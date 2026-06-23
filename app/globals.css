@@ -1,0 +1,36 @@
+@import "tailwindcss";
+@import "react-day-picker/style.css";
+@import "./booking.css";
+@import "./admin.css";
+
+:root {
+  --background: #f8fafc;
+  --foreground: #1e293b;
+  --hathor-navy: #1e3a5f;
+  --hathor-gold: #c9a227;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/* Public booking & marketing pages */
+body:has(.booking-page),
+body:has(.public-site) {
+  background: #f5f0e8;
+}
+
+.rdp-root {
+  --rdp-accent-color: #1e3a5f;
+  --rdp-accent-background-color: #1e3a5f;
+  --rdp-range_middle-background-color: rgb(30 58 95 / 0.1);
+}

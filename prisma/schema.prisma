@@ -1,0 +1,181 @@
+// Hathor Booking System
+// All DateTime values are stored as UTC instants (timezone-proof).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum BookingStatus {
+  PENDING_HOLD
+  CONFIRMED
+  CANCELLED
+  EXPIRED
+}
+
+enum ContentSection {
+  HERO
+  ABOUT
+  ITINERARIES
+  ROOMS
+  WELLNESS
+  GASTRONOMY
+  CHARTER
+  CONTACT
+}
+
+model Cruise {
+  id             String    @id @default(cuid())
+  name           String
+  description    String?
+  slug           String    @unique
+  imageUrl       String?
+  basePriceCents Int       @default(0)
+  ports          String?
+  deletedAt      DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  schedules   CruiseSchedule[]
+  rooms       Room[]
+  ticketTypes TicketType[]
+
+  @@index([deletedAt])
+}
+
+model CruiseSchedule {
+  id            String   @id @default(cuid())
+  cruiseId      String
+  departureTime DateTime
+  arrivalTime   DateTime
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  cruise       Cruise        @relation(fields: [cruiseId], references: [id], onDelete: Cascade)
+  bookings     Booking[]
+  bookingRooms BookingRoom[]
+
+  @@index([cruiseId])
+}
+
+model Room {
+  id              String    @id @default(cuid())
+  cruiseId        String
+  name            String
+  roomNumber      String?
+  roomType        String?
+  priceMultiplier Float     @default(1)
+  capacity        Int
+  description     String?
+  deletedAt       DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  cruise       Cruise        @relation(fields: [cruiseId], references: [id], onDelete: Cascade)
+  bookingRooms BookingRoom[]
+
+  @@index([cruiseId])
+  @@index([deletedAt])
+}
+
+model TicketType {
+  id          String   @id @default(cuid())
+  cruiseId    String
+  name        String
+  description String?
+  priceCents  Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  cruise         Cruise          @relation(fields: [cruiseId], references: [id], onDelete: Cascade)
+  bookingTickets BookingTicket[]
+
+  @@index([cruiseId])
+}
+
+model Booking {
+  id               String        @id @default(cuid())
+  cruiseScheduleId String
+  status           BookingStatus @default(PENDING_HOLD)
+  holdExpiresAt    DateTime?
+  customerEmail    String?
+  customerName     String?
+  deletedAt        DateTime?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  cruiseSchedule CruiseSchedule @relation(fields: [cruiseScheduleId], references: [id])
+  bookingRooms   BookingRoom[]
+  bookingTickets BookingTicket[]
+
+  @@index([cruiseScheduleId, status])
+  @@index([deletedAt])
+  @@index([deletedAt, createdAt])
+  @@index([status, deletedAt, createdAt])
+}
+
+model BookingRoom {
+  id               String   @id @default(cuid())
+  bookingId        String
+  roomId           String
+  cruiseScheduleId String
+  createdAt        DateTime @default(now())
+
+  booking        Booking        @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  room           Room           @relation(fields: [roomId], references: [id])
+  cruiseSchedule CruiseSchedule @relation(fields: [cruiseScheduleId], references: [id])
+
+  @@unique([bookingId, roomId])
+  @@index([roomId, cruiseScheduleId])
+}
+
+model BookingTicket {
+  id           String   @id @default(cuid())
+  bookingId    String
+  ticketTypeId String
+  quantity     Int      @default(1)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  booking    Booking    @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  ticketType TicketType @relation(fields: [ticketTypeId], references: [id])
+
+  @@unique([bookingId, ticketTypeId])
+}
+
+model SiteContent {
+  id        String         @id @default(cuid())
+  section   ContentSection @unique
+  title     String
+  subtitle  String?
+  bodyText  String?
+  imageUrl  String?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model BlogPost {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  excerpt     String
+  content     String   @default("")
+  publishedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([publishedAt])
+}
+
+model AdminProfile {
+  id                String   @id
+  displayName       String   @default("Admin")
+  avatarUrl         String?
+  lastSeenBookingAt DateTime @default(now())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
