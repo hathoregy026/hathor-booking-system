@@ -1,21 +1,80 @@
-/* Hathor public booking page — Atlanta-inspired palette */
+/* Hathor public booking page — premium luxury palette */
 
 .booking-page {
-  --booking-bg: #f5f0e8;
-  --booking-surface: #faf8f4;
+  --booking-bg: #faf8f5;
+  --booking-bg-alt: #f5f0e8;
+  --booking-surface: #fdfbf7;
   --booking-card: #ffffff;
-  --booking-navy: #1a3a4a;
-  --booking-navy-hover: #142e3b;
-  --booking-cream: #ebe4d8;
-  --booking-text: #1c1c1c;
-  --booking-muted: #6b6560;
-  --booking-border: #ddd5c8;
-  --booking-serif: var(--font-booking-serif, "Playfair Display", Georgia, serif);
-  --booking-sans: var(--font-booking-sans, "DM Sans", system-ui, sans-serif);
-  background-color: var(--booking-bg);
+  --booking-gold: #c9a96e;
+  --booking-gold-dark: #8b6914;
+  --booking-gold-light: #f5ecd8;
+  --booking-navy: #1a1a1a;
+  --booking-navy-hover: #8b6914;
+  --booking-cream: #e8e2d9;
+  --booking-text: #1a1a1a;
+  --booking-muted: #6b6b6b;
+  --booking-border: #e8e2d9;
+  --booking-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --booking-shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --booking-serif: Georgia, "Times New Roman", var(--font-booking-serif, serif);
+  --booking-sans: var(--font-booking-sans, "Inter"), "Helvetica Neue", Helvetica,
+    Arial, sans-serif;
+  background: linear-gradient(180deg, var(--booking-bg) 0%, var(--booking-bg-alt) 100%);
   color: var(--booking-text);
   font-family: var(--booking-sans);
   min-height: 100vh;
+  animation: bookingFadeIn 0.5s ease;
+}
+
+@keyframes bookingFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.booking-premium-intro {
+  max-width: 42rem;
+  margin: 0 auto 2.5rem;
+  text-align: center;
+  animation: bookingSlideUp 0.55s ease backwards;
+}
+
+.booking-premium-eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--booking-gold-dark);
+}
+
+.booking-premium-title {
+  margin-top: 0.75rem;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--booking-text);
+}
+
+.booking-premium-subtitle {
+  margin-top: 1rem;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--booking-muted);
+}
+
+@keyframes bookingSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .booking-serif {
@@ -30,8 +89,11 @@
 .booking-card {
   background: var(--booking-card);
   border: 1px solid var(--booking-border);
-  border-radius: 20px;
-  box-shadow: 0 2px 16px rgba(26, 58, 74, 0.06);
+  border-radius: 12px;
+  box-shadow: var(--booking-shadow);
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
 }
 
 .booking-pill {
@@ -89,18 +151,21 @@
 }
 
 .booking-btn-primary {
-  background: var(--booking-navy);
+  background: var(--booking-gold-dark);
   color: #ffffff;
-  border-radius: 9999px;
+  border-radius: 10px;
   font-weight: 600;
+  letter-spacing: 0.02em;
   transition:
-    background-color 200ms ease,
-    transform 200ms ease;
+    background-color 0.3s ease,
+    transform 0.2s ease,
+    box-shadow 0.3s ease;
 }
 
 .booking-btn-primary:hover:not(:disabled) {
-  background: var(--booking-navy-hover);
-  transform: scale(1.02);
+  background: #7a5f12;
+  box-shadow: 0 4px 16px rgba(139, 105, 20, 0.35);
+  transform: translateY(-1px);
 }
 
 .booking-btn-primary:disabled {
@@ -111,17 +176,17 @@
 .booking-btn-outline {
   background: transparent;
   border: 1px solid var(--booking-border);
-  color: var(--booking-navy);
-  border-radius: 9999px;
+  color: var(--booking-gold-dark);
+  border-radius: 10px;
   font-weight: 600;
   transition:
-    border-color 200ms ease,
-    background-color 200ms ease;
+    border-color 0.3s ease,
+    background-color 0.3s ease;
 }
 
 .booking-btn-outline:hover {
-  border-color: var(--booking-navy);
-  background: var(--booking-surface);
+  border-color: var(--booking-gold);
+  background: var(--booking-gold-light);
 }
 
 .booking-input {
@@ -186,7 +251,7 @@
 }
 
 .booking-search-mode__button--active {
-  background: var(--booking-navy);
+  background: var(--booking-gold-dark);
   color: #fff;
 }
 
@@ -194,9 +259,10 @@
 .booking-widget {
   background: var(--booking-card);
   border: 1px solid var(--booking-border);
-  border-radius: 24px;
-  box-shadow: 0 8px 32px rgba(26, 58, 74, 0.08);
-  padding: 1rem;
+  border-radius: 16px;
+  box-shadow: var(--booking-shadow);
+  padding: 1.25rem;
+  animation: bookingSlideUp 0.5s ease 0.1s backwards;
 }
 
 @media (max-width: 767px) {
@@ -281,8 +347,8 @@
 
 .booking-widget-select:focus {
   outline: none;
-  border-color: var(--booking-navy);
-  box-shadow: 0 0 0 3px rgba(26, 58, 74, 0.1);
+  border-color: var(--booking-gold);
+  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.22);
 }
 
 .booking-widget-trigger {
@@ -307,8 +373,8 @@
 
 .booking-widget-trigger:focus-visible {
   outline: none;
-  border-color: var(--booking-navy);
-  box-shadow: 0 0 0 3px rgba(26, 58, 74, 0.1);
+  border-color: var(--booking-gold);
+  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.22);
 }
 
 .booking-widget-action {
@@ -570,28 +636,30 @@
   display: grid;
   grid-template-columns: 1fr;
   overflow: hidden;
-  border-radius: 20px;
+  border-radius: 12px;
   background: var(--booking-card);
   border: 1px solid var(--booking-border);
-  box-shadow: 0 2px 16px rgba(26, 58, 74, 0.06);
+  box-shadow: var(--booking-shadow);
   transition:
-    box-shadow 200ms ease,
-    transform 200ms ease;
+    box-shadow 0.3s ease,
+    transform 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.booking-room-card:hover {
+  box-shadow: var(--booking-shadow-hover);
+  transform: translateY(-2px);
+}
+
+.booking-room-card--selected {
+  border-color: var(--booking-gold);
+  box-shadow: 0 0 0 1px var(--booking-gold), var(--booking-shadow-hover);
 }
 
 @media (min-width: 768px) {
   .booking-room-card {
     grid-template-columns: 280px 1fr 220px;
   }
-}
-
-.booking-room-card:hover {
-  box-shadow: 0 8px 32px rgba(26, 58, 74, 0.1);
-}
-
-.booking-room-card--selected {
-  border-color: var(--booking-navy);
-  box-shadow: 0 0 0 2px var(--booking-navy);
 }
 
 .booking-room-card__image {
@@ -625,16 +693,56 @@
 
 .booking-step-dot--active {
   width: 28px;
-  background: var(--booking-navy);
+  background: var(--booking-gold-dark);
 }
 
 .booking-step-dot--done {
-  background: var(--booking-navy);
+  background: var(--booking-gold);
 }
 
 /* Day picker overrides for booking */
 .booking-page .rdp-root {
-  --rdp-accent-color: #1a3a4a;
-  --rdp-accent-background-color: #1a3a4a;
-  --rdp-range_middle-background-color: rgb(26 58 74 / 0.08);
+  --rdp-accent-color: #8b6914;
+  --rdp-accent-background-color: #8b6914;
+  --rdp-range_middle-background-color: rgb(201 169 110 / 0.15);
+}
+
+/* ——— Custom scrollbars (booking & public site) ——— */
+.booking-page,
+.booking-page *,
+.public-site,
+.public-site * {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(26, 58, 74, 0.28) rgba(26, 58, 74, 0.06);
+}
+
+.booking-page ::-webkit-scrollbar,
+.public-site ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.booking-page ::-webkit-scrollbar-track,
+.public-site ::-webkit-scrollbar-track {
+  background: rgba(26, 58, 74, 0.06);
+  border-radius: 999px;
+}
+
+.booking-page ::-webkit-scrollbar-thumb,
+.public-site ::-webkit-scrollbar-thumb {
+  background: rgba(201, 169, 110, 0.45);
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+}
+
+.booking-page ::-webkit-scrollbar-thumb:hover,
+.public-site ::-webkit-scrollbar-thumb:hover {
+  background: rgba(26, 58, 74, 0.42);
+  background-clip: padding-box;
+}
+
+.booking-page ::-webkit-scrollbar-corner,
+.public-site ::-webkit-scrollbar-corner {
+  background: transparent;
 }

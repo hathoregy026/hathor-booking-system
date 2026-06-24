@@ -60,7 +60,8 @@ export const ModelName = {
   BookingTicket: 'BookingTicket',
   SiteContent: 'SiteContent',
   BlogPost: 'BlogPost',
-  AdminProfile: 'AdminProfile'
+  AdminProfile: 'AdminProfile',
+  EmailTemplate: 'EmailTemplate'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -213,6 +214,22 @@ export const AdminProfileScalarFieldEnum = {
 } as const
 
 export type AdminProfileScalarFieldEnum = (typeof AdminProfileScalarFieldEnum)[keyof typeof AdminProfileScalarFieldEnum]
+
+
+export const EmailTemplateScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  subject: 'subject',
+  logoUrl: 'logoUrl',
+  heroImageUrl: 'heroImageUrl',
+  primaryColor: 'primaryColor',
+  backgroundColor: 'backgroundColor',
+  heroHeading: 'heroHeading',
+  bodyText: 'bodyText',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmailTemplateScalarFieldEnum = (typeof EmailTemplateScalarFieldEnum)[keyof typeof EmailTemplateScalarFieldEnum]
 
 
 export const SortOrder = {

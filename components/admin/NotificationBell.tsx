@@ -153,14 +153,11 @@ export function NotificationBell() {
 
       {open && (
         <div
-          className="admin-card fixed inset-x-4 top-[4.5rem] z-50 mx-auto max-h-[min(70vh,32rem)] w-auto overflow-hidden p-0 shadow-xl sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 sm:w-[min(100vw-2rem,22rem)]"
+          className="admin-notification-panel fixed inset-x-4 top-[4.5rem] z-[60] mx-auto max-h-[min(70vh,32rem)] w-auto overflow-hidden p-0 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 sm:w-[min(100vw-2rem,22rem)]"
           role="dialog"
           aria-label="Booking notifications"
         >
-          <div
-            className="flex items-center justify-between border-b px-4 py-3"
-            style={{ borderColor: "var(--border)" }}
-          >
+          <div className="admin-notification-panel__header flex items-center justify-between px-4 py-3">
             <p className="text-sm font-semibold">New bookings</p>
             <Link
               href="/admin/bookings"
@@ -172,7 +169,7 @@ export function NotificationBell() {
             </Link>
           </div>
 
-          <div className="max-h-80 overflow-y-auto">
+          <div className="admin-notification-panel__list max-h-80 overflow-y-auto">
             {isLoading ? (
               <div
                 className="flex items-center justify-center gap-2 py-10 text-sm"

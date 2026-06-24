@@ -230,68 +230,74 @@ export function BookingCalendar({ bookings, isLoading }: BookingCalendarProps) {
         </div>
       ) : (
         <>
-      <div className="hidden grid-cols-7 border-b text-center text-xs font-semibold uppercase tracking-wide md:grid" style={{ borderColor: "var(--border)", color: "var(--text-muted)" }}>
-        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((label) => (
-          <div key={label} className="px-2 py-3">
-            {label}
+          <div
+            className="hidden grid-cols-7 border-b text-center text-xs font-semibold uppercase tracking-wide md:grid"
+            style={{ borderColor: "var(--border)", color: "var(--text-muted)" }}
+          >
+            {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((label) => (
+              <div key={label} className="px-2 py-3">
+                {label}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
 
-      <div className="hidden grid-cols-7 md:grid">
-        {days.map((day) => {
-          const key = format(day, "yyyy-MM-dd");
-          const dayEvents = eventsByDay.get(key) ?? [];
-          const inMonth = isSameMonth(day, month);
-          const isToday = isSameDay(day, new Date());
+          <div className="hidden grid-cols-7 md:grid">
+            {days.map((day) => {
+              const key = format(day, "yyyy-MM-dd");
+              const dayEvents = eventsByDay.get(key) ?? [];
+              const inMonth = isSameMonth(day, month);
+              const isToday = isSameDay(day, new Date());
 
-          return (
-            <div
-              key={key}
-              className="min-h-[7.5rem] border-b border-r p-2"
-              style={{
-                borderColor: "color-mix(in srgb, var(--border) 60%, transparent)",
-                background: inMonth
-                  ? "transparent"
-                  : "color-mix(in srgb, var(--border) 12%, transparent)",
-                opacity: inMonth ? 1 : 0.55,
-              }}
-            >
-              <div
-                className={`mb-2 inline-flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold ${
-                  isToday ? "text-white" : ""
-                }`}
-                style={
-                  isToday
-                    ? { background: "var(--accent)" }
-                    : { color: "var(--text-secondary)" }
-                }
-              >
-                {format(day, "d")}
-              </div>
-
-              <div className="space-y-1">
-                {dayEvents.map((booking) => (
+              return (
+                <div
+                  key={key}
+                  className="min-h-[7.5rem] border-b border-r p-2"
+                  style={{
+                    borderColor:
+                      "color-mix(in srgb, var(--border) 60%, transparent)",
+                    background: inMonth
+                      ? "transparent"
+                      : "color-mix(in srgb, var(--border) 12%, transparent)",
+                    opacity: inMonth ? 1 : 0.55,
+                  }}
+                >
                   <div
-                    key={`${booking.id}-${key}`}
-                    className="rounded-md border px-2 py-1.5 text-[11px] leading-snug"
-                    style={eventStyles(booking.status)}
-                    title={`${booking.customerName} · ${booking.roomTypes.join(", ") || booking.rooms.join(", ")}`}
+                    className={`mb-2 inline-flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold ${
+                      isToday ? "text-white" : ""
+                    }`}
+                    style={
+                      isToday
+                        ? { background: "var(--accent)" }
+                        : { color: "var(--text-secondary)" }
+                    }
                   >
-                    <p className="truncate font-semibold">{booking.customerName}</p>
-                    <p className="truncate opacity-80">
-                      {booking.roomTypes[0] ?? booking.rooms[0] ?? "Room"}
-                    </p>
-                    <p className="truncate opacity-70">
-                      {displayBookingStatus(booking.status)}
-                    </p>
+                    {format(day, "d")}
                   </div>
-                ))}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+
+                  <div className="space-y-1">
+                    {dayEvents.map((booking) => (
+                      <div
+                        key={`${booking.id}-${key}`}
+                        className="rounded-md border px-2 py-1.5 text-[11px] leading-snug"
+                        style={eventStyles(booking.status)}
+                        title={`${booking.customerName} · ${booking.roomTypes.join(", ") || booking.rooms.join(", ")}`}
+                      >
+                        <p className="truncate font-semibold">
+                          {booking.customerName}
+                        </p>
+                        <p className="truncate opacity-80">
+                          {booking.roomTypes[0] ?? booking.rooms[0] ?? "Room"}
+                        </p>
+                        <p className="truncate opacity-70">
+                          {displayBookingStatus(booking.status)}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </>
       )}
     </div>

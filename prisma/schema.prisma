@@ -179,3 +179,16 @@ model AdminProfile {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 }
+
+model EmailTemplate {
+  id              String   @id @default(cuid())
+  name            String   @unique
+  subject         String
+  logoUrl         String?
+  heroImageUrl    String?
+  primaryColor    String   @default("#C9A96E")
+  backgroundColor String   @default("#FAF8F5")
+  heroHeading     String?
+  bodyText        String?
+  updatedAt       DateTime @updatedAt
+}

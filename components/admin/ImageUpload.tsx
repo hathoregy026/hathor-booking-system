@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AlertCircle, ImageIcon, Loader2, Upload } from "lucide-react";
+import { AlertCircle, ImageIcon, Loader2, Trash2, Upload } from "lucide-react";
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 const ACCEPTED_TYPES = "image/jpeg,image/png,image/webp";
@@ -9,10 +9,11 @@ const ACCEPTED_TYPES = "image/jpeg,image/png,image/webp";
 type ImageUploadProps = {
   label: string;
   value: string | null;
-  onChange: (url: string) => void;
+  onChange: (url: string | null) => void;
   folder?: string;
   helperText?: string;
   variant?: "default" | "admin";
+  allowClear?: boolean;
 };
 
 function validateClientFile(file: File): string | null {
@@ -34,6 +35,7 @@ export function ImageUpload({
   folder = "general",
   helperText,
   variant = "default",
+  allowClear = true,
 }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -114,6 +116,15 @@ export function ImageUpload({
       );
     } finally {
       setIsUploading(false);
+    }
+  };
+
+  const handleClear = () => {
+    setError(null);
+    setSelectedFile(null);
+    onChange(null);
+    if (inputRef.current) {
+      inputRef.current.value = "";
     }
   };
 
@@ -216,6 +227,22 @@ export function ImageUpload({
             Upload
           </button>
         )}
+
+        {allowClear && value && !selectedFile && (
+          <button
+            type="button"
+            onClick={handleClear}
+            disabled={isUploading}
+            className={
+              isAdmin
+                ? "admin-btn-outline inline-flex items-center gap-2 px-3 py-2 text-sm text-red-600 disabled:opacity-60"
+                : "inline-flex items-center gap-2 rounded-lg border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 disabled:opacity-60"
+            }
+          >
+            <Trash2 className="h-4 w-4" aria-hidden />
+            Remove
+          </button>
+        )}
       </div>
 
       {selectedFile && !isUploading && (
@@ -232,7 +259,7 @@ export function ImageUpload({
           {isAdmin && (
             <>
               Selected: {selectedFile.name} ({(selectedFile.size / 1024).toFixed(0)}{" "}
-              KB) — click Upload, then Save profile.
+              KB) — click Upload, then Save Template.
             </>
           )}
         </p>
@@ -244,7 +271,7 @@ export function ImageUpload({
           style={isAdmin ? { color: "var(--text-muted)" } : undefined}
           title={value}
         >
-          {isAdmin ? "Photo uploaded — save profile to apply." : `Current URL: ${value}`}
+          {isAdmin ? "Image uploaded — save template to apply." : `Current URL: ${value}`}
         </p>
       )}
 

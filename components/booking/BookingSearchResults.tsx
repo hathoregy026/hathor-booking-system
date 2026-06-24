@@ -22,7 +22,7 @@ import type { RoomSearchConfig } from "@/lib/booking-search-config";
 import type { BookingSearchMode } from "@/store/bookingStore";
 
 const ROOM_PLACEHOLDER =
-  "linear-gradient(135deg, #1a3a4a 0%, #2d5a6e 50%, #4a7c8f 100%)";
+  "linear-gradient(135deg, #8b6914 0%, #c9a96e 45%, #f5ecd8 100%)";
 
 type BookingSearchResultsProps = {
   searchMode: BookingSearchMode;

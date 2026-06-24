@@ -2,9 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { BookingStatus } from "@/app/generated/prisma/client";
 import { handleRouteError } from "@/lib/api";
 import { BookingConflictError, InvalidBookingError } from "@/lib/booking";
+import { buildEmailDetailsFromConfirmBooking } from "@/lib/booking-email-details";
 import { ensureDefaultTicketType } from "@/lib/cruise-setup";
 import { withDb } from "@/lib/db-safe";
 import { utcNow } from "@/lib/dates";
+import {
+  sendAdminAlertEmail,
+  sendBookingConfirmedEmail,
+} from "@/lib/email";
 import { prisma } from "@/lib/prisma";
 import { confirmBookingSchema } from "@/lib/validations";
 
@@ -150,11 +155,69 @@ export async function POST(request: NextRequest) {
             holdExpiresAt: null,
           },
           include: {
-            bookingRooms: true,
-            bookingTickets: true,
+            bookingRooms: {
+              select: {
+                room: { select: { name: true, roomType: true } },
+              },
+            },
+            bookingTickets: {
+              select: {
+                quantity: true,
+                ticketType: { select: { priceCents: true } },
+              },
+            },
+            cruiseSchedule: {
+              select: {
+                departureTime: true,
+                arrivalTime: true,
+                cruise: { select: { name: true } },
+              },
+            },
           },
         });
     });
+
+    const emailDetails = buildEmailDetailsFromConfirmBooking({
+      id: confirmedBooking.id,
+      customerName: confirmedBooking.customerName,
+      customerEmail: confirmedBooking.customerEmail,
+      cruiseSchedule: confirmedBooking.cruiseSchedule,
+      bookingRooms: confirmedBooking.bookingRooms,
+      bookingTickets: confirmedBooking.bookingTickets,
+    });
+
+    if (emailDetails) {
+      try {
+        console.log(
+          "[email] confirm: sending booking confirmed email to",
+          emailDetails.guestEmail,
+        );
+        await sendBookingConfirmedEmail(
+          emailDetails.guestEmail,
+          emailDetails.guestName,
+          emailDetails,
+        );
+        console.log("[email] confirm: guest confirmation email sent");
+      } catch (emailError) {
+        console.error(
+          "[email] confirm: guest confirmation email failed:",
+          emailError,
+        );
+      }
+
+      try {
+        console.log("[email] confirm: sending admin alert email");
+        await sendAdminAlertEmail(emailDetails);
+        console.log("[email] confirm: admin alert email sent");
+      } catch (emailError) {
+        console.error("[email] confirm: admin alert email failed:", emailError);
+      }
+    } else {
+      console.warn(
+        "[email] confirm: skipped emails — no guest email on booking",
+        confirmedBooking.id,
+      );
+    }
 
     return NextResponse.json({
       bookingId: confirmedBooking.id,

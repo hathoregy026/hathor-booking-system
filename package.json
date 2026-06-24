@@ -4,17 +4,20 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "node scripts/sync-email-assets.mjs && prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "prisma generate",
     "seed:hathor": "node scripts/seed-hathor-data.mjs",
-    "seed:content": "node scripts/seed-raw-content.mjs"
+    "seed:content": "node scripts/seed-raw-content.mjs",
+    "seed:email-templates": "node scripts/seed-email-templates.mjs",
+    "email:dev": "node scripts/sync-email-assets.mjs && email dev --dir emails --port 3005"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "@react-email/components": "^1.0.12",
+    "@react-email/render": "^2.0.9",
     "@supabase/supabase-js": "^2.108.2",
     "date-fns": "^4.4.0",
     "lucide-react": "^1.21.0",
@@ -31,6 +34,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@react-email/ui": "^6.6.4",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/pg": "^8.20.0",

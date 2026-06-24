@@ -3,6 +3,11 @@ import { Resend } from "resend";
 import AdminAlertEmail from "@/emails/AdminAlert";
 import BookingConfirmedEmail from "@/emails/BookingConfirmed";
 import BookingReceivedEmail from "@/emails/BookingReceived";
+import {
+  getEmailTemplateForSend,
+  resolveEmailSubject,
+} from "@/lib/email-template-send";
+import { toEmailThemeOverrides } from "@/lib/email-templates";
 import type { BookingEmailDetails } from "@/lib/email-types";
 
 let resendClient: Resend | null = null;
@@ -68,10 +73,17 @@ export async function sendBookingReceivedEmail(
   guestName: string,
   bookingDetails: BookingEmailDetails,
 ) {
+  const template = await getEmailTemplateForSend("BookingReceived");
+  const theme = toEmailThemeOverrides(template);
+
   await sendEmail({
     to: guestEmail,
-    subject: "Your Hathor booking request has been received",
-    react: BookingReceivedEmail({ guestName, details: bookingDetails }),
+    subject: resolveEmailSubject(template, { guestName }),
+    react: BookingReceivedEmail({
+      guestName,
+      details: bookingDetails,
+      ...theme,
+    }),
     label: "booking received (guest)",
   });
 }
@@ -81,10 +93,17 @@ export async function sendBookingConfirmedEmail(
   guestName: string,
   bookingDetails: BookingEmailDetails,
 ) {
+  const template = await getEmailTemplateForSend("BookingConfirmed");
+  const theme = toEmailThemeOverrides(template);
+
   await sendEmail({
     to: guestEmail,
-    subject: "Your Hathor Dahabiya cruise is confirmed",
-    react: BookingConfirmedEmail({ guestName, details: bookingDetails }),
+    subject: resolveEmailSubject(template, { guestName }),
+    react: BookingConfirmedEmail({
+      guestName,
+      details: bookingDetails,
+      ...theme,
+    }),
     label: "booking confirmed (guest)",
   });
 }
@@ -96,10 +115,18 @@ export async function sendAdminAlertEmail(bookingDetails: BookingEmailDetails) {
     return;
   }
 
+  const template = await getEmailTemplateForSend("AdminAlert");
+  const theme = toEmailThemeOverrides(template);
+
   await sendEmail({
     to: adminEmail,
-    subject: `New booking request — ${bookingDetails.guestName}`,
-    react: AdminAlertEmail({ details: bookingDetails }),
+    subject: resolveEmailSubject(template, {
+      guestName: bookingDetails.guestName,
+    }),
+    react: AdminAlertEmail({
+      details: bookingDetails,
+      ...theme,
+    }),
     label: "admin alert",
   });
 }

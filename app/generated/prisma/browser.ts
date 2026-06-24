@@ -67,3 +67,8 @@ export type BlogPost = Prisma.BlogPostModel
  * 
  */
 export type AdminProfile = Prisma.AdminProfileModel
+/**
+ * Model EmailTemplate
+ * 
+ */
+export type EmailTemplate = Prisma.EmailTemplateModel

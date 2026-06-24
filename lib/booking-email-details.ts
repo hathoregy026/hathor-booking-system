@@ -43,6 +43,50 @@ export function buildCheckoutEmailDetails(input: {
   };
 }
 
+export function buildEmailDetailsFromConfirmBooking(booking: {
+  id: string;
+  customerName: string | null;
+  customerEmail: string | null;
+  cruiseSchedule: {
+    departureTime: Date;
+    arrivalTime: Date;
+    cruise: { name: string };
+  };
+  bookingRooms: {
+    room: { name: string; roomType: string | null };
+  }[];
+  bookingTickets: {
+    quantity: number;
+    ticketType: { priceCents: number };
+  }[];
+}): BookingEmailDetails | null {
+  const email = booking.customerEmail?.trim();
+  if (!email) return null;
+
+  const parsed = parseGuestFromCustomerName(booking.customerName ?? "Guest");
+  const roomLabel =
+    booking.bookingRooms[0]?.room.roomType ??
+    booking.bookingRooms[0]?.room.name ??
+    "Luxury accommodation";
+  const totalPriceCents = booking.bookingTickets.reduce(
+    (sum, ticket) => sum + ticket.quantity * ticket.ticketType.priceCents,
+    0,
+  );
+
+  return {
+    bookingId: booking.id,
+    guestName: parsed.guestName,
+    guestEmail: email,
+    guestPhone: parsed.guestPhone,
+    cruiseName: booking.cruiseSchedule.cruise.name,
+    checkInDate: format(booking.cruiseSchedule.departureTime, "MMMM d, yyyy"),
+    checkOutDate: format(booking.cruiseSchedule.arrivalTime, "MMMM d, yyyy"),
+    roomType: roomLabel,
+    guests: parsed.guests,
+    totalPrice: formatPrice(totalPriceCents),
+  };
+}
+
 export function buildEmailDetailsFromAdminBooking(
   booking: AdminBookingDto,
 ): BookingEmailDetails | null {

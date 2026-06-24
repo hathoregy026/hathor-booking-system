@@ -1,70 +1,227 @@
 import { Section, Text } from "@react-email/components";
+import { differenceInCalendarDays, parse } from "date-fns";
 import type { BookingEmailDetails } from "@/lib/email-types";
 import { emailColors, emailFonts } from "../styles";
+import { GoldSectionTitle } from "./EmailLayout";
 
 type BookingSummaryProps = {
   details: BookingEmailDetails;
+  showBookingReference?: boolean;
+  sectionTitle?: string;
 };
 
-export function BookingSummary({ details }: BookingSummaryProps) {
-  const rows: { label: string; value: string }[] = [
-    { label: "Cruise", value: details.cruiseName },
-    { label: "Dates", value: `${details.checkInDate} – ${details.checkOutDate}` },
-    { label: "Room", value: details.roomType },
-    { label: "Guests", value: details.guests },
-    { label: "Total", value: details.totalPrice },
-  ];
+type SummaryRow = {
+  label: string;
+  value: string;
+  bold?: boolean;
+  gold?: boolean;
+};
 
-  if (details.bookingId) {
-    rows.unshift({ label: "Reference", value: details.bookingId });
+function parseGuestCounts(guests: string): { adults: string; children: string } {
+  const adultsMatch = guests.match(/(\d+)\s+adult/i);
+  const childrenMatch = guests.match(/(\d+)\s+child/i);
+  return {
+    adults: adultsMatch?.[1] ?? guests,
+    children: childrenMatch?.[1] ?? "0",
+  };
+}
+
+function computeDuration(checkIn: string, checkOut: string): string {
+  try {
+    const start = parse(checkIn, "MMMM d, yyyy", new Date());
+    const end = parse(checkOut, "MMMM d, yyyy", new Date());
+    const nights = differenceInCalendarDays(end, start);
+    if (nights <= 0) return "—";
+    return `${nights} night${nights === 1 ? "" : "s"}`;
+  } catch {
+    return "—";
+  }
+}
+
+function buildSummaryRows(
+  details: BookingEmailDetails,
+  showBookingReference: boolean,
+): SummaryRow[] {
+  const { adults, children } = parseGuestCounts(details.guests);
+  const rows: SummaryRow[] = [];
+
+  if (showBookingReference && details.bookingId) {
+    rows.push({
+      label: "Booking Reference",
+      value: details.bookingId,
+      bold: true,
+    });
   }
 
+  rows.push(
+    { label: "Cruise Name", value: details.cruiseName },
+    { label: "Departure Date", value: details.checkInDate },
+    { label: "Return Date", value: details.checkOutDate },
+    {
+      label: "Duration",
+      value: computeDuration(details.checkInDate, details.checkOutDate),
+    },
+    { label: "Room Type", value: details.roomType },
+    { label: "Adults", value: adults },
+    { label: "Children", value: children },
+    { label: "Total Price", value: details.totalPrice, bold: true, gold: true },
+  );
+
+  return rows;
+}
+
+function cellStyle(isAlt: boolean) {
+  return {
+    backgroundColor: isAlt ? emailColors.rowAlt : emailColors.card,
+    borderBottom: `1px solid ${emailColors.border}`,
+    padding: "12px 16px",
+    verticalAlign: "top" as const,
+    width: "50%",
+  };
+}
+
+export function BookingSummary({
+  details,
+  showBookingReference = false,
+  sectionTitle = "YOUR RESERVATION DETAILS",
+}: BookingSummaryProps) {
+  if (!details) {
+    return null;
+  }
+
+  const rows = buildSummaryRows(details, showBookingReference);
+
   return (
-    <Section style={summaryBox}>
-      <Text style={summaryTitle}>Booking summary</Text>
-      {rows.map((row) => (
-        <Section key={row.label} style={rowStyle}>
-          <Text style={label}>{row.label}</Text>
-          <Text style={value}>{row.value}</Text>
-        </Section>
-      ))}
+    <Section style={{ margin: "32px 0" }}>
+      <GoldSectionTitle>{sectionTitle}</GoldSectionTitle>
+      <table
+        role="presentation"
+        cellPadding={0}
+        cellSpacing={0}
+        width="100%"
+        style={{
+          border: `1px solid ${emailColors.border}`,
+          borderCollapse: "collapse",
+          width: "100%",
+        }}
+      >
+        <tbody>
+          {rows.map((row, index) => {
+            const isAlt = index % 2 === 1;
+            return (
+              <tr key={row.label}>
+                <td style={cellStyle(isAlt)}>
+                  <Text
+                    style={{
+                      color: emailColors.textSecondary,
+                      fontFamily: emailFonts.sans,
+                      fontSize: "13px",
+                      fontWeight: 700,
+                      letterSpacing: "1px",
+                      lineHeight: "1.4",
+                      margin: 0,
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {row.label}
+                  </Text>
+                </td>
+                <td style={cellStyle(isAlt)}>
+                  <Text
+                    style={{
+                      color: row.gold ? emailColors.goldDark : emailColors.textPrimary,
+                      fontFamily: emailFonts.sans,
+                      fontSize: "16px",
+                      fontWeight: row.bold ? 700 : 400,
+                      lineHeight: "1.6",
+                      margin: 0,
+                      textAlign: "right",
+                    }}
+                  >
+                    {row.value}
+                  </Text>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </Section>
   );
 }
 
-const summaryBox = {
-  backgroundColor: "rgba(201, 162, 39, 0.08)",
-  border: `1px solid ${emailColors.border}`,
-  borderRadius: "8px",
-  margin: "24px 0",
-  padding: "20px",
-};
+export function GuestInfoTable({
+  details,
+  sectionTitle = "GUEST INFORMATION",
+}: {
+  details: BookingEmailDetails;
+  sectionTitle?: string;
+}) {
+  if (!details) {
+    return null;
+  }
 
-const summaryTitle = {
-  color: emailColors.goldLight,
-  fontFamily: emailFonts.serif,
-  fontSize: "14px",
-  fontWeight: 600,
-  letterSpacing: "0.08em",
-  margin: "0 0 16px",
-  textTransform: "uppercase" as const,
-};
+  const rows: SummaryRow[] = [
+    { label: "Full Name", value: details.guestName },
+    { label: "Email", value: details.guestEmail },
+    { label: "Phone Number", value: details.guestPhone ?? "—" },
+    { label: "Special Requests", value: "—" },
+  ];
 
-const rowStyle = {
-  marginBottom: "10px",
-};
-
-const label = {
-  color: emailColors.muted,
-  fontSize: "11px",
-  letterSpacing: "0.06em",
-  margin: "0 0 2px",
-  textTransform: "uppercase" as const,
-};
-
-const value = {
-  color: emailColors.cream,
-  fontSize: "14px",
-  lineHeight: "1.5",
-  margin: 0,
-};
+  return (
+    <Section style={{ margin: "0 0 32px" }}>
+      <GoldSectionTitle>{sectionTitle}</GoldSectionTitle>
+      <table
+        role="presentation"
+        cellPadding={0}
+        cellSpacing={0}
+        width="100%"
+        style={{
+          border: `1px solid ${emailColors.border}`,
+          borderCollapse: "collapse",
+          width: "100%",
+        }}
+      >
+        <tbody>
+          {rows.map((row, index) => {
+            const isAlt = index % 2 === 1;
+            return (
+              <tr key={row.label}>
+                <td style={cellStyle(isAlt)}>
+                  <Text
+                    style={{
+                      color: emailColors.textSecondary,
+                      fontFamily: emailFonts.sans,
+                      fontSize: "13px",
+                      fontWeight: 700,
+                      letterSpacing: "1px",
+                      lineHeight: "1.4",
+                      margin: 0,
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {row.label}
+                  </Text>
+                </td>
+                <td style={cellStyle(isAlt)}>
+                  <Text
+                    style={{
+                      color: emailColors.textPrimary,
+                      fontFamily: emailFonts.sans,
+                      fontSize: "16px",
+                      lineHeight: "1.6",
+                      margin: 0,
+                      textAlign: "right",
+                    }}
+                  >
+                    {row.value}
+                  </Text>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </Section>
+  );
+}

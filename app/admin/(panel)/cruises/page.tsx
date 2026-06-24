@@ -840,7 +840,7 @@ export default function AdminCruisesPage() {
                               label="Cruise Image"
                               value={cruise.imageUrl}
                               onChange={(url) =>
-                                updateCruiseField(cruise.id, "imageUrl", url)
+                                updateCruiseField(cruise.id, "imageUrl", url ?? "")
                               }
                               folder="cruises"
                               helperText="Upload an image, then click Save Cruise."

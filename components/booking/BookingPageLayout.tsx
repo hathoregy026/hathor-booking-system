@@ -21,7 +21,7 @@ export function BookingPageLayout({
       {bannerVisible && (
         <div
           className="relative flex items-center justify-center px-10 py-2.5 text-center text-xs sm:text-sm"
-          style={{ background: "var(--booking-navy)", color: "#ffffff" }}
+          style={{ background: "var(--booking-gold-dark)", color: "#ffffff" }}
         >
           <p>
             Sign up for our weekly newsletter and get{" "}
@@ -48,7 +48,7 @@ export function BookingPageLayout({
             onClick={() => setMenuOpen(!menuOpen)}
             className="rounded-lg p-2 transition-colors hover:bg-black/5"
             aria-label="Menu"
-            style={{ color: "var(--booking-navy)" }}
+            style={{ color: "var(--booking-gold-dark)" }}
           >
             <Menu className="h-6 w-6" />
           </button>
@@ -56,7 +56,7 @@ export function BookingPageLayout({
           <Link
             href="/"
             className="booking-serif text-2xl font-semibold tracking-tight sm:text-3xl"
-            style={{ color: "var(--booking-navy)" }}
+            style={{ color: "var(--booking-gold-dark)" }}
           >
             {brandTitle}
           </Link>
@@ -64,7 +64,7 @@ export function BookingPageLayout({
           <button
             type="button"
             className="flex h-10 w-10 items-center justify-center rounded-full"
-            style={{ background: "var(--booking-navy)", color: "#fff" }}
+            style={{ background: "var(--booking-gold-dark)", color: "#fff" }}
             aria-label="Booking cart"
           >
             <ShoppingBag className="h-4 w-4" />
@@ -98,7 +98,7 @@ export function BookingPageLayout({
       </div>
 
       <div className="booking-wave-bg">
-        <main className="mx-auto max-w-6xl px-4 pb-20 pt-8 sm:px-6 sm:pt-10 lg:px-8">
+        <main className="booking-main mx-auto max-w-[1400px] px-4 pb-20 pt-8 sm:px-6 sm:pt-10 lg:px-8">
           {children}
         </main>
       </div>

@@ -7,6 +7,7 @@ import {
   Globe,
   LayoutDashboard,
   LogOut,
+  Mail,
   Settings,
   Ship,
   Ticket,
@@ -29,6 +30,7 @@ const NAV_SECTIONS: { title: string; items: NavItem[] }[] = [
       { href: "/admin/bookings", label: "Bookings", icon: Ticket },
       { href: "/admin/cruises", label: "Cruises & Rooms", icon: Ship },
       { href: "/admin/content", label: "Website Content", icon: Globe },
+      { href: "/admin/email-templates", label: "Email Templates", icon: Mail },
     ],
   },
   {

@@ -121,7 +121,10 @@ function BookingMobileCard({
       </dl>
 
       {viewMode === "active" && (canConfirm || canCancel) && (
-        <div className="flex flex-wrap gap-2 border-t pt-3" style={{ borderColor: "var(--border)" }}>
+        <div
+          className="flex flex-wrap gap-2 border-t pt-3"
+          style={{ borderColor: "var(--border)" }}
+        >
           {canConfirm && (
             <button
               type="button"

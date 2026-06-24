@@ -69,6 +69,12 @@
   --admin-control-height: 2.25rem;
   --select-option-bg: #141418;
   --select-option-fg: #f4f4f5;
+  --popover-bg: #12121a;
+  --popover-border: rgba(255, 255, 255, 0.14);
+  --popover-shadow: 0 16px 48px rgba(0, 0, 0, 0.65);
+  --scrollbar-thumb: rgba(167, 139, 250, 0.38);
+  --scrollbar-thumb-hover: rgba(196, 181, 253, 0.58);
+  --scrollbar-track: rgba(255, 255, 255, 0.04);
 }
 
 [data-theme="day"] {
@@ -140,6 +146,12 @@
   --admin-control-height: 2.25rem;
   --select-option-bg: #d6d6d6;
   --select-option-fg: #1f1f1f;
+  --popover-bg: #e4e4e4;
+  --popover-border: rgba(0, 0, 0, 0.12);
+  --popover-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+  --scrollbar-thumb: rgba(46, 46, 46, 0.28);
+  --scrollbar-thumb-hover: rgba(46, 46, 46, 0.45);
+  --scrollbar-track: rgba(0, 0, 0, 0.05);
 }
 
 .admin-shell {
@@ -720,4 +732,72 @@ select.admin-input option:checked {
   .admin-login-card {
     padding: 1.5rem;
   }
+}
+
+.email-preview-frame {
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+.email-preview-frame--desktop {
+  width: min(100%, 680px);
+  height: min(72vh, 720px);
+}
+
+.email-preview-frame--mobile {
+  width: min(100%, 390px);
+  height: min(72vh, 720px);
+  border-radius: 24px;
+}
+
+/* ——— Notification dropdown (solid, opaque) ——— */
+.admin-notification-panel {
+  background: var(--popover-bg);
+  border: 1px solid var(--popover-border);
+  border-radius: 16px;
+  box-shadow: var(--popover-shadow);
+  isolation: isolate;
+}
+
+.admin-notification-panel__header {
+  background: color-mix(in srgb, var(--popover-bg) 92%, var(--accent) 8%);
+  border-bottom: 1px solid var(--popover-border);
+}
+
+.admin-notification-panel__list {
+  background: var(--popover-bg);
+}
+
+/* ——— Custom scrollbars (admin) ——— */
+.admin-shell,
+.admin-shell * {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+.admin-shell ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.admin-shell ::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 999px;
+}
+
+.admin-shell ::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+}
+
+.admin-shell ::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+  background-clip: padding-box;
+}
+
+.admin-shell ::-webkit-scrollbar-corner {
+  background: transparent;
 }

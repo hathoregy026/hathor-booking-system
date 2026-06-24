@@ -266,63 +266,63 @@ export default function AdminBookingsPage() {
       <div className="flex flex-col gap-4">
         <div className="-mx-4 flex overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
           <div className="flex min-w-max flex-wrap items-center gap-2 sm:min-w-0">
-          {viewMode === "active" && (
-            <div
-              className="mr-1 flex shrink-0 rounded-xl border p-1 sm:mr-2"
-              style={{ borderColor: "var(--border)" }}
-            >
-              <button
-                type="button"
-                onClick={() => setLayoutView("list")}
-                className={`admin-filter-tab flex items-center gap-1.5 ${
-                  layoutView === "list" ? "admin-filter-tab--active" : ""
-                }`}
+            {viewMode === "active" && (
+              <div
+                className="mr-1 flex shrink-0 rounded-xl border p-1 sm:mr-2"
+                style={{ borderColor: "var(--border)" }}
               >
-                <LayoutList className="h-4 w-4" />
-                List
-              </button>
-              <button
-                type="button"
-                onClick={() => setLayoutView("calendar")}
-                className={`admin-filter-tab flex items-center gap-1.5 ${
-                  layoutView === "calendar" ? "admin-filter-tab--active" : ""
-                }`}
-              >
-                <CalendarDays className="h-4 w-4" />
-                Calendar
-              </button>
-            </div>
-          )}
+                <button
+                  type="button"
+                  onClick={() => setLayoutView("list")}
+                  className={`admin-filter-tab flex items-center gap-1.5 ${
+                    layoutView === "list" ? "admin-filter-tab--active" : ""
+                  }`}
+                >
+                  <LayoutList className="h-4 w-4" />
+                  List
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLayoutView("calendar")}
+                  className={`admin-filter-tab flex items-center gap-1.5 ${
+                    layoutView === "calendar" ? "admin-filter-tab--active" : ""
+                  }`}
+                >
+                  <CalendarDays className="h-4 w-4" />
+                  Calendar
+                </button>
+              </div>
+            )}
 
-          {FILTER_TABS.map((tab) => (
+            {FILTER_TABS.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                disabled={viewMode === "bin" || layoutView === "calendar"}
+                onClick={() => setStatusFilter(tab.id)}
+                className={`admin-filter-tab disabled:opacity-40 ${
+                  statusFilter === tab.id && viewMode === "active"
+                    ? "admin-filter-tab--active"
+                    : ""
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
             <button
-              key={tab.id}
               type="button"
-              disabled={viewMode === "bin" || layoutView === "calendar"}
-              onClick={() => setStatusFilter(tab.id)}
-              className={`admin-filter-tab disabled:opacity-40 ${
-                statusFilter === tab.id && viewMode === "active"
-                  ? "admin-filter-tab--active"
-                  : ""
+              onClick={() => {
+                switchViewMode(viewMode === "bin" ? "active" : "bin");
+                setStatusFilter("all");
+              }}
+              className={`admin-filter-tab ${
+                viewMode === "bin"
+                  ? "admin-filter-tab--danger-active"
+                  : "admin-filter-tab--danger"
               }`}
             >
-              {tab.label}
+              Recycle Bin
             </button>
-          ))}
-          <button
-            type="button"
-            onClick={() => {
-              switchViewMode(viewMode === "bin" ? "active" : "bin");
-              setStatusFilter("all");
-            }}
-            className={`admin-filter-tab ${
-              viewMode === "bin"
-                ? "admin-filter-tab--danger-active"
-                : "admin-filter-tab--danger"
-            }`}
-          >
-            Recycle Bin
-          </button>
           </div>
         </div>
 
