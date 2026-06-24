@@ -1,4 +1,5 @@
 import { EMAIL_LOGO_URL, emailColors } from "@/emails/styles";
+import { toAbsolutePublicUrl } from "@/lib/public-url";
 
 export const EMAIL_TEMPLATE_NAMES = [
   "BookingReceived",
@@ -104,8 +105,9 @@ export function mergeEmailTemplate(
     id: row.id ?? defaults.id,
     name,
     subject: row.subject?.trim() || defaults.subject,
-    logoUrl: row.logoUrl?.trim() || defaults.logoUrl,
-    heroImageUrl: row.heroImageUrl?.trim() || defaults.heroImageUrl,
+    logoUrl: toAbsolutePublicUrl(row.logoUrl?.trim()) || defaults.logoUrl,
+    heroImageUrl:
+      toAbsolutePublicUrl(row.heroImageUrl?.trim()) || defaults.heroImageUrl,
     primaryColor: row.primaryColor?.trim() || defaults.primaryColor,
     backgroundColor: row.backgroundColor?.trim() || defaults.backgroundColor,
     heroHeading: row.heroHeading?.trim() || defaults.heroHeading,
@@ -162,8 +164,8 @@ export function toEmailThemeOverrides(
   if (!template) return undefined;
 
   return {
-    logoUrl: template.logoUrl,
-    heroImageUrl: template.heroImageUrl,
+    logoUrl: toAbsolutePublicUrl(template.logoUrl),
+    heroImageUrl: toAbsolutePublicUrl(template.heroImageUrl),
     primaryColor: template.primaryColor,
     backgroundColor: template.backgroundColor,
     heroHeading: template.heroHeading,

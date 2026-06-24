@@ -1,3 +1,5 @@
+import { getSiteBaseUrl } from "@/lib/public-url";
+
 export const emailColors = {
   background: "#FAF8F5",
   card: "#FFFFFF",
@@ -16,12 +18,12 @@ export const emailFonts = {
   sans: "'Helvetica Neue', Helvetica, Arial, sans-serif",
 } as const;
 
-export const SITE_URL = "https://hathor-booking-system.vercel.app";
+export const SITE_URL = getSiteBaseUrl();
 
 export const EMAIL_LOGO_FILENAME =
   "e-mail-logo-egypttoor-booking-cruise-honeymoon.png";
 
-export const EMAIL_LOGO_URL = `${SITE_URL}/assets/${EMAIL_LOGO_FILENAME}`;
+export const EMAIL_LOGO_URL = `${getSiteBaseUrl()}/assets/${EMAIL_LOGO_FILENAME}`;
 
 export const emailLayout = {
   maxWidth: "600px",

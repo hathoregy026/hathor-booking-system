@@ -1,6 +1,7 @@
 import { randomUUID } from "crypto";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
+import { toAbsolutePublicUrl } from "@/lib/public-url";
 import { createSupabaseAdminClient } from "@/lib/supabase-server";
 import { IMAGE_BUCKET } from "@/lib/image-upload";
 
@@ -43,7 +44,7 @@ async function uploadToSupabase(
   const { data } = supabase.storage.from(IMAGE_BUCKET).getPublicUrl(objectPath);
 
   return {
-    url: data.publicUrl,
+    url: toAbsolutePublicUrl(data.publicUrl) ?? data.publicUrl,
     path: objectPath,
     storage: "supabase",
   };
@@ -59,8 +60,10 @@ async function uploadToLocal(
   await mkdir(path.dirname(absolutePath), { recursive: true });
   await writeFile(absolutePath, buffer);
 
+  const relativeUrl = `/uploads/${relativePath}`;
+
   return {
-    url: `/uploads/${relativePath}`,
+    url: toAbsolutePublicUrl(relativeUrl) ?? relativeUrl,
     path: relativePath,
     storage: "local",
   };

@@ -6,7 +6,14 @@ import {
   isEmailTemplateName,
   mergeAllEmailTemplates,
 } from "@/lib/email-templates";
+import { toAbsolutePublicUrl } from "@/lib/public-url";
 import { prisma } from "@/lib/prisma";
+
+function normalizeOptionalImageUrl(
+  url: string | null | undefined,
+): string | null {
+  return toAbsolutePublicUrl(url?.trim() || null);
+}
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -55,6 +62,8 @@ export async function POST(request: NextRequest) {
 
     const subject = body.subject.trim();
     const name = body.name;
+    const logoUrl = normalizeOptionalImageUrl(body.logoUrl);
+    const heroImageUrl = normalizeOptionalImageUrl(body.heroImageUrl);
 
     const template = await withDb(() =>
       prisma.emailTemplate.upsert({
@@ -62,8 +71,8 @@ export async function POST(request: NextRequest) {
         create: {
           name,
           subject,
-          logoUrl: body.logoUrl?.trim() || null,
-          heroImageUrl: body.heroImageUrl?.trim() || null,
+          logoUrl,
+          heroImageUrl,
           primaryColor: body.primaryColor?.trim() || "#C9A96E",
           backgroundColor: body.backgroundColor?.trim() || "#FAF8F5",
           heroHeading: body.heroHeading?.trim() || null,
@@ -71,8 +80,8 @@ export async function POST(request: NextRequest) {
         },
         update: {
           subject,
-          logoUrl: body.logoUrl?.trim() || null,
-          heroImageUrl: body.heroImageUrl?.trim() || null,
+          logoUrl,
+          heroImageUrl,
           primaryColor: body.primaryColor?.trim() || "#C9A96E",
           backgroundColor: body.backgroundColor?.trim() || "#FAF8F5",
           heroHeading: body.heroHeading?.trim() || null,

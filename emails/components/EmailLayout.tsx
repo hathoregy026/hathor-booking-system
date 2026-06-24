@@ -12,6 +12,7 @@ import {
 } from "@react-email/components";
 import type { ReactNode } from "react";
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
+import { toAbsolutePublicUrl } from "@/lib/public-url";
 import { resolveEmailTheme } from "../theme";
 import { emailColors, emailFonts, emailLayout } from "../styles";
 
@@ -25,10 +26,12 @@ type EmailLayoutProps = {
 } & EmailTemplateOverrides;
 
 export function EmailHeroBanner({ heroImageUrl }: { heroImageUrl: string }) {
+  const src = toAbsolutePublicUrl(heroImageUrl) ?? heroImageUrl;
+
   return (
     <Section style={{ margin: "0 0 24px", textAlign: "center" }}>
       <Img
-        src={heroImageUrl}
+        src={src}
         alt="Hathor Dahabiya"
         width={600}
         style={{
@@ -55,10 +58,12 @@ export function EmailLogo({
   logoUrl: string;
   primaryColor: string;
 }) {
+  const src = toAbsolutePublicUrl(logoUrl) ?? logoUrl;
+
   return (
     <Section style={{ textAlign: "center", margin: "0 0 24px" }}>
       <Img
-        src={logoUrl}
+        src={src}
         alt="Hathor Dahabiya — Luxury Nile Cruises"
         width={width}
         style={{
@@ -244,7 +249,7 @@ export function EmailLayout({
   backgroundColor,
 }: EmailLayoutProps) {
   const theme = resolveEmailTheme({ logoUrl, primaryColor, backgroundColor });
-  const bannerUrl = heroImageUrl?.trim() || null;
+  const bannerUrl = toAbsolutePublicUrl(heroImageUrl);
 
   return (
     <Html lang="en">
