@@ -51,7 +51,7 @@ export default async function BookingCheckoutPage({ searchParams }: PageProps) {
             longer be available.
           </p>
           <Link
-            href="/#booking"
+            href="/book"
             className="booking-btn-primary mt-6 inline-flex px-6 py-3 text-sm"
           >
             Start a new search

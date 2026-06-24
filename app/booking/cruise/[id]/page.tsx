@@ -16,7 +16,7 @@ type PageProps = {
 };
 
 const ROOM_PLACEHOLDER =
-  "linear-gradient(135deg, #1a3a4a 0%, #2d5a6e 50%, #4a7c8f 100%)";
+  "linear-gradient(135deg, #8b6914 0%, #c9a96e 45%, #f5ecd8 100%)";
 
 export default async function BookingCruiseDetailsPage({
   params,
@@ -47,17 +47,17 @@ export default async function BookingCruiseDetailsPage({
     : { background: ROOM_PLACEHOLDER };
 
   return (
-    <div className="mx-auto max-w-5xl px-4 pb-20 pt-6 sm:px-6 sm:pt-10 lg:px-8">
+    <div className="mx-auto max-w-5xl">
       <nav className="mb-6 text-sm" style={{ color: "var(--booking-muted)" }}>
         <Link href="/" className="hover:underline">
           Home
         </Link>
         <span className="mx-2">/</span>
-        <Link href="/#booking" className="hover:underline">
+        <Link href="/book" className="hover:underline">
           Search
         </Link>
         <span className="mx-2">/</span>
-        <span style={{ color: "var(--booking-navy)" }}>{details.roomName}</span>
+        <span style={{ color: "var(--booking-gold-dark)" }}>{details.roomName}</span>
       </nav>
 
       <article className="booking-card overflow-hidden">
@@ -82,7 +82,7 @@ export default async function BookingCruiseDetailsPage({
             {details.meta && (
               <p
                 className="mt-3 text-sm font-medium"
-                style={{ color: "var(--booking-navy)" }}
+                style={{ color: "var(--booking-gold-dark)" }}
               >
                 {details.meta}
               </p>
@@ -110,7 +110,7 @@ export default async function BookingCruiseDetailsPage({
                     <li key={amenity} className="flex items-start gap-2 text-sm">
                       <Check
                         className="mt-0.5 h-4 w-4 shrink-0"
-                        style={{ color: "var(--booking-navy)" }}
+                        style={{ color: "var(--booking-gold-dark)" }}
                         aria-hidden
                       />
                       <span>{amenity}</span>

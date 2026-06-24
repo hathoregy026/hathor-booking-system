@@ -1,26 +1,10 @@
-import { BookingWizard } from "@/components/booking/BookingWizard";
+import Link from "next/link";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
-import {
-  getContentBySection,
-  getDefaultSiteContent,
-  getSiteContent,
-} from "@/lib/site-content";
-import { ContentSection } from "@/app/generated/prisma/enums";
 import { formatPrice } from "@/lib/client-dates";
 
 export const revalidate = 3600;
 
 export default async function CruisesPage() {
-  let allContent;
-
-  try {
-    allContent = await getSiteContent();
-  } catch {
-    allContent = getDefaultSiteContent();
-  }
-
-  const hero = getContentBySection(allContent, ContentSection.HERO);
-
   return (
     <div className="mx-auto max-w-6xl px-4 pb-20 pt-6 sm:px-6 sm:pt-10 lg:px-8">
       <div className="mb-6 space-y-3 text-center sm:mb-10">
@@ -36,8 +20,10 @@ export default async function CruisesPage() {
         </p>
       </div>
 
-      <div id="booking">
-        <BookingWizard heroImageUrl={hero.imageUrl ?? null} />
+      <div id="booking" className="text-center">
+        <Link href="/book" className="public-btn-gold inline-flex px-8 py-3.5 text-sm">
+          Search Availability &amp; Book
+        </Link>
       </div>
 
       <section className="mt-12 space-y-5 sm:mt-16 sm:space-y-6">

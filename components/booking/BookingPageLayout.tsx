@@ -78,7 +78,7 @@ export function BookingPageLayout({
           >
             <div className="booking-card flex flex-col gap-1 p-3 text-sm">
               <Link
-                href="/"
+                href="/book"
                 className="rounded-xl px-4 py-2.5 font-medium hover:bg-black/5"
                 onClick={() => setMenuOpen(false)}
               >

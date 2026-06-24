@@ -24,10 +24,10 @@ function BookingSuccessError({
           {message}
         </p>
         <Link
-          href="/"
+          href="/book"
           className="booking-btn-primary mt-8 inline-flex px-8 py-3 text-sm"
         >
-          Back to Home
+          Start a new search
         </Link>
       </div>
     </div>
@@ -42,7 +42,7 @@ export default async function BookingSuccessPage({ searchParams }: PageProps) {
     return (
       <BookingSuccessError
         title="Booking not found"
-        message="We could not find a booking reference. Please check your link or start a new search from the homepage."
+        message="We could not find a booking reference. Please check your link or start a new search."
       />
     );
   }
@@ -74,11 +74,11 @@ export default async function BookingSuccessPage({ searchParams }: PageProps) {
       <div className="w-full space-y-6 text-center sm:space-y-8">
         <div
           className="mx-auto flex h-16 w-16 items-center justify-center rounded-full sm:h-20 sm:w-20"
-          style={{ background: "var(--booking-cream)" }}
+          style={{ background: "var(--booking-gold-light)" }}
         >
           <CheckCircle2
             className="h-9 w-9 sm:h-11 sm:w-11"
-            style={{ color: "var(--booking-navy)" }}
+            style={{ color: "var(--booking-gold-dark)" }}
             aria-hidden
           />
         </div>
@@ -169,8 +169,8 @@ export default async function BookingSuccessPage({ searchParams }: PageProps) {
                 <span
                   className="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
                   style={{
-                    background: "var(--booking-cream)",
-                    color: "var(--booking-navy)",
+                    background: "var(--booking-gold-light)",
+                    color: "var(--booking-gold-dark)",
                   }}
                 >
                   {details.statusLabel}

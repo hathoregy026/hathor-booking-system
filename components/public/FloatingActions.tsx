@@ -39,7 +39,7 @@ const ACTIONS = [
   },
   {
     key: "book",
-    href: "/#booking",
+    href: "/book",
     external: false,
     label: "Book Now",
     icon: CalendarCheck,

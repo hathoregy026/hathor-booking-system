@@ -65,7 +65,7 @@ export function PublicHeader() {
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <Link
-            href="/#booking"
+            href="/book"
             className="public-btn-gold min-h-11 px-3 py-2 text-xs sm:px-[1.35rem] sm:py-[0.7rem] sm:text-sm"
           >
             Book Now
@@ -132,7 +132,7 @@ export function PublicHeader() {
                 );
               })}
               <Link
-                href="/#booking"
+                href="/book"
                 className="public-btn-gold mt-3 w-full py-3.5 text-center"
                 onClick={closeMenu}
               >

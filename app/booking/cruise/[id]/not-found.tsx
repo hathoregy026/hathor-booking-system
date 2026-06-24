@@ -8,7 +8,7 @@ export default function BookingCruiseNotFound() {
         This sailing or room is no longer available. Try a new search.
       </p>
       <Link
-        href="/#booking"
+        href="/book"
         className="booking-btn-primary mt-6 inline-flex px-6 py-3 text-sm font-semibold"
       >
         Back to search

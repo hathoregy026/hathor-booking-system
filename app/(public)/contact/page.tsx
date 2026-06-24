@@ -114,7 +114,7 @@ export default async function ContactPage() {
         </div>
 
         <div className="flex justify-center pt-2">
-          <Link href="/#booking" className="public-btn-gold w-full max-w-sm py-3.5 text-center sm:w-auto">
+          <Link href="/book" className="public-btn-gold w-full max-w-sm py-3.5 text-center sm:w-auto">
             Book Now
           </Link>
         </div>

@@ -1,4 +1,4 @@
-import { BookingWizard } from "@/components/booking/BookingWizard";
+import Link from "next/link";
 import { SiteContentSection } from "@/components/public/SiteContentSection";
 import {
   getContentBySection,
@@ -48,8 +48,34 @@ export default async function Home() {
         )}
       </div>
 
-      <div id="booking">
-        <BookingWizard heroImageUrl={hero.imageUrl ?? null} />
+      <div id="booking" className="mx-auto max-w-2xl text-center">
+        <div
+          className="rounded-2xl border bg-white p-8 sm:p-10"
+          style={{ borderColor: "var(--public-border)" }}
+        >
+          <p
+            className="text-xs font-semibold uppercase tracking-[0.2em]"
+            style={{ color: "var(--public-gold)" }}
+          >
+            Ready to sail?
+          </p>
+          <h2 className="public-serif mt-3 text-2xl font-semibold sm:text-3xl">
+            Reserve Your Nile Journey
+          </h2>
+          <p
+            className="mx-auto mt-3 max-w-md text-sm leading-relaxed sm:text-base"
+            style={{ color: "var(--public-muted)" }}
+          >
+            Search sailings, choose your cabin, and secure your place aboard
+            Hathor Dahabiya.
+          </p>
+          <Link
+            href="/book"
+            className="public-btn-gold mt-6 inline-flex px-8 py-3.5 text-sm"
+          >
+            Book Your Cruise
+          </Link>
+        </div>
       </div>
 
       <div className="mt-12 space-y-8 sm:mt-20 sm:space-y-12">
