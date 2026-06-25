@@ -30,6 +30,8 @@ CREATE TABLE IF NOT EXISTS "EmailTemplate" (
 CREATE UNIQUE INDEX IF NOT EXISTS "EmailTemplate_name_key" ON "EmailTemplate"("name");
 
 ALTER TABLE "EmailTemplate" ADD COLUMN IF NOT EXISTS "heroImageUrl" TEXT;
+ALTER TABLE "EmailTemplate" ADD COLUMN IF NOT EXISTS "logoDataUrl" TEXT;
+ALTER TABLE "EmailTemplate" ADD COLUMN IF NOT EXISTS "heroImageDataUrl" TEXT;
 `;
 
 const pool = new pg.Pool({

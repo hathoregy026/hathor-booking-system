@@ -5,6 +5,11 @@ import { Settings } from "lucide-react";
 export function AdminSettingsPanel() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
+      <div>
+        <h1 className="admin-page-title">Settings</h1>
+        <p className="admin-page-subtitle">System configuration and preferences</p>
+      </div>
+
       <div className="admin-card p-6">
         <div className="flex items-center gap-3">
           <Settings className="h-5 w-5" style={{ color: "var(--accent)" }} aria-hidden />

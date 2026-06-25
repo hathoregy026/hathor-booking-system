@@ -8,8 +8,8 @@ import {
   type EmailTemplateOverrides,
   type EmailTemplateRecord,
   interpolateEmailText,
-  toEmailThemeOverrides,
 } from "@/lib/email-templates";
+import { toEmailThemeOverridesForSend } from "@/lib/email-theme-server";
 
 async function renderTemplateHtml(
   name: EmailTemplateName,
@@ -45,7 +45,7 @@ async function renderTemplateHtml(
 export async function renderEmailTemplatePreview(
   template: EmailTemplateRecord,
 ): Promise<{ name: EmailTemplateName; subject: string; html: string }> {
-  const overrides = toEmailThemeOverrides(template) ?? {};
+  const overrides = toEmailThemeOverridesForSend(template) ?? {};
   const subject = interpolateEmailText(template.subject, {
     guestName: sampleGuestName,
   });

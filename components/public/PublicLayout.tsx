@@ -10,7 +10,7 @@ export function PublicLayout({ children }: PublicLayoutProps) {
   return (
     <div className="public-site">
       <PublicHeader />
-      <main className="public-main public-main--with-fab public-wave-bg">{children}</main>
+      <main className="public-main public-main--with-fab">{children}</main>
       <PublicFooter />
       <FloatingActions />
     </div>

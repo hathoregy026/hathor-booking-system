@@ -3,13 +3,24 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 import { HATHOR_BRAND_NAME, HATHOR_LOGO_SRC } from "@/lib/branding";
 import { PUBLIC_NAV_LINKS } from "@/lib/public-contact";
+
+const HERO_PATHS = new Set(["/"]);
 
 export function PublicHeader() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const isHeroPage = HERO_PATHS.has(pathname);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 48);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -22,9 +33,17 @@ export function PublicHeader() {
 
   const closeMenu = () => setMenuOpen(false);
 
+  const headerClass = isHeroPage
+    ? scrolled
+      ? "public-header public-header--solid"
+      : "public-header public-header--transparent"
+    : scrolled
+      ? "public-header public-header--light"
+      : "public-header public-header--light";
+
   return (
-    <header className="public-header">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:gap-4 sm:px-6 sm:py-4 lg:px-8">
+    <header className={headerClass}>
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:px-6 lg:px-8">
         <Link
           href="/"
           className="flex min-w-0 items-center gap-2 sm:gap-3"
@@ -34,9 +53,9 @@ export function PublicHeader() {
           <img
             src={HATHOR_LOGO_SRC}
             alt={HATHOR_BRAND_NAME}
-            className="h-10 w-auto shrink-0 object-contain sm:h-12"
+            className="h-9 w-auto shrink-0 object-contain sm:h-11"
           />
-          <span className="public-serif hidden text-xl font-semibold tracking-tight text-[var(--public-navy)] sm:inline sm:text-2xl">
+          <span className="public-brand-text hidden text-xl font-medium tracking-tight sm:inline sm:text-2xl">
             Hathor
           </span>
         </Link>
@@ -66,7 +85,7 @@ export function PublicHeader() {
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <Link
             href="/book"
-            className="public-btn-gold min-h-11 px-3 py-2 text-xs sm:px-[1.35rem] sm:py-[0.7rem] sm:text-sm"
+            className="public-btn-gold min-h-11 px-4 py-2 text-xs sm:px-8 sm:py-3 sm:text-sm"
           >
             Book Now
           </Link>
@@ -96,8 +115,8 @@ export function PublicHeader() {
             onClick={closeMenu}
           />
           <nav className="public-mobile-nav__panel" aria-label="Mobile navigation">
-            <div className="flex items-center justify-between border-b border-[var(--public-border)] px-4 py-4">
-              <span className="public-serif text-lg font-semibold text-[var(--public-navy)]">
+            <div className="flex items-center justify-between border-b border-[rgb(201_169_110/0.2)] px-5 py-4">
+              <span className="public-serif text-lg text-[var(--lux-gold-cream)]">
                 Menu
               </span>
               <button
@@ -120,10 +139,10 @@ export function PublicHeader() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`rounded-xl px-4 py-3.5 text-base font-medium ${
+                    className={`px-4 py-3.5 text-sm font-medium tracking-wide uppercase transition-colors ${
                       isActive
-                        ? "bg-[var(--public-bg)] text-[var(--public-gold)]"
-                        : "text-[var(--public-navy)] hover:bg-black/5"
+                        ? "text-[var(--lux-gold)]"
+                        : "text-[var(--lux-text-light)] hover:text-[var(--lux-gold)]"
                     }`}
                     onClick={closeMenu}
                   >
@@ -133,7 +152,7 @@ export function PublicHeader() {
               })}
               <Link
                 href="/book"
-                className="public-btn-gold mt-3 w-full py-3.5 text-center"
+                className="public-btn-gold mt-4 w-full py-3.5 text-center"
                 onClick={closeMenu}
               >
                 Book Now
@@ -143,5 +162,14 @@ export function PublicHeader() {
         </div>
       )}
     </header>
+  );
+}
+
+export function HeroScrollIndicator() {
+  return (
+    <a href="#discover" className="lux-hero__scroll" aria-label="Scroll to content">
+      <span>Discover</span>
+      <ChevronDown className="h-5 w-5" aria-hidden />
+    </a>
   );
 }

@@ -7,6 +7,9 @@ type SiteContentSectionProps = {
   showHeading?: boolean;
 };
 
+const IMAGE_PLACEHOLDER =
+  "linear-gradient(135deg, #e8e2d9 0%, #d4c4a8 50%, #c9a96e 100%)";
+
 export function SiteContentSection({
   title,
   subtitle,
@@ -17,41 +20,42 @@ export function SiteContentSection({
 }: SiteContentSectionProps) {
   if (!bodyText && !imageUrl) return null;
 
+  const imageStyle = imageUrl
+    ? { backgroundImage: `url(${imageUrl})` }
+    : { background: IMAGE_PLACEHOLDER };
+
   return (
-    <section className="booking-card overflow-hidden">
+    <section className="lux-content-block">
       <div
-        className={`grid md:grid-cols-2 md:items-center ${
+        className={`grid md:grid-cols-2 md:items-stretch ${
           imagePosition === "left" ? "md:[&>*:first-child]:order-2" : ""
         }`}
       >
-        {imageUrl && (
-          <div
-            className="aspect-[4/3] bg-cover bg-center md:aspect-auto md:min-h-[280px] lg:min-h-[320px]"
-            style={{ backgroundImage: `url(${imageUrl})` }}
-            role="img"
-            aria-label={title}
-          />
+        {imageUrl !== null && (
+          <div className="lux-content-block__image-wrap">
+            <div
+              className="lux-content-block__image min-h-[260px] md:min-h-full md:h-full"
+              style={imageStyle}
+              role="img"
+              aria-label={title}
+            />
+          </div>
         )}
-        <div className="p-4 sm:p-8 md:p-10">
+        <div className="flex flex-col justify-center p-6 sm:p-10 lg:p-12">
           {showHeading && subtitle && (
-            <p
-              className="mb-2 text-xs font-semibold uppercase tracking-[0.16em]"
-              style={{ color: "var(--booking-muted)" }}
-            >
-              {subtitle}
-            </p>
+            <p className="lux-section-eyebrow">{subtitle}</p>
           )}
           {showHeading && (
-            <h2 className="booking-serif text-xl font-semibold sm:text-3xl">
+            <h2 className="public-serif mt-2 text-2xl font-medium sm:text-3xl">
               {title}
             </h2>
           )}
+          {showHeading && <div className="mt-4 h-px w-12 bg-[var(--lux-gold)]" />}
           {bodyText && (
             <div
-              className={`space-y-3 text-sm leading-relaxed whitespace-pre-line sm:text-base ${
-                showHeading ? "mt-4" : ""
+              className={`space-y-4 text-sm font-light leading-relaxed whitespace-pre-line text-[var(--public-muted)] sm:text-base ${
+                showHeading ? "mt-6" : ""
               }`}
-              style={{ color: "var(--booking-muted)" }}
             >
               {bodyText}
             </div>

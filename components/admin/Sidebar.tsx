@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  ChevronLeft,
   Globe,
   LayoutDashboard,
   LogOut,
@@ -14,7 +13,6 @@ import {
   X,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { HATHOR_BRAND_NAME } from "@/lib/branding";
 import { HathorLogo } from "./HathorLogo";
 
 type NavItem = { href: string; label: string; icon: LucideIcon };
@@ -45,6 +43,25 @@ type SidebarProps = {
   onMobileClose?: () => void;
 };
 
+function SidebarBrand({ collapsed }: { collapsed?: boolean }) {
+  return (
+    <div
+      className="flex h-20 flex-col items-center justify-center gap-1.5 px-4"
+      style={{ borderBottom: "1px solid var(--border)" }}
+    >
+      <HathorLogo size="lg" className="!h-10 !w-auto max-w-[140px]" />
+      {!collapsed && (
+        <p
+          className="admin-section-label"
+          style={{ color: "var(--accent)", letterSpacing: "0.16em" }}
+        >
+          Admin Panel
+        </p>
+      )}
+    </div>
+  );
+}
+
 function NavContent({
   collapsed,
   onNavigate,
@@ -68,7 +85,7 @@ function NavContent({
 
   return (
     <>
-      <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-2">
+      <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-4">
         {NAV_SECTIONS.map((section) => (
           <div key={section.title}>
             {!collapsed && (
@@ -86,7 +103,7 @@ function NavContent({
                     onClick={onNavigate}
                     className={`admin-nav-item ${active ? "admin-nav-item--active" : ""}`}
                   >
-                    <Icon className="h-4 w-4 shrink-0" aria-hidden />
+                    <Icon className="h-5 w-5 shrink-0" aria-hidden />
                     {!collapsed && <span>{item.label}</span>}
                   </Link>
                 );
@@ -97,12 +114,15 @@ function NavContent({
       </nav>
 
       <div className="p-3" style={{ borderTop: "1px solid var(--border)" }}>
+        {!collapsed && (
+          <p className="admin-section-label mb-2 px-3">System</p>
+        )}
         <button
           type="button"
           onClick={handleLogout}
-          className="admin-nav-item w-full"
+          className="admin-nav-item admin-nav-item--danger w-full"
         >
-          <LogOut className="h-4 w-4 shrink-0" aria-hidden />
+          <LogOut className="h-5 w-5 shrink-0" aria-hidden />
           {!collapsed && "Logout"}
         </button>
       </div>
@@ -121,43 +141,9 @@ export function Sidebar({
         className={`admin-sidebar hidden shrink-0 flex-col md:flex ${
           collapsed ? "w-[72px]" : "w-[260px]"
         }`}
-        style={{
-          background: "var(--bg-primary)",
-          borderRight: "1px solid var(--border)",
-        }}
+        style={{ borderRight: "1px solid var(--border)" }}
       >
-        <div className="flex items-center justify-between px-5 py-5">
-          <Link href="/admin" className="flex min-w-0 items-center gap-3">
-            <HathorLogo size="md" />
-            {!collapsed && (
-              <div className="min-w-0">
-                <p
-                  className="truncate text-base font-bold tracking-tight"
-                  style={{ color: "var(--sidebar-fg)" }}
-                >
-                  {HATHOR_BRAND_NAME}
-                </p>
-                <p
-                  className="truncate text-xs"
-                  style={{ color: "var(--sidebar-fg-muted)" }}
-                >
-                  Admin Panel
-                </p>
-              </div>
-            )}
-          </Link>
-          {!collapsed && (
-            <button
-              type="button"
-              className="hidden rounded-lg p-1 lg:flex"
-              style={{ color: "var(--sidebar-fg-muted)" }}
-              aria-label="Collapse sidebar"
-            >
-              <ChevronLeft className="h-4 w-4" aria-hidden />
-            </button>
-          )}
-        </div>
-
+        <SidebarBrand collapsed={collapsed} />
         <NavContent collapsed={collapsed} />
       </aside>
 
@@ -171,43 +157,19 @@ export function Sidebar({
           />
           <aside
             className="admin-sidebar admin-sidebar--drawer absolute inset-y-0 left-0 flex w-[min(100vw-3rem,280px)] max-w-full flex-col shadow-2xl"
-            style={{
-              background: "var(--bg-primary)",
-              borderRight: "1px solid var(--border)",
-            }}
+            style={{ borderRight: "1px solid var(--border)" }}
           >
-            <div className="flex items-center justify-between px-5 py-5">
-              <Link
-                href="/admin"
-                className="flex min-w-0 items-center gap-3"
-                onClick={onMobileClose}
-              >
-                <HathorLogo size="md" />
-                <div className="min-w-0">
-                  <p
-                    className="truncate text-base font-bold tracking-tight"
-                    style={{ color: "var(--sidebar-fg)" }}
-                  >
-                    {HATHOR_BRAND_NAME}
-                  </p>
-                  <p
-                    className="truncate text-xs"
-                    style={{ color: "var(--sidebar-fg-muted)" }}
-                  >
-                    Admin Panel
-                  </p>
-                </div>
-              </Link>
+            <div className="relative">
+              <SidebarBrand />
               <button
                 type="button"
                 onClick={onMobileClose}
-                className="admin-header-icon-btn"
+                className="admin-header-icon-btn absolute right-3 top-3"
                 aria-label="Close menu"
               >
                 <X className="h-4 w-4" aria-hidden />
               </button>
             </div>
-
             <NavContent onNavigate={onMobileClose} />
           </aside>
         </div>

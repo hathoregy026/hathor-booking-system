@@ -1,6 +1,7 @@
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
+import { resolveEmailLogoSrcForSend } from "@/lib/email-image-data.server";
 import { toAbsolutePublicUrl } from "@/lib/public-url";
-import { EMAIL_LOGO_URL, emailColors } from "./styles";
+import { emailColors } from "./styles";
 
 export type ResolvedEmailTheme = {
   logoUrl: string;
@@ -20,9 +21,10 @@ export function resolveEmailTheme(
     overrides?.backgroundColor?.trim() || emailColors.background;
 
   return {
-    logoUrl:
-      toAbsolutePublicUrl(overrides?.logoUrl) ||
-      EMAIL_LOGO_URL,
+    logoUrl: resolveEmailLogoSrcForSend(
+      overrides?.logoDataUrl,
+      toAbsolutePublicUrl(overrides?.logoUrl),
+    ),
     primaryColor,
     goldDark:
       primaryColor === emailColors.gold ? emailColors.goldDark : primaryColor,

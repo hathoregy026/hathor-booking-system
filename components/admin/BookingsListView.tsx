@@ -1,6 +1,6 @@
 "use client";
 
-import { format, formatDistanceToNow, parseISO } from "date-fns";
+import { differenceInDays, format, formatDistanceToNow, parseISO } from "date-fns";
 import { Loader2 } from "lucide-react";
 import { BookingStatus } from "@/app/generated/prisma/enums";
 import { ActionButton } from "@/components/admin/ActionButton";
@@ -27,6 +27,22 @@ type BookingsListViewProps = {
   onConfirm: (id: string) => void;
   onCancel: (id: string) => void;
 };
+
+function getInitials(name: string) {
+  return (
+    name
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase() ?? "")
+      .join("") || "?"
+  );
+}
+
+function getTripDays(departure: string, arrival: string) {
+  const days = differenceInDays(parseISO(arrival), parseISO(departure));
+  return Math.max(1, days);
+}
 
 function BookingMobileCard({
   booking,
@@ -102,7 +118,7 @@ function BookingMobileCard({
         </div>
         <div className="flex justify-between gap-3">
           <dt style={{ color: "var(--text-muted)" }}>Total</dt>
-          <dd className="font-semibold tabular-nums">
+          <dd className="font-semibold tabular-nums" style={{ color: "var(--accent)" }}>
             {formatPrice(booking.totalPriceCents)}
           </dd>
         </div>
@@ -233,7 +249,7 @@ export function BookingsListView({
           <table className="admin-table hidden min-w-full text-sm md:table">
             <thead>
               <tr>
-                <th className="w-10 px-4 py-3">
+                <th className="w-10 px-4">
                   <input
                     type="checkbox"
                     checked={allSelected}
@@ -245,17 +261,16 @@ export function BookingsListView({
                   />
                 </th>
                 {[
-                  "Customer",
-                  "Email",
+                  "Guest",
                   "Cruise",
                   "Dates",
-                  "Rooms",
+                  "Room",
                   "Total",
                   "Status",
                   viewMode === "bin" ? "Deletes in" : "Booked",
                   ...(viewMode === "active" ? ["Actions"] : []),
                 ].map((heading) => (
-                  <th key={heading} className="px-4 py-3 text-left">
+                  <th key={heading} className="px-4 text-left">
                     {heading}
                   </th>
                 ))}
@@ -271,10 +286,15 @@ export function BookingsListView({
                 const canCancel =
                   isPendingBookingStatus(booking.status) ||
                   booking.status === BookingStatus.CONFIRMED;
+                const tripDays = getTripDays(
+                  booking.departureTime,
+                  booking.arrivalTime,
+                );
+                const guestCount = booking.rooms.length;
 
                 return (
                   <tr key={booking.id}>
-                    <td className="px-4 py-3">
+                    <td className="px-4">
                       <input
                         type="checkbox"
                         checked={selectedIds.has(booking.id)}
@@ -284,63 +304,120 @@ export function BookingsListView({
                         style={{ accentColor: "var(--accent)" }}
                       />
                     </td>
-                    <td className="px-4 py-3 font-medium">
-                      {booking.customerName}
+                    <td className="px-4">
+                      <div className="flex min-w-[200px] items-center gap-3">
+                        <div className="admin-guest-avatar" aria-hidden>
+                          {getInitials(booking.customerName)}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-semibold">
+                            {booking.customerName}
+                          </p>
+                          <p
+                            className="truncate text-[0.8125rem]"
+                            style={{ color: "var(--text-secondary)" }}
+                          >
+                            {booking.customerEmail}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4">
+                      <p className="text-sm font-medium">{booking.cruiseName}</p>
+                      <span
+                        className="mt-1 inline-flex rounded-full border px-2 py-0.5 text-[0.6875rem] font-medium"
+                        style={{
+                          borderColor: "var(--accent)",
+                          color: "var(--accent)",
+                        }}
+                      >
+                        {tripDays} day{tripDays === 1 ? "" : "s"}
+                      </span>
+                    </td>
+                    <td className="whitespace-nowrap px-4">
+                      <p className="text-sm">
+                        {format(parseISO(booking.departureTime), "MMM d, yyyy")}
+                        {" – "}
+                        {format(parseISO(booking.arrivalTime), "MMM d, yyyy")}
+                      </p>
+                      <p
+                        className="mt-0.5 text-[0.8125rem] font-medium"
+                        style={{ color: "var(--accent)" }}
+                      >
+                        {tripDays} day{tripDays === 1 ? "" : "s"}
+                      </p>
+                    </td>
+                    <td className="px-4">
+                      <p className="text-sm">
+                        {booking.rooms.length > 0
+                          ? booking.rooms.join(", ")
+                          : "—"}
+                      </p>
+                      {guestCount > 0 && (
+                        <p
+                          className="mt-0.5 text-[0.8125rem]"
+                          style={{ color: "var(--text-secondary)" }}
+                        >
+                          {guestCount} room{guestCount === 1 ? "" : "s"}
+                        </p>
+                      )}
                     </td>
                     <td
-                      className="px-4 py-3"
-                      style={{ color: "var(--text-secondary)" }}
+                      className="px-4 text-base font-semibold tabular-nums"
+                      style={{ color: "var(--accent)" }}
                     >
-                      {booking.customerEmail}
-                    </td>
-                    <td
-                      className="px-4 py-3"
-                      style={{ color: "var(--text-secondary)" }}
-                    >
-                      {booking.cruiseName}
-                    </td>
-                    <td
-                      className="whitespace-nowrap px-4 py-3"
-                      style={{ color: "var(--text-secondary)" }}
-                    >
-                      {format(parseISO(booking.departureTime), "MMM d, yyyy")}
-                      {" – "}
-                      {format(parseISO(booking.arrivalTime), "MMM d, yyyy")}
-                    </td>
-                    <td
-                      className="px-4 py-3"
-                      style={{ color: "var(--text-secondary)" }}
-                    >
-                      {booking.rooms.length > 0 ? booking.rooms.join(", ") : "—"}
-                    </td>
-                    <td className="px-4 py-3 font-semibold tabular-nums">
                       {formatPrice(booking.totalPriceCents)}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4">
                       <StatusBadge status={booking.status} />
                     </td>
-                    <td
-                      className="whitespace-nowrap px-4 py-3"
-                      style={{ color: "var(--text-secondary)" }}
-                    >
+                    <td className="whitespace-nowrap px-4">
                       {viewMode === "bin" && purgeDate ? (
                         <span title={format(purgeDate, "MMM d, yyyy HH:mm")}>
-                          {formatDistanceToNow(purgeDate, { addSuffix: true })}
+                          <p className="text-[0.8125rem]">
+                            {format(purgeDate, "MMM d, yyyy HH:mm")}
+                          </p>
+                          <p
+                            className="text-xs"
+                            style={{ color: "var(--text-secondary)" }}
+                          >
+                            {formatDistanceToNow(purgeDate, { addSuffix: true })}
+                          </p>
                         </span>
                       ) : (
-                        format(parseISO(booking.createdAt), "MMM d, yyyy HH:mm")
+                        <>
+                          <p className="text-[0.8125rem]">
+                            {format(
+                              parseISO(booking.createdAt),
+                              "MMM d, yyyy HH:mm",
+                            )}
+                          </p>
+                          <p
+                            className="text-xs"
+                            style={{ color: "var(--text-secondary)" }}
+                          >
+                            {formatDistanceToNow(parseISO(booking.createdAt), {
+                              addSuffix: true,
+                            })}
+                          </p>
+                        </>
                       )}
                     </td>
                     {viewMode === "active" && (
-                      <td className="px-4 py-3">
+                      <td className="px-4">
                         <div className="flex flex-wrap gap-2">
                           {canConfirm && (
                             <button
                               type="button"
                               disabled={isUpdating}
                               onClick={() => onConfirm(booking.id)}
-                              className="rounded-lg px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-60"
-                              style={{ background: "var(--success)" }}
+                              className="admin-btn-primary px-3 py-1.5 text-xs disabled:opacity-60"
+                              style={{
+                                background: "var(--success)",
+                                borderColor: "var(--success)",
+                                color: "#fff",
+                                minHeight: "auto",
+                              }}
                             >
                               {isUpdating ? (
                                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -354,10 +431,11 @@ export function BookingsListView({
                               type="button"
                               disabled={isUpdating}
                               onClick={() => onCancel(booking.id)}
-                              className="rounded-lg border px-3 py-1.5 text-xs font-semibold disabled:opacity-60"
+                              className="admin-btn-outline px-3 py-1.5 text-xs disabled:opacity-60"
                               style={{
                                 borderColor: "var(--danger)",
                                 color: "var(--danger)",
+                                minHeight: "auto",
                               }}
                             >
                               Cancel

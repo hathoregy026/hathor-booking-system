@@ -3,6 +3,7 @@ import {
   ALLOWED_IMAGE_EXTENSIONS,
   validateImageFile,
 } from "@/lib/image-upload";
+import { bufferToDataUrl } from "@/lib/email-image-data.server";
 import { buildObjectPath, uploadImageBuffer } from "@/lib/upload-image";
 
 export async function POST(request: NextRequest) {
@@ -42,6 +43,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       url: result.url,
+      dataUrl: bufferToDataUrl(buffer, file.type),
       path: result.path,
       storage: result.storage,
     });

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight, Eye, Menu, Search } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
@@ -33,14 +34,8 @@ export function Header({ onMenuToggle }: HeaderProps) {
   };
 
   return (
-    <header
-      className="sticky top-0 z-30 px-4 py-3 backdrop-blur-xl sm:px-5 sm:py-4 md:px-6 lg:px-8"
-      style={{
-        background: "var(--header-bg)",
-        borderBottom: "1px solid var(--border)",
-      }}
-    >
-      <div className="flex items-center gap-2 sm:gap-3 lg:gap-5">
+    <header className="admin-header sticky top-0 z-30">
+      <div className="flex h-[70px] items-center gap-2 px-4 sm:gap-3 sm:px-5 md:px-6 lg:px-8">
         <button
           type="button"
           onClick={onMenuToggle}
@@ -50,31 +45,42 @@ export function Header({ onMenuToggle }: HeaderProps) {
           <Menu className="h-5 w-5" aria-hidden />
         </button>
 
-        <div className="min-w-0 flex-1">
-          <div
-            className="hidden items-center gap-1.5 text-xs font-medium sm:flex"
-            style={{ color: "var(--text-muted)" }}
+        <Link
+          href="/admin"
+          className="flex min-w-0 shrink-0 items-center gap-2.5 sm:gap-3"
+        >
+          <HathorLogo size="md" className="!h-10 !w-10" />
+          <span
+            className="hidden truncate text-base font-semibold sm:inline"
+            style={{ color: "var(--accent)" }}
           >
-            <span>{page.section}</span>
-            <ChevronRight className="h-3 w-3" aria-hidden />
-            <span style={{ color: "var(--text-secondary)" }}>{page.title}</span>
-          </div>
-          <h1 className="admin-heading mt-0 truncate text-lg sm:mt-0.5 sm:text-xl md:text-2xl">
-            {page.title}
-          </h1>
-        </div>
+            Hathor Admin
+          </span>
+        </Link>
+
+        <nav
+          className="admin-breadcrumb hidden min-w-0 flex-1 justify-center md:flex"
+          aria-label="Breadcrumb"
+        >
+          <span>{page.section}</span>
+          <ChevronRight
+            className="admin-breadcrumb__sep h-3.5 w-3.5 shrink-0"
+            aria-hidden
+          />
+          <span className="admin-breadcrumb__current truncate">{page.title}</span>
+        </nav>
 
         <div className="hidden flex-1 justify-center px-4 lg:flex">
-          <div className="relative w-full max-w-lg">
+          <div className="relative w-full max-w-md">
             <Search
-              className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2"
+              className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2"
               style={{ color: "var(--text-muted)" }}
               aria-hidden
             />
             <input
               type="search"
               placeholder="Search bookings, cruises..."
-              className="admin-input w-full py-2.5 pl-11 pr-4 text-sm"
+              className="admin-input w-full py-2 pl-10 pr-4 text-sm"
               aria-label="Search"
             />
           </div>
@@ -84,7 +90,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
           <ThemeToggle />
 
           <ActionButton
-            variant="primary"
+            variant="outline"
             icon={Eye}
             onClick={handlePreview}
             className="hidden text-xs sm:inline-flex"
@@ -94,7 +100,9 @@ export function Header({ onMenuToggle }: HeaderProps) {
 
           <NotificationBell />
 
-          <HathorLogo size="sm" className="hidden sm:block" />
+          <div className="admin-user-avatar" aria-label="Admin user" title="Admin">
+            A
+          </div>
         </div>
       </div>
     </header>

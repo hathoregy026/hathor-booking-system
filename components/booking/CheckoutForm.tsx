@@ -41,7 +41,7 @@ type FormState = {
 };
 
 const inputClassName =
-  "w-full rounded-xl border px-4 py-3 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--booking-navy)]/20";
+  "w-full border px-4 py-3.5 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--booking-gold)]/25 focus:border-[var(--booking-gold)]";
 
 const inputStyle = {
   borderColor: "var(--booking-border)",

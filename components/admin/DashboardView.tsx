@@ -106,11 +106,8 @@ export function DashboardView() {
     <div className="space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="admin-section-label">Live updates</p>
-          <h2 className="admin-heading mt-1 text-xl sm:text-2xl md:text-3xl">
-            Booking overview
-          </h2>
-          <p className="admin-subheading mt-1">
+          <h1 className="admin-page-title">Dashboard</h1>
+          <p className="admin-page-subtitle">
             Track reservations, revenue, and fleet status
           </p>
         </div>
@@ -163,7 +160,7 @@ export function DashboardView() {
           isLoading={isLoading}
         />
         <StatCard
-          label="Pending Bookings"
+          label="Pending Review"
           value={stats?.pendingBookings ?? 0}
           icon={RefreshCw}
           change={
@@ -175,7 +172,7 @@ export function DashboardView() {
           isLoading={isLoading}
         />
         <StatCard
-          label="Recent Revenue"
+          label="Revenue"
           value={formatPrice(totalRevenueCents)}
           icon={DollarSign}
           change={recentBookings.length > 0 ? "Last 5 confirmed" : undefined}
@@ -231,7 +228,7 @@ export function DashboardView() {
                 <span style={{ color: "var(--text-muted)" }}>
                   {format(parseISO(booking.departureTime), "MMM d, yyyy")}
                 </span>
-                <span className="font-semibold tabular-nums">
+                <span className="font-semibold tabular-nums" style={{ color: "var(--accent)" }}>
                   {formatPrice(booking.totalPriceCents)}
                 </span>
               </div>
@@ -268,7 +265,10 @@ export function DashboardView() {
                 <td className="px-6 py-4">
                   <StatusBadge status={booking.status} />
                 </td>
-                <td className="px-6 py-4 font-semibold tabular-nums">
+                <td
+                  className="px-6 py-4 font-semibold tabular-nums"
+                  style={{ color: "var(--accent)" }}
+                >
                   {formatPrice(booking.totalPriceCents)}
                 </td>
               </tr>

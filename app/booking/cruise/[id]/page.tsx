@@ -16,7 +16,7 @@ type PageProps = {
 };
 
 const ROOM_PLACEHOLDER =
-  "linear-gradient(135deg, #8b6914 0%, #c9a96e 45%, #f5ecd8 100%)";
+  "linear-gradient(135deg, #1a1a1a 0%, #3d2e1a 50%, #0a0a0a 100%)";
 
 export default async function BookingCruiseDetailsPage({
   params,
@@ -47,117 +47,138 @@ export default async function BookingCruiseDetailsPage({
     : { background: ROOM_PLACEHOLDER };
 
   return (
-    <div className="mx-auto max-w-5xl">
-      <nav className="mb-6 text-sm" style={{ color: "var(--booking-muted)" }}>
-        <Link href="/" className="hover:underline">
+    <div className="mx-auto max-w-6xl">
+      <nav
+        className="mb-8 flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.12em]"
+        style={{ color: "var(--booking-muted)" }}
+      >
+        <Link href="/" className="transition-colors hover:text-[var(--booking-gold-dark)]">
           Home
         </Link>
-        <span className="mx-2">/</span>
-        <Link href="/book" className="hover:underline">
+        <span>/</span>
+        <Link href="/book" className="transition-colors hover:text-[var(--booking-gold-dark)]">
           Search
         </Link>
-        <span className="mx-2">/</span>
+        <span>/</span>
         <span style={{ color: "var(--booking-gold-dark)" }}>{details.roomName}</span>
       </nav>
 
-      <article className="booking-card overflow-hidden">
+      <div
+        className="relative mb-10 overflow-hidden"
+        style={{ minHeight: "320px" }}
+      >
         <div
-          className="aspect-[21/9] bg-cover bg-center sm:aspect-[2.4/1]"
+          className="absolute inset-0 bg-cover bg-center"
           style={imageStyle}
           role="img"
           aria-label={details.title}
         />
-
-        <div className="grid gap-6 p-4 sm:gap-8 sm:p-8 lg:grid-cols-[1fr_280px] lg:gap-10">
-          <div>
-            <p
-              className="text-xs font-semibold uppercase tracking-[0.16em]"
-              style={{ color: "var(--booking-muted)" }}
-            >
-              {details.cruiseName}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgb(0 0 0 / 0.3) 0%, rgb(10 10 10 / 0.85) 100%)",
+          }}
+        />
+        <div className="relative flex min-h-[320px] flex-col justify-end p-6 sm:p-10">
+          <p
+            className="text-xs font-medium uppercase tracking-[0.2em]"
+            style={{ color: "var(--booking-gold)" }}
+          >
+            {details.cruiseName}
+          </p>
+          <h1 className="booking-serif mt-2 text-3xl font-medium text-white sm:text-4xl lg:text-5xl">
+            {details.title}
+          </h1>
+          {details.meta && (
+            <p className="mt-3 text-sm font-light text-[var(--booking-gold-cream,#f4e5c2)]">
+              {details.meta}
             </p>
-            <h1 className="booking-serif mt-2 text-xl font-semibold sm:text-3xl lg:text-4xl">
-              {details.title}
-            </h1>
-            {details.meta && (
-              <p
-                className="mt-3 text-sm font-medium"
-                style={{ color: "var(--booking-gold-dark)" }}
-              >
-                {details.meta}
-              </p>
-            )}
+          )}
+        </div>
+      </div>
 
-            {details.description && (
+      <div className="grid gap-10 lg:grid-cols-[1fr_320px] lg:gap-12">
+        <div>
+          {details.description && (
+            <section className="mb-10">
+              <h2 className="booking-serif text-2xl font-medium">Overview</h2>
+              <div
+                className="mt-3 h-px w-16"
+                style={{ background: "var(--booking-gold)" }}
+              />
               <p
                 className="mt-6 text-sm leading-relaxed sm:text-base"
                 style={{ color: "var(--booking-muted)" }}
               >
                 {details.description}
               </p>
-            )}
+            </section>
+          )}
 
-            {details.amenities.length > 0 && (
-              <div className="mt-8">
-                <h2 className="booking-serif text-lg font-semibold sm:text-xl">
-                  Amenities
-                </h2>
-                <ul
-                  className="mt-4 grid gap-2 sm:grid-cols-2"
-                  style={{ color: "var(--booking-muted)" }}
-                >
-                  {details.amenities.map((amenity) => (
-                    <li key={amenity} className="flex items-start gap-2 text-sm">
-                      <Check
-                        className="mt-0.5 h-4 w-4 shrink-0"
-                        style={{ color: "var(--booking-gold-dark)" }}
-                        aria-hidden
-                      />
-                      <span>{amenity}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-
-          <aside
-            className="h-fit rounded-2xl border p-6"
-            style={{
-              borderColor: "var(--booking-border)",
-              background: "var(--booking-surface)",
-            }}
-          >
-            <p
-              className="text-xs font-semibold uppercase tracking-[0.14em]"
-              style={{ color: "var(--booking-muted)" }}
-            >
-              Price
-            </p>
-            <p className="booking-serif mt-2 text-2xl font-semibold sm:text-3xl">
-              {formatPrice(details.priceCents)}
-            </p>
-            <p className="mt-1 text-xs" style={{ color: "var(--booking-muted)" }}>
-              per {details.roomType?.toLowerCase().includes("suite") ? "suite" : "cabin"}
-              {" · "}up to {details.capacity} guests
-            </p>
-
-            <Link
-              href={`/booking/checkout?${checkoutParams.toString()}`}
-              className="booking-btn-primary mt-6 flex w-full items-center justify-center px-6 py-3.5 text-sm font-semibold"
-            >
-              Book This Cruise
-            </Link>
-
-            <p
-              className="mt-4 text-center text-xs leading-relaxed"
-              style={{ color: "var(--booking-muted)" }}
-            >
-              You will confirm guest details on the next step.
-            </p>
-          </aside>
+          {details.amenities.length > 0 && (
+            <section>
+              <h2 className="booking-serif text-2xl font-medium">
+                Amenities &amp; Features
+              </h2>
+              <div
+                className="mt-3 h-px w-16"
+                style={{ background: "var(--booking-gold)" }}
+              />
+              <ul
+                className="mt-6 grid gap-3 sm:grid-cols-2"
+                style={{ color: "var(--booking-muted)" }}
+              >
+                {details.amenities.map((amenity) => (
+                  <li key={amenity} className="flex items-start gap-3 text-sm">
+                    <Check
+                      className="mt-0.5 h-4 w-4 shrink-0"
+                      style={{ color: "var(--booking-gold-dark)" }}
+                      aria-hidden
+                    />
+                    <span>{amenity}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
         </div>
-      </article>
+
+        <aside className="lux-booking-widget h-fit">
+          <p
+            className="text-xs font-medium uppercase tracking-[0.18em]"
+            style={{ color: "var(--booking-gold)" }}
+          >
+            Reserve
+          </p>
+          <p className="booking-serif mt-3 text-3xl font-medium text-white">
+            {formatPrice(details.priceCents)}
+          </p>
+          <p className="mt-1 text-xs text-[var(--lux-text-grey,#b8b8b8)]">
+            per {details.roomType?.toLowerCase().includes("suite") ? "suite" : "cabin"}
+            {" · "}up to {details.capacity} guests
+          </p>
+
+          <Link
+            href={`/booking/checkout?${checkoutParams.toString()}`}
+            className="booking-btn-primary mt-6 flex w-full items-center justify-center px-6 py-3.5 text-sm font-semibold"
+          >
+            Check Availability
+          </Link>
+
+          <Link
+            href="/book"
+            className="mt-3 block text-center text-xs uppercase tracking-wider text-[var(--booking-gold)] hover:underline"
+          >
+            Or search all sailings
+          </Link>
+
+          <p className="mt-6 text-center text-xs leading-relaxed text-[var(--lux-text-grey,#b8b8b8)]">
+            Guest details confirmed on the next step. No payment required to
+            request a booking.
+          </p>
+        </aside>
+      </div>
     </div>
   );
 }

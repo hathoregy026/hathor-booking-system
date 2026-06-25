@@ -1,4 +1,4 @@
-import { DM_Sans, Playfair_Display } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
 import { PublicLayout } from "@/components/public/PublicLayout";
 import "../public.css";
 
@@ -8,10 +8,10 @@ const playfair = Playfair_Display({
   weight: ["400", "500", "600", "700"],
 });
 
-const dmSans = DM_Sans({
+const inter = Inter({
   subsets: ["latin"],
   variable: "--font-booking-sans",
-  weight: ["400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export default function PublicSiteLayout({
@@ -20,7 +20,7 @@ export default function PublicSiteLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className={`${playfair.variable} ${dmSans.variable}`}>
+    <div className={`${playfair.variable} ${inter.variable}`}>
       <PublicLayout>{children}</PublicLayout>
     </div>
   );

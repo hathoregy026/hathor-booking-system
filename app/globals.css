@@ -8,6 +8,15 @@
   --foreground: #1e293b;
   --hathor-navy: #1e3a5f;
   --hathor-gold: #c9a227;
+
+  /* Luxury public site tokens */
+  --lux-dark: #0a0a0a;
+  --lux-dark-2: #1a1a1a;
+  --lux-gold: #c9a96e;
+  --lux-gold-bright: #d4af37;
+  --lux-gold-cream: #f4e5c2;
+  --lux-cream: #faf8f5;
+  --lux-beige: #f5f0e8;
 }
 
 @theme inline {
@@ -17,20 +26,50 @@
   --font-mono: var(--font-geist-mono);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
-/* Public booking & marketing pages */
-body:has(.booking-page),
 body:has(.public-site) {
-  background: #f5f0e8;
+  background: var(--lux-beige);
 }
 
 body:has(.booking-page) {
   background: #faf8f5;
+}
+
+::selection {
+  background: var(--lux-gold);
+  color: var(--lux-dark);
+}
+
+.public-site::-webkit-scrollbar {
+  width: 10px;
+}
+
+.public-site::-webkit-scrollbar-track {
+  background: var(--lux-dark);
+}
+
+.public-site::-webkit-scrollbar-thumb {
+  background: var(--lux-gold);
+  border-radius: 5px;
+}
+
+@keyframes luxShimmer {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 .rdp-root {

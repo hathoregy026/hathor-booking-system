@@ -98,9 +98,9 @@
 
 .booking-pill {
   background: var(--booking-card);
-  border: 1px solid var(--booking-border);
-  border-radius: 9999px;
-  box-shadow: 0 4px 24px rgba(26, 58, 74, 0.08);
+  border: 1px solid var(--booking-gold);
+  border-radius: 0;
+  box-shadow: 0 8px 32px rgb(0 0 0 / 0.1);
   overflow: hidden;
 }
 

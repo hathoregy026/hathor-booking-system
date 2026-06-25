@@ -12,6 +12,7 @@ import {
 } from "@react-email/components";
 import type { ReactNode } from "react";
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
+import { isEmailImageDataUrl } from "@/lib/email-image-shared";
 import { toAbsolutePublicUrl } from "@/lib/public-url";
 import { resolveEmailTheme } from "../theme";
 import { emailColors, emailFonts, emailLayout } from "../styles";
@@ -26,7 +27,10 @@ type EmailLayoutProps = {
 } & EmailTemplateOverrides;
 
 export function EmailHeroBanner({ heroImageUrl }: { heroImageUrl: string }) {
-  const src = toAbsolutePublicUrl(heroImageUrl) ?? heroImageUrl;
+  const src =
+    (isEmailImageDataUrl(heroImageUrl) ? heroImageUrl : null) ??
+    toAbsolutePublicUrl(heroImageUrl) ??
+    heroImageUrl;
 
   return (
     <Section style={{ margin: "0 0 24px", textAlign: "center" }}>
@@ -58,7 +62,10 @@ export function EmailLogo({
   logoUrl: string;
   primaryColor: string;
 }) {
-  const src = toAbsolutePublicUrl(logoUrl) ?? logoUrl;
+  const src =
+    (isEmailImageDataUrl(logoUrl) ? logoUrl : null) ??
+    toAbsolutePublicUrl(logoUrl) ??
+    logoUrl;
 
   return (
     <Section style={{ textAlign: "center", margin: "0 0 24px" }}>
@@ -244,12 +251,22 @@ export function EmailLayout({
   footerVariant = "guest",
   logoWidth = 180,
   logoUrl,
+  logoDataUrl,
   heroImageUrl,
+  heroImageDataUrl,
   primaryColor,
   backgroundColor,
 }: EmailLayoutProps) {
-  const theme = resolveEmailTheme({ logoUrl, primaryColor, backgroundColor });
-  const bannerUrl = toAbsolutePublicUrl(heroImageUrl);
+  const theme = resolveEmailTheme({
+    logoUrl,
+    logoDataUrl,
+    primaryColor,
+    backgroundColor,
+  });
+  const bannerUrl =
+    (isEmailImageDataUrl(heroImageDataUrl) ? heroImageDataUrl?.trim() : null) ??
+    (isEmailImageDataUrl(heroImageUrl) ? heroImageUrl?.trim() : null) ??
+    toAbsolutePublicUrl(heroImageUrl);
 
   return (
     <Html lang="en">

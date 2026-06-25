@@ -1,30 +1,42 @@
+import Link from "next/link";
+
 type SiteContentPageProps = {
   title: string;
   subtitle?: string | null;
+  breadcrumb?: string;
+  darkHero?: boolean;
   children: React.ReactNode;
 };
 
 export function SiteContentPage({
   title,
   subtitle,
+  breadcrumb,
+  darkHero = false,
   children,
 }: SiteContentPageProps) {
   return (
-    <div className="mx-auto max-w-6xl px-4 pb-20 pt-6 sm:px-6 sm:pt-10 lg:px-8">
-      <div className="mb-6 space-y-3 text-center sm:mb-10">
-        {subtitle && (
-          <p
-            className="text-xs font-semibold uppercase tracking-[0.2em]"
-            style={{ color: "var(--booking-muted)" }}
-          >
-            {subtitle}
-          </p>
-        )}
-        <h1 className="booking-serif text-2xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">
-          {title}
-        </h1>
+    <>
+      <div
+        className={`lux-page-hero ${darkHero ? "lux-page-hero--dark" : ""}`}
+      >
+        <div className="lux-page-hero__pattern" aria-hidden />
+        <div className="lux-container relative">
+          <nav className="lux-breadcrumb" aria-label="Breadcrumb">
+            <Link href="/">Home</Link>
+            <span>/</span>
+            <span>{breadcrumb ?? title}</span>
+          </nav>
+          {subtitle && (
+            <p className="lux-section-eyebrow">{subtitle}</p>
+          )}
+          <h1 className="lux-page-hero__title mt-2">{title}</h1>
+          <div className="lux-gold-line" />
+        </div>
       </div>
-      {children}
-    </div>
+      <div className="lux-section lux-section--beige">
+        <div className="lux-container">{children}</div>
+      </div>
+    </>
   );
 }

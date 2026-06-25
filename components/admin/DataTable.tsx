@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { CalendarX2 } from "lucide-react";
 import { displayBookingStatus, isPendingBookingStatus } from "@/lib/admin-bookings";
 
 type DataTableProps = {
@@ -53,12 +54,13 @@ export function DataTable({
           ))}
         </div>
       ) : isEmpty && emptyMessage ? (
-        <p
-          className="px-6 py-12 text-center text-sm"
-          style={{ color: "var(--text-secondary)" }}
-        >
-          {emptyMessage}
-        </p>
+        <div className="admin-empty-state">
+          <CalendarX2 className="admin-empty-state__icon h-12 w-12" aria-hidden />
+          <p className="text-base font-semibold">No bookings found</p>
+          <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+            {emptyMessage}
+          </p>
+        </div>
       ) : (
         <div className="overflow-x-auto">{children}</div>
       )}
@@ -73,8 +75,10 @@ export function StatusBadge({ status }: { status: string }) {
   if (normalized === "CONFIRMED") className = "admin-badge admin-badge--confirmed";
   else if (isPendingBookingStatus(normalized))
     className = "admin-badge admin-badge--pending";
-  else if (normalized === "CANCELLED" || normalized === "EXPIRED")
+  else if (normalized === "CANCELLED")
     className = "admin-badge admin-badge--cancelled";
+  else if (normalized === "EXPIRED")
+    className = "admin-badge admin-badge--expired";
 
   return <span className={className}>{displayBookingStatus(status)}</span>;
 }

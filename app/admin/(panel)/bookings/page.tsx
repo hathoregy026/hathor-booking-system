@@ -263,6 +263,13 @@ export default function AdminBookingsPage() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="admin-page-title">Bookings</h1>
+          <p className="admin-page-subtitle">Manage reservations</p>
+        </div>
+      </div>
+
       <div className="flex flex-col gap-4">
         <div className="-mx-4 flex overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
           <div className="flex min-w-max flex-wrap items-center gap-2 sm:min-w-0">

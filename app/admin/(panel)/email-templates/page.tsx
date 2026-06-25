@@ -10,11 +10,17 @@ import { ImageUpload } from "@/components/admin/ImageUpload";
 import { useToast } from "@/components/admin/ToastProvider";
 import { adminFetch } from "@/lib/admin-fetch";
 import type { EmailTemplateName, EmailTemplateRecord } from "@/lib/email-templates";
+import {
+  getEmailTemplatePreviewHeroSrc,
+  getEmailTemplatePreviewLogoSrc,
+} from "@/lib/email-templates";
 
 type TemplateForm = {
   subject: string;
   logoUrl: string | null;
+  logoDataUrl: string | null;
   heroImageUrl: string | null;
+  heroImageDataUrl: string | null;
   primaryColor: string;
   backgroundColor: string;
   heroHeading: string;
@@ -46,7 +52,9 @@ function toForm(template: EmailTemplateRecord): TemplateForm {
   return {
     subject: template.subject,
     logoUrl: template.logoUrl,
+    logoDataUrl: template.logoDataUrl,
     heroImageUrl: template.heroImageUrl,
+    heroImageDataUrl: template.heroImageDataUrl,
     primaryColor: template.primaryColor,
     backgroundColor: template.backgroundColor,
     heroHeading: template.heroHeading ?? "",
@@ -110,7 +118,9 @@ export default function AdminEmailTemplatesPage() {
           name: editingName,
           subject: form.subject,
           logoUrl: form.logoUrl,
+          logoDataUrl: form.logoDataUrl,
           heroImageUrl: form.heroImageUrl,
+          heroImageDataUrl: form.heroImageDataUrl,
           primaryColor: form.primaryColor,
           backgroundColor: form.backgroundColor,
           heroHeading: form.heroHeading || null,
@@ -150,12 +160,18 @@ export default function AdminEmailTemplatesPage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-4 sm:space-y-6">
+      <div>
+        <h1 className="admin-page-title">Email Templates</h1>
+        <p className="admin-page-subtitle">
+          Customize branding and messaging for automated booking emails
+        </p>
+      </div>
+
       <div className="admin-card p-4 sm:p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h1 className="admin-heading text-xl sm:text-2xl">Email Templates</h1>
             <p
-              className="mt-2 max-w-2xl text-sm leading-relaxed"
+              className="max-w-2xl text-sm leading-relaxed"
               style={{ color: "var(--text-secondary)" }}
             >
               Customize subject lines, branding, hero imagery, and messaging for
@@ -183,6 +199,8 @@ export default function AdminEmailTemplatesPage() {
       <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-3">
         {templates.map((template) => {
           const meta = TEMPLATE_META[template.name];
+          const previewHero = getEmailTemplatePreviewHeroSrc(template);
+          const previewLogo = getEmailTemplatePreviewLogoSrc(template);
           return (
             <section key={template.name} className="admin-card flex flex-col p-4 sm:p-6">
               <div className="flex items-start justify-between gap-3">
@@ -206,14 +224,14 @@ export default function AdminEmailTemplatesPage() {
                 </span>
               </div>
 
-              {template.heroImageUrl ? (
+              {previewHero ? (
                 <div
                   className="mt-4 overflow-hidden rounded-xl border"
                   style={{ borderColor: "var(--border)" }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={template.heroImageUrl}
+                    src={previewHero}
                     alt={`${meta.label} hero`}
                     className="h-24 w-full object-cover"
                   />
@@ -244,19 +262,17 @@ export default function AdminEmailTemplatesPage() {
               </div>
 
               <div className="mt-4 flex items-center gap-2">
-                {template.logoUrl ? (
-                  <div
-                    className="h-8 w-8 overflow-hidden rounded border"
-                    style={{ borderColor: "var(--border)" }}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={template.logoUrl}
-                      alt=""
-                      className="h-full w-full object-contain"
-                    />
-                  </div>
-                ) : null}
+                <div
+                  className="h-8 w-8 overflow-hidden rounded border"
+                  style={{ borderColor: "var(--border)" }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={previewLogo}
+                    alt=""
+                    className="h-full w-full object-contain"
+                  />
+                </div>
                 <span
                   className="h-5 w-5 rounded-full border"
                   style={{
@@ -372,18 +388,22 @@ export default function AdminEmailTemplatesPage() {
                 label="Logo"
                 value={form.logoUrl}
                 onChange={(url) => updateForm({ logoUrl: url })}
+                onDataUrlChange={(dataUrl) => updateForm({ logoDataUrl: dataUrl })}
                 folder="email-templates"
                 variant="admin"
-                helperText="Upload your brand logo. Leave empty to use the default Hathor logo."
+                helperText="Stored in the database for reliable email delivery. Leave empty for the default Hathor logo."
               />
 
               <ImageUpload
                 label="Hero Banner Image"
                 value={form.heroImageUrl}
                 onChange={(url) => updateForm({ heroImageUrl: url })}
+                onDataUrlChange={(dataUrl) =>
+                  updateForm({ heroImageDataUrl: dataUrl })
+                }
                 folder="email-templates"
                 variant="admin"
-                helperText="Optional wide banner shown at the top of the email."
+                helperText="Optional banner — embedded in the database so it always displays in inboxes."
               />
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

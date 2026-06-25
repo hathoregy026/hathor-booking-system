@@ -7,7 +7,7 @@ import {
   getEmailTemplateForSend,
   resolveEmailSubject,
 } from "@/lib/email-template-send";
-import { toEmailThemeOverrides } from "@/lib/email-templates";
+import { toEmailThemeOverridesForSend } from "@/lib/email-theme-server";
 import type { BookingEmailDetails } from "@/lib/email-types";
 
 let resendClient: Resend | null = null;
@@ -74,7 +74,7 @@ export async function sendBookingReceivedEmail(
   bookingDetails: BookingEmailDetails,
 ) {
   const template = await getEmailTemplateForSend("BookingReceived");
-  const theme = toEmailThemeOverrides(template);
+  const theme = toEmailThemeOverridesForSend(template);
 
   await sendEmail({
     to: guestEmail,
@@ -94,7 +94,7 @@ export async function sendBookingConfirmedEmail(
   bookingDetails: BookingEmailDetails,
 ) {
   const template = await getEmailTemplateForSend("BookingConfirmed");
-  const theme = toEmailThemeOverrides(template);
+  const theme = toEmailThemeOverridesForSend(template);
 
   await sendEmail({
     to: guestEmail,
@@ -116,7 +116,7 @@ export async function sendAdminAlertEmail(bookingDetails: BookingEmailDetails) {
   }
 
   const template = await getEmailTemplateForSend("AdminAlert");
-  const theme = toEmailThemeOverrides(template);
+  const theme = toEmailThemeOverridesForSend(template);
 
   await sendEmail({
     to: adminEmail,

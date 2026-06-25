@@ -10,6 +10,7 @@ type ImageUploadProps = {
   label: string;
   value: string | null;
   onChange: (url: string | null) => void;
+  onDataUrlChange?: (dataUrl: string | null) => void;
   folder?: string;
   helperText?: string;
   variant?: "default" | "admin";
@@ -32,6 +33,7 @@ export function ImageUpload({
   label,
   value,
   onChange,
+  onDataUrlChange,
   folder = "general",
   helperText,
   variant = "default",
@@ -95,7 +97,11 @@ export function ImageUpload({
         body: formData,
       });
 
-      const data = (await response.json()) as { url?: string; error?: string };
+      const data = (await response.json()) as {
+        url?: string;
+        dataUrl?: string;
+        error?: string;
+      };
 
       if (!response.ok) {
         throw new Error(data.error || "Upload failed");
@@ -106,6 +112,7 @@ export function ImageUpload({
       }
 
       onChange(data.url);
+      onDataUrlChange?.(data.dataUrl ?? null);
       setSelectedFile(null);
       if (inputRef.current) {
         inputRef.current.value = "";
@@ -123,6 +130,7 @@ export function ImageUpload({
     setError(null);
     setSelectedFile(null);
     onChange(null);
+    onDataUrlChange?.(null);
     if (inputRef.current) {
       inputRef.current.value = "";
     }
