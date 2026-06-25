@@ -4,6 +4,7 @@ import {
   isEmailImageDataUrl,
   resolveEmailLogoSrc,
 } from "@/lib/email-image-shared";
+import { HATHOR_LOGO_SRC } from "@/lib/branding";
 import { toAbsolutePublicUrl } from "@/lib/public-url";
 
 export const EMAIL_TEMPLATE_NAMES = [
@@ -206,13 +207,31 @@ export function toEmailThemeOverrides(
   };
 }
 
-/** Logo src for admin UI preview — prefers stored preview URL, not full data URL. */
+/** Logo src for admin UI preview — prefers embedded data, then stored URL. */
 export function getEmailTemplatePreviewLogoSrc(
   template: EmailTemplateRecord,
 ): string {
-  if (template.logoUrl) return template.logoUrl;
-  if (isEmailImageDataUrl(template.logoDataUrl)) return template.logoDataUrl!;
+  if (isEmailImageDataUrl(template.logoDataUrl)) {
+    return template.logoDataUrl!.trim();
+  }
+
+  const url = template.logoUrl?.trim();
+  if (url) {
+    if (
+      url.startsWith("/") ||
+      url.startsWith("data:") ||
+      /^https?:\/\//i.test(url)
+    ) {
+      return url;
+    }
+  }
+
   return EMAIL_LOGO_ASSET_PATH;
+}
+
+/** Safe fallback when a template logo URL fails to load in the browser. */
+export function getEmailTemplatePreviewLogoFallback(): string {
+  return HATHOR_LOGO_SRC;
 }
 
 export function getEmailTemplatePreviewHeroSrc(

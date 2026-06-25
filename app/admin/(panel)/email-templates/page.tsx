@@ -12,6 +12,7 @@ import { adminFetch } from "@/lib/admin-fetch";
 import type { EmailTemplateName, EmailTemplateRecord } from "@/lib/email-templates";
 import {
   getEmailTemplatePreviewHeroSrc,
+  getEmailTemplatePreviewLogoFallback,
   getEmailTemplatePreviewLogoSrc,
 } from "@/lib/email-templates";
 
@@ -60,6 +61,28 @@ function toForm(template: EmailTemplateRecord): TemplateForm {
     heroHeading: template.heroHeading ?? "",
     bodyText: template.bodyText ?? "",
   };
+}
+
+function TemplateLogoThumb({ src }: { src: string }) {
+  const [imgSrc, setImgSrc] = useState(src);
+  const fallback = getEmailTemplatePreviewLogoFallback();
+
+  return (
+    <div
+      className="h-8 w-8 shrink-0 overflow-hidden rounded border"
+      style={{ borderColor: "var(--border)" }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={imgSrc}
+        alt="Template logo"
+        className="h-full w-full object-contain"
+        onError={() => {
+          if (imgSrc !== fallback) setImgSrc(fallback);
+        }}
+      />
+    </div>
+  );
 }
 
 export default function AdminEmailTemplatesPage() {
@@ -214,7 +237,7 @@ export default function AdminEmailTemplatesPage() {
                   <h2 className="admin-heading mt-1 text-lg">{meta.label}</h2>
                 </div>
                 <span
-                  className="rounded-md px-2 py-1 text-[10px] font-bold uppercase tracking-wide"
+                  className="hidden shrink-0 rounded-md px-2 py-1 text-[10px] font-bold uppercase tracking-wide sm:inline"
                   style={{
                     background: "var(--bg-secondary)",
                     color: "var(--text-secondary)",
@@ -261,18 +284,8 @@ export default function AdminEmailTemplatesPage() {
                 ) : null}
               </div>
 
-              <div className="mt-4 flex items-center gap-2">
-                <div
-                  className="h-8 w-8 overflow-hidden rounded border"
-                  style={{ borderColor: "var(--border)" }}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={previewLogo}
-                    alt=""
-                    className="h-full w-full object-contain"
-                  />
-                </div>
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                <TemplateLogoThumb src={previewLogo} />
                 <span
                   className="h-5 w-5 rounded-full border"
                   style={{

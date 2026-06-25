@@ -229,7 +229,7 @@ export function EmailTemplatePreviewButton({
     <button
       type="button"
       onClick={onClick}
-      className="admin-btn-outline inline-flex items-center gap-2 px-4 py-2.5 text-sm"
+      className="admin-btn-outline inline-flex w-full items-center justify-center gap-2 px-4 py-2.5 text-sm sm:w-auto"
     >
       <Eye className="h-4 w-4" aria-hidden />
       Preview Emails
