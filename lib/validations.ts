@@ -110,6 +110,7 @@ export const createHoldSchema = z.object({
 
 export const confirmBookingSchema = z.object({
   bookingId: z.string().min(1, "bookingId is required"),
+  holdSecret: z.string().min(1, "holdSecret is required"),
   customerName: z.string().min(1, "customerName is required"),
   customerEmail: z.string().email("Valid email is required"),
   roomIds: z

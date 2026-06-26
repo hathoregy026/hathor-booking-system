@@ -1,4 +1,5 @@
 import type { AdminBookingDto } from "@/lib/admin-bookings";
+import { resolveDatabaseUrl } from "@/lib/database-config";
 import { withDbRetry } from "@/lib/db-retry";
 import { getSharedPgPool } from "@/lib/pg-pool";
 
@@ -85,11 +86,7 @@ type FetchOptions = {
 export async function fetchAdminBookingsFast(
   options: FetchOptions,
 ): Promise<AdminBookingDto[]> {
-  const connectionString = process.env.DATABASE_URL?.trim();
-  if (!connectionString) {
-    throw new Error("DATABASE_URL is not set");
-  }
-
+  const connectionString = resolveDatabaseUrl();
   const pool = getSharedPgPool(connectionString);
 
   let where = "";

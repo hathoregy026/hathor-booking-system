@@ -1,4 +1,5 @@
 import pg from "pg";
+import { getDatabasePoolConfig } from "@/lib/database-config";
 
 type PoolGlobal = {
   pgPool: pg.Pool | undefined;
@@ -18,7 +19,7 @@ export function getPgPoolGeneration(): number {
   return globalForPool.pgPoolGeneration ?? 0;
 }
 
-/** One shared pool for the whole Node process (critical for Supabase ~15 slot limit). */
+/** One shared pool for the whole Node process (critical for Supabase slot limits). */
 export function getSharedPgPool(connectionString: string): pg.Pool {
   const existing = globalForPool.pgPool;
   if (
@@ -29,23 +30,40 @@ export function getSharedPgPool(connectionString: string): pg.Pool {
     return existing;
   }
 
+  const config = getDatabasePoolConfig(connectionString);
+
   // Never call pool.end() here — other Prisma clients may still reference the old pool.
   const pool = new pg.Pool({
     connectionString,
-    max: process.env.NODE_ENV === "development" ? 2 : 2,
-    idleTimeoutMillis: 10_000,
-    connectionTimeoutMillis: 8_000,
+    max: config.connectionLimit,
+    idleTimeoutMillis: config.idleTimeoutMs,
+    connectionTimeoutMillis: config.connectTimeoutMs,
+    maxUses: config.maxUses,
     keepAlive: true,
+    allowExitOnIdle: true,
     ssl: poolSsl(connectionString),
   });
 
   pool.on("error", (error) => {
+    // Idle clients dropped by Supabase/pgbouncer are expected — pool replaces them.
     console.error("[pg-pool] idle client error:", error);
+  });
+
+  pool.on("connect", (client) => {
+    client.on("error", (error) => {
+      console.error("[pg-pool] connected client error:", error);
+    });
   });
 
   globalForPool.pgPool = pool;
   globalForPool.pgPoolUrl = connectionString;
   globalForPool.pgPoolGeneration = (globalForPool.pgPoolGeneration ?? 0) + 1;
+
+  if (process.env.NODE_ENV === "development") {
+    console.log(
+      `[pg-pool] created shared pool (max=${config.connectionLimit}, connectTimeout=${config.connectTimeoutMs}ms, idleTimeout=${config.idleTimeoutMs}ms)`,
+    );
+  }
 
   return pool;
 }

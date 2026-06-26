@@ -1,4 +1,6 @@
-import { invalidatePrismaClient } from "@/lib/prisma";
+import { invalidatePrismaClient } from "@/lib/prisma-state";
+import { getSharedPgPool } from "@/lib/pg-pool";
+import { resolveDatabaseUrl } from "@/lib/database-config";
 
 const TRANSIENT_PATTERNS = [
   "connection terminated",
@@ -11,6 +13,8 @@ const TRANSIENT_PATTERNS = [
   "connection closed",
   "socket hang up",
   "server has closed the connection",
+  "client has encountered a connection error",
+  "is not queryable",
 ];
 
 const POOL_EXHAUSTION_PATTERNS = [
@@ -67,7 +71,7 @@ export async function withDbRetry<T>(
   operation: () => Promise<T>,
   options: { retries?: number; delay?: number } = {},
 ): Promise<T> {
-  const { retries = 2, delay = 400 } = options;
+  const { retries = 3, delay = 500 } = options;
   let lastError: unknown;
 
   for (let attempt = 0; attempt <= retries; attempt += 1) {
@@ -88,10 +92,15 @@ export async function withDbRetry<T>(
       // Rebind Prisma to the live pool — never $disconnect() or pool.end() mid-request.
       if (isConnectionError(error)) {
         invalidatePrismaClient();
+        try {
+          await getSharedPgPool(resolveDatabaseUrl()).query("SELECT 1");
+        } catch {
+          // Pool will open a fresh connection on the next operation.
+        }
       }
 
       await new Promise((resolve) =>
-        setTimeout(resolve, delay * (attempt + 1)),
+        setTimeout(resolve, delay * 2 ** attempt),
       );
     }
   }

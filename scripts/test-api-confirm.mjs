@@ -24,6 +24,7 @@ const confirm = await fetch(`${base}/api/bookings/confirm`, {
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
     bookingId: holdData.bookingId,
+    holdSecret: holdData.holdSecret,
     customerName: "KHLID",
     customerEmail: "khlid@example.com",
     roomIds: [roomId],

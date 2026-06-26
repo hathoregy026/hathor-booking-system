@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { BookingStatus } from "@/app/generated/prisma/client";
 import { handleRouteError } from "@/lib/api";
 import { BIN_RETENTION_DAYS } from "@/lib/booking-retention";
@@ -6,10 +6,20 @@ import {
   purgeCruiseIfAllowed,
   purgeRoomIfAllowed,
 } from "@/lib/catalog-bin";
+import { isCronSecretConfigured, verifyCronSecret } from "@/lib/cron-auth";
 import { utcNow } from "@/lib/dates";
 import { prisma } from "@/lib/prisma";
 
-export async function POST() {
+export async function POST(request: NextRequest) {
+  if (!isCronSecretConfigured()) {
+    console.error("[cron/cleanup] CRON_SECRET is not configured");
+    return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
+  }
+
+  if (!verifyCronSecret(request)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const now = utcNow();
     const purgeBefore = new Date(now);

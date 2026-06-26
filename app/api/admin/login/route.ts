@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  ADMIN_SESSION_COOKIE,
+  createSessionToken,
+  verifyAdminPassword,
+} from "@/lib/admin-auth";
 
 export const runtime = "nodejs";
 
 export async function POST(request: NextRequest) {
   try {
-    const adminPassword = process.env.ADMIN_PASSWORD;
-
-    if (!adminPassword) {
+    if (!process.env.ADMIN_PASSWORD) {
       return NextResponse.json(
         { error: "Admin password is not configured on the server" },
         { status: 500 },
@@ -22,12 +25,13 @@ export async function POST(request: NextRequest) {
 
     const password = body.password?.trim() ?? "";
 
-    if (password !== adminPassword) {
+    if (!verifyAdminPassword(password)) {
       return NextResponse.json({ error: "Invalid password" }, { status: 401 });
     }
 
+    const sessionToken = createSessionToken();
     const response = NextResponse.json({ success: true });
-    response.cookies.set("admin_session", "authenticated", {
+    response.cookies.set(ADMIN_SESSION_COOKIE, sessionToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",

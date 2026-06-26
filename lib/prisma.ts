@@ -1,26 +1,19 @@
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@/app/generated/prisma/client";
+import { resolveDatabaseUrl } from "@/lib/database-config";
 import {
   getPgPoolGeneration,
   getSharedPgPool,
   resetSharedPgPool,
 } from "@/lib/pg-pool";
+import {
+  invalidatePrismaClient,
+  prismaGlobal,
+} from "@/lib/prisma-state";
 
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
-  dbUrl: string | undefined;
-  prismaSchemaVersion: number | undefined;
-  prismaPoolGeneration: number | undefined;
-};
+export { invalidatePrismaClient } from "@/lib/prisma-state";
 
-const PRISMA_SCHEMA_VERSION = 16;
-
-function resolveDatabaseUrl(): string {
-  const pooled = process.env.DATABASE_URL?.trim();
-  if (pooled) return pooled;
-
-  throw new Error("DATABASE_URL is not set");
-}
+const PRISMA_SCHEMA_VERSION = 17;
 
 function createPrismaClient(connectionString: string): PrismaClient {
   const pool = getSharedPgPool(connectionString);
@@ -37,28 +30,22 @@ function getPrismaClient(): PrismaClient {
   const connectionString = resolveDatabaseUrl();
   const poolGeneration = getPgPoolGeneration();
   const needsNewClient =
-    !globalForPrisma.prisma ||
-    globalForPrisma.prismaSchemaVersion !== PRISMA_SCHEMA_VERSION ||
-    globalForPrisma.dbUrl !== connectionString ||
-    globalForPrisma.prismaPoolGeneration !== poolGeneration;
+    !prismaGlobal.prisma ||
+    prismaGlobal.prismaSchemaVersion !== PRISMA_SCHEMA_VERSION ||
+    prismaGlobal.dbUrl !== connectionString ||
+    prismaGlobal.prismaPoolGeneration !== poolGeneration;
 
-  if (!needsNewClient && globalForPrisma.prisma) {
-    return globalForPrisma.prisma;
+  if (!needsNewClient && prismaGlobal.prisma) {
+    return prismaGlobal.prisma;
   }
 
   // Drop cached client only — never $disconnect(); that can poison the shared pool.
-  globalForPrisma.prisma = createPrismaClient(connectionString);
-  globalForPrisma.dbUrl = connectionString;
-  globalForPrisma.prismaSchemaVersion = PRISMA_SCHEMA_VERSION;
-  globalForPrisma.prismaPoolGeneration = poolGeneration;
+  prismaGlobal.prisma = createPrismaClient(connectionString);
+  prismaGlobal.dbUrl = connectionString;
+  prismaGlobal.prismaSchemaVersion = PRISMA_SCHEMA_VERSION;
+  prismaGlobal.prismaPoolGeneration = poolGeneration;
 
-  return globalForPrisma.prisma;
-}
-
-/** Drop cached Prisma client after connection failures. Does not close the shared pool. */
-export function invalidatePrismaClient(): void {
-  globalForPrisma.prisma = undefined;
-  globalForPrisma.prismaPoolGeneration = undefined;
+  return prismaGlobal.prisma;
 }
 
 /** @deprecated Use invalidatePrismaClient — kept for call-site compatibility. */

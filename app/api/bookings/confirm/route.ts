@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { BookingStatus } from "@/app/generated/prisma/client";
 import { handleRouteError } from "@/lib/api";
-import { BookingConflictError, InvalidBookingError } from "@/lib/booking";
+import {
+  BookingConflictError,
+  InvalidBookingError,
+  lockBookingRow,
+} from "@/lib/booking";
+import {
+  UnauthorizedBookingError,
+  verifyHoldToken,
+} from "@/lib/booking-hold-token";
 import { buildEmailDetailsFromConfirmBooking } from "@/lib/booking-email-details";
 import { ensureDefaultTicketType } from "@/lib/cruise-setup";
 import { withDb } from "@/lib/db-safe";
@@ -20,6 +28,13 @@ type TicketInput = {
   ticketTypeId: string;
   quantity: number;
 };
+
+function roomIdsMatch(left: string[], right: string[]): boolean {
+  if (left.length !== right.length) return false;
+  const sortedLeft = [...left].sort();
+  const sortedRight = [...right].sort();
+  return sortedLeft.every((roomId, index) => roomId === sortedRight[index]);
+}
 
 async function resolveTicketLines(
   cruiseId: string,
@@ -62,83 +77,89 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const parsed = confirmBookingSchema.parse(body);
 
-    const confirmedBooking = await withDb(async () => {
-        const booking = await prisma.booking.findUnique({
-          where: { id: parsed.bookingId },
-          select: {
-            id: true,
-            status: true,
-            holdExpiresAt: true,
-            cruiseScheduleId: true,
-            cruiseSchedule: {
-              select: { cruiseId: true },
-            },
-          },
-        });
+    if (!verifyHoldToken(parsed.bookingId, parsed.holdSecret)) {
+      throw new UnauthorizedBookingError();
+    }
+
+    const confirmedBooking = await withDb(async () =>
+      prisma.$transaction(async (tx) => {
+        const booking = await lockBookingRow(tx, parsed.bookingId);
 
         if (!booking || booking.status !== BookingStatus.PENDING_HOLD) {
           throw new InvalidBookingError();
         }
 
         if (booking.holdExpiresAt && booking.holdExpiresAt <= utcNow()) {
-          await prisma.booking.update({
+          await tx.booking.update({
             where: { id: parsed.bookingId },
             data: { status: BookingStatus.EXPIRED },
           });
           throw new BookingConflictError("Hold has expired");
         }
 
-        const [overlap, rooms] = await Promise.all([
-          prisma.bookingRoom.findFirst({
-            where: {
-              roomId: { in: parsed.roomIds },
-              cruiseScheduleId: booking.cruiseScheduleId,
-              bookingId: { not: parsed.bookingId },
-              booking: {
-                deletedAt: null,
-                OR: [
-                  { status: BookingStatus.CONFIRMED },
-                  {
-                    status: BookingStatus.PENDING_HOLD,
-                    OR: [
-                      { holdExpiresAt: null },
-                      { holdExpiresAt: { gt: utcNow() } },
-                    ],
-                  },
-                ],
-              },
+        const heldRooms = await tx.bookingRoom.findMany({
+          where: { bookingId: parsed.bookingId },
+          select: { roomId: true },
+        });
+
+        const heldRoomIds = heldRooms.map((entry) => entry.roomId);
+
+        if (heldRoomIds.length === 0) {
+          throw new InvalidBookingError("Hold has no reserved rooms");
+        }
+
+        if (!roomIdsMatch(heldRoomIds, parsed.roomIds)) {
+          throw new InvalidBookingError(
+            "Room selection does not match the active hold",
+          );
+        }
+
+        const overlap = await tx.bookingRoom.findFirst({
+          where: {
+            roomId: { in: heldRoomIds },
+            cruiseScheduleId: booking.cruiseScheduleId,
+            bookingId: { not: parsed.bookingId },
+            booking: {
+              deletedAt: null,
+              OR: [
+                { status: BookingStatus.CONFIRMED },
+                {
+                  status: BookingStatus.PENDING_HOLD,
+                  OR: [
+                    { holdExpiresAt: null },
+                    { holdExpiresAt: { gt: utcNow() } },
+                  ],
+                },
+              ],
             },
-            select: { id: true },
-          }),
-          prisma.room.findMany({
-            where: { id: { in: parsed.roomIds } },
-            select: { id: true },
-          }),
-        ]);
+          },
+          select: { id: true },
+        });
 
         if (overlap) {
           throw new BookingConflictError();
         }
 
-        if (rooms.length !== parsed.roomIds.length) {
-          throw new InvalidBookingError("One or more rooms are invalid");
-        }
-
-        await prisma.bookingRoom.createMany({
-          data: parsed.roomIds.map((roomId) => ({
-            bookingId: parsed.bookingId,
-            roomId,
-            cruiseScheduleId: booking.cruiseScheduleId,
-          })),
+        const schedule = await tx.cruiseSchedule.findUnique({
+          where: { id: booking.cruiseScheduleId },
+          select: { cruiseId: true },
         });
 
+        if (!schedule) {
+          throw new InvalidBookingError("Cruise schedule not found");
+        }
+
         const ticketLines = await resolveTicketLines(
-          booking.cruiseSchedule.cruiseId,
-          parsed.roomIds.length,
+          schedule.cruiseId,
+          heldRoomIds.length,
           parsed.tickets,
         );
 
-        await prisma.bookingTicket.createMany({
+        await tx.bookingTicket.deleteMany({
+          where: { bookingId: parsed.bookingId },
+        });
+
+        await tx.bookingTicket.createMany({
           data: ticketLines.map((ticket) => ({
             bookingId: parsed.bookingId,
             ticketTypeId: ticket.ticketTypeId,
@@ -146,7 +167,7 @@ export async function POST(request: NextRequest) {
           })),
         });
 
-        return prisma.booking.update({
+        return tx.booking.update({
           where: { id: parsed.bookingId },
           data: {
             status: BookingStatus.CONFIRMED,
@@ -175,7 +196,8 @@ export async function POST(request: NextRequest) {
             },
           },
         });
-    });
+      }),
+    );
 
     const emailDetails = buildEmailDetailsFromConfirmBooking({
       id: confirmedBooking.id,

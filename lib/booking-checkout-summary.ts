@@ -7,6 +7,7 @@ import {
   findStayDurationOption,
   type StayDurationValue,
 } from "@/lib/booking-search-config";
+import { withDb } from "@/lib/db-safe";
 import { ensureDefaultTicketType } from "@/lib/cruise-setup";
 import { prisma } from "@/lib/prisma";
 
@@ -86,6 +87,7 @@ export async function getCheckoutSummary(input: {
   adults?: string | null;
   children?: string | null;
 }): Promise<CheckoutSummary | null> {
+  return withDb(async () => {
   const roomDetails = await getBookingRoomDetails(input.roomId);
   if (!roomDetails || roomDetails.cruiseId !== input.cruiseId) {
     return null;
@@ -134,4 +136,5 @@ export async function getCheckoutSummary(input: {
     backHref: buildBackHref(roomDetails.roomId, backQuery),
     ticketTypeId: ticketType.id,
   };
+  });
 }

@@ -22,6 +22,10 @@ export function handleRouteError(error: unknown) {
     return jsonError(error.message, 400);
   }
 
+  if (error instanceof Error && error.name === "UnauthorizedBookingError") {
+    return jsonError(error.message, 401);
+  }
+
   if (error instanceof Error && error.name === "BookingConflictError") {
     return jsonError(error.message, 409);
   }

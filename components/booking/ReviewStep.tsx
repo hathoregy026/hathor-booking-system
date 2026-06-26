@@ -89,6 +89,7 @@ export function ReviewStep() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           bookingId: holdData.bookingId,
+          holdSecret: holdData.holdSecret,
           customerName: passengerDetails.name,
           customerEmail: passengerDetails.email,
           roomIds: checkoutRoomIds,

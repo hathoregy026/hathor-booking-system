@@ -6,6 +6,12 @@ generator client {
   output   = "../app/generated/prisma"
 }
 
+// Pool tuning (applied at runtime in lib/database-config.ts + lib/pg-pool.ts):
+// Append to DATABASE_URL or set env vars:
+//   connection_limit=5  — max clients in the shared pool
+//   pool_timeout=15     — seconds to wait when acquiring a connection
+//   connect_timeout=10  — seconds to wait when opening a new connection
+// Migrate URL: prisma.config.ts (DIRECT_URL / DATABASE_URL)
 datasource db {
   provider = "postgresql"
 }

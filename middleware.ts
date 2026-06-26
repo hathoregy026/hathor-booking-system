@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  ADMIN_SESSION_COOKIE,
+  verifySessionToken,
+} from "@/lib/admin-auth-edge";
 
 const PUBLIC_ADMIN_PATHS = ["/admin/login", "/api/admin/login"];
-const ADMIN_SESSION_COOKIE = "admin_session";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   try {
     const { pathname } = request.nextUrl;
     const session = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
-    const isAuthenticated = session === "authenticated";
+    const isAuthenticated = await verifySessionToken(session);
 
     const isAdminRoute =
       pathname.startsWith("/admin") || pathname.startsWith("/api/admin");

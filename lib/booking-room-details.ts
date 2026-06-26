@@ -3,6 +3,7 @@ import {
   findStayDurationOption,
   type StayDurationValue,
 } from "@/lib/booking-search-config";
+import { withDb } from "@/lib/db-safe";
 import { prisma } from "@/lib/prisma";
 
 export type BookingRoomDetails = {
@@ -130,6 +131,7 @@ function stripAmenitiesBlock(description: string | null): string {
 export async function getBookingRoomDetails(
   roomId: string,
 ): Promise<BookingRoomDetails | null> {
+  return withDb(async () => {
   const room = await prisma.room.findFirst({
     where: {
       id: roomId,
@@ -194,4 +196,5 @@ export async function getBookingRoomDetails(
     days,
     imageUrl: room.cruise.imageUrl,
   };
+  });
 }

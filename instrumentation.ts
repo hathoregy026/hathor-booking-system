@@ -1,8 +1,13 @@
 export async function register() {
   if (process.env.NEXT_RUNTIME !== "nodejs") return;
 
-  const connectionString = process.env.DATABASE_URL?.trim();
-  if (!connectionString) return;
+  const { resolveDatabaseUrl } = await import("@/lib/database-config");
+  let connectionString: string;
+  try {
+    connectionString = resolveDatabaseUrl();
+  } catch {
+    return;
+  }
 
   const { getSharedPgPool } = await import("@/lib/pg-pool");
   const pool = getSharedPgPool(connectionString);
