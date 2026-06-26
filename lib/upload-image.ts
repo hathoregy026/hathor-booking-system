@@ -4,7 +4,6 @@ import path from "path";
 import {
   buildStableEmailImagePath,
   optimizeEmailTemplateImage,
-  toStorageUploadBody,
 } from "@/lib/email-image-optimize";
 import { isValidImageMagicBytes } from "@/lib/email-image-verify";
 import {
@@ -15,6 +14,12 @@ import {
   isEmailImageFolder,
 } from "@/lib/image-upload";
 import { toAbsolutePublicUrl } from "@/lib/public-url";
+import {
+  copyToBinaryBody,
+  downloadObjectBytes,
+  getStoragePublicUrl,
+  uploadObjectBytes,
+} from "@/lib/supabase-storage-rest";
 import { createSupabaseStorageAdminClient } from "@/lib/supabase-server";
 
 export type UploadedImage = {
@@ -42,7 +47,7 @@ async function uploadToSupabase(
   upsert = false,
 ): Promise<UploadedImage> {
   const supabase = createSupabaseStorageAdminClient();
-  const body = toStorageUploadBody(buffer);
+  const body = copyToBinaryBody(buffer);
 
   const { error } = await supabase.storage.from(bucket).upload(objectPath, body, {
     contentType,
@@ -76,16 +81,7 @@ async function verifyUploadedObject(
   objectPath: string,
   expectedMinBytes: number,
 ): Promise<void> {
-  const supabase = createSupabaseStorageAdminClient();
-  const { data, error } = await supabase.storage.from(bucket).download(objectPath);
-
-  if (error || !data) {
-    throw new Error(
-      `Upload verification failed: ${error?.message ?? "object not found"}`,
-    );
-  }
-
-  const bytes = Buffer.from(await data.arrayBuffer());
+  const bytes = await downloadObjectBytes(bucket, objectPath);
 
   if (bytes.length < expectedMinBytes) {
     throw new Error(
@@ -98,6 +94,28 @@ async function verifyUploadedObject(
       "Uploaded image is corrupted (invalid file header). Re-upload the file.",
     );
   }
+}
+
+async function uploadEmailImageToSupabase(
+  objectPath: string,
+  buffer: Buffer,
+  contentType: string,
+): Promise<UploadedImage> {
+  await uploadObjectBytes(
+    EMAIL_IMAGE_BUCKET,
+    objectPath,
+    buffer,
+    contentType,
+    true,
+  );
+
+  const publicUrl = getStoragePublicUrl(EMAIL_IMAGE_BUCKET, objectPath);
+
+  return {
+    url: toAbsolutePublicUrl(publicUrl) ?? publicUrl,
+    path: objectPath,
+    storage: "supabase",
+  };
 }
 
 /**
@@ -120,12 +138,10 @@ export async function uploadEmailTemplateImage(options: {
 
   const optimized = await optimizeEmailTemplateImage(options.field, options.buffer);
   const objectPath = buildStableEmailImagePath(options.field);
-  const uploaded = await uploadToSupabase(
-    EMAIL_IMAGE_BUCKET,
+  const uploaded = await uploadEmailImageToSupabase(
     objectPath,
     optimized.buffer,
     optimized.contentType,
-    true,
   );
 
   const canonicalUrl = getPublicImageUrl(uploaded.path, EMAIL_IMAGE_BUCKET);

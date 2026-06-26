@@ -3,6 +3,7 @@ import {
   ALLOWED_IMAGE_EXTENSIONS,
   validateEmailTemplateImageFile,
 } from "@/lib/image-upload";
+import { isValidImageMagicBytes } from "@/lib/email-image-verify";
 import { handleRouteError } from "@/lib/api";
 import { withDb } from "@/lib/db-safe";
 import {
@@ -63,6 +64,13 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(await file.arrayBuffer());
     if (!buffer.length) {
       return NextResponse.json({ error: "Uploaded file is empty." }, { status: 400 });
+    }
+
+    if (!isValidImageMagicBytes(buffer)) {
+      return NextResponse.json(
+        { error: "Uploaded file is not a valid image." },
+        { status: 400 },
+      );
     }
 
     const uploaded = await uploadEmailTemplateImage({

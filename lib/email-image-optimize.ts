@@ -83,8 +83,3 @@ export function buildStableEmailImagePath(
 ): string {
   return field === "logoUrl" ? "hathor-email-logo.png" : "hathor-email-hero.jpg";
 }
-
-/** Binary-safe body for Supabase Storage (avoids UTF-8 corruption on serverless). */
-export function toStorageUploadBody(buffer: Buffer): Uint8Array {
-  return new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
-}
