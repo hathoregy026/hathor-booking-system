@@ -1,12 +1,18 @@
-import { Button, Heading, Section, Text } from "@react-email/components";
+import { Text } from "@react-email/components";
 import { format } from "date-fns";
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
 import { interpolateEmailText } from "@/lib/email-templates";
 import type { BookingEmailDetails } from "@/lib/email-types";
 import { BookingSummary, GuestInfoTable } from "./components/BookingSummary";
 import { EmailLayout } from "./components/EmailLayout";
+import {
+  EmailBodyText,
+  EmailCtaButton,
+  EmailEyebrow,
+  EmailHeading,
+  GoldDivider,
+} from "./components/EmailUi";
 import { sampleBookingDetails } from "./sample-data";
-import { resolveEmailTheme } from "./theme";
 import { emailColors, emailFonts, SITE_URL } from "./styles";
 
 type AdminAlertEmailProps = {
@@ -30,7 +36,6 @@ export default function AdminAlertEmail({
   heroHeading,
   bodyText,
 }: AdminAlertEmailProps) {
-  const theme = resolveEmailTheme({ logoUrl, primaryColor, backgroundColor });
   const heading = interpolateEmailText(heroHeading ?? DEFAULT_HERO, {
     guestName: details.guestName,
   });
@@ -43,96 +48,57 @@ export default function AdminAlertEmail({
     <EmailLayout
       preview="New Hathor booking request"
       footerVariant="admin"
-      logoWidth={120}
+      logoWidth={160}
       logoUrl={logoUrl}
       heroImageUrl={heroImageUrl}
       primaryColor={primaryColor}
       backgroundColor={backgroundColor}
     >
-      <Section
-        style={{
-          backgroundColor: theme.infoBg,
-          borderLeft: `4px solid ${theme.goldDark}`,
-          borderRadius: "4px",
-          margin: "0 0 32px",
-          padding: "20px 24px",
-        }}
+      <EmailEyebrow>Admin Notification</EmailEyebrow>
+      <EmailHeading align="left" size="medium">
+        {heading}
+      </EmailHeading>
+
+      <table
+        role="presentation"
+        cellPadding={0}
+        cellSpacing={0}
+        width="100%"
+        style={{ borderCollapse: "collapse", margin: "0 0 24px" }}
       >
-        <Heading
-          as="h2"
-          style={{
-            color: emailColors.textPrimary,
-            fontFamily: emailFonts.serif,
-            fontSize: "22px",
-            fontWeight: 400,
-            lineHeight: "1.35",
-            margin: "0 0 8px",
-          }}
-        >
-          {heading}
-        </Heading>
-        <Text
-          style={{
-            color: emailColors.textSecondary,
-            fontFamily: emailFonts.sans,
-            fontSize: "13px",
-            lineHeight: "1.5",
-            margin: 0,
-          }}
-        >
-          Received: {receivedDate} at {receivedTime}
-        </Text>
-      </Section>
+        <tbody>
+          <tr>
+            <td style={{ padding: 0 }}>
+              <Text
+                style={{
+                  color: emailColors.textMuted,
+                  fontFamily: emailFonts.body,
+                  fontSize: "13px",
+                  lineHeight: "1.5",
+                  margin: 0,
+                }}
+              >
+                Received {receivedDate} at {receivedTime}
+              </Text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <GoldDivider width="60px" />
 
       <GuestInfoTable details={details} />
-
       <BookingSummary
         details={details}
         showBookingReference
-        sectionTitle="BOOKING DETAILS"
+        sectionTitle="Booking Details"
       />
 
-      <Section
-        style={{
-          backgroundColor: theme.cardBackground,
-          border: `1px solid ${theme.borderColor}`,
-          borderRadius: "8px",
-          margin: "32px 0 8px",
-          padding: "24px 28px",
-          textAlign: "center",
-        }}
-      >
-        <Text
-          style={{
-            color: emailColors.textSecondary,
-            fontFamily: emailFonts.sans,
-            fontSize: "16px",
-            lineHeight: "1.6",
-            margin: "0 0 20px",
-          }}
-        >
-          {body}
-        </Text>
-        <Button
-          href={`${SITE_URL}/admin`}
-          style={{
-            backgroundColor: theme.goldDark,
-            borderRadius: "4px",
-            color: theme.cardBackground,
-            display: "inline-block",
-            fontFamily: emailFonts.sans,
-            fontSize: "14px",
-            fontWeight: 700,
-            letterSpacing: "2px",
-            lineHeight: "1",
-            padding: "16px 32px",
-            textDecoration: "none",
-            textTransform: "uppercase",
-          }}
-        >
-          Open Dashboard
-        </Button>
-      </Section>
+      <EmailBodyText align="center" muted>
+        {body}
+      </EmailBodyText>
+
+      <EmailCtaButton href={`${SITE_URL}/admin`} label="Open Dashboard" />
     </EmailLayout>
   );
 }

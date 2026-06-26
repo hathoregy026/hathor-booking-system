@@ -1,12 +1,18 @@
-import { Button, Heading, Section, Text } from "@react-email/components";
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
 import { interpolateEmailText } from "@/lib/email-templates";
 import type { BookingEmailDetails } from "@/lib/email-types";
 import { BookingSummary } from "./components/BookingSummary";
 import { EmailLayout } from "./components/EmailLayout";
+import {
+  EmailBodyText,
+  EmailBulletList,
+  EmailCtaButton,
+  EmailEyebrow,
+  EmailHeading,
+  GoldDivider,
+} from "./components/EmailUi";
 import { sampleBookingDetails, sampleGuestName } from "./sample-data";
-import { resolveEmailTheme } from "./theme";
-import { emailColors, emailFonts, SITE_URL } from "./styles";
+import { emailColors, SITE_URL } from "./styles";
 
 type BookingConfirmedEmailProps = {
   guestName: string;
@@ -39,7 +45,6 @@ export default function BookingConfirmedEmail({
   heroHeading,
   bodyText,
 }: BookingConfirmedEmailProps) {
-  const theme = resolveEmailTheme({ logoUrl, primaryColor, backgroundColor });
   const heading = interpolateEmailText(heroHeading ?? DEFAULT_HERO, { guestName });
   const body = bodyText?.trim() || DEFAULT_BODY;
 
@@ -52,115 +57,59 @@ export default function BookingConfirmedEmail({
       primaryColor={primaryColor}
       backgroundColor={backgroundColor}
     >
-      <Text
-        style={{
-          color: emailColors.success,
-          fontFamily: emailFonts.sans,
-          fontSize: "13px",
-          fontWeight: 700,
-          letterSpacing: "2px",
-          margin: "0 0 12px",
-          textAlign: "center",
-          textTransform: "uppercase",
-        }}
-      >
-        Confirmed
-      </Text>
-
-      <Heading
-        as="h1"
-        style={{
-          color: emailColors.textPrimary,
-          fontFamily: emailFonts.serif,
-          fontSize: "28px",
-          fontWeight: 400,
-          lineHeight: "1.35",
-          margin: "0 0 16px",
-          textAlign: "center",
-        }}
-      >
-        {heading}
-      </Heading>
-
-      <Text
-        style={{
-          color: emailColors.textSecondary,
-          fontFamily: emailFonts.sans,
-          fontSize: "16px",
-          lineHeight: "1.6",
-          margin: "0 0 8px",
-          textAlign: "center",
-        }}
-      >
-        {body}
-      </Text>
-
+      <EmailEyebrow color={emailColors.success}>Booking Confirmed</EmailEyebrow>
+      <EmailHeading>{heading}</EmailHeading>
+      <GoldDivider />
+      <EmailBodyText>{body}</EmailBodyText>
       <BookingSummary details={details} showBookingReference />
 
-      <Section
-        style={{
-          backgroundColor: theme.cardBackground,
-          border: `1px solid ${theme.primaryColor}`,
-          borderRadius: "8px",
-          margin: "32px 0",
-          padding: "24px 28px",
-        }}
+      <table
+        role="presentation"
+        cellPadding={0}
+        cellSpacing={0}
+        width="100%"
+        style={{ borderCollapse: "collapse", margin: "32px 0 0" }}
       >
-        <Heading
-          as="h3"
-          style={{
-            color: emailColors.textPrimary,
-            fontFamily: emailFonts.serif,
-            fontSize: "18px",
-            fontWeight: 400,
-            lineHeight: "1.4",
-            margin: "0 0 16px",
-            textAlign: "left",
-          }}
-        >
-          Your Journey Awaits
-        </Heading>
-        {HIGHLIGHTS.map((item) => (
-          <Text
-            key={item}
-            style={{
-              color: emailColors.textSecondary,
-              fontFamily: emailFonts.sans,
-              fontSize: "16px",
-              lineHeight: "1.6",
-              margin: "0 0 10px",
-              paddingLeft: "4px",
-            }}
-          >
-            <span style={{ color: theme.goldDark, marginRight: "10px" }}>
-              •
-            </span>
-            {item}
-          </Text>
-        ))}
-      </Section>
+        <tbody>
+          <tr>
+            <td
+              style={{
+                border: `1px solid ${emailColors.border}`,
+                padding: "28px 32px",
+              }}
+            >
+              <table
+                role="presentation"
+                cellPadding={0}
+                cellSpacing={0}
+                width="100%"
+                style={{ borderCollapse: "collapse", margin: "0 0 20px" }}
+              >
+                <tbody>
+                  <tr>
+                    <td
+                      style={{
+                        color: emailColors.gold,
+                        fontFamily:
+                          "'Playfair Display', Georgia, 'Times New Roman', serif",
+                        fontSize: "22px",
+                        fontWeight: 500,
+                        lineHeight: "1.4",
+                        padding: 0,
+                      }}
+                    >
+                      Your Journey Awaits
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <EmailBulletList items={HIGHLIGHTS} />
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-      <Section style={{ margin: "32px 0 8px", textAlign: "center" }}>
-        <Button
-          href={SITE_URL}
-          style={{
-            backgroundColor: theme.goldDark,
-            borderRadius: "4px",
-            color: theme.cardBackground,
-            display: "inline-block",
-            fontFamily: emailFonts.sans,
-            fontSize: "14px",
-            fontWeight: 700,
-            letterSpacing: "2px",
-            lineHeight: "1",
-            padding: "16px 32px",
-            textDecoration: "none",
-            textTransform: "uppercase",
-          }}
-        >
-          View Your Booking
-        </Button>
-      </Section>
+      <EmailCtaButton href={SITE_URL} label="View Your Booking" />
     </EmailLayout>
   );
 }

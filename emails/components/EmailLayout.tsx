@@ -1,7 +1,6 @@
 import {
   Body,
   Head,
-  Hr,
   Html,
   Img,
   Link,
@@ -12,7 +11,12 @@ import type { ReactNode } from "react";
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
 import { resolveEmailHostedImageUrl } from "@/lib/email-image-shared";
 import { resolveEmailTheme } from "../theme";
-import { emailColors, emailFonts, emailLayout } from "../styles";
+import {
+  emailColors,
+  emailFonts,
+  emailLayout,
+  GOOGLE_FONTS_URL,
+} from "../styles";
 
 export type EmailFooterVariant = "guest" | "guest-reply" | "admin";
 
@@ -30,7 +34,7 @@ const cellReset = {
 
 export function EmailHeroBanner({
   heroImageUrl,
-  alt = "The luxury Hathor Dahabiya cruise ship illuminated at night on the Nile",
+  alt = "Luxury Hathor Dahabiya cruise on the Nile at sunset",
 }: {
   heroImageUrl: string;
   alt?: string;
@@ -43,7 +47,7 @@ export function EmailHeroBanner({
       cellPadding={0}
       cellSpacing={0}
       width="100%"
-      style={{ borderCollapse: "collapse", margin: "0 0 24px" }}
+      style={{ borderCollapse: "collapse", margin: 0 }}
     >
       <tbody>
         <tr>
@@ -52,14 +56,13 @@ export function EmailHeroBanner({
               src={src}
               alt={alt}
               width={600}
-              height={220}
+              height={240}
               style={{
                 border: 0,
-                borderRadius: "8px",
                 display: "block",
                 height: "auto",
-                margin: "0 auto",
-                maxHeight: "220px",
+                margin: 0,
+                maxHeight: "240px",
                 maxWidth: "100%",
                 outline: "none",
                 textDecoration: "none",
@@ -74,13 +77,11 @@ export function EmailHeroBanner({
 }
 
 export function EmailLogo({
-  width = 180,
+  width = 200,
   logoUrl,
-  primaryColor,
 }: {
   width?: number;
   logoUrl: string;
-  primaryColor: string;
 }) {
   const src = resolveEmailHostedImageUrl(logoUrl) ?? logoUrl;
 
@@ -90,7 +91,7 @@ export function EmailLogo({
       cellPadding={0}
       cellSpacing={0}
       width="100%"
-      style={{ borderCollapse: "collapse", margin: "0 0 24px" }}
+      style={{ borderCollapse: "collapse", margin: 0 }}
     >
       <tbody>
         <tr>
@@ -98,16 +99,15 @@ export function EmailLogo({
             align="center"
             style={{
               ...cellReset,
-              backgroundColor: "#000000",
-              borderRadius: "8px",
-              padding: "16px 24px",
+              backgroundColor: emailColors.dark,
+              padding: "28px 32px",
             }}
           >
             <Img
               src={src}
-              alt="Hathor Luxury Dahabiya Cruise Logo"
+              alt="Hathor Luxury Dahabiya Cruise"
               width={width}
-              height={60}
+              height={64}
               style={{
                 border: 0,
                 display: "block",
@@ -119,14 +119,18 @@ export function EmailLogo({
                 width: "100%",
               }}
             />
-            <Hr
-              style={{
-                border: "none",
-                borderTop: `2px solid ${primaryColor}`,
-                margin: "20px auto 0",
-                width: "60px",
-              }}
-            />
+          </td>
+        </tr>
+        <tr>
+          <td
+            style={{
+              backgroundColor: emailColors.gold,
+              fontSize: 0,
+              height: "3px",
+              lineHeight: 0,
+            }}
+          >
+            &nbsp;
           </td>
         </tr>
       </tbody>
@@ -134,6 +138,7 @@ export function EmailLogo({
   );
 }
 
+/** @deprecated Use EmailEyebrow from EmailUi instead. */
 export function GoldSectionTitle({
   children,
   color,
@@ -144,11 +149,11 @@ export function GoldSectionTitle({
   return (
     <Text
       style={{
-        color: color ?? emailColors.goldDark,
-        fontFamily: emailFonts.sans,
-        fontSize: "13px",
-        fontWeight: 700,
-        letterSpacing: "2px",
+        color: color ?? emailColors.gold,
+        fontFamily: emailFonts.body,
+        fontSize: "11px",
+        fontWeight: 600,
+        letterSpacing: "3px",
         lineHeight: "1.4",
         margin: "0 0 16px",
         textAlign: "left",
@@ -174,33 +179,36 @@ export function EmailFooter({
         cellPadding={0}
         cellSpacing={0}
         width="100%"
-        style={{ borderCollapse: "collapse", marginTop: "32px" }}
+        style={{ borderCollapse: "collapse", marginTop: "0" }}
       >
         <tbody>
           <tr>
-            <td align="center" style={cellReset}>
-              <Hr
-                style={{
-                  border: "none",
-                  borderTop: `1px solid ${primaryColor}`,
-                  margin: "0 0 20px",
-                }}
-              />
+            <td
+              align="center"
+              style={{
+                ...cellReset,
+                backgroundColor: emailColors.dark,
+                padding: "32px 24px",
+              }}
+            >
               <Text
                 style={{
-                  color: emailColors.textSecondary,
-                  fontFamily: emailFonts.sans,
+                  color: emailColors.cream,
+                  fontFamily: emailFonts.body,
                   fontSize: "13px",
+                  fontWeight: 500,
+                  letterSpacing: "1px",
                   lineHeight: "1.5",
                   margin: "0 0 8px",
+                  textTransform: "uppercase",
                 }}
               >
-                Hathor Dahabiya Admin System
+                Hathor Dahabiya Admin
               </Text>
               <Text
                 style={{
                   color: primaryColor,
-                  fontFamily: emailFonts.sans,
+                  fontFamily: emailFonts.body,
                   fontSize: "12px",
                   lineHeight: "1.5",
                   margin: 0,
@@ -221,25 +229,48 @@ export function EmailFooter({
       cellPadding={0}
       cellSpacing={0}
       width="100%"
-      style={{ borderCollapse: "collapse", marginTop: "32px" }}
+      style={{ borderCollapse: "collapse", marginTop: "0" }}
     >
       <tbody>
         <tr>
-          <td align="center" style={{ ...cellReset, paddingTop: "30px" }}>
-            <Hr
-              style={{
-                border: "none",
-                borderTop: `1px solid ${primaryColor}`,
-                margin: "0 0 24px",
-              }}
-            />
+          <td
+            align="center"
+            style={{
+              ...cellReset,
+              backgroundColor: emailColors.dark,
+              padding: "40px 32px",
+            }}
+          >
+            <table
+              role="presentation"
+              cellPadding={0}
+              cellSpacing={0}
+              style={{ borderCollapse: "collapse", margin: "0 auto 20px" }}
+            >
+              <tbody>
+                <tr>
+                  <td
+                    style={{
+                      backgroundColor: primaryColor,
+                      fontSize: 0,
+                      height: "2px",
+                      lineHeight: 0,
+                      width: "60px",
+                    }}
+                  >
+                    &nbsp;
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
             <Text
               style={{
-                color: emailColors.textPrimary,
-                fontFamily: emailFonts.serif,
-                fontSize: "16px",
-                fontWeight: 400,
-                lineHeight: "1.5",
+                color: emailColors.cream,
+                fontFamily: emailFonts.display,
+                fontSize: "22px",
+                fontWeight: 500,
+                lineHeight: "1.4",
                 margin: "0 0 6px",
               }}
             >
@@ -247,29 +278,32 @@ export function EmailFooter({
             </Text>
             <Text
               style={{
-                color: emailColors.textSecondary,
-                fontFamily: emailFonts.sans,
-                fontSize: "13px",
+                color: primaryColor,
+                fontFamily: emailFonts.body,
+                fontSize: "12px",
                 fontStyle: "italic",
+                fontWeight: 400,
+                letterSpacing: "1px",
                 lineHeight: "1.5",
-                margin: "0 0 16px",
+                margin: "0 0 24px",
               }}
             >
               Luxury Cruises on the Nile
             </Text>
+
             <Text
               style={{
-                color: emailColors.textSecondary,
-                fontFamily: emailFonts.sans,
-                fontSize: "13px",
-                lineHeight: "1.6",
-                margin: "0 0 4px",
+                color: emailColors.textMuted,
+                fontFamily: emailFonts.body,
+                fontSize: "14px",
+                lineHeight: "1.7",
+                margin: "0 0 6px",
               }}
             >
               <Link
                 href="mailto:reservations@hathorcruise.com"
                 style={{
-                  color: emailColors.textSecondary,
+                  color: emailColors.cream,
                   textDecoration: "underline",
                 }}
               >
@@ -278,33 +312,36 @@ export function EmailFooter({
             </Text>
             <Text
               style={{
-                color: emailColors.textSecondary,
-                fontFamily: emailFonts.sans,
-                fontSize: "13px",
-                lineHeight: "1.6",
-                margin: "0 0 20px",
+                color: emailColors.textMuted,
+                fontFamily: emailFonts.body,
+                fontSize: "14px",
+                lineHeight: "1.7",
+                margin: "0 0 24px",
               }}
             >
               +20 127 049 6896
             </Text>
+
             {variant === "guest-reply" ? (
               <Text
                 style={{
-                  color: emailColors.textSecondary,
-                  fontFamily: emailFonts.sans,
+                  color: emailColors.textMuted,
+                  fontFamily: emailFonts.body,
                   fontSize: "13px",
-                  lineHeight: "1.6",
-                  margin: "0 0 20px",
+                  lineHeight: "1.7",
+                  margin: "0 0 24px",
                 }}
               >
-                If you have any questions, reply directly to this email.
+                Questions? Reply directly to this email — we are here to help.
               </Text>
             ) : null}
+
             <Text
               style={{
                 color: primaryColor,
-                fontFamily: emailFonts.sans,
-                fontSize: "12px",
+                fontFamily: emailFonts.body,
+                fontSize: "11px",
+                letterSpacing: "1px",
                 lineHeight: "1.5",
                 margin: 0,
               }}
@@ -322,7 +359,7 @@ export function EmailLayout({
   preview,
   children,
   footerVariant = "guest",
-  logoWidth = 180,
+  logoWidth = 200,
   logoUrl,
   heroImageUrl,
   primaryColor,
@@ -338,14 +375,31 @@ export function EmailLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="x-apple-disable-message-reformatting" />
-        <meta name="format-detection" content="telephone=no,address=no,email=no,date=no,url=no" />
+        <meta
+          name="format-detection"
+          content="telephone=no,address=no,email=no,date=no,url=no"
+        />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link href={GOOGLE_FONTS_URL} rel="stylesheet" />
         <title>{preview}</title>
+        <style>{`
+          @media only screen and (max-width: 620px) {
+            .email-container { width: 100% !important; }
+            .email-card { padding: 28px 20px !important; }
+            .email-heading { font-size: 26px !important; }
+          }
+        `}</style>
       </Head>
       <Preview>{preview}</Preview>
       <Body
         style={{
           backgroundColor: theme.backgroundColor,
-          fontFamily: emailFonts.sans,
+          fontFamily: emailFonts.body,
           margin: 0,
           padding: 0,
           WebkitTextSizeAdjust: "100%",
@@ -371,7 +425,7 @@ export function EmailLayout({
                 align="center"
                 style={{
                   backgroundColor: theme.backgroundColor,
-                  padding: `${emailLayout.paddingMobile} 12px`,
+                  padding: "24px 12px",
                 }}
               >
                 <table
@@ -379,6 +433,7 @@ export function EmailLayout({
                   cellPadding={0}
                   cellSpacing={0}
                   width="600"
+                  className="email-container"
                   style={{
                     borderCollapse: "collapse",
                     maxWidth: emailLayout.maxWidth,
@@ -386,6 +441,14 @@ export function EmailLayout({
                   }}
                 >
                   <tbody>
+                    <tr>
+                      <td style={cellReset}>
+                        <EmailLogo
+                          width={logoWidth}
+                          logoUrl={theme.logoUrl}
+                        />
+                      </td>
+                    </tr>
                     {bannerUrl ? (
                       <tr>
                         <td style={cellReset}>
@@ -394,23 +457,38 @@ export function EmailLayout({
                       </tr>
                     ) : null}
                     <tr>
-                      <td style={cellReset}>
-                        <EmailLogo
-                          width={logoWidth}
-                          logoUrl={theme.logoUrl}
-                          primaryColor={theme.primaryColor}
-                        />
-                      </td>
-                    </tr>
-                    <tr>
                       <td
+                        className="email-card"
                         style={{
                           backgroundColor: theme.cardBackground,
-                          border: `1px solid ${theme.borderColor}`,
-                          borderRadius: "8px",
-                          padding: emailLayout.paddingMobile,
+                          borderLeft: `1px solid ${theme.borderColor}`,
+                          borderRight: `1px solid ${theme.borderColor}`,
+                          padding: emailLayout.paddingCard,
                         }}
                       >
+                        <table
+                          role="presentation"
+                          cellPadding={0}
+                          cellSpacing={0}
+                          width="100%"
+                          style={{ borderCollapse: "collapse" }}
+                        >
+                          <tbody>
+                            <tr>
+                              <td
+                                style={{
+                                  borderTop: `3px solid ${theme.primaryColor}`,
+                                  fontSize: 0,
+                                  height: 0,
+                                  lineHeight: 0,
+                                  padding: 0,
+                                }}
+                              >
+                                &nbsp;
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
                         {children}
                       </td>
                     </tr>

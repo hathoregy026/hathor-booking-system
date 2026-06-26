@@ -1,4 +1,4 @@
-import { Section, Text } from "@react-email/components";
+import { Text } from "@react-email/components";
 import { differenceInCalendarDays, parse } from "date-fns";
 import type { BookingEmailDetails } from "@/lib/email-types";
 import { emailColors, emailFonts } from "../styles";
@@ -70,20 +70,30 @@ function buildSummaryRows(
   return rows;
 }
 
-function cellStyle(isAlt: boolean) {
+function labelCell(isAlt: boolean) {
   return {
     backgroundColor: isAlt ? emailColors.rowAlt : emailColors.card,
     borderBottom: `1px solid ${emailColors.border}`,
-    padding: "12px 16px",
+    padding: "14px 18px",
     verticalAlign: "top" as const,
-    width: "50%",
+    width: "42%",
+  };
+}
+
+function valueCell(isAlt: boolean) {
+  return {
+    backgroundColor: isAlt ? emailColors.rowAlt : emailColors.card,
+    borderBottom: `1px solid ${emailColors.border}`,
+    padding: "14px 18px",
+    verticalAlign: "top" as const,
+    width: "58%",
   };
 }
 
 export function BookingSummary({
   details,
   showBookingReference = false,
-  sectionTitle = "YOUR RESERVATION DETAILS",
+  sectionTitle = "Your Reservation Details",
 }: BookingSummaryProps) {
   if (!details) {
     return null;
@@ -92,67 +102,98 @@ export function BookingSummary({
   const rows = buildSummaryRows(details, showBookingReference);
 
   return (
-    <Section style={{ margin: "32px 0" }}>
-      <GoldSectionTitle>{sectionTitle}</GoldSectionTitle>
-      <table
-        role="presentation"
-        cellPadding={0}
-        cellSpacing={0}
-        width="100%"
-        style={{
-          border: `1px solid ${emailColors.border}`,
-          borderCollapse: "collapse",
-          width: "100%",
-        }}
-      >
-        <tbody>
-          {rows.map((row, index) => {
-            const isAlt = index % 2 === 1;
-            return (
-              <tr key={row.label}>
-                <td style={cellStyle(isAlt)}>
-                  <Text
-                    style={{
-                      color: emailColors.textSecondary,
-                      fontFamily: emailFonts.sans,
-                      fontSize: "13px",
-                      fontWeight: 700,
-                      letterSpacing: "1px",
-                      lineHeight: "1.4",
-                      margin: 0,
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    {row.label}
-                  </Text>
-                </td>
-                <td style={cellStyle(isAlt)}>
-                  <Text
-                    style={{
-                      color: row.gold ? emailColors.goldDark : emailColors.textPrimary,
-                      fontFamily: emailFonts.sans,
-                      fontSize: "16px",
-                      fontWeight: row.bold ? 700 : 400,
-                      lineHeight: "1.6",
-                      margin: 0,
-                      textAlign: "right",
-                    }}
-                  >
-                    {row.value}
-                  </Text>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </Section>
+    <table
+      role="presentation"
+      cellPadding={0}
+      cellSpacing={0}
+      width="100%"
+      style={{ borderCollapse: "collapse", margin: "32px 0 0" }}
+    >
+      <tbody>
+        <tr>
+          <td style={{ padding: 0 }}>
+            <GoldSectionTitle>{sectionTitle}</GoldSectionTitle>
+            <table
+              role="presentation"
+              cellPadding={0}
+              cellSpacing={0}
+              width="100%"
+              style={{
+                border: `1px solid ${emailColors.border}`,
+                borderCollapse: "collapse",
+                width: "100%",
+              }}
+            >
+              <tbody>
+                {rows.map((row, index) => {
+                  const isAlt = index % 2 === 1;
+                  const isLast = index === rows.length - 1;
+                  const bottomBorder = isLast
+                    ? `2px solid ${emailColors.gold}`
+                    : `1px solid ${emailColors.border}`;
+
+                  return (
+                    <tr key={row.label}>
+                      <td
+                        style={{
+                          ...labelCell(isAlt),
+                          borderBottom: bottomBorder,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            color: emailColors.textMuted,
+                            fontFamily: emailFonts.body,
+                            fontSize: "11px",
+                            fontWeight: 600,
+                            letterSpacing: "2px",
+                            lineHeight: "1.4",
+                            margin: 0,
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          {row.label}
+                        </Text>
+                      </td>
+                      <td
+                        style={{
+                          ...valueCell(isAlt),
+                          borderBottom: bottomBorder,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            color: row.gold
+                              ? emailColors.gold
+                              : emailColors.textPrimary,
+                            fontFamily: row.gold
+                              ? emailFonts.display
+                              : emailFonts.body,
+                            fontSize: row.gold ? "20px" : "15px",
+                            fontWeight: row.bold ? 600 : 400,
+                            lineHeight: "1.5",
+                            margin: 0,
+                            textAlign: "right",
+                          }}
+                        >
+                          {row.value}
+                        </Text>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   );
 }
 
 export function GuestInfoTable({
   details,
-  sectionTitle = "GUEST INFORMATION",
+  sectionTitle = "Guest Information",
 }: {
   details: BookingEmailDetails;
   sectionTitle?: string;
@@ -169,59 +210,71 @@ export function GuestInfoTable({
   ];
 
   return (
-    <Section style={{ margin: "0 0 32px" }}>
-      <GoldSectionTitle>{sectionTitle}</GoldSectionTitle>
-      <table
-        role="presentation"
-        cellPadding={0}
-        cellSpacing={0}
-        width="100%"
-        style={{
-          border: `1px solid ${emailColors.border}`,
-          borderCollapse: "collapse",
-          width: "100%",
-        }}
-      >
-        <tbody>
-          {rows.map((row, index) => {
-            const isAlt = index % 2 === 1;
-            return (
-              <tr key={row.label}>
-                <td style={cellStyle(isAlt)}>
-                  <Text
-                    style={{
-                      color: emailColors.textSecondary,
-                      fontFamily: emailFonts.sans,
-                      fontSize: "13px",
-                      fontWeight: 700,
-                      letterSpacing: "1px",
-                      lineHeight: "1.4",
-                      margin: 0,
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    {row.label}
-                  </Text>
-                </td>
-                <td style={cellStyle(isAlt)}>
-                  <Text
-                    style={{
-                      color: emailColors.textPrimary,
-                      fontFamily: emailFonts.sans,
-                      fontSize: "16px",
-                      lineHeight: "1.6",
-                      margin: 0,
-                      textAlign: "right",
-                    }}
-                  >
-                    {row.value}
-                  </Text>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </Section>
+    <table
+      role="presentation"
+      cellPadding={0}
+      cellSpacing={0}
+      width="100%"
+      style={{ borderCollapse: "collapse", margin: "0 0 8px" }}
+    >
+      <tbody>
+        <tr>
+          <td style={{ padding: 0 }}>
+            <GoldSectionTitle>{sectionTitle}</GoldSectionTitle>
+            <table
+              role="presentation"
+              cellPadding={0}
+              cellSpacing={0}
+              width="100%"
+              style={{
+                border: `1px solid ${emailColors.border}`,
+                borderCollapse: "collapse",
+                width: "100%",
+              }}
+            >
+              <tbody>
+                {rows.map((row, index) => {
+                  const isAlt = index % 2 === 1;
+                  return (
+                    <tr key={row.label}>
+                      <td style={labelCell(isAlt)}>
+                        <Text
+                          style={{
+                            color: emailColors.textMuted,
+                            fontFamily: emailFonts.body,
+                            fontSize: "11px",
+                            fontWeight: 600,
+                            letterSpacing: "2px",
+                            lineHeight: "1.4",
+                            margin: 0,
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          {row.label}
+                        </Text>
+                      </td>
+                      <td style={valueCell(isAlt)}>
+                        <Text
+                          style={{
+                            color: emailColors.textPrimary,
+                            fontFamily: emailFonts.body,
+                            fontSize: "15px",
+                            lineHeight: "1.5",
+                            margin: 0,
+                            textAlign: "right",
+                          }}
+                        >
+                          {row.value}
+                        </Text>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   );
 }
