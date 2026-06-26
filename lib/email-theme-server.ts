@@ -4,7 +4,10 @@ import type {
   EmailTemplateOverrides,
   EmailTemplateRecord,
 } from "@/lib/email-templates";
-import { EMAIL_LOGO_URL } from "@/emails/styles";
+import {
+  HATHOR_EMAIL_HERO_URL,
+  HATHOR_EMAIL_LOGO_URL,
+} from "@/lib/email-branding-urls";
 import { toAbsolutePublicUrl } from "@/lib/public-url";
 
 /** Theme overrides for server-side email render/send (hosted image URLs). */
@@ -14,8 +17,9 @@ export function toEmailThemeOverridesForSend(
   if (!template) return undefined;
 
   return {
-    logoUrl: toAbsolutePublicUrl(template.logoUrl) ?? EMAIL_LOGO_URL,
-    heroImageUrl: toAbsolutePublicUrl(template.heroImageUrl),
+    logoUrl: toAbsolutePublicUrl(template.logoUrl) ?? HATHOR_EMAIL_LOGO_URL,
+    heroImageUrl:
+      toAbsolutePublicUrl(template.heroImageUrl) ?? HATHOR_EMAIL_HERO_URL,
     primaryColor: template.primaryColor,
     backgroundColor: template.backgroundColor,
     heroHeading: template.heroHeading,

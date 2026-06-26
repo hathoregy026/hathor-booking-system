@@ -30,7 +30,7 @@ const cellReset = {
 
 export function EmailHeroBanner({
   heroImageUrl,
-  alt = "Hathor Dahabiya — Luxury Nile Cruise",
+  alt = "The luxury Hathor Dahabiya cruise ship illuminated at night on the Nile",
 }: {
   heroImageUrl: string;
   alt?: string;
@@ -94,11 +94,20 @@ export function EmailLogo({
     >
       <tbody>
         <tr>
-          <td align="center" style={cellReset}>
+          <td
+            align="center"
+            style={{
+              ...cellReset,
+              backgroundColor: "#000000",
+              borderRadius: "8px",
+              padding: "16px 24px",
+            }}
+          >
             <Img
               src={src}
-              alt="Hathor Dahabiya — Luxury Nile Cruises"
+              alt="Hathor Luxury Dahabiya Cruise Logo"
               width={width}
+              height={60}
               style={{
                 border: 0,
                 display: "block",

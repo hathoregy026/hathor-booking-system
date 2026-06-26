@@ -1,7 +1,7 @@
 export const IMAGE_BUCKET = "website-images";
 
 /** Dedicated public bucket for email template images (logos, hero banners). */
-export const EMAIL_IMAGE_BUCKET = "email-assets";
+export const EMAIL_IMAGE_BUCKET = "email-images";
 
 export const EMAIL_IMAGE_FOLDER = "email-templates";
 

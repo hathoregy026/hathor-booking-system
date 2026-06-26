@@ -11,6 +11,7 @@
     "seed:hathor": "node scripts/seed-hathor-data.mjs",
     "seed:content": "node scripts/seed-raw-content.mjs",
     "seed:email-templates": "node scripts/seed-email-templates.mjs",
+    "seed:email-template-urls": "node scripts/seed-email-template-urls.mjs",
     "backfill:email-images": "node scripts/backfill-email-template-images.mjs",
     "email:dev": "node scripts/sync-email-assets.mjs && email dev --dir emails --port 3005"
   },

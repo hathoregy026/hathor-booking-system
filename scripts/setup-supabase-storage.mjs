@@ -8,7 +8,7 @@ import { createClient } from "@supabase/supabase-js";
 
 const BUCKETS = [
   { name: "website-images", description: "Cruise photos, content images" },
-  { name: "email-assets", description: "Email template logos and hero banners" },
+  { name: "email-images", description: "Email template logos and hero banners" },
 ];
 
 const url = process.env.SUPABASE_URL;

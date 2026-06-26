@@ -1,4 +1,8 @@
-import { EMAIL_LOGO_URL, emailColors } from "@/emails/styles";
+import {
+  HATHOR_EMAIL_HERO_URL,
+  HATHOR_EMAIL_LOGO_URL,
+} from "@/lib/email-branding-urls";
+import { emailColors } from "@/emails/styles";
 import {
   EMAIL_LOGO_ASSET_PATH,
   resolveEmailHostedImageUrl,
@@ -44,8 +48,8 @@ const DEFAULT_TEMPLATES: Record<EmailTemplateName, Omit<EmailTemplateRecord, "id
   BookingReceived: {
     name: "BookingReceived",
     subject: "Your Hathor booking request has been received",
-    logoUrl: EMAIL_LOGO_URL,
-    heroImageUrl: null,
+    logoUrl: HATHOR_EMAIL_LOGO_URL,
+    heroImageUrl: HATHOR_EMAIL_HERO_URL,
     primaryColor: emailColors.gold,
     backgroundColor: emailColors.background,
     heroHeading: "Thank You, {guestName}",
@@ -55,8 +59,8 @@ const DEFAULT_TEMPLATES: Record<EmailTemplateName, Omit<EmailTemplateRecord, "id
   BookingConfirmed: {
     name: "BookingConfirmed",
     subject: "Your Hathor Dahabiya cruise is confirmed",
-    logoUrl: EMAIL_LOGO_URL,
-    heroImageUrl: null,
+    logoUrl: HATHOR_EMAIL_LOGO_URL,
+    heroImageUrl: HATHOR_EMAIL_HERO_URL,
     primaryColor: emailColors.gold,
     backgroundColor: emailColors.background,
     heroHeading: "Welcome Aboard, {guestName}",
@@ -66,8 +70,8 @@ const DEFAULT_TEMPLATES: Record<EmailTemplateName, Omit<EmailTemplateRecord, "id
   AdminAlert: {
     name: "AdminAlert",
     subject: "New booking request — {guestName}",
-    logoUrl: EMAIL_LOGO_URL,
-    heroImageUrl: null,
+    logoUrl: HATHOR_EMAIL_LOGO_URL,
+    heroImageUrl: HATHOR_EMAIL_HERO_URL,
     primaryColor: emailColors.gold,
     backgroundColor: emailColors.background,
     heroHeading: "New Booking Request",
@@ -169,7 +173,7 @@ export function toEmailThemeOverrides(
   if (!template) return undefined;
 
   return {
-    logoUrl: resolveEmailHostedImageUrl(template.logoUrl) ?? EMAIL_LOGO_URL,
+    logoUrl: resolveEmailHostedImageUrl(template.logoUrl) ?? HATHOR_EMAIL_LOGO_URL,
     heroImageUrl: resolveEmailHostedImageUrl(template.heroImageUrl),
     primaryColor: template.primaryColor,
     backgroundColor: template.backgroundColor,
