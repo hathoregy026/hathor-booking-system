@@ -8,6 +8,7 @@ import {
   getEmailTemplateForSend,
   resolveEmailSubject,
 } from "@/lib/email-template-send";
+import { prepareEmailSendImages } from "@/lib/email-send-images";
 import { toEmailThemeOverridesForSend } from "@/lib/email-theme-server";
 import type { BookingEmailDetails } from "@/lib/email-types";
 
@@ -43,8 +44,11 @@ function getAdminEmail(): string | null {
 async function sendEmail(input: {
   to: string;
   subject: string;
-  react: ReactElement;
   label: string;
+  renderMessage: (
+    theme: Awaited<ReturnType<typeof toEmailThemeOverridesForSend>>,
+  ) => ReactElement;
+  theme: Awaited<ReturnType<typeof toEmailThemeOverridesForSend>>;
 }) {
   const resend = getResend();
   if (!resend) {
@@ -54,13 +58,17 @@ async function sendEmail(input: {
 
   console.log(`[email] sending ${input.label} to ${input.to}`);
 
-  const html = await render(input.react);
+  const { theme: sendTheme, attachments } = await prepareEmailSendImages(
+    input.theme,
+  );
+  const html = await render(input.renderMessage(sendTheme));
 
   const result = await resend.emails.send({
     from: getFromAddress(),
     to: input.to,
     subject: input.subject,
     html,
+    attachments: attachments.length > 0 ? attachments : undefined,
   });
 
   if (result.error) {
@@ -82,11 +90,13 @@ export async function sendBookingReceivedEmail(
   await sendEmail({
     to: guestEmail,
     subject: resolveEmailSubject(template, { guestName }),
-    react: BookingReceivedEmail({
-      guestName,
-      details: bookingDetails,
-      ...theme,
-    }),
+    theme,
+    renderMessage: (sendTheme) =>
+      BookingReceivedEmail({
+        guestName,
+        details: bookingDetails,
+        ...sendTheme,
+      }),
     label: "booking received (guest)",
   });
 }
@@ -102,11 +112,13 @@ export async function sendBookingConfirmedEmail(
   await sendEmail({
     to: guestEmail,
     subject: resolveEmailSubject(template, { guestName }),
-    react: BookingConfirmedEmail({
-      guestName,
-      details: bookingDetails,
-      ...theme,
-    }),
+    theme,
+    renderMessage: (sendTheme) =>
+      BookingConfirmedEmail({
+        guestName,
+        details: bookingDetails,
+        ...sendTheme,
+      }),
     label: "booking confirmed (guest)",
   });
 }
@@ -126,10 +138,12 @@ export async function sendAdminAlertEmail(bookingDetails: BookingEmailDetails) {
     subject: resolveEmailSubject(template, {
       guestName: bookingDetails.guestName,
     }),
-    react: AdminAlertEmail({
-      details: bookingDetails,
-      ...theme,
-    }),
+    theme,
+    renderMessage: (sendTheme) =>
+      AdminAlertEmail({
+        details: bookingDetails,
+        ...sendTheme,
+      }),
     label: "admin alert",
   });
 }

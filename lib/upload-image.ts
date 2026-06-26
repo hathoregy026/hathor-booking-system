@@ -33,12 +33,13 @@ async function uploadToSupabase(
   objectPath: string,
   buffer: Buffer,
   contentType: string,
+  upsert = false,
 ): Promise<UploadedImage> {
   const supabase = createSupabaseAdminClient();
   const { error } = await supabase.storage.from(bucket).upload(objectPath, buffer, {
     contentType,
     cacheControl: "3600",
-    upsert: false,
+    upsert,
   });
 
   if (error) {
@@ -64,8 +65,10 @@ async function uploadToSupabase(
 
 /**
  * Upload email template branding images — always Supabase `email-images` (no local fallback).
+ * Uses stable object names so the public URL stays predictable across re-uploads.
  */
 export async function uploadEmailTemplateImage(options: {
+  field: "logoUrl" | "heroImageUrl";
   buffer: Buffer;
   contentType: string;
   extension: string;
@@ -76,17 +79,29 @@ export async function uploadEmailTemplateImage(options: {
     );
   }
 
-  const objectPath = buildObjectPath(EMAIL_IMAGE_FOLDER, options.extension);
+  const objectPath = buildStableEmailImagePath(options.field, options.extension);
   const uploaded = await uploadToSupabase(
     EMAIL_IMAGE_BUCKET,
     objectPath,
     options.buffer,
     options.contentType,
+    true,
   );
 
   const canonicalUrl = getPublicImageUrl(uploaded.path, EMAIL_IMAGE_BUCKET);
   if (!canonicalUrl) {
     throw new Error("Failed to build public Supabase URL for email image");
+  }
+
+  const verify = await fetch(canonicalUrl, {
+    method: "HEAD",
+    signal: AbortSignal.timeout(15_000),
+  });
+
+  if (!verify.ok) {
+    throw new Error(
+      `Uploaded image is not publicly accessible (${verify.status}). Check Supabase Storage policies for bucket "${EMAIL_IMAGE_BUCKET}".`,
+    );
   }
 
   return {
@@ -156,4 +171,18 @@ export function buildObjectPath(folder: string, extension: string): string {
   const safeExtension =
     extension.replace(/[^a-z0-9]/gi, "").toLowerCase() || "jpg";
   return `${safeFolder}/${Date.now()}-${randomUUID()}.${safeExtension}`;
+}
+
+const STABLE_EMAIL_IMAGE_NAMES = {
+  logoUrl: "hathor-email-logo",
+  heroImageUrl: "hathor-email-hero",
+} as const;
+
+export function buildStableEmailImagePath(
+  field: "logoUrl" | "heroImageUrl",
+  extension: string,
+): string {
+  const safeExtension =
+    extension.replace(/[^a-z0-9]/gi, "").toLowerCase() || "jpg";
+  return `${STABLE_EMAIL_IMAGE_NAMES[field]}.${safeExtension}`;
 }

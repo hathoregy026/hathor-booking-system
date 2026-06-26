@@ -4,6 +4,7 @@ import { Resend } from "resend";
 import BookingReceivedEmail from "@/emails/BookingReceived";
 import { sampleBookingDetails, sampleGuestName } from "@/emails/sample-data";
 import { getEmailTemplateForSend } from "@/lib/email-template-send";
+import { prepareEmailSendImages } from "@/lib/email-send-images";
 import { toEmailThemeOverridesForSend } from "@/lib/email-theme-server";
 
 export const dynamic = "force-dynamic";
@@ -38,12 +39,13 @@ export async function GET() {
     const resend = new Resend(process.env.RESEND_API_KEY!.trim());
     const template = await getEmailTemplateForSend("BookingReceived");
     const theme = toEmailThemeOverridesForSend(template);
+    const { theme: sendTheme, attachments } = await prepareEmailSendImages(theme);
 
     const html = await render(
       BookingReceivedEmail({
         guestName: sampleGuestName,
         details: sampleBookingDetails,
-        ...theme,
+        ...sendTheme,
       }),
     );
 
@@ -54,6 +56,7 @@ export async function GET() {
       to,
       subject: "Hathor Booking System — template test email",
       html,
+      attachments: attachments.length > 0 ? attachments : undefined,
     });
 
     if (result.error) {

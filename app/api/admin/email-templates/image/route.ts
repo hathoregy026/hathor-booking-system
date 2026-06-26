@@ -59,6 +59,7 @@ export async function POST(request: NextRequest) {
 
     const buffer = Buffer.from(await file.arrayBuffer());
     const uploaded = await uploadEmailTemplateImage({
+      field: imageField,
       buffer,
       contentType: file.type || `image/${extension === "jpg" ? "jpeg" : extension}`,
       extension,

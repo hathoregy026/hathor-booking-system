@@ -17,20 +17,23 @@ if (!connectionString) {
   process.exit(1);
 }
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
-  process.env.SITE_URL?.replace(/\/$/, "") ||
-  "https://hathor-booking-system.vercel.app";
+const LOGO_URL =
+  process.env.HATHOR_EMAIL_LOGO_URL?.trim() ??
+  "https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/email-images/e-mail-logo-egypttoor-booking-cruise-honeymoon.png";
 
-const defaultLogoUrl = `${siteUrl}/assets/e-mail-logo-egypttoor-booking-cruise-honeymoon.png`;
+const HERO_URL =
+  process.env.HATHOR_EMAIL_HERO_URL?.trim() ??
+  "https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/email-images/cruise-in-egypt-hathor-holiday-on-nile.JPG";
+
+const defaultLogoUrl = LOGO_URL;
 
 function normalizeUrl(value) {
   if (!value?.trim()) return null;
   const trimmed = value.trim();
   if (trimmed.startsWith("data:image/")) return null;
   if (/^https?:\/\//i.test(trimmed)) return trimmed;
-  if (trimmed.startsWith("/")) return `${siteUrl}${trimmed}`;
-  return trimmed;
+  if (/\/uploads\//i.test(trimmed)) return null;
+  return null;
 }
 
 const pool = new pg.Pool({
@@ -52,7 +55,7 @@ try {
 
   for (const row of rows) {
     const logoUrl = normalizeUrl(row.logoUrl) ?? defaultLogoUrl;
-    const heroImageUrl = normalizeUrl(row.heroImageUrl);
+    const heroImageUrl = normalizeUrl(row.heroImageUrl) ?? HERO_URL;
 
     await pool.query(
       `UPDATE "EmailTemplate"
