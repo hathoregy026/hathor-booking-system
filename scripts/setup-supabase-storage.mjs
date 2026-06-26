@@ -6,10 +6,23 @@
 
 import { createClient } from "@supabase/supabase-js";
 
+const FIVE_MB = 5 * 1024 * 1024;
+const FIFTEEN_MB = 15 * 1024 * 1024;
+
 const BUCKETS = [
-  { name: "website-images", description: "Cruise photos, content images" },
-  { name: "email-images", description: "Email template logos and hero banners" },
+  {
+    name: "website-images",
+    description: "Cruise photos, content images",
+    fileSizeLimit: FIVE_MB,
+  },
+  {
+    name: "email-images",
+    description: "Email template logos and hero banners",
+    fileSizeLimit: FIFTEEN_MB,
+  },
 ];
+
+const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 const url = process.env.SUPABASE_URL;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -36,17 +49,36 @@ if (listError) {
 
 for (const bucket of BUCKETS) {
   const alreadyExists = existing.some((entry) => entry.name === bucket.name);
+  const bucketOptions = {
+    public: true,
+    fileSizeLimit: bucket.fileSizeLimit,
+    allowedMimeTypes: ALLOWED_MIME_TYPES,
+  };
 
   if (alreadyExists) {
-    console.log(`Bucket "${bucket.name}" already exists.`);
+    const { error: updateError } = await supabase.storage.updateBucket(
+      bucket.name,
+      bucketOptions,
+    );
+
+    if (updateError) {
+      console.error(
+        `Failed to update bucket "${bucket.name}":`,
+        updateError.message,
+      );
+      process.exit(1);
+    }
+
+    console.log(
+      `Updated bucket "${bucket.name}" (max ${bucket.fileSizeLimit / (1024 * 1024)} MB).`,
+    );
     continue;
   }
 
-  const { error: createError } = await supabase.storage.createBucket(bucket.name, {
-    public: true,
-    fileSizeLimit: 5 * 1024 * 1024,
-    allowedMimeTypes: ["image/jpeg", "image/png", "image/webp"],
-  });
+  const { error: createError } = await supabase.storage.createBucket(
+    bucket.name,
+    bucketOptions,
+  );
 
   if (createError) {
     console.error(`Failed to create bucket "${bucket.name}":`, createError.message);

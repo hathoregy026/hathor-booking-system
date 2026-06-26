@@ -1,6 +1,7 @@
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
-import { resolveEmailHostedImageUrl } from "@/lib/email-image-shared";
-import { EMAIL_LOGO_URL, emailColors } from "./styles";
+import { pickReliableEmailImageUrl } from "@/lib/email-branding-shared";
+import { HATHOR_EMAIL_LOGO_URL } from "@/lib/email-branding-urls";
+import { emailColors } from "./styles";
 
 export type ResolvedEmailTheme = {
   logoUrl: string;
@@ -21,7 +22,7 @@ export function resolveEmailTheme(
 
   return {
     logoUrl:
-      resolveEmailHostedImageUrl(overrides?.logoUrl) ?? EMAIL_LOGO_URL,
+      pickReliableEmailImageUrl(overrides?.logoUrl) ?? HATHOR_EMAIL_LOGO_URL,
     primaryColor,
     goldDark:
       primaryColor === emailColors.gold ? emailColors.goldDark : primaryColor,

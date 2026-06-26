@@ -6,13 +6,13 @@ import {
   isEmailTemplateName,
   mergeAllEmailTemplates,
 } from "@/lib/email-templates";
-import { toAbsolutePublicUrl } from "@/lib/public-url";
+import { pickReliableEmailImageUrl } from "@/lib/email-branding-shared";
 import { prisma } from "@/lib/prisma";
 
 function normalizeOptionalImageUrl(
   url: string | null | undefined,
 ): string | null {
-  return toAbsolutePublicUrl(url?.trim() || null);
+  return pickReliableEmailImageUrl(url);
 }
 
 export const dynamic = "force-dynamic";

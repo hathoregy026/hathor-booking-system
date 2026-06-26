@@ -4,6 +4,7 @@ import path from "path";
 import {
   EMAIL_IMAGE_BUCKET,
   EMAIL_IMAGE_FOLDER,
+  getPublicImageUrl,
   IMAGE_BUCKET,
   isEmailImageFolder,
 } from "@/lib/image-upload";
@@ -58,6 +59,39 @@ async function uploadToSupabase(
     url: toAbsolutePublicUrl(data.publicUrl) ?? data.publicUrl,
     path: objectPath,
     storage: "supabase",
+  };
+}
+
+/**
+ * Upload email template branding images — always Supabase `email-images` (no local fallback).
+ */
+export async function uploadEmailTemplateImage(options: {
+  buffer: Buffer;
+  contentType: string;
+  extension: string;
+}): Promise<UploadedImage> {
+  if (!isSupabaseUploadConfigured()) {
+    throw new Error(
+      "Supabase is not configured. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY to upload email images.",
+    );
+  }
+
+  const objectPath = buildObjectPath(EMAIL_IMAGE_FOLDER, options.extension);
+  const uploaded = await uploadToSupabase(
+    EMAIL_IMAGE_BUCKET,
+    objectPath,
+    options.buffer,
+    options.contentType,
+  );
+
+  const canonicalUrl = getPublicImageUrl(uploaded.path, EMAIL_IMAGE_BUCKET);
+  if (!canonicalUrl) {
+    throw new Error("Failed to build public Supabase URL for email image");
+  }
+
+  return {
+    ...uploaded,
+    url: canonicalUrl,
   };
 }
 

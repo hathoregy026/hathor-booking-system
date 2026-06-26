@@ -125,12 +125,21 @@ export default function AdminEmailTemplatesPage() {
     setForm((current) => (current ? { ...current, ...patch } : current));
   };
 
+  const handleImageSaved = useCallback(
+    (field: "logoUrl" | "heroImageUrl", url: string) => {
+      updateForm({ [field]: url });
+      showToast("success", "Image uploaded and saved to all email templates");
+      void loadTemplates();
+    },
+    [showToast, loadTemplates],
+  );
+
   const handleSave = async () => {
     if (!editingName || !form) return;
 
     setIsSaving(true);
     try {
-      const response = await fetch("/api/admin/email-templates", {
+      const response = await adminFetch("/api/admin/email-templates", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -397,7 +406,16 @@ export default function AdminEmailTemplatesPage() {
                 onChange={(url) => updateForm({ logoUrl: url })}
                 folder="email-templates"
                 variant="admin"
-                helperText="Uploaded to Supabase Storage. Leave empty for the default Hathor logo."
+                helperText="Uploads to Supabase email-images bucket (max 5 MB). Saves to all templates."
+                emailTemplateAutoSave={
+                  editingName
+                    ? {
+                        templateName: editingName,
+                        imageField: "logoUrl",
+                        onSaved: (url) => handleImageSaved("logoUrl", url),
+                      }
+                    : undefined
+                }
               />
 
               <ImageUpload
@@ -406,7 +424,16 @@ export default function AdminEmailTemplatesPage() {
                 onChange={(url) => updateForm({ heroImageUrl: url })}
                 folder="email-templates"
                 variant="admin"
-                helperText="Optional banner — hosted on Supabase for reliable display in all email clients."
+                helperText="Uploads to Supabase email-images bucket (max 15 MB). Saves to all templates."
+                emailTemplateAutoSave={
+                  editingName
+                    ? {
+                        templateName: editingName,
+                        imageField: "heroImageUrl",
+                        onSaved: (url) => handleImageSaved("heroImageUrl", url),
+                      }
+                    : undefined
+                }
               />
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

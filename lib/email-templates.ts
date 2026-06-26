@@ -1,14 +1,13 @@
 import {
+  pickReliableEmailImageUrl,
+  pickSharedEmailBrandingFromRows,
+} from "@/lib/email-branding-shared";
+import {
   HATHOR_EMAIL_HERO_URL,
   HATHOR_EMAIL_LOGO_URL,
 } from "@/lib/email-branding-urls";
 import { emailColors } from "@/emails/styles";
-import {
-  EMAIL_LOGO_ASSET_PATH,
-  resolveEmailHostedImageUrl,
-} from "@/lib/email-image-shared";
 import { HATHOR_LOGO_SRC } from "@/lib/branding";
-import { toAbsolutePublicUrl } from "@/lib/public-url";
 
 export const EMAIL_TEMPLATE_NAMES = [
   "BookingReceived",
@@ -105,23 +104,52 @@ export function getDefaultEmailTemplate(
 export function mergeEmailTemplate(
   name: EmailTemplateName,
   row?: Partial<EmailTemplateRecord> | null,
+  shared?: { logoUrl: string | null; heroImageUrl: string | null },
 ): EmailTemplateRecord {
   const defaults = getDefaultEmailTemplate(name);
 
-  if (!row) return defaults;
+  if (!row) {
+    return applySharedEmailBranding(defaults, shared);
+  }
+
+  return applySharedEmailBranding(
+    {
+      id: row.id ?? defaults.id,
+      name,
+      subject: row.subject?.trim() || defaults.subject,
+      logoUrl: pickReliableEmailImageUrl(row.logoUrl) || defaults.logoUrl,
+      heroImageUrl:
+        pickReliableEmailImageUrl(row.heroImageUrl) || defaults.heroImageUrl,
+      primaryColor: row.primaryColor?.trim() || defaults.primaryColor,
+      backgroundColor: row.backgroundColor?.trim() || defaults.backgroundColor,
+      heroHeading: row.heroHeading?.trim() || defaults.heroHeading,
+      bodyText: row.bodyText?.trim() || defaults.bodyText,
+      updatedAt: row.updatedAt ?? defaults.updatedAt,
+    },
+    shared,
+  );
+}
+
+function applySharedEmailBranding(
+  template: EmailTemplateRecord,
+  shared?: { logoUrl: string | null; heroImageUrl: string | null },
+): EmailTemplateRecord {
+  const defaults = getDefaultEmailTemplate(template.name);
 
   return {
-    id: row.id ?? defaults.id,
-    name,
-    subject: row.subject?.trim() || defaults.subject,
-    logoUrl: toAbsolutePublicUrl(row.logoUrl?.trim()) || defaults.logoUrl,
+    ...template,
+    logoUrl:
+      pickReliableEmailImageUrl(
+        template.logoUrl,
+        shared?.logoUrl,
+        defaults.logoUrl,
+      ) ?? defaults.logoUrl,
     heroImageUrl:
-      toAbsolutePublicUrl(row.heroImageUrl?.trim()) || defaults.heroImageUrl,
-    primaryColor: row.primaryColor?.trim() || defaults.primaryColor,
-    backgroundColor: row.backgroundColor?.trim() || defaults.backgroundColor,
-    heroHeading: row.heroHeading?.trim() || defaults.heroHeading,
-    bodyText: row.bodyText?.trim() || defaults.bodyText,
-    updatedAt: row.updatedAt ?? defaults.updatedAt,
+      pickReliableEmailImageUrl(
+        template.heroImageUrl,
+        shared?.heroImageUrl,
+        defaults.heroImageUrl,
+      ) ?? defaults.heroImageUrl,
   };
 }
 
@@ -140,23 +168,28 @@ export function mergeAllEmailTemplates(
   }>,
 ): EmailTemplateRecord[] {
   const byName = new Map(rows.map((row) => [row.name, row]));
+  const shared = pickSharedEmailBrandingFromRows(rows);
 
   return EMAIL_TEMPLATE_NAMES.map((name) => {
     const row = byName.get(name);
-    if (!row) return getDefaultEmailTemplate(name);
+    if (!row) return mergeEmailTemplate(name, null, shared);
 
-    return mergeEmailTemplate(name, {
-      id: row.id,
-      name: name as EmailTemplateName,
-      subject: row.subject,
-      logoUrl: row.logoUrl,
-      heroImageUrl: row.heroImageUrl,
-      primaryColor: row.primaryColor,
-      backgroundColor: row.backgroundColor,
-      heroHeading: row.heroHeading,
-      bodyText: row.bodyText,
-      updatedAt: row.updatedAt.toISOString(),
-    });
+    return mergeEmailTemplate(
+      name,
+      {
+        id: row.id,
+        name: name as EmailTemplateName,
+        subject: row.subject,
+        logoUrl: row.logoUrl,
+        heroImageUrl: row.heroImageUrl,
+        primaryColor: row.primaryColor,
+        backgroundColor: row.backgroundColor,
+        heroHeading: row.heroHeading,
+        bodyText: row.bodyText,
+        updatedAt: row.updatedAt.toISOString(),
+      },
+      shared,
+    );
   });
 }
 
@@ -173,8 +206,9 @@ export function toEmailThemeOverrides(
   if (!template) return undefined;
 
   return {
-    logoUrl: resolveEmailHostedImageUrl(template.logoUrl) ?? HATHOR_EMAIL_LOGO_URL,
-    heroImageUrl: resolveEmailHostedImageUrl(template.heroImageUrl),
+    logoUrl: pickReliableEmailImageUrl(template.logoUrl) ?? HATHOR_EMAIL_LOGO_URL,
+    heroImageUrl:
+      pickReliableEmailImageUrl(template.heroImageUrl) ?? HATHOR_EMAIL_HERO_URL,
     primaryColor: template.primaryColor,
     backgroundColor: template.backgroundColor,
     heroHeading: template.heroHeading,
@@ -185,7 +219,7 @@ export function toEmailThemeOverrides(
 export function getEmailTemplatePreviewLogoSrc(
   template: EmailTemplateRecord,
 ): string {
-  return resolveEmailHostedImageUrl(template.logoUrl) ?? EMAIL_LOGO_ASSET_PATH;
+  return pickReliableEmailImageUrl(template.logoUrl) ?? HATHOR_EMAIL_LOGO_URL;
 }
 
 export function getEmailTemplatePreviewLogoFallback(): string {
@@ -195,5 +229,5 @@ export function getEmailTemplatePreviewLogoFallback(): string {
 export function getEmailTemplatePreviewHeroSrc(
   template: EmailTemplateRecord,
 ): string | null {
-  return resolveEmailHostedImageUrl(template.heroImageUrl);
+  return pickReliableEmailImageUrl(template.heroImageUrl) ?? HATHOR_EMAIL_HERO_URL;
 }

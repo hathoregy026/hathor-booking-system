@@ -9,7 +9,8 @@ import {
 } from "@react-email/components";
 import type { ReactNode } from "react";
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
-import { resolveEmailHostedImageUrl } from "@/lib/email-image-shared";
+import { pickReliableEmailImageUrl } from "@/lib/email-branding-shared";
+import { HATHOR_EMAIL_HERO_URL, HATHOR_EMAIL_LOGO_URL } from "@/lib/email-branding-urls";
 import { resolveEmailTheme } from "../theme";
 import {
   emailColors,
@@ -39,7 +40,8 @@ export function EmailHeroBanner({
   heroImageUrl: string;
   alt?: string;
 }) {
-  const src = resolveEmailHostedImageUrl(heroImageUrl) ?? heroImageUrl;
+  const src =
+    pickReliableEmailImageUrl(heroImageUrl) ?? HATHOR_EMAIL_HERO_URL;
 
   return (
     <table
@@ -83,7 +85,7 @@ export function EmailLogo({
   width?: number;
   logoUrl: string;
 }) {
-  const src = resolveEmailHostedImageUrl(logoUrl) ?? logoUrl;
+  const src = pickReliableEmailImageUrl(logoUrl) ?? HATHOR_EMAIL_LOGO_URL;
 
   return (
     <table
@@ -366,7 +368,9 @@ export function EmailLayout({
   backgroundColor,
 }: EmailLayoutProps) {
   const theme = resolveEmailTheme({ logoUrl, primaryColor, backgroundColor });
-  const bannerUrl = resolveEmailHostedImageUrl(heroImageUrl);
+  const bannerUrl = heroImageUrl
+    ? pickReliableEmailImageUrl(heroImageUrl) ?? HATHOR_EMAIL_HERO_URL
+    : null;
 
   return (
     <Html lang="en" dir="ltr">
