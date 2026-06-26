@@ -61,8 +61,6 @@ export async function POST(request: NextRequest) {
     const uploaded = await uploadEmailTemplateImage({
       field: imageField,
       buffer,
-      contentType: file.type || `image/${extension === "jpg" ? "jpeg" : extension}`,
-      extension,
     });
 
     await withDb(() =>

@@ -5,14 +5,23 @@ import AdminAlertEmail from "@/emails/AdminAlert";
 import BookingConfirmedEmail from "@/emails/BookingConfirmed";
 import BookingReceivedEmail from "@/emails/BookingReceived";
 import {
+  HATHOR_EMAIL_HERO_URL,
+  HATHOR_EMAIL_LOGO_URL,
+} from "@/lib/email-branding-urls";
+import {
   getEmailTemplateForSend,
   resolveEmailSubject,
 } from "@/lib/email-template-send";
-import { prepareEmailSendImages } from "@/lib/email-send-images";
+import type { EmailTemplateOverrides } from "@/lib/email-templates";
 import { toEmailThemeOverridesForSend } from "@/lib/email-theme-server";
 import type { BookingEmailDetails } from "@/lib/email-types";
 
 let resendClient: Resend | null = null;
+
+const EMAIL_IMAGE_DEFAULTS = {
+  logoUrl: HATHOR_EMAIL_LOGO_URL,
+  heroImageUrl: HATHOR_EMAIL_HERO_URL,
+};
 
 function getResend(): Resend | null {
   const apiKey = process.env.RESEND_API_KEY?.trim();
@@ -45,10 +54,8 @@ async function sendEmail(input: {
   to: string;
   subject: string;
   label: string;
-  renderMessage: (
-    theme: Awaited<ReturnType<typeof toEmailThemeOverridesForSend>>,
-  ) => ReactElement;
-  theme: Awaited<ReturnType<typeof toEmailThemeOverridesForSend>>;
+  renderMessage: (theme: EmailTemplateOverrides) => ReactElement;
+  theme: EmailTemplateOverrides;
 }) {
   const resend = getResend();
   if (!resend) {
@@ -57,18 +64,16 @@ async function sendEmail(input: {
   }
 
   console.log(`[email] sending ${input.label} to ${input.to}`);
+  console.log(`[email] logo: ${input.theme.logoUrl}`);
+  console.log(`[email] hero: ${input.theme.heroImageUrl}`);
 
-  const { theme: sendTheme, attachments } = await prepareEmailSendImages(
-    input.theme,
-  );
-  const html = await render(input.renderMessage(sendTheme));
+  const html = await render(input.renderMessage(input.theme));
 
   const result = await resend.emails.send({
     from: getFromAddress(),
     to: input.to,
     subject: input.subject,
     html,
-    attachments: attachments.length > 0 ? attachments : undefined,
   });
 
   if (result.error) {
@@ -85,7 +90,8 @@ export async function sendBookingReceivedEmail(
   bookingDetails: BookingEmailDetails,
 ) {
   const template = await getEmailTemplateForSend("BookingReceived");
-  const theme = toEmailThemeOverridesForSend(template);
+  const theme =
+    (await toEmailThemeOverridesForSend(template, EMAIL_IMAGE_DEFAULTS)) ?? {};
 
   await sendEmail({
     to: guestEmail,
@@ -107,7 +113,8 @@ export async function sendBookingConfirmedEmail(
   bookingDetails: BookingEmailDetails,
 ) {
   const template = await getEmailTemplateForSend("BookingConfirmed");
-  const theme = toEmailThemeOverridesForSend(template);
+  const theme =
+    (await toEmailThemeOverridesForSend(template, EMAIL_IMAGE_DEFAULTS)) ?? {};
 
   await sendEmail({
     to: guestEmail,
@@ -131,7 +138,8 @@ export async function sendAdminAlertEmail(bookingDetails: BookingEmailDetails) {
   }
 
   const template = await getEmailTemplateForSend("AdminAlert");
-  const theme = toEmailThemeOverridesForSend(template);
+  const theme =
+    (await toEmailThemeOverridesForSend(template, EMAIL_IMAGE_DEFAULTS)) ?? {};
 
   await sendEmail({
     to: adminEmail,

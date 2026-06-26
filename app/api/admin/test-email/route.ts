@@ -3,8 +3,11 @@ import { render } from "@react-email/render";
 import { Resend } from "resend";
 import BookingReceivedEmail from "@/emails/BookingReceived";
 import { sampleBookingDetails, sampleGuestName } from "@/emails/sample-data";
+import {
+  HATHOR_EMAIL_HERO_URL,
+  HATHOR_EMAIL_LOGO_URL,
+} from "@/lib/email-branding-urls";
 import { getEmailTemplateForSend } from "@/lib/email-template-send";
-import { prepareEmailSendImages } from "@/lib/email-send-images";
 import { toEmailThemeOverridesForSend } from "@/lib/email-theme-server";
 
 export const dynamic = "force-dynamic";
@@ -38,31 +41,38 @@ export async function GET() {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY!.trim());
     const template = await getEmailTemplateForSend("BookingReceived");
-    const theme = toEmailThemeOverridesForSend(template);
-    const { theme: sendTheme, attachments } = await prepareEmailSendImages(theme);
+    const theme =
+      (await toEmailThemeOverridesForSend(template, {
+        logoUrl: HATHOR_EMAIL_LOGO_URL,
+        heroImageUrl: HATHOR_EMAIL_HERO_URL,
+      })) ?? {};
 
     const html = await render(
       BookingReceivedEmail({
         guestName: sampleGuestName,
         details: sampleBookingDetails,
-        ...sendTheme,
+        ...theme,
       }),
     );
 
     console.log("[admin/test-email] sending template test to", to);
+    console.log("[admin/test-email] logo:", theme.logoUrl);
+    console.log("[admin/test-email] hero:", theme.heroImageUrl);
 
     const result = await resend.emails.send({
       from,
       to,
       subject: "Hathor Booking System — template test email",
       html,
-      attachments: attachments.length > 0 ? attachments : undefined,
     });
 
     if (result.error) {
       console.error("[admin/test-email] Resend error:", result.error);
       return NextResponse.json(
-        { ok: false, error: "Failed to send test email" },
+        {
+          ok: false,
+          error: result.error.message || "Failed to send test email",
+        },
         { status: 500 },
       );
     }
@@ -73,11 +83,17 @@ export async function GET() {
       id: result.data?.id,
       to,
       template: "BookingReceived",
+      logoUrl: theme.logoUrl,
+      heroImageUrl: theme.heroImageUrl,
     });
   } catch (error) {
     console.error("[admin/test-email] exception:", error);
     return NextResponse.json(
-      { ok: false, error: "Failed to send test email" },
+      {
+        ok: false,
+        error:
+          error instanceof Error ? error.message : "Failed to send test email",
+      },
       { status: 500 },
     );
   }

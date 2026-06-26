@@ -9,6 +9,10 @@ import {
   type EmailTemplateRecord,
   interpolateEmailText,
 } from "@/lib/email-templates";
+import {
+  HATHOR_EMAIL_HERO_URL,
+  HATHOR_EMAIL_LOGO_URL,
+} from "@/lib/email-branding-urls";
 import { toEmailThemeOverridesForSend } from "@/lib/email-theme-server";
 
 async function renderTemplateHtml(
@@ -45,7 +49,11 @@ async function renderTemplateHtml(
 export async function renderEmailTemplatePreview(
   template: EmailTemplateRecord,
 ): Promise<{ name: EmailTemplateName; subject: string; html: string }> {
-  const overrides = toEmailThemeOverridesForSend(template) ?? {};
+  const overrides =
+    (await toEmailThemeOverridesForSend(template, {
+      logoUrl: HATHOR_EMAIL_LOGO_URL,
+      heroImageUrl: HATHOR_EMAIL_HERO_URL,
+    })) ?? {};
   const subject = interpolateEmailText(template.subject, {
     guestName: sampleGuestName,
   });

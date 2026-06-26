@@ -19,11 +19,11 @@ if (!connectionString) {
 
 const LOGO_URL =
   process.env.HATHOR_EMAIL_LOGO_URL?.trim() ??
-  "https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/email-images/e-mail-logo-egypttoor-booking-cruise-honeymoon.png";
+  "https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/email-images/hathor-email-logo.png";
 
 const HERO_URL =
   process.env.HATHOR_EMAIL_HERO_URL?.trim() ??
-  "https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/email-images/cruise-in-egypt-hathor-holiday-on-nile.JPG";
+  "https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/email-images/hathor-email-hero.jpg";
 
 const defaultLogoUrl = LOGO_URL;
 

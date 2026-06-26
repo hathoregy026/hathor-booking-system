@@ -4,17 +4,12 @@ import {
   HATHOR_EMAIL_LOGO_URL,
 } from "@/lib/email-branding-urls";
 
-/** Resolve an image src for email HTML (supports cid: inline attachments). */
+/** Resolve hosted HTTPS image src for email HTML. */
 export function resolveEmailImageSrcForSend(
   url: string | null | undefined,
   fallback: string,
 ): string {
-  const trimmed = url?.trim();
-  if (trimmed?.startsWith("cid:")) {
-    return trimmed;
-  }
-
-  return pickReliableEmailImageUrl(trimmed) ?? fallback;
+  return pickReliableEmailImageUrl(url) ?? fallback;
 }
 
 export function resolveEmailLogoSrcForSend(

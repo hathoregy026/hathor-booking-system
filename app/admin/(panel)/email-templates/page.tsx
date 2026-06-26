@@ -406,7 +406,7 @@ export default function AdminEmailTemplatesPage() {
                 onChange={(url) => updateForm({ logoUrl: url })}
                 folder="email-templates"
                 variant="admin"
-                helperText="Uploads to Supabase email-images bucket (max 5 MB). Saves to all templates."
+                helperText="Hosted in Supabase for email display (max 15 MB upload, auto-optimized). Saves to all templates."
                 emailTemplateAutoSave={
                   editingName
                     ? {
@@ -424,7 +424,7 @@ export default function AdminEmailTemplatesPage() {
                 onChange={(url) => updateForm({ heroImageUrl: url })}
                 folder="email-templates"
                 variant="admin"
-                helperText="Uploads to Supabase email-images bucket (max 15 MB). Saves to all templates."
+                helperText="Hosted in Supabase for email display (max 15 MB upload, auto-optimized). Saves to all templates."
                 emailTemplateAutoSave={
                   editingName
                     ? {

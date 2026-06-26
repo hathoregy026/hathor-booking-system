@@ -2,6 +2,10 @@ import { randomUUID } from "crypto";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
 import {
+  buildStableEmailImagePath,
+  optimizeEmailTemplateImage,
+} from "@/lib/email-image-optimize";
+import {
   EMAIL_IMAGE_BUCKET,
   EMAIL_IMAGE_FOLDER,
   getPublicImageUrl,
@@ -70,8 +74,6 @@ async function uploadToSupabase(
 export async function uploadEmailTemplateImage(options: {
   field: "logoUrl" | "heroImageUrl";
   buffer: Buffer;
-  contentType: string;
-  extension: string;
 }): Promise<UploadedImage> {
   if (!isSupabaseUploadConfigured()) {
     throw new Error(
@@ -79,12 +81,13 @@ export async function uploadEmailTemplateImage(options: {
     );
   }
 
-  const objectPath = buildStableEmailImagePath(options.field, options.extension);
+  const optimized = await optimizeEmailTemplateImage(options.field, options.buffer);
+  const objectPath = buildStableEmailImagePath(options.field);
   const uploaded = await uploadToSupabase(
     EMAIL_IMAGE_BUCKET,
     objectPath,
-    options.buffer,
-    options.contentType,
+    optimized.buffer,
+    optimized.contentType,
     true,
   );
 
@@ -171,18 +174,4 @@ export function buildObjectPath(folder: string, extension: string): string {
   const safeExtension =
     extension.replace(/[^a-z0-9]/gi, "").toLowerCase() || "jpg";
   return `${safeFolder}/${Date.now()}-${randomUUID()}.${safeExtension}`;
-}
-
-const STABLE_EMAIL_IMAGE_NAMES = {
-  logoUrl: "hathor-email-logo",
-  heroImageUrl: "hathor-email-hero",
-} as const;
-
-export function buildStableEmailImagePath(
-  field: "logoUrl" | "heroImageUrl",
-  extension: string,
-): string {
-  const safeExtension =
-    extension.replace(/[^a-z0-9]/gi, "").toLowerCase() || "jpg";
-  return `${STABLE_EMAIL_IMAGE_NAMES[field]}.${safeExtension}`;
 }
