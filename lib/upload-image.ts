@@ -6,7 +6,7 @@ import {
   optimizeEmailTemplateImage,
   toStorageUploadBody,
 } from "@/lib/email-image-optimize";
-import { verifyPublicImageUrl } from "@/lib/email-image-verify";
+import { isValidImageMagicBytes } from "@/lib/email-image-verify";
 import {
   EMAIL_IMAGE_BUCKET,
   EMAIL_IMAGE_FOLDER,
@@ -71,6 +71,35 @@ async function uploadToSupabase(
   };
 }
 
+async function verifyUploadedObject(
+  bucket: string,
+  objectPath: string,
+  expectedMinBytes: number,
+): Promise<void> {
+  const supabase = createSupabaseStorageAdminClient();
+  const { data, error } = await supabase.storage.from(bucket).download(objectPath);
+
+  if (error || !data) {
+    throw new Error(
+      `Upload verification failed: ${error?.message ?? "object not found"}`,
+    );
+  }
+
+  const bytes = Buffer.from(await data.arrayBuffer());
+
+  if (bytes.length < expectedMinBytes) {
+    throw new Error(
+      `Uploaded image is empty or too small (${bytes.length} bytes).`,
+    );
+  }
+
+  if (!isValidImageMagicBytes(bytes)) {
+    throw new Error(
+      "Uploaded image is corrupted (invalid file header). Re-upload the file.",
+    );
+  }
+}
+
 /**
  * Upload email template branding images — always Supabase `email-images` (no local fallback).
  * Uses stable object names so the public URL stays predictable across re-uploads.
@@ -104,7 +133,11 @@ export async function uploadEmailTemplateImage(options: {
     throw new Error("Failed to build public Supabase URL for email image");
   }
 
-  await verifyPublicImageUrl(canonicalUrl, optimized.buffer.length / 4);
+  await verifyUploadedObject(
+    EMAIL_IMAGE_BUCKET,
+    objectPath,
+    Math.min(optimized.buffer.length, 256),
+  );
 
   return {
     ...uploaded,

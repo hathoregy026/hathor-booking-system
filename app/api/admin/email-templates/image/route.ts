@@ -95,9 +95,13 @@ export async function POST(request: NextRequest) {
 
     if (
       message.includes("Supabase is not configured") ||
-      message.includes("Storage bucket")
+      message.includes("Storage bucket") ||
+      message.includes("Uploaded image") ||
+      message.includes("Upload verification") ||
+      message.includes("Optimized") ||
+      message.includes("valid image")
     ) {
-      return NextResponse.json({ error: message }, { status: 503 });
+      return NextResponse.json({ error: message }, { status: 400 });
     }
 
     return handleRouteError(error);

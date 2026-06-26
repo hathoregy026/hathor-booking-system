@@ -19,10 +19,13 @@ export async function verifyPublicImageUrl(
 ): Promise<void> {
   const response = await fetch(url, {
     signal: AbortSignal.timeout(VERIFY_TIMEOUT_MS),
-    headers: { Accept: "image/*" },
+    headers: {
+      Accept: "image/*",
+      Range: "bytes=0-511",
+    },
   });
 
-  if (!response.ok) {
+  if (!response.ok && response.status !== 206) {
     throw new Error(
       `Uploaded image is not publicly accessible (${response.status}).`,
     );
@@ -30,7 +33,7 @@ export async function verifyPublicImageUrl(
 
   const bytes = Buffer.from(await response.arrayBuffer());
 
-  if (bytes.length < expectedMinBytes) {
+  if (bytes.length < Math.min(expectedMinBytes, 12)) {
     throw new Error(
       `Uploaded image is empty or too small (${bytes.length} bytes).`,
     );
