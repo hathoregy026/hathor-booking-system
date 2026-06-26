@@ -4,7 +4,9 @@ import path from "path";
 import {
   buildStableEmailImagePath,
   optimizeEmailTemplateImage,
+  toStorageUploadBody,
 } from "@/lib/email-image-optimize";
+import { verifyPublicImageUrl } from "@/lib/email-image-verify";
 import {
   EMAIL_IMAGE_BUCKET,
   EMAIL_IMAGE_FOLDER,
@@ -13,7 +15,7 @@ import {
   isEmailImageFolder,
 } from "@/lib/image-upload";
 import { toAbsolutePublicUrl } from "@/lib/public-url";
-import { createSupabaseAdminClient } from "@/lib/supabase-server";
+import { createSupabaseStorageAdminClient } from "@/lib/supabase-server";
 
 export type UploadedImage = {
   url: string;
@@ -39,8 +41,10 @@ async function uploadToSupabase(
   contentType: string,
   upsert = false,
 ): Promise<UploadedImage> {
-  const supabase = createSupabaseAdminClient();
-  const { error } = await supabase.storage.from(bucket).upload(objectPath, buffer, {
+  const supabase = createSupabaseStorageAdminClient();
+  const body = toStorageUploadBody(buffer);
+
+  const { error } = await supabase.storage.from(bucket).upload(objectPath, body, {
     contentType,
     cacheControl: "3600",
     upsert,
@@ -81,6 +85,10 @@ export async function uploadEmailTemplateImage(options: {
     );
   }
 
+  if (!options.buffer.length) {
+    throw new Error("Uploaded file is empty.");
+  }
+
   const optimized = await optimizeEmailTemplateImage(options.field, options.buffer);
   const objectPath = buildStableEmailImagePath(options.field);
   const uploaded = await uploadToSupabase(
@@ -96,16 +104,7 @@ export async function uploadEmailTemplateImage(options: {
     throw new Error("Failed to build public Supabase URL for email image");
   }
 
-  const verify = await fetch(canonicalUrl, {
-    method: "HEAD",
-    signal: AbortSignal.timeout(15_000),
-  });
-
-  if (!verify.ok) {
-    throw new Error(
-      `Uploaded image is not publicly accessible (${verify.status}). Check Supabase Storage policies for bucket "${EMAIL_IMAGE_BUCKET}".`,
-    );
-  }
+  await verifyPublicImageUrl(canonicalUrl, optimized.buffer.length / 4);
 
   return {
     ...uploaded,

@@ -14,6 +14,9 @@ import { mergeAllEmailTemplates } from "@/lib/email-templates";
 import { uploadEmailTemplateImage } from "@/lib/upload-image";
 import { prisma } from "@/lib/prisma";
 
+export const runtime = "nodejs";
+export const maxDuration = 60;
+
 /**
  * Upload an email template image to Supabase Storage and persist the public URL
  * on all EmailTemplate rows (shared logo/hero across Booking Received, Confirmed, Admin).
@@ -58,6 +61,10 @@ export async function POST(request: NextRequest) {
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
+    if (!buffer.length) {
+      return NextResponse.json({ error: "Uploaded file is empty." }, { status: 400 });
+    }
+
     const uploaded = await uploadEmailTemplateImage({
       field: imageField,
       buffer,
@@ -78,6 +85,7 @@ export async function POST(request: NextRequest) {
       imageField,
       templateName,
       templates: mergeAllEmailTemplates(rows),
+      verified: true,
     });
   } catch (error) {
     console.error("[admin.email-templates.image]", error);
