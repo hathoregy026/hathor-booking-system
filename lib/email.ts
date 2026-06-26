@@ -1,4 +1,5 @@
 import type { ReactElement } from "react";
+import { render } from "@react-email/render";
 import { Resend } from "resend";
 import AdminAlertEmail from "@/emails/AdminAlert";
 import BookingConfirmedEmail from "@/emails/BookingConfirmed";
@@ -53,11 +54,13 @@ async function sendEmail(input: {
 
   console.log(`[email] sending ${input.label} to ${input.to}`);
 
+  const html = await render(input.react);
+
   const result = await resend.emails.send({
     from: getFromAddress(),
     to: input.to,
     subject: input.subject,
-    react: input.react,
+    html,
   });
 
   if (result.error) {

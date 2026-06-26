@@ -191,9 +191,7 @@ model EmailTemplate {
   name            String   @unique
   subject         String
   logoUrl         String?
-  logoDataUrl     String?  @db.Text
   heroImageUrl    String?
-  heroImageDataUrl String? @db.Text
   primaryColor    String   @default("#C9A96E")
   backgroundColor String   @default("#FAF8F5")
   heroHeading     String?

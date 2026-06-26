@@ -29,9 +29,7 @@ export type EmailTemplateMinAggregateOutputType = {
   name: string | null
   subject: string | null
   logoUrl: string | null
-  logoDataUrl: string | null
   heroImageUrl: string | null
-  heroImageDataUrl: string | null
   primaryColor: string | null
   backgroundColor: string | null
   heroHeading: string | null
@@ -44,9 +42,7 @@ export type EmailTemplateMaxAggregateOutputType = {
   name: string | null
   subject: string | null
   logoUrl: string | null
-  logoDataUrl: string | null
   heroImageUrl: string | null
-  heroImageDataUrl: string | null
   primaryColor: string | null
   backgroundColor: string | null
   heroHeading: string | null
@@ -59,9 +55,7 @@ export type EmailTemplateCountAggregateOutputType = {
   name: number
   subject: number
   logoUrl: number
-  logoDataUrl: number
   heroImageUrl: number
-  heroImageDataUrl: number
   primaryColor: number
   backgroundColor: number
   heroHeading: number
@@ -76,9 +70,7 @@ export type EmailTemplateMinAggregateInputType = {
   name?: true
   subject?: true
   logoUrl?: true
-  logoDataUrl?: true
   heroImageUrl?: true
-  heroImageDataUrl?: true
   primaryColor?: true
   backgroundColor?: true
   heroHeading?: true
@@ -91,9 +83,7 @@ export type EmailTemplateMaxAggregateInputType = {
   name?: true
   subject?: true
   logoUrl?: true
-  logoDataUrl?: true
   heroImageUrl?: true
-  heroImageDataUrl?: true
   primaryColor?: true
   backgroundColor?: true
   heroHeading?: true
@@ -106,9 +96,7 @@ export type EmailTemplateCountAggregateInputType = {
   name?: true
   subject?: true
   logoUrl?: true
-  logoDataUrl?: true
   heroImageUrl?: true
-  heroImageDataUrl?: true
   primaryColor?: true
   backgroundColor?: true
   heroHeading?: true
@@ -194,9 +182,7 @@ export type EmailTemplateGroupByOutputType = {
   name: string
   subject: string
   logoUrl: string | null
-  logoDataUrl: string | null
   heroImageUrl: string | null
-  heroImageDataUrl: string | null
   primaryColor: string
   backgroundColor: string
   heroHeading: string | null
@@ -230,9 +216,7 @@ export type EmailTemplateWhereInput = {
   name?: Prisma.StringFilter<"EmailTemplate"> | string
   subject?: Prisma.StringFilter<"EmailTemplate"> | string
   logoUrl?: Prisma.StringNullableFilter<"EmailTemplate"> | string | null
-  logoDataUrl?: Prisma.StringNullableFilter<"EmailTemplate"> | string | null
   heroImageUrl?: Prisma.StringNullableFilter<"EmailTemplate"> | string | null
-  heroImageDataUrl?: Prisma.StringNullableFilter<"EmailTemplate"> | string | null
   primaryColor?: Prisma.StringFilter<"EmailTemplate"> | string
   backgroundColor?: Prisma.StringFilter<"EmailTemplate"> | string
   heroHeading?: Prisma.StringNullableFilter<"EmailTemplate"> | string | null
@@ -245,9 +229,7 @@ export type EmailTemplateOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   subject?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  logoDataUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   heroImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  heroImageDataUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   primaryColor?: Prisma.SortOrder
   backgroundColor?: Prisma.SortOrder
   heroHeading?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -263,9 +245,7 @@ export type EmailTemplateWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.EmailTemplateWhereInput | Prisma.EmailTemplateWhereInput[]
   subject?: Prisma.StringFilter<"EmailTemplate"> | string
   logoUrl?: Prisma.StringNullableFilter<"EmailTemplate"> | string | null
-  logoDataUrl?: Prisma.StringNullableFilter<"EmailTemplate"> | string | null
   heroImageUrl?: Prisma.StringNullableFilter<"EmailTemplate"> | string | null
-  heroImageDataUrl?: Prisma.StringNullableFilter<"EmailTemplate"> | string | null
   primaryColor?: Prisma.StringFilter<"EmailTemplate"> | string
   backgroundColor?: Prisma.StringFilter<"EmailTemplate"> | string
   heroHeading?: Prisma.StringNullableFilter<"EmailTemplate"> | string | null
@@ -278,9 +258,7 @@ export type EmailTemplateOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   subject?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  logoDataUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   heroImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  heroImageDataUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   primaryColor?: Prisma.SortOrder
   backgroundColor?: Prisma.SortOrder
   heroHeading?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -299,9 +277,7 @@ export type EmailTemplateScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"EmailTemplate"> | string
   subject?: Prisma.StringWithAggregatesFilter<"EmailTemplate"> | string
   logoUrl?: Prisma.StringNullableWithAggregatesFilter<"EmailTemplate"> | string | null
-  logoDataUrl?: Prisma.StringNullableWithAggregatesFilter<"EmailTemplate"> | string | null
   heroImageUrl?: Prisma.StringNullableWithAggregatesFilter<"EmailTemplate"> | string | null
-  heroImageDataUrl?: Prisma.StringNullableWithAggregatesFilter<"EmailTemplate"> | string | null
   primaryColor?: Prisma.StringWithAggregatesFilter<"EmailTemplate"> | string
   backgroundColor?: Prisma.StringWithAggregatesFilter<"EmailTemplate"> | string
   heroHeading?: Prisma.StringNullableWithAggregatesFilter<"EmailTemplate"> | string | null
@@ -314,9 +290,7 @@ export type EmailTemplateCreateInput = {
   name: string
   subject: string
   logoUrl?: string | null
-  logoDataUrl?: string | null
   heroImageUrl?: string | null
-  heroImageDataUrl?: string | null
   primaryColor?: string
   backgroundColor?: string
   heroHeading?: string | null
@@ -329,9 +303,7 @@ export type EmailTemplateUncheckedCreateInput = {
   name: string
   subject: string
   logoUrl?: string | null
-  logoDataUrl?: string | null
   heroImageUrl?: string | null
-  heroImageDataUrl?: string | null
   primaryColor?: string
   backgroundColor?: string
   heroHeading?: string | null
@@ -344,9 +316,7 @@ export type EmailTemplateUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logoDataUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   heroImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  heroImageDataUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryColor?: Prisma.StringFieldUpdateOperationsInput | string
   backgroundColor?: Prisma.StringFieldUpdateOperationsInput | string
   heroHeading?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -359,9 +329,7 @@ export type EmailTemplateUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logoDataUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   heroImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  heroImageDataUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryColor?: Prisma.StringFieldUpdateOperationsInput | string
   backgroundColor?: Prisma.StringFieldUpdateOperationsInput | string
   heroHeading?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -374,9 +342,7 @@ export type EmailTemplateCreateManyInput = {
   name: string
   subject: string
   logoUrl?: string | null
-  logoDataUrl?: string | null
   heroImageUrl?: string | null
-  heroImageDataUrl?: string | null
   primaryColor?: string
   backgroundColor?: string
   heroHeading?: string | null
@@ -389,9 +355,7 @@ export type EmailTemplateUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logoDataUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   heroImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  heroImageDataUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryColor?: Prisma.StringFieldUpdateOperationsInput | string
   backgroundColor?: Prisma.StringFieldUpdateOperationsInput | string
   heroHeading?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -404,9 +368,7 @@ export type EmailTemplateUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logoDataUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   heroImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  heroImageDataUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   primaryColor?: Prisma.StringFieldUpdateOperationsInput | string
   backgroundColor?: Prisma.StringFieldUpdateOperationsInput | string
   heroHeading?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -419,9 +381,7 @@ export type EmailTemplateCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   subject?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
-  logoDataUrl?: Prisma.SortOrder
   heroImageUrl?: Prisma.SortOrder
-  heroImageDataUrl?: Prisma.SortOrder
   primaryColor?: Prisma.SortOrder
   backgroundColor?: Prisma.SortOrder
   heroHeading?: Prisma.SortOrder
@@ -434,9 +394,7 @@ export type EmailTemplateMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   subject?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
-  logoDataUrl?: Prisma.SortOrder
   heroImageUrl?: Prisma.SortOrder
-  heroImageDataUrl?: Prisma.SortOrder
   primaryColor?: Prisma.SortOrder
   backgroundColor?: Prisma.SortOrder
   heroHeading?: Prisma.SortOrder
@@ -449,9 +407,7 @@ export type EmailTemplateMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   subject?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
-  logoDataUrl?: Prisma.SortOrder
   heroImageUrl?: Prisma.SortOrder
-  heroImageDataUrl?: Prisma.SortOrder
   primaryColor?: Prisma.SortOrder
   backgroundColor?: Prisma.SortOrder
   heroHeading?: Prisma.SortOrder
@@ -466,9 +422,7 @@ export type EmailTemplateSelect<ExtArgs extends runtime.Types.Extensions.Interna
   name?: boolean
   subject?: boolean
   logoUrl?: boolean
-  logoDataUrl?: boolean
   heroImageUrl?: boolean
-  heroImageDataUrl?: boolean
   primaryColor?: boolean
   backgroundColor?: boolean
   heroHeading?: boolean
@@ -481,9 +435,7 @@ export type EmailTemplateSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   name?: boolean
   subject?: boolean
   logoUrl?: boolean
-  logoDataUrl?: boolean
   heroImageUrl?: boolean
-  heroImageDataUrl?: boolean
   primaryColor?: boolean
   backgroundColor?: boolean
   heroHeading?: boolean
@@ -496,9 +448,7 @@ export type EmailTemplateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   name?: boolean
   subject?: boolean
   logoUrl?: boolean
-  logoDataUrl?: boolean
   heroImageUrl?: boolean
-  heroImageDataUrl?: boolean
   primaryColor?: boolean
   backgroundColor?: boolean
   heroHeading?: boolean
@@ -511,9 +461,7 @@ export type EmailTemplateSelectScalar = {
   name?: boolean
   subject?: boolean
   logoUrl?: boolean
-  logoDataUrl?: boolean
   heroImageUrl?: boolean
-  heroImageDataUrl?: boolean
   primaryColor?: boolean
   backgroundColor?: boolean
   heroHeading?: boolean
@@ -521,7 +469,7 @@ export type EmailTemplateSelectScalar = {
   updatedAt?: boolean
 }
 
-export type EmailTemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "subject" | "logoUrl" | "logoDataUrl" | "heroImageUrl" | "heroImageDataUrl" | "primaryColor" | "backgroundColor" | "heroHeading" | "bodyText" | "updatedAt", ExtArgs["result"]["emailTemplate"]>
+export type EmailTemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "subject" | "logoUrl" | "heroImageUrl" | "primaryColor" | "backgroundColor" | "heroHeading" | "bodyText" | "updatedAt", ExtArgs["result"]["emailTemplate"]>
 
 export type $EmailTemplatePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "EmailTemplate"
@@ -531,9 +479,7 @@ export type $EmailTemplatePayload<ExtArgs extends runtime.Types.Extensions.Inter
     name: string
     subject: string
     logoUrl: string | null
-    logoDataUrl: string | null
     heroImageUrl: string | null
-    heroImageDataUrl: string | null
     primaryColor: string
     backgroundColor: string
     heroHeading: string | null
@@ -966,9 +912,7 @@ export interface EmailTemplateFieldRefs {
   readonly name: Prisma.FieldRef<"EmailTemplate", 'String'>
   readonly subject: Prisma.FieldRef<"EmailTemplate", 'String'>
   readonly logoUrl: Prisma.FieldRef<"EmailTemplate", 'String'>
-  readonly logoDataUrl: Prisma.FieldRef<"EmailTemplate", 'String'>
   readonly heroImageUrl: Prisma.FieldRef<"EmailTemplate", 'String'>
-  readonly heroImageDataUrl: Prisma.FieldRef<"EmailTemplate", 'String'>
   readonly primaryColor: Prisma.FieldRef<"EmailTemplate", 'String'>
   readonly backgroundColor: Prisma.FieldRef<"EmailTemplate", 'String'>
   readonly heroHeading: Prisma.FieldRef<"EmailTemplate", 'String'>

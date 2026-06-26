@@ -1,35 +1,15 @@
 /**
- * Creates the public Supabase Storage bucket "website-images".
+ * Creates public Supabase Storage buckets for site and email images.
  *
- * Prerequisites:
- *   1. Add to .env:
- *        SUPABASE_URL=https://<project-ref>.supabase.co
- *        SUPABASE_SERVICE_ROLE_KEY=<service-role-key>  (recommended for uploads)
- *        SUPABASE_ANON_KEY=<anon-key>
- *   2. Get keys from Supabase Dashboard → Project Settings → API
- *
- * Run:
- *   node scripts/setup-supabase-storage.mjs
- *
- * Manual setup (Supabase Dashboard → Storage):
- *   - Create bucket: website-images
- *   - Enable "Public bucket"
- *   - File size limit: 5 MB (Project Settings → Storage)
- *   - Allowed MIME types: image/jpeg, image/png, image/webp (optional)
- *
- * Storage policies (SQL Editor) for public reads:
- *   create policy "Public read website images"
- *   on storage.objects for select
- *   using ( bucket_id = 'website-images' );
- *
- * Uploads are handled by the Next.js admin API using the service role key
- * (protected by admin session middleware). Do not expose the service role key
- * to the browser.
+ * Run: node scripts/setup-supabase-storage.mjs
  */
 
 import { createClient } from "@supabase/supabase-js";
 
-const BUCKET = "website-images";
+const BUCKETS = [
+  { name: "website-images", description: "Cruise photos, content images" },
+  { name: "email-assets", description: "Email template logos and hero banners" },
+];
 
 const url = process.env.SUPABASE_URL;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -54,26 +34,31 @@ if (listError) {
   process.exit(1);
 }
 
-const alreadyExists = existing.some((bucket) => bucket.name === BUCKET);
+for (const bucket of BUCKETS) {
+  const alreadyExists = existing.some((entry) => entry.name === bucket.name);
 
-if (alreadyExists) {
-  console.log(`Bucket "${BUCKET}" already exists.`);
-} else {
-  const { error: createError } = await supabase.storage.createBucket(BUCKET, {
+  if (alreadyExists) {
+    console.log(`Bucket "${bucket.name}" already exists.`);
+    continue;
+  }
+
+  const { error: createError } = await supabase.storage.createBucket(bucket.name, {
     public: true,
     fileSizeLimit: 5 * 1024 * 1024,
     allowedMimeTypes: ["image/jpeg", "image/png", "image/webp"],
   });
 
   if (createError) {
-    console.error("Failed to create bucket:", createError.message);
+    console.error(`Failed to create bucket "${bucket.name}":`, createError.message);
     process.exit(1);
   }
 
-  console.log(`Created public bucket "${BUCKET}".`);
+  console.log(`Created public bucket "${bucket.name}" (${bucket.description}).`);
 }
 
-console.log("\nDone. Public image URLs will look like:");
-console.log(
-  `${url.replace(/\/$/, "")}/storage/v1/object/public/${BUCKET}/<folder>/<filename>`,
-);
+console.log("\nPublic image URLs:");
+for (const bucket of BUCKETS) {
+  console.log(
+    `  ${url.replace(/\/$/, "")}/storage/v1/object/public/${bucket.name}/<path>`,
+  );
+}

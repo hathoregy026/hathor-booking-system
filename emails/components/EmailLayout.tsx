@@ -1,19 +1,16 @@
 import {
   Body,
-  Container,
   Head,
   Hr,
   Html,
   Img,
   Link,
   Preview,
-  Section,
   Text,
 } from "@react-email/components";
 import type { ReactNode } from "react";
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
-import { isEmailImageDataUrl } from "@/lib/email-image-shared";
-import { toAbsolutePublicUrl } from "@/lib/public-url";
+import { resolveEmailHostedImageUrl } from "@/lib/email-image-shared";
 import { resolveEmailTheme } from "../theme";
 import { emailColors, emailFonts, emailLayout } from "../styles";
 
@@ -26,30 +23,53 @@ type EmailLayoutProps = {
   logoWidth?: number;
 } & EmailTemplateOverrides;
 
-export function EmailHeroBanner({ heroImageUrl }: { heroImageUrl: string }) {
-  const src =
-    (isEmailImageDataUrl(heroImageUrl) ? heroImageUrl : null) ??
-    toAbsolutePublicUrl(heroImageUrl) ??
-    heroImageUrl;
+const cellReset = {
+  padding: 0,
+  margin: 0,
+} as const;
+
+export function EmailHeroBanner({
+  heroImageUrl,
+  alt = "Hathor Dahabiya — Luxury Nile Cruise",
+}: {
+  heroImageUrl: string;
+  alt?: string;
+}) {
+  const src = resolveEmailHostedImageUrl(heroImageUrl) ?? heroImageUrl;
 
   return (
-    <Section style={{ margin: "0 0 24px", textAlign: "center" }}>
-      <Img
-        src={src}
-        alt="Hathor Dahabiya"
-        width={600}
-        style={{
-          borderRadius: "8px",
-          display: "block",
-          height: "auto",
-          margin: "0 auto",
-          maxHeight: "220px",
-          maxWidth: "100%",
-          objectFit: "cover",
-          width: "100%",
-        }}
-      />
-    </Section>
+    <table
+      role="presentation"
+      cellPadding={0}
+      cellSpacing={0}
+      width="100%"
+      style={{ borderCollapse: "collapse", margin: "0 0 24px" }}
+    >
+      <tbody>
+        <tr>
+          <td align="center" style={cellReset}>
+            <Img
+              src={src}
+              alt={alt}
+              width={600}
+              height={220}
+              style={{
+                border: 0,
+                borderRadius: "8px",
+                display: "block",
+                height: "auto",
+                margin: "0 auto",
+                maxHeight: "220px",
+                maxWidth: "100%",
+                outline: "none",
+                textDecoration: "none",
+                width: "100%",
+              }}
+            />
+          </td>
+        </tr>
+      </tbody>
+    </table>
   );
 }
 
@@ -62,34 +82,46 @@ export function EmailLogo({
   logoUrl: string;
   primaryColor: string;
 }) {
-  const src =
-    (isEmailImageDataUrl(logoUrl) ? logoUrl : null) ??
-    toAbsolutePublicUrl(logoUrl) ??
-    logoUrl;
+  const src = resolveEmailHostedImageUrl(logoUrl) ?? logoUrl;
 
   return (
-    <Section style={{ textAlign: "center", margin: "0 0 24px" }}>
-      <Img
-        src={src}
-        alt="Hathor Dahabiya — Luxury Nile Cruises"
-        width={width}
-        style={{
-          display: "block",
-          margin: "0 auto",
-          maxWidth: `${width}px`,
-          width: "100%",
-          height: "auto",
-        }}
-      />
-      <Hr
-        style={{
-          border: "none",
-          borderTop: `2px solid ${primaryColor}`,
-          width: "60px",
-          margin: "20px auto 0",
-        }}
-      />
-    </Section>
+    <table
+      role="presentation"
+      cellPadding={0}
+      cellSpacing={0}
+      width="100%"
+      style={{ borderCollapse: "collapse", margin: "0 0 24px" }}
+    >
+      <tbody>
+        <tr>
+          <td align="center" style={cellReset}>
+            <Img
+              src={src}
+              alt="Hathor Dahabiya — Luxury Nile Cruises"
+              width={width}
+              style={{
+                border: 0,
+                display: "block",
+                height: "auto",
+                margin: "0 auto",
+                maxWidth: `${width}px`,
+                outline: "none",
+                textDecoration: "none",
+                width: "100%",
+              }}
+            />
+            <Hr
+              style={{
+                border: "none",
+                borderTop: `2px solid ${primaryColor}`,
+                margin: "20px auto 0",
+                width: "60px",
+              }}
+            />
+          </td>
+        </tr>
+      </tbody>
+    </table>
   );
 }
 
@@ -128,120 +160,152 @@ export function EmailFooter({
 }) {
   if (variant === "admin") {
     return (
-      <Section style={{ marginTop: "32px", textAlign: "center" }}>
-        <Hr
-          style={{
-            border: "none",
-            borderTop: `1px solid ${primaryColor}`,
-            margin: "0 0 20px",
-          }}
-        />
-        <Text
-          style={{
-            color: emailColors.textSecondary,
-            fontFamily: emailFonts.sans,
-            fontSize: "13px",
-            margin: "0 0 8px",
-          }}
-        >
-          Hathor Dahabiya Admin System
-        </Text>
-        <Text
-          style={{
-            color: primaryColor,
-            fontFamily: emailFonts.sans,
-            fontSize: "12px",
-            margin: 0,
-          }}
-        >
-          © 2025 Hathor Dahabiya. All rights reserved.
-        </Text>
-      </Section>
+      <table
+        role="presentation"
+        cellPadding={0}
+        cellSpacing={0}
+        width="100%"
+        style={{ borderCollapse: "collapse", marginTop: "32px" }}
+      >
+        <tbody>
+          <tr>
+            <td align="center" style={cellReset}>
+              <Hr
+                style={{
+                  border: "none",
+                  borderTop: `1px solid ${primaryColor}`,
+                  margin: "0 0 20px",
+                }}
+              />
+              <Text
+                style={{
+                  color: emailColors.textSecondary,
+                  fontFamily: emailFonts.sans,
+                  fontSize: "13px",
+                  lineHeight: "1.5",
+                  margin: "0 0 8px",
+                }}
+              >
+                Hathor Dahabiya Admin System
+              </Text>
+              <Text
+                style={{
+                  color: primaryColor,
+                  fontFamily: emailFonts.sans,
+                  fontSize: "12px",
+                  lineHeight: "1.5",
+                  margin: 0,
+                }}
+              >
+                © 2025 Hathor Dahabiya. All rights reserved.
+              </Text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     );
   }
 
   return (
-    <Section style={{ marginTop: "32px", textAlign: "center", paddingTop: "30px" }}>
-      <Hr
-        style={{
-          border: "none",
-          borderTop: `1px solid ${primaryColor}`,
-          margin: "0 0 24px",
-        }}
-      />
-      <Text
-        style={{
-          color: emailColors.textPrimary,
-          fontFamily: emailFonts.serif,
-          fontSize: "16px",
-          fontWeight: 400,
-          margin: "0 0 6px",
-        }}
-      >
-        Hathor Dahabiya
-      </Text>
-      <Text
-        style={{
-          color: emailColors.textSecondary,
-          fontFamily: emailFonts.sans,
-          fontSize: "13px",
-          fontStyle: "italic",
-          margin: "0 0 16px",
-        }}
-      >
-        Luxury Cruises on the Nile
-      </Text>
-      <Text
-        style={{
-          color: emailColors.textSecondary,
-          fontFamily: emailFonts.sans,
-          fontSize: "13px",
-          lineHeight: "1.6",
-          margin: "0 0 4px",
-        }}
-      >
-        <Link
-          href="mailto:reservations@hathorcruise.com"
-          style={{ color: emailColors.textSecondary, textDecoration: "underline" }}
-        >
-          reservations@hathorcruise.com
-        </Link>
-      </Text>
-      <Text
-        style={{
-          color: emailColors.textSecondary,
-          fontFamily: emailFonts.sans,
-          fontSize: "13px",
-          lineHeight: "1.6",
-          margin: "0 0 20px",
-        }}
-      >
-        +20 127 049 6896
-      </Text>
-      {variant === "guest-reply" ? (
-        <Text
-          style={{
-            color: emailColors.textSecondary,
-            fontFamily: emailFonts.sans,
-            fontSize: "13px",
-            lineHeight: "1.6",
-            margin: "0 0 20px",
-          }}
-        >
-          If you have any questions, reply directly to this email.
-        </Text>
-      ) : null}
-      <Text
-        style={{
-          color: primaryColor,
-          fontFamily: emailFonts.sans,
-          fontSize: "12px",
-          margin: 0,
-        }}
-      >
-        © 2025 Hathor Dahabiya. All rights reserved.
-      </Text>
-    </Section>
+    <table
+      role="presentation"
+      cellPadding={0}
+      cellSpacing={0}
+      width="100%"
+      style={{ borderCollapse: "collapse", marginTop: "32px" }}
+    >
+      <tbody>
+        <tr>
+          <td align="center" style={{ ...cellReset, paddingTop: "30px" }}>
+            <Hr
+              style={{
+                border: "none",
+                borderTop: `1px solid ${primaryColor}`,
+                margin: "0 0 24px",
+              }}
+            />
+            <Text
+              style={{
+                color: emailColors.textPrimary,
+                fontFamily: emailFonts.serif,
+                fontSize: "16px",
+                fontWeight: 400,
+                lineHeight: "1.5",
+                margin: "0 0 6px",
+              }}
+            >
+              Hathor Dahabiya
+            </Text>
+            <Text
+              style={{
+                color: emailColors.textSecondary,
+                fontFamily: emailFonts.sans,
+                fontSize: "13px",
+                fontStyle: "italic",
+                lineHeight: "1.5",
+                margin: "0 0 16px",
+              }}
+            >
+              Luxury Cruises on the Nile
+            </Text>
+            <Text
+              style={{
+                color: emailColors.textSecondary,
+                fontFamily: emailFonts.sans,
+                fontSize: "13px",
+                lineHeight: "1.6",
+                margin: "0 0 4px",
+              }}
+            >
+              <Link
+                href="mailto:reservations@hathorcruise.com"
+                style={{
+                  color: emailColors.textSecondary,
+                  textDecoration: "underline",
+                }}
+              >
+                reservations@hathorcruise.com
+              </Link>
+            </Text>
+            <Text
+              style={{
+                color: emailColors.textSecondary,
+                fontFamily: emailFonts.sans,
+                fontSize: "13px",
+                lineHeight: "1.6",
+                margin: "0 0 20px",
+              }}
+            >
+              +20 127 049 6896
+            </Text>
+            {variant === "guest-reply" ? (
+              <Text
+                style={{
+                  color: emailColors.textSecondary,
+                  fontFamily: emailFonts.sans,
+                  fontSize: "13px",
+                  lineHeight: "1.6",
+                  margin: "0 0 20px",
+                }}
+              >
+                If you have any questions, reply directly to this email.
+              </Text>
+            ) : null}
+            <Text
+              style={{
+                color: primaryColor,
+                fontFamily: emailFonts.sans,
+                fontSize: "12px",
+                lineHeight: "1.5",
+                margin: 0,
+              }}
+            >
+              © 2025 Hathor Dahabiya. All rights reserved.
+            </Text>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   );
 }
 
@@ -251,29 +315,22 @@ export function EmailLayout({
   footerVariant = "guest",
   logoWidth = 180,
   logoUrl,
-  logoDataUrl,
   heroImageUrl,
-  heroImageDataUrl,
   primaryColor,
   backgroundColor,
 }: EmailLayoutProps) {
-  const theme = resolveEmailTheme({
-    logoUrl,
-    logoDataUrl,
-    primaryColor,
-    backgroundColor,
-  });
-  const bannerUrl =
-    (isEmailImageDataUrl(heroImageDataUrl) ? heroImageDataUrl?.trim() : null) ??
-    (isEmailImageDataUrl(heroImageUrl) ? heroImageUrl?.trim() : null) ??
-    toAbsolutePublicUrl(heroImageUrl);
+  const theme = resolveEmailTheme({ logoUrl, primaryColor, backgroundColor });
+  const bannerUrl = resolveEmailHostedImageUrl(heroImageUrl);
 
   return (
-    <Html lang="en">
+    <Html lang="en" dir="ltr">
       <Head>
+        <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="x-apple-disable-message-reformatting" />
+        <meta name="format-detection" content="telephone=no,address=no,email=no,date=no,url=no" />
+        <title>{preview}</title>
       </Head>
       <Preview>{preview}</Preview>
       <Body
@@ -283,38 +340,85 @@ export function EmailLayout({
           margin: 0,
           padding: 0,
           WebkitTextSizeAdjust: "100%",
+          textSizeAdjust: "100%",
         }}
       >
-        <Container
+        <table
+          role="presentation"
+          cellPadding={0}
+          cellSpacing={0}
+          width="100%"
           style={{
             backgroundColor: theme.backgroundColor,
-            margin: "0 auto",
-            maxWidth: emailLayout.maxWidth,
-            padding: `${emailLayout.paddingMobile} ${emailLayout.paddingMobile}`,
+            borderCollapse: "collapse",
+            margin: 0,
+            padding: 0,
             width: "100%",
           }}
         >
-          {bannerUrl ? <EmailHeroBanner heroImageUrl={bannerUrl} /> : null}
-
-          <EmailLogo
-            width={logoWidth}
-            logoUrl={theme.logoUrl}
-            primaryColor={theme.primaryColor}
-          />
-
-          <Section
-            style={{
-              backgroundColor: theme.cardBackground,
-              border: `1px solid ${theme.borderColor}`,
-              borderRadius: "8px",
-              padding: emailLayout.paddingMobile,
-            }}
-          >
-            {children}
-          </Section>
-
-          <EmailFooter variant={footerVariant} primaryColor={theme.primaryColor} />
-        </Container>
+          <tbody>
+            <tr>
+              <td
+                align="center"
+                style={{
+                  backgroundColor: theme.backgroundColor,
+                  padding: `${emailLayout.paddingMobile} 12px`,
+                }}
+              >
+                <table
+                  role="presentation"
+                  cellPadding={0}
+                  cellSpacing={0}
+                  width="600"
+                  style={{
+                    borderCollapse: "collapse",
+                    maxWidth: emailLayout.maxWidth,
+                    width: "100%",
+                  }}
+                >
+                  <tbody>
+                    {bannerUrl ? (
+                      <tr>
+                        <td style={cellReset}>
+                          <EmailHeroBanner heroImageUrl={bannerUrl} />
+                        </td>
+                      </tr>
+                    ) : null}
+                    <tr>
+                      <td style={cellReset}>
+                        <EmailLogo
+                          width={logoWidth}
+                          logoUrl={theme.logoUrl}
+                          primaryColor={theme.primaryColor}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        style={{
+                          backgroundColor: theme.cardBackground,
+                          border: `1px solid ${theme.borderColor}`,
+                          borderRadius: "8px",
+                          padding: emailLayout.paddingMobile,
+                        }}
+                      >
+                        {children}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={cellReset}>
+                        <EmailFooter
+                          variant={footerVariant}
+                          primaryColor={theme.primaryColor}
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </Body>
     </Html>
   );

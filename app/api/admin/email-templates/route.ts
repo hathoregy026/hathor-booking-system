@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { handleRouteError, jsonError } from "@/lib/api";
 import { logDbError, withDb } from "@/lib/db-safe";
-import { isEmailImageDataUrl } from "@/lib/email-image-shared";
-import { urlToEmailImageDataUrl } from "@/lib/email-image-data.server";
 import {
   getDefaultEmailTemplates,
   isEmailTemplateName,
@@ -15,27 +13,6 @@ function normalizeOptionalImageUrl(
   url: string | null | undefined,
 ): string | null {
   return toAbsolutePublicUrl(url?.trim() || null);
-}
-
-function normalizeOptionalDataUrl(
-  dataUrl: string | null | undefined,
-): string | null {
-  if (!isEmailImageDataUrl(dataUrl)) return null;
-  return dataUrl!.trim();
-}
-
-async function resolveStoredImagePair(input: {
-  url: string | null | undefined;
-  dataUrl: string | null | undefined;
-}): Promise<{ url: string | null; dataUrl: string | null }> {
-  const url = normalizeOptionalImageUrl(input.url);
-  let dataUrl = normalizeOptionalDataUrl(input.dataUrl);
-
-  if (!dataUrl && url) {
-    dataUrl = await urlToEmailImageDataUrl(url);
-  }
-
-  return { url, dataUrl };
 }
 
 export const dynamic = "force-dynamic";
@@ -68,9 +45,7 @@ export async function POST(request: NextRequest) {
       name?: string;
       subject?: string;
       logoUrl?: string | null;
-      logoDataUrl?: string | null;
       heroImageUrl?: string | null;
-      heroImageDataUrl?: string | null;
       primaryColor?: string;
       backgroundColor?: string;
       heroHeading?: string | null;
@@ -87,15 +62,8 @@ export async function POST(request: NextRequest) {
 
     const subject = body.subject.trim();
     const name = body.name;
-
-    const logo = await resolveStoredImagePair({
-      url: body.logoUrl,
-      dataUrl: body.logoDataUrl,
-    });
-    const hero = await resolveStoredImagePair({
-      url: body.heroImageUrl,
-      dataUrl: body.heroImageDataUrl,
-    });
+    const logoUrl = normalizeOptionalImageUrl(body.logoUrl);
+    const heroImageUrl = normalizeOptionalImageUrl(body.heroImageUrl);
 
     const template = await withDb(() =>
       prisma.emailTemplate.upsert({
@@ -103,10 +71,8 @@ export async function POST(request: NextRequest) {
         create: {
           name,
           subject,
-          logoUrl: logo.url,
-          logoDataUrl: logo.dataUrl,
-          heroImageUrl: hero.url,
-          heroImageDataUrl: hero.dataUrl,
+          logoUrl,
+          heroImageUrl,
           primaryColor: body.primaryColor?.trim() || "#C9A96E",
           backgroundColor: body.backgroundColor?.trim() || "#FAF8F5",
           heroHeading: body.heroHeading?.trim() || null,
@@ -114,10 +80,8 @@ export async function POST(request: NextRequest) {
         },
         update: {
           subject,
-          logoUrl: logo.url,
-          logoDataUrl: logo.dataUrl,
-          heroImageUrl: hero.url,
-          heroImageDataUrl: hero.dataUrl,
+          logoUrl,
+          heroImageUrl,
           primaryColor: body.primaryColor?.trim() || "#C9A96E",
           backgroundColor: body.backgroundColor?.trim() || "#FAF8F5",
           heroHeading: body.heroHeading?.trim() || null,
@@ -132,9 +96,7 @@ export async function POST(request: NextRequest) {
         name: template.name,
         subject: template.subject,
         logoUrl: template.logoUrl,
-        logoDataUrl: template.logoDataUrl,
         heroImageUrl: template.heroImageUrl,
-        heroImageDataUrl: template.heroImageDataUrl,
         primaryColor: template.primaryColor,
         backgroundColor: template.backgroundColor,
         heroHeading: template.heroHeading,

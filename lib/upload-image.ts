@@ -1,9 +1,14 @@
 import { randomUUID } from "crypto";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
+import {
+  EMAIL_IMAGE_BUCKET,
+  EMAIL_IMAGE_FOLDER,
+  IMAGE_BUCKET,
+  isEmailImageFolder,
+} from "@/lib/image-upload";
 import { toAbsolutePublicUrl } from "@/lib/public-url";
 import { createSupabaseAdminClient } from "@/lib/supabase-server";
-import { IMAGE_BUCKET } from "@/lib/image-upload";
 
 export type UploadedImage = {
   url: string;
@@ -17,13 +22,19 @@ export function isSupabaseUploadConfigured(): boolean {
   return Boolean(url && serviceRoleKey);
 }
 
+function resolveBucket(folder: string, bucket?: string): string {
+  if (bucket) return bucket;
+  return isEmailImageFolder(folder) ? EMAIL_IMAGE_BUCKET : IMAGE_BUCKET;
+}
+
 async function uploadToSupabase(
+  bucket: string,
   objectPath: string,
   buffer: Buffer,
   contentType: string,
 ): Promise<UploadedImage> {
   const supabase = createSupabaseAdminClient();
-  const { error } = await supabase.storage.from(IMAGE_BUCKET).upload(objectPath, buffer, {
+  const { error } = await supabase.storage.from(bucket).upload(objectPath, buffer, {
     contentType,
     cacheControl: "3600",
     upsert: false,
@@ -34,14 +45,14 @@ async function uploadToSupabase(
 
     if (message.includes("bucket") && message.includes("not found")) {
       throw new Error(
-        `Storage bucket "${IMAGE_BUCKET}" was not found in Supabase. Create a public bucket with that name under Storage.`,
+        `Storage bucket "${bucket}" was not found in Supabase. Run: node scripts/setup-supabase-storage.mjs`,
       );
     }
 
     throw new Error(error.message || "Supabase upload failed");
   }
 
-  const { data } = supabase.storage.from(IMAGE_BUCKET).getPublicUrl(objectPath);
+  const { data } = supabase.storage.from(bucket).getPublicUrl(objectPath);
 
   return {
     url: toAbsolutePublicUrl(data.publicUrl) ?? data.publicUrl,
@@ -51,34 +62,45 @@ async function uploadToSupabase(
 }
 
 async function uploadToLocal(
+  folder: string,
   objectPath: string,
   buffer: Buffer,
 ): Promise<UploadedImage> {
+  const localFolder = isEmailImageFolder(folder) ? EMAIL_IMAGE_FOLDER : folder;
   const relativePath = objectPath.replace(/\\/g, "/");
-  const absolutePath = path.join(process.cwd(), "public", "uploads", relativePath);
+  const absolutePath = path.join(
+    process.cwd(),
+    "public",
+    "uploads",
+    localFolder,
+    path.basename(relativePath),
+  );
 
   await mkdir(path.dirname(absolutePath), { recursive: true });
   await writeFile(absolutePath, buffer);
 
-  const relativeUrl = `/uploads/${relativePath}`;
+  const relativeUrl = `/uploads/${localFolder}/${path.basename(relativePath)}`;
 
   return {
     url: toAbsolutePublicUrl(relativeUrl) ?? relativeUrl,
-    path: relativePath,
+    path: `${localFolder}/${path.basename(relativePath)}`,
     storage: "local",
   };
 }
 
 export async function uploadImageBuffer(options: {
+  folder: string;
   objectPath: string;
   buffer: Buffer;
   contentType: string;
+  bucket?: string;
 }): Promise<UploadedImage> {
-  const { objectPath, buffer, contentType } = options;
+  const { folder, objectPath, buffer, contentType } = options;
+  const bucket = resolveBucket(folder, options.bucket);
 
   if (isSupabaseUploadConfigured()) {
     try {
-      return await uploadToSupabase(objectPath, buffer, contentType);
+      return await uploadToSupabase(bucket, objectPath, buffer, contentType);
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Supabase upload failed";
@@ -91,11 +113,13 @@ export async function uploadImageBuffer(options: {
     }
   }
 
-  return uploadToLocal(objectPath, buffer);
+  return uploadToLocal(folder, objectPath, buffer);
 }
 
 export function buildObjectPath(folder: string, extension: string): string {
-  const safeFolder = folder.replace(/[^a-z0-9-_]/gi, "").toLowerCase() || "general";
-  const safeExtension = extension.replace(/[^a-z0-9]/gi, "").toLowerCase() || "jpg";
+  const safeFolder =
+    folder.replace(/[^a-z0-9-_]/gi, "").toLowerCase() || "general";
+  const safeExtension =
+    extension.replace(/[^a-z0-9]/gi, "").toLowerCase() || "jpg";
   return `${safeFolder}/${Date.now()}-${randomUUID()}.${safeExtension}`;
 }

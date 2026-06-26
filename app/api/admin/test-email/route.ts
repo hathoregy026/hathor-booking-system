@@ -1,11 +1,17 @@
 import { NextResponse } from "next/server";
+import { render } from "@react-email/render";
 import { Resend } from "resend";
+import BookingReceivedEmail from "@/emails/BookingReceived";
+import { sampleBookingDetails, sampleGuestName } from "@/emails/sample-data";
+import { getEmailTemplateForSend } from "@/lib/email-template-send";
+import { toEmailThemeOverridesForSend } from "@/lib/email-theme-server";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 /**
- * Admin-only Resend connectivity check. Protected by middleware (HMAC session).
+ * Admin-only email test — sends a rendered BookingReceived template.
+ * Protected by middleware (HMAC session).
  */
 export async function GET() {
   const hasResendKey = Boolean(process.env.RESEND_API_KEY?.trim());
@@ -30,13 +36,24 @@ export async function GET() {
 
   try {
     const resend = new Resend(process.env.RESEND_API_KEY!.trim());
-    console.log("[admin/test-email] sending test email to", to);
+    const template = await getEmailTemplateForSend("BookingReceived");
+    const theme = toEmailThemeOverridesForSend(template);
+
+    const html = await render(
+      BookingReceivedEmail({
+        guestName: sampleGuestName,
+        details: sampleBookingDetails,
+        ...theme,
+      }),
+    );
+
+    console.log("[admin/test-email] sending template test to", to);
 
     const result = await resend.emails.send({
       from,
       to,
-      subject: "Hathor Booking System — test email",
-      html: "<p>If you received this, Resend is configured correctly.</p>",
+      subject: "Hathor Booking System — template test email",
+      html,
     });
 
     if (result.error) {
@@ -52,6 +69,7 @@ export async function GET() {
       ok: true,
       id: result.data?.id,
       to,
+      template: "BookingReceived",
     });
   } catch (error) {
     console.error("[admin/test-email] exception:", error);

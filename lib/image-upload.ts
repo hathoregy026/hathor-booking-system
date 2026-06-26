@@ -1,5 +1,10 @@
 export const IMAGE_BUCKET = "website-images";
 
+/** Dedicated public bucket for email template images (logos, hero banners). */
+export const EMAIL_IMAGE_BUCKET = "email-assets";
+
+export const EMAIL_IMAGE_FOLDER = "email-templates";
+
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
 export const ALLOWED_IMAGE_TYPES = new Set([
@@ -43,8 +48,15 @@ function mimeFromExtension(extension: string): string | null {
   }
 }
 
-export function getPublicImageUrl(path: string): string | null {
+export function getPublicImageUrl(
+  path: string,
+  bucket: string = IMAGE_BUCKET,
+): string | null {
   const baseUrl = process.env.SUPABASE_URL?.replace(/\/$/, "");
   if (!baseUrl) return null;
-  return `${baseUrl}/storage/v1/object/public/${IMAGE_BUCKET}/${path}`;
+  return `${baseUrl}/storage/v1/object/public/${bucket}/${path}`;
+}
+
+export function isEmailImageFolder(folder: string): boolean {
+  return folder.replace(/[^a-z0-9-_]/gi, "").toLowerCase() === EMAIL_IMAGE_FOLDER;
 }

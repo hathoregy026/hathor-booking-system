@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   ALLOWED_IMAGE_EXTENSIONS,
+  EMAIL_IMAGE_BUCKET,
   validateImageFile,
 } from "@/lib/image-upload";
-import { bufferToDataUrl } from "@/lib/email-image-data.server";
 import { buildObjectPath, uploadImageBuffer } from "@/lib/upload-image";
 
 export async function POST(request: NextRequest) {
@@ -36,14 +36,15 @@ export async function POST(request: NextRequest) {
     const objectPath = buildObjectPath(folder, extension);
     const buffer = Buffer.from(await file.arrayBuffer());
     const result = await uploadImageBuffer({
+      folder,
       objectPath,
       buffer,
       contentType: file.type,
+      bucket: folder === "email-templates" ? EMAIL_IMAGE_BUCKET : undefined,
     });
 
     return NextResponse.json({
       url: result.url,
-      dataUrl: bufferToDataUrl(buffer, file.type),
       path: result.path,
       storage: result.storage,
     });

@@ -19,9 +19,7 @@ import {
 type TemplateForm = {
   subject: string;
   logoUrl: string | null;
-  logoDataUrl: string | null;
   heroImageUrl: string | null;
-  heroImageDataUrl: string | null;
   primaryColor: string;
   backgroundColor: string;
   heroHeading: string;
@@ -53,9 +51,7 @@ function toForm(template: EmailTemplateRecord): TemplateForm {
   return {
     subject: template.subject,
     logoUrl: template.logoUrl,
-    logoDataUrl: template.logoDataUrl,
     heroImageUrl: template.heroImageUrl,
-    heroImageDataUrl: template.heroImageDataUrl,
     primaryColor: template.primaryColor,
     backgroundColor: template.backgroundColor,
     heroHeading: template.heroHeading ?? "",
@@ -141,9 +137,7 @@ export default function AdminEmailTemplatesPage() {
           name: editingName,
           subject: form.subject,
           logoUrl: form.logoUrl,
-          logoDataUrl: form.logoDataUrl,
           heroImageUrl: form.heroImageUrl,
-          heroImageDataUrl: form.heroImageDataUrl,
           primaryColor: form.primaryColor,
           backgroundColor: form.backgroundColor,
           heroHeading: form.heroHeading || null,
@@ -401,22 +395,18 @@ export default function AdminEmailTemplatesPage() {
                 label="Logo"
                 value={form.logoUrl}
                 onChange={(url) => updateForm({ logoUrl: url })}
-                onDataUrlChange={(dataUrl) => updateForm({ logoDataUrl: dataUrl })}
                 folder="email-templates"
                 variant="admin"
-                helperText="Stored in the database for reliable email delivery. Leave empty for the default Hathor logo."
+                helperText="Uploaded to Supabase Storage. Leave empty for the default Hathor logo."
               />
 
               <ImageUpload
                 label="Hero Banner Image"
                 value={form.heroImageUrl}
                 onChange={(url) => updateForm({ heroImageUrl: url })}
-                onDataUrlChange={(dataUrl) =>
-                  updateForm({ heroImageDataUrl: dataUrl })
-                }
                 folder="email-templates"
                 variant="admin"
-                helperText="Optional banner — embedded in the database so it always displays in inboxes."
+                helperText="Optional banner — hosted on Supabase for reliable display in all email clients."
               />
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

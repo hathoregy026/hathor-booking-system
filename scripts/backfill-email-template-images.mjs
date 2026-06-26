@@ -1,111 +1,72 @@
+/**
+ * Normalizes EmailTemplate image URLs (hosted URLs only — no base64).
+ *
+ * Run: npm run backfill:email-images
+ */
+
 import "dotenv/config";
-import { readFileSync } from "node:fs";
-import path from "node:path";
 import pg from "pg";
 
-function getSessionPoolerUrl() {
-  const url = process.env.DATABASE_URL;
-  if (!url) throw new Error("DATABASE_URL is not set");
+const connectionString =
+  process.env.DIRECT_URL?.trim() ||
+  process.env.DATABASE_DIRECT_URL?.trim() ||
+  process.env.DATABASE_URL?.trim();
 
-  return url
-    .replace(":6543/", ":5432/")
-    .replace("?pgbouncer=true&", "?")
-    .replace("&pgbouncer=true", "")
-    .replace("?pgbouncer=true", "");
+if (!connectionString) {
+  console.error("DATABASE_URL or DIRECT_URL is required");
+  process.exit(1);
 }
 
-function loadDefaultLogoDataUrl() {
-  const logoName = "e-mail-logo-egypttoor-booking-cruise-honeymoon.png";
-  const candidates = [
-    path.join(process.cwd(), "public", "assets", logoName),
-    path.join(process.cwd(), "assets", logoName),
-  ];
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
+  process.env.SITE_URL?.replace(/\/$/, "") ||
+  "https://hathor-booking-system.vercel.app";
 
-  for (const filePath of candidates) {
-    try {
-      const buffer = readFileSync(filePath);
-      return `data:image/png;base64,${buffer.toString("base64")}`;
-    } catch {
-      // try next
-    }
-  }
+const defaultLogoUrl = `${siteUrl}/assets/e-mail-logo-egypttoor-booking-cruise-honeymoon.png`;
 
-  throw new Error("Default logo file not found. Run npm run build or sync-email-assets first.");
+function normalizeUrl(value) {
+  if (!value?.trim()) return null;
+  const trimmed = value.trim();
+  if (trimmed.startsWith("data:image/")) return null;
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  if (trimmed.startsWith("/")) return `${siteUrl}${trimmed}`;
+  return trimmed;
 }
-
-async function fetchToDataUrl(url) {
-  if (!url || url.startsWith("data:image/")) return url || null;
-
-  try {
-    if (url.startsWith("/")) {
-      const localPath = path.join(process.cwd(), "public", url.replace(/^\//, ""));
-      const buffer = readFileSync(localPath);
-      const ext = path.extname(localPath).toLowerCase();
-      const mime =
-        ext === ".jpg" || ext === ".jpeg"
-          ? "image/jpeg"
-          : ext === ".webp"
-            ? "image/webp"
-            : "image/png";
-      return `data:${mime};base64,${buffer.toString("base64")}`;
-    }
-
-    const response = await fetch(url, { signal: AbortSignal.timeout(15000) });
-    if (!response.ok) return null;
-    const contentType = response.headers.get("content-type") ?? "image/png";
-    const buffer = Buffer.from(await response.arrayBuffer());
-    if (buffer.length > 2 * 1024 * 1024) return null;
-    return `data:${contentType.split(";")[0]};base64,${buffer.toString("base64")}`;
-  } catch (error) {
-    console.warn(`[backfill] could not fetch ${url}:`, error.message);
-    return null;
-  }
-}
-
-const defaultLogoDataUrl = loadDefaultLogoDataUrl();
 
 const pool = new pg.Pool({
-  connectionString: getSessionPoolerUrl(),
-  ssl: { rejectUnauthorized: false },
+  connectionString,
+  ssl: connectionString.includes("localhost")
+    ? false
+    : { rejectUnauthorized: false },
 });
 
 try {
   await pool.query(`
-    ALTER TABLE "EmailTemplate" ADD COLUMN IF NOT EXISTS "logoDataUrl" TEXT;
-    ALTER TABLE "EmailTemplate" ADD COLUMN IF NOT EXISTS "heroImageDataUrl" TEXT;
+    ALTER TABLE "EmailTemplate" DROP COLUMN IF EXISTS "logoDataUrl";
+    ALTER TABLE "EmailTemplate" DROP COLUMN IF EXISTS "heroImageDataUrl";
   `);
 
   const { rows } = await pool.query(
-    `SELECT "name", "logoUrl", "logoDataUrl", "heroImageUrl", "heroImageDataUrl" FROM "EmailTemplate"`,
+    `SELECT "name", "logoUrl", "heroImageUrl" FROM "EmailTemplate"`,
   );
 
   for (const row of rows) {
-    let logoDataUrl = row.logoDataUrl;
-    let heroImageDataUrl = row.heroImageDataUrl;
-
-    if (!logoDataUrl?.startsWith("data:image/")) {
-      logoDataUrl =
-        (await fetchToDataUrl(row.logoUrl)) ?? defaultLogoDataUrl;
-    }
-
-    if (
-      row.heroImageUrl &&
-      !heroImageDataUrl?.startsWith("data:image/")
-    ) {
-      heroImageDataUrl = await fetchToDataUrl(row.heroImageUrl);
-    }
+    const logoUrl = normalizeUrl(row.logoUrl) ?? defaultLogoUrl;
+    const heroImageUrl = normalizeUrl(row.heroImageUrl);
 
     await pool.query(
       `UPDATE "EmailTemplate"
-       SET "logoDataUrl" = $1, "heroImageDataUrl" = $2, "updatedAt" = NOW()
+       SET "logoUrl" = $1, "heroImageUrl" = $2, "updatedAt" = NOW()
        WHERE "name" = $3`,
-      [logoDataUrl, heroImageDataUrl, row.name],
+      [logoUrl, heroImageUrl, row.name],
     );
-
-    console.log(`Backfilled images for ${row.name}`);
+    console.log(`Updated ${row.name}: logo=${logoUrl ? "ok" : "none"}`);
   }
 
-  console.log("Email template image backfill complete.");
+  console.log("Backfill complete.");
+} catch (error) {
+  console.error("Backfill failed:", error);
+  process.exitCode = 1;
 } finally {
   await pool.end();
 }

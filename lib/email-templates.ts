@@ -1,8 +1,7 @@
 import { EMAIL_LOGO_URL, emailColors } from "@/emails/styles";
 import {
   EMAIL_LOGO_ASSET_PATH,
-  isEmailImageDataUrl,
-  resolveEmailLogoSrc,
+  resolveEmailHostedImageUrl,
 } from "@/lib/email-image-shared";
 import { HATHOR_LOGO_SRC } from "@/lib/branding";
 import { toAbsolutePublicUrl } from "@/lib/public-url";
@@ -20,9 +19,7 @@ export type EmailTemplateRecord = {
   name: EmailTemplateName;
   subject: string;
   logoUrl: string | null;
-  logoDataUrl: string | null;
   heroImageUrl: string | null;
-  heroImageDataUrl: string | null;
   primaryColor: string;
   backgroundColor: string;
   heroHeading: string | null;
@@ -32,9 +29,7 @@ export type EmailTemplateRecord = {
 
 export type EmailTemplateOverrides = {
   logoUrl?: string | null;
-  logoDataUrl?: string | null;
   heroImageUrl?: string | null;
-  heroImageDataUrl?: string | null;
   primaryColor?: string | null;
   backgroundColor?: string | null;
   heroHeading?: string | null;
@@ -50,9 +45,7 @@ const DEFAULT_TEMPLATES: Record<EmailTemplateName, Omit<EmailTemplateRecord, "id
     name: "BookingReceived",
     subject: "Your Hathor booking request has been received",
     logoUrl: EMAIL_LOGO_URL,
-    logoDataUrl: null,
     heroImageUrl: null,
-    heroImageDataUrl: null,
     primaryColor: emailColors.gold,
     backgroundColor: emailColors.background,
     heroHeading: "Thank You, {guestName}",
@@ -63,9 +56,7 @@ const DEFAULT_TEMPLATES: Record<EmailTemplateName, Omit<EmailTemplateRecord, "id
     name: "BookingConfirmed",
     subject: "Your Hathor Dahabiya cruise is confirmed",
     logoUrl: EMAIL_LOGO_URL,
-    logoDataUrl: null,
     heroImageUrl: null,
-    heroImageDataUrl: null,
     primaryColor: emailColors.gold,
     backgroundColor: emailColors.background,
     heroHeading: "Welcome Aboard, {guestName}",
@@ -76,9 +67,7 @@ const DEFAULT_TEMPLATES: Record<EmailTemplateName, Omit<EmailTemplateRecord, "id
     name: "AdminAlert",
     subject: "New booking request — {guestName}",
     logoUrl: EMAIL_LOGO_URL,
-    logoDataUrl: null,
     heroImageUrl: null,
-    heroImageDataUrl: null,
     primaryColor: emailColors.gold,
     backgroundColor: emailColors.background,
     heroHeading: "New Booking Request",
@@ -122,14 +111,8 @@ export function mergeEmailTemplate(
     name,
     subject: row.subject?.trim() || defaults.subject,
     logoUrl: toAbsolutePublicUrl(row.logoUrl?.trim()) || defaults.logoUrl,
-    logoDataUrl: isEmailImageDataUrl(row.logoDataUrl)
-      ? row.logoDataUrl!.trim()
-      : defaults.logoDataUrl,
     heroImageUrl:
       toAbsolutePublicUrl(row.heroImageUrl?.trim()) || defaults.heroImageUrl,
-    heroImageDataUrl: isEmailImageDataUrl(row.heroImageDataUrl)
-      ? row.heroImageDataUrl!.trim()
-      : defaults.heroImageDataUrl,
     primaryColor: row.primaryColor?.trim() || defaults.primaryColor,
     backgroundColor: row.backgroundColor?.trim() || defaults.backgroundColor,
     heroHeading: row.heroHeading?.trim() || defaults.heroHeading,
@@ -144,9 +127,7 @@ export function mergeAllEmailTemplates(
     name: string;
     subject: string;
     logoUrl: string | null;
-    logoDataUrl: string | null;
     heroImageUrl: string | null;
-    heroImageDataUrl: string | null;
     primaryColor: string;
     backgroundColor: string;
     heroHeading: string | null;
@@ -165,9 +146,7 @@ export function mergeAllEmailTemplates(
       name: name as EmailTemplateName,
       subject: row.subject,
       logoUrl: row.logoUrl,
-      logoDataUrl: row.logoDataUrl,
       heroImageUrl: row.heroImageUrl,
-      heroImageDataUrl: row.heroImageDataUrl,
       primaryColor: row.primaryColor,
       backgroundColor: row.backgroundColor,
       heroHeading: row.heroHeading,
@@ -189,17 +168,9 @@ export function toEmailThemeOverrides(
 ): EmailTemplateOverrides | undefined {
   if (!template) return undefined;
 
-  const previewLogoUrl = toAbsolutePublicUrl(template.logoUrl);
-  const previewHeroUrl = toAbsolutePublicUrl(template.heroImageUrl);
-
   return {
-    logoUrl: resolveEmailLogoSrc(template.logoDataUrl, previewLogoUrl),
-    logoDataUrl: template.logoDataUrl,
-    heroImageUrl:
-      (isEmailImageDataUrl(template.heroImageDataUrl)
-        ? template.heroImageDataUrl
-        : previewHeroUrl) ?? null,
-    heroImageDataUrl: template.heroImageDataUrl,
+    logoUrl: resolveEmailHostedImageUrl(template.logoUrl) ?? EMAIL_LOGO_URL,
+    heroImageUrl: resolveEmailHostedImageUrl(template.heroImageUrl),
     primaryColor: template.primaryColor,
     backgroundColor: template.backgroundColor,
     heroHeading: template.heroHeading,
@@ -207,29 +178,12 @@ export function toEmailThemeOverrides(
   };
 }
 
-/** Logo src for admin UI preview — prefers embedded data, then stored URL. */
 export function getEmailTemplatePreviewLogoSrc(
   template: EmailTemplateRecord,
 ): string {
-  if (isEmailImageDataUrl(template.logoDataUrl)) {
-    return template.logoDataUrl!.trim();
-  }
-
-  const url = template.logoUrl?.trim();
-  if (url) {
-    if (
-      url.startsWith("/") ||
-      url.startsWith("data:") ||
-      /^https?:\/\//i.test(url)
-    ) {
-      return url;
-    }
-  }
-
-  return EMAIL_LOGO_ASSET_PATH;
+  return resolveEmailHostedImageUrl(template.logoUrl) ?? EMAIL_LOGO_ASSET_PATH;
 }
 
-/** Safe fallback when a template logo URL fails to load in the browser. */
 export function getEmailTemplatePreviewLogoFallback(): string {
   return HATHOR_LOGO_SRC;
 }
@@ -237,9 +191,5 @@ export function getEmailTemplatePreviewLogoFallback(): string {
 export function getEmailTemplatePreviewHeroSrc(
   template: EmailTemplateRecord,
 ): string | null {
-  if (template.heroImageUrl) return template.heroImageUrl;
-  if (isEmailImageDataUrl(template.heroImageDataUrl)) {
-    return template.heroImageDataUrl;
-  }
-  return null;
+  return resolveEmailHostedImageUrl(template.heroImageUrl);
 }

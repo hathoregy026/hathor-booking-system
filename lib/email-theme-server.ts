@@ -4,27 +4,18 @@ import type {
   EmailTemplateOverrides,
   EmailTemplateRecord,
 } from "@/lib/email-templates";
-import { isEmailImageDataUrl } from "@/lib/email-image-shared";
-import { resolveEmailLogoSrcForSend } from "@/lib/email-image-data.server";
+import { EMAIL_LOGO_URL } from "@/emails/styles";
 import { toAbsolutePublicUrl } from "@/lib/public-url";
 
-/** Theme overrides for server-side email render/send (embedded logos). */
+/** Theme overrides for server-side email render/send (hosted image URLs). */
 export function toEmailThemeOverridesForSend(
   template: EmailTemplateRecord | null | undefined,
 ): EmailTemplateOverrides | undefined {
   if (!template) return undefined;
 
-  const previewLogoUrl = toAbsolutePublicUrl(template.logoUrl);
-  const previewHeroUrl = toAbsolutePublicUrl(template.heroImageUrl);
-
   return {
-    logoUrl: resolveEmailLogoSrcForSend(template.logoDataUrl, previewLogoUrl),
-    logoDataUrl: template.logoDataUrl,
-    heroImageUrl:
-      (isEmailImageDataUrl(template.heroImageDataUrl)
-        ? template.heroImageDataUrl
-        : previewHeroUrl) ?? null,
-    heroImageDataUrl: template.heroImageDataUrl,
+    logoUrl: toAbsolutePublicUrl(template.logoUrl) ?? EMAIL_LOGO_URL,
+    heroImageUrl: toAbsolutePublicUrl(template.heroImageUrl),
     primaryColor: template.primaryColor,
     backgroundColor: template.backgroundColor,
     heroHeading: template.heroHeading,
