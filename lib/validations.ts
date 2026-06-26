@@ -1,5 +1,9 @@
 import { isValid, parseISO, startOfDay } from "date-fns";
 import { z } from "zod";
+import {
+  MAX_GUESTS_PER_ROOM,
+  validateRoomGuestCapacity,
+} from "@/lib/room-capacity";
 
 const utcIsoDateString = z
   .string()
@@ -28,11 +32,22 @@ export const luxuryRoomTypeSchema = z.enum([
   "luxury-royal-suites",
 ]);
 
-export const roomSearchConfigSchema = z.object({
-  roomType: luxuryRoomTypeSchema,
-  adults: z.coerce.number().int().min(1).max(10),
-  children: z.coerce.number().int().min(0).max(10),
-});
+export const roomSearchConfigSchema = z
+  .object({
+    roomType: luxuryRoomTypeSchema,
+    adults: z.coerce.number().int().min(1).max(MAX_GUESTS_PER_ROOM),
+    children: z.coerce.number().int().min(0).max(MAX_GUESTS_PER_ROOM),
+  })
+  .superRefine((data, ctx) => {
+    const message = validateRoomGuestCapacity(data);
+    if (message) {
+      ctx.addIssue({
+        code: "custom",
+        message,
+        path: ["adults"],
+      });
+    }
+  });
 
 const roomsJsonParam = z
   .string()
@@ -158,8 +173,8 @@ export const cruiseSearchSchema = z
     checkInDate: utcIsoDateString,
     rooms: roomsJsonParam.optional(),
     roomType: luxuryRoomTypeSchema.optional(),
-    adults: z.coerce.number().int().min(1).max(10).optional(),
-    children: z.coerce.number().int().min(0).max(10).optional(),
+    adults: z.coerce.number().int().min(1).max(MAX_GUESTS_PER_ROOM).optional(),
+    children: z.coerce.number().int().min(0).max(MAX_GUESTS_PER_ROOM).optional(),
   })
   .refine(
     (data) => {
@@ -183,18 +198,28 @@ export const cruiseSearchSchema = z
     },
   );
 
-export const checkoutBookingSchema = z.object({
-  cruiseId: z.string().min(1, "cruiseId is required"),
-  cruiseScheduleId: z.string().min(1, "cruiseScheduleId is required"),
-  roomId: z.string().min(1, "roomId is required"),
-  fullName: z.string().trim().min(1, "Full name is required"),
-  email: z.string().trim().email("Valid email is required"),
-  phone: z.string().trim().min(6, "Phone number is required"),
-  adults: z.coerce.number().int().min(1).max(10),
-  children: z.coerce.number().int().min(0).max(10),
-  specialRequests: z.string().trim().max(2000).optional().default(""),
-  priceCents: z.coerce.number().int().positive().optional(),
-});
+export const checkoutBookingSchema = z
+  .object({
+    cruiseId: z.string().min(1, "cruiseId is required"),
+    cruiseScheduleId: z.string().min(1, "cruiseScheduleId is required"),
+    roomId: z.string().min(1, "roomId is required"),
+    fullName: z.string().trim().min(1, "Full name is required"),
+    email: z.string().trim().email("Valid email is required"),
+    phone: z.string().trim().min(6, "Phone number is required"),
+    adults: z.coerce.number().int().min(1).max(MAX_GUESTS_PER_ROOM),
+    children: z.coerce.number().int().min(0).max(MAX_GUESTS_PER_ROOM),
+    specialRequests: z.string().trim().max(2000).optional().default(""),
+    priceCents: z.coerce.number().int().positive().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.adults + data.children > MAX_GUESTS_PER_ROOM) {
+      ctx.addIssue({
+        code: "custom",
+        message: `Maximum ${MAX_GUESTS_PER_ROOM} guests per room`,
+        path: ["adults"],
+      });
+    }
+  });
 
 export const periodSearchSchema = z
   .object({
@@ -202,8 +227,8 @@ export const periodSearchSchema = z
     periodEnd: utcIsoDateString,
     rooms: roomsJsonParam.optional(),
     roomType: luxuryRoomTypeSchema.optional(),
-    adults: z.coerce.number().int().min(1).max(10).optional(),
-    children: z.coerce.number().int().min(0).max(10).optional(),
+    adults: z.coerce.number().int().min(1).max(MAX_GUESTS_PER_ROOM).optional(),
+    children: z.coerce.number().int().min(0).max(MAX_GUESTS_PER_ROOM).optional(),
   })
   .refine(
     (data) => new Date(data.periodEnd) > new Date(data.periodStart),
@@ -244,3 +269,19 @@ export type RoomSearchConfigInput = z.infer<typeof roomSearchConfigSchema>;
 export type CreateHold = z.infer<typeof createHoldSchema>;
 export type ConfirmBooking = z.infer<typeof confirmBookingSchema>;
 export type CheckoutBooking = z.infer<typeof checkoutBookingSchema>;
+
+const calendarDateParam = z
+  .string()
+  .min(1)
+  .refine((value) => isValid(parseISO(value)), {
+    message: "Invalid date",
+  });
+
+export const cruiseCalendarQuerySchema = z.object({
+  duration: stayDurationSchema,
+  rooms: roomsJsonParam,
+  from: calendarDateParam,
+  to: calendarDateParam,
+});
+
+export type CruiseCalendarQuery = z.infer<typeof cruiseCalendarQuerySchema>;

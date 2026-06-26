@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import type { CheckoutSummary } from "@/lib/booking-checkout-summary";
 import { formatPrice, formatUtcDate } from "@/lib/client-dates";
+import { getMaxCapacityForDbRoomType } from "@/lib/room-capacity";
 
 const COUNTRY_CODES = [
   { code: "+20", label: "Egypt (+20)" },
@@ -64,6 +65,10 @@ export function CheckoutForm({ summary }: CheckoutFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const guestTotal = form.adults + form.children;
+  const maxGuests = Math.min(
+    summary.capacity,
+    getMaxCapacityForDbRoomType(summary.roomType),
+  );
 
   const validate = (): boolean => {
     const nextErrors: Partial<Record<keyof FormState, string>> = {};
@@ -90,6 +95,10 @@ export function CheckoutForm({ summary }: CheckoutFormProps) {
 
     if (form.children < 0) {
       nextErrors.children = "Invalid number of children";
+    }
+
+    if (guestTotal > maxGuests) {
+      nextErrors.adults = `This room allows a maximum of ${maxGuests} guests`;
     }
 
     setFieldErrors(nextErrors);
@@ -277,7 +286,7 @@ export function CheckoutForm({ summary }: CheckoutFormProps) {
                 id="adults"
                 type="number"
                 min={1}
-                max={10}
+                max={Math.max(1, maxGuests - form.children)}
                 value={form.adults}
                 onChange={(event) =>
                   setForm((current) => ({
@@ -301,7 +310,7 @@ export function CheckoutForm({ summary }: CheckoutFormProps) {
                 id="children"
                 type="number"
                 min={0}
-                max={10}
+                max={Math.max(0, maxGuests - form.adults)}
                 value={form.children}
                 onChange={(event) =>
                   setForm((current) => ({

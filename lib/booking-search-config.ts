@@ -1,4 +1,5 @@
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
+import { clampRoomSearchConfig } from "@/lib/room-capacity";
 
 export type StayDurationValue =
   | "3-nights-aswan-luxor"
@@ -156,14 +157,14 @@ export function normalizeRoomConfigsForDuration(
   rooms: RoomSearchConfig[],
 ): RoomSearchConfig[] {
   return rooms.map((room) => {
-    if (durationSupportsRoomType(duration, room.roomType)) {
-      return room;
-    }
+    const withType = durationSupportsRoomType(duration, room.roomType)
+      ? room
+      : {
+          ...room,
+          roomType: getDefaultRoomTypeForDuration(duration),
+        };
 
-    return {
-      ...room,
-      roomType: getDefaultRoomTypeForDuration(duration),
-    };
+    return clampRoomSearchConfig(withType);
   });
 }
 

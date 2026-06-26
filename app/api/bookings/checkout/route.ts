@@ -15,6 +15,7 @@ import {
   sendBookingReceivedEmail,
 } from "@/lib/email";
 import { prisma } from "@/lib/prisma";
+import { validateRoomGuestCapacityForDbRoom } from "@/lib/room-capacity";
 import { checkoutBookingSchema } from "@/lib/validations";
 
 export const dynamic = "force-dynamic";
@@ -53,6 +54,7 @@ export async function POST(request: NextRequest) {
           id: true,
           name: true,
           roomType: true,
+          capacity: true,
           priceMultiplier: true,
           cruise: { select: { basePriceCents: true } },
         },
@@ -60,6 +62,22 @@ export async function POST(request: NextRequest) {
 
       if (!room) {
         throw new InvalidBookingError("Room not found for this cruise");
+      }
+
+      const capacityError = validateRoomGuestCapacityForDbRoom(
+        room.roomType,
+        parsed.adults,
+        parsed.children,
+      );
+      if (capacityError) {
+        throw new InvalidBookingError(capacityError);
+      }
+
+      const guestTotal = parsed.adults + parsed.children;
+      if (guestTotal > room.capacity) {
+        throw new InvalidBookingError(
+          `This room allows a maximum of ${room.capacity} guests.`,
+        );
       }
 
       const multiplier = room.priceMultiplier > 0 ? room.priceMultiplier : 1;

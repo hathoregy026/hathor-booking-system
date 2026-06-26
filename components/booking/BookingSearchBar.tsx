@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { format, parseISO } from "date-fns";
 import type { DateRange } from "react-day-picker";
 import { CalendarDays, ChevronDown, Loader2, Users, X } from "lucide-react";
-import { DayPicker } from "react-day-picker";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 import { calendarDateToUtcIso } from "@/lib/client-dates";
 import {
@@ -14,6 +13,10 @@ import {
   type StayDurationValue,
 } from "@/lib/booking-search-config";
 import type { BookingSearchMode } from "@/store/bookingStore";
+import {
+  BookingCalendarPicker,
+  parseCalendarSelectedDate,
+} from "./BookingCalendarPicker";
 import { BookingGuestsPanel } from "./BookingGuestsPanel";
 
 type BookingSearchBarProps = {
@@ -135,22 +138,21 @@ export function BookingSearchBar({
 
   const calendarContent =
     searchMode === "period" ? (
-      <DayPicker
+      <BookingCalendarPicker
         mode="range"
-        selected={selectedPeriod}
-        onSelect={handlePeriodSelect}
-        disabled={{ before: new Date() }}
+        rooms={rooms}
+        selectedRange={selectedPeriod}
+        onRangeSelect={handlePeriodSelect}
         numberOfMonths={calendarMonths}
-        className="rdp-root"
       />
     ) : (
-      <DayPicker
+      <BookingCalendarPicker
         mode="single"
-        selected={checkInDate ? parseISO(checkInDate) : undefined}
+        duration={duration}
+        rooms={rooms}
+        selected={parseCalendarSelectedDate(checkInDate)}
         onSelect={handleCheckInSelect}
-        disabled={{ before: new Date() }}
         numberOfMonths={calendarMonths}
-        className="rdp-root"
       />
     );
 

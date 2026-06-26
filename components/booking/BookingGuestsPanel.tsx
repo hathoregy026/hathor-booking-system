@@ -6,6 +6,11 @@ import {
   LUXURY_ROOM_TYPE_OPTIONS,
   type RoomSearchConfig,
 } from "@/lib/booking-search-config";
+import {
+  clampRoomSearchConfig,
+  getMaxCapacityForLuxuryType,
+  getRoomGuestTotal,
+} from "@/lib/room-capacity";
 
 type BookingGuestsPanelProps = {
   rooms: RoomSearchConfig[];
@@ -66,7 +71,9 @@ export function BookingGuestsPanel({
   const updateRoom = (index: number, patch: Partial<RoomSearchConfig>) => {
     onChange(
       rooms.map((room, roomIndex) =>
-        roomIndex === index ? { ...room, ...patch } : room,
+        roomIndex === index
+          ? clampRoomSearchConfig({ ...room, ...patch })
+          : room,
       ),
     );
   };
@@ -84,70 +91,82 @@ export function BookingGuestsPanel({
   return (
     <div className="booking-guests-panel">
       <div className="space-y-4">
-        {rooms.map((room, index) => (
-          <div key={index} className="booking-guests-room">
-            <div className="mb-3 flex items-center justify-between">
-              <p className="text-xs font-semibold uppercase tracking-wider text-[var(--booking-muted)]">
-                Room {index + 1}
-              </p>
-              {rooms.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removeRoom(index)}
-                  className="text-xs font-medium text-[var(--booking-muted)] transition hover:text-[var(--booking-navy)]"
-                >
-                  Remove
-                </button>
-              )}
-            </div>
+        {rooms.map((room, index) => {
+          const maxGuests = getMaxCapacityForLuxuryType(room.roomType);
+          const guestTotal = getRoomGuestTotal(room);
+          const remainingAdultSlots = Math.max(1, maxGuests - room.children);
+          const remainingChildSlots = Math.max(0, maxGuests - room.adults);
 
-            <div className="space-y-3">
-              <div>
-                <label
-                  htmlFor={`room-type-${index}`}
-                  className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--booking-muted)]"
-                >
-                  Room Types
-                </label>
-                <select
-                  id={`room-type-${index}`}
-                  value={room.roomType}
-                  onChange={(event) =>
-                    updateRoom(index, {
-                      roomType: event.target
-                        .value as RoomSearchConfig["roomType"],
-                    })
-                  }
-                  className="booking-widget-select w-full"
-                >
-                  <option value="" disabled>
-                    Select room type
-                  </option>
-                  {LUXURY_ROOM_TYPE_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+          return (
+            <div key={index} className="booking-guests-room">
+              <div className="mb-3 flex items-center justify-between">
+                <p className="text-xs font-semibold uppercase tracking-wider text-[var(--booking-muted)]">
+                  Room {index + 1}
+                </p>
+                {rooms.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeRoom(index)}
+                    className="text-xs font-medium text-[var(--booking-muted)] transition hover:text-[var(--booking-navy)]"
+                  >
+                    Remove
+                  </button>
+                )}
               </div>
 
-              <CounterRow
-                label="Adults"
-                value={room.adults}
-                min={1}
-                max={10}
-                onChange={(adults) => updateRoom(index, { adults })}
-              />
-              <CounterRow
-                label="Children"
-                value={room.children}
-                min={0}
-                max={10}
-                onChange={(children) => updateRoom(index, { children })}
-              />
+              <div className="space-y-3">
+                <div>
+                  <label
+                    htmlFor={`room-type-${index}`}
+                    className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--booking-muted)]"
+                  >
+                    Room Types
+                  </label>
+                  <select
+                    id={`room-type-${index}`}
+                    value={room.roomType}
+                    onChange={(event) =>
+                      updateRoom(index, {
+                        roomType: event.target
+                          .value as RoomSearchConfig["roomType"],
+                      })
+                    }
+                    className="booking-widget-select w-full"
+                  >
+                    <option value="" disabled>
+                      Select room type
+                    </option>
+                    {LUXURY_ROOM_TYPE_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label} (max{" "}
+                        {getMaxCapacityForLuxuryType(option.value)} guests)
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <CounterRow
+                  label="Adults"
+                  value={room.adults}
+                  min={1}
+                  max={remainingAdultSlots}
+                  onChange={(adults) => updateRoom(index, { adults })}
+                />
+                <CounterRow
+                  label="Children"
+                  value={room.children}
+                  min={0}
+                  max={remainingChildSlots}
+                  onChange={(children) => updateRoom(index, { children })}
+                />
+
+                <p className="text-[11px] text-[var(--booking-muted)]">
+                  {guestTotal} of {maxGuests} guests allowed for this room type
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="mt-4 flex flex-col gap-3 border-t border-[var(--booking-border)] pt-4 sm:flex-row sm:items-center sm:justify-between">

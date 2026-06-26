@@ -18,6 +18,7 @@ export type CheckoutSummary = {
   title: string;
   meta: string;
   roomType: string | null;
+  capacity: number;
   checkInDate: string | null;
   adults: number;
   children: number;
@@ -129,6 +130,7 @@ export async function getCheckoutSummary(input: {
     title: roomDetails.title,
     meta: roomDetails.meta,
     roomType: roomDetails.roomType,
+    capacity: roomDetails.capacity,
     checkInDate: input.checkInDate ?? null,
     adults: parseGuestCount(input.adults ?? undefined, 2),
     children: parseGuestCount(input.children ?? undefined, 0),

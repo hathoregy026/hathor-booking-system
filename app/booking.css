@@ -707,6 +707,74 @@
   --rdp-range_middle-background-color: rgb(201 169 110 / 0.15);
 }
 
+.hathor-calendar .rdp-day {
+  width: 3.25rem;
+  height: 3.75rem;
+}
+
+.hathor-calendar-day {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 3.25rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1rem;
+  border-radius: 0.5rem;
+  padding: 0.2rem 0.15rem;
+  line-height: 1.1;
+}
+
+.hathor-calendar-day__number {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.hathor-calendar-day__price {
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--booking-gold);
+}
+
+.hathor-calendar-day__label {
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #9a6b6b;
+}
+
+.hathor-calendar-day[data-status="booked"] {
+  background: rgb(154 107 107 / 0.12);
+  color: #7a5555;
+  cursor: not-allowed;
+}
+
+.hathor-calendar-day[data-status="closed"] {
+  opacity: 0.35;
+}
+
+.hathor-calendar-day[data-status="available"]:not(:disabled):hover {
+  background: rgb(201 169 110 / 0.14);
+}
+
+.hathor-calendar-legend {
+  display: inline-block;
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 999px;
+}
+
+.hathor-calendar-legend--available {
+  background: rgb(201 169 110 / 0.55);
+}
+
+.hathor-calendar-legend--booked {
+  background: rgb(154 107 107 / 0.45);
+}
+
 /* ——— Custom scrollbars (booking & public site) ——— */
 .booking-page,
 .booking-page *,
