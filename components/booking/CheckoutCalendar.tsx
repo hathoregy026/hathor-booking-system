@@ -106,9 +106,6 @@ function MonthPanel({
           const meta = dayMeta.get(cell.dateKey);
           const isDepartureDay = isValidDepartureDateKey(cell.dateKey, duration);
           const isAvailable = meta?.status === "available" && isDepartureDay;
-          const isBooked = meta?.status === "booked";
-          const isClosed =
-            !isDepartureDay || !meta || meta.status === "closed" || isBooked;
 
           const isCheckIn = selectedDateKey === cell.dateKey;
           const isCheckOut = checkOutDateKey === cell.dateKey;
@@ -118,10 +115,8 @@ function MonthPanel({
             cell.dateKey > selectedDateKey &&
             cell.dateKey < checkOutDateKey;
 
-          let statusClass = "historia-cal-day--muted";
-          if (isBooked) statusClass = "historia-cal-day--booked";
-          else if (isAvailable) statusClass = "historia-cal-day--available";
-          else if (isClosed) statusClass = "historia-cal-day--closed";
+          let statusClass = "historia-cal-day--unavailable";
+          if (isAvailable) statusClass = "historia-cal-day--available";
 
           return (
             <button
@@ -229,7 +224,6 @@ export function CheckoutCalendar({
         setDays(data.days ?? []);
       } catch (loadError) {
         if (controller.signal.aborted) return;
-        setDays([]);
         setError(
           loadError instanceof Error ? loadError.message : "Failed to load calendar",
         );
@@ -248,7 +242,27 @@ export function CheckoutCalendar({
   );
 
   return (
-    <section className="historia-checkout-calendar">
+    <section
+      className="historia-checkout-calendar"
+      aria-busy={isLoading}
+    >
+      <div className="historia-checkout-calendar__stay-labels">
+        <span
+          className={`historia-checkout-calendar__stay-label${
+            selectedDateKey ? " historia-checkout-calendar__stay-label--active" : ""
+          }`}
+        >
+          Check in
+        </span>
+        <span
+          className={`historia-checkout-calendar__stay-label${
+            checkOutDateKey ? " historia-checkout-calendar__stay-label--active" : ""
+          }`}
+        >
+          Check out
+        </span>
+      </div>
+
       <div className="historia-checkout-calendar__range">
         <p className="historia-checkout-calendar__range-label">{rangeLabel}</p>
         <div className="historia-checkout-calendar__nav">
@@ -271,7 +285,11 @@ export function CheckoutCalendar({
         </div>
       </div>
 
-      <div className="historia-checkout-calendar__months">
+      <div
+        className={`historia-checkout-calendar__months${
+          isLoading ? " historia-checkout-calendar__months--loading" : ""
+        }`}
+      >
         <MonthPanel
           year={monthA.getFullYear()}
           monthIndex={monthA.getMonth()}
@@ -292,20 +310,23 @@ export function CheckoutCalendar({
         />
       </div>
 
-      {isLoading ? (
-        <p className="historia-checkout-calendar__status">Loading sailings…</p>
-      ) : null}
-      {error ? (
-        <p className="historia-checkout-calendar__error" role="alert">
-          {error}
-        </p>
-      ) : null}
+      <div className="historia-checkout-calendar__status-slot" aria-live="polite">
+        {error ? (
+          <p className="historia-checkout-calendar__error" role="alert">
+            {error}
+          </p>
+        ) : isLoading ? (
+          <p className="historia-checkout-calendar__status">Loading sailings…</p>
+        ) : (
+          <span className="historia-checkout-calendar__status-placeholder" aria-hidden />
+        )}
+      </div>
 
       <div className="historia-checkout-calendar__legend" aria-hidden>
         <span className="historia-checkout-calendar__legend-item historia-checkout-calendar__legend-item--available">
           Available
         </span>
-        <span className="historia-checkout-calendar__legend-item historia-checkout-calendar__legend-item--booked">
+        <span className="historia-checkout-calendar__legend-item historia-checkout-calendar__legend-item--unavailable">
           No availability
         </span>
       </div>

@@ -862,12 +862,16 @@
 
 /* ─── Historia-style booking flow (/booking) ─── */
 
-.hathor-booking-flow {
-  animation: bookingSlideUp 0.45s ease backwards;
+.booking-page {
+  scroll-behavior: auto;
+}
+
+.booking-main {
+  overflow-anchor: none;
 }
 
 .hathor-booking-flow__header {
-  margin: 1.75rem 0 2rem;
+  margin: 1.25rem 0 1.75rem;
   text-align: center;
 }
 
@@ -886,105 +890,142 @@
   margin-right: auto;
 }
 
-.hathor-booking-progress {
+/* Historia-style segmented step bar (Hathor palette) */
+
+.hathor-checkout-steps {
+  width: 100vw;
   position: relative;
-  padding: 0 0 1.5rem;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  margin-bottom: 1.75rem;
+  background: #0a0a0a;
+  border-bottom: 1px solid rgb(201 169 110 / 0.25);
 }
 
-.hathor-booking-progress__track {
-  position: absolute;
-  top: 1.1rem;
-  left: 5%;
-  right: 5%;
-  height: 3px;
-  background: var(--booking-border);
-  border-radius: 9999px;
-  overflow: hidden;
+.hathor-checkout-steps__inner {
+  display: flex;
+  align-items: stretch;
+  min-height: 4.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
-.hathor-booking-progress__fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--booking-gold-dark), var(--booking-gold));
-  border-radius: 9999px;
-  transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+.hathor-checkout-steps__brand {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  padding: 0 1.25rem;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--booking-gold);
+  text-decoration: none;
+  border-right: 1px solid rgb(255 255 255 / 0.08);
 }
 
-.hathor-booking-progress__steps {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.5rem;
+.hathor-checkout-steps__brand:hover {
+  color: #f5ecd8;
+}
+
+.hathor-checkout-steps__segments {
+  display: flex;
+  flex: 1;
+  min-width: 0;
   list-style: none;
   margin: 0;
   padding: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 
-.hathor-booking-progress__step {
+.hathor-checkout-steps__segments::-webkit-scrollbar {
+  display: none;
+}
+
+.hathor-checkout-steps__segment {
+  position: relative;
   display: flex;
+  flex: 1;
+  min-width: 9.5rem;
   flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
+  gap: 0.2rem;
+  padding: 0.65rem 0.85rem;
+  border-right: 1px solid rgb(255 255 255 / 0.08);
+  color: rgb(250 248 245 / 0.55);
   text-align: center;
-  color: var(--booking-muted);
-  font-size: 0.625rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+}
+
+.hathor-checkout-steps__segment-title {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-@media (min-width: 640px) {
-  .hathor-booking-progress__step {
-    font-size: 0.6875rem;
-  }
+.hathor-checkout-steps__segment-meta {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: rgb(250 248 245 / 0.75);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.hathor-booking-progress__marker {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 9999px;
-  border: 2px solid var(--booking-border);
-  background: var(--booking-card);
-  font-size: 0.75rem;
-  font-weight: 700;
-  transition:
-    border-color 0.3s ease,
-    background 0.3s ease,
-    color 0.3s ease;
+.hathor-checkout-steps__segment--complete {
+  color: rgb(201 169 110 / 0.85);
 }
 
-.hathor-booking-progress__step--active .hathor-booking-progress__marker {
-  border-color: var(--booking-gold);
-  background: var(--booking-gold);
+.hathor-checkout-steps__segment--complete .hathor-checkout-steps__segment-meta {
+  color: var(--booking-gold);
+}
+
+.hathor-checkout-steps__segment--active {
+  background: #2f4f4f;
+  color: #faf8f5;
+}
+
+.hathor-checkout-steps__segment--active .hathor-checkout-steps__segment-meta {
   color: #fff;
-  box-shadow: 0 2px 12px rgb(201 169 110 / 0.45);
+  font-weight: 600;
 }
 
-.hathor-booking-progress__step--complete .hathor-booking-progress__marker {
-  border-color: var(--booking-gold-dark);
-  background: var(--booking-gold-light);
-  color: var(--booking-gold-dark);
+.hathor-checkout-steps__caret {
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 7px solid var(--booking-bg);
 }
 
-.hathor-booking-progress__step--active {
-  color: var(--booking-text);
-}
-
-.hathor-booking-progress__step--complete {
-  color: var(--booking-gold-dark);
-}
-
-.hathor-booking-progress__label {
-  max-width: 5.5rem;
-  line-height: 1.3;
-}
-
-@media (max-width: 479px) {
-  .hathor-booking-progress__label {
-    display: none;
+@media (min-width: 768px) {
+  .hathor-checkout-steps__segment {
+    min-width: 0;
+    padding: 0.75rem 1rem;
   }
+
+  .hathor-checkout-steps__segment-title {
+    font-size: 0.625rem;
+  }
+
+  .hathor-checkout-steps__segment-meta {
+    font-size: 0.75rem;
+  }
+}
+
+/* Legacy progress (unused) — kept for /book wizard if referenced */
+
+.hathor-booking-progress {
+  display: none;
 }
 
 .hathor-checkout-grid {
@@ -1332,6 +1373,44 @@
   max-width: 56rem;
   margin: 0 auto;
   padding: 0 1rem 2rem;
+  overflow-anchor: none;
+}
+
+.historia-checkout-calendar__stay-labels {
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+  margin-bottom: 0.75rem;
+  min-height: 1.25rem;
+}
+
+.historia-checkout-calendar__stay-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgb(180 180 180 / 0.9);
+  transition: color 0.2s ease;
+}
+
+.historia-checkout-calendar__stay-label--active {
+  color: #b42318;
+}
+
+.historia-checkout-calendar__months--loading {
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+.historia-checkout-calendar__status-slot {
+  min-height: 1.5rem;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.historia-checkout-calendar__status-placeholder {
+  display: block;
+  min-height: 1.5rem;
 }
 
 .historia-checkout-calendar__range {
@@ -1425,14 +1504,15 @@
   min-height: 3.25rem;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 0.125rem;
   padding: 0.35rem 0.2rem;
-  border: 1px solid var(--booking-border);
-  background: var(--booking-surface);
+  border: 1px solid #c8c8c8;
+  background: #fff;
   font-size: 0.8125rem;
   line-height: 1.2;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  overflow: hidden;
 }
 
 .historia-cal-day--empty {
@@ -1441,29 +1521,33 @@
   pointer-events: none;
 }
 
-.historia-cal-day--muted {
-  opacity: 0.35;
+/* Historia exact crossed-out unavailable cell */
+.historia-cal-day--unavailable {
+  background: #6d6d6d;
+  border-color: #5a5a5a;
+  color: #1a1a1a;
   cursor: not-allowed;
+  opacity: 1;
 }
 
-.historia-cal-day--closed {
-  opacity: 0.35;
-  cursor: not-allowed;
-  background: #ece8e1;
-}
-
-.historia-cal-day--booked {
-  opacity: 0.4;
-  cursor: not-allowed;
-  background: #3a3a3a;
-  color: #f5f5f5;
-  background-image: linear-gradient(
-    135deg,
-    transparent 46%,
-    rgb(255 255 255 / 0.25) 46%,
-    rgb(255 255 255 / 0.25) 54%,
-    transparent 54%
+.historia-cal-day--unavailable::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom right,
+    transparent calc(50% - 0.75px),
+    #2a2a2a calc(50% - 0.75px),
+    #2a2a2a calc(50% + 0.75px),
+    transparent calc(50% + 0.75px)
   );
+  pointer-events: none;
+}
+
+.historia-cal-day--unavailable .historia-cal-day__num {
+  position: relative;
+  z-index: 1;
+  font-weight: 600;
 }
 
 .historia-cal-day--available {
@@ -1475,7 +1559,6 @@
 }
 
 .historia-cal-day--available:hover {
-  transform: translateY(-1px);
   box-shadow: 0 4px 12px rgb(47 79 79 / 0.35);
   background: #3a6363;
 }
@@ -1548,15 +1631,15 @@
   border-color: #2f4f4f;
 }
 
-.historia-checkout-calendar__legend-item--booked::before {
-  background: #3a3a3a;
-  opacity: 0.5;
+.historia-checkout-calendar__legend-item--unavailable::before {
+  background: #6d6d6d;
+  border-color: #5a5a5a;
   background-image: linear-gradient(
-    135deg,
-    transparent 46%,
-    rgb(255 255 255 / 0.35) 46%,
-    rgb(255 255 255 / 0.35) 54%,
-    transparent 54%
+    to bottom right,
+    transparent calc(50% - 0.75px),
+    #2a2a2a calc(50% - 0.75px),
+    #2a2a2a calc(50% + 0.75px),
+    transparent calc(50% + 0.75px)
   );
 }
 

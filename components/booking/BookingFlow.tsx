@@ -9,6 +9,10 @@ import { ProgressBar } from "@/components/booking/ProgressBar";
 import { RoomSelection } from "@/components/booking/RoomSelection";
 import { SuccessStep } from "@/components/booking/SuccessStep";
 import {
+  formatCheckInFromDateKey,
+  formatCheckoutFromDateKey,
+} from "@/lib/booking-modal-helpers";
+import {
   fetchAvailabilitySearch,
   getAvailabilityErrorMessage,
 } from "@/lib/booking-availability-client";
@@ -46,6 +50,7 @@ export function BookingFlow() {
     setError,
     setIsLoading,
     selectRoomForCheckout,
+    totalPrice,
   } = useBookingStore();
 
   const [pendingDateKey, setPendingDateKey] = useState<string | null>(() =>
@@ -125,7 +130,6 @@ export function BookingFlow() {
       setAvailability(availability);
       setSearchAttempted(true);
       setCheckoutStep(3);
-      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (updateError) {
       setError(
         updateError instanceof Error
@@ -139,14 +143,23 @@ export function BookingFlow() {
 
   const handleBookRoom = (selectionKey: string, ratePlan: RatePlanId) => {
     selectRoomForCheckout(selectionKey, ratePlan);
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  const selectedDateLabel =
+    selectedDateKey && duration
+      ? `${formatCheckInFromDateKey(selectedDateKey)} – ${formatCheckoutFromDateKey(selectedDateKey, duration)}`
+      : null;
 
   const activeTitle = stepTitles[checkoutStep as 2 | 3 | 4] ?? "Your Reservation";
 
   return (
     <div className="hathor-booking-flow">
-      <ProgressBar currentStep={checkoutStep} />
+      <ProgressBar
+        currentStep={checkoutStep}
+        roomConfigs={roomConfigs}
+        totalPrice={totalPrice}
+        selectedDateLabel={selectedDateLabel}
+      />
 
       <header className="hathor-booking-flow__header">
         <h1 className="booking-serif hathor-booking-flow__title">{activeTitle}</h1>

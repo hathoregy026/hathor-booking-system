@@ -98,7 +98,7 @@ export function BookingPageLayout({
       </div>
 
       <div className="booking-wave-bg">
-        <main className="booking-main mx-auto max-w-[1400px] px-4 pb-20 pt-8 sm:px-6 sm:pt-10 lg:px-8">
+        <main className="booking-main mx-auto max-w-[1400px] px-4 pb-20 pt-4 sm:px-6 sm:pt-6 lg:px-8">
           {children}
         </main>
       </div>

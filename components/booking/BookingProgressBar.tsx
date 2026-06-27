@@ -1,51 +1,97 @@
 "use client";
 
-export type HistoriaBookingStep = 1 | 2 | 3 | 4;
+import Link from "next/link";
+import { formatPrice } from "@/lib/client-dates";
+import type { RoomSearchConfig } from "@/lib/booking-search-config";
 
-const STEPS: { number: HistoriaBookingStep; label: string }[] = [
-  { number: 1, label: "Adults & Children" },
-  { number: 2, label: "Dates" },
-  { number: 3, label: "Cabin & Suite Selection" },
-  { number: 4, label: "Confirmation Details" },
-];
+export type HistoriaBookingStep = 1 | 2 | 3 | 4;
 
 type BookingProgressBarProps = {
   currentStep: HistoriaBookingStep;
+  roomConfigs: RoomSearchConfig[];
+  totalPrice?: number;
+  selectedDateLabel?: string | null;
 };
 
-export function BookingProgressBar({ currentStep }: BookingProgressBarProps) {
-  const progressPercent = ((currentStep - 1) / (STEPS.length - 1)) * 100;
+type SegmentConfig = {
+  id: string;
+  title: string;
+  meta: string;
+  isActive: boolean;
+  isComplete: boolean;
+};
+
+export function BookingProgressBar({
+  currentStep,
+  roomConfigs,
+  totalPrice = 0,
+  selectedDateLabel,
+}: BookingProgressBarProps) {
+  const adults = roomConfigs.reduce((sum, room) => sum + room.adults, 0);
+  const children = roomConfigs.reduce((sum, room) => sum + room.children, 0);
+  const priceLabel =
+    totalPrice > 0 ? formatPrice(totalPrice) : "$ 0.00";
+
+  const segments: SegmentConfig[] = [
+    {
+      id: "guests",
+      title: "Step 1: Adults and Children",
+      meta: `${adults}/${children}`,
+      isActive: currentStep === 1,
+      isComplete: currentStep > 1,
+    },
+    {
+      id: "dates",
+      title: "Dates",
+      meta: selectedDateLabel?.trim() || "Select",
+      isActive: currentStep === 2,
+      isComplete: currentStep > 2,
+    },
+    {
+      id: "cabins",
+      title: "Step 2: Cabin and Suite Selection",
+      meta: currentStep > 3 ? "Selected" : "Select",
+      isActive: currentStep === 3,
+      isComplete: currentStep > 3,
+    },
+    {
+      id: "confirmation",
+      title: "Step 3: Confirmation Details",
+      meta: priceLabel,
+      isActive: currentStep === 4,
+      isComplete: false,
+    },
+  ];
 
   return (
-    <nav className="hathor-booking-progress" aria-label="Booking progress">
-      <div className="hathor-booking-progress__track" aria-hidden>
-        <div
-          className="hathor-booking-progress__fill"
-          style={{ width: `${progressPercent}%` }}
-        />
-      </div>
+    <nav className="hathor-checkout-steps" aria-label="Booking progress">
+      <div className="hathor-checkout-steps__inner">
+        <Link href="/" className="hathor-checkout-steps__brand booking-serif">
+          Hathor
+        </Link>
 
-      <ol className="hathor-booking-progress__steps">
-        {STEPS.map((step) => {
-          const isComplete = currentStep > step.number;
-          const isActive = currentStep === step.number;
-
-          return (
+        <ol className="hathor-checkout-steps__segments">
+          {segments.map((segment) => (
             <li
-              key={step.number}
-              className={`hathor-booking-progress__step${
-                isActive ? " hathor-booking-progress__step--active" : ""
-              }${isComplete ? " hathor-booking-progress__step--complete" : ""}`}
-              aria-current={isActive ? "step" : undefined}
+              key={segment.id}
+              className={`hathor-checkout-steps__segment${
+                segment.isActive ? " hathor-checkout-steps__segment--active" : ""
+              }${segment.isComplete ? " hathor-checkout-steps__segment--complete" : ""}`}
+              aria-current={segment.isActive ? "step" : undefined}
             >
-              <span className="hathor-booking-progress__marker" aria-hidden>
-                {isComplete ? "✓" : step.number}
+              <span className="hathor-checkout-steps__segment-title">
+                {segment.title}
               </span>
-              <span className="hathor-booking-progress__label">{step.label}</span>
+              <span className="hathor-checkout-steps__segment-meta">
+                {segment.meta}
+              </span>
+              {segment.isActive ? (
+                <span className="hathor-checkout-steps__caret" aria-hidden />
+              ) : null}
             </li>
-          );
-        })}
-      </ol>
+          ))}
+        </ol>
+      </div>
     </nav>
   );
 }
