@@ -891,15 +891,48 @@
 
 /* Historia-style segmented step bar (Hathor palette) */
 
-.hathor-checkout-steps {
+.hathor-checkout-chrome {
   width: 100vw;
   position: relative;
   left: 50%;
   right: 50%;
   margin-left: -50vw;
   margin-right: -50vw;
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.hathor-checkout-chrome__toolbar {
+  display: flex;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0.5rem 1rem 0.75rem;
+}
+
+.hathor-checkout-chrome__back-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--booking-gold-dark);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.hathor-checkout-chrome__back-home:hover {
+  color: var(--booking-text);
+}
+
+.booking-page--checkout-focus .booking-main {
+  padding-top: 0.5rem;
+}
+
+.hathor-checkout-steps {
   background: #0a0a0a;
+  border-top: 1px solid rgb(201 169 110 / 0.2);
   border-bottom: 1px solid rgb(201 169 110 / 0.25);
 }
 
@@ -951,11 +984,39 @@
   min-width: 9.5rem;
   flex-direction: column;
   justify-content: center;
-  gap: 0.2rem;
-  padding: 0.65rem 0.85rem;
   border-right: 1px solid rgb(255 255 255 / 0.08);
   color: rgb(250 248 245 / 0.55);
   text-align: center;
+}
+
+.hathor-checkout-steps__segment-content,
+.hathor-checkout-steps__segment-btn {
+  display: flex;
+  width: 100%;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.2rem;
+  padding: 0.65rem 0.85rem;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+}
+
+.hathor-checkout-steps__segment-btn {
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.hathor-checkout-steps__segment--clickable .hathor-checkout-steps__segment-btn:hover {
+  background: rgb(255 255 255 / 0.07);
+  color: #faf8f5;
+}
+
+.hathor-checkout-steps__segment--locked {
+  opacity: 0.45;
 }
 
 .hathor-checkout-steps__segment-title {
@@ -1009,6 +1070,10 @@
 @media (min-width: 768px) {
   .hathor-checkout-steps__segment {
     min-width: 0;
+  }
+
+  .hathor-checkout-steps__segment-content,
+  .hathor-checkout-steps__segment-btn {
     padding: 0.75rem 1rem;
   }
 

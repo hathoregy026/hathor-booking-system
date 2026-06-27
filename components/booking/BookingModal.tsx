@@ -68,6 +68,9 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const hydrateFromModal = useBookingStore((state) => state.hydrateFromModal);
+  const storeDuration = useBookingStore((state) => state.duration);
+  const storeRoomConfigs = useBookingStore((state) => state.roomConfigs);
+  const itineraryConfigured = useBookingStore((state) => state.itineraryConfigured);
 
   const [duration, setDuration] = useState<StayDurationValue>(
     STAY_DURATION_OPTIONS[2]?.value ?? "7-nights-luxor-aswan-luxor",
@@ -86,12 +89,20 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
   }, []);
 
   const handleClose = useCallback(() => {
-    resetModal();
     onClose();
-  }, [onClose, resetModal]);
+  }, [onClose]);
 
   useEffect(() => {
     if (!open) return;
+
+    if (itineraryConfigured && storeDuration) {
+      setDuration(storeDuration);
+      setRoomConfigs(storeRoomConfigs);
+      setRoomCount(storeRoomConfigs.length);
+      setError(null);
+    } else {
+      resetModal();
+    }
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -107,7 +118,7 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [open, handleClose]);
+  }, [open, handleClose, itineraryConfigured, resetModal, storeDuration, storeRoomConfigs]);
 
   const handleDurationChange = (nextDuration: StayDurationValue) => {
     setDuration(nextDuration);

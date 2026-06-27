@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { CheckoutCalendar } from "@/components/booking/CheckoutCalendar";
 import { GuestPaymentForm } from "@/components/booking/GuestPaymentForm";
-import { ProgressBar } from "@/components/booking/ProgressBar";
+import { ProgressBar, type HistoriaBookingStep } from "@/components/booking/ProgressBar";
 import { RoomSelection } from "@/components/booking/RoomSelection";
 import { SuccessStep } from "@/components/booking/SuccessStep";
 import {
@@ -18,7 +18,7 @@ import {
 } from "@/lib/booking-availability-client";
 import { checkInIsoFromDateKey } from "@/lib/departure-dates";
 import type { RatePlanId } from "@/lib/rate-plans";
-import { useBookingStore } from "@/store/bookingStore";
+import { useBookingStore, getSelectedRooms } from "@/store/bookingStore";
 
 function dateKeyFromCheckInIso(iso: string | null): string | null {
   if (!iso) return null;
@@ -151,15 +151,57 @@ export function BookingFlow() {
       ? `${formatCheckInFromDateKey(selectedDateKey)} – ${formatCheckoutFromDateKey(selectedDateKey, duration)}`
       : null;
 
+  const maxReachableStep = useMemo((): HistoriaBookingStep => {
+    if (selectedRoomIds.length > 0) return 4;
+    if (searchAttempted && availableRooms.length > 0) return 3;
+    if (itineraryConfigured) return 2;
+    return 1;
+  }, [
+    availableRooms.length,
+    itineraryConfigured,
+    searchAttempted,
+    selectedRoomIds.length,
+  ]);
+
+  const selectedRoomLabel =
+    getSelectedRooms(availableRooms, selectedRoomIds)[0]?.name ?? null;
+
+  const handleStepNavigate = (step: HistoriaBookingStep) => {
+    if (step > maxReachableStep || step === checkoutStep) return;
+
+    setError(null);
+
+    if (step === 1) {
+      router.push("/?book=1");
+      return;
+    }
+
+    if (step === 2) {
+      setPendingDateKey(dateKeyFromCheckInIso(checkInDate));
+      setCheckoutStep(2);
+      return;
+    }
+
+    if (step === 3) {
+      setCheckoutStep(3);
+      return;
+    }
+
+    setCheckoutStep(4);
+  };
+
   const activeTitle = stepTitles[checkoutStep as 2 | 3 | 4] ?? "Your Reservation";
 
   return (
     <div className="hathor-booking-flow">
       <ProgressBar
         currentStep={checkoutStep}
+        maxReachableStep={maxReachableStep}
         roomConfigs={roomConfigs}
         totalPrice={totalPrice}
         selectedDateLabel={selectedDateLabel}
+        selectedRoomLabel={selectedRoomLabel}
+        onStepNavigate={handleStepNavigate}
       />
 
       <header className="hathor-booking-flow__header">
