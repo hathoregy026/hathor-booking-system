@@ -1,5 +1,6 @@
 import "server-only";
 
+import { withEmailImageCacheBust } from "@/lib/email-image-cache";
 import { pickReliableEmailImageUrl } from "@/lib/email-branding-shared";
 import type { EmailTemplateOverrides, EmailTemplateRecord } from "@/lib/email-templates";
 
@@ -14,45 +15,61 @@ function parseContentLength(value: string | null): number | null {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
-async function isPublicImageReachable(url: string): Promise<boolean> {
-  try {
-    const head = await fetch(url, {
-      method: "HEAD",
-      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-      headers: { Accept: "image/*" },
-    });
+async function isPublicImageReachable(
+  url: string,
+  cacheBustVersion?: string | null,
+): Promise<boolean> {
+  const candidates = [
+    url,
+    withEmailImageCacheBust(url, cacheBustVersion),
+  ].filter((value, index, array): value is string => {
+    return Boolean(value) && array.indexOf(value) === index;
+  });
 
-    if (!head.ok) {
-      return false;
+  for (const candidate of candidates) {
+    try {
+      const head = await fetch(candidate, {
+        method: "HEAD",
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+        headers: { Accept: "image/*" },
+      });
+
+      if (!head.ok) {
+        continue;
+      }
+
+      const contentLength = parseContentLength(head.headers.get("content-length"));
+      if (contentLength !== null && contentLength > MAX_EMAIL_IMAGE_BYTES) {
+        console.warn(
+          `[email] skipping oversized image (${(contentLength / 1024 / 1024).toFixed(1)} MB): ${candidate}`,
+        );
+        continue;
+      }
+
+      const sample = await fetch(candidate, {
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+        headers: { Accept: "image/*", Range: "bytes=0-16383" },
+      });
+
+      if (!sample.ok && sample.status !== 206) {
+        continue;
+      }
+
+      const bytes = await sample.arrayBuffer();
+      if (bytes.byteLength > 0) {
+        return true;
+      }
+    } catch (error) {
+      console.warn(`[email] image reachability check failed for ${candidate}:`, error);
     }
-
-    const contentLength = parseContentLength(head.headers.get("content-length"));
-    if (contentLength !== null && contentLength > MAX_EMAIL_IMAGE_BYTES) {
-      console.warn(
-        `[email] skipping oversized image (${(contentLength / 1024 / 1024).toFixed(1)} MB): ${url}`,
-      );
-      return false;
-    }
-
-    const sample = await fetch(url, {
-      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-      headers: { Accept: "image/*", Range: "bytes=0-16383" },
-    });
-
-    if (!sample.ok && sample.status !== 206) {
-      return false;
-    }
-
-    const bytes = await sample.arrayBuffer();
-    return bytes.byteLength > 0;
-  } catch (error) {
-    console.warn(`[email] image reachability check failed for ${url}:`, error);
-    return false;
   }
+
+  return false;
 }
 
 /** Pick the first Supabase URL that email clients can actually load. */
 export async function resolveAccessibleEmailImageUrl(
+  cacheBustVersion: string | null | undefined,
   ...candidates: Array<string | null | undefined>
 ): Promise<string | null> {
   const seen = new Set<string>();
@@ -62,8 +79,8 @@ export async function resolveAccessibleEmailImageUrl(
     if (!url || seen.has(url)) continue;
     seen.add(url);
 
-    if (await isPublicImageReachable(url)) {
-      return url;
+    if (await isPublicImageReachable(url, cacheBustVersion)) {
+      return withEmailImageCacheBust(url, cacheBustVersion) ?? url;
     }
   }
 
@@ -77,14 +94,22 @@ export async function toEmailThemeOverridesForSend(
 ): Promise<EmailTemplateOverrides | undefined> {
   if (!template) return undefined;
 
+  const cacheVersion = template.updatedAt ?? new Date().toISOString();
+
   const [logoUrl, heroImageUrl] = await Promise.all([
-    resolveAccessibleEmailImageUrl(template.logoUrl, defaults.logoUrl),
-    resolveAccessibleEmailImageUrl(template.heroImageUrl, defaults.heroImageUrl),
+    resolveAccessibleEmailImageUrl(cacheVersion, template.logoUrl, defaults.logoUrl),
+    resolveAccessibleEmailImageUrl(cacheVersion, template.heroImageUrl, defaults.heroImageUrl),
   ]);
 
   return {
-    logoUrl: logoUrl ?? defaults.logoUrl,
-    heroImageUrl: heroImageUrl ?? defaults.heroImageUrl,
+    logoUrl:
+      logoUrl ??
+      withEmailImageCacheBust(defaults.logoUrl, cacheVersion) ??
+      defaults.logoUrl,
+    heroImageUrl:
+      heroImageUrl ??
+      withEmailImageCacheBust(defaults.heroImageUrl, cacheVersion) ??
+      defaults.heroImageUrl,
     primaryColor: template.primaryColor,
     backgroundColor: template.backgroundColor,
     heroHeading: template.heroHeading,
