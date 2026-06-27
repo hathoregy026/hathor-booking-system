@@ -893,7 +893,7 @@
 
 .hathor-checkout-chrome {
   --hathor-checkout-dark: #0a0a0a;
-  --hathor-checkout-active: #c9a96e;
+  --hathor-checkout-surface: #faf8f5;
   --hathor-checkout-footer: #e8e2d9;
   width: 100vw;
   position: relative;
@@ -902,6 +902,8 @@
   margin-left: -50vw;
   margin-right: -50vw;
   margin-bottom: 1.75rem;
+  overflow: visible;
+  z-index: 30;
 }
 
 .booking-page--checkout-focus .booking-main {
@@ -910,6 +912,7 @@
 
 .hathor-checkout-steps {
   background: var(--hathor-checkout-dark);
+  overflow: visible;
 }
 
 .hathor-checkout-steps__inner {
@@ -919,6 +922,7 @@
   max-width: 1400px;
   margin: 0 auto;
   position: relative;
+  overflow: visible;
 }
 
 .hathor-checkout-steps__logo {
@@ -950,7 +954,7 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  overflow-x: auto;
+  overflow: visible;
   scrollbar-width: none;
 }
 
@@ -969,6 +973,7 @@
   border-right: 1px solid rgb(255 255 255 / 0.18);
   color: #fff;
   text-align: center;
+  overflow: visible;
 }
 
 .hathor-checkout-steps__segment-content,
@@ -1012,7 +1017,7 @@
 
 .hathor-checkout-steps__value {
   font-size: 1.125rem;
-  font-weight: 500;
+  font-weight: 300;
   line-height: 1.2;
   letter-spacing: 0.01em;
   color: #fff;
@@ -1037,37 +1042,42 @@
 }
 
 .hathor-checkout-steps__segment--active {
-  background: var(--hathor-checkout-active);
-  color: #0a0a0a;
+  background: var(--hathor-checkout-dark);
+  color: #fff;
   z-index: 2;
 }
 
-.hathor-checkout-steps__segment--active .hathor-checkout-steps__label {
-  color: rgb(10 10 10 / 0.82);
+.hathor-checkout-steps__segment--active .hathor-checkout-steps__segment-content,
+.hathor-checkout-steps__segment--active .hathor-checkout-steps__segment-btn {
+  padding-bottom: 1.05rem;
 }
 
+.hathor-checkout-steps__segment--active .hathor-checkout-steps__label,
 .hathor-checkout-steps__segment--active .hathor-checkout-steps__value {
-  color: #0a0a0a;
+  color: #fff;
 }
 
 .hathor-checkout-steps__segment--dropdown-open {
-  z-index: 5;
+  z-index: 6;
 }
 
 .hathor-checkout-steps__caret {
   position: absolute;
-  bottom: -9px;
+  bottom: -1px;
   left: 50%;
-  z-index: 4;
+  z-index: 5;
   transform: translateX(-50%);
   width: 0;
   height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-top: 9px solid var(--hathor-checkout-active);
+  border-left: 11px solid transparent;
+  border-right: 11px solid transparent;
+  border-bottom: 10px solid var(--hathor-checkout-surface);
+  pointer-events: none;
 }
 
 .hathor-checkout-chrome__footer {
+  position: relative;
+  z-index: 1;
   padding: 0.9rem 1rem 1rem;
   background: var(--hathor-checkout-footer);
   border-top: 1px solid #d9d2c8;
@@ -1090,18 +1100,16 @@
 }
 
 .hathor-checkout-room-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  z-index: 20;
+  position: fixed;
+  z-index: 250;
   min-width: min(20rem, 92vw);
   width: max-content;
   max-width: 24rem;
-  margin-top: 0;
+  margin-top: 0.35rem;
   padding: 0.65rem 0;
   background: #faf8f5;
   border: 1px solid #d9d2c8;
-  box-shadow: 0 10px 28px rgb(10 10 10 / 0.14);
+  box-shadow: 0 10px 28px rgb(10 10 10 / 0.18);
   transform: translateX(-50%);
   animation: hathorRoomDropdownIn 0.2s ease-out;
 }
@@ -1172,6 +1180,13 @@
 
 .hathor-checkout-room-dropdown__view:hover {
   color: var(--booking-gold-dark);
+}
+
+@media (max-width: 767px) {
+  .hathor-checkout-steps__segments {
+    overflow-x: auto;
+    overflow-y: visible;
+  }
 }
 
 @media (min-width: 768px) {

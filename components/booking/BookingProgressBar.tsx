@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { HathorBrandMark } from "@/components/booking/HathorBrandMark";
 import { formatPrice } from "@/lib/client-dates";
 import { computeBookingTotals } from "@/lib/booking-pricing";
@@ -77,6 +77,7 @@ export function BookingProgressBar({
   onStepNavigate,
 }: BookingProgressBarProps) {
   const [openRoomDropdown, setOpenRoomDropdown] = useState(false);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
   const cabinsRef = useRef<HTMLLIElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -84,7 +85,7 @@ export function BookingProgressBar({
   const children = roomConfigs.reduce((sum, room) => sum + room.children, 0);
   const roomCount = roomConfigs.length;
   const selectedRooms = getSelectedRooms(availableRooms, selectedRoomIds);
-  const hasSelectedRooms = selectedRooms.length > 0;
+  const hasSelectedRooms = selectedRoomIds.length > 0;
   const grandTotal = computeBookingTotals(totalPrice).totalCents;
   const priceLabel =
     grandTotal > 0 ? formatPrice(grandTotal).replace("$", "$ ") : "$ 0.00";
@@ -170,6 +171,26 @@ export function BookingProgressBar({
   useEffect(() => {
     if (!hasSelectedRooms) setOpenRoomDropdown(false);
   }, [hasSelectedRooms]);
+
+  const updateDropdownPosition = useCallback(() => {
+    if (!cabinsRef.current) return;
+    const rect = cabinsRef.current.getBoundingClientRect();
+    setDropdownPosition({
+      top: rect.bottom,
+      left: rect.left + rect.width / 2,
+    });
+  }, []);
+
+  useLayoutEffect(() => {
+    if (!openRoomDropdown) return;
+    updateDropdownPosition();
+    window.addEventListener("resize", updateDropdownPosition);
+    window.addEventListener("scroll", updateDropdownPosition, true);
+    return () => {
+      window.removeEventListener("resize", updateDropdownPosition);
+      window.removeEventListener("scroll", updateDropdownPosition, true);
+    };
+  }, [openRoomDropdown, updateDropdownPosition]);
 
   const handleCabinsClick = () => {
     if (hasSelectedRooms) {
@@ -278,60 +299,62 @@ export function BookingProgressBar({
                       {content}
                     </div>
                   )}
-
-                  {isCabins && openRoomDropdown && hasSelectedRooms ? (
-                    <div
-                      ref={dropdownRef}
-                      className="hathor-checkout-room-dropdown"
-                      role="region"
-                      aria-label="Selected rooms"
-                    >
-                      {selectedRooms.map((room) => {
-                        const meta = [
-                          room.roomType ?? "Stateroom",
-                          `up to ${room.capacity} guests`,
-                        ].join(" · ");
-
-                        return (
-                          <article
-                            key={room.selectionKey ?? room.id}
-                            className="hathor-checkout-room-dropdown__item"
-                          >
-                            <div
-                              className="hathor-checkout-room-dropdown__thumb"
-                              style={{ background: ROOM_THUMB_PLACEHOLDER }}
-                              role="img"
-                              aria-label={room.name}
-                            />
-                            <div className="hathor-checkout-room-dropdown__body">
-                              <p className="hathor-checkout-room-dropdown__name">
-                                {room.name}
-                              </p>
-                              <p className="hathor-checkout-room-dropdown__meta">{meta}</p>
-                            </div>
-                            <Link
-                              href={buildRoomDetailsHref(
-                                room,
-                                checkInDate,
-                                duration,
-                                roomConfigs,
-                              )}
-                              className="hathor-checkout-room-dropdown__view"
-                              onClick={closeRoomDropdown}
-                            >
-                              View
-                            </Link>
-                          </article>
-                        );
-                      })}
-                    </div>
-                  ) : null}
                 </li>
               );
             })}
           </ol>
         </div>
       </nav>
+
+      {openRoomDropdown && selectedRooms.length > 0 ? (
+        <div
+          ref={dropdownRef}
+          className="hathor-checkout-room-dropdown"
+          role="region"
+          aria-label="Selected rooms"
+          style={{
+            top: dropdownPosition.top,
+            left: dropdownPosition.left,
+          }}
+        >
+          {selectedRooms.map((room) => {
+            const meta = [
+              room.roomType ?? "Stateroom",
+              `up to ${room.capacity} guests`,
+            ].join(" · ");
+
+            return (
+              <article
+                key={room.selectionKey ?? room.id}
+                className="hathor-checkout-room-dropdown__item"
+              >
+                <div
+                  className="hathor-checkout-room-dropdown__thumb"
+                  style={{ background: ROOM_THUMB_PLACEHOLDER }}
+                  role="img"
+                  aria-label={room.name}
+                />
+                <div className="hathor-checkout-room-dropdown__body">
+                  <p className="hathor-checkout-room-dropdown__name">{room.name}</p>
+                  <p className="hathor-checkout-room-dropdown__meta">{meta}</p>
+                </div>
+                <Link
+                  href={buildRoomDetailsHref(
+                    room,
+                    checkInDate,
+                    duration,
+                    roomConfigs,
+                  )}
+                  className="hathor-checkout-room-dropdown__view"
+                  onClick={closeRoomDropdown}
+                >
+                  View
+                </Link>
+              </article>
+            );
+          })}
+        </div>
+      ) : null}
 
       <div className="hathor-checkout-chrome__footer">
         <Link href="/" className="hathor-checkout-chrome__back-home">
