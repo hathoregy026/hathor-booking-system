@@ -4,16 +4,12 @@ import BookingConfirmedEmail from "@/emails/BookingConfirmed";
 import BookingReceivedEmail from "@/emails/BookingReceived";
 import { sampleBookingDetails, sampleGuestName } from "@/emails/sample-data";
 import {
+  buildEmailSendTheme,
+  interpolateEmailText,
   type EmailTemplateName,
   type EmailTemplateOverrides,
   type EmailTemplateRecord,
-  interpolateEmailText,
 } from "@/lib/email-templates";
-import {
-  HATHOR_EMAIL_HERO_URL,
-  HATHOR_EMAIL_LOGO_URL,
-} from "@/lib/email-branding-urls";
-import { toEmailThemeOverridesForSend } from "@/lib/email-theme-server";
 
 async function renderTemplateHtml(
   name: EmailTemplateName,
@@ -49,11 +45,7 @@ async function renderTemplateHtml(
 export async function renderEmailTemplatePreview(
   template: EmailTemplateRecord,
 ): Promise<{ name: EmailTemplateName; subject: string; html: string }> {
-  const overrides =
-    (await toEmailThemeOverridesForSend(template, {
-      logoUrl: HATHOR_EMAIL_LOGO_URL,
-      heroImageUrl: HATHOR_EMAIL_HERO_URL,
-    })) ?? {};
+  const overrides = buildEmailSendTheme(template);
   const subject = interpolateEmailText(template.subject, {
     guestName: sampleGuestName,
   });

@@ -3,20 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { AlertCircle, ImageIcon, Loader2, Trash2, Upload } from "lucide-react";
 import { adminFetch } from "@/lib/admin-fetch";
-import {
-  MAX_EMAIL_HERO_BYTES,
-  MAX_EMAIL_LOGO_BYTES,
-  MAX_IMAGE_BYTES,
-} from "@/lib/image-upload";
-import type { EmailTemplateName } from "@/lib/email-templates";
+import { MAX_IMAGE_BYTES } from "@/lib/image-upload";
 
 const ACCEPTED_TYPES = "image/jpeg,image/png,image/webp";
-
-type EmailTemplateAutoSave = {
-  templateName: EmailTemplateName;
-  imageField: "logoUrl" | "heroImageUrl";
-  onSaved?: (url: string) => void;
-};
 
 type ImageUploadProps = {
   label: string;
@@ -27,20 +16,15 @@ type ImageUploadProps = {
   helperText?: string;
   variant?: "default" | "admin";
   allowClear?: boolean;
-  emailTemplateAutoSave?: EmailTemplateAutoSave;
 };
 
-function validateClientFile(
-  file: File,
-  maxBytes: number,
-): string | null {
+function validateClientFile(file: File): string | null {
   if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
     return "Only JPG, PNG, and WebP images are allowed.";
   }
 
-  if (file.size > maxBytes) {
-    const maxMb = maxBytes / (1024 * 1024);
-    return `Image must be ${maxMb} MB or smaller.`;
+  if (file.size > MAX_IMAGE_BYTES) {
+    return `Image must be ${MAX_IMAGE_BYTES / (1024 * 1024)} MB or smaller.`;
   }
 
   return null;
@@ -55,7 +39,6 @@ export function ImageUpload({
   helperText,
   variant = "default",
   allowClear = true,
-  emailTemplateAutoSave,
 }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -77,13 +60,6 @@ export function ImageUpload({
     };
   }, [selectedFile]);
 
-  const maxBytes =
-    emailTemplateAutoSave?.imageField === "heroImageUrl"
-      ? MAX_EMAIL_HERO_BYTES
-      : emailTemplateAutoSave
-        ? MAX_EMAIL_LOGO_BYTES
-        : MAX_IMAGE_BYTES;
-
   const displayUrl = previewUrl ?? value;
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,7 +71,7 @@ export function ImageUpload({
       return;
     }
 
-    const validationError = validateClientFile(file, maxBytes);
+    const validationError = validateClientFile(file);
     if (validationError) {
       setError(validationError);
       setSelectedFile(null);
@@ -117,21 +93,10 @@ export function ImageUpload({
       formData.append("file", selectedFile);
       formData.append("folder", folder);
 
-      let response: Response;
-
-      if (emailTemplateAutoSave) {
-        formData.append("templateName", emailTemplateAutoSave.templateName);
-        formData.append("imageField", emailTemplateAutoSave.imageField);
-        response = await adminFetch("/api/admin/email-templates/image", {
-          method: "POST",
-          body: formData,
-        });
-      } else {
-        response = await adminFetch("/api/admin/upload", {
-          method: "POST",
-          body: formData,
-        });
-      }
+      const response = await adminFetch("/api/admin/upload", {
+        method: "POST",
+        body: formData,
+      });
 
       const data = (await response.json()) as {
         url?: string;
@@ -149,7 +114,6 @@ export function ImageUpload({
 
       onChange(data.url);
       onDataUrlChange?.(data.dataUrl ?? null);
-      emailTemplateAutoSave?.onSaved?.(data.url);
       setSelectedFile(null);
       if (inputRef.current) {
         inputRef.current.value = "";
@@ -201,11 +165,7 @@ export function ImageUpload({
           <img
             src={displayUrl}
             alt={`${label} preview`}
-            className={
-              isAdmin
-                ? "max-h-48 w-full object-cover"
-                : "max-h-48 w-full object-cover"
-            }
+            className="max-h-48 w-full object-cover"
           />
         </div>
       ) : (
@@ -295,24 +255,8 @@ export function ImageUpload({
           className="text-xs"
           style={isAdmin ? { color: "var(--text-muted)" } : undefined}
         >
-          {!isAdmin && (
-            <>
-              Selected: {selectedFile.name} ({(selectedFile.size / 1024).toFixed(0)}{" "}
-              KB) — click Upload, then Save Changes to store the URL.
-            </>
-          )}
-          {isAdmin && emailTemplateAutoSave && (
-            <>
-              Selected: {selectedFile.name} ({(selectedFile.size / 1024).toFixed(0)}{" "}
-              KB) — click Upload to save to Supabase and all email templates.
-            </>
-          )}
-          {isAdmin && !emailTemplateAutoSave && (
-            <>
-              Selected: {selectedFile.name} ({(selectedFile.size / 1024).toFixed(0)}{" "}
-              KB) — click Upload, then Save Template.
-            </>
-          )}
+          Selected: {selectedFile.name} ({(selectedFile.size / 1024).toFixed(0)}{" "}
+          KB) — click Upload to store the URL.
         </p>
       )}
 
@@ -322,11 +266,7 @@ export function ImageUpload({
           style={isAdmin ? { color: "var(--text-muted)" } : undefined}
           title={value}
         >
-          {isAdmin && emailTemplateAutoSave
-            ? "Saved to all email templates."
-            : isAdmin
-              ? "Image uploaded — save template to apply."
-              : `Current URL: ${value}`}
+          {isAdmin ? "Image uploaded." : `Current URL: ${value}`}
         </p>
       )}
 

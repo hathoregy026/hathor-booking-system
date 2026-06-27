@@ -3,12 +3,8 @@ import { render } from "@react-email/render";
 import { Resend } from "resend";
 import BookingReceivedEmail from "@/emails/BookingReceived";
 import { sampleBookingDetails, sampleGuestName } from "@/emails/sample-data";
-import {
-  HATHOR_EMAIL_HERO_URL,
-  HATHOR_EMAIL_LOGO_URL,
-} from "@/lib/email-branding-urls";
+import { buildEmailSendTheme } from "@/lib/email-templates";
 import { getEmailTemplateForSend } from "@/lib/email-template-send";
-import { toEmailThemeOverridesForSend } from "@/lib/email-theme-server";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -41,11 +37,7 @@ export async function GET() {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY!.trim());
     const template = await getEmailTemplateForSend("BookingReceived");
-    const theme =
-      (await toEmailThemeOverridesForSend(template, {
-        logoUrl: HATHOR_EMAIL_LOGO_URL,
-        heroImageUrl: HATHOR_EMAIL_HERO_URL,
-      })) ?? {};
+    const theme = buildEmailSendTheme(template);
 
     const html = await render(
       BookingReceivedEmail({

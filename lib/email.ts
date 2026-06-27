@@ -5,23 +5,14 @@ import AdminAlertEmail from "@/emails/AdminAlert";
 import BookingConfirmedEmail from "@/emails/BookingConfirmed";
 import BookingReceivedEmail from "@/emails/BookingReceived";
 import {
-  HATHOR_EMAIL_HERO_URL,
-  HATHOR_EMAIL_LOGO_URL,
-} from "@/lib/email-branding-urls";
-import {
   getEmailTemplateForSend,
   resolveEmailSubject,
 } from "@/lib/email-template-send";
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
-import { toEmailThemeOverridesForSend } from "@/lib/email-theme-server";
+import { buildEmailSendTheme } from "@/lib/email-templates";
 import type { BookingEmailDetails } from "@/lib/email-types";
 
 let resendClient: Resend | null = null;
-
-const EMAIL_IMAGE_DEFAULTS = {
-  logoUrl: HATHOR_EMAIL_LOGO_URL,
-  heroImageUrl: HATHOR_EMAIL_HERO_URL,
-};
 
 function getResend(): Resend | null {
   const apiKey = process.env.RESEND_API_KEY?.trim();
@@ -90,8 +81,7 @@ export async function sendBookingReceivedEmail(
   bookingDetails: BookingEmailDetails,
 ) {
   const template = await getEmailTemplateForSend("BookingReceived");
-  const theme =
-    (await toEmailThemeOverridesForSend(template, EMAIL_IMAGE_DEFAULTS)) ?? {};
+  const theme = buildEmailSendTheme(template);
 
   await sendEmail({
     to: guestEmail,
@@ -113,8 +103,7 @@ export async function sendBookingConfirmedEmail(
   bookingDetails: BookingEmailDetails,
 ) {
   const template = await getEmailTemplateForSend("BookingConfirmed");
-  const theme =
-    (await toEmailThemeOverridesForSend(template, EMAIL_IMAGE_DEFAULTS)) ?? {};
+  const theme = buildEmailSendTheme(template);
 
   await sendEmail({
     to: guestEmail,
@@ -138,8 +127,7 @@ export async function sendAdminAlertEmail(bookingDetails: BookingEmailDetails) {
   }
 
   const template = await getEmailTemplateForSend("AdminAlert");
-  const theme =
-    (await toEmailThemeOverridesForSend(template, EMAIL_IMAGE_DEFAULTS)) ?? {};
+  const theme = buildEmailSendTheme(template);
 
   await sendEmail({
     to: adminEmail,

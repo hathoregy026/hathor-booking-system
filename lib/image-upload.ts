@@ -8,9 +8,7 @@ export const EMAIL_IMAGE_FOLDER = "email-templates";
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
 export const MAX_EMAIL_LOGO_BYTES = MAX_IMAGE_BYTES;
-
-/** Hero banners in email templates may be larger than logos. */
-export const MAX_EMAIL_HERO_BYTES = 15 * 1024 * 1024;
+export const MAX_EMAIL_HERO_BYTES = MAX_IMAGE_BYTES;
 
 export const ALLOWED_IMAGE_TYPES = new Set([
   "image/jpeg",
@@ -39,9 +37,8 @@ export function validateImageFile(file: File): string | null {
   return null;
 }
 
-export function validateEmailTemplateImageFile(
-  file: File,
-  field: "logoUrl" | "heroImageUrl",
+export function validateEmailImageFile(
+  file: Pick<File, "name" | "type" | "size">,
 ): string | null {
   const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
   const mimeType = file.type || mimeFromExtension(extension);
@@ -54,17 +51,19 @@ export function validateEmailTemplateImageFile(
     return "Invalid file extension. Use .jpg, .png, or .webp.";
   }
 
-  const maxBytes =
-    field === "heroImageUrl" ? MAX_EMAIL_HERO_BYTES : MAX_EMAIL_LOGO_BYTES;
-
-  if (file.size > maxBytes) {
-    const maxMb = maxBytes / (1024 * 1024);
-    return field === "heroImageUrl"
-      ? `Hero image must be ${maxMb} MB or smaller.`
-      : `Logo must be ${maxMb} MB or smaller.`;
+  if (file.size > MAX_IMAGE_BYTES) {
+    return "Image must be 5 MB or smaller.";
   }
 
   return null;
+}
+
+/** @deprecated Use validateEmailImageFile */
+export function validateEmailTemplateImageFile(
+  file: File,
+  _field: "logoUrl" | "heroImageUrl",
+): string | null {
+  return validateEmailImageFile(file);
 }
 
 function mimeFromExtension(extension: string): string | null {

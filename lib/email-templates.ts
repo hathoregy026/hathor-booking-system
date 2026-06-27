@@ -216,6 +216,38 @@ export function toEmailThemeOverrides(
   };
 }
 
+/** Cache-busted image URLs for sending emails (avoids stale Supabase CDN bytes). */
+export function buildEmailSendTheme(
+  template: EmailTemplateRecord,
+): EmailTemplateOverrides {
+  const version = template.updatedAt ?? new Date().toISOString();
+  const logoBase =
+    pickReliableEmailImageUrl(template.logoUrl) ?? HATHOR_EMAIL_LOGO_URL;
+  const heroBase =
+    pickReliableEmailImageUrl(template.heroImageUrl) ?? HATHOR_EMAIL_HERO_URL;
+
+  return {
+    logoUrl: withEmailCacheBust(logoBase, version) ?? logoBase,
+    heroImageUrl: withEmailCacheBust(heroBase, version) ?? heroBase,
+    primaryColor: template.primaryColor,
+    backgroundColor: template.backgroundColor,
+    heroHeading: template.heroHeading,
+    bodyText: template.bodyText,
+  };
+}
+
+export function withEmailCacheBust(
+  url: string | null | undefined,
+  version: string | null | undefined,
+): string | null {
+  const base = url?.trim();
+  if (!base) return null;
+  const token = version?.trim();
+  if (!token) return base;
+  const separator = base.includes("?") ? "&" : "?";
+  return `${base}${separator}v=${encodeURIComponent(token)}`;
+}
+
 export function getEmailTemplatePreviewLogoSrc(
   template: EmailTemplateRecord,
 ): string {

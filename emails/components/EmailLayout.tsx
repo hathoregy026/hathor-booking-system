@@ -9,10 +9,6 @@ import {
 } from "@react-email/components";
 import type { ReactNode } from "react";
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
-import {
-  resolveEmailHeroSrcForSend,
-  resolveEmailLogoSrcForSend,
-} from "@/lib/email-image-resolve";
 import { resolveEmailTheme } from "../theme";
 import {
   emailColors,
@@ -42,7 +38,7 @@ export function EmailHeroBanner({
   heroImageUrl: string;
   alt?: string;
 }) {
-  const src = resolveEmailHeroSrcForSend(heroImageUrl) ?? heroImageUrl;
+  const src = heroImageUrl?.trim() || "";
 
   return (
     <table
@@ -86,7 +82,7 @@ export function EmailLogo({
   width?: number;
   logoUrl: string;
 }) {
-  const src = resolveEmailLogoSrcForSend(logoUrl);
+  const src = logoUrl?.trim() || "";
 
   return (
     <table
@@ -369,7 +365,7 @@ export function EmailLayout({
   backgroundColor,
 }: EmailLayoutProps) {
   const theme = resolveEmailTheme({ logoUrl, primaryColor, backgroundColor });
-  const bannerUrl = resolveEmailHeroSrcForSend(heroImageUrl);
+  const bannerUrl = heroImageUrl?.trim() || null;
 
   return (
     <Html lang="en" dir="ltr">

@@ -1,94 +1,90 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { Loader2, Mail, Pencil, Save, X } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Loader2, Mail, Save, Send } from "lucide-react";
 import {
   EmailTemplatePreviewButton,
   EmailTemplatePreviewModal,
 } from "@/components/admin/EmailTemplatePreviewModal";
-import { ImageUpload } from "@/components/admin/ImageUpload";
+import { EmailImageUpload } from "@/components/admin/EmailImageUpload";
 import { useToast } from "@/components/admin/ToastProvider";
 import { adminFetch } from "@/lib/admin-fetch";
-import type { EmailTemplateName, EmailTemplateRecord } from "@/lib/email-templates";
 import {
-  getEmailTemplatePreviewHeroSrc,
-  getEmailTemplatePreviewLogoFallback,
-  getEmailTemplatePreviewLogoSrc,
+  EMAIL_TEMPLATE_NAMES,
+  type EmailTemplateName,
+  type EmailTemplateRecord,
 } from "@/lib/email-templates";
 
-type TemplateForm = {
-  subject: string;
+type SharedBranding = {
   logoUrl: string | null;
   heroImageUrl: string | null;
   primaryColor: string;
   backgroundColor: string;
+};
+
+type TemplateCopy = {
+  name: EmailTemplateName;
+  subject: string;
   heroHeading: string;
   bodyText: string;
 };
 
 const TEMPLATE_META: Record<
   EmailTemplateName,
-  { label: string; description: string; audience: string }
+  { label: string; description: string }
 > = {
   BookingReceived: {
     label: "Booking Received",
-    description: "Sent to guests immediately after they submit a booking request.",
-    audience: "Guest",
+    description: "Sent to guests when they submit a booking request.",
   },
   BookingConfirmed: {
     label: "Booking Confirmed",
-    description: "Sent to guests when their cruise reservation is confirmed.",
-    audience: "Guest",
+    description: "Sent to guests when their cruise is confirmed.",
   },
   AdminAlert: {
     label: "Admin Alert",
-    description: "Notifies your team when a new booking request arrives.",
-    audience: "Admin",
+    description: "Notifies your team of new booking requests.",
   },
 };
 
-function toForm(template: EmailTemplateRecord): TemplateForm {
+function pickShared(templates: EmailTemplateRecord[]): SharedBranding {
+  const first = templates[0];
   return {
+    logoUrl: first?.logoUrl ?? null,
+    heroImageUrl: first?.heroImageUrl ?? null,
+    primaryColor: first?.primaryColor ?? "#C9A96E",
+    backgroundColor: first?.backgroundColor ?? "#FAF8F5",
+  };
+}
+
+function toCopy(template: EmailTemplateRecord): TemplateCopy {
+  return {
+    name: template.name,
     subject: template.subject,
-    logoUrl: template.logoUrl,
-    heroImageUrl: template.heroImageUrl,
-    primaryColor: template.primaryColor,
-    backgroundColor: template.backgroundColor,
     heroHeading: template.heroHeading ?? "",
     bodyText: template.bodyText ?? "",
   };
 }
 
-function TemplateLogoThumb({ src }: { src: string }) {
-  const [imgSrc, setImgSrc] = useState(src);
-  const fallback = getEmailTemplatePreviewLogoFallback();
-
-  return (
-    <div
-      className="h-8 w-8 shrink-0 overflow-hidden rounded border"
-      style={{ borderColor: "var(--border)" }}
-    >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={imgSrc}
-        alt="Template logo"
-        className="h-full w-full object-contain"
-        onError={() => {
-          if (imgSrc !== fallback) setImgSrc(fallback);
-        }}
-      />
-    </div>
-  );
-}
-
 export default function AdminEmailTemplatesPage() {
   const { showToast } = useToast();
-  const [templates, setTemplates] = useState<EmailTemplateRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [editingName, setEditingName] = useState<EmailTemplateName | null>(null);
-  const [form, setForm] = useState<TemplateForm | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isSendingTest, setIsSendingTest] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<EmailTemplateName>("BookingReceived");
+  const [shared, setShared] = useState<SharedBranding>({
+    logoUrl: null,
+    heroImageUrl: null,
+    primaryColor: "#C9A96E",
+    backgroundColor: "#FAF8F5",
+  });
+  const [copies, setCopies] = useState<TemplateCopy[]>([]);
+
+  const activeCopy = useMemo(
+    () => copies.find((entry) => entry.name === activeTab) ?? copies[0],
+    [copies, activeTab],
+  );
 
   const loadTemplates = useCallback(async () => {
     setIsLoading(true);
@@ -98,7 +94,9 @@ export default function AdminEmailTemplatesPage() {
       if (!response.ok && !data.templates) {
         throw new Error(data.error ?? "Failed to load");
       }
-      setTemplates(data.templates as EmailTemplateRecord[]);
+      const templates = data.templates as EmailTemplateRecord[];
+      setShared(pickShared(templates));
+      setCopies(templates.map(toCopy));
     } catch {
       showToast("error", "Failed to load email templates");
     } finally {
@@ -107,68 +105,74 @@ export default function AdminEmailTemplatesPage() {
   }, [showToast]);
 
   useEffect(() => {
-    loadTemplates();
+    void loadTemplates();
   }, [loadTemplates]);
 
-  const openEditor = (template: EmailTemplateRecord) => {
-    setEditingName(template.name);
-    setForm(toForm(template));
+  const updateCopy = (name: EmailTemplateName, patch: Partial<TemplateCopy>) => {
+    setCopies((current) =>
+      current.map((entry) =>
+        entry.name === name ? { ...entry, ...patch } : entry,
+      ),
+    );
   };
 
-  const closeEditor = () => {
-    if (isSaving) return;
-    setEditingName(null);
-    setForm(null);
-  };
-
-  const updateForm = (patch: Partial<TemplateForm>) => {
-    setForm((current) => (current ? { ...current, ...patch } : current));
-  };
-
-  const handleImageSaved = useCallback(
-    (field: "logoUrl" | "heroImageUrl", url: string) => {
-      updateForm({ [field]: url });
-      showToast("success", "Image uploaded and saved to all email templates");
-      void loadTemplates();
-    },
-    [showToast, loadTemplates],
-  );
-
-  const handleSave = async () => {
-    if (!editingName || !form) return;
+  const handleSaveAll = async () => {
+    if (copies.some((entry) => !entry.subject.trim())) {
+      showToast("error", "Every template needs a subject line");
+      return;
+    }
 
     setIsSaving(true);
     try {
       const response = await adminFetch("/api/admin/email-templates", {
-        method: "POST",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: editingName,
-          subject: form.subject,
-          logoUrl: form.logoUrl,
-          heroImageUrl: form.heroImageUrl,
-          primaryColor: form.primaryColor,
-          backgroundColor: form.backgroundColor,
-          heroHeading: form.heroHeading || null,
-          bodyText: form.bodyText || null,
+          shared,
+          templates: copies.map((entry) => ({
+            name: entry.name,
+            subject: entry.subject,
+            heroHeading: entry.heroHeading || null,
+            bodyText: entry.bodyText || null,
+          })),
         }),
       });
 
+      const data = await response.json();
       if (!response.ok) {
-        const data = await response.json();
         throw new Error(data.error ?? "Save failed");
       }
 
-      showToast("success", "Email template saved");
-      closeEditor();
-      await loadTemplates();
+      showToast("success", "All email templates saved");
+      const templates = data.templates as EmailTemplateRecord[];
+      setShared(pickShared(templates));
+      setCopies(templates.map(toCopy));
     } catch (error) {
       showToast(
         "error",
-        error instanceof Error ? error.message : "Failed to save template",
+        error instanceof Error ? error.message : "Failed to save templates",
       );
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleSendTest = async () => {
+    setIsSendingTest(true);
+    try {
+      const response = await adminFetch("/api/admin/test-email");
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error ?? "Test email failed");
+      }
+      showToast("success", `Test email sent to ${data.to}`);
+    } catch (error) {
+      showToast(
+        "error",
+        error instanceof Error ? error.message : "Failed to send test email",
+      );
+    } finally {
+      setIsSendingTest(false);
     }
   };
 
@@ -185,374 +189,236 @@ export default function AdminEmailTemplatesPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-4 sm:space-y-6">
-      <div>
-        <h1 className="admin-page-title">Email Templates</h1>
-        <p className="admin-page-subtitle">
-          Customize branding and messaging for automated booking emails
-        </p>
-      </div>
-
-      <div className="admin-card p-4 sm:p-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <p
-              className="max-w-2xl text-sm leading-relaxed"
-              style={{ color: "var(--text-secondary)" }}
-            >
-              Customize subject lines, branding, hero imagery, and messaging for
-              automated booking emails. Changes apply to new emails only. If the
-              database is unavailable, the system falls back to the built-in luxury
-              design.
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <EmailTemplatePreviewButton onClick={() => setPreviewOpen(true)} />
-            <div
-              className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold"
-              style={{
-                background: "var(--bg-secondary)",
-                color: "var(--text-secondary)",
-              }}
-            >
-              <Mail className="h-3.5 w-3.5" aria-hidden />
-              {templates.length} templates
-            </div>
-          </div>
+    <div className="mx-auto max-w-5xl space-y-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="admin-page-title">Email Templates</h1>
+          <p className="admin-page-subtitle">
+            One shared brand for all automated booking emails
+          </p>
         </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-3">
-        {templates.map((template) => {
-          const meta = TEMPLATE_META[template.name];
-          const previewHero = getEmailTemplatePreviewHeroSrc(template);
-          const previewLogo = getEmailTemplatePreviewLogoSrc(template);
-          return (
-            <section key={template.name} className="admin-card flex flex-col p-4 sm:p-6">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p
-                    className="text-xs font-semibold uppercase tracking-wider"
-                    style={{ color: "var(--accent)" }}
-                  >
-                    {meta.audience}
-                  </p>
-                  <h2 className="admin-heading mt-1 text-lg">{meta.label}</h2>
-                </div>
-                <span
-                  className="hidden shrink-0 rounded-md px-2 py-1 text-[10px] font-bold uppercase tracking-wide sm:inline"
-                  style={{
-                    background: "var(--bg-secondary)",
-                    color: "var(--text-secondary)",
-                  }}
-                >
-                  {template.name}
-                </span>
-              </div>
-
-              {previewHero ? (
-                <div
-                  className="mt-4 overflow-hidden rounded-xl border"
-                  style={{ borderColor: "var(--border)" }}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={previewHero}
-                    alt={`${meta.label} hero`}
-                    className="h-24 w-full object-cover"
-                  />
-                </div>
-              ) : null}
-
-              <p
-                className="mt-3 flex-1 text-sm leading-relaxed"
-                style={{ color: "var(--text-secondary)" }}
-              >
-                {meta.description}
-              </p>
-
-              <div
-                className="mt-4 space-y-2 rounded-lg p-3 text-sm"
-                style={{ background: "var(--bg-secondary)" }}
-              >
-                <p style={{ color: "var(--text-primary)" }}>
-                  <span style={{ color: "var(--text-secondary)" }}>Subject: </span>
-                  {template.subject}
-                </p>
-                {template.heroHeading ? (
-                  <p style={{ color: "var(--text-primary)" }}>
-                    <span style={{ color: "var(--text-secondary)" }}>Heading: </span>
-                    {template.heroHeading}
-                  </p>
-                ) : null}
-              </div>
-
-              <div className="mt-4 flex flex-wrap items-center gap-2">
-                <TemplateLogoThumb src={previewLogo} />
-                <span
-                  className="h-5 w-5 rounded-full border"
-                  style={{
-                    backgroundColor: template.backgroundColor,
-                    borderColor: "var(--border)",
-                  }}
-                  title="Background color"
-                />
-                <span
-                  className="h-5 w-5 rounded-full border"
-                  style={{
-                    backgroundColor: template.primaryColor,
-                    borderColor: "var(--border)",
-                  }}
-                  title="Primary color"
-                />
-                {template.updatedAt ? (
-                  <span
-                    className="ml-auto text-xs"
-                    style={{ color: "var(--text-secondary)" }}
-                  >
-                    Updated {new Date(template.updatedAt).toLocaleDateString()}
-                  </span>
-                ) : (
-                  <span
-                    className="ml-auto text-xs italic"
-                    style={{ color: "var(--text-secondary)" }}
-                  >
-                    Using defaults
-                  </span>
-                )}
-              </div>
-
-              <button
-                type="button"
-                onClick={() => openEditor(template)}
-                className="admin-btn-outline mt-5 flex w-full items-center justify-center gap-2 px-4 py-2.5 text-sm"
-              >
-                <Pencil className="h-4 w-4" aria-hidden />
-                Edit Template
-              </button>
-            </section>
-          );
-        })}
-      </div>
-
-      {editingName && form ? (
-        <div className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4">
+        <div className="flex flex-wrap gap-2">
+          <EmailTemplatePreviewButton onClick={() => setPreviewOpen(true)} />
           <button
             type="button"
-            className="absolute inset-0 bg-black/50 backdrop-blur-[2px]"
-            aria-label="Close editor"
-            onClick={closeEditor}
-          />
-          <div
-            className="relative flex max-h-[min(92vh,900px)] w-full max-w-2xl flex-col overflow-hidden rounded-t-2xl shadow-2xl sm:rounded-2xl"
-            style={{
-              background: "var(--bg-primary)",
-              border: "1px solid var(--border)",
-            }}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="email-template-editor-title"
+            onClick={() => void handleSendTest()}
+            disabled={isSendingTest}
+            className="admin-btn-outline inline-flex items-center gap-2 px-4 py-2 text-sm disabled:opacity-60"
           >
-            <div
-              className="flex items-center justify-between border-b px-4 py-4 sm:px-6"
-              style={{ borderColor: "var(--border)" }}
-            >
-              <div>
-                <p
-                  className="text-xs font-semibold uppercase tracking-wider"
-                  style={{ color: "var(--accent)" }}
-                >
-                  Edit Template
-                </p>
-                <h2 id="email-template-editor-title" className="admin-heading text-lg">
-                  {TEMPLATE_META[editingName].label}
-                </h2>
-              </div>
-              <button
-                type="button"
-                onClick={closeEditor}
-                className="admin-header-icon-btn"
-                aria-label="Close"
-              >
-                <X className="h-4 w-4" aria-hidden />
-              </button>
-            </div>
-
-            <div className="flex-1 space-y-4 overflow-y-auto px-4 py-4 sm:px-6">
-              <label className="block text-sm">
-                <span
-                  className="mb-1 block font-medium"
-                  style={{ color: "var(--text-primary)" }}
-                >
-                  Subject Line
-                </span>
-                <input
-                  value={form.subject}
-                  onChange={(event) => updateForm({ subject: event.target.value })}
-                  className="admin-input w-full px-3 py-2"
-                  placeholder="Email subject"
-                />
-                <span
-                  className="mt-1 block text-xs"
-                  style={{ color: "var(--text-secondary)" }}
-                >
-                  Use {"{guestName}"} for the guest&apos;s name where applicable.
-                </span>
-              </label>
-
-              <ImageUpload
-                label="Logo"
-                value={form.logoUrl}
-                onChange={(url) => updateForm({ logoUrl: url })}
-                folder="email-templates"
-                variant="admin"
-                helperText="Hosted in Supabase for email display (max 15 MB upload, auto-optimized). Saves to all templates."
-                emailTemplateAutoSave={
-                  editingName
-                    ? {
-                        templateName: editingName,
-                        imageField: "logoUrl",
-                        onSaved: (url) => handleImageSaved("logoUrl", url),
-                      }
-                    : undefined
-                }
-              />
-
-              <ImageUpload
-                label="Hero Banner Image"
-                value={form.heroImageUrl}
-                onChange={(url) => updateForm({ heroImageUrl: url })}
-                folder="email-templates"
-                variant="admin"
-                helperText="Hosted in Supabase for email display (max 15 MB upload, auto-optimized). Saves to all templates."
-                emailTemplateAutoSave={
-                  editingName
-                    ? {
-                        templateName: editingName,
-                        imageField: "heroImageUrl",
-                        onSaved: (url) => handleImageSaved("heroImageUrl", url),
-                      }
-                    : undefined
-                }
-              />
-
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <label className="block text-sm">
-                  <span
-                    className="mb-1 block font-medium"
-                    style={{ color: "var(--text-primary)" }}
-                  >
-                    Primary Color
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="color"
-                      value={form.primaryColor}
-                      onChange={(event) =>
-                        updateForm({ primaryColor: event.target.value })
-                      }
-                      className="h-10 w-12 cursor-pointer rounded border p-1"
-                      style={{ borderColor: "var(--border)" }}
-                    />
-                    <input
-                      value={form.primaryColor}
-                      onChange={(event) =>
-                        updateForm({ primaryColor: event.target.value })
-                      }
-                      className="admin-input min-w-0 flex-1 px-3 py-2"
-                    />
-                  </div>
-                </label>
-
-                <label className="block text-sm">
-                  <span
-                    className="mb-1 block font-medium"
-                    style={{ color: "var(--text-primary)" }}
-                  >
-                    Background Color
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="color"
-                      value={form.backgroundColor}
-                      onChange={(event) =>
-                        updateForm({ backgroundColor: event.target.value })
-                      }
-                      className="h-10 w-12 cursor-pointer rounded border p-1"
-                      style={{ borderColor: "var(--border)" }}
-                    />
-                    <input
-                      value={form.backgroundColor}
-                      onChange={(event) =>
-                        updateForm({ backgroundColor: event.target.value })
-                      }
-                      className="admin-input min-w-0 flex-1 px-3 py-2"
-                    />
-                  </div>
-                </label>
-              </div>
-
-              <label className="block text-sm">
-                <span
-                  className="mb-1 block font-medium"
-                  style={{ color: "var(--text-primary)" }}
-                >
-                  Hero Heading
-                </span>
-                <input
-                  value={form.heroHeading}
-                  onChange={(event) => updateForm({ heroHeading: event.target.value })}
-                  className="admin-input w-full px-3 py-2"
-                  placeholder="Thank You, {guestName}"
-                />
-              </label>
-
-              <label className="block text-sm">
-                <span
-                  className="mb-1 block font-medium"
-                  style={{ color: "var(--text-primary)" }}
-                >
-                  Body Text
-                </span>
-                <textarea
-                  value={form.bodyText}
-                  onChange={(event) => updateForm({ bodyText: event.target.value })}
-                  rows={5}
-                  className="admin-input w-full px-3 py-2"
-                  placeholder="Main message shown in the email body"
-                />
-              </label>
-            </div>
-
-            <div
-              className="flex flex-col-reverse gap-2 border-t px-4 py-4 sm:flex-row sm:justify-end sm:px-6"
-              style={{ borderColor: "var(--border)" }}
-            >
-              <button
-                type="button"
-                onClick={closeEditor}
-                disabled={isSaving}
-                className="admin-btn-outline px-5 py-2.5 text-sm disabled:opacity-60"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={handleSave}
-                disabled={isSaving || !form.subject.trim()}
-                className="admin-btn-primary flex items-center justify-center gap-2 px-5 py-2.5 text-sm disabled:opacity-60"
-              >
-                {isSaving ? (
-                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-                ) : (
-                  <Save className="h-4 w-4" aria-hidden />
-                )}
-                Save Template
-              </button>
-            </div>
-          </div>
+            {isSendingTest ? (
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+            ) : (
+              <Send className="h-4 w-4" aria-hidden />
+            )}
+            Send test email
+          </button>
+          <button
+            type="button"
+            onClick={() => void handleSaveAll()}
+            disabled={isSaving}
+            className="admin-btn-primary inline-flex items-center gap-2 px-4 py-2 text-sm disabled:opacity-60"
+          >
+            {isSaving ? (
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+            ) : (
+              <Save className="h-4 w-4" aria-hidden />
+            )}
+            Save all templates
+          </button>
         </div>
-      ) : null}
+      </div>
+
+      <section className="admin-card space-y-6 p-4 sm:p-6">
+        <div>
+          <h2 className="admin-heading text-lg">Shared branding</h2>
+          <p className="mt-1 text-sm" style={{ color: "var(--text-secondary)" }}>
+            Logo, hero image, and colors apply to all three templates.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <EmailImageUpload
+            label="Logo"
+            field="logoUrl"
+            value={shared.logoUrl}
+            onUploaded={(url) => {
+              setShared((current) => ({ ...current, logoUrl: url }));
+              showToast("success", "Logo uploaded — save to persist copy changes");
+              void loadTemplates();
+            }}
+          />
+          <EmailImageUpload
+            label="Hero image"
+            field="heroImageUrl"
+            value={shared.heroImageUrl}
+            onUploaded={(url) => {
+              setShared((current) => ({ ...current, heroImageUrl: url }));
+              showToast("success", "Hero uploaded — save to persist copy changes");
+              void loadTemplates();
+            }}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <label className="block text-sm">
+            <span
+              className="mb-1 block font-medium"
+              style={{ color: "var(--text-primary)" }}
+            >
+              Primary color (gold)
+            </span>
+            <div className="flex items-center gap-2">
+              <input
+                type="color"
+                value={shared.primaryColor}
+                onChange={(event) =>
+                  setShared((current) => ({
+                    ...current,
+                    primaryColor: event.target.value,
+                  }))
+                }
+                className="h-10 w-12 cursor-pointer rounded border p-1"
+                style={{ borderColor: "var(--border)" }}
+              />
+              <input
+                value={shared.primaryColor}
+                onChange={(event) =>
+                  setShared((current) => ({
+                    ...current,
+                    primaryColor: event.target.value,
+                  }))
+                }
+                className="admin-input min-w-0 flex-1 px-3 py-2"
+              />
+            </div>
+          </label>
+
+          <label className="block text-sm">
+            <span
+              className="mb-1 block font-medium"
+              style={{ color: "var(--text-primary)" }}
+            >
+              Background color
+            </span>
+            <div className="flex items-center gap-2">
+              <input
+                type="color"
+                value={shared.backgroundColor}
+                onChange={(event) =>
+                  setShared((current) => ({
+                    ...current,
+                    backgroundColor: event.target.value,
+                  }))
+                }
+                className="h-10 w-12 cursor-pointer rounded border p-1"
+                style={{ borderColor: "var(--border)" }}
+              />
+              <input
+                value={shared.backgroundColor}
+                onChange={(event) =>
+                  setShared((current) => ({
+                    ...current,
+                    backgroundColor: event.target.value,
+                  }))
+                }
+                className="admin-input min-w-0 flex-1 px-3 py-2"
+              />
+            </div>
+          </label>
+        </div>
+      </section>
+
+      <section className="admin-card p-4 sm:p-6">
+        <div className="mb-4 flex flex-wrap gap-2 border-b pb-4" style={{ borderColor: "var(--border)" }}>
+          {EMAIL_TEMPLATE_NAMES.map((name) => (
+            <button
+              key={name}
+              type="button"
+              onClick={() => setActiveTab(name)}
+              className={
+                activeTab === name
+                  ? "admin-btn-primary px-4 py-2 text-sm"
+                  : "admin-btn-outline px-4 py-2 text-sm"
+              }
+            >
+              {TEMPLATE_META[name].label}
+            </button>
+          ))}
+        </div>
+
+        {activeCopy ? (
+          <div className="space-y-4">
+            <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+              {TEMPLATE_META[activeCopy.name].description}
+            </p>
+
+            <label className="block text-sm">
+              <span
+                className="mb-1 block font-medium"
+                style={{ color: "var(--text-primary)" }}
+              >
+                Subject line
+              </span>
+              <input
+                value={activeCopy.subject}
+                onChange={(event) =>
+                  updateCopy(activeCopy.name, { subject: event.target.value })
+                }
+                className="admin-input w-full px-3 py-2"
+              />
+              <span
+                className="mt-1 block text-xs"
+                style={{ color: "var(--text-secondary)" }}
+              >
+                Use {"{guestName}"} where needed.
+              </span>
+            </label>
+
+            <label className="block text-sm">
+              <span
+                className="mb-1 block font-medium"
+                style={{ color: "var(--text-primary)" }}
+              >
+                Hero heading
+              </span>
+              <input
+                value={activeCopy.heroHeading}
+                onChange={(event) =>
+                  updateCopy(activeCopy.name, { heroHeading: event.target.value })
+                }
+                className="admin-input w-full px-3 py-2"
+                placeholder="Thank You, {guestName}"
+              />
+            </label>
+
+            <label className="block text-sm">
+              <span
+                className="mb-1 block font-medium"
+                style={{ color: "var(--text-primary)" }}
+              >
+                Body text
+              </span>
+              <textarea
+                value={activeCopy.bodyText}
+                onChange={(event) =>
+                  updateCopy(activeCopy.name, { bodyText: event.target.value })
+                }
+                rows={5}
+                className="admin-input w-full px-3 py-2"
+              />
+            </label>
+          </div>
+        ) : null}
+      </section>
+
+      <div
+        className="admin-card flex items-center gap-3 p-4 text-sm"
+        style={{ color: "var(--text-secondary)" }}
+      >
+        <Mail className="h-4 w-4 shrink-0" aria-hidden />
+        Images upload directly to Supabase. Click &ldquo;Save all templates&rdquo; after
+        editing copy or colors. Use Preview or Send test email to verify.
+      </div>
 
       <EmailTemplatePreviewModal
         open={previewOpen}

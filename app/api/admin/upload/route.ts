@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   ALLOWED_IMAGE_EXTENSIONS,
-  EMAIL_IMAGE_BUCKET,
   validateImageFile,
 } from "@/lib/image-upload";
-import { buildObjectPath, uploadImageBuffer } from "@/lib/upload-image";
+import { uploadWebsiteImage } from "@/lib/admin-storage";
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,20 +32,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const objectPath = buildObjectPath(folder, extension);
     const buffer = Buffer.from(await file.arrayBuffer());
-    const result = await uploadImageBuffer({
+    const result = await uploadWebsiteImage({
       folder,
-      objectPath,
       buffer,
       contentType: file.type,
-      bucket: folder === "email-templates" ? EMAIL_IMAGE_BUCKET : undefined,
+      extension,
     });
 
     return NextResponse.json({
       url: result.url,
       path: result.path,
-      storage: result.storage,
+      storage: "supabase",
     });
   } catch (error) {
     console.error("[admin.upload]", error);
