@@ -11,6 +11,10 @@ import {
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
 import { buildEmailSendTheme } from "@/lib/email-templates";
 import type { BookingEmailDetails } from "@/lib/email-types";
+import {
+  getAdminNotificationEmail,
+  getResendFromAddress,
+} from "@/lib/resend-config";
 
 let resendClient: Resend | null = null;
 
@@ -27,14 +31,11 @@ function getResend(): Resend | null {
 }
 
 function getFromAddress(): string {
-  return (
-    process.env.RESEND_FROM_EMAIL?.trim() ??
-    "Hathor Dahabiya <onboarding@resend.dev>"
-  );
+  return getResendFromAddress();
 }
 
 function getAdminEmail(): string | null {
-  const email = process.env.ADMIN_EMAIL?.trim();
+  const email = getAdminNotificationEmail();
   if (!email) {
     console.warn("[email] ADMIN_EMAIL is not set");
   }

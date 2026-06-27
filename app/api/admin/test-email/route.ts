@@ -5,6 +5,10 @@ import BookingReceivedEmail from "@/emails/BookingReceived";
 import { sampleBookingDetails, sampleGuestName } from "@/emails/sample-data";
 import { buildEmailSendTheme } from "@/lib/email-templates";
 import { getEmailTemplateForSend } from "@/lib/email-template-send";
+import {
+  getResendFromAddress,
+  getTestEmailRecipient,
+} from "@/lib/resend-config";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -15,10 +19,8 @@ export const revalidate = 0;
  */
 export async function GET() {
   const hasResendKey = Boolean(process.env.RESEND_API_KEY?.trim());
-  const to = process.env.ADMIN_EMAIL?.trim();
-  const from =
-    process.env.RESEND_FROM_EMAIL?.trim() ??
-    "Hathor Dahabiya <onboarding@resend.dev>";
+  const to = getTestEmailRecipient();
+  const from = getResendFromAddress();
 
   if (!hasResendKey) {
     return NextResponse.json(
@@ -29,7 +31,7 @@ export async function GET() {
 
   if (!to) {
     return NextResponse.json(
-      { ok: false, error: "Admin notification email is not configured" },
+      { ok: false, error: "Test recipient email is not configured" },
       { status: 500 },
     );
   }
