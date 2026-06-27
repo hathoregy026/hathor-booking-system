@@ -48,7 +48,9 @@ function HathorCalendarDayButton({
         </span>
       ) : null}
       {meta?.status === "booked" ? (
-        <span className="hathor-calendar-day__label">Booked</span>
+        <span className="hathor-calendar-day__label" aria-hidden>
+          Booked
+        </span>
       ) : null}
     </button>
   );

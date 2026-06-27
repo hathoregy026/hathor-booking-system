@@ -41,15 +41,15 @@ export async function ensureScheduleForCheckIn(
   nights: number,
 ) {
   const checkIn = parseToUtcDate(checkInDateIso);
-  const arrival = new Date(checkIn);
-  arrival.setUTCDate(arrival.getUTCDate() + nights);
+  const dayEnd = new Date(checkIn);
+  dayEnd.setUTCDate(dayEnd.getUTCDate() + 1);
 
-  const onOrAfter = await prisma.cruiseSchedule.findFirst({
+  // Only reuse a schedule departing on the selected check-in day (UTC).
+  const exactDeparture = await prisma.cruiseSchedule.findFirst({
     where: {
       cruiseId,
-      departureTime: { gte: checkIn },
+      departureTime: { gte: checkIn, lt: dayEnd },
     },
-    orderBy: { departureTime: "asc" },
     select: {
       id: true,
       departureTime: true,
@@ -57,7 +57,7 @@ export async function ensureScheduleForCheckIn(
     },
   });
 
-  if (onOrAfter) return onOrAfter;
+  if (exactDeparture) return exactDeparture;
 
   const cruise = await prisma.cruise.findUnique({
     where: { id: cruiseId },
