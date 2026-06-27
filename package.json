@@ -15,8 +15,7 @@
     "optimize:email-images": "node --env-file=.env scripts/optimize-email-bucket-images.mjs",
     "backfill:email-images": "node scripts/backfill-email-template-images.mjs",
     "email:dev": "node scripts/sync-email-assets.mjs && email dev --dir emails --port 3005",
-    "validate:availability": "tsx scripts/validate-calendar-availability.ts",
-    "validate:availability:remote": "tsx scripts/validate-calendar-availability.ts --remote"
+    "validate:availability": "tsx scripts/validate-calendar-availability.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
