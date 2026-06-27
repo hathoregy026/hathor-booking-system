@@ -15,6 +15,10 @@ import {
 import { departureTimeToCheckInDate } from "@/lib/dates";
 import type { CruiseSearchItem } from "@/lib/cruise-search";
 
+import type { HistoriaBookingStep } from "@/components/booking/BookingProgressBar";
+import type { RatePlanId } from "@/lib/rate-plans";
+import { applyRatePlan } from "@/lib/rate-plans";
+
 export type BookingSearchMode = "exact" | "period";
 
 export type PassengerDetails = {
@@ -24,6 +28,8 @@ export type PassengerDetails = {
 
 type BookingStore = {
   step: 1 | 2 | 3;
+  checkoutStep: HistoriaBookingStep;
+  itineraryConfigured: boolean;
   isSuccess: boolean;
   searchMode: BookingSearchMode;
   duration: StayDurationValue | "";
@@ -38,6 +44,7 @@ type BookingStore = {
   availableSchedules: AvailabilityResponse["schedules"];
   availableRooms: AvailableRoom[];
   selectedRoomIds: string[];
+  selectedRatePlan: RatePlanId;
   selectedScheduleId: string | null;
   passengerDetails: PassengerDetails;
   holdExpiresAt: string | null;
@@ -47,6 +54,11 @@ type BookingStore = {
   error: string | null;
 
   setStep: (step: 1 | 2 | 3) => void;
+  setCheckoutStep: (step: HistoriaBookingStep) => void;
+  hydrateFromModal: (input: {
+    duration: StayDurationValue;
+    roomConfigs: RoomSearchConfig[];
+  }) => void;
   setSearchMode: (mode: BookingSearchMode) => void;
   setDuration: (duration: StayDurationValue | "") => void;
   setCheckInDate: (iso: string | null) => void;
@@ -62,6 +74,7 @@ type BookingStore = {
     data: AvailabilityResponse & { cruises?: CruiseSearchItem[] },
   ) => void;
   toggleRoomSelection: (selectionKey: string) => void;
+  selectRoomForCheckout: (selectionKey: string, ratePlan?: RatePlanId) => void;
   setPassengerDetails: (details: Partial<PassengerDetails>) => void;
   setHoldExpiresAt: (iso: string | null) => void;
   setBookingId: (id: string | null) => void;
@@ -80,6 +93,8 @@ const initialPassengerDetails: PassengerDetails = {
 
 const initialState = {
   step: 1 as const,
+  checkoutStep: 1 as HistoriaBookingStep,
+  itineraryConfigured: false,
   isSuccess: false,
   searchMode: "exact" as BookingSearchMode,
   duration: "" as StayDurationValue | "",
@@ -94,6 +109,7 @@ const initialState = {
   availableSchedules: [] as AvailabilityResponse["schedules"],
   availableRooms: [] as AvailableRoom[],
   selectedRoomIds: [] as string[],
+  selectedRatePlan: "standard" as RatePlanId,
   selectedScheduleId: null as string | null,
   passengerDetails: initialPassengerDetails,
   holdExpiresAt: null as string | null,
@@ -130,6 +146,29 @@ export const useBookingStore = create<BookingStore>((set, get) => ({
 
   setStep: (step) => set({ step, error: null }),
 
+  setCheckoutStep: (checkoutStep) => set({ checkoutStep, error: null }),
+
+  hydrateFromModal: ({ duration, roomConfigs }) =>
+    set({
+      searchMode: "exact",
+      duration,
+      roomConfigs,
+      itineraryConfigured: true,
+      checkoutStep: 2,
+      checkInDate: null,
+      startDate: null,
+      endDate: null,
+      searchAttempted: false,
+      availableSchedules: [],
+      availableRooms: [],
+      selectedRoomIds: [],
+      selectedRatePlan: "standard",
+      selectedScheduleId: null,
+      selectedCruiseId: "",
+      totalPrice: 0,
+      error: null,
+    }),
+
   setSearchMode: (mode) =>
     set({
       searchMode: mode,
@@ -138,6 +177,7 @@ export const useBookingStore = create<BookingStore>((set, get) => ({
       availableSchedules: [],
       availableRooms: [],
       selectedRoomIds: [],
+      selectedRatePlan: "standard",
       selectedScheduleId: null,
       totalPrice: 0,
     }),
@@ -166,6 +206,7 @@ export const useBookingStore = create<BookingStore>((set, get) => ({
       availableSchedules: data.schedules,
       availableRooms: rooms,
       selectedRoomIds: [],
+      selectedRatePlan: "standard",
       selectedScheduleId: null,
       totalPrice: 0,
     });
@@ -180,6 +221,7 @@ export const useBookingStore = create<BookingStore>((set, get) => ({
       availableSchedules: data.schedules,
       availableRooms: rooms,
       selectedRoomIds: [],
+      selectedRatePlan: "standard",
       selectedScheduleId: null,
       totalPrice: 0,
       startDate: data.startDate,
@@ -209,6 +251,29 @@ export const useBookingStore = create<BookingStore>((set, get) => ({
     }
 
     set(updates);
+  },
+
+  selectRoomForCheckout: (selectionKey, ratePlan = "standard") => {
+    const { availableRooms } = get();
+    const selectedRoom = availableRooms.find(
+      (room) =>
+        (room.selectionKey ?? room.id) === selectionKey || room.id === selectionKey,
+    );
+
+    if (!selectedRoom) return;
+
+    const scheduleId = getScheduleIdForSelection(availableRooms, [selectionKey]);
+    const roomPriceCents = applyRatePlan(selectedRoom.minPriceCents, ratePlan);
+
+    set({
+      selectedRoomIds: [selectionKey],
+      selectedRatePlan: ratePlan,
+      selectedScheduleId: scheduleId,
+      totalPrice: roomPriceCents,
+      checkoutStep: 4,
+      error: null,
+      ...applySelectedSailingContext(selectedRoom),
+    });
   },
 
   setPassengerDetails: (details) =>

@@ -1089,6 +1089,90 @@
   color: var(--booking-gold-dark);
 }
 
+.hathor-checkout-summary__rate-plan {
+  margin: 0.35rem 0 0.75rem;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--booking-muted);
+}
+
+.hathor-checkout-tax-link {
+  margin-top: 0.75rem;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--booking-gold-dark);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.hathor-checkout-tax-link:hover {
+  color: var(--booking-navy-hover);
+}
+
+.hathor-checkout-tax-breakdown {
+  margin-top: 0.75rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--booking-border);
+  background: var(--booking-surface);
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--booking-muted);
+}
+
+.hathor-checkout-tax-breakdown p + p {
+  margin-top: 0.35rem;
+}
+
+.hathor-checkout-tax-breakdown__note {
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+.hathor-checkout-special-requests {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--booking-border);
+}
+
+.hathor-checkout-special-requests__label {
+  margin-bottom: 0.625rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--booking-text);
+}
+
+.hathor-checkout-special-requests__item + .hathor-checkout-special-requests__item {
+  margin-top: 0.625rem;
+}
+
+.hathor-checkout-special-requests__input {
+  min-height: 4.5rem;
+  resize: vertical;
+}
+
+.hathor-checkout-special-requests__add {
+  margin-top: 0.625rem;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--booking-gold-dark);
+  cursor: pointer;
+}
+
+.hathor-checkout-special-requests__add:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .hathor-checkout-form {
   display: flex;
   flex-direction: column;
@@ -1239,5 +1323,397 @@
   .hathor-checkout-book-btn {
     width: auto;
     min-width: 11rem;
+  }
+}
+
+/* Historia-style checkout calendar & room selection */
+
+.historia-checkout-calendar {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 0 1rem 2rem;
+}
+
+.historia-checkout-calendar__range {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+  background: var(--booking-card);
+  border: 1px solid var(--booking-border);
+  box-shadow: var(--booking-shadow);
+}
+
+.historia-checkout-calendar__range-label {
+  font-family: var(--booking-serif);
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--booking-text);
+}
+
+.historia-checkout-calendar__nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.historia-checkout-calendar__nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--booking-border);
+  background: var(--booking-surface);
+  color: var(--booking-text);
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.historia-checkout-calendar__nav-btn:hover {
+  border-color: var(--booking-gold);
+  color: var(--booking-gold-dark);
+}
+
+.historia-checkout-calendar__months {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .historia-checkout-calendar__months {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+}
+
+.historia-cal-month__title {
+  margin-bottom: 1rem;
+  font-family: var(--booking-serif);
+  font-size: 1.25rem;
+  font-weight: 500;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+.historia-cal-month__weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
+}
+
+.historia-cal-month__weekdays span {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-align: center;
+  color: var(--booking-muted);
+}
+
+.historia-cal-month__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.35rem;
+}
+
+.historia-cal-day {
+  position: relative;
+  display: flex;
+  min-height: 3.25rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.125rem;
+  padding: 0.35rem 0.2rem;
+  border: 1px solid var(--booking-border);
+  background: var(--booking-surface);
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.historia-cal-day--empty {
+  border-color: transparent;
+  background: transparent;
+  pointer-events: none;
+}
+
+.historia-cal-day--muted {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.historia-cal-day--closed {
+  opacity: 0.35;
+  cursor: not-allowed;
+  background: #ece8e1;
+}
+
+.historia-cal-day--booked {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: #3a3a3a;
+  color: #f5f5f5;
+  background-image: linear-gradient(
+    135deg,
+    transparent 46%,
+    rgb(255 255 255 / 0.25) 46%,
+    rgb(255 255 255 / 0.25) 54%,
+    transparent 54%
+  );
+}
+
+.historia-cal-day--available {
+  background: #2f4f4f;
+  border-color: #2f4f4f;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.historia-cal-day--available:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgb(47 79 79 / 0.35);
+  background: #3a6363;
+}
+
+.historia-cal-day--check-in,
+.historia-cal-day--check-out,
+.historia-cal-day--in-range {
+  background: var(--booking-gold);
+  border-color: var(--booking-gold-dark);
+  color: #0a0a0a;
+  font-weight: 700;
+}
+
+.historia-cal-day--in-range {
+  opacity: 0.92;
+}
+
+.historia-cal-day__num {
+  font-size: 0.9375rem;
+}
+
+.historia-cal-day__tag {
+  font-size: 0.5rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.historia-cal-day__price {
+  font-size: 0.5625rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.historia-checkout-calendar__status,
+.historia-checkout-calendar__error {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+.historia-checkout-calendar__error {
+  color: #b42318;
+}
+
+.historia-checkout-calendar__legend {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 1.25rem;
+}
+
+.historia-checkout-calendar__legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--booking-muted);
+}
+
+.historia-checkout-calendar__legend-item::before {
+  content: "";
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 1px solid var(--booking-border);
+}
+
+.historia-checkout-calendar__legend-item--available::before {
+  background: #2f4f4f;
+  border-color: #2f4f4f;
+}
+
+.historia-checkout-calendar__legend-item--booked::before {
+  background: #3a3a3a;
+  opacity: 0.5;
+  background-image: linear-gradient(
+    135deg,
+    transparent 46%,
+    rgb(255 255 255 / 0.35) 46%,
+    rgb(255 255 255 / 0.35) 54%,
+    transparent 54%
+  );
+}
+
+.historia-checkout-calendar__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.historia-btn {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.historia-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.historia-btn--ghost {
+  background: #fff;
+  border-color: var(--booking-border);
+  color: var(--booking-text);
+}
+
+.historia-btn--ghost:hover:not(:disabled) {
+  border-color: var(--booking-gold);
+}
+
+.historia-btn--primary {
+  background: #2f4f4f;
+  border-color: #2f4f4f;
+  color: #fff;
+}
+
+.historia-btn--primary:hover:not(:disabled) {
+  background: #3a6363;
+}
+
+.historia-room-selection {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 0 1rem 2rem;
+}
+
+.historia-room-selection__toolbar {
+  margin-bottom: 1.5rem;
+}
+
+.historia-room-selection__loading,
+.historia-room-selection__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--booking-muted);
+}
+
+.historia-room-selection__list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.historia-room-card {
+  display: grid;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  background: var(--booking-card);
+  border: 1px solid var(--booking-border);
+  box-shadow: var(--booking-shadow);
+}
+
+@media (min-width: 640px) {
+  .historia-room-card {
+    grid-template-columns: 11rem 1fr;
+  }
+}
+
+.historia-room-card--selected {
+  border-color: var(--booking-gold);
+  box-shadow: 0 0 0 1px var(--booking-gold);
+}
+
+.historia-room-card__image {
+  min-height: 8rem;
+  border-radius: 2px;
+}
+
+.historia-room-card__name {
+  font-family: var(--booking-serif);
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.historia-room-card__meta {
+  margin-top: 0.35rem;
+  font-size: 0.8125rem;
+  color: var(--booking-muted);
+}
+
+.historia-room-card__desc {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--booking-text);
+}
+
+.historia-room-card__link {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--booking-gold-dark);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.historia-room-card__rate {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--booking-border);
+}
+
+.historia-room-card__rate-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.historia-room-card__rate-option + .historia-room-card__rate-option {
+  margin-top: 0.625rem;
+}
+
+.historia-room-card__book {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+@media (min-width: 480px) {
+  .historia-room-card__book {
+    width: auto;
+    min-width: 9rem;
   }
 }

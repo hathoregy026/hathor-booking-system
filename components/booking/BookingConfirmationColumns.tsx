@@ -10,13 +10,20 @@ import { formatPrice, formatUtcDate } from "@/lib/client-dates";
 import {
   computeBookingTotals,
   formatServiceChargePercent,
+  formatTaxPercent,
   getServiceChargeRate,
+  getTaxRate,
 } from "@/lib/booking-pricing";
+import { buildBookingCustomerName } from "@/lib/booking-guest-details";
 import {
   findStayDurationOption,
   formatGuestsSummary,
   type StayDurationValue,
 } from "@/lib/booking-search-config";
+import {
+  nonRefundableRateLabel,
+  standardRateLabel,
+} from "@/lib/rate-plans";
 import { useBookingStore, getSelectedRooms } from "@/store/bookingStore";
 
 const SALUTATIONS = ["Mr", "Mrs", "Ms", "Miss", "Dr"] as const;
@@ -80,6 +87,7 @@ export function BookingConfirmationColumns({ onBack }: BookingConfirmationColumn
     selectedRoomIds,
     selectedCruiseId,
     selectedScheduleId,
+    selectedRatePlan,
     totalPrice,
     isLoading,
     error,
@@ -107,6 +115,8 @@ export function BookingConfirmationColumns({ onBack }: BookingConfirmationColumn
     termsAccepted: false,
   });
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<string, string>>>({});
+  const [taxBreakdownOpen, setTaxBreakdownOpen] = useState(false);
+  const [specialRequests, setSpecialRequests] = useState<string[]>([""]);
 
   const selectedRooms = getSelectedRooms(availableRooms, selectedRoomIds);
   const checkoutRoomIds = getSelectedRoomIdsForCheckout(
@@ -118,8 +128,21 @@ export function BookingConfirmationColumns({ onBack }: BookingConfirmationColumn
     : undefined;
   const totals = computeBookingTotals(totalPrice);
   const serviceRate = getServiceChargeRate();
+  const taxRate = getTaxRate();
   const nights = durationOption?.nights ?? 1;
   const perNightCents = nights > 0 ? Math.round(totalPrice / nights) : totalPrice;
+  const rateLabel =
+    selectedRatePlan === "non-refundable"
+      ? nonRefundableRateLabel(
+          durationOption?.label.replace(/^⛵\s*/, "") ?? "Hathor Cruise",
+        )
+      : standardRateLabel(
+          durationOption?.label.replace(/^⛵\s*/, "") ?? "Hathor Cruise",
+        );
+  const combinedSpecialRequests = specialRequests
+    .map((entry) => entry.trim())
+    .filter(Boolean)
+    .join("\n");
 
   const validate = (): boolean => {
     const next: Partial<Record<string, string>> = {};
@@ -169,7 +192,13 @@ export function BookingConfirmationColumns({ onBack }: BookingConfirmationColumn
       return;
     }
 
-    const fullName = `${form.salutation} ${form.firstName.trim()} ${form.lastName.trim()}`.trim();
+    const fullName = buildBookingCustomerName({
+      fullName: `${form.salutation} ${form.firstName.trim()} ${form.lastName.trim()}`.trim(),
+      phone: `${form.countryCode} ${form.phone.trim()}`.trim(),
+      adults: roomConfigs.reduce((sum, cfg) => sum + cfg.adults, 0),
+      children: roomConfigs.reduce((sum, cfg) => sum + cfg.children, 0),
+      specialRequests: combinedSpecialRequests,
+    });
 
     setIsLoading(true);
     setError(null);
@@ -308,6 +337,15 @@ export function BookingConfirmationColumns({ onBack }: BookingConfirmationColumn
                 </span>
                 <span>{formatPrice(totalPrice)}</span>
               </div>
+              <p className="hathor-checkout-summary__rate-plan">{rateLabel}</p>
+              <div className="hathor-checkout-summary__line">
+                <span>Subtotal</span>
+                <span>{formatPrice(totals.subtotalCents)}</span>
+              </div>
+              <div className="hathor-checkout-summary__line">
+                <span>Taxes ({formatTaxPercent(taxRate)})</span>
+                <span>{formatPrice(totals.taxCents)}</span>
+              </div>
               <div className="hathor-checkout-summary__line">
                 <span>Service charges ({formatServiceChargePercent(serviceRate)})</span>
                 <span>{formatPrice(totals.serviceChargeCents)}</span>
@@ -316,6 +354,61 @@ export function BookingConfirmationColumns({ onBack }: BookingConfirmationColumn
                 <span>Total</span>
                 <span className="booking-serif">{formatPrice(totals.totalCents)}</span>
               </div>
+              <button
+                type="button"
+                className="hathor-checkout-tax-link"
+                aria-expanded={taxBreakdownOpen}
+                onClick={() => setTaxBreakdownOpen((open) => !open)}
+              >
+                {taxBreakdownOpen ? "Hide Tax Breakdown" : "View Tax Breakdown"}
+              </button>
+              {taxBreakdownOpen ? (
+                <div className="hathor-checkout-tax-breakdown">
+                  <p>
+                    Room rate ({rateLabel}): {formatPrice(totals.subtotalCents)}
+                  </p>
+                  <p>
+                    Tourism &amp; VAT ({formatTaxPercent(taxRate)}):{" "}
+                    {formatPrice(totals.taxCents)}
+                  </p>
+                  <p>
+                    Service charge ({formatServiceChargePercent(serviceRate)}):{" "}
+                    {formatPrice(totals.serviceChargeCents)}
+                  </p>
+                  <p className="hathor-checkout-tax-breakdown__note">
+                    Taxes and service charges are estimated for display. Final
+                    invoicing is confirmed by our reservations team.
+                  </p>
+                </div>
+              ) : null}
+            </div>
+
+            <div className="hathor-checkout-special-requests">
+              <p className="hathor-checkout-special-requests__label">Special Requests</p>
+              {specialRequests.map((request, index) => (
+                <div key={`request-${index}`} className="hathor-checkout-special-requests__item">
+                  <textarea
+                    className={`${fieldClass} hathor-checkout-special-requests__input`}
+                    rows={3}
+                    value={request}
+                    placeholder="Dietary needs, celebrations, accessibility…"
+                    onChange={(event) =>
+                      setSpecialRequests((current) => {
+                        const next = [...current];
+                        next[index] = event.target.value;
+                        return next;
+                      })
+                    }
+                  />
+                </div>
+              ))}
+              <button
+                type="button"
+                className="hathor-checkout-special-requests__add"
+                onClick={() => setSpecialRequests((current) => [...current, ""])}
+              >
+                + Another Request
+              </button>
             </div>
           </div>
         </aside>
