@@ -8,7 +8,7 @@ import {
 import type { RoomSearchConfig, StayDurationValue } from "@/lib/booking-search-config";
 import { ensureDefaultTicketType } from "@/lib/cruise-setup";
 import { withDb } from "@/lib/db-safe";
-import { utcNow } from "@/lib/dates";
+import { utcNow, utcDateKeyFromDate } from "@/lib/dates";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 import { prisma } from "@/lib/prisma";
 import { availabilityRoomSelect } from "@/lib/query-selects";
@@ -65,7 +65,7 @@ function enumerateUtcDateKeys(from: Date, to: Date): string[] {
 }
 
 function scheduleDepartureKey(departureTime: Date): string {
-  return departureTime.toISOString().slice(0, 10);
+  return utcDateKeyFromDate(departureTime);
 }
 
 function computeMinPriceCents(

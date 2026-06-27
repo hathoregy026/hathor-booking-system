@@ -7,7 +7,7 @@ import {
   type RoomSearchConfig,
   type StayDurationValue,
 } from "@/lib/booking-search-config";
-import { parseToUtcDate } from "@/lib/dates";
+import { parseToUtcDate, exactUtcDayBounds } from "@/lib/dates";
 import { withDb } from "@/lib/db-safe";
 import { prisma } from "@/lib/prisma";
 
@@ -137,19 +137,18 @@ export function canAssignRoomConfigs(
   return true;
 }
 
+/** Schedules departing on the selected check-in calendar day (UTC) only. */
 export async function getSchedulesFromCheckIn(
   cruiseId: string,
   checkInDateIso: string,
-  endDateIso: string,
+  _endDateIso?: string,
 ) {
-  const checkInDate = parseToUtcDate(checkInDateIso);
-  const endDate = parseToUtcDate(endDateIso);
+  const { dayStart, dayEnd } = exactUtcDayBounds(checkInDateIso);
 
   return prisma.cruiseSchedule.findMany({
     where: {
       cruiseId,
-      departureTime: { gte: checkInDate, lt: endDate },
-      arrivalTime: { gt: checkInDate },
+      departureTime: { gte: dayStart, lt: dayEnd },
     },
     orderBy: { departureTime: "asc" },
     select: {

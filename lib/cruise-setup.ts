@@ -1,4 +1,4 @@
-import { parseToUtcDate } from "@/lib/dates";
+import { parseToUtcDate, exactUtcDayBounds } from "@/lib/dates";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 import { prisma } from "@/lib/prisma";
 
@@ -40,15 +40,13 @@ export async function ensureScheduleForCheckIn(
   checkInDateIso: string,
   nights: number,
 ) {
-  const checkIn = parseToUtcDate(checkInDateIso);
-  const dayEnd = new Date(checkIn);
-  dayEnd.setUTCDate(dayEnd.getUTCDate() + 1);
+  const { dayStart, dayEnd } = exactUtcDayBounds(checkInDateIso);
 
   // Only reuse a schedule departing on the selected check-in day (UTC).
   const exactDeparture = await prisma.cruiseSchedule.findFirst({
     where: {
       cruiseId,
-      departureTime: { gte: checkIn, lt: dayEnd },
+      departureTime: { gte: dayStart, lt: dayEnd },
     },
     select: {
       id: true,
@@ -58,6 +56,8 @@ export async function ensureScheduleForCheckIn(
   });
 
   if (exactDeparture) return exactDeparture;
+
+  const checkIn = dayStart;
 
   const cruise = await prisma.cruise.findUnique({
     where: { id: cruiseId },

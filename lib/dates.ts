@@ -19,6 +19,19 @@ export function addUtcMinutes(minutes: number): Date {
   return addMinutes(utcNow(), minutes);
 }
 
+/** Inclusive UTC midnight start and exclusive next-day end for a calendar day. */
+export function exactUtcDayBounds(iso: string): { dayStart: Date; dayEnd: Date } {
+  const dayStart = parseToUtcDate(iso);
+  const dayEnd = new Date(dayStart);
+  dayEnd.setUTCDate(dayEnd.getUTCDate() + 1);
+  return { dayStart, dayEnd };
+}
+
+/** UTC calendar date key (yyyy-MM-dd) for a Date value. */
+export function utcDateKeyFromDate(date: Date): string {
+  return date.toISOString().slice(0, 10);
+}
+
 /** Start-of-day UTC ISO for a schedule departure (used as public check-in date). */
 export function departureTimeToCheckInDate(departureTimeIso: string): string {
   const departure = parseToUtcDate(departureTimeIso);
