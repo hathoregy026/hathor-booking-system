@@ -10,6 +10,7 @@ import {
   UnauthorizedBookingError,
   verifyHoldToken,
 } from "@/lib/booking-hold-token";
+import { assertHoldBookingRequest } from "@/lib/booking-validation";
 import { buildEmailDetailsFromConfirmBooking } from "@/lib/booking-email-details";
 import { ensureDefaultTicketType } from "@/lib/cruise-setup";
 import { withDb } from "@/lib/db-safe";
@@ -142,12 +143,25 @@ export async function POST(request: NextRequest) {
 
         const schedule = await tx.cruiseSchedule.findUnique({
           where: { id: booking.cruiseScheduleId },
-          select: { cruiseId: true },
+          select: {
+            cruiseId: true,
+            departureTime: true,
+            arrivalTime: true,
+          },
         });
 
         if (!schedule) {
           throw new InvalidBookingError("Cruise schedule not found");
         }
+
+        await assertHoldBookingRequest(tx, {
+          cruiseId: schedule.cruiseId,
+          cruiseScheduleId: booking.cruiseScheduleId,
+          roomIds: heldRoomIds,
+          startDate: schedule.departureTime.toISOString(),
+          endDate: schedule.arrivalTime.toISOString(),
+          excludeBookingId: parsed.bookingId,
+        });
 
         const ticketLines = await resolveTicketLines(
           schedule.cruiseId,

@@ -5,6 +5,7 @@ import {
   BookingConflictError,
   InvalidBookingError,
 } from "@/lib/booking";
+import { assertHoldBookingRequest } from "@/lib/booking-validation";
 import { createHoldToken } from "@/lib/booking-hold-token";
 import { resolveDatabaseUrl } from "@/lib/database-config";
 import { withDb } from "@/lib/db-safe";
@@ -22,6 +23,14 @@ export async function POST(request: NextRequest) {
     const parsed = createHoldSchema.parse(body);
 
     const result = await withDb(async () => {
+      await assertHoldBookingRequest(prisma, {
+        cruiseId: parsed.cruiseId,
+        cruiseScheduleId: parsed.cruiseScheduleId,
+        roomIds: parsed.roomIds,
+        startDate: parsed.startDate,
+        endDate: parsed.endDate,
+      });
+
       const schedule = await prisma.cruiseSchedule.findFirst({
         where: {
           id: parsed.cruiseScheduleId,
