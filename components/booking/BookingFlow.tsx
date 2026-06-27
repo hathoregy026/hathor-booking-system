@@ -56,6 +56,7 @@ export function BookingFlow() {
   const [pendingDateKey, setPendingDateKey] = useState<string | null>(() =>
     dateKeyFromCheckInIso(checkInDate),
   );
+  const [isUpdatingDates, setIsUpdatingDates] = useState(false);
 
   const selectedDateKey = pendingDateKey;
 
@@ -106,7 +107,7 @@ export function BookingFlow() {
       return;
     }
 
-    setIsLoading(true);
+    setIsUpdatingDates(true);
     setError(null);
 
     try {
@@ -137,7 +138,7 @@ export function BookingFlow() {
           : "Failed to check availability",
       );
     } finally {
-      setIsLoading(false);
+      setIsUpdatingDates(false);
     }
   };
 
@@ -183,7 +184,7 @@ export function BookingFlow() {
           }}
           onGoBack={handleGoBackFromDates}
           onUpdateDates={() => void handleUpdateDates()}
-          isUpdating={isLoading}
+          isUpdating={isUpdatingDates}
           canUpdate={Boolean(selectedDateKey)}
         />
       ) : null}

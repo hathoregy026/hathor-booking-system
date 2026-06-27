@@ -23,7 +23,6 @@
   color: var(--booking-text);
   font-family: var(--booking-sans);
   min-height: 100vh;
-  animation: bookingFadeIn 0.5s ease;
 }
 
 @keyframes bookingFadeIn {
@@ -1398,8 +1397,8 @@
 }
 
 .historia-checkout-calendar__months--loading {
-  opacity: 0.72;
   pointer-events: none;
+  opacity: 0.55;
 }
 
 .historia-checkout-calendar__status-slot {
@@ -1521,13 +1520,13 @@
   pointer-events: none;
 }
 
-/* Historia exact crossed-out unavailable cell */
+/* Faded unavailable — Historia diagonal strike */
 .historia-cal-day--unavailable {
-  background: #6d6d6d;
-  border-color: #5a5a5a;
-  color: #1a1a1a;
+  background: #eceae6;
+  border-color: #e0ddd8;
+  color: #b8b4ae;
   cursor: not-allowed;
-  opacity: 1;
+  opacity: 0.42;
 }
 
 .historia-cal-day--unavailable::after {
@@ -1536,10 +1535,10 @@
   inset: 0;
   background: linear-gradient(
     to bottom right,
-    transparent calc(50% - 0.75px),
-    #2a2a2a calc(50% - 0.75px),
-    #2a2a2a calc(50% + 0.75px),
-    transparent calc(50% + 0.75px)
+    transparent calc(50% - 0.5px),
+    rgb(160 160 160 / 0.55) calc(50% - 0.5px),
+    rgb(160 160 160 / 0.55) calc(50% + 0.5px),
+    transparent calc(50% + 0.5px)
   );
   pointer-events: none;
 }
@@ -1547,7 +1546,7 @@
 .historia-cal-day--unavailable .historia-cal-day__num {
   position: relative;
   z-index: 1;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .historia-cal-day--available {
@@ -1564,16 +1563,29 @@
 }
 
 .historia-cal-day--check-in,
-.historia-cal-day--check-out,
-.historia-cal-day--in-range {
-  background: var(--booking-gold);
-  border-color: var(--booking-gold-dark);
-  color: #0a0a0a;
+.historia-cal-day--check-out {
+  background: var(--booking-gold) !important;
+  border-color: var(--booking-gold-dark) !important;
+  color: #0a0a0a !important;
   font-weight: 700;
+  opacity: 1 !important;
+  z-index: 2;
+}
+
+.historia-cal-day--check-in::after,
+.historia-cal-day--check-out::after {
+  display: none;
 }
 
 .historia-cal-day--in-range {
-  opacity: 0.92;
+  background: rgb(201 169 110 / 0.28) !important;
+  border-color: rgb(201 169 110 / 0.65) !important;
+  color: var(--booking-text) !important;
+  opacity: 1 !important;
+}
+
+.historia-cal-day--in-range::after {
+  display: none;
 }
 
 .historia-cal-day__num {
@@ -1632,15 +1644,21 @@
 }
 
 .historia-checkout-calendar__legend-item--unavailable::before {
-  background: #6d6d6d;
-  border-color: #5a5a5a;
+  background: #eceae6;
+  border-color: #e0ddd8;
+  opacity: 0.55;
   background-image: linear-gradient(
     to bottom right,
-    transparent calc(50% - 0.75px),
-    #2a2a2a calc(50% - 0.75px),
-    #2a2a2a calc(50% + 0.75px),
-    transparent calc(50% + 0.75px)
+    transparent calc(50% - 0.5px),
+    rgb(160 160 160 / 0.55) calc(50% - 0.5px),
+    rgb(160 160 160 / 0.55) calc(50% + 0.5px),
+    transparent calc(50% + 0.5px)
   );
+}
+
+.historia-checkout-calendar__legend-item--in-range::before {
+  background: rgb(201 169 110 / 0.35);
+  border-color: var(--booking-gold);
 }
 
 .historia-checkout-calendar__actions {

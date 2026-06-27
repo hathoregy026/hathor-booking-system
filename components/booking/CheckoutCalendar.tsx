@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   addMonths,
+  eachDayOfInterval,
   endOfMonth,
   format,
   parseISO,
@@ -52,6 +53,22 @@ function buildMonthCells(year: number, monthIndex: number) {
   return cells;
 }
 
+function buildSailingPeriodKeys(
+  checkInKey: string | null,
+  checkOutKey: string | null,
+): Set<string> {
+  if (!checkInKey || !checkOutKey || checkOutKey < checkInKey) {
+    return new Set();
+  }
+
+  const interval = eachDayOfInterval({
+    start: parseISO(checkInIsoFromDateKey(checkInKey)),
+    end: parseISO(checkInIsoFromDateKey(checkOutKey)),
+  });
+
+  return new Set(interval.map((date) => localDateKey(date)));
+}
+
 type CheckoutCalendarProps = {
   duration: StayDurationValue;
   roomConfigs: RoomSearchConfig[];
@@ -70,6 +87,7 @@ function MonthPanel({
   duration,
   selectedDateKey,
   checkOutDateKey,
+  sailingPeriodKeys,
   onSelectDate,
 }: {
   year: number;
@@ -78,6 +96,7 @@ function MonthPanel({
   duration: StayDurationValue;
   selectedDateKey: string | null;
   checkOutDateKey: string | null;
+  sailingPeriodKeys: Set<string>;
   onSelectDate: (dateKey: string) => void;
 }) {
   const cells = buildMonthCells(year, monthIndex);
@@ -109,11 +128,8 @@ function MonthPanel({
 
           const isCheckIn = selectedDateKey === cell.dateKey;
           const isCheckOut = checkOutDateKey === cell.dateKey;
-          const isInStay =
-            selectedDateKey &&
-            checkOutDateKey &&
-            cell.dateKey > selectedDateKey &&
-            cell.dateKey < checkOutDateKey;
+          const isInSailingPeriod =
+            sailingPeriodKeys.has(cell.dateKey) && !isCheckIn && !isCheckOut;
 
           let statusClass = "historia-cal-day--unavailable";
           if (isAvailable) statusClass = "historia-cal-day--available";
@@ -123,7 +139,7 @@ function MonthPanel({
               key={cell.dateKey}
               type="button"
               disabled={!isAvailable}
-              aria-pressed={isCheckIn || isCheckOut}
+              aria-pressed={isCheckIn || isCheckOut || isInSailingPeriod}
               title={
                 meta && isAvailable
                   ? `${formatCheckInFromDateKey(cell.dateKey)} · from ${formatPrice(meta.priceCents)}`
@@ -132,7 +148,7 @@ function MonthPanel({
               className={`historia-cal-day ${statusClass}${
                 isCheckIn ? " historia-cal-day--check-in" : ""
               }${isCheckOut ? " historia-cal-day--check-out" : ""}${
-                isInStay ? " historia-cal-day--in-range" : ""
+                isInSailingPeriod ? " historia-cal-day--in-range" : ""
               }`}
               onClick={() => {
                 if (isAvailable) onSelectDate(cell.dateKey!);
@@ -170,11 +186,16 @@ export function CheckoutCalendar({
 }: CheckoutCalendarProps) {
   const [visibleMonth, setVisibleMonth] = useState(() => startOfMonth(new Date()));
   const [days, setDays] = useState<CruiseCalendarDay[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const fetchGenerationRef = useRef(0);
 
-  const monthA = visibleMonth;
-  const monthB = addMonths(visibleMonth, 1);
+  const visibleYear = visibleMonth.getFullYear();
+  const visibleMonthIndex = visibleMonth.getMonth();
+  const monthBYear = visibleMonthIndex === 11 ? visibleYear + 1 : visibleYear;
+  const monthBIndex = visibleMonthIndex === 11 ? 0 : visibleMonthIndex + 1;
+
+  const roomsKey = useMemo(() => JSON.stringify(roomConfigs), [roomConfigs]);
 
   const checkOutDateKey = useMemo(() => {
     if (!selectedDateKey) return null;
@@ -186,6 +207,11 @@ export function CheckoutCalendar({
     return localDateKey(end);
   }, [duration, selectedDateKey]);
 
+  const sailingPeriodKeys = useMemo(
+    () => buildSailingPeriodKeys(selectedDateKey, checkOutDateKey),
+    [selectedDateKey, checkOutDateKey],
+  );
+
   const rangeLabel = useMemo(() => {
     if (!selectedDateKey) return "Select your check-in date";
     const checkInLabel = formatCheckInFromDateKey(selectedDateKey);
@@ -193,18 +219,28 @@ export function CheckoutCalendar({
     return `${checkInLabel} – ${checkOutLabel}`;
   }, [duration, selectedDateKey]);
 
+  const checkInLabel = selectedDateKey
+    ? formatCheckInFromDateKey(selectedDateKey)
+    : null;
+  const checkOutLabel =
+    selectedDateKey && checkOutDateKey
+      ? formatCheckoutFromDateKey(selectedDateKey, duration)
+      : null;
+
   useEffect(() => {
+    const generation = ++fetchGenerationRef.current;
     const controller = new AbortController();
-    const from = startOfMonth(monthA);
-    const to = endOfMonth(monthB);
+    const from = startOfMonth(new Date(visibleYear, visibleMonthIndex, 1));
+    const to = endOfMonth(new Date(monthBYear, monthBIndex, 1));
 
     async function load() {
-      setIsLoading(true);
+      setIsFetching(true);
       setError(null);
+
       try {
         const params = new URLSearchParams({
           duration,
-          rooms: JSON.stringify(roomConfigs),
+          rooms: roomsKey,
           from: calendarDateToUtcIso(from),
           to: calendarDateToUtcIso(to),
         });
@@ -221,45 +257,48 @@ export function CheckoutCalendar({
           throw new Error(data.error ?? "Failed to load calendar");
         }
 
+        if (generation !== fetchGenerationRef.current) return;
         setDays(data.days ?? []);
       } catch (loadError) {
         if (controller.signal.aborted) return;
+        if (generation !== fetchGenerationRef.current) return;
         setError(
           loadError instanceof Error ? loadError.message : "Failed to load calendar",
         );
       } finally {
-        if (!controller.signal.aborted) setIsLoading(false);
+        if (!controller.signal.aborted && generation === fetchGenerationRef.current) {
+          setIsFetching(false);
+        }
       }
     }
 
     void load();
     return () => controller.abort();
-  }, [duration, monthA, monthB, roomConfigs]);
+  }, [duration, visibleYear, visibleMonthIndex, monthBYear, monthBIndex, roomsKey]);
 
   const dayMeta = useMemo(
     () => new Map(days.map((day) => [day.date, day])),
     [days],
   );
 
+  const showLoadingMessage = isFetching && days.length === 0;
+
   return (
-    <section
-      className="historia-checkout-calendar"
-      aria-busy={isLoading}
-    >
+    <section className="historia-checkout-calendar" aria-busy={showLoadingMessage}>
       <div className="historia-checkout-calendar__stay-labels">
         <span
           className={`historia-checkout-calendar__stay-label${
-            selectedDateKey ? " historia-checkout-calendar__stay-label--active" : ""
+            checkInLabel ? " historia-checkout-calendar__stay-label--active" : ""
           }`}
         >
-          Check in
+          {checkInLabel ? `Check in · ${checkInLabel}` : "Check in"}
         </span>
         <span
           className={`historia-checkout-calendar__stay-label${
-            checkOutDateKey ? " historia-checkout-calendar__stay-label--active" : ""
+            checkOutLabel ? " historia-checkout-calendar__stay-label--active" : ""
           }`}
         >
-          Check out
+          {checkOutLabel ? `Check out · ${checkOutLabel}` : "Check out"}
         </span>
       </div>
 
@@ -269,7 +308,7 @@ export function CheckoutCalendar({
           <button
             type="button"
             className="historia-checkout-calendar__nav-btn"
-            onClick={() => setVisibleMonth((m) => addMonths(m, -1))}
+            onClick={() => setVisibleMonth((month) => addMonths(month, -1))}
             aria-label="Previous months"
           >
             <ChevronLeft className="h-5 w-5" aria-hidden />
@@ -277,7 +316,7 @@ export function CheckoutCalendar({
           <button
             type="button"
             className="historia-checkout-calendar__nav-btn"
-            onClick={() => setVisibleMonth((m) => addMonths(m, 1))}
+            onClick={() => setVisibleMonth((month) => addMonths(month, 1))}
             aria-label="Next months"
           >
             <ChevronRight className="h-5 w-5" aria-hidden />
@@ -287,25 +326,27 @@ export function CheckoutCalendar({
 
       <div
         className={`historia-checkout-calendar__months${
-          isLoading ? " historia-checkout-calendar__months--loading" : ""
+          showLoadingMessage ? " historia-checkout-calendar__months--loading" : ""
         }`}
       >
         <MonthPanel
-          year={monthA.getFullYear()}
-          monthIndex={monthA.getMonth()}
+          year={visibleYear}
+          monthIndex={visibleMonthIndex}
           dayMeta={dayMeta}
           duration={duration}
           selectedDateKey={selectedDateKey}
           checkOutDateKey={checkOutDateKey}
+          sailingPeriodKeys={sailingPeriodKeys}
           onSelectDate={onSelectDate}
         />
         <MonthPanel
-          year={monthB.getFullYear()}
-          monthIndex={monthB.getMonth()}
+          year={monthBYear}
+          monthIndex={monthBIndex}
           dayMeta={dayMeta}
           duration={duration}
           selectedDateKey={selectedDateKey}
           checkOutDateKey={checkOutDateKey}
+          sailingPeriodKeys={sailingPeriodKeys}
           onSelectDate={onSelectDate}
         />
       </div>
@@ -315,7 +356,7 @@ export function CheckoutCalendar({
           <p className="historia-checkout-calendar__error" role="alert">
             {error}
           </p>
-        ) : isLoading ? (
+        ) : showLoadingMessage ? (
           <p className="historia-checkout-calendar__status">Loading sailings…</p>
         ) : (
           <span className="historia-checkout-calendar__status-placeholder" aria-hidden />
@@ -328,6 +369,9 @@ export function CheckoutCalendar({
         </span>
         <span className="historia-checkout-calendar__legend-item historia-checkout-calendar__legend-item--unavailable">
           No availability
+        </span>
+        <span className="historia-checkout-calendar__legend-item historia-checkout-calendar__legend-item--in-range">
+          Your sailing
         </span>
       </div>
 
