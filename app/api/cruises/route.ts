@@ -98,10 +98,13 @@ export async function GET(request: NextRequest) {
         children: parsed.children,
       });
 
+      const previewOnly = searchParams.get("previewOnly") === "true";
+
       const result = await runCruiseSearch(
         parsed.duration,
         parsed.checkInDate,
         roomConfigs,
+        { previewOnly },
       );
 
       console.log("[api/cruises] cruise search result:", {
