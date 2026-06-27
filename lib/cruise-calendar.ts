@@ -1,15 +1,24 @@
 import { BookingStatus } from "@/app/generated/prisma/client";
 import {
-  canAssignRoomConfigs,
   filterRoomsForConfigs,
   resolveCruiseByDuration,
   type AvailabilityRoomRecord,
 } from "@/lib/availability-search";
-import type { RoomSearchConfig, StayDurationValue } from "@/lib/booking-search-config";
+import { computeCheckInAvailability } from "@/lib/availability-lookup";
+import {
+  normalizeRoomConfigsForDuration,
+  type RoomSearchConfig,
+  type StayDurationValue,
+} from "@/lib/booking-search-config";
 import { ensureDefaultTicketType } from "@/lib/cruise-setup";
+import {
+  departureDateKeyFromTime,
+  departureWeekdayForDuration,
+  isValidDepartureDateKey,
+  utcDateKeyToDate,
+} from "@/lib/departure-dates";
 import { withDb } from "@/lib/db-safe";
-import { utcNow, utcDateKeyFromDate } from "@/lib/dates";
-import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
+import { utcDateKeyFromDate, utcNow } from "@/lib/dates";
 import { prisma } from "@/lib/prisma";
 import { availabilityRoomSelect } from "@/lib/query-selects";
 
@@ -22,31 +31,6 @@ export type CruiseCalendarDay = {
   status: CruiseCalendarDayStatus;
 };
 
-function localDateToUtcKey(date: Date): string {
-  const utc = new Date(
-    Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
-  );
-  return utc.toISOString().slice(0, 10);
-}
-
-function utcKeyToDate(key: string): Date {
-  const [year, month, day] = key.split("-").map(Number);
-  return new Date(Date.UTC(year, month - 1, day));
-}
-
-function departureDayForDuration(duration: StayDurationValue): "Wednesday" | "Saturday" {
-  const seed = HATHOR_CRUISES.find((entry) => entry.slug === duration);
-  return seed?.departureDay ?? "Saturday";
-}
-
-function isValidDepartureUtcKey(
-  dateKey: string,
-  departureDay: "Wednesday" | "Saturday",
-): boolean {
-  const targetDow = departureDay === "Wednesday" ? 3 : 6;
-  return utcKeyToDate(dateKey).getUTCDay() === targetDow;
-}
-
 function enumerateUtcDateKeys(from: Date, to: Date): string[] {
   const keys: string[] = [];
   const cursor = new Date(
@@ -57,15 +41,11 @@ function enumerateUtcDateKeys(from: Date, to: Date): string[] {
   );
 
   while (cursor <= end) {
-    keys.push(cursor.toISOString().slice(0, 10));
+    keys.push(utcDateKeyFromDate(cursor));
     cursor.setUTCDate(cursor.getUTCDate() + 1);
   }
 
   return keys;
-}
-
-function scheduleDepartureKey(departureTime: Date): string {
-  return utcDateKeyFromDate(departureTime);
 }
 
 function computeMinPriceCents(
@@ -92,8 +72,12 @@ export async function getCruiseCalendarDays(input: {
   departureDay: "Wednesday" | "Saturday";
   cruiseId: string | null;
 }> {
-  const departureDay = departureDayForDuration(input.duration);
-  const todayKey = utcNow().toISOString().slice(0, 10);
+  const departureDay = departureWeekdayForDuration(input.duration);
+  const roomConfigs = normalizeRoomConfigsForDuration(
+    input.duration,
+    input.roomConfigs,
+  );
+  const todayKey = utcDateKeyFromDate(utcNow());
   const dateKeys = enumerateUtcDateKeys(input.from, input.to);
 
   const cruise = await resolveCruiseByDuration(input.duration);
@@ -127,7 +111,7 @@ export async function getCruiseCalendarDays(input: {
 
     const matchingRooms = filterRoomsForConfigs(
       cruiseRecord.rooms,
-      input.roomConfigs,
+      roomConfigs,
     );
 
     const ticketType = await ensureDefaultTicketType(
@@ -135,8 +119,8 @@ export async function getCruiseCalendarDays(input: {
       cruiseRecord.basePriceCents,
     );
 
-    const rangeStart = utcKeyToDate(dateKeys[0] ?? todayKey);
-    const rangeEnd = utcKeyToDate(dateKeys[dateKeys.length - 1] ?? todayKey);
+    const rangeStart = utcDateKeyToDate(dateKeys[0] ?? todayKey);
+    const rangeEnd = utcDateKeyToDate(dateKeys[dateKeys.length - 1] ?? todayKey);
     rangeEnd.setUTCDate(rangeEnd.getUTCDate() + 1);
 
     const schedules = await prisma.cruiseSchedule.findMany({
@@ -144,7 +128,7 @@ export async function getCruiseCalendarDays(input: {
         cruiseId: cruiseRecord.id,
         departureTime: { gte: rangeStart, lt: rangeEnd },
       },
-      select: { id: true, departureTime: true },
+      select: { id: true, departureTime: true, arrivalTime: true },
     });
 
     const scheduleIds = schedules.map((schedule) => schedule.id);
@@ -183,12 +167,13 @@ export async function getCruiseCalendarDays(input: {
       blockedBySchedule.set(row.cruiseScheduleId, set);
     }
 
-    const scheduleByDate = new Map(
-      schedules.map((schedule) => [
-        scheduleDepartureKey(schedule.departureTime),
-        schedule,
-      ]),
-    );
+    const schedulesByDate = new Map<string, typeof schedules>();
+    for (const schedule of schedules) {
+      const dateKey = departureDateKeyFromTime(schedule.departureTime);
+      const bucket = schedulesByDate.get(dateKey) ?? [];
+      bucket.push(schedule);
+      schedulesByDate.set(dateKey, bucket);
+    }
 
     const priceCents = computeMinPriceCents(
       matchingRooms,
@@ -198,7 +183,7 @@ export async function getCruiseCalendarDays(input: {
     return {
       matchingRooms,
       priceCents,
-      scheduleByDate,
+      schedulesByDate,
       blockedBySchedule,
     };
   });
@@ -216,28 +201,31 @@ export async function getCruiseCalendarDays(input: {
   }
 
   const days: CruiseCalendarDay[] = dateKeys.map((date) => {
-    if (date < todayKey || !isValidDepartureUtcKey(date, departureDay)) {
+    if (date < todayKey || !isValidDepartureDateKey(date, input.duration)) {
       return { date, priceCents: context.priceCents, status: "closed" };
     }
 
-    const schedule = context.scheduleByDate.get(date);
-    if (!schedule) {
-      return { date, priceCents: context.priceCents, status: "available" };
+    const daySchedules = context.schedulesByDate.get(date) ?? [];
+
+    const availability = computeCheckInAvailability({
+      roomsForSearch: context.matchingRooms,
+      roomConfigs,
+      schedules: daySchedules,
+      unavailableBySchedule: context.blockedBySchedule,
+      previewIfNoSchedule: true,
+    });
+
+    if (availability.reason === "NO_MATCHING_ROOMS") {
+      return { date, priceCents: context.priceCents, status: "closed" };
     }
 
-    const blocked = context.blockedBySchedule.get(schedule.id) ?? new Set<string>();
-    const openRooms = context.matchingRooms.filter(
-      (room) => !blocked.has(room.id),
-    );
-
-    const assignable =
-      openRooms.length > 0 &&
-      canAssignRoomConfigs(openRooms, input.roomConfigs);
+    const status: CruiseCalendarDayStatus =
+      availability.openRooms.length > 0 ? "available" : "booked";
 
     return {
       date,
       priceCents: context.priceCents,
-      status: assignable ? "available" : "booked",
+      status,
     };
   });
 
@@ -248,5 +236,8 @@ export function calendarMetaFromLocalDate(
   date: Date,
   daysByDate: Map<string, CruiseCalendarDay>,
 ): CruiseCalendarDay | undefined {
-  return daysByDate.get(localDateToUtcKey(date));
+  const key = utcDateKeyFromDate(
+    new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())),
+  );
+  return daysByDate.get(key);
 }

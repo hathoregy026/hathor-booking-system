@@ -69,9 +69,11 @@ export async function ensureScheduleForCheckIn(
   const targetDow = departureDay === "Wednesday" ? 3 : 6;
 
   let departure = new Date(checkIn);
+  departure.setUTCHours(0, 0, 0, 0);
   for (let offset = 0; offset < 14; offset += 1) {
     const candidate = new Date(checkIn);
     candidate.setUTCDate(candidate.getUTCDate() + offset);
+    candidate.setUTCHours(0, 0, 0, 0);
     if (candidate.getUTCDay() === targetDow) {
       departure = candidate;
       break;
@@ -80,6 +82,7 @@ export async function ensureScheduleForCheckIn(
 
   const arrivalTime = new Date(departure);
   arrivalTime.setUTCDate(arrivalTime.getUTCDate() + nights);
+  arrivalTime.setUTCHours(0, 0, 0, 0);
 
   return prisma.cruiseSchedule.create({
     data: {

@@ -3,6 +3,9 @@ import { parseISO } from "date-fns";
 import { ZodError } from "zod";
 import { handleRouteError } from "@/lib/api";
 import { getCruiseCalendarDays } from "@/lib/cruise-calendar";
+import {
+  normalizeRoomConfigsForDuration,
+} from "@/lib/booking-search-config";
 import { cruiseCalendarQuerySchema } from "@/lib/validations";
 
 export const dynamic = "force-dynamic";
@@ -23,7 +26,10 @@ export async function GET(request: NextRequest) {
 
     const result = await getCruiseCalendarDays({
       duration: parsed.duration,
-      roomConfigs: parsed.rooms,
+      roomConfigs: normalizeRoomConfigsForDuration(
+        parsed.duration,
+        parsed.rooms,
+      ),
       from,
       to,
     });
