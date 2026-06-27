@@ -196,6 +196,10 @@ export function BookingFlow() {
         currentStep={checkoutStep}
         maxReachableStep={maxReachableStep}
         roomConfigs={roomConfigs}
+        availableRooms={availableRooms}
+        selectedRoomIds={selectedRoomIds}
+        checkInDate={checkInDate}
+        duration={duration}
         totalPrice={totalPrice}
         selectedDateLabel={selectedDateLabel}
         onStepNavigate={handleStepNavigate}
