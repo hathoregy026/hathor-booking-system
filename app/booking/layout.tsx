@@ -20,7 +20,7 @@ export default function BookingFlowLayout({
 }) {
   return (
     <div className={`${playfair.variable} ${inter.variable}`}>
-      <BookingPageLayout brandTitle="Hathor Dahabiya">{children}</BookingPageLayout>
+      <BookingPageLayout>{children}</BookingPageLayout>
     </div>
   );
 }

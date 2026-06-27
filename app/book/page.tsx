@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function BookPage() {
   return (
-    <BookingPageLayout brandTitle="Hathor Dahabiya">
+    <BookingPageLayout>
       <div className="booking-premium-intro">
         <p className="booking-premium-eyebrow">Ultra Luxury Dahabiya Cruise</p>
         <h1 className="booking-serif booking-premium-title">

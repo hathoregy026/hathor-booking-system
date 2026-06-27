@@ -3,16 +3,15 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Menu, ShoppingBag, X } from "lucide-react";
+import { HathorBrandMark } from "@/components/booking/HathorBrandMark";
 import { useBookingStore } from "@/store/bookingStore";
 
 type BookingPageLayoutProps = {
   children: React.ReactNode;
-  brandTitle?: string;
 };
 
 export function BookingPageLayout({
   children,
-  brandTitle = "Hathor",
 }: BookingPageLayoutProps) {
   const [bannerVisible, setBannerVisible] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -66,10 +65,12 @@ export function BookingPageLayout({
 
             <Link
               href="/"
-              className="booking-serif text-2xl font-semibold tracking-tight sm:text-3xl"
-              style={{ color: "var(--booking-gold-dark)" }}
+              className="flex min-w-0 items-center justify-center"
             >
-              {brandTitle}
+              <HathorBrandMark
+                variant="on-light"
+                className="h-10 w-auto max-w-[11rem] object-contain sm:h-11"
+              />
             </Link>
 
             <button

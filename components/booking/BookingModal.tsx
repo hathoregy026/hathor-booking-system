@@ -3,10 +3,8 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { Minus, Plus, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import {
-  formatCheckInFromDateKey,
-  formatCheckoutFromDateKey,
-} from "@/lib/booking-modal-helpers";
+import { HathorBrandMark } from "@/components/booking/HathorBrandMark";
+import { formatCheckoutFromDateKey } from "@/lib/booking-modal-helpers";
 import {
   createDefaultRoomConfigs,
   normalizeRoomConfigsForDuration,
@@ -186,11 +184,17 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
         className="hathor-booking-modal__dialog"
       >
         <header className="hathor-booking-modal__header">
-          <div>
-            <p className="hathor-booking-modal__eyebrow">Reserve Your Journey</p>
-            <h2 id={titleId} className="hathor-booking-modal__title public-serif">
-              Book Hathor Dahabiya
-            </h2>
+          <div className="hathor-booking-modal__header-brand">
+            <HathorBrandMark
+              variant="on-light"
+              className="h-9 w-auto max-w-[9rem] object-contain"
+            />
+            <div>
+              <p className="hathor-booking-modal__eyebrow">Reserve Your Journey</p>
+              <h2 id={titleId} className="hathor-booking-modal__title public-serif">
+                Book Hathor Dahabiya
+              </h2>
+            </div>
           </div>
           <button
             type="button"

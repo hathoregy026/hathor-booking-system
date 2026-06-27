@@ -1,4 +1,4 @@
-import { addDays, parseISO } from "date-fns";
+import { addDays, format, parseISO } from "date-fns";
 import {
   findStayDurationOption,
   type StayDurationValue,
@@ -52,6 +52,28 @@ export function formatCheckoutFromDateKey(
   if (!option) return "—";
   const endDate = addDays(parseISO(checkInIsoFromDateKey(dateKey)), option.nights);
   return formatUtcDate(endDate.toISOString());
+}
+
+/** Historia-style compact range, e.g. "Sep 25-Oct 2". */
+export function formatCompactStayLabel(
+  dateKey: string | null,
+  duration: StayDurationValue | "",
+): string | null {
+  if (!dateKey || !duration) return null;
+  const option = findStayDurationOption(duration);
+  if (!option) return null;
+
+  const start = parseISO(checkInIsoFromDateKey(dateKey));
+  const end = addDays(start, option.nights);
+
+  if (
+    start.getUTCMonth() === end.getUTCMonth() &&
+    start.getUTCFullYear() === end.getUTCFullYear()
+  ) {
+    return `${format(start, "MMM d")}-${format(end, "d")}`;
+  }
+
+  return `${format(start, "MMM d")}-${format(end, "MMM d")}`;
 }
 
 export function utcDateKeyFromParts(year: number, monthIndex: number, day: number): string {

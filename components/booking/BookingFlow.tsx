@@ -11,6 +11,7 @@ import { SuccessStep } from "@/components/booking/SuccessStep";
 import {
   formatCheckInFromDateKey,
   formatCheckoutFromDateKey,
+  formatCompactStayLabel,
 } from "@/lib/booking-modal-helpers";
 import {
   fetchAvailabilitySearch,
@@ -18,7 +19,7 @@ import {
 } from "@/lib/booking-availability-client";
 import { checkInIsoFromDateKey } from "@/lib/departure-dates";
 import type { RatePlanId } from "@/lib/rate-plans";
-import { useBookingStore, getSelectedRooms } from "@/store/bookingStore";
+import { useBookingStore } from "@/store/bookingStore";
 
 function dateKeyFromCheckInIso(iso: string | null): string | null {
   if (!iso) return null;
@@ -148,7 +149,7 @@ export function BookingFlow() {
 
   const selectedDateLabel =
     selectedDateKey && duration
-      ? `${formatCheckInFromDateKey(selectedDateKey)} – ${formatCheckoutFromDateKey(selectedDateKey, duration)}`
+      ? formatCompactStayLabel(selectedDateKey, duration)
       : null;
 
   const maxReachableStep = useMemo((): HistoriaBookingStep => {
@@ -162,9 +163,6 @@ export function BookingFlow() {
     searchAttempted,
     selectedRoomIds.length,
   ]);
-
-  const selectedRoomLabel =
-    getSelectedRooms(availableRooms, selectedRoomIds)[0]?.name ?? null;
 
   const handleStepNavigate = (step: HistoriaBookingStep) => {
     if (step > maxReachableStep || step === checkoutStep) return;
@@ -200,7 +198,6 @@ export function BookingFlow() {
         roomConfigs={roomConfigs}
         totalPrice={totalPrice}
         selectedDateLabel={selectedDateLabel}
-        selectedRoomLabel={selectedRoomLabel}
         onStepNavigate={handleStepNavigate}
       />
 
