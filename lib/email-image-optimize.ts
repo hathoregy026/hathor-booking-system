@@ -1,4 +1,8 @@
 import sharp from "sharp";
+import {
+  assertExpectedImageFormat,
+  isValidImageMagicBytes,
+} from "@/lib/email-image-verify";
 
 export type OptimizedEmailImage = {
   buffer: Buffer;
@@ -70,6 +74,7 @@ export async function optimizeEmailTemplateImage(
     .toBuffer();
 
   assertValidImageBuffer(optimized, "Optimized hero image");
+  assertExpectedImageFormat(optimized, "heroImageUrl", "Optimized hero image");
 
   return {
     buffer: optimized,

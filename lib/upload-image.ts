@@ -5,7 +5,13 @@ import {
   buildStableEmailImagePath,
   optimizeEmailTemplateImage,
 } from "@/lib/email-image-optimize";
-import { isValidImageMagicBytes } from "@/lib/email-image-verify";
+import {
+  assertExpectedImageFormat,
+  formatMagicHex,
+  isValidImageMagicBytes,
+  isValidJpegMagicBytes,
+  isValidPngMagicBytes,
+} from "@/lib/email-image-verify";
 import {
   EMAIL_IMAGE_BUCKET,
   EMAIL_IMAGE_FOLDER,
@@ -16,6 +22,7 @@ import {
 import { toAbsolutePublicUrl } from "@/lib/public-url";
 import {
   copyToBinaryBody,
+  deleteObject,
   downloadObjectBytes,
   getStoragePublicUrl,
   uploadObjectBytes,
@@ -26,6 +33,24 @@ export type UploadedImage = {
   url: string;
   path: string;
   storage: "supabase" | "local";
+};
+
+export type EmailImageUploadDebug = {
+  field: "logoUrl" | "heroImageUrl";
+  objectPath: string;
+  uploadMethod: "rest";
+  beforeOptimize: { bytes: number; magicHex: string };
+  afterOptimize: { bytes: number; magicHex: string; contentType: string };
+  afterUploadDownload: {
+    bytes: number;
+    magicHex: string;
+    validPng: boolean;
+    validJpeg: boolean;
+  };
+};
+
+export type EmailImageUploadResult = UploadedImage & {
+  debug: EmailImageUploadDebug;
 };
 
 export function isSupabaseUploadConfigured(): boolean {
@@ -47,7 +72,7 @@ async function uploadToSupabase(
   upsert = false,
 ): Promise<UploadedImage> {
   const supabase = createSupabaseStorageAdminClient();
-  const body = copyToBinaryBody(buffer);
+  const body = copyToBinaryBody(buffer, contentType);
 
   const { error } = await supabase.storage.from(bucket).upload(objectPath, body, {
     contentType,
@@ -79,8 +104,9 @@ async function uploadToSupabase(
 async function verifyUploadedObject(
   bucket: string,
   objectPath: string,
+  field: "logoUrl" | "heroImageUrl",
   expectedMinBytes: number,
-): Promise<void> {
+): Promise<Buffer> {
   const bytes = await downloadObjectBytes(bucket, objectPath);
 
   if (bytes.length < expectedMinBytes) {
@@ -89,11 +115,9 @@ async function verifyUploadedObject(
     );
   }
 
-  if (!isValidImageMagicBytes(bytes)) {
-    throw new Error(
-      "Uploaded image is corrupted (invalid file header). Re-upload the file.",
-    );
-  }
+  assertExpectedImageFormat(bytes, field, "Uploaded image");
+
+  return bytes;
 }
 
 async function uploadEmailImageToSupabase(
@@ -101,6 +125,8 @@ async function uploadEmailImageToSupabase(
   buffer: Buffer,
   contentType: string,
 ): Promise<UploadedImage> {
+  await deleteObject(EMAIL_IMAGE_BUCKET, objectPath);
+
   await uploadObjectBytes(
     EMAIL_IMAGE_BUCKET,
     objectPath,
@@ -125,7 +151,7 @@ async function uploadEmailImageToSupabase(
 export async function uploadEmailTemplateImage(options: {
   field: "logoUrl" | "heroImageUrl";
   buffer: Buffer;
-}): Promise<UploadedImage> {
+}): Promise<EmailImageUploadResult> {
   if (!isSupabaseUploadConfigured()) {
     throw new Error(
       "Supabase is not configured. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY to upload email images.",
@@ -136,7 +162,40 @@ export async function uploadEmailTemplateImage(options: {
     throw new Error("Uploaded file is empty.");
   }
 
+  if (!isValidImageMagicBytes(options.buffer)) {
+    throw new Error(
+      `Uploaded file is not a valid image (magic: ${formatMagicHex(options.buffer)}).`,
+    );
+  }
+
+  const beforeOptimize = {
+    bytes: options.buffer.length,
+    magicHex: formatMagicHex(options.buffer),
+  };
+
+  console.log(
+    `[email-upload] ${options.field} before optimize:`,
+    beforeOptimize,
+  );
+
   const optimized = await optimizeEmailTemplateImage(options.field, options.buffer);
+  assertExpectedImageFormat(
+    optimized.buffer,
+    options.field,
+    options.field === "heroImageUrl" ? "Optimized hero image" : "Optimized logo",
+  );
+
+  const afterOptimize = {
+    bytes: optimized.buffer.length,
+    magicHex: formatMagicHex(optimized.buffer),
+    contentType: optimized.contentType,
+  };
+
+  console.log(
+    `[email-upload] ${options.field} after optimize:`,
+    afterOptimize,
+  );
+
   const objectPath = buildStableEmailImagePath(options.field);
   const uploaded = await uploadEmailImageToSupabase(
     objectPath,
@@ -144,20 +203,43 @@ export async function uploadEmailTemplateImage(options: {
     optimized.contentType,
   );
 
+  const verifiedBytes = await verifyUploadedObject(
+    EMAIL_IMAGE_BUCKET,
+    objectPath,
+    options.field,
+    Math.min(optimized.buffer.length, 256),
+  );
+
+  const afterUploadDownload = {
+    bytes: verifiedBytes.length,
+    magicHex: formatMagicHex(verifiedBytes),
+    validPng: isValidPngMagicBytes(verifiedBytes),
+    validJpeg: isValidJpegMagicBytes(verifiedBytes),
+  };
+
+  console.log(
+    `[email-upload] ${options.field} after upload (download verify):`,
+    afterUploadDownload,
+  );
+
+  const debug: EmailImageUploadDebug = {
+    field: options.field,
+    objectPath,
+    uploadMethod: "rest",
+    beforeOptimize,
+    afterOptimize,
+    afterUploadDownload,
+  };
+
   const canonicalUrl = getPublicImageUrl(uploaded.path, EMAIL_IMAGE_BUCKET);
   if (!canonicalUrl) {
     throw new Error("Failed to build public Supabase URL for email image");
   }
 
-  await verifyUploadedObject(
-    EMAIL_IMAGE_BUCKET,
-    objectPath,
-    Math.min(optimized.buffer.length, 256),
-  );
-
   return {
     ...uploaded,
     url: canonicalUrl,
+    debug,
   };
 }
 

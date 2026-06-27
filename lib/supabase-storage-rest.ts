@@ -38,10 +38,28 @@ function storageAuthHeaders(): Record<string, string> {
 }
 
 /** Contiguous binary copy for fetch body (avoids shared-buffer / encoding issues). */
-export function copyToBinaryBody(buffer: Buffer): Blob {
+export function copyToBinaryBody(buffer: Buffer, contentType: string): Blob {
   const bytes = new Uint8Array(buffer.length);
   bytes.set(buffer);
-  return new Blob([bytes], { type: "application/octet-stream" });
+  return new Blob([bytes], { type: contentType });
+}
+
+/** Remove an object before re-upload (clears stale CDN bytes on stable paths). */
+export async function deleteObject(
+  bucket: string,
+  objectPath: string,
+): Promise<void> {
+  const response = await fetch(buildObjectUrl(bucket, objectPath), {
+    method: "DELETE",
+    headers: storageAuthHeaders(),
+  });
+
+  if (!response.ok && response.status !== 404) {
+    const detail = await response.text().catch(() => "");
+    throw new Error(
+      `Supabase storage delete failed (${response.status})${detail ? `: ${detail}` : ""}`,
+    );
+  }
 }
 
 /** Upload raw bytes via Supabase Storage REST API (binary-safe on serverless). */
@@ -52,6 +70,8 @@ export async function uploadObjectBytes(
   contentType: string,
   upsert = false,
 ): Promise<void> {
+  const body = copyToBinaryBody(buffer, contentType);
+
   const response = await fetch(buildObjectUrl(bucket, objectPath), {
     method: "POST",
     headers: {
@@ -60,7 +80,7 @@ export async function uploadObjectBytes(
       "x-upsert": upsert ? "true" : "false",
       "cache-control": "max-age=3600",
     },
-    body: copyToBinaryBody(buffer),
+    body,
   });
 
   if (!response.ok) {

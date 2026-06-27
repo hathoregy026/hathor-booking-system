@@ -191,9 +191,17 @@ export async function GET(request: NextRequest) {
 
     const probes = await Promise.all([
       probeImageUrl("database.logoUrl (selected template)", selectedRow?.logoUrl),
-      probeImageUrl("database.heroImageUrl (selected template)", selectedRow?.heroImageUrl),
+      probeImageUrl(
+        "database.heroImageUrl (selected template)",
+        selectedRow?.heroImageUrl,
+        cacheVersion,
+      ),
       probeImageUrl("mergedForSend.logoUrl", templateForSend.logoUrl),
-      probeImageUrl("mergedForSend.heroImageUrl", templateForSend.heroImageUrl),
+      probeImageUrl(
+        "mergedForSend.heroImageUrl",
+        templateForSend.heroImageUrl,
+        cacheVersion,
+      ),
       probeImageUrl("defaults.logoUrl", defaults.logoUrl),
       probeImageUrl("defaults.heroImageUrl", defaults.heroImageUrl),
       probeImageUrl("sendTheme.logoUrl", theme?.logoUrl),

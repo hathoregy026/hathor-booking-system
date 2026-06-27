@@ -1,5 +1,9 @@
 import { isReliableHostedEmailImageUrl } from "@/lib/email-branding-shared";
-import { isValidImageMagicBytes } from "@/lib/email-image-verify";
+import { withEmailImageCacheBust } from "@/lib/email-image-cache";
+import {
+  isValidImageMagicBytes,
+  isValidJpegMagicBytes,
+} from "@/lib/email-image-verify";
 
 const PROBE_TIMEOUT_MS = 15_000;
 
@@ -19,8 +23,10 @@ export type ImageUrlProbe = {
     sampleSize: number;
     magicHex: string | null;
     validMagic: boolean;
+    validJpeg: boolean;
     error: string | null;
   };
+  cacheBustedUrl: string | null;
 };
 
 function parseContentLength(value: string | null): number | null {
@@ -32,8 +38,10 @@ function parseContentLength(value: string | null): number | null {
 export async function probeImageUrl(
   label: string,
   url: string | null | undefined,
+  cacheBustVersion?: string | null,
 ): Promise<ImageUrlProbe> {
   const trimmed = url?.trim() || null;
+  const cacheBustedUrl = withEmailImageCacheBust(trimmed, cacheBustVersion);
 
   if (!trimmed) {
     return {
@@ -52,8 +60,10 @@ export async function probeImageUrl(
         sampleSize: 0,
         magicHex: null,
         validMagic: false,
+        validJpeg: false,
         error: "URL is empty or missing",
       },
+      cacheBustedUrl: null,
     };
   }
 
@@ -63,59 +73,82 @@ export async function probeImageUrl(
   let contentLength: number | null = null;
   let headError: string | null = null;
 
-  try {
-    const head = await fetch(trimmed, {
-      method: "HEAD",
-      signal: AbortSignal.timeout(PROBE_TIMEOUT_MS),
-      headers: { Accept: "image/*" },
-    });
+  const probeUrls = [trimmed, cacheBustedUrl].filter(
+    (value, index, array): value is string =>
+      Boolean(value) && array.indexOf(value) === index,
+  );
 
-    headStatus = head.status;
-    headOk = head.ok;
-    contentType = head.headers.get("content-type");
-    contentLength = parseContentLength(head.headers.get("content-length"));
+  for (const probeUrl of probeUrls) {
+    try {
+      const head = await fetch(probeUrl, {
+        method: "HEAD",
+        signal: AbortSignal.timeout(PROBE_TIMEOUT_MS),
+        headers: { Accept: "image/*" },
+      });
 
-    if (!head.ok) {
-      headError = `HEAD returned ${head.status}`;
+      headStatus = head.status;
+      headOk = head.ok;
+      contentType = head.headers.get("content-type");
+      contentLength = parseContentLength(head.headers.get("content-length"));
+
+      if (!head.ok) {
+        headError = `HEAD returned ${head.status}`;
+        continue;
+      }
+
+      headError = null;
+      break;
+    } catch (error) {
+      headError =
+        error instanceof Error ? error.message : "HEAD request failed";
     }
-  } catch (error) {
-    headError =
-      error instanceof Error ? error.message : "HEAD request failed";
   }
 
   let sampleSize = 0;
   let magicHex: string | null = null;
   let validMagic = false;
+  let validJpeg = false;
   let bytesError: string | null = null;
   let bytesOk = false;
 
-  try {
-    const sample = await fetch(trimmed, {
-      signal: AbortSignal.timeout(PROBE_TIMEOUT_MS),
-      headers: {
-        Accept: "image/*",
-        Range: "bytes=0-511",
-      },
-    });
+  for (const probeUrl of probeUrls) {
+    try {
+      const sample = await fetch(probeUrl, {
+        signal: AbortSignal.timeout(PROBE_TIMEOUT_MS),
+        headers: {
+          Accept: "image/*",
+          Range: "bytes=0-511",
+        },
+      });
 
-    if (!sample.ok && sample.status !== 206) {
-      bytesError = `Byte sample fetch returned ${sample.status}`;
-    } else {
+      if (!sample.ok && sample.status !== 206) {
+        bytesError = `Byte sample fetch returned ${sample.status}`;
+        continue;
+      }
+
       const buffer = Buffer.from(await sample.arrayBuffer());
       sampleSize = buffer.length;
       magicHex = buffer.subarray(0, Math.min(8, buffer.length)).toString("hex");
       validMagic = isValidImageMagicBytes(buffer);
+      validJpeg = isValidJpegMagicBytes(buffer);
       bytesOk = sampleSize > 0 && validMagic;
 
       if (!validMagic && sampleSize > 0) {
-        bytesError = "Invalid image magic bytes (file may be corrupt)";
-      } else if (sampleSize === 0) {
-        bytesError = "Byte sample is empty";
+        bytesError = "Invalid image magic bytes (file may be corrupt or CDN stale)";
+        continue;
       }
+
+      if (sampleSize === 0) {
+        bytesError = "Byte sample is empty";
+        continue;
+      }
+
+      bytesError = null;
+      break;
+    } catch (error) {
+      bytesError =
+        error instanceof Error ? error.message : "Byte sample fetch failed";
     }
-  } catch (error) {
-    bytesError =
-      error instanceof Error ? error.message : "Byte sample fetch failed";
   }
 
   return {
@@ -134,8 +167,10 @@ export async function probeImageUrl(
       sampleSize,
       magicHex,
       validMagic,
+      validJpeg,
       error: bytesError,
     },
+    cacheBustedUrl,
   };
 }
 

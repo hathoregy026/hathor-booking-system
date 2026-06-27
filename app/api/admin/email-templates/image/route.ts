@@ -94,6 +94,7 @@ export async function POST(request: NextRequest) {
       templateName,
       templates: mergeAllEmailTemplates(rows),
       verified: true,
+      debug: uploaded.debug,
     });
   } catch (error) {
     console.error("[admin.email-templates.image]", error);
