@@ -109,12 +109,13 @@
 .hathor-booking-modal__hero {
   margin: 0;
   font-family: var(--booking-serif);
-  font-size: clamp(1.5rem, 4.5vw, 2.125rem);
+  font-size: clamp(1rem, 2.8vw, 1.25rem);
   font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: 0.14em;
+  line-height: 1.2;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--hathor-modal-dark);
+  white-space: nowrap;
+  color: var(--hathor-modal-gold);
 }
 
 .hathor-booking-modal__header-brand {

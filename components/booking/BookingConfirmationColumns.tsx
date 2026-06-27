@@ -19,7 +19,7 @@ import {
 } from "@/lib/rate-plans";
 import { useBookingStore, getSelectedRooms } from "@/store/bookingStore";
 
-const SALUTATIONS = ["Mr", "Mrs", "Ms", "Miss", "Dr"] as const;
+const SALUTATIONS = ["Mr", "Mrs", "Miss"] as const;
 
 const COUNTRY_CODES = [
   { code: "+20", label: "Egypt (+20)" },
