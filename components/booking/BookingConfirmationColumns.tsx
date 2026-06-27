@@ -7,13 +7,6 @@ import {
   validateRoomSelection,
 } from "@/components/booking/BookingSearchResults";
 import { formatPrice, formatUtcDate } from "@/lib/client-dates";
-import {
-  computeBookingTotals,
-  formatServiceChargePercent,
-  formatTaxPercent,
-  getServiceChargeRate,
-  getTaxRate,
-} from "@/lib/booking-pricing";
 import { buildBookingCustomerName } from "@/lib/booking-guest-details";
 import {
   findStayDurationOption,
@@ -115,7 +108,6 @@ export function BookingConfirmationColumns({ onBack }: BookingConfirmationColumn
     termsAccepted: false,
   });
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<string, string>>>({});
-  const [taxBreakdownOpen, setTaxBreakdownOpen] = useState(false);
   const [specialRequests, setSpecialRequests] = useState<string[]>([""]);
 
   const selectedRooms = getSelectedRooms(availableRooms, selectedRoomIds);
@@ -126,9 +118,6 @@ export function BookingConfirmationColumns({ onBack }: BookingConfirmationColumn
   const durationOption = duration
     ? findStayDurationOption(duration as StayDurationValue)
     : undefined;
-  const totals = computeBookingTotals(totalPrice);
-  const serviceRate = getServiceChargeRate();
-  const taxRate = getTaxRate();
   const nights = durationOption?.nights ?? 1;
   const perNightCents = nights > 0 ? Math.round(totalPrice / nights) : totalPrice;
   const rateLabel =
@@ -338,49 +327,10 @@ export function BookingConfirmationColumns({ onBack }: BookingConfirmationColumn
                 <span>{formatPrice(totalPrice)}</span>
               </div>
               <p className="hathor-checkout-summary__rate-plan">{rateLabel}</p>
-              <div className="hathor-checkout-summary__line">
-                <span>Subtotal</span>
-                <span>{formatPrice(totals.subtotalCents)}</span>
-              </div>
-              <div className="hathor-checkout-summary__line">
-                <span>Taxes ({formatTaxPercent(taxRate)})</span>
-                <span>{formatPrice(totals.taxCents)}</span>
-              </div>
-              <div className="hathor-checkout-summary__line">
-                <span>Service charges ({formatServiceChargePercent(serviceRate)})</span>
-                <span>{formatPrice(totals.serviceChargeCents)}</span>
-              </div>
               <div className="hathor-checkout-summary__total">
                 <span>Total</span>
-                <span className="booking-serif">{formatPrice(totals.totalCents)}</span>
+                <span className="booking-serif">{formatPrice(totalPrice)}</span>
               </div>
-              <button
-                type="button"
-                className="hathor-checkout-tax-link"
-                aria-expanded={taxBreakdownOpen}
-                onClick={() => setTaxBreakdownOpen((open) => !open)}
-              >
-                {taxBreakdownOpen ? "Hide Tax Breakdown" : "View Tax Breakdown"}
-              </button>
-              {taxBreakdownOpen ? (
-                <div className="hathor-checkout-tax-breakdown">
-                  <p>
-                    Room rate ({rateLabel}): {formatPrice(totals.subtotalCents)}
-                  </p>
-                  <p>
-                    Tourism &amp; VAT ({formatTaxPercent(taxRate)}):{" "}
-                    {formatPrice(totals.taxCents)}
-                  </p>
-                  <p>
-                    Service charge ({formatServiceChargePercent(serviceRate)}):{" "}
-                    {formatPrice(totals.serviceChargeCents)}
-                  </p>
-                  <p className="hathor-checkout-tax-breakdown__note">
-                    Taxes and service charges are estimated for display. Final
-                    invoicing is confirmed by our reservations team.
-                  </p>
-                </div>
-              ) : null}
             </div>
 
             <div className="hathor-checkout-special-requests">

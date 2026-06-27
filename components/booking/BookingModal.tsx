@@ -4,7 +4,6 @@ import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { Minus, Plus, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { HathorBrandMark } from "@/components/booking/HathorBrandMark";
-import { formatCheckoutFromDateKey } from "@/lib/booking-modal-helpers";
 import {
   createDefaultRoomConfigs,
   normalizeRoomConfigsForDuration,
@@ -184,18 +183,6 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
         className="hathor-booking-modal__dialog"
       >
         <header className="hathor-booking-modal__header">
-          <div className="hathor-booking-modal__header-brand">
-            <HathorBrandMark
-              variant="on-light"
-              className="h-9 w-auto max-w-[9rem] object-contain"
-            />
-            <div>
-              <p className="hathor-booking-modal__eyebrow">Reserve Your Journey</p>
-              <h2 id={titleId} className="hathor-booking-modal__title public-serif">
-                Book Hathor Dahabiya
-              </h2>
-            </div>
-          </div>
           <button
             type="button"
             className="hathor-booking-modal__close"
@@ -204,6 +191,19 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
           >
             <X className="h-5 w-5" aria-hidden />
           </button>
+
+          <div className="hathor-booking-modal__header-center">
+            <h2 id={titleId} className="hathor-booking-modal__hero">
+              Reserve Your Journey
+            </h2>
+            <div className="hathor-booking-modal__header-brand">
+              <HathorBrandMark
+                variant="on-light"
+                className="hathor-booking-modal__logo"
+              />
+              <p className="hathor-booking-modal__subtitle">Book Hathor Dahabiya</p>
+            </div>
+          </div>
         </header>
 
         <div className="hathor-booking-modal__body">
@@ -231,13 +231,11 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
             <div className="hathor-modal-dates-grid">
               <div className="hathor-modal-field">
                 <span className="hathor-modal-label">Check-in</span>
-                <p className="hathor-modal-readonly">Select on next step</p>
+                <p className="hathor-modal-readonly">Choose on next step</p>
               </div>
               <div className="hathor-modal-field">
                 <span className="hathor-modal-label">Check-out</span>
-                <p className="hathor-modal-readonly">
-                  {formatCheckoutFromDateKey(null, duration)}
-                </p>
+                <p className="hathor-modal-readonly">Choose on next step</p>
               </div>
             </div>
 
@@ -296,7 +294,6 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
         </div>
 
         <footer className="hathor-booking-modal__footer">
-          <span />
           <button
             type="button"
             className="hathor-modal-btn hathor-modal-btn--primary"

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { HathorBrandMark } from "@/components/booking/HathorBrandMark";
 import { formatPrice } from "@/lib/client-dates";
-import { computeBookingTotals } from "@/lib/booking-pricing";
 import type { RoomSearchConfig, StayDurationValue } from "@/lib/booking-search-config";
 import type { AvailableRoom } from "@/lib/booking-types";
 import { getSelectedRooms } from "@/store/bookingStore";
@@ -86,7 +85,7 @@ export function BookingProgressBar({
   const roomCount = roomConfigs.length;
   const selectedRooms = getSelectedRooms(availableRooms, selectedRoomIds);
   const hasSelectedRooms = selectedRoomIds.length > 0;
-  const grandTotal = computeBookingTotals(totalPrice).totalCents;
+  const grandTotal = totalPrice;
   const priceLabel =
     grandTotal > 0 ? formatPrice(grandTotal).replace("$", "$ ") : "$ 0.00";
 
