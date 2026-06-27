@@ -1,6 +1,7 @@
 import { Inter, Playfair_Display } from "next/font/google";
 import { PublicLayout } from "@/components/public/PublicLayout";
 import "../public.css";
+import "../booking-modal.css";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],

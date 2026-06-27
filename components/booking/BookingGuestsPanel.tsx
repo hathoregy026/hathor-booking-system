@@ -17,6 +17,7 @@ type BookingGuestsPanelProps = {
   onChange: (rooms: RoomSearchConfig[]) => void;
   onDone: () => void;
   maxRooms?: number;
+  doneLabel?: string;
 };
 
 function CounterRow({
@@ -67,6 +68,7 @@ export function BookingGuestsPanel({
   onChange,
   onDone,
   maxRooms = 5,
+  doneLabel = "DONE",
 }: BookingGuestsPanelProps) {
   const updateRoom = (index: number, patch: Partial<RoomSearchConfig>) => {
     onChange(
@@ -183,7 +185,7 @@ export function BookingGuestsPanel({
           onClick={onDone}
           className="booking-btn-primary w-full px-8 py-3 text-sm tracking-wide uppercase sm:w-auto sm:py-2.5"
         >
-          DONE
+          {doneLabel}
         </button>
       </div>
     </div>

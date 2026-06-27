@@ -62,7 +62,7 @@ export function PublicFooter() {
               ))}
               <li>
                 <Link
-                  href="/book"
+                  href="/?book=1"
                   className="text-sm font-light text-[var(--lux-text-grey)] transition-colors hover:text-[var(--lux-gold-cream)]"
                 >
                   Book a Cruise

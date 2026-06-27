@@ -9,6 +9,7 @@ import {
   Plus,
   X,
 } from "lucide-react";
+import { useBookNowModal } from "@/components/booking/BookingModalProvider";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 
@@ -39,8 +40,6 @@ const ACTIONS = [
   },
   {
     key: "book",
-    href: "/book",
-    external: false,
     label: "Book Now",
     icon: CalendarCheck,
     className: "public-fab--book",
@@ -50,36 +49,71 @@ const ACTIONS = [
 export function FloatingActions() {
   const isMobile = useIsMobile();
   const [expanded, setExpanded] = useState(false);
+  const { openBooking } = useBookNowModal();
+
+  const renderAction = (
+    action: (typeof ACTIONS)[number],
+    className: string,
+    onActivate?: () => void,
+  ) => {
+    const Icon = action.icon;
+
+    if (action.key === "book") {
+      return (
+        <button
+          key={action.key}
+          type="button"
+          className={className}
+          onClick={() => {
+            onActivate?.();
+            openBooking();
+          }}
+        >
+          {Icon && <Icon className="h-4 w-4 shrink-0" aria-hidden />}
+          <span>{action.label}</span>
+        </button>
+      );
+    }
+
+    if ("href" in action && action.external) {
+      return (
+        <a
+          key={action.key}
+          href={action.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={className}
+          onClick={onActivate}
+        >
+          {Icon && <Icon className="h-4 w-4 shrink-0" aria-hidden />}
+          <span>{action.label}</span>
+        </a>
+      );
+    }
+
+    if ("href" in action) {
+      return (
+        <Link
+          key={action.key}
+          href={action.href}
+          className={className}
+          onClick={onActivate}
+        >
+          {Icon && <Icon className="h-4 w-4 shrink-0" aria-hidden />}
+          <span>{action.label}</span>
+        </Link>
+      );
+    }
+
+    return null;
+  };
 
   if (!isMobile) {
     return (
       <aside className="public-floating-actions" aria-label="Quick actions">
-        {ACTIONS.map((action) => {
-          const Icon = action.icon;
-          const className = `public-fab ${action.className}`.trim();
-
-          if (action.external) {
-            return (
-              <a
-                key={action.key}
-                href={action.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={className}
-              >
-                {Icon && <Icon className="h-4 w-4 shrink-0" aria-hidden />}
-                <span>{action.label}</span>
-              </a>
-            );
-          }
-
-          return (
-            <Link key={action.key} href={action.href} className={className}>
-              {Icon && <Icon className="h-4 w-4 shrink-0" aria-hidden />}
-              <span>{action.label}</span>
-            </Link>
-          );
-        })}
+        {ACTIONS.map((action) =>
+          renderAction(action, `public-fab ${action.className}`.trim()),
+        )}
       </aside>
     );
   }
@@ -100,38 +134,13 @@ export function FloatingActions() {
             onClick={() => setExpanded(false)}
           />
           <div className="public-fab-menu">
-            {ACTIONS.map((action) => {
-              const Icon = action.icon;
-              const className = `public-fab public-fab--menu ${action.className}`.trim();
-
-              if (action.external) {
-                return (
-                  <a
-                    key={action.key}
-                    href={action.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={className}
-                    onClick={() => setExpanded(false)}
-                  >
-                    {Icon && <Icon className="h-4 w-4 shrink-0" aria-hidden />}
-                    <span>{action.label}</span>
-                  </a>
-                );
-              }
-
-              return (
-                <Link
-                  key={action.key}
-                  href={action.href}
-                  className={className}
-                  onClick={() => setExpanded(false)}
-                >
-                  {Icon && <Icon className="h-4 w-4 shrink-0" aria-hidden />}
-                  <span>{action.label}</span>
-                </Link>
-              );
-            })}
+            {ACTIONS.map((action) =>
+              renderAction(
+                action,
+                `public-fab public-fab--menu ${action.className}`.trim(),
+                () => setExpanded(false),
+              ),
+            )}
           </div>
         </>
       )}

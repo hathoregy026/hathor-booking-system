@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BedDouble, ConciergeBell, UtensilsCrossed } from "lucide-react";
+import { HeroBookTrigger } from "@/components/public/BookNowTrigger";
 import { HeroScrollIndicator } from "@/components/public/PublicHeader";
 import { ScrollReveal } from "@/components/public/ScrollReveal";
 import { SiteContentSection } from "@/components/public/SiteContentSection";
@@ -77,9 +78,9 @@ export default async function Home() {
               "Experience timeless elegance aboard Hathor Dahabiya — Egypt's most exclusive river cruise."}
           </p>
           <div className="lux-hero__actions">
-            <Link href="/book" className="public-btn-gold">
+            <HeroBookTrigger className="public-btn-gold">
               Book Your Journey
-            </Link>
+            </HeroBookTrigger>
             <Link href="/cruises" className="public-btn-outline-gold">
               Explore Cruises
             </Link>
@@ -172,9 +173,9 @@ export default async function Home() {
               Reserve your place aboard Hathor Dahabiya and discover the Nile
               as it was meant to be experienced.
             </p>
-            <Link href="/book" className="public-btn-gold mt-8 inline-flex">
+            <HeroBookTrigger className="public-btn-gold mt-8 inline-flex">
               Book Now
-            </Link>
+            </HeroBookTrigger>
           </ScrollReveal>
         </div>
       </section>

@@ -6,11 +6,13 @@ import { useEffect, useState } from "react";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { HATHOR_BRAND_NAME, HATHOR_LOGO_SRC } from "@/lib/branding";
 import { PUBLIC_NAV_LINKS } from "@/lib/public-contact";
+import { useBookNowModal } from "@/components/booking/BookingModalProvider";
 
 const HERO_PATHS = new Set(["/"]);
 
 export function PublicHeader() {
   const pathname = usePathname();
+  const { openBooking } = useBookNowModal();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const isHeroPage = HERO_PATHS.has(pathname);
@@ -83,12 +85,13 @@ export function PublicHeader() {
         </nav>
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-          <Link
-            href="/book"
+          <button
+            type="button"
             className="public-btn-gold min-h-11 px-4 py-2 text-xs sm:px-8 sm:py-3 sm:text-sm"
+            onClick={openBooking}
           >
             Book Now
-          </Link>
+          </button>
 
           <button
             type="button"
@@ -150,13 +153,16 @@ export function PublicHeader() {
                   </Link>
                 );
               })}
-              <Link
-                href="/book"
+              <button
+                type="button"
                 className="public-btn-gold mt-4 w-full py-3.5 text-center"
-                onClick={closeMenu}
+                onClick={() => {
+                  closeMenu();
+                  openBooking();
+                }}
               >
                 Book Now
-              </Link>
+              </button>
             </div>
           </nav>
         </div>
