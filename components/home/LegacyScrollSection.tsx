@@ -1,138 +1,235 @@
 "use client";
 
-import { useRef } from "react";
+import type { RefObject, SyntheticEvent } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   motion,
-  useScroll,
+  useMotionValue,
+  useSpring,
   useTransform,
   type MotionValue,
 } from "framer-motion";
+import { LEGACY_SCROLL_IMAGES } from "@/lib/hathor-media";
 
-const HEADLINE = "Continuing a Legacy";
-const INTRO =
-  "Indulge yourself in timeless luxury on the Hathor Dahabiya Nile Cruise. From panoramic Nile view suites to gourmet fine dining and tranquil spa moments, every detail is crafted for relaxation and exclusivity.";
+const STEP_COUNT = LEGACY_SCROLL_IMAGES.length;
+const STEPS = LEGACY_SCROLL_IMAGES;
 
-const IMAGES = [
-  {
-    src: "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&q=80&w=1000",
-    alt: "Luxury cabin aboard Hathor Dahabiya",
-    label: "Luxury Cabin",
-    body: "Handsome cabins overlook iconic Nile landmarks — refined comfort and thoughtful design for every sailing.",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&q=80&w=1000",
-    alt: "Luxury suite aboard Hathor Dahabiya",
-    label: "Luxury Suite",
-    body: "Expansive suites blend modern elegance with timeless Egyptian charm aboard our luxury Dahabiya.",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&q=80&w=1000",
-    alt: "Royal suite aboard Hathor Dahabiya",
-    label: "Royal Suite",
-    body: "The pinnacle of aboard accommodation — generous space, privacy, and uninterrupted Nile vistas.",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&q=80&w=1000",
-    alt: "Luxury cabin interior aboard Hathor Dahabiya",
-    label: "Suite Interiors",
-    body: "Each room is tailored for the Nile journey — bespoke details, panoramic views, and quiet luxury.",
-  },
+const CARD_OFFSETS = [
+  { rotate: -3, x: 0, y: 0, scale: 1 },
+  { rotate: 2, x: 28, y: -22, scale: 0.99 },
+  { rotate: -1.5, x: -18, y: -44, scale: 0.98 },
+  { rotate: 2.5, x: 32, y: -66, scale: 0.97 },
 ] as const;
 
-const SLIDE = 200;
+const SPRING = { stiffness: 70, damping: 26, mass: 0.8, restDelta: 0.0005 };
+const ENTER_BLEND = 0.22;
 
-function useLegacyTransforms(scrollYProgress: MotionValue<number>) {
-  const image1Y = useTransform(scrollYProgress, [0, 0.2, 0.25], [0, 0, -SLIDE]);
-  const image1Opacity = useTransform(scrollYProgress, [0, 0.2, 0.25], [1, 1, 0]);
+const PLACEHOLDER = "/media/hathor/room-luxury.webp";
 
-  const image2Y = useTransform(scrollYProgress, [0.2, 0.25, 0.45, 0.5], [SLIDE, 0, 0, -SLIDE]);
-  const image2Opacity = useTransform(scrollYProgress, [0.2, 0.25, 0.45, 0.5], [0, 1, 1, 0]);
+type PinState = "before" | "pinned" | "after";
 
-  const image3Y = useTransform(scrollYProgress, [0.45, 0.5, 0.7, 0.75], [SLIDE, 0, 0, -SLIDE]);
-  const image3Opacity = useTransform(scrollYProgress, [0.45, 0.5, 0.7, 0.75], [0, 1, 1, 0]);
+/** Reliable scroll progress when Framer useScroll + sticky fails (e.g. overflow-x on ancestors). */
+function useSectionScroll(
+  ref: RefObject<HTMLElement | null>,
+): { progress: MotionValue<number>; pinState: PinState } {
+  const progress = useMotionValue(0);
+  const [pinState, setPinState] = useState<PinState>("before");
 
-  const image4Y = useTransform(scrollYProgress, [0.7, 0.75, 1], [SLIDE, 0, 0]);
-  const image4Opacity = useTransform(scrollYProgress, [0.7, 0.75, 1], [0, 1, 1]);
+  useEffect(() => {
+    const update = () => {
+      const el = ref.current;
+      if (!el) return;
 
-  const text1Opacity = useTransform(scrollYProgress, [0, 0.2, 0.25], [1, 1, 0]);
-  const text2Opacity = useTransform(scrollYProgress, [0.2, 0.25, 0.45, 0.5], [0, 1, 1, 0]);
-  const text3Opacity = useTransform(scrollYProgress, [0.45, 0.5, 0.7, 0.75], [0, 1, 1, 0]);
-  const text4Opacity = useTransform(scrollYProgress, [0.7, 0.75, 1], [0, 1, 1]);
+      const rect = el.getBoundingClientRect();
+      const scrollable = el.offsetHeight - window.innerHeight;
 
-  return {
-    images: [
-      { y: image1Y, opacity: image1Opacity },
-      { y: image2Y, opacity: image2Opacity },
-      { y: image3Y, opacity: image3Opacity },
-      { y: image4Y, opacity: image4Opacity },
-    ],
-    texts: [text1Opacity, text2Opacity, text3Opacity, text4Opacity],
-  };
+      if (scrollable <= 0) {
+        progress.set(0);
+        setPinState("before");
+        return;
+      }
+
+      const nextProgress = Math.min(1, Math.max(0, -rect.top / scrollable));
+      progress.set(nextProgress);
+
+      if (rect.top > 0) {
+        setPinState("before");
+      } else if (rect.bottom < window.innerHeight) {
+        setPinState("after");
+      } else {
+        setPinState("pinned");
+      }
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [ref, progress]);
+
+  return { progress, pinState };
+}
+
+function handleImageError(event: SyntheticEvent<HTMLImageElement>) {
+  const img = event.currentTarget;
+  if (img.src !== PLACEHOLDER) img.src = PLACEHOLDER;
+}
+
+function StackImage({
+  index,
+  progress,
+  src,
+  alt,
+}: {
+  index: number;
+  progress: MotionValue<number>;
+  src: string;
+  alt: string;
+}) {
+  const start = index / STEP_COUNT;
+  const enterEnd = start + ENTER_BLEND;
+  const offset = CARD_OFFSETS[index];
+
+  const opacity = useTransform(
+    progress,
+    index === 0 ? [0, 0.02] : [start, enterEnd],
+    index === 0 ? [1, 1] : [0, 1],
+  );
+  const y = useTransform(
+    progress,
+    index === 0 ? [0, 1] : [start, enterEnd],
+    index === 0 ? [offset.y, offset.y] : [100, offset.y],
+  );
+  const x = useTransform(
+    progress,
+    index === 0 ? [0, 1] : [start, enterEnd],
+    index === 0 ? [offset.x, offset.x] : [0, offset.x],
+  );
+
+  return (
+    <motion.div
+      className="hathor-legacy-stack__card"
+      style={{
+        opacity,
+        y,
+        x,
+        scale: offset.scale,
+        rotate: offset.rotate,
+        zIndex: index + 1,
+      }}
+      transition={{ type: "spring", ...SPRING }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={alt}
+        className="hathor-legacy-stack__card-img"
+        onError={handleImageError}
+        loading={index === 0 ? "eager" : "lazy"}
+        decoding="async"
+      />
+    </motion.div>
+  );
+}
+
+function ScrollTextPanel({
+  index,
+  progress,
+  headline,
+  body,
+}: {
+  index: number;
+  progress: MotionValue<number>;
+  headline: string;
+  body: string;
+}) {
+  const start = index / STEP_COUNT;
+  const end = (index + 1) / STEP_COUNT;
+  const blend = 0.1;
+
+  const opacity = useTransform(
+    progress,
+    index === 0
+      ? [0, end - blend, end]
+      : index === STEP_COUNT - 1
+        ? [start, start + blend, 1]
+        : [start, start + blend, end - blend, end],
+    index === 0
+      ? [1, 1, 0]
+      : index === STEP_COUNT - 1
+        ? [0, 1, 1]
+        : [0, 1, 1, 0],
+  );
+
+  const y = useTransform(
+    progress,
+    index === 0
+      ? [0, end - blend, end]
+      : index === STEP_COUNT - 1
+        ? [start, start + blend, 1]
+        : [start, start + blend, end - blend, end],
+    index === 0
+      ? [0, 0, -12]
+      : index === STEP_COUNT - 1
+        ? [12, 0, 0]
+        : [12, 0, 0, -12],
+  );
+
+  return (
+    <motion.div
+      className="hathor-legacy-stack__text-panel"
+      style={{ opacity, y, zIndex: index + 1 }}
+      transition={{ type: "spring", ...SPRING }}
+    >
+      <h2 className="hathor-legacy-stack__headline">{headline}</h2>
+      <p className="hathor-legacy-stack__body">{body}</p>
+    </motion.div>
+  );
 }
 
 export function LegacyScrollSection() {
   const containerRef = useRef<HTMLElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
-  const { images, texts } = useLegacyTransforms(scrollYProgress);
+  const { progress, pinState } = useSectionScroll(containerRef);
+  const smoothProgress = useSpring(progress, SPRING);
 
   return (
     <section
       ref={containerRef}
-      className="hathor-legacy-scroll"
-      style={{ height: "400vh" }}
+      className="hathor-legacy-stack"
+      style={{ height: `${STEP_COUNT * 100}vh` }}
       aria-label="Continuing a Legacy"
     >
-      <div className="hathor-legacy-scroll__sticky">
-        <div className="hathor-legacy-scroll__grid">
-          <div className="hathor-legacy-scroll__images">
-            {IMAGES.map((image, index) => (
-              <motion.div
-                key={image.src}
-                className="hathor-legacy-scroll__image-layer"
-                style={{
-                  y: images[index].y,
-                  opacity: images[index].opacity,
-                  zIndex: index + 1,
-                }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={image.src}
-                  alt={image.alt}
-                  className="hathor-legacy-scroll__img"
-                  loading={index === 0 ? "eager" : "lazy"}
-                  decoding="async"
-                />
-              </motion.div>
+      <div
+        className={`hathor-legacy-stack__pin hathor-legacy-stack__pin--${pinState}`}
+      >
+        <div className="hathor-legacy-stack__grid">
+          <div className="hathor-legacy-stack__images">
+            {STEPS.map((step, index) => (
+              <StackImage
+                key={step.src}
+                index={index}
+                progress={smoothProgress}
+                src={step.src}
+                alt={step.alt}
+              />
             ))}
           </div>
 
-          <div className="hathor-legacy-scroll__text-col">
-            <div className="hathor-legacy-scroll__text-inner">
-              <h2 className="hathor-legacy-scroll__headline">{HEADLINE}</h2>
-              <p className="hathor-legacy-scroll__intro">{INTRO}</p>
-              <div className="hathor-legacy-scroll__text-stack">
-                {IMAGES.map((item, index) => (
-                  <motion.div
-                    key={item.label}
-                    className="hathor-legacy-scroll__text-block"
-                    style={{
-                      opacity: texts[index],
-                      zIndex: index + 1,
-                    }}
-                  >
-                    <h3 className="hathor-legacy-scroll__step-label">
-                      {item.label}
-                    </h3>
-                    <p className="hathor-legacy-scroll__step-body">{item.body}</p>
-                  </motion.div>
-                ))}
-              </div>
+          <div className="hathor-legacy-stack__text-col">
+            <p className="hathor-legacy-stack__eyebrow">Continuing a Legacy</p>
+            <div className="hathor-legacy-stack__text-stage">
+              {STEPS.map((step, index) => (
+                <ScrollTextPanel
+                  key={step.headline}
+                  index={index}
+                  progress={smoothProgress}
+                  headline={step.headline}
+                  body={step.body}
+                />
+              ))}
             </div>
           </div>
         </div>

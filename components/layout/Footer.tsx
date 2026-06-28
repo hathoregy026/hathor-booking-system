@@ -1,8 +1,8 @@
 import Link from "next/link";
 import {
   HATHOR_BRAND_NAME,
-  HATHOR_LOGO_DAY_SRC,
-  HATHOR_LOGO_SRC,
+  HATHOR_FOOTER_LOGO_DAY_SRC,
+  HATHOR_FOOTER_LOGO_SRC,
 } from "@/lib/branding";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 
@@ -41,13 +41,13 @@ export function Footer() {
       <div className="owo-footer__brand-block">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={HATHOR_LOGO_SRC}
+          src={HATHOR_FOOTER_LOGO_SRC}
           alt={HATHOR_BRAND_NAME}
           className="owo-footer__logo hathor-brand-logo hathor-brand-logo--night"
         />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={HATHOR_LOGO_DAY_SRC}
+          src={HATHOR_FOOTER_LOGO_DAY_SRC}
           alt=""
           aria-hidden
           className="owo-footer__logo hathor-brand-logo hathor-brand-logo--day"

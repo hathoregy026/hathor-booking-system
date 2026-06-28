@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { HomePageContent } from "@/components/home/HomePageContent";
+import { HATHOR_HERO_POSTER_SRC } from "@/lib/branding";
 
 export const metadata: Metadata = {
   title: "Luxury Dahabiya Nile Cruise | Hathor Dahabiya",
@@ -10,17 +11,27 @@ export const metadata: Metadata = {
     "Luxury Egypt Cruise",
     "Private Nile Sailing",
     "Hathor Dahabiya",
+    "Ultra Luxury Dahabiya Cruise",
   ],
   openGraph: {
     title: "Hathor Dahabiya | Ultra Luxury Nile Cruise",
-    description: "Your luxurious Nile escape begins here",
+    description: "Your luxurious Nile escape begins with the Hathor Dahabiya",
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: HATHOR_HERO_POSTER_SRC,
+        width: 1920,
+        height: 1080,
+        alt: "Luxury Nile cruise at sunset",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Hathor Dahabiya | Ultra Luxury Nile Cruise",
-    description: "Your luxurious Nile escape begins here",
+    description: "Your luxurious Nile escape begins with the Hathor Dahabiya",
+    images: [HATHOR_HERO_POSTER_SRC],
   },
   robots: {
     index: true,

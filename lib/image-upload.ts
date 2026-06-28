@@ -6,6 +6,10 @@ export const EMAIL_IMAGE_BUCKET = "email-images";
 export const EMAIL_IMAGE_FOLDER = "email-templates";
 
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+export const MAX_VIDEO_BYTES = 100 * 1024 * 1024;
+
+export const ALLOWED_VIDEO_TYPES = new Set(["video/mp4", "video/webm"]);
+export const ALLOWED_VIDEO_EXTENSIONS = new Set(["mp4", "webm"]);
 
 export const MAX_EMAIL_LOGO_BYTES = MAX_IMAGE_BYTES;
 export const MAX_EMAIL_HERO_BYTES = MAX_IMAGE_BYTES;
@@ -64,6 +68,36 @@ export function validateEmailTemplateImageFile(
   _field: "logoUrl" | "heroImageUrl",
 ): string | null {
   return validateEmailImageFile(file);
+}
+
+export function validateVideoFile(file: File): string | null {
+  const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
+  const mimeType = file.type || videoMimeFromExtension(extension);
+
+  if (!mimeType || !ALLOWED_VIDEO_TYPES.has(mimeType)) {
+    return "Only MP4 and WebM videos are allowed.";
+  }
+
+  if (!ALLOWED_VIDEO_EXTENSIONS.has(extension)) {
+    return "Invalid file extension. Use .mp4 or .webm.";
+  }
+
+  if (file.size > MAX_VIDEO_BYTES) {
+    return "Video must be 100 MB or smaller.";
+  }
+
+  return null;
+}
+
+function videoMimeFromExtension(extension: string): string | null {
+  switch (extension) {
+    case "mp4":
+      return "video/mp4";
+    case "webm":
+      return "video/webm";
+    default:
+      return null;
+  }
 }
 
 function mimeFromExtension(extension: string): string | null {

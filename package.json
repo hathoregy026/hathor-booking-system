@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/sync-email-assets.mjs && prisma generate && next build",
+    "build": "node scripts/sync-email-assets.mjs && node scripts/sync-hathor-media.mjs && prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "prisma generate",
@@ -16,6 +16,7 @@
     "optimize:email-images": "node --env-file=.env scripts/optimize-email-bucket-images.mjs",
     "backfill:email-images": "node scripts/backfill-email-template-images.mjs",
     "email:dev": "node scripts/sync-email-assets.mjs && email dev --dir emails --port 3005",
+    "sync:media": "node scripts/sync-hathor-media.mjs",
     "validate:availability": "tsx scripts/validate-calendar-availability.ts"
   },
   "dependencies": {

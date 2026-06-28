@@ -1,22 +1,26 @@
 "use client";
 
-import { BookNowTrigger } from "@/components/public/BookNowTrigger";
-import { useSiteImage } from "@/components/public/SiteImagesProvider";
+import Link from "next/link";
 import { ParallaxHeroVideo } from "@/components/ui/ParallaxHeroVideo";
-import { HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
+import {
+  HATHOR_BRAND_NAME,
+  HATHOR_HERO_POSTER_SRC,
+  HATHOR_HERO_VIDEO_SRC,
+  HATHOR_LOGO_DAY_SRC,
+  HATHOR_LOGO_SRC,
+} from "@/lib/branding";
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 
 export function Hero() {
-  const poster = useSiteImage("home-hero-poster");
-
   return (
     <section className="owo-hero" aria-label="Hero">
       <ParallaxHeroVideo
         src={HATHOR_HERO_VIDEO_SRC}
-        poster={poster.src}
-        ariaLabel={poster.alt}
+        poster={HATHOR_HERO_POSTER_SRC}
+        ariaLabel="Hathor Dahabiya sailing on the Nile"
         className="owo-hero__media"
       />
+      <div className="owo-hero__cream" aria-hidden />
       <div className="owo-hero__overlay" aria-hidden />
 
       <div className="owo-hero__content">
@@ -24,9 +28,22 @@ export function Hero() {
         <p className="owo-hero__subtitle">{HOMEPAGE_HERO.subtitle}</p>
       </div>
 
-      <BookNowTrigger className="owo-hero__cta public-btn-gold cursor-hover">
-        {HOMEPAGE_HERO.cta}
-      </BookNowTrigger>
+      <Link href="/" className="owo-hero__logo-bottom cursor-hover" aria-label={HATHOR_BRAND_NAME}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={HATHOR_LOGO_SRC}
+          alt=""
+          aria-hidden
+          className="owo-hero__logo-bottom-img hathor-brand-logo hathor-brand-logo--night"
+        />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={HATHOR_LOGO_DAY_SRC}
+          alt=""
+          aria-hidden
+          className="owo-hero__logo-bottom-img hathor-brand-logo hathor-brand-logo--day"
+        />
+      </Link>
     </section>
   );
 }

@@ -1,22 +1,23 @@
 "use client";
 
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
-import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { ParallaxHeroVideo } from "@/components/ui/ParallaxHeroVideo";
-import { HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
+import {
+  HATHOR_HERO_POSTER_SRC,
+  HATHOR_HERO_VIDEO_SRC,
+} from "@/lib/branding";
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 
 export function PreviewHero() {
-  const poster = useSiteImage("home-hero-poster");
-
   return (
     <section className="preview-hero" aria-label="Hero">
       <ParallaxHeroVideo
         src={HATHOR_HERO_VIDEO_SRC}
-        poster={poster.src}
-        ariaLabel={poster.alt}
+        poster={HATHOR_HERO_POSTER_SRC}
+        ariaLabel="Hathor Dahabiya sailing on the Nile"
         className="preview-hero__media"
       />
+      <div className="preview-hero__cream" aria-hidden />
       <div className="preview-hero__overlay" aria-hidden />
 
       <div className="preview-hero__content">

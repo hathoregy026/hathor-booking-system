@@ -11,7 +11,7 @@ import { Hero } from "@/components/home/Hero";
 import { LayeredCollageSection } from "@/components/home/LayeredCollageSection";
 import { PostHeroIntro } from "@/components/home/PostHeroIntro";
 import { PostHeroMedia } from "@/components/home/PostHeroMedia";
-import { LegacyRoomStackSection } from "@/components/home/LegacyRoomStackSection";
+import { LegacyScrollSection } from "@/components/home/LegacyScrollSection";
 import { ScrollPinnedSection } from "@/components/home/ScrollPinnedSection";
 import { SketchSection } from "@/components/home/SketchSection";
 import { TextBridge } from "@/components/home/TextBridge";
@@ -25,7 +25,6 @@ import {
   HOMEPAGE_ALTERNATING_CHAPTERS,
   HOMEPAGE_CINEMATIC_BRIDGE,
   HOMEPAGE_RESIDENCES_CHAPTERS,
-  HOMEPAGE_SCROLL_STORY,
   HOMEPAGE_SPLIT_CHAPTERS,
 } from "@/lib/homepage-sections";
 
@@ -59,8 +58,7 @@ export function HomePageContent() {
         variant="dark"
       />
 
-      <ScrollPinnedSection chapters={HOMEPAGE_SCROLL_STORY} variant="story" />
-      <LegacyRoomStackSection />
+      <LegacyScrollSection />
 
       <FullBleedMedia imageName="home-cinematic-video" />
       <TextBridge

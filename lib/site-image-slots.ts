@@ -1,5 +1,5 @@
 import type { ImageCategory } from "@/lib/image-categories";
-import { UNSPLASH_IMAGES } from "@/lib/unsplash-images";
+import { HATHOR_MEDIA } from "@/lib/hathor-media";
 
 export type SiteImageSlot = {
   name: string;
@@ -15,16 +15,16 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   // Homepage
   {
     name: "home-hero-poster",
-    altText: UNSPLASH_IMAGES.heroHomepageAlt,
-    url: UNSPLASH_IMAGES.heroHomepage,
+    altText: HATHOR_MEDIA.heroHomepageAlt,
+    url: HATHOR_MEDIA.heroHomepage,
     category: "hero",
     pagePath: "/",
     displayOrder: 0,
   },
   {
     name: "home-post-hero-media",
-    altText: UNSPLASH_IMAGES.postHeroMediaAlt,
-    url: UNSPLASH_IMAGES.postHeroMedia,
+    altText: HATHOR_MEDIA.postHeroMediaAlt,
+    url: HATHOR_MEDIA.postHeroMedia,
     category: "general",
     pagePath: "/",
     displayOrder: 1,
@@ -32,7 +32,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-story-craft-large",
     altText: "Ornate interior corridor aboard a luxury Dahabiya",
-    url: UNSPLASH_IMAGES.storyCraftLarge,
+    url: HATHOR_MEDIA.storyCraftLarge,
     category: "general",
     pagePath: "/",
     displayOrder: 10,
@@ -40,7 +40,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-story-craft-small",
     altText: "Detailed craftsmanship on the Hathor Dahabiya",
-    url: UNSPLASH_IMAGES.storyCraftSmall,
+    url: HATHOR_MEDIA.storyCraftSmall,
     category: "general",
     pagePath: "/",
     displayOrder: 11,
@@ -48,7 +48,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-story-transform",
     altText: "Grand staircase and elegant interior aboard Hathor",
-    url: UNSPLASH_IMAGES.storyTransform,
+    url: HATHOR_MEDIA.storyTransform,
     category: "general",
     pagePath: "/",
     displayOrder: 12,
@@ -56,7 +56,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-story-legacy-large",
     altText: "Hathor Dahabiya sailing on the Nile",
-    url: UNSPLASH_IMAGES.storyLegacyLarge,
+    url: HATHOR_MEDIA.storyLegacyLarge,
     category: "general",
     pagePath: "/",
     displayOrder: 13,
@@ -64,31 +64,31 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-story-legacy-small",
     altText: "Ancient Egyptian temple viewed from the Nile",
-    url: UNSPLASH_IMAGES.storyLegacySmall,
+    url: HATHOR_MEDIA.storyLegacySmall,
     category: "general",
     pagePath: "/",
     displayOrder: 14,
   },
   {
     name: "home-cinematic-video",
-    altText: UNSPLASH_IMAGES.cinematicVideoAlt,
-    url: UNSPLASH_IMAGES.cinematicVideo,
+    altText: HATHOR_MEDIA.cinematicVideoAlt,
+    url: HATHOR_MEDIA.cinematicVideo,
     category: "general",
     pagePath: "/",
     displayOrder: 20,
   },
   {
     name: "home-cinematic-still",
-    altText: UNSPLASH_IMAGES.cinematicStillAlt,
-    url: UNSPLASH_IMAGES.cinematicStill,
+    altText: HATHOR_MEDIA.cinematicStillAlt,
+    url: HATHOR_MEDIA.cinematicStill,
     category: "suite",
     pagePath: "/",
     displayOrder: 21,
   },
   {
     name: "home-split-courtyard",
-    altText: UNSPLASH_IMAGES.splitCourtyardAlt,
-    url: UNSPLASH_IMAGES.splitCourtyard,
+    altText: HATHOR_MEDIA.splitCourtyardAlt,
+    url: HATHOR_MEDIA.splitCourtyard,
     category: "landmark",
     pagePath: "/",
     displayOrder: 22,
@@ -96,7 +96,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-split-service",
     altText: "Elegant hallway aboard the Hathor Dahabiya",
-    url: UNSPLASH_IMAGES.splitService,
+    url: HATHOR_MEDIA.splitService,
     category: "general",
     pagePath: "/",
     displayOrder: 30,
@@ -104,7 +104,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-split-interiors",
     altText: "Luxury suite interior on the Hathor Dahabiya",
-    url: UNSPLASH_IMAGES.splitInteriors,
+    url: HATHOR_MEDIA.splitInteriors,
     category: "suite",
     pagePath: "/",
     displayOrder: 31,
@@ -112,7 +112,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-split-venue",
     altText: "Temple of Hatshepsut along the Nile cruise route",
-    url: UNSPLASH_IMAGES.splitVenue,
+    url: HATHOR_MEDIA.splitVenue,
     category: "landmark",
     pagePath: "/",
     displayOrder: 32,
@@ -120,7 +120,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-collage-bg",
     altText: "Hathor Dahabiya on the Nile at golden hour",
-    url: UNSPLASH_IMAGES.collageBg,
+    url: HATHOR_MEDIA.collageBg,
     category: "hero",
     pagePath: "/",
     displayOrder: 40,
@@ -128,7 +128,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-collage-large",
     altText: "Luxury corridor with chandelier aboard Hathor",
-    url: UNSPLASH_IMAGES.collageLarge,
+    url: HATHOR_MEDIA.collageLarge,
     category: "general",
     pagePath: "/",
     displayOrder: 41,
@@ -136,7 +136,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-collage-small",
     altText: "Marble and mosaic detail aboard Hathor Dahabiya",
-    url: UNSPLASH_IMAGES.collageSmall,
+    url: HATHOR_MEDIA.collageSmall,
     category: "general",
     pagePath: "/",
     displayOrder: 42,
@@ -144,7 +144,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-collage-living",
     altText: "Luxury suite aboard Hathor Dahabiya",
-    url: UNSPLASH_IMAGES.collageLiving,
+    url: HATHOR_MEDIA.collageLiving,
     category: "suite",
     pagePath: "/",
     displayOrder: 43,
@@ -152,7 +152,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-residences-kitchen",
     altText: "Luxury cabin interior aboard Hathor Dahabiya",
-    url: UNSPLASH_IMAGES.residencesKitchen,
+    url: HATHOR_MEDIA.residencesKitchen,
     category: "room",
     pagePath: "/",
     displayOrder: 50,
@@ -160,7 +160,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-residences-lounge",
     altText: "Luxury lounge aboard the Hathor Dahabiya",
-    url: UNSPLASH_IMAGES.residencesLounge,
+    url: HATHOR_MEDIA.residencesLounge,
     category: "general",
     pagePath: "/",
     displayOrder: 51,
@@ -168,7 +168,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-residences-rooftop",
     altText: "Sun deck aboard Hathor Dahabiya at golden hour",
-    url: UNSPLASH_IMAGES.residencesRooftop,
+    url: HATHOR_MEDIA.residencesRooftop,
     category: "hero",
     pagePath: "/",
     displayOrder: 52,
@@ -176,7 +176,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-sketch-boat",
     altText: "Hathor Dahabiya sailing on the Nile — deck plan reference",
-    url: UNSPLASH_IMAGES.sketchBoat,
+    url: HATHOR_MEDIA.sketchBoat,
     category: "general",
     pagePath: "/",
     displayOrder: 53,
@@ -184,7 +184,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-alt-dining",
     altText: "Fine dining restaurant aboard Hathor Dahabiya",
-    url: UNSPLASH_IMAGES.altDining,
+    url: HATHOR_MEDIA.altDining,
     category: "dining",
     pagePath: "/",
     displayOrder: 60,
@@ -192,7 +192,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-alt-wellness",
     altText: "Seneb Spa wellness pool aboard Hathor",
-    url: UNSPLASH_IMAGES.altWellness,
+    url: HATHOR_MEDIA.altWellness,
     category: "spa",
     pagePath: "/",
     displayOrder: 61,
@@ -200,7 +200,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-alt-highlights",
     altText: "Ancient landmarks along the Nile",
-    url: UNSPLASH_IMAGES.altHighlights,
+    url: HATHOR_MEDIA.altHighlights,
     category: "landmark",
     pagePath: "/",
     displayOrder: 62,
@@ -208,7 +208,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-testimonials-bg",
     altText: "Hathor Dahabiya on the Nile at sunset",
-    url: UNSPLASH_IMAGES.testimonials,
+    url: HATHOR_MEDIA.testimonials,
     category: "general",
     pagePath: "/",
     displayOrder: 70,
@@ -217,7 +217,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "room-luxury",
     altText: "Luxury cabin aboard Hathor Dahabiya",
-    url: UNSPLASH_IMAGES.luxuryRoom,
+    url: HATHOR_MEDIA.luxuryRoom,
     category: "room",
     pagePath: "/rooms",
     displayOrder: 0,
@@ -225,7 +225,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "room-suite",
     altText: "Luxury suite aboard Hathor Dahabiya",
-    url: UNSPLASH_IMAGES.luxurySuite,
+    url: HATHOR_MEDIA.luxurySuite,
     category: "suite",
     pagePath: "/rooms",
     displayOrder: 1,
@@ -233,7 +233,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "room-royal",
     altText: "Royal suite aboard Hathor Dahabiya",
-    url: UNSPLASH_IMAGES.royalSuite,
+    url: HATHOR_MEDIA.royalSuite,
     category: "suite",
     pagePath: "/rooms",
     displayOrder: 2,
@@ -241,7 +241,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "charter",
     altText: "Private charter aboard Hathor Dahabiya",
-    url: UNSPLASH_IMAGES.charter,
+    url: HATHOR_MEDIA.charter,
     category: "general",
     pagePath: "/charter",
     displayOrder: 0,
@@ -250,7 +250,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "cruises-hero",
     altText: "Luxury Dahabiya cruise on the Nile",
-    url: UNSPLASH_IMAGES.heroCruises,
+    url: HATHOR_MEDIA.heroCruises,
     category: "hero",
     pagePath: "/cruises",
     displayOrder: 0,
@@ -258,7 +258,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "about-hero",
     altText: "Hathor Dahabiya sailing on the Nile",
-    url: UNSPLASH_IMAGES.about,
+    url: HATHOR_MEDIA.about,
     category: "hero",
     pagePath: "/about",
     displayOrder: 0,
@@ -266,7 +266,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "gastronomy-hero",
     altText: "Gourmet dining aboard Hathor Dahabiya with Nile views",
-    url: UNSPLASH_IMAGES.dining,
+    url: HATHOR_MEDIA.dining,
     category: "dining",
     pagePath: "/gastronomy",
     displayOrder: 0,
@@ -274,7 +274,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "gastronomy-restaurant",
     altText: "Hathor Dahabiya restaurant interior",
-    url: UNSPLASH_IMAGES.restaurant,
+    url: HATHOR_MEDIA.restaurant,
     category: "dining",
     pagePath: "/gastronomy",
     displayOrder: 1,
@@ -282,7 +282,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "wellness-hero",
     altText: "Seneb Spa wellness aboard Hathor Dahabiya",
-    url: UNSPLASH_IMAGES.wellness,
+    url: HATHOR_MEDIA.wellness,
     category: "spa",
     pagePath: "/wellness",
     displayOrder: 0,
@@ -290,7 +290,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "wellness-fitness",
     altText: "Fitness and active wellness aboard Hathor",
-    url: UNSPLASH_IMAGES.fitness,
+    url: HATHOR_MEDIA.fitness,
     category: "spa",
     pagePath: "/wellness",
     displayOrder: 1,
@@ -298,7 +298,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "highlights-hero",
     altText: "Dahabiya sailing past ancient Egyptian monuments",
-    url: UNSPLASH_IMAGES.highlights,
+    url: HATHOR_MEDIA.highlights,
     category: "landmark",
     pagePath: "/highlights",
     displayOrder: 0,
@@ -306,7 +306,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "highlights-lifestyle",
     altText: "Scenic Nile views from Hathor Dahabiya",
-    url: UNSPLASH_IMAGES.lifestyle,
+    url: HATHOR_MEDIA.lifestyle,
     category: "landmark",
     pagePath: "/highlights",
     displayOrder: 1,
@@ -314,7 +314,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "landmark-obelisk",
     altText: "Unfinished Obelisk, Aswan",
-    url: UNSPLASH_IMAGES.obelisk,
+    url: HATHOR_MEDIA.obelisk,
     category: "landmark",
     pagePath: "/highlights",
     displayOrder: 2,
@@ -322,7 +322,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "landmark-hatshepsut",
     altText: "Temple of Hatshepsut",
-    url: UNSPLASH_IMAGES.templeHatshepsut,
+    url: HATHOR_MEDIA.templeHatshepsut,
     category: "landmark",
     pagePath: "/highlights",
     displayOrder: 3,
@@ -330,7 +330,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "landmark-valley-kings",
     altText: "Valley of the Kings, Luxor",
-    url: UNSPLASH_IMAGES.valleyOfKings,
+    url: HATHOR_MEDIA.valleyOfKings,
     category: "landmark",
     pagePath: "/highlights",
     displayOrder: 4,
@@ -338,7 +338,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "charter-hero",
     altText: "Private charter on the Hathor Dahabiya",
-    url: UNSPLASH_IMAGES.heroCharter,
+    url: HATHOR_MEDIA.heroCharter,
     category: "hero",
     pagePath: "/charter",
     displayOrder: 0,
@@ -346,7 +346,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "contact-hero",
     altText: "Hathor Dahabiya on the Nile",
-    url: UNSPLASH_IMAGES.heroContact,
+    url: HATHOR_MEDIA.heroContact,
     category: "hero",
     pagePath: "/contact",
     displayOrder: 0,
@@ -354,7 +354,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "blog-hero",
     altText: "Hathor Dahabiya blog — stories from the Nile",
-    url: UNSPLASH_IMAGES.heroBlog,
+    url: HATHOR_MEDIA.heroBlog,
     category: "general",
     pagePath: "/blogs",
     displayOrder: 0,
@@ -362,7 +362,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "about-dining",
     altText: "Fine dining aboard Hathor Dahabiya",
-    url: UNSPLASH_IMAGES.dining,
+    url: HATHOR_MEDIA.dining,
     category: "dining",
     pagePath: "/about",
     displayOrder: 1,
@@ -380,7 +380,7 @@ export function getSiteImageSlot(name: string): SiteImageSlot | undefined {
 export function getDefaultSiteImage(name: string): { src: string; alt: string } {
   const slot = getSiteImageSlot(name);
   if (!slot) {
-    return { src: UNSPLASH_IMAGES.heroHomepage, alt: "Hathor Dahabiya" };
+    return { src: HATHOR_MEDIA.heroHomepage, alt: "Hathor Dahabiya" };
   }
   return { src: slot.url, alt: slot.altText };
 }

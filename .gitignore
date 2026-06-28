@@ -30,7 +30,9 @@
 
 # large media — synced locally; host on CDN/Vercel Blob for production
 /assets/*.mp4
+/assets/TEMPORARY IMAGES FOR HATHOR/
 /public/videos/*.mp4
+/public/media/hathor/videos/hero-reel.mp4
 
 # debug
 npm-debug.log*

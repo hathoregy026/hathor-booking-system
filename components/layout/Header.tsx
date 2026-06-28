@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { useBookNowModal } from "@/components/booking/BookingModalProvider";
 import { PublicThemeToggle } from "@/components/public/PublicThemeToggle";
 import {
   HATHOR_BRAND_NAME,
+  HATHOR_HERO_ICON_SRC,
   HATHOR_LOGO_DAY_SRC,
   HATHOR_LOGO_SRC,
 } from "@/lib/branding";
@@ -125,6 +126,21 @@ export function Header() {
   const { theme } = usePublicTheme();
   const [exploreOpen, setExploreOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [menuHovered, setMenuHovered] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const [scrollHidden, setScrollHidden] = useState(false);
+  const menuHoveredRef = useRef(false);
+  const isScrollingRef = useRef(false);
+
+  const menuBarVisible = menuHovered || isScrolling;
+
+  useEffect(() => {
+    menuHoveredRef.current = menuHovered;
+    isScrollingRef.current = isScrolling;
+    if (menuBarVisible) {
+      setScrollHidden(false);
+    }
+  }, [menuHovered, isScrolling, menuBarVisible]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 48);
@@ -133,6 +149,53 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const isHomeHero = isHeroRoute(pathname);
+
+  const isPastHero = () => {
+    const hero = document.querySelector(".owo-hero");
+    if (!hero) {
+      return window.scrollY > window.innerHeight * 0.9;
+    }
+    return hero.getBoundingClientRect().bottom <= 0;
+  };
+
+  useEffect(() => {
+    if (!isHomeHero) return;
+
+    let scrollEndTimer: ReturnType<typeof setTimeout>;
+
+    const onHeroScroll = () => {
+      setIsScrolling(true);
+      setScrollHidden(false);
+
+      clearTimeout(scrollEndTimer);
+      scrollEndTimer = setTimeout(() => {
+        setIsScrolling(false);
+        if (isPastHero() && !menuHoveredRef.current) {
+          setScrollHidden(true);
+        }
+      }, 200);
+    };
+
+    window.addEventListener("scroll", onHeroScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onHeroScroll);
+      clearTimeout(scrollEndTimer);
+    };
+  }, [isHomeHero]);
+
+  const handleMenuZoneEnter = () => {
+    setMenuHovered(true);
+    setScrollHidden(false);
+  };
+
+  const handleMenuZoneLeave = () => {
+    setMenuHovered(false);
+    if (!isScrollingRef.current && isPastHero()) {
+      setScrollHidden(true);
+    }
+  };
+
   useEffect(() => {
     document.body.style.overflow = exploreOpen ? "hidden" : "";
     return () => {
@@ -140,33 +203,51 @@ export function Header() {
     };
   }, [exploreOpen]);
 
-  const overHero = !scrolled && isHeroRoute(pathname);
-  const headerClass = getPublicHeaderClassName({
+  const headerClass = `${getPublicHeaderClassName({
     theme,
-    scrolled,
-    overHero,
-  });
+    scrolled: isHomeHero ? false : scrolled,
+    overHero: isHomeHero,
+  })}${isHomeHero ? " hathor-header--owo-hero-layout" : ""}${
+    isHomeHero && menuBarVisible ? " hathor-header--menu-active" : ""
+  }${isHomeHero && isScrolling ? " hathor-header--scrolling" : ""}${
+    isHomeHero && scrollHidden && !menuBarVisible ? " hathor-header--scroll-hidden" : ""
+  }`;
 
   return (
     <>
       <header className={headerClass}>
         <div className="hathor-header__inner hathor-header__inner--owo">
-          <div className="hathor-header__col hathor-header__col--left">
-            <Link href="/" className="hathor-header__brand cursor-hover">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={HATHOR_LOGO_SRC}
-                alt={HATHOR_BRAND_NAME}
-                className="hathor-header__logo hathor-brand-logo hathor-brand-logo--night"
-              />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={HATHOR_LOGO_DAY_SRC}
-                alt=""
-                aria-hidden
-                className="hathor-header__logo hathor-brand-logo hathor-brand-logo--day"
-              />
-              <span className="hathor-header__wordmark">Hathor</span>
+          <div
+            className="hathor-header__menu-zone"
+            onMouseEnter={handleMenuZoneEnter}
+            onMouseLeave={handleMenuZoneLeave}
+          >
+            <div className="hathor-header__col hathor-header__col--left">
+            <Link href="/" className="hathor-header__brand">
+              {isHomeHero ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  src={HATHOR_HERO_ICON_SRC}
+                  alt={HATHOR_BRAND_NAME}
+                  className="hathor-header__logo hathor-header__logo--icon"
+                />
+              ) : (
+                <>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={HATHOR_LOGO_SRC}
+                    alt={HATHOR_BRAND_NAME}
+                    className="hathor-header__logo hathor-brand-logo hathor-brand-logo--night"
+                  />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={HATHOR_LOGO_DAY_SRC}
+                    alt=""
+                    aria-hidden
+                    className="hathor-header__logo hathor-brand-logo hathor-brand-logo--day"
+                  />
+                </>
+              )}
             </Link>
           </div>
 
@@ -192,6 +273,7 @@ export function Header() {
               })}
             </ul>
           </nav>
+          </div>
 
           <div className="hathor-header__col hathor-header__col--right">
             <button

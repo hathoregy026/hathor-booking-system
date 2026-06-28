@@ -1,164 +1,76 @@
 "use client";
 
-import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
-import {
-  CalendarCheck,
-  MessageCircle,
-  Phone,
-  Plus,
-  X,
-} from "lucide-react";
-import { useBookNowModal } from "@/components/booking/BookingModalProvider";
-import { useIsMobile } from "@/hooks/useMediaQuery";
-import { PUBLIC_CONTACT } from "@/lib/public-contact";
-
-const ACTIONS = [
-  {
-    key: "whatsapp",
-    href: PUBLIC_CONTACT.whatsappUrl,
-    external: true,
-    label: "Whatsapp",
-    icon: MessageCircle,
-    className: "public-fab--whatsapp",
-  },
-  {
-    key: "call",
-    href: `tel:${PUBLIC_CONTACT.phone}`,
-    external: false,
-    label: "Call",
-    icon: Phone,
-    className: "",
-  },
-  {
-    key: "contact",
-    href: "/contact",
-    external: false,
-    label: "Contact Us",
-    icon: null,
-    className: "",
-  },
-  {
-    key: "book",
-    label: "Book Now",
-    icon: CalendarCheck,
-    className: "public-fab--book",
-  },
-] as const;
+import { MessageCircle } from "lucide-react";
+import { BookNowTrigger } from "@/components/public/BookNowTrigger";
+import { SocialBrandIcon } from "@/components/public/SocialBrandIcon";
+import { HOMEPAGE_HERO } from "@/lib/homepage-content";
+import { PUBLIC_SOCIAL_LINKS } from "@/lib/public-social";
+import { isHeroRoute } from "@/lib/public-theme";
 
 export function FloatingActions() {
-  const isMobile = useIsMobile();
+  const pathname = usePathname();
   const [expanded, setExpanded] = useState(false);
-  const { openBooking } = useBookNowModal();
-
-  const renderAction = (
-    action: (typeof ACTIONS)[number],
-    className: string,
-    onActivate?: () => void,
-  ) => {
-    const Icon = action.icon;
-
-    if (action.key === "book") {
-      return (
-        <button
-          key={action.key}
-          type="button"
-          className={className}
-          onClick={() => {
-            onActivate?.();
-            openBooking();
-          }}
-        >
-          {Icon && <Icon className="h-4 w-4 shrink-0" aria-hidden />}
-          <span>{action.label}</span>
-        </button>
-      );
-    }
-
-    if ("href" in action && action.external) {
-      return (
-        <a
-          key={action.key}
-          href={action.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={className}
-          onClick={onActivate}
-        >
-          {Icon && <Icon className="h-4 w-4 shrink-0" aria-hidden />}
-          <span>{action.label}</span>
-        </a>
-      );
-    }
-
-    if ("href" in action) {
-      return (
-        <Link
-          key={action.key}
-          href={action.href}
-          className={className}
-          onClick={onActivate}
-        >
-          {Icon && <Icon className="h-4 w-4 shrink-0" aria-hidden />}
-          <span>{action.label}</span>
-        </Link>
-      );
-    }
-
-    return null;
-  };
-
-  if (!isMobile) {
-    return (
-      <aside className="public-floating-actions" aria-label="Quick actions">
-        {ACTIONS.map((action) =>
-          renderAction(action, `public-fab ${action.className}`.trim()),
-        )}
-      </aside>
-    );
-  }
+  const showHeroBookNow = isHeroRoute(pathname);
 
   return (
-    <aside
-      className={`public-floating-actions public-floating-actions--mobile ${
-        expanded ? "public-floating-actions--expanded" : ""
-      }`}
-      aria-label="Quick actions"
-    >
+    <div className="public-bottom-dock">
       {expanded && (
-        <>
-          <button
-            type="button"
-            className="public-fab-backdrop"
-            aria-label="Close quick actions"
-            onClick={() => setExpanded(false)}
-          />
-          <div className="public-fab-menu">
-            {ACTIONS.map((action) =>
-              renderAction(
-                action,
-                `public-fab public-fab--menu ${action.className}`.trim(),
-                () => setExpanded(false),
-              ),
-            )}
-          </div>
-        </>
+        <button
+          type="button"
+          className="public-social-hub__backdrop"
+          aria-label="Close social links"
+          onClick={() => setExpanded(false)}
+        />
       )}
 
-      <button
-        type="button"
-        className="public-fab public-fab--main"
-        aria-expanded={expanded}
-        aria-label={expanded ? "Close quick actions" : "Open quick actions"}
-        onClick={() => setExpanded((open) => !open)}
-      >
-        {expanded ? (
-          <X className="h-5 w-5 shrink-0" aria-hidden />
-        ) : (
-          <Plus className="h-5 w-5 shrink-0" aria-hidden />
+      <div className="public-bottom-dock__row">
+        <aside
+          className={`public-social-hub ${expanded ? "public-social-hub--expanded" : ""}`}
+          aria-label="Social links"
+        >
+          {expanded && (
+            <div className="public-social-hub__menu" role="menu">
+              {PUBLIC_SOCIAL_LINKS.map((link) => (
+                <a
+                  key={link.key}
+                  href={link.href}
+                  className="public-social-hub__icon-btn cursor-hover"
+                  role="menuitem"
+                  aria-label={link.label}
+                  onClick={(event) => {
+                    if (link.href === "#") {
+                      event.preventDefault();
+                    }
+                  }}
+                >
+                  <SocialBrandIcon
+                    platform={link.key}
+                    className="public-social-hub__brand-icon"
+                  />
+                </a>
+              ))}
+            </div>
+          )}
+
+          <button
+            type="button"
+            className="public-social-hub__main cursor-hover"
+            aria-expanded={expanded}
+            aria-label={expanded ? "Close social links" : "Open social links"}
+            onClick={() => setExpanded((open) => !open)}
+          >
+            <MessageCircle className="public-social-hub__chat-icon" aria-hidden />
+          </button>
+        </aside>
+
+        {showHeroBookNow && (
+          <BookNowTrigger className="public-bottom-dock__book owo-hero__cta--outline cursor-hover">
+            {HOMEPAGE_HERO.cta}
+          </BookNowTrigger>
         )}
-        <span>{expanded ? "Close" : "Contact"}</span>
-      </button>
-    </aside>
+      </div>
+    </div>
   );
 }

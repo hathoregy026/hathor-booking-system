@@ -31,15 +31,6 @@ export const HOMEPAGE_SCROLL_STORY: readonly HomeChapter[] = [
       alt: "Detailed craftsmanship on the Hathor Dahabiya",
     },
   },
-  {
-    id: "transformation",
-    headline: "A Definitive Transformation",
-    body: "Experience Egypt's soul from the quiet elegance of a Dahabiya Nile Cruise — an intimate small boat where history, comfort, and style converge on every sailing.",
-    image: {
-      name: "home-story-transform",
-      alt: "Grand staircase and elegant interior aboard Hathor",
-    },
-  },
 ] as const;
 
 export type LegacyRoomStep = {
