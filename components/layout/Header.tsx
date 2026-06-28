@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
-import { useBookNowModal } from "@/components/booking/BookingModalProvider";
 import { PublicThemeToggle } from "@/components/public/PublicThemeToggle";
 import {
   HATHOR_BRAND_NAME,
@@ -122,7 +121,6 @@ function ExplorePanel({
 
 export function Header() {
   const pathname = usePathname();
-  const { openBooking } = useBookNowModal();
   const { theme } = usePublicTheme();
   const [exploreOpen, setExploreOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -287,14 +285,6 @@ export function Header() {
             </button>
 
             <PublicThemeToggle />
-
-            <button
-              type="button"
-              className="public-btn-gold cursor-hover min-h-11 px-5 py-2.5 text-xs sm:px-8 sm:text-sm"
-              onClick={openBooking}
-            >
-              Book Now
-            </button>
           </div>
         </div>
       </header>

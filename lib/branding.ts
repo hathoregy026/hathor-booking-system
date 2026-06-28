@@ -30,7 +30,7 @@ export const HATHOR_BRAND_NAME = "HATHOR";
 
 /** Full-bleed homepage hero — Vercel static CDN (same origin, edge-cached). */
 export const HATHOR_HERO_VIDEO_SRC =
-  "/media/hathor/videos/hathor-luxury-nile-cruise-promo.mp4";
+  "/media/hathor/videos/hathor-luxury-nile-cruise-promo-bestofegypt.mp4";
 
 /** Hero poster while video buffers — local Hathor still. */
 export const HATHOR_HERO_POSTER_SRC = hathorImage("home-hero-poster");
