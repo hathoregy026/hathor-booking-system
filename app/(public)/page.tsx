@@ -42,11 +42,18 @@ export const metadata: Metadata = {
 
 export default function Home() {
   preload(HATHOR_HERO_POSTER_SRC, { as: "image", fetchPriority: "high" });
-  preload(HATHOR_HERO_VIDEO_SRC, {
-    as: "fetch",
-    fetchPriority: "high",
-    crossOrigin: undefined,
-  });
+  preload(HATHOR_HERO_VIDEO_SRC, { as: "fetch", fetchPriority: "high" });
 
-  return <HomePageContent />;
+  return (
+    <>
+      <link
+        rel="preload"
+        href={HATHOR_HERO_VIDEO_SRC}
+        as="video"
+        type="video/mp4"
+        fetchPriority="high"
+      />
+      <HomePageContent />
+    </>
+  );
 }

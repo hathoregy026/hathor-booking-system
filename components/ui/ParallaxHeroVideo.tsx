@@ -21,7 +21,7 @@ export function ParallaxHeroVideo({
 }: ParallaxHeroVideoProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -31,66 +31,46 @@ export function ParallaxHeroVideo({
   const scale = useTransform(scrollYProgress, [0, 1], [1.08, 1.18]);
 
   useEffect(() => {
-    const link = document.createElement("link");
-    link.rel = "preload";
-    link.as = "video";
-    link.href = src;
-    link.type = "video/mp4";
-    document.head.appendChild(link);
-    return () => {
-      link.remove();
-    };
-  }, [src]);
-
-  useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    video.muted = true;
-    video.volume = HERO_VOLUME;
-    setIsMuted(true);
-
-    const startPlayback = async () => {
-      try {
-        await video.play();
-      } catch {
-        /* autoplay blocked — poster remains visible until interaction */
-      }
-    };
-
-    const onReady = () => {
-      void startPlayback();
-    };
-
-    video.addEventListener("canplay", onReady);
-    if (video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
-      void startPlayback();
-    }
-
-    return () => video.removeEventListener("canplay", onReady);
-  }, [src]);
-
-  const toggleMute = async () => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const nextMuted = !isMuted;
-    if (nextMuted) {
-      video.muted = true;
-      setIsMuted(true);
-      return;
-    }
-
+    video.defaultMuted = false;
     video.muted = false;
     video.volume = HERO_VOLUME;
+    setIsMuted(false);
 
-    try {
-      await video.play();
-      setIsMuted(false);
-    } catch {
-      video.muted = true;
-      setIsMuted(true);
+    const startPlayback = () => {
+      video.muted = false;
+      video.volume = HERO_VOLUME;
+      void video.play().catch(() => {
+        /* Autoplay blocked without gesture — keep unmuted; user can tap play area */
+      });
+    };
+
+    startPlayback();
+    video.addEventListener("canplay", startPlayback, { once: true });
+
+    const onVolumeChange = () => {
+      setIsMuted(video.muted);
+    };
+    video.addEventListener("volumechange", onVolumeChange);
+
+    return () => {
+      video.removeEventListener("canplay", startPlayback);
+      video.removeEventListener("volumechange", onVolumeChange);
+    };
+  }, [src]);
+
+  const toggleMute = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.muted = !video.muted;
+    if (!video.muted) {
+      video.volume = HERO_VOLUME;
+      void video.play().catch(() => {});
     }
+    setIsMuted(video.muted);
   };
 
   return (
@@ -103,7 +83,6 @@ export function ParallaxHeroVideo({
           poster={poster}
           autoPlay
           loop
-          muted
           playsInline
           preload="auto"
           // @ts-expect-error fetchPriority is valid on video in modern browsers
@@ -115,9 +94,7 @@ export function ParallaxHeroVideo({
       <button
         type="button"
         className="hathor-hero-audio-toggle cursor-hover"
-        onClick={() => {
-          void toggleMute();
-        }}
+        onClick={toggleMute}
         aria-label={isMuted ? "Unmute hero video" : "Mute hero video"}
         aria-pressed={!isMuted}
       >

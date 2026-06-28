@@ -28,9 +28,9 @@ export const HATHOR_FOOTER_LOGO_DAY_SRC =
 export const HATHOR_FAVICON_SRC = "/branding/hathor-logo-nile-cruise-favicon.webp";
 export const HATHOR_BRAND_NAME = "HATHOR";
 
-/** Full-bleed homepage hero — Supabase Storage (do not change). */
+/** Full-bleed homepage hero — Vercel static CDN (same origin, edge-cached). */
 export const HATHOR_HERO_VIDEO_SRC =
-  "https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/videos/hathor-luxury-nile-cruise-promo.mp4.mp4";
+  "/media/hathor/videos/hathor-luxury-nile-cruise-promo.mp4";
 
 /** Hero poster while video buffers — local Hathor still. */
 export const HATHOR_HERO_POSTER_SRC = hathorImage("home-hero-poster");
