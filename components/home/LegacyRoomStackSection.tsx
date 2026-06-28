@@ -54,28 +54,28 @@ function StackedImage({
   const scale = useTransform(scrollYProgress, [start, revealEnd], [0.9, 1]);
 
   return (
-    <motion.div
+    <div
       className="hathor-legacy-stack__image"
       style={{
-        opacity,
-        scale,
         zIndex: offset.zIndex,
         top: "top" in offset ? offset.top : undefined,
         left: "left" in offset ? offset.left : undefined,
         bottom: "bottom" in offset ? offset.bottom : undefined,
         right: "right" in offset ? offset.right : undefined,
         width: offset.width,
+        transform: `rotate(${offset.rotate}deg)`,
       }}
-      rotate={offset.rotate}
     >
-      <ManagedImage
-        name={step.image.name}
-        alt={step.image.alt}
-        fill
-        className="object-cover"
-        sizes="(max-width: 768px) 70vw, 36vw"
-      />
-    </motion.div>
+      <motion.div className="hathor-legacy-stack__image-inner" style={{ opacity, scale }}>
+        <ManagedImage
+          name={step.image.name}
+          alt={step.image.alt}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 70vw, 36vw"
+        />
+      </motion.div>
+    </div>
   );
 }
 

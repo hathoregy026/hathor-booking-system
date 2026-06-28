@@ -3002,6 +3002,12 @@
   transform-origin: center center;
 }
 
+.hathor-legacy-stack__image-inner {
+  position: absolute;
+  inset: 0;
+  transform-origin: center center;
+}
+
 .hathor-legacy-stack__text {
   max-width: 28rem;
   overflow-y: auto;
