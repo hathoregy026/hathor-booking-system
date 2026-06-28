@@ -36,10 +36,9 @@ export function ParallaxHeroVideo({
 
     let cancelled = false;
 
-    const ensurePlaying = async () => {
-      if (cancelled) return;
+    const kickPlayback = async () => {
+      if (cancelled || !video.paused) return;
 
-      // Browsers only allow autoplay when muted — start muted so video actually plays.
       video.muted = true;
       video.volume = HERO_VOLUME;
 
@@ -50,8 +49,8 @@ export function ParallaxHeroVideo({
       }
 
       if (cancelled) return;
+      video.removeAttribute("poster");
 
-      // Attempt unmuted playback immediately after video is running.
       video.muted = false;
       video.volume = HERO_VOLUME;
 
@@ -60,13 +59,19 @@ export function ParallaxHeroVideo({
         if (!cancelled) setIsMuted(false);
       } catch {
         video.muted = true;
+        video.volume = HERO_VOLUME;
+        try {
+          await video.play();
+        } catch {
+          /* still blocked — poster already removed if first play succeeded */
+        }
         if (!cancelled) setIsMuted(true);
       }
     };
 
-    void ensurePlaying();
-    video.addEventListener("loadeddata", ensurePlaying, { once: true });
-    video.addEventListener("canplay", ensurePlaying, { once: true });
+    void kickPlayback();
+    video.addEventListener("loadeddata", kickPlayback, { once: true });
+    video.addEventListener("canplay", kickPlayback, { once: true });
 
     const onVolumeChange = () => {
       setIsMuted(video.muted);
@@ -75,8 +80,8 @@ export function ParallaxHeroVideo({
 
     return () => {
       cancelled = true;
-      video.removeEventListener("loadeddata", ensurePlaying);
-      video.removeEventListener("canplay", ensurePlaying);
+      video.removeEventListener("loadeddata", kickPlayback);
+      video.removeEventListener("canplay", kickPlayback);
       video.removeEventListener("volumechange", onVolumeChange);
     };
   }, [src]);
