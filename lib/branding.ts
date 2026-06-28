@@ -1,4 +1,5 @@
 import type { AdminTheme } from "@/lib/admin-theme";
+import { hathorImage, hathorVideo } from "@/lib/hathor-media";
 
 /** Hero header icon — default (light on hero video) */
 export const HATHOR_HERO_ICON_SRC =
@@ -27,13 +28,23 @@ export const HATHOR_FOOTER_LOGO_DAY_SRC =
 export const HATHOR_FAVICON_SRC = "/branding/hathor-logo-nile-cruise-favicon.webp";
 export const HATHOR_BRAND_NAME = "HATHOR";
 
-/** Full-bleed homepage hero — hosted on Supabase Storage. */
-export const HATHOR_HERO_VIDEO_SRC =
-  "https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/videos/hathor-luxury-nile-cruise-promo.mp4.mp4";
+/** Same-origin hero video (fast on Vercel). */
+export const HATHOR_HERO_VIDEO_LOCAL_SRC = hathorVideo("hero-promo");
 
-/** Nile poster while hero video metadata loads (mobile / slow connections). */
-export const HATHOR_HERO_POSTER_SRC =
-  "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1920&q=80";
+/** Supabase fallback — Hathor boat reel (with audio when encoded in source). */
+export const HATHOR_HERO_VIDEO_SUPABASE_SRC =
+  "https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/videos/hathor-hero-promo.mp4";
+
+export const HATHOR_HERO_VIDEO_SOURCES = [
+  HATHOR_HERO_VIDEO_LOCAL_SRC,
+  HATHOR_HERO_VIDEO_SUPABASE_SRC,
+] as const;
+
+/** @deprecated Use HATHOR_HERO_VIDEO_SOURCES */
+export const HATHOR_HERO_VIDEO_SRC = HATHOR_HERO_VIDEO_SUPABASE_SRC;
+
+/** Hero poster while video buffers — local Hathor still. */
+export const HATHOR_HERO_POSTER_SRC = hathorImage("home-hero-poster");
 
 export function getHathorLogoSrc(theme: AdminTheme): string {
   return theme === "day" ? HATHOR_LOGO_DAY_SRC : HATHOR_LOGO_SRC;

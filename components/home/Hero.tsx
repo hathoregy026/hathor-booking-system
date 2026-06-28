@@ -5,7 +5,7 @@ import { ParallaxHeroVideo } from "@/components/ui/ParallaxHeroVideo";
 import {
   HATHOR_BRAND_NAME,
   HATHOR_HERO_POSTER_SRC,
-  HATHOR_HERO_VIDEO_SRC,
+  HATHOR_HERO_VIDEO_SOURCES,
   HATHOR_LOGO_DAY_SRC,
   HATHOR_LOGO_SRC,
 } from "@/lib/branding";
@@ -15,7 +15,7 @@ export function Hero() {
   return (
     <section className="owo-hero" aria-label="Hero">
       <ParallaxHeroVideo
-        src={HATHOR_HERO_VIDEO_SRC}
+        sources={[...HATHOR_HERO_VIDEO_SOURCES]}
         poster={HATHOR_HERO_POSTER_SRC}
         ariaLabel="Hathor Dahabiya sailing on the Nile"
         className="owo-hero__media"

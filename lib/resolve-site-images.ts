@@ -3,6 +3,7 @@ import { listSiteImages } from "@/lib/image-management";
 import {
   SITE_IMAGE_SLOTS,
   getDefaultSiteImage,
+  getSiteImageSlot,
   type SiteImageName,
 } from "@/lib/site-image-slots";
 
@@ -12,6 +13,15 @@ export type ResolvedSiteImage = {
 };
 
 export type SiteImageMap = Record<string, ResolvedSiteImage>;
+
+/** DB URLs starting with /media/hathor/ work on Vercel and locally. */
+export function shouldUseDatabaseSiteImageUrl(url: string): boolean {
+  const trimmed = url.trim();
+  if (!trimmed) return false;
+  if (trimmed.startsWith("/media/hathor/")) return true;
+  if (trimmed.includes("supabase.co/storage/v1/object/public/")) return true;
+  return false;
+}
 
 export async function resolveSiteImageMap(): Promise<SiteImageMap> {
   const map: SiteImageMap = {};
@@ -24,7 +34,16 @@ export async function resolveSiteImageMap(): Promise<SiteImageMap> {
     const records = await listSiteImages();
     for (const record of records) {
       if (!record.isActive) continue;
-      map[record.name] = { src: record.url, alt: record.altText };
+      const slot = getSiteImageSlot(record.name);
+      const fallback = slot
+        ? { src: slot.url, alt: slot.altText }
+        : getDefaultSiteImage(record.name);
+
+      if (shouldUseDatabaseSiteImageUrl(record.url)) {
+        map[record.name] = { src: record.url, alt: record.altText || fallback.alt };
+      } else {
+        map[record.name] = fallback;
+      }
     }
   } catch (error) {
     logDbError("resolveSiteImageMap", error);

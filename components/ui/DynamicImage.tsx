@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { getSiteImageByName } from "@/lib/image-management";
+import { shouldUseDatabaseSiteImageUrl } from "@/lib/resolve-site-images";
 import { getDefaultSiteImage } from "@/lib/site-image-slots";
 
 type DynamicImageProps = {
@@ -31,7 +32,7 @@ export async function DynamicImage({
 
   try {
     const record = await getSiteImageByName(name);
-    if (record?.url) {
+    if (record?.url && shouldUseDatabaseSiteImageUrl(record.url)) {
       src = record.url;
       alt = record.altText || alt;
     }
