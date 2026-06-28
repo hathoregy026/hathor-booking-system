@@ -2962,8 +2962,13 @@
   color: var(--hathor-muted);
 }
 
-/* Legacy room stack — pinned scroll with cumulative images + text */
-.hathor-legacy-stack__sticky {
+/* Legacy scroll — sticky curtain images + crossfade text */
+.hathor-legacy-scroll {
+  position: relative;
+  background: var(--hathor-surface, var(--hathor-cream));
+}
+
+.hathor-legacy-scroll__sticky {
   position: sticky;
   top: 0;
   height: 100vh;
@@ -2971,66 +2976,74 @@
   overflow: hidden;
 }
 
-.hathor-legacy-stack__layout {
+.hathor-legacy-scroll__grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2rem;
   height: 100%;
   padding: clamp(5rem, 10vh, 7rem) clamp(1.25rem, 4vw, 3rem);
-  background: var(--hathor-dark);
+  background: var(--hathor-surface, var(--hathor-cream));
 }
 
 @media (min-width: 1024px) {
-  .hathor-legacy-stack__layout {
+  .hathor-legacy-scroll__grid {
     grid-template-columns: 1fr 1fr;
     align-items: center;
     gap: 4rem;
   }
 }
 
-.hathor-legacy-stack__images {
+.hathor-legacy-scroll__images {
   position: relative;
-  min-height: 20rem;
-  height: clamp(20rem, 52vh, 34rem);
-}
-
-.hathor-legacy-stack__image {
-  position: absolute;
-  aspect-ratio: 3 / 4;
+  width: 100%;
+  height: clamp(22rem, 58vh, 34rem);
   overflow: hidden;
-  box-shadow: 0 24px 80px rgb(0 0 0 / 0.45);
-  transform-origin: center center;
 }
 
-.hathor-legacy-stack__image-inner {
+.hathor-legacy-scroll__image-layer {
   position: absolute;
   inset: 0;
-  transform-origin: center center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform, opacity;
 }
 
-.hathor-legacy-stack__text {
+.hathor-legacy-scroll__img {
+  display: block;
+  width: min(88%, 22rem);
+  height: min(70vh, 32rem);
+  object-fit: cover;
+  border-radius: 0.25rem;
+  box-shadow: 0 24px 80px rgb(0 0 0 / 0.18);
+  transform: rotate(2deg);
+}
+
+.hathor-legacy-scroll__text-col {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 16rem;
+}
+
+.hathor-legacy-scroll__text-sticky {
+  position: sticky;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
   max-width: 28rem;
-  overflow-y: auto;
 }
 
-@media (min-width: 1024px) {
-  .hathor-legacy-stack__text {
-    justify-self: end;
-    max-height: calc(100dvh - 8rem);
-    padding-bottom: 2rem;
-  }
-}
-
-.hathor-legacy-stack__headline {
+.hathor-legacy-scroll__headline {
   font-family: var(--public-sans);
   font-size: clamp(1.25rem, 2.5vw, 1.75rem);
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--hathor-cream);
+  color: var(--hathor-ink, var(--hathor-cream));
 }
 
-.hathor-legacy-stack__intro {
+.hathor-legacy-scroll__intro {
   margin-top: 1.25rem;
   font-family: var(--public-serif);
   font-size: 1rem;
@@ -3038,14 +3051,19 @@
   color: var(--hathor-muted);
 }
 
-.hathor-legacy-stack__steps {
-  margin-top: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+.hathor-legacy-scroll__text-stack {
+  position: relative;
+  margin-top: 1.75rem;
+  min-height: 6rem;
 }
 
-.hathor-legacy-stack__step-label {
+.hathor-legacy-scroll__text-block {
+  position: absolute;
+  inset: 0;
+  will-change: transform, opacity;
+}
+
+.hathor-legacy-scroll__step-label {
   font-family: var(--public-sans);
   font-size: 0.75rem;
   font-weight: 600;
@@ -3054,16 +3072,12 @@
   color: var(--hathor-gold);
 }
 
-.hathor-legacy-stack__step-body {
-  margin-top: 0.35rem;
+.hathor-legacy-scroll__step-body {
+  margin-top: 0.5rem;
   font-family: var(--public-serif);
   font-size: 0.95rem;
   line-height: 1.65;
   color: var(--hathor-muted);
-}
-
-.hathor-legacy-stack__reveal {
-  transform-origin: left center;
 }
 
 /* 50/50 split scroll */
