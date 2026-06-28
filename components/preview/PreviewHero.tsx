@@ -4,7 +4,7 @@ import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { ParallaxHeroVideo } from "@/components/ui/ParallaxHeroVideo";
 import {
   HATHOR_HERO_POSTER_SRC,
-  HATHOR_HERO_VIDEO_SOURCES,
+  HATHOR_HERO_VIDEO_SRC,
 } from "@/lib/branding";
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 
@@ -12,7 +12,7 @@ export function PreviewHero() {
   return (
     <section className="preview-hero" aria-label="Hero">
       <ParallaxHeroVideo
-        sources={[...HATHOR_HERO_VIDEO_SOURCES]}
+        src={HATHOR_HERO_VIDEO_SRC}
         poster={HATHOR_HERO_POSTER_SRC}
         ariaLabel="Hathor Dahabiya sailing on the Nile"
         className="preview-hero__media"
