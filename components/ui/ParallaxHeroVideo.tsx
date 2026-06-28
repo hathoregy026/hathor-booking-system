@@ -21,7 +21,7 @@ export function ParallaxHeroVideo({
 }: ParallaxHeroVideoProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -34,21 +34,39 @@ export function ParallaxHeroVideo({
     const video = videoRef.current;
     if (!video) return;
 
-    video.defaultMuted = false;
-    video.muted = false;
-    video.volume = HERO_VOLUME;
-    setIsMuted(false);
+    let cancelled = false;
 
-    const startPlayback = () => {
+    const ensurePlaying = async () => {
+      if (cancelled) return;
+
+      // Browsers only allow autoplay when muted — start muted so video actually plays.
+      video.muted = true;
+      video.volume = HERO_VOLUME;
+
+      try {
+        await video.play();
+      } catch {
+        return;
+      }
+
+      if (cancelled) return;
+
+      // Attempt unmuted playback immediately after video is running.
       video.muted = false;
       video.volume = HERO_VOLUME;
-      void video.play().catch(() => {
-        /* Autoplay blocked without gesture — keep unmuted; user can tap play area */
-      });
+
+      try {
+        await video.play();
+        if (!cancelled) setIsMuted(false);
+      } catch {
+        video.muted = true;
+        if (!cancelled) setIsMuted(true);
+      }
     };
 
-    startPlayback();
-    video.addEventListener("canplay", startPlayback, { once: true });
+    void ensurePlaying();
+    video.addEventListener("loadeddata", ensurePlaying, { once: true });
+    video.addEventListener("canplay", ensurePlaying, { once: true });
 
     const onVolumeChange = () => {
       setIsMuted(video.muted);
@@ -56,7 +74,9 @@ export function ParallaxHeroVideo({
     video.addEventListener("volumechange", onVolumeChange);
 
     return () => {
-      video.removeEventListener("canplay", startPlayback);
+      cancelled = true;
+      video.removeEventListener("loadeddata", ensurePlaying);
+      video.removeEventListener("canplay", ensurePlaying);
       video.removeEventListener("volumechange", onVolumeChange);
     };
   }, [src]);
@@ -83,6 +103,7 @@ export function ParallaxHeroVideo({
           poster={poster}
           autoPlay
           loop
+          muted
           playsInline
           preload="auto"
           // @ts-expect-error fetchPriority is valid on video in modern browsers
