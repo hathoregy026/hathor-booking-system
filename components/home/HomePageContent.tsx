@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { TestimonialsCarousel } from "@/components/public/TestimonialsCarousel";
 import { AccommodationsBento } from "@/components/home/AccommodationsBento";
 import { EditorialChapter } from "@/components/home/EditorialChapter";
@@ -60,25 +59,25 @@ export function HomePageContent() {
 
       <LegacyScrollSection />
 
-      <FullBleedMedia imageName="home-cinematic-video" />
+      <FullBleedMedia imageName="home-cinematic-video" showCta={false} />
       <TextBridge
         headline={HOMEPAGE_CINEMATIC_BRIDGE.headline}
         body={HOMEPAGE_CINEMATIC_BRIDGE.body}
       />
-      <FullBleedMedia imageName="home-cinematic-still" />
+      <FullBleedMedia imageName="home-cinematic-still" showCta={false} />
 
       <ScrollPinnedSection chapters={HOMEPAGE_SPLIT_CHAPTERS} variant="split" />
-      <FullBleedMedia imageName="home-split-courtyard" />
+      <FullBleedMedia imageName="home-split-courtyard" showCta={false} />
 
       <LayeredCollageSection />
-      <FullBleedMedia imageName="home-collage-living" />
+      <FullBleedMedia imageName="home-collage-living" showCta={false} />
 
       <ScrollPinnedSection
         chapters={HOMEPAGE_RESIDENCES_CHAPTERS}
         variant="split"
         id="residences"
       />
-      <FullBleedMedia imageName="home-residences-rooftop" />
+      <FullBleedMedia imageName="home-residences-rooftop" showCta={false} />
       <SketchSection />
 
       <AccommodationsBento />
@@ -145,9 +144,6 @@ export function HomePageContent() {
               Reserve your place aboard Hathor Dahabiya and discover the Nile as
               it was meant to be experienced.
             </p>
-            <BookNowTrigger className="public-btn-gold mt-8 inline-flex cursor-hover">
-              Book Now
-            </BookNowTrigger>
           </ScrollReveal>
         </div>
       </section>

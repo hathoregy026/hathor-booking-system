@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Volume2, VolumeX } from "lucide-react";
 
@@ -8,7 +8,7 @@ const HERO_VOLUME = 0.3;
 
 type ParallaxHeroVideoProps = {
   src: string;
-  poster: string;
+  poster?: string;
   className?: string;
   ariaLabel: string;
 };
@@ -30,48 +30,28 @@ export function ParallaxHeroVideo({
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "28%"]);
   const scale = useTransform(scrollYProgress, [0, 1], [1.08, 1.18]);
 
+  useLayoutEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.muted = true;
+    video.volume = HERO_VOLUME;
+    void video.play().catch(() => {});
+  }, [src]);
+
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    let cancelled = false;
-
-    const kickPlayback = async () => {
-      if (cancelled || !video.paused) return;
-
+    const startPlayback = () => {
       video.muted = true;
       video.volume = HERO_VOLUME;
-
-      try {
-        await video.play();
-      } catch {
-        return;
-      }
-
-      if (cancelled) return;
-      video.removeAttribute("poster");
-
-      video.muted = false;
-      video.volume = HERO_VOLUME;
-
-      try {
-        await video.play();
-        if (!cancelled) setIsMuted(false);
-      } catch {
-        video.muted = true;
-        video.volume = HERO_VOLUME;
-        try {
-          await video.play();
-        } catch {
-          /* still blocked — poster already removed if first play succeeded */
-        }
-        if (!cancelled) setIsMuted(true);
-      }
+      void video.play().catch(() => {});
     };
 
-    void kickPlayback();
-    video.addEventListener("loadeddata", kickPlayback, { once: true });
-    video.addEventListener("canplay", kickPlayback, { once: true });
+    startPlayback();
+    video.addEventListener("loadedmetadata", startPlayback, { once: true });
+    video.addEventListener("canplay", startPlayback, { once: true });
 
     const onVolumeChange = () => {
       setIsMuted(video.muted);
@@ -79,9 +59,8 @@ export function ParallaxHeroVideo({
     video.addEventListener("volumechange", onVolumeChange);
 
     return () => {
-      cancelled = true;
-      video.removeEventListener("loadeddata", kickPlayback);
-      video.removeEventListener("canplay", kickPlayback);
+      video.removeEventListener("loadedmetadata", startPlayback);
+      video.removeEventListener("canplay", startPlayback);
       video.removeEventListener("volumechange", onVolumeChange);
     };
   }, [src]);
@@ -105,7 +84,6 @@ export function ParallaxHeroVideo({
           ref={videoRef}
           className="hathor-parallax-hero__video w-full h-full"
           src={src}
-          poster={poster}
           autoPlay
           loop
           muted
@@ -114,6 +92,7 @@ export function ParallaxHeroVideo({
           // @ts-expect-error fetchPriority is valid on video in modern browsers
           fetchPriority="high"
           aria-label={ariaLabel}
+          {...(poster ? { poster } : {})}
         />
       </motion.div>
 

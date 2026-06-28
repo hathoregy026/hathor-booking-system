@@ -1,9 +1,5 @@
 import Link from "next/link";
-import {
-  HATHOR_BRAND_NAME,
-  HATHOR_FOOTER_LOGO_DAY_SRC,
-  HATHOR_FOOTER_LOGO_SRC,
-} from "@/lib/branding";
+import { HATHOR_BRAND_NAME } from "@/lib/branding";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 
 const FOOTER_COLUMNS = [
@@ -39,19 +35,6 @@ export function Footer() {
   return (
     <footer className="owo-footer">
       <div className="owo-footer__brand-block">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={HATHOR_FOOTER_LOGO_SRC}
-          alt={HATHOR_BRAND_NAME}
-          className="owo-footer__logo hathor-brand-logo hathor-brand-logo--night"
-        />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={HATHOR_FOOTER_LOGO_DAY_SRC}
-          alt=""
-          aria-hidden
-          className="owo-footer__logo hathor-brand-logo hathor-brand-logo--day"
-        />
         <p className="owo-footer__wordmark">{HATHOR_BRAND_NAME}</p>
         <p className="owo-footer__tag">Luxury Dahabiya Nile Cruise</p>
       </div>

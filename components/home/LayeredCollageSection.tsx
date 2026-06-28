@@ -1,10 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { ManagedImage } from "@/components/ui/ManagedImage";
-import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 import { HOMEPAGE_LAYERED_COLLAGE } from "@/lib/homepage-sections";
 
 export function LayeredCollageSection() {
@@ -52,10 +49,6 @@ export function LayeredCollageSection() {
           </div>
         </div>
       </div>
-
-      <BookNowTrigger className="hathor-collage__cta public-btn-gold cursor-hover">
-        {HOMEPAGE_HERO.cta}
-      </BookNowTrigger>
     </section>
   );
 }
