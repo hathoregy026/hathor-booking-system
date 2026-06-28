@@ -23,8 +23,8 @@
   --public-text: var(--lux-dark);
   --public-muted: #6b6560;
   --public-border: #e8e2d9;
-  --public-serif: var(--font-booking-serif, "Playfair Display", Georgia, serif);
-  --public-sans: var(--font-booking-sans, "Inter", system-ui, sans-serif);
+  --public-serif: var(--font-hathor-display, "Playfair Display", Georgia, serif);
+  --public-sans: var(--font-hathor-body, "Plus Jakarta Sans", system-ui, sans-serif);
 
   background: var(--public-bg);
   color: var(--public-text);
@@ -966,4 +966,1164 @@
   .lux-grid-2 {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HATHOR DESIGN DNA — Phase 1 (Editorial Nile Luxury)
+   ═══════════════════════════════════════════════════════════ */
+
+.hathor-site {
+  --hathor-gold: #c9a96e;
+  --hathor-gold-bright: #d4af37;
+  --hathor-dark: #0a0a0a;
+  --hathor-dark-2: #1a1a1a;
+  --hathor-cream: #faf8f5;
+  --hathor-surface: #fdfbf7;
+  --hathor-muted: #6b6b6b;
+  --hathor-accent: #2f4f4f;
+  --hathor-text-light: #e8e2d9;
+
+  cursor: none;
+}
+
+.hathor-site a,
+.hathor-site button {
+  cursor: none;
+}
+
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .hathor-site,
+  .hathor-site a,
+  .hathor-site button {
+    cursor: auto;
+  }
+}
+
+.lux-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  border: 1px solid var(--hathor-gold);
+  background: rgb(201 169 110 / 0.25);
+  pointer-events: none;
+  transition:
+    width 0.35s ease,
+    height 0.35s ease,
+    margin 0.35s ease,
+    background 0.35s ease;
+  mix-blend-mode: difference;
+}
+
+.lux-cursor[data-hover="true"] {
+  width: 48px;
+  height: 48px;
+  margin: -24px 0 0 -24px;
+  background: rgb(201 169 110 / 0.15);
+}
+
+.hathor-container {
+  width: 100%;
+  max-width: 87.5rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .hathor-container {
+    padding: 0 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hathor-container {
+    padding: 0 2rem;
+  }
+}
+
+.hathor-section {
+  padding: 7.5rem 0;
+}
+
+@media (max-width: 767px) {
+  .hathor-section {
+    padding: 4rem 0;
+  }
+
+  .lux-hero {
+    min-height: 60vh;
+    min-height: 60dvh;
+  }
+}
+
+.hathor-section--surface {
+  background: var(--hathor-surface);
+}
+
+.hathor-section--cream {
+  background: var(--hathor-cream);
+}
+
+.hathor-section--dark {
+  background: var(--hathor-dark);
+  color: var(--hathor-text-light);
+}
+
+.hathor-section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.hathor-section-eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--hathor-gold);
+}
+
+.hathor-section-title {
+  margin-top: 0.875rem;
+  font-family: var(--public-serif);
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--hathor-dark);
+}
+
+.hathor-section--dark .hathor-section-title {
+  color: var(--hathor-cream);
+}
+
+.hathor-section-subtitle {
+  margin-top: 0.75rem;
+  font-family: var(--public-serif);
+  font-size: clamp(1.125rem, 2vw, 1.5rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--hathor-muted);
+}
+
+.hathor-section--dark .hathor-section-subtitle {
+  color: var(--hathor-text-light);
+}
+
+.hathor-gold-line {
+  width: 4rem;
+  height: 1px;
+  margin: 1.25rem auto 0;
+  background: linear-gradient(90deg, transparent, var(--hathor-gold), transparent);
+}
+
+.hathor-gold-line--left {
+  margin-left: 0;
+  margin-right: auto;
+  background: linear-gradient(90deg, var(--hathor-gold), transparent);
+}
+
+.hathor-body-text {
+  font-size: 1rem;
+  font-weight: 300;
+  line-height: 1.85;
+  color: var(--hathor-muted);
+}
+
+.hathor-section--dark .hathor-body-text {
+  color: var(--hathor-text-light);
+}
+
+.hathor-discover-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-top: 2rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--hathor-gold);
+  transition: gap 0.3s ease, color 0.3s ease;
+}
+
+.hathor-discover-link:hover {
+  gap: 1rem;
+  color: var(--hathor-gold-bright);
+}
+
+/* Hero image overlay */
+.lux-hero__bg-image {
+  position: absolute;
+  inset: 0;
+  transform: scale(1.05);
+  transition: transform 10s ease;
+}
+
+.lux-hero:hover .lux-hero__bg-image {
+  transform: scale(1.1);
+}
+
+/* Header — The OWO inspired */
+.hathor-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  transition:
+    background 0.45s ease,
+    border-color 0.45s ease,
+    box-shadow 0.45s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.hathor-header--transparent {
+  background: transparent;
+}
+
+.hathor-header--solid {
+  background: rgb(10 10 10 / 0.92);
+  border-bottom-color: rgb(201 169 110 / 0.2);
+  box-shadow: 0 8px 40px rgb(0 0 0 / 0.35);
+  backdrop-filter: blur(20px);
+}
+
+.hathor-header--light {
+  background: rgb(250 248 245 / 0.94);
+  border-bottom-color: rgb(201 169 110 / 0.15);
+  box-shadow: 0 4px 24px rgb(0 0 0 / 0.05);
+  backdrop-filter: blur(16px);
+}
+
+.hathor-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 87.5rem;
+  margin: 0 auto;
+  padding: 1.125rem 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .hathor-header__inner {
+    padding: 1.25rem 1.5rem;
+  }
+}
+
+.hathor-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.hathor-header__logo {
+  height: 2.25rem;
+  width: auto;
+  object-fit: contain;
+}
+
+@media (min-width: 640px) {
+  .hathor-header__logo {
+    height: 2.75rem;
+  }
+}
+
+.hathor-header__wordmark {
+  display: none;
+  font-family: var(--public-serif);
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--hathor-cream);
+}
+
+.hathor-header--light .hathor-header__wordmark {
+  color: var(--hathor-dark);
+}
+
+@media (min-width: 640px) {
+  .hathor-header__wordmark {
+    display: inline;
+  }
+}
+
+.hathor-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.hathor-header__explore {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--hathor-cream);
+  transition: color 0.3s ease;
+}
+
+.hathor-header__explore--mobile {
+  padding: 0.625rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.hathor-header--light .hathor-header__explore {
+  color: var(--hathor-dark);
+}
+
+.hathor-header__explore:hover {
+  color: var(--hathor-gold);
+}
+
+@media (min-width: 768px) {
+  .hathor-header__explore--mobile {
+    display: none;
+  }
+}
+
+.hathor-header-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  color: var(--hathor-cream);
+  transition: color 0.2s ease;
+}
+
+.hathor-header-icon-btn:hover {
+  color: var(--hathor-gold);
+}
+
+/* Explore overlay */
+.hathor-explore {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+}
+
+.hathor-explore__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgb(0 0 0 / 0.65);
+  backdrop-filter: blur(6px);
+}
+
+.hathor-explore__panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  width: min(100vw, 720px);
+  background: var(--hathor-dark);
+  border-left: 1px solid rgb(201 169 110 / 0.2);
+  box-shadow: -24px 0 80px rgb(0 0 0 / 0.5);
+  animation: publicSlideIn 320ms ease;
+  overflow-y: auto;
+}
+
+.hathor-explore__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 1.75rem;
+  border-bottom: 1px solid rgb(201 169 110 / 0.15);
+}
+
+.hathor-explore__label {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--hathor-gold);
+}
+
+.hathor-explore__grid {
+  display: grid;
+  gap: 2rem;
+  padding: 2rem 1.75rem;
+}
+
+@media (min-width: 640px) {
+  .hathor-explore__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.hathor-explore__group-label {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgb(201 169 110 / 0.7);
+  margin-bottom: 1rem;
+}
+
+.hathor-explore__links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.hathor-explore__link {
+  display: block;
+  padding: 0.75rem 0;
+  font-family: var(--public-serif);
+  font-size: 1.25rem;
+  color: var(--hathor-cream);
+  transition: color 0.3s ease, padding-left 0.3s ease;
+}
+
+.hathor-explore__link:hover {
+  color: var(--hathor-gold);
+  padding-left: 0.5rem;
+}
+
+.hathor-explore__link-desc {
+  display: block;
+  margin-top: 0.25rem;
+  font-family: var(--public-sans);
+  font-size: 0.8125rem;
+  font-weight: 300;
+  color: var(--hathor-muted);
+}
+
+.hathor-explore__footer {
+  margin-top: auto;
+  padding: 1.75rem;
+  border-top: 1px solid rgb(201 169 110 / 0.15);
+}
+
+.hathor-explore__follow {
+  font-size: 0.625rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--hathor-gold);
+  margin-bottom: 0.75rem;
+}
+
+.hathor-explore__contact {
+  color: var(--hathor-text-light);
+  transition: color 0.2s ease;
+}
+
+.hathor-explore__contact:hover {
+  color: var(--hathor-gold);
+}
+
+/* Footer */
+.hathor-footer {
+  background: var(--hathor-dark);
+  color: var(--hathor-text-light);
+}
+
+.hathor-footer__gold-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--hathor-gold), transparent);
+}
+
+.hathor-footer__top {
+  display: grid;
+  gap: 2.5rem;
+  padding: 4rem 0 3rem;
+}
+
+@media (min-width: 768px) {
+  .hathor-footer__top {
+    grid-template-columns: 1.4fr repeat(3, 1fr);
+    gap: 2rem;
+  }
+}
+
+.hathor-footer__brand {
+  font-family: var(--public-serif);
+  font-size: 1.75rem;
+  font-weight: 500;
+  color: var(--hathor-cream);
+}
+
+.hathor-footer__tagline {
+  margin-top: 1rem;
+  max-width: 18rem;
+  font-size: 0.875rem;
+  font-weight: 300;
+  line-height: 1.75;
+  color: var(--hathor-muted);
+}
+
+.hathor-footer__follow {
+  margin-top: 1.5rem;
+  font-size: 0.625rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--hathor-gold);
+}
+
+.hathor-footer__social {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.875rem;
+}
+
+.hathor-footer__social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid rgb(201 169 110 / 0.35);
+  color: var(--hathor-gold);
+  transition:
+    border-color 0.3s ease,
+    background 0.3s ease;
+}
+
+.hathor-footer__social-link:hover {
+  border-color: var(--hathor-gold);
+  background: rgb(201 169 110 / 0.1);
+}
+
+.hathor-footer__col-label {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--hathor-gold);
+}
+
+.hathor-footer__links {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.hathor-footer__link {
+  font-size: 0.875rem;
+  font-weight: 300;
+  color: var(--hathor-muted);
+  transition: color 0.25s ease;
+}
+
+.hathor-footer__link:hover {
+  color: var(--hathor-cream);
+}
+
+.hathor-footer__contact {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  font-size: 0.875rem;
+  font-weight: 300;
+}
+
+.hathor-footer__contact li {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  color: var(--hathor-muted);
+}
+
+.hathor-footer__contact a:hover {
+  color: var(--hathor-cream);
+}
+
+.hathor-footer__bottom {
+  border-top: 1px solid rgb(201 169 110 / 0.12);
+}
+
+.hathor-footer__bottom-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.5rem 0 2rem;
+  font-size: 0.75rem;
+  font-weight: 300;
+  color: var(--hathor-muted);
+}
+
+@media (min-width: 640px) {
+  .hathor-footer__bottom-inner {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+/* Itinerary cards */
+.hathor-itinerary-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .hathor-itinerary-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.hathor-itinerary-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--hathor-cream);
+  border: 1px solid rgb(201 169 110 / 0.12);
+  transition:
+    transform 0.4s ease,
+    box-shadow 0.4s ease;
+  overflow: hidden;
+}
+
+.hathor-itinerary-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 56px rgb(0 0 0 / 0.1);
+}
+
+.hathor-itinerary-card__image {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.hathor-itinerary-card__body {
+  padding: 1.75rem;
+}
+
+.hathor-itinerary-card__title {
+  font-family: var(--public-serif);
+  font-size: 1.375rem;
+  font-weight: 500;
+  color: var(--hathor-dark);
+}
+
+.hathor-itinerary-card__duration {
+  margin-top: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--hathor-gold);
+}
+
+.hathor-itinerary-card__schedule {
+  margin-top: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 300;
+  color: var(--hathor-muted);
+}
+
+/* Accommodation cards — bento-style asymmetric on desktop */
+.hathor-accommodation-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .hathor-accommodation-grid {
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1.5rem;
+  }
+
+  .hathor-accommodation-card:nth-child(1) {
+    grid-column: span 5;
+  }
+
+  .hathor-accommodation-card:nth-child(2) {
+    grid-column: span 7;
+  }
+
+  .hathor-accommodation-card:nth-child(3) {
+    grid-column: span 7;
+  }
+
+  .hathor-accommodation-card:nth-child(4) {
+    grid-column: span 5;
+  }
+}
+
+.hathor-accommodation-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--hathor-dark-2);
+  border: 1px solid rgb(201 169 110 / 0.12);
+  overflow: hidden;
+  transition:
+    transform 0.4s ease,
+    border-color 0.4s ease;
+}
+
+.hathor-accommodation-card:hover {
+  transform: translateY(-4px);
+  border-color: rgb(201 169 110 / 0.35);
+}
+
+.hathor-accommodation-card__image {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+}
+
+.hathor-accommodation-card__body {
+  padding: 1.5rem 1.75rem 1.75rem;
+}
+
+.hathor-accommodation-card__title {
+  font-family: var(--public-serif);
+  font-size: 1.375rem;
+  font-weight: 500;
+  color: var(--hathor-cream);
+}
+
+.hathor-accommodation-card__text {
+  margin-top: 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--hathor-muted);
+}
+
+/* Stats band */
+.hathor-stats-band {
+  padding: 4rem 0;
+  background: var(--hathor-accent);
+}
+
+.hathor-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .hathor-stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.hathor-stat {
+  text-align: center;
+}
+
+.hathor-stat__value {
+  font-family: var(--public-serif);
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 500;
+  color: var(--hathor-gold);
+  line-height: 1;
+}
+
+.hathor-stat__label {
+  margin-top: 0.75rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgb(250 248 245 / 0.75);
+}
+
+/* Editorial sections */
+.hathor-editorial {
+  padding: 7.5rem 0;
+}
+
+@media (max-width: 767px) {
+  .hathor-editorial {
+    padding: 4rem 0;
+  }
+}
+
+.hathor-editorial--dark {
+  background: var(--hathor-dark);
+  color: var(--hathor-text-light);
+}
+
+.hathor-editorial--dark .hathor-section-title {
+  color: var(--hathor-cream);
+}
+
+.hathor-editorial__grid {
+  display: grid;
+  gap: 3rem;
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .hathor-editorial__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+  }
+
+  .hathor-editorial__grid--reverse .hathor-editorial__image-wrap {
+    order: 2;
+  }
+
+  .hathor-editorial__grid--reverse .hathor-editorial__content {
+    order: 1;
+  }
+}
+
+.hathor-editorial__image-wrap {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 0 2rem 0 2rem;
+}
+
+.hathor-editorial__image {
+  transition: transform 0.8s ease;
+}
+
+.hathor-editorial__image-wrap:hover .hathor-editorial__image {
+  transform: scale(1.05);
+}
+
+.hathor-editorial__content {
+  max-width: 32rem;
+}
+
+.hathor-editorial--dark .hathor-body-text {
+  color: var(--hathor-text-light);
+}
+
+/* ─── Inner page hero ─── */
+.hathor-page-hero {
+  position: relative;
+  min-height: 50vh;
+  display: flex;
+  align-items: flex-end;
+  padding: 8rem 0 4rem;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .hathor-page-hero {
+    min-height: 55vh;
+    padding: 10rem 0 5rem;
+  }
+}
+
+.hathor-page-hero__bg {
+  z-index: 0;
+}
+
+.hathor-page-hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgb(10 10 10 / 0.35) 0%,
+    rgb(10 10 10 / 0.82) 100%
+  );
+}
+
+.hathor-page-hero__content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: var(--hathor-cream);
+}
+
+.hathor-page-hero__title {
+  font-family: var(--public-serif);
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.hathor-page-hero__subtitle {
+  margin-top: 1rem;
+  max-width: 36rem;
+  margin-inline: auto;
+  font-size: 0.9375rem;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--hathor-text-light);
+}
+
+.hathor-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgb(232 226 217 / 0.75);
+}
+
+.hathor-breadcrumb a:hover {
+  color: var(--hathor-gold);
+}
+
+.hathor-editorial__image-wrap--tall {
+  aspect-ratio: 4 / 3;
+}
+
+.hathor-stat--light .hathor-stat__value {
+  color: var(--hathor-gold);
+}
+
+.hathor-feature-card {
+  padding: 1.25rem 1.5rem;
+  background: var(--lux-white);
+  border: 1px solid var(--public-border);
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.hathor-feature-card:hover {
+  border-color: rgb(201 169 110 / 0.45);
+  transform: translateY(-2px);
+}
+
+/* ─── Cruise listing cards ─── */
+.hathor-filter-panel {
+  padding: 1.5rem;
+  background: var(--lux-white);
+  border: 1px solid var(--public-border);
+}
+
+.hathor-filter-btn {
+  padding: 0.5rem 0.875rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  border: 1px solid var(--public-border);
+  background: transparent;
+  color: var(--public-muted);
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.hathor-filter-btn:hover,
+.hathor-filter-btn--active {
+  border-color: var(--hathor-gold);
+  color: var(--hathor-dark);
+  background: rgb(201 169 110 / 0.12);
+}
+
+.hathor-cruise-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--lux-white);
+  border: 1px solid var(--public-border);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.hathor-cruise-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 48px rgb(10 10 10 / 0.08);
+}
+
+.hathor-cruise-card__image {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+}
+
+.hathor-cruise-card__badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 2;
+  padding: 0.35rem 0.85rem;
+  background: var(--hathor-gold);
+  color: var(--hathor-dark);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.hathor-cruise-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 1.5rem;
+}
+
+.hathor-cruise-card__meta {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--public-muted);
+}
+
+.hathor-cruise-card__title {
+  margin-top: 0.5rem;
+  font-family: var(--public-serif);
+  font-size: 1.375rem;
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.hathor-cruise-card__route {
+  margin-top: 0.35rem;
+  font-size: 0.8125rem;
+  color: var(--public-muted);
+}
+
+.hathor-cruise-card__description {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 300;
+  line-height: 1.65;
+  color: var(--public-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hathor-cruise-card__features {
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--public-muted);
+  list-style: none;
+}
+
+.hathor-cruise-card__features li::before {
+  content: "· ";
+  color: var(--hathor-gold);
+}
+
+.hathor-cruise-card__price {
+  margin-top: auto;
+  padding-top: 1rem;
+  font-family: var(--public-serif);
+  font-size: 1.5rem;
+  color: var(--hathor-gold);
+}
+
+.hathor-cruise-card__capacity {
+  font-size: 0.75rem;
+  color: var(--public-muted);
+}
+
+/* ─── Venue cards ─── */
+.hathor-venue-card {
+  overflow: hidden;
+  background: var(--hathor-dark-2);
+  border: 1px solid rgb(201 169 110 / 0.2);
+}
+
+.hathor-venue-card__image {
+  position: relative;
+  aspect-ratio: 16 / 9;
+}
+
+.hathor-venue-card__body {
+  padding: 1.5rem;
+}
+
+.hathor-venue-card__title {
+  font-family: var(--public-serif);
+  font-size: 1.25rem;
+  color: var(--hathor-cream);
+}
+
+/* ─── Blog cards ─── */
+.hathor-blog-card {
+  height: 100%;
+  background: var(--lux-white);
+  border: 1px solid var(--public-border);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.hathor-blog-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgb(10 10 10 / 0.08);
+}
+
+.hathor-blog-card__image {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+}
+
+.hathor-blog-card__body {
+  padding: 1.5rem;
+}
+
+.hathor-blog-card__title {
+  margin-top: 0.75rem;
+  font-family: var(--public-serif);
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.hathor-blog-card__excerpt {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 300;
+  line-height: 1.65;
+  color: var(--public-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ─── Contact & forms ─── */
+.hathor-contact-card {
+  padding: 1.5rem;
+  background: var(--lux-white);
+  border: 1px solid var(--public-border);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hathor-contact-card:hover {
+  border-color: rgb(201 169 110 / 0.45);
+}
+
+.hathor-contact-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border: 1px solid rgb(201 169 110 / 0.4);
+  color: var(--hathor-gold);
+}
+
+.hathor-form-card {
+  padding: 1.75rem;
+  background: var(--lux-white);
+  border: 1px solid var(--public-border);
+}
+
+.hathor-form-card--success {
+  text-align: center;
+  padding: 2.5rem 1.75rem;
+}
+
+.hathor-route-chip {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  border: 1px solid rgb(201 169 110 / 0.35);
+  color: var(--public-muted);
+  background: var(--lux-white);
 }

@@ -61,7 +61,8 @@ export const ModelName = {
   SiteContent: 'SiteContent',
   BlogPost: 'BlogPost',
   AdminProfile: 'AdminProfile',
-  EmailTemplate: 'EmailTemplate'
+  EmailTemplate: 'EmailTemplate',
+  SiteImage: 'SiteImage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -230,6 +231,22 @@ export const EmailTemplateScalarFieldEnum = {
 } as const
 
 export type EmailTemplateScalarFieldEnum = (typeof EmailTemplateScalarFieldEnum)[keyof typeof EmailTemplateScalarFieldEnum]
+
+
+export const SiteImageScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  altText: 'altText',
+  url: 'url',
+  category: 'category',
+  pagePath: 'pagePath',
+  displayOrder: 'displayOrder',
+  isActive: 'isActive',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type SiteImageScalarFieldEnum = (typeof SiteImageScalarFieldEnum)[keyof typeof SiteImageScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -1,0 +1,85 @@
+"use client";
+
+import { CtaBand } from "@/components/pages/CtaBand";
+import { InquiryForm } from "@/components/pages/InquiryForm";
+import { PageHero } from "@/components/pages/PageHero";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { CHARTER_PAGE } from "@/lib/page-content";
+import { UNSPLASH_IMAGES } from "@/lib/unsplash-images";
+
+export function CharterPageContent() {
+  return (
+    <>
+      <PageHero
+        title={CHARTER_PAGE.hero.title}
+        subtitle={CHARTER_PAGE.hero.subtitle}
+        breadcrumb="Charter"
+        imageSrc={UNSPLASH_IMAGES.heroCharter}
+        imageAlt="Private Dahabiya charter on the Nile"
+      />
+
+      <section className="hathor-section hathor-section--cream">
+        <div className="hathor-container">
+          <div className="grid gap-12 lg:grid-cols-2">
+            <ScrollReveal>
+              <div>
+                <h2 className="hathor-section-title">{CHARTER_PAGE.overview.title}</h2>
+                <div className="hathor-gold-line hathor-gold-line--left" />
+                <p className="hathor-body-text">{CHARTER_PAGE.overview.intro}</p>
+                <p className="hathor-body-text mt-4">
+                  {CHARTER_PAGE.overview.benefitsIntro}
+                </p>
+                <ul className="mt-6 space-y-3">
+                  {CHARTER_PAGE.overview.benefits.map((benefit) => (
+                    <li key={benefit} className="hathor-feature-card">
+                      <p className="hathor-body-text">{benefit}</p>
+                    </li>
+                  ))}
+                </ul>
+                <p className="hathor-body-text mt-8 font-medium">
+                  {CHARTER_PAGE.overview.cta}
+                </p>
+              </div>
+            </ScrollReveal>
+
+            <ScrollReveal delay={120}>
+              <div>
+                <p className="hathor-section-eyebrow">Route Options</p>
+                <h3 className="hathor-section-title text-2xl">Your Private Itinerary</h3>
+                <div className="hathor-gold-line hathor-gold-line--left" />
+                <div className="mt-6 flex flex-wrap gap-3">
+                  {CHARTER_PAGE.overview.routes.map((route) => (
+                    <span key={route} className="hathor-route-chip">
+                      {route}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </ScrollReveal>
+          </div>
+        </div>
+      </section>
+
+      <section className="hathor-section hathor-section--surface">
+        <div className="hathor-container">
+          <div className="mx-auto max-w-2xl">
+            <ScrollReveal>
+              <InquiryForm
+                type="charter"
+                title="Charter Request"
+                intro="Tell us about your group and preferred dates — we will craft a personalized offer."
+                submitLabel="Send Request"
+                showCharterFields
+              />
+            </ScrollReveal>
+          </div>
+        </div>
+      </section>
+
+      <CtaBand
+        title="The Nile, Exclusively Yours"
+        body="Charter the entire Hathor Dahabiya for your family, friends, or celebration."
+      />
+    </>
+  );
+}

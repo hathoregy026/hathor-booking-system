@@ -198,3 +198,18 @@ model EmailTemplate {
   bodyText        String?
   updatedAt       DateTime @updatedAt
 }
+
+model SiteImage {
+  id           String   @id @default(cuid())
+  name         String
+  altText      String
+  url          String
+  category     String
+  pagePath     String
+  displayOrder Int      @default(0)
+  isActive     Boolean  @default(true)
+  updatedAt    DateTime @updatedAt
+  createdAt    DateTime @default(now())
+
+  @@index([pagePath, category])
+}

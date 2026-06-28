@@ -394,7 +394,8 @@ export const ModelName = {
   SiteContent: 'SiteContent',
   BlogPost: 'BlogPost',
   AdminProfile: 'AdminProfile',
-  EmailTemplate: 'EmailTemplate'
+  EmailTemplate: 'EmailTemplate',
+  SiteImage: 'SiteImage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -410,7 +411,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "cruise" | "cruiseSchedule" | "room" | "ticketType" | "booking" | "bookingRoom" | "bookingTicket" | "siteContent" | "blogPost" | "adminProfile" | "emailTemplate"
+    modelProps: "cruise" | "cruiseSchedule" | "room" | "ticketType" | "booking" | "bookingRoom" | "bookingTicket" | "siteContent" | "blogPost" | "adminProfile" | "emailTemplate" | "siteImage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1228,6 +1229,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    SiteImage: {
+      payload: Prisma.$SiteImagePayload<ExtArgs>
+      fields: Prisma.SiteImageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SiteImageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteImagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SiteImageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteImagePayload>
+        }
+        findFirst: {
+          args: Prisma.SiteImageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteImagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SiteImageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteImagePayload>
+        }
+        findMany: {
+          args: Prisma.SiteImageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteImagePayload>[]
+        }
+        create: {
+          args: Prisma.SiteImageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteImagePayload>
+        }
+        createMany: {
+          args: Prisma.SiteImageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SiteImageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteImagePayload>[]
+        }
+        delete: {
+          args: Prisma.SiteImageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteImagePayload>
+        }
+        update: {
+          args: Prisma.SiteImageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteImagePayload>
+        }
+        deleteMany: {
+          args: Prisma.SiteImageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SiteImageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SiteImageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteImagePayload>[]
+        }
+        upsert: {
+          args: Prisma.SiteImageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteImagePayload>
+        }
+        aggregate: {
+          args: Prisma.SiteImageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSiteImage>
+        }
+        groupBy: {
+          args: Prisma.SiteImageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SiteImageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SiteImageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SiteImageCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1419,6 +1494,22 @@ export const EmailTemplateScalarFieldEnum = {
 export type EmailTemplateScalarFieldEnum = (typeof EmailTemplateScalarFieldEnum)[keyof typeof EmailTemplateScalarFieldEnum]
 
 
+export const SiteImageScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  altText: 'altText',
+  url: 'url',
+  category: 'category',
+  pagePath: 'pagePath',
+  displayOrder: 'displayOrder',
+  isActive: 'isActive',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type SiteImageScalarFieldEnum = (typeof SiteImageScalarFieldEnum)[keyof typeof SiteImageScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1530,6 +1621,13 @@ export type EnumContentSectionFieldRefInput<$PrismaModel> = FieldRefInputType<$P
  * Reference to a field of type 'ContentSection[]'
  */
 export type ListEnumContentSectionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContentSection[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 /**
@@ -1653,6 +1751,7 @@ export type GlobalOmitConfig = {
   blogPost?: Prisma.BlogPostOmit
   adminProfile?: Prisma.AdminProfileOmit
   emailTemplate?: Prisma.EmailTemplateOmit
+  siteImage?: Prisma.SiteImageOmit
 }
 
 /* Types for Logging */

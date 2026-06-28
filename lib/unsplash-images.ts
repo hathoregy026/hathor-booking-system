@@ -1,0 +1,50 @@
+/** Curated Unsplash placeholders — replace via admin SiteImage when ready. */
+export const UNSPLASH_IMAGES = {
+  heroHomepage:
+    "https://images.unsplash.com/photo-1568322445380-fea286843984?w=1920&q=80",
+  heroHomepageAlt: "Luxury Dahabiya sailing on the Nile at sunset",
+  itineraryAswanLuxor:
+    "https://images.unsplash.com/photo-1587330979470-3585ac1ab985?w=800&q=80",
+  itineraryLuxorAswan:
+    "https://images.unsplash.com/photo-1569778059450-4b0f3b652c8d?w=800&q=80",
+  itineraryRoundTrip:
+    "https://images.unsplash.com/photo-1539768942893-daf53e448371?w=800&q=80",
+  luxuryRoom:
+    "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80",
+  luxurySuite:
+    "https://images.unsplash.com/photo-1618773928123-c722ed5472b0?w=800&q=80",
+  royalSuite:
+    "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&q=80",
+  charter:
+    "https://images.unsplash.com/photo-1548013146-724f68e4d9b0?w=800&q=80",
+  lifestyle:
+    "https://images.unsplash.com/photo-1572252009286-268ace3025e9?w=1200&q=80",
+  highlights:
+    "https://images.unsplash.com/photo-1569778059450-4b0f3b652c8d?w=1200&q=80",
+  dining:
+    "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80",
+  wellness:
+    "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=1200&q=80",
+  about:
+    "https://images.unsplash.com/photo-1587330979470-3585ac1ab985?w=1200&q=80",
+  testimonials:
+    "https://images.unsplash.com/photo-1568322445380-fea286843984?w=1920&q=80",
+  templeHatshepsut:
+    "https://images.unsplash.com/photo-1569778059450-4b0f3b652c8d?w=800&q=80",
+  obelisk:
+    "https://images.unsplash.com/photo-1539768942893-daf53e448371?w=800&q=80",
+  valleyOfKings:
+    "https://images.unsplash.com/photo-1587330979470-3585ac1ab985?w=800&q=80",
+  fitness:
+    "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=1200&q=80",
+  restaurant:
+    "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&q=80",
+  heroCruises:
+    "https://images.unsplash.com/photo-1568322445380-fea286843984?w=1920&q=80",
+  heroBlog:
+    "https://images.unsplash.com/photo-1539768942893-daf53e448371?w=1920&q=80",
+  heroContact:
+    "https://images.unsplash.com/photo-1572252009286-268ace3025e9?w=1920&q=80",
+  heroCharter:
+    "https://images.unsplash.com/photo-1548013146-724f68e4d9b0?w=1920&q=80",
+} as const;

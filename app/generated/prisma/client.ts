@@ -96,3 +96,8 @@ export type AdminProfile = Prisma.AdminProfileModel
  * 
  */
 export type EmailTemplate = Prisma.EmailTemplateModel
+/**
+ * Model SiteImage
+ * 
+ */
+export type SiteImage = Prisma.SiteImageModel
