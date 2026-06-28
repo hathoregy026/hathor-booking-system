@@ -2,6 +2,7 @@ import { z } from "zod";
 import { IMAGE_CATEGORIES } from "@/lib/image-categories";
 import { prisma } from "@/lib/prisma";
 import { withDb } from "@/lib/db-safe";
+import { getSiteImageSlot } from "@/lib/site-image-slots";
 
 const siteImageSchema = z.object({
   name: z
@@ -86,6 +87,56 @@ export async function updateSiteImage(id: string, input: SiteImageUpdateInput) {
 
 export async function deleteSiteImage(id: string) {
   return withDb(() => prisma.siteImage.delete({ where: { id } }));
+}
+
+export type SiteImageBulkItem = {
+  name: string;
+  url: string;
+  altText: string;
+};
+
+export async function upsertSiteImagesBulk(items: SiteImageBulkItem[]) {
+  const results = [];
+
+  for (const item of items) {
+    const slot = getSiteImageSlot(item.name);
+    if (!slot) continue;
+
+    const existing = await withDb(() =>
+      prisma.siteImage.findFirst({ where: { name: item.name } }),
+    );
+
+    if (existing) {
+      const updated = await withDb(() =>
+        prisma.siteImage.update({
+          where: { id: existing.id },
+          data: {
+            url: item.url,
+            altText: item.altText,
+            isActive: true,
+          },
+        }),
+      );
+      results.push(updated);
+    } else {
+      const created = await withDb(() =>
+        prisma.siteImage.create({
+          data: {
+            name: slot.name,
+            altText: item.altText,
+            url: item.url,
+            category: slot.category,
+            pagePath: slot.pagePath,
+            displayOrder: slot.displayOrder,
+            isActive: true,
+          },
+        }),
+      );
+      results.push(created);
+    }
+  }
+
+  return results;
 }
 
 export { IMAGE_CATEGORIES } from "@/lib/image-categories";

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import sharp from "sharp";
 import {
   ALLOWED_IMAGE_EXTENSIONS,
   validateImageFile,
@@ -32,12 +33,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
+    const inputBuffer = Buffer.from(await file.arrayBuffer());
+    const webpBuffer = await sharp(inputBuffer)
+      .rotate()
+      .webp({ quality: 85 })
+      .toBuffer();
+
     const result = await uploadWebsiteImage({
       folder,
-      buffer,
-      contentType: file.type,
-      extension,
+      buffer: webpBuffer,
+      contentType: "image/webp",
+      extension: "webp",
     });
 
     return NextResponse.json({

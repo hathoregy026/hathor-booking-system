@@ -256,7 +256,7 @@ export function ImageUpload({
           style={isAdmin ? { color: "var(--text-muted)" } : undefined}
         >
           Selected: {selectedFile.name} ({(selectedFile.size / 1024).toFixed(0)}{" "}
-          KB) — click Upload to store the URL.
+          KB) — converts to WebP on upload.
         </p>
       )}
 
