@@ -2962,10 +2962,10 @@
   color: var(--hathor-muted);
 }
 
-/* Legacy scroll — sticky curtain images + crossfade text */
+/* Legacy scroll — Framer Motion sticky curtain (400vh track) */
 .hathor-legacy-scroll {
   position: relative;
-  background: var(--hathor-surface, var(--hathor-cream));
+  background: var(--public-surface, #f5f0e8);
 }
 
 .hathor-legacy-scroll__sticky {
@@ -2974,29 +2974,33 @@
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
+  background: var(--public-surface, #f5f0e8);
 }
 
 .hathor-legacy-scroll__grid {
   display: grid;
   grid-template-columns: 1fr;
   height: 100%;
-  padding: clamp(5rem, 10vh, 7rem) clamp(1.25rem, 4vw, 3rem);
-  background: var(--hathor-surface, var(--hathor-cream));
 }
 
 @media (min-width: 1024px) {
   .hathor-legacy-scroll__grid {
     grid-template-columns: 1fr 1fr;
-    align-items: center;
-    gap: 4rem;
   }
 }
 
 .hathor-legacy-scroll__images {
   position: relative;
-  width: 100%;
-  height: clamp(22rem, 58vh, 34rem);
+  min-height: 50vh;
+  height: 100%;
   overflow: hidden;
+  background: #1a1a1a;
+}
+
+@media (min-width: 1024px) {
+  .hathor-legacy-scroll__images {
+    min-height: 0;
+  }
 }
 
 .hathor-legacy-scroll__image-layer {
@@ -3010,26 +3014,20 @@
 
 .hathor-legacy-scroll__img {
   display: block;
-  width: min(88%, 22rem);
-  height: min(70vh, 32rem);
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 0.25rem;
-  box-shadow: 0 24px 80px rgb(0 0 0 / 0.18);
-  transform: rotate(2deg);
 }
 
 .hathor-legacy-scroll__text-col {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 16rem;
+  padding: clamp(2rem, 5vw, 5rem);
+  background: var(--public-surface, #f5f0e8);
 }
 
-.hathor-legacy-scroll__text-sticky {
-  position: sticky;
-  top: 50%;
-  transform: translateY(-50%);
+.hathor-legacy-scroll__text-inner {
   width: 100%;
   max-width: 28rem;
 }
@@ -3040,7 +3038,7 @@
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--hathor-ink, var(--hathor-cream));
+  color: var(--public-text, #2c2824);
 }
 
 .hathor-legacy-scroll__intro {
@@ -3048,19 +3046,19 @@
   font-family: var(--public-serif);
   font-size: 1rem;
   line-height: 1.75;
-  color: var(--hathor-muted);
+  color: var(--public-muted, #6b6560);
 }
 
 .hathor-legacy-scroll__text-stack {
   position: relative;
   margin-top: 1.75rem;
-  min-height: 6rem;
+  min-height: 6.5rem;
 }
 
 .hathor-legacy-scroll__text-block {
   position: absolute;
   inset: 0;
-  will-change: transform, opacity;
+  will-change: opacity;
 }
 
 .hathor-legacy-scroll__step-label {
@@ -3069,7 +3067,7 @@
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--hathor-gold);
+  color: var(--hathor-gold, #c9a96e);
 }
 
 .hathor-legacy-scroll__step-body {
@@ -3077,7 +3075,7 @@
   font-family: var(--public-serif);
   font-size: 0.95rem;
   line-height: 1.65;
-  color: var(--hathor-muted);
+  color: var(--public-muted, #6b6560);
 }
 
 /* 50/50 split scroll */
