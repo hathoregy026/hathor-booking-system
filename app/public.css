@@ -2962,6 +2962,104 @@
   color: var(--hathor-muted);
 }
 
+/* Legacy room stack — pinned scroll with cumulative images + text */
+.hathor-legacy-stack__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.hathor-legacy-stack__layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  height: 100%;
+  padding: clamp(5rem, 10vh, 7rem) clamp(1.25rem, 4vw, 3rem);
+  background: var(--hathor-dark);
+}
+
+@media (min-width: 1024px) {
+  .hathor-legacy-stack__layout {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 4rem;
+  }
+}
+
+.hathor-legacy-stack__images {
+  position: relative;
+  min-height: 20rem;
+  height: clamp(20rem, 52vh, 34rem);
+}
+
+.hathor-legacy-stack__image {
+  position: absolute;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgb(0 0 0 / 0.45);
+  transform-origin: center center;
+}
+
+.hathor-legacy-stack__text {
+  max-width: 28rem;
+  overflow-y: auto;
+}
+
+@media (min-width: 1024px) {
+  .hathor-legacy-stack__text {
+    justify-self: end;
+    max-height: calc(100dvh - 8rem);
+    padding-bottom: 2rem;
+  }
+}
+
+.hathor-legacy-stack__headline {
+  font-family: var(--public-sans);
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hathor-cream);
+}
+
+.hathor-legacy-stack__intro {
+  margin-top: 1.25rem;
+  font-family: var(--public-serif);
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--hathor-muted);
+}
+
+.hathor-legacy-stack__steps {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.hathor-legacy-stack__step-label {
+  font-family: var(--public-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--hathor-gold);
+}
+
+.hathor-legacy-stack__step-body {
+  margin-top: 0.35rem;
+  font-family: var(--public-serif);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--hathor-muted);
+}
+
+.hathor-legacy-stack__reveal {
+  transform-origin: left center;
+}
+
 /* 50/50 split scroll */
 .hathor-split-scroll__chapter,
 .hathor-alt-split__chapter {
