@@ -20,12 +20,19 @@ function copyAsset(fileName, publicSubdir) {
 }
 
 const logoName = "e-mail-logo-egypttoor-booking-cruise-honeymoon.png";
-const logoSource = join(root, "assets", logoName);
+const logoSource = join(root, "assets", "LOGOS", logoName);
 
 if (!existsSync(logoSource)) {
-  console.error(`[sync-public-assets] Missing logo: ${logoSource}`);
-  process.exit(1);
+  const legacySource = join(root, "assets", logoName);
+  if (!existsSync(legacySource)) {
+    console.error(`[sync-public-assets] Missing logo: ${logoSource}`);
+    process.exit(1);
+  }
+  copyAsset(logoName, "assets");
+} else {
+  const targetDir = join(root, "public", "assets");
+  mkdirSync(targetDir, { recursive: true });
+  copyFileSync(logoSource, join(targetDir, logoName));
+  console.log(`[sync-public-assets] Copied ${logoName} to public/assets/`);
 }
-
-copyAsset(logoName, "assets");
 copyAsset("Hathor-Luxor-Promo-nile-cruise.mp4", "videos");
