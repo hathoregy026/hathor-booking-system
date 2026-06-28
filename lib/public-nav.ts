@@ -79,3 +79,12 @@ export const EXPLORE_LINKS: NavLink[] = [
   { href: "/wellness", label: "Seneb Spa" },
   { href: "/charter", label: "Charter Enquiry" },
 ];
+
+/** Centered desktop header links — OWO-style primary navigation. */
+export const HEADER_NAV_LINKS: NavLink[] = [
+  { href: "/cruises", label: "Cruises" },
+  { href: "/rooms", label: "Accommodations" },
+  { href: "/highlights", label: "Experiences" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
+];

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
 import { PublicLayout } from "@/components/public/PublicLayout";
+import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
+import { resolveSiteImageMap } from "@/lib/resolve-site-images";
 import "../public.css";
 import "../booking-modal.css";
 
@@ -46,14 +48,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function PublicSiteLayout({
+export default async function PublicSiteLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const siteImages = await resolveSiteImageMap();
+
   return (
     <div className={`${playfair.variable} ${plusJakarta.variable}`}>
-      <PublicLayout>{children}</PublicLayout>
+      <SiteImagesProvider images={siteImages}>
+        <PublicLayout>{children}</PublicLayout>
+      </SiteImagesProvider>
     </div>
   );
 }

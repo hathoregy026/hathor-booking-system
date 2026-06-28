@@ -28,6 +28,10 @@
 /public/uploads/**
 !/public/uploads/.gitkeep
 
+# large media — synced locally; host on CDN/Vercel Blob for production
+/assets/*.mp4
+/public/videos/*.mp4
+
 # debug
 npm-debug.log*
 yarn-debug.log*

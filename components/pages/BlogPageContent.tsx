@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { CtaBand } from "@/components/pages/CtaBand";
@@ -9,15 +8,15 @@ import { PageHero } from "@/components/pages/PageHero";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import type { BlogPostSummary } from "@/lib/blog-posts";
 import { BLOG_PAGE } from "@/lib/page-content";
-import { UNSPLASH_IMAGES } from "@/lib/unsplash-images";
+import { ManagedImage } from "@/components/ui/ManagedImage";
 
-const BLOG_IMAGES = [
-  UNSPLASH_IMAGES.highlights,
-  UNSPLASH_IMAGES.lifestyle,
-  UNSPLASH_IMAGES.templeHatshepsut,
-  UNSPLASH_IMAGES.obelisk,
-  UNSPLASH_IMAGES.valleyOfKings,
-  UNSPLASH_IMAGES.dining,
+const BLOG_IMAGE_NAMES = [
+  "highlights-hero",
+  "highlights-lifestyle",
+  "landmark-hatshepsut",
+  "landmark-obelisk",
+  "landmark-valley-kings",
+  "gastronomy-hero",
 ] as const;
 
 const PAGE_SIZE = 12;
@@ -47,11 +46,10 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
         title={BLOG_PAGE.hero.title}
         subtitle={BLOG_PAGE.hero.subtitle}
         breadcrumb="Blog"
-        imageSrc={UNSPLASH_IMAGES.heroBlog}
-        imageAlt="Hathor Dahabiya blog — stories from the Nile"
+        imageName="blog-hero"
       />
 
-      <section className="hathor-section hathor-section--cream">
+      <section className="hathor-section hathor-section--dark">
         <div className="hathor-container">
           <ScrollReveal>
             <p className="hathor-body-text mx-auto max-w-3xl text-center">
@@ -65,8 +63,8 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
                 <article className="hathor-blog-card group">
                   <Link href={`/blogs/${post.slug}`} className="block">
                     <div className="hathor-blog-card__image">
-                      <Image
-                        src={BLOG_IMAGES[index % BLOG_IMAGES.length]}
+                      <ManagedImage
+                        name={BLOG_IMAGE_NAMES[index % BLOG_IMAGE_NAMES.length]}
                         alt=""
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-105"

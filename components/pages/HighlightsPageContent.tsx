@@ -1,18 +1,17 @@
 "use client";
 
-import Image from "next/image";
 import { CtaBand } from "@/components/pages/CtaBand";
 import { EditorialSection } from "@/components/pages/EditorialSection";
 import { PageHero } from "@/components/pages/PageHero";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { HIGHLIGHTS_PAGE } from "@/lib/page-content";
-import { UNSPLASH_IMAGES } from "@/lib/unsplash-images";
+import { ManagedImage } from "@/components/ui/ManagedImage";
 
-const LANDMARK_IMAGES = [
-  UNSPLASH_IMAGES.obelisk,
-  UNSPLASH_IMAGES.templeHatshepsut,
-  UNSPLASH_IMAGES.valleyOfKings,
-];
+const LANDMARK_IMAGE_NAMES = [
+  "landmark-obelisk",
+  "landmark-hatshepsut",
+  "landmark-valley-kings",
+] as const;
 
 export function HighlightsPageContent() {
   return (
@@ -21,11 +20,10 @@ export function HighlightsPageContent() {
         title={HIGHLIGHTS_PAGE.hero.title}
         subtitle={HIGHLIGHTS_PAGE.hero.subtitle}
         breadcrumb="Highlights"
-        imageSrc={UNSPLASH_IMAGES.highlights}
-        imageAlt="Dahabiya sailing past ancient Egyptian monuments"
+        imageName="highlights-hero"
       />
 
-      <section className="hathor-section hathor-section--cream">
+      <section className="hathor-section hathor-section--dark">
         <div className="hathor-container">
           <ScrollReveal>
             <div className="mx-auto max-w-3xl text-center">
@@ -42,7 +40,7 @@ export function HighlightsPageContent() {
       {HIGHLIGHTS_PAGE.landmarks.map((landmark, index) => (
         <section
           key={landmark.title}
-          className={`hathor-section ${index % 2 === 1 ? "hathor-section--surface" : "hathor-section--cream"}`}
+          className={`hathor-section ${index % 2 === 1 ? "hathor-section--dark-2" : "hathor-section--dark"}`}
         >
           <div className="hathor-container">
             <div
@@ -50,8 +48,8 @@ export function HighlightsPageContent() {
             >
               <ScrollReveal direction={index % 2 === 1 ? "right" : "left"}>
                 <div className="hathor-editorial__image-wrap">
-                  <Image
-                    src={LANDMARK_IMAGES[index]}
+                  <ManagedImage
+                    name={LANDMARK_IMAGE_NAMES[index]}
                     alt={landmark.title}
                     fill
                     className="hathor-editorial__image object-cover"
@@ -76,14 +74,15 @@ export function HighlightsPageContent() {
       ))}
 
       <EditorialSection
+        chapter="Explore More"
         title="Explore More Aboard Hathor"
         body="Every bend of the Nile reveals another chapter of Egypt's timeless story. Sail in privacy, comfort, and true elegance."
         href="/cruises"
-        hrefLabel="View Cruises"
-        imageSrc={UNSPLASH_IMAGES.lifestyle}
+        hrefLabel="Discover cruises"
+        imageName="highlights-lifestyle"
         imageAlt="Scenic Nile views from Hathor Dahabiya"
-        dark
         imageLeft
+        fullBleed
       />
 
       <CtaBand />

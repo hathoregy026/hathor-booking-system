@@ -1,10 +1,10 @@
 "use client";
 
 import type { ReactNode } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { ManagedImage } from "@/components/ui/ManagedImage";
 
 export function DiscoverLink({
   href,
@@ -22,44 +22,49 @@ export function DiscoverLink({
 }
 
 type EditorialSectionProps = {
+  chapter?: string;
   eyebrow?: string;
   title: string;
   subtitle?: string;
   body: string | string[];
   href?: string;
   hrefLabel?: string;
-  imageSrc: string;
-  imageAlt: string;
+  imageName: string;
+  imageAlt?: string;
   imageLeft?: boolean;
   dark?: boolean;
+  fullBleed?: boolean;
 };
 
 export function EditorialSection({
+  chapter,
   eyebrow,
   title,
   subtitle,
   body,
   href,
-  hrefLabel = "Learn more",
-  imageSrc,
+  hrefLabel = "Discover",
+  imageName,
   imageAlt,
   imageLeft = false,
-  dark = false,
+  dark = true,
+  fullBleed = false,
 }: EditorialSectionProps) {
   const paragraphs = Array.isArray(body) ? body : [body];
+  const label = chapter ?? eyebrow;
 
   return (
     <section
-      className={`hathor-editorial ${dark ? "hathor-editorial--dark" : ""}`}
+      className={`hathor-editorial ${dark ? "hathor-editorial--dark" : ""} ${fullBleed ? "hathor-editorial--bleed" : ""}`}
     >
-      <div className="hathor-container">
+      <div className={fullBleed ? "" : "hathor-container"}>
         <div
           className={`hathor-editorial__grid ${imageLeft ? "hathor-editorial__grid--reverse" : ""}`}
         >
           <ScrollReveal direction={imageLeft ? "right" : "left"}>
             <div className="hathor-editorial__image-wrap">
-              <Image
-                src={imageSrc}
+              <ManagedImage
+                name={imageName}
                 alt={imageAlt}
                 fill
                 className="hathor-editorial__image object-cover"
@@ -69,10 +74,10 @@ export function EditorialSection({
           </ScrollReveal>
 
           <ScrollReveal direction={imageLeft ? "left" : "right"} delay={120}>
-            <div className="hathor-editorial__content">
-              {eyebrow ? (
-                <p className="hathor-section-eyebrow">{eyebrow}</p>
-              ) : null}
+            <div
+              className={`hathor-editorial__content ${fullBleed ? "hathor-container py-16 lg:py-24" : ""}`}
+            >
+              {label ? <p className="hathor-chapter-eyebrow">{label}</p> : null}
               <h2 className="hathor-section-title">{title}</h2>
               {subtitle ? (
                 <p className="hathor-section-subtitle">{subtitle}</p>

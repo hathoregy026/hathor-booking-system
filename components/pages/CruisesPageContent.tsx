@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { CtaBand } from "@/components/pages/CtaBand";
@@ -10,7 +9,7 @@ import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { formatPrice } from "@/lib/client-dates";
 import type { HathorCruiseSeed } from "@/lib/hathor-catalog";
 import { CRUISES_PAGE } from "@/lib/page-content";
-import { UNSPLASH_IMAGES } from "@/lib/unsplash-images";
+import { ManagedImage } from "@/components/ui/ManagedImage";
 
 type CruiseListingItem = {
   key: string;
@@ -24,14 +23,14 @@ type CruiseListingItem = {
   priceCents: number;
   capacity: number;
   amenities: readonly string[];
-  imageSrc: string;
+  imageName: string;
   detailHref: string;
 };
 
-function roomImage(roomType: string): string {
-  if (roomType.includes("Royal")) return UNSPLASH_IMAGES.royalSuite;
-  if (roomType.includes("Suite")) return UNSPLASH_IMAGES.luxurySuite;
-  return UNSPLASH_IMAGES.luxuryRoom;
+function roomImageName(roomType: string): string {
+  if (roomType.includes("Royal")) return "room-royal";
+  if (roomType.includes("Suite")) return "room-suite";
+  return "room-luxury";
 }
 
 function roomDetailHref(roomType: string): string {
@@ -55,7 +54,7 @@ function flattenCruises(cruises: HathorCruiseSeed[]): CruiseListingItem[] {
       priceCents: room.priceCents,
       capacity: room.capacity,
       amenities: room.amenities.slice(0, 3),
-      imageSrc: roomImage(room.roomType),
+      imageName: roomImageName(room.roomType),
       detailHref: roomDetailHref(room.roomType),
     })),
   );
@@ -93,11 +92,10 @@ export function CruisesPageContent({ cruises }: CruisesPageContentProps) {
         title={CRUISES_PAGE.hero.title}
         subtitle={CRUISES_PAGE.hero.subtitle}
         breadcrumb="Cruises"
-        imageSrc={UNSPLASH_IMAGES.heroCruises}
-        imageAlt="Luxury Dahabiya cruise on the Nile"
+        imageName="cruises-hero"
       />
 
-      <section className="hathor-section hathor-section--cream">
+      <section className="hathor-section hathor-section--dark">
         <div className="hathor-container">
           <ScrollReveal>
             <div className="hathor-section-header">
@@ -171,8 +169,8 @@ export function CruisesPageContent({ cruises }: CruisesPageContentProps) {
                   <ScrollReveal key={item.key} delay={index * 60}>
                     <article className="hathor-cruise-card group">
                       <div className="hathor-cruise-card__image">
-                        <Image
-                          src={item.imageSrc}
+                        <ManagedImage
+                          name={item.imageName}
                           alt={`${item.roomName} — ${item.cruiseName}`}
                           fill
                           className="object-cover transition-transform duration-700 group-hover:scale-105"

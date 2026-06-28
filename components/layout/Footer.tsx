@@ -1,91 +1,93 @@
 import Link from "next/link";
-import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
-import { HATHOR_BRAND_NAME } from "@/lib/branding";
+import {
+  HATHOR_BRAND_NAME,
+  HATHOR_LOGO_DAY_SRC,
+  HATHOR_LOGO_SRC,
+} from "@/lib/branding";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
-import { NAV_GROUPS } from "@/lib/public-nav";
+
+const FOOTER_COLUMNS = [
+  {
+    links: [
+      { href: "/rooms", label: "Accommodations" },
+      { href: "/highlights", label: "Experiences" },
+    ],
+  },
+  {
+    links: [
+      { href: "/cruises", label: "Cruises" },
+      { href: "/about", label: "About" },
+    ],
+  },
+  {
+    links: [
+      { href: "/wellness", label: "Wellness" },
+      { href: "/contact", label: "Contact" },
+    ],
+  },
+  {
+    links: [
+      { href: "/gastronomy", label: "Dining" },
+      { href: "/blogs", label: "Blog" },
+    ],
+  },
+] as const;
 
 export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="hathor-footer">
-      <div className="hathor-footer__gold-line" />
-
-      <div className="hathor-container hathor-footer__top">
-        <div className="hathor-footer__brand-col">
-          <p className="hathor-footer__brand">{HATHOR_BRAND_NAME}</p>
-          <p className="hathor-footer__tagline">
-            Ultra luxury Dahabiya Nile cruise — timeless elegance, bespoke
-            service, and unforgettable journeys on Egypt&apos;s legendary river.
-          </p>
-          <p className="hathor-footer__follow">Follow Us</p>
-          <div className="hathor-footer__social">
-            <a
-              href={PUBLIC_CONTACT.whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hathor-footer__social-link cursor-hover"
-              aria-label="WhatsApp"
-            >
-              <Phone className="h-4 w-4" />
-            </a>
-            <a
-              href={`mailto:${PUBLIC_CONTACT.email}`}
-              className="hathor-footer__social-link cursor-hover"
-              aria-label="Email"
-            >
-              <Mail className="h-4 w-4" />
-            </a>
-          </div>
-        </div>
-
-        {NAV_GROUPS.map((group) => (
-          <div key={group.id}>
-            <p className="hathor-footer__col-label">{group.label}</p>
-            <ul className="hathor-footer__links">
-              {group.links.map((link) => (
-                <li key={`${group.id}-${link.label}`}>
-                  <Link href={link.href} className="hathor-footer__link cursor-hover">
-                    {link.label}
-                    <ArrowUpRight className="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100" aria-hidden />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-
-        <div>
-          <p className="hathor-footer__col-label">Contact</p>
-          <ul className="hathor-footer__contact">
-            <li>
-              <Mail className="h-4 w-4 shrink-0 text-[var(--hathor-gold)]" aria-hidden />
-              <a href={`mailto:${PUBLIC_CONTACT.email}`} className="cursor-hover">
-                {PUBLIC_CONTACT.email}
-              </a>
-            </li>
-            <li>
-              <Phone className="h-4 w-4 shrink-0 text-[var(--hathor-gold)]" aria-hidden />
-              <a href={`tel:${PUBLIC_CONTACT.phone}`} className="cursor-hover">
-                {PUBLIC_CONTACT.phoneDisplay}
-              </a>
-            </li>
-            <li>
-              <MapPin className="h-4 w-4 shrink-0 text-[var(--hathor-gold)]" aria-hidden />
-              <span>{PUBLIC_CONTACT.address}</span>
-            </li>
-          </ul>
-          <p className="mt-4 text-xs tracking-wide text-[var(--hathor-muted)]">
-            {PUBLIC_CONTACT.workingHours}
-          </p>
-        </div>
+    <footer className="owo-footer">
+      <div className="owo-footer__brand-block">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={HATHOR_LOGO_SRC}
+          alt={HATHOR_BRAND_NAME}
+          className="owo-footer__logo hathor-brand-logo hathor-brand-logo--night"
+        />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={HATHOR_LOGO_DAY_SRC}
+          alt=""
+          aria-hidden
+          className="owo-footer__logo hathor-brand-logo hathor-brand-logo--day"
+        />
+        <p className="owo-footer__wordmark">{HATHOR_BRAND_NAME}</p>
+        <p className="owo-footer__tag">Luxury Dahabiya Nile Cruise</p>
       </div>
 
-      <div className="hathor-footer__bottom">
-        <div className="hathor-container hathor-footer__bottom-inner">
-          <p>© {year} Hathor Dahabiya Cruise. All rights reserved.</p>
-          <p>Luxury Dahabiya Nile Cruise · Egypt</p>
+      <div className="owo-footer__nav">
+        {FOOTER_COLUMNS.map((column, colIndex) => (
+          <ul key={colIndex} className="owo-footer__col">
+            {column.links.map((link) => (
+              <li key={link.href}>
+                <Link href={link.href} className="owo-footer__link cursor-hover">
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        ))}
+      </div>
+
+      <div className="owo-footer__legal">
+        <div className="owo-footer__legal-row">
+          <a href={`mailto:${PUBLIC_CONTACT.email}`} className="owo-footer__legal-link cursor-hover">
+            Press
+          </a>
+          <div className="owo-footer__legal-right">
+            <Link href="/contact" className="owo-footer__legal-link cursor-hover">
+              Privacy
+            </Link>
+            <Link href="/contact" className="owo-footer__legal-link cursor-hover">
+              Contact
+            </Link>
+            <Link href="/cruises" className="owo-footer__legal-link cursor-hover">
+              Sitemap
+            </Link>
+          </div>
         </div>
+        <p className="owo-footer__copy">© {HATHOR_BRAND_NAME} {year}</p>
       </div>
     </footer>
   );

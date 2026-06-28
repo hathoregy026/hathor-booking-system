@@ -3,17 +3,26 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ArrowRight, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useBookNowModal } from "@/components/booking/BookingModalProvider";
-import { HATHOR_BRAND_NAME, HATHOR_LOGO_SRC } from "@/lib/branding";
+import { PublicThemeToggle } from "@/components/public/PublicThemeToggle";
+import {
+  HATHOR_BRAND_NAME,
+  HATHOR_LOGO_DAY_SRC,
+  HATHOR_LOGO_SRC,
+} from "@/lib/branding";
+import {
+  getPublicHeaderClassName,
+  isHeroRoute,
+} from "@/lib/public-theme";
 import {
   EXPLORE_LINKS,
+  HEADER_NAV_LINKS,
   NAV_GROUPS,
   type NavGroup,
 } from "@/lib/public-nav";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
-
-const HERO_PATHS = new Set(["/"]);
+import { usePublicTheme } from "@/components/public/PublicThemeProvider";
 
 function ExplorePanel({
   open,
@@ -113,9 +122,9 @@ function ExplorePanel({
 export function Header() {
   const pathname = usePathname();
   const { openBooking } = useBookNowModal();
+  const { theme } = usePublicTheme();
   const [exploreOpen, setExploreOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const isHeroPage = HERO_PATHS.has(pathname);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 48);
@@ -131,30 +140,63 @@ export function Header() {
     };
   }, [exploreOpen]);
 
-  const headerClass = isHeroPage
-    ? scrolled
-      ? "hathor-header hathor-header--solid"
-      : "hathor-header hathor-header--transparent"
-    : "hathor-header hathor-header--light";
+  const overHero = !scrolled && isHeroRoute(pathname);
+  const headerClass = getPublicHeaderClassName({
+    theme,
+    scrolled,
+    overHero,
+  });
 
   return (
     <>
       <header className={headerClass}>
-        <div className="hathor-header__inner">
-          <Link href="/" className="hathor-header__brand cursor-hover">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={HATHOR_LOGO_SRC}
-              alt={HATHOR_BRAND_NAME}
-              className="hathor-header__logo"
-            />
-            <span className="hathor-header__wordmark">Hathor</span>
-          </Link>
+        <div className="hathor-header__inner hathor-header__inner--owo">
+          <div className="hathor-header__col hathor-header__col--left">
+            <Link href="/" className="hathor-header__brand cursor-hover">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={HATHOR_LOGO_SRC}
+                alt={HATHOR_BRAND_NAME}
+                className="hathor-header__logo hathor-brand-logo hathor-brand-logo--night"
+              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={HATHOR_LOGO_DAY_SRC}
+                alt=""
+                aria-hidden
+                className="hathor-header__logo hathor-brand-logo hathor-brand-logo--day"
+              />
+              <span className="hathor-header__wordmark">Hathor</span>
+            </Link>
+          </div>
 
-          <div className="hathor-header__actions">
+          <nav
+            className="hathor-header__col hathor-header__col--center"
+            aria-label="Primary navigation"
+          >
+            <ul className="hathor-header__nav">
+              {HEADER_NAV_LINKS.map((link) => {
+                const isActive =
+                  pathname === link.href ||
+                  (link.href !== "/" && pathname.startsWith(link.href));
+                return (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className={`hathor-header__nav-link cursor-hover ${isActive ? "hathor-header__nav-link--active" : ""}`}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+
+          <div className="hathor-header__col hathor-header__col--right">
             <button
               type="button"
-              className="hathor-header__explore hathor-header__explore--mobile cursor-hover lg:hidden"
+              className="hathor-header__menu-btn cursor-hover lg:hidden"
               onClick={() => setExploreOpen(true)}
               aria-expanded={exploreOpen}
               aria-label="Open menu"
@@ -162,15 +204,7 @@ export function Header() {
               <Menu className="h-5 w-5" aria-hidden />
             </button>
 
-            <button
-              type="button"
-              className="hathor-header__explore cursor-hover hidden md:inline-flex"
-              onClick={() => setExploreOpen(true)}
-              aria-expanded={exploreOpen}
-            >
-              <span>Explore</span>
-              <Menu className="h-4 w-4" aria-hidden />
-            </button>
+            <PublicThemeToggle />
 
             <button
               type="button"
@@ -185,14 +219,5 @@ export function Header() {
 
       <ExplorePanel open={exploreOpen} onClose={() => setExploreOpen(false)} />
     </>
-  );
-}
-
-export function HeroScrollIndicator() {
-  return (
-    <a href="#discover" className="lux-hero__scroll cursor-hover" aria-label="Scroll to content">
-      <span>Discover</span>
-      <ArrowRight className="h-4 w-4 rotate-90" aria-hidden />
-    </a>
   );
 }

@@ -1,8 +1,16 @@
-/** Curated Unsplash placeholders — replace via admin SiteImage when ready. */
+/** Default image URLs — used as fallbacks and seeded into admin Site Images. */
 export const UNSPLASH_IMAGES = {
   heroHomepage:
     "https://images.unsplash.com/photo-1568322445380-fea286843984?w=1920&q=80",
   heroHomepageAlt: "Luxury Dahabiya sailing on the Nile at sunset",
+  previewHero:
+    "https://images.unsplash.com/photo-1568322445380-fea286843984?w=1920&q=80",
+  previewHeroAlt:
+    "Luxury Dahabiya sailing on the Nile at golden hour",
+  postHeroMedia:
+    "https://images.unsplash.com/photo-1587330979470-3585ac1ab985?w=1920&q=80",
+  postHeroMediaAlt:
+    "Hathor Dahabiya on the Nile with ancient Egyptian landmarks",
   itineraryAswanLuxor:
     "https://images.unsplash.com/photo-1587330979470-3585ac1ab985?w=800&q=80",
   itineraryLuxorAswan:
@@ -47,4 +55,51 @@ export const UNSPLASH_IMAGES = {
     "https://images.unsplash.com/photo-1572252009286-268ace3025e9?w=1920&q=80",
   heroCharter:
     "https://images.unsplash.com/photo-1548013146-724f68e4d9b0?w=1920&q=80",
+  storyCraftLarge:
+    "https://images.unsplash.com/photo-1618773928123-c722ed5472b0?w=800&q=80",
+  storyCraftSmall:
+    "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80",
+  storyTransform:
+    "https://images.unsplash.com/photo-1572252009286-268ace3025e9?w=800&q=80",
+  storyLegacyLarge:
+    "https://images.unsplash.com/photo-1568322445380-fea286843984?w=800&q=80",
+  storyLegacySmall:
+    "https://images.unsplash.com/photo-1569778059450-4b0f3b652c8d?w=600&q=80",
+  cinematicVideo:
+    "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1920&q=80",
+  cinematicVideoAlt: "Grand interior aboard Hathor Dahabiya",
+  cinematicStill:
+    "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=1920&q=80",
+  cinematicStillAlt: "Luxury royal suite aboard Hathor Dahabiya",
+  splitCourtyard:
+    "https://images.unsplash.com/photo-1539768942893-daf53e448371?w=1920&q=80",
+  splitCourtyardAlt: "Ancient Egyptian architecture along the Nile",
+  splitService:
+    "https://images.unsplash.com/photo-1572252009286-268ace3025e9?w=1200&q=80",
+  splitInteriors:
+    "https://images.unsplash.com/photo-1618773928123-c722ed5472b0?w=1200&q=80",
+  splitVenue:
+    "https://images.unsplash.com/photo-1569778059450-4b0f3b652c8d?w=1200&q=80",
+  collageLarge:
+    "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=80",
+  collageSmall:
+    "https://images.unsplash.com/photo-1587330979470-3585ac1ab985?w=600&q=80",
+  collageBg:
+    "https://images.unsplash.com/photo-1568322445380-fea286843984?w=1920&q=80",
+  collageLiving:
+    "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=1920&q=80",
+  residencesKitchen:
+    "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1200&q=80",
+  residencesLounge:
+    "https://images.unsplash.com/photo-1618773928123-c722ed5472b0?w=1200&q=80",
+  residencesRooftop:
+    "https://images.unsplash.com/photo-1568322445380-fea286843984?w=1920&q=80",
+  sketchBoat:
+    "https://images.unsplash.com/photo-1587330979470-3585ac1ab985?w=1400&q=80",
+  altDining:
+    "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&q=80",
+  altWellness:
+    "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=1200&q=80",
+  altHighlights:
+    "https://images.unsplash.com/photo-1587330979470-3585ac1ab985?w=1200&q=80",
 } as const;

@@ -5,7 +5,6 @@ import { InquiryForm } from "@/components/pages/InquiryForm";
 import { PageHero } from "@/components/pages/PageHero";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { CHARTER_PAGE } from "@/lib/page-content";
-import { UNSPLASH_IMAGES } from "@/lib/unsplash-images";
 
 export function CharterPageContent() {
   return (
@@ -14,11 +13,10 @@ export function CharterPageContent() {
         title={CHARTER_PAGE.hero.title}
         subtitle={CHARTER_PAGE.hero.subtitle}
         breadcrumb="Charter"
-        imageSrc={UNSPLASH_IMAGES.heroCharter}
-        imageAlt="Private Dahabiya charter on the Nile"
+        imageName="charter-hero"
       />
 
-      <section className="hathor-section hathor-section--cream">
+      <section className="hathor-section hathor-section--dark">
         <div className="hathor-container">
           <div className="grid gap-12 lg:grid-cols-2">
             <ScrollReveal>
@@ -60,7 +58,7 @@ export function CharterPageContent() {
         </div>
       </section>
 
-      <section className="hathor-section hathor-section--surface">
+      <section className="hathor-section hathor-section--dark-2">
         <div className="hathor-container">
           <div className="mx-auto max-w-2xl">
             <ScrollReveal>

@@ -7,7 +7,6 @@ import { PageHero } from "@/components/pages/PageHero";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { CONTACT_PAGE } from "@/lib/page-content";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
-import { UNSPLASH_IMAGES } from "@/lib/unsplash-images";
 
 const CONTACT_ITEMS = [
   {
@@ -44,11 +43,10 @@ export function ContactPageContent() {
         title={CONTACT_PAGE.hero.title}
         subtitle={CONTACT_PAGE.hero.subtitle}
         breadcrumb="Contact"
-        imageSrc={UNSPLASH_IMAGES.heroContact}
-        imageAlt="Contact Hathor Dahabiya reservations team"
+        imageName="contact-hero"
       />
 
-      <section className="hathor-section hathor-section--cream">
+      <section className="hathor-section hathor-section--dark">
         <div className="hathor-container">
           <div className="grid gap-10 lg:grid-cols-2">
             <ScrollReveal>

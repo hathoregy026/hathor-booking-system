@@ -1,12 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import { CtaBand } from "@/components/pages/CtaBand";
 import { EditorialSection } from "@/components/pages/EditorialSection";
 import { PageHero } from "@/components/pages/PageHero";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { GASTRONOMY_PAGE } from "@/lib/page-content";
-import { UNSPLASH_IMAGES } from "@/lib/unsplash-images";
+import { ManagedImage } from "@/components/ui/ManagedImage";
 
 export function GastronomyPageContent() {
   return (
@@ -15,11 +14,10 @@ export function GastronomyPageContent() {
         title={GASTRONOMY_PAGE.hero.title}
         subtitle={GASTRONOMY_PAGE.hero.subtitle}
         breadcrumb="Gastronomy"
-        imageSrc={UNSPLASH_IMAGES.dining}
-        imageAlt="Gourmet dining aboard Hathor Dahabiya with Nile views"
+        imageName="gastronomy-hero"
       />
 
-      <section className="hathor-section hathor-section--cream">
+      <section className="hathor-section hathor-section--dark">
         <div className="hathor-container">
           <ScrollReveal>
             <div className="mx-auto max-w-3xl text-center">
@@ -34,15 +32,17 @@ export function GastronomyPageContent() {
       </section>
 
       <EditorialSection
+        chapter="Hathor Restaurant"
         title={GASTRONOMY_PAGE.restaurant.title}
         body={[
           GASTRONOMY_PAGE.restaurant.service,
           `${GASTRONOMY_PAGE.restaurant.atmosphereTitle}: ${GASTRONOMY_PAGE.restaurant.atmosphere}`,
           GASTRONOMY_PAGE.restaurant.closing,
         ]}
-        imageSrc={UNSPLASH_IMAGES.restaurant}
+        imageName="gastronomy-restaurant"
         imageAlt="Hathor Dahabiya restaurant interior"
         imageLeft
+        fullBleed
       />
 
       <section className="hathor-section hathor-section--dark">
@@ -62,8 +62,8 @@ export function GastronomyPageContent() {
               <ScrollReveal key={venue.title} delay={index * 80}>
                 <article className="hathor-venue-card">
                   <div className="hathor-venue-card__image">
-                    <Image
-                      src={index % 2 === 0 ? UNSPLASH_IMAGES.dining : UNSPLASH_IMAGES.restaurant}
+                    <ManagedImage
+                      name={index % 2 === 0 ? "gastronomy-hero" : "gastronomy-restaurant"}
                       alt={venue.title}
                       fill
                       className="object-cover"

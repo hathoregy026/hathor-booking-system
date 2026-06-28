@@ -5,7 +5,17 @@ export const HOMEPAGE_HERO = {
   title: "Ultra Luxury Dahabiya Cruise",
   subtitle:
     "Your luxurious Nile escape begins with the Hathor Dahabiya",
-  cta: "Get Started",
+  cta: "Book Now",
+} as const;
+
+/** Post-hero editorial band — RAW_DATA.md (About + Itineraries intro + Welcome). */
+export const HOMEPAGE_POST_HERO = {
+  headline: "Elegance and Serenity on the Nile",
+  paragraphs: [
+    "Step into an aura of elegance and tranquility aboard the Hathor Dahabiya, where luxury glides gracefully along the Nile and the timeless beauty of Egypt surrounds you. Experience the finest Luxurious Dahabiya in Egypt, where every moment is crafted to inspire wonder and serenity.",
+    "Experience the magic of Egypt on the luxury Hathor Dahabiya Nile cruise.",
+  ],
+  signOff: "Welcome aboard Hathor Dahabiya Cruise.",
 } as const;
 
 export const HOMEPAGE_ITINERARIES = {
@@ -78,6 +88,20 @@ export const HOMEPAGE_HIGHLIGHTS = {
   subtitle: "Cruise in True Elegance",
   body: "The ancient Nile welcomes you aboard the luxurious Hathor Dahabiya Cruise. This private, five-star small boat blends history, comfort, and style.",
   href: "/highlights",
+  pillars: [
+    {
+      title: "The Unfinished Obelisk",
+      body: "A remarkable Ancient Egyptian monument in Aswan — a powerful reminder of Egypt's engineering brilliance, over 3,500 years old.",
+    },
+    {
+      title: "Temple of Hatshepsut",
+      body: "Djeser-Djeseru beneath the cliffs at Deir el-Bahari — relief sculptures recounting the divine birth of a first-of-its-kind female pharaoh.",
+    },
+    {
+      title: "The Valley of the Kings",
+      body: "A magnificent burial ground of pharaohs — Ramses II, Tutankhamen and Seti I — a UNESCO World Heritage Site since 1979.",
+    },
+  ],
 } as const;
 
 export const HOMEPAGE_WELCOME = {
@@ -110,4 +134,17 @@ export const HOMEPAGE_ABOUT = {
 export const HOMEPAGE_REVIEWS = {
   title: "What Our Guests Say",
   body: "Discover what our valued guests have to say about their unforgettable experiences with Hathor Dahabiya Cruise. From luxury accommodations to exceptional service, read authentic reviews from travelers who have explored Egypt with us.",
+} as const;
+
+export const HOMEPAGE_PARTNERS = {
+  title: "Our Partners",
+  chapter: "Trusted Worldwide",
+  partners: [
+    "Easy Trav Tourism",
+    "Booking",
+    "Expedia",
+    "X Luxury Hospitality",
+  ],
+  href: "/#partners",
+  hrefLabel: "Learn more",
 } as const;

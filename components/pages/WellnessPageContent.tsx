@@ -5,7 +5,6 @@ import { EditorialSection } from "@/components/pages/EditorialSection";
 import { PageHero } from "@/components/pages/PageHero";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { WELLNESS_PAGE } from "@/lib/page-content";
-import { UNSPLASH_IMAGES } from "@/lib/unsplash-images";
 
 export function WellnessPageContent() {
   return (
@@ -14,11 +13,10 @@ export function WellnessPageContent() {
         title={WELLNESS_PAGE.hero.title}
         subtitle={WELLNESS_PAGE.hero.subtitle}
         breadcrumb="Wellness"
-        imageSrc={UNSPLASH_IMAGES.wellness}
-        imageAlt="Seneb Spa wellness experience aboard Hathor Dahabiya"
+        imageName="wellness-hero"
       />
 
-      <section className="hathor-section hathor-section--cream">
+      <section className="hathor-section hathor-section--dark">
         <div className="hathor-container">
           <ScrollReveal>
             <div className="mx-auto max-w-3xl text-center">
@@ -35,12 +33,13 @@ export function WellnessPageContent() {
       </section>
 
       <EditorialSection
+        chapter="Historia Fitness"
         title={WELLNESS_PAGE.fitness.title}
         body={WELLNESS_PAGE.fitness.body}
-        imageSrc={UNSPLASH_IMAGES.fitness}
+        imageName="wellness-fitness"
         imageAlt="Historia Fitness Center with panoramic Nile views"
         imageLeft
-        dark
+        fullBleed
       />
 
       <CtaBand

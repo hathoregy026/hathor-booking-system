@@ -1,30 +1,33 @@
-import Image from "next/image";
+"use client";
+
 import Link from "next/link";
+import { useSiteImage } from "@/components/public/SiteImagesProvider";
+import { ParallaxHeroImage } from "@/components/ui/ParallaxHeroImage";
 
 type PageHeroProps = {
   title: string;
   subtitle?: string;
   breadcrumb: string;
-  imageSrc: string;
-  imageAlt: string;
+  imageName: string;
+  imageAlt?: string;
 };
 
 export function PageHero({
   title,
   subtitle,
   breadcrumb,
-  imageSrc,
+  imageName,
   imageAlt,
 }: PageHeroProps) {
+  const image = useSiteImage(imageName);
+
   return (
     <section className="hathor-page-hero">
-      <Image
-        src={imageSrc}
-        alt={imageAlt}
-        fill
+      <ParallaxHeroImage
+        src={image.src}
+        alt={imageAlt ?? image.alt}
         priority
-        className="hathor-page-hero__bg object-cover"
-        sizes="100vw"
+        className="hathor-page-hero__bg"
       />
       <div className="hathor-page-hero__overlay" aria-hidden />
       <div className="hathor-container hathor-page-hero__content">

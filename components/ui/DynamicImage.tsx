@@ -1,10 +1,11 @@
 import Image from "next/image";
 import { getSiteImageByName } from "@/lib/image-management";
+import { getDefaultSiteImage } from "@/lib/site-image-slots";
 
 type DynamicImageProps = {
   name: string;
-  fallbackSrc: string;
-  fallbackAlt: string;
+  fallbackSrc?: string;
+  fallbackAlt?: string;
   className?: string;
   fill?: boolean;
   width?: number;
@@ -24,17 +25,18 @@ export async function DynamicImage({
   priority = false,
   sizes = "(max-width: 768px) 100vw, 50vw",
 }: DynamicImageProps) {
-  let src = fallbackSrc;
-  let alt = fallbackAlt;
+  const defaults = getDefaultSiteImage(name);
+  let src = fallbackSrc ?? defaults.src;
+  let alt = fallbackAlt ?? defaults.alt;
 
   try {
     const record = await getSiteImageByName(name);
     if (record?.url) {
       src = record.url;
-      alt = record.altText || fallbackAlt;
+      alt = record.altText || alt;
     }
   } catch {
-    /* fall back to placeholder */
+    /* fall back to slot defaults */
   }
 
   if (fill) {

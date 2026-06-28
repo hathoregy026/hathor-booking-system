@@ -10,6 +10,7 @@
     "postinstall": "prisma generate",
     "seed:hathor": "node scripts/seed-hathor-data.mjs",
     "seed:content": "node scripts/seed-raw-content.mjs",
+    "seed:site-images": "npx tsx scripts/seed-site-images.ts",
     "seed:email-templates": "node scripts/seed-email-templates.mjs",
     "seed:email-template-urls": "node scripts/seed-email-template-urls.mjs",
     "optimize:email-images": "node --env-file=.env scripts/optimize-email-bucket-images.mjs",

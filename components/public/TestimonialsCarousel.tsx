@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { ScrollReveal } from "./ScrollReveal";
+import { useSiteImage } from "@/components/public/SiteImagesProvider";
 
 const TESTIMONIALS = [
   {
@@ -29,12 +30,14 @@ const HERO_PLACEHOLDER =
   "linear-gradient(135deg, #1a1a1a 0%, #3d2e1a 50%, #0a0a0a 100%)";
 
 type TestimonialsCarouselProps = {
-  backgroundImage?: string | null;
+  backgroundImageName?: string;
 };
 
 export function TestimonialsCarousel({
-  backgroundImage = null,
+  backgroundImageName = "home-testimonials-bg",
 }: TestimonialsCarouselProps) {
+  const managedBackground = useSiteImage(backgroundImageName);
+  const background = managedBackground.src;
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -45,8 +48,8 @@ export function TestimonialsCarousel({
   }, []);
 
   const current = TESTIMONIALS[index];
-  const bgStyle = backgroundImage
-    ? { backgroundImage: `url(${backgroundImage})` }
+  const bgStyle = background
+    ? { backgroundImage: `url(${background})` }
     : { background: HERO_PLACEHOLDER };
 
   return (

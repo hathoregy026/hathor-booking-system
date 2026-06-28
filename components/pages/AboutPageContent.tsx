@@ -1,32 +1,31 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { CtaBand } from "@/components/pages/CtaBand";
 import { EditorialSection } from "@/components/pages/EditorialSection";
 import { PageHero } from "@/components/pages/PageHero";
+import { ManagedImage } from "@/components/ui/ManagedImage";
 import { ABOUT_PAGE } from "@/lib/page-content";
-import { UNSPLASH_IMAGES } from "@/lib/unsplash-images";
 
 const ACCOMMODATION_SECTIONS = [
   {
     key: "cabin",
     data: ABOUT_PAGE.cabin,
-    image: UNSPLASH_IMAGES.luxuryRoom,
+    imageName: "room-luxury",
     imageLeft: false,
   },
   {
     key: "suite",
     data: ABOUT_PAGE.suite,
-    image: UNSPLASH_IMAGES.luxurySuite,
+    imageName: "room-suite",
     imageLeft: true,
   },
   {
     key: "royal",
     data: ABOUT_PAGE.royalSuite,
-    image: UNSPLASH_IMAGES.royalSuite,
+    imageName: "room-royal",
     imageLeft: false,
   },
 ] as const;
@@ -38,8 +37,7 @@ export function AboutPageContent() {
         title={ABOUT_PAGE.hero.title}
         subtitle={ABOUT_PAGE.hero.subtitle}
         breadcrumb="About"
-        imageSrc={UNSPLASH_IMAGES.about}
-        imageAlt="Hathor Dahabiya sailing on the Nile"
+        imageName="about-hero"
       />
 
       <section className="hathor-section hathor-section--cream">
@@ -102,7 +100,7 @@ export function AboutPageContent() {
               : "",
             `Amenities: ${section.data.features.join(" · ")}`,
           ].filter(Boolean)}
-          imageSrc={section.image}
+          imageName={section.imageName}
           imageAlt={`${section.data.title} aboard Hathor Dahabiya`}
           imageLeft={section.imageLeft}
           dark={section.imageLeft}
@@ -159,8 +157,8 @@ export function AboutPageContent() {
             </ScrollReveal>
             <ScrollReveal delay={120}>
               <div className="hathor-editorial__image-wrap hathor-editorial__image-wrap--tall">
-                <Image
-                  src={UNSPLASH_IMAGES.dining}
+                <ManagedImage
+                  name="about-dining"
                   alt="Fine dining aboard Hathor Dahabiya"
                   fill
                   className="hathor-editorial__image object-cover"
