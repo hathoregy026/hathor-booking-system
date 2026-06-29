@@ -2,8 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { Loader2, Lock } from "lucide-react";
-import { HATHOR_BRAND_NAME } from "@/lib/branding";
-import { HathorLogo } from "./HathorLogo";
+import { HATHOR_ADMIN_LOGIN_ICON_SRC, HATHOR_BRAND_NAME } from "@/lib/branding";
 import { AdminThemeProvider, useAdminTheme } from "./ThemeProvider";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -60,13 +59,16 @@ function LoginFormInner({ redirectTo = "/admin" }: LoginFormProps) {
         <div className="flex flex-1 items-center justify-center px-4 pb-12">
           <div className="admin-login-card w-full max-w-md p-6 sm:p-10">
             <div className="mb-6 text-center sm:mb-8">
-              <HathorLogo size="xl" className="mx-auto mb-4 sm:mb-5" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={HATHOR_ADMIN_LOGIN_ICON_SRC}
+                alt=""
+                aria-hidden
+                className="mx-auto mb-4 h-16 w-auto object-contain sm:mb-5"
+              />
               <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
-                Welcome back
+                Welcome to {HATHOR_BRAND_NAME}
               </h1>
-              <p className="mt-2 text-sm" style={{ color: "var(--text-secondary)" }}>
-                Sign in to {HATHOR_BRAND_NAME} Admin
-              </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">

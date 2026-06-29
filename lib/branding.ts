@@ -28,6 +28,13 @@ export const HATHOR_FOOTER_LOGO_DAY_SRC =
 export const HATHOR_FAVICON_SRC = "/branding/hathor-logo-nile-cruise-favicon.webp";
 export const HATHOR_BRAND_NAME = "HATHOR";
 
+/** Admin panel — day / dark wordmarks from assets/LOGOS. */
+export const HATHOR_ADMIN_LOGO_DAY_SRC = "/branding/hathor-logo-nile-cruise-day-mode.webp";
+export const HATHOR_ADMIN_LOGO_DARK_SRC = "/branding/hathor-logo-nile-cruise.webp";
+
+/** Admin login — white Hathor icon (same as public hero header). */
+export const HATHOR_ADMIN_LOGIN_ICON_SRC = HATHOR_HERO_ICON_SRC;
+
 /** Full-bleed homepage hero — Vercel static CDN (same origin, edge-cached). */
 export const HATHOR_HERO_VIDEO_SRC =
   "/media/hathor/videos/hathor-luxury-nile-cruise-promo-bestofegypt.mp4";
@@ -37,4 +44,8 @@ export const HATHOR_HERO_POSTER_SRC = hathorImage("home-hero-poster");
 
 export function getHathorLogoSrc(theme: AdminTheme): string {
   return theme === "day" ? HATHOR_LOGO_DAY_SRC : HATHOR_LOGO_SRC;
+}
+
+export function getHathorAdminLogoSrc(theme: AdminTheme): string {
+  return theme === "day" ? HATHOR_ADMIN_LOGO_DAY_SRC : HATHOR_ADMIN_LOGO_DARK_SRC;
 }

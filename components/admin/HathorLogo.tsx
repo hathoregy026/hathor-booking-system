@@ -1,6 +1,6 @@
 "use client";
 
-import { getHathorLogoSrc, HATHOR_BRAND_NAME } from "@/lib/branding";
+import { getHathorAdminLogoSrc, HATHOR_BRAND_NAME } from "@/lib/branding";
 import { useAdminTheme } from "./ThemeProvider";
 
 type HathorLogoProps = {
@@ -34,7 +34,7 @@ export function HathorLogo({
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={getHathorLogoSrc(theme)}
+      src={getHathorAdminLogoSrc(theme)}
       alt={HATHOR_BRAND_NAME}
       className={`shrink-0 object-contain ${SIZE_CLASSES[size]} ${ROUNDED_CLASSES[rounded]} ${className}`}
     />
