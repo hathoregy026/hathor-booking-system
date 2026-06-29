@@ -21,6 +21,7 @@ export function ParallaxHeroVideo({
 }: ParallaxHeroVideoProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const userUnmutedRef = useRef(false);
   const [isMuted, setIsMuted] = useState(true);
 
   const { scrollYProgress } = useScroll({
@@ -35,6 +36,7 @@ export function ParallaxHeroVideo({
     if (!video) return;
 
     video.muted = true;
+    video.defaultMuted = true;
     video.volume = HERO_VOLUME;
     void video.play().catch(() => {});
   }, [src]);
@@ -43,8 +45,18 @@ export function ParallaxHeroVideo({
     const video = videoRef.current;
     if (!video) return;
 
+    userUnmutedRef.current = false;
+    setIsMuted(true);
+
     const startPlayback = () => {
+      if (userUnmutedRef.current) {
+        video.volume = HERO_VOLUME;
+        void video.play().catch(() => {});
+        return;
+      }
+
       video.muted = true;
+      video.defaultMuted = true;
       video.volume = HERO_VOLUME;
       void video.play().catch(() => {});
     };
@@ -53,15 +65,9 @@ export function ParallaxHeroVideo({
     video.addEventListener("loadedmetadata", startPlayback, { once: true });
     video.addEventListener("canplay", startPlayback, { once: true });
 
-    const onVolumeChange = () => {
-      setIsMuted(video.muted);
-    };
-    video.addEventListener("volumechange", onVolumeChange);
-
     return () => {
       video.removeEventListener("loadedmetadata", startPlayback);
       video.removeEventListener("canplay", startPlayback);
-      video.removeEventListener("volumechange", onVolumeChange);
     };
   }, [src]);
 
@@ -69,12 +75,30 @@ export function ParallaxHeroVideo({
     const video = videoRef.current;
     if (!video) return;
 
-    video.muted = !video.muted;
-    if (!video.muted) {
-      video.volume = HERO_VOLUME;
-      void video.play().catch(() => {});
+    if (!isMuted) {
+      video.muted = true;
+      video.defaultMuted = true;
+      userUnmutedRef.current = false;
+      setIsMuted(true);
+      return;
     }
-    setIsMuted(video.muted);
+
+    userUnmutedRef.current = true;
+    video.defaultMuted = false;
+    video.muted = false;
+    video.volume = HERO_VOLUME;
+
+    setIsMuted(false);
+
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        userUnmutedRef.current = false;
+        video.muted = true;
+        video.defaultMuted = true;
+        setIsMuted(true);
+      });
+    }
   };
 
   return (
@@ -86,7 +110,7 @@ export function ParallaxHeroVideo({
           src={src}
           autoPlay
           loop
-          muted
+          muted={isMuted}
           playsInline
           preload="auto"
           // @ts-expect-error fetchPriority is valid on video in modern browsers
