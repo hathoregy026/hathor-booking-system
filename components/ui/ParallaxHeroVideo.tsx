@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Volume2, VolumeX } from "lucide-react";
 
@@ -23,6 +24,7 @@ export function ParallaxHeroVideo({
   const videoRef = useRef<HTMLVideoElement>(null);
   const userUnmutedRef = useRef(false);
   const [isMuted, setIsMuted] = useState(true);
+  const [heroRoot, setHeroRoot] = useState<HTMLElement | null>(null);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -32,11 +34,17 @@ export function ParallaxHeroVideo({
   const scale = useTransform(scrollYProgress, [0, 1], [1.08, 1.18]);
 
   useLayoutEffect(() => {
+    const root = containerRef.current?.closest(".owo-hero, .preview-hero");
+    setHeroRoot(root instanceof HTMLElement ? root : null);
+  }, []);
+
+  useLayoutEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
     video.muted = true;
     video.defaultMuted = true;
+    video.setAttribute("muted", "");
     video.volume = HERO_VOLUME;
     void video.play().catch(() => {});
   }, [src]);
@@ -57,6 +65,7 @@ export function ParallaxHeroVideo({
 
       video.muted = true;
       video.defaultMuted = true;
+      video.setAttribute("muted", "");
       video.volume = HERO_VOLUME;
       void video.play().catch(() => {});
     };
@@ -71,23 +80,15 @@ export function ParallaxHeroVideo({
     };
   }, [src]);
 
-  const toggleMute = () => {
+  const unmuteFromGesture = () => {
     const video = videoRef.current;
     if (!video) return;
-
-    if (!isMuted) {
-      video.muted = true;
-      video.defaultMuted = true;
-      userUnmutedRef.current = false;
-      setIsMuted(true);
-      return;
-    }
 
     userUnmutedRef.current = true;
     video.defaultMuted = false;
     video.muted = false;
+    video.removeAttribute("muted");
     video.volume = HERO_VOLUME;
-
     setIsMuted(false);
 
     const playPromise = video.play();
@@ -96,10 +97,50 @@ export function ParallaxHeroVideo({
         userUnmutedRef.current = false;
         video.muted = true;
         video.defaultMuted = true;
+        video.setAttribute("muted", "");
         setIsMuted(true);
       });
     }
   };
+
+  const muteVideo = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    userUnmutedRef.current = false;
+    video.muted = true;
+    video.defaultMuted = true;
+    video.setAttribute("muted", "");
+    setIsMuted(true);
+  };
+
+  const handleAudioToggle = () => {
+    if (isMuted) {
+      unmuteFromGesture();
+      return;
+    }
+    muteVideo();
+  };
+
+  const audioToggle = (
+    <button
+      type="button"
+      className="hathor-hero-audio-toggle cursor-hover"
+      onClick={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        handleAudioToggle();
+      }}
+      aria-label={isMuted ? "Unmute hero video" : "Mute hero video"}
+      aria-pressed={!isMuted}
+    >
+      {isMuted ? (
+        <VolumeX className="hathor-hero-audio-toggle__icon" aria-hidden />
+      ) : (
+        <Volume2 className="hathor-hero-audio-toggle__icon" aria-hidden />
+      )}
+    </button>
+  );
 
   return (
     <div ref={containerRef} className={`hathor-parallax-hero__frame ${className}`}>
@@ -110,7 +151,6 @@ export function ParallaxHeroVideo({
           src={src}
           autoPlay
           loop
-          muted={isMuted}
           playsInline
           preload="auto"
           // @ts-expect-error fetchPriority is valid on video in modern browsers
@@ -120,19 +160,7 @@ export function ParallaxHeroVideo({
         />
       </motion.div>
 
-      <button
-        type="button"
-        className="hathor-hero-audio-toggle cursor-hover"
-        onClick={toggleMute}
-        aria-label={isMuted ? "Unmute hero video" : "Mute hero video"}
-        aria-pressed={!isMuted}
-      >
-        {isMuted ? (
-          <VolumeX className="hathor-hero-audio-toggle__icon" aria-hidden />
-        ) : (
-          <Volume2 className="hathor-hero-audio-toggle__icon" aria-hidden />
-        )}
-      </button>
+      {heroRoot ? createPortal(audioToggle, heroRoot) : audioToggle}
     </div>
   );
 }
