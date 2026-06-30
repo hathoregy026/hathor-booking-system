@@ -8,10 +8,10 @@ import { deleteBlogPost } from "@/app/admin/(panel)/blogs/actions";
 import { ActionButton } from "@/components/admin/ActionButton";
 import { DataTable } from "@/components/admin/DataTable";
 import { useToast } from "@/components/admin/ToastProvider";
-import type { AdminBlogPostRow } from "@/lib/admin-blog";
+import type { AdminBlogPostListItem } from "@/lib/admin-blog";
 
 type BlogsAdminClientProps = {
-  initialPosts: AdminBlogPostRow[];
+  initialPosts: AdminBlogPostListItem[];
 };
 
 function formatPublishedDate(iso: string): string {
@@ -40,7 +40,7 @@ export function BlogsAdminClient({ initialPosts }: BlogsAdminClientProps) {
     );
   }, [posts, query]);
 
-  const handleDelete = (post: AdminBlogPostRow) => {
+  const handleDelete = (post: AdminBlogPostListItem) => {
     const confirmed = window.confirm(
       `Delete "${post.title}"? This cannot be undone.`,
     );

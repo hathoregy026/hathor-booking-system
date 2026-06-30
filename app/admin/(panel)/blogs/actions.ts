@@ -6,15 +6,12 @@ import { assertAdminSession, AdminAuthError } from "@/lib/admin-server-auth";
 import {
   createBlogPostRecord,
   deleteBlogPostRecord,
-  fetchBlogPostForAdminById,
-  fetchBlogPostsForAdmin,
   updateBlogPostRecord,
 } from "@/lib/admin-blog-data";
 import {
   parseBlogPostFormData,
   parsePublishedAt,
   resolveBlogSlug,
-  type AdminBlogPostRow,
 } from "@/lib/admin-blog";
 import { ZodError } from "zod";
 
@@ -45,18 +42,6 @@ function formatActionError(error: unknown): string {
   }
 
   return "Something went wrong. Please try again.";
-}
-
-export async function listBlogPostsForAdmin(): Promise<AdminBlogPostRow[]> {
-  await assertAdminSession();
-  return fetchBlogPostsForAdmin();
-}
-
-export async function getBlogPostForAdmin(
-  id: string,
-): Promise<AdminBlogPostRow | null> {
-  await assertAdminSession();
-  return fetchBlogPostForAdminById(id);
 }
 
 export async function createBlogPost(

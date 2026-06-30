@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getBlogPostForAdmin } from "../actions";
+import { fetchBlogPostForAdminById } from "@/lib/admin-blog-data";
 import { BlogPostForm } from "@/components/admin/BlogPostForm";
 
 type EditBlogPostPageProps = {
@@ -8,7 +8,7 @@ type EditBlogPostPageProps = {
 
 export default async function EditBlogPostPage({ params }: EditBlogPostPageProps) {
   const { id } = await params;
-  const post = await getBlogPostForAdmin(id);
+  const post = await fetchBlogPostForAdminById(id);
 
   if (!post) {
     notFound();

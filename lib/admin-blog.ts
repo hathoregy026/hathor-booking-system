@@ -1,15 +1,18 @@
 import { z } from "zod";
 import { resolveBlogSlug } from "@/lib/blog-slug";
 
-export type AdminBlogPostRow = {
+export type AdminBlogPostListItem = {
   id: string;
   slug: string;
   title: string;
   excerpt: string;
-  content: string;
   publishedAt: string;
-  createdAt: string;
   updatedAt: string;
+};
+
+export type AdminBlogPostRow = AdminBlogPostListItem & {
+  content: string;
+  createdAt: string;
 };
 
 export const blogPostFormSchema = z.object({

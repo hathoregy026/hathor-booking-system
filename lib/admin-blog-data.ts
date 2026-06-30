@@ -1,30 +1,52 @@
 import { prisma } from "@/lib/prisma";
 import { createSupabaseAdminClient } from "@/lib/supabase-server";
-import { serializeAdminBlogPost, type AdminBlogPostRow } from "@/lib/admin-blog";
+import {
+  serializeAdminBlogPost,
+  type AdminBlogPostListItem,
+  type AdminBlogPostRow,
+} from "@/lib/admin-blog";
 
-const ADMIN_BLOG_SELECT = {
+const ADMIN_BLOG_LIST_SELECT = {
   id: true,
   slug: true,
   title: true,
   excerpt: true,
-  content: true,
   publishedAt: true,
-  createdAt: true,
   updatedAt: true,
 } as const;
 
-type BlogPostRecord = {
+const ADMIN_BLOG_DETAIL_SELECT = {
+  ...ADMIN_BLOG_LIST_SELECT,
+  content: true,
+  createdAt: true,
+} as const;
+
+type BlogPostListRecord = {
   id: string;
   slug: string;
   title: string;
   excerpt: string;
-  content: string;
   publishedAt: string | Date;
-  createdAt: string | Date;
   updatedAt: string | Date;
 };
 
-function mapAdminBlogPost(row: BlogPostRecord): AdminBlogPostRow {
+type BlogPostDetailRecord = BlogPostListRecord & {
+  content: string;
+  createdAt: string | Date;
+};
+
+function mapAdminBlogListItem(row: BlogPostListRecord): AdminBlogPostListItem {
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    excerpt: row.excerpt,
+    publishedAt: new Date(row.publishedAt).toISOString(),
+    updatedAt: new Date(row.updatedAt).toISOString(),
+  };
+}
+
+function mapAdminBlogDetail(row: BlogPostDetailRecord): AdminBlogPostRow {
   return serializeAdminBlogPost({
     id: row.id,
     slug: row.slug,
@@ -42,49 +64,62 @@ function prefersSupabaseBlogData(): boolean {
   return /db\.[a-z0-9-]+\.supabase\.co(?::5432)?/i.test(url);
 }
 
-async function listViaPrisma(): Promise<AdminBlogPostRow[]> {
+async function listViaPrisma(): Promise<AdminBlogPostListItem[]> {
   const posts = await prisma.blogPost.findMany({
     orderBy: { publishedAt: "desc" },
-    select: ADMIN_BLOG_SELECT,
+    select: ADMIN_BLOG_LIST_SELECT,
   });
-  return posts.map(serializeAdminBlogPost);
+
+  return posts.map((post) =>
+    mapAdminBlogListItem({
+      ...post,
+      publishedAt: post.publishedAt,
+      updatedAt: post.updatedAt,
+    }),
+  );
 }
 
-async function listViaSupabase(): Promise<AdminBlogPostRow[]> {
+async function listViaSupabase(): Promise<AdminBlogPostListItem[]> {
   const supabase = createSupabaseAdminClient();
   const { data, error } = await supabase
     .from("BlogPost")
-    .select("id, slug, title, excerpt, content, publishedAt, createdAt, updatedAt")
+    .select("id, slug, title, excerpt, publishedAt, updatedAt")
     .order("publishedAt", { ascending: false });
 
   if (error) throw error;
-  return (data ?? []).map((row) => mapAdminBlogPost(row as BlogPostRecord));
+  return (data ?? []).map((row) => mapAdminBlogListItem(row as BlogPostListRecord));
 }
 
-export async function fetchBlogPostsForAdmin(): Promise<AdminBlogPostRow[]> {
-  if (prefersSupabaseBlogData()) {
+export async function fetchBlogPostsForAdmin(): Promise<AdminBlogPostListItem[]> {
+  const attempts: Array<() => Promise<AdminBlogPostListItem[]>> = prefersSupabaseBlogData()
+    ? [listViaSupabase, listViaPrisma, listViaSupabase]
+    : [listViaPrisma, listViaSupabase];
+
+  for (const attempt of attempts) {
     try {
-      return await listViaSupabase();
+      return await attempt();
     } catch (error) {
-      console.error("[admin-blog-data] supabase list failed:", error);
+      console.error("[admin-blog-data] list attempt failed:", error);
     }
   }
 
-  try {
-    return await listViaPrisma();
-  } catch (error) {
-    console.error("[admin-blog-data] prisma list failed:", error);
-  }
-
-  return listViaSupabase();
+  return [];
 }
 
 async function getByIdViaPrisma(id: string): Promise<AdminBlogPostRow | null> {
   const post = await prisma.blogPost.findUnique({
     where: { id },
-    select: ADMIN_BLOG_SELECT,
+    select: ADMIN_BLOG_DETAIL_SELECT,
   });
-  return post ? serializeAdminBlogPost(post) : null;
+
+  return post
+    ? mapAdminBlogDetail({
+        ...post,
+        publishedAt: post.publishedAt,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+      })
+    : null;
 }
 
 async function getByIdViaSupabase(id: string): Promise<AdminBlogPostRow | null> {
@@ -96,27 +131,25 @@ async function getByIdViaSupabase(id: string): Promise<AdminBlogPostRow | null> 
     .maybeSingle();
 
   if (error) throw error;
-  return data ? mapAdminBlogPost(data as BlogPostRecord) : null;
+  return data ? mapAdminBlogDetail(data as BlogPostDetailRecord) : null;
 }
 
 export async function fetchBlogPostForAdminById(
   id: string,
 ): Promise<AdminBlogPostRow | null> {
-  if (prefersSupabaseBlogData()) {
+  const attempts: Array<() => Promise<AdminBlogPostRow | null>> = prefersSupabaseBlogData()
+    ? [() => getByIdViaSupabase(id), () => getByIdViaPrisma(id), () => getByIdViaSupabase(id)]
+    : [() => getByIdViaPrisma(id), () => getByIdViaSupabase(id)];
+
+  for (const attempt of attempts) {
     try {
-      return await getByIdViaSupabase(id);
+      return await attempt();
     } catch (error) {
-      console.error("[admin-blog-data] supabase get failed:", error);
+      console.error("[admin-blog-data] get attempt failed:", error);
     }
   }
 
-  try {
-    return await getByIdViaPrisma(id);
-  } catch (error) {
-    console.error("[admin-blog-data] prisma get failed:", error);
-  }
-
-  return getByIdViaSupabase(id);
+  return null;
 }
 
 export async function createBlogPostRecord(data: {
