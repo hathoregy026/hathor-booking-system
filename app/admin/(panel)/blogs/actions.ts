@@ -4,14 +4,18 @@ import { revalidatePath } from "next/cache";
 import { Prisma } from "@/app/generated/prisma/client";
 import { assertAdminSession, AdminAuthError } from "@/lib/admin-server-auth";
 import {
+  createBlogPostRecord,
+  deleteBlogPostRecord,
+  fetchBlogPostForAdminById,
+  fetchBlogPostsForAdmin,
+  updateBlogPostRecord,
+} from "@/lib/admin-blog-data";
+import {
   parseBlogPostFormData,
   parsePublishedAt,
   resolveBlogSlug,
-  serializeAdminBlogPost,
   type AdminBlogPostRow,
 } from "@/lib/admin-blog";
-import { withDb } from "@/lib/db-safe";
-import { prisma } from "@/lib/prisma";
 import { ZodError } from "zod";
 
 export type BlogActionResult<T = void> =
@@ -34,6 +38,9 @@ function formatActionError(error: unknown): string {
   }
 
   if (error instanceof Error) {
+    if (error.message.includes("duplicate key")) {
+      return "A post with this slug already exists. Choose a different slug.";
+    }
     return error.message;
   }
 
@@ -42,48 +49,14 @@ function formatActionError(error: unknown): string {
 
 export async function listBlogPostsForAdmin(): Promise<AdminBlogPostRow[]> {
   await assertAdminSession();
-
-  const posts = await withDb(() =>
-    prisma.blogPost.findMany({
-      orderBy: { publishedAt: "desc" },
-      select: {
-        id: true,
-        slug: true,
-        title: true,
-        excerpt: true,
-        content: true,
-        publishedAt: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    }),
-  );
-
-  return posts.map(serializeAdminBlogPost);
+  return fetchBlogPostsForAdmin();
 }
 
 export async function getBlogPostForAdmin(
   id: string,
 ): Promise<AdminBlogPostRow | null> {
   await assertAdminSession();
-
-  const post = await withDb(() =>
-    prisma.blogPost.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        slug: true,
-        title: true,
-        excerpt: true,
-        content: true,
-        publishedAt: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    }),
-  );
-
-  return post ? serializeAdminBlogPost(post) : null;
+  return fetchBlogPostForAdminById(id);
 }
 
 export async function createBlogPost(
@@ -96,18 +69,13 @@ export async function createBlogPost(
     const slug = resolveBlogSlug(input.title, input.slug);
     const publishedAt = parsePublishedAt(input.publishedAt);
 
-    const post = await withDb(() =>
-      prisma.blogPost.create({
-        data: {
-          title: input.title,
-          slug,
-          excerpt: input.excerpt,
-          content: input.content,
-          publishedAt,
-        },
-        select: { id: true },
-      }),
-    );
+    const post = await createBlogPostRecord({
+      title: input.title,
+      slug,
+      excerpt: input.excerpt,
+      content: input.content,
+      publishedAt,
+    });
 
     revalidatePath("/admin/blogs");
     revalidatePath("/blogs");
@@ -134,18 +102,13 @@ export async function updateBlogPost(
     const slug = resolveBlogSlug(input.title, input.slug);
     const publishedAt = parsePublishedAt(input.publishedAt);
 
-    await withDb(() =>
-      prisma.blogPost.update({
-        where: { id },
-        data: {
-          title: input.title,
-          slug,
-          excerpt: input.excerpt,
-          content: input.content,
-          publishedAt,
-        },
-      }),
-    );
+    await updateBlogPostRecord(id, {
+      title: input.title,
+      slug,
+      excerpt: input.excerpt,
+      content: input.content,
+      publishedAt,
+    });
 
     revalidatePath("/admin/blogs");
     revalidatePath("/blogs");
@@ -173,22 +136,15 @@ export async function deleteBlogPost(
       return { success: false, error: "Post ID is required." };
     }
 
-    const existing = await withDb(() =>
-      prisma.blogPost.findUnique({
-        where: { id },
-        select: { slug: true },
-      }),
-    );
+    const slug = await deleteBlogPostRecord(id);
 
-    if (!existing) {
+    if (!slug) {
       return { success: false, error: "Post not found." };
     }
 
-    await withDb(() => prisma.blogPost.delete({ where: { id } }));
-
     revalidatePath("/admin/blogs");
     revalidatePath("/blogs");
-    revalidatePath(`/blogs/${existing.slug}`);
+    revalidatePath(`/blogs/${slug}`);
 
     return { success: true };
   } catch (error) {
