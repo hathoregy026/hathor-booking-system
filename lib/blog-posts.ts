@@ -1,3 +1,4 @@
+import { isValidBlogSlug } from "@/lib/blog-slug";
 import { prisma } from "@/lib/prisma";
 import { createSupabaseAdminClient } from "@/lib/supabase-server";
 
@@ -19,13 +20,7 @@ type BlogPostRow = {
   publishedAt: string;
 };
 
-const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-
-/** Direct Supabase DB hosts are often unreachable locally; prefer REST for blog reads. */
-function prefersSupabaseBlogData(): boolean {
-  const url = process.env.DATABASE_URL ?? "";
-  return /db\.[a-z0-9-]+\.supabase\.co(?::5432)?/i.test(url);
-}
+export { isValidBlogSlug } from "@/lib/blog-slug";
 
 const BLOG_POST_LIST_SELECT = {
   slug: true,
@@ -39,8 +34,10 @@ const BLOG_POST_DETAIL_SELECT = {
   content: true,
 } as const;
 
-export function isValidBlogSlug(slug: string): boolean {
-  return SLUG_PATTERN.test(slug) && slug.length <= 200;
+/** Direct Supabase DB hosts are often unreachable locally; prefer REST for blog reads. */
+function prefersSupabaseBlogData(): boolean {
+  const url = process.env.DATABASE_URL ?? "";
+  return /db\.[a-z0-9-]+\.supabase\.co(?::5432)?/i.test(url);
 }
 
 function mapBlogPostSummary(row: BlogPostRow): BlogPostSummary {

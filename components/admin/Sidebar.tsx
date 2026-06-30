@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
+  FileText,
   Globe,
   LayoutDashboard,
   LogOut,
@@ -28,6 +29,7 @@ const NAV_SECTIONS: { title: string; items: NavItem[] }[] = [
       { href: "/admin/bookings", label: "Bookings", icon: Ticket },
       { href: "/admin/cruises", label: "Cruises & Rooms", icon: Ship },
       { href: "/admin/content", label: "Website Content", icon: Globe },
+      { href: "/admin/blogs", label: "Blog Posts", icon: FileText },
       { href: "/admin/email-templates", label: "Email Templates", icon: Mail },
     ],
   },
