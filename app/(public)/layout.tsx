@@ -19,6 +19,9 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.hathorcruise.com",
+  ),
   title: {
     default: "Luxury Dahabiya Nile Cruise | Hathor Dahabiya",
     template: "%s | Hathor Dahabiya",

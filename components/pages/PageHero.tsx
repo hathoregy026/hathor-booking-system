@@ -8,6 +8,7 @@ type PageHeroProps = {
   title: string;
   subtitle?: string;
   breadcrumb: string;
+  parentBreadcrumb?: { label: string; href: string };
   imageName: string;
   imageAlt?: string;
 };
@@ -16,6 +17,7 @@ export function PageHero({
   title,
   subtitle,
   breadcrumb,
+  parentBreadcrumb,
   imageName,
   imageAlt,
 }: PageHeroProps) {
@@ -34,7 +36,13 @@ export function PageHero({
         <nav className="hathor-breadcrumb" aria-label="Breadcrumb">
           <Link href="/">Home</Link>
           <span aria-hidden>/</span>
-          <span>{breadcrumb}</span>
+          {parentBreadcrumb ? (
+            <>
+              <Link href={parentBreadcrumb.href}>{parentBreadcrumb.label}</Link>
+              <span aria-hidden>/</span>
+            </>
+          ) : null}
+          <span aria-current="page">{breadcrumb}</span>
         </nav>
         <h1 className="hathor-page-hero__title">{title}</h1>
         {subtitle ? (

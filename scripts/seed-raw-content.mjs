@@ -299,11 +299,10 @@ async function upsertBlogPost(post) {
       `UPDATE "BlogPost"
        SET title = $2,
            excerpt = $3,
-           content = $4,
-           "publishedAt" = $5,
+           "publishedAt" = $4,
            "updatedAt" = NOW()
        WHERE id = $1`,
-      [existing.rows[0].id, post.title, post.excerpt, "", post.publishedAt],
+      [existing.rows[0].id, post.title, post.excerpt, post.publishedAt],
     );
   } else {
     await query(
@@ -348,7 +347,8 @@ try {
     console.log(`  ✓ ${section}`);
   }
 
-  console.log("Seeding BlogPost records...");
+  console.log("Seeding BlogPost metadata (titles/excerpts only)...");
+  console.log("  → Run npm run seed:blogs to populate full article content.");
   for (const post of blogPosts) {
     await upsertBlogPost(post);
   }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { BlogPageContent } from "@/components/pages/BlogPageContent";
+import { serializeBlogPostSummaries } from "@/lib/blog-display";
 import { getPublishedBlogPosts } from "@/lib/blog-posts";
 
 export const metadata: Metadata = {
@@ -16,6 +17,6 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function BlogsPage() {
-  const posts = await getPublishedBlogPosts();
+  const posts = serializeBlogPostSummaries(await getPublishedBlogPosts());
   return <BlogPageContent posts={posts} />;
 }

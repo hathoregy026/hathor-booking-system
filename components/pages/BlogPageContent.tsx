@@ -6,7 +6,10 @@ import { ArrowRight } from "lucide-react";
 import { CtaBand } from "@/components/pages/CtaBand";
 import { PageHero } from "@/components/pages/PageHero";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import type { BlogPostSummary } from "@/lib/blog-posts";
+import {
+  formatBlogPublishedDate,
+  type BlogPostSummaryClient,
+} from "@/lib/blog-display";
 import { BLOG_PAGE } from "@/lib/page-content";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 
@@ -21,16 +24,8 @@ const BLOG_IMAGE_NAMES = [
 
 const PAGE_SIZE = 12;
 
-function formatBlogDate(date: Date): string {
-  return new Intl.DateTimeFormat("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  }).format(date);
-}
-
 type BlogPageContentProps = {
-  posts: BlogPostSummary[];
+  posts: BlogPostSummaryClient[];
 };
 
 export function BlogPageContent({ posts }: BlogPageContentProps) {
@@ -73,10 +68,10 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
                     </div>
                     <div className="hathor-blog-card__body">
                       <time
-                        dateTime={post.publishedAt.toISOString()}
+                        dateTime={post.publishedAt}
                         className="hathor-section-eyebrow"
                       >
-                        {formatBlogDate(post.publishedAt)}
+                        {formatBlogPublishedDate(post.publishedAt)}
                       </time>
                       <h2 className="hathor-blog-card__title">{post.title}</h2>
                       <p className="hathor-blog-card__excerpt">{post.excerpt}</p>
