@@ -10,51 +10,57 @@ import {
 import {
   PUBLIC_THEME_STORAGE_KEY,
   type PublicTheme,
+  applyPublicThemeToDocument,
   normalizePublicTheme,
+  persistPublicTheme,
+  readPublicThemeFromDocument,
 } from "@/lib/public-theme";
 
 type PublicThemeContextValue = {
   theme: PublicTheme;
   setTheme: (theme: PublicTheme) => void;
-  mounted: boolean;
+  toggleTheme: () => void;
 };
 
 const PublicThemeContext = createContext<PublicThemeContextValue | null>(null);
 
-function applyThemeToDocument(theme: PublicTheme) {
-  document.documentElement.setAttribute("data-public-theme", theme);
+function readStoredTheme(): PublicTheme {
+  try {
+    return normalizePublicTheme(localStorage.getItem(PUBLIC_THEME_STORAGE_KEY));
+  } catch {
+    return readPublicThemeFromDocument();
+  }
 }
 
 export function PublicThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<PublicTheme>("day");
-  const [mounted, setMounted] = useState(false);
+  const [theme, setThemeState] = useState<PublicTheme>(() => {
+    if (typeof window === "undefined") return "day";
+    return readStoredTheme();
+  });
 
   useEffect(() => {
-    const stored = localStorage.getItem(PUBLIC_THEME_STORAGE_KEY);
-    const next = normalizePublicTheme(stored);
+    const next = readStoredTheme();
     setThemeState(next);
-    applyThemeToDocument(next);
-    setMounted(true);
+    applyPublicThemeToDocument(next);
   }, []);
-
-  useEffect(() => {
-    if (!mounted) return;
-    applyThemeToDocument(theme);
-    localStorage.setItem(PUBLIC_THEME_STORAGE_KEY, theme);
-  }, [theme, mounted]);
 
   const setTheme = useCallback((next: PublicTheme) => {
     setThemeState(next);
-    applyThemeToDocument(next);
-    try {
-      localStorage.setItem(PUBLIC_THEME_STORAGE_KEY, next);
-    } catch {
-      /* storage unavailable */
-    }
+    applyPublicThemeToDocument(next);
+    persistPublicTheme(next);
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    setThemeState((current) => {
+      const next: PublicTheme = current === "day" ? "night" : "day";
+      applyPublicThemeToDocument(next);
+      persistPublicTheme(next);
+      return next;
+    });
   }, []);
 
   return (
-    <PublicThemeContext.Provider value={{ theme, setTheme, mounted }}>
+    <PublicThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
       {children}
     </PublicThemeContext.Provider>
   );

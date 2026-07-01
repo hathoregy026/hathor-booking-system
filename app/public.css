@@ -4193,6 +4193,12 @@ html[data-public-theme="day"] .hathor-explore__backdrop {
   background: rgb(28 25 22 / 0.45);
 }
 
+.hathor-header--owo-hero-layout .hathor-header__col--right .public-theme-toggle {
+  position: relative;
+  z-index: 20;
+  pointer-events: auto;
+}
+
 .public-theme-toggle {
   display: inline-flex;
   align-items: center;
