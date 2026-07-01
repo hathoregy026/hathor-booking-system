@@ -8,6 +8,7 @@
   --foreground: #1e293b;
   --hathor-navy: #1e3a5f;
   --hathor-gold: #c9a227;
+  --hathor-cursor: url("/branding/hathor-mouse-arrow-egypt-tours-GOLDEN.svg") 11 1, auto;
 
   /* Luxury public site tokens */
   --lux-dark: #0a0a0a;
@@ -29,6 +30,7 @@
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
+  cursor: var(--hathor-cursor);
 }
 
 body {
@@ -36,6 +38,47 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   overflow-x: hidden;
+  cursor: var(--hathor-cursor);
+}
+
+a,
+button,
+[role="button"],
+input[type="submit"],
+input[type="button"],
+input[type="reset"],
+input[type="checkbox"],
+input[type="radio"],
+select,
+summary,
+label[for],
+.cursor-hover {
+  cursor: var(--hathor-cursor);
+}
+
+button:disabled,
+[disabled],
+.cursor-not-allowed {
+  cursor: not-allowed;
+}
+
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  html,
+  body,
+  a,
+  button,
+  [role="button"],
+  input[type="submit"],
+  input[type="button"],
+  input[type="reset"],
+  input[type="checkbox"],
+  input[type="radio"],
+  select,
+  summary,
+  label[for],
+  .cursor-hover {
+    cursor: auto;
+  }
 }
 
 body:has(.public-site) {

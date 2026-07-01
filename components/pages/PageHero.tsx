@@ -11,6 +11,8 @@ type PageHeroProps = {
   parentBreadcrumb?: { label: string; href: string };
   imageName: string;
   imageAlt?: string;
+  /** Larger hero with stronger title contrast — used on blog posts. */
+  variant?: "default" | "blog";
 };
 
 export function PageHero({
@@ -20,11 +22,14 @@ export function PageHero({
   parentBreadcrumb,
   imageName,
   imageAlt,
+  variant = "default",
 }: PageHeroProps) {
   const image = useSiteImage(imageName);
 
   return (
-    <section className="hathor-page-hero">
+    <section
+      className={`hathor-page-hero${variant === "blog" ? " hathor-page-hero--blog" : ""}`}
+    >
       <ParallaxHeroImage
         src={image.src}
         alt={imageAlt ?? image.alt}

@@ -74,17 +74,54 @@ export const NAV_PAGES: NavGroup = {
 export const NAV_GROUPS = [NAV_ACCOMMODATIONS, NAV_EXPERIENCES, NAV_PAGES] as const;
 
 export const EXPLORE_LINKS: NavLink[] = [
+  { href: "/", label: "Homepage" },
   { href: "/cruises", label: "Cruises" },
   { href: "/gastronomy", label: "Dining" },
   { href: "/wellness", label: "Seneb Spa" },
   { href: "/charter", label: "Charter Enquiry" },
 ];
 
-/** Centered desktop header links — OWO-style primary navigation. */
-export const HEADER_NAV_LINKS: NavLink[] = [
-  { href: "/cruises", label: "Cruises" },
-  { href: "/rooms", label: "Accommodations" },
-  { href: "/highlights", label: "Experiences" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
+export type HeaderNavLink = {
+  type: "link";
+  href: string;
+  label: string;
+};
+
+export type HeaderNavGroup = {
+  type: "group";
+  id: string;
+  label: string;
+  href: string;
+  links: NavLink[];
+};
+
+export type HeaderNavItem = HeaderNavLink | HeaderNavGroup;
+
+/** Desktop + mobile primary nav — groups match explore panel dropdowns. */
+export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
+  { type: "link", href: "/", label: "Homepage" },
+  { type: "link", href: "/cruises", label: "Cruises" },
+  {
+    type: "group",
+    id: "accommodations",
+    label: "Accommodations",
+    href: "/rooms",
+    links: NAV_ACCOMMODATIONS.links,
+  },
+  {
+    type: "group",
+    id: "experiences",
+    label: "Experiences",
+    href: "/highlights",
+    links: NAV_EXPERIENCES.links,
+  },
+  { type: "link", href: "/about", label: "About" },
+  { type: "link", href: "/contact", label: "Contact" },
 ];
+
+/** @deprecated Use HEADER_NAV_ITEMS */
+export const HEADER_NAV_LINKS: NavLink[] = HEADER_NAV_ITEMS.flatMap((item) =>
+  item.type === "link"
+    ? [{ href: item.href, label: item.label }]
+    : [{ href: item.href, label: item.label }],
+);

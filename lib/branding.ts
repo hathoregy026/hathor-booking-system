@@ -26,6 +26,14 @@ export const HATHOR_FOOTER_LOGO_DAY_SRC =
   "/branding/hathor-logo-nile-cruise-panorama-on-nile-visit-egypt-black.svg";
 
 export const HATHOR_FAVICON_SRC = "/branding/hathor-logo-nile-cruise-favicon.webp";
+
+/** Homepage hero wordmark — centered over video */
+export const HATHOR_MAIN_LOGO_SRC =
+  "/branding/hathor-main-logo-egypt-toors.svg";
+
+/** Custom site-wide pointer — tip hotspot at ~11×1 in 32×32 viewBox */
+export const HATHOR_CURSOR_SRC =
+  "/branding/hathor-mouse-arrow-egypt-tours-GOLDEN.svg";
 export const HATHOR_BRAND_NAME = "HATHOR";
 
 /** Admin panel — day / dark wordmarks from assets/LOGOS. */

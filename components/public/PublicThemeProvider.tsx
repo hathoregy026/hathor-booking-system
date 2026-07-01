@@ -26,7 +26,7 @@ function applyThemeToDocument(theme: PublicTheme) {
 }
 
 export function PublicThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<PublicTheme>("night");
+  const [theme, setThemeState] = useState<PublicTheme>("day");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -45,6 +45,12 @@ export function PublicThemeProvider({ children }: { children: React.ReactNode })
 
   const setTheme = useCallback((next: PublicTheme) => {
     setThemeState(next);
+    applyThemeToDocument(next);
+    try {
+      localStorage.setItem(PUBLIC_THEME_STORAGE_KEY, next);
+    } catch {
+      /* storage unavailable */
+    }
   }, []);
 
   return (

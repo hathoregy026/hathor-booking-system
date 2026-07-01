@@ -1,12 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { ParallaxHeroVideo } from "@/components/ui/ParallaxHeroVideo";
 import {
   HATHOR_BRAND_NAME,
   HATHOR_HERO_VIDEO_SRC,
-  HATHOR_LOGO_DAY_SRC,
-  HATHOR_LOGO_SRC,
+  HATHOR_MAIN_LOGO_SRC,
 } from "@/lib/branding";
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 
@@ -26,22 +24,12 @@ export function Hero() {
         <p className="owo-hero__subtitle">{HOMEPAGE_HERO.subtitle}</p>
       </div>
 
-      <Link href="/" className="owo-hero__logo-bottom cursor-hover" aria-label={HATHOR_BRAND_NAME}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={HATHOR_LOGO_SRC}
-          alt=""
-          aria-hidden
-          className="owo-hero__logo-bottom-img hathor-brand-logo hathor-brand-logo--night"
-        />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={HATHOR_LOGO_DAY_SRC}
-          alt=""
-          aria-hidden
-          className="owo-hero__logo-bottom-img hathor-brand-logo hathor-brand-logo--day"
-        />
-      </Link>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={HATHOR_MAIN_LOGO_SRC}
+        alt={HATHOR_BRAND_NAME}
+        className="owo-hero__logo-main"
+      />
     </section>
   );
 }

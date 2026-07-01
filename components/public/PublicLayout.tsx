@@ -3,7 +3,6 @@ import { Header } from "@/components/layout/Header";
 import { BookingModalProvider } from "@/components/booking/BookingModalProvider";
 import { PublicThemeInit } from "@/components/public/PublicThemeInit";
 import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
-import { LuxuryCursor } from "@/components/ui/LuxuryCursor";
 import { PageTransition } from "@/components/ui/PageTransition";
 import type { ReactNode } from "react";
 
@@ -17,7 +16,6 @@ export function PublicLayout({ children }: PublicLayoutProps) {
       <PublicThemeInit />
       <BookingModalProvider>
         <div className="public-site hathor-site">
-          <LuxuryCursor />
           <Header />
           <main className="public-main public-main--hero">
             <PageTransition>{children}</PageTransition>

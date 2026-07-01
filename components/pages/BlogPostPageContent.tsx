@@ -28,6 +28,7 @@ export function BlogPostPageContent({
         breadcrumb="Blog"
         imageName={heroImageName}
         imageAlt={post.title}
+        variant="blog"
       />
 
       <article className="hathor-blog-article">

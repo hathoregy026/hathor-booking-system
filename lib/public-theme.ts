@@ -7,12 +7,34 @@ export function isPublicTheme(value: string | null): value is PublicTheme {
 }
 
 export function normalizePublicTheme(value: string | null): PublicTheme {
-  if (value === "day") return "day";
-  return "night";
+  if (value === "night") return "night";
+  return "day";
 }
 
 export function isHeroRoute(pathname: string): boolean {
   return pathname === "/" || pathname === "/preview";
+}
+
+const PAGE_HERO_PREFIXES = [
+  "/blogs",
+  "/about",
+  "/cruises",
+  "/highlights",
+  "/gastronomy",
+  "/wellness",
+  "/charter",
+  "/contact",
+  "/rooms",
+  "/luxury-cabins",
+  "/Luxury-Royal",
+] as const;
+
+/** Routes with a full-bleed image hero — header needs light nav text at the top. */
+export function hasPageHero(pathname: string): boolean {
+  if (isHeroRoute(pathname)) return true;
+  return PAGE_HERO_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
 }
 
 type HeaderBase = "hathor-header" | "preview-header";
