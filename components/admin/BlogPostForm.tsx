@@ -1,22 +1,18 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import {
-  createBlogPost,
-  updateBlogPost,
-} from "@/app/admin/(panel)/blogs/actions";
 import { ActionButton } from "@/components/admin/ActionButton";
 import { useToast } from "@/components/admin/ToastProvider";
+import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
 import { slugifyBlogTitle } from "@/lib/blog-slug";
 import type { AdminBlogPostRow } from "@/lib/admin-blog";
 
-type BlogPostFormProps = {
-  mode: "create" | "edit";
-  post?: AdminBlogPostRow;
-};
+type BlogPostFormProps =
+  | { mode: "create" }
+  | { mode: "edit"; postId: string };
 
 function toDatetimeLocalValue(iso?: string): string {
   if (!iso) {
@@ -30,16 +26,79 @@ function toDatetimeLocalValue(iso?: string): string {
   return date.toISOString().slice(0, 16);
 }
 
-export function BlogPostForm({ mode, post }: BlogPostFormProps) {
+function formValuesToJson(formData: FormData): Record<string, string> {
+  return {
+    title: String(formData.get("title") ?? ""),
+    slug: String(formData.get("slug") ?? ""),
+    excerpt: String(formData.get("excerpt") ?? ""),
+    content: String(formData.get("content") ?? ""),
+    publishedAt: String(formData.get("publishedAt") ?? ""),
+  };
+}
+
+export function BlogPostForm(props: BlogPostFormProps) {
+  const { mode } = props;
+  const postId = mode === "edit" ? props.postId : undefined;
+
   const router = useRouter();
   const { showToast } = useToast();
   const [isPending, startTransition] = useTransition();
+  const [isLoading, setIsLoading] = useState(mode === "edit");
+  const [loadFailed, setLoadFailed] = useState(false);
+  const loadIdRef = useRef(0);
+
   const [slugTouched, setSlugTouched] = useState(mode === "edit");
-  const [title, setTitle] = useState(post?.title ?? "");
-  const [slug, setSlug] = useState(post?.slug ?? "");
-  const [excerpt, setExcerpt] = useState(post?.excerpt ?? "");
-  const [content, setContent] = useState(post?.content ?? "");
-  const [publishedAt, setPublishedAt] = useState(toDatetimeLocalValue(post?.publishedAt));
+  const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
+  const [excerpt, setExcerpt] = useState("");
+  const [content, setContent] = useState("");
+  const [publishedAt, setPublishedAt] = useState(toDatetimeLocalValue());
+
+  useEffect(() => {
+    if (mode !== "edit" || !postId) return;
+
+    const loadId = ++loadIdRef.current;
+
+    async function loadPost(attempt = 0) {
+      setIsLoading(true);
+      setLoadFailed(false);
+
+      try {
+        const response = await adminFetch(`/api/admin/blog-posts/${postId}`);
+        if (loadId !== loadIdRef.current) return;
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error ?? "Failed to load blog post");
+        }
+
+        const post = data.post as AdminBlogPostRow;
+        setTitle(post.title);
+        setSlug(post.slug);
+        setExcerpt(post.excerpt);
+        setContent(post.content);
+        setPublishedAt(toDatetimeLocalValue(post.publishedAt));
+        setLoadFailed(false);
+        setIsLoading(false);
+      } catch (err) {
+        if (loadId !== loadIdRef.current) return;
+
+        if (attempt < 1 && isTransientFetchError(err)) {
+          await new Promise((resolve) => setTimeout(resolve, 800));
+          return loadPost(attempt + 1);
+        }
+
+        setLoadFailed(true);
+        showToast(
+          "error",
+          err instanceof Error ? err.message : "Failed to load blog post",
+        );
+        setIsLoading(false);
+      }
+    }
+
+    void loadPost();
+  }, [mode, postId, showToast]);
 
   const handleTitleChange = (value: string) => {
     setTitle(value);
@@ -51,33 +110,75 @@ export function BlogPostForm({ mode, post }: BlogPostFormProps) {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
+    const body = formValuesToJson(formData);
 
     startTransition(async () => {
-      const result =
-        mode === "create"
-          ? await createBlogPost(formData)
-          : await updateBlogPost(post!.id, formData);
+      try {
+        const response =
+          mode === "create"
+            ? await adminFetch("/api/admin/blog-posts", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body),
+              })
+            : await adminFetch(`/api/admin/blog-posts/${postId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body),
+              });
 
-      if (!result.success) {
-        showToast("error", result.error);
-        return;
-      }
+        const data = await response.json();
 
-      showToast(
-        "success",
-        mode === "create" ? "Blog post created." : "Blog post saved.",
-      );
+        if (!response.ok) {
+          showToast("error", data.error ?? "Could not save post.");
+          return;
+        }
 
-      if (mode === "create" && result.data?.id) {
-        router.push(`/admin/blogs/${result.data.id}`);
+        showToast(
+          "success",
+          mode === "create" ? "Blog post created." : "Blog post saved.",
+        );
+
+        if (mode === "create" && data.post?.id) {
+          router.push(`/admin/blogs/${data.post.id}`);
+          router.refresh();
+          return;
+        }
+
+        router.push("/admin/blogs");
         router.refresh();
-        return;
+      } catch (err) {
+        showToast(
+          "error",
+          err instanceof Error ? err.message : "Could not save post.",
+        );
       }
-
-      router.push("/admin/blogs");
-      router.refresh();
     });
   };
+
+  if (mode === "edit" && isLoading) {
+    return (
+      <div className="flex items-center justify-center gap-2 py-24 text-sm"
+        style={{ color: "var(--text-muted)" }}
+      >
+        <Loader2 className="h-5 w-5 animate-spin" aria-hidden />
+        Loading post…
+      </div>
+    );
+  }
+
+  if (mode === "edit" && loadFailed) {
+    return (
+      <div className="mx-auto max-w-4xl space-y-4 py-12 text-center">
+        <p className="admin-subheading">
+          This post could not be loaded. The database may be busy — try again.
+        </p>
+        <Link href="/admin/blogs" className="admin-btn-outline inline-block px-4 py-2.5 text-sm">
+          Back to all posts
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
@@ -183,7 +284,8 @@ export function BlogPostForm({ mode, post }: BlogPostFormProps) {
           </div>
         </div>
 
-        <div className="flex flex-col-reverse gap-3 border-t pt-5 sm:flex-row sm:justify-end"
+        <div
+          className="flex flex-col-reverse gap-3 border-t pt-5 sm:flex-row sm:justify-end"
           style={{ borderColor: "var(--border)" }}
         >
           <Link href="/admin/blogs" className="admin-btn-outline px-4 py-2.5 text-center text-sm">
