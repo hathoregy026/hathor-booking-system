@@ -18,6 +18,7 @@ import {
   type NavGroup,
 } from "@/lib/public-nav";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
+import { isHeroRoute } from "@/lib/public-theme";
 
 function ExplorePanel({
   open,
@@ -132,8 +133,8 @@ function isNavItemActive(pathname: string, item: HeaderNavItem): boolean {
   );
 }
 
-function isPastHero(): boolean {
-  const hero = document.querySelector(".owo-hero, .hathor-page-hero");
+function isPastPageHero(): boolean {
+  const hero = document.querySelector(".hathor-page-hero");
   if (!hero) {
     return window.scrollY > window.innerHeight * 0.9;
   }
@@ -142,6 +143,8 @@ function isPastHero(): boolean {
 
 export function Header() {
   const pathname = usePathname();
+  const isHomepage = isHeroRoute(pathname);
+  const usePagesHeaderTransition = !isHomepage;
   const [exploreOpen, setExploreOpen] = useState(false);
   const [menuHovered, setMenuHovered] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
@@ -177,7 +180,11 @@ export function Header() {
       clearTimeout(scrollEndTimer);
       scrollEndTimer = setTimeout(() => {
         setIsScrolling(false);
-        if (isPastHero() && !menuHoveredRef.current) {
+        if (
+          usePagesHeaderTransition &&
+          isPastPageHero() &&
+          !menuHoveredRef.current
+        ) {
           setScrollHidden(true);
         }
       }, 200);
@@ -188,7 +195,7 @@ export function Header() {
       window.removeEventListener("scroll", onHeroScroll);
       clearTimeout(scrollEndTimer);
     };
-  }, [pathname]);
+  }, [pathname, usePagesHeaderTransition]);
 
   const handleMenuZoneEnter = () => {
     setMenuHovered(true);
@@ -198,7 +205,11 @@ export function Header() {
   const handleMenuZoneLeave = () => {
     setMenuHovered(false);
     setOpenDropdown(null);
-    if (!isScrollingRef.current && isPastHero()) {
+    if (
+      usePagesHeaderTransition &&
+      !isScrollingRef.current &&
+      isPastPageHero()
+    ) {
       setScrollHidden(true);
     }
   };
