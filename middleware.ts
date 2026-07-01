@@ -32,15 +32,16 @@ export async function middleware(request: NextRequest) {
     }
 
     const { pathname } = request.nextUrl;
-    const session = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
-    const isAuthenticated = await verifySessionToken(session);
 
-    const isAdminRoute =
-      pathname.startsWith("/admin") || pathname.startsWith("/api/admin");
-
-    if (!isAdminRoute) {
+    if (
+      !pathname.startsWith("/admin") &&
+      !pathname.startsWith("/api/admin")
+    ) {
       return NextResponse.next();
     }
+
+    const session = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
+    const isAuthenticated = await verifySessionToken(session);
 
     if (PUBLIC_ADMIN_PATHS.includes(pathname)) {
       if (pathname === "/admin/login" && isAuthenticated) {

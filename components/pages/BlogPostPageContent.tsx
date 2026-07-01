@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { BlogArticleBody } from "@/components/pages/BlogArticleBody";
 import { PageHero } from "@/components/pages/PageHero";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import {
@@ -13,13 +12,13 @@ import {
 type BlogPostPageContentProps = {
   post: BlogPostDetailClient;
   heroImageName: string;
-  contentHtml: string;
+  children: React.ReactNode;
 };
 
 export function BlogPostPageContent({
   post,
   heroImageName,
-  contentHtml,
+  children,
 }: BlogPostPageContentProps) {
   return (
     <>
@@ -49,9 +48,7 @@ export function BlogPostPageContent({
           </ScrollReveal>
 
           <ScrollReveal delay={80}>
-            <div className="hathor-blog-article__body">
-              <BlogArticleBody html={contentHtml} />
-            </div>
+            <div className="hathor-blog-article__body">{children}</div>
           </ScrollReveal>
         </div>
       </article>

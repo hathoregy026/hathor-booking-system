@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { BlogArticleBody } from "@/components/pages/BlogArticleBody";
 import { BlogPostPageContent } from "@/components/pages/BlogPostPageContent";
 import {
   getBlogHeroImageName,
@@ -52,11 +53,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
+  const contentHtml = prepareBlogContentForRender(post.content, post.excerpt);
+
   return (
     <BlogPostPageContent
       post={serializeBlogPostDetail(post)}
       heroImageName={getBlogHeroImageName(post.slug)}
-      contentHtml={prepareBlogContentForRender(post.content, post.excerpt)}
-    />
+    >
+      <BlogArticleBody html={contentHtml} />
+    </BlogPostPageContent>
   );
 }
