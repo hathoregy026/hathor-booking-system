@@ -1,3 +1,29 @@
+/** Hash-only Vercel deployment URLs (not git branch previews). */
+export const STALE_VERCEL_DEPLOYMENT_HOST =
+  /^hathor-booking-system-(?!git-)[a-z0-9]+-hathor1\.vercel\.app$/i;
+
+/**
+ * Canonical production origin for redirects and absolute links.
+ */
+export function getProductionOrigin(): string {
+  const fromVercel = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
+  if (fromVercel) {
+    return fromVercel.startsWith("http")
+      ? fromVercel.replace(/\/$/, "")
+      : `https://${fromVercel.replace(/\/$/, "")}`;
+  }
+
+  const explicit =
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
+    process.env.SITE_URL?.trim();
+
+  if (explicit) {
+    return explicit.replace(/\/$/, "");
+  }
+
+  return "https://hathor-booking-system.vercel.app";
+}
+
 /**
  * Public site base URL for absolute links (emails, uploads, OG tags).
  * Prefer NEXT_PUBLIC_SITE_URL or SITE_URL in production.
@@ -14,11 +40,13 @@ export function getSiteBaseUrl(): string {
   const vercel = process.env.VERCEL_URL?.trim();
   if (vercel) {
     const host = vercel.replace(/^https?:\/\//, "");
-    return `https://${host}`;
+    if (!STALE_VERCEL_DEPLOYMENT_HOST.test(host)) {
+      return `https://${host}`;
+    }
   }
 
   if (process.env.NODE_ENV === "production") {
-    return "https://hathor-booking-system.vercel.app";
+    return getProductionOrigin();
   }
 
   const port = process.env.PORT?.trim() || "3000";

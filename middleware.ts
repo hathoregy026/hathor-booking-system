@@ -3,11 +3,34 @@ import {
   ADMIN_SESSION_COOKIE,
   verifySessionToken,
 } from "@/lib/admin-auth-edge";
+import {
+  getProductionOrigin,
+  STALE_VERCEL_DEPLOYMENT_HOST,
+} from "@/lib/public-url";
 
 const PUBLIC_ADMIN_PATHS = ["/admin/login", "/api/admin/login"];
 
+function redirectStaleDeploymentHost(request: NextRequest): NextResponse | null {
+  const hostname = request.nextUrl.hostname;
+  if (!STALE_VERCEL_DEPLOYMENT_HOST.test(hostname)) {
+    return null;
+  }
+
+  const target = new URL(
+    `${request.nextUrl.pathname}${request.nextUrl.search}`,
+    getProductionOrigin(),
+  );
+
+  return NextResponse.redirect(target, 308);
+}
+
 export async function middleware(request: NextRequest) {
   try {
+    const deploymentRedirect = redirectStaleDeploymentHost(request);
+    if (deploymentRedirect) {
+      return deploymentRedirect;
+    }
+
     const { pathname } = request.nextUrl;
     const session = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
     const isAuthenticated = await verifySessionToken(session);
@@ -49,5 +72,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/admin/:path*"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|media/|videos/|assets/).*)",
+  ],
 };
