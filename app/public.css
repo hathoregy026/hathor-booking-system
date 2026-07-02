@@ -4589,6 +4589,7 @@ body.has-page-scroll-transition .page-transition {
   height: 100svh;
   overflow: hidden;
   width: 100%;
+  perspective: 1400px;
 }
 
 [data-page-transition] .pt-hero {
