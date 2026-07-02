@@ -53,6 +53,11 @@ function stripCount() {
   return 52;
 }
 
+/** Smooth flattening — corners ease closed without abrupt jumps. */
+function easeInOutCubic(t: number) {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
 export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
   const instanceId = useId().replace(/:/g, "");
 
@@ -108,7 +113,7 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
       const styles = getComputedStyle(trigger);
       return {
         start: parseFloat(styles.getPropertyValue("--pt-dome-r-start")) || 1250,
-        end: parseFloat(styles.getPropertyValue("--pt-dome-r-end")) || 400,
+        end: parseFloat(styles.getPropertyValue("--pt-dome-r-end")) || 0,
       };
     }
 
@@ -169,10 +174,13 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
       const extra = Math.max(0, sheetH - vh * 0.92);
       y -= driftT * extra;
 
+      const radiusProgress = easeInOutCubic(mapRange(p, 0.12, 0.85, 0, 1));
+      const radius = rEnd + (rStart - rEnd) * (1 - radiusProgress);
+
       gsap.set(sheetEl, {
         y,
-        borderTopLeftRadius: rStart + (rEnd - rStart) * riseT,
-        borderTopRightRadius: rStart + (rEnd - rStart) * riseT,
+        borderTopLeftRadius: radius,
+        borderTopRightRadius: radius,
       });
 
       applyMaskReveal(p);

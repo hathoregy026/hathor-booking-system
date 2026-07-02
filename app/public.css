@@ -4578,7 +4578,7 @@ body.has-page-scroll-transition .page-transition {
   --pt-gold: #c9a96e;
   --pt-cream: #ece8df;
   --pt-dome-r-start: 1250px;
-  --pt-dome-r-end: 400px;
+  --pt-dome-r-end: 0px;
   position: relative;
   width: 100%;
 }
@@ -4645,6 +4645,9 @@ body.has-page-scroll-transition .page-transition {
   right: 0;
   bottom: 0;
   z-index: 10;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
   background: var(--pt-cream);
   border-top-left-radius: var(--pt-dome-r-start);
   border-top-right-radius: var(--pt-dome-r-start);
@@ -4654,14 +4657,14 @@ body.has-page-scroll-transition .page-transition {
 @media (max-width: 1024px) {
   [data-page-transition] {
     --pt-dome-r-start: 300px;
-    --pt-dome-r-end: 200px;
+    --pt-dome-r-end: 0px;
   }
 }
 
 @media (max-width: 767px) {
   [data-page-transition] {
     --pt-dome-r-start: 150px;
-    --pt-dome-r-end: 80px;
+    --pt-dome-r-end: 0px;
   }
 }
 
@@ -4723,8 +4726,10 @@ body.has-page-scroll-transition .page-transition {
 }
 
 [data-page-transition] .pt-sheet__rise-cap {
-  min-height: 100vh;
-  min-height: 100svh;
+  width: 100%;
+  min-height: 100%;
+  min-height: 120vh;
+  min-height: 120svh;
 }
 
 .hathor-page-body {
