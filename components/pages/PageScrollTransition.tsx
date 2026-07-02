@@ -90,8 +90,15 @@ export function PageScrollTransition({
               </div>
             </div>
           </div>
-          <div ref={sheetRef} className="pt-sheet" aria-hidden="true">
-            <div className="pt-sheet__rise-cap" />
+          <div ref={sheetRef} className="pt-sheet">
+            <div className="pt-sheet__landing" aria-labelledby="page-landing-title">
+              <div className="hathor-container">
+                <h2 id="page-landing-title" className="pt-sheet__landing-title">
+                  {title}
+                </h2>
+              </div>
+            </div>
+            <div className="pt-sheet__rise-cap" aria-hidden="true" />
           </div>
         </div>
       </section>

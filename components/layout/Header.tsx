@@ -118,6 +118,7 @@ function ExplorePanel({
 function isNavItemActive(pathname: string, item: HeaderNavItem): boolean {
   if (item.type === "link") {
     if (item.href === "/") return pathname === "/";
+    if (item.href === "/homepage-2") return pathname === "/homepage-2";
     return (
       pathname === item.href || pathname.startsWith(`${item.href}/`)
     );

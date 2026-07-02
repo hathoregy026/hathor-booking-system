@@ -40,7 +40,11 @@ export function persistPublicTheme(theme: PublicTheme): void {
 }
 
 export function isHeroRoute(pathname: string): boolean {
-  return pathname === "/" || pathname === "/preview";
+  return (
+    pathname === "/" ||
+    pathname === "/homepage-2" ||
+    pathname === "/preview"
+  );
 }
 
 const PAGE_HERO_PREFIXES = [

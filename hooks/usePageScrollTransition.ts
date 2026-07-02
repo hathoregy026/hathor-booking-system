@@ -8,14 +8,14 @@ const PT_CREAM = "#ECE8DF";
 const PT_GOLD = "#C9A96E";
 
 const MASK = {
-  start: 0.02,
-  end: 0.88,
+  start: 0.1,
+  end: 0.44,
   gapRatio: 0.94,
-  rotSpread: 0.82,
-  rotWindow: 0.04,
-  gapSealStart: 0.48,
-  gapSealStagger: 0.32,
-  gapSealWindow: 0.022,
+  rotSpread: 0.48,
+  rotWindow: 0.09,
+  gapSealStart: 0.52,
+  gapSealStagger: 0.22,
+  gapSealWindow: 0.028,
 };
 
 const PEEK_VH = 0.065;
@@ -121,7 +121,7 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
       const maskT = mapRange(p, MASK.start, MASK.end, 0, 1);
       const n = strips.length;
 
-      if (maskT <= 0 || n === 0) {
+      if (maskT <= 0 || maskT >= 1 || n === 0) {
         mask.classList.remove("is-active");
         gsap.set(mask, { opacity: 0 });
         strips.forEach(({ el, colW }) =>
