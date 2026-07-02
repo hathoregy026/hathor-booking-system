@@ -4562,8 +4562,14 @@ html[data-public-theme="day"] .preview-header--transparent:not(.preview-header--
 }
 
 /* ─── Inner page scroll transition (not homepage) ─── */
-body.has-page-scroll-transition {
+body.has-page-scroll-transition,
+html.has-page-scroll-transition {
   background: #ece8df;
+}
+
+body.has-page-scroll-transition .public-main,
+html.has-page-scroll-transition .public-main {
+  overflow: visible;
 }
 
 .hathor-page-scroll-transition {
@@ -4623,13 +4629,13 @@ body.has-page-scroll-transition {
   );
 }
 
-[data-page-transition] .pt-sheet {
-  padding-top: clamp(2.5rem, 5vw, 4rem);
+[data-page-transition] .pt-sheet__rise-cap {
   min-height: 100vh;
   min-height: 100svh;
 }
 
-[data-page-transition] .pt-sheet > .hathor-section:first-child {
-  padding-top: 0;
+.hathor-page-body {
+  position: relative;
+  z-index: 1;
 }
 
