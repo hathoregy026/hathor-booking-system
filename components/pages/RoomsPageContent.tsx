@@ -1,20 +1,19 @@
 "use client";
 
 import { EditorialSection } from "@/components/pages/EditorialSection";
-import { PageHero } from "@/components/pages/PageHero";
+import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { ROOMS_PAGE } from "@/lib/page-content";
 
 export function RoomsPageContent() {
   return (
-    <>
-      <PageHero
-        title={ROOMS_PAGE.hero.title}
-        subtitle={ROOMS_PAGE.hero.subtitle}
-        breadcrumb="Accommodations"
-        imageName="room-luxury"
-        imageAlt="Luxury cabin aboard Hathor Dahabiya"
-      />
+    <PageScrollTransition
+      title={ROOMS_PAGE.hero.title}
+      subtitle={ROOMS_PAGE.hero.subtitle}
+      breadcrumb="Accommodations"
+      imageName="room-luxury"
+      imageAlt="Luxury cabin aboard Hathor Dahabiya"
+    >
 
       <section className="hathor-section hathor-section--dark">
         <div className="hathor-container">
@@ -131,6 +130,6 @@ export function RoomsPageContent() {
         imageLeft
         fullBleed
       />
-    </>
+    </PageScrollTransition>
   );
 }

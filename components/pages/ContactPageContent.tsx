@@ -3,7 +3,7 @@
 import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { CtaBand } from "@/components/pages/CtaBand";
 import { InquiryForm } from "@/components/pages/InquiryForm";
-import { PageHero } from "@/components/pages/PageHero";
+import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { CONTACT_PAGE } from "@/lib/page-content";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
@@ -38,13 +38,12 @@ const CONTACT_ITEMS = [
 
 export function ContactPageContent() {
   return (
-    <>
-      <PageHero
-        title={CONTACT_PAGE.hero.title}
-        subtitle={CONTACT_PAGE.hero.subtitle}
-        breadcrumb="Contact"
-        imageName="contact-hero"
-      />
+    <PageScrollTransition
+      title={CONTACT_PAGE.hero.title}
+      subtitle={CONTACT_PAGE.hero.subtitle}
+      breadcrumb="Contact"
+      imageName="contact-hero"
+    >
 
       <section className="hathor-section hathor-section--dark">
         <div className="hathor-container">
@@ -111,6 +110,6 @@ export function ContactPageContent() {
       </section>
 
       <CtaBand />
-    </>
+    </PageScrollTransition>
   );
 }

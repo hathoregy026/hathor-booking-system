@@ -3,21 +3,20 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { EditorialSection } from "@/components/pages/EditorialSection";
-import { PageHero } from "@/components/pages/PageHero";
+import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { LUXURY_CABINS_PAGE } from "@/lib/page-content";
 
 export function LuxuryCabinsPageContent() {
   return (
-    <>
-      <PageHero
-        title={LUXURY_CABINS_PAGE.hero.title}
-        subtitle={LUXURY_CABINS_PAGE.hero.subtitle}
-        breadcrumb="Luxury Cabins"
-        parentBreadcrumb={{ label: "Rooms", href: "/rooms" }}
-        imageName="room-luxury"
-        imageAlt="Luxury cabin with Nile view aboard Hathor Dahabiya"
-      />
+    <PageScrollTransition
+      title={LUXURY_CABINS_PAGE.hero.title}
+      subtitle={LUXURY_CABINS_PAGE.hero.subtitle}
+      breadcrumb="Luxury Cabins"
+      parentBreadcrumb={{ label: "Rooms", href: "/rooms" }}
+      imageName="room-luxury"
+      imageAlt="Luxury cabin with Nile view aboard Hathor Dahabiya"
+    >
 
       <section className="hathor-section hathor-section--dark">
         <div className="hathor-container">
@@ -81,6 +80,6 @@ export function LuxuryCabinsPageContent() {
         imageAlt="Nile sailing aboard Hathor Dahabiya"
         fullBleed
       />
-    </>
+    </PageScrollTransition>
   );
 }

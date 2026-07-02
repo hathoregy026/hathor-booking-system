@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { PageHero } from "@/components/pages/PageHero";
+import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import {
   formatBlogPublishedDate,
@@ -21,15 +21,14 @@ export function BlogPostPageContent({
   children,
 }: BlogPostPageContentProps) {
   return (
-    <>
-      <PageHero
-        title={post.title}
-        subtitle={post.excerpt}
-        breadcrumb="Blog"
-        imageName={heroImageName}
-        imageAlt={post.title}
-        variant="blog"
-      />
+    <PageScrollTransition
+      title={post.title}
+      subtitle={post.excerpt}
+      breadcrumb="Blog"
+      imageName={heroImageName}
+      imageAlt={post.title}
+      variant="blog"
+    >
 
       <article className="hathor-blog-article">
         <div className="hathor-container">
@@ -53,6 +52,6 @@ export function BlogPostPageContent({
           </ScrollReveal>
         </div>
       </article>
-    </>
+    </PageScrollTransition>
   );
 }

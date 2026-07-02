@@ -2,19 +2,18 @@
 
 import { CtaBand } from "@/components/pages/CtaBand";
 import { EditorialSection } from "@/components/pages/EditorialSection";
-import { PageHero } from "@/components/pages/PageHero";
+import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { WELLNESS_PAGE } from "@/lib/page-content";
 
 export function WellnessPageContent() {
   return (
-    <>
-      <PageHero
-        title={WELLNESS_PAGE.hero.title}
-        subtitle={WELLNESS_PAGE.hero.subtitle}
-        breadcrumb="Wellness"
-        imageName="wellness-hero"
-      />
+    <PageScrollTransition
+      title={WELLNESS_PAGE.hero.title}
+      subtitle={WELLNESS_PAGE.hero.subtitle}
+      breadcrumb="Wellness"
+      imageName="wellness-hero"
+    >
 
       <section className="hathor-section hathor-section--dark">
         <div className="hathor-container">
@@ -46,6 +45,6 @@ export function WellnessPageContent() {
         title="Renew Your Soul on the Nile"
         body="Book your journey and discover Seneb Spa — where ancient Egyptian wellness meets modern tranquility."
       />
-    </>
+    </PageScrollTransition>
   );
 }

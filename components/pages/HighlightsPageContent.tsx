@@ -2,7 +2,7 @@
 
 import { CtaBand } from "@/components/pages/CtaBand";
 import { EditorialSection } from "@/components/pages/EditorialSection";
-import { PageHero } from "@/components/pages/PageHero";
+import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { HIGHLIGHTS_PAGE } from "@/lib/page-content";
 import { ManagedImage } from "@/components/ui/ManagedImage";
@@ -15,13 +15,12 @@ const LANDMARK_IMAGE_NAMES = [
 
 export function HighlightsPageContent() {
   return (
-    <>
-      <PageHero
-        title={HIGHLIGHTS_PAGE.hero.title}
-        subtitle={HIGHLIGHTS_PAGE.hero.subtitle}
-        breadcrumb="Highlights"
-        imageName="highlights-hero"
-      />
+    <PageScrollTransition
+      title={HIGHLIGHTS_PAGE.hero.title}
+      subtitle={HIGHLIGHTS_PAGE.hero.subtitle}
+      breadcrumb="Highlights"
+      imageName="highlights-hero"
+    >
 
       <section className="hathor-section hathor-section--dark">
         <div className="hathor-container">
@@ -86,6 +85,6 @@ export function HighlightsPageContent() {
       />
 
       <CtaBand />
-    </>
+    </PageScrollTransition>
   );
 }

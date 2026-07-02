@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { CtaBand } from "@/components/pages/CtaBand";
-import { PageHero } from "@/components/pages/PageHero";
+import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import {
   formatBlogPublishedDate,
@@ -36,13 +36,12 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
   );
 
   return (
-    <>
-      <PageHero
-        title={BLOG_PAGE.hero.title}
-        subtitle={BLOG_PAGE.hero.subtitle}
-        breadcrumb="Blog"
-        imageName="blog-hero"
-      />
+    <PageScrollTransition
+      title={BLOG_PAGE.hero.title}
+      subtitle={BLOG_PAGE.hero.subtitle}
+      breadcrumb="Blog"
+      imageName="blog-hero"
+    >
 
       <section className="hathor-section hathor-section--dark">
         <div className="hathor-container">
@@ -101,6 +100,6 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
       </section>
 
       <CtaBand />
-    </>
+    </PageScrollTransition>
   );
 }

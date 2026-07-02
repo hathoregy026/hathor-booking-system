@@ -2,19 +2,18 @@
 
 import { CtaBand } from "@/components/pages/CtaBand";
 import { InquiryForm } from "@/components/pages/InquiryForm";
-import { PageHero } from "@/components/pages/PageHero";
+import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { CHARTER_PAGE } from "@/lib/page-content";
 
 export function CharterPageContent() {
   return (
-    <>
-      <PageHero
-        title={CHARTER_PAGE.hero.title}
-        subtitle={CHARTER_PAGE.hero.subtitle}
-        breadcrumb="Charter"
-        imageName="charter-hero"
-      />
+    <PageScrollTransition
+      title={CHARTER_PAGE.hero.title}
+      subtitle={CHARTER_PAGE.hero.subtitle}
+      breadcrumb="Charter"
+      imageName="charter-hero"
+    >
 
       <section className="hathor-section hathor-section--dark">
         <div className="hathor-container">
@@ -78,6 +77,6 @@ export function CharterPageContent() {
         title="The Nile, Exclusively Yours"
         body="Charter the entire Hathor Dahabiya for your family, friends, or celebration."
       />
-    </>
+    </PageScrollTransition>
   );
 }

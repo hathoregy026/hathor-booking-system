@@ -2,20 +2,19 @@
 
 import { CtaBand } from "@/components/pages/CtaBand";
 import { EditorialSection } from "@/components/pages/EditorialSection";
-import { PageHero } from "@/components/pages/PageHero";
+import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { GASTRONOMY_PAGE } from "@/lib/page-content";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 
 export function GastronomyPageContent() {
   return (
-    <>
-      <PageHero
-        title={GASTRONOMY_PAGE.hero.title}
-        subtitle={GASTRONOMY_PAGE.hero.subtitle}
-        breadcrumb="Gastronomy"
-        imageName="gastronomy-hero"
-      />
+    <PageScrollTransition
+      title={GASTRONOMY_PAGE.hero.title}
+      subtitle={GASTRONOMY_PAGE.hero.subtitle}
+      breadcrumb="Gastronomy"
+      imageName="gastronomy-hero"
+    >
 
       <section className="hathor-section hathor-section--dark">
         <div className="hathor-container">
@@ -87,6 +86,6 @@ export function GastronomyPageContent() {
         title="Taste the Nile"
         body="Reserve your voyage and savor every moment — from sunrise breakfasts to candlelit dinners under the stars."
       />
-    </>
+    </PageScrollTransition>
   );
 }

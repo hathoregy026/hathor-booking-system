@@ -4,21 +4,20 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { EditorialSection } from "@/components/pages/EditorialSection";
-import { PageHero } from "@/components/pages/PageHero";
+import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { ROYAL_SUITES_PAGE } from "@/lib/page-content";
 
 export function RoyalSuitesPageContent() {
   return (
-    <>
-      <PageHero
-        title={ROYAL_SUITES_PAGE.hero.title}
-        subtitle={ROYAL_SUITES_PAGE.hero.subtitle}
-        breadcrumb="Royal Suites"
-        parentBreadcrumb={{ label: "Rooms", href: "/rooms" }}
-        imageName="room-royal"
-        imageAlt="Royal suite with panoramic Nile view aboard Hathor Dahabiya"
-      />
+    <PageScrollTransition
+      title={ROYAL_SUITES_PAGE.hero.title}
+      subtitle={ROYAL_SUITES_PAGE.hero.subtitle}
+      breadcrumb="Royal Suites"
+      parentBreadcrumb={{ label: "Rooms", href: "/rooms" }}
+      imageName="room-royal"
+      imageAlt="Royal suite with panoramic Nile view aboard Hathor Dahabiya"
+    >
 
       <section className="hathor-section hathor-section--dark">
         <div className="hathor-container">
@@ -117,6 +116,6 @@ export function RoyalSuitesPageContent() {
         imageAlt="Nile sailing aboard Hathor Dahabiya"
         fullBleed
       />
-    </>
+    </PageScrollTransition>
   );
 }

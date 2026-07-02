@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { CtaBand } from "@/components/pages/CtaBand";
 import { EditorialSection } from "@/components/pages/EditorialSection";
-import { PageHero } from "@/components/pages/PageHero";
+import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { ABOUT_PAGE } from "@/lib/page-content";
 
@@ -32,13 +32,12 @@ const ACCOMMODATION_SECTIONS = [
 
 export function AboutPageContent() {
   return (
-    <>
-      <PageHero
-        title={ABOUT_PAGE.hero.title}
-        subtitle={ABOUT_PAGE.hero.subtitle}
-        breadcrumb="About"
-        imageName="about-hero"
-      />
+    <PageScrollTransition
+      title={ABOUT_PAGE.hero.title}
+      subtitle={ABOUT_PAGE.hero.subtitle}
+      breadcrumb="About"
+      imageName="about-hero"
+    >
 
       <section className="hathor-section hathor-section--cream">
         <div className="hathor-container">
@@ -183,6 +182,6 @@ export function AboutPageContent() {
       </section>
 
       <CtaBand />
-    </>
+    </PageScrollTransition>
   );
 }

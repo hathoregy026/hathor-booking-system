@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { CtaBand } from "@/components/pages/CtaBand";
-import { PageHero } from "@/components/pages/PageHero";
+import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { formatPrice } from "@/lib/client-dates";
 import type { HathorCruiseSeed } from "@/lib/hathor-catalog";
@@ -87,13 +87,12 @@ export function CruisesPageContent({ cruises }: CruisesPageContentProps) {
   });
 
   return (
-    <>
-      <PageHero
-        title={CRUISES_PAGE.hero.title}
-        subtitle={CRUISES_PAGE.hero.subtitle}
-        breadcrumb="Cruises"
-        imageName="cruises-hero"
-      />
+    <PageScrollTransition
+      title={CRUISES_PAGE.hero.title}
+      subtitle={CRUISES_PAGE.hero.subtitle}
+      breadcrumb="Cruises"
+      imageName="cruises-hero"
+    >
 
       <section className="hathor-section hathor-section--dark">
         <div className="hathor-container">
@@ -220,6 +219,6 @@ export function CruisesPageContent({ cruises }: CruisesPageContentProps) {
       </section>
 
       <CtaBand />
-    </>
+    </PageScrollTransition>
   );
 }

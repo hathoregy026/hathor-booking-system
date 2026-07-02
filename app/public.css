@@ -4560,3 +4560,76 @@ html[data-public-theme="day"] .preview-header--transparent:not(.preview-header--
 .public-site button {
   -webkit-tap-highlight-color: rgb(201 169 110 / 0.15);
 }
+
+/* ─── Inner page scroll transition (not homepage) ─── */
+body.has-page-scroll-transition {
+  background: #ece8df;
+}
+
+.hathor-page-scroll-transition {
+  min-height: unset !important;
+  padding: 0 !important;
+  display: block;
+  overflow: visible;
+  background: transparent;
+}
+
+[data-page-transition] .pt-hero__media {
+  position: absolute;
+  inset: 0;
+}
+
+[data-page-transition] .pt-hero__media img {
+  object-position: center center;
+}
+
+[data-page-transition] .pt-hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgb(10 10 10 / 0.35) 0%,
+    rgb(10 10 10 / 0.82) 100%
+  );
+  pointer-events: none;
+}
+
+[data-page-transition] .pt-hero__copy {
+  left: 50%;
+  right: auto;
+  width: min(92vw, 52rem);
+  transform: translateX(-50%);
+  bottom: clamp(14vh, 20vh, 28vh);
+  text-align: center;
+}
+
+[data-page-transition] .pt-hero__copy .hathor-container {
+  width: 100%;
+  max-width: none;
+  padding-inline: clamp(1rem, 4vw, 2rem);
+}
+
+.hathor-page-scroll-transition.hathor-page-hero--blog .pt-hero__copy {
+  bottom: clamp(16vh, 22vh, 30vh);
+}
+
+.hathor-page-scroll-transition.hathor-page-hero--blog .pt-hero__overlay {
+  background: linear-gradient(
+    180deg,
+    rgb(10 10 10 / 0.55) 0%,
+    rgb(10 10 10 / 0.72) 45%,
+    rgb(10 10 10 / 0.92) 100%
+  );
+}
+
+[data-page-transition] .pt-sheet {
+  padding-top: clamp(2.5rem, 5vw, 4rem);
+  min-height: 100vh;
+  min-height: 100svh;
+}
+
+[data-page-transition] .pt-sheet > .hathor-section:first-child {
+  padding-top: 0;
+}
+
