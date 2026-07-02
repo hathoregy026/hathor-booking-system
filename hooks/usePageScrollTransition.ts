@@ -53,9 +53,9 @@ function stripCount() {
   return 52;
 }
 
-/** Smooth flattening — corners ease closed without abrupt jumps. */
-function easeInOutCubic(t: number) {
-  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+/** Corners close quickly early in the scroll — nearly flat before half progress. */
+function easeOutCubic(t: number) {
+  return 1 - Math.pow(1 - t, 3);
 }
 
 export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
@@ -174,7 +174,7 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
       const extra = Math.max(0, sheetH - vh * 0.92);
       y -= driftT * extra;
 
-      const radiusProgress = easeInOutCubic(mapRange(p, 0.12, 0.85, 0, 1));
+      const radiusProgress = easeOutCubic(mapRange(p, 0.04, 0.42, 0, 1));
       const radius = rEnd + (rStart - rEnd) * (1 - radiusProgress);
 
       gsap.set(sheetEl, {
