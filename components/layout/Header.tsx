@@ -18,12 +18,7 @@ import {
   type NavGroup,
 } from "@/lib/public-nav";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
-import { usePublicTheme } from "@/components/public/PublicThemeProvider";
-import {
-  getPublicHeaderClassName,
-  hasPageHero,
-  isHeroRoute,
-} from "@/lib/public-theme";
+import { isHeroRoute } from "@/lib/public-theme";
 
 function ExplorePanel({
   open,
@@ -138,8 +133,8 @@ function isNavItemActive(pathname: string, item: HeaderNavItem): boolean {
   );
 }
 
-function isPastHomeHero(): boolean {
-  const hero = document.querySelector(".owo-hero");
+function isPastPageHero(): boolean {
+  const hero = document.querySelector(".hathor-page-hero");
   if (!hero) {
     return window.scrollY > window.innerHeight * 0.9;
   }
@@ -148,10 +143,9 @@ function isPastHomeHero(): boolean {
 
 export function Header() {
   const pathname = usePathname();
-  const { theme } = usePublicTheme();
   const isHomepage = isHeroRoute(pathname);
+  const usePagesHeaderTransition = !isHomepage;
   const [exploreOpen, setExploreOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [menuHovered, setMenuHovered] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
   const [scrollHidden, setScrollHidden] = useState(false);
@@ -173,22 +167,10 @@ export function Header() {
     setScrollHidden(false);
     setMenuHovered(false);
     setIsScrolling(false);
-    setScrolled(false);
     setOpenDropdown(null);
   }, [pathname]);
 
   useEffect(() => {
-    if (isHomepage) return;
-
-    const onScroll = () => setScrolled(window.scrollY > 48);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [pathname, isHomepage]);
-
-  useEffect(() => {
-    if (!isHomepage) return;
-
     let scrollEndTimer: ReturnType<typeof setTimeout>;
 
     const onHeroScroll = () => {
@@ -198,7 +180,11 @@ export function Header() {
       clearTimeout(scrollEndTimer);
       scrollEndTimer = setTimeout(() => {
         setIsScrolling(false);
-        if (isPastHomeHero() && !menuHoveredRef.current) {
+        if (
+          usePagesHeaderTransition &&
+          isPastPageHero() &&
+          !menuHoveredRef.current
+        ) {
           setScrollHidden(true);
         }
       }, 200);
@@ -209,7 +195,7 @@ export function Header() {
       window.removeEventListener("scroll", onHeroScroll);
       clearTimeout(scrollEndTimer);
     };
-  }, [pathname, isHomepage]);
+  }, [pathname, usePagesHeaderTransition]);
 
   const handleMenuZoneEnter = () => {
     setMenuHovered(true);
@@ -219,7 +205,11 @@ export function Header() {
   const handleMenuZoneLeave = () => {
     setMenuHovered(false);
     setOpenDropdown(null);
-    if (isHomepage && !isScrollingRef.current && isPastHomeHero()) {
+    if (
+      usePagesHeaderTransition &&
+      !isScrollingRef.current &&
+      isPastPageHero()
+    ) {
       setScrollHidden(true);
     }
   };
@@ -231,33 +221,18 @@ export function Header() {
     };
   }, [exploreOpen]);
 
-  const showDarkIcon =
-    menuHovered || (!isHomepage && scrolled && theme === "day");
-
-  const headerClass = isHomepage
-    ? [
-        "hathor-header",
-        "hathor-header--transparent",
-        "hathor-header--over-hero",
-        "hathor-header--owo-hero-layout",
-        menuBarVisible && "hathor-header--menu-active",
-        menuHovered && "hathor-header--menu-hovered",
-        isScrolling && "hathor-header--scrolling",
-        scrollHidden && !menuBarVisible && "hathor-header--scroll-hidden",
-      ]
-        .filter(Boolean)
-        .join(" ")
-    : [
-        getPublicHeaderClassName({
-          theme,
-          scrolled,
-          overHero: hasPageHero(pathname) && !scrolled,
-        }),
-        "hathor-header--owo-hero-layout",
-        menuHovered && "hathor-header--menu-hovered",
-      ]
-        .filter(Boolean)
-        .join(" ");
+  const headerClass = [
+    "hathor-header",
+    "hathor-header--transparent",
+    "hathor-header--over-hero",
+    "hathor-header--owo-hero-layout",
+    menuBarVisible && "hathor-header--menu-active",
+    menuHovered && "hathor-header--menu-hovered",
+    isScrolling && "hathor-header--scrolling",
+    scrollHidden && !menuBarVisible && "hathor-header--scroll-hidden",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <>
@@ -273,7 +248,7 @@ export function Header() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={
-                    showDarkIcon ? HATHOR_HERO_ICON_DARK_SRC : HATHOR_HERO_ICON_SRC
+                    menuHovered ? HATHOR_HERO_ICON_DARK_SRC : HATHOR_HERO_ICON_SRC
                   }
                   alt={HATHOR_BRAND_NAME}
                   className="hathor-header__logo hathor-header__logo--icon"
