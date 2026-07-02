@@ -4565,11 +4565,103 @@ html[data-public-theme="day"] .preview-header--transparent:not(.preview-header--
 body.has-page-scroll-transition,
 html.has-page-scroll-transition {
   background: #ece8df;
+  overflow-x: visible !important;
 }
 
+body.has-page-scroll-transition .public-site,
 body.has-page-scroll-transition .public-main,
-html.has-page-scroll-transition .public-main {
-  overflow: visible;
+body.has-page-scroll-transition .page-transition {
+  overflow: visible !important;
+}
+
+[data-page-transition] {
+  --pt-gold: #c9a96e;
+  --pt-cream: #ece8df;
+  --pt-dome-r-start: 1250px;
+  --pt-dome-r-end: 400px;
+  position: relative;
+  width: 100%;
+}
+
+[data-page-transition] .pt-stage {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  width: 100%;
+}
+
+[data-page-transition] .pt-hero {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+[data-page-transition] .pt-mask {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+[data-page-transition] .pt-mask.is-active {
+  visibility: visible;
+}
+
+[data-page-transition] .pt-mask__col {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+[data-page-transition] .pt-mask__strip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: var(--pt-gold);
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transform: rotateY(-90deg);
+  opacity: 0;
+  backface-visibility: hidden;
+  will-change: transform, opacity, width;
+}
+
+[data-page-transition] .pt-hero__copy {
+  position: absolute;
+  z-index: 3;
+  pointer-events: auto;
+}
+
+[data-page-transition] .pt-sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  background: var(--pt-cream);
+  border-top-left-radius: var(--pt-dome-r-start);
+  border-top-right-radius: var(--pt-dome-r-start);
+  will-change: transform, border-radius;
+}
+
+@media (max-width: 1024px) {
+  [data-page-transition] {
+    --pt-dome-r-start: 300px;
+    --pt-dome-r-end: 200px;
+  }
+}
+
+@media (max-width: 767px) {
+  [data-page-transition] {
+    --pt-dome-r-start: 150px;
+    --pt-dome-r-end: 80px;
+  }
 }
 
 .hathor-page-scroll-transition {

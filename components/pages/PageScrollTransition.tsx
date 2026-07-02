@@ -1,13 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useLayoutEffect, useRef, type ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import {
-  destroyTransitionForPages,
-  initTransitionForPages,
-  refreshTransitionForPages,
-} from "@/lib/transition-for-pages";
+  refreshPageScrollTransition,
+  usePageScrollTransition,
+} from "@/hooks/usePageScrollTransition";
 
 export type PageScrollTransitionProps = {
   title: string;
@@ -19,9 +18,6 @@ export type PageScrollTransitionProps = {
   variant?: "default" | "blog";
   children: ReactNode;
 };
-
-const PT_CREAM = "#ECE8DF";
-const PT_GOLD = "#C9A96E";
 
 export function PageScrollTransition({
   title,
@@ -35,46 +31,18 @@ export function PageScrollTransition({
 }: PageScrollTransitionProps) {
   const image = useSiteImage(imageName);
   const rootRef = useRef<HTMLElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const maskRef = useRef<HTMLDivElement>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const heroCopyRef = useRef<HTMLDivElement>(null);
 
-  useLayoutEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
-
-    document.body.classList.add("has-page-scroll-transition");
-    document.documentElement.classList.add("has-page-scroll-transition");
-    document.body.style.backgroundColor = PT_CREAM;
-
-    let cancelled = false;
-    let refreshTimer: ReturnType<typeof setTimeout> | null = null;
-
-    const boot = () => {
-      if (cancelled) return;
-
-      initTransitionForPages({
-        root,
-        colors: { gold: PT_GOLD, cream: PT_CREAM },
-        nav: "___pt-nav-none___",
-      });
-
-      refreshTimer = setTimeout(() => {
-        if (!cancelled) refreshTransitionForPages();
-      }, 120);
-    };
-
-    const frame = requestAnimationFrame(() => {
-      requestAnimationFrame(boot);
-    });
-
-    return () => {
-      cancelled = true;
-      cancelAnimationFrame(frame);
-      if (refreshTimer) clearTimeout(refreshTimer);
-      destroyTransitionForPages();
-      document.body.classList.remove("has-page-scroll-transition");
-      document.documentElement.classList.remove("has-page-scroll-transition");
-      document.body.style.backgroundColor = "";
-    };
-  }, [imageName, title]);
+  usePageScrollTransition({
+    root: rootRef,
+    stage: stageRef,
+    mask: maskRef,
+    sheet: sheetRef,
+    heroCopy: heroCopyRef,
+  });
 
   return (
     <>
@@ -85,7 +53,7 @@ export function PageScrollTransition({
           variant === "blog" ? " hathor-page-hero--blog" : ""
         }`}
       >
-        <div className="pt-stage">
+        <div ref={stageRef} className="pt-stage">
           <div className="pt-hero">
             <div className="pt-hero__media">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -94,12 +62,12 @@ export function PageScrollTransition({
                 alt={imageAlt ?? image.alt}
                 fetchPriority="high"
                 decoding="async"
-                onLoad={() => refreshTransitionForPages()}
+                onLoad={() => refreshPageScrollTransition()}
               />
               <div className="pt-hero__overlay" aria-hidden />
             </div>
-            <div className="pt-mask" aria-hidden="true" />
-            <div className="pt-hero__copy">
+            <div ref={maskRef} className="pt-mask" aria-hidden="true" />
+            <div ref={heroCopyRef} className="pt-hero__copy">
               <div className="hathor-container hathor-page-hero__content">
                 <nav className="hathor-breadcrumb" aria-label="Breadcrumb">
                   <Link href="/">Home</Link>
@@ -122,7 +90,7 @@ export function PageScrollTransition({
               </div>
             </div>
           </div>
-          <div className="pt-sheet" aria-hidden="true">
+          <div ref={sheetRef} className="pt-sheet" aria-hidden="true">
             <div className="pt-sheet__rise-cap" />
           </div>
         </div>
