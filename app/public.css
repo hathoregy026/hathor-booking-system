@@ -4857,8 +4857,6 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet {
   background-color: #ece8df !important;
   z-index: 10;
-  min-height: 0;
-  height: auto;
 }
 
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet__landing {
@@ -4866,11 +4864,7 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-
   padding-bottom: 0;
 }
 
-/* GSAP keeps 120vh runway height; collapse visual gap under landing title */
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet__rise-cap {
-  margin-top: calc(-120vh + clamp(5rem, 14vh, 8rem));
-  margin-top: calc(-120svh + clamp(5rem, 14vh, 8rem));
-}
+/* Do not touch rise-cap — GSAP half-circle reveal needs default 120vh runway */
 
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--media-gone .pt-hero__media,
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--past-pin .pt-hero__media {
@@ -4890,9 +4884,9 @@ body.has-page-scroll-transition .hathor-page-cream-floor {
   min-height: 100vh;
 }
 
-/* Cream content starts right after reveal — no pull-up hacks */
+/* Cream content starts right after reveal — spacing only on cream floor, not on sheet */
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor {
-  margin-top: 0;
+  margin-top: calc(-120svh + clamp(5rem, 14vh, 8rem));
   padding-top: 0;
 }
 
