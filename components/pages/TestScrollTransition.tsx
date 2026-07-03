@@ -49,7 +49,8 @@ export function TestScrollTransition({
       <section
         ref={rootRef}
         data-page-transition
-        className={`hathor-page-scroll-transition hathor-page-hero${
+        data-test-scroll-reveal
+        className={`hathor-page-scroll-transition hathor-page-hero test-scroll-reveal${
           variant === "blog" ? " hathor-page-hero--blog" : ""
         }`}
       >
@@ -98,10 +99,10 @@ export function TestScrollTransition({
               </div>
             </div>
             <div className="pt-sheet__rise-cap" aria-hidden="true" />
+            <div className="test-scroll-reveal__body">{children}</div>
           </div>
         </div>
       </section>
-      <div className="hathor-page-body bg-[#ece8df] min-h-screen">{children}</div>
     </>
   );
 }

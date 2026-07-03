@@ -4875,3 +4875,105 @@ footer {
 
 .pin-spacer { background-color: #ece8df !important; }
 body { background-color: #ece8df !important; }
+
+/* ─── /test-scroll-reveal isolated layout (does not affect other pages) ─── */
+.test-scroll-reveal-route,
+.test-scroll-reveal-route .public-site,
+.test-scroll-reveal-route .public-main,
+.test-scroll-reveal-route .page-transition {
+  background-color: #ece8df !important;
+}
+
+.test-scroll-reveal-route .owo-footer {
+  display: none;
+}
+
+.test-scroll-reveal-route [data-test-scroll-reveal] {
+  background: transparent !important;
+}
+
+/* Hero image fixed to viewport top — does not drag with scroll */
+.test-scroll-reveal-route [data-test-scroll-reveal] .pt-hero__media {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.test-scroll-reveal-route [data-test-scroll-reveal] .pt-hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.test-scroll-reveal-route [data-test-scroll-reveal] .pt-hero__overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  z-index: 1;
+}
+
+.test-scroll-reveal-route [data-test-scroll-reveal] .pt-stage {
+  z-index: 40;
+  background: transparent;
+}
+
+.test-scroll-reveal-route [data-test-scroll-reveal] .pt-hero {
+  z-index: 2;
+}
+
+.test-scroll-reveal-route [data-test-scroll-reveal] .pt-sheet {
+  background-color: #ece8df !important;
+}
+
+.test-scroll-reveal-route [data-test-scroll-reveal] .test-scroll-reveal__body {
+  position: relative;
+  z-index: 3;
+  background-color: #ece8df;
+  isolation: isolate;
+}
+
+.test-scroll-reveal-route [data-test-scroll-reveal] .test-scroll-reveal__section {
+  padding-block: clamp(4rem, 10vh, 6rem);
+  background-color: #ece8df;
+}
+
+.test-scroll-reveal-route [data-test-scroll-reveal] .test-scroll-reveal__section--tail {
+  min-height: 60vh;
+  padding-bottom: clamp(6rem, 16vh, 10rem);
+}
+
+.test-scroll-reveal-route [data-test-scroll-reveal] .test-scroll-reveal__inner {
+  max-width: 42rem;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 1.5rem);
+}
+
+.test-scroll-reveal-route [data-test-scroll-reveal] .test-scroll-reveal__heading {
+  margin: 0 0 1.5rem;
+  font-family: var(--public-serif);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #0a0a0a;
+}
+
+.test-scroll-reveal-route [data-test-scroll-reveal] .test-scroll-reveal__text {
+  margin: 0 0 1rem;
+  font-size: clamp(1rem, 2vw, 1.125rem);
+  line-height: 1.65;
+  color: #0a0a0a;
+}
+
+.test-scroll-reveal-route .pin-spacer {
+  background-color: #ece8df !important;
+}

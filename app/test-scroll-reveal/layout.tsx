@@ -25,7 +25,7 @@ export default async function TestScrollRevealLayout({
   const siteImages = await resolveSiteImageMap();
 
   return (
-    <div className={`${playfair.variable} ${plusJakarta.variable}`}>
+    <div className={`test-scroll-reveal-route ${playfair.variable} ${plusJakarta.variable}`}>
       <SiteImagesProvider images={siteImages}>
         <PublicLayout>{children}</PublicLayout>
       </SiteImagesProvider>
