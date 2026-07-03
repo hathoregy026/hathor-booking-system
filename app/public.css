@@ -4880,7 +4880,9 @@ body { background-color: #ece8df !important; }
 .test-scroll-reveal-route,
 .test-scroll-reveal-route .public-site,
 .test-scroll-reveal-route .public-main,
-.test-scroll-reveal-route .page-transition {
+.test-scroll-reveal-route .page-transition,
+.test-scroll-reveal-route html,
+.test-scroll-reveal-route body {
   background-color: #ece8df !important;
 }
 
@@ -4892,14 +4894,28 @@ body { background-color: #ece8df !important; }
   background: transparent !important;
 }
 
-/* Hero image fixed to viewport top — does not drag with scroll */
+/* Ship hero ONLY in the pinned viewport top — absolute, never fixed */
+.test-scroll-reveal-route [data-test-scroll-reveal] .pt-stage {
+  z-index: 40;
+  background-color: #ece8df;
+  overflow: hidden;
+}
+
+.test-scroll-reveal-route [data-test-scroll-reveal] .pt-hero {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  height: 100%;
+  max-height: 100vh;
+  max-height: 100svh;
+  overflow: hidden;
+}
+
 .test-scroll-reveal-route [data-test-scroll-reveal] .pt-hero__media {
-  position: fixed;
-  top: 0;
-  left: 0;
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: 100vh;
-  height: 100svh;
+  height: 100%;
   z-index: 0;
   pointer-events: none;
 }
@@ -4912,33 +4928,37 @@ body { background-color: #ece8df !important; }
 }
 
 .test-scroll-reveal-route [data-test-scroll-reveal] .pt-hero__overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  height: 100svh;
+  position: absolute;
+  inset: 0;
   z-index: 1;
-}
-
-.test-scroll-reveal-route [data-test-scroll-reveal] .pt-stage {
-  z-index: 40;
-  background: transparent;
-}
-
-.test-scroll-reveal-route [data-test-scroll-reveal] .pt-hero {
-  z-index: 2;
 }
 
 .test-scroll-reveal-route [data-test-scroll-reveal] .pt-sheet {
   background-color: #ece8df !important;
+  z-index: 10;
 }
 
-.test-scroll-reveal-route [data-test-scroll-reveal] .test-scroll-reveal__body {
+/* After transition: kill hero ship entirely — cream only */
+.test-scroll-reveal-route [data-test-scroll-reveal].test-scroll-reveal--cream-only .pt-hero {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Cream continues from dome through all page content to the bottom */
+.test-scroll-reveal-route .test-scroll-reveal__cream-floor {
   position: relative;
-  z-index: 3;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
   background-color: #ece8df;
-  isolation: isolate;
+  min-height: 100vh;
+}
+
+.test-scroll-reveal-route .pin-spacer {
+  background-color: #ece8df !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .test-scroll-reveal-route [data-test-scroll-reveal] .test-scroll-reveal__section {
@@ -4946,18 +4966,19 @@ body { background-color: #ece8df !important; }
   background-color: #ece8df;
 }
 
-.test-scroll-reveal-route [data-test-scroll-reveal] .test-scroll-reveal__section--tail {
-  min-height: 60vh;
-  padding-bottom: clamp(6rem, 16vh, 10rem);
+.test-scroll-reveal-route [data-test-scroll-reveal] .test-scroll-reveal__section--tail,
+.test-scroll-reveal-route .test-scroll-reveal__cream-floor .test-scroll-reveal__section--tail {
+  min-height: 70vh;
+  padding-bottom: clamp(8rem, 20vh, 12rem);
 }
 
-.test-scroll-reveal-route [data-test-scroll-reveal] .test-scroll-reveal__inner {
+.test-scroll-reveal-route .test-scroll-reveal__inner {
   max-width: 42rem;
   margin-inline: auto;
   padding-inline: clamp(1rem, 4vw, 1.5rem);
 }
 
-.test-scroll-reveal-route [data-test-scroll-reveal] .test-scroll-reveal__heading {
+.test-scroll-reveal-route .test-scroll-reveal__heading {
   margin: 0 0 1.5rem;
   font-family: var(--public-serif);
   font-size: clamp(1.75rem, 4vw, 2.5rem);
@@ -4967,13 +4988,9 @@ body { background-color: #ece8df !important; }
   color: #0a0a0a;
 }
 
-.test-scroll-reveal-route [data-test-scroll-reveal] .test-scroll-reveal__text {
+.test-scroll-reveal-route .test-scroll-reveal__text {
   margin: 0 0 1rem;
   font-size: clamp(1rem, 2vw, 1.125rem);
   line-height: 1.65;
   color: #0a0a0a;
-}
-
-.test-scroll-reveal-route .pin-spacer {
-  background-color: #ece8df !important;
 }

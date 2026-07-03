@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import {
   refreshPageScrollTransition,
   usePageScrollTransition,
 } from "@/hooks/usePageScrollTransition";
+
+const PIN_VH = 2.8;
 
 export type TestScrollTransitionProps = {
   title: string;
@@ -43,6 +45,27 @@ export function TestScrollTransition({
     sheet: sheetRef,
     heroCopy: heroCopyRef,
   });
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+
+    const syncHeroVisibility = () => {
+      const vh = window.innerHeight;
+      const pinEnd = root.offsetTop + vh * PIN_VH;
+      const hideHero = window.scrollY >= pinEnd - vh * 0.15;
+      root.classList.toggle("test-scroll-reveal--cream-only", hideHero);
+    };
+
+    syncHeroVisibility();
+    window.addEventListener("scroll", syncHeroVisibility, { passive: true });
+    window.addEventListener("resize", syncHeroVisibility);
+
+    return () => {
+      window.removeEventListener("scroll", syncHeroVisibility);
+      window.removeEventListener("resize", syncHeroVisibility);
+    };
+  }, []);
 
   return (
     <>
@@ -99,10 +122,10 @@ export function TestScrollTransition({
               </div>
             </div>
             <div className="pt-sheet__rise-cap" aria-hidden="true" />
-            <div className="test-scroll-reveal__body">{children}</div>
           </div>
         </div>
       </section>
+      <div className="test-scroll-reveal__cream-floor">{children}</div>
     </>
   );
 }
