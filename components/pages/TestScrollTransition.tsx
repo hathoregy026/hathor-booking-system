@@ -37,7 +37,6 @@ export function TestScrollTransition({
   const maskRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
-  const mediaHiddenRef = useRef(false);
 
   usePageScrollTransition({
     root: rootRef,
@@ -59,28 +58,13 @@ export function TestScrollTransition({
       const sheetTop = sheet?.getBoundingClientRect().top ?? vh;
       const pinProgress = Math.max(0, (scroll - top) / (vh * PIN_VH));
 
-      if (scroll <= top + 4) {
-        mediaHiddenRef.current = false;
-        root.classList.remove(
-          "test-scroll-reveal--media-gone",
-          "test-scroll-reveal--past-pin",
-        );
-        return;
-      }
-
-      // Hide ship image only AFTER gold stripes (mask ends ~0.44) and sheet is rising
+      // Reversible — ship returns when scrolling back into the hero zone
+      const inHeroZone = pinProgress < 0.12;
       const hideMedia =
-        mediaHiddenRef.current ||
-        pinProgress > 0.48 ||
-        sheetTop <= vh * 0.35;
-
+        !inHeroZone && (pinProgress > 0.48 || sheetTop <= vh * 0.35);
       const pastPin = pinProgress >= 0.92;
 
-      if (hideMedia) {
-        mediaHiddenRef.current = true;
-        root.classList.add("test-scroll-reveal--media-gone");
-      }
-
+      root.classList.toggle("test-scroll-reveal--media-gone", hideMedia);
       root.classList.toggle("test-scroll-reveal--past-pin", pastPin);
     };
 
