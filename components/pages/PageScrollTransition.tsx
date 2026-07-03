@@ -62,9 +62,11 @@ export function PageScrollTransition({
       const hideMedia =
         !inHeroZone && (pinProgress > 0.48 || sheetTop <= vh * 0.35);
       const pastPin = pinProgress >= 0.92;
+      const landingReady = pinProgress >= 0.72;
 
       root.classList.toggle("hathor-page-scroll--media-gone", hideMedia);
       root.classList.toggle("hathor-page-scroll--past-pin", pastPin);
+      root.classList.toggle("hathor-page-scroll--landing-ready", landingReady);
     };
 
     syncMediaVisibility();
@@ -135,10 +137,12 @@ export function PageScrollTransition({
               </div>
             </div>
             <div className="pt-sheet__rise-cap" aria-hidden="true" />
+            <div className="pt-sheet__body hathor-page-body hathor-page-cream-floor">
+              {children}
+            </div>
           </div>
         </div>
       </section>
-      <div className="hathor-page-body hathor-page-cream-floor">{children}</div>
     </>
   );
 }
