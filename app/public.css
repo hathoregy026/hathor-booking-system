@@ -4814,6 +4814,69 @@ body.has-page-scroll-transition .public-site > .owo-footer {
   margin-top: 0;
 }
 
+/* ─── Inner pages: same cream layout as /test-scroll-reveal (not test route) ─── */
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) {
+  background: transparent !important;
+}
+
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-stage {
+  z-index: 40;
+  background-color: #ece8df;
+  overflow: hidden;
+}
+
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-hero {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  height: 100%;
+  max-height: 100vh;
+  max-height: 100svh;
+  overflow: hidden;
+}
+
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-hero__media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-hero__media img {
+  object-position: center top;
+}
+
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-sheet {
+  background-color: #ece8df !important;
+  z-index: 10;
+}
+
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--media-gone .pt-hero__media,
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--past-pin .pt-hero__media {
+  display: none !important;
+}
+
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--past-pin .pt-stage {
+  background-color: #ece8df !important;
+}
+
+body.has-page-scroll-transition .hathor-page-cream-floor {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  background-color: #ece8df;
+  min-height: 100vh;
+}
+
 /* ============================================
    CONTINUOUS BACKGROUND FIX - NO GAPS
    ============================================ */

@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import {
   refreshPageScrollTransition,
   usePageScrollTransition,
 } from "@/hooks/usePageScrollTransition";
+
+const PIN_VH = 2.8;
 
 export type PageScrollTransitionProps = {
   title: string;
@@ -43,6 +45,37 @@ export function PageScrollTransition({
     sheet: sheetRef,
     heroCopy: heroCopyRef,
   });
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+
+    const syncMediaVisibility = () => {
+      const vh = window.innerHeight;
+      const top = root.getBoundingClientRect().top + window.scrollY;
+      const scroll = window.scrollY;
+      const sheet = sheetRef.current;
+      const sheetTop = sheet?.getBoundingClientRect().top ?? vh;
+      const pinProgress = Math.max(0, (scroll - top) / (vh * PIN_VH));
+
+      const inHeroZone = pinProgress < 0.12;
+      const hideMedia =
+        !inHeroZone && (pinProgress > 0.48 || sheetTop <= vh * 0.35);
+      const pastPin = pinProgress >= 0.92;
+
+      root.classList.toggle("hathor-page-scroll--media-gone", hideMedia);
+      root.classList.toggle("hathor-page-scroll--past-pin", pastPin);
+    };
+
+    syncMediaVisibility();
+    window.addEventListener("scroll", syncMediaVisibility, { passive: true });
+    window.addEventListener("resize", syncMediaVisibility);
+
+    return () => {
+      window.removeEventListener("scroll", syncMediaVisibility);
+      window.removeEventListener("resize", syncMediaVisibility);
+    };
+  }, []);
 
   return (
     <>
@@ -101,9 +134,7 @@ export function PageScrollTransition({
           </div>
         </div>
       </section>
-      <div className="hathor-page-body hathor-page-body--continuous-bg">
-        {children}
-      </div>
+      <div className="hathor-page-body hathor-page-cream-floor">{children}</div>
     </>
   );
 }
