@@ -4822,7 +4822,7 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-stage {
   z-index: 40;
   background-color: #ece8df;
-  overflow: hidden;
+  overflow: visible;
 }
 
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-hero {
@@ -4857,6 +4857,7 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet {
   background-color: #ece8df !important;
   z-index: 10;
+  min-height: 0;
 }
 
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet__landing {
@@ -4864,16 +4865,32 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-
   padding-bottom: 0;
 }
 
-/* Do not touch rise-cap — GSAP half-circle reveal needs default 120vh runway */
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet__rise-cap {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet__body {
+  --pt-content-gap: clamp(1.5rem, 4vh, 2.5rem);
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: var(--pt-content-gap) 0 0;
+  background-color: #ece8df;
+  pointer-events: auto;
+}
 
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--media-gone .pt-hero__media,
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--past-pin .pt-hero__media {
   display: none !important;
 }
 
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition].hathor-page-scroll--past-pin + .hathor-page-cream-floor {
-  position: relative;
-  z-index: 41;
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--past-pin .pt-stage {
+  background-color: #ece8df !important;
 }
 
 body.has-page-scroll-transition .hathor-page-cream-floor {
@@ -4882,29 +4899,38 @@ body.has-page-scroll-transition .hathor-page-cream-floor {
   margin: 0;
   padding: 0;
   background-color: #ece8df;
-  min-height: 100vh;
+  min-height: 0;
 }
 
-/* Tight gap under landing title — edit --pt-content-gap to adjust spacing */
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor {
-  --pt-content-gap: clamp(1.5rem, 4vh, 2.5rem);
-  margin-top: calc(-120svh + var(--pt-content-gap));
+body.has-page-scroll-transition .pt-sheet__body.hathor-page-cream-floor {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  background-color: #ece8df;
+  min-height: 0;
 }
 
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor > .hathor-section:first-child,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor > .hathor-section:first-child {
   padding-top: 0;
   padding-bottom: 2.5rem;
 }
 
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor > .hathor-section:first-child > .hathor-container,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor > .hathor-section:first-child > .hathor-container {
   padding-top: 0;
 }
 
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor > .hathor-container > .mt-12,
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .mt-12:first-of-type,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor > .hathor-container > .mt-12,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .mt-12:first-of-type {
   margin-top: 0;
 }
 
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .hathor-section,
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .hathor-section--dark,
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .hathor-section--dark-2,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-section,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-section--dark,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-section--dark-2 {
@@ -4912,10 +4938,17 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-pag
   color: #0a0a0a;
 }
 
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor > .hathor-section:first-child .hathor-section-header,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor > .hathor-section:first-child .hathor-section-header {
   display: none;
 }
 
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .hathor-section--dark .hathor-section-title,
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .hathor-section--dark-2 .hathor-section-title,
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .hathor-section--dark .hathor-section-subtitle,
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .hathor-section--dark-2 .hathor-section-subtitle,
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .hathor-section--dark .hathor-body-text,
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .hathor-section--dark-2 .hathor-body-text,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-section--dark .hathor-section-title,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-section--dark-2 .hathor-section-title,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-section--dark .hathor-section-subtitle,
@@ -4925,16 +4958,19 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-pag
   color: #0a0a0a;
 }
 
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .hathor-filter-panel,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-filter-panel {
   background-color: rgb(236 232 223 / 0.85);
   border-color: rgb(10 10 10 / 0.08);
 }
 
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .hathor-cruise-card,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-cruise-card {
   background-color: #fff;
   border-color: rgb(10 10 10 / 0.08);
 }
 
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .lux-cta-band,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .lux-cta-band {
   background-color: #ece8df;
 }

@@ -20,6 +20,7 @@ const MASK = {
 
 const PEEK_VH = 0.065;
 const PIN_VH = 2.8;
+const RISE_CAP_VH = 1.2;
 
 type Strip = { el: HTMLDivElement; colW: number; slatW: number };
 
@@ -28,6 +29,7 @@ type PageScrollTransitionRefs = {
   stage: RefObject<HTMLElement | null>;
   mask: RefObject<HTMLElement | null>;
   sheet: RefObject<HTMLElement | null>;
+  riseCap?: RefObject<HTMLElement | null>;
   heroCopy: RefObject<HTMLElement | null>;
 };
 
@@ -58,6 +60,20 @@ function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3);
 }
 
+/** Animation runway only — landing + rise-cap, never page body content. */
+function getSheetScrollHeight(
+  sheetEl: HTMLElement,
+  riseCapEl: HTMLElement | null,
+) {
+  const vh = window.innerHeight;
+  const landing = sheetEl.querySelector<HTMLElement>(".pt-sheet__landing");
+  const riseCap =
+    riseCapEl ?? sheetEl.querySelector<HTMLElement>(".pt-sheet__rise-cap");
+  const landingH = landing?.offsetHeight ?? 0;
+  const riseCapH = riseCap?.offsetHeight ?? vh * RISE_CAP_VH;
+  return landingH + riseCapH;
+}
+
 export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
   const instanceId = useId().replace(/:/g, "");
 
@@ -66,12 +82,14 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
     const stage = refs.stage.current;
     const maskEl = refs.mask.current;
     const sheet = refs.sheet.current;
+    const riseCap = refs.riseCap?.current ?? null;
     const heroCopy = refs.heroCopy.current;
 
     if (!root || !stage || !maskEl || !sheet) return;
 
     const mask = maskEl;
     const sheetEl = sheet;
+    const riseCapEl = riseCap;
     const trigger = root;
 
     document.body.classList.add("has-page-scroll-transition");
@@ -162,7 +180,7 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
 
     function applyProgress(p: number) {
       const vh = window.innerHeight;
-      const sheetH = sheetEl.offsetHeight;
+      const sheetH = getSheetScrollHeight(sheetEl, riseCapEl);
       const peek = vh * PEEK_VH;
       const startY = sheetH - peek;
       const { start: rStart, end: rEnd } = getDomeRadii();
@@ -240,7 +258,7 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
       document.documentElement.classList.remove("has-page-scroll-transition");
       document.body.style.backgroundColor = "";
     };
-  }, [instanceId, refs.root, refs.stage, refs.mask, refs.sheet, refs.heroCopy]);
+  }, [instanceId, refs.root, refs.stage, refs.mask, refs.sheet, refs.riseCap, refs.heroCopy]);
 }
 
 export function refreshPageScrollTransition() {
