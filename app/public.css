@@ -4857,18 +4857,18 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet {
   background-color: #ece8df !important;
   z-index: 10;
+  /* Sheet height = landing + rise-cap only — no phantom 100vh cream block under the title */
+  min-height: 0;
+  height: auto;
 }
 
-/* Tighter landing — less dead space before page content */
+/* Tighter landing — content follows immediately after title */
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet__landing {
-  padding-top: clamp(3rem, 7vh, 4.5rem);
+  padding-top: clamp(2.5rem, 6vh, 3.5rem);
   padding-bottom: 0;
 }
 
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet__rise-cap {
-  min-height: 8vh;
-  min-height: 8svh;
-}
+/* Keep default 120vh rise-cap for GSAP — do not shrink (animation runway) */
 
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--media-gone .pt-hero__media,
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--past-pin .pt-hero__media {
@@ -4888,15 +4888,20 @@ body.has-page-scroll-transition .hathor-page-cream-floor {
   min-height: 100vh;
 }
 
-/* Pull page content up against the landing title — no giant empty cream scroll */
+/* Pull listings up to sit directly under the landing title once the reveal finishes */
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor {
-  margin-top: calc(-1 * clamp(72vh, 92vh, 108vh));
+  margin-top: calc(-120vh + 2.5rem);
+  margin-top: calc(-120svh + 2.5rem);
   padding-top: 0;
 }
 
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor > .hathor-section:first-child {
   padding-top: 0;
-  padding-bottom: 4rem;
+  padding-bottom: 2.5rem;
+}
+
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor > .hathor-section:first-child > .hathor-container {
+  padding-top: 0;
 }
 
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor > .hathor-container > .mt-12,
