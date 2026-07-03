@@ -4822,7 +4822,7 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-stage {
   z-index: 40;
   background-color: #ece8df;
-  overflow: visible;
+  overflow: hidden;
 }
 
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-hero {
@@ -4859,31 +4859,17 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-
   z-index: 10;
   min-height: 0;
   height: auto;
-  pointer-events: none;
 }
 
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet__landing {
-  padding-top: clamp(2.5rem, 6vh, 3.5rem);
+  padding-top: clamp(5.5rem, 12vh, 7.5rem);
   padding-bottom: 0;
-  position: relative;
-  z-index: 12;
 }
 
-/* Content pulls up over rise-cap runway — directly under landing title, inside pinned stage */
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet__content {
-  position: relative;
-  z-index: 11;
-  margin-top: calc(-120vh + 1.25rem);
-  margin-top: calc(-120svh + 1.25rem);
-  padding: 0;
-  min-height: 0;
-  pointer-events: auto;
-  background-color: #ece8df;
-}
-
+/* GSAP keeps 120vh runway height; collapse visual gap under landing title */
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet__rise-cap {
-  position: relative;
-  z-index: 1;
+  margin-top: calc(-120vh + clamp(5rem, 14vh, 8rem));
+  margin-top: calc(-120svh + clamp(5rem, 14vh, 8rem));
 }
 
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--media-gone .pt-hero__media,
@@ -4901,31 +4887,30 @@ body.has-page-scroll-transition .hathor-page-cream-floor {
   margin: 0;
   padding: 0;
   background-color: #ece8df;
-  min-height: 0;
+  min-height: 100vh;
 }
 
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__content.hathor-page-cream-floor > .hathor-section:first-child,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor > .hathor-section:first-child {
+/* Cream content starts right after reveal — no pull-up hacks */
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor {
+  margin-top: 0;
   padding-top: 0;
+}
+
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor > .hathor-section:first-child {
+  padding-top: clamp(1.5rem, 4vh, 2.5rem);
   padding-bottom: 2.5rem;
 }
 
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__content.hathor-page-cream-floor > .hathor-section:first-child > .hathor-container,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor > .hathor-section:first-child > .hathor-container {
   padding-top: 0;
 }
 
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__content.hathor-page-cream-floor > .hathor-container > .mt-12,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__content.hathor-page-cream-floor .mt-12:first-of-type,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor > .hathor-container > .mt-12,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .mt-12:first-of-type {
   margin-top: 0;
 }
 
-/* Cream content area */
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__content.hathor-page-cream-floor .hathor-section,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__content.hathor-page-cream-floor .hathor-section--dark,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__content.hathor-page-cream-floor .hathor-section--dark-2,
+/* Cream content area — sibling after transition (same as test page) */
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-section,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-section--dark,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-section--dark-2 {
@@ -4933,17 +4918,10 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-pag
   color: #0a0a0a;
 }
 
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__content.hathor-page-cream-floor > .hathor-section:first-child .hathor-section-header,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor > .hathor-section:first-child .hathor-section-header {
   display: none;
 }
 
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__content.hathor-page-cream-floor .hathor-section--dark .hathor-section-title,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__content.hathor-page-cream-floor .hathor-section--dark-2 .hathor-section-title,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__content.hathor-page-cream-floor .hathor-section--dark .hathor-section-subtitle,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__content.hathor-page-cream-floor .hathor-section--dark-2 .hathor-section-subtitle,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__content.hathor-page-cream-floor .hathor-section--dark .hathor-body-text,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__content.hathor-page-cream-floor .hathor-section--dark-2 .hathor-body-text,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-section--dark .hathor-section-title,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-section--dark-2 .hathor-section-title,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-section--dark .hathor-section-subtitle,
@@ -4953,19 +4931,16 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-pag
   color: #0a0a0a;
 }
 
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__content.hathor-page-cream-floor .hathor-filter-panel,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-filter-panel {
   background-color: rgb(236 232 223 / 0.85);
   border-color: rgb(10 10 10 / 0.08);
 }
 
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__content.hathor-page-cream-floor .hathor-cruise-card,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-cruise-card {
   background-color: #fff;
   border-color: rgb(10 10 10 / 0.08);
 }
 
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__content.hathor-page-cream-floor .lux-cta-band,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .lux-cta-band {
   background-color: #ece8df;
 }
