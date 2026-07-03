@@ -81,7 +81,7 @@ export function PageScrollTransition({
 
   useEffect(() => {
     requestAnimationFrame(() => refreshPageScrollTransition());
-  }, []);
+  }, [children]);
 
   return (
     <section
@@ -127,19 +127,19 @@ export function PageScrollTransition({
             </div>
           </div>
         </div>
-        <div ref={sheetRef} className="pt-sheet">
-          <div className="pt-sheet__landing" aria-labelledby="page-landing-title">
-            <div className="hathor-container">
-              <h2 id="page-landing-title" className="pt-sheet__landing-title">
-                {title}
-              </h2>
+          <div ref={sheetRef} className="pt-sheet">
+            <div className="pt-sheet__landing" aria-labelledby="page-landing-title">
+              <div className="hathor-container">
+                <h2 id="page-landing-title" className="pt-sheet__landing-title">
+                  {title}
+                </h2>
+              </div>
+            </div>
+            <div ref={riseCapRef} className="pt-sheet__rise-cap" aria-hidden="true" />
+            <div className="pt-sheet__body hathor-page-body hathor-page-cream-floor">
+              {children}
             </div>
           </div>
-          <div className="pt-sheet__body hathor-page-body hathor-page-cream-floor">
-            {children}
-          </div>
-          <div ref={riseCapRef} className="pt-sheet__rise-cap" aria-hidden="true" />
-        </div>
       </div>
     </section>
   );

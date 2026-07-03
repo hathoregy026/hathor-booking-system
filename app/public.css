@@ -4822,7 +4822,7 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-stage {
   z-index: 40;
   background-color: #ece8df;
-  overflow: visible;
+  overflow: hidden;
 }
 
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-hero {
@@ -4857,7 +4857,6 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet {
   background-color: #ece8df !important;
   z-index: 10;
-  min-height: 0;
 }
 
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet__landing {
@@ -4865,21 +4864,12 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-
   padding-bottom: 0;
 }
 
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet__rise-cap {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 0;
-  pointer-events: none;
-}
-
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet__body {
   --pt-content-gap: clamp(1.5rem, 4vh, 2.5rem);
   position: relative;
   z-index: 1;
-  margin: 0;
-  padding: var(--pt-content-gap) 0 0;
+  margin-top: calc(-120svh + var(--pt-content-gap));
+  padding: 0;
   background-color: #ece8df;
   pointer-events: auto;
 }
