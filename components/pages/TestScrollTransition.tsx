@@ -37,7 +37,7 @@ export function TestScrollTransition({
   const maskRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
-  const heroHiddenRef = useRef(false);
+  const mediaHiddenRef = useRef(false);
 
   usePageScrollTransition({
     root: rootRef,
@@ -51,7 +51,7 @@ export function TestScrollTransition({
     const root = rootRef.current;
     if (!root) return;
 
-    const syncHeroVisibility = () => {
+    const syncMediaVisibility = () => {
       const vh = window.innerHeight;
       const top = root.getBoundingClientRect().top + window.scrollY;
       const scroll = window.scrollY;
@@ -60,29 +60,37 @@ export function TestScrollTransition({
       const pinProgress = Math.max(0, (scroll - top) / (vh * PIN_VH));
 
       if (scroll <= top + 4) {
-        heroHiddenRef.current = false;
-        root.classList.remove("test-scroll-reveal--hero-gone");
+        mediaHiddenRef.current = false;
+        root.classList.remove(
+          "test-scroll-reveal--media-gone",
+          "test-scroll-reveal--past-pin",
+        );
         return;
       }
 
-      const shouldHide =
-        heroHiddenRef.current ||
-        pinProgress > 0.06 ||
-        sheetTop <= vh * 0.78;
+      // Hide ship image only AFTER gold stripes (mask ends ~0.44) and sheet is rising
+      const hideMedia =
+        mediaHiddenRef.current ||
+        pinProgress > 0.48 ||
+        sheetTop <= vh * 0.35;
 
-      if (shouldHide) {
-        heroHiddenRef.current = true;
-        root.classList.add("test-scroll-reveal--hero-gone");
+      const pastPin = pinProgress >= 0.92;
+
+      if (hideMedia) {
+        mediaHiddenRef.current = true;
+        root.classList.add("test-scroll-reveal--media-gone");
       }
+
+      root.classList.toggle("test-scroll-reveal--past-pin", pastPin);
     };
 
-    syncHeroVisibility();
-    window.addEventListener("scroll", syncHeroVisibility, { passive: true });
-    window.addEventListener("resize", syncHeroVisibility);
+    syncMediaVisibility();
+    window.addEventListener("scroll", syncMediaVisibility, { passive: true });
+    window.addEventListener("resize", syncMediaVisibility);
 
     return () => {
-      window.removeEventListener("scroll", syncHeroVisibility);
-      window.removeEventListener("resize", syncHeroVisibility);
+      window.removeEventListener("scroll", syncMediaVisibility);
+      window.removeEventListener("resize", syncMediaVisibility);
     };
   }, []);
 
@@ -97,7 +105,6 @@ export function TestScrollTransition({
         }`}
       >
         <div ref={stageRef} className="pt-stage">
-          <div className="test-scroll-reveal__cream-cover" aria-hidden="true" />
           <div className="pt-hero">
             <div className="pt-hero__media">
               <img
