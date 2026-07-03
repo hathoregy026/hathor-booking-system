@@ -77,6 +77,10 @@ export function PageScrollTransition({
     };
   }, []);
 
+  useEffect(() => {
+    requestAnimationFrame(() => refreshPageScrollTransition());
+  }, []);
+
   return (
     <>
       <section
