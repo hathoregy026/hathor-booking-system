@@ -37,6 +37,7 @@ export function TestScrollTransition({
   const maskRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
+  const heroHiddenRef = useRef(false);
 
   usePageScrollTransition({
     root: rootRef,
@@ -52,9 +53,27 @@ export function TestScrollTransition({
 
     const syncHeroVisibility = () => {
       const vh = window.innerHeight;
-      const pinEnd = root.offsetTop + vh * PIN_VH;
-      const hideHero = window.scrollY >= pinEnd - vh * 0.15;
-      root.classList.toggle("test-scroll-reveal--cream-only", hideHero);
+      const top = root.getBoundingClientRect().top + window.scrollY;
+      const scroll = window.scrollY;
+      const sheet = sheetRef.current;
+      const sheetTop = sheet?.getBoundingClientRect().top ?? vh;
+      const pinProgress = Math.max(0, (scroll - top) / (vh * PIN_VH));
+
+      if (scroll <= top + 4) {
+        heroHiddenRef.current = false;
+        root.classList.remove("test-scroll-reveal--hero-gone");
+        return;
+      }
+
+      const shouldHide =
+        heroHiddenRef.current ||
+        pinProgress > 0.06 ||
+        sheetTop <= vh * 0.78;
+
+      if (shouldHide) {
+        heroHiddenRef.current = true;
+        root.classList.add("test-scroll-reveal--hero-gone");
+      }
     };
 
     syncHeroVisibility();
@@ -78,6 +97,7 @@ export function TestScrollTransition({
         }`}
       >
         <div ref={stageRef} className="pt-stage">
+          <div className="test-scroll-reveal__cream-cover" aria-hidden="true" />
           <div className="pt-hero">
             <div className="pt-hero__media">
               <img

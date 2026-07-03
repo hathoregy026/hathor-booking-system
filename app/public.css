@@ -4938,17 +4938,33 @@ body { background-color: #ece8df !important; }
   z-index: 10;
 }
 
-/* After transition: kill hero ship entirely — cream only */
-.test-scroll-reveal-route [data-test-scroll-reveal].test-scroll-reveal--cream-only .pt-hero {
-  visibility: hidden;
-  opacity: 0;
+/* Full cream cover inside stage once hero is removed */
+.test-scroll-reveal-route [data-test-scroll-reveal] .test-scroll-reveal__cream-cover {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  background-color: #ece8df;
   pointer-events: none;
+}
+
+/* Ship hero ONLY at page top — gone permanently once scroll starts */
+.test-scroll-reveal-route [data-test-scroll-reveal].test-scroll-reveal--hero-gone .pt-hero {
+  display: none !important;
+}
+
+.test-scroll-reveal-route [data-test-scroll-reveal].test-scroll-reveal--hero-gone .test-scroll-reveal__cream-cover {
+  display: block;
+}
+
+.test-scroll-reveal-route [data-test-scroll-reveal].test-scroll-reveal--hero-gone .pt-stage {
+  background-color: #ece8df !important;
 }
 
 /* Cream continues from dome through all page content to the bottom */
 .test-scroll-reveal-route .test-scroll-reveal__cream-floor {
   position: relative;
-  z-index: 1;
+  z-index: 45;
   margin: 0;
   padding: 0;
   background-color: #ece8df;
