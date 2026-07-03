@@ -4861,12 +4861,13 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-
 
 /* Tighter landing — less dead space before page content */
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet__landing {
-  padding-bottom: 0.25rem;
+  padding-top: clamp(3rem, 7vh, 4.5rem);
+  padding-bottom: 0;
 }
 
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet__rise-cap {
-  min-height: 28vh;
-  min-height: 28svh;
+  min-height: 8vh;
+  min-height: 8svh;
 }
 
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--media-gone .pt-hero__media,
