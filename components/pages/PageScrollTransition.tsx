@@ -56,7 +56,6 @@ export function PageScrollTransition({
         <div ref={stageRef} className="pt-stage">
           <div className="pt-hero">
             <div className="pt-hero__media">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={image.src}
                 alt={imageAlt ?? image.alt}
@@ -102,7 +101,9 @@ export function PageScrollTransition({
           </div>
         </div>
       </section>
-      <div className="hathor-page-body">{children}</div>
+      <div className="hathor-page-body hathor-page-body--continuous-bg">
+        {children}
+      </div>
     </>
   );
 }

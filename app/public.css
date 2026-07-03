@@ -1402,7 +1402,7 @@
 .hathor-header--owo-hero-layout .hathor-header__menu-zone,
 .hathor-header--owo-hero-layout .hathor-header__inner--owo {
   position: relative;
-  z-index: 1;
+  z-index: 210;
   overflow: visible;
 }
 
@@ -4569,17 +4569,38 @@ html[data-public-theme="day"] .preview-header--transparent:not(.preview-header--
 }
 
 /* ─── Inner page scroll transition (not homepage) ─── */
+/* Background gap fixes — CSS ONLY, scroll-reveal pages via body class from existing hook */
 body.has-page-scroll-transition,
 html.has-page-scroll-transition {
-  background: #ece8df;
+  background-color: #ece8df;
+  margin: 0;
+  padding: 0;
   overflow-x: visible !important;
+}
+
+body.has-page-scroll-transition .pin-spacer {
+  background: #ece8df !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 body.has-page-scroll-transition .public-site,
 body.has-page-scroll-transition .public-main,
+body.has-page-scroll-transition .page-transition,
+body.has-page-scroll-transition .hathor-page-body {
+  background-color: #ece8df;
+  margin: 0;
+  padding: 0;
+}
+
+body.has-page-scroll-transition .public-site {
+  min-height: 100vh;
+}
+
+body.has-page-scroll-transition .public-main,
 body.has-page-scroll-transition .page-transition {
   overflow: visible !important;
-  background: #ece8df;
+  background-color: #ece8df;
 }
 
 [data-page-transition] {
@@ -4600,6 +4621,14 @@ body.has-page-scroll-transition .page-transition {
   perspective: 1400px;
   background: var(--pt-cream);
   z-index: 40;
+  pointer-events: none;
+}
+
+[data-page-transition] .pt-hero__media img {
+  object-position: center center;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 [data-page-transition] .pt-hero {
@@ -4681,18 +4710,32 @@ body.has-page-scroll-transition .page-transition {
 .hathor-page-scroll-transition {
   min-height: unset !important;
   padding: 0 !important;
-  display: block;
+  margin: 0 !important;
+  display: block !important;
+  align-items: unset !important;
   overflow: visible;
-  background: transparent;
+  background: transparent !important;
+}
+
+.hathor-page-scroll-transition.hathor-page-hero {
+  min-height: unset !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+body.has-page-scroll-transition .public-main--hero {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+body.has-page-scroll-transition [data-page-transition] {
+  margin: 0;
+  padding: 0;
 }
 
 [data-page-transition] .pt-hero__media {
   position: absolute;
   inset: 0;
-}
-
-[data-page-transition] .pt-hero__media img {
-  object-position: center center;
 }
 
 [data-page-transition] .pt-hero__overlay {
@@ -4764,6 +4807,69 @@ body.has-page-scroll-transition .page-transition {
 .hathor-page-body {
   position: relative;
   z-index: 1;
-  background: #ece8df;
+  background-color: #ece8df;
+}
+
+body.has-page-scroll-transition .public-site > .owo-footer {
+  margin-top: 0;
+}
+
+/* ============================================
+   CONTINUOUS BACKGROUND FIX - NO GAPS
+   ============================================ */
+
+/* Global background continuity */
+html,
+body {
+  background-color: #ece8df !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Page body continuous background */
+.hathor-page-body--continuous-bg {
+  background-color: #ece8df !important;
+  min-height: 100vh !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Pin-spacer background (GSAP creates this - MUST match cream) */
+.pin-spacer {
+  background-color: #ece8df !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Remove gaps between hero and content */
+.hathor-page-scroll-transition {
+  margin-bottom: 0 !important;
+}
+
+.hathor-page-body {
+  margin-top: 0 !important;
+  background-color: #ece8df !important;
+}
+
+/* Section backgrounds */
+.hathor-section {
+  background-color: #ece8df !important;
+}
+
+.hathor-section--dark {
+  background-color: #0a0a0a !important;
+}
+
+/* Footer background */
+footer {
+  background-color: #0a0a0a !important;
+  margin-top: 0 !important;
+}
+
+/* Ensure no white gaps anywhere */
+.public-site,
+.public-main,
+.page-transition {
+  background-color: #ece8df !important;
 }
 
