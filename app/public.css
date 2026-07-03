@@ -4822,7 +4822,7 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-stage {
   z-index: 40;
   background-color: #ece8df;
-  overflow: hidden;
+  overflow: visible;
 }
 
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-hero {
@@ -4874,7 +4874,50 @@ body.has-page-scroll-transition .hathor-page-cream-floor {
   margin: 0;
   padding: 0;
   background-color: #ece8df;
-  min-height: 100vh;
+  min-height: 0;
+}
+
+/* Content sits on cream directly under the landing title — not dark blocks */
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .hathor-page-cream-floor .hathor-section,
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .hathor-page-cream-floor .hathor-section--dark,
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .hathor-page-cream-floor .hathor-section--dark-2 {
+  background-color: #ece8df !important;
+  color: #0a0a0a;
+}
+
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .hathor-page-cream-floor .hathor-section--dark .hathor-section-title,
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .hathor-page-cream-floor .hathor-section--dark-2 .hathor-section-title,
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .hathor-page-cream-floor .hathor-section--dark .hathor-section-subtitle,
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .hathor-page-cream-floor .hathor-section--dark-2 .hathor-section-subtitle,
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .hathor-page-cream-floor .hathor-section--dark .hathor-body-text,
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .hathor-page-cream-floor .hathor-section--dark-2 .hathor-body-text {
+  color: #0a0a0a;
+}
+
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .hathor-page-cream-floor > .hathor-section:first-child {
+  padding-top: 0;
+}
+
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .hathor-page-cream-floor > .hathor-section:first-child .hathor-section-header {
+  display: none;
+}
+
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .hathor-page-cream-floor .hathor-filter-panel {
+  background-color: rgb(236 232 223 / 0.85);
+  border-color: rgb(10 10 10 / 0.08);
+}
+
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .hathor-page-cream-floor .hathor-cruise-card {
+  background-color: #fff;
+  border-color: rgb(10 10 10 / 0.08);
+}
+
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-sheet__landing {
+  padding-bottom: 0;
+}
+
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .hathor-page-cream-floor .lux-cta-band {
+  background-color: #ece8df;
 }
 
 /* ============================================
