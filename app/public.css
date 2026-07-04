@@ -4864,16 +4864,6 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-
   padding-bottom: 0;
 }
 
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet__body {
-  --pt-content-gap: clamp(1.5rem, 4vh, 2.5rem);
-  position: relative;
-  z-index: 1;
-  margin-top: calc(-120svh + var(--pt-content-gap));
-  padding: 0;
-  background-color: #ece8df;
-  pointer-events: auto;
-}
-
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--media-gone .pt-hero__media,
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--past-pin .pt-hero__media {
   display: none !important;
@@ -4886,18 +4876,18 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
 body.has-page-scroll-transition .hathor-page-cream-floor {
   position: relative;
   z-index: 1;
-  margin: 0;
   padding: 0;
   background-color: #ece8df;
-  min-height: 0;
+  min-height: 100vh;
 }
 
-body.has-page-scroll-transition .pt-sheet__body.hathor-page-cream-floor {
-  position: relative;
-  z-index: 1;
-  margin: 0;
-  background-color: #ece8df;
-  min-height: 0;
+/* Pull cream content up under landing title — edit --pt-content-gap to tune spacing */
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor {
+  --pt-content-gap: clamp(1.5rem, 4vh, 2.5rem);
+  margin-top: calc(-120svh + var(--pt-content-gap));
+  margin-right: 0;
+  margin-bottom: 0;
+  margin-left: 0;
 }
 
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor > .hathor-section:first-child,
