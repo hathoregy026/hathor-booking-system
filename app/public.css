@@ -5407,19 +5407,17 @@ body { background-color: #ece8df !important; }
 }
 
 .test-scroll-reveal-route [data-cruises-scroll] .dome-manual-spacer {
-  display: block;
-  height: 0;
-  margin: 0;
-  padding: 0;
-  pointer-events: none;
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .test-scroll-reveal-route .next-section {
   position: relative;
-  margin-top: -1px;
+  margin-top: 0 !important;
 }
 
 .test-scroll-reveal-route .dome-spacer {
-  height: 1px;
-  margin-top: -1px;
+  display: none !important;
 }

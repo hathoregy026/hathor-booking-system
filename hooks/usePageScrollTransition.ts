@@ -3,6 +3,7 @@
 import { useLayoutEffect, useId, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { alignCruisesDomeContentGap, restoreCruisesScrollTrack } from "@/lib/align-dome-content-gap";
 
 const PT_CREAM = "#ECE8DF";
 const PT_GOLD = "#C9A96E";
@@ -314,6 +315,20 @@ export function usePageScrollTransition(
             invalidateOnRefresh: true,
             anticipatePin: 1,
             onUpdate: (self) => applyProgress(self.progress),
+            onLeave: () => {
+              setTimeout(() => {
+                if (trigger.hasAttribute("data-cruises-scroll")) {
+                  alignCruisesDomeContentGap(true);
+                } else {
+                  alignCruisesDomeContentGap();
+                }
+              }, 50);
+            },
+            onEnterBack: () => {
+              if (trigger.hasAttribute("data-cruises-scroll") && manualScrollTrack) {
+                restoreCruisesScrollTrack(PIN_VH);
+              }
+            },
           });
 
           ScrollTrigger.refresh();

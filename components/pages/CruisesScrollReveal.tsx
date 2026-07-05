@@ -7,6 +7,10 @@ import {
   refreshPageScrollTransition,
   usePageScrollTransition,
 } from "@/hooks/usePageScrollTransition";
+import {
+  alignCruisesDomeContentGap,
+  alignDomeContentGap,
+} from "@/lib/align-dome-content-gap";
 
 const PIN_VH = 1.5;
 
@@ -16,18 +20,6 @@ export type CruisesScrollRevealProps = {
   imageSrc: string;
   children: ReactNode;
 };
-
-function alignDomeContentGap(root: HTMLElement, next: HTMLElement) {
-  const dome = root.querySelector<HTMLElement>(".dome-container");
-  const landing = root.querySelector<HTMLElement>(".pt-sheet__landing");
-  if (!dome) return;
-
-  const domeBottom =
-    landing?.getBoundingClientRect().bottom ?? dome.getBoundingClientRect().bottom;
-  const gap = next.getBoundingClientRect().top - domeBottom;
-  next.style.marginTop = gap > 0 ? `-${gap}px` : "0";
-  ScrollTrigger.refresh();
-}
 
 export function CruisesScrollReveal({
   title,
@@ -98,6 +90,15 @@ export function CruisesScrollReveal({
       alignDomeContentGap(root, next);
     };
 
+    const onScrollEnd = () => {
+      const root = rootRef.current;
+      if (root?.classList.contains("test-scroll-reveal--past-pin")) {
+        alignCruisesDomeContentGap(true);
+      } else {
+        alignCruisesDomeContentGap();
+      }
+    };
+
     runGapFix();
     requestAnimationFrame(runGapFix);
     setTimeout(runGapFix, 100);
@@ -106,11 +107,13 @@ export function CruisesScrollReveal({
     window.addEventListener("load", runGapFix);
     window.addEventListener("resize", runGapFix);
     ScrollTrigger.addEventListener("refresh", runGapFix);
+    ScrollTrigger.addEventListener("scrollEnd", onScrollEnd);
 
     return () => {
       window.removeEventListener("load", runGapFix);
       window.removeEventListener("resize", runGapFix);
       ScrollTrigger.removeEventListener("refresh", runGapFix);
+      ScrollTrigger.removeEventListener("scrollEnd", onScrollEnd);
       if (creamFloorRef.current) {
         creamFloorRef.current.style.marginTop = "";
       }
@@ -126,7 +129,7 @@ export function CruisesScrollReveal({
         data-cruises-scroll
         className="hathor-page-scroll-transition hathor-page-hero test-scroll-reveal"
       >
-        <div className="dome-manual-spacer" aria-hidden="true" />
+        <div className="dome-manual-spacer" aria-hidden="true" style={{ display: "none" }} />
         <div ref={stageRef} className="pt-stage dome-container">
           <div className="pt-hero">
             <div className="pt-hero__media">
@@ -178,4 +181,29 @@ export function CruisesScrollReveal({
       </div>
     </>
   );
+}
+
+// Emergency gap fix: collapse manual scroll track + pull content flush after pin release
+if (typeof window !== "undefined") {
+  window.addEventListener("load", () => {
+    const root = document.querySelector<HTMLElement>("[data-cruises-scroll]");
+    const next = document.querySelector<HTMLElement>(".next-section");
+    if (!root || !next) return;
+    if (!root.classList.contains("test-scroll-reveal--past-pin")) return;
+
+    root.style.height = "auto";
+    root.style.minHeight = "0";
+
+    const landing = root.querySelector<HTMLElement>(".pt-sheet__landing");
+    const dome = root.querySelector<HTMLElement>(".dome-container");
+    const domeBottom =
+      landing?.getBoundingClientRect().bottom ??
+      dome?.getBoundingClientRect().bottom ??
+      0;
+    const gap = next.getBoundingClientRect().top - domeBottom;
+    if (gap > 0) {
+      next.style.setProperty("margin-top", `-${gap}px`, "important");
+    }
+    ScrollTrigger.refresh();
+  });
 }
