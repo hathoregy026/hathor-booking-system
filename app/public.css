@@ -5234,8 +5234,23 @@ body { background-color: #ece8df !important; }
 }
 
 .cruises-scroll-route [data-cruises-scroll-reveal][data-pt-layout="venetian"] .pt-sheet__rise-cap {
-  min-height: calc(1.2 * 1vh);
-  min-height: calc(1.2 * 1svh);
+  width: 100%;
+  min-height: 120vh;
+  min-height: 120svh;
+}
+
+.cruises-scroll-route [data-cruises-scroll-reveal][data-pt-layout="venetian"] .pt-sheet__body.cruises-page-cream {
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  z-index: 20;
+  margin: 0;
+  padding: 0;
+}
+
+.cruises-scroll-route [data-cruises-scroll-reveal][data-pt-layout="venetian"] .pt-sheet__body.cruises-page-cream .page-layout__inner {
+  padding-top: 0;
 }
 
 /* ─── /test-scroll-reveal isolated layout (does not affect other pages) ─── */
