@@ -1,104 +1,110 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import React, { useEffect, useRef, type ReactNode } from "react";
+import { refreshPageScrollTransition, usePageScrollTransition } from "@/hooks/usePageScrollTransition";
 
-interface CruisesScrollRevealProps {
+export type CruisesScrollRevealProps = {
   title: string;
-  children?: React.ReactNode;
-}
+  subtitle?: string;
+  imageSrc: string;
+  children: ReactNode;
+};
 
-export function CruisesScrollReveal({ title, children }: CruisesScrollRevealProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const viewportRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
+export function CruisesScrollReveal({
+  title,
+  subtitle,
+  imageSrc,
+  children,
+}: CruisesScrollRevealProps) {
+  const rootRef = useRef<HTMLElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const maskRef = useRef<HTMLDivElement>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const heroCopyRef = useRef<HTMLDivElement>(null);
+
+  usePageScrollTransition({
+    root: rootRef,
+    stage: stageRef,
+    mask: maskRef,
+    sheet: sheetRef,
+    heroCopy: heroCopyRef,
+  });
 
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    const root = rootRef.current;
+    if (!root) return;
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 1,
-        pin: viewportRef.current,
-        pinSpacing: false,
-      },
-    });
+    const syncMediaVisibility = () => {
+      const vh = window.innerHeight;
+      const top = root.getBoundingClientRect().top + window.scrollY;
+      const scroll = window.scrollY;
+      const sheet = sheetRef.current;
+      const sheetTop = sheet?.getBoundingClientRect().top ?? vh;
+      const pinProgress = Math.max(0, (scroll - top) / (vh * 2.8));
 
-    tl.to(titleRef.current, {
-      opacity: 0,
-      scale: 0.85,
-      duration: 1,
-      ease: "power1.inOut",
-    }).to(
-      contentRef.current,
-      {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        ease: "power1.inOut",
-      },
-      "-=0.4",
-    );
+      const inHeroZone = pinProgress < 0.12;
+      const hideMedia = !inHeroZone && (pinProgress > 0.48 || sheetTop <= vh * 0.35);
+      const pastPin = pinProgress >= 0.92;
+
+      root.classList.toggle("test-scroll-reveal--media-gone", hideMedia);
+      root.classList.toggle("test-scroll-reveal--past-pin", pastPin);
+    };
+
+    syncMediaVisibility();
+    window.addEventListener("scroll", syncMediaVisibility, { passive: true });
+    window.addEventListener("resize", syncMediaVisibility);
 
     return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
+      window.removeEventListener("scroll", syncMediaVisibility);
+      window.removeEventListener("resize", syncMediaVisibility);
     };
   }, []);
 
   return (
-    <div data-cruises-scroll-reveal style={{ position: "relative" }}>
-      <div ref={containerRef} className="reveal-track" style={{ height: "250vh", position: "relative" }}>
-        <div
-          ref={viewportRef}
-          className="sticky-viewport"
-          style={{
-            position: "sticky",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            overflow: "hidden",
-            backgroundColor: "#0b0c10",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <h1
-            ref={titleRef}
-            style={{
-              position: "absolute",
-              fontSize: "7vw",
-              color: "#ffffff",
-              textAlign: "center",
-              width: "100%",
-              zIndex: 2,
-              margin: 0,
-            }}
-          >
-            {title}
-          </h1>
-          <div
-            ref={contentRef}
-            style={{
-              position: "absolute",
-              opacity: 0,
-              transform: "translateY(60px)",
-              textAlign: "center",
-              maxWidth: "800px",
-              zIndex: 3,
-              padding: "2rem",
-            }}
-          >
-            {children}
+    <>
+      <section
+        ref={rootRef}
+        data-page-transition
+        data-test-scroll-reveal
+        className="hathor-page-scroll-transition hathor-page-hero test-scroll-reveal"
+      >
+        <div ref={stageRef} className="pt-stage">
+          <div className="pt-hero">
+            <div className="pt-hero__media">
+              <img
+                src={imageSrc}
+                alt="Cruises Immersive Hero Transition Background"
+                fetchPriority="high"
+                decoding="async"
+                onLoad={() => refreshPageScrollTransition()}
+              />
+              <div className="pt-hero__overlay" aria-hidden />
+            </div>
+            <div ref={maskRef} className="pt-mask" aria-hidden="true" />
+            <div ref={heroCopyRef} className="pt-hero__copy">
+              <div className="hathor-container hathor-page-hero__content">
+                <h1 className="hathor-page-hero__title">{title}</h1>
+                {subtitle && <p className="hathor-page-hero__subtitle">{subtitle}</p>}
+                <div className="hathor-gold-line" />
+              </div>
+            </div>
+          </div>
+          <div ref={sheetRef} className="pt-sheet">
+            <div className="pt-sheet__landing">
+              <div className="hathor-container">
+                <h2 className="pt-sheet__landing-title">
+                  {title}
+                </h2>
+              </div>
+            </div>
+            <div className="pt-sheet__rise-cap" aria-hidden="true" />
           </div>
         </div>
+      </section>
+
+      <div className="test-scroll-reveal__cream-floor">
+        {children}
       </div>
-    </div>
+    </>
   );
 }
