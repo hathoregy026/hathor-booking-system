@@ -242,7 +242,7 @@ export function usePageScrollTransition(
         borderTopRightRadius: radius,
       });
 
-      // Clip hero stack (image → stripes → headline) to the live dome silhouette
+      // Trim hero stack (image → stripes → headline) to the live dome top arc
       const stageEl = refs.stage.current;
       const heroEl = stageEl?.querySelector<HTMLElement>(".pt-hero");
       if (stageEl && heroEl) {
@@ -253,11 +253,13 @@ export function usePageScrollTransition(
           0,
           stageRect.height,
         );
-        const bottomInset = Math.max(0, stageRect.height - domeTop);
-        const clip = `inset(0px 0px ${bottomInset}px 0px round 0px 0px ${radius}px ${radius}px)`;
 
-        heroEl.style.clipPath = clip;
-        trigger.style.setProperty("--pt-dome-clip", clip);
+        heroEl.style.removeProperty("clip-path");
+        heroEl.style.height = `${domeTop}px`;
+        heroEl.style.maxHeight = `${domeTop}px`;
+        heroEl.style.borderBottomLeftRadius = `${radius}px`;
+        heroEl.style.borderBottomRightRadius = `${radius}px`;
+
         trigger.style.setProperty("--pt-dome-r-live", `${radius}px`);
         trigger.style.setProperty("--pt-dome-top", `${domeTop}px`);
       }
@@ -340,10 +342,16 @@ export function usePageScrollTransition(
       ctx.revert();
       trigger.removeAttribute("data-pt-layout");
       trigger.style.height = "";
-      trigger.style.removeProperty("--pt-dome-clip");
       trigger.style.removeProperty("--pt-dome-r-live");
       trigger.style.removeProperty("--pt-dome-top");
-      stage?.querySelector<HTMLElement>(".pt-hero")?.style.removeProperty("clip-path");
+      const heroEl = stage?.querySelector<HTMLElement>(".pt-hero");
+      if (heroEl) {
+        heroEl.style.removeProperty("clip-path");
+        heroEl.style.removeProperty("height");
+        heroEl.style.removeProperty("max-height");
+        heroEl.style.removeProperty("border-bottom-left-radius");
+        heroEl.style.removeProperty("border-bottom-right-radius");
+      }
       document.body.classList.remove("has-page-scroll-transition");
       document.documentElement.classList.remove("has-page-scroll-transition");
       document.body.style.backgroundColor = "";

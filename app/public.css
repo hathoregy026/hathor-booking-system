@@ -4636,7 +4636,7 @@ body.has-page-scroll-transition .page-transition {
   inset: 0;
   z-index: 1;
   overflow: hidden;
-  will-change: clip-path;
+  will-change: height, max-height, border-radius;
 }
 
 [data-page-transition] .pt-hero__media {
@@ -5300,7 +5300,7 @@ body { background-color: #ece8df !important; }
   max-height: 100vh;
   max-height: 100svh;
   overflow: hidden;
-  will-change: clip-path;
+  will-change: height, max-height, border-radius;
 }
 
 .test-scroll-reveal-route [data-test-scroll-reveal] .pt-mask {
