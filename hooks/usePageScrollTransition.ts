@@ -242,26 +242,31 @@ export function usePageScrollTransition(
         borderTopRightRadius: radius,
       });
 
-      // Trim hero stack (image → stripes → headline) to the live dome top arc
+      // Trim hero stack from the TOP down to the live dome edge (must anchor top — inset:0 + height alone pins from bottom)
       const stageEl = refs.stage.current;
       const heroEl = stageEl?.querySelector<HTMLElement>(".pt-hero");
       if (stageEl && heroEl) {
         const stageRect = stageEl.getBoundingClientRect();
         const sheetRect = sheetEl.getBoundingClientRect();
-        const domeTop = clamp(
+        const visibleH = clamp(
           sheetRect.top - stageRect.top,
           0,
           stageRect.height,
         );
 
         heroEl.style.removeProperty("clip-path");
-        heroEl.style.height = `${domeTop}px`;
-        heroEl.style.maxHeight = `${domeTop}px`;
+        heroEl.style.top = "0";
+        heroEl.style.left = "0";
+        heroEl.style.right = "0";
+        heroEl.style.bottom = "auto";
+        heroEl.style.width = "100%";
+        heroEl.style.height = `${visibleH}px`;
+        heroEl.style.maxHeight = "none";
         heroEl.style.borderBottomLeftRadius = `${radius}px`;
         heroEl.style.borderBottomRightRadius = `${radius}px`;
 
         trigger.style.setProperty("--pt-dome-r-live", `${radius}px`);
-        trigger.style.setProperty("--pt-dome-top", `${domeTop}px`);
+        trigger.style.setProperty("--pt-dome-top", `${visibleH}px`);
       }
 
       applyMaskReveal(p);
@@ -347,6 +352,11 @@ export function usePageScrollTransition(
       const heroEl = stage?.querySelector<HTMLElement>(".pt-hero");
       if (heroEl) {
         heroEl.style.removeProperty("clip-path");
+        heroEl.style.removeProperty("top");
+        heroEl.style.removeProperty("left");
+        heroEl.style.removeProperty("right");
+        heroEl.style.removeProperty("bottom");
+        heroEl.style.removeProperty("width");
         heroEl.style.removeProperty("height");
         heroEl.style.removeProperty("max-height");
         heroEl.style.removeProperty("border-bottom-left-radius");
