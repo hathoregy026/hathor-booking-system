@@ -20,7 +20,6 @@ export function CruisesScrollReveal({
   const stageRef = useRef<HTMLDivElement>(null);
   const maskRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
-  const riseCapRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
 
   usePageScrollTransition({
@@ -28,7 +27,6 @@ export function CruisesScrollReveal({
     stage: stageRef,
     mask: maskRef,
     sheet: sheetRef,
-    riseCap: riseCapRef,
     heroCopy: heroCopyRef,
   });
 
@@ -43,12 +41,8 @@ export function CruisesScrollReveal({
       const sheet = sheetRef.current;
       const sheetTop = sheet?.getBoundingClientRect().top ?? vh;
 
-      const landing = sheetRef.current?.querySelector(".pt-sheet__landing") as HTMLElement;
-      const landingH = landing ? landing.offsetHeight : 0;
-      const riseCapH = vh * 1.2; // This uses the matching 1.2 RISE_CAP_VH multiplier
-      const totalDuration = landingH + riseCapH;
-
-      const pinProgress = Math.max(0, (scroll - top) / totalDuration);
+      // Matches our tight 1.4 scroll track duration limit
+      const pinProgress = Math.max(0, (scroll - top) / (vh * 1.4));
 
       const inHeroZone = pinProgress < 0.12;
       const hideMedia = !inHeroZone && (pinProgress > 0.48 || sheetTop <= vh * 0.35);
@@ -75,14 +69,13 @@ export function CruisesScrollReveal({
         data-page-transition
         data-test-scroll-reveal
         className="hathor-page-scroll-transition hathor-page-hero test-scroll-reveal"
-        style={{ position: "relative", width: "100%", height: "auto" }}
       >
         <div ref={stageRef} className="pt-stage">
           <div className="pt-hero">
             <div className="pt-hero__media">
               <img
                 src={imageSrc}
-                alt="Cruises Immersive Hero Transition Background"
+                alt="Cruises Background"
                 fetchPriority="high"
                 decoding="async"
                 onLoad={() => refreshPageScrollTransition()}
@@ -93,7 +86,9 @@ export function CruisesScrollReveal({
             <div ref={heroCopyRef} className="pt-hero__copy">
               <div className="hathor-container hathor-page-hero__content">
                 <h1 className="hathor-page-hero__title">{title}</h1>
-                {subtitle && <p className="hathor-page-hero__subtitle">{subtitle}</p>}
+                {subtitle ? (
+                  <p className="hathor-page-hero__subtitle">{subtitle}</p>
+                ) : null}
                 <div className="hathor-gold-line" />
               </div>
             </div>
@@ -101,14 +96,15 @@ export function CruisesScrollReveal({
           <div ref={sheetRef} className="pt-sheet">
             <div className="pt-sheet__landing">
               <div className="hathor-container">
-                <h2 className="pt-sheet__landing-title">{title}</h2>
+                <h2 className="pt-sheet__landing-title">
+                  {title}
+                </h2>
               </div>
             </div>
-            <div ref={riseCapRef} className="pt-sheet__rise-cap" aria-hidden="true" />
+            <div className="pt-sheet__rise-cap" aria-hidden="true" />
           </div>
         </div>
       </section>
-
       <div className="test-scroll-reveal__cream-floor">{children}</div>
     </>
   );
