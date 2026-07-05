@@ -4616,6 +4616,7 @@ body.has-page-scroll-transition .page-transition {
   position: relative;
   height: 100vh;
   height: 100svh;
+  max-height: 82vh; /* STOPS the dome from rising too high and locks it at a professional position */
   overflow: hidden;
   width: 100%;
   perspective: 1400px;
