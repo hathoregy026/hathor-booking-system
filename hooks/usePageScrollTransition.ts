@@ -248,6 +248,16 @@ export function usePageScrollTransition(
         mask.style.height = `${currentDomeTop}px`;
       }
 
+      // Trim the background hero container height to collapse the layout gap dynamically
+      const root = refs.root.current;
+      if (root) {
+        const heroMedia = root.querySelector(".pt-hero") as HTMLElement;
+        if (heroMedia) {
+          // Trim the background wrapper height to match the exact changing top edge of the rising dome (y)
+          heroMedia.style.height = `${y}px`;
+        }
+      }
+
       applyMaskReveal(p);
 
       if (heroCopy) {
