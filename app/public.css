@@ -5285,6 +5285,14 @@ body { background-color: #ece8df !important; }
   margin-top: 0 !important;
 }
 
+.cruises-scroll-reveal-route .hathor-page-cream-floor {
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+  transform: none !important;
+  translate: none !important;
+}
+
 [data-cruises-scroll-reveal] {
   --reveal-cream: #ece8df;
   --reveal-gold: #c9a96e;
@@ -5403,18 +5411,23 @@ body { background-color: #ece8df !important; }
   text-align: center;
 }
 
+[data-cruises-scroll-reveal] .hathor-page-cream-floor.cruises-page-cream,
 [data-cruises-scroll-reveal] .cruises-page-cream {
   position: relative;
   z-index: 1;
   margin: 0;
   padding: 0;
+  min-height: 0;
   background-color: var(--reveal-cream);
   transform: none;
+  translate: none;
 }
 
 [data-cruises-scroll-reveal] .page-layout__main {
   position: relative;
   width: 100%;
+  margin: 0;
+  padding: 0;
   background-color: var(--reveal-cream);
 }
 
@@ -5423,7 +5436,7 @@ body { background-color: #ece8df !important; }
   max-width: 87.5rem;
   margin-inline: auto;
   margin-top: 0;
-  padding-top: clamp(1.25rem, 3vh, 1.875rem);
+  padding-top: clamp(0.625rem, 1.5vh, 1rem);
   padding-inline: clamp(1rem, 4vw, 2rem);
   padding-bottom: clamp(2.5rem, 6vh, 4rem);
 }

@@ -2,26 +2,29 @@
 
 import Link from "next/link";
 import { useRef, type ReactNode } from "react";
+import { CruisesPageListings } from "@/components/pages/CruisesPageListings";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import {
   refreshCruisesScrollReveal,
   useCruisesScrollReveal,
 } from "@/hooks/useCruisesScrollReveal";
+import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
+import { CRUISES_PAGE } from "@/lib/page-content";
 
 export type CruisesScrollRevealProps = {
   title: string;
   subtitle?: string;
-  breadcrumb: string;
-  imageName: string;
+  breadcrumb?: string;
+  imageName?: string;
   imageAlt?: string;
   children: ReactNode;
 };
 
 export function CruisesScrollReveal({
   title,
-  subtitle,
-  breadcrumb,
-  imageName,
+  subtitle = CRUISES_PAGE.hero.subtitle,
+  breadcrumb = "Cruises",
+  imageName = "cruises-hero",
   imageAlt,
   children,
 }: CruisesScrollRevealProps) {
@@ -91,7 +94,10 @@ export function CruisesScrollReveal({
       </div>
 
       <div className="hathor-page-body hathor-page-cream-floor cruises-page-cream">
-        <div className="page-layout__main">{children}</div>
+        <div className="page-layout__main">
+          <CruisesPageListings cruises={HATHOR_CRUISES} />
+          {children}
+        </div>
       </div>
     </div>
   );

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { CruisesPageContent } from "@/components/pages/CruisesPageContent";
-import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 
 export const metadata: Metadata = {
   title: "Dahabiya Cruises List | Hathor Nile Cruise",
@@ -14,5 +13,5 @@ export const metadata: Metadata = {
 };
 
 export default function CruisesPage() {
-  return <CruisesPageContent cruises={HATHOR_CRUISES} />;
+  return <CruisesPageContent />;
 }
