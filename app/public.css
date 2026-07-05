@@ -4864,6 +4864,12 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-
   padding-bottom: 0;
 }
 
+/* Shorter rise-cap on inner pages — test page keeps 120vh in test-scroll-reveal.css */
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet__rise-cap {
+  min-height: 35vh;
+  min-height: 35svh;
+}
+
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--media-gone .pt-hero__media,
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--past-pin .pt-hero__media {
   display: none !important;

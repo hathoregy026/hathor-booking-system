@@ -19,8 +19,7 @@ const MASK = {
 };
 
 const PEEK_VH = 0.065;
-const PIN_VH = 1.5;
-const RISE_CAP_VH = 0.35;
+const PIN_VH = 2.8;
 
 type Strip = { el: HTMLDivElement; colW: number; slatW: number };
 
@@ -29,7 +28,6 @@ type PageScrollTransitionRefs = {
   stage: RefObject<HTMLElement | null>;
   mask: RefObject<HTMLElement | null>;
   sheet: RefObject<HTMLElement | null>;
-  riseCap?: RefObject<HTMLElement | null>;
   heroCopy: RefObject<HTMLElement | null>;
 };
 
@@ -59,27 +57,6 @@ function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3);
 }
 
-function readRiseCapVh(trigger: HTMLElement) {
-  const v = parseFloat(
-    getComputedStyle(trigger).getPropertyValue("--pt-rise-cap-vh"),
-  );
-  return Number.isFinite(v) && v > 0 ? v : RISE_CAP_VH;
-}
-
-function getSheetScrollHeight(
-  sheetEl: HTMLElement,
-  riseCapEl: HTMLElement | null,
-  trigger: HTMLElement,
-) {
-  const vh = window.innerHeight;
-  const landing = sheetEl.querySelector<HTMLElement>(".pt-sheet__landing");
-  const riseCap =
-    riseCapEl ?? sheetEl.querySelector<HTMLElement>(".pt-sheet__rise-cap");
-  const landingH = landing?.offsetHeight ?? 0;
-  const riseCapH = riseCap?.offsetHeight ?? vh * readRiseCapVh(trigger);
-  return landingH + riseCapH;
-}
-
 export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
   const instanceId = useId().replace(/:/g, "");
 
@@ -88,14 +65,12 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
     const stage = refs.stage.current;
     const maskEl = refs.mask.current;
     const sheet = refs.sheet.current;
-    const riseCap = refs.riseCap?.current ?? null;
     const heroCopy = refs.heroCopy.current;
 
     if (!root || !stage || !maskEl || !sheet) return;
 
     const mask = maskEl;
     const sheetEl = sheet;
-    const riseCapEl = riseCap;
     const trigger = root;
 
     document.body.classList.add("has-page-scroll-transition");
@@ -104,7 +79,6 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
 
     trigger.style.setProperty("--pt-gold", PT_GOLD);
     trigger.style.setProperty("--pt-cream", PT_CREAM);
-    trigger.style.setProperty("--pt-pin-vh", String(PIN_VH));
 
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
@@ -185,13 +159,9 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
       });
     }
 
-    function measureSheetHeight() {
-      return getSheetScrollHeight(sheetEl, riseCapEl, trigger);
-    }
-
     function applyProgress(p: number) {
       const vh = window.innerHeight;
-      const sheetH = measureSheetHeight();
+      const sheetH = sheetEl.offsetHeight;
       const peek = vh * PEEK_VH;
       const startY = sheetH - peek;
       const { start: rStart, end: rEnd } = getDomeRadii();
@@ -212,18 +182,6 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
         borderTopRightRadius: radius,
       });
 
-      if (mask) {
-        mask.style.height = `${y}px`;
-      }
-
-      const rootEl = refs.root.current;
-      if (rootEl) {
-        const heroMedia = rootEl.querySelector(".pt-hero") as HTMLElement;
-        if (heroMedia) {
-          heroMedia.style.height = `${y}px`;
-        }
-      }
-
       applyMaskReveal(p);
 
       if (heroCopy) {
@@ -233,6 +191,24 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
 
     const ctx = gsap.context(() => {
       gsap.registerPlugin(ScrollTrigger);
+
+      function alignCreamFloor() {
+        const cream = trigger.nextElementSibling as HTMLElement | null;
+        const landing = trigger.querySelector<HTMLElement>(".pt-sheet__landing");
+        if (!cream || !landing) return;
+
+        const gap =
+          cream.getBoundingClientRect().top - landing.getBoundingClientRect().bottom;
+        cream.style.marginTop = gap > 0 ? `-${gap}px` : "0";
+        ScrollTrigger.refresh();
+      }
+
+      function resetCreamFloor() {
+        const cream = trigger.nextElementSibling as HTMLElement | null;
+        if (!cream) return;
+        cream.style.marginTop = "0";
+        ScrollTrigger.refresh();
+      }
 
       const setup = () => {
         if (!buildMaskStrips()) return false;
@@ -249,9 +225,14 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
           invalidateOnRefresh: true,
           anticipatePin: 1,
           onUpdate: (self) => applyProgress(self.progress),
+          onLeave: () => {
+            setTimeout(alignCreamFloor, 50);
+          },
+          onEnterBack: () => {
+            resetCreamFloor();
+          },
         });
 
-        ScrollTrigger.refresh();
         return true;
       };
 
@@ -277,21 +258,14 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
     return () => {
       window.removeEventListener("resize", onResize);
       if (resizeTimer) clearTimeout(resizeTimer);
+      const cream = trigger.nextElementSibling as HTMLElement | null;
+      if (cream) cream.style.marginTop = "";
       ctx.revert();
-      trigger.style.height = "";
       document.body.classList.remove("has-page-scroll-transition");
       document.documentElement.classList.remove("has-page-scroll-transition");
       document.body.style.backgroundColor = "";
     };
-  }, [
-    instanceId,
-    refs.root,
-    refs.stage,
-    refs.mask,
-    refs.sheet,
-    refs.riseCap,
-    refs.heroCopy,
-  ]);
+  }, [instanceId, refs.root, refs.stage, refs.mask, refs.sheet, refs.heroCopy]);
 }
 
 export function refreshPageScrollTransition() {

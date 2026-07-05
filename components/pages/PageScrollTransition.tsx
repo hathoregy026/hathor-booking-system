@@ -36,7 +36,6 @@ export function PageScrollTransition({
   const stageRef = useRef<HTMLDivElement>(null);
   const maskRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
-  const riseCapRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
 
   usePageScrollTransition({
@@ -44,7 +43,6 @@ export function PageScrollTransition({
     stage: stageRef,
     mask: maskRef,
     sheet: sheetRef,
-    riseCap: riseCapRef,
     heroCopy: heroCopyRef,
   });
 
@@ -139,13 +137,11 @@ export function PageScrollTransition({
                 </h2>
               </div>
             </div>
-            <div ref={riseCapRef} className="pt-sheet__rise-cap" aria-hidden="true" />
+            <div className="pt-sheet__rise-cap" aria-hidden="true" />
           </div>
         </div>
       </section>
-      <div className="hathor-page-body hathor-page-cream-floor page-layout">
-        <div className="page-layout__main">{children}</div>
-      </div>
+      <div className="hathor-page-cream-floor page-layout">{children}</div>
     </>
   );
 }
