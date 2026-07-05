@@ -4875,40 +4875,32 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
 
 body.has-page-scroll-transition .hathor-page-cream-floor {
   position: relative;
-  z-index: 10;
+  z-index: 1;
+  margin: 0;
   padding: 0;
   background-color: #ece8df;
-  min-height: 0;
+  transform: none;
+  min-height: 100vh;
 }
 
-/* Cream floor: normal flow + visual lift (no negative margin — pinSpacing:false removes spacer gap) */
+/* Inner pages: same as working /test-scroll-reveal cream floor — no pull-up hacks */
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor.page-layout {
-  --pt-content-gap: clamp(1.25rem, 3vh, 1.875rem);
-  --pt-lift: 100svh;
+  position: relative;
+  z-index: 1;
   margin: 0;
-  padding-top: var(--pt-content-gap);
-  transform: translateY(calc(-1 * var(--pt-lift)));
-  will-change: transform;
+  padding: 0;
+  background-color: #ece8df;
+  transform: none;
+  min-height: 100vh;
 }
 
-/* After scroll reveal completes, ease lift so content stays visible */
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal]))
-  [data-page-transition].hathor-page-scroll--past-pin
-  ~ .hathor-page-cream-floor.page-layout {
-  transform: translateY(0);
-  z-index: 15;
-}
-
-/* GSAP pin-spacer — reset spacing when present (test route / legacy) */
-body.has-page-scroll-transition .pin-spacer,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pin-spacer {
+body.has-page-scroll-transition .pin-spacer {
+  background: #ece8df !important;
   margin: 0 !important;
   padding: 0 !important;
-  border: 0 !important;
-  box-sizing: border-box;
 }
 
-/* 3. MAIN CONTENT CONTAINER — cream sheet continuation */
+/* 3. MAIN CONTENT CONTAINER */
 .page-layout__main {
   position: relative;
   z-index: 1;
@@ -4920,10 +4912,10 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pin-spacer
 
 .page-layout__inner {
   width: 100%;
-  max-width: var(--hathor-container-max, 72rem);
+  max-width: 87.5rem;
   margin-inline: auto;
   margin-top: 0;
-  padding-top: 0;
+  padding-top: clamp(2rem, 5vh, 3rem);
   padding-inline: clamp(1rem, 4vw, 2rem);
   padding-bottom: clamp(2.5rem, 6vh, 4rem);
 }
