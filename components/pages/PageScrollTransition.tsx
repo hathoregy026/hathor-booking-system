@@ -143,7 +143,9 @@ export function PageScrollTransition({
           </div>
         </div>
       </section>
-      <div className="hathor-page-body hathor-page-cream-floor">{children}</div>
+      <div className="hathor-page-body hathor-page-cream-floor page-layout">
+        <div className="page-layout__main">{children}</div>
+      </div>
     </>
   );
 }

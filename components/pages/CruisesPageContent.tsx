@@ -93,130 +93,118 @@ export function CruisesPageContent({ cruises }: CruisesPageContentProps) {
       breadcrumb="Cruises"
       imageName="cruises-hero"
     >
+      <div className="hathor-container page-layout__inner">
+        <section className="page-layout__filters" aria-label="Listing filters">
+          <p className="page-layout__filters-label">Filters</p>
 
-      <section className="hathor-section hathor-section--dark">
-        <div className="hathor-container">
-          <ScrollReveal>
-            <div className="hathor-section-header">
-              <h2 className="hathor-section-title">{CRUISES_PAGE.sectionTitle}</h2>
-              <div className="hathor-gold-line" />
-            </div>
-          </ScrollReveal>
-
-          <div className="mt-12 grid gap-10 lg:grid-cols-[240px_1fr]">
-            <aside className="hathor-filter-panel h-fit lg:sticky lg:top-28">
-              <p className="hathor-section-eyebrow">Filters</p>
-
-              <div className="mt-6">
-                <p className="lux-label">Duration</p>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setDurationFilter("all")}
-                    className={`hathor-filter-btn ${durationFilter === "all" ? "hathor-filter-btn--active" : ""}`}
-                  >
-                    All
-                  </button>
-                  {durations.map((n) => (
-                    <button
-                      key={n}
-                      type="button"
-                      onClick={() => setDurationFilter(n)}
-                      className={`hathor-filter-btn ${durationFilter === n ? "hathor-filter-btn--active" : ""}`}
-                    >
-                      {n} nights
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <p className="lux-label">Departure</p>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setDepartureFilter("all")}
-                    className={`hathor-filter-btn ${departureFilter === "all" ? "hathor-filter-btn--active" : ""}`}
-                  >
-                    Any day
-                  </button>
-                  {departures.map((day) => (
-                    <button
-                      key={day}
-                      type="button"
-                      onClick={() => setDepartureFilter(day)}
-                      className={`hathor-filter-btn ${departureFilter === day ? "hathor-filter-btn--active" : ""}`}
-                    >
-                      {day}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <BookNowTrigger className="public-btn-gold mt-8 w-full py-3 text-center text-xs">
-                Check Availability
-              </BookNowTrigger>
-            </aside>
-
-            <div>
-              <p className="mb-6 text-sm text-[var(--public-muted)]">
-                {filtered.length} listing{filtered.length !== 1 ? "s" : ""} available
-              </p>
-
-              <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-2">
-                {filtered.map((item, index) => (
-                  <ScrollReveal key={item.key} delay={index * 60}>
-                    <article className="hathor-cruise-card group">
-                      <div className="hathor-cruise-card__image">
-                        <ManagedImage
-                          name={item.imageName}
-                          alt={`${item.roomName} — ${item.cruiseName}`}
-                          fill
-                          className="object-cover transition-transform duration-700 group-hover:scale-105"
-                          sizes="(max-width: 768px) 100vw, 50vw"
-                        />
-                        <span className="hathor-cruise-card__badge">
-                          {item.nights}N / {item.days}D
-                        </span>
-                      </div>
-                      <div className="hathor-cruise-card__body">
-                        <p className="hathor-cruise-card__meta">
-                          Departs {item.departureDay}
-                        </p>
-                        <h3 className="hathor-cruise-card__title">{item.roomName}</h3>
-                        <p className="hathor-cruise-card__route">{item.cruiseName}</p>
-                        <p className="hathor-cruise-card__description">{item.description}</p>
-                        <ul className="hathor-cruise-card__features">
-                          {item.amenities.map((amenity) => (
-                            <li key={amenity}>{amenity}</li>
-                          ))}
-                        </ul>
-                        <p className="hathor-cruise-card__price">
-                          {formatPrice(item.priceCents)}
-                        </p>
-                        <p className="hathor-cruise-card__capacity">
-                          per cabin · up to {item.capacity} guests
-                        </p>
-                        <div className="mt-4 flex flex-wrap gap-3">
-                          <Link
-                            href={item.detailHref}
-                            className="public-btn-outline-gold flex-1 py-3 text-center text-xs"
-                          >
-                            View Details
-                          </Link>
-                          <BookNowTrigger className="public-btn-gold flex-1 py-3 text-xs">
-                            Book Now
-                          </BookNowTrigger>
-                        </div>
-                      </div>
-                    </article>
-                  </ScrollReveal>
-                ))}
-              </div>
+          <div className="page-layout__filter-group">
+            <p className="lux-label">Duration</p>
+            <div className="page-layout__filter-options">
+              <button
+                type="button"
+                onClick={() => setDurationFilter("all")}
+                className={`hathor-filter-btn ${durationFilter === "all" ? "hathor-filter-btn--active" : ""}`}
+              >
+                All
+              </button>
+              {durations.map((n) => (
+                <button
+                  key={n}
+                  type="button"
+                  onClick={() => setDurationFilter(n)}
+                  className={`hathor-filter-btn ${durationFilter === n ? "hathor-filter-btn--active" : ""}`}
+                >
+                  {n} nights
+                </button>
+              ))}
             </div>
           </div>
-        </div>
-      </section>
+
+          <div className="page-layout__filter-group">
+            <p className="lux-label">Departure</p>
+            <div className="page-layout__filter-options">
+              <button
+                type="button"
+                onClick={() => setDepartureFilter("all")}
+                className={`hathor-filter-btn ${departureFilter === "all" ? "hathor-filter-btn--active" : ""}`}
+              >
+                Any day
+              </button>
+              {departures.map((day) => (
+                <button
+                  key={day}
+                  type="button"
+                  onClick={() => setDepartureFilter(day)}
+                  className={`hathor-filter-btn ${departureFilter === day ? "hathor-filter-btn--active" : ""}`}
+                >
+                  {day}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <BookNowTrigger className="public-btn-gold page-layout__filters-cta">
+            Check Availability
+          </BookNowTrigger>
+        </section>
+
+        <section className="page-layout__content" aria-label="Cruise listings">
+          <p className="page-layout__content-count">
+            {filtered.length} listing{filtered.length !== 1 ? "s" : ""} available
+          </p>
+
+          <div className="page-layout__grid">
+            {filtered.map((item, index) => (
+              <ScrollReveal key={item.key} delay={index * 60}>
+                <article className="hathor-cruise-card group">
+                  <div className="hathor-cruise-card__image">
+                    <ManagedImage
+                      name={item.imageName}
+                      alt={`${item.roomName} — ${item.cruiseName}`}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                    <span className="hathor-cruise-card__badge">
+                      {item.nights}N / {item.days}D
+                    </span>
+                  </div>
+                  <div className="hathor-cruise-card__body">
+                    <p className="hathor-cruise-card__meta">
+                      Departs {item.departureDay}
+                    </p>
+                    <h3 className="hathor-cruise-card__title">{item.roomName}</h3>
+                    <p className="hathor-cruise-card__route">{item.cruiseName}</p>
+                    <p className="hathor-cruise-card__description">{item.description}</p>
+                    <ul className="hathor-cruise-card__features">
+                      {item.amenities.map((amenity) => (
+                        <li key={amenity}>{amenity}</li>
+                      ))}
+                    </ul>
+                    <p className="hathor-cruise-card__price">
+                      {formatPrice(item.priceCents)}
+                    </p>
+                    <p className="hathor-cruise-card__capacity">
+                      per cabin · up to {item.capacity} guests
+                    </p>
+                    <div className="hathor-cruise-card__actions">
+                      <Link
+                        href={item.detailHref}
+                        className="public-btn-outline-gold flex-1 py-3 text-center text-xs"
+                      >
+                        View Details
+                      </Link>
+                      <BookNowTrigger className="public-btn-gold flex-1 py-3 text-xs">
+                        Book Now
+                      </BookNowTrigger>
+                    </div>
+                  </div>
+                </article>
+              </ScrollReveal>
+            ))}
+          </div>
+        </section>
+      </div>
 
       <CtaBand />
     </PageScrollTransition>
