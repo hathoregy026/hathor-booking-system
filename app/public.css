@@ -5182,7 +5182,8 @@ body { background-color: #ece8df !important; }
   flex-shrink: 0;
 }
 
-[data-page-transition][data-pt-layout="venetian"] .pt-sheet__body {
+[data-page-transition][data-pt-layout="venetian"] .pt-sheet__body,
+[data-page-transition][data-pt-layout="venetian"] .cruises-scroll-reveal__cream-floor {
   position: absolute;
   top: 100%;
   left: 0;
@@ -5192,9 +5193,16 @@ body { background-color: #ece8df !important; }
   pointer-events: auto;
 }
 
-.cruises-scroll-route [data-pt-layout="venetian"] .pt-sheet__body {
+.cruises-scroll-route [data-pt-layout="venetian"] .pt-sheet__body,
+.cruises-scroll-route [data-pt-layout="venetian"] .cruises-scroll-reveal__cream-floor {
   margin: 0;
   padding: 0;
+}
+
+.cruises-scroll-route [data-cruises-scroll-reveal] .pt-sheet[style] {
+  height: auto !important;
+  min-height: 100vh !important;
+  min-height: 100svh !important;
 }
 
 .cruises-scroll-route [data-pt-layout="venetian"].cruises-scroll-reveal--past-pin .pt-stage {
