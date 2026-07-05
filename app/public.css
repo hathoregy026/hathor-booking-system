@@ -5388,8 +5388,12 @@ body { background-color: #ece8df !important; }
   min-height: 100vh;
 }
 
-.pt-sheet__body {
+.test-scroll-reveal-route .hathor-page-cream-floor.cruises-page-cream {
   background-color: #ece8df !important;
-  margin: 0;
-  padding: 0;
+  position: relative;
+  z-index: 101;
+}
+
+.test-scroll-reveal-route .hathor-page-cream-floor.cruises-page-cream .page-layout__inner {
+  padding-top: 0;
 }

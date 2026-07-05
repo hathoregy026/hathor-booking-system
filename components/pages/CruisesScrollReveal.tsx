@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useEffect, useRef, type ReactNode } from "react";
+import React, { useEffect, useLayoutEffect, useRef, type ReactNode } from "react";
 import { refreshPageScrollTransition, usePageScrollTransition } from "@/hooks/usePageScrollTransition";
+
+const PIN_VH = 1.5;
 
 export type CruisesScrollRevealProps = {
   title: string;
@@ -21,6 +23,7 @@ export function CruisesScrollReveal({
   const maskRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
+  const creamFloorRef = useRef<HTMLDivElement>(null);
 
   usePageScrollTransition({
     root: rootRef,
@@ -40,7 +43,7 @@ export function CruisesScrollReveal({
       const scroll = window.scrollY;
       const sheet = sheetRef.current;
       const sheetTop = sheet?.getBoundingClientRect().top ?? vh;
-      const pinProgress = Math.max(0, (scroll - top) / (vh * 2.8));
+      const pinProgress = Math.max(0, (scroll - top) / (vh * PIN_VH));
 
       const inHeroZone = pinProgress < 0.12;
       const hideMedia =
@@ -61,6 +64,45 @@ export function CruisesScrollReveal({
     };
   }, []);
 
+  useLayoutEffect(() => {
+    const root = rootRef.current;
+
+    const applyContentOffset = () => {
+      const stage = stageRef.current;
+      const sheet = sheetRef.current;
+      const creamFloor = creamFloorRef.current;
+      if (!root || !stage || !sheet || !creamFloor) return;
+
+      const pinSpacer =
+        stage.parentElement?.classList.contains("pin-spacer")
+          ? stage.parentElement
+          : root.querySelector(".pin-spacer");
+      const landing = sheet.querySelector(".pt-sheet__landing");
+      if (!(pinSpacer instanceof HTMLElement) || !(landing instanceof HTMLElement)) {
+        return;
+      }
+
+      const pinScroll = window.innerHeight * PIN_VH;
+      const offset = Math.max(
+        0,
+        pinSpacer.offsetHeight - pinScroll - landing.offsetHeight - 12,
+      );
+
+      creamFloor.style.marginTop = offset > 0 ? `-${offset}px` : "0";
+    };
+
+    applyContentOffset();
+    requestAnimationFrame(applyContentOffset);
+    window.addEventListener("resize", applyContentOffset);
+
+    return () => {
+      window.removeEventListener("resize", applyContentOffset);
+      if (creamFloorRef.current) {
+        creamFloorRef.current.style.marginTop = "";
+      }
+    };
+  }, []);
+
   return (
     <>
       <section
@@ -77,7 +119,29 @@ export function CruisesScrollReveal({
                 alt="Cruises Background"
                 fetchPriority="high"
                 decoding="async"
-                onLoad={() => refreshPageScrollTransition()}
+                onLoad={() => {
+                  refreshPageScrollTransition();
+                  requestAnimationFrame(() => {
+                    const stage = stageRef.current;
+                    const sheet = sheetRef.current;
+                    const creamFloor = creamFloorRef.current;
+                    if (!rootRef.current || !stage || !sheet || !creamFloor) return;
+                    const pinSpacer =
+                      stage.parentElement?.classList.contains("pin-spacer")
+                        ? stage.parentElement
+                        : rootRef.current.querySelector(".pin-spacer");
+                    const landing = sheet.querySelector(".pt-sheet__landing");
+                    if (!(pinSpacer instanceof HTMLElement) || !(landing instanceof HTMLElement)) {
+                      return;
+                    }
+                    const pinScroll = window.innerHeight * PIN_VH;
+                    const offset = Math.max(
+                      0,
+                      pinSpacer.offsetHeight - pinScroll - landing.offsetHeight - 12,
+                    );
+                    creamFloor.style.marginTop = offset > 0 ? `-${offset}px` : "0";
+                  });
+                }}
               />
               <div className="pt-hero__overlay" aria-hidden />
             </div>
@@ -92,34 +156,19 @@ export function CruisesScrollReveal({
               </div>
             </div>
           </div>
-
-          <div
-            ref={sheetRef}
-            className="pt-sheet"
-            style={{ height: "auto", minHeight: "100vh" }}
-          >
+          <div ref={sheetRef} className="pt-sheet">
             <div className="pt-sheet__landing">
               <div className="hathor-container">
                 <h2 className="pt-sheet__landing-title">{title}</h2>
               </div>
             </div>
-
-            <div
-              className="pt-sheet__body"
-              style={{
-                position: "relative",
-                zIndex: 5,
-                backgroundColor: "#ece8df",
-                width: "100%",
-              }}
-            >
-              {children}
-            </div>
-
             <div className="pt-sheet__rise-cap" aria-hidden="true" />
           </div>
         </div>
       </section>
+      <div ref={creamFloorRef} className="test-scroll-reveal__cream-floor">
+        <div className="hathor-page-cream-floor cruises-page-cream">{children}</div>
+      </div>
     </>
   );
 }
