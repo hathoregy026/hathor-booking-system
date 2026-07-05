@@ -1,11 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, type ReactNode } from "react";
-import {
-  refreshPageScrollTransition,
-  RISE_CAP_VH,
-  usePageScrollTransition,
-} from "@/hooks/usePageScrollTransition";
+import { refreshPageScrollTransition, usePageScrollTransition } from "@/hooks/usePageScrollTransition";
 
 export type CruisesScrollRevealProps = {
   title: string;
@@ -24,6 +20,7 @@ export function CruisesScrollReveal({
   const stageRef = useRef<HTMLDivElement>(null);
   const maskRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
+  const riseCapRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
 
   usePageScrollTransition({
@@ -31,6 +28,7 @@ export function CruisesScrollReveal({
     stage: stageRef,
     mask: maskRef,
     sheet: sheetRef,
+    riseCap: riseCapRef,
     heroCopy: heroCopyRef,
   });
 
@@ -47,7 +45,7 @@ export function CruisesScrollReveal({
 
       const landing = sheetRef.current?.querySelector(".pt-sheet__landing") as HTMLElement;
       const landingH = landing ? landing.offsetHeight : 0;
-      const riseCapH = vh * RISE_CAP_VH;
+      const riseCapH = vh * 1.2; // This uses the matching 1.2 RISE_CAP_VH multiplier
       const totalDuration = landingH + riseCapH;
 
       const pinProgress = Math.max(0, (scroll - top) / totalDuration);
@@ -103,19 +101,15 @@ export function CruisesScrollReveal({
           <div ref={sheetRef} className="pt-sheet">
             <div className="pt-sheet__landing">
               <div className="hathor-container">
-                <h2 className="pt-sheet__landing-title">
-                  {title}
-                </h2>
+                <h2 className="pt-sheet__landing-title">{title}</h2>
               </div>
             </div>
-            <div className="pt-sheet__rise-cap" aria-hidden="true" />
+            <div ref={riseCapRef} className="pt-sheet__rise-cap" aria-hidden="true" />
           </div>
         </div>
       </section>
 
-      <div className="test-scroll-reveal__cream-floor">
-        {children}
-      </div>
+      <div className="test-scroll-reveal__cream-floor">{children}</div>
     </>
   );
 }

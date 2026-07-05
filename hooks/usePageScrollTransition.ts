@@ -224,6 +224,7 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
             const riseCap = refs.riseCap?.current ?? null;
             if (!sheet) return `+=${window.innerHeight * 1.5}`;
 
+            // Measure the exact structural height our engine uses for the sheet
             const landing = sheet.querySelector(".pt-sheet__landing") as HTMLElement;
             const landingH = landing ? landing.offsetHeight : 0;
             const riseCapH = riseCap
@@ -231,6 +232,7 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
               : window.innerHeight * RISE_CAP_VH;
             const totalSheetHeight = landingH + riseCapH;
 
+            // Instantly release the pin the exact pixel the sheet finishes moving up
             return `+=${totalSheetHeight}`;
           },
           pin: stage,
