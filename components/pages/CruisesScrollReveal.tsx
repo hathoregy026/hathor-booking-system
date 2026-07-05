@@ -167,7 +167,10 @@ export function CruisesScrollReveal({
         </div>
       </section>
       <div ref={creamFloorRef} className="test-scroll-reveal__cream-floor">
-        <div className="hathor-page-cream-floor cruises-page-cream">{children}</div>
+        <div className="dome-spacer" aria-hidden="true" />
+        <div className="hathor-page-cream-floor cruises-page-cream content-after-dome">
+          {children}
+        </div>
       </div>
     </>
   );

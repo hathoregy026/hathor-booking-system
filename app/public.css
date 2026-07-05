@@ -5397,3 +5397,15 @@ body { background-color: #ece8df !important; }
 .test-scroll-reveal-route .hathor-page-cream-floor.cruises-page-cream .page-layout__inner {
   padding-top: 0;
 }
+
+/* Cruises — pull listings closer under dome title (scroll reveal untouched) */
+.test-scroll-reveal-route .content-after-dome {
+  margin-top: -5vh;
+  position: relative;
+  z-index: 2;
+}
+
+.test-scroll-reveal-route .dome-spacer {
+  height: 1px;
+  margin-top: -1px;
+}
