@@ -40,9 +40,7 @@ export function CruisesScrollReveal({
       const scroll = window.scrollY;
       const sheet = sheetRef.current;
       const sheetTop = sheet?.getBoundingClientRect().top ?? vh;
-
-      // Matches our tight 1.4 scroll track duration limit
-      const pinProgress = Math.max(0, (scroll - top) / (vh * 1.4));
+      const pinProgress = Math.max(0, (scroll - top) / (vh * 2.8));
 
       const inHeroZone = pinProgress < 0.12;
       const hideMedia = !inHeroZone && (pinProgress > 0.48 || sheetTop <= vh * 0.35);
@@ -61,6 +59,13 @@ export function CruisesScrollReveal({
       window.removeEventListener("resize", syncMediaVisibility);
     };
   }, []);
+
+  useEffect(() => {
+    const refresh = () => refreshPageScrollTransition();
+    requestAnimationFrame(refresh);
+    const t = window.setTimeout(refresh, 150);
+    return () => window.clearTimeout(t);
+  }, [children]);
 
   return (
     <>
@@ -93,19 +98,33 @@ export function CruisesScrollReveal({
               </div>
             </div>
           </div>
-          <div ref={sheetRef} className="pt-sheet">
+
+          <div
+            ref={sheetRef}
+            className="pt-sheet"
+            style={{ height: "auto", minHeight: "100vh" }}
+          >
             <div className="pt-sheet__landing">
               <div className="hathor-container">
-                <h2 className="pt-sheet__landing-title">
-                  {title}
-                </h2>
+                <h2 className="pt-sheet__landing-title">{title}</h2>
               </div>
             </div>
+
+            <div
+              className="test-scroll-reveal__cream-floor"
+              style={{
+                backgroundColor: "#ece8df",
+                position: "relative",
+                zIndex: 20,
+              }}
+            >
+              {children}
+            </div>
+
             <div className="pt-sheet__rise-cap" aria-hidden="true" />
           </div>
         </div>
       </section>
-      <div className="test-scroll-reveal__cream-floor">{children}</div>
     </>
   );
 }

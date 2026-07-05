@@ -4606,6 +4606,7 @@ body.has-page-scroll-transition .page-transition {
 [data-page-transition] {
   --pt-gold: #c9a96e;
   --pt-cream: #ece8df;
+  --pt-rise-cap-vh: 1.2;
   --pt-dome-r-start: 1250px;
   --pt-dome-r-end: 22px;
   position: relative;
@@ -4777,9 +4778,8 @@ body.has-page-scroll-transition [data-page-transition] {
 
 [data-page-transition] .pt-sheet__rise-cap {
   width: 100%;
-  min-height: 100%;
-  min-height: 25vh;
-  min-height: 25svh;
+  min-height: calc(var(--pt-rise-cap-vh) * 1vh);
+  min-height: calc(var(--pt-rise-cap-vh) * 1svh);
 }
 
 [data-page-transition] .pt-sheet__landing {
@@ -5270,12 +5270,11 @@ body { background-color: #ece8df !important; }
   color: #0a0a0a;
 }
 
-/* Post-reveal layout spacing fix */
-[data-cruises-scroll-reveal] + .hathor-page-cream-floor,
+/* Cruises listings: sit flush in cream-floor stream — no extra top padding after reveal */
 .hathor-page-cream-floor.cruises-page-cream {
   position: relative;
-  z-index: 10;
+  z-index: 1;
   margin-top: 0 !important;
-  padding-top: 5rem;
-  background-color: var(--hathor-cream, #faf8f5);
+  padding-top: 0;
+  background-color: #ece8df;
 }

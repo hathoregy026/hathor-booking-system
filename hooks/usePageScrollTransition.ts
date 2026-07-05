@@ -19,8 +19,8 @@ const MASK = {
 };
 
 const PEEK_VH = 0.065;
-const PIN_VH = 1.4;
-export const RISE_CAP_VH = 0.25;
+const PIN_VH = 2.8;
+const RISE_CAP_VH = 1.2;
 
 type Strip = { el: HTMLDivElement; colW: number; slatW: number };
 
@@ -60,17 +60,25 @@ function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3);
 }
 
+function readRiseCapVh(trigger: HTMLElement) {
+  const v = parseFloat(
+    getComputedStyle(trigger).getPropertyValue("--pt-rise-cap-vh"),
+  );
+  return Number.isFinite(v) && v > 0 ? v : RISE_CAP_VH;
+}
+
 /** Animation runway only — landing + rise-cap, never page body content. */
 function getSheetScrollHeight(
   sheetEl: HTMLElement,
   riseCapEl: HTMLElement | null,
+  trigger: HTMLElement,
 ) {
   const vh = window.innerHeight;
   const landing = sheetEl.querySelector<HTMLElement>(".pt-sheet__landing");
   const riseCap =
     riseCapEl ?? sheetEl.querySelector<HTMLElement>(".pt-sheet__rise-cap");
   const landingH = landing?.offsetHeight ?? 0;
-  const riseCapH = riseCap?.offsetHeight ?? vh * RISE_CAP_VH;
+  const riseCapH = riseCap?.offsetHeight ?? vh * readRiseCapVh(trigger);
   return landingH + riseCapH;
 }
 
@@ -98,6 +106,7 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
 
     trigger.style.setProperty("--pt-gold", PT_GOLD);
     trigger.style.setProperty("--pt-cream", PT_CREAM);
+    trigger.style.setProperty("--pt-rise-cap-vh", String(RISE_CAP_VH));
 
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
@@ -180,7 +189,7 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
 
     function applyProgress(p: number) {
       const vh = window.innerHeight;
-      const sheetH = getSheetScrollHeight(sheetEl, riseCapEl);
+      const sheetH = getSheetScrollHeight(sheetEl, riseCapEl, trigger);
       const peek = vh * PEEK_VH;
       const startY = sheetH - peek;
       const { start: rStart, end: rEnd } = getDomeRadii();
@@ -188,6 +197,7 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
       const riseT = mapRange(p, 0, 0.7, 0, 1);
       let y = startY * (1 - riseT);
 
+      // Drift (p 0.7→1) scrolls through rise-cap padding only — must match --pt-rise-cap-vh
       const driftT = mapRange(p, 0.7, 1, 0, 1);
       const extra = Math.max(0, sheetH - vh * 0.92);
       y -= driftT * extra;
