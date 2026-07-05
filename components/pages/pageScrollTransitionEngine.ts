@@ -192,24 +192,6 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
     const ctx = gsap.context(() => {
       gsap.registerPlugin(ScrollTrigger);
 
-      function alignCreamFloor() {
-        const cream = trigger.nextElementSibling as HTMLElement | null;
-        const landing = trigger.querySelector<HTMLElement>(".pt-sheet__landing");
-        if (!cream || !landing) return;
-
-        const gap =
-          cream.getBoundingClientRect().top - landing.getBoundingClientRect().bottom;
-        cream.style.marginTop = gap > 0 ? `-${gap}px` : "0";
-        ScrollTrigger.refresh();
-      }
-
-      function resetCreamFloor() {
-        const cream = trigger.nextElementSibling as HTMLElement | null;
-        if (!cream) return;
-        cream.style.marginTop = "0";
-        ScrollTrigger.refresh();
-      }
-
       const setup = () => {
         if (!buildMaskStrips()) return false;
         applyProgress(0);
@@ -225,12 +207,6 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
           invalidateOnRefresh: true,
           anticipatePin: 1,
           onUpdate: (self) => applyProgress(self.progress),
-          onLeave: () => {
-            setTimeout(alignCreamFloor, 50);
-          },
-          onEnterBack: () => {
-            resetCreamFloor();
-          },
         });
 
         return true;
@@ -258,8 +234,6 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
     return () => {
       window.removeEventListener("resize", onResize);
       if (resizeTimer) clearTimeout(resizeTimer);
-      const cream = trigger.nextElementSibling as HTMLElement | null;
-      if (cream) cream.style.marginTop = "";
       ctx.revert();
       document.body.classList.remove("has-page-scroll-transition");
       document.documentElement.classList.remove("has-page-scroll-transition");

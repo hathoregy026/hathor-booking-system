@@ -4877,22 +4877,14 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
 
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--past-pin .pt-stage {
   background-color: #ece8df !important;
-}
-
-body.has-page-scroll-transition .hathor-page-cream-floor {
-  position: relative;
   z-index: 1;
-  margin: 0;
-  padding: 0;
-  background-color: #ece8df;
-  transform: none;
-  min-height: 100vh;
+  overflow: visible;
+  pointer-events: none;
 }
 
-/* Inner pages: same as working /test-scroll-reveal cream floor — no pull-up hacks */
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor.page-layout {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   margin: 0;
   padding: 0;
   background-color: #ece8df;
