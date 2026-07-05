@@ -6,7 +6,7 @@ import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import {
   refreshPageScrollTransition,
   usePageScrollTransition,
-} from "@/hooks/usePageScrollTransition";
+} from "@/components/pages/pageScrollTransitionEngine";
 
 const PIN_VH = 2.8;
 

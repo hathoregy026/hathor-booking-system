@@ -1,209 +1,53 @@
 "use client";
 
-import React, { useEffect, useLayoutEffect, useRef, type ReactNode } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import {
-  refreshPageScrollTransition,
-  usePageScrollTransition,
-} from "@/hooks/usePageScrollTransition";
-import {
-  alignCruisesDomeContentGap,
-  alignDomeContentGap,
-} from "@/lib/align-dome-content-gap";
+import React, { useEffect, useRef, type ReactNode } from "react";
+import { CRUISES_PAGE } from "@/lib/page-content";
 
-const PIN_VH = 1.5;
-
-export type CruisesScrollRevealProps = {
-  title: string;
-  subtitle?: string;
-  imageSrc: string;
-  children: ReactNode;
-};
-
-export function CruisesScrollReveal({
-  title,
-  subtitle,
-  imageSrc,
-  children,
-}: CruisesScrollRevealProps) {
-  const rootRef = useRef<HTMLElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
-  const maskRef = useRef<HTMLDivElement>(null);
-  const sheetRef = useRef<HTMLDivElement>(null);
-  const heroCopyRef = useRef<HTMLDivElement>(null);
-  const creamFloorRef = useRef<HTMLDivElement>(null);
-
-  usePageScrollTransition(
-    {
-      root: rootRef,
-      stage: stageRef,
-      mask: maskRef,
-      sheet: sheetRef,
-      heroCopy: heroCopyRef,
-    },
-    {
-      pinSpacing: false,
-      scrollEnd: "bottom top",
-      manualScrollTrack: true,
-    },
-  );
+export function CruisesScrollReveal({ children }: { children: ReactNode }) {
+  const domeRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
+    const section = sectionRef.current;
+    const dome = domeRef.current;
+    if (!section || !dome) return;
 
-    const syncMediaVisibility = () => {
-      const vh = window.innerHeight;
-      const top = root.getBoundingClientRect().top + window.scrollY;
-      const scroll = window.scrollY;
-      const sheet = sheetRef.current;
-      const sheetTop = sheet?.getBoundingClientRect().top ?? vh;
-      const pinProgress = Math.max(0, (scroll - top) / (vh * PIN_VH));
+    const handleScroll = () => {
+      const rect = section.getBoundingClientRect();
+      const progress = Math.max(0, Math.min(1, 1 - rect.top / window.innerHeight));
 
-      const inHeroZone = pinProgress < 0.12;
-      const hideMedia =
-        !inHeroZone && (pinProgress > 0.48 || sheetTop <= vh * 0.35);
-      const pastPin = pinProgress >= 0.92;
-
-      root.classList.toggle("test-scroll-reveal--media-gone", hideMedia);
-      root.classList.toggle("test-scroll-reveal--past-pin", pastPin);
+      const scale = 1.3 - progress * 0.5;
+      dome.style.transform = `scale(${scale})`;
+      dome.style.opacity = String(1 - progress * 0.3);
     };
 
-    syncMediaVisibility();
-    window.addEventListener("scroll", syncMediaVisibility, { passive: true });
-    window.addEventListener("resize", syncMediaVisibility);
-
-    return () => {
-      window.removeEventListener("scroll", syncMediaVisibility);
-      window.removeEventListener("resize", syncMediaVisibility);
-    };
-  }, []);
-
-  useLayoutEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-
-    const runGapFix = () => {
-      const root = rootRef.current;
-      const next = creamFloorRef.current;
-      if (!root || !next) return;
-      alignDomeContentGap(root, next);
-    };
-
-    const onScrollEnd = () => {
-      const root = rootRef.current;
-      if (root?.classList.contains("test-scroll-reveal--past-pin")) {
-        alignCruisesDomeContentGap(true);
-      } else {
-        alignCruisesDomeContentGap();
-      }
-    };
-
-    runGapFix();
-    requestAnimationFrame(runGapFix);
-    setTimeout(runGapFix, 100);
-    setTimeout(runGapFix, 400);
-
-    window.addEventListener("load", runGapFix);
-    window.addEventListener("resize", runGapFix);
-    ScrollTrigger.addEventListener("refresh", runGapFix);
-    ScrollTrigger.addEventListener("scrollEnd", onScrollEnd);
-
-    return () => {
-      window.removeEventListener("load", runGapFix);
-      window.removeEventListener("resize", runGapFix);
-      ScrollTrigger.removeEventListener("refresh", runGapFix);
-      ScrollTrigger.removeEventListener("scrollEnd", onScrollEnd);
-      if (creamFloorRef.current) {
-        creamFloorRef.current.style.marginTop = "";
-      }
-    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <>
-      <section
-        ref={rootRef}
-        data-page-transition
-        data-test-scroll-reveal
-        data-cruises-scroll
-        className="hathor-page-scroll-transition hathor-page-hero test-scroll-reveal"
-      >
-        <div className="dome-manual-spacer" aria-hidden="true" style={{ display: "none" }} />
-        <div ref={stageRef} className="pt-stage dome-container">
-          <div className="pt-hero">
-            <div className="pt-hero__media">
-              <img
-                src={imageSrc}
-                alt="Cruises Background"
-                fetchPriority="high"
-                decoding="async"
-                onLoad={() => {
-                  refreshPageScrollTransition();
-                  requestAnimationFrame(() => {
-                    const root = rootRef.current;
-                    const next = creamFloorRef.current;
-                    if (root && next) alignDomeContentGap(root, next);
-                  });
-                }}
-              />
-              <div className="pt-hero__overlay" aria-hidden />
+      <section ref={sectionRef} className="dome-scroll-section">
+        <div className="dome-sticky-wrapper">
+          <div ref={domeRef} className="dome-content">
+            <img
+              className="dome-content__image"
+              src="/media/hathor/cruises-hero.webp"
+              alt="Cruises"
+              fetchPriority="high"
+              decoding="async"
+            />
+            <div className="dome-content__copy">
+              <h1>{CRUISES_PAGE.hero.title}</h1>
+              {CRUISES_PAGE.hero.subtitle ? (
+                <p>{CRUISES_PAGE.hero.subtitle}</p>
+              ) : null}
             </div>
-            <div ref={maskRef} className="pt-mask" aria-hidden="true" />
-            <div ref={heroCopyRef} className="pt-hero__copy">
-              <div className="hathor-container hathor-page-hero__content">
-                <h1 className="hathor-page-hero__title">{title}</h1>
-                {subtitle ? (
-                  <p className="hathor-page-hero__subtitle">{subtitle}</p>
-                ) : null}
-                <div className="hathor-gold-line" />
-              </div>
-            </div>
-          </div>
-          <div ref={sheetRef} className="pt-sheet">
-            <div className="pt-sheet__landing">
-              <div className="hathor-container">
-                <h2 className="pt-sheet__landing-title">{title}</h2>
-              </div>
-            </div>
-            <div className="pt-sheet__rise-cap" aria-hidden="true" />
           </div>
         </div>
       </section>
-      <div
-        ref={creamFloorRef}
-        className="test-scroll-reveal__cream-floor next-section"
-      >
-        <div className="dome-spacer" aria-hidden="true" />
-        <div className="hathor-page-cream-floor cruises-page-cream">
-          {children}
-        </div>
-      </div>
+      <div className="dome-next-section">{children}</div>
     </>
   );
-}
-
-// Emergency gap fix: collapse manual scroll track + pull content flush after pin release
-if (typeof window !== "undefined") {
-  window.addEventListener("load", () => {
-    const root = document.querySelector<HTMLElement>("[data-cruises-scroll]");
-    const next = document.querySelector<HTMLElement>(".next-section");
-    if (!root || !next) return;
-    if (!root.classList.contains("test-scroll-reveal--past-pin")) return;
-
-    root.style.height = "auto";
-    root.style.minHeight = "0";
-
-    const landing = root.querySelector<HTMLElement>(".pt-sheet__landing");
-    const dome = root.querySelector<HTMLElement>(".dome-container");
-    const domeBottom =
-      landing?.getBoundingClientRect().bottom ??
-      dome?.getBoundingClientRect().bottom ??
-      0;
-    const gap = next.getBoundingClientRect().top - domeBottom;
-    if (gap > 0) {
-      next.style.setProperty("margin-top", `-${gap}px`, "important");
-    }
-    ScrollTrigger.refresh();
-  });
 }
