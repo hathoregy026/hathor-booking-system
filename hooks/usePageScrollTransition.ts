@@ -242,31 +242,20 @@ export function usePageScrollTransition(
         borderTopRightRadius: radius,
       });
 
-      // Trim hero stack from the TOP down to the live dome edge (must anchor top — inset:0 + height alone pins from bottom)
-      const stageEl = refs.stage.current;
-      const heroEl = stageEl?.querySelector<HTMLElement>(".pt-hero");
-      if (stageEl && heroEl) {
-        const stageRect = stageEl.getBoundingClientRect();
-        const sheetRect = sheetEl.getBoundingClientRect();
-        const visibleH = clamp(
-          sheetRect.top - stageRect.top,
-          0,
-          stageRect.height,
-        );
+      // Trim the background gold stripes length to match the rising dome boundary
+      if (mask) {
+        const currentDomeTop = y;
+        mask.style.height = `${currentDomeTop}px`;
+      }
 
-        heroEl.style.removeProperty("clip-path");
-        heroEl.style.top = "0";
-        heroEl.style.left = "0";
-        heroEl.style.right = "0";
-        heroEl.style.bottom = "auto";
-        heroEl.style.width = "100%";
-        heroEl.style.height = `${visibleH}px`;
-        heroEl.style.maxHeight = "none";
-        heroEl.style.borderBottomLeftRadius = `${radius}px`;
-        heroEl.style.borderBottomRightRadius = `${radius}px`;
-
-        trigger.style.setProperty("--pt-dome-r-live", `${radius}px`);
-        trigger.style.setProperty("--pt-dome-top", `${visibleH}px`);
+      // Trim the background hero container height to collapse the layout gap dynamically
+      const root = refs.root.current;
+      if (root) {
+        const heroMedia = root.querySelector(".pt-hero") as HTMLElement;
+        if (heroMedia) {
+          // Trim the background wrapper height to match the exact changing top edge of the rising dome (y)
+          heroMedia.style.height = `${y}px`;
+        }
       }
 
       applyMaskReveal(p);
@@ -347,21 +336,6 @@ export function usePageScrollTransition(
       ctx.revert();
       trigger.removeAttribute("data-pt-layout");
       trigger.style.height = "";
-      trigger.style.removeProperty("--pt-dome-r-live");
-      trigger.style.removeProperty("--pt-dome-top");
-      const heroEl = stage?.querySelector<HTMLElement>(".pt-hero");
-      if (heroEl) {
-        heroEl.style.removeProperty("clip-path");
-        heroEl.style.removeProperty("top");
-        heroEl.style.removeProperty("left");
-        heroEl.style.removeProperty("right");
-        heroEl.style.removeProperty("bottom");
-        heroEl.style.removeProperty("width");
-        heroEl.style.removeProperty("height");
-        heroEl.style.removeProperty("max-height");
-        heroEl.style.removeProperty("border-bottom-left-radius");
-        heroEl.style.removeProperty("border-bottom-right-radius");
-      }
       document.body.classList.remove("has-page-scroll-transition");
       document.documentElement.classList.remove("has-page-scroll-transition");
       document.body.style.backgroundColor = "";
