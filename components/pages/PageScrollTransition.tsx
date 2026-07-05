@@ -137,11 +137,13 @@ export function PageScrollTransition({
                 </h2>
               </div>
             </div>
+            <div className="pt-sheet__body hathor-page-cream-floor page-layout">
+              {children}
+            </div>
             <div className="pt-sheet__rise-cap" aria-hidden="true" />
           </div>
         </div>
       </section>
-      <div className="hathor-page-cream-floor page-layout">{children}</div>
     </>
   );
 }

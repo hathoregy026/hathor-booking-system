@@ -4870,6 +4870,20 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-
   min-height: 35svh;
 }
 
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet__body {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  background-color: #ece8df;
+}
+
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--past-pin .pt-sheet__rise-cap {
+  min-height: 0;
+  height: 0;
+  overflow: hidden;
+}
+
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--media-gone .pt-hero__media,
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--past-pin .pt-hero__media {
   display: none !important;

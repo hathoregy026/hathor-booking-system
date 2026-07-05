@@ -159,9 +159,17 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
       });
     }
 
+    function measureAnimationSheetHeight() {
+      const landing = sheetEl.querySelector<HTMLElement>(".pt-sheet__landing");
+      const riseCap = sheetEl.querySelector<HTMLElement>(".pt-sheet__rise-cap");
+      const landingH = landing?.offsetHeight ?? 0;
+      const riseCapH = riseCap?.offsetHeight ?? 0;
+      return landingH + riseCapH;
+    }
+
     function applyProgress(p: number) {
       const vh = window.innerHeight;
-      const sheetH = sheetEl.offsetHeight;
+      const sheetH = measureAnimationSheetHeight();
       const peek = vh * PEEK_VH;
       const startY = sheetH - peek;
       const { start: rStart, end: rEnd } = getDomeRadii();
