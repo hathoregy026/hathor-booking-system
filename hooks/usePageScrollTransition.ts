@@ -221,7 +221,7 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
           start: "top top",
           end: () => `+=${window.innerHeight * PIN_VH}`,
           pin: stage,
-          pinSpacing: true,
+          pinSpacing: false,
           scrub: 0,
           invalidateOnRefresh: true,
           anticipatePin: 1,
