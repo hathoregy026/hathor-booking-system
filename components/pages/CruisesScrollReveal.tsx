@@ -60,6 +60,33 @@ export function CruisesScrollReveal({
     };
   }, []);
 
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+
+    const closeLayoutGap = () => {
+      const pinSpacer = root.closest(".pin-spacer") as HTMLElement;
+      const creamFloor = root.parentElement?.querySelector(
+        ".test-scroll-reveal__cream-floor",
+      ) as HTMLElement;
+
+      if (pinSpacer && creamFloor) {
+        const vh = window.innerHeight;
+        const emptyGapHeight = pinSpacer.offsetHeight - vh;
+        creamFloor.style.marginTop = `-${emptyGapHeight}px`;
+      }
+    };
+
+    setTimeout(closeLayoutGap, 100);
+    window.addEventListener("resize", closeLayoutGap);
+    window.addEventListener("scroll", closeLayoutGap, { passive: true });
+
+    return () => {
+      window.removeEventListener("resize", closeLayoutGap);
+      window.removeEventListener("scroll", closeLayoutGap);
+    };
+  }, []);
+
   return (
     <>
       <section

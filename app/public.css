@@ -5367,7 +5367,7 @@ body { background-color: #ece8df !important; }
 .test-scroll-reveal-route .test-scroll-reveal__cream-floor {
   position: relative;
   z-index: 100;
-  margin-top: -120vh !important;
+  margin-top: 0;
   background-color: #ece8df !important;
 }
 
