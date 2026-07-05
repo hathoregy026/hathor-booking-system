@@ -1,7 +1,11 @@
 "use client";
 
-import React, { useEffect, useRef, type ReactNode } from "react";
+import React, { useEffect, useLayoutEffect, useRef, type ReactNode } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { refreshPageScrollTransition, usePageScrollTransition } from "@/hooks/usePageScrollTransition";
+
+const PIN_VH = 1.5;
 
 export type CruisesScrollRevealProps = {
   title: string;
@@ -21,6 +25,7 @@ export function CruisesScrollReveal({
   const maskRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
+  const creamFloorRef = useRef<HTMLDivElement>(null);
 
   usePageScrollTransition({
     root: rootRef,
@@ -40,7 +45,7 @@ export function CruisesScrollReveal({
       const scroll = window.scrollY;
       const sheet = sheetRef.current;
       const sheetTop = sheet?.getBoundingClientRect().top ?? vh;
-      const pinProgress = Math.max(0, (scroll - top) / (vh * 2.8));
+      const pinProgress = Math.max(0, (scroll - top) / (vh * PIN_VH));
 
       const inHeroZone = pinProgress < 0.12;
       const hideMedia = !inHeroZone && (pinProgress > 0.48 || sheetTop <= vh * 0.35);
@@ -60,30 +65,45 @@ export function CruisesScrollReveal({
     };
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const root = rootRef.current;
     if (!root) return;
 
-    const closeLayoutGap = () => {
-      const pinSpacer = root.closest(".pin-spacer") as HTMLElement;
-      const creamFloor = root.parentElement?.querySelector(
-        ".test-scroll-reveal__cream-floor",
-      ) as HTMLElement;
+    gsap.registerPlugin(ScrollTrigger);
 
-      if (pinSpacer && creamFloor) {
-        const vh = window.innerHeight;
-        const emptyGapHeight = pinSpacer.offsetHeight - vh;
-        creamFloor.style.marginTop = `-${emptyGapHeight}px`;
-      }
+    const closeLayoutGap = () => {
+      const stage = stageRef.current;
+      const creamFloor = creamFloorRef.current;
+      if (!stage || !creamFloor) return;
+
+      const pinSpacer =
+        stage.parentElement?.classList.contains("pin-spacer")
+          ? stage.parentElement
+          : root.querySelector(".pin-spacer");
+
+      if (!(pinSpacer instanceof HTMLElement)) return;
+
+      const pinScroll = window.innerHeight * PIN_VH;
+      const emptyGapHeight = pinSpacer.offsetHeight - pinScroll;
+      creamFloor.style.marginTop =
+        emptyGapHeight > 0 ? `-${emptyGapHeight}px` : "0";
     };
 
-    setTimeout(closeLayoutGap, 100);
+    const scheduleGapClose = () => {
+      closeLayoutGap();
+      requestAnimationFrame(closeLayoutGap);
+      setTimeout(closeLayoutGap, 100);
+      setTimeout(closeLayoutGap, 400);
+      setTimeout(closeLayoutGap, 1000);
+    };
+
+    scheduleGapClose();
+    ScrollTrigger.addEventListener("refresh", closeLayoutGap);
     window.addEventListener("resize", closeLayoutGap);
-    window.addEventListener("scroll", closeLayoutGap, { passive: true });
 
     return () => {
+      ScrollTrigger.removeEventListener("refresh", closeLayoutGap);
       window.removeEventListener("resize", closeLayoutGap);
-      window.removeEventListener("scroll", closeLayoutGap);
     };
   }, []);
 
@@ -128,7 +148,7 @@ export function CruisesScrollReveal({
           </div>
         </div>
       </section>
-      <div className="test-scroll-reveal__cream-floor">{children}</div>
+      <div ref={creamFloorRef} className="test-scroll-reveal__cream-floor">{children}</div>
     </>
   );
 }

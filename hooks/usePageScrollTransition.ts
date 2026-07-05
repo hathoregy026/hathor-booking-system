@@ -19,8 +19,8 @@ const MASK = {
 };
 
 const PEEK_VH = 0.065;
-const PIN_VH = 2.8;
-const RISE_CAP_VH = 1.2;
+const PIN_VH = 1.5;
+const RISE_CAP_VH = 0.4;
 
 type Strip = { el: HTMLDivElement; colW: number; slatW: number };
 
@@ -241,6 +241,12 @@ export function usePageScrollTransition(
         borderTopLeftRadius: radius,
         borderTopRightRadius: radius,
       });
+
+      // Trim the background gold stripes length to match the rising dome boundary
+      if (mask) {
+        const currentDomeTop = y;
+        mask.style.height = `${currentDomeTop}px`;
+      }
 
       applyMaskReveal(p);
 
