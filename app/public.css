@@ -4875,28 +4875,38 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
 
 body.has-page-scroll-transition .hathor-page-cream-floor {
   position: relative;
-  z-index: 1;
+  z-index: 10;
   padding: 0;
   background-color: #ece8df;
   min-height: 0;
 }
 
-/* Wireframe: pull cream content up under second title (PIN_VH 2.8 + stage — CSS only, JS untouched) */
+/* Force cream floor over GSAP pin-spacer empty scroll zone (CSS only — JS untouched) */
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor.page-layout {
   --pt-content-gap: clamp(1.25rem, 3vh, 1.875rem); /* ~20–30px below second title */
-  --pt-pin-scroll: 280svh; /* PIN_VH 2.8 × 100svh — matches usePageScrollTransition */
-  --pt-stage-h: 100svh;
-  --pt-landing-block: calc(
-    clamp(5.5rem, 12vh, 7.5rem) + clamp(2rem, 4.5vw, 3.25rem) * 1.12
-  );
-  padding-top: 0;
-  margin-top: calc(
-    -1 * (var(--pt-stage-h) + var(--pt-pin-scroll) - var(--pt-landing-block)) +
-      var(--pt-content-gap)
-  );
-  margin-right: 0;
-  margin-bottom: 0;
-  margin-left: 0;
+  --pt-landing-offset: 9.5rem; /* landing pad + title block (no nested clamp in calc) */
+  --pt-pull-up: 380svh; /* 100svh stage + 280svh pin scroll (PIN_VH 2.8) */
+  position: relative;
+  z-index: 10;
+  top: 0;
+  margin-top: calc(-1 * var(--pt-pull-up)) !important;
+  margin-right: 0 !important;
+  margin-bottom: 0 !important;
+  margin-left: 0 !important;
+  padding-top: calc(var(--pt-landing-offset) + var(--pt-content-gap));
+}
+
+/* GSAP pin-spacer — strip default spacing so cream pull-up math is clean */
+body.has-page-scroll-transition .pin-spacer,
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pin-spacer {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  box-sizing: border-box;
+}
+
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-body.hathor-page-cream-floor.page-layout {
+  margin-top: calc(-1 * var(--pt-pull-up, 380svh)) !important;
 }
 
 /* 3. MAIN CONTENT CONTAINER — cream sheet continuation */
@@ -5115,8 +5125,11 @@ body {
 }
 
 .hathor-page-body {
-  margin-top: 0 !important;
   background-color: #ece8df !important;
+}
+
+body.has-page-scroll-transition .hathor-page-body.hathor-page-cream-floor.page-layout {
+  margin-top: calc(-1 * var(--pt-pull-up, 380svh)) !important;
 }
 
 /* Section backgrounds */
