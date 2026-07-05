@@ -1,7 +1,11 @@
 "use client";
 
 import React, { useEffect, useRef, type ReactNode } from "react";
-import { refreshPageScrollTransition, usePageScrollTransition } from "@/hooks/usePageScrollTransition";
+import {
+  refreshPageScrollTransition,
+  RISE_CAP_VH,
+  usePageScrollTransition,
+} from "@/hooks/usePageScrollTransition";
 
 export type CruisesScrollRevealProps = {
   title: string;
@@ -40,7 +44,13 @@ export function CruisesScrollReveal({
       const scroll = window.scrollY;
       const sheet = sheetRef.current;
       const sheetTop = sheet?.getBoundingClientRect().top ?? vh;
-      const pinProgress = Math.max(0, (scroll - top) / (vh * 1.6));
+
+      const landing = sheetRef.current?.querySelector(".pt-sheet__landing") as HTMLElement;
+      const landingH = landing ? landing.offsetHeight : 0;
+      const riseCapH = vh * RISE_CAP_VH;
+      const totalDuration = landingH + riseCapH;
+
+      const pinProgress = Math.max(0, (scroll - top) / totalDuration);
 
       const inHeroZone = pinProgress < 0.12;
       const hideMedia = !inHeroZone && (pinProgress > 0.48 || sheetTop <= vh * 0.35);
@@ -67,7 +77,7 @@ export function CruisesScrollReveal({
         data-page-transition
         data-test-scroll-reveal
         className="hathor-page-scroll-transition hathor-page-hero test-scroll-reveal"
-        style={{ position: "relative", width: "100%", height: "180vh" }}
+        style={{ position: "relative", width: "100%", height: "auto" }}
       >
         <div ref={stageRef} className="pt-stage">
           <div className="pt-hero">

@@ -20,7 +20,7 @@ const MASK = {
 
 const PEEK_VH = 0.065;
 const PIN_VH = 1.6;
-const RISE_CAP_VH = 0.25;
+export const RISE_CAP_VH = 0.25;
 
 type Strip = { el: HTMLDivElement; colW: number; slatW: number };
 
@@ -219,7 +219,20 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
           id: `page-transition-${instanceId}`,
           trigger: trigger,
           start: "top top",
-          end: () => `+=${window.innerHeight * PIN_VH}`,
+          end: () => {
+            const sheet = refs.sheet.current;
+            const riseCap = refs.riseCap?.current ?? null;
+            if (!sheet) return `+=${window.innerHeight * 1.5}`;
+
+            const landing = sheet.querySelector(".pt-sheet__landing") as HTMLElement;
+            const landingH = landing ? landing.offsetHeight : 0;
+            const riseCapH = riseCap
+              ? (riseCap as HTMLElement).offsetHeight
+              : window.innerHeight * RISE_CAP_VH;
+            const totalSheetHeight = landingH + riseCapH;
+
+            return `+=${totalSheetHeight}`;
+          },
           pin: stage,
           pinSpacing: true,
           scrub: 0,
