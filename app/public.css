@@ -4635,12 +4635,26 @@ body.has-page-scroll-transition .page-transition {
   position: absolute;
   inset: 0;
   z-index: 1;
+  overflow: hidden;
+  will-change: clip-path;
+}
+
+[data-page-transition] .pt-hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+[data-page-transition] .pt-hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
 }
 
 [data-page-transition] .pt-mask {
   position: absolute;
   inset: 0;
-  z-index: 5;
+  z-index: 2;
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
@@ -5286,6 +5300,19 @@ body { background-color: #ece8df !important; }
   max-height: 100vh;
   max-height: 100svh;
   overflow: hidden;
+  will-change: clip-path;
+}
+
+.test-scroll-reveal-route [data-test-scroll-reveal] .pt-mask {
+  z-index: 2;
+}
+
+.test-scroll-reveal-route [data-test-scroll-reveal] .pt-hero__copy {
+  z-index: 3;
+}
+
+.test-scroll-reveal-route [data-test-scroll-reveal] .pt-sheet__landing {
+  padding-bottom: clamp(1rem, 2.5vh, 1.75rem);
 }
 
 .test-scroll-reveal-route [data-test-scroll-reveal] .pt-hero__media {
@@ -5395,5 +5422,10 @@ body { background-color: #ece8df !important; }
 }
 
 .test-scroll-reveal-route .hathor-page-cream-floor.cruises-page-cream .page-layout__inner {
-  padding-top: 0;
+  padding-top: clamp(0.75rem, 2vh, 1.25rem);
+  padding-bottom: clamp(2rem, 5vh, 3rem);
+}
+
+.test-scroll-reveal-route .hathor-page-cream-floor.cruises-page-cream .page-layout__filters {
+  margin-bottom: clamp(1.25rem, 3vh, 2rem);
 }

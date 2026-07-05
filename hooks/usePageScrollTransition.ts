@@ -242,20 +242,24 @@ export function usePageScrollTransition(
         borderTopRightRadius: radius,
       });
 
-      // Trim the background gold stripes length to match the rising dome boundary
-      if (mask) {
-        const currentDomeTop = y;
-        mask.style.height = `${currentDomeTop}px`;
-      }
+      // Clip hero stack (image → stripes → headline) to the live dome silhouette
+      const stageEl = refs.stage.current;
+      const heroEl = stageEl?.querySelector<HTMLElement>(".pt-hero");
+      if (stageEl && heroEl) {
+        const stageRect = stageEl.getBoundingClientRect();
+        const sheetRect = sheetEl.getBoundingClientRect();
+        const domeTop = clamp(
+          sheetRect.top - stageRect.top,
+          0,
+          stageRect.height,
+        );
+        const bottomInset = Math.max(0, stageRect.height - domeTop);
+        const clip = `inset(0px 0px ${bottomInset}px 0px round 0px 0px ${radius}px ${radius}px)`;
 
-      // Trim the background hero container height to collapse the layout gap dynamically
-      const root = refs.root.current;
-      if (root) {
-        const heroMedia = root.querySelector(".pt-hero") as HTMLElement;
-        if (heroMedia) {
-          // Trim the background wrapper height to match the exact changing top edge of the rising dome (y)
-          heroMedia.style.height = `${y}px`;
-        }
+        heroEl.style.clipPath = clip;
+        trigger.style.setProperty("--pt-dome-clip", clip);
+        trigger.style.setProperty("--pt-dome-r-live", `${radius}px`);
+        trigger.style.setProperty("--pt-dome-top", `${domeTop}px`);
       }
 
       applyMaskReveal(p);
@@ -336,6 +340,10 @@ export function usePageScrollTransition(
       ctx.revert();
       trigger.removeAttribute("data-pt-layout");
       trigger.style.height = "";
+      trigger.style.removeProperty("--pt-dome-clip");
+      trigger.style.removeProperty("--pt-dome-r-live");
+      trigger.style.removeProperty("--pt-dome-top");
+      stage?.querySelector<HTMLElement>(".pt-hero")?.style.removeProperty("clip-path");
       document.body.classList.remove("has-page-scroll-transition");
       document.documentElement.classList.remove("has-page-scroll-transition");
       document.body.style.backgroundColor = "";
