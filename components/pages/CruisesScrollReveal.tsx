@@ -40,7 +40,7 @@ export function CruisesScrollReveal({
       const scroll = window.scrollY;
       const sheet = sheetRef.current;
       const sheetTop = sheet?.getBoundingClientRect().top ?? vh;
-      const pinProgress = Math.max(0, (scroll - top) / (vh * 2.8));
+      const pinProgress = Math.max(0, (scroll - top) / (vh * 1.8));
 
       const inHeroZone = pinProgress < 0.12;
       const hideMedia = !inHeroZone && (pinProgress > 0.48 || sheetTop <= vh * 0.35);
@@ -67,6 +67,7 @@ export function CruisesScrollReveal({
         data-page-transition
         data-test-scroll-reveal
         className="hathor-page-scroll-transition hathor-page-hero test-scroll-reveal"
+        style={{ position: "relative", width: "100%", height: "180vh" }}
       >
         <div ref={stageRef} className="pt-stage">
           <div className="pt-hero">
