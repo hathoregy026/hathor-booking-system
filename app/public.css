@@ -4777,9 +4777,8 @@ body.has-page-scroll-transition [data-page-transition] {
 
 [data-page-transition] .pt-sheet__rise-cap {
   width: 100%;
-  min-height: 100%;
-  min-height: 120vh;
-  min-height: 120svh;
+  min-height: 25vh;
+  min-height: 25svh;
 }
 
 [data-page-transition] .pt-sheet__landing {
