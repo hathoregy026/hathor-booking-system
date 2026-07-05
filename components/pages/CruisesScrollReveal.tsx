@@ -20,6 +20,7 @@ export function CruisesScrollReveal({
   const stageRef = useRef<HTMLDivElement>(null);
   const maskRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
+  const riseCapRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
 
   usePageScrollTransition(
@@ -28,6 +29,7 @@ export function CruisesScrollReveal({
       stage: stageRef,
       mask: maskRef,
       sheet: sheetRef,
+      riseCap: riseCapRef,
       heroCopy: heroCopyRef,
     },
     { layout: "venetian" },
@@ -49,8 +51,8 @@ export function CruisesScrollReveal({
       const hideMedia = !inHeroZone && (pinProgress > 0.48 || sheetTop <= vh * 0.35);
       const pastPin = pinProgress >= 0.92;
 
-      root.classList.toggle("test-scroll-reveal--media-gone", hideMedia);
-      root.classList.toggle("test-scroll-reveal--past-pin", pastPin);
+      root.classList.toggle("cruises-scroll-reveal--media-gone", hideMedia);
+      root.classList.toggle("cruises-scroll-reveal--past-pin", pastPin);
     };
 
     syncMediaVisibility();
@@ -74,8 +76,8 @@ export function CruisesScrollReveal({
     <section
       ref={rootRef}
       data-page-transition
-      data-test-scroll-reveal
-      className="hathor-page-scroll-transition hathor-page-hero test-scroll-reveal"
+      data-cruises-scroll-reveal
+      className="hathor-page-scroll-transition hathor-page-hero cruises-scroll-reveal"
     >
       <div ref={stageRef} className="pt-stage">
         <div className="pt-hero">
@@ -108,7 +110,9 @@ export function CruisesScrollReveal({
             </div>
           </div>
 
-          <div className="pt-sheet__body test-scroll-reveal__cream-floor hathor-page-cream-floor cruises-page-cream">
+          <div ref={riseCapRef} className="pt-sheet__rise-cap" aria-hidden="true" />
+
+          <div className="pt-sheet__body hathor-page-cream-floor cruises-page-cream">
             {children}
           </div>
         </div>

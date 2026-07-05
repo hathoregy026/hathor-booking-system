@@ -1,0 +1,11 @@
+/**
+ * FROZEN — /test-scroll-reveal ONLY.
+ * Do not edit. Do not import from cruises or other routes.
+ */
+
+.test-scroll-reveal-route [data-test-scroll-reveal] .pt-sheet__rise-cap {
+  width: 100%;
+  min-height: 100%;
+  min-height: 120vh;
+  min-height: 120svh;
+}

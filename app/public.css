@@ -4606,7 +4606,6 @@ body.has-page-scroll-transition .page-transition {
 [data-page-transition] {
   --pt-gold: #c9a96e;
   --pt-cream: #ece8df;
-  --pt-rise-cap-vh: 1.2;
   --pt-dome-r-start: 1250px;
   --pt-dome-r-end: 22px;
   position: relative;
@@ -4778,8 +4777,9 @@ body.has-page-scroll-transition [data-page-transition] {
 
 [data-page-transition] .pt-sheet__rise-cap {
   width: 100%;
-  min-height: calc(var(--pt-rise-cap-vh) * 1vh);
-  min-height: calc(var(--pt-rise-cap-vh) * 1svh);
+  min-height: 100%;
+  min-height: 120vh;
+  min-height: 120svh;
 }
 
 [data-page-transition] .pt-sheet__landing {
@@ -5145,7 +5145,16 @@ footer {
 .pin-spacer { background-color: #ece8df !important; }
 body { background-color: #ece8df !important; }
 
-/* Venetian layout (transition-for-pages.js): sticky stage, content in sheet, no pin-spacer */
+/* Cruises only — Venetian sticky layout (never used on /test-scroll-reveal) */
+.cruises-scroll-route,
+.cruises-scroll-route .public-site,
+.cruises-scroll-route .public-main,
+.cruises-scroll-route .page-transition,
+.cruises-scroll-route html,
+.cruises-scroll-route body {
+  background-color: #ece8df !important;
+}
+
 [data-page-transition][data-pt-layout="venetian"] {
   position: relative;
   width: 100%;
@@ -5165,24 +5174,60 @@ body { background-color: #ece8df !important; }
   left: 0;
   right: 0;
   bottom: 0;
-  min-height: 0;
   pointer-events: auto;
 }
 
+/* Animation runway only — body content must not affect dome / stripe math */
+[data-page-transition][data-pt-layout="venetian"] .pt-sheet__rise-cap {
+  flex-shrink: 0;
+}
+
 [data-page-transition][data-pt-layout="venetian"] .pt-sheet__body {
-  position: relative;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
   z-index: 20;
   background-color: #ece8df;
   pointer-events: auto;
 }
 
-.test-scroll-reveal-route [data-pt-layout="venetian"] .pt-sheet__body {
+.cruises-scroll-route [data-pt-layout="venetian"] .pt-sheet__body {
   margin: 0;
   padding: 0;
 }
 
-.test-scroll-reveal-route [data-pt-layout="venetian"].test-scroll-reveal--past-pin .pt-stage {
+.cruises-scroll-route [data-pt-layout="venetian"].cruises-scroll-reveal--past-pin .pt-stage {
   overflow: visible;
+}
+
+.cruises-scroll-route [data-cruises-scroll-reveal] {
+  background: transparent !important;
+}
+
+.cruises-scroll-route [data-cruises-scroll-reveal] .pt-stage {
+  z-index: 40;
+  background-color: #ece8df;
+  overflow: hidden;
+}
+
+.cruises-scroll-route [data-cruises-scroll-reveal] .pt-sheet {
+  background-color: #ece8df !important;
+  z-index: 10;
+}
+
+.cruises-scroll-route [data-cruises-scroll-reveal].cruises-scroll-reveal--media-gone .pt-hero__media,
+.cruises-scroll-route [data-cruises-scroll-reveal].cruises-scroll-reveal--past-pin .pt-hero__media {
+  display: none !important;
+}
+
+.cruises-scroll-route [data-cruises-scroll-reveal].cruises-scroll-reveal--past-pin .pt-stage {
+  background-color: #ece8df !important;
+}
+
+.cruises-scroll-route [data-cruises-scroll-reveal][data-pt-layout="venetian"] .pt-sheet__rise-cap {
+  min-height: calc(1.2 * 1vh);
+  min-height: calc(1.2 * 1svh);
 }
 
 /* ─── /test-scroll-reveal isolated layout (does not affect other pages) ─── */

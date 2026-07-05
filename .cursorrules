@@ -85,3 +85,10 @@ When I say "Generate Design DNA for [Project Name]", you must output:
 5. CSS Variables: Output the exact CSS/Tailwind config variables for this DNA so I can copy-paste it into my globals.css or tailwind.config.js.
 
 Once the Design DNA is approved, ALL subsequent UI code must strictly adhere to these custom variables and rule
+
+# FROZEN — /test-scroll-reveal (NEVER MODIFY)
+The `/test-scroll-reveal` route is the canonical scroll-reveal reference. DO NOT edit these files unless the user explicitly says to modify the test page:
+- `app/test-scroll-reveal/**` (including `test-scroll-reveal.css`)
+- `components/pages/TestScrollTransition.tsx`
+- `hooks/useTestScrollTransition.ts`
+Cruises and all other pages use separate files (`CruisesScrollReveal`, `usePageScrollTransition`, `cruises-scroll-route`). Never share `test-scroll-reveal-route` or `data-test-scroll-reveal` with other pages.

@@ -1,3 +1,8 @@
+/**
+ * FROZEN — /test-scroll-reveal ONLY.
+ * Restored from commit e56c591. Do not modify.
+ * Cruises and all other pages must use usePageScrollTransition.ts instead.
+ */
 "use client";
 
 import { useLayoutEffect, useId, type RefObject } from "react";
@@ -20,22 +25,15 @@ const MASK = {
 
 const PEEK_VH = 0.065;
 const PIN_VH = 2.8;
-const RISE_CAP_VH = 1.2;
 
 type Strip = { el: HTMLDivElement; colW: number; slatW: number };
 
-type PageScrollTransitionRefs = {
+type TestScrollTransitionRefs = {
   root: RefObject<HTMLElement | null>;
   stage: RefObject<HTMLElement | null>;
   mask: RefObject<HTMLElement | null>;
   sheet: RefObject<HTMLElement | null>;
-  riseCap?: RefObject<HTMLElement | null>;
   heroCopy: RefObject<HTMLElement | null>;
-};
-
-/** Venetian (transition-for-pages.js): sticky stage + content in sheet, no pin-spacer */
-export type PageScrollTransitionOptions = {
-  layout?: "pinned" | "venetian";
 };
 
 function clamp(v: number, min: number, max: number) {
@@ -60,38 +58,11 @@ function stripCount() {
   return 52;
 }
 
-/** Corners close quickly early in the scroll — nearly flat before half progress. */
 function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3);
 }
 
-function readRiseCapVh(trigger: HTMLElement) {
-  const v = parseFloat(
-    getComputedStyle(trigger).getPropertyValue("--pt-rise-cap-vh"),
-  );
-  return Number.isFinite(v) && v > 0 ? v : RISE_CAP_VH;
-}
-
-/** Animation runway only — landing + rise-cap, never page body content. */
-function getSheetScrollHeight(
-  sheetEl: HTMLElement,
-  riseCapEl: HTMLElement | null,
-  trigger: HTMLElement,
-) {
-  const vh = window.innerHeight;
-  const landing = sheetEl.querySelector<HTMLElement>(".pt-sheet__landing");
-  const riseCap =
-    riseCapEl ?? sheetEl.querySelector<HTMLElement>(".pt-sheet__rise-cap");
-  const landingH = landing?.offsetHeight ?? 0;
-  const riseCapH = riseCap?.offsetHeight ?? vh * readRiseCapVh(trigger);
-  return landingH + riseCapH;
-}
-
-export function usePageScrollTransition(
-  refs: PageScrollTransitionRefs,
-  options: PageScrollTransitionOptions = {},
-) {
-  const layout = options.layout ?? "pinned";
+export function useTestScrollTransition(refs: TestScrollTransitionRefs) {
   const instanceId = useId().replace(/:/g, "");
 
   useLayoutEffect(() => {
@@ -99,14 +70,12 @@ export function usePageScrollTransition(
     const stage = refs.stage.current;
     const maskEl = refs.mask.current;
     const sheet = refs.sheet.current;
-    const riseCap = refs.riseCap?.current ?? null;
     const heroCopy = refs.heroCopy.current;
 
     if (!root || !stage || !maskEl || !sheet) return;
 
     const mask = maskEl;
     const sheetEl = sheet;
-    const riseCapEl = riseCap;
     const trigger = root;
 
     document.body.classList.add("has-page-scroll-transition");
@@ -115,11 +84,6 @@ export function usePageScrollTransition(
 
     trigger.style.setProperty("--pt-gold", PT_GOLD);
     trigger.style.setProperty("--pt-cream", PT_CREAM);
-    trigger.style.setProperty("--pt-pin-vh", String(PIN_VH));
-
-    if (layout === "venetian") {
-      trigger.setAttribute("data-pt-layout", "venetian");
-    }
 
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
@@ -200,27 +164,9 @@ export function usePageScrollTransition(
       });
     }
 
-    function measureSheetHeight() {
-      return getSheetScrollHeight(sheetEl, riseCapEl, trigger);
-    }
-
-    function getBodyScrollExtra() {
-      const body = sheetEl.querySelector<HTMLElement>(".pt-sheet__body");
-      return body?.offsetHeight ?? 0;
-    }
-
-    function syncVenetianScrollTrack() {
-      if (layout !== "venetian") return 0;
-      const vh = window.innerHeight;
-      const runway = vh * PIN_VH;
-      const total = runway + getBodyScrollExtra();
-      trigger.style.height = `${total}px`;
-      return total;
-    }
-
     function applyProgress(p: number) {
       const vh = window.innerHeight;
-      const sheetH = measureSheetHeight();
+      const sheetH = sheetEl.offsetHeight;
       const peek = vh * PEEK_VH;
       const startY = sheetH - peek;
       const { start: rStart, end: rEnd } = getDomeRadii();
@@ -228,7 +174,6 @@ export function usePageScrollTransition(
       const riseT = mapRange(p, 0, 0.7, 0, 1);
       let y = startY * (1 - riseT);
 
-      // Drift (p 0.7→1) scrolls through rise-cap padding only — must match --pt-rise-cap-vh
       const driftT = mapRange(p, 0.7, 1, 0, 1);
       const extra = Math.max(0, sheetH - vh * 0.92);
       y -= driftT * extra;
@@ -256,40 +201,18 @@ export function usePageScrollTransition(
         if (!buildMaskStrips()) return false;
         applyProgress(0);
 
-        if (layout === "venetian") {
-          syncVenetianScrollTrack();
-          const runway = window.innerHeight * PIN_VH;
-
-          ScrollTrigger.create({
-            id: `page-transition-${instanceId}`,
-            trigger: trigger,
-            start: "top top",
-            end: () => {
-              syncVenetianScrollTrack();
-              const vh = window.innerHeight;
-              return `+=${vh * PIN_VH + getBodyScrollExtra()}`;
-            },
-            scrub: 0,
-            invalidateOnRefresh: true,
-            onUpdate: (self) => {
-              const scrolled = self.scroll() - self.start;
-              applyProgress(clamp(scrolled / runway, 0, 1));
-            },
-          });
-        } else {
-          ScrollTrigger.create({
-            id: `page-transition-${instanceId}`,
-            trigger: trigger,
-            start: "top top",
-            end: () => `+=${window.innerHeight * PIN_VH}`,
-            pin: stage,
-            pinSpacing: true,
-            scrub: 0,
-            invalidateOnRefresh: true,
-            anticipatePin: 1,
-            onUpdate: (self) => applyProgress(self.progress),
-          });
-        }
+        ScrollTrigger.create({
+          id: `test-scroll-transition-${instanceId}`,
+          trigger: trigger,
+          start: "top top",
+          end: () => `+=${window.innerHeight * PIN_VH}`,
+          pin: stage,
+          pinSpacing: true,
+          scrub: 0,
+          invalidateOnRefresh: true,
+          anticipatePin: 1,
+          onUpdate: (self) => applyProgress(self.progress),
+        });
 
         return true;
       };
@@ -306,7 +229,6 @@ export function usePageScrollTransition(
       if (resizeTimer) clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
         buildMaskStrips();
-        syncVenetianScrollTrack();
         ScrollTrigger.refresh();
       }, 150);
     };
@@ -318,16 +240,14 @@ export function usePageScrollTransition(
       window.removeEventListener("resize", onResize);
       if (resizeTimer) clearTimeout(resizeTimer);
       ctx.revert();
-      trigger.removeAttribute("data-pt-layout");
-      trigger.style.height = "";
       document.body.classList.remove("has-page-scroll-transition");
       document.documentElement.classList.remove("has-page-scroll-transition");
       document.body.style.backgroundColor = "";
     };
-  }, [instanceId, layout, refs.root, refs.stage, refs.mask, refs.sheet, refs.riseCap, refs.heroCopy]);
+  }, [instanceId, refs.root, refs.stage, refs.mask, refs.sheet, refs.heroCopy]);
 }
 
-export function refreshPageScrollTransition() {
+export function refreshTestScrollTransition() {
   if (typeof window === "undefined") return;
   gsap.registerPlugin(ScrollTrigger);
   ScrollTrigger.refresh();

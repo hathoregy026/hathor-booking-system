@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useEffect, useRef, type ReactNode } from "react";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import {
-  refreshPageScrollTransition,
-  usePageScrollTransition,
-} from "@/hooks/usePageScrollTransition";
+  refreshTestScrollTransition,
+  useTestScrollTransition,
+} from "@/hooks/useTestScrollTransition";
 
 const PIN_VH = 2.8;
 
@@ -38,7 +38,7 @@ export function TestScrollTransition({
   const sheetRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
 
-  usePageScrollTransition({
+  useTestScrollTransition({
     root: rootRef,
     stage: stageRef,
     mask: maskRef,
@@ -96,7 +96,7 @@ export function TestScrollTransition({
                 alt={imageAlt ?? image.alt}
                 fetchPriority="high"
                 decoding="async"
-                onLoad={() => refreshPageScrollTransition()}
+                onLoad={() => refreshTestScrollTransition()}
               />
               <div className="pt-hero__overlay" aria-hidden />
             </div>

@@ -4,6 +4,7 @@ import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
 import { resolveSiteImageMap } from "@/lib/resolve-site-images";
 import "../public.css";
 import "../booking-modal.css";
+import "./test-scroll-reveal.css";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
