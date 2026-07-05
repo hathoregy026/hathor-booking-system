@@ -19,8 +19,8 @@ const MASK = {
 };
 
 const PEEK_VH = 0.065;
-const PIN_VH = 2.8;
-const RISE_CAP_VH = 1.2;
+const PIN_VH = 1.6;
+const RISE_CAP_VH = 0.25;
 
 type Strip = { el: HTMLDivElement; colW: number; slatW: number };
 
@@ -219,7 +219,7 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
           id: `page-transition-${instanceId}`,
           trigger: trigger,
           start: "top top",
-          end: () => `+=${window.innerHeight * 1.8}`,
+          end: () => `+=${window.innerHeight * PIN_VH}`,
           pin: stage,
           pinSpacing: true,
           scrub: 0,
