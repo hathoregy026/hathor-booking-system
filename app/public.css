@@ -4881,11 +4881,19 @@ body.has-page-scroll-transition .hathor-page-cream-floor {
   min-height: 0;
 }
 
-/* Wireframe: main content container overlaps hero via negative margin (scroll JS untouched) */
+/* Wireframe: pull cream content up under second title (PIN_VH 2.8 + stage — CSS only, JS untouched) */
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor.page-layout {
-  --pt-content-gap: clamp(1.25rem, 3vh, 2rem);
-  --pt-overlap: 120svh;
-  margin-top: calc(-1 * var(--pt-overlap) + var(--pt-content-gap));
+  --pt-content-gap: clamp(1.25rem, 3vh, 1.875rem); /* ~20–30px below second title */
+  --pt-pin-scroll: 280svh; /* PIN_VH 2.8 × 100svh — matches usePageScrollTransition */
+  --pt-stage-h: 100svh;
+  --pt-landing-block: calc(
+    clamp(5.5rem, 12vh, 7.5rem) + clamp(2rem, 4.5vw, 3.25rem) * 1.12
+  );
+  padding-top: 0;
+  margin-top: calc(
+    -1 * (var(--pt-stage-h) + var(--pt-pin-scroll) - var(--pt-landing-block)) +
+      var(--pt-content-gap)
+  );
   margin-right: 0;
   margin-bottom: 0;
   margin-left: 0;
@@ -4905,6 +4913,8 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-pag
   width: 100%;
   max-width: var(--hathor-container-max, 72rem);
   margin-inline: auto;
+  margin-top: 0;
+  padding-top: 0;
   padding-inline: clamp(1rem, 4vw, 2rem);
   padding-bottom: clamp(2.5rem, 6vh, 4rem);
 }
@@ -4915,7 +4925,8 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-pag
   flex-wrap: wrap;
   align-items: flex-end;
   gap: clamp(0.75rem, 2vw, 1.25rem);
-  padding-block: clamp(0.75rem, 2vh, 1.25rem);
+  padding-top: 0;
+  padding-bottom: clamp(0.75rem, 2vh, 1.25rem);
   margin: 0;
   border-bottom: 1px solid rgb(10 10 10 / 0.08);
 }
