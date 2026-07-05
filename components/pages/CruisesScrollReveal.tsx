@@ -1,7 +1,12 @@
 "use client";
 
 import React, { useEffect, useLayoutEffect, useRef, type ReactNode } from "react";
-import { refreshPageScrollTransition, usePageScrollTransition } from "@/hooks/usePageScrollTransition";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import {
+  refreshPageScrollTransition,
+  usePageScrollTransition,
+} from "@/hooks/usePageScrollTransition";
 
 const PIN_VH = 1.5;
 
@@ -11,6 +16,18 @@ export type CruisesScrollRevealProps = {
   imageSrc: string;
   children: ReactNode;
 };
+
+function alignDomeContentGap(root: HTMLElement, next: HTMLElement) {
+  const dome = root.querySelector<HTMLElement>(".dome-container");
+  const landing = root.querySelector<HTMLElement>(".pt-sheet__landing");
+  if (!dome) return;
+
+  const domeBottom =
+    landing?.getBoundingClientRect().bottom ?? dome.getBoundingClientRect().bottom;
+  const gap = next.getBoundingClientRect().top - domeBottom;
+  next.style.marginTop = gap > 0 ? `-${gap}px` : "0";
+  ScrollTrigger.refresh();
+}
 
 export function CruisesScrollReveal({
   title,
@@ -25,13 +42,20 @@ export function CruisesScrollReveal({
   const heroCopyRef = useRef<HTMLDivElement>(null);
   const creamFloorRef = useRef<HTMLDivElement>(null);
 
-  usePageScrollTransition({
-    root: rootRef,
-    stage: stageRef,
-    mask: maskRef,
-    sheet: sheetRef,
-    heroCopy: heroCopyRef,
-  });
+  usePageScrollTransition(
+    {
+      root: rootRef,
+      stage: stageRef,
+      mask: maskRef,
+      sheet: sheetRef,
+      heroCopy: heroCopyRef,
+    },
+    {
+      pinSpacing: false,
+      scrollEnd: "bottom top",
+      manualScrollTrack: true,
+    },
+  );
 
   useEffect(() => {
     const root = rootRef.current;
@@ -65,38 +89,28 @@ export function CruisesScrollReveal({
   }, []);
 
   useLayoutEffect(() => {
-    const root = rootRef.current;
+    gsap.registerPlugin(ScrollTrigger);
 
-    const applyContentOffset = () => {
-      const stage = stageRef.current;
-      const sheet = sheetRef.current;
-      const creamFloor = creamFloorRef.current;
-      if (!root || !stage || !sheet || !creamFloor) return;
-
-      const pinSpacer =
-        stage.parentElement?.classList.contains("pin-spacer")
-          ? stage.parentElement
-          : root.querySelector(".pin-spacer");
-      const landing = sheet.querySelector(".pt-sheet__landing");
-      if (!(pinSpacer instanceof HTMLElement) || !(landing instanceof HTMLElement)) {
-        return;
-      }
-
-      const pinScroll = window.innerHeight * PIN_VH;
-      const offset = Math.max(
-        0,
-        pinSpacer.offsetHeight - pinScroll - landing.offsetHeight - 12,
-      );
-
-      creamFloor.style.marginTop = offset > 0 ? `-${offset}px` : "0";
+    const runGapFix = () => {
+      const root = rootRef.current;
+      const next = creamFloorRef.current;
+      if (!root || !next) return;
+      alignDomeContentGap(root, next);
     };
 
-    applyContentOffset();
-    requestAnimationFrame(applyContentOffset);
-    window.addEventListener("resize", applyContentOffset);
+    runGapFix();
+    requestAnimationFrame(runGapFix);
+    setTimeout(runGapFix, 100);
+    setTimeout(runGapFix, 400);
+
+    window.addEventListener("load", runGapFix);
+    window.addEventListener("resize", runGapFix);
+    ScrollTrigger.addEventListener("refresh", runGapFix);
 
     return () => {
-      window.removeEventListener("resize", applyContentOffset);
+      window.removeEventListener("load", runGapFix);
+      window.removeEventListener("resize", runGapFix);
+      ScrollTrigger.removeEventListener("refresh", runGapFix);
       if (creamFloorRef.current) {
         creamFloorRef.current.style.marginTop = "";
       }
@@ -109,9 +123,11 @@ export function CruisesScrollReveal({
         ref={rootRef}
         data-page-transition
         data-test-scroll-reveal
+        data-cruises-scroll
         className="hathor-page-scroll-transition hathor-page-hero test-scroll-reveal"
       >
-        <div ref={stageRef} className="pt-stage">
+        <div className="dome-manual-spacer" aria-hidden="true" />
+        <div ref={stageRef} className="pt-stage dome-container">
           <div className="pt-hero">
             <div className="pt-hero__media">
               <img
@@ -122,24 +138,9 @@ export function CruisesScrollReveal({
                 onLoad={() => {
                   refreshPageScrollTransition();
                   requestAnimationFrame(() => {
-                    const stage = stageRef.current;
-                    const sheet = sheetRef.current;
-                    const creamFloor = creamFloorRef.current;
-                    if (!rootRef.current || !stage || !sheet || !creamFloor) return;
-                    const pinSpacer =
-                      stage.parentElement?.classList.contains("pin-spacer")
-                        ? stage.parentElement
-                        : rootRef.current.querySelector(".pin-spacer");
-                    const landing = sheet.querySelector(".pt-sheet__landing");
-                    if (!(pinSpacer instanceof HTMLElement) || !(landing instanceof HTMLElement)) {
-                      return;
-                    }
-                    const pinScroll = window.innerHeight * PIN_VH;
-                    const offset = Math.max(
-                      0,
-                      pinSpacer.offsetHeight - pinScroll - landing.offsetHeight - 12,
-                    );
-                    creamFloor.style.marginTop = offset > 0 ? `-${offset}px` : "0";
+                    const root = rootRef.current;
+                    const next = creamFloorRef.current;
+                    if (root && next) alignDomeContentGap(root, next);
                   });
                 }}
               />
@@ -166,9 +167,12 @@ export function CruisesScrollReveal({
           </div>
         </div>
       </section>
-      <div ref={creamFloorRef} className="test-scroll-reveal__cream-floor">
+      <div
+        ref={creamFloorRef}
+        className="test-scroll-reveal__cream-floor next-section"
+      >
         <div className="dome-spacer" aria-hidden="true" />
-        <div className="hathor-page-cream-floor cruises-page-cream content-after-dome">
+        <div className="hathor-page-cream-floor cruises-page-cream">
           {children}
         </div>
       </div>

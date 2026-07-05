@@ -36,6 +36,9 @@ type PageScrollTransitionRefs = {
 /** Venetian (transition-for-pages.js): sticky stage + content in sheet, no pin-spacer */
 export type PageScrollTransitionOptions = {
   layout?: "pinned" | "venetian";
+  pinSpacing?: boolean;
+  scrollEnd?: string | (() => string);
+  manualScrollTrack?: boolean;
 };
 
 function clamp(v: number, min: number, max: number) {
@@ -92,6 +95,9 @@ export function usePageScrollTransition(
   options: PageScrollTransitionOptions = {},
 ) {
   const layout = options.layout ?? "pinned";
+  const pinSpacing = options.pinSpacing ?? true;
+  const scrollEnd = options.scrollEnd ?? (() => `+=${window.innerHeight * PIN_VH}`);
+  const manualScrollTrack = options.manualScrollTrack ?? false;
   const instanceId = useId().replace(/:/g, "");
 
   useLayoutEffect(() => {
@@ -293,18 +299,24 @@ export function usePageScrollTransition(
             },
           });
         } else {
+          if (manualScrollTrack) {
+            trigger.style.height = `${window.innerHeight * (1 + PIN_VH)}px`;
+          }
+
           ScrollTrigger.create({
             id: `page-transition-${instanceId}`,
             trigger: trigger,
             start: "top top",
-            end: () => `+=${window.innerHeight * PIN_VH}`,
+            end: scrollEnd,
             pin: stage,
-            pinSpacing: true,
+            pinSpacing,
             scrub: 0,
             invalidateOnRefresh: true,
             anticipatePin: 1,
             onUpdate: (self) => applyProgress(self.progress),
           });
+
+          ScrollTrigger.refresh();
         }
 
         return true;
@@ -340,7 +352,7 @@ export function usePageScrollTransition(
       document.documentElement.classList.remove("has-page-scroll-transition");
       document.body.style.backgroundColor = "";
     };
-  }, [instanceId, layout, refs.root, refs.stage, refs.mask, refs.sheet, refs.riseCap, refs.heroCopy]);
+  }, [instanceId, layout, pinSpacing, scrollEnd, manualScrollTrack, refs.root, refs.stage, refs.mask, refs.sheet, refs.riseCap, refs.heroCopy]);
 }
 
 export function refreshPageScrollTransition() {
