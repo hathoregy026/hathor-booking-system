@@ -74,7 +74,8 @@ export function CruisesScrollReveal({
     const closeLayoutGap = () => {
       const stage = stageRef.current;
       const creamFloor = creamFloorRef.current;
-      if (!stage || !creamFloor) return;
+      const sheet = sheetRef.current;
+      if (!stage || !creamFloor || !sheet) return;
 
       const pinSpacer =
         stage.parentElement?.classList.contains("pin-spacer")
@@ -83,10 +84,30 @@ export function CruisesScrollReveal({
 
       if (!(pinSpacer instanceof HTMLElement)) return;
 
-      const pinScroll = window.innerHeight * PIN_VH;
-      const emptyGapHeight = pinSpacer.offsetHeight - pinScroll;
-      creamFloor.style.marginTop =
-        emptyGapHeight > 0 ? `-${emptyGapHeight}px` : "0";
+      const vh = window.innerHeight;
+      const pinScroll = vh * PIN_VH;
+      let pullUp = Math.max(0, pinSpacer.offsetHeight - pinScroll);
+
+      const sectionTop = root.getBoundingClientRect().top + window.scrollY;
+      const pinProgress = Math.max(
+        0,
+        (window.scrollY - sectionTop) / (vh * PIN_VH),
+      );
+
+      // After the reveal finishes, pull listings up to sit just under the landing title
+      if (pinProgress >= 0.92) {
+        const landing = sheet.querySelector(".pt-sheet__landing");
+        if (landing instanceof HTMLElement) {
+          const gap =
+            creamFloor.getBoundingClientRect().top -
+            landing.getBoundingClientRect().bottom;
+          if (gap > 16) {
+            pullUp += gap - 16;
+          }
+        }
+      }
+
+      creamFloor.style.marginTop = pullUp > 0 ? `-${pullUp}px` : "0";
     };
 
     const scheduleGapClose = () => {
@@ -100,10 +121,12 @@ export function CruisesScrollReveal({
     scheduleGapClose();
     ScrollTrigger.addEventListener("refresh", closeLayoutGap);
     window.addEventListener("resize", closeLayoutGap);
+    window.addEventListener("scroll", closeLayoutGap, { passive: true });
 
     return () => {
       ScrollTrigger.removeEventListener("refresh", closeLayoutGap);
       window.removeEventListener("resize", closeLayoutGap);
+      window.removeEventListener("scroll", closeLayoutGap);
     };
   }, []);
 
