@@ -33,6 +33,11 @@ type PageScrollTransitionRefs = {
   heroCopy: RefObject<HTMLElement | null>;
 };
 
+/** Venetian (transition-for-pages.js): sticky stage + content in sheet, no pin-spacer */
+export type PageScrollTransitionOptions = {
+  layout?: "pinned" | "venetian";
+};
+
 function clamp(v: number, min: number, max: number) {
   return Math.max(min, Math.min(max, v));
 }
@@ -82,7 +87,11 @@ function getSheetScrollHeight(
   return landingH + riseCapH;
 }
 
-export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
+export function usePageScrollTransition(
+  refs: PageScrollTransitionRefs,
+  options: PageScrollTransitionOptions = {},
+) {
+  const layout = options.layout ?? "pinned";
   const instanceId = useId().replace(/:/g, "");
 
   useLayoutEffect(() => {
@@ -107,6 +116,11 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
     trigger.style.setProperty("--pt-gold", PT_GOLD);
     trigger.style.setProperty("--pt-cream", PT_CREAM);
     trigger.style.setProperty("--pt-rise-cap-vh", String(RISE_CAP_VH));
+    trigger.style.setProperty("--pt-pin-vh", String(PIN_VH));
+
+    if (layout === "venetian") {
+      trigger.setAttribute("data-pt-layout", "venetian");
+    }
 
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
@@ -187,9 +201,26 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
       });
     }
 
+    function measureSheetHeight() {
+      if (layout === "venetian") {
+        return sheetEl.offsetHeight;
+      }
+      return getSheetScrollHeight(sheetEl, riseCapEl, trigger);
+    }
+
+    function syncVenetianScrollTrack() {
+      if (layout !== "venetian") return 0;
+      const vh = window.innerHeight;
+      const runway = vh * PIN_VH;
+      const extra = Math.max(0, sheetEl.offsetHeight - vh);
+      const total = runway + extra;
+      trigger.style.height = `${total}px`;
+      return total;
+    }
+
     function applyProgress(p: number) {
       const vh = window.innerHeight;
-      const sheetH = getSheetScrollHeight(sheetEl, riseCapEl, trigger);
+      const sheetH = measureSheetHeight();
       const peek = vh * PEEK_VH;
       const startY = sheetH - peek;
       const { start: rStart, end: rEnd } = getDomeRadii();
@@ -225,18 +256,41 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
         if (!buildMaskStrips()) return false;
         applyProgress(0);
 
-        ScrollTrigger.create({
-          id: `page-transition-${instanceId}`,
-          trigger: trigger,
-          start: "top top",
-          end: () => `+=${window.innerHeight * PIN_VH}`,
-          pin: stage,
-          pinSpacing: true,
-          scrub: 0,
-          invalidateOnRefresh: true,
-          anticipatePin: 1,
-          onUpdate: (self) => applyProgress(self.progress),
-        });
+        if (layout === "venetian") {
+          syncVenetianScrollTrack();
+          const runway = window.innerHeight * PIN_VH;
+
+          ScrollTrigger.create({
+            id: `page-transition-${instanceId}`,
+            trigger: trigger,
+            start: "top top",
+            end: () => {
+              syncVenetianScrollTrack();
+              const vh = window.innerHeight;
+              const extra = Math.max(0, sheetEl.offsetHeight - vh);
+              return `+=${vh * PIN_VH + extra}`;
+            },
+            scrub: 0,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              const scrolled = self.scroll() - self.start;
+              applyProgress(clamp(scrolled / runway, 0, 1));
+            },
+          });
+        } else {
+          ScrollTrigger.create({
+            id: `page-transition-${instanceId}`,
+            trigger: trigger,
+            start: "top top",
+            end: () => `+=${window.innerHeight * PIN_VH}`,
+            pin: stage,
+            pinSpacing: true,
+            scrub: 0,
+            invalidateOnRefresh: true,
+            anticipatePin: 1,
+            onUpdate: (self) => applyProgress(self.progress),
+          });
+        }
 
         return true;
       };
@@ -253,6 +307,7 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
       if (resizeTimer) clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
         buildMaskStrips();
+        syncVenetianScrollTrack();
         ScrollTrigger.refresh();
       }, 150);
     };
@@ -264,11 +319,13 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
       window.removeEventListener("resize", onResize);
       if (resizeTimer) clearTimeout(resizeTimer);
       ctx.revert();
+      trigger.removeAttribute("data-pt-layout");
+      trigger.style.height = "";
       document.body.classList.remove("has-page-scroll-transition");
       document.documentElement.classList.remove("has-page-scroll-transition");
       document.body.style.backgroundColor = "";
     };
-  }, [instanceId, refs.root, refs.stage, refs.mask, refs.sheet, refs.riseCap, refs.heroCopy]);
+  }, [instanceId, layout, refs.root, refs.stage, refs.mask, refs.sheet, refs.riseCap, refs.heroCopy]);
 }
 
 export function refreshPageScrollTransition() {
