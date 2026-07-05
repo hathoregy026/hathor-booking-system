@@ -230,9 +230,7 @@ export function usePageScrollTransition(
 
       // Drift (p 0.7→1) scrolls through rise-cap padding only — must match --pt-rise-cap-vh
       const driftT = mapRange(p, 0.7, 1, 0, 1);
-      // Clamp the maximum extra upward drift to 15% of the viewport height instead of the full sheet height
-      const maxDriftLimit = vh * 0.15;
-      const extra = Math.min(maxDriftLimit, Math.max(0, sheetH - vh * 0.92));
+      const extra = Math.max(0, sheetH - vh * 0.92);
       y -= driftT * extra;
 
       const radiusProgress = easeOutCubic(mapRange(p, 0.04, 0.42, 0, 1));
