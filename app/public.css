@@ -5375,4 +5375,11 @@ body { background-color: #ece8df !important; }
   background-color: #ece8df !important;
   position: relative;
   z-index: 101;
+  /* Content-layer pull only — does not touch scroll reveal DOM, stripes, or pin math */
+  margin-top: clamp(-52vh, -42vh, -32vh);
+  margin-top: clamp(-52svh, -42svh, -32svh);
+}
+
+.test-scroll-reveal-route .hathor-page-cream-floor.cruises-page-cream .page-layout__inner {
+  padding-top: 0;
 }
