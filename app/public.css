@@ -5386,30 +5386,10 @@ body { background-color: #ece8df !important; }
   background-color: #ece8df !important;
 }
 
-.test-scroll-reveal-route .test-scroll-reveal__cream-floor:has(.cruises-page-cream) {
-  min-height: 0;
-  padding: 0;
-  margin-bottom: 0;
-}
-
 .test-scroll-reveal-route .hathor-page-cream-floor.cruises-page-cream {
   background-color: #ece8df !important;
   position: relative;
   z-index: 101;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 0.35s ease, visibility 0.35s ease;
-  will-change: transform;
-}
-
-.test-scroll-reveal-route
-  [data-test-scroll-reveal].test-scroll-reveal--media-gone
-  + .test-scroll-reveal__cream-floor
-  .hathor-page-cream-floor.cruises-page-cream {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
 }
 
 .test-scroll-reveal-route .hathor-page-cream-floor.cruises-page-cream .page-layout__inner {
