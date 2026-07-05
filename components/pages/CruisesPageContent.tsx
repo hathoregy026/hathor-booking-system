@@ -11,10 +11,12 @@ export function CruisesPageContent() {
       subtitle={CRUISES_PAGE.hero.subtitle}
       imageSrc="/media/hathor/cruises-hero.webp"
     >
-      <div className="page-layout__main">
-        <CruisesPageListings cruises={HATHOR_CRUISES} />
+      <div className="hathor-page-cream-floor cruises-page-cream">
+        <div className="page-layout__main">
+          <CruisesPageListings cruises={HATHOR_CRUISES} />
+        </div>
+        <CtaBand />
       </div>
-      <CtaBand />
     </CruisesScrollReveal>
   );
 }

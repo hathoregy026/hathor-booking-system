@@ -5363,11 +5363,16 @@ body { background-color: #ece8df !important; }
   color: #0a0a0a;
 }
 
-/* Cruises listings: sit flush in cream-floor stream — no extra top padding after reveal */
-.hathor-page-cream-floor.cruises-page-cream {
+/* Pulls our content listing floor up to overlay smoothly right on top of the empty pin-spacer track */
+.test-scroll-reveal-route .test-scroll-reveal__cream-floor {
   position: relative;
-  z-index: 1;
-  margin-top: 0 !important;
-  padding-top: 0;
-  background-color: #ece8df;
+  z-index: 100;
+  margin-top: -120vh !important;
+  background-color: #ece8df !important;
+}
+
+.test-scroll-reveal-route .hathor-page-cream-floor.cruises-page-cream {
+  background-color: #ece8df !important;
+  position: relative;
+  z-index: 101;
 }

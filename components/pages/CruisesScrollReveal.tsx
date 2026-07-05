@@ -20,20 +20,15 @@ export function CruisesScrollReveal({
   const stageRef = useRef<HTMLDivElement>(null);
   const maskRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
-  const riseCapRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
 
-  usePageScrollTransition(
-    {
-      root: rootRef,
-      stage: stageRef,
-      mask: maskRef,
-      sheet: sheetRef,
-      riseCap: riseCapRef,
-      heroCopy: heroCopyRef,
-    },
-    { layout: "venetian" },
-  );
+  usePageScrollTransition({
+    root: rootRef,
+    stage: stageRef,
+    mask: maskRef,
+    sheet: sheetRef,
+    heroCopy: heroCopyRef,
+  });
 
   useEffect(() => {
     const root = rootRef.current;
@@ -51,8 +46,8 @@ export function CruisesScrollReveal({
       const hideMedia = !inHeroZone && (pinProgress > 0.48 || sheetTop <= vh * 0.35);
       const pastPin = pinProgress >= 0.92;
 
-      root.classList.toggle("cruises-scroll-reveal--media-gone", hideMedia);
-      root.classList.toggle("cruises-scroll-reveal--past-pin", pastPin);
+      root.classList.toggle("test-scroll-reveal--media-gone", hideMedia);
+      root.classList.toggle("test-scroll-reveal--past-pin", pastPin);
     };
 
     syncMediaVisibility();
@@ -65,20 +60,13 @@ export function CruisesScrollReveal({
     };
   }, []);
 
-  useEffect(() => {
-    const refresh = () => refreshPageScrollTransition();
-    requestAnimationFrame(refresh);
-    const t = window.setTimeout(refresh, 150);
-    return () => window.clearTimeout(t);
-  }, [children]);
-
   return (
     <>
       <section
         ref={rootRef}
         data-page-transition
-        data-cruises-scroll-reveal
-        className="hathor-page-scroll-transition hathor-page-hero cruises-scroll-reveal"
+        data-test-scroll-reveal
+        className="hathor-page-scroll-transition hathor-page-hero test-scroll-reveal"
       >
         <div ref={stageRef} className="pt-stage">
           <div className="pt-hero">
@@ -103,29 +91,17 @@ export function CruisesScrollReveal({
               </div>
             </div>
           </div>
-
-          <div
-            ref={sheetRef}
-            className="pt-sheet"
-            style={{ height: "auto", minHeight: "100vh" }}
-          >
+          <div ref={sheetRef} className="pt-sheet">
             <div className="pt-sheet__landing">
               <div className="hathor-container">
                 <h2 className="pt-sheet__landing-title">{title}</h2>
               </div>
             </div>
-
-            <div
-              className="cruises-scroll-reveal__cream-floor pt-sheet__body hathor-page-cream-floor cruises-page-cream"
-              style={{ backgroundColor: "#ece8df", zIndex: 20 }}
-            >
-              {children}
-            </div>
-
-            <div ref={riseCapRef} className="pt-sheet__rise-cap" aria-hidden="true" />
+            <div className="pt-sheet__rise-cap" aria-hidden="true" />
           </div>
         </div>
       </section>
+      <div className="test-scroll-reveal__cream-floor">{children}</div>
     </>
   );
 }
