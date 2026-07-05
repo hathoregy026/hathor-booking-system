@@ -20,7 +20,7 @@ const MASK = {
 
 const PEEK_VH = 0.065;
 const PIN_VH = 1.5;
-const RISE_CAP_VH = 0.4;
+const RISE_CAP_VH = 0.35;
 
 type Strip = { el: HTMLDivElement; colW: number; slatW: number };
 
