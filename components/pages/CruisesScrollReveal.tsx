@@ -71,74 +71,66 @@ export function CruisesScrollReveal({
 
     gsap.registerPlugin(ScrollTrigger);
 
-    let contentPullTrigger: ScrollTrigger | null = null;
-
-    const syncContentPull = () => {
-      const creamFloor = creamFloorRef.current;
-      const sheet = sheetRef.current;
-      if (!creamFloor || !sheet) return;
-
-      const landing = sheet.querySelector(".pt-sheet__landing");
-      if (!(landing instanceof HTMLElement)) return;
-
-      const landingRect = landing.getBoundingClientRect();
-      if (landingRect.bottom <= 0) {
-        creamFloor.style.marginTop = "0";
-        return;
-      }
-
-      const naturalCreamTop =
-        root.getBoundingClientRect().bottom + window.scrollY;
-      const targetTop = landingRect.bottom + window.scrollY + 12;
-      const pullUp = Math.max(0, naturalCreamTop - targetTop);
-      creamFloor.style.marginTop = pullUp > 0 ? `-${pullUp}px` : "0";
-    };
-
-    const setupContentPull = () => {
+    const closeLayoutGap = () => {
       const stage = stageRef.current;
       const creamFloor = creamFloorRef.current;
       const sheet = sheetRef.current;
-      if (!stage || !creamFloor || !sheet) return false;
+      if (!stage || !creamFloor || !sheet) return;
+
+      const vh = window.innerHeight;
+      const sectionTop = root.getBoundingClientRect().top + window.scrollY;
+      const pinProgress = Math.max(
+        0,
+        (window.scrollY - sectionTop) / (vh * PIN_VH),
+      );
+
+      const landing = sheet.querySelector(".pt-sheet__landing");
+      const landingRect = landing?.getBoundingClientRect();
+      const canSnap =
+        landing instanceof HTMLElement &&
+        landingRect &&
+        pinProgress >= 0.45 &&
+        landingRect.bottom > 0 &&
+        landingRect.top < vh * 0.92;
+
+      if (canSnap) {
+        const naturalCreamTop =
+          root.getBoundingClientRect().bottom + window.scrollY;
+        const targetTop = landingRect.bottom + window.scrollY + 12;
+        const pullUp = Math.max(0, naturalCreamTop - targetTop);
+        creamFloor.style.marginTop = pullUp > 0 ? `-${pullUp}px` : "0";
+        return;
+      }
 
       const pinSpacer =
         stage.parentElement?.classList.contains("pin-spacer")
           ? stage.parentElement
           : root.querySelector(".pin-spacer");
 
-      if (!(pinSpacer instanceof HTMLElement)) return false;
+      if (!(pinSpacer instanceof HTMLElement)) return;
 
-      contentPullTrigger?.kill();
-
-      contentPullTrigger = ScrollTrigger.create({
-        id: "cruises-content-pull",
-        trigger: root,
-        start: "top top",
-        end: () => `+=${window.innerHeight * PIN_VH}`,
-        scrub: 0,
-        invalidateOnRefresh: true,
-        onUpdate: syncContentPull,
-      });
-
-      syncContentPull();
-      return true;
+      const pinScroll = vh * PIN_VH;
+      const pullUp = Math.max(0, pinSpacer.offsetHeight - pinScroll);
+      creamFloor.style.marginTop = pullUp > 0 ? `-${pullUp}px` : "0";
     };
 
-    if (!setupContentPull()) {
-      requestAnimationFrame(setupContentPull);
-    }
-
-    const onLayoutRefresh = () => {
-      setupContentPull();
+    const scheduleGapClose = () => {
+      closeLayoutGap();
+      requestAnimationFrame(closeLayoutGap);
+      setTimeout(closeLayoutGap, 100);
+      setTimeout(closeLayoutGap, 400);
+      setTimeout(closeLayoutGap, 1000);
     };
 
-    ScrollTrigger.addEventListener("refresh", onLayoutRefresh);
-    window.addEventListener("resize", onLayoutRefresh);
+    scheduleGapClose();
+    ScrollTrigger.addEventListener("refresh", closeLayoutGap);
+    window.addEventListener("resize", closeLayoutGap);
+    window.addEventListener("scroll", closeLayoutGap, { passive: true });
 
     return () => {
-      ScrollTrigger.removeEventListener("refresh", onLayoutRefresh);
-      window.removeEventListener("resize", onLayoutRefresh);
-      contentPullTrigger?.kill();
-      contentPullTrigger = null;
+      ScrollTrigger.removeEventListener("refresh", closeLayoutGap);
+      window.removeEventListener("resize", closeLayoutGap);
+      window.removeEventListener("scroll", closeLayoutGap);
     };
   }, []);
 
