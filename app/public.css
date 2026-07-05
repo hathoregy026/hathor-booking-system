@@ -5395,3 +5395,47 @@ body { background-color: #ece8df !important; }
 .test-scroll-reveal-route .hathor-page-cream-floor.cruises-page-cream .page-layout__inner {
   padding-top: 0;
 }
+
+/* Cruises only — listings live inside rising sheet; test page has no .pt-sheet__body */
+.test-scroll-reveal-route [data-cruises-scroll-reveal] .pt-sheet {
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+}
+
+.test-scroll-reveal-route [data-cruises-scroll-reveal] .pt-sheet__landing {
+  flex-shrink: 0;
+  padding-bottom: clamp(1.25rem, 3vh, 2rem);
+}
+
+.test-scroll-reveal-route [data-cruises-scroll-reveal] .pt-sheet__rise-cap {
+  flex-shrink: 0;
+}
+
+.test-scroll-reveal-route [data-cruises-scroll-reveal] .pt-sheet__body {
+  position: relative;
+  flex: 0 0 auto;
+  z-index: 20;
+  margin: 0;
+  padding: clamp(0.75rem, 2vh, 1.25rem) 0 clamp(3rem, 8vh, 5rem);
+  background-color: #ece8df;
+  pointer-events: auto;
+}
+
+.test-scroll-reveal-route [data-cruises-scroll-reveal] .pt-sheet__body .page-layout__inner {
+  padding-top: clamp(0.5rem, 1.5vh, 1rem);
+  padding-bottom: clamp(2rem, 5vh, 3rem);
+}
+
+.test-scroll-reveal-route [data-cruises-scroll-reveal] .pt-sheet__body .page-layout__filters {
+  padding-top: 0;
+  margin-bottom: clamp(1.5rem, 4vh, 2.5rem);
+}
+
+/* After reveal — let sheet + listings scroll naturally */
+.test-scroll-reveal-route [data-cruises-scroll-reveal].test-scroll-reveal--past-pin .pt-stage {
+  height: auto;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: visible;
+}
