@@ -77,6 +77,31 @@ export function CruisesScrollReveal({
       const sheet = sheetRef.current;
       if (!stage || !creamFloor || !sheet) return;
 
+      const vh = window.innerHeight;
+      const sectionTop = root.getBoundingClientRect().top + window.scrollY;
+      const pinProgress = Math.max(
+        0,
+        (window.scrollY - sectionTop) / (vh * PIN_VH),
+      );
+
+      const landing = sheet.querySelector(".pt-sheet__landing");
+      const landingRect = landing?.getBoundingClientRect();
+      const canSnap =
+        landing instanceof HTMLElement &&
+        landingRect &&
+        pinProgress >= 0.45 &&
+        landingRect.bottom > 0 &&
+        landingRect.top < vh * 0.92;
+
+      if (canSnap) {
+        const naturalCreamTop =
+          root.getBoundingClientRect().bottom + window.scrollY;
+        const targetTop = landingRect.bottom + window.scrollY + 12;
+        const pullUp = Math.max(0, naturalCreamTop - targetTop);
+        creamFloor.style.marginTop = pullUp > 0 ? `-${pullUp}px` : "0";
+        return;
+      }
+
       const pinSpacer =
         stage.parentElement?.classList.contains("pin-spacer")
           ? stage.parentElement
@@ -84,29 +109,8 @@ export function CruisesScrollReveal({
 
       if (!(pinSpacer instanceof HTMLElement)) return;
 
-      const vh = window.innerHeight;
       const pinScroll = vh * PIN_VH;
-      let pullUp = Math.max(0, pinSpacer.offsetHeight - pinScroll);
-
-      const sectionTop = root.getBoundingClientRect().top + window.scrollY;
-      const pinProgress = Math.max(
-        0,
-        (window.scrollY - sectionTop) / (vh * PIN_VH),
-      );
-
-      // After the reveal finishes, pull listings up to sit just under the landing title
-      if (pinProgress >= 0.92) {
-        const landing = sheet.querySelector(".pt-sheet__landing");
-        if (landing instanceof HTMLElement) {
-          const gap =
-            creamFloor.getBoundingClientRect().top -
-            landing.getBoundingClientRect().bottom;
-          if (gap > 16) {
-            pullUp += gap - 16;
-          }
-        }
-      }
-
+      const pullUp = Math.max(0, pinSpacer.offsetHeight - pinScroll);
       creamFloor.style.marginTop = pullUp > 0 ? `-${pullUp}px` : "0";
     };
 

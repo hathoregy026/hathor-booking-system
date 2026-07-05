@@ -5373,6 +5373,8 @@ body { background-color: #ece8df !important; }
 
 .test-scroll-reveal-route .test-scroll-reveal__cream-floor:has(.cruises-page-cream) {
   min-height: 0;
+  padding: 0;
+  margin-bottom: 0;
 }
 
 .test-scroll-reveal-route .hathor-page-cream-floor.cruises-page-cream {
