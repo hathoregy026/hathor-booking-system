@@ -4,50 +4,72 @@ import React, { useEffect, useRef, type ReactNode } from "react";
 import { CRUISES_PAGE } from "@/lib/page-content";
 
 export function CruisesScrollReveal({ children }: { children: ReactNode }) {
-  const domeRef = useRef<HTMLDivElement>(null);
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const section = sectionRef.current;
-    const dome = domeRef.current;
-    if (!section || !dome) return;
+    const hero = heroRef.current;
+    const content = contentRef.current;
+    if (!hero || !content) return;
 
     const handleScroll = () => {
-      const rect = section.getBoundingClientRect();
-      const progress = Math.max(0, Math.min(1, 1 - rect.top / window.innerHeight));
+      const scrollY = window.scrollY;
+      const heroHeight = window.innerHeight;
 
-      const scale = 1.3 - progress * 0.5;
-      dome.style.transform = `scale(${scale})`;
-      dome.style.opacity = String(1 - progress * 0.3);
+      const opacity = Math.max(0, 1 - scrollY / heroHeight);
+      hero.style.opacity = String(opacity);
+
+      const translateY = Math.min(0, -scrollY * 0.3);
+      content.style.transform = `translateY(${translateY}px)`;
     };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+          }
+        });
+      },
+      { threshold: 0.1 },
+    );
+
+    content.querySelectorAll(".content-wrapper > *").forEach((el) => {
+      observer.observe(el);
+    });
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      observer.disconnect();
+    };
   }, []);
 
   return (
-    <>
-      <section ref={sectionRef} className="dome-scroll-section">
-        <div className="dome-sticky-wrapper">
-          <div ref={domeRef} className="dome-content">
-            <img
-              className="dome-content__image"
-              src="/media/hathor/cruises-hero.webp"
-              alt="Cruises"
-              fetchPriority="high"
-              decoding="async"
-            />
-            <div className="dome-content__copy">
-              <h1>{CRUISES_PAGE.hero.title}</h1>
-              {CRUISES_PAGE.hero.subtitle ? (
-                <p>{CRUISES_PAGE.hero.subtitle}</p>
-              ) : null}
-            </div>
+    <div className="scroll-reveal-container">
+      <div ref={heroRef} className="scroll-hero">
+        <div className="dome-content">
+          <img
+            className="scroll-hero__image"
+            src="/media/hathor/cruises-hero.webp"
+            alt="Cruises"
+            fetchPriority="high"
+            decoding="async"
+          />
+          <div className="scroll-hero__copy">
+            <h1>{CRUISES_PAGE.hero.title}</h1>
+            {CRUISES_PAGE.hero.subtitle ? (
+              <p>{CRUISES_PAGE.hero.subtitle}</p>
+            ) : null}
           </div>
         </div>
-      </section>
-      <div className="dome-next-section">{children}</div>
-    </>
+      </div>
+
+      <div ref={contentRef} className="scroll-content">
+        <div className="content-wrapper">{children}</div>
+      </div>
+    </div>
   );
 }

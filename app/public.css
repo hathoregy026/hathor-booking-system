@@ -5484,3 +5484,150 @@ body { background-color: #ece8df !important; }
   margin-top: -1px;
   padding-top: 1px;
 }
+
+/* The reveal effect */
+.reveal-content {
+  opacity: 0;
+  transform: translateY(60px);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  background: white;
+  position: relative;
+  z-index: 2;
+}
+
+.reveal-content.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Each child element staggers */
+.reveal-inner > * {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition-delay: calc(var(--index, 0) * 0.1s);
+}
+
+.reveal-content.visible .reveal-inner > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Give each child an index for stagger */
+.reveal-inner > *:nth-child(1) {
+  --index: 1;
+}
+.reveal-inner > *:nth-child(2) {
+  --index: 2;
+}
+.reveal-inner > *:nth-child(3) {
+  --index: 3;
+}
+.reveal-inner > *:nth-child(4) {
+  --index: 4;
+}
+.reveal-inner > *:nth-child(5) {
+  --index: 5;
+}
+
+/* The dome section */
+.dome-section {
+  height: 100vh;
+  height: 100svh;
+  position: relative;
+  z-index: 1;
+  margin-bottom: -1px;
+}
+
+.dome-container {
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f0eb;
+}
+
+/* Venetian-style scroll reveal — cruises */
+.scroll-reveal-container {
+  position: relative;
+}
+
+.scroll-hero {
+  height: 100vh;
+  height: 100svh;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f0eb;
+  transition: opacity 0.1s;
+  overflow: hidden;
+}
+
+.scroll-hero .dome-content {
+  width: min(92vw, 56rem);
+  text-align: center;
+}
+
+.scroll-hero__image {
+  width: 100%;
+  max-height: 55vh;
+  object-fit: cover;
+  border-radius: 1.5rem 1.5rem 0 0;
+  display: block;
+}
+
+.scroll-hero__copy {
+  background: linear-gradient(
+    180deg,
+    rgba(26, 22, 18, 0.72) 0%,
+    rgba(26, 22, 18, 0.92) 100%
+  );
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  border-radius: 0 0 1.5rem 1.5rem;
+  color: #fff;
+}
+
+.scroll-hero__copy h1 {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-display, "Playfair Display", serif);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.1;
+}
+
+.scroll-hero__copy p {
+  margin: 0;
+  opacity: 0.88;
+}
+
+.scroll-content {
+  position: relative;
+  z-index: 2;
+  background: #ece8df;
+  min-height: 100vh;
+  min-height: 100svh;
+  margin-top: -1px;
+  padding-top: 40px;
+  will-change: transform;
+}
+
+.content-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.content-wrapper > * {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.content-wrapper > *.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
