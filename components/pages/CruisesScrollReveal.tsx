@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useEffect, useLayoutEffect, useRef, type ReactNode } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { refreshPageScrollTransition, usePageScrollTransition } from "@/hooks/usePageScrollTransition";
 
 const PIN_VH = 1.5;
@@ -26,6 +24,7 @@ export function CruisesScrollReveal({
   const sheetRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
   const creamFloorRef = useRef<HTMLDivElement>(null);
+  const applyContentOffsetRef = useRef<(() => void) | null>(null);
 
   usePageScrollTransition({
     root: rootRef,
@@ -69,68 +68,52 @@ export function CruisesScrollReveal({
     const root = rootRef.current;
     if (!root) return;
 
-    gsap.registerPlugin(ScrollTrigger);
-
-    const closeLayoutGap = () => {
+    const applyContentOffset = () => {
       const stage = stageRef.current;
-      const creamFloor = creamFloorRef.current;
       const sheet = sheetRef.current;
-      if (!stage || !creamFloor || !sheet) return;
+      const creamFloor = creamFloorRef.current;
+      if (!stage || !sheet || !creamFloor) return;
 
-      const vh = window.innerHeight;
-      const sectionTop = root.getBoundingClientRect().top + window.scrollY;
-      const pinProgress = Math.max(
-        0,
-        (window.scrollY - sectionTop) / (vh * PIN_VH),
-      );
+      const creamInner = creamFloor.querySelector(".cruises-page-cream");
+      if (!(creamInner instanceof HTMLElement)) return;
 
-      const landing = sheet.querySelector(".pt-sheet__landing");
-      const landingRect = landing?.getBoundingClientRect();
-      const canSnap =
-        landing instanceof HTMLElement &&
-        landingRect &&
-        pinProgress >= 0.45 &&
-        landingRect.bottom > 0 &&
-        landingRect.top < vh * 0.92;
-
-      if (canSnap) {
-        const naturalCreamTop =
-          root.getBoundingClientRect().bottom + window.scrollY;
-        const targetTop = landingRect.bottom + window.scrollY + 12;
-        const pullUp = Math.max(0, naturalCreamTop - targetTop);
-        creamFloor.style.marginTop = pullUp > 0 ? `-${pullUp}px` : "0";
-        return;
-      }
+      creamFloor.style.marginTop = "";
 
       const pinSpacer =
         stage.parentElement?.classList.contains("pin-spacer")
           ? stage.parentElement
           : root.querySelector(".pin-spacer");
+      const landing = sheet.querySelector(".pt-sheet__landing");
+      if (!(pinSpacer instanceof HTMLElement) || !(landing instanceof HTMLElement)) {
+        return;
+      }
 
-      if (!(pinSpacer instanceof HTMLElement)) return;
+      const pinScroll = window.innerHeight * PIN_VH;
+      const offset = Math.max(
+        0,
+        pinSpacer.offsetHeight - pinScroll - landing.offsetHeight - 12,
+      );
 
-      const pinScroll = vh * PIN_VH;
-      const pullUp = Math.max(0, pinSpacer.offsetHeight - pinScroll);
-      creamFloor.style.marginTop = pullUp > 0 ? `-${pullUp}px` : "0";
+      creamInner.style.transform =
+        offset > 0 ? `translateY(-${offset}px)` : "";
     };
 
-    const scheduleGapClose = () => {
-      closeLayoutGap();
-      requestAnimationFrame(closeLayoutGap);
-      setTimeout(closeLayoutGap, 100);
-      setTimeout(closeLayoutGap, 400);
-      setTimeout(closeLayoutGap, 1000);
-    };
+    applyContentOffsetRef.current = applyContentOffset;
+    applyContentOffset();
+    requestAnimationFrame(applyContentOffset);
 
-    scheduleGapClose();
-    ScrollTrigger.addEventListener("refresh", closeLayoutGap);
-    window.addEventListener("resize", closeLayoutGap);
-    window.addEventListener("scroll", closeLayoutGap, { passive: true });
+    window.addEventListener("resize", applyContentOffset);
 
     return () => {
-      ScrollTrigger.removeEventListener("refresh", closeLayoutGap);
-      window.removeEventListener("resize", closeLayoutGap);
-      window.removeEventListener("scroll", closeLayoutGap);
+      window.removeEventListener("resize", applyContentOffset);
+      applyContentOffsetRef.current = null;
+      const creamFloor = creamFloorRef.current;
+      if (!creamFloor) return;
+      creamFloor.style.marginTop = "";
+      const creamInner = creamFloor.querySelector(".cruises-page-cream");
+      if (creamInner instanceof HTMLElement) {
+        creamInner.style.transform = "";
+      }
     };
   }, []);
 
@@ -150,7 +133,10 @@ export function CruisesScrollReveal({
                 alt="Cruises Background"
                 fetchPriority="high"
                 decoding="async"
-                onLoad={() => refreshPageScrollTransition()}
+                onLoad={() => {
+                  refreshPageScrollTransition();
+                  requestAnimationFrame(() => applyContentOffsetRef.current?.());
+                }}
               />
               <div className="pt-hero__overlay" aria-hidden />
             </div>
