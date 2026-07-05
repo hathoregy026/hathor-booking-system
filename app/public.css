@@ -5387,3 +5387,9 @@ body { background-color: #ece8df !important; }
   background-color: #ece8df;
   min-height: 100vh;
 }
+
+.pt-sheet__body {
+  background-color: #ece8df !important;
+  margin: 0;
+  padding: 0;
+}
