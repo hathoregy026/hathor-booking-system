@@ -37,6 +37,7 @@ export function PageScrollTransition({
   const maskRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
+  const creamFloorRef = useRef<HTMLDivElement>(null);
 
   usePageScrollTransition({
     root: rootRef,
@@ -48,7 +49,8 @@ export function PageScrollTransition({
 
   useEffect(() => {
     const root = rootRef.current;
-    if (!root) return;
+    const cream = creamFloorRef.current;
+    if (!root || !cream) return;
 
     const syncMediaVisibility = () => {
       const vh = window.innerHeight;
@@ -62,9 +64,11 @@ export function PageScrollTransition({
       const hideMedia =
         !inHeroZone && (pinProgress > 0.48 || sheetTop <= vh * 0.35);
       const pastPin = pinProgress >= 0.92;
+      const showContent = pinProgress >= 0.88;
 
       root.classList.toggle("hathor-page-scroll--media-gone", hideMedia);
       root.classList.toggle("hathor-page-scroll--past-pin", pastPin);
+      cream.classList.toggle("hathor-page-cream-floor--revealed", showContent);
     };
 
     syncMediaVisibility();
@@ -137,13 +141,16 @@ export function PageScrollTransition({
                 </h2>
               </div>
             </div>
-            <div className="pt-sheet__body hathor-page-cream-floor page-layout">
-              {children}
-            </div>
             <div className="pt-sheet__rise-cap" aria-hidden="true" />
           </div>
         </div>
       </section>
+      <div
+        ref={creamFloorRef}
+        className="hathor-page-cream-floor page-layout hathor-page-cream-floor--below-pin"
+      >
+        {children}
+      </div>
     </>
   );
 }
