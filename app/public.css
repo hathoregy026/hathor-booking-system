@@ -5376,3 +5376,17 @@ body { background-color: #ece8df !important; }
   position: relative;
   z-index: 101;
 }
+
+/* Cruises only — compress rise-cap spacer; test page keeps 120vh via test-scroll-reveal.css */
+.test-scroll-reveal-route:has(.cruises-page-cream)
+  [data-page-transition]
+  .pt-sheet__rise-cap {
+  min-height: 25vh;
+  min-height: 25svh;
+}
+
+.test-scroll-reveal-route:has(.cruises-page-cream)
+  .hathor-page-cream-floor.cruises-page-cream
+  .page-layout__inner {
+  padding-top: 0;
+}

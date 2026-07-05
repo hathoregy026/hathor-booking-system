@@ -74,7 +74,8 @@ export function CruisesScrollReveal({
     const closeLayoutGap = () => {
       const stage = stageRef.current;
       const creamFloor = creamFloorRef.current;
-      if (!stage || !creamFloor) return;
+      const sheet = sheetRef.current;
+      if (!stage || !creamFloor || !sheet) return;
 
       const pinSpacer =
         stage.parentElement?.classList.contains("pin-spacer")
@@ -83,8 +84,11 @@ export function CruisesScrollReveal({
 
       if (!(pinSpacer instanceof HTMLElement)) return;
 
+      const landing = sheet.querySelector(".pt-sheet__landing");
+      const landingH =
+        landing instanceof HTMLElement ? landing.offsetHeight : 0;
       const pinScroll = window.innerHeight * PIN_VH;
-      const emptyGapHeight = pinSpacer.offsetHeight - pinScroll;
+      const emptyGapHeight = pinSpacer.offsetHeight - pinScroll - landingH;
       creamFloor.style.marginTop =
         emptyGapHeight > 0 ? `-${emptyGapHeight}px` : "0";
     };
@@ -100,10 +104,12 @@ export function CruisesScrollReveal({
     scheduleGapClose();
     ScrollTrigger.addEventListener("refresh", closeLayoutGap);
     window.addEventListener("resize", closeLayoutGap);
+    window.addEventListener("scroll", closeLayoutGap, { passive: true });
 
     return () => {
       ScrollTrigger.removeEventListener("refresh", closeLayoutGap);
       window.removeEventListener("resize", closeLayoutGap);
+      window.removeEventListener("scroll", closeLayoutGap);
     };
   }, []);
 
