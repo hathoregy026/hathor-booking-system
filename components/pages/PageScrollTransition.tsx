@@ -160,7 +160,11 @@ export function PageScrollTransition({
           <div ref={sheetRef} className="pt-sheet">
             <div className="pt-sheet__landing" aria-labelledby="page-landing-title">
               <div className="hathor-container">
-                <h2 id="page-landing-title" className="pt-sheet__landing-title">
+                <h2
+                  id="page-landing-title"
+                  className="pt-sheet__landing-title"
+                  data-text={title}
+                >
                   {title}
                 </h2>
               </div>
