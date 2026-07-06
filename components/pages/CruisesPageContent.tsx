@@ -20,9 +20,7 @@ export function CruisesPageContent() {
         imageName="cruises-hero"
         sheetBelowLanding={<CruisesPageFilters />}
       >
-        <div className="page-layout__main">
-          <CruisesPageListingsGrid />
-        </div>
+        <CruisesPageListingsGrid />
         <CtaBand />
       </PageScrollTransition>
     </CruisesListingProvider>

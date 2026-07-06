@@ -81,8 +81,7 @@ export function PageScrollTransition({
   }, []);
 
   return (
-    <>
-      <section
+    <section
         ref={rootRef}
         data-page-transition
         className={`hathor-page-scroll-transition hathor-page-hero${
@@ -137,10 +136,9 @@ export function PageScrollTransition({
               <div className="pt-sheet__filters">{sheetBelowLanding}</div>
             ) : null}
             <div className="pt-sheet__rise-cap" aria-hidden="true" />
+            <div className="pt-sheet__content">{children}</div>
           </div>
         </div>
       </section>
-      <div className="hathor-page-cream-floor">{children}</div>
-    </>
   );
 }

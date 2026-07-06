@@ -4691,6 +4691,14 @@ body.has-page-scroll-transition .page-transition {
   border-top-left-radius: var(--pt-dome-r-start);
   border-top-right-radius: var(--pt-dome-r-start);
   will-change: transform, border-radius;
+  overflow: visible;
+}
+
+/* Content inside sheet (the grid) */
+[data-page-transition] .pt-sheet__content {
+  position: relative;
+  z-index: 2;
+  background-color: #ece8df;
 }
 
 @media (max-width: 1024px) {
@@ -4777,8 +4785,7 @@ body.has-page-scroll-transition [data-page-transition] {
 
 [data-page-transition] .pt-sheet__rise-cap {
   width: 100%;
-  min-height: 120svh !important; /* Keep original height so GSAP offsetHeight stays intact */
-  background: transparent; /* Visually invisible so it doesn't add dead color space */
+  min-height: 30svh !important; /* Much shorter - just enough for animation */
 }
 
 [data-page-transition] .pt-sheet__landing {
@@ -4896,16 +4903,7 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
 }
 
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor {
-  position: relative;
-  z-index: 5; /* Sits BELOW the sheet (z-index: 10) so dome curves aren't clipped */
-  background-color: #ece8df;
-  margin-top: -35vh !important; /* Pulls content up visually to close the gap */
-  padding-top: 2rem;
-  min-height: 100vh;
-  /* Match the final dome radius so transition is seamless when sheet finishes */
-  border-top-left-radius: var(--pt-dome-r-end, 22px);
-  border-top-right-radius: var(--pt-dome-r-end, 22px);
-  overflow: hidden;
+  display: none; /* No longer needed */
 }
 
 body.has-page-scroll-transition .pin-spacer {
@@ -5020,19 +5018,22 @@ body.has-page-scroll-transition .pin-spacer {
   }
 }
 
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-cruise-card {
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-cruise-card,
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__content .hathor-cruise-card {
   background-color: #fff;
   border-color: rgb(10 10 10 / 0.08);
 }
 
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-cruise-card__actions {
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-cruise-card__actions,
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__content .hathor-cruise-card__actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
   margin-top: 1rem;
 }
 
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .lux-cta-band {
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .lux-cta-band,
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__content .lux-cta-band {
   background-color: #ece8df;
 }
 
@@ -5091,13 +5092,15 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-pag
 }
 
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .hathor-cruise-card,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-cruise-card {
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-cruise-card,
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__content .hathor-cruise-card {
   background-color: #fff;
   border-color: rgb(10 10 10 / 0.08);
 }
 
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .lux-cta-band,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .lux-cta-band {
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .lux-cta-band,
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__content .lux-cta-band {
   background-color: #ece8df;
 }
 
