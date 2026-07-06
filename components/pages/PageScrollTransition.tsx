@@ -80,6 +80,26 @@ export function PageScrollTransition({
     };
   }, []);
 
+  useEffect(() => {
+    const sheet = sheetRef.current;
+    if (!sheet || typeof ResizeObserver === "undefined") return;
+
+    let frame: number | null = null;
+    const observer = new ResizeObserver(() => {
+      if (frame !== null) window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() => {
+        refreshPageScrollTransition();
+      });
+    });
+
+    observer.observe(sheet);
+
+    return () => {
+      if (frame !== null) window.cancelAnimationFrame(frame);
+      observer.disconnect();
+    };
+  }, []);
+
   return (
     <section
         ref={rootRef}

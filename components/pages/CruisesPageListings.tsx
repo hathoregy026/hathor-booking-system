@@ -5,10 +5,12 @@ import {
   useContext,
   useMemo,
   useState,
+  type MouseEvent,
   type ReactNode,
 } from "react";
 import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
+import { refreshPageScrollTransition } from "@/components/pages/pageScrollTransitionEngine";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { formatPrice } from "@/lib/client-dates";
 import type { HathorCruiseSeed } from "@/lib/hathor-catalog";
@@ -63,6 +65,16 @@ function roomDetailHref(roomType: string): string {
     return "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise";
   }
   return "/rooms";
+}
+
+function refreshTransitionAfterFilterChange() {
+  if (typeof window === "undefined") return;
+
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => {
+      refreshPageScrollTransition();
+    });
+  });
 }
 
 function flattenCruises(cruises: HathorCruiseSeed[]): CruiseListingItem[] {
@@ -145,6 +157,20 @@ export function CruisesPageFilters() {
     departures,
   } = useCruisesListing();
 
+  const keepPinnedScrollStable = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
+
+  const updateDurationFilter = (value: number | "all") => {
+    setDurationFilter(value);
+    refreshTransitionAfterFilterChange();
+  };
+
+  const updateDepartureFilter = (value: string | "all") => {
+    setDepartureFilter(value);
+    refreshTransitionAfterFilterChange();
+  };
+
   return (
     <div className="hathor-container">
       <section className="page-layout__filters" aria-label="Listing filters">
@@ -155,7 +181,8 @@ export function CruisesPageFilters() {
           <div className="page-layout__filter-options">
             <button
               type="button"
-              onClick={() => setDurationFilter("all")}
+              onMouseDown={keepPinnedScrollStable}
+              onClick={() => updateDurationFilter("all")}
               className={`hathor-filter-btn ${durationFilter === "all" ? "hathor-filter-btn--active" : ""}`}
             >
               All
@@ -164,7 +191,8 @@ export function CruisesPageFilters() {
               <button
                 key={n}
                 type="button"
-                onClick={() => setDurationFilter(n)}
+                onMouseDown={keepPinnedScrollStable}
+                onClick={() => updateDurationFilter(n)}
                 className={`hathor-filter-btn ${durationFilter === n ? "hathor-filter-btn--active" : ""}`}
               >
                 {n} nights
@@ -178,7 +206,8 @@ export function CruisesPageFilters() {
           <div className="page-layout__filter-options">
             <button
               type="button"
-              onClick={() => setDepartureFilter("all")}
+              onMouseDown={keepPinnedScrollStable}
+              onClick={() => updateDepartureFilter("all")}
               className={`hathor-filter-btn ${departureFilter === "all" ? "hathor-filter-btn--active" : ""}`}
             >
               Any day
@@ -187,7 +216,8 @@ export function CruisesPageFilters() {
               <button
                 key={day}
                 type="button"
-                onClick={() => setDepartureFilter(day)}
+                onMouseDown={keepPinnedScrollStable}
+                onClick={() => updateDepartureFilter(day)}
                 className={`hathor-filter-btn ${departureFilter === day ? "hathor-filter-btn--active" : ""}`}
               >
                 {day}
