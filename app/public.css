@@ -4777,9 +4777,7 @@ body.has-page-scroll-transition [data-page-transition] {
 
 [data-page-transition] .pt-sheet__rise-cap {
   width: 100%;
-  min-height: 100%;
-  min-height: 120vh;
-  min-height: 120svh;
+  min-height: 40svh !important; /* Reduced from 120svh to eliminate dead scroll zone */
 }
 
 [data-page-transition] .pt-sheet__landing {
@@ -4886,20 +4884,22 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
   z-index: 2;
   background-color: #ece8df;
   pointer-events: auto;
+  padding-top: 1.5rem; /* Space between title and filters */
+  padding-bottom: 1.5rem;
 }
 
 /* Keep filters hidden during stripe reveal; show once hero media is gone */
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]):not(.hathor-page-scroll--media-gone) .pt-sheet__filters {
-  visibility: hidden;
-  pointer-events: none;
+  visibility: visible !important;
+  pointer-events: auto !important;
 }
 
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor {
   position: relative;
-  z-index: 1;
-  margin: 0;
-  padding: 0;
+  z-index: 15; /* Sits just above the sheet (z-index: 10) */
   background-color: #ece8df;
+  margin-top: -2vh !important; /* Pulls grid up to overlap the end of the rise-cap */
+  padding-top: 2rem; /* Adds breathing room at the top of the grid */
   min-height: 100vh;
 }
 
