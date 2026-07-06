@@ -4823,28 +4823,17 @@ body.has-page-scroll-transition [data-page-transition] {
   font-weight: 500;
   line-height: 1.12;
   letter-spacing: -0.02em;
-  color: transparent;
-  background:
-    radial-gradient(
-      ellipse at 42% 28%,
-      rgb(255 246 192 / 0.72) 0%,
-      rgb(224 205 133 / 0.48) 24%,
-      transparent 48%
-    ),
-    linear-gradient(
-      92deg,
-      #766537 0%,
-      #9a844c 13%,
-      #b69f64 28%,
-      #d7c27c 45%,
-      #f1dfa2 52%,
-      #b69f64 67%,
-      #9a844c 82%,
-      #6f5d34 100%
-    );
-  -webkit-background-clip: text;
-  background-clip: text;
+  color: #b69f64;
+  filter: url("#hathor-title-inner-shadow");
   text-shadow: none;
+}
+
+.hathor-text-filter-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
 }
 
 .hathor-page-body {
