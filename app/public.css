@@ -4777,7 +4777,8 @@ body.has-page-scroll-transition [data-page-transition] {
 
 [data-page-transition] .pt-sheet__rise-cap {
   width: 100%;
-  min-height: 40svh !important; /* Reduced from 120svh to eliminate dead scroll zone */
+  min-height: 120svh !important; /* Keep original height so GSAP offsetHeight stays intact */
+  background: transparent; /* Visually invisible so it doesn't add dead color space */
 }
 
 [data-page-transition] .pt-sheet__landing {
@@ -4884,8 +4885,8 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
   z-index: 2;
   background-color: #ece8df;
   pointer-events: auto;
-  padding-top: 1.5rem; /* Space between title and filters */
-  padding-bottom: 1.5rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 /* Keep filters hidden during stripe reveal; show once hero media is gone */
@@ -4896,11 +4897,15 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
 
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor {
   position: relative;
-  z-index: 15; /* Sits just above the sheet (z-index: 10) */
+  z-index: 5; /* Sits BELOW the sheet (z-index: 10) so dome curves aren't clipped */
   background-color: #ece8df;
-  margin-top: -2vh !important; /* Pulls grid up to overlap the end of the rise-cap */
-  padding-top: 2rem; /* Adds breathing room at the top of the grid */
+  margin-top: -35vh !important; /* Pulls content up visually to close the gap */
+  padding-top: 2rem;
   min-height: 100vh;
+  /* Match the final dome radius so transition is seamless when sheet finishes */
+  border-top-left-radius: var(--pt-dome-r-end, 22px);
+  border-top-right-radius: var(--pt-dome-r-end, 22px);
+  overflow: hidden;
 }
 
 body.has-page-scroll-transition .pin-spacer {
