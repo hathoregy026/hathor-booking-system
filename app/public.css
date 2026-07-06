@@ -4699,6 +4699,7 @@ body.has-page-scroll-transition .page-transition {
   position: relative;
   z-index: 2;
   background-color: transparent;
+  padding-top: clamp(0.75rem, 2svh, 1.5rem);
 }
 
 @media (max-width: 1024px) {
@@ -4744,6 +4745,8 @@ body.has-page-scroll-transition [data-page-transition] {
 [data-page-transition] .pt-hero__media {
   position: absolute;
   inset: 0;
+  transition: opacity 420ms ease-out;
+  will-change: opacity;
 }
 
 [data-page-transition] .pt-hero__overlay {
@@ -4785,7 +4788,7 @@ body.has-page-scroll-transition [data-page-transition] {
 
 [data-page-transition] .pt-sheet__rise-cap {
   width: 100%;
-  min-height: clamp(1.5rem, 6svh, 4rem) !important;
+  min-height: clamp(2.25rem, 8svh, 5.5rem) !important;
   background: transparent;
 }
 
@@ -4869,13 +4872,13 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-
 /* Same rise-cap runway as /test-scroll-reveal (test-scroll-reveal.css) */
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-sheet__rise-cap {
   width: 100%;
-  min-height: clamp(1.5rem, 6svh, 4rem) !important;
+  min-height: clamp(2.25rem, 8svh, 5.5rem) !important;
   background: transparent;
 }
 
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--media-gone .pt-hero__media,
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--past-pin .pt-hero__media {
-  display: none !important;
+  opacity: 0;
 }
 
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--past-pin .pt-stage {
@@ -4884,6 +4887,7 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
 
 /* Filters inside sheet (cruises) — below landing, above rise-cap */
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-sheet__landing {
+  padding-top: clamp(7rem, 15vh, 9.5rem);
   padding-bottom: 0;
 }
 
@@ -4892,8 +4896,8 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
   z-index: 2;
   background-color: transparent;
   pointer-events: auto;
-  padding-top: 0.875rem;
-  padding-bottom: 0.875rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 /* Keep filters hidden during stripe reveal; show once hero media is gone */

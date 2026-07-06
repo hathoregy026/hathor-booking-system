@@ -63,7 +63,7 @@ export function PageScrollTransition({
 
       const inHeroZone = pinProgress < 0.12;
       const hideMedia =
-        !inHeroZone && (pinProgress > 0.48 || sheetTop <= vh * 0.35);
+        !inHeroZone && (pinProgress > 0.58 || sheetTop <= vh * 0.12);
       const pastPin = pinProgress >= 0.92;
 
       root.classList.toggle("hathor-page-scroll--media-gone", hideMedia);
