@@ -4823,18 +4823,17 @@ body.has-page-scroll-transition [data-page-transition] {
   font-weight: 500;
   line-height: 1.12;
   letter-spacing: -0.02em;
-  color: transparent;
-  background: linear-gradient(
-    90deg,
-    #b69f64 0%,
-    #b69f64 34%,
-    rgb(0 0 0 / 0.25) 58%,
-    #b69f64 78%,
-    #b69f64 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
+  color: #b69f64;
+  filter: url("#hathor-title-inner-shadow");
   text-shadow: none;
+}
+
+.hathor-text-filter-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
 }
 
 .hathor-page-body {
