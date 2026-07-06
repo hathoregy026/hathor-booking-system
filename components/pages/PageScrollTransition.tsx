@@ -57,13 +57,10 @@ export function PageScrollTransition({
       const vh = window.innerHeight;
       const top = root.getBoundingClientRect().top + window.scrollY;
       const scroll = window.scrollY;
-      const sheet = sheetRef.current;
-      const sheetTop = sheet?.getBoundingClientRect().top ?? vh;
       const pinProgress = Math.max(0, (scroll - top) / (vh * PIN_VH));
 
       const inHeroZone = pinProgress < 0.12;
-      const hideMedia =
-        !inHeroZone && (pinProgress > 0.58 || sheetTop <= vh * 0.12);
+      const hideMedia = !inHeroZone && pinProgress > 0.82;
       const pastPin = pinProgress >= 0.92;
 
       root.classList.toggle("hathor-page-scroll--media-gone", hideMedia);
@@ -77,26 +74,6 @@ export function PageScrollTransition({
     return () => {
       window.removeEventListener("scroll", syncMediaVisibility);
       window.removeEventListener("resize", syncMediaVisibility);
-    };
-  }, []);
-
-  useEffect(() => {
-    const sheet = sheetRef.current;
-    if (!sheet || typeof ResizeObserver === "undefined") return;
-
-    let frame: number | null = null;
-    const observer = new ResizeObserver(() => {
-      if (frame !== null) window.cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(() => {
-        refreshPageScrollTransition();
-      });
-    });
-
-    observer.observe(sheet);
-
-    return () => {
-      if (frame !== null) window.cancelAnimationFrame(frame);
-      observer.disconnect();
     };
   }, []);
 

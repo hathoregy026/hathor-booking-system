@@ -10,7 +10,6 @@ import {
 } from "react";
 import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
-import { refreshPageScrollTransition } from "@/components/pages/pageScrollTransitionEngine";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { formatPrice } from "@/lib/client-dates";
 import type { HathorCruiseSeed } from "@/lib/hathor-catalog";
@@ -65,16 +64,6 @@ function roomDetailHref(roomType: string): string {
     return "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise";
   }
   return "/rooms";
-}
-
-function refreshTransitionAfterFilterChange() {
-  if (typeof window === "undefined") return;
-
-  window.requestAnimationFrame(() => {
-    window.requestAnimationFrame(() => {
-      refreshPageScrollTransition();
-    });
-  });
 }
 
 function flattenCruises(cruises: HathorCruiseSeed[]): CruiseListingItem[] {
@@ -163,12 +152,10 @@ export function CruisesPageFilters() {
 
   const updateDurationFilter = (value: number | "all") => {
     setDurationFilter(value);
-    refreshTransitionAfterFilterChange();
   };
 
   const updateDepartureFilter = (value: string | "all") => {
     setDepartureFilter(value);
-    refreshTransitionAfterFilterChange();
   };
 
   return (
