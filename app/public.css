@@ -3,9 +3,9 @@
 .public-site {
   --lux-dark: #0a0a0a;
   --lux-dark-2: #1a1a1a;
-  --lux-gold: #c9a96e;
-  --lux-gold-bright: #d4af37;
-  --lux-gold-cream: #f4e5c2;
+  --lux-gold: #b69f64;
+  --lux-gold-bright: #b69f64;
+  --lux-gold-cream: #b69f64;
   --lux-cream: #faf8f5;
   --lux-beige: #f5f0e8;
   --lux-white: #ffffff;
@@ -22,7 +22,7 @@
   --public-gold-hover: var(--lux-gold-bright);
   --public-text: var(--lux-gold-cream);
   --public-muted: #9a9590;
-  --public-border: rgb(201 169 110 / 0.18);
+  --public-border: rgb(182 159 100 / 0.18);
   --public-serif: var(--font-hathor-display, "Playfair Display", Georgia, serif);
   --public-sans: var(--font-hathor-body, "Plus Jakarta Sans", system-ui, sans-serif);
 
@@ -62,7 +62,7 @@
 
 .public-header--solid {
   background: rgb(10 10 10 / 0.95);
-  border-bottom-color: rgb(201 169 110 / 0.2);
+  border-bottom-color: rgb(182 159 100 / 0.2);
   box-shadow: 0 4px 30px rgb(0 0 0 / 0.4);
   backdrop-filter: blur(16px);
 }
@@ -143,7 +143,7 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   padding: 0.875rem 2rem;
-  box-shadow: 0 4px 24px rgb(201 169 110 / 0.35);
+  box-shadow: 0 4px 24px rgb(182 159 100 / 0.35);
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease,
@@ -153,7 +153,7 @@
 
 .public-btn-gold:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgb(201 169 110 / 0.5);
+  box-shadow: 0 8px 32px rgb(182 159 100 / 0.5);
   background-position: 100% 0;
 }
 
@@ -241,7 +241,7 @@
   width: min(100vw - 2rem, 340px);
   flex-direction: column;
   background: var(--lux-dark);
-  border-left: 1px solid rgb(201 169 110 / 0.25);
+  border-left: 1px solid rgb(182 159 100 / 0.25);
   box-shadow: -12px 0 48px rgb(0 0 0 / 0.5);
   animation: publicSlideIn 280ms ease;
 }
@@ -464,7 +464,7 @@
 /* ─── Cards ─── */
 .lux-card {
   background: var(--lux-dark-2);
-  border: 1px solid rgb(201 169 110 / 0.15);
+  border: 1px solid rgb(182 159 100 / 0.15);
   padding: 2rem;
   transition:
     transform 0.4s ease,
@@ -494,7 +494,7 @@
   justify-content: center;
   width: 3rem;
   height: 3rem;
-  border: 1px solid rgb(201 169 110 / 0.4);
+  border: 1px solid rgb(182 159 100 / 0.4);
   color: var(--lux-gold);
 }
 
@@ -527,7 +527,7 @@
   position: relative;
   overflow: hidden;
   background: var(--lux-dark-2);
-  border: 1px solid rgb(201 169 110 / 0.12);
+  border: 1px solid rgb(182 159 100 / 0.12);
   transition:
     transform 0.4s ease,
     box-shadow 0.4s ease;
@@ -561,7 +561,7 @@
 .lux-cruise-card:hover .lux-cruise-card__image::after {
   background: linear-gradient(
     180deg,
-    rgb(201 169 110 / 0.15) 0%,
+    rgb(182 159 100 / 0.15) 0%,
     rgb(10 10 10 / 0.9) 100%
   );
 }
@@ -667,7 +667,7 @@
   background: linear-gradient(
     135deg,
     rgb(10 10 10 / 0.88) 0%,
-    rgb(201 169 110 / 0.35) 100%
+    rgb(182 159 100 / 0.35) 100%
   );
 }
 
@@ -691,8 +691,8 @@
   padding: 5rem 0;
   background: var(--lux-dark);
   text-align: center;
-  border-top: 1px solid rgb(201 169 110 / 0.2);
-  border-bottom: 1px solid rgb(201 169 110 / 0.2);
+  border-top: 1px solid rgb(182 159 100 / 0.2);
+  border-bottom: 1px solid rgb(182 159 100 / 0.2);
 }
 
 .lux-cta-band__title {
@@ -749,7 +749,7 @@
 /* ─── Forms ─── */
 .lux-input {
   width: 100%;
-  border: 1px solid rgb(201 169 110 / 0.22);
+  border: 1px solid rgb(182 159 100 / 0.22);
   background: var(--hathor-dark);
   padding: 1rem 1.125rem;
   font-size: 0.9375rem;
@@ -762,7 +762,7 @@
 .lux-input:focus {
   outline: none;
   border-color: var(--lux-gold);
-  box-shadow: 0 0 0 3px rgb(201 169 110 / 0.15);
+  box-shadow: 0 0 0 3px rgb(182 159 100 / 0.15);
 }
 
 .lux-label {
@@ -779,7 +779,7 @@
 .lux-timeline {
   position: relative;
   padding-left: 2rem;
-  border-left: 1px solid rgb(201 169 110 / 0.35);
+  border-left: 1px solid rgb(182 159 100 / 0.35);
 }
 
 .lux-timeline__item {
@@ -796,7 +796,7 @@
   height: 10px;
   border-radius: 50%;
   background: var(--lux-gold);
-  box-shadow: 0 0 0 4px rgb(201 169 110 / 0.2);
+  box-shadow: 0 0 0 4px rgb(182 159 100 / 0.2);
 }
 
 /* ─── Sticky booking widget ─── */
@@ -827,7 +827,7 @@
 .public-footer {
   background: var(--lux-dark);
   color: var(--lux-text-light);
-  border-top: 1px solid rgb(201 169 110 / 0.2);
+  border-top: 1px solid rgb(182 159 100 / 0.2);
 }
 
 .public-footer__gold-line {
@@ -926,7 +926,7 @@
   border-color: var(--lux-gold-bright);
   box-shadow:
     0 14px 34px rgb(0 0 0 / 0.5),
-    0 0 0 1px rgb(201 169 110 / 0.25);
+    0 0 0 1px rgb(182 159 100 / 0.25);
 }
 
 .public-social-hub__main {
@@ -1003,7 +1003,7 @@
 .lux-filter__option--active {
   color: var(--lux-dark);
   border-color: var(--lux-gold);
-  background: rgb(201 169 110 / 0.1);
+  background: rgb(182 159 100 / 0.1);
 }
 
 /* ─── Grid helpers ─── */
@@ -1037,8 +1037,8 @@
    ═══════════════════════════════════════════════════════════ */
 
 .hathor-site {
-  --hathor-gold: #c9a96e;
-  --hathor-gold-bright: #d4af37;
+  --hathor-gold: #b69f64;
+  --hathor-gold-bright: #b69f64;
   --hathor-dark: #0a0a0a;
   --hathor-dark-2: #1a1a1a;
   --hathor-cream: #faf8f5;
@@ -1220,14 +1220,14 @@
 
 .hathor-header--solid {
   background: rgb(10 10 10 / 0.92);
-  border-bottom-color: rgb(201 169 110 / 0.2);
+  border-bottom-color: rgb(182 159 100 / 0.2);
   box-shadow: 0 8px 40px rgb(0 0 0 / 0.35);
   backdrop-filter: blur(20px);
 }
 
 .hathor-header--light {
   background: rgb(250 248 245 / 0.94);
-  border-bottom-color: rgb(201 169 110 / 0.15);
+  border-bottom-color: rgb(182 159 100 / 0.15);
   box-shadow: 0 4px 24px rgb(0 0 0 / 0.05);
   backdrop-filter: blur(16px);
 }
@@ -1395,7 +1395,7 @@
 }
 
 .hathor-header__dropdown-link:hover {
-  background: rgb(201 169 110 / 0.12);
+  background: rgb(182 159 100 / 0.12);
   color: #1c1917;
 }
 
@@ -1459,12 +1459,12 @@
 }
 
 .hathor-header--owo-hero-layout.hathor-header--solid {
-  border-bottom-color: rgb(201 169 110 / 0.2);
+  border-bottom-color: rgb(182 159 100 / 0.2);
   box-shadow: 0 8px 40px rgb(0 0 0 / 0.35);
 }
 
 .hathor-header--owo-hero-layout.hathor-header--solid.hathor-header--light {
-  border-bottom-color: rgb(201 169 110 / 0.15);
+  border-bottom-color: rgb(182 159 100 / 0.15);
   box-shadow: 0 4px 24px rgb(0 0 0 / 0.05);
 }
 
@@ -1797,7 +1797,7 @@
   flex-direction: column;
   width: min(100vw, 720px);
   background: var(--hathor-dark);
-  border-left: 1px solid rgb(201 169 110 / 0.2);
+  border-left: 1px solid rgb(182 159 100 / 0.2);
   box-shadow: -24px 0 80px rgb(0 0 0 / 0.5);
   animation: publicSlideIn 320ms ease;
   overflow-y: auto;
@@ -1808,7 +1808,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 1.5rem 1.75rem;
-  border-bottom: 1px solid rgb(201 169 110 / 0.15);
+  border-bottom: 1px solid rgb(182 159 100 / 0.15);
 }
 
 .hathor-explore__label {
@@ -1836,7 +1836,7 @@
   font-weight: 600;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: rgb(201 169 110 / 0.7);
+  color: rgb(182 159 100 / 0.7);
   margin-bottom: 1rem;
 }
 
@@ -1872,7 +1872,7 @@
 .hathor-explore__footer {
   margin-top: auto;
   padding: 1.75rem;
-  border-top: 1px solid rgb(201 169 110 / 0.15);
+  border-top: 1px solid rgb(182 159 100 / 0.15);
 }
 
 .hathor-explore__follow {
@@ -1952,7 +1952,7 @@
   justify-content: center;
   width: 2.25rem;
   height: 2.25rem;
-  border: 1px solid rgb(201 169 110 / 0.35);
+  border: 1px solid rgb(182 159 100 / 0.35);
   color: var(--hathor-gold);
   transition:
     border-color 0.3s ease,
@@ -1961,7 +1961,7 @@
 
 .hathor-footer__social-link:hover {
   border-color: var(--hathor-gold);
-  background: rgb(201 169 110 / 0.1);
+  background: rgb(182 159 100 / 0.1);
 }
 
 .hathor-footer__col-label {
@@ -2011,7 +2011,7 @@
 }
 
 .hathor-footer__bottom {
-  border-top: 1px solid rgb(201 169 110 / 0.12);
+  border-top: 1px solid rgb(182 159 100 / 0.12);
 }
 
 .hathor-footer__bottom-inner {
@@ -2049,7 +2049,7 @@
   display: flex;
   flex-direction: column;
   background: var(--hathor-dark-2);
-  border: 1px solid rgb(201 169 110 / 0.15);
+  border: 1px solid rgb(182 159 100 / 0.15);
   transition:
     transform 0.4s ease,
     box-shadow 0.4s ease,
@@ -2059,7 +2059,7 @@
 
 .hathor-itinerary-card:hover {
   transform: translateY(-4px);
-  border-color: rgb(201 169 110 / 0.35);
+  border-color: rgb(182 159 100 / 0.35);
   box-shadow: 0 24px 56px rgb(0 0 0 / 0.45);
 }
 
@@ -2130,7 +2130,7 @@
   display: flex;
   flex-direction: column;
   background: var(--hathor-dark-2);
-  border: 1px solid rgb(201 169 110 / 0.12);
+  border: 1px solid rgb(182 159 100 / 0.12);
   overflow: hidden;
   transition:
     transform 0.4s ease,
@@ -2139,7 +2139,7 @@
 
 .hathor-accommodation-card:hover {
   transform: translateY(-4px);
-  border-color: rgb(201 169 110 / 0.35);
+  border-color: rgb(182 159 100 / 0.35);
 }
 
 .hathor-accommodation-card__image {
@@ -2429,12 +2429,12 @@
 .hathor-feature-card {
   padding: 1.25rem 1.5rem;
   background: var(--hathor-dark);
-  border: 1px solid rgb(201 169 110 / 0.15);
+  border: 1px solid rgb(182 159 100 / 0.15);
   transition: border-color 0.3s ease, transform 0.3s ease;
 }
 
 .hathor-feature-card:hover {
-  border-color: rgb(201 169 110 / 0.45);
+  border-color: rgb(182 159 100 / 0.45);
   transform: translateY(-2px);
 }
 
@@ -2446,7 +2446,7 @@
 .hathor-filter-panel {
   padding: 1.5rem;
   background: var(--hathor-dark);
-  border: 1px solid rgb(201 169 110 / 0.15);
+  border: 1px solid rgb(182 159 100 / 0.15);
 }
 
 .hathor-filter-btn {
@@ -2464,7 +2464,7 @@
 .hathor-filter-btn--active {
   border-color: var(--hathor-gold);
   color: var(--hathor-cream);
-  background: rgb(201 169 110 / 0.12);
+  background: rgb(182 159 100 / 0.12);
 }
 
 .hathor-cruise-card {
@@ -2472,13 +2472,13 @@
   flex-direction: column;
   height: 100%;
   background: var(--hathor-dark-2);
-  border: 1px solid rgb(201 169 110 / 0.15);
+  border: 1px solid rgb(182 159 100 / 0.15);
   transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
 }
 
 .hathor-cruise-card:hover {
   transform: translateY(-4px);
-  border-color: rgb(201 169 110 / 0.35);
+  border-color: rgb(182 159 100 / 0.35);
   box-shadow: 0 20px 48px rgb(0 0 0 / 0.45);
 }
 
@@ -2573,7 +2573,7 @@
 .hathor-venue-card {
   overflow: hidden;
   background: var(--hathor-dark-2);
-  border: 1px solid rgb(201 169 110 / 0.2);
+  border: 1px solid rgb(182 159 100 / 0.2);
 }
 
 .hathor-venue-card__image {
@@ -2595,13 +2595,13 @@
 .hathor-blog-card {
   height: 100%;
   background: var(--hathor-dark-2);
-  border: 1px solid rgb(201 169 110 / 0.15);
+  border: 1px solid rgb(182 159 100 / 0.15);
   transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
 }
 
 .hathor-blog-card:hover {
   transform: translateY(-4px);
-  border-color: rgb(201 169 110 / 0.35);
+  border-color: rgb(182 159 100 / 0.35);
   box-shadow: 0 16px 40px rgb(0 0 0 / 0.45);
 }
 
@@ -2651,7 +2651,7 @@
   gap: 1rem 1.5rem;
   margin-bottom: clamp(2rem, 5vw, 3rem);
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid rgb(201 169 110 / 0.18);
+  border-bottom: 1px solid rgb(182 159 100 / 0.18);
 }
 
 .hathor-blog-article__date {
@@ -2730,7 +2730,7 @@
 .hathor-blog-article__link {
   color: var(--hathor-gold);
   text-decoration: underline;
-  text-decoration-color: rgb(201 169 110 / 0.45);
+  text-decoration-color: rgb(182 159 100 / 0.45);
   text-underline-offset: 0.2em;
   transition: color 0.25s ease, text-decoration-color 0.25s ease;
 }
@@ -2749,7 +2749,7 @@
   display: block;
   margin: 2rem 0;
   overflow: hidden;
-  border: 1px solid rgb(201 169 110 / 0.18);
+  border: 1px solid rgb(182 159 100 / 0.18);
 }
 
 .hathor-blog-article__image,
@@ -2766,7 +2766,7 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--public-muted);
-  border-top: 1px solid rgb(201 169 110 / 0.12);
+  border-top: 1px solid rgb(182 159 100 / 0.12);
 }
 
 .hathor-blog-article__paragraph {
@@ -2786,13 +2786,13 @@
 .hathor-contact-card {
   padding: 1.5rem;
   background: var(--hathor-dark);
-  border: 1px solid rgb(201 169 110 / 0.15);
+  border: 1px solid rgb(182 159 100 / 0.15);
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
   color: var(--hathor-cream);
 }
 
 .hathor-contact-card:hover {
-  border-color: rgb(201 169 110 / 0.45);
+  border-color: rgb(182 159 100 / 0.45);
 }
 
 .hathor-contact-card__icon {
@@ -2801,14 +2801,14 @@
   justify-content: center;
   width: 3rem;
   height: 3rem;
-  border: 1px solid rgb(201 169 110 / 0.4);
+  border: 1px solid rgb(182 159 100 / 0.4);
   color: var(--hathor-gold);
 }
 
 .hathor-form-card {
   padding: 1.75rem;
   background: var(--hathor-dark);
-  border: 1px solid rgb(201 169 110 / 0.15);
+  border: 1px solid rgb(182 159 100 / 0.15);
 }
 
 .hathor-form-card--success {
@@ -2821,7 +2821,7 @@
   padding: 0.5rem 1rem;
   font-size: 0.75rem;
   letter-spacing: 0.06em;
-  border: 1px solid rgb(201 169 110 / 0.35);
+  border: 1px solid rgb(182 159 100 / 0.35);
   color: var(--hathor-text-light);
   background: var(--hathor-dark);
 }
@@ -2958,7 +2958,7 @@
   justify-content: center;
   min-height: 6.5rem;
   padding: 1.5rem;
-  border: 1px solid rgb(201 169 110 / 0.15);
+  border: 1px solid rgb(182 159 100 / 0.15);
   background: var(--hathor-dark);
   transition:
     border-color 0.35s ease,
@@ -2967,9 +2967,9 @@
 }
 
 .hathor-partner-card:hover {
-  border-color: rgb(201 169 110 / 0.4);
+  border-color: rgb(182 159 100 / 0.4);
   transform: translateY(-3px);
-  background: rgb(201 169 110 / 0.06);
+  background: rgb(182 159 100 / 0.06);
 }
 
 .hathor-partner-card__name {
@@ -3188,7 +3188,7 @@
 
 .owo-pillar {
   padding-top: 1.5rem;
-  border-top: 1px solid rgb(201 169 110 / 0.25);
+  border-top: 1px solid rgb(182 159 100 / 0.25);
 }
 
 .owo-pillar__title {
@@ -3366,7 +3366,7 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 1px;
   margin-top: 3rem;
-  background: rgb(201 169 110 / 0.12);
+  background: rgb(182 159 100 / 0.12);
 }
 
 @media (min-width: 768px) {
@@ -3386,7 +3386,7 @@
 }
 
 .owo-partner:hover {
-  background: rgb(201 169 110 / 0.06);
+  background: rgb(182 159 100 / 0.06);
 }
 
 .owo-partner__name {
@@ -3673,7 +3673,7 @@
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #c9a96e;
+  color: #b69f64;
 }
 
 .hathor-legacy-stack__text-stage {
@@ -3966,7 +3966,7 @@
 .owo-footer {
   padding: clamp(4rem, 8vw, 6rem) 1.5rem 2rem;
   background: var(--hathor-dark);
-  border-top: 1px solid rgb(201 169 110 / 0.15);
+  border-top: 1px solid rgb(182 159 100 / 0.15);
   color: var(--hathor-cream);
 }
 
@@ -4042,7 +4042,7 @@
   max-width: 56rem;
   margin: 0 auto;
   padding-top: 2rem;
-  border-top: 1px solid rgb(201 169 110 / 0.12);
+  border-top: 1px solid rgb(182 159 100 / 0.12);
 }
 
 .owo-footer__legal-row {
@@ -4213,7 +4213,7 @@ html[data-public-theme="day"] .hathor-explore__backdrop {
   flex-shrink: 0;
   width: 2.5rem;
   height: 2.5rem;
-  border: 1px solid rgb(201 169 110 / 0.35);
+  border: 1px solid rgb(182 159 100 / 0.35);
   border-radius: 9999px;
   background: rgb(10 10 10 / 0.2);
   color: var(--hathor-cream);
@@ -4565,7 +4565,7 @@ html[data-public-theme="day"] .preview-header--transparent:not(.preview-header--
 
 .public-site a,
 .public-site button {
-  -webkit-tap-highlight-color: rgb(201 169 110 / 0.15);
+  -webkit-tap-highlight-color: rgb(182 159 100 / 0.15);
 }
 
 /* ─── Inner page scroll transition (not homepage) ─── */
@@ -4604,7 +4604,7 @@ body.has-page-scroll-transition .page-transition {
 }
 
 [data-page-transition] {
-  --pt-gold: #c9a96e;
+  --pt-gold: #b69f64;
   --pt-cream: #ece8df;
   --pt-dome-r-start: 1250px;
   --pt-dome-r-end: 22px;

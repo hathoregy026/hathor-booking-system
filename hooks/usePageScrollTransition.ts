@@ -12,7 +12,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const PT_CREAM = "#ECE8DF";
-const PT_GOLD = "#C9A96E";
+const PT_GOLD = "#B69F64";
 
 const MASK = {
   start: 0.01,

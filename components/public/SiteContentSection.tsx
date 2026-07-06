@@ -8,7 +8,7 @@ type SiteContentSectionProps = {
 };
 
 const IMAGE_PLACEHOLDER =
-  "linear-gradient(135deg, #e8e2d9 0%, #d4c4a8 50%, #c9a96e 100%)";
+  "linear-gradient(135deg, #e8e2d9 0%, #b69f64 50%, #b69f64 100%)";
 
 export function SiteContentSection({
   title,
