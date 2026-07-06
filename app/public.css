@@ -4823,17 +4823,28 @@ body.has-page-scroll-transition [data-page-transition] {
   font-weight: 500;
   line-height: 1.12;
   letter-spacing: -0.02em;
-  color: #b69f64;
-  filter: url("#hathor-title-inner-shadow");
+  color: transparent;
+  background:
+    radial-gradient(
+      ellipse at 45% 34%,
+      rgb(255 255 255 / 0.5) 0%,
+      rgb(255 255 255 / 0.28) 24%,
+      transparent 48%
+    ),
+    linear-gradient(
+      92deg,
+      rgb(0 0 0 / 0.36) 0%,
+      rgb(0 0 0 / 0.18) 12%,
+      #b69f64 26%,
+      #b69f64 44%,
+      rgb(255 255 255 / 0.42) 52%,
+      #b69f64 66%,
+      rgb(0 0 0 / 0.2) 82%,
+      rgb(0 0 0 / 0.38) 100%
+    );
+  -webkit-background-clip: text;
+  background-clip: text;
   text-shadow: none;
-}
-
-.hathor-text-filter-defs {
-  position: absolute;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-  pointer-events: none;
 }
 
 .hathor-page-body {

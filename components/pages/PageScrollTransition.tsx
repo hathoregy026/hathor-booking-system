@@ -108,32 +108,7 @@ export function PageScrollTransition({
   }, []);
 
   return (
-    <>
-      <svg
-        aria-hidden="true"
-        focusable="false"
-        width="0"
-        height="0"
-        className="hathor-text-filter-defs"
-      >
-        <filter id="hathor-title-inner-shadow" colorInterpolationFilters="sRGB">
-          <feOffset in="SourceAlpha" dx="10" dy="0" result="offset" />
-          <feGaussianBlur in="offset" stdDeviation="4" result="blur" />
-          <feComposite in="blur" in2="SourceAlpha" operator="in" result="innerShadow" />
-          <feFlood floodColor="#000000" floodOpacity="0.25" result="shadowColor" />
-          <feComposite
-            in="shadowColor"
-            in2="innerShadow"
-            operator="in"
-            result="shadow"
-          />
-          <feMerge>
-            <feMergeNode in="SourceGraphic" />
-            <feMergeNode in="shadow" />
-          </feMerge>
-        </filter>
-      </svg>
-      <section
+    <section
         ref={rootRef}
         data-page-transition
         className={`hathor-page-scroll-transition hathor-page-hero${
@@ -201,6 +176,5 @@ export function PageScrollTransition({
           </div>
         </div>
       </section>
-    </>
   );
 }
