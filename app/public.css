@@ -4698,7 +4698,7 @@ body.has-page-scroll-transition .page-transition {
 [data-page-transition] .pt-sheet__content {
   position: relative;
   z-index: 2;
-  background-color: #ece8df;
+  background-color: transparent;
 }
 
 @media (max-width: 1024px) {
@@ -4785,7 +4785,8 @@ body.has-page-scroll-transition [data-page-transition] {
 
 [data-page-transition] .pt-sheet__rise-cap {
   width: 100%;
-  min-height: 30svh !important; /* Much shorter - just enough for animation */
+  min-height: clamp(1.5rem, 6svh, 4rem) !important;
+  background: transparent;
 }
 
 [data-page-transition] .pt-sheet__landing {
@@ -4868,9 +4869,8 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-
 /* Same rise-cap runway as /test-scroll-reveal (test-scroll-reveal.css) */
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-sheet__rise-cap {
   width: 100%;
-  min-height: 100%;
-  min-height: 120vh;
-  min-height: 120svh;
+  min-height: clamp(1.5rem, 6svh, 4rem) !important;
+  background: transparent;
 }
 
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--media-gone .pt-hero__media,
@@ -4890,10 +4890,10 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-sheet__filters {
   position: relative;
   z-index: 2;
-  background-color: #ece8df;
+  background-color: transparent;
   pointer-events: auto;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  padding-top: 0.875rem;
+  padding-bottom: 0.875rem;
 }
 
 /* Keep filters hidden during stripe reveal; show once hero media is gone */
