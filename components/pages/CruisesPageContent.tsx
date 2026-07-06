@@ -1,30 +1,39 @@
 "use client";
 
 import { CtaBand } from "@/components/pages/CtaBand";
+import { CruisesScrollReveal } from "@/components/pages/CruisesScrollReveal";
 import {
   CruisesListingProvider,
   CruisesPageFilters,
   CruisesPageListingsGrid,
 } from "@/components/pages/CruisesPageListings";
-import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 import { CRUISES_PAGE } from "@/lib/page-content";
 
 export function CruisesPageContent() {
   return (
     <CruisesListingProvider cruises={HATHOR_CRUISES}>
-      <PageScrollTransition
+      <CruisesScrollReveal
         title={CRUISES_PAGE.hero.title}
         subtitle={CRUISES_PAGE.hero.subtitle}
         breadcrumb="Cruises"
         imageName="cruises-hero"
-        sheetBelowLanding={<CruisesPageFilters />}
+        revealContent={
+          <>
+            <div className="cruises-scroll-reveal__landing hathor-container">
+              <h2 className="cruises-scroll-reveal__landing-title">
+                {CRUISES_PAGE.hero.title}
+              </h2>
+            </div>
+            <CruisesPageFilters />
+          </>
+        }
       >
         <div className="page-layout__main">
           <CruisesPageListingsGrid />
         </div>
         <CtaBand />
-      </PageScrollTransition>
+      </CruisesScrollReveal>
     </CruisesListingProvider>
   );
 }

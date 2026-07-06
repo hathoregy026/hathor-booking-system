@@ -18,8 +18,6 @@ export type PageScrollTransitionProps = {
   imageName: string;
   imageAlt?: string;
   variant?: "default" | "blog";
-  /** Renders inside .pt-sheet below the landing title (e.g. cruises filters). */
-  sheetBelowLanding?: ReactNode;
   children: ReactNode;
 };
 
@@ -31,7 +29,6 @@ export function PageScrollTransition({
   imageName,
   imageAlt,
   variant = "default",
-  sheetBelowLanding,
   children,
 }: PageScrollTransitionProps) {
   const image = useSiteImage(imageName);
@@ -133,9 +130,6 @@ export function PageScrollTransition({
                 </h2>
               </div>
             </div>
-            {sheetBelowLanding ? (
-              <div className="pt-sheet__filters">{sheetBelowLanding}</div>
-            ) : null}
             <div className="pt-sheet__rise-cap" aria-hidden="true" />
           </div>
         </div>

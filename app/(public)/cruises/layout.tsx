@@ -5,5 +5,5 @@ export default function CruisesLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
-  return children;
+  return <div className="cruises-scroll-route">{children}</div>;
 }
