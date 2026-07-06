@@ -1,6 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
@@ -23,6 +29,28 @@ type CruiseListingItem = {
   imageName: string;
   detailHref: string;
 };
+
+type CruisesListingContextValue = {
+  durationFilter: number | "all";
+  setDurationFilter: (value: number | "all") => void;
+  departureFilter: string | "all";
+  setDepartureFilter: (value: string | "all") => void;
+  durations: number[];
+  departures: string[];
+  filtered: CruiseListingItem[];
+};
+
+const CruisesListingContext = createContext<CruisesListingContextValue | null>(
+  null,
+);
+
+function useCruisesListing() {
+  const ctx = useContext(CruisesListingContext);
+  if (!ctx) {
+    throw new Error("Cruises listing components must be used within CruisesListingProvider");
+  }
+  return ctx;
+}
 
 function roomImageName(roomType: string): string {
   if (roomType.includes("Royal")) return "room-royal";
@@ -57,11 +85,15 @@ function flattenCruises(cruises: HathorCruiseSeed[]): CruiseListingItem[] {
   );
 }
 
-type CruisesPageListingsProps = {
+type CruisesListingProviderProps = {
   cruises: HathorCruiseSeed[];
+  children: ReactNode;
 };
 
-export function CruisesPageListings({ cruises }: CruisesPageListingsProps) {
+export function CruisesListingProvider({
+  cruises,
+  children,
+}: CruisesListingProviderProps) {
   const items = useMemo(() => flattenCruises(cruises), [cruises]);
   const durations = useMemo(
     () => [...new Set(cruises.map((c) => c.nights))].sort((a, b) => a - b),
@@ -83,8 +115,38 @@ export function CruisesPageListings({ cruises }: CruisesPageListingsProps) {
     return true;
   });
 
+  const value = useMemo(
+    () => ({
+      durationFilter,
+      setDurationFilter,
+      departureFilter,
+      setDepartureFilter,
+      durations,
+      departures,
+      filtered,
+    }),
+    [durationFilter, departureFilter, durations, departures, filtered],
+  );
+
   return (
-    <div className="hathor-container page-layout__inner">
+    <CruisesListingContext.Provider value={value}>
+      {children}
+    </CruisesListingContext.Provider>
+  );
+}
+
+export function CruisesPageFilters() {
+  const {
+    durationFilter,
+    setDurationFilter,
+    departureFilter,
+    setDepartureFilter,
+    durations,
+    departures,
+  } = useCruisesListing();
+
+  return (
+    <div className="hathor-container">
       <section className="page-layout__filters" aria-label="Listing filters">
         <p className="page-layout__filters-label">Filters</p>
 
@@ -138,7 +200,15 @@ export function CruisesPageListings({ cruises }: CruisesPageListingsProps) {
           Check Availability
         </BookNowTrigger>
       </section>
+    </div>
+  );
+}
 
+export function CruisesPageListingsGrid() {
+  const { filtered } = useCruisesListing();
+
+  return (
+    <div className="hathor-container page-layout__inner page-layout__inner--listings">
       <section className="page-layout__content" aria-label="Cruise listings">
         <p className="page-layout__content-count">
           {filtered.length} listing{filtered.length !== 1 ? "s" : ""} available

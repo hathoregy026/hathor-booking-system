@@ -4876,9 +4876,21 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
   background-color: #ece8df !important;
 }
 
-/* After pin: pull aligned content above stage so filters sit under landing title */
-body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--cream-aligned .pt-stage {
-  overflow: visible;
+/* Filters inside sheet (cruises) — below landing, above rise-cap */
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-sheet__landing {
+  padding-bottom: 0;
+}
+
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-sheet__filters {
+  position: relative;
+  z-index: 2;
+  background-color: #ece8df;
+  pointer-events: auto;
+}
+
+/* Keep filters hidden during stripe reveal; show once hero media is gone */
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]):not(.hathor-page-scroll--media-gone) .pt-sheet__filters {
+  visibility: hidden;
   pointer-events: none;
 }
 
@@ -4889,10 +4901,6 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-pag
   padding: 0;
   background-color: #ece8df;
   min-height: 100vh;
-}
-
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor--aligned {
-  z-index: 45;
 }
 
 body.has-page-scroll-transition .pin-spacer {
@@ -4919,6 +4927,10 @@ body.has-page-scroll-transition .pin-spacer {
   padding-top: clamp(2rem, 5vh, 3rem);
   padding-inline: clamp(1rem, 4vw, 2rem);
   padding-bottom: clamp(2.5rem, 6vh, 4rem);
+}
+
+.page-layout__inner--listings {
+  padding-top: 0;
 }
 
 /* 4. FILTERS SECTION */

@@ -18,6 +18,8 @@ export type PageScrollTransitionProps = {
   imageName: string;
   imageAlt?: string;
   variant?: "default" | "blog";
+  /** Renders inside .pt-sheet below the landing title (e.g. cruises filters). */
+  sheetBelowLanding?: ReactNode;
   children: ReactNode;
 };
 
@@ -29,6 +31,7 @@ export function PageScrollTransition({
   imageName,
   imageAlt,
   variant = "default",
+  sheetBelowLanding,
   children,
 }: PageScrollTransitionProps) {
   const image = useSiteImage(imageName);
@@ -37,7 +40,6 @@ export function PageScrollTransition({
   const maskRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
-  const creamFloorRef = useRef<HTMLDivElement>(null);
 
   usePageScrollTransition({
     root: rootRef,
@@ -51,32 +53,11 @@ export function PageScrollTransition({
     const root = rootRef.current;
     if (!root) return;
 
-    const alignCreamFloor = () => {
-      const cream = creamFloorRef.current;
-      const landing = sheetRef.current?.querySelector<HTMLElement>(".pt-sheet__landing");
-      if (!cream || !landing) return;
-
-      const gap = cream.getBoundingClientRect().top - landing.getBoundingClientRect().bottom;
-      if (gap > 2) {
-        const current = parseFloat(cream.style.marginTop) || 0;
-        cream.style.marginTop = `${current - gap}px`;
-      }
-    };
-
-    const resetCreamFloor = () => {
-      const cream = creamFloorRef.current;
-      if (!cream) return;
-      cream.style.marginTop = "";
-      cream.classList.remove("hathor-page-cream-floor--aligned");
-      root.classList.remove("hathor-page-scroll--cream-aligned");
-    };
-
     const syncMediaVisibility = () => {
       const vh = window.innerHeight;
       const top = root.getBoundingClientRect().top + window.scrollY;
       const scroll = window.scrollY;
       const sheet = sheetRef.current;
-      const cream = creamFloorRef.current;
       const sheetTop = sheet?.getBoundingClientRect().top ?? vh;
       const pinProgress = Math.max(0, (scroll - top) / (vh * PIN_VH));
 
@@ -84,33 +65,18 @@ export function PageScrollTransition({
       const hideMedia =
         !inHeroZone && (pinProgress > 0.48 || sheetTop <= vh * 0.35);
       const pastPin = pinProgress >= 0.92;
-      const readyForContent = pinProgress >= 0.88;
 
       root.classList.toggle("hathor-page-scroll--media-gone", hideMedia);
       root.classList.toggle("hathor-page-scroll--past-pin", pastPin);
-
-      // Close title → content gap once dome has landed (before pin fully ends).
-      if (readyForContent && cream) {
-        alignCreamFloor();
-        cream.classList.add("hathor-page-cream-floor--aligned");
-        root.classList.add("hathor-page-scroll--cream-aligned");
-      } else if (pinProgress < 0.82) {
-        resetCreamFloor();
-      }
     };
 
     syncMediaVisibility();
     window.addEventListener("scroll", syncMediaVisibility, { passive: true });
-    const onResize = () => {
-      resetCreamFloor();
-      syncMediaVisibility();
-    };
-    window.addEventListener("resize", onResize);
+    window.addEventListener("resize", syncMediaVisibility);
 
     return () => {
       window.removeEventListener("scroll", syncMediaVisibility);
-      window.removeEventListener("resize", onResize);
-      resetCreamFloor();
+      window.removeEventListener("resize", syncMediaVisibility);
     };
   }, []);
 
@@ -167,13 +133,14 @@ export function PageScrollTransition({
                 </h2>
               </div>
             </div>
+            {sheetBelowLanding ? (
+              <div className="pt-sheet__filters">{sheetBelowLanding}</div>
+            ) : null}
             <div className="pt-sheet__rise-cap" aria-hidden="true" />
           </div>
         </div>
       </section>
-      <div ref={creamFloorRef} className="hathor-page-cream-floor">
-        {children}
-      </div>
+      <div className="hathor-page-cream-floor">{children}</div>
     </>
   );
 }
