@@ -4876,6 +4876,12 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
   background-color: #ece8df !important;
 }
 
+/* After pin: pull aligned content above stage so filters sit under landing title */
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--cream-aligned .pt-stage {
+  overflow: visible;
+  pointer-events: none;
+}
+
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor {
   position: relative;
   z-index: 1;
@@ -4883,6 +4889,10 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-pag
   padding: 0;
   background-color: #ece8df;
   min-height: 100vh;
+}
+
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor--aligned {
+  z-index: 45;
 }
 
 body.has-page-scroll-transition .pin-spacer {
