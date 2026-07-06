@@ -4823,21 +4823,18 @@ body.has-page-scroll-transition [data-page-transition] {
   font-weight: 500;
   line-height: 1.12;
   letter-spacing: -0.02em;
-  color: #b69f64;
-  text-shadow: none;
-}
-
-[data-page-transition] .pt-sheet__landing-title::after {
-  content: attr(data-text);
-  position: absolute;
-  inset: 0;
   color: transparent;
-  background: rgb(0 0 0 / 0.25);
+  background: linear-gradient(
+    90deg,
+    #b69f64 0%,
+    #b69f64 34%,
+    rgb(0 0 0 / 0.25) 58%,
+    #b69f64 78%,
+    #b69f64 100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
-  filter: blur(4px);
-  transform: translate(10px, 0);
-  pointer-events: none;
+  text-shadow: none;
 }
 
 .hathor-page-body {
