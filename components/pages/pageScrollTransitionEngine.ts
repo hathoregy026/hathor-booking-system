@@ -71,7 +71,6 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
 
     const mask = maskEl;
     const sheetEl = sheet;
-    const riseCapEl = sheetEl.querySelector<HTMLElement>(".pt-sheet__rise-cap");
     const trigger = root;
 
     document.body.classList.add("has-page-scroll-transition");
@@ -83,7 +82,6 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
 
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
-    let riseCapFullH = riseCapEl?.offsetHeight ?? 0;
 
     function buildMaskStrips() {
       const n = stripCount();
@@ -163,18 +161,16 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
 
     function applyProgress(p: number) {
       const vh = window.innerHeight;
-      const landing = sheetEl.querySelector<HTMLElement>(".pt-sheet__landing");
-      const landingH = landing?.offsetHeight ?? 0;
-      const animationSheetH = landingH + riseCapFullH;
+      const sheetH = sheetEl.offsetHeight;
       const peek = vh * PEEK_VH;
-      const startY = animationSheetH - peek;
+      const startY = sheetH - peek;
       const { start: rStart, end: rEnd } = getDomeRadii();
 
       const riseT = mapRange(p, 0, 0.7, 0, 1);
       let y = startY * (1 - riseT);
 
       const driftT = mapRange(p, 0.7, 1, 0, 1);
-      const extra = Math.max(0, animationSheetH - vh * 0.92);
+      const extra = Math.max(0, sheetH - vh * 0.92);
       y -= driftT * extra;
 
       const radiusProgress = easeOutCubic(mapRange(p, 0.04, 0.42, 0, 1));
@@ -185,12 +181,6 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
         borderTopLeftRadius: radius,
         borderTopRightRadius: radius,
       });
-
-      if (riseCapEl) {
-        const shrink = mapRange(p, 0.72, 1, 1, 0);
-        riseCapEl.style.height = `${riseCapFullH * shrink}px`;
-        riseCapEl.style.minHeight = "0";
-      }
 
       applyMaskReveal(p);
 
@@ -204,7 +194,6 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
 
       const setup = () => {
         if (!buildMaskStrips()) return false;
-        riseCapFullH = riseCapEl?.offsetHeight ?? window.innerHeight * 0.35;
         applyProgress(0);
 
         ScrollTrigger.create({
@@ -235,7 +224,6 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
       if (resizeTimer) clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
         buildMaskStrips();
-        riseCapFullH = riseCapEl?.offsetHeight ?? window.innerHeight * 0.35;
         ScrollTrigger.refresh();
       }, 150);
     };
@@ -246,10 +234,6 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
     return () => {
       window.removeEventListener("resize", onResize);
       if (resizeTimer) clearTimeout(resizeTimer);
-      if (riseCapEl) {
-        riseCapEl.style.height = "";
-        riseCapEl.style.minHeight = "";
-      }
       ctx.revert();
       document.body.classList.remove("has-page-scroll-transition");
       document.documentElement.classList.remove("has-page-scroll-transition");

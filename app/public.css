@@ -4859,28 +4859,6 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-
   z-index: 10;
 }
 
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet__landing {
-  padding-top: clamp(5.5rem, 12vh, 7.5rem);
-  padding-bottom: 0;
-}
-
-/* Shorter rise-cap on inner pages — test page keeps 120vh in test-scroll-reveal.css */
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet__rise-cap {
-  min-height: 35vh;
-  min-height: 35svh;
-}
-
-/* Content stays below pin during reveal — never covers stripes/dome */
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor--below-pin {
-  visibility: hidden;
-  pointer-events: none;
-}
-
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor--below-pin.hathor-page-cream-floor--revealed {
-  visibility: visible;
-  pointer-events: auto;
-}
-
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--media-gone .pt-hero__media,
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--past-pin .pt-hero__media {
   display: none !important;
@@ -4888,18 +4866,14 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
 
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--past-pin .pt-stage {
   background-color: #ece8df !important;
-  z-index: 1;
-  overflow: visible;
-  pointer-events: none;
 }
 
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor.page-layout {
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor {
   position: relative;
-  z-index: 2;
+  z-index: 1;
   margin: 0;
   padding: 0;
   background-color: #ece8df;
-  transform: none;
   min-height: 100vh;
 }
 
