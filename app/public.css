@@ -4876,6 +4876,24 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
   background-color: #ece8df !important;
 }
 
+/* Filters inside sheet (cruises) — below landing, above rise-cap */
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-sheet__landing {
+  padding-bottom: 0;
+}
+
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-sheet__filters {
+  position: relative;
+  z-index: 2;
+  background-color: #ece8df;
+  pointer-events: auto;
+}
+
+/* Keep filters hidden during stripe reveal; show once hero media is gone */
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]):not(.hathor-page-scroll--media-gone) .pt-sheet__filters {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor {
   position: relative;
   z-index: 1;
@@ -5140,131 +5158,112 @@ footer {
 .pin-spacer { background-color: #ece8df !important; }
 body { background-color: #ece8df !important; }
 
-/* Cruises route — cream canvas (grid-stack reveal, not /test-scroll-reveal) */
+/* Cruises only — Venetian sticky layout (never used on /test-scroll-reveal) */
 .cruises-scroll-route,
 .cruises-scroll-route .public-site,
 .cruises-scroll-route .public-main,
 .cruises-scroll-route .page-transition,
 .cruises-scroll-route html,
-.cruises-scroll-route body,
-body.has-cruises-scroll-reveal,
-body.has-cruises-scroll-reveal .public-main {
+.cruises-scroll-route body {
   background-color: #ece8df !important;
 }
 
-body.has-cruises-scroll-reveal .pin-spacer {
-  background-color: #ece8df !important;
-}
-
-/* ─── Cruises: pinned wrapper + CSS grid stack (not /test-scroll-reveal) ─── */
-[data-cruises-scroll-reveal] {
+[data-page-transition][data-pt-layout="venetian"] {
   position: relative;
   width: 100%;
 }
 
-[data-cruises-scroll-reveal] .reveal-wrapper {
+[data-page-transition][data-pt-layout="venetian"] .pt-stage {
+  position: sticky;
+  top: 0;
   height: 100vh;
   height: 100svh;
-  width: 100%;
   overflow: hidden;
-  background-color: #ece8df;
+  z-index: 40;
 }
 
-[data-cruises-scroll-reveal] .reveal-stack {
-  display: grid;
-  grid-template-areas: "stack";
-  height: 100%;
-  width: 100%;
-}
-
-[data-cruises-scroll-reveal] .reveal-hero,
-[data-cruises-scroll-reveal] .reveal-content {
-  grid-area: stack;
-  min-height: 0;
-  width: 100%;
-}
-
-[data-cruises-scroll-reveal] .reveal-hero {
-  position: relative;
-  z-index: 2;
-  overflow: hidden;
-  will-change: transform, opacity;
-}
-
-[data-cruises-scroll-reveal] .reveal-hero__media {
+[data-page-transition][data-pt-layout="venetian"] .pt-sheet {
   position: absolute;
-  inset: 0;
-  z-index: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: auto;
 }
 
-[data-cruises-scroll-reveal] .reveal-hero__media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
-}
-
-[data-cruises-scroll-reveal] .reveal-hero__overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: linear-gradient(
-    180deg,
-    rgb(10 10 10 / 0.35) 0%,
-    rgb(10 10 10 / 0.82) 100%
-  );
-  pointer-events: none;
-}
-
-[data-cruises-scroll-reveal] .reveal-hero__copy {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  z-index: 2;
-  width: min(92vw, 52rem);
-  transform: translate(-50%, -50%);
-  text-align: center;
-  pointer-events: none;
-}
-
-[data-cruises-scroll-reveal] .reveal-content {
-  z-index: 3;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  overflow: hidden;
-  background-color: #ece8df;
-  will-change: transform, opacity;
-}
-
-[data-cruises-scroll-reveal] .cruises-scroll-reveal__landing {
+/* Animation runway only — body content must not affect dome / stripe math */
+[data-page-transition][data-pt-layout="venetian"] .pt-sheet__rise-cap {
   flex-shrink: 0;
-  padding-top: clamp(5.5rem, 12vh, 7.5rem);
-  padding-bottom: 0;
-  text-align: center;
 }
 
-[data-cruises-scroll-reveal] .cruises-scroll-reveal__landing-title {
+[data-page-transition][data-pt-layout="venetian"] .pt-sheet__body,
+[data-page-transition][data-pt-layout="venetian"] .cruises-scroll-reveal__cream-floor {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background-color: #ece8df;
+  pointer-events: auto;
+}
+
+.cruises-scroll-route [data-pt-layout="venetian"] .pt-sheet__body,
+.cruises-scroll-route [data-pt-layout="venetian"] .cruises-scroll-reveal__cream-floor {
   margin: 0;
-  max-width: 18ch;
-  margin-inline: auto;
-  font-family: var(--public-serif);
-  font-size: clamp(2rem, 4.5vw, 3.25rem);
-  font-weight: 500;
-  line-height: 1.12;
-  letter-spacing: -0.02em;
-  color: #1a1a1a;
+  padding: 0;
 }
 
-[data-cruises-scroll-reveal] .reveal-content .page-layout__filters {
-  flex-shrink: 0;
-  margin-top: 0;
+.cruises-scroll-route [data-cruises-scroll-reveal] .pt-sheet[style] {
+  height: auto !important;
+  min-height: 100vh !important;
+  min-height: 100svh !important;
 }
 
-[data-cruises-scroll-reveal] .cruises-scroll-reveal__floor {
-  position: relative;
-  z-index: 1;
+.cruises-scroll-route [data-pt-layout="venetian"].cruises-scroll-reveal--past-pin .pt-stage {
+  overflow: visible;
+}
+
+.cruises-scroll-route [data-cruises-scroll-reveal] {
+  background: transparent !important;
+}
+
+.cruises-scroll-route [data-cruises-scroll-reveal] .pt-stage {
+  z-index: 40;
   background-color: #ece8df;
+  overflow: hidden;
+}
+
+.cruises-scroll-route [data-cruises-scroll-reveal] .pt-sheet {
+  background-color: #ece8df !important;
+  z-index: 10;
+}
+
+.cruises-scroll-route [data-cruises-scroll-reveal].cruises-scroll-reveal--media-gone .pt-hero__media,
+.cruises-scroll-route [data-cruises-scroll-reveal].cruises-scroll-reveal--past-pin .pt-hero__media {
+  display: none !important;
+}
+
+.cruises-scroll-route [data-cruises-scroll-reveal].cruises-scroll-reveal--past-pin .pt-stage {
+  background-color: #ece8df !important;
+}
+
+.cruises-scroll-route [data-cruises-scroll-reveal][data-pt-layout="venetian"] .pt-sheet__rise-cap {
+  width: 100%;
+  min-height: 120vh;
+  min-height: 120svh;
+}
+
+.cruises-scroll-route [data-cruises-scroll-reveal][data-pt-layout="venetian"] .pt-sheet__body.cruises-page-cream {
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  z-index: 20;
+  margin: 0;
+  padding: 0;
+}
+
+.cruises-scroll-route [data-cruises-scroll-reveal][data-pt-layout="venetian"] .pt-sheet__body.cruises-page-cream .page-layout__inner {
+  padding-top: 0;
 }
 
 /* ─── /test-scroll-reveal isolated layout (does not affect other pages) ─── */
