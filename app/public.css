@@ -4891,7 +4891,7 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
 
 /* Filters inside sheet (cruises) — below landing, above rise-cap */
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-sheet__landing {
-  padding-top: clamp(8.25rem, 17vh, 11rem);
+  padding-top: clamp(10rem, 21vh, 13rem);
   padding-bottom: 0;
 }
 
