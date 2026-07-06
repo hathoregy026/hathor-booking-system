@@ -15,6 +15,7 @@ export function CruisesPageContent() {
     <CruisesListingProvider cruises={HATHOR_CRUISES}>
       <PageScrollTransition
         title={CRUISES_PAGE.hero.title}
+        heroTitle="Experience Egypt."
         subtitle={CRUISES_PAGE.hero.subtitle}
         breadcrumb="Cruises"
         imageName="cruises-hero"

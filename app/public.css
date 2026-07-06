@@ -4676,7 +4676,7 @@ body.has-page-scroll-transition .page-transition {
 
 [data-page-transition] .pt-hero__copy {
   position: absolute;
-  z-index: 3;
+  z-index: 6;
   pointer-events: auto;
 }
 
@@ -4779,6 +4779,12 @@ body.has-page-scroll-transition [data-page-transition] {
   width: 100%;
   max-width: none;
   padding-inline: clamp(1rem, 4vw, 2rem);
+}
+
+[data-page-transition] .hathor-page-hero__title--feature {
+  font-size: clamp(3.75rem, 8vw, 6.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.055em;
 }
 
 .hathor-page-scroll-transition.hathor-page-hero--blog .pt-hero__overlay {

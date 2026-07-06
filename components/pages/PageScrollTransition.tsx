@@ -12,6 +12,7 @@ const PIN_VH = 2.8;
 
 export type PageScrollTransitionProps = {
   title: string;
+  heroTitle?: string;
   subtitle?: string;
   breadcrumb: string;
   parentBreadcrumb?: { label: string; href: string };
@@ -25,6 +26,7 @@ export type PageScrollTransitionProps = {
 
 export function PageScrollTransition({
   title,
+  heroTitle,
   subtitle,
   breadcrumb,
   parentBreadcrumb,
@@ -141,7 +143,13 @@ export function PageScrollTransition({
                   ) : null}
                   <span aria-current="page">{breadcrumb}</span>
                 </nav>
-                <h1 className="hathor-page-hero__title">{title}</h1>
+                <h1
+                  className={`hathor-page-hero__title${
+                    heroTitle ? " hathor-page-hero__title--feature" : ""
+                  }`}
+                >
+                  {heroTitle ?? title}
+                </h1>
                 {subtitle ? (
                   <p className="hathor-page-hero__subtitle">{subtitle}</p>
                 ) : null}
