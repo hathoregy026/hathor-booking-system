@@ -15,14 +15,14 @@ const PT_CREAM = "#ECE8DF";
 const PT_GOLD = "#C9A96E";
 
 const MASK = {
-  start: 0.06,
-  end: 0.66,
-  gapRatio: 0.92,
-  rotSpread: 0.72,
-  rotWindow: 0.14,
-  gapSealStart: 0.58,
-  gapSealStagger: 0.3,
-  gapSealWindow: 0.04,
+  start: 0.01,
+  end: 0.24,
+  gapRatio: 0.94,
+  rotSpread: 0.38,
+  rotWindow: 0.09,
+  gapSealStart: 0.5,
+  gapSealStagger: 0.24,
+  gapSealWindow: 0.035,
 };
 
 const PEEK_VH = 0.065;
@@ -210,7 +210,7 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
           end: () => `+=${window.innerHeight * PIN_VH}`,
           pin: stage,
           pinSpacing: true,
-          scrub: 0.35,
+          scrub: 0.18,
           invalidateOnRefresh: true,
           anticipatePin: 1,
           onUpdate: (self) => applyProgress(self.progress),

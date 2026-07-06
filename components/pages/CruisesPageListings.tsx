@@ -3,7 +3,6 @@
 import {
   createContext,
   useContext,
-  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -265,13 +264,6 @@ export function CruisesPageFilters() {
 
 export function CruisesPageListingsGrid() {
   const { filtered } = useCruisesListing();
-  const gridRef = useRef<HTMLDivElement>(null);
-  const [minGridHeight, setMinGridHeight] = useState(0);
-
-  useLayoutEffect(() => {
-    const height = gridRef.current?.getBoundingClientRect().height ?? 0;
-    setMinGridHeight((current) => Math.max(current, Math.ceil(height)));
-  }, [filtered.length]);
 
   return (
     <div className="hathor-container page-layout__inner page-layout__inner--listings">
@@ -280,11 +272,7 @@ export function CruisesPageListingsGrid() {
           {filtered.length} listing{filtered.length !== 1 ? "s" : ""} available
         </p>
 
-        <div
-          ref={gridRef}
-          className="page-layout__grid"
-          style={minGridHeight ? { minHeight: minGridHeight } : undefined}
-        >
+        <div className="page-layout__grid">
           {filtered.map((item, index) => (
             <ScrollReveal key={item.key} delay={index * 60}>
               <article className="hathor-cruise-card group">
