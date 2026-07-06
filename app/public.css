@@ -4817,11 +4817,12 @@ body.has-page-scroll-transition [data-page-transition] {
   max-width: 18ch;
   margin-inline: auto;
   font-family: var(--public-serif);
-  font-size: clamp(2rem, 4.5vw, 3.25rem);
+  font-size: clamp(2.75rem, 5.8vw, 4.75rem);
   font-weight: 500;
   line-height: 1.12;
   letter-spacing: -0.02em;
-  color: #1a1a1a;
+  color: #b69f64;
+  text-shadow: 0 4px 4px rgb(0 0 0 / 0.25);
 }
 
 .hathor-page-body {
