@@ -3,9 +3,12 @@
 import {
   createContext,
   useContext,
+  useLayoutEffect,
   useMemo,
+  useRef,
   useState,
   type MouseEvent,
+  type PointerEvent,
   type ReactNode,
 } from "react";
 import Link from "next/link";
@@ -64,6 +67,27 @@ function roomDetailHref(roomType: string): string {
     return "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise";
   }
   return "/rooms";
+}
+
+function preservePinnedScrollPosition(scrollY: number) {
+  if (typeof window === "undefined") return;
+
+  const root = document.documentElement;
+  const previousScrollBehavior = root.style.scrollBehavior;
+  root.style.scrollBehavior = "auto";
+
+  const restore = () => {
+    window.scrollTo(window.scrollX, scrollY);
+  };
+
+  restore();
+  window.requestAnimationFrame(() => {
+    restore();
+    window.requestAnimationFrame(() => {
+      restore();
+      root.style.scrollBehavior = previousScrollBehavior;
+    });
+  });
 }
 
 function flattenCruises(cruises: HathorCruiseSeed[]): CruiseListingItem[] {
@@ -145,17 +169,27 @@ export function CruisesPageFilters() {
     durations,
     departures,
   } = useCruisesListing();
+  const pinnedScrollYRef = useRef<number | null>(null);
 
-  const keepPinnedScrollStable = (event: MouseEvent<HTMLButtonElement>) => {
+  const keepPinnedScrollStable = (
+    event: MouseEvent<HTMLButtonElement> | PointerEvent<HTMLButtonElement>,
+  ) => {
+    pinnedScrollYRef.current = window.scrollY;
     event.preventDefault();
   };
 
   const updateDurationFilter = (value: number | "all") => {
+    const scrollY = pinnedScrollYRef.current ?? window.scrollY;
     setDurationFilter(value);
+    preservePinnedScrollPosition(scrollY);
+    pinnedScrollYRef.current = null;
   };
 
   const updateDepartureFilter = (value: string | "all") => {
+    const scrollY = pinnedScrollYRef.current ?? window.scrollY;
     setDepartureFilter(value);
+    preservePinnedScrollPosition(scrollY);
+    pinnedScrollYRef.current = null;
   };
 
   return (
@@ -168,6 +202,8 @@ export function CruisesPageFilters() {
           <div className="page-layout__filter-options">
             <button
               type="button"
+              tabIndex={-1}
+              onPointerDown={keepPinnedScrollStable}
               onMouseDown={keepPinnedScrollStable}
               onClick={() => updateDurationFilter("all")}
               className={`hathor-filter-btn ${durationFilter === "all" ? "hathor-filter-btn--active" : ""}`}
@@ -178,6 +214,8 @@ export function CruisesPageFilters() {
               <button
                 key={n}
                 type="button"
+                tabIndex={-1}
+                onPointerDown={keepPinnedScrollStable}
                 onMouseDown={keepPinnedScrollStable}
                 onClick={() => updateDurationFilter(n)}
                 className={`hathor-filter-btn ${durationFilter === n ? "hathor-filter-btn--active" : ""}`}
@@ -193,6 +231,8 @@ export function CruisesPageFilters() {
           <div className="page-layout__filter-options">
             <button
               type="button"
+              tabIndex={-1}
+              onPointerDown={keepPinnedScrollStable}
               onMouseDown={keepPinnedScrollStable}
               onClick={() => updateDepartureFilter("all")}
               className={`hathor-filter-btn ${departureFilter === "all" ? "hathor-filter-btn--active" : ""}`}
@@ -203,6 +243,8 @@ export function CruisesPageFilters() {
               <button
                 key={day}
                 type="button"
+                tabIndex={-1}
+                onPointerDown={keepPinnedScrollStable}
                 onMouseDown={keepPinnedScrollStable}
                 onClick={() => updateDepartureFilter(day)}
                 className={`hathor-filter-btn ${departureFilter === day ? "hathor-filter-btn--active" : ""}`}
@@ -223,6 +265,13 @@ export function CruisesPageFilters() {
 
 export function CruisesPageListingsGrid() {
   const { filtered } = useCruisesListing();
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [minGridHeight, setMinGridHeight] = useState(0);
+
+  useLayoutEffect(() => {
+    const height = gridRef.current?.getBoundingClientRect().height ?? 0;
+    setMinGridHeight((current) => Math.max(current, Math.ceil(height)));
+  }, [filtered.length]);
 
   return (
     <div className="hathor-container page-layout__inner page-layout__inner--listings">
@@ -231,7 +280,11 @@ export function CruisesPageListingsGrid() {
           {filtered.length} listing{filtered.length !== 1 ? "s" : ""} available
         </p>
 
-        <div className="page-layout__grid">
+        <div
+          ref={gridRef}
+          className="page-layout__grid"
+          style={minGridHeight ? { minHeight: minGridHeight } : undefined}
+        >
           {filtered.map((item, index) => (
             <ScrollReveal key={item.key} delay={index * 60}>
               <article className="hathor-cruise-card group">

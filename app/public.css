@@ -4610,6 +4610,7 @@ body.has-page-scroll-transition .page-transition {
   --pt-dome-r-end: 22px;
   position: relative;
   width: 100%;
+  overflow-anchor: none;
 }
 
 [data-page-transition] .pt-stage {
@@ -4622,6 +4623,7 @@ body.has-page-scroll-transition .page-transition {
   background: var(--pt-cream);
   z-index: 40;
   pointer-events: none;
+  overflow-anchor: none;
 }
 
 [data-page-transition] .pt-hero__media img {
@@ -4692,6 +4694,7 @@ body.has-page-scroll-transition .page-transition {
   border-top-right-radius: var(--pt-dome-r-start);
   will-change: transform, border-radius;
   overflow: visible;
+  overflow-anchor: none;
 }
 
 /* Content inside sheet (the grid) */
@@ -4700,6 +4703,7 @@ body.has-page-scroll-transition .page-transition {
   z-index: 2;
   background-color: transparent;
   padding-top: clamp(0.75rem, 2svh, 1.5rem);
+  overflow-anchor: none;
 }
 
 @media (max-width: 1024px) {
