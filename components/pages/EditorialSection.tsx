@@ -34,6 +34,9 @@ type EditorialSectionProps = {
   imageLeft?: boolean;
   dark?: boolean;
   fullBleed?: boolean;
+  motionDelay?: number;
+  motionViewportAmount?: number;
+  motionViewportMargin?: string;
 };
 
 export function EditorialSection({
@@ -49,6 +52,9 @@ export function EditorialSection({
   imageLeft = false,
   dark = true,
   fullBleed = false,
+  motionDelay = 0,
+  motionViewportAmount,
+  motionViewportMargin,
 }: EditorialSectionProps) {
   const paragraphs = Array.isArray(body) ? body : [body];
   const label = chapter ?? eyebrow;
@@ -61,7 +67,10 @@ export function EditorialSection({
         <div
           className={`hathor-editorial__grid ${imageLeft ? "hathor-editorial__grid--reverse" : ""}`}
         >
-          <ScrollReveal direction={imageLeft ? "right" : "left"}>
+          <ScrollReveal
+            viewportAmount={motionViewportAmount}
+            viewportMargin={motionViewportMargin}
+          >
             <div className="hathor-editorial__image-wrap">
               <ManagedImage
                 name={imageName}
@@ -73,7 +82,11 @@ export function EditorialSection({
             </div>
           </ScrollReveal>
 
-          <ScrollReveal direction={imageLeft ? "left" : "right"} delay={120}>
+          <ScrollReveal
+            delay={motionDelay}
+            viewportAmount={motionViewportAmount}
+            viewportMargin={motionViewportMargin}
+          >
             <div
               className={`hathor-editorial__content ${fullBleed ? "hathor-container py-16 lg:py-24" : ""}`}
             >

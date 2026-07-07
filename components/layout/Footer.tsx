@@ -2,75 +2,108 @@ import Link from "next/link";
 import { HATHOR_BRAND_NAME } from "@/lib/branding";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 
-const FOOTER_COLUMNS = [
-  {
-    links: [
-      { href: "/rooms", label: "Accommodations" },
-      { href: "/highlights", label: "Experiences" },
-    ],
-  },
-  {
-    links: [
-      { href: "/cruises", label: "Cruises" },
-      { href: "/about", label: "About" },
-    ],
-  },
-  {
-    links: [
-      { href: "/wellness", label: "Wellness" },
-      { href: "/contact", label: "Contact" },
-    ],
-  },
-  {
-    links: [
-      { href: "/gastronomy", label: "Dining" },
-      { href: "/blogs", label: "Blog" },
-    ],
-  },
+const FOOTER_EXPLORE = [
+  { href: "/rooms", label: "Accommodations" },
+  { href: "/cruises", label: "Cruises" },
+  { href: "/about", label: "About" },
+  { href: "/blogs", label: "Blog" },
+] as const;
+
+const FOOTER_EXPERIENCES = [
+  { href: "/highlights", label: "Highlights" },
+  { href: "/wellness", label: "Wellness" },
+  { href: "/gastronomy", label: "Gastronomy" },
+  { href: "/charter", label: "Charter" },
+] as const;
+
+const FOOTER_LEGAL = [
+  { href: `mailto:${PUBLIC_CONTACT.email}`, label: "Press" },
+  { href: "/contact", label: "Privacy" },
+  { href: "/contact", label: "Contact" },
+  { href: "/cruises", label: "Sitemap" },
 ] as const;
 
 export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="owo-footer">
-      <div className="owo-footer__brand-block">
-        <p className="owo-footer__wordmark">{HATHOR_BRAND_NAME}</p>
-        <p className="owo-footer__tag">Luxury Dahabiya Nile Cruise</p>
-      </div>
+    <footer className="owo-footer !mt-0 !pt-20">
+      <div className="owo-footer__inner hathor-container">
+        <div className="owo-footer__grid">
+          <div className="owo-footer__brand">
+            <p className="owo-footer__wordmark">{HATHOR_BRAND_NAME}</p>
+            <p className="owo-footer__tag">Luxury Dahabiya Nile Cruise</p>
+            <p className="owo-footer__address">{PUBLIC_CONTACT.address}</p>
+          </div>
 
-      <div className="owo-footer__nav">
-        {FOOTER_COLUMNS.map((column, colIndex) => (
-          <ul key={colIndex} className="owo-footer__col">
-            {column.links.map((link) => (
-              <li key={link.href}>
-                <Link href={link.href} className="owo-footer__link cursor-hover">
-                  {link.label}
-                </Link>
+          <div className="owo-footer__col">
+            <p className="owo-footer__col-label">Explore</p>
+            <ul className="owo-footer__links">
+              {FOOTER_EXPLORE.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="owo-footer__link cursor-hover">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="owo-footer__col">
+            <p className="owo-footer__col-label">Experiences</p>
+            <ul className="owo-footer__links">
+              {FOOTER_EXPERIENCES.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="owo-footer__link cursor-hover">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="owo-footer__col">
+            <p className="owo-footer__col-label">Contact</p>
+            <ul className="owo-footer__contact">
+              <li>
+                <a
+                  href={`mailto:${PUBLIC_CONTACT.email}`}
+                  className="owo-footer__link cursor-hover"
+                >
+                  {PUBLIC_CONTACT.email}
+                </a>
               </li>
-            ))}
-          </ul>
-        ))}
-      </div>
-
-      <div className="owo-footer__legal">
-        <div className="owo-footer__legal-row">
-          <a href={`mailto:${PUBLIC_CONTACT.email}`} className="owo-footer__legal-link cursor-hover">
-            Press
-          </a>
-          <div className="owo-footer__legal-right">
-            <Link href="/contact" className="owo-footer__legal-link cursor-hover">
-              Privacy
-            </Link>
-            <Link href="/contact" className="owo-footer__legal-link cursor-hover">
-              Contact
-            </Link>
-            <Link href="/cruises" className="owo-footer__legal-link cursor-hover">
-              Sitemap
-            </Link>
+              <li>
+                <a
+                  href={`tel:${PUBLIC_CONTACT.phone}`}
+                  className="owo-footer__link cursor-hover"
+                >
+                  {PUBLIC_CONTACT.phoneDisplay}
+                </a>
+              </li>
+              <li className="owo-footer__hours">{PUBLIC_CONTACT.workingHours}</li>
+            </ul>
           </div>
         </div>
-        <p className="owo-footer__copy">© {HATHOR_BRAND_NAME} {year}</p>
+
+        <div className="owo-footer__legal">
+          <div className="owo-footer__legal-row">
+            <div className="owo-footer__legal-links">
+              {FOOTER_LEGAL.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  className="owo-footer__legal-link cursor-hover"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
+            <p className="owo-footer__copy">
+              © {HATHOR_BRAND_NAME} {year}
+            </p>
+          </div>
+        </div>
       </div>
     </footer>
   );

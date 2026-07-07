@@ -10,6 +10,7 @@
 import { useLayoutEffect, useId, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
 
 const PT_CREAM = "#ECE8DF";
 const PT_GOLD = "#B69F64";
@@ -26,7 +27,7 @@ const MASK = {
 };
 
 const PEEK_VH = 0.065;
-const PIN_VH = 2.8;
+const PIN_VH = 4.2;
 
 type Strip = { el: HTMLDivElement; colW: number; slatW: number };
 
@@ -64,6 +65,30 @@ function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3);
 }
 
+function setupSmoothScroll() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    return null;
+  }
+
+  const lenis = new Lenis({
+    duration: 2.1,
+    easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+    syncTouch: false,
+  });
+
+  lenis.on("scroll", ScrollTrigger.update);
+
+  const ticker = (time: number) => {
+    lenis.raf(time * 1000);
+  };
+
+  gsap.ticker.add(ticker);
+  gsap.ticker.lagSmoothing(0);
+
+  return { lenis, ticker };
+}
+
 export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
   const instanceId = useId().replace(/:/g, "");
 
@@ -89,6 +114,7 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
 
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
+    const smoothScroll = setupSmoothScroll();
 
     function buildMaskStrips() {
       const n = stripCount();
@@ -210,7 +236,7 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
           end: () => `+=${window.innerHeight * PIN_VH}`,
           pin: stage,
           pinSpacing: true,
-          scrub: 0.18,
+          scrub: 0.55,
           invalidateOnRefresh: true,
           anticipatePin: 1,
           onUpdate: (self) => applyProgress(self.progress),
@@ -241,6 +267,10 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
     return () => {
       window.removeEventListener("resize", onResize);
       if (resizeTimer) clearTimeout(resizeTimer);
+      if (smoothScroll) {
+        gsap.ticker.remove(smoothScroll.ticker);
+        smoothScroll.lenis.destroy();
+      }
       ctx.revert();
       document.body.classList.remove("has-page-scroll-transition");
       document.documentElement.classList.remove("has-page-scroll-transition");

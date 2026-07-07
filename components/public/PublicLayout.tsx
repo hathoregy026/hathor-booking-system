@@ -1,6 +1,7 @@
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { BookingModalProvider } from "@/components/booking/BookingModalProvider";
+import { LuxuryTextAnimations } from "@/components/public/LuxuryTextAnimations";
 import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
 import { PageTransition } from "@/components/ui/PageTransition";
 import type { ReactNode } from "react";
@@ -14,6 +15,7 @@ export function PublicLayout({ children }: PublicLayoutProps) {
     <PublicThemeProvider>
       <BookingModalProvider>
         <div className="public-site hathor-site">
+          <LuxuryTextAnimations />
           <Header />
           <main className="public-main public-main--hero">
             <PageTransition>{children}</PageTransition>

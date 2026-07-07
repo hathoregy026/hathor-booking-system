@@ -1,10 +1,17 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import { Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
 import { PublicLayout } from "@/components/public/PublicLayout";
 import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
 import { resolveSiteImageMap } from "@/lib/resolve-site-images";
 import "../public.css";
 import "../booking-modal.css";
+
+const agraham = localFont({
+  src: "../../public/fonts/agraham-regular.ttf",
+  variable: "--font-hathor-agraham",
+  display: "swap",
+});
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -59,7 +66,7 @@ export default async function PublicSiteLayout({
   const siteImages = await resolveSiteImageMap();
 
   return (
-    <div className={`${playfair.variable} ${plusJakarta.variable}`}>
+    <div className={`${agraham.variable} ${playfair.variable} ${plusJakarta.variable}`}>
       <SiteImagesProvider images={siteImages}>
         <PublicLayout>{children}</PublicLayout>
       </SiteImagesProvider>

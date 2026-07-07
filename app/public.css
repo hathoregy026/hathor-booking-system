@@ -1,3 +1,17 @@
+/* FORCE TYPOGRAPHY RESET */
+.hathor-section-title,
+h2.hathor-section-title {
+  font-size: clamp(2rem, 4vw, 3rem) !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.hathor-body-text,
+p.hathor-body-text {
+  font-size: 1rem !important;
+  line-height: 1.7 !important;
+}
+
 /* Hathor — Award-winning luxury public site */
 
 .public-site {
@@ -24,6 +38,7 @@
   --public-muted: #9a9590;
   --public-border: rgb(182 159 100 / 0.18);
   --public-serif: var(--font-hathor-display, "Playfair Display", Georgia, serif);
+  --public-title: var(--font-hathor-agraham, "Agraham"), var(--public-serif);
   --public-sans: var(--font-hathor-body, "Plus Jakarta Sans", system-ui, sans-serif);
 
   background: var(--public-bg);
@@ -32,7 +47,8 @@
   max-width: 100vw;
   font-family: var(--public-sans);
   font-size: 16px;
-  line-height: 1.8;
+  line-height: 1.7;
+  --hathor-lux-ease: cubic-bezier(0.16, 1, 0.3, 1);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -331,9 +347,9 @@
 .lux-hero__title {
   margin-top: 1.25rem;
   font-family: var(--public-serif);
-  font-size: clamp(2.5rem, 7vw, 4.5rem);
+  font-size: clamp(2rem, 5.5vw, 3.5rem);
   font-weight: 400;
-  line-height: 1.08;
+  line-height: 1.22;
   letter-spacing: -0.02em;
   color: var(--lux-white);
 }
@@ -443,9 +459,9 @@
 .lux-section-title {
   margin-top: 0.75rem;
   font-family: var(--public-serif);
-  font-size: clamp(2rem, 4vw, 2.625rem);
+  font-size: clamp(1.625rem, 3.5vw, 2.25rem);
   font-weight: 400;
-  line-height: 1.15;
+  line-height: 1.25;
   letter-spacing: -0.01em;
 }
 
@@ -625,8 +641,9 @@
 .lux-page-hero__title {
   position: relative;
   font-family: var(--public-serif);
-  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  font-size: clamp(1.875rem, 4vw, 2.75rem);
   font-weight: 400;
+  line-height: 1.22;
   letter-spacing: -0.02em;
 }
 
@@ -697,8 +714,9 @@
 
 .lux-cta-band__title {
   font-family: var(--public-serif);
-  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-size: clamp(1.5rem, 3.25vw, 2.25rem);
   font-weight: 400;
+  line-height: 1.25;
   color: var(--lux-white);
 }
 
@@ -812,15 +830,106 @@
 /* ─── Scroll reveal ─── */
 .lux-reveal {
   opacity: 0;
-  transform: translateY(24px);
+  transform: translate3d(0, 1.5rem, 0);
+  filter: blur(8px);
   transition:
-    opacity 0.7s ease,
-    transform 0.7s ease;
+    opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .lux-reveal--visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translate3d(0, 0, 0);
+  filter: blur(0);
+}
+
+/* ─── Luxury text motion ─── */
+@keyframes hathor-lux-text-land {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.35rem, 0);
+    filter: blur(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+  }
+}
+
+.hathor-lux-text {
+  opacity: 0;
+  transform: translate3d(0, 1.25rem, 0);
+  filter: blur(6px);
+  transition:
+    opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 1s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform, filter;
+}
+
+.hathor-lux-text--in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  filter: blur(0);
+}
+
+/* Homepage hero — landing sequence */
+.owo-hero__title,
+.owo-hero__subtitle {
+  opacity: 0;
+  animation: hathor-lux-text-land 1.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.owo-hero__title {
+  animation-delay: 0.28s;
+}
+
+.owo-hero__subtitle {
+  animation-delay: 0.52s;
+}
+
+/* Inner-page scroll heroes — landing sequence (CSS only, no GSAP changes) */
+[data-page-transition] .pt-hero__copy .hathor-breadcrumb,
+[data-page-transition] .pt-hero__copy .hathor-page-hero__title,
+[data-page-transition] .pt-hero__copy .hathor-page-hero__subtitle,
+[data-page-transition] .pt-hero__copy .hathor-gold-line {
+  opacity: 0;
+  animation: hathor-lux-text-land 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+[data-page-transition] .pt-hero__copy .hathor-breadcrumb {
+  animation-delay: 0.18s;
+}
+
+[data-page-transition] .pt-hero__copy .hathor-page-hero__title {
+  animation-delay: 0.38s;
+}
+
+[data-page-transition] .pt-hero__copy .hathor-page-hero__subtitle {
+  animation-delay: 0.62s;
+}
+
+[data-page-transition] .pt-hero__copy .hathor-gold-line {
+  animation-delay: 0.82s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hathor-lux-text,
+  .owo-hero__title,
+  .owo-hero__subtitle,
+  [data-page-transition] .pt-hero__copy .hathor-breadcrumb,
+  [data-page-transition] .pt-hero__copy .hathor-page-hero__title,
+  [data-page-transition] .pt-hero__copy .hathor-page-hero__subtitle,
+  [data-page-transition] .pt-hero__copy .hathor-gold-line {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
 }
 
 /* ─── Footer ─── */
@@ -1068,12 +1177,12 @@
 }
 
 .hathor-section {
-  padding: 7.5rem 0;
+  padding: clamp(4rem, 8vw, 6rem) 0;
 }
 
 @media (max-width: 767px) {
   .hathor-section {
-    padding: 4rem 0;
+    padding: clamp(3rem, 10vw, 4rem) 0;
   }
 
   .lux-hero {
@@ -1104,7 +1213,7 @@
 
 .hathor-section-header {
   text-align: center;
-  margin-bottom: 4rem;
+  margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
 }
 
 .hathor-section-eyebrow {
@@ -1117,11 +1226,11 @@
 
 .hathor-section-title {
   margin-top: 0.875rem;
-  font-family: var(--public-serif);
-  font-size: clamp(2rem, 4.5vw, 3rem);
-  font-weight: 500;
+  font-family: var(--public-title, var(--public-serif));
+  font-size: clamp(2rem, 4.5vw, 3.25rem);
+  font-weight: 600;
   line-height: 1.12;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   color: var(--hathor-cream);
 }
 
@@ -1132,9 +1241,10 @@
 .hathor-section-subtitle {
   margin-top: 0.75rem;
   font-family: var(--public-serif);
-  font-size: clamp(1.125rem, 2vw, 1.5rem);
+  font-size: clamp(1rem, 1.75vw, 1.25rem);
   font-weight: 400;
   font-style: italic;
+  line-height: 1.55;
   color: var(--hathor-muted);
 }
 
@@ -1156,9 +1266,9 @@
 }
 
 .hathor-body-text {
-  font-size: 1rem;
+  font-size: 0.9375rem;
   font-weight: 300;
-  line-height: 1.85;
+  line-height: 1.7;
   color: var(--hathor-text-light);
 }
 
@@ -1170,18 +1280,41 @@
   display: inline-flex;
   align-items: center;
   gap: 0.625rem;
+  position: relative;
   margin-top: 2rem;
+  padding-bottom: 0.3rem;
   font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--hathor-gold);
-  transition: gap 0.3s ease, color 0.3s ease;
+  transition:
+    gap 0.5s var(--hathor-lux-ease),
+    color 0.5s var(--hathor-lux-ease),
+    transform 0.5s var(--hathor-lux-ease);
+}
+
+.hathor-discover-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s var(--hathor-lux-ease);
 }
 
 .hathor-discover-link:hover {
-  gap: 1rem;
+  gap: 0.85rem;
   color: var(--hathor-gold-bright);
+  transform: translateX(0.2rem);
+}
+
+.hathor-discover-link:hover::after {
+  transform: scaleX(1);
 }
 
 /* Hero image overlay */
@@ -1301,6 +1434,8 @@
   top: clamp(0.75rem, 2vh, 1.25rem);
   right: clamp(1rem, 3vw, 1.5rem);
   width: auto;
+  z-index: 220;
+  pointer-events: auto;
 }
 
 .hathor-header--owo-hero-layout .hathor-header__col--right .public-btn-gold {
@@ -1763,11 +1898,11 @@
   color: var(--hathor-gold);
 }
 
-/* Explore overlay */
+/* Explore overlay — above pinned scroll stage */
 .hathor-explore {
   position: fixed;
   inset: 0;
-  z-index: 70;
+  z-index: 250;
 }
 
 .hathor-explore__backdrop {
@@ -2075,8 +2210,9 @@
 
 .hathor-itinerary-card__title {
   font-family: var(--public-serif);
-  font-size: 1.375rem;
+  font-size: 1.25rem;
   font-weight: 500;
+  line-height: 1.35;
   color: var(--hathor-cream);
 }
 
@@ -2154,8 +2290,9 @@
 
 .hathor-accommodation-card__title {
   font-family: var(--public-serif);
-  font-size: 1.375rem;
+  font-size: 1.25rem;
   font-weight: 500;
+  line-height: 1.35;
   color: var(--hathor-cream);
 }
 
@@ -2208,14 +2345,14 @@
 
 /* Editorial sections */
 .hathor-editorial {
-  padding: 7.5rem 0;
+  padding: clamp(4rem, 8vw, 6rem) 0;
   background: var(--hathor-dark-2);
   color: var(--hathor-text-light);
 }
 
 @media (max-width: 767px) {
   .hathor-editorial {
-    padding: 4rem 0;
+    padding: clamp(3rem, 10vw, 4rem) 0;
   }
 }
 
@@ -2277,11 +2414,12 @@
 }
 
 .hathor-editorial__image {
-  transition: transform 0.8s ease;
+  transition: transform 1s var(--hathor-lux-ease), filter 1s var(--hathor-lux-ease);
 }
 
 .hathor-editorial__image-wrap:hover .hathor-editorial__image {
-  transform: scale(1.05);
+  transform: scale(1.04);
+  filter: saturate(1.03) contrast(1.02);
 }
 
 .hathor-editorial__content {
@@ -2342,11 +2480,11 @@
 }
 
 .hathor-page-hero__title {
-  font-family: var(--public-serif);
-  font-size: clamp(2.25rem, 5vw, 3.75rem);
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
+  font-family: var(--public-title, var(--public-serif));
+  font-size: clamp(2.5rem, 6vw, 4.25rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
   color: #ffffff;
   text-shadow:
     0 2px 28px rgb(0 0 0 / 0.65),
@@ -2387,7 +2525,8 @@
   }
 
   .hathor-page-hero--blog .hathor-page-hero__title {
-    font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+    font-size: clamp(2rem, 4.5vw, 3.25rem);
+    line-height: 1.22;
   }
 }
 
@@ -2484,8 +2623,22 @@
 
 .hathor-cruise-card__image {
   position: relative;
+  flex-shrink: 0;
   aspect-ratio: 16 / 10;
   overflow: hidden;
+}
+
+.hathor-cruise-card__image img {
+  pointer-events: none;
+}
+
+.hathor-cruise-card__body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 1.5rem;
 }
 
 .hathor-cruise-card__badge {
@@ -2502,33 +2655,31 @@
   text-transform: uppercase;
 }
 
-.hathor-cruise-card__body {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  padding: 1.5rem;
-}
-
 .hathor-cruise-card__meta {
   font-size: 0.6875rem;
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--public-muted);
+  line-height: 1.4;
 }
 
 .hathor-cruise-card__title {
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.125rem;
   font-family: var(--public-serif);
-  font-size: 1.375rem;
+  font-size: 1.25rem;
   font-weight: 400;
-  line-height: 1.25;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
   color: var(--hathor-cream);
+  text-wrap: pretty;
 }
 
 .hathor-cruise-card__route {
-  margin-top: 0.35rem;
+  margin-top: 0.875rem;
   font-size: 0.8125rem;
+  line-height: 1.55;
   color: var(--public-muted);
 }
 
@@ -2579,6 +2730,7 @@
 .hathor-venue-card__image {
   position: relative;
   aspect-ratio: 16 / 9;
+  overflow: hidden;
 }
 
 .hathor-venue-card__body {
@@ -2587,7 +2739,8 @@
 
 .hathor-venue-card__title {
   font-family: var(--public-serif);
-  font-size: 1.25rem;
+  font-size: 1.125rem;
+  line-height: 1.35;
   color: var(--hathor-cream);
 }
 
@@ -2618,7 +2771,7 @@
 .hathor-blog-card__title {
   margin-top: 0.75rem;
   font-family: var(--public-serif);
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 400;
   line-height: 1.35;
   color: var(--hathor-cream);
@@ -2907,18 +3060,18 @@
 
 .hathor-chapter-title {
   margin-top: 1rem;
-  font-family: var(--public-serif);
-  font-size: clamp(2.25rem, 5vw, 3.75rem);
-  font-weight: 400;
-  line-height: 1.08;
-  letter-spacing: -0.02em;
+  font-family: var(--public-title, var(--public-serif));
+  font-size: clamp(2rem, 4.5vw, 3.25rem);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
   color: var(--hathor-cream);
 }
 
 .hathor-chapter-subtitle {
   margin-top: 0.75rem;
   font-family: var(--public-serif);
-  font-size: clamp(1.125rem, 2.5vw, 1.625rem);
+  font-size: clamp(1rem, 1.75vw, 1.25rem);
   font-style: italic;
   font-weight: 400;
   color: var(--hathor-text-light);
@@ -3044,16 +3197,17 @@
 
 .owo-hero__title {
   font-family: var(--public-serif);
-  font-size: clamp(2.75rem, 7vw, 4.75rem);
+  font-size: clamp(2.25rem, 5.5vw, 3.5rem);
   font-weight: 500;
-  line-height: 1.05;
+  line-height: 1.2;
   letter-spacing: -0.02em;
   color: var(--hathor-cream);
 }
 
 @media (min-width: 768px) {
   .owo-hero__title {
-    font-size: clamp(4.5rem, 6vw, 5.5rem);
+    font-size: clamp(3rem, 5vw, 4rem);
+    line-height: 1.22;
   }
 }
 
@@ -3149,9 +3303,9 @@
 .owo-chapter__title {
   margin-top: 1rem;
   font-family: var(--public-serif);
-  font-size: clamp(2rem, 4.5vw, 3.25rem);
+  font-size: clamp(1.625rem, 3.75vw, 2.625rem);
   font-weight: 500;
-  line-height: 1.12;
+  line-height: 1.25;
   letter-spacing: -0.02em;
   color: var(--hathor-cream);
 }
@@ -3193,8 +3347,9 @@
 
 .owo-pillar__title {
   font-family: var(--public-serif);
-  font-size: 1.375rem;
+  font-size: 1.25rem;
   font-weight: 500;
+  line-height: 1.3;
   color: var(--hathor-cream);
 }
 
@@ -3343,8 +3498,9 @@
 
 .owo-bento__title {
   font-family: var(--public-serif);
-  font-size: clamp(1.25rem, 2.5vw, 1.625rem);
+  font-size: clamp(1.125rem, 2.25vw, 1.5rem);
   font-weight: 500;
+  line-height: 1.3;
   color: var(--hathor-cream);
 }
 
@@ -3837,8 +3993,9 @@
 .hathor-collage__title {
   margin-top: 1rem;
   font-family: var(--public-serif);
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-size: clamp(1.5rem, 3.25vw, 2.125rem);
   font-weight: 500;
+  line-height: 1.25;
   color: var(--hathor-cream);
 }
 
@@ -3898,8 +4055,9 @@
 
 .hathor-sketch__title {
   font-family: var(--public-serif);
-  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-size: clamp(1.5rem, 3.25vw, 2.25rem);
   font-weight: 500;
+  line-height: 1.25;
   color: var(--hathor-cream);
 }
 
@@ -3958,91 +4116,131 @@
 
 @media (min-width: 768px) {
   .owo-hero__title {
-    font-size: clamp(3.5rem, 7vw, 5.5rem);
+    font-size: clamp(3rem, 5vw, 4rem);
+    line-height: 1.22;
   }
 }
 
-/* OWO footer */
+/* Premium site footer */
 .owo-footer {
-  padding: clamp(4rem, 8vw, 6rem) 1.5rem 2rem;
-  background: var(--hathor-dark);
-  border-top: 1px solid rgb(182 159 100 / 0.15);
-  color: var(--hathor-cream);
+  margin-top: 0;
+  padding: clamp(3.5rem, 7vw, 5rem) 0 clamp(2rem, 4vw, 2.5rem);
+  background: var(--public-surface);
+  border-top: 1px solid var(--public-border);
+  color: var(--public-text);
 }
 
-.owo-footer__brand-block {
+.owo-footer__inner {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  margin-bottom: 3rem;
+  gap: clamp(2.5rem, 5vw, 3.5rem);
 }
 
-.owo-footer__logo {
-  height: 3rem;
-  width: auto;
-  object-fit: contain;
+.owo-footer__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(2rem, 4vw, 3rem);
+}
+
+@media (min-width: 768px) {
+  .owo-footer__grid {
+    grid-template-columns: 1.4fr repeat(3, 1fr);
+    gap: 2rem 3rem;
+  }
+}
+
+.owo-footer__brand {
+  max-width: 22rem;
 }
 
 .owo-footer__wordmark {
-  margin-top: 1rem;
-  font-family: var(--public-serif);
-  font-size: 1.5rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
+  font-family: var(--public-title, var(--public-serif));
+  font-size: clamp(1.375rem, 2.5vw, 1.75rem);
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
+  color: var(--public-text);
 }
 
 .owo-footer__tag {
-  margin-top: 0.35rem;
+  margin-top: 0.5rem;
   font-size: 0.625rem;
   font-weight: 500;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--hathor-muted);
+  color: var(--public-muted);
 }
 
-.owo-footer__nav {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2rem 1.5rem;
-  max-width: 48rem;
-  margin: 0 auto 3rem;
+.owo-footer__address {
+  margin-top: 1rem;
+  font-size: 0.8125rem;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--public-muted);
 }
 
-@media (min-width: 768px) {
-  .owo-footer__nav {
-    grid-template-columns: repeat(4, 1fr);
-  }
+.owo-footer__col-label {
+  margin: 0 0 1rem;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--public-muted);
 }
 
-.owo-footer__col {
+.owo-footer__links,
+.owo-footer__contact {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.65rem;
+}
+
+.owo-footer__hours {
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--public-muted);
 }
 
 .owo-footer__link {
-  font-size: 0.6875rem;
+  position: relative;
+  display: inline-block;
+  width: fit-content;
+  padding-bottom: 0.15rem;
+  font-size: 0.75rem;
   font-weight: 500;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--hathor-cream);
-  transition: color 0.3s ease;
+  color: var(--public-text);
+  transition: color 0.5s var(--hathor-lux-ease);
+}
+
+.owo-footer__link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s var(--hathor-lux-ease);
 }
 
 .owo-footer__link:hover {
   color: var(--hathor-gold);
 }
 
+.owo-footer__link:hover::after {
+  transform: scaleX(1);
+}
+
 .owo-footer__legal {
-  max-width: 56rem;
-  margin: 0 auto;
-  padding-top: 2rem;
-  border-top: 1px solid rgb(182 159 100 / 0.12);
+  padding-top: clamp(1.5rem, 3vw, 2rem);
+  border-top: 1px solid var(--public-border);
 }
 
 .owo-footer__legal-row {
@@ -4050,35 +4248,52 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 1rem 1.5rem;
 }
 
-.owo-footer__legal-right {
+.owo-footer__legal-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.25rem;
+  gap: 1rem 1.25rem;
 }
 
 .owo-footer__legal-link {
+  position: relative;
+  padding-bottom: 0.15rem;
   font-size: 0.625rem;
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--hathor-muted);
-  transition: color 0.3s ease;
+  color: var(--public-muted);
+  transition: color 0.5s var(--hathor-lux-ease);
+}
+
+.owo-footer__legal-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s var(--hathor-lux-ease);
 }
 
 .owo-footer__legal-link:hover {
   color: var(--hathor-gold);
 }
 
+.owo-footer__legal-link:hover::after {
+  transform: scaleX(1);
+}
+
 .owo-footer__copy {
-  margin-top: 1.5rem;
-  text-align: center;
   font-size: 0.625rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--hathor-muted);
+  color: var(--public-muted);
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -4309,12 +4524,13 @@ html[data-public-theme="day"] .preview-header--transparent:not(.preview-header--
   }
 
   .hathor-page-hero--blog .hathor-page-hero__title {
-    font-size: clamp(1.875rem, 8.5vw, 2.75rem);
+    font-size: clamp(1.625rem, 7vw, 2.375rem);
+    line-height: 1.22;
   }
 
   .hathor-page-hero__title {
-    font-size: clamp(1.75rem, 8vw, 2.5rem);
-    line-height: 1.12;
+    font-size: clamp(1.5rem, 6.5vw, 2.125rem);
+    line-height: 1.22;
     overflow-wrap: break-word;
     hyphens: auto;
   }
@@ -4330,8 +4546,8 @@ html[data-public-theme="day"] .preview-header--transparent:not(.preview-header--
   }
 
   .hathor-section-title {
-    font-size: clamp(1.625rem, 7vw, 2rem);
-    line-height: 1.15;
+    font-size: clamp(1.375rem, 6vw, 1.75rem);
+    line-height: 1.25;
     overflow-wrap: break-word;
   }
 
@@ -4397,8 +4613,15 @@ html[data-public-theme="day"] .preview-header--transparent:not(.preview-header--
   }
 
   .hathor-cruise-card__title {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
+    line-height: 1.55;
+    margin-top: 0.625rem;
     overflow-wrap: break-word;
+  }
+
+  .hathor-cruise-card__route {
+    margin-top: 0.75rem;
+    line-height: 1.55;
   }
 
   .hathor-cruise-card .public-btn-outline-gold,
@@ -4442,7 +4665,8 @@ html[data-public-theme="day"] .preview-header--transparent:not(.preview-header--
   }
 
   .owo-hero__title {
-    font-size: clamp(2rem, 9vw, 2.75rem);
+    font-size: clamp(1.75rem, 7.5vw, 2.375rem);
+    line-height: 1.22;
   }
 
   .owo-hero__subtitle {
@@ -4489,7 +4713,8 @@ html[data-public-theme="day"] .preview-header--transparent:not(.preview-header--
   }
 
   .hathor-page-hero__title {
-    font-size: clamp(2rem, 4.5vw, 3rem);
+    font-size: clamp(1.75rem, 3.75vw, 2.5rem);
+    line-height: 1.22;
   }
 }
 
@@ -4572,23 +4797,24 @@ html[data-public-theme="day"] .preview-header--transparent:not(.preview-header--
 /* Background gap fixes — CSS ONLY, scroll-reveal pages via body class from existing hook */
 body.has-page-scroll-transition,
 html.has-page-scroll-transition {
-  background-color: #ece8df;
+  background-color: var(--public-bg);
   margin: 0;
   padding: 0;
   overflow-x: visible !important;
 }
 
 body.has-page-scroll-transition .pin-spacer {
-  background: #ece8df !important;
-  margin: 0 !important;
-  padding: 0 !important;
+  background: var(--public-bg);
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
 }
 
 body.has-page-scroll-transition .public-site,
 body.has-page-scroll-transition .public-main,
 body.has-page-scroll-transition .page-transition,
 body.has-page-scroll-transition .hathor-page-body {
-  background-color: #ece8df;
+  background-color: var(--public-bg);
   margin: 0;
   padding: 0;
 }
@@ -4600,12 +4826,12 @@ body.has-page-scroll-transition .public-site {
 body.has-page-scroll-transition .public-main,
 body.has-page-scroll-transition .page-transition {
   overflow: visible !important;
-  background-color: #ece8df;
+  background-color: var(--public-bg);
 }
 
 [data-page-transition] {
   --pt-gold: #b69f64;
-  --pt-cream: #ece8df;
+  --pt-cream: var(--public-bg);
   --pt-dome-r-start: 1250px;
   --pt-dome-r-end: 22px;
   position: relative;
@@ -4695,6 +4921,7 @@ body.has-page-scroll-transition .page-transition {
   will-change: transform, border-radius;
   overflow: visible;
   overflow-anchor: none;
+  pointer-events: auto;
 }
 
 /* Content inside sheet (the grid) */
@@ -4704,6 +4931,7 @@ body.has-page-scroll-transition .page-transition {
   background-color: transparent;
   padding-top: clamp(0.75rem, 2svh, 1.5rem);
   overflow-anchor: none;
+  pointer-events: auto;
 }
 
 @media (max-width: 1024px) {
@@ -4781,10 +5009,35 @@ body.has-page-scroll-transition [data-page-transition] {
   padding-inline: clamp(1rem, 4vw, 2rem);
 }
 
+[data-page-transition] .pt-hero__copy .hathor-breadcrumb {
+  margin-bottom: clamp(1.25rem, 3vw, 2rem);
+}
+
 [data-page-transition] .hathor-page-hero__title--feature {
-  font-size: clamp(3.75rem, 8vw, 6.5rem);
-  line-height: 0.95;
-  letter-spacing: -0.055em;
+  font-size: clamp(2.125rem, 4.75vw, 3.375rem);
+  line-height: 1.55;
+  letter-spacing: -0.02em;
+  margin: 0;
+  padding-bottom: 0.15em;
+}
+
+[data-page-transition] .pt-hero__copy .hathor-page-hero__subtitle {
+  margin-top: clamp(1.75rem, 4vw, 2.75rem);
+}
+
+[data-page-transition] .pt-hero__copy .hathor-gold-line {
+  margin-top: clamp(1.5rem, 3vw, 2rem);
+}
+
+@media (max-width: 767px) {
+  [data-page-transition] .hathor-page-hero__title--feature {
+    font-size: clamp(1.75rem, 7vw, 2.25rem);
+    line-height: 1.58;
+  }
+
+  [data-page-transition] .pt-hero__copy .hathor-page-hero__subtitle {
+    margin-top: 1.625rem;
+  }
 }
 
 .hathor-page-scroll-transition.hathor-page-hero--blog .pt-hero__overlay {
@@ -4819,9 +5072,9 @@ body.has-page-scroll-transition [data-page-transition] {
   max-width: 18ch;
   margin-inline: auto;
   font-family: var(--public-serif);
-  font-size: clamp(2.75rem, 5.8vw, 4.75rem);
+  font-size: clamp(2rem, 4.2vw, 3.25rem);
   font-weight: 500;
-  line-height: 1.12;
+  line-height: 1.28;
   letter-spacing: -0.02em;
   color: #b69f64;
   filter: url("#hathor-title-inner-shadow");
@@ -4839,7 +5092,7 @@ body.has-page-scroll-transition [data-page-transition] {
 .hathor-page-body {
   position: relative;
   z-index: 1;
-  background-color: #ece8df;
+  background-color: var(--public-bg);
 }
 
 body.has-page-scroll-transition .public-site > .owo-footer {
@@ -4853,7 +5106,7 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
 
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-stage {
   z-index: 40;
-  background-color: #ece8df;
+  background-color: var(--public-bg);
   overflow: hidden;
 }
 
@@ -4887,7 +5140,7 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
 }
 
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet {
-  background-color: #ece8df !important;
+  background-color: var(--public-bg);
   z-index: 10;
 }
 
@@ -4904,7 +5157,7 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
 }
 
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--past-pin .pt-stage {
-  background-color: #ece8df !important;
+  background-color: var(--public-bg);
 }
 
 /* Filters inside sheet (cruises) — below landing, above rise-cap */
@@ -4932,18 +5185,12 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-pag
   display: none; /* No longer needed */
 }
 
-body.has-page-scroll-transition .pin-spacer {
-  background: #ece8df !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
 /* 3. MAIN CONTENT CONTAINER */
 .page-layout__main {
   position: relative;
   z-index: 1;
   width: 100%;
-  background-color: #ece8df;
+  background-color: var(--public-bg);
   padding: 0;
   margin: 0;
 }
@@ -5060,7 +5307,7 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__
 
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .lux-cta-band,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__content .lux-cta-band {
-  background-color: #ece8df;
+  background-color: var(--public-bg);
 }
 
 /* Legacy inner-page cream overrides (non wireframe pages) */
@@ -5081,37 +5328,26 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-pag
   margin-top: 0;
 }
 
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .hathor-section,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .hathor-section--dark,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .hathor-section--dark-2,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-section,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-section--dark,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-section--dark-2 {
-  background-color: #ece8df !important;
-  color: #0a0a0a;
-}
-
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor > .hathor-section:first-child .hathor-section-header,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor > .hathor-section:first-child .hathor-section-header {
   display: none;
 }
 
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .hathor-section--dark .hathor-section-title,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .hathor-section--dark-2 .hathor-section-title,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .hathor-section--dark .hathor-section-subtitle,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .hathor-section--dark-2 .hathor-section-subtitle,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .hathor-section--dark .hathor-body-text,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .hathor-section--dark-2 .hathor-body-text,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-section--dark .hathor-section-title,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-section--dark-2 .hathor-section-title,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-section--dark .hathor-section-subtitle,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-section--dark-2 .hathor-section-subtitle,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-section--dark .hathor-body-text,
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-section--dark-2 .hathor-body-text {
-  color: #0a0a0a;
+/* Scroll-transition pages — theme-aware continuity */
+.hathor-page-scroll-transition {
+  margin-bottom: 0;
 }
 
-body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .hathor-filter-panel,
+.hathor-page-body {
+  margin-top: 0;
+  background-color: var(--public-bg);
+}
+
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-sheet__content > .hathor-section:first-child {
+  padding-top: 0;
+}
+
+/* Cruises only — Venetian sticky layout (never used on /test-scroll-reveal) */
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-filter-panel {
   background-color: rgb(236 232 223 / 0.85);
   border-color: rgb(10 10 10 / 0.08);
@@ -5127,70 +5363,8 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__body.hathor-page-cream-floor .lux-cta-band,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .lux-cta-band,
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__content .lux-cta-band {
-  background-color: #ece8df;
+  background-color: var(--public-bg);
 }
-
-/* ============================================
-   CONTINUOUS BACKGROUND FIX - NO GAPS
-   ============================================ */
-
-/* Global background continuity */
-html,
-body {
-  background-color: #ece8df !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* Page body continuous background */
-.hathor-page-body--continuous-bg {
-  background-color: #ece8df !important;
-  min-height: 100vh !important;
-  position: relative !important;
-  z-index: 1 !important;
-}
-
-/* Pin-spacer background (GSAP creates this - MUST match cream) */
-.pin-spacer {
-  background-color: #ece8df !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* Remove gaps between hero and content */
-.hathor-page-scroll-transition {
-  margin-bottom: 0 !important;
-}
-
-.hathor-page-body {
-  margin-top: 0;
-  background-color: #ece8df !important;
-}
-
-/* Section backgrounds */
-.hathor-section {
-  background-color: #ece8df !important;
-}
-
-.hathor-section--dark {
-  background-color: #0a0a0a !important;
-}
-
-/* Footer background */
-footer {
-  background-color: #0a0a0a !important;
-  margin-top: 0 !important;
-}
-
-/* Ensure no white gaps anywhere */
-.public-site,
-.public-main,
-.page-transition {
-  background-color: #ece8df !important;
-}
-
-.pin-spacer { background-color: #ece8df !important; }
-body { background-color: #ece8df !important; }
 
 /* Cruises only — Venetian sticky layout (never used on /test-scroll-reveal) */
 .cruises-scroll-route,
@@ -5678,3 +5852,407 @@ body { background-color: #ece8df !important; }
   opacity: 1;
   transform: translateY(0);
 }
+
+/* Titles — Agraham, refined scale + line spacing */
+.public-site [class*="__title"],
+.public-site [class*="__headline"],
+.public-site .hathor-chapter-title,
+.public-site .hathor-section-title,
+.public-site .lux-section-title,
+.public-site [data-page-transition] .pt-sheet__landing-title {
+  font-family: var(--public-title);
+  text-wrap: balance;
+}
+
+/* Listing cards — keep readable spacing; Agraham swashes clash at small sizes */
+.public-site .hathor-cruise-card__title {
+  font-family: var(--public-serif);
+  line-height: 1.55;
+  margin-top: 0.75rem;
+  margin-bottom: 0.125rem;
+  text-wrap: pretty;
+}
+
+.public-site .hathor-cruise-card__route {
+  margin-top: 0.875rem;
+  line-height: 1.55;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Agency Design System — editorial luxury reset
+   Applies to public inner pages without touching route logic.
+   ═══════════════════════════════════════════════════════════ */
+
+:root,
+html[data-public-theme="day"],
+html[data-public-theme="day"] .public-site,
+html[data-public-theme="day"] .hathor-site,
+html[data-public-theme="day"] .preview-site {
+  --public-bg: #faf8f5;
+  --public-surface: #f5f0e8;
+  --public-text: #1a1a1a;
+  --public-muted: #6b6560;
+  --public-border: rgb(26 26 26 / 0.08);
+}
+
+html[data-public-theme="night"],
+html[data-public-theme="night"] .public-site,
+html[data-public-theme="night"] .hathor-site,
+html[data-public-theme="night"] .preview-site,
+.public-site {
+  --public-bg: #0a0a0a;
+  --public-surface: #1a1a1a;
+  --public-text: #faf8f5;
+  --public-muted: #9a9590;
+  --public-border: rgb(250 248 245 / 0.08);
+}
+
+body,
+.public-site,
+.public-main,
+.page-transition {
+  background-color: var(--public-bg);
+  color: var(--public-text);
+  transition:
+    background-color 0.6s var(--hathor-lux-ease),
+    color 0.6s var(--hathor-lux-ease);
+}
+
+.public-site {
+  --hathor-dark: var(--public-bg);
+  --hathor-dark-2: var(--public-surface);
+  --hathor-surface: var(--public-surface);
+  --hathor-cream: var(--public-text);
+  --hathor-text-light: var(--public-text);
+  --hathor-muted: var(--public-muted);
+  --hathor-lux-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html[data-public-theme="day"] .owo-hero,
+html[data-public-theme="day"] .preview-hero,
+html[data-public-theme="day"] .hathor-full-media,
+html[data-public-theme="day"] .hathor-header--over-hero,
+html[data-public-theme="day"] .preview-header--over-hero,
+[data-page-transition] .pt-hero {
+  --hathor-cream: #faf8f5;
+  --hathor-text-light: #e8e2d9;
+  --hathor-muted: rgb(250 248 245 / 0.72);
+}
+
+.hathor-container {
+  max-width: 1400px;
+  padding-inline: clamp(2rem, 5vw, 4rem);
+}
+
+.hathor-page-hero__title {
+  margin-bottom: 2rem;
+  font-family: var(--public-title, var(--public-serif));
+  font-size: clamp(2.5rem, 5.5vw, 4.75rem);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1.14;
+  text-wrap: balance;
+}
+
+.hathor-section-title {
+  margin-bottom: 1.5rem;
+  font-family: var(--public-title, var(--public-serif));
+  font-size: clamp(1.875rem, 3.5vw, 3rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.22;
+  text-wrap: balance;
+}
+
+.hathor-chapter-title {
+  font-size: clamp(1.875rem, 4vw, 3rem);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+[data-page-transition] .pt-sheet__landing-title {
+  font-size: clamp(1.875rem, 3.75vw, 2.875rem);
+  letter-spacing: -0.015em;
+  line-height: 1.22;
+}
+
+.hathor-section-subtitle,
+.hathor-chapter-subtitle {
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 0;
+  line-height: 1.6;
+  opacity: 0.8;
+}
+
+.hathor-body-text,
+.public-site p {
+  font-size: clamp(0.9375rem, 1.1vw, 1.0625rem);
+  font-weight: 300;
+  line-height: 1.8;
+  letter-spacing: 0.01em;
+}
+
+.hathor-body-text {
+  max-width: 65ch;
+}
+
+.hathor-section {
+  padding-block: clamp(5rem, 10vw, 8rem);
+  background-color: var(--public-bg);
+}
+
+.hathor-section--dark,
+.hathor-section--dark-2,
+.hathor-section--surface,
+.hathor-section--cream {
+  background-color: var(--public-surface);
+  color: var(--public-text);
+}
+
+.hathor-section-header {
+  margin-bottom: clamp(3rem, 6vw, 5rem);
+}
+
+.hathor-editorial {
+  padding-block: clamp(5rem, 10vw, 8rem);
+  background-color: var(--public-surface);
+  color: var(--public-text);
+}
+
+.hathor-editorial__grid {
+  gap: clamp(3rem, 6vw, 5rem);
+}
+
+[data-page-transition] {
+  --pt-cream: var(--public-bg);
+}
+
+[data-page-transition] .pt-stage,
+[data-page-transition] .pt-sheet,
+body.has-page-scroll-transition .pin-spacer {
+  background-color: var(--public-bg);
+}
+
+[data-page-transition] .pt-hero,
+[data-page-transition] .pt-hero__media {
+  overflow: hidden;
+  contain: paint;
+}
+
+[data-page-transition] .pt-sheet__content > .hathor-section:first-child {
+  padding-top: 0;
+}
+
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 1.2s var(--hathor-lux-ease),
+    transform 1.2s var(--hathor-lux-ease);
+  will-change: opacity, transform;
+}
+
+.scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.stagger-children > * {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.8s var(--hathor-lux-ease),
+    transform 0.8s var(--hathor-lux-ease);
+}
+
+.scroll-reveal.is-visible .stagger-children > *,
+.stagger-children.is-visible > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scroll-reveal.is-visible .stagger-children > *:nth-child(1),
+.stagger-children.is-visible > *:nth-child(1) {
+  transition-delay: 0ms;
+}
+
+.scroll-reveal.is-visible .stagger-children > *:nth-child(2),
+.stagger-children.is-visible > *:nth-child(2) {
+  transition-delay: 100ms;
+}
+
+.scroll-reveal.is-visible .stagger-children > *:nth-child(3),
+.stagger-children.is-visible > *:nth-child(3) {
+  transition-delay: 200ms;
+}
+
+.scroll-reveal.is-visible .stagger-children > *:nth-child(4),
+.stagger-children.is-visible > *:nth-child(4) {
+  transition-delay: 300ms;
+}
+
+.scroll-reveal.is-visible .stagger-children > *:nth-child(5),
+.stagger-children.is-visible > *:nth-child(5) {
+  transition-delay: 400ms;
+}
+
+.scroll-reveal.is-visible .stagger-children > *:nth-child(6),
+.stagger-children.is-visible > *:nth-child(6) {
+  transition-delay: 500ms;
+}
+
+.public-btn-gold,
+.public-btn-outline-gold {
+  position: relative;
+  overflow: hidden;
+  transform: translateY(0);
+  transition:
+    transform 0.6s var(--hathor-lux-ease),
+    box-shadow 0.6s var(--hathor-lux-ease),
+    background-color 0.6s var(--hathor-lux-ease),
+    border-color 0.6s var(--hathor-lux-ease),
+    color 0.6s var(--hathor-lux-ease);
+}
+
+.public-btn-gold:hover,
+.public-btn-outline-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px rgb(182 159 100 / 0.3);
+}
+
+.hathor-discover-link,
+.owo-footer__link,
+.owo-footer__legal-link {
+  position: relative;
+  text-decoration: none;
+}
+
+.hathor-discover-link::after,
+.owo-footer__link::after,
+.owo-footer__legal-link::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.6s var(--hathor-lux-ease);
+}
+
+.hathor-discover-link:hover::after,
+.owo-footer__link:hover::after,
+.owo-footer__legal-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.hathor-editorial__image-wrap,
+.hathor-venue-card__image,
+.hathor-blog-card__image,
+.hathor-accommodation-card__image {
+  overflow: hidden;
+}
+
+.hathor-editorial__image-wrap img,
+.hathor-venue-card__image img,
+.hathor-blog-card__image img,
+.hathor-accommodation-card__image img {
+  transition:
+    transform 1.2s var(--hathor-lux-ease),
+    filter 1.2s var(--hathor-lux-ease);
+}
+
+.hathor-editorial__image-wrap:hover img,
+.hathor-venue-card__image:hover img,
+.hathor-blog-card__image:hover img,
+.hathor-accommodation-card__image:hover img {
+  transform: scale(1.08);
+  filter: saturate(1.1) contrast(1.05);
+}
+
+.hathor-gold-line {
+  width: 60px;
+  height: 1px;
+  margin: 2rem auto;
+  background: var(--hathor-gold);
+  transition: width 0.8s var(--hathor-lux-ease);
+}
+
+.hathor-gold-line--left {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.hathor-section-header:hover .hathor-gold-line {
+  width: 120px;
+}
+
+.hathor-stat__value {
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 200;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--hathor-gold);
+}
+
+.hathor-stat__label {
+  margin-top: 1rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--public-muted);
+}
+
+.hathor-venue-card,
+.hathor-accommodation-card,
+.hathor-blog-card,
+.hathor-feature-card,
+.hathor-stat {
+  background: var(--public-surface);
+  border: 1px solid var(--public-border);
+  transition:
+    transform 0.6s var(--hathor-lux-ease),
+    box-shadow 0.6s var(--hathor-lux-ease),
+    border-color 0.6s var(--hathor-lux-ease);
+}
+
+.hathor-venue-card:hover,
+.hathor-accommodation-card:hover,
+.hathor-blog-card:hover,
+.hathor-feature-card:hover,
+.hathor-stat:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 40px 80px rgb(0 0 0 / 0.15);
+  border-color: rgb(182 159 100 / 0.3);
+}
+
+@media (max-width: 767px) {
+  .hathor-container {
+    padding-inline: clamp(1.25rem, 6vw, 2rem);
+  }
+
+  .hathor-page-hero__title {
+    font-size: clamp(2.25rem, 11vw, 3.5rem);
+    line-height: 1.16;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal,
+  .stagger-children > *,
+  .hathor-editorial__image-wrap img,
+  .hathor-venue-card__image img,
+  .hathor-blog-card__image img,
+  .hathor-accommodation-card__image img {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+

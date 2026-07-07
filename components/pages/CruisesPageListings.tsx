@@ -6,8 +6,6 @@ import {
   useMemo,
   useRef,
   useState,
-  type MouseEvent,
-  type PointerEvent,
   type ReactNode,
 } from "react";
 import Link from "next/link";
@@ -170,11 +168,8 @@ export function CruisesPageFilters() {
   } = useCruisesListing();
   const pinnedScrollYRef = useRef<number | null>(null);
 
-  const keepPinnedScrollStable = (
-    event: MouseEvent<HTMLButtonElement> | PointerEvent<HTMLButtonElement>,
-  ) => {
+  const keepPinnedScrollStable = () => {
     pinnedScrollYRef.current = window.scrollY;
-    event.preventDefault();
   };
 
   const updateDurationFilter = (value: number | "all") => {

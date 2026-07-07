@@ -1,0 +1,515 @@
+/* /rooms editorial design system — scoped, no public.css */
+
+.editorial {
+  --rooms-ease: cubic-bezier(0.19, 1, 0.22, 1);
+  --rooms-section-pad: clamp(8rem, 15vw, 12rem);
+  --rooms-gold: #b69f64;
+  --rooms-ink: #1a1a1a;
+  --rooms-ink-muted: #6b6560;
+  --rooms-cream: #faf8f5;
+  --rooms-surface: #f5f0e8;
+  --rooms-grid-gap: clamp(1.5rem, 3vw, 3rem);
+  --rooms-display: var(--font-playfair, "Playfair Display", Georgia, serif);
+  --rooms-body: var(--font-geist-sans, system-ui, sans-serif);
+
+  color: var(--rooms-ink);
+  background: var(--rooms-cream);
+}
+
+/* ─── 12-column asymmetric grid ─── */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--rooms-grid-gap);
+  width: 100%;
+  max-width: 1400px;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 5vw, 4rem);
+}
+
+.col1 {
+  grid-column: 1 / span 1;
+}
+.col2 {
+  grid-column: 2 / span 1;
+}
+.col3 {
+  grid-column: 3 / span 1;
+}
+.col4 {
+  grid-column: 4 / span 1;
+}
+.col5 {
+  grid-column: 5 / span 1;
+}
+.col6 {
+  grid-column: 6 / span 1;
+}
+.col7 {
+  grid-column: 7 / span 1;
+}
+.col8 {
+  grid-column: 8 / span 1;
+}
+.col9 {
+  grid-column: 9 / span 1;
+}
+.col10 {
+  grid-column: 10 / span 1;
+}
+.col11 {
+  grid-column: 11 / span 1;
+}
+.col12 {
+  grid-column: 12 / span 1;
+}
+
+.span4 {
+  grid-column: span 4;
+}
+.span5 {
+  grid-column: span 5;
+}
+.span6 {
+  grid-column: span 6;
+}
+.span7 {
+  grid-column: span 7;
+}
+.span8 {
+  grid-column: span 8;
+}
+.span9 {
+  grid-column: span 9;
+}
+.span10 {
+  grid-column: span 10;
+}
+.span11 {
+  grid-column: span 11;
+}
+.span12 {
+  grid-column: span 12;
+}
+
+/* Editorial offsets — image 7 cols, text 4 cols + 1 gutter */
+.imageRight {
+  grid-column: 2 / span 7;
+}
+
+.textRight {
+  grid-column: 10 / span 3;
+  align-self: center;
+}
+
+.imageLeft {
+  grid-column: 5 / span 7;
+}
+
+.textLeft {
+  grid-column: 1 / span 4;
+  align-self: center;
+}
+
+.introBlock {
+  grid-column: 2 / span 10;
+}
+
+.accommodationsHeader {
+  grid-column: 1 / span 9;
+}
+
+.accommodationsIntro {
+  grid-column: 2 / span 8;
+}
+
+.statsRow {
+  grid-column: 2 / span 10;
+}
+
+.accommodationsOutro {
+  grid-column: 3 / span 8;
+}
+
+.welcomeTitle {
+  grid-column: 1 / span 7;
+}
+
+.welcomeBody {
+  grid-column: 9 / span 4;
+  align-self: end;
+}
+
+@media (max-width: 767px) {
+  .imageRight,
+  .imageLeft,
+  .textRight,
+  .textLeft,
+  .introBlock,
+  .accommodationsHeader,
+  .accommodationsIntro,
+  .statsRow,
+  .accommodationsOutro,
+  .welcomeTitle,
+  .welcomeBody {
+    grid-column: 1 / -1;
+  }
+}
+
+.introText + .introText {
+  margin-top: 1.5rem;
+}
+
+/* ─── Sections ─── */
+
+.section {
+  padding-block: var(--rooms-section-pad);
+}
+
+.sectionSurface {
+  composes: section;
+  background: var(--rooms-surface);
+}
+
+.sectionDark {
+  composes: section;
+  background: var(--rooms-ink);
+  color: var(--rooms-cream);
+}
+
+.sectionDark .bodyText,
+.sectionDark .introText {
+  color: rgb(250 248 245 / 0.72);
+}
+
+.sectionDark .eyebrow {
+  color: var(--rooms-gold);
+}
+
+/* ─── Typography ─── */
+
+.eyebrow {
+  margin: 0 0 1.25rem;
+  font-family: var(--rooms-body);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--rooms-gold);
+}
+
+.displayTitle {
+  margin: 0;
+  font-family: var(--rooms-display);
+  font-size: clamp(3.5rem, 8vw, 7rem);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-family: var(--rooms-display);
+  font-size: clamp(2.25rem, 5vw, 4.25rem);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.subtitle {
+  margin: 1rem 0 0;
+  font-family: var(--rooms-display);
+  font-size: clamp(1.125rem, 2vw, 1.5rem);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--rooms-ink-muted);
+}
+
+.bodyText {
+  margin: 0;
+  font-family: var(--rooms-body);
+  font-size: 0.8125rem;
+  font-weight: 300;
+  line-height: 1.85;
+  letter-spacing: 0.04em;
+  color: var(--rooms-ink-muted);
+}
+
+.bodyText + .bodyText {
+  margin-top: 1.25rem;
+}
+
+.introText {
+  composes: bodyText;
+  font-size: clamp(0.875rem, 1.1vw, 0.9375rem);
+  line-height: 1.9;
+  max-width: 52ch;
+}
+
+/* ─── Kinetic typography (line masks) ─── */
+
+.lineMask {
+  display: block;
+  overflow: hidden;
+}
+
+.lineInner {
+  display: block;
+  will-change: transform;
+}
+
+.kineticTitle {
+  margin: 0;
+  font-family: var(--rooms-display);
+  font-size: clamp(3.5rem, 8vw, 7rem);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+}
+
+/* ─── Gold rule ─── */
+
+.goldRule {
+  width: 4rem;
+  height: 1px;
+  margin: 1.75rem 0 0;
+  background: var(--rooms-gold);
+  transform-origin: left center;
+  will-change: transform;
+}
+
+/* ─── Parallax image reveal ─── */
+
+.parallaxWrap {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  border-radius: 0 clamp(2rem, 4vw, 3.5rem) 0 0;
+  background: var(--rooms-surface);
+  clip-path: inset(100% 0 0 0);
+  will-change: clip-path;
+}
+
+.parallaxInner {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 115%;
+  will-change: transform;
+}
+
+.parallaxImg {
+  object-fit: cover;
+}
+
+@media (max-width: 767px) {
+  .parallaxWrap {
+    aspect-ratio: 3 / 4;
+    border-radius: 0 1.5rem 0 0;
+  }
+}
+
+/* ─── Stats filmstrip ─── */
+
+.statsFilmstrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(2rem, 5vw, 4rem);
+  margin-top: clamp(3rem, 6vw, 5rem);
+  padding-top: clamp(2rem, 4vw, 3rem);
+  border-top: 1px solid rgb(26 26 26 / 0.08);
+}
+
+.stat {
+  flex: 1 1 auto;
+  min-width: 8rem;
+}
+
+.statValue {
+  margin: 0;
+  font-family: var(--rooms-display);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--rooms-gold);
+}
+
+.statLabel {
+  margin: 0.5rem 0 0;
+  font-family: var(--rooms-body);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rooms-ink-muted);
+}
+
+/* ─── Suite chapter text column ─── */
+
+.chapterText {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.chapterText .goldRule {
+  margin-bottom: 1.5rem;
+}
+
+/* ─── Bento feature grid ─── */
+
+.bento {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(0.75rem, 1.5vw, 1rem);
+  margin-top: 2.5rem;
+}
+
+.bentoFeature {
+  grid-column: span 5;
+  min-height: 14rem;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  background: rgb(250 248 245 / 0.04);
+  border: 1px solid rgb(250 248 245 / 0.08);
+  transition:
+    border-color 0.6s var(--rooms-ease),
+    transform 0.6s var(--rooms-ease);
+}
+
+.bentoCell {
+  grid-column: span 7;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.75rem, 1.5vw, 1rem);
+}
+
+.bentoItem {
+  padding: 1.25rem 1.5rem;
+  background: rgb(250 248 245 / 0.03);
+  border: 1px solid rgb(250 248 245 / 0.06);
+  transition:
+    border-color 0.6s var(--rooms-ease),
+    transform 0.6s var(--rooms-ease);
+}
+
+.bentoFeature:hover,
+.bentoItem:hover {
+  border-color: rgb(182 159 100 / 0.35);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 767px) {
+  .bento {
+    grid-template-columns: 1fr;
+  }
+
+  .bentoFeature,
+  .bentoCell {
+    grid-column: 1 / -1;
+  }
+
+  .bentoCell {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── CTA closing frame ─── */
+
+.ctaFrame {
+  position: relative;
+  overflow: hidden;
+  min-height: clamp(28rem, 55vw, 40rem);
+  border-radius: 0 clamp(2rem, 4vw, 3rem) 0 0;
+}
+
+.ctaMedia {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 115%;
+  will-change: transform;
+}
+
+.ctaScrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    rgb(10 10 10 / 0.82) 0%,
+    rgb(10 10 10 / 0.45) 45%,
+    rgb(10 10 10 / 0.2) 100%
+  );
+  pointer-events: none;
+}
+
+.ctaCopy {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: clamp(28rem, 55vw, 40rem);
+  padding: clamp(2.5rem, 6vw, 4rem);
+  max-width: 36rem;
+}
+
+.ctaCopy .displayTitle {
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  color: var(--rooms-cream);
+}
+
+.ctaCopy .bodyText {
+  color: rgb(250 248 245 / 0.78);
+  margin-top: 1.25rem;
+}
+
+/* ─── Magnetic link ─── */
+
+.magneticLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-top: 2rem;
+  width: fit-content;
+  font-family: var(--rooms-body);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--rooms-gold);
+  transition: color 0.5s var(--rooms-ease);
+  will-change: transform;
+}
+
+.magneticLink:hover {
+  color: #d4bc7a;
+}
+
+.magneticArrow {
+  display: inline-flex;
+  transition: transform 0.6s var(--rooms-ease);
+}
+
+/* ─── Reduced motion ─── */
+
+@media (prefers-reduced-motion: reduce) {
+  .parallaxWrap,
+  .parallaxInner,
+  .lineInner,
+  .goldRule,
+  .magneticLink,
+  .bentoFeature,
+  .bentoItem {
+    will-change: auto;
+  }
+
+  .bentoFeature:hover,
+  .bentoItem:hover {
+    transform: none;
+  }
+}

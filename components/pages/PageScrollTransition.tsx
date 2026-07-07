@@ -8,7 +8,7 @@ import {
   usePageScrollTransition,
 } from "@/components/pages/pageScrollTransitionEngine";
 
-const PIN_VH = 2.8;
+const PIN_VH = 4.2;
 
 export type PageScrollTransitionProps = {
   title: string;
@@ -132,7 +132,7 @@ export function PageScrollTransition({
             operator="in"
             result="innerShadowAlpha"
           />
-          <feFlood floodColor="#000000" floodOpacity="0.25" result="shadowColor" />
+          <feFlood floodColor="#000000" floodOpacity="0.38" result="shadowColor" />
           <feComposite
             in="shadowColor"
             in2="innerShadowAlpha"

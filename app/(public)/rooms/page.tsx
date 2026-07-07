@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { RoomsPageContent } from "@/components/pages/RoomsPageContent";
+import { RoomsPageContent } from "@/components/pages/rooms/RoomsPageContent";
 import { hathorImage } from "@/lib/hathor-media";
 
 const OG_IMAGE = hathorImage("room-luxury");
