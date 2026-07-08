@@ -5053,17 +5053,17 @@ body.has-page-scroll-transition [data-page-transition] {
 
 [data-page-transition] .pt-sheet__landing-title {
   position: relative;
-  display: inline-block;
-  margin: 0;
-  max-width: 18ch;
-  margin-inline: auto;
+  display: block;
+  margin: 0 auto;
+  max-width: 22ch;
   font-family: var(--public-serif);
-  font-size: clamp(2rem, 4.2vw, 3.25rem);
+  font-size: clamp(1.625rem, 3.25vw, 2.375rem);
   font-weight: 500;
-  line-height: 1.28;
+  line-height: 1.2;
   letter-spacing: -0.02em;
+  text-wrap: balance;
   color: #b69f64;
-  filter: url("#hathor-title-inner-shadow");
+  filter: none;
   text-shadow: none;
 }
 
@@ -5125,6 +5125,14 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
   z-index: 1;
 }
 
+body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pin-spacer {
+  background-color: var(--public-bg) !important;
+}
+
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--past-pin {
+  background-color: var(--public-bg) !important;
+}
+
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-transition] .pt-sheet {
   background-color: var(--public-bg);
   z-index: 10;
@@ -5139,7 +5147,14 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
 
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--media-gone .pt-hero__media,
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--past-pin .pt-hero__media {
+  display: none !important;
   opacity: 0;
+  visibility: hidden;
+}
+
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--media-gone .pt-hero__overlay,
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--past-pin .pt-hero__overlay {
+  display: none !important;
 }
 
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]).hathor-page-scroll--past-pin .pt-stage {
@@ -5148,8 +5163,17 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
 
 /* Filters inside sheet (cruises) — below landing, above rise-cap */
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-sheet__landing {
-  padding-top: clamp(10rem, 21vh, 13rem);
+  padding-top: clamp(8rem, 17vh, 11rem);
+  padding-bottom: clamp(1.25rem, 2.5vh, 2rem);
+}
+
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-sheet__content {
+  background-color: var(--public-bg);
   padding-bottom: 0;
+}
+
+body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-sheet__content > :first-child {
+  margin-top: clamp(0.5rem, 1.5vh, 1.25rem);
 }
 
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-sheet__filters {
@@ -5957,9 +5981,9 @@ html[data-public-theme="day"] .preview-header--over-hero,
 }
 
 [data-page-transition] .pt-sheet__landing-title {
-  font-size: clamp(1.875rem, 3.75vw, 2.875rem);
-  letter-spacing: -0.015em;
-  line-height: 1.22;
+  font-size: clamp(1.625rem, 3.25vw, 2.375rem);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 
 .hathor-section-subtitle,

@@ -42,7 +42,6 @@ export function PageScrollTransition({
   const maskRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
-  const maxSheetHeightRef = useRef(0);
 
   usePageScrollTransition({
     root: rootRef,
@@ -77,33 +76,6 @@ export function PageScrollTransition({
     return () => {
       window.removeEventListener("scroll", syncMediaVisibility);
       window.removeEventListener("resize", syncMediaVisibility);
-    };
-  }, []);
-
-  useEffect(() => {
-    const sheet = sheetRef.current;
-    if (!sheet || typeof ResizeObserver === "undefined") return;
-
-    let frame: number | null = null;
-    const lockMaxSheetHeight = () => {
-      const height = Math.ceil(sheet.getBoundingClientRect().height);
-      if (height > maxSheetHeightRef.current) {
-        maxSheetHeightRef.current = height;
-        sheet.style.minHeight = `${height}px`;
-      }
-    };
-
-    frame = window.requestAnimationFrame(lockMaxSheetHeight);
-    const observer = new ResizeObserver(() => {
-      if (frame !== null) window.cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(lockMaxSheetHeight);
-    });
-
-    observer.observe(sheet);
-
-    return () => {
-      if (frame !== null) window.cancelAnimationFrame(frame);
-      observer.disconnect();
     };
   }, []);
 
