@@ -5,6 +5,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import SplitType from "split-type";
+import { deferEditorialMotionInit } from "@/lib/defer-editorial-motion";
+import { refreshPageScrollTransition } from "@/components/pages/pageScrollTransitionEngine";
 
 const HIGHLIGHTS_EASE = "expo.out" as const;
 const HIGHLIGHTS_SCRUB = 1;
@@ -417,7 +419,7 @@ export function useHighlightsEditorialMotion(
 
     const splits: SplitInstance[] = [];
     const cleanupLenis = setupOptionalLenis(smoothScroll);
-    let refreshTimer: ReturnType<typeof setTimeout> | null = null;
+    let cancelDeferred: (() => void) | null = null;
 
     const ctx = gsap.context(() => {
       if (prefersReducedMotion()) {
@@ -435,25 +437,24 @@ export function useHighlightsEditorialMotion(
         return;
       }
 
-      ScrollTrigger.matchMedia({
-        "(min-width: 768px)": () => setupEditorial(root, true, splits),
-        "(max-width: 767px)": () => setupEditorial(root, false, splits),
-      });
+      cancelDeferred = deferEditorialMotionInit(() => {
+        ScrollTrigger.matchMedia({
+          "(min-width: 768px)": () => setupEditorial(root, true, splits),
+          "(max-width: 767px)": () => setupEditorial(root, false, splits),
+        });
+      }, layoutDelayMs);
     }, root);
 
-    const scheduleRefresh = () => {
-      if (refreshTimer) clearTimeout(refreshTimer);
-      refreshTimer = setTimeout(() => {
-        ScrollTrigger.refresh();
-      }, layoutDelayMs);
+    const onLoad = () => {
+      refreshPageScrollTransition();
+      ScrollTrigger.refresh();
     };
 
-    scheduleRefresh();
-    window.addEventListener("load", scheduleRefresh);
+    window.addEventListener("load", onLoad);
 
     return () => {
-      window.removeEventListener("load", scheduleRefresh);
-      if (refreshTimer) clearTimeout(refreshTimer);
+      window.removeEventListener("load", onLoad);
+      cancelDeferred?.();
       cleanupMagneticLinks(root);
       ctx.revert();
       splits.forEach((split) => split.revert());
