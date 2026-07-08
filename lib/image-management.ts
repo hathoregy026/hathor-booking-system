@@ -16,7 +16,12 @@ const siteImageSchema = z.object({
     .trim()
     .min(1, "Alt text is required")
     .max(300, "Alt text must be 300 characters or fewer"),
-  url: z.string().trim().url("Must be a valid URL").max(2048),
+  url: z
+    .string()
+    .trim()
+    .min(1, "URL is required")
+    .max(2048)
+    .refine(isSafePublicImageUrl, "Must be an HTTPS URL or a root-relative path"),
   category: z.enum(IMAGE_CATEGORIES),
   pagePath: z
     .string()
@@ -27,6 +32,22 @@ const siteImageSchema = z.object({
   displayOrder: z.number().int().min(0).max(9999).default(0),
   isActive: z.boolean().default(true),
 });
+
+export function isSafePublicImageUrl(value: string): boolean {
+  const url = value.trim();
+  if (!url) return false;
+
+  if (url.startsWith("/")) {
+    return !url.startsWith("//") && !/[\u0000-\u001f]/.test(url);
+  }
+
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "https:" || parsed.protocol === "http:";
+  } catch {
+    return false;
+  }
+}
 
 export type SiteImageInput = z.infer<typeof siteImageSchema>;
 

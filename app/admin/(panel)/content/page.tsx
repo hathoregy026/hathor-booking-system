@@ -76,6 +76,20 @@ function buildSiteImageForm(
   return form;
 }
 
+async function readAdminError(
+  response: Response,
+  fallback: string,
+): Promise<string> {
+  try {
+    const data = (await response.json()) as { error?: string; details?: unknown };
+    if (data.error) return data.error;
+  } catch {
+    // Fall through to generic copy if the server did not return JSON.
+  }
+
+  return fallback;
+}
+
 export default function AdminContentPage() {
   const { showToast } = useToast();
   const [sections, setSections] = useState<SiteContentItem[]>([]);
@@ -178,7 +192,9 @@ export default function AdminContentPage() {
       });
 
       if (!contentResponse.ok) {
-        throw new Error("Failed to save website content");
+        throw new Error(
+          await readAdminError(contentResponse, "Failed to save website content"),
+        );
       }
 
       const imagePayload = siteImageList
@@ -199,14 +215,19 @@ export default function AdminContentPage() {
         });
 
         if (!imagesResponse.ok) {
-          throw new Error("Failed to save site images");
+          throw new Error(
+            await readAdminError(imagesResponse, "Failed to save site images"),
+          );
         }
       }
 
       showToast("success", "Website content and images saved");
       await loadContent();
-    } catch {
-      showToast("error", "Failed to save changes");
+    } catch (saveError) {
+      showToast(
+        "error",
+        saveError instanceof Error ? saveError.message : "Failed to save changes",
+      );
     } finally {
       setIsSaving(false);
     }
