@@ -1,17 +1,12 @@
-/**
- * Homepage 2 route chrome only.
- * Layer layout lives in HomePage2Layers.module.css.
- */
-
 html[data-homepage2-experience],
 html[data-homepage2-experience] body {
-  background-color: #f4f1ea !important;
+  background-color: #000 !important;
 }
 
 html[data-homepage2-experience] .public-site,
 html[data-homepage2-experience] .public-main,
 html[data-homepage2-experience] .page-transition {
-  background-color: #f4f1ea !important;
+  background-color: #000 !important;
 }
 
 html[data-homepage2-experience] .public-main--hero {
@@ -24,6 +19,131 @@ html[data-homepage2-experience] .public-main--hero {
 /* Hide global site header — Homepage 2 owns Layer 3 nav */
 html[data-homepage2-experience] .hathor-header {
   display: none !important;
+}
+
+/* THE DOME SHAPE */
+.dome-container {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120vw; /* Wider than screen to make the curve smooth */
+  height: 80vh;
+  background-color: #f4f1ea; /* The cream color */
+  border-top-left-radius: 50vw; /* This creates the perfect arch */
+  border-top-right-radius: 50vw;
+  z-index: 20;
+}
+
+/* THE GIANT LOGO */
+.giant-logo {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70vw;
+  z-index: 5; /* Behind the dome (20), in front of video (0) */
+  opacity: 0.9;
+  animation: giantLogoRise 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes giantLogoRise {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(40px);
+  }
+
+  to {
+    opacity: 0.9;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.top-bar {
+  position: fixed;
+  top: 20px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5vw;
+  z-index: 50;
+}
+
+.book-now-btn {
+  background-color: #b69f64;
+  color: #000;
+  padding: 10px 30px;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  border: none;
+  cursor: pointer;
+}
+
+.center-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.center-logo img {
+  width: 48px;
+  height: auto;
+}
+
+.nav-container {
+  position: fixed;
+  top: 80px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  z-index: 50;
+}
+
+.nav-item {
+  position: relative;
+}
+
+.nav-link {
+  color: #fff;
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* DROPDOWN */
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #111;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.nav-item:hover .dropdown {
+  opacity: 1;
+  visibility: visible;
+  top: 120%;
+}
+
+.dropdown-link {
+  color: #b69f64;
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: 1px;
+  white-space: nowrap;
 }
 
 html[data-homepage2-experience] .owo-footer__wordmark {
