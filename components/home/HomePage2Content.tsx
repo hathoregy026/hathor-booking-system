@@ -1,121 +1,138 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { ParallaxHeroVideo } from "@/components/ui/ParallaxHeroVideo";
+import Link from "next/link";
+import { useEffect } from "react";
+import { BookNowTrigger } from "@/components/public/BookNowTrigger";
+import { PublicThemeToggle } from "@/components/public/PublicThemeToggle";
 import {
-  HATHOR_HERO_VIDEO_SRC,
+  HATHOR_BRAND_NAME,
+  HATHOR_HERO_ICON_SRC,
   HATHOR_HERO_POSTER_SRC,
+  HATHOR_HERO_VIDEO_SRC,
 } from "@/lib/branding";
-import { usePageScrollTransition } from "@/components/pages/pageScrollTransitionEngine";
-import styles from "./HomePage2Experience.module.css";
+import { NAV_ACCOMMODATIONS, NAV_EXPERIENCES } from "@/lib/public-nav";
+import styles from "./HomePage2Layers.module.css";
 
-const PIN_VH = 4.2;
 const BACK_LOGO_SRC =
   "/branding/hathor-logo-behing-the-sheet-egypt-toors-pyramids.svg";
 
+const NAV_LINKS = [
+  { href: "/", label: "Home" },
+  { href: "/cruises", label: "Cruises" },
+  {
+    href: "/rooms",
+    label: "Accommodation",
+    links: NAV_ACCOMMODATIONS.links,
+  },
+  {
+    href: "/highlights",
+    label: "Experiences",
+    links: NAV_EXPERIENCES.links,
+  },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
+] as const;
+
+/**
+ * Homepage 2 — strict 4-layer architecture (no GSAP scroll).
+ * L1 video z0 → L2 logo z10 → L4 cream dome z20 → L3 nav z50
+ */
 export function HomePage2Content() {
-  const rootRef = useRef<HTMLElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
-  const maskRef = useRef<HTMLDivElement>(null);
-  const sheetRef = useRef<HTMLDivElement>(null);
-  const heroCopyRef = useRef<HTMLDivElement>(null);
-
-  usePageScrollTransition({
-    root: rootRef,
-    stage: stageRef,
-    mask: maskRef,
-    sheet: sheetRef,
-    heroCopy: heroCopyRef,
-  });
-
   useEffect(() => {
     document.documentElement.setAttribute("data-homepage2-experience", "");
-
     return () => {
       document.documentElement.removeAttribute("data-homepage2-experience");
     };
   }, []);
 
-  useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
-
-    const syncMediaVisibility = () => {
-      const vh = window.innerHeight;
-      const top = root.getBoundingClientRect().top + window.scrollY;
-      const scroll = window.scrollY;
-      const pinProgress = Math.max(0, (scroll - top) / (vh * PIN_VH));
-
-      const inHeroZone = pinProgress < 0.12;
-      const creamStage = pinProgress > 0.38;
-      const hideMedia = !inHeroZone && pinProgress > 0.45;
-      const pastPin = pinProgress >= 0.85;
-
-      root.classList.toggle("hathor-page-scroll--cream-stage", creamStage);
-      root.classList.toggle("hathor-page-scroll--media-gone", hideMedia);
-      root.classList.toggle("hathor-page-scroll--past-pin", pastPin);
-    };
-
-    syncMediaVisibility();
-    window.addEventListener("scroll", syncMediaVisibility, { passive: true });
-    window.addEventListener("resize", syncMediaVisibility);
-
-    return () => {
-      window.removeEventListener("scroll", syncMediaVisibility);
-      window.removeEventListener("resize", syncMediaVisibility);
-    };
-  }, []);
-
   return (
-    <>
-      <section
-        ref={rootRef}
-        data-page-transition
-        data-homepage2-transition
-        className={`hathor-page-scroll-transition hathor-page-hero ${styles.root}`}
-      >
-        <div ref={stageRef} className={`pt-stage ${styles.stage}`}>
-          <div className={`pt-hero ${styles.hero}`}>
-            <div className={`pt-hero__media ${styles.heroMedia}`}>
-              <ParallaxHeroVideo
-                src={HATHOR_HERO_VIDEO_SRC}
-                poster={HATHOR_HERO_POSTER_SRC}
-                ariaLabel="Hathor Dahabiya sailing on the Nile"
-                className={styles.heroVideo}
-              />
-              <div className={styles.heroShade} aria-hidden />
-            </div>
+    <div className={styles.root}>
+      {/* LAYER 1 — Hero background (z-0) */}
+      <div className={styles.layerHero} aria-hidden={false}>
+        <video
+          className={styles.heroVideo}
+          src={HATHOR_HERO_VIDEO_SRC}
+          poster={HATHOR_HERO_POSTER_SRC}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-label="Hathor Dahabiya sailing on the Nile"
+        />
+        <div className={styles.heroShade} aria-hidden />
+        <div className={styles.heroStripes} aria-hidden />
+      </div>
 
-            <div ref={maskRef} className="pt-mask" aria-hidden="true" />
+      {/* LAYER 2 — Giant HATHOR logo (z-10), behind cream sheet */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={BACK_LOGO_SRC}
+        alt={HATHOR_BRAND_NAME}
+        className={styles.layerLogo}
+        fetchPriority="high"
+        decoding="async"
+      />
 
-            <div ref={heroCopyRef} className={styles.heroCopy}>
-              <p className={styles.heroEyebrow}>Ultra Luxury</p>
-              <h1 className={styles.heroTitle}>Dahabiya Cruise</h1>
-              <p className={styles.heroSubtitle}>
-                Your Luxury Trip Begins With Hathor Dahabiya
-              </p>
-            </div>
+      {/* LAYER 4 — Cream dome sheet (z-20), covers logo bottom */}
+      <div className={styles.layerDome}>
+        <div className={styles.domeContent} />
+      </div>
 
+      {/* LAYER 3 — Navigation (z-50), always on top */}
+      <header className={styles.layerNav}>
+        <div className={styles.topBar}>
+          <BookNowTrigger className={styles.bookNow}>Book Now</BookNowTrigger>
+          <Link href="/" className={styles.iconBrand}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={BACK_LOGO_SRC}
-              alt=""
-              className={`homepage-2-back-logo ${styles.backLogo}`}
-              aria-hidden
-              fetchPriority="high"
-              decoding="async"
+              src={HATHOR_HERO_ICON_SRC}
+              alt={HATHOR_BRAND_NAME}
+              className={styles.iconLogo}
             />
-          </div>
-
-          <div ref={sheetRef} className={`pt-sheet ${styles.sheet}`}>
-            <div className={styles.sheetCap} aria-hidden />
-          </div>
+          </Link>
+          <BookNowTrigger className={styles.bookNow}>Book Now</BookNowTrigger>
         </div>
-      </section>
 
-      <div className="homepage-2-cream-floor" aria-hidden="true">
-        <div className="homepage-2-cream-floor__inner" />
-      </div>
-    </>
+        <nav className={styles.nav} aria-label="Homepage 2 navigation">
+          <ul className={styles.navList}>
+            {NAV_LINKS.map((item) => {
+              const hasDropdown = "links" in item && item.links;
+
+              return (
+                <li
+                  key={item.label}
+                  className={
+                    hasDropdown ? styles.navItemDropdown : styles.navItem
+                  }
+                >
+                  <Link href={item.href} className={styles.navLink}>
+                    {item.label}
+                  </Link>
+                  {hasDropdown ? (
+                    <div className={styles.dropdown} role="menu">
+                      {item.links.map((link) => (
+                        <Link
+                          key={`${item.label}-${link.label}`}
+                          href={link.href}
+                          className={styles.dropdownLink}
+                          role="menuitem"
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+                  ) : null}
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+
+        <div className={styles.themeSlot}>
+          <PublicThemeToggle />
+        </div>
+      </header>
+    </div>
   );
 }
