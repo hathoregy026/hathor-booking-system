@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
+import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { PublicThemeToggle } from "@/components/public/PublicThemeToggle";
 import {
   HATHOR_BRAND_NAME,
@@ -144,6 +145,7 @@ function isPastPageHero(): boolean {
 
 export function Header() {
   const pathname = usePathname();
+  const isHomepage2 = pathname === "/homepage-2";
   const isHomepage = isHeroRoute(pathname);
   const usePagesHeaderTransition = !isHomepage;
   const [exploreOpen, setExploreOpen] = useState(false);
@@ -227,6 +229,7 @@ export function Header() {
     "hathor-header--transparent",
     "hathor-header--over-hero",
     "hathor-header--owo-hero-layout",
+    isHomepage2 && "hathor-header--homepage-2",
     menuBarVisible && "hathor-header--menu-active",
     menuHovered && "hathor-header--menu-hovered",
     isScrolling && "hathor-header--scrolling",
@@ -244,18 +247,43 @@ export function Header() {
             onMouseEnter={handleMenuZoneEnter}
             onMouseLeave={handleMenuZoneLeave}
           >
-            <div className="hathor-header__col hathor-header__col--left">
-              <Link href="/" className="hathor-header__brand">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={
-                    menuHovered ? HATHOR_HERO_ICON_DARK_SRC : HATHOR_HERO_ICON_SRC
-                  }
-                  alt={HATHOR_BRAND_NAME}
-                  className="hathor-header__logo hathor-header__logo--icon"
-                />
-              </Link>
-            </div>
+            {isHomepage2 ? (
+              <div className="hathor-header__hp2-top">
+                <BookNowTrigger className="hathor-header__hp2-book cursor-hover">
+                  Book Now
+                </BookNowTrigger>
+                <Link href="/" className="hathor-header__brand hathor-header__hp2-brand">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={
+                      menuHovered
+                        ? HATHOR_HERO_ICON_DARK_SRC
+                        : HATHOR_HERO_ICON_SRC
+                    }
+                    alt={HATHOR_BRAND_NAME}
+                    className="hathor-header__logo hathor-header__logo--icon"
+                  />
+                </Link>
+                <BookNowTrigger className="hathor-header__hp2-book cursor-hover">
+                  Book Now
+                </BookNowTrigger>
+              </div>
+            ) : (
+              <div className="hathor-header__col hathor-header__col--left">
+                <Link href="/" className="hathor-header__brand">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={
+                      menuHovered
+                        ? HATHOR_HERO_ICON_DARK_SRC
+                        : HATHOR_HERO_ICON_SRC
+                    }
+                    alt={HATHOR_BRAND_NAME}
+                    className="hathor-header__logo hathor-header__logo--icon"
+                  />
+                </Link>
+              </div>
+            )}
 
             <nav
               className="hathor-header__col hathor-header__col--center"

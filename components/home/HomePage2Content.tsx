@@ -1,19 +1,13 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useRef } from "react";
-import { PublicThemeToggle } from "@/components/public/PublicThemeToggle";
+import { useEffect, useLayoutEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ParallaxHeroVideo } from "@/components/ui/ParallaxHeroVideo";
 import {
-  HATHOR_HERO_ICON_SRC,
   HATHOR_HERO_VIDEO_SRC,
   HATHOR_HERO_POSTER_SRC,
 } from "@/lib/branding";
-import {
-  NAV_ACCOMMODATIONS,
-  NAV_EXPERIENCES,
-  type NavGroup,
-} from "@/lib/public-nav";
 import { usePageScrollTransition } from "@/components/pages/pageScrollTransitionEngine";
 import styles from "./HomePage2Experience.module.css";
 
@@ -21,84 +15,13 @@ const PIN_VH = 4.2;
 const BACK_LOGO_SRC =
   "/branding/hathor-logo-behing-the-sheet-egypt-toors-pyramids.svg";
 
-const NAV_ITEMS: Array<
-  | { type: "link"; href: string; label: string }
-  | { type: "group"; href: string; label: string; group: NavGroup }
-> = [
-  { type: "link", href: "/", label: "Homepage" },
-  { type: "link", href: "/homepage-2", label: "Homepage 2" },
-  { type: "link", href: "/cruises", label: "Cruises" },
-  {
-    type: "group",
-    href: "/rooms",
-    label: "Accommodation",
-    group: NAV_ACCOMMODATIONS,
-  },
-  {
-    type: "group",
-    href: "/highlights",
-    label: "Experiences",
-    group: NAV_EXPERIENCES,
-  },
-  { type: "link", href: "/about", label: "About" },
-  { type: "link", href: "/contact", label: "Contact" },
-];
-
-function HomePage2Header() {
-  return (
-    <header className={styles.header}>
-      <div className={styles.bookingRail} aria-label="Booking shortcuts">
-        <Link href="/booking" className={styles.bookingPill}>
-          Book Now
-        </Link>
-        <Link href="/booking" className={styles.bookingPill}>
-          Book Now
-        </Link>
-      </div>
-
-      <div className={styles.logoWrap}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={HATHOR_HERO_ICON_SRC} alt="Hathor" className={styles.iconLogo} />
-      </div>
-
-      <nav className={styles.nav} aria-label="Homepage 2 navigation">
-        <ul className={styles.navList}>
-          {NAV_ITEMS.map((item) => (
-            <li
-              key={`${item.type}-${item.label}`}
-              className={item.type === "group" ? styles.navGroup : styles.navItem}
-            >
-              <Link href={item.href} className={styles.navLink}>
-                {item.label}
-              </Link>
-              {item.type === "group" ? (
-                <div className={styles.dropdown} role="menu">
-                  {item.group.links.map((link) => (
-                    <Link
-                      key={`${item.group.id}-${link.label}`}
-                      href={link.href}
-                      className={styles.dropdownLink}
-                      role="menuitem"
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                </div>
-              ) : null}
-            </li>
-          ))}
-        </ul>
-      </nav>
-    </header>
-  );
-}
-
 export function HomePage2Content() {
   const rootRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const maskRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
+  const backLogoRef = useRef<HTMLImageElement>(null);
 
   usePageScrollTransition({
     root: rootRef,
@@ -144,6 +67,42 @@ export function HomePage2Content() {
     };
   }, []);
 
+  useLayoutEffect(() => {
+    const root = rootRef.current;
+    const logo = backLogoRef.current;
+    if (!root || !logo) return;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        logo,
+        { y: 48, opacity: 0.82 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1.35,
+          ease: "power3.out",
+          delay: 0.2,
+        },
+      );
+
+      gsap.to(logo, {
+        y: () => -window.innerHeight * 0.18,
+        ease: "none",
+        scrollTrigger: {
+          trigger: root,
+          start: "top top",
+          end: () => `+=${window.innerHeight * PIN_VH}`,
+          scrub: 1.4,
+          invalidateOnRefresh: true,
+        },
+      });
+    }, root);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section
       ref={rootRef}
@@ -163,14 +122,12 @@ export function HomePage2Content() {
             <div className={styles.heroShade} aria-hidden />
           </div>
 
-          <HomePage2Header />
-          <PublicThemeToggle />
-
           <div ref={maskRef} className="pt-mask" aria-hidden="true" />
           <div ref={heroCopyRef} className={styles.heroCopy} aria-hidden="true" />
 
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
+            ref={backLogoRef}
             src={BACK_LOGO_SRC}
             alt=""
             className={styles.backLogo}
