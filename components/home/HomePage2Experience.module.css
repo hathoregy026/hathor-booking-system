@@ -33,6 +33,10 @@
   color: #faf8f5;
 }
 
+:global(html[data-homepage2-experience] .owo-footer__wordmark) {
+  display: none;
+}
+
 .stage {
   background: var(--hp2-black) !important;
 }
@@ -52,14 +56,18 @@
   z-index: 0;
 }
 
+.heroVideo :global(.hathor-parallax-hero__video) {
+  filter: brightness(0.38) saturate(0.84) contrast(1.12);
+}
+
 .heroShade {
   position: absolute;
   inset: 0;
   z-index: 2;
   pointer-events: none;
   background:
-    linear-gradient(180deg, rgb(0 0 0 / 0.32), rgb(0 0 0 / 0.12) 34%, rgb(0 0 0 / 0.52)),
-    radial-gradient(circle at 50% 12%, rgb(182 159 100 / 0.14), transparent 34rem);
+    linear-gradient(180deg, rgb(0 0 0 / 0.72), rgb(0 0 0 / 0.48) 38%, rgb(0 0 0 / 0.74)),
+    radial-gradient(circle at 50% 16%, rgb(182 159 100 / 0.16), transparent 34rem);
 }
 
 .header {
@@ -71,15 +79,19 @@
   display: grid;
   grid-template-rows: auto auto;
   justify-items: center;
-  gap: clamp(0.55rem, 1.25vh, 0.8rem);
-  padding: clamp(0.7rem, 1.8vh, 1.15rem) clamp(1rem, 3vw, 2.5rem) 0;
+  gap: clamp(0.45rem, 1vh, 0.7rem);
+  min-height: clamp(5.6rem, 11vh, 7.1rem);
+  padding: clamp(0.55rem, 1.4vh, 0.85rem) clamp(1rem, 3vw, 2.5rem) 0;
   pointer-events: none;
+  background:
+    linear-gradient(180deg, rgb(0 0 0 / 0.96), rgb(0 0 0 / 0.82) 72%, transparent 100%);
+  box-shadow: inset 0 -1px 0 rgb(182 159 100 / 0.36);
 }
 
 .bookingRail {
   display: grid;
   grid-template-columns: minmax(7rem, 13rem) minmax(7rem, 13rem);
-  gap: clamp(4.75rem, 16vw, 15rem);
+  gap: clamp(7rem, 20vw, 19rem);
   pointer-events: auto;
 }
 
@@ -115,22 +127,22 @@
 
 .logoWrap {
   position: absolute;
-  top: clamp(1.75rem, 4.5vh, 3rem);
+  top: clamp(1.45rem, 3.6vh, 2.35rem);
   left: 50%;
-  z-index: 2;
+  z-index: 4;
   transform: translateX(-50%);
   pointer-events: none;
 }
 
 .iconLogo {
-  width: clamp(2.1rem, 4vw, 3.25rem);
+  width: clamp(2.55rem, 4.1vw, 3.55rem);
   height: auto;
   filter: drop-shadow(0 0.4rem 1rem rgb(0 0 0 / 0.28));
 }
 
 .nav {
-  width: min(88vw, 78rem);
-  margin-top: clamp(1.75rem, 4.5vh, 3.25rem);
+  width: min(88vw, 76rem);
+  margin-top: clamp(2.3rem, 4.7vh, 3rem);
   pointer-events: auto;
 }
 
@@ -158,7 +170,7 @@
   justify-content: center;
   color: #faf8f5;
   font-family: var(--public-sans);
-  font-size: clamp(0.46rem, 0.72vw, 0.62rem);
+  font-size: clamp(0.48rem, 0.74vw, 0.62rem);
   font-weight: 800;
   line-height: 1;
   letter-spacing: 0.21em;
@@ -178,7 +190,7 @@
 
 .dropdown {
   position: absolute;
-  top: calc(100% + 0.45rem);
+  top: calc(100% + 0.18rem);
   left: 50%;
   z-index: 5;
   display: grid;
@@ -205,8 +217,8 @@
 
 .dropdownLink {
   justify-self: center;
-  min-width: 7.5rem;
-  padding: 0.28rem 0.78rem;
+  min-width: 8.75rem;
+  padding: 0.32rem 0.95rem;
   border-radius: 999px;
   background: linear-gradient(180deg, #dfc37a, #a98637);
   box-shadow:
@@ -241,12 +253,14 @@
 .backLogo {
   position: absolute;
   left: 50%;
-  top: clamp(10rem, 27vh, 18rem);
+  top: clamp(7.4rem, 23vh, 13rem);
   z-index: 8;
-  width: min(78vw, 58rem);
+  width: min(112vw, 94rem);
   height: auto;
   pointer-events: none;
-  filter: drop-shadow(0 1rem 2.5rem rgb(0 0 0 / 0.38));
+  filter:
+    drop-shadow(0 1rem 2.5rem rgb(0 0 0 / 0.48))
+    drop-shadow(0 0 1.25rem rgb(182 159 100 / 0.12));
   transform: translate3d(-50%, 2rem, 0);
   animation: hp2LogoRise 1.45s var(--hp2-ease) 0.25s forwards;
 }
@@ -261,6 +275,7 @@
   --pt-cream: var(--hp2-cream);
   background: var(--hp2-cream) !important;
   overflow: hidden !important;
+  box-shadow: 0 -1px 0 rgb(182 159 100 / 0.25);
 }
 
 .sheetCap {
