@@ -5,14 +5,15 @@ export const EMAIL_IMAGE_BUCKET = "email-images";
 
 export const EMAIL_IMAGE_FOLDER = "email-templates";
 
-export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+export const MAX_IMAGE_BYTES = 15 * 1024 * 1024;
 export const MAX_VIDEO_BYTES = 100 * 1024 * 1024;
+const MAX_EMAIL_IMAGE_BYTES = 5 * 1024 * 1024;
 
 export const ALLOWED_VIDEO_TYPES = new Set(["video/mp4", "video/webm"]);
 export const ALLOWED_VIDEO_EXTENSIONS = new Set(["mp4", "webm"]);
 
-export const MAX_EMAIL_LOGO_BYTES = MAX_IMAGE_BYTES;
-export const MAX_EMAIL_HERO_BYTES = MAX_IMAGE_BYTES;
+export const MAX_EMAIL_LOGO_BYTES = MAX_EMAIL_IMAGE_BYTES;
+export const MAX_EMAIL_HERO_BYTES = MAX_EMAIL_IMAGE_BYTES;
 
 export const ALLOWED_IMAGE_TYPES = new Set([
   "image/jpeg",
@@ -35,7 +36,7 @@ export function validateImageFile(file: File): string | null {
   }
 
   if (file.size > MAX_IMAGE_BYTES) {
-    return "Image must be 5 MB or smaller.";
+    return "Image must be 15 MB or smaller.";
   }
 
   return null;
@@ -55,7 +56,7 @@ export function validateEmailImageFile(
     return "Invalid file extension. Use .jpg, .png, or .webp.";
   }
 
-  if (file.size > MAX_IMAGE_BYTES) {
+  if (file.size > MAX_EMAIL_IMAGE_BYTES) {
     return "Image must be 5 MB or smaller.";
   }
 
