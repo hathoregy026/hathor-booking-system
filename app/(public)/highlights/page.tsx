@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import { HighlightsPageContent } from "@/components/pages/highlights/HighlightsPageContent";
 
 export const metadata: Metadata = {
-  title: "Authentic Egyptian Sailing | Hathor Dahabiya Cruise Highlights",
+  title: "The Collection | Hathor Nile Highlights",
   description:
-    "Discover Dahabiya cruise highlights — the Unfinished Obelisk, Temple of Hatshepsut, Valley of the Kings, and more along the Nile.",
+    "A curated gallery of Nile landmarks — the Unfinished Obelisk, Temple of Hatshepsut, Valley of the Kings — aboard Hathor Dahabiya.",
   openGraph: {
-    title: "Dahabiya Cruise Highlights | Hathor",
+    title: "The Collection | Hathor Highlights",
     description:
-      "Explore ancient wonders and serene Nile sailing aboard the luxury Hathor Dahabiya.",
+      "Whispered opulence along the Nile. Explore ancient wonders in editorial stillness.",
   },
 };
 
