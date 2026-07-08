@@ -77,24 +77,24 @@ export function HomePage2Content() {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         logo,
-        { y: 48, opacity: 0.82 },
+        { y: 64, opacity: 0.78 },
         {
           y: 0,
           opacity: 1,
-          duration: 1.35,
+          duration: 1.45,
           ease: "power3.out",
-          delay: 0.2,
+          delay: 0.15,
         },
       );
 
       gsap.to(logo, {
-        y: () => -window.innerHeight * 0.18,
+        y: () => window.innerHeight * 0.14,
         ease: "none",
         scrollTrigger: {
           trigger: root,
           start: "top top",
           end: () => `+=${window.innerHeight * PIN_VH}`,
-          scrub: 1.4,
+          scrub: 1.6,
           invalidateOnRefresh: true,
         },
       });
@@ -123,7 +123,14 @@ export function HomePage2Content() {
           </div>
 
           <div ref={maskRef} className="pt-mask" aria-hidden="true" />
-          <div ref={heroCopyRef} className={styles.heroCopy} aria-hidden="true" />
+
+          <div ref={heroCopyRef} className={styles.heroCopy}>
+            <p className={styles.heroEyebrow}>Ultra Luxury</p>
+            <h1 className={styles.heroTitle}>Dahabiya Cruise</h1>
+            <p className={styles.heroSubtitle}>
+              Your Luxury Trip Begins With Hathor Dahabiya
+            </p>
+          </div>
 
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -138,7 +145,9 @@ export function HomePage2Content() {
         <div ref={sheetRef} className={`pt-sheet ${styles.sheet}`}>
           <div className={styles.sheetCap} aria-hidden />
           <div className="pt-sheet__content">
-            <div className={styles.sheetBody} />
+            <div className={styles.sheetBody}>
+              <div className={styles.sheetPlaceholder} aria-hidden="true" />
+            </div>
           </div>
         </div>
       </div>

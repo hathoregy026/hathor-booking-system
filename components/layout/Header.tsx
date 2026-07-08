@@ -14,6 +14,7 @@ import {
 import {
   EXPLORE_LINKS,
   HEADER_NAV_ITEMS,
+  HEADER_NAV_ITEMS_HP2,
   NAV_GROUPS,
   type HeaderNavItem,
   type NavGroup,
@@ -148,6 +149,7 @@ export function Header() {
   const isHomepage2 = pathname === "/homepage-2";
   const isHomepage = isHeroRoute(pathname);
   const usePagesHeaderTransition = !isHomepage;
+  const navItems = isHomepage2 ? HEADER_NAV_ITEMS_HP2 : HEADER_NAV_ITEMS;
   const [exploreOpen, setExploreOpen] = useState(false);
   const [menuHovered, setMenuHovered] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
@@ -290,7 +292,7 @@ export function Header() {
               aria-label="Primary navigation"
             >
               <ul className="hathor-header__nav">
-                {HEADER_NAV_ITEMS.map((item) => {
+                {navItems.map((item) => {
                   const isActive = isNavItemActive(pathname, item);
 
                   if (item.type === "link") {
