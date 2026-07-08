@@ -1,12 +1,11 @@
 "use client";
 
 import { useRef } from "react";
-import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { ManagedImage } from "@/components/ui/ManagedImage";
-import { useHighlightsGalleryMotion } from "@/hooks/useHighlightsGalleryMotion";
-import { HATHOR_LOGO_DAY_SRC, HATHOR_BRAND_NAME } from "@/lib/branding";
+import { useHighlightsEditorialMotion } from "@/hooks/useHighlightsEditorialMotion";
 import { HIGHLIGHTS_PAGE } from "@/lib/page-content";
-import styles from "./HighlightsGallery.module.css";
+import styles from "./HighlightsEditorial.module.css";
 
 const LANDMARK_IMAGES = [
   "landmark-obelisk",
@@ -14,128 +13,175 @@ const LANDMARK_IMAGES = [
   "landmark-valley-kings",
 ] as const;
 
-/** Warm cream micro-blur for lazy-loaded gallery frames */
-const HG_BLUR_PLACEHOLDER =
-  "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=";
-
-function AtlasButton({ href, label }: { href: string; label: string }) {
+function KineticTitle({
+  lines,
+  className,
+}: {
+  lines: readonly string[];
+  className?: string;
+}) {
   return (
-    <Link href={href} className={styles.atlasLink} data-hg-reveal>
-      <svg viewBox="0 0 100 100" className={styles.atlasSvg} aria-hidden>
-        <defs>
-          <path
-            id="hg-atlas-ring"
-            d="M 50,50 m -34,0 a 34,34 0 1,1 68,0 a 34,34 0 1,1 -68,0"
-          />
-        </defs>
-        <text className={styles.atlasText}>
-          <textPath href="#hg-atlas-ring" startOffset="22%">
-            {label}
-          </textPath>
-        </text>
-      </svg>
-      <span
-        style={{
-          position: "absolute",
-          width: 1,
-          height: 1,
-          padding: 0,
-          margin: -1,
-          overflow: "hidden",
-          clip: "rect(0, 0, 0, 0)",
-          whiteSpace: "nowrap",
-          border: 0,
-        }}
-      >
-        {label}
-      </span>
-    </Link>
+    <h2 data-kinetic-title className={className ?? styles.kineticTitle}>
+      {lines.map((line) => (
+        <span key={line} className={styles.lineMask}>
+          <span data-kinetic-line className={styles.lineInner}>
+            {line}
+          </span>
+        </span>
+      ))}
+    </h2>
+  );
+}
+
+function MagneticLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: string;
+}) {
+  return (
+    <a href={href} data-magnetic-link className={styles.magneticLink}>
+      <span data-highlights-chapter-reveal>{children}</span>
+      <ArrowRight
+        data-magnetic-arrow
+        className={styles.magneticArrow}
+        size={16}
+        aria-hidden
+      />
+    </a>
+  );
+}
+
+function splitTitleLines(title: string): [string, string] | [string] {
+  const words = title.split(" ");
+  if (words.length <= 1) return [title];
+  const mid = Math.ceil(words.length / 2);
+  return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
+}
+
+type LandmarkChapterProps = {
+  index: number;
+  title: string;
+  body: string;
+  imageName: (typeof LANDMARK_IMAGES)[number];
+};
+
+function LandmarkChapter({ index, title, body, imageName }: LandmarkChapterProps) {
+  const even = index % 2 === 0;
+  const titleLines = splitTitleLines(title);
+
+  const textCol = (
+    <div className={styles.chapterText}>
+      <p className={styles.chapterIndex} data-highlights-chapter-reveal>
+        {String(index + 1).padStart(2, "0")} — Nile Landmark
+      </p>
+      <KineticTitle lines={titleLines} />
+      <div data-highlights-gold-rule className={styles.goldRule} />
+      <p className={styles.bodyText} data-highlights-chapter-reveal>
+        {body}
+      </p>
+    </div>
+  );
+
+  const imageCol = (
+    <div data-parallax-wrap className={styles.parallaxWrap}>
+      <div data-parallax-img className={styles.parallaxInner}>
+        <ManagedImage
+          name={imageName}
+          alt={title}
+          fill
+          className={styles.parallaxImg}
+          sizes="(max-width: 767px) 100vw, 50vw"
+          loading={index === 0 ? "eager" : "lazy"}
+        />
+      </div>
+    </div>
+  );
+
+  return (
+    <section data-highlights-chapter className={styles.section}>
+      <div className={styles.grid}>
+        {even ? (
+          <>
+            <div className={styles.landmarkImageEven}>{imageCol}</div>
+            <div className={styles.landmarkTextEven}>{textCol}</div>
+          </>
+        ) : (
+          <>
+            <div className={styles.landmarkTextOdd}>{textCol}</div>
+            <div className={styles.landmarkImageOdd}>{imageCol}</div>
+          </>
+        )}
+      </div>
+    </section>
   );
 }
 
 export function HighlightsPageContent() {
   const rootRef = useRef<HTMLDivElement>(null);
-  useHighlightsGalleryMotion(rootRef);
+  useHighlightsEditorialMotion(rootRef);
 
   return (
-    <div ref={rootRef} data-highlights-gallery className={styles.gallery}>
-      <div className={styles.halo} aria-hidden />
-      <div className={styles.vignette} aria-hidden />
-      <div data-hg-cursor className={styles.cursor} aria-hidden />
-
-      <img
-        src={HATHOR_LOGO_DAY_SRC}
-        alt=""
-        className={styles.logoWatermark}
-        aria-hidden
-      />
-
-      <header className={styles.hero}>
-        <h1 className={styles.marquee} data-hg-reveal>
-          The Collection
-        </h1>
-        <p className={styles.tagline} data-hg-reveal>
-          Where craft meets legacy.
-        </p>
-      </header>
-
-      <section className={styles.intro} aria-label="Introduction">
-        {HIGHLIGHTS_PAGE.intro.map((paragraph) => (
-          <p key={paragraph.slice(0, 48)} className={styles.introText} data-hg-reveal>
-            {paragraph}
-          </p>
-        ))}
-      </section>
-
-      <div className={styles.divider} aria-hidden>
-        <div className={styles.dividerBar} />
-      </div>
-
-      <section className={styles.waterfall} aria-label="Nile landmarks">
-        {HIGHLIGHTS_PAGE.landmarks.map((landmark, index) => (
-          <article
-            key={landmark.title}
-            data-hg-plinth
-            data-hg-reveal
-            className={`${styles.plinth} ${
-              index % 2 === 0 ? styles.plinthLeft : styles.plinthRight
-            }`}
-          >
-            <div data-hg-parallax className={styles.imageFrame}>
-              <div data-hg-parallax-img className={styles.parallaxInner}>
-                <ManagedImage
-                  name={LANDMARK_IMAGES[index]}
-                  alt={landmark.title}
-                  fill
-                  className={styles.galleryImg}
-                  sizes="(max-width: 767px) 94vw, 72vw"
-                  loading={index === 0 ? "eager" : "lazy"}
-                  placeholder="blur"
-                  blurDataURL={HG_BLUR_PLACEHOLDER}
-                />
-              </div>
-              <div className={styles.caption}>
-                <p className={styles.captionIndex}>
-                  {String(index + 1).padStart(2, "0")} — Landmark
+    <div
+      ref={rootRef}
+      data-highlights-editorial
+      className={styles.editorial}
+      style={{
+        backgroundColor: "#F4F1EA",
+        color: "#1A1A1A",
+        minHeight: "100vh",
+      }}
+    >
+      <section data-highlights-intro className={styles.section}>
+        <div className={styles.grid}>
+          <div className={styles.introBlock}>
+            <p className={styles.eyebrow} data-highlights-intro-reveal>
+              The Hathor Experience
+            </p>
+            <h1 className={styles.displayTitle} data-highlights-intro-reveal>
+              Dahabiya Cruise
+              <br />
+              <span className={styles.goldItalic}>Highlights</span>
+            </h1>
+            <div className={styles.introBody}>
+              {HIGHLIGHTS_PAGE.intro.map((paragraph) => (
+                <p
+                  key={paragraph.slice(0, 48)}
+                  className={styles.bodyText}
+                  data-highlights-intro-reveal
+                >
+                  {paragraph}
                 </p>
-                <h2 className={styles.captionTitle}>{landmark.title}</h2>
-                <p className={styles.captionBody}>{landmark.body}</p>
-              </div>
+              ))}
             </div>
-          </article>
-        ))}
+          </div>
+        </div>
       </section>
 
-      <footer className={styles.closing}>
-        <h2 className={styles.closingTitle} data-hg-reveal>
-          Whispered Opulence
-        </h2>
-        <p className={styles.closingCopy} data-hg-reveal>
-          Sail the Nile aboard {HATHOR_BRAND_NAME}. Silence, space, and the
-          river — composed as one.
-        </p>
-        <AtlasButton href="/cruises" label="Explore" />
-      </footer>
+      {HIGHLIGHTS_PAGE.landmarks.map((landmark, index) => (
+        <LandmarkChapter
+          key={landmark.title}
+          index={index}
+          title={landmark.title}
+          body={landmark.body}
+          imageName={LANDMARK_IMAGES[index]}
+        />
+      ))}
+
+      <section className={styles.ctaSection} aria-label="Explore cruises">
+        <div className={styles.ctaInner}>
+          <h2 className={styles.ctaTitle} data-highlights-intro-reveal>
+            Explore the Nile
+          </h2>
+          <p className={styles.ctaBody} data-highlights-intro-reveal>
+            Every bend of the river reveals another chapter of Egypt&apos;s
+            timeless story. Sail in privacy, comfort, and true elegance aboard
+            Hathor Dahabiya.
+          </p>
+          <MagneticLink href="/cruises">Discover cruises</MagneticLink>
+        </div>
+      </section>
     </div>
   );
 }
