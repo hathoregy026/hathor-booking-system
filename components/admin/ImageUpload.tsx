@@ -1,8 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AlertCircle, ImageIcon, Loader2, Trash2, Upload } from "lucide-react";
-import { ADMIN_UPLOAD_TIMEOUT_MS, adminFetch } from "@/lib/admin-fetch";
+import {
+  AlertCircle,
+  CheckCircle2,
+  ImageIcon,
+  Loader2,
+  Trash2,
+  Upload,
+} from "lucide-react";
+import { ADMIN_UPLOAD_TIMEOUT_MS } from "@/lib/admin-fetch";
 import { MAX_IMAGE_BYTES } from "@/lib/image-upload";
 
 const ACCEPTED_TYPES = "image/jpeg,image/png,image/webp";
@@ -18,6 +25,12 @@ type ImageUploadProps = {
   allowClear?: boolean;
 };
 
+type UploadResponse = {
+  url?: string;
+  dataUrl?: string;
+  error?: string;
+};
+
 function validateClientFile(file: File): string | null {
   if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
     return "Only JPG, PNG, and WebP images are allowed.";
@@ -28,6 +41,62 @@ function validateClientFile(file: File): string | null {
   }
 
   return null;
+}
+
+function uploadWithProgress(
+  formData: FormData,
+  onProgress: (progress: number) => void,
+): Promise<UploadResponse> {
+  return new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest();
+
+    request.open("POST", "/api/admin/upload");
+    request.timeout = ADMIN_UPLOAD_TIMEOUT_MS;
+    request.withCredentials = true;
+
+    request.upload.onprogress = (event) => {
+      if (!event.lengthComputable) return;
+      const percent = Math.round((event.loaded / event.total) * 85);
+      onProgress(Math.min(percent, 85));
+    };
+
+    request.onload = () => {
+      let data: UploadResponse = {};
+
+      try {
+        data = request.responseText
+          ? (JSON.parse(request.responseText) as UploadResponse)
+          : {};
+      } catch {
+        reject(new Error("Upload failed: invalid server response"));
+        return;
+      }
+
+      if (request.status < 200 || request.status >= 300) {
+        reject(new Error(data.error || "Upload failed"));
+        return;
+      }
+
+      onProgress(100);
+      resolve(data);
+    };
+
+    request.onerror = () => {
+      reject(new Error("Upload failed. Check your connection and try again."));
+    };
+
+    request.ontimeout = () => {
+      reject(
+        new Error("Upload timed out. Try a smaller image or a stronger connection."),
+      );
+    };
+
+    request.onabort = () => {
+      reject(new Error("Upload cancelled."));
+    };
+
+    request.send(formData);
+  });
 }
 
 export function ImageUpload({
@@ -45,6 +114,8 @@ export function ImageUpload({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const [uploadComplete, setUploadComplete] = useState(false);
 
   useEffect(() => {
     if (!selectedFile) {
@@ -65,6 +136,8 @@ export function ImageUpload({
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     setError(null);
+    setUploadProgress(null);
+    setUploadComplete(false);
 
     if (!file) {
       setSelectedFile(null);
@@ -87,26 +160,15 @@ export function ImageUpload({
 
     setIsUploading(true);
     setError(null);
+    setUploadProgress(0);
+    setUploadComplete(false);
 
     try {
       const formData = new FormData();
       formData.append("file", selectedFile);
       formData.append("folder", folder);
 
-      const response = await adminFetch("/api/admin/upload", {
-        method: "POST",
-        body: formData,
-      }, ADMIN_UPLOAD_TIMEOUT_MS);
-
-      const data = (await response.json()) as {
-        url?: string;
-        dataUrl?: string;
-        error?: string;
-      };
-
-      if (!response.ok) {
-        throw new Error(data.error || "Upload failed");
-      }
+      const data = await uploadWithProgress(formData, setUploadProgress);
 
       if (!data.url) {
         throw new Error("Upload succeeded but no URL was returned");
@@ -114,6 +176,8 @@ export function ImageUpload({
 
       onChange(data.url);
       onDataUrlChange?.(data.dataUrl ?? null);
+      setUploadProgress(100);
+      setUploadComplete(true);
       setSelectedFile(null);
       if (inputRef.current) {
         inputRef.current.value = "";
@@ -130,6 +194,8 @@ export function ImageUpload({
   const handleClear = () => {
     setError(null);
     setSelectedFile(null);
+    setUploadProgress(null);
+    setUploadComplete(false);
     onChange(null);
     onDataUrlChange?.(null);
     if (inputRef.current) {
@@ -138,6 +204,11 @@ export function ImageUpload({
   };
 
   const isAdmin = variant === "admin";
+  const showUploadProgress = uploadProgress !== null && (isUploading || uploadComplete);
+  const uploadStatusText =
+    uploadProgress !== null && uploadProgress >= 85 && uploadProgress < 100
+      ? "Processing image..."
+      : `Uploading... ${uploadProgress ?? 0}%`;
 
   return (
     <div className="space-y-3">
@@ -249,6 +320,60 @@ export function ImageUpload({
           </button>
         )}
       </div>
+
+      {showUploadProgress && (
+        <div
+          className="space-y-2 rounded-xl border p-3"
+          style={
+            isAdmin
+              ? { borderColor: "var(--border)", background: "var(--input-bg)" }
+              : undefined
+          }
+        >
+          <div className="flex items-center justify-between gap-3 text-xs">
+            <span
+              className="inline-flex items-center gap-1.5 font-medium"
+              style={isAdmin ? { color: "var(--text-primary)" } : undefined}
+            >
+              {uploadComplete ? (
+                <>
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600" aria-hidden />
+                  Upload complete
+                </>
+              ) : (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                  {uploadStatusText}
+                </>
+              )}
+            </span>
+            <span style={isAdmin ? { color: "var(--text-muted)" } : undefined}>
+              {uploadProgress ?? 0}%
+            </span>
+          </div>
+          <div
+            className="h-2 overflow-hidden rounded-full"
+            style={{
+              background: isAdmin ? "var(--border)" : "rgb(226 232 240)",
+            }}
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={uploadProgress ?? 0}
+            aria-label={`${label} upload progress`}
+          >
+            <div
+              className="h-full rounded-full transition-all duration-300 ease-out"
+              style={{
+                width: `${uploadProgress ?? 0}%`,
+                background: uploadComplete
+                  ? "#059669"
+                  : "linear-gradient(90deg, #b69f64, #d8c17f)",
+              }}
+            />
+          </div>
+        </div>
+      )}
 
       {selectedFile && !isUploading && (
         <p
