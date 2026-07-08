@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { preload } from "react-dom";
 import { HomePage2Content } from "@/components/home/HomePage2Content";
 import { HATHOR_HERO_POSTER_SRC, HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
+import "./homepage-2.css";
 
 export const metadata: Metadata = {
   title: "Homepage 2 | Hathor Dahabiya",

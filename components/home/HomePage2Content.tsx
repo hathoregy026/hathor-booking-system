@@ -50,9 +50,11 @@ export function HomePage2Content() {
       const pinProgress = Math.max(0, (scroll - top) / (vh * PIN_VH));
 
       const inHeroZone = pinProgress < 0.12;
-      const hideMedia = !inHeroZone && pinProgress > 0.82;
-      const pastPin = pinProgress >= 0.92;
+      const creamStage = pinProgress > 0.38;
+      const hideMedia = !inHeroZone && pinProgress > 0.45;
+      const pastPin = pinProgress >= 0.85;
 
+      root.classList.toggle("hathor-page-scroll--cream-stage", creamStage);
       root.classList.toggle("hathor-page-scroll--media-gone", hideMedia);
       root.classList.toggle("hathor-page-scroll--past-pin", pastPin);
     };
@@ -134,13 +136,13 @@ export function HomePage2Content() {
             </div>
 
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              ref={backLogoRef}
-              src={BACK_LOGO_SRC}
-              alt=""
-              className={styles.backLogo}
-              aria-hidden
-            />
+          <img
+            ref={backLogoRef}
+            src={BACK_LOGO_SRC}
+            alt=""
+            className={`homepage-2-back-logo ${styles.backLogo}`}
+            aria-hidden
+          />
           </div>
 
           <div ref={sheetRef} className={`pt-sheet ${styles.sheet}`}>
@@ -149,8 +151,8 @@ export function HomePage2Content() {
         </div>
       </section>
 
-      <div className={styles.creamFloor} aria-hidden="true">
-        <div className={styles.creamFloorInner} />
+      <div className="homepage-2-cream-floor" aria-hidden="true">
+        <div className="homepage-2-cream-floor__inner" />
       </div>
     </>
   );

@@ -1,0 +1,107 @@
+/**
+ * Homepage 2 only — scroll transition + cream floor + footer seam.
+ * Loaded from homepage-2/page.tsx (after public.css).
+ */
+
+html[data-homepage2-experience],
+html[data-homepage2-experience] body,
+html[data-homepage2-experience] body.has-page-scroll-transition {
+  background-color: #ece8df !important;
+}
+
+html[data-homepage2-experience] .public-site,
+html[data-homepage2-experience] .public-main,
+html[data-homepage2-experience] .page-transition {
+  background-color: #ece8df !important;
+}
+
+html[data-homepage2-experience] .public-main {
+  flex: 0 1 auto !important;
+  min-height: 0 !important;
+}
+
+html[data-homepage2-experience] body.has-page-scroll-transition .pin-spacer {
+  background-color: #ece8df !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+html[data-homepage2-experience] [data-homepage2-transition] {
+  background: transparent !important;
+  --pt-cream: #ece8df;
+}
+
+html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition] .pt-stage {
+  background-color: #020202;
+}
+
+html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition].hathor-page-scroll--cream-stage .pt-stage,
+html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition].hathor-page-scroll--media-gone .pt-stage,
+html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition].hathor-page-scroll--past-pin .pt-stage {
+  background-color: #ece8df !important;
+  overflow: visible !important;
+}
+
+html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition].hathor-page-scroll--cream-stage .pt-mask,
+html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition].hathor-page-scroll--media-gone .pt-mask,
+html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition].hathor-page-scroll--past-pin .pt-mask,
+html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition].hathor-page-scroll--cream-stage .pt-mask.is-active,
+html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition].hathor-page-scroll--media-gone .pt-mask.is-active {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+html[data-homepage2-experience] .homepage-2-back-logo {
+  position: absolute;
+  left: 50%;
+  top: clamp(8.5rem, 24vh, 13.5rem);
+  z-index: 8;
+  width: min(102vw, 88rem);
+  height: auto;
+  pointer-events: none;
+  transform: translate3d(-50%, 0, 0);
+}
+
+html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition] .pt-hero {
+  overflow: visible !important;
+}
+
+html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition].hathor-page-scroll--media-gone .pt-hero__media,
+html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition].hathor-page-scroll--past-pin .pt-hero__media {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+html[data-homepage2-experience] body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-homepage2-transition] .pt-sheet {
+  background-color: #ece8df !important;
+}
+
+html[data-homepage2-experience] .homepage-2-cream-floor {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  background-color: #ece8df;
+}
+
+html[data-homepage2-experience] .homepage-2-cream-floor__inner {
+  min-height: clamp(72rem, 160vh, 120rem);
+  background-color: #ece8df;
+}
+
+html[data-homepage2-experience] .public-site > .owo-footer {
+  margin-top: 0 !important;
+  background-color: #ece8df !important;
+  border-top: none !important;
+}
+
+html[data-homepage2-experience] .owo-footer__wordmark {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  html[data-homepage2-experience] .homepage-2-cream-floor__inner {
+    min-height: clamp(90rem, 220vh, 140rem);
+  }
+}

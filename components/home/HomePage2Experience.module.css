@@ -10,58 +10,6 @@
   --pt-cream: var(--hp2-cream);
 }
 
-:global(html[data-homepage2-experience] .public-main--hero) {
-  padding-top: 0 !important;
-  margin-top: 0 !important;
-}
-
-:global(html[data-homepage2-experience] .page-transition) {
-  background: var(--hp2-cream);
-}
-
-:global(html[data-homepage2-experience].has-page-scroll-transition),
-:global(html[data-homepage2-experience] body.has-page-scroll-transition) {
-  background-color: var(--hp2-cream) !important;
-}
-
-:global(html[data-homepage2-experience] body.has-page-scroll-transition .pin-spacer) {
-  background: var(--hp2-cream) !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-:global(html[data-homepage2-experience] body.has-page-scroll-transition .public-site),
-:global(html[data-homepage2-experience] body.has-page-scroll-transition .public-main),
-:global(html[data-homepage2-experience] body.has-page-scroll-transition .page-transition) {
-  background-color: var(--hp2-cream) !important;
-}
-
-:global(html[data-homepage2-experience] [data-homepage2-transition].hathor-page-scroll--past-pin .pt-stage) {
-  overflow: visible !important;
-  background-color: var(--hp2-cream) !important;
-}
-
-:global(html[data-homepage2-experience] [data-homepage2-transition].hathor-page-scroll--media-gone .pt-hero__media),
-:global(html[data-homepage2-experience] [data-homepage2-transition].hathor-page-scroll--past-pin .pt-hero__media) {
-  opacity: 0 !important;
-}
-
-:global(html[data-homepage2-experience] [data-homepage2-transition].hathor-page-scroll--media-gone .pt-mask),
-:global(html[data-homepage2-experience] [data-homepage2-transition].hathor-page-scroll--past-pin .pt-mask) {
-  opacity: 0 !important;
-  visibility: hidden !important;
-}
-
-:global(html[data-homepage2-experience] .owo-footer__wordmark) {
-  display: none;
-}
-
-:global(html[data-homepage2-experience] .owo-footer) {
-  margin-top: 0 !important;
-  background: var(--hp2-cream) !important;
-  border-top: none !important;
-}
-
 /* Homepage 2 only — Book Now row + gold dropdown (nav font/style unchanged) */
 :global(.hathor-header--homepage-2 .hathor-header__hp2-top) {
   order: 1;
@@ -194,7 +142,6 @@
 
 .hero {
   background: var(--hp2-black);
-  overflow: visible !important;
 }
 
 .heroMedia {
@@ -267,18 +214,10 @@
 }
 
 .backLogo {
-  position: absolute;
-  left: 50%;
-  top: clamp(8.5rem, 24vh, 13.5rem);
-  z-index: 8;
-  width: min(102vw, 88rem);
-  height: auto;
-  pointer-events: none;
   will-change: transform;
   filter:
     drop-shadow(0 1rem 2.5rem rgb(0 0 0 / 0.42))
     drop-shadow(0 0 1.25rem rgb(182 159 100 / 0.1));
-  transform: translate3d(-50%, 0, 0);
 }
 
 .sheet {
@@ -290,19 +229,6 @@
 
 .sheetCap {
   min-height: clamp(2rem, 5vh, 3rem);
-}
-
-.creamFloor {
-  position: relative;
-  z-index: 1;
-  margin: 0;
-  padding: 0;
-  background: var(--hp2-cream);
-}
-
-.creamFloorInner {
-  min-height: clamp(72rem, 160vh, 120rem);
-  background: var(--hp2-cream);
 }
 
 @media (max-width: 767px) {
@@ -321,15 +247,6 @@
   :global(.hathor-header--homepage-2 .hathor-header__hp2-top .hathor-header__hp2-book:last-child) {
     justify-self: stretch;
     min-width: 0;
-  }
-
-  .backLogo {
-    top: clamp(7rem, 20vh, 10rem);
-    width: 98vw;
-  }
-
-  .creamFloorInner {
-    min-height: clamp(90rem, 220vh, 140rem);
   }
 }
 
