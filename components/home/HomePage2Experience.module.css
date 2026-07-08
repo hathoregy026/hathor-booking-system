@@ -1,0 +1,312 @@
+.root {
+  --hp2-black: #020202;
+  --hp2-gold: #b69f64;
+  --hp2-cream: #ece8df;
+  --hp2-ink: #0a0a0a;
+  --hp2-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  position: relative;
+  isolation: isolate;
+  background: var(--hp2-black);
+}
+
+:global(html[data-homepage2-experience] .hathor-header) {
+  display: none !important;
+}
+
+:global(html[data-homepage2-experience] .public-main--hero) {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+:global(html[data-homepage2-experience] .page-transition) {
+  background: var(--hp2-black);
+}
+
+:global(html[data-homepage2-experience] .public-theme-toggle) {
+  position: fixed;
+  top: clamp(1.2rem, 2.5vw, 1.9rem);
+  right: clamp(1.2rem, 2.5vw, 1.9rem);
+  z-index: 90;
+  border-color: rgb(250 248 245 / 0.32);
+  background: rgb(10 10 10 / 0.32);
+  color: #faf8f5;
+}
+
+.stage {
+  background: var(--hp2-black) !important;
+}
+
+.hero {
+  background: var(--hp2-black);
+}
+
+.heroMedia {
+  overflow: hidden;
+  background: var(--hp2-black);
+}
+
+.heroVideo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.heroShade {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgb(0 0 0 / 0.32), rgb(0 0 0 / 0.12) 34%, rgb(0 0 0 / 0.52)),
+    radial-gradient(circle at 50% 12%, rgb(182 159 100 / 0.14), transparent 34rem);
+}
+
+.header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 70;
+  display: grid;
+  grid-template-rows: auto auto;
+  justify-items: center;
+  gap: clamp(0.55rem, 1.25vh, 0.8rem);
+  padding: clamp(0.7rem, 1.8vh, 1.15rem) clamp(1rem, 3vw, 2.5rem) 0;
+  pointer-events: none;
+}
+
+.bookingRail {
+  display: grid;
+  grid-template-columns: minmax(7rem, 13rem) minmax(7rem, 13rem);
+  gap: clamp(4.75rem, 16vw, 15rem);
+  pointer-events: auto;
+}
+
+.bookingPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.35rem;
+  padding: 0.2rem 1.15rem;
+  border: 1px solid rgb(250 248 245 / 0.22);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #dfc37a, #a98637);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.42),
+    0 0.45rem 1.25rem rgb(0 0 0 / 0.2);
+  color: #fff7d6;
+  font-family: var(--public-sans);
+  font-size: clamp(0.48rem, 0.7vw, 0.58rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition:
+    transform 0.32s var(--hp2-ease),
+    filter 0.32s var(--hp2-ease);
+}
+
+.bookingPill:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.logoWrap {
+  position: absolute;
+  top: clamp(1.75rem, 4.5vh, 3rem);
+  left: 50%;
+  z-index: 2;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.iconLogo {
+  width: clamp(2.1rem, 4vw, 3.25rem);
+  height: auto;
+  filter: drop-shadow(0 0.4rem 1rem rgb(0 0 0 / 0.28));
+}
+
+.nav {
+  width: min(88vw, 78rem);
+  margin-top: clamp(1.75rem, 4.5vh, 3.25rem);
+  pointer-events: auto;
+}
+
+.navList {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: clamp(0.5rem, 1.4vw, 1.5rem);
+  align-items: start;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.navItem,
+.navGroup {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #faf8f5;
+  font-family: var(--public-sans);
+  font-size: clamp(0.46rem, 0.72vw, 0.62rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.21em;
+  text-transform: uppercase;
+  text-decoration: none;
+  text-shadow: 0 0.35rem 0.9rem rgb(0 0 0 / 0.55);
+  transition:
+    color 0.28s var(--hp2-ease),
+    transform 0.28s var(--hp2-ease);
+}
+
+.navLink:hover,
+.navGroup:hover .navLink {
+  color: #f5dd9c;
+  transform: translateY(-1px);
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 0.45rem);
+  left: 50%;
+  z-index: 5;
+  display: grid;
+  min-width: clamp(8rem, 12vw, 12rem);
+  gap: 0.18rem;
+  padding: 0.2rem 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(-50%, -0.35rem);
+  transition:
+    opacity 0.26s var(--hp2-ease),
+    visibility 0.26s var(--hp2-ease),
+    transform 0.26s var(--hp2-ease);
+}
+
+.navGroup:hover .dropdown,
+.navGroup:focus-within .dropdown {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+
+.dropdownLink {
+  justify-self: center;
+  min-width: 7.5rem;
+  padding: 0.28rem 0.78rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #dfc37a, #a98637);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.36),
+    0 0.55rem 1.25rem rgb(0 0 0 / 0.26);
+  color: #fff7d6;
+  font-family: var(--public-sans);
+  font-size: clamp(0.46rem, 0.65vw, 0.55rem);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition:
+    transform 0.28s var(--hp2-ease),
+    filter 0.28s var(--hp2-ease);
+}
+
+.dropdownLink:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.heroCopy {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.backLogo {
+  position: absolute;
+  left: 50%;
+  top: clamp(10rem, 27vh, 18rem);
+  z-index: 8;
+  width: min(78vw, 58rem);
+  height: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 1rem 2.5rem rgb(0 0 0 / 0.38));
+  transform: translate3d(-50%, 2rem, 0);
+  animation: hp2LogoRise 1.45s var(--hp2-ease) 0.25s forwards;
+}
+
+@keyframes hp2LogoRise {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.sheet {
+  --pt-cream: var(--hp2-cream);
+  background: var(--hp2-cream) !important;
+  overflow: hidden !important;
+}
+
+.sheetCap {
+  min-height: clamp(3rem, 9vh, 6rem);
+}
+
+.sheetBody {
+  min-height: clamp(88rem, 190vh, 140rem);
+  background: var(--hp2-cream);
+}
+
+@media (max-width: 767px) {
+  .bookingRail {
+    grid-template-columns: 1fr 1fr;
+    width: min(76vw, 22rem);
+    gap: 1rem;
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .logoWrap {
+    top: 3rem;
+  }
+
+  .backLogo {
+    top: 10rem;
+    width: 88vw;
+  }
+
+  .sheetBody {
+    min-height: 150vh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backLogo {
+    animation: none;
+    transform: translate3d(-50%, 0, 0);
+  }
+
+  .bookingPill,
+  .dropdown,
+  .dropdownLink,
+  .navLink {
+    transition: none;
+  }
+}

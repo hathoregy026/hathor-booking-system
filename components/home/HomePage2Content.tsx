@@ -1,152 +1,190 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { TestimonialsCarousel } from "@/components/public/TestimonialsCarousel";
-import { AccommodationsBento } from "@/components/home/AccommodationsBento";
-import { EditorialChapter } from "@/components/home/EditorialChapter";
-import { FullBleedMedia } from "@/components/home/FullBleedMedia";
-import { Hero } from "@/components/home/Hero";
-import { LayeredCollageSection } from "@/components/home/LayeredCollageSection";
-import { PostHeroIntro } from "@/components/home/PostHeroIntro";
-import { PostHeroMedia } from "@/components/home/PostHeroMedia";
-import { LegacyScrollSection } from "@/components/home/LegacyScrollSection";
-import { ScrollPinnedSection } from "@/components/home/ScrollPinnedSection";
-import { SketchSection } from "@/components/home/SketchSection";
-import { TextBridge } from "@/components/home/TextBridge";
-import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { useEffect, useRef } from "react";
+import { PublicThemeToggle } from "@/components/public/PublicThemeToggle";
+import { ParallaxHeroVideo } from "@/components/ui/ParallaxHeroVideo";
 import {
-  HOMEPAGE_ITINERARIES,
-  HOMEPAGE_PARTNERS,
-  HOMEPAGE_REVIEWS,
-} from "@/lib/homepage-content";
+  HATHOR_HERO_ICON_SRC,
+  HATHOR_HERO_VIDEO_SRC,
+  HATHOR_HERO_POSTER_SRC,
+} from "@/lib/branding";
 import {
-  HOMEPAGE_ALTERNATING_CHAPTERS,
-  HOMEPAGE_CINEMATIC_BRIDGE,
-  HOMEPAGE_RESIDENCES_CHAPTERS,
-  HOMEPAGE_SPLIT_CHAPTERS,
-} from "@/lib/homepage-sections";
+  NAV_ACCOMMODATIONS,
+  NAV_EXPERIENCES,
+  type NavGroup,
+} from "@/lib/public-nav";
+import { usePageScrollTransition } from "@/components/pages/pageScrollTransitionEngine";
+import styles from "./HomePage2Experience.module.css";
 
-const ITINERARY_PILLARS = HOMEPAGE_ITINERARIES.cards.map((card) => ({
-  title: card.title,
-  body: `${card.duration}. Sailing ${card.schedule}.`,
-}));
+const PIN_VH = 4.2;
+const BACK_LOGO_SRC =
+  "/branding/hathor-logo-behing-the-sheet-egypt-toors-pyramids.svg";
 
-const STATS = [
-  { value: "8", label: "Luxury Cabins" },
-  { value: "2", label: "Suites" },
-  { value: "2", label: "Royal Suites" },
-  { value: "12", label: "Guest Capacity" },
-] as const;
+const NAV_ITEMS: Array<
+  | { type: "link"; href: string; label: string }
+  | { type: "group"; href: string; label: string; group: NavGroup }
+> = [
+  { type: "link", href: "/", label: "Homepage" },
+  { type: "link", href: "/homepage-2", label: "Homepage 2" },
+  { type: "link", href: "/cruises", label: "Cruises" },
+  {
+    type: "group",
+    href: "/rooms",
+    label: "Accommodation",
+    group: NAV_ACCOMMODATIONS,
+  },
+  {
+    type: "group",
+    href: "/highlights",
+    label: "Experiences",
+    group: NAV_EXPERIENCES,
+  },
+  { type: "link", href: "/about", label: "About" },
+  { type: "link", href: "/contact", label: "Contact" },
+];
+
+function HomePage2Header() {
+  return (
+    <header className={styles.header}>
+      <div className={styles.bookingRail} aria-label="Booking shortcuts">
+        <Link href="/booking" className={styles.bookingPill}>
+          Book Now
+        </Link>
+        <Link href="/booking" className={styles.bookingPill}>
+          Book Now
+        </Link>
+      </div>
+
+      <div className={styles.logoWrap}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={HATHOR_HERO_ICON_SRC} alt="Hathor" className={styles.iconLogo} />
+      </div>
+
+      <nav className={styles.nav} aria-label="Homepage 2 navigation">
+        <ul className={styles.navList}>
+          {NAV_ITEMS.map((item) => (
+            <li
+              key={`${item.type}-${item.label}`}
+              className={item.type === "group" ? styles.navGroup : styles.navItem}
+            >
+              <Link href={item.href} className={styles.navLink}>
+                {item.label}
+              </Link>
+              {item.type === "group" ? (
+                <div className={styles.dropdown} role="menu">
+                  {item.group.links.map((link) => (
+                    <Link
+                      key={`${item.group.id}-${link.label}`}
+                      href={link.href}
+                      className={styles.dropdownLink}
+                      role="menuitem"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              ) : null}
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </header>
+  );
+}
 
 export function HomePage2Content() {
+  const rootRef = useRef<HTMLElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const maskRef = useRef<HTMLDivElement>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const heroCopyRef = useRef<HTMLDivElement>(null);
+
+  usePageScrollTransition({
+    root: rootRef,
+    stage: stageRef,
+    mask: maskRef,
+    sheet: sheetRef,
+    heroCopy: heroCopyRef,
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-homepage2-experience", "");
+
+    return () => {
+      document.documentElement.removeAttribute("data-homepage2-experience");
+    };
+  }, []);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+
+    const syncMediaVisibility = () => {
+      const vh = window.innerHeight;
+      const top = root.getBoundingClientRect().top + window.scrollY;
+      const scroll = window.scrollY;
+      const pinProgress = Math.max(0, (scroll - top) / (vh * PIN_VH));
+
+      const inHeroZone = pinProgress < 0.12;
+      const hideMedia = !inHeroZone && pinProgress > 0.82;
+      const pastPin = pinProgress >= 0.92;
+
+      root.classList.toggle("hathor-page-scroll--media-gone", hideMedia);
+      root.classList.toggle("hathor-page-scroll--past-pin", pastPin);
+    };
+
+    syncMediaVisibility();
+    window.addEventListener("scroll", syncMediaVisibility, { passive: true });
+    window.addEventListener("resize", syncMediaVisibility);
+
+    return () => {
+      window.removeEventListener("scroll", syncMediaVisibility);
+      window.removeEventListener("resize", syncMediaVisibility);
+    };
+  }, []);
+
   return (
-    <>
-      <Hero />
-      <PostHeroIntro />
-      <PostHeroMedia />
+    <section
+      ref={rootRef}
+      data-page-transition
+      data-homepage2-transition
+      className={`hathor-page-scroll-transition hathor-page-hero ${styles.root}`}
+    >
+      <div ref={stageRef} className={`pt-stage ${styles.stage}`}>
+        <div className={`pt-hero ${styles.hero}`}>
+          <div className={`pt-hero__media ${styles.heroMedia}`}>
+            <ParallaxHeroVideo
+              src={HATHOR_HERO_VIDEO_SRC}
+              poster={HATHOR_HERO_POSTER_SRC}
+              ariaLabel="Hathor Dahabiya sailing on the Nile"
+              className={styles.heroVideo}
+            />
+            <div className={styles.heroShade} aria-hidden />
+          </div>
 
-      <EditorialChapter
-        id="itineraries"
-        eyebrow="Journeys"
-        title={HOMEPAGE_ITINERARIES.title}
-        intro={`${HOMEPAGE_ITINERARIES.subtitle}. ${HOMEPAGE_ITINERARIES.intro}`}
-        pillars={ITINERARY_PILLARS}
-        discoverHref="/cruises"
-        discoverLabel="Discover itineraries"
-        variant="dark"
-      />
+          <HomePage2Header />
+          <PublicThemeToggle />
 
-      <LegacyScrollSection />
+          <div ref={maskRef} className="pt-mask" aria-hidden="true" />
+          <div ref={heroCopyRef} className={styles.heroCopy} aria-hidden="true" />
 
-      <FullBleedMedia imageName="home-cinematic-video" showCta={false} />
-      <TextBridge
-        headline={HOMEPAGE_CINEMATIC_BRIDGE.headline}
-        body={HOMEPAGE_CINEMATIC_BRIDGE.body}
-      />
-      <FullBleedMedia imageName="home-cinematic-still" showCta={false} />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={BACK_LOGO_SRC}
+            alt=""
+            className={styles.backLogo}
+            aria-hidden
+          />
+        </div>
 
-      <ScrollPinnedSection chapters={HOMEPAGE_SPLIT_CHAPTERS} variant="split" />
-      <FullBleedMedia imageName="home-split-courtyard" showCta={false} />
-
-      <LayeredCollageSection />
-      <FullBleedMedia imageName="home-collage-living" showCta={false} />
-
-      <ScrollPinnedSection
-        chapters={HOMEPAGE_RESIDENCES_CHAPTERS}
-        variant="split"
-        id="residences"
-      />
-      <FullBleedMedia imageName="home-residences-rooftop" showCta={false} />
-      <SketchSection />
-
-      <AccommodationsBento />
-
-      <section className="hathor-stats-band">
-        <div className="hathor-container">
-          <div className="hathor-stats-grid">
-            {STATS.map((stat, index) => (
-              <ScrollReveal key={stat.label} delay={index * 80}>
-                <div className="hathor-stat">
-                  <p className="hathor-stat__value">{stat.value}</p>
-                  <p className="hathor-stat__label">{stat.label}</p>
-                </div>
-              </ScrollReveal>
-            ))}
+        <div ref={sheetRef} className={`pt-sheet ${styles.sheet}`}>
+          <div className={styles.sheetCap} aria-hidden />
+          <div className="pt-sheet__content">
+            <div className={styles.sheetBody} />
           </div>
         </div>
-      </section>
-
-      <ScrollPinnedSection
-        chapters={HOMEPAGE_ALTERNATING_CHAPTERS}
-        variant="alternating"
-      />
-
-      <section id="partners" className="owo-chapter owo-chapter--dark">
-        <div className="hathor-container">
-          <ScrollReveal>
-            <header className="owo-chapter__header owo-chapter__header--center">
-              <h2 className="owo-chapter__title">{HOMEPAGE_PARTNERS.title}</h2>
-            </header>
-          </ScrollReveal>
-          <div className="owo-partners">
-            {HOMEPAGE_PARTNERS.partners.map((partner, index) => (
-              <ScrollReveal key={partner} delay={index * 60}>
-                <div className="owo-partner">
-                  <p className="owo-partner__name">{partner}</p>
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="owo-chapter owo-chapter--dark-2">
-        <div className="hathor-container">
-          <ScrollReveal>
-            <header className="owo-chapter__header owo-chapter__header--center">
-              <p className="owo-eyebrow">Guest Reviews</p>
-              <h2 className="owo-chapter__title">{HOMEPAGE_REVIEWS.title}</h2>
-              <p className="owo-chapter__intro">{HOMEPAGE_REVIEWS.body}</p>
-            </header>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      <TestimonialsCarousel backgroundImageName="home-testimonials-bg" />
-
-      <section className="lux-cta-band">
-        <div className="hathor-container">
-          <ScrollReveal>
-            <div className="lux-cta-band__decor" aria-hidden />
-            <h2 className="lux-cta-band__title">Ready to Embark on Your Journey?</h2>
-            <p className="mx-auto mt-4 max-w-lg text-sm font-light text-[var(--lux-text-grey)]">
-              Reserve your place aboard Hathor Dahabiya and discover the Nile as
-              it was meant to be experienced.
-            </p>
-          </ScrollReveal>
-        </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }

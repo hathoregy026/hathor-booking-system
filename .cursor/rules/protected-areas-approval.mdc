@@ -1,0 +1,15 @@
+---
+description: Require explicit approval before editing protected project areas
+alwaysApply: true
+---
+
+# Protected Areas Approval
+
+Before editing anything that can affect any protected area, stop and tell the user exactly which protected area will be affected, then wait for explicit approval.
+
+Protected areas:
+- `/cruises` page, cruises components, cruises scroll reveal, `PageScrollTransition`, `usePageScrollTransition`, and shared transition CSS that can affect cruises.
+- Booking system and booking pages, including `/booking/**`, booking APIs, checkout, availability, holds, confirmations, and booking UI components.
+- Admin dashboard, including `/admin/**`, `/api/admin/**`, dashboard upload/save flows, dashboard UI components, and dashboard auth.
+
+This applies even if the protected change seems necessary for the prompt. Do not make the edit first.
