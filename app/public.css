@@ -5138,12 +5138,6 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) [data-page-
   z-index: 10;
 }
 
-@media (min-width: 768px) {
-  body.has-page-scroll-transition [data-page-transition]:has(.pt-sheet__filters):not([data-test-scroll-reveal]):not(.hathor-page-scroll--media-gone):not(.hathor-page-scroll--past-pin) .pt-sheet {
-    clip-path: ellipse(45% 155% at 50% 100%);
-  }
-}
-
 /* Same rise-cap runway as /test-scroll-reveal (test-scroll-reveal.css) */
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-sheet__rise-cap {
   width: 100%;
