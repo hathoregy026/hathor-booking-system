@@ -15,7 +15,7 @@ const MOTION = {
   goldRule: { duration: 1.1, delay: 0.22 },
   maskReveal: { duration: 1.35 },
   parallax: { yPercent: 15 },
-  reveal: { duration: 1.1, stagger: 0.07, y: 28 },
+  textColumn: { duration: 1.1, stagger: 0.07, y: 28 },
   ctaParallax: { yPercent: 12 },
 } as const;
 
@@ -27,11 +27,8 @@ const SELECTORS = {
   goldRule: "[data-highlights-gold-rule]",
   parallaxWrap: "[data-parallax-wrap]",
   parallaxImg: "[data-parallax-img]",
-  stickyScene: "[data-highlights-sticky-scene]",
-  stickyCopy: "[data-highlights-sticky-copy]",
-  landmarkCard: "[data-highlights-landmark-card]",
-  landmarkCopy: "[data-highlights-landmark-copy]",
-  reveal: "[data-highlights-reveal]",
+  chapter: "[data-highlights-chapter]",
+  chapterReveal: "[data-highlights-chapter-reveal]",
   ctaWrap: "[data-highlights-cta-wrap]",
   ctaImg: "[data-highlights-cta-img]",
   ctaCopy: "[data-highlights-cta-copy]",
@@ -248,63 +245,58 @@ function setupImageUnveils(root: HTMLElement, enableParallax: boolean) {
   });
 }
 
-function setupReveals(root: HTMLElement) {
-  root.querySelectorAll<HTMLElement>("[data-highlights-reveal-group]").forEach((group) => {
-    const items = Array.from(group.querySelectorAll<HTMLElement>(SELECTORS.reveal));
-    if (!items.length) return;
+function setupChapterCopy(root: HTMLElement) {
+  root.querySelectorAll<HTMLElement>(SELECTORS.chapter).forEach((chapter) => {
+    const revealItems = Array.from(
+      chapter.querySelectorAll<HTMLElement>(SELECTORS.chapterReveal),
+    );
+    if (!revealItems.length) return;
 
-    gsap.set(items, {
+    gsap.set(revealItems, {
       opacity: 0,
-      y: MOTION.reveal.y,
+      y: MOTION.textColumn.y,
       force3D: true,
     });
 
-    gsap.to(items, {
+    gsap.to(revealItems, {
       opacity: 1,
       y: 0,
-      duration: MOTION.reveal.duration,
-      stagger: MOTION.reveal.stagger,
+      duration: MOTION.textColumn.duration,
+      stagger: MOTION.textColumn.stagger,
       ease: HIGHLIGHTS_EASE,
       scrollTrigger: {
-        trigger: group,
-        start: "top 82%",
+        trigger: chapter,
+        start: "top 78%",
         once: true,
       },
     });
   });
-}
 
-function setupStickyLandmarks(root: HTMLElement, enableSticky: boolean) {
-  const scene = root.querySelector<HTMLElement>(SELECTORS.stickyScene);
-  if (!scene) return;
+  root.querySelectorAll<HTMLElement>("[data-highlights-section]").forEach((section) => {
+    if (section.hasAttribute("data-highlights-chapter")) return;
 
-  const copyItems = Array.from(
-    scene.querySelectorAll<HTMLElement>(SELECTORS.landmarkCopy),
-  );
-  const cards = Array.from(
-    scene.querySelectorAll<HTMLElement>(SELECTORS.landmarkCard),
-  );
+    const revealItems = Array.from(
+      section.querySelectorAll<HTMLElement>(SELECTORS.chapterReveal),
+    );
+    if (!revealItems.length) return;
 
-  const activate = (index: number) => {
-    copyItems.forEach((item, itemIndex) => {
-      item.dataset.active = itemIndex === index ? "true" : "false";
+    gsap.set(revealItems, {
+      opacity: 0,
+      y: MOTION.textColumn.y,
+      force3D: true,
     });
-    cards.forEach((card, cardIndex) => {
-      card.dataset.active = cardIndex === index ? "true" : "false";
-    });
-  };
 
-  activate(0);
-
-  if (!enableSticky) return;
-
-  cards.forEach((card, index) => {
-    ScrollTrigger.create({
-      trigger: card,
-      start: "top center",
-      end: "bottom center",
-      onEnter: () => activate(index),
-      onEnterBack: () => activate(index),
+    gsap.to(revealItems, {
+      opacity: 1,
+      y: 0,
+      duration: MOTION.textColumn.duration,
+      stagger: MOTION.textColumn.stagger,
+      ease: HIGHLIGHTS_EASE,
+      scrollTrigger: {
+        trigger: section,
+        start: "top 78%",
+        once: true,
+      },
     });
   });
 }
@@ -334,7 +326,7 @@ function setupCta(root: HTMLElement, enableParallax: boolean) {
     if (!copy) return;
 
     const revealItems = Array.from(
-      copy.querySelectorAll<HTMLElement>(SELECTORS.reveal),
+      copy.querySelectorAll<HTMLElement>(SELECTORS.chapterReveal),
     );
     gsap.set(revealItems, { opacity: 0, y: 28, force3D: true });
     gsap.to(revealItems, {
@@ -402,13 +394,12 @@ function cleanupMagneticLinks(root: HTMLElement) {
   });
 }
 
-function setupEditorial(root: HTMLElement, enableDesktopMotion: boolean, splits: SplitInstance[]) {
+function setupEditorial(root: HTMLElement, enableParallax: boolean, splits: SplitInstance[]) {
   setupIntroMasks(root);
   setupKineticTypography(root, splits);
-  setupImageUnveils(root, enableDesktopMotion);
-  setupReveals(root);
-  setupStickyLandmarks(root, enableDesktopMotion);
-  setupCta(root, enableDesktopMotion);
+  setupImageUnveils(root, enableParallax);
+  setupChapterCopy(root);
+  setupCta(root, enableParallax);
   setupMagneticLinks(root);
 }
 
@@ -433,6 +424,14 @@ export function useHighlightsEditorialMotion(
         gsap.set(root.querySelectorAll(SELECTORS.parallaxWrap), {
           clipPath: "inset(0% 0 0 0)",
         });
+        gsap.set(
+          [
+            ...root.querySelectorAll(SELECTORS.kineticLineInner),
+            ...root.querySelectorAll(SELECTORS.introLine),
+            ...root.querySelectorAll(SELECTORS.chapterReveal),
+          ],
+          { clearProps: "all" },
+        );
         return;
       }
 

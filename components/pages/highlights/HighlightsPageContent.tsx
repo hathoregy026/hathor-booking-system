@@ -53,7 +53,7 @@ function MagneticLink({
 }) {
   return (
     <a href={href} data-magnetic-link className={styles.magneticLink}>
-      <span data-highlights-reveal>{children}</span>
+      <span data-highlights-chapter-reveal>{children}</span>
       <ArrowRight
         data-magnetic-arrow
         className={styles.magneticArrow}
@@ -69,6 +69,78 @@ function splitTitleLines(title: string): [string, string] | [string] {
   if (words.length <= 1) return [title];
   const mid = Math.ceil(words.length / 2);
   return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
+}
+
+type LandmarkChapterProps = {
+  index: number;
+  title: string;
+  body: string;
+  imageName: (typeof LANDMARK_IMAGE_NAMES)[number];
+  imageLeft: boolean;
+  parallaxDirection: "up" | "down";
+};
+
+function LandmarkChapter({
+  index,
+  title,
+  body,
+  imageName,
+  imageLeft,
+  parallaxDirection,
+}: LandmarkChapterProps) {
+  const titleLines = splitTitleLines(title);
+  const chapterLabel = `${String(index + 1).padStart(2, "0")} / Landmark`;
+
+  const textCol = (
+    <div className={styles.chapterText} data-highlights-chapter-text>
+      <p className={styles.eyebrow} data-highlights-chapter-reveal>
+        {chapterLabel}
+      </p>
+      <KineticTitle lines={titleLines} className={styles.sectionTitle} />
+      <div data-highlights-gold-rule className={styles.goldRule} />
+      <p className={styles.bodyText} data-highlights-chapter-reveal>
+        {body}
+      </p>
+    </div>
+  );
+
+  const imageCol = (
+    <div
+      data-parallax-wrap
+      data-parallax-direction={parallaxDirection}
+      className={`${styles.parallaxWrap} ${
+        imageLeft ? styles.imageLeft : styles.imageRight
+      }`}
+    >
+      <div data-parallax-img className={styles.parallaxInner}>
+        <ManagedImage
+          name={imageName}
+          alt={title}
+          fill
+          className={styles.parallaxImg}
+          sizes="(max-width: 767px) 100vw, 58vw"
+        />
+      </div>
+    </div>
+  );
+
+  return (
+    <section data-highlights-section data-highlights-chapter className={styles.section}>
+      <div className={styles.grid}>
+        {imageLeft ? (
+          <>
+            <div className={styles.textLeft}>{textCol}</div>
+            {imageCol}
+          </>
+        ) : (
+          <>
+            {imageCol}
+            <div className={styles.textRight}>{textCol}</div>
+          </>
+        )}
+      </div>
+    </section>
+  );
 }
 
 export function HighlightsPageContent() {
@@ -87,20 +159,14 @@ export function HighlightsPageContent() {
         data-highlights-editorial
         className={styles.editorial}
         style={{
-          backgroundColor: "var(--highlights-bg-light)",
-          color: "var(--highlights-ink)",
+          backgroundColor: "#f4f1ea",
+          color: "#1a1a1a",
         }}
       >
-        <section
-          data-highlights-intro
-          data-highlights-reveal-group
-          className={styles.section}
-        >
+        <section data-highlights-intro className={styles.section}>
           <div className={styles.grid}>
             <div className={styles.introTitle}>
-              <p className={styles.eyebrow} data-highlights-reveal>
-                Nile Landmarks
-              </p>
+              <p className={styles.eyebrow}>Nile Landmarks</p>
               <KineticTitle lines={["Sail Through", "Living History"]} />
               <div data-highlights-gold-rule className={styles.goldRule} />
             </div>
@@ -115,82 +181,42 @@ export function HighlightsPageContent() {
           </div>
         </section>
 
-        <section
-          data-highlights-sticky-scene
-          className={styles.stickyScene}
-        >
+        <section data-highlights-section className={styles.sectionSurface}>
           <div className={styles.grid}>
-            <div
-              data-highlights-sticky-copy
-              className={styles.stickyCopy}
-            >
-              <p className={styles.eyebrow} data-highlights-reveal>
+            <div className={styles.landmarksHeader}>
+              <p className={styles.eyebrow} data-highlights-chapter-reveal>
                 Landmark Story
               </p>
               <KineticTitle lines={["Ancient Sites,", "Private Tempo"]} />
               <div data-highlights-gold-rule className={styles.goldRule} />
-
-              <div className={styles.landmarkCopyStack}>
-                {HIGHLIGHTS_PAGE.landmarks.map((landmark, index) => (
-                  <article
-                    key={landmark.title}
-                    data-highlights-landmark-copy
-                    data-landmark-index={index}
-                    data-active={index === 0 ? "true" : "false"}
-                    className={styles.landmarkCopy}
-                  >
-                    <p className={styles.eyebrow}>
-                      {String(index + 1).padStart(2, "0")} / Landmark
-                    </p>
-                    <KineticTitle
-                      lines={splitTitleLines(landmark.title)}
-                      className={styles.sectionTitle}
-                    />
-                    <p className={styles.bodyText} data-highlights-reveal>
-                      {landmark.body}
-                    </p>
-                  </article>
-                ))}
-              </div>
             </div>
 
-            <div className={styles.imageRail}>
-              {HIGHLIGHTS_PAGE.landmarks.map((landmark, index) => (
-                <article
-                  key={landmark.title}
-                  data-highlights-landmark-card
-                  data-landmark-index={index}
-                  data-active={index === 0 ? "true" : "false"}
-                  className={styles.landmarkCard}
-                >
-                  <div
-                    data-parallax-wrap
-                    data-parallax-direction={index % 2 === 0 ? "up" : "down"}
-                    className={styles.parallaxWrap}
-                  >
-                    <div data-parallax-img className={styles.parallaxInner}>
-                      <ManagedImage
-                        name={LANDMARK_IMAGE_NAMES[index]}
-                        alt={landmark.title}
-                        fill
-                        className={styles.parallaxImg}
-                        sizes="(max-width: 767px) 100vw, 50vw"
-                      />
-                    </div>
-                  </div>
-                  <div className={styles.landmarkMeta}>
-                    <p className={styles.eyebrow}>
-                      {String(index + 1).padStart(2, "0")}
-                    </p>
-                    <p className={styles.bodyText}>{landmark.title}</p>
-                  </div>
-                </article>
-              ))}
+            <div className={styles.landmarksIntro}>
+              <p className={styles.bodyText} data-highlights-chapter-reveal>
+                Each bend of the Nile opens a chapter of Egypt&apos;s living
+                museum — explored at the unhurried pace only a Dahabiya allows.
+              </p>
             </div>
           </div>
         </section>
 
-        <section className={styles.section} style={{ paddingBottom: 0 }}>
+        {HIGHLIGHTS_PAGE.landmarks.map((landmark, index) => (
+          <LandmarkChapter
+            key={landmark.title}
+            index={index}
+            title={landmark.title}
+            body={landmark.body}
+            imageName={LANDMARK_IMAGE_NAMES[index]}
+            imageLeft={index % 2 === 1}
+            parallaxDirection={index % 2 === 0 ? "up" : "down"}
+          />
+        ))}
+
+        <section
+          data-highlights-section
+          className={styles.section}
+          style={{ paddingBottom: 0 }}
+        >
           <div data-highlights-cta-wrap className={styles.ctaStage}>
             <div data-highlights-cta-img className={styles.ctaMedia}>
               <ManagedImage
@@ -203,18 +229,17 @@ export function HighlightsPageContent() {
             </div>
             <div className={styles.ctaScrim} aria-hidden />
             <div data-highlights-cta-copy className={styles.ctaCopy}>
-              <p className={styles.eyebrow} data-highlights-reveal>
-                Explore More
-              </p>
               <KineticTitle
                 lines={["Explore More", "Aboard Hathor"]}
                 className={styles.displayTitle}
               />
-              <p className={styles.bodyText} data-highlights-reveal>
+              <p className={styles.bodyText} data-highlights-chapter-reveal>
                 Every bend of the Nile reveals another chapter of Egypt&apos;s
                 timeless story. Sail in privacy, comfort, and true elegance.
               </p>
-              <MagneticLink href="/cruises">Discover cruises</MagneticLink>
+              <span data-highlights-chapter-reveal>
+                <MagneticLink href="/cruises">Discover cruises</MagneticLink>
+              </span>
             </div>
           </div>
         </section>
