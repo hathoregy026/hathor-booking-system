@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect, useRef } from "react";
 import { ParallaxHeroVideo } from "@/components/ui/ParallaxHeroVideo";
 import {
   HATHOR_HERO_VIDEO_SRC,
@@ -21,7 +19,6 @@ export function HomePage2Content() {
   const maskRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
-  const backLogoRef = useRef<HTMLImageElement>(null);
 
   usePageScrollTransition({
     root: rootRef,
@@ -69,42 +66,6 @@ export function HomePage2Content() {
     };
   }, []);
 
-  useLayoutEffect(() => {
-    const root = rootRef.current;
-    const logo = backLogoRef.current;
-    if (!root || !logo) return;
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        logo,
-        { y: 40, opacity: 0.84 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1.35,
-          ease: "power3.out",
-          delay: 0.15,
-        },
-      );
-
-      gsap.to(logo, {
-        y: () => -window.innerHeight * 0.1,
-        ease: "none",
-        scrollTrigger: {
-          trigger: root,
-          start: "top top",
-          end: () => `+=${window.innerHeight * PIN_VH}`,
-          scrub: 1.5,
-          invalidateOnRefresh: true,
-        },
-      });
-    }, root);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
     <>
       <section
@@ -136,13 +97,14 @@ export function HomePage2Content() {
             </div>
 
             {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            ref={backLogoRef}
-            src={BACK_LOGO_SRC}
-            alt=""
-            className={`homepage-2-back-logo ${styles.backLogo}`}
-            aria-hidden
-          />
+            <img
+              src={BACK_LOGO_SRC}
+              alt=""
+              className={`homepage-2-back-logo ${styles.backLogo}`}
+              aria-hidden
+              fetchPriority="high"
+              decoding="async"
+            />
           </div>
 
           <div ref={sheetRef} className={`pt-sheet ${styles.sheet}`}>

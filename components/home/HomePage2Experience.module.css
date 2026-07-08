@@ -214,7 +214,6 @@
 }
 
 .backLogo {
-  will-change: transform;
   filter:
     drop-shadow(0 1rem 2.5rem rgb(0 0 0 / 0.42))
     drop-shadow(0 0 1.25rem rgb(182 159 100 / 0.1));
@@ -251,10 +250,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .backLogo {
-    will-change: auto;
-  }
-
   :global(.hathor-header--homepage-2 .hathor-header__hp2-book),
   :global(.hathor-header--homepage-2 .hathor-header__dropdown-link) {
     transition: none;

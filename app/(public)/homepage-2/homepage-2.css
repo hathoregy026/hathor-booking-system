@@ -1,6 +1,6 @@
 /**
  * Homepage 2 only — scroll transition + cream floor + footer seam.
- * Loaded from homepage-2/page.tsx (after public.css).
+ * Selectors use html[data-homepage2-experience] (set in layout script before paint).
  */
 
 html[data-homepage2-experience],
@@ -60,7 +60,15 @@ html[data-homepage2-experience] .homepage-2-back-logo {
   width: min(102vw, 88rem);
   height: auto;
   pointer-events: none;
-  transform: translate3d(-50%, 0, 0);
+  transform: translate3d(-50%, 2.5rem, 0);
+  animation: homepage2-logo-rise 1.35s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+  will-change: transform;
+}
+
+@keyframes homepage2-logo-rise {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
 }
 
 html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition] .pt-hero {
@@ -85,8 +93,9 @@ html[data-homepage2-experience] .homepage-2-cream-floor {
   background-color: #ece8df;
 }
 
+/* Long enough for future content; avoid 120rem which kills scroll perf */
 html[data-homepage2-experience] .homepage-2-cream-floor__inner {
-  min-height: clamp(72rem, 160vh, 120rem);
+  min-height: clamp(48rem, 100vh, 72rem);
   background-color: #ece8df;
 }
 
@@ -102,6 +111,14 @@ html[data-homepage2-experience] .owo-footer__wordmark {
 
 @media (max-width: 767px) {
   html[data-homepage2-experience] .homepage-2-cream-floor__inner {
-    min-height: clamp(90rem, 220vh, 140rem);
+    min-height: clamp(56rem, 120vh, 80rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-homepage2-experience] .homepage-2-back-logo {
+    animation: none;
+    transform: translate3d(-50%, 0, 0);
+    will-change: auto;
   }
 }

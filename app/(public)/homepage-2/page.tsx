@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { preload } from "react-dom";
 import { HomePage2Content } from "@/components/home/HomePage2Content";
-import { HATHOR_HERO_POSTER_SRC, HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
-import "./homepage-2.css";
+import { HATHOR_HERO_POSTER_SRC } from "@/lib/branding";
+
+const BACK_LOGO_SRC =
+  "/branding/hathor-logo-behing-the-sheet-egypt-toors-pyramids.svg";
 
 export const metadata: Metadata = {
   title: "Homepage 2 | Hathor Dahabiya",
@@ -42,17 +43,9 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage2() {
-  preload(HATHOR_HERO_VIDEO_SRC, { as: "fetch", fetchPriority: "high" });
-
   return (
     <>
-      <link
-        rel="preload"
-        href={HATHOR_HERO_VIDEO_SRC}
-        as="video"
-        type="video/mp4"
-        fetchPriority="high"
-      />
+      <link rel="preload" href={BACK_LOGO_SRC} as="image" type="image/svg+xml" />
       <HomePage2Content />
     </>
   );
