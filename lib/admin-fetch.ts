@@ -1,6 +1,8 @@
 const DEFAULT_TIMEOUT_MS = 20_000;
 /** Bookings list/calendar can wait on a cold Supabase pooler connection. */
 export const ADMIN_BOOKINGS_TIMEOUT_MS = 60_000;
+/** Large dashboard media uploads need time for transfer, WebP conversion, and storage. */
+export const ADMIN_UPLOAD_TIMEOUT_MS = 90_000;
 
 export function isTransientFetchError(error: unknown): boolean {
   if (error instanceof TypeError) return true;

@@ -8,6 +8,9 @@ import {
 } from "@/lib/image-upload";
 import { uploadWebsiteImage } from "@/lib/admin-storage";
 
+export const runtime = "nodejs";
+export const maxDuration = 60;
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();

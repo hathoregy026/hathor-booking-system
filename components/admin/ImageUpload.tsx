@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AlertCircle, ImageIcon, Loader2, Trash2, Upload } from "lucide-react";
-import { adminFetch } from "@/lib/admin-fetch";
+import { ADMIN_UPLOAD_TIMEOUT_MS, adminFetch } from "@/lib/admin-fetch";
 import { MAX_IMAGE_BYTES } from "@/lib/image-upload";
 
 const ACCEPTED_TYPES = "image/jpeg,image/png,image/webp";
@@ -96,7 +96,7 @@ export function ImageUpload({
       const response = await adminFetch("/api/admin/upload", {
         method: "POST",
         body: formData,
-      });
+      }, ADMIN_UPLOAD_TIMEOUT_MS);
 
       const data = (await response.json()) as {
         url?: string;
