@@ -17,10 +17,10 @@ const FOOTER_EXPERIENCES = [
 ] as const;
 
 const FOOTER_LEGAL = [
-  { href: `mailto:${PUBLIC_CONTACT.email}`, label: "Press" },
-  { href: "/contact", label: "Privacy" },
-  { href: "/contact", label: "Contact" },
-  { href: "/cruises", label: "Sitemap" },
+  { id: "press", href: `mailto:${PUBLIC_CONTACT.email}`, label: "Press" },
+  { id: "privacy", href: "/contact", label: "Privacy" },
+  { id: "contact", href: "/contact", label: "Contact" },
+  { id: "sitemap", href: "/cruises", label: "Sitemap" },
 ] as const;
 
 export function Footer() {
@@ -91,7 +91,7 @@ export function Footer() {
             <div className="owo-footer__legal-links">
               {FOOTER_LEGAL.map((link) => (
                 <a
-                  key={link.label}
+                  key={link.id}
                   href={link.href}
                   className="owo-footer__legal-link cursor-hover"
                 >

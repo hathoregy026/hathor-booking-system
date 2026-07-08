@@ -1,17 +1,3 @@
-/* FORCE TYPOGRAPHY RESET */
-.hathor-section-title,
-h2.hathor-section-title {
-  font-size: clamp(2rem, 4vw, 3rem) !important;
-  line-height: 1.1 !important;
-  letter-spacing: -0.02em !important;
-}
-
-.hathor-body-text,
-p.hathor-body-text {
-  font-size: 1rem !important;
-  line-height: 1.7 !important;
-}
-
 /* Hathor — Award-winning luxury public site */
 
 .public-site {
@@ -6054,9 +6040,21 @@ body.has-page-scroll-transition .pin-spacer {
   will-change: opacity, transform;
 }
 
+.scroll-reveal--left {
+  transform: translateX(-30px);
+}
+
+.scroll-reveal--right {
+  transform: translateX(30px);
+}
+
+.scroll-reveal--up {
+  transform: translateY(30px);
+}
+
 .scroll-reveal.is-visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translate3d(0, 0, 0);
 }
 
 .stagger-children > * {

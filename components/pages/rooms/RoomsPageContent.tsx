@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef } from "react";
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ManagedImage } from "@/components/ui/ManagedImage";
@@ -31,11 +30,11 @@ function KineticTitle({
 
 function IntroParagraph({ children }: { children: string }) {
   return (
-    <p className={styles.introText}>
-      <span data-rooms-intro-line className={styles.lineInner}>
+    <div className={styles.lineMask}>
+      <p data-rooms-intro-line className={styles.introText}>
         {children}
-      </span>
-    </p>
+      </p>
+    </div>
   );
 }
 
@@ -47,7 +46,7 @@ function MagneticDiscoverLink({
   children: string;
 }) {
   return (
-    <Link href={href} data-magnetic-link className={styles.magneticLink}>
+    <a href={href} data-magnetic-link className={styles.magneticLink}>
       <span data-rooms-chapter-reveal>{children}</span>
       <ArrowRight
         data-magnetic-arrow
@@ -55,7 +54,7 @@ function MagneticDiscoverLink({
         size={16}
         aria-hidden
       />
-    </Link>
+    </a>
   );
 }
 
@@ -111,9 +110,11 @@ function SuiteChapter({
 
   const imageCol = (
     <div
-      className={imageLeft ? styles.imageLeft : styles.imageRight}
       data-parallax-wrap
       data-parallax-direction={parallaxDirection}
+      className={`${styles.parallaxWrap} ${
+        imageLeft ? styles.imageLeft : styles.imageRight
+      }`}
     >
       <div data-parallax-img className={styles.parallaxInner}>
         <ManagedImage
@@ -158,7 +159,15 @@ export function RoomsPageContent() {
       imageName="room-luxury"
       imageAlt="Luxury cabin aboard Hathor Dahabiya"
     >
-      <div ref={rootRef} data-rooms-editorial className={styles.editorial}>
+      <div
+        ref={rootRef}
+        data-rooms-editorial
+        className={styles.editorial}
+        style={{
+          backgroundColor: "var(--rooms-bg-light)",
+          color: "var(--rooms-ink)",
+        }}
+      >
         {/* ─── Intro manifesto ─── */}
         <section
           data-rooms-section
@@ -292,28 +301,20 @@ export function RoomsPageContent() {
         >
           <div className={styles.grid}>
             <div className={styles.welcomeTitle}>
-              <KineticTitle
-                lines={["Why Choose Our", "Accommodations"]}
-              />
-              <p
-                className={styles.subtitle}
-                data-rooms-welcome-reveal
-              >
-                <span className={styles.lineInner}>
+              <KineticTitle lines={["Why Choose Our", "Accommodations"]} />
+              <div className={styles.lineMask}>
+                <p className={styles.subtitle} data-rooms-welcome-reveal>
                   {ROOMS_PAGE.welcome.subtitle}
-                </span>
-              </p>
+                </p>
+              </div>
             </div>
 
             <div className={styles.welcomeBody}>
-              <p className={styles.bodyText}>
-                <span
-                  data-rooms-welcome-reveal
-                  className={styles.lineInner}
-                >
+              <div className={styles.lineMask}>
+                <p className={styles.bodyText} data-rooms-welcome-reveal>
                   {ROOMS_PAGE.welcome.body}
-                </span>
-              </p>
+                </p>
+              </div>
             </div>
           </div>
         </section>

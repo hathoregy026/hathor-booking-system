@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { HighlightsPageContent } from "@/components/pages/HighlightsPageContent";
+import { HighlightsPageContent } from "@/components/pages/highlights/HighlightsPageContent";
 
 export const metadata: Metadata = {
   title: "Authentic Egyptian Sailing | Hathor Dahabiya Cruise Highlights",

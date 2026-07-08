@@ -17,7 +17,7 @@ export function ScrollReveal({
   children,
   className = "",
   delay = 0,
-  direction: _direction = "up",
+  direction = "up",
   viewportAmount = 0.18,
   viewportMargin = "0px 0px -10% 0px",
 }: ScrollRevealProps) {
@@ -32,6 +32,7 @@ export function ScrollReveal({
     <motion.div
       className={[
         "scroll-reveal",
+        `scroll-reveal--${direction}`,
         isVisible ? "is-visible" : "",
         className,
       ]

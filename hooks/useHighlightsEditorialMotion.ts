@@ -5,24 +5,46 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import SplitType from "split-type";
-import {
-  ROOMS_EASE,
-  ROOMS_MOTION,
-  ROOMS_SCRUB,
-  ROOMS_SELECTORS,
-} from "@/lib/rooms-motion";
 
-type UseRoomsEditorialMotionOptions = {
-  /**
-   * The public PageScrollTransition already owns Lenis on /rooms.
-   * Keep this off there; enable only if the rooms editorial is rendered standalone.
-   */
-  smoothScroll?: boolean;
-  /** Wait for the page-transition sheet to settle before refreshing triggers. */
-  layoutDelayMs?: number;
-};
+const HIGHLIGHTS_EASE = "expo.out" as const;
+const HIGHLIGHTS_SCRUB = 1;
+
+const MOTION = {
+  splitReveal: { duration: 1.25, stagger: 0.05, yPercent: 100 },
+  lineReveal: { duration: 1.15, stagger: 0.06, yPercent: 100 },
+  goldRule: { duration: 1.1, delay: 0.22 },
+  maskReveal: { duration: 1.35 },
+  parallax: { yPercent: 15 },
+  reveal: { duration: 1.1, stagger: 0.07, y: 28 },
+  ctaParallax: { yPercent: 12 },
+} as const;
+
+const SELECTORS = {
+  intro: "[data-highlights-intro]",
+  introLine: "[data-highlights-intro-line]",
+  kineticTitle: "[data-kinetic-title]",
+  kineticLineInner: "[data-kinetic-line]",
+  goldRule: "[data-highlights-gold-rule]",
+  parallaxWrap: "[data-parallax-wrap]",
+  parallaxImg: "[data-parallax-img]",
+  stickyScene: "[data-highlights-sticky-scene]",
+  stickyCopy: "[data-highlights-sticky-copy]",
+  landmarkCard: "[data-highlights-landmark-card]",
+  landmarkCopy: "[data-highlights-landmark-copy]",
+  reveal: "[data-highlights-reveal]",
+  ctaWrap: "[data-highlights-cta-wrap]",
+  ctaImg: "[data-highlights-cta-img]",
+  ctaCopy: "[data-highlights-cta-copy]",
+  magneticLink: "[data-magnetic-link]",
+  magneticArrow: "[data-magnetic-arrow]",
+} as const;
 
 type SplitInstance = InstanceType<typeof SplitType>;
+
+type UseHighlightsEditorialMotionOptions = {
+  smoothScroll?: boolean;
+  layoutDelayMs?: number;
+};
 
 function prefersReducedMotion() {
   return (
@@ -58,7 +80,7 @@ function setupOptionalLenis(enabled: boolean) {
 
 function splitTitle(title: HTMLElement, splits: SplitInstance[]) {
   const manualLines = title.querySelectorAll<HTMLElement>(
-    ROOMS_SELECTORS.kineticLineInner,
+    SELECTORS.kineticLineInner,
   );
 
   if (manualLines.length) {
@@ -71,8 +93,8 @@ function splitTitle(title: HTMLElement, splits: SplitInstance[]) {
 
   const split = new SplitType(title, {
     types: "lines,words",
-    lineClass: "rooms-split-line",
-    wordClass: "rooms-split-word",
+    lineClass: "highlights-split-line",
+    wordClass: "highlights-split-word",
   });
   splits.push(split);
 
@@ -102,15 +124,15 @@ function revealMaskedElements(
   if (!elements.length) return;
 
   gsap.set(elements, {
-    yPercent: options.yPercent ?? ROOMS_MOTION.splitReveal.yPercent,
+    yPercent: options.yPercent ?? MOTION.splitReveal.yPercent,
     force3D: true,
   });
 
   gsap.to(elements, {
     yPercent: 0,
-    duration: options.duration ?? ROOMS_MOTION.splitReveal.duration,
-    stagger: options.stagger ?? ROOMS_MOTION.splitReveal.stagger,
-    ease: ROOMS_EASE,
+    duration: options.duration ?? MOTION.splitReveal.duration,
+    stagger: options.stagger ?? MOTION.splitReveal.stagger,
+    ease: HIGHLIGHTS_EASE,
     scrollTrigger: {
       trigger,
       start: options.start ?? "top 86%",
@@ -120,7 +142,7 @@ function revealMaskedElements(
 }
 
 function setupKineticTypography(root: HTMLElement, splits: SplitInstance[]) {
-  root.querySelectorAll<HTMLElement>(ROOMS_SELECTORS.kineticTitle).forEach((title) => {
+  root.querySelectorAll<HTMLElement>(SELECTORS.kineticTitle).forEach((title) => {
     const revealTargets = splitTitle(title, splits);
     if (!revealTargets.length) return;
 
@@ -133,19 +155,19 @@ function setupKineticTypography(root: HTMLElement, splits: SplitInstance[]) {
     });
 
     gsap.set(revealTargets, {
-      yPercent: ROOMS_MOTION.splitReveal.yPercent,
+      yPercent: MOTION.splitReveal.yPercent,
       force3D: true,
     });
 
     tl.to(revealTargets, {
       yPercent: 0,
-      duration: ROOMS_MOTION.splitReveal.duration,
-      stagger: ROOMS_MOTION.splitReveal.stagger,
-      ease: ROOMS_EASE,
+      duration: MOTION.splitReveal.duration,
+      stagger: MOTION.splitReveal.stagger,
+      ease: HIGHLIGHTS_EASE,
     });
 
     const rule = title.parentElement?.querySelector<HTMLElement>(
-      ROOMS_SELECTORS.goldRule,
+      SELECTORS.goldRule,
     );
 
     if (rule) {
@@ -154,39 +176,39 @@ function setupKineticTypography(root: HTMLElement, splits: SplitInstance[]) {
         rule,
         {
           scaleX: 1,
-          duration: ROOMS_MOTION.goldRule.duration,
-          ease: ROOMS_EASE,
+          duration: MOTION.goldRule.duration,
+          ease: HIGHLIGHTS_EASE,
         },
-        `>-${ROOMS_MOTION.goldRule.delay}`,
+        `>-${MOTION.goldRule.delay}`,
       );
     }
   });
 }
 
 function setupIntroMasks(root: HTMLElement) {
-  root.querySelectorAll<HTMLElement>(ROOMS_SELECTORS.intro).forEach((intro) => {
+  root.querySelectorAll<HTMLElement>(SELECTORS.intro).forEach((intro) => {
     const lines = Array.from(
-      intro.querySelectorAll<HTMLElement>(ROOMS_SELECTORS.introLine),
+      intro.querySelectorAll<HTMLElement>(SELECTORS.introLine),
     );
     lines.forEach((line) => {
       line.parentElement?.style.setProperty("overflow", "hidden");
     });
     revealMaskedElements(lines, intro, {
-      yPercent: ROOMS_MOTION.lineReveal.yPercent,
-      stagger: ROOMS_MOTION.lineReveal.stagger,
-      duration: ROOMS_MOTION.lineReveal.duration,
+      yPercent: MOTION.lineReveal.yPercent,
+      stagger: MOTION.lineReveal.stagger,
+      duration: MOTION.lineReveal.duration,
     });
   });
 }
 
 function setupImageUnveils(root: HTMLElement, enableParallax: boolean) {
-  root.querySelectorAll<HTMLElement>(ROOMS_SELECTORS.parallaxWrap).forEach((wrap) => {
-    const img = wrap.querySelector<HTMLElement>(ROOMS_SELECTORS.parallaxImg);
+  root.querySelectorAll<HTMLElement>(SELECTORS.parallaxWrap).forEach((wrap) => {
+    const img = wrap.querySelector<HTMLElement>(SELECTORS.parallaxImg);
     if (!img) return;
 
     const direction = wrap.dataset.parallaxDirection === "down" ? 1 : -1;
-    const yStart = direction * -ROOMS_MOTION.parallax.yPercent;
-    const yEnd = direction * ROOMS_MOTION.parallax.yPercent;
+    const yStart = direction * -MOTION.parallax.yPercent;
+    const yEnd = direction * MOTION.parallax.yPercent;
 
     gsap.set(wrap, {
       clipPath: "inset(100% 0 0 0)",
@@ -195,8 +217,8 @@ function setupImageUnveils(root: HTMLElement, enableParallax: boolean) {
 
     gsap.to(wrap, {
       clipPath: "inset(0% 0 0 0)",
-      duration: ROOMS_MOTION.maskReveal.duration,
-      ease: ROOMS_EASE,
+      duration: MOTION.maskReveal.duration,
+      ease: HIGHLIGHTS_EASE,
       scrollTrigger: {
         trigger: wrap,
         start: "top 88%",
@@ -219,124 +241,91 @@ function setupImageUnveils(root: HTMLElement, enableParallax: boolean) {
           trigger: wrap,
           start: "top bottom",
           end: "bottom top",
-          scrub: ROOMS_SCRUB,
+          scrub: HIGHLIGHTS_SCRUB,
         },
       },
     );
   });
 }
 
-function setupChapterCopy(root: HTMLElement) {
-  root.querySelectorAll<HTMLElement>(ROOMS_SELECTORS.chapter).forEach((chapter) => {
-    const revealItems = Array.from(
-      chapter.querySelectorAll<HTMLElement>(ROOMS_SELECTORS.chapterReveal),
-    );
-    if (!revealItems.length) return;
+function setupReveals(root: HTMLElement) {
+  root.querySelectorAll<HTMLElement>("[data-highlights-reveal-group]").forEach((group) => {
+    const items = Array.from(group.querySelectorAll<HTMLElement>(SELECTORS.reveal));
+    if (!items.length) return;
 
-    gsap.set(revealItems, {
+    gsap.set(items, {
       opacity: 0,
-      y: ROOMS_MOTION.textColumn.y,
+      y: MOTION.reveal.y,
       force3D: true,
     });
 
-    gsap.to(revealItems, {
+    gsap.to(items, {
       opacity: 1,
       y: 0,
-      duration: ROOMS_MOTION.textColumn.duration,
-      stagger: ROOMS_MOTION.textColumn.stagger,
-      ease: ROOMS_EASE,
+      duration: MOTION.reveal.duration,
+      stagger: MOTION.reveal.stagger,
+      ease: HIGHLIGHTS_EASE,
       scrollTrigger: {
-        trigger: chapter,
-        start: "top 78%",
+        trigger: group,
+        start: "top 82%",
         once: true,
       },
     });
   });
 }
 
-function setupStatsAndBento(root: HTMLElement) {
-  root.querySelectorAll<HTMLElement>("[data-rooms-stats]").forEach((row) => {
-    const stats = Array.from(row.querySelectorAll<HTMLElement>(ROOMS_SELECTORS.stat));
-    if (!stats.length) return;
+function setupStickyLandmarks(root: HTMLElement, enableSticky: boolean) {
+  const scene = root.querySelector<HTMLElement>(SELECTORS.stickyScene);
+  if (!scene) return;
 
-    gsap.set(stats, {
-      opacity: 0,
-      y: ROOMS_MOTION.statsFilmstrip.y,
-      force3D: true,
+  const copyItems = Array.from(
+    scene.querySelectorAll<HTMLElement>(SELECTORS.landmarkCopy),
+  );
+  const cards = Array.from(
+    scene.querySelectorAll<HTMLElement>(SELECTORS.landmarkCard),
+  );
+
+  const activate = (index: number) => {
+    copyItems.forEach((item, itemIndex) => {
+      item.dataset.active = itemIndex === index ? "true" : "false";
     });
-
-    gsap.to(stats, {
-      opacity: 1,
-      y: 0,
-      duration: ROOMS_MOTION.statsFilmstrip.duration,
-      stagger: ROOMS_MOTION.statsFilmstrip.stagger,
-      ease: ROOMS_EASE,
-      scrollTrigger: {
-        trigger: row,
-        start: "top 84%",
-        once: true,
-      },
+    cards.forEach((card, cardIndex) => {
+      card.dataset.active = cardIndex === index ? "true" : "false";
     });
-  });
+  };
 
-  root.querySelectorAll<HTMLElement>(ROOMS_SELECTORS.bento).forEach((bento) => {
-    const cells = Array.from(
-      bento.querySelectorAll<HTMLElement>(ROOMS_SELECTORS.bentoCell),
-    );
-    if (!cells.length) return;
+  activate(0);
 
-    gsap.set(cells, {
-      opacity: 0,
-      y: ROOMS_MOTION.bentoCell.y,
-      force3D: true,
-    });
+  if (!enableSticky) return;
 
-    gsap.to(cells, {
-      opacity: 1,
-      y: 0,
-      duration: ROOMS_MOTION.bentoCell.duration,
-      stagger: ROOMS_MOTION.bentoCell.stagger,
-      ease: ROOMS_EASE,
-      scrollTrigger: {
-        trigger: bento,
-        start: "top 84%",
-        once: true,
-      },
-    });
-  });
-}
-
-function setupWelcome(root: HTMLElement) {
-  root.querySelectorAll<HTMLElement>(ROOMS_SELECTORS.welcome).forEach((section) => {
-    const reveals = Array.from(
-      section.querySelectorAll<HTMLElement>(ROOMS_SELECTORS.welcomeReveal),
-    );
-    reveals.forEach((item) => item.parentElement?.style.setProperty("overflow", "hidden"));
-    revealMaskedElements(reveals, section, {
-      stagger: 0.08,
-      duration: 1.25,
-      start: "top 82%",
+  cards.forEach((card, index) => {
+    ScrollTrigger.create({
+      trigger: card,
+      start: "top center",
+      end: "bottom center",
+      onEnter: () => activate(index),
+      onEnterBack: () => activate(index),
     });
   });
 }
 
 function setupCta(root: HTMLElement, enableParallax: boolean) {
-  root.querySelectorAll<HTMLElement>(ROOMS_SELECTORS.ctaWrap).forEach((frame) => {
-    const img = frame.querySelector<HTMLElement>(ROOMS_SELECTORS.ctaImg);
-    const copy = frame.querySelector<HTMLElement>(ROOMS_SELECTORS.ctaCopy);
+  root.querySelectorAll<HTMLElement>(SELECTORS.ctaWrap).forEach((frame) => {
+    const img = frame.querySelector<HTMLElement>(SELECTORS.ctaImg);
+    const copy = frame.querySelector<HTMLElement>(SELECTORS.ctaCopy);
 
     if (img && enableParallax) {
       gsap.fromTo(
         img,
-        { yPercent: -ROOMS_MOTION.ctaParallax.yPercent, force3D: true },
+        { yPercent: -MOTION.ctaParallax.yPercent, force3D: true },
         {
-          yPercent: ROOMS_MOTION.ctaParallax.yPercent,
+          yPercent: MOTION.ctaParallax.yPercent,
           ease: "none",
           scrollTrigger: {
             trigger: frame,
             start: "top bottom",
             end: "bottom top",
-            scrub: ROOMS_SCRUB,
+            scrub: HIGHLIGHTS_SCRUB,
           },
         },
       );
@@ -345,16 +334,15 @@ function setupCta(root: HTMLElement, enableParallax: boolean) {
     if (!copy) return;
 
     const revealItems = Array.from(
-      copy.querySelectorAll<HTMLElement>(ROOMS_SELECTORS.chapterReveal),
+      copy.querySelectorAll<HTMLElement>(SELECTORS.reveal),
     );
-
     gsap.set(revealItems, { opacity: 0, y: 28, force3D: true });
     gsap.to(revealItems, {
       opacity: 1,
       y: 0,
       duration: 1.2,
       stagger: 0.08,
-      ease: ROOMS_EASE,
+      ease: HIGHLIGHTS_EASE,
       scrollTrigger: {
         trigger: frame,
         start: "top 72%",
@@ -365,12 +353,12 @@ function setupCta(root: HTMLElement, enableParallax: boolean) {
 }
 
 function setupMagneticLinks(root: HTMLElement) {
-  root.querySelectorAll<HTMLElement>(ROOMS_SELECTORS.magneticLink).forEach((link) => {
-    const arrow = link.querySelector<HTMLElement>(ROOMS_SELECTORS.magneticArrow);
-    const linkX = gsap.quickTo(link, "x", { duration: 0.65, ease: ROOMS_EASE });
-    const linkY = gsap.quickTo(link, "y", { duration: 0.65, ease: ROOMS_EASE });
+  root.querySelectorAll<HTMLElement>(SELECTORS.magneticLink).forEach((link) => {
+    const arrow = link.querySelector<HTMLElement>(SELECTORS.magneticArrow);
+    const linkX = gsap.quickTo(link, "x", { duration: 0.65, ease: HIGHLIGHTS_EASE });
+    const linkY = gsap.quickTo(link, "y", { duration: 0.65, ease: HIGHLIGHTS_EASE });
     const arrowX = arrow
-      ? gsap.quickTo(arrow, "x", { duration: 0.8, ease: ROOMS_EASE })
+      ? gsap.quickTo(arrow, "x", { duration: 0.8, ease: HIGHLIGHTS_EASE })
       : null;
 
     const onMove = (event: MouseEvent) => {
@@ -396,8 +384,8 @@ function setupMagneticLinks(root: HTMLElement) {
     link.addEventListener("mousemove", onMove);
     link.addEventListener("mouseleave", onLeave);
 
-    (link as HTMLElement & { __roomsMagneticCleanup?: () => void })
-      .__roomsMagneticCleanup = () => {
+    (link as HTMLElement & { __highlightsMagneticCleanup?: () => void })
+      .__highlightsMagneticCleanup = () => {
       link.removeEventListener("mousemove", onMove);
       link.removeEventListener("mouseleave", onLeave);
       gsap.set(link, { x: 0, y: 0 });
@@ -407,32 +395,26 @@ function setupMagneticLinks(root: HTMLElement) {
 }
 
 function cleanupMagneticLinks(root: HTMLElement) {
-  root.querySelectorAll<HTMLElement>(ROOMS_SELECTORS.magneticLink).forEach((link) => {
-    const el = link as HTMLElement & { __roomsMagneticCleanup?: () => void };
-    el.__roomsMagneticCleanup?.();
-    delete el.__roomsMagneticCleanup;
+  root.querySelectorAll<HTMLElement>(SELECTORS.magneticLink).forEach((link) => {
+    const el = link as HTMLElement & { __highlightsMagneticCleanup?: () => void };
+    el.__highlightsMagneticCleanup?.();
+    delete el.__highlightsMagneticCleanup;
   });
 }
 
-function setupEditorial(root: HTMLElement, enableParallax: boolean, splits: SplitInstance[]) {
+function setupEditorial(root: HTMLElement, enableDesktopMotion: boolean, splits: SplitInstance[]) {
   setupIntroMasks(root);
   setupKineticTypography(root, splits);
-  setupImageUnveils(root, enableParallax);
-  setupChapterCopy(root);
-  setupStatsAndBento(root);
-  setupWelcome(root);
-  setupCta(root, enableParallax);
+  setupImageUnveils(root, enableDesktopMotion);
+  setupReveals(root);
+  setupStickyLandmarks(root, enableDesktopMotion);
+  setupCta(root, enableDesktopMotion);
   setupMagneticLinks(root);
 }
 
-/**
- * Site-of-the-Year style GSAP choreography for /rooms.
- * Everything is scoped to `[data-rooms-editorial]`; no homepage, cruises,
- * nav, booking, hero-video, or public.css behavior is touched.
- */
-export function useRoomsEditorialMotion(
+export function useHighlightsEditorialMotion(
   rootRef: RefObject<HTMLElement | null>,
-  options: UseRoomsEditorialMotionOptions = {},
+  options: UseHighlightsEditorialMotionOptions = {},
 ) {
   const { smoothScroll = false, layoutDelayMs = 120 } = options;
 
@@ -448,18 +430,9 @@ export function useRoomsEditorialMotion(
 
     const ctx = gsap.context(() => {
       if (prefersReducedMotion()) {
-        gsap.set(root.querySelectorAll(ROOMS_SELECTORS.parallaxWrap), {
+        gsap.set(root.querySelectorAll(SELECTORS.parallaxWrap), {
           clipPath: "inset(0% 0 0 0)",
         });
-        gsap.set(
-          [
-            ...root.querySelectorAll(ROOMS_SELECTORS.kineticLineInner),
-            ...root.querySelectorAll(ROOMS_SELECTORS.introLine),
-            ...root.querySelectorAll(ROOMS_SELECTORS.chapterReveal),
-            ...root.querySelectorAll(ROOMS_SELECTORS.welcomeReveal),
-          ],
-          { clearProps: "all" },
-        );
         return;
       }
 

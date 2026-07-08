@@ -1,0 +1,348 @@
+/* /highlights editorial luxury system — scoped CSS module only. No public.css. */
+
+.editorial {
+  --highlights-bg-light: #f4f1ea;
+  --highlights-bg-dark: #0a0a0a;
+  --highlights-surface: #e9e1d3;
+  --highlights-ink: #12100d;
+  --highlights-ink-muted: rgb(18 16 13 / 0.62);
+  --highlights-cream: #f8f3ea;
+  --highlights-gold: #b69f64;
+  --highlights-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --highlights-section-pad: clamp(8rem, 15vw, 12rem);
+  --highlights-grid-gap: clamp(1.25rem, 2.5vw, 2.75rem);
+  --highlights-display: var(--font-playfair, "Playfair Display", Georgia, serif);
+  --highlights-body: var(--font-inter, Inter, var(--font-geist-sans), Arial, sans-serif);
+
+  position: relative;
+  overflow: clip;
+  color: var(--highlights-ink);
+  background: var(--highlights-bg-light);
+  isolation: isolate;
+}
+
+.editorial::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 88% 12%, rgb(182 159 100 / 0.14), transparent 30rem),
+    linear-gradient(180deg, rgb(255 255 255 / 0.24), transparent 34rem);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--highlights-grid-gap);
+  width: 100%;
+  max-width: 1520px;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 5vw, 4.5rem);
+}
+
+.section {
+  position: relative;
+  padding-block: var(--highlights-section-pad);
+}
+
+.sectionSurface {
+  composes: section;
+  background: var(--highlights-surface);
+}
+
+.introTitle {
+  grid-column: 1 / span 7;
+}
+
+.introCopy {
+  grid-column: 9 / span 4;
+  align-self: end;
+}
+
+.storyHeader {
+  grid-column: 1 / span 7;
+  margin-bottom: clamp(4rem, 8vw, 7rem);
+}
+
+.stickyScene {
+  position: relative;
+  padding-block: clamp(8rem, 14vw, 12rem);
+  background: var(--highlights-bg-dark);
+  color: var(--highlights-cream);
+}
+
+.stickyCopy {
+  grid-column: 1 / span 5;
+  position: sticky;
+  top: clamp(6rem, 12vh, 9rem);
+  height: fit-content;
+  min-height: clamp(28rem, 58vh, 38rem);
+  align-self: start;
+}
+
+.landmarkCopyStack {
+  position: relative;
+  min-height: clamp(22rem, 46vh, 30rem);
+  margin-top: clamp(2rem, 4vw, 3rem);
+}
+
+.landmarkCopy {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.9s var(--highlights-ease),
+    transform 0.9s var(--highlights-ease);
+  pointer-events: none;
+}
+
+.landmarkCopy[data-active="true"] {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.imageRail {
+  grid-column: 7 / span 6;
+  display: grid;
+  gap: clamp(5rem, 9vw, 8rem);
+}
+
+.landmarkCard {
+  position: relative;
+  min-height: clamp(38rem, 84vh, 58rem);
+}
+
+.landmarkMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+  color: rgb(248 243 234 / 0.56);
+}
+
+.ctaStage {
+  position: relative;
+  overflow: hidden;
+  min-height: clamp(36rem, 72vw, 56rem);
+  isolation: isolate;
+}
+
+.ctaMedia {
+  position: absolute;
+  inset: -10% 0;
+  width: 100%;
+  height: 120%;
+  will-change: transform;
+}
+
+.ctaScrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgb(10 10 10 / 0.84), rgb(10 10 10 / 0.24)),
+    radial-gradient(circle at 15% 85%, rgb(182 159 100 / 0.2), transparent 28rem);
+}
+
+.ctaCopy {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: clamp(36rem, 72vw, 56rem);
+  max-width: 42rem;
+  padding: clamp(2rem, 7vw, 7rem);
+  color: var(--highlights-cream);
+}
+
+.eyebrow {
+  margin: 0 0 clamp(1rem, 2vw, 1.75rem);
+  font-family: var(--highlights-body);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--highlights-gold);
+}
+
+.displayTitle,
+.kineticTitle {
+  margin: 0;
+  font-family: var(--highlights-display);
+  font-size: clamp(3rem, 6vw, 6rem);
+  font-weight: 400;
+  line-height: 0.93;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+  color: currentColor;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-family: var(--highlights-display);
+  font-size: clamp(2.75rem, 5vw, 5rem);
+  font-weight: 400;
+  line-height: 0.96;
+  letter-spacing: -0.04em;
+}
+
+.bodyText {
+  margin: 0;
+  font-family: var(--highlights-body);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.9;
+  letter-spacing: 0.085em;
+  color: var(--highlights-ink-muted);
+}
+
+.stickyScene .bodyText,
+.ctaCopy .bodyText {
+  color: rgb(248 243 234 / 0.68);
+}
+
+.bodyText + .bodyText,
+.introText + .introText {
+  margin-top: 1.4rem;
+}
+
+.introText {
+  composes: bodyText;
+  max-width: 60ch;
+}
+
+.lineMask {
+  display: block;
+  overflow: hidden;
+}
+
+.lineInner {
+  display: block;
+  will-change: transform;
+}
+
+.goldRule {
+  width: clamp(3rem, 7vw, 7rem);
+  height: 1px;
+  margin: clamp(1.5rem, 3vw, 2.25rem) 0 0;
+  background: var(--highlights-gold);
+  transform-origin: left center;
+  will-change: transform;
+}
+
+.parallaxWrap {
+  position: relative;
+  overflow: hidden;
+  min-height: clamp(34rem, 74vh, 52rem);
+  background: var(--highlights-surface);
+  border-radius: 999px 999px 0 0;
+  clip-path: inset(100% 0 0 0);
+  will-change: clip-path;
+}
+
+.parallaxInner {
+  position: absolute;
+  inset: -8% 0;
+  width: 100%;
+  height: 116%;
+  will-change: transform;
+}
+
+.parallaxImg {
+  object-fit: cover;
+}
+
+.magneticLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: fit-content;
+  margin-top: clamp(2rem, 4vw, 3rem);
+  font-family: var(--highlights-body);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--highlights-gold);
+  transition: color 0.8s var(--highlights-ease);
+  will-change: transform;
+}
+
+.magneticLink:hover {
+  color: #d8c17f;
+}
+
+.magneticArrow {
+  display: inline-flex;
+  will-change: transform;
+}
+
+@media (max-width: 767px) {
+  .editorial {
+    --highlights-section-pad: clamp(5rem, 18vw, 7rem);
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .introTitle,
+  .introCopy,
+  .storyHeader,
+  .stickyCopy,
+  .imageRail {
+    grid-column: 1 / -1;
+  }
+
+  .stickyCopy {
+    position: relative;
+    top: auto;
+    min-height: auto;
+  }
+
+  .landmarkCopyStack {
+    min-height: auto;
+  }
+
+  .landmarkCopy {
+    position: relative;
+    inset: auto;
+    opacity: 1;
+    transform: none;
+    margin-top: 2rem;
+  }
+
+  .displayTitle,
+  .kineticTitle {
+    font-size: clamp(3rem, 17vw, 4.8rem);
+  }
+
+  .parallaxWrap {
+    min-height: clamp(28rem, 110vw, 38rem);
+    border-radius: 14rem 14rem 0 0;
+  }
+
+  .imageRail {
+    margin-top: 4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lineInner,
+  .parallaxWrap,
+  .parallaxInner,
+  .ctaMedia,
+  .magneticLink,
+  .magneticArrow {
+    will-change: auto;
+  }
+}
