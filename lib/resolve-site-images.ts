@@ -14,12 +14,6 @@ export type ResolvedSiteImage = {
 
 export type SiteImageMap = Record<string, ResolvedSiteImage>;
 
-/** Direct Supabase DB hosts are often unreachable; slot defaults already use local media. */
-function prefersStaticSiteImageDefaults(): boolean {
-  const url = process.env.DATABASE_URL ?? "";
-  return /db\.[a-z0-9-]+\.supabase\.co(?::5432)?/i.test(url);
-}
-
 /** DB URLs starting with /media/hathor/ work on Vercel and locally. */
 export function shouldUseDatabaseSiteImageUrl(url: string): boolean {
   const trimmed = url.trim();
@@ -34,10 +28,6 @@ export async function resolveSiteImageMap(): Promise<SiteImageMap> {
 
   for (const slot of SITE_IMAGE_SLOTS) {
     map[slot.name] = { src: slot.url, alt: slot.altText };
-  }
-
-  if (prefersStaticSiteImageDefaults()) {
-    return map;
   }
 
   try {

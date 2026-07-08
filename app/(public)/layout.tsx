@@ -7,6 +7,8 @@ import { resolveSiteImageMap } from "@/lib/resolve-site-images";
 import "../public.css";
 import "../booking-modal.css";
 
+export const dynamic = "force-dynamic";
+
 const agraham = localFont({
   src: "../../public/fonts/agraham-regular.ttf",
   variable: "--font-hathor-agraham",

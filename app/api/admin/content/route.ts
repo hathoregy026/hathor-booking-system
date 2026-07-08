@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { ContentSection } from "@/app/generated/prisma/enums";
 import { handleRouteError } from "@/lib/api";
 import { logDbError, withDb } from "@/lib/db-safe";
@@ -74,6 +75,7 @@ export async function PUT(request: NextRequest) {
       ),
     );
 
+    revalidatePath("/", "layout");
     return NextResponse.json({ content: updates });
   } catch (error) {
     return handleRouteError(error);
