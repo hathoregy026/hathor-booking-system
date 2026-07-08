@@ -77,24 +77,24 @@ export function HomePage2Content() {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         logo,
-        { y: 64, opacity: 0.78 },
+        { y: 40, opacity: 0.84 },
         {
           y: 0,
           opacity: 1,
-          duration: 1.45,
+          duration: 1.35,
           ease: "power3.out",
           delay: 0.15,
         },
       );
 
       gsap.to(logo, {
-        y: () => window.innerHeight * 0.14,
+        y: () => -window.innerHeight * 0.1,
         ease: "none",
         scrollTrigger: {
           trigger: root,
           start: "top top",
           end: () => `+=${window.innerHeight * PIN_VH}`,
-          scrub: 1.6,
+          scrub: 1.5,
           invalidateOnRefresh: true,
         },
       });
@@ -104,53 +104,54 @@ export function HomePage2Content() {
   }, []);
 
   return (
-    <section
-      ref={rootRef}
-      data-page-transition
-      data-homepage2-transition
-      className={`hathor-page-scroll-transition hathor-page-hero ${styles.root}`}
-    >
-      <div ref={stageRef} className={`pt-stage ${styles.stage}`}>
-        <div className={`pt-hero ${styles.hero}`}>
-          <div className={`pt-hero__media ${styles.heroMedia}`}>
-            <ParallaxHeroVideo
-              src={HATHOR_HERO_VIDEO_SRC}
-              poster={HATHOR_HERO_POSTER_SRC}
-              ariaLabel="Hathor Dahabiya sailing on the Nile"
-              className={styles.heroVideo}
-            />
-            <div className={styles.heroShade} aria-hidden />
-          </div>
-
-          <div ref={maskRef} className="pt-mask" aria-hidden="true" />
-
-          <div ref={heroCopyRef} className={styles.heroCopy}>
-            <p className={styles.heroEyebrow}>Ultra Luxury</p>
-            <h1 className={styles.heroTitle}>Dahabiya Cruise</h1>
-            <p className={styles.heroSubtitle}>
-              Your Luxury Trip Begins With Hathor Dahabiya
-            </p>
-          </div>
-
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            ref={backLogoRef}
-            src={BACK_LOGO_SRC}
-            alt=""
-            className={styles.backLogo}
-            aria-hidden
-          />
-        </div>
-
-        <div ref={sheetRef} className={`pt-sheet ${styles.sheet}`}>
-          <div className={styles.sheetCap} aria-hidden />
-          <div className="pt-sheet__content">
-            <div className={styles.sheetBody}>
-              <div className={styles.sheetPlaceholder} aria-hidden="true" />
+    <>
+      <section
+        ref={rootRef}
+        data-page-transition
+        data-homepage2-transition
+        className={`hathor-page-scroll-transition hathor-page-hero ${styles.root}`}
+      >
+        <div ref={stageRef} className={`pt-stage ${styles.stage}`}>
+          <div className={`pt-hero ${styles.hero}`}>
+            <div className={`pt-hero__media ${styles.heroMedia}`}>
+              <ParallaxHeroVideo
+                src={HATHOR_HERO_VIDEO_SRC}
+                poster={HATHOR_HERO_POSTER_SRC}
+                ariaLabel="Hathor Dahabiya sailing on the Nile"
+                className={styles.heroVideo}
+              />
+              <div className={styles.heroShade} aria-hidden />
             </div>
+
+            <div ref={maskRef} className="pt-mask" aria-hidden="true" />
+
+            <div ref={heroCopyRef} className={styles.heroCopy}>
+              <p className={styles.heroEyebrow}>Ultra Luxury</p>
+              <h1 className={styles.heroTitle}>Dahabiya Cruise</h1>
+              <p className={styles.heroSubtitle}>
+                Your Luxury Trip Begins With Hathor Dahabiya
+              </p>
+            </div>
+
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              ref={backLogoRef}
+              src={BACK_LOGO_SRC}
+              alt=""
+              className={styles.backLogo}
+              aria-hidden
+            />
+          </div>
+
+          <div ref={sheetRef} className={`pt-sheet ${styles.sheet}`}>
+            <div className={styles.sheetCap} aria-hidden />
           </div>
         </div>
+      </section>
+
+      <div className={styles.creamFloor} aria-hidden="true">
+        <div className={styles.creamFloorInner} />
       </div>
-    </section>
+    </>
   );
 }

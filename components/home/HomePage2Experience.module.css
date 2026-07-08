@@ -6,7 +6,7 @@
 
   position: relative;
   isolation: isolate;
-  background: var(--hp2-black);
+  background: transparent;
   --pt-cream: var(--hp2-cream);
 }
 
@@ -26,6 +26,8 @@
 
 :global(html[data-homepage2-experience] body.has-page-scroll-transition .pin-spacer) {
   background: var(--hp2-cream) !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 :global(html[data-homepage2-experience] body.has-page-scroll-transition .public-site),
@@ -34,50 +36,33 @@
   background-color: var(--hp2-cream) !important;
 }
 
+:global(html[data-homepage2-experience] [data-homepage2-transition].hathor-page-scroll--past-pin .pt-stage) {
+  overflow: visible !important;
+  background-color: var(--hp2-cream) !important;
+}
+
+:global(html[data-homepage2-experience] [data-homepage2-transition].hathor-page-scroll--media-gone .pt-hero__media),
+:global(html[data-homepage2-experience] [data-homepage2-transition].hathor-page-scroll--past-pin .pt-hero__media) {
+  opacity: 0 !important;
+}
+
+:global(html[data-homepage2-experience] [data-homepage2-transition].hathor-page-scroll--media-gone .pt-mask),
+:global(html[data-homepage2-experience] [data-homepage2-transition].hathor-page-scroll--past-pin .pt-mask) {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
 :global(html[data-homepage2-experience] .owo-footer__wordmark) {
   display: none;
 }
 
 :global(html[data-homepage2-experience] .owo-footer) {
   margin-top: 0 !important;
-  padding-top: clamp(3.5rem, 7vw, 5rem);
   background: var(--hp2-cream) !important;
   border-top: none !important;
-  color: #2c2824;
 }
 
-:global(html[data-homepage2-experience] .owo-footer__link),
-:global(html[data-homepage2-experience] .owo-footer__legal-link),
-:global(html[data-homepage2-experience] .owo-footer__col-label),
-:global(html[data-homepage2-experience] .owo-footer__tag),
-:global(html[data-homepage2-experience] .owo-footer__address),
-:global(html[data-homepage2-experience] .owo-footer__copy) {
-  color: inherit;
-}
-
-/* Homepage 2 header — solid black bar, reference layout */
-:global(.hathor-header--homepage-2) {
-  background: #0a0a0a !important;
-  border-bottom: none !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-}
-
-:global(.hathor-header--homepage-2::before) {
-  display: none !important;
-}
-
-:global(.hathor-header--homepage-2:not(.hathor-header--menu-hovered)),
-:global(.hathor-header--homepage-2.hathor-header--menu-hovered),
-:global(.hathor-header--homepage-2.hathor-header--menu-active) {
-  background: #0a0a0a !important;
-}
-
-:global(.hathor-header--homepage-2 .hathor-header__inner--owo) {
-  padding-top: clamp(0.85rem, 2vh, 1.25rem);
-  padding-bottom: 0.65rem;
-}
-
+/* Homepage 2 only — Book Now row + gold dropdown (nav font/style unchanged) */
 :global(.hathor-header--homepage-2 .hathor-header__hp2-top) {
   order: 1;
   display: grid;
@@ -104,7 +89,7 @@
     inset 0 1px 0 rgb(255 255 255 / 0.38),
     0 0.35rem 1rem rgb(0 0 0 / 0.18);
   color: #fff8e8;
-  font-family: var(--public-title);
+  font-family: var(--public-serif);
   font-size: clamp(0.52rem, 0.72vw, 0.62rem);
   font-weight: 500;
   letter-spacing: 0.16em;
@@ -113,8 +98,7 @@
   white-space: nowrap;
   transition:
     transform 0.32s var(--hp2-ease),
-    filter 0.32s var(--hp2-ease),
-    box-shadow 0.32s var(--hp2-ease);
+    filter 0.32s var(--hp2-ease);
 }
 
 :global(.hathor-header--homepage-2 .hathor-header__hp2-top .hathor-header__hp2-book:first-child) {
@@ -140,51 +124,16 @@
   margin-top: 0.45rem;
 }
 
-:global(.hathor-header--homepage-2 .hathor-header__nav) {
-  gap: clamp(0.35rem, 1.2vw, 1rem);
-  padding-inline: clamp(0.5rem, 2vw, 1.5rem);
-}
-
-:global(.hathor-header--homepage-2 .hathor-header__nav-link) {
-  font-family: var(--public-title);
-  font-size: clamp(0.58rem, 0.82vw, 0.72rem);
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  padding: 0.42rem 0.55rem;
-  color: #faf8f5 !important;
-  background: transparent;
-  border-radius: 999px;
-  transition:
-    background 0.28s var(--hp2-ease),
-    color 0.28s var(--hp2-ease),
-    transform 0.28s var(--hp2-ease);
-}
-
 :global(.hathor-header--homepage-2 .hathor-header__nav-item--dropdown:hover .hathor-header__nav-link),
 :global(.hathor-header--homepage-2 .hathor-header__nav-item--dropdown:focus-within .hathor-header__nav-link) {
+  border-radius: 999px;
   background: linear-gradient(180deg, #dfc37a 0%, #b69f64 52%, #9a7f3a 100%);
   color: #fff8e8 !important;
-}
-
-:global(.hathor-header--homepage-2.hathor-header--menu-hovered .hathor-header__nav-link) {
-  color: #faf8f5 !important;
-  background: transparent;
-}
-
-:global(.hathor-header--homepage-2.hathor-header--menu-hovered .hathor-header__nav-item--dropdown:hover .hathor-header__nav-link),
-:global(.hathor-header--homepage-2.hathor-header--menu-hovered .hathor-header__nav-item--dropdown:focus-within .hathor-header__nav-link) {
-  background: linear-gradient(180deg, #dfc37a 0%, #b69f64 52%, #9a7f3a 100%);
-  color: #fff8e8 !important;
-}
-
-:global(.hathor-header--homepage-2 .hathor-header__dropdown) {
-  min-width: 0;
-  padding-top: 0.45rem;
 }
 
 :global(.hathor-header--homepage-2 .hathor-header__dropdown-list) {
   margin: 0;
-  padding: 0;
+  padding: 0.28rem 0;
   list-style: none;
   background: transparent;
   border: none;
@@ -206,10 +155,7 @@
     inset 0 1px 0 rgb(255 255 255 / 0.36),
     0 0.45rem 1.1rem rgb(0 0 0 / 0.22);
   color: #fff8e8 !important;
-  font-family: var(--public-title);
-  font-size: clamp(0.48rem, 0.64vw, 0.56rem);
-  font-weight: 500;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   line-height: 1;
   text-align: center;
   text-transform: uppercase;
@@ -217,10 +163,6 @@
   transition:
     transform 0.28s var(--hp2-ease),
     filter 0.28s var(--hp2-ease);
-}
-
-:global(.hathor-header--homepage-2 .hathor-header__dropdown li:nth-child(1) .hathor-header__dropdown-link) {
-  transform: translateX(0);
 }
 
 :global(.hathor-header--homepage-2 .hathor-header__dropdown li:nth-child(2) .hathor-header__dropdown-link) {
@@ -235,6 +177,7 @@
   background: linear-gradient(180deg, #ebd089 0%, #c4ab6d 52%, #ad9245 100%);
   color: #fff8e8 !important;
   filter: brightness(1.05);
+  transform: translateY(-1px);
 }
 
 :global(.hathor-header--homepage-2 .hathor-header__dropdown li:nth-child(2) .hathor-header__dropdown-link:hover) {
@@ -245,22 +188,13 @@
   transform: translateX(2.3rem) translateY(-1px);
 }
 
-:global(.hathor-header--homepage-2.hathor-header--menu-hovered .hathor-header__hp2-book) {
-  color: #fff8e8;
-}
-
-:global(.hathor-header--homepage-2 .public-theme-toggle) {
-  border-color: rgb(250 248 245 / 0.35);
-  background: rgb(10 10 10 / 0.25);
-  color: #faf8f5;
-}
-
 .stage {
   background: var(--hp2-black) !important;
 }
 
 .hero {
   background: var(--hp2-black);
+  overflow: visible !important;
 }
 
 .heroMedia {
@@ -295,8 +229,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: clamp(6.5rem, 14vh, 8.5rem) 1.5rem clamp(16rem, 34vh, 22rem);
+  justify-content: flex-start;
+  padding: clamp(6.5rem, 14vh, 8.5rem) 1.5rem 0;
   pointer-events: none;
   text-align: center;
 }
@@ -335,10 +269,9 @@
 .backLogo {
   position: absolute;
   left: 50%;
-  top: auto;
-  bottom: clamp(1.5rem, 5vh, 3.5rem);
+  top: clamp(8.5rem, 24vh, 13.5rem);
   z-index: 8;
-  width: min(104vw, 90rem);
+  width: min(102vw, 88rem);
   height: auto;
   pointer-events: none;
   will-change: transform;
@@ -359,13 +292,16 @@
   min-height: clamp(2rem, 5vh, 3rem);
 }
 
-.sheetBody {
-  min-height: clamp(72rem, 160vh, 120rem);
+.creamFloor {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
   background: var(--hp2-cream);
 }
 
-.sheetPlaceholder {
-  min-height: inherit;
+.creamFloorInner {
+  min-height: clamp(72rem, 160vh, 120rem);
   background: var(--hp2-cream);
 }
 
@@ -387,24 +323,12 @@
     min-width: 0;
   }
 
-  .heroCopy {
-    padding-bottom: clamp(12rem, 28vh, 16rem);
-  }
-
-  .heroEyebrow {
-    font-size: clamp(1.1rem, 5vw, 1.5rem);
-  }
-
-  .heroTitle {
-    font-size: clamp(1.25rem, 5.5vw, 1.75rem);
-  }
-
   .backLogo {
-    bottom: clamp(0.75rem, 3vh, 1.75rem);
+    top: clamp(7rem, 20vh, 10rem);
     width: 98vw;
   }
 
-  .sheetBody {
+  .creamFloorInner {
     min-height: clamp(90rem, 220vh, 140rem);
   }
 }
@@ -415,8 +339,7 @@
   }
 
   :global(.hathor-header--homepage-2 .hathor-header__hp2-book),
-  :global(.hathor-header--homepage-2 .hathor-header__dropdown-link),
-  :global(.hathor-header--homepage-2 .hathor-header__nav-link) {
+  :global(.hathor-header--homepage-2 .hathor-header__dropdown-link) {
     transition: none;
   }
 }

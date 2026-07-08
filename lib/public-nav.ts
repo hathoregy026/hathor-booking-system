@@ -121,28 +121,6 @@ export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
   { type: "link", href: "/contact", label: "Contact" },
 ];
 
-/** Homepage 2 reference nav — editorial labels, no preview link. */
-export const HEADER_NAV_ITEMS_HP2: HeaderNavItem[] = [
-  { type: "link", href: "/", label: "Home" },
-  { type: "link", href: "/cruises", label: "Cruises" },
-  {
-    type: "group",
-    id: "accommodations",
-    label: "Accommodation",
-    href: "/rooms",
-    links: NAV_ACCOMMODATIONS.links,
-  },
-  {
-    type: "group",
-    id: "experiences",
-    label: "Experiences",
-    href: "/highlights",
-    links: NAV_EXPERIENCES.links,
-  },
-  { type: "link", href: "/about", label: "About" },
-  { type: "link", href: "/contact", label: "Contact" },
-];
-
 /** @deprecated Use HEADER_NAV_ITEMS */
 export const HEADER_NAV_LINKS: NavLink[] = HEADER_NAV_ITEMS.flatMap((item) =>
   item.type === "link"
