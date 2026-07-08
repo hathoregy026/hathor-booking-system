@@ -26,8 +26,8 @@ type ImageUploadProps = {
 };
 
 type UploadResponse = {
-  url?: string;
-  dataUrl?: string;
+  publicUrl?: string;
+  signedUrl?: string;
   error?: string;
 };
 
@@ -43,42 +43,71 @@ function validateClientFile(file: File): string | null {
   return null;
 }
 
-function uploadWithProgress(
-  formData: FormData,
+async function parseUploadResponse(response: Response): Promise<UploadResponse> {
+  const text = await response.text();
+  if (!text) return {};
+
+  try {
+    return JSON.parse(text) as UploadResponse;
+  } catch {
+    return {
+      error: text.startsWith("Request Entity")
+        ? "Upload is too large for the server route. Try again or choose a smaller image."
+        : "Upload failed: invalid server response.",
+    };
+  }
+}
+
+async function requestSignedUpload(file: File, folder: string): Promise<UploadResponse> {
+  const response = await fetch("/api/admin/upload/sign", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "same-origin",
+    body: JSON.stringify({
+      folder,
+      fileName: file.name,
+      contentType: file.type || "application/octet-stream",
+      fileSize: file.size,
+    }),
+  });
+
+  const data = await parseUploadResponse(response);
+  if (!response.ok || !data.signedUrl || !data.publicUrl) {
+    throw new Error(data.error || "Could not start upload");
+  }
+
+  return data;
+}
+
+function uploadFileToSignedUrl(
+  file: File,
+  signedUrl: string,
   onProgress: (progress: number) => void,
-): Promise<UploadResponse> {
+): Promise<void> {
   return new Promise((resolve, reject) => {
     const request = new XMLHttpRequest();
 
-    request.open("POST", "/api/admin/upload");
+    request.open("PUT", signedUrl);
     request.timeout = ADMIN_UPLOAD_TIMEOUT_MS;
-    request.withCredentials = true;
 
     request.upload.onprogress = (event) => {
       if (!event.lengthComputable) return;
-      const percent = Math.round((event.loaded / event.total) * 85);
-      onProgress(Math.min(percent, 85));
+      const percent = 5 + Math.round((event.loaded / event.total) * 90);
+      onProgress(Math.min(percent, 95));
     };
 
     request.onload = () => {
-      let data: UploadResponse = {};
-
-      try {
-        data = request.responseText
-          ? (JSON.parse(request.responseText) as UploadResponse)
-          : {};
-      } catch {
-        reject(new Error("Upload failed: invalid server response"));
-        return;
-      }
-
       if (request.status < 200 || request.status >= 300) {
-        reject(new Error(data.error || "Upload failed"));
+        reject(
+          new Error(
+            `Upload to storage failed (${request.status}). Please try again.`,
+          ),
+        );
         return;
       }
 
       onProgress(100);
-      resolve(data);
+      resolve();
     };
 
     request.onerror = () => {
@@ -95,7 +124,8 @@ function uploadWithProgress(
       reject(new Error("Upload cancelled."));
     };
 
-    request.send(formData);
+    request.setRequestHeader("Content-Type", file.type || "application/octet-stream");
+    request.send(file);
   });
 }
 
@@ -164,18 +194,21 @@ export function ImageUpload({
     setUploadComplete(false);
 
     try {
-      const formData = new FormData();
-      formData.append("file", selectedFile);
-      formData.append("folder", folder);
+      setUploadProgress(5);
+      const signedUpload = await requestSignedUpload(selectedFile, folder);
 
-      const data = await uploadWithProgress(formData, setUploadProgress);
-
-      if (!data.url) {
-        throw new Error("Upload succeeded but no URL was returned");
+      if (!signedUpload.signedUrl || !signedUpload.publicUrl) {
+        throw new Error("Upload could not start. No signed URL was returned.");
       }
 
-      onChange(data.url);
-      onDataUrlChange?.(data.dataUrl ?? null);
+      await uploadFileToSignedUrl(
+        selectedFile,
+        signedUpload.signedUrl,
+        setUploadProgress,
+      );
+
+      onChange(signedUpload.publicUrl);
+      onDataUrlChange?.(null);
       setUploadProgress(100);
       setUploadComplete(true);
       setSelectedFile(null);
@@ -206,8 +239,8 @@ export function ImageUpload({
   const isAdmin = variant === "admin";
   const showUploadProgress = uploadProgress !== null && (isUploading || uploadComplete);
   const uploadStatusText =
-    uploadProgress !== null && uploadProgress >= 85 && uploadProgress < 100
-      ? "Processing image..."
+    uploadProgress !== null && uploadProgress >= 95 && uploadProgress < 100
+      ? "Saving image..."
       : `Uploading... ${uploadProgress ?? 0}%`;
 
   return (
@@ -381,7 +414,7 @@ export function ImageUpload({
           style={isAdmin ? { color: "var(--text-muted)" } : undefined}
         >
           Selected: {selectedFile.name} ({(selectedFile.size / 1024).toFixed(0)}{" "}
-          KB) — converts to WebP on upload.
+          KB) — uploads directly to Supabase Storage.
         </p>
       )}
 

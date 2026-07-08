@@ -23,7 +23,9 @@ export const ALLOWED_IMAGE_TYPES = new Set([
 
 export const ALLOWED_IMAGE_EXTENSIONS = new Set(["jpg", "jpeg", "png", "webp"]);
 
-export function validateImageFile(file: File): string | null {
+export function validateImageFile(
+  file: Pick<File, "name" | "type" | "size">,
+): string | null {
   const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
   const mimeType = file.type || mimeFromExtension(extension);
 

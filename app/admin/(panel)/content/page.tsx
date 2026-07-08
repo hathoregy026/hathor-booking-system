@@ -293,7 +293,7 @@ export default function AdminContentPage() {
                   }
                   folder={item.section.toLowerCase()}
                   variant="admin"
-                  helperText="Optional. Upload converts to WebP, then click Save Changes."
+                  helperText="Optional. Uploads directly to Supabase Storage, then click Save Changes."
                 />
               </div>
             </section>
@@ -304,8 +304,8 @@ export default function AdminContentPage() {
       <div id="site-images">
         <h2 className="admin-heading text-xl">Site Images</h2>
         <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
-          Manage every homepage and page image by section. Uploads are converted
-          to WebP and stored in your database.
+          Manage every homepage and page image by section. Uploads go directly
+          to Supabase Storage; image URLs are saved when you click Save Changes.
         </p>
 
         {SITE_IMAGE_GROUPS.map((group) => (
@@ -356,7 +356,7 @@ export default function AdminContentPage() {
                         }
                         folder={`site-images/${item.name}`}
                         variant="admin"
-                        helperText="Upload converts to WebP automatically. Click Save Changes to apply on the live site."
+                        helperText="Uploads directly to Supabase Storage. Click Save Changes to apply on the live site."
                       />
                     </div>
                   </section>
