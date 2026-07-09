@@ -1,0 +1,19 @@
+---
+description: Never modify the frozen local scroll-reveal-effect reference copy
+alwaysApply: true
+---
+
+# FROZEN — `_local/scroll-reveal-effect/` (NEVER MODIFY)
+
+The folder `_local/scroll-reveal-effect/` is a **local-only**, **gitignored** snapshot of the cruises scroll reveal engine.
+
+**DO NOT edit, refactor, delete, or move** any file in this folder unless the user explicitly says to modify the frozen scroll-reveal-effect reference.
+
+This includes:
+
+- `_local/scroll-reveal-effect/usePageScrollTransition.ts`
+- `_local/scroll-reveal-effect/PageScrollTransition.tsx`
+- `_local/scroll-reveal-effect/pageScrollTransitionEngine.ts`
+- `_local/scroll-reveal-effect/README.md`
+
+Homepage 2 and all other pages must use the live shared engine (`hooks/usePageScrollTransition.ts`, `components/pages/PageScrollTransition.tsx`) — not fork or duplicate logic from this frozen copy.

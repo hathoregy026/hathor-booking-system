@@ -3,44 +3,42 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import {
-  refreshHomePage2ScrollTransition,
-  useHomePage2ScrollTransition,
-} from "./useHomePage2ScrollTransition";
+  refreshPageScrollTransition,
+  usePageScrollTransition,
+} from "@/components/pages/pageScrollTransitionEngine";
 
 const PIN_VH = 4.2;
 
 const BACK_LOGO_SRC =
   "/branding/hathor-logo-behing-the-sheet-egypt-toors-pyramids.svg";
 
-export type HomePage2ScrollTransitionProps = {
+export type HomePage2ScrollRevealProps = {
   title: string;
   imageName: string;
   imageAlt?: string;
   children: ReactNode;
 };
 
-/** Cruises PageScrollTransition DOM — homepage-2 local hook only. */
-export function HomePage2ScrollTransition({
+/** Same DOM + engine as cruises PageScrollTransition — giant logo replaces hero copy. */
+export function HomePage2ScrollReveal({
   title,
   imageName,
   imageAlt,
   children,
-}: HomePage2ScrollTransitionProps) {
+}: HomePage2ScrollRevealProps) {
   const image = useSiteImage(imageName);
   const rootRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const maskRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
-  const giantLogoRef = useRef<HTMLDivElement>(null);
 
-  useHomePage2ScrollTransition({
+  usePageScrollTransition({
     root: rootRef,
     stage: stageRef,
     mask: maskRef,
     sheet: sheetRef,
     heroCopy: heroCopyRef,
-    giantLogo: giantLogoRef,
   });
 
   useEffect(() => {
@@ -112,7 +110,6 @@ export function HomePage2ScrollTransition({
       <section
         ref={rootRef}
         data-page-transition
-        data-homepage2-transition
         className="hathor-page-scroll-transition hathor-page-hero"
       >
         <div ref={stageRef} className="pt-stage">
@@ -123,13 +120,13 @@ export function HomePage2ScrollTransition({
                 alt={imageAlt ?? image.alt}
                 fetchPriority="high"
                 decoding="async"
-                onLoad={() => refreshHomePage2ScrollTransition()}
+                onLoad={() => refreshPageScrollTransition()}
               />
               <div className="pt-hero__overlay" aria-hidden />
             </div>
             <div ref={maskRef} className="pt-mask" aria-hidden="true" />
             <div ref={heroCopyRef} className="pt-hero__copy">
-              <div ref={giantLogoRef} className="giant-logo-container">
+              <div className="giant-logo-container">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={BACK_LOGO_SRC} alt="Hathor" />
               </div>

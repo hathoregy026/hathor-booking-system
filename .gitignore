@@ -47,6 +47,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# frozen local scroll reveal reference (never commit)
+/_local/scroll-reveal-effect/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

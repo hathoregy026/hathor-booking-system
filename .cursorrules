@@ -92,3 +92,7 @@ The `/test-scroll-reveal` route is the canonical scroll-reveal reference. DO NOT
 - `components/pages/TestScrollTransition.tsx`
 - `hooks/useTestScrollTransition.ts`
 Cruises and all other pages use separate files (`CruisesScrollReveal`, `usePageScrollTransition`, `cruises-scroll-route`). Never share `test-scroll-reveal-route` or `data-test-scroll-reveal` with other pages.
+
+# FROZEN — `_local/scroll-reveal-effect/` (NEVER MODIFY)
+Local-only gitignored snapshot of the cruises scroll reveal. DO NOT edit unless the user explicitly says to modify the frozen scroll-reveal-effect reference:
+- `_local/scroll-reveal-effect/**`
