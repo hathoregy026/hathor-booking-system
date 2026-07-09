@@ -21,18 +21,12 @@ const HP2_CRITICAL_CSS = `
 }
 .homepage-2-route [data-homepage2-transition] .pt-sheet {
   background-color: #f4f1ea !important;
-  border-top-left-radius: 50% var(--pt-dome-r-start);
-  border-top-right-radius: 50% var(--pt-dome-r-start);
+  border-top-left-radius: 50% var(--pt-dome-r-start) !important;
+  border-top-right-radius: 50% var(--pt-dome-r-start) !important;
 }
 .homepage-2-route [data-homepage2-transition] .pt-stage {
   overflow: hidden !important;
   background-color: #f4f1ea !important;
-}
-.homepage-2-root {
-  visibility: hidden;
-}
-.homepage-2-root.homepage-2-scroll-ready {
-  visibility: visible;
 }
 `;
 
@@ -47,10 +41,9 @@ export default function HomePage2Layout({ children }: { children: ReactNode }) {
     min-height: 120svh !important;
   }
 
-  /* 2. HIDE GIANT LOGO UNTIL JS IS READY (Prevents Pop) */
-  html[data-homepage2-experience] .giant-logo-container,
-  html[data-homepage2-experience] .giant-logo {
-    opacity: 0 !important;
+  /* 2. HIDE GIANT LOGO ONLY UNTIL SCROLL ENGINE IS READY (no opacity lock) */
+  html[data-homepage2-experience] .homepage-2-root:not(.homepage-2-scroll-ready) .giant-logo-container {
+    visibility: hidden !important;
   }
 
   /* 3. FORCE BOOK BAR TO BE VISIBLE IMMEDIATELY (Prevents Slide-in) */
