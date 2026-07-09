@@ -31,7 +31,7 @@ html[data-homepage2-experience] .homepage-2-root {
   --pt-cream: #f4f1ea;
 }
 
-/* Match cruises scroll dome math — px radii on the transition root (not vw). */
+/* Match cruises scroll dome — same px radii, full-width sheet (no vw bleed). */
 html[data-homepage2-experience] body.has-page-scroll-transition [data-page-transition] {
   --pt-cream: #f4f1ea !important;
   --pt-dome-r-start: 1250px !important;
@@ -47,12 +47,18 @@ html[data-homepage2-experience] body.has-page-scroll-transition [data-page-trans
   background-color: #f4f1ea !important;
 }
 
-/* Wider sheet removes the vertical "ears" at the dome base (cruises uses full bleed). */
 html[data-homepage2-experience] body.has-page-scroll-transition [data-page-transition] .pt-sheet {
-  left: -10vw;
-  width: 120vw;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  margin-left: 0 !important;
   max-width: none;
   background-color: #f4f1ea !important;
+}
+
+/* Static hero stripes off during mask reveal — cruises uses mask stripes only. */
+html[data-homepage2-experience] [data-page-transition].homepage-2--mask-phase .homepage-2-hero-stripes {
+  opacity: 0;
 }
 
 @media (max-width: 1024px) {
@@ -66,11 +72,6 @@ html[data-homepage2-experience] body.has-page-scroll-transition [data-page-trans
   html[data-homepage2-experience] body.has-page-scroll-transition [data-page-transition] {
     --pt-dome-r-start: 150px !important;
     --pt-dome-r-end: 10px !important;
-  }
-
-  html[data-homepage2-experience] body.has-page-scroll-transition [data-page-transition] .pt-sheet {
-    left: -5vw;
-    width: 110vw;
   }
 }
 

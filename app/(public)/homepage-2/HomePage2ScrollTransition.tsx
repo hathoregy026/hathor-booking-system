@@ -3,9 +3,9 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import {
-  refreshPageScrollTransition,
-  usePageScrollTransition,
-} from "@/components/pages/pageScrollTransitionEngine";
+  refreshHomePage2ScrollTransition,
+  useHomePage2ScrollTransition,
+} from "./useHomePage2ScrollTransition";
 import {
   HATHOR_HERO_POSTER_SRC,
   HATHOR_HERO_VIDEO_SRC,
@@ -37,7 +37,7 @@ export function HomePage2ScrollTransition({
   const sheetRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
 
-  usePageScrollTransition({
+  useHomePage2ScrollTransition({
     root: rootRef,
     stage: stageRef,
     mask: maskRef,
@@ -129,7 +129,7 @@ export function HomePage2ScrollTransition({
                 playsInline
                 preload="metadata"
                 aria-label="Hathor Dahabiya sailing on the Nile"
-                onLoadedData={() => refreshPageScrollTransition()}
+                onLoadedData={() => refreshHomePage2ScrollTransition()}
               />
               {/* Hidden poster image keeps scroll engine layout in sync with cruises. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -139,7 +139,7 @@ export function HomePage2ScrollTransition({
                 fetchPriority="high"
                 decoding="async"
                 className="homepage-2-hero-poster"
-                onLoad={() => refreshPageScrollTransition()}
+                onLoad={() => refreshHomePage2ScrollTransition()}
               />
               <div className="homepage-2-hero-shade" aria-hidden />
               <div className="homepage-2-hero-stripes" aria-hidden />
