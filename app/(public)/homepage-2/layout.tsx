@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import "./homepage-2.css";
 
 /** Runs before paint so homepage-2.css applies immediately (not after React hydration). */
 const HP2_ATTR_SCRIPT = `(function(){try{document.documentElement.setAttribute("data-homepage2-experience","");}catch(e){}})();`;

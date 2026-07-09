@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { HomePage2Content } from "@/components/home/HomePage2Content";
 import { HATHOR_HERO_POSTER_SRC } from "@/lib/branding";
+import { HomePage2Client } from "./HomePage2Client";
+import "./homepage-2.css";
 
 const BACK_LOGO_SRC =
   "/branding/hathor-logo-behing-the-sheet-egypt-toors-pyramids.svg";
@@ -46,7 +47,7 @@ export default function HomePage2() {
   return (
     <>
       <link rel="preload" href={BACK_LOGO_SRC} as="image" type="image/svg+xml" />
-      <HomePage2Content />
+      <HomePage2Client />
     </>
   );
 }

@@ -27,32 +27,102 @@ html[data-homepage2-experience] body.has-page-scroll-transition .pin-spacer {
   padding: 0 !important;
 }
 
-html[data-homepage2-experience] [data-homepage2-transition] {
+html[data-homepage2-experience] .homepage-2-root {
   --pt-cream: #f4f1ea;
   --pt-dome-r-start: 50vw;
-  --pt-dome-r-end: 22px;
-  background: transparent !important;
 }
 
-/* LAYER 1: video + stripes */
-html[data-homepage2-experience] [data-homepage2-transition] .pt-stage {
-  background-color: #000;
+/* 1. GIANT LOGO BEHIND DOME */
+.homepage-2-root .giant-logo-container {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70vw;
+  z-index: 5;
+  opacity: 0;
+  animation: logoRise 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
 }
 
-html[data-homepage2-experience] .homepage-2-hero-bg {
-  z-index: 0;
+.homepage-2-root .giant-logo-container img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 1rem 2.5rem rgb(0 0 0 / 0.46));
+}
+
+@keyframes logoRise {
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* 2. BOOK NOW BUTTONS (Top Bar) */
+.homepage-2-root .top-book-buttons {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 40px;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.homepage-2-root .book-now-btn {
+  pointer-events: auto;
+  background-color: #b69f64;
+  color: #000;
+  padding: 12px 30px;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  border: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.homepage-2-root .book-now-btn:hover {
+  background-color: #fff;
+  transform: translateY(-2px);
+}
+
+/* 3. DOME SHEET COLOR & SEAMLESS FLOW */
+.homepage-2-root .pt-sheet {
+  background-color: #f4f1ea !important;
+}
+
+.homepage-2-root .pt-sheet__content {
+  min-height: 100vh;
+  padding-bottom: 0;
+}
+
+/* Hero video + stripes (Frame 9 layer 1) */
+.homepage-2-root .homepage-2-hero-media {
   background: #000;
 }
 
-html[data-homepage2-experience] .homepage-2-hero-video {
+.homepage-2-root .homepage-2-hero-video {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  z-index: 0;
 }
 
-html[data-homepage2-experience] .homepage-2-hero-shade {
+.homepage-2-root .homepage-2-hero-poster {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.homepage-2-root .homepage-2-hero-shade {
   position: absolute;
   inset: 0;
   z-index: 1;
@@ -60,7 +130,7 @@ html[data-homepage2-experience] .homepage-2-hero-shade {
   pointer-events: none;
 }
 
-html[data-homepage2-experience] .homepage-2-hero-stripes {
+.homepage-2-root .homepage-2-hero-stripes {
   position: absolute;
   inset: 0;
   z-index: 2;
@@ -76,123 +146,15 @@ html[data-homepage2-experience] .homepage-2-hero-stripes {
   opacity: 0.45;
 }
 
-/* LAYER 2: giant logo, behind the sheet and in front of video */
-html[data-homepage2-experience] .homepage-2-logo-layer {
+.homepage-2-root .pt-hero__copy {
   position: absolute;
   inset: 0;
-  z-index: 10;
+  z-index: 5;
   pointer-events: none;
 }
 
-html[data-homepage2-experience] .giant-logo {
-  position: absolute;
-  top: 20%;
-  left: 50%;
-  width: 75vw;
-  max-width: 1400px;
-  height: auto;
-  z-index: 10;
-  opacity: 0;
-  transform: translateX(-50%) translateY(60px);
-  animation: giantLogoRise 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  filter: drop-shadow(0 1rem 2.5rem rgb(0 0 0 / 0.46));
-}
-
-@keyframes giantLogoRise {
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-}
-
-/* LAYER 3: route-only Book Now buttons; global nav remains unchanged */
-html[data-homepage2-experience] .homepage-2-book-now-layer {
-  position: fixed;
-  top: 18px;
-  left: 0;
-  right: 0;
-  z-index: 260;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: clamp(7rem, 18vw, 19rem);
-  pointer-events: none;
-}
-
-html[data-homepage2-experience] .book-now-btn {
-  background-color: #b69f64;
-  color: #000;
-  padding: 12px 32px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  border: none;
-  cursor: pointer;
-  pointer-events: auto;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-html[data-homepage2-experience] .book-now-btn:hover {
-  background-color: #fff;
-  transform: translateY(-2px);
-}
-
-/* Standard nav layout stays global; Homepage 2 only refines dropdown skin. */
-html[data-homepage2-experience] .hathor-header__dropdown-list {
-  background-color: #111;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  border: 1px solid rgb(182 159 100 / 0.18);
-  box-shadow: 0 18px 42px rgb(0 0 0 / 0.28);
-}
-
-html[data-homepage2-experience] .hathor-header__dropdown {
-  opacity: 0;
-  visibility: hidden;
-  transform: translateX(-50%) translateY(-10px);
-  transition:
-    opacity 0.3s ease,
-    visibility 0.3s ease,
-    transform 0.3s ease;
-}
-
-html[data-homepage2-experience] .hathor-header__dropdown.is-open,
-html[data-homepage2-experience] .hathor-header__nav-item--dropdown:hover .hathor-header__dropdown,
-html[data-homepage2-experience] .hathor-header__nav-item--dropdown:focus-within .hathor-header__dropdown {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(0);
-}
-
-html[data-homepage2-experience] .hathor-header__dropdown-link {
-  color: #b69f64;
-  text-decoration: none;
-  font-size: 11px;
-  letter-spacing: 1px;
-  white-space: nowrap;
-}
-
-/* LAYER 4: cream sheet + seamless footer */
-html[data-homepage2-experience] .homepage-2-sheet {
-  background-color: #f4f1ea !important;
-  z-index: 20 !important;
-}
-
-html[data-homepage2-experience] .homepage-2-sheet-landing {
-  min-height: 80vh;
-  background: #f4f1ea;
-}
-
-html[data-homepage2-experience] .homepage-2-rise-cap {
-  min-height: clamp(8rem, 16vh, 12rem);
-  background: #f4f1ea;
-}
-
-html[data-homepage2-experience] .homepage-2-placeholder {
+/* Sheet placeholder + footer seam */
+.homepage-2-root .homepage-2-placeholder {
   min-height: clamp(90rem, 180vh, 130rem);
   display: grid;
   place-items: start center;
@@ -201,7 +163,7 @@ html[data-homepage2-experience] .homepage-2-placeholder {
   text-align: center;
 }
 
-html[data-homepage2-experience] .homepage-2-placeholder__eyebrow {
+.homepage-2-root .homepage-2-placeholder__eyebrow {
   margin: 0 0 1.2rem;
   color: #b69f64;
   font-size: 0.72rem;
@@ -210,7 +172,7 @@ html[data-homepage2-experience] .homepage-2-placeholder__eyebrow {
   text-transform: uppercase;
 }
 
-html[data-homepage2-experience] .homepage-2-placeholder h1 {
+.homepage-2-root .homepage-2-placeholder h1 {
   margin: 0;
   max-width: 62rem;
   color: #1a1a1a;
@@ -221,38 +183,29 @@ html[data-homepage2-experience] .homepage-2-placeholder h1 {
   letter-spacing: -0.06em;
 }
 
-html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition].hathor-page-scroll--past-pin .pt-stage {
-  background-color: #f4f1ea !important;
-}
-
-html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition].hathor-page-scroll--media-gone .pt-hero__media,
-html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition].hathor-page-scroll--past-pin .pt-hero__media {
-  opacity: 0;
-}
-
-html[data-homepage2-experience] .owo-footer__wordmark {
-  display: none;
-}
-
 html[data-homepage2-experience] .public-site > .owo-footer {
   margin-top: 0 !important;
   background-color: #f4f1ea !important;
   border-top: none !important;
 }
 
+html[data-homepage2-experience] .owo-footer__wordmark {
+  display: none;
+}
+
 @media (max-width: 767px) {
-  html[data-homepage2-experience] .homepage-2-book-now-layer {
+  .homepage-2-root .top-book-buttons {
     top: 4.25rem;
-    gap: 0.75rem;
     padding-inline: 1rem;
+    gap: 0.75rem;
   }
 
-  html[data-homepage2-experience] .book-now-btn {
+  .homepage-2-root .book-now-btn {
     flex: 1 1 0;
     padding-inline: 1rem;
   }
 
-  html[data-homepage2-experience] .giant-logo {
+  .homepage-2-root .giant-logo-container {
     top: 22%;
     width: 92vw;
   }
