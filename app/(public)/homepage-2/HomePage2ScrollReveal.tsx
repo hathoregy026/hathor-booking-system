@@ -6,6 +6,7 @@ import {
   refreshPageScrollTransition,
   usePageScrollTransition,
 } from "@/components/pages/pageScrollTransitionEngine";
+import { useHomePage2GiantLogo } from "./useHomePage2GiantLogo";
 
 const PIN_VH = 4.2;
 
@@ -31,15 +32,17 @@ export function HomePage2ScrollReveal({
   const stageRef = useRef<HTMLDivElement>(null);
   const maskRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
-  const heroCopyRef = useRef<HTMLDivElement>(null);
+  const giantLogoRef = useRef<HTMLDivElement>(null);
 
   usePageScrollTransition({
     root: rootRef,
     stage: stageRef,
     mask: maskRef,
     sheet: sheetRef,
-    heroCopy: heroCopyRef,
+    heroCopy: { current: null },
   });
+
+  useHomePage2GiantLogo(rootRef, giantLogoRef);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -125,8 +128,8 @@ export function HomePage2ScrollReveal({
               <div className="pt-hero__overlay" aria-hidden />
             </div>
             <div ref={maskRef} className="pt-mask" aria-hidden="true" />
-            <div ref={heroCopyRef} className="pt-hero__copy">
-              <div className="giant-logo-container">
+            <div className="pt-hero__copy">
+              <div ref={giantLogoRef} className="giant-logo-container">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={BACK_LOGO_SRC} alt="Hathor" />
               </div>
