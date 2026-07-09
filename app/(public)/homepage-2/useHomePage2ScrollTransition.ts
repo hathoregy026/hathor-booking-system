@@ -35,13 +35,13 @@ const LOGO_LAND = {
 };
 
 /** Below rEnd — flat top without reintroducing base corner ears (never 0). */
-const DOME_TOP_OPEN_AMOUNT = 0.99;
+const DOME_TOP_OPEN_AMOUNT = 0.95;
 const DOME_EAR_SAFE_MIN = 8;
-/** Wide px band: sheet center traveling up toward the nav (no snap window). */
-const KISS_GAP_FAR = 90;
-const KISS_GAP_NEAR = -15;
-/** Power > 1 keeps the arch closed longer, then eases to 99% without a hard gate. */
-const KISS_FLATTEN_POWER = 4;
+/** Wide px band — long runway so flatten never feels snappy. */
+const KISS_GAP_FAR = 180;
+const KISS_GAP_NEAR = 8;
+/** Per-frame catch-up for vertR (lower = smoother, less jumpy). */
+const VERT_R_SMOOTH = 0.14;
 
 type PageScrollTransitionRefs = {
   root: RefObject<HTMLElement | null>;
@@ -80,6 +80,12 @@ function easeOutCubic(t: number) {
 
 function easeInOutCubic(t: number) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+/** Perlin smootherstep — zero 1st/2nd derivative at ends. */
+function smootherstep(t: number) {
+  const x = clamp(t, 0, 1);
+  return x * x * x * (x * (x * 6 - 15) + 10);
 }
 
 function setupSmoothScroll() {
@@ -133,6 +139,7 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
     let landingTween: gsap.core.Tween | null = null;
+    let smoothVertR: number | null = null;
     const smoothScroll = setupSmoothScroll();
 
     function getLogoHiddenY() {
@@ -260,17 +267,18 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
         document.querySelector(".hathor-header")?.getBoundingClientRect().bottom ??
         vh * 0.15;
       const gapCenter = sheetEl.getBoundingClientRect().top - navBottom;
-      const kissProgress = easeInOutCubic(
-        mapRange(gapCenter, KISS_GAP_FAR, KISS_GAP_NEAR, 0, 1),
-      );
-      const topOpen =
-        Math.pow(kissProgress, KISS_FLATTEN_POWER) * DOME_TOP_OPEN_AMOUNT;
+      const kissLinear = mapRange(gapCenter, KISS_GAP_FAR, KISS_GAP_NEAR, 0, 1);
+      const kissProgress = smootherstep(easeInOutCubic(kissLinear));
+      const openBlend = kissProgress * DOME_TOP_OPEN_AMOUNT;
       const vertFloor = Math.max(DOME_EAR_SAFE_MIN, rEnd * 0.42);
-      const openBlend = topOpen * DOME_TOP_OPEN_AMOUNT;
-      const vertR = Math.max(
+      const targetVertR = Math.max(
         DOME_EAR_SAFE_MIN,
         openBlend > 0 ? radius + (vertFloor - radius) * openBlend : radius,
       );
+
+      if (smoothVertR === null) smoothVertR = targetVertR;
+      smoothVertR += (targetVertR - smoothVertR) * VERT_R_SMOOTH;
+      const vertR = smoothVertR;
 
       gsap.set(sheetEl, {
         y,
