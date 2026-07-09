@@ -13,7 +13,7 @@ const HP2_CRITICAL_CSS = `
 .homepage-2-route [data-homepage2-transition] {
   --pt-cream: #f4f1ea;
   --pt-dome-r-start: 1250px;
-  --pt-dome-r-end: 22px;
+  --pt-dome-r-end: 0px;
 }
 .homepage-2-route [data-homepage2-transition] .pt-sheet__rise-cap {
   width: 100%;
@@ -21,6 +21,8 @@ const HP2_CRITICAL_CSS = `
 }
 .homepage-2-route [data-homepage2-transition] .pt-sheet {
   background-color: #f4f1ea !important;
+  border-top-left-radius: 50% var(--pt-dome-r-start);
+  border-top-right-radius: 50% var(--pt-dome-r-start);
 }
 .homepage-2-route [data-homepage2-transition] .pt-stage {
   overflow: hidden !important;

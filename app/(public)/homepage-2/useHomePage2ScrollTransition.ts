@@ -34,9 +34,9 @@ const LOGO_LAND = {
   ease: "power2.out",
 };
 
-/** Below rEnd — flat top without reintroducing base corner ears (never 0). */
+/** Elliptical vertical floor — 0 removes shoulder ears (horizontal stays halfW). */
 const DOME_TOP_OPEN_AMOUNT = 0.95;
-const DOME_EAR_SAFE_MIN = 8;
+const DOME_EAR_SAFE_MIN = 0;
 /** Wide px band — long runway so flatten never feels snappy. */
 const KISS_GAP_FAR = 180;
 const KISS_GAP_NEAR = 8;
@@ -199,7 +199,7 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
       const styles = getComputedStyle(trigger);
       return {
         start: parseFloat(styles.getPropertyValue("--pt-dome-r-start")) || 1250,
-        end: parseFloat(styles.getPropertyValue("--pt-dome-r-end")) || 22,
+        end: parseFloat(styles.getPropertyValue("--pt-dome-r-end")) || 0,
       };
     }
 
@@ -271,12 +271,10 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
       const kissLinear = mapRange(gapCenter, KISS_GAP_FAR, KISS_GAP_NEAR, 0, 1);
       const kissProgress = smootherstep(easeInOutCubic(kissLinear));
       const openBlend = kissProgress * DOME_TOP_OPEN_AMOUNT;
-      const vertFloor = Math.max(DOME_EAR_SAFE_MIN, rEnd * 0.42);
-      const targetVertR = Math.max(
-        DOME_EAR_SAFE_MIN,
-        openBlend > 0 ? radius + (vertFloor - radius) * openBlend : radius,
-      );
-      const vertR = targetVertR;
+      const vertFloor = DOME_EAR_SAFE_MIN;
+      const targetVertR =
+        openBlend > 0 ? radius + (vertFloor - radius) * openBlend : radius;
+      const vertR = Math.max(DOME_EAR_SAFE_MIN, targetVertR);
 
       gsap.set(sheetEl, {
         y,

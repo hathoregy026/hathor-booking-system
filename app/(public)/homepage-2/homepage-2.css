@@ -21,7 +21,7 @@ html[data-homepage2-experience] body {
 .homepage-2-route [data-homepage2-transition] {
   --pt-cream: #f4f1ea;
   --pt-dome-r-start: 1250px;
-  --pt-dome-r-end: 22px;
+  --pt-dome-r-end: 0px;
 }
 
 .homepage-2-route [data-homepage2-transition] .pt-sheet__rise-cap {
@@ -32,6 +32,8 @@ html[data-homepage2-experience] body {
 
 .homepage-2-route [data-homepage2-transition] .pt-sheet {
   background-color: #f4f1ea !important;
+  border-top-left-radius: 50% var(--pt-dome-r-start);
+  border-top-right-radius: 50% var(--pt-dome-r-start);
 }
 
 .homepage-2-route [data-homepage2-transition] .pt-stage {
@@ -75,11 +77,13 @@ html[data-homepage2-experience] body.has-page-scroll-transition .pin-spacer {
 html[data-homepage2-experience] [data-homepage2-transition] {
   --pt-cream: #f4f1ea;
   --pt-dome-r-start: 1250px;
-  --pt-dome-r-end: 22px;
+  --pt-dome-r-end: 0px;
 }
 
 html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition] .pt-sheet {
   background-color: #f4f1ea !important;
+  border-top-left-radius: 50% var(--pt-dome-r-start);
+  border-top-right-radius: 50% var(--pt-dome-r-start);
 }
 
 /* Same scroll runway as /test-scroll-reveal — applies before hydration */
@@ -113,14 +117,14 @@ html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-
 @media (max-width: 1024px) {
   html[data-homepage2-experience] [data-homepage2-transition] {
     --pt-dome-r-start: 300px;
-    --pt-dome-r-end: 14px;
+    --pt-dome-r-end: 0px;
   }
 }
 
 @media (max-width: 767px) {
   html[data-homepage2-experience] [data-homepage2-transition] {
     --pt-dome-r-start: 150px;
-    --pt-dome-r-end: 10px;
+    --pt-dome-r-end: 0px;
   }
 }
 
