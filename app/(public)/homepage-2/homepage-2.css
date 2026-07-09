@@ -92,15 +92,14 @@ html[data-homepage2-experience] .hathor-header__col--right {
 
 .homepage-2-book-bar {
   --hp2-book-bar-height: clamp(2.15rem, 4.8vh, 2.85rem);
-  --hp2-book-logo-gap: clamp(0.75rem, 2vw, 1.35rem);
-  --hp2-book-pill-width: clamp(9.5rem, 17vw, 12.75rem);
+  --hp2-book-logo-gap: clamp(0.85rem, 2.4vw, 1.75rem);
   position: fixed;
   top: clamp(1rem, 2.5vh, 1.75rem);
   left: 0;
   right: 0;
   z-index: 215;
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   column-gap: var(--hp2-book-logo-gap);
   align-items: center;
   height: var(--hp2-book-bar-height);
@@ -112,7 +111,7 @@ html[data-homepage2-experience] .hathor-header__col--right {
 .homepage-2-book-bar__pill {
   display: flex;
   align-items: center;
-  width: var(--hp2-book-pill-width);
+  width: 100%;
   height: var(--hp2-book-bar-height);
   min-width: 0;
   border: none;
@@ -137,18 +136,18 @@ html[data-homepage2-experience] .hathor-header__col--right {
 }
 
 .homepage-2-book-bar__pill--left {
-  justify-self: start;
+  justify-self: stretch;
   justify-content: flex-end;
-  padding-inline: clamp(1rem, 2.5vw, 1.5rem) clamp(0.85rem, 2vw, 1.25rem);
+  padding-inline: clamp(1.25rem, 4vw, 2.75rem) clamp(1.1rem, 3vw, 2rem);
   border-radius: 0 999px 999px 0;
   transform: translateX(calc(-100% - 1px));
   animation: homepage2BookSlideLeft 1.85s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
 }
 
 .homepage-2-book-bar__pill--right {
-  justify-self: end;
+  justify-self: stretch;
   justify-content: flex-start;
-  padding-inline: clamp(0.85rem, 2vw, 1.25rem) clamp(1rem, 2.5vw, 1.5rem);
+  padding-inline: clamp(1.1rem, 3vw, 2rem) clamp(1.25rem, 4vw, 2.75rem);
   border-radius: 999px 0 0 999px;
   transform: translateX(calc(100% + 1px));
   animation: homepage2BookSlideRight 1.85s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
@@ -278,8 +277,7 @@ html[data-homepage2-experience] .owo-footer__wordmark {
 @media (max-width: 767px) {
   .homepage-2-book-bar {
     --hp2-book-bar-height: clamp(2rem, 7vw, 2.35rem);
-    --hp2-book-logo-gap: clamp(0.5rem, 1.8vw, 0.75rem);
-    --hp2-book-pill-width: clamp(7.25rem, 34vw, 9rem);
+    --hp2-book-logo-gap: clamp(0.55rem, 2vw, 0.85rem);
   }
 
   .homepage-2-book-bar__pill {
@@ -288,11 +286,11 @@ html[data-homepage2-experience] .owo-footer__wordmark {
   }
 
   .homepage-2-book-bar__pill--left {
-    padding-inline: 0.75rem 0.55rem;
+    padding-inline: 0.85rem 0.65rem;
   }
 
   .homepage-2-book-bar__pill--right {
-    padding-inline: 0.55rem 0.75rem;
+    padding-inline: 0.65rem 0.85rem;
   }
 
   .homepage-2-root .giant-logo-container {
