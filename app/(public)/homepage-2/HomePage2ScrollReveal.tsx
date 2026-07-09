@@ -14,15 +14,13 @@ const BACK_LOGO_SRC =
   "/branding/hathor-logo-behing-the-sheet-egypt-toors-pyramids.svg";
 
 export type HomePage2ScrollRevealProps = {
-  title: string;
   imageName: string;
   imageAlt?: string;
-  children: ReactNode;
+  children?: ReactNode;
 };
 
 /** Same DOM + engine as cruises PageScrollTransition — giant logo replaces hero copy. */
 export function HomePage2ScrollReveal({
-  title,
   imageName,
   imageAlt,
   children,
@@ -136,16 +134,6 @@ export function HomePage2ScrollReveal({
             </div>
           </div>
           <div ref={sheetRef} className="pt-sheet">
-            <div className="pt-sheet__landing" aria-labelledby="page-landing-title">
-              <div className="hathor-container">
-                <h2
-                  id="page-landing-title"
-                  className="pt-sheet__landing-title"
-                >
-                  {title}
-                </h2>
-              </div>
-            </div>
             <div className="pt-sheet__rise-cap" aria-hidden="true" />
             <div className="pt-sheet__content">{children}</div>
           </div>

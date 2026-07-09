@@ -10,6 +10,10 @@ const HP2_CRITICAL_CSS = `
 .homepage-2-route .page-transition {
   background-color: #f4f1ea !important;
 }
+html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet,
+html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet__rise-cap {
+  background-color: #f4f1ea !important;
+}
 html[data-homepage2-experience] .homepage-2-book-bar__pill--left,
 html[data-homepage2-experience] .homepage-2-book-bar__pill--right,
 html[data-homepage2-experience] .homepage-2-book-bar__logo {

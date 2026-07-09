@@ -413,34 +413,29 @@ html[data-homepage2-experience] .homepage-2-root .giant-logo-container {
   filter: drop-shadow(0 1rem 2.5rem rgb(0 0 0 / 0.46));
 }
 
-/* Long content + seamless footer */
-.homepage-2-root .homepage-2-placeholder {
-  min-height: clamp(90rem, 180vh, 130rem);
-  display: grid;
-  place-items: start center;
-  padding: clamp(8rem, 14vw, 12rem) clamp(1.5rem, 5vw, 4rem);
-  background: #f4f1ea;
-  text-align: center;
+/* Cream sheet floor — single surface from dome through footer (no landing block) */
+html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet {
+  background-color: #f4f1ea !important;
+  overflow: hidden;
 }
 
-.homepage-2-root .homepage-2-placeholder__eyebrow {
-  margin: 0 0 1.2rem;
-  color: #b69f64;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
+html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet__rise-cap {
+  width: 100%;
+  min-height: 120vh !important;
+  min-height: 120svh !important;
+  background-color: #f4f1ea !important;
 }
 
-.homepage-2-root .homepage-2-placeholder h1 {
+html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet__content {
+  padding: 0 !important;
   margin: 0;
-  max-width: 62rem;
-  color: #1a1a1a;
-  font-family: var(--public-serif, Georgia, serif);
-  font-size: clamp(3.5rem, 9vw, 9rem);
-  font-weight: 500;
-  line-height: 0.92;
-  letter-spacing: -0.06em;
+  min-height: 0;
+  background-color: #f4f1ea !important;
+}
+
+html[data-homepage2-experience] body.has-page-scroll-transition .homepage-2-root [data-page-transition] .pt-stage,
+html[data-homepage2-experience] body.has-page-scroll-transition .homepage-2-root [data-page-transition].hathor-page-scroll--past-pin .pt-stage {
+  background-color: #f4f1ea !important;
 }
 
 html[data-homepage2-experience] .public-site > .owo-footer {
