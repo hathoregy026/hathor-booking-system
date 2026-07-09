@@ -4,6 +4,7 @@ import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import {
   HATHOR_BRAND_NAME,
+  HATHOR_HERO_ICON_DARK_SRC,
   HATHOR_HERO_ICON_SRC,
 } from "@/lib/branding";
 
@@ -20,7 +21,14 @@ export function HomePage2BookBar() {
         <img
           src={HATHOR_HERO_ICON_SRC}
           alt=""
-          className="homepage-2-book-bar__logo-img"
+          className="homepage-2-book-bar__logo-img homepage-2-book-bar__logo-img--light"
+        />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={HATHOR_HERO_ICON_DARK_SRC}
+          alt=""
+          className="homepage-2-book-bar__logo-img homepage-2-book-bar__logo-img--dark"
+          aria-hidden="true"
         />
       </Link>
 
