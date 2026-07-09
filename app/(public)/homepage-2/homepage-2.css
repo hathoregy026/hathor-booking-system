@@ -231,6 +231,9 @@ html[data-homepage2-experience]:has(.hathor-header--menu-hovered)
 /* Frame 9 — diagonal gold dropdown pills (homepage-2 only) */
 @media (min-width: 768px) {
   html[data-homepage2-experience] .hathor-header__nav-item--dropdown {
+    --hp2-drop-pill-width: clamp(10.75rem, 14vw, 12.5rem);
+    --hp2-drop-base-shift: clamp(2.75rem, 38%, 4.75rem);
+    min-width: var(--hp2-drop-pill-width);
     overflow: visible;
   }
 
@@ -248,32 +251,42 @@ html[data-homepage2-experience]:has(.hathor-header--menu-hovered)
     .hathor-header__dropdown-trigger
     .hathor-header__nav-link {
     flex: 0 0 auto;
-    width: auto;
-    white-space: nowrap;
+    width: auto !important;
+    max-width: none !important;
+    white-space: nowrap !important;
     flex-wrap: nowrap;
   }
 
   html[data-homepage2-experience] .hathor-header__nav-item--dropdown .hathor-header__nav-link {
-    display: inline-flex;
+    display: inline-flex !important;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-    flex-wrap: nowrap;
+    flex-wrap: nowrap !important;
     gap: 0.42rem;
-    width: auto;
+    width: auto !important;
+    max-width: none !important;
     border-radius: 999px;
-    white-space: nowrap;
+    white-space: nowrap !important;
+    text-align: center;
     transition:
       background-color 0.55s cubic-bezier(0.22, 1, 0.36, 1),
       color 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-      padding 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+      padding 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+      width 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+      min-width 0.55s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  html[data-homepage2-experience] .hathor-header__nav-item--dropdown .hathor-header__nav-link::after {
-    content: "";
+  html[data-homepage2-experience] .hathor-header__nav-item--dropdown .hathor-header__nav-link-label {
+    flex: 0 1 auto;
+    white-space: nowrap;
+  }
+
+  html[data-homepage2-experience] .hathor-header__nav-item--dropdown .hathor-header__nav-pyramid {
+    flex: 0 0 auto;
     display: inline-block;
     width: 0.45rem;
     height: 0.45rem;
-    flex: 0 0 auto;
     background: currentColor;
     clip-path: polygon(50% 100%, 0 0, 100% 0);
     opacity: 0.9;
@@ -284,7 +297,11 @@ html[data-homepage2-experience]:has(.hathor-header--menu-hovered)
   html[data-homepage2-experience]
     .hathor-header__nav-item--dropdown:has(.hathor-header__dropdown.is-open)
     .hathor-header__nav-link {
-    padding: 0.45rem 0.95rem;
+    width: var(--hp2-drop-pill-width) !important;
+    min-width: var(--hp2-drop-pill-width);
+    max-width: var(--hp2-drop-pill-width);
+    box-sizing: border-box;
+    padding: 0.52rem 1rem;
     background-color: #b69f64;
     color: #faf8f5;
   }
@@ -300,8 +317,6 @@ html[data-homepage2-experience]:has(.hathor-header--menu-hovered)
   }
 
   html[data-homepage2-experience] .hathor-header__nav-item--dropdown .hathor-header__dropdown {
-    --hp2-drop-pill-width: clamp(10.75rem, 14vw, 12.5rem);
-    --hp2-drop-base-shift: clamp(2.75rem, 38%, 4.75rem);
     left: var(--hp2-drop-base-shift);
     min-width: 0;
     padding-top: 0.55rem;

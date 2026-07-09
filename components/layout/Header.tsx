@@ -135,6 +135,7 @@ function isNavItemActive(pathname: string, item: HeaderNavItem): boolean {
 
 export function Header() {
   const pathname = usePathname();
+  const isHomepage2 = pathname === "/homepage-2";
   const [exploreOpen, setExploreOpen] = useState(false);
   const [menuHovered, setMenuHovered] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -244,7 +245,10 @@ export function Header() {
                           aria-haspopup="menu"
                           aria-expanded={dropdownOpen}
                         >
-                          {item.label}
+                          <span className="hathor-header__nav-link-label">{item.label}</span>
+                          {isHomepage2 ? (
+                            <span className="hathor-header__nav-pyramid" aria-hidden="true" />
+                          ) : null}
                         </Link>
                         <button
                           type="button"
