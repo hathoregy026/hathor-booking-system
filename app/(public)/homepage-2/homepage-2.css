@@ -27,22 +27,60 @@ html[data-homepage2-experience] body.has-page-scroll-transition .pin-spacer {
   padding: 0 !important;
 }
 
-/* Cream sheet + stage — seamless with footer (cruises engine, homepage-2 color only). */
-html[data-homepage2-experience] body.has-page-scroll-transition [data-page-transition] .pt-sheet {
+/* Cruises dome vars — px only, no vw overrides */
+html[data-homepage2-experience] [data-homepage2-transition] {
+  --pt-cream: #f4f1ea;
+  --pt-dome-r-start: 1250px;
+  --pt-dome-r-end: 22px;
+}
+
+html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition] .pt-sheet {
   background-color: #f4f1ea !important;
 }
 
-html[data-homepage2-experience] body.has-page-scroll-transition [data-page-transition].hathor-page-scroll--past-pin .pt-stage {
+/* Same scroll runway as /test-scroll-reveal — keeps dome math aligned with /cruises */
+html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition] .pt-sheet__rise-cap {
+  width: 100%;
+  min-height: 120vh !important;
+  min-height: 120svh !important;
+}
+
+html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition] .pt-stage {
+  overflow: hidden !important;
   background-color: #f4f1ea !important;
 }
 
-html[data-homepage2-experience] body.has-page-scroll-transition [data-page-transition].hathor-page-scroll--media-gone .pt-hero__media,
-html[data-homepage2-experience] body.has-page-scroll-transition [data-page-transition].hathor-page-scroll--past-pin .pt-hero__media {
+html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition].hathor-page-scroll--past-pin .pt-stage {
+  background-color: #f4f1ea !important;
+}
+
+html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition].hathor-page-scroll--media-gone .pt-hero,
+html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition].hathor-page-scroll--past-pin .pt-hero {
   opacity: 0 !important;
   visibility: hidden !important;
+  pointer-events: none !important;
 }
 
-/* Frame 9: Book Now buttons */
+html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition].hathor-page-scroll--media-gone .pt-hero__media,
+html[data-homepage2-experience] body.has-page-scroll-transition [data-homepage2-transition].hathor-page-scroll--past-pin .pt-hero__media {
+  display: none !important;
+}
+
+@media (max-width: 1024px) {
+  html[data-homepage2-experience] [data-homepage2-transition] {
+    --pt-dome-r-start: 300px;
+    --pt-dome-r-end: 14px;
+  }
+}
+
+@media (max-width: 767px) {
+  html[data-homepage2-experience] [data-homepage2-transition] {
+    --pt-dome-r-start: 150px;
+    --pt-dome-r-end: 10px;
+  }
+}
+
+/* Book Now buttons */
 .homepage-2-root .top-book-buttons {
   position: fixed;
   top: 0;
@@ -74,15 +112,20 @@ html[data-homepage2-experience] body.has-page-scroll-transition [data-page-trans
   transform: translateY(-2px);
 }
 
-/* Frame 9: giant logo over hero (hidden when cruises engine hides hero media). */
+/* Giant logo in hero copy layer */
+.homepage-2-root [data-homepage2-transition] .pt-hero__copy {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+}
+
 .homepage-2-root .giant-logo-container {
-  position: fixed;
+  position: absolute;
   top: 25%;
   left: 50%;
   transform: translateX(-50%);
   width: 70vw;
-  z-index: 45;
-  pointer-events: none;
   opacity: 0;
   animation: homepage2LogoRise 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
 }
@@ -101,18 +144,7 @@ html[data-homepage2-experience] body.has-page-scroll-transition [data-page-trans
   }
 }
 
-.homepage-2-root:has([data-page-transition].hathor-page-scroll--media-gone) .giant-logo-container,
-.homepage-2-root:has([data-page-transition].hathor-page-scroll--past-pin) .giant-logo-container {
-  opacity: 0 !important;
-  visibility: hidden !important;
-}
-
-/* Hide default hero copy — logo replaces it on this route. */
-.homepage-2-root [data-page-transition] .pt-hero__copy .hathor-container {
-  visibility: hidden;
-}
-
-/* Long content area below the sheet landing */
+/* Long content + seamless footer */
 .homepage-2-root .homepage-2-placeholder {
   min-height: clamp(90rem, 180vh, 130rem);
   display: grid;
