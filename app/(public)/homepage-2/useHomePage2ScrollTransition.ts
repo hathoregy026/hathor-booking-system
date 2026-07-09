@@ -240,9 +240,7 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
       y -= driftT * extra;
 
       const radiusProgress = easeOutCubic(mapRange(p, 0.04, 0.42, 0, 1));
-      let radius = rEnd + (rStart - rEnd) * (1 - radiusProgress);
-      const riseFlatten = mapRange(riseT, 0.82, 0.92, 0, 1);
-      radius = Math.max(rEnd, radius * (1 - riseFlatten));
+      const radius = rEnd + (rStart - rEnd) * (1 - radiusProgress);
       const halfW = sheetEl.offsetWidth / 2;
 
       gsap.set(sheetEl, {
