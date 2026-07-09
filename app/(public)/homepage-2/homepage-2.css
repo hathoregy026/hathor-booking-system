@@ -433,12 +433,18 @@ html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-shee
   background-color: #f4f1ea !important;
 }
 
+/* Tall cream floor — sheet column runs full page with no gaps (ref sheet image) */
+.homepage-2-sheet-floor {
+  width: 100%;
+  min-height: clamp(70rem, 140vh, 100rem);
+  background-color: #f4f1ea;
+}
+
 html[data-homepage2-experience] body.has-page-scroll-transition .homepage-2-root [data-page-transition] .pt-stage,
 html[data-homepage2-experience] body.has-page-scroll-transition .homepage-2-root [data-page-transition].hathor-page-scroll--past-pin .pt-stage {
   background-color: #f4f1ea !important;
 }
 
-/* Sheet bottom seam — zero gap, logo bridge into footer */
 html[data-homepage2-experience] .homepage-2-root {
   margin-bottom: 0;
   background-color: #f4f1ea;
@@ -448,43 +454,30 @@ html[data-homepage2-experience] .homepage-2-root [data-page-transition] {
   margin-bottom: 0 !important;
 }
 
-.homepage-2-sheet-footer-zone {
+/* Footer giant logo — in front of sheet (z12), footer on top (z25) */
+.homepage-2-footer-logo-stage {
   position: relative;
   height: 0;
   margin: 0;
   padding: 0;
   overflow: visible;
-  background-color: #f4f1ea;
+  pointer-events: none;
   z-index: 12;
 }
 
-.homepage-2-sheet-footer-zone::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: -4px;
-  height: 8px;
-  background-color: #f4f1ea;
-  z-index: 11;
-}
-
-.homepage-2-footer-rise-logo {
+.homepage-2-footer-giant-logo {
   position: absolute;
   left: 50%;
-  top: 0;
+  bottom: 0;
   width: 92vw;
   max-width: none;
-  z-index: 15;
+  margin: 0;
+  z-index: 12;
   pointer-events: none;
   will-change: transform, opacity;
 }
 
-.homepage-2-footer-rise-logo.is-behind-footer {
-  z-index: 2;
-}
-
-.homepage-2-footer-rise-logo img {
+.homepage-2-footer-giant-logo img {
   display: block;
   width: 100%;
   height: auto;
@@ -527,7 +520,7 @@ html[data-homepage2-experience] .owo-footer__wordmark {
     width: 96vw;
   }
 
-  .homepage-2-footer-rise-logo {
+  .homepage-2-footer-giant-logo {
     width: 96vw;
   }
 }
