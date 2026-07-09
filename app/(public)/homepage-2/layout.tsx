@@ -11,7 +11,8 @@ const HP2_CRITICAL_CSS = `
   background-color: #f4f1ea !important;
 }
 html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet,
-html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet__rise-cap {
+html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet__rise-cap,
+html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-stage {
   background-color: #f4f1ea !important;
 }
 html[data-homepage2-experience] .homepage-2-book-bar__pill--left,

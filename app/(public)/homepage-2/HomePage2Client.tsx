@@ -13,10 +13,10 @@ export function HomePage2Client() {
         imageName="home-hero-poster"
         imageAlt="Luxury Nile cruise at sunset"
       >
-        <div className="homepage-2-sheet-floor" aria-hidden="true" />
+        <div className="homepage-2-sheet-floor">
+          <HomePage2FooterGiantLogo />
+        </div>
       </HomePage2ScrollReveal>
-
-      <HomePage2FooterGiantLogo />
     </div>
   );
 }

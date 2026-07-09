@@ -414,9 +414,24 @@ html[data-homepage2-experience] .homepage-2-root .giant-logo-container {
 }
 
 /* Cream sheet floor — single surface from dome through footer (no landing block) */
+html[data-homepage2-experience] .homepage-2-root {
+  --pt-cream: #f4f1ea;
+  --pt-gold: #b69f64;
+  margin: 0 !important;
+  padding: 0 !important;
+  background-color: #f4f1ea;
+}
+
+html[data-homepage2-experience] .homepage-2-root [data-page-transition] {
+  --pt-cream: #f4f1ea !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  background: transparent !important;
+}
+
 html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet {
   background-color: #f4f1ea !important;
-  overflow: hidden;
+  overflow: visible;
 }
 
 html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet__rise-cap {
@@ -433,10 +448,67 @@ html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-shee
   background-color: #f4f1ea !important;
 }
 
-/* Tall cream floor — sheet column runs full page with no gaps (ref sheet image) */
+/* Hero image fills pinned viewport — only intentional gap is during dome reveal */
+html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-stage {
+  background-color: #f4f1ea !important;
+}
+
+html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-hero__media,
+html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-hero__media img {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  object-fit: cover !important;
+  object-position: center center !important;
+}
+
+/* After hero: sheet column visible and continuous — no clipping gaps */
+html[data-homepage2-experience] .homepage-2-root [data-page-transition].hathor-page-scroll--media-gone .pt-hero__media {
+  display: none !important;
+}
+
+html[data-homepage2-experience] .homepage-2-root [data-page-transition].hathor-page-scroll--media-gone .pt-stage,
+html[data-homepage2-experience] .homepage-2-root [data-page-transition].hathor-page-scroll--past-pin .pt-stage {
+  overflow: visible !important;
+}
+
+html[data-homepage2-experience] .homepage-2-root [data-page-transition].hathor-page-scroll--past-pin .pt-stage {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+}
+
+html[data-homepage2-experience] .homepage-2-root [data-page-transition].hathor-page-scroll--past-pin .pt-hero,
+html[data-homepage2-experience] .homepage-2-root [data-page-transition].hathor-page-scroll--past-pin .pt-mask {
+  display: none !important;
+}
+
+html[data-homepage2-experience] .homepage-2-root [data-page-transition].hathor-page-scroll--past-pin .pt-sheet {
+  position: relative !important;
+  inset: auto !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  translate: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* Tall cream floor — sheet runs full page with zero seams to footer */
 .homepage-2-sheet-floor {
+  position: relative;
+  display: block;
   width: 100%;
   min-height: clamp(70rem, 140vh, 100rem);
+  margin: 0;
+  padding: 0;
   background-color: #f4f1ea;
 }
 
@@ -445,18 +517,22 @@ html[data-homepage2-experience] body.has-page-scroll-transition .homepage-2-root
   background-color: #f4f1ea !important;
 }
 
-html[data-homepage2-experience] .homepage-2-root {
-  margin-bottom: 0;
-  background-color: #f4f1ea;
+html[data-homepage2-experience] body.has-page-scroll-transition .pin-spacer {
+  background-color: #f4f1ea !important;
 }
 
-html[data-homepage2-experience] .homepage-2-root [data-page-transition] {
+html[data-homepage2-experience] .public-main,
+html[data-homepage2-experience] .page-transition {
   margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
 }
 
-/* Footer giant logo — in front of sheet (z12), footer on top (z25) */
+/* Footer giant logo — bottom of sheet column, in front of sheet, footer on top */
 .homepage-2-footer-logo-stage {
-  position: relative;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
   height: 0;
   margin: 0;
   padding: 0;
