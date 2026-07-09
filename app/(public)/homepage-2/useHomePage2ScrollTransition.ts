@@ -123,7 +123,7 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
     const smoothScroll = setupSmoothScroll();
 
     function getLogoHiddenY() {
-      return window.innerHeight * 0.42;
+      return window.innerHeight * 0.34;
     }
 
     function setupGiantLogoLanding() {
@@ -135,7 +135,6 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
 
       gsap.set(giantLogo, {
         xPercent: -50,
-        left: "50%",
         y: reducedMotion ? 0 : hiddenY,
         opacity: 1,
       });
