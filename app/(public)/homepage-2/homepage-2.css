@@ -466,8 +466,8 @@ html[data-homepage2-experience]
 .homepage-2-root .giant-logo-container {
   position: absolute;
   left: 50%;
-  top: 22%;
-  width: 70vw;
+  top: 35.2%;
+  width: 92vw;
   max-width: none;
   margin: 0;
   opacity: 1;
@@ -541,7 +541,7 @@ html[data-homepage2-experience] .owo-footer__wordmark {
   }
 
   .homepage-2-root .giant-logo-container {
-    top: 18%;
-    width: 88vw;
+    top: 28.8%;
+    width: 96vw;
   }
 }
