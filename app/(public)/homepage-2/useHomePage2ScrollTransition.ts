@@ -34,6 +34,10 @@ const LOGO_LAND = {
   ease: "power2.out",
 };
 
+/** Below rEnd — flat top without reintroducing base corner ears (never 0). */
+const DOME_TOP_OPEN_P_START = 0.92;
+const DOME_TOP_OPEN_P_END = 0.98;
+
 type PageScrollTransitionRefs = {
   root: RefObject<HTMLElement | null>;
   stage: RefObject<HTMLElement | null>;
@@ -243,10 +247,17 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
       const radius = rEnd + (rStart - rEnd) * (1 - radiusProgress);
       const halfW = sheetEl.offsetWidth / 2;
 
+      const topOpen = easeOutCubic(
+        mapRange(p, DOME_TOP_OPEN_P_START, DOME_TOP_OPEN_P_END, 0, 1),
+      );
+      const vertFloor = Math.max(8, rEnd * 0.42);
+      const vertR =
+        topOpen > 0 ? radius + (vertFloor - radius) * topOpen : radius;
+
       gsap.set(sheetEl, {
         y,
-        borderTopLeftRadius: `${halfW}px ${radius}px`,
-        borderTopRightRadius: `${halfW}px ${radius}px`,
+        borderTopLeftRadius: `${halfW}px ${vertR}px`,
+        borderTopRightRadius: `${halfW}px ${vertR}px`,
         clipPath: "none",
       });
 
