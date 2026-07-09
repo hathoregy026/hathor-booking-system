@@ -31,6 +31,49 @@ html[data-homepage2-experience] .homepage-2-root {
   --pt-cream: #f4f1ea;
 }
 
+/* Match cruises scroll dome math — px radii on the transition root (not vw). */
+html[data-homepage2-experience] body.has-page-scroll-transition [data-page-transition] {
+  --pt-cream: #f4f1ea !important;
+  --pt-dome-r-start: 1250px !important;
+  --pt-dome-r-end: 22px !important;
+}
+
+html[data-homepage2-experience] body.has-page-scroll-transition [data-page-transition] .pt-stage {
+  background-color: #f4f1ea !important;
+  overflow: hidden;
+}
+
+html[data-homepage2-experience] body.has-page-scroll-transition [data-page-transition].hathor-page-scroll--past-pin .pt-stage {
+  background-color: #f4f1ea !important;
+}
+
+/* Wider sheet removes the vertical "ears" at the dome base (cruises uses full bleed). */
+html[data-homepage2-experience] body.has-page-scroll-transition [data-page-transition] .pt-sheet {
+  left: -10vw;
+  width: 120vw;
+  max-width: none;
+  background-color: #f4f1ea !important;
+}
+
+@media (max-width: 1024px) {
+  html[data-homepage2-experience] body.has-page-scroll-transition [data-page-transition] {
+    --pt-dome-r-start: 300px !important;
+    --pt-dome-r-end: 14px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  html[data-homepage2-experience] body.has-page-scroll-transition [data-page-transition] {
+    --pt-dome-r-start: 150px !important;
+    --pt-dome-r-end: 10px !important;
+  }
+
+  html[data-homepage2-experience] body.has-page-scroll-transition [data-page-transition] .pt-sheet {
+    left: -5vw;
+    width: 110vw;
+  }
+}
+
 /* 1. GIANT LOGO BEHIND DOME */
 .homepage-2-root .giant-logo-container {
   position: absolute;
@@ -90,10 +133,6 @@ html[data-homepage2-experience] .homepage-2-root {
 }
 
 /* 3. DOME SHEET COLOR & SEAMLESS FLOW */
-.homepage-2-root .pt-sheet {
-  background-color: #f4f1ea !important;
-}
-
 .homepage-2-root .pt-sheet__content {
   min-height: 100vh;
   padding-bottom: 0;
