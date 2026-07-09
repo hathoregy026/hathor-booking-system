@@ -35,10 +35,11 @@ const LOGO_LAND = {
 };
 
 /** Below rEnd — flat top without reintroducing base corner ears (never 0). */
-const DOME_TOP_OPEN_P_START = 0.965;
-const DOME_TOP_OPEN_P_END = 0.98;
 const DOME_TOP_OPEN_AMOUNT = 0.99;
 const DOME_EAR_SAFE_MIN = 8;
+/** Center gap (px) below nav where top flatten begins / completes. */
+const NAV_FLATTEN_GAP_START = 14;
+const NAV_FLATTEN_GAP_END = -2;
 
 type PageScrollTransitionRefs = {
   root: RefObject<HTMLElement | null>;
@@ -253,8 +254,12 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
       const radius = rEnd + (rStart - rEnd) * (1 - radiusProgress);
       const halfW = sheetEl.offsetWidth / 2;
 
+      const navBottom =
+        document.querySelector(".hathor-header")?.getBoundingClientRect().bottom ??
+        vh * 0.15;
+      const gapCenter = sheetEl.getBoundingClientRect().top - navBottom;
       const topOpen = easeInCubic(
-        mapRange(p, DOME_TOP_OPEN_P_START, DOME_TOP_OPEN_P_END, 0, 1),
+        mapRange(gapCenter, NAV_FLATTEN_GAP_START, NAV_FLATTEN_GAP_END, 0, 1),
       );
       const vertFloor = Math.max(DOME_EAR_SAFE_MIN, rEnd * 0.42);
       const openBlend = topOpen * DOME_TOP_OPEN_AMOUNT;
