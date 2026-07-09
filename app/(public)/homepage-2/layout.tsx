@@ -39,6 +39,29 @@ const HP2_CRITICAL_CSS = `
 export default function HomePage2Layout({ children }: { children: ReactNode }) {
   return (
     <div className="homepage-2-route">
+      <style dangerouslySetInnerHTML={{__html: `
+  /* 1. FORCE THE TALL SCROLL RUNWAY IMMEDIATELY */
+  html[data-homepage2-experience] [data-homepage2-transition] .pt-sheet__rise-cap {
+    width: 100% !important;
+    min-height: 120vh !important;
+    min-height: 120svh !important;
+  }
+
+  /* 2. HIDE GIANT LOGO UNTIL JS IS READY (Prevents Pop) */
+  html[data-homepage2-experience] .giant-logo-container,
+  html[data-homepage2-experience] .giant-logo {
+    opacity: 0 !important;
+  }
+
+  /* 3. FORCE BOOK BAR TO BE VISIBLE IMMEDIATELY (Prevents Slide-in) */
+  html[data-homepage2-experience] .homepage-2-book-bar__pill--left,
+  html[data-homepage2-experience] .homepage-2-book-bar__pill--right,
+  html[data-homepage2-experience] .homepage-2-book-bar__logo {
+    transform: none !important;
+    opacity: 1 !important;
+    animation: none !important;
+  }
+`}} />
       <style dangerouslySetInnerHTML={{ __html: HP2_CRITICAL_CSS }} />
       <script dangerouslySetInnerHTML={{ __html: HP2_BOOT }} />
       {children}
