@@ -13,7 +13,7 @@ const HP2_CRITICAL_CSS = `
 .homepage-2-route [data-homepage2-transition] {
   --pt-cream: #f4f1ea;
   --pt-dome-r-start: 1250px;
-  --pt-dome-r-end: 0px;
+  --pt-dome-r-end: 22px;
 }
 .homepage-2-route [data-homepage2-transition] .pt-sheet__rise-cap {
   width: 100%;
@@ -41,12 +41,7 @@ export default function HomePage2Layout({ children }: { children: ReactNode }) {
     min-height: 120svh !important;
   }
 
-  /* 2. HIDE GIANT LOGO ONLY UNTIL SCROLL ENGINE IS READY (no opacity lock) */
-  html[data-homepage2-experience] .homepage-2-root:not(.homepage-2-scroll-ready) .giant-logo-container {
-    visibility: hidden !important;
-  }
-
-  /* 3. FORCE BOOK BAR TO BE VISIBLE IMMEDIATELY (Prevents Slide-in) */
+  /* 2. BOOK BAR — visible immediately (no slide-in flash) */
   html[data-homepage2-experience] .homepage-2-book-bar__pill--left,
   html[data-homepage2-experience] .homepage-2-book-bar__pill--right,
   html[data-homepage2-experience] .homepage-2-book-bar__logo {

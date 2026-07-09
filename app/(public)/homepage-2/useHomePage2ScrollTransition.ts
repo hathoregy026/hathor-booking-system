@@ -7,7 +7,6 @@
 import { useLayoutEffect, useId, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Lenis from "lenis";
 
 const PT_CREAM = "#F4F1EA";
 const PT_GOLD = "#B69F64";
@@ -34,14 +33,14 @@ const LOGO_LAND = {
   ease: "power2.out",
 };
 
-/** Elliptical vertical floor — 0 removes shoulder ears (horizontal stays halfW). */
+/** Elliptical vertical floor at navbar kiss (horizontal stays halfW). */
+const DOME_EAR_SAFE_MIN = 1;
 const DOME_TOP_OPEN_AMOUNT = 1;
-const DOME_EAR_SAFE_MIN = 0;
-/** Wide px band — long runway so flatten never feels snappy. */
-const KISS_GAP_FAR = 180;
-const KISS_GAP_NEAR = 8;
-/** Power > 1 keeps the arch intact during rise; flatten only at true navbar kiss. */
-const KISS_FLATTEN_POWER = 4;
+/** Kiss band — only active once the sheet is in the final rise phase. */
+const KISS_GAP_FAR = 90;
+const KISS_GAP_NEAR = -12;
+const RISE_KISS_GATE_START = 0.72;
+const RISE_KISS_GATE_END = 0.98;
 
 type PageScrollTransitionRefs = {
   root: RefObject<HTMLElement | null>;
@@ -88,30 +87,6 @@ function smootherstep(t: number) {
   return x * x * x * (x * (x * 6 - 15) + 10);
 }
 
-function setupSmoothScroll() {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    return null;
-  }
-
-  const lenis = new Lenis({
-    duration: 2.1,
-    easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smoothWheel: true,
-    syncTouch: false,
-  });
-
-  lenis.on("scroll", ScrollTrigger.update);
-
-  const ticker = (time: number) => {
-    lenis.raf(time * 1000);
-  };
-
-  gsap.ticker.add(ticker);
-  gsap.ticker.lagSmoothing(0);
-
-  return { lenis, ticker };
-}
-
 export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
   const instanceId = useId().replace(/:/g, "");
 
@@ -139,7 +114,6 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
     let landingTween: gsap.core.Tween | null = null;
-    const smoothScroll = setupSmoothScroll();
 
     function markScrollReady() {
       trigger.closest(".homepage-2-root")?.classList.add("homepage-2-scroll-ready");
@@ -201,7 +175,7 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
       const styles = getComputedStyle(trigger);
       return {
         start: parseFloat(styles.getPropertyValue("--pt-dome-r-start")) || 1250,
-        end: parseFloat(styles.getPropertyValue("--pt-dome-r-end")) || 0,
+        end: parseFloat(styles.getPropertyValue("--pt-dome-r-end")) || 22,
       };
     }
 
@@ -272,8 +246,10 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
       const gapCenter = sheetEl.getBoundingClientRect().top - navBottom;
       const kissLinear = mapRange(gapCenter, KISS_GAP_FAR, KISS_GAP_NEAR, 0, 1);
       const kissProgress = smootherstep(easeInOutCubic(kissLinear));
-      const kissFlatten = Math.pow(kissProgress, KISS_FLATTEN_POWER);
-      const openBlend = kissFlatten * DOME_TOP_OPEN_AMOUNT;
+      const riseGate = smootherstep(
+        mapRange(riseT, RISE_KISS_GATE_START, RISE_KISS_GATE_END, 0, 1),
+      );
+      const openBlend = kissProgress * riseGate * DOME_TOP_OPEN_AMOUNT;
       const vertFloor = DOME_EAR_SAFE_MIN;
       const vertR =
         openBlend > 0
@@ -352,10 +328,6 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
       window.removeEventListener("resize", onResize);
       if (resizeTimer) clearTimeout(resizeTimer);
       landingTween?.kill();
-      if (smoothScroll) {
-        gsap.ticker.remove(smoothScroll.ticker);
-        smoothScroll.lenis.destroy();
-      }
       ctx.revert();
       trigger.closest(".homepage-2-root")?.classList.remove("homepage-2-scroll-ready");
       document.body.classList.remove("has-page-scroll-transition");
