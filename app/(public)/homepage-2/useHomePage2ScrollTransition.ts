@@ -40,9 +40,8 @@ const DOME_EAR_SAFE_MIN = 8;
 /** Wide px band: sheet center traveling up toward the nav (no snap window). */
 const KISS_GAP_FAR = 90;
 const KISS_GAP_NEAR = -15;
-/** Flatten only in the last 23% of that approach (75% → 98% kissed). */
-const KISS_FLATTEN_START = 0.75;
-const KISS_FLATTEN_END = 0.98;
+/** Power > 1 keeps the arch closed longer, then eases to 99% without a hard gate. */
+const KISS_FLATTEN_POWER = 4;
 
 type PageScrollTransitionRefs = {
   root: RefObject<HTMLElement | null>;
@@ -265,9 +264,7 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
         mapRange(gapCenter, KISS_GAP_FAR, KISS_GAP_NEAR, 0, 1),
       );
       const topOpen =
-        easeInOutCubic(
-          mapRange(kissProgress, KISS_FLATTEN_START, KISS_FLATTEN_END, 0, 1),
-        ) * DOME_TOP_OPEN_AMOUNT;
+        Math.pow(kissProgress, KISS_FLATTEN_POWER) * DOME_TOP_OPEN_AMOUNT;
       const vertFloor = Math.max(DOME_EAR_SAFE_MIN, rEnd * 0.42);
       const openBlend = topOpen * DOME_TOP_OPEN_AMOUNT;
       const vertR = Math.max(
