@@ -32,6 +32,7 @@ export function HomePage2ScrollTransition({
   const maskRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
+  const giantLogoRef = useRef<HTMLDivElement>(null);
 
   useHomePage2ScrollTransition({
     root: rootRef,
@@ -39,6 +40,7 @@ export function HomePage2ScrollTransition({
     mask: maskRef,
     sheet: sheetRef,
     heroCopy: heroCopyRef,
+    giantLogo: giantLogoRef,
   });
 
   useEffect(() => {
@@ -127,7 +129,7 @@ export function HomePage2ScrollTransition({
             </div>
             <div ref={maskRef} className="pt-mask" aria-hidden="true" />
             <div ref={heroCopyRef} className="pt-hero__copy">
-              <div className="giant-logo-container">
+              <div ref={giantLogoRef} className="giant-logo-container">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={BACK_LOGO_SRC} alt="Hathor" />
               </div>

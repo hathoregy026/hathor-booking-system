@@ -28,12 +28,19 @@ const PIN_VH = 4.2;
 
 type Strip = { el: HTMLDivElement; colW: number; slatW: number };
 
+const LOGO_LAND = {
+  duration: 1.85,
+  delay: 0.2,
+  ease: "power2.out",
+};
+
 type PageScrollTransitionRefs = {
   root: RefObject<HTMLElement | null>;
   stage: RefObject<HTMLElement | null>;
   mask: RefObject<HTMLElement | null>;
   sheet: RefObject<HTMLElement | null>;
   heroCopy: RefObject<HTMLElement | null>;
+  giantLogo: RefObject<HTMLElement | null>;
 };
 
 function clamp(v: number, min: number, max: number) {
@@ -95,6 +102,7 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
     const maskEl = refs.mask.current;
     const sheet = refs.sheet.current;
     const heroCopy = refs.heroCopy.current;
+    const giantLogo = refs.giantLogo.current;
 
     if (!root || !stage || !maskEl || !sheet) return;
 
@@ -111,7 +119,36 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
 
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
+    let landingTween: gsap.core.Tween | null = null;
     const smoothScroll = setupSmoothScroll();
+
+    function getLogoHiddenY() {
+      return window.innerHeight * 0.42;
+    }
+
+    function setupGiantLogoLanding() {
+      if (!giantLogo) return;
+
+      landingTween?.kill();
+      const hiddenY = getLogoHiddenY();
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      gsap.set(giantLogo, {
+        xPercent: -50,
+        left: "50%",
+        y: reducedMotion ? 0 : hiddenY,
+        opacity: 1,
+      });
+
+      if (reducedMotion) return;
+
+      landingTween = gsap.to(giantLogo, {
+        y: 0,
+        duration: LOGO_LAND.duration,
+        delay: LOGO_LAND.delay,
+        ease: LOGO_LAND.ease,
+      });
+    }
 
     function buildMaskStrips() {
       const n = stripCount();
@@ -216,8 +253,17 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
 
       applyMaskReveal(p);
 
-      if (heroCopy) {
-        gsap.set(heroCopy, { opacity: mapRange(riseT, 0.35, 0.75, 1, 0) });
+      if (giantLogo) {
+        const hiddenY = getLogoHiddenY();
+        const scrollLogoY = mapRange(riseT, 0, 1, 0, hiddenY);
+
+        if (p > 0.001) {
+          landingTween?.kill();
+          landingTween = null;
+          gsap.set(giantLogo, { y: scrollLogoY });
+        }
+      } else if (heroCopy) {
+        gsap.set(heroCopy, { opacity: 1 });
       }
     }
 
@@ -226,6 +272,7 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
 
       const setup = () => {
         if (!buildMaskStrips()) return false;
+        setupGiantLogoLanding();
         applyProgress(0);
 
         ScrollTrigger.create({
@@ -266,6 +313,7 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
     return () => {
       window.removeEventListener("resize", onResize);
       if (resizeTimer) clearTimeout(resizeTimer);
+      landingTween?.kill();
       if (smoothScroll) {
         gsap.ticker.remove(smoothScroll.ticker);
         smoothScroll.lenis.destroy();
@@ -275,7 +323,7 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
       document.documentElement.classList.remove("has-page-scroll-transition");
       document.body.style.backgroundColor = "";
     };
-  }, [instanceId, refs.root, refs.stage, refs.mask, refs.sheet, refs.heroCopy]);
+  }, [instanceId, refs.root, refs.stage, refs.mask, refs.sheet, refs.heroCopy, refs.giantLogo]);
 }
 
 export function refreshHomePage2ScrollTransition() {

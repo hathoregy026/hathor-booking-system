@@ -444,22 +444,27 @@ html[data-homepage2-experience]:has(.hathor-header--menu-hovered)
   }
 }
 
-/* Giant logo in hero copy layer */
+/* Giant logo — behind dome sheet (z10), in front of stripes (z5) */
 .homepage-2-root [data-homepage2-transition] .pt-hero__copy {
   position: absolute;
   inset: 0;
   z-index: 6;
   pointer-events: none;
+  overflow: visible;
+}
+
+.homepage-2-root [data-homepage2-transition] .pt-stage,
+.homepage-2-root [data-homepage2-transition] .pt-hero {
+  overflow: visible;
 }
 
 .homepage-2-root .giant-logo-container {
   position: absolute;
-  top: 25%;
+  top: clamp(18%, 24vh, 26%);
   left: 50%;
-  transform: translateX(-50%);
-  width: 70vw;
-  opacity: 0;
-  animation: homepage2LogoRise 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+  width: clamp(62vw, 70vw, 74vw);
+  opacity: 1;
+  will-change: transform;
 }
 
 .homepage-2-root .giant-logo-container img {
@@ -467,13 +472,6 @@ html[data-homepage2-experience]:has(.hathor-header--menu-hovered)
   width: 100%;
   height: auto;
   filter: drop-shadow(0 1rem 2.5rem rgb(0 0 0 / 0.46));
-}
-
-@keyframes homepage2LogoRise {
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
 }
 
 /* Long content + seamless footer */
@@ -536,7 +534,7 @@ html[data-homepage2-experience] .owo-footer__wordmark {
   }
 
   .homepage-2-root .giant-logo-container {
-    top: 22%;
+    top: 20%;
     width: 92vw;
   }
 }
