@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { PublicThemeToggle } from "@/components/public/PublicThemeToggle";
 import {
@@ -18,7 +18,6 @@ import {
   type NavGroup,
 } from "@/lib/public-nav";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
-import { isHeroRoute } from "@/lib/public-theme";
 
 function ExplorePanel({
   open,
@@ -59,7 +58,7 @@ function ExplorePanel({
                   <li key={`${group.id}-${link.href}-${link.label}`}>
                     <Link
                       href={link.href}
-                      className="hathor-explore__link cursor-hover"
+                      className="hathor-explore__link"
                       onClick={onClose}
                     >
                       <span>{link.label}</span>
@@ -82,7 +81,7 @@ function ExplorePanel({
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="hathor-explore__link cursor-hover"
+                    className="hathor-explore__link"
                     onClick={onClose}
                   >
                     <span>{link.label}</span>
@@ -98,13 +97,13 @@ function ExplorePanel({
           <div className="flex flex-wrap gap-4 text-sm">
             <a
               href={`mailto:${PUBLIC_CONTACT.email}`}
-              className="hathor-explore__contact cursor-hover"
+              className="hathor-explore__contact"
             >
               {PUBLIC_CONTACT.email}
             </a>
             <a
               href={`tel:${PUBLIC_CONTACT.phone}`}
-              className="hathor-explore__contact cursor-hover"
+              className="hathor-explore__contact"
             >
               {PUBLIC_CONTACT.phoneDisplay}
             </a>
@@ -134,86 +133,17 @@ function isNavItemActive(pathname: string, item: HeaderNavItem): boolean {
   );
 }
 
-function isPastPageHero(): boolean {
-  const hero = document.querySelector(".hathor-page-hero");
-  if (!hero) {
-    return window.scrollY > window.innerHeight * 0.9;
-  }
-  return hero.getBoundingClientRect().bottom <= 0;
-}
-
 export function Header() {
   const pathname = usePathname();
-  const isHomepage = isHeroRoute(pathname);
-  const usePagesHeaderTransition = !isHomepage;
   const [exploreOpen, setExploreOpen] = useState(false);
   const [menuHovered, setMenuHovered] = useState(false);
-  const [isScrolling, setIsScrolling] = useState(false);
-  const [scrollHidden, setScrollHidden] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const menuHoveredRef = useRef(false);
-  const isScrollingRef = useRef(false);
-
-  const menuBarVisible = menuHovered || isScrolling;
 
   useEffect(() => {
-    menuHoveredRef.current = menuHovered;
-    isScrollingRef.current = isScrolling;
-    if (menuBarVisible) {
-      setScrollHidden(false);
-    }
-  }, [menuHovered, isScrolling, menuBarVisible]);
-
-  useEffect(() => {
-    setScrollHidden(false);
     setMenuHovered(false);
-    setIsScrolling(false);
     setOpenDropdown(null);
+    setExploreOpen(false);
   }, [pathname]);
-
-  useEffect(() => {
-    let scrollEndTimer: ReturnType<typeof setTimeout>;
-
-    const onHeroScroll = () => {
-      setIsScrolling(true);
-      setScrollHidden(false);
-
-      clearTimeout(scrollEndTimer);
-      scrollEndTimer = setTimeout(() => {
-        setIsScrolling(false);
-        if (
-          usePagesHeaderTransition &&
-          isPastPageHero() &&
-          !menuHoveredRef.current
-        ) {
-          setScrollHidden(true);
-        }
-      }, 200);
-    };
-
-    window.addEventListener("scroll", onHeroScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onHeroScroll);
-      clearTimeout(scrollEndTimer);
-    };
-  }, [pathname, usePagesHeaderTransition]);
-
-  const handleMenuZoneEnter = () => {
-    setMenuHovered(true);
-    setScrollHidden(false);
-  };
-
-  const handleMenuZoneLeave = () => {
-    setMenuHovered(false);
-    setOpenDropdown(null);
-    if (
-      usePagesHeaderTransition &&
-      !isScrollingRef.current &&
-      isPastPageHero()
-    ) {
-      setScrollHidden(true);
-    }
-  };
 
   useEffect(() => {
     document.body.style.overflow = exploreOpen ? "hidden" : "";
@@ -222,18 +152,33 @@ export function Header() {
     };
   }, [exploreOpen]);
 
+  useEffect(() => {
+    if (!openDropdown) return;
+
+    const closeDropdown = () => setOpenDropdown(null);
+    window.addEventListener("scroll", closeDropdown, { passive: true });
+    window.addEventListener("resize", closeDropdown);
+
+    return () => {
+      window.removeEventListener("scroll", closeDropdown);
+      window.removeEventListener("resize", closeDropdown);
+    };
+  }, [openDropdown]);
+
   const headerClass = [
     "hathor-header",
     "hathor-header--transparent",
     "hathor-header--over-hero",
     "hathor-header--owo-hero-layout",
-    menuBarVisible && "hathor-header--menu-active",
+    "hathor-header--menu-active",
     menuHovered && "hathor-header--menu-hovered",
-    isScrolling && "hathor-header--scrolling",
-    scrollHidden && !menuBarVisible && "hathor-header--scroll-hidden",
   ]
     .filter(Boolean)
     .join(" ");
+
+  const toggleDropdown = (id: string) => {
+    setOpenDropdown((current) => (current === id ? null : id));
+  };
 
   return (
     <>
@@ -241,8 +186,11 @@ export function Header() {
         <div className="hathor-header__inner hathor-header__inner--owo">
           <div
             className="hathor-header__menu-zone"
-            onMouseEnter={handleMenuZoneEnter}
-            onMouseLeave={handleMenuZoneLeave}
+            onMouseEnter={() => setMenuHovered(true)}
+            onMouseLeave={() => {
+              setMenuHovered(false);
+              setOpenDropdown(null);
+            }}
           >
             <div className="hathor-header__col hathor-header__col--left">
               <Link href="/" className="hathor-header__brand">
@@ -272,13 +220,15 @@ export function Header() {
                       <li key={item.href} className="hathor-header__nav-item">
                         <Link
                           href={item.href}
-                          className={`hathor-header__nav-link cursor-hover ${isActive ? "hathor-header__nav-link--active" : ""}`}
+                          className={`hathor-header__nav-link ${isActive ? "hathor-header__nav-link--active" : ""}`}
                         >
                           {item.label}
                         </Link>
                       </li>
                     );
                   }
+
+                  const dropdownOpen = openDropdown === item.id;
 
                   return (
                     <li
@@ -287,16 +237,25 @@ export function Header() {
                       onMouseEnter={() => setOpenDropdown(item.id)}
                       onMouseLeave={() => setOpenDropdown(null)}
                     >
-                      <Link
-                        href={item.href}
-                        className={`hathor-header__nav-link cursor-hover ${isActive ? "hathor-header__nav-link--active" : ""}`}
-                        aria-haspopup="menu"
-                        aria-expanded={openDropdown === item.id}
-                      >
-                        {item.label}
-                      </Link>
+                      <div className="hathor-header__dropdown-trigger">
+                        <Link
+                          href={item.href}
+                          className={`hathor-header__nav-link ${isActive ? "hathor-header__nav-link--active" : ""}`}
+                          aria-haspopup="menu"
+                          aria-expanded={dropdownOpen}
+                        >
+                          {item.label}
+                        </Link>
+                        <button
+                          type="button"
+                          className="hathor-header__dropdown-toggle"
+                          aria-label={`Show ${item.label} pages`}
+                          aria-expanded={dropdownOpen}
+                          onClick={() => toggleDropdown(item.id)}
+                        />
+                      </div>
                       <div
-                        className={`hathor-header__dropdown${openDropdown === item.id ? " is-open" : ""}`}
+                        className={`hathor-header__dropdown${dropdownOpen ? " is-open" : ""}`}
                         role="menu"
                         aria-label={`${item.label} pages`}
                       >
@@ -305,8 +264,9 @@ export function Header() {
                             <li key={`${item.id}-${link.href}-${link.label}`}>
                               <Link
                                 href={link.href}
-                                className="hathor-header__dropdown-link cursor-hover"
+                                className="hathor-header__dropdown-link"
                                 role="menuitem"
+                                onClick={() => setOpenDropdown(null)}
                               >
                                 {link.label}
                               </Link>
@@ -324,7 +284,7 @@ export function Header() {
           <div className="hathor-header__col hathor-header__col--right">
             <button
               type="button"
-              className="hathor-header__menu-btn cursor-hover md:hidden"
+              className="hathor-header__menu-btn md:hidden"
               onClick={() => setExploreOpen(true)}
               aria-expanded={exploreOpen}
               aria-label="Open menu"

@@ -1,15 +1,12 @@
 "use client";
 
-import { BookNowTrigger } from "@/components/public/BookNowTrigger";
+import { HomePage2BookBar } from "./HomePage2BookBar";
 import { HomePage2ScrollTransition } from "./HomePage2ScrollTransition";
 
 export function HomePage2Client() {
   return (
     <div className="homepage-2-root">
-      <div className="top-book-buttons" aria-label="Booking shortcuts">
-        <BookNowTrigger className="book-now-btn">BOOK NOW</BookNowTrigger>
-        <BookNowTrigger className="book-now-btn">BOOK NOW</BookNowTrigger>
-      </div>
+      <HomePage2BookBar />
 
       <HomePage2ScrollTransition
         title="The Hathor Experience"
