@@ -40,8 +40,6 @@ const DOME_EAR_SAFE_MIN = 8;
 /** Wide px band — long runway so flatten never feels snappy. */
 const KISS_GAP_FAR = 180;
 const KISS_GAP_NEAR = 8;
-/** Per-frame catch-up for vertR (lower = smoother, less jumpy). */
-const VERT_R_SMOOTH = 0.14;
 
 type PageScrollTransitionRefs = {
   root: RefObject<HTMLElement | null>;
@@ -139,8 +137,11 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
     let landingTween: gsap.core.Tween | null = null;
-    let smoothVertR: number | null = null;
     const smoothScroll = setupSmoothScroll();
+
+    function markScrollReady() {
+      trigger.closest(".homepage-2-root")?.classList.add("homepage-2-scroll-ready");
+    }
 
     function getLogoHiddenY() {
       return window.innerHeight * 0.34;
@@ -275,10 +276,7 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
         DOME_EAR_SAFE_MIN,
         openBlend > 0 ? radius + (vertFloor - radius) * openBlend : radius,
       );
-
-      if (smoothVertR === null) smoothVertR = targetVertR;
-      smoothVertR += (targetVertR - smoothVertR) * VERT_R_SMOOTH;
-      const vertR = smoothVertR;
+      const vertR = targetVertR;
 
       gsap.set(sheetEl, {
         y,
@@ -324,13 +322,15 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
           onUpdate: (self) => applyProgress(self.progress),
         });
 
+        markScrollReady();
         return true;
       };
 
       if (!setup()) {
         requestAnimationFrame(() => {
-          setup();
-          ScrollTrigger.refresh();
+          if (setup()) {
+            ScrollTrigger.refresh();
+          }
         });
       }
     }, trigger);
@@ -355,6 +355,7 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
         smoothScroll.lenis.destroy();
       }
       ctx.revert();
+      trigger.closest(".homepage-2-root")?.classList.remove("homepage-2-scroll-ready");
       document.body.classList.remove("has-page-scroll-transition");
       document.documentElement.classList.remove("has-page-scroll-transition");
       document.body.style.backgroundColor = "";

@@ -3,6 +3,50 @@ html[data-homepage2-experience] body {
   background-color: #f4f1ea !important;
 }
 
+/* SSR-first mirrors — apply from first HTML byte via .homepage-2-route wrapper */
+.homepage-2-route,
+.homepage-2-route .public-site,
+.homepage-2-route .public-main,
+.homepage-2-route .page-transition {
+  background-color: #f4f1ea !important;
+}
+
+.homepage-2-route .public-main--hero {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+  flex: 0 1 auto !important;
+  min-height: 0 !important;
+}
+
+.homepage-2-route [data-homepage2-transition] {
+  --pt-cream: #f4f1ea;
+  --pt-dome-r-start: 1250px;
+  --pt-dome-r-end: 22px;
+}
+
+.homepage-2-route [data-homepage2-transition] .pt-sheet__rise-cap {
+  width: 100%;
+  min-height: 120vh !important;
+  min-height: 120svh !important;
+}
+
+.homepage-2-route [data-homepage2-transition] .pt-sheet {
+  background-color: #f4f1ea !important;
+}
+
+.homepage-2-route [data-homepage2-transition] .pt-stage {
+  overflow: hidden !important;
+  background-color: #f4f1ea !important;
+}
+
+.homepage-2-root {
+  visibility: hidden;
+}
+
+.homepage-2-root.homepage-2-scroll-ready {
+  visibility: visible;
+}
+
 html[data-homepage2-experience] .public-site,
 html[data-homepage2-experience] .public-main,
 html[data-homepage2-experience] .page-transition {
@@ -439,7 +483,7 @@ html[data-homepage2-experience] .homepage-2-root .giant-logo-container {
   width: 92vw;
   max-width: none;
   margin: 0;
-  opacity: 0; /* Start invisible to prevent pre-GSAP pop */
+  opacity: 1;
   will-change: transform;
 }
 

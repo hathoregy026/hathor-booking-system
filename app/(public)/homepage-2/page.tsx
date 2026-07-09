@@ -6,6 +6,8 @@ import "./homepage-2.css";
 const BACK_LOGO_SRC =
   "/branding/hathor-logo-behing-the-sheet-egypt-toors-pyramids.svg";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Homepage 2 | Hathor Dahabiya",
   description:
