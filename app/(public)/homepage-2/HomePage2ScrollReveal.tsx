@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { forwardRef, useEffect, useRef, type ReactNode } from "react";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import {
   refreshPageScrollTransition,
@@ -20,17 +20,28 @@ export type HomePage2ScrollRevealProps = {
 };
 
 /** Same DOM + engine as cruises PageScrollTransition — giant logo replaces hero copy. */
-export function HomePage2ScrollReveal({
-  imageName,
-  imageAlt,
-  children,
-}: HomePage2ScrollRevealProps) {
-  const image = useSiteImage(imageName);
+export const HomePage2ScrollReveal = forwardRef<
+  HTMLElement,
+  HomePage2ScrollRevealProps
+>(function HomePage2ScrollReveal(
+  { imageName, imageAlt, children },
+  forwardedRef,
+) {
   const rootRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const maskRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
   const giantLogoRef = useRef<HTMLDivElement>(null);
+  const image = useSiteImage(imageName);
+
+  function setRootRef(node: HTMLElement | null) {
+    rootRef.current = node;
+    if (typeof forwardedRef === "function") {
+      forwardedRef(node);
+    } else if (forwardedRef) {
+      forwardedRef.current = node;
+    }
+  }
 
   usePageScrollTransition({
     root: rootRef,
@@ -109,7 +120,7 @@ export function HomePage2ScrollReveal({
         </filter>
       </svg>
       <section
-        ref={rootRef}
+        ref={setRootRef}
         data-page-transition
         className="hathor-page-scroll-transition hathor-page-hero"
       >
@@ -141,4 +152,4 @@ export function HomePage2ScrollReveal({
       </section>
     </>
   );
-}
+});
