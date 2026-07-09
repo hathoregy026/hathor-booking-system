@@ -35,9 +35,9 @@ const LOGO_LAND = {
 };
 
 /** Below rEnd — flat top without reintroducing base corner ears (never 0). */
-const DOME_TOP_OPEN_P_START = 0.92;
+const DOME_TOP_OPEN_P_START = 0.965;
 const DOME_TOP_OPEN_P_END = 0.98;
-const DOME_TOP_OPEN_AMOUNT = 0.95;
+const DOME_TOP_OPEN_AMOUNT = 0.99;
 const DOME_EAR_SAFE_MIN = 8;
 
 type PageScrollTransitionRefs = {
@@ -73,6 +73,10 @@ function stripCount() {
 
 function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3);
+}
+
+function easeInCubic(t: number) {
+  return t * t * t;
 }
 
 function setupSmoothScroll() {
@@ -249,7 +253,7 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
       const radius = rEnd + (rStart - rEnd) * (1 - radiusProgress);
       const halfW = sheetEl.offsetWidth / 2;
 
-      const topOpen = easeOutCubic(
+      const topOpen = easeInCubic(
         mapRange(p, DOME_TOP_OPEN_P_START, DOME_TOP_OPEN_P_END, 0, 1),
       );
       const vertFloor = Math.max(DOME_EAR_SAFE_MIN, rEnd * 0.42);
