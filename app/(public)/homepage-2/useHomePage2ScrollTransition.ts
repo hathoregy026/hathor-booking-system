@@ -37,9 +37,12 @@ const LOGO_LAND = {
 /** Below rEnd — flat top without reintroducing base corner ears (never 0). */
 const DOME_TOP_OPEN_AMOUNT = 0.99;
 const DOME_EAR_SAFE_MIN = 8;
-/** Center gap (px) below nav where top flatten begins / completes. */
-const NAV_FLATTEN_GAP_START = 14;
-const NAV_FLATTEN_GAP_END = -2;
+/** Wide px band: sheet center traveling up toward the nav (no snap window). */
+const KISS_GAP_FAR = 90;
+const KISS_GAP_NEAR = -15;
+/** Flatten only in the last 23% of that approach (75% → 98% kissed). */
+const KISS_FLATTEN_START = 0.75;
+const KISS_FLATTEN_END = 0.98;
 
 type PageScrollTransitionRefs = {
   root: RefObject<HTMLElement | null>;
@@ -76,8 +79,8 @@ function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3);
 }
 
-function easeInCubic(t: number) {
-  return t * t * t;
+function easeInOutCubic(t: number) {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
 
 function setupSmoothScroll() {
@@ -258,9 +261,13 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
         document.querySelector(".hathor-header")?.getBoundingClientRect().bottom ??
         vh * 0.15;
       const gapCenter = sheetEl.getBoundingClientRect().top - navBottom;
-      const topOpen = easeInCubic(
-        mapRange(gapCenter, NAV_FLATTEN_GAP_START, NAV_FLATTEN_GAP_END, 0, 1),
+      const kissProgress = easeInOutCubic(
+        mapRange(gapCenter, KISS_GAP_FAR, KISS_GAP_NEAR, 0, 1),
       );
+      const topOpen =
+        easeInOutCubic(
+          mapRange(kissProgress, KISS_FLATTEN_START, KISS_FLATTEN_END, 0, 1),
+        ) * DOME_TOP_OPEN_AMOUNT;
       const vertFloor = Math.max(DOME_EAR_SAFE_MIN, rEnd * 0.42);
       const openBlend = topOpen * DOME_TOP_OPEN_AMOUNT;
       const vertR = Math.max(
