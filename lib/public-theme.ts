@@ -43,6 +43,7 @@ export function isHeroRoute(pathname: string): boolean {
   return (
     pathname === "/" ||
     pathname === "/homepage-2" ||
+    pathname === "/homepage-3" ||
     pathname === "/preview"
   );
 }
