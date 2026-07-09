@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, type ReactNode } from "react";
-import gsap from "gsap";
+import { useEffect, useRef, type ReactNode } from "react";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import {
   refreshPageScrollTransition,
@@ -10,7 +9,6 @@ import {
 import { useHomePage2GiantLogo } from "./useHomePage2GiantLogo";
 
 const PIN_VH = 4.2;
-const HP2_CREAM = "#f4f1ea";
 
 const BACK_LOGO_SRC =
   "/branding/hathor-logo-behing-the-sheet-egypt-toors-pyramids.svg";
@@ -44,28 +42,8 @@ export function HomePage2ScrollReveal({
 
   useHomePage2GiantLogo(rootRef, giantLogoRef);
 
-  useLayoutEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
-
-    const applyCreamTheme = () => {
-      root.style.setProperty("--pt-cream", HP2_CREAM);
-      root.style.setProperty("--pt-gold", "#b69f64");
-      document.body.style.backgroundColor = HP2_CREAM;
-    };
-
-    applyCreamTheme();
-    const onTick = () => applyCreamTheme();
-    gsap.ticker.add(onTick);
-
-    return () => {
-      gsap.ticker.remove(onTick);
-    };
-  }, []);
-
   useEffect(() => {
     const root = rootRef.current;
-    const sheet = sheetRef.current;
     if (!root) return;
 
     const syncMediaVisibility = () => {
@@ -74,19 +52,12 @@ export function HomePage2ScrollReveal({
       const scroll = window.scrollY;
       const pinProgress = Math.max(0, (scroll - top) / (vh * PIN_VH));
 
-      const hideMedia = pinProgress > 0.82;
-      const pastPin = pinProgress >= 0.88;
+      const inHeroZone = pinProgress < 0.12;
+      const hideMedia = !inHeroZone && pinProgress > 0.82;
+      const pastPin = pinProgress >= 0.92;
 
       root.classList.toggle("hathor-page-scroll--media-gone", hideMedia);
       root.classList.toggle("hathor-page-scroll--past-pin", pastPin);
-
-      if (pastPin && sheet) {
-        gsap.set(sheet, {
-          y: 0,
-          borderTopLeftRadius: 0,
-          borderTopRightRadius: 0,
-        });
-      }
     };
 
     syncMediaVisibility();
