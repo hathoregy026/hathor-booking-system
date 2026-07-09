@@ -1,18 +1,29 @@
 "use client";
 
+import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
-import { HomePage2ScrollTransition } from "./HomePage2ScrollTransition";
+
+const BACK_LOGO_SRC =
+  "/branding/hathor-logo-behing-the-sheet-egypt-toors-pyramids.svg";
 
 export function HomePage2Client() {
   return (
     <div className="homepage-2-root">
-      <div className="top-book-buttons">
+      <div className="top-book-buttons" aria-label="Booking shortcuts">
         <BookNowTrigger className="book-now-btn">BOOK NOW</BookNowTrigger>
         <BookNowTrigger className="book-now-btn">BOOK NOW</BookNowTrigger>
       </div>
 
-      <HomePage2ScrollTransition
+      <div className="giant-logo-container" aria-hidden="true">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={BACK_LOGO_SRC} alt="" />
+      </div>
+
+      <PageScrollTransition
         title="The Hathor Experience"
+        heroTitle="Hathor"
+        subtitle="Nile · Luxor to Aswan"
+        breadcrumb="Home"
         imageName="home-hero-poster"
         imageAlt="Luxury Nile cruise at sunset"
       >
@@ -20,7 +31,7 @@ export function HomePage2Client() {
           <p className="homepage-2-placeholder__eyebrow">Hathor</p>
           <h1>The Hathor Experience</h1>
         </section>
-      </HomePage2ScrollTransition>
+      </PageScrollTransition>
     </div>
   );
 }

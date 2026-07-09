@@ -27,81 +27,22 @@ html[data-homepage2-experience] body.has-page-scroll-transition .pin-spacer {
   padding: 0 !important;
 }
 
-html[data-homepage2-experience] .homepage-2-root {
-  --pt-cream: #f4f1ea;
-}
-
-/* Match cruises scroll dome — same px radii, full-width sheet (no vw bleed). */
-html[data-homepage2-experience] body.has-page-scroll-transition [data-page-transition] {
-  --pt-cream: #f4f1ea !important;
-  --pt-dome-r-start: 1250px !important;
-  --pt-dome-r-end: 22px !important;
-}
-
-html[data-homepage2-experience] body.has-page-scroll-transition [data-page-transition] .pt-stage {
+/* Cream sheet + stage — seamless with footer (cruises engine, homepage-2 color only). */
+html[data-homepage2-experience] body.has-page-scroll-transition [data-page-transition] .pt-sheet {
   background-color: #f4f1ea !important;
-  overflow: hidden;
 }
 
 html[data-homepage2-experience] body.has-page-scroll-transition [data-page-transition].hathor-page-scroll--past-pin .pt-stage {
   background-color: #f4f1ea !important;
 }
 
-html[data-homepage2-experience] body.has-page-scroll-transition [data-page-transition] .pt-sheet {
-  left: 0 !important;
-  right: 0 !important;
-  width: 100% !important;
-  margin-left: 0 !important;
-  max-width: none;
-  background-color: #f4f1ea !important;
+html[data-homepage2-experience] body.has-page-scroll-transition [data-page-transition].hathor-page-scroll--media-gone .pt-hero__media,
+html[data-homepage2-experience] body.has-page-scroll-transition [data-page-transition].hathor-page-scroll--past-pin .pt-hero__media {
+  opacity: 0 !important;
+  visibility: hidden !important;
 }
 
-/* Static hero stripes off during mask reveal — cruises uses mask stripes only. */
-html[data-homepage2-experience] [data-page-transition].homepage-2--mask-phase .homepage-2-hero-stripes {
-  opacity: 0;
-}
-
-@media (max-width: 1024px) {
-  html[data-homepage2-experience] body.has-page-scroll-transition [data-page-transition] {
-    --pt-dome-r-start: 300px !important;
-    --pt-dome-r-end: 14px !important;
-  }
-}
-
-@media (max-width: 767px) {
-  html[data-homepage2-experience] body.has-page-scroll-transition [data-page-transition] {
-    --pt-dome-r-start: 150px !important;
-    --pt-dome-r-end: 10px !important;
-  }
-}
-
-/* 1. GIANT LOGO BEHIND DOME */
-.homepage-2-root .giant-logo-container {
-  position: absolute;
-  top: 25%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 70vw;
-  z-index: 5;
-  opacity: 0;
-  animation: logoRise 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
-}
-
-.homepage-2-root .giant-logo-container img {
-  display: block;
-  width: 100%;
-  height: auto;
-  filter: drop-shadow(0 1rem 2.5rem rgb(0 0 0 / 0.46));
-}
-
-@keyframes logoRise {
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-}
-
-/* 2. BOOK NOW BUTTONS (Top Bar) */
+/* Frame 9: Book Now buttons */
 .homepage-2-root .top-book-buttons {
   position: fixed;
   top: 0;
@@ -133,66 +74,45 @@ html[data-homepage2-experience] [data-page-transition].homepage-2--mask-phase .h
   transform: translateY(-2px);
 }
 
-/* 3. DOME SHEET COLOR & SEAMLESS FLOW */
-.homepage-2-root .pt-sheet__content {
-  min-height: 100vh;
-  padding-bottom: 0;
-}
-
-/* Hero video + stripes (Frame 9 layer 1) */
-.homepage-2-root .homepage-2-hero-media {
-  background: #000;
-}
-
-.homepage-2-root .homepage-2-hero-video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0;
-}
-
-.homepage-2-root .homepage-2-hero-poster {
-  position: absolute;
-  width: 1px;
-  height: 1px;
+/* Frame 9: giant logo over hero (hidden when cruises engine hides hero media). */
+.homepage-2-root .giant-logo-container {
+  position: fixed;
+  top: 25%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70vw;
+  z-index: 45;
+  pointer-events: none;
   opacity: 0;
-  pointer-events: none;
+  animation: homepage2LogoRise 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
 }
 
-.homepage-2-root .homepage-2-hero-shade {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: rgb(0 0 0 / 0.4);
-  pointer-events: none;
+.homepage-2-root .giant-logo-container img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 1rem 2.5rem rgb(0 0 0 / 0.46));
 }
 
-.homepage-2-root .homepage-2-hero-stripes {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    90deg,
-    transparent 0,
-    transparent calc(100% / 52 - 1px),
-    rgb(182 159 100 / 0.16) calc(100% / 52 - 1px),
-    rgb(182 159 100 / 0.16) calc(100% / 52)
-  );
-  mix-blend-mode: soft-light;
-  opacity: 0.45;
+@keyframes homepage2LogoRise {
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
-.homepage-2-root .pt-hero__copy {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  pointer-events: none;
+.homepage-2-root:has([data-page-transition].hathor-page-scroll--media-gone) .giant-logo-container,
+.homepage-2-root:has([data-page-transition].hathor-page-scroll--past-pin) .giant-logo-container {
+  opacity: 0 !important;
+  visibility: hidden !important;
 }
 
-/* Sheet placeholder + footer seam */
+/* Hide default hero copy — logo replaces it on this route. */
+.homepage-2-root [data-page-transition] .pt-hero__copy .hathor-container {
+  visibility: hidden;
+}
+
+/* Long content area below the sheet landing */
 .homepage-2-root .homepage-2-placeholder {
   min-height: clamp(90rem, 180vh, 130rem);
   display: grid;
