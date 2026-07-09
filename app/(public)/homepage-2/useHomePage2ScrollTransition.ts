@@ -39,7 +39,9 @@ const DOME_TOP_OPEN_AMOUNT = 1;
 const DOME_EAR_SAFE_MIN = 0;
 /** Wide px band — long runway so flatten never feels snappy. */
 const KISS_GAP_FAR = 180;
-const KISS_GAP_NEAR = 0;
+const KISS_GAP_NEAR = 8;
+/** Power > 1 keeps the arch intact during rise; flatten only at true navbar kiss. */
+const KISS_FLATTEN_POWER = 4;
 
 type PageScrollTransitionRefs = {
   root: RefObject<HTMLElement | null>;
@@ -270,9 +272,13 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
       const gapCenter = sheetEl.getBoundingClientRect().top - navBottom;
       const kissLinear = mapRange(gapCenter, KISS_GAP_FAR, KISS_GAP_NEAR, 0, 1);
       const kissProgress = smootherstep(easeInOutCubic(kissLinear));
-      const openBlend = kissProgress * DOME_TOP_OPEN_AMOUNT;
+      const kissFlatten = Math.pow(kissProgress, KISS_FLATTEN_POWER);
+      const openBlend = kissFlatten * DOME_TOP_OPEN_AMOUNT;
+      const vertFloor = DOME_EAR_SAFE_MIN;
       const vertR =
-        openBlend > 0 ? Math.max(DOME_EAR_SAFE_MIN, radius * (1 - openBlend)) : radius;
+        openBlend > 0
+          ? Math.max(DOME_EAR_SAFE_MIN, radius + (vertFloor - radius) * openBlend)
+          : radius;
 
       gsap.set(sheetEl, {
         y,
@@ -304,7 +310,6 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
         if (!buildMaskStrips()) return false;
         setupGiantLogoLanding();
         applyProgress(0);
-        markScrollReady();
 
         ScrollTrigger.create({
           id: `homepage-2-scroll-${instanceId}`,
@@ -319,6 +324,7 @@ export function useHomePage2ScrollTransition(refs: PageScrollTransitionRefs) {
           onUpdate: (self) => applyProgress(self.progress),
         });
 
+        markScrollReady();
         return true;
       };
 
