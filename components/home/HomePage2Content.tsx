@@ -1,17 +1,33 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import {
-  HATHOR_HERO_ICON_SRC,
   HATHOR_HERO_POSTER_SRC,
   HATHOR_HERO_VIDEO_SRC,
 } from "@/lib/branding";
+import { usePageScrollTransition } from "@/components/pages/pageScrollTransitionEngine";
 
 const BACK_LOGO_SRC =
   "/branding/hathor-logo-behing-the-sheet-egypt-toors-pyramids.svg";
 
+const PIN_VH = 4.2;
+
 export function HomePage2Content() {
+  const rootRef = useRef<HTMLElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const maskRef = useRef<HTMLDivElement>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const heroCopyRef = useRef<HTMLDivElement>(null);
+
+  usePageScrollTransition({
+    root: rootRef,
+    stage: stageRef,
+    mask: maskRef,
+    sheet: sheetRef,
+    heroCopy: heroCopyRef,
+  });
+
   useEffect(() => {
     document.documentElement.setAttribute("data-homepage2-experience", "");
     return () => {
@@ -19,77 +35,91 @@ export function HomePage2Content() {
     };
   }, []);
 
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+
+    const syncMediaVisibility = () => {
+      const vh = window.innerHeight;
+      const top = root.getBoundingClientRect().top + window.scrollY;
+      const scroll = window.scrollY;
+      const pinProgress = Math.max(0, (scroll - top) / (vh * PIN_VH));
+
+      root.classList.toggle(
+        "hathor-page-scroll--media-gone",
+        pinProgress > 0.82,
+      );
+      root.classList.toggle(
+        "hathor-page-scroll--past-pin",
+        pinProgress >= 0.92,
+      );
+    };
+
+    syncMediaVisibility();
+    window.addEventListener("scroll", syncMediaVisibility, { passive: true });
+    window.addEventListener("resize", syncMediaVisibility);
+
+    return () => {
+      window.removeEventListener("scroll", syncMediaVisibility);
+      window.removeEventListener("resize", syncMediaVisibility);
+    };
+  }, []);
+
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-black">
-      {/* LAYER 1: Video Background */}
-      <div className="absolute inset-0 z-0">
-        <video
-          className="absolute inset-0 w-full h-full object-cover"
-          src={HATHOR_HERO_VIDEO_SRC}
-          poster={HATHOR_HERO_POSTER_SRC}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          aria-label="Hathor Dahabiya sailing on the Nile"
-        />
-        <div className="absolute inset-0 bg-black/40" />
-      </div>
+    <>
+      <section
+        ref={rootRef}
+        data-page-transition
+        data-homepage2-transition
+        className="hathor-page-scroll-transition hathor-page-hero homepage-2-transition"
+      >
+        <div ref={stageRef} className="pt-stage">
+          <div className="pt-hero">
+            {/* LAYER 1: Video Background (z-0) */}
+            <div className="pt-hero__media homepage-2-hero-bg">
+              <video
+                className="homepage-2-hero-video"
+                src={HATHOR_HERO_VIDEO_SRC}
+                poster={HATHOR_HERO_POSTER_SRC}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                aria-label="Hathor Dahabiya sailing on the Nile"
+              />
+              <div className="homepage-2-hero-shade" aria-hidden />
+              <div className="homepage-2-hero-stripes" aria-hidden />
+            </div>
 
-      {/* LAYER 2: Giant Logo */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={BACK_LOGO_SRC} className="giant-logo" alt="Hathor" />
+            <div ref={maskRef} className="pt-mask" aria-hidden="true" />
 
-      {/* LAYER 3: Top Bar & Nav */}
-      <div className="top-bar">
-        <BookNowTrigger className="book-now-btn">BOOK NOW</BookNowTrigger>
-        <div className="center-logo">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={HATHOR_HERO_ICON_SRC} alt="Hathor" />
-        </div>
-        <BookNowTrigger className="book-now-btn">BOOK NOW</BookNowTrigger>
-      </div>
+            {/* LAYER 2: Giant Logo (z-10) */}
+            <div ref={heroCopyRef} className="homepage-2-logo-layer">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={BACK_LOGO_SRC} className="giant-logo" alt="Hathor" />
+            </div>
+          </div>
 
-      <div className="nav-container">
-        <a href="/" className="nav-link">
-          Home
-        </a>
-        <a href="/cruises" className="nav-link">
-          Cruises
-        </a>
-        <div className="nav-item relative">
-          <a href="/rooms" className="nav-link">
-            Accommodation
-          </a>
-          <div className="dropdown">
-            <a href="/rooms" className="dropdown-link">
-              Luxury Rooms
-            </a>
-            <a href="/rooms" className="dropdown-link">
-              Luxury Suites
-            </a>
-            <a
-              href="/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"
-              className="dropdown-link"
-            >
-              Royal Suites
-            </a>
+          {/* LAYER 4: Cream Dome Sheet (z-20) */}
+          <div ref={sheetRef} className="pt-sheet homepage-2-sheet">
+            <div className="pt-sheet__landing homepage-2-sheet-landing" />
+            <div className="pt-sheet__rise-cap homepage-2-rise-cap" aria-hidden />
+            <div className="pt-sheet__content">
+              <section className="homepage-2-placeholder">
+                <p className="homepage-2-placeholder__eyebrow">Hathor</p>
+                <h1>The Hathor Experience</h1>
+              </section>
+            </div>
           </div>
         </div>
-        <a href="/highlights" className="nav-link">
-          Experiences
-        </a>
-        <a href="/about" className="nav-link">
-          About
-        </a>
-        <a href="/contact" className="nav-link">
-          Contact
-        </a>
-      </div>
+      </section>
 
-      {/* LAYER 4: The Cream Dome */}
-      <div className="dome-container" />
-    </div>
+      {/* LAYER 3: Book Now buttons only. Standard site nav remains unchanged. */}
+      <div className="homepage-2-book-now-layer" aria-label="Booking shortcuts">
+        <BookNowTrigger className="book-now-btn">BOOK NOW</BookNowTrigger>
+        <BookNowTrigger className="book-now-btn">BOOK NOW</BookNowTrigger>
+      </div>
+    </>
   );
 }
