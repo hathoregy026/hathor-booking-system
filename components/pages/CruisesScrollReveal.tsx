@@ -37,7 +37,7 @@ export type CruisesScrollRevealProps = {
 };
 
 /**
- * Animation layer: empty sheet runway + reveal title façade (synced during pin).
+ * Animation layer: empty sheet runway + cream sheet surface (title sync during pin).
  * Content layer: independent document flow — listings, filters, footer.
  */
 export function CruisesScrollReveal({
@@ -55,7 +55,7 @@ export function CruisesScrollReveal({
   const stageRef = useRef<HTMLDivElement>(null);
   const maskRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
-  const revealFacadeRef = useRef<HTMLDivElement>(null);
+  const sheetSurfaceRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
   const giantLogoRef = useRef<HTMLDivElement>(null);
 
@@ -64,7 +64,7 @@ export function CruisesScrollReveal({
     stage: stageRef,
     mask: maskRef,
     sheet: sheetRef,
-    revealFacade: revealFacadeRef,
+    sheetSurface: sheetSurfaceRef,
     heroCopy: heroCopyRef,
   });
 
@@ -171,8 +171,8 @@ export function CruisesScrollReveal({
             </div>
 
             <div
-              ref={revealFacadeRef}
-              className="cruises-reveal-facade"
+              ref={sheetSurfaceRef}
+              className="cruises-sheet-surface"
               aria-hidden="true"
             >
               <div className="pt-sheet__landing">

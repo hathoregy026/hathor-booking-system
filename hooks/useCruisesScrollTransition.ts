@@ -1,6 +1,6 @@
 /**
- * Cruises scroll engine — animation layer only (hero, mask, empty sheet).
- * Pin ends at reveal distance. Title façade syncs visually during reveal.
+ * Cruises scroll engine — animation layer (hero, mask, empty sheet runway).
+ * Cream sheet surface syncs y + dome radius during pin (old follower behavior).
  * Listings live in .cruises-content-layer (normal scroll, no GSAP).
  */
 "use client";
@@ -36,7 +36,7 @@ type CruisesScrollTransitionRefs = {
   stage: RefObject<HTMLElement | null>;
   mask: RefObject<HTMLElement | null>;
   sheet: RefObject<HTMLElement | null>;
-  revealFacade: RefObject<HTMLElement | null>;
+  sheetSurface: RefObject<HTMLElement | null>;
   heroCopy: RefObject<HTMLElement | null>;
 };
 
@@ -102,7 +102,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     const stage = config.stage.current;
     const maskEl = config.mask.current;
     const sheet = config.sheet.current;
-    const facadeEl = config.revealFacade.current;
+    const surfaceEl = config.sheetSurface.current;
     const heroCopy = config.heroCopy.current;
 
     if (!root || !stage || !maskEl || !sheet) return;
@@ -121,7 +121,8 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
 
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
-    let lastFacadeY = Number.NaN;
+    let lastSurfaceY = Number.NaN;
+    let lastSurfaceRadius = "";
     const smoothScroll = setupSmoothScroll();
 
     function buildMaskStrips() {
@@ -238,23 +239,47 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       return { sheetY: y, radius };
     }
 
-    function applyRevealFacade(sheetY: number, revealP: number) {
-      if (!facadeEl) return;
+    function applySheetSurface(
+      revealP: number,
+      sheetY: number,
+      radius: number | string,
+    ) {
+      if (!surfaceEl) return;
       if (trigger.classList.contains("hathor-page-scroll--past-pin")) return;
 
       const y = Math.round(sheetY);
+      const radiusKey = revealP < 0.98 ? String(radius) : "0";
 
-      if (y === lastFacadeY) return;
+      trigger.classList.toggle(
+        "hathor-page-scroll--content-active",
+        revealP >= 0.995,
+      );
 
-      lastFacadeY = y;
+      if (y === lastSurfaceY && radiusKey === lastSurfaceRadius) return;
 
-      gsap.set(facadeEl, { y });
+      lastSurfaceY = y;
+      lastSurfaceRadius = radiusKey;
+
+      if (revealP < 0.98) {
+        gsap.set(surfaceEl, {
+          y,
+          borderTopLeftRadius: radius,
+          borderTopRightRadius: radius,
+        });
+        return;
+      }
+
+      gsap.set(surfaceEl, {
+        y,
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 0,
+      });
     }
 
     function applyFrame(scrollProgress: number) {
       const revealP = clamp(scrollProgress, 0, 1);
       const { sheetY, radius } = applyProgress(revealP);
-      applyRevealFacade(sheetY, revealP);
+      applySheetSurface(revealP, sheetY, radius);
     }
 
     const ctx = gsap.context(() => {
@@ -280,8 +305,8 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
           onLeave: () => {
             trigger.classList.add("hathor-page-scroll--past-pin");
             trigger.classList.add("hathor-page-scroll--media-gone");
-            if (facadeEl) {
-              gsap.set(facadeEl, { clearProps: "transform" });
+            if (surfaceEl) {
+              gsap.set(surfaceEl, { clearProps: "transform,borderRadius" });
             }
           },
           onEnterBack: () => {
@@ -335,12 +360,13 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
         smoothScroll.lenis.destroy();
       }
       ctx.revert();
-      if (facadeEl) {
-        gsap.set(facadeEl, { clearProps: "transform" });
+      if (surfaceEl) {
+        gsap.set(surfaceEl, { clearProps: "transform,borderRadius" });
       }
       trigger.classList.remove(
         "hathor-page-scroll--past-pin",
         "hathor-page-scroll--media-gone",
+        "hathor-page-scroll--content-active",
       );
       document.body.classList.remove("has-page-scroll-transition");
       document.documentElement.classList.remove("has-page-scroll-transition");
@@ -352,7 +378,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     config.stage,
     config.mask,
     config.sheet,
-    config.revealFacade,
+    config.sheetSurface,
     config.heroCopy,
   ]);
 }

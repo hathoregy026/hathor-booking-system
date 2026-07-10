@@ -63,9 +63,6 @@ html[data-cruises-experience] .public-site > .owo-footer,
 
 .cruises-scroll-route [data-cruises-transition] .pt-stage {
   overflow: hidden !important;
-  height: 100svh !important;
-  min-height: 100svh !important;
-  max-height: 100svh !important;
   background-color: var(--cruises-cream) !important;
 }
 
@@ -84,71 +81,88 @@ html[data-cruises-experience] .public-site > .owo-footer,
   overflow: hidden;
 }
 
-/* Empty animation runway — sole cream dome surface (no duplicate layer) */
+/* Empty animation runway — fixed height so dome math matches Homepage 2 */
 .cruises-scroll-route [data-cruises-transition] .pt-sheet.cruises-sheet-runway {
-  left: 0 !important;
-  right: 0 !important;
-  width: 100% !important;
-  max-width: none !important;
   height: 100svh !important;
   min-height: 100svh !important;
   max-height: 100svh !important;
   overflow: hidden !important;
-  background-color: var(--cruises-cream) !important;
   pointer-events: none;
   border-bottom-left-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
 }
 
-.cruises-scroll-route [data-cruises-transition] .cruises-sheet-runway .pt-sheet__rise-cap {
-  width: 100%;
-  min-height: 0 !important;
-  background-color: var(--cruises-cream) !important;
-}
-
-/* Title-only overlay — transparent, no radius (sheet owns the dome shape) */
-.cruises-scroll-route [data-cruises-transition] .cruises-reveal-facade {
+.cruises-scroll-route [data-cruises-transition] .cruises-sheet-surface {
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
-  z-index: 12;
+  z-index: 11;
   width: 100%;
   margin: 0;
   padding: 0;
-  background: transparent !important;
+  min-height: 250vh;
+  background-color: var(--cruises-cream) !important;
   pointer-events: none;
-  overflow: visible;
-  border-radius: 0 !important;
+  overflow: hidden;
+  overflow-anchor: none;
+  will-change: auto;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
 }
 
-.cruises-scroll-route [data-cruises-transition] .cruises-reveal-facade .pt-sheet__landing {
-  background: transparent !important;
+.cruises-scroll-route
+  [data-cruises-transition].hathor-page-scroll--content-active
+  .cruises-sheet-surface {
+  overflow: visible;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
 }
 
 .cruises-scroll-route
   [data-cruises-transition].hathor-page-scroll--past-pin
-  .cruises-reveal-facade {
+  .cruises-sheet-surface {
   display: none !important;
   visibility: hidden !important;
 }
 
 .cruises-scroll-route
   [data-cruises-transition].hathor-page-scroll--past-pin
-  .pt-sheet.cruises-sheet-runway {
+  .pt-sheet.cruises-sheet-runway,
+.cruises-scroll-route
+  [data-cruises-transition].hathor-page-scroll--past-pin
+  .cruises-sheet-surface {
   border-top-left-radius: 0 !important;
   border-top-right-radius: 0 !important;
 }
 
 body.has-page-scroll-transition:has(.cruises-scroll-route)
   [data-page-transition]:not([data-test-scroll-reveal])
-  .pt-sheet.cruises-sheet-runway,
+  .pt-stage,
+body.has-page-scroll-transition:has(.cruises-scroll-route)
+  [data-page-transition]:not([data-test-scroll-reveal])
+  .pt-sheet,
+body.has-page-scroll-transition:has(.cruises-scroll-route)
+  [data-page-transition]:not([data-test-scroll-reveal])
+  .cruises-sheet-surface,
 body.has-page-scroll-transition:has(.cruises-scroll-route)
   .cruises-content-layer
   .pt-sheet__filters,
 body.has-page-scroll-transition:has(.cruises-scroll-route)
   .cruises-content-layer
   .pt-sheet__landing {
+  background-color: var(--cruises-cream) !important;
+}
+
+.cruises-scroll-route [data-cruises-transition] .pt-sheet,
+.cruises-scroll-route [data-cruises-transition] .pt-sheet__rise-cap,
+.cruises-scroll-route [data-cruises-transition] .cruises-sheet-surface .pt-sheet__landing {
+  background-color: var(--cruises-cream) !important;
+}
+
+.cruises-scroll-route [data-cruises-transition] .cruises-sheet-runway .pt-sheet__rise-cap {
+  width: 100%;
+  min-height: 0 !important;
   background-color: var(--cruises-cream) !important;
 }
 
