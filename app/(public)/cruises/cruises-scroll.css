@@ -115,9 +115,17 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   pointer-events: auto;
   overflow: hidden;
   overflow-anchor: none;
-  will-change: transform, border-radius;
+  will-change: auto;
   border-bottom-left-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
+}
+
+.cruises-scroll-route
+  [data-cruises-transition].hathor-page-scroll--content-active
+  .cruises-sheet-follower {
+  overflow: visible;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
 }
 
 .cruises-scroll-route
@@ -139,7 +147,40 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   border-top-right-radius: 0 !important;
 }
 
-.cruises-scroll-route [data-cruises-transition] .pt-stage,
+.cruises-scroll-route [data-cruises-transition] .cruises-sheet-follower .page-layout__grid {
+  isolation: isolate;
+  transform: translateZ(0);
+}
+
+/* Cards inside GSAP-transformed follower — static layout, no hover motion */
+.cruises-scroll-route .cruises-sheet-follower .cruises-listing-card,
+.cruises-scroll-route .cruises-sheet-follower .hathor-cruise-card {
+  contain: layout style paint;
+  transition: none !important;
+  transform: none !important;
+  will-change: auto;
+}
+
+.cruises-scroll-route .cruises-sheet-follower .scroll-reveal,
+.cruises-scroll-route .cruises-sheet-follower [data-lux-scroll-reveal] {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+  will-change: auto;
+}
+
+.cruises-scroll-route .cruises-sheet-follower .hathor-cruise-card:hover,
+.cruises-scroll-route .cruises-sheet-follower .cruises-listing-card:hover {
+  transform: none !important;
+  box-shadow: none !important;
+  border-color: rgb(182 159 100 / 0.42);
+}
+
+.cruises-scroll-route .cruises-sheet-follower .hathor-cruise-card__image,
+.cruises-scroll-route .cruises-sheet-follower .hathor-cruise-card__image img {
+  transform: none !important;
+  transition: none !important;
+}
 .cruises-scroll-route [data-cruises-transition] .pt-sheet,
 .cruises-scroll-route [data-cruises-transition] .pt-sheet__rise-cap,
 .cruises-scroll-route [data-cruises-transition] .pt-sheet__content {

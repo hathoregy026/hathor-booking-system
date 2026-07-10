@@ -76,7 +76,7 @@ function setupSmoothScroll() {
   }
 
   const lenis = new Lenis({
-    duration: 2.1,
+    duration: 1,
     easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     smoothWheel: true,
     syncTouch: false,
@@ -121,6 +121,8 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
 
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
+    let lastFollowerY = Number.NaN;
+    let lastFollowerRadius = "";
     const smoothScroll = setupSmoothScroll();
 
     function buildMaskStrips() {
@@ -256,15 +258,38 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       if (!followerEl) return;
       if (trigger.classList.contains("hathor-page-scroll--past-pin")) return;
 
+      const revealP = getRevealProgress(scrollProgress);
       const scrolledPx = scrollProgress * getTotalPinDistance();
       const revealDist = getRevealDistance();
       const tailBlendStart = revealDist * TAIL_BLEND_START;
       const tailScroll = Math.max(0, scrolledPx - tailBlendStart);
+      const y = Math.round(sheetY - tailScroll);
+      const radiusKey =
+        revealP < 0.98 ? String(radius) : "0";
+
+      trigger.classList.toggle(
+        "hathor-page-scroll--content-active",
+        revealP >= 0.995,
+      );
+
+      if (y === lastFollowerY && radiusKey === lastFollowerRadius) return;
+
+      lastFollowerY = y;
+      lastFollowerRadius = radiusKey;
+
+      if (revealP < 0.98) {
+        gsap.set(followerEl, {
+          y,
+          borderTopLeftRadius: radius,
+          borderTopRightRadius: radius,
+        });
+        return;
+      }
 
       gsap.set(followerEl, {
-        y: sheetY - tailScroll,
-        borderTopLeftRadius: radius,
-        borderTopRightRadius: radius,
+        y,
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 0,
       });
     }
 
@@ -336,30 +361,12 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     resizeObserver.observe(stageEl);
     resizeObserver.observe(mask);
 
-    let followerResizeTimer: ReturnType<typeof setTimeout> | null = null;
-    let lastFollowerHeight = 0;
-    const followerObserver = followerEl
-      ? new ResizeObserver(() => {
-          const nextHeight = followerEl.scrollHeight;
-          if (Math.abs(nextHeight - lastFollowerHeight) < 12) return;
-          lastFollowerHeight = nextHeight;
-          if (followerResizeTimer) clearTimeout(followerResizeTimer);
-          followerResizeTimer = setTimeout(() => ScrollTrigger.refresh(), 400);
-        })
-      : null;
-    if (followerEl) {
-      lastFollowerHeight = followerEl.scrollHeight;
-      followerObserver?.observe(followerEl);
-    }
-
     ScrollTrigger.refresh();
 
     return () => {
       window.removeEventListener("resize", onResize);
       window.visualViewport?.removeEventListener("resize", onResize);
       resizeObserver.disconnect();
-      followerObserver?.disconnect();
-      if (followerResizeTimer) clearTimeout(followerResizeTimer);
       if (resizeTimer) clearTimeout(resizeTimer);
       if (smoothScroll) {
         gsap.ticker.remove(smoothScroll.ticker);
@@ -374,6 +381,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       trigger.classList.remove(
         "hathor-page-scroll--past-pin",
         "hathor-page-scroll--media-gone",
+        "hathor-page-scroll--content-active",
       );
       document.body.classList.remove("has-page-scroll-transition");
       document.documentElement.classList.remove("has-page-scroll-transition");
