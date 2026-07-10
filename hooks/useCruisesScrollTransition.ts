@@ -1,6 +1,5 @@
 /**
- * Cruises scroll engine — pin theater for mask/dome reveal only.
- * Listings live in .cruises-content-section (normal document flow, no GSAP y).
+ * Cruises scroll engine — Homepage 2 mask/dome timing with listings tail-scroll.
  */
 "use client";
 
@@ -26,6 +25,8 @@ export const CRUISES_PIN_VH = 4.2;
 export const CRUISES_RISE_END = 0.7;
 /** Pin travel in viewport heights — dome rise completes at this distance. */
 export const CRUISES_PIN_DISTANCE_VH = CRUISES_PIN_VH * CRUISES_RISE_END;
+/** Blend listings scroll before dome rise ends — avoids frozen handoff. */
+const TAIL_BLEND_START = 0.88;
 const SCRUB = true;
 
 type Strip = { el: HTMLDivElement; colW: number; slatW: number };
@@ -122,6 +123,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
     let lastFollowerY = Number.NaN;
     let lastFollowerRadius = "";
+    let lastFollowerScrollTop = -1;
     let smoothScroll = setupSmoothScroll();
 
     function teardownSmoothScroll() {
@@ -175,6 +177,20 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
 
     function getRevealDistance() {
       return window.innerHeight * CRUISES_PIN_DISTANCE_VH;
+    }
+
+    function getContentScrollDistance() {
+      if (!followerEl) return 0;
+      return Math.max(0, followerEl.scrollHeight - stageEl.offsetHeight);
+    }
+
+    function getTotalPinDistance() {
+      return getRevealDistance() + getContentScrollDistance();
+    }
+
+    function getRevealProgress(scrollProgress: number) {
+      const revealShare = getRevealDistance() / Math.max(getTotalPinDistance(), 1);
+      return clamp(scrollProgress / revealShare, 0, 1);
     }
 
     function getDomeRadii() {
@@ -231,6 +247,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       const { start: rStart, end: rEnd } = getDomeRadii();
 
       const riseT = clamp(p, 0, 1);
+      /* Linear sheet travel — matches wheel speed; dome/mask keep eased timing. */
       const y = startY * (1 - riseT);
       const easedRiseT = easeOutCubic(riseT);
       const radius = rEnd + (rStart - rEnd) * (1 - easedRiseT);
@@ -250,11 +267,50 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       return { sheetY: y, radius };
     }
 
-    function applyFollower(sheetY: number, radius: number | string, revealP: number) {
+    function applyFollower(scrollProgress: number, sheetY: number, radius: number | string) {
       if (!followerEl) return;
       if (trigger.classList.contains("hathor-page-scroll--past-pin")) return;
 
-      const y = Math.round(sheetY);
+      const revealP = getRevealProgress(scrollProgress);
+      const scrolledPx = scrollProgress * getTotalPinDistance();
+      const revealDist = getRevealDistance();
+      const tailBlendStart = revealDist * TAIL_BLEND_START;
+      const tailScroll = Math.max(0, scrolledPx - tailBlendStart);
+      const contentActive = revealP >= 0.995;
+
+      trigger.classList.toggle(
+        "hathor-page-scroll--content-active",
+        contentActive,
+      );
+
+      if (contentActive) {
+        teardownSmoothScroll();
+        const scrollTop = Math.round(tailScroll);
+        if (
+          lastFollowerY === 0 &&
+          lastFollowerScrollTop === scrollTop &&
+          lastFollowerRadius === "0"
+        ) {
+          return;
+        }
+
+        gsap.set(followerEl, {
+          y: 0,
+          borderTopLeftRadius: 0,
+          borderTopRightRadius: 0,
+        });
+        followerEl.scrollTop = scrollTop;
+        lastFollowerY = 0;
+        lastFollowerScrollTop = scrollTop;
+        lastFollowerRadius = "0";
+        return;
+      }
+
+      restoreSmoothScroll();
+      followerEl.scrollTop = 0;
+      lastFollowerScrollTop = 0;
+
+      const y = Math.round(sheetY - tailScroll);
       const radiusKey = revealP < 0.98 ? String(radius) : "0";
 
       if (y === lastFollowerY && radiusKey === lastFollowerRadius) return;
@@ -279,9 +335,9 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     }
 
     function applyFrame(scrollProgress: number) {
-      const revealP = clamp(scrollProgress, 0, 1);
+      const revealP = getRevealProgress(scrollProgress);
       const { sheetY, radius } = applyProgress(revealP);
-      applyFollower(sheetY, radius, revealP);
+      applyFollower(scrollProgress, sheetY, radius);
     }
 
     const ctx = gsap.context(() => {
@@ -295,7 +351,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
           id: `cruises-scroll-${instanceId}`,
           trigger,
           start: "top top",
-          end: () => `+=${getRevealDistance()}`,
+          end: () => `+=${getTotalPinDistance()}`,
           pin: stage,
           pinSpacing: true,
           scrub: SCRUB,
@@ -307,11 +363,9 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
           onLeave: () => {
             trigger.classList.add("hathor-page-scroll--past-pin");
             trigger.classList.add("hathor-page-scroll--media-gone");
-            teardownSmoothScroll();
           },
           onEnterBack: () => {
             trigger.classList.remove("hathor-page-scroll--past-pin");
-            restoreSmoothScroll();
           },
         });
 
@@ -365,6 +419,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       trigger.classList.remove(
         "hathor-page-scroll--past-pin",
         "hathor-page-scroll--media-gone",
+        "hathor-page-scroll--content-active",
       );
       document.body.classList.remove("has-page-scroll-transition");
       document.documentElement.classList.remove("has-page-scroll-transition");
