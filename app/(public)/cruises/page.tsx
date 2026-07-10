@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { CruisesPageContent } from "@/components/pages/CruisesPageContent";
 
+const BACK_LOGO_SRC =
+  "/branding/hathor-logo-behing-the-sheet-egypt-toors-pyramids.svg";
+
 export const metadata: Metadata = {
   title: "Dahabiya Cruises List | Hathor Nile Cruise",
   description:
@@ -13,5 +16,10 @@ export const metadata: Metadata = {
 };
 
 export default function CruisesPage() {
-  return <CruisesPageContent />;
+  return (
+    <>
+      <link rel="preload" href={BACK_LOGO_SRC} as="image" type="image/svg+xml" />
+      <CruisesPageContent />
+    </>
+  );
 }
