@@ -192,11 +192,12 @@ export function useHomePage2ScrollTransition(config: HomePage2ScrollTransitionRe
           seal = easeInOutQuad(mapRange(maskT, sealStart, sealEnd, 0, 1));
         }
 
-        const width = slatW + (colW - slatW) * seal;
+        const fullW = colW + 1;
+        const width = slatW + (fullW - slatW) * seal;
 
         gsap.set(el, {
           rotationY: -90 + open * 90,
-          opacity: open,
+          opacity: open > 0.03 ? 1 : 0,
           width,
         });
       });
