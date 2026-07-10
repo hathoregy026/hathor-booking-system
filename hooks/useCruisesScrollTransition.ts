@@ -122,7 +122,6 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
     let lastFacadeY = Number.NaN;
-    let lastFacadeRadius = "";
     const smoothScroll = setupSmoothScroll();
 
     function buildMaskStrips() {
@@ -239,38 +238,23 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       return { sheetY: y, radius };
     }
 
-    function applyRevealFacade(sheetY: number, radius: number | string, revealP: number) {
+    function applyRevealFacade(sheetY: number, revealP: number) {
       if (!facadeEl) return;
       if (trigger.classList.contains("hathor-page-scroll--past-pin")) return;
 
       const y = Math.round(sheetY);
-      const radiusKey = revealP < 0.98 ? String(radius) : "0";
 
-      if (y === lastFacadeY && radiusKey === lastFacadeRadius) return;
+      if (y === lastFacadeY) return;
 
       lastFacadeY = y;
-      lastFacadeRadius = radiusKey;
 
-      if (revealP < 0.98) {
-        gsap.set(facadeEl, {
-          y,
-          borderTopLeftRadius: radius,
-          borderTopRightRadius: radius,
-        });
-        return;
-      }
-
-      gsap.set(facadeEl, {
-        y,
-        borderTopLeftRadius: 0,
-        borderTopRightRadius: 0,
-      });
+      gsap.set(facadeEl, { y });
     }
 
     function applyFrame(scrollProgress: number) {
       const revealP = clamp(scrollProgress, 0, 1);
       const { sheetY, radius } = applyProgress(revealP);
-      applyRevealFacade(sheetY, radius, revealP);
+      applyRevealFacade(sheetY, revealP);
     }
 
     const ctx = gsap.context(() => {
@@ -297,9 +281,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
             trigger.classList.add("hathor-page-scroll--past-pin");
             trigger.classList.add("hathor-page-scroll--media-gone");
             if (facadeEl) {
-              gsap.set(facadeEl, {
-                clearProps: "transform,borderTopLeftRadius,borderTopRightRadius",
-              });
+              gsap.set(facadeEl, { clearProps: "transform" });
             }
           },
           onEnterBack: () => {
@@ -354,9 +336,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       }
       ctx.revert();
       if (facadeEl) {
-        gsap.set(facadeEl, {
-          clearProps: "transform,borderTopLeftRadius,borderTopRightRadius",
-        });
+        gsap.set(facadeEl, { clearProps: "transform" });
       }
       trigger.classList.remove(
         "hathor-page-scroll--past-pin",

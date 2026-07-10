@@ -63,24 +63,9 @@ html[data-cruises-experience] .public-site > .owo-footer,
 
 .cruises-scroll-route [data-cruises-transition] .pt-stage {
   overflow: hidden !important;
-  background-color: var(--cruises-cream) !important;
-}
-
-body.has-page-scroll-transition:has(.cruises-scroll-route)
-  [data-page-transition]:not([data-test-scroll-reveal])
-  .pt-stage,
-body.has-page-scroll-transition:has(.cruises-scroll-route)
-  [data-page-transition]:not([data-test-scroll-reveal])
-  .pt-sheet,
-body.has-page-scroll-transition:has(.cruises-scroll-route)
-  [data-cruises-transition]
-  .cruises-reveal-facade,
-body.has-page-scroll-transition:has(.cruises-scroll-route)
-  .cruises-content-layer
-  .pt-sheet__filters,
-body.has-page-scroll-transition:has(.cruises-scroll-route)
-  .cruises-content-layer
-  .pt-sheet__landing {
+  height: 100svh !important;
+  min-height: 100svh !important;
+  max-height: 100svh !important;
   background-color: var(--cruises-cream) !important;
 }
 
@@ -89,6 +74,7 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   .pt-stage {
   height: auto !important;
   min-height: 100svh;
+  max-height: none !important;
   overflow: visible !important;
   z-index: 0 !important;
   pointer-events: none;
@@ -98,8 +84,12 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   overflow: hidden;
 }
 
-/* Empty animation runway — fixed height, dome math untouched */
+/* Empty animation runway — sole cream dome surface (no duplicate layer) */
 .cruises-scroll-route [data-cruises-transition] .pt-sheet.cruises-sheet-runway {
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
   height: 100svh !important;
   min-height: 100svh !important;
   max-height: 100svh !important;
@@ -116,21 +106,24 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   background-color: var(--cruises-cream) !important;
 }
 
-/* Reveal-only title façade — synced to sheet during pin, not real content */
+/* Title-only overlay — transparent, no radius (sheet owns the dome shape) */
 .cruises-scroll-route [data-cruises-transition] .cruises-reveal-facade {
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
-  z-index: 11;
+  z-index: 12;
   width: 100%;
   margin: 0;
   padding: 0;
-  background-color: var(--cruises-cream) !important;
+  background: transparent !important;
   pointer-events: none;
-  overflow: hidden;
-  border-bottom-left-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
+  overflow: visible;
+  border-radius: 0 !important;
+}
+
+.cruises-scroll-route [data-cruises-transition] .cruises-reveal-facade .pt-sheet__landing {
+  background: transparent !important;
 }
 
 .cruises-scroll-route
@@ -142,12 +135,21 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
 
 .cruises-scroll-route
   [data-cruises-transition].hathor-page-scroll--past-pin
-  .pt-sheet.cruises-sheet-runway,
-.cruises-scroll-route
-  [data-cruises-transition].hathor-page-scroll--past-pin
-  .cruises-reveal-facade {
+  .pt-sheet.cruises-sheet-runway {
   border-top-left-radius: 0 !important;
   border-top-right-radius: 0 !important;
+}
+
+body.has-page-scroll-transition:has(.cruises-scroll-route)
+  [data-page-transition]:not([data-test-scroll-reveal])
+  .pt-sheet.cruises-sheet-runway,
+body.has-page-scroll-transition:has(.cruises-scroll-route)
+  .cruises-content-layer
+  .pt-sheet__filters,
+body.has-page-scroll-transition:has(.cruises-scroll-route)
+  .cruises-content-layer
+  .pt-sheet__landing {
+  background-color: var(--cruises-cream) !important;
 }
 
 /* Content layer — below pin theater until reveal completes */
@@ -289,6 +291,13 @@ body.has-page-scroll-transition:has(.cruises-scroll-route) .pin-spacer {
 
 .cruises-footer .owo-footer__wordmark {
   display: none;
+}
+
+@media (min-width: 1025px) {
+  .cruises-scroll-route [data-cruises-transition] {
+    --pt-dome-r-start: 1250px;
+    --pt-dome-r-end: 0px !important;
+  }
 }
 
 @media (max-width: 1024px) {
