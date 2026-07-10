@@ -27,7 +27,7 @@ export function useHomePage2PinHandoff() {
       const top = rootEl.getBoundingClientRect().top + window.scrollY;
       const pinProgress = Math.max(0, (window.scrollY - top) / (vh * PIN_VH));
 
-      if (pinProgress >= 0.94) {
+      if (pinProgress >= 0.88) {
         gsap.set(sheetEl, { y: 0 });
       }
     }

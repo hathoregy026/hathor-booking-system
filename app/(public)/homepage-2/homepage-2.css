@@ -474,7 +474,7 @@ html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-stag
   left: 0;
   right: 0;
   bottom: 0;
-  height: 45vh;
+  height: 55vh;
   background-color: #f4f1ea;
   z-index: 9;
   pointer-events: none;
@@ -503,7 +503,7 @@ html[data-homepage2-experience] .public-site > .owo-footer:not(.homepage-2-foote
   margin: 0;
   padding: 0;
   background-color: #f4f1ea;
-  min-height: 0;
+  min-height: 50vh;
 }
 
 .homepage-2-dome-content {
@@ -523,6 +523,7 @@ html[data-homepage2-experience] .public-site > .owo-footer:not(.homepage-2-foote
   flex-shrink: 0;
   width: 100%;
   margin: 0;
+  margin-top: auto;
   padding: 0;
   background-color: #f4f1ea;
 }
