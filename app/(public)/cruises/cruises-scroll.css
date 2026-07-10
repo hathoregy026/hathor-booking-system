@@ -97,7 +97,6 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   min-height: 100svh !important;
   max-height: 100svh !important;
   overflow: hidden !important;
-  background-color: transparent !important;
   pointer-events: none;
   border-bottom-left-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
@@ -233,10 +232,18 @@ body.has-page-scroll-transition:has(.cruises-scroll-route) .pin-spacer {
   pointer-events: auto;
 }
 
-/* After the pin completes, hero + giant logo must not bleed over listings */
 .cruises-scroll-route
   [data-cruises-transition].hathor-page-scroll--media-gone
-  .pt-hero,
+  .pt-hero__media,
+.cruises-scroll-route
+  [data-cruises-transition].hathor-page-scroll--media-gone
+  .pt-hero__overlay {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* After pin only — hide full hero stack (mask is done by then) */
 .cruises-scroll-route
   [data-cruises-transition].hathor-page-scroll--past-pin
   .pt-hero {

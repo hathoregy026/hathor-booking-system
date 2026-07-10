@@ -84,8 +84,7 @@ export function CruisesScrollReveal({
       );
 
       const inHeroZone = pinProgress < 0.12;
-      /* Hide hero photo as soon as the cream sheet rises — stops corner “ears”. */
-      const hideMedia = !inHeroZone && pinProgress > 0.3;
+      const hideMedia = !inHeroZone && pinProgress > 0.35;
 
       root.classList.toggle("hathor-page-scroll--media-gone", hideMedia);
     };

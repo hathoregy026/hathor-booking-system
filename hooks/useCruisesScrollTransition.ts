@@ -1,6 +1,5 @@
 /**
  * Cruises scroll engine — Homepage 2 mask/dome timing with listings tail-scroll.
- * Sheet + follower share one scrubbed timeline for uniform scroll speed.
  */
 "use client";
 
@@ -26,6 +25,7 @@ export const CRUISES_PIN_VH = 4.2;
 export const CRUISES_RISE_END = 0.7;
 /** Pin travel in viewport heights — dome rise completes at this distance. */
 export const CRUISES_PIN_DISTANCE_VH = CRUISES_PIN_VH * CRUISES_RISE_END;
+const SCRUB = 0.55;
 
 type Strip = { el: HTMLDivElement; colW: number; slatW: number };
 
@@ -171,6 +171,11 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       return getRevealDistance() + getContentScrollDistance();
     }
 
+    function getRevealProgress(scrollProgress: number) {
+      const revealShare = getRevealDistance() / Math.max(getTotalPinDistance(), 1);
+      return clamp(scrollProgress / revealShare, 0, 1);
+    }
+
     function getDomeRadii() {
       const styles = getComputedStyle(trigger);
       return {
@@ -224,12 +229,9 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       const startY = sheetH - peek;
       const { start: rStart, end: rEnd } = getDomeRadii();
 
-      /* Linear rise — scroll pixels map 1:1 to sheet travel (no frozen tail). */
-      const riseT = clamp(p, 0, 1);
-      const y = startY * (1 - riseT);
-
-      const radiusProgress = easeOutCubic(mapRange(riseT, 0.04, 0.42, 0, 1));
-      const radius = rEnd + (rStart - rEnd) * (1 - radiusProgress);
+      const easedRiseT = easeOutCubic(p);
+      const y = startY * (1 - easedRiseT);
+      const radius = rEnd + (rStart - rEnd) * (1 - easedRiseT);
 
       gsap.set(sheetEl, {
         y,
@@ -237,38 +239,33 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
         borderTopRightRadius: radius,
       });
 
-      applyMaskReveal(riseT);
+      applyMaskReveal(p);
 
       if (heroCopy) {
-        gsap.set(heroCopy, { opacity: mapRange(riseT, 0.35, 0.75, 1, 0) });
+        gsap.set(heroCopy, { opacity: mapRange(easedRiseT, 0.35, 0.75, 1, 0) });
       }
 
       return { sheetY: y, radius };
     }
 
-    function applyFollower(scrolledPx: number, sheetY: number, radius: number) {
+    function applyFollower(scrollProgress: number, sheetY: number, radius: number | string) {
       if (!followerEl) return;
+      if (trigger.classList.contains("hathor-page-scroll--past-pin")) return;
 
-      if (trigger.classList.contains("hathor-page-scroll--past-pin")) {
-        gsap.set(followerEl, {
-          clearProps: "transform,borderTopLeftRadius,borderTopRightRadius",
-        });
-        return;
-      }
-
-      const contentScroll = Math.max(0, scrolledPx - getRevealDistance());
+      const scrolledPx = scrollProgress * getTotalPinDistance();
+      const tailScroll = Math.max(0, scrolledPx - getRevealDistance());
 
       gsap.set(followerEl, {
-        y: sheetY - contentScroll,
+        y: sheetY - tailScroll,
         borderTopLeftRadius: radius,
         borderTopRightRadius: radius,
       });
     }
 
-    function applyScrolledPx(scrolledPx: number) {
-      const revealP = clamp(scrolledPx / getRevealDistance(), 0, 1);
+    function applyFrame(scrollProgress: number) {
+      const revealP = getRevealProgress(scrollProgress);
       const { sheetY, radius } = applyProgress(revealP);
-      applyFollower(scrolledPx, sheetY, radius);
+      applyFollower(scrollProgress, sheetY, radius);
     }
 
     const ctx = gsap.context(() => {
@@ -276,7 +273,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
 
       const setup = () => {
         if (!buildMaskStrips()) return false;
-        applyScrolledPx(0);
+        applyFrame(0);
 
         ScrollTrigger.create({
           id: `cruises-scroll-${instanceId}`,
@@ -285,16 +282,15 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
           end: () => `+=${getTotalPinDistance()}`,
           pin: stage,
           pinSpacing: true,
-          scrub: false,
+          scrub: SCRUB,
           invalidateOnRefresh: true,
           anticipatePin: 1,
           onUpdate: (self) => {
-            applyScrolledPx(self.progress * getTotalPinDistance());
+            applyFrame(self.progress);
           },
           onLeave: () => {
             trigger.classList.add("hathor-page-scroll--past-pin");
             trigger.classList.add("hathor-page-scroll--media-gone");
-            applyFollower(getTotalPinDistance(), 0, 0);
           },
           onEnterBack: () => {
             trigger.classList.remove("hathor-page-scroll--past-pin");
@@ -316,12 +312,12 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       if (resizeTimer) clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
         const st = ScrollTrigger.getById(`cruises-scroll-${instanceId}`);
-        const scrolledPx = (st?.progress ?? 0) * getTotalPinDistance();
+        const progress = st?.progress ?? 0;
 
         releasePinWidth();
 
         if (buildMaskStrips()) {
-          applyScrolledPx(scrolledPx);
+          applyFrame(progress);
         }
         ScrollTrigger.refresh();
       }, 150);
@@ -338,9 +334,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     const followerObserver = followerEl
       ? new ResizeObserver(() => {
           if (followerResizeTimer) clearTimeout(followerResizeTimer);
-          followerResizeTimer = setTimeout(() => {
-            ScrollTrigger.refresh();
-          }, 400);
+          followerResizeTimer = setTimeout(() => ScrollTrigger.refresh(), 400);
         })
       : null;
     followerObserver?.observe(followerEl!);
@@ -359,6 +353,11 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
         smoothScroll.lenis.destroy();
       }
       ctx.revert();
+      if (followerEl) {
+        gsap.set(followerEl, {
+          clearProps: "transform,borderTopLeftRadius,borderTopRightRadius",
+        });
+      }
       trigger.classList.remove(
         "hathor-page-scroll--past-pin",
         "hathor-page-scroll--media-gone",
