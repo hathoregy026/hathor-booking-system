@@ -137,6 +137,8 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   .cruises-sheet-follower {
   position: relative;
   top: auto;
+  height: auto !important;
+  max-height: none !important;
   will-change: auto;
   overflow: visible;
 }

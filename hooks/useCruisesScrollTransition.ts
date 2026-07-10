@@ -1,5 +1,6 @@
 /**
- * Cruises scroll engine — Homepage 2 mask/dome timing with listings tail-scroll.
+ * Cruises scroll engine — empty sheet runway + synced follower.
+ * Reveal: follower rides the sheet. Browse: follower frozen, internal scroll.
  */
 "use client";
 
@@ -25,8 +26,6 @@ export const CRUISES_PIN_VH = 4.2;
 export const CRUISES_RISE_END = 0.7;
 /** Pin travel in viewport heights — dome rise completes at this distance. */
 export const CRUISES_PIN_DISTANCE_VH = CRUISES_PIN_VH * CRUISES_RISE_END;
-/** Blend listings scroll before dome rise ends — avoids frozen handoff. */
-const TAIL_BLEND_START = 0.88;
 const SCRUB = true;
 
 type Strip = { el: HTMLDivElement; colW: number; slatW: number };
@@ -267,25 +266,35 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       return { sheetY: y, radius };
     }
 
+    function getBrowsingScrollTop(scrollProgress: number) {
+      if (!followerEl) return 0;
+      const scrolledPx = scrollProgress * getTotalPinDistance();
+      const contentPx = Math.max(0, scrolledPx - getRevealDistance());
+      const maxScroll = Math.max(
+        0,
+        followerEl.scrollHeight - followerEl.clientHeight,
+      );
+      return Math.round(Math.min(contentPx, maxScroll));
+    }
+
+    function isBrowsingPhase(scrollProgress: number) {
+      const revealShare =
+        getRevealDistance() / Math.max(getTotalPinDistance(), 1);
+      return scrollProgress >= revealShare - 0.0001;
+    }
+
     function applyFollower(scrollProgress: number, sheetY: number, radius: number | string) {
       if (!followerEl) return;
       if (trigger.classList.contains("hathor-page-scroll--past-pin")) return;
 
       const revealP = getRevealProgress(scrollProgress);
-      const scrolledPx = scrollProgress * getTotalPinDistance();
-      const revealDist = getRevealDistance();
-      const tailBlendStart = revealDist * TAIL_BLEND_START;
-      const tailScroll = Math.max(0, scrolledPx - tailBlendStart);
-      const contentActive = revealP >= 0.995;
+      const browsing = isBrowsingPhase(scrollProgress);
 
-      trigger.classList.toggle(
-        "hathor-page-scroll--content-active",
-        contentActive,
-      );
+      trigger.classList.toggle("hathor-page-scroll--content-active", browsing);
 
-      if (contentActive) {
+      if (browsing) {
         teardownSmoothScroll();
-        const scrollTop = Math.round(tailScroll);
+        const scrollTop = getBrowsingScrollTop(scrollProgress);
         if (
           lastFollowerY === 0 &&
           lastFollowerScrollTop === scrollTop &&
@@ -310,7 +319,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       followerEl.scrollTop = 0;
       lastFollowerScrollTop = 0;
 
-      const y = Math.round(sheetY - tailScroll);
+      const y = Math.round(sheetY);
       const radiusKey = revealP < 0.98 ? String(radius) : "0";
 
       if (y === lastFollowerY && radiusKey === lastFollowerRadius) return;
@@ -363,6 +372,18 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
           onLeave: () => {
             trigger.classList.add("hathor-page-scroll--past-pin");
             trigger.classList.add("hathor-page-scroll--media-gone");
+            if (followerEl) {
+              const maxScroll = Math.max(
+                0,
+                followerEl.scrollHeight - followerEl.clientHeight,
+              );
+              followerEl.scrollTop = maxScroll;
+              gsap.set(followerEl, {
+                borderTopLeftRadius: 0,
+                borderTopRightRadius: 0,
+                clearProps: "transform",
+              });
+            }
           },
           onEnterBack: () => {
             trigger.classList.remove("hathor-page-scroll--past-pin");
@@ -401,6 +422,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     const resizeObserver = new ResizeObserver(() => onResize());
     resizeObserver.observe(stageEl);
     resizeObserver.observe(mask);
+    if (followerEl) resizeObserver.observe(followerEl);
 
     ScrollTrigger.refresh();
 

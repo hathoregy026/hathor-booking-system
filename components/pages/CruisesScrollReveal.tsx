@@ -37,8 +37,9 @@ export type CruisesScrollRevealProps = {
 };
 
 /**
- * Empty 100svh sheet runway for Homepage 2 dome math.
- * Listings in .cruises-sheet-follower use PageScrollTransition rise travel.
+ * Empty 100svh sheet runway for dome math.
+ * Content lives in .cruises-sheet-follower — synced during reveal,
+ * frozen with internal scroll once the dome is up.
  */
 export function CruisesScrollReveal({
   heroTitle,
