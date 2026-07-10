@@ -1,6 +1,6 @@
 /**
  * Cruises scroll engine — empty sheet runway + synced follower.
- * Reveal: follower rides the sheet. Browse: follower frozen, internal scroll.
+ * Reveal: follower rides the sheet. Listings tail-scroll blends before dome ends.
  */
 "use client";
 
@@ -26,6 +26,8 @@ export const CRUISES_PIN_VH = 4.2;
 export const CRUISES_RISE_END = 0.7;
 /** Pin travel in viewport heights — dome rise completes at this distance. */
 export const CRUISES_PIN_DISTANCE_VH = CRUISES_PIN_VH * CRUISES_RISE_END;
+/** Blend listings scroll before dome rise ends — keeps wheel speed continuous. */
+const TAIL_BLEND_START = 0.88;
 const SCRUB = true;
 
 type Strip = { el: HTMLDivElement; colW: number; slatW: number };
@@ -122,20 +124,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
     let lastFollowerY = Number.NaN;
     let lastFollowerRadius = "";
-    let lastFollowerScrollTop = -1;
-    let smoothScroll = setupSmoothScroll();
-
-    function teardownSmoothScroll() {
-      if (!smoothScroll) return;
-      gsap.ticker.remove(smoothScroll.ticker);
-      smoothScroll.lenis.destroy();
-      smoothScroll = null;
-    }
-
-    function restoreSmoothScroll() {
-      if (smoothScroll) return;
-      smoothScroll = setupSmoothScroll();
-    }
+    const smoothScroll = setupSmoothScroll();
 
     function buildMaskStrips() {
       const n = stripCount();
@@ -246,7 +235,6 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       const { start: rStart, end: rEnd } = getDomeRadii();
 
       const riseT = clamp(p, 0, 1);
-      /* Linear sheet travel — matches wheel speed; dome/mask keep eased timing. */
       const y = startY * (1 - riseT);
       const easedRiseT = easeOutCubic(riseT);
       const radius = rEnd + (rStart - rEnd) * (1 - easedRiseT);
@@ -266,61 +254,22 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       return { sheetY: y, radius };
     }
 
-    function getBrowsingScrollTop(scrollProgress: number) {
-      if (!followerEl) return 0;
-      const scrolledPx = scrollProgress * getTotalPinDistance();
-      const contentPx = Math.max(0, scrolledPx - getRevealDistance());
-      const maxScroll = Math.max(
-        0,
-        followerEl.scrollHeight - followerEl.clientHeight,
-      );
-      return Math.round(Math.min(contentPx, maxScroll));
-    }
-
-    function isBrowsingPhase(scrollProgress: number) {
-      const revealShare =
-        getRevealDistance() / Math.max(getTotalPinDistance(), 1);
-      return scrollProgress >= revealShare - 0.0001;
-    }
-
     function applyFollower(scrollProgress: number, sheetY: number, radius: number | string) {
       if (!followerEl) return;
       if (trigger.classList.contains("hathor-page-scroll--past-pin")) return;
 
       const revealP = getRevealProgress(scrollProgress);
-      const browsing = isBrowsingPhase(scrollProgress);
-
-      trigger.classList.toggle("hathor-page-scroll--content-active", browsing);
-
-      if (browsing) {
-        teardownSmoothScroll();
-        const scrollTop = getBrowsingScrollTop(scrollProgress);
-        if (
-          lastFollowerY === 0 &&
-          lastFollowerScrollTop === scrollTop &&
-          lastFollowerRadius === "0"
-        ) {
-          return;
-        }
-
-        gsap.set(followerEl, {
-          y: 0,
-          borderTopLeftRadius: 0,
-          borderTopRightRadius: 0,
-        });
-        followerEl.scrollTop = scrollTop;
-        lastFollowerY = 0;
-        lastFollowerScrollTop = scrollTop;
-        lastFollowerRadius = "0";
-        return;
-      }
-
-      restoreSmoothScroll();
-      followerEl.scrollTop = 0;
-      lastFollowerScrollTop = 0;
-
-      const y = Math.round(sheetY);
+      const scrolledPx = scrollProgress * getTotalPinDistance();
+      const revealDist = getRevealDistance();
+      const tailBlendStart = revealDist * TAIL_BLEND_START;
+      const tailScroll = Math.max(0, scrolledPx - tailBlendStart);
+      const y = Math.round(sheetY - tailScroll);
       const radiusKey = revealP < 0.98 ? String(radius) : "0";
+
+      trigger.classList.toggle(
+        "hathor-page-scroll--content-active",
+        revealP >= 0.995,
+      );
 
       if (y === lastFollowerY && radiusKey === lastFollowerRadius) return;
 
@@ -372,18 +321,6 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
           onLeave: () => {
             trigger.classList.add("hathor-page-scroll--past-pin");
             trigger.classList.add("hathor-page-scroll--media-gone");
-            if (followerEl) {
-              const maxScroll = Math.max(
-                0,
-                followerEl.scrollHeight - followerEl.clientHeight,
-              );
-              followerEl.scrollTop = maxScroll;
-              gsap.set(followerEl, {
-                borderTopLeftRadius: 0,
-                borderTopRightRadius: 0,
-                clearProps: "transform",
-              });
-            }
           },
           onEnterBack: () => {
             trigger.classList.remove("hathor-page-scroll--past-pin");
@@ -431,7 +368,10 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       window.visualViewport?.removeEventListener("resize", onResize);
       resizeObserver.disconnect();
       if (resizeTimer) clearTimeout(resizeTimer);
-      teardownSmoothScroll();
+      if (smoothScroll) {
+        gsap.ticker.remove(smoothScroll.ticker);
+        smoothScroll.lenis.destroy();
+      }
       ctx.revert();
       if (followerEl) {
         gsap.set(followerEl, {

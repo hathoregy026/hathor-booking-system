@@ -123,11 +123,7 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
 .cruises-scroll-route
   [data-cruises-transition].hathor-page-scroll--content-active
   .cruises-sheet-follower {
-  height: 100svh;
-  max-height: 100svh;
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
+  overflow: visible;
   border-top-left-radius: 0 !important;
   border-top-right-radius: 0 !important;
 }
@@ -137,8 +133,6 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   .cruises-sheet-follower {
   position: relative;
   top: auto;
-  height: auto !important;
-  max-height: none !important;
   will-change: auto;
   overflow: visible;
 }
@@ -155,14 +149,13 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
 
 .cruises-scroll-route [data-cruises-transition] .cruises-sheet-follower .page-layout__grid {
   isolation: isolate;
-  transform: translateZ(0);
 }
 
-/* Cards inside GSAP-transformed follower — static layout, no hover motion */
+/* Cards in follower — shadow/border hover only, no lift transform */
 .cruises-scroll-route .cruises-sheet-follower .cruises-listing-card,
 .cruises-scroll-route .cruises-sheet-follower .hathor-cruise-card {
   contain: layout style paint;
-  transition: none !important;
+  transition: border-color 0.35s ease, box-shadow 0.35s ease;
   transform: none !important;
   will-change: auto;
 }
@@ -178,8 +171,8 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
 .cruises-scroll-route .cruises-sheet-follower .hathor-cruise-card:hover,
 .cruises-scroll-route .cruises-sheet-follower .cruises-listing-card:hover {
   transform: none !important;
-  box-shadow: none !important;
-  border-color: rgb(182 159 100 / 0.42);
+  border-color: rgb(182 159 100 / 0.35);
+  box-shadow: 0 16px 40px rgb(0 0 0 / 0.14);
 }
 
 .cruises-scroll-route .cruises-sheet-follower .hathor-cruise-card__image,
@@ -187,6 +180,7 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   transform: none !important;
   transition: none !important;
 }
+
 .cruises-scroll-route [data-cruises-transition] .pt-sheet,
 .cruises-scroll-route [data-cruises-transition] .pt-sheet__rise-cap,
 .cruises-scroll-route [data-cruises-transition] .pt-sheet__content {
@@ -224,36 +218,6 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
 .cruises-scroll-route [data-cruises-transition] .cruises-sheet-follower .page-layout__grid,
 .cruises-scroll-route [data-cruises-transition] .cruises-sheet-follower .page-layout__content {
   overflow-anchor: none;
-}
-
-/* Cards inside GSAP-transformed follower — no nested transforms or motion */
-.cruises-scroll-route .cruises-sheet-follower .cruises-listing-card,
-.cruises-scroll-route .cruises-sheet-follower .hathor-cruise-card {
-  contain: layout style paint;
-  transition: border-color 0.35s ease, box-shadow 0.35s ease;
-  transform: none !important;
-  will-change: auto;
-}
-
-.cruises-scroll-route .cruises-sheet-follower .scroll-reveal,
-.cruises-scroll-route .cruises-sheet-follower [data-lux-scroll-reveal] {
-  opacity: 1 !important;
-  transform: none !important;
-  transition: none !important;
-  will-change: auto;
-}
-
-.cruises-scroll-route .cruises-sheet-follower .hathor-cruise-card:hover,
-.cruises-scroll-route .cruises-sheet-follower .cruises-listing-card:hover {
-  transform: none !important;
-  border-color: rgb(182 159 100 / 0.35);
-  box-shadow: 0 16px 40px rgb(0 0 0 / 0.14);
-}
-
-.cruises-scroll-route .cruises-sheet-follower .hathor-cruise-card__image,
-.cruises-scroll-route .cruises-sheet-follower .hathor-cruise-card__image img {
-  transform: none !important;
-  transition: none !important;
 }
 
 body.has-page-scroll-transition:has(.cruises-scroll-route) .pin-spacer {
