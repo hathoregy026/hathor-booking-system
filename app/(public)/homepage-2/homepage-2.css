@@ -433,40 +433,22 @@ html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-shee
   background-color: #f4f1ea !important;
 }
 
-/* Tall cream floor — sheet column through footer seam */
-.homepage-2-sheet-floor {
+/* Cream floor BELOW pinned scroll section — never inside .pt-sheet (test-scroll-reveal pattern) */
+.homepage-2-cream-floor {
   position: relative;
+  z-index: 1;
   display: block;
   width: 100%;
-  min-height: clamp(70rem, 140vh, 100rem);
   margin: 0;
   padding: 0;
   background-color: #f4f1ea;
-}
-
-/* Past-pin only — hero/dome finished; sheet drops transform and flows to footer */
-html[data-homepage2-experience] .homepage-2-root [data-page-transition].hathor-page-scroll--past-pin .pt-stage {
-  overflow: visible !important;
-}
-
-html[data-homepage2-experience] .homepage-2-root [data-page-transition].hathor-page-scroll--past-pin .pt-sheet {
-  position: relative !important;
-  inset: auto !important;
-  top: auto !important;
-  left: auto !important;
-  right: auto !important;
-  bottom: auto !important;
-  transform: none !important;
-  translate: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  min-height: 0 !important;
-  height: auto !important;
-  overflow: visible !important;
+  min-height: clamp(70rem, 140vh, 100rem);
 }
 
 html[data-homepage2-experience] body.has-page-scroll-transition .pin-spacer {
   background-color: #f4f1ea !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 html[data-homepage2-experience] .homepage-2-root {
@@ -485,7 +467,7 @@ html[data-homepage2-experience] .page-transition {
   padding-bottom: 0 !important;
 }
 
-/* Footer giant logo — bottom of sheet column, in front of sheet, footer on top */
+/* Footer giant logo — bottom of cream column, in front of floor, footer on top */
 .homepage-2-footer-logo-stage {
   position: absolute;
   left: 0;

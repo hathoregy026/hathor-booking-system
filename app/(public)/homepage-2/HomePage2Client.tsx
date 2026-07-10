@@ -9,14 +9,15 @@ export function HomePage2Client() {
     <div className="homepage-2-root">
       <HomePage2BookBar />
 
+      {/* Hero + dome pin only — cream column is a sibling below (test-scroll-reveal pattern) */}
       <HomePage2ScrollReveal
         imageName="home-hero-poster"
         imageAlt="Luxury Nile cruise at sunset"
-      >
-        <div className="homepage-2-sheet-floor">
-          <HomePage2FooterGiantLogo />
-        </div>
-      </HomePage2ScrollReveal>
+      />
+
+      <div className="homepage-2-cream-floor">
+        <HomePage2FooterGiantLogo />
+      </div>
     </div>
   );
 }
