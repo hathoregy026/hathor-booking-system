@@ -330,17 +330,22 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
 
       const scrolledPx = scrollProgress * getTotalPinDistance();
       const revealDist = getRevealDistance();
-      const tailBlendStart = revealDist * TAIL_BLEND_START;
-      const tailScroll = Math.max(0, scrolledPx - tailBlendStart);
-      const tailRoom = revealDist * (1 - TAIL_BLEND_START);
+      const revealTailStart = revealDist * TAIL_BLEND_START;
+      const revealTailScroll = Math.max(0, scrolledPx - revealTailStart);
+      const revealTailRoom = revealDist * (1 - TAIL_BLEND_START);
+
+      /* Crossfade during last 12% of dome rise — no upward pull yet. */
       const handoffBlend =
-        tailRoom > 0 && tailScroll > 0
-          ? clamp(tailScroll / tailRoom, 0, 1)
-          : scrolledPx >= revealDist
+        revealP >= TAIL_BLEND_START && revealP < 1
+          ? clamp(revealTailScroll / Math.max(revealTailRoom, 1), 0, 1)
+          : revealP >= 1 || scrolledPx >= revealDist
             ? 1
             : 0;
 
-      const y = Math.round(sheetY - tailScroll);
+      /* After dome completes, scroll listings up with extended pin. */
+      const contentTailScroll =
+        scrolledPx > revealDist ? scrolledPx - revealDist : 0;
+      const y = Math.round(sheetY - contentTailScroll);
       const radiusKey = revealP < 0.98 ? String(radius) : "0";
 
       trigger.classList.toggle(
