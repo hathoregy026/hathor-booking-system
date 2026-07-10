@@ -159,8 +159,6 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
 
     function syncContentHandoff(handoffBlend: number) {
       const contentLayer = getContentLayer();
-      const revealDist = getRevealDistance();
-      const tailRoom = revealDist * (1 - TAIL_BLEND_START);
 
       trigger.style.setProperty("--cruises-handoff-blend", String(handoffBlend));
 
@@ -197,18 +195,6 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
         y: targetY,
         opacity: handoffBlend,
       });
-    }
-
-    function bakeContentLayerPosition() {
-      const contentLayer = getContentLayer();
-      if (!contentLayer) return;
-
-      const currentY = Number(gsap.getProperty(contentLayer, "y")) || 0;
-      if (currentY !== 0) {
-        const margin = parseFloat(getComputedStyle(contentLayer).marginTop) || 0;
-        contentLayer.style.marginTop = `${margin + currentY}px`;
-        gsap.set(contentLayer, { clearProps: "y" });
-      }
     }
 
     function applyMaskReveal(p: number) {
@@ -287,13 +273,12 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     function applyFollower(
       sheetY: number,
       radius: number,
-      tailScroll: number,
       handoffBlend: number,
     ) {
       if (!followerEl) return;
       if (trigger.classList.contains("hathor-page-scroll--past-pin")) return;
 
-      const y = Math.round(sheetY - tailScroll);
+      const y = Math.round(sheetY);
       const radiusKey = String(radius);
 
       if (y === lastFollowerY && radiusKey === lastFollowerRadius) return;
@@ -319,13 +304,12 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
         tailRoom > 0 ? clamp(tailScroll / tailRoom, 0, 1) : scrollProgress >= 1 ? 1 : 0;
 
       const { sheetY, radius } = applyProgress(scrollProgress);
-      applyFollower(sheetY, radius, tailScroll, handoffBlend);
+      applyFollower(sheetY, radius, handoffBlend);
       syncContentHandoff(handoffBlend);
     }
 
     function completeRevealHandoff() {
       syncContentHandoff(1);
-      bakeContentLayerPosition();
 
       trigger.classList.add("hathor-page-scroll--past-pin");
       trigger.classList.add("hathor-page-scroll--media-gone");
@@ -337,7 +321,10 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
 
       const contentLayer = getContentLayer();
       if (contentLayer) {
-        gsap.set(contentLayer, { opacity: 1, clearProps: "transform" });
+        gsap.set(contentLayer, { clearProps: "transform" });
+        contentLayer.style.marginTop =
+          "calc(-100svh + clamp(10rem, 21vh, 13rem))";
+        gsap.set(contentLayer, { opacity: 1 });
       }
 
       gsap.set(sheetEl, {

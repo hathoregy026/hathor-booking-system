@@ -167,6 +167,7 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   .cruises-content-layer {
   visibility: visible;
   opacity: 1;
+  margin-top: calc(-100svh + clamp(10rem, 21vh, 13rem));
   pointer-events: auto;
 }
 
