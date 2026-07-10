@@ -1,6 +1,7 @@
 /**
- * Cruises scroll engine — empty sheet runway + synced follower.
- * Reveal: follower rides the sheet. Listings tail-scroll blends before dome ends.
+ * Cruises scroll engine — animation layer only (hero, mask, empty sheet).
+ * Pin ends at reveal distance. Title façade syncs visually during reveal.
+ * Listings live in .cruises-content-layer (normal scroll, no GSAP).
  */
 "use client";
 
@@ -26,8 +27,6 @@ export const CRUISES_PIN_VH = 4.2;
 export const CRUISES_RISE_END = 0.7;
 /** Pin travel in viewport heights — dome rise completes at this distance. */
 export const CRUISES_PIN_DISTANCE_VH = CRUISES_PIN_VH * CRUISES_RISE_END;
-/** Blend listings scroll before dome rise ends — keeps wheel speed continuous. */
-const TAIL_BLEND_START = 0.88;
 const SCRUB = true;
 
 type Strip = { el: HTMLDivElement; colW: number; slatW: number };
@@ -37,7 +36,7 @@ type CruisesScrollTransitionRefs = {
   stage: RefObject<HTMLElement | null>;
   mask: RefObject<HTMLElement | null>;
   sheet: RefObject<HTMLElement | null>;
-  follower: RefObject<HTMLElement | null>;
+  revealFacade: RefObject<HTMLElement | null>;
   heroCopy: RefObject<HTMLElement | null>;
 };
 
@@ -103,7 +102,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     const stage = config.stage.current;
     const maskEl = config.mask.current;
     const sheet = config.sheet.current;
-    const followerEl = config.follower.current;
+    const facadeEl = config.revealFacade.current;
     const heroCopy = config.heroCopy.current;
 
     if (!root || !stage || !maskEl || !sheet) return;
@@ -122,8 +121,8 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
 
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
-    let lastFollowerY = Number.NaN;
-    let lastFollowerRadius = "";
+    let lastFacadeY = Number.NaN;
+    let lastFacadeRadius = "";
     const smoothScroll = setupSmoothScroll();
 
     function buildMaskStrips() {
@@ -165,20 +164,6 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
 
     function getRevealDistance() {
       return window.innerHeight * CRUISES_PIN_DISTANCE_VH;
-    }
-
-    function getContentScrollDistance() {
-      if (!followerEl) return 0;
-      return Math.max(0, followerEl.scrollHeight - stageEl.offsetHeight);
-    }
-
-    function getTotalPinDistance() {
-      return getRevealDistance() + getContentScrollDistance();
-    }
-
-    function getRevealProgress(scrollProgress: number) {
-      const revealShare = getRevealDistance() / Math.max(getTotalPinDistance(), 1);
-      return clamp(scrollProgress / revealShare, 0, 1);
     }
 
     function getDomeRadii() {
@@ -254,30 +239,20 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       return { sheetY: y, radius };
     }
 
-    function applyFollower(scrollProgress: number, sheetY: number, radius: number | string) {
-      if (!followerEl) return;
+    function applyRevealFacade(sheetY: number, radius: number | string, revealP: number) {
+      if (!facadeEl) return;
       if (trigger.classList.contains("hathor-page-scroll--past-pin")) return;
 
-      const revealP = getRevealProgress(scrollProgress);
-      const scrolledPx = scrollProgress * getTotalPinDistance();
-      const revealDist = getRevealDistance();
-      const tailBlendStart = revealDist * TAIL_BLEND_START;
-      const tailScroll = Math.max(0, scrolledPx - tailBlendStart);
-      const y = Math.round(sheetY - tailScroll);
+      const y = Math.round(sheetY);
       const radiusKey = revealP < 0.98 ? String(radius) : "0";
 
-      trigger.classList.toggle(
-        "hathor-page-scroll--content-active",
-        revealP >= 0.995,
-      );
+      if (y === lastFacadeY && radiusKey === lastFacadeRadius) return;
 
-      if (y === lastFollowerY && radiusKey === lastFollowerRadius) return;
-
-      lastFollowerY = y;
-      lastFollowerRadius = radiusKey;
+      lastFacadeY = y;
+      lastFacadeRadius = radiusKey;
 
       if (revealP < 0.98) {
-        gsap.set(followerEl, {
+        gsap.set(facadeEl, {
           y,
           borderTopLeftRadius: radius,
           borderTopRightRadius: radius,
@@ -285,7 +260,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
         return;
       }
 
-      gsap.set(followerEl, {
+      gsap.set(facadeEl, {
         y,
         borderTopLeftRadius: 0,
         borderTopRightRadius: 0,
@@ -293,9 +268,9 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     }
 
     function applyFrame(scrollProgress: number) {
-      const revealP = getRevealProgress(scrollProgress);
+      const revealP = clamp(scrollProgress, 0, 1);
       const { sheetY, radius } = applyProgress(revealP);
-      applyFollower(scrollProgress, sheetY, radius);
+      applyRevealFacade(sheetY, radius, revealP);
     }
 
     const ctx = gsap.context(() => {
@@ -309,7 +284,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
           id: `cruises-scroll-${instanceId}`,
           trigger,
           start: "top top",
-          end: () => `+=${getTotalPinDistance()}`,
+          end: () => `+=${getRevealDistance()}`,
           pin: stage,
           pinSpacing: true,
           scrub: SCRUB,
@@ -321,6 +296,11 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
           onLeave: () => {
             trigger.classList.add("hathor-page-scroll--past-pin");
             trigger.classList.add("hathor-page-scroll--media-gone");
+            if (facadeEl) {
+              gsap.set(facadeEl, {
+                clearProps: "transform,borderTopLeftRadius,borderTopRightRadius",
+              });
+            }
           },
           onEnterBack: () => {
             trigger.classList.remove("hathor-page-scroll--past-pin");
@@ -359,7 +339,6 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     const resizeObserver = new ResizeObserver(() => onResize());
     resizeObserver.observe(stageEl);
     resizeObserver.observe(mask);
-    if (followerEl) resizeObserver.observe(followerEl);
 
     ScrollTrigger.refresh();
 
@@ -373,15 +352,14 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
         smoothScroll.lenis.destroy();
       }
       ctx.revert();
-      if (followerEl) {
-        gsap.set(followerEl, {
+      if (facadeEl) {
+        gsap.set(facadeEl, {
           clearProps: "transform,borderTopLeftRadius,borderTopRightRadius",
         });
       }
       trigger.classList.remove(
         "hathor-page-scroll--past-pin",
         "hathor-page-scroll--media-gone",
-        "hathor-page-scroll--content-active",
       );
       document.body.classList.remove("has-page-scroll-transition");
       document.documentElement.classList.remove("has-page-scroll-transition");
@@ -393,7 +371,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     config.stage,
     config.mask,
     config.sheet,
-    config.follower,
+    config.revealFacade,
     config.heroCopy,
   ]);
 }

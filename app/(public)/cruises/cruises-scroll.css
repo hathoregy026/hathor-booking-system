@@ -56,6 +56,7 @@ html[data-cruises-experience] .public-site > .owo-footer,
   width: 100% !important;
   max-width: none !important;
   margin: 0 !important;
+  margin-bottom: 0 !important;
 }
 
 .cruises-scroll-route [data-cruises-transition] .pt-stage {
@@ -70,10 +71,13 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   [data-page-transition]:not([data-test-scroll-reveal])
   .pt-sheet,
 body.has-page-scroll-transition:has(.cruises-scroll-route)
-  [data-page-transition]:not([data-test-scroll-reveal])
+  [data-cruises-transition]
+  .cruises-reveal-facade,
+body.has-page-scroll-transition:has(.cruises-scroll-route)
+  .cruises-content-layer
   .pt-sheet__filters,
 body.has-page-scroll-transition:has(.cruises-scroll-route)
-  [data-page-transition]:not([data-test-scroll-reveal])
+  .cruises-content-layer
   .pt-sheet__landing {
   background-color: var(--cruises-cream) !important;
 }
@@ -92,6 +96,7 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   overflow: hidden;
 }
 
+/* Empty animation runway — fixed height, dome math untouched */
 .cruises-scroll-route [data-cruises-transition] .pt-sheet.cruises-sheet-runway {
   height: 100svh !important;
   min-height: 100svh !important;
@@ -102,7 +107,14 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   border-bottom-right-radius: 0 !important;
 }
 
-.cruises-scroll-route [data-cruises-transition] .cruises-sheet-follower {
+.cruises-scroll-route [data-cruises-transition] .cruises-sheet-runway .pt-sheet__rise-cap {
+  width: 100%;
+  min-height: 0 !important;
+  background-color: var(--cruises-cream) !important;
+}
+
+/* Reveal-only title façade — synced to sheet during pin, not real content */
+.cruises-scroll-route [data-cruises-transition] .cruises-reveal-facade {
   position: absolute;
   left: 0;
   right: 0;
@@ -112,29 +124,17 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   margin: 0;
   padding: 0;
   background-color: var(--cruises-cream) !important;
-  pointer-events: auto;
+  pointer-events: none;
   overflow: hidden;
-  overflow-anchor: none;
-  will-change: auto;
   border-bottom-left-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
 }
 
 .cruises-scroll-route
-  [data-cruises-transition].hathor-page-scroll--content-active
-  .cruises-sheet-follower {
-  overflow: visible;
-  border-top-left-radius: 0 !important;
-  border-top-right-radius: 0 !important;
-}
-
-.cruises-scroll-route
   [data-cruises-transition].hathor-page-scroll--past-pin
-  .cruises-sheet-follower {
-  position: relative;
-  top: auto;
-  will-change: auto;
-  overflow: visible;
+  .cruises-reveal-facade {
+  display: none !important;
+  visibility: hidden !important;
 }
 
 .cruises-scroll-route
@@ -142,49 +142,34 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   .pt-sheet.cruises-sheet-runway,
 .cruises-scroll-route
   [data-cruises-transition].hathor-page-scroll--past-pin
-  .cruises-sheet-follower {
+  .cruises-reveal-facade {
   border-top-left-radius: 0 !important;
   border-top-right-radius: 0 !important;
 }
 
-.cruises-scroll-route [data-cruises-transition] .cruises-sheet-follower .page-layout__grid {
-  isolation: isolate;
+/* Content layer — independent document flow, flush below pin theater */
+.cruises-content-layer {
+  position: relative;
+  z-index: 20;
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--cruises-cream);
 }
 
-/* Cards in follower — shadow/border hover only, no lift transform */
-.cruises-scroll-route .cruises-sheet-follower .cruises-listing-card,
-.cruises-scroll-route .cruises-sheet-follower .hathor-cruise-card {
-  contain: layout style paint;
-  transition: border-color 0.35s ease, box-shadow 0.35s ease;
-  transform: none !important;
-  will-change: auto;
-}
-
-.cruises-scroll-route .cruises-sheet-follower .scroll-reveal,
-.cruises-scroll-route .cruises-sheet-follower [data-lux-scroll-reveal] {
-  opacity: 1 !important;
-  transform: none !important;
-  transition: none !important;
-  will-change: auto;
-}
-
-.cruises-scroll-route .cruises-sheet-follower .hathor-cruise-card:hover,
-.cruises-scroll-route .cruises-sheet-follower .cruises-listing-card:hover {
-  transform: none !important;
-  border-color: rgb(182 159 100 / 0.35);
-  box-shadow: 0 16px 40px rgb(0 0 0 / 0.14);
-}
-
-.cruises-scroll-route .cruises-sheet-follower .hathor-cruise-card__image,
-.cruises-scroll-route .cruises-sheet-follower .hathor-cruise-card__image img {
-  transform: none !important;
-  transition: none !important;
-}
-
-.cruises-scroll-route [data-cruises-transition] .pt-sheet,
-.cruises-scroll-route [data-cruises-transition] .pt-sheet__rise-cap,
-.cruises-scroll-route [data-cruises-transition] .pt-sheet__content {
+.cruises-content-layer .pt-sheet__content,
+.cruises-content-layer .pt-sheet__filters,
+.cruises-content-layer .pt-sheet__landing {
   background-color: var(--cruises-cream) !important;
+}
+
+/* Hide real landing during pin — façade shows title on the rising sheet */
+.cruises-scroll-root:has(
+    [data-cruises-transition]:not(.hathor-page-scroll--past-pin)
+  )
+  .cruises-content-layer__landing {
+  visibility: hidden;
 }
 
 .cruises-scroll-route [data-cruises-transition] .pt-stage,
@@ -192,32 +177,6 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
 .cruises-scroll-route [data-cruises-transition] .pt-mask {
   width: 100% !important;
   max-width: none !important;
-}
-
-/* Empty animation runway — fixed height so dome math matches Homepage 2 */
-.cruises-scroll-route [data-cruises-transition] .cruises-sheet-runway .pt-sheet__rise-cap {
-  width: 100%;
-  min-height: 0 !important;
-  background-color: var(--cruises-cream) !important;
-}
-
-/* Follower rise-cap removed in DOM — guard against global min-height */
-.cruises-scroll-route
-  [data-cruises-transition]
-  .cruises-sheet-follower
-  .pt-sheet__rise-cap {
-  display: none !important;
-  min-height: 0 !important;
-}
-
-.cruises-scroll-route [data-cruises-transition] .cruises-sheet-follower .pt-sheet__content {
-  overflow-anchor: none;
-}
-
-.cruises-scroll-route [data-cruises-transition] .cruises-sheet-follower .page-layout__filters,
-.cruises-scroll-route [data-cruises-transition] .cruises-sheet-follower .page-layout__grid,
-.cruises-scroll-route [data-cruises-transition] .cruises-sheet-follower .page-layout__content {
-  overflow-anchor: none;
 }
 
 body.has-page-scroll-transition:has(.cruises-scroll-route) .pin-spacer {
@@ -228,7 +187,6 @@ body.has-page-scroll-transition:has(.cruises-scroll-route) .pin-spacer {
   background-color: var(--cruises-cream) !important;
 }
 
-/* Giant logo — Homepage 2 hero layer */
 .cruises-scroll-route [data-cruises-transition] .cruises-hero__copy {
   position: absolute;
   inset: 0 !important;
@@ -284,7 +242,6 @@ body.has-page-scroll-transition:has(.cruises-scroll-route) .pin-spacer {
   pointer-events: none !important;
 }
 
-/* After pin only — hide full hero stack (mask is done by then) */
 .cruises-scroll-route
   [data-cruises-transition].hathor-page-scroll--past-pin
   .pt-hero {
@@ -293,24 +250,17 @@ body.has-page-scroll-transition:has(.cruises-scroll-route) .pin-spacer {
   pointer-events: none !important;
 }
 
-/* Past pin: transition stack must not block filters/listings */
 .cruises-scroll-route
   [data-cruises-transition].hathor-page-scroll--past-pin {
   pointer-events: none;
 }
 
-.cruises-scroll-route
-  [data-cruises-transition].hathor-page-scroll--past-pin
-  .cruises-sheet-follower
-  .pt-sheet__filters,
-.cruises-scroll-route
-  [data-cruises-transition].hathor-page-scroll--past-pin
-  .cruises-sheet-follower
-  .pt-sheet__content {
+.cruises-content-layer,
+.cruises-content-layer .pt-sheet__filters,
+.cruises-content-layer .pt-sheet__content {
   pointer-events: auto;
 }
 
-/* Footer inside sheet follower */
 .cruises-scroll-route .cruises-column-tail {
   position: relative;
   z-index: 1;
@@ -353,9 +303,6 @@ body.has-page-scroll-transition:has(.cruises-scroll-route) .pin-spacer {
 @media (max-width: 767px) {
   .cruises-scroll-route .cruises-giant-logo {
     width: 96vw;
-  }
-
-  .cruises-scroll-route .cruises-giant-logo {
     top: 37.44%;
   }
 }

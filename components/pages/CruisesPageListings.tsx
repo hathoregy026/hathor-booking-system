@@ -91,7 +91,7 @@ function preservePinnedScrollPosition(scrollY: number) {
 
 function stabilizeListingsLayoutDuringFilterChange(scrollY: number) {
   const content = document.querySelector<HTMLElement>(
-    ".cruises-sheet-follower .page-layout__content",
+    ".cruises-content-layer .page-layout__content",
   );
   if (content) {
     content.style.minHeight = `${content.offsetHeight}px`;
