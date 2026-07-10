@@ -426,6 +426,24 @@ html[data-homepage2-experience] .homepage-2-root .giant-logo-container {
   padding: 0;
 }
 
+/* Match /transition dome geometry without affecting other routes. */
+html[data-homepage2-experience] [data-homepage2-transition] {
+  --pt-dome-r-start: 1250px;
+  --pt-dome-r-end: 0px;
+}
+
+@media (max-width: 768px) {
+  html[data-homepage2-experience] [data-homepage2-transition] {
+    --pt-dome-r-start: 600px;
+  }
+}
+
+@media (max-width: 480px) {
+  html[data-homepage2-experience] [data-homepage2-transition] {
+    --pt-dome-r-start: 300px;
+  }
+}
+
 html[data-homepage2-experience] .homepage-2-root [data-page-transition],
 html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-stage,
 html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-hero,
