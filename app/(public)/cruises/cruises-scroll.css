@@ -96,18 +96,12 @@ html[data-cruises-experience] .public-site > .owo-footer,
 
 .cruises-scroll-route
   [data-cruises-transition].hathor-page-scroll--past-pin
-  .cruises-sheet-follower {
-  position: relative;
-  top: auto;
-  will-change: auto;
-}
-
-.cruises-scroll-route
-  [data-cruises-transition].hathor-page-scroll--past-pin
   .pt-stage {
   height: auto !important;
   min-height: 100svh;
   overflow: visible !important;
+  z-index: 0 !important;
+  pointer-events: none;
 }
 
 .cruises-scroll-route [data-cruises-transition] .cruises-sheet-follower .pt-sheet__content {
@@ -191,16 +185,6 @@ body.has-page-scroll-transition:has(.cruises-scroll-route) .pin-spacer {
   pointer-events: none;
 }
 
-.cruises-scroll-route
-  [data-cruises-transition].hathor-page-scroll--past-pin
-  .pt-stage {
-  z-index: 0 !important;
-  pointer-events: none;
-}
-
-.cruises-scroll-route
-  [data-cruises-transition].hathor-page-scroll--past-pin
-  .cruises-sheet-follower,
 .cruises-scroll-route
   [data-cruises-transition].hathor-page-scroll--past-pin
   .cruises-sheet-follower

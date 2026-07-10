@@ -3,14 +3,17 @@
 import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, type ReactNode } from "react";
 import { useHomePage2GiantLogo } from "@/app/(public)/homepage-2/useHomePage2GiantLogo";
-import { useHomePage2ScrollTransition } from "@/hooks/useHomePage2ScrollTransition";
+import {
+  CRUISES_PIN_DISTANCE_VH,
+  useCruisesScrollTransition,
+} from "@/hooks/useCruisesScrollTransition";
 import { useCruisesSheetFollower } from "@/hooks/useCruisesSheetFollower";
 import {
   refreshPageScrollTransition,
 } from "@/components/pages/pageScrollTransitionEngine";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 
-const PIN_VH = 4.2;
+const PIN_DISTANCE_VH = CRUISES_PIN_DISTANCE_VH;
 
 const BACK_LOGO_SRC =
   "/branding/hathor-logo-behing-the-sheet-egypt-toors-pyramids.svg";
@@ -57,7 +60,7 @@ export function CruisesScrollReveal({
   const heroCopyRef = useRef<HTMLDivElement>(null);
   const giantLogoRef = useRef<HTMLDivElement>(null);
 
-  useHomePage2ScrollTransition({
+  useCruisesScrollTransition({
     root: rootRef,
     stage: stageRef,
     mask: maskRef,
@@ -76,14 +79,15 @@ export function CruisesScrollReveal({
       const vh = window.innerHeight;
       const top = root.getBoundingClientRect().top + window.scrollY;
       const scroll = window.scrollY;
-      const pinProgress = Math.max(0, (scroll - top) / (vh * PIN_VH));
+      const pinProgress = Math.max(
+        0,
+        (scroll - top) / (vh * PIN_DISTANCE_VH),
+      );
 
       const inHeroZone = pinProgress < 0.12;
       const hideMedia = !inHeroZone && pinProgress > 0.82;
-      const pastPin = pinProgress >= 0.92;
 
       root.classList.toggle("hathor-page-scroll--media-gone", hideMedia);
-      root.classList.toggle("hathor-page-scroll--past-pin", pastPin);
     };
 
     syncMediaVisibility();
