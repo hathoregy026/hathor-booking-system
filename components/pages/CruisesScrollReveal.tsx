@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { useHomePage2GiantLogo } from "@/app/(public)/homepage-2/useHomePage2GiantLogo";
 import { useHomePage2ScrollTransition } from "@/hooks/useHomePage2ScrollTransition";
 import {
@@ -14,31 +14,33 @@ const PIN_VH = 4.2;
 const BACK_LOGO_SRC =
   "/branding/hathor-logo-behing-the-sheet-egypt-toors-pyramids.svg";
 
-export type CruisesPageTransitionProps = {
-  title: string;
-  heroTitle?: string;
+function markCruisesScrollReady() {
+  document.documentElement.classList.add("cruises-scroll-ready");
+}
+
+function clearCruisesScrollReady() {
+  document.documentElement.classList.remove("cruises-scroll-ready");
+}
+
+export type CruisesScrollRevealProps = {
+  heroTitle: string;
   subtitle?: string;
   breadcrumb: string;
   imageName: string;
   imageAlt?: string;
-  sheetBelowLanding?: ReactNode;
-  children: ReactNode;
 };
 
 /**
- * Cruises-only: Homepage 2 Venetian engine + giant logo on the pin theater,
- * with the original PageScrollTransition sheet content (landing, filters, listings).
+ * Pin theater only — same empty-sheet runway as Homepage 2 so dome/stripe math stays identical.
+ * Listings live in CruisesPageContent as a sibling section.
  */
-export function CruisesPageTransition({
-  title,
+export function CruisesScrollReveal({
   heroTitle,
   subtitle,
   breadcrumb,
   imageName,
   imageAlt,
-  sheetBelowLanding,
-  children,
-}: CruisesPageTransitionProps) {
+}: CruisesScrollRevealProps) {
   const image = useSiteImage(imageName);
   const rootRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -57,7 +59,7 @@ export function CruisesPageTransition({
 
   useHomePage2GiantLogo(rootRef, giantLogoRef);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const root = rootRef.current;
     if (!root) return;
 
@@ -76,13 +78,36 @@ export function CruisesPageTransition({
     };
 
     syncMediaVisibility();
-    window.addEventListener("scroll", syncMediaVisibility, { passive: true });
-    window.addEventListener("resize", syncMediaVisibility);
+    requestAnimationFrame(() => {
+      syncMediaVisibility();
+      refreshPageScrollTransition();
+      markCruisesScrollReady();
+    });
+
+    const onScroll = () => syncMediaVisibility();
+    const onResize = () => syncMediaVisibility();
+    const onPageShow = (event: PageTransitionEvent) => {
+      if (!event.persisted) return;
+      syncMediaVisibility();
+      refreshPageScrollTransition();
+      markCruisesScrollReady();
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
+    window.addEventListener("pageshow", onPageShow);
 
     return () => {
-      window.removeEventListener("scroll", syncMediaVisibility);
-      window.removeEventListener("resize", syncMediaVisibility);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("pageshow", onPageShow);
+      clearCruisesScrollReady();
     };
+  }, []);
+
+  useEffect(() => {
+    markCruisesScrollReady();
+    return () => clearCruisesScrollReady();
   }, []);
 
   return (
@@ -118,7 +143,7 @@ export function CruisesPageTransition({
                   <span aria-current="page">{breadcrumb}</span>
                 </nav>
                 <h1 className="hathor-page-hero__title hathor-page-hero__title--feature">
-                  {heroTitle ?? title}
+                  {heroTitle}
                 </h1>
                 {subtitle ? (
                   <p className="hathor-page-hero__subtitle">{subtitle}</p>
@@ -128,18 +153,8 @@ export function CruisesPageTransition({
             </div>
           </div>
           <div ref={sheetRef} className="pt-sheet">
-            <div className="pt-sheet__landing" aria-labelledby="cruises-landing-title">
-              <div className="hathor-container">
-                <h2 id="cruises-landing-title" className="pt-sheet__landing-title">
-                  {title}
-                </h2>
-              </div>
-            </div>
-            {sheetBelowLanding ? (
-              <div className="pt-sheet__filters">{sheetBelowLanding}</div>
-            ) : null}
             <div className="pt-sheet__rise-cap" aria-hidden="true" />
-            <div className="pt-sheet__content">{children}</div>
+            <div className="pt-sheet__content" />
           </div>
         </div>
       </section>
