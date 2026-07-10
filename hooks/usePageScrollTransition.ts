@@ -109,6 +109,7 @@ export function usePageScrollTransition(config: PageScrollTransitionConfig) {
 
     const mask = maskEl;
     const sheetEl = sheet;
+    const stageEl = stage;
     const trigger = root;
     const ptCream =
       layout === "homepage-2" ? PT_CREAM_HOMEPAGE_2 : PT_CREAM_DEFAULT;
@@ -126,7 +127,7 @@ export function usePageScrollTransition(config: PageScrollTransitionConfig) {
 
     function buildMaskStrips() {
       const n = stripCount();
-      const w = mask.clientWidth;
+      const w = Math.max(mask.clientWidth, stageEl.clientWidth, 1);
       if (!w) return false;
 
       const colW = w / n;
@@ -138,7 +139,8 @@ export function usePageScrollTransition(config: PageScrollTransitionConfig) {
         const col = document.createElement("div");
         col.className = "pt-mask__col";
         col.style.left = `${i * colW}px`;
-        col.style.width = `${colW}px`;
+        col.style.width =
+          i === n - 1 ? `${w - (n - 1) * colW}px` : `${colW}px`;
 
         const strip = document.createElement("div");
         strip.className = "pt-mask__strip";
@@ -147,6 +149,19 @@ export function usePageScrollTransition(config: PageScrollTransitionConfig) {
         strips.push({ el: strip, colW, slatW });
       }
       return true;
+    }
+
+    function releaseHomepage2PinWidth() {
+      if (layout !== "homepage-2") return;
+
+      gsap.set(stageEl, { clearProps: "width,maxWidth,minWidth" });
+      stageEl.style.width = "100%";
+
+      const pinSpacer = stageEl.parentElement;
+      if (pinSpacer?.classList.contains("pin-spacer")) {
+        pinSpacer.style.removeProperty("width");
+        pinSpacer.style.removeProperty("max-width");
+      }
     }
 
     function getDomeRadii() {
@@ -266,16 +281,36 @@ export function usePageScrollTransition(config: PageScrollTransitionConfig) {
     const onResize = () => {
       if (resizeTimer) clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
-        buildMaskStrips();
+        const st = ScrollTrigger.getById(`page-scroll-transition-${instanceId}`);
+        const progress = st?.progress ?? 0;
+
+        releaseHomepage2PinWidth();
+
+        if (buildMaskStrips()) {
+          applyProgress(progress);
+        }
         ScrollTrigger.refresh();
       }, 150);
     };
 
     window.addEventListener("resize", onResize);
+    window.visualViewport?.addEventListener("resize", onResize);
+
+    const resizeObserver =
+      layout === "homepage-2"
+        ? new ResizeObserver(() => onResize())
+        : null;
+    if (resizeObserver) {
+      resizeObserver.observe(stageEl);
+      resizeObserver.observe(mask);
+    }
+
     ScrollTrigger.refresh();
 
     return () => {
       window.removeEventListener("resize", onResize);
+      window.visualViewport?.removeEventListener("resize", onResize);
+      resizeObserver?.disconnect();
       if (resizeTimer) clearTimeout(resizeTimer);
       if (smoothScroll) {
         gsap.ticker.remove(smoothScroll.ticker);
