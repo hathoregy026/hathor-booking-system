@@ -60,12 +60,10 @@ html[data-cruises-experience] .public-site > .owo-footer,
 
 .cruises-scroll-route [data-cruises-transition] .pt-stage {
   overflow: hidden !important;
-  background-color: var(--cruises-cream) !important;
+  /* Gold behind mask slats — prevents cream/white gaps between stripes */
+  background-color: var(--pt-gold, #b69f64) !important;
 }
 
-body.has-page-scroll-transition:has(.cruises-scroll-route)
-  [data-page-transition]:not([data-test-scroll-reveal])
-  .pt-stage,
 body.has-page-scroll-transition:has(.cruises-scroll-route)
   [data-page-transition]:not([data-test-scroll-reveal])
   .pt-sheet,
@@ -144,7 +142,7 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   visibility: hidden !important;
 }
 
-/* Content layer — real listings/filters after pin ends */
+/* Content layer — fades in during tail (88–100%), position synced to follower in JS */
 .cruises-content-layer {
   position: relative;
   z-index: 10;
@@ -153,23 +151,25 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   margin: 0;
   padding: 0;
   background: var(--cruises-cream);
-}
-
-/* Pull listings up to align with follower landing at handoff */
-.cruises-scroll-root:has([data-cruises-transition].hathor-page-scroll--past-pin)
-  .cruises-content-layer {
-  margin-top: var(--cruises-content-pull, calc(-100svh + clamp(10rem, 21vh, 13rem)));
-}
-
-.cruises-scroll-root:has(
-    [data-cruises-transition]:not(.hathor-page-scroll--past-pin)
-  )
-  .cruises-content-layer {
+  opacity: 0;
   visibility: hidden;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.cruises-scroll-root:has([data-cruises-transition].hathor-page-scroll--handoff-active)
+  .cruises-content-layer {
+  visibility: visible;
   pointer-events: none;
 }
 
-.cruises-content-layer,
+.cruises-scroll-root:has([data-cruises-transition].hathor-page-scroll--past-pin)
+  .cruises-content-layer {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
 .cruises-content-layer .pt-sheet__filters,
 .cruises-content-layer .pt-sheet__content {
   pointer-events: auto;
@@ -245,6 +245,10 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
 .cruises-scroll-route [data-cruises-transition] .pt-mask {
   width: 100% !important;
   max-width: none !important;
+}
+
+.cruises-scroll-route [data-cruises-transition] .pt-mask {
+  background-color: var(--pt-gold, #b69f64);
 }
 
 /* Empty animation runway — fixed height so dome math matches Homepage 2 */
