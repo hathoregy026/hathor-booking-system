@@ -25,7 +25,9 @@ export const CRUISES_PIN_VH = 4.2;
 export const CRUISES_RISE_END = 0.7;
 /** Pin travel in viewport heights — dome rise completes at this distance. */
 export const CRUISES_PIN_DISTANCE_VH = CRUISES_PIN_VH * CRUISES_RISE_END;
-const SCRUB = 0.55;
+/** Blend listings scroll before dome rise ends — avoids frozen handoff. */
+const TAIL_BLEND_START = 0.88;
+const SCRUB = true;
 
 type Strip = { el: HTMLDivElement; colW: number; slatW: number };
 
@@ -229,8 +231,10 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       const startY = sheetH - peek;
       const { start: rStart, end: rEnd } = getDomeRadii();
 
-      const easedRiseT = easeOutCubic(p);
-      const y = startY * (1 - easedRiseT);
+      const riseT = clamp(p, 0, 1);
+      /* Linear sheet travel — matches wheel speed; dome/mask keep eased timing. */
+      const y = startY * (1 - riseT);
+      const easedRiseT = easeOutCubic(riseT);
       const radius = rEnd + (rStart - rEnd) * (1 - easedRiseT);
 
       gsap.set(sheetEl, {
@@ -239,7 +243,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
         borderTopRightRadius: radius,
       });
 
-      applyMaskReveal(p);
+      applyMaskReveal(riseT);
 
       if (heroCopy) {
         gsap.set(heroCopy, { opacity: mapRange(easedRiseT, 0.35, 0.75, 1, 0) });
@@ -253,7 +257,9 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       if (trigger.classList.contains("hathor-page-scroll--past-pin")) return;
 
       const scrolledPx = scrollProgress * getTotalPinDistance();
-      const tailScroll = Math.max(0, scrolledPx - getRevealDistance());
+      const revealDist = getRevealDistance();
+      const tailBlendStart = revealDist * TAIL_BLEND_START;
+      const tailScroll = Math.max(0, scrolledPx - tailBlendStart);
 
       gsap.set(followerEl, {
         y: sheetY - tailScroll,
@@ -331,13 +337,20 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     resizeObserver.observe(mask);
 
     let followerResizeTimer: ReturnType<typeof setTimeout> | null = null;
+    let lastFollowerHeight = 0;
     const followerObserver = followerEl
       ? new ResizeObserver(() => {
+          const nextHeight = followerEl.scrollHeight;
+          if (Math.abs(nextHeight - lastFollowerHeight) < 12) return;
+          lastFollowerHeight = nextHeight;
           if (followerResizeTimer) clearTimeout(followerResizeTimer);
           followerResizeTimer = setTimeout(() => ScrollTrigger.refresh(), 400);
         })
       : null;
-    followerObserver?.observe(followerEl!);
+    if (followerEl) {
+      lastFollowerHeight = followerEl.scrollHeight;
+      followerObserver?.observe(followerEl);
+    }
 
     ScrollTrigger.refresh();
 
