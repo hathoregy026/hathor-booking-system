@@ -82,8 +82,26 @@ function preservePinnedScrollPosition(scrollY: number) {
     restore();
     window.requestAnimationFrame(() => {
       restore();
-      root.style.scrollBehavior = previousScrollBehavior;
+      window.requestAnimationFrame(() => {
+        restore();
+        root.style.scrollBehavior = previousScrollBehavior;
+      });
     });
+  });
+}
+
+function stabilizeListingsLayoutDuringFilterChange(scrollY: number) {
+  const content = document.querySelector<HTMLElement>(
+    ".cruises-content-section .page-layout__content",
+  );
+  if (content) {
+    content.style.minHeight = `${content.offsetHeight}px`;
+  }
+  preservePinnedScrollPosition(scrollY);
+  window.requestAnimationFrame(() => {
+    if (content) {
+      content.style.minHeight = "";
+    }
   });
 }
 
@@ -175,14 +193,14 @@ export function CruisesPageFilters() {
   const updateDurationFilter = (value: number | "all") => {
     const scrollY = pinnedScrollYRef.current ?? window.scrollY;
     setDurationFilter(value);
-    preservePinnedScrollPosition(scrollY);
+    stabilizeListingsLayoutDuringFilterChange(scrollY);
     pinnedScrollYRef.current = null;
   };
 
   const updateDepartureFilter = (value: string | "all") => {
     const scrollY = pinnedScrollYRef.current ?? window.scrollY;
     setDepartureFilter(value);
-    preservePinnedScrollPosition(scrollY);
+    stabilizeListingsLayoutDuringFilterChange(scrollY);
     pinnedScrollYRef.current = null;
   };
 

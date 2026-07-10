@@ -146,21 +146,42 @@ body.has-page-scroll-transition:has(.cruises-scroll-route) .pin-spacer {
   pointer-events: none !important;
 }
 
-/* Post-pin content — sibling of pin theater (Homepage 2 pattern) */
+/* Past pin: transition stack must not block filters/listings */
+.cruises-scroll-route
+  [data-cruises-transition].hathor-page-scroll--past-pin {
+  pointer-events: none;
+}
+
+.cruises-scroll-route
+  [data-cruises-transition].hathor-page-scroll--past-pin
+  .pt-stage {
+  z-index: 0 !important;
+  pointer-events: none;
+}
+
+/* Post-pin content — flush under dome (PageScrollTransition geometry) */
 .cruises-content-section {
   position: relative;
   z-index: 20;
   display: block;
   width: 100%;
-  margin: 0;
+  margin: calc(-100svh) 0 0;
   padding: 0;
   background: var(--cruises-cream);
+  overflow-anchor: none;
+}
+
+/* Tuck under rising sheet during pin — reveal when dome completes */
+.cruises-scroll-root:not(:has([data-cruises-transition].hathor-page-scroll--past-pin))
+  .cruises-content-section {
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .cruises-content-section .pt-sheet__landing {
   position: relative;
   z-index: 2;
-  padding: clamp(10rem, 21vh, 13rem) clamp(1rem, 4vw, 2rem) 0;
+  padding: clamp(1.5rem, 4vh, 2.5rem) clamp(1rem, 4vw, 2rem) 0;
   text-align: center;
   pointer-events: none;
 }
@@ -202,45 +223,19 @@ body.has-page-scroll-transition:has(.cruises-scroll-route) .pin-spacer {
   pointer-events: auto;
 }
 
-/* Footer column — Homepage 2 pattern */
+.cruises-content-section .page-layout__filters,
+.cruises-content-section .page-layout__grid,
+.cruises-content-section .page-layout__content {
+  overflow-anchor: none;
+}
+
+/* Footer column */
 .cruises-column-tail {
   position: relative;
   width: 100%;
   margin: 0;
   padding: 0;
   background: var(--cruises-cream);
-}
-
-.cruises-footer-logo-stage {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 0;
-  margin: 0;
-  padding: 0;
-  overflow: visible;
-  z-index: 12;
-  pointer-events: none;
-}
-
-.cruises-footer-giant-logo {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  width: 92vw;
-  max-width: none;
-  margin: 0;
-  z-index: 12;
-  pointer-events: none;
-  will-change: transform, opacity;
-}
-
-.cruises-footer-giant-logo img {
-  display: block;
-  width: 100%;
-  height: auto;
-  filter: drop-shadow(0 1rem 2.5rem rgb(0 0 0 / 0.46));
 }
 
 .cruises-footer.owo-footer {
@@ -267,8 +262,7 @@ body.has-page-scroll-transition:has(.cruises-scroll-route) .pin-spacer {
 }
 
 @media (max-width: 767px) {
-  .cruises-scroll-route .cruises-giant-logo,
-  .cruises-scroll-route .cruises-footer-giant-logo {
+  .cruises-scroll-route .cruises-giant-logo {
     width: 96vw;
   }
 

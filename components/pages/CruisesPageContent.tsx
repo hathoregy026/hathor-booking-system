@@ -7,7 +7,6 @@ import {
   CruisesPageListingsGrid,
 } from "@/components/pages/CruisesPageListings";
 import { CruisesFooter } from "@/components/pages/CruisesFooter";
-import { CruisesFooterGiantLogo } from "@/components/pages/CruisesFooterGiantLogo";
 import { CruisesScrollReveal } from "@/components/pages/CruisesScrollReveal";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 import { CRUISES_PAGE } from "@/lib/page-content";
@@ -47,7 +46,6 @@ export function CruisesPageContent() {
           </div>
 
           <div className="cruises-column-tail">
-            <CruisesFooterGiantLogo />
             <CruisesFooter />
           </div>
         </section>
