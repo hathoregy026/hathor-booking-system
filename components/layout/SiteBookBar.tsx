@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import {
   HATHOR_BRAND_NAME,
@@ -10,6 +11,12 @@ import {
 
 /** Gold BOOK NOW bars + centered ring logo — site-wide primary nav tier. */
 export function SiteBookBar() {
+  const pathname = usePathname();
+
+  // Homepage 2 keeps its original, page-local book bar so its proven
+  // transition and stacking structure remain completely unchanged.
+  if (pathname === "/homepage-2") return null;
+
   return (
     <div className="homepage-2-book-bar" aria-label="Booking shortcuts">
       <BookNowTrigger className="homepage-2-book-bar__pill homepage-2-book-bar__pill--left">
