@@ -35,6 +35,7 @@ type CruisesScrollTransitionRefs = {
   stage: RefObject<HTMLElement | null>;
   mask: RefObject<HTMLElement | null>;
   sheet: RefObject<HTMLElement | null>;
+  follower: RefObject<HTMLElement | null>;
   heroCopy: RefObject<HTMLElement | null>;
 };
 
@@ -100,6 +101,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     const stage = config.stage.current;
     const maskEl = config.mask.current;
     const sheet = config.sheet.current;
+    const followerEl = config.follower.current;
     const heroCopy = config.heroCopy.current;
 
     if (!root || !stage || !maskEl || !sheet) return;
@@ -155,6 +157,38 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
         pinSpacer.style.removeProperty("width");
         pinSpacer.style.removeProperty("max-width");
       }
+    }
+
+    function getRevealDistance() {
+      return window.innerHeight * CRUISES_PIN_DISTANCE_VH;
+    }
+
+    function getContentScrollDistance() {
+      if (!followerEl) return 0;
+      return Math.max(0, followerEl.scrollHeight - stageEl.offsetHeight);
+    }
+
+    function getTotalPinDistance() {
+      return getRevealDistance() + getContentScrollDistance();
+    }
+
+    function syncPinSpacerRoom() {
+      const pinSpacer = stageEl.parentElement;
+      if (!pinSpacer?.classList.contains("pin-spacer")) return;
+
+      const pastPin = trigger.classList.contains("hathor-page-scroll--past-pin");
+      const extra = getContentScrollDistance();
+
+      if (pastPin || extra <= 0) {
+        pinSpacer.style.removeProperty("padding-bottom");
+      } else {
+        pinSpacer.style.paddingBottom = `${extra}px`;
+      }
+    }
+
+    function getRevealProgress(scrollProgress: number) {
+      const revealShare = getRevealDistance() / Math.max(getTotalPinDistance(), 1);
+      return clamp(scrollProgress / revealShare, 0, 1);
     }
 
     function getDomeRadii() {
@@ -240,23 +274,29 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
           id: `cruises-scroll-${instanceId}`,
           trigger,
           start: "top top",
-          end: () =>
-            `+=${window.innerHeight * CRUISES_PIN_DISTANCE_VH}`,
+          end: () => `+=${getTotalPinDistance()}`,
           pin: stage,
           pinSpacing: true,
           scrub: SCRUB,
           invalidateOnRefresh: true,
           anticipatePin: 1,
-          onUpdate: (self) => applyProgress(self.progress),
+          onUpdate: (self) => {
+            syncPinSpacerRoom();
+            applyProgress(getRevealProgress(self.progress));
+          },
           onLeave: () => {
             trigger.classList.add("hathor-page-scroll--past-pin");
             trigger.classList.add("hathor-page-scroll--media-gone");
+            syncPinSpacerRoom();
             requestAnimationFrame(() => ScrollTrigger.refresh());
           },
           onEnterBack: () => {
             trigger.classList.remove("hathor-page-scroll--past-pin");
+            syncPinSpacerRoom();
           },
         });
+
+        syncPinSpacerRoom();
 
         return true;
       };
@@ -278,8 +318,9 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
         releasePinWidth();
 
         if (buildMaskStrips()) {
-          applyProgress(progress);
+          applyProgress(getRevealProgress(progress));
         }
+        syncPinSpacerRoom();
         ScrollTrigger.refresh();
       }, 150);
     };
@@ -290,6 +331,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     const resizeObserver = new ResizeObserver(() => onResize());
     resizeObserver.observe(stageEl);
     resizeObserver.observe(mask);
+    if (followerEl) resizeObserver.observe(followerEl);
 
     ScrollTrigger.refresh();
 
@@ -317,6 +359,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     config.stage,
     config.mask,
     config.sheet,
+    config.follower,
     config.heroCopy,
   ]);
 }

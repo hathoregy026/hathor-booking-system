@@ -2,8 +2,13 @@
 
 import { useLayoutEffect, type RefObject } from "react";
 import gsap from "gsap";
+import { CRUISES_PIN_DISTANCE_VH } from "@/hooks/useCruisesScrollTransition";
 
-/** Lock follower to the cream runway transform (read from GSAP sheet). */
+function clamp(v: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, v));
+}
+
+/** Lock follower to the cream runway; after reveal, scroll listings with the wheel. */
 export function useCruisesSheetFollower(
   root: RefObject<HTMLElement | null>,
   sheet: RefObject<HTMLElement | null>,
@@ -25,11 +30,17 @@ export function useCruisesSheetFollower(
         return;
       }
 
+      const vh = window.innerHeight;
+      const top = rootEl.getBoundingClientRect().top + window.scrollY;
+      const revealDistance = vh * CRUISES_PIN_DISTANCE_VH;
+      const scrollInSection = clamp(window.scrollY - top, 0, Number.MAX_SAFE_INTEGER);
+      const tailScroll = Math.max(0, scrollInSection - revealDistance);
+
       const sheetY = Number(gsap.getProperty(sheetEl, "y") ?? 0);
       const radius = gsap.getProperty(sheetEl, "borderTopLeftRadius");
 
       gsap.set(followerEl, {
-        y: sheetY,
+        y: sheetY - tailScroll,
         borderTopLeftRadius: radius,
         borderTopRightRadius: radius,
       });

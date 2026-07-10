@@ -65,6 +65,7 @@ export function CruisesScrollReveal({
     stage: stageRef,
     mask: maskRef,
     sheet: sheetRef,
+    follower: followerRef,
     heroCopy: heroCopyRef,
   });
 
