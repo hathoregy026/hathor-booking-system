@@ -155,18 +155,14 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   background: var(--cruises-cream);
 }
 
-/* Pull listings up so title sits exactly where follower title ended */
+/* Pull listings up to align with follower landing at handoff */
 .cruises-scroll-root:has([data-cruises-transition].hathor-page-scroll--past-pin)
-  .cruises-content-layer,
-.cruises-scroll-root:has([data-cruises-transition].hathor-page-scroll--content-active)
   .cruises-content-layer {
-  margin-top: calc(-100svh + clamp(10rem, 21vh, 13rem));
+  margin-top: var(--cruises-content-pull, calc(-100svh + clamp(10rem, 21vh, 13rem)));
 }
 
 .cruises-scroll-root:has(
-    [data-cruises-transition]:not(.hathor-page-scroll--content-active):not(
-        .hathor-page-scroll--past-pin
-      )
+    [data-cruises-transition]:not(.hathor-page-scroll--past-pin)
   )
   .cruises-content-layer {
   visibility: hidden;
