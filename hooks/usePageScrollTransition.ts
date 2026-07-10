@@ -39,6 +39,10 @@ type PageScrollTransitionRefs = {
   heroCopy: RefObject<HTMLElement | null>;
 };
 
+export type PageScrollTransitionConfig = PageScrollTransitionRefs & {
+  layout?: "default" | "homepage-2";
+};
+
 function clamp(v: number, min: number, max: number) {
   return Math.max(min, Math.min(max, v));
 }
@@ -89,15 +93,16 @@ function setupSmoothScroll() {
   return { lenis, ticker };
 }
 
-export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
+export function usePageScrollTransition(config: PageScrollTransitionConfig) {
+  const layout = config.layout ?? "default";
   const instanceId = useId().replace(/:/g, "");
 
   useLayoutEffect(() => {
-    const root = refs.root.current;
-    const stage = refs.stage.current;
-    const maskEl = refs.mask.current;
-    const sheet = refs.sheet.current;
-    const heroCopy = refs.heroCopy.current;
+    const root = config.root.current;
+    const stage = config.stage.current;
+    const maskEl = config.mask.current;
+    const sheet = config.sheet.current;
+    const heroCopy = config.heroCopy.current;
 
     if (!root || !stage || !maskEl || !sheet) return;
 
@@ -204,7 +209,9 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
 
       const driftT = mapRange(p, 0.7, 1, 0, 1);
       const extra = Math.max(0, sheetH - vh * 0.92);
-      y -= driftT * extra;
+      if (layout !== "homepage-2") {
+        y -= driftT * extra;
+      }
 
       const radiusProgress = easeOutCubic(mapRange(p, 0.04, 0.42, 0, 1));
       const radius = rEnd + (rStart - rEnd) * (1 - radiusProgress);
@@ -276,7 +283,15 @@ export function usePageScrollTransition(refs: PageScrollTransitionRefs) {
       document.documentElement.classList.remove("has-page-scroll-transition");
       document.body.style.backgroundColor = "";
     };
-  }, [instanceId, refs.root, refs.stage, refs.mask, refs.sheet, refs.heroCopy]);
+  }, [
+    instanceId,
+    layout,
+    config.root,
+    config.stage,
+    config.mask,
+    config.sheet,
+    config.heroCopy,
+  ]);
 }
 
 export function refreshPageScrollTransition() {

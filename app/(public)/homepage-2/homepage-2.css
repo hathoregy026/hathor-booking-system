@@ -421,8 +421,6 @@ html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-shee
 
 html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet__rise-cap {
   width: 100%;
-  min-height: 120vh !important;
-  min-height: 120svh !important;
   background-color: #f4f1ea !important;
 }
 
@@ -444,14 +442,15 @@ html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-shee
   margin-top: -1px;
   padding: 0;
   background-color: #f4f1ea;
-  min-height: clamp(70rem, 140vh, 100rem);
+  min-height: 120vh;
+  min-height: 120svh;
 }
 
 /* Future page content: images, text, animations */
 .homepage-2-dome-content {
   flex: 1 1 auto;
   width: 100%;
-  min-height: clamp(40rem, 80vh, 60rem);
+  min-height: 0;
   margin: 0;
   padding: 0;
   background-color: #f4f1ea;

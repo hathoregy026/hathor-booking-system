@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef } from "react";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import {
   refreshPageScrollTransition,
-  usePageScrollTransition,
 } from "@/components/pages/pageScrollTransitionEngine";
 import { useHomePage2GiantLogo } from "./useHomePage2GiantLogo";
+import { useHomePage2ScrollTransition } from "./useHomePage2ScrollTransition";
 
 const PIN_VH = 4.2;
 
@@ -16,14 +16,12 @@ const BACK_LOGO_SRC =
 export type HomePage2ScrollRevealProps = {
   imageName: string;
   imageAlt?: string;
-  children?: ReactNode;
 };
 
 /** Same DOM + engine as cruises PageScrollTransition — giant logo replaces hero copy. */
 export function HomePage2ScrollReveal({
   imageName,
   imageAlt,
-  children,
 }: HomePage2ScrollRevealProps) {
   const image = useSiteImage(imageName);
   const rootRef = useRef<HTMLElement>(null);
@@ -32,7 +30,7 @@ export function HomePage2ScrollReveal({
   const sheetRef = useRef<HTMLDivElement>(null);
   const giantLogoRef = useRef<HTMLDivElement>(null);
 
-  usePageScrollTransition({
+  useHomePage2ScrollTransition({
     root: rootRef,
     stage: stageRef,
     mask: maskRef,
@@ -111,6 +109,7 @@ export function HomePage2ScrollReveal({
       <section
         ref={rootRef}
         data-page-transition
+        data-homepage2-transition
         className="hathor-page-scroll-transition hathor-page-hero"
       >
         <div ref={stageRef} className="pt-stage">
@@ -135,7 +134,7 @@ export function HomePage2ScrollReveal({
           </div>
           <div ref={sheetRef} className="pt-sheet">
             <div className="pt-sheet__rise-cap" aria-hidden="true" />
-            <div className="pt-sheet__content">{children}</div>
+            <div className="pt-sheet__content" />
           </div>
         </div>
       </section>
