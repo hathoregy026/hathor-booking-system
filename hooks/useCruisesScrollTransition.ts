@@ -1,6 +1,6 @@
 ﻿/**
- * Cruises scroll engine — Homepage 2 mask/dome timing with synced follower.
- * Reveal: follower rides the sheet (title + cream column). Listings in .cruises-content-layer.
+ * Cruises scroll engine — 1:1 scroll % to dome rise.
+ * Follower syncs during reveal; listings live in .cruises-content-layer.
  */
 "use client";
 
@@ -22,11 +22,15 @@ const MASK = {
 };
 
 const PEEK_VH = 0.065;
+/** Dome arc fully closes by this reveal progress — no cream gap at the seam. */
+const DOME_CLOSE_AT = 0.98;
+/** Cream hides; gold stripes fill the frame. */
+const GOLD_COMPLETE_AT = 0.995;
+
 export const CRUISES_PIN_VH = 4.2;
 export const CRUISES_RISE_END = 0.7;
 /** Pin travel in viewport heights — dome rise completes at this distance. */
 export const CRUISES_PIN_DISTANCE_VH = CRUISES_PIN_VH * CRUISES_RISE_END;
-const SCRUB = true;
 
 type Strip = { el: HTMLDivElement; colW: number; slatW: number };
 
@@ -165,19 +169,6 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       return window.innerHeight * CRUISES_PIN_DISTANCE_VH;
     }
 
-    function getContentScrollDistance() {
-      /* Listings live outside the pin — no extended tail pin. */
-      return 0;
-    }
-
-    function getTotalPinDistance() {
-      return getRevealDistance();
-    }
-
-    function getRevealProgress(scrollProgress: number) {
-      return clamp(scrollProgress, 0, 1);
-    }
-
     function getDomeRadii() {
       const styles = getComputedStyle(trigger);
       return {
@@ -231,49 +222,73 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       const startY = sheetH - peek;
       const { start: rStart, end: rEnd } = getDomeRadii();
 
+      /* Linear 1:1 — scroll % maps directly to sheet travel. */
       const riseT = clamp(p, 0, 1);
-      /* Linear sheet travel — matches wheel speed; dome/mask keep eased timing. */
       const y = startY * (1 - riseT);
-      const easedRiseT = easeOutCubic(riseT);
-      const radius = rEnd + (rStart - rEnd) * (1 - easedRiseT);
+
+      /* Arc closes by 98% so sides meet with no white seam. */
+      const radiusT = clamp(riseT / DOME_CLOSE_AT, 0, 1);
+      const radiusProgress = easeOutCubic(radiusT);
+      const radius = rEnd + (rStart - rEnd) * (1 - radiusProgress);
+
+      const goldComplete = riseT >= GOLD_COMPLETE_AT;
+
+      trigger.classList.toggle(
+        "hathor-page-scroll--gold-complete",
+        goldComplete,
+      );
+      trigger.classList.toggle(
+        "hathor-page-scroll--content-active",
+        goldComplete,
+      );
 
       gsap.set(sheetEl, {
         y,
-        borderTopLeftRadius: radius,
-        borderTopRightRadius: radius,
+        opacity: goldComplete ? 0 : 1,
+        borderTopLeftRadius: goldComplete ? 0 : radius,
+        borderTopRightRadius: goldComplete ? 0 : radius,
       });
 
       applyMaskReveal(riseT);
 
       if (heroCopy) {
-        gsap.set(heroCopy, { opacity: mapRange(easedRiseT, 0.35, 0.75, 1, 0) });
+        gsap.set(heroCopy, { opacity: mapRange(riseT, 0.35, 0.75, 1, 0) });
       }
 
-      return { sheetY: y, radius };
+      return { sheetY: y, radius, riseT, goldComplete };
     }
 
-    function applyFollower(scrollProgress: number, sheetY: number, radius: number | string) {
+    function applyFollower(
+      sheetY: number,
+      radius: number,
+      riseT: number,
+      goldComplete: boolean,
+    ) {
       if (!followerEl) return;
       if (trigger.classList.contains("hathor-page-scroll--past-pin")) return;
 
-      const revealP = getRevealProgress(scrollProgress);
       const y = Math.round(sheetY);
-      const radiusKey =
-        revealP < 0.98 ? String(radius) : "0";
-
-      trigger.classList.toggle(
-        "hathor-page-scroll--content-active",
-        revealP >= 0.995,
-      );
+      const radiusKey = riseT < DOME_CLOSE_AT ? String(radius) : "0";
 
       if (y === lastFollowerY && radiusKey === lastFollowerRadius) return;
 
       lastFollowerY = y;
       lastFollowerRadius = radiusKey;
 
-      if (revealP < 0.98) {
+      if (goldComplete) {
         gsap.set(followerEl, {
           y,
+          opacity: 0,
+          borderTopLeftRadius: 0,
+          borderTopRightRadius: 0,
+        });
+        return;
+      }
+
+      if (riseT < DOME_CLOSE_AT) {
+        gsap.set(followerEl, {
+          y,
+          opacity: 1,
           borderTopLeftRadius: radius,
           borderTopRightRadius: radius,
         });
@@ -282,15 +297,15 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
 
       gsap.set(followerEl, {
         y,
+        opacity: 1,
         borderTopLeftRadius: 0,
         borderTopRightRadius: 0,
       });
     }
 
-    function applyFrame(scrollProgress: number) {
-      const revealP = getRevealProgress(scrollProgress);
-      const { sheetY, radius } = applyProgress(revealP);
-      applyFollower(scrollProgress, sheetY, radius);
+    function applyRevealProgress(revealP: number) {
+      const { sheetY, radius, riseT, goldComplete } = applyProgress(revealP);
+      applyFollower(sheetY, radius, riseT, goldComplete);
     }
 
     const ctx = gsap.context(() => {
@@ -298,28 +313,31 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
 
       const setup = () => {
         if (!buildMaskStrips()) return false;
-        applyFrame(0);
+        applyRevealProgress(0);
 
         ScrollTrigger.create({
           id: `cruises-scroll-${instanceId}`,
           trigger,
           start: "top top",
-          end: () => `+=${getTotalPinDistance()}`,
+          end: () => `+=${getRevealDistance()}`,
           pin: stage,
           pinSpacing: true,
-          scrub: SCRUB,
+          scrub: false,
           invalidateOnRefresh: true,
           anticipatePin: 1,
           onUpdate: (self) => {
-            applyFrame(self.progress);
+            applyRevealProgress(self.progress);
           },
           onLeave: () => {
             trigger.classList.add("hathor-page-scroll--past-pin");
             trigger.classList.add("hathor-page-scroll--media-gone");
+            applyRevealProgress(1);
           },
           onEnterBack: () => {
             trigger.classList.remove("hathor-page-scroll--past-pin");
             trigger.classList.remove("hathor-page-scroll--media-gone");
+            trigger.classList.remove("hathor-page-scroll--gold-complete");
+            trigger.classList.remove("hathor-page-scroll--content-active");
           },
         });
 
@@ -343,7 +361,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
         releasePinWidth();
 
         if (buildMaskStrips()) {
-          applyFrame(progress);
+          applyRevealProgress(progress);
         }
         ScrollTrigger.refresh();
       }, 150);
@@ -370,13 +388,18 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       ctx.revert();
       if (followerEl) {
         gsap.set(followerEl, {
-          clearProps: "transform,borderTopLeftRadius,borderTopRightRadius",
+          clearProps:
+            "transform,borderTopLeftRadius,borderTopRightRadius,opacity",
         });
+      }
+      if (sheetEl) {
+        gsap.set(sheetEl, { clearProps: "opacity" });
       }
       trigger.classList.remove(
         "hathor-page-scroll--past-pin",
         "hathor-page-scroll--media-gone",
         "hathor-page-scroll--content-active",
+        "hathor-page-scroll--gold-complete",
       );
       document.body.classList.remove("has-page-scroll-transition");
       document.documentElement.classList.remove("has-page-scroll-transition");

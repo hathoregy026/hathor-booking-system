@@ -155,8 +155,18 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   background: var(--cruises-cream);
 }
 
+/* Pull listings up so title sits exactly where follower title ended */
+.cruises-scroll-root:has([data-cruises-transition].hathor-page-scroll--past-pin)
+  .cruises-content-layer,
+.cruises-scroll-root:has([data-cruises-transition].hathor-page-scroll--content-active)
+  .cruises-content-layer {
+  margin-top: calc(-100svh + clamp(10rem, 21vh, 13rem));
+}
+
 .cruises-scroll-root:has(
-    [data-cruises-transition]:not(.hathor-page-scroll--past-pin)
+    [data-cruises-transition]:not(.hathor-page-scroll--content-active):not(
+        .hathor-page-scroll--past-pin
+      )
   )
   .cruises-content-layer {
   visibility: hidden;
@@ -359,6 +369,31 @@ body.has-page-scroll-transition:has(.cruises-scroll-route) .pin-spacer {
   opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none !important;
+}
+
+/* 100% — full gold frame, cream layers hidden */
+.cruises-scroll-route
+  [data-cruises-transition].hathor-page-scroll--gold-complete
+  .pt-sheet.cruises-sheet-runway,
+.cruises-scroll-route
+  [data-cruises-transition].hathor-page-scroll--gold-complete
+  .cruises-sheet-follower {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.cruises-scroll-route
+  [data-cruises-transition].hathor-page-scroll--gold-complete
+  .pt-mask {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.cruises-scroll-route
+  [data-cruises-transition].hathor-page-scroll--gold-complete
+  .pt-stage {
+  background-color: var(--pt-gold, #b69f64) !important;
 }
 
 /* After pin only — hide full hero stack (mask is done by then) */
