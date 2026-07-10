@@ -304,6 +304,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
           },
           onEnterBack: () => {
             trigger.classList.remove("hathor-page-scroll--past-pin");
+            trigger.classList.remove("hathor-page-scroll--media-gone");
           },
         });
 

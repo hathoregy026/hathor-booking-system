@@ -85,10 +85,8 @@ export function CruisesScrollReveal({
 
       const inHeroZone = pinProgress < 0.12;
       const hideMedia = !inHeroZone && pinProgress > 0.35;
-      const pastPin = pinProgress >= 0.995;
 
       root.classList.toggle("hathor-page-scroll--media-gone", hideMedia);
-      root.classList.toggle("hathor-page-scroll--past-pin", pastPin);
     };
 
     syncMediaVisibility();

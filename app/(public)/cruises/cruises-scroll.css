@@ -37,6 +37,8 @@ html[data-cruises-experience] .public-site > .owo-footer,
 
 .cruises-pin-wrapper {
   position: relative;
+  z-index: 50;
+  isolation: isolate;
   width: 100%;
   max-width: none;
   margin: 0;
@@ -102,6 +104,7 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   min-height: 100svh !important;
   max-height: 100svh !important;
   overflow: hidden !important;
+  background-color: var(--cruises-cream) !important;
   pointer-events: none;
   border-bottom-left-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
@@ -147,10 +150,10 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   border-top-right-radius: 0 !important;
 }
 
-/* Content layer — independent document flow, flush below pin theater */
+/* Content layer — below pin theater until reveal completes */
 .cruises-content-layer {
   position: relative;
-  z-index: 20;
+  z-index: 10;
   display: block;
   width: 100%;
   margin: 0;
@@ -158,18 +161,19 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   background: var(--cruises-cream);
 }
 
+/* Keep content out of the pin theater — prevents covering the dome */
+.cruises-scroll-root:has(
+    [data-cruises-transition]:not(.hathor-page-scroll--past-pin)
+  )
+  .cruises-content-layer {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .cruises-content-layer .pt-sheet__content,
 .cruises-content-layer .pt-sheet__filters,
 .cruises-content-layer .pt-sheet__landing {
   background-color: var(--cruises-cream) !important;
-}
-
-/* Hide real landing during pin — façade shows title on the rising sheet */
-.cruises-scroll-root:has(
-    [data-cruises-transition]:not(.hathor-page-scroll--past-pin)
-  )
-  .cruises-content-layer__landing {
-  visibility: hidden;
 }
 
 .cruises-scroll-route [data-cruises-transition] .pt-stage,
