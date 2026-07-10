@@ -10,7 +10,6 @@ import {
 } from "react";
 import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
-import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { formatPrice } from "@/lib/client-dates";
 import type { HathorCruiseSeed } from "@/lib/hathor-catalog";
 import { ManagedImage } from "@/components/ui/ManagedImage";
@@ -286,17 +285,16 @@ export function CruisesPageListingsGrid() {
         </p>
 
         <div className="page-layout__grid">
-          {filtered.map((item, index) => (
-            <ScrollReveal key={item.key} delay={index * 60}>
-              <article className="hathor-cruise-card group">
-                <div className="hathor-cruise-card__image">
-                  <ManagedImage
-                    name={item.imageName}
-                    alt={`${item.roomName} — ${item.cruiseName}`}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                  />
+          {filtered.map((item) => (
+            <article key={item.key} className="hathor-cruise-card cruises-listing-card">
+              <div className="hathor-cruise-card__image">
+                <ManagedImage
+                  name={item.imageName}
+                  alt={`${item.roomName} — ${item.cruiseName}`}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
                   <span className="hathor-cruise-card__badge">
                     {item.nights}N / {item.days}D
                   </span>
@@ -332,7 +330,6 @@ export function CruisesPageListingsGrid() {
                   </div>
                 </div>
               </article>
-            </ScrollReveal>
           ))}
         </div>
       </section>
