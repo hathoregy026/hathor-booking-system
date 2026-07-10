@@ -25,11 +25,10 @@ export function CruisesPageContent() {
         >
           <CruisesPageListingsGrid />
           <CtaBand />
+          <div className="cruises-column-tail">
+            <CruisesFooter />
+          </div>
         </CruisesScrollReveal>
-
-        <div className="cruises-column-tail">
-          <CruisesFooter />
-        </div>
       </div>
     </CruisesListingProvider>
   );

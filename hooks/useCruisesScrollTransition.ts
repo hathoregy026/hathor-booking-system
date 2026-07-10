@@ -251,6 +251,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
           onLeave: () => {
             trigger.classList.add("hathor-page-scroll--past-pin");
             trigger.classList.add("hathor-page-scroll--media-gone");
+            requestAnimationFrame(() => ScrollTrigger.refresh());
           },
           onEnterBack: () => {
             trigger.classList.remove("hathor-page-scroll--past-pin");

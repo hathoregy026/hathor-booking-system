@@ -52,7 +52,11 @@ html[data-cruises-experience] .public-site > .owo-footer,
 }
 
 .cruises-scroll-route [data-cruises-transition] .pt-stage {
-  overflow: hidden !important;
+  overflow: visible !important;
+}
+
+.cruises-scroll-route [data-cruises-transition] .pt-hero {
+  overflow: hidden;
 }
 
 .cruises-scroll-route [data-cruises-transition] .pt-sheet.cruises-sheet-runway {
@@ -75,7 +79,7 @@ html[data-cruises-experience] .public-site > .owo-footer,
   padding: 0;
   background: transparent;
   pointer-events: auto;
-  overflow: hidden;
+  overflow: visible;
   overflow-anchor: none;
   will-change: transform, border-radius;
   border-bottom-left-radius: 0 !important;
@@ -84,10 +88,18 @@ html[data-cruises-experience] .public-site > .owo-footer,
 
 .cruises-scroll-route
   [data-cruises-transition].hathor-page-scroll--past-pin
+  .cruises-sheet-follower {
+  position: relative;
+  top: auto;
+  will-change: auto;
+}
+
+.cruises-scroll-route
+  [data-cruises-transition].hathor-page-scroll--past-pin
   .pt-stage {
   height: auto !important;
   min-height: 100svh;
-  overflow: hidden !important;
+  overflow: visible !important;
   z-index: 0 !important;
   pointer-events: none;
 }
@@ -214,9 +226,10 @@ body.has-page-scroll-transition:has(.cruises-scroll-route) .pin-spacer {
   pointer-events: auto;
 }
 
-/* Footer column */
-.cruises-column-tail {
+/* Footer inside sheet follower */
+.cruises-scroll-route .cruises-column-tail {
   position: relative;
+  z-index: 1;
   width: 100%;
   margin: 0;
   padding: 0;
@@ -225,7 +238,7 @@ body.has-page-scroll-transition:has(.cruises-scroll-route) .pin-spacer {
 
 .cruises-footer.owo-footer {
   position: relative;
-  z-index: 25;
+  z-index: 1;
   margin-top: 0 !important;
   background: var(--cruises-cream) !important;
   border-top: none !important;

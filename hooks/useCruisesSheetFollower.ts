@@ -19,7 +19,9 @@ export function useCruisesSheetFollower(
       const pastPin = rootEl.classList.contains("hathor-page-scroll--past-pin");
 
       if (pastPin) {
-        gsap.set(followerEl, { clearProps: "borderTopLeftRadius,borderTopRightRadius" });
+        gsap.set(followerEl, {
+          clearProps: "transform,borderTopLeftRadius,borderTopRightRadius",
+        });
         return;
       }
 
