@@ -453,9 +453,31 @@ html[data-homepage2-experience] .homepage-2-root {
   background-color: #f4f1ea;
 }
 
+/* Single cream column wrapper — diagram blue block through purple footer */
+.homepage-2-dome-column {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f1ea;
+}
+
 html[data-homepage2-experience] .homepage-2-root [data-page-transition] {
   margin-bottom: 0 !important;
   background-color: #f4f1ea !important;
+}
+
+/* Cream fill below rising sheet inside pinned stage (engine drift leaves a strip) */
+html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-stage::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 45vh;
+  background-color: #f4f1ea;
+  z-index: 9;
+  pointer-events: none;
 }
 
 html[data-homepage2-experience] .public-main,
@@ -471,7 +493,7 @@ html[data-homepage2-experience] .public-site > .owo-footer:not(.homepage-2-foote
   display: none !important;
 }
 
-/* Cream column — pulled up 100svh so it meets the dome as pin ends (diagram: sheet→footer) */
+/* Cream cap — flush after pin-spacer, no negative margin */
 .homepage-2-cream-floor {
   position: relative;
   z-index: 1;
@@ -479,10 +501,9 @@ html[data-homepage2-experience] .public-site > .owo-footer:not(.homepage-2-foote
   flex-direction: column;
   width: 100%;
   margin: 0;
-  margin-top: -100svh;
   padding: 0;
   background-color: #f4f1ea;
-  min-height: 100svh;
+  min-height: 0;
 }
 
 .homepage-2-dome-content {
@@ -502,7 +523,6 @@ html[data-homepage2-experience] .public-site > .owo-footer:not(.homepage-2-foote
   flex-shrink: 0;
   width: 100%;
   margin: 0;
-  margin-top: auto;
   padding: 0;
   background-color: #f4f1ea;
 }

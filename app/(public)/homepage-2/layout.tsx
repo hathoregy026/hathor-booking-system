@@ -15,6 +15,7 @@ const HP2_CRITICAL_CSS = `
 html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-stage,
 html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet,
 html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet__rise-cap,
+html[data-homepage2-experience] .homepage-2-dome-column,
 html[data-homepage2-experience] .homepage-2-cream-floor,
 html[data-homepage2-experience] .homepage-2-column-tail {
   background-color: #f4f1ea !important;
