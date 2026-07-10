@@ -17,6 +17,17 @@ function getLogoHiddenY() {
   return window.innerHeight * 0.34;
 }
 
+function getMaxScroll() {
+  return Math.max(
+    document.documentElement.scrollHeight - window.innerHeight,
+    0,
+  );
+}
+
+function isNearPageBottom(thresholdPx = 64) {
+  return window.scrollY >= getMaxScroll() - thresholdPx;
+}
+
 export function useHomePage2FooterGiantLogo(
   logoRef: RefObject<HTMLElement | null>,
 ) {
@@ -28,10 +39,22 @@ export function useHomePage2FooterGiantLogo(
     let landingTween: gsap.core.Tween | null = null;
     let hasRisen = false;
 
-    function hideLogo() {
+    function setLogoResting() {
       landingTween?.kill();
       landingTween = null;
-      hasRisen = false;
+      gsap.set(logoEl, {
+        xPercent: -50,
+        y: 0,
+        opacity: 1,
+        visibility: "visible",
+      });
+    }
+
+    function hideLogo() {
+      if (hasRisen) return;
+
+      landingTween?.kill();
+      landingTween = null;
       gsap.set(logoEl, {
         xPercent: -50,
         y: getLogoHiddenY(),
@@ -41,21 +64,28 @@ export function useHomePage2FooterGiantLogo(
     }
 
     function riseLogo() {
-      if (hasRisen) return;
+      if (hasRisen) {
+        setLogoResting();
+        return;
+      }
+
       hasRisen = true;
       landingTween?.kill();
 
-      const hiddenY = getLogoHiddenY();
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+      if (reducedMotion || isNearPageBottom()) {
+        setLogoResting();
+        return;
+      }
+
+      const hiddenY = getLogoHiddenY();
       gsap.set(logoEl, {
         xPercent: -50,
-        y: reducedMotion ? 0 : hiddenY,
+        y: hiddenY,
         opacity: 1,
         visibility: "visible",
       });
-
-      if (reducedMotion) return;
 
       landingTween = gsap.to(logoEl, {
         y: 0,
@@ -69,12 +99,24 @@ export function useHomePage2FooterGiantLogo(
       const footer = document.querySelector<HTMLElement>(".homepage-2-footer");
       if (!footer) return;
 
+      if (isNearPageBottom()) {
+        if (hasRisen) {
+          setLogoResting();
+        } else {
+          riseLogo();
+        }
+        return;
+      }
+
       const footerTop = footer.getBoundingClientRect().top;
       const vh = window.innerHeight;
 
       if (footerTop <= vh * 0.94) {
         riseLogo();
-      } else if (footerTop > vh * 1.08) {
+        return;
+      }
+
+      if (!hasRisen && footerTop > vh * 1.2) {
         hideLogo();
       }
     }
@@ -84,7 +126,7 @@ export function useHomePage2FooterGiantLogo(
     const onScroll = () => sync();
     const onResize = () => {
       if (hasRisen) {
-        gsap.set(logoEl, { xPercent: -50, y: 0, opacity: 1, visibility: "visible" });
+        setLogoResting();
       } else {
         hideLogo();
       }
