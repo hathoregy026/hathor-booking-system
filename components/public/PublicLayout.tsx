@@ -1,5 +1,6 @@
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { SiteBookBar } from "@/components/layout/SiteBookBar";
 import { BookingModalProvider } from "@/components/booking/BookingModalProvider";
 import { LuxuryTextAnimations } from "@/components/public/LuxuryTextAnimations";
 import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
@@ -16,6 +17,7 @@ export function PublicLayout({ children }: PublicLayoutProps) {
       <BookingModalProvider>
         <div className="public-site hathor-site">
           <LuxuryTextAnimations />
+          <SiteBookBar />
           <Header />
           <main className="public-main public-main--hero">
             <PageTransition>{children}</PageTransition>

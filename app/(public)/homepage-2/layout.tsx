@@ -21,13 +21,6 @@ html[data-homepage2-experience] .homepage-2-column-tail {
 html[data-homepage2-experience] .public-site > .owo-footer:not(.homepage-2-footer) {
   display: none !important;
 }
-html[data-homepage2-experience] .homepage-2-book-bar__pill--left,
-html[data-homepage2-experience] .homepage-2-book-bar__pill--right,
-html[data-homepage2-experience] .homepage-2-book-bar__logo {
-  transform: none !important;
-  opacity: 1 !important;
-  animation: none !important;
-}
 `;
 
 export default function HomePage2Layout({ children }: { children: ReactNode }) {

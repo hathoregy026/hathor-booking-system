@@ -5,6 +5,7 @@ import { PublicLayout } from "@/components/public/PublicLayout";
 import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
 import { resolveSiteImageMap } from "@/lib/resolve-site-images";
 import "../public.css";
+import "../site-nav.css";
 import "../booking-modal.css";
 
 export const dynamic = "force-dynamic";

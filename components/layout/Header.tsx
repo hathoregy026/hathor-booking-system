@@ -11,11 +11,8 @@ import {
   HATHOR_HERO_ICON_SRC,
 } from "@/lib/branding";
 import {
-  EXPLORE_LINKS,
   HEADER_NAV_ITEMS,
-  NAV_GROUPS,
   type HeaderNavItem,
-  type NavGroup,
 } from "@/lib/public-nav";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 
@@ -50,46 +47,49 @@ function ExplorePanel({
         </div>
 
         <div className="hathor-explore__grid">
-          {NAV_GROUPS.map((group: NavGroup) => (
-            <div key={group.id} className="hathor-explore__group">
-              <p className="hathor-explore__group-label">{group.label}</p>
-              <ul className="hathor-explore__links">
-                {group.links.map((link) => (
-                  <li key={`${group.id}-${link.href}-${link.label}`}>
-                    <Link
-                      href={link.href}
-                      className="hathor-explore__link"
-                      onClick={onClose}
-                    >
-                      <span>{link.label}</span>
-                      {link.description && (
-                        <span className="hathor-explore__link-desc">
-                          {link.description}
-                        </span>
-                      )}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {HEADER_NAV_ITEMS.map((item) => {
+            if (item.type === "link") {
+              return (
+                <div key={item.href} className="hathor-explore__group">
+                  <ul className="hathor-explore__links">
+                    <li>
+                      <Link
+                        href={item.href}
+                        className="hathor-explore__link"
+                        onClick={onClose}
+                      >
+                        <span>{item.label}</span>
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+              );
+            }
 
-          <div className="hathor-explore__group">
-            <p className="hathor-explore__group-label">Quick Links</p>
-            <ul className="hathor-explore__links">
-              {EXPLORE_LINKS.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="hathor-explore__link"
-                    onClick={onClose}
-                  >
-                    <span>{link.label}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+            return (
+              <div key={item.id} className="hathor-explore__group">
+                <p className="hathor-explore__group-label">{item.label}</p>
+                <ul className="hathor-explore__links">
+                  {item.links.map((link) => (
+                    <li key={`${item.id}-${link.href}-${link.label}`}>
+                      <Link
+                        href={link.href}
+                        className="hathor-explore__link"
+                        onClick={onClose}
+                      >
+                        <span>{link.label}</span>
+                        {link.description ? (
+                          <span className="hathor-explore__link-desc">
+                            {link.description}
+                          </span>
+                        ) : null}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
         </div>
 
         <div className="hathor-explore__footer">
@@ -135,7 +135,6 @@ function isNavItemActive(pathname: string, item: HeaderNavItem): boolean {
 
 export function Header() {
   const pathname = usePathname();
-  const isHomepage2 = pathname === "/homepage-2";
   const [exploreOpen, setExploreOpen] = useState(false);
   const [menuHovered, setMenuHovered] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -246,9 +245,7 @@ export function Header() {
                           aria-expanded={dropdownOpen}
                         >
                           <span className="hathor-header__nav-link-label">{item.label}</span>
-                          {isHomepage2 ? (
-                            <span className="hathor-header__nav-pyramid" aria-hidden="true" />
-                          ) : null}
+                          <span className="hathor-header__nav-pyramid" aria-hidden="true" />
                         </Link>
                         <button
                           type="button"
