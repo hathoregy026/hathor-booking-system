@@ -8,13 +8,15 @@ const HP2_CRITICAL_CSS = `
 .homepage-2-route .public-site,
 .homepage-2-route .public-main,
 .homepage-2-route .page-transition {
-  background-color: #f4f1ea !important;
+  --hp2-cream: #f4f1ea;
+  background-color: var(--hp2-cream) !important;
 }
+html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-stage,
 html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet,
 html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet__rise-cap,
-html[data-homepage2-experience] .homepage-2-cream-floor,
+html[data-homepage2-experience] .homepage-2-content-section,
 html[data-homepage2-experience] .homepage-2-column-tail {
-  background-color: #f4f1ea !important;
+  background-color: var(--hp2-cream) !important;
 }
 html[data-homepage2-experience] .public-site > .owo-footer:not(.homepage-2-footer) {
   display: none !important;

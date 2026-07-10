@@ -1,6 +1,6 @@
 /**
- * Homepage-2 scroll transition — shared engine with drift disabled.
- * Pin theater (hero, stripes, dome) unchanged; sheet drift skipped for Zone B handoff.
+ * Homepage-2 scroll transition — shared engine, Venetian handoff:
+ * pin theater only; drift disabled; sheet ends full cream; sibling content section after pin.
  */
 "use client";
 

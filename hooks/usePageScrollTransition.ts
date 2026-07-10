@@ -12,7 +12,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 
-const PT_CREAM = "#ECE8DF";
+const PT_CREAM_DEFAULT = "#ECE8DF";
+const PT_CREAM_HOMEPAGE_2 = "#f4f1ea";
 const PT_GOLD = "#B69F64";
 
 const MASK = {
@@ -109,13 +110,15 @@ export function usePageScrollTransition(config: PageScrollTransitionConfig) {
     const mask = maskEl;
     const sheetEl = sheet;
     const trigger = root;
+    const ptCream =
+      layout === "homepage-2" ? PT_CREAM_HOMEPAGE_2 : PT_CREAM_DEFAULT;
 
     document.body.classList.add("has-page-scroll-transition");
     document.documentElement.classList.add("has-page-scroll-transition");
-    document.body.style.backgroundColor = PT_CREAM;
+    document.body.style.backgroundColor = ptCream;
 
     trigger.style.setProperty("--pt-gold", PT_GOLD);
-    trigger.style.setProperty("--pt-cream", PT_CREAM);
+    trigger.style.setProperty("--pt-cream", ptCream);
 
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;

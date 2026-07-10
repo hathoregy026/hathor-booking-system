@@ -10,7 +10,7 @@ await page.waitForTimeout(3000);
 
 const report = await page.evaluate(async () => {
   const footer = document.querySelector(".owo-footer");
-  const creamFloor = document.querySelector(".homepage-2-cream-floor");
+  const contentSection = document.querySelector(".homepage-2-content-section");
   const pinSpacer = document.querySelector(".pin-spacer");
   const backLogo = document.querySelector(".homepage-2-back-logo");
   const main = document.querySelector(".public-main");
@@ -25,7 +25,7 @@ const report = await page.evaluate(async () => {
     window.scrollTo(0, Math.round(maxScroll * ratio));
     await new Promise((r) => setTimeout(r, 250));
     const footerRect = footer?.getBoundingClientRect();
-    const creamRect = creamFloor?.getBoundingClientRect();
+    const creamRect = contentSection?.getBoundingClientRect();
     const probeY = Math.min(
       window.innerHeight - 120,
       Math.max(120, (footerRect?.top ?? window.innerHeight) - 4),
@@ -50,13 +50,13 @@ const report = await page.evaluate(async () => {
   await new Promise((r) => setTimeout(r, 400));
 
   const footerRect = footer?.getBoundingClientRect();
-  const creamRect = creamFloor?.getBoundingClientRect();
+  const creamRect = contentSection?.getBoundingClientRect();
   const gapProbeY = (footerRect?.top ?? 0) - 2;
   const elAtGap = document.elementFromPoint(window.innerWidth / 2, gapProbeY);
   const styles = elAtGap ? getComputedStyle(elAtGap) : null;
 
   return {
-    hasCreamFloor: Boolean(creamFloor),
+    hasContentSection: Boolean(contentSection),
     hasBackLogo: Boolean(backLogo),
     backLogoDisplay: backLogo ? getComputedStyle(backLogo).display : null,
     backLogoOpacity: backLogo ? getComputedStyle(backLogo).opacity : null,

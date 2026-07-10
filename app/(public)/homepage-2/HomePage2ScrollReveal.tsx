@@ -24,7 +24,7 @@ export function HomePage2ScrollReveal({
   imageAlt,
 }: HomePage2ScrollRevealProps) {
   const image = useSiteImage(imageName);
-  const rootRef = useRef<HTMLElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const maskRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
@@ -106,38 +106,39 @@ export function HomePage2ScrollReveal({
           </feMerge>
         </filter>
       </svg>
-      <section
-        ref={rootRef}
-        data-page-transition
-        data-homepage2-transition
-        className="hathor-page-scroll-transition hathor-page-hero"
-      >
-        <div ref={stageRef} className="pt-stage">
-          <div className="pt-hero">
-            <div className="pt-hero__media">
-              <img
-                src={image.src}
-                alt={imageAlt ?? image.alt}
-                fetchPriority="high"
-                decoding="async"
-                onLoad={() => refreshPageScrollTransition()}
-              />
-              <div className="pt-hero__overlay" aria-hidden />
-            </div>
-            <div ref={maskRef} className="pt-mask" aria-hidden="true" />
-            <div className="pt-hero__copy">
-              <div ref={giantLogoRef} className="giant-logo-container">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={BACK_LOGO_SRC} alt="Hathor" />
+      <div ref={rootRef} className="homepage-2-pin-wrapper">
+        <section
+          data-page-transition
+          data-homepage2-transition
+          className="hathor-page-scroll-transition hathor-page-hero"
+        >
+          <div ref={stageRef} className="pt-stage">
+            <div className="pt-hero">
+              <div className="pt-hero__media">
+                <img
+                  src={image.src}
+                  alt={imageAlt ?? image.alt}
+                  fetchPriority="high"
+                  decoding="async"
+                  onLoad={() => refreshPageScrollTransition()}
+                />
+                <div className="pt-hero__overlay" aria-hidden />
+              </div>
+              <div ref={maskRef} className="pt-mask" aria-hidden="true" />
+              <div className="pt-hero__copy">
+                <div ref={giantLogoRef} className="giant-logo-container">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={BACK_LOGO_SRC} alt="Hathor" />
+                </div>
               </div>
             </div>
+            <div ref={sheetRef} className="pt-sheet">
+              <div className="pt-sheet__rise-cap" aria-hidden="true" />
+              <div className="pt-sheet__content" />
+            </div>
           </div>
-          <div ref={sheetRef} className="pt-sheet">
-            <div className="pt-sheet__rise-cap" aria-hidden="true" />
-            <div className="pt-sheet__content" />
-          </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </>
   );
 }

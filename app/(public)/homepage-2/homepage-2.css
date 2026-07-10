@@ -1,6 +1,7 @@
 html[data-homepage2-experience],
 html[data-homepage2-experience] body {
-  background-color: #f4f1ea !important;
+  --hp2-cream: #f4f1ea;
+  background-color: var(--hp2-cream) !important;
 }
 
 /* SSR-first mirrors — apply from first HTML byte via .homepage-2-route wrapper */
@@ -8,7 +9,8 @@ html[data-homepage2-experience] body {
 .homepage-2-route .public-site,
 .homepage-2-route .public-main,
 .homepage-2-route .page-transition {
-  background-color: #f4f1ea !important;
+  --hp2-cream: #f4f1ea;
+  background-color: var(--hp2-cream) !important;
 }
 
 .homepage-2-route .public-main--hero {
@@ -413,61 +415,73 @@ html[data-homepage2-experience] .homepage-2-root .giant-logo-container {
   filter: drop-shadow(0 1rem 2.5rem rgb(0 0 0 / 0.46));
 }
 
-/* Cream sheet floor — single surface from dome through footer (no landing block) */
+/* Pin theater wrapper — Venetian pattern: pin only this block, content follows as sibling */
+.homepage-2-pin-wrapper {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-stage,
+html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet,
+html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet__rise-cap,
+html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet__content {
+  background-color: var(--hp2-cream) !important;
+}
+
+html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-stage {
+  background-color: var(--hp2-cream) !important;
+}
+
 html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet {
-  background-color: #f4f1ea !important;
   overflow: hidden;
 }
 
 html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet__rise-cap {
   width: 100%;
-  background-color: #f4f1ea !important;
+  min-height: 0 !important;
+  background-color: var(--hp2-cream) !important;
 }
 
 html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet__content {
   padding: 0 !important;
   margin: 0;
   min-height: 0;
-  background-color: #f4f1ea !important;
+  background-color: var(--hp2-cream) !important;
 }
 
-/* Cream floor BELOW pinned scroll section — dome column (test-scroll-reveal pattern) */
-.homepage-2-cream-floor {
+/* Post-pin content — DIRECTLY connected to pin theater, no gap (Venetian content-section) */
+.homepage-2-content-section {
   position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
+  z-index: 20;
+  display: block;
   width: 100%;
   margin: 0;
-  margin-top: -1px;
   padding: 0;
-  background-color: #f4f1ea;
-  min-height: 120vh;
-  min-height: 120svh;
+  background: var(--hp2-cream);
 }
 
 /* Future page content: images, text, animations */
 .homepage-2-dome-content {
-  flex: 1 1 auto;
   width: 100%;
   min-height: 0;
   margin: 0;
   padding: 0;
-  background-color: #f4f1ea;
+  background: var(--hp2-cream);
 }
 
-/* Bottom cap — footer logo + footer connected to dome column */
+/* Bottom cap — footer logo + footer connected to cream column */
 .homepage-2-column-tail {
   position: relative;
-  flex-shrink: 0;
   width: 100%;
   margin: 0;
   padding: 0;
-  background-color: #f4f1ea;
+  background: var(--hp2-cream);
 }
 
 html[data-homepage2-experience] body.has-page-scroll-transition .pin-spacer {
-  background-color: #f4f1ea !important;
+  background-color: var(--hp2-cream) !important;
   margin: 0 !important;
   padding: 0 !important;
 }
@@ -475,7 +489,7 @@ html[data-homepage2-experience] body.has-page-scroll-transition .pin-spacer {
 html[data-homepage2-experience] .homepage-2-root {
   margin: 0 !important;
   padding: 0 !important;
-  background-color: #f4f1ea;
+  background: var(--hp2-cream);
 }
 
 html[data-homepage2-experience] .homepage-2-root [data-page-transition] {
@@ -532,8 +546,13 @@ html[data-homepage2-experience] .homepage-2-footer.owo-footer {
   position: relative;
   z-index: 25;
   margin-top: 0 !important;
-  background-color: #f4f1ea !important;
+  background: var(--hp2-cream) !important;
   border-top: none !important;
+  box-shadow: none !important;
+}
+
+html[data-homepage2-experience] .homepage-2-footer .owo-footer__legal {
+  border-top-color: rgb(44 40 36 / 0.08);
 }
 
 html[data-homepage2-experience] .homepage-2-footer .owo-footer__wordmark {

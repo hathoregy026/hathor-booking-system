@@ -10,21 +10,21 @@ export function HomePage2Client() {
     <div className="homepage-2-root">
       <HomePage2BookBar />
 
-      {/* Zone 1 — hero + dome pin only (scroll engine untouched) */}
+      {/* Pin theater only — hero, stripes, dome sheet (Venetian pin-wrapper pattern) */}
       <HomePage2ScrollReveal
         imageName="home-hero-poster"
         imageAlt="Luxury Nile cruise at sunset"
       />
 
-      {/* Zone 2 — dome column: content canvas + footer logo + footer cap */}
-      <div className="homepage-2-cream-floor">
-        <div className="homepage-2-dome-content" aria-hidden="true" />
+      {/* Post-pin cream column — flush sibling, no gap (Venetian content-section pattern) */}
+      <section className="homepage-2-content-section" aria-label="Page content">
+        <div className="homepage-2-dome-content" />
 
         <div className="homepage-2-column-tail">
           <HomePage2FooterGiantLogo />
           <HomePage2Footer />
         </div>
-      </div>
+      </section>
     </div>
   );
 }
