@@ -24,7 +24,7 @@ export function HomePage2ScrollReveal({
   imageAlt,
 }: HomePage2ScrollRevealProps) {
   const image = useSiteImage(imageName);
-  const rootRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const maskRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
@@ -106,8 +106,9 @@ export function HomePage2ScrollReveal({
           </feMerge>
         </filter>
       </svg>
-      <div ref={rootRef} className="homepage-2-pin-wrapper">
+      <div className="homepage-2-pin-wrapper">
         <section
+          ref={rootRef}
           data-page-transition
           data-homepage2-transition
           className="hathor-page-scroll-transition hathor-page-hero"

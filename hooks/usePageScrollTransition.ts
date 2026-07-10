@@ -29,6 +29,8 @@ const MASK = {
 
 const PEEK_VH = 0.065;
 const PIN_VH = 4.2;
+/** Cruises sheet travel ≈ 4002px / 900px viewport — keeps hp2 hero rise pace in sync */
+const HP2_CRUISES_SHEET_TRAVEL_VH = 4.447;
 
 type Strip = { el: HTMLDivElement; colW: number; slatW: number };
 
@@ -219,7 +221,10 @@ export function usePageScrollTransition(config: PageScrollTransitionConfig) {
       const vh = window.innerHeight;
       const sheetH = sheetEl.offsetHeight;
       const peek = vh * PEEK_VH;
-      const startY = sheetH - peek;
+      const startY =
+        layout === "homepage-2"
+          ? vh * HP2_CRUISES_SHEET_TRAVEL_VH - peek
+          : sheetH - peek;
       const { start: rStart, end: rEnd } = getDomeRadii();
 
       const riseT = mapRange(p, 0, 0.7, 0, 1);
