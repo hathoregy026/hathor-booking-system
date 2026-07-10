@@ -21,7 +21,7 @@ html[data-cruises-experience] .cruises-scroll-root {
 html[data-cruises-experience] .public-site > .owo-footer {
   display: none !important;
 }
-html[data-cruises-experience]:not(.cruises-scroll-ready) .cruises-sheet-surface {
+html[data-cruises-experience]:not(.cruises-scroll-ready) .cruises-sheet-follower {
   visibility: hidden !important;
 }
 html[data-cruises-experience]:not(.cruises-scroll-ready) .cruises-content-layer {

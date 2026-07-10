@@ -1,7 +1,6 @@
-/**
- * Cruises scroll engine — animation layer (hero, mask, empty sheet runway).
- * Cream sheet surface syncs y + dome radius during pin (old follower behavior).
- * Listings live in .cruises-content-layer (normal scroll, no GSAP).
+﻿/**
+ * Cruises scroll engine — Homepage 2 mask/dome timing with synced follower.
+ * Reveal: follower rides the sheet (title + cream column). Listings in .cruises-content-layer.
  */
 "use client";
 
@@ -36,7 +35,7 @@ type CruisesScrollTransitionRefs = {
   stage: RefObject<HTMLElement | null>;
   mask: RefObject<HTMLElement | null>;
   sheet: RefObject<HTMLElement | null>;
-  sheetSurface: RefObject<HTMLElement | null>;
+  follower: RefObject<HTMLElement | null>;
   heroCopy: RefObject<HTMLElement | null>;
 };
 
@@ -102,7 +101,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     const stage = config.stage.current;
     const maskEl = config.mask.current;
     const sheet = config.sheet.current;
-    const surfaceEl = config.sheetSurface.current;
+    const followerEl = config.follower.current;
     const heroCopy = config.heroCopy.current;
 
     if (!root || !stage || !maskEl || !sheet) return;
@@ -121,8 +120,8 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
 
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
-    let lastSurfaceY = Number.NaN;
-    let lastSurfaceRadius = "";
+    let lastFollowerY = Number.NaN;
+    let lastFollowerRadius = "";
     const smoothScroll = setupSmoothScroll();
 
     function buildMaskStrips() {
@@ -164,6 +163,19 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
 
     function getRevealDistance() {
       return window.innerHeight * CRUISES_PIN_DISTANCE_VH;
+    }
+
+    function getContentScrollDistance() {
+      /* Listings live outside the pin — no extended tail pin. */
+      return 0;
+    }
+
+    function getTotalPinDistance() {
+      return getRevealDistance();
+    }
+
+    function getRevealProgress(scrollProgress: number) {
+      return clamp(scrollProgress, 0, 1);
     }
 
     function getDomeRadii() {
@@ -220,6 +232,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       const { start: rStart, end: rEnd } = getDomeRadii();
 
       const riseT = clamp(p, 0, 1);
+      /* Linear sheet travel — matches wheel speed; dome/mask keep eased timing. */
       const y = startY * (1 - riseT);
       const easedRiseT = easeOutCubic(riseT);
       const radius = rEnd + (rStart - rEnd) * (1 - easedRiseT);
@@ -239,29 +252,27 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       return { sheetY: y, radius };
     }
 
-    function applySheetSurface(
-      revealP: number,
-      sheetY: number,
-      radius: number | string,
-    ) {
-      if (!surfaceEl) return;
+    function applyFollower(scrollProgress: number, sheetY: number, radius: number | string) {
+      if (!followerEl) return;
       if (trigger.classList.contains("hathor-page-scroll--past-pin")) return;
 
+      const revealP = getRevealProgress(scrollProgress);
       const y = Math.round(sheetY);
-      const radiusKey = revealP < 0.98 ? String(radius) : "0";
+      const radiusKey =
+        revealP < 0.98 ? String(radius) : "0";
 
       trigger.classList.toggle(
         "hathor-page-scroll--content-active",
         revealP >= 0.995,
       );
 
-      if (y === lastSurfaceY && radiusKey === lastSurfaceRadius) return;
+      if (y === lastFollowerY && radiusKey === lastFollowerRadius) return;
 
-      lastSurfaceY = y;
-      lastSurfaceRadius = radiusKey;
+      lastFollowerY = y;
+      lastFollowerRadius = radiusKey;
 
       if (revealP < 0.98) {
-        gsap.set(surfaceEl, {
+        gsap.set(followerEl, {
           y,
           borderTopLeftRadius: radius,
           borderTopRightRadius: radius,
@@ -269,7 +280,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
         return;
       }
 
-      gsap.set(surfaceEl, {
+      gsap.set(followerEl, {
         y,
         borderTopLeftRadius: 0,
         borderTopRightRadius: 0,
@@ -277,9 +288,9 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     }
 
     function applyFrame(scrollProgress: number) {
-      const revealP = clamp(scrollProgress, 0, 1);
+      const revealP = getRevealProgress(scrollProgress);
       const { sheetY, radius } = applyProgress(revealP);
-      applySheetSurface(revealP, sheetY, radius);
+      applyFollower(scrollProgress, sheetY, radius);
     }
 
     const ctx = gsap.context(() => {
@@ -293,7 +304,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
           id: `cruises-scroll-${instanceId}`,
           trigger,
           start: "top top",
-          end: () => `+=${getRevealDistance()}`,
+          end: () => `+=${getTotalPinDistance()}`,
           pin: stage,
           pinSpacing: true,
           scrub: SCRUB,
@@ -305,9 +316,6 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
           onLeave: () => {
             trigger.classList.add("hathor-page-scroll--past-pin");
             trigger.classList.add("hathor-page-scroll--media-gone");
-            if (surfaceEl) {
-              gsap.set(surfaceEl, { clearProps: "transform,borderRadius" });
-            }
           },
           onEnterBack: () => {
             trigger.classList.remove("hathor-page-scroll--past-pin");
@@ -360,8 +368,10 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
         smoothScroll.lenis.destroy();
       }
       ctx.revert();
-      if (surfaceEl) {
-        gsap.set(surfaceEl, { clearProps: "transform,borderRadius" });
+      if (followerEl) {
+        gsap.set(followerEl, {
+          clearProps: "transform,borderTopLeftRadius,borderTopRightRadius",
+        });
       }
       trigger.classList.remove(
         "hathor-page-scroll--past-pin",
@@ -378,7 +388,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     config.stage,
     config.mask,
     config.sheet,
-    config.sheetSurface,
+    config.follower,
     config.heroCopy,
   ]);
 }
