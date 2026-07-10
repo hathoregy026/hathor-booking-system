@@ -210,8 +210,8 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       const startY = sheetH - peek;
       const { start: rStart, end: rEnd } = getDomeRadii();
 
-      const riseT = mapRange(p, 0, CRUISES_RISE_END, 0, 1);
-      const easedRiseT = easeOutCubic(riseT);
+      /* Rise spans the full pin — no frozen tail after dome completes */
+      const easedRiseT = easeOutCubic(p);
       const y = startY * (1 - easedRiseT);
 
       const radius = rEnd + (rStart - rEnd) * (1 - easedRiseT);
@@ -225,7 +225,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       applyMaskReveal(p);
 
       if (heroCopy) {
-        gsap.set(heroCopy, { opacity: mapRange(riseT, 0.35, 0.75, 1, 0) });
+        gsap.set(heroCopy, { opacity: mapRange(easedRiseT, 0.35, 0.75, 1, 0) });
       }
     }
 

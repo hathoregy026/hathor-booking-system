@@ -45,10 +45,61 @@ html[data-cruises-experience] .public-site > .owo-footer,
 
 .cruises-scroll-route [data-cruises-transition] {
   --pt-dome-r-start: 1250px;
-  --pt-dome-r-end: 0px;
+  --pt-dome-r-end: 0px !important;
   width: 100% !important;
   max-width: none !important;
   margin: 0 !important;
+}
+
+.cruises-scroll-route [data-cruises-transition] .pt-stage {
+  overflow: hidden !important;
+}
+
+.cruises-scroll-route [data-cruises-transition] .pt-sheet.cruises-sheet-runway {
+  height: 100svh !important;
+  min-height: 100svh !important;
+  max-height: 100svh !important;
+  overflow: hidden;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.cruises-scroll-route [data-cruises-transition] .cruises-sheet-follower {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 11;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  pointer-events: auto;
+  overflow: hidden;
+  overflow-anchor: none;
+  will-change: transform, border-radius;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.cruises-scroll-route
+  [data-cruises-transition].hathor-page-scroll--past-pin
+  .pt-stage {
+  height: auto !important;
+  min-height: 100svh;
+  overflow: hidden !important;
+  z-index: 0 !important;
+  pointer-events: none;
+}
+
+.cruises-scroll-route
+  [data-cruises-transition].hathor-page-scroll--past-pin
+  .pt-sheet.cruises-sheet-runway,
+.cruises-scroll-route
+  [data-cruises-transition].hathor-page-scroll--past-pin
+  .cruises-sheet-follower {
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
 }
 
 .cruises-scroll-route [data-cruises-transition] .pt-stage,
@@ -66,42 +117,9 @@ html[data-cruises-experience] .public-site > .owo-footer,
 }
 
 /* Empty animation runway — fixed height so dome math matches Homepage 2 */
-.cruises-scroll-route [data-cruises-transition] .pt-sheet.cruises-sheet-runway {
-  height: 100svh !important;
-  min-height: 100svh !important;
-  max-height: 100svh !important;
-  overflow: hidden;
-}
-
 .cruises-scroll-route [data-cruises-transition] .cruises-sheet-runway .pt-sheet__rise-cap {
   width: 100%;
   min-height: 0 !important;
-}
-
-/* Listings rise with the cream runway — top-aligned so landing sits under the dome */
-.cruises-scroll-route [data-cruises-transition] .cruises-sheet-follower {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  z-index: 11;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  background: transparent;
-  pointer-events: auto;
-  overflow-anchor: none;
-  will-change: transform;
-}
-
-.cruises-scroll-route
-  [data-cruises-transition].hathor-page-scroll--past-pin
-  .pt-stage {
-  height: auto !important;
-  min-height: 100svh;
-  overflow: visible !important;
-  z-index: 0 !important;
-  pointer-events: none;
 }
 
 .cruises-scroll-route [data-cruises-transition] .cruises-sheet-follower .pt-sheet__content {
@@ -222,9 +240,16 @@ body.has-page-scroll-transition:has(.cruises-scroll-route) .pin-spacer {
   display: none;
 }
 
+@media (max-width: 1024px) {
+  .cruises-scroll-route [data-cruises-transition] {
+    --pt-dome-r-end: 0px !important;
+  }
+}
+
 @media (max-width: 768px) {
   .cruises-scroll-route [data-cruises-transition] {
     --pt-dome-r-start: 600px;
+    --pt-dome-r-end: 0px !important;
   }
 }
 
@@ -241,5 +266,6 @@ body.has-page-scroll-transition:has(.cruises-scroll-route) .pin-spacer {
 @media (max-width: 480px) {
   .cruises-scroll-route [data-cruises-transition] {
     --pt-dome-r-start: 300px;
+    --pt-dome-r-end: 0px !important;
   }
 }
