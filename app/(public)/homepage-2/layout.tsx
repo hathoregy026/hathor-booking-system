@@ -1,15 +1,18 @@
 import type { ReactNode } from "react";
 
 /** Boot homepage-2 book bar + cream theme before hydration. */
-const HP2_BOOT = `(function(){try{var d=document;d.documentElement.setAttribute("data-homepage2-experience","");}catch(e){}})();`;
+const HP2_BOOT = `(function(){try{var d=document;d.documentElement.setAttribute("data-homepage2-experience","");d.documentElement.style.setProperty("--public-bg","#f4f1ea");d.documentElement.style.setProperty("--pt-cream","#f4f1ea");}catch(e){}})();`;
 
 const HP2_CRITICAL_CSS = `
 .homepage-2-route,
 .homepage-2-route .public-site,
 .homepage-2-route .public-main,
 .homepage-2-route .page-transition {
+  --public-bg: #f4f1ea;
+  --pt-cream: #f4f1ea;
   background-color: #f4f1ea !important;
 }
+html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-stage,
 html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet,
 html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet__rise-cap,
 html[data-homepage2-experience] .homepage-2-cream-floor,

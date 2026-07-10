@@ -20,7 +20,10 @@ html[data-homepage2-experience] body {
 
 html[data-homepage2-experience] .public-site,
 html[data-homepage2-experience] .public-main,
-html[data-homepage2-experience] .page-transition {
+html[data-homepage2-experience] .page-transition,
+html[data-homepage2-experience] .hathor-site {
+  --public-bg: #f4f1ea;
+  --pt-cream: #f4f1ea;
   background-color: #f4f1ea !important;
 }
 
@@ -447,8 +450,28 @@ html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-shee
   min-height: clamp(70rem, 140vh, 100rem);
 }
 
+/* Cream bridge — overlaps pin-spacer bottom so dome column reads continuous on scroll */
+.homepage-2-cream-floor::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -100vh;
+  height: 100vh;
+  background-color: #f4f1ea;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Pinned stage fill — matches sheet cream so hero-to-dome gap is invisible (color only) */
+html[data-homepage2-experience] body.has-page-scroll-transition .homepage-2-root [data-page-transition] .pt-stage {
+  background-color: #f4f1ea !important;
+}
+
 /* Future page content: images, text, animations */
 .homepage-2-dome-content {
+  position: relative;
+  z-index: 1;
   flex: 1 1 auto;
   width: 100%;
   min-height: clamp(40rem, 80vh, 60rem);
@@ -460,6 +483,7 @@ html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-shee
 /* Bottom cap — footer logo + footer connected to dome column */
 .homepage-2-column-tail {
   position: relative;
+  z-index: 1;
   flex-shrink: 0;
   width: 100%;
   margin: 0;
