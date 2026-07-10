@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, type ReactNode } from "react";
 import { useHomePage2GiantLogo } from "@/app/(public)/homepage-2/useHomePage2GiantLogo";
 import { useHomePage2ScrollTransition } from "@/hooks/useHomePage2ScrollTransition";
+import { useCruisesSheetFollower } from "@/hooks/useCruisesSheetFollower";
 import {
   refreshPageScrollTransition,
 } from "@/components/pages/pageScrollTransitionEngine";
@@ -24,28 +25,35 @@ function clearCruisesScrollReady() {
 
 export type CruisesScrollRevealProps = {
   heroTitle: string;
+  title: string;
   subtitle?: string;
   breadcrumb: string;
   imageName: string;
   imageAlt?: string;
+  sheetBelowLanding?: ReactNode;
+  children: ReactNode;
 };
 
 /**
- * Pin theater only — same empty-sheet runway as Homepage 2 so dome/stripe math stays identical.
- * Listings live in CruisesPageContent as a sibling section.
+ * Empty 100svh sheet runway for Homepage 2 dome math.
+ * Listings in .cruises-sheet-follower use PageScrollTransition rise travel.
  */
 export function CruisesScrollReveal({
   heroTitle,
+  title,
   subtitle,
   breadcrumb,
   imageName,
   imageAlt,
+  sheetBelowLanding,
+  children,
 }: CruisesScrollRevealProps) {
   const image = useSiteImage(imageName);
   const rootRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const maskRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
+  const followerRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
   const giantLogoRef = useRef<HTMLDivElement>(null);
 
@@ -58,6 +66,7 @@ export function CruisesScrollReveal({
   });
 
   useHomePage2GiantLogo(rootRef, giantLogoRef);
+  useCruisesSheetFollower(rootRef, sheetRef, followerRef);
 
   useLayoutEffect(() => {
     const root = rootRef.current;
@@ -152,9 +161,31 @@ export function CruisesScrollReveal({
               </div>
             </div>
           </div>
-          <div ref={sheetRef} className="pt-sheet">
+
+          <div ref={sheetRef} className="pt-sheet cruises-sheet-runway">
             <div className="pt-sheet__rise-cap" aria-hidden="true" />
-            <div className="pt-sheet__content" />
+          </div>
+
+          <div
+            ref={followerRef}
+            className="cruises-sheet-follower"
+            aria-labelledby="cruises-landing-title"
+          >
+            <div className="pt-sheet__landing">
+              <div className="hathor-container">
+                <h2 id="cruises-landing-title" className="pt-sheet__landing-title">
+                  {title}
+                </h2>
+              </div>
+            </div>
+
+            {sheetBelowLanding ? (
+              <div className="pt-sheet__filters">{sheetBelowLanding}</div>
+            ) : null}
+
+            <div className="pt-sheet__rise-cap" aria-hidden="true" />
+
+            <div className="pt-sheet__content">{children}</div>
           </div>
         </div>
       </section>

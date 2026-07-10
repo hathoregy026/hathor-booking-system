@@ -17,38 +17,19 @@ export function CruisesPageContent() {
       <div className="cruises-scroll-root">
         <CruisesScrollReveal
           heroTitle="Experience Egypt."
+          title={CRUISES_PAGE.hero.title}
           subtitle={CRUISES_PAGE.hero.subtitle}
           breadcrumb="Cruises"
           imageName="cruises-hero"
-        />
-
-        <section
-          className="cruises-content-section"
-          aria-labelledby="cruises-landing-title"
+          sheetBelowLanding={<CruisesPageFilters />}
         >
-          <div className="pt-sheet__landing">
-            <div className="hathor-container">
-              <h2 id="cruises-landing-title" className="pt-sheet__landing-title">
-                {CRUISES_PAGE.hero.title}
-              </h2>
-            </div>
-          </div>
+          <CruisesPageListingsGrid />
+          <CtaBand />
+        </CruisesScrollReveal>
 
-          <div className="pt-sheet__filters">
-            <CruisesPageFilters />
-          </div>
-
-          <div className="pt-sheet__rise-cap" aria-hidden="true" />
-
-          <div className="pt-sheet__content">
-            <CruisesPageListingsGrid />
-            <CtaBand />
-          </div>
-
-          <div className="cruises-column-tail">
-            <CruisesFooter />
-          </div>
-        </section>
+        <div className="cruises-column-tail">
+          <CruisesFooter />
+        </div>
       </div>
     </CruisesListingProvider>
   );
