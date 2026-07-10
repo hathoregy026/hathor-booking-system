@@ -41,6 +41,13 @@ html[data-cruises-experience] .public-site > .owo-footer,
   max-width: none;
   margin: 0;
   padding: 0;
+  overflow: hidden;
+}
+
+.cruises-scroll-route
+  [data-cruises-transition].hathor-page-scroll--past-pin
+  .cruises-pin-wrapper {
+  overflow: visible;
 }
 
 .cruises-scroll-route [data-cruises-transition] {
@@ -52,7 +59,33 @@ html[data-cruises-experience] .public-site > .owo-footer,
 }
 
 .cruises-scroll-route [data-cruises-transition] .pt-stage {
+  overflow: hidden !important;
+  background-color: var(--cruises-cream) !important;
+}
+
+body.has-page-scroll-transition:has(.cruises-scroll-route)
+  [data-page-transition]:not([data-test-scroll-reveal])
+  .pt-stage,
+body.has-page-scroll-transition:has(.cruises-scroll-route)
+  [data-page-transition]:not([data-test-scroll-reveal])
+  .pt-sheet,
+body.has-page-scroll-transition:has(.cruises-scroll-route)
+  [data-page-transition]:not([data-test-scroll-reveal])
+  .pt-sheet__filters,
+body.has-page-scroll-transition:has(.cruises-scroll-route)
+  [data-page-transition]:not([data-test-scroll-reveal])
+  .pt-sheet__landing {
+  background-color: var(--cruises-cream) !important;
+}
+
+.cruises-scroll-route
+  [data-cruises-transition].hathor-page-scroll--past-pin
+  .pt-stage {
+  height: auto !important;
+  min-height: 100svh;
   overflow: visible !important;
+  z-index: 0 !important;
+  pointer-events: none;
 }
 
 .cruises-scroll-route [data-cruises-transition] .pt-hero {
@@ -63,7 +96,9 @@ html[data-cruises-experience] .public-site > .owo-footer,
   height: 100svh !important;
   min-height: 100svh !important;
   max-height: 100svh !important;
-  overflow: hidden;
+  overflow: hidden !important;
+  background-color: transparent !important;
+  pointer-events: none;
   border-bottom-left-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
 }
@@ -77,9 +112,9 @@ html[data-cruises-experience] .public-site > .owo-footer,
   width: 100%;
   margin: 0;
   padding: 0;
-  background: transparent;
+  background-color: var(--cruises-cream) !important;
   pointer-events: auto;
-  overflow: visible;
+  overflow: hidden;
   overflow-anchor: none;
   will-change: transform, border-radius;
   border-bottom-left-radius: 0 !important;
@@ -92,16 +127,7 @@ html[data-cruises-experience] .public-site > .owo-footer,
   position: relative;
   top: auto;
   will-change: auto;
-}
-
-.cruises-scroll-route
-  [data-cruises-transition].hathor-page-scroll--past-pin
-  .pt-stage {
-  height: auto !important;
-  min-height: 100svh;
-  overflow: visible !important;
-  z-index: 0 !important;
-  pointer-events: none;
+  overflow: visible;
 }
 
 .cruises-scroll-route
@@ -131,6 +157,16 @@ html[data-cruises-experience] .public-site > .owo-footer,
 /* Empty animation runway — fixed height so dome math matches Homepage 2 */
 .cruises-scroll-route [data-cruises-transition] .cruises-sheet-runway .pt-sheet__rise-cap {
   width: 100%;
+  min-height: 0 !important;
+  background-color: var(--cruises-cream) !important;
+}
+
+/* Follower rise-cap removed in DOM — guard against global min-height */
+.cruises-scroll-route
+  [data-cruises-transition]
+  .cruises-sheet-follower
+  .pt-sheet__rise-cap {
+  display: none !important;
   min-height: 0 !important;
 }
 

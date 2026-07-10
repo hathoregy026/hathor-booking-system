@@ -1,6 +1,6 @@
 /**
- * Cruises scroll engine — Homepage 2 mask/dome timing with a shorter pin.
- * Pin ends when the cream rise completes so listings scroll smoothly (no frozen tail).
+ * Cruises scroll engine — Homepage 2 mask/dome timing with listings tail-scroll.
+ * Sheet + follower share one scrubbed timeline for uniform scroll speed.
  */
 "use client";
 
@@ -24,9 +24,8 @@ const MASK = {
 const PEEK_VH = 0.065;
 export const CRUISES_PIN_VH = 4.2;
 export const CRUISES_RISE_END = 0.7;
-/** Pin travel in viewport heights — ends when dome rise finishes. */
+/** Pin travel in viewport heights — dome rise completes at this distance. */
 export const CRUISES_PIN_DISTANCE_VH = CRUISES_PIN_VH * CRUISES_RISE_END;
-const SCRUB = 1.2;
 
 type Strip = { el: HTMLDivElement; colW: number; slatW: number };
 
@@ -172,25 +171,6 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       return getRevealDistance() + getContentScrollDistance();
     }
 
-    function syncPinSpacerRoom() {
-      const pinSpacer = stageEl.parentElement;
-      if (!pinSpacer?.classList.contains("pin-spacer")) return;
-
-      const pastPin = trigger.classList.contains("hathor-page-scroll--past-pin");
-      const extra = getContentScrollDistance();
-
-      if (pastPin || extra <= 0) {
-        pinSpacer.style.removeProperty("padding-bottom");
-      } else {
-        pinSpacer.style.paddingBottom = `${extra}px`;
-      }
-    }
-
-    function getRevealProgress(scrollProgress: number) {
-      const revealShare = getRevealDistance() / Math.max(getTotalPinDistance(), 1);
-      return clamp(scrollProgress / revealShare, 0, 1);
-    }
-
     function getDomeRadii() {
       const styles = getComputedStyle(trigger);
       return {
@@ -244,11 +224,12 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       const startY = sheetH - peek;
       const { start: rStart, end: rEnd } = getDomeRadii();
 
-      /* Rise spans the full pin — no frozen tail after dome completes */
-      const easedRiseT = easeOutCubic(p);
-      const y = startY * (1 - easedRiseT);
+      /* Linear rise — scroll pixels map 1:1 to sheet travel (no frozen tail). */
+      const riseT = clamp(p, 0, 1);
+      const y = startY * (1 - riseT);
 
-      const radius = rEnd + (rStart - rEnd) * (1 - easedRiseT);
+      const radiusProgress = easeOutCubic(mapRange(riseT, 0.04, 0.42, 0, 1));
+      const radius = rEnd + (rStart - rEnd) * (1 - radiusProgress);
 
       gsap.set(sheetEl, {
         y,
@@ -256,11 +237,38 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
         borderTopRightRadius: radius,
       });
 
-      applyMaskReveal(p);
+      applyMaskReveal(riseT);
 
       if (heroCopy) {
-        gsap.set(heroCopy, { opacity: mapRange(easedRiseT, 0.35, 0.75, 1, 0) });
+        gsap.set(heroCopy, { opacity: mapRange(riseT, 0.35, 0.75, 1, 0) });
       }
+
+      return { sheetY: y, radius };
+    }
+
+    function applyFollower(scrolledPx: number, sheetY: number, radius: number) {
+      if (!followerEl) return;
+
+      if (trigger.classList.contains("hathor-page-scroll--past-pin")) {
+        gsap.set(followerEl, {
+          clearProps: "transform,borderTopLeftRadius,borderTopRightRadius",
+        });
+        return;
+      }
+
+      const contentScroll = Math.max(0, scrolledPx - getRevealDistance());
+
+      gsap.set(followerEl, {
+        y: sheetY - contentScroll,
+        borderTopLeftRadius: radius,
+        borderTopRightRadius: radius,
+      });
+    }
+
+    function applyScrolledPx(scrolledPx: number) {
+      const revealP = clamp(scrolledPx / getRevealDistance(), 0, 1);
+      const { sheetY, radius } = applyProgress(revealP);
+      applyFollower(scrolledPx, sheetY, radius);
     }
 
     const ctx = gsap.context(() => {
@@ -268,7 +276,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
 
       const setup = () => {
         if (!buildMaskStrips()) return false;
-        applyProgress(0);
+        applyScrolledPx(0);
 
         ScrollTrigger.create({
           id: `cruises-scroll-${instanceId}`,
@@ -277,26 +285,21 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
           end: () => `+=${getTotalPinDistance()}`,
           pin: stage,
           pinSpacing: true,
-          scrub: SCRUB,
+          scrub: false,
           invalidateOnRefresh: true,
           anticipatePin: 1,
           onUpdate: (self) => {
-            syncPinSpacerRoom();
-            applyProgress(getRevealProgress(self.progress));
+            applyScrolledPx(self.progress * getTotalPinDistance());
           },
           onLeave: () => {
             trigger.classList.add("hathor-page-scroll--past-pin");
             trigger.classList.add("hathor-page-scroll--media-gone");
-            syncPinSpacerRoom();
-            requestAnimationFrame(() => ScrollTrigger.refresh());
+            applyFollower(getTotalPinDistance(), 0, 0);
           },
           onEnterBack: () => {
             trigger.classList.remove("hathor-page-scroll--past-pin");
-            syncPinSpacerRoom();
           },
         });
-
-        syncPinSpacerRoom();
 
         return true;
       };
@@ -313,14 +316,13 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       if (resizeTimer) clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
         const st = ScrollTrigger.getById(`cruises-scroll-${instanceId}`);
-        const progress = st?.progress ?? 0;
+        const scrolledPx = (st?.progress ?? 0) * getTotalPinDistance();
 
         releasePinWidth();
 
         if (buildMaskStrips()) {
-          applyProgress(getRevealProgress(progress));
+          applyScrolledPx(scrolledPx);
         }
-        syncPinSpacerRoom();
         ScrollTrigger.refresh();
       }, 150);
     };
@@ -331,7 +333,17 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     const resizeObserver = new ResizeObserver(() => onResize());
     resizeObserver.observe(stageEl);
     resizeObserver.observe(mask);
-    if (followerEl) resizeObserver.observe(followerEl);
+
+    let followerResizeTimer: ReturnType<typeof setTimeout> | null = null;
+    const followerObserver = followerEl
+      ? new ResizeObserver(() => {
+          if (followerResizeTimer) clearTimeout(followerResizeTimer);
+          followerResizeTimer = setTimeout(() => {
+            ScrollTrigger.refresh();
+          }, 400);
+        })
+      : null;
+    followerObserver?.observe(followerEl!);
 
     ScrollTrigger.refresh();
 
@@ -339,6 +351,8 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       window.removeEventListener("resize", onResize);
       window.visualViewport?.removeEventListener("resize", onResize);
       resizeObserver.disconnect();
+      followerObserver?.disconnect();
+      if (followerResizeTimer) clearTimeout(followerResizeTimer);
       if (resizeTimer) clearTimeout(resizeTimer);
       if (smoothScroll) {
         gsap.ticker.remove(smoothScroll.ticker);

@@ -7,7 +7,6 @@ import {
   CRUISES_PIN_DISTANCE_VH,
   useCruisesScrollTransition,
 } from "@/hooks/useCruisesScrollTransition";
-import { useCruisesSheetFollower } from "@/hooks/useCruisesSheetFollower";
 import {
   refreshPageScrollTransition,
 } from "@/components/pages/pageScrollTransitionEngine";
@@ -70,7 +69,6 @@ export function CruisesScrollReveal({
   });
 
   useHomePage2GiantLogo(rootRef, giantLogoRef);
-  useCruisesSheetFollower(rootRef, sheetRef, followerRef);
 
   useLayoutEffect(() => {
     const root = rootRef.current;
@@ -86,7 +84,8 @@ export function CruisesScrollReveal({
       );
 
       const inHeroZone = pinProgress < 0.12;
-      const hideMedia = !inHeroZone && pinProgress > 0.82;
+      /* Hide hero photo as soon as the cream sheet rises — stops corner “ears”. */
+      const hideMedia = !inHeroZone && pinProgress > 0.3;
 
       root.classList.toggle("hathor-page-scroll--media-gone", hideMedia);
     };
@@ -187,8 +186,6 @@ export function CruisesScrollReveal({
             {sheetBelowLanding ? (
               <div className="pt-sheet__filters">{sheetBelowLanding}</div>
             ) : null}
-
-            <div className="pt-sheet__rise-cap" aria-hidden="true" />
 
             <div className="pt-sheet__content">{children}</div>
           </div>
