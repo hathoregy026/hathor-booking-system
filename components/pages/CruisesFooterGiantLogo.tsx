@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { useCruisesFooterGiantLogo } from "@/hooks/useCruisesFooterGiantLogo";
+import { useHomePage2FooterGiantLogo } from "@/app/(public)/homepage-2/useHomePage2FooterGiantLogo";
 
 const BACK_LOGO_SRC =
   "/branding/hathor-logo-behing-the-sheet-egypt-toors-pyramids.svg";
@@ -9,7 +9,7 @@ const BACK_LOGO_SRC =
 export function CruisesFooterGiantLogo() {
   const logoRef = useRef<HTMLDivElement>(null);
 
-  useCruisesFooterGiantLogo(logoRef);
+  useHomePage2FooterGiantLogo(logoRef);
 
   return (
     <div className="cruises-footer-logo-stage" aria-hidden="true">

@@ -28,7 +28,7 @@ export function CruisesFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="owo-footer cruises-footer !mt-0 !pt-20">
+    <footer className="owo-footer cruises-footer homepage-2-footer !mt-0 !pt-20">
       <div className="owo-footer__inner hathor-container">
         <div className="owo-footer__grid">
           <div className="owo-footer__brand">
