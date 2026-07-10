@@ -102,7 +102,8 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   border-bottom-right-radius: 0 !important;
 }
 
-.cruises-scroll-route [data-cruises-transition] .cruises-sheet-follower {
+/* Reveal-only follower — landing title synced to sheet during pin, no listings */
+.cruises-scroll-route [data-cruises-transition] .cruises-reveal-follower {
   position: absolute;
   left: 0;
   right: 0;
@@ -112,29 +113,18 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   margin: 0;
   padding: 0;
   background-color: var(--cruises-cream) !important;
-  pointer-events: auto;
+  pointer-events: none;
   overflow: hidden;
-  overflow-anchor: none;
-  will-change: auto;
   border-bottom-left-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
 }
 
 .cruises-scroll-route
-  [data-cruises-transition].hathor-page-scroll--content-active
-  .cruises-sheet-follower {
-  overflow: visible;
-  border-top-left-radius: 0 !important;
-  border-top-right-radius: 0 !important;
-}
-
-.cruises-scroll-route
   [data-cruises-transition].hathor-page-scroll--past-pin
-  .cruises-sheet-follower {
-  position: relative;
-  top: auto;
-  will-change: auto;
-  overflow: visible;
+  .cruises-reveal-follower {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 .cruises-scroll-route
@@ -142,48 +132,26 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   .pt-sheet.cruises-sheet-runway,
 .cruises-scroll-route
   [data-cruises-transition].hathor-page-scroll--past-pin
-  .cruises-sheet-follower {
+  .cruises-reveal-follower {
   border-top-left-radius: 0 !important;
   border-top-right-radius: 0 !important;
 }
 
-.cruises-scroll-route [data-cruises-transition] .cruises-sheet-follower .page-layout__grid {
-  isolation: isolate;
-  transform: translateZ(0);
+/* Post-pin listings — normal document flow, stable hover (Homepage 2 pattern) */
+.cruises-content-section {
+  position: relative;
+  z-index: 20;
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--cruises-cream);
 }
 
-/* Cards inside GSAP-transformed follower — static layout, no hover motion */
-.cruises-scroll-route .cruises-sheet-follower .cruises-listing-card,
-.cruises-scroll-route .cruises-sheet-follower .hathor-cruise-card {
-  contain: layout style paint;
-  transition: none !important;
-  transform: none !important;
-  will-change: auto;
-}
-
-.cruises-scroll-route .cruises-sheet-follower .scroll-reveal,
-.cruises-scroll-route .cruises-sheet-follower [data-lux-scroll-reveal] {
-  opacity: 1 !important;
-  transform: none !important;
-  transition: none !important;
-  will-change: auto;
-}
-
-.cruises-scroll-route .cruises-sheet-follower .hathor-cruise-card:hover,
-.cruises-scroll-route .cruises-sheet-follower .cruises-listing-card:hover {
-  transform: none !important;
-  box-shadow: none !important;
-  border-color: rgb(182 159 100 / 0.42);
-}
-
-.cruises-scroll-route .cruises-sheet-follower .hathor-cruise-card__image,
-.cruises-scroll-route .cruises-sheet-follower .hathor-cruise-card__image img {
-  transform: none !important;
-  transition: none !important;
-}
 .cruises-scroll-route [data-cruises-transition] .pt-sheet,
 .cruises-scroll-route [data-cruises-transition] .pt-sheet__rise-cap,
-.cruises-scroll-route [data-cruises-transition] .pt-sheet__content {
+.cruises-scroll-route [data-cruises-transition] .pt-sheet__content,
+.cruises-content-section .pt-sheet__content {
   background-color: var(--cruises-cream) !important;
 }
 
@@ -194,60 +162,10 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   max-width: none !important;
 }
 
-/* Empty animation runway — fixed height so dome math matches Homepage 2 */
 .cruises-scroll-route [data-cruises-transition] .cruises-sheet-runway .pt-sheet__rise-cap {
   width: 100%;
   min-height: 0 !important;
   background-color: var(--cruises-cream) !important;
-}
-
-/* Follower rise-cap removed in DOM — guard against global min-height */
-.cruises-scroll-route
-  [data-cruises-transition]
-  .cruises-sheet-follower
-  .pt-sheet__rise-cap {
-  display: none !important;
-  min-height: 0 !important;
-}
-
-.cruises-scroll-route [data-cruises-transition] .cruises-sheet-follower .pt-sheet__content {
-  overflow-anchor: none;
-}
-
-.cruises-scroll-route [data-cruises-transition] .cruises-sheet-follower .page-layout__filters,
-.cruises-scroll-route [data-cruises-transition] .cruises-sheet-follower .page-layout__grid,
-.cruises-scroll-route [data-cruises-transition] .cruises-sheet-follower .page-layout__content {
-  overflow-anchor: none;
-}
-
-/* Cards inside GSAP-transformed follower — no nested transforms or motion */
-.cruises-scroll-route .cruises-sheet-follower .cruises-listing-card,
-.cruises-scroll-route .cruises-sheet-follower .hathor-cruise-card {
-  contain: layout style paint;
-  transition: border-color 0.35s ease, box-shadow 0.35s ease;
-  transform: none !important;
-  will-change: auto;
-}
-
-.cruises-scroll-route .cruises-sheet-follower .scroll-reveal,
-.cruises-scroll-route .cruises-sheet-follower [data-lux-scroll-reveal] {
-  opacity: 1 !important;
-  transform: none !important;
-  transition: none !important;
-  will-change: auto;
-}
-
-.cruises-scroll-route .cruises-sheet-follower .hathor-cruise-card:hover,
-.cruises-scroll-route .cruises-sheet-follower .cruises-listing-card:hover {
-  transform: none !important;
-  border-color: rgb(182 159 100 / 0.35);
-  box-shadow: 0 16px 40px rgb(0 0 0 / 0.14);
-}
-
-.cruises-scroll-route .cruises-sheet-follower .hathor-cruise-card__image,
-.cruises-scroll-route .cruises-sheet-follower .hathor-cruise-card__image img {
-  transform: none !important;
-  transition: none !important;
 }
 
 body.has-page-scroll-transition:has(.cruises-scroll-route) .pin-spacer {
@@ -258,7 +176,6 @@ body.has-page-scroll-transition:has(.cruises-scroll-route) .pin-spacer {
   background-color: var(--cruises-cream) !important;
 }
 
-/* Giant logo — Homepage 2 hero layer */
 .cruises-scroll-route [data-cruises-transition] .cruises-hero__copy {
   position: absolute;
   inset: 0 !important;
@@ -314,7 +231,6 @@ body.has-page-scroll-transition:has(.cruises-scroll-route) .pin-spacer {
   pointer-events: none !important;
 }
 
-/* After pin only — hide full hero stack (mask is done by then) */
 .cruises-scroll-route
   [data-cruises-transition].hathor-page-scroll--past-pin
   .pt-hero {
@@ -323,24 +239,46 @@ body.has-page-scroll-transition:has(.cruises-scroll-route) .pin-spacer {
   pointer-events: none !important;
 }
 
-/* Past pin: transition stack must not block filters/listings */
 .cruises-scroll-route
   [data-cruises-transition].hathor-page-scroll--past-pin {
   pointer-events: none;
 }
 
-.cruises-scroll-route
-  [data-cruises-transition].hathor-page-scroll--past-pin
-  .cruises-sheet-follower
-  .pt-sheet__filters,
-.cruises-scroll-route
-  [data-cruises-transition].hathor-page-scroll--past-pin
-  .cruises-sheet-follower
-  .pt-sheet__content {
+.cruises-content-section,
+.cruises-content-section .pt-sheet__filters,
+.cruises-content-section .pt-sheet__content {
   pointer-events: auto;
 }
 
-/* Footer inside sheet follower */
+/* Listings zone — no lift transform; scroll + translateY fights the cursor */
+.cruises-content-section .hathor-cruise-card,
+.cruises-content-section .cruises-listing-card {
+  transition: border-color 0.35s ease, box-shadow 0.35s ease;
+  transform: none !important;
+  will-change: auto;
+}
+
+.cruises-content-section .hathor-cruise-card:hover,
+.cruises-content-section .cruises-listing-card:hover {
+  transform: none !important;
+  border-color: rgb(182 159 100 / 0.35);
+  box-shadow: 0 16px 40px rgb(0 0 0 / 0.14);
+}
+
+.cruises-content-section .hathor-cruise-card__image,
+.cruises-content-section .hathor-cruise-card__image img {
+  transform: none !important;
+}
+
+/* Hide document-flow title during pin — reveal follower shows it rising with the dome */
+.cruises-scroll-root:has(
+    [data-cruises-transition]:not(.hathor-page-scroll--past-pin)
+  )
+  .cruises-content-section
+  > .pt-sheet__landing {
+  visibility: hidden;
+}
+
 .cruises-scroll-route .cruises-column-tail {
   position: relative;
   z-index: 1;
@@ -383,9 +321,6 @@ body.has-page-scroll-transition:has(.cruises-scroll-route) .pin-spacer {
 @media (max-width: 767px) {
   .cruises-scroll-route .cruises-giant-logo {
     width: 96vw;
-  }
-
-  .cruises-scroll-route .cruises-giant-logo {
     top: 37.44%;
   }
 }

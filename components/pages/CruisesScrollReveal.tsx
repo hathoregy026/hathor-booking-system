@@ -37,8 +37,8 @@ export type CruisesScrollRevealProps = {
 };
 
 /**
- * Empty 100svh sheet runway for Homepage 2 dome math.
- * Listings in .cruises-sheet-follower use PageScrollTransition rise travel.
+ * Pin theater for mask/dome reveal. Listings scroll in .cruises-content-section
+ * (normal flow — stable hover, no GSAP y on cards).
  */
 export function CruisesScrollReveal({
   heroTitle,
@@ -85,8 +85,10 @@ export function CruisesScrollReveal({
 
       const inHeroZone = pinProgress < 0.12;
       const hideMedia = !inHeroZone && pinProgress > 0.35;
+      const pastPin = pinProgress >= 0.995;
 
       root.classList.toggle("hathor-page-scroll--media-gone", hideMedia);
+      root.classList.toggle("hathor-page-scroll--past-pin", pastPin);
     };
 
     syncMediaVisibility();
@@ -123,73 +125,87 @@ export function CruisesScrollReveal({
   }, []);
 
   return (
-    <div className="cruises-pin-wrapper">
+    <>
+      <div className="cruises-pin-wrapper">
+        <section
+          ref={rootRef}
+          data-page-transition
+          data-cruises-transition
+          className="hathor-page-scroll-transition hathor-page-hero"
+        >
+          <div ref={stageRef} className="pt-stage">
+            <div className="pt-hero">
+              <div className="pt-hero__media">
+                <img
+                  src={image.src}
+                  alt={imageAlt ?? image.alt}
+                  fetchPriority="high"
+                  decoding="async"
+                  onLoad={() => refreshPageScrollTransition()}
+                />
+                <div className="pt-hero__overlay" aria-hidden />
+              </div>
+              <div ref={maskRef} className="pt-mask" aria-hidden="true" />
+              <div ref={heroCopyRef} className="pt-hero__copy cruises-hero__copy">
+                <div ref={giantLogoRef} className="giant-logo-container cruises-giant-logo">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={BACK_LOGO_SRC} alt="Hathor" />
+                </div>
+                <div className="hathor-container hathor-page-hero__content cruises-hero__content">
+                  <nav className="hathor-breadcrumb" aria-label="Breadcrumb">
+                    <Link href="/">Home</Link>
+                    <span aria-hidden>/</span>
+                    <span aria-current="page">{breadcrumb}</span>
+                  </nav>
+                  <h1 className="hathor-page-hero__title hathor-page-hero__title--feature">
+                    {heroTitle}
+                  </h1>
+                  {subtitle ? (
+                    <p className="hathor-page-hero__subtitle">{subtitle}</p>
+                  ) : null}
+                  <div className="hathor-gold-line" />
+                </div>
+              </div>
+            </div>
+
+            <div ref={sheetRef} className="pt-sheet cruises-sheet-runway">
+              <div className="pt-sheet__rise-cap" aria-hidden="true" />
+            </div>
+
+            <div
+              ref={followerRef}
+              className="cruises-reveal-follower"
+              aria-hidden="true"
+            >
+              <div className="pt-sheet__landing">
+                <div className="hathor-container">
+                  <h2 className="pt-sheet__landing-title">{title}</h2>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
       <section
-        ref={rootRef}
-        data-page-transition
-        data-cruises-transition
-        className="hathor-page-scroll-transition hathor-page-hero"
+        className="cruises-content-section"
+        aria-label="Cruise listings"
+        aria-labelledby="cruises-landing-title"
       >
-        <div ref={stageRef} className="pt-stage">
-          <div className="pt-hero">
-            <div className="pt-hero__media">
-              <img
-                src={image.src}
-                alt={imageAlt ?? image.alt}
-                fetchPriority="high"
-                decoding="async"
-                onLoad={() => refreshPageScrollTransition()}
-              />
-              <div className="pt-hero__overlay" aria-hidden />
-            </div>
-            <div ref={maskRef} className="pt-mask" aria-hidden="true" />
-            <div ref={heroCopyRef} className="pt-hero__copy cruises-hero__copy">
-              <div ref={giantLogoRef} className="giant-logo-container cruises-giant-logo">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={BACK_LOGO_SRC} alt="Hathor" />
-              </div>
-              <div className="hathor-container hathor-page-hero__content cruises-hero__content">
-                <nav className="hathor-breadcrumb" aria-label="Breadcrumb">
-                  <Link href="/">Home</Link>
-                  <span aria-hidden>/</span>
-                  <span aria-current="page">{breadcrumb}</span>
-                </nav>
-                <h1 className="hathor-page-hero__title hathor-page-hero__title--feature">
-                  {heroTitle}
-                </h1>
-                {subtitle ? (
-                  <p className="hathor-page-hero__subtitle">{subtitle}</p>
-                ) : null}
-                <div className="hathor-gold-line" />
-              </div>
-            </div>
-          </div>
-
-          <div ref={sheetRef} className="pt-sheet cruises-sheet-runway">
-            <div className="pt-sheet__rise-cap" aria-hidden="true" />
-          </div>
-
-          <div
-            ref={followerRef}
-            className="cruises-sheet-follower"
-            aria-labelledby="cruises-landing-title"
-          >
-            <div className="pt-sheet__landing">
-              <div className="hathor-container">
-                <h2 id="cruises-landing-title" className="pt-sheet__landing-title">
-                  {title}
-                </h2>
-              </div>
-            </div>
-
-            {sheetBelowLanding ? (
-              <div className="pt-sheet__filters">{sheetBelowLanding}</div>
-            ) : null}
-
-            <div className="pt-sheet__content">{children}</div>
+        <div className="pt-sheet__landing">
+          <div className="hathor-container">
+            <h2 id="cruises-landing-title" className="pt-sheet__landing-title">
+              {title}
+            </h2>
           </div>
         </div>
+
+        {sheetBelowLanding ? (
+          <div className="pt-sheet__filters">{sheetBelowLanding}</div>
+        ) : null}
+
+        <div className="pt-sheet__content">{children}</div>
       </section>
-    </div>
+    </>
   );
 }
