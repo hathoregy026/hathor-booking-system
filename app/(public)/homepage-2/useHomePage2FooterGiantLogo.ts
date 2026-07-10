@@ -66,7 +66,7 @@ export function useHomePage2FooterGiantLogo(
     }
 
     function sync() {
-      const footer = document.querySelector<HTMLElement>(".public-site > .owo-footer");
+      const footer = document.querySelector<HTMLElement>(".homepage-2-footer");
       if (!footer) return;
 
       const footerTop = footer.getBoundingClientRect().top;

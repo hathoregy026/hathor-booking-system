@@ -12,8 +12,12 @@ const HP2_CRITICAL_CSS = `
 }
 html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet,
 html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-sheet__rise-cap,
-html[data-homepage2-experience] .homepage-2-cream-floor {
+html[data-homepage2-experience] .homepage-2-cream-floor,
+html[data-homepage2-experience] .homepage-2-column-tail {
   background-color: #f4f1ea !important;
+}
+html[data-homepage2-experience] .public-site > .owo-footer:not(.homepage-2-footer) {
+  display: none !important;
 }
 html[data-homepage2-experience] .homepage-2-book-bar__pill--left,
 html[data-homepage2-experience] .homepage-2-book-bar__pill--right,

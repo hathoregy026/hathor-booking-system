@@ -433,16 +433,38 @@ html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-shee
   background-color: #f4f1ea !important;
 }
 
-/* Cream floor BELOW pinned scroll section — never inside .pt-sheet (test-scroll-reveal pattern) */
+/* Cream floor BELOW pinned scroll section — dome column (test-scroll-reveal pattern) */
 .homepage-2-cream-floor {
   position: relative;
   z-index: 1;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0;
+  margin-top: -1px;
+  padding: 0;
+  background-color: #f4f1ea;
+  min-height: clamp(70rem, 140vh, 100rem);
+}
+
+/* Future page content: images, text, animations */
+.homepage-2-dome-content {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: clamp(40rem, 80vh, 60rem);
+  margin: 0;
+  padding: 0;
+  background-color: #f4f1ea;
+}
+
+/* Bottom cap — footer logo + footer connected to dome column */
+.homepage-2-column-tail {
+  position: relative;
+  flex-shrink: 0;
   width: 100%;
   margin: 0;
   padding: 0;
   background-color: #f4f1ea;
-  min-height: clamp(70rem, 140vh, 100rem);
 }
 
 html[data-homepage2-experience] body.has-page-scroll-transition .pin-spacer {
@@ -462,12 +484,19 @@ html[data-homepage2-experience] .homepage-2-root [data-page-transition] {
 }
 
 html[data-homepage2-experience] .public-main,
-html[data-homepage2-experience] .page-transition {
+html[data-homepage2-experience] .page-transition,
+html[data-homepage2-experience] .public-site {
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
+  background-color: #f4f1ea !important;
 }
 
-/* Footer giant logo — bottom of cream column, in front of floor, footer on top */
+/* Hide global footer — dome column footer replaces it on homepage-2 only */
+html[data-homepage2-experience] .public-site > .owo-footer:not(.homepage-2-footer) {
+  display: none !important;
+}
+
+/* Footer giant logo — bottom of column tail, in front of sheet, footer on top */
 .homepage-2-footer-logo-stage {
   position: absolute;
   left: 0;
@@ -500,7 +529,7 @@ html[data-homepage2-experience] .page-transition {
   filter: drop-shadow(0 1rem 2.5rem rgb(0 0 0 / 0.46));
 }
 
-html[data-homepage2-experience] .public-site > .owo-footer {
+html[data-homepage2-experience] .homepage-2-footer.owo-footer {
   position: relative;
   z-index: 25;
   margin-top: 0 !important;
@@ -508,7 +537,7 @@ html[data-homepage2-experience] .public-site > .owo-footer {
   border-top: none !important;
 }
 
-html[data-homepage2-experience] .owo-footer__wordmark {
+html[data-homepage2-experience] .homepage-2-footer .owo-footer__wordmark {
   display: none;
 }
 
