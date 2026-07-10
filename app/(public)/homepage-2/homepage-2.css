@@ -20,10 +20,7 @@ html[data-homepage2-experience] body {
 
 html[data-homepage2-experience] .public-site,
 html[data-homepage2-experience] .public-main,
-html[data-homepage2-experience] .page-transition,
-html[data-homepage2-experience] .hathor-site {
-  --public-bg: #f4f1ea;
-  --pt-cream: #f4f1ea;
+html[data-homepage2-experience] .page-transition {
   background-color: #f4f1ea !important;
 }
 
@@ -436,9 +433,38 @@ html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-shee
   background-color: #f4f1ea !important;
 }
 
-/* Pinned stage fill — matches sheet cream so hero-to-dome gap is invisible (color only) */
-html[data-homepage2-experience] body.has-page-scroll-transition .homepage-2-root [data-page-transition] .pt-stage {
-  background-color: #f4f1ea !important;
+/* Cream floor BELOW pinned scroll section — dome column (test-scroll-reveal pattern) */
+.homepage-2-cream-floor {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0;
+  margin-top: -1px;
+  padding: 0;
+  background-color: #f4f1ea;
+  min-height: clamp(70rem, 140vh, 100rem);
+}
+
+/* Future page content: images, text, animations */
+.homepage-2-dome-content {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: clamp(40rem, 80vh, 60rem);
+  margin: 0;
+  padding: 0;
+  background-color: #f4f1ea;
+}
+
+/* Bottom cap — footer logo + footer connected to dome column */
+.homepage-2-column-tail {
+  position: relative;
+  flex-shrink: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f1ea;
 }
 
 html[data-homepage2-experience] body.has-page-scroll-transition .pin-spacer {
@@ -453,31 +479,8 @@ html[data-homepage2-experience] .homepage-2-root {
   background-color: #f4f1ea;
 }
 
-/* Single cream column wrapper — diagram blue block through purple footer */
-.homepage-2-dome-column {
-  position: relative;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  background-color: #f4f1ea;
-}
-
 html[data-homepage2-experience] .homepage-2-root [data-page-transition] {
   margin-bottom: 0 !important;
-  background-color: #f4f1ea !important;
-}
-
-/* Cream fill below rising sheet inside pinned stage (engine drift leaves a strip) */
-html[data-homepage2-experience] .homepage-2-root [data-page-transition] .pt-stage::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 55vh;
-  background-color: #f4f1ea;
-  z-index: 9;
-  pointer-events: none;
 }
 
 html[data-homepage2-experience] .public-main,
@@ -493,42 +496,7 @@ html[data-homepage2-experience] .public-site > .owo-footer:not(.homepage-2-foote
   display: none !important;
 }
 
-/* Cream cap — flush after pin-spacer, no negative margin */
-.homepage-2-cream-floor {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  background-color: #f4f1ea;
-  min-height: 50vh;
-}
-
-.homepage-2-dome-content {
-  position: relative;
-  z-index: 1;
-  flex: 1 1 auto;
-  width: 100%;
-  min-height: 0;
-  margin: 0;
-  padding: 0;
-  background-color: #f4f1ea;
-}
-
-.homepage-2-column-tail {
-  position: relative;
-  z-index: 1;
-  flex-shrink: 0;
-  width: 100%;
-  margin: 0;
-  margin-top: auto;
-  padding: 0;
-  background-color: #f4f1ea;
-}
-
-/* Footer giant logo — bottom of column tail, in front of floor, footer on top */
+/* Footer giant logo — bottom of column tail, in front of sheet, footer on top */
 .homepage-2-footer-logo-stage {
   position: absolute;
   left: 0;
