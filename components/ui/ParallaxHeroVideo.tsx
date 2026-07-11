@@ -152,9 +152,7 @@ export function ParallaxHeroVideo({
           autoPlay
           loop
           playsInline
-          preload="auto"
-          // @ts-expect-error fetchPriority is valid on video in modern browsers
-          fetchPriority="high"
+          preload="metadata"
           aria-label={ariaLabel}
           {...(poster ? { poster } : {})}
         />

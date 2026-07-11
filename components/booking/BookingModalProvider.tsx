@@ -9,8 +9,14 @@ import {
   type ReactNode,
   Suspense,
 } from "react";
+import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { BookingModal } from "@/components/booking/BookingModal";
+
+const BookingModal = dynamic(
+  () =>
+    import("@/components/booking/BookingModal").then((mod) => mod.BookingModal),
+  { ssr: false },
+);
 
 type BookingModalContextValue = {
   openBooking: () => void;
