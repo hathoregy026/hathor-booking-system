@@ -9,8 +9,7 @@ import {
 } from "@/hooks/useCruisesHeroStripes";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 
-const GIANT_LOGO_SRC =
-  "/branding/hathor-logo-behind-the-sheet-egypt-toors-gold-01.svg";
+const GIANT_LOGO_SRC = "/branding/gold.svg";
 
 type CruisesHeroProps = {
   eyebrow?: string;

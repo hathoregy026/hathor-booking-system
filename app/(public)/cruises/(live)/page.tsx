@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { CruisesPageContent } from "@/components/pages/CruisesPageContent";
 
-const GIANT_LOGO_SRC =
-  "/branding/hathor-logo-behind-the-sheet-egypt-toors-gold-01.svg";
+const GIANT_LOGO_SRC = "/branding/gold.svg";
 
 export const metadata: Metadata = {
   title: "Dahabiya Cruises List | Hathor Nile Cruise",
