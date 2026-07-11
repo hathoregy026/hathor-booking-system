@@ -50,7 +50,7 @@ body:has(.cruises-scroll-route) .pin-spacer {
 .cruises-scroll-route .cruises-page {
   width: 100%;
   max-width: none;
-  margin: calc(-1 * clamp(3rem, 7vh, 4.5rem)) 0 0 !important;
+  margin: 0 !important;
   padding: 0 !important;
   overflow: visible;
 }

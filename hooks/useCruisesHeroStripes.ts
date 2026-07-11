@@ -190,11 +190,17 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
       });
     }
 
+    function getSafeProgress(self: ScrollTrigger) {
+      if (window.scrollY <= 2) return 0;
+      return self.progress;
+    }
+
     function applyProgress(p: number) {
-      applyMaskReveal(p);
+      const safeP = window.scrollY <= 2 ? 0 : p;
+      applyMaskReveal(safeP);
 
       if (headline) {
-        const riseT = mapRange(p, 0, 0.7, 0, 1);
+        const riseT = mapRange(safeP, 0, 0.7, 0, 1);
         gsap.set(headline, { opacity: mapRange(riseT, 0.35, 0.75, 1, 0) });
       }
     }
@@ -213,8 +219,8 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
         pinSpacing: true,
         scrub: SCRUB,
         invalidateOnRefresh: true,
-        anticipatePin: 1,
-        onUpdate: (self) => applyProgress(self.progress),
+        anticipatePin: 0,
+        onUpdate: (self) => applyProgress(getSafeProgress(self)),
       });
     }
 
@@ -222,15 +228,17 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
       gsap.registerPlugin(ScrollTrigger);
       initScroll();
       ScrollTrigger.refresh();
+      if (window.scrollY <= 2) applyProgress(0);
     }, trigger);
 
     function refreshEngine() {
       const st = ScrollTrigger.getById(`cruises-hero-${instanceId}`);
-      const progress = st?.progress ?? 0;
+      const progress = st ? getSafeProgress(st) : 0;
       releasePinWidth();
       initScroll();
       applyProgress(progress);
       ScrollTrigger.refresh();
+      if (window.scrollY <= 2) applyProgress(0);
     }
 
     const onResize = () => {

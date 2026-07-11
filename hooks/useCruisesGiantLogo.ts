@@ -81,6 +81,11 @@ export function useCruisesGiantLogo(
     }
 
     function syncFromScroll() {
+      if (window.scrollY <= 2) {
+        if (!hasScrolled && !landingTween) setupLanding();
+        return;
+      }
+
       const top = runwayEl.getBoundingClientRect().top + window.scrollY;
       const scroll = window.scrollY;
       const pinProgress = Math.max(
@@ -89,7 +94,7 @@ export function useCruisesGiantLogo(
       );
       const riseT = mapRange(pinProgress, 0, LOGO_HIDE_END, 0, 1);
 
-      if (pinProgress > 0.001) {
+      if (pinProgress > 0.02) {
         hasScrolled = true;
         landingTween?.kill();
         landingTween = null;
