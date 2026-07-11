@@ -6,6 +6,7 @@
 import { useLayoutEffect, type RefObject } from "react";
 import gsap from "gsap";
 
+const PIN_VH = 4.2;
 const LANDED_Y_OFFSET = 10;
 
 const LOGO_LAND = {
@@ -49,8 +50,7 @@ export function useCruisesGiantLogo(
     let hasScrolled = false;
 
     function getRunwayScrollDistance() {
-      const vh = window.innerHeight;
-      return Math.max(vh * 0.35, runwayEl.offsetHeight - vh);
+      return window.innerHeight * PIN_VH;
     }
 
     function getLogoHideDistance() {

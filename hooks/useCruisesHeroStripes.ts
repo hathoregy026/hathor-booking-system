@@ -1,16 +1,17 @@
 /**
- * Cruises hero — Homepage 2 Venetian stripes (timing, easing, scrub).
- * No sheet / dome / pin.
+ * Cruises hero stripes — same engine as Homepage 2 (mask, pin, Lenis, scrub).
+ * Stripe height = full hero stage; no dome / sheet animation.
  */
 "use client";
 
 import { useLayoutEffect, useId, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
 
 const PT_GOLD = "#B69F64";
 
-/** Homepage 2 / transition index.html mask cadence */
+/** Homepage 2 / transition index.html timeline */
 const MASK = {
   start: 0,
   end: 0.37,
@@ -20,7 +21,8 @@ const MASK = {
   gapSealWindow: 0.06 / 0.37,
 };
 
-const SCRUB = 2.8;
+const PIN_VH = 4.2;
+const SCRUB = 1.2;
 
 export const CRUISES_HERO_REFRESH_EVENT = "cruises-hero-stripe-refresh";
 
@@ -63,6 +65,30 @@ function stripCount() {
   return 52;
 }
 
+function setupSmoothScroll() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    return null;
+  }
+
+  const lenis = new Lenis({
+    duration: 2.1,
+    easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+    syncTouch: false,
+  });
+
+  lenis.on("scroll", ScrollTrigger.update);
+
+  const ticker = (time: number) => {
+    lenis.raf(time * 1000);
+  };
+
+  gsap.ticker.add(ticker);
+  gsap.ticker.lagSmoothing(0);
+
+  return { lenis, ticker };
+}
+
 export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
   const instanceId = useId().replace(/:/g, "");
 
@@ -82,6 +108,7 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
 
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
+    const smoothScroll = setupSmoothScroll();
 
     function buildMaskStrips() {
       const n = stripCount();
@@ -107,6 +134,17 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
         strips.push({ el: strip, colW, slatW });
       }
       return true;
+    }
+
+    function releasePinWidth() {
+      gsap.set(stageEl, { clearProps: "width,maxWidth,minWidth" });
+      stageEl.style.width = "100%";
+
+      const pinSpacer = stageEl.parentElement;
+      if (pinSpacer?.classList.contains("pin-spacer")) {
+        pinSpacer.style.removeProperty("width");
+        pinSpacer.style.removeProperty("max-width");
+      }
     }
 
     function applyMaskReveal(p: number) {
@@ -151,12 +189,9 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
       applyMaskReveal(p);
 
       if (headline) {
-        gsap.set(headline, {
-          opacity: mapRange(p, 0.06, 0.28, 1, 0),
-        });
+        const riseT = mapRange(p, 0, 0.7, 0, 1);
+        gsap.set(headline, { opacity: mapRange(riseT, 0.35, 0.75, 1, 0) });
       }
-
-      trigger.classList.toggle("cruises-hero--stripes-done", p >= 0.37);
     }
 
     function initScroll() {
@@ -168,9 +203,12 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
         id: `cruises-hero-${instanceId}`,
         trigger,
         start: "top top",
-        end: "bottom bottom",
+        end: () => `+=${window.innerHeight * PIN_VH}`,
+        pin: stageEl,
+        pinSpacing: true,
         scrub: SCRUB,
         invalidateOnRefresh: true,
+        anticipatePin: 1,
         onUpdate: (self) => applyProgress(self.progress),
       });
     }
@@ -184,6 +222,7 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
     function refreshEngine() {
       const st = ScrollTrigger.getById(`cruises-hero-${instanceId}`);
       const progress = st?.progress ?? 0;
+      releasePinWidth();
       initScroll();
       applyProgress(progress);
       ScrollTrigger.refresh();
@@ -208,6 +247,10 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
       window.removeEventListener(CRUISES_HERO_REFRESH_EVENT, refreshEngine);
       resizeObserver.disconnect();
       if (resizeTimer) clearTimeout(resizeTimer);
+      if (smoothScroll) {
+        gsap.ticker.remove(smoothScroll.ticker);
+        smoothScroll.lenis.destroy();
+      }
       ctx.revert();
     };
   }, [

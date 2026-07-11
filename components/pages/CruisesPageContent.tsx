@@ -23,8 +23,6 @@ export function CruisesPageContent() {
         />
 
         <div className="cruises-sheet">
-          <div className="cruises-sheet__edge" aria-hidden="true" />
-
           <header className="cruises-sheet__header hathor-container">
             <h2 className="cruises-sheet__title">{CRUISES_PAGE.hero.title}</h2>
           </header>

@@ -1,8 +1,9 @@
-/* Cruises page — fullscreen hero, logo behind cream sheet, normal scroll */
+/* Cruises page — HP2 pin/stripes hero + content sheet (no gap, no gold rule) */
 
 :root {
   --cruises-cream: #f4f1ea;
   --cruises-gold: #b69f64;
+  --cruises-pin-vh: 4.2;
 }
 
 html[data-cruises-experience],
@@ -14,6 +15,11 @@ body:has(.cruises-scroll-route),
 .cruises-scroll-route,
 .cruises-page {
   background-color: var(--cruises-cream);
+}
+
+html[data-cruises-experience] .public-main--hero {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
 }
 
 .public-main:has(.cruises-scroll-route) {
@@ -31,23 +37,20 @@ body:has(.cruises-scroll-route),
   margin: 0 !important;
   padding: 0 !important;
   overflow: visible;
-  --cruises-runway-height: 180vh;
-  --cruises-sheet-land: 62svh;
 }
 
-/* ─── Hero runway — sticky stage + stripe scroll tail ─── */
+/* ─── Hero pin theater (HP2: 4.2vh scroll, full-viewport stage) ─── */
 .cruises-scroll-route .cruises-hero {
   position: relative;
   width: 100%;
-  height: var(--cruises-runway-height);
-  min-height: var(--cruises-runway-height);
+  min-height: unset;
   margin: 0;
   padding: 0;
-  background: var(--cruises-cream);
+  background: transparent;
 }
 
 .cruises-scroll-route .cruises-hero__stage {
-  position: sticky;
+  position: relative;
   top: 0;
   width: 100%;
   height: 100svh;
@@ -84,7 +87,7 @@ body:has(.cruises-scroll-route),
   pointer-events: none;
 }
 
-/* Venetian stripes */
+/* Venetian stripes — full hero height (HP2 mask) */
 .cruises-scroll-route .cruises-hero__mask {
   position: absolute;
   inset: 0;
@@ -182,7 +185,7 @@ body:has(.cruises-scroll-route),
   color: rgb(255 255 255 / 0.92);
 }
 
-/* Giant logo — straddles hero / sheet seam (+10px lower at rest) */
+/* Giant logo — straddles seam (+10px lower at rest) */
 .cruises-scroll-route .cruises-hero__giant-logo {
   position: absolute;
   left: 50%;
@@ -207,34 +210,20 @@ html[data-cruises-experience]:not(.cruises-scroll-ready)
   opacity: 0;
 }
 
-/* Cream content sheet — overlaps hero bottom, no white gap after hero */
+/* Content sheet — flush after pin, no gap, no decorative line */
 .cruises-scroll-route .cruises-sheet {
   position: relative;
   z-index: 10;
   width: 100%;
-  margin-top: calc(-1 * (var(--cruises-runway-height) - var(--cruises-sheet-land)));
-  padding-top: clamp(1.25rem, 3vh, 2rem);
+  margin-top: 0;
+  padding-top: 0;
   background: var(--cruises-cream);
   isolation: isolate;
 }
 
-.cruises-scroll-route .cruises-sheet__edge {
-  width: 100%;
-  height: 3px;
-  margin-bottom: clamp(1.25rem, 3vh, 2rem);
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    var(--cruises-gold) 12%,
-    var(--cruises-gold) 88%,
-    transparent 100%
-  );
-  opacity: 0.85;
-}
-
 .cruises-scroll-route .cruises-sheet__header {
   text-align: center;
-  padding-bottom: 0.75rem;
+  padding: clamp(1.5rem, 4vh, 2.5rem) 0 0.75rem;
 }
 
 .cruises-scroll-route .cruises-sheet__title {
@@ -251,22 +240,13 @@ html[data-cruises-experience]:not(.cruises-scroll-ready)
   background: var(--cruises-cream);
 }
 
-@media (max-width: 1024px) {
-  .cruises-scroll-route,
-  .cruises-page {
-    --cruises-runway-height: 165vh;
-  }
-}
-
 @media (max-width: 767px) {
-  .cruises-scroll-route,
-  .cruises-page {
-    --cruises-runway-height: 155vh;
-    --cruises-sheet-land: 58svh;
-  }
-
   .cruises-scroll-route .cruises-hero__giant-logo {
     width: 96vw;
     bottom: calc(clamp(-1rem, -2vh, 0rem) - 10px);
+  }
+
+  .cruises-scroll-route .cruises-sheet__header {
+    padding-top: clamp(1.25rem, 3vh, 2rem);
   }
 }
