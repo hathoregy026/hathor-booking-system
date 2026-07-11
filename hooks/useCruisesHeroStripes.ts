@@ -21,7 +21,6 @@ const MASK = {
   gapSealWindow: 0.06 / 0.37,
 };
 
-const PIN_VH = 4.2;
 const SCRUB = 1.2;
 
 export const CRUISES_HERO_REFRESH_EVENT = "cruises-hero-stripe-refresh";
@@ -195,7 +194,7 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
         id: `cruises-hero-${instanceId}`,
         trigger,
         start: "top top",
-        end: () => `+=${window.innerHeight * PIN_VH}`,
+        end: "bottom bottom",
         scrub: SCRUB,
         invalidateOnRefresh: true,
         onUpdate: (self) => applyProgress(self.progress),

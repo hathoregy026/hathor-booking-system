@@ -6,7 +6,6 @@
 import { useLayoutEffect, type RefObject } from "react";
 import gsap from "gsap";
 
-const PIN_VH = 4.2;
 const LANDED_Y_OFFSET = 10;
 
 const LOGO_LAND = {
@@ -71,11 +70,15 @@ export function useCruisesGiantLogo(
       });
     }
 
+    function getRunwayScroll() {
+      return Math.max(1, rootEl.offsetHeight - window.innerHeight);
+    }
+
     function syncLogoFromScroll() {
-      const vh = window.innerHeight;
       const top = rootEl.getBoundingClientRect().top + window.scrollY;
       const scroll = window.scrollY;
-      const pinProgress = Math.max(0, (scroll - top) / (vh * PIN_VH));
+      const runwayScroll = getRunwayScroll();
+      const pinProgress = Math.max(0, (scroll - top) / runwayScroll);
       const riseT = mapRange(pinProgress, 0, 0.7, 0, 1);
 
       if (pinProgress > 0.001) {

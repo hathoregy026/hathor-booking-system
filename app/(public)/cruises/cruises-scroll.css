@@ -31,12 +31,15 @@ body:has(.cruises-scroll-route),
   margin: 0 !important;
   padding: 0 !important;
   overflow: visible;
+  /* Shared by hero + sheet (siblings — vars must live on parent) */
+  --cruises-pin-vh: 1.38;
+  --cruises-stripe-scroll: 38vh;
+  --cruises-runway-height: calc(100svh + var(--cruises-stripe-scroll));
+  --cruises-sheet-land: 62svh;
 }
 
-/* ─── Hero runway — HP2 scroll distance (4.2vh), sticky full-screen stage ─── */
+/* ─── Hero runway — sticky full-screen stage + stripe scroll tail ─── */
 .cruises-scroll-route .cruises-hero {
-  --cruises-pin-vh: 4.2;
-  --cruises-runway-height: calc(100svh + (var(--cruises-pin-vh) - 1) * 100vh);
   position: relative;
   width: 100%;
   height: var(--cruises-runway-height);
@@ -217,7 +220,7 @@ body:has(.cruises-scroll-route),
   position: relative;
   z-index: 10;
   width: 100%;
-  margin-top: calc(-1 * (var(--cruises-runway-height) - 62svh));
+  margin-top: calc(-1 * (var(--cruises-runway-height) - var(--cruises-sheet-land)));
   padding-top: clamp(1.25rem, 3vh, 2rem);
   background: var(--cruises-cream);
   isolation: isolate;
@@ -265,7 +268,19 @@ body:has(.cruises-scroll-route),
   letter-spacing: 0.06em;
 }
 
+@media (max-width: 1024px) {
+  .cruises-scroll-route,
+  .cruises-page {
+    --cruises-stripe-scroll: 32vh;
+  }
+}
+
 @media (max-width: 767px) {
+  .cruises-scroll-route,
+  .cruises-page {
+    --cruises-stripe-scroll: 28vh;
+  }
+
   .cruises-scroll-route .cruises-hero__copy .giant-logo-container,
   .cruises-scroll-route .cruises-giant-logo {
     width: 96vw;
