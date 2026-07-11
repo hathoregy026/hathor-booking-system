@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useRef } from "react";
+import { useHomePage2GiantLogo } from "@/app/(public)/homepage-2/useHomePage2GiantLogo";
 import {
   refreshCruisesHeroStripes,
   useCruisesHeroStripes,
 } from "@/hooks/useCruisesHeroStripes";
-import { useCruisesGiantLogo } from "@/hooks/useCruisesGiantLogo";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 
 const GIANT_LOGO_SRC =
@@ -22,7 +22,7 @@ type CruisesHeroProps = {
 };
 
 /**
- * Full-screen hero + Venetian stripes + giant logo straddling the content sheet.
+ * Full-screen hero + Venetian stripes + HP2 giant logo (rise on land, hide on scroll).
  */
 export function CruisesHero({
   eyebrow = "Ultra Luxury",
@@ -37,7 +37,7 @@ export function CruisesHero({
   const stageRef = useRef<HTMLDivElement>(null);
   const maskRef = useRef<HTMLDivElement>(null);
   const headlineRef = useRef<HTMLDivElement>(null);
-  const logoRef = useRef<HTMLDivElement>(null);
+  const giantLogoRef = useRef<HTMLDivElement>(null);
 
   useCruisesHeroStripes({
     runway: runwayRef,
@@ -46,7 +46,7 @@ export function CruisesHero({
     headline: headlineRef,
   });
 
-  useCruisesGiantLogo(runwayRef, logoRef);
+  useHomePage2GiantLogo(runwayRef, giantLogoRef);
 
   useEffect(() => {
     document.documentElement.classList.add("cruises-scroll-ready");
@@ -73,7 +73,7 @@ export function CruisesHero({
 
         <div ref={headlineRef} className="cruises-hero__headline">
           <div className="hathor-container cruises-hero__headline-inner">
-            <nav className="hathor-breadcrumb cruises-hero__breadcrumb" aria-label="Breadcrumb">
+            <nav className="cruises-hero__breadcrumb" aria-label="Breadcrumb">
               <Link href="/">Home</Link>
               <span aria-hidden>/</span>
               <span aria-current="page">{breadcrumb}</span>
@@ -86,9 +86,11 @@ export function CruisesHero({
           </div>
         </div>
 
-        <div ref={logoRef} className="cruises-hero__giant-logo">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={GIANT_LOGO_SRC} alt="Hathor" />
+        <div className="cruises-hero__copy">
+          <div ref={giantLogoRef} className="giant-logo-container cruises-giant-logo">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={GIANT_LOGO_SRC} alt="Hathor" />
+          </div>
         </div>
       </div>
     </section>
