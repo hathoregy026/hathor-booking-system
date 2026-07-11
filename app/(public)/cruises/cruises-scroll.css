@@ -247,10 +247,6 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   max-width: none !important;
 }
 
-.cruises-scroll-route [data-cruises-transition] .pt-mask {
-  background-color: var(--pt-gold, #b69f64);
-}
-
 /* Empty animation runway — fixed height so dome math matches Homepage 2 */
 .cruises-scroll-route [data-cruises-transition] .cruises-sheet-runway .pt-sheet__rise-cap {
   width: 100%;

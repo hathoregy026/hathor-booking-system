@@ -197,7 +197,7 @@ export function useHomePage2ScrollTransition(config: HomePage2ScrollTransitionRe
 
         gsap.set(el, {
           rotationY: -90 + open * 90,
-          opacity: open > 0.03 ? 1 : 0,
+          opacity: open,
           width,
         });
       });

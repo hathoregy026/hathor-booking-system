@@ -1,19 +1,16 @@
 ﻿/**
- * Cruises scroll — Venetian dome from frozen HP2/7a3bd0e reference + split content layer.
- * Animation: sheet runway + synced follower (title + cream column).
- * Listings: .cruises-content-layer synced to follower during tail / extended pin.
+ * Cruises scroll — Venetian dome (frozen HP2 reference) + split content layer.
+ * Content syncs to follower Y every frame so listings ride the cream sheet.
  */
 "use client";
 
 import { useLayoutEffect, useId, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Lenis from "lenis";
 
 const PT_CREAM = "#f4f1ea";
 const PT_GOLD = "#B69F64";
 
-/** Same mask cadence as frozen _local/scroll-reveal-effect (Venetian reference). */
 const MASK = {
   start: 0,
   end: 0.37,
@@ -24,8 +21,9 @@ const MASK = {
 };
 
 const PEEK_VH = 0.065;
-const TAIL_BLEND_START = 0.88;
-const SCRUB = true;
+/** Fade listings in once dome is visibly rising. */
+const CONTENT_BLEND_START = 0.55;
+const SCRUB = 1.2;
 
 export const CRUISES_PIN_VH = 4.2;
 export const CRUISES_RISE_END = 0.7;
@@ -72,30 +70,6 @@ function stripCount() {
   return 52;
 }
 
-function setupSmoothScroll() {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    return null;
-  }
-
-  const lenis = new Lenis({
-    duration: 1,
-    easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smoothWheel: true,
-    syncTouch: false,
-  });
-
-  lenis.on("scroll", ScrollTrigger.update);
-
-  const ticker = (time: number) => {
-    lenis.raf(time * 1000);
-  };
-
-  gsap.ticker.add(ticker);
-  gsap.ticker.lagSmoothing(0);
-
-  return { lenis, ticker };
-}
-
 export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) {
   const instanceId = useId().replace(/:/g, "");
 
@@ -125,7 +99,6 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
     let lastFollowerY = Number.NaN;
     let lastFollowerRadius = "";
-    const smoothScroll = setupSmoothScroll();
 
     function getContentLayer() {
       return document.querySelector(
@@ -174,24 +147,6 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       return window.innerHeight * CRUISES_PIN_DISTANCE_VH;
     }
 
-    function getContentScrollDistance() {
-      const contentLayer = getContentLayer();
-      if (contentLayer) {
-        return Math.max(0, contentLayer.offsetHeight - window.innerHeight * 0.35);
-      }
-      if (!followerEl) return 0;
-      return Math.max(0, followerEl.scrollHeight - stageEl.offsetHeight);
-    }
-
-    function getTotalPinDistance() {
-      return getRevealDistance() + getContentScrollDistance();
-    }
-
-    function getRevealProgress(scrollProgress: number) {
-      const revealShare = getRevealDistance() / Math.max(getTotalPinDistance(), 1);
-      return clamp(scrollProgress / revealShare, 0, 1);
-    }
-
     function getDomeRadii() {
       const styles = getComputedStyle(trigger);
       return {
@@ -233,7 +188,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
 
         gsap.set(el, {
           rotationY: -90 + open * 90,
-          opacity: open > 0.03 ? 1 : 0,
+          opacity: open,
           width,
         });
       });
@@ -264,15 +219,14 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
         gsap.set(heroCopy, { opacity: mapRange(easedRiseT, 0.35, 0.75, 1, 0) });
       }
 
-      return { sheetY: y, radius, revealP: riseT };
+      return { sheetY: y, radius, riseT };
     }
 
-    function syncContentLayer(handoffBlend: number) {
+    function syncContentLayer(blend: number) {
       const contentLayer = getContentLayer();
+      trigger.style.setProperty("--cruises-handoff-blend", String(blend));
 
-      trigger.style.setProperty("--cruises-handoff-blend", String(handoffBlend));
-
-      if (!contentLayer || !followerEl || handoffBlend <= 0) {
+      if (!contentLayer || !followerEl || blend <= 0) {
         trigger.classList.remove("hathor-page-scroll--handoff-active");
         if (contentLayer) {
           gsap.set(contentLayer, { clearProps: "transform,opacity" });
@@ -303,7 +257,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
 
       gsap.set(contentLayer, {
         y: targetY,
-        opacity: Math.min(1, handoffBlend),
+        opacity: Math.min(1, blend),
       });
     }
 
@@ -320,41 +274,24 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     }
 
     function applyFollower(
-      scrollProgress: number,
+      revealP: number,
       sheetY: number,
       radius: number,
-      revealP: number,
     ) {
       if (!followerEl) return;
       if (trigger.classList.contains("hathor-page-scroll--past-pin")) return;
 
-      const scrolledPx = scrollProgress * getTotalPinDistance();
-      const revealDist = getRevealDistance();
-      const revealTailStart = revealDist * TAIL_BLEND_START;
-      const revealTailScroll = Math.max(0, scrolledPx - revealTailStart);
-      const revealTailRoom = revealDist * (1 - TAIL_BLEND_START);
-
-      /* Crossfade during last 12% of dome rise — no upward pull yet. */
-      const handoffBlend =
-        revealP >= TAIL_BLEND_START && revealP < 1
-          ? clamp(revealTailScroll / Math.max(revealTailRoom, 1), 0, 1)
-          : revealP >= 1 || scrolledPx >= revealDist
-            ? 1
-            : 0;
-
-      /* After dome completes, scroll listings up with extended pin. */
-      const contentTailScroll =
-        scrolledPx > revealDist ? scrolledPx - revealDist : 0;
-      const y = Math.round(sheetY - contentTailScroll);
+      const blend = mapRange(revealP, CONTENT_BLEND_START, 0.98, 0, 1);
+      const y = Math.round(sheetY);
       const radiusKey = revealP < 0.98 ? String(radius) : "0";
 
       trigger.classList.toggle(
         "hathor-page-scroll--content-active",
-        revealP >= 0.995 || handoffBlend >= 0.5,
+        revealP >= 0.9,
       );
 
       if (y === lastFollowerY && radiusKey === lastFollowerRadius) {
-        syncContentLayer(handoffBlend);
+        syncContentLayer(blend);
         return;
       }
 
@@ -364,26 +301,25 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       if (revealP < 0.98) {
         gsap.set(followerEl, {
           y,
-          opacity: 1 - handoffBlend,
+          opacity: 1 - blend,
           borderTopLeftRadius: radius,
           borderTopRightRadius: radius,
         });
       } else {
         gsap.set(followerEl, {
           y,
-          opacity: 1 - handoffBlend,
+          opacity: 1 - blend,
           borderTopLeftRadius: 0,
           borderTopRightRadius: 0,
         });
       }
 
-      syncContentLayer(handoffBlend);
+      syncContentLayer(blend);
     }
 
-    function applyFrame(scrollProgress: number) {
-      const revealP = getRevealProgress(scrollProgress);
-      const { sheetY, radius } = applyProgress(revealP);
-      applyFollower(scrollProgress, sheetY, radius, revealP);
+    function applyRevealProgress(scrollProgress: number) {
+      const { sheetY, radius, riseT } = applyProgress(scrollProgress);
+      applyFollower(riseT, sheetY, radius);
     }
 
     function completePinHandoff() {
@@ -420,20 +356,20 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
 
       const setup = () => {
         if (!buildMaskStrips()) return false;
-        applyFrame(0);
+        applyRevealProgress(0);
 
         ScrollTrigger.create({
           id: `cruises-scroll-${instanceId}`,
           trigger,
           start: "top top",
-          end: () => `+=${getTotalPinDistance()}`,
+          end: () => `+=${getRevealDistance()}`,
           pin: stage,
           pinSpacing: true,
           scrub: SCRUB,
           invalidateOnRefresh: true,
           anticipatePin: 1,
           onUpdate: (self) => {
-            applyFrame(self.progress);
+            applyRevealProgress(self.progress);
           },
           onLeave: () => {
             completePinHandoff();
@@ -454,7 +390,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
             );
             lastFollowerY = Number.NaN;
             lastFollowerRadius = "";
-            applyFrame(
+            applyRevealProgress(
               ScrollTrigger.getById(`cruises-scroll-${instanceId}`)?.progress ?? 0,
             );
           },
@@ -483,7 +419,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
           if (trigger.classList.contains("hathor-page-scroll--past-pin")) {
             completePinHandoff();
           } else {
-            applyFrame(progress);
+            applyRevealProgress(progress);
           }
         }
         ScrollTrigger.refresh();
@@ -496,8 +432,6 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     const resizeObserver = new ResizeObserver(() => onResize());
     resizeObserver.observe(stageEl);
     resizeObserver.observe(mask);
-    const contentLayer = getContentLayer();
-    if (contentLayer) resizeObserver.observe(contentLayer);
 
     ScrollTrigger.refresh();
 
@@ -506,10 +440,6 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       window.visualViewport?.removeEventListener("resize", onResize);
       resizeObserver.disconnect();
       if (resizeTimer) clearTimeout(resizeTimer);
-      if (smoothScroll) {
-        gsap.ticker.remove(smoothScroll.ticker);
-        smoothScroll.lenis.destroy();
-      }
       ctx.revert();
       if (followerEl) {
         gsap.set(followerEl, {
