@@ -13,10 +13,7 @@ import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { formatPrice } from "@/lib/client-dates";
 import type { HathorCruiseSeed } from "@/lib/hathor-catalog";
 import { ManagedImage } from "@/components/ui/ManagedImage";
-import { refreshCruisesOption2SpaTransition } from "@/hooks/useCruisesOption2SpaTransition";
-import { refreshCruisesOption4Spa } from "@/hooks/useCruisesOption4SpaEngine";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { refreshCruisesHeroStripes } from "@/hooks/useCruisesScrollTransition";
 
 type CruiseListingItem = {
   key: string;
@@ -69,77 +66,16 @@ function roomDetailHref(roomType: string): string {
   return "/rooms";
 }
 
-function preservePinnedScrollPosition(scrollY: number) {
-  if (typeof window === "undefined") return;
-
-  const root = document.documentElement;
-  const previousScrollBehavior = root.style.scrollBehavior;
-  root.style.scrollBehavior = "auto";
-
-  const restore = () => {
-    window.scrollTo(window.scrollX, scrollY);
-  };
-
-  restore();
-  window.requestAnimationFrame(() => {
-    restore();
-    window.requestAnimationFrame(() => {
-      restore();
-      window.requestAnimationFrame(() => {
-        restore();
-        root.style.scrollBehavior = previousScrollBehavior;
-      });
-    });
-  });
-}
-
 function stabilizeListingsLayoutDuringFilterChange(scrollY: number) {
+  void scrollY;
   const content = document.querySelector<HTMLElement>(
-    [
-      ".cruises-content-layer .page-layout__content",
-      ".cruises-option-3-content-layer .page-layout__content",
-      ".cruises-option-2-root .pt-sheet__content",
-      ".cruises-option-1-content .page-layout__content",
-      ".cruises-option-4-listings .page-layout__content",
-      ".co4-listings .page-layout__content",
-    ].join(", "),
+    ".cruises-page-content .page-layout__content",
   );
   if (content) {
     content.style.minHeight = `${content.offsetHeight}px`;
   }
 
-  const onOption2 = Boolean(document.querySelector(".cruises-option-2-root"));
-  const onOption4 = Boolean(document.querySelector(".cruises-option-4-root"));
-  const pastPin = Boolean(
-    document.querySelector(
-      ".cruises-option-2-spa.hathor-page-scroll--past-pin",
-    ),
-  );
-
-  if (!onOption2 || !pastPin) {
-    if (!onOption4) {
-      preservePinnedScrollPosition(scrollY);
-    }
-  }
-
-  if (onOption2) {
-    refreshCruisesOption2SpaTransition();
-  }
-
-  if (onOption4) {
-    refreshCruisesOption4Spa();
-  }
-
-  if (document.querySelector(".cruises-option-3-root")) {
-    gsap.registerPlugin(ScrollTrigger);
-    const st = ScrollTrigger.getAll().find((t) =>
-      String(t.vars.id ?? "").startsWith("cruises-option-3-scroll-"),
-    );
-    if (st && !document.querySelector("[data-cruises-option-3].hathor-page-scroll--past-pin")) {
-      st.update();
-    }
-    ScrollTrigger.refresh();
-  }
+  refreshCruisesHeroStripes();
 
   window.requestAnimationFrame(() => {
     if (content) {
