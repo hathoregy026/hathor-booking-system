@@ -21,7 +21,7 @@ const MASK = {
   gapSealWindow: 0.06 / 0.37,
 };
 
-const PIN_VH = 4.2;
+const PIN_VH = 2.1;
 const SCRUB = 1.2;
 
 export const CRUISES_HERO_REFRESH_EVENT = "cruises-hero-stripe-refresh";

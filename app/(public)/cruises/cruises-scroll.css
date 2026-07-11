@@ -3,7 +3,7 @@
 :root {
   --cruises-cream: #f4f1ea;
   --cruises-gold: #b69f64;
-  --cruises-pin-vh: 4.2;
+  --cruises-pin-vh: 2.1;
 }
 
 html[data-cruises-experience],
@@ -39,7 +39,7 @@ html[data-cruises-experience] .public-main--hero {
   overflow: visible;
 }
 
-/* ─── Hero pin theater (HP2: 4.2vh scroll, full-viewport stage) ─── */
+/* ─── Hero pin theater (HP2 stripes, half scroll reach to content) ─── */
 .cruises-scroll-route .cruises-hero {
   position: relative;
   width: 100%;
