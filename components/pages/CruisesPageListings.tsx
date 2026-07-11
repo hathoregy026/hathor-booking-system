@@ -14,6 +14,7 @@ import { formatPrice } from "@/lib/client-dates";
 import type { HathorCruiseSeed } from "@/lib/hathor-catalog";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { refreshCruisesOption2SpaTransition } from "@/hooks/useCruisesOption2SpaTransition";
+import { refreshCruisesOption4Spa } from "@/hooks/useCruisesOption4SpaEngine";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -99,6 +100,7 @@ function stabilizeListingsLayoutDuringFilterChange(scrollY: number) {
       ".cruises-option-3-content-layer .page-layout__content",
       ".cruises-option-2-root .pt-sheet__content",
       ".cruises-option-1-content .page-layout__content",
+      ".cruises-option-4-listings .page-layout__content",
     ].join(", "),
   );
   if (content) {
@@ -106,6 +108,7 @@ function stabilizeListingsLayoutDuringFilterChange(scrollY: number) {
   }
 
   const onOption2 = Boolean(document.querySelector(".cruises-option-2-root"));
+  const onOption4 = Boolean(document.querySelector(".cruises-option-4-root"));
   const pastPin = Boolean(
     document.querySelector(
       ".cruises-option-2-spa.hathor-page-scroll--past-pin",
@@ -113,11 +116,17 @@ function stabilizeListingsLayoutDuringFilterChange(scrollY: number) {
   );
 
   if (!onOption2 || !pastPin) {
-    preservePinnedScrollPosition(scrollY);
+    if (!onOption4) {
+      preservePinnedScrollPosition(scrollY);
+    }
   }
 
   if (onOption2) {
     refreshCruisesOption2SpaTransition();
+  }
+
+  if (onOption4) {
+    refreshCruisesOption4Spa();
   }
 
   if (document.querySelector(".cruises-option-3-root")) {

@@ -21,4 +21,9 @@ export const CRUISES_OPTION_LINKS: NavLink[] = [
     label: "Option 3 — Two layers",
     description: "Split animation layer + synced content layer",
   },
+  {
+    href: "/cruises/option-4",
+    label: "Option 4 — Hybrid spa",
+    description: "Venetian sticky rise + listings in normal flow (recommended)",
+  },
 ];

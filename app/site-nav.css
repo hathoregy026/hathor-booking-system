@@ -350,6 +350,21 @@
   }
 
   .public-site
+    .hathor-header__nav-item--dropdown:hover
+    .hathor-header__dropdown-list
+    > li:nth-child(6)
+    .hathor-header__dropdown-link,
+  .public-site
+    .hathor-header__nav-item--dropdown
+    .hathor-header__dropdown.is-open
+    .hathor-header__dropdown-list
+    > li:nth-child(6)
+    .hathor-header__dropdown-link {
+    --hp2-drop-shift: 6.75rem;
+    transition-delay: 0.7s;
+  }
+
+  .public-site
     .hathor-header__nav-item--dropdown:not(:has(.hathor-header__dropdown.is-open)):not(:hover):not(:focus-within)
     .hathor-header__dropdown-link {
     transition-delay: 0s;
