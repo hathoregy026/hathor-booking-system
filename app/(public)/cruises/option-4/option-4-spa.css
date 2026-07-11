@@ -1,4 +1,4 @@
-/* Option 4 — isolated Venetian spa (transition-for-pages.js). No global pin-spacer. */
+/* Option 4 — Venetian stripes + flat horizon rail (no dome). No global pin-spacer. */
 
 :root {
   --cruises-option-4-cream: #f4f1ea;
@@ -55,8 +55,6 @@ html[data-cruises-option-4-experience] .public-site > .owo-footer,
   --pt-gold: var(--cruises-option-4-gold);
   --pt-cream: var(--cruises-option-4-cream);
   --pt-pin-height: 280vh;
-  --pt-arch-r-start: min(92vw, 960px);
-  --pt-arch-r-end: 56px;
   position: relative;
   width: 100%;
   height: var(--pt-pin-height);
@@ -89,6 +87,8 @@ html[data-cruises-option-4-experience] .public-site > .owo-footer,
   position: absolute;
   inset: 0;
   z-index: 0;
+  transform-origin: center center;
+  will-change: transform;
 }
 
 .cruises-option-4-route [data-cruises-option-4] .pt-hero__media img {
@@ -181,7 +181,7 @@ html[data-cruises-option-4-experience] .public-site > .owo-footer,
   filter: drop-shadow(0 1rem 2.5rem rgb(0 0 0 / 0.46));
 }
 
-/* Short sheet — title + filters only (hybrid) */
+/* Flat cream panel — straight top edge, gold horizon rail */
 .cruises-option-4-route [data-cruises-option-4] .pt-sheet.cruises-option-4-sheet {
   position: absolute;
   left: 0;
@@ -191,8 +191,50 @@ html[data-cruises-option-4-experience] .public-site > .owo-footer,
   min-height: 0 !important;
   max-height: none !important;
   background: var(--pt-cream);
-  will-change: transform, border-radius, clip-path;
+  border-radius: 0;
+  box-shadow: 0 -18px 48px rgb(28 25 23 / 0.08);
+  will-change: transform;
   pointer-events: auto;
+  overflow: visible;
+}
+
+.cruises-option-4-route [data-cruises-option-4] .pt-sheet__horizon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  height: 5px;
+  transform-origin: center top;
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgb(182 159 100 / 0.35) 8%,
+    var(--pt-gold) 18%,
+    var(--pt-gold) 82%,
+    rgb(182 159 100 / 0.35) 92%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 24px rgb(182 159 100 / 0.45),
+    0 6px 20px rgb(182 159 100 / 0.18);
+}
+
+.cruises-option-4-route [data-cruises-option-4] .pt-sheet__horizon::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(182 159 100 / 0.55) 50%,
+    transparent
+  );
 }
 
 .cruises-option-4-route [data-cruises-option-4] .pt-sheet__landing {
@@ -260,16 +302,12 @@ body:has(.cruises-option-4-route) .pin-spacer {
 @media (max-width: 1024px) {
   .cruises-option-4-route [data-cruises-option-4].cruises-option-4-spa {
     --pt-pin-height: 260vh;
-    --pt-arch-r-start: min(88vw, 640px);
-    --pt-arch-r-end: 48px;
   }
 }
 
 @media (max-width: 767px) {
   .cruises-option-4-route [data-cruises-option-4].cruises-option-4-spa {
     --pt-pin-height: 240vh;
-    --pt-arch-r-start: min(100vw, 420px);
-    --pt-arch-r-end: 32px;
   }
 
   .cruises-option-4-route [data-cruises-option-4] .giant-logo-container {

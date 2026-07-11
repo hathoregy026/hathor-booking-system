@@ -1,6 +1,6 @@
 /**
- * Option 4 — canonical spa engine (transition-for-pages.js port).
- * Sticky stage, fixed 280vh runway, NO GSAP pin, NO handoff jumps.
+ * Option 4 — Venetian stripe reveal + flat horizon rail rise.
+ * Sticky stage, fixed 280vh runway, NO GSAP pin, NO dome/arch shapes.
  */
 "use client";
 
@@ -35,6 +35,7 @@ type SpaEngineRefs = {
   mask: RefObject<HTMLElement | null>;
   sheet: RefObject<HTMLElement | null>;
   heroCopy: RefObject<HTMLElement | null>;
+  horizon?: RefObject<HTMLElement | null>;
 };
 
 function clamp(v: number, min: number, max: number) {
@@ -92,6 +93,7 @@ export function useCruisesOption4SpaEngine(config: SpaEngineRefs) {
     const maskEl = config.mask.current;
     const sheet = config.sheet.current;
     const heroCopy = config.heroCopy.current;
+    const horizonEl = config.horizon?.current ?? null;
 
     if (!root || !stage || !maskEl || !sheet) return;
 
@@ -99,6 +101,7 @@ export function useCruisesOption4SpaEngine(config: SpaEngineRefs) {
     const sheetEl = sheet;
     const stageEl = stage;
     const trigger = root;
+    const heroMedia = stageEl.querySelector<HTMLElement>(".pt-hero__media");
 
     trigger.style.setProperty("--pt-gold", PT_GOLD);
     trigger.style.setProperty("--pt-cream", PT_CREAM);
@@ -106,14 +109,6 @@ export function useCruisesOption4SpaEngine(config: SpaEngineRefs) {
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
     let smoothScroll: ReturnType<typeof setupLenis> | null = null;
-
-    function getArchRadii() {
-      const styles = getComputedStyle(trigger);
-      const start =
-        parseFloat(styles.getPropertyValue("--pt-arch-r-start")) || 960;
-      const end = parseFloat(styles.getPropertyValue("--pt-arch-r-end")) || 56;
-      return { start, end };
-    }
 
     function buildMaskStrips() {
       const n = stripCount();
@@ -190,7 +185,6 @@ export function useCruisesOption4SpaEngine(config: SpaEngineRefs) {
       const sheetH = sheetEl.offsetHeight;
       const peek = vh * PEEK_VH;
       const startY = sheetH - peek;
-      const { start: rStart, end: rEnd } = getArchRadii();
 
       const riseT = mapRange(p, 0, 0.7, 0, 1);
       let y = startY * (1 - riseT);
@@ -199,15 +193,27 @@ export function useCruisesOption4SpaEngine(config: SpaEngineRefs) {
       const extra = Math.max(0, sheetH - vh * 0.92);
       y -= driftT * extra;
 
-      const radius = rStart + (rEnd - rStart) * riseT;
-      const archFlatten = mapRange(riseT, 0, 1, 38, 0);
+      const maskT = mapRange(p, MASK.start, MASK.end, 0, 1);
 
       gsap.set(sheetEl, {
         y,
-        borderTopLeftRadius: radius,
-        borderTopRightRadius: radius,
-        clipPath: `ellipse(102% ${100 - archFlatten}% at 50% 0%)`,
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 0,
+        clipPath: "none",
       });
+
+      if (horizonEl) {
+        gsap.set(horizonEl, {
+          scaleX: mapRange(riseT, 0, 0.5, 0.55, 1),
+          opacity: mapRange(riseT, 0, 0.22, 0, 1),
+        });
+      }
+
+      if (heroMedia) {
+        gsap.set(heroMedia, {
+          scale: 1 + mapRange(maskT, 0, 1, 0, 0.05),
+        });
+      }
 
       applyMaskReveal(p);
 
@@ -284,6 +290,7 @@ export function useCruisesOption4SpaEngine(config: SpaEngineRefs) {
     config.mask,
     config.sheet,
     config.heroCopy,
+    config.horizon,
   ]);
 }
 

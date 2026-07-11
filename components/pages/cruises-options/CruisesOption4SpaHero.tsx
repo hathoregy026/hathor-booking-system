@@ -33,6 +33,7 @@ export function CruisesOption4SpaHero({
   const maskRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
   const heroCopyRef = useRef<HTMLDivElement>(null);
+  const horizonRef = useRef<HTMLDivElement>(null);
   const giantLogoRef = useRef<HTMLDivElement>(null);
 
   useCruisesOption4SpaEngine({
@@ -41,6 +42,7 @@ export function CruisesOption4SpaHero({
     mask: maskRef,
     sheet: sheetRef,
     heroCopy: heroCopyRef,
+    horizon: horizonRef,
   });
 
   useHomePage2GiantLogo(rootRef, giantLogoRef);
@@ -90,6 +92,7 @@ export function CruisesOption4SpaHero({
         </div>
 
         <div ref={sheetRef} className="pt-sheet cruises-option-4-sheet">
+          <div ref={horizonRef} className="pt-sheet__horizon" aria-hidden="true" />
           <div className="pt-sheet__landing" aria-labelledby="cruises-option-4-landing-title">
             <div className="hathor-container">
               <h2 id="cruises-option-4-landing-title" className="pt-sheet__landing-title">

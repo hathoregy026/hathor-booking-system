@@ -11,9 +11,8 @@ import { useCruisesOption4ListingsEntrance } from "@/hooks/useCruisesOption4List
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 
 /**
- * Option 4 — Hybrid spa:
- * - Venetian sticky blinds + elliptical arch rise (short sheet: title + filters)
- * - Listings/footer in normal document flow (no transforms, filter-safe)
+ * Option 4 — Venetian stripes + flat horizon rail (no dome).
+ * Listings/footer in normal document flow (filter-safe).
  */
 export function CruisesOption4PageContent() {
   const listingsRef = useRef<HTMLElement>(null);

@@ -5,9 +5,9 @@ const BACK_LOGO_SRC =
   "/branding/hathor-logo-behing-the-sheet-egypt-toors-pyramids.svg";
 
 export const metadata: Metadata = {
-  title: "Cruises Option 4 — Hybrid Spa | Hathor",
+  title: "Cruises Option 4 — Horizon Stripes | Hathor",
   description:
-    "Hybrid Venetian spa transition: sticky blinds + arch rise, listings in normal flow.",
+    "Venetian gold stripe reveal with flat horizon rail rise — no dome.",
   robots: { index: false, follow: false },
 };
 
