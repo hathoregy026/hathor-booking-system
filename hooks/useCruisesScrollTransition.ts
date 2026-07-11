@@ -178,16 +178,35 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       ) as HTMLElement | null;
     }
 
-    function syncContentHandoff(handoffBlend: number) {
+    function syncContentToFollower(handoffBlend: number) {
       const contentLayer = getContentLayer();
 
       trigger.style.setProperty("--cruises-handoff-blend", String(handoffBlend));
 
-      if (!contentLayer || !followerEl || handoffBlend <= 0) {
+      if (!contentLayer || !followerEl) {
         trigger.classList.remove("hathor-page-scroll--handoff-active");
-        if (contentLayer) {
-          gsap.set(contentLayer, { clearProps: "transform,opacity" });
-        }
+        return;
+      }
+
+      const followerTitle = followerEl.querySelector(
+        ".pt-sheet__landing-title",
+      ) as HTMLElement | null;
+      const contentTitle = contentLayer.querySelector(
+        ".pt-sheet__landing-title",
+      ) as HTMLElement | null;
+      if (!followerTitle || !contentTitle) return;
+
+      const followerTop = followerTitle.getBoundingClientRect().top;
+      const layerRect = contentLayer.getBoundingClientRect();
+      const titleRect = contentTitle.getBoundingClientRect();
+      const currentY = Number(gsap.getProperty(contentLayer, "y")) || 0;
+      const layerTop = layerRect.top - currentY;
+      const titleOffset = titleRect.top - layerRect.top;
+      const targetY = followerTop - (layerTop + titleOffset);
+
+      if (handoffBlend <= 0) {
+        trigger.classList.remove("hathor-page-scroll--handoff-active");
+        gsap.set(contentLayer, { y: targetY, opacity: 0 });
         return;
       }
 
@@ -195,22 +214,6 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
         "hathor-page-scroll--handoff-active",
         !trigger.classList.contains("hathor-page-scroll--past-pin"),
       );
-
-      const followerLanding = followerEl.querySelector(
-        ".pt-sheet__landing",
-      ) as HTMLElement | null;
-      const contentLanding = contentLayer.querySelector(
-        ".cruises-content-layer__landing",
-      ) as HTMLElement | null;
-      if (!followerLanding || !contentLanding) return;
-
-      const followerTop = followerLanding.getBoundingClientRect().top;
-      const layerRect = contentLayer.getBoundingClientRect();
-      const landingRect = contentLanding.getBoundingClientRect();
-      const currentY = Number(gsap.getProperty(contentLayer, "y")) || 0;
-      const layerTop = layerRect.top - currentY;
-      const landingOffset = landingRect.top - layerRect.top;
-      const targetY = followerTop - (layerTop + landingOffset);
 
       gsap.set(contentLayer, {
         y: targetY,
@@ -303,7 +306,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       const radiusKey = String(radius);
 
       if (y === lastFollowerY && radiusKey === lastFollowerRadius) {
-        syncContentHandoff(handoffBlend);
+        syncContentToFollower(handoffBlend);
         return;
       }
 
@@ -329,11 +332,32 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
 
       const { sheetY, radius } = applyProgress(scrollProgress);
       applyFollower(sheetY, radius, handoffBlend);
-      syncContentHandoff(handoffBlend);
+      syncContentToFollower(handoffBlend);
+    }
+
+    function lockContentMarginFromTransform(contentLayer: HTMLElement) {
+      const title = contentLayer.querySelector(
+        ".pt-sheet__landing-title",
+      ) as HTMLElement | null;
+      if (!title) return;
+
+      const titleTop = title.getBoundingClientRect().top;
+
+      gsap.set(contentLayer, { clearProps: "transform" });
+      contentLayer.style.removeProperty("margin-top");
+
+      const titleAfterClear = title.getBoundingClientRect().top;
+      contentLayer.style.marginTop = `${titleTop - titleAfterClear}px`;
     }
 
     function completeRevealHandoff() {
-      syncContentHandoff(1);
+      syncContentToFollower(1);
+
+      const contentLayer = getContentLayer();
+      if (contentLayer) {
+        lockContentMarginFromTransform(contentLayer);
+        gsap.set(contentLayer, { opacity: 1 });
+      }
 
       trigger.classList.add("hathor-page-scroll--past-pin");
       trigger.classList.add("hathor-page-scroll--media-gone");
@@ -341,14 +365,6 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       trigger.classList.remove("hathor-page-scroll--handoff-active");
 
       trigger.style.setProperty("--cruises-handoff-blend", "1");
-
-      const contentLayer = getContentLayer();
-      if (contentLayer) {
-        gsap.set(contentLayer, { clearProps: "transform" });
-        contentLayer.style.marginTop =
-          "calc(-100svh + clamp(10rem, 21vh, 13rem))";
-        gsap.set(contentLayer, { opacity: 1 });
-      }
 
       gsap.set(sheetEl, {
         y: 0,

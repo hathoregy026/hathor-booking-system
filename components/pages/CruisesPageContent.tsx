@@ -18,7 +18,6 @@ export function CruisesPageContent() {
         <CruisesScrollReveal
           heroTitle="Experience Egypt."
           title={CRUISES_PAGE.hero.title}
-          subtitle={CRUISES_PAGE.hero.subtitle}
           breadcrumb="Cruises"
           imageName="cruises-hero"
           sheetBelowLanding={<CruisesPageFilters />}
