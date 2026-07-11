@@ -101,6 +101,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
     let lastFollowerY = Number.NaN;
     let lastFollowerRadius = "";
+    let lastSyncedContentY = 0;
 
     function buildMaskStrips() {
       const n = stripCount();
@@ -206,6 +207,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
 
       if (handoffBlend <= 0) {
         trigger.classList.remove("hathor-page-scroll--handoff-active");
+        lastSyncedContentY = targetY;
         gsap.set(contentLayer, { y: targetY, opacity: 0 });
         return;
       }
@@ -215,6 +217,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
         !trigger.classList.contains("hathor-page-scroll--past-pin"),
       );
 
+      lastSyncedContentY = targetY;
       gsap.set(contentLayer, {
         y: targetY,
         opacity: handoffBlend,
@@ -343,10 +346,8 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       ) as HTMLElement | null;
       const titleTopBefore = contentTitle?.getBoundingClientRect().top;
 
-      syncContentToFollower(1);
-
       if (contentLayer) {
-        gsap.set(contentLayer, { opacity: 1 });
+        gsap.set(contentLayer, { y: lastSyncedContentY, opacity: 1 });
       }
 
       trigger.classList.add("hathor-page-scroll--past-pin");
@@ -425,6 +426,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
             );
             lastFollowerY = Number.NaN;
             lastFollowerRadius = "";
+            lastSyncedContentY = 0;
             applyRevealProgress(ScrollTrigger.getById(`cruises-scroll-${instanceId}`)?.progress ?? 0);
           },
         });
