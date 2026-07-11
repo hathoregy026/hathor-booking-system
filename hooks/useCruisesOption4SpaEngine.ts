@@ -1,6 +1,6 @@
 /**
- * Option 4 — Venetian stripe reveal + flat horizon rail rise.
- * Sticky stage, fixed 280vh runway, NO GSAP pin, NO dome/arch shapes.
+ * Option 4 — Venetian stripe wipe only.
+ * Sticky runway, gold blinds L→R, flat cream behind stripes. NO rising sheet / NO dome.
  */
 "use client";
 
@@ -23,19 +23,16 @@ const MASK = {
   gapSealWindow: 0.022,
 };
 
-const PEEK_VH = 0.065;
-
 export const OPTION4_SPA_REFRESH_EVENT = "cruises-option-4-spa-refresh";
 
 type Strip = { el: HTMLDivElement; colW: number; slatW: number };
 
-type SpaEngineRefs = {
+type HeroEngineRefs = {
   root: RefObject<HTMLElement | null>;
   stage: RefObject<HTMLElement | null>;
   mask: RefObject<HTMLElement | null>;
-  sheet: RefObject<HTMLElement | null>;
+  cream: RefObject<HTMLElement | null>;
   heroCopy: RefObject<HTMLElement | null>;
-  horizon?: RefObject<HTMLElement | null>;
 };
 
 function clamp(v: number, min: number, max: number) {
@@ -84,31 +81,31 @@ function setupLenis() {
   return { lenis, ticker };
 }
 
-export function useCruisesOption4SpaEngine(config: SpaEngineRefs) {
+export function useCruisesOption4SpaEngine(config: HeroEngineRefs) {
   const instanceId = useId().replace(/:/g, "");
 
   useLayoutEffect(() => {
     const root = config.root.current;
     const stage = config.stage.current;
     const maskEl = config.mask.current;
-    const sheet = config.sheet.current;
+    const creamEl = config.cream.current;
     const heroCopy = config.heroCopy.current;
-    const horizonEl = config.horizon?.current ?? null;
 
-    if (!root || !stage || !maskEl || !sheet) return;
+    if (!root || !stage || !maskEl || !creamEl) return;
 
     const mask = maskEl;
-    const sheetEl = sheet;
     const stageEl = stage;
     const trigger = root;
-    const heroMedia = stageEl.querySelector<HTMLElement>(".pt-hero__media");
+    const heroMedia = stageEl.querySelector<HTMLElement>(".co4-media");
+    const giantLogo = stageEl.querySelector<HTMLElement>(".co4-giant-logo");
 
-    trigger.style.setProperty("--pt-gold", PT_GOLD);
-    trigger.style.setProperty("--pt-cream", PT_CREAM);
+    trigger.style.setProperty("--co4-gold", PT_GOLD);
+    trigger.style.setProperty("--co4-cream", PT_CREAM);
 
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
     let smoothScroll: ReturnType<typeof setupLenis> | null = null;
+    let logoTween: gsap.core.Tween | null = null;
 
     function buildMaskStrips() {
       const n = stripCount();
@@ -122,13 +119,13 @@ export function useCruisesOption4SpaEngine(config: SpaEngineRefs) {
 
       for (let i = 0; i < n; i++) {
         const col = document.createElement("div");
-        col.className = "pt-mask__col";
+        col.className = "co4-mask__col";
         col.style.left = `${i * colW}px`;
         col.style.width =
           i === n - 1 ? `${w - (n - 1) * colW}px` : `${colW}px`;
 
         const strip = document.createElement("div");
-        strip.className = "pt-mask__strip";
+        strip.className = "co4-mask__strip";
         col.appendChild(strip);
         mask.appendChild(col);
         strips.push({ el: strip, colW, slatW });
@@ -181,57 +178,45 @@ export function useCruisesOption4SpaEngine(config: SpaEngineRefs) {
     }
 
     function applyProgress(p: number) {
-      const vh = window.innerHeight;
-      const sheetH = sheetEl.offsetHeight;
-      const peek = vh * PEEK_VH;
-      const startY = sheetH - peek;
-
-      const riseT = mapRange(p, 0, 0.7, 0, 1);
-      let y = startY * (1 - riseT);
-
-      const driftT = mapRange(p, 0.7, 1, 0, 1);
-      const extra = Math.max(0, sheetH - vh * 0.92);
-      y -= driftT * extra;
-
       const maskT = mapRange(p, MASK.start, MASK.end, 0, 1);
+      const heroFade = mapRange(p, 0.06, 0.68, 1, 0);
+      const copyFade = mapRange(p, 0.16, 0.55, 1, 0);
+      const creamShow = Math.max(
+        mapRange(maskT, 0.12, 0.88, 0, 1),
+        mapRange(p, 0.72, 1, 0, 1),
+      );
 
-      gsap.set(sheetEl, {
-        y,
-        borderTopLeftRadius: 0,
-        borderTopRightRadius: 0,
-        clipPath: "none",
-      });
-
-      if (horizonEl) {
-        gsap.set(horizonEl, {
-          scaleX: mapRange(riseT, 0, 0.5, 0.55, 1),
-          opacity: mapRange(riseT, 0, 0.22, 0, 1),
-        });
-      }
+      gsap.set(creamEl, { opacity: creamShow });
 
       if (heroMedia) {
         gsap.set(heroMedia, {
-          scale: 1 + mapRange(maskT, 0, 1, 0, 0.05),
+          opacity: heroFade,
+          scale: 1 + maskT * 0.05,
+        });
+      }
+
+      if (heroCopy) {
+        gsap.set(heroCopy, { opacity: copyFade });
+      }
+
+      if (giantLogo) {
+        gsap.set(giantLogo, {
+          opacity: copyFade,
+          y: mapRange(p, 0, 0.5, 0, -18),
         });
       }
 
       applyMaskReveal(p);
-
-      if (heroCopy) {
-        gsap.set(heroCopy, { opacity: mapRange(riseT, 0.35, 0.75, 1, 0) });
-      }
-
-      trigger.classList.toggle("cruises-option-4-spa--media-gone", riseT > 0.35);
-      trigger.classList.toggle("cruises-option-4-spa--revealed", p >= 0.98);
+      trigger.classList.toggle("co4-runway--revealed", p >= 0.98);
     }
 
     function initScroll() {
-      ScrollTrigger.getById(`cruises-option-4-spa-${instanceId}`)?.kill();
+      ScrollTrigger.getById(`cruises-option-4-${instanceId}`)?.kill();
       if (!buildMaskStrips()) return;
       applyProgress(0);
 
       ScrollTrigger.create({
-        id: `cruises-option-4-spa-${instanceId}`,
+        id: `cruises-option-4-${instanceId}`,
         trigger,
         start: "top top",
         end: "bottom bottom",
@@ -244,12 +229,30 @@ export function useCruisesOption4SpaEngine(config: SpaEngineRefs) {
     const ctx = gsap.context(() => {
       gsap.registerPlugin(ScrollTrigger);
       smoothScroll = setupLenis();
+
+      if (giantLogo) {
+        const reduced = window.matchMedia("(prefers-reduced-motion: reduce)")
+          .matches;
+        if (reduced) {
+          gsap.set(giantLogo, { opacity: 1, y: 0 });
+        } else {
+          gsap.set(giantLogo, { opacity: 0, y: 36 });
+          logoTween = gsap.to(giantLogo, {
+            opacity: 1,
+            y: 0,
+            duration: 1.35,
+            delay: 0.18,
+            ease: "power2.out",
+          });
+        }
+      }
+
       initScroll();
       ScrollTrigger.refresh();
     }, trigger);
 
     function refreshEngine() {
-      const st = ScrollTrigger.getById(`cruises-option-4-spa-${instanceId}`);
+      const st = ScrollTrigger.getById(`cruises-option-4-${instanceId}`);
       const progress = st?.progress ?? 0;
       initScroll();
       applyProgress(progress);
@@ -268,10 +271,10 @@ export function useCruisesOption4SpaEngine(config: SpaEngineRefs) {
     window.addEventListener(OPTION4_SPA_REFRESH_EVENT, onRefreshEvent);
 
     const resizeObserver = new ResizeObserver(() => onResize());
-    resizeObserver.observe(sheetEl);
     resizeObserver.observe(stageEl);
 
     return () => {
+      logoTween?.kill();
       window.removeEventListener("resize", onResize);
       window.visualViewport?.removeEventListener("resize", onResize);
       window.removeEventListener(OPTION4_SPA_REFRESH_EVENT, onRefreshEvent);
@@ -288,9 +291,8 @@ export function useCruisesOption4SpaEngine(config: SpaEngineRefs) {
     config.root,
     config.stage,
     config.mask,
-    config.sheet,
+    config.cream,
     config.heroCopy,
-    config.horizon,
   ]);
 }
 

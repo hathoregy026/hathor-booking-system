@@ -101,6 +101,7 @@ function stabilizeListingsLayoutDuringFilterChange(scrollY: number) {
       ".cruises-option-2-root .pt-sheet__content",
       ".cruises-option-1-content .page-layout__content",
       ".cruises-option-4-listings .page-layout__content",
+      ".co4-listings .page-layout__content",
     ].join(", "),
   );
   if (content) {

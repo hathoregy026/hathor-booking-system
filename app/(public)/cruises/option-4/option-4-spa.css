@@ -1,4 +1,4 @@
-/* Option 4 — Venetian stripes + flat horizon rail (no dome). No global pin-spacer. */
+/* Option 4 — isolated co4-* hero (stripe wipe only). No pt-sheet, no dome, no hathor-page-hero. */
 
 :root {
   --cruises-option-4-cream: #f4f1ea;
@@ -50,73 +50,83 @@ html[data-cruises-option-4-experience] .public-site > .owo-footer,
   border-bottom: 1px solid #c9b98a;
 }
 
-/* ─── Spa root: fixed 280vh scroll runway (canonical) ─── */
-.cruises-option-4-route [data-cruises-option-4].cruises-option-4-spa {
-  --pt-gold: var(--cruises-option-4-gold);
-  --pt-cream: var(--cruises-option-4-cream);
-  --pt-pin-height: 280vh;
+/* ─── Scroll runway ─── */
+.cruises-option-4-route .co4-runway {
+  --co4-gold: var(--cruises-option-4-gold);
+  --co4-cream: var(--cruises-option-4-cream);
+  --co4-runway-height: 240vh;
   position: relative;
   width: 100%;
-  height: var(--pt-pin-height);
-  min-height: var(--pt-pin-height);
+  height: var(--co4-runway-height);
+  min-height: var(--co4-runway-height);
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
   overflow: visible;
-  background: transparent;
+  background: transparent !important;
 }
 
-.cruises-option-4-route [data-cruises-option-4] .pt-stage {
+.cruises-option-4-route .co4-stage {
   position: sticky !important;
   top: 0 !important;
+  width: 100% !important;
   height: 100svh !important;
   min-height: 100svh !important;
   max-height: 100svh !important;
   overflow: hidden !important;
-  width: 100% !important;
   z-index: 2;
-  background: var(--cruises-option-4-cream);
+  margin: 0 !important;
+  padding: 0 !important;
+  background: #0a0a0a !important;
   perspective: 1400px;
 }
 
-.cruises-option-4-route [data-cruises-option-4] .pt-hero {
+.cruises-option-4-route .co4-scene {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Hero image */
+.cruises-option-4-route .co4-media {
   position: absolute;
   inset: 0;
   z-index: 1;
   overflow: hidden;
-}
-
-.cruises-option-4-route [data-cruises-option-4] .pt-hero__media {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
   transform-origin: center center;
-  will-change: transform;
+  will-change: transform, opacity;
 }
 
-.cruises-option-4-route [data-cruises-option-4] .pt-hero__media img {
+.cruises-option-4-route .co4-media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center 42%;
 }
 
-.cruises-option-4-route [data-cruises-option-4] .pt-hero__overlay {
+.cruises-option-4-route .co4-media__shade {
   position: absolute;
   inset: 0;
-  z-index: 1;
   background: linear-gradient(
     180deg,
-    rgb(0 0 0 / 0.08) 0%,
-    rgb(0 0 0 / 0.42) 100%
+    rgb(0 0 0 / 0.12) 0%,
+    rgb(0 0 0 / 0.5) 100%
   );
+  pointer-events: none;
 }
 
-.cruises-option-4-route
-  [data-cruises-option-4].cruises-option-4-spa--media-gone
-  .pt-hero__media {
+/* Flat cream — revealed through stripe gaps (no shape, no rise) */
+.cruises-option-4-route .co4-cream {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
   opacity: 0;
-  transition: opacity 0.35s ease;
+  background: var(--co4-cream);
+  pointer-events: none;
 }
 
-.cruises-option-4-route [data-cruises-option-4] .pt-mask {
+/* Venetian mask */
+.cruises-option-4-route .co4-mask {
   position: absolute;
   inset: 0;
   z-index: 5;
@@ -126,23 +136,23 @@ html[data-cruises-option-4-experience] .public-site > .owo-footer,
   transform-style: preserve-3d;
 }
 
-.cruises-option-4-route [data-cruises-option-4] .pt-mask.is-active {
+.cruises-option-4-route .co4-mask.is-active {
   visibility: visible;
 }
 
-.cruises-option-4-route [data-cruises-option-4] .pt-mask__col {
+.cruises-option-4-route .co4-mask__col {
   position: absolute;
   top: 0;
   height: 100%;
   transform-style: preserve-3d;
 }
 
-.cruises-option-4-route [data-cruises-option-4] .pt-mask__strip {
+.cruises-option-4-route .co4-mask__strip {
   position: absolute;
   top: 0;
   left: 0;
   height: 100%;
-  background: var(--pt-gold);
+  background: var(--co4-gold);
   transform-origin: left center;
   transform-style: preserve-3d;
   transform: rotateY(-90deg);
@@ -151,121 +161,90 @@ html[data-cruises-option-4-experience] .public-site > .owo-footer,
   will-change: transform, opacity, width;
 }
 
-.cruises-option-4-route [data-cruises-option-4] .pt-hero__copy {
+/* Hero copy */
+.cruises-option-4-route .co4-copy {
   position: absolute;
-  inset: 0 !important;
+  inset: 0;
   z-index: 6;
   pointer-events: none;
   overflow: visible;
 }
 
-.cruises-option-4-route [data-cruises-option-4] .pt-hero__copy .hathor-page-hero__content {
+.cruises-option-4-route .co4-copy__inner {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(3rem, 12vh, 6rem);
+  text-align: center;
   pointer-events: auto;
 }
 
-.cruises-option-4-route [data-cruises-option-4] .giant-logo-container {
+.cruises-option-4-route .co4-giant-logo {
   position: absolute;
   left: 50%;
-  top: 45.76%;
-  width: 92vw;
-  max-width: none;
+  top: 44%;
+  width: min(92vw, 1100px);
   transform: translate(-50%, -50%);
-  opacity: 1;
-  will-change: transform;
+  will-change: transform, opacity;
 }
 
-.cruises-option-4-route [data-cruises-option-4] .giant-logo-container img {
+.cruises-option-4-route .co4-giant-logo img {
   display: block;
   width: 100%;
   height: auto;
   filter: drop-shadow(0 1rem 2.5rem rgb(0 0 0 / 0.46));
 }
 
-/* Flat cream panel — straight top edge, gold horizon rail */
-.cruises-option-4-route [data-cruises-option-4] .pt-sheet.cruises-option-4-sheet {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 10;
-  min-height: 0 !important;
-  max-height: none !important;
-  background: var(--pt-cream);
-  border-radius: 0;
-  box-shadow: 0 -18px 48px rgb(28 25 23 / 0.08);
-  will-change: transform;
-  pointer-events: auto;
-  overflow: visible;
+.cruises-option-4-route .co4-breadcrumb a {
+  color: rgb(255 255 255 / 0.88);
 }
 
-.cruises-option-4-route [data-cruises-option-4] .pt-sheet__horizon {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+.cruises-option-4-route .co4-breadcrumb a:hover {
+  color: #fff;
+}
+
+.cruises-option-4-route .co4-title {
+  margin: 0.75rem 0 0;
+  font-family: var(--public-title, var(--public-serif, Georgia, serif));
+  font-size: clamp(2.25rem, 5.5vw, 4rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  color: #fff;
+  text-shadow:
+    0 2px 28px rgb(0 0 0 / 0.65),
+    0 1px 4px rgb(0 0 0 / 0.5);
+}
+
+.cruises-option-4-route .co4-gold-line {
+  margin: 1rem auto 0;
+}
+
+/* Content below runway */
+.cruises-option-4-route .co4-main {
+  position: relative;
   z-index: 3;
-  height: 5px;
-  transform-origin: center top;
-  opacity: 0;
-  pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgb(182 159 100 / 0.35) 8%,
-    var(--pt-gold) 18%,
-    var(--pt-gold) 82%,
-    rgb(182 159 100 / 0.35) 92%,
-    transparent 100%
-  );
-  box-shadow:
-    0 0 24px rgb(182 159 100 / 0.45),
-    0 6px 20px rgb(182 159 100 / 0.18);
-}
-
-.cruises-option-4-route [data-cruises-option-4] .pt-sheet__horizon::after {
-  content: "";
-  position: absolute;
-  top: 10px;
-  left: 12%;
-  right: 12%;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgb(182 159 100 / 0.55) 50%,
-    transparent
-  );
-}
-
-.cruises-option-4-route [data-cruises-option-4] .pt-sheet__landing {
-  padding-top: clamp(8rem, 18vh, 11rem);
-  padding-bottom: 0.5rem;
+  width: 100%;
   background: var(--cruises-option-4-cream);
+  padding: clamp(2rem, 5vh, 3.5rem) 0 clamp(0.5rem, 2vh, 1rem);
 }
 
-.cruises-option-4-route [data-cruises-option-4] .pt-sheet__landing-title {
-  margin: 0;
+.cruises-option-4-route .co4-intro__title {
+  margin: 0 0 1.25rem;
   font-family: var(--public-serif, Georgia, serif);
   font-size: clamp(1.75rem, 4vw, 2.75rem);
   font-weight: 500;
   letter-spacing: 0.04em;
   color: #1c1917;
+  text-align: center;
 }
 
-.cruises-option-4-route [data-cruises-option-4] .cruises-option-4-filters {
+.cruises-option-4-route .co4-intro__filters {
   position: relative;
   z-index: 2;
-  background: var(--cruises-option-4-cream);
-  pointer-events: auto;
 }
 
-.cruises-option-4-route [data-cruises-option-4] .pt-sheet__rise-cap {
-  width: 100%;
-  min-height: clamp(1.25rem, 4svh, 2.5rem) !important;
-  background: transparent;
-}
-
-/* Listings — normal flow below spa runway (no GSAP transforms) */
+.co4-listings,
 .cruises-option-4-listings {
   position: relative;
   z-index: 3;
@@ -276,7 +255,7 @@ html[data-cruises-option-4-experience] .public-site > .owo-footer,
   opacity: 0;
 }
 
-.cruises-option-4-listings .pt-sheet__content,
+.co4-listings .page-layout__inner,
 .cruises-option-4-listings .page-layout__inner {
   background: var(--cruises-option-4-cream);
 }
@@ -286,7 +265,6 @@ html[data-cruises-option-4-experience] .public-site > .owo-footer,
   padding-bottom: 0;
 }
 
-/* Block any global pin-spacer bleed */
 body:has(.cruises-option-4-route) .pin-spacer {
   height: auto !important;
   min-height: 0 !important;
@@ -294,23 +272,19 @@ body:has(.cruises-option-4-route) .pin-spacer {
   margin: 0 !important;
 }
 
-/* Neutralize public.css page-transition rules inside option 4 */
-.cruises-option-4-route [data-cruises-option-4] .pt-stage {
-  pointer-events: auto !important;
-}
-
 @media (max-width: 1024px) {
-  .cruises-option-4-route [data-cruises-option-4].cruises-option-4-spa {
-    --pt-pin-height: 260vh;
+  .cruises-option-4-route .co4-runway {
+    --co4-runway-height: 220vh;
   }
 }
 
 @media (max-width: 767px) {
-  .cruises-option-4-route [data-cruises-option-4].cruises-option-4-spa {
-    --pt-pin-height: 240vh;
+  .cruises-option-4-route .co4-runway {
+    --co4-runway-height: 200vh;
   }
 
-  .cruises-option-4-route [data-cruises-option-4] .giant-logo-container {
+  .cruises-option-4-route .co4-giant-logo {
     width: 96vw;
+    top: 42%;
   }
 }

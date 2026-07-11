@@ -25,7 +25,7 @@ export default function CruisesOption4Layout({
       <script dangerouslySetInnerHTML={{ __html: OPTION_4_BOOT }} />
       <div className="cruises-option-4-route">
         <p className="cruises-option-4-demo-banner" role="note">
-          Option 4 — Venetian stripes + flat horizon rise (no dome)
+          Option 4 — Venetian stripe wipe (no dome, no rising sheet)
         </p>
         <CruisesOption4Boot>{children}</CruisesOption4Boot>
       </div>

@@ -23,7 +23,7 @@ export const CRUISES_OPTION_LINKS: NavLink[] = [
   },
   {
     href: "/cruises/option-4",
-    label: "Option 4 — Horizon stripes",
-    description: "Gold Venetian blinds + flat cream panel rise (no dome)",
+    label: "Option 4 — Stripe wipe",
+    description: "Gold Venetian blinds reveal flat cream — no dome",
   },
 ];

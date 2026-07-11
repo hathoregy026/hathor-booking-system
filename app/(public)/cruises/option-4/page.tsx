@@ -5,9 +5,9 @@ const BACK_LOGO_SRC =
   "/branding/hathor-logo-behing-the-sheet-egypt-toors-pyramids.svg";
 
 export const metadata: Metadata = {
-  title: "Cruises Option 4 — Horizon Stripes | Hathor",
+  title: "Cruises Option 4 — Stripe Wipe | Hathor",
   description:
-    "Venetian gold stripe reveal with flat horizon rail rise — no dome.",
+    "Venetian gold stripe wipe over hero — flat cream reveal, no dome.",
   robots: { index: false, follow: false },
 };
 
