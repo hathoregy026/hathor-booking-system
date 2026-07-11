@@ -6,7 +6,7 @@
 import { useLayoutEffect, type RefObject } from "react";
 import gsap from "gsap";
 
-const PIN_VH = 2.1;
+const PIN_VH = 1.05;
 const LANDED_Y_OFFSET = 10;
 
 const LOGO_LAND = {

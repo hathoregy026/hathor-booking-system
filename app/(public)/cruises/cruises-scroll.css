@@ -3,7 +3,7 @@
 :root {
   --cruises-cream: #f4f1ea;
   --cruises-gold: #b69f64;
-  --cruises-pin-vh: 2.1;
+  --cruises-pin-vh: 1.05;
 }
 
 html[data-cruises-experience],
@@ -30,8 +30,7 @@ html[data-cruises-experience] .public-main--hero {
   padding: 0 !important;
 }
 
-.cruises-scroll-route,
-.cruises-page {
+.cruises-scroll-route {
   width: 100%;
   max-width: none;
   margin: 0 !important;
@@ -39,7 +38,22 @@ html[data-cruises-experience] .public-main--hero {
   overflow: visible;
 }
 
-/* ─── Hero pin theater (HP2 stripes, half scroll reach to content) ─── */
+html[data-cruises-experience] body.has-page-scroll-transition .pin-spacer,
+body:has(.cruises-scroll-route) .pin-spacer {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background-color: var(--cruises-cream) !important;
+}
+
+.cruises-scroll-route .cruises-page {
+  width: 100%;
+  max-width: none;
+  margin: calc(-1 * clamp(3rem, 7vh, 4.5rem)) 0 0 !important;
+  padding: 0 !important;
+  overflow: visible;
+}
 .cruises-scroll-route .cruises-hero {
   position: relative;
   width: 100%;
@@ -72,7 +86,7 @@ html[data-cruises-experience] .public-main--hero {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 42%;
+  object-position: center 58%;
 }
 
 .cruises-scroll-route .cruises-hero__shade {
@@ -126,7 +140,7 @@ html[data-cruises-experience] .public-main--hero {
 /* Hero title — top center */
 .cruises-scroll-route .cruises-hero__headline {
   position: absolute;
-  top: clamp(5.5rem, 14vh, 8.5rem);
+  top: clamp(6.5rem, 16vh, 9.5rem);
   left: 0;
   right: 0;
   z-index: 7;
@@ -215,7 +229,7 @@ html[data-cruises-experience]:not(.cruises-scroll-ready)
   position: relative;
   z-index: 10;
   width: 100%;
-  margin-top: 0;
+  margin-top: clamp(-5rem, -9vh, -3rem);
   padding-top: 0;
   background: var(--cruises-cream);
   isolation: isolate;

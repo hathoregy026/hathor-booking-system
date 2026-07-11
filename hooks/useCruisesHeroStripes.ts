@@ -21,7 +21,7 @@ const MASK = {
   gapSealWindow: 0.06 / 0.37,
 };
 
-const PIN_VH = 2.1;
+const PIN_VH = 1.05;
 const SCRUB = 1.2;
 
 export const CRUISES_HERO_REFRESH_EVENT = "cruises-hero-stripe-refresh";
@@ -105,6 +105,9 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
     const trigger = runway;
 
     trigger.style.setProperty("--cruises-gold", PT_GOLD);
+
+    document.body.classList.add("has-page-scroll-transition");
+    document.documentElement.classList.add("has-page-scroll-transition");
 
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
@@ -251,6 +254,8 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
         gsap.ticker.remove(smoothScroll.ticker);
         smoothScroll.lenis.destroy();
       }
+      document.body.classList.remove("has-page-scroll-transition");
+      document.documentElement.classList.remove("has-page-scroll-transition");
       ctx.revert();
     };
   }, [
