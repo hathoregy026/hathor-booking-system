@@ -142,7 +142,7 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   visibility: hidden !important;
 }
 
-/* Content layer — fades in during tail (88–100%), position synced to follower in JS */
+/* Content layer — rides dome via JS y = pull + followerY; one title only */
 .cruises-content-layer {
   position: relative;
   z-index: 10;
@@ -158,6 +158,13 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
 }
 
 .cruises-scroll-root:has([data-cruises-transition].hathor-page-scroll--handoff-active)
+  .cruises-sheet-follower
+  .pt-sheet__landing {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+.cruises-scroll-root:has([data-cruises-transition].hathor-page-scroll--handoff-active)
   .cruises-content-layer {
   visibility: visible;
   pointer-events: none;
@@ -167,6 +174,7 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   .cruises-content-layer {
   visibility: visible;
   opacity: 1;
+  margin-top: calc(-100svh + clamp(10rem, 21vh, 13rem));
   pointer-events: auto;
 }
 
