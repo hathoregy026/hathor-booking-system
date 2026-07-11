@@ -182,15 +182,15 @@ export function Header() {
 
   return (
     <>
-      <header className={headerClass}>
+      <header
+        className={headerClass}
+        onMouseLeave={() => setOpenDropdown(null)}
+      >
         <div className="hathor-header__inner hathor-header__inner--owo">
           <div
             className="hathor-header__menu-zone"
             onMouseEnter={() => setMenuHovered(true)}
-            onMouseLeave={() => {
-              setMenuHovered(false);
-              setOpenDropdown(null);
-            }}
+            onMouseLeave={() => setMenuHovered(false)}
           >
             <div className="hathor-header__col hathor-header__col--left">
               <Link href="/" className="hathor-header__brand">
@@ -234,46 +234,50 @@ export function Header() {
                     <li
                       key={item.id}
                       className="hathor-header__nav-item hathor-header__nav-item--dropdown"
-                      onMouseEnter={() => setOpenDropdown(item.id)}
-                      onMouseLeave={() => setOpenDropdown(null)}
                     >
-                      <div className="hathor-header__dropdown-trigger">
-                        <Link
-                          href={item.href}
-                          className={`hathor-header__nav-link ${isActive ? "hathor-header__nav-link--active" : ""}`}
-                          aria-haspopup="menu"
-                          aria-expanded={dropdownOpen}
-                        >
-                          <span className="hathor-header__nav-link-label">{item.label}</span>
-                          <span className="hathor-header__nav-pyramid" aria-hidden="true" />
-                        </Link>
-                        <button
-                          type="button"
-                          className="hathor-header__dropdown-toggle"
-                          aria-label={`Show ${item.label} pages`}
-                          aria-expanded={dropdownOpen}
-                          onClick={() => toggleDropdown(item.id)}
-                        />
-                      </div>
                       <div
-                        className={`hathor-header__dropdown${dropdownOpen ? " is-open" : ""}`}
-                        role="menu"
-                        aria-label={`${item.label} pages`}
+                        className="hathor-header__dropdown-zone"
+                        onMouseEnter={() => setOpenDropdown(item.id)}
+                        onMouseLeave={() => setOpenDropdown(null)}
                       >
-                        <ul className="hathor-header__dropdown-list">
-                          {item.links.map((link) => (
-                            <li key={`${item.id}-${link.href}-${link.label}`}>
-                              <Link
-                                href={link.href}
-                                className="hathor-header__dropdown-link"
-                                role="menuitem"
-                                onClick={() => setOpenDropdown(null)}
-                              >
-                                {link.label}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
+                        <div className="hathor-header__dropdown-trigger">
+                          <Link
+                            href={item.href}
+                            className={`hathor-header__nav-link ${isActive ? "hathor-header__nav-link--active" : ""}`}
+                            aria-haspopup="menu"
+                            aria-expanded={dropdownOpen}
+                          >
+                            <span className="hathor-header__nav-link-label">{item.label}</span>
+                            <span className="hathor-header__nav-pyramid" aria-hidden="true" />
+                          </Link>
+                          <button
+                            type="button"
+                            className="hathor-header__dropdown-toggle"
+                            aria-label={`Show ${item.label} pages`}
+                            aria-expanded={dropdownOpen}
+                            onClick={() => toggleDropdown(item.id)}
+                          />
+                        </div>
+                        <div
+                          className={`hathor-header__dropdown${dropdownOpen ? " is-open" : ""}`}
+                          role="menu"
+                          aria-label={`${item.label} pages`}
+                        >
+                          <ul className="hathor-header__dropdown-list">
+                            {item.links.map((link) => (
+                              <li key={`${item.id}-${link.href}-${link.label}`}>
+                                <Link
+                                  href={link.href}
+                                  className="hathor-header__dropdown-link"
+                                  role="menuitem"
+                                  onClick={() => setOpenDropdown(null)}
+                                >
+                                  {link.label}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
                       </div>
                     </li>
                   );

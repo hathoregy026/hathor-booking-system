@@ -213,7 +213,9 @@
     transition: visibility 0.55s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  .public-site .hathor-header__nav-item--dropdown .hathor-header__dropdown.is-open {
+  .public-site .hathor-header__nav-item--dropdown .hathor-header__dropdown.is-open,
+  .public-site .hathor-header__nav-item--dropdown:hover .hathor-header__dropdown,
+  .public-site .hathor-header__nav-item--dropdown:focus-within .hathor-header__dropdown {
     transform: none;
   }
 
@@ -261,11 +263,22 @@
   .public-site
     .hathor-header__nav-item--dropdown
     .hathor-header__dropdown.is-open
+    .hathor-header__dropdown-link,
+  .public-site
+    .hathor-header__nav-item--dropdown:hover
+    .hathor-header__dropdown-link,
+  .public-site
+    .hathor-header__nav-item--dropdown:focus-within
     .hathor-header__dropdown-link {
     opacity: 1;
     transform: translateY(0) translateX(var(--hp2-drop-shift, 0));
   }
 
+  .public-site
+    .hathor-header__nav-item--dropdown:hover
+    .hathor-header__dropdown-list
+    > li:nth-child(1)
+    .hathor-header__dropdown-link,
   .public-site
     .hathor-header__nav-item--dropdown
     .hathor-header__dropdown.is-open
@@ -277,6 +290,11 @@
   }
 
   .public-site
+    .hathor-header__nav-item--dropdown:hover
+    .hathor-header__dropdown-list
+    > li:nth-child(2)
+    .hathor-header__dropdown-link,
+  .public-site
     .hathor-header__nav-item--dropdown
     .hathor-header__dropdown.is-open
     .hathor-header__dropdown-list
@@ -286,6 +304,11 @@
     transition-delay: 0.22s;
   }
 
+  .public-site
+    .hathor-header__nav-item--dropdown:hover
+    .hathor-header__dropdown-list
+    > li:nth-child(3)
+    .hathor-header__dropdown-link,
   .public-site
     .hathor-header__nav-item--dropdown
     .hathor-header__dropdown.is-open
@@ -297,6 +320,11 @@
   }
 
   .public-site
+    .hathor-header__nav-item--dropdown:hover
+    .hathor-header__dropdown-list
+    > li:nth-child(4)
+    .hathor-header__dropdown-link,
+  .public-site
     .hathor-header__nav-item--dropdown
     .hathor-header__dropdown.is-open
     .hathor-header__dropdown-list
@@ -307,7 +335,22 @@
   }
 
   .public-site
-    .hathor-header__nav-item--dropdown:not(:has(.hathor-header__dropdown.is-open))
+    .hathor-header__nav-item--dropdown:hover
+    .hathor-header__dropdown-list
+    > li:nth-child(5)
+    .hathor-header__dropdown-link,
+  .public-site
+    .hathor-header__nav-item--dropdown
+    .hathor-header__dropdown.is-open
+    .hathor-header__dropdown-list
+    > li:nth-child(5)
+    .hathor-header__dropdown-link {
+    --hp2-drop-shift: 5.4rem;
+    transition-delay: 0.58s;
+  }
+
+  .public-site
+    .hathor-header__nav-item--dropdown:not(:has(.hathor-header__dropdown.is-open)):not(:hover):not(:focus-within)
     .hathor-header__dropdown-link {
     transition-delay: 0s;
   }
