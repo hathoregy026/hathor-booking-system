@@ -14,7 +14,7 @@ const PT_GOLD = "#B69F64";
 
 /** /transition index.html timeline: stagger 0.23, open 0.08, seal 0.06, window 0→0.37 */
 const MASK = {
-  start: 0,
+  start: 0.05,
   end: 0.37,
   gapRatio: 0.94,
   rotSpread: 0.23 / 0.37,
@@ -168,7 +168,7 @@ export function useHomePage2ScrollTransition(config: HomePage2ScrollTransitionRe
       const maskT = clamp(mapRange(p, MASK.start, MASK.end, 0, 1), 0, 1);
       const n = strips.length;
 
-      if (maskT <= 0 || n === 0) {
+      if (maskT <= 0 || p <= 0 || n === 0) {
         mask.classList.remove("is-active");
         gsap.set(mask, { opacity: 0 });
         strips.forEach(({ el, slatW }) =>
@@ -256,7 +256,10 @@ export function useHomePage2ScrollTransition(config: HomePage2ScrollTransitionRe
         requestAnimationFrame(() => {
           setup();
           ScrollTrigger.refresh();
+          applyProgress(0);
         });
+      } else {
+        requestAnimationFrame(() => applyProgress(0));
       }
     }, trigger);
 

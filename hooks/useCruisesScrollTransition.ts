@@ -12,7 +12,7 @@ const PT_CREAM = "#f4f1ea";
 const PT_GOLD = "#B69F64";
 
 const MASK = {
-  start: 0,
+  start: 0.05,
   end: 0.37,
   gapRatio: 0.94,
   rotSpread: 0.23 / 0.37,
@@ -159,7 +159,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       const maskT = clamp(mapRange(p, MASK.start, MASK.end, 0, 1), 0, 1);
       const n = strips.length;
 
-      if (maskT <= 0 || n === 0) {
+      if (maskT <= 0 || p <= 0 || n === 0) {
         mask.classList.remove("is-active");
         gsap.set(mask, { opacity: 0 });
         strips.forEach(({ el, slatW }) =>
@@ -403,7 +403,10 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
         requestAnimationFrame(() => {
           setup();
           ScrollTrigger.refresh();
+          applyRevealProgress(0);
         });
+      } else {
+        requestAnimationFrame(() => applyRevealProgress(0));
       }
     }, trigger);
 
