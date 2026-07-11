@@ -319,6 +319,8 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
         borderTopLeftRadius: radius,
         borderTopRightRadius: radius,
       });
+
+      syncContentToFollower(handoffBlend);
     }
 
     function applyRevealProgress(scrollProgress: number) {
@@ -332,30 +334,18 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
 
       const { sheetY, radius } = applyProgress(scrollProgress);
       applyFollower(sheetY, radius, handoffBlend);
-      syncContentToFollower(handoffBlend);
-    }
-
-    function lockContentMarginFromTransform(contentLayer: HTMLElement) {
-      const title = contentLayer.querySelector(
-        ".pt-sheet__landing-title",
-      ) as HTMLElement | null;
-      if (!title) return;
-
-      const titleTop = title.getBoundingClientRect().top;
-
-      gsap.set(contentLayer, { clearProps: "transform" });
-      contentLayer.style.removeProperty("margin-top");
-
-      const titleAfterClear = title.getBoundingClientRect().top;
-      contentLayer.style.marginTop = `${titleTop - titleAfterClear}px`;
     }
 
     function completeRevealHandoff() {
+      const contentLayer = getContentLayer();
+      const contentTitle = contentLayer?.querySelector(
+        ".pt-sheet__landing-title",
+      ) as HTMLElement | null;
+      const titleTopBefore = contentTitle?.getBoundingClientRect().top;
+
       syncContentToFollower(1);
 
-      const contentLayer = getContentLayer();
       if (contentLayer) {
-        lockContentMarginFromTransform(contentLayer);
         gsap.set(contentLayer, { opacity: 1 });
       }
 
@@ -385,7 +375,16 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       mask.classList.remove("is-active");
       gsap.set(mask, { opacity: 0 });
 
-      releasePinnedStage();
+      if (contentLayer && contentTitle && titleTopBefore != null) {
+        requestAnimationFrame(() => {
+          const titleTopAfter = contentTitle.getBoundingClientRect().top;
+          const drift = titleTopAfter - titleTopBefore;
+          if (Math.abs(drift) > 0.5) {
+            const y = Number(gsap.getProperty(contentLayer, "y")) || 0;
+            gsap.set(contentLayer, { y: y - drift });
+          }
+        });
+      }
     }
 
     const ctx = gsap.context(() => {
