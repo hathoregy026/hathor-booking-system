@@ -21,7 +21,7 @@ const MASK = {
   gapSealWindow: 0.06 / 0.37,
 };
 
-const PIN_VH = 1.05;
+const PIN_VH = 0.65;
 const SCRUB = 1.2;
 
 export const CRUISES_HERO_REFRESH_EVENT = "cruises-hero-stripe-refresh";
@@ -171,6 +171,7 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
         const rotEnd = rotStart + MASK.rotWindow;
         const open = easeOutCubic(mapRange(maskT, rotStart, rotEnd, 0, 1));
 
+        const fullW = colW + (i === n - 1 ? 2 : 1);
         let seal = 0;
         if (open >= 0.98) {
           const sealStart = rotEnd;
@@ -178,11 +179,12 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
           seal = easeInOutQuad(mapRange(maskT, sealStart, sealEnd, 0, 1));
         }
 
-        const width = slatW + (colW - slatW) * seal;
+        const width =
+          maskT >= 0.98 ? fullW : slatW + (fullW - slatW) * seal;
 
         gsap.set(el, {
           rotationY: -90 + open * 90,
-          opacity: open,
+          opacity: open > 0.02 ? 1 : open,
           width,
         });
       });

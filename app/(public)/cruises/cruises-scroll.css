@@ -3,7 +3,7 @@
 :root {
   --cruises-cream: #f4f1ea;
   --cruises-gold: #b69f64;
-  --cruises-pin-vh: 1.05;
+  --cruises-pin-vh: 0.65;
 }
 
 html[data-cruises-experience],
@@ -229,15 +229,18 @@ html[data-cruises-experience]:not(.cruises-scroll-ready)
   position: relative;
   z-index: 10;
   width: 100%;
-  margin-top: clamp(-5rem, -9vh, -3rem);
+  margin-top: clamp(-6rem, -11vh, -4rem);
+  padding-top: 0.35rem;
   padding-top: 0;
   background: var(--cruises-cream);
   isolation: isolate;
+  box-shadow: 0 -16px 0 12px var(--cruises-cream);
 }
 
 .cruises-scroll-route .cruises-sheet__header {
   text-align: center;
-  padding: clamp(1.5rem, 4vh, 2.5rem) 0 0.75rem;
+  padding: clamp(1.25rem, 3vh, 2rem) 0 0.75rem;
+  background: var(--cruises-cream);
 }
 
 .cruises-scroll-route .cruises-sheet__title {

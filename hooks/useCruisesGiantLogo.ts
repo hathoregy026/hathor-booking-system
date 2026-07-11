@@ -1,13 +1,14 @@
 /**
- * Giant Hathor logo — slow smooth landing, hides fully behind content on scroll.
+ * Giant Hathor logo — slow smooth landing, fully hidden behind content on scroll.
  */
 "use client";
 
 import { useLayoutEffect, type RefObject } from "react";
 import gsap from "gsap";
 
-const PIN_VH = 1.05;
+const PIN_VH = 0.65;
 const LANDED_Y_OFFSET = 10;
+const LOGO_HIDE_END = 0.7;
 
 const LOGO_LAND = {
   duration: 3.4,
@@ -30,10 +31,6 @@ function mapRange(
   return outMin + t * (outMax - outMin);
 }
 
-function easeOutCubic(t: number) {
-  return 1 - Math.pow(1 - t, 3);
-}
-
 export function useCruisesGiantLogo(
   runwayRef: RefObject<HTMLElement | null>,
   logoRef: RefObject<HTMLElement | null>,
@@ -53,13 +50,13 @@ export function useCruisesGiantLogo(
       return window.innerHeight * PIN_VH;
     }
 
-    function getLogoHideDistance() {
+    function getLogoHiddenY() {
       const logoHeight = logoEl.offsetHeight || window.innerHeight * 0.42;
-      return logoHeight * 0.62 + window.innerHeight * 0.14;
+      return logoHeight * 0.78 + window.innerHeight * 0.2 + 24;
     }
 
     function getLandingStartY() {
-      return getLogoHideDistance() + LANDED_Y_OFFSET;
+      return getLogoHiddenY() + LANDED_Y_OFFSET;
     }
 
     function setupLanding() {
@@ -90,14 +87,14 @@ export function useCruisesGiantLogo(
         0,
         (scroll - top) / getRunwayScrollDistance(),
       );
-      const hideT = easeOutCubic(mapRange(pinProgress, 0, 1, 0, 1));
+      const riseT = mapRange(pinProgress, 0, LOGO_HIDE_END, 0, 1);
 
       if (pinProgress > 0.001) {
         hasScrolled = true;
         landingTween?.kill();
         landingTween = null;
         gsap.set(logoEl, {
-          y: LANDED_Y_OFFSET + hideT * getLogoHideDistance(),
+          y: LANDED_Y_OFFSET + riseT * getLogoHiddenY(),
         });
       } else if (!hasScrolled && !landingTween) {
         setupLanding();
