@@ -1,6 +1,6 @@
 ﻿/**
- * Cruises scroll — Venetian dome (frozen HP2 reference) + split content layer.
- * Content syncs to follower Y every frame so listings ride the cream sheet.
+ * Cruises scroll engine — native 1:1 scroll % to dome rise (no Lenis lag).
+ * 98%: arc nearly shut, cream sealed. 100%: full gold handoff to content layer.
  */
 "use client";
 
@@ -12,21 +12,23 @@ const PT_CREAM = "#f4f1ea";
 const PT_GOLD = "#B69F64";
 
 const MASK = {
-  start: 0.05,
+  start: 0,
   end: 0.37,
   gapRatio: 0.94,
   rotSpread: 0.23 / 0.37,
   rotWindow: 0.08 / 0.37,
-  gapSealWindow: 0.06 / 0.37,
+  gapSealStart: 0.5,
+  gapSealStagger: 0.24,
+  gapSealWindow: 0.035,
 };
 
 const PEEK_VH = 0.065;
-/** Fade listings in as dome rises — locked to follower Y. */
-const CONTENT_BLEND_START = 0.42;
-const SCRUB = false;
+/** Last 12% of pin — follower tails up while content layer blends in. */
+const TAIL_BLEND_START = 0.88;
 
 export const CRUISES_PIN_VH = 4.2;
 export const CRUISES_RISE_END = 0.7;
+/** Pin travel in viewport heights — dome rise completes at this distance. */
 export const CRUISES_PIN_DISTANCE_VH = CRUISES_PIN_VH * CRUISES_RISE_END;
 
 type Strip = { el: HTMLDivElement; colW: number; slatW: number };
@@ -100,12 +102,6 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
     let lastFollowerY = Number.NaN;
     let lastFollowerRadius = "";
 
-    function getContentLayer() {
-      return document.querySelector(
-        ".cruises-content-layer",
-      ) as HTMLElement | null;
-    }
-
     function buildMaskStrips() {
       const n = stripCount();
       const w = Math.max(mask.clientWidth, stageEl.clientWidth, 1);
@@ -155,81 +151,18 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       };
     }
 
-    function applyMaskReveal(p: number) {
-      const maskT = clamp(mapRange(p, MASK.start, MASK.end, 0, 1), 0, 1);
-      const n = strips.length;
-
-      if (maskT <= 0 || p <= 0 || n === 0) {
-        mask.classList.remove("is-active");
-        gsap.set(mask, { opacity: 0 });
-        strips.forEach(({ el, slatW }) =>
-          gsap.set(el, { rotationY: -90, opacity: 0, width: slatW }),
-        );
-        return;
-      }
-
-      mask.classList.add("is-active");
-      gsap.set(mask, { opacity: 1 });
-
-      strips.forEach(({ el, colW, slatW }, i) => {
-        const rotStart = (i / n) * MASK.rotSpread;
-        const rotEnd = rotStart + MASK.rotWindow;
-        const open = easeOutCubic(mapRange(maskT, rotStart, rotEnd, 0, 1));
-
-        let seal = 0;
-        if (open >= 0.98) {
-          const sealStart = rotEnd;
-          const sealEnd = sealStart + MASK.gapSealWindow;
-          seal = easeInOutQuad(mapRange(maskT, sealStart, sealEnd, 0, 1));
-        }
-
-        const fullW = colW + 1;
-        const width = slatW + (fullW - slatW) * seal;
-
-        gsap.set(el, {
-          rotationY: -90 + open * 90,
-          opacity: open,
-          width,
-        });
-      });
+    function getContentLayer() {
+      return document.querySelector(
+        ".cruises-content-layer",
+      ) as HTMLElement | null;
     }
 
-    function applyProgress(p: number) {
-      const vh = window.innerHeight;
-      const sheetH = sheetEl.offsetHeight;
-      const peek = vh * PEEK_VH;
-      const startY = sheetH - peek;
-      const { start: rStart, end: rEnd } = getDomeRadii();
-
-      const riseT = clamp(p, 0, 1);
-      const y = startY * (1 - riseT);
-      const easedRiseT = easeOutCubic(riseT);
-      const radius = rEnd + (rStart - rEnd) * (1 - easedRiseT);
-
-      gsap.set(sheetEl, {
-        y,
-        opacity: 1,
-        borderTopLeftRadius: radius,
-        borderTopRightRadius: radius,
-      });
-
-      applyMaskReveal(riseT);
-
-      if (heroCopy) {
-        gsap.set(heroCopy, { opacity: mapRange(easedRiseT, 0.35, 0.75, 1, 0) });
-      }
-
-      return { sheetY: y, radius, riseT };
-    }
-
-    let contentAlignPull: number | null = null;
-
-    function syncContentLayer(blend: number, followerY: number) {
+    function syncContentHandoff(handoffBlend: number) {
       const contentLayer = getContentLayer();
-      trigger.style.setProperty("--cruises-handoff-blend", String(blend));
 
-      if (!contentLayer || !followerEl || blend <= 0) {
-        contentAlignPull = null;
+      trigger.style.setProperty("--cruises-handoff-blend", String(handoffBlend));
+
+      if (!contentLayer || !followerEl || handoffBlend <= 0) {
         trigger.classList.remove("hathor-page-scroll--handoff-active");
         if (contentLayer) {
           gsap.set(contentLayer, { clearProps: "transform,opacity" });
@@ -250,108 +183,152 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       ) as HTMLElement | null;
       if (!followerLanding || !contentLanding) return;
 
-      if (contentAlignPull === null) {
-        const followerTop = followerLanding.getBoundingClientRect().top;
-        const contentTop = contentLanding.getBoundingClientRect().top;
-        const currentY = Number(gsap.getProperty(contentLayer, "y")) || 0;
-        contentAlignPull = followerTop - (contentTop - currentY) - followerY;
-      }
+      const followerTop = followerLanding.getBoundingClientRect().top;
+      const layerRect = contentLayer.getBoundingClientRect();
+      const landingRect = contentLanding.getBoundingClientRect();
+      const currentY = Number(gsap.getProperty(contentLayer, "y")) || 0;
+      const layerTop = layerRect.top - currentY;
+      const landingOffset = landingRect.top - layerRect.top;
+      const targetY = followerTop - (layerTop + landingOffset);
 
       gsap.set(contentLayer, {
-        y: contentAlignPull + followerY,
-        opacity: Math.min(1, blend),
+        y: targetY,
+        opacity: handoffBlend,
       });
     }
 
-    function finalizeContentLayer() {
-      const contentLayer = getContentLayer();
-      if (!contentLayer) return;
+    function applyMaskReveal(p: number) {
+      const maskT = clamp(mapRange(p, MASK.start, MASK.end, 0, 1), 0, 1);
+      const n = strips.length;
 
-      const landing = contentLayer.querySelector(
-        ".cruises-content-layer__landing",
-      ) as HTMLElement | null;
-      const beforeTop = landing?.getBoundingClientRect().top ?? 0;
-      const currentY = Number(gsap.getProperty(contentLayer, "y")) || 0;
-
-      gsap.set(contentLayer, { clearProps: "transform" });
-      contentLayer.style.marginTop =
-        "calc(-100svh + clamp(10rem, 21vh, 13rem))";
-
-      if (landing) {
-        const afterTop = landing.getBoundingClientRect().top;
-        const delta = beforeTop - afterTop;
-        if (Math.abs(delta) > 0.5) {
-          const margin =
-            parseFloat(getComputedStyle(contentLayer).marginTop) || 0;
-          contentLayer.style.marginTop = `${margin + delta}px`;
-        }
-      } else if (currentY !== 0) {
-        const margin = parseFloat(getComputedStyle(contentLayer).marginTop) || 0;
-        contentLayer.style.marginTop = `${margin + currentY}px`;
+      if (maskT <= 0 || n === 0) {
+        mask.classList.remove("is-active");
+        gsap.set(mask, { opacity: 0 });
+        strips.forEach(({ el, slatW }) =>
+          gsap.set(el, { rotationY: -90, opacity: 0, width: slatW }),
+        );
+        return;
       }
 
-      gsap.set(contentLayer, { opacity: 1 });
+      mask.classList.add("is-active");
+      gsap.set(mask, { opacity: 1 });
+
+      strips.forEach(({ el, colW, slatW }, i) => {
+        const rotStart = (i / n) * MASK.rotSpread;
+        const rotEnd = rotStart + MASK.rotWindow;
+        const open = easeOutCubic(mapRange(maskT, rotStart, rotEnd, 0, 1));
+
+        const sealStart = MASK.gapSealStart + (i / n) * MASK.gapSealStagger;
+        const sealEnd = sealStart + MASK.gapSealWindow;
+        const seal =
+          open >= 0.98 ? easeInOutQuad(mapRange(maskT, sealStart, sealEnd, 0, 1)) : 0;
+
+        /* +1px overlap kills cream gaps between slats (Venetian reference). */
+        const fullW = colW + 1;
+        let width: number;
+        if (open <= 0.03) {
+          width = fullW;
+        } else if (seal > 0) {
+          width = slatW + (fullW - slatW) * seal;
+        } else {
+          width = slatW;
+        }
+
+        gsap.set(el, {
+          rotationY: -90 + open * 90,
+          opacity: open > 0.03 ? 1 : 0,
+          width,
+        });
+      });
+    }
+
+    function applyProgress(p: number) {
+      const vh = window.innerHeight;
+      const sheetH = sheetEl.offsetHeight;
+      const peek = vh * PEEK_VH;
+      const startY = sheetH - peek;
+      const { start: rStart, end: rEnd } = getDomeRadii();
+
+      /* Linear 1:1 — scroll % = rise % = radius shrink % (no early flat ears). */
+      const riseT = clamp(p, 0, 1);
+      const y = startY * (1 - riseT);
+      const radius = rEnd + (rStart - rEnd) * (1 - riseT);
+
+      gsap.set(sheetEl, {
+        y,
+        opacity: 1,
+        borderTopLeftRadius: radius,
+        borderTopRightRadius: radius,
+      });
+
+      applyMaskReveal(riseT);
+
+      if (heroCopy) {
+        gsap.set(heroCopy, { opacity: mapRange(riseT, 0.35, 0.75, 1, 0) });
+      }
+
+      return { sheetY: y, radius, riseT };
     }
 
     function applyFollower(
-      revealP: number,
       sheetY: number,
       radius: number,
+      handoffBlend: number,
     ) {
       if (!followerEl) return;
       if (trigger.classList.contains("hathor-page-scroll--past-pin")) return;
 
-      const blend = mapRange(revealP, CONTENT_BLEND_START, 0.98, 0, 1);
       const y = Math.round(sheetY);
-      const radiusKey = revealP < 0.98 ? String(radius) : "0";
-
-      trigger.classList.toggle(
-        "hathor-page-scroll--content-active",
-        revealP >= 0.88,
-      );
+      const radiusKey = String(radius);
 
       if (y === lastFollowerY && radiusKey === lastFollowerRadius) {
-        syncContentLayer(blend, y);
+        syncContentHandoff(handoffBlend);
         return;
       }
 
       lastFollowerY = y;
       lastFollowerRadius = radiusKey;
 
-      if (revealP < 0.98) {
-        gsap.set(followerEl, {
-          y,
-          opacity: blend < 0.08 ? 1 : Math.max(0, 1 - blend * 1.4),
-          borderTopLeftRadius: radius,
-          borderTopRightRadius: radius,
-        });
-      } else {
-        gsap.set(followerEl, {
-          y,
-          opacity: 0,
-          borderTopLeftRadius: 0,
-          borderTopRightRadius: 0,
-        });
-      }
-
-      syncContentLayer(blend, y);
+      gsap.set(followerEl, {
+        y,
+        opacity: 1 - handoffBlend,
+        borderTopLeftRadius: radius,
+        borderTopRightRadius: radius,
+      });
     }
 
     function applyRevealProgress(scrollProgress: number) {
-      const { sheetY, radius, riseT } = applyProgress(scrollProgress);
-      applyFollower(riseT, sheetY, radius);
+      const revealDist = getRevealDistance();
+      const scrolledPx = scrollProgress * revealDist;
+      const tailBlendStart = revealDist * TAIL_BLEND_START;
+      const tailScroll = Math.max(0, scrolledPx - tailBlendStart);
+      const tailRoom = revealDist * (1 - TAIL_BLEND_START);
+      const handoffBlend =
+        tailRoom > 0 ? clamp(tailScroll / tailRoom, 0, 1) : scrollProgress >= 1 ? 1 : 0;
+
+      const { sheetY, radius } = applyProgress(scrollProgress);
+      applyFollower(sheetY, radius, handoffBlend);
+      syncContentHandoff(handoffBlend);
     }
 
-    function completePinHandoff() {
-      const sheetY = Number(gsap.getProperty(sheetEl, "y")) || 0;
-      syncContentLayer(1, sheetY);
-      finalizeContentLayer();
+    function completeRevealHandoff() {
+      syncContentHandoff(1);
 
       trigger.classList.add("hathor-page-scroll--past-pin");
       trigger.classList.add("hathor-page-scroll--media-gone");
       trigger.classList.add("hathor-page-scroll--gold-complete");
       trigger.classList.add("hathor-page-scroll--content-active");
       trigger.classList.remove("hathor-page-scroll--handoff-active");
+
+      trigger.style.setProperty("--cruises-handoff-blend", "1");
+
+      const contentLayer = getContentLayer();
+      if (contentLayer) {
+        gsap.set(contentLayer, { clearProps: "transform" });
+        contentLayer.style.marginTop =
+          "calc(-100svh + clamp(10rem, 21vh, 13rem))";
+        gsap.set(contentLayer, { opacity: 1 });
+      }
 
       gsap.set(sheetEl, {
         y: 0,
@@ -386,14 +363,14 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
           end: () => `+=${getRevealDistance()}`,
           pin: stage,
           pinSpacing: true,
-          scrub: SCRUB,
+          scrub: false,
           invalidateOnRefresh: true,
           anticipatePin: 1,
           onUpdate: (self) => {
             applyRevealProgress(self.progress);
           },
           onLeave: () => {
-            completePinHandoff();
+            completeRevealHandoff();
           },
           onEnterBack: () => {
             const contentLayer = getContentLayer();
@@ -411,10 +388,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
             );
             lastFollowerY = Number.NaN;
             lastFollowerRadius = "";
-            contentAlignPull = null;
-            applyRevealProgress(
-              ScrollTrigger.getById(`cruises-scroll-${instanceId}`)?.progress ?? 0,
-            );
+            applyRevealProgress(ScrollTrigger.getById(`cruises-scroll-${instanceId}`)?.progress ?? 0);
           },
         });
 
@@ -425,10 +399,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
         requestAnimationFrame(() => {
           setup();
           ScrollTrigger.refresh();
-          applyRevealProgress(0);
         });
-      } else {
-        requestAnimationFrame(() => applyRevealProgress(0));
       }
     }, trigger);
 
@@ -442,7 +413,7 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
 
         if (buildMaskStrips()) {
           if (trigger.classList.contains("hathor-page-scroll--past-pin")) {
-            completePinHandoff();
+            completeRevealHandoff();
           } else {
             applyRevealProgress(progress);
           }
@@ -475,10 +446,10 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       if (sheetEl) {
         gsap.set(sheetEl, { clearProps: "opacity" });
       }
-      const layer = getContentLayer();
-      if (layer) {
-        layer.style.removeProperty("margin-top");
-        gsap.set(layer, { clearProps: "transform,opacity" });
+      const contentLayer = getContentLayer();
+      if (contentLayer) {
+        contentLayer.style.removeProperty("margin-top");
+        gsap.set(contentLayer, { clearProps: "transform,opacity" });
       }
       trigger.style.removeProperty("--cruises-handoff-blend");
       trigger.classList.remove(

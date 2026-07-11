@@ -142,7 +142,7 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   visibility: hidden !important;
 }
 
-/* Content layer — rides dome via JS y = pull + followerY; one title only */
+/* Content layer — fades in during tail (88–100%), position synced to follower in JS */
 .cruises-content-layer {
   position: relative;
   z-index: 10;
@@ -155,13 +155,6 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   visibility: hidden;
   pointer-events: none;
   will-change: transform, opacity;
-}
-
-.cruises-scroll-root:has([data-cruises-transition].hathor-page-scroll--handoff-active)
-  .cruises-sheet-follower
-  .pt-sheet__landing {
-  opacity: 0 !important;
-  visibility: hidden !important;
 }
 
 .cruises-scroll-root:has([data-cruises-transition].hathor-page-scroll--handoff-active)
@@ -253,6 +246,10 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
 .cruises-scroll-route [data-cruises-transition] .pt-mask {
   width: 100% !important;
   max-width: none !important;
+}
+
+.cruises-scroll-route [data-cruises-transition] .pt-mask {
+  background-color: var(--pt-gold, #b69f64);
 }
 
 /* Empty animation runway — fixed height so dome math matches Homepage 2 */
