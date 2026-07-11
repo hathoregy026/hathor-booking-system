@@ -1,0 +1,47 @@
+:root {
+  --cruises-option-2-cream: #f4f1ea;
+}
+
+html[data-cruises-option-2-experience],
+html[data-cruises-option-2-experience] body,
+body:has(.cruises-option-2-route),
+.public-site:has(.cruises-option-2-route),
+.public-main:has(.cruises-option-2-route),
+.page-transition:has(.cruises-option-2-route),
+.cruises-option-2-route,
+.cruises-option-2-root {
+  background-color: var(--cruises-option-2-cream) !important;
+}
+
+html[data-cruises-option-2-experience] .public-site > .owo-footer,
+.public-site:has(.cruises-option-2-route) > .owo-footer {
+  display: none !important;
+}
+
+.public-main:has(.cruises-option-2-route) {
+  width: 100%;
+  max-width: none;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.cruises-option-2-route,
+.cruises-option-2-root {
+  width: 100%;
+  max-width: none;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.cruises-option-2-demo-banner {
+  margin: 0;
+  padding: 0.65rem 1rem;
+  text-align: center;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #5c4f2e;
+  background: #e8e0d0;
+  border-bottom: 1px solid #c9b98a;
+}

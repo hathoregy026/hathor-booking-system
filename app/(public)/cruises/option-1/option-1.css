@@ -1,0 +1,64 @@
+:root {
+  --cruises-option-1-cream: #f4f1ea;
+}
+
+html[data-cruises-option-1-experience],
+html[data-cruises-option-1-experience] body,
+body:has(.cruises-option-1-route),
+.public-site:has(.cruises-option-1-route),
+.public-main:has(.cruises-option-1-route),
+.page-transition:has(.cruises-option-1-route),
+.cruises-option-1-route,
+.cruises-option-1-root {
+  background-color: var(--cruises-option-1-cream) !important;
+}
+
+html[data-cruises-option-1-experience] .public-site > .owo-footer,
+.public-site:has(.cruises-option-1-route) > .owo-footer {
+  display: none !important;
+}
+
+.public-main:has(.cruises-option-1-route) {
+  width: 100%;
+  max-width: none;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.cruises-option-1-route,
+.cruises-option-1-root {
+  width: 100%;
+  max-width: none;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.cruises-option-1-hero .pt-sheet.cruises-option-1-sheet-runway {
+  min-height: 0;
+  padding: 0;
+  background: var(--cruises-option-1-cream);
+}
+
+.cruises-option-1-content {
+  position: relative;
+  z-index: 1;
+  background: var(--cruises-option-1-cream);
+}
+
+.cruises-option-1-content [data-option-1-reveal] {
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.cruises-option-1-demo-banner {
+  margin: 0;
+  padding: 0.65rem 1rem;
+  text-align: center;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #5c4f2e;
+  background: #e8e0d0;
+  border-bottom: 1px solid #c9b98a;
+}

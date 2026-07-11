@@ -1,5 +1,7 @@
 /** Public navigation structure — aligned with RAW_DATA.md site map. */
 
+import { CRUISES_OPTION_LINKS } from "@/lib/cruises-option-nav";
+
 export type NavLink = {
   href: string;
   label: string;
@@ -71,7 +73,13 @@ export const NAV_PAGES: NavGroup = {
   ],
 };
 
-export const NAV_GROUPS = [NAV_ACCOMMODATIONS, NAV_EXPERIENCES, NAV_PAGES] as const;
+export const NAV_CRUISES: NavGroup = {
+  id: "cruises",
+  label: "Cruises",
+  links: CRUISES_OPTION_LINKS,
+};
+
+export const NAV_GROUPS = [NAV_CRUISES, NAV_ACCOMMODATIONS, NAV_EXPERIENCES, NAV_PAGES] as const;
 
 export const EXPLORE_LINKS: NavLink[] = [
   { href: "/", label: "Homepage" },
@@ -102,7 +110,13 @@ export type HeaderNavItem = HeaderNavLink | HeaderNavGroup;
 export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
   { type: "link", href: "/", label: "Homepage" },
   { type: "link", href: "/homepage-2", label: "Homepage 2" },
-  { type: "link", href: "/cruises", label: "Cruises" },
+  {
+    type: "group",
+    id: "cruises",
+    label: "Cruises",
+    href: "/cruises",
+    links: NAV_CRUISES.links,
+  },
   {
     type: "group",
     id: "accommodations",
