@@ -83,11 +83,9 @@ export function CruisesHero({
           </div>
         </div>
 
-        <div className="cruises-hero__copy">
-          <div ref={giantLogoRef} className="giant-logo-container cruises-giant-logo">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={GIANT_LOGO_SRC} alt="Hathor" />
-          </div>
+        <div ref={giantLogoRef} className="cruises-hero__giant-logo">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={GIANT_LOGO_SRC} alt="Hathor" />
         </div>
       </div>
     </section>

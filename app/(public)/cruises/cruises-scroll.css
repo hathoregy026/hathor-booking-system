@@ -1,4 +1,4 @@
-/* Cruises page — ref layout: fullscreen hero, logo behind cream sheet, normal scroll */
+/* Cruises page — fullscreen hero, logo behind cream sheet, normal scroll */
 
 :root {
   --cruises-cream: #f4f1ea;
@@ -31,15 +31,11 @@ body:has(.cruises-scroll-route),
   margin: 0 !important;
   padding: 0 !important;
   overflow: visible;
-  /* Shared by hero + sheet (siblings — vars must live on parent) */
-  --cruises-pin-vh: 1.38;
-  --cruises-stripe-scroll: 38vh;
-  --cruises-runway-height: calc(100svh + var(--cruises-stripe-scroll));
-  --cruises-sheet-land: 62svh;
 }
 
-/* ─── Hero runway — sticky full-screen stage + stripe scroll tail ─── */
+/* ─── Hero runway — sticky stage + short stripe scroll tail ─── */
 .cruises-scroll-route .cruises-hero {
+  --cruises-runway-height: 135vh;
   position: relative;
   width: 100%;
   height: var(--cruises-runway-height);
@@ -123,7 +119,7 @@ body:has(.cruises-scroll-route),
   will-change: transform, opacity, width;
 }
 
-/* Hero title — top center (ref) */
+/* Hero title — top center */
 .cruises-scroll-route .cruises-hero__headline {
   position: absolute;
   top: clamp(5.5rem, 14vh, 8.5rem);
@@ -185,43 +181,38 @@ body:has(.cruises-scroll-route),
   color: rgb(255 255 255 / 0.92);
 }
 
-/* Giant logo — same placement as Homepage 2 (ref: straddles content sheet) */
-.cruises-scroll-route .cruises-hero__copy {
-  position: absolute;
-  inset: 0;
-  z-index: 6;
-  pointer-events: none;
-  overflow: visible;
-}
-
-.cruises-scroll-route .cruises-hero__copy .giant-logo-container,
-.cruises-scroll-route .cruises-giant-logo {
+/* Giant logo — straddles hero / sheet seam (+10px lower at rest) */
+.cruises-scroll-route .cruises-hero__giant-logo {
   position: absolute;
   left: 50%;
-  top: calc(45.76% + 10px);
+  bottom: calc(clamp(-2rem, -4vh, -0.5rem) - 10px);
   width: 92vw;
   max-width: none;
-  margin: 0;
-  opacity: 1;
+  z-index: 6;
   pointer-events: none;
   will-change: transform;
 }
 
-.cruises-scroll-route .cruises-giant-logo img,
-.cruises-scroll-route .giant-logo-container img {
+.cruises-scroll-route .cruises-hero__giant-logo img {
   display: block;
   width: 100%;
   height: auto;
   filter: drop-shadow(0 1rem 2.5rem rgb(0 0 0 / 0.46));
 }
 
-/* Cream content sheet — z above logo; clips bottom half at rest (ref) */
+html[data-cruises-experience]:not(.cruises-scroll-ready)
+  .cruises-scroll-route
+  .cruises-hero__giant-logo {
+  opacity: 0;
+}
+
+/* Cream content sheet — overlaps hero bottom, logo rises from behind */
 .cruises-scroll-route .cruises-sheet {
   position: relative;
   z-index: 10;
   width: 100%;
-  margin-top: calc(-1 * (var(--cruises-runway-height) - var(--cruises-sheet-land)));
-  padding-top: clamp(1.25rem, 3vh, 2rem);
+  margin-top: clamp(-11rem, -18vh, -7rem);
+  padding-top: clamp(1.5rem, 4vh, 2.5rem);
   background: var(--cruises-cream);
   isolation: isolate;
 }
@@ -250,7 +241,7 @@ body:has(.cruises-scroll-route),
   font-family: var(--public-serif, Georgia, serif);
   font-size: clamp(1.75rem, 4vw, 2.75rem);
   font-weight: 500;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   color: #1c1917;
 }
 
@@ -259,31 +250,23 @@ body:has(.cruises-scroll-route),
   background: var(--cruises-cream);
 }
 
-.cruises-scroll-route .cruises-sheet__header,
-.cruises-scroll-route .cruises-sheet__filters {
-  transition: opacity 0.45s ease;
-}
-
-.cruises-scroll-route .cruises-sheet__title {
-  letter-spacing: 0.06em;
-}
-
 @media (max-width: 1024px) {
-  .cruises-scroll-route,
-  .cruises-page {
-    --cruises-stripe-scroll: 32vh;
+  .cruises-scroll-route .cruises-hero {
+    --cruises-runway-height: 125vh;
   }
 }
 
 @media (max-width: 767px) {
-  .cruises-scroll-route,
-  .cruises-page {
-    --cruises-stripe-scroll: 28vh;
+  .cruises-scroll-route .cruises-hero {
+    --cruises-runway-height: 120vh;
   }
 
-  .cruises-scroll-route .cruises-hero__copy .giant-logo-container,
-  .cruises-scroll-route .cruises-giant-logo {
+  .cruises-scroll-route .cruises-hero__giant-logo {
     width: 96vw;
-    top: calc(37.44% + 10px);
+    bottom: calc(clamp(-1rem, -2vh, 0rem) - 10px);
+  }
+
+  .cruises-scroll-route .cruises-sheet {
+    margin-top: clamp(-8rem, -14vh, -5rem);
   }
 }

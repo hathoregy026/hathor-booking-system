@@ -1,5 +1,5 @@
 /**
- * Cruises hero — Homepage 2 Venetian stripes (timing, easing, Lenis, scrub).
+ * Cruises hero — Homepage 2 Venetian stripes (timing, easing, scrub).
  * No sheet / dome / pin.
  */
 "use client";
@@ -7,7 +7,6 @@
 import { useLayoutEffect, useId, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Lenis from "lenis";
 
 const PT_GOLD = "#B69F64";
 
@@ -64,30 +63,6 @@ function stripCount() {
   return 52;
 }
 
-function setupSmoothScroll() {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    return null;
-  }
-
-  const lenis = new Lenis({
-    duration: 2.1,
-    easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smoothWheel: true,
-    syncTouch: false,
-  });
-
-  lenis.on("scroll", ScrollTrigger.update);
-
-  const ticker = (time: number) => {
-    lenis.raf(time * 1000);
-  };
-
-  gsap.ticker.add(ticker);
-  gsap.ticker.lagSmoothing(0);
-
-  return { lenis, ticker };
-}
-
 export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
   const instanceId = useId().replace(/:/g, "");
 
@@ -107,7 +82,6 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
 
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
-    const smoothScroll = setupSmoothScroll();
 
     function buildMaskStrips() {
       const n = stripCount();
@@ -234,10 +208,6 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
       window.removeEventListener(CRUISES_HERO_REFRESH_EVENT, refreshEngine);
       resizeObserver.disconnect();
       if (resizeTimer) clearTimeout(resizeTimer);
-      if (smoothScroll) {
-        gsap.ticker.remove(smoothScroll.ticker);
-        smoothScroll.lenis.destroy();
-      }
       ctx.revert();
     };
   }, [
