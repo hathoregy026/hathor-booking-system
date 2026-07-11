@@ -175,11 +175,6 @@ export function CruisesScrollReveal({
               className="cruises-sheet-follower"
               aria-hidden="true"
             >
-              <div className="pt-sheet__landing">
-                <div className="hathor-container">
-                  <h2 className="pt-sheet__landing-title">{title}</h2>
-                </div>
-              </div>
               <div className="cruises-sheet-follower__cream" aria-hidden="true" />
             </div>
           </div>

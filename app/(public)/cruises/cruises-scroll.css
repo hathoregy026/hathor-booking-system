@@ -141,7 +141,7 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   visibility: hidden !important;
 }
 
-/* Content layer — fades in during tail (88–100%), position synced to follower in JS */
+/* Content layer — rides the sheet (fixed above pin stage), no crossfade */
 .cruises-content-layer {
   position: relative;
   z-index: 10;
@@ -153,21 +153,38 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  will-change: transform, opacity;
+  will-change: transform;
 }
 
-.cruises-scroll-root:has([data-cruises-transition].hathor-page-scroll--handoff-active)
+.cruises-scroll-root:has(
+    [data-cruises-transition].hathor-page-scroll--content-riding
+  )
+  .cruises-content-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 45;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.cruises-scroll-root:has(
+    [data-cruises-transition].hathor-page-scroll--content-visible
+  )
   .cruises-content-layer {
   visibility: visible;
+  opacity: 1 !important;
   pointer-events: none;
 }
 
 .cruises-scroll-root:has([data-cruises-transition].hathor-page-scroll--past-pin)
   .cruises-content-layer {
-  visibility: visible;
-  opacity: 1;
-  pointer-events: auto;
   position: relative;
+  visibility: visible;
+  opacity: 1 !important;
+  pointer-events: auto;
   z-index: 50;
 }
 
