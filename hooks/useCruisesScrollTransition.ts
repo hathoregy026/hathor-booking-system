@@ -152,7 +152,7 @@ export function useCruisesScrollTransition(config: CruisesHeroStripeRefs) {
 
       if (heroMedia) {
         gsap.set(heroMedia, {
-          opacity: mapRange(p, 0.1, 0.75, 1, 0.15),
+          opacity: mapRange(p, 0.45, 0.92, 1, 0.88),
           scale: 1 + maskT * 0.04,
         });
       }

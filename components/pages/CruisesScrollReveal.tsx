@@ -24,8 +24,7 @@ export type CruisesScrollRevealProps = {
 };
 
 /**
- * Standard hero + Venetian stripes. Giant logo bridges hero and content.
- * Content scrolls normally below — no cream sheet / dome.
+ * Standard hero + Venetian stripes. Giant logo centered in hero, rises from behind content.
  */
 export function CruisesScrollReveal({
   heroTitle,
@@ -51,7 +50,7 @@ export function CruisesScrollReveal({
     heroCopy: heroCopyRef,
   });
 
-  useCruisesGiantLogo(giantLogoRef);
+  useCruisesGiantLogo(rootRef, giantLogoRef);
 
   useEffect(() => {
     document.documentElement.classList.add("cruises-scroll-ready");
@@ -74,7 +73,14 @@ export function CruisesScrollReveal({
             />
             <div className="cruises-hero-media__shade" aria-hidden />
           </div>
+
+          <div ref={giantLogoRef} className="cruises-giant-logo giant-logo-container">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={BACK_LOGO_SRC} alt="Hathor" />
+          </div>
+
           <div ref={maskRef} className="cruises-hero-mask" aria-hidden="true" />
+
           <div ref={heroCopyRef} className="cruises-hero-copy">
             <div className="hathor-container cruises-hero-copy__inner">
               <nav className="hathor-breadcrumb" aria-label="Breadcrumb">
@@ -91,13 +97,6 @@ export function CruisesScrollReveal({
           </div>
         </div>
       </section>
-
-      <div className="cruises-hero-logo-bridge" aria-hidden="false">
-        <div ref={giantLogoRef} className="cruises-giant-logo">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={BACK_LOGO_SRC} alt="Hathor" />
-        </div>
-      </div>
 
       <section
         className="cruises-page-body"
