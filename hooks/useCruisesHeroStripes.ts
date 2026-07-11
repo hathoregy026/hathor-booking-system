@@ -1,24 +1,28 @@
 /**
- * Cruises hero — Venetian gold stripes on scroll. No sheet, no pin.
+ * Cruises hero — Homepage 2 Venetian stripes (timing, easing, Lenis, scrub).
+ * No sheet / dome / pin.
  */
 "use client";
 
 import { useLayoutEffect, useId, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
 
 const PT_GOLD = "#B69F64";
 
+/** Homepage 2 / transition index.html mask cadence */
 const MASK = {
-  start: 0.02,
-  end: 0.88,
+  start: 0,
+  end: 0.37,
   gapRatio: 0.94,
-  rotSpread: 0.82,
-  rotWindow: 0.04,
-  gapSealStart: 0.48,
-  gapSealStagger: 0.32,
-  gapSealWindow: 0.022,
+  rotSpread: 0.23 / 0.37,
+  rotWindow: 0.08 / 0.37,
+  gapSealWindow: 0.06 / 0.37,
 };
+
+const PIN_VH = 4.2;
+const SCRUB = 1.2;
 
 export const CRUISES_HERO_REFRESH_EVENT = "cruises-hero-stripe-refresh";
 
@@ -46,11 +50,43 @@ function mapRange(
   return outMin + t * (outMax - outMin);
 }
 
+function easeOutCubic(t: number) {
+  return 1 - Math.pow(1 - t, 3);
+}
+
+function easeInOutQuad(t: number) {
+  return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+}
+
 function stripCount() {
   const w = window.innerWidth;
   if (w <= 767) return 25;
   if (w <= 1024) return 35;
   return 52;
+}
+
+function setupSmoothScroll() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    return null;
+  }
+
+  const lenis = new Lenis({
+    duration: 2.1,
+    easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+    syncTouch: false,
+  });
+
+  lenis.on("scroll", ScrollTrigger.update);
+
+  const ticker = (time: number) => {
+    lenis.raf(time * 1000);
+  };
+
+  gsap.ticker.add(ticker);
+  gsap.ticker.lagSmoothing(0);
+
+  return { lenis, ticker };
 }
 
 export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
@@ -72,6 +108,7 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
 
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
+    const smoothScroll = setupSmoothScroll();
 
     function buildMaskStrips() {
       const n = stripCount();
@@ -100,14 +137,14 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
     }
 
     function applyMaskReveal(p: number) {
-      const maskT = mapRange(p, MASK.start, MASK.end, 0, 1);
+      const maskT = clamp(mapRange(p, MASK.start, MASK.end, 0, 1), 0, 1);
       const n = strips.length;
 
       if (maskT <= 0 || n === 0) {
         mask.classList.remove("is-active");
         gsap.set(mask, { opacity: 0 });
-        strips.forEach(({ el, colW }) =>
-          gsap.set(el, { rotationY: -90, opacity: 0, width: colW }),
+        strips.forEach(({ el, slatW }) =>
+          gsap.set(el, { rotationY: -90, opacity: 0, width: slatW }),
         );
         return;
       }
@@ -118,26 +155,20 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
       strips.forEach(({ el, colW, slatW }, i) => {
         const rotStart = (i / n) * MASK.rotSpread;
         const rotEnd = rotStart + MASK.rotWindow;
-        const open = mapRange(maskT, rotStart, rotEnd, 0, 1);
+        const open = easeOutCubic(mapRange(maskT, rotStart, rotEnd, 0, 1));
 
-        const sealStart = MASK.gapSealStart + (i / n) * MASK.gapSealStagger;
-        const sealEnd = sealStart + MASK.gapSealWindow;
-        const seal =
-          open >= 0.98 ? mapRange(maskT, sealStart, sealEnd, 0, 1) : 0;
-
-        const fullW = colW + 1;
-        let width: number;
-        if (open <= 0.03) {
-          width = fullW;
-        } else if (seal > 0) {
-          width = slatW + (fullW - slatW) * seal;
-        } else {
-          width = slatW;
+        let seal = 0;
+        if (open >= 0.98) {
+          const sealStart = rotEnd;
+          const sealEnd = sealStart + MASK.gapSealWindow;
+          seal = easeInOutQuad(mapRange(maskT, sealStart, sealEnd, 0, 1));
         }
+
+        const width = slatW + (colW - slatW) * seal;
 
         gsap.set(el, {
           rotationY: -90 + open * 90,
-          opacity: open > 0.03 ? 1 : 0,
+          opacity: open,
           width,
         });
       });
@@ -148,11 +179,11 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
 
       if (headline) {
         gsap.set(headline, {
-          opacity: mapRange(p, 0.08, 0.45, 1, 0),
+          opacity: mapRange(p, 0.08, 0.32, 1, 0),
         });
       }
 
-      trigger.classList.toggle("cruises-hero--stripes-done", p >= 0.92);
+      trigger.classList.toggle("cruises-hero--stripes-done", p >= 0.37);
     }
 
     function initScroll() {
@@ -164,8 +195,8 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
         id: `cruises-hero-${instanceId}`,
         trigger,
         start: "top top",
-        end: "bottom bottom",
-        scrub: 0,
+        end: () => `+=${window.innerHeight * PIN_VH}`,
+        scrub: SCRUB,
         invalidateOnRefresh: true,
         onUpdate: (self) => applyProgress(self.progress),
       });
@@ -196,6 +227,7 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
 
     const resizeObserver = new ResizeObserver(() => onResize());
     resizeObserver.observe(stageEl);
+    resizeObserver.observe(mask);
 
     return () => {
       window.removeEventListener("resize", onResize);
@@ -203,6 +235,10 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
       window.removeEventListener(CRUISES_HERO_REFRESH_EVENT, refreshEngine);
       resizeObserver.disconnect();
       if (resizeTimer) clearTimeout(resizeTimer);
+      if (smoothScroll) {
+        gsap.ticker.remove(smoothScroll.ticker);
+        smoothScroll.lenis.destroy();
+      }
       ctx.revert();
     };
   }, [

@@ -33,14 +33,14 @@ body:has(.cruises-scroll-route),
   overflow: visible;
 }
 
-/* ─── Full-screen hero + stripe scroll runway (cream tail, no black gap) ─── */
+/* ─── Hero runway — HP2 scroll distance (4.2vh), sticky full-screen stage ─── */
 .cruises-scroll-route .cruises-hero {
-  --cruises-runway-height: 100svh;
-  --cruises-stripe-scroll: 38vh;
+  --cruises-pin-vh: 4.2;
+  --cruises-runway-height: calc(100svh + (var(--cruises-pin-vh) - 1) * 100vh);
   position: relative;
   width: 100%;
-  height: calc(var(--cruises-runway-height) + var(--cruises-stripe-scroll));
-  min-height: calc(var(--cruises-runway-height) + var(--cruises-stripe-scroll));
+  height: var(--cruises-runway-height);
+  min-height: var(--cruises-runway-height);
   margin: 0;
   padding: 0;
   background: var(--cruises-cream);
@@ -195,7 +195,7 @@ body:has(.cruises-scroll-route),
 .cruises-scroll-route .cruises-giant-logo {
   position: absolute;
   left: 50%;
-  top: 45.76%;
+  top: calc(45.76% + 10px);
   width: 92vw;
   max-width: none;
   margin: 0;
@@ -256,30 +256,19 @@ body:has(.cruises-scroll-route),
   background: var(--cruises-cream);
 }
 
-.cruises-scroll-route .cruises-column-tail {
-  margin-bottom: 0;
-  padding-bottom: 0;
+.cruises-scroll-route .cruises-sheet__header,
+.cruises-scroll-route .cruises-sheet__filters {
+  transition: opacity 0.45s ease;
 }
 
-.cruises-scroll-route .cruises-footer.owo-footer {
-  margin-top: 0 !important;
-  background: var(--cruises-cream) !important;
-}
-
-@media (max-width: 1024px) {
-  .cruises-scroll-route .cruises-hero {
-    --cruises-stripe-scroll: 32vh;
-  }
+.cruises-scroll-route .cruises-sheet__title {
+  letter-spacing: 0.06em;
 }
 
 @media (max-width: 767px) {
-  .cruises-scroll-route .cruises-hero {
-    --cruises-stripe-scroll: 28vh;
-  }
-
   .cruises-scroll-route .cruises-hero__copy .giant-logo-container,
   .cruises-scroll-route .cruises-giant-logo {
     width: 96vw;
-    top: 37.44%;
+    top: calc(37.44% + 10px);
   }
 }

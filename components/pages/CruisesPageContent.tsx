@@ -6,7 +6,6 @@ import {
   CruisesPageFilters,
   CruisesPageListingsGrid,
 } from "@/components/pages/CruisesPageListings";
-import { CruisesFooter } from "@/components/pages/CruisesFooter";
 import { CruisesHero } from "@/components/pages/CruisesHero";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 import { CRUISES_PAGE } from "@/lib/page-content";
@@ -37,9 +36,6 @@ export function CruisesPageContent() {
           <div className="cruises-sheet__body">
             <CruisesPageListingsGrid />
             <CtaBand />
-            <div className="cruises-column-tail">
-              <CruisesFooter />
-            </div>
           </div>
         </div>
       </div>

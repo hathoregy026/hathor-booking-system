@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef } from "react";
-import { useHomePage2GiantLogo } from "@/app/(public)/homepage-2/useHomePage2GiantLogo";
+import { useCruisesGiantLogo } from "@/hooks/useCruisesGiantLogo";
 import {
   refreshCruisesHeroStripes,
   useCruisesHeroStripes,
@@ -10,7 +10,7 @@ import {
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 
 const GIANT_LOGO_SRC =
-  "/branding/hathor-logo-behing-the-sheet-egypt-toors-pyramids.svg";
+  "/branding/hathor-logo-behind-the-sheet-egypt-toors-gold-01.svg";
 
 type CruisesHeroProps = {
   eyebrow?: string;
@@ -21,9 +21,6 @@ type CruisesHeroProps = {
   imageAlt?: string;
 };
 
-/**
- * Full-screen hero + Venetian stripes + HP2 giant logo (rise on land, hide on scroll).
- */
 export function CruisesHero({
   eyebrow = "Ultra Luxury",
   title,
@@ -46,7 +43,7 @@ export function CruisesHero({
     headline: headlineRef,
   });
 
-  useHomePage2GiantLogo(runwayRef, giantLogoRef);
+  useCruisesGiantLogo(runwayRef, giantLogoRef);
 
   useEffect(() => {
     document.documentElement.classList.add("cruises-scroll-ready");
