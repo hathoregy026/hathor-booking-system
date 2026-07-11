@@ -4,17 +4,17 @@ import {
   CruisesListingProvider,
   CruisesPageFilters,
 } from "@/components/pages/CruisesPageListings";
-import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
+import { CruisesOption2SpaTransition } from "@/components/pages/cruises-options/CruisesOption2SpaTransition";
 import { CruisesOptionBody } from "@/components/pages/cruises-options/CruisesOptionBody";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 import { CRUISES_PAGE } from "@/lib/page-content";
 
-/** Option 2 — one elevator: all listings inside the rising cream sheet. */
+/** Option 2 — spa one-elevator (sticky stage, no pin-spacer dead zone). */
 export function CruisesOption2PageContent() {
   return (
     <CruisesListingProvider cruises={HATHOR_CRUISES}>
-      <div className="cruises-option-2-root" data-cruises-option-2>
-        <PageScrollTransition
+      <div className="cruises-option-2-root">
+        <CruisesOption2SpaTransition
           heroTitle="Experience Egypt."
           title={CRUISES_PAGE.hero.title}
           breadcrumb="Cruises"
@@ -22,7 +22,7 @@ export function CruisesOption2PageContent() {
           sheetBelowLanding={<CruisesPageFilters />}
         >
           <CruisesOptionBody />
-        </PageScrollTransition>
+        </CruisesOption2SpaTransition>
       </div>
     </CruisesListingProvider>
   );

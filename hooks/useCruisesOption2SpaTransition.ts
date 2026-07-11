@@ -1,6 +1,6 @@
 /**
- * Cruises Option 1 — spa-style hero only (blinds + dome). Isolated from HP2/cruises.
- * Mask + dome cadence matches public/transition/index.html (Venetian reference).
+ * Option 2 — Venetian/spa one-elevator engine (sticky stage, NO GSAP pin-spacer).
+ * Ported from transition-for-pages.js: end "bottom bottom", content in .pt-sheet.
  */
 "use client";
 
@@ -12,24 +12,25 @@ import Lenis from "lenis";
 const PT_CREAM = "#f4f1ea";
 const PT_GOLD = "#B69F64";
 
-/** /transition index.html timeline: stagger 0.23, open 0.08, seal 0.06, window 0→0.37 */
 const MASK = {
-  start: 0,
-  end: 0.37,
+  start: 0.02,
+  end: 0.88,
   gapRatio: 0.94,
-  rotSpread: 0.23 / 0.37,
-  rotWindow: 0.08 / 0.37,
-  gapSealWindow: 0.06 / 0.37,
+  rotSpread: 0.82,
+  rotWindow: 0.04,
+  gapSealStart: 0.48,
+  gapSealStagger: 0.32,
+  gapSealWindow: 0.022,
 };
 
 const PEEK_VH = 0.065;
-const PIN_VH = 2.94;
-const RISE_END = 0.7;
-const SCRUB = 0;
+const BASE_RUNWAY_VH = 2.8;
+
+export const OPTION2_SPA_REFRESH_EVENT = "cruises-option-2-spa-refresh";
 
 type Strip = { el: HTMLDivElement; colW: number; slatW: number };
 
-type HomePage2ScrollTransitionRefs = {
+type SpaTransitionRefs = {
   root: RefObject<HTMLElement | null>;
   stage: RefObject<HTMLElement | null>;
   mask: RefObject<HTMLElement | null>;
@@ -52,14 +53,6 @@ function mapRange(
   return outMin + t * (outMax - outMin);
 }
 
-function easeOutCubic(t: number) {
-  return 1 - Math.pow(1 - t, 3);
-}
-
-function easeInOutQuad(t: number) {
-  return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-}
-
 function stripCount() {
   const w = window.innerWidth;
   if (w <= 767) return 25;
@@ -73,7 +66,7 @@ function setupSmoothScroll() {
   }
 
   const lenis = new Lenis({
-    duration: 2.1,
+    duration: 1.4,
     easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     smoothWheel: true,
     syncTouch: false,
@@ -91,7 +84,7 @@ function setupSmoothScroll() {
   return { lenis, ticker };
 }
 
-export function useCruisesOption1HeroTransition(config: HomePage2ScrollTransitionRefs) {
+export function useCruisesOption2SpaTransition(config: SpaTransitionRefs) {
   const instanceId = useId().replace(/:/g, "");
 
   useLayoutEffect(() => {
@@ -114,10 +107,39 @@ export function useCruisesOption1HeroTransition(config: HomePage2ScrollTransitio
 
     trigger.style.setProperty("--pt-gold", PT_GOLD);
     trigger.style.setProperty("--pt-cream", PT_CREAM);
+    trigger.style.setProperty("--pt-dome-r-start", "1250px");
+    trigger.style.setProperty("--pt-dome-r-end", "400px");
 
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
+    let handedOff = false;
     const smoothScroll = setupSmoothScroll();
+
+    function getDomeRadii() {
+      const styles = getComputedStyle(trigger);
+      return {
+        start: parseFloat(styles.getPropertyValue("--pt-dome-r-start")) || 1250,
+        end: parseFloat(styles.getPropertyValue("--pt-dome-r-end")) || 400,
+      };
+    }
+
+    function computePinHeightPx() {
+      const vh = window.innerHeight;
+      const sheetH = sheetEl.offsetHeight;
+      const extra = Math.max(0, sheetH - vh * 0.92);
+      return Math.round(vh * BASE_RUNWAY_VH + extra * 0.55);
+    }
+
+    function syncPinHeight() {
+      if (handedOff) {
+        trigger.style.height = "auto";
+        trigger.style.minHeight = "0";
+        return;
+      }
+      const pinPx = computePinHeightPx();
+      trigger.style.height = `${pinPx}px`;
+      trigger.style.minHeight = `${pinPx}px`;
+    }
 
     function buildMaskStrips() {
       const n = stripCount();
@@ -145,34 +167,15 @@ export function useCruisesOption1HeroTransition(config: HomePage2ScrollTransitio
       return true;
     }
 
-    function releaseHomepage2PinWidth() {
-      gsap.set(stageEl, { clearProps: "width,maxWidth,minWidth" });
-      stageEl.style.width = "100%";
-
-      const pinSpacer = stageEl.parentElement;
-      if (pinSpacer?.classList.contains("pin-spacer")) {
-        pinSpacer.style.removeProperty("width");
-        pinSpacer.style.removeProperty("max-width");
-      }
-    }
-
-    function getDomeRadii() {
-      const styles = getComputedStyle(trigger);
-      return {
-        start: parseFloat(styles.getPropertyValue("--pt-dome-r-start")) || 1250,
-        end: parseFloat(styles.getPropertyValue("--pt-dome-r-end")) || 0,
-      };
-    }
-
     function applyMaskReveal(p: number) {
-      const maskT = clamp(mapRange(p, MASK.start, MASK.end, 0, 1), 0, 1);
+      const maskT = mapRange(p, MASK.start, MASK.end, 0, 1);
       const n = strips.length;
 
       if (maskT <= 0 || n === 0) {
         mask.classList.remove("is-active");
         gsap.set(mask, { opacity: 0 });
-        strips.forEach(({ el, slatW }) =>
-          gsap.set(el, { rotationY: -90, opacity: 0, width: slatW }),
+        strips.forEach(({ el, colW }) =>
+          gsap.set(el, { rotationY: -90, opacity: 0, width: colW }),
         );
         return;
       }
@@ -183,48 +186,50 @@ export function useCruisesOption1HeroTransition(config: HomePage2ScrollTransitio
       strips.forEach(({ el, colW, slatW }, i) => {
         const rotStart = (i / n) * MASK.rotSpread;
         const rotEnd = rotStart + MASK.rotWindow;
-        const open = easeOutCubic(mapRange(maskT, rotStart, rotEnd, 0, 1));
+        const open = mapRange(maskT, rotStart, rotEnd, 0, 1);
 
-        let seal = 0;
-        if (open >= 0.98) {
-          const sealStart = rotEnd;
-          const sealEnd = sealStart + MASK.gapSealWindow;
-          seal = easeInOutQuad(mapRange(maskT, sealStart, sealEnd, 0, 1));
+        const sealStart = MASK.gapSealStart + (i / n) * MASK.gapSealStagger;
+        const sealEnd = sealStart + MASK.gapSealWindow;
+        const seal = open >= 0.98 ? mapRange(maskT, sealStart, sealEnd, 0, 1) : 0;
+
+        const fullW = colW + 1;
+        let width: number;
+        if (open <= 0.03) {
+          width = fullW;
+        } else if (seal > 0) {
+          width = slatW + (fullW - slatW) * seal;
+        } else {
+          width = slatW;
         }
-
-        const width = slatW + (colW - slatW) * seal;
 
         gsap.set(el, {
           rotationY: -90 + open * 90,
-          opacity: open,
+          opacity: open > 0.03 ? 1 : 0,
           width,
         });
       });
     }
 
-    function syncPinHeight() {
-      const vh = window.innerHeight;
-      trigger.style.height = `${Math.round(vh * PIN_VH)}px`;
-      trigger.style.minHeight = `${Math.round(vh * PIN_VH)}px`;
-    }
-
     function applyProgress(p: number) {
+      if (handedOff) return;
+
       const vh = window.innerHeight;
       const sheetH = sheetEl.offsetHeight;
       const peek = vh * PEEK_VH;
       const startY = sheetH - peek;
       const { start: rStart, end: rEnd } = getDomeRadii();
 
-      const riseT = mapRange(p, 0, RISE_END, 0, 1);
-      const easedRiseT = easeOutCubic(riseT);
-      const y = startY * (1 - easedRiseT);
+      const riseT = mapRange(p, 0, 0.7, 0, 1);
+      let y = startY * (1 - riseT);
 
-      const radius = rEnd + (rStart - rEnd) * (1 - easedRiseT);
+      const driftT = mapRange(p, 0.7, 1, 0, 1);
+      const extra = Math.max(0, sheetH - vh * 0.92);
+      y -= driftT * extra;
 
       gsap.set(sheetEl, {
         y,
-        borderTopLeftRadius: radius,
-        borderTopRightRadius: radius,
+        borderTopLeftRadius: rStart + (rEnd - rStart) * riseT,
+        borderTopRightRadius: rStart + (rEnd - rStart) * riseT,
       });
 
       applyMaskReveal(p);
@@ -232,6 +237,64 @@ export function useCruisesOption1HeroTransition(config: HomePage2ScrollTransitio
       if (heroCopy) {
         gsap.set(heroCopy, { opacity: mapRange(riseT, 0.35, 0.75, 1, 0) });
       }
+
+      const hideMedia = p > 0.35;
+      trigger.classList.toggle("hathor-page-scroll--media-gone", hideMedia);
+    }
+
+    function completeHandoff() {
+      if (handedOff) return;
+      handedOff = true;
+
+      trigger.classList.add("hathor-page-scroll--past-pin");
+      trigger.classList.add("hathor-page-scroll--media-gone");
+
+      gsap.set(sheetEl, {
+        clearProps: "transform,borderTopLeftRadius,borderTopRightRadius",
+      });
+      gsap.set(mask, { opacity: 0 });
+      mask.classList.remove("is-active");
+
+      trigger.style.height = "auto";
+      trigger.style.minHeight = "0";
+      stageEl.style.height = "auto";
+      stageEl.style.minHeight = "0";
+      stageEl.style.position = "relative";
+      stageEl.style.overflow = "visible";
+      sheetEl.style.position = "relative";
+      sheetEl.style.bottom = "auto";
+      sheetEl.style.transform = "none";
+    }
+
+    function restoreFromHandoff() {
+      handedOff = false;
+      trigger.classList.remove(
+        "hathor-page-scroll--past-pin",
+        "hathor-page-scroll--media-gone",
+      );
+      stageEl.style.removeProperty("height");
+      stageEl.style.removeProperty("min-height");
+      stageEl.style.removeProperty("position");
+      stageEl.style.removeProperty("overflow");
+      sheetEl.style.removeProperty("position");
+      sheetEl.style.removeProperty("bottom");
+      sheetEl.style.removeProperty("transform");
+      syncPinHeight();
+    }
+
+    function refreshEngine() {
+      const st = ScrollTrigger.getById(`cruises-option-2-spa-${instanceId}`);
+      const progress = handedOff ? 1 : (st?.progress ?? 0);
+
+      syncPinHeight();
+      if (buildMaskStrips()) {
+        if (handedOff) {
+          completeHandoff();
+        } else {
+          applyProgress(progress);
+        }
+      }
+      ScrollTrigger.refresh();
     }
 
     const ctx = gsap.context(() => {
@@ -243,27 +306,19 @@ export function useCruisesOption1HeroTransition(config: HomePage2ScrollTransitio
         applyProgress(0);
 
         ScrollTrigger.create({
-          id: `cruises-option-1-hero-${instanceId}`,
+          id: `cruises-option-2-spa-${instanceId}`,
           trigger,
           start: "top top",
           end: "bottom bottom",
-          scrub: SCRUB,
+          scrub: 0,
           invalidateOnRefresh: true,
-          onUpdate: (self) => applyProgress(self.progress),
-          onLeave: () => {
-            trigger.classList.add("hathor-page-scroll--past-pin");
-            trigger.classList.add("hathor-page-scroll--media-gone");
-            gsap.set(sheetEl, { clearProps: "transform,borderTopLeftRadius,borderTopRightRadius" });
-            trigger.style.height = "auto";
-            trigger.style.minHeight = "0";
+          onUpdate: (self) => {
+            if (!handedOff) applyProgress(self.progress);
           },
+          onLeave: () => completeHandoff(),
           onEnterBack: () => {
-            trigger.classList.remove(
-              "hathor-page-scroll--past-pin",
-              "hathor-page-scroll--media-gone",
-            );
-            syncPinHeight();
-            const st = ScrollTrigger.getById(`cruises-option-1-hero-${instanceId}`);
+            restoreFromHandoff();
+            const st = ScrollTrigger.getById(`cruises-option-2-spa-${instanceId}`);
             applyProgress(st?.progress ?? 0);
           },
         });
@@ -281,32 +336,24 @@ export function useCruisesOption1HeroTransition(config: HomePage2ScrollTransitio
 
     const onResize = () => {
       if (resizeTimer) clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        const st = ScrollTrigger.getById(`cruises-option-1-hero-${instanceId}`);
-        const progress = st?.progress ?? 0;
-
-        releaseHomepage2PinWidth();
-
-        if (buildMaskStrips()) {
-          syncPinHeight();
-          applyProgress(progress);
-        }
-        ScrollTrigger.refresh();
-      }, 150);
+      resizeTimer = setTimeout(refreshEngine, 120);
     };
+
+    const onSpaRefresh = () => refreshEngine();
 
     window.addEventListener("resize", onResize);
     window.visualViewport?.addEventListener("resize", onResize);
+    window.addEventListener(OPTION2_SPA_REFRESH_EVENT, onSpaRefresh);
 
     const resizeObserver = new ResizeObserver(() => onResize());
-    resizeObserver.observe(stageEl);
-    resizeObserver.observe(mask);
+    resizeObserver.observe(sheetEl);
 
     ScrollTrigger.refresh();
 
     return () => {
       window.removeEventListener("resize", onResize);
       window.visualViewport?.removeEventListener("resize", onResize);
+      window.removeEventListener(OPTION2_SPA_REFRESH_EVENT, onSpaRefresh);
       resizeObserver.disconnect();
       if (resizeTimer) clearTimeout(resizeTimer);
       if (smoothScroll) {
@@ -326,4 +373,9 @@ export function useCruisesOption1HeroTransition(config: HomePage2ScrollTransitio
     config.sheet,
     config.heroCopy,
   ]);
+}
+
+export function refreshCruisesOption2SpaTransition() {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new CustomEvent(OPTION2_SPA_REFRESH_EVENT));
 }

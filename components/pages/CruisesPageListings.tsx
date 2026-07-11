@@ -13,6 +13,9 @@ import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { formatPrice } from "@/lib/client-dates";
 import type { HathorCruiseSeed } from "@/lib/hathor-catalog";
 import { ManagedImage } from "@/components/ui/ManagedImage";
+import { refreshCruisesOption2SpaTransition } from "@/hooks/useCruisesOption2SpaTransition";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 type CruiseListingItem = {
   key: string;
@@ -91,12 +94,43 @@ function preservePinnedScrollPosition(scrollY: number) {
 
 function stabilizeListingsLayoutDuringFilterChange(scrollY: number) {
   const content = document.querySelector<HTMLElement>(
-    ".cruises-content-layer .page-layout__content",
+    [
+      ".cruises-content-layer .page-layout__content",
+      ".cruises-option-3-content-layer .page-layout__content",
+      ".cruises-option-2-root .pt-sheet__content",
+      ".cruises-option-1-content .page-layout__content",
+    ].join(", "),
   );
   if (content) {
     content.style.minHeight = `${content.offsetHeight}px`;
   }
-  preservePinnedScrollPosition(scrollY);
+
+  const onOption2 = Boolean(document.querySelector(".cruises-option-2-root"));
+  const pastPin = Boolean(
+    document.querySelector(
+      ".cruises-option-2-spa.hathor-page-scroll--past-pin",
+    ),
+  );
+
+  if (!onOption2 || !pastPin) {
+    preservePinnedScrollPosition(scrollY);
+  }
+
+  if (onOption2) {
+    refreshCruisesOption2SpaTransition();
+  }
+
+  if (document.querySelector(".cruises-option-3-root")) {
+    gsap.registerPlugin(ScrollTrigger);
+    const st = ScrollTrigger.getAll().find((t) =>
+      String(t.vars.id ?? "").startsWith("cruises-option-3-scroll-"),
+    );
+    if (st && !document.querySelector("[data-cruises-option-3].hathor-page-scroll--past-pin")) {
+      st.update();
+    }
+    ScrollTrigger.refresh();
+  }
+
   window.requestAnimationFrame(() => {
     if (content) {
       content.style.minHeight = "";

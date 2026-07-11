@@ -129,11 +129,12 @@ body.has-page-scroll-transition:has(.cruises-option-3-route)
   border-bottom-right-radius: 0 !important;
 }
 
-/* Tall cream column — replaces listings height for dome paint during reveal */
+/* Follower cream cap — paint only, no artificial 400vh dead zone */
 .cruises-option-3-route [data-cruises-option-3] .cruises-sheet-follower__cream {
   display: block;
   width: 100%;
-  min-height: 400vh;
+  min-height: 100svh;
+  height: 100%;
   background-color: var(--cruises-cream) !important;
   pointer-events: none;
 }
@@ -424,7 +425,16 @@ body.has-page-scroll-transition:has(
       [data-cruises-option-3].hathor-page-scroll--past-pin
   )
   .pin-spacer {
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
   z-index: auto !important;
+}
+
+.cruises-option-3-root:has([data-cruises-option-3].hathor-page-scroll--past-pin) {
+  padding-bottom: 0;
+  margin-bottom: 0;
 }
 
 /* Past pin: transition stack must not block filters/listings */

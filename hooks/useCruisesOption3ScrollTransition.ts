@@ -1,5 +1,5 @@
 /**
- * Cruises Option 3 scroll engine — native 1:1 scroll % to dome rise (no Lenis lag).
+ * Cruises Option 3 scroll engine - native 1:1 scroll % to dome rise (no Lenis lag).
  * Real content layer rides the cream sheet (no follower title crossfade).
  */
 "use client";
@@ -335,6 +335,13 @@ export function useCruisesOption3ScrollTransition(config: CruisesScrollTransitio
       mask.classList.remove("is-active");
       gsap.set(mask, { opacity: 0 });
 
+      const pinSpacer = stageEl.parentElement;
+      if (pinSpacer?.classList.contains("pin-spacer")) {
+        pinSpacer.style.height = "auto";
+        pinSpacer.style.minHeight = "0";
+        pinSpacer.style.paddingBottom = "0";
+      }
+
       if (contentLayer && contentTitle && titleTopBefore != null) {
         requestAnimationFrame(() => {
           const titleTopAfter = contentTitle.getBoundingClientRect().top;
@@ -344,6 +351,19 @@ export function useCruisesOption3ScrollTransition(config: CruisesScrollTransitio
             gsap.set(contentLayer, { y: y - drift });
             lastSyncedContentY = y - drift;
           }
+          requestAnimationFrame(() => {
+            if (contentLayer) {
+              gsap.set(contentLayer, { clearProps: "transform" });
+            }
+            ScrollTrigger.refresh();
+          });
+        });
+      } else {
+        requestAnimationFrame(() => {
+          if (contentLayer) {
+            gsap.set(contentLayer, { clearProps: "transform" });
+          }
+          ScrollTrigger.refresh();
         });
       }
     }
@@ -429,6 +449,10 @@ export function useCruisesOption3ScrollTransition(config: CruisesScrollTransitio
     const resizeObserver = new ResizeObserver(() => onResize());
     resizeObserver.observe(stageEl);
     resizeObserver.observe(mask);
+    const contentLayer = getContentLayer();
+    if (contentLayer) {
+      resizeObserver.observe(contentLayer);
+    }
 
     ScrollTrigger.refresh();
 

@@ -45,3 +45,78 @@ html[data-cruises-option-2-experience] .public-site > .owo-footer,
   background: #e8e0d0;
   border-bottom: 1px solid #c9b98a;
 }
+
+/* ─── Spa engine: sticky stage (NO GSAP pin / pin-spacer) ─── */
+.cruises-option-2-root .cruises-option-2-spa[data-cruises-option-2] {
+  position: relative;
+  width: 100%;
+  overflow: visible;
+}
+
+.cruises-option-2-root .cruises-option-2-spa .pt-stage {
+  position: sticky !important;
+  top: 0 !important;
+  height: 100svh !important;
+  min-height: 100svh !important;
+  max-height: 100svh !important;
+  overflow: hidden !important;
+  z-index: 2;
+  background-color: var(--cruises-option-2-cream) !important;
+}
+
+.cruises-option-2-root .cruises-option-2-spa .pt-sheet.cruises-option-2-sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  min-height: 0 !important;
+  background: var(--cruises-option-2-cream);
+  pointer-events: auto;
+}
+
+.cruises-option-2-root .cruises-option-2-spa .pt-sheet__rise-cap {
+  min-height: clamp(1.5rem, 5svh, 3rem) !important;
+}
+
+.cruises-option-2-root
+  .cruises-option-2-spa.hathor-page-scroll--past-pin
+  .pt-stage {
+  position: relative !important;
+  top: auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.cruises-option-2-root
+  .cruises-option-2-spa.hathor-page-scroll--past-pin
+  .pt-sheet.cruises-option-2-sheet {
+  position: relative !important;
+  transform: none !important;
+}
+
+.cruises-option-2-root
+  .cruises-option-2-spa.hathor-page-scroll--past-pin
+  .pt-hero,
+.cruises-option-2-root
+  .cruises-option-2-spa.hathor-page-scroll--past-pin
+  .pt-mask {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* No pin-spacer dead zone on option 2 */
+body.has-page-scroll-transition:has(.cruises-option-2-route) .pin-spacer {
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.cruises-option-2-root .cruises-column-tail {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
