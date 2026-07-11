@@ -139,6 +139,27 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
       }
     }
 
+    /** Split-layer handoff: unpin stage so fixed gold stack cannot cover listings. */
+    function releasePinnedStage() {
+      gsap.set(stageEl, {
+        clearProps:
+          "top,left,right,bottom,width,height,maxWidth,minWidth,padding,margin,transform,position,zIndex",
+      });
+      stageEl.style.removeProperty("position");
+      stageEl.style.removeProperty("top");
+      stageEl.style.removeProperty("left");
+      stageEl.style.removeProperty("width");
+      stageEl.style.removeProperty("max-width");
+      stageEl.style.removeProperty("min-width");
+      stageEl.style.removeProperty("z-index");
+
+      const pinSpacer = stageEl.parentElement;
+      if (pinSpacer?.classList.contains("pin-spacer")) {
+        gsap.set(pinSpacer, { clearProps: "zIndex" });
+        pinSpacer.style.removeProperty("z-index");
+      }
+    }
+
     function getRevealDistance() {
       return window.innerHeight * CRUISES_PIN_DISTANCE_VH;
     }
@@ -316,7 +337,6 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
 
       trigger.classList.add("hathor-page-scroll--past-pin");
       trigger.classList.add("hathor-page-scroll--media-gone");
-      trigger.classList.add("hathor-page-scroll--gold-complete");
       trigger.classList.add("hathor-page-scroll--content-active");
       trigger.classList.remove("hathor-page-scroll--handoff-active");
 
@@ -346,7 +366,10 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
         });
       }
 
-      applyMaskReveal(1);
+      mask.classList.remove("is-active");
+      gsap.set(mask, { opacity: 0 });
+
+      releasePinnedStage();
     }
 
     const ctx = gsap.context(() => {
@@ -382,7 +405,6 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
             trigger.classList.remove(
               "hathor-page-scroll--past-pin",
               "hathor-page-scroll--media-gone",
-              "hathor-page-scroll--gold-complete",
               "hathor-page-scroll--content-active",
               "hathor-page-scroll--handoff-active",
             );
@@ -456,7 +478,6 @@ export function useCruisesScrollTransition(config: CruisesScrollTransitionRefs) 
         "hathor-page-scroll--past-pin",
         "hathor-page-scroll--media-gone",
         "hathor-page-scroll--content-active",
-        "hathor-page-scroll--gold-complete",
         "hathor-page-scroll--handoff-active",
       );
       document.body.classList.remove("has-page-scroll-transition");

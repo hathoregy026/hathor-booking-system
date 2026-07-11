@@ -60,8 +60,7 @@ html[data-cruises-experience] .public-site > .owo-footer,
 
 .cruises-scroll-route [data-cruises-transition] .pt-stage {
   overflow: hidden !important;
-  /* Gold behind mask slats — prevents cream/white gaps between stripes */
-  background-color: var(--pt-gold, #b69f64) !important;
+  background-color: var(--cruises-cream) !important;
 }
 
 body.has-page-scroll-transition:has(.cruises-scroll-route)
@@ -79,11 +78,11 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
 .cruises-scroll-route
   [data-cruises-transition].hathor-page-scroll--past-pin
   .pt-stage {
-  height: auto !important;
-  min-height: 100svh;
-  overflow: visible !important;
-  z-index: 0 !important;
-  pointer-events: none;
+  overflow: hidden !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
 }
 
 .cruises-scroll-route [data-cruises-transition] .pt-hero {
@@ -169,6 +168,8 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
   opacity: 1;
   margin-top: calc(-100svh + clamp(10rem, 21vh, 13rem));
   pointer-events: auto;
+  position: relative;
+  z-index: 50;
 }
 
 .cruises-content-layer .pt-sheet__filters,
@@ -249,7 +250,7 @@ body.has-page-scroll-transition:has(.cruises-scroll-route)
 }
 
 .cruises-scroll-route [data-cruises-transition] .pt-mask {
-  background-color: var(--pt-gold, #b69f64);
+  background-color: transparent;
 }
 
 /* Empty animation runway — fixed height so dome math matches Homepage 2 */
@@ -372,38 +373,30 @@ body.has-page-scroll-transition:has(.cruises-scroll-route) .pin-spacer {
   pointer-events: none !important;
 }
 
-/* 100% — full gold frame, cream layers hidden */
+/* Past pin — collapse pinned theater so listings are immediately visible */
 .cruises-scroll-route
-  [data-cruises-transition].hathor-page-scroll--gold-complete
+  [data-cruises-transition].hathor-page-scroll--past-pin
+  .pt-hero,
+.cruises-scroll-route
+  [data-cruises-transition].hathor-page-scroll--past-pin
+  .pt-mask,
+.cruises-scroll-route
+  [data-cruises-transition].hathor-page-scroll--past-pin
   .pt-sheet.cruises-sheet-runway,
 .cruises-scroll-route
-  [data-cruises-transition].hathor-page-scroll--gold-complete
+  [data-cruises-transition].hathor-page-scroll--past-pin
   .cruises-sheet-follower {
   opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none !important;
 }
 
-.cruises-scroll-route
-  [data-cruises-transition].hathor-page-scroll--gold-complete
-  .pt-mask {
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
-.cruises-scroll-route
-  [data-cruises-transition].hathor-page-scroll--gold-complete
-  .pt-stage {
-  background-color: var(--pt-gold, #b69f64) !important;
-}
-
-/* After pin only — hide full hero stack (mask is done by then) */
-.cruises-scroll-route
-  [data-cruises-transition].hathor-page-scroll--past-pin
-  .pt-hero {
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
+body.has-page-scroll-transition:has(
+    .cruises-scroll-route
+      [data-cruises-transition].hathor-page-scroll--past-pin
+  )
+  .pin-spacer {
+  z-index: auto !important;
 }
 
 /* Past pin: transition stack must not block filters/listings */
