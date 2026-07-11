@@ -1,6 +1,5 @@
 /**
- * Giant Hathor logo — same animation as Homepage 2 / previous cruises hero.
- * Rises from behind the cream content section (not a rising sheet).
+ * Giant Hathor logo — rises from behind the cream content sheet (ref layout).
  */
 "use client";
 
@@ -33,38 +32,38 @@ function getLogoHiddenY() {
 }
 
 export function useCruisesGiantLogo(
-  rootRef: RefObject<HTMLElement | null>,
-  giantLogoRef: RefObject<HTMLElement | null>,
+  runwayRef: RefObject<HTMLElement | null>,
+  logoRef: RefObject<HTMLElement | null>,
 ) {
   useLayoutEffect(() => {
-    const root = rootRef.current;
-    const giantLogo = giantLogoRef.current;
-    if (!root || !giantLogo) return;
+    const runway = runwayRef.current;
+    const logo = logoRef.current;
+    if (!runway || !logo) return;
 
-    const rootEl = root;
-    const logoEl = giantLogo;
+    const runwayEl = runway;
+    const logoEl = logo;
 
     let landingTween: gsap.core.Tween | null = null;
     let hasScrolled = false;
 
     function getRunwayScrollDistance() {
       const vh = window.innerHeight;
-      return Math.max(vh * 0.5, rootEl.offsetHeight - vh);
+      return Math.max(vh * 0.35, runwayEl.offsetHeight - vh);
     }
 
-    function setupGiantLogoLanding() {
+    function setupLanding() {
       landingTween?.kill();
       const hiddenY = getLogoHiddenY();
-      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)")
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)")
         .matches;
 
       gsap.set(logoEl, {
         xPercent: -50,
-        y: reducedMotion ? 0 : hiddenY,
+        y: reduced ? 0 : hiddenY,
         opacity: 1,
       });
 
-      if (reducedMotion) return;
+      if (reduced) return;
 
       landingTween = gsap.to(logoEl, {
         y: 0,
@@ -74,9 +73,9 @@ export function useCruisesGiantLogo(
       });
     }
 
-    function syncLogoFromScroll() {
+    function syncFromScroll() {
       const vh = window.innerHeight;
-      const top = rootEl.getBoundingClientRect().top + window.scrollY;
+      const top = runwayEl.getBoundingClientRect().top + window.scrollY;
       const scroll = window.scrollY;
       const pinProgress = Math.max(0, (scroll - top) / getRunwayScrollDistance());
       const riseT = mapRange(pinProgress, 0, 0.7, 0, 1);
@@ -85,19 +84,20 @@ export function useCruisesGiantLogo(
         hasScrolled = true;
         landingTween?.kill();
         landingTween = null;
-        const scrollLogoY = mapRange(riseT, 0, 1, 0, getLogoHiddenY());
-        gsap.set(logoEl, { y: scrollLogoY });
+        gsap.set(logoEl, {
+          y: mapRange(riseT, 0, 1, 0, getLogoHiddenY()),
+        });
       } else if (!hasScrolled && !landingTween) {
-        setupGiantLogoLanding();
+        setupLanding();
       }
     }
 
-    setupGiantLogoLanding();
+    setupLanding();
 
-    const onScroll = () => syncLogoFromScroll();
+    const onScroll = () => syncFromScroll();
     const onResize = () => {
-      if (hasScrolled) syncLogoFromScroll();
-      else setupGiantLogoLanding();
+      if (hasScrolled) syncFromScroll();
+      else setupLanding();
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -109,5 +109,5 @@ export function useCruisesGiantLogo(
       landingTween?.kill();
       gsap.set(logoEl, { clearProps: "transform,opacity" });
     };
-  }, [rootRef, giantLogoRef]);
+  }, [runwayRef, logoRef]);
 }

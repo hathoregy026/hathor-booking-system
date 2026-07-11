@@ -9,11 +9,8 @@ html[data-cruises-experience],
 html[data-cruises-experience] body {
   background-color: #f4f1ea !important;
 }
-html[data-cruises-experience] .public-site,
-html[data-cruises-experience] .public-main,
-html[data-cruises-experience] .page-transition,
 html[data-cruises-experience] .cruises-scroll-route,
-html[data-cruises-experience] .cruises-scroll-root {
+html[data-cruises-experience] .cruises-page {
   background-color: #f4f1ea !important;
 }
 `;

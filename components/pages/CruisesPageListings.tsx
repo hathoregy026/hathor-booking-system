@@ -13,7 +13,7 @@ import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { formatPrice } from "@/lib/client-dates";
 import type { HathorCruiseSeed } from "@/lib/hathor-catalog";
 import { ManagedImage } from "@/components/ui/ManagedImage";
-import { refreshCruisesHeroStripes } from "@/hooks/useCruisesScrollTransition";
+import { refreshCruisesHeroStripes } from "@/hooks/useCruisesHeroStripes";
 
 type CruiseListingItem = {
   key: string;
@@ -69,7 +69,7 @@ function roomDetailHref(roomType: string): string {
 function stabilizeListingsLayoutDuringFilterChange(scrollY: number) {
   void scrollY;
   const content = document.querySelector<HTMLElement>(
-    ".cruises-page-content .page-layout__content",
+    ".cruises-sheet__body .page-layout__content",
   );
   if (content) {
     content.style.minHeight = `${content.offsetHeight}px`;

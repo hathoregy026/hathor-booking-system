@@ -1,5 +1,5 @@
-﻿/**
- * Cruises hero — Venetian gold stripes only. Sticky runway, no sheet/dome/pin.
+/**
+ * Cruises hero — Venetian gold stripes on scroll. No sheet, no pin.
  */
 "use client";
 
@@ -25,10 +25,10 @@ export const CRUISES_HERO_REFRESH_EVENT = "cruises-hero-stripe-refresh";
 type Strip = { el: HTMLDivElement; colW: number; slatW: number };
 
 type CruisesHeroStripeRefs = {
-  root: RefObject<HTMLElement | null>;
+  runway: RefObject<HTMLElement | null>;
   stage: RefObject<HTMLElement | null>;
   mask: RefObject<HTMLElement | null>;
-  heroCopy: RefObject<HTMLElement | null>;
+  headline: RefObject<HTMLElement | null>;
 };
 
 function clamp(v: number, min: number, max: number) {
@@ -53,21 +53,20 @@ function stripCount() {
   return 52;
 }
 
-export function useCruisesScrollTransition(config: CruisesHeroStripeRefs) {
+export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
   const instanceId = useId().replace(/:/g, "");
 
   useLayoutEffect(() => {
-    const root = config.root.current;
+    const runway = config.runway.current;
     const stage = config.stage.current;
     const maskEl = config.mask.current;
-    const heroCopy = config.heroCopy.current;
+    const headline = config.headline.current;
 
-    if (!root || !stage || !maskEl) return;
+    if (!runway || !stage || !maskEl) return;
 
     const mask = maskEl;
     const stageEl = stage;
-    const trigger = root;
-    const heroMedia = stageEl.querySelector<HTMLElement>(".cruises-hero-media");
+    const trigger = runway;
 
     trigger.style.setProperty("--cruises-gold", PT_GOLD);
 
@@ -145,20 +144,12 @@ export function useCruisesScrollTransition(config: CruisesHeroStripeRefs) {
     }
 
     function applyProgress(p: number) {
-      const maskT = mapRange(p, MASK.start, MASK.end, 0, 1);
-      const copyFade = mapRange(p, 0.12, 0.55, 1, 0);
-
       applyMaskReveal(p);
 
-      if (heroMedia) {
-        gsap.set(heroMedia, {
-          opacity: mapRange(p, 0.45, 0.92, 1, 0.88),
-          scale: 1 + maskT * 0.04,
+      if (headline) {
+        gsap.set(headline, {
+          opacity: mapRange(p, 0.08, 0.45, 1, 0),
         });
-      }
-
-      if (heroCopy) {
-        gsap.set(heroCopy, { opacity: copyFade });
       }
 
       trigger.classList.toggle("cruises-hero--stripes-done", p >= 0.92);
@@ -199,11 +190,9 @@ export function useCruisesScrollTransition(config: CruisesHeroStripeRefs) {
       resizeTimer = setTimeout(refreshEngine, 150);
     };
 
-    const onRefreshEvent = () => refreshEngine();
-
     window.addEventListener("resize", onResize);
     window.visualViewport?.addEventListener("resize", onResize);
-    window.addEventListener(CRUISES_HERO_REFRESH_EVENT, onRefreshEvent);
+    window.addEventListener(CRUISES_HERO_REFRESH_EVENT, refreshEngine);
 
     const resizeObserver = new ResizeObserver(() => onResize());
     resizeObserver.observe(stageEl);
@@ -211,17 +200,17 @@ export function useCruisesScrollTransition(config: CruisesHeroStripeRefs) {
     return () => {
       window.removeEventListener("resize", onResize);
       window.visualViewport?.removeEventListener("resize", onResize);
-      window.removeEventListener(CRUISES_HERO_REFRESH_EVENT, onRefreshEvent);
+      window.removeEventListener(CRUISES_HERO_REFRESH_EVENT, refreshEngine);
       resizeObserver.disconnect();
       if (resizeTimer) clearTimeout(resizeTimer);
       ctx.revert();
     };
   }, [
     instanceId,
-    config.root,
+    config.runway,
     config.stage,
     config.mask,
-    config.heroCopy,
+    config.headline,
   ]);
 }
 

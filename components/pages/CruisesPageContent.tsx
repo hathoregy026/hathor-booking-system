@@ -7,27 +7,41 @@ import {
   CruisesPageListingsGrid,
 } from "@/components/pages/CruisesPageListings";
 import { CruisesFooter } from "@/components/pages/CruisesFooter";
-import { CruisesScrollReveal } from "@/components/pages/CruisesScrollReveal";
+import { CruisesHero } from "@/components/pages/CruisesHero";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 import { CRUISES_PAGE } from "@/lib/page-content";
 
 export function CruisesPageContent() {
   return (
     <CruisesListingProvider cruises={HATHOR_CRUISES}>
-      <div className="cruises-scroll-root">
-        <CruisesScrollReveal
-          heroTitle="Experience Egypt."
-          title={CRUISES_PAGE.hero.title}
+      <div className="cruises-page">
+        <CruisesHero
+          eyebrow="Ultra Luxury"
+          title="Dahabiya Cruise"
+          subtitle="Your Luxury Trip Begins With Hathor Dahabiya"
           breadcrumb="Cruises"
           imageName="cruises-hero"
-          sheetBelowLanding={<CruisesPageFilters />}
-        >
-          <CruisesPageListingsGrid />
-          <CtaBand />
-          <div className="cruises-column-tail">
-            <CruisesFooter />
+        />
+
+        <div className="cruises-sheet">
+          <div className="cruises-sheet__edge" aria-hidden="true" />
+
+          <header className="cruises-sheet__header hathor-container">
+            <h2 className="cruises-sheet__title">{CRUISES_PAGE.hero.title}</h2>
+          </header>
+
+          <div className="cruises-sheet__filters">
+            <CruisesPageFilters />
           </div>
-        </CruisesScrollReveal>
+
+          <div className="cruises-sheet__body">
+            <CruisesPageListingsGrid />
+            <CtaBand />
+            <div className="cruises-column-tail">
+              <CruisesFooter />
+            </div>
+          </div>
+        </div>
       </div>
     </CruisesListingProvider>
   );
