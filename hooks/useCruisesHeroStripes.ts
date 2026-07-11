@@ -20,7 +20,7 @@ const MASK = {
   gapSealWindow: 0.06 / 0.37,
 };
 
-const SCRUB = 1.2;
+const SCRUB = 2.8;
 
 export const CRUISES_HERO_REFRESH_EVENT = "cruises-hero-stripe-refresh";
 
@@ -152,7 +152,7 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
 
       if (headline) {
         gsap.set(headline, {
-          opacity: mapRange(p, 0.08, 0.32, 1, 0),
+          opacity: mapRange(p, 0.06, 0.28, 1, 0),
         });
       }
 

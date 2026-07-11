@@ -1,5 +1,5 @@
 /**
- * Giant Hathor logo — rises from behind the cream content sheet.
+ * Giant Hathor logo — slow smooth landing, hides fully behind content on scroll.
  */
 "use client";
 
@@ -9,9 +9,9 @@ import gsap from "gsap";
 const LANDED_Y_OFFSET = 10;
 
 const LOGO_LAND = {
-  duration: 1.85,
-  delay: 0.2,
-  ease: "power2.out",
+  duration: 3.4,
+  delay: 0.5,
+  ease: "power3.out",
 };
 
 function clamp(v: number, min: number, max: number) {
@@ -29,8 +29,8 @@ function mapRange(
   return outMin + t * (outMax - outMin);
 }
 
-function getLogoHiddenY() {
-  return window.innerHeight * 0.34;
+function easeOutCubic(t: number) {
+  return 1 - Math.pow(1 - t, 3);
 }
 
 export function useCruisesGiantLogo(
@@ -53,15 +53,23 @@ export function useCruisesGiantLogo(
       return Math.max(vh * 0.35, runwayEl.offsetHeight - vh);
     }
 
+    function getLogoHideDistance() {
+      const logoHeight = logoEl.offsetHeight || window.innerHeight * 0.42;
+      return logoHeight * 0.62 + window.innerHeight * 0.14;
+    }
+
+    function getLandingStartY() {
+      return getLogoHideDistance() + LANDED_Y_OFFSET;
+    }
+
     function setupLanding() {
       landingTween?.kill();
-      const hiddenY = getLogoHiddenY();
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)")
         .matches;
 
       gsap.set(logoEl, {
         xPercent: -50,
-        y: reduced ? LANDED_Y_OFFSET : hiddenY + LANDED_Y_OFFSET,
+        y: reduced ? LANDED_Y_OFFSET : getLandingStartY(),
         opacity: 1,
       });
 
@@ -82,16 +90,14 @@ export function useCruisesGiantLogo(
         0,
         (scroll - top) / getRunwayScrollDistance(),
       );
-      const riseT = mapRange(pinProgress, 0, 0.7, 0, 1);
+      const hideT = easeOutCubic(mapRange(pinProgress, 0, 1, 0, 1));
 
       if (pinProgress > 0.001) {
         hasScrolled = true;
         landingTween?.kill();
         landingTween = null;
         gsap.set(logoEl, {
-          y:
-            LANDED_Y_OFFSET +
-            mapRange(riseT, 0, 1, 0, getLogoHiddenY()),
+          y: LANDED_Y_OFFSET + hideT * getLogoHideDistance(),
         });
       } else if (!hasScrolled && !landingTween) {
         setupLanding();
