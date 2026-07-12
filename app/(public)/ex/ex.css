@@ -23,10 +23,23 @@ html[data-ex-experience] .ex-root {
   overflow-x: hidden;
 }
 
+html[data-ex-experience] .ex-root .hero-logo-mark {
+  left: 50%;
+  top: 50%;
+  width: 100vw;
+  max-width: none;
+  margin: 0;
+  transform-origin: 50% 50%;
+}
+
 html[data-ex-experience] .ex-root .hero-logo-img {
-  width: min(96vw, 1180px);
+  width: 100%;
+  max-width: none;
   height: auto;
+  display: block;
+  margin: 0 auto;
   object-fit: contain;
+  object-position: center center;
 }
 
 html[data-ex-experience] .ex-root .home-hero-container {
@@ -466,10 +479,8 @@ h1, h2, h3, h4, p {
   left: 50%;
   top: 50%;
   z-index: 4;
-  /* FULL-SCREEN emblem — nearly the whole hero width */
-  width: min(96vw, 1400px);
-  max-width: 1400px;
-  /* First paint: fully off hero bottom (hidden under content join) */
+  width: 100vw;
+  max-width: none;
   transform: translate3d(-50%, 95vh, 0);
   transform-origin: center center;
   will-change: transform, opacity;

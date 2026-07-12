@@ -591,7 +591,7 @@ export function useExScrollMotion() {
      * Never appears on content pages. Never "already fixed" on land.
      */
     // yPercent with left/top 50%:
-    const LOGO_REST = 22;   // under main title (slightly low of dead center)
+    const LOGO_REST = -50; // vertically centered in hero (xPercent/yPercent with top/left 50%)
     const LOGO_HIDDEN = 95; // fully under content join / off hero
 
     let landingTween = null;
