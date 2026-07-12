@@ -76,6 +76,7 @@ export const NAV_GROUPS = [NAV_ACCOMMODATIONS, NAV_EXPERIENCES, NAV_PAGES] as co
 export const EXPLORE_LINKS: NavLink[] = [
   { href: "/", label: "Homepage" },
   { href: "/homepage-2", label: "Homepage 2" },
+  { href: "/ex", label: "EX" },
   { href: "/cruises", label: "Cruises" },
   { href: "/gastronomy", label: "Dining" },
   { href: "/wellness", label: "Seneb Spa" },
@@ -102,6 +103,7 @@ export type HeaderNavItem = HeaderNavLink | HeaderNavGroup;
 export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
   { type: "link", href: "/", label: "Homepage" },
   { type: "link", href: "/homepage-2", label: "Homepage 2" },
+  { type: "link", href: "/ex", label: "EX" },
   { type: "link", href: "/cruises", label: "Cruises" },
   {
     type: "group",
