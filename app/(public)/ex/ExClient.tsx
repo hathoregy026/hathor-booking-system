@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { HomePage2BookBar } from "../homepage-2/HomePage2BookBar";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { HATHOR_BRAND_NAME } from "@/lib/branding";
 import {
@@ -24,8 +23,6 @@ export function ExClient() {
 
   return (
     <div className="ex-root">
-      <HomePage2BookBar />
-
       <main id="top">
         <section className="home-hero-container" aria-label="Hero">
           <div className="hero-media">

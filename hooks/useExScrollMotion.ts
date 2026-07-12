@@ -592,6 +592,7 @@ export function useExScrollMotion() {
      */
     // yPercent with left/top 50%:
     const LOGO_REST = -50; // vertically centered in hero (xPercent/yPercent with top/left 50%)
+    const LOGO_LANDED_Y_OFFSET = 15;
     const LOGO_HIDDEN = 95; // fully under content join / off hero
 
     let landingTween = null;
@@ -614,7 +615,7 @@ export function useExScrollMotion() {
     if (prefersReduced) {
       cover.innerHTML = "";
       if (logoMark) {
-        gsap.set(logoMark, { yPercent: LOGO_REST, autoAlpha: 1 });
+        gsap.set(logoMark, { yPercent: LOGO_REST, y: LOGO_LANDED_Y_OFFSET, autoAlpha: 1 });
       }
       logoReadyForScroll = true;
       return;
@@ -641,6 +642,7 @@ export function useExScrollMotion() {
 
       landingTween = gsap.to(logoMark, {
         yPercent: LOGO_REST,
+        y: LOGO_LANDED_Y_OFFSET,
         duration: 2.6,
         ease: "power2.inOut",
         delay: 0.2,
@@ -757,7 +759,7 @@ export function useExScrollMotion() {
             xPercent: -50,
             yPercent: LOGO_REST,
             x: 0,
-            y: 0,
+            y: LOGO_LANDED_Y_OFFSET,
             scale: 1,
             autoAlpha: 1,
           });
@@ -770,7 +772,7 @@ export function useExScrollMotion() {
             autoAlpha: 1,
             xPercent: -50,
             x: 0,
-            y: 0,
+            y: LOGO_LANDED_Y_OFFSET,
             scale: 1,
           },
           {
@@ -812,7 +814,7 @@ export function useExScrollMotion() {
             yPercent: LOGO_REST,
             xPercent: -50,
             x: 0,
-            y: 0,
+            y: LOGO_LANDED_Y_OFFSET,
             scale: 1,
             autoAlpha: 1,
           });

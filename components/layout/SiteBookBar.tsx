@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import {
   HATHOR_BRAND_NAME,
   HATHOR_HERO_ICON_DARK_SRC,
@@ -18,11 +17,7 @@ export function SiteBookBar() {
   if (pathname === "/homepage-2") return null;
 
   return (
-    <div className="homepage-2-book-bar" aria-label="Booking shortcuts">
-      <BookNowTrigger className="homepage-2-book-bar__pill homepage-2-book-bar__pill--left">
-        BOOK NOW
-      </BookNowTrigger>
-
+    <div className="homepage-2-book-bar" aria-label="Site logo">
       <Link href="/" className="homepage-2-book-bar__logo" aria-label={HATHOR_BRAND_NAME}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -38,10 +33,6 @@ export function SiteBookBar() {
           aria-hidden="true"
         />
       </Link>
-
-      <BookNowTrigger className="homepage-2-book-bar__pill homepage-2-book-bar__pill--right">
-        BOOK NOW
-      </BookNowTrigger>
     </div>
   );
 }
