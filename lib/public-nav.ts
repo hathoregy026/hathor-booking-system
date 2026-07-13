@@ -74,8 +74,7 @@ export const NAV_PAGES: NavGroup = {
 export const NAV_GROUPS = [NAV_ACCOMMODATIONS, NAV_EXPERIENCES, NAV_PAGES] as const;
 
 export const EXPLORE_LINKS: NavLink[] = [
-  { href: "/", label: "Homepage" },
-  { href: "/ex", label: "EX" },
+  { href: "/", label: "Home" },
   { href: "/cruises", label: "Cruises" },
   { href: "/gastronomy", label: "Dining" },
   { href: "/wellness", label: "Seneb Spa" },
@@ -100,8 +99,7 @@ export type HeaderNavItem = HeaderNavLink | HeaderNavGroup;
 
 /** Desktop + mobile primary nav — groups match explore panel dropdowns. */
 export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
-  { type: "link", href: "/", label: "Homepage" },
-  { type: "link", href: "/ex", label: "EX" },
+  { type: "link", href: "/", label: "Home" },
   { type: "link", href: "/cruises", label: "Cruises" },
   {
     type: "group",

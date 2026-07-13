@@ -1,7 +1,7 @@
 import { SITE_IMAGE_SLOTS, type SiteImageSlot } from "@/lib/site-image-slots";
 
 const PAGE_GROUP_TITLES: Record<string, string> = {
-  "/": "Homepage",
+  "/": "Home",
   "/cruises": "Cruises",
   "/about": "About",
   "/gastronomy": "Gastronomy",

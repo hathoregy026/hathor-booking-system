@@ -19,7 +19,7 @@ import {
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 import { useExScrollMotion } from "@/hooks/useExScrollMotion";
 
-export function ExClient() {
+export function HomePageClient() {
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   useExScrollMotion();
 

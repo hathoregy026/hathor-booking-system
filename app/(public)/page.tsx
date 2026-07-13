@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
-import { HomePageContent } from "@/components/home/HomePageContent";
-import { HATHOR_HERO_POSTER_SRC } from "@/lib/branding";
+import { preload } from "react-dom";
+import { HomeExperienceShell } from "@/components/pages/HomeExperienceShell";
+import { HomePageClient } from "@/components/pages/HomePageClient";
+import { HATHOR_HERO_POSTER_SRC, HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
+import "./home-experience.css";
 
 export const metadata: Metadata = {
   title: "Luxury Dahabiya Nile Cruise | Hathor Dahabiya",
@@ -39,6 +42,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Home() {
-  return <HomePageContent />;
+export default function HomePage() {
+  preload(HATHOR_HERO_VIDEO_SRC, { as: "fetch", fetchPriority: "high" });
+
+  return (
+    <HomeExperienceShell>
+      <link
+        rel="preload"
+        href={HATHOR_HERO_VIDEO_SRC}
+        as="video"
+        type="video/mp4"
+        fetchPriority="high"
+      />
+      <HomePageClient />
+    </HomeExperienceShell>
+  );
 }

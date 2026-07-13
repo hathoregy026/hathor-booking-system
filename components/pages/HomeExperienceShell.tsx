@@ -1,13 +1,13 @@
 import type { ReactNode } from "react";
 
-/** Boot EX experience + cream theme before hydration. */
-const EX_BOOT = `(function(){try{var d=document.documentElement;d.setAttribute("data-ex-experience","");}catch(e){}})();`;
+/** Boot home experience + cream theme before hydration. */
+const HOME_BOOT = `(function(){try{var d=document.documentElement;d.setAttribute("data-ex-experience","");}catch(e){}})();`;
 
-const EX_CRITICAL_CSS = `
-.ex-route,
-.ex-route .public-site,
-.ex-route .public-main,
-.ex-route .page-transition {
+const HOME_CRITICAL_CSS = `
+.home-experience-route,
+.home-experience-route .public-site,
+.home-experience-route .public-main,
+.home-experience-route .page-transition {
   --ex-cream: #f4f1ea;
   background-color: var(--ex-cream) !important;
 }
@@ -30,11 +30,11 @@ html[data-ex-experience] .site-nav-bar__logo {
 }
 `;
 
-export default function ExLayout({ children }: { children: ReactNode }) {
+export function HomeExperienceShell({ children }: { children: ReactNode }) {
   return (
-    <div className="ex-route">
-      <style dangerouslySetInnerHTML={{ __html: EX_CRITICAL_CSS }} />
-      <script dangerouslySetInnerHTML={{ __html: EX_BOOT }} />
+    <div className="home-experience-route ex-route">
+      <style dangerouslySetInnerHTML={{ __html: HOME_CRITICAL_CSS }} />
+      <script dangerouslySetInnerHTML={{ __html: HOME_BOOT }} />
       {children}
     </div>
   );
