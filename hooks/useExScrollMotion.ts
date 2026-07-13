@@ -592,7 +592,7 @@ export function useExScrollMotion() {
      */
     // yPercent with left/top 50%:
     const LOGO_REST = -50; // vertically centered in hero (xPercent/yPercent with top/left 50%)
-    const LOGO_LANDED_Y_OFFSET = 65;
+    const LOGO_LANDED_Y_OFFSET = 215;
     const LOGO_HIDDEN = 95; // fully under content join / off hero
 
     let landingTween = null;
