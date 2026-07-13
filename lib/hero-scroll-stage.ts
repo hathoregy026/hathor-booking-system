@@ -14,7 +14,7 @@ type MountHeroScrollStageOptions = {
 };
 
 /** Extra downward offset at logo landing / scroll-scrub start (px). */
-const LOGO_FINISH_Y_OFFSET_PX = 10;
+const LOGO_FINISH_Y_OFFSET_PX = 30;
 
 export function mountHeroScrollStage({
   prefersReduced,
