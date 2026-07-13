@@ -868,70 +868,79 @@ export function useExScrollMotion() {
   /* -------------------------------------------------------
    * EX stack scroll — fullscreen luxury card stack + text
    * ----------------------------------------------------- */
-  function initExStackScrollText() {
-    const section = document.querySelector(".ex-stack-scroll");
-    const title = section?.querySelector(".ex-stack-scroll__title");
-    const body = section?.querySelector(".ex-stack-scroll__body");
-    const eyebrow = section?.querySelector(".ex-stack-scroll__eyebrow");
-    if (!section || !title) return;
+  function initExStackScrollText(section: Element) {
+    const titleLines = section.querySelectorAll(".ex-stack-scroll__title-line");
+    const body = section.querySelector(".ex-stack-scroll__body");
+    const eyebrow = section.querySelector(".ex-stack-scroll__eyebrow");
+    if (!titleLines.length) return;
 
     if (prefersReduced) return;
 
-    document.fonts.ready.then(() => {
-      ScrollTrigger.getAll().forEach((st) => {
-        if (st.vars && st.vars.id === "ex-stack-text") st.kill();
-      });
+    ScrollTrigger.getAll().forEach((st) => {
+      if (st.vars && st.vars.id === "ex-stack-text") st.kill();
+    });
 
-      const splitTitle = new SplitType(title, { types: "lines,chars" });
-      const splitBody = body ? new SplitType(body, { types: "lines" }) : null;
+    const splits: Array<{ chars?: Element[]; lines?: Element[] }> = [];
 
-      gsap.set(splitTitle.chars, { opacity: 0, yPercent: 110 });
-      if (splitBody?.lines) gsap.set(splitBody.lines, { opacity: 0, y: 22 });
-      if (eyebrow) gsap.set(eyebrow, { opacity: 0, y: 14 });
+    const runReveal = () => {
+      gsap.killTweensOf([
+        eyebrow,
+        body,
+        ...titleLines,
+        ...splits.flatMap((s) => s.chars ?? s.lines ?? []),
+      ]);
 
-      const textTl = gsap.timeline({
-        scrollTrigger: {
-          id: "ex-stack-text",
-          trigger: section,
-          start: "top 78%",
-          toggleActions: "play none none reverse",
-        },
-      });
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
       if (eyebrow) {
-        textTl.to(eyebrow, {
-          opacity: 1,
-          y: 0,
-          duration: 0.85,
-          ease: "power2.out",
-        });
+        gsap.set(eyebrow, { opacity: 0, y: 18 });
+        tl.to(eyebrow, { opacity: 1, y: 0, duration: 0.75 });
       }
 
-      textTl.to(
-        splitTitle.chars,
-        {
-          opacity: 1,
-          yPercent: 0,
-          duration: 0.72,
-          stagger: 0.028,
-          ease: "power3.out",
-        },
-        eyebrow ? "-=0.45" : 0,
-      );
-
-      if (splitBody?.lines) {
-        textTl.to(
-          splitBody.lines,
+      titleLines.forEach((line, index) => {
+        const split = new SplitType(line as HTMLElement, { types: "chars" });
+        splits.push(split);
+        if (!split.chars?.length) return;
+        gsap.set(split.chars, { opacity: 0, yPercent: 110 });
+        tl.to(
+          split.chars,
           {
             opacity: 1,
-            y: 0,
-            duration: 0.8,
-            stagger: 0.14,
-            ease: "power2.out",
+            yPercent: 0,
+            duration: 0.7,
+            stagger: 0.032,
           },
-          "-=0.35",
+          index === 0 ? (eyebrow ? "-=0.35" : 0) : "-=0.48",
         );
+      });
+
+      if (body) {
+        const splitBody = new SplitType(body as HTMLElement, { types: "lines" });
+        splits.push(splitBody);
+        if (splitBody.lines?.length) {
+          gsap.set(splitBody.lines, { opacity: 0, y: 24 });
+          tl.to(
+            splitBody.lines,
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              stagger: 0.14,
+            },
+            "-=0.28",
+          );
+        }
       }
+    };
+
+    document.fonts.ready.then(() => {
+      ScrollTrigger.create({
+        id: "ex-stack-text",
+        trigger: section,
+        start: "top top",
+        onEnter: runReveal,
+        onEnterBack: runReveal,
+      });
     });
   }
 
@@ -942,7 +951,7 @@ export function useExScrollMotion() {
     const cards = gsap.utils.toArray<HTMLElement>(".ex-stack-scroll__card");
     if (!section || !viewport || cards.length < 2) return;
 
-    initExStackScrollText();
+    initExStackScrollText(section);
 
     if (prefersReduced) {
       gsap.set(cards, { yPercent: 0, scale: 1, filter: "brightness(1)" });

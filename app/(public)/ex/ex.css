@@ -1009,6 +1009,12 @@ h1, h2, h3, h4, p {
 .ex-stack-scroll__title-line {
   display: block;
   overflow: hidden;
+  padding-bottom: 0.06em;
+}
+
+.ex-stack-scroll__title-line .char {
+  display: inline-block;
+  will-change: transform, opacity;
 }
 
 .ex-stack-scroll__body {
@@ -1023,6 +1029,7 @@ h1, h2, h3, h4, p {
 
 .ex-stack-scroll__body .line {
   display: block;
+  will-change: transform, opacity;
 }
 
 /* ---------- TEXT + IMAGE BLOCKS ---------- */

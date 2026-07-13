@@ -66,20 +66,20 @@ export const EX_PINNED = {
   body: HOMEPAGE_HIGHLIGHTS.body,
   slides: [
     {
-      src: HATHOR_MEDIA.obelisk,
-      alt: "Ancient obelisk along the Nile",
+      src: HATHOR_MEDIA.heroCruises,
+      alt: "Hathor Dahabiya sailing on the Nile",
     },
     {
-      src: HATHOR_MEDIA.templeHatshepsut,
-      alt: "Temple of Hatshepsut, Luxor",
+      src: HATHOR_MEDIA.splitCourtyard,
+      alt: HATHOR_MEDIA.splitCourtyardAlt,
     },
     {
-      src: HATHOR_MEDIA.valleyOfKings,
-      alt: "Valley of the Kings",
+      src: HATHOR_MEDIA.about,
+      alt: "Luxury Dahabiya Nile cruise",
     },
     {
-      src: HATHOR_MEDIA.postHeroMedia,
-      alt: HATHOR_MEDIA.postHeroMediaAlt,
+      src: HATHOR_MEDIA.storyLegacyLarge,
+      alt: "Hathor Dahabiya ship on the Nile at golden hour",
     },
   ],
 } as const;
