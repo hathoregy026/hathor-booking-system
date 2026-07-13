@@ -346,17 +346,6 @@
     color: #1c1917;
   }
 
-  /* Prevent focus-within from leaving empty dropdown shells open */
-  .public-site
-    .hathor-header__nav-item--dropdown:focus-within:not(
-      :has(.hathor-header__dropdown-zone:hover)
-    )
-    .hathor-header__dropdown {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
-
   .public-site .hathor-header__nav-item--dropdown .hathor-header__dropdown-list {
     background: transparent;
     border: none;

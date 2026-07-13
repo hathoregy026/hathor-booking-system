@@ -131,9 +131,7 @@ export function Header() {
   const pathname = usePathname();
   const [exploreOpen, setExploreOpen] = useState(false);
   const [menuHovered, setMenuHovered] = useState(false);
-  /** Touch / keyboard toggle only — desktop fine-pointer uses CSS :hover */
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [touchDropdownNav, setTouchDropdownNav] = useState(false);
 
   useEffect(() => {
     setMenuHovered(false);
@@ -147,24 +145,6 @@ export function Header() {
       document.body.style.overflow = "";
     };
   }, [exploreOpen]);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(pointer: coarse)");
-    const update = () => setTouchDropdownNav(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(pointer: fine)");
-    const onFinePointerEnter = () => {
-      if (mq.matches) setOpenDropdown(null);
-    };
-    const menuZone = document.querySelector(".hathor-header__menu-zone");
-    menuZone?.addEventListener("pointerenter", onFinePointerEnter);
-    return () => menuZone?.removeEventListener("pointerenter", onFinePointerEnter);
-  }, []);
 
   useEffect(() => {
     if (!openDropdown) return;
@@ -188,6 +168,14 @@ export function Header() {
     };
   }, [openDropdown]);
 
+  const handleDropdownTriggerClick = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    id: string,
+  ) => {
+    event.preventDefault();
+    setOpenDropdown((current) => (current === id ? null : id));
+  };
+
   const headerClass = [
     "hathor-header",
     "hathor-header--transparent",
@@ -198,10 +186,6 @@ export function Header() {
   ]
     .filter(Boolean)
     .join(" ");
-
-  const toggleDropdown = (id: string) => {
-    setOpenDropdown((current) => (current === id ? null : id));
-  };
 
   return (
     <>
@@ -248,22 +232,26 @@ export function Header() {
                     );
                   }
 
-                  const dropdownOpen =
-                    touchDropdownNav && openDropdown === item.id;
+                  const dropdownOpen = openDropdown === item.id;
 
                   return (
                     <li
                       key={item.id}
                       className="hathor-header__nav-item hathor-header__nav-item--dropdown"
                     >
-                      <div className="hathor-header__dropdown-zone">
+                      <div
+                        className="hathor-header__dropdown-zone"
+                        onMouseLeave={() => setOpenDropdown(null)}
+                      >
                         <div className="hathor-header__dropdown-trigger">
                           <Link
                             href={item.href}
                             className={`hathor-header__nav-link ${isActive ? "hathor-header__nav-link--active" : ""}`}
                             aria-haspopup="menu"
                             aria-expanded={dropdownOpen}
-                            onClick={() => setOpenDropdown(null)}
+                            onClick={(event) =>
+                              handleDropdownTriggerClick(event, item.id)
+                            }
                           >
                             <span className="hathor-header__nav-link-label">{item.label}</span>
                             <span className="hathor-header__nav-pyramid" aria-hidden="true" />
@@ -273,16 +261,11 @@ export function Header() {
                             className="hathor-header__dropdown-toggle"
                             aria-label={`Show ${item.label} pages`}
                             aria-expanded={dropdownOpen}
-                            onClick={() => toggleDropdown(item.id)}
-                            onBlur={(event) => {
-                              if (
-                                !event.currentTarget.parentElement?.contains(
-                                  event.relatedTarget,
-                                )
-                              ) {
-                                setOpenDropdown(null);
-                              }
-                            }}
+                            onClick={() =>
+                              setOpenDropdown((current) =>
+                                current === item.id ? null : item.id,
+                              )
+                            }
                           />
                         </div>
                         <div
