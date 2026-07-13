@@ -114,6 +114,7 @@ export const NAV_GROUPS = [
 ] as const;
 
 export const EXPLORE_LINKS: NavLink[] = [
+  { href: "/", label: "Home" },
   { href: "/cruises-list", label: "Scheduled Voyages" },
   { href: "/charter", label: "Private Charter" },
   { href: "/wellness", label: "Wellness & Spa" },
@@ -137,8 +138,9 @@ export type HeaderNavGroup = {
 
 export type HeaderNavItem = HeaderNavLink | HeaderNavGroup;
 
-/** Desktop + mobile primary nav — four editorial dropdown groups. */
+/** Desktop + mobile primary nav — Home link plus four editorial dropdown groups. */
 export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
+  { type: "link", href: "/", label: "Home" },
   {
     type: "group",
     id: NAV_SUITES.id,
