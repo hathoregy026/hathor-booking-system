@@ -517,6 +517,7 @@ h1, h2, h3, h4, p {
   justify-content: center;
   text-align: center;
   pointer-events: none;
+  transform: translateY(15px);
 }
 
 .hero-kicker {
@@ -530,7 +531,7 @@ h1, h2, h3, h4, p {
 
 .hero-heading {
   font-family: var(--font-display);
-  font-weight: 400;
+  font-weight: 700;
   font-size: clamp(2.4rem, 6.5vw, 5.2rem);
   line-height: 1.05;
   letter-spacing: 0.06em;
@@ -548,6 +549,23 @@ h1, h2, h3, h4, p {
   display: block;
   will-change: transform, opacity;
   white-space: nowrap;
+}
+
+.hero-line--right {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero-line--left {
+  font-family: var(--font-hathor-agraham), "Agraham", var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.1rem, 5.8vw, 4.6rem);
+  letter-spacing: 0.02em;
+  text-transform: none;
+  line-height: 1.15;
+  margin-top: 0.06em;
 }
 
 .hero-sub {

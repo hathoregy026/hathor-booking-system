@@ -17,6 +17,14 @@ import {
 } from "@/lib/public-nav";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 
+const HEADER_NAV_LEFT = HEADER_NAV_ITEMS.slice(
+  0,
+  Math.ceil(HEADER_NAV_ITEMS.length / 2),
+);
+const HEADER_NAV_RIGHT = HEADER_NAV_ITEMS.slice(
+  Math.ceil(HEADER_NAV_ITEMS.length / 2),
+);
+
 function ExplorePanel({
   open,
   onClose,
@@ -201,6 +209,83 @@ export function Header() {
     setOpenDropdown(id);
   };
 
+  const renderNavItem = (item: HeaderNavItem) => {
+    const isActive = isNavItemActive(pathname, item);
+
+    if (item.type === "link") {
+      return (
+        <li key={item.href} className="hathor-header__nav-item">
+          <Link
+            href={item.href}
+            className={`hathor-header__nav-link ${isActive ? "hathor-header__nav-link--active" : ""}`}
+          >
+            {item.label}
+          </Link>
+        </li>
+      );
+    }
+
+    const dropdownOpen = openDropdown === item.id;
+
+    return (
+      <li
+        key={item.id}
+        className="hathor-header__nav-item hathor-header__nav-item--dropdown"
+      >
+        <div
+          className="hathor-header__dropdown-zone"
+          onMouseEnter={() => openDropdownMenu(item.id)}
+          onMouseLeave={scheduleDropdownClose}
+        >
+          <div className="hathor-header__dropdown-trigger">
+            <Link
+              href={item.href}
+              className={`hathor-header__nav-link ${isActive ? "hathor-header__nav-link--active" : ""}`}
+              aria-haspopup="menu"
+              aria-expanded={dropdownOpen}
+              onClick={(event) => handleDropdownTriggerClick(event, item.id)}
+            >
+              <span className="hathor-header__nav-link-label">{item.label}</span>
+              <span className="hathor-header__nav-pyramid" aria-hidden="true" />
+            </Link>
+            <button
+              type="button"
+              className="hathor-header__dropdown-toggle"
+              aria-label={`Show ${item.label} pages`}
+              aria-expanded={dropdownOpen}
+              onClick={() => {
+                cancelDropdownClose();
+                setOpenDropdown((current) =>
+                  current === item.id ? null : item.id,
+                );
+              }}
+            />
+          </div>
+          <div
+            className={`hathor-header__dropdown${dropdownOpen ? " is-open" : ""}`}
+            role="menu"
+            aria-label={`${item.label} pages`}
+          >
+            <ul className="hathor-header__dropdown-list">
+              {item.links.map((link) => (
+                <li key={`${item.id}-${link.href}-${link.label}`}>
+                  <Link
+                    href={link.href}
+                    className="hathor-header__dropdown-link"
+                    role="menuitem"
+                    onClick={() => setOpenDropdown(null)}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </li>
+    );
+  };
+
   const headerClass = [
     "hathor-header",
     "hathor-header--transparent",
@@ -221,7 +306,16 @@ export function Header() {
             onMouseEnter={() => setMenuHovered(true)}
             onMouseLeave={() => setMenuHovered(false)}
           >
-            <div className="hathor-header__col hathor-header__col--left">
+            <nav
+              className="hathor-header__col hathor-header__col--nav-left"
+              aria-label="Primary navigation left"
+            >
+              <ul className="hathor-header__nav hathor-header__nav--left">
+                {HEADER_NAV_LEFT.map(renderNavItem)}
+              </ul>
+            </nav>
+
+            <div className="hathor-header__col hathor-header__col--logo">
               <Link href="/" className="hathor-header__brand">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -237,88 +331,11 @@ export function Header() {
             </div>
 
             <nav
-              className="hathor-header__col hathor-header__col--center"
-              aria-label="Primary navigation"
+              className="hathor-header__col hathor-header__col--nav-right"
+              aria-label="Primary navigation right"
             >
-              <ul className="hathor-header__nav">
-                {HEADER_NAV_ITEMS.map((item) => {
-                  const isActive = isNavItemActive(pathname, item);
-
-                  if (item.type === "link") {
-                    return (
-                      <li key={item.href} className="hathor-header__nav-item">
-                        <Link
-                          href={item.href}
-                          className={`hathor-header__nav-link ${isActive ? "hathor-header__nav-link--active" : ""}`}
-                        >
-                          {item.label}
-                        </Link>
-                      </li>
-                    );
-                  }
-
-                  const dropdownOpen = openDropdown === item.id;
-
-                  return (
-                    <li
-                      key={item.id}
-                      className="hathor-header__nav-item hathor-header__nav-item--dropdown"
-                    >
-                      <div
-                        className="hathor-header__dropdown-zone"
-                        onMouseEnter={() => openDropdownMenu(item.id)}
-                        onMouseLeave={scheduleDropdownClose}
-                      >
-                        <div className="hathor-header__dropdown-trigger">
-                          <Link
-                            href={item.href}
-                            className={`hathor-header__nav-link ${isActive ? "hathor-header__nav-link--active" : ""}`}
-                            aria-haspopup="menu"
-                            aria-expanded={dropdownOpen}
-                            onClick={(event) =>
-                              handleDropdownTriggerClick(event, item.id)
-                            }
-                          >
-                            <span className="hathor-header__nav-link-label">{item.label}</span>
-                            <span className="hathor-header__nav-pyramid" aria-hidden="true" />
-                          </Link>
-                          <button
-                            type="button"
-                            className="hathor-header__dropdown-toggle"
-                            aria-label={`Show ${item.label} pages`}
-                            aria-expanded={dropdownOpen}
-                            onClick={() => {
-                              cancelDropdownClose();
-                              setOpenDropdown((current) =>
-                                current === item.id ? null : item.id,
-                              );
-                            }}
-                          />
-                        </div>
-                        <div
-                          className={`hathor-header__dropdown${dropdownOpen ? " is-open" : ""}`}
-                          role="menu"
-                          aria-label={`${item.label} pages`}
-                        >
-                          <ul className="hathor-header__dropdown-list">
-                            {item.links.map((link) => (
-                              <li key={`${item.id}-${link.href}-${link.label}`}>
-                                <Link
-                                  href={link.href}
-                                  className="hathor-header__dropdown-link"
-                                  role="menuitem"
-                                  onClick={() => setOpenDropdown(null)}
-                                >
-                                  {link.label}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    </li>
-                  );
-                })}
+              <ul className="hathor-header__nav hathor-header__nav--right">
+                {HEADER_NAV_RIGHT.map(renderNavItem)}
               </ul>
             </nav>
           </div>
