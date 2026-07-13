@@ -1824,12 +1824,12 @@
 }
 
 .hathor-header__col--right .public-btn-gold {
-  display: none;
+  display: none !important;
 }
 
 @media (min-width: 640px) {
   .hathor-header__col--right .public-btn-gold {
-    display: inline-flex;
+    display: none !important;
   }
 }
 

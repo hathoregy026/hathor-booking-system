@@ -42,7 +42,6 @@ export function persistPublicTheme(theme: PublicTheme): void {
 export function isHeroRoute(pathname: string): boolean {
   return (
     pathname === "/" ||
-    pathname === "/homepage-2" ||
     pathname === "/ex" ||
     pathname === "/preview"
   );

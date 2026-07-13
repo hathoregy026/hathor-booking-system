@@ -1,18 +1,12 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { MessageCircle } from "lucide-react";
-import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { SocialBrandIcon } from "@/components/public/SocialBrandIcon";
-import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 import { PUBLIC_SOCIAL_LINKS } from "@/lib/public-social";
-import { isHeroRoute } from "@/lib/public-theme";
 
 export function FloatingActions() {
-  const pathname = usePathname();
   const [expanded, setExpanded] = useState(false);
-  const showHeroBookNow = isHeroRoute(pathname);
 
   return (
     <div className="public-bottom-dock">
@@ -64,12 +58,6 @@ export function FloatingActions() {
             <MessageCircle className="public-social-hub__chat-icon" aria-hidden />
           </button>
         </aside>
-
-        {showHeroBookNow && (
-          <BookNowTrigger className="public-bottom-dock__book owo-hero__cta--outline cursor-hover">
-            {HOMEPAGE_HERO.cta}
-          </BookNowTrigger>
-        )}
       </div>
     </div>
   );

@@ -1,6 +1,5 @@
-/* Site-wide nav — homepage-2 book bar + primary header */
+/* Site-wide unified navbar — PublicNavbar (EX style on all public routes) */
 
-/* Frame 9 — gold BOOK NOW bars flanking header logo (homepage-2 only) */
 .public-site .hathor-header__menu-zone .hathor-header__col--left {
   visibility: hidden;
   pointer-events: none;
@@ -10,77 +9,23 @@
   z-index: 230;
 }
 
-.homepage-2-book-bar {
-  --hp2-book-bar-height: clamp(2.15rem, 4.8vh, 2.85rem);
-  --hp2-book-logo-gap: clamp(0.85rem, 2.4vw, 1.75rem);
+.site-nav-bar {
+  --site-nav-bar-height: clamp(2.15rem, 4.8vh, 2.85rem);
   position: fixed;
   top: clamp(1rem, 2.5vh, 1.75rem);
   left: 0;
   right: 0;
   z-index: 215;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  column-gap: var(--hp2-book-logo-gap);
+  display: flex;
   align-items: center;
-  height: var(--hp2-book-bar-height);
+  justify-content: center;
+  height: var(--site-nav-bar-height);
   width: 100%;
   padding: 0;
   pointer-events: none;
 }
 
-.homepage-2-book-bar__pill {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: var(--hp2-book-bar-height);
-  min-width: 0;
-  border: none;
-  background-color: #b69f64;
-  color: #faf8f5;
-  font-family: var(--public-serif, Georgia, serif);
-  font-size: clamp(0.78rem, 1.35vw, 0.95rem);
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  line-height: 1;
-  text-transform: uppercase;
-  cursor: pointer;
-  pointer-events: auto;
-  transition:
-    background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.homepage-2-book-bar__pill:hover {
-  background-color: #faf8f5;
-  color: #1c1917;
-  filter: brightness(1.03);
-}
-
-.homepage-2-book-bar__pill:focus-visible {
-  outline: 2px solid #faf8f5;
-  outline-offset: 2px;
-}
-
-.homepage-2-book-bar__pill--left {
-  justify-self: stretch;
-  justify-content: flex-end;
-  padding-inline: clamp(1.25rem, 4vw, 2.75rem) clamp(1.1rem, 3vw, 2rem);
-  border-radius: 0 999px 999px 0;
-  transform: none;
-  opacity: 1;
-}
-
-.homepage-2-book-bar__pill--right {
-  justify-self: stretch;
-  justify-content: flex-start;
-  padding-inline: clamp(1.1rem, 3vw, 2rem) clamp(1.25rem, 4vw, 2.75rem);
-  border-radius: 999px 0 0 999px;
-  transform: none;
-  opacity: 1;
-}
-
-.homepage-2-book-bar__logo {
+.site-nav-bar__logo {
   position: relative;
   display: grid;
   place-items: center;
@@ -90,40 +35,31 @@
   opacity: 1;
 }
 
-/* Logo-only bar (BOOK NOW pills removed) — keep emblem centered in nav */
-.homepage-2-book-bar:not(:has(.homepage-2-book-bar__pill)) .homepage-2-book-bar__logo {
-  grid-column: 2;
-  justify-self: center;
-}
-
-.homepage-2-book-bar__logo-img {
+.site-nav-bar__logo-img {
   display: block;
   width: 100%;
   height: auto;
-  max-height: var(--hp2-book-bar-height);
+  max-height: var(--site-nav-bar-height);
   object-fit: contain;
   transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.homepage-2-book-bar__logo-img--dark {
+.site-nav-bar__logo-img--dark {
   position: absolute;
   inset: 0;
   margin: auto;
   opacity: 0;
 }
 
-.public-site:has(.hathor-header--menu-hovered)
-  .homepage-2-book-bar__logo-img--light {
+.public-site:has(.hathor-header--menu-hovered) .site-nav-bar__logo-img--light {
   opacity: 0;
 }
 
-.public-site:has(.hathor-header--menu-hovered)
-  .homepage-2-book-bar__logo-img--dark {
+.public-site:has(.hathor-header--menu-hovered) .site-nav-bar__logo-img--dark {
   opacity: 1;
 }
 
-
-/* Frame 9 — diagonal gold dropdown pills (homepage-2 only) */
+/* Diagonal gold dropdown pills — unified header */
 @media (min-width: 768px) {
   .public-site .hathor-header__nav-item--dropdown {
     --hp2-drop-pill-width: clamp(10.75rem, 14vw, 12.5rem);
@@ -398,21 +334,7 @@
 }
 
 @media (max-width: 767px) {
-  .homepage-2-book-bar {
-    --hp2-book-bar-height: clamp(2rem, 7vw, 2.35rem);
-    --hp2-book-logo-gap: clamp(0.55rem, 2vw, 0.85rem);
-  }
-
-  .homepage-2-book-bar__pill {
-    font-size: 0.68rem;
-    letter-spacing: 0.14em;
-  }
-
-  .homepage-2-book-bar__pill--left {
-    padding-inline: 0.85rem 0.65rem;
-  }
-
-  .homepage-2-book-bar__pill--right {
-    padding-inline: 0.65rem 0.85rem;
+  .site-nav-bar {
+    --site-nav-bar-height: clamp(2rem, 7vw, 2.35rem);
   }
 }

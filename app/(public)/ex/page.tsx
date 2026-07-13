@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { HATHOR_HERO_POSTER_SRC } from "@/lib/branding";
+import { preload } from "react-dom";
 import { ExClient } from "./ExClient";
+import { HATHOR_HERO_POSTER_SRC, HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
 import "./ex.css";
 
 export const metadata: Metadata = {
@@ -28,5 +29,18 @@ export const metadata: Metadata = {
 };
 
 export default function ExPage() {
-  return <ExClient />;
+  preload(HATHOR_HERO_VIDEO_SRC, { as: "fetch", fetchPriority: "high" });
+
+  return (
+    <>
+      <link
+        rel="preload"
+        href={HATHOR_HERO_VIDEO_SRC}
+        as="video"
+        type="video/mp4"
+        fetchPriority="high"
+      />
+      <ExClient />
+    </>
+  );
 }

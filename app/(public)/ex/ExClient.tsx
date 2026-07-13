@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useLayoutEffect, useRef } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
-import { HATHOR_BRAND_NAME } from "@/lib/branding";
+import { HATHOR_BRAND_NAME, HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
 import {
   EX_ABOUT,
   EX_CAROUSEL,
@@ -19,14 +20,34 @@ import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 import { useExScrollMotion } from "@/hooks/useExScrollMotion";
 
 export function ExClient() {
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
   useExScrollMotion();
+
+  useLayoutEffect(() => {
+    const video = heroVideoRef.current;
+    if (!video) return;
+
+    video.muted = true;
+    video.defaultMuted = true;
+    video.setAttribute("muted", "");
+    void video.play().catch(() => {});
+  }, []);
 
   return (
     <div className="ex-root">
       <main id="top">
         <section className="home-hero-container" aria-label="Hero">
           <div className="hero-media">
-            <img src={EX_HERO.image} alt={EX_HERO.imageAlt} />
+            <video
+              ref={heroVideoRef}
+              src={HATHOR_HERO_VIDEO_SRC}
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="metadata"
+              aria-label="Hathor Dahabiya sailing on the Nile"
+            />
           </div>
           <div className="hero-overlay" aria-hidden="true" />
 

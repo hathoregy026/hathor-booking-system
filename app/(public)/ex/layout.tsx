@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
-/** Boot EX experience + cream theme before hydration (mirrors homepage-2 pattern). */
-const EX_BOOT = `(function(){try{var d=document.documentElement;d.setAttribute("data-ex-experience","");d.setAttribute("data-homepage2-experience","");}catch(e){}})();`;
+/** Boot EX experience + cream theme before hydration. */
+const EX_BOOT = `(function(){try{var d=document.documentElement;d.setAttribute("data-ex-experience","");}catch(e){}})();`;
 
 const EX_CRITICAL_CSS = `
 .ex-route,
@@ -23,9 +23,7 @@ html[data-ex-experience] .public-main {
   margin-top: 0 !important;
   padding-top: 0 !important;
 }
-html[data-ex-experience] .homepage-2-book-bar__pill--left,
-html[data-ex-experience] .homepage-2-book-bar__pill--right,
-html[data-ex-experience] .homepage-2-book-bar__logo {
+html[data-ex-experience] .site-nav-bar__logo {
   transform: none !important;
   opacity: 1 !important;
   animation: none !important;

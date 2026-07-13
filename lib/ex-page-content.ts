@@ -19,8 +19,6 @@ export const EX_HERO = {
   subtitle: HOMEPAGE_HERO.subtitle,
   sideLeft: "Luxor · Aswan",
   sideRight: "Private Nile Sailing",
-  image: HATHOR_MEDIA.heroHomepage,
-  imageAlt: HATHOR_MEDIA.heroHomepageAlt,
 } as const;
 
 export const EX_ABOUT = {

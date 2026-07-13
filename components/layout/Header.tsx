@@ -117,7 +117,6 @@ function ExplorePanel({
 function isNavItemActive(pathname: string, item: HeaderNavItem): boolean {
   if (item.type === "link") {
     if (item.href === "/") return pathname === "/";
-    if (item.href === "/homepage-2") return pathname === "/homepage-2";
     if (item.href === "/ex") return pathname === "/ex";
     return (
       pathname === item.href || pathname.startsWith(`${item.href}/`)
@@ -134,6 +133,7 @@ function isNavItemActive(pathname: string, item: HeaderNavItem): boolean {
   );
 }
 
+/** Primary site header — part of unified PublicNavbar (EX style on all routes). */
 export function Header() {
   const pathname = usePathname();
   const [exploreOpen, setExploreOpen] = useState(false);

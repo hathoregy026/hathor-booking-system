@@ -1,0 +1,34 @@
+---
+description: Unified public navbar — one nav for all pages; EX style is canonical
+alwaysApply: true
+---
+
+# Unified Public Navbar
+
+When the user says **edit navbar**, **nav bar**, **header**, **top bar**, or **site nav**, treat it as a **site-wide** change on **every public page** — not a single route.
+
+## Canonical implementation (do not fork per page)
+
+| Piece | File | Role |
+|-------|------|------|
+| **PublicNavbar** | `components/layout/PublicNavbar.tsx` | Single entry — render this in layouts |
+| **SiteNavLogoBar** | `components/layout/SiteNavLogoBar.tsx` | Centered Hathor ring logo (no BOOK NOW pills) |
+| **Header** | `components/layout/Header.tsx` | Primary nav links + mobile explore + theme toggle |
+| **Nav data** | `lib/public-nav.ts` | `HEADER_NAV_ITEMS`, `EXPLORE_LINKS` |
+| **Nav styles** | `app/site-nav.css` | Logo bar + dropdown pill styles |
+
+**Reference:** `/ex` uses the same `PublicLayout` → `PublicNavbar` as `/`, `/cruises`, `/rooms`, etc.
+
+## Rules
+
+1. **Never** add page-local nav bars, duplicate headers, or route-specific BOOK NOW pills in the top tier.
+2. **Never** reintroduce flanking gold BOOK NOW bars in the navbar — booking CTAs belong in page content or the booking modal trigger elsewhere, not the fixed top nav.
+3. Layouts must use `<PublicNavbar />` only (`PublicLayout`, `app/preview/layout.tsx`). Do not wire `Header` / `SiteNavLogoBar` separately in new code.
+4. Page layouts (`ex/layout.tsx`, etc.) may set **theme/background** only — not alternate nav markup or nav-specific BOOK NOW UI.
+5. Admin (`/admin/**`) and booking flows keep their own shells; this rule is for the public marketing site.
+
+## When editing nav
+
+- Change `lib/public-nav.ts` for links/labels.
+- Change `Header.tsx` / `SiteNavLogoBar.tsx` / `site-nav.css` for structure and styling.
+- Verify on **at least two routes** (e.g. `/` and `/ex` or `/cruises`) that the nav matches.
