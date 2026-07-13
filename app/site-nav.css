@@ -401,21 +401,43 @@
   }
 }
 
-/* Public nav — 30px shorter vertically (logo bar + link row only) */
-.public-site .site-nav-bar {
-  --site-nav-bar-height: calc(clamp(2.15rem, 4.8vh, 2.85rem) - 15px);
-}
-
-@media (max-width: 767px) {
-  .public-site .site-nav-bar {
-    --site-nav-bar-height: calc(clamp(2rem, 7vw, 2.35rem) - 15px);
-  }
-}
-
+/*
+ * Public nav — compress the MENU ROW (not just the center logo).
+ * ~20px shorter: link padding + nav padding + logo/menu gap + bottom padding.
+ */
 .public-site .hathor-header--owo-hero-layout .hathor-header__inner--owo {
-  padding-bottom: calc(0.75rem - 9px);
+  padding-bottom: calc(0.75rem - 4px);
 }
 
 .public-site .hathor-header--owo-hero-layout .hathor-header__menu-zone .hathor-header__col--center {
-  margin-top: calc(0.85rem - 6px);
+  margin-top: calc(0.85rem - 8px);
+}
+
+.public-site .hathor-header--owo-hero-layout .hathor-header__nav {
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
+}
+
+.public-site .hathor-header--owo-hero-layout .hathor-header__nav-link {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+@media (min-width: 768px) {
+  .public-site .hathor-header__dropdown-zone:hover .hathor-header__nav-link,
+  .public-site
+    .hathor-header__dropdown-zone:has(.hathor-header__dropdown.is-open)
+    .hathor-header__nav-link {
+    padding-top: 0.32rem;
+    padding-bottom: 0.32rem;
+  }
+}
+
+/* Navbar glass — 20% more transparent (0.58 → 0.38; hover cream 1 → 0.8) */
+.public-site .hathor-header--owo-hero-layout.hathor-header--menu-active:not(.hathor-header--menu-hovered) {
+  background: rgb(10 10 10 / 0.38);
+}
+
+.public-site .hathor-header--owo-hero-layout.hathor-header--menu-hovered::before {
+  opacity: 0.8;
 }
