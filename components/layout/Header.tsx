@@ -139,6 +139,7 @@ export function Header() {
   const pathname = usePathname();
   const [exploreOpen, setExploreOpen] = useState(false);
   const [menuHovered, setMenuHovered] = useState(false);
+  const [navCompact, setNavCompact] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const closeDropdownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
     null,
@@ -175,6 +176,15 @@ export function Header() {
       document.body.style.overflow = "";
     };
   }, [exploreOpen]);
+
+  useEffect(() => {
+    const updateCompact = () => {
+      setNavCompact(window.scrollY > 40);
+    };
+    updateCompact();
+    window.addEventListener("scroll", updateCompact, { passive: true });
+    return () => window.removeEventListener("scroll", updateCompact);
+  }, []);
 
   useEffect(() => {
     if (!openDropdown) return;
@@ -293,6 +303,7 @@ export function Header() {
     "hathor-header--owo-hero-layout",
     "hathor-header--menu-active",
     menuHovered && "hathor-header--menu-hovered",
+    navCompact && "hathor-header--nav-compact",
   ]
     .filter(Boolean)
     .join(" ");

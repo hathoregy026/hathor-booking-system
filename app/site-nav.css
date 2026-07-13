@@ -40,10 +40,20 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    padding-top: 0.55rem;
-    padding-bottom: 0.55rem;
+    /* Tall at rest — matches pre-compact vertical feel */
+    padding-top: clamp(1rem, 2.5vh, 1.75rem);
+    padding-bottom: 0.75rem;
     padding-left: var(--nav-edge);
     padding-right: var(--nav-edge);
+    transition:
+      padding 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--nav-compact
+    .hathor-header__inner--owo {
+    padding-top: 0.55rem;
+    padding-bottom: 0.55rem;
   }
 
   .public-site .hathor-header--owo-hero-layout .hathor-header__menu-zone {
@@ -88,8 +98,15 @@
   }
 
   .public-site .hathor-header--owo-hero-layout .hathor-header__logo--icon {
-    height: clamp(2.35rem, 3.2vw, 2.85rem);
+    height: clamp(3.15rem, 7vh, 4.5rem);
     width: auto;
+    transition: height 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--nav-compact
+    .hathor-header__logo--icon {
+    height: clamp(2.35rem, 3.2vw, 2.85rem);
   }
 
   .public-site .hathor-header--owo-hero-layout .hathor-header__nav {
@@ -101,6 +118,12 @@
     max-width: none;
     margin: 0;
     gap: var(--nav-word-gap);
+    padding: 0.35rem 0;
+  }
+
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--nav-compact
+    .hathor-header__nav {
     padding: 0.1rem 0;
   }
 
@@ -115,10 +138,18 @@
   .public-site .hathor-header--owo-hero-layout .hathor-header__nav-link {
     width: auto;
     white-space: nowrap;
-    padding-top: 0.25rem;
-    padding-bottom: 0.25rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
     padding-left: 0;
     padding-right: 0;
+    transition: padding 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--nav-compact
+    .hathor-header__nav-link {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
   }
 }
 
@@ -142,10 +173,18 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding-top: 0.45rem;
-    padding-bottom: 0.45rem;
+    padding-top: clamp(0.85rem, 2vh, 1.35rem);
+    padding-bottom: 0.65rem;
     padding-left: var(--nav-edge);
     padding-right: var(--nav-edge);
+    transition: padding 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--nav-compact
+    .hathor-header__inner--owo {
+    padding-top: 0.45rem;
+    padding-bottom: 0.45rem;
   }
 
   .public-site .hathor-header--owo-hero-layout .hathor-header__menu-zone {
@@ -178,12 +217,25 @@
   }
 
   .public-site .hathor-header--owo-hero-layout .hathor-header__logo--icon {
+    height: clamp(2.75rem, 5vh, 3.5rem);
+    transition: height 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--nav-compact
+    .hathor-header__logo--icon {
     height: 2.15rem;
   }
 
   .public-site .hathor-header--owo-hero-layout .hathor-header__nav-link {
     width: auto;
     font-size: 0.7rem;
+    padding: 0.4rem 0;
+  }
+
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--nav-compact
+    .hathor-header__nav-link {
     padding: 0.2rem 0;
   }
 }

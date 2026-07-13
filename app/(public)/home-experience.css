@@ -536,12 +536,12 @@ h1, h2, h3, h4, p {
   line-height: 1.05;
   letter-spacing: 0.06em;
   color: var(--white);
-  text-transform: uppercase;
+  text-transform: none;
   text-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.08em;
+  gap: 0.02em;
   margin: 0;
 }
 
@@ -552,20 +552,22 @@ h1, h2, h3, h4, p {
 }
 
 .hero-line--right {
-  font-family: var(--font-display);
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-family: var(--font-hathor-display), var(--font-display), "Playfair Display", Georgia, serif !important;
+  font-weight: 700 !important;
+  font-size: clamp(2.4rem, 6.5vw, 5.2rem);
+  letter-spacing: 0.12em;
   text-transform: uppercase;
+  line-height: 1.05;
 }
 
 .hero-line--left {
-  font-family: var(--font-hathor-agraham), "Agraham", var(--font-display);
-  font-weight: 400;
-  font-size: clamp(2.1rem, 5.8vw, 4.6rem);
-  letter-spacing: 0.02em;
-  text-transform: none;
-  line-height: 1.15;
-  margin-top: 0.06em;
+  font-family: var(--font-hathor-script), var(--font-hathor-agraham), "Great Vibes", cursive !important;
+  font-weight: 400 !important;
+  font-size: clamp(2.85rem, 7.2vw, 5.75rem) !important;
+  letter-spacing: 0.03em;
+  text-transform: none !important;
+  line-height: 1.2;
+  margin-top: -0.08em;
 }
 
 .hero-sub {

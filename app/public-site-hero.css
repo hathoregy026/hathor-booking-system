@@ -5,6 +5,7 @@
   --site-hero-gold-soft: #d4c28a;
   --site-hero-white: #faf8f5;
   --site-hero-font-display: var(--font-hathor-display), "Playfair Display", Georgia, serif;
+  --site-hero-font-script: var(--font-hathor-script), var(--font-hathor-agraham), "Great Vibes", cursive;
 }
 
 .public-page-body {
@@ -148,12 +149,12 @@
   line-height: 1.05;
   letter-spacing: 0.06em;
   color: var(--site-hero-white);
-  text-transform: uppercase;
+  text-transform: none;
   text-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.08em;
+  gap: 0.02em;
   margin: 0;
 }
 
@@ -164,22 +165,27 @@
 }
 
 /* Line 1 — bold luxurious display serif */
-.hero-line--right {
-  font-family: var(--site-hero-font-display);
-  font-weight: 700;
-  letter-spacing: 0.08em;
+.home-hero-container .hero-heading .hero-line--right {
+  font-family: var(--site-hero-font-display) !important;
+  font-weight: 700 !important;
+  font-style: normal;
+  font-size: clamp(2.4rem, 6.5vw, 5.2rem);
+  letter-spacing: 0.12em;
   text-transform: uppercase;
+  line-height: 1.05;
 }
 
-/* Line 2 — luxurious script (Agraham) */
-.hero-line--left {
-  font-family: var(--font-hathor-agraham), "Agraham", "Playfair Display", Georgia, serif;
-  font-weight: 400;
-  font-size: clamp(2.1rem, 5.8vw, 4.6rem);
-  letter-spacing: 0.02em;
-  text-transform: none;
-  line-height: 1.15;
-  margin-top: 0.06em;
+/* Line 2 — elegant luxurious script */
+.home-hero-container .hero-heading .hero-line--left {
+  font-family: var(--site-hero-font-script) !important;
+  font-weight: 400 !important;
+  font-style: normal;
+  font-size: clamp(2.85rem, 7.2vw, 5.75rem) !important;
+  letter-spacing: 0.03em;
+  text-transform: none !important;
+  line-height: 1.2;
+  margin-top: -0.08em;
+  color: var(--site-hero-white);
 }
 
 .hero-sub {
