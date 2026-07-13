@@ -40,9 +40,9 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    /* Tall at rest — matches pre-compact vertical feel */
-    padding-top: clamp(1rem, 2.5vh, 1.75rem);
-    padding-bottom: 0.75rem;
+    /* Tall at rest (+10px vs previous), compact size unchanged on scroll */
+    padding-top: calc(clamp(1rem, 2.5vh, 1.75rem) + 5px);
+    padding-bottom: calc(0.75rem + 5px);
     padding-left: var(--nav-edge);
     padding-right: var(--nav-edge);
     transition:
@@ -173,8 +173,8 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding-top: clamp(0.85rem, 2vh, 1.35rem);
-    padding-bottom: 0.65rem;
+    padding-top: calc(clamp(0.85rem, 2vh, 1.35rem) + 5px);
+    padding-bottom: calc(0.65rem + 5px);
     padding-left: var(--nav-edge);
     padding-right: var(--nav-edge);
     transition: padding 0.35s cubic-bezier(0.22, 1, 0.36, 1);

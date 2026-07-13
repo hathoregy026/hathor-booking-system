@@ -4,8 +4,8 @@
   --site-hero-gold: #b69f64;
   --site-hero-gold-soft: #d4c28a;
   --site-hero-white: #faf8f5;
-  --site-hero-font-display: var(--font-hathor-display), "Playfair Display", Georgia, serif;
-  --site-hero-font-script: var(--font-hathor-script), var(--font-hathor-agraham), "Great Vibes", cursive;
+  --site-hero-font-display: var(--font-hathor-gabigaile), "Gabigaile", var(--font-hathor-display), "Playfair Display", Georgia, serif;
+  --site-hero-font-script: var(--font-hathor-quiet-luxury), "Quiet Luxury", var(--font-hathor-agraham), cursive;
 }
 
 .public-page-body {
@@ -139,14 +139,14 @@
   justify-content: center;
   text-align: center;
   pointer-events: none;
-  transform: translateY(15px);
+  transform: translateY(30px);
 }
 
 .hero-heading {
   font-family: var(--site-hero-font-display);
-  font-weight: 700;
+  font-weight: 400;
   font-size: clamp(2.4rem, 6.5vw, 5.2rem);
-  line-height: 1.05;
+  line-height: 0.92;
   letter-spacing: 0.06em;
   color: var(--site-hero-white);
   text-transform: none;
@@ -154,7 +154,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.02em;
+  gap: 0;
   margin: 0;
 }
 
@@ -164,27 +164,31 @@
   white-space: nowrap;
 }
 
-/* Line 1 — bold luxurious display serif */
+/* Line 1 — Gabigaile (bold luxurious) */
 .home-hero-container .hero-heading .hero-line--right {
   font-family: var(--site-hero-font-display) !important;
-  font-weight: 700 !important;
+  font-weight: 400 !important;
   font-style: normal;
   font-size: clamp(2.4rem, 6.5vw, 5.2rem);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  line-height: 1.05;
+  line-height: 0.95;
+  position: relative;
+  z-index: 1;
 }
 
-/* Line 2 — elegant luxurious script */
+/* Line 2 — Quiet Luxury script; tight overlap into line 1 */
 .home-hero-container .hero-heading .hero-line--left {
   font-family: var(--site-hero-font-script) !important;
   font-weight: 400 !important;
   font-style: normal;
   font-size: clamp(2.85rem, 7.2vw, 5.75rem) !important;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
   text-transform: none !important;
-  line-height: 1.2;
-  margin-top: -0.08em;
+  line-height: 0.9;
+  margin-top: -0.38em;
+  position: relative;
+  z-index: 2;
   color: var(--site-hero-white);
 }
 

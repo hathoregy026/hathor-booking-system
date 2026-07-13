@@ -517,7 +517,7 @@ h1, h2, h3, h4, p {
   justify-content: center;
   text-align: center;
   pointer-events: none;
-  transform: translateY(15px);
+  transform: translateY(30px);
 }
 
 .hero-kicker {
@@ -530,10 +530,10 @@ h1, h2, h3, h4, p {
 }
 
 .hero-heading {
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-family: var(--font-hathor-gabigaile), "Gabigaile", var(--font-display);
+  font-weight: 400;
   font-size: clamp(2.4rem, 6.5vw, 5.2rem);
-  line-height: 1.05;
+  line-height: 0.92;
   letter-spacing: 0.06em;
   color: var(--white);
   text-transform: none;
@@ -541,7 +541,7 @@ h1, h2, h3, h4, p {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.02em;
+  gap: 0;
   margin: 0;
 }
 
@@ -552,22 +552,26 @@ h1, h2, h3, h4, p {
 }
 
 .hero-line--right {
-  font-family: var(--font-hathor-display), var(--font-display), "Playfair Display", Georgia, serif !important;
-  font-weight: 700 !important;
+  font-family: var(--font-hathor-gabigaile), "Gabigaile", var(--font-display) !important;
+  font-weight: 400 !important;
   font-size: clamp(2.4rem, 6.5vw, 5.2rem);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  line-height: 1.05;
+  line-height: 0.95;
+  position: relative;
+  z-index: 1;
 }
 
 .hero-line--left {
-  font-family: var(--font-hathor-script), var(--font-hathor-agraham), "Great Vibes", cursive !important;
+  font-family: var(--font-hathor-quiet-luxury), "Quiet Luxury", cursive !important;
   font-weight: 400 !important;
   font-size: clamp(2.85rem, 7.2vw, 5.75rem) !important;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
   text-transform: none !important;
-  line-height: 1.2;
-  margin-top: -0.08em;
+  line-height: 0.9;
+  margin-top: -0.38em;
+  position: relative;
+  z-index: 2;
 }
 
 .hero-sub {

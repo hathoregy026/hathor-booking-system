@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Playfair_Display, Plus_Jakarta_Sans, Great_Vibes } from "next/font/google";
+import { Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
 import { PublicLayout } from "@/components/public/PublicLayout";
 import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
 import { resolveSiteImageMap } from "@/lib/resolve-site-images";
@@ -17,17 +17,22 @@ const agraham = localFont({
   display: "swap",
 });
 
+const gabigaile = localFont({
+  src: "../../public/fonts/Gabigaile.otf",
+  variable: "--font-hathor-gabigaile",
+  display: "swap",
+});
+
+const quietLuxury = localFont({
+  src: "../../public/fonts/quietluxury-script.otf",
+  variable: "--font-hathor-quiet-luxury",
+  display: "swap",
+});
+
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-hathor-display",
   weight: ["400", "500", "600", "700"],
-});
-
-const greatVibes = Great_Vibes({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-hathor-script",
-  display: "swap",
 });
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -78,7 +83,7 @@ export default async function PublicSiteLayout({
 
   return (
     <div
-      className={`${agraham.variable} ${playfair.variable} ${greatVibes.variable} ${plusJakarta.variable}`}
+      className={`${agraham.variable} ${gabigaile.variable} ${quietLuxury.variable} ${playfair.variable} ${plusJakarta.variable}`}
     >
       <SiteImagesProvider images={siteImages}>
         <PublicLayout>{children}</PublicLayout>
