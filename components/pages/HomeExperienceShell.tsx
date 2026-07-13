@@ -8,7 +8,7 @@ const HOME_CRITICAL_CSS = `
 .home-experience-route .public-site,
 .home-experience-route .public-main,
 .home-experience-route .page-transition {
-  --ex-cream: #f4f1ea;
+  --ex-cream: #ece8df;
   background-color: var(--ex-cream) !important;
 }
 html[data-ex-experience] .ex-root [data-page-transition],

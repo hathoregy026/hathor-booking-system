@@ -2,16 +2,16 @@ import type { ReactNode } from "react";
 import { CruisesScrollBoot } from "../CruisesScrollBoot";
 import "../cruises-scroll.css";
 
-const CRUISES_BOOT = `(function(){try{var d=document.documentElement,b=document.body;d.setAttribute("data-cruises-experience","");b.style.backgroundColor="#f4f1ea";}catch(e){}})();`;
+const CRUISES_BOOT = `(function(){try{var d=document.documentElement,b=document.body;d.setAttribute("data-cruises-experience","");b.style.backgroundColor="#ece8df";}catch(e){}})();`;
 
 const CRUISES_CRITICAL_CSS = `
 html[data-cruises-experience],
 html[data-cruises-experience] body {
-  background-color: #f4f1ea !important;
+  background-color: #ece8df !important;
 }
 html[data-cruises-experience] .cruises-scroll-route,
 html[data-cruises-experience] .cruises-page {
-  background-color: #f4f1ea !important;
+  background-color: #ece8df !important;
 }
 `;
 

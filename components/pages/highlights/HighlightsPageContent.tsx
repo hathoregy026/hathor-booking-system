@@ -1,5 +1,7 @@
 "use client";
 
+import { PublicSiteHero } from "@/components/pages/PublicSiteHero";
+import { splitHeroTitle } from "@/lib/split-hero-title";
 import { useRef } from "react";
 import { ArrowRight } from "lucide-react";
 import { ManagedImage } from "@/components/ui/ManagedImage";
@@ -120,6 +122,7 @@ function LandmarkChapter({ index, title, body, imageName }: LandmarkChapterProps
 
 export function HighlightsPageContent() {
   const rootRef = useRef<HTMLDivElement>(null);
+  const [lineRight, lineLeft] = splitHeroTitle(HIGHLIGHTS_PAGE.hero.title);
   useHighlightsEditorialMotion(rootRef);
 
   return (
@@ -128,11 +131,17 @@ export function HighlightsPageContent() {
       data-highlights-editorial
       className={styles.editorial}
       style={{
-        backgroundColor: "#F4F1EA",
+        backgroundColor: "#ECE8DF",
         color: "#1A1A1A",
         minHeight: "100vh",
       }}
     >
+      <PublicSiteHero
+        lineRight={lineRight}
+        lineLeft={lineLeft}
+        subtitle={HIGHLIGHTS_PAGE.hero.subtitle}
+      />
+
       <section data-highlights-intro className={styles.section}>
         <div className={styles.grid}>
           <div className={styles.introBlock}>

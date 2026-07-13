@@ -1,7 +1,7 @@
 /* /rooms editorial luxury system — scoped CSS module only. No public.css. */
 
 .editorial {
-  --rooms-bg-light: #f4f1ea;
+  --rooms-bg-light: #ece8df;
   --rooms-bg-dark: #0a0a0a;
   --rooms-surface: #ebe5d9;
   --rooms-ink: #12100d;

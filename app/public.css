@@ -4345,7 +4345,7 @@ html[data-public-theme="day"] .hathor-site {
   --lux-text-light: #3d3834;
   --lux-text-grey: #6b6560;
 
-  --public-bg: #faf8f5;
+  --public-bg: #ece8df;
   --public-surface: #f5f0e8;
   --public-card: #f0ebe3;
   --public-navy: #ebe4da;
@@ -5813,7 +5813,7 @@ html[data-public-theme="day"],
 html[data-public-theme="day"] .public-site,
 html[data-public-theme="day"] .hathor-site,
 html[data-public-theme="day"] .preview-site {
-  --public-bg: #faf8f5;
+  --public-bg: #ece8df;
   --public-surface: #f5f0e8;
   --public-text: #1a1a1a;
   --public-muted: #6b6560;

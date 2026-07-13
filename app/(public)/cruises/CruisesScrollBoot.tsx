@@ -8,7 +8,7 @@ export function CruisesScrollBoot({ children }: { children: ReactNode }) {
     const body = document.body;
 
     root.setAttribute("data-cruises-experience", "");
-    body.style.backgroundColor = "#f4f1ea";
+    body.style.backgroundColor = "#ece8df";
 
     return () => {
       root.removeAttribute("data-cruises-experience");

@@ -1,93 +1,33 @@
 "use client";
 
 import Link from "next/link";
-import { useLayoutEffect, useRef } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
-import { HATHOR_BRAND_NAME, HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
+import { PublicSiteHero } from "@/components/pages/PublicSiteHero";
+import { HATHOR_BRAND_NAME } from "@/lib/branding";
 import {
   EX_ABOUT,
   EX_CAROUSEL,
   EX_CTA,
   EX_GALLERY,
-  EX_GOLD_LOGO_SRC,
   EX_HERO,
   EX_PINNED,
   EX_TESTIMONIALS,
   EX_TEXT_BLOCKS,
   EX_WELLNESS,
 } from "@/lib/ex-page-content";
-import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 import { useExScrollMotion } from "@/hooks/useExScrollMotion";
 
 export function HomePageClient() {
-  const heroVideoRef = useRef<HTMLVideoElement>(null);
   useExScrollMotion();
-
-  useLayoutEffect(() => {
-    const video = heroVideoRef.current;
-    if (!video) return;
-
-    video.muted = true;
-    video.defaultMuted = true;
-    video.setAttribute("muted", "");
-    void video.play().catch(() => {});
-  }, []);
 
   return (
     <div className="ex-root">
       <main id="top">
-        <section className="home-hero-container" aria-label="Hero">
-          <div className="hero-media">
-            <video
-              ref={heroVideoRef}
-              src={HATHOR_HERO_VIDEO_SRC}
-              autoPlay
-              loop
-              muted
-              playsInline
-              preload="metadata"
-              aria-label="Hathor Dahabiya sailing on the Nile"
-            />
-          </div>
-          <div className="hero-overlay" aria-hidden="true" />
-
-          <div className="home-hero-cover" aria-hidden="true" />
-
-          <div className="hero-logo-mark" aria-hidden="true">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              className="hero-logo-img"
-              src={EX_GOLD_LOGO_SRC}
-              alt={HATHOR_BRAND_NAME}
-              width={1600}
-              height={560}
-            />
-          </div>
-
-          <div className="hero-content">
-            <h1 className="hero-heading">
-              <span className="hero-line hero-line--right">{EX_HERO.lineRight}</span>
-              <span className="hero-line hero-line--left">{EX_HERO.lineLeft}</span>
-            </h1>
-          </div>
-
-          <div className="hero-button">
-            <BookNowTrigger className="btn btn-light hero-cta">
-              <span className="hero-cta-text">{HOMEPAGE_HERO.cta}</span>
-            </BookNowTrigger>
-          </div>
-
-          <div className="hero-side hero-side--left" aria-hidden="true">
-            <span>{EX_HERO.sideLeft}</span>
-          </div>
-          <div className="hero-side hero-side--right" aria-hidden="true">
-            <span>{EX_HERO.sideRight}</span>
-          </div>
-
-          <div className="hero-scroll-hint" aria-hidden="true">
-            Scroll
-          </div>
-        </section>
+        <PublicSiteHero
+          animate={false}
+          lineRight={EX_HERO.lineRight}
+          lineLeft={EX_HERO.lineLeft}
+        />
 
         <section className="about-section ex-content-section" id="about">
           <div className="section-inner">

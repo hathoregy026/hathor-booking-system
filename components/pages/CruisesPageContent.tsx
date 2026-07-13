@@ -1,25 +1,26 @@
 "use client";
 
 import { CtaBand } from "@/components/pages/CtaBand";
+import { PublicSiteHero } from "@/components/pages/PublicSiteHero";
 import {
   CruisesListingProvider,
   CruisesPageFilters,
   CruisesPageListingsGrid,
 } from "@/components/pages/CruisesPageListings";
-import { CruisesHero } from "@/components/pages/CruisesHero";
+import { splitHeroTitle } from "@/lib/split-hero-title";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 import { CRUISES_PAGE } from "@/lib/page-content";
 
 export function CruisesPageContent() {
+  const [lineRight, lineLeft] = splitHeroTitle(CRUISES_PAGE.hero.title);
+
   return (
     <CruisesListingProvider cruises={HATHOR_CRUISES}>
       <div className="cruises-page">
-        <CruisesHero
-          eyebrow="Ultra Luxury"
-          title="Dahabiya Cruise"
-          subtitle="Your Luxury Trip Begins With Hathor Dahabiya"
-          breadcrumb="Cruises"
-          imageName="cruises-hero"
+        <PublicSiteHero
+          lineRight={lineRight}
+          lineLeft={lineLeft}
+          subtitle={CRUISES_PAGE.hero.subtitle}
         />
 
         <div className="cruises-sheet">
