@@ -866,13 +866,83 @@ export function useExScrollMotion() {
   }
 
   /* -------------------------------------------------------
-   * EX stack scroll — fullscreen cards pile as you scroll
+   * EX stack scroll — fullscreen luxury card stack + text
    * ----------------------------------------------------- */
+  function initExStackScrollText() {
+    const section = document.querySelector(".ex-stack-scroll");
+    const title = section?.querySelector(".ex-stack-scroll__title");
+    const body = section?.querySelector(".ex-stack-scroll__body");
+    const eyebrow = section?.querySelector(".ex-stack-scroll__eyebrow");
+    if (!section || !title) return;
+
+    if (prefersReduced) return;
+
+    document.fonts.ready.then(() => {
+      ScrollTrigger.getAll().forEach((st) => {
+        if (st.vars && st.vars.id === "ex-stack-text") st.kill();
+      });
+
+      const splitTitle = new SplitType(title, { types: "lines,chars" });
+      const splitBody = body ? new SplitType(body, { types: "lines" }) : null;
+
+      gsap.set(splitTitle.chars, { opacity: 0, yPercent: 110 });
+      if (splitBody?.lines) gsap.set(splitBody.lines, { opacity: 0, y: 22 });
+      if (eyebrow) gsap.set(eyebrow, { opacity: 0, y: 14 });
+
+      const textTl = gsap.timeline({
+        scrollTrigger: {
+          id: "ex-stack-text",
+          trigger: section,
+          start: "top 78%",
+          toggleActions: "play none none reverse",
+        },
+      });
+
+      if (eyebrow) {
+        textTl.to(eyebrow, {
+          opacity: 1,
+          y: 0,
+          duration: 0.85,
+          ease: "power2.out",
+        });
+      }
+
+      textTl.to(
+        splitTitle.chars,
+        {
+          opacity: 1,
+          yPercent: 0,
+          duration: 0.72,
+          stagger: 0.028,
+          ease: "power3.out",
+        },
+        eyebrow ? "-=0.45" : 0,
+      );
+
+      if (splitBody?.lines) {
+        textTl.to(
+          splitBody.lines,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            stagger: 0.14,
+            ease: "power2.out",
+          },
+          "-=0.35",
+        );
+      }
+    });
+  }
+
   function initExStackScroll() {
     const section = document.querySelector(".ex-stack-scroll");
     const viewport = section?.querySelector(".ex-stack-scroll__viewport");
+    const copy = section?.querySelector(".ex-stack-scroll__copy");
     const cards = gsap.utils.toArray<HTMLElement>(".ex-stack-scroll__card");
     if (!section || !viewport || cards.length < 2) return;
+
+    initExStackScrollText();
 
     if (prefersReduced) {
       gsap.set(cards, { yPercent: 0, scale: 1, filter: "brightness(1)" });
@@ -884,24 +954,33 @@ export function useExScrollMotion() {
 
     const killExisting = () => {
       ScrollTrigger.getAll().forEach((st) => {
-        if (st.vars && String(st.vars.id || "").startsWith("ex-stack")) st.kill();
+        const id = st.vars && String(st.vars.id || "");
+        if (id.startsWith("ex-stack-scroll") || id === "ex-stack-copy") st.kill();
       });
     };
+
+    const getCardMedia = (card: HTMLElement) =>
+      card.querySelector<HTMLElement>(".ex-stack-scroll__card-media img");
 
     const build = () => {
       killExisting();
 
       const total = cards.length;
       const step = 1;
+      const scrollSpan = (total - 1) * step;
 
       cards.forEach((card, index) => {
+        const media = getCardMedia(card);
         gsap.set(card, {
           zIndex: index + 1,
-          yPercent: index === 0 ? 0 : 100,
+          yPercent: index === 0 ? 0 : 108,
           scale: 1,
           filter: "brightness(1)",
           force3D: true,
         });
+        if (media) {
+          gsap.set(media, { scale: index === 0 ? 1.06 : 1.14, force3D: true });
+        }
       });
 
       const tl = gsap.timeline({
@@ -909,8 +988,8 @@ export function useExScrollMotion() {
           id: "ex-stack-scroll",
           trigger: section,
           start: "top top",
-          end: `+=${(total - 1) * 100}%`,
-          scrub: 1,
+          end: `+=${scrollSpan * 100}%`,
+          scrub: 1.65,
           pin: viewport,
           pinSpacing: true,
           anticipatePin: 1,
@@ -918,31 +997,64 @@ export function useExScrollMotion() {
         },
       });
 
+      if (copy) {
+        tl.fromTo(
+          copy,
+          { y: 0, opacity: 1 },
+          { y: -28, opacity: 0.92, ease: "none", duration: scrollSpan },
+          0,
+        );
+      }
+
       for (let i = 1; i < total; i++) {
         const at = (i - 1) * step;
+        const card = cards[i];
+        const media = getCardMedia(card);
 
-        tl.to(
-          cards[i],
-          {
-            yPercent: 0,
-            ease: "none",
-            duration: step,
-          },
+        tl.fromTo(
+          card,
+          { yPercent: 108, scale: 1.04 },
+          { yPercent: 0, scale: 1, ease: "none", duration: step },
           at,
         );
 
+        if (media) {
+          tl.fromTo(
+            media,
+            { scale: 1.16 },
+            { scale: 1.05, ease: "none", duration: step },
+            at,
+          );
+        }
+
         for (let j = 0; j < i; j++) {
           const depth = i - j;
+          const underCard = cards[j];
+          const underMedia = getCardMedia(underCard);
+
           tl.to(
-            cards[j],
+            underCard,
             {
-              scale: Math.max(0.82, 1 - depth * 0.045),
-              filter: `brightness(${Math.max(0.42, 1 - depth * 0.14)})`,
+              yPercent: -4 * depth,
+              scale: Math.max(0.86, 1 - depth * 0.038),
+              filter: `brightness(${Math.max(0.48, 1 - depth * 0.12)})`,
               ease: "none",
               duration: step,
             },
             at,
           );
+
+          if (underMedia) {
+            tl.to(
+              underMedia,
+              {
+                scale: 1.05 + depth * 0.02,
+                ease: "none",
+                duration: step,
+              },
+              at,
+            );
+          }
         }
       }
     };

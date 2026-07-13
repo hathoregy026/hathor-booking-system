@@ -78,8 +78,8 @@ export const EX_PINNED = {
       alt: "Valley of the Kings",
     },
     {
-      src: HATHOR_MEDIA.altHighlights,
-      alt: "Nile cruise highlights aboard Hathor Dahabiya",
+      src: HATHOR_MEDIA.postHeroMedia,
+      alt: HATHOR_MEDIA.postHeroMediaAlt,
     },
   ],
 } as const;

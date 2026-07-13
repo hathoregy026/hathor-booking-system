@@ -190,17 +190,19 @@ export function ExClient() {
             <div className="ex-stack-scroll__cards" aria-hidden="true">
               {EX_PINNED.slides.map((slide) => (
                 <div key={slide.src} className="ex-stack-scroll__card">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={slide.src} alt={slide.alt} />
+                  <div className="ex-stack-scroll__card-media">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={slide.src} alt={slide.alt} />
+                  </div>
                 </div>
               ))}
             </div>
 
             <div className="ex-stack-scroll__copy">
+              <p className="ex-stack-scroll__eyebrow">Nile · Hathor</p>
               <h2 className="ex-stack-scroll__title">
-                Every landmark,
-                <br />
-                a pleasure.
+                <span className="ex-stack-scroll__title-line">Every landmark,</span>
+                <span className="ex-stack-scroll__title-line">a pleasure.</span>
               </h2>
               <p className="ex-stack-scroll__body">{EX_PINNED.body}</p>
             </div>
