@@ -90,6 +90,12 @@
   opacity: 1;
 }
 
+/* Logo-only bar (BOOK NOW pills removed) — keep emblem centered in nav */
+.homepage-2-book-bar:not(:has(.homepage-2-book-bar__pill)) .homepage-2-book-bar__logo {
+  grid-column: 2;
+  justify-self: center;
+}
+
 .homepage-2-book-bar__logo-img {
   display: block;
   width: 100%;
