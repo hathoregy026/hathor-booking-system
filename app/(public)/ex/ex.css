@@ -25,11 +25,12 @@ html[data-ex-experience] .ex-root {
 
 html[data-ex-experience] .ex-root .hero-logo-mark {
   left: 50%;
-  top: 50%;
+  top: auto;
+  bottom: clamp(2rem, 7vh, 4.5rem);
   width: 100vw;
   max-width: none;
   margin: 0;
-  transform-origin: 50% 50%;
+  transform-origin: 50% 100%;
 }
 
 html[data-ex-experience] .ex-root .hero-logo-img {
@@ -477,12 +478,13 @@ h1, h2, h3, h4, p {
 .hero-logo-mark {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: auto;
+  bottom: clamp(2rem, 7vh, 4.5rem);
   z-index: 4;
   width: 100vw;
   max-width: none;
-  transform: translate3d(-50%, 95vh, 0);
-  transform-origin: center center;
+  transform: translate3d(-50%, 0, 0);
+  transform-origin: 50% 100%;
   will-change: transform, opacity;
   pointer-events: none;
   /* Must not flash in center before JS runs */

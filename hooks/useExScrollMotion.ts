@@ -590,32 +590,34 @@ export function useExScrollMotion() {
      * - SCROLL UP: reverses the down path only
      * Never appears on content pages. Never "already fixed" on land.
      */
-    // yPercent with left/top 50%:
-    const LOGO_REST = -50; // vertically centered in hero (xPercent/yPercent with top/left 50%)
-    const LOGO_LANDED_Y_OFFSET = 215;
-    const LOGO_HIDDEN = 95; // fully under content join / off hero
+    function getLogoHiddenY() {
+      const logoHeight = logoMark?.offsetHeight || window.innerHeight * 0.42;
+      return logoHeight * 0.78 + window.innerHeight * 0.12;
+    }
+
+    const LOGO_LANDED_Y = 0;
 
     let landingTween = null;
     let logoReadyForScroll = false; // scrub only after landing finishes
 
     if (logoMark) {
-      // FORCE hidden first paint — not visible, not centered
+      // FORCE hidden first paint — below hero bottom
       gsap.set(logoMark, {
         xPercent: -50,
-        yPercent: LOGO_HIDDEN,
+        yPercent: 0,
         x: 0,
-        y: 0,
+        y: getLogoHiddenY(),
         scale: 1,
         autoAlpha: 0,
         force3D: true,
-        transformOrigin: "50% 50%",
+        transformOrigin: "50% 100%",
       });
     }
 
     if (prefersReduced) {
       cover.innerHTML = "";
       if (logoMark) {
-        gsap.set(logoMark, { yPercent: LOGO_REST, y: LOGO_LANDED_Y_OFFSET, autoAlpha: 1 });
+        gsap.set(logoMark, { y: LOGO_LANDED_Y, autoAlpha: 1 });
       }
       logoReadyForScroll = true;
       return;
@@ -633,16 +635,15 @@ export function useExScrollMotion() {
       // Ensure we start from hidden every time
       gsap.set(logoMark, {
         xPercent: -50,
-        yPercent: LOGO_HIDDEN,
+        yPercent: 0,
         x: 0,
-        y: 0,
+        y: getLogoHiddenY(),
         scale: 1,
         autoAlpha: 1, // visible as it rises from under the join
       });
 
       landingTween = gsap.to(logoMark, {
-        yPercent: LOGO_REST,
-        y: LOGO_LANDED_Y_OFFSET,
+        y: LOGO_LANDED_Y,
         duration: 2.6,
         ease: "power2.inOut",
         delay: 0.2,
@@ -713,10 +714,10 @@ export function useExScrollMotion() {
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onLeave: () => {
-            if (logoMark) gsap.set(logoMark, { autoAlpha: 0, yPercent: LOGO_HIDDEN });
+            if (logoMark) gsap.set(logoMark, { autoAlpha: 0, y: getLogoHiddenY() });
           },
           onEnterBack: () => {
-            if (logoMark) gsap.set(logoMark, { autoAlpha: 1 });
+            if (logoMark) gsap.set(logoMark, { autoAlpha: 1, y: LOGO_LANDED_Y });
           },
         },
       });
@@ -757,9 +758,9 @@ export function useExScrollMotion() {
         if (logoReadyForScroll || !(landingTween && landingTween.isActive())) {
           gsap.set(logoMark, {
             xPercent: -50,
-            yPercent: LOGO_REST,
+            yPercent: 0,
             x: 0,
-            y: LOGO_LANDED_Y_OFFSET,
+            y: LOGO_LANDED_Y,
             scale: 1,
             autoAlpha: 1,
           });
@@ -768,15 +769,15 @@ export function useExScrollMotion() {
         tl.fromTo(
           logoMark,
           {
-            yPercent: LOGO_REST,
+            y: LOGO_LANDED_Y,
             autoAlpha: 1,
             xPercent: -50,
             x: 0,
-            y: LOGO_LANDED_Y_OFFSET,
+            yPercent: 0,
             scale: 1,
           },
           {
-            yPercent: LOGO_HIDDEN,
+            y: getLogoHiddenY(),
             autoAlpha: 0,
             ease: "none",
             duration: 1,
