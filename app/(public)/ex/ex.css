@@ -30,7 +30,7 @@ html[data-ex-experience] .ex-root .hero-logo-mark {
   width: 100vw;
   max-width: none;
   margin: 0;
-  transform-origin: 50% 100%;
+  transform-origin: 50% 50%;
 }
 
 html[data-ex-experience] .ex-root .hero-logo-img {
@@ -484,7 +484,7 @@ h1, h2, h3, h4, p {
   width: 100vw;
   max-width: none;
   transform: translate3d(-50%, 0, 0);
-  transform-origin: 50% 100%;
+  transform-origin: 50% 50%;
   will-change: transform, opacity;
   pointer-events: none;
   /* Must not flash in center before JS runs */

@@ -44,12 +44,10 @@ export function ExClient() {
           </div>
 
           <div className="hero-content">
-            <p className="hero-kicker">{EX_HERO.kicker}</p>
             <h1 className="hero-heading">
               <span className="hero-line hero-line--right">{EX_HERO.lineRight}</span>
               <span className="hero-line hero-line--left">{EX_HERO.lineLeft}</span>
             </h1>
-            <p className="hero-sub">{EX_HERO.subtitle}</p>
           </div>
 
           <div className="hero-button">

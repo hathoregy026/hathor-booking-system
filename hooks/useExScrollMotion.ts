@@ -566,7 +566,7 @@ export function useExScrollMotion() {
     const sub = hero.querySelector(".hero-sub");
     const scrollHint = hero.querySelector(".hero-scroll-hint");
     const chrome = hero.querySelectorAll(
-      ".hero-kicker, .hero-sub, .hero-side, .hero-heading, .hero-button"
+      ".hero-side, .hero-heading, .hero-button"
     );
 
     document.querySelectorAll(".hero-logo-bridge").forEach((el) => el.remove());
@@ -595,7 +595,19 @@ export function useExScrollMotion() {
       return logoHeight * 0.78 + window.innerHeight * 0.12;
     }
 
-    const LOGO_LANDED_Y = 0;
+    function getLogoLandedY() {
+      const ctaEl = hero.querySelector(".hero-cta");
+      if (!logoMark || !ctaEl) return 0;
+
+      const currentY = Number(gsap.getProperty(logoMark, "y")) || 0;
+      gsap.set(logoMark, { y: 0, xPercent: -50, yPercent: 0 });
+      const logoRect = logoMark.getBoundingClientRect();
+      const ctaRect = ctaEl.getBoundingClientRect();
+      const delta =
+        ctaRect.top + ctaRect.height / 2 - (logoRect.top + logoRect.height / 2);
+      gsap.set(logoMark, { y: currentY });
+      return delta;
+    }
 
     let landingTween = null;
     let logoReadyForScroll = false; // scrub only after landing finishes
@@ -610,14 +622,14 @@ export function useExScrollMotion() {
         scale: 1,
         autoAlpha: 0,
         force3D: true,
-        transformOrigin: "50% 100%",
+        transformOrigin: "50% 50%",
       });
     }
 
     if (prefersReduced) {
       cover.innerHTML = "";
       if (logoMark) {
-        gsap.set(logoMark, { y: LOGO_LANDED_Y, autoAlpha: 1 });
+        gsap.set(logoMark, { y: getLogoLandedY(), autoAlpha: 1 });
       }
       logoReadyForScroll = true;
       return;
@@ -643,12 +655,15 @@ export function useExScrollMotion() {
       });
 
       landingTween = gsap.to(logoMark, {
-        y: LOGO_LANDED_Y,
+        y: getLogoLandedY(),
         duration: 2.6,
         ease: "power2.inOut",
         delay: 0.2,
         onComplete: () => {
           logoReadyForScroll = true;
+          if (logoMark) {
+            gsap.set(logoMark, { y: getLogoLandedY() });
+          }
           // Snap scroll timeline to "rest" start so scrub doesn't jump
           ScrollTrigger.getAll().forEach((st) => {
             if (st.vars && st.vars.id === "hero-stage") st.refresh();
@@ -717,7 +732,7 @@ export function useExScrollMotion() {
             if (logoMark) gsap.set(logoMark, { autoAlpha: 0, y: getLogoHiddenY() });
           },
           onEnterBack: () => {
-            if (logoMark) gsap.set(logoMark, { autoAlpha: 1, y: LOGO_LANDED_Y });
+            if (logoMark) gsap.set(logoMark, { autoAlpha: 1, y: getLogoLandedY() });
           },
         },
       });
@@ -756,20 +771,22 @@ export function useExScrollMotion() {
         // If landing still running and user hasn't scrolled, keep REST as from
         // Don't force yPercent on every rebuild mid-landing unless landing done
         if (logoReadyForScroll || !(landingTween && landingTween.isActive())) {
+          const landedY = getLogoLandedY();
           gsap.set(logoMark, {
             xPercent: -50,
             yPercent: 0,
             x: 0,
-            y: LOGO_LANDED_Y,
+            y: landedY,
             scale: 1,
             autoAlpha: 1,
           });
         }
 
+        const landedY = getLogoLandedY();
         tl.fromTo(
           logoMark,
           {
-            y: LOGO_LANDED_Y,
+            y: landedY,
             autoAlpha: 1,
             xPercent: -50,
             x: 0,
@@ -812,10 +829,10 @@ export function useExScrollMotion() {
         logoReadyForScroll = true;
         if (logoMark) {
           gsap.set(logoMark, {
-            yPercent: LOGO_REST,
+            y: getLogoLandedY(),
             xPercent: -50,
             x: 0,
-            y: LOGO_LANDED_Y_OFFSET,
+            yPercent: 0,
             scale: 1,
             autoAlpha: 1,
           });
