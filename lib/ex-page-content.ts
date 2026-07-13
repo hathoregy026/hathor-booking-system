@@ -64,12 +64,23 @@ export const EX_CAROUSEL = {
 export const EX_PINNED = {
   title: "Every landmark,\na pleasure.",
   body: HOMEPAGE_HIGHLIGHTS.body,
-  bgIcon: HATHOR_MEDIA.sketchBoat,
-  images: [
-    HATHOR_MEDIA.obelisk,
-    HATHOR_MEDIA.templeHatshepsut,
-    HATHOR_MEDIA.valleyOfKings,
-    HATHOR_MEDIA.altHighlights,
+  slides: [
+    {
+      src: HATHOR_MEDIA.obelisk,
+      alt: "Ancient obelisk along the Nile",
+    },
+    {
+      src: HATHOR_MEDIA.templeHatshepsut,
+      alt: "Temple of Hatshepsut, Luxor",
+    },
+    {
+      src: HATHOR_MEDIA.valleyOfKings,
+      alt: "Valley of the Kings",
+    },
+    {
+      src: HATHOR_MEDIA.altHighlights,
+      alt: "Nile cruise highlights aboard Hathor Dahabiya",
+    },
   ],
 } as const;
 

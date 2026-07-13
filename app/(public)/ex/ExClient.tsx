@@ -182,36 +182,28 @@ export function ExClient() {
         </section>
 
         <section
-          className="home-scroll-container ex-content-section"
+          className="ex-stack-scroll ex-content-section"
           id="details"
           aria-label="Every landmark, a pleasure"
         >
-          <div className="home-scroll-bg" aria-hidden="true">
-            <img className="large-bg-icon" src={EX_PINNED.bgIcon} alt="" />
-          </div>
-
-          <div className="home-scroll-images" aria-hidden="true">
-            {EX_PINNED.images.map((src) => (
-              <div key={src} className="move-up-img">
-                <img src={src} alt="" />
-              </div>
-            ))}
-          </div>
-
-          <div className="home-scroll-content">
-            <div>
-              <div className="home-scroll-h2">
-                <h2>
-                  Every landmark,
-                  <br />
-                  a pleasure.
-                </h2>
-              </div>
-              <div className="home-scroll-p">
-                <p>{EX_PINNED.body}</p>
-              </div>
+          <div className="ex-stack-scroll__viewport">
+            <div className="ex-stack-scroll__cards" aria-hidden="true">
+              {EX_PINNED.slides.map((slide) => (
+                <div key={slide.src} className="ex-stack-scroll__card">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={slide.src} alt={slide.alt} />
+                </div>
+              ))}
             </div>
-            <div />
+
+            <div className="ex-stack-scroll__copy">
+              <h2 className="ex-stack-scroll__title">
+                Every landmark,
+                <br />
+                a pleasure.
+              </h2>
+              <p className="ex-stack-scroll__body">{EX_PINNED.body}</p>
+            </div>
           </div>
         </section>
 

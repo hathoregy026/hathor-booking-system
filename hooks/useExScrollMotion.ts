@@ -731,9 +731,6 @@ export function useExScrollMotion() {
           onLeave: () => {
             if (logoMark) gsap.set(logoMark, { autoAlpha: 0, y: getLogoHiddenY() });
           },
-          onEnterBack: () => {
-            if (logoMark) gsap.set(logoMark, { autoAlpha: 1, y: getLogoLandedY() });
-          },
         },
       });
 
@@ -869,79 +866,97 @@ export function useExScrollMotion() {
   }
 
   /* -------------------------------------------------------
-   * PATTERN E — Pinned multi-image scroll sequence
-   *   pin 3000px, images y: vh → -vh staggered, bg scale
-   *   desktop mouse parallax ±25px
+   * EX stack scroll — fullscreen cards pile as you scroll
    * ----------------------------------------------------- */
-  function initPinnedScroll() {
-    const container = document.querySelector(".home-scroll-container");
-    const bg = document.querySelector(".large-bg-icon");
-    const moveImgs = document.querySelectorAll(".move-up-img");
-    if (!container || !moveImgs.length) return;
+  function initExStackScroll() {
+    const section = document.querySelector(".ex-stack-scroll");
+    const viewport = section?.querySelector(".ex-stack-scroll__viewport");
+    const cards = gsap.utils.toArray<HTMLElement>(".ex-stack-scroll__card");
+    if (!section || !viewport || cards.length < 2) return;
 
-    if (prefersReduced) return;
-
-    const innerImgs = Array.from(moveImgs).map((img) => img.querySelector("img"));
-    const scrollDistance = "3000px";
-
-    if (bg) {
-      gsap.fromTo(
-        bg,
-        { scale: 1, opacity: 1 },
-        {
-          scale: 1.75,
-          opacity: 0.5,
-          ease: "none",
-          scrollTrigger: {
-            trigger: container,
-            start: "top top",
-            end: scrollDistance,
-            scrub: true,
-            pin: false,
-          },
-        }
-      );
+    if (prefersReduced) {
+      gsap.set(cards, { yPercent: 0, scale: 1, filter: "brightness(1)" });
+      cards.slice(1).forEach((card) => {
+        gsap.set(card, { autoAlpha: 0 });
+      });
+      return;
     }
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: container,
-        start: "top top",
-        end: scrollDistance,
-        scrub: true,
-        pin: true,
-        pinSpacing: true,
-      },
-    });
+    const killExisting = () => {
+      ScrollTrigger.getAll().forEach((st) => {
+        if (st.vars && String(st.vars.id || "").startsWith("ex-stack")) st.kill();
+      });
+    };
 
-    moveImgs.forEach((img, i) => {
-      const delay = i * 0.12;
-      tl.fromTo(
-        img,
-        { y: window.innerHeight },
-        { y: -window.innerHeight, ease: "none" },
-        delay
-      );
-    });
+    const build = () => {
+      killExisting();
 
-    const parallaxStrength = 25;
+      const total = cards.length;
+      const step = 1;
 
-    if (window.innerWidth > 1024) {
-      document.addEventListener("mousemove", (e) => {
-        const mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-        const mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-
-        innerImgs.forEach((innerImg) => {
-          if (!innerImg) return;
-          gsap.to(innerImg, {
-            x: -mouseX * parallaxStrength,
-            y: -mouseY * parallaxStrength,
-            duration: 0.5,
-            ease: "power2.out",
-          });
+      cards.forEach((card, index) => {
+        gsap.set(card, {
+          zIndex: index + 1,
+          yPercent: index === 0 ? 0 : 100,
+          scale: 1,
+          filter: "brightness(1)",
+          force3D: true,
         });
       });
-    }
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          id: "ex-stack-scroll",
+          trigger: section,
+          start: "top top",
+          end: `+=${(total - 1) * 100}%`,
+          scrub: 1,
+          pin: viewport,
+          pinSpacing: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      for (let i = 1; i < total; i++) {
+        const at = (i - 1) * step;
+
+        tl.to(
+          cards[i],
+          {
+            yPercent: 0,
+            ease: "none",
+            duration: step,
+          },
+          at,
+        );
+
+        for (let j = 0; j < i; j++) {
+          const depth = i - j;
+          tl.to(
+            cards[j],
+            {
+              scale: Math.max(0.82, 1 - depth * 0.045),
+              filter: `brightness(${Math.max(0.42, 1 - depth * 0.14)})`,
+              ease: "none",
+              duration: step,
+            },
+            at,
+          );
+        }
+      }
+    };
+
+    build();
+
+    let resizeTimer: ReturnType<typeof setTimeout>;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        build();
+        ScrollTrigger.refresh();
+      }, 200);
+    });
   }
 
   /* -------------------------------------------------------
@@ -1204,7 +1219,7 @@ export function useExScrollMotion() {
     initCarousel();
     initGeneralButtons();
     initHomeScrollText();
-    initPinnedScroll();
+    initExStackScroll();
     initHomeTextImgReveal();
     initHomeTextBlocks();
     initGalleryH2();
