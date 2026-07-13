@@ -131,7 +131,9 @@ export function Header() {
   const pathname = usePathname();
   const [exploreOpen, setExploreOpen] = useState(false);
   const [menuHovered, setMenuHovered] = useState(false);
+  /** Touch / keyboard toggle only — desktop fine-pointer uses CSS :hover */
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [touchDropdownNav, setTouchDropdownNav] = useState(false);
 
   useEffect(() => {
     setMenuHovered(false);
@@ -147,15 +149,42 @@ export function Header() {
   }, [exploreOpen]);
 
   useEffect(() => {
+    const mq = window.matchMedia("(pointer: coarse)");
+    const update = () => setTouchDropdownNav(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(pointer: fine)");
+    const onFinePointerEnter = () => {
+      if (mq.matches) setOpenDropdown(null);
+    };
+    const menuZone = document.querySelector(".hathor-header__menu-zone");
+    menuZone?.addEventListener("pointerenter", onFinePointerEnter);
+    return () => menuZone?.removeEventListener("pointerenter", onFinePointerEnter);
+  }, []);
+
+  useEffect(() => {
     if (!openDropdown) return;
 
     const closeDropdown = () => setOpenDropdown(null);
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (target.closest(".hathor-header__dropdown-zone")) return;
+      closeDropdown();
+    };
+
     window.addEventListener("scroll", closeDropdown, { passive: true });
     window.addEventListener("resize", closeDropdown);
+    document.addEventListener("pointerdown", onPointerDown);
 
     return () => {
       window.removeEventListener("scroll", closeDropdown);
       window.removeEventListener("resize", closeDropdown);
+      document.removeEventListener("pointerdown", onPointerDown);
     };
   }, [openDropdown]);
 
@@ -176,10 +205,7 @@ export function Header() {
 
   return (
     <>
-      <header
-        className={headerClass}
-        onMouseLeave={() => setOpenDropdown(null)}
-      >
+      <header className={headerClass}>
         <div className="hathor-header__inner hathor-header__inner--owo">
           <div
             className="hathor-header__menu-zone"
@@ -222,24 +248,22 @@ export function Header() {
                     );
                   }
 
-                  const dropdownOpen = openDropdown === item.id;
+                  const dropdownOpen =
+                    touchDropdownNav && openDropdown === item.id;
 
                   return (
                     <li
                       key={item.id}
                       className="hathor-header__nav-item hathor-header__nav-item--dropdown"
                     >
-                      <div
-                        className="hathor-header__dropdown-zone"
-                        onMouseEnter={() => setOpenDropdown(item.id)}
-                        onMouseLeave={() => setOpenDropdown(null)}
-                      >
+                      <div className="hathor-header__dropdown-zone">
                         <div className="hathor-header__dropdown-trigger">
                           <Link
                             href={item.href}
                             className={`hathor-header__nav-link ${isActive ? "hathor-header__nav-link--active" : ""}`}
                             aria-haspopup="menu"
                             aria-expanded={dropdownOpen}
+                            onClick={() => setOpenDropdown(null)}
                           >
                             <span className="hathor-header__nav-link-label">{item.label}</span>
                             <span className="hathor-header__nav-pyramid" aria-hidden="true" />
@@ -250,6 +274,15 @@ export function Header() {
                             aria-label={`Show ${item.label} pages`}
                             aria-expanded={dropdownOpen}
                             onClick={() => toggleDropdown(item.id)}
+                            onBlur={(event) => {
+                              if (
+                                !event.currentTarget.parentElement?.contains(
+                                  event.relatedTarget,
+                                )
+                              ) {
+                                setOpenDropdown(null);
+                              }
+                            }}
                           />
                         </div>
                         <div
