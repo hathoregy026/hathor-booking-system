@@ -145,6 +145,6 @@ export const HOMEPAGE_PARTNERS = {
     "Expedia",
     "X Luxury Hospitality",
   ],
-  href: "/#partners",
+  href: "/partners",
   hrefLabel: "Learn more",
 } as const;

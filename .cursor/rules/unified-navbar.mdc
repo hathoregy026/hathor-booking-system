@@ -14,7 +14,7 @@ When the user says **edit navbar**, **nav bar**, **header**, **top bar**, or **s
 | **PublicNavbar** | `components/layout/PublicNavbar.tsx` | Single entry — render this in layouts |
 | **SiteNavLogoBar** | `components/layout/SiteNavLogoBar.tsx` | Centered Hathor ring logo (no BOOK NOW pills) |
 | **Header** | `components/layout/Header.tsx` | Primary nav links + mobile explore + theme toggle |
-| **Nav data** | `lib/public-nav.ts` | `HEADER_NAV_ITEMS`, `EXPLORE_LINKS` |
+| **Nav data** | `lib/public-nav.ts` | `HEADER_NAV_ITEMS` (Suites, Cruises, Experiences, About), `EXPLORE_LINKS` |
 | **Nav styles** | `app/site-nav.css` | Logo bar + dropdown pill styles |
 
 **Reference:** `/` is the home experience (former EX page). All public routes use the same `PublicLayout` → `PublicNavbar`.

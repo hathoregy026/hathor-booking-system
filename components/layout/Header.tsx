@@ -12,6 +12,7 @@ import {
 } from "@/lib/branding";
 import {
   HEADER_NAV_ITEMS,
+  navHrefMatches,
   type HeaderNavItem,
 } from "@/lib/public-nav";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
@@ -116,19 +117,12 @@ function ExplorePanel({
 
 function isNavItemActive(pathname: string, item: HeaderNavItem): boolean {
   if (item.type === "link") {
-    if (item.href === "/") return pathname === "/";
-    return (
-      pathname === item.href || pathname.startsWith(`${item.href}/`)
-    );
+    return navHrefMatches(pathname, item.href);
   }
 
   return (
-    pathname === item.href ||
-    pathname.startsWith(`${item.href}/`) ||
-    item.links.some(
-      (link) =>
-        pathname === link.href || pathname.startsWith(`${link.href}/`),
-    )
+    navHrefMatches(pathname, item.href) ||
+    item.links.some((link) => navHrefMatches(pathname, link.href))
   );
 }
 
