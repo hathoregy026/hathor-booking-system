@@ -13,6 +13,20 @@
   background-color: #ece8df;
 }
 
+/* Pinned hero must not block the fixed navbar */
+.public-site .pin-spacer:has(.home-hero-container) {
+  pointer-events: none;
+}
+
+.public-site .home-hero-container {
+  pointer-events: none;
+}
+
+.public-site .home-hero-container .hero-button,
+.public-site .home-hero-container .hero-button .hero-cta {
+  pointer-events: auto;
+}
+
 .home-hero-container {
   position: relative;
   height: 100vh;

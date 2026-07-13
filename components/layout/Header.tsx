@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { PublicThemeToggle } from "@/components/public/PublicThemeToggle";
 import {
@@ -132,12 +132,34 @@ export function Header() {
   const [exploreOpen, setExploreOpen] = useState(false);
   const [menuHovered, setMenuHovered] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const closeDropdownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+
+  const cancelDropdownClose = () => {
+    if (closeDropdownTimerRef.current) {
+      clearTimeout(closeDropdownTimerRef.current);
+      closeDropdownTimerRef.current = null;
+    }
+  };
+
+  const scheduleDropdownClose = () => {
+    cancelDropdownClose();
+    closeDropdownTimerRef.current = setTimeout(() => {
+      setOpenDropdown(null);
+    }, 140);
+  };
 
   useEffect(() => {
     setMenuHovered(false);
     setOpenDropdown(null);
     setExploreOpen(false);
+    cancelDropdownClose();
   }, [pathname]);
+
+  useEffect(() => {
+    return () => cancelDropdownClose();
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = exploreOpen ? "hidden" : "";
@@ -154,16 +176,13 @@ export function Header() {
       const target = event.target;
       if (!(target instanceof Element)) return;
       if (target.closest(".hathor-header__dropdown-zone")) return;
+      if (target.closest(".hathor-header__nav")) return;
       closeDropdown();
     };
 
-    window.addEventListener("scroll", closeDropdown, { passive: true });
-    window.addEventListener("resize", closeDropdown);
     document.addEventListener("pointerdown", onPointerDown);
 
     return () => {
-      window.removeEventListener("scroll", closeDropdown);
-      window.removeEventListener("resize", closeDropdown);
       document.removeEventListener("pointerdown", onPointerDown);
     };
   }, [openDropdown]);
@@ -173,7 +192,13 @@ export function Header() {
     id: string,
   ) => {
     event.preventDefault();
+    cancelDropdownClose();
     setOpenDropdown((current) => (current === id ? null : id));
+  };
+
+  const openDropdownMenu = (id: string) => {
+    cancelDropdownClose();
+    setOpenDropdown(id);
   };
 
   const headerClass = [
@@ -241,7 +266,8 @@ export function Header() {
                     >
                       <div
                         className="hathor-header__dropdown-zone"
-                        onMouseLeave={() => setOpenDropdown(null)}
+                        onMouseEnter={() => openDropdownMenu(item.id)}
+                        onMouseLeave={scheduleDropdownClose}
                       >
                         <div className="hathor-header__dropdown-trigger">
                           <Link
@@ -261,11 +287,12 @@ export function Header() {
                             className="hathor-header__dropdown-toggle"
                             aria-label={`Show ${item.label} pages`}
                             aria-expanded={dropdownOpen}
-                            onClick={() =>
+                            onClick={() => {
+                              cancelDropdownClose();
                               setOpenDropdown((current) =>
                                 current === item.id ? null : item.id,
-                              )
-                            }
+                              );
+                            }}
                           />
                         </div>
                         <div

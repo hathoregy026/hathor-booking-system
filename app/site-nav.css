@@ -1,12 +1,35 @@
 /* Site-wide unified navbar — PublicNavbar (EX style on all public routes) */
 
+/* Stay above GSAP-pinned heroes on every page */
+.public-site .hathor-header {
+  z-index: 1200;
+}
+
+.public-site .site-nav-bar {
+  z-index: 1210;
+}
+
+/* Pinned hero must not eat navbar clicks */
+.public-site .pin-spacer:has(.home-hero-container) {
+  pointer-events: none;
+}
+
+.public-site .home-hero-container {
+  pointer-events: none;
+}
+
+.public-site .home-hero-container .hero-button,
+.public-site .home-hero-container .hero-button .hero-cta {
+  pointer-events: auto;
+}
+
 .public-site .hathor-header__menu-zone .hathor-header__col--left {
   visibility: hidden;
   pointer-events: none;
 }
 
 .public-site .hathor-header__col--right {
-  z-index: 230;
+  z-index: 1230;
 }
 
 .site-nav-bar {
@@ -15,7 +38,7 @@
   top: clamp(1rem, 2.5vh, 1.75rem);
   left: 0;
   right: 0;
-  z-index: 215;
+  z-index: 1210;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -158,11 +181,18 @@
     color: #ffffff;
   }
 
+  .public-site .hathor-header__dropdown-zone {
+    position: relative;
+    z-index: 1220;
+    overflow: visible;
+  }
+
   .public-site .hathor-header__nav-item--dropdown .hathor-header__dropdown {
     left: var(--hp2-drop-base-shift);
     min-width: 0;
     padding-top: 0;
     margin-top: 0.2rem;
+    z-index: 1225;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -183,6 +213,7 @@
   }
 
   .public-site .hathor-header__dropdown-zone:hover .hathor-header__dropdown,
+  .public-site .hathor-header__dropdown-zone:has(.hathor-header__dropdown.is-open) .hathor-header__dropdown,
   .public-site .hathor-header__dropdown.is-open {
     opacity: 1;
     visibility: visible;
@@ -236,6 +267,9 @@
 
   .public-site
     .hathor-header__dropdown-zone:hover
+    .hathor-header__dropdown-link,
+  .public-site
+    .hathor-header__dropdown-zone:has(.hathor-header__dropdown.is-open)
     .hathor-header__dropdown-link,
   .public-site
     .hathor-header__dropdown.is-open
