@@ -53,7 +53,7 @@ export const NAV_CRUISES: NavGroup = {
 
 export const NAV_EXPERIENCES: NavGroup = {
   id: "experiences",
-  label: "Experiences",
+  label: "Voyage",
   links: [
     {
       href: "/highlights",
@@ -91,11 +91,6 @@ export const NAV_ABOUT: NavGroup = {
       href: "/partners",
       label: "Partners",
       description: "Those we sail with",
-    },
-    {
-      href: "/contact",
-      label: "Contact",
-      description: "Reach our reservations team",
     },
   ],
 };
@@ -169,6 +164,7 @@ export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
     href: "/about",
     links: NAV_ABOUT.links,
   },
+  { type: "link", href: "/contact", label: "Contact" },
 ];
 
 /** Path aliases so active states match legacy or redirect routes. */
