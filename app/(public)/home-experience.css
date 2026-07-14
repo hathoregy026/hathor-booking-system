@@ -564,7 +564,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--right {
   z-index: 1;
 }
 
-/* Home hero line 2 — Quiet Luxury script, gold; +35px lower + engraved inner depth */
+/* Home hero line 2 — Quiet Luxury script; +40px lower + real recessed inset */
 html[data-ex-experience] .ex-root .hero-heading .hero-line--left {
   font-family: var(--font-hathor-quiet-luxury), "Quiet Luxury", cursive !important;
   font-weight: 400 !important;
@@ -572,16 +572,52 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left {
   letter-spacing: 0.01em;
   text-transform: none !important;
   line-height: 0.82;
-  margin-top: calc(-0.44em + 35px);
-  color: #b69f64 !important;
+  margin-top: calc(-0.44em + 40px);
   position: relative;
   z-index: 2;
-  /* Engraved / pressed-in gold (inner-shadow feel on text) */
-  text-shadow:
-    0 1px 0 rgba(255, 248, 230, 0.45),
-    0 -1px 1px rgba(55, 38, 12, 0.55),
-    0 2px 3px rgba(30, 20, 5, 0.35),
-    0 0 12px rgba(182, 159, 100, 0.25);
+  /* Recessed gold fill (reads as inner lighting) */
+  color: transparent !important;
+  background-image: linear-gradient(
+    180deg,
+    #6a5330 0%,
+    #9a8150 28%,
+    #d4c28a 48%,
+    #b69f64 62%,
+    #7a6438 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /* Carved rim — dark cavity above, highlight below */
+  filter:
+    drop-shadow(0 -2px 1.5px rgba(18, 10, 2, 0.75))
+    drop-shadow(0 2px 0 rgba(255, 246, 220, 0.55))
+    drop-shadow(0 4px 8px rgba(0, 0, 0, 0.28));
+}
+
+/* Soft dark inset overlay inside the glyphs */
+html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  font: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  white-space: nowrap;
+  text-align: center;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(
+    180deg,
+    rgba(25, 15, 5, 0.55) 0%,
+    rgba(25, 15, 5, 0.12) 42%,
+    transparent 70%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  mix-blend-mode: multiply;
+  opacity: 0.85;
 }
 
 .hero-sub {

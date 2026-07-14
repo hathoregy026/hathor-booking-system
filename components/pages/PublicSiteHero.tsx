@@ -75,7 +75,12 @@ export function PublicSiteHero({
         <h1 className="hero-heading">
           <span className="hero-line hero-line--right">{lineRight}</span>
           {lineLeft ? (
-            <span className="hero-line hero-line--left">{lineLeft}</span>
+            <span
+              className="hero-line hero-line--left"
+              data-text={lineLeft}
+            >
+              {lineLeft}
+            </span>
           ) : null}
         </h1>
         {subtitle ? <p className="hero-sub">{subtitle}</p> : null}
