@@ -2,7 +2,7 @@
 
 .public-site {
   --hieroglyph-tile: url("/branding/egyptian-hyroglyphs-hathor-cruise.webp");
-  --hieroglyph-opacity: 0.09;
+  --hieroglyph-opacity: 1; /* WebP already has 15% opacity baked in */
   --hieroglyph-tile-size: 640px;
 }
 
@@ -117,14 +117,14 @@ html[data-ex-experience] .ex-root .cta-section {
   z-index: 2;
 }
 
-/* Night: keep extremely soft if visible at all */
+/* Night / mobile: keep CSS opacity at 1 — strength lives in the WebP */
 html[data-public-theme="night"] .public-site {
-  --hieroglyph-opacity: 0.035;
+  --hieroglyph-opacity: 1;
 }
 
 @media (max-width: 768px) {
   .public-site {
-    --hieroglyph-opacity: 0.06;
+    --hieroglyph-opacity: 1;
     --hieroglyph-tile-size: 480px;
   }
 
