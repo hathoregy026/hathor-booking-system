@@ -9,10 +9,11 @@ html[data-cruises-experience],
 html[data-cruises-experience] body,
 html[data-cruises-experience] .public-site {
   background-color: #ece8df !important;
-  background-image: url("/branding/egyptian-hyroglyphs-hathor-cruise-tile.webp") !important;
-  background-repeat: repeat !important;
-  background-position: center top !important;
-  background-size: 640px auto !important;
+  background-image: none !important;
+}
+html[data-cruises-experience] .public-site::before {
+  content: none !important;
+  display: none !important;
 }
 html[data-cruises-experience] .cruises-scroll-route,
 html[data-cruises-experience] .cruises-page {
@@ -20,15 +21,37 @@ html[data-cruises-experience] .cruises-page {
   background-image: none !important;
 }
 html[data-cruises-experience] .cruises-sheet {
+  position: relative !important;
+  isolation: isolate !important;
   background-color: #ece8df !important;
-  background-image: url("/branding/egyptian-hyroglyphs-hathor-cruise-tile.webp") !important;
+  background-image: none !important;
+}
+html[data-cruises-experience] .cruises-sheet::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  background-image: url("/branding/egyptian-hyroglyphs-hathor-cruise-solid.webp") !important;
   background-repeat: repeat !important;
   background-position: center top !important;
   background-size: 640px auto !important;
+  opacity: 0.15 !important;
+}
+html[data-cruises-experience] .cruises-sheet > * {
+  position: relative;
+  z-index: 1;
 }
 html[data-cruises-experience] .cruises-hero,
 html[data-cruises-experience] .cruises-hero__stage {
   background-image: none !important;
+  z-index: 2 !important;
+}
+html[data-cruises-experience] .cruises-hero::before,
+html[data-cruises-experience] .cruises-hero__stage::before {
+  content: none !important;
+  display: none !important;
 }
 `;
 

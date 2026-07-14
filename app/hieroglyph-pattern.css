@@ -1,58 +1,136 @@
 /* Hieroglyphic pattern — cream content only (never heroes / video)
  *
- * Applied as background-image ON cream canvases (not under opaque shells),
- * so critical/inline cream styles cannot hide it.
+ * Tile = solid gold glyphs on real transparency.
+ * Visibility = exactly --hieroglyph-opacity (0.15).
+ * Only ONE host layer paints the tile (no nested double/triple stack).
  */
 
 .public-site {
-  --hieroglyph-tile: url("/branding/egyptian-hyroglyphs-hathor-cruise-tile.webp");
+  --hieroglyph-tile: url("/branding/egyptian-hyroglyphs-hathor-cruise-solid.webp");
   --hieroglyph-tile-size: 640px;
+  --hieroglyph-opacity: 0.15;
   --hieroglyph-cream: #ece8df;
 }
 
-/* Shared content canvas: cream fill + tile (WebP already ~15% visible) */
+/* Cream base fill */
 .public-site,
 .public-page-body,
-.home-experience-route,
 html[data-ex-experience] .ex-root,
-html[data-cruises-experience] body,
-html[data-cruises-experience] .public-site,
 .cruises-scroll-route .cruises-sheet,
 .public-site .hathor-section--cream,
 .public-site .lux-section--cream {
   background-color: var(--hieroglyph-cream) !important;
-  background-image: var(--hieroglyph-tile) !important;
-  background-repeat: repeat !important;
-  background-position: center top !important;
-  background-size: var(--hieroglyph-tile-size) auto !important;
-  background-attachment: scroll !important;
+  background-image: none !important;
 }
 
-/* Homepage content sections share the root tile — don't re-cover with solid cream */
+/* Single pattern host for standard public pages (not home / not cruises shell) */
+.public-page-body,
+.public-site .hathor-section--cream,
+.public-site .lux-section--cream {
+  position: relative;
+  isolation: isolate;
+}
+
+.public-page-body::before,
+.public-site .hathor-section--cream::before,
+.public-site .lux-section--cream::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: var(--hieroglyph-tile);
+  background-repeat: repeat;
+  background-position: center top;
+  background-size: var(--hieroglyph-tile-size) auto;
+  opacity: var(--hieroglyph-opacity);
+}
+
+.public-page-body > *,
+.public-site .hathor-section--cream > *,
+.public-site .lux-section--cream > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Home — only .ex-root hosts the tile */
+html[data-ex-experience] .ex-root {
+  position: relative;
+  isolation: isolate;
+}
+
+html[data-ex-experience] .ex-root::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: var(--hieroglyph-tile);
+  background-repeat: repeat;
+  background-position: center top;
+  background-size: var(--hieroglyph-tile-size) auto;
+  opacity: var(--hieroglyph-opacity);
+}
+
+html[data-ex-experience] .ex-root > * {
+  position: relative;
+  z-index: 1;
+}
+
 html[data-ex-experience] .ex-root .ex-content-section {
   background-color: transparent !important;
   background-image: none !important;
 }
 
-/* Alternate cream bands: slight tint, still show parent tile */
+html[data-ex-experience] .ex-root .ex-content-section::before {
+  content: none !important;
+  display: none !important;
+}
+
 html[data-ex-experience] .ex-root .gallery-section,
 html[data-ex-experience] .ex-root .testimonials-section,
 html[data-ex-experience] .ex-root .cta-section {
-  background-color: rgb(235 230 220 / 0.42) !important;
-  background-image: none !important;
+  background-color: rgb(235 230 220 / 0.45) !important;
 }
 
-/* Inner pages: public-main chrome stays clear of double paint */
+/* Cruises sheet — only sheet hosts the tile (must stay opaque over giant logo) */
+.cruises-scroll-route .cruises-sheet {
+  position: relative;
+  isolation: isolate;
+}
+
+.cruises-scroll-route .cruises-sheet::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: var(--hieroglyph-tile);
+  background-repeat: repeat;
+  background-position: center top;
+  background-size: var(--hieroglyph-tile-size) auto;
+  opacity: var(--hieroglyph-opacity);
+}
+
+.cruises-scroll-route .cruises-sheet > * {
+  position: relative;
+  z-index: 1;
+}
+
 .public-site .public-main,
-.public-site .page-transition {
+.public-site .page-transition,
+html[data-cruises-experience] .cruises-scroll-route,
+html[data-cruises-experience] .cruises-page,
+.home-experience-route {
   background-color: transparent !important;
   background-image: none !important;
 }
 
-html[data-cruises-experience] .cruises-scroll-route,
-html[data-cruises-experience] .cruises-page {
-  background-color: transparent !important;
-  background-image: none !important;
+.home-experience-route::before,
+.public-site .public-main::before,
+.public-site .page-transition::before {
+  content: none !important;
+  display: none !important;
 }
 
 /* ——— NEVER on heroes / video ——— */
@@ -64,6 +142,15 @@ html[data-cruises-experience] .cruises-page {
 .pt-stage,
 .pt-hero {
   background-image: none !important;
+  z-index: 2;
+}
+
+.home-hero-container::before,
+.cruises-scroll-route .cruises-hero::before,
+.cruises-scroll-route .cruises-hero__stage::before,
+[data-page-transition] .pt-hero::before {
+  content: none !important;
+  display: none !important;
 }
 
 .home-hero-container {
@@ -74,10 +161,19 @@ html[data-cruises-experience] .cruises-page {
   background-color: #1a1410 !important;
 }
 
-/* Cruises sheet header keeps cream + tile continuity */
 .cruises-scroll-route .cruises-sheet__header {
   background-color: transparent !important;
   background-image: none !important;
+}
+
+.cruises-scroll-route .cruises-sheet__header::before {
+  content: none !important;
+  display: none !important;
+}
+
+.public-site .hathor-header,
+.public-site .site-nav-bar {
+  z-index: 1200;
 }
 
 @media (max-width: 768px) {
