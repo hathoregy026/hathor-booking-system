@@ -612,8 +612,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left.hero-line--word
 html[data-ex-experience] .ex-root .hero-heading .hero-line--wordmark .hero-line-wordmark-img {
   display: block;
   width: auto;
-  height: clamp(3.15rem, 8.2vw, 6.25rem);
-  max-width: 100%;
+  height: clamp(calc(3.15rem + 20px), calc(8.2vw + 20px), calc(6.25rem + 20px));
+  max-width: calc(100% + 20px);
   object-fit: contain;
   object-position: center;
   pointer-events: none;
