@@ -564,7 +564,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--right {
   z-index: 1;
 }
 
-/* Home hero line 2 — Quiet Luxury script, gold; +15px lower */
+/* Home hero line 2 — Quiet Luxury script, gold; +35px lower + engraved inner depth */
 html[data-ex-experience] .ex-root .hero-heading .hero-line--left {
   font-family: var(--font-hathor-quiet-luxury), "Quiet Luxury", cursive !important;
   font-weight: 400 !important;
@@ -572,10 +572,16 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left {
   letter-spacing: 0.01em;
   text-transform: none !important;
   line-height: 0.82;
-  margin-top: calc(-0.44em + 15px);
+  margin-top: calc(-0.44em + 35px);
   color: #b69f64 !important;
   position: relative;
   z-index: 2;
+  /* Engraved / pressed-in gold (inner-shadow feel on text) */
+  text-shadow:
+    0 1px 0 rgba(255, 248, 230, 0.45),
+    0 -1px 1px rgba(55, 38, 12, 0.55),
+    0 2px 3px rgba(30, 20, 5, 0.35),
+    0 0 12px rgba(182, 159, 100, 0.25);
 }
 
 .hero-sub {
