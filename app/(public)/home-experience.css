@@ -551,20 +551,20 @@ h1, h2, h3, h4, p {
   white-space: nowrap;
 }
 
-/* Home hero line 1 — Agraham, tall luxurious caps (ref sizing) */
+/* Home hero line 1 — Agraham: "Ultra Luxury" (U + L only capital) */
 html[data-ex-experience] .ex-root .hero-heading .hero-line--right {
   font-family: var(--font-hathor-agraham), "Agraham", var(--font-display) !important;
   font-weight: 400 !important;
   font-size: clamp(2.75rem, 5.8vw, 4.85rem) !important;
   letter-spacing: 0.14em;
-  text-transform: uppercase;
+  text-transform: none !important;
   line-height: 0.88;
   color: #faf8f5;
   position: relative;
   z-index: 1;
 }
 
-/* Home hero line 2 — Quiet Luxury script, gold, tight overlap */
+/* Home hero line 2 — Quiet Luxury script, gold; +15px lower */
 html[data-ex-experience] .ex-root .hero-heading .hero-line--left {
   font-family: var(--font-hathor-quiet-luxury), "Quiet Luxury", cursive !important;
   font-weight: 400 !important;
@@ -572,7 +572,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left {
   letter-spacing: 0.01em;
   text-transform: none !important;
   line-height: 0.82;
-  margin-top: -0.44em;
+  margin-top: calc(-0.44em + 15px);
   color: #b69f64 !important;
   position: relative;
   z-index: 2;
