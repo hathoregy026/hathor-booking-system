@@ -563,6 +563,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--right {
   line-height: 0.88;
   color: #faf8f5;
   position: relative;
+  top: 0.42em;
   z-index: 1;
   overflow: visible;
 }
@@ -592,13 +593,13 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left {
     0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Wordmark image — same slot / scroll motion as script text */
+/* Wordmark — sit in front; Ultra Luxury bottom rests behind mid/top of wordmark */
 html[data-ex-experience] .ex-root .hero-heading .hero-line--left.hero-line--wordmark {
   font-size: 0 !important;
   line-height: 0;
   letter-spacing: 0;
   padding-top: 0;
-  margin-top: calc(-1.35rem + 50px);
+  margin-top: clamp(-3.85rem, -9.2vw, -3.05rem);
   color: transparent !important;
   -webkit-text-fill-color: transparent;
   text-shadow: none;
@@ -607,6 +608,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left.hero-line--word
   align-items: center;
   width: auto;
   max-width: min(92vw, 40rem);
+  z-index: 3;
 }
 
 html[data-ex-experience] .ex-root .hero-heading .hero-line--wordmark .hero-line-wordmark-img {
