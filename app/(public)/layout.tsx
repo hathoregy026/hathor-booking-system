@@ -7,6 +7,7 @@ import { resolveSiteImageMap } from "@/lib/resolve-site-images";
 import "../public.css";
 import "../site-nav.css";
 import "../public-site-hero.css";
+import "../hieroglyph-pattern.css";
 import "../booking-modal.css";
 
 export const dynamic = "force-dynamic";

@@ -11,7 +11,7 @@ html[data-cruises-experience] body {
 }
 html[data-cruises-experience] .cruises-scroll-route,
 html[data-cruises-experience] .cruises-page {
-  background-color: #ece8df !important;
+  background-color: transparent !important;
 }
 `;
 

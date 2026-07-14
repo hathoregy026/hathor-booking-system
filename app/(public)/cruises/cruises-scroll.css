@@ -9,12 +9,15 @@
 html[data-cruises-experience],
 html[data-cruises-experience] body,
 body:has(.cruises-scroll-route),
-.public-site:has(.cruises-scroll-route),
+.public-site:has(.cruises-scroll-route) {
+  background-color: var(--cruises-cream);
+}
+
 .public-main:has(.cruises-scroll-route),
 .page-transition:has(.cruises-scroll-route),
 .cruises-scroll-route,
 .cruises-page {
-  background-color: var(--cruises-cream);
+  background-color: transparent;
 }
 
 html[data-cruises-experience] .public-main--hero {
