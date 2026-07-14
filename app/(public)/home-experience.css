@@ -563,7 +563,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--right {
   line-height: 0.88;
   color: #faf8f5;
   position: relative;
-  top: 0.42em;
+  top: 0.08em;
   z-index: 1;
   overflow: visible;
 }
@@ -593,13 +593,13 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left {
     0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Wordmark — sit in front; Ultra Luxury bottom rests behind mid/top of wordmark */
+/* Wordmark — light overlap only: ~upper third of Dahabiya over bottom of Ultra Luxury */
 html[data-ex-experience] .ex-root .hero-heading .hero-line--left.hero-line--wordmark {
   font-size: 0 !important;
   line-height: 0;
   letter-spacing: 0;
   padding-top: 0;
-  margin-top: clamp(-3.85rem, -9.2vw, -3.05rem);
+  margin-top: clamp(-1.95rem, -4.5vw, -1.35rem);
   color: transparent !important;
   -webkit-text-fill-color: transparent;
   text-shadow: none;
