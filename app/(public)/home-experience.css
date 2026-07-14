@@ -530,11 +530,11 @@ h1, h2, h3, h4, p {
 }
 
 .hero-heading {
-  font-family: var(--font-hathor-gabigaile), "Gabigaile", var(--font-display);
+  font-family: var(--font-hathor-agraham), "Agraham", var(--font-display);
   font-weight: 400;
-  font-size: clamp(2.4rem, 6.5vw, 5.2rem);
-  line-height: 0.92;
-  letter-spacing: 0.06em;
+  font-size: clamp(2.75rem, 5.8vw, 4.85rem);
+  line-height: 0.88;
+  letter-spacing: 0.14em;
   color: var(--white);
   text-transform: none;
   text-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
@@ -551,25 +551,29 @@ h1, h2, h3, h4, p {
   white-space: nowrap;
 }
 
-.hero-line--right {
-  font-family: var(--font-hathor-gabigaile), "Gabigaile", var(--font-display) !important;
+/* Home hero line 1 — Agraham, tall luxurious caps (ref sizing) */
+html[data-ex-experience] .ex-root .hero-heading .hero-line--right {
+  font-family: var(--font-hathor-agraham), "Agraham", var(--font-display) !important;
   font-weight: 400 !important;
-  font-size: clamp(2.4rem, 6.5vw, 5.2rem);
-  letter-spacing: 0.08em;
+  font-size: clamp(2.75rem, 5.8vw, 4.85rem) !important;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  line-height: 0.95;
+  line-height: 0.88;
+  color: #faf8f5;
   position: relative;
   z-index: 1;
 }
 
-.hero-line--left {
+/* Home hero line 2 — Quiet Luxury script, gold, tight overlap */
+html[data-ex-experience] .ex-root .hero-heading .hero-line--left {
   font-family: var(--font-hathor-quiet-luxury), "Quiet Luxury", cursive !important;
   font-weight: 400 !important;
-  font-size: clamp(2.85rem, 7.2vw, 5.75rem) !important;
-  letter-spacing: 0.02em;
+  font-size: clamp(3.15rem, 8.2vw, 6.25rem) !important;
+  letter-spacing: 0.01em;
   text-transform: none !important;
-  line-height: 0.9;
-  margin-top: -0.38em;
+  line-height: 0.82;
+  margin-top: -0.44em;
+  color: #b69f64 !important;
   position: relative;
   z-index: 2;
 }
