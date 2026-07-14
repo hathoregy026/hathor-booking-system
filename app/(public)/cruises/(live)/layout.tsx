@@ -37,7 +37,7 @@ html[data-cruises-experience] .cruises-sheet::before {
   background-repeat: repeat !important;
   background-position: center top !important;
   background-size: 640px auto !important;
-  opacity: 0.09 !important;
+  opacity: 0.04 !important;
 }
 html[data-cruises-experience] .cruises-sheet > * {
   position: relative;

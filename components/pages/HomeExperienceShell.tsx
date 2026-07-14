@@ -23,7 +23,7 @@ html[data-ex-experience] .ex-root::before {
   background-repeat: repeat !important;
   background-position: center top !important;
   background-size: 640px auto !important;
-  opacity: 0.09 !important;
+  opacity: 0.04 !important;
 }
 html[data-ex-experience] .ex-root > * {
   position: relative;
