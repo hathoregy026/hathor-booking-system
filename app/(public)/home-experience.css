@@ -543,12 +543,14 @@ h1, h2, h3, h4, p {
   align-items: center;
   gap: 0;
   margin: 0;
+  overflow: visible;
 }
 
 .hero-line {
   display: block;
   will-change: transform, opacity;
   white-space: nowrap;
+  overflow: visible;
 }
 
 /* Home hero line 1 — Agraham: "Ultra Luxury" (U + L only capital) */
@@ -562,44 +564,42 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--right {
   color: #faf8f5;
   position: relative;
   z-index: 1;
+  overflow: visible;
 }
 
-/* Home hero line 2 — Quiet Luxury script; +40px lower + real recessed inset */
+/* Home hero line 2 — Quiet Luxury script; +50px lower, soft faded inset */
 html[data-ex-experience] .ex-root .hero-heading .hero-line--left {
   font-family: var(--font-hathor-quiet-luxury), "Quiet Luxury", cursive !important;
   font-weight: 400 !important;
   font-size: clamp(3.15rem, 8.2vw, 6.25rem) !important;
   letter-spacing: 0.01em;
   text-transform: none !important;
-  line-height: 0.82;
-  margin-top: calc(-0.44em + 40px);
+  line-height: 1.1;
+  padding-top: 0.14em;
+  margin-top: calc(-0.44em + 50px);
   position: relative;
   z-index: 2;
-  /* Recessed gold fill (reads as inner lighting) */
-  color: transparent !important;
-  background-image: linear-gradient(
-    180deg,
-    #6a5330 0%,
-    #9a8150 28%,
-    #d4c28a 48%,
-    #b69f64 62%,
-    #7a6438 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  /* Carved rim — dark cavity above, highlight below */
-  filter:
-    drop-shadow(0 -2px 1.5px rgba(18, 10, 2, 0.75))
-    drop-shadow(0 2px 0 rgba(255, 246, 220, 0.55))
-    drop-shadow(0 4px 8px rgba(0, 0, 0, 0.28));
+  overflow: visible;
+  color: #b69f64 !important;
+  -webkit-text-fill-color: #b69f64;
+  background: none;
+  background-image: none;
+  filter: none;
+  /* Soft faded inner depth — not bright/harsh */
+  text-shadow:
+    0 1px 0 rgba(255, 248, 235, 0.18),
+    0 -1px 2px rgba(55, 40, 18, 0.16),
+    0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Soft dark inset overlay inside the glyphs */
+/* Gentle top fade inside glyphs (no harsh clip) */
 html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   content: attr(data-text);
   position: absolute;
-  inset: 0;
+  left: 0;
+  right: 0;
+  top: 0.14em;
+  bottom: 0;
   pointer-events: none;
   font: inherit;
   letter-spacing: inherit;
@@ -610,14 +610,13 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   -webkit-text-fill-color: transparent;
   background-image: linear-gradient(
     180deg,
-    rgba(25, 15, 5, 0.55) 0%,
-    rgba(25, 15, 5, 0.12) 42%,
-    transparent 70%
+    rgba(35, 24, 10, 0.22) 0%,
+    rgba(35, 24, 10, 0.06) 38%,
+    transparent 72%
   );
   -webkit-background-clip: text;
   background-clip: text;
-  mix-blend-mode: multiply;
-  opacity: 0.85;
+  opacity: 0.55;
 }
 
 .hero-sub {
