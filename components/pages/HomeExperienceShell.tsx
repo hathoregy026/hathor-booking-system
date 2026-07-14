@@ -6,7 +6,7 @@ const HOME_BOOT = `(function(){try{var d=document.documentElement;d.setAttribute
 const HOME_CRITICAL_CSS = `
 html[data-ex-experience] .ex-root {
   --ex-cream: #ece8df;
-  --hieroglyph-tile: url("/branding/egyptian-hyroglyphs-hathor-cruise-solid.webp");
+  --hieroglyph-tile: url("/branding/egyptian-hyroglyphs-hathor-cruise-solid-v2.webp");
   position: relative !important;
   isolation: isolate !important;
   background-color: var(--ex-cream) !important;
@@ -23,7 +23,7 @@ html[data-ex-experience] .ex-root::before {
   background-repeat: repeat !important;
   background-position: center top !important;
   background-size: 640px auto !important;
-  opacity: 0.15 !important;
+  opacity: 0.09 !important;
 }
 html[data-ex-experience] .ex-root > * {
   position: relative;

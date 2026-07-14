@@ -12,6 +12,11 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion"],
+    // Prevent App Router client cache from showing a previous deploy after soft/navigated revisits.
+    staleTimes: {
+      dynamic: 0,
+      static: 0,
+    },
   },
   async headers() {
     return [
@@ -25,11 +30,12 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        // Branding can change in place — never pin forever or browsers keep old glyphs forever.
         source: "/branding/:path*",
         headers: [
           {
             key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
+            value: "public, max-age=0, must-revalidate",
           },
         ],
       },

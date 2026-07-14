@@ -33,11 +33,11 @@ html[data-cruises-experience] .cruises-sheet::before {
   inset: 0 !important;
   z-index: 0 !important;
   pointer-events: none !important;
-  background-image: url("/branding/egyptian-hyroglyphs-hathor-cruise-solid.webp") !important;
+  background-image: url("/branding/egyptian-hyroglyphs-hathor-cruise-solid-v2.webp") !important;
   background-repeat: repeat !important;
   background-position: center top !important;
   background-size: 640px auto !important;
-  opacity: 0.15 !important;
+  opacity: 0.09 !important;
 }
 html[data-cruises-experience] .cruises-sheet > * {
   position: relative;

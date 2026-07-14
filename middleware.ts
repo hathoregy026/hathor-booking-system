@@ -24,11 +24,23 @@ function redirectStaleDeploymentHost(request: NextRequest): NextResponse | null 
   return NextResponse.redirect(target, 308);
 }
 
+function withHtmlNoStore(response: NextResponse): NextResponse {
+  response.headers.set(
+    "Cache-Control",
+    "private, no-cache, no-store, max-age=0, must-revalidate",
+  );
+  response.headers.set("CDN-Cache-Control", "no-store");
+  response.headers.set("Vercel-CDN-Cache-Control", "no-store");
+  response.headers.set("Pragma", "no-cache");
+  response.headers.set("Expires", "0");
+  return response;
+}
+
 export async function middleware(request: NextRequest) {
   try {
     const deploymentRedirect = redirectStaleDeploymentHost(request);
     if (deploymentRedirect) {
-      return deploymentRedirect;
+      return withHtmlNoStore(deploymentRedirect);
     }
 
     const { pathname } = request.nextUrl;
@@ -37,7 +49,14 @@ export async function middleware(request: NextRequest) {
       !pathname.startsWith("/admin") &&
       !pathname.startsWith("/api/admin")
     ) {
-      return NextResponse.next();
+      // Let branding/font files use next.config Cache-Control (revalidate), not no-store.
+      if (
+        pathname.startsWith("/branding/") ||
+        pathname.startsWith("/fonts/")
+      ) {
+        return NextResponse.next();
+      }
+      return withHtmlNoStore(NextResponse.next());
     }
 
     const session = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
