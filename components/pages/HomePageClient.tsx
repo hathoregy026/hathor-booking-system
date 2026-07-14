@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { PublicSiteHero } from "@/components/pages/PublicSiteHero";
-import { HATHOR_BRAND_NAME } from "@/lib/branding";
+import { HATHOR_BRAND_NAME, HATHOR_DAHABIYA_WORDMARK_SRC } from "@/lib/branding";
 import {
   EX_ABOUT,
   EX_CAROUSEL,
@@ -27,6 +27,7 @@ export function HomePageClient() {
           animate={false}
           lineRight={EX_HERO.lineRight}
           lineLeft={EX_HERO.lineLeft}
+          lineLeftImageSrc={HATHOR_DAHABIYA_WORDMARK_SRC}
         />
 
         <section className="about-section ex-content-section" id="about">

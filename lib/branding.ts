@@ -31,6 +31,10 @@ export const HATHOR_FAVICON_SRC = "/branding/hathor-logo-nile-cruise-favicon.web
 export const HATHOR_MAIN_LOGO_SRC =
   "/branding/hathor-main-logo-egypt-toors.svg";
 
+/** Home hero second line — replaces "Dahabiya Cruise" script text */
+export const HATHOR_DAHABIYA_WORDMARK_SRC =
+  "/branding/dahabiya-cruise-nile-tour.webp";
+
 /** Custom site-wide pointer — tip hotspot at ~11×1 in 32×32 viewBox */
 export const HATHOR_CURSOR_SRC =
   "/branding/hathor-mouse-arrow-egypt-tours-GOLDEN.svg";

@@ -2,7 +2,10 @@
 
 import { useLayoutEffect, useRef } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
-import { HATHOR_BRAND_NAME, HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
+import {
+  HATHOR_BRAND_NAME,
+  HATHOR_HERO_VIDEO_SRC,
+} from "@/lib/branding";
 import { EX_GOLD_LOGO_SRC, EX_HERO } from "@/lib/ex-page-content";
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 import { usePublicSiteHeroMotion } from "@/hooks/usePublicSiteHeroMotion";
@@ -10,6 +13,8 @@ import { usePublicSiteHeroMotion } from "@/hooks/usePublicSiteHeroMotion";
 export type PublicSiteHeroProps = {
   lineRight: string;
   lineLeft: string;
+  /** When set, replaces lineLeft text with this image (same scroll animation). */
+  lineLeftImageSrc?: string;
   subtitle?: string;
   sideLeft?: string;
   sideRight?: string;
@@ -22,6 +27,7 @@ export type PublicSiteHeroProps = {
 export function PublicSiteHero({
   lineRight,
   lineLeft,
+  lineLeftImageSrc,
   subtitle,
   sideLeft = EX_HERO.sideLeft,
   sideRight = EX_HERO.sideRight,
@@ -74,7 +80,19 @@ export function PublicSiteHero({
       <div className="hero-content">
         <h1 className="hero-heading">
           <span className="hero-line hero-line--right">{lineRight}</span>
-          {lineLeft ? (
+          {lineLeftImageSrc ? (
+            <span className="hero-line hero-line--left hero-line--wordmark">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                className="hero-line-wordmark-img"
+                src={lineLeftImageSrc}
+                alt={lineLeft || "Dahabiya Cruise"}
+                width={1600}
+                height={302}
+                draggable={false}
+              />
+            </span>
+          ) : lineLeft ? (
             <span
               className="hero-line hero-line--left"
               data-text={lineLeft}

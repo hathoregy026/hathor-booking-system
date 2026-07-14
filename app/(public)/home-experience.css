@@ -592,6 +592,40 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left {
     0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+/* Wordmark image — same slot / scroll motion as script text */
+html[data-ex-experience] .ex-root .hero-heading .hero-line--left.hero-line--wordmark {
+  font-size: 0 !important;
+  line-height: 0;
+  letter-spacing: 0;
+  padding-top: 0;
+  margin-top: calc(-1.35rem + 50px);
+  color: transparent !important;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+  max-width: min(92vw, 40rem);
+}
+
+html[data-ex-experience] .ex-root .hero-heading .hero-line--wordmark .hero-line-wordmark-img {
+  display: block;
+  width: auto;
+  height: clamp(3.15rem, 8.2vw, 6.25rem);
+  max-width: 100%;
+  object-fit: contain;
+  object-position: center;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+html[data-ex-experience] .ex-root .hero-heading .hero-line--left.hero-line--wordmark::after {
+  content: none !important;
+  display: none !important;
+}
+
 /* Gentle top fade inside glyphs (no harsh clip) */
 html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   content: attr(data-text);
