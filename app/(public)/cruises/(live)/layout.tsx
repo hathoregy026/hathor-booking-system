@@ -6,12 +6,29 @@ const CRUISES_BOOT = `(function(){try{var d=document.documentElement,b=document.
 
 const CRUISES_CRITICAL_CSS = `
 html[data-cruises-experience],
-html[data-cruises-experience] body {
+html[data-cruises-experience] body,
+html[data-cruises-experience] .public-site {
   background-color: #ece8df !important;
+  background-image: url("/branding/egyptian-hyroglyphs-hathor-cruise-tile.webp") !important;
+  background-repeat: repeat !important;
+  background-position: center top !important;
+  background-size: 640px auto !important;
 }
 html[data-cruises-experience] .cruises-scroll-route,
 html[data-cruises-experience] .cruises-page {
   background-color: transparent !important;
+  background-image: none !important;
+}
+html[data-cruises-experience] .cruises-sheet {
+  background-color: #ece8df !important;
+  background-image: url("/branding/egyptian-hyroglyphs-hathor-cruise-tile.webp") !important;
+  background-repeat: repeat !important;
+  background-position: center top !important;
+  background-size: 640px auto !important;
+}
+html[data-cruises-experience] .cruises-hero,
+html[data-cruises-experience] .cruises-hero__stage {
+  background-image: none !important;
 }
 `;
 

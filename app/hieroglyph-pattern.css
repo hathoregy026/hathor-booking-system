@@ -1,143 +1,87 @@
-/* Hieroglyphic pattern — cream content only (never heroes / video) */
+/* Hieroglyphic pattern — cream content only (never heroes / video)
+ *
+ * Applied as background-image ON cream canvases (not under opaque shells),
+ * so critical/inline cream styles cannot hide it.
+ */
 
 .public-site {
-  --hieroglyph-tile: url("/branding/egyptian-hyroglyphs-hathor-cruise.webp");
-  --hieroglyph-opacity: 1; /* WebP already has 15% opacity baked in */
+  --hieroglyph-tile: url("/branding/egyptian-hyroglyphs-hathor-cruise-tile.webp");
   --hieroglyph-tile-size: 640px;
+  --hieroglyph-cream: #ece8df;
 }
 
-/*
- * Single fixed tile layer between cream page fill and content.
- * Heroes/video stages stay opaque above this so the pattern never shows there.
- */
-.public-site::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image: var(--hieroglyph-tile);
-  background-repeat: repeat;
-  background-position: center top;
-  background-size: var(--hieroglyph-tile-size) auto;
-  opacity: var(--hieroglyph-opacity);
-  contain: paint;
-}
-
-/* Raise page UI above the fixed pattern */
-.public-site > * {
-  position: relative;
-  z-index: 1;
-}
-
-.public-site .hathor-header,
-.public-site .site-nav-bar {
-  z-index: 1200;
-}
-
-/* Full-bleed cream wrappers must not paint an opaque slab over the tile.
- * Cream still comes from .public-site / html day background (#ece8df).
- */
+/* Shared content canvas: cream fill + tile (WebP already ~15% visible) */
+.public-site,
 .public-page-body,
-.public-site .public-main,
-.public-site .page-transition,
+.home-experience-route,
 html[data-ex-experience] .ex-root,
-html[data-ex-experience] .ex-root .ex-content-section,
-html[data-cruises-experience] .cruises-scroll-route,
-html[data-cruises-experience] .cruises-page,
+html[data-cruises-experience] body,
+html[data-cruises-experience] .public-site,
+.cruises-scroll-route .cruises-sheet,
 .public-site .hathor-section--cream,
 .public-site .lux-section--cream {
+  background-color: var(--hieroglyph-cream) !important;
+  background-image: var(--hieroglyph-tile) !important;
+  background-repeat: repeat !important;
+  background-position: center top !important;
+  background-size: var(--hieroglyph-tile-size) auto !important;
+  background-attachment: scroll !important;
+}
+
+/* Homepage content sections share the root tile — don't re-cover with solid cream */
+html[data-ex-experience] .ex-root .ex-content-section {
   background-color: transparent !important;
+  background-image: none !important;
 }
 
-/*
- * Cruises cream sheet must stay opaque (hides giant logo) — paint the
- * pattern inside the sheet instead of making the sheet transparent.
- */
-.cruises-scroll-route .cruises-sheet {
-  position: relative;
-  isolation: isolate;
-}
-
-.cruises-scroll-route .cruises-sheet::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image: var(--hieroglyph-tile);
-  background-repeat: repeat;
-  background-position: center top;
-  background-size: var(--hieroglyph-tile-size) auto;
-  opacity: var(--hieroglyph-opacity);
-}
-
-.cruises-scroll-route .cruises-sheet > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* Preserve intentional deeper cream bands (texture still shows through slight tint) */
+/* Alternate cream bands: slight tint, still show parent tile */
 html[data-ex-experience] .ex-root .gallery-section,
 html[data-ex-experience] .ex-root .testimonials-section,
 html[data-ex-experience] .ex-root .cta-section {
-  background-color: rgb(235 230 220 / 0.55);
+  background-color: rgb(235 230 220 / 0.42) !important;
+  background-image: none !important;
+}
+
+/* Inner pages: public-main chrome stays clear of double paint */
+.public-site .public-main,
+.public-site .page-transition {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+html[data-cruises-experience] .cruises-scroll-route,
+html[data-cruises-experience] .cruises-page {
+  background-color: transparent !important;
+  background-image: none !important;
 }
 
 /* ——— NEVER on heroes / video ——— */
 .home-hero-container,
 .cruises-scroll-route .cruises-hero,
 .cruises-scroll-route .cruises-hero__stage,
+.cruises-scroll-route .cruises-hero__media,
 [data-page-transition] .pt-hero,
 .pt-stage,
 .pt-hero {
-  position: relative;
-  z-index: 2;
   background-image: none !important;
 }
 
-.home-hero-container::before,
-.cruises-scroll-route .cruises-hero::before,
-[data-page-transition] .pt-hero::before {
-  content: none !important;
-  display: none !important;
-}
-
-/* Opaque hero stages fully cover the fixed pattern */
 .home-hero-container {
-  background-color: #1a1410;
+  background-color: #1a1410 !important;
 }
 
 .cruises-scroll-route .cruises-hero__stage {
-  background-color: #1a1410;
+  background-color: #1a1410 !important;
 }
 
-/* Homepage pin-spacer should not leave pattern flashing over video edges */
-.public-site .pin-spacer:has(.home-hero-container) {
-  z-index: 2;
-}
-
-/* Night / mobile: keep CSS opacity at 1 — strength lives in the WebP */
-html[data-public-theme="night"] .public-site {
-  --hieroglyph-opacity: 1;
+/* Cruises sheet header keeps cream + tile continuity */
+.cruises-scroll-route .cruises-sheet__header {
+  background-color: transparent !important;
+  background-image: none !important;
 }
 
 @media (max-width: 768px) {
   .public-site {
-    --hieroglyph-opacity: 1;
     --hieroglyph-tile-size: 480px;
-  }
-
-  /* Absolute on mobile = less fixed-attachment composite cost */
-  .public-site::before {
-    position: absolute;
-    height: 100%;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .public-site::before {
-    position: absolute;
-    height: 100%;
   }
 }

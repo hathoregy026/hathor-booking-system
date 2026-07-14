@@ -6,14 +6,27 @@ const HOME_BOOT = `(function(){try{var d=document.documentElement;d.setAttribute
 const HOME_CRITICAL_CSS = `
 .home-experience-route,
 .home-experience-route .public-site,
-.home-experience-route .public-main,
-.home-experience-route .page-transition {
+html[data-ex-experience] .public-site,
+html[data-ex-experience] .ex-root {
   --ex-cream: #ece8df;
+  --hieroglyph-tile: url("/branding/egyptian-hyroglyphs-hathor-cruise-tile.webp");
   background-color: var(--ex-cream) !important;
+  background-image: var(--hieroglyph-tile) !important;
+  background-repeat: repeat !important;
+  background-position: center top !important;
+  background-size: 640px auto !important;
 }
-html[data-ex-experience] .ex-root [data-page-transition],
+.home-experience-route .public-main,
+.home-experience-route .page-transition,
+html[data-ex-experience] .public-main,
+html[data-ex-experience] .page-transition,
 html[data-ex-experience] .ex-content-section {
-  background-color: var(--ex-cream) !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+html[data-ex-experience] .home-hero-container {
+  background-color: #1a1410 !important;
+  background-image: none !important;
 }
 html[data-ex-experience] .public-site > .owo-footer:not(.ex-site-footer) {
   display: none !important;
