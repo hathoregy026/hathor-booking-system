@@ -1,4 +1,5 @@
 import { SITE_IMAGE_SLOTS, type SiteImageSlot } from "@/lib/site-image-slots";
+import { buildSiteImageLivePath } from "@/lib/site-image-preview";
 
 /** Client-facing page names for tabs / accordion headers. */
 const PAGE_GROUP_TITLES: Record<string, string> = {
@@ -148,7 +149,7 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
       defaultAlt: slot.altText,
       category: slot.category,
       pagePath: slot.pagePath,
-      livePath: slot.pagePath === "/" ? "/" : slot.pagePath,
+      livePath: buildSiteImageLivePath(slot.pagePath, slot.name),
       displayOrder: slot.displayOrder,
       layoutKind,
       layoutLabel: LAYOUT_LABELS[layoutKind],

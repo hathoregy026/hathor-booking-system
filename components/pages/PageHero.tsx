@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { ParallaxHeroImage } from "@/components/ui/ParallaxHeroImage";
+import { siteImageAnchorId } from "@/lib/site-image-preview";
 
 type PageHeroProps = {
   title: string;
@@ -28,6 +29,8 @@ export function PageHero({
 
   return (
     <section
+      id={siteImageAnchorId(imageName)}
+      data-site-image={imageName}
       className={`hathor-page-hero${variant === "blog" ? " hathor-page-hero--blog" : ""}`}
     >
       <ParallaxHeroImage

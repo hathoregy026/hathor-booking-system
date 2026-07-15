@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { PublicSiteHero } from "@/components/pages/PublicSiteHero";
+import { ManagedImage } from "@/components/ui/ManagedImage";
 import { HATHOR_BRAND_NAME, HATHOR_DAHABIYA_WORDMARK_SRC } from "@/lib/branding";
 import {
   EX_ABOUT,
@@ -29,6 +29,7 @@ export function HomePageClient() {
           lineRight={EX_HERO.lineRight}
           lineLeft={EX_HERO.lineLeft}
           lineLeftImageSrc={HATHOR_DAHABIYA_WORDMARK_SRC}
+          posterImageName={EX_HERO.imageName}
         />
 
         <section className="about-section ex-content-section" id="about">
@@ -41,8 +42,8 @@ export function HomePageClient() {
                 <div className="radius-img-container">
                   <div className="radius-img-container-inner">
                     <div className="general-reveal-img">
-                      <Image
-                        src={EX_ABOUT.image}
+                      <ManagedImage
+                        name={EX_ABOUT.imageName}
                         alt={EX_ABOUT.imageAlt}
                         width={900}
                         height={1200}
@@ -56,14 +57,18 @@ export function HomePageClient() {
 
               <div>
                 <div className="radius-decor" aria-hidden="true">
-                  {EX_ABOUT.decor.map((src) => (
-                    <Image
-                      key={src}
-                      src={src}
-                      alt=""
+                  {EX_ABOUT.decor.map((item) => (
+                    <ManagedImage
+                      key={item.name}
+                      name={item.name}
+                      alt={item.alt}
                       width={42}
                       height={42}
                       sizes="42px"
+                      previewAnchor={
+                        item.name === "home-collage-small" ||
+                        item.name === "home-collage-large"
+                      }
                     />
                   ))}
                 </div>
@@ -101,12 +106,13 @@ export function HomePageClient() {
                 <article key={slide.title} className="carousel-slide">
                   <div className="carousel-container-parent">
                     <div className="carousel-container">
-                      <Image
-                        src={slide.image}
+                      <ManagedImage
+                        name={slide.imageName}
                         alt={slide.alt}
                         fill
                         sizes="(max-width: 768px) 100vw, 33vw"
                         className="object-cover"
+                        previewAnchor={false}
                       />
                       <div className="carousel-heading">
                         <h2>{slide.title}</h2>
@@ -141,19 +147,26 @@ export function HomePageClient() {
         <section
           className="ex-stack-scroll ex-content-section"
           id="details"
+          data-site-image-pin-root
           aria-label="Every landmark, a pleasure"
         >
           <div className="ex-stack-scroll__viewport">
             <div className="ex-stack-scroll__cards" aria-hidden="true">
-              {EX_PINNED.slides.map((slide) => (
-                <div key={slide.src} className="ex-stack-scroll__card">
+              {EX_PINNED.slides.map((slide, index) => (
+                <div key={slide.imageName} className="ex-stack-scroll__card">
                   <div className="ex-stack-scroll__card-media">
-                    <Image
-                      src={slide.src}
+                    <ManagedImage
+                      name={slide.imageName}
                       alt={slide.alt}
                       fill
                       sizes="100vw"
                       className="object-cover object-center"
+                      previewAnchor={
+                        slide.imageName === "home-split-courtyard" ||
+                        slide.imageName === "home-story-legacy-large"
+                      }
+                      data-site-image-pin-index={String(index)}
+                      data-site-image-pin-total={String(EX_PINNED.slides.length)}
                     />
                   </div>
                 </div>
@@ -179,12 +192,13 @@ export function HomePageClient() {
             >
               <div className="home-text-img-parent">
                 <div className="home-text-img-container">
-                  <Image
-                    src={block.image}
+                  <ManagedImage
+                    name={block.imageName}
                     alt={block.alt}
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover"
+                    previewAnchor={block.imageName === "gastronomy-restaurant"}
                   />
                 </div>
               </div>
@@ -211,14 +225,20 @@ export function HomePageClient() {
           </div>
 
           <div className="gallery-grid">
-            {EX_GALLERY.images.map((item) => (
-              <div key={item.src} className="gallery-item">
-                <Image
-                  src={item.src}
+            {EX_GALLERY.images.map((item, index) => (
+              <div key={`${item.imageName}-${index}`} className="gallery-item">
+                <ManagedImage
+                  name={item.imageName}
                   alt={item.alt}
                   fill
                   sizes="(max-width: 768px) 50vw, 20vw"
                   className="object-cover"
+                  previewAnchor={
+                    item.imageName === "home-collage-living" ||
+                    item.imageName === "home-alt-highlights" ||
+                    item.imageName === "home-cinematic-still" ||
+                    item.imageName === "wellness-hero"
+                  }
                 />
               </div>
             ))}

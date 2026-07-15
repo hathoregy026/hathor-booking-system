@@ -21,6 +21,7 @@ export function CruisesPageContent() {
           lineRight={lineRight}
           lineLeft={lineLeft}
           subtitle={CRUISES_PAGE.hero.subtitle}
+          posterImageName="cruises-hero"
         />
 
         <div className="cruises-sheet">

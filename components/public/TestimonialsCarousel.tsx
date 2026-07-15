@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { ScrollReveal } from "./ScrollReveal";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
+import { siteImageAnchorId } from "@/lib/site-image-preview";
 
 const TESTIMONIALS = [
   {
@@ -53,7 +54,12 @@ export function TestimonialsCarousel({
     : { background: HERO_PLACEHOLDER };
 
   return (
-    <section className="lux-testimonials" style={bgStyle}>
+    <section
+      id={siteImageAnchorId(backgroundImageName)}
+      data-site-image={backgroundImageName}
+      className="lux-testimonials"
+      style={bgStyle}
+    >
       <div className="lux-testimonials__overlay" />
       <div className="lux-container relative z-10">
         <ScrollReveal>

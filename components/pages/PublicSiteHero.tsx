@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useLayoutEffect, useRef } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
+import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import {
   HATHOR_BRAND_NAME,
   HATHOR_HERO_VIDEO_SRC,
@@ -10,6 +11,7 @@ import {
 import { EX_GOLD_LOGO_SRC, EX_HERO } from "@/lib/ex-page-content";
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 import { usePublicSiteHeroMotion } from "@/hooks/usePublicSiteHeroMotion";
+import { siteImageAnchorId } from "@/lib/site-image-preview";
 
 export type PublicSiteHeroProps = {
   lineRight: string;
@@ -23,6 +25,11 @@ export type PublicSiteHeroProps = {
   ctaLabel?: string;
   /** When false, parent hook (e.g. useExScrollMotion) drives animation. */
   animate?: boolean;
+  /**
+   * CMS image slot used as the video poster and as the “View on Live Site”
+   * scroll target for this page’s hero.
+   */
+  posterImageName?: string;
 };
 
 export function PublicSiteHero({
@@ -35,8 +42,11 @@ export function PublicSiteHero({
   showCta = true,
   ctaLabel = HOMEPAGE_HERO.cta,
   animate = true,
+  posterImageName,
 }: PublicSiteHeroProps) {
   const heroVideoRef = useRef<HTMLVideoElement>(null);
+  const posterImage = useSiteImage(posterImageName ?? "home-hero-poster");
+  const posterSrc = posterImageName ? posterImage.src : undefined;
   usePublicSiteHeroMotion(animate);
 
   useLayoutEffect(() => {
@@ -50,11 +60,17 @@ export function PublicSiteHero({
   }, []);
 
   return (
-    <section className="home-hero-container" aria-label="Hero">
+    <section
+      id={posterImageName ? siteImageAnchorId(posterImageName) : undefined}
+      data-site-image={posterImageName}
+      className="home-hero-container"
+      aria-label="Hero"
+    >
       <div className="hero-media">
         <video
           ref={heroVideoRef}
           src={HATHOR_HERO_VIDEO_SRC}
+          poster={posterSrc}
           autoPlay
           loop
           muted

@@ -93,6 +93,7 @@ function LandmarkChapter({ index, title, body, imageName }: LandmarkChapterProps
           name={imageName}
           alt={title}
           fill
+          previewAnchor={false}
           className={styles.parallaxImg}
           sizes="(max-width: 767px) 100vw, 50vw"
           loading={index === 0 ? "eager" : "lazy"}
@@ -102,7 +103,12 @@ function LandmarkChapter({ index, title, body, imageName }: LandmarkChapterProps
   );
 
   return (
-    <section data-highlights-chapter className={styles.section}>
+    <section
+      id={`site-image-${imageName}`}
+      data-site-image={imageName}
+      data-highlights-chapter
+      className={styles.section}
+    >
       <div className={styles.grid}>
         {even ? (
           <>
@@ -140,6 +146,7 @@ export function HighlightsPageContent() {
         lineRight={lineRight}
         lineLeft={lineLeft}
         subtitle={HIGHLIGHTS_PAGE.hero.subtitle}
+        posterImageName="highlights-hero"
       />
 
       <section data-highlights-intro className={styles.section}>

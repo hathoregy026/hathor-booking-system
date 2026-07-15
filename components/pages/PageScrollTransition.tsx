@@ -22,6 +22,7 @@ export function PageScrollTransition({
   title,
   heroTitle,
   subtitle,
+  imageName,
   sheetBelowLanding,
   children,
 }: PageScrollTransitionProps) {
@@ -34,6 +35,7 @@ export function PageScrollTransition({
         lineRight={lineRight}
         lineLeft={lineLeft}
         subtitle={subtitle}
+        posterImageName={imageName}
       />
       <div className="public-page-body">
         {sheetBelowLanding ? (

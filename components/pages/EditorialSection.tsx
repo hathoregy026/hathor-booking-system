@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { ManagedImage } from "@/components/ui/ManagedImage";
+import { siteImageAnchorId } from "@/lib/site-image-preview";
 
 export function DiscoverLink({
   href,
@@ -61,6 +62,8 @@ export function EditorialSection({
 
   return (
     <section
+      id={siteImageAnchorId(imageName)}
+      data-site-image={imageName}
       className={`hathor-editorial ${dark ? "hathor-editorial--dark" : ""} ${fullBleed ? "hathor-editorial--bleed" : ""}`}
     >
       <div className={fullBleed ? "" : "hathor-container"}>
@@ -76,6 +79,7 @@ export function EditorialSection({
                 name={imageName}
                 alt={imageAlt}
                 fill
+                previewAnchor={false}
                 className="hathor-editorial__image object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />

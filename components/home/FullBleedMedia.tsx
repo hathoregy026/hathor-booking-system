@@ -4,6 +4,7 @@ import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { ParallaxHeroImage } from "@/components/ui/ParallaxHeroImage";
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
+import { siteImageAnchorId } from "@/lib/site-image-preview";
 
 type FullBleedMediaProps = {
   imageName: string;
@@ -23,7 +24,12 @@ export function FullBleedMedia({
   const image = useSiteImage(imageName);
 
   return (
-    <section className={`hathor-full-media ${className}`.trim()} aria-hidden={false}>
+    <section
+      id={siteImageAnchorId(imageName)}
+      data-site-image={imageName}
+      className={`hathor-full-media ${className}`.trim()}
+      aria-hidden={false}
+    >
       <ParallaxHeroImage
         src={image.src}
         alt={alt ?? image.alt}

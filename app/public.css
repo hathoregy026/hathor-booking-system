@@ -1,5 +1,11 @@
 /* Hathor — Award-winning luxury public site */
 
+/* Admin “View on Live Site” image anchors — clear the fixed navbar */
+[id^="site-image-"],
+[data-site-image] {
+  scroll-margin-top: 5.5rem;
+}
+
 .public-site {
   --lux-dark: #0a0a0a;
   --lux-dark-2: #1a1a1a;

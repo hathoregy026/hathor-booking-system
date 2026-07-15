@@ -9,6 +9,7 @@ import {
   useCruisesHeroStripes,
 } from "@/hooks/useCruisesHeroStripes";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
+import { siteImageAnchorId } from "@/lib/site-image-preview";
 
 const GIANT_LOGO_SRC = "/branding/gold.svg";
 
@@ -53,7 +54,13 @@ export function CruisesHero({
   }, []);
 
   return (
-    <section ref={runwayRef} className="cruises-hero" data-cruises-hero>
+    <section
+      ref={runwayRef}
+      id={siteImageAnchorId(imageName)}
+      data-site-image={imageName}
+      className="cruises-hero"
+      data-cruises-hero
+    >
       <div ref={stageRef} className="cruises-hero__stage">
         <div className="cruises-hero__media">
           <Image

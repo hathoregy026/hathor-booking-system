@@ -8,7 +8,7 @@ import {
   HOMEPAGE_REVIEWS,
   HOMEPAGE_WELLNESS,
 } from "@/lib/homepage-content";
-import { HATHOR_MEDIA } from "@/lib/hathor-media";
+import type { SiteImageName } from "@/lib/site-image-slots";
 
 export const EX_GOLD_LOGO_SRC = "/branding/gold.svg";
 
@@ -19,18 +19,20 @@ export const EX_HERO = {
   subtitle: HOMEPAGE_HERO.subtitle,
   sideLeft: "Luxor · Aswan",
   sideRight: "Private Nile Sailing",
+  /** CMS slot for video poster / hero cover. */
+  imageName: "home-hero-poster" as SiteImageName,
 } as const;
 
 export const EX_ABOUT = {
   eyebrow: HOMEPAGE_ABOUT.subtitle,
   heading: "Elegance and\na way of life.",
   body: HOMEPAGE_ABOUT.body,
-  image: HATHOR_MEDIA.storyCraftLarge,
+  imageName: "home-story-craft-large" as SiteImageName,
   imageAlt: "Ornate interior aboard Hathor Dahabiya",
   decor: [
-    HATHOR_MEDIA.collageSmall,
-    HATHOR_MEDIA.collageLarge,
-    HATHOR_MEDIA.splitCourtyard,
+    { name: "home-collage-small" as SiteImageName, alt: "" },
+    { name: "home-collage-large" as SiteImageName, alt: "" },
+    { name: "home-split-courtyard" as SiteImageName, alt: "" },
   ],
 } as const;
 
@@ -40,22 +42,22 @@ export const EX_CAROUSEL = {
   slides: [
     {
       title: HOMEPAGE_ITINERARIES.cards[0].title,
-      image: HATHOR_MEDIA.heroCruises,
+      imageName: "cruises-hero" as SiteImageName,
       alt: "Hathor Dahabiya on the Nile",
     },
     {
       title: HOMEPAGE_ITINERARIES.cards[1].title,
-      image: HATHOR_MEDIA.luxurySuite,
+      imageName: "room-suite" as SiteImageName,
       alt: "Luxury suite aboard Hathor",
     },
     {
       title: HOMEPAGE_ITINERARIES.cards[2].title,
-      image: HATHOR_MEDIA.royalSuite,
+      imageName: "room-royal" as SiteImageName,
       alt: "Royal suite aboard Hathor",
     },
     {
       title: "Luxury Cabins",
-      image: HATHOR_MEDIA.luxuryRoom,
+      imageName: "room-luxury" as SiteImageName,
       alt: "Luxury cabin aboard Hathor Dahabiya",
     },
   ],
@@ -66,19 +68,19 @@ export const EX_PINNED = {
   body: HOMEPAGE_HIGHLIGHTS.body,
   slides: [
     {
-      src: HATHOR_MEDIA.heroCruises,
+      imageName: "cruises-hero" as SiteImageName,
       alt: "Hathor Dahabiya sailing on the Nile",
     },
     {
-      src: HATHOR_MEDIA.splitCourtyard,
-      alt: HATHOR_MEDIA.splitCourtyardAlt,
+      imageName: "home-split-courtyard" as SiteImageName,
+      alt: "Hathor Dahabiya on the Nile",
     },
     {
-      src: HATHOR_MEDIA.about,
+      imageName: "about-hero" as SiteImageName,
       alt: "Luxury Dahabiya Nile cruise",
     },
     {
-      src: HATHOR_MEDIA.storyLegacyLarge,
+      imageName: "home-story-legacy-large" as SiteImageName,
       alt: "Hathor Dahabiya ship on the Nile at golden hour",
     },
   ],
@@ -88,15 +90,15 @@ export const EX_TEXT_BLOCKS = [
   {
     title: HOMEPAGE_LIFESTYLE.title,
     body: HOMEPAGE_LIFESTYLE.body,
-    image: HATHOR_MEDIA.splitCourtyard,
-    alt: HATHOR_MEDIA.splitCourtyardAlt,
+    imageName: "home-split-courtyard" as SiteImageName,
+    alt: "Hathor Dahabiya on the Nile",
     cta: "Discover Hathor",
     href: "/about",
   },
   {
     title: HOMEPAGE_DINING.title,
     body: HOMEPAGE_DINING.body,
-    image: HATHOR_MEDIA.restaurant,
+    imageName: "gastronomy-restaurant" as SiteImageName,
     alt: "Fine dining aboard Hathor Dahabiya",
     cta: "Explore Gastronomy",
     href: "/gastronomy",
@@ -106,11 +108,26 @@ export const EX_TEXT_BLOCKS = [
 export const EX_GALLERY = {
   title: "@hathorcruise",
   images: [
-    { src: HATHOR_MEDIA.collageLiving, alt: "Luxury lounge aboard Hathor" },
-    { src: HATHOR_MEDIA.altHighlights, alt: "Nile cruise highlights" },
-    { src: HATHOR_MEDIA.restaurant, alt: "Gastronomy on the Nile" },
-    { src: HATHOR_MEDIA.wellness, alt: "Wellness aboard Hathor" },
-    { src: HATHOR_MEDIA.cinematicStill, alt: "Suite interior aboard Hathor" },
+    {
+      imageName: "home-collage-living" as SiteImageName,
+      alt: "Luxury lounge aboard Hathor",
+    },
+    {
+      imageName: "home-alt-highlights" as SiteImageName,
+      alt: "Nile cruise highlights",
+    },
+    {
+      imageName: "gastronomy-restaurant" as SiteImageName,
+      alt: "Gastronomy on the Nile",
+    },
+    {
+      imageName: "wellness-hero" as SiteImageName,
+      alt: "Wellness aboard Hathor",
+    },
+    {
+      imageName: "home-cinematic-still" as SiteImageName,
+      alt: "Suite interior aboard Hathor",
+    },
   ],
   ctaTitle: "Sail with Hathor",
 } as const;

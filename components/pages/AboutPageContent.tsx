@@ -155,11 +155,16 @@ export function AboutPageContent() {
               </div>
             </ScrollReveal>
             <ScrollReveal delay={120}>
-              <div className="hathor-editorial__image-wrap hathor-editorial__image-wrap--tall">
+              <div
+                id="site-image-about-dining"
+                data-site-image="about-dining"
+                className="hathor-editorial__image-wrap hathor-editorial__image-wrap--tall"
+              >
                 <ManagedImage
                   name="about-dining"
                   alt="Fine dining aboard Hathor Dahabiya"
                   fill
+                  previewAnchor={false}
                   className="hathor-editorial__image object-cover"
                   sizes="(max-width: 1024px) 100vw, 50vw"
                 />
