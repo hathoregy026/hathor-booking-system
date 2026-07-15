@@ -1,7 +1,12 @@
-import { randomUUID } from "crypto";
 import { createSupabaseStorageAdminClient } from "@/lib/supabase-server";
 import { getPublicImageUrl, IMAGE_BUCKET } from "@/lib/image-upload";
 import { toAbsolutePublicUrl } from "@/lib/public-url";
+import {
+  buildSeoImageStorageName,
+  resolveImageTitle,
+  sanitizeFileExtension,
+  sanitizeStorageFolder,
+} from "@/lib/seo-image-filename";
 
 /** Generic admin image upload (cruises, content) — not used for email templates. */
 export async function uploadWebsiteImage(options: {
@@ -9,12 +14,28 @@ export async function uploadWebsiteImage(options: {
   buffer: Buffer;
   contentType: string;
   extension: string;
-}): Promise<{ url: string; path: string }> {
-  const safeFolder =
-    options.folder.replace(/[^a-z0-9-_]/gi, "").toLowerCase() || "general";
+  pageName?: string;
+  imageTitle?: string;
+  imageName?: string;
+  imageLabel?: string;
+}): Promise<{ url: string; path: string; suggestedAltText?: string }> {
+  const safeFolder = sanitizeStorageFolder(options.folder);
   const safeExtension =
     options.extension.replace(/[^a-z0-9]/gi, "").toLowerCase() || "jpg";
-  const objectPath = `${safeFolder}/${Date.now()}-${randomUUID()}.${safeExtension}`;
+
+  const pageName = options.pageName?.trim() || safeFolder;
+  const imageTitle = resolveImageTitle({
+    title: options.imageTitle,
+    name: options.imageName,
+    label: options.imageLabel,
+  });
+
+  const { objectPath, suggestedAltText } = buildSeoImageStorageName({
+    folder: safeFolder,
+    pageName,
+    imageTitle,
+    extension: safeExtension,
+  });
 
   const supabase = createSupabaseStorageAdminClient();
   const { error } = await supabase.storage
@@ -37,5 +58,6 @@ export async function uploadWebsiteImage(options: {
   return {
     url: toAbsolutePublicUrl(publicUrl) ?? publicUrl,
     path: objectPath,
+    suggestedAltText,
   };
 }

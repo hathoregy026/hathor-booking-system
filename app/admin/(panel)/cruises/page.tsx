@@ -847,6 +847,8 @@ export default function AdminCruisesPage() {
                               onChange={(url) =>
                                 updateCruiseField(cruise.id, "imageUrl", url ?? "")
                               }
+                              pageName="Cruises"
+                              imageTitle={cruise.name || "Cruise Image"}
                               folder="cruises"
                               helperText="Upload an image, then click Save Cruise."
                             />

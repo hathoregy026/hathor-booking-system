@@ -7,6 +7,7 @@ import {
   validateVideoFile,
 } from "@/lib/image-upload";
 import { uploadWebsiteImage } from "@/lib/admin-storage";
+import { resolveImageTitle } from "@/lib/seo-image-filename";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -16,6 +17,12 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get("file");
     const folder = (formData.get("folder") as string | null)?.trim() || "general";
+    const pageName = (formData.get("pageName") as string | null)?.trim() || folder;
+    const imageTitle = resolveImageTitle({
+      title: (formData.get("imageTitle") as string | null)?.trim(),
+      name: (formData.get("imageName") as string | null)?.trim(),
+      label: (formData.get("imageLabel") as string | null)?.trim(),
+    });
 
     if (!(file instanceof File)) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
@@ -49,6 +56,8 @@ export async function POST(request: NextRequest) {
         buffer: processed.buffer,
         contentType: processed.contentType,
         extension: processed.extension,
+        pageName,
+        imageTitle,
       });
 
       return NextResponse.json({
@@ -56,6 +65,7 @@ export async function POST(request: NextRequest) {
         path: result.path,
         storage: "supabase",
         type: "video",
+        suggestedAltText: result.suggestedAltText,
       });
     }
 
@@ -84,6 +94,8 @@ export async function POST(request: NextRequest) {
       buffer: processed.buffer,
       contentType: processed.contentType,
       extension: processed.extension,
+      pageName,
+      imageTitle,
     });
 
     return NextResponse.json({
@@ -91,6 +103,7 @@ export async function POST(request: NextRequest) {
       path: result.path,
       storage: "supabase",
       type: "image",
+      suggestedAltText: result.suggestedAltText,
     });
   } catch (error) {
     console.error("[admin.upload]", error);

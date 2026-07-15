@@ -10,7 +10,7 @@ const PAGE_GROUP_TITLES: Record<string, string> = {
   "/charter": "Charter",
   "/contact": "Contact",
   "/blogs": "Blog",
-  "/rooms": "Accommodations",
+  "/rooms": "Luxury Rooms",
 };
 
 const SLOT_LABELS: Partial<Record<SiteImageSlot["name"], string>> = {
@@ -60,6 +60,53 @@ const SLOT_LABELS: Partial<Record<SiteImageSlot["name"], string>> = {
   "blog-hero": "Blog Hero",
 };
 
+const SLOT_LOCATION_HINTS: Partial<Record<SiteImageSlot["name"], string>> = {
+  "home-hero-poster": "Homepage > Hero video poster (shown while video loads)",
+  "home-post-hero-media": "Homepage > Full-width image directly below the hero",
+  "home-story-craft-large": "Homepage > About section — large craftsmanship photo",
+  "home-story-craft-small": "Homepage > About section — small detail photo",
+  "home-story-transform": "Homepage > Story section — grand interior photo",
+  "home-story-legacy-large": "Homepage > Story section — Nile sailing photo",
+  "home-story-legacy-small": "Homepage > Story section — temple photo",
+  "home-cinematic-video": "Homepage > Cinematic video section — video still",
+  "home-cinematic-still": "Homepage > Cinematic section — suite still",
+  "home-split-courtyard": "Homepage > Landmark full-bleed scroll section",
+  "home-split-service": "Homepage > Split scroll — service hallway",
+  "home-split-interiors": "Homepage > Split scroll — suite interior",
+  "home-split-venue": "Homepage > Split scroll — Hatshepsut temple",
+  "home-collage-bg": "Homepage > Collage section — background image",
+  "home-collage-large": "Homepage > About decor — large collage tile",
+  "home-collage-small": "Homepage > About decor — small collage tile",
+  "home-collage-living": "Homepage > Collage section — suite photo",
+  "home-residences-kitchen": "Homepage > Residences section — cabin interior",
+  "home-residences-lounge": "Homepage > Residences section — lounge",
+  "home-residences-rooftop": "Homepage > Residences section — sun deck",
+  "home-sketch-boat": "Homepage > Boat sketch / deck plan visual",
+  "home-alt-dining": "Homepage > Alternating blocks — dining photo",
+  "home-alt-wellness": "Homepage > Alternating blocks — wellness / spa",
+  "home-alt-highlights": "Homepage > Alternating blocks — Nile landmarks",
+  "home-testimonials-bg": "Homepage > Testimonials section background",
+  "room-luxury": "Luxury Rooms > Luxury Cabin chapter image",
+  "room-suite": "Luxury Rooms > Luxury Suite chapter image",
+  "room-royal": "Luxury Rooms > Royal Suite chapter image",
+  charter: "Charter page > Charter overview card image",
+  "cruises-hero": "Cruises > Hero background (top of page)",
+  "about-hero": "About > Hero background (top of page)",
+  "about-dining": "About > Dining section image",
+  "gastronomy-hero": "Gastronomy > Hero background (top of page)",
+  "gastronomy-restaurant": "Gastronomy > Restaurant section image",
+  "wellness-hero": "Wellness > Hero background (top of page)",
+  "wellness-fitness": "Wellness > Fitness section image",
+  "highlights-hero": "Highlights > Hero background (top of page)",
+  "highlights-lifestyle": "Highlights > Lifestyle section image",
+  "landmark-obelisk": "Highlights > Obelisk landmark chapter",
+  "landmark-hatshepsut": "Highlights > Hatshepsut temple chapter",
+  "landmark-valley-kings": "Highlights > Valley of the Kings chapter",
+  "charter-hero": "Charter > Hero background (top of page)",
+  "contact-hero": "Contact > Hero background (top of page)",
+  "blog-hero": "Blog > Hero background (top of page)",
+};
+
 export type SiteImageAdminItem = {
   name: string;
   label: string;
@@ -67,6 +114,8 @@ export type SiteImageAdminItem = {
   category: SiteImageSlot["category"];
   pagePath: string;
   displayOrder: number;
+  /** Where this image appears on the live site. */
+  locationHint: string;
 };
 
 export type SiteImageAdminGroup = {
@@ -77,6 +126,21 @@ export type SiteImageAdminGroup = {
 
 function labelForSlot(slot: SiteImageSlot): string {
   return SLOT_LABELS[slot.name] ?? slot.name.replace(/-/g, " ");
+}
+
+function locationHintForSlot(slot: SiteImageSlot): string {
+  const explicit = SLOT_LOCATION_HINTS[slot.name];
+  if (explicit) return `Displays on: ${explicit}`;
+
+  const pageTitle = PAGE_GROUP_TITLES[slot.pagePath] ?? slot.pagePath;
+  const sectionLabel = labelForSlot(slot);
+  return `Displays on: ${pageTitle} > ${sectionLabel}`;
+}
+
+/** e.g. "Homepage Images", "Cruises Images" */
+export function getSiteImageGroupHeading(pageTitle: string): string {
+  if (pageTitle === "Home") return "Homepage Images";
+  return `${pageTitle} Images`;
 }
 
 export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
@@ -91,6 +155,7 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
       category: slot.category,
       pagePath: slot.pagePath,
       displayOrder: slot.displayOrder,
+      locationHint: locationHintForSlot(slot),
     });
     byPage.set(slot.pagePath, items);
   }

@@ -1,4 +1,3 @@
-import { randomUUID } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { jsonError } from "@/lib/api";
 import {
@@ -7,22 +6,16 @@ import {
   validateImageFile,
 } from "@/lib/image-upload";
 import { toAbsolutePublicUrl } from "@/lib/public-url";
+import {
+  buildSeoImageStorageName,
+  resolveImageTitle,
+  sanitizeFileExtension,
+  sanitizeStorageFolder,
+} from "@/lib/seo-image-filename";
 import { createSupabaseStorageAdminClient } from "@/lib/supabase-server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-function sanitizeFolder(folder: string | null | undefined): string {
-  return folder?.replace(/[^a-z0-9-_]/gi, "").toLowerCase() || "general";
-}
-
-function sanitizeExtension(fileName: string | undefined, contentType: string): string {
-  return (
-    fileName?.split(".").pop()?.replace(/[^a-z0-9]/gi, "").toLowerCase() ||
-    contentType.split("/")[1]?.replace(/[^a-z0-9]/gi, "").toLowerCase() ||
-    "jpg"
-  );
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,6 +24,10 @@ export async function POST(request: NextRequest) {
       fileName?: string;
       contentType?: string;
       fileSize?: number;
+      pageName?: string;
+      imageTitle?: string;
+      imageName?: string;
+      imageLabel?: string;
     };
 
     const fileName = body.fileName ?? "image.jpg";
@@ -47,9 +44,23 @@ export async function POST(request: NextRequest) {
       return jsonError(validationError, 400);
     }
 
-    const safeFolder = sanitizeFolder(body.folder);
-    const extension = sanitizeExtension(fileName, contentType);
-    const objectPath = `${safeFolder}/${Date.now()}-${randomUUID()}.${extension}`;
+    const safeFolder = sanitizeStorageFolder(body.folder);
+    const extension = sanitizeFileExtension(fileName, contentType);
+    const pageName = body.pageName?.trim() || safeFolder;
+    const imageTitle = resolveImageTitle({
+      title: body.imageTitle,
+      name: body.imageName,
+      label: body.imageLabel,
+    });
+
+    const { objectPath, filename, slugBase, suggestedAltText } =
+      buildSeoImageStorageName({
+        folder: safeFolder,
+        pageName,
+        imageTitle,
+        extension,
+      });
+
     const supabase = createSupabaseStorageAdminClient();
 
     const { data, error } = await supabase.storage
@@ -69,6 +80,9 @@ export async function POST(request: NextRequest) {
       signedUrl: data.signedUrl,
       token: data.token,
       path: objectPath,
+      filename,
+      slugBase,
+      suggestedAltText,
       publicUrl: toAbsolutePublicUrl(publicUrl) ?? publicUrl,
     });
   } catch (error) {

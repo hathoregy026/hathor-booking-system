@@ -14,20 +14,33 @@ import { MAX_IMAGE_BYTES } from "@/lib/image-upload";
 
 const ACCEPTED_TYPES = "image/jpeg,image/png,image/webp";
 
+type ImageUploadMeta = {
+  suggestedAltText?: string;
+};
+
 type ImageUploadProps = {
   label: string;
   value: string | null;
-  onChange: (url: string | null) => void;
+  onChange: (url: string | null, meta?: ImageUploadMeta) => void;
   onDataUrlChange?: (dataUrl: string | null) => void;
   folder?: string;
+  /** Page or category name shown in the dashboard, e.g. "Cruises", "Luxury Rooms". */
+  pageName?: string;
+  /** User-entered title for this image (Alt Text, Title, or Name field). */
+  imageTitle?: string;
+  /** Slot label fallback when imageTitle is empty. */
+  imageLabel?: string;
   helperText?: string;
   variant?: "default" | "admin";
   allowClear?: boolean;
+  /** compact = no large preview (parent shows thumbnail beside slot) */
+  layout?: "default" | "compact";
 };
 
 type UploadResponse = {
   publicUrl?: string;
   signedUrl?: string;
+  suggestedAltText?: string;
   error?: string;
 };
 
@@ -58,7 +71,15 @@ async function parseUploadResponse(response: Response): Promise<UploadResponse> 
   }
 }
 
-async function requestSignedUpload(file: File, folder: string): Promise<UploadResponse> {
+async function requestSignedUpload(
+  file: File,
+  folder: string,
+  naming: {
+    pageName?: string;
+    imageTitle?: string;
+    imageLabel?: string;
+  },
+): Promise<UploadResponse> {
   const response = await fetch("/api/admin/upload/sign", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -68,6 +89,9 @@ async function requestSignedUpload(file: File, folder: string): Promise<UploadRe
       fileName: file.name,
       contentType: file.type || "application/octet-stream",
       fileSize: file.size,
+      pageName: naming.pageName,
+      imageTitle: naming.imageTitle,
+      imageLabel: naming.imageLabel,
     }),
   });
 
@@ -135,9 +159,13 @@ export function ImageUpload({
   onChange,
   onDataUrlChange,
   folder = "general",
+  pageName,
+  imageTitle,
+  imageLabel,
   helperText,
   variant = "default",
   allowClear = true,
+  layout = "default",
 }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -195,7 +223,11 @@ export function ImageUpload({
 
     try {
       setUploadProgress(5);
-      const signedUpload = await requestSignedUpload(selectedFile, folder);
+      const signedUpload = await requestSignedUpload(selectedFile, folder, {
+        pageName: pageName ?? folder,
+        imageTitle: imageTitle ?? label,
+        imageLabel,
+      });
 
       if (!signedUpload.signedUrl || !signedUpload.publicUrl) {
         throw new Error("Upload could not start. No signed URL was returned.");
@@ -207,7 +239,9 @@ export function ImageUpload({
         setUploadProgress,
       );
 
-      onChange(signedUpload.publicUrl);
+      onChange(signedUpload.publicUrl, {
+        suggestedAltText: signedUpload.suggestedAltText,
+      });
       onDataUrlChange?.(null);
       setUploadProgress(100);
       setUploadComplete(true);
@@ -237,22 +271,27 @@ export function ImageUpload({
   };
 
   const isAdmin = variant === "admin";
-  const showUploadProgress = uploadProgress !== null && (isUploading || uploadComplete);
+  const isCompact = layout === "compact";
+  const showLargePreview = !isCompact && Boolean(displayUrl);
+  const showEmptyPlaceholder = !isCompact && !displayUrl;
   const uploadStatusText =
     uploadProgress !== null && uploadProgress >= 95 && uploadProgress < 100
       ? "Saving image..."
       : `Uploading... ${uploadProgress ?? 0}%`;
+  const showUploadProgress = uploadProgress !== null && (isUploading || uploadComplete);
 
   return (
-    <div className="space-y-3">
-      <span
-        className="block text-sm font-medium"
-        style={isAdmin ? { color: "var(--text-primary)" } : undefined}
-      >
-        {label}
-      </span>
+    <div className={isCompact ? "space-y-2" : "space-y-3"}>
+      {!isCompact ? (
+        <span
+          className="block text-sm font-medium"
+          style={isAdmin ? { color: "var(--text-primary)" } : undefined}
+        >
+          {label}
+        </span>
+      ) : null}
 
-      {displayUrl ? (
+      {showLargePreview ? (
         <div
           className={
             isAdmin
@@ -272,7 +311,9 @@ export function ImageUpload({
             className="max-h-48 w-full object-cover"
           />
         </div>
-      ) : (
+      ) : null}
+
+      {showEmptyPlaceholder ? (
         <div
           className={
             isAdmin
@@ -291,7 +332,16 @@ export function ImageUpload({
         >
           <ImageIcon className="h-8 w-8" aria-hidden />
         </div>
-      )}
+      ) : null}
+
+      {isCompact ? (
+        <span
+          className="block text-xs font-medium uppercase tracking-wide"
+          style={isAdmin ? { color: "var(--text-muted)" } : undefined}
+        >
+          {label}
+        </span>
+      ) : null}
 
       <input
         ref={inputRef}
@@ -418,7 +468,7 @@ export function ImageUpload({
         </p>
       )}
 
-      {value && !selectedFile && (
+      {value && !selectedFile && !isCompact ? (
         <p
           className="truncate text-xs"
           style={isAdmin ? { color: "var(--text-muted)" } : undefined}

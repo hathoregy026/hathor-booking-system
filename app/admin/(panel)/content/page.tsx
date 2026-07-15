@@ -4,9 +4,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ContentSection } from "@/app/generated/prisma/enums";
 import { Loader2, Save } from "lucide-react";
 import { ImageUpload } from "@/components/admin/ImageUpload";
+import { SiteImageSlotCard } from "@/components/admin/SiteImageSlotCard";
 import { useToast } from "@/components/admin/ToastProvider";
 import { adminFetch } from "@/lib/admin-fetch";
-import { getSiteImageAdminGroups } from "@/lib/site-image-admin";
+import {
+  getSiteImageAdminGroups,
+  getSiteImageGroupHeading,
+} from "@/lib/site-image-admin";
 import { getSiteImageSlot } from "@/lib/site-image-slots";
 
 type SiteContentItem = {
@@ -309,9 +313,11 @@ export default function AdminContentPage() {
                 <ImageUpload
                   label="Section Image"
                   value={item.imageUrl}
-                  onChange={(url) =>
+                  onChange={(url, meta) =>
                     updateSection(item.section, { imageUrl: url })
                   }
+                  pageName={SECTION_LABELS[item.section]}
+                  imageTitle={item.title || "Section Image"}
                   folder={item.section.toLowerCase()}
                   variant="admin"
                   helperText="Optional. Uploads directly to Supabase Storage, then click Save Changes."
@@ -322,70 +328,72 @@ export default function AdminContentPage() {
         </div>
       </div>
 
-      <div id="site-images">
-        <h2 className="admin-heading text-xl">Site Images</h2>
-        <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
-          Manage every homepage and page image by section. Uploads go directly
-          to Supabase Storage; image URLs are saved when you click Save Changes.
-        </p>
+      <div id="site-images" className="space-y-6">
+        <div>
+          <h2 className="admin-heading text-xl">Site Images</h2>
+          <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
+            Every image on the public site, grouped by page. Each slot shows a
+            live thumbnail, where it appears on the site, and upload controls.
+          </p>
+        </div>
 
-        {SITE_IMAGE_GROUPS.map((group) => (
-          <div key={group.pagePath} className="mt-6">
-            <h3
-              className="mb-4 text-xs font-semibold uppercase tracking-[0.2em]"
-              style={{ color: "var(--accent)" }}
+        {SITE_IMAGE_GROUPS.map((group) => {
+          const assignedCount = group.items.filter(
+            (item) => siteImages[item.name]?.url?.trim(),
+          ).length;
+
+          return (
+            <section
+              key={group.pagePath}
+              className="site-image-group admin-card overflow-hidden"
+              aria-labelledby={`site-images-${group.pagePath.replace(/\//g, "-") || "home"}`}
             >
-              {group.title}
-            </h3>
-            <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">
-              {group.items.map((item) => {
-                const image = siteImages[item.name];
-                if (!image) return null;
+              <header className="site-image-group__header">
+                <div>
+                  <h3
+                    id={`site-images-${group.pagePath.replace(/\//g, "-") || "home"}`}
+                    className="site-image-group__title"
+                  >
+                    {getSiteImageGroupHeading(group.title)}
+                  </h3>
+                  <p className="site-image-group__meta">
+                    {group.pagePath === "/" ? "/" : group.pagePath} ·{" "}
+                    {assignedCount} of {group.items.length} images assigned
+                  </p>
+                </div>
+                <span className="site-image-group__badge">
+                  {group.items.length} slots
+                </span>
+              </header>
 
-                return (
-                  <section key={item.name} className="admin-card p-4 sm:p-6">
-                    <h4 className="admin-heading text-lg">{item.label}</h4>
-                    <p
-                      className="mt-1 text-xs"
-                      style={{ color: "var(--text-muted)" }}
-                    >
-                      {item.name}
-                    </p>
-                    <div className="mt-4 space-y-4">
-                      <label className="block text-sm">
-                        <span
-                          className="mb-1 block font-medium"
-                          style={{ color: "var(--text-primary)" }}
-                        >
-                          Alt Text
-                        </span>
-                        <input
-                          value={image.altText}
-                          onChange={(event) =>
-                            updateSiteImage(item.name, {
-                              altText: event.target.value,
-                            })
-                          }
-                          className="admin-input w-full px-3 py-2"
-                        />
-                      </label>
-                      <ImageUpload
-                        label="Section Image"
-                        value={image.url || null}
-                        onChange={(url) =>
-                          updateSiteImage(item.name, { url: url ?? "" })
-                        }
-                        folder={`site-images/${item.name}`}
-                        variant="admin"
-                        helperText="Uploads directly to Supabase Storage. Click Save Changes to apply on the live site."
-                      />
-                    </div>
-                  </section>
-                );
-              })}
-            </div>
-          </div>
-        ))}
+              <div className="site-image-group__grid">
+                {group.items.map((item) => {
+                  const image = siteImages[item.name];
+                  if (!image) return null;
+
+                  return (
+                    <SiteImageSlotCard
+                      key={item.name}
+                      item={item}
+                      pageTitle={group.title}
+                      url={image.url}
+                      altText={image.altText}
+                      onAltTextChange={(altText) =>
+                        updateSiteImage(item.name, { altText })
+                      }
+                      onUrlChange={(url, meta) =>
+                        updateSiteImage(item.name, {
+                          url: url ?? "",
+                          altText: meta?.suggestedAltText ?? image.altText,
+                        })
+                      }
+                    />
+                  );
+                })}
+              </div>
+            </section>
+          );
+        })}
       </div>
 
       <button
