@@ -1147,10 +1147,10 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 .text-img-row {
   width: min(1180px, 100%);
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
   gap: clamp(36px, 6vw, 90px);
-  align-items: center;
 }
 
 .text-img-row + .text-img-row {
@@ -1158,11 +1158,19 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 }
 
 .text-img-row.is-reverse {
-  direction: rtl;
+  flex-direction: row-reverse;
 }
 
-.text-img-row.is-reverse > * {
-  direction: ltr;
+.home-text-img-parent,
+.home-text-img-copy {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.home-text-img-copy {
+  justify-content: center;
 }
 
 .home-text-img-parent {
@@ -1174,15 +1182,15 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   position: relative;
   overflow: hidden;
   border-radius: 6px;
-  aspect-ratio: 16 / 11;
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
   will-change: transform, clip-path;
 }
 
 .home-text-img-container img {
-  width: 100%;
-  height: 100%;
   object-fit: cover;
-  aspect-ratio: 16 / 11;
 }
 
 .home-text-h2 h2 {
@@ -1416,13 +1424,26 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   }
 
   .about-layout,
-  .radius-layout,
-  .text-img-row {
+  .radius-layout {
     grid-template-columns: 1fr;
   }
 
+  .text-img-row {
+    flex-direction: column;
+  }
+
   .text-img-row.is-reverse {
-    direction: ltr;
+    flex-direction: column;
+  }
+
+  .home-text-img-parent {
+    width: 100%;
+  }
+
+  .home-text-img-container {
+    flex: none;
+    height: 300px;
+    min-height: 300px;
   }
 
   .carousel-slide {

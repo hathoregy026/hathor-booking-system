@@ -222,7 +222,7 @@ export function HomePageClient() {
                   />
                 </div>
               </div>
-              <div>
+              <div className="home-text-img-copy">
                 <div className="home-text-h2">
                   <h2>{block.title}</h2>
                 </div>
