@@ -1,4 +1,4 @@
-export const HATHOR_MEDIA_BASE = "/media/hathor";
+export const HATHOR_MEDIA_BASE = "/media/hathor/r2";
 
 /** Public URL for a synced Hathor WebP image by slot key. */
 export function hathorImage(key: string): string {
@@ -6,7 +6,7 @@ export function hathorImage(key: string): string {
 }
 
 export function hathorVideo(key: string): string {
-  return `${HATHOR_MEDIA_BASE}/videos/${key}.mp4`;
+  return `/media/hathor/videos/${key}.mp4`;
 }
 
 /** Default site image URLs — local Hathor media (WebP), not Unsplash. */
