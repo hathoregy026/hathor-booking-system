@@ -58,32 +58,37 @@ function waitForMotionReady(): Promise<void> {
   });
 }
 
+function scrollToElement(target: HTMLElement) {
+  const pinIndex = target.dataset.siteImagePinIndex;
+  const pinTotal = target.dataset.siteImagePinTotal;
+  const pinSection = target.closest<HTMLElement>("[data-site-image-pin-root]");
+
+  if (
+    pinSection &&
+    pinIndex != null &&
+    pinTotal != null &&
+    Number(pinTotal) > 0
+  ) {
+    const scrollable = pinSection.offsetHeight - window.innerHeight;
+    const progress = (Number(pinIndex) + 0.45) / Number(pinTotal);
+    const top =
+      pinSection.getBoundingClientRect().top +
+      window.scrollY +
+      Math.max(0, scrollable) * Math.min(1, Math.max(0, progress));
+    window.scrollTo({ top, behavior: "smooth" });
+    return;
+  }
+
+  const rect = target.getBoundingClientRect();
+  const top = Math.max(0, rect.top + window.scrollY - 88);
+  window.scrollTo({ top, behavior: "smooth" });
+}
+
 function scrollToPreviewName(name: string) {
   try {
     const target = findPreviewTarget(name);
     if (!target) return;
-
-    const pinIndex = target.dataset.siteImagePinIndex;
-    const pinTotal = target.dataset.siteImagePinTotal;
-    const pinSection = target.closest<HTMLElement>("[data-site-image-pin-root]");
-
-    if (
-      pinSection &&
-      pinIndex != null &&
-      pinTotal != null &&
-      Number(pinTotal) > 0
-    ) {
-      const scrollable = pinSection.offsetHeight - window.innerHeight;
-      const progress = (Number(pinIndex) + 0.45) / Number(pinTotal);
-      const top =
-        pinSection.getBoundingClientRect().top +
-        window.scrollY +
-        Math.max(0, scrollable) * Math.min(1, Math.max(0, progress));
-      window.scrollTo({ top, behavior: "smooth" });
-      return;
-    }
-
-    target.scrollIntoView({ behavior: "smooth", block: "center" });
+    scrollToElement(target);
   } catch (error) {
     console.warn("[SiteImagePreviewScroll] scroll failed", error);
   }
@@ -108,15 +113,13 @@ export function SiteImagePreviewScroll() {
       if (cancelled) return;
       scrollToPreviewName(name);
 
-      // Keep a clean shareable URL without forcing a hash fight on reload.
-      try {
-        const url = new URL(window.location.href);
-        if (url.searchParams.has(SITE_IMAGE_VIEW_PARAM)) {
-          // Keep the param so refresh still lands on the same image.
-        }
-      } catch {
-        /* ignore */
-      }
+      // Retry after layout/images settle (homepage gallery, pinned stacks).
+      window.setTimeout(() => {
+        if (!cancelled) scrollToPreviewName(name);
+      }, 900);
+      window.setTimeout(() => {
+        if (!cancelled) scrollToPreviewName(name);
+      }, 2200);
     };
 
     void run();

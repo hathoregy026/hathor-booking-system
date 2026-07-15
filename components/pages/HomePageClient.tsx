@@ -17,6 +17,15 @@ import {
   EX_WELLNESS,
 } from "@/lib/ex-page-content";
 import { useExScrollMotion } from "@/hooks/useExScrollMotion";
+import { siteImageAnchorId } from "@/lib/site-image-preview";
+
+const GALLERY_PREVIEW_ANCHORS = new Set([
+  "home-collage-living",
+  "home-alt-highlights",
+  "home-cinematic-still",
+  "wellness-hero",
+  "gastronomy-restaurant",
+]);
 
 export function HomePageClient() {
   useExScrollMotion();
@@ -237,19 +246,27 @@ export function HomePageClient() {
 
           <div className="gallery-grid">
             {EX_GALLERY.images.map((item, index) => (
-              <div key={`${item.imageName}-${index}`} className="gallery-item">
+              <div
+                key={`${item.imageName}-${index}`}
+                className="gallery-item"
+                id={
+                  GALLERY_PREVIEW_ANCHORS.has(item.imageName)
+                    ? siteImageAnchorId(item.imageName)
+                    : undefined
+                }
+                data-site-image={
+                  GALLERY_PREVIEW_ANCHORS.has(item.imageName)
+                    ? item.imageName
+                    : undefined
+                }
+              >
                 <ManagedImage
                   name={item.imageName}
                   alt={item.alt}
                   fill
                   sizes="(max-width: 768px) 50vw, 20vw"
                   className="object-cover"
-                  previewAnchor={
-                    item.imageName === "home-collage-living" ||
-                    item.imageName === "home-alt-highlights" ||
-                    item.imageName === "home-cinematic-still" ||
-                    item.imageName === "wellness-hero"
-                  }
+                  previewAnchor={false}
                 />
               </div>
             ))}
