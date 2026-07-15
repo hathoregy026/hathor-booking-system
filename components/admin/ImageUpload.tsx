@@ -306,7 +306,7 @@ export function ImageUpload({
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={displayUrl}
+            src={displayUrl ?? ""}
             alt={`${label} preview`}
             className="max-h-48 w-full object-cover"
           />
@@ -476,7 +476,7 @@ export function ImageUpload({
         >
           {isAdmin ? "Image uploaded." : `Current URL: ${value}`}
         </p>
-      )}
+      ) : null}
 
       {helperText && (
         <p

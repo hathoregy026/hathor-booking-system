@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
     // Prevent App Router client cache from showing a previous deploy after soft/navigated revisits.
     staleTimes: {
       dynamic: 0,
-      static: 0,
+      static: 30,
     },
   },
   async headers() {
