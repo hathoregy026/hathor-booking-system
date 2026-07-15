@@ -33,7 +33,7 @@ export const HATHOR_MAIN_LOGO_SRC =
 
 /** Home hero second line — replaces "Dahabiya Cruise" script text */
 export const HATHOR_DAHABIYA_WORDMARK_SRC =
-  "/branding/dahabiya-cruise-nile-tour.webp";
+  "/branding/dahabiya-cruise-hathor.webp";
 
 /** Custom site-wide pointer — tip hotspot at ~11×1 in 32×32 viewBox */
 export const HATHOR_CURSOR_SRC =
