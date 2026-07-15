@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ContentSection } from "@/app/generated/prisma/enums";
-import { Loader2, Save } from "lucide-react";
+import { ChevronDown, Loader2, Save } from "lucide-react";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { SiteImageSlotCard } from "@/components/admin/SiteImageSlotCard";
 import { useToast } from "@/components/admin/ToastProvider";
@@ -102,6 +102,9 @@ export default function AdminContentPage() {
   );
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [openImageGroup, setOpenImageGroup] = useState<string>(
+    SITE_IMAGE_GROUPS[0]?.pagePath ?? "/",
+  );
 
   const loadContent = useCallback(async () => {
     setIsLoading(true);
@@ -328,69 +331,99 @@ export default function AdminContentPage() {
         </div>
       </div>
 
-      <div id="site-images" className="space-y-6">
+      <div id="site-images" className="site-images-cms space-y-5">
         <div>
-          <h2 className="admin-heading text-xl">Site Images</h2>
+          <h2 className="admin-heading text-xl">Website Images</h2>
           <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
-            Every image on the public site, grouped by page. Each slot shows a
-            live thumbnail, where it appears on the site, and upload controls.
+            Choose a page below, then change any photo. You will see a preview
+            of what visitors see on the live website.
           </p>
         </div>
 
+        <div className="site-images-tabs" role="tablist" aria-label="Choose a page">
+          {SITE_IMAGE_GROUPS.map((group) => {
+            const isActive = openImageGroup === group.pagePath;
+            return (
+              <button
+                key={group.pagePath}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                className={`site-images-tab${isActive ? " is-active" : ""}`}
+                onClick={() => setOpenImageGroup(group.pagePath)}
+              >
+                {group.title}
+              </button>
+            );
+          })}
+        </div>
+
         {SITE_IMAGE_GROUPS.map((group) => {
+          const isOpen = openImageGroup === group.pagePath;
           const assignedCount = group.items.filter(
             (item) => siteImages[item.name]?.url?.trim(),
           ).length;
+          const headingId = `site-images-${group.pagePath.replace(/\//g, "-") || "home"}`;
 
           return (
             <section
               key={group.pagePath}
-              className="site-image-group admin-card overflow-hidden"
-              aria-labelledby={`site-images-${group.pagePath.replace(/\//g, "-") || "home"}`}
+              className={`site-image-group admin-card overflow-hidden${isOpen ? " is-open" : ""}`}
+              hidden={!isOpen}
+              aria-labelledby={headingId}
             >
-              <header className="site-image-group__header">
-                <div>
-                  <h3
-                    id={`site-images-${group.pagePath.replace(/\//g, "-") || "home"}`}
-                    className="site-image-group__title"
-                  >
+              <button
+                type="button"
+                id={headingId}
+                className="site-image-group__header"
+                aria-expanded={isOpen}
+                onClick={() =>
+                  setOpenImageGroup((current) =>
+                    current === group.pagePath ? "" : group.pagePath,
+                  )
+                }
+              >
+                <div className="site-image-group__header-text">
+                  <h3 className="site-image-group__title">
                     {getSiteImageGroupHeading(group.title)}
                   </h3>
                   <p className="site-image-group__meta">
-                    {group.pagePath === "/" ? "/" : group.pagePath} ·{" "}
-                    {assignedCount} of {group.items.length} images assigned
+                    {assignedCount} of {group.items.length} photos set
                   </p>
                 </div>
-                <span className="site-image-group__badge">
-                  {group.items.length} slots
-                </span>
-              </header>
+                <ChevronDown
+                  className={`site-image-group__chevron${isOpen ? " is-open" : ""}`}
+                  aria-hidden
+                />
+              </button>
 
-              <div className="site-image-group__grid">
-                {group.items.map((item) => {
-                  const image = siteImages[item.name];
-                  if (!image) return null;
+              {isOpen ? (
+                <div className="site-image-group__grid">
+                  {group.items.map((item) => {
+                    const image = siteImages[item.name];
+                    if (!image) return null;
 
-                  return (
-                    <SiteImageSlotCard
-                      key={item.name}
-                      item={item}
-                      pageTitle={group.title}
-                      url={image.url}
-                      altText={image.altText}
-                      onAltTextChange={(altText) =>
-                        updateSiteImage(item.name, { altText })
-                      }
-                      onUrlChange={(url, meta) =>
-                        updateSiteImage(item.name, {
-                          url: url ?? "",
-                          altText: meta?.suggestedAltText ?? image.altText,
-                        })
-                      }
-                    />
-                  );
-                })}
-              </div>
+                    return (
+                      <SiteImageSlotCard
+                        key={item.name}
+                        item={item}
+                        pageTitle={group.title}
+                        url={image.url}
+                        altText={image.altText}
+                        onAltTextChange={(altText) =>
+                          updateSiteImage(item.name, { altText })
+                        }
+                        onUrlChange={(url, meta) =>
+                          updateSiteImage(item.name, {
+                            url: url ?? "",
+                            altText: meta?.suggestedAltText ?? image.altText,
+                          })
+                        }
+                      />
+                    );
+                  })}
+                </div>
+              ) : null}
             </section>
           );
         })}

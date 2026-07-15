@@ -1,7 +1,8 @@
 import { SITE_IMAGE_SLOTS, type SiteImageSlot } from "@/lib/site-image-slots";
 
+/** Client-facing page names for group tabs / accordion headers. */
 const PAGE_GROUP_TITLES: Record<string, string> = {
-  "/": "Home",
+  "/": "Homepage",
   "/cruises": "Cruises",
   "/about": "About",
   "/gastronomy": "Gastronomy",
@@ -13,98 +14,103 @@ const PAGE_GROUP_TITLES: Record<string, string> = {
   "/rooms": "Luxury Rooms",
 };
 
+/** Plain English titles — never show internal slug codes to the client. */
 const SLOT_LABELS: Partial<Record<SiteImageSlot["name"], string>> = {
-  "home-hero-poster": "Hero Section",
-  "home-post-hero-media": "Post-Hero Full Bleed",
-  "home-story-craft-large": "Story — Craftsmanship (Large)",
-  "home-story-craft-small": "Story — Craftsmanship (Small)",
-  "home-story-transform": "Story — Transformation",
-  "home-story-legacy-large": "Story — Legacy (Large)",
-  "home-story-legacy-small": "Story — Legacy (Small)",
-  "home-cinematic-video": "Cinematic Video Still",
-  "home-cinematic-still": "Cinematic Suite Still",
-  "home-split-courtyard": "Landmark Full Bleed",
-  "home-split-service": "Split Scroll — Service",
-  "home-split-interiors": "Split Scroll — Interiors",
-  "home-split-venue": "Split Scroll — Journey",
-  "home-collage-bg": "Collage Background",
-  "home-collage-large": "Collage — Large Image",
-  "home-collage-small": "Collage — Small Image",
-  "home-collage-living": "Suite Full Bleed",
-  "home-residences-kitchen": "Residences — Cabin",
-  "home-residences-lounge": "Residences — Lounge",
-  "home-residences-rooftop": "Sun Deck Full Bleed",
-  "home-sketch-boat": "Sketch / Boat Visual",
-  "home-alt-dining": "Alternating — Dining",
-  "home-alt-wellness": "Alternating — Wellness",
-  "home-alt-highlights": "Alternating — Highlights",
-  "home-testimonials-bg": "Testimonials Background",
-  "room-luxury": "Luxury Cabin",
-  "room-suite": "Luxury Suite",
-  "room-royal": "Royal Suite",
-  charter: "Charter Card",
-  "cruises-hero": "Cruises Hero",
-  "about-hero": "About Hero",
-  "about-dining": "About — Dining",
-  "gastronomy-hero": "Gastronomy Hero",
-  "gastronomy-restaurant": "Restaurant Section",
-  "wellness-hero": "Wellness Hero",
-  "wellness-fitness": "Fitness Section",
-  "highlights-hero": "Highlights Hero",
-  "highlights-lifestyle": "Lifestyle Section",
-  "landmark-obelisk": "Landmark — Obelisk",
-  "landmark-hatshepsut": "Landmark — Hatshepsut",
-  "landmark-valley-kings": "Landmark — Valley of Kings",
-  "charter-hero": "Charter Hero",
-  "contact-hero": "Contact Hero",
-  "blog-hero": "Blog Hero",
+  "home-hero-poster": "Homepage Hero Video Cover",
+  "home-post-hero-media": "Image Below the Homepage Hero",
+  "home-story-craft-large": "About Section — Large Photo",
+  "home-story-craft-small": "About Section — Small Detail Photo",
+  "home-story-transform": "Story Section — Grand Interior",
+  "home-story-legacy-large": "Story Section — Nile Sailing Photo",
+  "home-story-legacy-small": "Story Section — Temple Photo",
+  "home-cinematic-video": "Main Homepage Video Background",
+  "home-cinematic-still": "Homepage Suite Showcase Photo",
+  "home-split-courtyard": "Landmark Full-Width Photo",
+  "home-split-service": "Scroll Section — Hallway Photo",
+  "home-split-interiors": "Scroll Section — Suite Interior",
+  "home-split-venue": "Scroll Section — Temple Photo",
+  "home-collage-bg": "Collage Section Background",
+  "home-collage-large": "About Decor — Large Tile",
+  "home-collage-small": "About Decor — Small Tile",
+  "home-collage-living": "Collage Section — Suite Photo",
+  "home-residences-kitchen": "Cabins Section — Cabin Photo",
+  "home-residences-lounge": "Cabins Section — Lounge Photo",
+  "home-residences-rooftop": "Cabins Section — Sun Deck Photo",
+  "home-sketch-boat": "Boat Sketch Visual",
+  "home-alt-dining": "Dining Feature Photo",
+  "home-alt-wellness": "Wellness Feature Photo",
+  "home-alt-highlights": "Landmarks Feature Photo",
+  "home-testimonials-bg": "Guest Reviews Background",
+  "room-luxury": "Luxury Cabin Photo",
+  "room-suite": "Luxury Suite Photo",
+  "room-royal": "Royal Suite Photo",
+  charter: "Charter Overview Photo",
+  "cruises-hero": "Cruises Page — Top Banner",
+  "about-hero": "About Page — Top Banner",
+  "about-dining": "About Page — Dining Photo",
+  "gastronomy-hero": "Gastronomy Page — Top Banner",
+  "gastronomy-restaurant": "Restaurant Section Photo",
+  "wellness-hero": "Wellness Page — Top Banner",
+  "wellness-fitness": "Fitness Section Photo",
+  "highlights-hero": "Highlights Page — Top Banner",
+  "highlights-lifestyle": "Lifestyle Section Photo",
+  "landmark-obelisk": "Obelisk Landmark Photo",
+  "landmark-hatshepsut": "Hatshepsut Temple Photo",
+  "landmark-valley-kings": "Valley of the Kings Photo",
+  "charter-hero": "Charter Page — Top Banner",
+  "contact-hero": "Contact Page — Top Banner",
+  "blog-hero": "Blog Page — Top Banner",
 };
 
-const SLOT_LOCATION_HINTS: Partial<Record<SiteImageSlot["name"], string>> = {
-  "home-hero-poster": "Homepage > Hero video poster (shown while video loads)",
-  "home-post-hero-media": "Homepage > Full-width image directly below the hero",
-  "home-story-craft-large": "Homepage > About section — large craftsmanship photo",
-  "home-story-craft-small": "Homepage > About section — small detail photo",
-  "home-story-transform": "Homepage > Story section — grand interior photo",
-  "home-story-legacy-large": "Homepage > Story section — Nile sailing photo",
-  "home-story-legacy-small": "Homepage > Story section — temple photo",
-  "home-cinematic-video": "Homepage > Cinematic video section — video still",
-  "home-cinematic-still": "Homepage > Cinematic section — suite still",
-  "home-split-courtyard": "Homepage > Landmark full-bleed scroll section",
-  "home-split-service": "Homepage > Split scroll — service hallway",
-  "home-split-interiors": "Homepage > Split scroll — suite interior",
-  "home-split-venue": "Homepage > Split scroll — Hatshepsut temple",
-  "home-collage-bg": "Homepage > Collage section — background image",
-  "home-collage-large": "Homepage > About decor — large collage tile",
-  "home-collage-small": "Homepage > About decor — small collage tile",
-  "home-collage-living": "Homepage > Collage section — suite photo",
-  "home-residences-kitchen": "Homepage > Residences section — cabin interior",
-  "home-residences-lounge": "Homepage > Residences section — lounge",
-  "home-residences-rooftop": "Homepage > Residences section — sun deck",
-  "home-sketch-boat": "Homepage > Boat sketch / deck plan visual",
-  "home-alt-dining": "Homepage > Alternating blocks — dining photo",
-  "home-alt-wellness": "Homepage > Alternating blocks — wellness / spa",
-  "home-alt-highlights": "Homepage > Alternating blocks — Nile landmarks",
-  "home-testimonials-bg": "Homepage > Testimonials section background",
-  "room-luxury": "Luxury Rooms > Luxury Cabin chapter image",
-  "room-suite": "Luxury Rooms > Luxury Suite chapter image",
-  "room-royal": "Luxury Rooms > Royal Suite chapter image",
-  charter: "Charter page > Charter overview card image",
-  "cruises-hero": "Cruises > Hero background (top of page)",
-  "about-hero": "About > Hero background (top of page)",
-  "about-dining": "About > Dining section image",
-  "gastronomy-hero": "Gastronomy > Hero background (top of page)",
-  "gastronomy-restaurant": "Gastronomy > Restaurant section image",
-  "wellness-hero": "Wellness > Hero background (top of page)",
-  "wellness-fitness": "Wellness > Fitness section image",
-  "highlights-hero": "Highlights > Hero background (top of page)",
-  "highlights-lifestyle": "Highlights > Lifestyle section image",
-  "landmark-obelisk": "Highlights > Obelisk landmark chapter",
-  "landmark-hatshepsut": "Highlights > Hatshepsut temple chapter",
-  "landmark-valley-kings": "Highlights > Valley of the Kings chapter",
-  "charter-hero": "Charter > Hero background (top of page)",
-  "contact-hero": "Contact > Hero background (top of page)",
-  "blog-hero": "Blog > Hero background (top of page)",
+/**
+ * Short client location line shown as a badge.
+ * Format: "Homepage - Main Video Section"
+ */
+const SLOT_LOCATIONS: Partial<Record<SiteImageSlot["name"], string>> = {
+  "home-hero-poster": "Homepage - Hero Video Cover",
+  "home-post-hero-media": "Homepage - Below Hero",
+  "home-story-craft-large": "Homepage - About (Large Photo)",
+  "home-story-craft-small": "Homepage - About (Detail Photo)",
+  "home-story-transform": "Homepage - Story Interior",
+  "home-story-legacy-large": "Homepage - Story Nile Photo",
+  "home-story-legacy-small": "Homepage - Story Temple Photo",
+  "home-cinematic-video": "Homepage - Main Video Section",
+  "home-cinematic-still": "Homepage - Suite Showcase",
+  "home-split-courtyard": "Homepage - Landmark Full Width",
+  "home-split-service": "Homepage - Scroll Hallway",
+  "home-split-interiors": "Homepage - Scroll Suite",
+  "home-split-venue": "Homepage - Scroll Temple",
+  "home-collage-bg": "Homepage - Collage Background",
+  "home-collage-large": "Homepage - About Decor (Large)",
+  "home-collage-small": "Homepage - About Decor (Small)",
+  "home-collage-living": "Homepage - Collage Suite",
+  "home-residences-kitchen": "Homepage - Cabins Cabin",
+  "home-residences-lounge": "Homepage - Cabins Lounge",
+  "home-residences-rooftop": "Homepage - Cabins Sun Deck",
+  "home-sketch-boat": "Homepage - Boat Sketch",
+  "home-alt-dining": "Homepage - Dining Feature",
+  "home-alt-wellness": "Homepage - Wellness Feature",
+  "home-alt-highlights": "Homepage - Landmarks Feature",
+  "home-testimonials-bg": "Homepage - Guest Reviews Background",
+  "room-luxury": "Luxury Rooms - Luxury Cabin",
+  "room-suite": "Luxury Rooms - Luxury Suite",
+  "room-royal": "Luxury Rooms - Royal Suite",
+  charter: "Charter - Overview Card",
+  "cruises-hero": "Cruises - Top Banner",
+  "about-hero": "About - Top Banner",
+  "about-dining": "About - Dining Section",
+  "gastronomy-hero": "Gastronomy - Top Banner",
+  "gastronomy-restaurant": "Gastronomy - Restaurant",
+  "wellness-hero": "Wellness - Top Banner",
+  "wellness-fitness": "Wellness - Fitness Section",
+  "highlights-hero": "Highlights - Top Banner",
+  "highlights-lifestyle": "Highlights - Lifestyle Section",
+  "landmark-obelisk": "Highlights - Obelisk",
+  "landmark-hatshepsut": "Highlights - Hatshepsut Temple",
+  "landmark-valley-kings": "Highlights - Valley of the Kings",
+  "charter-hero": "Charter - Top Banner",
+  "contact-hero": "Contact - Top Banner",
+  "blog-hero": "Blog - Top Banner",
 };
 
 export type SiteImageAdminItem = {
@@ -114,7 +120,7 @@ export type SiteImageAdminItem = {
   category: SiteImageSlot["category"];
   pagePath: string;
   displayOrder: number;
-  /** Where this image appears on the live site. */
+  /** Client location badge text, e.g. "Homepage - Main Video Section". */
   locationHint: string;
 };
 
@@ -129,17 +135,16 @@ function labelForSlot(slot: SiteImageSlot): string {
 }
 
 function locationHintForSlot(slot: SiteImageSlot): string {
-  const explicit = SLOT_LOCATION_HINTS[slot.name];
-  if (explicit) return `Displays on: ${explicit}`;
+  const explicit = SLOT_LOCATIONS[slot.name];
+  if (explicit) return explicit;
 
-  const pageTitle = PAGE_GROUP_TITLES[slot.pagePath] ?? slot.pagePath;
-  const sectionLabel = labelForSlot(slot);
-  return `Displays on: ${pageTitle} > ${sectionLabel}`;
+  const pageTitle = PAGE_GROUP_TITLES[slot.pagePath] ?? "Site";
+  return `${pageTitle} - ${labelForSlot(slot)}`;
 }
 
 /** e.g. "Homepage Images", "Cruises Images" */
 export function getSiteImageGroupHeading(pageTitle: string): string {
-  if (pageTitle === "Home") return "Homepage Images";
+  if (pageTitle === "Homepage" || pageTitle === "Home") return "Homepage Images";
   return `${pageTitle} Images`;
 }
 
