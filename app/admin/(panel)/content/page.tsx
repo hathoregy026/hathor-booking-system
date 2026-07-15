@@ -335,8 +335,9 @@ export default function AdminContentPage() {
         <div>
           <h2 className="admin-heading text-xl">Website Images</h2>
           <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
-            Choose a page below, then change any photo. You will see a preview
-            of what visitors see on the live website.
+            Choose a page below, then update any photo. Each card shows a large
+            preview, where it appears on the live site, and a direct link to
+            view that page.
           </p>
         </div>
 

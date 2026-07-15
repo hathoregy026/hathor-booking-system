@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type RefObject,
+} from "react";
 import {
   AlertCircle,
   CheckCircle2,
@@ -33,8 +39,14 @@ type ImageUploadProps = {
   helperText?: string;
   variant?: "default" | "admin";
   allowClear?: boolean;
-  /** compact = no large preview (parent shows thumbnail beside slot) */
-  layout?: "default" | "compact";
+  /**
+   * default = preview + controls
+   * compact = no large preview
+   * actions-only = primary Replace button for Visual Context Cards
+   */
+  layout?: "default" | "compact" | "actions-only";
+  /** Lets a parent card trigger the hidden file picker. */
+  chooseButtonRef?: RefObject<HTMLButtonElement | null>;
 };
 
 type UploadResponse = {
@@ -166,14 +178,24 @@ export function ImageUpload({
   variant = "default",
   allowClear = true,
   layout = "default",
+  chooseButtonRef,
 }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const chooseRef = useRef<HTMLButtonElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [uploadComplete, setUploadComplete] = useState(false);
+
+  useLayoutEffect(() => {
+    if (!chooseButtonRef) return;
+    chooseButtonRef.current = chooseRef.current;
+    return () => {
+      chooseButtonRef.current = null;
+    };
+  });
 
   useEffect(() => {
     if (!selectedFile) {
@@ -271,7 +293,8 @@ export function ImageUpload({
   };
 
   const isAdmin = variant === "admin";
-  const isCompact = layout === "compact";
+  const isCompact = layout === "compact" || layout === "actions-only";
+  const isActionsOnly = layout === "actions-only";
   const showLargePreview = !isCompact && Boolean(displayUrl);
   const showEmptyPlaceholder = !isCompact && !displayUrl;
   const uploadStatusText =
@@ -334,7 +357,7 @@ export function ImageUpload({
         </div>
       ) : null}
 
-      {isCompact ? (
+      {isCompact && !isActionsOnly ? (
         <span
           className="block text-xs font-medium uppercase tracking-wide"
           style={isAdmin ? { color: "var(--text-muted)" } : undefined}
@@ -352,19 +375,22 @@ export function ImageUpload({
         id={`image-upload-${folder}-${label.replace(/\s+/g, "-").toLowerCase()}`}
       />
 
-      <div className="flex flex-wrap items-center gap-2">
+      <div className={`flex flex-wrap items-center gap-2${isActionsOnly ? " vcc-upload-actions" : ""}`}>
         <button
+          ref={chooseRef}
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={isUploading}
           className={
-            isAdmin
-              ? "admin-btn-outline inline-flex items-center gap-2 px-3 py-2 text-sm disabled:opacity-60"
-              : "inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+            isActionsOnly
+              ? "vcc-card__replace-btn"
+              : isAdmin
+                ? "admin-btn-outline inline-flex items-center gap-2 px-3 py-2 text-sm disabled:opacity-60"
+                : "inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
           }
         >
           <Upload className="h-4 w-4" aria-hidden />
-          Choose Image
+          {isActionsOnly ? label : "Choose Image"}
         </button>
 
         {selectedFile && (
@@ -373,9 +399,11 @@ export function ImageUpload({
             onClick={handleUpload}
             disabled={isUploading}
             className={
-              isAdmin
-                ? "admin-btn-primary inline-flex items-center gap-2 px-3 py-2 text-sm disabled:opacity-60"
-                : "inline-flex items-center gap-2 rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-60"
+              isActionsOnly
+                ? "vcc-card__upload-btn"
+                : isAdmin
+                  ? "admin-btn-primary inline-flex items-center gap-2 px-3 py-2 text-sm disabled:opacity-60"
+                  : "inline-flex items-center gap-2 rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-60"
             }
           >
             {isUploading ? (
@@ -393,9 +421,11 @@ export function ImageUpload({
             onClick={handleClear}
             disabled={isUploading}
             className={
-              isAdmin
-                ? "admin-btn-outline inline-flex items-center gap-2 px-3 py-2 text-sm text-red-600 disabled:opacity-60"
-                : "inline-flex items-center gap-2 rounded-lg border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 disabled:opacity-60"
+              isActionsOnly
+                ? "vcc-card__remove-btn"
+                : isAdmin
+                  ? "admin-btn-outline inline-flex items-center gap-2 px-3 py-2 text-sm text-red-600 disabled:opacity-60"
+                  : "inline-flex items-center gap-2 rounded-lg border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 disabled:opacity-60"
             }
           >
             <Trash2 className="h-4 w-4" aria-hidden />
@@ -478,14 +508,14 @@ export function ImageUpload({
         </p>
       ) : null}
 
-      {helperText && (
+      {helperText ? (
         <p
           className="text-xs"
           style={isAdmin ? { color: "var(--text-muted)" } : undefined}
         >
           {helperText}
         </p>
-      )}
+      ) : null}
 
       {error && (
         <p className="flex items-center gap-1.5 text-sm text-red-600">

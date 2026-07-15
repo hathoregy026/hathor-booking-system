@@ -1,7 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronDown, ImageIcon } from "lucide-react";
+import { useRef, useState } from "react";
+import {
+  ChevronDown,
+  ExternalLink,
+  GalleryHorizontal,
+  ImageIcon,
+  Layout,
+  Upload,
+} from "lucide-react";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import type { SiteImageAdminItem } from "@/lib/site-image-admin";
 
@@ -14,6 +21,24 @@ type SiteImageSlotCardProps = {
   onUrlChange: (url: string | null, meta?: { suggestedAltText?: string }) => void;
 };
 
+function LayoutBadge({
+  kind,
+  label,
+}: {
+  kind: SiteImageAdminItem["layoutKind"];
+  label: string;
+}) {
+  const Icon =
+    kind === "hero" ? Layout : kind === "gallery" ? GalleryHorizontal : ImageIcon;
+
+  return (
+    <span className="vcc-layout-badge">
+      <Icon className="vcc-layout-badge__icon" aria-hidden />
+      <span>{label}</span>
+    </span>
+  );
+}
+
 export function SiteImageSlotCard({
   item,
   pageTitle,
@@ -24,72 +49,85 @@ export function SiteImageSlotCard({
 }: SiteImageSlotCardProps) {
   const hasImage = Boolean(url?.trim());
   const [altOpen, setAltOpen] = useState(false);
+  const replaceTriggerRef = useRef<HTMLButtonElement>(null);
 
   return (
-    <article className="site-image-slot-card">
-      <div className="site-image-slot-card__body">
-        <div className="site-image-slot-card__thumb-col">
+    <article className="vcc-card">
+      <div className="vcc-card__body">
+        <div className="vcc-card__media">
           {hasImage ? (
-            <div className="site-image-slot-card__thumb-wrap">
+            <div className="vcc-card__thumb">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={url}
                 alt={altText || item.label}
-                className="site-image-slot-card__thumb"
+                className="vcc-card__thumb-img"
               />
             </div>
           ) : (
-            <div
-              className="site-image-slot-card__thumb-wrap site-image-slot-card__thumb-wrap--empty"
-              aria-hidden
+            <button
+              type="button"
+              className="vcc-card__thumb vcc-card__thumb--empty"
+              onClick={() => replaceTriggerRef.current?.click()}
             >
-              <ImageIcon className="site-image-slot-card__empty-icon" />
-              <span className="site-image-slot-card__thumb-placeholder">
-                No image yet
-              </span>
-            </div>
+              <Upload className="vcc-card__empty-icon" aria-hidden />
+              <span>Upload Image</span>
+            </button>
           )}
         </div>
 
-        <div className="site-image-slot-card__content">
-          <div className="site-image-slot-card__header">
-            <h4 className="site-image-slot-card__title">{item.label}</h4>
-            <p className="site-image-slot-card__location-badge">
-              <span className="site-image-slot-card__location-label">Location:</span>{" "}
-              {item.locationHint}
-            </p>
+        <div className="vcc-card__context">
+          <div className="vcc-card__top">
+            <h4 className="vcc-card__title">{item.label}</h4>
+            <LayoutBadge kind={item.layoutKind} label={item.layoutLabel} />
           </div>
 
-          <ImageUpload
-            label="Change Image"
-            value={url || null}
-            onChange={(nextUrl, meta) => onUrlChange(nextUrl, meta)}
-            pageName={pageTitle}
-            imageTitle={altText}
-            imageLabel={item.label}
-            folder={`site-images/${item.name}`}
-            variant="admin"
-            layout="compact"
-            helperText="Pick a new photo, then click Save Changes at the bottom."
-          />
+          <div className="vcc-card__actions">
+            <div className="vcc-card__replace">
+              <ImageUpload
+                label="Replace Image"
+                value={url || null}
+                onChange={(nextUrl, meta) => onUrlChange(nextUrl, meta)}
+                pageName={pageTitle}
+                imageTitle={altText}
+                imageLabel={item.label}
+                folder={`site-images/${item.name}`}
+                variant="admin"
+                layout="actions-only"
+                allowClear={hasImage}
+                chooseButtonRef={replaceTriggerRef}
+                helperText=""
+              />
+            </div>
 
-          <div className="site-image-slot-card__alt">
+            <a
+              href={item.livePath}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="vcc-card__live-btn"
+            >
+              <ExternalLink className="vcc-card__live-icon" aria-hidden />
+              View on Live Site
+            </a>
+          </div>
+
+          <div className="vcc-card__alt">
             <button
               type="button"
-              className="site-image-slot-card__alt-toggle"
+              className="vcc-card__alt-toggle"
               aria-expanded={altOpen}
               onClick={() => setAltOpen((open) => !open)}
             >
-              <span>Optional: Image description (SEO)</span>
+              <span>Optional: photo description (SEO)</span>
               <ChevronDown
-                className={`site-image-slot-card__alt-chevron${altOpen ? " is-open" : ""}`}
+                className={`vcc-card__alt-chevron${altOpen ? " is-open" : ""}`}
                 aria-hidden
               />
             </button>
             {altOpen ? (
-              <label className="site-image-slot-card__alt-field">
-                <span className="site-image-slot-card__alt-caption">
-                  Short description of what’s in the photo
+              <label className="vcc-card__alt-field">
+                <span className="vcc-card__alt-caption">
+                  Describe what’s in the photo
                 </span>
                 <input
                   value={altText}
