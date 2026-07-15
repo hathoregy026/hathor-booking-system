@@ -1033,32 +1033,55 @@ export function useExScrollMotion() {
   function boot() {
     document.body.classList.add("has-ex-scroll-motion");
     document.documentElement.classList.add("has-ex-scroll-motion");
-    initNav();
-    initHeroScrollStage();
-    initHeroText();
-    initHeroBlinds();
-    initRadiusMorph();
-    initRadiusSubHeading();
-    initGeneralRevealImages();
-    initRadiusHeadingPara();
-    initCarouselHeadings();
-    initCarousel();
-    initGeneralButtons();
-    initHomeScrollText();
-    initExStackScroll();
-    initHomeTextImgReveal();
-    initHomeTextBlocks();
-    initGalleryH2();
-    initGalleryContainers();
-    initGalleryItems();
-    initTestimonialH2();
-    initTestimonialCards();
-    initCta();
+    // Isolate steps so one GSAP failure cannot white-screen the homepage
+    // (e.g. when admin preview scroll races ScrollTrigger boot).
+    const steps = [
+      initNav,
+      initHeroScrollStage,
+      initHeroText,
+      initHeroBlinds,
+      initRadiusMorph,
+      initRadiusSubHeading,
+      initGeneralRevealImages,
+      initRadiusHeadingPara,
+      initCarouselHeadings,
+      initCarousel,
+      initGeneralButtons,
+      initHomeScrollText,
+      initExStackScroll,
+      initHomeTextImgReveal,
+      initHomeTextBlocks,
+      initGalleryH2,
+      initGalleryContainers,
+      initGalleryItems,
+      initTestimonialH2,
+      initTestimonialCards,
+      initCta,
+    ];
+    for (const step of steps) {
+      try {
+        step();
+      } catch (error) {
+        console.error(`[useExScrollMotion] ${step.name || "step"} failed`, error);
+      }
+    }
   }
 
-    boot();
+    try {
+      boot();
+    } catch (error) {
+      console.error("[useExScrollMotion] boot failed", error);
+      document.body.classList.add("has-ex-scroll-motion");
+      document.documentElement.classList.add("has-ex-scroll-motion");
+    }
 
-    const onLoad = () => ScrollTrigger.refresh();
+    const onLoad = () => {
+      try {
+        ScrollTrigger.refresh();
+      } catch (error) {
+        console.warn("[useExScrollMotion] refresh failed", error);
+      }
+    };
     window.addEventListener("load", onLoad);
 
     return () => {
@@ -1066,7 +1089,11 @@ export function useExScrollMotion() {
       heroCleanup?.();
       if (tickerFn) gsap.ticker.remove(tickerFn);
       lenis?.destroy();
-      ScrollTrigger.getAll().forEach((st) => st.kill());
+      try {
+        ScrollTrigger.getAll().forEach((st) => st.kill());
+      } catch {
+        /* ignore */
+      }
       document.body.classList.remove("has-ex-scroll-motion");
       document.documentElement.classList.remove("has-ex-scroll-motion");
     };

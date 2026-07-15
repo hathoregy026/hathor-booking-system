@@ -244,14 +244,24 @@ export function useHighlightsEditorialMotion(
       });
     }, root);
 
-    const refresh = () => ScrollTrigger.refresh();
+    const refresh = () => {
+      try {
+        ScrollTrigger.refresh();
+      } catch (error) {
+        console.warn("[useHighlightsEditorialMotion] refresh failed", error);
+      }
+    };
     refresh();
     window.addEventListener("load", refresh);
 
     return () => {
       window.removeEventListener("load", refresh);
       cleanupMagneticLinks(root);
-      ctx.revert();
+      try {
+        ctx.revert();
+      } catch {
+        /* ignore */
+      }
     };
   }, [rootRef]);
 }

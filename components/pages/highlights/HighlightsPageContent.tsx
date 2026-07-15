@@ -172,6 +172,24 @@ export function HighlightsPageContent() {
               ))}
             </div>
           </div>
+          <div
+            id="site-image-highlights-lifestyle"
+            data-site-image="highlights-lifestyle"
+            data-parallax-wrap
+            className={styles.parallaxWrap}
+          >
+            <div data-parallax-img className={styles.parallaxInner}>
+              <ManagedImage
+                name="highlights-lifestyle"
+                alt="Scenic Nile views from Hathor Dahabiya"
+                fill
+                previewAnchor={false}
+                className={styles.parallaxImg}
+                sizes="(max-width: 767px) 100vw, 50vw"
+                priority
+              />
+            </div>
+          </div>
         </div>
       </section>
 

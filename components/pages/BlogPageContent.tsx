@@ -61,6 +61,7 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
                         name={BLOG_IMAGE_NAMES[index % BLOG_IMAGE_NAMES.length]}
                         alt=""
                         fill
+                        previewAnchor={false}
                         className="object-cover transition-transform duration-700 group-hover:scale-105"
                         sizes="(max-width: 768px) 100vw, 33vw"
                       />

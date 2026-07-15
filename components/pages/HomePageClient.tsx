@@ -154,19 +154,30 @@ export function HomePageClient() {
             <div className="ex-stack-scroll__cards" aria-hidden="true">
               {EX_PINNED.slides.map((slide, index) => (
                 <div key={slide.imageName} className="ex-stack-scroll__card">
-                  <div className="ex-stack-scroll__card-media">
+                  <div
+                    className="ex-stack-scroll__card-media"
+                    id={
+                      slide.imageName === "home-split-courtyard" ||
+                      slide.imageName === "home-story-legacy-large"
+                        ? `site-image-${slide.imageName}`
+                        : undefined
+                    }
+                    data-site-image={
+                      slide.imageName === "home-split-courtyard" ||
+                      slide.imageName === "home-story-legacy-large"
+                        ? slide.imageName
+                        : undefined
+                    }
+                    data-site-image-pin-index={String(index)}
+                    data-site-image-pin-total={String(EX_PINNED.slides.length)}
+                  >
                     <ManagedImage
                       name={slide.imageName}
                       alt={slide.alt}
                       fill
                       sizes="100vw"
                       className="object-cover object-center"
-                      previewAnchor={
-                        slide.imageName === "home-split-courtyard" ||
-                        slide.imageName === "home-story-legacy-large"
-                      }
-                      data-site-image-pin-index={String(index)}
-                      data-site-image-pin-total={String(EX_PINNED.slides.length)}
+                      previewAnchor={false}
                     />
                   </div>
                 </div>

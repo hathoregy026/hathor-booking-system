@@ -4,6 +4,7 @@ import { CtaBand } from "@/components/pages/CtaBand";
 import { InquiryForm } from "@/components/pages/InquiryForm";
 import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { ManagedImage } from "@/components/ui/ManagedImage";
 import { CHARTER_PAGE } from "@/lib/page-content";
 
 export function CharterPageContent() {
@@ -40,20 +41,37 @@ export function CharterPageContent() {
             </ScrollReveal>
 
             <ScrollReveal delay={120}>
-              <div>
-                <p className="hathor-section-eyebrow">Route Options</p>
-                <h3 className="hathor-section-title text-2xl">Your Private Itinerary</h3>
-                <div className="hathor-gold-line hathor-gold-line--left" />
-                <div className="mt-6 flex flex-wrap gap-3">
-                  {CHARTER_PAGE.overview.routes.map((route) => (
-                    <span key={route} className="hathor-route-chip">
-                      {route}
-                    </span>
-                  ))}
-                </div>
+              <div
+                id="site-image-charter"
+                data-site-image="charter"
+                className="hathor-editorial__image-wrap hathor-editorial__image-wrap--tall"
+              >
+                <ManagedImage
+                  name="charter"
+                  alt="Private charter aboard Hathor Dahabiya"
+                  fill
+                  previewAnchor={false}
+                  className="hathor-editorial__image object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
               </div>
             </ScrollReveal>
           </div>
+
+          <ScrollReveal>
+            <div className="mt-12">
+              <p className="hathor-section-eyebrow">Route Options</p>
+              <h3 className="hathor-section-title text-2xl">Your Private Itinerary</h3>
+              <div className="hathor-gold-line hathor-gold-line--left" />
+              <div className="mt-6 flex flex-wrap gap-3">
+                {CHARTER_PAGE.overview.routes.map((route) => (
+                  <span key={route} className="hathor-route-chip">
+                    {route}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
