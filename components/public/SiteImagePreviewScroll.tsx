@@ -5,7 +5,6 @@ import {
   getSiteImageFallbackSectionId,
   readSiteImagePreviewName,
   siteImageAnchorId,
-  SITE_IMAGE_VIEW_PARAM,
 } from "@/lib/site-image-preview";
 
 function findPreviewTarget(name: string): HTMLElement | null {
