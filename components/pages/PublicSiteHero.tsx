@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useLayoutEffect, useRef } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import {
@@ -67,13 +68,13 @@ export function PublicSiteHero({
       <div className="home-hero-cover" aria-hidden="true" />
 
       <div className="hero-logo-mark" aria-hidden="true">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           className="hero-logo-img"
           src={EX_GOLD_LOGO_SRC}
           alt={HATHOR_BRAND_NAME}
           width={1600}
           height={560}
+          sizes="(max-width: 768px) 80vw, 720px"
         />
       </div>
 
@@ -82,14 +83,14 @@ export function PublicSiteHero({
           <span className="hero-line hero-line--right">{lineRight}</span>
           {lineLeftImageSrc ? (
             <span className="hero-line hero-line--left hero-line--wordmark">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 className="hero-line-wordmark-img"
                 src={lineLeftImageSrc}
                 alt={lineLeft || "Dahabiya Cruise"}
                 width={1600}
                 height={302}
                 draggable={false}
+                sizes="(max-width: 768px) 70vw, 640px"
               />
             </span>
           ) : lineLeft ? (

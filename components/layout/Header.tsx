@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -328,14 +329,16 @@ export function Header() {
 
             <div className="hathor-header__col hathor-header__col--logo">
               <Link href="/" className="hathor-header__brand">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src={
                     menuHovered
                       ? HATHOR_HERO_ICON_DARK_SRC
                       : HATHOR_HERO_ICON_SRC
                   }
                   alt={HATHOR_BRAND_NAME}
+                  width={46}
+                  height={46}
+                  sizes="46px"
                   className="hathor-header__logo hathor-header__logo--icon"
                 />
               </Link>

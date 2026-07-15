@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { useCruisesGiantLogo } from "@/hooks/useCruisesGiantLogo";
@@ -55,11 +56,14 @@ export function CruisesHero({
     <section ref={runwayRef} className="cruises-hero" data-cruises-hero>
       <div ref={stageRef} className="cruises-hero__stage">
         <div className="cruises-hero__media">
-          <img
+          <Image
             src={image.src}
             alt={imageAlt ?? image.alt}
-            fetchPriority="high"
-            decoding="async"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+            style={{ objectPosition: "center 58%" }}
             onLoad={() => refreshCruisesHeroStripes()}
           />
           <div className="cruises-hero__shade" aria-hidden />
@@ -83,8 +87,13 @@ export function CruisesHero({
         </div>
 
         <div ref={giantLogoRef} className="cruises-hero__giant-logo">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={GIANT_LOGO_SRC} alt="Hathor" />
+          <Image
+            src={GIANT_LOGO_SRC}
+            alt="Hathor"
+            width={1600}
+            height={560}
+            sizes="100vw"
+          />
         </div>
       </div>
     </section>

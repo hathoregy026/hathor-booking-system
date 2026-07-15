@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { PublicSiteHero } from "@/components/pages/PublicSiteHero";
@@ -40,11 +41,13 @@ export function HomePageClient() {
                 <div className="radius-img-container">
                   <div className="radius-img-container-inner">
                     <div className="general-reveal-img">
-                      <img
+                      <Image
                         src={EX_ABOUT.image}
                         alt={EX_ABOUT.imageAlt}
                         width={900}
                         height={1200}
+                        sizes="(max-width: 768px) 100vw, 42vw"
+                        className="h-auto w-full object-cover"
                       />
                     </div>
                   </div>
@@ -54,7 +57,14 @@ export function HomePageClient() {
               <div>
                 <div className="radius-decor" aria-hidden="true">
                   {EX_ABOUT.decor.map((src) => (
-                    <img key={src} src={src} alt="" />
+                    <Image
+                      key={src}
+                      src={src}
+                      alt=""
+                      width={42}
+                      height={42}
+                      sizes="42px"
+                    />
                   ))}
                 </div>
                 <div className="radius-heading">
@@ -91,7 +101,13 @@ export function HomePageClient() {
                 <article key={slide.title} className="carousel-slide">
                   <div className="carousel-container-parent">
                     <div className="carousel-container">
-                      <img src={slide.image} alt={slide.alt} />
+                      <Image
+                        src={slide.image}
+                        alt={slide.alt}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="object-cover"
+                      />
                       <div className="carousel-heading">
                         <h2>{slide.title}</h2>
                       </div>
@@ -132,8 +148,13 @@ export function HomePageClient() {
               {EX_PINNED.slides.map((slide) => (
                 <div key={slide.src} className="ex-stack-scroll__card">
                   <div className="ex-stack-scroll__card-media">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={slide.src} alt={slide.alt} />
+                    <Image
+                      src={slide.src}
+                      alt={slide.alt}
+                      fill
+                      sizes="100vw"
+                      className="object-cover object-center"
+                    />
                   </div>
                 </div>
               ))}
@@ -158,7 +179,13 @@ export function HomePageClient() {
             >
               <div className="home-text-img-parent">
                 <div className="home-text-img-container">
-                  <img src={block.image} alt={block.alt} />
+                  <Image
+                    src={block.image}
+                    alt={block.alt}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover"
+                  />
                 </div>
               </div>
               <div>
@@ -186,7 +213,13 @@ export function HomePageClient() {
           <div className="gallery-grid">
             {EX_GALLERY.images.map((item) => (
               <div key={item.src} className="gallery-item">
-                <img src={item.src} alt={item.alt} />
+                <Image
+                  src={item.src}
+                  alt={item.alt}
+                  fill
+                  sizes="(max-width: 768px) 50vw, 20vw"
+                  className="object-cover"
+                />
               </div>
             ))}
           </div>
