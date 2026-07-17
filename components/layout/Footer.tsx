@@ -18,9 +18,12 @@ const FOOTER_EXPERIENCES = [
 
 const FOOTER_LEGAL = [
   { id: "press", href: `mailto:${PUBLIC_CONTACT.email}`, label: "Press" },
-  { id: "privacy", href: "/contact", label: "Privacy" },
+  {
+    id: "privacy",
+    href: `mailto:${PUBLIC_CONTACT.email}?subject=${encodeURIComponent("Privacy Policy Inquiry")}`,
+    label: "Privacy",
+  },
   { id: "contact", href: "/contact", label: "Contact" },
-  { id: "sitemap", href: "/cruises", label: "Sitemap" },
 ] as const;
 
 export function Footer() {

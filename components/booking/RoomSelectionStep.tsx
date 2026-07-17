@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { format, parseISO } from "date-fns";
 import {
   ArrowLeft,
@@ -150,6 +151,20 @@ export function RoomSelectionStep({ heroImageUrl }: RoomSelectionStepProps) {
               ? { backgroundImage: `url(${heroImageUrl})` }
               : { background: ROOM_PLACEHOLDER };
 
+            const detailsParams = new URLSearchParams();
+            if (checkInDate) detailsParams.set("checkInDate", checkInDate);
+            if (duration) detailsParams.set("duration", duration);
+            if (room.cruiseId) detailsParams.set("cruiseId", room.cruiseId);
+            detailsParams.set("scheduleId", room.scheduleId);
+            const adults = roomConfigs.reduce((sum, cfg) => sum + cfg.adults, 0);
+            const children = roomConfigs.reduce(
+              (sum, cfg) => sum + cfg.children,
+              0,
+            );
+            detailsParams.set("adults", String(adults));
+            detailsParams.set("children", String(children));
+            const detailsHref = `/booking/cruise/${room.id}?${detailsParams.toString()}`;
+
             return (
               <article
                 key={selectionKey}
@@ -161,13 +176,13 @@ export function RoomSelectionStep({ heroImageUrl }: RoomSelectionStepProps) {
                   className="booking-room-card__image"
                   style={imageStyle}
                 >
-                  <button
-                    type="button"
-                    className="absolute bottom-4 left-4 rounded-full bg-white/95 px-4 py-1.5 text-xs font-semibold shadow-sm backdrop-blur-sm"
+                  <Link
+                    href={detailsHref}
+                    className="absolute bottom-4 left-4 rounded-full bg-white/95 px-4 py-1.5 text-xs font-semibold shadow-sm backdrop-blur-sm transition hover:bg-white"
                     style={{ color: "var(--booking-navy)" }}
                   >
                     More details
-                  </button>
+                  </Link>
                 </div>
 
                 <div className="flex flex-col justify-center gap-4 p-6">

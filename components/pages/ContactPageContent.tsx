@@ -1,7 +1,7 @@
 "use client";
 
 import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
-import { CtaBand } from "@/components/pages/CtaBand";
+import { MarketingCtaBand } from "@/components/pages/MarketingCtaBand";
 import { InquiryForm } from "@/components/pages/InquiryForm";
 import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
@@ -109,7 +109,7 @@ export function ContactPageContent() {
         </div>
       </section>
 
-      <CtaBand />
+      <MarketingCtaBand />
     </PageScrollTransition>
   );
 }

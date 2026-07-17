@@ -1,6 +1,6 @@
 "use client";
 
-import { CtaBand } from "@/components/pages/CtaBand";
+import { MarketingCtaBand } from "@/components/pages/MarketingCtaBand";
 import { EditorialSection } from "@/components/pages/EditorialSection";
 import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
@@ -82,7 +82,7 @@ export function GastronomyPageContent() {
         </div>
       </section>
 
-      <CtaBand
+      <MarketingCtaBand
         title="Taste the Nile"
         body="Reserve your voyage and savor every moment — from sunrise breakfasts to candlelit dinners under the stars."
       />

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { CtaBand } from "@/components/pages/CtaBand";
+import { MarketingCtaBand } from "@/components/pages/MarketingCtaBand";
 import { EditorialSection } from "@/components/pages/EditorialSection";
 import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ManagedImage } from "@/components/ui/ManagedImage";
@@ -186,7 +186,7 @@ export function AboutPageContent() {
         </div>
       </section>
 
-      <CtaBand />
+      <MarketingCtaBand />
     </PageScrollTransition>
   );
 }

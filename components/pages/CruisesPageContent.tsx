@@ -1,6 +1,6 @@
 "use client";
 
-import { CtaBand } from "@/components/pages/CtaBand";
+import { MarketingCtaBand } from "@/components/pages/MarketingCtaBand";
 import { PublicSiteHero } from "@/components/pages/PublicSiteHero";
 import {
   CruisesListingProvider,
@@ -35,7 +35,7 @@ export function CruisesPageContent() {
 
           <div className="cruises-sheet__body">
             <CruisesPageListingsGrid />
-            <CtaBand />
+            <MarketingCtaBand />
           </div>
         </div>
       </div>

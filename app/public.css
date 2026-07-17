@@ -6199,3 +6199,102 @@ body.has-page-scroll-transition .pin-spacer {
   }
 }
 
+/* ═══════════════════════════════════════════════════════════
+   Agraham titles — 48px, gold body / white heroes, engraved depth
+   Excludes: homepage hero (data-ex-experience) and booking shell
+   ═══════════════════════════════════════════════════════════ */
+
+.public-site {
+  --hathor-title-font: var(--font-hathor-agraham), "Agraham", var(--public-serif);
+  --hathor-title-size: 48px;
+  --hathor-title-gold: #b69f64;
+  /* Soft engraved inner depth (cast from top-left) */
+  --hathor-title-engraved-gold:
+    -0.5px -0.5px 0 rgba(255, 248, 235, 0.4),
+    0.75px 0.75px 0 rgba(55, 40, 18, 0.32),
+    1px 2px 3px rgba(0, 0, 0, 0.16);
+  --hathor-title-engraved-white:
+    -0.5px -0.5px 0 rgba(255, 255, 255, 0.35),
+    0.75px 0.75px 0 rgba(0, 0, 0, 0.35),
+    1px 2px 6px rgba(0, 0, 0, 0.28);
+}
+
+/* Body / sheet main titles — Agraham gold */
+.public-site .hathor-section-title,
+.public-site .hathor-chapter-title,
+.public-site .lux-cta-band__title,
+.public-site .owo-chapter__title,
+.public-site .lux-section-title,
+.public-site [data-page-transition] .pt-sheet__landing-title,
+.public-site .cruises-sheet__title {
+  font-family: var(--hathor-title-font) !important;
+  font-size: clamp(1.75rem, 4.2vw, var(--hathor-title-size)) !important;
+  font-weight: 400 !important;
+  font-style: normal !important;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+  color: var(--hathor-title-gold) !important;
+  -webkit-text-fill-color: var(--hathor-title-gold);
+  text-shadow: var(--hathor-title-engraved-gold);
+  text-wrap: balance;
+}
+
+/* Page heroes (About, Wellness, Blog, …) — Agraham white */
+.public-site .hathor-page-hero__title,
+.public-site [data-page-transition] .pt-hero__copy .hathor-page-hero__title {
+  font-family: var(--hathor-title-font) !important;
+  font-size: clamp(1.75rem, 4.2vw, var(--hathor-title-size)) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.02em;
+  line-height: 1.12;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff;
+  text-shadow: var(--hathor-title-engraved-white);
+}
+
+/* Non-home PublicSiteHero (e.g. cruises) — leave homepage hero alone */
+html:not([data-ex-experience]) .public-site .home-hero-container .hero-heading,
+html:not([data-ex-experience]) .public-site .home-hero-container .hero-line--right,
+html:not([data-ex-experience])
+  .public-site
+  .home-hero-container
+  .hero-line--left:not(.hero-line--wordmark) {
+  font-family: var(--hathor-title-font) !important;
+  font-size: clamp(1.75rem, 4.2vw, var(--hathor-title-size)) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.06em;
+  line-height: 1.05;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff;
+  text-shadow: var(--hathor-title-engraved-white);
+  text-transform: none !important;
+}
+
+html:not([data-ex-experience]) .public-site .cruises-scroll-route .cruises-hero__title {
+  font-family: var(--hathor-title-font) !important;
+  font-size: clamp(1.75rem, 4.2vw, var(--hathor-title-size)) !important;
+  font-weight: 400 !important;
+  color: #ffffff !important;
+  text-shadow: var(--hathor-title-engraved-white);
+}
+
+/* Homepage body titles only — never the hero */
+html[data-ex-experience] .ex-root .radius-heading h2,
+html[data-ex-experience] .ex-root .home-carousel-h2 h2,
+html[data-ex-experience] .ex-root .ex-stack-scroll__title,
+html[data-ex-experience] .ex-root .home-text-h2 h2,
+html[data-ex-experience] .ex-root .gallery-h2 h2,
+html[data-ex-experience] .ex-root .gallery-sm h2,
+html[data-ex-experience] .ex-root .testimonial-h2 h2,
+html[data-ex-experience] .ex-root .cta-inner h2 {
+  font-family: var(--hathor-title-font) !important;
+  font-size: clamp(1.75rem, 4.2vw, var(--hathor-title-size)) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+  text-transform: none !important;
+  color: var(--hathor-title-gold) !important;
+  -webkit-text-fill-color: var(--hathor-title-gold);
+  text-shadow: var(--hathor-title-engraved-gold);
+}
+

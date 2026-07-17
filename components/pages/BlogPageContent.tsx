@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { CtaBand } from "@/components/pages/CtaBand";
+import { MarketingCtaBand } from "@/components/pages/MarketingCtaBand";
 import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import {
@@ -100,7 +100,7 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
         </div>
       </section>
 
-      <CtaBand />
+      <MarketingCtaBand />
     </PageScrollTransition>
   );
 }

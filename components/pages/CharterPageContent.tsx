@@ -1,6 +1,6 @@
 "use client";
 
-import { CtaBand } from "@/components/pages/CtaBand";
+import { MarketingCtaBand } from "@/components/pages/MarketingCtaBand";
 import { InquiryForm } from "@/components/pages/InquiryForm";
 import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
@@ -91,7 +91,7 @@ export function CharterPageContent() {
         </div>
       </section>
 
-      <CtaBand
+      <MarketingCtaBand
         title="The Nile, Exclusively Yours"
         body="Charter the entire Hathor Dahabiya for your family, friends, or celebration."
       />
