@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { HATHOR_BRAND_NAME } from "@/lib/branding";
 import {
   HATHOR_LOGO_LETTERS,
@@ -19,23 +18,29 @@ const RIGHT_LETTERS: readonly HathorLogoLetter[] = HATHOR_LOGO_LETTERS.slice(3);
 
 function LetterImages({ letters }: { letters: readonly HathorLogoLetter[] }) {
   return letters.map((letter) => (
-    <Image
+    <span
       key={letter.key}
-      src={letter.src}
-      alt={letter.alt}
-      width={letter.width}
-      height={letter.height}
-      priority
-      draggable={false}
-      sizes="(max-width: 768px) 30vw, 28vw"
-      className={`logo-letter ${letter.className}`}
-    />
+      className={`logo-letter-wrap ${letter.className}`}
+      style={{ flexGrow: letter.flexGrow }}
+    >
+      {/* Native img — Next/Image width/height attrs fight full-bleed flex sizing */}
+      <img
+        src={letter.src}
+        alt={letter.alt}
+        width={letter.width}
+        height={letter.height}
+        draggable={false}
+        decoding="async"
+        fetchPriority="high"
+        className="logo-letter"
+      />
+    </span>
   ));
 }
 
 /**
  * Full-bleed HATHOR: left half HAT · center gap (fixed Book Now) · right half HOR.
- * Each side fills from screen edge to the button.
+ * Letters scale to the side width so they read edge-to-edge from a distance.
  */
 export function HathorLogoSplit({ className }: HathorLogoSplitProps) {
   return (

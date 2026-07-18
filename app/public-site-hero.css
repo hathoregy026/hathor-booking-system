@@ -124,42 +124,56 @@
 
 /* Split HATHOR wordmark — per-letter images inside .hero-logo-mark */
 .hathor-logo-split {
+  --hathor-logo-gap: clamp(10.5rem, 14vw, 12.5rem);
+  --hathor-logo-side-w: calc((100vw - var(--hathor-logo-gap)) / 2);
+  --hathor-logo-h: calc(var(--hathor-logo-side-w) * 2200 / 2683);
+
   display: flex !important;
   flex-direction: row !important;
   flex-wrap: nowrap !important;
   justify-content: stretch;
   align-items: center;
   gap: 0;
-  width: 100%;
-  height: auto;
+  width: 100vw !important;
+  max-width: none !important;
+  height: var(--hathor-logo-h) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box;
 }
 
 .hathor-logo-split__side {
-  flex: 1 1 0;
+  flex: 1 1 0 !important;
+  width: 0;
   min-width: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.15vw;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: stretch;
+  height: 100% !important;
+  gap: 0;
 }
 
 .hathor-logo-split__side--left {
-  justify-content: flex-end;
-  padding-left: clamp(0.25rem, 1vw, 1rem);
+  justify-content: flex-start;
 }
 
 .hathor-logo-split__side--right {
-  justify-content: flex-start;
-  padding-right: clamp(0.25rem, 1vw, 1rem);
+  justify-content: flex-end;
+}
+
+.hathor-logo-split .logo-letter-wrap {
+  display: flex !important;
+  flex-basis: 0;
+  flex-shrink: 1;
+  min-width: 0;
+  height: 100% !important;
 }
 
 .hathor-logo-split .logo-letter {
-  display: block;
-  width: 0 !important;
-  min-width: 0;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
   max-width: none !important;
-  height: auto !important;
-  flex-basis: 0;
-  flex-shrink: 1;
   object-fit: contain;
   object-position: center center;
   user-select: none;
@@ -167,49 +181,23 @@
   will-change: transform, opacity;
 }
 
-.hathor-logo-split .letter-h1 {
-  flex-grow: 855;
-  aspect-ratio: 855 / 2200;
-}
-.hathor-logo-split .letter-a {
-  flex-grow: 1070;
-  aspect-ratio: 1070 / 2200;
-}
-.hathor-logo-split .letter-t {
-  flex-grow: 758;
-  aspect-ratio: 758 / 2200;
-}
-.hathor-logo-split .letter-h2 {
-  flex-grow: 840;
-  aspect-ratio: 840 / 2200;
-}
-.hathor-logo-split .letter-o {
-  flex-grow: 1019;
-  aspect-ratio: 1019 / 2200;
-}
-.hathor-logo-split .letter-r {
-  flex-grow: 764;
-  aspect-ratio: 764 / 2200;
-}
-
 .hathor-logo-split__gap {
-  flex: 0 0 clamp(10.5rem, 16vw, 12.5rem);
-  width: clamp(10.5rem, 16vw, 12.5rem);
+  flex: 0 0 var(--hathor-logo-gap) !important;
+  width: var(--hathor-logo-gap) !important;
   height: 1px;
   pointer-events: none;
 }
 
 .hero-logo-mark--split {
-  bottom: clamp(56px, 9vh, 88px);
+  bottom: clamp(40px, 6vh, 72px);
   width: 100vw;
   z-index: 4;
   pointer-events: none;
 }
 
 @media (max-width: 768px) {
-  .hathor-logo-split__gap {
-    flex-basis: clamp(7.25rem, 26vw, 9.5rem);
-    width: clamp(7.25rem, 26vw, 9.5rem);
+  .hathor-logo-split {
+    --hathor-logo-gap: clamp(7rem, 24vw, 9.5rem);
   }
 }
 

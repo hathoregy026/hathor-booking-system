@@ -34,6 +34,7 @@ html[data-ex-experience] .ex-root .hero-logo-mark {
 }
 
 html[data-ex-experience] .ex-root .hero-logo-mark--split {
+  bottom: clamp(40px, 6vh, 72px);
   z-index: 4;
   pointer-events: none;
 }
@@ -48,88 +49,78 @@ html[data-ex-experience] .ex-root .hero-logo-img {
   object-position: center center;
 }
 
-/* Must beat .hero-logo-img { display:block } or letters stack vertically.
-   Each side flex:1 fills the red zone (edge → Book Now). Letters scale to that width. */
+/*
+  Full-bleed split logo: each side = (100vw − gap) / 2.
+  Letter height = sideWidth × (2200 / 2683) so HAT / HOR fill edge → button.
+*/
 html[data-ex-experience] .ex-root .hathor-logo-split.hero-logo-img {
+  --hathor-logo-gap: clamp(10.5rem, 14vw, 12.5rem);
+  --hathor-logo-side-w: calc((100vw - var(--hathor-logo-gap)) / 2);
+  --hathor-logo-h: calc(var(--hathor-logo-side-w) * 2200 / 2683);
+
   display: flex !important;
   flex-direction: row !important;
   flex-wrap: nowrap !important;
   justify-content: stretch;
   align-items: center;
   gap: 0;
-  width: 100%;
-  height: auto;
+  width: 100vw !important;
+  max-width: none !important;
+  height: var(--hathor-logo-h) !important;
+  margin: 0 !important;
+  padding: 0 !important;
   object-fit: unset;
+  box-sizing: border-box;
 }
 
 html[data-ex-experience] .ex-root .hathor-logo-split__side {
-  flex: 1 1 0;
+  flex: 1 1 0 !important;
+  width: 0;
   min-width: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.15vw;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: stretch;
+  height: 100% !important;
+  gap: 0;
 }
 
 html[data-ex-experience] .ex-root .hathor-logo-split__side--left {
-  justify-content: flex-end;
-  padding-left: clamp(0.25rem, 1vw, 1rem);
+  justify-content: flex-start;
 }
 
 html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
-  justify-content: flex-start;
-  padding-right: clamp(0.25rem, 1vw, 1rem);
+  justify-content: flex-end;
+}
+
+html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter-wrap {
+  display: flex !important;
+  flex-basis: 0;
+  flex-shrink: 1;
+  min-width: 0;
+  height: 100% !important;
 }
 
 html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter {
-  display: block;
-  width: 0 !important;
-  min-width: 0;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
   max-width: none !important;
-  height: auto !important;
-  flex-basis: 0;
-  flex-shrink: 1;
   object-fit: contain;
   object-position: center center;
   will-change: transform, opacity;
 }
 
-html[data-ex-experience] .ex-root .hathor-logo-split .letter-h1 {
-  flex-grow: 855;
-  aspect-ratio: 855 / 2200;
-}
-html[data-ex-experience] .ex-root .hathor-logo-split .letter-a {
-  flex-grow: 1070;
-  aspect-ratio: 1070 / 2200;
-}
-html[data-ex-experience] .ex-root .hathor-logo-split .letter-t {
-  flex-grow: 758;
-  aspect-ratio: 758 / 2200;
-}
-html[data-ex-experience] .ex-root .hathor-logo-split .letter-h2 {
-  flex-grow: 840;
-  aspect-ratio: 840 / 2200;
-}
-html[data-ex-experience] .ex-root .hathor-logo-split .letter-o {
-  flex-grow: 1019;
-  aspect-ratio: 1019 / 2200;
-}
-html[data-ex-experience] .ex-root .hathor-logo-split .letter-r {
-  flex-grow: 764;
-  aspect-ratio: 764 / 2200;
-}
-
 /* Empty middle slot — Book Now stays in .hero-button and sits in this gap */
 html[data-ex-experience] .ex-root .hathor-logo-split__gap {
-  flex: 0 0 clamp(10.5rem, 16vw, 12.5rem);
-  width: clamp(10.5rem, 16vw, 12.5rem);
+  flex: 0 0 var(--hathor-logo-gap) !important;
+  width: var(--hathor-logo-gap) !important;
   height: 1px;
   pointer-events: none;
 }
 
 @media (max-width: 768px) {
-  html[data-ex-experience] .ex-root .hathor-logo-split__gap {
-    flex-basis: clamp(7.25rem, 26vw, 9.5rem);
-    width: clamp(7.25rem, 26vw, 9.5rem);
+  html[data-ex-experience] .ex-root .hathor-logo-split.hero-logo-img {
+    --hathor-logo-gap: clamp(7rem, 24vw, 9.5rem);
   }
 }
 
@@ -590,42 +581,56 @@ h1, h2, h3, h4, p {
 
 /* Split HATHOR — letter images (homepage); GSAP still animates .hero-logo-mark */
 .hathor-logo-split {
+  --hathor-logo-gap: clamp(10.5rem, 14vw, 12.5rem);
+  --hathor-logo-side-w: calc((100vw - var(--hathor-logo-gap)) / 2);
+  --hathor-logo-h: calc(var(--hathor-logo-side-w) * 2200 / 2683);
+
   display: flex !important;
   flex-direction: row !important;
   flex-wrap: nowrap !important;
   justify-content: stretch;
   align-items: center;
   gap: 0;
-  width: 100%;
-  height: auto;
+  width: 100vw !important;
+  max-width: none !important;
+  height: var(--hathor-logo-h) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box;
 }
 
 .hathor-logo-split__side {
-  flex: 1 1 0;
+  flex: 1 1 0 !important;
+  width: 0;
   min-width: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.15vw;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: stretch;
+  height: 100% !important;
+  gap: 0;
 }
 
 .hathor-logo-split__side--left {
-  justify-content: flex-end;
-  padding-left: clamp(0.25rem, 1vw, 1rem);
+  justify-content: flex-start;
 }
 
 .hathor-logo-split__side--right {
-  justify-content: flex-start;
-  padding-right: clamp(0.25rem, 1vw, 1rem);
+  justify-content: flex-end;
+}
+
+.hathor-logo-split .logo-letter-wrap {
+  display: flex !important;
+  flex-basis: 0;
+  flex-shrink: 1;
+  min-width: 0;
+  height: 100% !important;
 }
 
 .hathor-logo-split .logo-letter {
-  display: block;
-  width: 0 !important;
-  min-width: 0;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
   max-width: none !important;
-  height: auto !important;
-  flex-basis: 0;
-  flex-shrink: 1;
   object-fit: contain;
   object-position: center center;
   user-select: none;
@@ -633,50 +638,24 @@ h1, h2, h3, h4, p {
   will-change: transform, opacity;
 }
 
-.hathor-logo-split .letter-h1 {
-  flex-grow: 855;
-  aspect-ratio: 855 / 2200;
-}
-.hathor-logo-split .letter-a {
-  flex-grow: 1070;
-  aspect-ratio: 1070 / 2200;
-}
-.hathor-logo-split .letter-t {
-  flex-grow: 758;
-  aspect-ratio: 758 / 2200;
-}
-.hathor-logo-split .letter-h2 {
-  flex-grow: 840;
-  aspect-ratio: 840 / 2200;
-}
-.hathor-logo-split .letter-o {
-  flex-grow: 1019;
-  aspect-ratio: 1019 / 2200;
-}
-.hathor-logo-split .letter-r {
-  flex-grow: 764;
-  aspect-ratio: 764 / 2200;
-}
-
 /* Spacer so fixed Book Now sits between HAT and HOR */
 .hathor-logo-split__gap {
-  flex: 0 0 clamp(10.5rem, 16vw, 12.5rem);
-  width: clamp(10.5rem, 16vw, 12.5rem);
+  flex: 0 0 var(--hathor-logo-gap) !important;
+  width: var(--hathor-logo-gap) !important;
   height: 1px;
   pointer-events: none;
 }
 
 .hero-logo-mark--split {
-  bottom: clamp(56px, 9vh, 88px);
+  bottom: clamp(40px, 6vh, 72px);
   width: 100vw;
   z-index: 4;
   pointer-events: none;
 }
 
 @media (max-width: 768px) {
-  .hathor-logo-split__gap {
-    flex-basis: clamp(7.25rem, 26vw, 9.5rem);
-    width: clamp(7.25rem, 26vw, 9.5rem);
+  .hathor-logo-split {
+    --hathor-logo-gap: clamp(7rem, 24vw, 9.5rem);
   }
 }
 
