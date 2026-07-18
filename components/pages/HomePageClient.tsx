@@ -23,7 +23,7 @@ import {
   DEFAULT_HERO_LOGO_TUNE,
   type HeroLogoTune,
   heroLogoTuneToCssVars,
-} from "@/lib/hero-logo-tune";
+} from "@/lib/hero-logo-tune-shared";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 
 const GALLERY_PREVIEW_ANCHORS = new Set([

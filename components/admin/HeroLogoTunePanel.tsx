@@ -8,7 +8,7 @@ import {
   DEFAULT_HERO_LOGO_TUNE,
   type HeroLogoTune,
   parseHeroLogoTune,
-} from "@/lib/hero-logo-tune";
+} from "@/lib/hero-logo-tune-shared";
 
 function SliderRow({
   label,
