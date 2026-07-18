@@ -38,11 +38,21 @@ html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--spli
   --hathor-logo-side-w: calc((100vw - var(--hathor-logo-gap)) / 2);
   --hathor-cta-half-h: 26px;
   --hathor-cta-nudge: 0px;
-  /* Full edge-to-edge letter size (same aspect as letter assets) */
-  --hathor-logo-h: calc(var(--hathor-logo-side-w) * 1804 / 2676);
-  /* ~22% of letters sit under the cream content sheet — not cropped assets */
-  --hathor-logo-tuck: 0.22;
-  --hathor-logo-bottom: calc(var(--hathor-logo-h) * -1 * var(--hathor-logo-tuck));
+
+  /*
+    ═══ MANUAL TUNING — edit these (or use /?logoTune=1 sliders) ═══
+    --hathor-logo-size     scale vs edge-to-edge auto height (1 = default)
+    --hathor-logo-y        bottom offset in px (− lowers/tucks, + raises)
+    --hathor-cta-y-nudge   Book Now fine vertical nudge in px
+  */
+  --hathor-logo-size: 1;
+  --hathor-logo-y: 0px;
+  --hathor-cta-y-nudge: 0px;
+
+  --hathor-logo-h: calc(
+    var(--hathor-logo-side-w) * 1804 / 2676 * var(--hathor-logo-size)
+  );
+  --hathor-logo-bottom: var(--hathor-logo-y);
 }
 
 html[data-ex-experience] .ex-root .hero-logo-mark--split {
@@ -57,10 +67,11 @@ html[data-ex-experience] .ex-root .hero-logo-mark--split {
   -webkit-mask: none;
 }
 
-/* Book Now centered on the VISIBLE letter band (above the sheet tuck) */
+/* Book Now tracks letter band center + optional nudge */
 html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) .hero-button {
   bottom: calc(
-    var(--hathor-logo-h) * (1 - var(--hathor-logo-tuck)) / 2 - var(--hathor-cta-half-h)
+    var(--hathor-logo-bottom) + (var(--hathor-logo-h) / 2) - var(--hathor-cta-half-h) +
+      var(--hathor-cta-y-nudge)
   ) !important;
   top: auto !important;
   transform: translateX(var(--hathor-cta-nudge, 0px));
@@ -91,7 +102,7 @@ html[data-ex-experience] .ex-root .hathor-logo-split.hero-logo-img {
   flex-direction: row !important;
   flex-wrap: nowrap !important;
   justify-content: stretch;
-  align-items: flex-start; /* top-align the row */
+  align-items: flex-end;
   gap: 0;
   width: 100vw !important;
   max-width: none !important;
@@ -114,7 +125,7 @@ html[data-ex-experience] .ex-root .hathor-logo-split__side {
   min-width: 0;
   display: flex !important;
   flex-direction: row !important;
-  align-items: flex-start; /* top-align letters in each side */
+  align-items: flex-end; /* shared baseline — same letter height */
   height: 100% !important;
   gap: 0;
   overflow: visible;
@@ -132,8 +143,9 @@ html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
 
 html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter-wrap {
   display: flex !important;
-  flex-basis: 0;
-  flex-shrink: 1;
+  flex: 0 0 auto !important;
+  flex-basis: auto !important;
+  width: auto !important;
   min-width: 0;
   height: 100% !important;
   overflow: visible;
@@ -146,13 +158,13 @@ html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter-wrap {
 
 html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter {
   display: block !important;
-  width: 100% !important;
+  /* Same band height for every glyph; width follows each letter’s aspect */
+  width: auto !important;
   height: 100% !important;
   max-width: none !important;
   max-height: none !important;
-  /* Free full glyph — top-aligned so H/A/T/H/O/R share one cap line */
   object-fit: contain;
-  object-position: top center;
+  object-position: bottom center;
   clip-path: none;
   -webkit-clip-path: none;
   mask: none;
@@ -639,7 +651,7 @@ h1, h2, h3, h4, p {
   flex-direction: row !important;
   flex-wrap: nowrap !important;
   justify-content: stretch;
-  align-items: flex-start;
+  align-items: flex-end;
   gap: 0;
   width: 100vw !important;
   max-width: none !important;
@@ -660,7 +672,7 @@ h1, h2, h3, h4, p {
   min-width: 0;
   display: flex !important;
   flex-direction: row !important;
-  align-items: flex-start;
+  align-items: flex-end;
   height: 100% !important;
   gap: 0;
   overflow: visible;
@@ -678,8 +690,9 @@ h1, h2, h3, h4, p {
 
 .hathor-logo-split .logo-letter-wrap {
   display: flex !important;
-  flex-basis: 0;
-  flex-shrink: 1;
+  flex: 0 0 auto !important;
+  flex-basis: auto !important;
+  width: auto !important;
   min-width: 0;
   height: 100% !important;
   overflow: visible;
@@ -692,12 +705,12 @@ h1, h2, h3, h4, p {
 
 .hathor-logo-split .logo-letter {
   display: block !important;
-  width: 100% !important;
+  width: auto !important;
   height: 100% !important;
   max-width: none !important;
   max-height: none !important;
   object-fit: contain;
-  object-position: top center;
+  object-position: bottom center;
   user-select: none;
   pointer-events: none;
   clip-path: none;
@@ -1753,7 +1766,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 
   .home-hero-container:has(.hero-logo-mark--split) .hero-button {
     bottom: calc(
-      var(--hathor-logo-h) * (1 - var(--hathor-logo-tuck)) / 2 - var(--hathor-cta-half-h)
+      var(--hathor-logo-bottom) + (var(--hathor-logo-h) / 2) - var(--hathor-cta-half-h) +
+        var(--hathor-cta-y-nudge)
     );
   }
 
@@ -1785,4 +1799,85 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   .hero-scroll-hint::after {
     animation: none;
   }
+}
+
+/* Live logo tuner — only mounts with /?logoTune=1 */
+.hathor-logo-tuner {
+  position: fixed;
+  top: 88px;
+  right: 16px;
+  z-index: 9999;
+  width: min(280px, calc(100vw - 24px));
+  padding: 14px 14px 12px;
+  border: 1px solid rgba(212, 194, 138, 0.45);
+  background: rgba(18, 14, 12, 0.92);
+  color: #f5efe4;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.35;
+  backdrop-filter: blur(10px);
+  pointer-events: auto;
+}
+
+.hathor-logo-tuner__head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 12px;
+}
+
+.hathor-logo-tuner__head strong {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #d4c28a;
+}
+
+.hathor-logo-tuner__head span {
+  opacity: 0.65;
+}
+
+.hathor-logo-tuner__row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.hathor-logo-tuner__row small {
+  opacity: 0.55;
+}
+
+.hathor-logo-tuner__row input[type="range"] {
+  width: 100%;
+  accent-color: #d4c28a;
+}
+
+.hathor-logo-tuner__css {
+  margin: 0 0 10px;
+  padding: 8px;
+  overflow-x: auto;
+  white-space: pre;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #ece8df;
+}
+
+.hathor-logo-tuner__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.hathor-logo-tuner__actions button {
+  flex: 1;
+  padding: 7px 8px;
+  border: 1px solid rgba(212, 194, 138, 0.5);
+  background: transparent;
+  color: #f5efe4;
+  font: inherit;
+  cursor: pointer;
+}
+
+.hathor-logo-tuner__actions button:hover {
+  background: rgba(182, 159, 100, 0.22);
 }

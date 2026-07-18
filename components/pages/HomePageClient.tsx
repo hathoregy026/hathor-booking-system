@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
+import { HathorLogoTuner } from "@/components/public/HathorLogoTuner";
 import { PublicSiteHero } from "@/components/pages/PublicSiteHero";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { HATHOR_BRAND_NAME, HATHOR_DAHABIYA_WORDMARK_SRC } from "@/lib/branding";
@@ -32,6 +33,7 @@ export function HomePageClient() {
 
   return (
     <div className="ex-root">
+      <HathorLogoTuner />
       <main id="top">
         <PublicSiteHero
           animate={false}

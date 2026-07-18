@@ -128,11 +128,14 @@
   --hathor-logo-side-w: calc((100vw - var(--hathor-logo-gap)) / 2);
   --hathor-cta-half-h: 26px;
   --hathor-cta-nudge: 0px;
-  /* Full edge-to-edge letter size (same aspect as letter assets) */
-  --hathor-logo-h: calc(var(--hathor-logo-side-w) * 1804 / 2676);
-  /* ~22% of letters sit under the cream content sheet — not cropped assets */
-  --hathor-logo-tuck: 0.22;
-  --hathor-logo-bottom: calc(var(--hathor-logo-h) * -1 * var(--hathor-logo-tuck));
+  /* Manual knobs — mirrored in home-experience.css / ?logoTune=1 */
+  --hathor-logo-size: 1;
+  --hathor-logo-y: 0px;
+  --hathor-cta-y-nudge: 0px;
+  --hathor-logo-h: calc(
+    var(--hathor-logo-side-w) * 1804 / 2676 * var(--hathor-logo-size)
+  );
+  --hathor-logo-bottom: var(--hathor-logo-y);
 }
 
 .hathor-logo-split {
@@ -140,7 +143,7 @@
   flex-direction: row !important;
   flex-wrap: nowrap !important;
   justify-content: stretch;
-  align-items: flex-start;
+  align-items: flex-end;
   gap: 0;
   width: 100vw !important;
   max-width: none !important;
@@ -161,7 +164,7 @@
   min-width: 0;
   display: flex !important;
   flex-direction: row !important;
-  align-items: flex-start;
+  align-items: flex-end;
   height: 100% !important;
   gap: 0;
   overflow: visible;
@@ -179,8 +182,9 @@
 
 .hathor-logo-split .logo-letter-wrap {
   display: flex !important;
-  flex-basis: 0;
-  flex-shrink: 1;
+  flex: 0 0 auto !important;
+  flex-basis: auto !important;
+  width: auto !important;
   min-width: 0;
   height: 100% !important;
   overflow: visible;
@@ -193,12 +197,12 @@
 
 .hathor-logo-split .logo-letter {
   display: block !important;
-  width: 100% !important;
+  width: auto !important;
   height: 100% !important;
   max-width: none !important;
   max-height: none !important;
   object-fit: contain;
-  object-position: top center;
+  object-position: bottom center;
   user-select: none;
   pointer-events: none;
   clip-path: none;
@@ -233,7 +237,8 @@
 
 .home-hero-container:has(.hero-logo-mark--split) .hero-button {
   bottom: calc(
-    var(--hathor-logo-h) * (1 - var(--hathor-logo-tuck)) / 2 - var(--hathor-cta-half-h)
+    var(--hathor-logo-bottom) + (var(--hathor-logo-h) / 2) - var(--hathor-cta-half-h) +
+      var(--hathor-cta-y-nudge)
   ) !important;
   top: auto !important;
   transform: translateX(var(--hathor-cta-nudge, 0px));

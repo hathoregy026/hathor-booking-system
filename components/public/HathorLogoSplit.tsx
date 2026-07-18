@@ -21,9 +21,9 @@ function LetterImages({ letters }: { letters: readonly HathorLogoLetter[] }) {
     <span
       key={letter.key}
       className={`logo-letter-wrap ${letter.className}`}
-      style={{ flexGrow: letter.flexGrow }}
+      style={{ aspectRatio: `${letter.width} / ${letter.height}` }}
     >
-      {/* Native img — Next/Image width/height attrs fight full-bleed flex sizing */}
+      {/* Native img — height locked by CSS band; width follows aspect-ratio */}
       <img
         src={letter.src}
         alt={letter.alt}
