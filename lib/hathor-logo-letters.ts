@@ -5,18 +5,18 @@ export const HATHOR_LOGO_LETTERS = [
     src: "/branding/letters/hathor-h1.webp",
     alt: "H",
     className: "letter-h1",
-    width: 853,
-    height: 1804,
-    flexGrow: 853,
+    width: 855,
+    height: 2200,
+    flexGrow: 855,
   },
   {
     key: "a",
     src: "/branding/letters/hathor-a.webp",
     alt: "A",
     className: "letter-a",
-    width: 1065,
-    height: 1804,
-    flexGrow: 1065,
+    width: 1070,
+    height: 2200,
+    flexGrow: 1070,
   },
   {
     key: "t",
@@ -24,7 +24,7 @@ export const HATHOR_LOGO_LETTERS = [
     alt: "T",
     className: "letter-t",
     width: 758,
-    height: 1804,
+    height: 2200,
     flexGrow: 758,
   },
   {
@@ -33,7 +33,7 @@ export const HATHOR_LOGO_LETTERS = [
     alt: "H",
     className: "letter-h2",
     width: 840,
-    height: 1804,
+    height: 2200,
     flexGrow: 840,
   },
   {
@@ -42,7 +42,7 @@ export const HATHOR_LOGO_LETTERS = [
     alt: "O",
     className: "letter-o",
     width: 1019,
-    height: 1804,
+    height: 2200,
     flexGrow: 1019,
   },
   {
@@ -51,9 +51,13 @@ export const HATHOR_LOGO_LETTERS = [
     alt: "R",
     className: "letter-r",
     width: 764,
-    height: 1804,
+    height: 2200,
     flexGrow: 764,
   },
 ] as const;
+
+/** Combined HAT artboard width — used to size letter band height from side width. */
+export const HATHOR_LOGO_LEFT_WIDTH = 855 + 1070 + 758; // 2683
+export const HATHOR_LOGO_ARTBOARD_HEIGHT = 2200;
 
 export type HathorLogoLetter = (typeof HATHOR_LOGO_LETTERS)[number];

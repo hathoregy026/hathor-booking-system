@@ -43,8 +43,8 @@ html[data-ex-experience] .ex-root {
   --hathor-logo-gap: 168px;
   --hathor-gap-t-btn: 0px;
   --hathor-gap-btn-h: 0px;
-  --hathor-logo-align-items: flex-end;
-  --hathor-logo-object-position: bottom center;
+  --hathor-logo-align-items: flex-start;
+  --hathor-logo-object-position: top center;
   --hathor-gap-ha: 0px;
   --hathor-gap-at: 0px;
   --hathor-gap-ho: 0px;
@@ -63,8 +63,9 @@ html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--spli
   );
   --hathor-cta-half-h: 26px;
   --hathor-cta-nudge: 0px;
+  /* Artboard 2200×2683 (HAT) — keeps internal padding so O accent sits above H tops */
   --hathor-logo-h: calc(
-    var(--hathor-logo-side-w) * 1804 / 2676 * var(--hathor-logo-size, 1)
+    var(--hathor-logo-side-w) * 2200 / 2683 * var(--hathor-logo-size, 1)
   );
   --hathor-logo-bottom: var(--hathor-logo-y, 0px);
 }
@@ -172,13 +173,13 @@ html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter-wrap {
 
 html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter {
   display: block !important;
-  /* Same band height for every glyph; width follows each letter’s aspect */
-  width: auto !important;
+  /* Map full artboard into the wrap — preserve top/bottom padding in each file */
+  width: 100% !important;
   height: 100% !important;
   max-width: none !important;
   max-height: none !important;
-  object-fit: contain;
-  object-position: var(--hathor-logo-object-position, bottom center);
+  object-fit: fill;
+  object-position: var(--hathor-logo-object-position, top center);
   clip-path: none;
   -webkit-clip-path: none;
   mask: none;
@@ -706,7 +707,7 @@ h1, h2, h3, h4, p {
   gap: 0;
   width: 100vw !important;
   max-width: none !important;
-  height: var(--hathor-logo-h, calc((100vw - 168px) / 2 * 1804 / 2676)) !important;
+  height: var(--hathor-logo-h, calc((100vw - 168px) / 2 * 2200 / 2683)) !important;
   margin: 0 !important;
   padding: 0 var(--hathor-logo-edge, 0px) !important;
   box-sizing: border-box;
@@ -756,12 +757,12 @@ h1, h2, h3, h4, p {
 
 .hathor-logo-split .logo-letter {
   display: block !important;
-  width: auto !important;
+  width: 100% !important;
   height: 100% !important;
   max-width: none !important;
   max-height: none !important;
-  object-fit: contain;
-  object-position: var(--hathor-logo-object-position, bottom center);
+  object-fit: fill;
+  object-position: var(--hathor-logo-object-position, top center);
   user-select: none;
   pointer-events: none;
   clip-path: none;

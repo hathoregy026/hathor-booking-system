@@ -131,7 +131,7 @@
   --hathor-cta-nudge: 0px;
   /* Knobs inherited from .ex-root (admin tune) with safe fallbacks */
   --hathor-logo-h: calc(
-    var(--hathor-logo-side-w) * 1804 / 2676 * var(--hathor-logo-size, 1)
+    var(--hathor-logo-side-w) * 2200 / 2683 * var(--hathor-logo-size, 1)
   );
   --hathor-logo-bottom: var(--hathor-logo-y, 0px);
 }
@@ -145,7 +145,7 @@
   gap: 0;
   width: 100vw !important;
   max-width: none !important;
-  height: var(--hathor-logo-h, calc((100vw - 168px) / 2 * 1804 / 2676)) !important;
+  height: var(--hathor-logo-h, calc((100vw - 168px) / 2 * 2200 / 2683)) !important;
   margin: 0 !important;
   padding: 0 var(--hathor-logo-edge, 0px) !important;
   box-sizing: border-box;
@@ -195,12 +195,12 @@
 
 .hathor-logo-split .logo-letter {
   display: block !important;
-  width: auto !important;
+  width: 100% !important;
   height: 100% !important;
   max-width: none !important;
   max-height: none !important;
-  object-fit: contain;
-  object-position: var(--hathor-logo-object-position, bottom center);
+  object-fit: fill;
+  object-position: var(--hathor-logo-object-position, top center);
   user-select: none;
   pointer-events: none;
   clip-path: none;

@@ -48,7 +48,7 @@ export const DEFAULT_HERO_LOGO_TUNE: HeroLogoTune = {
   edgeInset: 0,
   gapTButton: 0,
   gapButtonH: 0,
-  vAlign: "bottom",
+  vAlign: "top",
   gapHA: 0,
   gapAT: 0,
   gapHO: 0,
