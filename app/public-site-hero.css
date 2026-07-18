@@ -126,8 +126,8 @@
 .home-hero-container:has(.hero-logo-mark--split) {
   --hathor-logo-gap: 168px;
   --hathor-logo-side-w: calc((100vw - var(--hathor-logo-gap)) / 2);
-  --hathor-logo-h: min(32vh, calc(var(--hathor-logo-side-w) * 0.72));
-  --hathor-logo-bottom: clamp(56px, 9vh, 88px);
+  --hathor-logo-h: calc(var(--hathor-logo-side-w) * 1806 / 2682);
+  --hathor-logo-bottom: clamp(4px, 0.8vh, 12px);
   --hathor-cta-half-h: 26px;
   --hathor-cta-nudge: 0px;
 }
@@ -141,7 +141,7 @@
   gap: 0;
   width: 100vw !important;
   max-width: none !important;
-  height: var(--hathor-logo-h, calc((100vw - 168px) / 2 * 2200 / 2683)) !important;
+  height: var(--hathor-logo-h, calc((100vw - 168px) / 2 * 1806 / 2682)) !important;
   margin: 0 !important;
   padding: 0 !important;
   box-sizing: border-box;
@@ -183,8 +183,8 @@
   width: 100% !important;
   height: 100% !important;
   max-width: none !important;
-  object-fit: cover;
-  object-position: 50% 8%;
+  object-fit: contain;
+  object-position: center bottom;
   user-select: none;
   pointer-events: none;
   will-change: transform, opacity;
@@ -198,7 +198,7 @@
 }
 
 .hero-logo-mark--split {
-  bottom: var(--hathor-logo-bottom, clamp(56px, 9vh, 88px));
+  bottom: var(--hathor-logo-bottom, clamp(4px, 0.8vh, 12px));
   width: 100vw;
   z-index: 4;
   pointer-events: none;
@@ -211,25 +211,6 @@
   );
   transform: translateX(var(--hathor-cta-nudge, 0px));
   z-index: 8;
-}
-
-.hathor-logo-split .letter-h1 .logo-letter {
-  object-position: 50% 0%;
-}
-.hathor-logo-split .letter-a .logo-letter {
-  object-position: 50% 12%;
-}
-.hathor-logo-split .letter-t .logo-letter {
-  object-position: 50% 12%;
-}
-.hathor-logo-split .letter-h2 .logo-letter {
-  object-position: 50% 12%;
-}
-.hathor-logo-split .letter-o .logo-letter {
-  object-position: 50% 0%;
-}
-.hathor-logo-split .letter-r .logo-letter {
-  object-position: 50% 0%;
 }
 
 @media (max-width: 768px) {

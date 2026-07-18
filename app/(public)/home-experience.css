@@ -36,12 +36,10 @@ html[data-ex-experience] .ex-root .hero-logo-mark {
 html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) {
   --hathor-logo-gap: 168px;
   --hathor-logo-side-w: calc((100vw - var(--hathor-logo-gap)) / 2);
-  /*
-    Size: cover fills each cell (no empty padding).
-    Position: keep the band in the bottom red-box zone only — do not raise.
-  */
-  --hathor-logo-h: min(32vh, calc(var(--hathor-logo-side-w) * 0.72));
-  --hathor-logo-bottom: clamp(56px, 9vh, 88px);
+  /* Trimmed glyphs (1806×2682 HAT) — full feet visible, edge-to-edge */
+  --hathor-logo-h: calc(var(--hathor-logo-side-w) * 1806 / 2682);
+  /* Sit in the bottom red box, just above the viewport edge */
+  --hathor-logo-bottom: clamp(4px, 0.8vh, 12px);
   --hathor-cta-half-h: 26px;
   --hathor-cta-nudge: 0px;
 }
@@ -60,6 +58,11 @@ html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--spli
   );
   transform: translateX(var(--hathor-cta-nudge, 0px));
   z-index: 8;
+}
+
+html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) .hero-scroll-hint {
+  bottom: clamp(2px, 0.5vh, 8px);
+  z-index: 9;
 }
 
 html[data-ex-experience] .ex-root .hero-logo-img {
@@ -128,29 +131,10 @@ html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter {
   width: 100% !important;
   height: 100% !important;
   max-width: none !important;
-  /* Cover fills the cell — crops empty padding so letters look as big as the ref */
-  object-fit: cover;
-  object-position: 50% 8%;
+  /* Contain + trimmed assets — never crop letter feet */
+  object-fit: contain;
+  object-position: center bottom;
   will-change: transform, opacity;
-}
-
-html[data-ex-experience] .ex-root .hathor-logo-split .letter-h1 .logo-letter {
-  object-position: 50% 0%;
-}
-html[data-ex-experience] .ex-root .hathor-logo-split .letter-a .logo-letter {
-  object-position: 50% 12%;
-}
-html[data-ex-experience] .ex-root .hathor-logo-split .letter-t .logo-letter {
-  object-position: 50% 12%;
-}
-html[data-ex-experience] .ex-root .hathor-logo-split .letter-h2 .logo-letter {
-  object-position: 50% 12%;
-}
-html[data-ex-experience] .ex-root .hathor-logo-split .letter-o .logo-letter {
-  object-position: 50% 0%;
-}
-html[data-ex-experience] .ex-root .hathor-logo-split .letter-r .logo-letter {
-  object-position: 50% 0%;
 }
 
 /* Empty middle slot — Book Now stays in .hero-button and sits in this gap */
@@ -633,7 +617,7 @@ h1, h2, h3, h4, p {
   gap: 0;
   width: 100vw !important;
   max-width: none !important;
-  height: var(--hathor-logo-h, calc((100vw - 168px) / 2 * 2200 / 2683)) !important;
+  height: var(--hathor-logo-h, calc((100vw - 168px) / 2 * 1806 / 2682)) !important;
   margin: 0 !important;
   padding: 0 !important;
   box-sizing: border-box;
@@ -675,8 +659,8 @@ h1, h2, h3, h4, p {
   width: 100% !important;
   height: 100% !important;
   max-width: none !important;
-  object-fit: cover;
-  object-position: 50% 8%;
+  object-fit: contain;
+  object-position: center bottom;
   user-select: none;
   pointer-events: none;
   will-change: transform, opacity;
@@ -691,7 +675,7 @@ h1, h2, h3, h4, p {
 }
 
 .hero-logo-mark--split {
-  bottom: var(--hathor-logo-bottom, clamp(56px, 9vh, 88px));
+  bottom: var(--hathor-logo-bottom, clamp(4px, 0.8vh, 12px));
   width: 100vw;
   z-index: 4;
   pointer-events: none;
@@ -1716,6 +1700,12 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 
   .hero-button {
     bottom: clamp(48px, 8vh, 72px);
+  }
+
+  .home-hero-container:has(.hero-logo-mark--split) .hero-button {
+    bottom: calc(
+      var(--hathor-logo-bottom) + (var(--hathor-logo-h) / 2) - var(--hathor-cta-half-h)
+    );
   }
 
   .hero-cta {
