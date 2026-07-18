@@ -39,11 +39,17 @@ html[data-ex-experience] .ex-root {
   --hathor-logo-y: 0px;
   --hathor-cta-y-nudge: 0px;
   --hathor-logo-anim-duration: 2.6;
+  --hathor-logo-align: flex-end;
+  --hathor-logo-object-position: bottom center;
+  --hathor-logo-edge: 0px;
+  --hathor-letter-gap: 0px;
+  --hathor-logo-gap: 168px;
 }
 
 html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) {
-  --hathor-logo-gap: 168px;
-  --hathor-logo-side-w: calc((100vw - var(--hathor-logo-gap)) / 2);
+  --hathor-logo-side-w: calc(
+    (100vw - var(--hathor-logo-gap, 168px) - 2 * var(--hathor-logo-edge, 0px)) / 2
+  );
   --hathor-cta-half-h: 26px;
   --hathor-cta-nudge: 0px;
   --hathor-logo-h: calc(
@@ -99,13 +105,13 @@ html[data-ex-experience] .ex-root .hathor-logo-split.hero-logo-img {
   flex-direction: row !important;
   flex-wrap: nowrap !important;
   justify-content: stretch;
-  align-items: flex-end;
+  align-items: var(--hathor-logo-align, flex-end);
   gap: 0;
   width: 100vw !important;
   max-width: none !important;
   height: var(--hathor-logo-h) !important;
   margin: 0 !important;
-  padding: 0 !important;
+  padding: 0 var(--hathor-logo-edge, 0px) !important;
   object-fit: unset;
   box-sizing: border-box;
   overflow: visible;
@@ -122,9 +128,9 @@ html[data-ex-experience] .ex-root .hathor-logo-split__side {
   min-width: 0;
   display: flex !important;
   flex-direction: row !important;
-  align-items: flex-end; /* shared baseline — same letter height */
+  align-items: var(--hathor-logo-align, flex-end);
   height: 100% !important;
-  gap: 0;
+  gap: var(--hathor-letter-gap, 0px);
   overflow: visible;
 }
 
@@ -161,7 +167,7 @@ html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter {
   max-width: none !important;
   max-height: none !important;
   object-fit: contain;
-  object-position: bottom center;
+  object-position: var(--hathor-logo-object-position, bottom center);
   clip-path: none;
   -webkit-clip-path: none;
   mask: none;
@@ -648,13 +654,13 @@ h1, h2, h3, h4, p {
   flex-direction: row !important;
   flex-wrap: nowrap !important;
   justify-content: stretch;
-  align-items: flex-end;
+  align-items: var(--hathor-logo-align, flex-end);
   gap: 0;
   width: 100vw !important;
   max-width: none !important;
   height: var(--hathor-logo-h, calc((100vw - 168px) / 2 * 1804 / 2676)) !important;
   margin: 0 !important;
-  padding: 0 !important;
+  padding: 0 var(--hathor-logo-edge, 0px) !important;
   box-sizing: border-box;
   overflow: visible;
   filter: none;
@@ -669,9 +675,9 @@ h1, h2, h3, h4, p {
   min-width: 0;
   display: flex !important;
   flex-direction: row !important;
-  align-items: flex-end;
+  align-items: var(--hathor-logo-align, flex-end);
   height: 100% !important;
-  gap: 0;
+  gap: var(--hathor-letter-gap, 0px);
   overflow: visible;
 }
 
@@ -707,7 +713,7 @@ h1, h2, h3, h4, p {
   max-width: none !important;
   max-height: none !important;
   object-fit: contain;
-  object-position: bottom center;
+  object-position: var(--hathor-logo-object-position, bottom center);
   user-select: none;
   pointer-events: none;
   clip-path: none;

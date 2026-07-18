@@ -124,8 +124,9 @@
 
 /* Split HATHOR wordmark — per-letter images inside .hero-logo-mark */
 .home-hero-container:has(.hero-logo-mark--split) {
-  --hathor-logo-gap: 168px;
-  --hathor-logo-side-w: calc((100vw - var(--hathor-logo-gap)) / 2);
+  --hathor-logo-side-w: calc(
+    (100vw - var(--hathor-logo-gap, 168px) - 2 * var(--hathor-logo-edge, 0px)) / 2
+  );
   --hathor-cta-half-h: 26px;
   --hathor-cta-nudge: 0px;
   /* Knobs inherited from .ex-root (admin tune) with safe fallbacks */
@@ -140,13 +141,13 @@
   flex-direction: row !important;
   flex-wrap: nowrap !important;
   justify-content: stretch;
-  align-items: flex-end;
+  align-items: var(--hathor-logo-align, flex-end);
   gap: 0;
   width: 100vw !important;
   max-width: none !important;
   height: var(--hathor-logo-h, calc((100vw - 168px) / 2 * 1804 / 2676)) !important;
   margin: 0 !important;
-  padding: 0 !important;
+  padding: 0 var(--hathor-logo-edge, 0px) !important;
   box-sizing: border-box;
   overflow: visible;
   filter: none;
@@ -161,9 +162,9 @@
   min-width: 0;
   display: flex !important;
   flex-direction: row !important;
-  align-items: flex-end;
+  align-items: var(--hathor-logo-align, flex-end);
   height: 100% !important;
-  gap: 0;
+  gap: var(--hathor-letter-gap, 0px);
   overflow: visible;
 }
 
@@ -199,7 +200,7 @@
   max-width: none !important;
   max-height: none !important;
   object-fit: contain;
-  object-position: bottom center;
+  object-position: var(--hathor-logo-object-position, bottom center);
   user-select: none;
   pointer-events: none;
   clip-path: none;
