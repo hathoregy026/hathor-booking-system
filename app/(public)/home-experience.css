@@ -36,9 +36,13 @@ html[data-ex-experience] .ex-root .hero-logo-mark {
 html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) {
   --hathor-logo-gap: 168px;
   --hathor-logo-side-w: calc((100vw - var(--hathor-logo-gap)) / 2);
-  --hathor-logo-h: calc(var(--hathor-logo-side-w) * 2200 / 2683);
-  /* Same bottom anchor as the original hero — do not raise the band */
-  --hathor-logo-bottom: clamp(56px, 9vh, 88px);
+  /*
+    Keep the whole wordmark in the bottom band (red box).
+    Uncapped aspect height was ~60–70vh and pushed the composition mid-screen.
+  */
+  --hathor-logo-h: min(30vh, calc(var(--hathor-logo-side-w) * 2200 / 2683));
+  --hathor-logo-bottom: clamp(48px, 7vh, 72px);
+  --hathor-cta-half-h: 26px;
   --hathor-cta-nudge: 0px;
 }
 
@@ -49,9 +53,11 @@ html[data-ex-experience] .ex-root .hero-logo-mark--split {
   overflow: visible;
 }
 
-/* Keep Book Now on the same bottom line as the logo (never mid-screen) */
+/* Book Now centered inside the bottom letter band — not mid-viewport */
 html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) .hero-button {
-  bottom: var(--hathor-logo-bottom);
+  bottom: calc(
+    var(--hathor-logo-bottom) + (var(--hathor-logo-h) / 2) - var(--hathor-cta-half-h)
+  );
   transform: translateX(var(--hathor-cta-nudge, 0px));
   z-index: 8;
 }
@@ -97,14 +103,13 @@ html[data-ex-experience] .ex-root .hathor-logo-split__side {
   gap: 0;
 }
 
-/* Bias gap left — T glyph has more trailing pad, so equal sides looked button-right */
 html[data-ex-experience] .ex-root .hathor-logo-split__side--left {
-  flex: 0.88 1 0 !important;
+  flex: 1 1 0 !important;
   justify-content: flex-end;
 }
 
 html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
-  flex: 1.12 1 0 !important;
+  flex: 1 1 0 !important;
   justify-content: flex-start;
 }
 
@@ -154,6 +159,8 @@ html[data-ex-experience] .ex-root .hathor-logo-split__gap {
 @media (max-width: 768px) {
   html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) {
     --hathor-logo-gap: clamp(7.25rem, 28vw, 9.5rem);
+    --hathor-logo-h: min(22vh, calc(var(--hathor-logo-side-w) * 2200 / 2683));
+    --hathor-cta-half-h: 24px;
   }
 }
 
@@ -640,12 +647,12 @@ h1, h2, h3, h4, p {
 }
 
 .hathor-logo-split__side--left {
-  flex: 0.88 1 0 !important;
+  flex: 1 1 0 !important;
   justify-content: flex-end;
 }
 
 .hathor-logo-split__side--right {
-  flex: 1.12 1 0 !important;
+  flex: 1 1 0 !important;
   justify-content: flex-start;
 }
 
@@ -680,7 +687,7 @@ h1, h2, h3, h4, p {
 }
 
 .hero-logo-mark--split {
-  bottom: var(--hathor-logo-bottom, clamp(56px, 9vh, 88px));
+  bottom: var(--hathor-logo-bottom, clamp(48px, 7vh, 72px));
   width: 100vw;
   z-index: 4;
   pointer-events: none;

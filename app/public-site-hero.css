@@ -126,8 +126,9 @@
 .home-hero-container:has(.hero-logo-mark--split) {
   --hathor-logo-gap: 168px;
   --hathor-logo-side-w: calc((100vw - var(--hathor-logo-gap)) / 2);
-  --hathor-logo-h: calc(var(--hathor-logo-side-w) * 2200 / 2683);
-  --hathor-logo-bottom: clamp(56px, 9vh, 88px);
+  --hathor-logo-h: min(30vh, calc(var(--hathor-logo-side-w) * 2200 / 2683));
+  --hathor-logo-bottom: clamp(48px, 7vh, 72px);
+  --hathor-cta-half-h: 26px;
   --hathor-cta-nudge: 0px;
 }
 
@@ -158,12 +159,12 @@
 }
 
 .hathor-logo-split__side--left {
-  flex: 0.88 1 0 !important;
+  flex: 1 1 0 !important;
   justify-content: flex-end;
 }
 
 .hathor-logo-split__side--right {
-  flex: 1.12 1 0 !important;
+  flex: 1 1 0 !important;
   justify-content: flex-start;
 }
 
@@ -197,7 +198,7 @@
 }
 
 .hero-logo-mark--split {
-  bottom: var(--hathor-logo-bottom, clamp(56px, 9vh, 88px));
+  bottom: var(--hathor-logo-bottom, clamp(48px, 7vh, 72px));
   width: 100vw;
   z-index: 4;
   pointer-events: none;
@@ -205,7 +206,9 @@
 }
 
 .home-hero-container:has(.hero-logo-mark--split) .hero-button {
-  bottom: var(--hathor-logo-bottom, clamp(56px, 9vh, 88px));
+  bottom: calc(
+    var(--hathor-logo-bottom) + (var(--hathor-logo-h) / 2) - var(--hathor-cta-half-h)
+  );
   transform: translateX(var(--hathor-cta-nudge, 0px));
   z-index: 8;
 }
@@ -226,6 +229,8 @@
 @media (max-width: 768px) {
   .home-hero-container:has(.hero-logo-mark--split) {
     --hathor-logo-gap: clamp(7.25rem, 28vw, 9.5rem);
+    --hathor-logo-h: min(22vh, calc(var(--hathor-logo-side-w) * 2200 / 2683));
+    --hathor-cta-half-h: 24px;
   }
 }
 
