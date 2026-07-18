@@ -141,7 +141,7 @@
   flex-direction: row !important;
   flex-wrap: nowrap !important;
   justify-content: stretch;
-  align-items: var(--hathor-logo-align, flex-end);
+  align-items: flex-end;
   gap: 0;
   width: 100vw !important;
   max-width: none !important;
@@ -162,9 +162,9 @@
   min-width: 0;
   display: flex !important;
   flex-direction: row !important;
-  align-items: var(--hathor-logo-align, flex-end);
+  align-items: flex-end;
   height: 100% !important;
-  gap: var(--hathor-letter-gap, 0px);
+  gap: 0;
   overflow: visible;
 }
 
@@ -200,7 +200,7 @@
   max-width: none !important;
   max-height: none !important;
   object-fit: contain;
-  object-position: var(--hathor-logo-object-position, bottom center);
+  object-position: bottom center;
   user-select: none;
   pointer-events: none;
   clip-path: none;
@@ -211,6 +211,37 @@
     drop-shadow(0 2px 0 rgba(0, 0, 0, 0.25))
     drop-shadow(0 28px 60px rgba(0, 0, 0, 0.45));
   will-change: transform, opacity;
+}
+
+.hathor-logo-split .letter-h1 {
+  margin-right: var(--hathor-gap-ha, 0px);
+}
+.hathor-logo-split .letter-a {
+  margin-right: var(--hathor-gap-at, 0px);
+}
+.hathor-logo-split .letter-h2 {
+  margin-right: var(--hathor-gap-ho, 0px);
+}
+.hathor-logo-split .letter-o {
+  margin-right: var(--hathor-gap-or, 0px);
+}
+.hathor-logo-split .letter-h1 .logo-letter {
+  transform: translateY(var(--hathor-y-h1, 0px));
+}
+.hathor-logo-split .letter-a .logo-letter {
+  transform: translateY(var(--hathor-y-a, 0px));
+}
+.hathor-logo-split .letter-t .logo-letter {
+  transform: translateY(var(--hathor-y-t, 0px));
+}
+.hathor-logo-split .letter-h2 .logo-letter {
+  transform: translateY(var(--hathor-y-h2, 0px));
+}
+.hathor-logo-split .letter-o .logo-letter {
+  transform: translateY(var(--hathor-y-o, 0px));
+}
+.hathor-logo-split .letter-r .logo-letter {
+  transform: translateY(var(--hathor-y-r, 0px));
 }
 
 .hathor-logo-split__gap {

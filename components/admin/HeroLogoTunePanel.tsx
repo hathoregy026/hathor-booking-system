@@ -2,65 +2,57 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { ExternalLink, Loader2, RotateCcw, Save } from "lucide-react";
-import { HeroLogoTunePreview } from "@/components/admin/HeroLogoTunePreview";
 import { useToast } from "@/components/admin/ToastProvider";
 import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
 import {
   DEFAULT_HERO_LOGO_TUNE,
-  type HeroLogoAlign,
   type HeroLogoTune,
   isHeroLogoTuneEqual,
   parseHeroLogoTune,
 } from "@/lib/hero-logo-tune-shared";
 
-function SliderRow({
+function NumberField({
   label,
   hint,
   value,
   min,
   max,
-  step,
-  display,
+  step = 1,
+  suffix = "px",
   onChange,
 }: {
   label: string;
-  hint: string;
+  hint?: string;
   value: number;
   min: number;
   max: number;
-  step: number;
-  display: string;
+  step?: number;
+  suffix?: string;
   onChange: (n: number) => void;
 }) {
   return (
-    <label className="block space-y-2">
-      <div className="flex items-baseline justify-between gap-3">
-        <span className="admin-heading text-sm">{label}</span>
-        <span className="font-mono text-sm" style={{ color: "var(--accent)" }}>
-          {display}
-        </span>
-      </div>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full accent-[var(--accent)]"
-      />
-      <p className="text-xs" style={{ color: "var(--muted)" }}>
-        {hint}
-      </p>
+    <label className="hlt-field">
+      <span className="hlt-field__label">{label}</span>
+      <span className="hlt-field__input-wrap">
+        <input
+          type="number"
+          min={min}
+          max={max}
+          step={step}
+          value={Number.isFinite(value) ? value : 0}
+          onChange={(e) => {
+            const next = Number(e.target.value);
+            if (!Number.isFinite(next)) return;
+            onChange(Math.min(max, Math.max(min, next)));
+          }}
+          className="hlt-field__input"
+        />
+        <span className="hlt-field__suffix">{suffix}</span>
+      </span>
+      {hint ? <span className="hlt-field__hint">{hint}</span> : null}
     </label>
   );
 }
-
-const ALIGN_OPTIONS: { value: HeroLogoAlign; label: string }[] = [
-  { value: "top", label: "Top" },
-  { value: "center", label: "Center" },
-  { value: "bottom", label: "Bottom" },
-];
 
 export function HeroLogoTunePanel() {
   const { showToast } = useToast();
@@ -92,6 +84,9 @@ export function HeroLogoTunePanel() {
   }, [load]);
 
   const dirty = !isHeroLogoTuneEqual(tune, saved);
+
+  const patch = (partial: Partial<HeroLogoTune>) =>
+    setTune((t) => ({ ...t, ...partial }));
 
   const save = async () => {
     setSaving(true);
@@ -127,15 +122,13 @@ export function HeroLogoTunePanel() {
         </p>
         <h1 className="admin-page-title">Hero Logo Tune</h1>
         <p className="admin-page-subtitle max-w-2xl">
-          Move sliders and watch the preview update instantly. Click Save when
-          you like it, then hard-refresh the live homepage. When finished, tell
-          the developer to hardcode these values and remove this page.
+          Type numbers in the boxes (no sliders). Save, then hard-refresh the
+          homepage. When it looks right, tell the developer to hardcode the
+          values and remove this page.
         </p>
       </div>
 
-      {!loading && <HeroLogoTunePreview tune={tune} />}
-
-      <div className="admin-card space-y-6 p-6">
+      <div className="admin-card space-y-8 p-6">
         {loading ? (
           <div
             className="flex items-center gap-2 text-sm"
@@ -146,107 +139,154 @@ export function HeroLogoTunePanel() {
           </div>
         ) : (
           <>
-            <div>
-              <p className="admin-heading mb-3 text-sm">Letter alignment</p>
-              <div className="flex flex-wrap gap-2">
-                {ALIGN_OPTIONS.map((opt) => {
-                  const active = tune.align === opt.value;
-                  return (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      className={
-                        active
-                          ? "admin-btn-primary px-4 py-2 text-sm"
-                          : "admin-btn-outline px-4 py-2 text-sm"
-                      }
-                      onClick={() =>
-                        setTune((t) => ({ ...t, align: opt.value }))
-                      }
-                    >
-                      {opt.label}
-                    </button>
-                  );
-                })}
+            <section className="hlt-section">
+              <h2 className="admin-heading text-base">Overall</h2>
+              <div className="hlt-grid">
+                <NumberField
+                  label="Size"
+                  hint="1 = default. Try 0.9–1.2"
+                  value={tune.size}
+                  min={0.55}
+                  max={1.45}
+                  step={0.01}
+                  suffix="×"
+                  onChange={(size) => patch({ size })}
+                />
+                <NumberField
+                  label="Bottom position (Y)"
+                  hint="Negative = lower / tuck under sheet"
+                  value={tune.y}
+                  min={-220}
+                  max={160}
+                  onChange={(y) => patch({ y })}
+                />
+                <NumberField
+                  label="Edge inset (left & right)"
+                  hint="Space from screen edges"
+                  value={tune.edgeInset}
+                  min={0}
+                  max={120}
+                  onChange={(edgeInset) => patch({ edgeInset })}
+                />
+                <NumberField
+                  label="Center gap (Book Now)"
+                  hint="Empty middle between T and H"
+                  value={tune.centerGap}
+                  min={80}
+                  max={320}
+                  onChange={(centerGap) => patch({ centerGap })}
+                />
+                <NumberField
+                  label="Book Now vertical nudge"
+                  value={tune.ctaNudge}
+                  min={-80}
+                  max={80}
+                  onChange={(ctaNudge) => patch({ ctaNudge })}
+                />
+                <NumberField
+                  label="Animation duration"
+                  hint="Higher = slower rise"
+                  value={tune.animDuration}
+                  min={0.6}
+                  max={5}
+                  step={0.1}
+                  suffix="s"
+                  onChange={(animDuration) => patch({ animDuration })}
+                />
               </div>
-              <p className="mt-2 text-xs" style={{ color: "var(--muted)" }}>
-                How H / A / T / H / O / R line up with each other (tops, middles,
-                or bottoms).
-              </p>
-            </div>
+            </section>
 
-            <SliderRow
-              label="Size"
-              hint="1.00 = default size. Lower = smaller, higher = bigger."
-              value={tune.size}
-              min={0.55}
-              max={1.45}
-              step={0.01}
-              display={`${tune.size.toFixed(2)}×`}
-              onChange={(size) => setTune((t) => ({ ...t, size }))}
-            />
-            <SliderRow
-              label="Distance from screen edges"
-              hint="Space from the left and right edges of the screen. 0 = touching the edges."
-              value={tune.edgeInset}
-              min={0}
-              max={120}
-              step={1}
-              display={`${tune.edgeInset}px`}
-              onChange={(edgeInset) => setTune((t) => ({ ...t, edgeInset }))}
-            />
-            <SliderRow
-              label="Space between letters"
-              hint="Gap between neighboring letters (H–A–T and H–O–R). Can go slightly negative to pull them tighter."
-              value={tune.letterGap}
-              min={-20}
-              max={80}
-              step={1}
-              display={`${tune.letterGap}px`}
-              onChange={(letterGap) => setTune((t) => ({ ...t, letterGap }))}
-            />
-            <SliderRow
-              label="Center gap (Book Now space)"
-              hint="Width of the empty middle between T and H where Book Now sits."
-              value={tune.centerGap}
-              min={100}
-              max={280}
-              step={1}
-              display={`${tune.centerGap}px`}
-              onChange={(centerGap) => setTune((t) => ({ ...t, centerGap }))}
-            />
-            <SliderRow
-              label="Bottom position (Y)"
-              hint="Negative = lower (tuck under cream sheet). Positive = higher."
-              value={tune.y}
-              min={-220}
-              max={160}
-              step={1}
-              display={`${tune.y}px`}
-              onChange={(y) => setTune((t) => ({ ...t, y }))}
-            />
-            <SliderRow
-              label="Book Now vertical nudge"
-              hint="Fine-tune the button up (−) or down (+) relative to the letters."
-              value={tune.ctaNudge}
-              min={-80}
-              max={80}
-              step={1}
-              display={`${tune.ctaNudge}px`}
-              onChange={(ctaNudge) => setTune((t) => ({ ...t, ctaNudge }))}
-            />
-            <SliderRow
-              label="Animation speed (duration)"
-              hint="How long letters take to rise. Higher = slower. Default 2.6s."
-              value={tune.animDuration}
-              min={0.6}
-              max={5}
-              step={0.1}
-              display={`${tune.animDuration.toFixed(1)}s`}
-              onChange={(animDuration) =>
-                setTune((t) => ({ ...t, animDuration }))
-              }
-            />
+            <section className="hlt-section">
+              <h2 className="admin-heading text-base">
+                Spacing between letters
+              </h2>
+              <p className="hlt-section__hint">
+                Each box is the gap after that letter, before the next one.
+              </p>
+              <div className="hlt-grid">
+                <NumberField
+                  label="H → A"
+                  value={tune.gapHA}
+                  min={-40}
+                  max={120}
+                  onChange={(gapHA) => patch({ gapHA })}
+                />
+                <NumberField
+                  label="A → T"
+                  value={tune.gapAT}
+                  min={-40}
+                  max={120}
+                  onChange={(gapAT) => patch({ gapAT })}
+                />
+                <NumberField
+                  label="H → O (right side)"
+                  value={tune.gapHO}
+                  min={-40}
+                  max={120}
+                  onChange={(gapHO) => patch({ gapHO })}
+                />
+                <NumberField
+                  label="O → R"
+                  value={tune.gapOR}
+                  min={-40}
+                  max={120}
+                  onChange={(gapOR) => patch({ gapOR })}
+                />
+              </div>
+            </section>
+
+            <section className="hlt-section">
+              <h2 className="admin-heading text-base">
+                Alignment (per letter vertical)
+              </h2>
+              <p className="hlt-section__hint">
+                Move each letter up (−) or down (+) on its own. Units are pixels.
+              </p>
+              <div className="hlt-grid">
+                <NumberField
+                  label="H (left)"
+                  value={tune.yH1}
+                  min={-80}
+                  max={80}
+                  onChange={(yH1) => patch({ yH1 })}
+                />
+                <NumberField
+                  label="A"
+                  value={tune.yA}
+                  min={-80}
+                  max={80}
+                  onChange={(yA) => patch({ yA })}
+                />
+                <NumberField
+                  label="T"
+                  value={tune.yT}
+                  min={-80}
+                  max={80}
+                  onChange={(yT) => patch({ yT })}
+                />
+                <NumberField
+                  label="H (right)"
+                  value={tune.yH2}
+                  min={-80}
+                  max={80}
+                  onChange={(yH2) => patch({ yH2 })}
+                />
+                <NumberField
+                  label="O"
+                  value={tune.yO}
+                  min={-80}
+                  max={80}
+                  onChange={(yO) => patch({ yO })}
+                />
+                <NumberField
+                  label="R"
+                  value={tune.yR}
+                  min={-80}
+                  max={80}
+                  onChange={(yR) => patch({ yR })}
+                />
+              </div>
+            </section>
           </>
         )}
 

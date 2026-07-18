@@ -39,11 +39,18 @@ html[data-ex-experience] .ex-root {
   --hathor-logo-y: 0px;
   --hathor-cta-y-nudge: 0px;
   --hathor-logo-anim-duration: 2.6;
-  --hathor-logo-align: flex-end;
-  --hathor-logo-object-position: bottom center;
   --hathor-logo-edge: 0px;
-  --hathor-letter-gap: 0px;
   --hathor-logo-gap: 168px;
+  --hathor-gap-ha: 0px;
+  --hathor-gap-at: 0px;
+  --hathor-gap-ho: 0px;
+  --hathor-gap-or: 0px;
+  --hathor-y-h1: 0px;
+  --hathor-y-a: 0px;
+  --hathor-y-t: 0px;
+  --hathor-y-h2: 0px;
+  --hathor-y-o: 0px;
+  --hathor-y-r: 0px;
 }
 
 html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) {
@@ -105,7 +112,7 @@ html[data-ex-experience] .ex-root .hathor-logo-split.hero-logo-img {
   flex-direction: row !important;
   flex-wrap: nowrap !important;
   justify-content: stretch;
-  align-items: var(--hathor-logo-align, flex-end);
+  align-items: flex-end;
   gap: 0;
   width: 100vw !important;
   max-width: none !important;
@@ -128,9 +135,9 @@ html[data-ex-experience] .ex-root .hathor-logo-split__side {
   min-width: 0;
   display: flex !important;
   flex-direction: row !important;
-  align-items: var(--hathor-logo-align, flex-end);
+  align-items: flex-end;
   height: 100% !important;
-  gap: var(--hathor-letter-gap, 0px);
+  gap: 0;
   overflow: visible;
 }
 
@@ -167,7 +174,7 @@ html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter {
   max-width: none !important;
   max-height: none !important;
   object-fit: contain;
-  object-position: var(--hathor-logo-object-position, bottom center);
+  object-position: bottom center;
   clip-path: none;
   -webkit-clip-path: none;
   mask: none;
@@ -176,6 +183,38 @@ html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter {
     drop-shadow(0 2px 0 rgba(0, 0, 0, 0.25))
     drop-shadow(0 28px 60px rgba(0, 0, 0, 0.45));
   will-change: transform, opacity;
+}
+
+/* Per-letter spacing (wrap) + vertical nudge on img (keeps GSAP free on wrap) */
+html[data-ex-experience] .ex-root .hathor-logo-split .letter-h1 {
+  margin-right: var(--hathor-gap-ha, 0px);
+}
+html[data-ex-experience] .ex-root .hathor-logo-split .letter-a {
+  margin-right: var(--hathor-gap-at, 0px);
+}
+html[data-ex-experience] .ex-root .hathor-logo-split .letter-h2 {
+  margin-right: var(--hathor-gap-ho, 0px);
+}
+html[data-ex-experience] .ex-root .hathor-logo-split .letter-o {
+  margin-right: var(--hathor-gap-or, 0px);
+}
+html[data-ex-experience] .ex-root .hathor-logo-split .letter-h1 .logo-letter {
+  transform: translateY(var(--hathor-y-h1, 0px));
+}
+html[data-ex-experience] .ex-root .hathor-logo-split .letter-a .logo-letter {
+  transform: translateY(var(--hathor-y-a, 0px));
+}
+html[data-ex-experience] .ex-root .hathor-logo-split .letter-t .logo-letter {
+  transform: translateY(var(--hathor-y-t, 0px));
+}
+html[data-ex-experience] .ex-root .hathor-logo-split .letter-h2 .logo-letter {
+  transform: translateY(var(--hathor-y-h2, 0px));
+}
+html[data-ex-experience] .ex-root .hathor-logo-split .letter-o .logo-letter {
+  transform: translateY(var(--hathor-y-o, 0px));
+}
+html[data-ex-experience] .ex-root .hathor-logo-split .letter-r .logo-letter {
+  transform: translateY(var(--hathor-y-r, 0px));
 }
 
 /* Empty middle slot — Book Now stays in .hero-button and sits in this gap */
@@ -654,7 +693,7 @@ h1, h2, h3, h4, p {
   flex-direction: row !important;
   flex-wrap: nowrap !important;
   justify-content: stretch;
-  align-items: var(--hathor-logo-align, flex-end);
+  align-items: flex-end;
   gap: 0;
   width: 100vw !important;
   max-width: none !important;
@@ -675,9 +714,9 @@ h1, h2, h3, h4, p {
   min-width: 0;
   display: flex !important;
   flex-direction: row !important;
-  align-items: var(--hathor-logo-align, flex-end);
+  align-items: flex-end;
   height: 100% !important;
-  gap: var(--hathor-letter-gap, 0px);
+  gap: 0;
   overflow: visible;
 }
 
@@ -713,7 +752,7 @@ h1, h2, h3, h4, p {
   max-width: none !important;
   max-height: none !important;
   object-fit: contain;
-  object-position: var(--hathor-logo-object-position, bottom center);
+  object-position: bottom center;
   user-select: none;
   pointer-events: none;
   clip-path: none;
@@ -724,6 +763,37 @@ h1, h2, h3, h4, p {
     drop-shadow(0 2px 0 rgba(0, 0, 0, 0.25))
     drop-shadow(0 28px 60px rgba(0, 0, 0, 0.45));
   will-change: transform, opacity;
+}
+
+.hathor-logo-split .letter-h1 {
+  margin-right: var(--hathor-gap-ha, 0px);
+}
+.hathor-logo-split .letter-a {
+  margin-right: var(--hathor-gap-at, 0px);
+}
+.hathor-logo-split .letter-h2 {
+  margin-right: var(--hathor-gap-ho, 0px);
+}
+.hathor-logo-split .letter-o {
+  margin-right: var(--hathor-gap-or, 0px);
+}
+.hathor-logo-split .letter-h1 .logo-letter {
+  transform: translateY(var(--hathor-y-h1, 0px));
+}
+.hathor-logo-split .letter-a .logo-letter {
+  transform: translateY(var(--hathor-y-a, 0px));
+}
+.hathor-logo-split .letter-t .logo-letter {
+  transform: translateY(var(--hathor-y-t, 0px));
+}
+.hathor-logo-split .letter-h2 .logo-letter {
+  transform: translateY(var(--hathor-y-h2, 0px));
+}
+.hathor-logo-split .letter-o .logo-letter {
+  transform: translateY(var(--hathor-y-o, 0px));
+}
+.hathor-logo-split .letter-r .logo-letter {
+  transform: translateY(var(--hathor-y-r, 0px));
 }
 
 /* Spacer so fixed Book Now sits between HAT and HOR */
