@@ -36,9 +36,12 @@ html[data-ex-experience] .ex-root .hero-logo-mark {
 html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) {
   --hathor-logo-gap: 168px;
   --hathor-logo-side-w: calc((100vw - var(--hathor-logo-gap)) / 2);
-  /* Full-bleed size (locked): height from side width so HAT/HOR fill edge → button */
-  --hathor-logo-h: calc(var(--hathor-logo-side-w) * 2200 / 2683);
-  --hathor-logo-bottom: clamp(48px, 7vh, 72px);
+  /*
+    Edge-to-edge band like the ref: height ≈ side width so glyphs fill the
+    bottom strip. (Letter WebPs have empty padding — cover crops it away.)
+  */
+  --hathor-logo-h: min(42vh, calc(var(--hathor-logo-side-w) * 0.92));
+  --hathor-logo-bottom: clamp(40px, 5.5vh, 64px);
   --hathor-cta-half-h: 26px;
   --hathor-cta-nudge: 0px;
 }
@@ -125,24 +128,29 @@ html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter {
   width: 100% !important;
   height: 100% !important;
   max-width: none !important;
-  object-fit: contain;
-  /* Sit on the bottom edge — never float mid-hero */
-  object-position: center bottom;
+  /* Cover fills the cell — crops empty padding so letters look as big as the ref */
+  object-fit: cover;
+  object-position: 50% 8%;
   will-change: transform, opacity;
 }
 
-/* Pull inner glyphs toward the Book Now gap so both sides look even */
 html[data-ex-experience] .ex-root .hathor-logo-split .letter-h1 .logo-letter {
-  object-position: 0% 100%;
+  object-position: 50% 0%;
+}
+html[data-ex-experience] .ex-root .hathor-logo-split .letter-a .logo-letter {
+  object-position: 50% 12%;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split .letter-t .logo-letter {
-  object-position: 100% 100%;
+  object-position: 50% 12%;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split .letter-h2 .logo-letter {
-  object-position: 0% 100%;
+  object-position: 50% 12%;
+}
+html[data-ex-experience] .ex-root .hathor-logo-split .letter-o .logo-letter {
+  object-position: 50% 0%;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split .letter-r .logo-letter {
-  object-position: 100% 100%;
+  object-position: 50% 0%;
 }
 
 /* Empty middle slot — Book Now stays in .hero-button and sits in this gap */
@@ -667,8 +675,8 @@ h1, h2, h3, h4, p {
   width: 100% !important;
   height: 100% !important;
   max-width: none !important;
-  object-fit: contain;
-  object-position: center bottom;
+  object-fit: cover;
+  object-position: 50% 8%;
   user-select: none;
   pointer-events: none;
   will-change: transform, opacity;
@@ -683,7 +691,7 @@ h1, h2, h3, h4, p {
 }
 
 .hero-logo-mark--split {
-  bottom: var(--hathor-logo-bottom, clamp(48px, 7vh, 72px));
+  bottom: var(--hathor-logo-bottom, clamp(40px, 5.5vh, 64px));
   width: 100vw;
   z-index: 4;
   pointer-events: none;
