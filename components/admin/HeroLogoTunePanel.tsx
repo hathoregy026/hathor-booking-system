@@ -280,10 +280,10 @@ export function HeroLogoTunePanel() {
                 />
                 <NumberField
                   label="Bottom position (Y)"
-                  hint="Negative = lower / tuck under sheet"
+                  hint="Full control of vertical position. Negative = lower / tuck under sheet"
                   value={tune.y}
-                  min={-220}
-                  max={160}
+                  min={-600}
+                  max={400}
                   onChange={(y) => patch({ y })}
                 />
                 <NumberField

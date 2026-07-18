@@ -116,8 +116,8 @@ export function HathorLogoTuner() {
         <span>Bottom Y ({tune.y}px)</span>
         <input
           type="range"
-          min={-220}
-          max={160}
+          min={-600}
+          max={400}
           step={1}
           value={tune.y}
           onChange={(e) =>

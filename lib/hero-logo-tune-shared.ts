@@ -13,7 +13,8 @@ export const HATHOR_BTN_SLOT_PX = 168;
 
 export const heroLogoTuneSchema = z.object({
   size: z.number().min(0.55).max(1.45),
-  y: px(-220, 160),
+  /** CSS `bottom` offset (px). Negative lowers / tucks under the cream sheet. */
+  y: px(-600, 400),
   ctaNudge: px(-80, 80),
   animDuration: z.number().min(0.6).max(5),
   /** Space from screen left edge to H (left). */
