@@ -126,19 +126,22 @@
 .hathor-logo-split {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
   gap: 0;
   width: 100%;
   height: auto;
 }
 
+/*
+  Letters are ~5306×2200 combined. Size by HEIGHT so width:auto keeps
+  aspect ratio. (width:0 + height:auto collapsed the logo to 0px tall.)
+*/
 .hathor-logo-split .logo-letter {
   display: block;
-  height: auto;
-  width: 0;
-  min-width: 0;
-  flex-shrink: 1;
-  flex-basis: 0;
+  height: min(41.5vw, 72vh);
+  width: auto !important;
+  max-width: none !important;
+  flex: 0 0 auto;
   object-fit: contain;
   object-position: center bottom;
   user-select: none;
@@ -146,8 +149,8 @@
 }
 
 @media (max-width: 768px) {
-  .hathor-logo-split {
-    gap: 0;
+  .hathor-logo-split .logo-letter {
+    height: min(38vw, 42vh);
   }
 }
 

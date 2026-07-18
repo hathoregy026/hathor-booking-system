@@ -45,11 +45,22 @@ html[data-ex-experience] .ex-root .hero-logo-img {
 
 html[data-ex-experience] .ex-root .hathor-logo-split.hero-logo-img {
   object-fit: unset;
+  width: 100%;
+  height: auto;
 }
 
 html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter {
+  height: min(41.5vw, 72vh);
+  width: auto !important;
+  max-width: none !important;
   object-fit: contain;
   object-position: center bottom;
+}
+
+@media (max-width: 768px) {
+  html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter {
+    height: min(38vw, 42vh);
+  }
 }
 
 html[data-ex-experience] .ex-root .home-hero-container {
@@ -511,23 +522,32 @@ h1, h2, h3, h4, p {
 .hathor-logo-split {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
   gap: 0;
   width: 100%;
   height: auto;
 }
 
+/*
+  Size by height — width:0 + height:auto made every letter 0px tall on deploy.
+  Combined glyph aspect ≈ 5306/2200 → height ≈ 41.5vw for a full-bleed wordmark.
+*/
 .hathor-logo-split .logo-letter {
   display: block;
-  height: auto;
-  width: 0;
-  min-width: 0;
-  flex-shrink: 1;
-  flex-basis: 0;
+  height: min(41.5vw, 72vh);
+  width: auto !important;
+  max-width: none !important;
+  flex: 0 0 auto;
   object-fit: contain;
   object-position: center bottom;
   user-select: none;
   pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .hathor-logo-split .logo-letter {
+    height: min(38vw, 42vh);
+  }
 }
 
 /* legacy bridge class — keep inert if present */

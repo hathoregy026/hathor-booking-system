@@ -29,9 +29,8 @@ export function HathorLogoSplit({ className }: HathorLogoSplitProps) {
           height={letter.height}
           priority
           draggable={false}
-          sizes="(max-width: 768px) 16vw, 12vw"
+          sizes="(max-width: 768px) 20vw, 18vw"
           className={`logo-letter ${letter.className}`}
-          style={{ flexGrow: letter.flexGrow }}
         />
       ))}
     </div>
