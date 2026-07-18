@@ -311,13 +311,13 @@ export function HeroLogoTunePanel() {
                 Screen edge spacing
               </h2>
               <p className="hlt-section__hint">
-                Space from the screen edge to the outer letters. 0 = current live
-                edge-to-edge look.
+                0 = H / R flush to the screen edge. Higher numbers push that
+                letter inward. Does not change letter size.
               </p>
               <div className="hlt-grid">
                 <NumberField
                   label="Left edge → H"
-                  hint="Inset from the left screen edge"
+                  hint="0 = stuck to left edge"
                   value={tune.edgeLeft}
                   min={0}
                   max={160}
@@ -325,7 +325,7 @@ export function HeroLogoTunePanel() {
                 />
                 <NumberField
                   label="R → right edge"
-                  hint="Inset from the right screen edge"
+                  hint="0 = stuck to right edge"
                   value={tune.edgeRight}
                   min={0}
                   max={160}
