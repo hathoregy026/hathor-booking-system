@@ -126,10 +126,13 @@
 .home-hero-container:has(.hero-logo-mark--split) {
   --hathor-logo-gap: 168px;
   --hathor-logo-side-w: calc((100vw - var(--hathor-logo-gap)) / 2);
-  --hathor-logo-h: calc(var(--hathor-logo-side-w) * 2200 / 2683);
-  --hathor-logo-bottom: clamp(36px, 5.5vh, 56px);
+  --hathor-logo-bottom: clamp(28px, 4vh, 44px);
   --hathor-cta-half-h: 26px;
   --hathor-cta-nudge: 0px;
+  --hathor-logo-h: min(
+    calc(var(--hathor-logo-side-w) * 1804 / 2676),
+    calc(100svh - var(--hathor-logo-bottom) - 16px)
+  );
 }
 
 .hathor-logo-split {
@@ -137,15 +140,20 @@
   flex-direction: row !important;
   flex-wrap: nowrap !important;
   justify-content: stretch;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 0;
   width: 100vw !important;
   max-width: none !important;
-  height: var(--hathor-logo-h, calc((100vw - 168px) / 2 * 2200 / 2683)) !important;
+  height: var(--hathor-logo-h, calc((100vw - 168px) / 2 * 1804 / 2676)) !important;
   margin: 0 !important;
   padding: 0 !important;
   box-sizing: border-box;
   overflow: visible;
+  filter: none;
+  clip-path: none;
+  -webkit-clip-path: none;
+  mask: none;
+  -webkit-mask: none;
 }
 
 .hathor-logo-split__side {
@@ -153,9 +161,10 @@
   min-width: 0;
   display: flex !important;
   flex-direction: row !important;
-  align-items: stretch;
+  align-items: flex-start;
   height: 100% !important;
   gap: 0;
+  overflow: visible;
 }
 
 .hathor-logo-split__side--left {
@@ -175,6 +184,10 @@
   min-width: 0;
   height: 100% !important;
   overflow: visible;
+  clip-path: none;
+  -webkit-clip-path: none;
+  mask: none;
+  -webkit-mask: none;
   will-change: transform, opacity;
 }
 
@@ -183,10 +196,18 @@
   width: 100% !important;
   height: 100% !important;
   max-width: none !important;
+  max-height: none !important;
   object-fit: contain;
-  object-position: center bottom;
+  object-position: top center;
   user-select: none;
   pointer-events: none;
+  clip-path: none;
+  -webkit-clip-path: none;
+  mask: none;
+  -webkit-mask: none;
+  filter:
+    drop-shadow(0 2px 0 rgba(0, 0, 0, 0.25))
+    drop-shadow(0 28px 60px rgba(0, 0, 0, 0.45));
   will-change: transform, opacity;
 }
 
@@ -198,11 +219,15 @@
 }
 
 .hero-logo-mark--split {
-  bottom: var(--hathor-logo-bottom, clamp(36px, 5.5vh, 56px));
+  bottom: var(--hathor-logo-bottom, clamp(28px, 4vh, 44px));
   width: 100vw;
   z-index: 4;
   pointer-events: none;
   overflow: visible;
+  clip-path: none;
+  -webkit-clip-path: none;
+  mask: none;
+  -webkit-mask: none;
 }
 
 .home-hero-container:has(.hero-logo-mark--split) .hero-button {
