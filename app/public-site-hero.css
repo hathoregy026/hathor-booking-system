@@ -126,13 +126,10 @@
 .home-hero-container:has(.hero-logo-mark--split) {
   --hathor-logo-gap: 168px;
   --hathor-logo-side-w: calc((100vw - var(--hathor-logo-gap)) / 2);
-  --hathor-logo-bottom: clamp(28px, 4vh, 44px);
+  --hathor-logo-bottom: clamp(48px, 7vh, 72px);
   --hathor-cta-half-h: 26px;
   --hathor-cta-nudge: 0px;
-  --hathor-logo-h: min(
-    calc(var(--hathor-logo-side-w) * 1804 / 2676),
-    calc(100svh - var(--hathor-logo-bottom) - 16px)
-  );
+  --hathor-logo-h: min(30vh, calc(var(--hathor-logo-side-w) * 1804 / 2676));
 }
 
 .hathor-logo-split {
@@ -219,7 +216,8 @@
 }
 
 .hero-logo-mark--split {
-  bottom: var(--hathor-logo-bottom, clamp(28px, 4vh, 44px));
+  bottom: var(--hathor-logo-bottom, clamp(48px, 7vh, 72px)) !important;
+  top: auto !important;
   width: 100vw;
   z-index: 4;
   pointer-events: none;
@@ -233,7 +231,8 @@
 .home-hero-container:has(.hero-logo-mark--split) .hero-button {
   bottom: calc(
     var(--hathor-logo-bottom) + (var(--hathor-logo-h) / 2) - var(--hathor-cta-half-h)
-  );
+  ) !important;
+  top: auto !important;
   transform: translateX(var(--hathor-cta-nudge, 0px));
   z-index: 8;
 }
