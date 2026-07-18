@@ -6208,11 +6208,14 @@ body.has-page-scroll-transition .pin-spacer {
   --hathor-title-font: var(--font-hathor-agraham), "Agraham", var(--public-serif);
   --hathor-title-size: 48px;
   --hathor-title-gold: #b69f64;
-  /* Soft engraved inner depth (cast from top-left) */
+  --hathor-title-line-height: 1.18;
+  /* Deeper engraved inner shadow (cast from top-left) */
   --hathor-title-engraved-gold:
-    -0.5px -0.5px 0 rgba(255, 248, 235, 0.4),
-    0.75px 0.75px 0 rgba(55, 40, 18, 0.32),
-    1px 2px 3px rgba(0, 0, 0, 0.16);
+    -1px -1px 0 rgba(255, 248, 235, 0.55),
+    -0.5px -0.5px 1px rgba(255, 248, 235, 0.28),
+    1px 1px 0 rgba(40, 28, 10, 0.48),
+    1.5px 1.5px 2px rgba(0, 0, 0, 0.3),
+    2px 3px 6px rgba(0, 0, 0, 0.2);
   --hathor-title-engraved-white:
     -0.5px -0.5px 0 rgba(255, 255, 255, 0.35),
     0.75px 0.75px 0 rgba(0, 0, 0, 0.35),
@@ -6232,7 +6235,7 @@ body.has-page-scroll-transition .pin-spacer {
   font-weight: 400 !important;
   font-style: normal !important;
   letter-spacing: 0.02em;
-  line-height: 1.15;
+  line-height: var(--hathor-title-line-height) !important;
   color: var(--hathor-title-gold) !important;
   -webkit-text-fill-color: var(--hathor-title-gold);
   text-shadow: var(--hathor-title-engraved-gold);
@@ -6246,7 +6249,7 @@ body.has-page-scroll-transition .pin-spacer {
   font-size: clamp(1.75rem, 4.2vw, var(--hathor-title-size)) !important;
   font-weight: 400 !important;
   letter-spacing: 0.02em;
-  line-height: 1.12;
+  line-height: var(--hathor-title-line-height) !important;
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff;
   text-shadow: var(--hathor-title-engraved-white);
@@ -6263,7 +6266,7 @@ html:not([data-ex-experience])
   font-size: clamp(1.75rem, 4.2vw, var(--hathor-title-size)) !important;
   font-weight: 400 !important;
   letter-spacing: 0.06em;
-  line-height: 1.05;
+  line-height: var(--hathor-title-line-height) !important;
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff;
   text-shadow: var(--hathor-title-engraved-white);
@@ -6274,6 +6277,7 @@ html:not([data-ex-experience]) .public-site .cruises-scroll-route .cruises-hero_
   font-family: var(--hathor-title-font) !important;
   font-size: clamp(1.75rem, 4.2vw, var(--hathor-title-size)) !important;
   font-weight: 400 !important;
+  line-height: var(--hathor-title-line-height) !important;
   color: #ffffff !important;
   text-shadow: var(--hathor-title-engraved-white);
 }
@@ -6291,7 +6295,7 @@ html[data-ex-experience] .ex-root .cta-inner h2 {
   font-size: clamp(1.75rem, 4.2vw, var(--hathor-title-size)) !important;
   font-weight: 400 !important;
   letter-spacing: 0.02em;
-  line-height: 1.15;
+  line-height: var(--hathor-title-line-height) !important;
   text-transform: none !important;
   color: var(--hathor-title-gold) !important;
   -webkit-text-fill-color: var(--hathor-title-gold);
