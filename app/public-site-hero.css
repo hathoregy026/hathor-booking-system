@@ -125,7 +125,10 @@
 /* Split HATHOR wordmark — per-letter images inside .hero-logo-mark */
 .home-hero-container:has(.hero-logo-mark--split) {
   --hathor-logo-side-w: calc(
-    (100vw - var(--hathor-logo-gap, 168px) - 2 * var(--hathor-logo-edge, 0px)) / 2
+    (
+        100vw - var(--hathor-logo-gap, 168px) - var(--hathor-logo-edge-l, 0px) -
+          var(--hathor-logo-edge-r, 0px)
+      ) / 2
   );
   --hathor-cta-half-h: 26px;
   --hathor-cta-nudge: 0px;
@@ -147,7 +150,7 @@
   max-width: none !important;
   height: var(--hathor-logo-h, calc((100vw - 168px) / 2 * 2200 / 2683)) !important;
   margin: 0 !important;
-  padding: 0 var(--hathor-logo-edge, 0px) !important;
+  padding: 0 var(--hathor-logo-edge-r, 0px) 0 var(--hathor-logo-edge-l, 0px) !important;
   box-sizing: border-box;
   overflow: visible;
   filter: none;

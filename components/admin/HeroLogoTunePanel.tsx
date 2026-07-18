@@ -287,14 +287,6 @@ export function HeroLogoTunePanel() {
                   onChange={(y) => patch({ y })}
                 />
                 <NumberField
-                  label="Edge inset (left & right)"
-                  hint="Space from screen edges"
-                  value={tune.edgeInset}
-                  min={0}
-                  max={120}
-                  onChange={(edgeInset) => patch({ edgeInset })}
-                />
-                <NumberField
                   label="Book Now vertical nudge"
                   value={tune.ctaNudge}
                   min={-80}
@@ -310,6 +302,34 @@ export function HeroLogoTunePanel() {
                   step={0.1}
                   suffix="s"
                   onChange={(animDuration) => patch({ animDuration })}
+                />
+              </div>
+            </section>
+
+            <section className="hlt-section">
+              <h2 className="admin-heading text-base">
+                Screen edge spacing
+              </h2>
+              <p className="hlt-section__hint">
+                Space from the screen edge to the outer letters. 0 = current live
+                edge-to-edge look.
+              </p>
+              <div className="hlt-grid">
+                <NumberField
+                  label="Left edge → H"
+                  hint="Inset from the left screen edge"
+                  value={tune.edgeLeft}
+                  min={0}
+                  max={160}
+                  onChange={(edgeLeft) => patch({ edgeLeft })}
+                />
+                <NumberField
+                  label="R → right edge"
+                  hint="Inset from the right screen edge"
+                  value={tune.edgeRight}
+                  min={0}
+                  max={160}
+                  onChange={(edgeRight) => patch({ edgeRight })}
                 />
               </div>
             </section>

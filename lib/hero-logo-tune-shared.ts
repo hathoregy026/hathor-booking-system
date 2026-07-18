@@ -16,7 +16,10 @@ export const heroLogoTuneSchema = z.object({
   y: px(-220, 160),
   ctaNudge: px(-80, 80),
   animDuration: z.number().min(0.6).max(5),
-  edgeInset: px(0, 120),
+  /** Space from screen left edge to H (left). */
+  edgeLeft: px(0, 160),
+  /** Space from R to screen right edge. */
+  edgeRight: px(0, 160),
   /** Space between T and the Book Now button (button stays centered). */
   gapTButton: px(0, 200),
   /** Space between Book Now and the right-side H. */
@@ -45,7 +48,8 @@ export const DEFAULT_HERO_LOGO_TUNE: HeroLogoTune = {
   y: -220,
   ctaNudge: 20,
   animDuration: 3,
-  edgeInset: 0,
+  edgeLeft: 0,
+  edgeRight: 0,
   gapTButton: 0,
   gapButtonH: 0,
   vAlign: "top",
@@ -93,6 +97,9 @@ export function parseHeroLogoTune(raw: unknown): HeroLogoTune {
       ? Math.max(0, Math.round((legacyCenter - HATHOR_BTN_SLOT_PX) / 2))
       : undefined;
 
+  // Old shared edgeInset → both sides
+  const legacyEdge = asFiniteNumber(src.edgeInset);
+
   const vAlignRaw = src.vAlign ?? src.align;
   const vAlign: HeroLogoVAlign =
     vAlignRaw === "top" || vAlignRaw === "middle" || vAlignRaw === "bottom"
@@ -107,7 +114,14 @@ export function parseHeroLogoTune(raw: unknown): HeroLogoTune {
     ctaNudge: asFiniteNumber(src.ctaNudge) ?? DEFAULT_HERO_LOGO_TUNE.ctaNudge,
     animDuration:
       asFiniteNumber(src.animDuration) ?? DEFAULT_HERO_LOGO_TUNE.animDuration,
-    edgeInset: asFiniteNumber(src.edgeInset) ?? DEFAULT_HERO_LOGO_TUNE.edgeInset,
+    edgeLeft:
+      asFiniteNumber(src.edgeLeft) ??
+      legacyEdge ??
+      DEFAULT_HERO_LOGO_TUNE.edgeLeft,
+    edgeRight:
+      asFiniteNumber(src.edgeRight) ??
+      legacyEdge ??
+      DEFAULT_HERO_LOGO_TUNE.edgeRight,
     gapTButton:
       asFiniteNumber(src.gapTButton) ??
       migratedWing ??
@@ -134,14 +148,14 @@ export function parseHeroLogoTune(raw: unknown): HeroLogoTune {
 }
 
 export function heroLogoTuneToCssVars(tune: HeroLogoTune): Record<string, string> {
-  // Center Book Now slot stays fixed width — T/H spacing is margin on T and H only,
-  // so the default live layout (gaps 0) matches the locked homepage pose exactly.
+  // Defaults 0 leave the locked live edge-to-edge pose unchanged.
   return {
     "--hathor-logo-size": String(tune.size),
     "--hathor-logo-y": `${tune.y}px`,
     "--hathor-cta-y-nudge": `${tune.ctaNudge}px`,
     "--hathor-logo-anim-duration": String(tune.animDuration),
-    "--hathor-logo-edge": `${tune.edgeInset}px`,
+    "--hathor-logo-edge-l": `${tune.edgeLeft}px`,
+    "--hathor-logo-edge-r": `${tune.edgeRight}px`,
     "--hathor-logo-gap": `${HATHOR_BTN_SLOT_PX}px`,
     "--hathor-gap-t-btn": `${tune.gapTButton}px`,
     "--hathor-gap-btn-h": `${tune.gapButtonH}px`,
