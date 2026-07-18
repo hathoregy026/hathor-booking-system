@@ -37,11 +37,11 @@ html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--spli
   --hathor-logo-gap: 168px;
   --hathor-logo-side-w: calc((100vw - var(--hathor-logo-gap)) / 2);
   /*
-    Edge-to-edge band like the ref: height ≈ side width so glyphs fill the
-    bottom strip. (Letter WebPs have empty padding — cover crops it away.)
+    Size: cover fills each cell (no empty padding).
+    Position: keep the band in the bottom red-box zone only — do not raise.
   */
-  --hathor-logo-h: min(42vh, calc(var(--hathor-logo-side-w) * 0.92));
-  --hathor-logo-bottom: clamp(40px, 5.5vh, 64px);
+  --hathor-logo-h: min(32vh, calc(var(--hathor-logo-side-w) * 0.72));
+  --hathor-logo-bottom: clamp(56px, 9vh, 88px);
   --hathor-cta-half-h: 26px;
   --hathor-cta-nudge: 0px;
 }
@@ -691,7 +691,7 @@ h1, h2, h3, h4, p {
 }
 
 .hero-logo-mark--split {
-  bottom: var(--hathor-logo-bottom, clamp(40px, 5.5vh, 64px));
+  bottom: var(--hathor-logo-bottom, clamp(56px, 9vh, 88px));
   width: 100vw;
   z-index: 4;
   pointer-events: none;
