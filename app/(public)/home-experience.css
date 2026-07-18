@@ -41,6 +41,8 @@ html[data-ex-experience] .ex-root {
   --hathor-logo-anim-duration: 2.6;
   --hathor-logo-edge: 0px;
   --hathor-logo-gap: 168px;
+  --hathor-logo-align-items: flex-end;
+  --hathor-logo-object-position: bottom center;
   --hathor-gap-ha: 0px;
   --hathor-gap-at: 0px;
   --hathor-gap-ho: 0px;
@@ -112,7 +114,7 @@ html[data-ex-experience] .ex-root .hathor-logo-split.hero-logo-img {
   flex-direction: row !important;
   flex-wrap: nowrap !important;
   justify-content: stretch;
-  align-items: flex-end;
+  align-items: var(--hathor-logo-align-items, flex-end);
   gap: 0;
   width: 100vw !important;
   max-width: none !important;
@@ -135,7 +137,7 @@ html[data-ex-experience] .ex-root .hathor-logo-split__side {
   min-width: 0;
   display: flex !important;
   flex-direction: row !important;
-  align-items: flex-end;
+  align-items: var(--hathor-logo-align-items, flex-end);
   height: 100% !important;
   gap: 0;
   overflow: visible;
@@ -174,7 +176,7 @@ html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter {
   max-width: none !important;
   max-height: none !important;
   object-fit: contain;
-  object-position: bottom center;
+  object-position: var(--hathor-logo-object-position, bottom center);
   clip-path: none;
   -webkit-clip-path: none;
   mask: none;
@@ -693,7 +695,7 @@ h1, h2, h3, h4, p {
   flex-direction: row !important;
   flex-wrap: nowrap !important;
   justify-content: stretch;
-  align-items: flex-end;
+  align-items: var(--hathor-logo-align-items, flex-end);
   gap: 0;
   width: 100vw !important;
   max-width: none !important;
@@ -714,7 +716,7 @@ h1, h2, h3, h4, p {
   min-width: 0;
   display: flex !important;
   flex-direction: row !important;
-  align-items: flex-end;
+  align-items: var(--hathor-logo-align-items, flex-end);
   height: 100% !important;
   gap: 0;
   overflow: visible;
@@ -752,7 +754,7 @@ h1, h2, h3, h4, p {
   max-width: none !important;
   max-height: none !important;
   object-fit: contain;
-  object-position: bottom center;
+  object-position: var(--hathor-logo-object-position, bottom center);
   user-select: none;
   pointer-events: none;
   clip-path: none;

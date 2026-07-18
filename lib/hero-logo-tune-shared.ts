@@ -5,6 +5,9 @@ export const HERO_LOGO_TUNE_KEY = "hero-logo-tune";
 
 const px = (min: number, max: number) => z.number().min(min).max(max);
 
+export const heroLogoVAlignSchema = z.enum(["top", "middle", "bottom"]);
+export type HeroLogoVAlign = z.infer<typeof heroLogoVAlignSchema>;
+
 export const heroLogoTuneSchema = z.object({
   size: z.number().min(0.55).max(1.45),
   y: px(-220, 160),
@@ -12,12 +15,14 @@ export const heroLogoTuneSchema = z.object({
   animDuration: z.number().min(0.6).max(5),
   edgeInset: px(0, 120),
   centerGap: px(80, 320),
+  /** Shared vertical alignment line for all letters (Figma-style). */
+  vAlign: heroLogoVAlignSchema,
   /** Space after each letter toward the next (px). */
   gapHA: px(-40, 120),
   gapAT: px(-40, 120),
   gapHO: px(-40, 120),
   gapOR: px(-40, 120),
-  /** Per-letter vertical nudge (px). − up, + down. */
+  /** Extra per-letter vertical nudge after vAlign (px). − up, + down. */
   yH1: px(-80, 80),
   yA: px(-80, 80),
   yT: px(-80, 80),
@@ -28,7 +33,7 @@ export const heroLogoTuneSchema = z.object({
 
 export type HeroLogoTune = z.infer<typeof heroLogoTuneSchema>;
 
-/** Starting point = last known live logo pose (so the form isn’t empty zeros). */
+/** Current live pose — do not change unless the user asks to hardcode a new baseline. */
 export const DEFAULT_HERO_LOGO_TUNE: HeroLogoTune = {
   size: 0.92,
   y: -220,
@@ -36,6 +41,7 @@ export const DEFAULT_HERO_LOGO_TUNE: HeroLogoTune = {
   animDuration: 3,
   edgeInset: 0,
   centerGap: 168,
+  vAlign: "bottom",
   gapHA: 0,
   gapAT: 0,
   gapHO: 0,
@@ -46,6 +52,18 @@ export const DEFAULT_HERO_LOGO_TUNE: HeroLogoTune = {
   yH2: 0,
   yO: 0,
   yR: 0,
+};
+
+const VALIGN_FLEX: Record<HeroLogoVAlign, string> = {
+  top: "flex-start",
+  middle: "center",
+  bottom: "flex-end",
+};
+
+const VALIGN_OBJECT: Record<HeroLogoVAlign, string> = {
+  top: "top center",
+  middle: "center center",
+  bottom: "bottom center",
 };
 
 function asFiniteNumber(value: unknown): number | undefined {
@@ -61,6 +79,25 @@ export function parseHeroLogoTune(raw: unknown): HeroLogoTune {
   const src =
     raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
 
+  // Legacy edge-lock payloads used T→button / button→H instead of centerGap
+  const gapT = asFiniteNumber(src.gapTButton);
+  const gapB = asFiniteNumber(src.gapButtonH);
+  const legacyCenterFromWings =
+    gapT != null || gapB != null
+      ? Math.min(
+          320,
+          Math.max(80, Math.round(168 + (gapT ?? 0) + (gapB ?? 0))),
+        )
+      : undefined;
+
+  const vAlignRaw = src.vAlign ?? src.align;
+  const vAlign: HeroLogoVAlign =
+    vAlignRaw === "top" || vAlignRaw === "middle" || vAlignRaw === "bottom"
+      ? vAlignRaw
+      : vAlignRaw === "center"
+        ? "middle"
+        : DEFAULT_HERO_LOGO_TUNE.vAlign;
+
   const candidate: HeroLogoTune = {
     size: asFiniteNumber(src.size) ?? DEFAULT_HERO_LOGO_TUNE.size,
     y: asFiniteNumber(src.y) ?? DEFAULT_HERO_LOGO_TUNE.y,
@@ -68,7 +105,11 @@ export function parseHeroLogoTune(raw: unknown): HeroLogoTune {
     animDuration:
       asFiniteNumber(src.animDuration) ?? DEFAULT_HERO_LOGO_TUNE.animDuration,
     edgeInset: asFiniteNumber(src.edgeInset) ?? DEFAULT_HERO_LOGO_TUNE.edgeInset,
-    centerGap: asFiniteNumber(src.centerGap) ?? DEFAULT_HERO_LOGO_TUNE.centerGap,
+    centerGap:
+      asFiniteNumber(src.centerGap) ??
+      legacyCenterFromWings ??
+      DEFAULT_HERO_LOGO_TUNE.centerGap,
+    vAlign,
     gapHA: asFiniteNumber(src.gapHA) ?? DEFAULT_HERO_LOGO_TUNE.gapHA,
     gapAT: asFiniteNumber(src.gapAT) ?? DEFAULT_HERO_LOGO_TUNE.gapAT,
     gapHO: asFiniteNumber(src.gapHO) ?? DEFAULT_HERO_LOGO_TUNE.gapHO,
@@ -93,6 +134,8 @@ export function heroLogoTuneToCssVars(tune: HeroLogoTune): Record<string, string
     "--hathor-logo-anim-duration": String(tune.animDuration),
     "--hathor-logo-edge": `${tune.edgeInset}px`,
     "--hathor-logo-gap": `${tune.centerGap}px`,
+    "--hathor-logo-align-items": VALIGN_FLEX[tune.vAlign],
+    "--hathor-logo-object-position": VALIGN_OBJECT[tune.vAlign],
     "--hathor-gap-ha": `${tune.gapHA}px`,
     "--hathor-gap-at": `${tune.gapAT}px`,
     "--hathor-gap-ho": `${tune.gapHO}px`,

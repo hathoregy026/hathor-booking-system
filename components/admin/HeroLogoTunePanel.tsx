@@ -7,9 +7,56 @@ import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
 import {
   DEFAULT_HERO_LOGO_TUNE,
   type HeroLogoTune,
+  type HeroLogoVAlign,
   isHeroLogoTuneEqual,
   parseHeroLogoTune,
 } from "@/lib/hero-logo-tune-shared";
+
+function AlignIcon({ kind }: { kind: HeroLogoVAlign }) {
+  if (kind === "top") {
+    return (
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
+        <path
+          d="M3 3.5h12M6 3.5v9M12 3.5v6"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+      </svg>
+    );
+  }
+  if (kind === "middle") {
+    return (
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
+        <path
+          d="M3 9h12M6 4.5v9M12 6v6"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+      </svg>
+    );
+  }
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
+      <path
+        d="M3 14.5h12M6 5.5v9M12 8.5v6"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+const VALIGN_OPTIONS: { value: HeroLogoVAlign; label: string }[] = [
+  { value: "top", label: "Align tops" },
+  { value: "middle", label: "Align middles" },
+  { value: "bottom", label: "Align bottoms" },
+];
 
 function NumberField({
   label,
@@ -120,23 +167,44 @@ export function HeroLogoTunePanel() {
   const patch = (partial: Partial<HeroLogoTune>) =>
     setTune((t) => ({ ...t, ...partial }));
 
+  const setVAlign = (vAlign: HeroLogoVAlign) => {
+    // Shared line for all letters; clear per-letter nudges so the align is clean
+    patch({
+      vAlign,
+      yH1: 0,
+      yA: 0,
+      yT: 0,
+      yH2: 0,
+      yO: 0,
+      yR: 0,
+    });
+  };
+
   const save = async () => {
     setSaving(true);
     try {
       const response = await adminFetch("/api/admin/hero-logo-tune", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tune }),
+        body: JSON.stringify({ tune: parseHeroLogoTune(tune) }),
       });
-      if (!response.ok) throw new Error("save failed");
-      const data = (await response.json()) as { tune?: unknown };
+      const data = (await response.json().catch(() => ({}))) as {
+        tune?: unknown;
+        error?: string;
+      };
+      if (!response.ok) {
+        throw new Error(data.error || `Save failed (${response.status})`);
+      }
       const next = parseHeroLogoTune(data.tune);
       setTune(next);
       setSaved(next);
       showToast("success", "Saved — hard-refresh the homepage to see it.");
     } catch (error) {
       if (!isTransientFetchError(error)) {
-        showToast("error", "Could not save logo settings.");
+        showToast(
+          "error",
+          error instanceof Error ? error.message : "Could not save logo settings.",
+        );
       }
     } finally {
       setSaving(false);
@@ -171,6 +239,32 @@ export function HeroLogoTunePanel() {
           </div>
         ) : (
           <>
+            <section className="hlt-section">
+              <h2 className="admin-heading text-base">Position · Alignment</h2>
+              <p className="hlt-section__hint">
+                Put every letter on the same top, middle, or bottom line (like
+                Figma). Save, then hard-refresh the homepage.
+              </p>
+              <div className="hlt-align-row" role="group" aria-label="Alignment">
+                {VALIGN_OPTIONS.map((opt) => {
+                  const active = tune.vAlign === opt.value;
+                  return (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      title={opt.label}
+                      aria-label={opt.label}
+                      aria-pressed={active}
+                      className={`hlt-align-btn${active ? " hlt-align-btn--active" : ""}`}
+                      onClick={() => setVAlign(opt.value)}
+                    >
+                      <AlignIcon kind={opt.value} />
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+
             <section className="hlt-section">
               <h2 className="admin-heading text-base">Overall</h2>
               <div className="hlt-grid">
@@ -269,10 +363,10 @@ export function HeroLogoTunePanel() {
 
             <section className="hlt-section">
               <h2 className="admin-heading text-base">
-                Alignment (per letter vertical)
+                Fine nudge (per letter)
               </h2>
               <p className="hlt-section__hint">
-                Move each letter up (−) or down (+) on its own. Units are pixels.
+                Extra up (−) / down (+) after using the alignment buttons.
               </p>
               <div className="hlt-grid">
                 <NumberField

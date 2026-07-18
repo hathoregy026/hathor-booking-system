@@ -5,7 +5,7 @@ import { logDbError } from "@/lib/db-safe";
 import {
   DEFAULT_HERO_LOGO_TUNE,
   getHeroLogoTune,
-  heroLogoTuneSchema,
+  parseHeroLogoTune,
   saveHeroLogoTune,
 } from "@/lib/hero-logo-tune";
 
@@ -28,19 +28,14 @@ export async function GET() {
 export async function PUT(request: NextRequest) {
   try {
     const body = (await request.json()) as { tune?: unknown };
-    const parsed = heroLogoTuneSchema.safeParse(body.tune);
-    if (!parsed.success) {
-      return NextResponse.json(
-        { error: "Invalid logo tune values." },
-        { status: 400 },
-      );
-    }
-
-    const tune = await saveHeroLogoTune(parsed.data);
+    // Lenient parse accepts older dashboard payloads (vAlign / gapTButton, etc.)
+    const tune = parseHeroLogoTune(body.tune);
+    const saved = await saveHeroLogoTune(tune);
     revalidatePath("/", "layout");
     revalidatePath("/");
-    return NextResponse.json({ tune });
+    return NextResponse.json({ tune: saved });
   } catch (error) {
+    logDbError("admin.hero-logo-tune.PUT", error);
     return handleRouteError(error);
   }
 }

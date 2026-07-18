@@ -17,6 +17,17 @@ export {
   type HeroLogoTune,
 } from "@/lib/hero-logo-tune-shared";
 
+function readStoredTune(value: unknown): unknown {
+  if (typeof value === "string") {
+    try {
+      return JSON.parse(value) as unknown;
+    } catch {
+      return value;
+    }
+  }
+  return value;
+}
+
 export async function getHeroLogoTune(): Promise<HeroLogoTune> {
   try {
     const row = await withDb(() =>
@@ -26,7 +37,7 @@ export async function getHeroLogoTune(): Promise<HeroLogoTune> {
       }),
     );
     if (!row?.value) return DEFAULT_HERO_LOGO_TUNE;
-    return parseHeroLogoTune(JSON.parse(row.value) as unknown);
+    return parseHeroLogoTune(readStoredTune(row.value));
   } catch {
     return DEFAULT_HERO_LOGO_TUNE;
   }
@@ -34,15 +45,17 @@ export async function getHeroLogoTune(): Promise<HeroLogoTune> {
 
 export async function saveHeroLogoTune(tune: HeroLogoTune): Promise<HeroLogoTune> {
   const safe = heroLogoTuneSchema.parse(tune);
-  await prisma.siteSetting.upsert({
-    where: { key: HERO_LOGO_TUNE_KEY },
-    create: {
-      key: HERO_LOGO_TUNE_KEY,
-      value: JSON.stringify(safe),
-    },
-    update: {
-      value: JSON.stringify(safe),
-    },
-  });
+  await withDb(() =>
+    prisma.siteSetting.upsert({
+      where: { key: HERO_LOGO_TUNE_KEY },
+      create: {
+        key: HERO_LOGO_TUNE_KEY,
+        value: JSON.stringify(safe),
+      },
+      update: {
+        value: JSON.stringify(safe),
+      },
+    }),
+  );
   return safe;
 }
