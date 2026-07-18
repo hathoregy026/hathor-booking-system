@@ -56,14 +56,7 @@ export function mountHeroScrollStage({
 
   function getLogoLandedY() {
     const ctaEl = hero.querySelector(".hero-cta");
-    if (!logoMark) return 0;
-
-    // Homepage split logo: CTA sits inside the letter row — land in place.
-    if (ctaEl && logoMark.contains(ctaEl)) {
-      return LOGO_FINISH_Y_OFFSET_PX;
-    }
-
-    if (!ctaEl) return LOGO_FINISH_Y_OFFSET_PX;
+    if (!logoMark || !ctaEl) return 0;
 
     const currentY = Number(gsap.getProperty(logoMark, "y")) || 0;
     gsap.set(logoMark, { y: 0, xPercent: -50, yPercent: 0 });
@@ -99,6 +92,9 @@ export function mountHeroScrollStage({
 
   const playLanding = () => {
     if (!logoMark) return;
+
+    const letters = logoMark.querySelectorAll(".logo-letter");
+
     gsap.set(logoMark, {
       xPercent: -50,
       yPercent: 0,
@@ -107,6 +103,18 @@ export function mountHeroScrollStage({
       scale: 1,
       autoAlpha: 1,
     });
+
+    if (letters.length) {
+      gsap.set(letters, { y: 120, opacity: 0 });
+      gsap.to(letters, {
+        y: 0,
+        opacity: 1,
+        duration: 1.35,
+        stagger: 0.14,
+        ease: "power2.out",
+        delay: 0.12,
+      });
+    }
 
     landingTween = gsap.to(logoMark, {
       y: getLogoLandedY(),

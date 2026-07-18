@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import type { ReactNode } from "react";
 import { HATHOR_BRAND_NAME } from "@/lib/branding";
 import {
   HATHOR_LOGO_LETTERS,
@@ -10,8 +9,6 @@ import {
 
 type HathorLogoSplitProps = {
   className?: string;
-  /** Placed between HAT and HOR — typically the Book Now CTA */
-  cta?: ReactNode;
 };
 
 const LEFT_LETTERS: readonly HathorLogoLetter[] = HATHOR_LOGO_LETTERS.slice(
@@ -30,25 +27,25 @@ function LetterImages({ letters }: { letters: readonly HathorLogoLetter[] }) {
       height={letter.height}
       priority
       draggable={false}
-      sizes="(max-width: 768px) 12vw, 10vw"
+      sizes="(max-width: 768px) 14vw, 12vw"
       className={`logo-letter ${letter.className}`}
     />
   ));
 }
 
 /**
- * HATHOR wordmark as 6 letter images in one row: H A T · CTA · H O R
- * Outer `.hero-logo-mark` remains the GSAP scroll-stage target.
+ * Full-bleed HATHOR letters: H A T · [gap for fixed Book Now] · H O R
+ * Book Now stays in `.hero-button` — this only leaves space so it sits in the middle.
  */
-export function HathorLogoSplit({ className, cta }: HathorLogoSplitProps) {
+export function HathorLogoSplit({ className }: HathorLogoSplitProps) {
   return (
     <div
       className={`hathor-logo-split hero-logo-img${className ? ` ${className}` : ""}`}
-      role={cta ? undefined : "img"}
-      aria-label={cta ? undefined : HATHOR_BRAND_NAME}
+      role="img"
+      aria-label={HATHOR_BRAND_NAME}
     >
       <LetterImages letters={LEFT_LETTERS} />
-      {cta ? <div className="hathor-logo-split__cta">{cta}</div> : null}
+      <span className="hathor-logo-split__gap" aria-hidden="true" />
       <LetterImages letters={RIGHT_LETTERS} />
     </div>
   );

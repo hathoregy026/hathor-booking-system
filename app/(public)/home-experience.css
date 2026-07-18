@@ -26,17 +26,15 @@ html[data-ex-experience] .ex-root {
 html[data-ex-experience] .ex-root .hero-logo-mark {
   left: 50%;
   top: auto;
-  bottom: clamp(2.5rem, 6vh, 4rem);
-  width: min(96vw, 1100px);
+  bottom: clamp(56px, 9vh, 88px);
+  width: 100vw;
   max-width: none;
   margin: 0;
   transform-origin: 50% 50%;
 }
 
 html[data-ex-experience] .ex-root .hero-logo-mark--split {
-  bottom: clamp(2.75rem, 7vh, 4.5rem);
-  width: min(94vw, 1080px);
-  z-index: 7;
+  z-index: 4;
   pointer-events: none;
 }
 
@@ -57,7 +55,7 @@ html[data-ex-experience] .ex-root .hathor-logo-split.hero-logo-img {
   flex-wrap: nowrap !important;
   justify-content: center;
   align-items: center;
-  gap: clamp(0.15rem, 0.55vw, 0.45rem);
+  gap: clamp(0.1rem, 0.35vw, 0.35rem);
   width: 100%;
   height: auto;
   object-fit: unset;
@@ -65,51 +63,31 @@ html[data-ex-experience] .ex-root .hathor-logo-split.hero-logo-img {
 
 html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter {
   display: block;
-  height: clamp(5.5rem, 14vw, 9.5rem);
+  height: clamp(6.5rem, 20vw, 13rem);
   width: auto !important;
   max-width: none !important;
   flex: 0 0 auto !important;
   object-fit: contain;
   object-position: center center;
+  will-change: transform, opacity;
 }
 
-html[data-ex-experience] .ex-root .hathor-logo-split__cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-  margin-inline: clamp(0.35rem, 1.1vw, 0.85rem);
-  pointer-events: auto;
-}
-
-html[data-ex-experience] .ex-root .hathor-logo-split__cta .hero-cta {
-  width: clamp(7.5rem, 14vw, 10.5rem);
-  height: clamp(2.4rem, 4.6vw, 3.15rem);
-  padding: 0 clamp(1rem, 1.8vw, 1.5rem);
-}
-
-html[data-ex-experience] .ex-root .hathor-logo-split__cta .hero-cta-text {
-  font-size: clamp(0.58rem, 1.05vw, 0.72rem);
-  letter-spacing: 0.2em;
+/* Empty middle slot — Book Now stays in .hero-button and sits in this gap */
+html[data-ex-experience] .ex-root .hathor-logo-split__gap {
+  flex: 0 0 clamp(10.5rem, 18vw, 13.5rem);
+  width: clamp(10.5rem, 18vw, 13.5rem);
+  height: 1px;
+  pointer-events: none;
 }
 
 @media (max-width: 768px) {
   html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter {
-    height: clamp(3.25rem, 12vw, 5rem);
+    height: clamp(4.25rem, 16vw, 7rem);
   }
 
-  html[data-ex-experience] .ex-root .hathor-logo-split {
-    gap: clamp(0.1rem, 0.4vw, 0.25rem);
-  }
-
-  html[data-ex-experience] .ex-root .hathor-logo-split__cta {
-    margin-inline: clamp(0.2rem, 1vw, 0.5rem);
-  }
-
-  html[data-ex-experience] .ex-root .hathor-logo-split__cta .hero-cta {
-    width: clamp(5.75rem, 22vw, 7.5rem);
-    height: clamp(2rem, 7vw, 2.5rem);
-    padding: 0 0.75rem;
+  html[data-ex-experience] .ex-root .hathor-logo-split__gap {
+    flex-basis: clamp(7.5rem, 28vw, 10rem);
+    width: clamp(7.5rem, 28vw, 10rem);
   }
 }
 
@@ -575,18 +553,14 @@ h1, h2, h3, h4, p {
   flex-wrap: nowrap !important;
   justify-content: center;
   align-items: center;
-  gap: clamp(0.15rem, 0.55vw, 0.45rem);
+  gap: clamp(0.1rem, 0.35vw, 0.35rem);
   width: 100%;
   height: auto;
 }
 
-/*
-  Side-by-side wordmark: H A T · Book Now · H O R
-  Even letter gaps; CTA sits between the two halves.
-*/
 .hathor-logo-split .logo-letter {
   display: block;
-  height: clamp(5.5rem, 14vw, 9.5rem);
+  height: clamp(6.5rem, 20vw, 13rem);
   width: auto !important;
   max-width: none !important;
   flex: 0 0 auto !important;
@@ -594,28 +568,32 @@ h1, h2, h3, h4, p {
   object-position: center center;
   user-select: none;
   pointer-events: none;
+  will-change: transform, opacity;
 }
 
-.hathor-logo-split__cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-  margin-inline: clamp(0.35rem, 1.1vw, 0.85rem);
-  pointer-events: auto;
+/* Spacer so fixed Book Now sits between HAT and HOR */
+.hathor-logo-split__gap {
+  flex: 0 0 clamp(10.5rem, 18vw, 13.5rem);
+  width: clamp(10.5rem, 18vw, 13.5rem);
+  height: 1px;
+  pointer-events: none;
+}
+
+.hero-logo-mark--split {
+  bottom: clamp(56px, 9vh, 88px);
+  width: 100vw;
+  z-index: 4;
+  pointer-events: none;
 }
 
 @media (max-width: 768px) {
   .hathor-logo-split .logo-letter {
-    height: clamp(3.25rem, 12vw, 5rem);
+    height: clamp(4.25rem, 16vw, 7rem);
   }
 
-  .hathor-logo-split {
-    gap: clamp(0.1rem, 0.4vw, 0.25rem);
-  }
-
-  .hathor-logo-split__cta {
-    margin-inline: clamp(0.2rem, 1vw, 0.5rem);
+  .hathor-logo-split__gap {
+    flex-basis: clamp(7.5rem, 28vw, 10rem);
+    width: clamp(7.5rem, 28vw, 10rem);
   }
 }
 

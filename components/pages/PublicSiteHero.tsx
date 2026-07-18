@@ -89,18 +89,10 @@ export function PublicSiteHero({
 
       <div
         className={`hero-logo-mark${splitLetterLogo ? " hero-logo-mark--split" : ""}`}
-        aria-hidden={splitLetterLogo ? undefined : true}
+        aria-hidden="true"
       >
         {splitLetterLogo ? (
-          <HathorLogoSplit
-            cta={
-              showCta ? (
-                <BookNowTrigger className="btn btn-light hero-cta">
-                  <span className="hero-cta-text">{ctaLabel}</span>
-                </BookNowTrigger>
-              ) : undefined
-            }
-          />
+          <HathorLogoSplit />
         ) : (
           <Image
             className="hero-logo-img"
@@ -140,19 +132,17 @@ export function PublicSiteHero({
         {subtitle ? <p className="hero-sub">{subtitle}</p> : null}
       </div>
 
-      {!splitLetterLogo ? (
-        showCta ? (
-          <div className="hero-button">
-            <BookNowTrigger className="btn btn-light hero-cta">
-              <span className="hero-cta-text">{ctaLabel}</span>
-            </BookNowTrigger>
-          </div>
-        ) : (
-          <div className="hero-button" aria-hidden="true">
-            <div className="hero-cta" />
-          </div>
-        )
-      ) : null}
+      {showCta ? (
+        <div className="hero-button">
+          <BookNowTrigger className="btn btn-light hero-cta">
+            <span className="hero-cta-text">{ctaLabel}</span>
+          </BookNowTrigger>
+        </div>
+      ) : (
+        <div className="hero-button" aria-hidden="true">
+          <div className="hero-cta" />
+        </div>
+      )}
 
       <div className="hero-side hero-side--left" aria-hidden="true">
         <span>{sideLeft}</span>
