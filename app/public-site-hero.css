@@ -124,7 +124,9 @@
 
 /* Split HATHOR wordmark — per-letter images inside .hero-logo-mark */
 .hathor-logo-split {
-  display: flex;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
   justify-content: center;
   align-items: flex-end;
   gap: 0;
@@ -132,16 +134,12 @@
   height: auto;
 }
 
-/*
-  Letters are ~5306×2200 combined. Size by HEIGHT so width:auto keeps
-  aspect ratio. (width:0 + height:auto collapsed the logo to 0px tall.)
-*/
 .hathor-logo-split .logo-letter {
   display: block;
-  height: min(41.5vw, 72vh);
+  height: min(22vw, 280px);
   width: auto !important;
   max-width: none !important;
-  flex: 0 0 auto;
+  flex: 0 0 auto !important;
   object-fit: contain;
   object-position: center bottom;
   user-select: none;
@@ -150,7 +148,7 @@
 
 @media (max-width: 768px) {
   .hathor-logo-split .logo-letter {
-    height: min(38vw, 42vh);
+    height: min(18vw, 160px);
   }
 }
 

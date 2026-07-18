@@ -9,9 +9,9 @@ type HathorLogoSplitProps = {
 };
 
 /**
- * Giant HATHOR wordmark as 6 letter images — wrapper stays `.hero-logo-mark`
- * so existing scroll-stage GSAP still targets the group; per-letter classes
- * are ready for individual animation.
+ * Giant HATHOR wordmark as 6 letter images in a horizontal row.
+ * Outer `.hero-logo-mark` stays the GSAP scroll-stage target;
+ * per-letter classes (`.letter-h1`, …) are ready for individual animation.
  */
 export function HathorLogoSplit({ className }: HathorLogoSplitProps) {
   return (
@@ -29,7 +29,7 @@ export function HathorLogoSplit({ className }: HathorLogoSplitProps) {
           height={letter.height}
           priority
           draggable={false}
-          sizes="(max-width: 768px) 20vw, 18vw"
+          sizes="(max-width: 768px) 15vw, 12vw"
           className={`logo-letter ${letter.className}`}
         />
       ))}

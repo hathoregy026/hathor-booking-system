@@ -43,23 +43,32 @@ html[data-ex-experience] .ex-root .hero-logo-img {
   object-position: center center;
 }
 
+/* Must beat .hero-logo-img { display:block } or letters stack vertically */
 html[data-ex-experience] .ex-root .hathor-logo-split.hero-logo-img {
-  object-fit: unset;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 0;
   width: 100%;
   height: auto;
+  object-fit: unset;
 }
 
 html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter {
-  height: min(41.5vw, 72vh);
+  display: block;
+  height: min(22vw, 280px);
   width: auto !important;
   max-width: none !important;
+  flex: 0 0 auto !important;
   object-fit: contain;
   object-position: center bottom;
 }
 
 @media (max-width: 768px) {
   html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter {
-    height: min(38vw, 42vh);
+    height: min(18vw, 160px);
   }
 }
 
@@ -520,7 +529,9 @@ h1, h2, h3, h4, p {
 
 /* Split HATHOR — letter images (homepage); GSAP still animates .hero-logo-mark */
 .hathor-logo-split {
-  display: flex;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
   justify-content: center;
   align-items: flex-end;
   gap: 0;
@@ -529,15 +540,15 @@ h1, h2, h3, h4, p {
 }
 
 /*
-  Size by height — width:0 + height:auto made every letter 0px tall on deploy.
-  Combined glyph aspect ≈ 5306/2200 → height ≈ 41.5vw for a full-bleed wordmark.
+  Side-by-side wordmark like the gold reference.
+  Size by height; width:auto keeps each glyph’s aspect ratio.
 */
 .hathor-logo-split .logo-letter {
   display: block;
-  height: min(41.5vw, 72vh);
+  height: min(22vw, 280px);
   width: auto !important;
   max-width: none !important;
-  flex: 0 0 auto;
+  flex: 0 0 auto !important;
   object-fit: contain;
   object-position: center bottom;
   user-select: none;
@@ -546,7 +557,7 @@ h1, h2, h3, h4, p {
 
 @media (max-width: 768px) {
   .hathor-logo-split .logo-letter {
-    height: min(38vw, 42vh);
+    height: min(18vw, 160px);
   }
 }
 
