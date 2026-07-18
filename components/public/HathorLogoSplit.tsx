@@ -39,8 +39,8 @@ function LetterImages({ letters }: { letters: readonly HathorLogoLetter[] }) {
 }
 
 /**
- * HAT | T→btn gap | Book Now slot (centered) | btn→H gap | HOR.
- * Book Now stays in .hero-button; the middle slot only reserves space.
+ * Full-bleed HATHOR: left half HAT · center gap (fixed Book Now) · right half HOR.
+ * Letters scale to the side width so they read edge-to-edge from a distance.
  */
 export function HathorLogoSplit({ className }: HathorLogoSplitProps) {
   return (
@@ -52,9 +52,7 @@ export function HathorLogoSplit({ className }: HathorLogoSplitProps) {
       <div className="hathor-logo-split__side hathor-logo-split__side--left">
         <LetterImages letters={LEFT_LETTERS} />
       </div>
-      <span className="hathor-logo-split__gap-t-btn" aria-hidden="true" />
-      <span className="hathor-logo-split__btn-slot" aria-hidden="true" />
-      <span className="hathor-logo-split__gap-btn-h" aria-hidden="true" />
+      <span className="hathor-logo-split__gap" aria-hidden="true" />
       <div className="hathor-logo-split__side hathor-logo-split__side--right">
         <LetterImages letters={RIGHT_LETTERS} />
       </div>

@@ -134,18 +134,17 @@ export function parseHeroLogoTune(raw: unknown): HeroLogoTune {
 }
 
 export function heroLogoTuneToCssVars(tune: HeroLogoTune): Record<string, string> {
-  const centerSpan =
-    tune.gapTButton + HATHOR_BTN_SLOT_PX + tune.gapButtonH;
+  // Center Book Now slot stays fixed width — T/H spacing is margin on T and H only,
+  // so the default live layout (gaps 0) matches the locked homepage pose exactly.
   return {
     "--hathor-logo-size": String(tune.size),
     "--hathor-logo-y": `${tune.y}px`,
     "--hathor-cta-y-nudge": `${tune.ctaNudge}px`,
     "--hathor-logo-anim-duration": String(tune.animDuration),
     "--hathor-logo-edge": `${tune.edgeInset}px`,
+    "--hathor-logo-gap": `${HATHOR_BTN_SLOT_PX}px`,
     "--hathor-gap-t-btn": `${tune.gapTButton}px`,
-    "--hathor-btn-slot": `${HATHOR_BTN_SLOT_PX}px`,
     "--hathor-gap-btn-h": `${tune.gapButtonH}px`,
-    "--hathor-logo-gap": `${centerSpan}px`,
     "--hathor-logo-align-items": VALIGN_FLEX[tune.vAlign],
     "--hathor-logo-object-position": VALIGN_OBJECT[tune.vAlign],
     "--hathor-gap-ha": `${tune.gapHA}px`,
