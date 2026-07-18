@@ -56,7 +56,14 @@ export function mountHeroScrollStage({
 
   function getLogoLandedY() {
     const ctaEl = hero.querySelector(".hero-cta");
-    if (!logoMark || !ctaEl) return 0;
+    if (!logoMark) return 0;
+
+    // Homepage split logo: CTA sits inside the letter row — land in place.
+    if (ctaEl && logoMark.contains(ctaEl)) {
+      return LOGO_FINISH_Y_OFFSET_PX;
+    }
+
+    if (!ctaEl) return LOGO_FINISH_Y_OFFSET_PX;
 
     const currentY = Number(gsap.getProperty(logoMark, "y")) || 0;
     gsap.set(logoMark, { y: 0, xPercent: -50, yPercent: 0 });
