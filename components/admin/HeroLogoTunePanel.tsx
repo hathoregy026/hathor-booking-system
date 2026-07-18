@@ -295,14 +295,6 @@ export function HeroLogoTunePanel() {
                   onChange={(edgeInset) => patch({ edgeInset })}
                 />
                 <NumberField
-                  label="Center gap (Book Now)"
-                  hint="Empty middle between T and H"
-                  value={tune.centerGap}
-                  min={80}
-                  max={320}
-                  onChange={(centerGap) => patch({ centerGap })}
-                />
-                <NumberField
                   label="Book Now vertical nudge"
                   value={tune.ctaNudge}
                   min={-80}
@@ -318,6 +310,34 @@ export function HeroLogoTunePanel() {
                   step={0.1}
                   suffix="s"
                   onChange={(animDuration) => patch({ animDuration })}
+                />
+              </div>
+            </section>
+
+            <section className="hlt-section">
+              <h2 className="admin-heading text-base">
+                Book Now spacing (button stays centered)
+              </h2>
+              <p className="hlt-section__hint">
+                Book Now stays fixed in the middle. These only change how close T
+                and H sit to it.
+              </p>
+              <div className="hlt-grid">
+                <NumberField
+                  label="T → Book Now"
+                  hint="Space between T and the button"
+                  value={tune.gapTButton}
+                  min={0}
+                  max={200}
+                  onChange={(gapTButton) => patch({ gapTButton })}
+                />
+                <NumberField
+                  label="Book Now → H"
+                  hint="Space between the button and right H"
+                  value={tune.gapButtonH}
+                  min={0}
+                  max={200}
+                  onChange={(gapButtonH) => patch({ gapButtonH })}
                 />
               </div>
             </section>

@@ -40,7 +40,12 @@ html[data-ex-experience] .ex-root {
   --hathor-cta-y-nudge: 0px;
   --hathor-logo-anim-duration: 2.6;
   --hathor-logo-edge: 0px;
-  --hathor-logo-gap: 168px;
+  --hathor-gap-t-btn: 0px;
+  --hathor-btn-slot: 168px;
+  --hathor-gap-btn-h: 0px;
+  --hathor-logo-gap: calc(
+    var(--hathor-gap-t-btn) + var(--hathor-btn-slot) + var(--hathor-gap-btn-h)
+  );
   --hathor-logo-align-items: flex-end;
   --hathor-logo-object-position: bottom center;
   --hathor-gap-ha: 0px;
@@ -56,8 +61,16 @@ html[data-ex-experience] .ex-root {
 }
 
 html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) {
-  --hathor-logo-side-w: calc(
-    (100vw - var(--hathor-logo-gap, 168px) - 2 * var(--hathor-logo-edge, 0px)) / 2
+  /* Use the narrower side so letters never overflow into the Book Now slot */
+  --hathor-logo-side-w: min(
+    calc(
+      50vw - (var(--hathor-btn-slot, 168px) / 2) - var(--hathor-gap-t-btn, 0px) -
+        var(--hathor-logo-edge, 0px)
+    ),
+    calc(
+      50vw - (var(--hathor-btn-slot, 168px) / 2) - var(--hathor-gap-btn-h, 0px) -
+        var(--hathor-logo-edge, 0px)
+    )
   );
   --hathor-cta-half-h: 26px;
   --hathor-cta-nudge: 0px;
@@ -106,14 +119,24 @@ html[data-ex-experience] .ex-root .hero-logo-img {
 }
 
 /*
-  Full-bleed split logo: each side = (100vw − gap) / 2.
-  Gap matches .hero-cta width (168px) so Book Now sits dead-center.
+  Full-bleed split logo: HAT | T→btn | Book Now slot | btn→H | HOR.
+  Side columns are sized so the Book Now slot stays viewport-centered
+  even when T→btn and btn→H gaps differ.
 */
 html[data-ex-experience] .ex-root .hathor-logo-split.hero-logo-img {
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: nowrap !important;
-  justify-content: stretch;
+  display: grid !important;
+  grid-template-columns:
+    minmax(
+      0,
+      calc(50% - (var(--hathor-btn-slot, 168px) / 2) - var(--hathor-gap-t-btn, 0px))
+    )
+    var(--hathor-gap-t-btn, 0px)
+    var(--hathor-btn-slot, 168px)
+    var(--hathor-gap-btn-h, 0px)
+    minmax(
+      0,
+      calc(50% - (var(--hathor-btn-slot, 168px) / 2) - var(--hathor-gap-btn-h, 0px))
+    );
   align-items: var(--hathor-logo-align-items, flex-end);
   gap: 0;
   width: 100vw !important;
@@ -133,8 +156,8 @@ html[data-ex-experience] .ex-root .hathor-logo-split.hero-logo-img {
 }
 
 html[data-ex-experience] .ex-root .hathor-logo-split__side {
-  width: 0;
   min-width: 0;
+  width: 100%;
   display: flex !important;
   flex-direction: row !important;
   align-items: var(--hathor-logo-align-items, flex-end);
@@ -144,12 +167,10 @@ html[data-ex-experience] .ex-root .hathor-logo-split__side {
 }
 
 html[data-ex-experience] .ex-root .hathor-logo-split__side--left {
-  flex: 1 1 0 !important;
   justify-content: flex-end;
 }
 
 html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
-  flex: 1 1 0 !important;
   justify-content: flex-start;
 }
 
@@ -219,17 +240,19 @@ html[data-ex-experience] .ex-root .hathor-logo-split .letter-r .logo-letter {
   transform: translateY(var(--hathor-y-r, 0px));
 }
 
-/* Empty middle slot — Book Now stays in .hero-button and sits in this gap */
-html[data-ex-experience] .ex-root .hathor-logo-split__gap {
-  flex: 0 0 var(--hathor-logo-gap) !important;
-  width: var(--hathor-logo-gap) !important;
+/* Book Now slot (centered) + tunable wings to T and H */
+html[data-ex-experience] .ex-root .hathor-logo-split__gap-t-btn,
+html[data-ex-experience] .ex-root .hathor-logo-split__btn-slot,
+html[data-ex-experience] .ex-root .hathor-logo-split__gap-btn-h {
+  display: block;
+  min-width: 0;
   height: 1px;
   pointer-events: none;
 }
 
 @media (max-width: 768px) {
   html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) {
-    --hathor-logo-gap: clamp(7.25rem, 28vw, 9.5rem);
+    --hathor-btn-slot: clamp(7.25rem, 28vw, 9.5rem);
     --hathor-cta-half-h: 24px;
   }
 }
@@ -691,10 +714,19 @@ h1, h2, h3, h4, p {
 
 /* Split HATHOR — letter images (homepage); GSAP still animates .hero-logo-mark */
 .hathor-logo-split {
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: nowrap !important;
-  justify-content: stretch;
+  display: grid !important;
+  grid-template-columns:
+    minmax(
+      0,
+      calc(50% - (var(--hathor-btn-slot, 168px) / 2) - var(--hathor-gap-t-btn, 0px))
+    )
+    var(--hathor-gap-t-btn, 0px)
+    var(--hathor-btn-slot, 168px)
+    var(--hathor-gap-btn-h, 0px)
+    minmax(
+      0,
+      calc(50% - (var(--hathor-btn-slot, 168px) / 2) - var(--hathor-gap-btn-h, 0px))
+    );
   align-items: var(--hathor-logo-align-items, flex-end);
   gap: 0;
   width: 100vw !important;
@@ -712,8 +744,8 @@ h1, h2, h3, h4, p {
 }
 
 .hathor-logo-split__side {
-  width: 0;
   min-width: 0;
+  width: 100%;
   display: flex !important;
   flex-direction: row !important;
   align-items: var(--hathor-logo-align-items, flex-end);
@@ -723,12 +755,10 @@ h1, h2, h3, h4, p {
 }
 
 .hathor-logo-split__side--left {
-  flex: 1 1 0 !important;
   justify-content: flex-end;
 }
 
 .hathor-logo-split__side--right {
-  flex: 1 1 0 !important;
   justify-content: flex-start;
 }
 
@@ -798,10 +828,11 @@ h1, h2, h3, h4, p {
   transform: translateY(var(--hathor-y-r, 0px));
 }
 
-/* Spacer so fixed Book Now sits between HAT and HOR */
-.hathor-logo-split__gap {
-  flex: 0 0 var(--hathor-logo-gap, 168px) !important;
-  width: var(--hathor-logo-gap, 168px) !important;
+.hathor-logo-split__gap-t-btn,
+.hathor-logo-split__btn-slot,
+.hathor-logo-split__gap-btn-h {
+  display: block;
+  min-width: 0;
   height: 1px;
   pointer-events: none;
 }
@@ -821,7 +852,7 @@ h1, h2, h3, h4, p {
 
 @media (max-width: 768px) {
   .home-hero-container:has(.hero-logo-mark--split) {
-    --hathor-logo-gap: clamp(7.25rem, 28vw, 9.5rem);
+    --hathor-btn-slot: clamp(7.25rem, 28vw, 9.5rem);
   }
 }
 
