@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { ExternalLink, Loader2, RotateCcw, Save } from "lucide-react";
+import { HeroLogoTunePreview } from "@/components/admin/HeroLogoTunePreview";
 import { useToast } from "@/components/admin/ToastProvider";
 import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
 import {
@@ -106,7 +107,6 @@ function NumberField({
           value={text}
           onChange={(e) => {
             const raw = e.target.value.trim();
-            // Allow typing intermediates: "", "-", "1.", "-0.9"
             if (raw !== "" && !/^-?\d*\.?\d*$/.test(raw)) return;
             setText(raw);
             if (raw === "" || raw === "-" || raw === "." || raw === "-.") return;
@@ -168,7 +168,6 @@ export function HeroLogoTunePanel() {
     setTune((t) => ({ ...t, ...partial }));
 
   const setVAlign = (vAlign: HeroLogoVAlign) => {
-    // Shared line for all letters; clear per-letter nudges so the align is clean
     patch({
       vAlign,
       yH1: 0,
@@ -198,7 +197,7 @@ export function HeroLogoTunePanel() {
       const next = parseHeroLogoTune(data.tune);
       setTune(next);
       setSaved(next);
-      showToast("success", "Saved — hard-refresh the homepage to see it.");
+      showToast("success", "Saved to live — hard-refresh the homepage.");
     } catch (error) {
       if (!isTransientFetchError(error)) {
         showToast(
@@ -222,28 +221,31 @@ export function HeroLogoTunePanel() {
         </p>
         <h1 className="admin-page-title">Hero Logo Tune</h1>
         <p className="admin-page-subtitle max-w-2xl">
-          Boxes start with the logo’s current live values. Type new numbers
-          (you should see them as you type), click Save, then hard-refresh the
-          homepage.
+          Use the preview above the controls — it updates instantly and uses the
+          exact letter files plus a 168×52 Book Now. Every spacer is one clear
+          gap in a single left-to-right chain (no fighting anchors). The live
+          homepage stays untouched until you click Save to live site.
         </p>
       </div>
 
       <div className="admin-card space-y-8 p-6">
+        {/* Always mounted — not gated on load — so the preview is never missing. */}
+        <HeroLogoTunePreview tune={tune} />
+
         {loading ? (
           <div
             className="flex items-center gap-2 text-sm"
             style={{ color: "var(--muted)" }}
           >
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-            Loading…
+            Loading saved values…
           </div>
         ) : (
           <>
             <section className="hlt-section">
               <h2 className="admin-heading text-base">Position · Alignment</h2>
               <p className="hlt-section__hint">
-                Put every letter on the same top, middle, or bottom line (like
-                Figma). Save, then hard-refresh the homepage.
+                Shared top / middle / bottom line for letter frames (like Figma).
               </p>
               <div className="hlt-align-row" role="group" aria-label="Alignment">
                 {VALIGN_OPTIONS.map((opt) => {
@@ -270,35 +272,35 @@ export function HeroLogoTunePanel() {
               <div className="hlt-grid">
                 <NumberField
                   label="Size"
-                  hint="1 = default. Try 0.9–1.2"
+                  hint="Scales letter height only"
                   value={tune.size}
-                  min={0.55}
-                  max={1.45}
+                  min={0.2}
+                  max={2.5}
                   step={0.01}
                   suffix="×"
                   onChange={(size) => patch({ size })}
                 />
                 <NumberField
                   label="Bottom position (Y)"
-                  hint="Full control of vertical position. Negative = lower / tuck under sheet"
+                  hint="Negative = lower"
                   value={tune.y}
-                  min={-600}
-                  max={400}
+                  min={-800}
+                  max={600}
                   onChange={(y) => patch({ y })}
                 />
                 <NumberField
                   label="Book Now vertical nudge"
                   value={tune.ctaNudge}
-                  min={-80}
-                  max={80}
+                  min={-300}
+                  max={300}
                   onChange={(ctaNudge) => patch({ ctaNudge })}
                 />
                 <NumberField
                   label="Animation duration"
-                  hint="Higher = slower rise"
+                  hint="Live land speed after Save"
                   value={tune.animDuration}
-                  min={0.6}
-                  max={5}
+                  min={0.2}
+                  max={8}
                   step={0.1}
                   suffix="s"
                   onChange={(animDuration) => patch({ animDuration })}
@@ -307,28 +309,24 @@ export function HeroLogoTunePanel() {
             </section>
 
             <section className="hlt-section">
-              <h2 className="admin-heading text-base">
-                Screen edge spacing
-              </h2>
+              <h2 className="admin-heading text-base">Screen edge → outer letters</h2>
               <p className="hlt-section__hint">
-                0 = H / R flush to the screen edge. Higher numbers push that
-                letter inward. Does not change letter size.
+                Padding before H and after R. Independent of letter gaps and
+                Book Now spacers. Does not change letter size.
               </p>
               <div className="hlt-grid">
                 <NumberField
                   label="Left edge → H"
-                  hint="0 = stuck to left edge"
                   value={tune.edgeLeft}
                   min={0}
-                  max={160}
+                  max={400}
                   onChange={(edgeLeft) => patch({ edgeLeft })}
                 />
                 <NumberField
                   label="R → right edge"
-                  hint="0 = stuck to right edge"
                   value={tune.edgeRight}
                   min={0}
-                  max={160}
+                  max={400}
                   onChange={(edgeRight) => patch({ edgeRight })}
                 />
               </div>
@@ -336,119 +334,114 @@ export function HeroLogoTunePanel() {
 
             <section className="hlt-section">
               <h2 className="admin-heading text-base">
-                Book Now spacing (button stays centered)
+                T ↔ Book Now ↔ H (center)
               </h2>
               <p className="hlt-section__hint">
-                Book Now stays fixed in the middle. These only change how close T
-                and H sit to it.
+                Book Now is fixed at 168×52. These spacers sit beside it in the
+                same chain as the letters — independent of H→A / A→T / H→O / O→R.
               </p>
               <div className="hlt-grid">
                 <NumberField
                   label="T → Book Now"
-                  hint="Space between T and the button"
                   value={tune.gapTButton}
-                  min={0}
-                  max={200}
+                  min={-100}
+                  max={400}
                   onChange={(gapTButton) => patch({ gapTButton })}
                 />
                 <NumberField
                   label="Book Now → H"
-                  hint="Space between the button and right H"
                   value={tune.gapButtonH}
-                  min={0}
-                  max={200}
+                  min={-100}
+                  max={400}
                   onChange={(gapButtonH) => patch({ gapButtonH })}
                 />
               </div>
             </section>
 
             <section className="hlt-section">
-              <h2 className="admin-heading text-base">
-                Spacing between letters
-              </h2>
+              <h2 className="admin-heading text-base">Spacing between letters</h2>
               <p className="hlt-section__hint">
-                Each box is the gap after that letter, before the next one.
+                Only the gap after that letter. Does not move screen edges or the
+                Book Now slot.
               </p>
               <div className="hlt-grid">
                 <NumberField
                   label="H → A"
                   value={tune.gapHA}
-                  min={-40}
-                  max={120}
+                  min={-100}
+                  max={400}
                   onChange={(gapHA) => patch({ gapHA })}
                 />
                 <NumberField
                   label="A → T"
                   value={tune.gapAT}
-                  min={-40}
-                  max={120}
+                  min={-100}
+                  max={400}
                   onChange={(gapAT) => patch({ gapAT })}
                 />
                 <NumberField
-                  label="H → O (right side)"
+                  label="H → O (right)"
                   value={tune.gapHO}
-                  min={-40}
-                  max={120}
+                  min={-100}
+                  max={400}
                   onChange={(gapHO) => patch({ gapHO })}
                 />
                 <NumberField
                   label="O → R"
                   value={tune.gapOR}
-                  min={-40}
-                  max={120}
+                  min={-100}
+                  max={400}
                   onChange={(gapOR) => patch({ gapOR })}
                 />
               </div>
             </section>
 
             <section className="hlt-section">
-              <h2 className="admin-heading text-base">
-                Fine nudge (per letter)
-              </h2>
+              <h2 className="admin-heading text-base">Fine nudge (per letter)</h2>
               <p className="hlt-section__hint">
-                Extra up (−) / down (+) after using the alignment buttons.
+                Extra up (−) / down (+) after alignment. Independent per letter.
               </p>
               <div className="hlt-grid">
                 <NumberField
                   label="H (left)"
                   value={tune.yH1}
-                  min={-80}
-                  max={80}
+                  min={-300}
+                  max={300}
                   onChange={(yH1) => patch({ yH1 })}
                 />
                 <NumberField
                   label="A"
                   value={tune.yA}
-                  min={-80}
-                  max={80}
+                  min={-300}
+                  max={300}
                   onChange={(yA) => patch({ yA })}
                 />
                 <NumberField
                   label="T"
                   value={tune.yT}
-                  min={-80}
-                  max={80}
+                  min={-300}
+                  max={300}
                   onChange={(yT) => patch({ yT })}
                 />
                 <NumberField
                   label="H (right)"
                   value={tune.yH2}
-                  min={-80}
-                  max={80}
+                  min={-300}
+                  max={300}
                   onChange={(yH2) => patch({ yH2 })}
                 />
                 <NumberField
                   label="O"
                   value={tune.yO}
-                  min={-80}
-                  max={80}
+                  min={-300}
+                  max={300}
                   onChange={(yO) => patch({ yO })}
                 />
                 <NumberField
                   label="R"
                   value={tune.yR}
-                  min={-80}
-                  max={80}
+                  min={-300}
+                  max={300}
                   onChange={(yR) => patch({ yR })}
                 />
               </div>

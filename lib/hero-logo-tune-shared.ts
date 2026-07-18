@@ -8,37 +8,38 @@ const px = (min: number, max: number) => z.number().min(min).max(max);
 export const heroLogoVAlignSchema = z.enum(["top", "middle", "bottom"]);
 export type HeroLogoVAlign = z.infer<typeof heroLogoVAlignSchema>;
 
-/** Fixed Book Now slot width — button stays viewport-centered in this slot. */
+/** Fixed Book Now slot width — matches live .hero-cta. */
 export const HATHOR_BTN_SLOT_PX = 168;
+export const HATHOR_BTN_HEIGHT_PX = 52;
 
 export const heroLogoTuneSchema = z.object({
-  size: z.number().min(0.55).max(1.45),
+  size: z.number().min(0.2).max(2.5),
   /** CSS `bottom` offset (px). Negative lowers / tucks under the cream sheet. */
-  y: px(-600, 400),
-  ctaNudge: px(-80, 80),
-  animDuration: z.number().min(0.6).max(5),
+  y: px(-800, 600),
+  ctaNudge: px(-300, 300),
+  animDuration: z.number().min(0.2).max(8),
   /** Space from screen left edge to H (left). */
-  edgeLeft: px(0, 160),
+  edgeLeft: px(0, 400),
   /** Space from R to screen right edge. */
-  edgeRight: px(0, 160),
-  /** Space between T and the Book Now button (button stays centered). */
-  gapTButton: px(0, 200),
+  edgeRight: px(0, 400),
+  /** Space between T and the Book Now button. */
+  gapTButton: px(-100, 400),
   /** Space between Book Now and the right-side H. */
-  gapButtonH: px(0, 200),
+  gapButtonH: px(-100, 400),
   /** Shared vertical alignment line for all letters (Figma-style). */
   vAlign: heroLogoVAlignSchema,
   /** Space after each letter toward the next (px). */
-  gapHA: px(-40, 120),
-  gapAT: px(-40, 120),
-  gapHO: px(-40, 120),
-  gapOR: px(-40, 120),
+  gapHA: px(-100, 400),
+  gapAT: px(-100, 400),
+  gapHO: px(-100, 400),
+  gapOR: px(-100, 400),
   /** Extra per-letter vertical nudge after vAlign (px). − up, + down. */
-  yH1: px(-80, 80),
-  yA: px(-80, 80),
-  yT: px(-80, 80),
-  yH2: px(-80, 80),
-  yO: px(-80, 80),
-  yR: px(-80, 80),
+  yH1: px(-300, 300),
+  yA: px(-300, 300),
+  yT: px(-300, 300),
+  yH2: px(-300, 300),
+  yO: px(-300, 300),
+  yR: px(-300, 300),
 });
 
 export type HeroLogoTune = z.infer<typeof heroLogoTuneSchema>;
@@ -91,14 +92,12 @@ export function parseHeroLogoTune(raw: unknown): HeroLogoTune {
   const src =
     raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
 
-  // Old single centerGap → split leftover evenly into T→btn and btn→H wings
   const legacyCenter = asFiniteNumber(src.centerGap);
   const migratedWing =
     legacyCenter != null
       ? Math.max(0, Math.round((legacyCenter - HATHOR_BTN_SLOT_PX) / 2))
       : undefined;
 
-  // Old shared edgeInset → both sides
   const legacyEdge = asFiniteNumber(src.edgeInset);
 
   const vAlignRaw = src.vAlign ?? src.align;
@@ -149,7 +148,6 @@ export function parseHeroLogoTune(raw: unknown): HeroLogoTune {
 }
 
 export function heroLogoTuneToCssVars(tune: HeroLogoTune): Record<string, string> {
-  // Defaults 0 leave the locked live edge-to-edge pose unchanged.
   return {
     "--hathor-logo-size": String(tune.size),
     "--hathor-logo-y": `${tune.y}px`,
@@ -158,6 +156,7 @@ export function heroLogoTuneToCssVars(tune: HeroLogoTune): Record<string, string
     "--hathor-logo-edge-l": `${tune.edgeLeft}px`,
     "--hathor-logo-edge-r": `${tune.edgeRight}px`,
     "--hathor-logo-gap": `${HATHOR_BTN_SLOT_PX}px`,
+    "--hathor-btn-slot": `${HATHOR_BTN_SLOT_PX}px`,
     "--hathor-gap-t-btn": `${tune.gapTButton}px`,
     "--hathor-gap-btn-h": `${tune.gapButtonH}px`,
     "--hathor-logo-align-items": VALIGN_FLEX[tune.vAlign],
