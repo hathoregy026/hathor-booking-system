@@ -49,6 +49,10 @@ export function mountHeroScrollStage({
     });
   }
 
+  function isSplitLetterLogo() {
+    return Boolean(logoMark?.querySelector(".hathor-logo-split"));
+  }
+
   function getLogoHiddenY() {
     const logoHeight = logoMark?.offsetHeight || window.innerHeight * 0.42;
     return logoHeight * 0.78 + window.innerHeight * 0.12;
@@ -57,6 +61,9 @@ export function mountHeroScrollStage({
   function getLogoLandedY() {
     const ctaEl = hero.querySelector(".hero-cta");
     if (!logoMark || !ctaEl) return 0;
+
+    // Split logo + CTA share CSS vertical centering — land at y:0.
+    if (isSplitLetterLogo()) return 0;
 
     const currentY = Number(gsap.getProperty(logoMark, "y")) || 0;
     gsap.set(logoMark, { y: 0, xPercent: -50, yPercent: 0 });
@@ -104,21 +111,31 @@ export function mountHeroScrollStage({
       autoAlpha: 1,
     });
 
-    if (letters.length) {
-      gsap.set(letters, { y: 120, opacity: 0 });
-      gsap.to(letters, {
+    // Prefer wraps so each glyph rises as a unit (one-by-one up).
+    const letterTargets =
+      logoMark.querySelectorAll(".logo-letter-wrap").length > 0
+        ? logoMark.querySelectorAll(".logo-letter-wrap")
+        : letters;
+
+    if (letterTargets.length) {
+      const risePx = Math.max(
+        140,
+        Math.round((logoMark.offsetHeight || window.innerHeight * 0.35) * 0.55),
+      );
+      gsap.set(letterTargets, { y: risePx, opacity: 0, force3D: true });
+      gsap.to(letterTargets, {
         y: 0,
         opacity: 1,
-        duration: 1.35,
-        stagger: 0.14,
-        ease: "power2.out",
-        delay: 0.12,
+        duration: 0.95,
+        stagger: 0.13,
+        ease: "power3.out",
+        delay: 0.28,
       });
     }
 
     landingTween = gsap.to(logoMark, {
       y: getLogoLandedY(),
-      duration: 2.6,
+      duration: isSplitLetterLogo() ? 2.1 : 2.6,
       ease: "power2.inOut",
       delay: 0.2,
       onComplete: () => {
