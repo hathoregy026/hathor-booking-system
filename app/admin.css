@@ -1307,3 +1307,36 @@ select.admin-input option:checked {
   font-size: 0.75rem;
   color: var(--text-muted);
 }
+
+.hlt-align-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-secondary);
+}
+
+.hlt-align-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.hlt-align-btn:hover {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--text-primary);
+}
+
+.hlt-align-btn--active {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  color: var(--accent);
+}
