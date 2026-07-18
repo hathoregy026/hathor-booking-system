@@ -36,10 +36,13 @@ html[data-ex-experience] .ex-root .hero-logo-mark {
 html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) {
   --hathor-logo-gap: 168px;
   --hathor-logo-side-w: calc((100vw - var(--hathor-logo-gap)) / 2);
-  /* Trimmed glyphs (1806×2682 HAT) — full feet visible, edge-to-edge */
-  --hathor-logo-h: calc(var(--hathor-logo-side-w) * 1806 / 2682);
-  /* Sit in the bottom red box, just above the viewport edge */
-  --hathor-logo-bottom: clamp(4px, 0.8vh, 12px);
+  /* Full original letter art (no asset crop). Height fills each side edge→button. */
+  --hathor-logo-h: calc(var(--hathor-logo-side-w) * 2200 / 2683);
+  /*
+    Clearance under letter feet — hero has overflow:hidden, so bottom:0/4px
+    sliced the glyphs. Keep the band low in the red box without clipping.
+  */
+  --hathor-logo-bottom: clamp(36px, 5.5vh, 56px);
   --hathor-cta-half-h: 26px;
   --hathor-cta-nudge: 0px;
 }
@@ -61,7 +64,7 @@ html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--spli
 }
 
 html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) .hero-scroll-hint {
-  bottom: clamp(2px, 0.5vh, 8px);
+  bottom: clamp(10px, 1.5vh, 18px);
   z-index: 9;
 }
 
@@ -131,7 +134,7 @@ html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter {
   width: 100% !important;
   height: 100% !important;
   max-width: none !important;
-  /* Contain + trimmed assets — never crop letter feet */
+  /* Never cover/crop — show full letter art including feet */
   object-fit: contain;
   object-position: center bottom;
   will-change: transform, opacity;
@@ -617,7 +620,7 @@ h1, h2, h3, h4, p {
   gap: 0;
   width: 100vw !important;
   max-width: none !important;
-  height: var(--hathor-logo-h, calc((100vw - 168px) / 2 * 1806 / 2682)) !important;
+  height: var(--hathor-logo-h, calc((100vw - 168px) / 2 * 2200 / 2683)) !important;
   margin: 0 !important;
   padding: 0 !important;
   box-sizing: border-box;
@@ -675,7 +678,7 @@ h1, h2, h3, h4, p {
 }
 
 .hero-logo-mark--split {
-  bottom: var(--hathor-logo-bottom, clamp(4px, 0.8vh, 12px));
+  bottom: var(--hathor-logo-bottom, clamp(36px, 5.5vh, 56px));
   width: 100vw;
   z-index: 4;
   pointer-events: none;
