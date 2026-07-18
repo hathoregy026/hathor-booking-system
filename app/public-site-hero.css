@@ -129,6 +129,7 @@
   --hathor-logo-h: calc(var(--hathor-logo-side-w) * 2200 / 2683);
   --hathor-logo-bottom: clamp(40px, 6vh, 72px);
   --hathor-cta-half-h: 26px;
+  --hathor-cta-nudge: 0px;
 }
 
 .hathor-logo-split {
@@ -148,7 +149,6 @@
 }
 
 .hathor-logo-split__side {
-  flex: 1 1 0 !important;
   width: 0;
   min-width: 0;
   display: flex !important;
@@ -159,11 +159,13 @@
 }
 
 .hathor-logo-split__side--left {
-  justify-content: flex-start;
+  flex: 0.88 1 0 !important;
+  justify-content: flex-end;
 }
 
 .hathor-logo-split__side--right {
-  justify-content: flex-end;
+  flex: 1.12 1 0 !important;
+  justify-content: flex-start;
 }
 
 .hathor-logo-split .logo-letter-wrap {
@@ -207,7 +209,21 @@
   bottom: calc(
     var(--hathor-logo-bottom) + (var(--hathor-logo-h) / 2) - var(--hathor-cta-half-h)
   );
+  transform: translateX(var(--hathor-cta-nudge, -2.8vw));
   z-index: 8;
+}
+
+.hathor-logo-split .letter-h1 .logo-letter {
+  object-position: 0% 50%;
+}
+.hathor-logo-split .letter-t .logo-letter {
+  object-position: 100% 50%;
+}
+.hathor-logo-split .letter-h2 .logo-letter {
+  object-position: 0% 50%;
+}
+.hathor-logo-split .letter-r .logo-letter {
+  object-position: 100% 50%;
 }
 
 @media (max-width: 768px) {

@@ -39,6 +39,7 @@ html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--spli
   --hathor-logo-h: calc(var(--hathor-logo-side-w) * 2200 / 2683);
   --hathor-logo-bottom: clamp(40px, 6vh, 72px);
   --hathor-cta-half-h: 26px;
+  --hathor-cta-nudge: 0px;
 }
 
 html[data-ex-experience] .ex-root .hero-logo-mark--split {
@@ -53,6 +54,8 @@ html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--spli
   bottom: calc(
     var(--hathor-logo-bottom) + (var(--hathor-logo-h) / 2) - var(--hathor-cta-half-h)
   );
+  /* Optical nudge: T has more trailing pad than H has leading pad */
+  transform: translateX(var(--hathor-cta-nudge, -1.6vw));
   z-index: 8;
 }
 
@@ -88,7 +91,6 @@ html[data-ex-experience] .ex-root .hathor-logo-split.hero-logo-img {
 }
 
 html[data-ex-experience] .ex-root .hathor-logo-split__side {
-  flex: 1 1 0 !important;
   width: 0;
   min-width: 0;
   display: flex !important;
@@ -98,12 +100,15 @@ html[data-ex-experience] .ex-root .hathor-logo-split__side {
   gap: 0;
 }
 
+/* Bias gap left — T glyph has more trailing pad, so equal sides looked button-right */
 html[data-ex-experience] .ex-root .hathor-logo-split__side--left {
-  justify-content: flex-start;
+  flex: 0.88 1 0 !important;
+  justify-content: flex-end;
 }
 
 html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
-  justify-content: flex-end;
+  flex: 1.12 1 0 !important;
+  justify-content: flex-start;
 }
 
 html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter-wrap {
@@ -124,6 +129,20 @@ html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter {
   object-fit: contain;
   object-position: center center;
   will-change: transform, opacity;
+}
+
+/* Pull inner glyphs toward the Book Now gap so both sides look even */
+html[data-ex-experience] .ex-root .hathor-logo-split .letter-h1 .logo-letter {
+  object-position: 0% 50%;
+}
+html[data-ex-experience] .ex-root .hathor-logo-split .letter-t .logo-letter {
+  object-position: 100% 50%;
+}
+html[data-ex-experience] .ex-root .hathor-logo-split .letter-h2 .logo-letter {
+  object-position: 0% 50%;
+}
+html[data-ex-experience] .ex-root .hathor-logo-split .letter-r .logo-letter {
+  object-position: 100% 50%;
 }
 
 /* Empty middle slot — Book Now stays in .hero-button and sits in this gap */
@@ -614,7 +633,6 @@ h1, h2, h3, h4, p {
 }
 
 .hathor-logo-split__side {
-  flex: 1 1 0 !important;
   width: 0;
   min-width: 0;
   display: flex !important;
@@ -625,11 +643,13 @@ h1, h2, h3, h4, p {
 }
 
 .hathor-logo-split__side--left {
-  justify-content: flex-start;
+  flex: 0.88 1 0 !important;
+  justify-content: flex-end;
 }
 
 .hathor-logo-split__side--right {
-  justify-content: flex-end;
+  flex: 1.12 1 0 !important;
+  justify-content: flex-start;
 }
 
 .hathor-logo-split .logo-letter-wrap {

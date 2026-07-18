@@ -79,16 +79,35 @@ export function mountHeroScrollStage({
   let logoReadyForScroll = false;
 
   if (logoMark) {
-    gsap.set(logoMark, {
-      xPercent: -50,
-      yPercent: 0,
-      x: 0,
-      y: getLogoHiddenY(),
-      scale: 1,
-      autoAlpha: 0,
-      force3D: true,
-      transformOrigin: "50% 50%",
-    });
+    if (isSplitLetterLogo()) {
+      // Split letters animate individually — keep the group parked at rest.
+      gsap.set(logoMark, {
+        xPercent: -50,
+        yPercent: 0,
+        x: 0,
+        y: 0,
+        scale: 1,
+        autoAlpha: 1,
+        force3D: true,
+        transformOrigin: "50% 50%",
+      });
+      gsap.set(logoMark.querySelectorAll(".logo-letter-wrap"), {
+        y: 48,
+        opacity: 0,
+        force3D: true,
+      });
+    } else {
+      gsap.set(logoMark, {
+        xPercent: -50,
+        yPercent: 0,
+        x: 0,
+        y: getLogoHiddenY(),
+        scale: 1,
+        autoAlpha: 0,
+        force3D: true,
+        transformOrigin: "50% 50%",
+      });
+    }
   }
 
   const killByPrefix = (prefix: string) => {
@@ -97,8 +116,48 @@ export function mountHeroScrollStage({
     });
   };
 
+  const markLogoReady = () => {
+    logoReadyForScroll = true;
+    if (logoMark) {
+      gsap.set(logoMark, { y: getLogoLandedY() });
+    }
+    ScrollTrigger.getAll().forEach((st) => {
+      if (st.vars && st.vars.id === "hero-stage") st.refresh();
+    });
+  };
+
   const playLanding = () => {
     if (!logoMark) return;
+
+    const letterTargets = gsap.utils.toArray(
+      logoMark.querySelectorAll(".logo-letter-wrap"),
+    );
+
+    // Split wordmark: only per-letter rise (short travel, clear stagger).
+    // Do NOT move the whole .hero-logo-mark — that made every letter rise together.
+    if (isSplitLetterLogo() && letterTargets.length) {
+      gsap.set(logoMark, {
+        xPercent: -50,
+        yPercent: 0,
+        x: 0,
+        y: 0,
+        scale: 1,
+        autoAlpha: 1,
+      });
+
+      gsap.set(letterTargets, { y: 48, opacity: 0, force3D: true });
+
+      landingTween = gsap.to(letterTargets, {
+        y: 0,
+        opacity: 1,
+        duration: 0.5,
+        stagger: 0.22,
+        ease: "power2.out",
+        delay: 0.2,
+        onComplete: markLogoReady,
+      });
+      return;
+    }
 
     const letters = logoMark.querySelectorAll(".logo-letter");
 
@@ -111,42 +170,24 @@ export function mountHeroScrollStage({
       autoAlpha: 1,
     });
 
-    // Prefer wraps so each glyph rises as a unit (one-by-one up).
-    const letterTargets =
-      logoMark.querySelectorAll(".logo-letter-wrap").length > 0
-        ? logoMark.querySelectorAll(".logo-letter-wrap")
-        : letters;
-
-    if (letterTargets.length) {
-      const risePx = Math.max(
-        140,
-        Math.round((logoMark.offsetHeight || window.innerHeight * 0.35) * 0.55),
-      );
-      gsap.set(letterTargets, { y: risePx, opacity: 0, force3D: true });
-      gsap.to(letterTargets, {
+    if (letters.length) {
+      gsap.set(letters, { y: 48, opacity: 0, force3D: true });
+      gsap.to(letters, {
         y: 0,
         opacity: 1,
-        duration: 0.95,
-        stagger: 0.13,
-        ease: "power3.out",
-        delay: 0.28,
+        duration: 0.5,
+        stagger: 0.22,
+        ease: "power2.out",
+        delay: 0.2,
       });
     }
 
     landingTween = gsap.to(logoMark, {
       y: getLogoLandedY(),
-      duration: isSplitLetterLogo() ? 2.1 : 2.6,
+      duration: 2.6,
       ease: "power2.inOut",
       delay: 0.2,
-      onComplete: () => {
-        logoReadyForScroll = true;
-        if (logoMark) {
-          gsap.set(logoMark, { y: getLogoLandedY() });
-        }
-        ScrollTrigger.getAll().forEach((st) => {
-          if (st.vars && st.vars.id === "hero-stage") st.refresh();
-        });
-      },
+      onComplete: markLogoReady,
     });
   };
 
@@ -315,6 +356,8 @@ export function mountHeroScrollStage({
         scale: 1,
         autoAlpha: 1,
       });
+      const wraps = logoMark.querySelectorAll(".logo-letter-wrap");
+      if (wraps.length) gsap.set(wraps, { y: 0, opacity: 1 });
     }
     window.removeEventListener("wheel", onFirstScroll);
     window.removeEventListener("touchstart", onFirstScroll);
