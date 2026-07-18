@@ -39,7 +39,7 @@ export const heroLogoTuneSchema = z.object({
 export type HeroLogoTune = z.infer<typeof heroLogoTuneSchema>;
 
 export const DEFAULT_HERO_LOGO_TUNE: HeroLogoTune = {
-  size: 0.92,
+  size: 1,
   y: -220,
   ctaNudge: 20,
   animDuration: 3,
