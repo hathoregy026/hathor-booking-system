@@ -36,11 +36,8 @@ html[data-ex-experience] .ex-root .hero-logo-mark {
 html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) {
   --hathor-logo-gap: 168px;
   --hathor-logo-side-w: calc((100vw - var(--hathor-logo-gap)) / 2);
-  /*
-    Keep the whole wordmark in the bottom band (red box).
-    Uncapped aspect height was ~60–70vh and pushed the composition mid-screen.
-  */
-  --hathor-logo-h: min(30vh, calc(var(--hathor-logo-side-w) * 2200 / 2683));
+  /* Full-bleed size (locked): height from side width so HAT/HOR fill edge → button */
+  --hathor-logo-h: calc(var(--hathor-logo-side-w) * 2200 / 2683);
   --hathor-logo-bottom: clamp(48px, 7vh, 72px);
   --hathor-cta-half-h: 26px;
   --hathor-cta-nudge: 0px;
@@ -159,7 +156,6 @@ html[data-ex-experience] .ex-root .hathor-logo-split__gap {
 @media (max-width: 768px) {
   html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) {
     --hathor-logo-gap: clamp(7.25rem, 28vw, 9.5rem);
-    --hathor-logo-h: min(22vh, calc(var(--hathor-logo-side-w) * 2200 / 2683));
     --hathor-cta-half-h: 24px;
   }
 }
