@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useLayoutEffect, useRef } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
+import { HathorLogoSplit } from "@/components/public/HathorLogoSplit";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import {
   HATHOR_BRAND_NAME,
@@ -30,6 +31,8 @@ export type PublicSiteHeroProps = {
    * scroll target for this page’s hero.
    */
   posterImageName?: string;
+  /** Homepage: split HATHOR into per-letter WebPs for individual GSAP targets. */
+  splitLetterLogo?: boolean;
 };
 
 export function PublicSiteHero({
@@ -43,6 +46,7 @@ export function PublicSiteHero({
   ctaLabel = HOMEPAGE_HERO.cta,
   animate = true,
   posterImageName,
+  splitLetterLogo = false,
 }: PublicSiteHeroProps) {
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const posterImage = useSiteImage(posterImageName ?? "home-hero-poster");
@@ -84,14 +88,18 @@ export function PublicSiteHero({
       <div className="home-hero-cover" aria-hidden="true" />
 
       <div className="hero-logo-mark" aria-hidden="true">
-        <Image
-          className="hero-logo-img"
-          src={EX_GOLD_LOGO_SRC}
-          alt={HATHOR_BRAND_NAME}
-          width={1600}
-          height={560}
-          sizes="(max-width: 768px) 80vw, 720px"
-        />
+        {splitLetterLogo ? (
+          <HathorLogoSplit />
+        ) : (
+          <Image
+            className="hero-logo-img"
+            src={EX_GOLD_LOGO_SRC}
+            alt={HATHOR_BRAND_NAME}
+            width={1600}
+            height={560}
+            sizes="(max-width: 768px) 80vw, 720px"
+          />
+        )}
       </div>
 
       <div className="hero-content">

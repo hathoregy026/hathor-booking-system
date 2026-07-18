@@ -35,6 +35,7 @@ export function HomePageClient() {
       <main id="top">
         <PublicSiteHero
           animate={false}
+          splitLetterLogo
           lineRight={EX_HERO.lineRight}
           lineLeft={EX_HERO.lineLeft}
           lineLeftImageSrc={HATHOR_DAHABIYA_WORDMARK_SRC}

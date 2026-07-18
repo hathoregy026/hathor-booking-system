@@ -43,6 +43,15 @@ html[data-ex-experience] .ex-root .hero-logo-img {
   object-position: center center;
 }
 
+html[data-ex-experience] .ex-root .hathor-logo-split.hero-logo-img {
+  object-fit: unset;
+}
+
+html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter {
+  object-fit: contain;
+  object-position: center bottom;
+}
+
 html[data-ex-experience] .ex-root .home-hero-container {
   min-height: 100svh;
 }
@@ -496,6 +505,29 @@ h1, h2, h3, h4, p {
   filter:
     drop-shadow(0 2px 0 rgba(0, 0, 0, 0.25))
     drop-shadow(0 28px 60px rgba(0, 0, 0, 0.45));
+}
+
+/* Split HATHOR — letter images (homepage); GSAP still animates .hero-logo-mark */
+.hathor-logo-split {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  height: auto;
+}
+
+.hathor-logo-split .logo-letter {
+  display: block;
+  height: auto;
+  width: 0;
+  min-width: 0;
+  flex-shrink: 1;
+  flex-basis: 0;
+  object-fit: contain;
+  object-position: center bottom;
+  user-select: none;
+  pointer-events: none;
 }
 
 /* legacy bridge class — keep inert if present */
