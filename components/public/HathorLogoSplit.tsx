@@ -27,15 +27,15 @@ function LetterImages({ letters }: { letters: readonly HathorLogoLetter[] }) {
       height={letter.height}
       priority
       draggable={false}
-      sizes="(max-width: 768px) 14vw, 12vw"
+      sizes="(max-width: 768px) 30vw, 28vw"
       className={`logo-letter ${letter.className}`}
     />
   ));
 }
 
 /**
- * Full-bleed HATHOR letters: H A T · [gap for fixed Book Now] · H O R
- * Book Now stays in `.hero-button` — this only leaves space so it sits in the middle.
+ * Full-bleed HATHOR: left half HAT · center gap (fixed Book Now) · right half HOR.
+ * Each side fills from screen edge to the button.
  */
 export function HathorLogoSplit({ className }: HathorLogoSplitProps) {
   return (
@@ -44,9 +44,13 @@ export function HathorLogoSplit({ className }: HathorLogoSplitProps) {
       role="img"
       aria-label={HATHOR_BRAND_NAME}
     >
-      <LetterImages letters={LEFT_LETTERS} />
+      <div className="hathor-logo-split__side hathor-logo-split__side--left">
+        <LetterImages letters={LEFT_LETTERS} />
+      </div>
       <span className="hathor-logo-split__gap" aria-hidden="true" />
-      <LetterImages letters={RIGHT_LETTERS} />
+      <div className="hathor-logo-split__side hathor-logo-split__side--right">
+        <LetterImages letters={RIGHT_LETTERS} />
+      </div>
     </div>
   );
 }

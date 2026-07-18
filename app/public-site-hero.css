@@ -127,19 +127,39 @@
   display: flex !important;
   flex-direction: row !important;
   flex-wrap: nowrap !important;
-  justify-content: center;
+  justify-content: stretch;
   align-items: center;
-  gap: clamp(0.1rem, 0.35vw, 0.35rem);
+  gap: 0;
   width: 100%;
   height: auto;
 }
 
+.hathor-logo-split__side {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.15vw;
+}
+
+.hathor-logo-split__side--left {
+  justify-content: flex-end;
+  padding-left: clamp(0.25rem, 1vw, 1rem);
+}
+
+.hathor-logo-split__side--right {
+  justify-content: flex-start;
+  padding-right: clamp(0.25rem, 1vw, 1rem);
+}
+
 .hathor-logo-split .logo-letter {
   display: block;
-  height: clamp(6.5rem, 20vw, 13rem);
-  width: auto !important;
+  width: 0 !important;
+  min-width: 0;
   max-width: none !important;
-  flex: 0 0 auto !important;
+  height: auto !important;
+  flex-basis: 0;
+  flex-shrink: 1;
   object-fit: contain;
   object-position: center center;
   user-select: none;
@@ -147,9 +167,34 @@
   will-change: transform, opacity;
 }
 
+.hathor-logo-split .letter-h1 {
+  flex-grow: 855;
+  aspect-ratio: 855 / 2200;
+}
+.hathor-logo-split .letter-a {
+  flex-grow: 1070;
+  aspect-ratio: 1070 / 2200;
+}
+.hathor-logo-split .letter-t {
+  flex-grow: 758;
+  aspect-ratio: 758 / 2200;
+}
+.hathor-logo-split .letter-h2 {
+  flex-grow: 840;
+  aspect-ratio: 840 / 2200;
+}
+.hathor-logo-split .letter-o {
+  flex-grow: 1019;
+  aspect-ratio: 1019 / 2200;
+}
+.hathor-logo-split .letter-r {
+  flex-grow: 764;
+  aspect-ratio: 764 / 2200;
+}
+
 .hathor-logo-split__gap {
-  flex: 0 0 clamp(10.5rem, 18vw, 13.5rem);
-  width: clamp(10.5rem, 18vw, 13.5rem);
+  flex: 0 0 clamp(10.5rem, 16vw, 12.5rem);
+  width: clamp(10.5rem, 16vw, 12.5rem);
   height: 1px;
   pointer-events: none;
 }
@@ -162,13 +207,9 @@
 }
 
 @media (max-width: 768px) {
-  .hathor-logo-split .logo-letter {
-    height: clamp(4.25rem, 16vw, 7rem);
-  }
-
   .hathor-logo-split__gap {
-    flex-basis: clamp(7.5rem, 28vw, 10rem);
-    width: clamp(7.5rem, 28vw, 10rem);
+    flex-basis: clamp(7.25rem, 26vw, 9.5rem);
+    width: clamp(7.25rem, 26vw, 9.5rem);
   }
 }
 
