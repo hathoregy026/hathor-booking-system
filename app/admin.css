@@ -1266,17 +1266,17 @@ select.admin-input option:checked {
 .hlt-field__label {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--text);
+  color: var(--text-primary);
 }
 
 .hlt-field__input-wrap {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.35rem 0.55rem;
+  padding: 0.45rem 0.65rem;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: var(--surface, #fff);
+  background: var(--bg-secondary);
 }
 
 .hlt-field__input {
@@ -1284,10 +1284,17 @@ select.admin-input option:checked {
   min-width: 0;
   border: 0;
   background: transparent;
-  color: var(--text);
+  color: var(--text-primary);
   font: inherit;
+  font-size: 0.95rem;
   font-variant-numeric: tabular-nums;
   outline: none;
+  -webkit-text-fill-color: var(--text-primary);
+}
+
+.hlt-field__input::placeholder {
+  color: var(--text-muted);
+  opacity: 1;
 }
 
 .hlt-field__suffix {

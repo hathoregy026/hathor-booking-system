@@ -28,11 +28,12 @@ export const heroLogoTuneSchema = z.object({
 
 export type HeroLogoTune = z.infer<typeof heroLogoTuneSchema>;
 
+/** Starting point = last known live logo pose (so the form isn’t empty zeros). */
 export const DEFAULT_HERO_LOGO_TUNE: HeroLogoTune = {
-  size: 1,
-  y: 0,
-  ctaNudge: 0,
-  animDuration: 2.6,
+  size: 0.92,
+  y: -220,
+  ctaNudge: 20,
+  animDuration: 3,
   edgeInset: 0,
   centerGap: 168,
   gapHA: 0,
@@ -47,12 +48,40 @@ export const DEFAULT_HERO_LOGO_TUNE: HeroLogoTune = {
   yR: 0,
 };
 
+function asFiniteNumber(value: unknown): number | undefined {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string" && value.trim() !== "") {
+    const n = Number(value);
+    if (Number.isFinite(n)) return n;
+  }
+  return undefined;
+}
+
 export function parseHeroLogoTune(raw: unknown): HeroLogoTune {
-  const merged =
-    raw && typeof raw === "object"
-      ? { ...DEFAULT_HERO_LOGO_TUNE, ...(raw as Record<string, unknown>) }
-      : DEFAULT_HERO_LOGO_TUNE;
-  const parsed = heroLogoTuneSchema.safeParse(merged);
+  const src =
+    raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
+
+  const candidate: HeroLogoTune = {
+    size: asFiniteNumber(src.size) ?? DEFAULT_HERO_LOGO_TUNE.size,
+    y: asFiniteNumber(src.y) ?? DEFAULT_HERO_LOGO_TUNE.y,
+    ctaNudge: asFiniteNumber(src.ctaNudge) ?? DEFAULT_HERO_LOGO_TUNE.ctaNudge,
+    animDuration:
+      asFiniteNumber(src.animDuration) ?? DEFAULT_HERO_LOGO_TUNE.animDuration,
+    edgeInset: asFiniteNumber(src.edgeInset) ?? DEFAULT_HERO_LOGO_TUNE.edgeInset,
+    centerGap: asFiniteNumber(src.centerGap) ?? DEFAULT_HERO_LOGO_TUNE.centerGap,
+    gapHA: asFiniteNumber(src.gapHA) ?? DEFAULT_HERO_LOGO_TUNE.gapHA,
+    gapAT: asFiniteNumber(src.gapAT) ?? DEFAULT_HERO_LOGO_TUNE.gapAT,
+    gapHO: asFiniteNumber(src.gapHO) ?? DEFAULT_HERO_LOGO_TUNE.gapHO,
+    gapOR: asFiniteNumber(src.gapOR) ?? DEFAULT_HERO_LOGO_TUNE.gapOR,
+    yH1: asFiniteNumber(src.yH1) ?? DEFAULT_HERO_LOGO_TUNE.yH1,
+    yA: asFiniteNumber(src.yA) ?? DEFAULT_HERO_LOGO_TUNE.yA,
+    yT: asFiniteNumber(src.yT) ?? DEFAULT_HERO_LOGO_TUNE.yT,
+    yH2: asFiniteNumber(src.yH2) ?? DEFAULT_HERO_LOGO_TUNE.yH2,
+    yO: asFiniteNumber(src.yO) ?? DEFAULT_HERO_LOGO_TUNE.yO,
+    yR: asFiniteNumber(src.yR) ?? DEFAULT_HERO_LOGO_TUNE.yR,
+  };
+
+  const parsed = heroLogoTuneSchema.safeParse(candidate);
   return parsed.success ? parsed.data : DEFAULT_HERO_LOGO_TUNE;
 }
 

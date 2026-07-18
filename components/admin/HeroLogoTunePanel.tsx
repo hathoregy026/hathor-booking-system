@@ -30,22 +30,54 @@ function NumberField({
   suffix?: string;
   onChange: (n: number) => void;
 }) {
+  const [text, setText] = useState(() => String(value));
+
+  useEffect(() => {
+    setText(String(value));
+  }, [value]);
+
+  const commit = (raw: string) => {
+    const n = Number(raw);
+    if (!Number.isFinite(n)) {
+      setText(String(value));
+      return;
+    }
+    const clamped = Math.min(max, Math.max(min, n));
+    onChange(clamped);
+    setText(String(clamped));
+  };
+
   return (
     <label className="hlt-field">
       <span className="hlt-field__label">{label}</span>
       <span className="hlt-field__input-wrap">
         <input
-          type="number"
-          min={min}
-          max={max}
-          step={step}
-          value={Number.isFinite(value) ? value : 0}
+          type="text"
+          inputMode={step < 1 ? "decimal" : "numeric"}
+          autoComplete="off"
+          spellCheck={false}
+          value={text}
           onChange={(e) => {
-            const next = Number(e.target.value);
-            if (!Number.isFinite(next)) return;
-            onChange(Math.min(max, Math.max(min, next)));
+            const raw = e.target.value.trim();
+            // Allow typing intermediates: "", "-", "1.", "-0.9"
+            if (raw !== "" && !/^-?\d*\.?\d*$/.test(raw)) return;
+            setText(raw);
+            if (raw === "" || raw === "-" || raw === "." || raw === "-.") return;
+            const n = Number(raw);
+            if (Number.isFinite(n)) {
+              onChange(Math.min(max, Math.max(min, n)));
+            }
+          }}
+          onBlur={() => commit(text)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              commit(text);
+              (e.target as HTMLInputElement).blur();
+            }
           }}
           className="hlt-field__input"
+          aria-label={label}
         />
         <span className="hlt-field__suffix">{suffix}</span>
       </span>
@@ -122,9 +154,9 @@ export function HeroLogoTunePanel() {
         </p>
         <h1 className="admin-page-title">Hero Logo Tune</h1>
         <p className="admin-page-subtitle max-w-2xl">
-          Type numbers in the boxes (no sliders). Save, then hard-refresh the
-          homepage. When it looks right, tell the developer to hardcode the
-          values and remove this page.
+          Boxes start with the logo’s current live values. Type new numbers
+          (you should see them as you type), click Save, then hard-refresh the
+          homepage.
         </p>
       </div>
 
