@@ -6208,7 +6208,8 @@ body.has-page-scroll-transition .pin-spacer {
   --hathor-title-font: var(--font-hathor-agraham), "Agraham", var(--public-serif);
   --hathor-title-size: 45px;
   --hathor-title-gold: #b69f64;
-  --hathor-title-line-height: 1.2;
+  /* Agraham descenders need generous leading — 1.2 still collided */
+  --hathor-title-line-height: 1.55;
   /* Deeper engraved inner shadow (cast from top-left) */
   --hathor-title-engraved-gold:
     -1px -1px 0 rgba(255, 248, 235, 0.55),
