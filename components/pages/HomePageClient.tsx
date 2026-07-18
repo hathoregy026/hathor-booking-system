@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { HathorLogoTuner } from "@/components/public/HathorLogoTuner";
 import { PublicSiteHero } from "@/components/pages/PublicSiteHero";
@@ -18,6 +19,11 @@ import {
   EX_WELLNESS,
 } from "@/lib/ex-page-content";
 import { useExScrollMotion } from "@/hooks/useExScrollMotion";
+import {
+  DEFAULT_HERO_LOGO_TUNE,
+  type HeroLogoTune,
+  heroLogoTuneToCssVars,
+} from "@/lib/hero-logo-tune";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 
 const GALLERY_PREVIEW_ANCHORS = new Set([
@@ -28,11 +34,19 @@ const GALLERY_PREVIEW_ANCHORS = new Set([
   "gastronomy-restaurant",
 ]);
 
-export function HomePageClient() {
+type HomePageClientProps = {
+  heroLogoTune?: HeroLogoTune;
+};
+
+export function HomePageClient({
+  heroLogoTune = DEFAULT_HERO_LOGO_TUNE,
+}: HomePageClientProps) {
   useExScrollMotion();
 
+  const logoTuneStyle = heroLogoTuneToCssVars(heroLogoTune) as CSSProperties;
+
   return (
-    <div className="ex-root">
+    <div className="ex-root" style={logoTuneStyle}>
       <HathorLogoTuner />
       <main id="top">
         <PublicSiteHero

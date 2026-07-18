@@ -11,18 +11,33 @@ gsap.registerPlugin(ScrollTrigger);
 type MountHeroScrollStageOptions = {
   prefersReduced: boolean;
   lenis?: Lenis | null;
+  /** Split-letter land duration in seconds (from admin logo tune). */
+  logoLandDuration?: number;
 };
 
 /** Extra downward offset at logo landing / scroll-scrub start (px). */
 const LOGO_FINISH_Y_OFFSET_PX = 30;
+const DEFAULT_LOGO_LAND_DURATION = 2.6;
 
 export function mountHeroScrollStage({
   prefersReduced,
   lenis = null,
+  logoLandDuration = DEFAULT_LOGO_LAND_DURATION,
 }: MountHeroScrollStageOptions): () => void {
   const hero = document.querySelector(".home-hero-container");
   const cover = document.querySelector(".home-hero-cover");
   if (!hero || !cover) return () => {};
+
+  const readLogoLandDuration = () => {
+    const fromCss = Number.parseFloat(
+      getComputedStyle(hero).getPropertyValue("--hathor-logo-anim-duration"),
+    );
+    if (Number.isFinite(fromCss) && fromCss > 0) return fromCss;
+    if (Number.isFinite(logoLandDuration) && logoLandDuration > 0) {
+      return logoLandDuration;
+    }
+    return DEFAULT_LOGO_LAND_DURATION;
+  };
 
   const logoMark = hero.querySelector(".hero-logo-mark");
   const lineRight = hero.querySelector(".hero-line--right");
@@ -151,7 +166,7 @@ export function mountHeroScrollStage({
       landingTween = gsap.to(letterTargets, {
         y: 0,
         opacity: 1,
-        duration: 2.6,
+        duration: readLogoLandDuration(),
         stagger: 0.16,
         ease: "power2.inOut",
         delay: 0.2,

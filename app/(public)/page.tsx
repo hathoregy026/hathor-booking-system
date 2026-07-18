@@ -3,7 +3,10 @@ import { preload } from "react-dom";
 import { HomeExperienceShell } from "@/components/pages/HomeExperienceShell";
 import { HomePageClient } from "@/components/pages/HomePageClient";
 import { HATHOR_HERO_POSTER_SRC, HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
+import { getHeroLogoTune } from "@/lib/hero-logo-tune";
 import "./home-experience.css";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Luxury Dahabiya Nile Cruise | Hathor Dahabiya",
@@ -42,8 +45,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function HomePage() {
+export default async function HomePage() {
   preload(HATHOR_HERO_VIDEO_SRC, { as: "fetch", fetchPriority: "high" });
+  const heroLogoTune = await getHeroLogoTune();
 
   return (
     <HomeExperienceShell>
@@ -54,7 +58,7 @@ export default function HomePage() {
         type="video/mp4"
         fetchPriority="high"
       />
-      <HomePageClient />
+      <HomePageClient heroLogoTune={heroLogoTune} />
     </HomeExperienceShell>
   );
 }

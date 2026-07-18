@@ -213,3 +213,10 @@ model SiteImage {
 
   @@index([pagePath, category])
 }
+
+/** Temporary key/value store (hero logo tuner). Safe to drop later. */
+model SiteSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}

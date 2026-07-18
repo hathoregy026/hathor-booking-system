@@ -128,14 +128,11 @@
   --hathor-logo-side-w: calc((100vw - var(--hathor-logo-gap)) / 2);
   --hathor-cta-half-h: 26px;
   --hathor-cta-nudge: 0px;
-  /* Manual knobs — mirrored in home-experience.css / ?logoTune=1 */
-  --hathor-logo-size: 1;
-  --hathor-logo-y: 0px;
-  --hathor-cta-y-nudge: 0px;
+  /* Knobs inherited from .ex-root (admin tune) with safe fallbacks */
   --hathor-logo-h: calc(
-    var(--hathor-logo-side-w) * 1804 / 2676 * var(--hathor-logo-size)
+    var(--hathor-logo-side-w) * 1804 / 2676 * var(--hathor-logo-size, 1)
   );
-  --hathor-logo-bottom: var(--hathor-logo-y);
+  --hathor-logo-bottom: var(--hathor-logo-y, 0px);
 }
 
 .hathor-logo-split {
@@ -238,7 +235,7 @@
 .home-hero-container:has(.hero-logo-mark--split) .hero-button {
   bottom: calc(
     var(--hathor-logo-bottom) + (var(--hathor-logo-h) / 2) - var(--hathor-cta-half-h) +
-      var(--hathor-cta-y-nudge)
+      var(--hathor-cta-y-nudge, 0px)
   ) !important;
   top: auto !important;
   transform: translateX(var(--hathor-cta-nudge, 0px));
