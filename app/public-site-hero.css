@@ -129,7 +129,8 @@
   --hathor-logo-bottom: clamp(48px, 7vh, 72px);
   --hathor-cta-half-h: 26px;
   --hathor-cta-nudge: 0px;
-  --hathor-logo-h: min(30vh, calc(var(--hathor-logo-side-w) * 1804 / 2676));
+  /* Full edge-to-edge letter size — bottom-anchored, no vh shrink */
+  --hathor-logo-h: calc(var(--hathor-logo-side-w) * 1804 / 2676);
 }
 
 .hathor-logo-split {

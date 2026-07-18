@@ -40,8 +40,8 @@ html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--spli
   --hathor-logo-bottom: clamp(48px, 7vh, 72px);
   --hathor-cta-half-h: 26px;
   --hathor-cta-nudge: 0px;
-  /* Band stays in the bottom zone only (do NOT use 100svh — that dragged it up) */
-  --hathor-logo-h: min(30vh, calc(var(--hathor-logo-side-w) * 1804 / 2676));
+  /* Full edge-to-edge letter size from aspect ratio — do NOT shrink with vh caps */
+  --hathor-logo-h: calc(var(--hathor-logo-side-w) * 1804 / 2676);
 }
 
 html[data-ex-experience] .ex-root .hero-logo-mark--split {
