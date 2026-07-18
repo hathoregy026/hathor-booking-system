@@ -7,7 +7,6 @@ import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
 import {
   DEFAULT_HERO_LOGO_TUNE,
   type HeroLogoTune,
-  type HeroLogoVAlign,
   isHeroLogoTuneEqual,
   parseHeroLogoTune,
 } from "@/lib/hero-logo-tune-shared";
@@ -60,6 +59,7 @@ function NumberField({
           value={text}
           onChange={(e) => {
             const raw = e.target.value.trim();
+            // Allow typing intermediates: "", "-", "1.", "-0.9"
             if (raw !== "" && !/^-?\d*\.?\d*$/.test(raw)) return;
             setText(raw);
             if (raw === "" || raw === "-" || raw === "." || raw === "-.") return;
@@ -85,52 +85,6 @@ function NumberField({
     </label>
   );
 }
-
-function AlignIcon({ kind }: { kind: HeroLogoVAlign }) {
-  if (kind === "top") {
-    return (
-      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
-        <path
-          d="M3 3.5h12M6 3.5v9M12 3.5v6"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-      </svg>
-    );
-  }
-  if (kind === "middle") {
-    return (
-      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
-        <path
-          d="M3 9h12M6 4.5v9M12 6v6"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-      </svg>
-    );
-  }
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
-      <path
-        d="M3 14.5h12M6 5.5v9M12 8.5v6"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-const VALIGN_OPTIONS: { value: HeroLogoVAlign; label: string }[] = [
-  { value: "top", label: "Align tops" },
-  { value: "middle", label: "Align middles" },
-  { value: "bottom", label: "Align bottoms" },
-];
 
 export function HeroLogoTunePanel() {
   const { showToast } = useToast();
@@ -166,19 +120,6 @@ export function HeroLogoTunePanel() {
   const patch = (partial: Partial<HeroLogoTune>) =>
     setTune((t) => ({ ...t, ...partial }));
 
-  const setVAlign = (vAlign: HeroLogoVAlign) => {
-    // Shared line for all letters; clear per-letter nudges so the align is clean
-    patch({
-      vAlign,
-      yH1: 0,
-      yA: 0,
-      yT: 0,
-      yH2: 0,
-      yO: 0,
-      yR: 0,
-    });
-  };
-
   const save = async () => {
     setSaving(true);
     try {
@@ -213,9 +154,9 @@ export function HeroLogoTunePanel() {
         </p>
         <h1 className="admin-page-title">Hero Logo Tune</h1>
         <p className="admin-page-subtitle max-w-2xl">
-          Outer letters stay on the screen edges. Spacing pushes letters inward
-          only. Book Now stays centered — use T→button and button→H for how
-          close the letters sit to it.
+          Boxes start with the logo’s current live values. Type new numbers
+          (you should see them as you type), click Save, then hard-refresh the
+          homepage.
         </p>
       </div>
 
@@ -231,37 +172,11 @@ export function HeroLogoTunePanel() {
         ) : (
           <>
             <section className="hlt-section">
-              <h2 className="admin-heading text-base">Position · Alignment</h2>
-              <p className="hlt-section__hint">
-                Put every letter on the same top, middle, or bottom line (like
-                Figma).
-              </p>
-              <div className="hlt-align-row" role="group" aria-label="Alignment">
-                {VALIGN_OPTIONS.map((opt) => {
-                  const active = tune.vAlign === opt.value;
-                  return (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      title={opt.label}
-                      aria-label={opt.label}
-                      aria-pressed={active}
-                      className={`hlt-align-btn${active ? " hlt-align-btn--active" : ""}`}
-                      onClick={() => setVAlign(opt.value)}
-                    >
-                      <AlignIcon kind={opt.value} />
-                    </button>
-                  );
-                })}
-              </div>
-            </section>
-
-            <section className="hlt-section">
               <h2 className="admin-heading text-base">Overall</h2>
               <div className="hlt-grid">
                 <NumberField
-                  label="Letter height"
-                  hint="Scales height only. Width stays inside the screen edges."
+                  label="Size"
+                  hint="1 = default. Try 0.9–1.2"
                   value={tune.size}
                   min={0.55}
                   max={1.45}
@@ -278,12 +193,20 @@ export function HeroLogoTunePanel() {
                   onChange={(y) => patch({ y })}
                 />
                 <NumberField
-                  label="Screen edge inset"
-                  hint="Padding from left & right screen edges (outer bound)"
+                  label="Edge inset (left & right)"
+                  hint="Space from screen edges"
                   value={tune.edgeInset}
                   min={0}
                   max={120}
                   onChange={(edgeInset) => patch({ edgeInset })}
+                />
+                <NumberField
+                  label="Center gap (Book Now)"
+                  hint="Empty middle between T and H"
+                  value={tune.centerGap}
+                  min={80}
+                  max={320}
+                  onChange={(centerGap) => patch({ centerGap })}
                 />
                 <NumberField
                   label="Book Now vertical nudge"
@@ -307,39 +230,10 @@ export function HeroLogoTunePanel() {
 
             <section className="hlt-section">
               <h2 className="admin-heading text-base">
-                Space around Book Now (button stays centered)
-              </h2>
-              <p className="hlt-section__hint">
-                Control how close T is to the button, and how close the right H
-                is to the button — independently.
-              </p>
-              <div className="hlt-grid">
-                <NumberField
-                  label="T → Book Now"
-                  hint="Gap between T and the button"
-                  value={tune.gapTButton}
-                  min={0}
-                  max={200}
-                  onChange={(gapTButton) => patch({ gapTButton })}
-                />
-                <NumberField
-                  label="Book Now → H"
-                  hint="Gap between the button and right-side H"
-                  value={tune.gapButtonH}
-                  min={0}
-                  max={200}
-                  onChange={(gapButtonH) => patch({ gapButtonH })}
-                />
-              </div>
-            </section>
-
-            <section className="hlt-section">
-              <h2 className="admin-heading text-base">
                 Spacing between letters
               </h2>
               <p className="hlt-section__hint">
-                Larger gaps push letters toward the center. Outer H and R stay
-                on the screen edges — nothing goes outside.
+                Each box is the gap after that letter, before the next one.
               </p>
               <div className="hlt-grid">
                 <NumberField
@@ -357,7 +251,7 @@ export function HeroLogoTunePanel() {
                   onChange={(gapAT) => patch({ gapAT })}
                 />
                 <NumberField
-                  label="H → O (right)"
+                  label="H → O (right side)"
                   value={tune.gapHO}
                   min={-40}
                   max={120}
@@ -375,10 +269,10 @@ export function HeroLogoTunePanel() {
 
             <section className="hlt-section">
               <h2 className="admin-heading text-base">
-                Fine-tune each letter (optional)
+                Alignment (per letter vertical)
               </h2>
               <p className="hlt-section__hint">
-                Extra up (−) / down (+) after using the alignment buttons.
+                Move each letter up (−) or down (+) on its own. Units are pixels.
               </p>
               <div className="hlt-grid">
                 <NumberField

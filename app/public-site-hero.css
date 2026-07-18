@@ -122,16 +122,14 @@
     drop-shadow(0 28px 60px rgba(0, 0, 0, 0.45));
 }
 
-/* Split HATHOR wordmark — edge-locked; Book Now viewport-centered */
+/* Split HATHOR wordmark — per-letter images inside .hero-logo-mark */
 .home-hero-container:has(.hero-logo-mark--split) {
+  --hathor-logo-side-w: calc(
+    (100vw - var(--hathor-logo-gap, 168px) - 2 * var(--hathor-logo-edge, 0px)) / 2
+  );
   --hathor-cta-half-h: 26px;
   --hathor-cta-nudge: 0px;
-  --hathor-logo-side-w: calc(
-    (
-        100vw - var(--hathor-logo-edge, 0px) * 2 - var(--hathor-gap-t-btn, 0px) -
-          var(--hathor-btn-slot, 168px) - var(--hathor-gap-btn-h, 0px)
-      ) / 2
-  );
+  /* Knobs inherited from .ex-root (admin tune) with safe fallbacks */
   --hathor-logo-h: calc(
     var(--hathor-logo-side-w) * 1804 / 2676 * var(--hathor-logo-size, 1)
   );
@@ -139,23 +137,19 @@
 }
 
 .hathor-logo-split {
-  display: grid !important;
-  grid-template-columns:
-    minmax(0, 1fr)
-    var(--hathor-gap-t-btn, 0px)
-    var(--hathor-btn-slot, 168px)
-    var(--hathor-gap-btn-h, 0px)
-    minmax(0, 1fr);
-  align-items: var(--hathor-logo-align-items, flex-end);
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  justify-content: stretch;
+  align-items: flex-end;
   gap: 0;
   width: 100vw !important;
-  max-width: 100vw !important;
-  height: var(--hathor-logo-h) !important;
+  max-width: none !important;
+  height: var(--hathor-logo-h, calc((100vw - 168px) / 2 * 1804 / 2676)) !important;
   margin: 0 !important;
   padding: 0 var(--hathor-logo-edge, 0px) !important;
   box-sizing: border-box;
-  overflow-x: clip;
-  overflow-y: visible;
+  overflow: visible;
   filter: none;
   clip-path: none;
   -webkit-clip-path: none;
@@ -164,30 +158,24 @@
 }
 
 .hathor-logo-split__side {
+  width: 0;
+  min-width: 0;
   display: flex !important;
   flex-direction: row !important;
-  align-items: var(--hathor-logo-align-items, flex-end);
-  justify-content: flex-start;
-  min-width: 0;
-  width: 100%;
+  align-items: flex-end;
   height: 100% !important;
   gap: 0;
   overflow: visible;
 }
 
-.hathor-logo-split__side-spacer {
-  flex: 1 1 0;
-  min-width: 0;
-  height: 1px;
-  pointer-events: none;
+.hathor-logo-split__side--left {
+  flex: 1 1 0 !important;
+  justify-content: flex-end;
 }
 
-.hathor-logo-split__gap-t-btn,
-.hathor-logo-split__gap-btn-h,
-.hathor-logo-split__btn-slot {
-  min-width: 0;
-  height: 1px;
-  pointer-events: none;
+.hathor-logo-split__side--right {
+  flex: 1 1 0 !important;
+  justify-content: flex-start;
 }
 
 .hathor-logo-split .logo-letter-wrap {
@@ -212,7 +200,7 @@
   max-width: none !important;
   max-height: none !important;
   object-fit: contain;
-  object-position: var(--hathor-logo-object-position, bottom center);
+  object-position: bottom center;
   user-select: none;
   pointer-events: none;
   clip-path: none;
@@ -256,6 +244,13 @@
   transform: translateY(var(--hathor-y-r, 0px));
 }
 
+.hathor-logo-split__gap {
+  flex: 0 0 var(--hathor-logo-gap, 168px) !important;
+  width: var(--hathor-logo-gap, 168px) !important;
+  height: 1px;
+  pointer-events: none;
+}
+
 .hero-logo-mark--split {
   bottom: var(--hathor-logo-bottom) !important;
   top: auto !important;
@@ -270,23 +265,18 @@
 }
 
 .home-hero-container:has(.hero-logo-mark--split) .hero-button {
-  bottom: max(
-    28px,
-    calc(
-      var(--hathor-logo-bottom) + (var(--hathor-logo-h) / 2) - var(--hathor-cta-half-h) +
-        var(--hathor-cta-y-nudge, 0px)
-    )
+  bottom: calc(
+    var(--hathor-logo-bottom) + (var(--hathor-logo-h) / 2) - var(--hathor-cta-half-h) +
+      var(--hathor-cta-y-nudge, 0px)
   ) !important;
   top: auto !important;
-  left: 0;
-  right: 0;
-  transform: none;
+  transform: translateX(var(--hathor-cta-nudge, 0px));
   z-index: 8;
 }
 
 @media (max-width: 768px) {
   .home-hero-container:has(.hero-logo-mark--split) {
-    --hathor-btn-slot: 148px;
+    --hathor-logo-gap: clamp(7.25rem, 28vw, 9.5rem);
     --hathor-cta-half-h: 24px;
   }
 }
