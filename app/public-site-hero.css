@@ -126,11 +126,13 @@
 .home-hero-container:has(.hero-logo-mark--split) {
   --hathor-logo-gap: 168px;
   --hathor-logo-side-w: calc((100vw - var(--hathor-logo-gap)) / 2);
-  --hathor-logo-bottom: clamp(48px, 7vh, 72px);
   --hathor-cta-half-h: 26px;
   --hathor-cta-nudge: 0px;
-  /* Full edge-to-edge letter size — bottom-anchored, no vh shrink */
+  /* Full edge-to-edge letter size (same aspect as letter assets) */
   --hathor-logo-h: calc(var(--hathor-logo-side-w) * 1804 / 2676);
+  /* ~22% of letters sit under the cream content sheet — not cropped assets */
+  --hathor-logo-tuck: 0.22;
+  --hathor-logo-bottom: calc(var(--hathor-logo-h) * -1 * var(--hathor-logo-tuck));
 }
 
 .hathor-logo-split {
@@ -217,7 +219,7 @@
 }
 
 .hero-logo-mark--split {
-  bottom: var(--hathor-logo-bottom, clamp(48px, 7vh, 72px)) !important;
+  bottom: var(--hathor-logo-bottom) !important;
   top: auto !important;
   width: 100vw;
   z-index: 4;
@@ -231,7 +233,7 @@
 
 .home-hero-container:has(.hero-logo-mark--split) .hero-button {
   bottom: calc(
-    var(--hathor-logo-bottom) + (var(--hathor-logo-h) / 2) - var(--hathor-cta-half-h)
+    var(--hathor-logo-h) * (1 - var(--hathor-logo-tuck)) / 2 - var(--hathor-cta-half-h)
   ) !important;
   top: auto !important;
   transform: translateX(var(--hathor-cta-nudge, 0px));

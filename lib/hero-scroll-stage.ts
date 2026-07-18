@@ -92,7 +92,7 @@ export function mountHeroScrollStage({
         transformOrigin: "50% 50%",
       });
       gsap.set(logoMark.querySelectorAll(".logo-letter-wrap"), {
-        y: 48,
+        y: getLogoHiddenY(),
         opacity: 0,
         force3D: true,
       });
@@ -133,7 +133,7 @@ export function mountHeroScrollStage({
       logoMark.querySelectorAll(".logo-letter-wrap"),
     );
 
-    // Split wordmark: only per-letter rise (short travel, clear stagger).
+    // Split wordmark: per-letter rise into the CSS end pose (same slow land as the old huge logo).
     // Do NOT move the whole .hero-logo-mark — that made every letter rise together.
     if (isSplitLetterLogo() && letterTargets.length) {
       gsap.set(logoMark, {
@@ -145,14 +145,15 @@ export function mountHeroScrollStage({
         autoAlpha: 1,
       });
 
-      gsap.set(letterTargets, { y: 48, opacity: 0, force3D: true });
+      const riseFrom = getLogoHiddenY();
+      gsap.set(letterTargets, { y: riseFrom, opacity: 0, force3D: true });
 
       landingTween = gsap.to(letterTargets, {
         y: 0,
         opacity: 1,
-        duration: 0.5,
-        stagger: 0.22,
-        ease: "power2.out",
+        duration: 2.6,
+        stagger: 0.16,
+        ease: "power2.inOut",
         delay: 0.2,
         onComplete: markLogoReady,
       });
