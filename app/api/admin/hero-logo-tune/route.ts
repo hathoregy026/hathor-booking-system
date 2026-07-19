@@ -33,7 +33,11 @@ export async function PUT(request: NextRequest) {
     const saved = await saveHeroLogoTune(tune);
     revalidatePath("/", "layout");
     revalidatePath("/");
-    return NextResponse.json({ tune: saved });
+    revalidatePath("/admin/hero-logo-tune");
+    return NextResponse.json(
+      { tune: saved, ok: true },
+      { headers: { "Cache-Control": "no-store" } },
+    );
   } catch (error) {
     logDbError("admin.hero-logo-tune.PUT", error);
     return handleRouteError(error);

@@ -197,7 +197,7 @@ export function HeroLogoTunePanel() {
       const next = parseHeroLogoTune(data.tune);
       setTune(next);
       setSaved(next);
-      showToast("success", "Saved to live — hard-refresh the homepage.");
+      showToast("success", "Saved. Hard-refresh the homepage (Ctrl+Shift+R) to see it.");
     } catch (error) {
       if (!isTransientFetchError(error)) {
         showToast(

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import type { CSSProperties } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { HathorLogoTuner } from "@/components/public/HathorLogoTuner";
@@ -23,6 +24,8 @@ import {
   DEFAULT_HERO_LOGO_TUNE,
   type HeroLogoTune,
   heroLogoTuneToCssVars,
+  heroLogoTuneToImportantCss,
+  parseHeroLogoTune,
 } from "@/lib/hero-logo-tune-shared";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 
@@ -43,10 +46,37 @@ export function HomePageClient({
 }: HomePageClientProps) {
   useExScrollMotion();
 
-  const logoTuneStyle = heroLogoTuneToCssVars(heroLogoTune) as CSSProperties;
+  const [liveTune, setLiveTune] = useState(heroLogoTune);
+
+  useEffect(() => {
+    setLiveTune(heroLogoTune);
+  }, [heroLogoTune]);
+
+  /* Re-fetch after Save so a cached HTML shell still picks up DB values. */
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const res = await fetch("/api/hero-logo-tune", { cache: "no-store" });
+        if (!res.ok) return;
+        const data = (await res.json()) as { tune?: unknown };
+        if (cancelled) return;
+        setLiveTune(parseHeroLogoTune(data.tune));
+      } catch {
+        /* keep SSR tune */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const logoTuneStyle = heroLogoTuneToCssVars(liveTune) as CSSProperties;
+  const logoTuneCss = heroLogoTuneToImportantCss(liveTune);
 
   return (
     <div className="ex-root" style={logoTuneStyle}>
+      <style data-hathor-logo-tune dangerouslySetInnerHTML={{ __html: logoTuneCss }} />
       <HathorLogoTuner />
       <main id="top">
         <PublicSiteHero

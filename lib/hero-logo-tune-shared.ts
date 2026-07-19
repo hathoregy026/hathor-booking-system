@@ -144,7 +144,46 @@ export function parseHeroLogoTune(raw: unknown): HeroLogoTune {
   };
 
   const parsed = heroLogoTuneSchema.safeParse(candidate);
-  return parsed.success ? parsed.data : DEFAULT_HERO_LOGO_TUNE;
+  if (parsed.success) return parsed.data;
+
+  /* Never wipe a whole save — clamp each field independently. */
+  const clamp = (
+    n: number | undefined,
+    min: number,
+    max: number,
+    fallback: number,
+  ) => {
+    const v = n ?? fallback;
+    if (!Number.isFinite(v)) return fallback;
+    return Math.min(max, Math.max(min, v));
+  };
+
+  return {
+    size: clamp(candidate.size, 0.2, 2.5, DEFAULT_HERO_LOGO_TUNE.size),
+    y: clamp(candidate.y, -800, 600, DEFAULT_HERO_LOGO_TUNE.y),
+    ctaNudge: clamp(candidate.ctaNudge, -300, 300, DEFAULT_HERO_LOGO_TUNE.ctaNudge),
+    animDuration: clamp(
+      candidate.animDuration,
+      0.2,
+      8,
+      DEFAULT_HERO_LOGO_TUNE.animDuration,
+    ),
+    edgeLeft: clamp(candidate.edgeLeft, 0, 400, DEFAULT_HERO_LOGO_TUNE.edgeLeft),
+    edgeRight: clamp(candidate.edgeRight, 0, 400, DEFAULT_HERO_LOGO_TUNE.edgeRight),
+    gapTButton: clamp(candidate.gapTButton, -100, 400, DEFAULT_HERO_LOGO_TUNE.gapTButton),
+    gapButtonH: clamp(candidate.gapButtonH, -100, 400, DEFAULT_HERO_LOGO_TUNE.gapButtonH),
+    vAlign: candidate.vAlign,
+    gapHA: clamp(candidate.gapHA, -100, 400, DEFAULT_HERO_LOGO_TUNE.gapHA),
+    gapAT: clamp(candidate.gapAT, -100, 400, DEFAULT_HERO_LOGO_TUNE.gapAT),
+    gapHO: clamp(candidate.gapHO, -100, 400, DEFAULT_HERO_LOGO_TUNE.gapHO),
+    gapOR: clamp(candidate.gapOR, -100, 400, DEFAULT_HERO_LOGO_TUNE.gapOR),
+    yH1: clamp(candidate.yH1, -300, 300, DEFAULT_HERO_LOGO_TUNE.yH1),
+    yA: clamp(candidate.yA, -300, 300, DEFAULT_HERO_LOGO_TUNE.yA),
+    yT: clamp(candidate.yT, -300, 300, DEFAULT_HERO_LOGO_TUNE.yT),
+    yH2: clamp(candidate.yH2, -300, 300, DEFAULT_HERO_LOGO_TUNE.yH2),
+    yO: clamp(candidate.yO, -300, 300, DEFAULT_HERO_LOGO_TUNE.yO),
+    yR: clamp(candidate.yR, -300, 300, DEFAULT_HERO_LOGO_TUNE.yR),
+  };
 }
 
 export function heroLogoTuneToCssVars(tune: HeroLogoTune): Record<string, string> {
@@ -172,6 +211,15 @@ export function heroLogoTuneToCssVars(tune: HeroLogoTune): Record<string, string
     "--hathor-y-o": `${tune.yO}px`,
     "--hathor-y-r": `${tune.yR}px`,
   };
+}
+
+/** Beats stylesheet defaults on `.ex-root` so Save → live always sticks. */
+export function heroLogoTuneToImportantCss(tune: HeroLogoTune): string {
+  const vars = heroLogoTuneToCssVars(tune);
+  const body = Object.entries(vars)
+    .map(([key, value]) => `  ${key}: ${value} !important;`)
+    .join("\n");
+  return `html[data-ex-experience] .ex-root {\n${body}\n}`;
 }
 
 export function isHeroLogoTuneEqual(a: HeroLogoTune, b: HeroLogoTune): boolean {

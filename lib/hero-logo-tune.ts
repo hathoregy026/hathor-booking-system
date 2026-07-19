@@ -13,6 +13,7 @@ export {
   HERO_LOGO_TUNE_KEY,
   heroLogoTuneSchema,
   heroLogoTuneToCssVars,
+  heroLogoTuneToImportantCss,
   parseHeroLogoTune,
   type HeroLogoTune,
 } from "@/lib/hero-logo-tune-shared";
@@ -45,17 +46,19 @@ export async function getHeroLogoTune(): Promise<HeroLogoTune> {
 
 export async function saveHeroLogoTune(tune: HeroLogoTune): Promise<HeroLogoTune> {
   const safe = heroLogoTuneSchema.parse(tune);
+  const payload = JSON.stringify(safe);
   await withDb(() =>
     prisma.siteSetting.upsert({
       where: { key: HERO_LOGO_TUNE_KEY },
       create: {
         key: HERO_LOGO_TUNE_KEY,
-        value: JSON.stringify(safe),
+        value: payload,
       },
       update: {
-        value: JSON.stringify(safe),
+        value: payload,
       },
     }),
   );
-  return safe;
+  /* Round-trip so callers get exactly what the DB will serve next. */
+  return getHeroLogoTune();
 }

@@ -33,30 +33,11 @@ html[data-ex-experience] .ex-root .hero-logo-mark {
   transform-origin: 50% 50%;
 }
 
-/* Defaults for admin / temporary logo tune (overridden on .ex-root via saved values) */
-html[data-ex-experience] .ex-root {
-  --hathor-logo-size: 1;
-  --hathor-logo-y: 0px;
-  --hathor-cta-y-nudge: 0px;
-  --hathor-logo-anim-duration: 2.6;
-  --hathor-logo-edge-l: 0px;
-  --hathor-logo-edge-r: 0px;
-  --hathor-logo-gap: 168px;
-  --hathor-gap-t-btn: 0px;
-  --hathor-gap-btn-h: 0px;
-  --hathor-logo-align-items: flex-start;
-  --hathor-logo-object-position: top center;
-  --hathor-gap-ha: 0px;
-  --hathor-gap-at: 0px;
-  --hathor-gap-ho: 0px;
-  --hathor-gap-or: 0px;
-  --hathor-y-h1: 0px;
-  --hathor-y-a: 0px;
-  --hathor-y-t: 0px;
-  --hathor-y-h2: 0px;
-  --hathor-y-o: 0px;
-  --hathor-y-r: 0px;
-}
+/*
+  Logo tune vars come from saved SiteSetting (injected on .ex-root).
+  Do not hardcode zeros here — that fought Save and looked like “not saved”.
+  Fallbacks live in var(--token, fallback) usages below.
+*/
 
 html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) {
   /* Edge insets do not change letter size — only push H / R in from the screen */
