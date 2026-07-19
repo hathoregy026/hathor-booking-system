@@ -259,9 +259,9 @@ export function HeroLogoTunePanel() {
         </p>
         <h1 className="admin-page-title">Hero Logo Tune</h1>
         <p className="admin-page-subtitle max-w-2xl">
-          Preview updates as you drag. Save writes to the live Vercel homepage
-          (`/`). H stays at the left edge, R at the right — letter gaps push free
-          letters toward Book Now.
+          Preview is full browser width (same as the hero). Left: H A T between
+          the left edge and Book Now. Right: H O R between Book Now and the right
+          edge. Each gap spacer is exact — letters shrink to stay in their zone.
         </p>
       </div>
 
@@ -406,9 +406,9 @@ export function HeroLogoTunePanel() {
             <section className="hlt-section">
               <h2 className="admin-heading text-base">Spacing between letters</h2>
               <p className="hlt-section__hint">
-                Each control is its own spacer — not a HAT/HOR block. H→A only
-                changes H↔A; A→T only changes A↔T; H→O only H↔O; O→R only O↔R.
-                Leftover side room is absorbed so gaps never vanish.
+                Exact px between those two letters. Wider gaps make neighboring
+                letters slightly narrower so everything stays between the edge
+                and Book Now — R never clips off the side.
               </p>
               <div className="hlt-grid">
                 <NumberField

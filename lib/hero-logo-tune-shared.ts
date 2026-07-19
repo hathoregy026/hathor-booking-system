@@ -249,27 +249,33 @@ html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__space--ha {
   width: ${Math.max(0, tune.gapHA)}px !important;
-  margin-right: ${Math.min(0, tune.gapHA)}px !important;
+  flex-basis: ${Math.max(0, tune.gapHA)}px !important;
+  margin-right: 0 !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__space--at {
   width: ${Math.max(0, tune.gapAT)}px !important;
-  margin-right: ${Math.min(0, tune.gapAT)}px !important;
+  flex-basis: ${Math.max(0, tune.gapAT)}px !important;
+  margin-right: 0 !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__space--t-btn {
   width: ${Math.max(0, tune.gapTButton)}px !important;
-  margin-right: ${Math.min(0, tune.gapTButton)}px !important;
+  flex-basis: ${Math.max(0, tune.gapTButton)}px !important;
+  margin-right: 0 !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__space--btn-h {
   width: ${Math.max(0, tune.gapButtonH)}px !important;
-  margin-right: ${Math.min(0, tune.gapButtonH)}px !important;
+  flex-basis: ${Math.max(0, tune.gapButtonH)}px !important;
+  margin-right: 0 !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__space--ho {
   width: ${Math.max(0, tune.gapHO)}px !important;
-  margin-right: ${Math.min(0, tune.gapHO)}px !important;
+  flex-basis: ${Math.max(0, tune.gapHO)}px !important;
+  margin-right: 0 !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__space--or {
   width: ${Math.max(0, tune.gapOR)}px !important;
-  margin-right: ${Math.min(0, tune.gapOR)}px !important;
+  flex-basis: ${Math.max(0, tune.gapOR)}px !important;
+  margin-right: 0 !important;
 }
 html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) .hero-button {
   bottom: calc(${tune.y}px + (${logoH} / 2) - 26px + ${tune.ctaNudge}px) !important;

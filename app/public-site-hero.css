@@ -172,6 +172,7 @@
   justify-content: flex-start;
   padding-left: var(--hathor-logo-edge-l, 0px);
   padding-right: 0;
+  overflow: hidden;
 }
 
 .hathor-logo-split__side--right {
@@ -179,14 +180,7 @@
   justify-content: flex-start;
   padding-right: var(--hathor-logo-edge-r, 0px);
   padding-left: 0;
-}
-
-.hathor-logo-split__grow {
-  flex: 1 1 0 !important;
-  width: 0;
-  min-width: 0;
-  height: 1px;
-  pointer-events: none;
+  overflow: hidden;
 }
 
 .hathor-logo-split__space {
@@ -196,43 +190,45 @@
   height: 1px;
   align-self: center;
   pointer-events: none;
-  box-sizing: border-box;
+  box-sizing: content-box;
+  background: transparent;
+  border: 0;
+  min-width: 0;
 }
 
 .hathor-logo-split__space--ha {
   width: max(0px, var(--hathor-gap-ha, 0px));
-  margin-right: min(0px, var(--hathor-gap-ha, 0px));
+  flex-basis: max(0px, var(--hathor-gap-ha, 0px));
 }
 .hathor-logo-split__space--at {
   width: max(0px, var(--hathor-gap-at, 0px));
-  margin-right: min(0px, var(--hathor-gap-at, 0px));
+  flex-basis: max(0px, var(--hathor-gap-at, 0px));
 }
 .hathor-logo-split__space--t-btn {
   width: max(0px, var(--hathor-gap-t-btn, 0px));
-  margin-right: min(0px, var(--hathor-gap-t-btn, 0px));
+  flex-basis: max(0px, var(--hathor-gap-t-btn, 0px));
 }
 .hathor-logo-split__space--btn-h {
   width: max(0px, var(--hathor-gap-btn-h, 0px));
-  margin-right: min(0px, var(--hathor-gap-btn-h, 0px));
+  flex-basis: max(0px, var(--hathor-gap-btn-h, 0px));
 }
 .hathor-logo-split__space--ho {
   width: max(0px, var(--hathor-gap-ho, 0px));
-  margin-right: min(0px, var(--hathor-gap-ho, 0px));
+  flex-basis: max(0px, var(--hathor-gap-ho, 0px));
 }
 .hathor-logo-split__space--or {
   width: max(0px, var(--hathor-gap-or, 0px));
-  margin-right: min(0px, var(--hathor-gap-or, 0px));
+  flex-basis: max(0px, var(--hathor-gap-or, 0px));
 }
 
 .hathor-logo-split .logo-letter-wrap {
   display: flex !important;
-  flex: 0 0 auto !important;
-  flex-basis: auto !important;
+  flex: var(--letter-flex, 1) 1 0 !important;
   width: auto !important;
-  min-width: 0;
+  min-width: 0 !important;
   margin: 0 !important;
   height: 100% !important;
-  overflow: visible;
+  overflow: hidden;
   clip-path: none;
   -webkit-clip-path: none;
   mask: none;
@@ -247,7 +243,7 @@
   max-width: none !important;
   max-height: none !important;
   object-fit: fill;
-  object-position: var(--hathor-logo-object-position, top center);
+  object-position: var(--hathor-logo-object-position, center center);
   user-select: none;
   pointer-events: none;
   clip-path: none;
