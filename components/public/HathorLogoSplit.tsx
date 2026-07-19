@@ -30,21 +30,9 @@ function Letter({ letter }: { letter: HathorLogoLetter }) {
   );
 }
 
-function Space({ kind }: { kind: string }) {
-  return (
-    <span
-      className={`hathor-logo-split__space hathor-logo-split__space--${kind}`}
-      aria-hidden="true"
-    />
-  );
-}
-
 /**
- * Free zone = edge ↔ Book Now on each side.
- * Outer edges are hard limits (overflow clipped — letters never paint past them).
- *
- * T→Book Now / Book Now→H are side paddings toward the button, so changing
- * them moves the letter clusters. Letter↔letter gaps stay exact spacers.
+ * Each letter is positioned on its own in the free zone (edge ↔ Book Now).
+ * Outer edges hard-clip. Gap controls move individual letters — not HAT/HOR as a block.
  */
 export function HathorLogoSplit({ className }: HathorLogoSplitProps) {
   const [h1, a, t, h2, o, r] = HATHOR_LOGO_LETTERS;
@@ -57,9 +45,7 @@ export function HathorLogoSplit({ className }: HathorLogoSplitProps) {
     >
       <div className="hathor-logo-split__side hathor-logo-split__side--left">
         <Letter letter={h1} />
-        <Space kind="ha" />
         <Letter letter={a} />
-        <Space kind="at" />
         <Letter letter={t} />
       </div>
 
@@ -67,9 +53,7 @@ export function HathorLogoSplit({ className }: HathorLogoSplitProps) {
 
       <div className="hathor-logo-split__side hathor-logo-split__side--right">
         <Letter letter={h2} />
-        <Space kind="ho" />
         <Letter letter={o} />
-        <Space kind="or" />
         <Letter letter={r} />
       </div>
     </div>

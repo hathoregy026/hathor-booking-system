@@ -156,73 +156,43 @@
 }
 
 .hathor-logo-split__side {
+  --lw-h1: calc(var(--hathor-logo-h, 120px) * 855 / 2200);
+  --lw-a: calc(var(--hathor-logo-h, 120px) * 1070 / 2200);
+  --lw-t: calc(var(--hathor-logo-h, 120px) * 758 / 2200);
+  --lw-h2: calc(var(--hathor-logo-h, 120px) * 840 / 2200);
+  --lw-o: calc(var(--hathor-logo-h, 120px) * 1019 / 2200);
+  --lw-r: calc(var(--hathor-logo-h, 120px) * 764 / 2200);
   width: 0;
   min-width: 0;
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: var(--hathor-logo-align-items, flex-end);
+  position: relative !important;
+  display: block !important;
   height: 100% !important;
-  gap: 0;
   overflow: hidden;
   box-sizing: border-box;
 }
 
 /*
-  Free zone = edge ↔ Book Now. Outer edges are hard clip limits.
-  T→Book Now / Book Now→H = padding on the button side (moves the cluster).
-  Leftover free space sits between the outer edge and the letters.
+  Per-letter placement in the free zone (not a glued HAT/HOR block).
+  Edges hard-clip. Each gap moves its letter.
 */
 .hathor-logo-split__side--left {
   flex: 1 1 0 !important;
-  justify-content: flex-end;
   padding-left: var(--hathor-logo-edge-l, 0px);
-  padding-right: max(0px, var(--hathor-gap-t-btn, 0px));
+  padding-right: 0;
   overflow: hidden;
 }
 
 .hathor-logo-split__side--right {
   flex: 1 1 0 !important;
-  justify-content: flex-start;
-  padding-left: max(0px, var(--hathor-gap-btn-h, 0px));
+  padding-left: 0;
   padding-right: var(--hathor-logo-edge-r, 0px);
   overflow: hidden;
 }
 
-.hathor-logo-split__space {
-  display: block;
-  flex: 0 0 auto;
-  flex-shrink: 0;
-  height: 1px;
-  align-self: center;
-  pointer-events: none;
-  box-sizing: content-box;
-  background: transparent;
-  border: 0;
-}
-
-.hathor-logo-split__space--ha {
-  width: max(0px, var(--hathor-gap-ha, 0px));
-  flex: 0 0 max(0px, var(--hathor-gap-ha, 0px));
-}
-.hathor-logo-split__space--at {
-  width: max(0px, var(--hathor-gap-at, 0px));
-  flex: 0 0 max(0px, var(--hathor-gap-at, 0px));
-}
-.hathor-logo-split__space--ho {
-  width: max(0px, var(--hathor-gap-ho, 0px));
-  flex: 0 0 max(0px, var(--hathor-gap-ho, 0px));
-}
-.hathor-logo-split__space--or {
-  width: max(0px, var(--hathor-gap-or, 0px));
-  flex: 0 0 max(0px, var(--hathor-gap-or, 0px));
-}
-
 .hathor-logo-split .logo-letter-wrap {
+  position: absolute !important;
+  top: 0;
   display: flex !important;
-  flex: 0 0 auto !important;
-  flex-basis: auto !important;
-  width: auto !important;
-  min-width: 0;
   margin: 0 !important;
   height: 100% !important;
   overflow: visible;
@@ -231,6 +201,48 @@
   mask: none;
   -webkit-mask: none;
   will-change: transform, opacity;
+}
+
+/* Left: H from edge · A via H→A · T via A→T, clamped by T→Book Now */
+.hathor-logo-split__side--left .letter-h1 {
+  left: 0;
+  width: var(--lw-h1);
+}
+.hathor-logo-split__side--left .letter-a {
+  left: calc(var(--lw-h1) + max(0px, var(--hathor-gap-ha, 0px)));
+  width: var(--lw-a);
+}
+.hathor-logo-split__side--left .letter-t {
+  left: min(
+    calc(
+      var(--lw-h1) + max(0px, var(--hathor-gap-ha, 0px)) + var(--lw-a) +
+        max(0px, var(--hathor-gap-at, 0px))
+    ),
+    calc(100% - var(--lw-t) - max(0px, var(--hathor-gap-t-btn, 0px)))
+  );
+  width: var(--lw-t);
+}
+
+/* Right: R on edge · O via O→R · H via Book Now→H, clamped by H→O */
+.hathor-logo-split__side--right .letter-r {
+  left: calc(100% - var(--lw-r));
+  width: var(--lw-r);
+}
+.hathor-logo-split__side--right .letter-o {
+  left: calc(
+    100% - var(--lw-r) - max(0px, var(--hathor-gap-or, 0px)) - var(--lw-o)
+  );
+  width: var(--lw-o);
+}
+.hathor-logo-split__side--right .letter-h2 {
+  left: min(
+    max(0px, var(--hathor-gap-btn-h, 0px)),
+    calc(
+      100% - var(--lw-r) - max(0px, var(--hathor-gap-or, 0px)) - var(--lw-o) -
+        max(0px, var(--hathor-gap-ho, 0px)) - var(--lw-h2)
+    )
+  );
+  width: var(--lw-h2);
 }
 
 .hathor-logo-split .logo-letter {

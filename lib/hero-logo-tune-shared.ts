@@ -239,31 +239,13 @@ html[data-ex-experience] .ex-root .hero-logo-mark--split {
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__side--left {
   padding-left: ${tune.edgeLeft}px !important;
-  padding-right: ${Math.max(0, tune.gapTButton)}px !important;
-  justify-content: flex-end !important;
+  padding-right: 0 !important;
   overflow: hidden !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
-  padding-left: ${Math.max(0, tune.gapButtonH)}px !important;
+  padding-left: 0 !important;
   padding-right: ${tune.edgeRight}px !important;
-  justify-content: flex-start !important;
   overflow: hidden !important;
-}
-html[data-ex-experience] .ex-root .hathor-logo-split__space--ha {
-  width: ${Math.max(0, tune.gapHA)}px !important;
-  flex: 0 0 ${Math.max(0, tune.gapHA)}px !important;
-}
-html[data-ex-experience] .ex-root .hathor-logo-split__space--at {
-  width: ${Math.max(0, tune.gapAT)}px !important;
-  flex: 0 0 ${Math.max(0, tune.gapAT)}px !important;
-}
-html[data-ex-experience] .ex-root .hathor-logo-split__space--ho {
-  width: ${Math.max(0, tune.gapHO)}px !important;
-  flex: 0 0 ${Math.max(0, tune.gapHO)}px !important;
-}
-html[data-ex-experience] .ex-root .hathor-logo-split__space--or {
-  width: ${Math.max(0, tune.gapOR)}px !important;
-  flex: 0 0 ${Math.max(0, tune.gapOR)}px !important;
 }
 html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) .hero-button {
   bottom: calc(${tune.y}px + (${logoH} / 2) - 26px + ${tune.ctaNudge}px) !important;

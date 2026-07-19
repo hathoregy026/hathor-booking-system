@@ -377,13 +377,13 @@ export function HeroLogoTunePanel() {
                 T ↔ Book Now ↔ H (center)
               </h2>
               <p className="hlt-section__hint">
-                Moves the letter cluster in the free zone. Bigger = letters
-                farther from Book Now (toward the outer edge). Edges still clip.
+                Moves that one letter only (T on the left, H on the right) — not
+                the whole side as a block.
               </p>
               <div className="hlt-grid">
                 <NumberField
                   label="T → Book Now"
-                  hint="Pushes HAT toward the left edge"
+                  hint="Moves T only"
                   value={tune.gapTButton}
                   min={-200}
                   max={2400}
@@ -391,7 +391,7 @@ export function HeroLogoTunePanel() {
                 />
                 <NumberField
                   label="Book Now → H"
-                  hint="Pushes HOR toward the right edge"
+                  hint="Moves right H only"
                   value={tune.gapButtonH}
                   min={-200}
                   max={2400}
@@ -403,8 +403,8 @@ export function HeroLogoTunePanel() {
             <section className="hlt-section">
               <h2 className="admin-heading text-base">Spacing between letters</h2>
               <p className="hlt-section__hint">
-                Exact pixels between those two letters. Move freely in the free
-                zone toward Book Now.
+                Exact pixels between two letters. Each control moves the next
+                letter only — letters stay independent.
               </p>
               <div className="hlt-grid">
                 <NumberField

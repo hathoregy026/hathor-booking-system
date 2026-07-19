@@ -12,24 +12,8 @@ import {
   type HeroLogoTune,
 } from "@/lib/hero-logo-tune-shared";
 
-function spaceStyle(gap: number): CSSProperties {
-  const w = Math.max(0, gap);
-  return {
-    width: w,
-    flex: `0 0 ${w}px`,
-    flexBasis: w,
-    height: 1,
-    alignSelf: "center",
-    background: "transparent",
-    border: 0,
-  };
-}
-
 /**
- * Same model as live:
- * - Free zone between outer edge and Book Now
- * - Edges hard-clipped
- * - T→btn / btn→H are paddings — changing them moves the clusters
+ * Same per-letter math as live — each letter moves on its own control.
  */
 export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
   const [stageW, setStageW] = useState(1440);
@@ -52,21 +36,44 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
   const lw = (i: number) =>
     Math.max(8, Math.round(HATHOR_LOGO_LETTERS[i].width * scale));
 
-  const alignItems =
-    tune.vAlign === "top"
-      ? "flex-start"
-      : tune.vAlign === "middle"
-        ? "center"
-        : "flex-end";
+  const h1W = lw(0);
+  const aW = lw(1);
+  const tW = lw(2);
+  const h2W = lw(3);
+  const oW = lw(4);
+  const rW = lw(5);
 
-  const letter = (i: number, key: string, yNudge: number) => (
+  const leftInner = Math.max(0, sideW - tune.edgeLeft);
+  const rightInner = Math.max(0, sideW - tune.edgeRight);
+
+  const h1Left = 0;
+  const aLeft = h1W + Math.max(0, tune.gapHA);
+  const tFromChain = aLeft + aW + Math.max(0, tune.gapAT);
+  const tFromBtn = leftInner - tW - Math.max(0, tune.gapTButton);
+  const tLeft = Math.min(tFromChain, tFromBtn);
+
+  const rLeft = rightInner - rW;
+  const oLeft = rLeft - Math.max(0, tune.gapOR) - oW;
+  const h2FromBtn = Math.max(0, tune.gapButtonH);
+  const h2FromOr = oLeft - Math.max(0, tune.gapHO) - h2W;
+  const h2Left = Math.min(h2FromBtn, h2FromOr);
+
+  const letter = (
+    i: number,
+    key: string,
+    yNudge: number,
+    left: number,
+    width: number,
+  ) => (
     <span
       key={key}
       className={`hlt-preview__letter letter-${key}`}
       style={{
-        width: lw(i),
+        position: "absolute",
+        left,
+        top: 0,
+        width,
         height: letterH,
-        flex: "0 0 auto",
         transform: `translateY(${yNudge}px)`,
       }}
     >
@@ -74,7 +81,7 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
       <img
         src={HATHOR_LOGO_LETTERS[i].src}
         alt={HATHOR_LOGO_LETTERS[i].alt}
-        width={lw(i)}
+        width={width}
         height={letterH}
         draggable={false}
         className="hlt-preview__letter-img"
@@ -82,11 +89,17 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
     </span>
   );
 
+  const sideBase: CSSProperties = {
+    position: "relative",
+    height: letterH,
+    overflow: "hidden",
+  };
+
   return (
     <div className="hlt-preview" data-hlt-preview="">
       <div className="hlt-preview__toolbar">
         <strong>1:1 hero width · {stageW}px</strong>
-        <span>Drag T→btn / btn→H — letters must move</span>
+        <span>Each letter moves on its own — not as a HAT/HOR block</span>
       </div>
 
       <div className="hlt-preview__hud" aria-live="polite">
@@ -111,25 +124,22 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
               {
                 width: stageW,
                 height: letterH,
-                alignItems,
+                position: "relative",
               } as CSSProperties
             }
           >
             <div
               className="hlt-preview__side hlt-preview__side--left"
               style={{
+                ...sideBase,
                 width: sideW,
                 paddingLeft: tune.edgeLeft,
-                paddingRight: Math.max(0, tune.gapTButton),
-                justifyContent: "flex-end",
-                overflow: "hidden",
+                boxSizing: "border-box",
               }}
             >
-              {letter(0, "h1", tune.yH1)}
-              <span className="hlt-preview__space" style={spaceStyle(tune.gapHA)} />
-              {letter(1, "a", tune.yA)}
-              <span className="hlt-preview__space" style={spaceStyle(tune.gapAT)} />
-              {letter(2, "t", tune.yT)}
+              {letter(0, "h1", tune.yH1, h1Left, h1W)}
+              {letter(1, "a", tune.yA, aLeft, aW)}
+              {letter(2, "t", tune.yT, tLeft, tW)}
             </div>
 
             <span
@@ -137,6 +147,8 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
               style={{
                 width: HATHOR_BTN_SLOT_PX,
                 flex: `0 0 ${HATHOR_BTN_SLOT_PX}px`,
+                position: "relative",
+                height: letterH,
               }}
             >
               <span
@@ -154,24 +166,21 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
             <div
               className="hlt-preview__side hlt-preview__side--right"
               style={{
+                ...sideBase,
                 width: sideW,
-                paddingLeft: Math.max(0, tune.gapButtonH),
                 paddingRight: tune.edgeRight,
-                justifyContent: "flex-start",
-                overflow: "hidden",
+                boxSizing: "border-box",
               }}
             >
-              {letter(3, "h2", tune.yH2)}
-              <span className="hlt-preview__space" style={spaceStyle(tune.gapHO)} />
-              {letter(4, "o", tune.yO)}
-              <span className="hlt-preview__space" style={spaceStyle(tune.gapOR)} />
-              {letter(5, "r", tune.yR)}
+              {letter(3, "h2", tune.yH2, h2Left, h2W)}
+              {letter(4, "o", tune.yO, oLeft, oW)}
+              {letter(5, "r", tune.yR, rLeft, rW)}
             </div>
           </div>
 
           <p className="hlt-preview__y-note">
-            Free zone between edge and Book Now · edges hard-clip · T→btn /
-            btn→H move the letter groups
+            H / A / T each free on the left · H / O / R each free on the right ·
+            edges hard-clip
           </p>
         </div>
       </div>

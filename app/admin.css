@@ -1447,14 +1447,16 @@ select.admin-input option:checked {
   min-width: 0;
 }
 
-.hlt-preview__side--left {
-  justify-content: flex-end;
+.hlt-preview__side--left,
+.hlt-preview__side--right {
+  position: relative;
   overflow: hidden;
+  flex: 0 0 auto;
 }
 
-.hlt-preview__side--right {
-  justify-content: flex-start;
-  overflow: hidden;
+.hlt-preview__letter {
+  position: absolute;
+  top: 0;
 }
 
 .hlt-preview__space {
