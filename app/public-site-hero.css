@@ -169,13 +169,13 @@
 
 .hathor-logo-split__side--left {
   flex: 1 1 0 !important;
-  justify-content: flex-start;
+  justify-content: flex-end;
   padding-left: var(--hathor-logo-edge-l, 0px);
 }
 
 .hathor-logo-split__side--right {
   flex: 1 1 0 !important;
-  justify-content: flex-end;
+  justify-content: flex-start;
   padding-right: var(--hathor-logo-edge-r, 0px);
 }
 

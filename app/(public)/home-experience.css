@@ -128,17 +128,17 @@ html[data-ex-experience] .ex-root .hathor-logo-split__side {
   box-sizing: border-box;
 }
 
-/* 0 = H flush to left edge; edge-l pushes the left group inward */
+/* 0 = T flush to Book Now; edge-l = empty space from screen left to H */
 html[data-ex-experience] .ex-root .hathor-logo-split__side--left {
   flex: 1 1 0 !important;
-  justify-content: flex-start;
+  justify-content: flex-end;
   padding-left: var(--hathor-logo-edge-l, 0px);
 }
 
-/* 0 = R flush to right edge; edge-r pushes the right group inward */
+/* 0 = H flush to Book Now; edge-r = empty space from R to screen right */
 html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
   flex: 1 1 0 !important;
-  justify-content: flex-end;
+  justify-content: flex-start;
   padding-right: var(--hathor-logo-edge-r, 0px);
 }
 
@@ -719,13 +719,13 @@ h1, h2, h3, h4, p {
 
 .hathor-logo-split__side--left {
   flex: 1 1 0 !important;
-  justify-content: flex-start;
+  justify-content: flex-end;
   padding-left: var(--hathor-logo-edge-l, 0px);
 }
 
 .hathor-logo-split__side--right {
   flex: 1 1 0 !important;
-  justify-content: flex-end;
+  justify-content: flex-start;
   padding-right: var(--hathor-logo-edge-r, 0px);
 }
 

@@ -311,8 +311,8 @@ export function HeroLogoTunePanel() {
             <section className="hlt-section">
               <h2 className="admin-heading text-base">Screen edge → outer letters</h2>
               <p className="hlt-section__hint">
-                Padding before H and after R. Independent of letter gaps and
-                Book Now spacers. Does not change letter size.
+                Empty space outside the letter groups (left of H / right of R).
+                Letters sit against Book Now; edges do not open the center gap.
               </p>
               <div className="hlt-grid">
                 <NumberField
@@ -337,8 +337,8 @@ export function HeroLogoTunePanel() {
                 T ↔ Book Now ↔ H (center)
               </h2>
               <p className="hlt-section__hint">
-                Book Now is fixed at 168×52. These spacers sit beside it in the
-                same chain as the letters — independent of H→A / A→T / H→O / O→R.
+                0 = letter flush against the 168px Book Now slot. Increase to push
+                T or H away from the button.
               </p>
               <div className="hlt-grid">
                 <NumberField

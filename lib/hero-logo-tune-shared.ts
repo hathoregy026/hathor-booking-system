@@ -236,9 +236,11 @@ html[data-ex-experience] .ex-root .hero-logo-mark--split {
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__side--left {
   padding-left: ${tune.edgeLeft}px !important;
+  justify-content: flex-end !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
   padding-right: ${tune.edgeRight}px !important;
+  justify-content: flex-start !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split .letter-h1 {
   margin-right: ${tune.gapHA}px !important;
