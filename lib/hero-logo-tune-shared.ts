@@ -44,21 +44,21 @@ export const heroLogoTuneSchema = z.object({
 
 export type HeroLogoTune = z.infer<typeof heroLogoTuneSchema>;
 
-/** Locked live baseline — only change when the user says to hardcode a new one. */
+/** Locked live baseline — forced from dashboard Save 2026-07-19. */
 export const DEFAULT_HERO_LOGO_TUNE: HeroLogoTune = {
-  size: 0.92,
-  y: -220,
+  size: 0.8,
+  y: -200,
   ctaNudge: 20,
-  animDuration: 3,
-  edgeLeft: 0,
-  edgeRight: 0,
-  gapTButton: 0,
-  gapButtonH: 0,
-  vAlign: "top",
-  gapHA: 0,
-  gapAT: 0,
-  gapHO: 0,
-  gapOR: 0,
+  animDuration: 2,
+  edgeLeft: 3,
+  edgeRight: 3,
+  gapTButton: 24,
+  gapButtonH: 24,
+  vAlign: "middle",
+  gapHA: 10,
+  gapAT: 10,
+  gapHO: 15,
+  gapOR: 15,
   yH1: 0,
   yA: 0,
   yT: 0,

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { unstable_noStore as noStore } from "next/cache";
 import { preload } from "react-dom";
 import { HomeExperienceShell } from "@/components/pages/HomeExperienceShell";
 import { HomePageClient } from "@/components/pages/HomePageClient";
@@ -49,13 +50,13 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
+  noStore();
   preload(HATHOR_HERO_VIDEO_SRC, { as: "fetch", fetchPriority: "high" });
   const heroLogoTune = await getHeroLogoTuneSafe();
   const logoTuneCss = heroLogoTuneToImportantCss(heroLogoTune);
 
   return (
     <HomeExperienceShell>
-      {/* Server-injected so saved tune is in HTML before hydration */}
       <style
         data-hathor-logo-tune-ssr
         dangerouslySetInnerHTML={{ __html: logoTuneCss }}

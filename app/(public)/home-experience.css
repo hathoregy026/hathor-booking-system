@@ -34,10 +34,32 @@ html[data-ex-experience] .ex-root .hero-logo-mark {
 }
 
 /*
-  Logo tune vars come from saved SiteSetting (injected on .ex-root).
-  Do not hardcode zeros here — that fought Save and looked like “not saved”.
-  Fallbacks live in var(--token, fallback) usages below.
+  Forced dashboard baseline (Save 2026-07-19).
+  SSR / client !important CSS overrides these when DB read succeeds.
 */
+html[data-ex-experience] .ex-root {
+  --hathor-logo-size: 0.8;
+  --hathor-logo-y: -200px;
+  --hathor-cta-y-nudge: 20px;
+  --hathor-logo-anim-duration: 2;
+  --hathor-logo-edge-l: 3px;
+  --hathor-logo-edge-r: 3px;
+  --hathor-logo-gap: 168px;
+  --hathor-gap-t-btn: 24px;
+  --hathor-gap-btn-h: 24px;
+  --hathor-logo-align-items: center;
+  --hathor-logo-object-position: center center;
+  --hathor-gap-ha: 10px;
+  --hathor-gap-at: 10px;
+  --hathor-gap-ho: 15px;
+  --hathor-gap-or: 15px;
+  --hathor-y-h1: 0px;
+  --hathor-y-a: 0px;
+  --hathor-y-t: 0px;
+  --hathor-y-h2: 0px;
+  --hathor-y-o: 0px;
+  --hathor-y-r: 0px;
+}
 
 html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) {
   /* Edge insets do not change letter size — only push H / R in from the screen */

@@ -190,14 +190,21 @@ export function HeroLogoTunePanel() {
       const data = (await response.json().catch(() => ({}))) as {
         tune?: unknown;
         error?: string;
+        ok?: boolean;
+        verified?: boolean;
       };
-      if (!response.ok) {
+      if (!response.ok || data.ok === false) {
         throw new Error(data.error || `Save failed (${response.status})`);
       }
       const next = parseHeroLogoTune(data.tune);
       setTune(next);
       setSaved(next);
-      showToast("success", "Saved. Hard-refresh the homepage (Ctrl+Shift+R) to see it.");
+      showToast(
+        "success",
+        data.verified
+          ? "Saved & verified in DB. Hard-refresh homepage (Ctrl+Shift+R)."
+          : "Saved. Hard-refresh the homepage (Ctrl+Shift+R).",
+      );
     } catch (error) {
       if (!isTransientFetchError(error)) {
         showToast(
