@@ -9,24 +9,9 @@ import {
   heroLogoTuneToCssVars,
 } from "@/lib/hero-logo-tune-shared";
 
-type Spacer = { type: "spacer"; key: string; width: number };
-type Letter = {
-  type: "letter";
-  key: string;
-  src: string;
-  alt: string;
-  width: number;
-  height: number;
-  yNudge: number;
-};
-type Btn = { type: "btn" };
-type Item = Spacer | Letter | Btn;
-
 /**
- * Admin-only instant preview — isolated from the live homepage.
- *
- * One left-to-right chain (no competing anchors):
- *   edgeL | H | HA | A | AT | T | T→btn | BookNow(168) | btn→H | H | HO | O | OR | R | edgeR
+ * Admin preview — matches live: H anchored at left edge, R at right edge.
+ * Letter gaps push free letters inward toward the centered Book Now.
  */
 export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
   const cssVars = heroLogoTuneToCssVars(tune) as CSSProperties;
@@ -34,66 +19,64 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
   const scale = letterH / 2200;
   const lw = (i: number) => HATHOR_LOGO_LETTERS[i].width * scale;
 
-  const items: Item[] = [
+  const alignItems =
+    tune.vAlign === "top"
+      ? "flex-start"
+      : tune.vAlign === "middle"
+        ? "center"
+        : "flex-end";
+
+  const leftLetters = [
     {
-      type: "letter",
       key: "h1",
       src: HATHOR_LOGO_LETTERS[0].src,
       alt: "H",
       width: lw(0),
-      height: letterH,
+      marginRight: tune.gapHA,
       yNudge: tune.yH1,
     },
-    { type: "spacer", key: "ha", width: tune.gapHA },
     {
-      type: "letter",
       key: "a",
       src: HATHOR_LOGO_LETTERS[1].src,
       alt: "A",
       width: lw(1),
-      height: letterH,
+      marginRight: tune.gapAT,
       yNudge: tune.yA,
     },
-    { type: "spacer", key: "at", width: tune.gapAT },
     {
-      type: "letter",
       key: "t",
       src: HATHOR_LOGO_LETTERS[2].src,
       alt: "T",
       width: lw(2),
-      height: letterH,
+      marginRight: tune.gapTButton,
       yNudge: tune.yT,
     },
-    { type: "spacer", key: "tbtn", width: tune.gapTButton },
-    { type: "btn" },
-    { type: "spacer", key: "btnh", width: tune.gapButtonH },
+  ];
+
+  const rightLetters = [
     {
-      type: "letter",
       key: "h2",
       src: HATHOR_LOGO_LETTERS[3].src,
       alt: "H",
       width: lw(3),
-      height: letterH,
+      marginLeft: tune.gapButtonH,
+      marginRight: tune.gapHO,
       yNudge: tune.yH2,
     },
-    { type: "spacer", key: "ho", width: tune.gapHO },
     {
-      type: "letter",
       key: "o",
       src: HATHOR_LOGO_LETTERS[4].src,
       alt: "O",
       width: lw(4),
-      height: letterH,
+      marginRight: tune.gapOR,
       yNudge: tune.yO,
     },
-    { type: "spacer", key: "or", width: tune.gapOR },
     {
-      type: "letter",
       key: "r",
       src: HATHOR_LOGO_LETTERS[5].src,
       alt: "R",
       width: lw(5),
-      height: letterH,
+      marginRight: 0,
       yNudge: tune.yR,
     },
   ];
@@ -103,83 +86,89 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
       <div className="hlt-preview__toolbar">
         <strong>Instant preview</strong>
         <span>
-          Exact letter files · Book Now {HATHOR_BTN_SLOT_PX}×{HATHOR_BTN_HEIGHT_PX}px ·
+          H at left edge · R at right edge · letter gaps push toward Book Now ·
           not live until Save
         </span>
       </div>
 
       <div className="hlt-preview__stage">
         <div
-          className="hlt-preview__band"
+          className="hlt-preview__band hlt-preview__band--edges"
           style={
             {
               height: letterH,
-              paddingLeft: tune.edgeLeft,
-              paddingRight: tune.edgeRight,
-              alignItems:
-                tune.vAlign === "top"
-                  ? "flex-start"
-                  : tune.vAlign === "middle"
-                    ? "center"
-                    : "flex-end",
+              alignItems,
               transform: `translateY(${tune.y * 0.1}px)`,
             } as CSSProperties
           }
         >
-          {items.map((item) => {
-            if (item.type === "spacer") {
-              const w = item.width;
-              return (
-                <span
-                  key={item.key}
-                  className="hlt-preview__spacer"
-                  style={{
-                    width: Math.max(0, w),
-                    flex: `0 0 ${Math.max(0, w)}px`,
-                    /* Negative gaps pull the next piece left (true overlap control). */
-                    marginInlineEnd: w < 0 ? w : 0,
-                  }}
-                  aria-hidden
-                />
-              );
-            }
-            if (item.type === "btn") {
-              return (
-                <span
-                  key="btn"
-                  className="hlt-preview__btn"
-                  style={{
-                    width: HATHOR_BTN_SLOT_PX,
-                    height: HATHOR_BTN_HEIGHT_PX,
-                    transform: `translateY(${tune.ctaNudge * 0.35}px)`,
-                  }}
-                >
-                  Book Now
-                </span>
-              );
-            }
-            return (
+          <div
+            className="hlt-preview__side hlt-preview__side--left"
+            style={{ paddingLeft: tune.edgeLeft }}
+          >
+            {leftLetters.map((letter) => (
               <span
-                key={item.key}
-                className={`hlt-preview__letter letter-${item.key}`}
+                key={letter.key}
+                className={`hlt-preview__letter letter-${letter.key}`}
                 style={{
-                  width: item.width,
-                  height: item.height,
-                  transform: `translateY(${item.yNudge * 0.45}px)`,
+                  width: letter.width,
+                  height: letterH,
+                  marginRight: letter.marginRight,
+                  transform: `translateY(${letter.yNudge * 0.45}px)`,
                 }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={item.src}
-                  alt={item.alt}
-                  width={item.width}
-                  height={item.height}
+                  src={letter.src}
+                  alt={letter.alt}
+                  width={letter.width}
+                  height={letterH}
                   draggable={false}
                   className="hlt-preview__letter-img"
                 />
               </span>
-            );
-          })}
+            ))}
+          </div>
+
+          <span
+            className="hlt-preview__btn"
+            style={{
+              width: HATHOR_BTN_SLOT_PX,
+              height: HATHOR_BTN_HEIGHT_PX,
+              transform: `translateY(${tune.ctaNudge * 0.35}px)`,
+            }}
+          >
+            Book Now
+          </span>
+
+          <div
+            className="hlt-preview__side hlt-preview__side--right"
+            style={{ paddingRight: tune.edgeRight }}
+          >
+            {rightLetters.map((letter) => (
+              <span
+                key={letter.key}
+                className={`hlt-preview__letter letter-${letter.key}`}
+                style={{
+                  width: letter.width,
+                  height: letterH,
+                  marginLeft: letter.marginLeft ?? 0,
+                  marginRight: letter.marginRight,
+                  transform: `translateY(${letter.yNudge * 0.45}px)`,
+                }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={letter.src}
+                  alt={letter.alt}
+                  width={letter.width}
+                  height={letterH}
+                  draggable={false}
+                  className="hlt-preview__letter-img"
+                />
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </div>

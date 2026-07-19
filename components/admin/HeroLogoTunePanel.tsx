@@ -311,8 +311,9 @@ export function HeroLogoTunePanel() {
             <section className="hlt-section">
               <h2 className="admin-heading text-base">Screen edge → outer letters</h2>
               <p className="hlt-section__hint">
-                Empty space outside the letter groups (left of H / right of R).
-                Letters sit against Book Now; edges do not open the center gap.
+                H stays at the left edge limit; R at the right. Letter gaps below
+                push the free letters inward toward Book Now — they are not glued
+                as HAT / HOR blocks.
               </p>
               <div className="hlt-grid">
                 <NumberField
@@ -337,22 +338,22 @@ export function HeroLogoTunePanel() {
                 T ↔ Book Now ↔ H (center)
               </h2>
               <p className="hlt-section__hint">
-                0 = letter flush against the 168px Book Now slot. Increase to push
-                T or H away from the button.
+                Final gap beside the 168px Book Now. Raise H→A / A→T (or H→O /
+                O→R) first to walk letters toward the button, then fine-tune here.
               </p>
               <div className="hlt-grid">
                 <NumberField
                   label="T → Book Now"
                   value={tune.gapTButton}
                   min={-100}
-                  max={400}
+                  max={800}
                   onChange={(gapTButton) => patch({ gapTButton })}
                 />
                 <NumberField
                   label="Book Now → H"
                   value={tune.gapButtonH}
                   min={-100}
-                  max={400}
+                  max={800}
                   onChange={(gapButtonH) => patch({ gapButtonH })}
                 />
               </div>
@@ -361,36 +362,37 @@ export function HeroLogoTunePanel() {
             <section className="hlt-section">
               <h2 className="admin-heading text-base">Spacing between letters</h2>
               <p className="hlt-section__hint">
-                Only the gap after that letter. Does not move screen edges or the
-                Book Now slot.
+                Each letter is free. More H→A / A→T pushes A and T toward Book
+                Now (H stays at the left edge). More H→O / O→R pushes O and H
+                toward Book Now (R stays at the right edge).
               </p>
               <div className="hlt-grid">
                 <NumberField
                   label="H → A"
                   value={tune.gapHA}
                   min={-100}
-                  max={400}
+                  max={800}
                   onChange={(gapHA) => patch({ gapHA })}
                 />
                 <NumberField
                   label="A → T"
                   value={tune.gapAT}
                   min={-100}
-                  max={400}
+                  max={800}
                   onChange={(gapAT) => patch({ gapAT })}
                 />
                 <NumberField
                   label="H → O (right)"
                   value={tune.gapHO}
                   min={-100}
-                  max={400}
+                  max={800}
                   onChange={(gapHO) => patch({ gapHO })}
                 />
                 <NumberField
                   label="O → R"
                   value={tune.gapOR}
                   min={-100}
-                  max={400}
+                  max={800}
                   onChange={(gapOR) => patch({ gapOR })}
                 />
               </div>

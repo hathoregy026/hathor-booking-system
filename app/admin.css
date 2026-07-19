@@ -1391,6 +1391,31 @@ select.admin-input option:checked {
   gap: 0;
 }
 
+.hlt-preview__band--edges {
+  width: 100%;
+  min-width: 100%;
+  justify-content: stretch;
+}
+
+.hlt-preview__side {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: inherit;
+  min-width: 0;
+  height: 100%;
+  gap: 0;
+}
+
+.hlt-preview__side--left {
+  justify-content: flex-start;
+}
+
+.hlt-preview__side--right {
+  justify-content: flex-end;
+}
+
 .hlt-preview__spacer {
   display: block;
   flex: 0 0 auto;

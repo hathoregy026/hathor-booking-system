@@ -23,16 +23,16 @@ export const heroLogoTuneSchema = z.object({
   /** Space from R to screen right edge. */
   edgeRight: px(0, 400),
   /** Space between T and the Book Now button. */
-  gapTButton: px(-100, 400),
+  gapTButton: px(-100, 800),
   /** Space between Book Now and the right-side H. */
-  gapButtonH: px(-100, 400),
+  gapButtonH: px(-100, 800),
   /** Shared vertical alignment line for all letters (Figma-style). */
   vAlign: heroLogoVAlignSchema,
   /** Space after each letter toward the next (px). */
-  gapHA: px(-100, 400),
-  gapAT: px(-100, 400),
-  gapHO: px(-100, 400),
-  gapOR: px(-100, 400),
+  gapHA: px(-100, 800),
+  gapAT: px(-100, 800),
+  gapHO: px(-100, 800),
+  gapOR: px(-100, 800),
   /** Extra per-letter vertical nudge after vAlign (px). − up, + down. */
   yH1: px(-300, 300),
   yA: px(-300, 300),
@@ -170,13 +170,13 @@ export function parseHeroLogoTune(raw: unknown): HeroLogoTune {
     ),
     edgeLeft: clamp(candidate.edgeLeft, 0, 400, DEFAULT_HERO_LOGO_TUNE.edgeLeft),
     edgeRight: clamp(candidate.edgeRight, 0, 400, DEFAULT_HERO_LOGO_TUNE.edgeRight),
-    gapTButton: clamp(candidate.gapTButton, -100, 400, DEFAULT_HERO_LOGO_TUNE.gapTButton),
-    gapButtonH: clamp(candidate.gapButtonH, -100, 400, DEFAULT_HERO_LOGO_TUNE.gapButtonH),
+    gapTButton: clamp(candidate.gapTButton, -100, 800, DEFAULT_HERO_LOGO_TUNE.gapTButton),
+    gapButtonH: clamp(candidate.gapButtonH, -100, 800, DEFAULT_HERO_LOGO_TUNE.gapButtonH),
     vAlign: candidate.vAlign,
-    gapHA: clamp(candidate.gapHA, -100, 400, DEFAULT_HERO_LOGO_TUNE.gapHA),
-    gapAT: clamp(candidate.gapAT, -100, 400, DEFAULT_HERO_LOGO_TUNE.gapAT),
-    gapHO: clamp(candidate.gapHO, -100, 400, DEFAULT_HERO_LOGO_TUNE.gapHO),
-    gapOR: clamp(candidate.gapOR, -100, 400, DEFAULT_HERO_LOGO_TUNE.gapOR),
+    gapHA: clamp(candidate.gapHA, -100, 800, DEFAULT_HERO_LOGO_TUNE.gapHA),
+    gapAT: clamp(candidate.gapAT, -100, 800, DEFAULT_HERO_LOGO_TUNE.gapAT),
+    gapHO: clamp(candidate.gapHO, -100, 800, DEFAULT_HERO_LOGO_TUNE.gapHO),
+    gapOR: clamp(candidate.gapOR, -100, 800, DEFAULT_HERO_LOGO_TUNE.gapOR),
     yH1: clamp(candidate.yH1, -300, 300, DEFAULT_HERO_LOGO_TUNE.yH1),
     yA: clamp(candidate.yA, -300, 300, DEFAULT_HERO_LOGO_TUNE.yA),
     yT: clamp(candidate.yT, -300, 300, DEFAULT_HERO_LOGO_TUNE.yT),
@@ -236,11 +236,11 @@ html[data-ex-experience] .ex-root .hero-logo-mark--split {
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__side--left {
   padding-left: ${tune.edgeLeft}px !important;
-  justify-content: flex-end !important;
+  justify-content: flex-start !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
   padding-right: ${tune.edgeRight}px !important;
-  justify-content: flex-start !important;
+  justify-content: flex-end !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split .letter-h1 {
   margin-right: ${tune.gapHA}px !important;
