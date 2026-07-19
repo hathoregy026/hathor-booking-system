@@ -1,22 +1,35 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import { HATHOR_LOGO_LETTERS } from "@/lib/hathor-logo-letters";
+import {
+  HATHOR_LOGO_ARTBOARD_HEIGHT,
+  HATHOR_LOGO_LETTERS,
+  HATHOR_LOGO_LEFT_WIDTH,
+} from "@/lib/hathor-logo-letters";
 import {
   HATHOR_BTN_HEIGHT_PX,
   HATHOR_BTN_SLOT_PX,
+  HERO_DESKTOP_PREVIEW_WIDTH,
   type HeroLogoTune,
 } from "@/lib/hero-logo-tune-shared";
 
 /**
- * Admin preview — always stays on-screen.
- * Y is shown as a marker (live uses CSS bottom); letter gaps / size move 1:1.
+ * Desktop-width hero clone (1440px = typical full-bleed desktop).
+ * Same shell as live: left | 168 Book Now slot | right.
+ * T→btn / btn→H = side padding (exact), letter gaps = margins.
  */
 export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
-  const letterH = Math.max(56, Math.round(100 * tune.size));
-  const scale = letterH / 2200;
+  const stageW = HERO_DESKTOP_PREVIEW_WIDTH;
+  const sideW = (stageW - HATHOR_BTN_SLOT_PX) / 2;
+  const letterH = Math.max(
+    40,
+    Math.round(
+      sideW * (HATHOR_LOGO_ARTBOARD_HEIGHT / HATHOR_LOGO_LEFT_WIDTH) * tune.size,
+    ),
+  );
+  const scale = letterH / HATHOR_LOGO_ARTBOARD_HEIGHT;
   const lw = (i: number) =>
-    Math.max(10, Math.round(HATHOR_LOGO_LETTERS[i].width * scale));
+    Math.max(8, Math.round(HATHOR_LOGO_LETTERS[i].width * scale));
 
   const alignItems =
     tune.vAlign === "top"
@@ -47,7 +60,7 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
       src: HATHOR_LOGO_LETTERS[2].src,
       alt: "T",
       width: lw(2),
-      marginRight: tune.gapTButton,
+      marginRight: 0,
       yNudge: tune.yT,
     },
   ];
@@ -58,7 +71,7 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
       src: HATHOR_LOGO_LETTERS[3].src,
       alt: "H",
       width: lw(3),
-      marginLeft: tune.gapButtonH,
+      marginLeft: 0,
       marginRight: tune.gapHO,
       yNudge: tune.yH2,
     },
@@ -83,14 +96,16 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
   return (
     <div className="hlt-preview" data-hlt-preview="">
       <div className="hlt-preview__toolbar">
-        <strong>Instant preview</strong>
-        <span>Drag sliders below — letters move here immediately</span>
+        <strong>Desktop preview · {stageW}px</strong>
+        <span>
+          Same layout as the live hero (full desktop width). Scroll sideways if
+          your admin panel is narrower.
+        </span>
       </div>
 
       <div className="hlt-preview__hud" aria-live="polite">
         <span>size {tune.size.toFixed(2)}×</span>
         <span>y {tune.y}px</span>
-        <span>cta {tune.ctaNudge}px</span>
         <span>H→A {tune.gapHA}</span>
         <span>A→T {tune.gapAT}</span>
         <span>T→btn {tune.gapTButton}</span>
@@ -99,113 +114,115 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
         <span>O→R {tune.gapOR}</span>
       </div>
 
-      <div className="hlt-preview__stage">
-        <div className="hlt-preview__y-rail" aria-hidden>
-          <span className="hlt-preview__y-label">Y {tune.y}px</span>
-          <div
-            className="hlt-preview__y-marker"
-            style={{ top: `calc(50% + ${Math.max(-70, Math.min(70, tune.y * 0.2))}px)` }}
-          />
-        </div>
-
+      <div className="hlt-preview__viewport">
         <div
-          className="hlt-preview__band hlt-preview__band--edges"
-          style={
-            {
-              height: letterH + 16,
-              alignItems,
-            } as CSSProperties
-          }
+          className="hlt-preview__stage"
+          style={{ width: stageW, minWidth: stageW }}
         >
           <div
-            className="hlt-preview__side hlt-preview__side--left"
-            style={{ paddingLeft: tune.edgeLeft }}
+            className="hlt-preview__band"
+            style={
+              {
+                width: stageW,
+                height: letterH,
+                alignItems,
+              } as CSSProperties
+            }
           >
-            {leftLetters.map((letter) => (
+            <div
+              className="hlt-preview__side hlt-preview__side--left"
+              style={{
+                width: sideW,
+                paddingLeft: tune.edgeLeft,
+                paddingRight: Math.max(0, tune.gapTButton),
+              }}
+            >
+              {leftLetters.map((letter) => (
+                <span
+                  key={letter.key}
+                  className={`hlt-preview__letter letter-${letter.key}`}
+                  style={{
+                    width: letter.width,
+                    height: letterH,
+                    marginRight:
+                      letter.key === "t"
+                        ? Math.min(0, tune.gapTButton)
+                        : letter.marginRight,
+                    transform: `translateY(${letter.yNudge}px)`,
+                  }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={letter.src}
+                    alt={letter.alt}
+                    width={letter.width}
+                    height={letterH}
+                    draggable={false}
+                    className="hlt-preview__letter-img"
+                  />
+                </span>
+              ))}
+            </div>
+
+            <span
+              className="hlt-preview__gap"
+              style={{
+                width: HATHOR_BTN_SLOT_PX,
+                flex: `0 0 ${HATHOR_BTN_SLOT_PX}px`,
+              }}
+            >
               <span
-                key={letter.key}
-                className={`hlt-preview__letter letter-${letter.key}`}
+                className="hlt-preview__btn"
                 style={{
-                  width: letter.width,
-                  height: letterH,
-                  marginRight: letter.marginRight,
-                  transform: `translateY(${letter.yNudge}px)`,
+                  width: HATHOR_BTN_SLOT_PX,
+                  height: HATHOR_BTN_HEIGHT_PX,
+                  transform: `translateY(${tune.ctaNudge}px)`,
                 }}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={letter.src}
-                  alt={letter.alt}
-                  width={letter.width}
-                  height={letterH}
-                  draggable={false}
-                  className="hlt-preview__letter-img"
-                  onError={(e) => {
-                    const el = e.currentTarget;
-                    el.style.display = "none";
-                    const fallback = el.nextElementSibling;
-                    if (fallback instanceof HTMLElement) {
-                      fallback.hidden = false;
-                    }
-                  }}
-                />
-                <span className="hlt-preview__letter-fallback" hidden>
-                  {letter.alt}
-                </span>
+                Book Now
               </span>
-            ))}
+            </span>
+
+            <div
+              className="hlt-preview__side hlt-preview__side--right"
+              style={{
+                width: sideW,
+                paddingRight: tune.edgeRight,
+                paddingLeft: Math.max(0, tune.gapButtonH),
+              }}
+            >
+              {rightLetters.map((letter) => (
+                <span
+                  key={letter.key}
+                  className={`hlt-preview__letter letter-${letter.key}`}
+                  style={{
+                    width: letter.width,
+                    height: letterH,
+                    marginLeft:
+                      letter.key === "h2"
+                        ? Math.min(0, tune.gapButtonH)
+                        : (letter.marginLeft ?? 0),
+                    marginRight: letter.marginRight,
+                    transform: `translateY(${letter.yNudge}px)`,
+                  }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={letter.src}
+                    alt={letter.alt}
+                    width={letter.width}
+                    height={letterH}
+                    draggable={false}
+                    className="hlt-preview__letter-img"
+                  />
+                </span>
+              ))}
+            </div>
           </div>
 
-          <span
-            className="hlt-preview__btn"
-            style={{
-              width: HATHOR_BTN_SLOT_PX,
-              height: HATHOR_BTN_HEIGHT_PX,
-              transform: `translateY(${tune.ctaNudge}px)`,
-            }}
-          >
-            Book Now
-          </span>
-
-          <div
-            className="hlt-preview__side hlt-preview__side--right"
-            style={{ paddingRight: tune.edgeRight }}
-          >
-            {rightLetters.map((letter) => (
-              <span
-                key={letter.key}
-                className={`hlt-preview__letter letter-${letter.key}`}
-                style={{
-                  width: letter.width,
-                  height: letterH,
-                  marginLeft: letter.marginLeft ?? 0,
-                  marginRight: letter.marginRight,
-                  transform: `translateY(${letter.yNudge}px)`,
-                }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={letter.src}
-                  alt={letter.alt}
-                  width={letter.width}
-                  height={letterH}
-                  draggable={false}
-                  className="hlt-preview__letter-img"
-                  onError={(e) => {
-                    const el = e.currentTarget;
-                    el.style.display = "none";
-                    const fallback = el.nextElementSibling;
-                    if (fallback instanceof HTMLElement) {
-                      fallback.hidden = false;
-                    }
-                  }}
-                />
-                <span className="hlt-preview__letter-fallback" hidden>
-                  {letter.alt}
-                </span>
-              </span>
-            ))}
-          </div>
+          <p className="hlt-preview__y-note">
+            Live Y position (homepage bottom): {tune.y}px
+          </p>
         </div>
       </div>
     </div>

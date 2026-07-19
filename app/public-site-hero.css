@@ -171,12 +171,14 @@
   flex: 1 1 0 !important;
   justify-content: flex-start;
   padding-left: var(--hathor-logo-edge-l, 0px);
+  padding-right: max(0px, var(--hathor-gap-t-btn, 0px));
 }
 
 .hathor-logo-split__side--right {
   flex: 1 1 0 !important;
   justify-content: flex-end;
   padding-right: var(--hathor-logo-edge-r, 0px);
+  padding-left: max(0px, var(--hathor-gap-btn-h, 0px));
 }
 
 .hathor-logo-split .logo-letter-wrap {
@@ -221,10 +223,10 @@
   margin-right: var(--hathor-gap-at, 0px);
 }
 .hathor-logo-split .letter-t {
-  margin-right: var(--hathor-gap-t-btn, 0px);
+  margin-right: min(0px, var(--hathor-gap-t-btn, 0px));
 }
 .hathor-logo-split .letter-h2 {
-  margin-left: var(--hathor-gap-btn-h, 0px);
+  margin-left: min(0px, var(--hathor-gap-btn-h, 0px));
   margin-right: var(--hathor-gap-ho, 0px);
 }
 .hathor-logo-split .letter-o {

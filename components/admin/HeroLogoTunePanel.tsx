@@ -379,12 +379,14 @@ export function HeroLogoTunePanel() {
                 T ↔ Book Now ↔ H (center)
               </h2>
               <p className="hlt-section__hint">
-                Final gap beside the 168px Book Now. Raise H→A / A→T (or H→O /
-                O→R) first to walk letters toward the button, then fine-tune here.
+                Exact pixel gap from the letter to the 168px Book Now slot.
+                These always move the space — they are not swallowed by empty
+                side room.
               </p>
               <div className="hlt-grid">
                 <NumberField
                   label="T → Book Now"
+                  hint="Padding after T to the button"
                   value={tune.gapTButton}
                   min={-100}
                   max={800}
@@ -392,6 +394,7 @@ export function HeroLogoTunePanel() {
                 />
                 <NumberField
                   label="Book Now → H"
+                  hint="Padding from the button to right H"
                   value={tune.gapButtonH}
                   min={-100}
                   max={800}
@@ -403,9 +406,9 @@ export function HeroLogoTunePanel() {
             <section className="hlt-section">
               <h2 className="admin-heading text-base">Spacing between letters</h2>
               <p className="hlt-section__hint">
-                Each letter is free. More H→A / A→T pushes A and T toward Book
-                Now (H stays at the left edge). More H→O / O→R pushes O and H
-                toward Book Now (R stays at the right edge).
+                Every letter gap is independent. H stays at the left edge, R at
+                the right. Raise H→A / A→T to walk A and T toward Book Now; raise
+                H→O / O→R to walk O and H toward Book Now.
               </p>
               <div className="hlt-grid">
                 <NumberField

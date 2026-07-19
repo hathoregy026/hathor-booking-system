@@ -12,6 +12,9 @@ export type HeroLogoVAlign = z.infer<typeof heroLogoVAlignSchema>;
 export const HATHOR_BTN_SLOT_PX = 168;
 export const HATHOR_BTN_HEIGHT_PX = 52;
 
+/** Admin preview viewport — desktop hero is full-bleed 100vw; we mirror 1440px. */
+export const HERO_DESKTOP_PREVIEW_WIDTH = 1440;
+
 export const heroLogoTuneSchema = z.object({
   size: z.number().min(0.2).max(2.5),
   /** CSS `bottom` offset (px). Negative lowers / tucks under the cream sheet. */
@@ -236,10 +239,12 @@ html[data-ex-experience] .ex-root .hero-logo-mark--split {
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__side--left {
   padding-left: ${tune.edgeLeft}px !important;
+  padding-right: ${Math.max(0, tune.gapTButton)}px !important;
   justify-content: flex-start !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
   padding-right: ${tune.edgeRight}px !important;
+  padding-left: ${Math.max(0, tune.gapButtonH)}px !important;
   justify-content: flex-end !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split .letter-h1 {
@@ -249,10 +254,10 @@ html[data-ex-experience] .ex-root .hathor-logo-split .letter-a {
   margin-right: ${tune.gapAT}px !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split .letter-t {
-  margin-right: ${tune.gapTButton}px !important;
+  margin-right: ${Math.min(0, tune.gapTButton)}px !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split .letter-h2 {
-  margin-left: ${tune.gapButtonH}px !important;
+  margin-left: ${Math.min(0, tune.gapButtonH)}px !important;
   margin-right: ${tune.gapHO}px !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split .letter-o {

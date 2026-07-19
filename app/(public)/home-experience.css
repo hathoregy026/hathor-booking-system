@@ -150,18 +150,20 @@ html[data-ex-experience] .ex-root .hathor-logo-split__side {
   box-sizing: border-box;
 }
 
-/* H at left edge; letter gaps push A / T toward Book Now */
+/* H at left edge; T→Book Now = side padding (exact). Negatives use letter margin. */
 html[data-ex-experience] .ex-root .hathor-logo-split__side--left {
   flex: 1 1 0 !important;
   justify-content: flex-start;
   padding-left: var(--hathor-logo-edge-l, 0px);
+  padding-right: max(0px, var(--hathor-gap-t-btn, 0px));
 }
 
-/* R at right edge; letter gaps push O / H toward Book Now */
+/* R at right edge; Book Now→H = side padding (exact). Negatives use letter margin. */
 html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
   flex: 1 1 0 !important;
   justify-content: flex-end;
   padding-right: var(--hathor-logo-edge-r, 0px);
+  padding-left: max(0px, var(--hathor-gap-btn-h, 0px));
 }
 
 html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter-wrap {
@@ -205,12 +207,12 @@ html[data-ex-experience] .ex-root .hathor-logo-split .letter-h1 {
 html[data-ex-experience] .ex-root .hathor-logo-split .letter-a {
   margin-right: var(--hathor-gap-at, 0px);
 }
-/* T → Book Now / Book Now → H — margins only; layout shell stays locked */
+/* Positive T→btn / btn→H = side padding; negative = pull letter toward button */
 html[data-ex-experience] .ex-root .hathor-logo-split .letter-t {
-  margin-right: var(--hathor-gap-t-btn, 0px);
+  margin-right: min(0px, var(--hathor-gap-t-btn, 0px));
 }
 html[data-ex-experience] .ex-root .hathor-logo-split .letter-h2 {
-  margin-left: var(--hathor-gap-btn-h, 0px);
+  margin-left: min(0px, var(--hathor-gap-btn-h, 0px));
   margin-right: var(--hathor-gap-ho, 0px);
 }
 html[data-ex-experience] .ex-root .hathor-logo-split .letter-o {
@@ -743,12 +745,14 @@ h1, h2, h3, h4, p {
   flex: 1 1 0 !important;
   justify-content: flex-start;
   padding-left: var(--hathor-logo-edge-l, 0px);
+  padding-right: max(0px, var(--hathor-gap-t-btn, 0px));
 }
 
 .hathor-logo-split__side--right {
   flex: 1 1 0 !important;
   justify-content: flex-end;
   padding-right: var(--hathor-logo-edge-r, 0px);
+  padding-left: max(0px, var(--hathor-gap-btn-h, 0px));
 }
 
 .hathor-logo-split .logo-letter-wrap {
@@ -793,10 +797,10 @@ h1, h2, h3, h4, p {
   margin-right: var(--hathor-gap-at, 0px);
 }
 .hathor-logo-split .letter-t {
-  margin-right: var(--hathor-gap-t-btn, 0px);
+  margin-right: min(0px, var(--hathor-gap-t-btn, 0px));
 }
 .hathor-logo-split .letter-h2 {
-  margin-left: var(--hathor-gap-btn-h, 0px);
+  margin-left: min(0px, var(--hathor-gap-btn-h, 0px));
   margin-right: var(--hathor-gap-ho, 0px);
 }
 .hathor-logo-split .letter-o {
