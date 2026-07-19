@@ -102,8 +102,8 @@ export default async function PublicSiteLayout({
   ]);
 
   const displayFontStyle = {
-    /* Local Playfair via @font-face in hathor-fonts.css — not Google Fonts */
-    ["--font-hathor-display" as string]: '"Playfair Display", Georgia, serif',
+    /* Installed local display face until Playfair file is added */
+    ["--font-hathor-display" as string]: '"Gamgote", Georgia, serif',
   } as CSSProperties;
 
   return (

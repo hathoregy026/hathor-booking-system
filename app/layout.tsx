@@ -42,7 +42,7 @@ export default function RootLayout({
     <html
       lang="en"
       data-public-theme={PUBLIC_THEME_DEFAULT}
-      style={{ ["--font-playfair" as string]: '"Playfair Display", Georgia, serif' }}
+      style={{ ["--font-playfair" as string]: '"Gamgote", Georgia, serif' }}
       suppressHydrationWarning
     >
       <head>

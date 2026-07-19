@@ -6,16 +6,24 @@ import { useToast } from "@/components/admin/ToastProvider";
 import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
 import {
   DEFAULT_TYPOGRAPHY_SETTINGS,
-  HATHOR_LUXURY_FONTS,
+  HATHOR_AVAILABLE_LUXURY_FONTS,
+  HATHOR_FONT_INSTALLED,
   TYPOGRAPHY_ROLE_LABELS,
   TYPOGRAPHY_ROLES,
   isTypographySettingsEqual,
   parseTypographySettings,
   typographyToInlineStyle,
+  type HathorLuxuryFont,
   type TypographyRole,
   type TypographySettings,
   type TypographyTextStyle,
 } from "@/lib/typography-settings-shared";
+
+function fontOptionsFor(current: HathorLuxuryFont): HathorLuxuryFont[] {
+  if (HATHOR_FONT_INSTALLED[current]) return [...HATHOR_AVAILABLE_LUXURY_FONTS];
+  /* Keep a saved-but-missing font selectable until the admin picks an installed one. */
+  return [current, ...HATHOR_AVAILABLE_LUXURY_FONTS];
+}
 
 function RoleEditor({
   role,
@@ -54,9 +62,10 @@ function RoleEditor({
             }
             style={{ fontFamily: `'${value.fontFamily}', serif` }}
           >
-            {HATHOR_LUXURY_FONTS.map((font) => (
+            {fontOptionsFor(value.fontFamily).map((font) => (
               <option key={font} value={font} style={{ fontFamily: `'${font}', serif` }}>
                 {font}
+                {!HATHOR_FONT_INSTALLED[font] ? " (file missing)" : ""}
               </option>
             ))}
           </select>
@@ -270,8 +279,8 @@ export function TypographyStylesPanel() {
           <h1 className="admin-page-title">Typography &amp; Styles</h1>
           <p className="admin-page-subtitle max-w-2xl">
             Control fonts, size, color, line-height, letter-spacing, and inner
-            shadow for hero and page titles. Fonts are limited to your 9 local
-            luxury faces — no Google Fonts.
+            shadow for hero and page titles. Only fonts with files in
+            public/fonts/ are listed — add the rest later to unlock them.
           </p>
         </div>
         <div className="hlt-panel__actions">

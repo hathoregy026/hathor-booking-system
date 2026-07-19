@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 
 export const TYPOGRAPHY_SETTINGS_KEY = "typography-styles";
 
-/** Exact allow-list — dashboard dropdown + Zod. No other fonts. */
+/** Exact allow-list — Zod accepts all 9. Dropdown only shows installed files. */
 export const HATHOR_LUXURY_FONTS = [
   "Agraham",
   "Baginda",
@@ -17,6 +17,27 @@ export const HATHOR_LUXURY_FONTS = [
 ] as const;
 
 export type HathorLuxuryFont = (typeof HATHOR_LUXURY_FONTS)[number];
+
+/**
+ * Fonts with files present in /public/fonts/.
+ * Flip to true when you add the matching file (see app/hathor-fonts.css).
+ */
+export const HATHOR_FONT_INSTALLED: Record<HathorLuxuryFont, boolean> = {
+  Agraham: true,
+  Baginda: false,
+  "Bastliga One": false,
+  Cylburn: false,
+  Gabigaile: true,
+  Gamgote: true,
+  "Quiet Luxury": true,
+  "Rollgates Luxury": false,
+  "Playfair Display": false,
+};
+
+/** Dropdown options — installed fonts only. */
+export const HATHOR_AVAILABLE_LUXURY_FONTS = HATHOR_LUXURY_FONTS.filter(
+  (font) => HATHOR_FONT_INSTALLED[font],
+);
 
 export const TYPOGRAPHY_ROLES = [
   "hero_title",
@@ -78,7 +99,7 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
     innerShadow: false,
   },
   page_title: {
-    fontFamily: "Playfair Display",
+    fontFamily: "Gamgote",
     fontSize: 44,
     color: "#1A1A1A",
     lineHeight: 1.22,
