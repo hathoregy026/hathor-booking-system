@@ -39,15 +39,11 @@ function Space({ kind }: { kind: string }) {
   );
 }
 
-function Grow() {
-  return <span className="hathor-logo-split__grow" aria-hidden="true" />;
-}
-
 /**
- * Natural letter proportions (no stretch).
- * Left:  edge → H · ha · A · at · T · grow · t→btn → Book Now
- * Right: Book Now → btn→H · grow · H · ho · O · or · R → edge
- * Gap spacers = exact px (same values as dashboard). Grow eats leftover room.
+ * Edge limits are hard:
+ * - H stays on the left edge (edgeLeft)
+ * - R stays on the right edge (edgeRight = 0 → flush)
+ * Extra letter spacing pushes toward Book Now, never past an edge.
  */
 export function HathorLogoSplit({ className }: HathorLogoSplitProps) {
   const [h1, a, t, h2, o, r] = HATHOR_LOGO_LETTERS;
@@ -64,7 +60,6 @@ export function HathorLogoSplit({ className }: HathorLogoSplitProps) {
         <Letter letter={a} />
         <Space kind="at" />
         <Letter letter={t} />
-        <Grow />
         <Space kind="t-btn" />
       </div>
 
@@ -72,7 +67,6 @@ export function HathorLogoSplit({ className }: HathorLogoSplitProps) {
 
       <div className="hathor-logo-split__side hathor-logo-split__side--right">
         <Space kind="btn-h" />
-        <Grow />
         <Letter letter={h2} />
         <Space kind="ho" />
         <Letter letter={o} />

@@ -26,8 +26,9 @@ function spaceStyle(gap: number): CSSProperties {
 }
 
 /**
- * Preview at real browser width — 1px in the dashboard = 1px on the hero.
- * Letters keep natural proportions (no stretch). Same layout as live.
+ * 1:1 hero width. Natural letter shapes.
+ * Left packs from left edge; right packs from right edge.
+ * Extra spacing pushes toward Book Now — never past an edge.
  */
 export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
   const [stageW, setStageW] = useState(1440);
@@ -85,18 +86,19 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
       <div className="hlt-preview__toolbar">
         <strong>1:1 hero width · {stageW}px</strong>
         <span>
-          Same pixel values as the live homepage — letters keep natural shape
+          Edges are limits · extra space pushes letters toward Book Now
         </span>
       </div>
 
       <div className="hlt-preview__hud" aria-live="polite">
+        <span>edge L {tune.edgeLeft}</span>
+        <span>edge R {tune.edgeRight}</span>
         <span>H→A {tune.gapHA}</span>
         <span>A→T {tune.gapAT}</span>
         <span>T→btn {tune.gapTButton}</span>
         <span>btn→H {tune.gapButtonH}</span>
         <span>H→O {tune.gapHO}</span>
         <span>O→R {tune.gapOR}</span>
-        <span>size {tune.size.toFixed(2)}×</span>
       </div>
 
       <div className="hlt-preview__viewport">
@@ -119,6 +121,8 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
               style={{
                 width: sideW,
                 paddingLeft: tune.edgeLeft,
+                justifyContent: "flex-start",
+                overflow: "hidden",
               }}
             >
               {letter(0, "h1", tune.yH1)}
@@ -126,7 +130,6 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
               {letter(1, "a", tune.yA)}
               <span className="hlt-preview__space" style={spaceStyle(tune.gapAT)} />
               {letter(2, "t", tune.yT)}
-              <span className="hlt-preview__grow" />
               <span
                 className="hlt-preview__space"
                 style={spaceStyle(tune.gapTButton)}
@@ -157,13 +160,14 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
               style={{
                 width: sideW,
                 paddingRight: tune.edgeRight,
+                justifyContent: "flex-end",
+                overflow: "hidden",
               }}
             >
               <span
                 className="hlt-preview__space"
                 style={spaceStyle(tune.gapButtonH)}
               />
-              <span className="hlt-preview__grow" />
               {letter(3, "h2", tune.yH2)}
               <span className="hlt-preview__space" style={spaceStyle(tune.gapHO)} />
               {letter(4, "o", tune.yO)}
@@ -173,8 +177,8 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
           </div>
 
           <p className="hlt-preview__y-note">
-            Browser width {stageW}px = hero width · gap numbers are real pixels on
-            the homepage
+            R→edge {tune.edgeRight}px · H→edge {tune.edgeLeft}px · overflow goes
+            toward Book Now, never past the outer edge
           </p>
         </div>
       </div>

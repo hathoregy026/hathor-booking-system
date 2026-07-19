@@ -351,9 +351,8 @@ export function HeroLogoTunePanel() {
             <section className="hlt-section">
               <h2 className="admin-heading text-base">Screen edge → outer letters</h2>
               <p className="hlt-section__hint">
-                H stays at the left edge limit; R at the right. Letter gaps below
-                push the free letters inward toward Book Now — they are not glued
-                as HAT / HOR blocks.
+                Hard limits. 0 = letter flush on the edge. Extra letter spacing
+                always pushes toward Book Now — never past the outer edge.
               </p>
               <div className="hlt-grid">
                 <NumberField

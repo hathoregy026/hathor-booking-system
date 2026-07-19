@@ -241,11 +241,13 @@ html[data-ex-experience] .ex-root .hathor-logo-split__side--left {
   padding-left: ${tune.edgeLeft}px !important;
   padding-right: 0 !important;
   justify-content: flex-start !important;
+  overflow: hidden !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
   padding-right: ${tune.edgeRight}px !important;
   padding-left: 0 !important;
-  justify-content: flex-start !important;
+  justify-content: flex-end !important;
+  overflow: hidden !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__space--ha {
   width: ${Math.max(0, tune.gapHA)}px !important;
