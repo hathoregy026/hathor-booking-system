@@ -351,8 +351,8 @@ export function HeroLogoTunePanel() {
             <section className="hlt-section">
               <h2 className="admin-heading text-base">Screen edge → outer letters</h2>
               <p className="hlt-section__hint">
-                Hard limits. 0 = letter flush on the edge. Extra letter spacing
-                always pushes toward Book Now — never past the outer edge.
+                Outer pins only. 0 = letter flush on the edge. Letters move freely
+                in the zone between that edge and Book Now.
               </p>
               <div className="hlt-grid">
                 <NumberField
@@ -377,25 +377,24 @@ export function HeroLogoTunePanel() {
                 T ↔ Book Now ↔ H (center)
               </h2>
               <p className="hlt-section__hint">
-                Exact pixel gap from the letter to the 168px Book Now slot.
-                These always move the space — they are not swallowed by empty
-                side room.
+                Absolute control — exact px flush to Book Now. No clip, no
+                practical limit. Changing these never gets broken to fix edges.
               </p>
               <div className="hlt-grid">
                 <NumberField
                   label="T → Book Now"
-                  hint="Padding after T to the button"
+                  hint="Exact spacer after T to the button"
                   value={tune.gapTButton}
-                  min={-100}
-                  max={800}
+                  min={-200}
+                  max={2400}
                   onChange={(gapTButton) => patch({ gapTButton })}
                 />
                 <NumberField
                   label="Book Now → H"
-                  hint="Padding from the button to right H"
+                  hint="Exact spacer from the button to right H"
                   value={tune.gapButtonH}
-                  min={-100}
-                  max={800}
+                  min={-200}
+                  max={2400}
                   onChange={(gapButtonH) => patch({ gapButtonH })}
                 />
               </div>
@@ -404,36 +403,36 @@ export function HeroLogoTunePanel() {
             <section className="hlt-section">
               <h2 className="admin-heading text-base">Spacing between letters</h2>
               <p className="hlt-section__hint">
-                Exact pixels between those two letters. Same numbers on the live
-                homepage.
+                Exact pixels between those two letters. Move freely in the free
+                zone toward Book Now.
               </p>
               <div className="hlt-grid">
                 <NumberField
                   label="H → A"
                   value={tune.gapHA}
-                  min={-100}
-                  max={800}
+                  min={-200}
+                  max={2400}
                   onChange={(gapHA) => patch({ gapHA })}
                 />
                 <NumberField
                   label="A → T"
                   value={tune.gapAT}
-                  min={-100}
-                  max={800}
+                  min={-200}
+                  max={2400}
                   onChange={(gapAT) => patch({ gapAT })}
                 />
                 <NumberField
                   label="H → O (right)"
                   value={tune.gapHO}
-                  min={-100}
-                  max={800}
+                  min={-200}
+                  max={2400}
                   onChange={(gapHO) => patch({ gapHO })}
                 />
                 <NumberField
                   label="O → R"
                   value={tune.gapOR}
-                  min={-100}
-                  max={800}
+                  min={-200}
+                  max={2400}
                   onChange={(gapOR) => patch({ gapOR })}
                 />
               </div>

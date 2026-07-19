@@ -146,30 +146,39 @@ html[data-ex-experience] .ex-root .hathor-logo-split__side {
   align-items: var(--hathor-logo-align-items, flex-end);
   height: 100% !important;
   gap: 0;
-  overflow: hidden;
+  overflow: visible;
   box-sizing: border-box;
 }
 
 /*
-  Hard edge limits:
-  - left: pack from left edge (H stays on edge)
-  - right: pack from right edge (R stays on edge)
-  Extra spacing overflows toward Book Now (clipped), never past the outer edge.
+  Free zone edge ↔ Book Now — exact T→btn / btn→H spacers flush to the button.
+  Never clip those spacers. Free absorbs leftover room so letter gaps stay exact.
 */
-html[data-ex-experience] .ex-root .hathor-logo-split__side--left {
+html[data-ex-experience] .ex-root .hathor-logo-split__side--left,
+html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
   flex: 1 1 0 !important;
   justify-content: flex-start;
+  overflow: visible;
+}
+
+html[data-ex-experience] .ex-root .hathor-logo-split__side--left {
   padding-left: var(--hathor-logo-edge-l, 0px);
   padding-right: 0;
-  overflow: hidden;
 }
 
 html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
-  flex: 1 1 0 !important;
-  justify-content: flex-end;
   padding-right: var(--hathor-logo-edge-r, 0px);
   padding-left: 0;
-  overflow: hidden;
+}
+
+html[data-ex-experience] .ex-root .hathor-logo-split__free {
+  display: block;
+  flex: 1 1 0;
+  width: 0;
+  min-width: 0;
+  height: 1px;
+  align-self: center;
+  pointer-events: none;
 }
 
 html[data-ex-experience] .ex-root .hathor-logo-split__space {
@@ -186,27 +195,27 @@ html[data-ex-experience] .ex-root .hathor-logo-split__space {
 
 html[data-ex-experience] .ex-root .hathor-logo-split__space--ha {
   width: max(0px, var(--hathor-gap-ha, 0px));
-  flex-basis: max(0px, var(--hathor-gap-ha, 0px));
+  flex: 0 0 max(0px, var(--hathor-gap-ha, 0px));
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__space--at {
   width: max(0px, var(--hathor-gap-at, 0px));
-  flex-basis: max(0px, var(--hathor-gap-at, 0px));
+  flex: 0 0 max(0px, var(--hathor-gap-at, 0px));
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__space--t-btn {
   width: max(0px, var(--hathor-gap-t-btn, 0px));
-  flex-basis: max(0px, var(--hathor-gap-t-btn, 0px));
+  flex: 0 0 max(0px, var(--hathor-gap-t-btn, 0px));
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__space--btn-h {
   width: max(0px, var(--hathor-gap-btn-h, 0px));
-  flex-basis: max(0px, var(--hathor-gap-btn-h, 0px));
+  flex: 0 0 max(0px, var(--hathor-gap-btn-h, 0px));
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__space--ho {
   width: max(0px, var(--hathor-gap-ho, 0px));
-  flex-basis: max(0px, var(--hathor-gap-ho, 0px));
+  flex: 0 0 max(0px, var(--hathor-gap-ho, 0px));
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__space--or {
   width: max(0px, var(--hathor-gap-or, 0px));
-  flex-basis: max(0px, var(--hathor-gap-or, 0px));
+  flex: 0 0 max(0px, var(--hathor-gap-or, 0px));
 }
 
 /* Natural letter proportions — height from band, width from aspect-ratio */
@@ -232,7 +241,7 @@ html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter {
   height: 100% !important;
   max-width: none !important;
   max-height: none !important;
-  object-fit: fill;
+  object-fit: contain;
   object-position: var(--hathor-logo-object-position, top center);
   clip-path: none;
   -webkit-clip-path: none;
@@ -763,24 +772,35 @@ h1, h2, h3, h4, p {
   align-items: var(--hathor-logo-align-items, flex-end);
   height: 100% !important;
   gap: 0;
-  overflow: hidden;
+  overflow: visible;
   box-sizing: border-box;
 }
 
-.hathor-logo-split__side--left {
+.hathor-logo-split__side--left,
+.hathor-logo-split__side--right {
   flex: 1 1 0 !important;
   justify-content: flex-start;
+  overflow: visible;
+}
+
+.hathor-logo-split__side--left {
   padding-left: var(--hathor-logo-edge-l, 0px);
   padding-right: 0;
-  overflow: hidden;
 }
 
 .hathor-logo-split__side--right {
-  flex: 1 1 0 !important;
-  justify-content: flex-end;
   padding-right: var(--hathor-logo-edge-r, 0px);
   padding-left: 0;
-  overflow: hidden;
+}
+
+.hathor-logo-split__free {
+  display: block;
+  flex: 1 1 0;
+  width: 0;
+  min-width: 0;
+  height: 1px;
+  align-self: center;
+  pointer-events: none;
 }
 
 .hathor-logo-split__space {
@@ -797,27 +817,27 @@ h1, h2, h3, h4, p {
 
 .hathor-logo-split__space--ha {
   width: max(0px, var(--hathor-gap-ha, 0px));
-  flex-basis: max(0px, var(--hathor-gap-ha, 0px));
+  flex: 0 0 max(0px, var(--hathor-gap-ha, 0px));
 }
 .hathor-logo-split__space--at {
   width: max(0px, var(--hathor-gap-at, 0px));
-  flex-basis: max(0px, var(--hathor-gap-at, 0px));
+  flex: 0 0 max(0px, var(--hathor-gap-at, 0px));
 }
 .hathor-logo-split__space--t-btn {
   width: max(0px, var(--hathor-gap-t-btn, 0px));
-  flex-basis: max(0px, var(--hathor-gap-t-btn, 0px));
+  flex: 0 0 max(0px, var(--hathor-gap-t-btn, 0px));
 }
 .hathor-logo-split__space--btn-h {
   width: max(0px, var(--hathor-gap-btn-h, 0px));
-  flex-basis: max(0px, var(--hathor-gap-btn-h, 0px));
+  flex: 0 0 max(0px, var(--hathor-gap-btn-h, 0px));
 }
 .hathor-logo-split__space--ho {
   width: max(0px, var(--hathor-gap-ho, 0px));
-  flex-basis: max(0px, var(--hathor-gap-ho, 0px));
+  flex: 0 0 max(0px, var(--hathor-gap-ho, 0px));
 }
 .hathor-logo-split__space--or {
   width: max(0px, var(--hathor-gap-or, 0px));
-  flex-basis: max(0px, var(--hathor-gap-or, 0px));
+  flex: 0 0 max(0px, var(--hathor-gap-or, 0px));
 }
 
 .hathor-logo-split .logo-letter-wrap {
@@ -842,7 +862,7 @@ h1, h2, h3, h4, p {
   height: 100% !important;
   max-width: none !important;
   max-height: none !important;
-  object-fit: fill;
+  object-fit: contain;
   object-position: var(--hathor-logo-object-position, top center);
   user-select: none;
   pointer-events: none;

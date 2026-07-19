@@ -25,17 +25,17 @@ export const heroLogoTuneSchema = z.object({
   edgeLeft: px(0, 400),
   /** Space from R to screen right edge. */
   edgeRight: px(0, 400),
-  /** Space between T and the Book Now button. */
-  gapTButton: px(-100, 800),
-  /** Space between Book Now and the right-side H. */
-  gapButtonH: px(-100, 800),
+  /** Exact px between T and Book Now (no practical dashboard cap). */
+  gapTButton: px(-200, 2400),
+  /** Exact px between Book Now and right-side H. */
+  gapButtonH: px(-200, 2400),
   /** Shared vertical alignment line for all letters (Figma-style). */
   vAlign: heroLogoVAlignSchema,
-  /** Space after each letter toward the next (px). */
-  gapHA: px(-100, 800),
-  gapAT: px(-100, 800),
-  gapHO: px(-100, 800),
-  gapOR: px(-100, 800),
+  /** Exact px between letters (absolute control in the free zone). */
+  gapHA: px(-200, 2400),
+  gapAT: px(-200, 2400),
+  gapHO: px(-200, 2400),
+  gapOR: px(-200, 2400),
   /** Extra per-letter vertical nudge after vAlign (px). − up, + down. */
   yH1: px(-300, 300),
   yA: px(-300, 300),
@@ -173,13 +173,13 @@ export function parseHeroLogoTune(raw: unknown): HeroLogoTune {
     ),
     edgeLeft: clamp(candidate.edgeLeft, 0, 400, DEFAULT_HERO_LOGO_TUNE.edgeLeft),
     edgeRight: clamp(candidate.edgeRight, 0, 400, DEFAULT_HERO_LOGO_TUNE.edgeRight),
-    gapTButton: clamp(candidate.gapTButton, -100, 800, DEFAULT_HERO_LOGO_TUNE.gapTButton),
-    gapButtonH: clamp(candidate.gapButtonH, -100, 800, DEFAULT_HERO_LOGO_TUNE.gapButtonH),
+    gapTButton: clamp(candidate.gapTButton, -200, 2400, DEFAULT_HERO_LOGO_TUNE.gapTButton),
+    gapButtonH: clamp(candidate.gapButtonH, -200, 2400, DEFAULT_HERO_LOGO_TUNE.gapButtonH),
     vAlign: candidate.vAlign,
-    gapHA: clamp(candidate.gapHA, -100, 800, DEFAULT_HERO_LOGO_TUNE.gapHA),
-    gapAT: clamp(candidate.gapAT, -100, 800, DEFAULT_HERO_LOGO_TUNE.gapAT),
-    gapHO: clamp(candidate.gapHO, -100, 800, DEFAULT_HERO_LOGO_TUNE.gapHO),
-    gapOR: clamp(candidate.gapOR, -100, 800, DEFAULT_HERO_LOGO_TUNE.gapOR),
+    gapHA: clamp(candidate.gapHA, -200, 2400, DEFAULT_HERO_LOGO_TUNE.gapHA),
+    gapAT: clamp(candidate.gapAT, -200, 2400, DEFAULT_HERO_LOGO_TUNE.gapAT),
+    gapHO: clamp(candidate.gapHO, -200, 2400, DEFAULT_HERO_LOGO_TUNE.gapHO),
+    gapOR: clamp(candidate.gapOR, -200, 2400, DEFAULT_HERO_LOGO_TUNE.gapOR),
     yH1: clamp(candidate.yH1, -300, 300, DEFAULT_HERO_LOGO_TUNE.yH1),
     yA: clamp(candidate.yA, -300, 300, DEFAULT_HERO_LOGO_TUNE.yA),
     yT: clamp(candidate.yT, -300, 300, DEFAULT_HERO_LOGO_TUNE.yT),
@@ -237,47 +237,47 @@ html[data-ex-experience] .ex-root .hathor-logo-split {
 html[data-ex-experience] .ex-root .hero-logo-mark--split {
   bottom: ${tune.y}px !important;
 }
+html[data-ex-experience] .ex-root .hathor-logo-split__side--left,
+html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
+  justify-content: flex-start !important;
+  overflow: visible !important;
+}
 html[data-ex-experience] .ex-root .hathor-logo-split__side--left {
   padding-left: ${tune.edgeLeft}px !important;
   padding-right: 0 !important;
-  justify-content: flex-start !important;
-  overflow: hidden !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
   padding-right: ${tune.edgeRight}px !important;
   padding-left: 0 !important;
-  justify-content: flex-end !important;
-  overflow: hidden !important;
+}
+html[data-ex-experience] .ex-root .hathor-logo-split__free {
+  flex: 1 1 0 !important;
+  width: 0 !important;
+  min-width: 0 !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__space--ha {
   width: ${Math.max(0, tune.gapHA)}px !important;
-  flex-basis: ${Math.max(0, tune.gapHA)}px !important;
-  margin-right: 0 !important;
+  flex: 0 0 ${Math.max(0, tune.gapHA)}px !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__space--at {
   width: ${Math.max(0, tune.gapAT)}px !important;
-  flex-basis: ${Math.max(0, tune.gapAT)}px !important;
-  margin-right: 0 !important;
+  flex: 0 0 ${Math.max(0, tune.gapAT)}px !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__space--t-btn {
   width: ${Math.max(0, tune.gapTButton)}px !important;
-  flex-basis: ${Math.max(0, tune.gapTButton)}px !important;
-  margin-right: 0 !important;
+  flex: 0 0 ${Math.max(0, tune.gapTButton)}px !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__space--btn-h {
   width: ${Math.max(0, tune.gapButtonH)}px !important;
-  flex-basis: ${Math.max(0, tune.gapButtonH)}px !important;
-  margin-right: 0 !important;
+  flex: 0 0 ${Math.max(0, tune.gapButtonH)}px !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__space--ho {
   width: ${Math.max(0, tune.gapHO)}px !important;
-  flex-basis: ${Math.max(0, tune.gapHO)}px !important;
-  margin-right: 0 !important;
+  flex: 0 0 ${Math.max(0, tune.gapHO)}px !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__space--or {
   width: ${Math.max(0, tune.gapOR)}px !important;
-  flex-basis: ${Math.max(0, tune.gapOR)}px !important;
-  margin-right: 0 !important;
+  flex: 0 0 ${Math.max(0, tune.gapOR)}px !important;
 }
 html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) .hero-button {
   bottom: calc(${tune.y}px + (${logoH} / 2) - 26px + ${tune.ctaNudge}px) !important;
