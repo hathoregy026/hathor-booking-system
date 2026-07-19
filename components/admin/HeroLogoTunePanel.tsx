@@ -351,8 +351,8 @@ export function HeroLogoTunePanel() {
             <section className="hlt-section">
               <h2 className="admin-heading text-base">Screen edge → outer letters</h2>
               <p className="hlt-section__hint">
-                Outer pins only. 0 = letter flush on the edge. Letters move freely
-                in the zone between that edge and Book Now.
+                Hard limits. 0 = flush on the edge. Letters cannot cross outside
+                — extra spacing only pushes toward Book Now.
               </p>
               <div className="hlt-grid">
                 <NumberField

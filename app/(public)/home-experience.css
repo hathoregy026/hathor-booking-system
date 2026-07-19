@@ -146,39 +146,29 @@ html[data-ex-experience] .ex-root .hathor-logo-split__side {
   align-items: var(--hathor-logo-align-items, flex-end);
   height: 100% !important;
   gap: 0;
-  overflow: visible;
+  overflow: hidden;
   box-sizing: border-box;
 }
 
 /*
-  Free zone edge ↔ Book Now — exact T→btn / btn→H spacers flush to the button.
-  Never clip those spacers. Free absorbs leftover room so letter gaps stay exact.
+  Hard edge limits — letters cannot cross outside the screen edges.
+  Left packs from left (H); right packs from right (R).
+  Extra spacing overflows toward Book Now only.
 */
-html[data-ex-experience] .ex-root .hathor-logo-split__side--left,
-html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
+html[data-ex-experience] .ex-root .hathor-logo-split__side--left {
   flex: 1 1 0 !important;
   justify-content: flex-start;
-  overflow: visible;
-}
-
-html[data-ex-experience] .ex-root .hathor-logo-split__side--left {
   padding-left: var(--hathor-logo-edge-l, 0px);
   padding-right: 0;
+  overflow: hidden;
 }
 
 html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
+  flex: 1 1 0 !important;
+  justify-content: flex-end;
   padding-right: var(--hathor-logo-edge-r, 0px);
   padding-left: 0;
-}
-
-html[data-ex-experience] .ex-root .hathor-logo-split__free {
-  display: block;
-  flex: 1 1 0;
-  width: 0;
-  min-width: 0;
-  height: 1px;
-  align-self: center;
-  pointer-events: none;
+  overflow: hidden;
 }
 
 html[data-ex-experience] .ex-root .hathor-logo-split__space {
@@ -772,35 +762,24 @@ h1, h2, h3, h4, p {
   align-items: var(--hathor-logo-align-items, flex-end);
   height: 100% !important;
   gap: 0;
-  overflow: visible;
+  overflow: hidden;
   box-sizing: border-box;
 }
 
-.hathor-logo-split__side--left,
-.hathor-logo-split__side--right {
+.hathor-logo-split__side--left {
   flex: 1 1 0 !important;
   justify-content: flex-start;
-  overflow: visible;
-}
-
-.hathor-logo-split__side--left {
   padding-left: var(--hathor-logo-edge-l, 0px);
   padding-right: 0;
+  overflow: hidden;
 }
 
 .hathor-logo-split__side--right {
+  flex: 1 1 0 !important;
+  justify-content: flex-end;
   padding-right: var(--hathor-logo-edge-r, 0px);
   padding-left: 0;
-}
-
-.hathor-logo-split__free {
-  display: block;
-  flex: 1 1 0;
-  width: 0;
-  min-width: 0;
-  height: 1px;
-  align-self: center;
-  pointer-events: none;
+  overflow: hidden;
 }
 
 .hathor-logo-split__space {

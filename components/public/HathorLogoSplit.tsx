@@ -39,22 +39,14 @@ function Space({ kind }: { kind: string }) {
   );
 }
 
-function Free() {
-  /* Free room in the edge↔Book Now zone — letter gaps stay exact. */
-  return <span className="hathor-logo-split__free" aria-hidden="true" />;
-}
-
 /**
- * Canonical layout (do not “simplify” away the Book Now gaps):
+ * Edge limits (hard):
+ *   Left packs from the left edge — H cannot cross out.
+ *   Right packs from the right edge — R cannot cross out.
+ *   Extra spacing overflows toward Book Now only.
  *
- * Left zone (edge → Book Now):
- *   H · H→A · A · A→T · T · [free] · T→Book Now
- *
- * Right zone (Book Now → edge):
- *   Book Now→H · [free] · H · H→O · O · O→R · R
- *
- * Outer edges pin H / R. Free space is between letters and Book Now.
- * Every gap spacer is exact px — absolute dashboard control.
+ * Free zone = room between edge and Book Now.
+ * Exact spacers still sit next to Book Now (T→btn / btn→H).
  */
 export function HathorLogoSplit({ className }: HathorLogoSplitProps) {
   const [h1, a, t, h2, o, r] = HATHOR_LOGO_LETTERS;
@@ -71,7 +63,6 @@ export function HathorLogoSplit({ className }: HathorLogoSplitProps) {
         <Letter letter={a} />
         <Space kind="at" />
         <Letter letter={t} />
-        <Free />
         <Space kind="t-btn" />
       </div>
 
@@ -79,7 +70,6 @@ export function HathorLogoSplit({ className }: HathorLogoSplitProps) {
 
       <div className="hathor-logo-split__side hathor-logo-split__side--right">
         <Space kind="btn-h" />
-        <Free />
         <Letter letter={h2} />
         <Space kind="ho" />
         <Letter letter={o} />

@@ -237,23 +237,17 @@ html[data-ex-experience] .ex-root .hathor-logo-split {
 html[data-ex-experience] .ex-root .hero-logo-mark--split {
   bottom: ${tune.y}px !important;
 }
-html[data-ex-experience] .ex-root .hathor-logo-split__side--left,
-html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
-  justify-content: flex-start !important;
-  overflow: visible !important;
-}
 html[data-ex-experience] .ex-root .hathor-logo-split__side--left {
   padding-left: ${tune.edgeLeft}px !important;
   padding-right: 0 !important;
+  justify-content: flex-start !important;
+  overflow: hidden !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
   padding-right: ${tune.edgeRight}px !important;
   padding-left: 0 !important;
-}
-html[data-ex-experience] .ex-root .hathor-logo-split__free {
-  flex: 1 1 0 !important;
-  width: 0 !important;
-  min-width: 0 !important;
+  justify-content: flex-end !important;
+  overflow: hidden !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__space--ha {
   width: ${Math.max(0, tune.gapHA)}px !important;
