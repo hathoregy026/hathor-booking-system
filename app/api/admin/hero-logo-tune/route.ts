@@ -46,8 +46,13 @@ export async function PUT(request: NextRequest) {
     revalidatePath("/admin/hero-logo-tune");
 
     return NextResponse.json(
-      { tune: saved, ok: true },
-      { headers: { "Cache-Control": "no-store" } },
+      { tune: saved, ok: true, savedAt: new Date().toISOString() },
+      {
+        headers: {
+          "Cache-Control": "no-store, max-age=0",
+          "CDN-Cache-Control": "no-store",
+        },
+      },
     );
   } catch (error) {
     logDbError("admin.hero-logo-tune.PUT", error);

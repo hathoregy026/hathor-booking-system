@@ -81,21 +81,19 @@ export function HomePageClient({
     let cancelled = false;
     void (async () => {
       try {
-        const bust =
-          typeof window !== "undefined"
-            ? window.location.search.includes("logoRefresh")
-              ? Date.now()
-              : Date.now()
-            : Date.now();
+        const bust = Date.now();
         const res = await fetch(`/api/hero-logo-tune?t=${bust}`, {
           cache: "no-store",
+          headers: { Accept: "application/json" },
         });
         if (!res.ok) return;
+        const contentType = res.headers.get("content-type") ?? "";
+        if (!contentType.includes("application/json")) return;
         const data = (await res.json()) as { tune?: unknown };
         if (cancelled) return;
         setLiveTune(parseHeroLogoTune(data.tune));
       } catch {
-        /* keep SSR tune */
+        /* keep SSR tune — Cloudflare challenges / offline */
       }
     })();
     return () => {

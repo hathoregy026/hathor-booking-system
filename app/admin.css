@@ -1264,9 +1264,26 @@ select.admin-input option:checked {
 }
 
 .hlt-field__label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
   font-size: 0.8125rem;
   font-weight: 600;
   color: var(--text-primary);
+}
+
+.hlt-field__live {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+
+.hlt-field__range {
+  width: 100%;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
 }
 
 .hlt-field__input-wrap {
@@ -1368,16 +1385,32 @@ select.admin-input option:checked {
   color: var(--text-muted);
 }
 
+.hlt-preview__hud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.65rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+}
+
+.hlt-preview__hud span {
+  white-space: nowrap;
+}
+
 .hlt-preview__stage {
   position: relative;
   width: 100%;
-  min-height: 180px;
-  padding: 28px 12px 32px;
+  min-height: 220px;
+  padding: 40px 12px 48px;
   border: 2px solid color-mix(in srgb, var(--accent) 55%, var(--border));
   border-radius: 14px;
   background: linear-gradient(180deg, #2a241c 0%, #1a1612 55%, #14110e 100%);
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow: auto;
 }
 
 .hlt-preview__band {
@@ -1403,9 +1436,10 @@ select.admin-input option:checked {
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: inherit;
-  min-width: 0;
+  min-width: 120px;
   height: 100%;
   gap: 0;
+  overflow: visible;
 }
 
 .hlt-preview__side--left {
@@ -1427,7 +1461,8 @@ select.admin-input option:checked {
 .hlt-preview__letter {
   display: block;
   flex: 0 0 auto;
-  min-width: 0;
+  flex-shrink: 0;
+  min-width: unset;
 }
 
 .hlt-preview__letter-img {

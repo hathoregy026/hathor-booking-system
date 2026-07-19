@@ -84,20 +84,38 @@ function NumberField({
     setText(String(value));
   }, [value]);
 
+  const clamp = (n: number) => Math.min(max, Math.max(min, n));
+
   const commit = (raw: string) => {
     const n = Number(raw);
     if (!Number.isFinite(n)) {
       setText(String(value));
       return;
     }
-    const clamped = Math.min(max, Math.max(min, n));
-    onChange(clamped);
-    setText(String(clamped));
+    const next = clamp(n);
+    onChange(next);
+    setText(String(next));
   };
 
   return (
     <label className="hlt-field">
-      <span className="hlt-field__label">{label}</span>
+      <span className="hlt-field__label">
+        {label}
+        <span className="hlt-field__live">
+          {step < 1 ? Number(value).toFixed(2) : value}
+          {suffix}
+        </span>
+      </span>
+      <input
+        type="range"
+        className="hlt-field__range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(clamp(Number(e.target.value)))}
+        aria-label={`${label} slider`}
+      />
       <span className="hlt-field__input-wrap">
         <input
           type="text"
@@ -111,9 +129,7 @@ function NumberField({
             setText(raw);
             if (raw === "" || raw === "-" || raw === "." || raw === "-.") return;
             const n = Number(raw);
-            if (Number.isFinite(n)) {
-              onChange(Math.min(max, Math.max(min, n)));
-            }
+            if (Number.isFinite(n)) onChange(clamp(n));
           }}
           onBlur={() => commit(text)}
           onKeyDown={(e) => {
@@ -211,7 +227,11 @@ export function HeroLogoTunePanel() {
       setSaved(next);
       showToast(
         "success",
-        "Saved to live. Hard-refresh the homepage (Ctrl+Shift+R).",
+        "Saved to live site. Open homepage (or Ctrl+Shift+R) to confirm.",
+      );
+      /* Bust Cloudflare / browser cache on the public homepage. */
+      void fetch(`/api/hero-logo-tune?t=${Date.now()}`, { cache: "no-store" }).catch(
+        () => undefined,
       );
     } catch (error) {
       if (!isTransientFetchError(error)) {
@@ -492,7 +512,7 @@ export function HeroLogoTunePanel() {
             Undo unsaved
           </button>
           <a
-            href="/?logoRefresh=1"
+            href={`/?logoRefresh=1&t=${Date.now()}`}
             target="_blank"
             rel="noopener noreferrer"
             className="admin-btn-outline inline-flex items-center gap-2 px-4 py-2.5 text-sm"

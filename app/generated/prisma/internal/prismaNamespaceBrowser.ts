@@ -62,7 +62,8 @@ export const ModelName = {
   BlogPost: 'BlogPost',
   AdminProfile: 'AdminProfile',
   EmailTemplate: 'EmailTemplate',
-  SiteImage: 'SiteImage'
+  SiteImage: 'SiteImage',
+  SiteSetting: 'SiteSetting'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -247,6 +248,15 @@ export const SiteImageScalarFieldEnum = {
 } as const
 
 export type SiteImageScalarFieldEnum = (typeof SiteImageScalarFieldEnum)[keyof typeof SiteImageScalarFieldEnum]
+
+
+export const SiteSettingScalarFieldEnum = {
+  key: 'key',
+  value: 'value',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SiteSettingScalarFieldEnum = (typeof SiteSettingScalarFieldEnum)[keyof typeof SiteSettingScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -101,3 +101,8 @@ export type EmailTemplate = Prisma.EmailTemplateModel
  * 
  */
 export type SiteImage = Prisma.SiteImageModel
+/**
+ * Model SiteSetting
+ * * Temporary key/value store (hero logo tuner). Safe to drop later.
+ */
+export type SiteSetting = Prisma.SiteSettingModel
