@@ -259,9 +259,8 @@ export function HeroLogoTunePanel() {
         </p>
         <h1 className="admin-page-title">Hero Logo Tune</h1>
         <p className="admin-page-subtitle max-w-2xl">
-          Preview is full browser width (same as the hero). Left: H A T between
-          the left edge and Book Now. Right: H O R between Book Now and the right
-          edge. Each gap spacer is exact — letters shrink to stay in their zone.
+          Preview is your real browser width — every gap pixel matches the live
+          hero. Letters keep their natural shape (not stretched).
         </p>
       </div>
 
@@ -406,9 +405,8 @@ export function HeroLogoTunePanel() {
             <section className="hlt-section">
               <h2 className="admin-heading text-base">Spacing between letters</h2>
               <p className="hlt-section__hint">
-                Exact px between those two letters. Wider gaps make neighboring
-                letters slightly narrower so everything stays between the edge
-                and Book Now — R never clips off the side.
+                Exact pixels between those two letters. Same numbers on the live
+                homepage.
               </p>
               <div className="hlt-grid">
                 <NumberField

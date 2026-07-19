@@ -151,16 +151,16 @@ html[data-ex-experience] .ex-root .hathor-logo-split__side {
 }
 
 /*
-  Equal halves = Book Now stays centered.
-  Zone model: letters live only between edge and button.
-  Gap spacers are fixed px; letters flex/shrink to fill leftover room.
+  Equal halves keep Book Now centered.
+  Letters keep natural aspect ratio (no stretch).
+  Gap spacers = exact dashboard px. Grow absorbs leftover side room.
 */
 html[data-ex-experience] .ex-root .hathor-logo-split__side--left {
   flex: 1 1 0 !important;
   justify-content: flex-start;
   padding-left: var(--hathor-logo-edge-l, 0px);
   padding-right: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
@@ -168,7 +168,15 @@ html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
   justify-content: flex-start;
   padding-right: var(--hathor-logo-edge-r, 0px);
   padding-left: 0;
-  overflow: hidden;
+  overflow: visible;
+}
+
+html[data-ex-experience] .ex-root .hathor-logo-split__grow {
+  flex: 1 1 0 !important;
+  width: 0;
+  min-width: 0;
+  height: 1px;
+  pointer-events: none;
 }
 
 html[data-ex-experience] .ex-root .hathor-logo-split__space {
@@ -181,7 +189,6 @@ html[data-ex-experience] .ex-root .hathor-logo-split__space {
   box-sizing: content-box;
   background: transparent;
   border: 0;
-  min-width: 0;
 }
 
 html[data-ex-experience] .ex-root .hathor-logo-split__space--ha {
@@ -209,16 +216,16 @@ html[data-ex-experience] .ex-root .hathor-logo-split__space--or {
   flex-basis: max(0px, var(--hathor-gap-or, 0px));
 }
 
-/* Letters share leftover width after gaps — stay inside edge↔button zone */
+/* Natural letter proportions — height from band, width from aspect-ratio */
 html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter-wrap {
   display: flex !important;
-  flex: var(--letter-flex, 1) 1 0 !important;
+  flex: 0 0 auto !important;
+  flex-basis: auto !important;
   width: auto !important;
-  min-width: 0 !important;
-  max-width: none !important;
+  min-width: 0;
   margin: 0 !important;
   height: 100% !important;
-  overflow: hidden;
+  overflow: visible;
   clip-path: none;
   -webkit-clip-path: none;
   mask: none;
@@ -233,7 +240,7 @@ html[data-ex-experience] .ex-root .hathor-logo-split .logo-letter {
   max-width: none !important;
   max-height: none !important;
   object-fit: fill;
-  object-position: var(--hathor-logo-object-position, center center);
+  object-position: var(--hathor-logo-object-position, top center);
   clip-path: none;
   -webkit-clip-path: none;
   mask: none;
@@ -772,7 +779,7 @@ h1, h2, h3, h4, p {
   justify-content: flex-start;
   padding-left: var(--hathor-logo-edge-l, 0px);
   padding-right: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .hathor-logo-split__side--right {
@@ -780,7 +787,15 @@ h1, h2, h3, h4, p {
   justify-content: flex-start;
   padding-right: var(--hathor-logo-edge-r, 0px);
   padding-left: 0;
-  overflow: hidden;
+  overflow: visible;
+}
+
+.hathor-logo-split__grow {
+  flex: 1 1 0 !important;
+  width: 0;
+  min-width: 0;
+  height: 1px;
+  pointer-events: none;
 }
 
 .hathor-logo-split__space {
@@ -793,7 +808,6 @@ h1, h2, h3, h4, p {
   box-sizing: content-box;
   background: transparent;
   border: 0;
-  min-width: 0;
 }
 
 .hathor-logo-split__space--ha {
@@ -823,12 +837,13 @@ h1, h2, h3, h4, p {
 
 .hathor-logo-split .logo-letter-wrap {
   display: flex !important;
-  flex: var(--letter-flex, 1) 1 0 !important;
+  flex: 0 0 auto !important;
+  flex-basis: auto !important;
   width: auto !important;
-  min-width: 0 !important;
+  min-width: 0;
   margin: 0 !important;
   height: 100% !important;
-  overflow: hidden;
+  overflow: visible;
   clip-path: none;
   -webkit-clip-path: none;
   mask: none;
@@ -843,7 +858,7 @@ h1, h2, h3, h4, p {
   max-width: none !important;
   max-height: none !important;
   object-fit: fill;
-  object-position: var(--hathor-logo-object-position, center center);
+  object-position: var(--hathor-logo-object-position, top center);
   user-select: none;
   pointer-events: none;
   clip-path: none;

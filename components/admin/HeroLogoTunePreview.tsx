@@ -26,16 +26,14 @@ function spaceStyle(gap: number): CSSProperties {
 }
 
 /**
- * Full-viewport preview — same zone model as the live hero:
- * Left:  edge → H · ha · A · at · T · t→btn → Book Now
- * Right: Book Now → btn→H · H · ho · O · or · R → edge
- * Gap spacers are fixed; letters flex so they stay inside each zone.
+ * Preview at real browser width — 1px in the dashboard = 1px on the hero.
+ * Letters keep natural proportions (no stretch). Same layout as live.
  */
 export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
   const [stageW, setStageW] = useState(1440);
 
   useEffect(() => {
-    const sync = () => setStageW(Math.max(1024, window.innerWidth));
+    const sync = () => setStageW(window.innerWidth);
     sync();
     window.addEventListener("resize", sync);
     return () => window.removeEventListener("resize", sync);
@@ -48,6 +46,9 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
       sideW * (HATHOR_LOGO_ARTBOARD_HEIGHT / HATHOR_LOGO_LEFT_WIDTH) * tune.size,
     ),
   );
+  const scale = letterH / HATHOR_LOGO_ARTBOARD_HEIGHT;
+  const lw = (i: number) =>
+    Math.max(8, Math.round(HATHOR_LOGO_LETTERS[i].width * scale));
 
   const alignItems =
     tune.vAlign === "top"
@@ -61,9 +62,9 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
       key={key}
       className={`hlt-preview__letter letter-${key}`}
       style={{
-        flex: `${HATHOR_LOGO_LETTERS[i].flexGrow} 1 0`,
-        minWidth: 0,
+        width: lw(i),
         height: letterH,
+        flex: "0 0 auto",
         transform: `translateY(${yNudge}px)`,
       }}
     >
@@ -71,6 +72,8 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
       <img
         src={HATHOR_LOGO_LETTERS[i].src}
         alt={HATHOR_LOGO_LETTERS[i].alt}
+        width={lw(i)}
+        height={letterH}
         draggable={false}
         className="hlt-preview__letter-img"
       />
@@ -80,10 +83,9 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
   return (
     <div className="hlt-preview" data-hlt-preview="">
       <div className="hlt-preview__toolbar">
-        <strong>Live-width preview · {stageW}px</strong>
+        <strong>1:1 hero width · {stageW}px</strong>
         <span>
-          Left zone: edge → H A T → Book Now · Right zone: Book Now → H O R →
-          edge
+          Same pixel values as the live homepage — letters keep natural shape
         </span>
       </div>
 
@@ -124,6 +126,7 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
               {letter(1, "a", tune.yA)}
               <span className="hlt-preview__space" style={spaceStyle(tune.gapAT)} />
               {letter(2, "t", tune.yT)}
+              <span className="hlt-preview__grow" />
               <span
                 className="hlt-preview__space"
                 style={spaceStyle(tune.gapTButton)}
@@ -160,6 +163,7 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
                 className="hlt-preview__space"
                 style={spaceStyle(tune.gapButtonH)}
               />
+              <span className="hlt-preview__grow" />
               {letter(3, "h2", tune.yH2)}
               <span className="hlt-preview__space" style={spaceStyle(tune.gapHO)} />
               {letter(4, "o", tune.yO)}
@@ -169,8 +173,8 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
           </div>
 
           <p className="hlt-preview__y-note">
-            Full browser width ({stageW}px) · letters stay between edge and Book
-            Now · Y on live site: {tune.y}px
+            Browser width {stageW}px = hero width · gap numbers are real pixels on
+            the homepage
           </p>
         </div>
       </div>

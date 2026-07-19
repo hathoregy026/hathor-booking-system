@@ -1,6 +1,5 @@
 "use client";
 
-import type { CSSProperties } from "react";
 import { HATHOR_BRAND_NAME } from "@/lib/branding";
 import {
   HATHOR_LOGO_LETTERS,
@@ -15,7 +14,7 @@ function Letter({ letter }: { letter: HathorLogoLetter }) {
   return (
     <span
       className={`logo-letter-wrap ${letter.className}`}
-      style={{ ["--letter-flex" as string]: String(letter.flexGrow) } as CSSProperties}
+      style={{ aspectRatio: `${letter.width} / ${letter.height}` }}
     >
       <img
         src={letter.src}
@@ -40,13 +39,15 @@ function Space({ kind }: { kind: string }) {
   );
 }
 
+function Grow() {
+  return <span className="hathor-logo-split__grow" aria-hidden="true" />;
+}
+
 /**
- * Hero HATHOR — simple two zones:
- * Left:  edge → H · ha · A · at · T · t→btn → Book Now
- * Right: Book Now → btn→H · H · ho · O · or · R → edge
- *
- * Gap spacers are fixed px. Letters flex/shrink so they always stay
- * inside the edge↔button zone (R never clips off-screen).
+ * Natural letter proportions (no stretch).
+ * Left:  edge → H · ha · A · at · T · grow · t→btn → Book Now
+ * Right: Book Now → btn→H · grow · H · ho · O · or · R → edge
+ * Gap spacers = exact px (same values as dashboard). Grow eats leftover room.
  */
 export function HathorLogoSplit({ className }: HathorLogoSplitProps) {
   const [h1, a, t, h2, o, r] = HATHOR_LOGO_LETTERS;
@@ -63,6 +64,7 @@ export function HathorLogoSplit({ className }: HathorLogoSplitProps) {
         <Letter letter={a} />
         <Space kind="at" />
         <Letter letter={t} />
+        <Grow />
         <Space kind="t-btn" />
       </div>
 
@@ -70,6 +72,7 @@ export function HathorLogoSplit({ className }: HathorLogoSplitProps) {
 
       <div className="hathor-logo-split__side hathor-logo-split__side--right">
         <Space kind="btn-h" />
+        <Grow />
         <Letter letter={h2} />
         <Space kind="ho" />
         <Letter letter={o} />
