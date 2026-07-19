@@ -1448,12 +1448,12 @@ select.admin-input option:checked {
 }
 
 .hlt-preview__side--left {
-  justify-content: flex-start;
+  justify-content: flex-end;
   overflow: hidden;
 }
 
 .hlt-preview__side--right {
-  justify-content: flex-end;
+  justify-content: flex-start;
   overflow: hidden;
 }
 

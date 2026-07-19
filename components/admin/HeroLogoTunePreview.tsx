@@ -26,9 +26,10 @@ function spaceStyle(gap: number): CSSProperties {
 }
 
 /**
- * 1:1 hero width. Natural letter shapes.
- * Edges are hard limits — H/R cannot cross outside.
- * Extra spacing pushes toward Book Now only.
+ * Same model as live:
+ * - Free zone between outer edge and Book Now
+ * - Edges hard-clipped
+ * - T→btn / btn→H are paddings — changing them moves the clusters
  */
 export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
   const [stageW, setStageW] = useState(1440);
@@ -85,7 +86,7 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
     <div className="hlt-preview" data-hlt-preview="">
       <div className="hlt-preview__toolbar">
         <strong>1:1 hero width · {stageW}px</strong>
-        <span>Edges are hard limits · overflow only toward Book Now</span>
+        <span>Drag T→btn / btn→H — letters must move</span>
       </div>
 
       <div className="hlt-preview__hud" aria-live="polite">
@@ -119,7 +120,8 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
               style={{
                 width: sideW,
                 paddingLeft: tune.edgeLeft,
-                justifyContent: "flex-start",
+                paddingRight: Math.max(0, tune.gapTButton),
+                justifyContent: "flex-end",
                 overflow: "hidden",
               }}
             >
@@ -128,10 +130,6 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
               {letter(1, "a", tune.yA)}
               <span className="hlt-preview__space" style={spaceStyle(tune.gapAT)} />
               {letter(2, "t", tune.yT)}
-              <span
-                className="hlt-preview__space"
-                style={spaceStyle(tune.gapTButton)}
-              />
             </div>
 
             <span
@@ -157,15 +155,12 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
               className="hlt-preview__side hlt-preview__side--right"
               style={{
                 width: sideW,
+                paddingLeft: Math.max(0, tune.gapButtonH),
                 paddingRight: tune.edgeRight,
-                justifyContent: "flex-end",
+                justifyContent: "flex-start",
                 overflow: "hidden",
               }}
             >
-              <span
-                className="hlt-preview__space"
-                style={spaceStyle(tune.gapButtonH)}
-              />
               {letter(3, "h2", tune.yH2)}
               <span className="hlt-preview__space" style={spaceStyle(tune.gapHO)} />
               {letter(4, "o", tune.yO)}
@@ -175,8 +170,8 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
           </div>
 
           <p className="hlt-preview__y-note">
-            R stays on the right edge · H on the left · letters cannot pass
-            through either edge
+            Free zone between edge and Book Now · edges hard-clip · T→btn /
+            btn→H move the letter groups
           </p>
         </div>
       </div>

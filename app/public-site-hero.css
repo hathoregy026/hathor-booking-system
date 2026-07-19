@@ -168,23 +168,23 @@
 }
 
 /*
-  Hard edge limits — letters cannot cross outside the screen edges.
-  Left packs from left (H); right packs from right (R).
-  Extra spacing overflows toward Book Now only.
+  Free zone = edge ↔ Book Now. Outer edges are hard clip limits.
+  T→Book Now / Book Now→H = padding on the button side (moves the cluster).
+  Leftover free space sits between the outer edge and the letters.
 */
 .hathor-logo-split__side--left {
   flex: 1 1 0 !important;
-  justify-content: flex-start;
+  justify-content: flex-end;
   padding-left: var(--hathor-logo-edge-l, 0px);
-  padding-right: 0;
+  padding-right: max(0px, var(--hathor-gap-t-btn, 0px));
   overflow: hidden;
 }
 
 .hathor-logo-split__side--right {
   flex: 1 1 0 !important;
-  justify-content: flex-end;
+  justify-content: flex-start;
+  padding-left: max(0px, var(--hathor-gap-btn-h, 0px));
   padding-right: var(--hathor-logo-edge-r, 0px);
-  padding-left: 0;
   overflow: hidden;
 }
 
@@ -207,14 +207,6 @@
 .hathor-logo-split__space--at {
   width: max(0px, var(--hathor-gap-at, 0px));
   flex: 0 0 max(0px, var(--hathor-gap-at, 0px));
-}
-.hathor-logo-split__space--t-btn {
-  width: max(0px, var(--hathor-gap-t-btn, 0px));
-  flex: 0 0 max(0px, var(--hathor-gap-t-btn, 0px));
-}
-.hathor-logo-split__space--btn-h {
-  width: max(0px, var(--hathor-gap-btn-h, 0px));
-  flex: 0 0 max(0px, var(--hathor-gap-btn-h, 0px));
 }
 .hathor-logo-split__space--ho {
   width: max(0px, var(--hathor-gap-ho, 0px));

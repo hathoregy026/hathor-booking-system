@@ -40,13 +40,11 @@ function Space({ kind }: { kind: string }) {
 }
 
 /**
- * Edge limits (hard):
- *   Left packs from the left edge — H cannot cross out.
- *   Right packs from the right edge — R cannot cross out.
- *   Extra spacing overflows toward Book Now only.
+ * Free zone = edge ↔ Book Now on each side.
+ * Outer edges are hard limits (overflow clipped — letters never paint past them).
  *
- * Free zone = room between edge and Book Now.
- * Exact spacers still sit next to Book Now (T→btn / btn→H).
+ * T→Book Now / Book Now→H are side paddings toward the button, so changing
+ * them moves the letter clusters. Letter↔letter gaps stay exact spacers.
  */
 export function HathorLogoSplit({ className }: HathorLogoSplitProps) {
   const [h1, a, t, h2, o, r] = HATHOR_LOGO_LETTERS;
@@ -63,13 +61,11 @@ export function HathorLogoSplit({ className }: HathorLogoSplitProps) {
         <Letter letter={a} />
         <Space kind="at" />
         <Letter letter={t} />
-        <Space kind="t-btn" />
       </div>
 
       <span className="hathor-logo-split__gap" aria-hidden="true" />
 
       <div className="hathor-logo-split__side hathor-logo-split__side--right">
-        <Space kind="btn-h" />
         <Letter letter={h2} />
         <Space kind="ho" />
         <Letter letter={o} />

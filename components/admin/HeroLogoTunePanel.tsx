@@ -377,13 +377,13 @@ export function HeroLogoTunePanel() {
                 T ↔ Book Now ↔ H (center)
               </h2>
               <p className="hlt-section__hint">
-                Absolute control — exact px flush to Book Now. No clip, no
-                practical limit. Changing these never gets broken to fix edges.
+                Moves the letter cluster in the free zone. Bigger = letters
+                farther from Book Now (toward the outer edge). Edges still clip.
               </p>
               <div className="hlt-grid">
                 <NumberField
                   label="T → Book Now"
-                  hint="Exact spacer after T to the button"
+                  hint="Pushes HAT toward the left edge"
                   value={tune.gapTButton}
                   min={-200}
                   max={2400}
@@ -391,7 +391,7 @@ export function HeroLogoTunePanel() {
                 />
                 <NumberField
                   label="Book Now → H"
-                  hint="Exact spacer from the button to right H"
+                  hint="Pushes HOR toward the right edge"
                   value={tune.gapButtonH}
                   min={-200}
                   max={2400}
