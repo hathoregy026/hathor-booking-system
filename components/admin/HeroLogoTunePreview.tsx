@@ -46,17 +46,19 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
   const leftInner = Math.max(0, sideW - tune.edgeLeft);
   const rightInner = Math.max(0, sideW - tune.edgeRight);
 
+  /* T / right-H always from Book Now — gap 0 = flush (full free zone). */
+  const tLeft = leftInner - tW - tune.gapTButton;
+  const h2Left = tune.gapButtonH;
+
   const h1Left = 0;
-  const aLeft = h1W + Math.max(0, tune.gapHA);
-  const tFromChain = aLeft + aW + Math.max(0, tune.gapAT);
-  const tFromBtn = leftInner - tW - Math.max(0, tune.gapTButton);
-  const tLeft = Math.min(tFromChain, tFromBtn);
+  const aFromH = h1W + tune.gapHA;
+  const aFromT = tLeft - tune.gapAT - aW;
+  const aLeft = Math.min(aFromH, aFromT);
 
   const rLeft = rightInner - rW;
-  const oLeft = rLeft - Math.max(0, tune.gapOR) - oW;
-  const h2FromBtn = Math.max(0, tune.gapButtonH);
-  const h2FromOr = oLeft - Math.max(0, tune.gapHO) - h2W;
-  const h2Left = Math.min(h2FromBtn, h2FromOr);
+  const oFromR = rLeft - tune.gapOR - oW;
+  const oFromH = h2Left + h2W + tune.gapHO;
+  const oLeft = Math.max(oFromH, oFromR);
 
   const letter = (
     i: number,

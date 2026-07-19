@@ -377,8 +377,8 @@ export function HeroLogoTunePanel() {
                 T ↔ Book Now ↔ H (center)
               </h2>
               <p className="hlt-section__hint">
-                Moves that one letter only (T on the left, H on the right) — not
-                the whole side as a block.
+                Full free zone to the Book Now edge. 0 = letter flush on the
+                button. Moves T / right H only.
               </p>
               <div className="hlt-grid">
                 <NumberField

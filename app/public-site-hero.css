@@ -203,46 +203,46 @@
   will-change: transform, opacity;
 }
 
-/* Left: H from edge · A via H→A · T via A→T, clamped by T→Book Now */
+/*
+  Full free zone edge ↔ Book Now (gap 0 = flush to the button).
+  T / right-H are anchored only to Book Now — letter gaps never block that.
+*/
 .hathor-logo-split__side--left .letter-h1 {
   left: 0;
   width: var(--lw-h1);
 }
-.hathor-logo-split__side--left .letter-a {
-  left: calc(var(--lw-h1) + max(0px, var(--hathor-gap-ha, 0px)));
-  width: var(--lw-a);
-}
 .hathor-logo-split__side--left .letter-t {
-  left: min(
-    calc(
-      var(--lw-h1) + max(0px, var(--hathor-gap-ha, 0px)) + var(--lw-a) +
-        max(0px, var(--hathor-gap-at, 0px))
-    ),
-    calc(100% - var(--lw-t) - max(0px, var(--hathor-gap-t-btn, 0px)))
-  );
+  left: calc(100% - var(--lw-t) - var(--hathor-gap-t-btn, 0px));
   width: var(--lw-t);
 }
+.hathor-logo-split__side--left .letter-a {
+  /* H→A from left, or A→T from T — whichever the controls ask for */
+  left: min(
+    calc(var(--lw-h1) + var(--hathor-gap-ha, 0px)),
+    calc(
+      100% - var(--hathor-gap-t-btn, 0px) - var(--lw-t) -
+        var(--hathor-gap-at, 0px) - var(--lw-a)
+    )
+  );
+  width: var(--lw-a);
+}
 
-/* Right: R on edge · O via O→R · H via Book Now→H, clamped by H→O */
+.hathor-logo-split__side--right .letter-h2 {
+  left: var(--hathor-gap-btn-h, 0px);
+  width: var(--lw-h2);
+}
 .hathor-logo-split__side--right .letter-r {
   left: calc(100% - var(--lw-r));
   width: var(--lw-r);
 }
 .hathor-logo-split__side--right .letter-o {
-  left: calc(
-    100% - var(--lw-r) - max(0px, var(--hathor-gap-or, 0px)) - var(--lw-o)
+  left: max(
+    calc(
+      var(--hathor-gap-btn-h, 0px) + var(--lw-h2) + var(--hathor-gap-ho, 0px)
+    ),
+    calc(100% - var(--lw-r) - var(--hathor-gap-or, 0px) - var(--lw-o))
   );
   width: var(--lw-o);
-}
-.hathor-logo-split__side--right .letter-h2 {
-  left: min(
-    max(0px, var(--hathor-gap-btn-h, 0px)),
-    calc(
-      100% - var(--lw-r) - max(0px, var(--hathor-gap-or, 0px)) - var(--lw-o) -
-        max(0px, var(--hathor-gap-ho, 0px)) - var(--lw-h2)
-    )
-  );
-  width: var(--lw-h2);
 }
 
 .hathor-logo-split .logo-letter {
