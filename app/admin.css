@@ -1435,15 +1435,12 @@ select.admin-input option:checked {
 }
 
 .hlt-preview__side {
-  display: flex;
+  display: block;
   flex: 0 0 auto;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: inherit;
+  position: relative;
   box-sizing: border-box;
   height: 100%;
-  gap: 0;
-  overflow: visible;
+  overflow: hidden;
   min-width: 0;
 }
 
