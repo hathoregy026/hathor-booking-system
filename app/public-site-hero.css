@@ -171,14 +171,57 @@
   flex: 1 1 0 !important;
   justify-content: flex-start;
   padding-left: var(--hathor-logo-edge-l, 0px);
-  padding-right: max(0px, var(--hathor-gap-t-btn, 0px));
+  padding-right: 0;
 }
 
 .hathor-logo-split__side--right {
   flex: 1 1 0 !important;
-  justify-content: flex-end;
+  justify-content: flex-start;
   padding-right: var(--hathor-logo-edge-r, 0px);
-  padding-left: max(0px, var(--hathor-gap-btn-h, 0px));
+  padding-left: 0;
+}
+
+.hathor-logo-split__grow {
+  flex: 1 1 0 !important;
+  width: 0;
+  min-width: 0;
+  height: 1px;
+  pointer-events: none;
+}
+
+.hathor-logo-split__space {
+  display: block;
+  flex: 0 0 auto;
+  flex-shrink: 0;
+  height: 1px;
+  align-self: center;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+.hathor-logo-split__space--ha {
+  width: max(0px, var(--hathor-gap-ha, 0px));
+  margin-right: min(0px, var(--hathor-gap-ha, 0px));
+}
+.hathor-logo-split__space--at {
+  width: max(0px, var(--hathor-gap-at, 0px));
+  margin-right: min(0px, var(--hathor-gap-at, 0px));
+}
+.hathor-logo-split__space--t-btn {
+  width: max(0px, var(--hathor-gap-t-btn, 0px));
+  margin-right: min(0px, var(--hathor-gap-t-btn, 0px));
+}
+.hathor-logo-split__space--btn-h {
+  width: max(0px, var(--hathor-gap-btn-h, 0px));
+  margin-right: min(0px, var(--hathor-gap-btn-h, 0px));
+}
+.hathor-logo-split__space--ho {
+  width: max(0px, var(--hathor-gap-ho, 0px));
+  margin-right: min(0px, var(--hathor-gap-ho, 0px));
+}
+.hathor-logo-split__space--or {
+  width: max(0px, var(--hathor-gap-or, 0px));
+  margin-right: min(0px, var(--hathor-gap-or, 0px));
 }
 
 .hathor-logo-split .logo-letter-wrap {
@@ -187,6 +230,7 @@
   flex-basis: auto !important;
   width: auto !important;
   min-width: 0;
+  margin: 0 !important;
   height: 100% !important;
   overflow: visible;
   clip-path: none;
@@ -216,22 +260,6 @@
   will-change: transform, opacity;
 }
 
-.hathor-logo-split .letter-h1 {
-  margin-right: var(--hathor-gap-ha, 0px);
-}
-.hathor-logo-split .letter-a {
-  margin-right: var(--hathor-gap-at, 0px);
-}
-.hathor-logo-split .letter-t {
-  margin-right: min(0px, var(--hathor-gap-t-btn, 0px));
-}
-.hathor-logo-split .letter-h2 {
-  margin-left: min(0px, var(--hathor-gap-btn-h, 0px));
-  margin-right: var(--hathor-gap-ho, 0px);
-}
-.hathor-logo-split .letter-o {
-  margin-right: var(--hathor-gap-or, 0px);
-}
 .hathor-logo-split .letter-h1 .logo-letter {
   transform: translateY(var(--hathor-y-h1, 0px));
 }

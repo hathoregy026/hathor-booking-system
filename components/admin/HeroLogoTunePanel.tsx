@@ -406,9 +406,9 @@ export function HeroLogoTunePanel() {
             <section className="hlt-section">
               <h2 className="admin-heading text-base">Spacing between letters</h2>
               <p className="hlt-section__hint">
-                Every letter gap is independent. H stays at the left edge, R at
-                the right. Raise H→A / A→T to walk A and T toward Book Now; raise
-                H→O / O→R to walk O and H toward Book Now.
+                Each control is its own spacer — not a HAT/HOR block. H→A only
+                changes H↔A; A→T only changes A↔T; H→O only H↔O; O→R only O↔R.
+                Leftover side room is absorbed so gaps never vanish.
               </p>
               <div className="hlt-grid">
                 <NumberField

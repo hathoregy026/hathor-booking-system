@@ -1444,12 +1444,24 @@ select.admin-input option:checked {
   min-width: 0;
 }
 
-.hlt-preview__side--left {
+.hlt-preview__side--left,
+.hlt-preview__side--right {
   justify-content: flex-start;
 }
 
-.hlt-preview__side--right {
-  justify-content: flex-end;
+.hlt-preview__grow {
+  flex: 1 1 0;
+  width: 0;
+  min-width: 0;
+  height: 1px;
+  pointer-events: none;
+}
+
+.hlt-preview__space {
+  display: block;
+  flex: 0 0 auto;
+  flex-shrink: 0;
+  pointer-events: none;
 }
 
 .hlt-preview__gap {

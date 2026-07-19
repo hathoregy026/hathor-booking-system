@@ -239,29 +239,37 @@ html[data-ex-experience] .ex-root .hero-logo-mark--split {
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__side--left {
   padding-left: ${tune.edgeLeft}px !important;
-  padding-right: ${Math.max(0, tune.gapTButton)}px !important;
+  padding-right: 0 !important;
   justify-content: flex-start !important;
 }
 html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
   padding-right: ${tune.edgeRight}px !important;
-  padding-left: ${Math.max(0, tune.gapButtonH)}px !important;
-  justify-content: flex-end !important;
+  padding-left: 0 !important;
+  justify-content: flex-start !important;
 }
-html[data-ex-experience] .ex-root .hathor-logo-split .letter-h1 {
-  margin-right: ${tune.gapHA}px !important;
+html[data-ex-experience] .ex-root .hathor-logo-split__space--ha {
+  width: ${Math.max(0, tune.gapHA)}px !important;
+  margin-right: ${Math.min(0, tune.gapHA)}px !important;
 }
-html[data-ex-experience] .ex-root .hathor-logo-split .letter-a {
-  margin-right: ${tune.gapAT}px !important;
+html[data-ex-experience] .ex-root .hathor-logo-split__space--at {
+  width: ${Math.max(0, tune.gapAT)}px !important;
+  margin-right: ${Math.min(0, tune.gapAT)}px !important;
 }
-html[data-ex-experience] .ex-root .hathor-logo-split .letter-t {
+html[data-ex-experience] .ex-root .hathor-logo-split__space--t-btn {
+  width: ${Math.max(0, tune.gapTButton)}px !important;
   margin-right: ${Math.min(0, tune.gapTButton)}px !important;
 }
-html[data-ex-experience] .ex-root .hathor-logo-split .letter-h2 {
-  margin-left: ${Math.min(0, tune.gapButtonH)}px !important;
-  margin-right: ${tune.gapHO}px !important;
+html[data-ex-experience] .ex-root .hathor-logo-split__space--btn-h {
+  width: ${Math.max(0, tune.gapButtonH)}px !important;
+  margin-right: ${Math.min(0, tune.gapButtonH)}px !important;
 }
-html[data-ex-experience] .ex-root .hathor-logo-split .letter-o {
-  margin-right: ${tune.gapOR}px !important;
+html[data-ex-experience] .ex-root .hathor-logo-split__space--ho {
+  width: ${Math.max(0, tune.gapHO)}px !important;
+  margin-right: ${Math.min(0, tune.gapHO)}px !important;
+}
+html[data-ex-experience] .ex-root .hathor-logo-split__space--or {
+  width: ${Math.max(0, tune.gapOR)}px !important;
+  margin-right: ${Math.min(0, tune.gapOR)}px !important;
 }
 html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) .hero-button {
   bottom: calc(${tune.y}px + (${logoH} / 2) - 26px + ${tune.ctaNudge}px) !important;
