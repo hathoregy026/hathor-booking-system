@@ -24,6 +24,12 @@ const gabigaile = localFont({
   display: "swap",
 });
 
+const gamgote = localFont({
+  src: "../../public/fonts/Gamgote.otf",
+  variable: "--font-hathor-gamgote",
+  display: "swap",
+});
+
 const quietLuxury = localFont({
   src: "../../public/fonts/quietluxury-script.otf",
   variable: "--font-hathor-quiet-luxury",
@@ -84,7 +90,7 @@ export default async function PublicSiteLayout({
 
   return (
     <div
-      className={`${agraham.variable} ${gabigaile.variable} ${quietLuxury.variable} ${playfair.variable} ${plusJakarta.variable}`}
+      className={`${agraham.variable} ${gabigaile.variable} ${gamgote.variable} ${quietLuxury.variable} ${playfair.variable} ${plusJakarta.variable}`}
     >
       <SiteImagesProvider images={siteImages}>
         <PublicLayout>{children}</PublicLayout>

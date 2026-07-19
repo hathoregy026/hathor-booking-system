@@ -30,7 +30,7 @@
   --public-muted: #9a9590;
   --public-border: rgb(182 159 100 / 0.18);
   --public-serif: var(--font-hathor-display, "Playfair Display", Georgia, serif);
-  --public-title: var(--font-hathor-agraham, "Agraham"), var(--public-serif);
+  --public-title: var(--font-hathor-gamgote, "Gamgote"), var(--public-serif);
   --public-sans: var(--font-hathor-body, "Plus Jakarta Sans", system-ui, sans-serif);
 
   background: var(--public-bg);
@@ -6200,16 +6200,15 @@ body.has-page-scroll-transition .pin-spacer {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   Agraham titles — 45px, gold body / white heroes, engraved depth
+   Gamgote titles — 48px / lh 100, gold body / white heroes, engraved depth
    Excludes: homepage hero (data-ex-experience) and booking shell
    ═══════════════════════════════════════════════════════════ */
 
 .public-site {
-  --hathor-title-font: var(--font-hathor-agraham), "Agraham", var(--public-serif);
-  --hathor-title-size: 45px;
+  --hathor-title-font: var(--font-hathor-gamgote), "Gamgote", var(--public-serif);
+  --hathor-title-size: 48px;
   --hathor-title-gold: #b69f64;
-  /* Agraham descenders need generous leading — 1.2 still collided */
-  --hathor-title-line-height: 1.55;
+  --hathor-title-line-height: 1;
   /* Deeper engraved inner shadow (cast from top-left) */
   --hathor-title-engraved-gold:
     -1px -1px 0 rgba(255, 248, 235, 0.55),
@@ -6223,7 +6222,7 @@ body.has-page-scroll-transition .pin-spacer {
     1px 2px 6px rgba(0, 0, 0, 0.28);
 }
 
-/* Body / sheet main titles — Agraham gold */
+/* Body / sheet main titles — Gamgote gold */
 .public-site .hathor-section-title,
 .public-site .hathor-chapter-title,
 .public-site .lux-cta-band__title,
@@ -6243,7 +6242,7 @@ body.has-page-scroll-transition .pin-spacer {
   text-wrap: balance;
 }
 
-/* Page heroes (About, Wellness, Blog, …) — Agraham white */
+/* Page heroes (About, Wellness, Blog, …) — Gamgote white */
 .public-site .hathor-page-hero__title,
 .public-site [data-page-transition] .pt-hero__copy .hathor-page-hero__title {
   font-family: var(--hathor-title-font) !important;
