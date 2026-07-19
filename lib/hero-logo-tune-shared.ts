@@ -213,13 +213,65 @@ export function heroLogoTuneToCssVars(tune: HeroLogoTune): Record<string, string
   };
 }
 
-/** Beats stylesheet defaults on `.ex-root` so Save → live always sticks. */
+/** Beats stylesheet cascade so Save → live always shows. */
 export function heroLogoTuneToImportantCss(tune: HeroLogoTune): string {
   const vars = heroLogoTuneToCssVars(tune);
-  const body = Object.entries(vars)
+  const rootBody = Object.entries(vars)
     .map(([key, value]) => `  ${key}: ${value} !important;`)
     .join("\n");
-  return `html[data-ex-experience] .ex-root {\n${body}\n}`;
+
+  const logoH = `calc((100vw - ${HATHOR_BTN_SLOT_PX}px) / 2 * 2200 / 2683 * ${tune.size})`;
+
+  return `
+html[data-ex-experience] .ex-root,
+html[data-ex-experience] .ex-root .home-hero-container {
+${rootBody}
+}
+html[data-ex-experience] .ex-root .hathor-logo-split.hero-logo-img,
+html[data-ex-experience] .ex-root .hathor-logo-split {
+  height: ${logoH} !important;
+}
+html[data-ex-experience] .ex-root .hero-logo-mark--split {
+  bottom: ${tune.y}px !important;
+}
+html[data-ex-experience] .ex-root .hathor-logo-split__side--left {
+  padding-left: ${tune.edgeLeft}px !important;
+}
+html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
+  padding-right: ${tune.edgeRight}px !important;
+}
+html[data-ex-experience] .ex-root .hathor-logo-split .letter-h1 {
+  margin-right: ${tune.gapHA}px !important;
+}
+html[data-ex-experience] .ex-root .hathor-logo-split .letter-a {
+  margin-right: ${tune.gapAT}px !important;
+}
+html[data-ex-experience] .ex-root .hathor-logo-split .letter-t {
+  margin-right: ${tune.gapTButton}px !important;
+}
+html[data-ex-experience] .ex-root .hathor-logo-split .letter-h2 {
+  margin-left: ${tune.gapButtonH}px !important;
+  margin-right: ${tune.gapHO}px !important;
+}
+html[data-ex-experience] .ex-root .hathor-logo-split .letter-o {
+  margin-right: ${tune.gapOR}px !important;
+}
+html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) .hero-button {
+  bottom: calc(${tune.y}px + (${logoH} / 2) - 26px + ${tune.ctaNudge}px) !important;
+}
+`.trim();
+}
+
+/** Apply tune vars directly on DOM nodes (bypasses stylesheet fights). */
+export function applyHeroLogoTuneToElement(
+  el: HTMLElement | null | undefined,
+  tune: HeroLogoTune,
+): void {
+  if (!el) return;
+  const vars = heroLogoTuneToCssVars(tune);
+  for (const [key, value] of Object.entries(vars)) {
+    el.style.setProperty(key, value, "important");
+  }
 }
 
 export function isHeroLogoTuneEqual(a: HeroLogoTune, b: HeroLogoTune): boolean {

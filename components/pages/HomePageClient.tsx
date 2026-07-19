@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import type { CSSProperties } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { HathorLogoTuner } from "@/components/public/HathorLogoTuner";
@@ -23,6 +23,7 @@ import { useExScrollMotion } from "@/hooks/useExScrollMotion";
 import {
   DEFAULT_HERO_LOGO_TUNE,
   type HeroLogoTune,
+  applyHeroLogoTuneToElement,
   heroLogoTuneToCssVars,
   heroLogoTuneToImportantCss,
   parseHeroLogoTune,
@@ -41,6 +42,25 @@ type HomePageClientProps = {
   heroLogoTune?: HeroLogoTune;
 };
 
+function paintLogoTune(tune: HeroLogoTune) {
+  const root = document.querySelector<HTMLElement>(".ex-root");
+  const hero = document.querySelector<HTMLElement>(
+    ".ex-root .home-hero-container",
+  );
+  applyHeroLogoTuneToElement(root, tune);
+  applyHeroLogoTuneToElement(hero, tune);
+
+  let tag = document.querySelector<HTMLStyleElement>(
+    "style[data-hathor-logo-tune-live]",
+  );
+  if (!tag) {
+    tag = document.createElement("style");
+    tag.setAttribute("data-hathor-logo-tune-live", "");
+    document.head.appendChild(tag);
+  }
+  tag.textContent = heroLogoTuneToImportantCss(tune);
+}
+
 export function HomePageClient({
   heroLogoTune = DEFAULT_HERO_LOGO_TUNE,
 }: HomePageClientProps) {
@@ -52,12 +72,18 @@ export function HomePageClient({
     setLiveTune(heroLogoTune);
   }, [heroLogoTune]);
 
-  /* Re-fetch after Save so a cached HTML shell still picks up DB values. */
+  useLayoutEffect(() => {
+    paintLogoTune(liveTune);
+  }, [liveTune]);
+
+  /* Re-fetch so a stale HTML shell still picks up the latest Save. */
   useEffect(() => {
     let cancelled = false;
     void (async () => {
       try {
-        const res = await fetch("/api/hero-logo-tune", { cache: "no-store" });
+        const res = await fetch(`/api/hero-logo-tune?t=${Date.now()}`, {
+          cache: "no-store",
+        });
         if (!res.ok) return;
         const data = (await res.json()) as { tune?: unknown };
         if (cancelled) return;
@@ -72,11 +98,9 @@ export function HomePageClient({
   }, []);
 
   const logoTuneStyle = heroLogoTuneToCssVars(liveTune) as CSSProperties;
-  const logoTuneCss = heroLogoTuneToImportantCss(liveTune);
 
   return (
-    <div className="ex-root" style={logoTuneStyle}>
-      <style data-hathor-logo-tune dangerouslySetInnerHTML={{ __html: logoTuneCss }} />
+    <div className="ex-root" style={logoTuneStyle} data-hathor-logo-tuned="">
       <HathorLogoTuner />
       <main id="top">
         <PublicSiteHero

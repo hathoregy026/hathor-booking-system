@@ -14,6 +14,7 @@ export {
   heroLogoTuneSchema,
   heroLogoTuneToCssVars,
   heroLogoTuneToImportantCss,
+  applyHeroLogoTuneToElement,
   parseHeroLogoTune,
   type HeroLogoTune,
 } from "@/lib/hero-logo-tune-shared";
@@ -30,16 +31,22 @@ function readStoredTune(value: unknown): unknown {
 }
 
 export async function getHeroLogoTune(): Promise<HeroLogoTune> {
+  const row = await withDb(() =>
+    prisma.siteSetting.findUnique({
+      where: { key: HERO_LOGO_TUNE_KEY },
+      select: { value: true },
+    }),
+  );
+  if (!row?.value) return DEFAULT_HERO_LOGO_TUNE;
+  return parseHeroLogoTune(readStoredTune(row.value));
+}
+
+/** Homepage-safe read — never throws; logs and falls back. */
+export async function getHeroLogoTuneSafe(): Promise<HeroLogoTune> {
   try {
-    const row = await withDb(() =>
-      prisma.siteSetting.findUnique({
-        where: { key: HERO_LOGO_TUNE_KEY },
-        select: { value: true },
-      }),
-    );
-    if (!row?.value) return DEFAULT_HERO_LOGO_TUNE;
-    return parseHeroLogoTune(readStoredTune(row.value));
-  } catch {
+    return await getHeroLogoTune();
+  } catch (error) {
+    console.error("[hero-logo-tune] get failed:", error);
     return DEFAULT_HERO_LOGO_TUNE;
   }
 }
@@ -59,6 +66,10 @@ export async function saveHeroLogoTune(tune: HeroLogoTune): Promise<HeroLogoTune
       },
     }),
   );
-  /* Round-trip so callers get exactly what the DB will serve next. */
-  return getHeroLogoTune();
+  try {
+    return await getHeroLogoTune();
+  } catch {
+    /* Upsert already succeeded — don't wipe the dashboard with defaults. */
+    return safe;
+  }
 }

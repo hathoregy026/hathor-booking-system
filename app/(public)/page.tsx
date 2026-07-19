@@ -3,10 +3,13 @@ import { preload } from "react-dom";
 import { HomeExperienceShell } from "@/components/pages/HomeExperienceShell";
 import { HomePageClient } from "@/components/pages/HomePageClient";
 import { HATHOR_HERO_POSTER_SRC, HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
-import { getHeroLogoTune } from "@/lib/hero-logo-tune";
+import { getHeroLogoTuneSafe } from "@/lib/hero-logo-tune";
+import { heroLogoTuneToImportantCss } from "@/lib/hero-logo-tune-shared";
 import "./home-experience.css";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
 export const metadata: Metadata = {
   title: "Luxury Dahabiya Nile Cruise | Hathor Dahabiya",
@@ -47,10 +50,16 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   preload(HATHOR_HERO_VIDEO_SRC, { as: "fetch", fetchPriority: "high" });
-  const heroLogoTune = await getHeroLogoTune();
+  const heroLogoTune = await getHeroLogoTuneSafe();
+  const logoTuneCss = heroLogoTuneToImportantCss(heroLogoTune);
 
   return (
     <HomeExperienceShell>
+      {/* Server-injected so saved tune is in HTML before hydration */}
+      <style
+        data-hathor-logo-tune-ssr
+        dangerouslySetInnerHTML={{ __html: logoTuneCss }}
+      />
       <link
         rel="preload"
         href={HATHOR_HERO_VIDEO_SRC}
