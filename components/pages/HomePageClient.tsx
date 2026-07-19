@@ -81,7 +81,13 @@ export function HomePageClient({
     let cancelled = false;
     void (async () => {
       try {
-        const res = await fetch(`/api/hero-logo-tune?t=${Date.now()}`, {
+        const bust =
+          typeof window !== "undefined"
+            ? window.location.search.includes("logoRefresh")
+              ? Date.now()
+              : Date.now()
+            : Date.now();
+        const res = await fetch(`/api/hero-logo-tune?t=${bust}`, {
           cache: "no-store",
         });
         if (!res.ok) return;

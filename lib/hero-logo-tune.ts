@@ -66,10 +66,6 @@ export async function saveHeroLogoTune(tune: HeroLogoTune): Promise<HeroLogoTune
       },
     }),
   );
-  try {
-    return await getHeroLogoTune();
-  } catch {
-    /* Upsert already succeeded — don't wipe the dashboard with defaults. */
-    return safe;
-  }
+  /* Return what we wrote — never block Save on a follow-up read. */
+  return safe;
 }

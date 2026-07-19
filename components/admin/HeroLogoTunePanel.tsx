@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ExternalLink, Loader2, RotateCcw, Save } from "lucide-react";
 import { HeroLogoTunePreview } from "@/components/admin/HeroLogoTunePreview";
 import { useToast } from "@/components/admin/ToastProvider";
@@ -140,27 +140,33 @@ export function HeroLogoTunePanel() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await adminFetch("/api/admin/hero-logo-tune");
-      if (!response.ok) throw new Error("load failed");
-      const data = (await response.json()) as { tune?: unknown };
-      const next = parseHeroLogoTune(data.tune);
-      setTune(next);
-      setSaved(next);
-    } catch (error) {
-      if (!isTransientFetchError(error)) {
-        showToast("error", "Could not load logo settings.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [showToast]);
-
   useEffect(() => {
-    void load();
-  }, [load]);
+    let cancelled = false;
+    void (async () => {
+      setLoading(true);
+      try {
+        const response = await adminFetch("/api/admin/hero-logo-tune");
+        const data = (await response.json().catch(() => ({}))) as {
+          tune?: unknown;
+        };
+        if (cancelled) return;
+        const next = parseHeroLogoTune(data.tune);
+        setTune(next);
+        setSaved(next);
+      } catch (error) {
+        if (!cancelled && !isTransientFetchError(error)) {
+          showToast("error", "Could not load logo settings — editing defaults.");
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // Load once on mount — do not re-fetch while the user is typing.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const dirty = !isHeroLogoTuneEqual(tune, saved);
 
@@ -182,28 +188,30 @@ export function HeroLogoTunePanel() {
   const save = async () => {
     setSaving(true);
     try {
-      const response = await adminFetch("/api/admin/hero-logo-tune", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tune: parseHeroLogoTune(tune) }),
-      });
+      const payload = parseHeroLogoTune(tune);
+      const response = await adminFetch(
+        "/api/admin/hero-logo-tune",
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ tune: payload }),
+        },
+        60_000,
+      );
       const data = (await response.json().catch(() => ({}))) as {
         tune?: unknown;
         error?: string;
         ok?: boolean;
-        verified?: boolean;
       };
-      if (!response.ok || data.ok === false) {
+      if (!response.ok) {
         throw new Error(data.error || `Save failed (${response.status})`);
       }
-      const next = parseHeroLogoTune(data.tune);
+      const next = parseHeroLogoTune(data.tune ?? payload);
       setTune(next);
       setSaved(next);
       showToast(
         "success",
-        data.verified
-          ? "Saved & verified in DB. Hard-refresh homepage (Ctrl+Shift+R)."
-          : "Saved. Hard-refresh the homepage (Ctrl+Shift+R).",
+        "Saved to live. Hard-refresh the homepage (Ctrl+Shift+R).",
       );
     } catch (error) {
       if (!isTransientFetchError(error)) {
@@ -228,17 +236,13 @@ export function HeroLogoTunePanel() {
         </p>
         <h1 className="admin-page-title">Hero Logo Tune</h1>
         <p className="admin-page-subtitle max-w-2xl">
-          Use the preview above the controls — it updates instantly and uses the
-          exact letter files plus a 168×52 Book Now. Every spacer is one clear
-          gap in a single left-to-right chain (no fighting anchors). The live
-          homepage stays untouched until you click Save to live site.
+          Preview updates as you type. Click Save to write values to the live
+          homepage. H stays at the left edge, R at the right — letter gaps push
+          free letters toward Book Now.
         </p>
       </div>
 
       <div className="admin-card space-y-8 p-6">
-        {/* Always mounted — not gated on load — so the preview is never missing. */}
-        <HeroLogoTunePreview tune={tune} />
-
         {loading ? (
           <div
             className="flex items-center gap-2 text-sm"
@@ -247,8 +251,15 @@ export function HeroLogoTunePanel() {
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
             Loading saved values…
           </div>
-        ) : (
-          <>
+        ) : null}
+
+        <HeroLogoTunePreview tune={tune} />
+
+        <fieldset
+          disabled={saving}
+          className="space-y-8 border-0 p-0 m-0 min-w-0"
+          style={{ opacity: loading ? 0.7 : 1 }}
+        >
             <section className="hlt-section">
               <h2 className="admin-heading text-base">Position · Alignment</h2>
               <p className="hlt-section__hint">
@@ -455,14 +466,13 @@ export function HeroLogoTunePanel() {
                 />
               </div>
             </section>
-          </>
-        )}
+        </fieldset>
 
         <div className="flex flex-wrap gap-3 pt-2">
           <button
             type="button"
             className="admin-btn-primary inline-flex items-center gap-2 px-4 py-2.5 text-sm disabled:opacity-60"
-            disabled={loading || saving || !dirty}
+            disabled={saving}
             onClick={() => void save()}
           >
             {saving ? (
@@ -470,19 +480,19 @@ export function HeroLogoTunePanel() {
             ) : (
               <Save className="h-4 w-4" aria-hidden />
             )}
-            Save to live site
+            {dirty ? "Save to live site" : "Save again to live"}
           </button>
           <button
             type="button"
             className="admin-btn-outline inline-flex items-center gap-2 px-4 py-2.5 text-sm disabled:opacity-60"
-            disabled={loading || saving}
+            disabled={saving || !dirty}
             onClick={() => setTune(saved)}
           >
             <RotateCcw className="h-4 w-4" aria-hidden />
             Undo unsaved
           </button>
           <a
-            href="/"
+            href="/?logoRefresh=1"
             target="_blank"
             rel="noopener noreferrer"
             className="admin-btn-outline inline-flex items-center gap-2 px-4 py-2.5 text-sm"
