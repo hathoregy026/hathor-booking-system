@@ -25,9 +25,18 @@ const gabigaile = localFont({
 });
 
 const gamgote = localFont({
-  src: "../../public/fonts/Gamgote.otf",
+  src: [
+    {
+      path: "../../public/fonts/Gamgote-Regular.otf",
+      weight: "400",
+      style: "normal",
+    },
+  ],
   variable: "--font-hathor-gamgote",
   display: "swap",
+  weight: "400",
+  style: "normal",
+  declarations: [{ prop: "font-synthesis", value: "none" }],
 });
 
 const quietLuxury = localFont({

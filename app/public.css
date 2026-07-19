@@ -6200,13 +6200,13 @@ body.has-page-scroll-transition .pin-spacer {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   Gamgote titles — 48px / lh 100, gold body / white heroes, engraved depth
+   Gamgote Regular titles — 52px / lh 100, engraved depth
    Excludes: homepage hero (data-ex-experience) and booking shell
    ═══════════════════════════════════════════════════════════ */
 
 .public-site {
   --hathor-title-font: var(--font-hathor-gamgote), "Gamgote", var(--public-serif);
-  --hathor-title-size: 48px;
+  --hathor-title-size: 52px;
   --hathor-title-gold: #b69f64;
   --hathor-title-line-height: 1;
   /* Deeper engraved inner shadow (cast from top-left) */
@@ -6222,7 +6222,7 @@ body.has-page-scroll-transition .pin-spacer {
     1px 2px 6px rgba(0, 0, 0, 0.28);
 }
 
-/* Body / sheet main titles — Gamgote gold */
+/* Body / sheet main titles — Gamgote Regular gold */
 .public-site .hathor-section-title,
 .public-site .hathor-chapter-title,
 .public-site .lux-cta-band__title,
@@ -6234,6 +6234,7 @@ body.has-page-scroll-transition .pin-spacer {
   font-size: clamp(1.75rem, 4.2vw, var(--hathor-title-size)) !important;
   font-weight: 400 !important;
   font-style: normal !important;
+  font-synthesis: none !important;
   letter-spacing: 0.02em;
   line-height: var(--hathor-title-line-height) !important;
   color: var(--hathor-title-gold) !important;
@@ -6242,12 +6243,14 @@ body.has-page-scroll-transition .pin-spacer {
   text-wrap: balance;
 }
 
-/* Page heroes (About, Wellness, Blog, …) — Gamgote white */
+/* Page heroes (About, Wellness, Blog, …) — Gamgote Regular white */
 .public-site .hathor-page-hero__title,
 .public-site [data-page-transition] .pt-hero__copy .hathor-page-hero__title {
   font-family: var(--hathor-title-font) !important;
   font-size: clamp(1.75rem, 4.2vw, var(--hathor-title-size)) !important;
   font-weight: 400 !important;
+  font-style: normal !important;
+  font-synthesis: none !important;
   letter-spacing: 0.02em;
   line-height: var(--hathor-title-line-height) !important;
   color: #ffffff !important;
@@ -6265,6 +6268,8 @@ html:not([data-ex-experience])
   font-family: var(--hathor-title-font) !important;
   font-size: clamp(1.75rem, 4.2vw, var(--hathor-title-size)) !important;
   font-weight: 400 !important;
+  font-style: normal !important;
+  font-synthesis: none !important;
   letter-spacing: 0.06em;
   line-height: var(--hathor-title-line-height) !important;
   color: #ffffff !important;
@@ -6277,6 +6282,8 @@ html:not([data-ex-experience]) .public-site .cruises-scroll-route .cruises-hero_
   font-family: var(--hathor-title-font) !important;
   font-size: clamp(1.75rem, 4.2vw, var(--hathor-title-size)) !important;
   font-weight: 400 !important;
+  font-style: normal !important;
+  font-synthesis: none !important;
   line-height: var(--hathor-title-line-height) !important;
   color: #ffffff !important;
   text-shadow: var(--hathor-title-engraved-white);
@@ -6294,6 +6301,8 @@ html[data-ex-experience] .ex-root .cta-inner h2 {
   font-family: var(--hathor-title-font) !important;
   font-size: clamp(1.75rem, 4.2vw, var(--hathor-title-size)) !important;
   font-weight: 400 !important;
+  font-style: normal !important;
+  font-synthesis: none !important;
   letter-spacing: 0.02em;
   line-height: var(--hathor-title-line-height) !important;
   text-transform: none !important;
