@@ -6,18 +6,17 @@ import {
   HATHOR_BTN_HEIGHT_PX,
   HATHOR_BTN_SLOT_PX,
   type HeroLogoTune,
-  heroLogoTuneToCssVars,
 } from "@/lib/hero-logo-tune-shared";
 
 /**
- * Admin preview — 1:1 with control values (no dampening).
- * H at left edge, R at right edge; letter gaps push free letters toward Book Now.
+ * Admin preview — always stays on-screen.
+ * Y is shown as a marker (live uses CSS bottom); letter gaps / size move 1:1.
  */
 export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
-  const cssVars = heroLogoTuneToCssVars(tune) as CSSProperties;
-  const letterH = Math.max(48, Math.round(110 * tune.size));
+  const letterH = Math.max(56, Math.round(100 * tune.size));
   const scale = letterH / 2200;
-  const lw = (i: number) => Math.max(8, Math.round(HATHOR_LOGO_LETTERS[i].width * scale));
+  const lw = (i: number) =>
+    Math.max(10, Math.round(HATHOR_LOGO_LETTERS[i].width * scale));
 
   const alignItems =
     tune.vAlign === "top"
@@ -82,35 +81,39 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
   ];
 
   return (
-    <div className="hlt-preview" style={cssVars} data-hlt-preview="">
+    <div className="hlt-preview" data-hlt-preview="">
       <div className="hlt-preview__toolbar">
         <strong>Instant preview</strong>
-        <span>
-          Moves 1:1 with the numbers below · not live until you click Save
-        </span>
+        <span>Drag sliders below — letters move here immediately</span>
       </div>
 
       <div className="hlt-preview__hud" aria-live="polite">
         <span>size {tune.size.toFixed(2)}×</span>
         <span>y {tune.y}px</span>
-        <span>edges {tune.edgeLeft}/{tune.edgeRight}</span>
+        <span>cta {tune.ctaNudge}px</span>
         <span>H→A {tune.gapHA}</span>
         <span>A→T {tune.gapAT}</span>
         <span>T→btn {tune.gapTButton}</span>
         <span>btn→H {tune.gapButtonH}</span>
         <span>H→O {tune.gapHO}</span>
         <span>O→R {tune.gapOR}</span>
-        <span>align {tune.vAlign}</span>
       </div>
 
       <div className="hlt-preview__stage">
+        <div className="hlt-preview__y-rail" aria-hidden>
+          <span className="hlt-preview__y-label">Y {tune.y}px</span>
+          <div
+            className="hlt-preview__y-marker"
+            style={{ top: `calc(50% + ${Math.max(-70, Math.min(70, tune.y * 0.2))}px)` }}
+          />
+        </div>
+
         <div
           className="hlt-preview__band hlt-preview__band--edges"
           style={
             {
-              height: letterH + 24,
+              height: letterH + 16,
               alignItems,
-              transform: `translateY(${tune.y}px)`,
             } as CSSProperties
           }
         >
@@ -137,7 +140,18 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
                   height={letterH}
                   draggable={false}
                   className="hlt-preview__letter-img"
+                  onError={(e) => {
+                    const el = e.currentTarget;
+                    el.style.display = "none";
+                    const fallback = el.nextElementSibling;
+                    if (fallback instanceof HTMLElement) {
+                      fallback.hidden = false;
+                    }
+                  }}
                 />
+                <span className="hlt-preview__letter-fallback" hidden>
+                  {letter.alt}
+                </span>
               </span>
             ))}
           </div>
@@ -177,7 +191,18 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
                   height={letterH}
                   draggable={false}
                   className="hlt-preview__letter-img"
+                  onError={(e) => {
+                    const el = e.currentTarget;
+                    el.style.display = "none";
+                    const fallback = el.nextElementSibling;
+                    if (fallback instanceof HTMLElement) {
+                      fallback.hidden = false;
+                    }
+                  }}
                 />
+                <span className="hlt-preview__letter-fallback" hidden>
+                  {letter.alt}
+                </span>
               </span>
             ))}
           </div>

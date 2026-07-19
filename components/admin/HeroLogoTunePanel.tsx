@@ -220,6 +220,9 @@ export function HeroLogoTunePanel() {
         ok?: boolean;
       };
       if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Session expired — log in again, then Save.");
+        }
         throw new Error(data.error || `Save failed (${response.status})`);
       }
       const next = parseHeroLogoTune(data.tune ?? payload);
@@ -227,7 +230,7 @@ export function HeroLogoTunePanel() {
       setSaved(next);
       showToast(
         "success",
-        "Saved to live site. Open homepage (or Ctrl+Shift+R) to confirm.",
+        "Saved. Open the site homepage (/) and hard-refresh to confirm.",
       );
       /* Bust Cloudflare / browser cache on the public homepage. */
       void fetch(`/api/hero-logo-tune?t=${Date.now()}`, { cache: "no-store" }).catch(
@@ -256,9 +259,9 @@ export function HeroLogoTunePanel() {
         </p>
         <h1 className="admin-page-title">Hero Logo Tune</h1>
         <p className="admin-page-subtitle max-w-2xl">
-          Preview updates as you type. Click Save to write values to the live
-          homepage. H stays at the left edge, R at the right — letter gaps push
-          free letters toward Book Now.
+          Preview updates as you drag. Save writes to the live Vercel homepage
+          (`/`). H stays at the left edge, R at the right — letter gaps push free
+          letters toward Book Now.
         </p>
       </div>
 

@@ -1406,11 +1406,52 @@ select.admin-input option:checked {
   position: relative;
   width: 100%;
   min-height: 220px;
-  padding: 40px 12px 48px;
+  padding: 36px 12px 40px;
   border: 2px solid color-mix(in srgb, var(--accent) 55%, var(--border));
   border-radius: 14px;
   background: linear-gradient(180deg, #2a241c 0%, #1a1612 55%, #14110e 100%);
   overflow: auto;
+}
+
+.hlt-preview__y-rail {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  bottom: 12px;
+  width: 28px;
+  pointer-events: none;
+}
+
+.hlt-preview__y-label {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 0.65rem;
+  color: #c4a46a;
+  white-space: nowrap;
+}
+
+.hlt-preview__y-marker {
+  position: absolute;
+  right: 4px;
+  width: 12px;
+  height: 12px;
+  margin-top: -6px;
+  border-radius: 999px;
+  background: #c4a46a;
+  box-shadow: 0 0 0 3px rgba(196, 164, 106, 0.25);
+  transition: top 0.15s ease-out;
+}
+
+.hlt-preview__letter-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #c4a46a;
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 
 .hlt-preview__band {
