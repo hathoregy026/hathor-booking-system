@@ -11,6 +11,7 @@ import {
 } from "@/lib/branding";
 import { EX_GOLD_LOGO_SRC, EX_HERO } from "@/lib/ex-page-content";
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
+import { useTypographyInlineStyle } from "@/components/public/TypographySettingsProvider";
 import { usePublicSiteHeroMotion } from "@/hooks/usePublicSiteHeroMotion";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 
@@ -51,6 +52,8 @@ export function PublicSiteHero({
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const posterImage = useSiteImage(posterImageName ?? "home-hero-poster");
   const posterSrc = posterImageName ? posterImage.src : undefined;
+  const heroTitleStyle = useTypographyInlineStyle("hero_title");
+  const heroSubtitleStyle = useTypographyInlineStyle("hero_subtitle");
   usePublicSiteHeroMotion(animate);
 
   useLayoutEffect(() => {
@@ -106,8 +109,10 @@ export function PublicSiteHero({
       </div>
 
       <div className="hero-content">
-        <h1 className="hero-heading">
-          <span className="hero-line hero-line--right">{lineRight}</span>
+        <h1 className="hero-heading" style={heroTitleStyle}>
+          <span className="hero-line hero-line--right" style={heroTitleStyle}>
+            {lineRight}
+          </span>
           {lineLeftImageSrc ? (
             <span className="hero-line hero-line--left hero-line--wordmark">
               <Image
@@ -124,12 +129,17 @@ export function PublicSiteHero({
             <span
               className="hero-line hero-line--left"
               data-text={lineLeft}
+              style={heroTitleStyle}
             >
               {lineLeft}
             </span>
           ) : null}
         </h1>
-        {subtitle ? <p className="hero-sub">{subtitle}</p> : null}
+        {subtitle ? (
+          <p className="hero-sub" style={heroSubtitleStyle}>
+            {subtitle}
+          </p>
+        ) : null}
       </div>
 
       {showCta ? (

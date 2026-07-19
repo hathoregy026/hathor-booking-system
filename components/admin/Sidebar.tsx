@@ -12,6 +12,7 @@ import {
   Ship,
   Sparkles,
   Ticket,
+  Type,
   X,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -31,6 +32,7 @@ const NAV_SECTIONS: { title: string; items: NavItem[] }[] = [
       { href: "/admin/cruises", label: "Cruises & Rooms", icon: Ship },
       { href: "/admin/content", label: "Website Content", icon: Globe },
       { href: "/admin/hero-logo-tune", label: "Hero Logo Tune", icon: Sparkles },
+      { href: "/admin/typography", label: "Typography & Styles", icon: Type },
       { href: "/admin/blogs", label: "Blog Posts", icon: FileText },
       { href: "/admin/email-templates", label: "Email Templates", icon: Mail },
     ],

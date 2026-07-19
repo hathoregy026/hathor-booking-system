@@ -1513,3 +1513,88 @@ select.admin-input option:checked {
   color: rgba(196, 164, 106, 0.85);
   text-align: center;
 }
+
+/* Typography & Styles admin */
+.typo-panel .typo-roles {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.typo-role-card__preview {
+  margin: 0 0 1.25rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  min-height: 4.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.typo-color-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.typo-color-swatch {
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.typo-font-select {
+  cursor: pointer;
+}
+
+.typo-toggle-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.typo-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  height: var(--admin-control-height);
+  padding: 0.25rem 0.75rem 0.25rem 0.25rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.typo-switch__thumb {
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 999px;
+  background: var(--text-muted);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.typo-switch--on {
+  border-color: var(--accent);
+  background: var(--sidebar-active);
+  color: var(--accent);
+}
+
+.typo-switch--on .typo-switch__thumb {
+  transform: translateX(0.15rem);
+  background: var(--accent);
+}
+
+.typo-switch__label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}

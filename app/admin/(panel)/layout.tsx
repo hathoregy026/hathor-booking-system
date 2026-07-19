@@ -1,5 +1,6 @@
 import { Inter } from "next/font/google";
 import { AdminShell } from "@/components/admin/AdminShell";
+import "../../hathor-fonts.css";
 
 const inter = Inter({
   subsets: ["latin"],

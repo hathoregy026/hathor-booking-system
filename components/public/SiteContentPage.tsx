@@ -1,11 +1,15 @@
+"use client";
+
 import Link from "next/link";
+import type { ReactNode } from "react";
+import { useTypographyInlineStyle } from "@/components/public/TypographySettingsProvider";
 
 type SiteContentPageProps = {
   title: string;
   subtitle?: string | null;
   breadcrumb?: string;
   darkHero?: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 export function SiteContentPage({
@@ -15,6 +19,9 @@ export function SiteContentPage({
   darkHero = false,
   children,
 }: SiteContentPageProps) {
+  const titleStyle = useTypographyInlineStyle("page_title");
+  const subtitleStyle = useTypographyInlineStyle("page_subtitle");
+
   return (
     <>
       <div
@@ -28,9 +35,13 @@ export function SiteContentPage({
             <span>{breadcrumb ?? title}</span>
           </nav>
           {subtitle && (
-            <p className="lux-section-eyebrow">{subtitle}</p>
+            <p className="lux-section-eyebrow" style={subtitleStyle}>
+              {subtitle}
+            </p>
           )}
-          <h1 className="lux-page-hero__title mt-2">{title}</h1>
+          <h1 className="lux-page-hero__title mt-2" style={titleStyle}>
+            {title}
+          </h1>
           <div className="lux-gold-line" />
         </div>
       </div>

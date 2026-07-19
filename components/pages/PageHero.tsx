@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
+import { useTypographyInlineStyle } from "@/components/public/TypographySettingsProvider";
 import { ParallaxHeroImage } from "@/components/ui/ParallaxHeroImage";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 
@@ -26,6 +27,8 @@ export function PageHero({
   variant = "default",
 }: PageHeroProps) {
   const image = useSiteImage(imageName);
+  const titleStyle = useTypographyInlineStyle("page_title");
+  const subtitleStyle = useTypographyInlineStyle("page_subtitle");
 
   return (
     <section
@@ -52,9 +55,13 @@ export function PageHero({
           ) : null}
           <span aria-current="page">{breadcrumb}</span>
         </nav>
-        <h1 className="hathor-page-hero__title">{title}</h1>
+        <h1 className="hathor-page-hero__title" style={titleStyle}>
+          {title}
+        </h1>
         {subtitle ? (
-          <p className="hathor-page-hero__subtitle">{subtitle}</p>
+          <p className="hathor-page-hero__subtitle" style={subtitleStyle}>
+            {subtitle}
+          </p>
         ) : null}
         <div className="hathor-gold-line" />
       </div>

@@ -1,9 +1,16 @@
+import type { CSSProperties, ReactNode } from "react";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import { PublicLayout } from "@/components/public/PublicLayout";
 import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
+import { TypographySettingsProvider } from "@/components/public/TypographySettingsProvider";
 import { resolveSiteImageMap } from "@/lib/resolve-site-images";
+import {
+  getTypographySettingsSafe,
+  typographyToImportantCss,
+} from "@/lib/typography-settings";
+import "../hathor-fonts.css";
 import "../public.css";
 import "../site-nav.css";
 import "../public-site-hero.css";
@@ -43,12 +50,6 @@ const quietLuxury = localFont({
   src: "../../public/fonts/quietluxury-script.otf",
   variable: "--font-hathor-quiet-luxury",
   display: "swap",
-});
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-hathor-display",
-  weight: ["400", "500", "600", "700"],
 });
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -93,16 +94,32 @@ export const metadata: Metadata = {
 export default async function PublicSiteLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
-  const siteImages = await resolveSiteImageMap();
+  const [siteImages, typography] = await Promise.all([
+    resolveSiteImageMap(),
+    getTypographySettingsSafe(),
+  ]);
+
+  const displayFontStyle = {
+    /* Local Playfair via @font-face in hathor-fonts.css — not Google Fonts */
+    ["--font-hathor-display" as string]: '"Playfair Display", Georgia, serif',
+  } as CSSProperties;
 
   return (
     <div
-      className={`${agraham.variable} ${gabigaile.variable} ${gamgote.variable} ${quietLuxury.variable} ${playfair.variable} ${plusJakarta.variable}`}
+      className={`${agraham.variable} ${gabigaile.variable} ${gamgote.variable} ${quietLuxury.variable} ${plusJakarta.variable}`}
+      style={displayFontStyle}
     >
+      <style
+        dangerouslySetInnerHTML={{
+          __html: typographyToImportantCss(typography),
+        }}
+      />
       <SiteImagesProvider images={siteImages}>
-        <PublicLayout>{children}</PublicLayout>
+        <TypographySettingsProvider initial={typography}>
+          <PublicLayout>{children}</PublicLayout>
+        </TypographySettingsProvider>
       </SiteImagesProvider>
     </div>
   );
