@@ -13,13 +13,11 @@ export type SocialLink = {
   href: string;
 };
 
-/** Placeholder links — update href values when social URLs are ready. */
+/** Public social profiles for Hathor Dahabiya Cruise. */
 export const PUBLIC_SOCIAL_LINKS: SocialLink[] = [
-  { key: "facebook", label: "Facebook", href: "#" },
-  { key: "linkedin", label: "LinkedIn", href: "#" },
-  { key: "instagram", label: "Instagram", href: "#" },
-  { key: "x", label: "X", href: "#" },
-  { key: "youtube", label: "YouTube", href: "#" },
-  { key: "tiktok", label: "TikTok", href: "#" },
-  { key: "google", label: "Google", href: "#" },
+  { key: "facebook", label: "Facebook", href: "https://www.facebook.com/Hathorcruise" },
+  { key: "instagram", label: "Instagram", href: "https://www.instagram.com/hathorcruise/" },
+  { key: "linkedin", label: "LinkedIn", href: "https://www.linkedin.com/company/hathor-dahabiya-cruise" },
+  { key: "youtube", label: "YouTube", href: "https://www.youtube.com/@hathorcruise" },
+  { key: "tiktok", label: "TikTok", href: "https://www.tiktok.com/@hathorcruise" },
 ];

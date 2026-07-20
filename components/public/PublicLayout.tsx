@@ -1,6 +1,7 @@
 import { Footer } from "@/components/layout/Footer";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import { BookingModalProvider } from "@/components/booking/BookingModalProvider";
+import { FloatingActions } from "@/components/public/FloatingActions";
 import { LuxuryTextAnimations } from "@/components/public/LuxuryTextAnimations";
 import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
 import { SiteImagePreviewScroll } from "@/components/public/SiteImagePreviewScroll";
@@ -23,6 +24,7 @@ export function PublicLayout({ children }: PublicLayoutProps) {
             <PageTransition>{children}</PageTransition>
           </main>
           <Footer />
+          <FloatingActions />
         </div>
       </BookingModalProvider>
     </PublicThemeProvider>
