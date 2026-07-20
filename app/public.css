@@ -6285,15 +6285,16 @@ body.has-page-scroll-transition .pin-spacer {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   Gamgote Regular titles — 52px / lh 100, engraved depth
-   Excludes: homepage hero (data-ex-experience) and booking shell
+   Title engraving defaults — font/size/color owned by Typography admin
+   (see typographyToImportantCss / #hathor-typography-live)
+   Excludes: homepage hero (data-ex-experience hero) and booking shell
    ═══════════════════════════════════════════════════════════ */
 
 .public-site {
-  --hathor-title-font: var(--font-hathor-gamgote), "Gamgote", var(--public-serif);
-  --hathor-title-size: 52px;
-  --hathor-title-gold: #b69f64;
-  --hathor-title-line-height: 1;
+  --hathor-title-font: var(--typo-page-title-font, var(--font-hathor-gamgote), "Gamgote", var(--public-serif));
+  --hathor-title-size: var(--typo-page-title-size, 52px);
+  --hathor-title-gold: var(--typo-page-title-color, #b69f64);
+  --hathor-title-line-height: var(--typo-page-title-line-height, 1);
   /* Deeper engraved inner shadow (cast from top-left) */
   --hathor-title-engraved-gold:
     -1px -1px 0 rgba(255, 248, 235, 0.55),
@@ -6307,7 +6308,7 @@ body.has-page-scroll-transition .pin-spacer {
     1px 2px 6px rgba(0, 0, 0, 0.28);
 }
 
-/* Body / sheet main titles — Gamgote Regular gold */
+/* Body / sheet main titles — engraving only; typography admin owns type */
 .public-site .hathor-section-title,
 .public-site .hathor-chapter-title,
 .public-site .lux-cta-band__title,
@@ -6315,31 +6316,19 @@ body.has-page-scroll-transition .pin-spacer {
 .public-site .lux-section-title,
 .public-site [data-page-transition] .pt-sheet__landing-title,
 .public-site .cruises-sheet__title {
-  font-family: var(--hathor-title-font) !important;
-  font-size: clamp(1.75rem, 4.2vw, var(--hathor-title-size)) !important;
-  font-weight: 400 !important;
-  font-style: normal !important;
-  font-synthesis: none !important;
-  letter-spacing: 0.02em;
-  line-height: var(--hathor-title-line-height) !important;
-  color: var(--hathor-title-gold) !important;
-  -webkit-text-fill-color: var(--hathor-title-gold);
-  text-shadow: var(--hathor-title-engraved-gold);
+  font-weight: 400;
+  font-style: normal;
+  font-synthesis: none;
   text-wrap: balance;
+  text-shadow: var(--hathor-title-engraved-gold);
 }
 
-/* Page heroes (About, Wellness, Blog, …) — Gamgote Regular white */
+/* Page heroes (About, Wellness, Blog, …) — white engraved fallback */
 .public-site .hathor-page-hero__title,
 .public-site [data-page-transition] .pt-hero__copy .hathor-page-hero__title {
-  font-family: var(--hathor-title-font) !important;
-  font-size: clamp(1.75rem, 4.2vw, var(--hathor-title-size)) !important;
-  font-weight: 400 !important;
-  font-style: normal !important;
-  font-synthesis: none !important;
-  letter-spacing: 0.02em;
-  line-height: var(--hathor-title-line-height) !important;
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff;
+  font-weight: 400;
+  font-style: normal;
+  font-synthesis: none;
   text-shadow: var(--hathor-title-engraved-white);
 }
 
@@ -6353,13 +6342,9 @@ html:not([data-ex-experience]) .public-site .home-hero-container .hero-line--rig
 }
 
 html:not([data-ex-experience]) .public-site .cruises-scroll-route .cruises-hero__title {
-  font-family: var(--hathor-title-font) !important;
-  font-size: clamp(1.75rem, 4.2vw, var(--hathor-title-size)) !important;
-  font-weight: 400 !important;
-  font-style: normal !important;
-  font-synthesis: none !important;
-  line-height: var(--hathor-title-line-height) !important;
-  color: #ffffff !important;
+  font-weight: 400;
+  font-style: normal;
+  font-synthesis: none;
   text-shadow: var(--hathor-title-engraved-white);
 }
 
@@ -6372,16 +6357,10 @@ html[data-ex-experience] .ex-root .gallery-h2 h2,
 html[data-ex-experience] .ex-root .gallery-sm h2,
 html[data-ex-experience] .ex-root .testimonial-h2 h2,
 html[data-ex-experience] .ex-root .cta-inner h2 {
-  font-family: var(--hathor-title-font) !important;
-  font-size: clamp(1.75rem, 4.2vw, var(--hathor-title-size)) !important;
-  font-weight: 400 !important;
-  font-style: normal !important;
-  font-synthesis: none !important;
-  letter-spacing: 0.02em;
-  line-height: var(--hathor-title-line-height) !important;
-  text-transform: none !important;
-  color: var(--hathor-title-gold) !important;
-  -webkit-text-fill-color: var(--hathor-title-gold);
+  font-weight: 400;
+  font-style: normal;
+  font-synthesis: none;
+  text-transform: none;
   text-shadow: var(--hathor-title-engraved-gold);
 }
 
