@@ -98,13 +98,15 @@ export function GastronomyPageContent() {
 
         <section className="spx-suite" id="venues">
           <div className="lux-wrap">
-            <p className="lux-kicker" data-lux-reveal>
-              Venues
-            </p>
-            <h2 className="lux-gold lux-gold-lg" data-lux-title>
-              Where you dine
-            </h2>
-            <div className="spx-suite-grid" style={{ marginTop: "2rem" }}>
+            <header className="spx-intro" style={{ paddingTop: 0, paddingBottom: "2rem" }}>
+              <p className="lux-kicker" data-lux-reveal>
+                Venues
+              </p>
+              <h2 className="lux-gold lux-gold-lg" data-lux-title>
+                Where you dine
+              </h2>
+            </header>
+            <div className="spx-suite-grid">
               {GASTRONOMY_PAGE.venues.map((venue) => (
                 <article key={venue.title} className="spx-suite-card">
                   <div className="spx-suite-body">

@@ -63,10 +63,21 @@ export function RoomsPageContent() {
               </span>
             </h2>
             <p className="acc-intro-copy acc-reveal">
-              {ROOMS_PAGE.accommodations.intro}{" "}
-              {ROOMS_PAGE.accommodations.stats.join(" · ")}.
+              {ROOMS_PAGE.accommodations.intro}
             </p>
-            <p className="acc-intro-copy acc-reveal" style={{ marginTop: "1.25rem" }}>
+            <div className="cruise-stats acc-reveal" style={{ marginTop: "2.5rem" }}>
+              {ROOMS_PAGE.accommodations.stats.map((stat) => (
+                <div key={stat} className="cruise-stat">
+                  <span className="cruise-stat-num">
+                    {stat.match(/^\d+/)?.[0]}
+                  </span>
+                  <span className="cruise-stat-label">
+                    {stat.replace(/^\d+\s*/, "")}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <p className="acc-intro-copy acc-reveal" style={{ marginTop: "2rem" }}>
               {ROOMS_PAGE.accommodations.outro}
             </p>
           </div>
@@ -127,10 +138,12 @@ export function RoomsPageContent() {
 
         <section className="spx-suite" id="suites">
           <div className="lux-wrap">
-            <p className="lux-kicker acc-reveal">Suites</p>
-            <h2 className="lux-gold lux-gold-lg">{ROOMS_PAGE.suites.title}</h2>
-            <p className="lux-lead acc-reveal">{ROOMS_PAGE.suites.body}</p>
-            <div className="spx-suite-grid" style={{ marginTop: "2rem" }}>
+            <header className="spx-intro" style={{ paddingTop: 0, paddingBottom: "2rem" }}>
+              <p className="lux-kicker acc-reveal">Suites</p>
+              <h2 className="lux-gold lux-gold-lg">{ROOMS_PAGE.suites.title}</h2>
+              <p className="lux-lead acc-reveal">{ROOMS_PAGE.suites.body}</p>
+            </header>
+            <div className="spx-suite-grid">
               {ROOMS_PAGE.suites.features.map((feature) => (
                 <article key={feature} className="spx-suite-card">
                   <div className="spx-suite-body">
@@ -144,13 +157,11 @@ export function RoomsPageContent() {
         </section>
 
         <section className="cta-section" id="reserve">
-          <div className="cta-inner">
+          <div className="cta-inner hathor-cta-copy">
             <h2>{ROOMS_PAGE.cruisesCta.title}</h2>
             <p>{ROOMS_PAGE.cruisesCta.body}</p>
-            <p className="lux-lead" style={{ color: "rgba(255,255,255,0.75)" }}>
-              {ROOMS_PAGE.welcome.subtitle}
-            </p>
-            <p style={{ color: "rgba(255,255,255,0.7)" }}>{ROOMS_PAGE.welcome.body}</p>
+            <p className="hathor-cta-sub">{ROOMS_PAGE.welcome.subtitle}</p>
+            <p className="hathor-cta-note">{ROOMS_PAGE.welcome.body}</p>
             <Link className="btn btn-filled" href="/cruises">
               {ROOMS_PAGE.cruisesCta.hrefLabel}
             </Link>

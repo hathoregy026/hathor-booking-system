@@ -124,15 +124,15 @@ export function HighlightsPageContent() {
       </section>
 
       <section className="cta-section" id="reserve">
-        <div className="cta-inner">
+        <div className="cta-inner hathor-cta-copy">
           <h2 className="lux-gold lux-gold-md" data-lux-title>
             Book Your Cruise Now
           </h2>
           <p data-lux-reveal>
             Reserve your voyage and experience Hathor highlights on the Nile.
           </p>
-          <BookNowTrigger className="btn btn-filled">Book Now</BookNowTrigger>
-          <div style={{ marginTop: "1rem" }}>
+          <div className="hathor-cta-actions">
+            <BookNowTrigger className="btn btn-filled">Book Now</BookNowTrigger>
             <Link className="btn btn-dark" href="/cruises">
               View Voyages
             </Link>

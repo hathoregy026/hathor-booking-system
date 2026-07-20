@@ -257,7 +257,11 @@ export function CruisesPageListingsGrid() {
             <p className="cruise-card-region">Departs {item.departureDay}</p>
             <h3 className="cruise-card-title">{item.roomName}</h3>
             <p className="cruise-card-meta">
-              {item.cruiseName} · up to {item.capacity} guests
+              {item.cruiseName}
+              <span className="cruise-card-meta-sep" aria-hidden="true">
+                ·
+              </span>
+              up to {item.capacity} guests
             </p>
             <p className="cruise-card-desc">{item.description}</p>
             <ul className="cruise-card-amenities">

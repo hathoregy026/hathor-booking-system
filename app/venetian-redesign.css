@@ -1757,3 +1757,261 @@
   color: var(--gold-soft);
 }
 
+/* ---------- Elegant typography alignment (content unchanged) ---------- */
+.venetian-page .acc-intro-title,
+.venetian-page .cruise-intro-title,
+.venetian-page .cruise-exp-title,
+.venetian-page .lux-gold,
+.venetian-page .hlx-head .lux-gold,
+.venetian-page .spx-intro .lux-gold,
+.venetian-page .cta-inner h2 {
+  text-wrap: balance;
+}
+
+.venetian-page .acc-intro-copy,
+.venetian-page .cruise-intro-copy,
+.venetian-page .spx-intro .lux-lead,
+.venetian-page .spx-intro .lux-copy,
+.venetian-page .hlx-head .lux-lead,
+.venetian-page .hlx-head .lux-copy,
+.venetian-page .lux-end .lux-lead,
+.venetian-page .lux-end .lux-copy {
+  text-wrap: pretty;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.venetian-page .acc-intro-copy {
+  max-width: 46ch;
+  line-height: 1.8;
+  letter-spacing: 0.01em;
+}
+
+.venetian-page .cruise-intro-copy {
+  max-width: 48ch;
+  line-height: 1.8;
+}
+
+.venetian-page .spx-intro .lux-lead,
+.venetian-page .hlx-head .lux-lead,
+.venetian-page .lux-end .lux-lead {
+  max-width: 40ch;
+}
+
+.venetian-page .spx-intro .lux-copy,
+.venetian-page .hlx-head .lux-copy,
+.venetian-page .lux-end .lux-copy {
+  max-width: 52ch;
+  line-height: 1.85;
+}
+
+.venetian-page .room-fs-copy {
+  text-align: left;
+}
+
+.venetian-page .room-fs-title {
+  text-wrap: balance;
+  max-width: 14ch;
+}
+
+.venetian-page .room-fs-meta {
+  letter-spacing: 0.14em;
+}
+
+.venetian-page .room-fs-desc {
+  max-width: 36ch;
+  line-height: 1.7;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+}
+
+.venetian-page .cruise-card-body {
+  text-align: left;
+}
+
+.venetian-page .cruise-card-title {
+  text-wrap: balance;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  font-size: clamp(1.35rem, 2vw, 1.7rem);
+  line-height: 1.2;
+}
+
+.venetian-page .cruise-card-meta {
+  line-height: 1.55;
+}
+
+.venetian-page .cruise-card-meta-sep {
+  margin: 0 0.35em;
+  opacity: 0.55;
+}
+
+.venetian-page .cruise-card-desc {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  line-height: 1.7;
+  max-width: none;
+}
+
+.venetian-page .cruise-card-amenities li {
+  position: relative;
+  padding-left: 0.85rem;
+  line-height: 1.45;
+}
+
+.venetian-page .cruise-card-amenities li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 5px;
+  height: 1px;
+  background: var(--gold);
+}
+
+.venetian-page .cruise-card-price {
+  margin-top: auto;
+  padding-top: 0.35rem;
+}
+
+.venetian-page .hlx-panel-copy {
+  text-align: left;
+}
+
+.venetian-page .hlx-panel-copy h3 {
+  text-wrap: balance;
+  line-height: 1.15;
+  margin-bottom: 0.75rem;
+}
+
+.venetian-page .hlx-panel-copy > p:not(.lux-kicker) {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  overflow: hidden;
+  line-height: 1.7;
+  max-width: 38ch;
+}
+
+.venetian-page .dnx-panel {
+  text-align: left;
+}
+
+.venetian-page .dnx-panel .lux-copy {
+  max-width: 38ch;
+  line-height: 1.75;
+}
+
+.venetian-page .spx-frame-ui {
+  text-align: left;
+}
+
+.venetian-page .spx-frame--right .spx-frame-ui {
+  text-align: right;
+}
+
+.venetian-page .spx-frame-ui .lux-lead,
+.venetian-page .spx-frame-ui .lux-copy {
+  max-width: 36ch;
+  line-height: 1.7;
+}
+
+.venetian-page .spx-frame--right .spx-frame-ui .lux-lead,
+.venetian-page .spx-frame--right .spx-frame-ui .lux-copy {
+  margin-left: auto;
+}
+
+.venetian-page .spx-suite-body {
+  text-align: left;
+}
+
+.venetian-page .spx-suite-body h3 {
+  text-wrap: balance;
+  line-height: 1.25;
+  margin-bottom: 0.55rem;
+}
+
+.venetian-page .spx-suite-body p {
+  line-height: 1.7;
+  max-width: 34ch;
+}
+
+.venetian-page .hlx-manifesto-item {
+  text-align: left;
+}
+
+.venetian-page .hlx-manifesto-item h3 {
+  text-wrap: balance;
+  margin-bottom: 0.65rem;
+}
+
+.venetian-page .hlx-manifesto-item p {
+  line-height: 1.75;
+  max-width: 36ch;
+}
+
+.venetian-page .cta-inner.hathor-cta-copy,
+.venetian-page .cta-inner {
+  text-align: center;
+}
+
+.venetian-page .cta-inner p,
+.venetian-page .hathor-cta-note {
+  max-width: 48ch;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.75;
+  text-wrap: pretty;
+}
+
+.venetian-page .hathor-cta-sub {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  letter-spacing: 0.02em;
+  color: rgba(245, 239, 228, 0.88);
+  margin: 0.25rem auto 0.85rem;
+  max-width: 36ch;
+}
+
+.venetian-page .hathor-cta-note {
+  color: rgba(245, 239, 228, 0.68);
+  margin-bottom: 1.75rem;
+}
+
+.venetian-page .spx-atelier-copy {
+  text-align: left;
+}
+
+.venetian-page .spx-atelier-copy .lux-lead,
+.venetian-page .spx-atelier-copy .lux-copy {
+  max-width: 42ch;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.venetian-page .cruise-exp-copy {
+  text-align: left;
+}
+
+.venetian-page .cruise-exp-list li {
+  line-height: 1.55;
+}
+
+.venetian-page .hathor-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.35rem;
+}
+
+.venetian-page .cta-inner .btn + div {
+  margin-top: 1rem;
+}
+
