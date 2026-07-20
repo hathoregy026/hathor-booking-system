@@ -33,6 +33,8 @@ export type PublicSiteHeroProps = {
    * the old single gold.svg mark is removed.
    */
   splitLetterLogo?: boolean;
+  /** Homepage-only warm gold video tint (see app/hero-tint.css). */
+  goldTint?: boolean;
 };
 
 export function PublicSiteHero({
@@ -46,6 +48,7 @@ export function PublicSiteHero({
   ctaLabel = HOMEPAGE_HERO.cta,
   animate = true,
   posterImageName,
+  goldTint = false,
 }: PublicSiteHeroProps) {
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const posterImage = useSiteImage(posterImageName ?? "home-hero-poster");
@@ -68,7 +71,7 @@ export function PublicSiteHero({
     <section
       id={posterImageName ? siteImageAnchorId(posterImageName) : undefined}
       data-site-image={posterImageName}
-      className="home-hero-container"
+      className={`home-hero-container${goldTint ? " hero-gold-tint" : ""}`}
       aria-label="Hero"
     >
       <div className="hero-media">

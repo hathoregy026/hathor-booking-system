@@ -110,6 +110,7 @@ export function HomePageClient({
         <PublicSiteHero
           animate={false}
           splitLetterLogo
+          goldTint
           lineRight={EX_HERO.lineRight}
           lineLeft={EX_HERO.lineLeft}
           posterImageName={EX_HERO.imageName}

@@ -7,6 +7,7 @@ import { HATHOR_HERO_POSTER_SRC, HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
 import { getHeroLogoTuneSafe } from "@/lib/hero-logo-tune";
 import { heroLogoTuneToImportantCss } from "@/lib/hero-logo-tune-shared";
 import "./home-experience.css";
+import "../hero-tint.css";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
