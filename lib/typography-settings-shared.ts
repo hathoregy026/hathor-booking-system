@@ -74,12 +74,35 @@ export const typographyTextStyleSchema = z.object({
 
 export type TypographyTextStyle = z.infer<typeof typographyTextStyleSchema>;
 
+export const HERO_ALIGNS = ["left", "center", "right"] as const;
+export type HeroAlign = (typeof HERO_ALIGNS)[number];
+
+/** Free placement for the two hero title lines (may overlap). */
+export const heroLayoutSchema = z.object({
+  align: z.enum(HERO_ALIGNS),
+  mainX: z.number().min(-240).max(240),
+  mainY: z.number().min(-240).max(240),
+  secondX: z.number().min(-240).max(240),
+  secondY: z.number().min(-240).max(240),
+});
+
+export type HeroLayout = z.infer<typeof heroLayoutSchema>;
+
+export const DEFAULT_HERO_LAYOUT: HeroLayout = {
+  align: "center",
+  mainX: 0,
+  mainY: 0,
+  secondX: 0,
+  secondY: -28,
+};
+
 export const typographySettingsSchema = z.object({
   hero_title: typographyTextStyleSchema,
   hero_subtitle: typographyTextStyleSchema,
   page_title: typographyTextStyleSchema,
   page_subtitle: typographyTextStyleSchema,
   body_text: typographyTextStyleSchema,
+  hero_layout: heroLayoutSchema,
 });
 
 export type TypographySettings = z.infer<typeof typographySettingsSchema>;
@@ -125,6 +148,7 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
     letterSpacing: 0,
     innerShadow: false,
   },
+  hero_layout: { ...DEFAULT_HERO_LAYOUT },
 };
 
 const INNER_SHADOW = "inset 0 1px 2px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.2)";
@@ -186,6 +210,36 @@ function parseTextStyle(
   };
 }
 
+function clampNum(n: number, min: number, max: number, fb: number): number {
+  if (!Number.isFinite(n)) return fb;
+  return Math.min(max, Math.max(min, n));
+}
+
+function parseHeroLayout(raw: unknown): HeroLayout {
+  const src =
+    raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
+  const alignRaw = typeof src.align === "string" ? src.align : DEFAULT_HERO_LAYOUT.align;
+  const align = (HERO_ALIGNS as readonly string[]).includes(alignRaw)
+    ? (alignRaw as HeroAlign)
+    : DEFAULT_HERO_LAYOUT.align;
+  const candidate: HeroLayout = {
+    align,
+    mainX: asFiniteNumber(src.mainX) ?? DEFAULT_HERO_LAYOUT.mainX,
+    mainY: asFiniteNumber(src.mainY) ?? DEFAULT_HERO_LAYOUT.mainY,
+    secondX: asFiniteNumber(src.secondX) ?? DEFAULT_HERO_LAYOUT.secondX,
+    secondY: asFiniteNumber(src.secondY) ?? DEFAULT_HERO_LAYOUT.secondY,
+  };
+  const parsed = heroLayoutSchema.safeParse(candidate);
+  if (parsed.success) return parsed.data;
+  return {
+    align,
+    mainX: clampNum(candidate.mainX, -240, 240, DEFAULT_HERO_LAYOUT.mainX),
+    mainY: clampNum(candidate.mainY, -240, 240, DEFAULT_HERO_LAYOUT.mainY),
+    secondX: clampNum(candidate.secondX, -240, 240, DEFAULT_HERO_LAYOUT.secondX),
+    secondY: clampNum(candidate.secondY, -240, 240, DEFAULT_HERO_LAYOUT.secondY),
+  };
+}
+
 export function parseTypographySettings(raw: unknown): TypographySettings {
   const src =
     raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
@@ -201,6 +255,7 @@ export function parseTypographySettings(raw: unknown): TypographySettings {
       DEFAULT_TYPOGRAPHY_SETTINGS.page_subtitle,
     ),
     body_text: parseTextStyle(src.body_text, DEFAULT_TYPOGRAPHY_SETTINGS.body_text),
+    hero_layout: parseHeroLayout(src.hero_layout),
   };
 }
 
@@ -208,10 +263,14 @@ export function isTypographySettingsEqual(
   a: TypographySettings,
   b: TypographySettings,
 ): boolean {
-  return TYPOGRAPHY_ROLES.every((role) =>
+  const rolesEqual = TYPOGRAPHY_ROLES.every((role) =>
     (Object.keys(a[role]) as (keyof TypographyTextStyle)[]).every(
       (key) => a[role][key] === b[role][key],
     ),
+  );
+  if (!rolesEqual) return false;
+  return (Object.keys(a.hero_layout) as (keyof HeroLayout)[]).every(
+    (key) => a.hero_layout[key] === b.hero_layout[key],
   );
 }
 
@@ -239,13 +298,31 @@ function roleCssVars(role: TypographyRole, style: TypographyTextStyle): Record<s
   };
 }
 
+function heroLayoutCssVars(layout: HeroLayout): Record<string, string> {
+  const alignItems =
+    layout.align === "left"
+      ? "flex-start"
+      : layout.align === "right"
+        ? "flex-end"
+        : "center";
+  return {
+    "--typo-hero-align": layout.align,
+    "--typo-hero-align-items": alignItems,
+    "--typo-hero-main-x": `${layout.mainX}px`,
+    "--typo-hero-main-y": `${layout.mainY}px`,
+    "--typo-hero-second-x": `${layout.secondX}px`,
+    "--typo-hero-second-y": `${layout.secondY}px`,
+  };
+}
+
 export function typographyToCssVars(
   settings: TypographySettings,
 ): Record<string, string> {
-  return TYPOGRAPHY_ROLES.reduce(
+  const roleVars = TYPOGRAPHY_ROLES.reduce(
     (acc, role) => ({ ...acc, ...roleCssVars(role, settings[role]) }),
     {} as Record<string, string>,
   );
+  return { ...roleVars, ...heroLayoutCssVars(settings.hero_layout) };
 }
 
 /** Beats stylesheet cascade for hero + page titles/subtitles. */
@@ -275,6 +352,11 @@ export function typographyToImportantCss(settings: TypographySettings): string {
 .public-site .owo-hero {
 ${rootBody}
 }
+.public-site .hero-heading,
+html[data-ex-experience] .ex-root .hero-heading {
+  align-items: var(--typo-hero-align-items, center) !important;
+  text-align: var(--typo-hero-align, center) !important;
+}
 ${block(
   `.public-site .hero-heading,
 .public-site .hero-line--right,
@@ -282,11 +364,26 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--right,
 .public-site .owo-hero__title`,
   "hero_title",
 )}
+.public-site .hero-line--right,
+html[data-ex-experience] .ex-root .hero-heading .hero-line--right {
+  position: relative !important;
+  left: var(--typo-hero-main-x, 0px) !important;
+  top: var(--typo-hero-main-y, 0px) !important;
+  margin-top: 0 !important;
+}
 ${block(
   `.public-site .hero-line--left:not(.hero-line--wordmark),
 html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark)`,
   "hero_subtitle",
 )}
+.public-site .hero-line--left:not(.hero-line--wordmark),
+html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark) {
+  position: relative !important;
+  left: var(--typo-hero-second-x, 0px) !important;
+  top: var(--typo-hero-second-y, 0px) !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
 .public-site .hero-sub,
 html[data-ex-experience] .ex-root .hero-sub,
 .public-site .owo-hero__subtitle {

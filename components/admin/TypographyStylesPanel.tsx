@@ -1,16 +1,27 @@
 "use client";
 
-import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
-import { Loader2, RotateCcw, Save, Undo2 } from "lucide-react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type PointerEvent as ReactPointerEvent,
+  type ReactNode,
+} from "react";
+import { AlignCenter, AlignLeft, AlignRight, Loader2, RotateCcw, Save, Undo2 } from "lucide-react";
 import { useToast } from "@/components/admin/ToastProvider";
 import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
 import {
+  DEFAULT_HERO_LAYOUT,
   DEFAULT_TYPOGRAPHY_SETTINGS,
   HATHOR_AVAILABLE_LUXURY_FONTS,
   HATHOR_FONT_INSTALLED,
+  HERO_ALIGNS,
   isTypographySettingsEqual,
   parseTypographySettings,
   type HathorLuxuryFont,
+  type HeroAlign,
+  type HeroLayout,
   type TypographyRole,
   type TypographySettings,
   type TypographyTextStyle,
@@ -26,7 +37,7 @@ const GROUP_LABELS: Record<EditorGroup, string> = {
 };
 
 const GROUP_WHERE: Record<EditorGroup, string> = {
-  hero: "One style for every page hero — home, cruises, suites, and the rest.",
+  hero: "Drag either title freely (they can overlap). Align left / center / right. Saves to every page hero.",
   page_title: "Main title at the top of Suites, Experiences, About, etc.",
   page_subtitle: "Short line under that page title.",
   body_text: "Normal paragraph text in page content.",
@@ -49,6 +60,10 @@ const HERO_LINE_LABELS: Record<"hero_title" | "hero_subtitle", string> = {
 function fontOptionsFor(current: HathorLuxuryFont): HathorLuxuryFont[] {
   if (HATHOR_FONT_INSTALLED[current]) return [...HATHOR_AVAILABLE_LUXURY_FONTS];
   return [current, ...HATHOR_AVAILABLE_LUXURY_FONTS];
+}
+
+function clampOffset(n: number): number {
+  return Math.min(240, Math.max(-240, Math.round(n)));
 }
 
 /** CSS vars — admin.css applies them with !important so Inter never wins. */
@@ -101,6 +116,13 @@ export function TypographyStylesPanel() {
   );
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const dragRef = useRef<{
+    line: "hero_title" | "hero_subtitle";
+    startX: number;
+    startY: number;
+    origX: number;
+    origY: number;
+  } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -134,6 +156,7 @@ export function TypographyStylesPanel() {
   const activeRole: TypographyRole =
     group === "hero" ? heroLine : group;
   const value = settings[activeRole];
+  const layout = settings.hero_layout;
   const stageTone = group === "hero" ? "dark" : "light";
   const editingLabel =
     group === "hero"
@@ -145,6 +168,67 @@ export function TypographyStylesPanel() {
       ...prev,
       [activeRole]: { ...prev[activeRole], ...partial },
     }));
+  };
+
+  const patchLayout = (partial: Partial<HeroLayout>) => {
+    setSettings((prev) => ({
+      ...prev,
+      hero_layout: { ...prev.hero_layout, ...partial },
+    }));
+  };
+
+  const activeOffset =
+    heroLine === "hero_title"
+      ? { x: layout.mainX, y: layout.mainY }
+      : { x: layout.secondX, y: layout.secondY };
+
+  const setActiveOffset = (x: number, y: number) => {
+    if (heroLine === "hero_title") {
+      patchLayout({ mainX: clampOffset(x), mainY: clampOffset(y) });
+    } else {
+      patchLayout({ secondX: clampOffset(x), secondY: clampOffset(y) });
+    }
+  };
+
+  const onDragStart =
+    (line: "hero_title" | "hero_subtitle") =>
+    (event: ReactPointerEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+      setHeroLine(line);
+      const L = settings.hero_layout;
+      dragRef.current = {
+        line,
+        startX: event.clientX,
+        startY: event.clientY,
+        origX: line === "hero_title" ? L.mainX : L.secondX,
+        origY: line === "hero_title" ? L.mainY : L.secondY,
+      };
+      event.currentTarget.setPointerCapture(event.pointerId);
+    };
+
+  const onDragMove = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    const drag = dragRef.current;
+    if (!drag) return;
+    const dx = event.clientX - drag.startX;
+    const dy = event.clientY - drag.startY;
+    const nextX = clampOffset(drag.origX + dx);
+    const nextY = clampOffset(drag.origY + dy);
+    if (drag.line === "hero_title") {
+      patchLayout({ mainX: nextX, mainY: nextY });
+    } else {
+      patchLayout({ secondX: nextX, secondY: nextY });
+    }
+  };
+
+  const onDragEnd = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (dragRef.current) {
+      dragRef.current = null;
+      try {
+        event.currentTarget.releasePointerCapture(event.pointerId);
+      } catch {
+        /* already released */
+      }
+    }
   };
 
   const handleSave = async () => {
@@ -201,8 +285,8 @@ export function TypographyStylesPanel() {
         <div>
           <h1 className="admin-page-title">Typography &amp; Styles</h1>
           <p className="admin-page-subtitle">
-            Hero is one shared style for every page. Click a line in the preview
-            to edit it, then Save.
+            Hero preview: both titles together — drag to move, overlap freely,
+            or align. Save applies to every page.
           </p>
         </div>
       </header>
@@ -239,30 +323,79 @@ export function TypographyStylesPanel() {
         <p className="typo-stage__where">{GROUP_WHERE[group]}</p>
 
         {group === "hero" ? (
-          <div className="typo-stage__pair">
-            <button
-              type="button"
-              className={`typo-stage__line${heroLine === "hero_title" ? " typo-stage__line--on" : ""}`}
-              style={liveVars(settings.hero_title)}
-              onClick={() => setHeroLine("hero_title")}
+          <>
+            <div className="typo-stage__align">
+              {(
+                [
+                  ["left", AlignLeft, "Left"],
+                  ["center", AlignCenter, "Center"],
+                  ["right", AlignRight, "Right"],
+                ] as const
+              ).map(([align, Icon, label]) => (
+                <button
+                  key={align}
+                  type="button"
+                  className={`typo-stage__align-btn${layout.align === align ? " typo-stage__align-btn--on" : ""}`}
+                  onClick={() => patchLayout({ align })}
+                  aria-pressed={layout.align === align}
+                  title={label}
+                >
+                  <Icon className="h-4 w-4" />
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <div
+              className="typo-stage__canvas"
+              style={{
+                justifyContent:
+                  layout.align === "left"
+                    ? "flex-start"
+                    : layout.align === "right"
+                      ? "flex-end"
+                      : "center",
+                textAlign: layout.align,
+              }}
             >
-              <span className="typo-stage__line-tag">Main title</span>
-              <span className="typo-stage__sample typo-stage__sample--inline">
-                {SAMPLES.hero_title}
-              </span>
-            </button>
-            <button
-              type="button"
-              className={`typo-stage__line${heroLine === "hero_subtitle" ? " typo-stage__line--on" : ""}`}
-              style={liveVars(settings.hero_subtitle)}
-              onClick={() => setHeroLine("hero_subtitle")}
-            >
-              <span className="typo-stage__line-tag">Second title · script</span>
-              <span className="typo-stage__sample typo-stage__sample--inline">
-                {SAMPLES.hero_subtitle}
-              </span>
-            </button>
-          </div>
+              <button
+                type="button"
+                className={`typo-stage__drag${heroLine === "hero_title" ? " typo-stage__drag--on" : ""}`}
+                style={{
+                  ...liveVars(settings.hero_title),
+                  transform: `translate(${layout.mainX}px, ${layout.mainY}px)`,
+                  zIndex: heroLine === "hero_title" ? 3 : 2,
+                }}
+                onPointerDown={onDragStart("hero_title")}
+                onPointerMove={onDragMove}
+                onPointerUp={onDragEnd}
+                onPointerCancel={onDragEnd}
+              >
+                <span className="typo-stage__line-tag">Main · drag</span>
+                <span className="typo-stage__sample typo-stage__sample--inline">
+                  {SAMPLES.hero_title}
+                </span>
+              </button>
+              <button
+                type="button"
+                className={`typo-stage__drag${heroLine === "hero_subtitle" ? " typo-stage__drag--on" : ""}`}
+                style={{
+                  ...liveVars(settings.hero_subtitle),
+                  transform: `translate(${layout.secondX}px, ${layout.secondY}px)`,
+                  zIndex: heroLine === "hero_subtitle" ? 3 : 1,
+                }}
+                onPointerDown={onDragStart("hero_subtitle")}
+                onPointerMove={onDragMove}
+                onPointerUp={onDragEnd}
+                onPointerCancel={onDragEnd}
+              >
+                <span className="typo-stage__line-tag">Second · drag</span>
+                <span className="typo-stage__sample typo-stage__sample--inline">
+                  {SAMPLES.hero_subtitle}
+                </span>
+              </button>
+            </div>
+          </>
         ) : (
           <p className="typo-stage__sample" style={liveVars(value)}>
             {SAMPLES[activeRole]}
@@ -270,17 +403,77 @@ export function TypographyStylesPanel() {
         )}
 
         <p className="typo-stage__readout">
-          Font: {value.fontFamily} · Size: {value.fontSize}px · Color:{" "}
-          {value.color}
+          {group === "hero"
+            ? `Align ${layout.align} · ${HERO_LINE_LABELS[heroLine]} at ${activeOffset.x}px, ${activeOffset.y}px · ${value.fontFamily} ${value.fontSize}px`
+            : `Font: ${value.fontFamily} · Size: ${value.fontSize}px · Color: ${value.color}`}
         </p>
       </div>
 
       <div className="typo-easy__controls admin-card">
         {group === "hero" ? (
-          <p className="typo-easy__controls-hint">
-            Editing <strong>{HERO_LINE_LABELS[heroLine]}</strong> — applies to
-            all page heroes when you save.
-          </p>
+          <>
+            <p className="typo-easy__controls-hint">
+              Editing <strong>{HERO_LINE_LABELS[heroLine]}</strong> — drag in
+              the preview or use the sliders. Overlap is allowed.
+            </p>
+
+            <div className="typo-easy__row">
+              <SimpleField label="Move X" valueLabel={`${activeOffset.x}px`}>
+                <input
+                  type="range"
+                  className="typo-easy__range"
+                  min={-240}
+                  max={240}
+                  step={1}
+                  value={activeOffset.x}
+                  onChange={(e) =>
+                    setActiveOffset(Number(e.target.value), activeOffset.y)
+                  }
+                />
+              </SimpleField>
+              <SimpleField label="Move Y" valueLabel={`${activeOffset.y}px`}>
+                <input
+                  type="range"
+                  className="typo-easy__range"
+                  min={-240}
+                  max={240}
+                  step={1}
+                  value={activeOffset.y}
+                  onChange={(e) =>
+                    setActiveOffset(activeOffset.x, Number(e.target.value))
+                  }
+                />
+              </SimpleField>
+            </div>
+
+            <div className="typo-easy__row typo-easy__row--actions">
+              <button
+                type="button"
+                className="typo-easy__reset-role"
+                onClick={() =>
+                  patchLayout({
+                    ...DEFAULT_HERO_LAYOUT,
+                    align: layout.align,
+                  })
+                }
+              >
+                <RotateCcw className="h-3.5 w-3.5" />
+                Reset positions
+              </button>
+              <div className="typo-stage__align typo-stage__align--inline">
+                {HERO_ALIGNS.map((align) => (
+                  <button
+                    key={align}
+                    type="button"
+                    className={`typo-stage__align-btn${layout.align === align ? " typo-stage__align-btn--on" : ""}`}
+                    onClick={() => patchLayout({ align: align as HeroAlign })}
+                  >
+                    {align}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </>
         ) : null}
 
         <SimpleField label="Font (click one — preview updates above)">
