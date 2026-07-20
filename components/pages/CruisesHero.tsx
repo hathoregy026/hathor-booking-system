@@ -3,15 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
-import { useCruisesGiantLogo } from "@/hooks/useCruisesGiantLogo";
+import { HathorLogoSplit } from "@/components/public/HathorLogoSplit";
 import {
   refreshCruisesHeroStripes,
   useCruisesHeroStripes,
 } from "@/hooks/useCruisesHeroStripes";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
-
-const GIANT_LOGO_SRC = "/branding/gold.svg";
 
 type CruisesHeroProps = {
   eyebrow?: string;
@@ -22,6 +20,7 @@ type CruisesHeroProps = {
   imageAlt?: string;
 };
 
+/** Legacy cruises hero (unused by live /cruises). Giant gold.svg removed. */
 export function CruisesHero({
   eyebrow = "Ultra Luxury",
   title,
@@ -35,7 +34,6 @@ export function CruisesHero({
   const stageRef = useRef<HTMLDivElement>(null);
   const maskRef = useRef<HTMLDivElement>(null);
   const headlineRef = useRef<HTMLDivElement>(null);
-  const giantLogoRef = useRef<HTMLDivElement>(null);
 
   useCruisesHeroStripes({
     runway: runwayRef,
@@ -43,8 +41,6 @@ export function CruisesHero({
     mask: maskRef,
     headline: headlineRef,
   });
-
-  useCruisesGiantLogo(runwayRef, giantLogoRef);
 
   useEffect(() => {
     document.documentElement.classList.add("cruises-scroll-ready");
@@ -93,14 +89,8 @@ export function CruisesHero({
           </div>
         </div>
 
-        <div ref={giantLogoRef} className="cruises-hero__giant-logo">
-          <Image
-            src={GIANT_LOGO_SRC}
-            alt="Hathor"
-            width={1600}
-            height={560}
-            sizes="100vw"
-          />
+        <div className="cruises-hero__giant-logo" aria-hidden="true">
+          <HathorLogoSplit />
         </div>
       </div>
     </section>

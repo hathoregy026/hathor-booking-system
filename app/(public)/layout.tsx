@@ -6,6 +6,8 @@ import { PublicLayout } from "@/components/public/PublicLayout";
 import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
 import { TypographySettingsProvider } from "@/components/public/TypographySettingsProvider";
 import { resolveSiteImageMap } from "@/lib/resolve-site-images";
+import { getHeroLogoTuneSafe } from "@/lib/hero-logo-tune";
+import { heroLogoTuneToImportantCss } from "@/lib/hero-logo-tune-shared";
 import {
   getTypographySettingsSafe,
   typographyToImportantCss,
@@ -96,9 +98,10 @@ export default async function PublicSiteLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
-  const [siteImages, typography] = await Promise.all([
+  const [siteImages, typography, heroLogoTune] = await Promise.all([
     resolveSiteImageMap(),
     getTypographySettingsSafe(),
+    getHeroLogoTuneSafe(),
   ]);
 
   const displayFontStyle = {
@@ -114,6 +117,12 @@ export default async function PublicSiteLayout({
       <style
         dangerouslySetInnerHTML={{
           __html: typographyToImportantCss(typography),
+        }}
+      />
+      <style
+        data-hathor-logo-tune-site
+        dangerouslySetInnerHTML={{
+          __html: heroLogoTuneToImportantCss(heroLogoTune),
         }}
       />
       <SiteImagesProvider images={siteImages}>

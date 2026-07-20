@@ -1,15 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import { useLayoutEffect, useRef } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { HathorLogoSplit } from "@/components/public/HathorLogoSplit";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
-import {
-  HATHOR_BRAND_NAME,
-  HATHOR_HERO_VIDEO_SRC,
-} from "@/lib/branding";
-import { EX_GOLD_LOGO_SRC, EX_HERO } from "@/lib/ex-page-content";
+import { HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
+import { EX_HERO } from "@/lib/ex-page-content";
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 import { useTypographyInlineStyle } from "@/components/public/TypographySettingsProvider";
 import { usePublicSiteHeroMotion } from "@/hooks/usePublicSiteHeroMotion";
@@ -32,7 +28,10 @@ export type PublicSiteHeroProps = {
    * scroll target for this page’s hero.
    */
   posterImageName?: string;
-  /** Homepage: split HATHOR into per-letter WebPs for individual GSAP targets. */
+  /**
+   * Kept for callers (homepage). All public heroes use the split letter logo;
+   * the old single gold.svg mark is removed.
+   */
   splitLetterLogo?: boolean;
 };
 
@@ -47,7 +46,6 @@ export function PublicSiteHero({
   ctaLabel = HOMEPAGE_HERO.cta,
   animate = true,
   posterImageName,
-  splitLetterLogo = false,
 }: PublicSiteHeroProps) {
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const posterImage = useSiteImage(posterImageName ?? "home-hero-poster");
@@ -90,22 +88,8 @@ export function PublicSiteHero({
 
       <div className="home-hero-cover" aria-hidden="true" />
 
-      <div
-        className={`hero-logo-mark${splitLetterLogo ? " hero-logo-mark--split" : ""}`}
-        aria-hidden="true"
-      >
-        {splitLetterLogo ? (
-          <HathorLogoSplit />
-        ) : (
-          <Image
-            className="hero-logo-img"
-            src={EX_GOLD_LOGO_SRC}
-            alt={HATHOR_BRAND_NAME}
-            width={1600}
-            height={560}
-            sizes="(max-width: 768px) 80vw, 720px"
-          />
-        )}
+      <div className="hero-logo-mark hero-logo-mark--split" aria-hidden="true">
+        <HathorLogoSplit />
       </div>
 
       <div className="hero-content">
@@ -115,14 +99,14 @@ export function PublicSiteHero({
           </span>
           {lineLeftImageSrc ? (
             <span className="hero-line hero-line--left hero-line--wordmark">
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 className="hero-line-wordmark-img"
                 src={lineLeftImageSrc}
                 alt={lineLeft || "Dahabiya Cruise"}
                 width={1600}
                 height={302}
                 draggable={false}
-                sizes="(max-width: 768px) 70vw, 640px"
               />
             </span>
           ) : lineLeft ? (

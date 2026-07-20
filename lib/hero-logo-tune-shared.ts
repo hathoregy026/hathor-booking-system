@@ -227,27 +227,35 @@ export function heroLogoTuneToImportantCss(tune: HeroLogoTune): string {
 
   return `
 html[data-ex-experience] .ex-root,
-html[data-ex-experience] .ex-root .home-hero-container {
+html[data-ex-experience] .ex-root .home-hero-container,
+.public-site .home-hero-container,
+.public-site .home-hero-container:has(.hero-logo-mark--split) {
 ${rootBody}
 }
 html[data-ex-experience] .ex-root .hathor-logo-split.hero-logo-img,
-html[data-ex-experience] .ex-root .hathor-logo-split {
+html[data-ex-experience] .ex-root .hathor-logo-split,
+.public-site .home-hero-container .hathor-logo-split.hero-logo-img,
+.public-site .home-hero-container .hathor-logo-split {
   height: ${logoH} !important;
 }
-html[data-ex-experience] .ex-root .hero-logo-mark--split {
+html[data-ex-experience] .ex-root .hero-logo-mark--split,
+.public-site .home-hero-container .hero-logo-mark--split {
   bottom: ${tune.y}px !important;
 }
-html[data-ex-experience] .ex-root .hathor-logo-split__side--left {
+html[data-ex-experience] .ex-root .hathor-logo-split__side--left,
+.public-site .home-hero-container .hathor-logo-split__side--left {
   padding-left: ${tune.edgeLeft}px !important;
   padding-right: 0 !important;
   overflow: hidden !important;
 }
-html[data-ex-experience] .ex-root .hathor-logo-split__side--right {
+html[data-ex-experience] .ex-root .hathor-logo-split__side--right,
+.public-site .home-hero-container .hathor-logo-split__side--right {
   padding-left: 0 !important;
   padding-right: ${tune.edgeRight}px !important;
   overflow: hidden !important;
 }
-html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) .hero-button {
+html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) .hero-button,
+.public-site .home-hero-container:has(.hero-logo-mark--split) .hero-button {
   bottom: calc(${tune.y}px + (${logoH} / 2) - 26px + ${tune.ctaNudge}px) !important;
 }
 `.trim();
