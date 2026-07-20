@@ -1538,122 +1538,56 @@ select.admin-input option:checked {
   gap: 1rem;
 }
 
-.typo-board {
+/* Which text type — big clear tabs */
+.typo-rolebar {
   display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
+  flex-wrap: wrap;
+  gap: 0.45rem;
 }
 
-.typo-board__section {
+.typo-rolebar__btn {
+  padding: 0.65rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 650;
+  font-family: var(--font-admin, Inter), system-ui, sans-serif !important;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.typo-rolebar__btn:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.typo-rolebar__btn--on {
+  border-color: #b69f64;
+  background: rgba(182, 159, 100, 0.18);
+  color: var(--text-primary);
+  box-shadow: 0 0 0 2px rgba(182, 159, 100, 0.25);
+}
+
+/* One big preview — only the text you are editing */
+.typo-stage {
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
-  padding: 1rem 1.1rem 1.15rem;
-  border-radius: 16px;
-  border: 1px solid var(--border);
+  min-height: 14rem;
+  padding: 1.25rem 1.35rem 1.5rem;
+  border-radius: 18px;
+  border: 2px solid #b69f64;
+  animation: typoFlash 0.45s ease;
 }
 
-.typo-board__section--hero {
+.typo-stage--dark {
   background: linear-gradient(165deg, #1c1712 0%, #0e0c0a 100%);
 }
 
-.typo-board__section--page,
-.typo-board__section--body {
+.typo-stage--light {
   background: #f7f3ec;
-}
-
-.typo-board__heading {
-  margin: 0 0 0.15rem;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  font-family: var(--font-admin, Inter), system-ui, sans-serif !important;
-}
-
-.typo-board__section--hero .typo-board__heading {
-  color: rgba(245, 240, 232, 0.5);
-}
-
-.typo-pick {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0.35rem;
-  width: 100%;
-  padding: 0.75rem 0.85rem;
-  border-radius: 12px;
-  border: 2px dashed rgba(182, 159, 100, 0.35);
-  background: rgba(255, 255, 255, 0.04);
-  text-align: left;
-  cursor: pointer;
-  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
-}
-
-.typo-board__section--page .typo-pick,
-.typo-board__section--body .typo-pick {
-  background: rgba(255, 255, 255, 0.55);
-  border-color: rgba(182, 159, 100, 0.4);
-}
-
-.typo-pick:hover {
-  border-color: var(--accent);
-}
-
-.typo-pick--on {
-  border-style: solid;
-  border-color: #b69f64;
-  box-shadow:
-    0 0 0 3px rgba(182, 159, 100, 0.28),
-    0 10px 28px rgba(0, 0, 0, 0.18);
-  background: rgba(182, 159, 100, 0.12);
-}
-
-.typo-pick__meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-
-.typo-pick__role {
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  font-family: var(--font-admin, Inter), system-ui, sans-serif !important;
-}
-
-.typo-board__section--hero .typo-pick__role {
-  color: rgba(245, 240, 232, 0.55);
-}
-
-.typo-pick__cue {
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: var(--accent);
-  font-family: var(--font-admin, Inter), system-ui, sans-serif !important;
-}
-
-.typo-pick__words {
-  display: block;
-  width: 100%;
-  margin: 0;
-  word-break: break-word;
-}
-
-.typo-target {
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-  padding: 1rem 1.1rem;
-  border-radius: 14px;
-  border: 1px solid var(--accent);
-  background: var(--sidebar-active);
-  animation: typoFlash 0.45s ease;
 }
 
 @keyframes typoFlash {
@@ -1661,32 +1595,81 @@ select.admin-input option:checked {
     box-shadow: 0 0 0 0 rgba(182, 159, 100, 0.55);
   }
   to {
-    box-shadow: 0 0 0 8px rgba(182, 159, 100, 0);
+    box-shadow: 0 0 0 10px rgba(182, 159, 100, 0);
   }
 }
 
-.typo-target__label {
-  margin: 0;
-  font-size: 0.82rem;
-  color: var(--text-secondary);
+.typo-stage__banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.55rem;
 }
 
-.typo-target__label strong {
-  color: var(--accent);
-}
-
-.typo-target__sample {
-  margin: 0;
-  word-break: break-word;
-}
-
-.typo-target__readout {
-  margin: 0;
-  font-size: 0.75rem;
+.typo-stage__editing {
+  font-size: 0.78rem;
   font-weight: 650;
-  letter-spacing: 0.04em;
-  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #b69f64;
   font-family: var(--font-admin, Inter), system-ui, sans-serif !important;
+}
+
+.typo-stage__role {
+  font-size: 1.15rem;
+  font-weight: 750;
+  color: #f5f0e8;
+  font-family: var(--font-admin, Inter), system-ui, sans-serif !important;
+}
+
+.typo-stage--light .typo-stage__role {
+  color: #1a1612;
+}
+
+.typo-stage__where {
+  margin: 0;
+  max-width: 40rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: rgba(245, 240, 232, 0.65);
+  font-family: var(--font-admin, Inter), system-ui, sans-serif !important;
+}
+
+.typo-stage--light .typo-stage__where {
+  color: #5c564e;
+}
+
+/* Forced live styles — beats admin Inter inheritance */
+.typo-stage__sample {
+  margin: 0.75rem 0 0;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  min-height: 5.5rem;
+  word-break: break-word;
+  font-family: var(--typo-live-font, serif) !important;
+  font-size: var(--typo-live-size, 40px) !important;
+  color: var(--typo-live-color, #f5f0e8) !important;
+  line-height: var(--typo-live-lh, 1.2) !important;
+  letter-spacing: var(--typo-live-ls, 0) !important;
+  text-shadow: var(--typo-live-shadow, none) !important;
+  transition:
+    font-size 0.15s ease,
+    letter-spacing 0.15s ease,
+    color 0.15s ease;
+}
+
+.typo-stage__readout {
+  margin: 0.35rem 0 0;
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.03em;
+  color: rgba(182, 159, 100, 0.9);
+  font-family: var(--font-admin, Inter), system-ui, sans-serif !important;
+}
+
+.typo-stage--light .typo-stage__readout {
+  color: #7a6a45;
 }
 
 .typo-easy__controls {

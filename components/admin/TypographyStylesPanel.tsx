@@ -26,21 +26,39 @@ const SAMPLES: Record<TypographyRole, string> = {
     "Sail the Nile aboard a private dahabiya — unhurried days, fine dining, and suites crafted for quiet luxury from Luxor to Aswan.",
 };
 
+/** Plain-English: where this text appears on the live site. */
+const ROLE_WHERE: Record<TypographyRole, string> = {
+  hero_title:
+    "Big headline on the dark hero photo (home, cruises, and similar pages).",
+  hero_subtitle: "Smaller line directly under the hero headline.",
+  page_title: "Main title at the top of Suites, Experiences, About, etc.",
+  page_subtitle: "Short line under that page title.",
+  body_text: "Normal paragraph text in page content.",
+};
+
+const ROLE_ORDER: TypographyRole[] = [
+  "hero_title",
+  "hero_subtitle",
+  "page_title",
+  "page_subtitle",
+  "body_text",
+];
+
 function fontOptionsFor(current: HathorLuxuryFont): HathorLuxuryFont[] {
   if (HATHOR_FONT_INSTALLED[current]) return [...HATHOR_AVAILABLE_LUXURY_FONTS];
   return [current, ...HATHOR_AVAILABLE_LUXURY_FONTS];
 }
 
-/** Inline styles that win over admin Inter inheritance. */
-function liveStyle(style: TypographyTextStyle): CSSProperties {
+/** CSS vars — admin.css applies them with !important so Inter never wins. */
+function liveVars(style: TypographyTextStyle): CSSProperties {
   return {
-    fontFamily: `"${style.fontFamily}", serif`,
-    fontSize: `${style.fontSize}px`,
-    color: style.color,
-    lineHeight: style.lineHeight,
-    letterSpacing: `${style.letterSpacing}px`,
-    textShadow: style.innerShadow
-      ? "inset 0 1px 2px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.2)"
+    ["--typo-live-font" as string]: `"${style.fontFamily}", serif`,
+    ["--typo-live-size" as string]: `${style.fontSize}px`,
+    ["--typo-live-color" as string]: style.color,
+    ["--typo-live-lh" as string]: String(style.lineHeight),
+    ["--typo-live-ls" as string]: `${style.letterSpacing}px`,
+    ["--typo-live-shadow" as string]: style.innerShadow
+      ? "1px 1px 0 rgba(0,0,0,0.35), -0.5px -0.5px 0 rgba(255,255,255,0.25)"
       : "none",
   };
 }
@@ -67,38 +85,6 @@ function SimpleField({
   );
 }
 
-function EditableLine({
-  role,
-  active,
-  settings,
-  onSelect,
-}: {
-  role: TypographyRole;
-  active: boolean;
-  settings: TypographySettings;
-  onSelect: (role: TypographyRole) => void;
-}) {
-  const style = settings[role];
-  return (
-    <button
-      type="button"
-      className={`typo-pick${active ? " typo-pick--on" : ""}`}
-      onClick={() => onSelect(role)}
-      aria-pressed={active}
-    >
-      <span className="typo-pick__meta">
-        <span className="typo-pick__role">{TYPOGRAPHY_ROLE_LABELS[role]}</span>
-        <span className="typo-pick__cue">
-          {active ? "Editing this" : "Click to edit"}
-        </span>
-      </span>
-      <span className="typo-pick__words" style={liveStyle(style)}>
-        {SAMPLES[role]}
-      </span>
-    </button>
-  );
-}
-
 export function TypographyStylesPanel() {
   const { showToast } = useToast();
   const [settings, setSettings] = useState<TypographySettings>(
@@ -111,8 +97,6 @@ export function TypographyStylesPanel() {
     useState<TypographyRole>("hero_title");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [flash, setFlash] = useState(0);
-
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -143,13 +127,16 @@ export function TypographyStylesPanel() {
 
   const dirty = !isTypographySettingsEqual(settings, saved);
   const value = settings[activeRole];
+  const stageTone =
+    activeRole === "hero_title" || activeRole === "hero_subtitle"
+      ? "dark"
+      : "light";
 
   const patch = (partial: Partial<TypographyTextStyle>) => {
     setSettings((prev) => ({
       ...prev,
       [activeRole]: { ...prev[activeRole], ...partial },
     }));
-    setFlash((n) => n + 1);
   };
 
   const handleSave = async () => {
@@ -206,71 +193,51 @@ export function TypographyStylesPanel() {
         <div>
           <h1 className="admin-page-title">Typography &amp; Styles</h1>
           <p className="admin-page-subtitle">
-            1) Click the words you want to change. 2) Tune them below. 3) Save
-            to live site when done.
+            Pick one text type → change it in the big preview → Save when ready.
+            The live website only updates after Save.
           </p>
         </div>
       </header>
 
-      <div className="typo-board" aria-live="polite">
-        <section className="typo-board__section typo-board__section--hero">
-          <h2 className="typo-board__heading">Hero</h2>
-          <EditableLine
-            role="hero_title"
-            active={activeRole === "hero_title"}
-            settings={settings}
-            onSelect={setActiveRole}
-          />
-          <EditableLine
-            role="hero_subtitle"
-            active={activeRole === "hero_subtitle"}
-            settings={settings}
-            onSelect={setActiveRole}
-          />
-        </section>
+      <div className="typo-rolebar" role="tablist" aria-label="Which text to edit">
+        {ROLE_ORDER.map((role) => {
+          const on = activeRole === role;
+          return (
+            <button
+              key={role}
+              type="button"
+              role="tab"
+              aria-selected={on}
+              className={`typo-rolebar__btn${on ? " typo-rolebar__btn--on" : ""}`}
+              onClick={() => setActiveRole(role)}
+            >
+              {TYPOGRAPHY_ROLE_LABELS[role]}
+            </button>
+          );
+        })}
+      </div>
 
-        <section className="typo-board__section typo-board__section--page">
-          <h2 className="typo-board__heading">Page</h2>
-          <EditableLine
-            role="page_title"
-            active={activeRole === "page_title"}
-            settings={settings}
-            onSelect={setActiveRole}
-          />
-          <EditableLine
-            role="page_subtitle"
-            active={activeRole === "page_subtitle"}
-            settings={settings}
-            onSelect={setActiveRole}
-          />
-        </section>
-
-        <section className="typo-board__section typo-board__section--body">
-          <h2 className="typo-board__heading">Body</h2>
-          <EditableLine
-            role="body_text"
-            active={activeRole === "body_text"}
-            settings={settings}
-            onSelect={setActiveRole}
-          />
-        </section>
+      <div
+        className={`typo-stage typo-stage--${stageTone}`}
+        style={liveVars(value)}
+        key={activeRole}
+      >
+        <div className="typo-stage__banner">
+          <span className="typo-stage__editing">You are editing</span>
+          <strong className="typo-stage__role">
+            {TYPOGRAPHY_ROLE_LABELS[activeRole]}
+          </strong>
+        </div>
+        <p className="typo-stage__where">{ROLE_WHERE[activeRole]}</p>
+        <p className="typo-stage__sample">{SAMPLES[activeRole]}</p>
+        <p className="typo-stage__readout">
+          Font: {value.fontFamily} · Size: {value.fontSize}px · Color:{" "}
+          {value.color}
+        </p>
       </div>
 
       <div className="typo-easy__controls admin-card">
-        <div className="typo-target" key={flash}>
-          <p className="typo-target__label">
-            You are changing
-            <strong> {TYPOGRAPHY_ROLE_LABELS[activeRole]}</strong>
-          </p>
-          <p className="typo-target__sample" style={liveStyle(value)}>
-            {SAMPLES[activeRole]}
-          </p>
-          <p className="typo-target__readout">
-            {value.fontFamily} · {value.fontSize}px · {value.color}
-          </p>
-        </div>
-
-        <SimpleField label="Font">
+        <SimpleField label="Font (click one — preview updates above)">
           <div className="typo-easy__font-grid">
             {fontOptionsFor(value.fontFamily).map((font) => {
               const selected = value.fontFamily === font;
@@ -377,7 +344,6 @@ export function TypographyStylesPanel() {
                 ...prev,
                 [activeRole]: DEFAULT_TYPOGRAPHY_SETTINGS[activeRole],
               }));
-              setFlash((n) => n + 1);
             }}
           >
             <RotateCcw className="h-3.5 w-3.5" />
@@ -391,8 +357,8 @@ export function TypographyStylesPanel() {
       >
         <p className="typo-easy__savebar-status">
           {dirty
-            ? "Unsaved draft — live site unchanged until you save."
-            : "Live site matches what you see."}
+            ? "Draft only — click Save to update the live website."
+            : "Saved — live site matches this."}
         </p>
         <div className="typo-easy__savebar-actions">
           <button
