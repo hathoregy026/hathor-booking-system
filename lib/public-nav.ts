@@ -18,11 +18,16 @@ export const NAV_SUITES: NavGroup = {
   links: [
     {
       href: "/rooms",
+      label: "Accommodation",
+      description: "All rooms & suites aboard Hathor",
+    },
+    {
+      href: "/luxury-cabins-Nile-Cruise",
       label: "Luxury Rooms",
       description: "Nile-view cabins with quiet elegance",
     },
     {
-      href: "/rooms",
+      href: "/rooms#suites",
       label: "Luxury Suites",
       description: "Spacious quarters on deck",
     },
@@ -39,7 +44,7 @@ export const NAV_CRUISES: NavGroup = {
   label: "Cruises",
   links: [
     {
-      href: "/cruises-list",
+      href: "/cruises",
       label: "Scheduled Voyages",
       description: "Join a sailing on the Nile",
     },
@@ -110,8 +115,10 @@ export const NAV_GROUPS = [
 
 export const EXPLORE_LINKS: NavLink[] = [
   { href: "/", label: "Home" },
-  { href: "/cruises-list", label: "Scheduled Voyages" },
+  { href: "/rooms", label: "Accommodation" },
+  { href: "/cruises", label: "Scheduled Voyages" },
   { href: "/charter", label: "Private Charter" },
+  { href: "/highlights", label: "Highlights" },
   { href: "/wellness", label: "Wellness & Spa" },
   { href: "/gastronomy", label: "Dining" },
   { href: "/contact", label: "Contact" },
@@ -147,7 +154,7 @@ export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
     type: "group",
     id: NAV_CRUISES.id,
     label: NAV_CRUISES.label,
-    href: "/cruises-list",
+    href: "/cruises",
     links: NAV_CRUISES.links,
   },
   {
@@ -169,7 +176,10 @@ export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
 
 /** Path aliases so active states match legacy or redirect routes. */
 const NAV_PATH_ALIASES: Record<string, readonly string[]> = {
+  "/cruises": ["/cruises-list"],
   "/cruises-list": ["/cruises"],
+  "/rooms": ["/accommodation", "/accommodations", "/suites"],
+  "/gastronomy": ["/dining"],
   "/blog": ["/blogs"],
 };
 

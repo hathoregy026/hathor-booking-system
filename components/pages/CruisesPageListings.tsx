@@ -15,30 +15,28 @@ import type { HathorCruiseSeed } from "@/lib/hathor-catalog";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { refreshCruisesHeroStripes } from "@/hooks/useCruisesHeroStripes";
 
-type CruiseListingItem = {
+type VoyageFilter = "all" | "3" | "4" | "7" | "charter";
+
+type VoyageCard = {
   key: string;
-  cruiseName: string;
-  departureDay: string;
-  nights: number;
-  days: number;
-  roomName: string;
-  roomType: string;
+  filterKey: VoyageFilter;
+  region: string;
+  title: string;
+  meta: string;
   description: string;
-  priceCents: number;
-  capacity: number;
-  amenities: readonly string[];
+  priceCents: number | null;
+  priceUnit: string;
   imageName: string;
-  detailHref: string;
+  badge?: string;
+  badgeSoft?: boolean;
+  bookHref?: string;
 };
 
 type CruisesListingContextValue = {
-  durationFilter: number | "all";
-  setDurationFilter: (value: number | "all") => void;
-  departureFilter: string | "all";
-  setDepartureFilter: (value: string | "all") => void;
-  durations: number[];
-  departures: string[];
-  filtered: CruiseListingItem[];
+  filter: VoyageFilter;
+  setFilter: (value: VoyageFilter) => void;
+  voyages: VoyageCard[];
+  filtered: VoyageCard[];
 };
 
 const CruisesListingContext = createContext<CruisesListingContextValue | null>(
@@ -53,24 +51,50 @@ function useCruisesListing() {
   return ctx;
 }
 
-function roomImageName(roomType: string): string {
-  if (roomType.includes("Royal")) return "room-royal";
-  if (roomType.includes("Suite")) return "room-suite";
-  return "room-luxury";
+const VOYAGE_IMAGES = ["cruises-hero", "room-suite", "room-royal", "room-luxury"] as const;
+
+function shortVoyageTitle(cruise: HathorCruiseSeed): string {
+  if (cruise.nights === 3) return "Aswan to Luxor";
+  if (cruise.nights === 4) return "Luxor to Aswan";
+  return "Classic Nile Loop";
 }
 
-function roomDetailHref(roomType: string): string {
-  if (roomType.includes("Royal")) {
-    return "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise";
-  }
-  return "/rooms";
+function cruiseToVoyage(cruise: HathorCruiseSeed, index: number): VoyageCard {
+  const fromPrice = Math.min(...cruise.rooms.map((r) => r.priceCents));
+  const filterKey = String(cruise.nights) as "3" | "4" | "7";
+
+  return {
+    key: cruise.slug,
+    filterKey,
+    region: "Nile Dahabiya",
+    title: shortVoyageTitle(cruise),
+    meta: `${cruise.nights} nights · ${cruise.days} days · Every ${cruise.departureDay}`,
+    description: cruise.description,
+    priceCents: fromPrice,
+    priceUnit: "/ cabin",
+    imageName: VOYAGE_IMAGES[index % VOYAGE_IMAGES.length] ?? "cruises-hero",
+    badge: index === 0 ? "Featured" : cruise.nights === 7 ? "Signature" : undefined,
+    badgeSoft: cruise.nights === 4,
+  };
 }
 
-function stabilizeListingsLayoutDuringFilterChange(scrollY: number) {
-  void scrollY;
-  const content = document.querySelector<HTMLElement>(
-    ".cruises-sheet__body .page-layout__content",
-  );
+const CHARTER_VOYAGE: VoyageCard = {
+  key: "private-charter",
+  filterKey: "charter",
+  region: "Private Charter",
+  title: "The Hathor",
+  meta: "Custom · Full ship · Your itinerary",
+  description:
+    "The entire Dahabiya, your route, and a private crew — a voyage written only for you on the Nile.",
+  priceCents: null,
+  priceUnit: "/ charter",
+  imageName: "room-royal",
+  badge: "Exclusive",
+  bookHref: "/charter",
+};
+
+function stabilizeListingsLayoutDuringFilterChange() {
+  const content = document.querySelector<HTMLElement>(".cruise-grid-section");
   if (content) {
     content.style.minHeight = `${content.offsetHeight}px`;
   }
@@ -84,26 +108,6 @@ function stabilizeListingsLayoutDuringFilterChange(scrollY: number) {
   });
 }
 
-function flattenCruises(cruises: HathorCruiseSeed[]): CruiseListingItem[] {
-  return cruises.flatMap((cruise) =>
-    cruise.rooms.map((room) => ({
-      key: `${cruise.slug}-${room.roomNumber}`,
-      cruiseName: cruise.name,
-      departureDay: cruise.departureDay,
-      nights: cruise.nights,
-      days: cruise.days,
-      roomName: room.name,
-      roomType: room.roomType,
-      description: room.description,
-      priceCents: room.priceCents,
-      capacity: room.capacity,
-      amenities: room.amenities.slice(0, 3),
-      imageName: roomImageName(room.roomType),
-      detailHref: roomDetailHref(room.roomType),
-    })),
-  );
-}
-
 type CruisesListingProviderProps = {
   cruises: HathorCruiseSeed[];
   children: ReactNode;
@@ -113,38 +117,26 @@ export function CruisesListingProvider({
   cruises,
   children,
 }: CruisesListingProviderProps) {
-  const items = useMemo(() => flattenCruises(cruises), [cruises]);
-  const durations = useMemo(
-    () => [...new Set(cruises.map((c) => c.nights))].sort((a, b) => a - b),
-    [cruises],
-  );
-  const departures = useMemo(
-    () => [...new Set(cruises.map((c) => c.departureDay))],
+  const voyages = useMemo(
+    () => [...cruises.map(cruiseToVoyage), CHARTER_VOYAGE],
     [cruises],
   );
 
-  const [durationFilter, setDurationFilter] = useState<number | "all">("all");
-  const [departureFilter, setDepartureFilter] = useState<string | "all">("all");
+  const [filter, setFilter] = useState<VoyageFilter>("all");
 
-  const filtered = items.filter((item) => {
-    if (durationFilter !== "all" && item.nights !== durationFilter) return false;
-    if (departureFilter !== "all" && item.departureDay !== departureFilter) {
-      return false;
-    }
-    return true;
-  });
+  const filtered = useMemo(() => {
+    if (filter === "all") return voyages;
+    return voyages.filter((v) => v.filterKey === filter);
+  }, [filter, voyages]);
 
   const value = useMemo(
     () => ({
-      durationFilter,
-      setDurationFilter,
-      departureFilter,
-      setDepartureFilter,
-      durations,
-      departures,
+      filter,
+      setFilter,
+      voyages,
       filtered,
     }),
-    [durationFilter, departureFilter, durations, departures, filtered],
+    [filter, voyages, filtered],
   );
 
   return (
@@ -154,102 +146,44 @@ export function CruisesListingProvider({
   );
 }
 
+const FILTERS: { id: VoyageFilter; label: string }[] = [
+  { id: "all", label: "All Voyages" },
+  { id: "3", label: "3 Nights" },
+  { id: "4", label: "4 Nights" },
+  { id: "7", label: "7 Nights" },
+  { id: "charter", label: "Private Charter" },
+];
+
 export function CruisesPageFilters() {
-  const {
-    durationFilter,
-    setDurationFilter,
-    departureFilter,
-    setDepartureFilter,
-    durations,
-    departures,
-  } = useCruisesListing();
+  const { filter, setFilter } = useCruisesListing();
   const pinnedScrollYRef = useRef<number | null>(null);
 
   const keepPinnedScrollStable = () => {
     pinnedScrollYRef.current = window.scrollY;
   };
 
-  const updateDurationFilter = (value: number | "all") => {
-    const scrollY = pinnedScrollYRef.current ?? window.scrollY;
-    setDurationFilter(value);
-    stabilizeListingsLayoutDuringFilterChange(scrollY);
-    pinnedScrollYRef.current = null;
-  };
-
-  const updateDepartureFilter = (value: string | "all") => {
-    const scrollY = pinnedScrollYRef.current ?? window.scrollY;
-    setDepartureFilter(value);
-    stabilizeListingsLayoutDuringFilterChange(scrollY);
+  const updateFilter = (value: VoyageFilter) => {
+    setFilter(value);
+    stabilizeListingsLayoutDuringFilterChange();
     pinnedScrollYRef.current = null;
   };
 
   return (
-    <div className="hathor-container">
-      <section className="page-layout__filters" aria-label="Listing filters">
-        <p className="page-layout__filters-label">Filters</p>
-
-        <div className="page-layout__filter-group">
-          <p className="lux-label">Duration</p>
-          <div className="page-layout__filter-options">
-            <button
-              type="button"
-              tabIndex={-1}
-              onPointerDown={keepPinnedScrollStable}
-              onMouseDown={keepPinnedScrollStable}
-              onClick={() => updateDurationFilter("all")}
-              className={`hathor-filter-btn ${durationFilter === "all" ? "hathor-filter-btn--active" : ""}`}
-            >
-              All
-            </button>
-            {durations.map((n) => (
-              <button
-                key={n}
-                type="button"
-                tabIndex={-1}
-                onPointerDown={keepPinnedScrollStable}
-                onMouseDown={keepPinnedScrollStable}
-                onClick={() => updateDurationFilter(n)}
-                className={`hathor-filter-btn ${durationFilter === n ? "hathor-filter-btn--active" : ""}`}
-              >
-                {n} nights
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="page-layout__filter-group">
-          <p className="lux-label">Departure</p>
-          <div className="page-layout__filter-options">
-            <button
-              type="button"
-              tabIndex={-1}
-              onPointerDown={keepPinnedScrollStable}
-              onMouseDown={keepPinnedScrollStable}
-              onClick={() => updateDepartureFilter("all")}
-              className={`hathor-filter-btn ${departureFilter === "all" ? "hathor-filter-btn--active" : ""}`}
-            >
-              Any day
-            </button>
-            {departures.map((day) => (
-              <button
-                key={day}
-                type="button"
-                tabIndex={-1}
-                onPointerDown={keepPinnedScrollStable}
-                onMouseDown={keepPinnedScrollStable}
-                onClick={() => updateDepartureFilter(day)}
-                className={`hathor-filter-btn ${departureFilter === day ? "hathor-filter-btn--active" : ""}`}
-              >
-                {day}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <BookNowTrigger className="public-btn-gold page-layout__filters-cta">
-          Check Availability
-        </BookNowTrigger>
-      </section>
+    <div className="cruise-filter-inner">
+      {FILTERS.map((item) => (
+        <button
+          key={item.id}
+          type="button"
+          tabIndex={-1}
+          data-filter={item.id}
+          onPointerDown={keepPinnedScrollStable}
+          onMouseDown={keepPinnedScrollStable}
+          onClick={() => updateFilter(item.id)}
+          className={`cruise-filter${filter === item.id ? " is-active" : ""}`}
+        >
+          {item.label}
+        </button>
+      ))}
     </div>
   );
 }
@@ -258,61 +192,65 @@ export function CruisesPageListingsGrid() {
   const { filtered } = useCruisesListing();
 
   return (
-    <div className="hathor-container page-layout__inner page-layout__inner--listings">
-      <section className="page-layout__content" aria-label="Cruise listings">
-        <p className="page-layout__content-count">
-          {filtered.length} listing{filtered.length !== 1 ? "s" : ""} available
-        </p>
-
-        <div className="page-layout__grid">
-          {filtered.map((item) => (
-            <article key={item.key} className="hathor-cruise-card cruises-listing-card">
-              <div className="hathor-cruise-card__image">
-                <ManagedImage
-                  name={item.imageName}
-                  alt={`${item.roomName} — ${item.cruiseName}`}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                />
-                  <span className="hathor-cruise-card__badge">
-                    {item.nights}N / {item.days}D
-                  </span>
-                </div>
-                <div className="hathor-cruise-card__body">
-                  <p className="hathor-cruise-card__meta">
-                    Departs {item.departureDay}
-                  </p>
-                  <h3 className="hathor-cruise-card__title">{item.roomName}</h3>
-                  <p className="hathor-cruise-card__route">{item.cruiseName}</p>
-                  <p className="hathor-cruise-card__description">{item.description}</p>
-                  <ul className="hathor-cruise-card__features">
-                    {item.amenities.map((amenity) => (
-                      <li key={amenity}>{amenity}</li>
-                    ))}
-                  </ul>
-                  <p className="hathor-cruise-card__price">
-                    {formatPrice(item.priceCents)}
-                  </p>
-                  <p className="hathor-cruise-card__capacity">
-                    per cabin · up to {item.capacity} guests
-                  </p>
-                  <div className="hathor-cruise-card__actions">
-                    <Link
-                      href={item.detailHref}
-                      className="public-btn-outline-gold flex-1 py-3 text-center text-xs"
-                    >
-                      View Details
-                    </Link>
-                    <BookNowTrigger className="public-btn-gold flex-1 py-3 text-xs">
-                      Book Now
-                    </BookNowTrigger>
-                  </div>
-                </div>
-              </article>
-          ))}
-        </div>
-      </section>
+    <div className="cruise-grid" aria-label="Cruise voyages">
+      {filtered.map((item) => (
+        <article
+          key={item.key}
+          className="cruise-card"
+          data-region={item.filterKey}
+        >
+          <div className="cruise-card-media">
+            <ManagedImage
+              name={item.imageName}
+              alt={`${item.title} — Hathor Dahabiya`}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 33vw"
+            />
+            {item.badge ? (
+              <div
+                className={`cruise-card-badge${item.badgeSoft ? " cruise-card-badge--soft" : ""}`}
+              >
+                {item.badge}
+              </div>
+            ) : null}
+            <div className="cruise-card-shine" aria-hidden="true" />
+          </div>
+          <div className="cruise-card-body">
+            <p className="cruise-card-region">{item.region}</p>
+            <h3 className="cruise-card-title">{item.title}</h3>
+            <p className="cruise-card-meta">{item.meta}</p>
+            <p className="cruise-card-desc">{item.description}</p>
+            <div className="cruise-card-price">
+              <span className="cruise-price-label">From</span>
+              <span className="cruise-price-value">
+                {item.priceCents != null ? formatPrice(item.priceCents) : "Inquire"}
+              </span>
+              <span className="cruise-price-unit">{item.priceUnit}</span>
+            </div>
+            <div className="cruise-card-actions">
+              {item.bookHref ? (
+                <Link href={item.bookHref} className="btn btn-filled cruise-book">
+                  Book Now
+                </Link>
+              ) : (
+                <BookNowTrigger className="btn btn-filled cruise-book">
+                  Book Now
+                </BookNowTrigger>
+              )}
+              {item.bookHref ? (
+                <Link href={item.bookHref} className="btn btn-dark cruise-avail">
+                  Check Availability
+                </Link>
+              ) : (
+                <BookNowTrigger className="btn btn-dark cruise-avail">
+                  Check Availability
+                </BookNowTrigger>
+              )}
+            </div>
+          </div>
+        </article>
+      ))}
     </div>
   );
 }

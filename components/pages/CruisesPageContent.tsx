@@ -14,17 +14,12 @@ import { useHathorLuxBodyMotion } from "@/hooks/useHathorLuxBodyMotion";
 import { splitHeroTitle } from "@/lib/split-hero-title";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 import { CRUISES_PAGE } from "@/lib/page-content";
+import { ManagedImage } from "@/components/ui/ManagedImage";
 
 export function CruisesPageContent() {
   const rootRef = useRef<HTMLDivElement>(null);
   const [lineRight, lineLeft] = splitHeroTitle(CRUISES_PAGE.hero.title);
   useHathorLuxBodyMotion(rootRef);
-
-  const totalRooms = HATHOR_CRUISES.reduce(
-    (sum, cruise) => sum + cruise.rooms.length,
-    0,
-  );
-  const nightOptions = [...new Set(HATHOR_CRUISES.map((c) => c.nights))].length;
 
   return (
     <CruisesListingProvider cruises={HATHOR_CRUISES}>
@@ -42,11 +37,14 @@ export function CruisesPageContent() {
               <p className="cruise-eyebrow" data-lux-reveal>
                 Hathor Voyages
               </p>
-              <h2 className="lux-gold lux-gold-xl" data-lux-title>
-                {CRUISES_PAGE.sectionTitle}
+              <h2 className="cruise-intro-title" data-lux-title>
+                <span className="cruise-intro-line">Voyages composed</span>
+                <span className="cruise-intro-line">like a ritual.</span>
               </h2>
               <p className="cruise-intro-copy" data-lux-reveal>
-                {CRUISES_PAGE.hero.subtitle}
+                Each Hathor sailing is a carefully paced escape — Nile-view suites,
+                gold-hour decks, and service that anticipates without interruption.
+                Choose a voyage, check availability, and reserve your place onboard.
               </p>
               <div className="cruise-stats" data-lux-reveal>
                 <div className="cruise-stat">
@@ -54,24 +52,53 @@ export function CruisesPageContent() {
                   <span className="cruise-stat-label">Itineraries</span>
                 </div>
                 <div className="cruise-stat">
-                  <span className="cruise-stat-num">{nightOptions}</span>
-                  <span className="cruise-stat-label">Duration options</span>
+                  <span className="cruise-stat-num">12</span>
+                  <span className="cruise-stat-label">Cabins &amp; Suites</span>
                 </div>
                 <div className="cruise-stat">
-                  <span className="cruise-stat-num">{totalRooms}</span>
-                  <span className="cruise-stat-label">Cabin listings</span>
+                  <span className="cruise-stat-num">∞</span>
+                  <span className="cruise-stat-label">Quiet Hours</span>
                 </div>
               </div>
             </div>
           </section>
 
-          <div className="cruise-filter-bar" aria-label="Filter voyages">
+          <section className="cruise-filter-bar" aria-label="Filter voyages">
             <CruisesPageFilters />
-          </div>
+          </section>
 
-          <div className="cruise-grid-section" id="voyage-grid">
+          <section className="cruise-grid-section" id="voyage-grid">
             <CruisesPageListingsGrid />
-          </div>
+          </section>
+
+          <section className="cruise-experience">
+            <div className="cruise-experience-inner">
+              <div className="cruise-exp-copy">
+                <p className="cruise-eyebrow" data-lux-reveal>
+                  Onboard
+                </p>
+                <h2 className="cruise-exp-title" data-lux-title>
+                  <span className="cruise-intro-line">The river does not</span>
+                  <span className="cruise-intro-line">end at the shore.</span>
+                </h2>
+                <ul className="cruise-exp-list">
+                  <li data-lux-reveal>Seneb Spa rituals with Nile light</li>
+                  <li data-lux-reveal>Panoramic suites &amp; private decks</li>
+                  <li data-lux-reveal>Historia Fitness overlooking the river</li>
+                  <li data-lux-reveal>Candlelit dining under Egyptian stars</li>
+                </ul>
+              </div>
+              <div className="cruise-exp-visual" data-lux-reveal>
+                <ManagedImage
+                  name="wellness-hero"
+                  alt="Wellness and spa aboard Hathor Dahabiya"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 900px) 100vw, 50vw"
+                />
+              </div>
+            </div>
+          </section>
 
           <section className="lux-shell" style={{ padding: "clamp(3rem, 7vw, 5rem) 0" }}>
             <div className="lux-wrap" style={{ textAlign: "center" }}>

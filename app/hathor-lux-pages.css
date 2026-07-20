@@ -1053,6 +1053,148 @@
   margin-bottom: 8px;
 }
 
+.cruise-price-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cruise-price-value {
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  color: var(--ink);
+  letter-spacing: 0.03em;
+}
+
+.cruise-price-unit {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.cruise-card-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.cruise-card-actions .btn {
+  width: 100%;
+  padding: 14px 12px;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-align: center;
+}
+
+.cruise-card-actions .btn-dark {
+  background: transparent;
+}
+
+.cruise-card-media .object-cover,
+.cruise-card-media img,
+.cruise-exp-visual img,
+.cruise-exp-visual .object-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cruise-exp-visual {
+  position: relative;
+}
+
+/* ---- Experience strip ---- */
+.cruise-experience {
+  position: relative;
+  z-index: 20;
+  background: var(--ink);
+  color: var(--white);
+  padding: clamp(80px, 12vw, 140px) clamp(20px, 5vw, 64px);
+}
+
+.cruise-experience-inner {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: clamp(36px, 6vw, 80px);
+  align-items: center;
+}
+
+.cruise-exp-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+  line-height: 1.08;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  margin: 0 0 28px;
+  color: var(--white);
+}
+
+.cruise-exp-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cruise-exp-list li {
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  color: rgba(245, 239, 228, 0.78);
+  padding-left: 22px;
+  position: relative;
+}
+
+.cruise-exp-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 8px;
+  height: 1px;
+  background: var(--gold-soft);
+}
+
+.cruise-exp-visual {
+  overflow: hidden;
+  border-radius: 12px;
+  aspect-ratio: 5 / 4;
+}
+
+.cruise-experience .cruise-eyebrow {
+  color: var(--gold-soft);
+}
+
+@media (max-width: 1024px) {
+  .cruise-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .cruise-experience-inner {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  .cruise-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cruise-card-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .cruise-filter {
+    padding: 10px 16px;
+    font-size: 0.6rem;
+  }
+}
+
 /* ---- Rooms fullscreen chapters (alias of spx-frame) ---- */
 .hathor-lux .acc-fs,
 .hathor-lux .spx-frame {

@@ -206,13 +206,10 @@ export function Header() {
     };
   }, [openDropdown]);
 
-  const handleDropdownTriggerClick = (
-    event: React.MouseEvent<HTMLAnchorElement>,
-    id: string,
-  ) => {
-    event.preventDefault();
+  const handleDropdownTriggerClick = () => {
+    /* Navigate to the group landing page; close any open dropdown. */
     cancelDropdownClose();
-    setOpenDropdown((current) => (current === id ? null : id));
+    setOpenDropdown(null);
   };
 
   const openDropdownMenu = (id: string) => {
@@ -254,7 +251,7 @@ export function Header() {
               className={`hathor-header__nav-link ${isActive ? "hathor-header__nav-link--active" : ""}`}
               aria-haspopup="menu"
               aria-expanded={dropdownOpen}
-              onClick={(event) => handleDropdownTriggerClick(event, item.id)}
+              onClick={handleDropdownTriggerClick}
             >
               <span className="hathor-header__nav-link-label">{item.label}</span>
               <span className="hathor-header__nav-pyramid" aria-hidden="true" />
