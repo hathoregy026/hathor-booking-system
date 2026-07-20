@@ -1911,6 +1911,27 @@ select.admin-input option:checked {
   cursor: pointer;
 }
 
+.typo-easy__number-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: 100%;
+  max-width: 11rem;
+}
+
+.typo-easy__number {
+  width: 100%;
+  min-width: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.typo-easy__number-suffix {
+  flex-shrink: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
 .typo-easy__color {
   display: inline-flex;
   align-items: center;

@@ -70,10 +70,11 @@ export const HATHOR_FONT_GROUPS: readonly HathorFontFamilyGroup[] = [
   { family: "Michiko", variants: [{ id: "Michiko", label: "Italic" }] },
   {
     family: "Quiet Luxury",
-    variants: [
-      { id: "Quiet Luxury", label: "Script" },
-      { id: "Quiet Luxury Serif", label: "Serif" },
-    ],
+    variants: [{ id: "Quiet Luxury", label: "Script" }],
+  },
+  {
+    family: "Quiet Luxury Serif",
+    variants: [{ id: "Quiet Luxury Serif", label: "Serif" }],
   },
   {
     family: "Rollgates Luxury",
@@ -84,10 +85,11 @@ export const HATHOR_FONT_GROUPS: readonly HathorFontFamilyGroup[] = [
   },
   {
     family: "Playfair Display",
-    variants: [
-      { id: "Playfair Display", label: "Regular" },
-      { id: "Playfair Display Italic", label: "Italic" },
-    ],
+    variants: [{ id: "Playfair Display", label: "Regular" }],
+  },
+  {
+    family: "Playfair Display Italic",
+    variants: [{ id: "Playfair Display Italic", label: "Italic" }],
   },
 ] as const;
 

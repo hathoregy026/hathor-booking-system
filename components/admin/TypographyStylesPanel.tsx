@@ -99,6 +99,74 @@ function SimpleField({
   );
 }
 
+/** Typeable number with spinner arrows (up/down). */
+function NumberInput({
+  value,
+  min,
+  max,
+  step,
+  suffix,
+  onChange,
+  "aria-label": ariaLabel,
+}: {
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+  suffix?: string;
+  onChange: (n: number) => void;
+  "aria-label": string;
+}) {
+  const [draft, setDraft] = useState(String(value));
+
+  useEffect(() => {
+    setDraft(String(value));
+  }, [value]);
+
+  const clamp = (n: number) => Math.min(max, Math.max(min, n));
+
+  const commit = (raw: string) => {
+    const n = Number(raw);
+    if (!Number.isFinite(n)) {
+      setDraft(String(value));
+      return;
+    }
+    const next = clamp(n);
+    setDraft(String(next));
+    if (next !== value) onChange(next);
+  };
+
+  return (
+    <div className="typo-easy__number-wrap">
+      <input
+        type="number"
+        className="typo-easy__number admin-input"
+        value={draft}
+        min={min}
+        max={max}
+        step={step}
+        aria-label={ariaLabel}
+        onChange={(e) => {
+          const raw = e.target.value;
+          setDraft(raw);
+          if (raw.trim() === "" || raw === "-" || raw === "." || raw === "-.") {
+            return;
+          }
+          const n = Number(raw);
+          if (Number.isFinite(n)) onChange(clamp(n));
+        }}
+        onBlur={() => commit(draft)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.currentTarget.blur();
+          }
+        }}
+      />
+      {suffix ? <span className="typo-easy__number-suffix">{suffix}</span> : null}
+    </div>
+  );
+}
+
 /** Swatch + editable hex (#RGB / #RRGGBB). */
 function HexColorInput({
   value,
@@ -477,30 +545,26 @@ export function TypographyStylesPanel() {
             </p>
 
             <div className="typo-easy__row">
-              <SimpleField label="Move X" valueLabel={`${activeOffset.x}px`}>
-                <input
-                  type="range"
-                  className="typo-easy__range"
+              <SimpleField label="Move X">
+                <NumberInput
+                  aria-label="Move X"
+                  value={activeOffset.x}
                   min={-240}
                   max={240}
                   step={1}
-                  value={activeOffset.x}
-                  onChange={(e) =>
-                    setActiveOffset(Number(e.target.value), activeOffset.y)
-                  }
+                  suffix="px"
+                  onChange={(n) => setActiveOffset(n, activeOffset.y)}
                 />
               </SimpleField>
-              <SimpleField label="Move Y" valueLabel={`${activeOffset.y}px`}>
-                <input
-                  type="range"
-                  className="typo-easy__range"
+              <SimpleField label="Move Y">
+                <NumberInput
+                  aria-label="Move Y"
+                  value={activeOffset.y}
                   min={-240}
                   max={240}
                   step={1}
-                  value={activeOffset.y}
-                  onChange={(e) =>
-                    setActiveOffset(activeOffset.x, Number(e.target.value))
-                  }
+                  suffix="px"
+                  onChange={(n) => setActiveOffset(activeOffset.x, n)}
                 />
               </SimpleField>
             </div>
@@ -593,15 +657,15 @@ export function TypographyStylesPanel() {
         </SimpleField>
 
         <div className="typo-easy__row">
-          <SimpleField label="Size" valueLabel={`${value.fontSize}px`}>
-            <input
-              type="range"
-              className="typo-easy__range"
-              min={12}
-              max={96}
-              step={1}
+          <SimpleField label="Size">
+            <NumberInput
+              aria-label="Font size"
               value={value.fontSize}
-              onChange={(e) => patch({ fontSize: Number(e.target.value) })}
+              min={8}
+              max={200}
+              step={1}
+              suffix="px"
+              onChange={(n) => patch({ fontSize: n })}
             />
           </SimpleField>
 
@@ -614,32 +678,26 @@ export function TypographyStylesPanel() {
         </div>
 
         <div className="typo-easy__row">
-          <SimpleField label="Line height" valueLabel={String(value.lineHeight)}>
-            <input
-              type="range"
-              className="typo-easy__range"
-              min={0.9}
-              max={2}
-              step={0.05}
+          <SimpleField label="Line height">
+            <NumberInput
+              aria-label="Line height"
               value={value.lineHeight}
-              onChange={(e) => patch({ lineHeight: Number(e.target.value) })}
+              min={0.8}
+              max={3}
+              step={0.05}
+              onChange={(n) => patch({ lineHeight: n })}
             />
           </SimpleField>
 
-          <SimpleField
-            label="Letter spacing"
-            valueLabel={`${value.letterSpacing}px`}
-          >
-            <input
-              type="range"
-              className="typo-easy__range"
-              min={-4}
-              max={12}
-              step={0.5}
+          <SimpleField label="Letter spacing">
+            <NumberInput
+              aria-label="Letter spacing"
               value={value.letterSpacing}
-              onChange={(e) =>
-                patch({ letterSpacing: Number(e.target.value) })
-              }
+              min={-10}
+              max={40}
+              step={0.5}
+              suffix="px"
+              onChange={(n) => patch({ letterSpacing: n })}
             />
           </SimpleField>
         </div>
