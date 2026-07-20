@@ -82,17 +82,13 @@ export function useHathorLuxBodyMotion(
       });
 
       /* Wellness / rooms pinned frames */
-      root.querySelectorAll<HTMLElement>(".spx-frame, .acc-fs").forEach((frame) => {
-        const img = frame.querySelector<HTMLElement>(
-          ".spx-frame-media img, .acc-fs-media img",
-        );
-        const shade = frame.querySelector<HTMLElement>(
-          ".spx-frame-shade, .acc-fs-shade",
-        );
-        const ui = frame.querySelector<HTMLElement>(".spx-frame-ui, .acc-fs-ui");
+      root.querySelectorAll<HTMLElement>(".spx-frame").forEach((frame) => {
+        const img = frame.querySelector<HTMLElement>(".spx-frame-media img");
+        const shade = frame.querySelector<HTMLElement>(".spx-frame-shade");
+        const ui = frame.querySelector<HTMLElement>(".spx-frame-ui");
         const bits = ui
           ? ui.querySelectorAll<HTMLElement>(
-              ".lux-kicker, .lux-gold, .lux-lead, .lux-copy, .btn, .public-fab__book, a, button",
+              ".lux-kicker, .lux-gold, .lux-lead, .lux-copy, .btn, a, button",
             )
           : [];
 
@@ -270,32 +266,109 @@ export function useHathorLuxBodyMotion(
         }
       });
 
-      /* Cruise cards cascade */
-      root.querySelectorAll<HTMLElement>(".cruise-card, .hathor-cruise-card").forEach(
-        (card, i) => {
-          gsap.from(card, {
-            y: 40,
+      /* Luxury bands — suite cards, manifesto, atelier, quote, compare, metrics */
+      root
+        .querySelectorAll<HTMLElement>(".spx-suite-card, .hlx-manifesto-item")
+        .forEach((el, i) => {
+          gsap.from(el, {
+            y: 48,
             opacity: 0,
-            duration: 0.75,
-            delay: (i % 6) * 0.06,
+            duration: 0.9,
+            delay: (i % 4) * 0.08,
             ease,
-            scrollTrigger: { trigger: card, start: "top 92%", once: true },
+            scrollTrigger: { trigger: el, start: "top 90%", once: true },
           });
-        },
-      );
+        });
 
-      root.querySelectorAll<HTMLElement>(".lux-cta-band, .cta-section .cta-inner").forEach(
-        (cta) => {
-          gsap.from(cta.querySelectorAll("h2, p, .btn, button, a"), {
-            y: 28,
+      const atelier = root.querySelector<HTMLElement>(".spx-atelier-grid");
+      if (atelier) {
+        const media = atelier.querySelector<HTMLElement>(".spx-atelier-media");
+        const copy = atelier.querySelector<HTMLElement>(".spx-atelier-copy");
+        if (media) {
+          gsap.from(media, {
+            x: -40,
+            opacity: 0,
+            duration: 1.05,
+            ease,
+            scrollTrigger: { trigger: atelier, start: "top 78%", once: true },
+          });
+        }
+        if (copy) {
+          gsap.from(copy.children, {
+            y: 30,
             opacity: 0,
             duration: 0.8,
-            stagger: 0.1,
+            stagger: 0.08,
             ease,
-            scrollTrigger: { trigger: cta, start: "top 82%", once: true },
+            scrollTrigger: { trigger: atelier, start: "top 78%", once: true },
           });
-        },
-      );
+        }
+      }
+
+      const quote = root.querySelector<HTMLElement>(".spx-quote blockquote");
+      if (quote) {
+        gsap.from(quote, {
+          y: 44,
+          opacity: 0,
+          duration: 1.1,
+          ease: lux,
+          scrollTrigger: {
+            trigger: root.querySelector(".spx-quote"),
+            start: "top 80%",
+            once: true,
+          },
+        });
+      }
+
+      root.querySelectorAll<HTMLElement>(".hlx-compare-row").forEach((row, i) => {
+        gsap.from(row, {
+          y: 18,
+          opacity: 0,
+          duration: 0.55,
+          delay: i * 0.05,
+          ease,
+          scrollTrigger: { trigger: row, start: "top 94%", once: true },
+        });
+      });
+
+      root.querySelectorAll<HTMLElement>(".spx-metric").forEach((m, i) => {
+        gsap.from(m, {
+          y: 24,
+          opacity: 0,
+          duration: 0.7,
+          delay: i * 0.08,
+          ease,
+          scrollTrigger: { trigger: m, start: "top 90%", once: true },
+        });
+      });
+
+      root.querySelectorAll<HTMLElement>(".hlx-panel-media img").forEach((img) => {
+        gsap.fromTo(
+          img,
+          { scale: 1.18 },
+          {
+            scale: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: img.closest(".hlx-panel"),
+              start: "top 90%",
+              end: "top 30%",
+              scrub: true,
+            },
+          },
+        );
+      });
+
+      root.querySelectorAll<HTMLElement>(".cta-section .cta-inner").forEach((cta) => {
+        gsap.from(cta.querySelectorAll("h2, p, .btn, button, a"), {
+          y: 28,
+          opacity: 0,
+          duration: 0.8,
+          stagger: 0.1,
+          ease,
+          scrollTrigger: { trigger: cta, start: "top 82%", once: true },
+        });
+      });
     }, root);
 
     const onLoad = () => ScrollTrigger.refresh();

@@ -4,7 +4,6 @@ import {
   createContext,
   useContext,
   useMemo,
-  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -12,8 +11,10 @@ import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { formatPrice } from "@/lib/client-dates";
 import type { HathorCruiseSeed } from "@/lib/hathor-catalog";
-import { ManagedImage } from "@/components/ui/ManagedImage";
-import { refreshCruisesHeroStripes } from "@/hooks/useCruisesHeroStripes";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 type VoyageFilter = "all" | "3" | "4" | "7" | "charter";
 
@@ -26,7 +27,7 @@ type VoyageCard = {
   description: string;
   priceCents: number | null;
   priceUnit: string;
-  imageName: string;
+  imageSrc: string;
   badge?: string;
   badgeSoft?: boolean;
   bookHref?: string;
@@ -35,7 +36,6 @@ type VoyageCard = {
 type CruisesListingContextValue = {
   filter: VoyageFilter;
   setFilter: (value: VoyageFilter) => void;
-  voyages: VoyageCard[];
   filtered: VoyageCard[];
 };
 
@@ -51,7 +51,14 @@ function useCruisesListing() {
   return ctx;
 }
 
-const VOYAGE_IMAGES = ["cruises-hero", "room-suite", "room-royal", "room-luxury"] as const;
+const CARD_IMAGES = [
+  "/pages-redesign/cruise-1.webp",
+  "/pages-redesign/cruise-2.webp",
+  "/pages-redesign/cruise-3.webp",
+  "/pages-redesign/cruise-4.webp",
+  "/pages-redesign/cruise-5.webp",
+  "/pages-redesign/cruise-6.webp",
+] as const;
 
 function shortVoyageTitle(cruise: HathorCruiseSeed): string {
   if (cruise.nights === 3) return "Aswan to Luxor";
@@ -72,7 +79,7 @@ function cruiseToVoyage(cruise: HathorCruiseSeed, index: number): VoyageCard {
     description: cruise.description,
     priceCents: fromPrice,
     priceUnit: "/ cabin",
-    imageName: VOYAGE_IMAGES[index % VOYAGE_IMAGES.length] ?? "cruises-hero",
+    imageSrc: CARD_IMAGES[index % CARD_IMAGES.length]!,
     badge: index === 0 ? "Featured" : cruise.nights === 7 ? "Signature" : undefined,
     badgeSoft: cruise.nights === 4,
   };
@@ -88,25 +95,10 @@ const CHARTER_VOYAGE: VoyageCard = {
     "The entire Dahabiya, your route, and a private crew — a voyage written only for you on the Nile.",
   priceCents: null,
   priceUnit: "/ charter",
-  imageName: "room-royal",
+  imageSrc: "/pages-redesign/cruise-5.webp",
   badge: "Exclusive",
   bookHref: "/charter",
 };
-
-function stabilizeListingsLayoutDuringFilterChange() {
-  const content = document.querySelector<HTMLElement>(".cruise-grid-section");
-  if (content) {
-    content.style.minHeight = `${content.offsetHeight}px`;
-  }
-
-  refreshCruisesHeroStripes();
-
-  window.requestAnimationFrame(() => {
-    if (content) {
-      content.style.minHeight = "";
-    }
-  });
-}
 
 type CruisesListingProviderProps = {
   cruises: HathorCruiseSeed[];
@@ -121,7 +113,6 @@ export function CruisesListingProvider({
     () => [...cruises.map(cruiseToVoyage), CHARTER_VOYAGE],
     [cruises],
   );
-
   const [filter, setFilter] = useState<VoyageFilter>("all");
 
   const filtered = useMemo(() => {
@@ -130,13 +121,8 @@ export function CruisesListingProvider({
   }, [filter, voyages]);
 
   const value = useMemo(
-    () => ({
-      filter,
-      setFilter,
-      voyages,
-      filtered,
-    }),
-    [filter, voyages, filtered],
+    () => ({ filter, setFilter, filtered }),
+    [filter, filtered],
   );
 
   return (
@@ -156,17 +142,6 @@ const FILTERS: { id: VoyageFilter; label: string }[] = [
 
 export function CruisesPageFilters() {
   const { filter, setFilter } = useCruisesListing();
-  const pinnedScrollYRef = useRef<number | null>(null);
-
-  const keepPinnedScrollStable = () => {
-    pinnedScrollYRef.current = window.scrollY;
-  };
-
-  const updateFilter = (value: VoyageFilter) => {
-    setFilter(value);
-    stabilizeListingsLayoutDuringFilterChange();
-    pinnedScrollYRef.current = null;
-  };
 
   return (
     <div className="cruise-filter-inner">
@@ -174,11 +149,21 @@ export function CruisesPageFilters() {
         <button
           key={item.id}
           type="button"
-          tabIndex={-1}
           data-filter={item.id}
-          onPointerDown={keepPinnedScrollStable}
-          onMouseDown={keepPinnedScrollStable}
-          onClick={() => updateFilter(item.id)}
+          onClick={() => {
+            setFilter(item.id);
+            requestAnimationFrame(() => {
+              ScrollTrigger.refresh();
+              gsap.from(".cruise-card:not(.is-filtered-out)", {
+                opacity: 0.35,
+                y: 20,
+                duration: 0.45,
+                stagger: 0.06,
+                ease: "power2.out",
+                overwrite: "auto",
+              });
+            });
+          }}
           className={`cruise-filter${filter === item.id ? " is-active" : ""}`}
         >
           {item.label}
@@ -192,7 +177,7 @@ export function CruisesPageListingsGrid() {
   const { filtered } = useCruisesListing();
 
   return (
-    <div className="cruise-grid" aria-label="Cruise voyages">
+    <div className="cruise-grid">
       {filtered.map((item) => (
         <article
           key={item.key}
@@ -200,13 +185,8 @@ export function CruisesPageListingsGrid() {
           data-region={item.filterKey}
         >
           <div className="cruise-card-media">
-            <ManagedImage
-              name={item.imageName}
-              alt={`${item.title} — Hathor Dahabiya`}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 33vw"
-            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={item.imageSrc} alt={`${item.title} — Hathor Dahabiya`} />
             {item.badge ? (
               <div
                 className={`cruise-card-badge${item.badgeSoft ? " cruise-card-badge--soft" : ""}`}

@@ -4,15 +4,35 @@ import { useRef } from "react";
 import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { PublicSiteHero } from "@/components/pages/PublicSiteHero";
-import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useHathorLuxBodyMotion } from "@/hooks/useHathorLuxBodyMotion";
 import { splitHeroTitle } from "@/lib/split-hero-title";
 import { HIGHLIGHTS_PAGE } from "@/lib/page-content";
 
-const LANDMARK_IMAGES = [
-  "landmark-obelisk",
-  "landmark-hatshepsut",
-  "landmark-valley-kings",
+const PANEL_IMAGES = [
+  "/pages-redesign/highlights-1.webp",
+  "/pages-redesign/highlights-2.webp",
+  "/pages-redesign/hl-lux-1.webp",
+  "/pages-redesign/hl-lux-2.webp",
+  "/pages-redesign/hl-lux-3.webp",
+  "/pages-redesign/sport-5.webp",
+] as const;
+
+const EXTRA_PANELS = [
+  {
+    kicker: "Privacy",
+    title: "Intimate Dahabiya",
+    body: "Twelve guests at most — cabins and suites composed for silence, Nile light, and unhurried hospitality.",
+  },
+  {
+    kicker: "Cuisine",
+    title: "Hathor Flavors",
+    body: "Egyptian and international cuisine, candlelit dinners, and lounge bars as the river turns gold.",
+  },
+  {
+    kicker: "Wellness",
+    title: "Seneb Spa",
+    body: "Spa rituals and Historia Fitness — restoration timed between temples and sunset sails.",
+  },
 ] as const;
 
 export function HighlightsPageContent() {
@@ -20,8 +40,21 @@ export function HighlightsPageContent() {
   const [lineRight, lineLeft] = splitHeroTitle(HIGHLIGHTS_PAGE.hero.title);
   useHathorLuxBodyMotion(rootRef);
 
+  const panels = [
+    ...HIGHLIGHTS_PAGE.landmarks.map((landmark, index) => ({
+      kicker: "Landmark",
+      title: landmark.title,
+      body: landmark.body,
+      src: PANEL_IMAGES[index]!,
+    })),
+    ...EXTRA_PANELS.map((panel, index) => ({
+      ...panel,
+      src: PANEL_IMAGES[index + 3]!,
+    })),
+  ];
+
   return (
-    <div ref={rootRef} className="hathor-lux">
+    <div ref={rootRef} className="venetian-page lux-page">
       <PublicSiteHero
         lineRight={lineRight}
         lineLeft={lineLeft}
@@ -45,112 +78,123 @@ export function HighlightsPageContent() {
               <p key={paragraph.slice(0, 48)}>{paragraph}</p>
             ))}
           </div>
-          <div data-lux-reveal>
-            <BookNowTrigger className="btn btn-filled">Book Now</BookNowTrigger>
-          </div>
+          <BookNowTrigger className="btn btn-dark" data-lux-reveal>
+            Book Your Cruise Now
+          </BookNowTrigger>
         </header>
 
         <div className="hlx-pin">
           <div className="hlx-track" id="hlx-track">
-            {HIGHLIGHTS_PAGE.landmarks.map((landmark, index) => (
-              <article
-                key={landmark.title}
-                className="hlx-panel"
-                id={`site-image-${LANDMARK_IMAGES[index]}`}
-                data-site-image={LANDMARK_IMAGES[index]}
-              >
+            {panels.map((panel, index) => (
+              <article key={panel.title} className="hlx-panel">
                 <div className="hlx-panel-media">
                   <div className="lux-mask">
-                    <ManagedImage
-                      name={LANDMARK_IMAGES[index]!}
-                      alt={landmark.title}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 88vw, 45vw"
-                      loading={index === 0 ? "eager" : "lazy"}
-                    />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={panel.src} alt={panel.title} />
                   </div>
                 </div>
                 <div className="hlx-panel-copy">
                   <div className="hlx-panel-num">
                     {String(index + 1).padStart(2, "0")}
                   </div>
-                  <h3>{landmark.title}</h3>
-                  <p>{landmark.body}</p>
-                  <Link className="btn btn-dark" href="/cruises">
-                    Sail this route
-                  </Link>
+                  <p className="lux-kicker">{panel.kicker}</p>
+                  <h3>{panel.title}</h3>
+                  <p>{panel.body}</p>
+                  <BookNowTrigger className="btn btn-dark">
+                    Book Your Cruise Now
+                  </BookNowTrigger>
                 </div>
               </article>
             ))}
           </div>
         </div>
 
-        <div className="hlx-progress" aria-hidden>
-          {HIGHLIGHTS_PAGE.landmarks.map((landmark) => (
-            <span key={landmark.title}>
+        <div className="hlx-progress" aria-hidden="true">
+          {panels.map((panel) => (
+            <span key={panel.title}>
               <i />
             </span>
           ))}
         </div>
+      </section>
 
-        <section className="hlx-manifesto">
-          <div className="hlx-manifesto-grid">
-            <article className="hlx-manifesto-item" data-lux-reveal>
-              <p className="lux-kicker">Privacy</p>
-              <h3>Intimate Dahabiya</h3>
-              <p>
-                Eight cabins and four suites — including two royal — for a
-                quieter, more personal Nile voyage.
-              </p>
-            </article>
-            <article className="hlx-manifesto-item" data-lux-reveal>
-              <p className="lux-kicker">Gastronomy</p>
-              <h3>Flavors of Egypt</h3>
-              <p>
-                Expertly prepared dishes where authentic Egyptian flavors meet
-                international cuisine — fresh, daily, onboard.
-              </p>
-            </article>
-            <article className="hlx-manifesto-item" data-lux-reveal>
-              <p className="lux-kicker">Hospitality</p>
-              <h3>Attentive care</h3>
-              <p>
-                Warm service and refined atmosphere — every detail tended so you
-                can simply watch the Nile unfold.
-              </p>
-            </article>
-          </div>
-        </section>
-
-        <section className="cta-section">
-          <div className="cta-inner">
-            <h2 className="lux-gold lux-gold-md" data-lux-title>
-              Begin your Nile chapter
-            </h2>
-            <p data-lux-reveal>
-              Pair these landmarks with an exclusive Hathor itinerary between
-              Luxor and Aswan.
+      <section className="hlx-manifesto">
+        <div className="hlx-manifesto-grid">
+          <article className="hlx-manifesto-item">
+            <p className="lux-kicker">I</p>
+            <h3>Private by design</h3>
+            <p>
+              No crowds. No theatre. Only the Nile, your suite, and a crew that listens
+              as carefully as they serve.
             </p>
-            <div
-              data-lux-reveal
-              style={{
-                display: "flex",
-                gap: "1rem",
-                justifyContent: "center",
-                flexWrap: "wrap",
-              }}
-            >
-              <BookNowTrigger className="btn btn-filled">Book Now</BookNowTrigger>
-              <Link className="btn btn-dark" href="/cruises">
-                View Cruises
-              </Link>
-              <Link className="btn btn-dark" href="/wellness">
-                Wellness
-              </Link>
-            </div>
+          </article>
+          <article className="hlx-manifesto-item">
+            <p className="lux-kicker">II</p>
+            <h3>Temples by day</h3>
+            <p>
+              Landmarks paced with grace — Unfinished Obelisk, Hatshepsut, Valley of
+              the Kings — then return to river quiet.
+            </p>
+          </article>
+          <article className="hlx-manifesto-item">
+            <p className="lux-kicker">III</p>
+            <h3>Voyage-native</h3>
+            <p>
+              Dining, spa, and rest bend to itinerary: ports, walls of light, and gold
+              hour decks are part of the protocol.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section className="hlx-compare">
+        <div className="hlx-compare-inner">
+          <div className="hlx-compare-row is-head">
+            <span>Inclusion</span>
+            <span>Scheduled Voyage</span>
+            <span>Private Charter</span>
           </div>
-        </section>
+          <div className="hlx-compare-row">
+            <strong>Cabins &amp; suites</strong>
+            <span>Per booking</span>
+            <span>Full ship</span>
+          </div>
+          <div className="hlx-compare-row">
+            <strong>Itinerary</strong>
+            <span>Fixed sailings</span>
+            <span>Your route</span>
+          </div>
+          <div className="hlx-compare-row">
+            <strong>Dining &amp; spa</strong>
+            <span>Included onboard</span>
+            <span>Fully composed</span>
+          </div>
+          <div className="hlx-compare-row">
+            <strong>Privacy</strong>
+            <span>Intimate ship</span>
+            <span>Yours alone</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="cta-section" id="reserve">
+        <div className="cta-inner">
+          <h2 className="lux-gold lux-gold-md" data-lux-title>
+            Book Your Cruise Now
+          </h2>
+          <p data-lux-reveal>
+            Reserve your voyage and unlock the Hathor highlights — temples, suites, and
+            river cinema composed entirely around you.
+          </p>
+          <BookNowTrigger className="btn btn-filled">
+            Book Your Cruise Now
+          </BookNowTrigger>
+          <div style={{ marginTop: "1rem" }}>
+            <Link className="btn btn-dark" href="/cruises">
+              View Voyages
+            </Link>
+          </div>
+        </div>
       </section>
     </div>
   );

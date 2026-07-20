@@ -2,15 +2,54 @@
 
 import { useRef } from "react";
 import Link from "next/link";
-import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
-import { ManagedImage } from "@/components/ui/ManagedImage";
-import { useHathorLuxBodyMotion } from "@/hooks/useHathorLuxBodyMotion";
+import { useAccommodationMotion } from "@/hooks/useAccommodationMotion";
 import { ROOMS_PAGE } from "@/lib/page-content";
+
+const IMG = {
+  suite1: "/pages-redesign/suite-1.webp",
+  suite2: "/pages-redesign/suite-2.webp",
+  suite3: "/pages-redesign/suite-3.webp",
+  suite4: "/pages-redesign/suite-4.webp",
+  suite5: "/pages-redesign/suite-5.webp",
+  suite6: "/pages-redesign/suite-6.webp",
+  window: "/pages-redesign/suite-window.webp",
+  escape: "/pages-redesign/escape.webp",
+} as const;
+
+const RESIDENCES = [
+  {
+    id: "1",
+    label: "Residence 01",
+    title: "Luxury Rooms",
+    meta: "22 m² · Nile view · Smart cabin",
+    desc: "Refined cabins with panoramic Nile light — handcrafted calm for an elegant Dahabiya voyage.",
+    href: "/luxury-cabins-Nile-Cruise",
+    slides: [IMG.suite1, IMG.window, IMG.suite3, IMG.suite6],
+  },
+  {
+    id: "2",
+    label: "Residence 02",
+    title: "Luxury Suites",
+    meta: "46 m² · Jacuzzi · Dual baths",
+    desc: "Spacious suite sanctuary on the Lower Deck — privacy, Nile glass, and suite-level quiet.",
+    href: "/rooms#suites",
+    slides: [IMG.suite2, IMG.suite5, IMG.escape, IMG.suite4],
+  },
+  {
+    id: "3",
+    label: "Residence 03",
+    title: "Royal Suites",
+    meta: "56 m² · Main Deck · Royal glass",
+    desc: "The crown of Hathor Dahabiya — panoramic Nile views and the highest level of comfort.",
+    href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+    slides: [IMG.suite4, IMG.suite2, IMG.suite5, IMG.suite1],
+  },
+] as const;
 
 export function RoomsPageContent() {
   const rootRef = useRef<HTMLDivElement>(null);
-  useHathorLuxBodyMotion(rootRef);
+  useAccommodationMotion(rootRef);
 
   return (
     <PageScrollTransition
@@ -20,133 +59,77 @@ export function RoomsPageContent() {
       imageName="room-luxury"
       imageAlt="Luxury cabin aboard Hathor Dahabiya"
     >
-      <div ref={rootRef} className="hathor-lux">
-        <section className="cruise-intro" id="intro">
-          <div className="section-inner cruise-intro-inner">
-            <p className="cruise-eyebrow" data-lux-reveal>
-              The Collection
-            </p>
-            <h2 className="lux-gold lux-gold-xl" data-lux-title>
-              {ROOMS_PAGE.accommodations.title}
+      <div ref={rootRef} className="venetian-page page-accommodation">
+        <section className="about-section acc-intro-block" id="intro">
+          <div className="section-inner acc-intro-inner">
+            <p className="acc-eyebrow acc-reveal">The Collection</p>
+            <h2 className="acc-intro-title">
+              <span className="acc-intro-line">Three residences.</span>
+              <span className="acc-intro-line">Four views each.</span>
             </h2>
-            <p className="cruise-intro-copy" data-lux-reveal>
-              {ROOMS_PAGE.accommodations.intro}
+            <p className="acc-intro-copy acc-reveal">
+              Enter a suite. Scroll to move through its rooms of light. Then the next
+              residence stacks over — no empty scroll, only cinema.
             </p>
-            <div className="cruise-stats" data-lux-reveal>
-              {ROOMS_PAGE.accommodations.stats.map((stat) => (
-                <div key={stat} className="cruise-stat">
-                  <span className="cruise-stat-num">
-                    {stat.match(/^\d+/)?.[0]}
-                  </span>
-                  <span className="cruise-stat-label">
-                    {stat.replace(/^\d+\s*/, "")}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <div className="lux-copy" data-lux-reveal style={{ marginTop: "2rem" }}>
-              {ROOMS_PAGE.intro.map((paragraph) => (
-                <p key={paragraph.slice(0, 40)}>{paragraph}</p>
-              ))}
-              <p>{ROOMS_PAGE.accommodations.outro}</p>
-            </div>
           </div>
         </section>
 
-        {ROOMS_PAGE.categories.map((category, index) => {
-          const href = "href" in category ? category.href : undefined;
-          const hrefLabel =
-            "hrefLabel" in category ? category.hrefLabel : undefined;
-          return (
-            <article
-              key={category.title}
-              className={`acc-fs${index % 2 === 1 ? " acc-fs--right" : ""}`}
-              id={`site-image-${category.imageName}`}
-              data-site-image={category.imageName}
+        <div className="room-stack" id="rooms">
+          {RESIDENCES.map((room) => (
+            <section
+              key={room.id}
+              className="room-fs"
+              data-room={room.id}
+              aria-label={room.title}
             >
-              <div className="acc-fs-media">
-                <div className="lux-mask">
-                  <ManagedImage
-                    name={category.imageName}
-                    alt={`${category.title} aboard Hathor Dahabiya`}
-                    fill
-                    className="object-cover"
-                    sizes="100vw"
-                  />
-                </div>
-              </div>
-              <div className="acc-fs-shade" aria-hidden />
-              <div className="acc-fs-ui">
-                <p className="lux-kicker">
-                  0{index + 1} / Accommodation
-                </p>
-                <h3 className="lux-gold lux-gold-lg">{category.title}</h3>
-                <div className="lux-copy">
-                  <p>{category.body}</p>
-                </div>
-                {href && hrefLabel ? (
-                  <Link href={href}>{hrefLabel}</Link>
-                ) : (
-                  <Link href="/cruises">View cruises</Link>
-                )}
-              </div>
-            </article>
-          );
-        })}
-
-        <section className="spx-suite" id="suites">
-          <div className="lux-wrap">
-            <p className="lux-kicker" data-lux-reveal>
-              Suites
-            </p>
-            <h2 className="lux-gold lux-gold-lg" data-lux-title>
-              {ROOMS_PAGE.suites.title}
-            </h2>
-            <p className="lux-lead" data-lux-reveal>
-              {ROOMS_PAGE.suites.body}
-            </p>
-            <div className="spx-suite-grid" style={{ marginTop: "2rem" }}>
-              {ROOMS_PAGE.suites.features.map((feature) => (
-                <article key={feature} className="spx-suite-card">
-                  <div className="spx-suite-body">
-                    <h3>{feature}</h3>
-                    <p>Included in your suite sanctuary aboard Hathor Dahabiya.</p>
+              <div className="room-fs-slides">
+                {room.slides.map((src, i) => (
+                  <div
+                    key={src + i}
+                    className={`room-fs-slide${i === 0 ? " is-first" : ""}`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={src} alt={`${room.title} view ${i + 1}`} />
                   </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
+                ))}
+              </div>
+              <div className="room-fs-shade" aria-hidden="true" />
+              <div className="room-fs-ui">
+                <div className="room-fs-top">
+                  <span className="room-fs-count">
+                    <i className="room-fs-current">01</i> / 04
+                  </span>
+                  <span className="room-fs-label">{room.label}</span>
+                </div>
+                <div className="room-fs-copy">
+                  <h2 className="room-fs-title">{room.title}</h2>
+                  <p className="room-fs-meta">{room.meta}</p>
+                  <p className="room-fs-desc">{room.desc}</p>
+                  <Link className="btn btn-light room-fs-cta" href={room.href}>
+                    Discover
+                  </Link>
+                </div>
+                <div className="room-fs-progress" aria-hidden="true">
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                </div>
+              </div>
+            </section>
+          ))}
+        </div>
 
         <section className="cta-section" id="reserve">
           <div className="cta-inner">
-            <h2 className="lux-gold lux-gold-md" data-lux-title>
-              {ROOMS_PAGE.cruisesCta.title}
-            </h2>
-            <p data-lux-reveal>{ROOMS_PAGE.cruisesCta.body}</p>
-            <p className="lux-lead" data-lux-reveal>
-              {ROOMS_PAGE.welcome.subtitle}
+            <h2>Reserve your suite</h2>
+            <p>
+              Share your voyage dates. Our suite concierge will confirm availability and
+              hold your preferred residence aboard Hathor Dahabiya.
             </p>
-            <p data-lux-reveal className="lux-copy">
-              {ROOMS_PAGE.welcome.body}
-            </p>
-            <div
-              data-lux-reveal
-              style={{
-                display: "flex",
-                gap: "1rem",
-                justifyContent: "center",
-                flexWrap: "wrap",
-              }}
-            >
-              <Link className="btn btn-filled" href="/cruises">
-                {ROOMS_PAGE.cruisesCta.hrefLabel}
-              </Link>
-              <BookNowTrigger className="btn btn-dark">Book Now</BookNowTrigger>
-              <Link className="btn btn-dark" href="/gastronomy">
-                Dining
-              </Link>
-            </div>
+            <Link className="btn btn-filled" href="/cruises">
+              View Voyages
+            </Link>
           </div>
         </section>
       </div>

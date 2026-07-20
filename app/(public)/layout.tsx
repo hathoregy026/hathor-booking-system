@@ -19,7 +19,7 @@ import "../public-site-hero.css";
 import "../hero-tint.css";
 import "../hieroglyph-pattern.css";
 import "../booking-modal.css";
-import "../hathor-lux-pages.css";
+import "../venetian-redesign.css";
 
 export const dynamic = "force-dynamic";
 

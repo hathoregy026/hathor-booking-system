@@ -1,0 +1,1712 @@
+﻿/* Venetian pages redesign — faithful port. Scoped under .venetian-page */
+.venetian-page {
+  --gold: #b69f64;
+  --gold-soft: #d4c28a;
+  --cream: #f5efe4;
+  --cream-deep: #ebe3d4;
+  --ink: #3e3026;
+  --ink-soft: #5c4b3c;
+  --muted: #7a6a58;
+  --white: #ffffff;
+  --blush: #e8d6c8;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --font-display: "Cormorant Garamond", "Times New Roman", serif;
+  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+  --lux-paper: var(--cream);
+  --lux-paper-deep: var(--cream-deep);
+  --lux-gold: var(--gold);
+  --lux-gold-soft: var(--gold-soft);
+  --lux-ink: var(--ink);
+  --lux-muted: var(--muted);
+  --lux-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+.venetian-page img { max-width: 100%; display: block; }
+.venetian-page a { color: inherit; text-decoration: none; }
+.venetian-page button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+.venetian-page ul { list-style: none; margin: 0; padding: 0; }
+.venetian-page h1, .venetian-page h2, .venetian-page h3, .venetian-page h4, .venetian-page p { margin: 0; }
+
+/* ---- buttons ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: 999px;
+  border: 1px solid var(--gold);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transition: background 0.35s var(--ease-out), color 0.35s var(--ease-out),
+    border-color 0.35s var(--ease-out), transform 0.35s var(--ease-out);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn-light {
+  color: var(--white);
+  border-color: rgba(255, 255, 255, 0.55);
+  background: transparent;
+}
+
+.btn-light:hover {
+  background: var(--white);
+  color: var(--ink);
+}
+
+.btn-dark {
+  color: var(--ink);
+  border-color: var(--gold);
+  background: transparent;
+}
+
+.btn-dark:hover {
+  background: var(--gold);
+  color: var(--white);
+}
+
+.btn-filled {
+  background: var(--gold);
+  color: var(--white);
+  border-color: var(--gold);
+}
+
+.btn-filled:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+
+/* ---- cta ---- */
+.cta-section {
+  position: relative;
+  background: var(--ink);
+  color: var(--white);
+  padding: clamp(90px, 12vw, 160px) clamp(20px, 5vw, 64px);
+  text-align: center;
+  overflow: hidden;
+}
+
+.cta-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(182, 159, 100, 0.18), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(182, 159, 100, 0.12), transparent 45%);
+  pointer-events: none;
+}
+
+.cta-inner {
+  position: relative;
+  width: min(760px, 100%);
+  margin: 0 auto;
+}
+
+.cta-inner h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+.cta-inner p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
+
+/* =========================================================
+   Accommodation вЂ” full-screen stacked room slideshows
+   Pin room в†’ scroll cycles 4 full-bleed images в†’ next room
+   ========================================================= */
+
+.page-accommodation .nav-links a.is-active {
+  color: var(--gold);
+}
+
+.page-accommodation .nav-bar.is-solid .nav-links a.is-active {
+  color: var(--gold);
+}
+
+/* Cream intro only (no room faded backgrounds) */
+.acc-intro-block {
+  text-align: center;
+  background: var(--cream);
+  padding-top: clamp(90px, 12vw, 140px);
+  padding-bottom: clamp(70px, 10vw, 110px);
+}
+
+.acc-intro-inner {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.acc-eyebrow {
+  font-size: 0.68rem;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 22px;
+}
+
+.acc-intro-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+  line-height: 1.08;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 0 0 28px;
+}
+
+.acc-intro-line {
+  display: block;
+  overflow: hidden;
+}
+
+.acc-intro-copy {
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.75;
+  max-width: 44ch;
+  margin: 0 auto;
+}
+
+/* ---------- Full-screen room stack ---------- */
+.room-stack {
+  position: relative;
+  z-index: 5;
+  background: #0c0a08;
+}
+
+.room-fs {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  width: 100%;
+  overflow: hidden;
+  background: #0c0a08;
+}
+
+/* Stacked full-bleed slides */
+.room-fs-slides {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.room-fs-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  will-change: opacity, transform;
+}
+
+.room-fs-slide.is-first {
+  opacity: 1;
+  visibility: visible;
+}
+
+.room-fs-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.08);
+  will-change: transform;
+  filter: brightness(0.72) saturate(0.95);
+}
+
+/* Gradient for text legibility вЂ” not a faded room photo bg */
+.room-fs-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(12, 10, 8, 0.45) 0%, transparent 35%, transparent 50%, rgba(12, 10, 8, 0.72) 100%),
+    linear-gradient(90deg, rgba(12, 10, 8, 0.55) 0%, transparent 55%);
+}
+
+/* UI overlay on image */
+.room-fs-ui {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding:
+    clamp(100px, 14vh, 130px)
+    clamp(24px, 6vw, 80px)
+    clamp(36px, 6vh, 56px);
+  pointer-events: none;
+  color: #f5efe4;
+}
+
+.room-fs-ui a {
+  pointer-events: auto;
+}
+
+.room-fs-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.room-fs-count {
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(245, 239, 228, 0.75);
+}
+
+.room-fs-count i {
+  font-style: normal;
+  color: var(--gold-soft, #d4c28a);
+}
+
+.room-fs-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold-soft, #d4c28a);
+}
+
+.room-fs-copy {
+  max-width: 560px;
+}
+
+.room-fs-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.6rem, 6.5vw, 5rem);
+  line-height: 1.02;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0 0 14px;
+  overflow: hidden;
+  text-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.room-fs-meta {
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(245, 239, 228, 0.7);
+  margin: 0 0 16px;
+}
+
+.room-fs-desc {
+  font-size: clamp(1rem, 1.5vw, 1.15rem);
+  line-height: 1.65;
+  color: rgba(245, 239, 228, 0.82);
+  margin: 0 0 28px;
+  max-width: 34ch;
+}
+
+.room-fs-cta {
+  border-color: rgba(245, 239, 228, 0.55) !important;
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+.room-fs-cta:hover {
+  background: var(--gold, #b69f64) !important;
+  border-color: var(--gold, #b69f64) !important;
+  color: #1a1410 !important;
+}
+
+/* 4-segment progress for current room */
+.room-fs-progress {
+  display: flex;
+  gap: 8px;
+  width: min(280px, 50vw);
+  margin-top: 28px;
+}
+
+.room-fs-progress span {
+  flex: 1;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.22);
+  position: relative;
+  overflow: hidden;
+}
+
+.room-fs-progress span::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--gold-soft, #d4c28a);
+  transform: scaleX(0);
+  transform-origin: left center;
+  will-change: transform;
+}
+
+/* SplitType */
+.room-fs-title .char,
+.room-fs-meta .word,
+.room-fs-desc .line,
+.room-fs-label .char {
+  display: inline-block;
+}
+
+.room-fs-desc .line {
+  overflow: hidden;
+  padding-bottom: 0.05em;
+}
+
+/* Side room index (which residence) */
+.rooms-rail {
+  position: fixed;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.rooms-rail span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(182, 159, 100, 0.35);
+  transition: transform 0.35s, background 0.35s;
+}
+
+.rooms-rail span.is-active {
+  background: var(--gold, #b69f64);
+  transform: scale(1.5);
+}
+
+@media (max-width: 767px) {
+  .room-fs-ui {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .room-fs-title {
+    font-size: clamp(2.2rem, 11vw, 3.2rem);
+  }
+
+  .rooms-rail {
+    display: none;
+  }
+}
+
+
+/* =========================================================
+   Venetian Cruises вЂ” luxury page styles
+   ========================================================= */
+
+.page-cruises .nav-links a.is-active {
+  color: var(--gold);
+}
+
+.page-cruises .nav-bar.is-solid .nav-links a.is-active {
+  color: var(--gold);
+}
+
+/* ---- Intro ---- */
+.cruise-intro {
+  text-align: center;
+  padding-top: clamp(100px, 14vw, 160px);
+}
+
+.cruise-intro-inner {
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.cruise-eyebrow {
+  font-size: 0.68rem;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 22px;
+}
+
+.cruise-intro-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+  line-height: 1.08;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 0 0 28px;
+}
+
+.cruise-intro-line {
+  display: block;
+  overflow: hidden;
+}
+
+.cruise-intro-copy {
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.75;
+  max-width: 48ch;
+  margin: 0 auto 48px;
+}
+
+.cruise-stats {
+  display: flex;
+  justify-content: center;
+  gap: clamp(28px, 6vw, 72px);
+  flex-wrap: wrap;
+}
+
+.cruise-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.cruise-stat-num {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: var(--ink);
+  letter-spacing: 0.04em;
+}
+
+.cruise-stat-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---- Filters ---- */
+.cruise-filter-bar {
+  position: relative;
+  z-index: 20;
+  background: var(--cream);
+  padding: 8px clamp(20px, 5vw, 64px) 40px;
+  border-bottom: 1px solid rgba(182, 159, 100, 0.18);
+  transition: box-shadow 0.35s var(--ease-out), background 0.35s;
+}
+
+.cruise-filter-bar.is-stuck {
+  position: sticky;
+  top: 78px;
+  background: rgba(245, 239, 228, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(62, 48, 38, 0.06);
+  z-index: 40;
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+.cruise-filter-inner {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.cruise-filter {
+  padding: 12px 22px;
+  border-radius: 999px;
+  border: 1px solid rgba(182, 159, 100, 0.4);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  background: transparent;
+  transition: background 0.35s var(--ease-out), color 0.35s, border-color 0.35s;
+}
+
+.cruise-filter:hover,
+.cruise-filter.is-active {
+  background: var(--ink);
+  color: var(--white);
+  border-color: var(--ink);
+}
+
+/* ---- Card grid ---- */
+.cruise-grid-section {
+  position: relative;
+  z-index: 20;
+  background: var(--cream);
+  padding: clamp(48px, 8vw, 100px) clamp(20px, 5vw, 64px) clamp(80px, 12vw, 140px);
+}
+
+.cruise-grid {
+  width: min(1240px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(22px, 3vw, 32px);
+}
+
+.cruise-card {
+  background: var(--white);
+  border: 1px solid rgba(182, 159, 100, 0.22);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  transition: transform 0.55s var(--ease-out), box-shadow 0.55s var(--ease-out);
+  will-change: transform, opacity;
+}
+
+.cruise-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 28px 60px rgba(62, 48, 38, 0.12);
+}
+
+.cruise-card.is-filtered-out {
+  display: none;
+}
+
+.cruise-card-media {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--cream-deep);
+}
+
+.cruise-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.06);
+  transition: transform 1s var(--ease-out);
+  will-change: transform;
+}
+
+.cruise-card:hover .cruise-card-media img {
+  transform: scale(1);
+}
+
+.cruise-card-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 2;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--white);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.cruise-card-badge--soft {
+  background: rgba(245, 239, 228, 0.92);
+  color: var(--ink);
+  border: 1px solid rgba(182, 159, 100, 0.45);
+}
+
+.cruise-card-shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.18) 48%,
+    transparent 62%
+  );
+  transform: translateX(-120%);
+  pointer-events: none;
+}
+
+.cruise-card:hover .cruise-card-shine {
+  animation: card-shine 1.1s var(--ease-out) forwards;
+}
+
+@keyframes card-shine {
+  to { transform: translateX(120%); }
+}
+
+.cruise-card-body {
+  padding: 26px 24px 28px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 10px;
+}
+
+.cruise-card-region {
+  font-size: 0.65rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0;
+}
+
+.cruise-card-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.6rem, 2.4vw, 2rem);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 0;
+  line-height: 1.1;
+}
+
+.cruise-card-meta {
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin: 0;
+}
+
+.cruise-card-desc {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--muted);
+  margin: 4px 0 8px;
+  flex: 1;
+}
+
+.cruise-card-price {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.cruise-price-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cruise-price-value {
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  color: var(--ink);
+  letter-spacing: 0.03em;
+}
+
+.cruise-price-unit {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.cruise-card-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.cruise-card-actions .btn {
+  width: 100%;
+  padding: 14px 12px;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-align: center;
+}
+
+.cruise-card-actions .btn-dark {
+  background: transparent;
+}
+
+/* ---- Experience strip ---- */
+.cruise-experience {
+  position: relative;
+  z-index: 20;
+  background: var(--ink);
+  color: var(--white);
+  padding: clamp(80px, 12vw, 140px) clamp(20px, 5vw, 64px);
+}
+
+.cruise-experience-inner {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: clamp(36px, 6vw, 80px);
+  align-items: center;
+}
+
+.cruise-exp-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+  line-height: 1.08;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  margin: 0 0 28px;
+}
+
+.cruise-exp-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cruise-exp-list li {
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  color: rgba(245, 239, 228, 0.78);
+  padding-left: 22px;
+  position: relative;
+}
+
+.cruise-exp-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 8px;
+  height: 1px;
+  background: var(--gold-soft);
+}
+
+.cruise-exp-visual {
+  overflow: hidden;
+  border-radius: 12px;
+  aspect-ratio: 5 / 4;
+}
+
+.cruise-exp-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---- Availability modal ---- */
+.avail-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.avail-modal[hidden] {
+  display: none !important;
+}
+
+.avail-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(26, 20, 16, 0.55);
+  backdrop-filter: blur(8px);
+}
+
+.avail-modal-panel {
+  position: relative;
+  width: min(460px, 100%);
+  background: var(--cream);
+  border: 1px solid rgba(182, 159, 100, 0.35);
+  border-radius: 16px;
+  padding: 36px 32px 32px;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.25);
+}
+
+.avail-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--ink);
+  border: 1px solid rgba(182, 159, 100, 0.35);
+}
+
+.avail-modal-panel h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0 0 22px;
+  color: var(--ink);
+}
+
+.avail-dates {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.avail-date {
+  text-align: left;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(182, 159, 100, 0.3);
+  background: var(--white);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.avail-date:hover,
+.avail-date.is-selected {
+  border-color: var(--gold);
+  background: rgba(182, 159, 100, 0.1);
+}
+
+.avail-date.is-wait {
+  opacity: 0.7;
+}
+
+.avail-note {
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.55;
+  margin: 0 0 20px;
+}
+
+.avail-continue {
+  width: 100%;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 1024px) {
+  .cruise-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .cruise-experience-inner {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  .cruise-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cruise-card-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .cruise-filter {
+    padding: 10px 16px;
+    font-size: 0.6rem;
+  }
+}
+
+
+/* =========================================================
+   Luxury body вЂ” Wellness (sport) В· Highlights В· Dining
+   Home cream/gold vibe + embossed gold titles
+   ========================================================= */
+
+:root {
+  --lux-paper: var(--cream, #f5efe4);
+  --lux-paper-deep: var(--cream-deep, #ebe3d4);
+  --lux-gold: var(--gold, #b69f64);
+  --lux-gold-soft: var(--gold-soft, #d4c28a);
+  --lux-ink: var(--ink, #3e3026);
+  --lux-muted: var(--muted, #7a6a58);
+  --lux-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.venetian-page {
+  background: var(--lux-paper);
+}
+
+.venetian-page .nav-links a.is-active {
+  color: var(--lux-gold);
+}
+
+/* Embossed gold вЂ” never split into chars (breaks clip/filter) */
+.lux-gold {
+  font-family: "Playfair Display", "Cormorant Garamond", Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  display: block;
+  color: #b69f64;
+  background-image: linear-gradient(
+    145deg,
+    #d4b978 0%,
+    #b69f64 38%,
+    #8a7342 78%,
+    #c4ae72 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter:
+    drop-shadow(1px 2px 3px rgba(74, 59, 34, 0.3))
+    drop-shadow(-1px -1px 1px rgba(255, 255, 255, 0.5));
+  text-shadow: 0 0 18px rgba(182, 159, 100, 0.12);
+}
+
+.lux-gold-xl { font-size: clamp(2.6rem, 6vw, 4.8rem); }
+.lux-gold-lg { font-size: clamp(2.1rem, 4.5vw, 3.4rem); }
+.lux-gold-md { font-size: clamp(1.7rem, 3.2vw, 2.5rem); }
+
+.lux-kicker {
+  font-size: 0.68rem;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--lux-gold);
+  margin: 0 0 1rem;
+}
+
+.lux-lead {
+  font-family: "Cormorant Garamond", "Playfair Display", serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
+  line-height: 1.5;
+  color: var(--ink-soft, #5c4b3c);
+  margin: 0 0 1.25rem;
+}
+
+.lux-copy {
+  font-size: 1.02rem;
+  line-height: 1.8;
+  color: var(--lux-muted);
+}
+.lux-copy p { margin: 0 0 1em; }
+.lux-copy p:last-child { margin-bottom: 0; }
+
+.lux-shell {
+  position: relative;
+  z-index: 20;
+  background: var(--lux-paper);
+}
+
+.lux-wrap {
+  width: min(1200px, calc(100% - clamp(1.5rem, 5vw, 4rem)));
+  margin: 0 auto;
+}
+
+.lux-mask {
+  overflow: hidden;
+  background: var(--lux-paper-deep);
+  border-radius: 4px;
+}
+
+.lux-mask img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  will-change: transform;
+  transform: scale(1.1);
+}
+
+/* =========================================================
+   WELLNESS (SPORT) вЂ” cinematic performance gallery
+   Full-bleed pin frames with floating glass info
+   ========================================================= */
+.spx {
+  background: var(--lux-paper);
+}
+
+.spx-intro {
+  text-align: center;
+  padding: clamp(5rem, 10vw, 7.5rem) 1.25rem 3.5rem;
+  max-width: 46rem;
+  margin: 0 auto;
+}
+
+.spx-intro .lux-gold {
+  margin: 0 auto 1rem;
+}
+
+.spx-intro .lux-lead {
+  max-width: 34ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.spx-intro .lux-copy {
+  max-width: 48ch;
+  margin: 0 auto;
+}
+
+/* Full-screen sport chapters */
+.spx-frame {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  min-height: 640px;
+  overflow: hidden;
+  background: #1a1410;
+}
+
+.spx-frame-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.spx-frame-media .lux-mask {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
+.spx-frame-media img {
+  filter: brightness(0.58) saturate(0.95) contrast(1.05);
+}
+
+.spx-frame-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(20, 16, 12, 0.72) 0%, rgba(20, 16, 12, 0.2) 55%, rgba(20, 16, 12, 0.45) 100%),
+    linear-gradient(180deg, rgba(20, 16, 12, 0.35) 0%, transparent 40%, rgba(20, 16, 12, 0.55) 100%);
+}
+
+.spx-frame-ui {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding:
+    clamp(6rem, 12vh, 8rem)
+    clamp(1.5rem, 6vw, 5rem)
+    clamp(2.5rem, 6vh, 4rem);
+  color: #f5efe4;
+  max-width: min(640px, 100%);
+}
+
+.spx-frame--right .spx-frame-ui {
+  margin-left: auto;
+  text-align: right;
+  align-items: flex-end;
+}
+
+.spx-frame--right .spx-frame-shade {
+  background:
+    linear-gradient(270deg, rgba(20, 16, 12, 0.72) 0%, rgba(20, 16, 12, 0.2) 55%, rgba(20, 16, 12, 0.4) 100%),
+    linear-gradient(180deg, rgba(20, 16, 12, 0.35) 0%, transparent 40%, rgba(20, 16, 12, 0.55) 100%);
+}
+
+.spx-frame-ui .lux-kicker {
+  color: var(--lux-gold-soft);
+}
+
+.spx-frame-ui .lux-gold {
+  margin-bottom: 0.85rem;
+  /* readable emboss on dark */
+  filter:
+    drop-shadow(1px 2px 6px rgba(0, 0, 0, 0.45))
+    drop-shadow(-1px -1px 1px rgba(255, 255, 255, 0.12));
+}
+
+.spx-frame-ui .lux-lead {
+  color: rgba(245, 239, 228, 0.9);
+  margin-bottom: 1rem;
+}
+
+.spx-frame-ui .lux-copy {
+  color: rgba(245, 239, 228, 0.75);
+  max-width: 38ch;
+  margin-bottom: 1.5rem;
+}
+
+.spx-frame--right .spx-frame-ui .lux-copy {
+  margin-left: auto;
+}
+
+.spx-frame-ui .btn-light {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.spx-frame-ui .btn-light:hover {
+  background: var(--lux-gold);
+  border-color: var(--lux-gold);
+  color: #1a1410;
+}
+
+.spx-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: rgba(182, 159, 100, 0.2);
+  border: 1px solid rgba(182, 159, 100, 0.25);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 0 auto;
+  max-width: 1000px;
+}
+
+.spx-metric {
+  background: var(--lux-paper);
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.spx-metric strong {
+  display: block;
+  font-family: "Playfair Display", "Cormorant Garamond", serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-weight: 400;
+  color: var(--lux-gold);
+  letter-spacing: 0.02em;
+  margin-bottom: 0.4rem;
+}
+
+.spx-metric span {
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--lux-muted);
+}
+
+.spx-metrics-wrap {
+  padding: clamp(4rem, 8vw, 6rem) 1.25rem;
+  background: var(--lux-paper);
+}
+
+/* Wellness вЂ” additional luxury bands */
+.spx-atelier {
+  padding: clamp(5rem, 10vw, 8rem) 0;
+  background: var(--lux-paper);
+}
+
+.spx-atelier-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+}
+
+.spx-atelier-media .lux-mask {
+  aspect-ratio: 4 / 5;
+  box-shadow: 0 30px 70px rgba(62, 48, 38, 0.12);
+}
+
+.spx-atelier-list {
+  list-style: none;
+  margin: 1.5rem 0 2rem;
+  padding: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.spx-atelier-list li {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--lux-muted);
+  letter-spacing: 0.02em;
+}
+
+.spx-atelier-list li::before {
+  content: "";
+  width: 8px;
+  height: 1px;
+  margin-top: 0.7em;
+  flex-shrink: 0;
+  background: var(--lux-gold);
+}
+
+.spx-quote {
+  position: relative;
+  padding: clamp(5rem, 10vw, 8rem) 1.25rem;
+  background: var(--lux-paper-deep);
+  text-align: center;
+  overflow: hidden;
+}
+
+.spx-quote::before {
+  content: "вЂњ";
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "Playfair Display", serif;
+  font-size: clamp(8rem, 18vw, 14rem);
+  line-height: 0.8;
+  color: rgba(182, 159, 100, 0.12);
+  pointer-events: none;
+}
+
+.spx-quote blockquote {
+  position: relative;
+  z-index: 1;
+  max-width: 28ch;
+  margin: 0 auto;
+  font-family: "Playfair Display", "Cormorant Garamond", serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.5rem, 3.2vw, 2.35rem);
+  line-height: 1.4;
+  color: var(--lux-ink);
+}
+
+.spx-quote cite {
+  display: block;
+  margin-top: 1.5rem;
+  font-style: normal;
+  font-size: 0.68rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--lux-gold);
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.spx-suite {
+  padding: clamp(5rem, 10vw, 8rem) 0;
+  background: var(--lux-paper);
+}
+
+.spx-suite-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1.25rem, 2.5vw, 1.75rem);
+}
+
+.spx-suite-card {
+  background: #fff;
+  border: 1px solid rgba(182, 159, 100, 0.22);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  transition: transform 0.5s var(--lux-ease), box-shadow 0.5s var(--lux-ease);
+  will-change: transform, opacity;
+}
+
+.spx-suite-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 28px 60px rgba(62, 48, 38, 0.12);
+}
+
+.spx-suite-card .lux-mask {
+  aspect-ratio: 4 / 5;
+  border-radius: 0;
+}
+
+.spx-suite-body {
+  padding: 1.4rem 1.35rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  flex: 1;
+}
+
+.spx-suite-body h3 {
+  font-family: "Cormorant Garamond", "Playfair Display", serif;
+  font-weight: 400;
+  font-size: 1.55rem;
+  letter-spacing: 0.02em;
+  color: var(--lux-ink);
+  margin: 0;
+}
+
+.spx-suite-body p {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--lux-muted);
+  margin: 0;
+  flex: 1;
+}
+
+.spx-suite-body .btn {
+  margin-top: 0.5rem;
+  align-self: flex-start;
+}
+
+/* Highlights extras */
+.hlx-manifesto {
+  padding: clamp(4rem, 8vw, 6.5rem) 1.25rem;
+  background: var(--lux-paper);
+  border-top: 1px solid rgba(182, 159, 100, 0.15);
+}
+
+.hlx-manifesto-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.hlx-manifesto-item h3 {
+  font-family: "Cormorant Garamond", "Playfair Display", serif;
+  font-weight: 400;
+  font-size: 1.45rem;
+  color: var(--lux-ink);
+  margin: 0.75rem 0 0.65rem;
+}
+
+.hlx-manifesto-item p {
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--lux-muted);
+  margin: 0;
+}
+
+.hlx-manifesto-item .lux-kicker {
+  margin-bottom: 0;
+}
+
+.hlx-compare {
+  padding: 0 1.25rem clamp(5rem, 9vw, 7rem);
+  background: var(--lux-paper);
+}
+
+.hlx-compare-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  border: 1px solid rgba(182, 159, 100, 0.25);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.hlx-compare-row {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1fr;
+  gap: 1rem;
+  padding: 1.15rem 1.35rem;
+  border-bottom: 1px solid rgba(182, 159, 100, 0.12);
+  align-items: center;
+}
+
+.hlx-compare-row:last-child {
+  border-bottom: 0;
+}
+
+.hlx-compare-row.is-head {
+  background: rgba(182, 159, 100, 0.08);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--lux-gold);
+}
+
+.hlx-compare-row span {
+  font-size: 0.92rem;
+  color: var(--lux-muted);
+}
+
+.hlx-compare-row strong {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 500;
+  font-size: 1.05rem;
+  color: var(--lux-ink);
+}
+
+@media (max-width: 1024px) {
+  .spx-atelier-grid {
+    grid-template-columns: 1fr;
+  }
+  .spx-suite-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .hlx-manifesto-grid {
+    grid-template-columns: 1fr;
+  }
+  .hlx-compare-row {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .spx-suite-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   HIGHLIGHTS вЂ” horizontal cinematic gallery (unique)
+   ========================================================= */
+.hlx {
+  background: var(--lux-paper);
+  padding-top: clamp(4.5rem, 9vw, 7rem);
+}
+
+.hlx-head {
+  text-align: center;
+  max-width: 46rem;
+  margin: 0 auto 3rem;
+  padding: 0 1.25rem;
+}
+
+.hlx-head .lux-gold {
+  margin: 0 auto 1rem;
+}
+
+.hlx-head .lux-lead {
+  max-width: 36ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hlx-head .lux-copy {
+  max-width: 50ch;
+  margin: 0 auto 1.5rem;
+}
+
+.hlx-pin {
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  background: var(--lux-paper-deep);
+}
+
+.hlx-track {
+  display: flex;
+  gap: 1.75rem;
+  padding: 0 clamp(1.25rem, 5vw, 4rem);
+  width: max-content;
+  will-change: transform;
+}
+
+.hlx-panel {
+  width: min(82vw, 780px);
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 0;
+  background: #fff;
+  border: 1px solid rgba(182, 159, 100, 0.25);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 28px 60px rgba(62, 48, 38, 0.1);
+  min-height: min(72vh, 640px);
+}
+
+.hlx-panel-media {
+  position: relative;
+  min-height: 100%;
+  overflow: hidden;
+}
+
+.hlx-panel-media .lux-mask {
+  position: absolute;
+  inset: 0;
+  border-radius: 0;
+}
+
+.hlx-panel-media img {
+  filter: saturate(0.92) contrast(1.04);
+}
+
+.hlx-panel-copy {
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: linear-gradient(180deg, #fff 0%, #faf6ef 100%);
+}
+
+.hlx-panel-num {
+  font-family: "Playfair Display", serif;
+  font-size: 2.5rem;
+  line-height: 1;
+  color: rgba(182, 159, 100, 0.28);
+  letter-spacing: -0.03em;
+  margin-bottom: 0.75rem;
+}
+
+.hlx-panel-copy h3 {
+  font-family: "Cormorant Garamond", "Playfair Display", serif;
+  font-weight: 400;
+  font-size: clamp(1.7rem, 2.8vw, 2.3rem);
+  letter-spacing: 0.02em;
+  color: var(--lux-ink);
+  margin: 0 0 0.85rem;
+}
+
+.hlx-panel-copy p {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--lux-muted);
+  margin: 0 0 1.5rem;
+}
+
+.hlx-progress {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.5rem 0 3rem;
+  background: var(--lux-paper-deep);
+}
+
+.hlx-progress span {
+  width: 2rem;
+  height: 2px;
+  background: rgba(182, 159, 100, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.hlx-progress span i {
+  position: absolute;
+  inset: 0;
+  background: var(--lux-gold);
+  transform: scaleX(0);
+  transform-origin: left center;
+  display: block;
+}
+
+/* =========================================================
+   DINING вЂ” keep existing cinematic panels
+   ========================================================= */
+.dnx { background: var(--lux-paper); }
+
+.dnx-chapter {
+  position: relative;
+  min-height: 88vh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.dnx-chapter-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.dnx-chapter-media .lux-mask {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
+.dnx-chapter-media img {
+  filter: brightness(0.62) saturate(0.92) contrast(1.04);
+}
+
+.dnx-chapter-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(20, 16, 12, 0.55) 0%, rgba(20, 16, 12, 0.2) 55%, rgba(20, 16, 12, 0.35) 100%),
+    linear-gradient(180deg, rgba(20, 16, 12, 0.25) 0%, transparent 35%, rgba(20, 16, 12, 0.45) 100%);
+  pointer-events: none;
+}
+
+.dnx-panel {
+  position: relative;
+  z-index: 2;
+  width: min(520px, calc(100% - 2.5rem));
+  margin-left: clamp(1.25rem, 10vw, 8rem);
+  margin-right: auto;
+  padding: clamp(1.75rem, 3.5vw, 2.5rem);
+  background: rgba(245, 239, 228, 0.94);
+  border: 1px solid rgba(182, 159, 100, 0.28);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.dnx-chapter--right .dnx-panel {
+  margin-left: auto;
+  margin-right: clamp(1.25rem, 10vw, 8rem);
+}
+
+.dnx-panel .lux-gold { margin-bottom: 0.85rem; }
+.dnx-panel .btn { margin-top: 1.5rem; }
+
+.lux-end {
+  padding: clamp(4rem, 9vw, 7rem) 0 clamp(2rem, 4vw, 3rem);
+  text-align: center;
+  background: var(--lux-paper);
+}
+
+.lux-end .lux-gold { margin: 0 auto 1rem; }
+.lux-end .lux-lead {
+  max-width: 36ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+.lux-end .lux-copy {
+  max-width: 48ch;
+  margin: 0 auto 1.75rem;
+}
+
+@media (max-width: 1024px) {
+  .spx-metrics { grid-template-columns: 1fr 1fr; }
+  .hlx-panel {
+    grid-template-columns: 1fr;
+    width: min(88vw, 420px);
+    min-height: auto;
+  }
+  .hlx-panel-media {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    min-height: 280px;
+  }
+  .dnx-chapter { min-height: 78vh; }
+  .dnx-panel,
+  .dnx-chapter--right .dnx-panel {
+    margin-left: 1.25rem;
+    margin-right: 1.25rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .spx-metrics { grid-template-columns: 1fr; }
+  .spx-frame { min-height: 100svh; }
+  .lux-gold-xl { font-size: clamp(2.1rem, 10vw, 2.9rem); }
+}
+
+
+/* about / section helpers from styles.css */
+.venetian-page .about-section,
+.venetian-page .acc-intro-block {
+  position: relative;
+  z-index: 20;
+}
+.venetian-page .section-inner {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding-left: clamp(20px, 5vw, 64px);
+  padding-right: clamp(20px, 5vw, 64px);
+}
+.venetian-page .btn {
+  text-decoration: none;
+}
+.venetian-page .cruise-intro-line .char,
+.venetian-page .acc-intro-line .char,
+.venetian-page .room-fs-title .char,
+.venetian-page .cruise-exp-title .char {
+  display: inline-block;
+}
+

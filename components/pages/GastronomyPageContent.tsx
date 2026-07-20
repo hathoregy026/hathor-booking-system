@@ -4,30 +4,29 @@ import { useRef } from "react";
 import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
-import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useHathorLuxBodyMotion } from "@/hooks/useHathorLuxBodyMotion";
 import { GASTRONOMY_PAGE } from "@/lib/page-content";
 
 const CHAPTERS = [
   {
-    kicker: "01 / Service",
-    title: GASTRONOMY_PAGE.restaurant.title,
+    kicker: "First Light",
+    title: "The opening breath",
     body: GASTRONOMY_PAGE.restaurant.service,
-    imageName: "gastronomy-restaurant" as const,
+    src: "/pages-redesign/dining-1.webp",
     right: false,
   },
   {
-    kicker: "02 / Atmosphere",
+    kicker: "Deep Ember",
     title: GASTRONOMY_PAGE.restaurant.atmosphereTitle,
     body: GASTRONOMY_PAGE.restaurant.atmosphere,
-    imageName: "gastronomy-hero" as const,
+    src: "/pages-redesign/dining-2.webp",
     right: true,
   },
   {
-    kicker: "03 / Memory",
-    title: "Meals that linger",
+    kicker: "Last Whisper",
+    title: "A finish that lingers",
     body: GASTRONOMY_PAGE.restaurant.closing,
-    imageName: "gastronomy-restaurant" as const,
+    src: "/pages-redesign/dining-hero.webp",
     right: false,
   },
 ] as const;
@@ -43,17 +42,17 @@ export function GastronomyPageContent() {
       breadcrumb="Dining"
       imageName="gastronomy-hero"
     >
-      <div ref={rootRef} className="hathor-lux">
+      <div ref={rootRef} className="venetian-page lux-page">
         <section className="dnx" id="table">
           <div className="lux-end" style={{ paddingBottom: "2rem" }}>
             <p className="lux-kicker" data-lux-reveal>
-              Dining aboard Hathor
+              03 / Gastronomy
             </p>
             <h2 className="lux-gold lux-gold-xl" data-lux-title>
               {GASTRONOMY_PAGE.hero.subtitle}
             </h2>
             <p className="lux-lead" data-lux-reveal>
-              A sensory journey through Egypt&apos;s culinary heritage on the Nile.
+              A sensory voyage where every plate tells a story of the Nile.
             </p>
             <div className="lux-copy" data-lux-reveal>
               {GASTRONOMY_PAGE.intro.map((paragraph) => (
@@ -69,16 +68,11 @@ export function GastronomyPageContent() {
             >
               <div className="dnx-chapter-media">
                 <div className="lux-mask">
-                  <ManagedImage
-                    name={chapter.imageName}
-                    alt={chapter.title}
-                    fill
-                    className="object-cover"
-                    sizes="100vw"
-                  />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={chapter.src} alt={chapter.title} />
                 </div>
               </div>
-              <div className="dnx-chapter-shade" aria-hidden />
+              <div className="dnx-chapter-shade" aria-hidden="true" />
               <div className="dnx-panel">
                 <p className="lux-kicker">{chapter.kicker}</p>
                 <h3 className="lux-gold lux-gold-md" data-lux-title>
@@ -87,72 +81,31 @@ export function GastronomyPageContent() {
                 <div className="lux-copy">
                   <p>{chapter.body}</p>
                 </div>
+                {chapter.kicker === "Last Whisper" ? (
+                  <BookNowTrigger className="btn btn-dark">
+                    Reserve Your Table
+                  </BookNowTrigger>
+                ) : null}
               </div>
             </article>
           ))}
         </section>
 
-        <section className="lux-shell" style={{ padding: "clamp(4rem, 8vw, 6rem) 0" }}>
-          <div className="lux-wrap">
-            <p className="lux-kicker" data-lux-reveal>
-              Onboard venues
-            </p>
-            <h2 className="lux-gold lux-gold-lg" data-lux-title>
-              Dining &amp; Lounge
-            </h2>
-            <div
-              className="spx-suite-grid"
-              style={{ marginTop: "2.5rem" }}
-            >
-              {GASTRONOMY_PAGE.venues.map((venue, index) => (
-                <article key={venue.title} className="spx-suite-card">
-                  <div className="lux-mask">
-                    <ManagedImage
-                      name={
-                        index % 2 === 0
-                          ? "gastronomy-hero"
-                          : "gastronomy-restaurant"
-                      }
-                      alt={venue.title}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                    />
-                  </div>
-                  <div className="spx-suite-body">
-                    <h3>{venue.title}</h3>
-                    <p>{venue.description}</p>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
         <section className="cta-section" id="reserve">
-          <div className="cta-inner lux-end">
+          <div className="cta-inner">
             <h2 className="lux-gold lux-gold-md" data-lux-title>
-              Taste the Nile
+              Reserve Your Table
             </h2>
             <p data-lux-reveal>
-              Reserve your voyage and savor every moment — from sunrise
-              breakfasts to candlelit dinners under the stars.
+              An evening held for few. Request a table when you are ready to linger
+              aboard Hathor Dahabiya.
             </p>
-            <div
-              data-lux-reveal
-              style={{
-                display: "flex",
-                gap: "1rem",
-                justifyContent: "center",
-                flexWrap: "wrap",
-              }}
-            >
-              <BookNowTrigger className="btn btn-filled">Book Now</BookNowTrigger>
-              <Link className="btn btn-dark" href="/cruises">
-                View Cruises
-              </Link>
+            <BookNowTrigger className="btn btn-filled">
+              Book Your Cruise Now
+            </BookNowTrigger>
+            <div style={{ marginTop: "1rem" }}>
               <Link className="btn btn-dark" href="/wellness">
-                Wellness
+                Return to Wellness
               </Link>
             </div>
           </div>
