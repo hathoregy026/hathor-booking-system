@@ -1,155 +1,16 @@
 "use client";
 
 import { useRef } from "react";
-import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ManagedImage } from "@/components/ui/ManagedImage";
-import { useRoomsEditorialMotion } from "@/hooks/useRoomsEditorialMotion";
+import { useHathorLuxBodyMotion } from "@/hooks/useHathorLuxBodyMotion";
 import { ROOMS_PAGE } from "@/lib/page-content";
-import styles from "./RoomsEditorial.module.css";
-
-function KineticTitle({
-  lines,
-  className,
-}: {
-  lines: readonly string[];
-  className?: string;
-}) {
-  return (
-    <h2 data-kinetic-title className={className ?? styles.kineticTitle}>
-      {lines.map((line) => (
-        <span key={line} className={styles.lineMask}>
-          <span data-kinetic-line className={styles.lineInner}>
-            {line}
-          </span>
-        </span>
-      ))}
-    </h2>
-  );
-}
-
-function IntroParagraph({ children }: { children: string }) {
-  return (
-    <div className={styles.lineMask}>
-      <p data-rooms-intro-line className={styles.introText}>
-        {children}
-      </p>
-    </div>
-  );
-}
-
-function MagneticDiscoverLink({
-  href,
-  children,
-}: {
-  href: string;
-  children: string;
-}) {
-  return (
-    <a href={href} data-magnetic-link className={styles.magneticLink}>
-      <span data-rooms-chapter-reveal>{children}</span>
-      <ArrowRight
-        data-magnetic-arrow
-        className={styles.magneticArrow}
-        size={16}
-        aria-hidden
-      />
-    </a>
-  );
-}
-
-function splitTitleLines(title: string): [string, string] | [string] {
-  const words = title.split(" ");
-  if (words.length <= 1) return [title];
-  const mid = Math.ceil(words.length / 2);
-  return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
-}
-
-type SuiteChapterProps = {
-  chapter: string;
-  title: string;
-  body: string;
-  imageName: string;
-  imageAlt: string;
-  imageLeft: boolean;
-  parallaxDirection: "up" | "down";
-  href?: string;
-  hrefLabel?: string;
-};
-
-function SuiteChapter({
-  chapter,
-  title,
-  body,
-  imageName,
-  imageAlt,
-  imageLeft,
-  parallaxDirection,
-  href,
-  hrefLabel,
-}: SuiteChapterProps) {
-  const titleLines = splitTitleLines(title);
-
-  const textCol = (
-    <div className={styles.chapterText} data-rooms-chapter-text>
-      <p className={styles.eyebrow} data-rooms-chapter-reveal>
-        {chapter}
-      </p>
-      <KineticTitle lines={titleLines} />
-      <div data-rooms-gold-rule className={styles.goldRule} />
-      <p className={styles.bodyText} data-rooms-chapter-reveal>
-        {body}
-      </p>
-      {href && hrefLabel ? (
-        <span data-rooms-chapter-reveal>
-          <MagneticDiscoverLink href={href}>{hrefLabel}</MagneticDiscoverLink>
-        </span>
-      ) : null}
-    </div>
-  );
-
-  const imageCol = (
-    <div
-      data-parallax-wrap
-      data-parallax-direction={parallaxDirection}
-      className={`${styles.parallaxWrap} ${
-        imageLeft ? styles.imageLeft : styles.imageRight
-      }`}
-    >
-      <div data-parallax-img className={styles.parallaxInner}>
-        <ManagedImage
-          name={imageName}
-          alt={imageAlt}
-          fill
-          className={styles.parallaxImg}
-          sizes="(max-width: 767px) 100vw, 58vw"
-        />
-      </div>
-    </div>
-  );
-
-  return (
-    <section data-rooms-section data-rooms-chapter className={styles.section}>
-      <div className={styles.grid}>
-        {imageLeft ? (
-          <>
-            <div className={styles.textLeft}>{textCol}</div>
-            {imageCol}
-          </>
-        ) : (
-          <>
-            {imageCol}
-            <div className={styles.textRight}>{textCol}</div>
-          </>
-        )}
-      </div>
-    </section>
-  );
-}
 
 export function RoomsPageContent() {
   const rootRef = useRef<HTMLDivElement>(null);
-  useRoomsEditorialMotion(rootRef);
+  useHathorLuxBodyMotion(rootRef);
 
   return (
     <PageScrollTransition
@@ -159,196 +20,132 @@ export function RoomsPageContent() {
       imageName="room-luxury"
       imageAlt="Luxury cabin aboard Hathor Dahabiya"
     >
-      <div
-        ref={rootRef}
-        data-rooms-editorial
-        className={styles.editorial}
-        style={{
-          backgroundColor: "var(--rooms-bg-light)",
-          color: "var(--rooms-ink)",
-        }}
-      >
-        {/* ─── Intro manifesto ─── */}
-        <section
-          data-rooms-section
-          data-rooms-intro
-          className={styles.section}
-        >
-          <div className={styles.grid}>
-            <div className={styles.introBlock}>
-              {ROOMS_PAGE.intro.map((paragraph) => (
-                <IntroParagraph key={paragraph.slice(0, 48)}>
-                  {paragraph}
-                </IntroParagraph>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ─── Our Accommodations ─── */}
-        <section
-          data-rooms-section
-          className={styles.sectionSurface}
-        >
-          <div className={styles.grid}>
-            <div className={styles.accommodationsHeader}>
-              <KineticTitle lines={["Our", "Accommodations"]} />
-              <div data-rooms-gold-rule className={styles.goldRule} />
-            </div>
-
-            <div className={styles.accommodationsIntro}>
-              <p
-                className={styles.bodyText}
-                data-rooms-chapter-reveal
-              >
-                {ROOMS_PAGE.accommodations.intro}
-              </p>
-            </div>
-
-            <div
-              data-rooms-stats
-              className={`${styles.statsFilmstrip} ${styles.statsRow}`}
-            >
+      <div ref={rootRef} className="hathor-lux">
+        <section className="cruise-intro" id="intro">
+          <div className="section-inner cruise-intro-inner">
+            <p className="cruise-eyebrow" data-lux-reveal>
+              The Collection
+            </p>
+            <h2 className="lux-gold lux-gold-xl" data-lux-title>
+              {ROOMS_PAGE.accommodations.title}
+            </h2>
+            <p className="cruise-intro-copy" data-lux-reveal>
+              {ROOMS_PAGE.accommodations.intro}
+            </p>
+            <div className="cruise-stats" data-lux-reveal>
               {ROOMS_PAGE.accommodations.stats.map((stat) => (
-                <div key={stat} data-rooms-stat className={styles.stat}>
-                  <p className={styles.statValue}>
+                <div key={stat} className="cruise-stat">
+                  <span className="cruise-stat-num">
                     {stat.match(/^\d+/)?.[0]}
-                  </p>
-                  <p className={styles.statLabel}>
+                  </span>
+                  <span className="cruise-stat-label">
                     {stat.replace(/^\d+\s*/, "")}
-                  </p>
+                  </span>
                 </div>
               ))}
             </div>
-
-            <div className={styles.accommodationsOutro}>
-              <p
-                className={styles.bodyText}
-                data-rooms-chapter-reveal
-              >
-                {ROOMS_PAGE.accommodations.outro}
-              </p>
+            <div className="lux-copy" data-lux-reveal style={{ marginTop: "2rem" }}>
+              {ROOMS_PAGE.intro.map((paragraph) => (
+                <p key={paragraph.slice(0, 40)}>{paragraph}</p>
+              ))}
+              <p>{ROOMS_PAGE.accommodations.outro}</p>
             </div>
           </div>
         </section>
 
-        {/* ─── Suite chapters ─── */}
-        {ROOMS_PAGE.categories.map((category, index) => (
-          <SuiteChapter
-            key={category.title}
-            chapter="Accommodation"
-            title={category.title}
-            body={category.body}
-            imageName={category.imageName}
-            imageAlt={`${category.title} aboard Hathor Dahabiya`}
-            imageLeft={index % 2 === 1}
-            parallaxDirection={index % 2 === 0 ? "up" : "down"}
-            href={"href" in category ? category.href : undefined}
-            hrefLabel={"hrefLabel" in category ? category.hrefLabel : undefined}
-          />
-        ))}
-
-        {/* ─── Suites bento ─── */}
-        <section data-rooms-section className={styles.sectionDark}>
-          <div className={styles.grid}>
-            <div className={styles.span6}>
-              <p className={styles.eyebrow} data-rooms-chapter-reveal>
-                Suites
-              </p>
-              <KineticTitle
-                lines={["Luxury", "Suites"]}
-                className={styles.sectionTitle}
-              />
-              <div data-rooms-gold-rule className={styles.goldRule} />
-              <p className={styles.bodyText} data-rooms-chapter-reveal>
-                {ROOMS_PAGE.suites.body}
-              </p>
-            </div>
-
-            <div
-              data-rooms-bento
-              className={`${styles.bento} ${styles.span12}`}
+        {ROOMS_PAGE.categories.map((category, index) => {
+          const href = "href" in category ? category.href : undefined;
+          const hrefLabel =
+            "hrefLabel" in category ? category.hrefLabel : undefined;
+          return (
+            <article
+              key={category.title}
+              className={`acc-fs${index % 2 === 1 ? " acc-fs--right" : ""}`}
+              id={`site-image-${category.imageName}`}
+              data-site-image={category.imageName}
             >
-              <div
-                data-rooms-bento-cell
-                className={styles.bentoFeature}
-              >
-                <p className={styles.eyebrow}>Signature</p>
-                <p className={styles.bodyText}>
-                  {ROOMS_PAGE.suites.features[0]}
-                </p>
+              <div className="acc-fs-media">
+                <div className="lux-mask">
+                  <ManagedImage
+                    name={category.imageName}
+                    alt={`${category.title} aboard Hathor Dahabiya`}
+                    fill
+                    className="object-cover"
+                    sizes="100vw"
+                  />
+                </div>
               </div>
-              <div className={styles.bentoCell}>
-                {ROOMS_PAGE.suites.features.slice(1).map((feature) => (
-                  <div
-                    key={feature}
-                    data-rooms-bento-cell
-                    className={styles.bentoItem}
-                  >
-                    <p className={styles.bodyText}>{feature}</p>
+              <div className="acc-fs-shade" aria-hidden />
+              <div className="acc-fs-ui">
+                <p className="lux-kicker">
+                  0{index + 1} / Accommodation
+                </p>
+                <h3 className="lux-gold lux-gold-lg">{category.title}</h3>
+                <div className="lux-copy">
+                  <p>{category.body}</p>
+                </div>
+                {href && hrefLabel ? (
+                  <Link href={href}>{hrefLabel}</Link>
+                ) : (
+                  <Link href="/cruises">View cruises</Link>
+                )}
+              </div>
+            </article>
+          );
+        })}
+
+        <section className="spx-suite" id="suites">
+          <div className="lux-wrap">
+            <p className="lux-kicker" data-lux-reveal>
+              Suites
+            </p>
+            <h2 className="lux-gold lux-gold-lg" data-lux-title>
+              {ROOMS_PAGE.suites.title}
+            </h2>
+            <p className="lux-lead" data-lux-reveal>
+              {ROOMS_PAGE.suites.body}
+            </p>
+            <div className="spx-suite-grid" style={{ marginTop: "2rem" }}>
+              {ROOMS_PAGE.suites.features.map((feature) => (
+                <article key={feature} className="spx-suite-card">
+                  <div className="spx-suite-body">
+                    <h3>{feature}</h3>
+                    <p>Included in your suite sanctuary aboard Hathor Dahabiya.</p>
                   </div>
-                ))}
-              </div>
+                </article>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* ─── Welcome editorial split ─── */}
-        <section
-          data-rooms-section
-          data-rooms-welcome
-          className={styles.section}
-        >
-          <div className={styles.grid}>
-            <div className={styles.welcomeTitle}>
-              <KineticTitle lines={["Why Choose Our", "Accommodations"]} />
-              <div className={styles.lineMask}>
-                <p className={styles.subtitle} data-rooms-welcome-reveal>
-                  {ROOMS_PAGE.welcome.subtitle}
-                </p>
-              </div>
-            </div>
-
-            <div className={styles.welcomeBody}>
-              <div className={styles.lineMask}>
-                <p className={styles.bodyText} data-rooms-welcome-reveal>
-                  {ROOMS_PAGE.welcome.body}
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ─── Cruises CTA closing frame ─── */}
-        <section
-          data-rooms-section
-          className={styles.section}
-          style={{ paddingBottom: 0 }}
-        >
-          <div data-rooms-cta-wrap className={styles.ctaFrame}>
-            <div data-rooms-cta-img className={styles.ctaMedia}>
-              <ManagedImage
-                name="highlights-lifestyle"
-                alt="Nile sailing aboard Hathor Dahabiya"
-                fill
-                className={styles.parallaxImg}
-                sizes="100vw"
-              />
-            </div>
-            <div className={styles.ctaScrim} aria-hidden />
-            <div data-rooms-cta-copy className={styles.ctaCopy}>
-              <KineticTitle
-                lines={["Sail in Your", "Chosen Sanctuary"]}
-                className={styles.displayTitle}
-              />
-              <p className={styles.bodyText} data-rooms-chapter-reveal>
-                {ROOMS_PAGE.cruisesCta.body}
-              </p>
-              <span data-rooms-chapter-reveal>
-                <MagneticDiscoverLink href="/cruises">
-                  {ROOMS_PAGE.cruisesCta.hrefLabel}
-                </MagneticDiscoverLink>
-              </span>
+        <section className="cta-section" id="reserve">
+          <div className="cta-inner">
+            <h2 className="lux-gold lux-gold-md" data-lux-title>
+              {ROOMS_PAGE.cruisesCta.title}
+            </h2>
+            <p data-lux-reveal>{ROOMS_PAGE.cruisesCta.body}</p>
+            <p className="lux-lead" data-lux-reveal>
+              {ROOMS_PAGE.welcome.subtitle}
+            </p>
+            <p data-lux-reveal className="lux-copy">
+              {ROOMS_PAGE.welcome.body}
+            </p>
+            <div
+              data-lux-reveal
+              style={{
+                display: "flex",
+                gap: "1rem",
+                justifyContent: "center",
+                flexWrap: "wrap",
+              }}
+            >
+              <Link className="btn btn-filled" href="/cruises">
+                {ROOMS_PAGE.cruisesCta.hrefLabel}
+              </Link>
+              <BookNowTrigger className="btn btn-dark">Book Now</BookNowTrigger>
+              <Link className="btn btn-dark" href="/gastronomy">
+                Dining
+              </Link>
             </div>
           </div>
         </section>

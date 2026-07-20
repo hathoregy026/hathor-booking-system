@@ -1,13 +1,13 @@
 "use client";
 
-import { PublicSiteHero } from "@/components/pages/PublicSiteHero";
-import { splitHeroTitle } from "@/lib/split-hero-title";
 import { useRef } from "react";
-import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { BookNowTrigger } from "@/components/public/BookNowTrigger";
+import { PublicSiteHero } from "@/components/pages/PublicSiteHero";
 import { ManagedImage } from "@/components/ui/ManagedImage";
-import { useHighlightsEditorialMotion } from "@/hooks/useHighlightsEditorialMotion";
+import { useHathorLuxBodyMotion } from "@/hooks/useHathorLuxBodyMotion";
+import { splitHeroTitle } from "@/lib/split-hero-title";
 import { HIGHLIGHTS_PAGE } from "@/lib/page-content";
-import styles from "./HighlightsEditorial.module.css";
 
 const LANDMARK_IMAGES = [
   "landmark-obelisk",
@@ -15,133 +15,13 @@ const LANDMARK_IMAGES = [
   "landmark-valley-kings",
 ] as const;
 
-function KineticTitle({
-  lines,
-  className,
-}: {
-  lines: readonly string[];
-  className?: string;
-}) {
-  return (
-    <h2 data-kinetic-title className={className ?? styles.kineticTitle}>
-      {lines.map((line) => (
-        <span key={line} className={styles.lineMask}>
-          <span data-kinetic-line className={styles.lineInner}>
-            {line}
-          </span>
-        </span>
-      ))}
-    </h2>
-  );
-}
-
-function MagneticLink({
-  href,
-  children,
-}: {
-  href: string;
-  children: string;
-}) {
-  return (
-    <a href={href} data-magnetic-link className={styles.magneticLink}>
-      <span data-highlights-chapter-reveal>{children}</span>
-      <ArrowRight
-        data-magnetic-arrow
-        className={styles.magneticArrow}
-        size={16}
-        aria-hidden
-      />
-    </a>
-  );
-}
-
-function splitTitleLines(title: string): [string, string] | [string] {
-  const words = title.split(" ");
-  if (words.length <= 1) return [title];
-  const mid = Math.ceil(words.length / 2);
-  return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
-}
-
-type LandmarkChapterProps = {
-  index: number;
-  title: string;
-  body: string;
-  imageName: (typeof LANDMARK_IMAGES)[number];
-};
-
-function LandmarkChapter({ index, title, body, imageName }: LandmarkChapterProps) {
-  const even = index % 2 === 0;
-  const titleLines = splitTitleLines(title);
-
-  const textCol = (
-    <div className={styles.chapterText}>
-      <p className={styles.chapterIndex} data-highlights-chapter-reveal>
-        {String(index + 1).padStart(2, "0")} — Nile Landmark
-      </p>
-      <KineticTitle lines={titleLines} />
-      <div data-highlights-gold-rule className={styles.goldRule} />
-      <p className={styles.bodyText} data-highlights-chapter-reveal>
-        {body}
-      </p>
-    </div>
-  );
-
-  const imageCol = (
-    <div data-parallax-wrap className={styles.parallaxWrap}>
-      <div data-parallax-img className={styles.parallaxInner}>
-        <ManagedImage
-          name={imageName}
-          alt={title}
-          fill
-          previewAnchor={false}
-          className={styles.parallaxImg}
-          sizes="(max-width: 767px) 100vw, 50vw"
-          loading={index === 0 ? "eager" : "lazy"}
-        />
-      </div>
-    </div>
-  );
-
-  return (
-    <section
-      id={`site-image-${imageName}`}
-      data-site-image={imageName}
-      data-highlights-chapter
-      className={styles.section}
-    >
-      <div className={styles.grid}>
-        {even ? (
-          <>
-            <div className={styles.landmarkImageEven}>{imageCol}</div>
-            <div className={styles.landmarkTextEven}>{textCol}</div>
-          </>
-        ) : (
-          <>
-            <div className={styles.landmarkTextOdd}>{textCol}</div>
-            <div className={styles.landmarkImageOdd}>{imageCol}</div>
-          </>
-        )}
-      </div>
-    </section>
-  );
-}
-
 export function HighlightsPageContent() {
   const rootRef = useRef<HTMLDivElement>(null);
   const [lineRight, lineLeft] = splitHeroTitle(HIGHLIGHTS_PAGE.hero.title);
-  useHighlightsEditorialMotion(rootRef);
+  useHathorLuxBodyMotion(rootRef);
 
   return (
-    <div
-      ref={rootRef}
-      data-highlights-editorial
-      className={styles.editorial}
-      style={{
-        backgroundColor: "#ECE8DF",
-        color: "#1A1A1A",
-        minHeight: "100vh",
-      }}
-    >
+    <div ref={rootRef} className="hathor-lux">
       <PublicSiteHero
         lineRight={lineRight}
         lineLeft={lineLeft}
@@ -149,72 +29,128 @@ export function HighlightsPageContent() {
         posterImageName="highlights-hero"
       />
 
-      <section data-highlights-intro className={styles.section}>
-        <div className={styles.grid}>
-          <div className={styles.introBlock}>
-            <p className={styles.eyebrow} data-highlights-intro-reveal>
-              The Hathor Experience
-            </p>
-            <h1 className={styles.displayTitle} data-highlights-intro-reveal>
-              Dahabiya Cruise
-              <br />
-              <span className={styles.goldItalic}>Highlights</span>
-            </h1>
-            <div className={styles.introBody}>
-              {HIGHLIGHTS_PAGE.intro.map((paragraph) => (
-                <p
-                  key={paragraph.slice(0, 48)}
-                  className={styles.bodyText}
-                  data-highlights-intro-reveal
-                >
-                  {paragraph}
-                </p>
-              ))}
-            </div>
-          </div>
-          <div
-            id="site-image-highlights-lifestyle"
-            data-site-image="highlights-lifestyle"
-            data-parallax-wrap
-            className={styles.parallaxWrap}
-          >
-            <div data-parallax-img className={styles.parallaxInner}>
-              <ManagedImage
-                name="highlights-lifestyle"
-                alt="Scenic Nile views from Hathor Dahabiya"
-                fill
-                previewAnchor={false}
-                className={styles.parallaxImg}
-                sizes="(max-width: 767px) 100vw, 50vw"
-                priority
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {HIGHLIGHTS_PAGE.landmarks.map((landmark, index) => (
-        <LandmarkChapter
-          key={landmark.title}
-          index={index}
-          title={landmark.title}
-          body={landmark.body}
-          imageName={LANDMARK_IMAGES[index]}
-        />
-      ))}
-
-      <section className={styles.ctaSection} aria-label="Explore cruises">
-        <div className={styles.ctaInner}>
-          <h2 className={styles.ctaTitle} data-highlights-intro-reveal>
-            Explore the Nile
-          </h2>
-          <p className={styles.ctaBody} data-highlights-intro-reveal>
-            Every bend of the river reveals another chapter of Egypt&apos;s
-            timeless story. Sail in privacy, comfort, and true elegance aboard
-            Hathor Dahabiya.
+      <section className="hlx" id="programs">
+        <header className="hlx-head">
+          <p className="lux-kicker" data-lux-reveal>
+            The Hathor Experience
           </p>
-          <MagneticLink href="/cruises">Discover cruises</MagneticLink>
+          <h2 className="lux-gold lux-gold-xl" data-lux-title>
+            {HIGHLIGHTS_PAGE.hero.title}
+          </h2>
+          <p className="lux-lead" data-lux-reveal>
+            {HIGHLIGHTS_PAGE.hero.subtitle}
+          </p>
+          <div className="lux-copy" data-lux-reveal>
+            {HIGHLIGHTS_PAGE.intro.map((paragraph) => (
+              <p key={paragraph.slice(0, 48)}>{paragraph}</p>
+            ))}
+          </div>
+          <div data-lux-reveal>
+            <BookNowTrigger className="btn btn-filled">Book Now</BookNowTrigger>
+          </div>
+        </header>
+
+        <div className="hlx-pin">
+          <div className="hlx-track" id="hlx-track">
+            {HIGHLIGHTS_PAGE.landmarks.map((landmark, index) => (
+              <article
+                key={landmark.title}
+                className="hlx-panel"
+                id={`site-image-${LANDMARK_IMAGES[index]}`}
+                data-site-image={LANDMARK_IMAGES[index]}
+              >
+                <div className="hlx-panel-media">
+                  <div className="lux-mask">
+                    <ManagedImage
+                      name={LANDMARK_IMAGES[index]!}
+                      alt={landmark.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 88vw, 45vw"
+                      loading={index === 0 ? "eager" : "lazy"}
+                    />
+                  </div>
+                </div>
+                <div className="hlx-panel-copy">
+                  <div className="hlx-panel-num">
+                    {String(index + 1).padStart(2, "0")}
+                  </div>
+                  <h3>{landmark.title}</h3>
+                  <p>{landmark.body}</p>
+                  <Link className="btn btn-dark" href="/cruises">
+                    Sail this route
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
+
+        <div className="hlx-progress" aria-hidden>
+          {HIGHLIGHTS_PAGE.landmarks.map((landmark) => (
+            <span key={landmark.title}>
+              <i />
+            </span>
+          ))}
+        </div>
+
+        <section className="hlx-manifesto">
+          <div className="hlx-manifesto-grid">
+            <article className="hlx-manifesto-item" data-lux-reveal>
+              <p className="lux-kicker">Privacy</p>
+              <h3>Intimate Dahabiya</h3>
+              <p>
+                Eight cabins and four suites — including two royal — for a
+                quieter, more personal Nile voyage.
+              </p>
+            </article>
+            <article className="hlx-manifesto-item" data-lux-reveal>
+              <p className="lux-kicker">Gastronomy</p>
+              <h3>Flavors of Egypt</h3>
+              <p>
+                Expertly prepared dishes where authentic Egyptian flavors meet
+                international cuisine — fresh, daily, onboard.
+              </p>
+            </article>
+            <article className="hlx-manifesto-item" data-lux-reveal>
+              <p className="lux-kicker">Hospitality</p>
+              <h3>Attentive care</h3>
+              <p>
+                Warm service and refined atmosphere — every detail tended so you
+                can simply watch the Nile unfold.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section className="cta-section">
+          <div className="cta-inner">
+            <h2 className="lux-gold lux-gold-md" data-lux-title>
+              Begin your Nile chapter
+            </h2>
+            <p data-lux-reveal>
+              Pair these landmarks with an exclusive Hathor itinerary between
+              Luxor and Aswan.
+            </p>
+            <div
+              data-lux-reveal
+              style={{
+                display: "flex",
+                gap: "1rem",
+                justifyContent: "center",
+                flexWrap: "wrap",
+              }}
+            >
+              <BookNowTrigger className="btn btn-filled">Book Now</BookNowTrigger>
+              <Link className="btn btn-dark" href="/cruises">
+                View Cruises
+              </Link>
+              <Link className="btn btn-dark" href="/wellness">
+                Wellness
+              </Link>
+            </div>
+          </div>
+        </section>
       </section>
     </div>
   );
