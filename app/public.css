@@ -1016,19 +1016,17 @@
   width: 3.15rem;
   height: 3.15rem;
   border-radius: 9999px;
-  border: 1px solid rgba(182, 159, 100, 0.72);
-  background:
-    linear-gradient(160deg, rgba(40, 34, 28, 0.92) 0%, rgba(18, 15, 12, 0.96) 100%);
-  color: #f5efe4;
-  box-shadow:
-    0 10px 28px rgba(0, 0, 0, 0.38),
-    inset 0 0 0 1px rgba(212, 194, 138, 0.12);
+  border: 1px solid #b69f64;
+  background: #ece8df;
+  color: #2c2419;
+  box-shadow: 0 6px 18px rgba(44, 36, 25, 0.12);
   cursor: pointer;
   transition:
     transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 0.35s ease,
     border-color 0.35s ease,
-    background 0.35s ease,
+    background 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
     visibility 0.35s;
 }
@@ -1052,14 +1050,10 @@
 .public-fab__chat-main:hover,
 .public-fab__icon-btn:hover {
   transform: translateY(-4px) scale(1.05);
-  border-color: rgba(212, 194, 138, 0.95);
+  border-color: #b69f64;
+  background: #b69f64;
   color: #fff;
-  box-shadow:
-    0 16px 36px rgba(0, 0, 0, 0.45),
-    0 0 0 1px rgba(182, 159, 100, 0.28),
-    0 0 22px rgba(182, 159, 100, 0.22);
-  background:
-    linear-gradient(160deg, rgba(182, 159, 100, 0.42) 0%, rgba(28, 24, 18, 0.96) 100%);
+  box-shadow: 0 10px 24px rgba(182, 159, 100, 0.35);
 }
 
 .public-fab__chat--open .public-fab__icon-btn:hover {
@@ -1098,14 +1092,15 @@
   padding: 0 1.65rem;
   border-radius: 999px;
   border: 1px solid #b69f64;
-  background: transparent;
+  background: #ece8df;
   color: #2c2419;
-  box-shadow: none;
+  box-shadow: 0 6px 18px rgba(44, 36, 25, 0.12);
   cursor: pointer;
   transition:
     background 0.35s cubic-bezier(0.22, 1, 0.36, 1),
     color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
     border-color 0.35s ease,
+    box-shadow 0.35s ease,
     transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -1125,6 +1120,7 @@
   background: #b69f64;
   border-color: #b69f64;
   color: #fff;
+  box-shadow: 0 10px 24px rgba(182, 159, 100, 0.35);
   transform: translateY(-2px);
 }
 
