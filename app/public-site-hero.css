@@ -363,32 +363,21 @@
   white-space: nowrap;
 }
 
-/* Line 1 — Gabigaile (bold luxurious) */
+/* Line 1 — layout only; font/size/color from typography admin */
 .home-hero-container .hero-heading .hero-line--right {
-  font-family: var(--site-hero-font-display) !important;
   font-weight: 400 !important;
   font-style: normal;
-  font-size: clamp(2.4rem, 6.5vw, 5.2rem);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  line-height: 0.95;
   position: relative;
   z-index: 1;
 }
 
-/* Line 2 — Quiet Luxury script; tight overlap into line 1 */
+/* Line 2 — layout only; font/size/color from typography admin */
 .home-hero-container .hero-heading .hero-line--left {
-  font-family: var(--site-hero-font-script) !important;
   font-weight: 400 !important;
   font-style: normal;
-  font-size: clamp(2.85rem, 7.2vw, 5.75rem) !important;
-  letter-spacing: 0.02em;
   text-transform: none !important;
-  line-height: 0.9;
-  margin-top: -0.38em;
   position: relative;
   z-index: 2;
-  color: var(--site-hero-white);
 }
 
 .hero-sub {

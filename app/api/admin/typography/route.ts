@@ -43,7 +43,20 @@ export async function PUT(request: NextRequest) {
 
     revalidatePath("/", "layout");
     revalidatePath("/");
+    revalidatePath("/cruises");
     revalidatePath("/admin/typography");
+    revalidatePath("/suites");
+    revalidatePath("/experiences");
+    revalidatePath("/about");
+    revalidatePath("/blog");
+    revalidatePath("/contact");
+    revalidatePath("/wellness");
+    revalidatePath("/gastronomy");
+    revalidatePath("/highlights");
+    revalidatePath("/charter");
+    revalidatePath("/rooms");
+    revalidatePath("/royal-suites");
+    revalidatePath("/luxury-cabins");
 
     return NextResponse.json(
       { settings: saved, ok: true, savedAt: new Date().toISOString() },

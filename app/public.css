@@ -6258,19 +6258,12 @@ body.has-page-scroll-transition .pin-spacer {
   text-shadow: var(--hathor-title-engraved-white);
 }
 
-/* Non-home PublicSiteHero main title line — second line uses typography hero_subtitle */
+/* Non-home PublicSiteHero — layout defaults; typography admin owns font/size/color */
 html:not([data-ex-experience]) .public-site .home-hero-container .hero-heading,
 html:not([data-ex-experience]) .public-site .home-hero-container .hero-line--right {
-  font-family: var(--hathor-title-font) !important;
-  font-size: clamp(1.75rem, 4.2vw, var(--hathor-title-size)) !important;
   font-weight: 400 !important;
   font-style: normal !important;
   font-synthesis: none !important;
-  letter-spacing: 0.06em;
-  line-height: var(--hathor-title-line-height) !important;
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff;
-  text-shadow: var(--hathor-title-engraved-white);
   text-transform: none !important;
 }
 

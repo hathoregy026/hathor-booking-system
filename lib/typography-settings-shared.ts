@@ -153,6 +153,23 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
 
 const INNER_SHADOW = "inset 0 1px 2px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.2)";
 
+/** Prefer next/font CSS variables so live site resolves the same faces as admin. */
+export const HATHOR_FONT_STACKS: Record<HathorLuxuryFont, string> = {
+  Agraham: 'var(--font-hathor-agraham), "Agraham", serif',
+  Baginda: '"Baginda", serif',
+  "Bastliga One": '"Bastliga One", serif',
+  Cylburn: '"Cylburn", serif',
+  Gabigaile: 'var(--font-hathor-gabigaile), "Gabigaile", serif',
+  Gamgote: 'var(--font-hathor-gamgote), "Gamgote", serif',
+  "Quiet Luxury": 'var(--font-hathor-quiet-luxury), "Quiet Luxury", cursive',
+  "Rollgates Luxury": '"Rollgates Luxury", serif',
+  "Playfair Display": '"Playfair Display", Georgia, serif',
+};
+
+function fontStack(font: HathorLuxuryFont): string {
+  return HATHOR_FONT_STACKS[font] ?? `"${font}", serif`;
+}
+
 function asFiniteNumber(value: unknown): number | undefined {
   if (typeof value === "number" && Number.isFinite(value)) return value;
   if (typeof value === "string" && value.trim() !== "") {
@@ -277,19 +294,20 @@ export function isTypographySettingsEqual(
 /** Inline styles for React components (user-requested shape). */
 export function typographyToInlineStyle(style: TypographyTextStyle): CSSProperties {
   return {
-    fontFamily: `'${style.fontFamily}', serif`,
+    fontFamily: fontStack(style.fontFamily),
     fontSize: `${style.fontSize}px`,
     color: style.color,
     lineHeight: style.lineHeight,
     letterSpacing: `${style.letterSpacing}px`,
     textShadow: style.innerShadow ? INNER_SHADOW : "none",
+    WebkitTextFillColor: style.color,
   };
 }
 
 function roleCssVars(role: TypographyRole, style: TypographyTextStyle): Record<string, string> {
   const prefix = `--typo-${role.replace(/_/g, "-")}`;
   return {
-    [`${prefix}-font`]: `'${style.fontFamily}', serif`,
+    [`${prefix}-font`]: fontStack(style.fontFamily),
     [`${prefix}-size`]: `${style.fontSize}px`,
     [`${prefix}-color`]: style.color,
     [`${prefix}-line-height`]: String(style.lineHeight),
@@ -338,6 +356,7 @@ export function typographyToImportantCss(settings: TypographySettings): string {
   font-family: var(${p}-font) !important;
   font-size: var(${p}-size) !important;
   color: var(${p}-color) !important;
+  -webkit-text-fill-color: var(${p}-color) !important;
   line-height: var(${p}-line-height) !important;
   letter-spacing: var(${p}-letter-spacing) !important;
   text-shadow: var(${p}-shadow) !important;
@@ -349,22 +368,28 @@ export function typographyToImportantCss(settings: TypographySettings): string {
 .public-site .home-hero-container,
 .public-site .hathor-page-hero,
 .public-site .lux-page-hero,
-.public-site .owo-hero {
+.public-site .owo-hero,
+html[data-ex-experience] .public-site,
+html[data-ex-experience] .ex-root {
 ${rootBody}
 }
 .public-site .hero-heading,
+html[data-ex-experience] .public-site .ex-root .hero-heading,
 html[data-ex-experience] .ex-root .hero-heading {
   align-items: var(--typo-hero-align-items, center) !important;
   text-align: var(--typo-hero-align, center) !important;
 }
 ${block(
-  `.public-site .hero-heading,
-.public-site .hero-line--right,
+  `.public-site .hero-line--right,
+.public-site .home-hero-container .hero-heading .hero-line--right,
+html[data-ex-experience] .public-site .ex-root .hero-heading .hero-line--right,
 html[data-ex-experience] .ex-root .hero-heading .hero-line--right,
 .public-site .owo-hero__title`,
   "hero_title",
 )}
 .public-site .hero-line--right,
+.public-site .home-hero-container .hero-heading .hero-line--right,
+html[data-ex-experience] .public-site .ex-root .hero-heading .hero-line--right,
 html[data-ex-experience] .ex-root .hero-heading .hero-line--right {
   position: relative !important;
   left: var(--typo-hero-main-x, 0px) !important;
@@ -373,10 +398,14 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--right {
 }
 ${block(
   `.public-site .hero-line--left:not(.hero-line--wordmark),
+.public-site .home-hero-container .hero-heading .hero-line--left:not(.hero-line--wordmark),
+html[data-ex-experience] .public-site .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
 html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark)`,
   "hero_subtitle",
 )}
 .public-site .hero-line--left:not(.hero-line--wordmark),
+.public-site .home-hero-container .hero-heading .hero-line--left:not(.hero-line--wordmark),
+html[data-ex-experience] .public-site .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
 html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark) {
   position: relative !important;
   left: var(--typo-hero-second-x, 0px) !important;
@@ -389,6 +418,7 @@ html[data-ex-experience] .ex-root .hero-sub,
 .public-site .owo-hero__subtitle {
   font-family: var(--typo-hero-subtitle-font) !important;
   color: var(--typo-hero-subtitle-color) !important;
+  -webkit-text-fill-color: var(--typo-hero-subtitle-color) !important;
   letter-spacing: var(--typo-hero-subtitle-letter-spacing) !important;
   text-shadow: var(--typo-hero-subtitle-shadow) !important;
   font-size: clamp(0.92rem, 1.2vw, 1.1rem) !important;

@@ -10,15 +10,31 @@ import {
 import {
   DEFAULT_TYPOGRAPHY_SETTINGS,
   parseTypographySettings,
+  typographyToImportantCss,
   typographyToInlineStyle,
   type TypographyRole,
   type TypographySettings,
   type TypographyTextStyle,
 } from "@/lib/typography-settings-shared";
 
+const STYLE_ID = "hathor-typography-live";
+
 const TypographySettingsContext = createContext<TypographySettings>(
   DEFAULT_TYPOGRAPHY_SETTINGS,
 );
+
+function applyLiveCss(settings: TypographySettings) {
+  if (typeof document === "undefined") return;
+  let el = document.getElementById(STYLE_ID) as HTMLStyleElement | null;
+  if (!el) {
+    el = document.createElement("style");
+    el.id = STYLE_ID;
+    document.head.appendChild(el);
+  }
+  el.textContent = typographyToImportantCss(settings);
+  /* Keep last in <head> so it beats bundled page CSS. */
+  document.head.appendChild(el);
+}
 
 export function TypographySettingsProvider({
   initial,
@@ -36,6 +52,10 @@ export function TypographySettingsProvider({
   }, [initial]);
 
   useEffect(() => {
+    applyLiveCss(settings);
+  }, [settings]);
+
+  useEffect(() => {
     let cancelled = false;
     const load = async () => {
       try {
@@ -51,8 +71,14 @@ export function TypographySettingsProvider({
       }
     };
     void load();
+
+    const onVisible = () => {
+      if (document.visibilityState === "visible") void load();
+    };
+    document.addEventListener("visibilitychange", onVisible);
     return () => {
       cancelled = true;
+      document.removeEventListener("visibilitychange", onVisible);
     };
   }, []);
 
