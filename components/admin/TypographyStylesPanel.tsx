@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Loader2, RotateCcw, Save } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
+import { Loader2, RotateCcw, Save, Undo2 } from "lucide-react";
 import { useToast } from "@/components/admin/ToastProvider";
 import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
 import {
@@ -19,160 +19,37 @@ import {
   type TypographyTextStyle,
 } from "@/lib/typography-settings-shared";
 
+const ROLE_SAMPLES: Record<TypographyRole, string> = {
+  hero_title: "Hathor Dahabiya",
+  hero_subtitle: "A private Nile sailing",
+  page_title: "Our Suites",
+  page_subtitle: "Luxury on the water",
+};
+
 function fontOptionsFor(current: HathorLuxuryFont): HathorLuxuryFont[] {
   if (HATHOR_FONT_INSTALLED[current]) return [...HATHOR_AVAILABLE_LUXURY_FONTS];
-  /* Keep a saved-but-missing font selectable until the admin picks an installed one. */
   return [current, ...HATHOR_AVAILABLE_LUXURY_FONTS];
 }
 
-function RoleEditor({
-  role,
-  value,
-  onChange,
+function SimpleField({
+  label,
+  valueLabel,
+  children,
 }: {
-  role: TypographyRole;
-  value: TypographyTextStyle;
-  onChange: (next: TypographyTextStyle) => void;
+  label: string;
+  valueLabel?: string;
+  children: ReactNode;
 }) {
-  const patch = (partial: Partial<TypographyTextStyle>) =>
-    onChange({ ...value, ...partial });
-
   return (
-    <section className="hlt-section typo-role-card">
-      <h2 className="admin-heading text-base">{TYPOGRAPHY_ROLE_LABELS[role]}</h2>
-      <p
-        className="typo-role-card__preview"
-        style={typographyToInlineStyle(value)}
-      >
-        {role.includes("subtitle")
-          ? "Sample subtitle — elegance on the Nile"
-          : "Sample Title — Hathor"}
-      </p>
-
-      <div className="hlt-grid">
-        <label className="hlt-field">
-          <span className="hlt-field__label">Font Family</span>
-          <select
-            className="hlt-field__input typo-font-select"
-            value={value.fontFamily}
-            onChange={(e) =>
-              patch({
-                fontFamily: e.target.value as TypographyTextStyle["fontFamily"],
-              })
-            }
-            style={{ fontFamily: `'${value.fontFamily}', serif` }}
-          >
-            {fontOptionsFor(value.fontFamily).map((font) => (
-              <option key={font} value={font} style={{ fontFamily: `'${font}', serif` }}>
-                {font}
-                {!HATHOR_FONT_INSTALLED[font] ? " (file missing)" : ""}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className="hlt-field">
-          <span className="hlt-field__label">
-            Font Size
-            <span className="hlt-field__live">{value.fontSize}px</span>
-          </span>
-          <input
-            type="number"
-            className="hlt-field__input"
-            min={8}
-            max={200}
-            step={1}
-            value={value.fontSize}
-            onChange={(e) => {
-              const n = Number(e.target.value);
-              if (Number.isFinite(n)) patch({ fontSize: n });
-            }}
-          />
-        </label>
-
-        <label className="hlt-field">
-          <span className="hlt-field__label">Color</span>
-          <span className="typo-color-row">
-            <input
-              type="color"
-              className="typo-color-swatch"
-              value={value.color}
-              onChange={(e) => patch({ color: e.target.value.toUpperCase() })}
-              aria-label={`${TYPOGRAPHY_ROLE_LABELS[role]} color`}
-            />
-            <input
-              type="text"
-              className="hlt-field__input"
-              value={value.color}
-              spellCheck={false}
-              autoComplete="off"
-              onChange={(e) => {
-                const raw = e.target.value.trim();
-                if (/^#[0-9A-Fa-f]{0,6}$/.test(raw)) {
-                  if (/^#[0-9A-Fa-f]{6}$/.test(raw)) {
-                    patch({ color: raw.toUpperCase() });
-                  }
-                }
-              }}
-            />
-          </span>
-        </label>
-
-        <label className="hlt-field">
-          <span className="hlt-field__label">
-            Line Height
-            <span className="hlt-field__live">{value.lineHeight}</span>
-          </span>
-          <input
-            type="number"
-            className="hlt-field__input"
-            min={0.8}
-            max={3}
-            step={0.05}
-            value={value.lineHeight}
-            onChange={(e) => {
-              const n = Number(e.target.value);
-              if (Number.isFinite(n)) patch({ lineHeight: n });
-            }}
-          />
-        </label>
-
-        <label className="hlt-field">
-          <span className="hlt-field__label">
-            Letter Spacing
-            <span className="hlt-field__live">{value.letterSpacing}px</span>
-          </span>
-          <input
-            type="number"
-            className="hlt-field__input"
-            min={-10}
-            max={40}
-            step={0.5}
-            value={value.letterSpacing}
-            onChange={(e) => {
-              const n = Number(e.target.value);
-              if (Number.isFinite(n)) patch({ letterSpacing: n });
-            }}
-          />
-        </label>
-
-        <label className="hlt-field typo-toggle-field">
-          <span className="hlt-field__label">Inner Shadow</span>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={value.innerShadow}
-            className={`typo-switch${value.innerShadow ? " typo-switch--on" : ""}`}
-            onClick={() => patch({ innerShadow: !value.innerShadow })}
-          >
-            <span className="typo-switch__thumb" />
-            <span className="typo-switch__label">
-              {value.innerShadow ? "On" : "Off"}
-            </span>
-          </button>
-        </label>
-      </div>
-    </section>
+    <label className="typo-easy__field">
+      <span className="typo-easy__field-label">
+        {label}
+        {valueLabel ? (
+          <span className="typo-easy__field-value">{valueLabel}</span>
+        ) : null}
+      </span>
+      {children}
+    </label>
   );
 }
 
@@ -184,6 +61,8 @@ export function TypographyStylesPanel() {
   const [saved, setSaved] = useState<TypographySettings>(
     DEFAULT_TYPOGRAPHY_SETTINGS,
   );
+  const [activeRole, setActiveRole] =
+    useState<TypographyRole>("hero_title");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -216,12 +95,17 @@ export function TypographyStylesPanel() {
   }, [showToast]);
 
   const dirty = !isTypographySettingsEqual(settings, saved);
+  const value = settings[activeRole];
 
-  const patchRole = (role: TypographyRole, next: TypographyTextStyle) => {
-    setSettings((prev) => ({ ...prev, [role]: next }));
+  const patch = (partial: Partial<TypographyTextStyle>) => {
+    setSettings((prev) => ({
+      ...prev,
+      [activeRole]: { ...prev[activeRole], ...partial },
+    }));
   };
 
   const handleSave = async () => {
+    if (!dirty || saving) return;
     setSaving(true);
     try {
       const payload = parseTypographySettings(settings);
@@ -241,7 +125,7 @@ export function TypographyStylesPanel() {
       const next = parseTypographySettings(data.settings ?? payload);
       setSettings(next);
       setSaved(next);
-      showToast("success", "Typography saved to live site.");
+      showToast("success", "Saved to live site.");
       void fetch(`/api/typography?t=${Date.now()}`, { cache: "no-store" }).catch(
         () => {},
       );
@@ -259,13 +143,20 @@ export function TypographyStylesPanel() {
     }
   };
 
-  const handleReset = () => {
-    setSettings(DEFAULT_TYPOGRAPHY_SETTINGS);
+  const handleDiscard = () => {
+    setSettings(saved);
+  };
+
+  const handleResetRole = () => {
+    setSettings((prev) => ({
+      ...prev,
+      [activeRole]: DEFAULT_TYPOGRAPHY_SETTINGS[activeRole],
+    }));
   };
 
   if (loading) {
     return (
-      <div className="flex items-center gap-2 p-8 text-[var(--text-secondary)]">
+      <div className="typo-easy typo-easy--loading">
         <Loader2 className="h-5 w-5 animate-spin" />
         Loading typography…
       </div>
@@ -273,51 +164,186 @@ export function TypographyStylesPanel() {
   }
 
   return (
-    <div className="hlt-panel typo-panel">
-      <header className="hlt-panel__header">
+    <div className="typo-easy">
+      <header className="typo-easy__header">
         <div>
           <h1 className="admin-page-title">Typography &amp; Styles</h1>
-          <p className="admin-page-subtitle max-w-2xl">
-            Control fonts, size, color, line-height, letter-spacing, and inner
-            shadow for hero and page titles. Only fonts with files in
-            public/fonts/ are listed — add the rest later to unlock them.
+          <p className="admin-page-subtitle">
+            Edit one text style at a time. Nothing goes live until you press
+            Save.
           </p>
         </div>
-        <div className="hlt-panel__actions">
+      </header>
+
+      <div
+        className="typo-easy__tabs"
+        role="tablist"
+        aria-label="Which text to style"
+      >
+        {TYPOGRAPHY_ROLES.map((role) => {
+          const active = role === activeRole;
+          return (
+            <button
+              key={role}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              className={`typo-easy__tab${active ? " typo-easy__tab--active" : ""}`}
+              onClick={() => setActiveRole(role)}
+            >
+              {TYPOGRAPHY_ROLE_LABELS[role]}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="typo-easy__stage" aria-live="polite">
+        <p className="typo-easy__stage-label">Preview</p>
+        <p
+          className="typo-easy__preview"
+          style={typographyToInlineStyle(value)}
+        >
+          {ROLE_SAMPLES[activeRole]}
+        </p>
+      </div>
+
+      <div className="typo-easy__controls admin-card">
+        <SimpleField label="Font">
+          <div className="typo-easy__font-grid">
+            {fontOptionsFor(value.fontFamily).map((font) => {
+              const selected = value.fontFamily === font;
+              const missing = !HATHOR_FONT_INSTALLED[font];
+              return (
+                <button
+                  key={font}
+                  type="button"
+                  className={`typo-easy__font-btn${selected ? " typo-easy__font-btn--active" : ""}`}
+                  style={{ fontFamily: `'${font}', serif` }}
+                  onClick={() => patch({ fontFamily: font })}
+                  disabled={missing && !selected}
+                  title={missing ? "Font file not installed yet" : font}
+                >
+                  {font}
+                </button>
+              );
+            })}
+          </div>
+        </SimpleField>
+
+        <div className="typo-easy__row">
+          <SimpleField label="Size" valueLabel={`${value.fontSize}px`}>
+            <input
+              type="range"
+              className="typo-easy__range"
+              min={12}
+              max={96}
+              step={1}
+              value={value.fontSize}
+              onChange={(e) => patch({ fontSize: Number(e.target.value) })}
+            />
+          </SimpleField>
+
+          <SimpleField label="Color">
+            <div className="typo-easy__color">
+              <input
+                type="color"
+                className="typo-easy__swatch"
+                value={value.color}
+                onChange={(e) =>
+                  patch({ color: e.target.value.toUpperCase() })
+                }
+                aria-label="Color"
+              />
+              <span className="typo-easy__hex">{value.color}</span>
+            </div>
+          </SimpleField>
+        </div>
+
+        <div className="typo-easy__row">
+          <SimpleField label="Line height" valueLabel={String(value.lineHeight)}>
+            <input
+              type="range"
+              className="typo-easy__range"
+              min={0.9}
+              max={2}
+              step={0.05}
+              value={value.lineHeight}
+              onChange={(e) => patch({ lineHeight: Number(e.target.value) })}
+            />
+          </SimpleField>
+
+          <SimpleField
+            label="Letter spacing"
+            valueLabel={`${value.letterSpacing}px`}
+          >
+            <input
+              type="range"
+              className="typo-easy__range"
+              min={-4}
+              max={12}
+              step={0.5}
+              value={value.letterSpacing}
+              onChange={(e) =>
+                patch({ letterSpacing: Number(e.target.value) })
+              }
+            />
+          </SimpleField>
+        </div>
+
+        <div className="typo-easy__row typo-easy__row--actions">
+          <button
+            type="button"
+            role="switch"
+            aria-checked={value.innerShadow}
+            className={`typo-easy__shadow${value.innerShadow ? " typo-easy__shadow--on" : ""}`}
+            onClick={() => patch({ innerShadow: !value.innerShadow })}
+          >
+            Inner shadow: {value.innerShadow ? "On" : "Off"}
+          </button>
+
+          <button
+            type="button"
+            className="typo-easy__reset-role"
+            onClick={handleResetRole}
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+            Reset this text
+          </button>
+        </div>
+      </div>
+
+      <div
+        className={`typo-easy__savebar${dirty ? " typo-easy__savebar--dirty" : ""}`}
+      >
+        <p className="typo-easy__savebar-status">
+          {dirty
+            ? "You have unsaved changes — live site is unchanged until you save."
+            : "All changes are saved to the live site."}
+        </p>
+        <div className="typo-easy__savebar-actions">
           <button
             type="button"
             className="admin-btn admin-btn--ghost"
-            onClick={handleReset}
-            disabled={saving}
+            onClick={handleDiscard}
+            disabled={!dirty || saving}
           >
-            <RotateCcw className="h-4 w-4" />
-            Reset defaults
+            <Undo2 className="h-4 w-4" />
+            Discard
           </button>
           <button
             type="button"
-            className="admin-btn admin-btn--primary"
+            className="admin-btn admin-btn--primary typo-easy__save-btn"
             onClick={() => void handleSave()}
-            disabled={saving || !dirty}
+            disabled={!dirty || saving}
           >
             {saving ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               <Save className="h-4 w-4" />
             )}
-            Save to live
+            Save to live site
           </button>
         </div>
-      </header>
-
-      <div className="typo-roles">
-        {TYPOGRAPHY_ROLES.map((role) => (
-          <RoleEditor
-            key={role}
-            role={role}
-            value={settings[role]}
-            onChange={(next) => patchRole(role, next)}
-          />
-        ))}
       </div>
     </div>
   );
