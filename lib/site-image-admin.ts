@@ -20,7 +20,7 @@ const PAGE_GROUP_TITLES: Record<string, string> = {
  * Never expose internal slug codes.
  */
 const SLOT_LABELS: Partial<Record<SiteImageSlot["name"], string>> = {
-  "home-hero-poster": "Homepage - Hero Video Cover",
+  "home-hero-poster": "Hero — Homepage (video cover / poster)",
   "home-post-hero-media": "Homepage - Photo Below Hero",
   "home-story-craft-large": "Homepage - About Large Photo",
   "home-story-craft-small": "Homepage - About Detail Photo",
@@ -45,25 +45,25 @@ const SLOT_LABELS: Partial<Record<SiteImageSlot["name"], string>> = {
   "home-alt-wellness": "Homepage - Wellness Feature Photo",
   "home-alt-highlights": "Homepage - Landmarks Feature Photo",
   "home-testimonials-bg": "Homepage - Guest Reviews Background",
-  "room-luxury": "Luxury Rooms - Luxury Cabin Photo",
+  "room-luxury": "Hero — Luxury Rooms",
   "room-suite": "Luxury Rooms - Luxury Suite Photo",
-  "room-royal": "Luxury Rooms - Royal Suite Photo",
+  "room-royal": "Hero — Royal Suites",
   charter: "Charter - Overview Photo",
-  "cruises-hero": "Cruises - Hero Background",
-  "about-hero": "About Us - Hero Background",
+  "cruises-hero": "Hero — Cruises",
+  "about-hero": "Hero — About Us",
   "about-dining": "About Us - Dining Photo",
-  "gastronomy-hero": "Gastronomy - Hero Background",
+  "gastronomy-hero": "Hero — Gastronomy",
   "gastronomy-restaurant": "Gastronomy - Restaurant Photo",
-  "wellness-hero": "Wellness - Hero Background",
+  "wellness-hero": "Hero — Wellness",
   "wellness-fitness": "Wellness - Fitness Photo",
-  "highlights-hero": "Highlights - Hero Background",
+  "highlights-hero": "Hero — Highlights",
   "highlights-lifestyle": "Highlights - Lifestyle Photo",
   "landmark-obelisk": "Highlights - Obelisk Photo",
   "landmark-hatshepsut": "Highlights - Hatshepsut Temple Photo",
   "landmark-valley-kings": "Highlights - Valley of the Kings Photo",
-  "charter-hero": "Charter - Hero Background",
-  "contact-hero": "Contact - Hero Background",
-  "blog-hero": "Blog - Hero Background",
+  "charter-hero": "Hero — Charter",
+  "contact-hero": "Hero — Contact",
+  "blog-hero": "Hero — Blog",
 };
 
 /** Shape this image takes on the live page. */
@@ -90,6 +90,8 @@ const SLOT_LAYOUT_KINDS: Partial<Record<SiteImageSlot["name"], SiteImageLayoutKi
     "charter-hero": "hero",
     "contact-hero": "hero",
     "blog-hero": "hero",
+    "room-luxury": "hero",
+    "room-royal": "hero",
   };
 
 const LAYOUT_LABELS: Record<SiteImageLayoutKind, string> = {

@@ -38,6 +38,11 @@ export type PublicSiteHeroProps = {
   goldTint?: boolean;
   /** Homepage-only floating gold dust (delete tag + GoldDustParticles.tsx to remove). */
   goldDust?: boolean;
+  /**
+   * When true, play the homepage hero video.
+   * Other pages should leave this false and use `posterImageName` as a still image.
+   */
+  playVideo?: boolean;
 };
 
 export function PublicSiteHero({
@@ -53,15 +58,17 @@ export function PublicSiteHero({
   posterImageName,
   goldTint = false,
   goldDust = false,
+  playVideo = false,
 }: PublicSiteHeroProps) {
   const heroVideoRef = useRef<HTMLVideoElement>(null);
-  const posterImage = useSiteImage(posterImageName ?? "home-hero-poster");
-  const posterSrc = posterImageName ? posterImage.src : undefined;
+  const heroImageName = posterImageName ?? "home-hero-poster";
+  const heroImage = useSiteImage(heroImageName);
   const heroTitleStyle = useTypographyInlineStyle("hero_title");
   const heroSubtitleStyle = useTypographyInlineStyle("hero_subtitle");
   usePublicSiteHeroMotion(animate);
 
   useLayoutEffect(() => {
+    if (!playVideo) return;
     const video = heroVideoRef.current;
     if (!video) return;
 
@@ -69,7 +76,7 @@ export function PublicSiteHero({
     video.defaultMuted = true;
     video.setAttribute("muted", "");
     void video.play().catch(() => {});
-  }, []);
+  }, [playVideo]);
 
   return (
     <section
@@ -79,17 +86,27 @@ export function PublicSiteHero({
       aria-label="Hero"
     >
       <div className="hero-media">
-        <video
-          ref={heroVideoRef}
-          src={HATHOR_HERO_VIDEO_SRC}
-          poster={posterSrc}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          aria-label="Hathor Dahabiya sailing on the Nile"
-        />
+        {playVideo ? (
+          <video
+            ref={heroVideoRef}
+            src={HATHOR_HERO_VIDEO_SRC}
+            poster={heroImage.src}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            aria-label="Hathor Dahabiya sailing on the Nile"
+          />
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element -- CMS hero still; next/image fill not needed here
+          <img
+            src={heroImage.src}
+            alt={heroImage.alt}
+            decoding="async"
+            fetchPriority="high"
+          />
+        )}
       </div>
       <div className="hero-overlay" aria-hidden="true" />
 
