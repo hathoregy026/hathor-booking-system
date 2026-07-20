@@ -1538,148 +1538,155 @@ select.admin-input option:checked {
   gap: 1rem;
 }
 
-.typo-live {
+.typo-board {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.85rem;
 }
 
-.typo-live__hint {
-  margin: 0;
-  font-size: 0.78rem;
-  color: var(--text-muted);
-}
-
-.typo-live__grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.75rem;
-}
-
-@media (max-width: 960px) {
-  .typo-live__grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.typo-live__card {
+.typo-board__section {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 0.45rem;
-  min-height: 10.5rem;
-  padding: 1.1rem 1.15rem 1.25rem;
+  gap: 0.55rem;
+  padding: 1rem 1.1rem 1.15rem;
   border-radius: 16px;
   border: 1px solid var(--border);
-  text-align: left;
-  cursor: pointer;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.typo-live__card:hover {
-  border-color: var(--accent);
+.typo-board__section--hero {
+  background: linear-gradient(165deg, #1c1712 0%, #0e0c0a 100%);
 }
 
-.typo-live__card--active {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 1px rgba(182, 159, 100, 0.35);
-}
-
-.typo-live__card--hero {
-  background:
-    linear-gradient(160deg, #1a1612 0%, #0f0d0b 55%, #16120f 100%);
-}
-
-.typo-live__card--page {
+.typo-board__section--page,
+.typo-board__section--body {
   background: #f7f3ec;
 }
 
-.typo-live__card--body {
-  background: #faf8f5;
-}
-
-.typo-live__card-label {
-  font-size: 0.68rem;
+.typo-board__heading {
+  margin: 0 0 0.15rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--text-muted);
-  margin-bottom: 0.35rem;
+  font-family: var(--font-admin, Inter), system-ui, sans-serif !important;
 }
 
-.typo-live__card--hero .typo-live__card-label {
+.typo-board__section--hero .typo-board__heading {
+  color: rgba(245, 240, 232, 0.5);
+}
+
+.typo-pick {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35rem;
+  width: 100%;
+  padding: 0.75rem 0.85rem;
+  border-radius: 12px;
+  border: 2px dashed rgba(182, 159, 100, 0.35);
+  background: rgba(255, 255, 255, 0.04);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.typo-board__section--page .typo-pick,
+.typo-board__section--body .typo-pick {
+  background: rgba(255, 255, 255, 0.55);
+  border-color: rgba(182, 159, 100, 0.4);
+}
+
+.typo-pick:hover {
+  border-color: var(--accent);
+}
+
+.typo-pick--on {
+  border-style: solid;
+  border-color: #b69f64;
+  box-shadow:
+    0 0 0 3px rgba(182, 159, 100, 0.28),
+    0 10px 28px rgba(0, 0, 0, 0.18);
+  background: rgba(182, 159, 100, 0.12);
+}
+
+.typo-pick__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.typo-pick__role {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-family: var(--font-admin, Inter), system-ui, sans-serif !important;
+}
+
+.typo-board__section--hero .typo-pick__role {
   color: rgba(245, 240, 232, 0.55);
 }
 
-.typo-live__title,
-.typo-live__subtitle,
-.typo-live__body {
+.typo-pick__cue {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  font-family: var(--font-admin, Inter), system-ui, sans-serif !important;
+}
+
+.typo-pick__words {
   display: block;
   width: 100%;
   margin: 0;
   word-break: break-word;
 }
 
-.typo-live__body {
-  max-width: 36rem;
-}
-
-.typo-easy__editing {
-  margin: 0;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-}
-
-.typo-easy__editing strong {
-  color: var(--accent);
-}
-
-.typo-easy__tabs {
+.typo-target {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  padding: 0.35rem;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 1rem 1.1rem;
   border-radius: 14px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
+  border: 1px solid var(--accent);
+  background: var(--sidebar-active);
+  animation: typoFlash 0.45s ease;
 }
 
-.typo-easy__tab {
-  flex: 1 1 auto;
-  min-width: 7.5rem;
-  padding: 0.65rem 0.9rem;
-  border: 0;
-  border-radius: 10px;
-  background: transparent;
-  color: var(--text-secondary);
+@keyframes typoFlash {
+  from {
+    box-shadow: 0 0 0 0 rgba(182, 159, 100, 0.55);
+  }
+  to {
+    box-shadow: 0 0 0 8px rgba(182, 159, 100, 0);
+  }
+}
+
+.typo-target__label {
+  margin: 0;
   font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  color: var(--text-secondary);
 }
 
-.typo-easy__tab:hover {
-  color: var(--text-primary);
-  background: var(--sidebar-nav-hover);
-}
-
-.typo-easy__tab--active {
-  background: var(--bg-glass);
+.typo-target__label strong {
   color: var(--accent);
-  box-shadow: var(--shadow);
 }
 
-.typo-easy__stage {
-  display: none;
+.typo-target__sample {
+  margin: 0;
+  word-break: break-word;
 }
 
-.typo-easy__stage-label {
-  display: none;
-}
-
-.typo-easy__preview {
-  display: none;
+.typo-target__readout {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  font-family: var(--font-admin, Inter), system-ui, sans-serif !important;
 }
 
 .typo-easy__controls {
@@ -1719,6 +1726,10 @@ select.admin-input option:checked {
 }
 
 .typo-easy__font-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
   padding: 0.85rem 0.75rem;
   border-radius: 12px;
   border: 1px solid var(--border);
@@ -1729,6 +1740,19 @@ select.admin-input option:checked {
   cursor: pointer;
   text-align: center;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.typo-easy__font-btn-name {
+  font-size: 0.72rem;
+  font-weight: 650;
+  color: var(--text-muted);
+  font-family: var(--font-admin, Inter), system-ui, sans-serif !important;
+}
+
+.typo-easy__font-btn-demo {
+  font-size: 1.55rem;
+  line-height: 1;
+  color: var(--text-primary);
 }
 
 .typo-easy__font-btn:hover:not(:disabled) {

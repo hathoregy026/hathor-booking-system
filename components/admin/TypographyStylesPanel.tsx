@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import { Loader2, RotateCcw, Save, Undo2 } from "lucide-react";
 import { useToast } from "@/components/admin/ToastProvider";
 import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
@@ -9,22 +9,40 @@ import {
   HATHOR_AVAILABLE_LUXURY_FONTS,
   HATHOR_FONT_INSTALLED,
   TYPOGRAPHY_ROLE_LABELS,
-  TYPOGRAPHY_ROLES,
   isTypographySettingsEqual,
   parseTypographySettings,
-  typographyToInlineStyle,
   type HathorLuxuryFont,
   type TypographyRole,
   type TypographySettings,
   type TypographyTextStyle,
 } from "@/lib/typography-settings-shared";
 
-const BODY_SAMPLE =
-  "Sail the Nile aboard a private dahabiya — unhurried days, fine dining, and suites crafted for quiet luxury from Luxor to Aswan.";
+const SAMPLES: Record<TypographyRole, string> = {
+  hero_title: "Hathor Dahabiya",
+  hero_subtitle: "A private Nile sailing",
+  page_title: "Our Suites",
+  page_subtitle: "Luxury on the water",
+  body_text:
+    "Sail the Nile aboard a private dahabiya — unhurried days, fine dining, and suites crafted for quiet luxury from Luxor to Aswan.",
+};
 
 function fontOptionsFor(current: HathorLuxuryFont): HathorLuxuryFont[] {
   if (HATHOR_FONT_INSTALLED[current]) return [...HATHOR_AVAILABLE_LUXURY_FONTS];
   return [current, ...HATHOR_AVAILABLE_LUXURY_FONTS];
+}
+
+/** Inline styles that win over admin Inter inheritance. */
+function liveStyle(style: TypographyTextStyle): CSSProperties {
+  return {
+    fontFamily: `"${style.fontFamily}", serif`,
+    fontSize: `${style.fontSize}px`,
+    color: style.color,
+    lineHeight: style.lineHeight,
+    letterSpacing: `${style.letterSpacing}px`,
+    textShadow: style.innerShadow
+      ? "inset 0 1px 2px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.2)"
+      : "none",
+  };
 }
 
 function SimpleField({
@@ -49,83 +67,35 @@ function SimpleField({
   );
 }
 
-function LiveSectionsPreview({
+function EditableLine({
+  role,
+  active,
   settings,
-  activeRole,
-  onSelectRole,
+  onSelect,
 }: {
+  role: TypographyRole;
+  active: boolean;
   settings: TypographySettings;
-  activeRole: TypographyRole;
-  onSelectRole: (role: TypographyRole) => void;
+  onSelect: (role: TypographyRole) => void;
 }) {
-  const heroActive =
-    activeRole === "hero_title" || activeRole === "hero_subtitle";
-  const pageActive =
-    activeRole === "page_title" || activeRole === "page_subtitle";
-  const bodyActive = activeRole === "body_text";
-
+  const style = settings[role];
   return (
-    <div className="typo-live" aria-live="polite">
-      <p className="typo-live__hint">
-        Live preview — updates as you tune. Click a section to edit it.
-      </p>
-
-      <div className="typo-live__grid">
-        <button
-          type="button"
-          className={`typo-live__card typo-live__card--hero${heroActive ? " typo-live__card--active" : ""}`}
-          onClick={() => onSelectRole("hero_title")}
-        >
-          <span className="typo-live__card-label">Hero</span>
-          <span
-            className="typo-live__title"
-            style={typographyToInlineStyle(settings.hero_title)}
-          >
-            Hathor Dahabiya
-          </span>
-          <span
-            className="typo-live__subtitle"
-            style={typographyToInlineStyle(settings.hero_subtitle)}
-          >
-            A private Nile sailing
-          </span>
-        </button>
-
-        <button
-          type="button"
-          className={`typo-live__card typo-live__card--page${pageActive ? " typo-live__card--active" : ""}`}
-          onClick={() => onSelectRole("page_title")}
-        >
-          <span className="typo-live__card-label">Page</span>
-          <span
-            className="typo-live__title"
-            style={typographyToInlineStyle(settings.page_title)}
-          >
-            Our Suites
-          </span>
-          <span
-            className="typo-live__subtitle"
-            style={typographyToInlineStyle(settings.page_subtitle)}
-          >
-            Luxury on the water
-          </span>
-        </button>
-
-        <button
-          type="button"
-          className={`typo-live__card typo-live__card--body${bodyActive ? " typo-live__card--active" : ""}`}
-          onClick={() => onSelectRole("body_text")}
-        >
-          <span className="typo-live__card-label">Body</span>
-          <span
-            className="typo-live__body"
-            style={typographyToInlineStyle(settings.body_text)}
-          >
-            {BODY_SAMPLE}
-          </span>
-        </button>
-      </div>
-    </div>
+    <button
+      type="button"
+      className={`typo-pick${active ? " typo-pick--on" : ""}`}
+      onClick={() => onSelect(role)}
+      aria-pressed={active}
+    >
+      <span className="typo-pick__meta">
+        <span className="typo-pick__role">{TYPOGRAPHY_ROLE_LABELS[role]}</span>
+        <span className="typo-pick__cue">
+          {active ? "Editing this" : "Click to edit"}
+        </span>
+      </span>
+      <span className="typo-pick__words" style={liveStyle(style)}>
+        {SAMPLES[role]}
+      </span>
+    </button>
   );
 }
 
@@ -141,6 +111,7 @@ export function TypographyStylesPanel() {
     useState<TypographyRole>("hero_title");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [flash, setFlash] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -178,6 +149,7 @@ export function TypographyStylesPanel() {
       ...prev,
       [activeRole]: { ...prev[activeRole], ...partial },
     }));
+    setFlash((n) => n + 1);
   };
 
   const handleSave = async () => {
@@ -219,17 +191,6 @@ export function TypographyStylesPanel() {
     }
   };
 
-  const handleDiscard = () => {
-    setSettings(saved);
-  };
-
-  const handleResetRole = () => {
-    setSettings((prev) => ({
-      ...prev,
-      [activeRole]: DEFAULT_TYPOGRAPHY_SETTINGS[activeRole],
-    }));
-  };
-
   if (loading) {
     return (
       <div className="typo-easy typo-easy--loading">
@@ -245,44 +206,69 @@ export function TypographyStylesPanel() {
         <div>
           <h1 className="admin-page-title">Typography &amp; Styles</h1>
           <p className="admin-page-subtitle">
-            Preview every section live above. Tune below — nothing goes live
-            until you press Save.
+            1) Click the words you want to change. 2) Tune them below. 3) Save
+            to live site when done.
           </p>
         </div>
       </header>
 
-      <LiveSectionsPreview
-        settings={settings}
-        activeRole={activeRole}
-        onSelectRole={setActiveRole}
-      />
+      <div className="typo-board" aria-live="polite">
+        <section className="typo-board__section typo-board__section--hero">
+          <h2 className="typo-board__heading">Hero</h2>
+          <EditableLine
+            role="hero_title"
+            active={activeRole === "hero_title"}
+            settings={settings}
+            onSelect={setActiveRole}
+          />
+          <EditableLine
+            role="hero_subtitle"
+            active={activeRole === "hero_subtitle"}
+            settings={settings}
+            onSelect={setActiveRole}
+          />
+        </section>
 
-      <div
-        className="typo-easy__tabs"
-        role="tablist"
-        aria-label="Which text to style"
-      >
-        {TYPOGRAPHY_ROLES.map((role) => {
-          const active = role === activeRole;
-          return (
-            <button
-              key={role}
-              type="button"
-              role="tab"
-              aria-selected={active}
-              className={`typo-easy__tab${active ? " typo-easy__tab--active" : ""}`}
-              onClick={() => setActiveRole(role)}
-            >
-              {TYPOGRAPHY_ROLE_LABELS[role]}
-            </button>
-          );
-        })}
+        <section className="typo-board__section typo-board__section--page">
+          <h2 className="typo-board__heading">Page</h2>
+          <EditableLine
+            role="page_title"
+            active={activeRole === "page_title"}
+            settings={settings}
+            onSelect={setActiveRole}
+          />
+          <EditableLine
+            role="page_subtitle"
+            active={activeRole === "page_subtitle"}
+            settings={settings}
+            onSelect={setActiveRole}
+          />
+        </section>
+
+        <section className="typo-board__section typo-board__section--body">
+          <h2 className="typo-board__heading">Body</h2>
+          <EditableLine
+            role="body_text"
+            active={activeRole === "body_text"}
+            settings={settings}
+            onSelect={setActiveRole}
+          />
+        </section>
       </div>
 
       <div className="typo-easy__controls admin-card">
-        <p className="typo-easy__editing">
-          Editing: <strong>{TYPOGRAPHY_ROLE_LABELS[activeRole]}</strong>
-        </p>
+        <div className="typo-target" key={flash}>
+          <p className="typo-target__label">
+            You are changing
+            <strong> {TYPOGRAPHY_ROLE_LABELS[activeRole]}</strong>
+          </p>
+          <p className="typo-target__sample" style={liveStyle(value)}>
+            {SAMPLES[activeRole]}
+          </p>
+          <p className="typo-target__readout">
+            {value.fontFamily} · {value.fontSize}px · {value.color}
+          </p>
+        </div>
 
         <SimpleField label="Font">
           <div className="typo-easy__font-grid">
@@ -294,12 +280,18 @@ export function TypographyStylesPanel() {
                   key={font}
                   type="button"
                   className={`typo-easy__font-btn${selected ? " typo-easy__font-btn--active" : ""}`}
-                  style={{ fontFamily: `'${font}', serif` }}
+                  style={{ fontFamily: `"${font}", serif` }}
                   onClick={() => patch({ fontFamily: font })}
                   disabled={missing && !selected}
                   title={missing ? "Font file not installed yet" : font}
                 >
-                  {font}
+                  <span className="typo-easy__font-btn-name">{font}</span>
+                  <span
+                    className="typo-easy__font-btn-demo"
+                    style={{ fontFamily: `"${font}", serif` }}
+                  >
+                    Aa
+                  </span>
                 </button>
               );
             })}
@@ -380,7 +372,13 @@ export function TypographyStylesPanel() {
           <button
             type="button"
             className="typo-easy__reset-role"
-            onClick={handleResetRole}
+            onClick={() => {
+              setSettings((prev) => ({
+                ...prev,
+                [activeRole]: DEFAULT_TYPOGRAPHY_SETTINGS[activeRole],
+              }));
+              setFlash((n) => n + 1);
+            }}
           >
             <RotateCcw className="h-3.5 w-3.5" />
             Reset this text
@@ -393,14 +391,14 @@ export function TypographyStylesPanel() {
       >
         <p className="typo-easy__savebar-status">
           {dirty
-            ? "You have unsaved changes — live site is unchanged until you save."
-            : "All changes are saved to the live site."}
+            ? "Unsaved draft — live site unchanged until you save."
+            : "Live site matches what you see."}
         </p>
         <div className="typo-easy__savebar-actions">
           <button
             type="button"
             className="admin-btn admin-btn--ghost"
-            onClick={handleDiscard}
+            onClick={() => setSettings(saved)}
             disabled={!dirty || saving}
           >
             <Undo2 className="h-4 w-4" />
