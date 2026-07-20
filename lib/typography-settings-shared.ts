@@ -44,6 +44,7 @@ export const TYPOGRAPHY_ROLES = [
   "hero_subtitle",
   "page_title",
   "page_subtitle",
+  "body_text",
 ] as const;
 
 export type TypographyRole = (typeof TYPOGRAPHY_ROLES)[number];
@@ -53,6 +54,7 @@ export const TYPOGRAPHY_ROLE_LABELS: Record<TypographyRole, string> = {
   hero_subtitle: "Hero subtitle",
   page_title: "Page title",
   page_subtitle: "Page subtitle",
+  body_text: "Body text",
 };
 
 const hexColor = z
@@ -77,6 +79,7 @@ export const typographySettingsSchema = z.object({
   hero_subtitle: typographyTextStyleSchema,
   page_title: typographyTextStyleSchema,
   page_subtitle: typographyTextStyleSchema,
+  body_text: typographyTextStyleSchema,
 });
 
 export type TypographySettings = z.infer<typeof typographySettingsSchema>;
@@ -112,6 +115,14 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
     color: "#6B6B6B",
     lineHeight: 1.5,
     letterSpacing: 2,
+    innerShadow: false,
+  },
+  body_text: {
+    fontFamily: "Gamgote",
+    fontSize: 17,
+    color: "#3D3A36",
+    lineHeight: 1.7,
+    letterSpacing: 0,
     innerShadow: false,
   },
 };
@@ -189,6 +200,7 @@ export function parseTypographySettings(raw: unknown): TypographySettings {
       src.page_subtitle,
       DEFAULT_TYPOGRAPHY_SETTINGS.page_subtitle,
     ),
+    body_text: parseTextStyle(src.body_text, DEFAULT_TYPOGRAPHY_SETTINGS.body_text),
   };
 }
 
@@ -283,6 +295,13 @@ ${block(
   `.public-site .hathor-page-hero__subtitle,
 .public-site .lux-page-hero .lux-section-eyebrow`,
   "page_subtitle",
+)}
+${block(
+  `.public-site .lux-section--beige .lux-container > p,
+.public-site .lux-prose p,
+.public-site article.lux-section p,
+.public-site .typo-body-text`,
+  "body_text",
 )}
 `.trim();
 }

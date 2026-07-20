@@ -19,12 +19,8 @@ import {
   type TypographyTextStyle,
 } from "@/lib/typography-settings-shared";
 
-const ROLE_SAMPLES: Record<TypographyRole, string> = {
-  hero_title: "Hathor Dahabiya",
-  hero_subtitle: "A private Nile sailing",
-  page_title: "Our Suites",
-  page_subtitle: "Luxury on the water",
-};
+const BODY_SAMPLE =
+  "Sail the Nile aboard a private dahabiya — unhurried days, fine dining, and suites crafted for quiet luxury from Luxor to Aswan.";
 
 function fontOptionsFor(current: HathorLuxuryFont): HathorLuxuryFont[] {
   if (HATHOR_FONT_INSTALLED[current]) return [...HATHOR_AVAILABLE_LUXURY_FONTS];
@@ -50,6 +46,86 @@ function SimpleField({
       </span>
       {children}
     </label>
+  );
+}
+
+function LiveSectionsPreview({
+  settings,
+  activeRole,
+  onSelectRole,
+}: {
+  settings: TypographySettings;
+  activeRole: TypographyRole;
+  onSelectRole: (role: TypographyRole) => void;
+}) {
+  const heroActive =
+    activeRole === "hero_title" || activeRole === "hero_subtitle";
+  const pageActive =
+    activeRole === "page_title" || activeRole === "page_subtitle";
+  const bodyActive = activeRole === "body_text";
+
+  return (
+    <div className="typo-live" aria-live="polite">
+      <p className="typo-live__hint">
+        Live preview — updates as you tune. Click a section to edit it.
+      </p>
+
+      <div className="typo-live__grid">
+        <button
+          type="button"
+          className={`typo-live__card typo-live__card--hero${heroActive ? " typo-live__card--active" : ""}`}
+          onClick={() => onSelectRole("hero_title")}
+        >
+          <span className="typo-live__card-label">Hero</span>
+          <span
+            className="typo-live__title"
+            style={typographyToInlineStyle(settings.hero_title)}
+          >
+            Hathor Dahabiya
+          </span>
+          <span
+            className="typo-live__subtitle"
+            style={typographyToInlineStyle(settings.hero_subtitle)}
+          >
+            A private Nile sailing
+          </span>
+        </button>
+
+        <button
+          type="button"
+          className={`typo-live__card typo-live__card--page${pageActive ? " typo-live__card--active" : ""}`}
+          onClick={() => onSelectRole("page_title")}
+        >
+          <span className="typo-live__card-label">Page</span>
+          <span
+            className="typo-live__title"
+            style={typographyToInlineStyle(settings.page_title)}
+          >
+            Our Suites
+          </span>
+          <span
+            className="typo-live__subtitle"
+            style={typographyToInlineStyle(settings.page_subtitle)}
+          >
+            Luxury on the water
+          </span>
+        </button>
+
+        <button
+          type="button"
+          className={`typo-live__card typo-live__card--body${bodyActive ? " typo-live__card--active" : ""}`}
+          onClick={() => onSelectRole("body_text")}
+        >
+          <span className="typo-live__card-label">Body</span>
+          <span
+            className="typo-live__body"
+            style={typographyToInlineStyle(settings.body_text)}
+          >
+            {BODY_SAMPLE}
+          </span>
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -169,11 +245,17 @@ export function TypographyStylesPanel() {
         <div>
           <h1 className="admin-page-title">Typography &amp; Styles</h1>
           <p className="admin-page-subtitle">
-            Edit one text style at a time. Nothing goes live until you press
-            Save.
+            Preview every section live above. Tune below — nothing goes live
+            until you press Save.
           </p>
         </div>
       </header>
+
+      <LiveSectionsPreview
+        settings={settings}
+        activeRole={activeRole}
+        onSelectRole={setActiveRole}
+      />
 
       <div
         className="typo-easy__tabs"
@@ -197,17 +279,11 @@ export function TypographyStylesPanel() {
         })}
       </div>
 
-      <div className="typo-easy__stage" aria-live="polite">
-        <p className="typo-easy__stage-label">Preview</p>
-        <p
-          className="typo-easy__preview"
-          style={typographyToInlineStyle(value)}
-        >
-          {ROLE_SAMPLES[activeRole]}
-        </p>
-      </div>
-
       <div className="typo-easy__controls admin-card">
+        <p className="typo-easy__editing">
+          Editing: <strong>{TYPOGRAPHY_ROLE_LABELS[activeRole]}</strong>
+        </p>
+
         <SimpleField label="Font">
           <div className="typo-easy__font-grid">
             {fontOptionsFor(value.fontFamily).map((font) => {

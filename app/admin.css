@@ -1538,6 +1538,102 @@ select.admin-input option:checked {
   gap: 1rem;
 }
 
+.typo-live {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.typo-live__hint {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.typo-live__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+@media (max-width: 960px) {
+  .typo-live__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.typo-live__card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
+  min-height: 10.5rem;
+  padding: 1.1rem 1.15rem 1.25rem;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.typo-live__card:hover {
+  border-color: var(--accent);
+}
+
+.typo-live__card--active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(182, 159, 100, 0.35);
+}
+
+.typo-live__card--hero {
+  background:
+    linear-gradient(160deg, #1a1612 0%, #0f0d0b 55%, #16120f 100%);
+}
+
+.typo-live__card--page {
+  background: #f7f3ec;
+}
+
+.typo-live__card--body {
+  background: #faf8f5;
+}
+
+.typo-live__card-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.35rem;
+}
+
+.typo-live__card--hero .typo-live__card-label {
+  color: rgba(245, 240, 232, 0.55);
+}
+
+.typo-live__title,
+.typo-live__subtitle,
+.typo-live__body {
+  display: block;
+  width: 100%;
+  margin: 0;
+  word-break: break-word;
+}
+
+.typo-live__body {
+  max-width: 36rem;
+}
+
+.typo-easy__editing {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.typo-easy__editing strong {
+  color: var(--accent);
+}
+
 .typo-easy__tabs {
   display: flex;
   flex-wrap: wrap;
@@ -1575,27 +1671,15 @@ select.admin-input option:checked {
 }
 
 .typo-easy__stage {
-  padding: 1.75rem 1.5rem;
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  background:
-    linear-gradient(180deg, rgba(182, 159, 100, 0.08), transparent 55%),
-    var(--bg-secondary);
-  min-height: 9rem;
+  display: none;
 }
 
 .typo-easy__stage-label {
-  margin: 0 0 0.75rem;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-muted);
+  display: none;
 }
 
 .typo-easy__preview {
-  margin: 0;
-  word-break: break-word;
+  display: none;
 }
 
 .typo-easy__controls {
