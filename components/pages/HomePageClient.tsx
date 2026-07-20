@@ -111,6 +111,7 @@ export function HomePageClient({
           animate={false}
           splitLetterLogo
           goldTint
+          goldDust
           lineRight={EX_HERO.lineRight}
           lineLeft={EX_HERO.lineLeft}
           posterImageName={EX_HERO.imageName}

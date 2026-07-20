@@ -9,6 +9,7 @@ import { EX_HERO } from "@/lib/ex-page-content";
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 import { useTypographyInlineStyle } from "@/components/public/TypographySettingsProvider";
 import { usePublicSiteHeroMotion } from "@/hooks/usePublicSiteHeroMotion";
+import { GoldDustParticles } from "@/components/ui/GoldDustParticles";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 
 export type PublicSiteHeroProps = {
@@ -35,6 +36,8 @@ export type PublicSiteHeroProps = {
   splitLetterLogo?: boolean;
   /** Homepage-only warm gold video tint (see app/hero-tint.css). */
   goldTint?: boolean;
+  /** Homepage-only floating gold dust (delete tag + GoldDustParticles.tsx to remove). */
+  goldDust?: boolean;
 };
 
 export function PublicSiteHero({
@@ -49,6 +52,7 @@ export function PublicSiteHero({
   animate = true,
   posterImageName,
   goldTint = false,
+  goldDust = false,
 }: PublicSiteHeroProps) {
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const posterImage = useSiteImage(posterImageName ?? "home-hero-poster");
@@ -90,6 +94,8 @@ export function PublicSiteHero({
       <div className="hero-overlay" aria-hidden="true" />
 
       <div className="home-hero-cover" aria-hidden="true" />
+
+      {goldDust ? <GoldDustParticles /> : null}
 
       <div className="hero-logo-mark hero-logo-mark--split" aria-hidden="true">
         <HathorLogoSplit />
