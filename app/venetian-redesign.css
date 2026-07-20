@@ -1710,3 +1710,50 @@
   display: inline-block;
 }
 
+
+/* Hathor ManagedImage (next/image fill) inside redesign media shells */
+.venetian-page .room-fs-slide,
+.venetian-page .cruise-card-media,
+.venetian-page .cruise-exp-visual,
+.venetian-page .lux-mask,
+.venetian-page .spx-frame-media,
+.venetian-page .dnx-chapter-media,
+.venetian-page .hlx-panel-media,
+.venetian-page .spx-atelier-media {
+  position: relative;
+}
+.venetian-page .room-fs-slide span,
+.venetian-page .cruise-card-media span,
+.venetian-page .cruise-exp-visual span,
+.venetian-page .lux-mask span,
+.venetian-page .spx-frame-media span,
+.venetian-page .dnx-chapter-media span,
+.venetian-page .hlx-panel-media span,
+.venetian-page .spx-atelier-media span {
+  position: absolute !important;
+  inset: 0 !important;
+}
+.venetian-page .cruise-card-amenities {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.venetian-page .cruise-filter--cta {
+  background: var(--gold);
+  color: #fff;
+  border-color: var(--gold);
+}
+.venetian-page .cruise-exp-list a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(212, 194, 138, 0.35);
+}
+.venetian-page .cruise-exp-list a:hover {
+  color: var(--gold-soft);
+}
+
