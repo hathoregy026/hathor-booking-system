@@ -1,25 +1,11 @@
 /**
  * Hathor custom luxury fonts — local files only (no Google Fonts).
- * Place matching files in /public/fonts/ (woff2 / ttf / otf).
- *
- * Expected filenames (first match wins per family):
- *   Agraham            → agraham-regular.ttf | Agraham.woff2 | Agraham.ttf
- *   Baginda            → Baginda.woff2 | Baginda.ttf | Baginda.otf
- *   Bastliga One       → BastligaOne.woff2 | BastligaOne.ttf | Bastliga One.ttf
- *   Cylburn            → Cylburn.woff2 | Cylburn.ttf | Cylburn.otf
- *   Gabigaile          → Gabigaile.otf | Gabigaile.woff2 | Gabigaile.ttf
- *   Gamgote            → Gamgote.otf | Gamgote-Regular.otf | Gamgote.woff2
- *   Quiet Luxury       → quietluxury-script.otf | QuietLuxury.woff2 | Quiet Luxury.otf
- *   Rollgates Luxury   → RollgatesLuxury.woff2 | RollgatesLuxury.ttf | Rollgates Luxury.ttf
- *   Playfair Display   → PlayfairDisplay-Regular.woff2 | PlayfairDisplay-Regular.ttf | PlayfairDisplay.woff2
+ * Files live under /public/fonts/ (including subfolders).
  */
 
 @font-face {
   font-family: "Agraham";
-  src:
-    url("/fonts/agraham-regular.ttf") format("truetype"),
-    url("/fonts/Agraham.woff2") format("woff2"),
-    url("/fonts/Agraham.ttf") format("truetype");
+  src: url("/fonts/agraham-regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -27,10 +13,7 @@
 
 @font-face {
   font-family: "Baginda";
-  src:
-    url("/fonts/Baginda.woff2") format("woff2"),
-    url("/fonts/Baginda.ttf") format("truetype"),
-    url("/fonts/Baginda.otf") format("opentype");
+  src: url("/fonts/baginda-font/baginda.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -38,32 +21,102 @@
 
 @font-face {
   font-family: "Bastliga One";
-  src:
-    url("/fonts/BastligaOne.woff2") format("woff2"),
-    url("/fonts/BastligaOne.ttf") format("truetype"),
-    url("/fonts/Bastliga One.ttf") format("truetype");
+  src: url("/fonts/bastilga/Bastliga%20One%20Regular.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bastliga Two";
+  src: url("/fonts/bastilga/Bastliga%20Two%20Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bastliga Three";
+  src: url("/fonts/bastilga/Bastliga%20Three%20Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bastliga Four";
+  src: url("/fonts/bastilga/Bastliga%20Four%20Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bastliga Five";
+  src: url("/fonts/bastilga/Bastliga%20Five%20Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bastliga Tail";
+  src: url("/fonts/bastilga/Bastliga%20Tail%20Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bitho Luxury";
+  src: url("/fonts/bitho-luxury-italic-1784552304-0/BithoLuxury-Italic-Exfont89bb.otf")
+    format("opentype");
+  font-weight: 400;
+  font-style: italic;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Cylburn";
   src:
-    url("/fonts/Cylburn.woff2") format("woff2"),
-    url("/fonts/Cylburn.ttf") format("truetype"),
-    url("/fonts/Cylburn.otf") format("opentype");
+    url("/fonts/cylburn-1784545829-0/Cylburn.otf") format("opentype"),
+    url("/fonts/cylburn-personal-license/Cylburn.otf") format("opentype"),
+    url("/fonts/cylburn-personal-license/Cylburn.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
+  font-family: "Dynalight";
+  src: url("/fonts/Dynalight%2CPlayfair_Display/Dynalight-Regular.ttf")
+    format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Playfair Display";
+  src: url("/fonts/Dynalight%2CPlayfair_Display/PlayfairDisplay-VariableFont_wght.ttf")
+    format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Playfair Display Italic";
+  src: url("/fonts/Dynalight%2CPlayfair_Display/PlayfairDisplay-Italic-VariableFont_wght.ttf")
+    format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
   font-family: "Gabigaile";
-  src:
-    url("/fonts/Gabigaile.otf") format("opentype"),
-    url("/fonts/Gabigaile.woff2") format("woff2"),
-    url("/fonts/Gabigaile.ttf") format("truetype");
+  src: url("/fonts/Gabigaile.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -73,20 +126,43 @@
   font-family: "Gamgote";
   src:
     url("/fonts/Gamgote.otf") format("opentype"),
-    url("/fonts/Gamgote-Regular.otf") format("opentype"),
-    url("/fonts/Gamgote.woff2") format("woff2"),
-    url("/fonts/Gamgote.ttf") format("truetype");
+    url("/fonts/Gamgote-Regular.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Quiet Luxury";
+  font-family: "Lavenir";
   src:
-    url("/fonts/quietluxury-script.otf") format("opentype"),
-    url("/fonts/QuietLuxury.woff2") format("woff2"),
-    url("/fonts/Quiet Luxury.otf") format("opentype");
+    url("/fonts/lavenir-modern-lavish-serif-font/lavenir.otf") format("opentype"),
+    url("/fonts/lavenir-modern-lavish-serif-font/lavenir.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Michiko";
+  src: url("/fonts/michiko-personal-use-only-italic-ttf-1784545869-0/MichikoPersonalUseOnlyItalic-yYvze-Exfonted8a.ttf")
+    format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Quiet Luxury";
+  src: url("/fonts/quietluxury-script.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Quiet Luxury Serif";
+  src: url("/fonts/quiet-luxury-serif-1784545771-0/QuietLuxury-Serif-Exfontc332.otf")
+    format("opentype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -95,35 +171,19 @@
 @font-face {
   font-family: "Rollgates Luxury";
   src:
-    url("/fonts/RollgatesLuxury.woff2") format("woff2"),
-    url("/fonts/RollgatesLuxury.ttf") format("truetype"),
-    url("/fonts/Rollgates Luxury.ttf") format("truetype");
+    url("/fonts/rollgates-luxury/Rollgates%20Luxury.otf") format("opentype"),
+    url("/fonts/rollgates-luxury/Rollgates%20Luxury.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Playfair Display";
+  font-family: "Rollgates Luxury Italic";
   src:
-    url("/fonts/PlayfairDisplay-Regular.woff2") format("woff2"),
-    url("/fonts/PlayfairDisplay-Regular.ttf") format("truetype"),
-    url("/fonts/PlayfairDisplay.woff2") format("woff2"),
-    url("/fonts/PlayfairDisplay.ttf") format("truetype");
+    url("/fonts/rollgates-luxury/Rollgates%20Luxury%20Italic.otf") format("opentype"),
+    url("/fonts/rollgates-luxury/Rollgates%20Luxury%20Italic.ttf") format("truetype");
   font-weight: 400;
-  font-style: normal;
+  font-style: italic;
   font-display: swap;
-}
-
-/* Stable family tokens for site CSS (local @font-face names above). */
-:root {
-  --font-hathor-agraham-name: "Agraham", cursive;
-  --font-hathor-baginda-name: "Baginda", serif;
-  --font-hathor-bastliga-name: "Bastliga One", cursive;
-  --font-hathor-cylburn-name: "Cylburn", serif;
-  --font-hathor-gabigaile-name: "Gabigaile", serif;
-  --font-hathor-gamgote-name: "Gamgote", serif;
-  --font-hathor-quiet-luxury-name: "Quiet Luxury", cursive;
-  --font-hathor-rollgates-name: "Rollgates Luxury", serif;
-  --font-hathor-playfair-name: "Playfair Display", Georgia, serif;
 }

@@ -3,41 +3,119 @@ import type { CSSProperties } from "react";
 
 export const TYPOGRAPHY_SETTINGS_KEY = "typography-styles";
 
-/** Exact allow-list — Zod accepts all 9. Dropdown only shows installed files. */
+/**
+ * Exact CSS font-family names (one per face).
+ * Families with multiple styles appear once in the UI with a style dropdown.
+ */
 export const HATHOR_LUXURY_FONTS = [
   "Agraham",
   "Baginda",
   "Bastliga One",
+  "Bastliga Two",
+  "Bastliga Three",
+  "Bastliga Four",
+  "Bastliga Five",
+  "Bastliga Tail",
+  "Bitho Luxury",
   "Cylburn",
+  "Dynalight",
   "Gabigaile",
   "Gamgote",
+  "Lavenir",
+  "Michiko",
   "Quiet Luxury",
+  "Quiet Luxury Serif",
   "Rollgates Luxury",
+  "Rollgates Luxury Italic",
   "Playfair Display",
+  "Playfair Display Italic",
 ] as const;
 
 export type HathorLuxuryFont = (typeof HATHOR_LUXURY_FONTS)[number];
 
-/**
- * Fonts with files present in /public/fonts/.
- * Flip to true when you add the matching file (see app/hathor-fonts.css).
- */
-export const HATHOR_FONT_INSTALLED: Record<HathorLuxuryFont, boolean> = {
-  Agraham: true,
-  Baginda: false,
-  "Bastliga One": false,
-  Cylburn: false,
-  Gabigaile: true,
-  Gamgote: true,
-  "Quiet Luxury": true,
-  "Rollgates Luxury": false,
-  "Playfair Display": false,
+export type HathorFontVariant = {
+  id: HathorLuxuryFont;
+  label: string;
 };
+
+export type HathorFontFamilyGroup = {
+  family: string;
+  variants: readonly HathorFontVariant[];
+};
+
+/** Dashboard font picker: one card per family; dropdown when variants.length > 1. */
+export const HATHOR_FONT_GROUPS: readonly HathorFontFamilyGroup[] = [
+  { family: "Agraham", variants: [{ id: "Agraham", label: "Regular" }] },
+  { family: "Baginda", variants: [{ id: "Baginda", label: "Regular" }] },
+  {
+    family: "Bastliga",
+    variants: [
+      { id: "Bastliga One", label: "One" },
+      { id: "Bastliga Two", label: "Two" },
+      { id: "Bastliga Three", label: "Three" },
+      { id: "Bastliga Four", label: "Four" },
+      { id: "Bastliga Five", label: "Five" },
+      { id: "Bastliga Tail", label: "Tail" },
+    ],
+  },
+  {
+    family: "Bitho Luxury",
+    variants: [{ id: "Bitho Luxury", label: "Italic" }],
+  },
+  { family: "Cylburn", variants: [{ id: "Cylburn", label: "Regular" }] },
+  { family: "Dynalight", variants: [{ id: "Dynalight", label: "Regular" }] },
+  { family: "Gabigaile", variants: [{ id: "Gabigaile", label: "Regular" }] },
+  { family: "Gamgote", variants: [{ id: "Gamgote", label: "Regular" }] },
+  { family: "Lavenir", variants: [{ id: "Lavenir", label: "Regular" }] },
+  { family: "Michiko", variants: [{ id: "Michiko", label: "Italic" }] },
+  {
+    family: "Quiet Luxury",
+    variants: [
+      { id: "Quiet Luxury", label: "Script" },
+      { id: "Quiet Luxury Serif", label: "Serif" },
+    ],
+  },
+  {
+    family: "Rollgates Luxury",
+    variants: [
+      { id: "Rollgates Luxury", label: "Regular" },
+      { id: "Rollgates Luxury Italic", label: "Italic" },
+    ],
+  },
+  {
+    family: "Playfair Display",
+    variants: [
+      { id: "Playfair Display", label: "Regular" },
+      { id: "Playfair Display Italic", label: "Italic" },
+    ],
+  },
+] as const;
+
+/** All faces are installed under /public/fonts/. */
+export const HATHOR_FONT_INSTALLED: Record<HathorLuxuryFont, boolean> =
+  Object.fromEntries(HATHOR_LUXURY_FONTS.map((f) => [f, true])) as Record<
+    HathorLuxuryFont,
+    boolean
+  >;
 
 /** Dropdown options — installed fonts only. */
 export const HATHOR_AVAILABLE_LUXURY_FONTS = HATHOR_LUXURY_FONTS.filter(
   (font) => HATHOR_FONT_INSTALLED[font],
 );
+
+export function fontGroupForFace(face: HathorLuxuryFont): HathorFontFamilyGroup {
+  const found = HATHOR_FONT_GROUPS.find((g) =>
+    g.variants.some((v) => v.id === face),
+  );
+  return found ?? HATHOR_FONT_GROUPS[0]!;
+}
+
+export function isFaceInGroup(
+  face: HathorLuxuryFont,
+  group: HathorFontFamilyGroup,
+): boolean {
+  return group.variants.some((v) => v.id === face);
+}
 
 export const TYPOGRAPHY_ROLES = [
   "hero_title",
@@ -153,17 +231,29 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
 
 const INNER_SHADOW = "inset 0 1px 2px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.2)";
 
-/** Prefer next/font CSS variables so live site resolves the same faces as admin. */
+/** Prefer next/font CSS variables when present; else quoted family name. */
 export const HATHOR_FONT_STACKS: Record<HathorLuxuryFont, string> = {
-  Agraham: 'var(--font-hathor-agraham), "Agraham", serif',
+  Agraham: 'var(--font-hathor-agraham), "Agraham", cursive',
   Baginda: '"Baginda", serif',
-  "Bastliga One": '"Bastliga One", serif',
+  "Bastliga One": '"Bastliga One", cursive',
+  "Bastliga Two": '"Bastliga Two", cursive',
+  "Bastliga Three": '"Bastliga Three", cursive',
+  "Bastliga Four": '"Bastliga Four", cursive',
+  "Bastliga Five": '"Bastliga Five", cursive',
+  "Bastliga Tail": '"Bastliga Tail", cursive',
+  "Bitho Luxury": '"Bitho Luxury", cursive',
   Cylburn: '"Cylburn", serif',
+  Dynalight: '"Dynalight", cursive',
   Gabigaile: 'var(--font-hathor-gabigaile), "Gabigaile", serif',
   Gamgote: 'var(--font-hathor-gamgote), "Gamgote", serif',
+  Lavenir: '"Lavenir", serif',
+  Michiko: '"Michiko", cursive',
   "Quiet Luxury": 'var(--font-hathor-quiet-luxury), "Quiet Luxury", cursive',
+  "Quiet Luxury Serif": '"Quiet Luxury Serif", serif',
   "Rollgates Luxury": '"Rollgates Luxury", serif',
+  "Rollgates Luxury Italic": '"Rollgates Luxury Italic", serif',
   "Playfair Display": '"Playfair Display", Georgia, serif',
+  "Playfair Display Italic": '"Playfair Display Italic", Georgia, serif',
 };
 
 function fontStack(font: HathorLuxuryFont): string {

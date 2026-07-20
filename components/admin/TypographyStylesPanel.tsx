@@ -14,9 +14,11 @@ import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
 import {
   DEFAULT_HERO_LAYOUT,
   DEFAULT_TYPOGRAPHY_SETTINGS,
-  HATHOR_AVAILABLE_LUXURY_FONTS,
-  HATHOR_FONT_INSTALLED,
+  HATHOR_FONT_GROUPS,
+  HATHOR_FONT_STACKS,
   HERO_ALIGNS,
+  fontGroupForFace,
+  isFaceInGroup,
   isTypographySettingsEqual,
   parseTypographySettings,
   type HathorLuxuryFont,
@@ -57,11 +59,6 @@ const HERO_LINE_LABELS: Record<"hero_title" | "hero_subtitle", string> = {
   hero_subtitle: "Second title (script)",
 };
 
-function fontOptionsFor(current: HathorLuxuryFont): HathorLuxuryFont[] {
-  if (HATHOR_FONT_INSTALLED[current]) return [...HATHOR_AVAILABLE_LUXURY_FONTS];
-  return [current, ...HATHOR_AVAILABLE_LUXURY_FONTS];
-}
-
 function clampOffset(n: number): number {
   return Math.min(240, Math.max(-240, Math.round(n)));
 }
@@ -69,7 +66,7 @@ function clampOffset(n: number): number {
 /** CSS vars — admin.css applies them with !important so Inter never wins. */
 function liveVars(style: TypographyTextStyle): CSSProperties {
   return {
-    ["--typo-live-font" as string]: `"${style.fontFamily}", serif`,
+    ["--typo-live-font" as string]: HATHOR_FONT_STACKS[style.fontFamily],
     ["--typo-live-size" as string]: `${style.fontSize}px`,
     ["--typo-live-color" as string]: style.color,
     ["--typo-live-lh" as string]: String(style.lineHeight),
@@ -538,25 +535,29 @@ export function TypographyStylesPanel() {
           </>
         ) : null}
 
-        <SimpleField label="Font (click one — preview updates above)">
+        <SimpleField label="Font (click a family — preview updates above)">
           <div className="typo-easy__font-grid">
-            {fontOptionsFor(value.fontFamily).map((font) => {
-              const selected = value.fontFamily === font;
-              const missing = !HATHOR_FONT_INSTALLED[font];
+            {HATHOR_FONT_GROUPS.map((group) => {
+              const selected = isFaceInGroup(value.fontFamily, group);
+              const previewFace = selected
+                ? value.fontFamily
+                : group.variants[0]!.id;
               return (
                 <button
-                  key={font}
+                  key={group.family}
                   type="button"
                   className={`typo-easy__font-btn${selected ? " typo-easy__font-btn--active" : ""}`}
-                  style={{ fontFamily: `"${font}", serif` }}
-                  onClick={() => patch({ fontFamily: font })}
-                  disabled={missing && !selected}
-                  title={missing ? "Font file not installed yet" : font}
+                  style={{ fontFamily: HATHOR_FONT_STACKS[previewFace] }}
+                  onClick={() => {
+                    if (selected) return;
+                    patch({ fontFamily: group.variants[0]!.id });
+                  }}
+                  title={group.family}
                 >
-                  <span className="typo-easy__font-btn-name">{font}</span>
+                  <span className="typo-easy__font-btn-name">{group.family}</span>
                   <span
                     className="typo-easy__font-btn-demo"
-                    style={{ fontFamily: `"${font}", serif` }}
+                    style={{ fontFamily: HATHOR_FONT_STACKS[previewFace] }}
                   >
                     Aa
                   </span>
@@ -564,6 +565,31 @@ export function TypographyStylesPanel() {
               );
             })}
           </div>
+          {(() => {
+            const group = fontGroupForFace(value.fontFamily);
+            if (group.variants.length < 2) return null;
+            return (
+              <label className="typo-easy__variant">
+                <span className="typo-easy__variant-label">Style</span>
+                <select
+                  className="typo-easy__variant-select admin-input"
+                  value={value.fontFamily}
+                  onChange={(e) =>
+                    patch({
+                      fontFamily: e.target.value as HathorLuxuryFont,
+                    })
+                  }
+                  aria-label={`${group.family} style`}
+                >
+                  {group.variants.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            );
+          })()}
         </SimpleField>
 
         <div className="typo-easy__row">

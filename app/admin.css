@@ -1874,6 +1874,25 @@ select.admin-input option:checked {
   cursor: not-allowed;
 }
 
+.typo-easy__variant {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem 1rem;
+  margin-top: 0.85rem;
+}
+
+.typo-easy__variant-label {
+  font-size: 0.78rem;
+  font-weight: 650;
+  color: var(--text-secondary);
+}
+
+.typo-easy__variant-select {
+  min-width: 11rem;
+  max-width: 100%;
+}
+
 .typo-easy__row {
   display: grid;
   grid-template-columns: 1fr 1fr;
