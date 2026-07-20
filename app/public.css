@@ -6258,13 +6258,9 @@ body.has-page-scroll-transition .pin-spacer {
   text-shadow: var(--hathor-title-engraved-white);
 }
 
-/* Non-home PublicSiteHero (e.g. cruises) — leave homepage hero alone */
+/* Non-home PublicSiteHero main title line — second line uses typography hero_subtitle */
 html:not([data-ex-experience]) .public-site .home-hero-container .hero-heading,
-html:not([data-ex-experience]) .public-site .home-hero-container .hero-line--right,
-html:not([data-ex-experience])
-  .public-site
-  .home-hero-container
-  .hero-line--left:not(.hero-line--wordmark) {
+html:not([data-ex-experience]) .public-site .home-hero-container .hero-line--right {
   font-family: var(--hathor-title-font) !important;
   font-size: clamp(1.75rem, 4.2vw, var(--hathor-title-size)) !important;
   font-weight: 400 !important;

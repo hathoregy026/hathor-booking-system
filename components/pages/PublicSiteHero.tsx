@@ -129,7 +129,7 @@ export function PublicSiteHero({
             <span
               className="hero-line hero-line--left"
               data-text={lineLeft}
-              style={heroTitleStyle}
+              style={heroSubtitleStyle}
             >
               {lineLeft}
             </span>

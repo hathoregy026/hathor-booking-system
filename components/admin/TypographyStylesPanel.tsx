@@ -8,7 +8,6 @@ import {
   DEFAULT_TYPOGRAPHY_SETTINGS,
   HATHOR_AVAILABLE_LUXURY_FONTS,
   HATHOR_FONT_INSTALLED,
-  TYPOGRAPHY_ROLE_LABELS,
   isTypographySettingsEqual,
   parseTypographySettings,
   type HathorLuxuryFont,
@@ -17,32 +16,35 @@ import {
   type TypographyTextStyle,
 } from "@/lib/typography-settings-shared";
 
+type EditorGroup = "hero" | "page_title" | "page_subtitle" | "body_text";
+
+const GROUP_LABELS: Record<EditorGroup, string> = {
+  hero: "Hero (all pages)",
+  page_title: "Page title",
+  page_subtitle: "Page subtitle",
+  body_text: "Body text",
+};
+
+const GROUP_WHERE: Record<EditorGroup, string> = {
+  hero: "One style for every page hero — home, cruises, suites, and the rest.",
+  page_title: "Main title at the top of Suites, Experiences, About, etc.",
+  page_subtitle: "Short line under that page title.",
+  body_text: "Normal paragraph text in page content.",
+};
+
 const SAMPLES: Record<TypographyRole, string> = {
-  hero_title: "Hathor Dahabiya",
-  hero_subtitle: "A private Nile sailing",
+  hero_title: "Ultra Luxury",
+  hero_subtitle: "Dahabiya Cruise",
   page_title: "Our Suites",
   page_subtitle: "Luxury on the water",
   body_text:
     "Sail the Nile aboard a private dahabiya — unhurried days, fine dining, and suites crafted for quiet luxury from Luxor to Aswan.",
 };
 
-/** Plain-English: where this text appears on the live site. */
-const ROLE_WHERE: Record<TypographyRole, string> = {
-  hero_title:
-    "Big headline on the dark hero photo (home, cruises, and similar pages).",
-  hero_subtitle: "Smaller line directly under the hero headline.",
-  page_title: "Main title at the top of Suites, Experiences, About, etc.",
-  page_subtitle: "Short line under that page title.",
-  body_text: "Normal paragraph text in page content.",
+const HERO_LINE_LABELS: Record<"hero_title" | "hero_subtitle", string> = {
+  hero_title: "Main title",
+  hero_subtitle: "Second title (script)",
 };
-
-const ROLE_ORDER: TypographyRole[] = [
-  "hero_title",
-  "hero_subtitle",
-  "page_title",
-  "page_subtitle",
-  "body_text",
-];
 
 function fontOptionsFor(current: HathorLuxuryFont): HathorLuxuryFont[] {
   if (HATHOR_FONT_INSTALLED[current]) return [...HATHOR_AVAILABLE_LUXURY_FONTS];
@@ -93,10 +95,13 @@ export function TypographyStylesPanel() {
   const [saved, setSaved] = useState<TypographySettings>(
     DEFAULT_TYPOGRAPHY_SETTINGS,
   );
-  const [activeRole, setActiveRole] =
-    useState<TypographyRole>("hero_title");
+  const [group, setGroup] = useState<EditorGroup>("hero");
+  const [heroLine, setHeroLine] = useState<"hero_title" | "hero_subtitle">(
+    "hero_title",
+  );
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -126,11 +131,14 @@ export function TypographyStylesPanel() {
   }, [showToast]);
 
   const dirty = !isTypographySettingsEqual(settings, saved);
+  const activeRole: TypographyRole =
+    group === "hero" ? heroLine : group;
   const value = settings[activeRole];
-  const stageTone =
-    activeRole === "hero_title" || activeRole === "hero_subtitle"
-      ? "dark"
-      : "light";
+  const stageTone = group === "hero" ? "dark" : "light";
+  const editingLabel =
+    group === "hero"
+      ? `Hero · ${HERO_LINE_LABELS[heroLine]}`
+      : GROUP_LABELS[group];
 
   const patch = (partial: Partial<TypographyTextStyle>) => {
     setSettings((prev) => ({
@@ -160,7 +168,7 @@ export function TypographyStylesPanel() {
       const next = parseTypographySettings(data.settings ?? payload);
       setSettings(next);
       setSaved(next);
-      showToast("success", "Saved to live site.");
+      showToast("success", "Saved to live site — all page heroes updated.");
       void fetch(`/api/typography?t=${Date.now()}`, { cache: "no-store" }).catch(
         () => {},
       );
@@ -193,43 +201,74 @@ export function TypographyStylesPanel() {
         <div>
           <h1 className="admin-page-title">Typography &amp; Styles</h1>
           <p className="admin-page-subtitle">
-            Pick one text type → change it in the big preview → Save when ready.
-            The live website only updates after Save.
+            Hero is one shared style for every page. Click a line in the preview
+            to edit it, then Save.
           </p>
         </div>
       </header>
 
       <div className="typo-rolebar" role="tablist" aria-label="Which text to edit">
-        {ROLE_ORDER.map((role) => {
-          const on = activeRole === role;
+        {(Object.keys(GROUP_LABELS) as EditorGroup[]).map((key) => {
+          const on = group === key;
           return (
             <button
-              key={role}
+              key={key}
               type="button"
               role="tab"
               aria-selected={on}
               className={`typo-rolebar__btn${on ? " typo-rolebar__btn--on" : ""}`}
-              onClick={() => setActiveRole(role)}
+              onClick={() => {
+                setGroup(key);
+                if (key === "hero") setHeroLine("hero_title");
+              }}
             >
-              {TYPOGRAPHY_ROLE_LABELS[role]}
+              {GROUP_LABELS[key]}
             </button>
           );
         })}
       </div>
 
       <div
-        className={`typo-stage typo-stage--${stageTone}`}
-        style={liveVars(value)}
-        key={activeRole}
+        className={`typo-stage typo-stage--${stageTone}${group === "hero" ? " typo-stage--hero-pair" : ""}`}
+        key={group}
       >
         <div className="typo-stage__banner">
           <span className="typo-stage__editing">You are editing</span>
-          <strong className="typo-stage__role">
-            {TYPOGRAPHY_ROLE_LABELS[activeRole]}
-          </strong>
+          <strong className="typo-stage__role">{editingLabel}</strong>
         </div>
-        <p className="typo-stage__where">{ROLE_WHERE[activeRole]}</p>
-        <p className="typo-stage__sample">{SAMPLES[activeRole]}</p>
+        <p className="typo-stage__where">{GROUP_WHERE[group]}</p>
+
+        {group === "hero" ? (
+          <div className="typo-stage__pair">
+            <button
+              type="button"
+              className={`typo-stage__line${heroLine === "hero_title" ? " typo-stage__line--on" : ""}`}
+              style={liveVars(settings.hero_title)}
+              onClick={() => setHeroLine("hero_title")}
+            >
+              <span className="typo-stage__line-tag">Main title</span>
+              <span className="typo-stage__sample typo-stage__sample--inline">
+                {SAMPLES.hero_title}
+              </span>
+            </button>
+            <button
+              type="button"
+              className={`typo-stage__line${heroLine === "hero_subtitle" ? " typo-stage__line--on" : ""}`}
+              style={liveVars(settings.hero_subtitle)}
+              onClick={() => setHeroLine("hero_subtitle")}
+            >
+              <span className="typo-stage__line-tag">Second title · script</span>
+              <span className="typo-stage__sample typo-stage__sample--inline">
+                {SAMPLES.hero_subtitle}
+              </span>
+            </button>
+          </div>
+        ) : (
+          <p className="typo-stage__sample" style={liveVars(value)}>
+            {SAMPLES[activeRole]}
+          </p>
+        )}
+
         <p className="typo-stage__readout">
           Font: {value.fontFamily} · Size: {value.fontSize}px · Color:{" "}
           {value.color}
@@ -237,6 +276,13 @@ export function TypographyStylesPanel() {
       </div>
 
       <div className="typo-easy__controls admin-card">
+        {group === "hero" ? (
+          <p className="typo-easy__controls-hint">
+            Editing <strong>{HERO_LINE_LABELS[heroLine]}</strong> — applies to
+            all page heroes when you save.
+          </p>
+        ) : null}
+
         <SimpleField label="Font (click one — preview updates above)">
           <div className="typo-easy__font-grid">
             {fontOptionsFor(value.fontFamily).map((font) => {

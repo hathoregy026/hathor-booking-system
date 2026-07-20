@@ -7,7 +7,7 @@ import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { HathorLogoTuner } from "@/components/public/HathorLogoTuner";
 import { PublicSiteHero } from "@/components/pages/PublicSiteHero";
 import { ManagedImage } from "@/components/ui/ManagedImage";
-import { HATHOR_BRAND_NAME, HATHOR_DAHABIYA_WORDMARK_SRC } from "@/lib/branding";
+import { HATHOR_BRAND_NAME } from "@/lib/branding";
 import {
   EX_ABOUT,
   EX_CAROUSEL,
@@ -112,7 +112,6 @@ export function HomePageClient({
           splitLetterLogo
           lineRight={EX_HERO.lineRight}
           lineLeft={EX_HERO.lineLeft}
-          lineLeftImageSrc={HATHOR_DAHABIYA_WORDMARK_SRC}
           posterImageName={EX_HERO.imageName}
         />
 

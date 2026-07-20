@@ -1659,6 +1659,69 @@ select.admin-input option:checked {
     color 0.15s ease;
 }
 
+.typo-stage__sample--inline {
+  margin: 0;
+  min-height: 0;
+  flex: 0 1 auto;
+  display: block;
+}
+
+.typo-stage__pair {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: 0.65rem;
+}
+
+.typo-stage__line {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  width: 100%;
+  padding: 0.75rem 0.85rem;
+  border-radius: 12px;
+  border: 2px dashed rgba(182, 159, 100, 0.35);
+  background: rgba(255, 255, 255, 0.04);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.typo-stage__line:hover {
+  border-color: rgba(182, 159, 100, 0.7);
+}
+
+.typo-stage__line--on {
+  border-style: solid;
+  border-color: #b69f64;
+  background: rgba(182, 159, 100, 0.12);
+  box-shadow: 0 0 0 3px rgba(182, 159, 100, 0.22);
+}
+
+.typo-stage__line-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(182, 159, 100, 0.95);
+  font-family: var(--font-admin, Inter), system-ui, sans-serif !important;
+}
+
+.typo-easy__controls-hint {
+  margin: 0;
+  padding: 0.7rem 0.85rem;
+  border-radius: 10px;
+  background: var(--sidebar-active);
+  border: 1px solid rgba(182, 159, 100, 0.35);
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+}
+
+.typo-easy__controls-hint strong {
+  color: var(--accent);
+}
+
 .typo-stage__readout {
   margin: 0.35rem 0 0;
   font-size: 0.78rem;

@@ -95,10 +95,10 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
   },
   hero_subtitle: {
     fontFamily: "Quiet Luxury",
-    fontSize: 22,
+    fontSize: 64,
     color: "#B69F64",
-    lineHeight: 1.4,
-    letterSpacing: 1,
+    lineHeight: 1.1,
+    letterSpacing: 0.5,
     innerShadow: false,
   },
   page_title: {
@@ -277,15 +277,26 @@ ${rootBody}
 }
 ${block(
   `.public-site .hero-heading,
-.public-site .hero-line,
+.public-site .hero-line--right,
+html[data-ex-experience] .ex-root .hero-heading .hero-line--right,
 .public-site .owo-hero__title`,
   "hero_title",
 )}
 ${block(
-  `.public-site .hero-sub,
-.public-site .owo-hero__subtitle`,
+  `.public-site .hero-line--left:not(.hero-line--wordmark),
+html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark)`,
   "hero_subtitle",
 )}
+.public-site .hero-sub,
+html[data-ex-experience] .ex-root .hero-sub,
+.public-site .owo-hero__subtitle {
+  font-family: var(--typo-hero-subtitle-font) !important;
+  color: var(--typo-hero-subtitle-color) !important;
+  letter-spacing: var(--typo-hero-subtitle-letter-spacing) !important;
+  text-shadow: var(--typo-hero-subtitle-shadow) !important;
+  font-size: clamp(0.92rem, 1.2vw, 1.1rem) !important;
+  line-height: 1.55 !important;
+}
 ${block(
   `.public-site .hathor-page-hero__title,
 .public-site .lux-page-hero__title`,
