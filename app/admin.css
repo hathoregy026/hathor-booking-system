@@ -1914,6 +1914,16 @@ select.admin-input option:checked {
   color: var(--text-secondary);
 }
 
+.typo-easy__hex-input {
+  width: 7.5rem;
+  min-height: 2.5rem;
+  padding: 0.45rem 0.65rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .typo-easy__row--actions {
   align-items: center;
 }

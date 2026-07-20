@@ -19,15 +19,11 @@ type ParticleSeed = {
   color: string;
   blur: number;
   opacity: number;
-  duration: number;
-  delay: number;
-  xDrift: number;
-  yDrift: number;
 };
 
 function buildParticles(count: number): ParticleSeed[] {
   return Array.from({ length: count }, (_, id) => {
-    const size = 2.5 + Math.random() * 4; /* ~2.5px–6.5px */
+    const size = 2.5 + Math.random() * 4;
     return {
       id,
       left: `${Math.random() * 100}%`,
@@ -36,12 +32,25 @@ function buildParticles(count: number): ParticleSeed[] {
       color: COLORS[Math.floor(Math.random() * COLORS.length)]!,
       blur: 1 + Math.random() * 1.5,
       opacity: 0.4 + Math.random() * 0.4,
-      duration: 8 + Math.random() * 6, /* 8–14s — faster, still smooth */
-      delay: Math.random() * 4,
-      xDrift: (Math.random() - 0.5) * 64,
-      yDrift: -50 - Math.random() * 90,
     };
   });
+}
+
+/** Continuous random wander — never the same path twice. */
+function startWander(node: HTMLElement, tweens: gsap.core.Tween[]) {
+  const step = () => {
+    const duration = 3.5 + Math.random() * 4.5; /* 3.5–8s */
+    const tween = gsap.to(node, {
+      x: (Math.random() - 0.5) * 110,
+      y: (Math.random() - 0.5) * 130,
+      duration,
+      ease: "sine.inOut",
+      force3D: true,
+      onComplete: step,
+    });
+    tweens.push(tween);
+  };
+  step();
 }
 
 export function GoldDustParticles() {
@@ -59,30 +68,30 @@ export function GoldDustParticles() {
 
     const nodes = root.querySelectorAll<HTMLElement>("[data-gold-dust]");
     const tweens: gsap.core.Tween[] = [];
+    let cancelled = false;
 
     nodes.forEach((node, i) => {
       const seed = particles[i];
       if (!seed) return;
 
-      tweens.push(
-        gsap.to(node, {
-          x: seed.xDrift,
-          y: seed.yDrift,
-          duration: seed.duration,
-          delay: seed.delay,
-          ease: "sine.inOut",
-          yoyo: true,
-          repeat: -1,
-          force3D: true,
-        }),
-      );
+      gsap.set(node, {
+        x: (Math.random() - 0.5) * 40,
+        y: (Math.random() - 0.5) * 40,
+        opacity: seed.opacity,
+      });
 
-      /* Soft opacity pulse — matched ease, slightly quicker for life */
+      /* Stagger first move so the field doesn't pulse in sync */
+      const kick = gsap.delayedCall(Math.random() * 2.5, () => {
+        if (cancelled) return;
+        startWander(node, tweens);
+      });
+      tweens.push(kick as unknown as gsap.core.Tween);
+
       tweens.push(
         gsap.to(node, {
-          opacity: Math.min(0.95, seed.opacity + 0.3),
-          duration: seed.duration * 0.7,
-          delay: seed.delay,
+          opacity: Math.min(0.95, seed.opacity + 0.35),
+          duration: 2.8 + Math.random() * 3.2,
+          delay: Math.random() * 1.5,
           ease: "sine.inOut",
           yoyo: true,
           repeat: -1,
@@ -91,7 +100,9 @@ export function GoldDustParticles() {
     });
 
     return () => {
+      cancelled = true;
       tweens.forEach((t) => t.kill());
+      gsap.killTweensOf(nodes);
     };
   }, [particles]);
 

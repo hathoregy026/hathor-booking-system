@@ -102,6 +102,68 @@ function SimpleField({
   );
 }
 
+/** Swatch + editable hex (#RGB / #RRGGBB). */
+function HexColorInput({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (hex: string) => void;
+}) {
+  const [draft, setDraft] = useState(value);
+
+  useEffect(() => {
+    setDraft(value);
+  }, [value]);
+
+  const commit = (raw: string) => {
+    const trimmed = raw.trim();
+    const withHash = trimmed.startsWith("#") ? trimmed : `#${trimmed}`;
+    const short = /^#([0-9A-Fa-f]{3})$/.exec(withHash);
+    if (short) {
+      const [r, g, b] = short[1]!;
+      onChange(`#${r}${r}${g}${g}${b}${b}`.toUpperCase());
+      return;
+    }
+    if (/^#[0-9A-Fa-f]{6}$/.test(withHash)) {
+      onChange(withHash.toUpperCase());
+      return;
+    }
+    setDraft(value);
+  };
+
+  return (
+    <div className="typo-easy__color">
+      <input
+        type="color"
+        className="typo-easy__swatch"
+        value={/^#[0-9A-Fa-f]{6}$/.test(value) ? value : "#B69F64"}
+        onChange={(e) => onChange(e.target.value.toUpperCase())}
+        aria-label="Color swatch"
+      />
+      <input
+        type="text"
+        className="typo-easy__hex-input admin-input"
+        value={draft}
+        spellCheck={false}
+        autoComplete="off"
+        maxLength={7}
+        aria-label="Hex color code"
+        placeholder="#B69F64"
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={() => commit(draft)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            commit(draft);
+            (e.target as HTMLInputElement).blur();
+          }
+        }}
+      />
+    </div>
+  );
+}
+
 export function TypographyStylesPanel() {
   const { showToast } = useToast();
   const [settings, setSettings] = useState<TypographySettings>(
@@ -518,18 +580,10 @@ export function TypographyStylesPanel() {
           </SimpleField>
 
           <SimpleField label="Color">
-            <div className="typo-easy__color">
-              <input
-                type="color"
-                className="typo-easy__swatch"
-                value={value.color}
-                onChange={(e) =>
-                  patch({ color: e.target.value.toUpperCase() })
-                }
-                aria-label="Color"
-              />
-              <span className="typo-easy__hex">{value.color}</span>
-            </div>
+            <HexColorInput
+              value={value.color}
+              onChange={(hex) => patch({ color: hex })}
+            />
           </SimpleField>
         </div>
 
