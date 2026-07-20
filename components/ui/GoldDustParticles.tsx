@@ -1,8 +1,8 @@
 "use client";
 
 /**
- * Floating gold dust for the homepage hero.
- * Easy removal: delete `<GoldDustParticles />` from PublicSiteHero and this file.
+ * Floating gold dust for heroes and homepage content.
+ * Easy removal: delete `<GoldDustParticles />` usages and this file.
  */
 
 import { useLayoutEffect, useMemo, useRef } from "react";

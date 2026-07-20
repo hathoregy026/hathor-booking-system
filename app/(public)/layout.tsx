@@ -16,6 +16,7 @@ import "../hathor-fonts.css";
 import "../public.css";
 import "../site-nav.css";
 import "../public-site-hero.css";
+import "../hero-tint.css";
 import "../hieroglyph-pattern.css";
 import "../booking-modal.css";
 

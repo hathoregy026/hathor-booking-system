@@ -6,6 +6,7 @@ import type { CSSProperties } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { HathorLogoTuner } from "@/components/public/HathorLogoTuner";
 import { PublicSiteHero } from "@/components/pages/PublicSiteHero";
+import { GoldDustParticles } from "@/components/ui/GoldDustParticles";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { HATHOR_BRAND_NAME } from "@/lib/branding";
 import {
@@ -110,13 +111,14 @@ export function HomePageClient({
         <PublicSiteHero
           animate={false}
           splitLetterLogo
-          goldTint
-          goldDust
           playVideo
           lineRight={EX_HERO.lineRight}
           lineLeft={EX_HERO.lineLeft}
           posterImageName={EX_HERO.imageName}
         />
+
+        <div className="ex-content-dust" style={{ position: "relative" }}>
+          <GoldDustParticles />
 
         <section className="about-section ex-content-section" id="about">
           <div className="section-inner">
@@ -386,6 +388,7 @@ export function HomePageClient({
             <BookNowTrigger className="btn btn-filled">Book Your Experience</BookNowTrigger>
           </div>
         </section>
+        </div>
       </main>
 
       <footer className="site-footer ex-site-footer">

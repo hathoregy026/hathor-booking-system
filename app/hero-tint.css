@@ -1,8 +1,8 @@
 /* --- GOLD TINT OVERLAY (Delete this block / this file to remove) --- */
 /*
-  Homepage hero warm amber/gold tint.
-  Remove: delete this file + its import in app/(public)/page.tsx,
-  and remove the `goldTint` prop from HomePageClient → PublicSiteHero.
+  Warm amber/gold tint on every public hero (.home-hero-container.hero-gold-tint).
+  Remove: delete this file + its import in app/(public)/layout.tsx,
+  and stop passing / defaulting `goldTint` on PublicSiteHero.
   No other layout or z-index depends on this class.
 */
 

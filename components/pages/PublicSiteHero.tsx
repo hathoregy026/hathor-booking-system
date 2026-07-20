@@ -34,9 +34,11 @@ export type PublicSiteHeroProps = {
    * the old single gold.svg mark is removed.
    */
   splitLetterLogo?: boolean;
-  /** Homepage-only warm gold video tint (see app/hero-tint.css). */
+  /**
+   * Warm gold media tint (see app/hero-tint.css). On for every public hero.
+   */
   goldTint?: boolean;
-  /** Homepage-only floating gold dust (delete tag + GoldDustParticles.tsx to remove). */
+  /** Floating gold dust over the hero (delete tag + GoldDustParticles.tsx to remove). */
   goldDust?: boolean;
   /**
    * When true, play the homepage hero video.
@@ -56,8 +58,8 @@ export function PublicSiteHero({
   ctaLabel = HOMEPAGE_HERO.cta,
   animate = true,
   posterImageName,
-  goldTint = false,
-  goldDust = false,
+  goldTint = true,
+  goldDust = true,
   playVideo = false,
 }: PublicSiteHeroProps) {
   const heroVideoRef = useRef<HTMLVideoElement>(null);
