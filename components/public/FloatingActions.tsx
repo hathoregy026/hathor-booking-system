@@ -155,8 +155,8 @@ export function FloatingActions() {
         className={`public-fab public-fab--right${showBook ? " public-fab--book-visible" : ""}`}
         aria-hidden={!showBook}
       >
-        <BookNowTrigger className="btn btn-light hero-cta public-fab__book">
-          <span className="hero-cta-text">{HOMEPAGE_HERO.cta}</span>
+        <BookNowTrigger className="public-fab__book">
+          <span className="public-fab__book-text">{HOMEPAGE_HERO.cta}</span>
         </BookNowTrigger>
       </div>
     </>
