@@ -9,9 +9,14 @@ import {
   DEFAULT_HERO_LOGO_TUNE,
   type HeroLogoTune,
   type HeroLogoVAlign,
+  type HathorLogoPartsVariant,
   isHeroLogoTuneEqual,
   parseHeroLogoTune,
 } from "@/lib/hero-logo-tune-shared";
+import {
+  HATHOR_LOGO_PARTS_VARIANTS,
+  HATHOR_LOGO_PARTS_VARIANT_LABELS,
+} from "@/lib/hathor-logo-letters";
 
 function AlignIcon({ kind }: { kind: HeroLogoVAlign }) {
   if (kind === "top") {
@@ -282,6 +287,35 @@ export function HeroLogoTunePanel() {
           className="space-y-8 border-0 p-0 m-0 min-w-0"
           style={{ opacity: loading ? 0.7 : 1 }}
         >
+            <section className="hlt-section">
+              <h2 className="admin-heading text-base">Letter colour set</h2>
+              <p className="hlt-section__hint">
+                Swaps only the letter images. Positions, gaps, and animation stay
+                exactly as tuned. Current = live gold WebPs (unchanged).
+              </p>
+              <label className="hlt-field">
+                <span className="hlt-field__label">Parts variant</span>
+                <span className="hlt-field__input-wrap">
+                  <select
+                    className="hlt-field__input"
+                    value={tune.partsVariant}
+                    aria-label="Letter colour set"
+                    onChange={(e) =>
+                      patch({
+                        partsVariant: e.target.value as HathorLogoPartsVariant,
+                      })
+                    }
+                  >
+                    {HATHOR_LOGO_PARTS_VARIANTS.map((id) => (
+                      <option key={id} value={id}>
+                        {HATHOR_LOGO_PARTS_VARIANT_LABELS[id]}
+                      </option>
+                    ))}
+                  </select>
+                </span>
+              </label>
+            </section>
+
             <section className="hlt-section">
               <h2 className="admin-heading text-base">Position · Alignment</h2>
               <p className="hlt-section__hint">

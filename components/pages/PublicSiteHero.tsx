@@ -11,6 +11,7 @@ import { useTypographyInlineStyle } from "@/components/public/TypographySettings
 import { usePublicSiteHeroMotion } from "@/hooks/usePublicSiteHeroMotion";
 import { GoldDustParticles } from "@/components/ui/GoldDustParticles";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
+import type { HathorLogoPartsVariant } from "@/lib/hathor-logo-letters";
 
 export type PublicSiteHeroProps = {
   lineRight: string;
@@ -45,6 +46,8 @@ export type PublicSiteHeroProps = {
    * Other pages should leave this false and use `posterImageName` as a still image.
    */
   playVideo?: boolean;
+  /** Letter colour set from Hero Logo Tune — default keeps live gold WebPs. */
+  logoPartsVariant?: HathorLogoPartsVariant;
 };
 
 export function PublicSiteHero({
@@ -61,6 +64,7 @@ export function PublicSiteHero({
   goldTint = true,
   goldDust = true,
   playVideo = false,
+  logoPartsVariant = "current",
 }: PublicSiteHeroProps) {
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const heroImageName = posterImageName ?? "home-hero-poster";
@@ -117,7 +121,7 @@ export function PublicSiteHero({
       {goldDust ? <GoldDustParticles /> : null}
 
       <div className="hero-logo-mark hero-logo-mark--split" aria-hidden="true">
-        <HathorLogoSplit />
+        <HathorLogoSplit partsVariant={logoPartsVariant} />
       </div>
 
       <div className="hero-content">

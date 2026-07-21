@@ -1,4 +1,9 @@
 import { z } from "zod";
+import {
+  HATHOR_LOGO_PARTS_VARIANTS,
+  isHathorLogoPartsVariant,
+  type HathorLogoPartsVariant,
+} from "@/lib/hathor-logo-letters";
 
 /** Temporary homepage HATHOR letter tune — will be hardcoded then removed. */
 export const HERO_LOGO_TUNE_KEY = "hero-logo-tune";
@@ -7,6 +12,9 @@ const px = (min: number, max: number) => z.number().min(min).max(max);
 
 export const heroLogoVAlignSchema = z.enum(["top", "middle", "bottom"]);
 export type HeroLogoVAlign = z.infer<typeof heroLogoVAlignSchema>;
+
+export const heroLogoPartsVariantSchema = z.enum(HATHOR_LOGO_PARTS_VARIANTS);
+export type { HathorLogoPartsVariant };
 
 /** Fixed Book Now slot width — matches live .hero-cta. */
 export const HATHOR_BTN_SLOT_PX = 168;
@@ -43,6 +51,11 @@ export const heroLogoTuneSchema = z.object({
   yH2: px(-300, 300),
   yO: px(-300, 300),
   yR: px(-300, 300),
+  /**
+   * Letter colour set. Default `current` = existing live WebPs.
+   * `regular` / `white` swap images only — same seats, gaps, and animation.
+   */
+  partsVariant: heroLogoPartsVariantSchema,
 });
 
 export type HeroLogoTune = z.infer<typeof heroLogoTuneSchema>;
@@ -68,6 +81,7 @@ export const DEFAULT_HERO_LOGO_TUNE: HeroLogoTune = {
   yH2: 0,
   yO: 0,
   yR: 0,
+  partsVariant: "current",
 };
 
 const VALIGN_FLEX: Record<HeroLogoVAlign, string> = {
@@ -144,6 +158,9 @@ export function parseHeroLogoTune(raw: unknown): HeroLogoTune {
     yH2: asFiniteNumber(src.yH2) ?? DEFAULT_HERO_LOGO_TUNE.yH2,
     yO: asFiniteNumber(src.yO) ?? DEFAULT_HERO_LOGO_TUNE.yO,
     yR: asFiniteNumber(src.yR) ?? DEFAULT_HERO_LOGO_TUNE.yR,
+    partsVariant: isHathorLogoPartsVariant(src.partsVariant)
+      ? src.partsVariant
+      : DEFAULT_HERO_LOGO_TUNE.partsVariant,
   };
 
   const parsed = heroLogoTuneSchema.safeParse(candidate);
@@ -186,6 +203,7 @@ export function parseHeroLogoTune(raw: unknown): HeroLogoTune {
     yH2: clamp(candidate.yH2, -300, 300, DEFAULT_HERO_LOGO_TUNE.yH2),
     yO: clamp(candidate.yO, -300, 300, DEFAULT_HERO_LOGO_TUNE.yO),
     yR: clamp(candidate.yR, -300, 300, DEFAULT_HERO_LOGO_TUNE.yR),
+    partsVariant: candidate.partsVariant,
   };
 }
 

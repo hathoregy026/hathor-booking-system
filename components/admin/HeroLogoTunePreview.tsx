@@ -3,8 +3,8 @@
 import { useEffect, useState, type CSSProperties } from "react";
 import {
   HATHOR_LOGO_ARTBOARD_HEIGHT,
-  HATHOR_LOGO_LETTERS,
   HATHOR_LOGO_LEFT_WIDTH,
+  getHathorLogoLetters,
 } from "@/lib/hathor-logo-letters";
 import {
   HATHOR_BTN_HEIGHT_PX,
@@ -25,6 +25,7 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
     return () => window.removeEventListener("resize", sync);
   }, []);
 
+  const letters = getHathorLogoLetters(tune.partsVariant);
   const sideW = (stageW - HATHOR_BTN_SLOT_PX) / 2;
   const letterH = Math.max(
     48,
@@ -34,7 +35,7 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
   );
   const scale = letterH / HATHOR_LOGO_ARTBOARD_HEIGHT;
   const lw = (i: number) =>
-    Math.max(8, Math.round(HATHOR_LOGO_LETTERS[i].width * scale));
+    Math.max(8, Math.round(letters[i]!.width * scale));
 
   const h1W = lw(0);
   const aW = lw(1);
@@ -68,7 +69,7 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
     width: number,
   ) => (
     <span
-      key={key}
+      key={`${tune.partsVariant}-${key}`}
       className={`hlt-preview__letter letter-${key}`}
       style={{
         position: "absolute",
@@ -81,8 +82,8 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={HATHOR_LOGO_LETTERS[i].src}
-        alt={HATHOR_LOGO_LETTERS[i].alt}
+        src={letters[i]!.src}
+        alt={letters[i]!.alt}
         width={width}
         height={letterH}
         draggable={false}
