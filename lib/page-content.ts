@@ -326,7 +326,7 @@ export const LUXURY_CABINS_PAGE = {
       desc: "Sail the Nile in style on a 7 Nights 8 Days Dahabiya Nile Cruise from Luxor to Aswan, featuring luxury cabins, panoramic views, and timeless elegance. 7 Nights Itinerary: Luxor – Aswan – Luxor Price Per Cabin: Maximum 2 Persons",
       href: "/rooms/Luxury-nile-sailing-Dahabiya",
       slides: [
-        "scraped-cabin-1",
+        "room-luxury",
         "scraped-cabin-3",
         "scraped-cabin-4",
         "scraped-cabin-7",
@@ -340,7 +340,7 @@ export const LUXURY_CABINS_PAGE = {
       slides: [
         "scraped-cabin-5",
         "scraped-cabin-6",
-        "scraped-cabin-2",
+        "room-luxury",
         "scraped-cabin-8",
       ] as const,
     },
@@ -351,7 +351,7 @@ export const LUXURY_CABINS_PAGE = {
       href: "/rooms/Luxury-small-boat-nile-cruise-price",
       slides: [
         "scraped-cabin-3",
-        "scraped-cabin-1",
+        "room-luxury",
         "scraped-cabin-7",
         "scraped-cabin-4",
       ] as const,
@@ -365,7 +365,7 @@ export const LUXURY_CABINS_PAGE = {
         "scraped-cabin-6",
         "scraped-cabin-5",
         "scraped-cabin-8",
-        "scraped-cabin-2",
+        "room-luxury",
       ] as const,
     },
     {
@@ -374,7 +374,7 @@ export const LUXURY_CABINS_PAGE = {
       desc: "Luxury King Bed Cabins on the Hathor Dahabiya consist of the serene setting, adding to an aura of genuine luxury. Soft beds, an imposing detail treatment, and splendid views make these Luxury Cabins on a Nile Cruise Living like a shrinking mansion with class. 4 nights itinerary Luxor / Aswan Price Per Cabin – Maximum 2 Persons",
       href: "/rooms/Dahabiya-nile",
       slides: [
-        "scraped-cabin-1",
+        "room-luxury",
         "scraped-cabin-4",
         "scraped-cabin-3",
         "scraped-cabin-7",
@@ -387,7 +387,7 @@ export const LUXURY_CABINS_PAGE = {
       href: "/rooms/Best-nile-luxury-cruise",
       slides: [
         "scraped-cabin-5",
-        "scraped-cabin-2",
+        "room-luxury",
         "scraped-cabin-6",
         "scraped-cabin-8",
       ] as const,
@@ -451,7 +451,7 @@ export const LUXURY_SUITES_PAGE = {
       desc: "Experience the timeless charm of Egypt aboard the luxurious Hathor Dahabiya Cruise Each elegant cabin is a refined haven, combining modern comforts with authentic Egyptian artistry. Warm, intimate, and exquisitely appointed, your private sanctuary awaits promising an unforgettable journey along the majestic Nile.",
       href: "/luxury-cabins-Nile-Cruise",
       slides: [
-        "scraped-suites-luxury-rooms",
+        "room-luxury",
         "scraped-cabin-1",
         "scraped-cabin-3",
         "scraped-cabin-5",
@@ -463,7 +463,7 @@ export const LUXURY_SUITES_PAGE = {
       desc: "Discover effortless luxury in the Accessible Hathor Suite A spacious, elegantly designed retreat crafted for comfort, ease, and refined living. Thoughtfully tailored to ensure every guest feels perfectly at home, without compromise.",
       href: "/Nile-Cruise-Luxury-Suites",
       slides: [
-        "scraped-suites-luxury-suites",
+        "room-suite",
         "scraped-luxsuite-1",
         "scraped-luxsuite-2",
         "scraped-luxsuite-3",
@@ -475,7 +475,7 @@ export const LUXURY_SUITES_PAGE = {
       desc: "Step into the Signature Royal Suite on the Hathor Dahabiya Cruise and lose yourself in the wonders of forever luxury aboard a private Dahabiya Nile cruise, with a fusion of modern elegance and true Egyptian charm, serving as the perfect retreat while drifting along the amazing River Nile. Feel the tranquility in every moment and enjoy an unparalleled luxury experience.",
       href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
       slides: [
-        "scraped-suites-royal",
+        "room-royal",
         "scraped-royal-1",
         "scraped-royal-3",
         "scraped-royal-5",
@@ -489,7 +489,7 @@ export const LUXURY_SUITES_PAGE = {
       desc: "Immerse yourself in the perfect harmony of timeless style and modern luxury on our Nile Cruise Luxury Suites. Our Spacious Suites on Dahabiya are not limited by lavish decor but offer ravishing scenes. 7 nights itinerary Luxor / Aswan / Luxor Price Per Suite – Maximum 4 Persons",
       href: "/rooms/Luxury-nile-cruise-Luxor-Aswan-Luxor",
       slides: [
-        "scraped-luxsuite-1",
+        "room-suite",
         "scraped-luxsuite-2",
         "scraped-luxsuite-3",
         "scraped-luxsuite-4",
@@ -502,7 +502,7 @@ export const LUXURY_SUITES_PAGE = {
       href: "/rooms/Dahabiya-Nile-cruise-Cairo-to-Aswan",
       slides: [
         "scraped-luxsuite-5",
-        "scraped-luxsuite-6",
+        "room-suite",
         "scraped-luxsuite-2",
         "scraped-luxsuite-4",
       ] as const,
@@ -514,7 +514,7 @@ export const LUXURY_SUITES_PAGE = {
       href: "/rooms/Luxury-Nile-Cruise-Cairo-to-Aswan",
       slides: [
         "scraped-luxsuite-3",
-        "scraped-luxsuite-1",
+        "room-suite",
         "scraped-luxsuite-5",
         "scraped-luxsuite-6",
       ] as const,
@@ -560,7 +560,7 @@ export const ROYAL_SUITES_PAGE = {
       desc: "Loose yourself in the heart of the Nile with our Luxury Royal Suites Nile Cruise, tailored with love for those who appreciate authenticity, royalty and comfort. 7 nights itinerary Luxor / Aswan / Luxor Price Per Royal Suite – Maximum 4 Persons",
       href: "/rooms/Best-Dahabiya-Nile-cruise",
       slides: [
-        "scraped-royal-1",
+        "room-royal",
         "scraped-royal-2",
         "scraped-royal-3",
         "scraped-royal-4",
@@ -573,7 +573,7 @@ export const ROYAL_SUITES_PAGE = {
       href: "/rooms/Luxury-small-boat-Nile-cruise",
       slides: [
         "scraped-royal-5",
-        "scraped-royal-6",
+        "room-royal",
         "scraped-royal-7",
         "scraped-royal-8",
       ] as const,
@@ -586,7 +586,7 @@ export const ROYAL_SUITES_PAGE = {
       slides: [
         "scraped-royal-2",
         "scraped-royal-3",
-        "scraped-royal-5",
+        "room-royal",
         "scraped-royal-1",
       ] as const,
     },

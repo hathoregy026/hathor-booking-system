@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { RoomsPageContent } from "@/components/pages/rooms/RoomsPageContent";
 import { LUXURY_SUITES_PAGE } from "@/lib/page-content";
-const OG_IMAGE = "/media/hathor/scraped/suites-hero.webp";
+const OG_IMAGE = "/media/hathor/scraped/suites-hero.jpg";
 
 export const metadata: Metadata = {
   title: "Luxury suites on Nile cruise",

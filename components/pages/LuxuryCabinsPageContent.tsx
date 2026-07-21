@@ -9,7 +9,7 @@ export function LuxuryCabinsPageContent() {
       heroTitle={LUXURY_CABINS_PAGE.hero.title}
       heroSubtitle={LUXURY_CABINS_PAGE.hero.subtitle}
       breadcrumb="Luxury Rooms"
-      heroImageName="scraped-cabin-1"
+      heroImageName="room-luxury"
       heroImageAlt="Luxury cabin with Nile view aboard Hathor Dahabiya"
       intro={{
         eyebrow: "Luxury Rooms",

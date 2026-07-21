@@ -122,6 +122,7 @@ export function ResidenceScrollPage({
                       fill
                       className="object-cover"
                       sizes="100vw"
+                      unoptimized
                       previewAnchor={i === 0 && chapterIndex === 0}
                       priority={chapterIndex === 0 && i === 0}
                     />

@@ -10,7 +10,7 @@ export function RoomsPageContent() {
       heroTitle={LUXURY_SUITES_PAGE.hero.title}
       heroSubtitle={LUXURY_SUITES_PAGE.hero.subtitle}
       breadcrumb="Cabins & Suits"
-      heroImageName="scraped-suites-hero"
+      heroImageName="room-suite"
       heroImageAlt="Cabins and suites aboard Hathor Dahabiya"
       intro={{
         eyebrow: "Cabins & Suits",

@@ -371,7 +371,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "scraped-suites-hero",
     altText: "Cabins and suites aboard Hathor Dahabiya",
-    url: "/media/hathor/scraped/suites-hero.webp",
+    url: "/media/hathor/scraped/suites-hero.jpg",
     category: "suite",
     pagePath: "/rooms",
     displayOrder: 10,

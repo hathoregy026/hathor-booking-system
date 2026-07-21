@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { RoyalSuitesPageContent } from "@/components/pages/RoyalSuitesPageContent";
 import { ROYAL_SUITES_PAGE } from "@/lib/page-content";
-const OG_IMAGE = "/media/hathor/scraped/royal-1.webp";
+const OG_IMAGE = "/media/hathor/r2/room-royal.webp";
 
 export const metadata: Metadata = {
   title: "Luxury Dahabiya Royal Suite",
