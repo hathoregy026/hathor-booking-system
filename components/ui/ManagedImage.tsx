@@ -3,6 +3,9 @@
 import Image, { type ImageProps } from "next/image";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
+import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
+
+export { SITE_IMAGE_QUALITY };
 
 type ManagedImageProps = Omit<ImageProps, "src" | "alt"> & {
   name: string;
@@ -20,6 +23,7 @@ export function ManagedImage({
   className = "",
   previewAnchor = true,
   id,
+  quality = SITE_IMAGE_QUALITY,
   ...props
 }: ManagedImageProps) {
   const image = useSiteImage(name);
@@ -33,6 +37,7 @@ export function ManagedImage({
         src={image.src}
         alt={resolvedAlt}
         fill
+        quality={quality}
         className={className}
         id={id ?? anchorId}
         data-site-image={name}
@@ -45,6 +50,7 @@ export function ManagedImage({
       {...props}
       src={image.src}
       alt={resolvedAlt}
+      quality={quality}
       className={className}
       width={props.width ?? 800}
       height={props.height ?? 600}

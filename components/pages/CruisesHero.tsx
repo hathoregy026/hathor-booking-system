@@ -10,6 +10,7 @@ import {
 } from "@/hooks/useCruisesHeroStripes";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
+import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 
 type CruisesHeroProps = {
   eyebrow?: string;
@@ -65,6 +66,7 @@ export function CruisesHero({
             fill
             priority
             sizes="100vw"
+            quality={SITE_IMAGE_QUALITY}
             className="object-cover"
             style={{ objectPosition: "center 58%" }}
             onLoad={() => refreshCruisesHeroStripes()}

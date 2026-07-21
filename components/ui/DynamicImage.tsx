@@ -2,6 +2,7 @@ import Image from "next/image";
 import { getSiteImageByName } from "@/lib/image-management";
 import { shouldUseDatabaseSiteImageUrl } from "@/lib/resolve-site-images";
 import { getDefaultSiteImage } from "@/lib/site-image-slots";
+import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 
 type DynamicImageProps = {
   name: string;
@@ -13,6 +14,7 @@ type DynamicImageProps = {
   height?: number;
   priority?: boolean;
   sizes?: string;
+  quality?: number;
 };
 
 export async function DynamicImage({
@@ -25,6 +27,7 @@ export async function DynamicImage({
   height,
   priority = false,
   sizes = "(max-width: 768px) 100vw, 50vw",
+  quality = SITE_IMAGE_QUALITY,
 }: DynamicImageProps) {
   const defaults = getDefaultSiteImage(name);
   let src = fallbackSrc ?? defaults.src;
@@ -49,6 +52,7 @@ export async function DynamicImage({
         className={className}
         priority={priority}
         sizes={sizes}
+        quality={quality}
       />
     );
   }
@@ -62,6 +66,7 @@ export async function DynamicImage({
       className={className}
       priority={priority}
       sizes={sizes}
+      quality={quality}
     />
   );
 }

@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 
 type ParallaxHeroImageProps = {
   src: string;
@@ -25,7 +26,8 @@ export function ParallaxHeroImage({
     offset: ["start start", "end start"],
   });
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "28%"]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1.08, 1.18]);
+  /* Keep parallax, but avoid heavy upscale — sources are ~1536px */
+  const scale = useTransform(scrollYProgress, [0, 1], [1.02, 1.06]);
 
   return (
     <div ref={containerRef} className={`hathor-parallax-hero__frame ${className}`}>
@@ -37,6 +39,7 @@ export function ParallaxHeroImage({
           priority={priority}
           className="object-cover"
           sizes={sizes}
+          quality={SITE_IMAGE_QUALITY}
         />
       </motion.div>
     </div>

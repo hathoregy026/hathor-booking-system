@@ -5,7 +5,7 @@ import sharp from "sharp";
 const execFileAsync = promisify(execFile);
 
 const IMAGE_MAX_WIDTH = 1920;
-const WEBP_QUALITY = 82;
+const WEBP_QUALITY = 88;
 
 export type ProcessedImage = {
   buffer: Buffer;

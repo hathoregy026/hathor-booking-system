@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 
 type FullBleedSplitProps = {
   eyebrow: string;
@@ -43,6 +44,7 @@ export function FullBleedSplit({
               fill
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 50vw"
+              quality={SITE_IMAGE_QUALITY}
             />
             <div className="owo-split__image-overlay" aria-hidden />
           </div>

@@ -2,7 +2,12 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    formats: ["image/avif", "image/webp"],
+    // Next 16 defaults qualities to [75] only — anything else snaps to 75.
+    // 90 keeps photo detail; 75 stays allowed for any legacy callers.
+    qualities: [75, 90],
+    // Prefer WebP over AVIF: re-encoding already-compressed photo WebPs as
+    // AVIF at the old q75 default looked blocky / “pixelated” site-wide.
+    formats: ["image/webp"],
     remotePatterns: [
       {
         protocol: "https",
