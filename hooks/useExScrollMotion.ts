@@ -173,6 +173,7 @@ export function useExScrollMotion() {
           duration: 0.3,
           stagger: 0.05,
           ease: "power2.out",
+          immediateRender: false,
         });
 
         if (splitDescription) {
@@ -184,6 +185,7 @@ export function useExScrollMotion() {
               duration: 0.35,
               stagger: 0.1,
               ease: "power2.out",
+              immediateRender: false,
             },
             "-=0.15"
           );
@@ -197,6 +199,7 @@ export function useExScrollMotion() {
               opacity: 0,
               duration: 0.4,
               ease: "power2.out",
+              immediateRender: false,
             },
             "+=0"
           );
