@@ -58,16 +58,10 @@ async function putBinaryViaSignedUrl(options: {
     throw new Error(error?.message ?? "Failed to create signed upload URL");
   }
 
-  /* Blob keeps binary intact and satisfies BodyInit under strict DOM typings. */
-  const body = new Blob(
-    [
-      options.buffer.buffer.slice(
-        options.buffer.byteOffset,
-        options.buffer.byteOffset + options.buffer.byteLength,
-      ),
-    ],
-    { type: options.contentType || "application/octet-stream" },
-  );
+  /* Copy into a fresh Uint8Array so BodyInit typing stays clean on Vercel. */
+  const body = new Blob([Uint8Array.from(options.buffer)], {
+    type: options.contentType || "application/octet-stream",
+  });
 
   const putRes = await fetch(data.signedUrl, {
     method: "PUT",
