@@ -1686,6 +1686,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   letter-spacing: 0.03em;
   text-transform: uppercase;
   margin-bottom: 22px;
+  white-space: pre-line;
 }
 
 .home-text-p {

@@ -78,7 +78,7 @@ export const HOMEPAGE_ACCOMMODATIONS = {
 } as const;
 
 export const HOMEPAGE_LIFESTYLE = {
-  title: "Not Just a Cruise — A Way of Life",
+  title: "Not Just a Cruise\nA Way of Life",
   body: "Experience Egypt's soul from the quiet elegance of a Dahabiya Nile Cruise. Immerse yourself in a warm community atmosphere, exchanging stories with other travelers aboard a Luxury Dahabiya Nile Cruise, while the beauty of the Nile unfolds in the background on this intimate Small Nile Cruise Boat. Enjoy Hathor Dahabiya elegant cabins, intimate service, and a breathtaking journey on the tranquil river in a perfect blend of comfort, culture, and companionship — a truly unforgettable Nile cruise experience in Egypt.",
   href: "/about",
 } as const;

@@ -360,7 +360,14 @@ export function HomePageClient({
               </div>
               <div className="home-text-img-copy">
                 <div className="home-text-h2">
-                  <h2>{block.title}</h2>
+                  <h2>
+                    {block.title.split("\n").map((line, lineIndex, lines) => (
+                      <span key={`${block.title}-${lineIndex}`}>
+                        {line}
+                        {lineIndex < lines.length - 1 ? <br /> : null}
+                      </span>
+                    ))}
+                  </h2>
                 </div>
                 <div className="home-text-p">
                   <p>{block.body}</p>

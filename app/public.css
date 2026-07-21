@@ -1320,6 +1320,11 @@
   background: linear-gradient(90deg, var(--hathor-gold), transparent);
 }
 
+/* No decorative gold rules beside / under public-site copy */
+.public-site .hathor-gold-line {
+  display: none !important;
+}
+
 .hathor-body-text {
   font-size: 0.9375rem;
   font-weight: 300;
