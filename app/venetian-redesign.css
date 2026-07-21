@@ -312,11 +312,13 @@
   font-family: var(--font-display);
   font-weight: 400;
   font-size: clamp(2.6rem, 6.5vw, 5rem);
-  line-height: 1.02;
+  line-height: 1.12;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   margin: 0 0 10px;
-  overflow: hidden;
+  /* Do not clip glyph bottoms — display faces need room below the line box */
+  overflow: visible;
+  padding-bottom: 0.08em;
   text-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
 }
 
@@ -1860,6 +1862,13 @@
 .venetian-page .room-fs-title {
   text-wrap: balance;
   max-width: 12ch;
+  overflow: visible;
+  padding-bottom: 0.08em;
+}
+
+.venetian-page .room-fs-title .char {
+  overflow: visible;
+  padding-bottom: 0.06em;
 }
 
 .venetian-page .room-fs-route {
