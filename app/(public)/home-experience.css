@@ -279,12 +279,6 @@ html[data-ex-experience] .ex-root .blind-strip-v {
   background: var(--gold) !important;
 }
 
-html[data-ex-experience] .ex-root .btn-filled,
-html[data-ex-experience] .ex-root .btn-dark {
-  background-color: var(--gold);
-  border-color: var(--gold);
-}
-
 html[data-ex-experience] .ex-root .site-footer.ex-site-footer {
   background: var(--ink);
   color: var(--cream);
@@ -543,7 +537,7 @@ h1, h2, h3, h4, p {
   padding: 3px 1.75rem 1px;
   border-radius: 999px;
   border: 1px solid var(--gold);
-  background: #f5efe4;
+  background: #ffffff;
   color: var(--ink);
   font-size: 0.72rem;
   font-weight: 500;
@@ -568,7 +562,7 @@ h1, h2, h3, h4, p {
 .btn:hover {
   background: var(--gold);
   border-color: var(--gold);
-  color: #fff;
+  color: #ffffff;
   box-shadow: 0 10px 26px rgba(182, 159, 100, 0.35);
   transform: translateY(-2px);
 }
@@ -576,7 +570,7 @@ h1, h2, h3, h4, p {
 .btn-light,
 .btn-dark,
 .btn-filled {
-  background: #f5efe4;
+  background: #ffffff;
   color: var(--ink);
   border-color: var(--gold);
 }
@@ -586,7 +580,7 @@ h1, h2, h3, h4, p {
 .btn-filled:hover {
   background: var(--gold);
   border-color: var(--gold);
-  color: #fff;
+  color: #ffffff;
 }
 
 /* Hero Book Now keeps its own glass style */

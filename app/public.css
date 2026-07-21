@@ -130,7 +130,7 @@
   font-family: var(--public-serif);
 }
 
-/* ─── Buttons ─── */
+/* ─── Buttons: white + gold stroke idle / gold + white text hover ─── */
 .public-btn-gold,
 .public-btn-outline-gold,
 .public-btn-dark {
@@ -141,10 +141,11 @@
   box-sizing: border-box;
   min-height: 2.85rem;
   height: 2.85rem;
-  padding: 0 1.75rem;
+  /* ALL CAPS sit high in the em-box — bias padding so the label looks centered */
+  padding: 3px 1.75rem 1px;
   border-radius: 999px;
   border: 1px solid #b69f64;
-  background: #f5efe4;
+  background: #ffffff;
   color: #2c2419;
   font-size: 0.72rem;
   font-weight: 500;
@@ -163,12 +164,22 @@
   animation: none;
 }
 
+@supports (text-box-trim: trim-both) {
+  .public-btn-gold,
+  .public-btn-outline-gold,
+  .public-btn-dark {
+    padding: 0 1.75rem;
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+  }
+}
+
 .public-btn-gold:hover,
 .public-btn-outline-gold:hover,
 .public-btn-dark:hover {
   background: #b69f64;
   border-color: #b69f64;
-  color: #fff;
+  color: #ffffff;
   box-shadow: 0 10px 26px rgba(182, 159, 100, 0.35);
   transform: translateY(-2px);
 }

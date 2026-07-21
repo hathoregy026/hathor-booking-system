@@ -30,7 +30,7 @@
 .venetian-page ul { list-style: none; margin: 0; padding: 0; }
 .venetian-page h1, .venetian-page h2, .venetian-page h3, .venetian-page h4, .venetian-page p { margin: 0; }
 
-/* ---- buttons: cream idle / gold hover (hero .hero-cta excluded) ---- */
+/* ---- buttons: white + gold stroke idle / gold + white text hover (hero .hero-cta excluded) ---- */
 .btn:not(.hero-cta) {
   display: inline-flex;
   align-items: center;
@@ -39,10 +39,11 @@
   box-sizing: border-box;
   min-height: 2.85rem;
   height: 2.85rem;
-  padding: 0 1.75rem;
+  /* ALL CAPS sit high in the em-box — bias padding so the label looks centered */
+  padding: 3px 1.75rem 1px;
   border-radius: 999px;
   border: 1px solid var(--gold, #b69f64);
-  background: #f5efe4;
+  background: #ffffff;
   color: var(--ink, #2c2419);
   font-size: 0.72rem;
   font-weight: 500;
@@ -59,13 +60,21 @@
     transform 0.35s var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
+@supports (text-box-trim: trim-both) {
+  .btn:not(.hero-cta) {
+    padding: 0 1.75rem;
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+  }
+}
+
 .btn:not(.hero-cta):hover,
 .btn-light:not(.hero-cta):hover,
 .btn-dark:not(.hero-cta):hover,
 .btn-filled:not(.hero-cta):hover {
   background: var(--gold, #b69f64);
   border-color: var(--gold, #b69f64);
-  color: #fff;
+  color: #ffffff;
   box-shadow: 0 10px 26px rgba(182, 159, 100, 0.35);
   transform: translateY(-2px);
 }
@@ -73,7 +82,7 @@
 .btn-light:not(.hero-cta),
 .btn-dark:not(.hero-cta),
 .btn-filled:not(.hero-cta) {
-  background: #f5efe4;
+  background: #ffffff;
   color: var(--ink, #2c2419);
   border-color: var(--gold, #b69f64);
 }

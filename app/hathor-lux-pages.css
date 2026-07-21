@@ -1336,40 +1336,44 @@
   transform: translateY(-8px);
   box-shadow: 0 28px 60px rgba(62, 48, 38, 0.14);
 }
-/* Shared buttons inside lux pages */
+/* Shared buttons inside lux pages — white + gold stroke / gold + white hover */
 .hathor-lux .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 14px 28px;
+  box-sizing: border-box;
+  min-height: 2.85rem;
+  height: 2.85rem;
+  padding: 3px 1.75rem 1px;
   border-radius: 999px;
   border: 1px solid var(--lux-gold);
   font-size: 0.72rem;
+  font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
+  line-height: 1;
   text-decoration: none;
   cursor: pointer;
-  transition: background 0.35s var(--lux-ease), color 0.35s, border-color 0.35s, transform 0.35s;
-  background: transparent;
+  transition: background 0.35s var(--lux-ease), color 0.35s, border-color 0.35s,
+    box-shadow 0.35s, transform 0.35s;
+  background: #ffffff;
   color: var(--lux-ink);
+  box-shadow: 0 8px 22px rgba(44, 36, 25, 0.1);
 }
-.hathor-lux .btn:hover { transform: translateY(-2px); }
-.hathor-lux .btn-filled {
-  background: var(--lux-gold);
-  color: #fff;
-  border-color: var(--lux-gold);
-}
-.hathor-lux .btn-filled:hover {
-  background: var(--lux-ink);
-  border-color: var(--lux-ink);
-}
-.hathor-lux .btn-dark {
-  color: var(--lux-ink);
-  border-color: var(--lux-gold);
-}
+.hathor-lux .btn:hover,
+.hathor-lux .btn-filled:hover,
 .hathor-lux .btn-dark:hover {
   background: var(--lux-gold);
-  color: #fff;
+  border-color: var(--lux-gold);
+  color: #ffffff;
+  box-shadow: 0 10px 26px rgba(182, 159, 100, 0.35);
+  transform: translateY(-2px);
+}
+.hathor-lux .btn-filled,
+.hathor-lux .btn-dark {
+  background: #ffffff;
+  color: var(--lux-ink);
+  border-color: var(--lux-gold);
 }
 .hathor-lux .cta-section {
   background: var(--lux-paper);
