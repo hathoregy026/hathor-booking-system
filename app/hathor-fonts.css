@@ -187,3 +187,13 @@
   font-style: italic;
   font-display: swap;
 }
+
+@font-face {
+  font-family: "Rolling Fonte";
+  src:
+    url("/fonts/rollingfonte.otf") format("opentype"),
+    url("/fonts/rollingfonte.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}

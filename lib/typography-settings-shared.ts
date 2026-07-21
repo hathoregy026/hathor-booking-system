@@ -27,6 +27,7 @@ export const HATHOR_LUXURY_FONTS = [
   "Quiet Luxury Serif",
   "Rollgates Luxury",
   "Rollgates Luxury Italic",
+  "Rolling Fonte",
   "Playfair Display",
   "Playfair Display Italic",
 ] as const;
@@ -82,6 +83,10 @@ export const HATHOR_FONT_GROUPS: readonly HathorFontFamilyGroup[] = [
       { id: "Rollgates Luxury", label: "Regular" },
       { id: "Rollgates Luxury Italic", label: "Italic" },
     ],
+  },
+  {
+    family: "Rolling Fonte",
+    variants: [{ id: "Rolling Fonte", label: "Regular" }],
   },
   {
     family: "Playfair Display",
@@ -267,6 +272,7 @@ export const HATHOR_FONT_STACKS: Record<HathorLuxuryFont, string> = {
   "Quiet Luxury Serif": '"Quiet Luxury Serif", serif',
   "Rollgates Luxury": '"Rollgates Luxury", serif',
   "Rollgates Luxury Italic": '"Rollgates Luxury Italic", serif',
+  "Rolling Fonte": '"Rolling Fonte", serif',
   "Playfair Display": '"Playfair Display", Georgia, serif',
   "Playfair Display Italic": '"Playfair Display Italic", Georgia, serif',
 };
