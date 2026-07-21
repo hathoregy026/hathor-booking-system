@@ -994,7 +994,7 @@
   width: 2.85rem;
   height: 2.85rem;
   border-radius: 9999px;
-  border: 1px solid #2c2419;
+  border: 1px solid var(--lux-gold, #b69f64);
   background: #f5efe4;
   color: #2c2419;
   box-shadow: 0 6px 18px rgba(44, 36, 25, 0.12);
@@ -1071,7 +1071,7 @@
   height: 2.85rem;
   padding: 0 1.55rem;
   border-radius: 999px;
-  border: 1px solid #2c2419;
+  border: 1px solid var(--lux-gold, #b69f64);
   background: #f5efe4;
   color: #2c2419;
   box-shadow: 0 8px 22px rgba(44, 36, 25, 0.1);
