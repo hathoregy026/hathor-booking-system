@@ -420,16 +420,33 @@ h1, h2, h3, h4, p {
   transition: none !important;
 }
 
-/* SplitType units need overflow hidden for the y-rise effect */
-.line,
+/* SplitType units — only clip heading char masks, never body copy */
 .word,
 .char {
   display: inline-block;
 }
 
-.line {
+.radius-heading .line,
+.home-carousel-h2 .line,
+.home-scroll-h2 .line,
+.home-text-h2 .line,
+.gallery-h2 .line,
+.gallery-sm .line,
+.testimonial-h2 .line,
+.cta-inner .line {
+  display: inline-block;
   overflow: hidden;
-  padding-bottom: 0.08em;
+  padding-bottom: 0.12em;
+}
+
+.radius-heading h2 .char,
+.home-carousel-h2 h2 .char,
+.home-scroll-h2 h2 .char,
+.home-text-h2 h2 .char,
+.gallery-h2 h2 .char,
+.gallery-sm h2 .char,
+.testimonial-h2 h2 .char {
+  text-shadow: none;
 }
 
 /* ---------- NAV ---------- */
@@ -1301,6 +1318,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 .radius-heading h2 .line {
   color: inherit;
   -webkit-text-fill-color: inherit;
+  text-shadow: none;
 }
 
 .radius-p {
@@ -1311,11 +1329,10 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   margin-bottom: 32px;
 }
 
-.radius-p .line,
-.radius-p .word,
-.radius-p .char {
-  color: inherit;
-  -webkit-text-fill-color: inherit;
+.radius-p p {
+  /* Keep italic body crisp — no SplitType line wrappers */
+  text-shadow: none;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* ---------- SERVICES / CAROUSEL ---------- */

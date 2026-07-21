@@ -141,7 +141,8 @@ export function useExScrollMotion() {
     });
   }
 
-  // .radius-heading (chars) + .radius-p (lines) + .radius-button
+  // .radius-heading (chars) + .radius-p (whole) + .radius-button
+  // Do NOT SplitType body lines — italic descenders ghost/clip inside overflow:hidden lines.
   function initRadiusHeadingPara() {
     document.fonts.ready.then(() => {
       const animHeadingPara = document.querySelectorAll(".radius-heading");
@@ -154,9 +155,6 @@ export function useExScrollMotion() {
         if (prefersReduced) return;
 
         const splitHeading = new SplitType(h2, { types: "chars" });
-        const splitDescription = p
-          ? new SplitType(p, { types: "lines" })
-          : null;
         const button = headingElement.parentElement.querySelector(".radius-button");
 
         const headingParaTimeline = gsap.timeline({
@@ -173,19 +171,16 @@ export function useExScrollMotion() {
           duration: 0.3,
           stagger: 0.05,
           ease: "power2.out",
-          immediateRender: false,
         });
 
-        if (splitDescription) {
+        if (p) {
           headingParaTimeline.from(
-            splitDescription.lines,
+            p,
             {
-              y: 20,
+              y: 16,
               opacity: 0,
-              duration: 0.35,
-              stagger: 0.1,
+              duration: 0.45,
               ease: "power2.out",
-              immediateRender: false,
             },
             "-=0.15"
           );
@@ -199,7 +194,6 @@ export function useExScrollMotion() {
               opacity: 0,
               duration: 0.4,
               ease: "power2.out",
-              immediateRender: false,
             },
             "+=0"
           );
@@ -254,7 +248,7 @@ export function useExScrollMotion() {
     });
   }
 
-  // .home-scroll-h2 (chars) + .home-scroll-p (lines)
+  // .home-scroll-h2 (chars) + .home-scroll-p (whole)
   function initHomeScrollText() {
     document.fonts.ready.then(() => {
       const animElements = document.querySelectorAll(".home-scroll-h2");
@@ -267,7 +261,6 @@ export function useExScrollMotion() {
         if (prefersReduced) return;
 
         const splitH2 = new SplitType(h2, { types: "chars" });
-        const splitP = p ? new SplitType(p, { types: "lines" }) : null;
 
         const timeline = gsap.timeline({
           scrollTrigger: {
@@ -285,14 +278,13 @@ export function useExScrollMotion() {
           ease: "power2.out",
         });
 
-        if (splitP) {
+        if (p) {
           timeline.from(
-            splitP.lines,
+            p,
             {
-              y: 20,
+              y: 16,
               opacity: 0,
-              duration: 0.35,
-              stagger: 0.1,
+              duration: 0.45,
               ease: "power2.out",
             },
             "-=0.15"
@@ -302,7 +294,7 @@ export function useExScrollMotion() {
     });
   }
 
-  // .home-text-h2 (chars) + .home-text-p (lines) + .home-text-button
+  // .home-text-h2 (chars) + .home-text-p (whole) + .home-text-button
   function initHomeTextBlocks() {
     document.fonts.ready.then(() => {
       const animHeadingPara = document.querySelectorAll(".home-text-h2");
@@ -315,9 +307,6 @@ export function useExScrollMotion() {
         if (prefersReduced) return;
 
         const splitHeading = new SplitType(h2, { types: "chars" });
-        const splitDescription = p
-          ? new SplitType(p, { types: "lines" })
-          : null;
         const button =
           headingElement.parentElement.querySelector(".home-text-button");
 
@@ -337,14 +326,13 @@ export function useExScrollMotion() {
           ease: "power2.out",
         });
 
-        if (splitDescription) {
+        if (p) {
           headingParaTimeline.from(
-            splitDescription.lines,
+            p,
             {
-              y: 20,
+              y: 16,
               opacity: 0,
-              duration: 0.35,
-              stagger: 0.1,
+              duration: 0.45,
               ease: "power2.out",
             },
             "-=0.15"
