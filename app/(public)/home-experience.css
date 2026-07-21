@@ -1418,7 +1418,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   will-change: transform, filter;
   transform-origin: center top;
   border-radius: 0;
-  box-shadow: 0 -40px 80px rgba(0, 0, 0, 0.45);
+  /* Soft lift only — avoid a hard black rim at the frame edge */
+  box-shadow: 0 -28px 64px rgba(0, 0, 0, 0.22);
 }
 
 .ex-stack-scroll__card::before {
@@ -1438,13 +1439,19 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   z-index: 1;
   background:
     linear-gradient(
-      165deg,
-      rgba(12, 8, 6, 0.35) 0%,
-      transparent 42%,
-      transparent 55%,
-      rgba(12, 8, 6, 0.72) 100%
+      180deg,
+      rgba(12, 8, 6, 0.28) 0%,
+      transparent 38%,
+      transparent 58%,
+      rgba(12, 8, 6, 0.18) 78%,
+      rgba(12, 8, 6, 0.42) 100%
     ),
-    radial-gradient(ellipse 90% 70% at 50% 100%, rgba(12, 8, 6, 0.55), transparent 68%);
+    radial-gradient(
+      ellipse 110% 55% at 50% 100%,
+      rgba(12, 8, 6, 0.32) 0%,
+      rgba(12, 8, 6, 0.12) 42%,
+      transparent 72%
+    );
   pointer-events: none;
 }
 
@@ -1482,13 +1489,19 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   position: absolute;
   inset: 0;
   z-index: -1;
+  /* Tall, eased fade — no solid black bar at the dead edge */
   background: linear-gradient(
     to top,
-    rgba(12, 8, 6, 0.94) 0%,
-    rgba(12, 8, 6, 0.62) 38%,
-    rgba(12, 8, 6, 0.08) 72%,
+    rgba(12, 8, 6, 0.72) 0%,
+    rgba(12, 8, 6, 0.48) 22%,
+    rgba(12, 8, 6, 0.22) 48%,
+    rgba(12, 8, 6, 0.06) 72%,
     transparent 100%
   );
+  /* Stretch the veil above the copy so the fade lands in the image, not at a hard cut */
+  top: -35%;
+  mask-image: linear-gradient(to top, #000 42%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to top, #000 42%, transparent 100%);
 }
 
 .ex-stack-scroll__eyebrow {
