@@ -525,7 +525,7 @@ export function ImageUpload({
             }
           >
             <Trash2 className="h-4 w-4" aria-hidden />
-            Remove
+            {isActionsOnly ? "Delete" : "Remove"}
           </button>
         )}
       </div>

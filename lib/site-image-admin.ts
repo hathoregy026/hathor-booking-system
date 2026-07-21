@@ -66,6 +66,32 @@ const SLOT_LABELS: Partial<Record<SiteImageSlot["name"], string>> = {
   "charter-hero": "Hero — Charter",
   "contact-hero": "Hero — Contact",
   "blog-hero": "Hero — Blog",
+  "scraped-suites-hero": "Luxury Suites - Suites Hero Photo",
+  "scraped-suites-luxury-rooms": "Luxury Suites - Luxury Rooms Card",
+  "scraped-suites-luxury-suites": "Luxury Suites - Luxury Suites Card",
+  "scraped-suites-royal": "Luxury Suites - Royal Suites Card",
+  "scraped-luxsuite-1": "Luxury Suite Gallery — Photo 1",
+  "scraped-luxsuite-2": "Luxury Suite Gallery — Photo 2",
+  "scraped-luxsuite-3": "Luxury Suite Gallery — Photo 3",
+  "scraped-luxsuite-4": "Luxury Suite Gallery — Photo 4",
+  "scraped-luxsuite-5": "Luxury Suite Gallery — Photo 5",
+  "scraped-luxsuite-6": "Luxury Suite Gallery — Photo 6",
+  "scraped-royal-1": "Royal Suite Gallery — Photo 1",
+  "scraped-royal-2": "Royal Suite Gallery — Photo 2",
+  "scraped-royal-3": "Royal Suite Gallery — Photo 3",
+  "scraped-royal-4": "Royal Suite Gallery — Photo 4",
+  "scraped-royal-5": "Royal Suite Gallery — Photo 5",
+  "scraped-royal-6": "Royal Suite Gallery — Photo 6",
+  "scraped-royal-7": "Royal Suite Gallery — Photo 7",
+  "scraped-royal-8": "Royal Suite Gallery — Photo 8",
+  "scraped-cabin-1": "Luxury Cabin Gallery — Photo 1",
+  "scraped-cabin-2": "Luxury Cabin Gallery — Photo 2",
+  "scraped-cabin-3": "Luxury Cabin Gallery — Photo 3",
+  "scraped-cabin-4": "Luxury Cabin Gallery — Photo 4",
+  "scraped-cabin-5": "Luxury Cabin Gallery — Photo 5",
+  "scraped-cabin-6": "Luxury Cabin Gallery — Photo 6",
+  "scraped-cabin-7": "Luxury Cabin Gallery — Photo 7",
+  "scraped-cabin-8": "Luxury Cabin Gallery — Photo 8",
 };
 
 /** Shape this image takes on the live page. */
@@ -122,17 +148,47 @@ export type SiteImageAdminGroup = {
 };
 
 function labelForSlot(slot: SiteImageSlot): string {
-  return (
-    SLOT_LABELS[slot.name] ??
-    `${PAGE_GROUP_TITLES[slot.pagePath] ?? "Site"} - Photo`
-  );
+  if (SLOT_LABELS[slot.name]) return SLOT_LABELS[slot.name]!;
+  const page = PAGE_GROUP_TITLES[slot.pagePath] ?? "Site";
+  /* Never fall back to a bare "Photo" — always include the slot id so it is editable & identifiable */
+  return `${page} — ${slot.name.replace(/-/g, " ")}`;
 }
 
 function layoutForSlot(slot: SiteImageSlot): SiteImageLayoutKind {
   if (SLOT_LAYOUT_KINDS[slot.name]) return SLOT_LAYOUT_KINDS[slot.name]!;
   if (slot.category === "hero") return "hero";
+  if (slot.name.includes("collage") || slot.name.startsWith("scraped-")) {
+    return "gallery";
+  }
   return "standard";
 }
+
+/**
+ * Slots that appear on the live homepage (`HomePageClient`) but live under
+ * another pagePath — also listed under Homepage so every on-page photo is editable there.
+ */
+const HOMEPAGE_LINKED_EXTRA_NAMES = [
+  "cruises-hero",
+  "room-suite",
+  "room-royal",
+  "room-luxury",
+  "about-hero",
+  "gastronomy-restaurant",
+  "wellness-hero",
+] as const;
+
+const HOMEPAGE_LINKED_EXTRA_LABELS: Record<
+  (typeof HOMEPAGE_LINKED_EXTRA_NAMES)[number],
+  string
+> = {
+  "cruises-hero": "Homepage — Itineraries / landmarks (Cruises photo)",
+  "room-suite": "Homepage — Itineraries carousel (Luxury Suite)",
+  "room-royal": "Homepage — Itineraries carousel (Royal Suite)",
+  "room-luxury": "Homepage — Itineraries carousel (Luxury Cabin)",
+  "about-hero": "Homepage — Landmark scroll (About photo)",
+  "gastronomy-restaurant": "Homepage — Dining & gallery (Restaurant)",
+  "wellness-hero": "Homepage — Gallery (Wellness)",
+};
 
 /** e.g. "Homepage Images", "Cruises Images" */
 export function getSiteImageGroupHeading(pageTitle: string): string {
@@ -141,25 +197,50 @@ export function getSiteImageGroupHeading(pageTitle: string): string {
   return `${pageTitle} Images`;
 }
 
+function toAdminItem(slot: SiteImageSlot, labelOverride?: string): SiteImageAdminItem {
+  const layoutKind = layoutForSlot(slot);
+  return {
+    name: slot.name,
+    label: labelOverride ?? labelForSlot(slot),
+    defaultAlt: slot.altText,
+    category: slot.category,
+    pagePath: slot.pagePath,
+    livePath: buildSiteImageLivePath("/", slot.name),
+    displayOrder: slot.displayOrder,
+    layoutKind,
+    layoutLabel: LAYOUT_LABELS[layoutKind],
+  };
+}
+
 export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
   const byPage = new Map<string, SiteImageAdminItem[]>();
+  const byName = new Map(SITE_IMAGE_SLOTS.map((slot) => [slot.name, slot]));
 
   for (const slot of SITE_IMAGE_SLOTS) {
-    const layoutKind = layoutForSlot(slot);
     const items = byPage.get(slot.pagePath) ?? [];
     items.push({
-      name: slot.name,
-      label: labelForSlot(slot),
-      defaultAlt: slot.altText,
-      category: slot.category,
-      pagePath: slot.pagePath,
+      ...toAdminItem(slot),
       livePath: buildSiteImageLivePath(slot.pagePath, slot.name),
-      displayOrder: slot.displayOrder,
-      layoutKind,
-      layoutLabel: LAYOUT_LABELS[layoutKind],
     });
     byPage.set(slot.pagePath, items);
   }
+
+  /* Surface every homepage-visible cross-page slot under Homepage too */
+  const homeItems = byPage.get("/") ?? [];
+  const homeNames = new Set(homeItems.map((item) => item.name));
+  let extraOrder = 900;
+  for (const name of HOMEPAGE_LINKED_EXTRA_NAMES) {
+    if (homeNames.has(name)) continue;
+    const slot = byName.get(name);
+    if (!slot) continue;
+    homeItems.push({
+      ...toAdminItem(slot, HOMEPAGE_LINKED_EXTRA_LABELS[name]),
+      displayOrder: extraOrder++,
+      livePath: buildSiteImageLivePath("/", slot.name),
+    });
+    homeNames.add(name);
+  }
+  byPage.set("/", homeItems);
 
   const pageOrder = [
     "/",
@@ -176,13 +257,17 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
     "/blogs",
   ];
 
-  return pageOrder
-    .filter((pagePath) => byPage.has(pagePath))
-    .map((pagePath) => ({
-      pagePath,
-      title: PAGE_GROUP_TITLES[pagePath] ?? pagePath,
-      items: (byPage.get(pagePath) ?? []).sort(
-        (a, b) => a.displayOrder - b.displayOrder || a.label.localeCompare(b.label),
-      ),
-    }));
+  /* Guarantee every slot appears — append any pagePath not listed above */
+  const orderedPaths = [
+    ...pageOrder.filter((pagePath) => byPage.has(pagePath)),
+    ...[...byPage.keys()].filter((pagePath) => !pageOrder.includes(pagePath)),
+  ];
+
+  return orderedPaths.map((pagePath) => ({
+    pagePath,
+    title: PAGE_GROUP_TITLES[pagePath] ?? pagePath,
+    items: (byPage.get(pagePath) ?? []).sort(
+      (a, b) => a.displayOrder - b.displayOrder || a.label.localeCompare(b.label),
+    ),
+  }));
 }

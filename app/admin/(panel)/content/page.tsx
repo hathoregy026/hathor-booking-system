@@ -158,10 +158,18 @@ export default function AdminContentPage() {
     void loadContent();
   }, [loadContent]);
 
-  const siteImageList = useMemo(
-    () => SITE_IMAGE_GROUPS.flatMap((group) => group.items),
-    [],
-  );
+  const siteImageList = useMemo(() => {
+    const seen = new Set<string>();
+    const items: (typeof SITE_IMAGE_GROUPS)[number]["items"] = [];
+    for (const group of SITE_IMAGE_GROUPS) {
+      for (const item of group.items) {
+        if (seen.has(item.name)) continue;
+        seen.add(item.name);
+        items.push(item);
+      }
+    }
+    return items;
+  }, []);
 
   const updateSection = (
     section: ContentSection,
@@ -175,10 +183,20 @@ export default function AdminContentPage() {
   };
 
   const updateSiteImage = (name: string, patch: Partial<SiteImageFormItem>) => {
-    setSiteImages((current) => ({
-      ...current,
-      [name]: { ...current[name], ...patch },
-    }));
+    setSiteImages((current) => {
+      const existing = current[name];
+      const slot = getSiteImageSlot(name);
+      const base: SiteImageFormItem = existing ?? {
+        name,
+        label: slot?.name ?? name,
+        url: slot?.url ?? "",
+        altText: slot?.altText ?? "",
+      };
+      return {
+        ...current,
+        [name]: { ...base, ...patch, name },
+      };
+    });
   };
 
   /** Persist one slot immediately so replace/clear hits DB + storage without waiting for Save. */
@@ -302,7 +320,7 @@ export default function AdminContentPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-8 sm:space-y-10">
+    <div className="mx-auto max-w-7xl space-y-8 sm:space-y-10">
       <div>
         <h2 className="admin-heading text-xl">Page Content</h2>
         <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
@@ -451,23 +469,24 @@ export default function AdminContentPage() {
                 <div className="site-image-group__grid">
                   {group.items.map((item) => {
                     const image = siteImages[item.name];
-                    if (!image) return null;
+                    const url = image?.url ?? "";
+                    const altText = image?.altText ?? item.defaultAlt;
 
                     return (
                       <SiteImageSlotCard
-                        key={item.name}
+                        key={`${group.pagePath}:${item.name}`}
                         item={item}
                         pageTitle={group.title}
-                        url={image.url}
-                        altText={image.altText}
-                        onAltTextChange={(altText) =>
-                          updateSiteImage(item.name, { altText })
+                        url={url}
+                        altText={altText}
+                        onAltTextChange={(nextAlt) =>
+                          updateSiteImage(item.name, { altText: nextAlt })
                         }
-                        onUrlChange={(url, meta) => {
+                        onUrlChange={(nextUrl, meta) => {
                           void handleSiteImageUrlChange(
                             item.name,
-                            url,
-                            meta?.suggestedAltText ?? image.altText,
+                            nextUrl,
+                            meta?.suggestedAltText ?? altText,
                           );
                         }}
                       />
