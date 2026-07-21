@@ -21,6 +21,7 @@ function findPreviewTarget(name: string): HTMLElement | null {
     /* ignore invalid selector */
   }
 
+  /* Only fall back for slots that actually live on this page — never for orphans */
   const fallbackId = getSiteImageFallbackSectionId(name);
   if (fallbackId) {
     return document.getElementById(fallbackId);

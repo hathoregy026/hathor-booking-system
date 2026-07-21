@@ -1297,6 +1297,17 @@ select.admin-input option:checked {
   background: rgba(182, 159, 100, 0.08);
 }
 
+.vcc-card__live-muted {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+  padding: 0.35rem 0;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-style: italic;
+}
+
 .vcc-card__live-icon {
   width: 0.95rem;
   height: 0.95rem;

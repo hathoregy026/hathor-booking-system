@@ -1,5 +1,5 @@
 import { SITE_IMAGE_SLOTS, type SiteImageSlot } from "@/lib/site-image-slots";
-import { buildSiteImageLivePath } from "@/lib/site-image-preview";
+import { resolveSiteImageLivePath } from "@/lib/site-image-preview";
 
 /** Client-facing page names for tabs / accordion headers. */
 const PAGE_GROUP_TITLES: Record<string, string> = {
@@ -131,8 +131,8 @@ export type SiteImageAdminItem = {
   category: SiteImageSlot["category"];
   pagePath: string;
   displayOrder: number;
-  /** Live public URL path for this image’s page. */
-  livePath: string;
+  /** Live public URL path for this image’s page, or null if not on the live site. */
+  livePath: string | null;
   layoutKind: SiteImageLayoutKind;
   layoutLabel: string;
 };
@@ -193,7 +193,11 @@ export function getSiteImageGroupHeading(pageTitle: string): string {
   return `${pageTitle} Images`;
 }
 
-function toAdminItem(slot: SiteImageSlot, labelOverride?: string): SiteImageAdminItem {
+function toAdminItem(
+  slot: SiteImageSlot,
+  adminGroupPagePath: string,
+  labelOverride?: string,
+): SiteImageAdminItem {
   const layoutKind = layoutForSlot(slot);
   return {
     name: slot.name,
@@ -201,7 +205,7 @@ function toAdminItem(slot: SiteImageSlot, labelOverride?: string): SiteImageAdmi
     defaultAlt: slot.altText,
     category: slot.category,
     pagePath: slot.pagePath,
-    livePath: buildSiteImageLivePath("/", slot.name),
+    livePath: resolveSiteImageLivePath(slot.name, adminGroupPagePath),
     displayOrder: slot.displayOrder,
     layoutKind,
     layoutLabel: LAYOUT_LABELS[layoutKind],
@@ -214,10 +218,7 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
 
   for (const slot of SITE_IMAGE_SLOTS) {
     const items = byPage.get(slot.pagePath) ?? [];
-    items.push({
-      ...toAdminItem(slot),
-      livePath: buildSiteImageLivePath(slot.pagePath, slot.name),
-    });
+    items.push(toAdminItem(slot, slot.pagePath));
     byPage.set(slot.pagePath, items);
   }
 
@@ -230,13 +231,21 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
     const slot = byName.get(name);
     if (!slot) continue;
     homeItems.push({
-      ...toAdminItem(slot, HOMEPAGE_LINKED_EXTRA_LABELS[name]),
+      ...toAdminItem(slot, "/", HOMEPAGE_LINKED_EXTRA_LABELS[name]),
       displayOrder: extraOrder++,
-      livePath: buildSiteImageLivePath("/", slot.name),
     });
     homeNames.add(name);
   }
   byPage.set("/", homeItems);
+
+  /* Recompute homepage-native livePaths (orphan home-* get null) */
+  byPage.set(
+    "/",
+    homeItems.map((item) => ({
+      ...item,
+      livePath: resolveSiteImageLivePath(item.name, "/"),
+    })),
+  );
 
   const pageOrder = [
     "/",

@@ -41,6 +41,23 @@ const GALLERY_PREVIEW_ANCHORS = new Set([
   "gastronomy-restaurant",
 ]);
 
+/** Every homepage-visible CMS slot should be findable for admin “View on live site”. */
+const HOMEPAGE_PREVIEW_SLOTS = new Set([
+  "home-hero-poster",
+  "home-story-craft-large",
+  "home-collage-small",
+  "home-collage-large",
+  "home-split-courtyard",
+  "cruises-hero",
+  "room-suite",
+  "room-royal",
+  "room-luxury",
+  "about-hero",
+  "home-story-legacy-large",
+  "gastronomy-restaurant",
+  ...GALLERY_PREVIEW_ANCHORS,
+]);
+
 type HomePageClientProps = {
   heroLogoTune?: HeroLogoTune;
 };
@@ -131,6 +148,7 @@ export function HomePageClient({
           playVideo
           lineRight={EX_HERO.lineRight}
           lineLeft={EX_HERO.lineLeft}
+          posterImageName={EX_HERO.imageName}
           logoPartsVariant={liveTune.partsVariant}
         />
 
@@ -170,10 +188,7 @@ export function HomePageClient({
                       width={42}
                       height={42}
                       sizes="42px"
-                      previewAnchor={
-                        item.name === "home-collage-small" ||
-                        item.name === "home-collage-large"
-                      }
+                      previewAnchor={HOMEPAGE_PREVIEW_SLOTS.has(item.name)}
                     />
                   ))}
                 </div>
@@ -221,7 +236,7 @@ export function HomePageClient({
                         fill
                         sizes="(max-width: 768px) 100vw, 33vw"
                         className="object-cover"
-                        previewAnchor={false}
+                        previewAnchor={HOMEPAGE_PREVIEW_SLOTS.has(slide.imageName)}
                       />
                       <div className="carousel-heading">
                         <h2>{slide.title}</h2>
@@ -266,14 +281,12 @@ export function HomePageClient({
                   <div
                     className="ex-stack-scroll__card-media"
                     id={
-                      slide.imageName === "home-split-courtyard" ||
-                      slide.imageName === "home-story-legacy-large"
+                      HOMEPAGE_PREVIEW_SLOTS.has(slide.imageName)
                         ? `site-image-${slide.imageName}`
                         : undefined
                     }
                     data-site-image={
-                      slide.imageName === "home-split-courtyard" ||
-                      slide.imageName === "home-story-legacy-large"
+                      HOMEPAGE_PREVIEW_SLOTS.has(slide.imageName)
                         ? slide.imageName
                         : undefined
                     }
@@ -341,7 +354,7 @@ export function HomePageClient({
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover"
-                    previewAnchor={block.imageName === "gastronomy-restaurant"}
+                    previewAnchor={HOMEPAGE_PREVIEW_SLOTS.has(block.imageName)}
                   />
                 </div>
               </div>

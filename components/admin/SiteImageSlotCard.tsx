@@ -111,15 +111,21 @@ export function SiteImageSlotCard({
         </div>
 
         <div className="vcc-card__links">
-          <a
-            href={item.livePath}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="vcc-card__live-btn"
-          >
-            <ExternalLink className="vcc-card__live-icon" aria-hidden />
-            View on live site
-          </a>
+          {item.livePath ? (
+            <a
+              href={item.livePath}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="vcc-card__live-btn"
+            >
+              <ExternalLink className="vcc-card__live-icon" aria-hidden />
+              View on live site
+            </a>
+          ) : (
+            <span className="vcc-card__live-muted" title="This slot is editable but not used on the current live pages">
+              Not shown on live site
+            </span>
+          )}
         </div>
 
         <div className="vcc-card__alt">
