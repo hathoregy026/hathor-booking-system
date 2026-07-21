@@ -9,7 +9,6 @@ import { SocialBrandIcon } from "@/components/public/SocialBrandIcon";
 import { PublicSiteHero } from "@/components/pages/PublicSiteHero";
 import { GoldDustParticles } from "@/components/ui/GoldDustParticles";
 import { ManagedImage } from "@/components/ui/ManagedImage";
-import { HATHOR_BRAND_NAME } from "@/lib/branding";
 import {
   EX_ABOUT,
   EX_CAROUSEL,
@@ -19,7 +18,6 @@ import {
   EX_PINNED,
   EX_TESTIMONIALS,
   EX_TEXT_BLOCKS,
-  EX_WELLNESS,
 } from "@/lib/ex-page-content";
 import { useExScrollMotion } from "@/hooks/useExScrollMotion";
 import { useTypographyInlineStyle } from "@/components/public/TypographySettingsProvider";
@@ -467,15 +465,6 @@ export function HomePageClient({
         </section>
         </div>
       </main>
-
-      <footer className="site-footer ex-site-footer">
-        <div className="footer-inner">
-          <div className="footer-brand">{HATHOR_BRAND_NAME}</div>
-          <div className="footer-note">
-            {EX_WELLNESS.tag} · Ultra Luxury Dahabiya Nile Cruise
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

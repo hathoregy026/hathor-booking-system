@@ -94,9 +94,6 @@ html[data-ex-experience] .home-hero-container::before {
   content: none !important;
   display: none !important;
 }
-html[data-ex-experience] .public-site > .owo-footer:not(.ex-site-footer) {
-  display: none !important;
-}
 html[data-ex-experience] .public-main--hero,
 html[data-ex-experience] .public-main {
   margin-top: 0 !important;

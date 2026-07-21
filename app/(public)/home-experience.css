@@ -297,9 +297,123 @@ html[data-ex-experience] .ex-root .blind-strip-v {
   background: var(--gold) !important;
 }
 
-html[data-ex-experience] .ex-root .site-footer.ex-site-footer {
-  background: var(--ink);
-  color: var(--cream);
+/* Full site footer on homepage — cream luxury, matches EX atmosphere */
+html[data-ex-experience] .public-site > .owo-footer {
+  --ex-footer-cream: #ece8df;
+  --ex-footer-cream-deep: #ebe6dc;
+  --ex-footer-ink: #2c2419;
+  --ex-footer-ink-soft: #4a3f32;
+  --ex-footer-muted: #6b5d4d;
+  --ex-footer-gold: #b69f64;
+  --ex-footer-gold-soft: #d4c28a;
+  position: relative;
+  margin-top: 0;
+  padding: clamp(4.5rem, 9vw, 7rem) 0 clamp(2.25rem, 4vw, 3rem);
+  background:
+    radial-gradient(
+      ellipse 70% 55% at 12% 0%,
+      rgba(182, 159, 100, 0.09),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 55% 45% at 90% 100%,
+      rgba(232, 220, 200, 0.55),
+      transparent 50%
+    ),
+    linear-gradient(180deg, var(--ex-footer-cream-deep) 0%, var(--ex-footer-cream) 40%);
+  border-top: none;
+  color: var(--ex-footer-ink);
+  font-family: var(--font-hathor-body), "Plus Jakarta Sans", system-ui, sans-serif;
+}
+
+html[data-ex-experience] .public-site > .owo-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(12rem, 28vw);
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--ex-footer-gold-soft),
+    var(--ex-footer-gold),
+    var(--ex-footer-gold-soft),
+    transparent
+  );
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+html[data-ex-experience] .public-site > .owo-footer .owo-footer__wordmark {
+  font-family: var(--font-hathor-display), "Playfair Display", Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(1.65rem, 3vw, 2.15rem);
+  letter-spacing: 0.22em;
+  color: var(--ex-footer-ink);
+}
+
+html[data-ex-experience] .public-site > .owo-footer .owo-footer__tag {
+  margin-top: 0.65rem;
+  color: var(--ex-footer-gold);
+  letter-spacing: 0.26em;
+}
+
+html[data-ex-experience] .public-site > .owo-footer .owo-footer__address,
+html[data-ex-experience] .public-site > .owo-footer .owo-footer__hours,
+html[data-ex-experience] .public-site > .owo-footer .owo-footer__copy {
+  color: var(--ex-footer-muted);
+}
+
+html[data-ex-experience] .public-site > .owo-footer .owo-footer__col-label {
+  color: var(--ex-footer-gold);
+  letter-spacing: 0.24em;
+}
+
+html[data-ex-experience] .public-site > .owo-footer .owo-footer__link {
+  color: var(--ex-footer-ink-soft);
+  letter-spacing: 0.14em;
+  transition: color 0.45s ease;
+}
+
+html[data-ex-experience] .public-site > .owo-footer .owo-footer__link:hover {
+  color: var(--ex-footer-gold);
+}
+
+html[data-ex-experience] .public-site > .owo-footer .owo-footer__legal {
+  border-top-color: rgba(182, 159, 100, 0.28);
+}
+
+html[data-ex-experience] .public-site > .owo-footer .owo-footer__legal-link {
+  color: var(--ex-footer-muted);
+}
+
+html[data-ex-experience] .public-site > .owo-footer .owo-footer__legal-link:hover {
+  color: var(--ex-footer-gold);
+}
+
+html[data-public-theme="night"][data-ex-experience] .public-site > .owo-footer {
+  --ex-footer-cream: #0b0907;
+  --ex-footer-cream-deep: #14110e;
+  --ex-footer-ink: #f5efe4;
+  --ex-footer-ink-soft: #d9d0c4;
+  --ex-footer-muted: #a89f92;
+  background:
+    radial-gradient(
+      ellipse 70% 55% at 12% 0%,
+      rgba(182, 159, 100, 0.1),
+      transparent 55%
+    ),
+    linear-gradient(180deg, var(--ex-footer-cream-deep) 0%, var(--ex-footer-cream) 45%);
+  color: var(--ex-footer-ink);
+}
+
+html[data-public-theme="night"][data-ex-experience]
+  .public-site
+  > .owo-footer
+  .owo-footer__legal {
+  border-top-color: rgba(182, 159, 100, 0.22);
 }
 
 /* =========================================================
