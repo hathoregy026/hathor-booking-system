@@ -1,5 +1,5 @@
 ---
-description: Image upload size and compression policy (3 MB max, original quality)
+description: Image upload size and compression policy (2 MB max, original quality)
 globs: lib/media-process.ts,lib/image-size-policy.ts,lib/image-upload.ts,app/api/admin/upload/**/*,components/admin/ImageUpload.tsx,scripts/**/*image*
 alwaysApply: false
 ---
@@ -10,15 +10,16 @@ Canonical constants live in `lib/image-size-policy.ts`. Processing is in `lib/me
 
 ## Rules
 
-1. **Max delivered size: 3 MB** for all site images (heroes, gallery, content).
-2. **At or under 3 MB** — keep the original file bytes (no lossy re-encode). Quality stays original.
-3. **Over 3 MB** — accept the upload (up to the hard raw ceiling) and compress down to **≤ 3 MB**, starting at near-original WebP quality and only lowering quality / edge size as needed.
+1. **Max delivered size: 2 MB** for all site images (heroes, gallery, content). Keeps uploads renderable on Vercel (Next `/_next/image` often 400s above ~3 MB).
+2. **At or under 2 MB** — keep the original file bytes (no lossy re-encode). Quality stays original.
+3. **Over 2 MB** — accept the upload (up to the hard raw ceiling) and compress down to **≤ 2 MB**, starting at near-original WebP quality and only lowering quality / edge size as needed.
 4. **Hard raw upload ceiling** — `hardUploadMaxBytes` (25 MB). Reject anything larger before processing.
+5. **Remote CMS URLs** — `ManagedImage` / hero components use `unoptimized` for `https://` Supabase URLs so oversized existing uploads still display.
 
 ## Do
 
 - Use `shouldCompressImage()` / `processImageToWebp(buf, { kind })` — do not hardcode quality or always-compress.
-- Signed-upload originals when ≤ 3 MB; route > 3 MB through the processing upload API.
+- Signed-upload originals when ≤ 2 MB; route > 2 MB through the processing upload API.
 - Prefer high quality over aggressive downsizing so the live site stays sharp without multi‑MB payloads slowing pages.
 
 ## Don’t

@@ -7,7 +7,7 @@ export const EMAIL_IMAGE_BUCKET = "email-images";
 
 export const EMAIL_IMAGE_FOLDER = "email-templates";
 
-/** Hard ceiling for raw uploads (oversized masters may be compressed to ≤ 3 MB). */
+/** Hard ceiling for raw uploads (oversized masters are compressed to ≤ maxBytes). */
 export const MAX_IMAGE_BYTES = IMAGE_SIZE_POLICY.hardUploadMaxBytes;
 export const MAX_VIDEO_BYTES = 100 * 1024 * 1024;
 const MAX_EMAIL_IMAGE_BYTES = 5 * 1024 * 1024;
@@ -41,7 +41,8 @@ export function validateImageFile(
   }
 
   if (file.size > MAX_IMAGE_BYTES) {
-    return "Image must be 25 MB or smaller (files over 3 MB are compressed automatically).";
+    const maxMb = Math.round(IMAGE_SIZE_POLICY.maxBytes / (1024 * 1024));
+    return `Image must be 25 MB or smaller (files over ${maxMb} MB are compressed automatically).`;
   }
 
   return null;

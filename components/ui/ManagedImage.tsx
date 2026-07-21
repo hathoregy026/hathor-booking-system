@@ -2,6 +2,7 @@
 
 import Image, { type ImageProps } from "next/image";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
+import { isRemoteCmsImageUrl } from "@/lib/resolve-site-images";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 
@@ -29,6 +30,7 @@ export function ManagedImage({
   const image = useSiteImage(name);
   const resolvedAlt = alt ?? image.alt;
   const anchorId = previewAnchor ? siteImageAnchorId(name) : undefined;
+  const unoptimized = isRemoteCmsImageUrl(image.src);
 
   if (props.fill) {
     return (
@@ -38,6 +40,7 @@ export function ManagedImage({
         alt={resolvedAlt}
         fill
         quality={quality}
+        unoptimized={unoptimized}
         className={className}
         id={id ?? anchorId}
         data-site-image={name}
@@ -51,6 +54,7 @@ export function ManagedImage({
       src={image.src}
       alt={resolvedAlt}
       quality={quality}
+      unoptimized={unoptimized}
       className={className}
       width={props.width ?? 800}
       height={props.height ?? 600}

@@ -15,7 +15,7 @@ export type ProcessedImage = {
   buffer: Buffer;
   contentType: "image/jpeg" | "image/png" | "image/webp";
   extension: "jpg" | "png" | "webp";
-  /** True when lossy compression ran (source was over 3 MB). */
+  /** True when lossy compression ran (source was over the delivered max). */
   compressed: boolean;
   kind: ImageProcessKind;
 };
@@ -51,7 +51,7 @@ async function toFullQualityPassThrough(
   input: Buffer,
   kind: ImageProcessKind,
 ): Promise<ProcessedImage> {
-  /* ≤ 3 MB: keep original bytes — no lossy re-encode. */
+  /* Under delivered max: keep original bytes — no lossy re-encode. */
   const detected = detectOutputFormat(input);
   return {
     buffer: input,
@@ -63,9 +63,9 @@ async function toFullQualityPassThrough(
 }
 
 /**
- * Compress oversized sources down to ≤ 3 MB while preserving as much quality
- * as possible: high WebP quality first, then gently reduce edge length only
- * if still over the cap.
+ * Compress oversized sources down to the delivered max while preserving as
+ * much quality as possible: high WebP quality first, then gently reduce edge
+ * length only if still over the cap.
  */
 async function compressOversizeToWebp(
   input: Buffer,
@@ -114,8 +114,8 @@ async function compressOversizeToWebp(
 
 /**
  * Apply the site image size policy:
- * - ≤ 3 MB → original bytes (full quality)
- * - > 3 MB → compress to ≤ 3 MB at the highest quality that fits
+ * - ≤ delivered max → original bytes (full quality)
+ * - > delivered max → compress to ≤ max at the highest quality that fits
  */
 export async function processImageToWebp(
   input: Buffer,

@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { isRemoteCmsImageUrl } from "@/lib/resolve-site-images";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 
 type ParallaxHeroImageProps = {
@@ -40,6 +41,7 @@ export function ParallaxHeroImage({
           className="object-cover"
           sizes={sizes}
           quality={SITE_IMAGE_QUALITY}
+          unoptimized={isRemoteCmsImageUrl(src)}
         />
       </motion.div>
     </div>

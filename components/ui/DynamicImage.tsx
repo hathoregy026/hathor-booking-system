@@ -1,6 +1,9 @@
 import Image from "next/image";
 import { getSiteImageByName } from "@/lib/image-management";
-import { shouldUseDatabaseSiteImageUrl } from "@/lib/resolve-site-images";
+import {
+  isRemoteCmsImageUrl,
+  shouldUseDatabaseSiteImageUrl,
+} from "@/lib/resolve-site-images";
 import { getDefaultSiteImage } from "@/lib/site-image-slots";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 
@@ -43,6 +46,8 @@ export async function DynamicImage({
     /* fall back to slot defaults */
   }
 
+  const unoptimized = isRemoteCmsImageUrl(src);
+
   if (fill) {
     return (
       <Image
@@ -53,6 +58,7 @@ export async function DynamicImage({
         priority={priority}
         sizes={sizes}
         quality={quality}
+        unoptimized={unoptimized}
       />
     );
   }
@@ -67,6 +73,7 @@ export async function DynamicImage({
       priority={priority}
       sizes={sizes}
       quality={quality}
+      unoptimized={unoptimized}
     />
   );
 }

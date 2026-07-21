@@ -47,6 +47,15 @@ export function shouldUseDatabaseSiteImageUrl(url: string): boolean {
   }
 }
 
+/**
+ * Remote CMS URLs (Supabase) must bypass Next image optimization — Vercel
+ * `/_next/image` returns 400 for many multi‑MB uploads, leaving empty slots.
+ */
+export function isRemoteCmsImageUrl(url: string): boolean {
+  const trimmed = url.trim();
+  return /^https?:\/\//i.test(trimmed);
+}
+
 export async function resolveSiteImageMap(): Promise<SiteImageMap> {
   const map: SiteImageMap = {};
 

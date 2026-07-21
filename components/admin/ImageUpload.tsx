@@ -21,10 +21,12 @@ import {
   parseImageProcessKind,
   resolveImageProcessKind,
   shouldCompressImage,
+  IMAGE_SIZE_POLICY,
   type ImageProcessKind,
 } from "@/lib/image-size-policy";
 
 const ACCEPTED_TYPES = "image/jpeg,image/png,image/webp";
+const DELIVERED_MAX_MB = Math.round(IMAGE_SIZE_POLICY.maxBytes / (1024 * 1024));
 
 type ImageUploadMeta = {
   suggestedAltText?: string;
@@ -77,7 +79,7 @@ function validateClientFile(file: File): string | null {
   }
 
   if (file.size > MAX_IMAGE_BYTES) {
-    return `Image must be ${Math.round(MAX_IMAGE_BYTES / (1024 * 1024))} MB or smaller (over 3 MB will be compressed to 3 MB).`;
+    return `Image must be ${Math.round(MAX_IMAGE_BYTES / (1024 * 1024))} MB or smaller (over ${DELIVERED_MAX_MB} MB will be compressed to ${DELIVERED_MAX_MB} MB).`;
   }
 
   return null;
@@ -266,7 +268,7 @@ export function ImageUpload({
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [uploadComplete, setUploadComplete] = useState(false);
 
-  const policyHint = `Full original quality up to 3 MB. Larger files are compressed to 3 MB automatically so pages stay fast.`;
+  const policyHint = `Full original quality up to ${DELIVERED_MAX_MB} MB. Larger files are compressed to ${DELIVERED_MAX_MB} MB automatically so they render on the live site.`;
 
   useLayoutEffect(() => {
     if (!chooseButtonRef) return;
@@ -608,8 +610,8 @@ export function ImageUpload({
           Selected: {selectedFile.name} ({(selectedFile.size / 1024).toFixed(0)}{" "}
           KB)
           {shouldCompressImage(selectedFile.size)
-            ? " — over 3 MB, will be compressed to ≤ 3 MB on upload."
-            : " — under 3 MB, kept at original quality."}
+            ? ` — over ${DELIVERED_MAX_MB} MB, will be compressed to ≤ ${DELIVERED_MAX_MB} MB on upload.`
+            : ` — under ${DELIVERED_MAX_MB} MB, kept at original quality.`}
         </p>
       )}
 

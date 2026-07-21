@@ -10,6 +10,7 @@ import {
 } from "@/hooks/useCruisesHeroStripes";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
+import { isRemoteCmsImageUrl } from "@/lib/resolve-site-images";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 
 type CruisesHeroProps = {
@@ -67,6 +68,7 @@ export function CruisesHero({
             priority
             sizes="100vw"
             quality={SITE_IMAGE_QUALITY}
+            unoptimized={isRemoteCmsImageUrl(image.src)}
             className="object-cover"
             style={{ objectPosition: "center 58%" }}
             onLoad={() => refreshCruisesHeroStripes()}

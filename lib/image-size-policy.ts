@@ -1,32 +1,35 @@
 /**
  * Site image size / compression policy.
  *
- * - Keep original quality for files at or under 3 MB
- * - If a source exceeds 3 MB, compress it down to ≤ 3 MB (highest quality that fits)
- * - Hard upload ceiling for raw sources that still need room to compress
+ * Next/Vercel image optimization rejects many sources above ~3 MB, so delivered
+ * CMS files must stay under 2 MB. Keep original bytes under that cap; compress
+ * anything larger down to ≤ 2 MB at the highest quality that fits.
  */
 
 export const KB = 1024;
 export const MB = 1024 * KB;
 
+/** Safe ceiling for Next.js `/_next/image` on Vercel (3 MB+ uploads often 400). */
+const DELIVERED_MAX = 2 * MB;
+
 export type ImageProcessKind = "hero" | "gallery" | "content";
 
 export const IMAGE_SIZE_POLICY = {
   /** Delivered / stored images must stay at or under this size. */
-  maxBytes: 3 * MB,
+  maxBytes: DELIVERED_MAX,
   /** Only run lossy compression when the source is above maxBytes. */
-  compressAboveBytes: 3 * MB,
+  compressAboveBytes: DELIVERED_MAX,
   /** Target size when compressing oversized sources (same for all kinds). */
   compressTargetBytes: {
-    hero: 3 * MB,
-    gallery: 3 * MB,
-    content: 3 * MB,
+    hero: DELIVERED_MAX,
+    gallery: DELIVERED_MAX,
+    content: DELIVERED_MAX,
   },
   /** Alias used by UI copy — full quality is kept up to maxBytes. */
   fullQualityMaxBytes: {
-    hero: 3 * MB,
-    gallery: 3 * MB,
-    content: 3 * MB,
+    hero: DELIVERED_MAX,
+    gallery: DELIVERED_MAX,
+    content: DELIVERED_MAX,
   },
   /**
    * Hard ceiling for the raw file the browser may upload before compression.
@@ -34,9 +37,9 @@ export const IMAGE_SIZE_POLICY = {
    */
   hardUploadMaxBytes: 25 * MB,
   /** Prefer full resolution; only shrink edges if still over target after quality steps. */
-  compressMaxEdgeSteps: [4096, 2560, 1920, 1600] as const,
-  /** Start near-original quality; step down only as needed to hit ≤ 3 MB. */
-  compressQuality: { start: 95, min: 72, step: 3 },
+  compressMaxEdgeSteps: [4096, 2560, 1920, 1600, 1280] as const,
+  /** Start near-original quality; step down only as needed to hit ≤ maxBytes. */
+  compressQuality: { start: 92, min: 62, step: 3 },
 } as const;
 
 export function fullQualityMaxBytes(kind: ImageProcessKind): number {
