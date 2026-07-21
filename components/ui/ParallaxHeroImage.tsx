@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { isRemoteCmsImageUrl } from "@/lib/resolve-site-images";
+import { isRemoteCmsImageUrl } from "@/lib/site-image-url";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 
 type ParallaxHeroImageProps = {

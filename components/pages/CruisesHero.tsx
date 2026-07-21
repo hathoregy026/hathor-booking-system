@@ -10,7 +10,7 @@ import {
 } from "@/hooks/useCruisesHeroStripes";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
-import { isRemoteCmsImageUrl } from "@/lib/resolve-site-images";
+import { isRemoteCmsImageUrl } from "@/lib/site-image-url";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 
 type CruisesHeroProps = {

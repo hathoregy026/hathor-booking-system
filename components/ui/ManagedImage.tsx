@@ -2,7 +2,7 @@
 
 import Image, { type ImageProps } from "next/image";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
-import { isRemoteCmsImageUrl } from "@/lib/resolve-site-images";
+import { isRemoteCmsImageUrl } from "@/lib/site-image-url";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 

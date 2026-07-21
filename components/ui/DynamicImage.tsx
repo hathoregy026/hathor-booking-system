@@ -1,9 +1,7 @@
 import Image from "next/image";
 import { getSiteImageByName } from "@/lib/image-management";
-import {
-  isRemoteCmsImageUrl,
-  shouldUseDatabaseSiteImageUrl,
-} from "@/lib/resolve-site-images";
+import { isRemoteCmsImageUrl } from "@/lib/site-image-url";
+import { shouldUseDatabaseSiteImageUrl } from "@/lib/resolve-site-images";
 import { getDefaultSiteImage } from "@/lib/site-image-slots";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 
