@@ -3,58 +3,41 @@
 import { ResidenceScrollPage } from "@/components/pages/rooms/ResidenceScrollPage";
 import { LUXURY_SUITES_PAGE } from "@/lib/page-content";
 
-/** /rooms — Luxury Suites (RAW_DATA), residence scroll design */
+/** /rooms — Cabins & Suits content from hathorcruise.com/rooms */
 export function RoomsPageContent() {
   return (
     <ResidenceScrollPage
       heroTitle={LUXURY_SUITES_PAGE.hero.title}
       heroSubtitle={LUXURY_SUITES_PAGE.hero.subtitle}
-      breadcrumb="Luxury Suites"
-      heroImageName="room-suite"
-      heroImageAlt="Luxury suite aboard Hathor Dahabiya"
+      breadcrumb="Cabins & Suits"
+      heroImageName="scraped-suites-hero"
+      heroImageAlt="Cabins and suites aboard Hathor Dahabiya"
       intro={{
-        eyebrow: "Luxury Suites",
+        eyebrow: "Cabins & Suits",
         title: LUXURY_SUITES_PAGE.overview.title,
         copy: LUXURY_SUITES_PAGE.intro,
-        stats: ["2 Elegant Suites", "46 Square Meters", "Lower Deck"],
       }}
       chapters={[
-        {
-          id: "1",
-          label: "Suite 01",
-          title: "Luxury Suites",
-          meta: LUXURY_SUITES_PAGE.overview.subtitle,
-          desc: LUXURY_SUITES_PAGE.overview.body,
-          slides: ["room-suite", "room-luxury", "room-suite", "room-royal"],
-          ctaHref: "/cruises",
-          ctaLabel: "View cruises",
-        },
-        {
-          id: "2",
-          label: "Suite 02",
-          title: "Accessible Hathor Suite",
-          meta: "Spacious retreat · Panoramic Nile",
-          desc: LUXURY_SUITES_PAGE.intro[0]!,
-          slides: ["room-suite", "room-royal", "room-luxury", "room-suite"],
-        },
-        {
-          id: "3",
-          label: "Suite 03",
-          title: "Jacuzzi Sanctuary",
-          meta: "Dual baths · Smart entertainment",
-          desc: LUXURY_SUITES_PAGE.intro[1]!,
-          slides: ["room-royal", "room-suite", "room-luxury", "room-suite"],
-        },
-        {
-          id: "4",
-          label: "Suite 04",
-          title: "Sail in a Suite",
-          meta: "Luxor · Aswan · Private comfort",
-          desc: LUXURY_SUITES_PAGE.cruisesCta.body,
-          slides: ["room-suite", "room-suite", "room-royal", "room-luxury"],
-          ctaHref: "/cruises",
-          ctaLabel: LUXURY_SUITES_PAGE.cruisesCta.hrefLabel,
-        },
+        ...LUXURY_SUITES_PAGE.categories.map((category, index) => ({
+          id: `cat-${index + 1}`,
+          label: `Suite ${String(index + 1).padStart(2, "0")}`,
+          title: category.title,
+          meta: category.meta,
+          desc: category.desc,
+          slides: category.slides,
+          ctaHref: category.href,
+          ctaLabel: "Read More",
+        })),
+        ...LUXURY_SUITES_PAGE.listings.map((listing, index) => ({
+          id: `list-${index + 1}`,
+          label: `Itinerary ${String(index + 1).padStart(2, "0")}`,
+          title: listing.title,
+          meta: listing.meta,
+          desc: listing.desc,
+          slides: listing.slides,
+          ctaHref: listing.href,
+          ctaLabel: "Read More",
+        })),
       ]}
       amenities={{
         title: LUXURY_SUITES_PAGE.amenities.title,
@@ -64,7 +47,7 @@ export function RoomsPageContent() {
       cta={{
         title: LUXURY_SUITES_PAGE.cruisesCta.title,
         body: LUXURY_SUITES_PAGE.cruisesCta.body,
-        href: "/cruises",
+        href: LUXURY_SUITES_PAGE.cruisesCta.href,
         hrefLabel: LUXURY_SUITES_PAGE.cruisesCta.hrefLabel,
       }}
     />

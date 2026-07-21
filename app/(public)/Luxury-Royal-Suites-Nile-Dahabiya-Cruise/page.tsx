@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
 import { RoyalSuitesPageContent } from "@/components/pages/RoyalSuitesPageContent";
 import { ROYAL_SUITES_PAGE } from "@/lib/page-content";
-import { hathorImage } from "@/lib/hathor-media";
-
-const OG_IMAGE = hathorImage("room-royal");
+const OG_IMAGE = "/media/hathor/scraped/royal-1.webp";
 
 export const metadata: Metadata = {
-  title: "Royal Suites Nile Dahabiya",
+  title: "Luxury Dahabiya Royal Suite",
   description: ROYAL_SUITES_PAGE.metaDescription,
   openGraph: {
-    title: "Royal Suites Nile Dahabiya | Hathor",
+    title: "Luxury Dahabiya Royal Suite | Private Dahabiya Nile cruise",
     description: ROYAL_SUITES_PAGE.metaDescription,
     type: "website",
     images: [
@@ -23,7 +21,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Royal Suites Nile Dahabiya | Hathor",
+    title: "Luxury Dahabiya Royal Suite | Private Dahabiya Nile cruise",
     description: ROYAL_SUITES_PAGE.metaDescription,
     images: [OG_IMAGE],
   },

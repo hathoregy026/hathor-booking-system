@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
 import { LuxuryCabinsPageContent } from "@/components/pages/LuxuryCabinsPageContent";
 import { LUXURY_CABINS_PAGE } from "@/lib/page-content";
-import { hathorImage } from "@/lib/hathor-media";
-
-const OG_IMAGE = hathorImage("room-luxury");
+const OG_IMAGE = "/media/hathor/scraped/cabin-1.webp";
 
 export const metadata: Metadata = {
-  title: "Luxury Cabins Nile Cruise",
+  title: "Small Luxury Nile Cruise Rooms",
   description: LUXURY_CABINS_PAGE.metaDescription,
   openGraph: {
-    title: "Luxury Cabins Nile Cruise | Hathor Dahabiya",
+    title: "Small Luxury Nile Cruise Rooms | Boutique Nile Cruise Hathor Dahabiya",
     description: LUXURY_CABINS_PAGE.metaDescription,
     type: "website",
     images: [
@@ -23,7 +21,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Luxury Cabins Nile Cruise | Hathor Dahabiya",
+    title: "Small Luxury Nile Cruise Rooms | Boutique Nile Cruise Hathor Dahabiya",
     description: LUXURY_CABINS_PAGE.metaDescription,
     images: [OG_IMAGE],
   },

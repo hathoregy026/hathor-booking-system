@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
 import { RoomsPageContent } from "@/components/pages/rooms/RoomsPageContent";
 import { LUXURY_SUITES_PAGE } from "@/lib/page-content";
-import { hathorImage } from "@/lib/hathor-media";
-
-const OG_IMAGE = hathorImage("room-suite");
+const OG_IMAGE = "/media/hathor/scraped/suites-hero.webp";
 
 export const metadata: Metadata = {
   title: "Luxury suites on Nile cruise",
   description: LUXURY_SUITES_PAGE.metaDescription,
   openGraph: {
-    title: "Luxury suites on Nile cruise | Hathor Dahabiya",
+    title: "Luxury suites on Nile cruise | Hathor Dahabiya Cruise",
     description: LUXURY_SUITES_PAGE.metaDescription,
     type: "website",
     images: [
@@ -17,13 +15,13 @@ export const metadata: Metadata = {
         url: OG_IMAGE,
         width: 1920,
         height: 1280,
-        alt: "Luxury suite aboard Hathor Dahabiya Nile cruise",
+        alt: "Cabins and suites aboard Hathor Dahabiya",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Luxury suites on Nile cruise | Hathor Dahabiya",
+    title: "Luxury suites on Nile cruise | Hathor Dahabiya Cruise",
     description: LUXURY_SUITES_PAGE.metaDescription,
     images: [OG_IMAGE],
   },

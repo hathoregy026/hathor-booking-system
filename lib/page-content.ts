@@ -301,22 +301,100 @@ export const ROOMS_PAGE = {
   },
 } as const;
 
+/** Scraped from https://www.hathorcruise.com/luxury-cabins-Nile-Cruise */
 export const LUXURY_CABINS_PAGE = {
   metaDescription:
-    "Discover small luxury Nile cruise rooms aboard Hathor Dahabiya — eight elegant private cabins with panoramic Nile views, handcrafted Egyptian design, and refined contemporary comfort.",
+    "Small Luxury Nile Cruise Rooms | Boutique Nile Cruise Hathor Dahabiya",
   hero: {
     title: "Luxury Rooms",
     subtitle: "Luxury Nile Cruise Rooms, Hathor Dahabiya",
   },
   overview: {
-    title: "Eight Luxury Cabins",
-    subtitle: "22 sqm of refined comfort",
-    body: "Hathor Dahabiya features eight beautifully appointed luxury cabins, each offering panoramic Nile views, smart systems, and design elements inspired by Egypt's cultural heritage. Select cabins can be connected for added privacy and convenience.",
+    title: "Luxury Nile Cruise Rooms, Hathor Dahabiya",
+    subtitle: "22 Square Meters · Panoramic Nile view",
+    body: "Every cabin in our Small Luxury Nile Cruise offers a peaceful and relaxing space, allowing guests to enjoy wide-ranging views of the Nile River in complete comfort. The Boutique Nile Cruise experience provides an exclusive Dahabiya-style journey, giving passengers private space to sail through the serene waters of the Nile without encountering other travelers.",
   },
-  intro:
-    "The Hathor Dahabiya provides an Elegant, Private Dahabiya Cruise. Dive into the Authentic Boutique Nile Cruise experience tailored especially for travelers who want to experience the Timeless Nile River. Our Luxury Nile Cruise Rooms feature exquisite furnishings which present Nile River View Rooms and detailed design elements that draw inspiration from Egypt's cultural heritage and include contemporary design elements which establish an authentic Egyptian ambiance. Every cabin in our Small Luxury Nile Cruise Rooms provides guests with a tranquil space to relax while they take in wide-ranging views of the Nile River. The Elegant Dahabiya Nile Cruise experience provides passengers with private space to sail through the river's serene waters without encountering any other travelers. Guests will visit majestic temples and ancient sites before returning to the ship which provides elegant décor and dedicated staff. Experience Hathor fine dining which showcases traditional regional dishes in a close-knit setting that represents an Exclusive Private Small Luxury Nile Cruise. The Hathor Dahabiya Nile cruise experience delivers exceptional comfort and exclusive experiences which create enduring memories for all visitors to Egypt.",
+  intro: [
+    "The Hathor Dahabiya provides an Elegant, Private Dahabiya Cruise, Dive into the Authentic Boutique Nile Cruise experience which tailored especially for travelers who want to experience the Timeless Nile River.",
+    "Every cabin in our Small Luxury Nile Cruise offers a peaceful and relaxing space, allowing guests to enjoy wide-ranging views of the Nile River in complete comfort. The Boutique Nile Cruise experience provides an exclusive Dahabiya-style journey, giving passengers private space to sail through the serene waters of the Nile without encountering other travelers.",
+    "The guest will visit majestic temples and ancient sites before returning to the ship which provides elegant decor and dedicated staff. Experience Hathor fine dining which showcases traditional regional dishes in a close knit setting that represents an Exclusive Private Small Luxury Nile Cruise. The Hathor Dahabiya Nile cruise experience delivers exceptional comfort and Exclusive experiences which create enduring memories for all visitors to Egypt.",
+  ],
+  listings: [
+    {
+      title: "Luxury King Bed : Luxor / Aswan / Luxor",
+      meta: "7 Nights / 8 Days",
+      desc: "Sail the Nile in style on a 7 Nights 8 Days Dahabiya Nile Cruise from Luxor to Aswan, featuring luxury cabins, panoramic views, and timeless elegance. 7 Nights Itinerary: Luxor – Aswan – Luxor Price Per Cabin: Maximum 2 Persons",
+      href: "/rooms/Luxury-nile-sailing-Dahabiya",
+      slides: [
+        "scraped-cabin-1",
+        "scraped-cabin-3",
+        "scraped-cabin-4",
+        "scraped-cabin-7",
+      ] as const,
+    },
+    {
+      title: "Luxury Twin Bed : Luxor / Aswan / Luxor",
+      meta: "7 Nights / 8 Days",
+      desc: "Filled with warmth and elegance, our Luxury Dahabiya Nile Cruise Rooms with River View promise an unforgettable Elegant experience. Step into a majestically decorated Twin-Bed Cabin from the Hathor Dahabiya cabins collection. 7 Nights Itinerary: Luxor – Aswan – Luxor Price Per Cabin: Maximum 2 Persons",
+      href: "/rooms/dahabiya-sailing-cruise-from-Luxor-to-Aswan",
+      slides: [
+        "scraped-cabin-5",
+        "scraped-cabin-6",
+        "scraped-cabin-2",
+        "scraped-cabin-8",
+      ] as const,
+    },
+    {
+      title: "Luxury King Bed : Aswan / Luxor",
+      meta: "3 Nights / 4 Days",
+      desc: "Experience true luxury in our elegant rooms, where classic style meets modern comfort. Our suites offer luxurious design and magical views, perfect for those seeking Small Luxury Nile Cruise Rooms that combine sophistication, comfort, and unforgettable Nile scenery. 3 nights itinerary Aswan / Luxor Price Per Cabin – Maximum 2 Persons",
+      href: "/rooms/Luxury-small-boat-nile-cruise-price",
+      slides: [
+        "scraped-cabin-3",
+        "scraped-cabin-1",
+        "scraped-cabin-7",
+        "scraped-cabin-4",
+      ] as const,
+    },
+    {
+      title: "Luxury Twin Bed : Aswan / Luxor",
+      meta: "3 Nights / 4 Days",
+      desc: "Enjoy refined comfort in the Hathor Luxury Twin Bed cabins aboard Hathor Dahabiya. These elegant Luxury Nile Cruise Rooms feature panoramic Nile views, modern amenities, and personalized service. 3 nights itinerary Aswan / Luxor Price Per Cabin – Maximum 2 Persons",
+      href: "/rooms/Traditional-Nile-River-boat",
+      slides: [
+        "scraped-cabin-6",
+        "scraped-cabin-5",
+        "scraped-cabin-8",
+        "scraped-cabin-2",
+      ] as const,
+    },
+    {
+      title: "Luxury King Bed : Luxor / Aswan",
+      meta: "4 Nights / 5 Days",
+      desc: "Luxury King Bed Cabins on the Hathor Dahabiya consist of the serene setting, adding to an aura of genuine luxury. Soft beds, an imposing detail treatment, and splendid views make these Luxury Cabins on a Nile Cruise Living like a shrinking mansion with class. 4 nights itinerary Luxor / Aswan Price Per Cabin – Maximum 2 Persons",
+      href: "/rooms/Dahabiya-nile",
+      slides: [
+        "scraped-cabin-1",
+        "scraped-cabin-4",
+        "scraped-cabin-3",
+        "scraped-cabin-7",
+      ] as const,
+    },
+    {
+      title: "Luxury Twin Bed : Luxor / Aswan",
+      meta: "4 Nights / 5 Days",
+      desc: "Step into the warmth of our beautifully designed Twin Bed Cabins, part of Hathor Dahabiya and our Luxury Nile Cruise Rooms, where luxury feels effortless and every detail is crafted for your comfort. Surrounded by elegant touches, premium amenities, and stunning panoramic views, each cabin offers a serene retreat on the Nile. 4 Nights Itinerary: Luxor / Aswan Price Per Cabin: Maximum 2 Persons",
+      href: "/rooms/Best-nile-luxury-cruise",
+      slides: [
+        "scraped-cabin-5",
+        "scraped-cabin-2",
+        "scraped-cabin-6",
+        "scraped-cabin-8",
+      ] as const,
+    },
+  ],
   amenities: {
-    title: "Cabin Amenities",
+    title: "LUXURY ROOMS",
     features: [
       "LED Satellite Screen",
       "Bathtub or Walk-In Shower",
@@ -325,7 +403,7 @@ export const LUXURY_CABINS_PAGE = {
       "Telephone",
       "High-Speed Internet Access",
       "All cabins are non-smoking areas",
-      "8 Luxury Cabins",
+      "12 Luxury Cabins & Suites",
       "Panoramic Nile view",
       "Connected cabins available",
       "22 Square Meters",
@@ -337,103 +415,213 @@ export const LUXURY_CABINS_PAGE = {
       "Air Conditioner",
       "Hair Dryer",
     ],
-    note: "Experience true luxury in our elegant rooms, where classic style meets modern comfort. Our cabins offer luxurious design and magical views perfect for those seeking Luxury Nile Cruise Rooms and Luxury Nile Cruise Cabins. 3 nights itinerary Aswan / Luxor — Price Per Cabin, Maximum 2 Persons.",
   },
   cruisesCta: {
-    title: "Sail in a Luxury Cabin",
-    body: "Pair your private cabin with an exclusive Hathor itinerary — from intimate 3-night sailings between Aswan and Luxor to grand 7-night voyages.",
-    hrefLabel: "View cruises",
+    title: "LUXURY ROOMS",
+    body: "The Hathor Dahabiya Nile cruise experience delivers exceptional comfort and Exclusive experiences which create enduring memories for all visitors to Egypt.",
+    href: "/cruises",
+    hrefLabel: "Explore Now",
   },
 } as const;
 
-/** From assets/RAW_DATA.md — PAGE: Luxury Suites & Rooms Listing + Suite Experience */
+/**
+ * Suites page — scraped from https://www.hathorcruise.com/rooms (Cabins & Suits)
+ * plus Luxury Suites itineraries from https://www.hathorcruise.com/Nile-Cruise-Luxury-Suites
+ */
 export const LUXURY_SUITES_PAGE = {
   metaDescription:
-    "Discover Accessible Hathor Suites aboard Hathor Dahabiya — 46 sqm of distinctive luxury with panoramic Nile views, jacuzzi, and refined suite living on the Lower Deck.",
+    "Luxury suites on Nile cruise | Hathor Dahabiya Cruise",
   hero: {
-    title: "Luxury Suites",
-    subtitle: "Accessible Hathor Suite on the Nile",
+    title: "Cabins & Suits",
+    subtitle: "Luxury Suites aboard Hathor Dahabiya",
   },
   overview: {
-    title: "Suite Experience",
-    subtitle: "46 sqm of distinctive luxury",
-    body: "Located on the Lower Deck, our Suites offer a spacious retreat with panoramic views of the Nile.",
+    title: "Luxury Suites",
+    subtitle: "Accessible Hathor Suite",
+    body: "Discover effortless luxury in the Accessible Hathor Suite A spacious, elegantly designed retreat crafted for comfort, ease, and refined living. Thoughtfully tailored to ensure every guest feels perfectly at home, without compromise.",
   },
   intro: [
-    "Discover effortless luxury in the Accessible Hathor Suite — a spacious, elegantly designed retreat crafted for comfort, ease, and refined living. Thoughtfully tailored to ensure every guest feels perfectly at home, without compromise.",
-    "Experience elegant comfort and thoughtful design in our Accessible Hathor Suite aboard Hathor Dahabiya — luxury privilege on the Nile for true Luxury Dahabiya Egypt and an unforgettable Luxury Dahabiya Nile Cruise experience.",
+    "Experience Hathor Dahabiya Cruise that blends authenticity with luxury, offering an unforgettable journey by the timeless Nile. Whether you stay in our Elegant Dahabiya Suites or enjoying the Royal Suites with Panoramic Nile View, you'll enjoy unmatched comfort and Exclusive privacy. Our Small Luxury Nile Cruise Rooms offer everything you expect from a Nile View luxury cabin and more. The Elegant Nile Cruise Cabins provide a cool retreat through their air-conditioned spaces which show off their handcrafted designs. The Luxury Nile Cruise Rooms provide a serene, stylish environment to unwind. The Royal Suite with Panoramic Nile View in Hathor Dahabiya delivers the highest level of luxury through its exceptional views and ultimate relaxation. The Luxury Suites aboard the Hathor Dahabiya Cruise showcase timeless sophistication combined with modern amenities, offering a unique and private Dahabiya Cruise experience for each suite choice.",
+    "Experience the timeless charm of Egypt aboard the luxurious Hathor Dahabiya Cruise Each elegant cabin is a refined haven, combining modern comforts with authentic Egyptian artistry. Warm, intimate, and exquisitely appointed, your private sanctuary awaits promising an unforgettable journey along the majestic Nile.",
+  ],
+  categories: [
+    {
+      title: "Luxury Rooms",
+      meta: "LED Satellite Screen · Bathtub or Walk-In Shower · Safe box",
+      desc: "Experience the timeless charm of Egypt aboard the luxurious Hathor Dahabiya Cruise Each elegant cabin is a refined haven, combining modern comforts with authentic Egyptian artistry. Warm, intimate, and exquisitely appointed, your private sanctuary awaits promising an unforgettable journey along the majestic Nile.",
+      href: "/luxury-cabins-Nile-Cruise",
+      slides: [
+        "scraped-suites-luxury-rooms",
+        "scraped-cabin-1",
+        "scraped-cabin-3",
+        "scraped-cabin-5",
+      ] as const,
+    },
+    {
+      title: "Luxury Suites",
+      meta: "LED Satellite Screen · Bathtub or Walk-In Shower · Safe box",
+      desc: "Discover effortless luxury in the Accessible Hathor Suite A spacious, elegantly designed retreat crafted for comfort, ease, and refined living. Thoughtfully tailored to ensure every guest feels perfectly at home, without compromise.",
+      href: "/Nile-Cruise-Luxury-Suites",
+      slides: [
+        "scraped-suites-luxury-suites",
+        "scraped-luxsuite-1",
+        "scraped-luxsuite-2",
+        "scraped-luxsuite-3",
+      ] as const,
+    },
+    {
+      title: "Luxury Royal Suites",
+      meta: "LED Satellite Screen · Bathtub or Walk-In Shower · Safe box",
+      desc: "Step into the Signature Royal Suite on the Hathor Dahabiya Cruise and lose yourself in the wonders of forever luxury aboard a private Dahabiya Nile cruise, with a fusion of modern elegance and true Egyptian charm, serving as the perfect retreat while drifting along the amazing River Nile. Feel the tranquility in every moment and enjoy an unparalleled luxury experience.",
+      href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+      slides: [
+        "scraped-suites-royal",
+        "scraped-royal-1",
+        "scraped-royal-3",
+        "scraped-royal-5",
+      ] as const,
+    },
+  ],
+  listings: [
+    {
+      title: "Luxury Suite : Luxor / Aswan / Luxor",
+      meta: "7 Nights / 8 Days",
+      desc: "Immerse yourself in the perfect harmony of timeless style and modern luxury on our Nile Cruise Luxury Suites. Our Spacious Suites on Dahabiya are not limited by lavish decor but offer ravishing scenes. 7 nights itinerary Luxor / Aswan / Luxor Price Per Suite – Maximum 4 Persons",
+      href: "/rooms/Luxury-nile-cruise-Luxor-Aswan-Luxor",
+      slides: [
+        "scraped-luxsuite-1",
+        "scraped-luxsuite-2",
+        "scraped-luxsuite-3",
+        "scraped-luxsuite-4",
+      ] as const,
+    },
+    {
+      title: "Hathor Luxury Suite : Aswan / Luxor",
+      meta: "3 Nights / 4 Days",
+      desc: "Experience the ultimate luxury in our Nile Cruise Luxury Suites, where the authenticity of Egypt meets the luxurious modern interiors. 3 nights itinerary Aswan to Luxor Price Per Suite – Maximum 4 Persons",
+      href: "/rooms/Dahabiya-Nile-cruise-Cairo-to-Aswan",
+      slides: [
+        "scraped-luxsuite-5",
+        "scraped-luxsuite-6",
+        "scraped-luxsuite-2",
+        "scraped-luxsuite-4",
+      ] as const,
+    },
+    {
+      title: "Luxury Suite : Luxor / Aswan",
+      meta: "4 Nights / 5 Days",
+      desc: "Indulge yourself in graceful comfort at the Nile Cruise Luxury Suites featured on Hathor Cruise Egypt. Every suite is beautifully designed with timeless style and modern ease, creating the perfect place to relax. 4 nights itinerary Luxor / Aswan Price Per Suite – Maximum 4 Persons",
+      href: "/rooms/Luxury-Nile-Cruise-Cairo-to-Aswan",
+      slides: [
+        "scraped-luxsuite-3",
+        "scraped-luxsuite-1",
+        "scraped-luxsuite-5",
+        "scraped-luxsuite-6",
+      ] as const,
+    },
   ],
   amenities: {
-    title: "Suite Amenities",
+    title: "Luxury Suites",
     features: [
       "LED Satellite Screen",
       "Bathtub or Walk-In Shower",
       "Safe box",
-      "Exclusive décor and color themes",
-      "Jacuzzi & dual toilets",
-      "Hair dryer & mini bar",
-      "Smart entertainment system",
-      "Room & laundry service",
-      "Air conditioning & high-speed Wi-Fi",
-      "Panoramic Nile view",
     ],
   },
   cruisesCta: {
-    title: "Sail in a Luxury Suite",
-    body: "Pair your suite with an exclusive Hathor itinerary — from intimate 3-night sailings to grand 7-night voyages between Luxor and Aswan.",
-    hrefLabel: "View cruises",
+    title: "Luxury Suites",
+    body: "The Luxury Suites aboard the Hathor Dahabiya Cruise showcase timeless sophistication combined with modern amenities, offering a unique and private Dahabiya Cruise experience for each suite choice.",
+    href: "/cruises",
+    hrefLabel: "Read More",
   },
 } as const;
 
+/** Scraped from https://www.hathorcruise.com/Luxury-Royal-Suites-Nile-Dahabiya-Cruise */
 export const ROYAL_SUITES_PAGE = {
   metaDescription:
-    "Experience Hathor Dahabiya's two magnificent Royal Suites — 56 sqm of sophisticated elegance with panoramic Nile views, private balconies, jacuzzi, and uncompromising privacy on the Main Deck.",
+    "Luxury Dahabiya Royal Suite | Private Dahabiya Nile cruise",
   hero: {
     title: "Luxury Royal Suites",
-    subtitle: "Luxury Royal Suites on Hathor Dahabiya",
+    subtitle: "Luxury Royal Suites and Nile Whisper Stories of Kings",
   },
   overview: {
-    title: "Two Magnificent Royal Suites",
-    subtitle: "56 sqm of sophisticated elegance",
-    body: "The crown jewel of Hathor Dahabiya — our two Royal Suites on the Main Deck are designed for those who seek the extraordinary. Each suite features prime Nile views, one-of-a-kind furnishings, signature color palettes, and a private balcony for unforgettable vistas as you sail between Luxor and Aswan.",
+    title: "Luxury Royal Suites and Nile Whisper Stories of Kings",
+    subtitle: "56 Square Meters · Panoramic Nile view",
+    body: "They are designed for privacy and luxury, featuring Hathor elegant interior, historic decorations, and modern conveniences that comprise a luxurious fine stay.",
   },
-  intro:
-    "Experience a luxury authentic journey in our Royal Suite Nile Cruise aboard the Hathor Dahabiya Cruise Egypt, making for a memorable Luxury Nile Sailing Boat navigating the timeless Nile. They are designed for privacy and luxury, featuring Hathor elegant interior, historic decorations, and modern conveniences that comprise a luxurious fine stay. The Royal Suite with Panoramic Nile View features panoramic windows and a private balcony, allowing you to enjoy unforgettable views of the Nile as you sail through Luxor and Aswan. For visitors who seek added exclusivity, the Private Royal Suite with Nile View provides a peaceful retreat and luxury furniture with personalized comfort aboard Hathor Luxury Dahabiya. On this elegant and authentic Dahabiya experience, traditional craftsmanship blends seamlessly with modern luxury, creating the perfect setting for an unforgettable journey along the Nile.",
-  itineraries: {
-    title: "Royal Suite Itineraries",
-    options: [
-      "Lose yourself in the heart of the Nile with our Luxury Royal Suites Nile Cruise, tailored with love for those who appreciate authenticity, royalty and comfort. 7 nights itinerary Luxor / Aswan / Luxor — Price Per Royal Suite, Maximum 4 Persons.",
-      "Discover the perfect blend of luxury, space, and elegance as you begin your journey aboard our Luxury Royal Suites Dahabiya Cruise, where every suite is thoughtfully designed with care and attention to detail. 3-Night Itinerary: Aswan to Luxor — Price Per Royal Suite, Maximum 4 Persons.",
-      "Sail the Nile in style aboard the Luxury Royal Suites Nile Cruise. Every Royal Suite with Panoramic Views is a perfect match between elegant design, rich materials, and graceful hues to draw a truly peaceful escape. 4 nights itinerary Luxor / Aswan — Price Per Royal Suite, Maximum 4 Persons.",
-    ],
-  },
+  intro: [
+    "Experience a luxury authentic journey in our Royal Suite Nile Cruise aboard the Hathor Dahabiya Cruise Egypt, making for a memorable Luxury Nile Sailing Boat navigating the timeless Nile on a private Dahabiya Nile cruise.",
+    "They are designed for privacy and luxury, featuring Hathor elegant interior, historic decorations, and modern conveniences that comprise a luxurious fine stay. The Royal Suite with Panoramic Nile View features panoramic windows and a private balcony, allowing you to enjoy an unforgettable views of the Nile as you sail through Luxor and Aswan. For visitors who seek added exclusivity, the Private Royal Suite with Nile View provides a peaceful retreat and luxury furniture with personalized comfort just by Hathor Luxury Dahabiya. On this elegant and authentic Dahabiya experience, traditional craftsmanship blends seamlessly with modern luxury, creating the perfect setting for an unforgettable journey along the Nile aboard a private Dahabiya Nile cruise.",
+  ],
+  listings: [
+    {
+      title: "Luxury Royal Suite : Luxor / Aswan / Luxor",
+      meta: "7 Nights / 8 Days",
+      desc: "Loose yourself in the heart of the Nile with our Luxury Royal Suites Nile Cruise, tailored with love for those who appreciate authenticity, royalty and comfort. 7 nights itinerary Luxor / Aswan / Luxor Price Per Royal Suite – Maximum 4 Persons",
+      href: "/rooms/Best-Dahabiya-Nile-cruise",
+      slides: [
+        "scraped-royal-1",
+        "scraped-royal-2",
+        "scraped-royal-3",
+        "scraped-royal-4",
+      ] as const,
+    },
+    {
+      title: "Hathor Luxury Royal Suite : Aswan / Luxor",
+      meta: "3 Nights / 4 Days",
+      desc: "Discover the perfect blend of luxury, space, and elegance as you begin your journey aboard our Luxury Royal Suites Dahabiya Cruise, where every suite is thoughtfully designed with care and attention to detail. 3-Night Itinerary: Aswan to Luxor Price Per Royal Suite: Maximum 4 Persons",
+      href: "/rooms/Luxury-small-boat-Nile-cruise",
+      slides: [
+        "scraped-royal-5",
+        "scraped-royal-6",
+        "scraped-royal-7",
+        "scraped-royal-8",
+      ] as const,
+    },
+    {
+      title: "Luxury Royal Suite : Luxor / Aswan",
+      meta: "4 Nights / 5 Days",
+      desc: "Sail the Nile in style aboard the Luxury Royal Suites Nile Cruise. Every Royal Suite with Panoramic Views is a perfect match between elegant design, rich materials, and graceful hues to draw a truly peaceful escape. 4 nights itinerary Luxor / Aswan Price Per Royal Suite – Maximum 4 Persons",
+      href: "/rooms/nile-sailing-cruise",
+      slides: [
+        "scraped-royal-2",
+        "scraped-royal-3",
+        "scraped-royal-5",
+        "scraped-royal-1",
+      ] as const,
+    },
+  ],
   amenities: {
-    title: "Royal Suite Amenities",
+    title: "Luxury Royal Suites",
     features: [
-      "Tea & Coffee Facilities",
-      "High-Speed Internet Access",
-      "All cabins are non-smoking areas",
-      "2 Magnificent Royal Suites",
-      "Panoramic Nile view",
-      "Private balcony",
       "LED Satellite Screen",
       "Bathtub or Walk-In Shower",
       "Safe box",
-      "Jacuzzi & two luxurious bathrooms",
-      "One-of-a-kind furnishings and signature color palettes",
-      "Full amenities including coffee machine, mini bar, and air conditioning",
+      "Tea & Coffee Facilities",
+      "Telephone",
+      "High-Speed Internet Access",
+      "All cabins are non-smoking areas",
+      "Panoramic Nile view",
+      "2 Luxury Suites & 2 Royal Suites",
+      "56 Square Meters",
+      "Minibar",
+      "Laundry Service",
       "Smart System",
-      "Room & laundry service",
       "Doctor On Call",
+      "Jacuzzi",
+      "Room Service",
+      "Air Conditioner",
+      "Hair Dryer",
     ],
   },
   bookCta: {
-    title: "Reserve Your Royal Suite",
-    body: "Experience the pinnacle of Nile cruising — unparalleled privacy, panoramic views, and Hathor's signature hospitality await aboard our Royal Suites.",
+    title: "Luxury Royal Suites",
+    body: "Step into the Signature Royal Suite on the Hathor Dahabiya Cruise and lose yourself in the wonders of forever luxury aboard a private Dahabiya Nile cruise.",
   },
   cruisesCta: {
-    title: "Explore Royal Suite Itineraries",
-    body: "Pair your Royal Suite with an exclusive Hathor sailing — from 3-night journeys between Aswan and Luxor to grand 7-night round-trip voyages.",
-    hrefLabel: "View cruises",
+    title: "Luxury Royal Suites",
+    body: "On this elegant and authentic Dahabiya experience, traditional craftsmanship blends seamlessly with modern luxury, creating the perfect setting for an unforgettable journey along the Nile.",
+    href: "/cruises",
+    hrefLabel: "Read More",
   },
 } as const;

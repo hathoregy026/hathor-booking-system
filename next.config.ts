@@ -82,6 +82,17 @@ const nextConfig: NextConfig = {
         destination: "/gastronomy",
         permanent: true,
       },
+      {
+        source: "/Nile-Cruise-Luxury-Suites",
+        destination: "/rooms",
+        permanent: true,
+      },
+      // Live-site room detail paths (same links) → cruises until detail pages exist
+      {
+        source: "/rooms/:slug",
+        destination: "/cruises",
+        permanent: false,
+      },
     ];
   },
 };
