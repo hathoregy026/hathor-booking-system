@@ -1,7 +1,7 @@
 /**
- * Real site-wide night mode — flips cream/light surfaces to deep black.
- * Default remains day (html[data-public-theme="day"]).
- * Heroes / photo stacks stay dark cinematic; cream content areas turn night.
+ * Night mode — dark surfaces only when html[data-public-theme="night"].
+ * Day mode is restored explicitly below so cream/day never inherits night bleed.
+ * Does not override typography !important colors from the dashboard.
  */
 
 html[data-public-theme="night"] {
@@ -9,23 +9,16 @@ html[data-public-theme="night"] {
   --public-bg: #0b0907;
   --public-surface: #14110e;
   --public-card: #1a1612;
-  --public-navy: #12100e;
-  --public-navy-deep: #0b0907;
   --public-text: #f5efe4;
   --public-muted: #a89f92;
   --public-border: rgb(245 239 228 / 0.12);
   --hieroglyph-cream: #0b0907;
-  --lux-dark: #0b0907;
-  --lux-dark-2: #14110e;
-  --lux-text-light: #f5efe4;
-  --lux-text-grey: #a89f92;
   --hathor-dark: #0b0907;
   --hathor-dark-2: #14110e;
   --hathor-surface: #1a1612;
   --hathor-cream: #f5efe4;
   --hathor-text-light: #e8e2d9;
   --hathor-muted: #a89f92;
-  --hathor-accent: #2a241c;
 }
 
 html[data-public-theme="night"],
@@ -45,8 +38,8 @@ html[data-public-theme="night"] .home-experience-route {
   --public-surface: #14110e;
   --public-text: #f5efe4;
   --public-muted: #a89f92;
-  --public-border: rgb(245 239 228 / 0.12);
   --hieroglyph-cream: #0b0907;
+  --hieroglyph-opacity: 0.042;
   --hathor-dark: #0b0907;
   --hathor-dark-2: #14110e;
   --hathor-surface: #1a1612;
@@ -57,7 +50,6 @@ html[data-public-theme="night"] .home-experience-route {
   color: #f5efe4;
 }
 
-/* Hieroglyph cream hosts → night black */
 html[data-public-theme="night"] .public-site,
 html[data-public-theme="night"] .public-page-body,
 html[data-public-theme="night"][data-ex-experience] .ex-root,
@@ -65,14 +57,8 @@ html[data-public-theme="night"] .cruises-scroll-route .cruises-sheet,
 html[data-public-theme="night"] .public-site .hathor-section--cream,
 html[data-public-theme="night"] .public-site .lux-section--cream {
   background-color: #0b0907 !important;
-  background-image: none !important;
 }
 
-html[data-public-theme="night"] .public-site {
-  --hieroglyph-opacity: 0.042;
-}
-
-/* Homepage Venetian experience */
 html[data-public-theme="night"][data-ex-experience] .ex-root {
   --ex-cream: #0b0907;
   --cream: #0b0907;
@@ -81,9 +67,8 @@ html[data-public-theme="night"][data-ex-experience] .ex-root {
   --ink-soft: #d9d0c4;
   --muted: #a89f92;
   --blush: #1f1a15;
-  color: #f5efe4 !important;
-  background: #0b0907 !important;
   background-color: #0b0907 !important;
+  color: #f5efe4;
 }
 
 html[data-public-theme="night"][data-ex-experience] .ex-root .gallery-section,
@@ -92,29 +77,6 @@ html[data-public-theme="night"][data-ex-experience] .ex-root .cta-section {
   background-color: rgb(20 16 12 / 0.85) !important;
 }
 
-html[data-public-theme="night"][data-ex-experience] .ex-root .text-img-section,
-html[data-public-theme="night"][data-ex-experience] .ex-root .services-section,
-html[data-public-theme="night"][data-ex-experience] .ex-root .about-section,
-html[data-public-theme="night"][data-ex-experience] .ex-root .ex-content-section:not(.ex-stack-scroll) {
-  background-color: transparent !important;
-  color: #f5efe4;
-}
-
-html[data-public-theme="night"][data-ex-experience] .ex-root .radius-heading h2,
-html[data-public-theme="night"][data-ex-experience] .ex-root .home-carousel-h2 h2,
-html[data-public-theme="night"][data-ex-experience] .ex-root .home-text-h2 h2,
-html[data-public-theme="night"][data-ex-experience] .ex-root .gallery-h2 h2,
-html[data-public-theme="night"][data-ex-experience] .ex-root .testimonial-h2 h2,
-html[data-public-theme="night"][data-ex-experience] .ex-root .cta-inner h2,
-html[data-public-theme="night"][data-ex-experience] .ex-root .radius-p p,
-html[data-public-theme="night"][data-ex-experience] .ex-root .home-text-p p,
-html[data-public-theme="night"][data-ex-experience] .ex-root .home-scroll-p p,
-html[data-public-theme="night"][data-ex-experience] .ex-root .cta-inner p,
-html[data-public-theme="night"][data-ex-experience] .ex-root .testimonial-card p {
-  color: #f5efe4;
-}
-
-/* Inner pages / Venetian accommodation shells */
 html[data-public-theme="night"] .venetian-page,
 html[data-public-theme="night"] .page-accommodation,
 html[data-public-theme="night"] .page-cruises {
@@ -129,69 +91,89 @@ html[data-public-theme="night"] .page-cruises {
   color: #f5efe4;
 }
 
-html[data-public-theme="night"] .venetian-page .about-section,
-html[data-public-theme="night"] .venetian-page .acc-intro-block,
-html[data-public-theme="night"] .cruises-page .about-section,
-html[data-public-theme="night"] .cruises-page .cruise-intro {
-  background: transparent !important;
-  color: #f5efe4;
-}
-
-html[data-public-theme="night"] .public-site .hathor-section,
-html[data-public-theme="night"] .public-site .lux-section,
-html[data-public-theme="night"] .public-site .owo-footer,
-html[data-public-theme="night"] .public-site .ex-site-footer {
-  background-color: #0b0907;
-  color: #f5efe4;
-}
-
-html[data-public-theme="night"] .public-site .hathor-section--dark,
-html[data-public-theme="night"] .public-site .lux-section--dark {
-  background-color: #080604 !important;
-}
-
-/* Cards / panels that hardcode white or cream */
-html[data-public-theme="night"] .public-site .hathor-partner-card,
-html[data-public-theme="night"] .public-site .testimonial-card,
-html[data-public-theme="night"] .public-site .carousel-slide,
-html[data-public-theme="night"] .venetian-page .room-interstitial,
-html[data-public-theme="night"] .public-site .hathor-contact-card {
-  background-color: #14110e !important;
-  color: #f5efe4;
-  border-color: rgb(245 239 228 / 0.12);
-}
-
-html[data-public-theme="night"] .public-site .hathor-section-title,
-html[data-public-theme="night"] .public-site .hathor-page-hero__title,
-html[data-public-theme="night"] .public-site .lux-section-title,
-html[data-public-theme="night"] .public-site .hathor-section-lead,
-html[data-public-theme="night"] .public-site .hathor-body-text,
-html[data-public-theme="night"] .public-site .public-page-body p,
-html[data-public-theme="night"] .public-site .owo-footer__link,
-html[data-public-theme="night"] .public-site .owo-footer__legal-link {
-  color: #f5efe4;
-}
-
-html[data-public-theme="night"] .public-site .hathor-section-lead,
-html[data-public-theme="night"] .public-site .public-page-body p,
-html[data-public-theme="night"] .public-site .hathor-muted {
-  color: #cfc5b6;
-}
-
-/* Keep over-hero / menu-hover chrome readable */
-html[data-public-theme="night"] .hathor-header--over-hero:not(.hathor-header--menu-hovered) .hathor-header__nav-link,
-html[data-public-theme="night"] .hathor-header--over-hero:not(.hathor-header--menu-hovered) .hathor-header__menu-btn {
-  color: #e4d5b8;
-}
-
-html[data-public-theme="night"] .hathor-header--owo-hero-layout.hathor-header--menu-hovered .hathor-header__nav-link,
-html[data-public-theme="night"] .hathor-header--owo-hero-layout.hathor-header--menu-hovered .hathor-header__menu-btn {
-  color: #1c1917;
-}
-
-/* Theme toggle stays visible on night */
 html[data-public-theme="night"] .public-theme-toggle {
   border-color: rgb(228 213 184 / 0.4);
   background: rgb(10 8 6 / 0.45);
+  color: #e4d5b8;
+}
+
+/* ——— Day restore (must win over night variable bleed) ——— */
+html[data-public-theme="day"],
+html[data-public-theme="day"] body {
+  color-scheme: light;
+  background-color: #ece8df !important;
+  color: #1a1a1a;
+}
+
+html[data-public-theme="day"] .public-site,
+html[data-public-theme="day"] .hathor-site,
+html[data-public-theme="day"] .preview-site,
+html[data-public-theme="day"] .public-main,
+html[data-public-theme="day"] .page-transition,
+html[data-public-theme="day"] .public-page-body,
+html[data-public-theme="day"] .home-experience-route {
+  --public-bg: #ece8df;
+  --public-surface: #f5f0e8;
+  --public-text: #1a1a1a;
+  --public-muted: #6b6560;
+  --public-border: rgb(26 26 26 / 0.08);
+  --hieroglyph-cream: #ece8df;
+  --hieroglyph-opacity: 0.028;
+  --hathor-dark: #faf8f5;
+  --hathor-dark-2: #f5f0e8;
+  --hathor-surface: #f0ebe3;
+  --hathor-cream: #1c1917;
+  --hathor-text-light: #3d3834;
+  --hathor-muted: #6b6560;
+  background-color: transparent;
+  color: #1a1a1a;
+}
+
+html[data-public-theme="day"] .public-site,
+html[data-public-theme="day"] .public-page-body,
+html[data-public-theme="day"][data-ex-experience] .ex-root,
+html[data-public-theme="day"] .cruises-scroll-route .cruises-sheet,
+html[data-public-theme="day"] .public-site .hathor-section--cream,
+html[data-public-theme="day"] .public-site .lux-section--cream {
+  --hieroglyph-cream: #ece8df;
+  background-color: #ece8df !important;
+}
+
+html[data-public-theme="day"][data-ex-experience] .ex-root {
+  --ex-cream: #ece8df;
+  --cream: #ece8df;
+  --cream-deep: #ebe6dc;
+  --ink: #2c2419;
+  --ink-soft: #4a3f32;
+  --muted: #6b5d4d;
+  --blush: #e8dcc8;
+  background-color: #ece8df !important;
+  color: #2c2419 !important;
+}
+
+html[data-public-theme="day"][data-ex-experience] .ex-root .gallery-section,
+html[data-public-theme="day"][data-ex-experience] .ex-root .testimonials-section,
+html[data-public-theme="day"][data-ex-experience] .ex-root .cta-section {
+  background-color: rgb(235 230 220 / 0.45) !important;
+  color: #2c2419;
+}
+
+html[data-public-theme="day"] .venetian-page,
+html[data-public-theme="day"] .page-accommodation,
+html[data-public-theme="day"] .page-cruises {
+  --cream: #f5efe4;
+  --cream-deep: #ebe3d4;
+  --ink: #3e3026;
+  --ink-soft: #5c4b3c;
+  --muted: #7a6a58;
+  --lux-paper: #f5efe4;
+  --lux-paper-deep: #ebe3d4;
+  background: #f5efe4 !important;
+  color: #3e3026;
+}
+
+/* Over-hero nav stays light on imagery in day */
+html[data-public-theme="day"] .hathor-header--over-hero:not(.hathor-header--menu-hovered) .hathor-header__nav-link,
+html[data-public-theme="day"] .hathor-header--over-hero:not(.hathor-header--menu-hovered) .hathor-header__menu-btn {
   color: #e4d5b8;
 }

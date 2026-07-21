@@ -2086,4 +2086,18 @@ html[data-public-theme="night"] .venetian-page {
   color: #f5efe4;
 }
 
+html[data-public-theme="day"] .venetian-page {
+  --cream: #f5efe4;
+  --cream-deep: #ebe3d4;
+  --ink: #3e3026;
+  --ink-soft: #5c4b3c;
+  --muted: #7a6a58;
+  --white: #ffffff;
+  --blush: #e8d6c8;
+  --lux-paper: #f5efe4;
+  --lux-paper-deep: #ebe3d4;
+  background: #f5efe4;
+  color: #3e3026;
+}
+
 

@@ -32,6 +32,15 @@ html[data-public-theme="night"][data-ex-experience] .ex-root {
   --blush: #1f1a15;
 }
 
+html[data-public-theme="day"][data-ex-experience] .ex-root {
+  --cream: #ece8df;
+  --cream-deep: #ebe6dc;
+  --ink: #2c2419;
+  --ink-soft: #4a3f32;
+  --muted: #6b5d4d;
+  --blush: #e8dcc8;
+}
+
 html[data-ex-experience] .ex-root .hero-logo-mark {
   left: 50%;
   top: auto;

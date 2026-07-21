@@ -12,6 +12,11 @@ html[data-ex-experience] .ex-root {
   background-color: var(--ex-cream) !important;
   background-image: none !important;
 }
+html[data-public-theme="day"][data-ex-experience] .ex-root {
+  --ex-cream: #ece8df !important;
+  background-color: #ece8df !important;
+  color: #2c2419 !important;
+}
 html[data-public-theme="night"][data-ex-experience] .ex-root {
   --ex-cream: #0b0907 !important;
   background-color: #0b0907 !important;
