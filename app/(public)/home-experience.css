@@ -1811,7 +1811,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   margin: 56px auto 0;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 24px;
   flex-wrap: wrap;
 }

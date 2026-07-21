@@ -432,9 +432,6 @@ export function HomePageClient({
           </div>
 
           <div className="gallery-container">
-            <div className="gallery-sm">
-              <h2>{EX_GALLERY.title}</h2>
-            </div>
             <BookNowTrigger className="btn btn-dark gallery-button">
               Book Your Cruise
             </BookNowTrigger>
