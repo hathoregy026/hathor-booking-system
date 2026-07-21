@@ -114,13 +114,13 @@ export function PublicSiteHero({
       {playVideo ? (
         <div className="hero-luxury-blur" aria-hidden="true">
           <span className="hero-luxury-blur__haze" />
-          <span className="hero-luxury-blur__band" />
-          <span className="hero-luxury-blur__shade hero-luxury-blur__shade--a" />
-          <span className="hero-luxury-blur__shade hero-luxury-blur__shade--b" />
-          <span className="hero-luxury-blur__shade hero-luxury-blur__shade--c" />
-          <span className="hero-luxury-blur__shade hero-luxury-blur__shade--d" />
-          <span className="hero-luxury-blur__shade hero-luxury-blur__shade--e" />
-          <span className="hero-luxury-blur__shade hero-luxury-blur__shade--f" />
+          <span className="hero-luxury-blur__orb hero-luxury-blur__orb--1" />
+          <span className="hero-luxury-blur__orb hero-luxury-blur__orb--2" />
+          <span className="hero-luxury-blur__orb hero-luxury-blur__orb--3" />
+          <span className="hero-luxury-blur__orb hero-luxury-blur__orb--4" />
+          <span className="hero-luxury-blur__orb hero-luxury-blur__orb--5" />
+          <span className="hero-luxury-blur__orb hero-luxury-blur__orb--6" />
+          <span className="hero-luxury-blur__orb hero-luxury-blur__orb--7" />
         </div>
       ) : null}
 

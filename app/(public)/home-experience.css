@@ -690,7 +690,8 @@ h1, h2, h3, h4, p {
 
 /*
   Homepage video hero only (.hero-luxury-blur from playVideo).
-  Light frost + translucent scrim + horizon “sun shade” blooms (not flat circles).
+  Transparent dark veil + luminous circular gold bokeh (horizon cluster).
+  Orbs stay round with internal shimmer — not flattened pancakes.
   Above media / below logo·CTA·scroll. pointer-events: none.
 */
 .hero-luxury-blur {
@@ -699,203 +700,212 @@ h1, h2, h3, h4, p {
   right: 0;
   bottom: 0;
   z-index: 1;
-  height: min(50vh, 580px);
+  height: min(48vh, 560px);
   pointer-events: none;
   overflow: hidden;
-  /* Lighter frost — more of the video shows through */
-  -webkit-backdrop-filter: blur(14px) saturate(1.12) brightness(0.97);
-  backdrop-filter: blur(14px) saturate(1.12) brightness(0.97);
+  -webkit-backdrop-filter: blur(12px) saturate(1.1);
+  backdrop-filter: blur(12px) saturate(1.1);
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(20, 12, 6, 0.06) 22%,
-    rgba(12, 7, 4, 0.18) 48%,
-    rgba(8, 4, 2, 0.32) 72%,
-    rgba(4, 2, 1, 0.42) 100%
+    rgba(18, 10, 5, 0.05) 20%,
+    rgba(12, 7, 4, 0.16) 50%,
+    rgba(8, 4, 2, 0.28) 78%,
+    rgba(4, 2, 1, 0.38) 100%
   );
   -webkit-mask-image: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(0, 0, 0, 0.25) 16%,
-    #000 42%,
+    rgba(0, 0, 0, 0.3) 18%,
+    #000 45%,
     #000 100%
   );
   mask-image: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(0, 0, 0, 0.25) 16%,
-    #000 42%,
+    rgba(0, 0, 0, 0.3) 18%,
+    #000 45%,
     #000 100%
   );
   transform: translateZ(0);
 }
 
 .hero-luxury-blur__haze,
-.hero-luxury-blur__band,
-.hero-luxury-blur__shade {
+.hero-luxury-blur__orb {
   position: absolute;
   pointer-events: none;
   display: block;
 }
 
-/* Soft ambient wash — barely there */
+/* Soft warm wash behind the orbs — keeps them grounded on the horizon */
 .hero-luxury-blur__haze {
-  inset: 20% -10% -5%;
+  left: -5%;
+  right: 20%;
+  bottom: 0;
+  height: 55%;
   background: radial-gradient(
-    ellipse 80% 55% at 30% 80%,
-    rgba(180, 110, 45, 0.16) 0%,
-    transparent 68%
+    ellipse 70% 80% at 28% 85%,
+    rgba(200, 120, 45, 0.28) 0%,
+    rgba(120, 70, 25, 0.1) 45%,
+    transparent 72%
   );
-  filter: blur(28px);
-  opacity: 0.55;
+  filter: blur(24px);
+  opacity: 0.65;
   mix-blend-mode: screen;
-}
-
-/* Horizontal horizon glow band — sun sitting on the waterline */
-.hero-luxury-blur__band {
-  left: -8%;
-  right: -8%;
-  bottom: 6%;
-  height: 42%;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(200, 130, 55, 0.08) 12%,
-    rgba(255, 190, 100, 0.22) 28%,
-    rgba(230, 150, 70, 0.14) 48%,
-    rgba(255, 200, 120, 0.18) 62%,
-    rgba(180, 100, 40, 0.08) 82%,
-    transparent 100%
-  );
-  filter: blur(36px);
-  opacity: 0.7;
-  mix-blend-mode: screen;
-  transform: scaleY(0.55);
-  transform-origin: center bottom;
 }
 
 /*
-  Horizon sun-shades — wide/flattened ellipses with off-center hot cores.
-  Heavy blur + screen blend = glowing reflection, not stamped circles.
+  Circular bokeh orbs — equal width/height, ring-like glow + off-center hot core.
+  Moderate blur so they still read as circles (ref: sun shades on dark horizon).
 */
-.hero-luxury-blur__shade {
-  border-radius: 50% 50% 42% 48% / 58% 55% 38% 40%;
+.hero-luxury-blur__orb {
+  border-radius: 50%;
+  aspect-ratio: 1;
   mix-blend-mode: screen;
-  will-change: transform;
+  box-sizing: border-box;
 }
 
-.hero-luxury-blur__shade--a {
-  left: 2%;
-  bottom: 8%;
-  width: min(38vw, 420px);
-  height: min(18vh, 160px);
-  background:
-    radial-gradient(
-      ellipse 70% 80% at 42% 38%,
-      rgba(255, 230, 170, 0.55) 0%,
-      rgba(255, 175, 80, 0.28) 32%,
-      rgba(180, 100, 40, 0.08) 58%,
-      transparent 78%
-    );
-  filter: blur(28px);
-  opacity: 0.72;
-}
-
-.hero-luxury-blur__shade--b {
-  left: 14%;
-  bottom: 2%;
-  width: min(28vw, 300px);
-  height: min(14vh, 120px);
-  background:
-    radial-gradient(
-      ellipse 65% 75% at 58% 45%,
-      rgba(255, 200, 110, 0.48) 0%,
-      rgba(210, 130, 50, 0.2) 40%,
-      transparent 72%
-    );
-  filter: blur(34px);
-  opacity: 0.58;
-  border-radius: 48% 52% 40% 44% / 50% 48% 35% 38%;
-}
-
-.hero-luxury-blur__shade--c {
-  left: 26%;
+.hero-luxury-blur__orb--1 {
+  left: 4%;
   bottom: 10%;
   width: min(22vw, 240px);
-  height: min(11vh, 100px);
+  height: min(22vw, 240px);
   background:
     radial-gradient(
-      ellipse 60% 70% at 35% 55%,
-      rgba(255, 215, 140, 0.4) 0%,
-      rgba(190, 115, 45, 0.15) 45%,
-      transparent 70%
-    );
-  filter: blur(22px);
-  opacity: 0.5;
-  transform: scaleX(1.35) scaleY(0.75);
-}
-
-.hero-luxury-blur__shade--d {
-  left: 8%;
-  bottom: 18%;
-  width: min(16vw, 170px);
-  height: min(9vh, 80px);
-  background:
-    radial-gradient(
-      ellipse 55% 65% at 48% 40%,
-      rgba(255, 240, 190, 0.42) 0%,
-      rgba(230, 160, 70, 0.12) 50%,
-      transparent 75%
-    );
-  filter: blur(18px);
-  opacity: 0.45;
-  transform: scaleX(1.2) scaleY(0.65);
-}
-
-.hero-luxury-blur__shade--e {
-  left: 38%;
-  bottom: 4%;
-  width: min(32vw, 360px);
-  height: min(12vh, 110px);
-  background:
-    radial-gradient(
-      ellipse 75% 60% at 40% 60%,
-      rgba(200, 125, 50, 0.28) 0%,
-      rgba(140, 80, 30, 0.1) 48%,
+      circle at 38% 36%,
+      rgba(255, 236, 190, 0.95) 0%,
+      rgba(255, 200, 110, 0.55) 18%,
+      rgba(220, 140, 55, 0.28) 38%,
+      rgba(160, 90, 30, 0.12) 55%,
       transparent 72%
+    ),
+    radial-gradient(
+      circle at 62% 58%,
+      rgba(255, 170, 70, 0.35) 0%,
+      transparent 45%
     );
-  filter: blur(40px);
-  opacity: 0.4;
-  transform: scaleX(1.5) scaleY(0.55);
-  border-radius: 50% 50% 35% 40% / 45% 45% 30% 32%;
+  filter: blur(10px);
+  opacity: 0.9;
 }
 
-.hero-luxury-blur__shade--f {
-  left: -2%;
-  bottom: -2%;
-  width: min(48vw, 520px);
-  height: min(16vh, 140px);
+.hero-luxury-blur__orb--2 {
+  left: 16%;
+  bottom: 4%;
+  width: min(16vw, 170px);
+  height: min(16vw, 170px);
   background:
     radial-gradient(
-      ellipse 80% 50% at 30% 70%,
-      rgba(160, 95, 35, 0.22) 0%,
-      rgba(100, 55, 20, 0.08) 45%,
+      circle at 55% 42%,
+      rgba(255, 220, 150, 0.9) 0%,
+      rgba(255, 175, 85, 0.5) 22%,
+      rgba(190, 110, 40, 0.22) 48%,
       transparent 70%
     );
-  filter: blur(48px);
-  opacity: 0.48;
-  transform: scaleX(1.25) scaleY(0.5);
+  filter: blur(12px);
+  opacity: 0.82;
+}
+
+.hero-luxury-blur__orb--3 {
+  left: 28%;
+  bottom: 14%;
+  width: min(12vw, 130px);
+  height: min(12vw, 130px);
+  background:
+    radial-gradient(
+      circle at 44% 48%,
+      rgba(255, 240, 200, 0.85) 0%,
+      rgba(240, 170, 80, 0.4) 28%,
+      rgba(170, 95, 35, 0.15) 52%,
+      transparent 68%
+    );
+  filter: blur(8px);
+  opacity: 0.78;
+}
+
+.hero-luxury-blur__orb--4 {
+  left: 9%;
+  bottom: 22%;
+  width: min(9vw, 96px);
+  height: min(9vw, 96px);
+  background:
+    radial-gradient(
+      circle at 50% 40%,
+      rgba(255, 230, 170, 0.88) 0%,
+      rgba(230, 150, 60, 0.35) 35%,
+      transparent 65%
+    );
+  filter: blur(7px);
+  opacity: 0.7;
+}
+
+.hero-luxury-blur__orb--5 {
+  left: 36%;
+  bottom: 6%;
+  width: min(18vw, 200px);
+  height: min(18vw, 200px);
+  background:
+    radial-gradient(
+      circle at 40% 55%,
+      rgba(255, 190, 100, 0.7) 0%,
+      rgba(200, 120, 45, 0.32) 30%,
+      rgba(140, 75, 28, 0.12) 55%,
+      transparent 72%
+    ),
+    radial-gradient(
+      circle at 70% 30%,
+      rgba(255, 210, 130, 0.4) 0%,
+      transparent 40%
+    );
+  filter: blur(14px);
+  opacity: 0.75;
+}
+
+.hero-luxury-blur__orb--6 {
+  left: 22%;
+  bottom: 0%;
+  width: min(14vw, 150px);
+  height: min(14vw, 150px);
+  background:
+    radial-gradient(
+      circle at 48% 35%,
+      rgba(255, 205, 120, 0.8) 0%,
+      rgba(210, 130, 50, 0.35) 32%,
+      transparent 68%
+    );
+  filter: blur(11px);
+  opacity: 0.68;
+}
+
+.hero-luxury-blur__orb--7 {
+  left: 42%;
+  bottom: 16%;
+  width: min(8vw, 88px);
+  height: min(8vw, 88px);
+  background:
+    radial-gradient(
+      circle at 52% 45%,
+      rgba(255, 225, 160, 0.75) 0%,
+      rgba(220, 145, 55, 0.28) 40%,
+      transparent 66%
+    );
+  filter: blur(9px);
+  opacity: 0.62;
 }
 
 @media (max-width: 767px) {
   .hero-luxury-blur {
-    height: min(44vh, 420px);
+    height: min(42vh, 400px);
   }
 
-  .hero-luxury-blur__shade--a,
-  .hero-luxury-blur__shade--b,
-  .hero-luxury-blur__shade--e {
-    filter: blur(22px);
+  .hero-luxury-blur__orb--1 {
+    width: min(36vw, 180px);
+    height: min(36vw, 180px);
+  }
+
+  .hero-luxury-blur__orb--5 {
+    left: 48%;
+    width: min(28vw, 140px);
+    height: min(28vw, 140px);
   }
 }
 
