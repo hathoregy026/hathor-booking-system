@@ -1088,7 +1088,9 @@
 }
 
 .cruise-card-actions .btn-dark {
-  background: transparent;
+  background: #ffffff;
+  color: var(--lux-ink, #2c2419);
+  border-color: var(--lux-gold, #b69f64);
 }
 
 .cruise-card-media .object-cover,
