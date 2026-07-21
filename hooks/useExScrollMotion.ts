@@ -694,12 +694,21 @@ export function useExScrollMotion() {
           zIndex: index + 1,
           /* 100 = flush cover — never park below the fold (108 showed a dark gap) */
           yPercent: index === 0 ? 0 : 100,
+          x: 0,
+          xPercent: 0,
           scale: 1,
           filter: "brightness(1)",
           force3D: true,
+          clearProps: "",
         });
         if (media) {
-          gsap.set(media, { scale: index === 0 ? 1.06 : 1.14, force3D: true });
+          /* Gentle ken burn — avoid a hard settle when the pin engages */
+          gsap.set(media, {
+            x: 0,
+            xPercent: 0,
+            scale: index === 0 ? 1.04 : 1.08,
+            force3D: true,
+          });
         }
       });
 
@@ -709,20 +718,26 @@ export function useExScrollMotion() {
           trigger: section,
           start: "top top",
           end: `+=${scrollSpan * 100}%`,
-          scrub: 1.35,
+          scrub: 1.15,
           pin: viewport,
           pinSpacing: true,
           anticipatePin: 0,
           fastScrollEnd: true,
           invalidateOnRefresh: true,
+          /* Keep pinned width stable — no 100vw recalculation on pin */
+          onRefresh: (self) => {
+            const pin = self.pin as HTMLElement | null;
+            if (!pin) return;
+            gsap.set(pin, { x: 0, left: 0, marginLeft: 0, clearProps: "marginRight" });
+          },
         },
       });
 
       if (copy) {
         tl.fromTo(
           copy,
-          { y: 0, opacity: 1 },
-          { y: -28, opacity: 0.92, ease: "none", duration: scrollSpan },
+          { y: 0, opacity: 1, x: 0 },
+          { y: -28, opacity: 0.92, x: 0, ease: "none", duration: scrollSpan },
           0,
         );
       }
@@ -734,16 +749,16 @@ export function useExScrollMotion() {
 
         tl.fromTo(
           card,
-          { yPercent: 100, scale: 1 },
-          { yPercent: 0, scale: 1, ease: "none", duration: step },
+          { yPercent: 100, scale: 1, x: 0, xPercent: 0 },
+          { yPercent: 0, scale: 1, x: 0, xPercent: 0, ease: "none", duration: step },
           at,
         );
 
         if (media) {
           tl.fromTo(
             media,
-            { scale: 1.16 },
-            { scale: 1.05, ease: "none", duration: step },
+            { scale: 1.08, x: 0 },
+            { scale: 1.04, x: 0, ease: "none", duration: step },
             at,
           );
         }
@@ -758,6 +773,8 @@ export function useExScrollMotion() {
             underCard,
             {
               yPercent: 0,
+              x: 0,
+              xPercent: 0,
               scale: 1,
               filter: `brightness(${Math.max(0.55, 1 - depth * 0.1)})`,
               ease: "none",
@@ -770,7 +787,8 @@ export function useExScrollMotion() {
             tl.to(
               underMedia,
               {
-                scale: 1.05 + depth * 0.015,
+                scale: 1.04 + depth * 0.01,
+                x: 0,
                 ease: "none",
                 duration: step,
               },

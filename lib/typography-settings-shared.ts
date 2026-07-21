@@ -585,7 +585,8 @@ ${block(
 .public-site .venetian-page .room-fs-ui .room-fs-label,
 .public-site .venetian-page .room-fs-ui .room-fs-route,
 .public-site .venetian-page .room-fs-ui .room-fs-count,
-.public-site .venetian-page .room-fs-ui .room-fs-count i`,
+.public-site .venetian-page .room-fs-ui .room-fs-count i,
+html[data-ex-experience] .ex-root .ex-stack-scroll__eyebrow`,
   "page_subtitle",
 )}
 ${block(
@@ -614,6 +615,7 @@ html[data-ex-experience] .ex-root .home-text-p p,
 html[data-ex-experience] .ex-root .home-scroll-p p,
 html[data-ex-experience] .ex-root .cta-inner p,
 html[data-ex-experience] .ex-root .testimonial-card p,
+html[data-ex-experience] .ex-root .ex-stack-scroll__body,
 .public-site .typo-body-text`,
   "body_text",
 )}

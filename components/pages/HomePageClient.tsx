@@ -21,6 +21,7 @@ import {
   EX_WELLNESS,
 } from "@/lib/ex-page-content";
 import { useExScrollMotion } from "@/hooks/useExScrollMotion";
+import { useTypographyInlineStyle } from "@/components/public/TypographySettingsProvider";
 import {
   DEFAULT_HERO_LOGO_TUNE,
   type HeroLogoTune,
@@ -66,6 +67,10 @@ export function HomePageClient({
   heroLogoTune = DEFAULT_HERO_LOGO_TUNE,
 }: HomePageClientProps) {
   useExScrollMotion();
+
+  const stackEyebrowStyle = useTypographyInlineStyle("page_subtitle");
+  const stackTitleStyle = useTypographyInlineStyle("page_title");
+  const stackBodyStyle = useTypographyInlineStyle("body_text");
 
   const [liveTune, setLiveTune] = useState(heroLogoTune);
 
@@ -273,12 +278,20 @@ export function HomePageClient({
             </div>
 
             <div className="ex-stack-scroll__copy">
-              <p className="ex-stack-scroll__eyebrow">Nile · Hathor</p>
-              <h2 className="ex-stack-scroll__title">
-                <span className="ex-stack-scroll__title-line">Every landmark,</span>
-                <span className="ex-stack-scroll__title-line">a pleasure.</span>
+              <p className="ex-stack-scroll__eyebrow" style={stackEyebrowStyle}>
+                Nile · Hathor
+              </p>
+              <h2 className="ex-stack-scroll__title" style={stackTitleStyle}>
+                <span className="ex-stack-scroll__title-line" style={stackTitleStyle}>
+                  Every landmark,
+                </span>
+                <span className="ex-stack-scroll__title-line" style={stackTitleStyle}>
+                  a pleasure.
+                </span>
               </h2>
-              <p className="ex-stack-scroll__body">{EX_PINNED.body}</p>
+              <p className="ex-stack-scroll__body" style={stackBodyStyle}>
+                {EX_PINNED.body}
+              </p>
             </div>
           </div>
         </section>

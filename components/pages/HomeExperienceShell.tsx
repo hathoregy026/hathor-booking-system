@@ -48,10 +48,11 @@ html[data-ex-experience] .ex-stack-scroll__card {
   box-shadow: none !important;
 }
 html[data-ex-experience] .ex-stack-scroll__viewport {
-  width: 100vw !important;
-  max-width: 100vw !important;
-  margin-left: calc(50% - 50vw) !important;
-  margin-right: calc(50% - 50vw) !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  left: 0 !important;
   height: 100dvh !important;
   min-height: 100dvh !important;
   overflow: hidden !important;
@@ -61,6 +62,8 @@ html[data-ex-experience] .pin-spacer:has(.ex-stack-scroll__viewport) {
   background: #0c0806 !important;
   background-color: #0c0806 !important;
   margin: 0 !important;
+  margin-left: 0 !important;
+  left: 0 !important;
   width: 100% !important;
   max-width: none !important;
 }
