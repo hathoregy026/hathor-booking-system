@@ -367,7 +367,7 @@ export function HomePageClient({
                 target="_blank"
                 rel="noopener noreferrer"
                 style={galleryIndicationStyle}
-                aria-label="Follow Hathor Cruise on Instagram"
+                aria-label="Hathor Cruise on Instagram"
               >
                 <SocialBrandIcon
                   platform="instagram"
@@ -375,9 +375,6 @@ export function HomePageClient({
                 />
                 <span className="gallery-ig-link__handle">
                   {EX_GALLERY.indication}
-                </span>
-                <span className="gallery-ig-link__cue" aria-hidden="true">
-                  Follow
                 </span>
               </a>
             </div>
