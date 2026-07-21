@@ -36,6 +36,19 @@ html[data-ex-experience] .ex-content-section {
   background-color: transparent !important;
   background-image: none !important;
 }
+/* Must stay solid — transparent stack flashes cream as a seam under the photo */
+html[data-ex-experience] .ex-stack-scroll.ex-content-section,
+html[data-ex-experience] .ex-stack-scroll,
+html[data-ex-experience] .ex-stack-scroll__viewport {
+  background-color: #0c0806 !important;
+  background-image: none !important;
+}
+html[data-ex-experience] .ex-stack-scroll .pin-spacer,
+html[data-ex-experience] .pin-spacer:has(.ex-stack-scroll__viewport) {
+  background: #0c0806 !important;
+  background-color: #0c0806 !important;
+  margin: 0 !important;
+}
 .home-experience-route::before,
 html[data-ex-experience] .public-site::before {
   content: none !important;
