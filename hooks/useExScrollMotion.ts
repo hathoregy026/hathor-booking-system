@@ -704,10 +704,11 @@ export function useExScrollMotion() {
           trigger: section,
           start: "top top",
           end: `+=${scrollSpan * 100}%`,
-          scrub: 1.65,
+          scrub: 1.35,
           pin: viewport,
           pinSpacing: true,
-          anticipatePin: 1,
+          anticipatePin: 0,
+          fastScrollEnd: true,
           invalidateOnRefresh: true,
         },
       });

@@ -89,6 +89,13 @@ html[data-ex-experience] .ex-root .ex-stack-scroll.ex-content-section {
   background-image: none !important;
 }
 
+html[data-ex-experience] .ex-root .ex-stack-scroll__viewport {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: calc(50% - 50vw) !important;
+}
+
 html[data-ex-experience] .ex-root .ex-content-section::before {
   content: none !important;
   display: none !important;
@@ -101,6 +108,8 @@ html[data-ex-experience] .pin-spacer:has(.ex-stack-scroll__viewport) {
   background: #0c0806 !important;
   background-color: #0c0806 !important;
   margin: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
 }
 
 html[data-ex-experience] .ex-root .gallery-section,
