@@ -189,6 +189,36 @@
 }
 
 /* ---------- Full-screen room stack ---------- */
+/* Cream breath between full-bleed room pins — does not affect .room-fs slide motion */
+.room-interstitial {
+  position: relative;
+  z-index: 6;
+  background: var(--cream, #f5efe4);
+  color: var(--ink, #3e3026);
+  padding: clamp(72px, 12vw, 140px) clamp(20px, 5vw, 64px);
+  text-align: center;
+}
+
+.room-interstitial__inner {
+  width: min(640px, 100%);
+  margin: 0 auto;
+}
+
+.room-interstitial__eyebrow {
+  margin: 0 0 1rem;
+  text-transform: uppercase;
+}
+
+.room-interstitial__script {
+  margin: 0 0 1.5rem;
+  font-style: italic;
+}
+
+.room-interstitial__body {
+  margin: 0;
+  text-wrap: pretty;
+}
+
 .room-stack {
   position: relative;
   z-index: 5;

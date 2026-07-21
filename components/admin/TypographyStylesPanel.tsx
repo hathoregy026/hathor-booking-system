@@ -29,27 +29,37 @@ import {
   type TypographyTextStyle,
 } from "@/lib/typography-settings-shared";
 
-type EditorGroup = "hero" | "page_title" | "page_subtitle" | "body_text";
+type EditorGroup =
+  | "hero"
+  | "page_title"
+  | "page_subtitle"
+  | "sub_subtitle"
+  | "body_text";
 
 const GROUP_LABELS: Record<EditorGroup, string> = {
   hero: "Hero (all pages)",
   page_title: "Page title",
-  page_subtitle: "Page subtitle",
+  page_subtitle: "Small indication",
+  sub_subtitle: "Sub-sub title",
   body_text: "Body text",
 };
 
 const GROUP_WHERE: Record<EditorGroup, string> = {
   hero: "Drag either title freely (they can overlap). Align left / center / right. Saves to every page hero.",
-  page_title: "Main title at the top of Suites, Experiences, About, etc.",
-  page_subtitle: "Short line under that page title.",
+  page_title: "Big section titles — Suites intro, Hathor itineraries, amenities, etc.",
+  page_subtitle:
+    "Small uppercase labels under a title — e.g. EXPLORE, RELAX, DISCOVER on the homepage carousel, or Cabin / Suite labels.",
+  sub_subtitle:
+    "Script line under a title or between suite image blocks (elegant secondary line).",
   body_text: "Normal paragraph text in page content.",
 };
 
 const SAMPLES: Record<TypographyRole, string> = {
   hero_title: "Ultra Luxury",
   hero_subtitle: "Dahabiya Cruise",
-  page_title: "Our Suites",
-  page_subtitle: "Luxury on the water",
+  page_title: "Hathor itineraries",
+  page_subtitle: "Explore, Relax, Discover",
+  sub_subtitle: "Luxury on the water",
   body_text:
     "Sail the Nile aboard a private dahabiya — unhurried days, fine dining, and suites crafted for quiet luxury from Luxor to Aswan.",
 };

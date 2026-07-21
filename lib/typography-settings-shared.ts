@@ -124,6 +124,7 @@ export const TYPOGRAPHY_ROLES = [
   "hero_subtitle",
   "page_title",
   "page_subtitle",
+  "sub_subtitle",
   "body_text",
 ] as const;
 
@@ -133,7 +134,10 @@ export const TYPOGRAPHY_ROLE_LABELS: Record<TypographyRole, string> = {
   hero_title: "Hero title",
   hero_subtitle: "Hero subtitle",
   page_title: "Page title",
-  page_subtitle: "Page subtitle",
+  /** Small uppercase indication under section titles (e.g. EXPLORE, RELAX, DISCOVER) */
+  page_subtitle: "Small indication",
+  /** Script line under a title / between blocks */
+  sub_subtitle: "Sub-sub title",
   body_text: "Body text",
 };
 
@@ -181,6 +185,7 @@ export const typographySettingsSchema = z.object({
   hero_subtitle: typographyTextStyleSchema,
   page_title: typographyTextStyleSchema,
   page_subtitle: typographyTextStyleSchema,
+  sub_subtitle: typographyTextStyleSchema,
   body_text: typographyTextStyleSchema,
   hero_layout: heroLayoutSchema,
 });
@@ -213,11 +218,19 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
     innerShadow: false,
   },
   page_subtitle: {
-    fontFamily: "Gamgote",
-    fontSize: 16,
-    color: "#6B6B6B",
-    lineHeight: 1.5,
-    letterSpacing: 2,
+    fontFamily: "Lavenir",
+    fontSize: 13,
+    color: "#7A6A58",
+    lineHeight: 1.35,
+    letterSpacing: 4,
+    innerShadow: false,
+  },
+  sub_subtitle: {
+    fontFamily: "Bitho Luxury",
+    fontSize: 30,
+    color: "#B69F64",
+    lineHeight: 1.25,
+    letterSpacing: 0.5,
     innerShadow: false,
   },
   body_text: {
@@ -362,6 +375,10 @@ export function parseTypographySettings(raw: unknown): TypographySettings {
     page_subtitle: parseTextStyle(
       src.page_subtitle,
       DEFAULT_TYPOGRAPHY_SETTINGS.page_subtitle,
+    ),
+    sub_subtitle: parseTextStyle(
+      src.sub_subtitle,
+      DEFAULT_TYPOGRAPHY_SETTINGS.sub_subtitle,
     ),
     body_text: parseTextStyle(src.body_text, DEFAULT_TYPOGRAPHY_SETTINGS.body_text),
     hero_layout: parseHeroLayout(src.hero_layout),
@@ -528,6 +545,9 @@ ${block(
 .public-site [data-page-transition] .pt-hero__copy .hathor-page-hero__title,
 .public-site .cruises-sheet__title,
 .public-site .cruises-scroll-route .cruises-hero__title,
+.public-site .venetian-page .acc-intro-title,
+.public-site .venetian-page .lux-gold.lux-gold-lg,
+.public-site .venetian-page .cta-inner h2,
 html[data-ex-experience] .ex-root .radius-heading h2,
 html[data-ex-experience] .ex-root .home-carousel-h2 h2,
 html[data-ex-experience] .ex-root .ex-stack-scroll__title,
@@ -540,13 +560,26 @@ html[data-ex-experience] .ex-root .cta-inner h2,
   "page_title",
 )}
 ${block(
-  `.public-site .hathor-page-hero__subtitle,
-.public-site .lux-page-hero .lux-section-eyebrow,
+  `/* Small indication labels — e.g. EXPLORE, RELAX, DISCOVER */
+.public-site .typo-page-subtitle,
+.public-site .hathor-section-eyebrow,
+.public-site .hathor-chapter-eyebrow,
+.public-site .lux-section-eyebrow,
+.public-site .lux-kicker,
+.public-site .acc-eyebrow,
+.public-site .room-interstitial__eyebrow,
+.public-site .venetian-page .room-fs-label,
+html[data-ex-experience] .ex-root .home-carousel-h3 h3`,
+  "page_subtitle",
+)}
+${block(
+  `/* Script sub-sub titles */
+.public-site .typo-sub-subtitle,
+.public-site .room-interstitial__script,
 .public-site .hathor-section-subtitle,
 .public-site .hathor-chapter-subtitle,
-.public-site .lux-section-eyebrow,
-.public-site .typo-page-subtitle`,
-  "page_subtitle",
+.public-site .venetian-page .room-fs-meta`,
+  "sub_subtitle",
 )}
 ${block(
   `.public-site .hathor-body-text,
@@ -555,6 +588,9 @@ ${block(
 .public-site article.lux-section p,
 .public-site .public-page-body p,
 .public-site .cruises-sheet p,
+.public-site .venetian-page .acc-intro-copy,
+.public-site .venetian-page .lux-lead,
+.public-site .room-interstitial__body,
 html[data-ex-experience] .ex-root .radius-p p,
 html[data-ex-experience] .ex-root .home-text-p p,
 html[data-ex-experience] .ex-root .home-scroll-p p,

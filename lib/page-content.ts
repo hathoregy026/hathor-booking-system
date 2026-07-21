@@ -325,13 +325,15 @@ export const LUXURY_CABINS_PAGE = {
     afterHero: [
       "The Hathor Dahabiya provides an Elegant, Private Dahabiya Cruise, Dive into the Authentic Boutique Nile Cruise experience which tailored especially for travelers who want to experience the Timeless Nile River.",
     ],
-    beforeGallery: [
+    beforeGallery: [],
+    betweenChapters: [
       "Every cabin in our Small Luxury Nile Cruise offers a peaceful and relaxing space, allowing guests to enjoy wide-ranging views of the Nile River in complete comfort.",
       "The Boutique Nile Cruise experience provides an exclusive Dahabiya-style journey, giving passengers private space to sail through the serene waters of the Nile without encountering other travelers.",
+      "The guest will visit majestic temples and ancient sites before returning to the ship which provides elegant decor and dedicated staff.",
+      "Experience Hathor fine dining which showcases traditional regional dishes in a close knit setting that represents an Exclusive Private Small Luxury Nile Cruise.",
+      "The Hathor Dahabiya Nile cruise experience delivers exceptional comfort and Exclusive experiences which create enduring memories for all visitors to Egypt.",
     ],
-    beforeAmenities: [
-      "The guest will visit majestic temples and ancient sites before returning to the ship which provides elegant decor and dedicated staff. Experience Hathor fine dining which showcases traditional regional dishes in a close knit setting that represents an Exclusive Private Small Luxury Nile Cruise. The Hathor Dahabiya Nile cruise experience delivers exceptional comfort and Exclusive experiences which create enduring memories for all visitors to Egypt.",
-    ],
+    beforeAmenities: [],
   },
   listings: [
     {
@@ -466,11 +468,15 @@ export const LUXURY_SUITES_PAGE = {
       "Experience Hathor Dahabiya Cruise that blends authenticity with luxury, offering an unforgettable journey by the timeless Nile.",
       "Whether you stay in our Elegant Dahabiya Suites or enjoying the Royal Suites with Panoramic Nile View, you'll enjoy unmatched comfort and Exclusive privacy.",
     ],
-    beforeGallery: [
-      "Our Small Luxury Nile Cruise Rooms offer everything you expect from a Nile View luxury cabin and more. The Elegant Nile Cruise Cabins provide a cool retreat through their air-conditioned spaces which show off their handcrafted designs. The Luxury Nile Cruise Rooms provide a serene, stylish environment to unwind.",
+    beforeGallery: [],
+    betweenChapters: [
+      "Our Small Luxury Nile Cruise Rooms offer everything you expect from a Nile View luxury cabin and more.",
+      "The Elegant Nile Cruise Cabins provide a cool retreat through their air-conditioned spaces which show off their handcrafted designs.",
+      "The Luxury Nile Cruise Rooms provide a serene, stylish environment to unwind.",
+      "The Royal Suite with Panoramic Nile View in Hathor Dahabiya delivers the highest level of luxury through its exceptional views and ultimate relaxation.",
+      "The Luxury Suites aboard the Hathor Dahabiya Cruise showcase timeless sophistication combined with modern amenities, offering a unique and private Dahabiya Cruise experience for each suite choice.",
     ],
     beforeAmenities: [
-      "The Royal Suite with Panoramic Nile View in Hathor Dahabiya delivers the highest level of luxury through its exceptional views and ultimate relaxation. The Luxury Suites aboard the Hathor Dahabiya Cruise showcase timeless sophistication combined with modern amenities, offering a unique and private Dahabiya Cruise experience for each suite choice.",
       "Experience the timeless charm of Egypt aboard the luxurious Hathor Dahabiya Cruise Each elegant cabin is a refined haven, combining modern comforts with authentic Egyptian artistry. Warm, intimate, and exquisitely appointed, your private sanctuary awaits promising an unforgettable journey along the majestic Nile.",
     ],
   },
@@ -589,13 +595,14 @@ export const ROYAL_SUITES_PAGE = {
     afterHero: [
       "Experience a luxury authentic journey in our Royal Suite Nile Cruise aboard the Hathor Dahabiya Cruise Egypt, making for a memorable Luxury Nile Sailing Boat navigating the timeless Nile on a private Dahabiya Nile cruise.",
     ],
-    beforeGallery: [
+    beforeGallery: [],
+    betweenChapters: [
       "They are designed for privacy and luxury, featuring Hathor elegant interior, historic decorations, and modern conveniences that comprise a luxurious fine stay.",
       "The Royal Suite with Panoramic Nile View features panoramic windows and a private balcony, allowing you to enjoy an unforgettable views of the Nile as you sail through Luxor and Aswan.",
+      "For visitors who seek added exclusivity, the Private Royal Suite with Nile View provides a peaceful retreat and luxury furniture with personalized comfort just by Hathor Luxury Dahabiya.",
+      "On this elegant and authentic Dahabiya experience, traditional craftsmanship blends seamlessly with modern luxury, creating the perfect setting for an unforgettable journey along the Nile aboard a private Dahabiya Nile cruise.",
     ],
-    beforeAmenities: [
-      "For visitors who seek added exclusivity, the Private Royal Suite with Nile View provides a peaceful retreat and luxury furniture with personalized comfort just by Hathor Luxury Dahabiya. On this elegant and authentic Dahabiya experience, traditional craftsmanship blends seamlessly with modern luxury, creating the perfect setting for an unforgettable journey along the Nile aboard a private Dahabiya Nile cruise.",
-    ],
+    beforeAmenities: [],
   },
   listings: [
     {
