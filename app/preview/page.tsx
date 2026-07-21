@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { PreviewHero } from "@/components/preview/PreviewHero";
 import { PreviewPostHeroIntro } from "@/components/preview/PreviewPostHeroIntro";
-import { PreviewPostHeroMedia } from "@/components/preview/PreviewPostHeroMedia";
 import { PreviewItineraries } from "@/components/preview/PreviewItineraries";
 import { HATHOR_HERO_POSTER_SRC } from "@/lib/branding";
 
@@ -46,7 +45,6 @@ export default function PreviewPage() {
     <>
       <PreviewHero />
       <PreviewPostHeroIntro />
-      <PreviewPostHeroMedia />
       <PreviewItineraries />
       <div className="preview-scroll-spacer" aria-hidden="true" />
     </>

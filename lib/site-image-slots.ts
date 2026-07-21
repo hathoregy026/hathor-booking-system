@@ -14,22 +14,6 @@ export type SiteImageSlot = {
 export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   // Homepage
   {
-    name: "home-hero-poster",
-    altText: HATHOR_MEDIA.heroHomepageAlt,
-    url: HATHOR_MEDIA.heroHomepage,
-    category: "hero",
-    pagePath: "/",
-    displayOrder: 0,
-  },
-  {
-    name: "home-post-hero-media",
-    altText: HATHOR_MEDIA.postHeroMediaAlt,
-    url: HATHOR_MEDIA.postHeroMedia,
-    category: "general",
-    pagePath: "/",
-    displayOrder: 1,
-  },
-  {
     name: "home-story-craft-large",
     altText: "Ornate interior corridor aboard a luxury Dahabiya",
     url: HATHOR_MEDIA.storyCraftLarge,

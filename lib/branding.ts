@@ -51,7 +51,7 @@ export const HATHOR_ADMIN_LOGIN_ICON_SRC = HATHOR_HERO_ICON_SRC;
 export const HATHOR_HERO_VIDEO_SRC =
   "/media/hathor/videos/hathor-luxury-nile-cruise-promo-bestofegypt.mp4";
 
-/** Hero poster while video buffers — local Hathor still. */
+/** Static poster while hero video buffers (not a dashboard CMS slot). */
 export const HATHOR_HERO_POSTER_SRC = hathorImage("home-hero-poster");
 
 export function getHathorLogoSrc(theme: AdminTheme): string {

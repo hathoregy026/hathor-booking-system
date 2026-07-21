@@ -131,7 +131,6 @@ export function HomePageClient({
           playVideo
           lineRight={EX_HERO.lineRight}
           lineLeft={EX_HERO.lineLeft}
-          posterImageName={EX_HERO.imageName}
           logoPartsVariant={liveTune.partsVariant}
         />
 

@@ -9,7 +9,6 @@ import { FullBleedMedia } from "@/components/home/FullBleedMedia";
 import { Hero } from "@/components/home/Hero";
 import { LayeredCollageSection } from "@/components/home/LayeredCollageSection";
 import { PostHeroIntro } from "@/components/home/PostHeroIntro";
-import { PostHeroMedia } from "@/components/home/PostHeroMedia";
 import { LegacyScrollSection } from "@/components/home/LegacyScrollSection";
 import { ScrollPinnedSection } from "@/components/home/ScrollPinnedSection";
 import { SketchSection } from "@/components/home/SketchSection";
@@ -44,7 +43,6 @@ export function HomePageContent() {
     <>
       <Hero />
       <PostHeroIntro />
-      <PostHeroMedia />
 
       <EditorialChapter
         id="itineraries"

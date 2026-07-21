@@ -17,8 +17,6 @@ export function siteImageAnchorId(name: string): string {
  * the link still lands near the right place on the live page.
  */
 const SLOT_FALLBACK_SECTION: Partial<Record<string, string>> = {
-  "home-hero-poster": "top",
-  "home-post-hero-media": "about",
   "home-story-craft-large": "about",
   "home-story-craft-small": "about",
   "home-story-transform": "about",

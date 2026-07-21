@@ -4,7 +4,7 @@ import { useLayoutEffect, useRef } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { HathorLogoSplit } from "@/components/public/HathorLogoSplit";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
-import { HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
+import { HATHOR_HERO_POSTER_SRC, HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
 import { EX_HERO } from "@/lib/ex-page-content";
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 import { useTypographyInlineStyle } from "@/components/public/TypographySettingsProvider";
@@ -26,8 +26,8 @@ export type PublicSiteHeroProps = {
   /** When false, parent hook (e.g. useExScrollMotion) drives animation. */
   animate?: boolean;
   /**
-   * CMS image slot used as the video poster and as the “View on Live Site”
-   * scroll target for this page’s hero.
+   * CMS image slot for still-image heroes (cruises, highlights, etc.)
+   * and as the “View on Live Site” scroll target. Not used for homepage video.
    */
   posterImageName?: string;
   /**
@@ -42,7 +42,7 @@ export type PublicSiteHeroProps = {
   /** Floating gold dust over the hero (delete tag + GoldDustParticles.tsx to remove). */
   goldDust?: boolean;
   /**
-   * When true, play the homepage hero video.
+   * When true, play the homepage hero video (static poster — not a CMS slot).
    * Other pages should leave this false and use `posterImageName` as a still image.
    */
   playVideo?: boolean;
@@ -67,8 +67,8 @@ export function PublicSiteHero({
   logoPartsVariant = "current",
 }: PublicSiteHeroProps) {
   const heroVideoRef = useRef<HTMLVideoElement>(null);
-  const heroImageName = posterImageName ?? "home-hero-poster";
-  const heroImage = useSiteImage(heroImageName);
+  /* Still heroes need a CMS slot; video hero uses a fixed local poster file. */
+  const heroImage = useSiteImage(posterImageName ?? "about-hero");
   const heroTitleStyle = useTypographyInlineStyle("hero_title");
   const heroSubtitleStyle = useTypographyInlineStyle("hero_subtitle");
   usePublicSiteHeroMotion(animate);
@@ -96,7 +96,7 @@ export function PublicSiteHero({
           <video
             ref={heroVideoRef}
             src={HATHOR_HERO_VIDEO_SRC}
-            poster={heroImage.src}
+            poster={HATHOR_HERO_POSTER_SRC}
             autoPlay
             loop
             muted

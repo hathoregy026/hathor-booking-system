@@ -22,8 +22,6 @@ const PAGE_GROUP_TITLES: Record<string, string> = {
  * Never expose internal slug codes.
  */
 const SLOT_LABELS: Partial<Record<SiteImageSlot["name"], string>> = {
-  "home-hero-poster": "Hero — Homepage (video cover / poster)",
-  "home-post-hero-media": "Homepage - Photo Below Hero",
   "home-story-craft-large": "Homepage - About Large Photo",
   "home-story-craft-small": "Homepage - About Detail Photo",
   "home-story-transform": "Homepage - Story Interior Photo",
@@ -99,8 +97,6 @@ export type SiteImageLayoutKind = "hero" | "gallery" | "standard";
 
 const SLOT_LAYOUT_KINDS: Partial<Record<SiteImageSlot["name"], SiteImageLayoutKind>> =
   {
-    "home-hero-poster": "hero",
-    "home-post-hero-media": "hero",
     "home-cinematic-video": "hero",
     "home-cinematic-still": "hero",
     "home-split-courtyard": "hero",

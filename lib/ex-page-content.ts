@@ -19,8 +19,6 @@ export const EX_HERO = {
   subtitle: HOMEPAGE_HERO.subtitle,
   sideLeft: "Luxor · Aswan",
   sideRight: "Private Nile Sailing",
-  /** CMS slot for video poster / hero cover. */
-  imageName: "home-hero-poster" as SiteImageName,
 } as const;
 
 export const EX_ABOUT = {
