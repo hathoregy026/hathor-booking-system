@@ -38,6 +38,13 @@ function withHtmlNoStore(response: NextResponse): NextResponse {
   return response;
 }
 
+function withCachePurge(response: NextResponse): NextResponse {
+  withHtmlNoStore(response);
+  /* Forces Chromium to drop disk/memory HTTP cache for this origin. */
+  response.headers.set("Clear-Site-Data", '"cache", "storage"');
+  return response;
+}
+
 export async function middleware(request: NextRequest) {
   try {
     const deploymentRedirect = redirectStaleDeploymentHost(request);
@@ -46,6 +53,10 @@ export async function middleware(request: NextRequest) {
     }
 
     const { pathname } = request.nextUrl;
+
+    if (pathname === "/purge" || request.nextUrl.searchParams.has("fresh")) {
+      return withCachePurge(NextResponse.next());
+    }
 
     if (
       !pathname.startsWith("/admin") &&
