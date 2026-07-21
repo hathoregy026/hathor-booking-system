@@ -135,7 +135,7 @@ export function useAccommodationMotion(
 
         /* Soft reveal for on-block copy — already in place, never hard-jump from offscreen */
         const uiBits = room.querySelectorAll<HTMLElement>(
-          ".room-fs-label, .room-fs-title, .room-fs-meta, .room-fs-desc, .room-fs-cta, .room-fs-top",
+          ".room-fs-label, .room-fs-title, .room-fs-route, .room-fs-meta, .room-fs-desc, .room-fs-cta, .room-fs-top",
         );
         if (!prefersReduced) {
           gsap.set(uiBits, { opacity: 0.92, y: 8 });

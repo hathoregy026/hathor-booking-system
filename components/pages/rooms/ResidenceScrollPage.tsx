@@ -69,6 +69,18 @@ function scriptLineFromTitle(title: string): string {
   return beforeColon && beforeColon.length > 0 ? beforeColon : title;
 }
 
+/** "Luxury King Bed : Luxor / Aswan / Luxor" → name + itinerary route */
+function splitListingTitle(title: string): { name: string; route: string | null } {
+  const idx = title.indexOf(":");
+  if (idx === -1) return { name: title.trim(), route: null };
+  const name = title.slice(0, idx).trim();
+  const route = title.slice(idx + 1).trim();
+  return {
+    name: name.length > 0 ? name : title.trim(),
+    route: route.length > 0 ? route : null,
+  };
+}
+
 function CopyParagraphs({
   paragraphs,
   spaced,
@@ -177,6 +189,9 @@ export function ResidenceScrollPage({
             const showGap =
               Boolean(next) &&
               (Boolean(gapCopy) || Boolean(next));
+            const { name: titleName, route: titleRoute } = splitListingTitle(
+              chapter.title,
+            );
 
             return (
               <Fragment key={chapter.id}>
@@ -207,7 +222,7 @@ export function ResidenceScrollPage({
                   <div className="room-fs-shade" aria-hidden="true" />
                   <div className="room-fs-ui">
                     <div className="room-fs-top">
-                      <span className="room-fs-count">
+                      <span className="room-fs-count typo-page-subtitle">
                         <i className="room-fs-current">01</i> / 04
                       </span>
                       <span className="room-fs-label typo-page-subtitle">
@@ -215,11 +230,20 @@ export function ResidenceScrollPage({
                       </span>
                     </div>
                     <div className="room-fs-copy">
-                      <h2 className="room-fs-title">{chapter.title}</h2>
+                      <h2 className="room-fs-title typo-page-title">
+                        {titleName}
+                      </h2>
+                      {titleRoute ? (
+                        <p className="room-fs-route typo-page-subtitle">
+                          {titleRoute}
+                        </p>
+                      ) : null}
                       <p className="room-fs-meta typo-sub-subtitle">
                         {chapter.meta}
                       </p>
-                      <p className="room-fs-desc">{chapter.desc}</p>
+                      <p className="room-fs-desc typo-body-text">
+                        {chapter.desc}
+                      </p>
                       {chapter.ctaHref && chapter.ctaLabel ? (
                         <Link
                           className="btn btn-light room-fs-cta"

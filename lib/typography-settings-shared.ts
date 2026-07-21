@@ -461,6 +461,10 @@ export function typographyToImportantCss(settings: TypographySettings): string {
 
   const block = (selector: string, role: TypographyRole) => {
     const p = `--typo-${role.replace(/_/g, "-")}`;
+    const noForceCaps =
+      role === "sub_subtitle"
+        ? `\n  text-transform: none !important;`
+        : "";
     return `${selector} {
   font-family: var(${p}-font) !important;
   font-size: var(${p}-size) !important;
@@ -468,7 +472,7 @@ export function typographyToImportantCss(settings: TypographySettings): string {
   -webkit-text-fill-color: var(${p}-color) !important;
   line-height: var(${p}-line-height) !important;
   letter-spacing: var(${p}-letter-spacing) !important;
-  text-shadow: var(${p}-shadow) !important;
+  text-shadow: var(${p}-shadow) !important;${noForceCaps}
 }`;
   };
 
@@ -546,6 +550,7 @@ ${block(
 .public-site .cruises-sheet__title,
 .public-site .cruises-scroll-route .cruises-hero__title,
 .public-site .venetian-page .acc-intro-title,
+.public-site .venetian-page .room-fs-title,
 .public-site .venetian-page .lux-gold.lux-gold-lg,
 .public-site .venetian-page .cta-inner h2,
 html[data-ex-experience] .ex-root .radius-heading h2,
@@ -568,7 +573,9 @@ ${block(
 .public-site .lux-kicker,
 .public-site .acc-eyebrow,
 .public-site .room-interstitial__eyebrow,
-.public-site .venetian-page .room-fs-label`,
+.public-site .venetian-page .room-fs-label,
+.public-site .venetian-page .room-fs-route,
+.public-site .venetian-page .room-fs-count`,
   "page_subtitle",
 )}
 ${block(
@@ -590,6 +597,7 @@ ${block(
 .public-site .cruises-sheet p,
 .public-site .venetian-page .acc-intro-copy,
 .public-site .venetian-page .lux-lead,
+.public-site .venetian-page .room-fs-desc,
 .public-site .room-interstitial__body,
 html[data-ex-experience] .ex-root .radius-p p,
 html[data-ex-experience] .ex-root .home-text-p p,

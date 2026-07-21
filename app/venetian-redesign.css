@@ -335,9 +335,16 @@
   line-height: 1.02;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  margin: 0 0 14px;
+  margin: 0 0 10px;
   overflow: hidden;
   text-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+/* Itinerary route under suite name — Small indication (typography tune) */
+.room-fs-route {
+  margin: 0 0 14px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
 }
 
 .room-fs-meta {
@@ -1804,17 +1811,18 @@
   color: var(--gold-soft);
 }
 
-/* Fullscreen residence overlays — white text only */
-.venetian-page .room-fs-ui,
-.venetian-page .room-fs-ui .room-fs-title,
-.venetian-page .room-fs-ui .room-fs-meta,
-.venetian-page .room-fs-ui .room-fs-desc,
-.venetian-page .room-fs-ui .room-fs-label,
-.venetian-page .room-fs-ui .room-fs-count,
-.venetian-page .room-fs-ui .room-fs-count i,
-.venetian-page .room-fs-ui .char,
-.venetian-page .room-fs-ui .word,
-.venetian-page .room-fs-ui .line {
+/* Fullscreen residence overlays — white text only (beats typography color for contrast) */
+.public-site .venetian-page .room-fs-ui,
+.public-site .venetian-page .room-fs-ui .room-fs-title,
+.public-site .venetian-page .room-fs-ui .room-fs-route,
+.public-site .venetian-page .room-fs-ui .room-fs-meta,
+.public-site .venetian-page .room-fs-ui .room-fs-desc,
+.public-site .venetian-page .room-fs-ui .room-fs-label,
+.public-site .venetian-page .room-fs-ui .room-fs-count,
+.public-site .venetian-page .room-fs-ui .room-fs-count i,
+.public-site .venetian-page .room-fs-ui .char,
+.public-site .venetian-page .room-fs-ui .word,
+.public-site .venetian-page .room-fs-ui .line {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
   background: none !important;
@@ -1823,14 +1831,16 @@
   text-shadow: 0 10px 36px rgba(0, 0, 0, 0.45);
 }
 
-.venetian-page .room-fs-ui .room-fs-label,
-.venetian-page .room-fs-ui .room-fs-count i {
+.public-site .venetian-page .room-fs-ui .room-fs-label,
+.public-site .venetian-page .room-fs-ui .room-fs-route,
+.public-site .venetian-page .room-fs-ui .room-fs-count,
+.public-site .venetian-page .room-fs-ui .room-fs-count i {
   color: rgba(255, 255, 255, 0.92) !important;
   -webkit-text-fill-color: rgba(255, 255, 255, 0.92) !important;
 }
 
-.venetian-page .room-fs-ui .room-fs-meta,
-.venetian-page .room-fs-ui .room-fs-desc {
+.public-site .venetian-page .room-fs-ui .room-fs-meta,
+.public-site .venetian-page .room-fs-ui .room-fs-desc {
   color: rgba(255, 255, 255, 0.9) !important;
   -webkit-text-fill-color: rgba(255, 255, 255, 0.9) !important;
   text-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
@@ -1890,7 +1900,11 @@
 
 .venetian-page .room-fs-title {
   text-wrap: balance;
-  max-width: 14ch;
+  max-width: 12ch;
+}
+
+.venetian-page .room-fs-route {
+  max-width: 36ch;
 }
 
 .venetian-page .room-fs-meta {
