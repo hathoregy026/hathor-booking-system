@@ -11,6 +11,10 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import SplitType from "split-type";
 import { mountHeroScrollStage } from "@/lib/hero-scroll-stage";
+import {
+  registerHathorLenis,
+  restoreScrollPositionIfReload,
+} from "@/lib/scroll-position-restore";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -46,6 +50,7 @@ export function useExScrollMotion() {
 
     // Keep ScrollTrigger in sync with Lenis
     lenis.on("scroll", ScrollTrigger.update);
+    registerHathorLenis(lenis);
 
     tickerFn = (time: number) => {
       lenis?.raf(time * 1000);
@@ -1078,9 +1083,22 @@ export function useExScrollMotion() {
       document.documentElement.classList.add("has-ex-scroll-motion");
     }
 
+    const path = window.location.pathname || "/";
+    const restoreNow = () => {
+      restoreScrollPositionIfReload(path);
+      try {
+        ScrollTrigger.refresh();
+      } catch {
+        /* ignore */
+      }
+    };
+    restoreNow();
+    requestAnimationFrame(restoreNow);
+
     const onLoad = () => {
       try {
         ScrollTrigger.refresh();
+        restoreNow();
       } catch (error) {
         console.warn("[useExScrollMotion] refresh failed", error);
       }
@@ -1091,6 +1109,7 @@ export function useExScrollMotion() {
       window.removeEventListener("load", onLoad);
       heroCleanup?.();
       if (tickerFn) gsap.ticker.remove(tickerFn);
+      registerHathorLenis(null);
       lenis?.destroy();
       try {
         ScrollTrigger.getAll().forEach((st) => st.kill());

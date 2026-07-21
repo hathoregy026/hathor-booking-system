@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 /** Boot home experience + cream theme before hydration. */
-const HOME_BOOT = `(function(){try{var d=document.documentElement;d.setAttribute("data-ex-experience","");}catch(e){}})();`;
+const HOME_BOOT = `(function(){try{var d=document.documentElement;d.setAttribute("data-ex-experience","");if("scrollRestoration"in history)history.scrollRestoration="manual";}catch(e){}})();`;
 
 const HOME_CRITICAL_CSS = `
 html[data-ex-experience] .ex-root {

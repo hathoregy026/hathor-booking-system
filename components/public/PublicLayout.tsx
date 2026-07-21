@@ -4,6 +4,7 @@ import { BookingModalProvider } from "@/components/booking/BookingModalProvider"
 import { FloatingActions } from "@/components/public/FloatingActions";
 import { LuxuryTextAnimations } from "@/components/public/LuxuryTextAnimations";
 import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
+import { ScrollPositionRestore } from "@/components/public/ScrollPositionRestore";
 import { SiteImagePreviewScroll } from "@/components/public/SiteImagePreviewScroll";
 import { PageTransition } from "@/components/ui/PageTransition";
 import type { ReactNode } from "react";
@@ -17,6 +18,7 @@ export function PublicLayout({ children }: PublicLayoutProps) {
     <PublicThemeProvider>
       <BookingModalProvider>
         <div className="public-site hathor-site">
+          <ScrollPositionRestore />
           <LuxuryTextAnimations />
           <SiteImagePreviewScroll />
           <PublicNavbar />

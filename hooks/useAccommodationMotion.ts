@@ -10,6 +10,10 @@ import { useLayoutEffect, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
+import {
+  registerHathorLenis,
+  restoreScrollPositionIfReload,
+} from "@/lib/scroll-position-restore";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -38,6 +42,7 @@ export function useAccommodationMotion(
         syncTouch: false,
       });
       lenis.on("scroll", ScrollTrigger.update);
+      registerHathorLenis(lenis);
       ticker = (time: number) => {
         lenis?.raf(time * 1000);
       };
@@ -327,7 +332,11 @@ export function useAccommodationMotion(
     window.addEventListener("resize", onResize);
     requestAnimationFrame(() => {
       ScrollTrigger.refresh();
-      requestAnimationFrame(() => ScrollTrigger.refresh());
+      restoreScrollPositionIfReload(window.location.pathname || "/");
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+        restoreScrollPositionIfReload(window.location.pathname || "/");
+      });
     });
 
     return () => {
@@ -336,6 +345,7 @@ export function useAccommodationMotion(
       window.clearTimeout(resizeTimer);
       document.querySelectorAll(".rooms-rail").forEach((el) => el.remove());
       if (ticker) gsap.ticker.remove(ticker);
+      registerHathorLenis(null);
       lenis?.destroy();
       ctx.revert();
     };
