@@ -649,85 +649,49 @@
   }
 }
 
-/* Navbar vibe — dark bar + centered copper/gold radial glow (visual only) */
-.public-site .hathor-header.hathor-header--owo-hero-layout,
-.public-site .hathor-header.hathor-header--owo-hero-layout.hathor-header--transparent,
-.public-site .hathor-header.hathor-header--owo-hero-layout.hathor-header--solid,
-.public-site
-  .hathor-header.hathor-header--owo-hero-layout.hathor-header--solid.hathor-header--light,
+/* Navbar glass — translucent dark + blur (restored) */
 .public-site
   .hathor-header.hathor-header--owo-hero-layout.hathor-header--menu-active:not(
     .hathor-header--menu-hovered
   ),
 .public-site
-  .hathor-header.hathor-header--owo-hero-layout.hathor-header--over-hero:not(
+  .hathor-header.hathor-header--owo-hero-layout.hathor-header--solid:not(
     .hathor-header--menu-hovered
   ) {
-  background:
-    radial-gradient(
-      ellipse 48% 160% at 50% 100%,
-      rgba(196, 148, 88, 0.52) 0%,
-      rgba(140, 95, 52, 0.28) 28%,
-      rgba(28, 18, 12, 0.94) 58%,
-      rgba(8, 6, 5, 0.98) 100%
-    ),
-    #080605;
-  border-bottom: 1px solid rgba(201, 168, 108, 0.72);
+  background: rgb(10 10 10 / 0.38);
+  border-bottom: none;
   box-shadow: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
-/* Soft bloom concentrated behind the logo */
-.public-site .hathor-header.hathor-header--owo-hero-layout:not(.hathor-header--menu-hovered)::after {
+/* Gold bottom rule — bold in the middle, fades to both edges */
+.public-site
+  .hathor-header.hathor-header--owo-hero-layout.hathor-header--menu-active:not(
+    .hathor-header--menu-hovered
+  )::after,
+.public-site
+  .hathor-header.hathor-header--owo-hero-layout.hathor-header--solid:not(
+    .hathor-header--menu-hovered
+  )::after {
   content: "";
   position: absolute;
-  left: 50%;
-  bottom: -10%;
-  z-index: 0;
-  width: min(58vw, 780px);
-  height: 180%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  height: 1px;
   pointer-events: none;
-  background: radial-gradient(
-    ellipse at 50% 78%,
-    rgba(212, 170, 105, 0.42) 0%,
-    rgba(168, 118, 68, 0.18) 38%,
-    transparent 68%
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(201, 168, 108, 0.08) 12%,
+    rgba(201, 168, 108, 0.45) 32%,
+    rgba(212, 180, 120, 0.95) 50%,
+    rgba(201, 168, 108, 0.45) 68%,
+    rgba(201, 168, 108, 0.08) 88%,
+    transparent 100%
   );
-}
-
-/* Champagne / pale-gold nav text (ref vibe) */
-.public-site
-  .hathor-header--owo-hero-layout:not(.hathor-header--menu-hovered)
-  .hathor-header__nav-link,
-.public-site
-  .hathor-header--owo-hero-layout:not(.hathor-header--menu-hovered)
-  .hathor-header__menu-btn,
-.public-site
-  .hathor-header--owo-hero-layout.hathor-header--solid:not(.hathor-header--menu-hovered)
-  .hathor-header__nav-link,
-.public-site
-  .hathor-header--owo-hero-layout.hathor-header--solid:not(.hathor-header--menu-hovered)
-  .hathor-header__menu-btn {
-  color: #e4d5b8;
-}
-
-.public-site
-  .hathor-header--owo-hero-layout:not(.hathor-header--menu-hovered)
-  .hathor-header__nav-link:hover,
-.public-site
-  .hathor-header--owo-hero-layout:not(.hathor-header--menu-hovered)
-  .hathor-header__nav-link--active {
-  color: #f0e4c8;
-}
-
-.public-site
-  .hathor-header--owo-hero-layout:not(.hathor-header--menu-hovered)
-  .public-theme-toggle {
-  border-color: rgb(228 213 184 / 0.35);
-  background: rgb(10 8 6 / 0.35);
-  color: #e4d5b8;
 }
 
 /* Menu hover cream overlay — keep existing behavior */
@@ -745,33 +709,5 @@
 
 .public-site .hathor-header--owo-hero-layout.hathor-header--menu-hovered::before {
   opacity: 0.8;
-}
-
-/* Day theme — keep champagne links on the dark vibe bar */
-html[data-public-theme="day"]
-  .public-site
-  .hathor-header--owo-hero-layout:not(.hathor-header--menu-hovered)
-  .hathor-header__nav-link,
-html[data-public-theme="day"]
-  .public-site
-  .hathor-header--owo-hero-layout:not(.hathor-header--menu-hovered)
-  .hathor-header__menu-btn,
-html[data-public-theme="day"]
-  .public-site
-  .hathor-header--over-hero:not(.hathor-header--menu-hovered)
-  .hathor-header__nav-link,
-html[data-public-theme="day"]
-  .public-site
-  .hathor-header--over-hero:not(.hathor-header--menu-hovered)
-  .hathor-header__menu-btn,
-html[data-public-theme="day"]
-  .public-site
-  .hathor-header--light:not(.hathor-header--menu-hovered)
-  .hathor-header__nav-link,
-html[data-public-theme="day"]
-  .public-site
-  .hathor-header--light:not(.hathor-header--menu-hovered)
-  .hathor-header__menu-btn {
-  color: #e4d5b8;
 }
 
