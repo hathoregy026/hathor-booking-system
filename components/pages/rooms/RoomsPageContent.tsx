@@ -15,8 +15,9 @@ export function RoomsPageContent() {
       intro={{
         eyebrow: "Cabins & Suits",
         title: LUXURY_SUITES_PAGE.overview.title,
-        copy: LUXURY_SUITES_PAGE.intro,
+        copy: LUXURY_SUITES_PAGE.copyPlacement.afterHero,
       }}
+      copyPlacement={LUXURY_SUITES_PAGE.copyPlacement}
       chapters={[
         ...LUXURY_SUITES_PAGE.categories.map((category, index) => ({
           id: `cat-${index + 1}`,

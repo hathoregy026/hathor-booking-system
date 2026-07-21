@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, type CSSProperties } from "react";
 import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
@@ -18,6 +18,12 @@ export type ResidenceChapter = {
   ctaLabel?: string;
 };
 
+export type ResidenceCopyPlacement = {
+  afterHero?: readonly string[];
+  beforeGallery?: readonly string[];
+  beforeAmenities?: readonly string[];
+};
+
 export type ResidenceScrollPageProps = {
   heroTitle: string;
   heroSubtitle: string;
@@ -27,9 +33,12 @@ export type ResidenceScrollPageProps = {
   intro: {
     eyebrow: string;
     title: string;
+    /** Fallback when copyPlacement is omitted */
     copy: readonly string[];
     stats?: readonly string[];
   };
+  /** Split copy distributed between existing UI blocks */
+  copyPlacement?: ResidenceCopyPlacement;
   chapters: readonly ResidenceChapter[];
   amenities?: {
     title: string;
@@ -44,6 +53,38 @@ export type ResidenceScrollPageProps = {
   };
 };
 
+const COPY_BLOCK_STYLE: CSSProperties = {
+  padding: "60px 0",
+  marginBottom: "80px",
+};
+
+const COPY_PARA_STYLE: CSSProperties = {
+  marginTop: "1.25rem",
+};
+
+function CopyParagraphs({
+  paragraphs,
+  spaced,
+}: {
+  paragraphs: readonly string[];
+  spaced?: boolean;
+}) {
+  if (!paragraphs.length) return null;
+  return (
+    <div className="section-inner acc-intro-inner" style={spaced ? COPY_BLOCK_STYLE : undefined}>
+      {paragraphs.map((paragraph) => (
+        <p
+          key={paragraph.slice(0, 64)}
+          className="acc-intro-copy acc-reveal"
+          style={COPY_PARA_STYLE}
+        >
+          {paragraph}
+        </p>
+      ))}
+    </div>
+  );
+}
+
 export function ResidenceScrollPage({
   heroTitle,
   heroSubtitle,
@@ -51,12 +92,17 @@ export function ResidenceScrollPage({
   heroImageName,
   heroImageAlt,
   intro,
+  copyPlacement,
   chapters,
   amenities,
   cta,
 }: ResidenceScrollPageProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   useAccommodationMotion(rootRef);
+
+  const afterHero = copyPlacement?.afterHero ?? intro.copy;
+  const beforeGallery = copyPlacement?.beforeGallery ?? [];
+  const beforeAmenities = copyPlacement?.beforeAmenities ?? [];
 
   return (
     <PageScrollTransition
@@ -73,11 +119,11 @@ export function ResidenceScrollPage({
             <h2 className="acc-intro-title">
               <span className="acc-intro-line">{intro.title}</span>
             </h2>
-            {intro.copy.map((paragraph) => (
+            {afterHero.map((paragraph) => (
               <p
                 key={paragraph.slice(0, 48)}
                 className="acc-intro-copy acc-reveal"
-                style={{ marginTop: "1.25rem" }}
+                style={{ marginTop: "1.25rem", marginBottom: "1.5rem" }}
               >
                 {paragraph}
               </p>
@@ -101,6 +147,12 @@ export function ResidenceScrollPage({
             ) : null}
           </div>
         </section>
+
+        {beforeGallery.length > 0 ? (
+          <section className="about-section acc-intro-block" aria-label="Introduction">
+            <CopyParagraphs paragraphs={beforeGallery} spaced />
+          </section>
+        ) : null}
 
         <div className="room-stack" id="rooms">
           {chapters.map((chapter, chapterIndex) => (
@@ -164,6 +216,12 @@ export function ResidenceScrollPage({
             </section>
           ))}
         </div>
+
+        {beforeAmenities.length > 0 ? (
+          <section className="about-section acc-intro-block" aria-label="Further details">
+            <CopyParagraphs paragraphs={beforeAmenities} spaced />
+          </section>
+        ) : null}
 
         {amenities ? (
           <section className="spx-suite" id="amenities">

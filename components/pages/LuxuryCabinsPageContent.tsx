@@ -14,9 +14,10 @@ export function LuxuryCabinsPageContent() {
       intro={{
         eyebrow: "Luxury Rooms",
         title: LUXURY_CABINS_PAGE.overview.title,
-        copy: LUXURY_CABINS_PAGE.intro,
+        copy: LUXURY_CABINS_PAGE.copyPlacement.afterHero,
         stats: ["12 Luxury Cabins & Suites", "22 Square Meters", "Nile View"],
       }}
+      copyPlacement={LUXURY_CABINS_PAGE.copyPlacement}
       chapters={LUXURY_CABINS_PAGE.listings.map((listing, index) => ({
         id: String(index + 1),
         label: `Cabin ${String(index + 1).padStart(2, "0")}`,

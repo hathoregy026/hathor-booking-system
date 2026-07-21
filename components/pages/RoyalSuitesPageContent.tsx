@@ -14,9 +14,10 @@ export function RoyalSuitesPageContent() {
       intro={{
         eyebrow: "Luxury Royal Suites",
         title: ROYAL_SUITES_PAGE.overview.title,
-        copy: ROYAL_SUITES_PAGE.intro,
+        copy: ROYAL_SUITES_PAGE.copyPlacement.afterHero,
         stats: ["2 Luxury Suites & 2 Royal Suites", "56 Square Meters", "Panoramic Nile view"],
       }}
+      copyPlacement={ROYAL_SUITES_PAGE.copyPlacement}
       chapters={ROYAL_SUITES_PAGE.listings.map((listing, index) => ({
         id: String(index + 1),
         label: `Royal ${String(index + 1).padStart(2, "0")}`,
