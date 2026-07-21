@@ -36,7 +36,7 @@ html[data-ex-experience] .ex-root::before {
   opacity: 0.056 !important;
 }
 html[data-public-theme="night"][data-ex-experience] .ex-root::before {
-  opacity: 0.3 !important;
+  opacity: 0.1 !important;
 }
 html[data-ex-experience] .ex-root > * {
   position: relative;

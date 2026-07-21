@@ -1,7 +1,7 @@
 /* Hieroglyphic pattern — cream content only (never heroes / video)
  *
  * Tile = solid gold glyphs on real transparency.
- * Visibility = exactly --hieroglyph-opacity (day 0.056 / night 0.3).
+ * Visibility = exactly --hieroglyph-opacity (day 0.056 / night 0.1).
  * Only ONE host layer paints the tile (no nested double/triple stack).
  */
 
@@ -14,7 +14,7 @@
 
 html[data-public-theme="night"] .public-site {
   --hieroglyph-cream: #0b0907;
-  --hieroglyph-opacity: 0.3;
+  --hieroglyph-opacity: 0.1;
 }
 
 /* Cream base fill */
