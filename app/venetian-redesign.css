@@ -1681,8 +1681,9 @@
 }
 
 
-/* Hathor ManagedImage (next/image fill) inside redesign media shells */
-.venetian-page .room-fs-slide,
+/* Hathor ManagedImage (next/image fill) inside redesign media shells.
+   Do NOT set .room-fs-slide to relative — slides must stay absolute/inset:0
+   or the stack collapses to 0 height (fill imgs have no in-flow size). */
 .venetian-page .cruise-card-media,
 .venetian-page .cruise-exp-visual,
 .venetian-page .lux-mask,
@@ -1702,6 +1703,15 @@
 .venetian-page .spx-atelier-media span {
   position: absolute !important;
   inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+.venetian-page .room-fs-slide img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
 }
 .venetian-page .cruise-card-amenities {
   list-style: none;
