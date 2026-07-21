@@ -5861,8 +5861,7 @@ html[data-public-theme="day"] .preview-site {
 html[data-public-theme="night"],
 html[data-public-theme="night"] .public-site,
 html[data-public-theme="night"] .hathor-site,
-html[data-public-theme="night"] .preview-site,
-.public-site {
+html[data-public-theme="night"] .preview-site {
   --public-bg: #0a0a0a;
   --public-surface: #1a1a1a;
   --public-text: #faf8f5;

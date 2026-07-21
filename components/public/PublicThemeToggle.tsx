@@ -13,7 +13,11 @@ export function PublicThemeToggle() {
     <button
       type="button"
       className="public-theme-toggle cursor-hover"
-      onClick={toggleTheme}
+      onClick={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        toggleTheme();
+      }}
       aria-label={`Switch to ${isDay ? "night" : "day"} view`}
       title={`${isDay ? "Night" : "Day"} view`}
     >
