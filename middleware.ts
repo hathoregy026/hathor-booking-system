@@ -45,6 +45,16 @@ function withCachePurge(response: NextResponse): NextResponse {
   return response;
 }
 
+const DEPLOY_COOKIE = "hathor_v";
+
+function resolveDeployId(): string {
+  const sha = process.env.VERCEL_GIT_COMMIT_SHA?.trim();
+  if (sha) return sha.slice(0, 12);
+  const deployment = process.env.VERCEL_DEPLOYMENT_ID?.trim();
+  if (deployment) return deployment.slice(0, 12);
+  return "dev";
+}
+
 export async function middleware(request: NextRequest) {
   try {
     const deploymentRedirect = redirectStaleDeploymentHost(request);
@@ -65,11 +75,33 @@ export async function middleware(request: NextRequest) {
       // Let branding/font files use next.config Cache-Control (revalidate), not no-store.
       if (
         pathname.startsWith("/branding/") ||
-        pathname.startsWith("/fonts/")
+        pathname.startsWith("/fonts/") ||
+        pathname.startsWith("/_next/") ||
+        pathname.startsWith("/media/") ||
+        pathname.startsWith("/api/")
       ) {
         return NextResponse.next();
       }
-      return withHtmlNoStore(NextResponse.next());
+
+      const deployId = resolveDeployId();
+      const seen = request.cookies.get(DEPLOY_COOKIE)?.value;
+      /* First hit after a new deploy (or never-seen): wipe stuck HTTP cache. */
+      const needsPurge = deployId !== "dev" && seen !== deployId;
+
+      const response = needsPurge
+        ? withCachePurge(NextResponse.next())
+        : withHtmlNoStore(NextResponse.next());
+
+      if (needsPurge) {
+        response.cookies.set(DEPLOY_COOKIE, deployId, {
+          path: "/",
+          sameSite: "lax",
+          secure: true,
+          maxAge: 60 * 60 * 24 * 365,
+        });
+      }
+
+      return response;
     }
 
     const session = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;

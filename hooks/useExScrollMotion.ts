@@ -141,8 +141,8 @@ export function useExScrollMotion() {
     });
   }
 
-  // .radius-heading + .radius-p + .radius-button — whole-element reveal only.
-  // Char/line SplitType was leaving italic/title text clipped or stuck mid-tween.
+  // .radius-heading (chars) + .radius-p (whole) + .radius-button
+  // Do NOT SplitType body lines — italic descenders ghost/clip inside overflow:hidden lines.
   function initRadiusHeadingPara() {
     document.fonts.ready.then(() => {
       const animHeadingPara = document.querySelectorAll(".radius-heading");
@@ -154,23 +154,23 @@ export function useExScrollMotion() {
         if (!h2) return;
         if (prefersReduced) return;
 
-        const button = headingElement.parentElement?.querySelector(".radius-button");
+        const splitHeading = new SplitType(h2, { types: "chars" });
+        const button = headingElement.parentElement.querySelector(".radius-button");
 
         const headingParaTimeline = gsap.timeline({
           scrollTrigger: {
             trigger: headingElement,
             scroller: "body",
-            start: "top 85%",
-            once: true,
+            start: "top 80%",
           },
         });
 
-        headingParaTimeline.from(h2, {
-          y: 22,
+        headingParaTimeline.from(splitHeading.chars, {
+          y: 30,
           opacity: 0,
-          duration: 0.45,
+          duration: 0.3,
+          stagger: 0.05,
           ease: "power2.out",
-          clearProps: "transform,opacity",
         });
 
         if (p) {
@@ -181,9 +181,8 @@ export function useExScrollMotion() {
               opacity: 0,
               duration: 0.45,
               ease: "power2.out",
-              clearProps: "transform,opacity",
             },
-            "-=0.2"
+            "-=0.15"
           );
         }
 
@@ -191,13 +190,12 @@ export function useExScrollMotion() {
           headingParaTimeline.from(
             button,
             {
-              y: 16,
+              y: 20,
               opacity: 0,
               duration: 0.4,
               ease: "power2.out",
-              clearProps: "transform,opacity",
             },
-            "-=0.15"
+            "+=0"
           );
         }
       });
@@ -250,7 +248,7 @@ export function useExScrollMotion() {
     });
   }
 
-  // .home-scroll-h2 + .home-scroll-p — whole-element reveal (no SplitType body/title masks)
+  // .home-scroll-h2 (chars) + .home-scroll-p (whole)
   function initHomeScrollText() {
     document.fonts.ready.then(() => {
       const animElements = document.querySelectorAll(".home-scroll-h2");
@@ -262,21 +260,22 @@ export function useExScrollMotion() {
         if (!h2) return;
         if (prefersReduced) return;
 
+        const splitH2 = new SplitType(h2, { types: "chars" });
+
         const timeline = gsap.timeline({
           scrollTrigger: {
             trigger: headingElement,
             scroller: "body",
-            start: "top 85%",
-            once: true,
+            start: "top 80%",
           },
         });
 
-        timeline.from(h2, {
-          y: 22,
+        timeline.from(splitH2.chars, {
+          y: 30,
           opacity: 0,
-          duration: 0.45,
+          duration: 0.3,
+          stagger: 0.05,
           ease: "power2.out",
-          clearProps: "transform,opacity",
         });
 
         if (p) {
@@ -287,16 +286,15 @@ export function useExScrollMotion() {
               opacity: 0,
               duration: 0.45,
               ease: "power2.out",
-              clearProps: "transform,opacity",
             },
-            "-=0.2"
+            "-=0.15"
           );
         }
       });
     });
   }
 
-  // .home-text-h2 + .home-text-p + .home-text-button — whole-element reveal
+  // .home-text-h2 (chars) + .home-text-p (whole) + .home-text-button
   function initHomeTextBlocks() {
     document.fonts.ready.then(() => {
       const animHeadingPara = document.querySelectorAll(".home-text-h2");
@@ -308,24 +306,24 @@ export function useExScrollMotion() {
         if (!h2) return;
         if (prefersReduced) return;
 
+        const splitHeading = new SplitType(h2, { types: "chars" });
         const button =
-          headingElement.parentElement?.querySelector(".home-text-button");
+          headingElement.parentElement.querySelector(".home-text-button");
 
         const headingParaTimeline = gsap.timeline({
           scrollTrigger: {
             trigger: headingElement,
             scroller: "body",
-            start: "top 85%",
-            once: true,
+            start: "top 80%",
           },
         });
 
-        headingParaTimeline.from(h2, {
-          y: 22,
+        headingParaTimeline.from(splitHeading.chars, {
+          y: 30,
           opacity: 0,
-          duration: 0.45,
+          duration: 0.3,
+          stagger: 0.05,
           ease: "power2.out",
-          clearProps: "transform,opacity",
         });
 
         if (p) {
@@ -336,9 +334,8 @@ export function useExScrollMotion() {
               opacity: 0,
               duration: 0.45,
               ease: "power2.out",
-              clearProps: "transform,opacity",
             },
-            "-=0.2"
+            "-=0.15"
           );
         }
 
@@ -346,13 +343,12 @@ export function useExScrollMotion() {
           headingParaTimeline.from(
             button,
             {
-              y: 16,
+              y: 20,
               opacity: 0,
               duration: 0.4,
               ease: "power2.out",
-              clearProps: "transform,opacity",
             },
-            "-=0.15"
+            "+=0"
           );
         }
       });
