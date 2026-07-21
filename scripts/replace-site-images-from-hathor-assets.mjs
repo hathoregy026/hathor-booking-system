@@ -1,6 +1,7 @@
 /**
  * Replace all site images with assets from `assets/HATHOR IMAGES`.
- * - Converts PNG → WebP (sharp, max 1920, q82 — same as processImageToWebp)
+ * - Size policy: full quality ≤1 MB; compress only above 1 MB
+ *   (heroes target ≤800 KB, gallery/content ≤500 KB) — see lib/image-size-policy.ts
  * - Writes to /public/media/hathor/r2/ (new path = no immutable CDN flashbacks)
  * - Uploads to Supabase website-images under hathor/r2/
  * - Deletes previous SiteImage rows and reseeds URLs
@@ -23,7 +24,9 @@ const MEDIA_BASE = "/media/hathor/r2";
 const STORAGE_PREFIX = "hathor/r2";
 const BUCKET = "website-images";
 const MAX_WIDTH = 1920;
-const WEBP_QUALITY = 82;
+const COMPRESS_ABOVE = 1 * 1024 * 1024;
+const HERO_TARGET = 800 * 1024;
+const CONTENT_TARGET = 500 * 1024;
 
 function listImages(dir) {
   if (!existsSync(dir)) return [];
@@ -159,16 +162,35 @@ const SLOT_META = {
   "legacy-interior": { alt: "Suite interiors aboard Hathor Dahabiya", category: "suite", pagePath: "/", displayOrder: 93 },
 };
 
-async function toWebp(sourcePath, targetPath) {
+async function toWebp(sourcePath, targetPath, kind = "content") {
   const input = readFileSync(sourcePath);
-  const output = await sharp(input, { failOn: "none" })
+
+  /* Under 1 MB: full-quality WebP (no downscale, q100) — paths stay .webp. */
+  if (input.byteLength <= COMPRESS_ABOVE) {
+    const output = await sharp(input, { failOn: "none" })
+      .rotate()
+      .webp({ quality: 100, effort: 4 })
+      .toBuffer();
+    mkdirSync(dirname(targetPath), { recursive: true });
+    writeFileSync(targetPath, output);
+    return output;
+  }
+
+  const target = kind === "hero" ? HERO_TARGET : CONTENT_TARGET;
+  const base = sharp(input, { failOn: "none" })
     .rotate()
-    .resize(MAX_WIDTH, MAX_WIDTH, { fit: "inside", withoutEnlargement: true })
-    .webp({ quality: WEBP_QUALITY })
-    .toBuffer();
+    .resize(MAX_WIDTH, MAX_WIDTH, { fit: "inside", withoutEnlargement: true });
+
+  let best = null;
+  for (let quality = 86; quality >= 68; quality -= 6) {
+    const output = await base.clone().webp({ quality, effort: 4 }).toBuffer();
+    best = output;
+    if (output.byteLength <= target) break;
+  }
+
   mkdirSync(dirname(targetPath), { recursive: true });
-  writeFileSync(targetPath, output);
-  return output;
+  writeFileSync(targetPath, best);
+  return best;
 }
 
 async function main() {
@@ -198,7 +220,9 @@ async function main() {
       throw new Error(`Missing source for ${slot}: ${source}`);
     }
     const target = join(outDir, `${slot}.webp`);
-    const buffer = await toWebp(source, target);
+    const meta = SLOT_META[slot];
+    const kind = meta?.category === "hero" ? "hero" : "content";
+    const buffer = await toWebp(source, target, kind);
     written.push({ slot, source, target, bytes: buffer.length });
     console.log(
       `[replace-images] ${slot} ← ${source.replace(root + "\\", "").replace(root + "/", "")} (${(buffer.length / 1024).toFixed(0)} KB)`,

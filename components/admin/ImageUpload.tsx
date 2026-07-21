@@ -15,8 +15,15 @@ import {
   Trash2,
   Upload,
 } from "lucide-react";
-import { ADMIN_UPLOAD_TIMEOUT_MS } from "@/lib/admin-fetch";
+import { ADMIN_UPLOAD_TIMEOUT_MS, adminFetch } from "@/lib/admin-fetch";
 import { MAX_IMAGE_BYTES } from "@/lib/image-upload";
+import {
+  IMAGE_SIZE_POLICY,
+  parseImageProcessKind,
+  resolveImageProcessKind,
+  shouldCompressImage,
+  type ImageProcessKind,
+} from "@/lib/image-size-policy";
 
 const ACCEPTED_TYPES = "image/jpeg,image/png,image/webp";
 
@@ -36,6 +43,10 @@ type ImageUploadProps = {
   imageTitle?: string;
   /** Slot label fallback when imageTitle is empty. */
   imageLabel?: string;
+  /** hero | gallery | content — drives size policy when compressing. */
+  imageKind?: ImageProcessKind;
+  /** Site image layout kind from admin cards (maps to imageKind). */
+  layoutKind?: "hero" | "gallery" | "standard";
   helperText?: string;
   variant?: "default" | "admin";
   allowClear?: boolean;
@@ -51,6 +62,7 @@ type ImageUploadProps = {
 
 type UploadResponse = {
   publicUrl?: string;
+  url?: string;
   signedUrl?: string;
   suggestedAltText?: string;
   error?: string;
@@ -68,6 +80,21 @@ function validateClientFile(file: File): string | null {
   return null;
 }
 
+function resolveUploadKind(options: {
+  imageKind?: ImageProcessKind;
+  layoutKind?: "hero" | "gallery" | "standard";
+  folder: string;
+}): ImageProcessKind {
+  if (options.imageKind) return parseImageProcessKind(options.imageKind);
+  const slotName = options.folder.startsWith("site-images/")
+    ? options.folder.slice("site-images/".length)
+    : null;
+  return resolveImageProcessKind({
+    layoutKind: options.layoutKind,
+    slotName,
+  });
+}
+
 async function parseUploadResponse(response: Response): Promise<UploadResponse> {
   const text = await response.text();
   if (!text) return {};
@@ -81,6 +108,50 @@ async function parseUploadResponse(response: Response): Promise<UploadResponse> 
         : "Upload failed: invalid server response.",
     };
   }
+}
+
+async function uploadProcessedViaServer(
+  file: File,
+  folder: string,
+  naming: {
+    pageName?: string;
+    imageTitle?: string;
+    imageLabel?: string;
+    imageKind: ImageProcessKind;
+    layoutKind?: string;
+  },
+  onProgress: (progress: number) => void,
+): Promise<UploadResponse> {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("folder", folder);
+  formData.append("pageName", naming.pageName ?? folder);
+  formData.append("imageTitle", naming.imageTitle ?? "");
+  formData.append("imageLabel", naming.imageLabel ?? "");
+  formData.append("imageKind", naming.imageKind);
+  if (naming.layoutKind) formData.append("layoutKind", naming.layoutKind);
+
+  onProgress(12);
+  const response = await adminFetch(
+    "/api/admin/upload",
+    {
+      method: "POST",
+      body: formData,
+      credentials: "same-origin",
+    },
+    ADMIN_UPLOAD_TIMEOUT_MS,
+  );
+  onProgress(92);
+
+  const data = await parseUploadResponse(response);
+  if (!response.ok || !(data.url || data.publicUrl)) {
+    throw new Error(data.error || "Could not upload image");
+  }
+
+  return {
+    ...data,
+    publicUrl: data.publicUrl ?? data.url,
+  };
 }
 
 async function requestSignedUpload(
@@ -174,6 +245,8 @@ export function ImageUpload({
   pageName,
   imageTitle,
   imageLabel,
+  imageKind,
+  layoutKind,
   helperText,
   variant = "default",
   allowClear = true,
@@ -188,6 +261,12 @@ export function ImageUpload({
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [uploadComplete, setUploadComplete] = useState(false);
+
+  const resolvedKind = resolveUploadKind({ imageKind, layoutKind, folder });
+  const policyHint =
+    resolvedKind === "hero"
+      ? `Heroes: full quality up to ${IMAGE_SIZE_POLICY.fullQualityMaxBytes.hero / 1024} KB. Compress only above 1 MB.`
+      : `Gallery/content: full quality up to ${IMAGE_SIZE_POLICY.fullQualityMaxBytes.gallery / 1024} KB. Compress only above 1 MB.`;
 
   useLayoutEffect(() => {
     if (!chooseButtonRef) return;
@@ -245,25 +324,47 @@ export function ImageUpload({
 
     try {
       setUploadProgress(5);
-      const signedUpload = await requestSignedUpload(selectedFile, folder, {
-        pageName: pageName ?? folder,
-        imageTitle: imageTitle ?? label,
-        imageLabel,
-      });
+      const kind = resolveUploadKind({ imageKind, layoutKind, folder });
 
-      if (!signedUpload.signedUrl || !signedUpload.publicUrl) {
-        throw new Error("Upload could not start. No signed URL was returned.");
+      if (shouldCompressImage(selectedFile.size)) {
+        const processedUpload = await uploadProcessedViaServer(
+          selectedFile,
+          folder,
+          {
+            pageName: pageName ?? folder,
+            imageTitle: imageTitle ?? label,
+            imageLabel,
+            imageKind: kind,
+            layoutKind,
+          },
+          setUploadProgress,
+        );
+
+        onChange(processedUpload.publicUrl ?? null, {
+          suggestedAltText: processedUpload.suggestedAltText,
+        });
+      } else {
+        const signedUpload = await requestSignedUpload(selectedFile, folder, {
+          pageName: pageName ?? folder,
+          imageTitle: imageTitle ?? label,
+          imageLabel,
+        });
+
+        if (!signedUpload.signedUrl || !signedUpload.publicUrl) {
+          throw new Error("Upload could not start. No signed URL was returned.");
+        }
+
+        await uploadFileToSignedUrl(
+          selectedFile,
+          signedUpload.signedUrl,
+          setUploadProgress,
+        );
+
+        onChange(signedUpload.publicUrl, {
+          suggestedAltText: signedUpload.suggestedAltText,
+        });
       }
 
-      await uploadFileToSignedUrl(
-        selectedFile,
-        signedUpload.signedUrl,
-        setUploadProgress,
-      );
-
-      onChange(signedUpload.publicUrl, {
-        suggestedAltText: signedUpload.suggestedAltText,
-      });
       onDataUrlChange?.(null);
       setUploadProgress(100);
       setUploadComplete(true);
@@ -494,9 +595,21 @@ export function ImageUpload({
           style={isAdmin ? { color: "var(--text-muted)" } : undefined}
         >
           Selected: {selectedFile.name} ({(selectedFile.size / 1024).toFixed(0)}{" "}
-          KB) — uploads directly to Supabase Storage.
+          KB)
+          {shouldCompressImage(selectedFile.size)
+            ? " — over 1 MB, will be compressed on upload."
+            : " — under 1 MB, kept at full quality."}
         </p>
       )}
+
+      {helperText !== "" ? (
+        <p
+          className="text-xs"
+          style={isAdmin ? { color: "var(--text-muted)" } : undefined}
+        >
+          {helperText ?? policyHint}
+        </p>
+      ) : null}
 
       {value && !selectedFile && !isCompact ? (
         <p
@@ -505,15 +618,6 @@ export function ImageUpload({
           title={value}
         >
           {isAdmin ? "Image uploaded." : `Current URL: ${value}`}
-        </p>
-      ) : null}
-
-      {helperText ? (
-        <p
-          className="text-xs"
-          style={isAdmin ? { color: "var(--text-muted)" } : undefined}
-        >
-          {helperText}
         </p>
       ) : null}
 

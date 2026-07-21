@@ -1,0 +1,29 @@
+---
+description: Image upload size and compression policy (heroes vs gallery/content)
+globs: lib/media-process.ts,lib/image-size-policy.ts,app/api/admin/upload/**/*,components/admin/ImageUpload.tsx,scripts/**/*image*
+alwaysApply: false
+---
+
+# Image size & compression policy
+
+Canonical constants live in `lib/image-size-policy.ts`. Processing is in `lib/media-process.ts`.
+
+## Rules
+
+1. **Gallery / content images** — full quality allowed up to **500 KB**.
+2. **Hero images** — full quality allowed up to **800 KB**.
+3. **Only compress when the source file is above 1 MB.**
+   - At or under 1 MB: orientation-only pass-through (no lossy re-encode).
+   - Over 1 MB: lossy WebP compression aimed at the kind’s target (800 KB heroes, 500 KB gallery/content).
+
+## Do
+
+- Pass `imageKind` (`hero` | `gallery` | `content`) through admin upload when known.
+- Use `shouldCompressImage()` / `processImageToWebp(buf, { kind })` — do not hardcode quality or always-compress in new upload paths.
+- Keep signed-upload of originals for files ≤ 1 MB; route > 1 MB through the processing upload API.
+
+## Don’t
+
+- Don’t reintroduce blanket WebP q82/q88 compression for every upload.
+- Don’t compress email-template images with this policy unless explicitly requested (separate 5 MB email limits).
+- Don’t “upscale” or invent resolution; max edge applies only when compressing oversized sources.

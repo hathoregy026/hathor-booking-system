@@ -1,16 +1,23 @@
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import sharp from "sharp";
+import {
+  IMAGE_SIZE_POLICY,
+  compressTargetBytes,
+  parseImageProcessKind,
+  shouldCompressImage,
+  type ImageProcessKind,
+} from "@/lib/image-size-policy";
 
 const execFileAsync = promisify(execFile);
 
-const IMAGE_MAX_WIDTH = 1920;
-const WEBP_QUALITY = 88;
-
 export type ProcessedImage = {
   buffer: Buffer;
-  contentType: "image/webp";
-  extension: "webp";
+  contentType: "image/jpeg" | "image/png" | "image/webp";
+  extension: "jpg" | "png" | "webp";
+  /** True when lossy compression ran (source was over 1 MB). */
+  compressed: boolean;
+  kind: ImageProcessKind;
 };
 
 export type ProcessedVideo = {
@@ -19,17 +26,102 @@ export type ProcessedVideo = {
   extension: "mp4";
 };
 
-export async function processImageToWebp(input: Buffer): Promise<ProcessedImage> {
-  const buffer = await sharp(input, { failOn: "none" })
+export type ProcessImageOptions = {
+  kind?: ImageProcessKind | string | null;
+};
+
+function detectOutputFormat(
+  input: Buffer,
+): { contentType: ProcessedImage["contentType"]; extension: ProcessedImage["extension"] } {
+  if (input[0] === 0xff && input[1] === 0xd8) {
+    return { contentType: "image/jpeg", extension: "jpg" };
+  }
+  if (
+    input[0] === 0x89 &&
+    input[1] === 0x50 &&
+    input[2] === 0x4e &&
+    input[3] === 0x47
+  ) {
+    return { contentType: "image/png", extension: "png" };
+  }
+  return { contentType: "image/webp", extension: "webp" };
+}
+
+async function toFullQualityPassThrough(
+  input: Buffer,
+  kind: ImageProcessKind,
+): Promise<ProcessedImage> {
+  /* Under 1 MB: keep original bytes — no lossy re-encode. */
+  const detected = detectOutputFormat(input);
+  return {
+    buffer: input,
+    contentType: detected.contentType,
+    extension: detected.extension,
+    compressed: false,
+    kind,
+  };
+}
+
+async function compressOversizeToWebp(
+  input: Buffer,
+  kind: ImageProcessKind,
+): Promise<ProcessedImage> {
+  const target = compressTargetBytes(kind);
+  const { start, min, step } = IMAGE_SIZE_POLICY.compressQuality;
+  const maxEdge = IMAGE_SIZE_POLICY.compressMaxEdge;
+
+  const base = sharp(input, { failOn: "none" })
     .rotate()
-    .resize(IMAGE_MAX_WIDTH, IMAGE_MAX_WIDTH, {
+    .resize(maxEdge, maxEdge, {
       fit: "inside",
       withoutEnlargement: true,
-    })
-    .webp({ quality: WEBP_QUALITY })
-    .toBuffer();
+    });
 
-  return { buffer, contentType: "image/webp", extension: "webp" };
+  let best: Buffer | null = null;
+  for (let quality = start; quality >= min; quality -= step) {
+    const buffer = await base
+      .clone()
+      .webp({ quality, effort: 4 })
+      .toBuffer();
+    best = buffer;
+    if (buffer.byteLength <= target) break;
+  }
+
+  return {
+    buffer: best!,
+    contentType: "image/webp",
+    extension: "webp",
+    compressed: true,
+    kind,
+  };
+}
+
+/**
+ * Apply the site image size policy:
+ * - ≤ 1 MB → full quality (orientation only; no lossy compression)
+ * - > 1 MB → compress toward hero 800 KB / gallery·content 500 KB
+ */
+export async function processImageToWebp(
+  input: Buffer,
+  options: ProcessImageOptions = {},
+): Promise<ProcessedImage> {
+  const kind = parseImageProcessKind(
+    typeof options.kind === "string" ? options.kind : options.kind ?? "content",
+  );
+
+  if (!shouldCompressImage(input.byteLength)) {
+    return toFullQualityPassThrough(input, kind);
+  }
+
+  return compressOversizeToWebp(input, kind);
+}
+
+/** @deprecated Prefer processImageToWebp — kept name for call sites. */
+export async function processSiteImage(
+  input: Buffer,
+  options: ProcessImageOptions = {},
+): Promise<ProcessedImage> {
+  return processImageToWebp(input, options);
 }
 
 async function findFfmpeg(): Promise<string | null> {
@@ -100,3 +192,5 @@ export async function processVideoToMp4(
     await fs.rm(tmpDir, { recursive: true, force: true }).catch(() => undefined);
   }
 }
+
+export { detectOutputFormat };

@@ -91,6 +91,10 @@ export function SiteImageSlotCard({
                 pageName={pageTitle}
                 imageTitle={altText}
                 imageLabel={item.label}
+                layoutKind={item.layoutKind}
+                imageKind={
+                  item.layoutKind === "standard" ? "content" : item.layoutKind
+                }
                 folder={`site-images/${item.name}`}
                 variant="admin"
                 layout="actions-only"

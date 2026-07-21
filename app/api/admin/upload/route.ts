@@ -8,6 +8,10 @@ import {
 } from "@/lib/image-upload";
 import { uploadWebsiteImage } from "@/lib/admin-storage";
 import { resolveImageTitle } from "@/lib/seo-image-filename";
+import {
+  parseImageProcessKind,
+  resolveImageProcessKind,
+} from "@/lib/image-size-policy";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -23,6 +27,18 @@ export async function POST(request: NextRequest) {
       name: (formData.get("imageName") as string | null)?.trim(),
       label: (formData.get("imageLabel") as string | null)?.trim(),
     });
+    const layoutKind = (formData.get("layoutKind") as string | null)?.trim();
+    const imageKindRaw = (formData.get("imageKind") as string | null)?.trim();
+    const slotName = folder.startsWith("site-images/")
+      ? folder.slice("site-images/".length)
+      : (formData.get("imageName") as string | null)?.trim() || null;
+
+    const imageKind = imageKindRaw
+      ? parseImageProcessKind(imageKindRaw)
+      : resolveImageProcessKind({
+          layoutKind,
+          slotName,
+        });
 
     if (!(file instanceof File)) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
@@ -87,7 +103,7 @@ export async function POST(request: NextRequest) {
     }
 
     const inputBuffer = Buffer.from(await file.arrayBuffer());
-    const processed = await processImageToWebp(inputBuffer);
+    const processed = await processImageToWebp(inputBuffer, { kind: imageKind });
 
     const result = await uploadWebsiteImage({
       folder,
@@ -103,6 +119,8 @@ export async function POST(request: NextRequest) {
       path: result.path,
       storage: "supabase",
       type: "image",
+      compressed: processed.compressed,
+      imageKind: processed.kind,
       suggestedAltText: result.suggestedAltText,
     });
   } catch (error) {

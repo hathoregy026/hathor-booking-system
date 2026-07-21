@@ -34,15 +34,35 @@ async function findFfmpeg() {
 
 async function toWebp(sourcePath, targetPath, maxWidth = 1920) {
   const input = readFileSync(sourcePath);
-  const output = await sharp(input, { failOn: "none" })
+  const COMPRESS_ABOVE = 1 * 1024 * 1024;
+
+  /* Under 1 MB: full-quality WebP (no downscale). */
+  if (input.byteLength <= COMPRESS_ABOVE) {
+    const output = await sharp(input, { failOn: "none" })
+      .rotate()
+      .webp({ quality: 100, effort: 4 })
+      .toBuffer();
+    mkdirSync(dirname(targetPath), { recursive: true });
+    writeFileSync(targetPath, output);
+    console.log(
+      `[sync-hathor-media] ${targetPath.replace(root + "\\", "").replace(root + "/", "")} (full-q ${(output.length / 1024).toFixed(0)} KB)`,
+    );
+    return;
+  }
+
+  let best = null;
+  const base = sharp(input, { failOn: "none" })
     .rotate()
-    .resize(maxWidth, maxWidth, { fit: "inside", withoutEnlargement: true })
-    .webp({ quality: 82 })
-    .toBuffer();
+    .resize(maxWidth, maxWidth, { fit: "inside", withoutEnlargement: true });
+  for (let quality = 86; quality >= 68; quality -= 6) {
+    const output = await base.clone().webp({ quality, effort: 4 }).toBuffer();
+    best = output;
+    if (output.byteLength <= 800 * 1024) break;
+  }
   mkdirSync(dirname(targetPath), { recursive: true });
-  writeFileSync(targetPath, output);
+  writeFileSync(targetPath, best);
   console.log(
-    `[sync-hathor-media] ${targetPath.replace(root + "\\", "").replace(root + "/", "")} (${(output.length / 1024).toFixed(0)} KB)`,
+    `[sync-hathor-media] ${targetPath.replace(root + "\\", "").replace(root + "/", "")} (${(best.length / 1024).toFixed(0)} KB)`,
   );
 }
 
