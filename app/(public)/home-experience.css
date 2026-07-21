@@ -1310,12 +1310,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 }
 
 .home-carousel-h3 h3 {
-  font-family: var(--font-body);
-  font-weight: 400;
-  font-size: 0.95rem;
-  letter-spacing: 0.02em;
-  color: var(--muted);
-  text-transform: none;
+  margin: 0;
+  /* Font/size/case/color from dashboard typography (page_subtitle / Small indication) */
 }
 
 .home-carousel {

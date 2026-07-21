@@ -586,7 +586,9 @@ ${block(
 .public-site .venetian-page .room-fs-ui .room-fs-route,
 .public-site .venetian-page .room-fs-ui .room-fs-count,
 .public-site .venetian-page .room-fs-ui .room-fs-count i,
-html[data-ex-experience] .ex-root .ex-stack-scroll__eyebrow`,
+html[data-ex-experience] .ex-root .ex-stack-scroll__eyebrow,
+html[data-ex-experience] .ex-root .home-carousel-h3 h3,
+html[data-ex-experience] .ex-root .home-carousel-h3 .typo-page-subtitle`,
   "page_subtitle",
 )}
 ${block(
@@ -595,8 +597,7 @@ ${block(
 .public-site .room-interstitial__script,
 .public-site .hathor-section-subtitle,
 .public-site .hathor-chapter-subtitle,
-.public-site .venetian-page .room-fs-meta,
-html[data-ex-experience] .ex-root .home-carousel-h3 h3`,
+.public-site .venetian-page .room-fs-meta`,
   "sub_subtitle",
 )}
 ${block(

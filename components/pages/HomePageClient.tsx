@@ -71,6 +71,7 @@ export function HomePageClient({
   const stackEyebrowStyle = useTypographyInlineStyle("page_subtitle");
   const stackTitleStyle = useTypographyInlineStyle("page_title");
   const stackBodyStyle = useTypographyInlineStyle("body_text");
+  const itinerariesIndicationStyle = useTypographyInlineStyle("page_subtitle");
 
   const [liveTune, setLiveTune] = useState(heroLogoTune);
 
@@ -189,7 +190,9 @@ export function HomePageClient({
               <h2>{EX_CAROUSEL.title}</h2>
             </div>
             <div className="home-carousel-h3">
-              <h3 className="typo-sub-subtitle">{EX_CAROUSEL.subtitle}</h3>
+              <h3 className="typo-page-subtitle" style={itinerariesIndicationStyle}>
+                {EX_CAROUSEL.subtitle}
+              </h3>
             </div>
           </div>
 
