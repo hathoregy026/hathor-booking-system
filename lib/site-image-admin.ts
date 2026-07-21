@@ -1,5 +1,8 @@
 import { SITE_IMAGE_SLOTS, type SiteImageSlot } from "@/lib/site-image-slots";
-import { resolveSiteImageLivePath } from "@/lib/site-image-preview";
+import {
+  HOMEPAGE_LIVE_SLOT_NAMES,
+  resolveSiteImageLivePath,
+} from "@/lib/site-image-preview";
 
 /** Client-facing page names for tabs / accordion headers. */
 const PAGE_GROUP_TITLES: Record<string, string> = {
@@ -15,36 +18,74 @@ const PAGE_GROUP_TITLES: Record<string, string> = {
   "/rooms": "Luxury Rooms",
   "/luxury-cabins-Nile-Cruise": "Luxury Cabins Gallery",
   "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise": "Royal Suites Gallery",
+  "/__unused": "Unused (old homepage)",
 };
 
 /**
- * Plain English card titles — always "Page - Clear section name".
- * Never expose internal slug codes.
+ * Live homepage cards in page order — only these appear under the Homepage tab.
+ * Keep in sync with `lib/ex-page-content.ts` + hero poster.
+ */
+const HOMEPAGE_LIVE_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> =
+  [
+    { name: "home-hero-poster", label: "Hero — video poster / cover" },
+    { name: "home-story-craft-large", label: "About — main photo" },
+    { name: "home-collage-small", label: "About — small decor tile" },
+    { name: "home-collage-large", label: "About — large decor tile" },
+    {
+      name: "home-split-courtyard",
+      label: "About decor / landmarks / lifestyle photo",
+    },
+    {
+      name: "cruises-hero",
+      label: "Itineraries carousel + landmarks — Cruises photo",
+    },
+    {
+      name: "room-suite",
+      label: "Itineraries carousel — Luxury Suite",
+    },
+    {
+      name: "room-royal",
+      label: "Itineraries carousel — Royal Suite",
+    },
+    {
+      name: "room-luxury",
+      label: "Itineraries carousel — Luxury Cabin",
+    },
+    { name: "about-hero", label: "Landmarks scroll — About photo" },
+    {
+      name: "home-story-legacy-large",
+      label: "Landmarks scroll — Nile ship photo",
+    },
+    {
+      name: "gastronomy-restaurant",
+      label: "Dining section + gallery — Restaurant",
+    },
+    { name: "home-collage-living", label: "Gallery — lounge photo" },
+    { name: "home-alt-highlights", label: "Gallery — landmarks photo" },
+    { name: "wellness-hero", label: "Gallery — wellness photo" },
+    { name: "home-cinematic-still", label: "Gallery — suite photo" },
+  ];
+
+/**
+ * Plain English card titles for non-homepage slots.
  */
 const SLOT_LABELS: Partial<Record<SiteImageSlot["name"], string>> = {
-  "home-story-craft-large": "Homepage - About Large Photo",
-  "home-story-craft-small": "Homepage - About Detail Photo",
-  "home-story-transform": "Homepage - Story Interior Photo",
-  "home-story-legacy-large": "Homepage - Story Nile Photo",
-  "home-story-legacy-small": "Homepage - Story Temple Photo",
-  "home-cinematic-video": "Homepage - Main Video Background",
-  "home-cinematic-still": "Homepage - Suite Showcase Photo",
-  "home-split-courtyard": "Homepage - Landmark Full-Width Photo",
-  "home-split-service": "Homepage - Scroll Hallway Photo",
-  "home-split-interiors": "Homepage - Scroll Suite Photo",
-  "home-split-venue": "Homepage - Scroll Temple Photo",
-  "home-collage-bg": "Homepage - Collage Background",
-  "home-collage-large": "Homepage - Collage Large Tile",
-  "home-collage-small": "Homepage - Collage Small Tile",
-  "home-collage-living": "Homepage - Collage Suite Photo",
-  "home-residences-kitchen": "Homepage - Cabin Photo",
-  "home-residences-lounge": "Homepage - Lounge Photo",
-  "home-residences-rooftop": "Homepage - Sun Deck Photo",
-  "home-sketch-boat": "Homepage - Boat Sketch Photo",
-  "home-alt-dining": "Homepage - Dining Feature Photo",
-  "home-alt-wellness": "Homepage - Wellness Feature Photo",
-  "home-alt-highlights": "Homepage - Landmarks Feature Photo",
-  "home-testimonials-bg": "Homepage - Guest Reviews Background",
+  "home-story-craft-small": "Unused — About Detail Photo",
+  "home-story-transform": "Unused — Story Interior Photo",
+  "home-story-legacy-small": "Unused — Story Temple Photo",
+  "home-cinematic-video": "Unused — Main Video Background",
+  "home-split-service": "Unused — Scroll Hallway Photo",
+  "home-split-interiors": "Unused — Scroll Suite Photo",
+  "home-split-venue": "Unused — Scroll Temple Photo",
+  "home-collage-bg": "Unused — Collage Background",
+  "home-residences-kitchen": "Unused — Cabin Photo",
+  "home-residences-lounge": "Unused — Lounge Photo",
+  "home-residences-rooftop": "Unused — Sun Deck Photo",
+  "home-sketch-boat": "Unused — Boat Sketch Photo",
+  "home-alt-dining": "Unused — Dining Feature Photo",
+  "home-alt-wellness": "Unused — Wellness Feature Photo",
+  "home-testimonials-bg": "Unused — Guest Reviews Background",
+  "home-post-hero-media": "Unused — Photo Below Hero",
   "room-luxury": "Hero — Luxury Rooms",
   "room-suite": "Luxury Rooms - Luxury Suite Photo",
   "room-royal": "Hero — Royal Suites",
@@ -97,6 +138,7 @@ export type SiteImageLayoutKind = "hero" | "gallery" | "standard";
 
 const SLOT_LAYOUT_KINDS: Partial<Record<SiteImageSlot["name"], SiteImageLayoutKind>> =
   {
+    "home-hero-poster": "hero",
     "home-cinematic-video": "hero",
     "home-cinematic-still": "hero",
     "home-split-courtyard": "hero",
@@ -141,12 +183,13 @@ export type SiteImageAdminGroup = {
   pagePath: string;
   title: string;
   items: SiteImageAdminItem[];
+  /** Optional helper under the group title in admin. */
+  description?: string;
 };
 
 function labelForSlot(slot: SiteImageSlot): string {
   if (SLOT_LABELS[slot.name]) return SLOT_LABELS[slot.name]!;
   const page = PAGE_GROUP_TITLES[slot.pagePath] ?? "Site";
-  /* Never fall back to a bare "Photo" — always include the slot id so it is editable & identifiable */
   return `${page} — ${slot.name.replace(/-/g, " ")}`;
 }
 
@@ -159,37 +202,11 @@ function layoutForSlot(slot: SiteImageSlot): SiteImageLayoutKind {
   return "standard";
 }
 
-/**
- * Slots that appear on the live homepage (`HomePageClient`) but live under
- * another pagePath — also listed under Homepage so every on-page photo is editable there.
- */
-const HOMEPAGE_LINKED_EXTRA_NAMES = [
-  "cruises-hero",
-  "room-suite",
-  "room-royal",
-  "room-luxury",
-  "about-hero",
-  "gastronomy-restaurant",
-  "wellness-hero",
-] as const;
-
-const HOMEPAGE_LINKED_EXTRA_LABELS: Record<
-  (typeof HOMEPAGE_LINKED_EXTRA_NAMES)[number],
-  string
-> = {
-  "cruises-hero": "Homepage — Itineraries / landmarks (Cruises photo)",
-  "room-suite": "Homepage — Itineraries carousel (Luxury Suite)",
-  "room-royal": "Homepage — Itineraries carousel (Royal Suite)",
-  "room-luxury": "Homepage — Itineraries carousel (Luxury Cabin)",
-  "about-hero": "Homepage — Landmark scroll (About photo)",
-  "gastronomy-restaurant": "Homepage — Dining & gallery (Restaurant)",
-  "wellness-hero": "Homepage — Gallery (Wellness)",
-};
-
 /** e.g. "Homepage Images", "Cruises Images" */
 export function getSiteImageGroupHeading(pageTitle: string): string {
   if (pageTitle === "Homepage" || pageTitle === "Home") return "Homepage Images";
   if (pageTitle === "About Us") return "About Us Images";
+  if (pageTitle.startsWith("Unused")) return pageTitle;
   return `${pageTitle} Images`;
 }
 
@@ -197,6 +214,7 @@ function toAdminItem(
   slot: SiteImageSlot,
   adminGroupPagePath: string,
   labelOverride?: string,
+  displayOrderOverride?: number,
 ): SiteImageAdminItem {
   const layoutKind = layoutForSlot(slot);
   return {
@@ -206,49 +224,45 @@ function toAdminItem(
     category: slot.category,
     pagePath: slot.pagePath,
     livePath: resolveSiteImageLivePath(slot.name, adminGroupPagePath),
-    displayOrder: slot.displayOrder,
+    displayOrder: displayOrderOverride ?? slot.displayOrder,
     layoutKind,
     layoutLabel: LAYOUT_LABELS[layoutKind],
   };
 }
 
 export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
-  const byPage = new Map<string, SiteImageAdminItem[]>();
   const byName = new Map(SITE_IMAGE_SLOTS.map((slot) => [slot.name, slot]));
+  const claimedByHomepage = new Set(HOMEPAGE_LIVE_ADMIN_CARDS.map((c) => c.name));
+
+  /* Homepage tab = only images that actually appear on the live `/` page */
+  const homepageItems: SiteImageAdminItem[] = [];
+  HOMEPAGE_LIVE_ADMIN_CARDS.forEach((card, index) => {
+    const slot = byName.get(card.name);
+    if (!slot) return;
+    homepageItems.push(toAdminItem(slot, "/", card.label, index + 1));
+  });
+
+  /* Other page tabs — exclude slots already listed on Homepage as primary home use… 
+     No: keep them on their page tabs too so Cruises/Rooms editors still find them.
+     Only remove unused home-* from Homepage. */
+  const byPage = new Map<string, SiteImageAdminItem[]>();
+  const unusedHome: SiteImageAdminItem[] = [];
 
   for (const slot of SITE_IMAGE_SLOTS) {
+    if (slot.pagePath === "/") {
+      if (claimedByHomepage.has(slot.name) || HOMEPAGE_LIVE_SLOT_NAMES.has(slot.name)) {
+        continue; /* shown under Homepage live list */
+      }
+      unusedHome.push(toAdminItem(slot, "/__unused"));
+      continue;
+    }
+
     const items = byPage.get(slot.pagePath) ?? [];
     items.push(toAdminItem(slot, slot.pagePath));
     byPage.set(slot.pagePath, items);
   }
 
-  /* Surface every homepage-visible cross-page slot under Homepage too */
-  const homeItems = byPage.get("/") ?? [];
-  const homeNames = new Set(homeItems.map((item) => item.name));
-  let extraOrder = 900;
-  for (const name of HOMEPAGE_LINKED_EXTRA_NAMES) {
-    if (homeNames.has(name)) continue;
-    const slot = byName.get(name);
-    if (!slot) continue;
-    homeItems.push({
-      ...toAdminItem(slot, "/", HOMEPAGE_LINKED_EXTRA_LABELS[name]),
-      displayOrder: extraOrder++,
-    });
-    homeNames.add(name);
-  }
-  byPage.set("/", homeItems);
-
-  /* Recompute homepage-native livePaths (orphan home-* get null) */
-  byPage.set(
-    "/",
-    homeItems.map((item) => ({
-      ...item,
-      livePath: resolveSiteImageLivePath(item.name, "/"),
-    })),
-  );
-
   const pageOrder = [
-    "/",
     "/cruises",
     "/rooms",
     "/luxury-cabins-Nile-Cruise",
@@ -262,17 +276,41 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
     "/blogs",
   ];
 
-  /* Guarantee every slot appears — append any pagePath not listed above */
   const orderedPaths = [
     ...pageOrder.filter((pagePath) => byPage.has(pagePath)),
     ...[...byPage.keys()].filter((pagePath) => !pageOrder.includes(pagePath)),
   ];
 
-  return orderedPaths.map((pagePath) => ({
-    pagePath,
-    title: PAGE_GROUP_TITLES[pagePath] ?? pagePath,
-    items: (byPage.get(pagePath) ?? []).sort(
-      (a, b) => a.displayOrder - b.displayOrder || a.label.localeCompare(b.label),
-    ),
-  }));
+  const groups: SiteImageAdminGroup[] = [
+    {
+      pagePath: "/",
+      title: "Homepage",
+      description:
+        "Only photos that appear on the live homepage. Edit here to change what guests see on /.",
+      items: homepageItems,
+    },
+    ...orderedPaths.map((pagePath) => ({
+      pagePath,
+      title: PAGE_GROUP_TITLES[pagePath] ?? pagePath,
+      items: (byPage.get(pagePath) ?? []).sort(
+        (a, b) =>
+          a.displayOrder - b.displayOrder || a.label.localeCompare(b.label),
+      ),
+    })),
+  ];
+
+  if (unusedHome.length > 0) {
+    groups.push({
+      pagePath: "/__unused",
+      title: "Unused (old homepage)",
+      description:
+        "Leftovers from an older homepage layout. They are not shown on the live site today — safe to ignore, or replace if you plan to reuse them later.",
+      items: unusedHome.sort(
+        (a, b) =>
+          a.displayOrder - b.displayOrder || a.label.localeCompare(b.label),
+      ),
+    });
+  }
+
+  return groups;
 }

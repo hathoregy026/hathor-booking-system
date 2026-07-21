@@ -4,7 +4,7 @@ import { useLayoutEffect, useRef } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { HathorLogoSplit } from "@/components/public/HathorLogoSplit";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
-import { HATHOR_HERO_POSTER_SRC, HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
+import { HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
 import { EX_HERO } from "@/lib/ex-page-content";
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 import { useTypographyInlineStyle } from "@/components/public/TypographySettingsProvider";
@@ -42,8 +42,8 @@ export type PublicSiteHeroProps = {
   /** Floating gold dust over the hero (delete tag + GoldDustParticles.tsx to remove). */
   goldDust?: boolean;
   /**
-   * When true, play the homepage hero video (static poster — not a CMS slot).
-   * Other pages should leave this false and use `posterImageName` as a still image.
+   * When true, play the homepage hero video. Poster frame uses `posterImageName`
+   * CMS slot (falls back to about-hero if omitted).
    */
   playVideo?: boolean;
   /** Letter colour set from Hero Logo Tune — default keeps live gold WebPs. */
@@ -67,7 +67,6 @@ export function PublicSiteHero({
   logoPartsVariant = "current",
 }: PublicSiteHeroProps) {
   const heroVideoRef = useRef<HTMLVideoElement>(null);
-  /* Still heroes need a CMS slot; video hero uses a fixed local poster file. */
   const heroImage = useSiteImage(posterImageName ?? "about-hero");
   const heroTitleStyle = useTypographyInlineStyle("hero_title");
   const heroSubtitleStyle = useTypographyInlineStyle("hero_subtitle");
@@ -96,13 +95,13 @@ export function PublicSiteHero({
           <video
             ref={heroVideoRef}
             src={HATHOR_HERO_VIDEO_SRC}
-            poster={HATHOR_HERO_POSTER_SRC}
+            poster={heroImage.src}
             autoPlay
             loop
             muted
             playsInline
             preload="metadata"
-            aria-label="Hathor Dahabiya sailing on the Nile"
+            aria-label={heroImage.alt || "Hathor Dahabiya sailing on the Nile"}
           />
         ) : (
           // eslint-disable-next-line @next/next/no-img-element -- CMS hero still; next/image fill not needed here

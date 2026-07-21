@@ -12,7 +12,15 @@ export type SiteImageSlot = {
 
 /** Canonical image slots — seeded to SiteImage and editable in admin → Site Images. */
 export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
-  // Homepage
+  // Homepage (live EX page)
+  {
+    name: "home-hero-poster",
+    altText: HATHOR_MEDIA.heroHomepageAlt,
+    url: HATHOR_MEDIA.heroHomepage,
+    category: "hero",
+    pagePath: "/",
+    displayOrder: 0,
+  },
   {
     name: "home-story-craft-large",
     altText: "Ornate interior corridor aboard a luxury Dahabiya",
