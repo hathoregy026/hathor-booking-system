@@ -3130,13 +3130,17 @@
 }
 
 .hathor-chapter-title {
-  margin-top: 1rem;
+  margin-top: 0;
   font-family: var(--public-title, var(--public-serif));
   font-size: clamp(2rem, 4.5vw, 3.25rem);
   font-weight: 600;
   line-height: 1.12;
   letter-spacing: -0.03em;
   color: var(--hathor-cream);
+}
+
+.hathor-chapter-title + .hathor-chapter-eyebrow {
+  margin-top: 1rem;
 }
 
 .hathor-chapter-subtitle {
@@ -3372,13 +3376,17 @@
 }
 
 .owo-chapter__title {
-  margin-top: 1rem;
+  margin-top: 0;
   font-family: var(--public-serif);
   font-size: clamp(1.625rem, 3.75vw, 2.625rem);
   font-weight: 500;
   line-height: 1.25;
   letter-spacing: -0.02em;
   color: var(--hathor-cream);
+}
+
+.owo-chapter__title + .owo-eyebrow {
+  margin-top: 1rem;
 }
 
 .owo-chapter__subtitle {
@@ -3894,7 +3902,7 @@
 }
 
 .hathor-legacy-stack__eyebrow {
-  margin: 0 0 1.5rem;
+  margin: 1rem 0 0;
   font-family: var(--public-sans);
   font-size: 0.7rem;
   font-weight: 600;

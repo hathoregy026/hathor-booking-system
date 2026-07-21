@@ -58,12 +58,12 @@ export function WellnessPageContent() {
       <div ref={rootRef} className="venetian-page lux-page">
         <section className="lux-shell">
           <header className="spx-intro" id="performance">
-            <p className="lux-kicker" data-lux-reveal>
-              Wellness aboard Hathor
-            </p>
             <h2 className="lux-gold lux-gold-xl" data-lux-title>
               {WELLNESS_PAGE.spa.title}
             </h2>
+            <p className="lux-kicker" data-lux-reveal>
+              Wellness aboard Hathor
+            </p>
             <p className="lux-lead" data-lux-reveal>
               Health and well-being — Seneb — shaped by timeless Egyptian wisdom.
             </p>
@@ -93,10 +93,10 @@ export function WellnessPageContent() {
               </div>
               <div className="spx-frame-shade" aria-hidden="true" />
               <div className="spx-frame-ui">
-                <p className="lux-kicker">{frame.kicker}</p>
                 <h2 className="lux-gold lux-gold-lg" data-lux-title>
                   {frame.title}
                 </h2>
+                <p className="lux-kicker">{frame.kicker}</p>
                 <p className="lux-lead">{frame.lead}</p>
                 <div className="lux-copy">
                   <p>{frame.body}</p>
@@ -123,12 +123,12 @@ export function WellnessPageContent() {
                 </div>
               </div>
               <div className="spx-atelier-copy">
-                <p className="lux-kicker" data-lux-reveal>
-                  Historia Fitness
-                </p>
                 <h2 className="lux-gold lux-gold-lg" data-lux-title>
                   {WELLNESS_PAGE.fitness.title}
                 </h2>
+                <p className="lux-kicker" data-lux-reveal>
+                  Historia Fitness
+                </p>
                 <p className="lux-lead" data-lux-reveal>
                   Your personal oasis overlooking the River Nile.
                 </p>

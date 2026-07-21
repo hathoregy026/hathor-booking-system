@@ -47,12 +47,12 @@ export function GastronomyPageContent() {
       <div ref={rootRef} className="venetian-page lux-page">
         <section className="dnx" id="table">
           <div className="lux-end" style={{ paddingBottom: "2rem" }}>
-            <p className="lux-kicker" data-lux-reveal>
-              Dining aboard Hathor
-            </p>
             <h2 className="lux-gold lux-gold-xl" data-lux-title>
               {GASTRONOMY_PAGE.hero.subtitle}
             </h2>
+            <p className="lux-kicker" data-lux-reveal>
+              Dining aboard Hathor
+            </p>
             <p className="lux-lead" data-lux-reveal>
               A sensory journey through Egypt&apos;s culinary heritage on the Nile.
             </p>
@@ -82,10 +82,10 @@ export function GastronomyPageContent() {
               </div>
               <div className="dnx-chapter-shade" aria-hidden="true" />
               <div className="dnx-panel">
-                <p className="lux-kicker">{chapter.kicker}</p>
                 <h3 className="lux-gold lux-gold-md" data-lux-title>
                   {chapter.title}
                 </h3>
+                <p className="lux-kicker">{chapter.kicker}</p>
                 <div className="lux-copy">
                   <p>{chapter.body}</p>
                 </div>
@@ -100,12 +100,12 @@ export function GastronomyPageContent() {
         <section className="spx-suite" id="venues">
           <div className="lux-wrap">
             <header className="spx-intro" style={{ paddingTop: 0, paddingBottom: "2rem" }}>
-              <p className="lux-kicker" data-lux-reveal>
-                Venues
-              </p>
               <h2 className="lux-gold lux-gold-lg" data-lux-title>
                 Where you dine
               </h2>
+              <p className="lux-kicker" data-lux-reveal>
+                Venues
+              </p>
             </header>
             <div className="spx-suite-grid">
               {GASTRONOMY_PAGE.venues.map((venue) => (

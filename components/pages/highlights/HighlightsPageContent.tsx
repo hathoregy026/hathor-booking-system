@@ -31,12 +31,12 @@ export function HighlightsPageContent() {
 
       <section className="hlx" id="programs">
         <header className="hlx-head">
-          <p className="lux-kicker" data-lux-reveal>
-            The Hathor Experience
-          </p>
           <h2 className="lux-gold lux-gold-xl" data-lux-title>
             {HIGHLIGHTS_PAGE.hero.title}
           </h2>
+          <p className="lux-kicker" data-lux-reveal>
+            The Hathor Experience
+          </p>
           <p className="lux-lead" data-lux-reveal>
             {HIGHLIGHTS_PAGE.hero.subtitle}
           </p>
@@ -75,8 +75,8 @@ export function HighlightsPageContent() {
                   <div className="hlx-panel-num">
                     {String(index + 1).padStart(2, "0")}
                   </div>
-                  <p className="lux-kicker">Landmark</p>
                   <h3>{landmark.title}</h3>
+                  <p className="lux-kicker">Landmark</p>
                   <p>{landmark.body}</p>
                   <Link className="btn btn-dark" href="/cruises">
                     Sail this route
@@ -99,23 +99,23 @@ export function HighlightsPageContent() {
       <section className="hlx-manifesto">
         <div className="hlx-manifesto-grid">
           <article className="hlx-manifesto-item">
-            <p className="lux-kicker">I</p>
             <h3>Private by design</h3>
+            <p className="lux-kicker">I</p>
             <p>
               Intimate Dahabiya sailing — cabins and suites composed for Nile light and
               unhurried hospitality.
             </p>
           </article>
           <article className="hlx-manifesto-item">
-            <p className="lux-kicker">II</p>
             <h3>Temples by day</h3>
+            <p className="lux-kicker">II</p>
             <p>
               Ancient wonders paced with grace — then return to river quiet aboard Hathor.
             </p>
           </article>
           <article className="hlx-manifesto-item">
-            <p className="lux-kicker">III</p>
             <h3>Voyage-native</h3>
+            <p className="lux-kicker">III</p>
             <p>
               Dining, spa, and rest bend to itinerary along Luxor and Aswan.
             </p>

@@ -81,8 +81,8 @@ export function CruisesHero({
               <span aria-hidden>/</span>
               <span aria-current="page">{breadcrumb}</span>
             </nav>
-            <p className="cruises-hero__eyebrow">{eyebrow}</p>
             <h1 className="cruises-hero__title">{title}</h1>
+            <p className="cruises-hero__eyebrow">{eyebrow}</p>
             {subtitle ? (
               <p className="cruises-hero__subtitle">{subtitle}</p>
             ) : null}

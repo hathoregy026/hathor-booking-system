@@ -34,14 +34,14 @@ export function SiteContentPage({
             <span>/</span>
             <span>{breadcrumb ?? title}</span>
           </nav>
+          <h1 className="lux-page-hero__title mt-2" style={titleStyle}>
+            {title}
+          </h1>
           {subtitle && (
             <p className="lux-section-eyebrow" style={subtitleStyle}>
               {subtitle}
             </p>
           )}
-          <h1 className="lux-page-hero__title mt-2" style={titleStyle}>
-            {title}
-          </h1>
           <div className="lux-gold-line" />
         </div>
       </div>

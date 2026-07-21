@@ -61,8 +61,8 @@ export function CharterPageContent() {
 
           <ScrollReveal>
             <div className="mt-12">
-              <p className="hathor-section-eyebrow">Route Options</p>
               <h3 className="hathor-section-title text-2xl">Your Private Itinerary</h3>
+              <p className="hathor-section-eyebrow">Route Options</p>
               <div className="hathor-gold-line hathor-gold-line--left" />
               <div className="mt-6 flex flex-wrap gap-3">
                 {CHARTER_PAGE.overview.routes.map((route) => (

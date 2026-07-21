@@ -125,8 +125,8 @@ export function HomePageContent() {
         <div className="hathor-container">
           <ScrollReveal>
             <header className="owo-chapter__header owo-chapter__header--center">
-              <p className="owo-eyebrow">Guest Reviews</p>
               <h2 className="owo-chapter__title">{HOMEPAGE_REVIEWS.title}</h2>
+              <p className="owo-eyebrow">Guest Reviews</p>
               <p className="owo-chapter__intro">{HOMEPAGE_REVIEWS.body}</p>
             </header>
           </ScrollReveal>

@@ -38,8 +38,8 @@ export function EditorialChapter({
       <div className="hathor-container">
         <ScrollReveal>
           <header className="owo-chapter__header">
-            <p className="owo-eyebrow">{eyebrow}</p>
             <h2 className="owo-chapter__title">{title}</h2>
+            <p className="owo-eyebrow">{eyebrow}</p>
             {intro ? <p className="owo-chapter__intro">{intro}</p> : null}
           </header>
         </ScrollReveal>

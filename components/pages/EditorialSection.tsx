@@ -94,8 +94,8 @@ export function EditorialSection({
             <div
               className={`hathor-editorial__content ${fullBleed ? "hathor-container py-16 lg:py-24" : ""}`}
             >
-              {label ? <p className="hathor-chapter-eyebrow">{label}</p> : null}
               <h2 className="hathor-section-title">{title}</h2>
+              {label ? <p className="hathor-chapter-eyebrow">{label}</p> : null}
               {subtitle ? (
                 <p className="hathor-section-subtitle">{subtitle}</p>
               ) : null}

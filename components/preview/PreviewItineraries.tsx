@@ -16,8 +16,8 @@ export function PreviewItineraries() {
       <div className="preview-container">
         <ScrollReveal>
           <header className="preview-chapter__header">
-            <p className="preview-eyebrow">Journeys</p>
             <h2 className="preview-chapter__title">{HOMEPAGE_ITINERARIES.title}</h2>
+            <p className="preview-eyebrow">Journeys</p>
             <p className="preview-chapter__intro">{HOMEPAGE_ITINERARIES.subtitle}</p>
             <p className="preview-chapter__body">{HOMEPAGE_ITINERARIES.intro}</p>
           </header>

@@ -185,6 +185,7 @@ function ScrollTextPanel({
       transition={{ type: "spring", ...SPRING }}
     >
       <h2 className="hathor-legacy-stack__headline">{headline}</h2>
+      <p className="hathor-legacy-stack__eyebrow">Continuing a Legacy</p>
       <p className="hathor-legacy-stack__body">{body}</p>
     </motion.div>
   );
@@ -219,7 +220,6 @@ export function LegacyScrollSection() {
           </div>
 
           <div className="hathor-legacy-stack__text-col">
-            <p className="hathor-legacy-stack__eyebrow">Continuing a Legacy</p>
             <div className="hathor-legacy-stack__text-stage">
               {STEPS.map((step, index) => (
                 <ScrollTextPanel

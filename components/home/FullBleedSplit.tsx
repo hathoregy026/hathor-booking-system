@@ -50,8 +50,8 @@ export function FullBleedSplit({
 
         <ScrollReveal direction={imageLeft ? "left" : "right"} delay={120}>
           <div className="owo-split__content">
-            <p className="owo-eyebrow">{eyebrow}</p>
             <h2 className="owo-chapter__title">{title}</h2>
+            <p className="owo-eyebrow">{eyebrow}</p>
             {subtitle ? (
               <p className="owo-chapter__subtitle">{subtitle}</p>
             ) : null}

@@ -31,8 +31,8 @@ export function ChapterHeader({
       <div
         className={`hathor-chapter-header ${centered ? "hathor-chapter-header--center" : ""}`}
       >
-        {chapter ? <p className="hathor-chapter-eyebrow">{chapter}</p> : null}
         <h2 className="hathor-chapter-title">{title}</h2>
+        {chapter ? <p className="hathor-chapter-eyebrow">{chapter}</p> : null}
         {subtitle ? <p className="hathor-chapter-subtitle">{subtitle}</p> : null}
         <div className={`hathor-gold-line ${centered ? "" : "hathor-gold-line--left"}`} />
         {intro ? <p className="hathor-chapter-intro">{intro}</p> : null}

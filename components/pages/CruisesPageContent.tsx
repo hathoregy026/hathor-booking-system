@@ -36,10 +36,10 @@ export function CruisesPageContent() {
 
         <section className="about-section cruise-intro" id="intro">
           <div className="section-inner cruise-intro-inner">
-            <p className="cruise-eyebrow cruise-reveal">Hathor Voyages</p>
             <h2 className="cruise-intro-title">
               <span className="cruise-intro-line">{CRUISES_PAGE.sectionTitle}</span>
             </h2>
+            <p className="cruise-eyebrow cruise-reveal">Hathor Voyages</p>
             <p className="cruise-intro-copy cruise-reveal">
               {CRUISES_PAGE.hero.subtitle}
             </p>
@@ -71,11 +71,11 @@ export function CruisesPageContent() {
         <section className="cruise-experience">
           <div className="cruise-experience-inner">
             <div className="cruise-exp-copy">
-              <p className="cruise-eyebrow cruise-reveal">Onboard</p>
               <h2 className="cruise-exp-title">
                 <span className="cruise-intro-line">Continue exploring</span>
                 <span className="cruise-intro-line">aboard Hathor</span>
               </h2>
+              <p className="cruise-eyebrow cruise-reveal">Onboard</p>
               <ul className="cruise-exp-list">
                 <li className="cruise-reveal">
                   <Link href="/luxury-cabins-Nile-Cruise">Luxury Rooms</Link>

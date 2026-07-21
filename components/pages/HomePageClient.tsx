@@ -289,12 +289,6 @@ export function HomePageClient({
             </div>
 
             <div className="ex-stack-scroll__copy typo-on-images">
-              <p
-                className="ex-stack-scroll__eyebrow"
-                style={{ ...stackEyebrowStyle, ...onImageColor }}
-              >
-                Nile · Hathor
-              </p>
               <h2
                 className="ex-stack-scroll__title"
                 style={{ ...stackTitleStyle, ...onImageColor }}
@@ -312,6 +306,12 @@ export function HomePageClient({
                   a pleasure.
                 </span>
               </h2>
+              <p
+                className="ex-stack-scroll__eyebrow"
+                style={{ ...stackEyebrowStyle, ...onImageColor }}
+              >
+                Nile · Hathor
+              </p>
               <p
                 className="ex-stack-scroll__body"
                 style={{ ...stackBodyStyle, ...onImageColor }}

@@ -171,7 +171,7 @@ body:has(.cruises-scroll-route) .pin-spacer {
 }
 
 .cruises-scroll-route .cruises-hero__eyebrow {
-  margin: 0;
+  margin: 0.65rem 0 0;
   font-family: var(--public-serif, Georgia, serif);
   font-size: clamp(0.8rem, 1.6vw, 0.95rem);
   font-weight: 400;

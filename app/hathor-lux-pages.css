@@ -794,7 +794,7 @@
   letter-spacing: 0.36em;
   text-transform: uppercase;
   color: var(--gold);
-  margin-bottom: 22px;
+  margin: 0 0 1.25rem;
 }
 
 .cruise-intro-title {
@@ -805,7 +805,7 @@
   letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--ink);
-  margin: 0 0 28px;
+  margin: 0 0 0.85rem;
 }
 
 .cruise-intro-line {

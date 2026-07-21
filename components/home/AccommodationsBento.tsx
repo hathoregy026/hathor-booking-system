@@ -13,8 +13,8 @@ export function AccommodationsBento() {
       <div className="hathor-container">
         <ScrollReveal>
           <header className="owo-chapter__header">
-            <p className="owo-eyebrow">Accommodations</p>
             <h2 className="owo-chapter__title">{HOMEPAGE_ACCOMMODATIONS.title}</h2>
+            <p className="owo-eyebrow">Accommodations</p>
             <p className="owo-chapter__intro">{HOMEPAGE_ACCOMMODATIONS.intro}</p>
           </header>
         </ScrollReveal>

@@ -468,7 +468,7 @@
 }
 
 .preview-chapter__title {
-  margin-top: 1rem;
+  margin-top: 0;
   font-family: var(--font-hathor-display, "Playfair Display", Georgia, serif);
   font-size: clamp(2rem, 4.5vw, 3.25rem);
   font-weight: 500;
@@ -476,6 +476,10 @@
   letter-spacing: -0.02em;
   color: var(--preview-cream);
   text-transform: capitalize;
+}
+
+.preview-chapter__title + .preview-eyebrow {
+  margin-top: 1rem;
 }
 
 .preview-chapter__intro {

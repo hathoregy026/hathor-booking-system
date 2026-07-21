@@ -22,8 +22,8 @@ export function LayeredCollageSection() {
       <div className="hathor-collage__content">
         <ScrollReveal>
           <header className="hathor-collage__header">
-            <p className="owo-eyebrow">{eyebrow}</p>
             <h2 className="hathor-collage__title">{headline}</h2>
+            <p className="owo-eyebrow">{eyebrow}</p>
             <p className="hathor-collage__body">{body}</p>
           </header>
         </ScrollReveal>

@@ -42,13 +42,13 @@ export function SiteContentSection({
           </div>
         )}
         <div className="flex flex-col justify-center p-6 sm:p-10 lg:p-12">
-          {showHeading && subtitle && (
-            <p className="lux-section-eyebrow">{subtitle}</p>
-          )}
           {showHeading && (
             <h2 className="public-serif mt-2 text-2xl font-medium sm:text-3xl">
               {title}
             </h2>
+          )}
+          {showHeading && subtitle && (
+            <p className="lux-section-eyebrow">{subtitle}</p>
           )}
           {showHeading && <div className="mt-4 h-px w-12 bg-[var(--lux-gold)]" />}
           {bodyText && (

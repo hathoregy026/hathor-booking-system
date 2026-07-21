@@ -142,12 +142,12 @@ export function ResidenceScrollPage({
       <div ref={rootRef} className="venetian-page page-accommodation">
         <section className="about-section acc-intro-block" id="intro">
           <div className="section-inner acc-intro-inner">
-            <p className="acc-eyebrow acc-reveal typo-page-subtitle">
-              {intro.eyebrow}
-            </p>
             <h2 className="acc-intro-title typo-page-title">
               <span className="acc-intro-line">{intro.title}</span>
             </h2>
+            <p className="acc-eyebrow acc-reveal typo-page-subtitle">
+              {intro.eyebrow}
+            </p>
             {afterHero.map((paragraph) => (
               <p
                 key={paragraph.slice(0, 48)}
@@ -276,11 +276,11 @@ export function ResidenceScrollPage({
                     aria-label={`Between ${chapter.title} and ${next.title}`}
                   >
                     <div className="room-interstitial__inner">
-                      <p className="room-interstitial__eyebrow typo-page-subtitle">
-                        Explore · Relax · Discover
-                      </p>
                       <p className="room-interstitial__script typo-sub-subtitle">
                         {scriptLineFromTitle(next.title)}
+                      </p>
+                      <p className="room-interstitial__eyebrow typo-page-subtitle">
+                        Explore · Relax · Discover
                       </p>
                       {gapCopy ? (
                         <p className="room-interstitial__body typo-body-text acc-reveal">
@@ -311,12 +311,12 @@ export function ResidenceScrollPage({
                 className="spx-intro"
                 style={{ paddingTop: 0, paddingBottom: "2rem" }}
               >
-                <p className="lux-kicker acc-reveal typo-page-subtitle">
-                  Amenities
-                </p>
                 <h2 className="lux-gold lux-gold-lg typo-page-title">
                   {amenities.title}
                 </h2>
+                <p className="lux-kicker acc-reveal typo-page-subtitle">
+                  Amenities
+                </p>
                 <p className="lux-lead acc-reveal typo-body-text">
                   {amenities.body}
                 </p>

@@ -1546,7 +1546,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 
 .ex-stack-scroll__title {
   font-weight: 400;
-  margin: 0 0 1.25rem;
+  margin: 0 0 0.85rem;
   max-width: 15ch;
   /* Font/size/color/tracking from dashboard typography (page_title) */
 }
