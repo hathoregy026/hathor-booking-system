@@ -18,7 +18,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
     const body = await request.json();
     const input = parseSiteImageUpdate(body);
     const image = await updateSiteImage(id, input);
-    revalidateSiteImagePages();
+    revalidateSiteImagePages(image.name ? [image.name] : undefined);
     return NextResponse.json({ image });
   } catch (error) {
     return handleRouteError(error);
@@ -28,8 +28,9 @@ export async function PUT(request: NextRequest, context: RouteContext) {
 export async function DELETE(_request: NextRequest, context: RouteContext) {
   try {
     const { id } = await context.params;
+    const existing = await prisma.siteImage.findUnique({ where: { id } });
     await deleteSiteImage(id);
-    revalidateSiteImagePages();
+    revalidateSiteImagePages(existing?.name ? [existing.name] : undefined);
     return NextResponse.json({ success: true });
   } catch (error) {
     return handleRouteError(error);

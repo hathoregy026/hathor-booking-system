@@ -19,6 +19,12 @@ type SiteImageSlotCardProps = {
   onUrlChange: (url: string | null, meta?: { suggestedAltText?: string }) => void;
 };
 
+function withCacheBust(src: string, attempt: number): string {
+  if (!src || src.startsWith("blob:") || src.startsWith("data:")) return src;
+  const sep = src.includes("?") ? "&" : "?";
+  return `${src}${sep}_preview=${attempt}`;
+}
+
 export function SiteImageSlotCard({
   item,
   pageTitle,
@@ -30,12 +36,62 @@ export function SiteImageSlotCard({
   const hasImage = Boolean(url?.trim());
   const [altOpen, setAltOpen] = useState(false);
   const [thumbBroken, setThumbBroken] = useState(false);
+  const [localPreview, setLocalPreview] = useState<string | null>(null);
+  const [remoteSrc, setRemoteSrc] = useState(url);
+  const retryRef = useRef(0);
+  const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const replaceTriggerRef = useRef<HTMLButtonElement>(null);
-  const showThumb = hasImage && !thumbBroken;
+
+  const displaySrc = localPreview || remoteSrc;
+  const showThumb = Boolean(displaySrc?.trim()) && !thumbBroken;
 
   useEffect(() => {
     setThumbBroken(false);
+    setRemoteSrc(url);
+    retryRef.current = 0;
   }, [url]);
+
+  /* After upload, keep the instant blob for a moment then switch to the live URL */
+  useEffect(() => {
+    if (!localPreview || !url?.trim()) return;
+    const timer = setTimeout(() => {
+      setRemoteSrc(withCacheBust(url, 1));
+      setLocalPreview((current) => {
+        if (current?.startsWith("blob:")) URL.revokeObjectURL(current);
+        return null;
+      });
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [localPreview, url]);
+
+  useEffect(() => {
+    return () => {
+      if (retryTimerRef.current) clearTimeout(retryTimerRef.current);
+    };
+  }, []);
+
+  const handleThumbError = () => {
+    /* Prefer keeping the local blob preview while remote CDN catches up */
+    if (localPreview) {
+      if (retryRef.current >= 5) return;
+      retryRef.current += 1;
+      retryTimerRef.current = setTimeout(() => {
+        setRemoteSrc(withCacheBust(url, retryRef.current));
+      }, 400 * retryRef.current);
+      return;
+    }
+
+    if (!url?.trim() || retryRef.current >= 5) {
+      setThumbBroken(true);
+      return;
+    }
+
+    retryRef.current += 1;
+    retryTimerRef.current = setTimeout(() => {
+      setThumbBroken(false);
+      setRemoteSrc(withCacheBust(url, retryRef.current));
+    }, 350 * retryRef.current);
+  };
 
   return (
     <article className="vcc-card vcc-card--gallery">
@@ -44,11 +100,15 @@ export function SiteImageSlotCard({
           <div className="vcc-card__thumb">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              key={url}
-              src={url}
+              key={displaySrc}
+              src={displaySrc}
               alt={altText || item.label}
               className="vcc-card__thumb-img"
-              onError={() => setThumbBroken(true)}
+              referrerPolicy="no-referrer"
+              onError={handleThumbError}
+              onLoad={() => {
+                setThumbBroken(false);
+              }}
             />
           </div>
         ) : (
@@ -90,9 +150,16 @@ export function SiteImageSlotCard({
               label="Upload / Replace"
               value={url || null}
               onChange={(nextUrl, meta) => {
+                retryRef.current = 0;
                 setThumbBroken(false);
+                if (meta?.localPreviewUrl) {
+                  setLocalPreview(meta.localPreviewUrl);
+                } else if (!nextUrl) {
+                  setLocalPreview(null);
+                }
                 onUrlChange(nextUrl, meta);
               }}
+              onLocalPreviewChange={setLocalPreview}
               pageName={pageTitle}
               imageTitle={altText}
               imageLabel={item.label}
@@ -122,7 +189,10 @@ export function SiteImageSlotCard({
               View on live site
             </a>
           ) : (
-            <span className="vcc-card__live-muted" title="This slot is editable but not used on the current live pages">
+            <span
+              className="vcc-card__live-muted"
+              title="This slot is editable but not used on the current live pages"
+            >
               Not shown on live site
             </span>
           )}

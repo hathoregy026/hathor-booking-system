@@ -33,7 +33,7 @@ export async function PUT(request: NextRequest) {
   try {
     const body = bulkSchema.parse(await request.json());
     const images = await upsertSiteImagesBulk(body.images);
-    revalidateSiteImagePages();
+    revalidateSiteImagePages(body.images.map((item) => item.name));
     return NextResponse.json({ images });
   } catch (error) {
     return handleRouteError(error);

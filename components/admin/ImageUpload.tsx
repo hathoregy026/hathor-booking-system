@@ -28,6 +28,8 @@ const ACCEPTED_TYPES = "image/jpeg,image/png,image/webp";
 
 type ImageUploadMeta = {
   suggestedAltText?: string;
+  /** Local blob URL for instant card preview while CDN catches up */
+  localPreviewUrl?: string;
 };
 
 type ImageUploadProps = {
@@ -35,6 +37,8 @@ type ImageUploadProps = {
   value: string | null;
   onChange: (url: string | null, meta?: ImageUploadMeta) => void;
   onDataUrlChange?: (dataUrl: string | null) => void;
+  /** Fires when a local file preview blob is created/cleared */
+  onLocalPreviewChange?: (previewUrl: string | null) => void;
   folder?: string;
   /** Page or category name shown in the dashboard, e.g. "Cruises", "Luxury Rooms". */
   pageName?: string;
@@ -240,6 +244,7 @@ export function ImageUpload({
   value,
   onChange,
   onDataUrlChange,
+  onLocalPreviewChange,
   folder = "general",
   pageName,
   imageTitle,
@@ -279,11 +284,12 @@ export function ImageUpload({
 
     const objectUrl = URL.createObjectURL(selectedFile);
     setPreviewUrl(objectUrl);
+    onLocalPreviewChange?.(objectUrl);
 
     return () => {
       URL.revokeObjectURL(objectUrl);
     };
-  }, [selectedFile]);
+  }, [selectedFile, onLocalPreviewChange]);
 
   const displayUrl = previewUrl ?? value;
 
@@ -317,6 +323,9 @@ export function ImageUpload({
     setUploadProgress(0);
     setUploadComplete(false);
 
+    /* Keep a card preview alive after we clear selectedFile */
+    const handoffPreview = URL.createObjectURL(selectedFile);
+
     try {
       setUploadProgress(5);
       const kind = resolveUploadKind({ imageKind, layoutKind, folder });
@@ -335,9 +344,14 @@ export function ImageUpload({
           setUploadProgress,
         );
 
-        onChange(processedUpload.publicUrl ?? null, {
+        const publicUrl = processedUpload.publicUrl ?? null;
+        onChange(publicUrl, {
           suggestedAltText: processedUpload.suggestedAltText,
+          localPreviewUrl: publicUrl ? handoffPreview : undefined,
         });
+        if (!publicUrl) {
+          URL.revokeObjectURL(handoffPreview);
+        }
       } else {
         const signedUpload = await requestSignedUpload(selectedFile, folder, {
           pageName: pageName ?? folder,
@@ -357,6 +371,7 @@ export function ImageUpload({
 
         onChange(signedUpload.publicUrl, {
           suggestedAltText: signedUpload.suggestedAltText,
+          localPreviewUrl: handoffPreview,
         });
       }
 
@@ -368,6 +383,7 @@ export function ImageUpload({
         inputRef.current.value = "";
       }
     } catch (uploadError) {
+      URL.revokeObjectURL(handoffPreview);
       setError(
         uploadError instanceof Error ? uploadError.message : "Upload failed",
       );

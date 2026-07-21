@@ -100,6 +100,9 @@ export default function AdminContentPage() {
   const [siteImages, setSiteImages] = useState<Record<string, SiteImageFormItem>>(
     {},
   );
+  const [savedSiteImages, setSavedSiteImages] = useState<
+    Record<string, SiteImageFormItem>
+  >({});
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [openImageGroup, setOpenImageGroup] = useState<string>(
@@ -143,9 +146,13 @@ export default function AdminContentPage() {
         const imagesData = (await imagesRes.json()) as {
           images: SiteImageRecord[];
         };
-        setSiteImages(buildSiteImageForm(imagesData.images));
+        const form = buildSiteImageForm(imagesData.images);
+        setSiteImages(form);
+        setSavedSiteImages(form);
       } else {
-        setSiteImages(buildSiteImageForm([]));
+        const form = buildSiteImageForm([]);
+        setSiteImages(form);
+        setSavedSiteImages(form);
       }
     } catch {
       showToast("error", "Failed to load website content");
@@ -230,6 +237,19 @@ export default function AdminContentPage() {
 
       try {
         await persistSiteImageSlot(name, nextUrl, nextAlt);
+        setSavedSiteImages((current) => ({
+          ...current,
+          [name]: {
+            ...(current[name] ?? {
+              name,
+              label: name,
+              url: nextUrl,
+              altText: nextAlt,
+            }),
+            url: nextUrl,
+            altText: nextAlt,
+          },
+        }));
         showToast(
           "success",
           nextUrl
@@ -270,17 +290,25 @@ export default function AdminContentPage() {
         );
       }
 
-      /* Include empty URLs so clears reset slots (and delete prior uploads). */
-      const imagePayload = siteImageList
+      /* Only push slots that changed — image replace already persists immediately */
+      const dirtyImages = siteImageList
         .map((item) => siteImages[item.name])
-        .filter((item): item is SiteImageFormItem => Boolean(item));
+        .filter((item): item is SiteImageFormItem => Boolean(item))
+        .filter((item) => {
+          const saved = savedSiteImages[item.name];
+          if (!saved) return true;
+          return (
+            (item.url?.trim() ?? "") !== (saved.url?.trim() ?? "") ||
+            (item.altText?.trim() ?? "") !== (saved.altText?.trim() ?? "")
+          );
+        });
 
-      if (imagePayload.length > 0) {
+      if (dirtyImages.length > 0) {
         const imagesResponse = await adminFetch("/api/admin/images/bulk", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            images: imagePayload.map((item) => ({
+            images: dirtyImages.map((item) => ({
               name: item.name,
               url: item.url?.trim() ?? "",
               altText: item.altText?.trim() || item.label,

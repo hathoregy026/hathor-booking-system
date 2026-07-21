@@ -105,7 +105,7 @@ export async function updateSiteImage(id: string, input: SiteImageUpdateInput) {
       prisma.siteImage.findUnique({ where: { id } }),
     );
     if (existing && existing.url !== data.url) {
-      await deleteWebsiteImageByUrl(existing.url);
+      void deleteWebsiteImageByUrl(existing.url);
     }
   }
 
@@ -122,7 +122,7 @@ export async function deleteSiteImage(id: string) {
     prisma.siteImage.findUnique({ where: { id } }),
   );
   if (existing) {
-    await deleteWebsiteImageByUrl(existing.url);
+    void deleteWebsiteImageByUrl(existing.url);
   }
   return withDb(() => prisma.siteImage.delete({ where: { id } }));
 }
@@ -155,7 +155,8 @@ export async function upsertSiteImagesBulk(items: SiteImageBulkItem[]) {
     /* Clear / reset → default slot asset + delete prior upload */
     if (!nextUrl) {
       if (existing) {
-        await deleteWebsiteImageByUrl(existing.url);
+        /* Don't block the response on storage cleanup */
+        void deleteWebsiteImageByUrl(existing.url);
         const updated = await withDb(() =>
           prisma.siteImage.update({
             where: { id: existing.id },
@@ -173,7 +174,7 @@ export async function upsertSiteImagesBulk(items: SiteImageBulkItem[]) {
 
     if (existing) {
       if (existing.url !== nextUrl) {
-        await deleteWebsiteImageByUrl(existing.url);
+        void deleteWebsiteImageByUrl(existing.url);
       }
       const updated = await withDb(() =>
         prisma.siteImage.update({
