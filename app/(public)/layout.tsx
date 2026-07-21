@@ -20,6 +20,7 @@ import "../hero-tint.css";
 import "../hieroglyph-pattern.css";
 import "../booking-modal.css";
 import "../venetian-redesign.css";
+import "../night-mode.css";
 
 export const dynamic = "force-dynamic";
 

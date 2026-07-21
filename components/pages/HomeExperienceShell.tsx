@@ -12,6 +12,11 @@ html[data-ex-experience] .ex-root {
   background-color: var(--ex-cream) !important;
   background-image: none !important;
 }
+html[data-public-theme="night"][data-ex-experience] .ex-root {
+  --ex-cream: #0b0907 !important;
+  background-color: #0b0907 !important;
+  color: #f5efe4 !important;
+}
 html[data-ex-experience] .ex-root::before {
   content: "" !important;
   display: block !important;
@@ -24,6 +29,9 @@ html[data-ex-experience] .ex-root::before {
   background-position: center top !important;
   background-size: 640px auto !important;
   opacity: 0.04 !important;
+}
+html[data-public-theme="night"][data-ex-experience] .ex-root::before {
+  opacity: 0.06 !important;
 }
 html[data-ex-experience] .ex-root > * {
   position: relative;

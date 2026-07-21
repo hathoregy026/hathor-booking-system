@@ -23,6 +23,15 @@ html[data-ex-experience] .ex-root {
   overflow-x: hidden;
 }
 
+html[data-public-theme="night"][data-ex-experience] .ex-root {
+  --cream: #0b0907;
+  --cream-deep: #14110e;
+  --ink: #f5efe4;
+  --ink-soft: #d9d0c4;
+  --muted: #a89f92;
+  --blush: #1f1a15;
+}
+
 html[data-ex-experience] .ex-root .hero-logo-mark {
   left: 50%;
   top: auto;

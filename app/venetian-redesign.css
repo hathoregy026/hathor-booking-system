@@ -2071,3 +2071,19 @@
   margin-top: 1rem;
 }
 
+/* Night mode tokens — remapped when html[data-public-theme="night"] */
+html[data-public-theme="night"] .venetian-page {
+  --cream: #0b0907;
+  --cream-deep: #14110e;
+  --ink: #f5efe4;
+  --ink-soft: #d9d0c4;
+  --muted: #a89f92;
+  --white: #1a1612;
+  --blush: #1f1a15;
+  --lux-paper: #0b0907;
+  --lux-paper-deep: #14110e;
+  background: #0b0907;
+  color: #f5efe4;
+}
+
+

@@ -59,6 +59,10 @@ export function PublicThemeProvider({ children }: { children: React.ReactNode })
     });
   }, []);
 
+  useEffect(() => {
+    applyPublicThemeToDocument(theme);
+  }, [theme]);
+
   return (
     <PublicThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
       {children}

@@ -12,6 +12,11 @@
   --hieroglyph-cream: #ece8df;
 }
 
+html[data-public-theme="night"] .public-site {
+  --hieroglyph-cream: #0b0907;
+  --hieroglyph-opacity: 0.06;
+}
+
 /* Cream base fill */
 .public-site,
 .public-page-body,
