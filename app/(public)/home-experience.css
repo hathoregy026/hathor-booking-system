@@ -1313,9 +1313,9 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   font-family: var(--font-body);
   font-weight: 400;
   font-size: 0.95rem;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.02em;
   color: var(--muted);
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .home-carousel {

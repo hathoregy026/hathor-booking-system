@@ -560,7 +560,7 @@ html[data-ex-experience] .ex-root .cta-inner h2,
   "page_title",
 )}
 ${block(
-  `/* Small indication labels — e.g. EXPLORE, RELAX, DISCOVER */
+  `/* Small indication labels — e.g. section kickers (keep natural uppercase via element CSS) */
 .public-site .typo-page-subtitle,
 .public-site .hathor-section-eyebrow,
 .public-site .hathor-chapter-eyebrow,
@@ -568,17 +568,17 @@ ${block(
 .public-site .lux-kicker,
 .public-site .acc-eyebrow,
 .public-site .room-interstitial__eyebrow,
-.public-site .venetian-page .room-fs-label,
-html[data-ex-experience] .ex-root .home-carousel-h3 h3`,
+.public-site .venetian-page .room-fs-label`,
   "page_subtitle",
 )}
 ${block(
-  `/* Script sub-sub titles */
+  `/* Script sub-sub titles — never force caps; show authored case */
 .public-site .typo-sub-subtitle,
 .public-site .room-interstitial__script,
 .public-site .hathor-section-subtitle,
 .public-site .hathor-chapter-subtitle,
-.public-site .venetian-page .room-fs-meta`,
+.public-site .venetian-page .room-fs-meta,
+html[data-ex-experience] .ex-root .home-carousel-h3 h3`,
   "sub_subtitle",
 )}
 ${block(

@@ -48,9 +48,9 @@ const GROUP_WHERE: Record<EditorGroup, string> = {
   hero: "Drag either title freely (they can overlap). Align left / center / right. Saves to every page hero.",
   page_title: "Big section titles — Suites intro, Hathor itineraries, amenities, etc.",
   page_subtitle:
-    "Small uppercase labels under a title — e.g. EXPLORE, RELAX, DISCOVER on the homepage carousel, or Cabin / Suite labels.",
+    "Small uppercase labels under a title — Cabin / Suite labels, Amenities kickers, etc.",
   sub_subtitle:
-    "Script line under a title or between suite image blocks (elegant secondary line).",
+    "Script line under a title — e.g. Explore, Relax, Discover under Hathor itineraries, and lines between suite image blocks.",
   body_text: "Normal paragraph text in page content.",
 };
 
