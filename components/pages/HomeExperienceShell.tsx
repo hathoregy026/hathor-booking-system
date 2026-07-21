@@ -33,10 +33,10 @@ html[data-ex-experience] .ex-root::before {
   background-repeat: repeat !important;
   background-position: center top !important;
   background-size: 320px auto !important;
-  opacity: 0.028 !important;
+  opacity: 0.056 !important;
 }
 html[data-public-theme="night"][data-ex-experience] .ex-root::before {
-  opacity: 0.042 !important;
+  opacity: 0.021 !important;
 }
 html[data-ex-experience] .ex-root > * {
   position: relative;

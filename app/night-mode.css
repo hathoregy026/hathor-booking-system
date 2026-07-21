@@ -39,7 +39,7 @@ html[data-public-theme="night"] .home-experience-route {
   --public-text: #f5efe4;
   --public-muted: #a89f92;
   --hieroglyph-cream: #0b0907;
-  --hieroglyph-opacity: 0.042;
+  --hieroglyph-opacity: 0.021;
   --hathor-dark: #0b0907;
   --hathor-dark-2: #14110e;
   --hathor-surface: #1a1612;
@@ -118,7 +118,7 @@ html[data-public-theme="day"] .home-experience-route {
   --public-muted: #6b6560;
   --public-border: rgb(26 26 26 / 0.08);
   --hieroglyph-cream: #ece8df;
-  --hieroglyph-opacity: 0.028;
+  --hieroglyph-opacity: 0.056;
   --hathor-dark: #faf8f5;
   --hathor-dark-2: #f5f0e8;
   --hathor-surface: #f0ebe3;
