@@ -1393,8 +1393,13 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 /* ---------- FULL-SCREEN STACK SCROLL (landmarks) ---------- */
 .ex-stack-scroll {
   position: relative;
-  background: #0c0806;
+  background: #0c0806 !important;
   color: #faf8f5;
+  margin: 0;
+  padding: 0;
+  /* Kill subpixel seam above the cream section while scrolling */
+  margin-bottom: -3px;
+  z-index: 20;
 }
 
 .ex-stack-scroll__viewport {
@@ -1403,13 +1408,15 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   height: 100vh;
   height: 100svh;
   overflow: hidden;
-  background: #0c0806;
+  background: #0c0806 !important;
+  margin: 0;
+  padding: 0;
 }
 
 .ex-stack-scroll__cards {
   position: absolute;
   /* Bleed past edges so no 1px dark gap / dead rim shows */
-  inset: -2px;
+  inset: -3px;
 }
 
 .ex-stack-scroll__card {
@@ -1420,16 +1427,13 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   transform-origin: center top;
   border-radius: 0;
   box-shadow: none;
+  background: #0c0806;
 }
 
+/* No inset gold frame — its bottom rule read as a dead-edge / gap line */
 .ex-stack-scroll__card::before {
-  content: "";
-  position: absolute;
-  inset: clamp(14px, 2.2vw, 28px);
-  z-index: 2;
-  border: 1px solid rgba(182, 159, 100, 0.28);
-  pointer-events: none;
-  opacity: 0.85;
+  content: none;
+  display: none;
 }
 
 .ex-stack-scroll__card::after {
@@ -1437,11 +1441,11 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   position: absolute;
   inset: 0;
   z-index: 1;
-  /* Light vignette only — no bottom black shelf / dead-edge gap */
+  /* Top shade only — nothing at the bottom edge */
   background: linear-gradient(
     180deg,
-    rgba(12, 8, 6, 0.22) 0%,
-    transparent 32%,
+    rgba(12, 8, 6, 0.2) 0%,
+    transparent 28%,
     transparent 100%
   );
   pointer-events: none;
@@ -1480,20 +1484,27 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   content: "";
   position: absolute;
   left: 0;
-  right: 0;
+  right: 55%;
   bottom: 0;
-  /* Rise well above the copy so the fade dissolves in the photo, not as a bar */
-  height: min(72vh, 42rem);
+  height: min(58vh, 34rem);
   z-index: -1;
+  /* Soft left-side text veil only — does not paint a full-width bottom bar */
   background: linear-gradient(
     to top,
-    rgba(12, 8, 6, 0.55) 0%,
-    rgba(12, 8, 6, 0.32) 18%,
-    rgba(12, 8, 6, 0.14) 40%,
-    rgba(12, 8, 6, 0.04) 62%,
-    transparent 82%
+    rgba(12, 8, 6, 0.5) 0%,
+    rgba(12, 8, 6, 0.22) 36%,
+    rgba(12, 8, 6, 0.06) 68%,
+    transparent 100%
   );
   pointer-events: none;
+}
+
+/* Pull cream block up so it always overlaps the stack — no light hairline */
+.ex-stack-scroll + .text-img-section {
+  position: relative;
+  z-index: 21;
+  margin-top: -3px;
+  padding-top: calc(clamp(80px, 10vw, 140px) + 3px);
 }
 
 .ex-stack-scroll__eyebrow {

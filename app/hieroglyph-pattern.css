@@ -82,9 +82,25 @@ html[data-ex-experience] .ex-root .ex-content-section {
   background-image: none !important;
 }
 
+/* Landmarks stack must stay solid dark — transparent here flashes the cream
+   page bg as a hairline gap under the photo while scrolling / at the seam. */
+html[data-ex-experience] .ex-root .ex-stack-scroll.ex-content-section {
+  background-color: #0c0806 !important;
+  background-image: none !important;
+}
+
 html[data-ex-experience] .ex-root .ex-content-section::before {
   content: none !important;
   display: none !important;
+}
+
+/* GSAP pin-spacer around the stack viewport inherits page cream by default —
+   force it dark so no light line ever peeks under the photo. */
+html[data-ex-experience] .ex-root .ex-stack-scroll .pin-spacer,
+html[data-ex-experience] .pin-spacer:has(.ex-stack-scroll__viewport) {
+  background: #0c0806 !important;
+  background-color: #0c0806 !important;
+  margin: 0 !important;
 }
 
 html[data-ex-experience] .ex-root .gallery-section,
