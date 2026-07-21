@@ -11,7 +11,14 @@ export function slugifyForFilename(text: string): string {
 }
 
 export function sanitizeStorageFolder(folder: string | null | undefined): string {
-  return folder?.replace(/[^a-z0-9-_]/gi, "").toLowerCase() || "general";
+  const cleaned =
+    folder
+      ?.trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9/_-]+/gi, "")
+      .replace(/\/+/g, "/")
+      .replace(/^\/+|\/+$/g, "") ?? "";
+  return cleaned || "general";
 }
 
 export function sanitizeFileExtension(

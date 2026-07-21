@@ -13,6 +13,8 @@ const PAGE_GROUP_TITLES: Record<string, string> = {
   "/contact": "Contact",
   "/blogs": "Blog",
   "/rooms": "Luxury Rooms",
+  "/luxury-cabins-Nile-Cruise": "Luxury Cabins Gallery",
+  "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise": "Royal Suites Gallery",
 };
 
 /**
@@ -163,6 +165,8 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
     "/",
     "/cruises",
     "/rooms",
+    "/luxury-cabins-Nile-Cruise",
+    "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
     "/about",
     "/gastronomy",
     "/wellness",

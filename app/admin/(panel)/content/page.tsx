@@ -181,6 +181,54 @@ export default function AdminContentPage() {
     }));
   };
 
+  /** Persist one slot immediately so replace/clear hits DB + storage without waiting for Save. */
+  const persistSiteImageSlot = useCallback(
+    async (name: string, url: string, altText: string) => {
+      const response = await adminFetch("/api/admin/images/bulk", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          images: [{ name, url, altText }],
+        }),
+      });
+      if (!response.ok) {
+        throw new Error(
+          await readAdminError(response, "Failed to save site image"),
+        );
+      }
+    },
+    [],
+  );
+
+  const handleSiteImageUrlChange = useCallback(
+    async (name: string, url: string | null, altText: string) => {
+      const nextUrl = url ?? "";
+      const nextAlt = altText.trim();
+
+      updateSiteImage(name, {
+        url: nextUrl,
+        altText: nextAlt,
+      });
+
+      try {
+        await persistSiteImageSlot(name, nextUrl, nextAlt);
+        showToast(
+          "success",
+          nextUrl
+            ? "Image updated on the live site"
+            : "Image cleared — live site uses the default again",
+        );
+      } catch (error) {
+        showToast(
+          "error",
+          error instanceof Error ? error.message : "Failed to update image",
+        );
+        await loadContent();
+      }
+    },
+    [loadContent, persistSiteImageSlot, showToast],
+  );
+
   const handleSave = async () => {
     setIsSaving(true);
     try {
@@ -204,9 +252,10 @@ export default function AdminContentPage() {
         );
       }
 
+      /* Include empty URLs so clears reset slots (and delete prior uploads). */
       const imagePayload = siteImageList
         .map((item) => siteImages[item.name])
-        .filter((item): item is SiteImageFormItem => Boolean(item?.url && item.altText));
+        .filter((item): item is SiteImageFormItem => Boolean(item));
 
       if (imagePayload.length > 0) {
         const imagesResponse = await adminFetch("/api/admin/images/bulk", {
@@ -215,8 +264,8 @@ export default function AdminContentPage() {
           body: JSON.stringify({
             images: imagePayload.map((item) => ({
               name: item.name,
-              url: item.url,
-              altText: item.altText,
+              url: item.url?.trim() ?? "",
+              altText: item.altText?.trim() || item.label,
             })),
           }),
         });
@@ -335,9 +384,9 @@ export default function AdminContentPage() {
         <div>
           <h2 className="admin-heading text-xl">Website Images</h2>
           <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
-            Choose a page below, then update any photo. Each card shows a large
-            preview, where it appears on the live site, and a direct link to
-            view that page.
+            Choose a page below, then replace or clear any photo. Replacing
+            publishes to the live site immediately and deletes the previous
+            upload from storage. Clearing resets the slot to the default image.
           </p>
         </div>
 
@@ -414,12 +463,13 @@ export default function AdminContentPage() {
                         onAltTextChange={(altText) =>
                           updateSiteImage(item.name, { altText })
                         }
-                        onUrlChange={(url, meta) =>
-                          updateSiteImage(item.name, {
-                            url: url ?? "",
-                            altText: meta?.suggestedAltText ?? image.altText,
-                          })
-                        }
+                        onUrlChange={(url, meta) => {
+                          void handleSiteImageUrlChange(
+                            item.name,
+                            url,
+                            meta?.suggestedAltText ?? image.altText,
+                          );
+                        }}
                       />
                     );
                   })}

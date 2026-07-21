@@ -95,8 +95,8 @@ export function CruisesPageContent() {
             </div>
             <div className="cruise-exp-visual cruise-reveal">
               <ManagedImage
-                name="wellness-hero"
-                alt="Wellness aboard Hathor Dahabiya"
+                name="cruises-hero"
+                alt="Hathor Dahabiya Nile cruise"
                 fill
                 className="object-cover"
                 sizes="(max-width: 900px) 100vw, 50vw"

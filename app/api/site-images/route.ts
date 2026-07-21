@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getActiveSiteImages, getSiteImageByName } from "@/lib/image-management";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function GET(request: NextRequest) {
   try {

@@ -14,13 +14,37 @@ export type ResolvedSiteImage = {
 
 export type SiteImageMap = Record<string, ResolvedSiteImage>;
 
-/** DB URLs starting with /media/hathor/ work on Vercel and locally. */
+/** Accept CMS URLs that the public site can actually load. */
 export function shouldUseDatabaseSiteImageUrl(url: string): boolean {
   const trimmed = url.trim();
   if (!trimmed) return false;
-  if (trimmed.startsWith("/media/hathor/")) return true;
-  if (trimmed.includes("supabase.co/storage/v1/object/public/")) return true;
-  return false;
+
+  if (trimmed.startsWith("/media/") || trimmed.startsWith("/uploads/")) {
+    return !trimmed.startsWith("//") && !/[\u0000-\u001f]/.test(trimmed);
+  }
+
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
+      return false;
+    }
+    if (
+      parsed.hostname.includes("supabase.co") &&
+      parsed.pathname.includes("/storage/v1/object/public/")
+    ) {
+      return true;
+    }
+    /* Absolute site URLs that still point at local media paths */
+    if (
+      parsed.pathname.startsWith("/media/") ||
+      parsed.pathname.startsWith("/uploads/")
+    ) {
+      return true;
+    }
+    return false;
+  } catch {
+    return false;
+  }
 }
 
 export async function resolveSiteImageMap(): Promise<SiteImageMap> {

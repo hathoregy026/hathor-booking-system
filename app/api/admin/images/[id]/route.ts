@@ -6,6 +6,7 @@ import {
   updateSiteImage,
 } from "@/lib/image-management";
 import { prisma } from "@/lib/prisma";
+import { revalidateSiteImagePages } from "@/lib/revalidate-site-images";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -17,6 +18,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
     const body = await request.json();
     const input = parseSiteImageUpdate(body);
     const image = await updateSiteImage(id, input);
+    revalidateSiteImagePages();
     return NextResponse.json({ image });
   } catch (error) {
     return handleRouteError(error);
@@ -27,6 +29,7 @@ export async function DELETE(_request: NextRequest, context: RouteContext) {
   try {
     const { id } = await context.params;
     await deleteSiteImage(id);
+    revalidateSiteImagePages();
     return NextResponse.json({ success: true });
   } catch (error) {
     return handleRouteError(error);
