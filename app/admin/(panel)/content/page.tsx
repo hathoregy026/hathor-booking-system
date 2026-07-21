@@ -518,10 +518,17 @@ export default function AdminContentPage() {
                           updateSiteImage(item.name, { altText: nextAlt })
                         }
                         onUrlChange={(nextUrl, meta) => {
+                          const nextAlt =
+                            !altText.trim() ||
+                            /^(homepage-)+/.test(altText.trim())
+                              ? meta?.suggestedAltText ??
+                                item.label ??
+                                altText
+                              : altText;
                           void handleSiteImageUrlChange(
                             item.name,
                             nextUrl,
-                            meta?.suggestedAltText ?? altText,
+                            nextAlt,
                           );
                         }}
                       />

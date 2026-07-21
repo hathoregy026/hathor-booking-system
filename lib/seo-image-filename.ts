@@ -72,7 +72,21 @@ export function buildSeoImageStorageName(options: {
   now?: number;
 }): SeoImageStorageName {
   const pageSlug = slugifyForFilename(options.pageName);
-  const titleSlug = slugifyForFilename(options.imageTitle);
+  let titleSlug = slugifyForFilename(options.imageTitle);
+
+  /* Re-uploads used to pass previous alt (= old filename) as title, which
+   * stacked "homepage-homepage-homepage-…". Strip leading page slug repeats. */
+  if (pageSlug) {
+    const prefix = `${pageSlug}-`;
+    while (titleSlug === pageSlug || titleSlug.startsWith(prefix)) {
+      if (titleSlug === pageSlug) {
+        titleSlug = "";
+        break;
+      }
+      titleSlug = titleSlug.slice(prefix.length);
+    }
+  }
+
   const slugParts = [pageSlug, titleSlug].filter(Boolean);
   const slugBase = slugParts.join("-") || "image";
 

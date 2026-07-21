@@ -51,17 +51,40 @@ export function SiteImageSlotCard({
     retryRef.current = 0;
   }, [url]);
 
-  /* After upload, keep the instant blob for a moment then switch to the live URL */
+  /* After upload, keep the instant blob until the remote URL actually loads */
   useEffect(() => {
     if (!localPreview || !url?.trim()) return;
-    const timer = setTimeout(() => {
+    const probe = new Image();
+    let cancelled = false;
+    const failSafe = setTimeout(() => {
+      if (cancelled) return;
       setRemoteSrc(withCacheBust(url, 1));
       setLocalPreview((current) => {
         if (current?.startsWith("blob:")) URL.revokeObjectURL(current);
         return null;
       });
-    }, 1200);
-    return () => clearTimeout(timer);
+    }, 8000);
+
+    probe.onload = () => {
+      if (cancelled) return;
+      clearTimeout(failSafe);
+      setThumbBroken(false);
+      setRemoteSrc(withCacheBust(url, 1));
+      setLocalPreview((current) => {
+        if (current?.startsWith("blob:")) URL.revokeObjectURL(current);
+        return null;
+      });
+    };
+    probe.onerror = () => {
+      /* Keep blob preview; remote retry handled by handleThumbError */
+    };
+    probe.referrerPolicy = "no-referrer";
+    probe.src = withCacheBust(url, 1);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(failSafe);
+    };
   }, [localPreview, url]);
 
   useEffect(() => {
@@ -161,7 +184,7 @@ export function SiteImageSlotCard({
               }}
               onLocalPreviewChange={setLocalPreview}
               pageName={pageTitle}
-              imageTitle={altText}
+              imageTitle={item.label}
               imageLabel={item.label}
               layoutKind={item.layoutKind}
               imageKind={

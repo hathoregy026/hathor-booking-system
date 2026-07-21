@@ -37,9 +37,9 @@ export const IMAGE_SIZE_POLICY = {
    */
   hardUploadMaxBytes: 25 * MB,
   /** Prefer full resolution; only shrink edges if still over target after quality steps. */
-  compressMaxEdgeSteps: [4096, 2560, 1920, 1600, 1280] as const,
+  compressMaxEdgeSteps: [4096, 2560, 1920, 1600, 1280, 1024] as const,
   /** Start near-original quality; step down only as needed to hit ≤ maxBytes. */
-  compressQuality: { start: 92, min: 62, step: 3 },
+  compressQuality: { start: 90, min: 50, step: 4 },
 } as const;
 
 export function fullQualityMaxBytes(kind: ImageProcessKind): number {
