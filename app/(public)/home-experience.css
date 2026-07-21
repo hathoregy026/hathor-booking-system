@@ -1291,17 +1291,31 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   font-size: clamp(2.4rem, 5vw, 4.2rem);
   line-height: 1.05;
   letter-spacing: 0.02em;
-  text-transform: uppercase;
-  color: var(--ink);
+  /* Case + color come from dashboard typography (page_title) — never force ink/uppercase */
+  text-transform: none;
   margin-bottom: 24px;
 }
 
+.radius-heading h2 .char,
+.radius-heading h2 .word,
+.radius-heading h2 .line {
+  color: inherit;
+  -webkit-text-fill-color: inherit;
+}
+
 .radius-p {
-  color: var(--muted);
+  /* Color from dashboard typography (body_text) */
   font-size: clamp(0.95rem, 1.2vw, 1.05rem);
   line-height: 1.75;
   max-width: 42ch;
   margin-bottom: 32px;
+}
+
+.radius-p .line,
+.radius-p .word,
+.radius-p .char {
+  color: inherit;
+  -webkit-text-fill-color: inherit;
 }
 
 /* ---------- SERVICES / CAROUSEL ---------- */
@@ -1323,7 +1337,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   font-size: clamp(2rem, 4.5vw, 3.6rem);
   line-height: 1.1;
   letter-spacing: 0.04em;
-  text-transform: uppercase;
+  /* Case + color from dashboard typography (page_title) */
+  text-transform: none;
   margin-bottom: 16px;
 }
 

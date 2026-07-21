@@ -484,6 +484,7 @@ export function typographyToImportantCss(settings: TypographySettings): string {
     const p = `--typo-${role.replace(/_/g, "-")}`;
     /* Small indication + script + body: never invent case/weight — match dashboard input */
     const authoredCase =
+      role === "page_title" ||
       role === "page_subtitle" ||
       role === "sub_subtitle" ||
       role === "body_text"

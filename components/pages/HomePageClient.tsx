@@ -75,6 +75,8 @@ export function HomePageClient({
   const onImagesStyle = useTypographyInlineStyle("on_images");
   const itinerariesIndicationStyle = useTypographyInlineStyle("page_subtitle");
   const galleryIndicationStyle = useTypographyInlineStyle("page_subtitle");
+  const aboutTitleStyle = useTypographyInlineStyle("page_title");
+  const aboutBodyStyle = useTypographyInlineStyle("body_text");
 
   const onImageColor = {
     color: onImagesStyle.color,
@@ -177,14 +179,16 @@ export function HomePageClient({
                   ))}
                 </div>
                 <div className="radius-heading">
-                  <h2>
+                  <h2 className="typo-page-title" style={aboutTitleStyle}>
                     Elegance is
                     <br />
                     a way of life.
                   </h2>
                 </div>
                 <div className="radius-p">
-                  <p>{EX_ABOUT.body}</p>
+                  <p className="typo-body-text" style={aboutBodyStyle}>
+                    {EX_ABOUT.body}
+                  </p>
                 </div>
                 <Link className="btn btn-dark radius-button" href="/about">
                   Discover More

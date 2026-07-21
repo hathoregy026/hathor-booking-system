@@ -4,6 +4,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useLayoutEffect,
   useState,
   type ReactNode,
 } from "react";
@@ -51,7 +52,8 @@ export function TypographySettingsProvider({
     if (initial) setSettings(initial);
   }, [initial]);
 
-  useEffect(() => {
+  /* Apply before paint so homepage never flashes ink/uppercase defaults. */
+  useLayoutEffect(() => {
     applyLiveCss(settings);
   }, [settings]);
 
