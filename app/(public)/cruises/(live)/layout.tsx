@@ -36,8 +36,8 @@ html[data-cruises-experience] .cruises-sheet::before {
   background-image: url("/branding/egyptian-hyroglyphs-hathor-cruise-solid-v2.webp") !important;
   background-repeat: repeat !important;
   background-position: center top !important;
-  background-size: 640px auto !important;
-  opacity: 0.04 !important;
+  background-size: 320px auto !important;
+  opacity: 0.028 !important;
 }
 html[data-cruises-experience] .cruises-sheet > * {
   position: relative;

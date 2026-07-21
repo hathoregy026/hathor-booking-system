@@ -1,20 +1,20 @@
 /* Hieroglyphic pattern — cream content only (never heroes / video)
  *
  * Tile = solid gold glyphs on real transparency.
- * Visibility = exactly --hieroglyph-opacity (0.04).
+ * Visibility = exactly --hieroglyph-opacity (0.028).
  * Only ONE host layer paints the tile (no nested double/triple stack).
  */
 
 .public-site {
   --hieroglyph-tile: url("/branding/egyptian-hyroglyphs-hathor-cruise-solid-v2.webp");
-  --hieroglyph-tile-size: 640px;
-  --hieroglyph-opacity: 0.04;
+  --hieroglyph-tile-size: 320px;
+  --hieroglyph-opacity: 0.028;
   --hieroglyph-cream: #ece8df;
 }
 
 html[data-public-theme="night"] .public-site {
   --hieroglyph-cream: #0b0907;
-  --hieroglyph-opacity: 0.06;
+  --hieroglyph-opacity: 0.042;
 }
 
 /* Cream base fill */
@@ -208,6 +208,6 @@ html[data-cruises-experience] .cruises-page,
 
 @media (max-width: 768px) {
   .public-site {
-    --hieroglyph-tile-size: 480px;
+    --hieroglyph-tile-size: 240px;
   }
 }
