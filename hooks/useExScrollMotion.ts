@@ -687,7 +687,8 @@ export function useExScrollMotion() {
         const media = getCardMedia(card);
         gsap.set(card, {
           zIndex: index + 1,
-          yPercent: index === 0 ? 0 : 108,
+          /* 100 = flush cover — never park below the fold (108 showed a dark gap) */
+          yPercent: index === 0 ? 0 : 100,
           scale: 1,
           filter: "brightness(1)",
           force3D: true,
@@ -727,7 +728,7 @@ export function useExScrollMotion() {
 
         tl.fromTo(
           card,
-          { yPercent: 108, scale: 1.04 },
+          { yPercent: 100, scale: 1 },
           { yPercent: 0, scale: 1, ease: "none", duration: step },
           at,
         );
@@ -746,12 +747,13 @@ export function useExScrollMotion() {
           const underCard = cards[j];
           const underMedia = getCardMedia(underCard);
 
+          /* Keep full-bleed coverage — dim only, never shrink (scale < 1 = dark gaps) */
           tl.to(
             underCard,
             {
-              yPercent: -4 * depth,
-              scale: Math.max(0.86, 1 - depth * 0.038),
-              filter: `brightness(${Math.max(0.48, 1 - depth * 0.12)})`,
+              yPercent: 0,
+              scale: 1,
+              filter: `brightness(${Math.max(0.55, 1 - depth * 0.1)})`,
               ease: "none",
               duration: step,
             },
@@ -762,7 +764,7 @@ export function useExScrollMotion() {
             tl.to(
               underMedia,
               {
-                scale: 1.05 + depth * 0.02,
+                scale: 1.05 + depth * 0.015,
                 ease: "none",
                 duration: step,
               },
