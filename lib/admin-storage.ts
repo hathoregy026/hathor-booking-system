@@ -58,10 +58,15 @@ async function putBinaryViaSignedUrl(options: {
     throw new Error(error?.message ?? "Failed to create signed upload URL");
   }
 
-  const bytes = new Uint8Array(
-    options.buffer.buffer,
-    options.buffer.byteOffset,
-    options.buffer.byteLength,
+  /* Blob keeps binary intact and satisfies BodyInit under strict DOM typings. */
+  const body = new Blob(
+    [
+      options.buffer.buffer.slice(
+        options.buffer.byteOffset,
+        options.buffer.byteOffset + options.buffer.byteLength,
+      ),
+    ],
+    { type: options.contentType || "application/octet-stream" },
   );
 
   const putRes = await fetch(data.signedUrl, {
@@ -69,7 +74,7 @@ async function putBinaryViaSignedUrl(options: {
     headers: {
       "Content-Type": options.contentType || "application/octet-stream",
     },
-    body: bytes,
+    body,
   });
 
   if (!putRes.ok) {
