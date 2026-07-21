@@ -56,10 +56,7 @@
 .lux-gold-md { font-size: clamp(1.7rem, 3.2vw, 2.5rem); }
 
 .lux-kicker {
-  font-size: 0.68rem;
-  letter-spacing: 0.34em;
-  text-transform: uppercase;
-  color: var(--lux-gold);
+  /* font/size/case/color from typography Small indication */
   margin: 0 0 1rem;
 }
 
@@ -198,10 +195,6 @@
   background:
     linear-gradient(270deg, rgba(20, 16, 12, 0.72) 0%, rgba(20, 16, 12, 0.2) 55%, rgba(20, 16, 12, 0.4) 100%),
     linear-gradient(180deg, rgba(20, 16, 12, 0.35) 0%, transparent 40%, rgba(20, 16, 12, 0.55) 100%);
-}
-
-.spx-frame-ui .lux-kicker {
-  color: var(--lux-gold-soft);
 }
 
 .spx-frame-ui .lux-gold {
@@ -1396,10 +1389,7 @@
 .hathor-lux .lux-gold-lg { font-size: clamp(2.1rem, 4.5vw, 3.4rem); }
 .hathor-lux .lux-gold-md { font-size: clamp(1.7rem, 3.2vw, 2.5rem); }
 .hathor-lux .lux-kicker {
-  font-size: 0.68rem;
-  letter-spacing: 0.34em;
-  text-transform: uppercase;
-  color: var(--lux-gold);
+  /* font/size/case/color from typography Small indication */
   margin: 0 0 1rem;
 }
 .hathor-lux .lux-lead {

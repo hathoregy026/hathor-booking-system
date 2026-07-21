@@ -1653,6 +1653,8 @@ select.admin-input option:checked {
   line-height: var(--typo-live-lh, 1.2) !important;
   letter-spacing: var(--typo-live-ls, 0) !important;
   text-shadow: var(--typo-live-shadow, none) !important;
+  text-transform: none !important;
+  font-weight: 400 !important;
   transition:
     font-size 0.15s ease,
     letter-spacing 0.15s ease,

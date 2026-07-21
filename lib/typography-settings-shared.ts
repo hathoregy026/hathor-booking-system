@@ -134,7 +134,7 @@ export const TYPOGRAPHY_ROLE_LABELS: Record<TypographyRole, string> = {
   hero_title: "Hero title",
   hero_subtitle: "Hero subtitle",
   page_title: "Page title",
-  /** Small uppercase indication under section titles (e.g. EXPLORE, RELAX, DISCOVER) */
+  /** Small indication under section titles — case/font match dashboard exactly */
   page_subtitle: "Small indication",
   /** Script line under a title / between blocks */
   sub_subtitle: "Sub-sub title",
@@ -410,6 +410,8 @@ export function typographyToInlineStyle(style: TypographyTextStyle): CSSProperti
     letterSpacing: `${style.letterSpacing}px`,
     textShadow: style.innerShadow ? INNER_SHADOW : "none",
     WebkitTextFillColor: style.color,
+    textTransform: "none",
+    fontWeight: 400,
   };
 }
 
@@ -461,9 +463,12 @@ export function typographyToImportantCss(settings: TypographySettings): string {
 
   const block = (selector: string, role: TypographyRole) => {
     const p = `--typo-${role.replace(/_/g, "-")}`;
-    const noForceCaps =
-      role === "sub_subtitle"
-        ? `\n  text-transform: none !important;`
+    /* Small indication + script + body: never invent case/weight — match dashboard input */
+    const authoredCase =
+      role === "page_subtitle" ||
+      role === "sub_subtitle" ||
+      role === "body_text"
+        ? `\n  text-transform: none !important;\n  font-weight: 400 !important;`
         : "";
     return `${selector} {
   font-family: var(${p}-font) !important;
@@ -472,7 +477,7 @@ export function typographyToImportantCss(settings: TypographySettings): string {
   -webkit-text-fill-color: var(${p}-color) !important;
   line-height: var(${p}-line-height) !important;
   letter-spacing: var(${p}-letter-spacing) !important;
-  text-shadow: var(${p}-shadow) !important;${noForceCaps}
+  text-shadow: var(${p}-shadow) !important;${authoredCase}
 }`;
   };
 
@@ -565,17 +570,22 @@ html[data-ex-experience] .ex-root .cta-inner h2,
   "page_title",
 )}
 ${block(
-  `/* Small indication labels — e.g. section kickers (keep natural uppercase via element CSS) */
+  `/* Small indication — exact dashboard values (no forced caps / page fonts) */
 .public-site .typo-page-subtitle,
 .public-site .hathor-section-eyebrow,
 .public-site .hathor-chapter-eyebrow,
 .public-site .lux-section-eyebrow,
 .public-site .lux-kicker,
+.public-site .hathor-lux .lux-kicker,
 .public-site .acc-eyebrow,
 .public-site .room-interstitial__eyebrow,
 .public-site .venetian-page .room-fs-label,
 .public-site .venetian-page .room-fs-route,
-.public-site .venetian-page .room-fs-count`,
+.public-site .venetian-page .room-fs-count,
+.public-site .venetian-page .room-fs-ui .room-fs-label,
+.public-site .venetian-page .room-fs-ui .room-fs-route,
+.public-site .venetian-page .room-fs-ui .room-fs-count,
+.public-site .venetian-page .room-fs-ui .room-fs-count i`,
   "page_subtitle",
 )}
 ${block(
