@@ -111,18 +111,6 @@ export function PublicSiteHero({
         )}
       </div>
       <div className="hero-overlay" aria-hidden="true" />
-      {playVideo ? (
-        <div className="hero-luxury-blur" aria-hidden="true">
-          <span className="hero-luxury-blur__haze" />
-          <span className="hero-luxury-blur__orb hero-luxury-blur__orb--1" />
-          <span className="hero-luxury-blur__orb hero-luxury-blur__orb--2" />
-          <span className="hero-luxury-blur__orb hero-luxury-blur__orb--3" />
-          <span className="hero-luxury-blur__orb hero-luxury-blur__orb--4" />
-          <span className="hero-luxury-blur__orb hero-luxury-blur__orb--5" />
-          <span className="hero-luxury-blur__orb hero-luxury-blur__orb--6" />
-          <span className="hero-luxury-blur__orb hero-luxury-blur__orb--7" />
-        </div>
-      ) : null}
 
       <div className="home-hero-cover" aria-hidden="true" />
 
