@@ -32,11 +32,12 @@ async function findFfmpeg() {
   return null;
 }
 
-async function toWebp(sourcePath, targetPath, maxWidth = 1920) {
+async function toWebp(sourcePath, targetPath, maxWidth = 4096) {
   const input = readFileSync(sourcePath);
-  const COMPRESS_ABOVE = 1 * 1024 * 1024;
+  const COMPRESS_ABOVE = 3 * 1024 * 1024;
+  const TARGET = 3 * 1024 * 1024;
 
-  /* Under 1 MB: full-quality WebP (no downscale). */
+  /* Under 3 MB: full-quality WebP (no downscale). */
   if (input.byteLength <= COMPRESS_ABOVE) {
     const output = await sharp(input, { failOn: "none" })
       .rotate()
@@ -51,13 +52,23 @@ async function toWebp(sourcePath, targetPath, maxWidth = 1920) {
   }
 
   let best = null;
-  const base = sharp(input, { failOn: "none" })
-    .rotate()
-    .resize(maxWidth, maxWidth, { fit: "inside", withoutEnlargement: true });
-  for (let quality = 86; quality >= 68; quality -= 6) {
-    const output = await base.clone().webp({ quality, effort: 4 }).toBuffer();
-    best = output;
-    if (output.byteLength <= 800 * 1024) break;
+  const edgeSteps = [maxWidth, 2560, 1920, 1600];
+  for (const maxEdge of edgeSteps) {
+    const base = sharp(input, { failOn: "none" })
+      .rotate()
+      .resize(maxEdge, maxEdge, { fit: "inside", withoutEnlargement: true });
+    for (let quality = 95; quality >= 72; quality -= 3) {
+      const output = await base.clone().webp({ quality, effort: 4 }).toBuffer();
+      best = output;
+      if (output.byteLength <= TARGET) {
+        mkdirSync(dirname(targetPath), { recursive: true });
+        writeFileSync(targetPath, best);
+        console.log(
+          `[sync-hathor-media] ${targetPath.replace(root + "\\", "").replace(root + "/", "")} (${(best.length / 1024).toFixed(0)} KB)`,
+        );
+        return;
+      }
+    }
   }
   mkdirSync(dirname(targetPath), { recursive: true });
   writeFileSync(targetPath, best);

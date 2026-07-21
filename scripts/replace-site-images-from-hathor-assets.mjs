@@ -1,7 +1,7 @@
 /**
  * Replace all site images with assets from `assets/HATHOR IMAGES`.
- * - Size policy: full quality ≤1 MB; compress only above 1 MB
- *   (heroes target ≤800 KB, gallery/content ≤500 KB) — see lib/image-size-policy.ts
+ * - Size policy: full quality ≤3 MB; over 3 MB compress to ≤3 MB
+ *   (see lib/image-size-policy.ts)
  * - Writes to /public/media/hathor/r2/ (new path = no immutable CDN flashbacks)
  * - Uploads to Supabase website-images under hathor/r2/
  * - Deletes previous SiteImage rows and reseeds URLs
@@ -23,10 +23,8 @@ const oldWebpDir = join(root, "public", "media", "hathor");
 const MEDIA_BASE = "/media/hathor/r2";
 const STORAGE_PREFIX = "hathor/r2";
 const BUCKET = "website-images";
-const MAX_WIDTH = 1920;
-const COMPRESS_ABOVE = 1 * 1024 * 1024;
-const HERO_TARGET = 800 * 1024;
-const CONTENT_TARGET = 500 * 1024;
+const COMPRESS_ABOVE = 3 * 1024 * 1024;
+const TARGET_BYTES = 3 * 1024 * 1024;
 
 function listImages(dir) {
   if (!existsSync(dir)) return [];
@@ -165,7 +163,7 @@ const SLOT_META = {
 async function toWebp(sourcePath, targetPath, kind = "content") {
   const input = readFileSync(sourcePath);
 
-  /* Under 1 MB: full-quality WebP (no downscale, q100) — paths stay .webp. */
+  /* Under 3 MB: full-quality WebP (no downscale, q100) — paths stay .webp. */
   if (input.byteLength <= COMPRESS_ABOVE) {
     const output = await sharp(input, { failOn: "none" })
       .rotate()
@@ -176,16 +174,22 @@ async function toWebp(sourcePath, targetPath, kind = "content") {
     return output;
   }
 
-  const target = kind === "hero" ? HERO_TARGET : CONTENT_TARGET;
-  const base = sharp(input, { failOn: "none" })
-    .rotate()
-    .resize(MAX_WIDTH, MAX_WIDTH, { fit: "inside", withoutEnlargement: true });
-
+  const edgeSteps = [4096, 2560, 1920, 1600];
   let best = null;
-  for (let quality = 86; quality >= 68; quality -= 6) {
-    const output = await base.clone().webp({ quality, effort: 4 }).toBuffer();
-    best = output;
-    if (output.byteLength <= target) break;
+  for (const maxEdge of edgeSteps) {
+    const base = sharp(input, { failOn: "none" })
+      .rotate()
+      .resize(maxEdge, maxEdge, { fit: "inside", withoutEnlargement: true });
+
+    for (let quality = 95; quality >= 72; quality -= 3) {
+      const output = await base.clone().webp({ quality, effort: 4 }).toBuffer();
+      best = output;
+      if (output.byteLength <= TARGET_BYTES) {
+        mkdirSync(dirname(targetPath), { recursive: true });
+        writeFileSync(targetPath, best);
+        return best;
+      }
+    }
   }
 
   mkdirSync(dirname(targetPath), { recursive: true });

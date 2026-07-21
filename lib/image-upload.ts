@@ -1,3 +1,5 @@
+import { IMAGE_SIZE_POLICY } from "@/lib/image-size-policy";
+
 export const IMAGE_BUCKET = "website-images";
 
 /** Dedicated public bucket for email template images (logos, hero banners). */
@@ -5,7 +7,8 @@ export const EMAIL_IMAGE_BUCKET = "email-images";
 
 export const EMAIL_IMAGE_FOLDER = "email-templates";
 
-export const MAX_IMAGE_BYTES = 15 * 1024 * 1024;
+/** Hard ceiling for raw uploads (oversized masters may be compressed to ≤ 3 MB). */
+export const MAX_IMAGE_BYTES = IMAGE_SIZE_POLICY.hardUploadMaxBytes;
 export const MAX_VIDEO_BYTES = 100 * 1024 * 1024;
 const MAX_EMAIL_IMAGE_BYTES = 5 * 1024 * 1024;
 
@@ -38,7 +41,7 @@ export function validateImageFile(
   }
 
   if (file.size > MAX_IMAGE_BYTES) {
-    return "Image must be 15 MB or smaller.";
+    return "Image must be 25 MB or smaller (files over 3 MB are compressed automatically).";
   }
 
   return null;

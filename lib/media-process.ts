@@ -15,7 +15,7 @@ export type ProcessedImage = {
   buffer: Buffer;
   contentType: "image/jpeg" | "image/png" | "image/webp";
   extension: "jpg" | "png" | "webp";
-  /** True when lossy compression ran (source was over 1 MB). */
+  /** True when lossy compression ran (source was over 3 MB). */
   compressed: boolean;
   kind: ImageProcessKind;
 };
@@ -51,7 +51,7 @@ async function toFullQualityPassThrough(
   input: Buffer,
   kind: ImageProcessKind,
 ): Promise<ProcessedImage> {
-  /* Under 1 MB: keep original bytes — no lossy re-encode. */
+  /* ≤ 3 MB: keep original bytes — no lossy re-encode. */
   const detected = detectOutputFormat(input);
   return {
     buffer: input,
@@ -62,29 +62,45 @@ async function toFullQualityPassThrough(
   };
 }
 
+/**
+ * Compress oversized sources down to ≤ 3 MB while preserving as much quality
+ * as possible: high WebP quality first, then gently reduce edge length only
+ * if still over the cap.
+ */
 async function compressOversizeToWebp(
   input: Buffer,
   kind: ImageProcessKind,
 ): Promise<ProcessedImage> {
   const target = compressTargetBytes(kind);
   const { start, min, step } = IMAGE_SIZE_POLICY.compressQuality;
-  const maxEdge = IMAGE_SIZE_POLICY.compressMaxEdge;
-
-  const base = sharp(input, { failOn: "none" })
-    .rotate()
-    .resize(maxEdge, maxEdge, {
-      fit: "inside",
-      withoutEnlargement: true,
-    });
+  const edgeSteps = IMAGE_SIZE_POLICY.compressMaxEdgeSteps;
 
   let best: Buffer | null = null;
-  for (let quality = start; quality >= min; quality -= step) {
-    const buffer = await base
-      .clone()
-      .webp({ quality, effort: 4 })
-      .toBuffer();
-    best = buffer;
-    if (buffer.byteLength <= target) break;
+
+  for (const maxEdge of edgeSteps) {
+    const base = sharp(input, { failOn: "none" })
+      .rotate()
+      .resize(maxEdge, maxEdge, {
+        fit: "inside",
+        withoutEnlargement: true,
+      });
+
+    for (let quality = start; quality >= min; quality -= step) {
+      const buffer = await base
+        .clone()
+        .webp({ quality, effort: 4 })
+        .toBuffer();
+      best = buffer;
+      if (buffer.byteLength <= target) {
+        return {
+          buffer,
+          contentType: "image/webp",
+          extension: "webp",
+          compressed: true,
+          kind,
+        };
+      }
+    }
   }
 
   return {
@@ -98,8 +114,8 @@ async function compressOversizeToWebp(
 
 /**
  * Apply the site image size policy:
- * - ≤ 1 MB → full quality (orientation only; no lossy compression)
- * - > 1 MB → compress toward hero 800 KB / gallery·content 500 KB
+ * - ≤ 3 MB → original bytes (full quality)
+ * - > 3 MB → compress to ≤ 3 MB at the highest quality that fits
  */
 export async function processImageToWebp(
   input: Buffer,
@@ -192,5 +208,3 @@ export async function processVideoToMp4(
     await fs.rm(tmpDir, { recursive: true, force: true }).catch(() => undefined);
   }
 }
-
-export { detectOutputFormat };
