@@ -111,6 +111,9 @@ export function PublicSiteHero({
         )}
       </div>
       <div className="hero-overlay" aria-hidden="true" />
+      {playVideo ? (
+        <div className="hero-luxury-blur" aria-hidden="true" />
+      ) : null}
 
       <div className="home-hero-cover" aria-hidden="true" />
 

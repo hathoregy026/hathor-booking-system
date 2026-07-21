@@ -688,6 +688,41 @@ h1, h2, h3, h4, p {
     linear-gradient(180deg, rgba(12, 8, 6, 0.28) 0%, transparent 35%, rgba(12, 8, 6, 0.5) 100%);
 }
 
+/*
+  Homepage video hero only (.hero-luxury-blur from playVideo).
+  Soft bottom scrim + warm bokeh — above media, below logo/CTA/scroll.
+  pointer-events: none; does not affect scroll motion or hits.
+*/
+.hero-luxury-blur {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  height: min(46vh, 520px);
+  pointer-events: none;
+  background:
+    radial-gradient(circle 7rem at 10% 72%, rgba(232, 186, 110, 0.55) 0%, transparent 70%),
+    radial-gradient(circle 4.5rem at 22% 86%, rgba(198, 140, 70, 0.42) 0%, transparent 68%),
+    radial-gradient(circle 3.2rem at 6% 90%, rgba(240, 200, 130, 0.32) 0%, transparent 65%),
+    radial-gradient(circle 5.5rem at 32% 94%, rgba(160, 105, 48, 0.28) 0%, transparent 70%),
+    radial-gradient(circle 2.8rem at 16% 78%, rgba(212, 165, 90, 0.38) 0%, transparent 62%),
+    radial-gradient(circle 9rem at 18% 98%, rgba(120, 78, 36, 0.22) 0%, transparent 72%),
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(14, 9, 5, 0.12) 22%,
+      rgba(10, 6, 3, 0.48) 55%,
+      rgba(6, 3, 2, 0.78) 82%,
+      rgba(4, 2, 1, 0.9) 100%
+    );
+  filter: blur(10px);
+  opacity: 0.92;
+  transform: translateZ(0);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 28%, #000 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 28%, #000 100%);
+}
+
 /* Gold blinds — BEHIND the title; fully invisible until scroll opens them */
 .home-hero-cover {
   position: absolute;
