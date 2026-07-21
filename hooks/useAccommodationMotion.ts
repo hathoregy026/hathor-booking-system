@@ -3,12 +3,13 @@
 /**
  * Faithful port of assets/pages redesign/.../js/accommodation.js
  * Pin each room → scrub through 4 full-bleed images → next room.
+ * Smooth Lenis scroll + soft pin so entering blocks never snaps.
  */
 
 import { useLayoutEffect, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import SplitType from "split-type";
+import Lenis from "lenis";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -26,46 +27,66 @@ export function useAccommodationMotion(
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    let lenis: Lenis | null = null;
+    let ticker: ((time: number) => void) | null = null;
+
+    if (!prefersReduced) {
+      lenis = new Lenis({
+        duration: 1.55,
+        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        syncTouch: false,
+      });
+      lenis.on("scroll", ScrollTrigger.update);
+      ticker = (time: number) => {
+        lenis?.raf(time * 1000);
+      };
+      gsap.ticker.add(ticker);
+      gsap.ticker.lagSmoothing(0);
+    }
+
     const ctx = gsap.context(() => {
-      /* Intro */
+      /* Intro — soft fades only (no hard pop-ins) */
       if (!prefersReduced) {
-        const runIntroSplit = () => {
-          root
-            .querySelectorAll<HTMLElement>(".acc-intro-title .acc-intro-line")
-            .forEach((line) => {
-              const split = new SplitType(line, { types: "chars" });
-              gsap.from(split.chars, {
-                y: 40,
-                opacity: 0,
-                duration: 0.45,
-                stagger: 0.02,
-                ease: "power3.out",
+        gsap.utils
+          .toArray<HTMLElement>(root.querySelectorAll(".acc-reveal"))
+          .forEach((el) => {
+            gsap.fromTo(
+              el,
+              { y: 12, opacity: 0.35 },
+              {
+                y: 0,
+                opacity: 1,
+                duration: 0.9,
+                ease: "power2.out",
                 scrollTrigger: {
-                  trigger: line.parentElement,
-                  start: "top 82%",
+                  trigger: el,
+                  start: "top 92%",
                   once: true,
                 },
-              });
-            });
-        };
-        if (document.fonts?.ready) {
-          void document.fonts.ready.then(runIntroSplit);
-        } else {
-          runIntroSplit();
-        }
+              },
+            );
+          });
 
-        gsap.utils.toArray<HTMLElement>(root.querySelectorAll(".acc-reveal")).forEach(
-          (el, i) => {
-            gsap.from(el, {
-              y: 24,
-              opacity: 0,
-              duration: 0.7,
-              delay: i * 0.05,
-              ease: "power3.out",
-              scrollTrigger: { trigger: el, start: "top 90%", once: true },
-            });
-          },
-        );
+        root
+          .querySelectorAll<HTMLElement>(".acc-intro-title .acc-intro-line")
+          .forEach((line) => {
+            gsap.fromTo(
+              line,
+              { y: 16, opacity: 0.4 },
+              {
+                y: 0,
+                opacity: 1,
+                duration: 1,
+                ease: "power2.out",
+                scrollTrigger: {
+                  trigger: line.parentElement,
+                  start: "top 88%",
+                  once: true,
+                },
+              },
+            );
+          });
       }
 
       /* Room fullscreen stack */
@@ -93,6 +114,10 @@ export function useAccommodationMotion(
         railDots.forEach((d, di) => d.classList.toggle("is-active", di === i));
       };
 
+      const refreshWhenReady = () => {
+        ScrollTrigger.refresh();
+      };
+
       rooms.forEach((room, roomIndex) => {
         const slides = gsap.utils.toArray<HTMLElement>(
           room.querySelectorAll(".room-fs-slide"),
@@ -101,13 +126,15 @@ export function useAccommodationMotion(
           .map((s) => s.querySelector("img"))
           .filter((img): img is HTMLImageElement => Boolean(img));
         const currentEl = room.querySelector<HTMLElement>(".room-fs-current");
-        const title = room.querySelector<HTMLElement>(".room-fs-title");
-        const meta = room.querySelector<HTMLElement>(".room-fs-meta");
-        const desc = room.querySelector<HTMLElement>(".room-fs-desc");
-        const label = room.querySelector<HTMLElement>(".room-fs-label");
-        const cta = room.querySelector<HTMLElement>(".room-fs-cta");
-        const topBar = room.querySelector<HTMLElement>(".room-fs-top");
         const progressRoot = room.querySelector<HTMLElement>(".room-fs-progress");
+
+        /* Soft reveal for on-block copy — already in place, never hard-jump from offscreen */
+        const uiBits = room.querySelectorAll<HTMLElement>(
+          ".room-fs-label, .room-fs-title, .room-fs-meta, .room-fs-desc, .room-fs-cta, .room-fs-top",
+        );
+        if (!prefersReduced) {
+          gsap.set(uiBits, { opacity: 0.92, y: 8 });
+        }
 
         if (progressRoot) {
           progressRoot.querySelectorAll("span").forEach((seg) => {
@@ -132,97 +159,55 @@ export function useAccommodationMotion(
           });
         });
         imgs.forEach((img, i) => {
-          gsap.set(img, { scale: i === 0 ? 1.06 : 1.14 });
+          gsap.set(img, { scale: i === 0 ? 1.03 : 1.06 });
+          if (!img.complete) {
+            img.addEventListener("load", refreshWhenReady, { once: true });
+          }
         });
 
         let textPlayed = false;
         const playText = () => {
           if (textPlayed || prefersReduced) return;
           textPlayed = true;
-
-          const run = () => {
-            const targets = [label, title, meta, desc, cta, topBar].filter(
-              Boolean,
-            ) as HTMLElement[];
-
-            if (title) {
-              const s = new SplitType(title, { types: "chars" });
-              gsap.from(s.chars, {
-                y: 50,
-                opacity: 0,
-                duration: 0.45,
-                stagger: 0.02,
-                ease: "power3.out",
-              });
-            }
-            if (meta) {
-              const s = new SplitType(meta, { types: "words" });
-              gsap.from(s.words, {
-                y: 16,
-                opacity: 0,
-                duration: 0.35,
-                stagger: 0.04,
-                ease: "power3.out",
-                delay: 0.15,
-              });
-            }
-            if (desc) {
-              const s = new SplitType(desc, { types: "lines" });
-              gsap.from(s.lines, {
-                y: 22,
-                opacity: 0,
-                duration: 0.4,
-                stagger: 0.07,
-                ease: "power3.out",
-                delay: 0.22,
-              });
-            }
-            gsap.from([label, cta, topBar].filter(Boolean), {
-              y: 16,
-              opacity: 0,
-              duration: 0.45,
-              stagger: 0.08,
-              ease: "power3.out",
-              delay: 0.1,
-            });
-
-            if (!title && !meta && !desc) {
-              gsap.from(targets, {
-                y: 24,
-                opacity: 0,
-                duration: 0.55,
-                stagger: 0.08,
-                ease: "power3.out",
-              });
-            }
-          };
-
-          if (document.fonts?.ready) void document.fonts.ready.then(run);
-          else run();
+          gsap.to(uiBits, {
+            opacity: 1,
+            y: 0,
+            duration: 0.85,
+            stagger: 0.04,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
         };
 
         if (prefersReduced) {
-          playText();
+          gsap.set(uiBits, { opacity: 1, y: 0 });
           return;
         }
 
-        const pinEnd = `+=${SLIDE_COUNT * 75}%`;
+        /* Extra settle room after last slide so unpin doesn't feel abrupt */
+        const pinEnd = `+=${SLIDE_COUNT * 85}%`;
 
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: room,
             start: "top top",
             end: pinEnd,
-            scrub: 0.55,
+            /* Higher scrub = silkier catch-up; no hard snap into pin */
+            scrub: 1.15,
             pin: true,
             pinSpacing: true,
-            anticipatePin: 1,
+            anticipatePin: 0,
+            fastScrollEnd: true,
+            preventOverlaps: true,
             invalidateOnRefresh: true,
             onEnter: () => {
               setRail(roomIndex);
               playText();
             },
-            onEnterBack: () => setRail(roomIndex),
+            onEnterBack: () => {
+              setRail(roomIndex);
+              playText();
+            },
             onUpdate: (self) => {
               const p = self.progress;
               const raw = Math.min(SLIDE_COUNT - 0.001, p * SLIDE_COUNT);
@@ -233,12 +218,14 @@ export function useAccommodationMotion(
                 currentEl.textContent = String(active + 1).padStart(2, "0");
               }
 
-              room.querySelectorAll(".room-fs-progress span i").forEach((fill, i) => {
-                let sx = 0;
-                if (i < active) sx = 1;
-                else if (i === active) sx = segProgress;
-                gsap.set(fill, { scaleX: sx });
-              });
+              room
+                .querySelectorAll(".room-fs-progress span i")
+                .forEach((fill, i) => {
+                  let sx = 0;
+                  if (i < active) sx = 1;
+                  else if (i === active) sx = segProgress;
+                  gsap.set(fill, { scaleX: sx });
+                });
             },
           },
         });
@@ -246,7 +233,7 @@ export function useAccommodationMotion(
         if (imgs[0]) {
           tl.fromTo(
             imgs[0],
-            { scale: 1.12 },
+            { scale: 1.04 },
             { scale: 1.0, duration: 1, ease: "none" },
             0,
           );
@@ -261,21 +248,48 @@ export function useAccommodationMotion(
           tl.fromTo(
             slide,
             { opacity: 0 },
-            { opacity: 1, duration: 0.9, ease: "none" },
+            { opacity: 1, duration: 1, ease: "none" },
             t0,
           );
           if (img) {
             tl.fromTo(
               img,
-              { scale: 1.14 },
+              { scale: 1.05 },
               { scale: 1.0, duration: 1, ease: "none" },
               t0,
             );
           }
         }
 
-        tl.to({}, { duration: 0.05 });
+        /* Soft hold at end before unpin */
+        tl.to({}, { duration: 0.35 });
       });
+
+      /* Interstitial breaths — gentle fade, never a pop */
+      if (!prefersReduced) {
+        gsap.utils
+          .toArray<HTMLElement>(root.querySelectorAll(".room-interstitial"))
+          .forEach((el) => {
+            gsap.fromTo(
+              el.querySelectorAll(
+                ".room-interstitial__eyebrow, .room-interstitial__script, .room-interstitial__body",
+              ),
+              { y: 10, opacity: 0.4 },
+              {
+                y: 0,
+                opacity: 1,
+                duration: 0.9,
+                stagger: 0.08,
+                ease: "power2.out",
+                scrollTrigger: {
+                  trigger: el,
+                  start: "top 85%",
+                  once: true,
+                },
+              },
+            );
+          });
+      }
 
       /* CTA */
       if (!prefersReduced) {
@@ -283,18 +297,22 @@ export function useAccommodationMotion(
           "#reserve .cta-inner, .cta-section .cta-inner",
         );
         if (cta) {
-          gsap.from(cta.querySelectorAll("h2, p, .btn"), {
-            y: 24,
-            opacity: 0,
-            duration: 0.7,
-            stagger: 0.1,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: cta,
-              start: "top 82%",
-              once: true,
+          gsap.fromTo(
+            cta.querySelectorAll("h2, p, .btn"),
+            { y: 12, opacity: 0.4 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.85,
+              stagger: 0.08,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: cta,
+                start: "top 85%",
+                once: true,
+              },
             },
-          });
+          );
         }
       }
     }, root);
@@ -307,13 +325,18 @@ export function useAccommodationMotion(
       resizeTimer = window.setTimeout(() => ScrollTrigger.refresh(), 200);
     };
     window.addEventListener("resize", onResize);
-    requestAnimationFrame(() => ScrollTrigger.refresh());
+    requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+      requestAnimationFrame(() => ScrollTrigger.refresh());
+    });
 
     return () => {
       window.removeEventListener("load", onLoad);
       window.removeEventListener("resize", onResize);
       window.clearTimeout(resizeTimer);
       document.querySelectorAll(".rooms-rail").forEach((el) => el.remove());
+      if (ticker) gsap.ticker.remove(ticker);
+      lenis?.destroy();
       ctx.revert();
     };
   }, [rootRef, enabled]);

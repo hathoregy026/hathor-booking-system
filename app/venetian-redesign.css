@@ -197,6 +197,8 @@
   color: var(--ink, #3e3026);
   padding: clamp(72px, 12vw, 140px) clamp(20px, 5vw, 64px);
   text-align: center;
+  /* Soft handoff from dark pin spacer into cream */
+  box-shadow: 0 -40px 60px rgba(12, 10, 8, 0.12);
 }
 
 .room-interstitial__inner {
@@ -232,6 +234,8 @@
   width: 100%;
   overflow: hidden;
   background: #0c0a08;
+  /* Keep pin engagement calm — no layout flicker at the seam */
+  contain: layout paint;
 }
 
 /* Stacked full-bleed slides */
