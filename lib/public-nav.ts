@@ -17,17 +17,12 @@ export const NAV_SUITES: NavGroup = {
   label: "Suites",
   links: [
     {
-      href: "/rooms",
-      label: "Accommodation",
-      description: "All rooms & suites aboard Hathor",
-    },
-    {
       href: "/luxury-cabins-Nile-Cruise",
       label: "Luxury Rooms",
       description: "Nile-view cabins with quiet elegance",
     },
     {
-      href: "/rooms#suites",
+      href: "/rooms",
       label: "Luxury Suites",
       description: "Spacious quarters on deck",
     },
@@ -115,7 +110,9 @@ export const NAV_GROUPS = [
 
 export const EXPLORE_LINKS: NavLink[] = [
   { href: "/", label: "Home" },
-  { href: "/rooms", label: "Accommodation" },
+  { href: "/luxury-cabins-Nile-Cruise", label: "Luxury Rooms" },
+  { href: "/rooms", label: "Luxury Suites" },
+  { href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise", label: "Royal Suites" },
   { href: "/cruises", label: "Scheduled Voyages" },
   { href: "/charter", label: "Private Charter" },
   { href: "/highlights", label: "Highlights" },
@@ -147,7 +144,7 @@ export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
     type: "group",
     id: NAV_SUITES.id,
     label: NAV_SUITES.label,
-    href: "/rooms",
+    href: "/luxury-cabins-Nile-Cruise",
     links: NAV_SUITES.links,
   },
   {
@@ -178,7 +175,8 @@ export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
 const NAV_PATH_ALIASES: Record<string, readonly string[]> = {
   "/cruises": ["/cruises-list"],
   "/cruises-list": ["/cruises"],
-  "/rooms": ["/accommodation", "/accommodations", "/suites"],
+  "/rooms": ["/suites"],
+  "/luxury-cabins-Nile-Cruise": ["/accommodation", "/accommodations"],
   "/gastronomy": ["/dining"],
   "/blog": ["/blogs"],
 };

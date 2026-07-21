@@ -80,16 +80,18 @@ export function CruisesPageContent() {
               </h2>
               <ul className="cruise-exp-list">
                 <li className="cruise-reveal">
-                  <Link href="/rooms">Accommodation — rooms &amp; suites</Link>
+                  <Link href="/luxury-cabins-Nile-Cruise">Luxury Rooms</Link>
+                </li>
+                <li className="cruise-reveal">
+                  <Link href="/rooms">Luxury Suites</Link>
+                </li>
+                <li className="cruise-reveal">
+                  <Link href="/Luxury-Royal-Suites-Nile-Dahabiya-Cruise">
+                    Royal Suites
+                  </Link>
                 </li>
                 <li className="cruise-reveal">
                   <Link href="/gastronomy">Dining — Hathor Flavors</Link>
-                </li>
-                <li className="cruise-reveal">
-                  <Link href="/wellness">Wellness — Seneb Spa</Link>
-                </li>
-                <li className="cruise-reveal">
-                  <Link href="/highlights">Highlights along the Nile</Link>
                 </li>
               </ul>
             </div>
@@ -111,8 +113,8 @@ export function CruisesPageContent() {
             <p>{CRUISES_PAGE.hero.subtitle}</p>
             <BookNowTrigger className="btn btn-filled">Book Now</BookNowTrigger>
             <div style={{ marginTop: "1rem" }}>
-              <Link className="btn btn-dark" href="/rooms">
-                Accommodation
+              <Link className="btn btn-dark" href="/luxury-cabins-Nile-Cruise">
+                Luxury Rooms
               </Link>
             </div>
           </div>

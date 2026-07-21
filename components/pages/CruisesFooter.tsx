@@ -3,7 +3,9 @@ import { HATHOR_BRAND_NAME } from "@/lib/branding";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 
 const FOOTER_EXPLORE = [
-  { href: "/rooms", label: "Accommodations" },
+  { href: "/luxury-cabins-Nile-Cruise", label: "Luxury Rooms" },
+  { href: "/rooms", label: "Luxury Suites" },
+  { href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise", label: "Royal Suites" },
   { href: "/cruises", label: "Cruises" },
   { href: "/about", label: "About" },
   { href: "/blogs", label: "Blog" },

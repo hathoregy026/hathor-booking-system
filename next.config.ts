@@ -64,12 +64,12 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/accommodation",
-        destination: "/rooms",
+        destination: "/luxury-cabins-Nile-Cruise",
         permanent: true,
       },
       {
         source: "/accommodations",
-        destination: "/rooms",
+        destination: "/luxury-cabins-Nile-Cruise",
         permanent: true,
       },
       {

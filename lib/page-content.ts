@@ -305,7 +305,7 @@ export const LUXURY_CABINS_PAGE = {
   metaDescription:
     "Discover small luxury Nile cruise rooms aboard Hathor Dahabiya — eight elegant private cabins with panoramic Nile views, handcrafted Egyptian design, and refined contemporary comfort.",
   hero: {
-    title: "Luxury Cabins",
+    title: "Luxury Rooms",
     subtitle: "Luxury Nile Cruise Rooms, Hathor Dahabiya",
   },
   overview: {
@@ -346,11 +346,50 @@ export const LUXURY_CABINS_PAGE = {
   },
 } as const;
 
+/** From assets/RAW_DATA.md — PAGE: Luxury Suites & Rooms Listing + Suite Experience */
+export const LUXURY_SUITES_PAGE = {
+  metaDescription:
+    "Discover Accessible Hathor Suites aboard Hathor Dahabiya — 46 sqm of distinctive luxury with panoramic Nile views, jacuzzi, and refined suite living on the Lower Deck.",
+  hero: {
+    title: "Luxury Suites",
+    subtitle: "Accessible Hathor Suite on the Nile",
+  },
+  overview: {
+    title: "Suite Experience",
+    subtitle: "46 sqm of distinctive luxury",
+    body: "Located on the Lower Deck, our Suites offer a spacious retreat with panoramic views of the Nile.",
+  },
+  intro: [
+    "Discover effortless luxury in the Accessible Hathor Suite — a spacious, elegantly designed retreat crafted for comfort, ease, and refined living. Thoughtfully tailored to ensure every guest feels perfectly at home, without compromise.",
+    "Experience elegant comfort and thoughtful design in our Accessible Hathor Suite aboard Hathor Dahabiya — luxury privilege on the Nile for true Luxury Dahabiya Egypt and an unforgettable Luxury Dahabiya Nile Cruise experience.",
+  ],
+  amenities: {
+    title: "Suite Amenities",
+    features: [
+      "LED Satellite Screen",
+      "Bathtub or Walk-In Shower",
+      "Safe box",
+      "Exclusive décor and color themes",
+      "Jacuzzi & dual toilets",
+      "Hair dryer & mini bar",
+      "Smart entertainment system",
+      "Room & laundry service",
+      "Air conditioning & high-speed Wi-Fi",
+      "Panoramic Nile view",
+    ],
+  },
+  cruisesCta: {
+    title: "Sail in a Luxury Suite",
+    body: "Pair your suite with an exclusive Hathor itinerary — from intimate 3-night sailings to grand 7-night voyages between Luxor and Aswan.",
+    hrefLabel: "View cruises",
+  },
+} as const;
+
 export const ROYAL_SUITES_PAGE = {
   metaDescription:
     "Experience Hathor Dahabiya's two magnificent Royal Suites — 56 sqm of sophisticated elegance with panoramic Nile views, private balconies, jacuzzi, and uncompromising privacy on the Main Deck.",
   hero: {
-    title: "Royal Suites",
+    title: "Luxury Royal Suites",
     subtitle: "Luxury Royal Suites on Hathor Dahabiya",
   },
   overview: {
