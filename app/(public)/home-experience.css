@@ -690,7 +690,7 @@ h1, h2, h3, h4, p {
 
 /*
   Homepage video hero only (.hero-luxury-blur from playVideo).
-  Real backdrop blur of the video + warm dark scrim + soft gold bokeh.
+  Light frost + translucent scrim + horizon “sun shade” blooms (not flat circles).
   Above media / below logo·CTA·scroll. pointer-events: none.
 */
 .hero-luxury-blur {
@@ -699,75 +699,204 @@ h1, h2, h3, h4, p {
   right: 0;
   bottom: 0;
   z-index: 1;
-  height: min(52vh, 620px);
+  height: min(50vh, 580px);
   pointer-events: none;
-  isolation: isolate;
-  /* Frost the video itself — this is the luxury depth from the ref */
-  -webkit-backdrop-filter: blur(22px) saturate(1.2) brightness(0.92);
-  backdrop-filter: blur(22px) saturate(1.2) brightness(0.92);
+  overflow: hidden;
+  /* Lighter frost — more of the video shows through */
+  -webkit-backdrop-filter: blur(14px) saturate(1.12) brightness(0.97);
+  backdrop-filter: blur(14px) saturate(1.12) brightness(0.97);
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(28, 16, 8, 0.18) 18%,
-    rgba(18, 10, 5, 0.42) 42%,
-    rgba(10, 5, 3, 0.62) 68%,
-    rgba(4, 2, 1, 0.78) 100%
+    rgba(20, 12, 6, 0.06) 22%,
+    rgba(12, 7, 4, 0.18) 48%,
+    rgba(8, 4, 2, 0.32) 72%,
+    rgba(4, 2, 1, 0.42) 100%
   );
   -webkit-mask-image: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(0, 0, 0, 0.35) 18%,
-    #000 48%,
+    rgba(0, 0, 0, 0.25) 16%,
+    #000 42%,
     #000 100%
   );
   mask-image: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(0, 0, 0, 0.35) 18%,
-    #000 48%,
+    rgba(0, 0, 0, 0.25) 16%,
+    #000 42%,
     #000 100%
   );
   transform: translateZ(0);
 }
 
-/* Warm golden bokeh — light orbs over the frosted scrim (left-weighted like ref) */
-.hero-luxury-blur::before {
-  content: "";
+.hero-luxury-blur__haze,
+.hero-luxury-blur__band,
+.hero-luxury-blur__shade {
   position: absolute;
-  inset: 0;
   pointer-events: none;
-  background:
-    radial-gradient(circle 5.5rem at 8% 68%, rgba(255, 210, 130, 0.7) 0%, rgba(255, 180, 80, 0.2) 38%, transparent 68%),
-    radial-gradient(circle 3.8rem at 18% 82%, rgba(240, 175, 90, 0.65) 0%, transparent 70%),
-    radial-gradient(circle 2.4rem at 4% 88%, rgba(255, 220, 150, 0.55) 0%, transparent 65%),
-    radial-gradient(circle 7rem at 28% 92%, rgba(200, 130, 55, 0.4) 0%, transparent 72%),
-    radial-gradient(circle 2rem at 14% 74%, rgba(255, 200, 110, 0.5) 0%, transparent 60%),
-    radial-gradient(circle 4.2rem at 38% 86%, rgba(180, 110, 45, 0.32) 0%, transparent 68%),
-    radial-gradient(circle 1.6rem at 22% 70%, rgba(255, 230, 170, 0.45) 0%, transparent 58%),
-    radial-gradient(ellipse 90% 55% at 20% 100%, rgba(160, 95, 35, 0.35) 0%, transparent 70%);
-  mix-blend-mode: screen;
-  opacity: 0.85;
-  filter: blur(6px);
+  display: block;
 }
 
-/* Soft secondary glow bloom — larger, hazier wash */
-.hero-luxury-blur::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
+/* Soft ambient wash — barely there */
+.hero-luxury-blur__haze {
+  inset: 20% -10% -5%;
+  background: radial-gradient(
+    ellipse 80% 55% at 30% 80%,
+    rgba(180, 110, 45, 0.16) 0%,
+    transparent 68%
+  );
+  filter: blur(28px);
+  opacity: 0.55;
+  mix-blend-mode: screen;
+}
+
+/* Horizontal horizon glow band — sun sitting on the waterline */
+.hero-luxury-blur__band {
+  left: -8%;
+  right: -8%;
+  bottom: 6%;
+  height: 42%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(200, 130, 55, 0.08) 12%,
+    rgba(255, 190, 100, 0.22) 28%,
+    rgba(230, 150, 70, 0.14) 48%,
+    rgba(255, 200, 120, 0.18) 62%,
+    rgba(180, 100, 40, 0.08) 82%,
+    transparent 100%
+  );
+  filter: blur(36px);
+  opacity: 0.7;
+  mix-blend-mode: screen;
+  transform: scaleY(0.55);
+  transform-origin: center bottom;
+}
+
+/*
+  Horizon sun-shades — wide/flattened ellipses with off-center hot cores.
+  Heavy blur + screen blend = glowing reflection, not stamped circles.
+*/
+.hero-luxury-blur__shade {
+  border-radius: 50% 50% 42% 48% / 58% 55% 38% 40%;
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+
+.hero-luxury-blur__shade--a {
+  left: 2%;
+  bottom: 8%;
+  width: min(38vw, 420px);
+  height: min(18vh, 160px);
   background:
-    radial-gradient(ellipse 70% 60% at 15% 90%, rgba(212, 150, 70, 0.35) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 40% at 45% 100%, rgba(120, 70, 30, 0.25) 0%, transparent 65%),
-    linear-gradient(
-      180deg,
-      transparent 0%,
-      transparent 40%,
-      rgba(40, 22, 8, 0.2) 75%,
-      rgba(12, 6, 2, 0.45) 100%
+    radial-gradient(
+      ellipse 70% 80% at 42% 38%,
+      rgba(255, 230, 170, 0.55) 0%,
+      rgba(255, 175, 80, 0.28) 32%,
+      rgba(180, 100, 40, 0.08) 58%,
+      transparent 78%
     );
-  mix-blend-mode: soft-light;
-  opacity: 0.9;
+  filter: blur(28px);
+  opacity: 0.72;
+}
+
+.hero-luxury-blur__shade--b {
+  left: 14%;
+  bottom: 2%;
+  width: min(28vw, 300px);
+  height: min(14vh, 120px);
+  background:
+    radial-gradient(
+      ellipse 65% 75% at 58% 45%,
+      rgba(255, 200, 110, 0.48) 0%,
+      rgba(210, 130, 50, 0.2) 40%,
+      transparent 72%
+    );
+  filter: blur(34px);
+  opacity: 0.58;
+  border-radius: 48% 52% 40% 44% / 50% 48% 35% 38%;
+}
+
+.hero-luxury-blur__shade--c {
+  left: 26%;
+  bottom: 10%;
+  width: min(22vw, 240px);
+  height: min(11vh, 100px);
+  background:
+    radial-gradient(
+      ellipse 60% 70% at 35% 55%,
+      rgba(255, 215, 140, 0.4) 0%,
+      rgba(190, 115, 45, 0.15) 45%,
+      transparent 70%
+    );
+  filter: blur(22px);
+  opacity: 0.5;
+  transform: scaleX(1.35) scaleY(0.75);
+}
+
+.hero-luxury-blur__shade--d {
+  left: 8%;
+  bottom: 18%;
+  width: min(16vw, 170px);
+  height: min(9vh, 80px);
+  background:
+    radial-gradient(
+      ellipse 55% 65% at 48% 40%,
+      rgba(255, 240, 190, 0.42) 0%,
+      rgba(230, 160, 70, 0.12) 50%,
+      transparent 75%
+    );
+  filter: blur(18px);
+  opacity: 0.45;
+  transform: scaleX(1.2) scaleY(0.65);
+}
+
+.hero-luxury-blur__shade--e {
+  left: 38%;
+  bottom: 4%;
+  width: min(32vw, 360px);
+  height: min(12vh, 110px);
+  background:
+    radial-gradient(
+      ellipse 75% 60% at 40% 60%,
+      rgba(200, 125, 50, 0.28) 0%,
+      rgba(140, 80, 30, 0.1) 48%,
+      transparent 72%
+    );
+  filter: blur(40px);
+  opacity: 0.4;
+  transform: scaleX(1.5) scaleY(0.55);
+  border-radius: 50% 50% 35% 40% / 45% 45% 30% 32%;
+}
+
+.hero-luxury-blur__shade--f {
+  left: -2%;
+  bottom: -2%;
+  width: min(48vw, 520px);
+  height: min(16vh, 140px);
+  background:
+    radial-gradient(
+      ellipse 80% 50% at 30% 70%,
+      rgba(160, 95, 35, 0.22) 0%,
+      rgba(100, 55, 20, 0.08) 45%,
+      transparent 70%
+    );
+  filter: blur(48px);
+  opacity: 0.48;
+  transform: scaleX(1.25) scaleY(0.5);
+}
+
+@media (max-width: 767px) {
+  .hero-luxury-blur {
+    height: min(44vh, 420px);
+  }
+
+  .hero-luxury-blur__shade--a,
+  .hero-luxury-blur__shade--b,
+  .hero-luxury-blur__shade--e {
+    filter: blur(22px);
+  }
 }
 
 /* Gold blinds — BEHIND the title; fully invisible until scroll opens them */
