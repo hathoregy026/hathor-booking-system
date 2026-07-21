@@ -1,18 +1,18 @@
+import {
+  getProductionOrigin,
+  isStaleVercelDeploymentHost,
+} from "@/lib/public-url";
 import { NextRequest, NextResponse } from "next/server";
 import {
   ADMIN_SESSION_COOKIE,
   verifySessionToken,
 } from "@/lib/admin-auth-edge";
-import {
-  getProductionOrigin,
-  STALE_VERCEL_DEPLOYMENT_HOST,
-} from "@/lib/public-url";
 
 const PUBLIC_ADMIN_PATHS = ["/admin/login", "/api/admin/login"];
 
 function redirectStaleDeploymentHost(request: NextRequest): NextResponse | null {
   const hostname = request.nextUrl.hostname;
-  if (!STALE_VERCEL_DEPLOYMENT_HOST.test(hostname)) {
+  if (!isStaleVercelDeploymentHost(hostname)) {
     return null;
   }
 
@@ -31,6 +31,8 @@ function withHtmlNoStore(response: NextResponse): NextResponse {
   );
   response.headers.set("CDN-Cache-Control", "no-store");
   response.headers.set("Vercel-CDN-Cache-Control", "no-store");
+  response.headers.set("Cloudflare-CDN-Cache-Control", "no-store");
+  response.headers.set("Surrogate-Control", "no-store");
   response.headers.set("Pragma", "no-cache");
   response.headers.set("Expires", "0");
   return response;

@@ -55,7 +55,10 @@ export function TypographySettingsProvider({
     applyLiveCss(settings);
   }, [settings]);
 
+  /* Trust SSR typography when provided — client refetch morphs old→new and reads as a flashback. */
   useEffect(() => {
+    if (initial) return;
+
     let cancelled = false;
     const load = async () => {
       try {
@@ -67,20 +70,14 @@ export function TypographySettingsProvider({
         if (cancelled) return;
         setSettings(parseTypographySettings(data.settings));
       } catch {
-        /* keep SSR / defaults */
+        /* keep defaults */
       }
     };
     void load();
-
-    const onVisible = () => {
-      if (document.visibilityState === "visible") void load();
-    };
-    document.addEventListener("visibilitychange", onVisible);
     return () => {
       cancelled = true;
-      document.removeEventListener("visibilitychange", onVisible);
     };
-  }, []);
+  }, [initial]);
 
   return (
     <TypographySettingsContext.Provider value={settings}>

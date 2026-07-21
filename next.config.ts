@@ -17,10 +17,10 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion"],
-    // Prevent App Router client cache from showing a previous deploy after soft/navigated revisits.
+    // Never reuse Flight/RSC payloads across soft nav — prevents post-deploy "old UI" flashbacks.
     staleTimes: {
       dynamic: 0,
-      static: 30,
+      static: 0,
     },
   },
   async headers() {

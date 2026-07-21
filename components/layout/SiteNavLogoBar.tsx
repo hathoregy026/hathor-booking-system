@@ -12,7 +12,12 @@ import {
 export function SiteNavLogoBar() {
   return (
     <div className="site-nav-bar" aria-label="Site logo">
-      <Link href="/" className="site-nav-bar__logo" aria-label={HATHOR_BRAND_NAME}>
+      <Link
+        href="/"
+        prefetch={false}
+        className="site-nav-bar__logo"
+        aria-label={HATHOR_BRAND_NAME}
+      >
         <Image
           src={HATHOR_HERO_ICON_SRC}
           alt=""

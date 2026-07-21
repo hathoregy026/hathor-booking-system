@@ -325,7 +325,7 @@ export function Header() {
             </nav>
 
             <div className="hathor-header__col hathor-header__col--logo">
-              <Link href="/" className="hathor-header__brand">
+              <Link href="/" prefetch={false} className="hathor-header__brand">
                 <Image
                   src={
                     menuHovered

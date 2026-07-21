@@ -4,15 +4,9 @@ export const STALE_VERCEL_DEPLOYMENT_HOST =
 
 /**
  * Canonical production origin for redirects and absolute links.
+ * Prefer custom domain when configured so hash/preview hosts never stay sticky.
  */
 export function getProductionOrigin(): string {
-  const fromVercel = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
-  if (fromVercel) {
-    return fromVercel.startsWith("http")
-      ? fromVercel.replace(/\/$/, "")
-      : `https://${fromVercel.replace(/\/$/, "")}`;
-  }
-
   const explicit =
     process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
     process.env.SITE_URL?.trim();
@@ -21,7 +15,31 @@ export function getProductionOrigin(): string {
     return explicit.replace(/\/$/, "");
   }
 
+  const fromVercel = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
+  if (fromVercel) {
+    return fromVercel.startsWith("http")
+      ? fromVercel.replace(/\/$/, "")
+      : `https://${fromVercel.replace(/\/$/, "")}`;
+  }
+
   return "https://hathor-booking-system.vercel.app";
+}
+
+/** True when this host is a one-off Vercel deploy URL that should bounce to production. */
+export function isStaleVercelDeploymentHost(hostname: string): boolean {
+  if (STALE_VERCEL_DEPLOYMENT_HOST.test(hostname)) return true;
+
+  /* Also catch accidental opens of old alias hosts that aren't the production project URL. */
+  if (!hostname.endsWith(".vercel.app")) return false;
+  try {
+    const prodHost = new URL(getProductionOrigin()).hostname;
+    if (hostname === prodHost) return false;
+    /* Keep git branch preview URLs usable for review. */
+    if (hostname.includes("-git-")) return false;
+    return hostname.startsWith("hathor-booking-system-");
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -40,7 +58,7 @@ export function getSiteBaseUrl(): string {
   const vercel = process.env.VERCEL_URL?.trim();
   if (vercel) {
     const host = vercel.replace(/^https?:\/\//, "");
-    if (!STALE_VERCEL_DEPLOYMENT_HOST.test(host)) {
+    if (!isStaleVercelDeploymentHost(host)) {
       return `https://${host}`;
     }
   }

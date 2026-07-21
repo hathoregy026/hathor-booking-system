@@ -1,0 +1,38 @@
+"use client";
+
+import { useEffect } from "react";
+
+const STORAGE_KEY = "hathor-deploy-id";
+
+/**
+ * After a new Vercel deploy, soft-nav / SPA tabs can keep the previous
+ * Flight payload and client chunks in memory ("old production flashbacks").
+ * When the commit changes, force a hard reload once per tab.
+ */
+export function DeployFreshness({ deployId }: { deployId: string }) {
+  useEffect(() => {
+    if (!deployId || deployId === "dev") return;
+
+    try {
+      const prev = window.sessionStorage.getItem(STORAGE_KEY);
+      window.sessionStorage.setItem(STORAGE_KEY, deployId);
+      if (prev && prev !== deployId) {
+        window.location.reload();
+      }
+    } catch {
+      /* private mode / blocked storage */
+    }
+  }, [deployId]);
+
+  useEffect(() => {
+    const onPageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        window.location.reload();
+      }
+    };
+    window.addEventListener("pageshow", onPageShow);
+    return () => window.removeEventListener("pageshow", onPageShow);
+  }, []);
+
+  return null;
+}
