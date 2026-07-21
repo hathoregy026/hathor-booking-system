@@ -1667,6 +1667,12 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   text-align: center;
 }
 
+.gallery-h2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .gallery-h2 h2 {
   font-family: var(--font-display);
   font-weight: 400;
@@ -1680,8 +1686,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   align-items: center;
   justify-content: center;
   gap: 0.55rem;
-  margin: 0.85rem auto 0;
-  max-width: max-content;
+  margin: 0.85rem 0 0;
   text-decoration: none;
   color: inherit;
   position: relative;
@@ -1714,18 +1719,6 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   display: inline-block;
 }
 
-.gallery-ig-link__cue {
-  display: inline-block;
-  margin-left: 0.15rem;
-  padding-left: 0.65rem;
-  border-left: 1px solid color-mix(in srgb, currentColor 35%, transparent);
-  opacity: 0.55;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  font-size: 0.85em;
-  transition: opacity 0.35s ease, border-color 0.35s ease;
-}
-
 .gallery-ig-link:hover,
 .gallery-ig-link:focus-visible {
   color: var(--gold);
@@ -1743,12 +1736,6 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 .gallery-ig-link:focus-visible .gallery-ig-link__icon {
   opacity: 1;
   transform: translateY(-1px);
-}
-
-.gallery-ig-link:hover .gallery-ig-link__cue,
-.gallery-ig-link:focus-visible .gallery-ig-link__cue {
-  opacity: 0.9;
-  border-left-color: color-mix(in srgb, var(--gold) 55%, transparent);
 }
 
 .gallery-grid {
