@@ -54,7 +54,7 @@ export const HOMEPAGE_ACCOMMODATIONS = {
       title: "Luxury Rooms",
       description:
         "Discover Luxury Dahabiya Nile Cruise cabins — the best Dahabiya suitable for a truly elegant Nile cruise. Relish the comfort of refined luxury.",
-      href: "/rooms",
+      href: "/luxury-cabins-Nile-Cruise",
     },
     {
       title: "Luxury Suites",
