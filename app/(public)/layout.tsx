@@ -65,7 +65,9 @@ const plusJakarta = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.hathorcruise.com",
+    process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL.replace(/^https?:\/\//, "")}`
+      : "https://hathor-booking-system.vercel.app",
   ),
   title: {
     default: "Luxury Dahabiya Nile Cruise | Hathor Dahabiya",
