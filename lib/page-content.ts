@@ -91,6 +91,7 @@ export const ABOUT_PAGE = {
 export const CRUISES_PAGE = {
   hero: {
     title: "Dahabiya Cruises List",
+    secondTitle: "Sail Egypt",
     subtitle:
       "Discover exclusive itineraries — intimate sailings, legendary ports, and uncompromising luxury.",
   },
@@ -125,6 +126,7 @@ export const HIGHLIGHTS_PAGE = {
 export const GASTRONOMY_PAGE = {
   hero: {
     title: "Hathor Flavors",
+    secondTitle: "Fine Dining",
     subtitle: "Luxury Dining on Egypt's Finest Dahabiya",
   },
   intro: [
@@ -164,6 +166,7 @@ export const GASTRONOMY_PAGE = {
 export const WELLNESS_PAGE = {
   hero: {
     title: "A Floating Oasis of Wellness",
+    secondTitle: "Seneb Spa",
     subtitle: "Seneb Spa on the Nile",
   },
   spa: {
@@ -184,6 +187,7 @@ export const WELLNESS_PAGE = {
 export const CHARTER_PAGE = {
   hero: {
     title: "Charter Dahabiya Cruise",
+    secondTitle: "Private Voyage",
     subtitle: "Your private Nile — exclusively yours.",
   },
   overview: {
@@ -307,6 +311,7 @@ export const LUXURY_CABINS_PAGE = {
     "Small Luxury Nile Cruise Rooms | Boutique Nile Cruise Hathor Dahabiya",
   hero: {
     title: "Luxury Rooms",
+    secondTitle: "Nile Cabins",
     subtitle: "Luxury Nile Cruise Rooms, Hathor Dahabiya",
   },
   overview: {
@@ -449,6 +454,7 @@ export const LUXURY_SUITES_PAGE = {
     "Luxury suites on Nile cruise | Hathor Dahabiya Cruise",
   hero: {
     title: "Cabins & Suits",
+    secondTitle: "River Suites",
     subtitle: "Luxury Suites aboard Hathor Dahabiya",
   },
   overview: {
@@ -578,6 +584,7 @@ export const ROYAL_SUITES_PAGE = {
     "Luxury Dahabiya Royal Suite | Private Dahabiya Nile cruise",
   hero: {
     title: "Luxury Royal Suites",
+    secondTitle: "Royal Views",
     subtitle: "Luxury Royal Suites and Nile Whisper Stories of Kings",
   },
   overview: {

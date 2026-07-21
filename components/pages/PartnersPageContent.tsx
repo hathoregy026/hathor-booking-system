@@ -8,6 +8,7 @@ export function PartnersPageContent() {
   return (
     <PageScrollTransition
       title={HOMEPAGE_PARTNERS.title}
+      secondTitle="Trusted Worldwide"
       subtitle={HOMEPAGE_PARTNERS.chapter}
       breadcrumb="Partners"
       imageName="about-hero"

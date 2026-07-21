@@ -39,6 +39,7 @@ export function GastronomyPageContent() {
   return (
     <PageScrollTransition
       title={GASTRONOMY_PAGE.hero.title}
+      secondTitle={GASTRONOMY_PAGE.hero.secondTitle}
       subtitle={GASTRONOMY_PAGE.hero.subtitle}
       breadcrumb="Dining"
       imageName="gastronomy-hero"

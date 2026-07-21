@@ -7,6 +7,7 @@ export function RoyalSuitesPageContent() {
   return (
     <ResidenceScrollPage
       heroTitle={ROYAL_SUITES_PAGE.hero.title}
+      heroSecondTitle={ROYAL_SUITES_PAGE.hero.secondTitle}
       heroSubtitle={ROYAL_SUITES_PAGE.hero.subtitle}
       breadcrumb="Royal Suites"
       heroImageName="room-royal"

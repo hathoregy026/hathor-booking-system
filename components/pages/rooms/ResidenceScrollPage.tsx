@@ -28,6 +28,8 @@ export type ResidenceCopyPlacement = {
 
 export type ResidenceScrollPageProps = {
   heroTitle: string;
+  /** Elegant second hero line (script) — keeps full title on the main line */
+  heroSecondTitle?: string;
   heroSubtitle: string;
   breadcrumb: string;
   heroImageName: string;
@@ -109,6 +111,7 @@ function CopyParagraphs({
 
 export function ResidenceScrollPage({
   heroTitle,
+  heroSecondTitle,
   heroSubtitle,
   breadcrumb,
   heroImageName,
@@ -130,6 +133,7 @@ export function ResidenceScrollPage({
   return (
     <PageScrollTransition
       title={heroTitle}
+      secondTitle={heroSecondTitle}
       subtitle={heroSubtitle}
       breadcrumb={breadcrumb}
       imageName={heroImageName}

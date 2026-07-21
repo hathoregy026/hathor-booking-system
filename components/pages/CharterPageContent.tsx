@@ -11,6 +11,7 @@ export function CharterPageContent() {
   return (
     <PageScrollTransition
       title={CHARTER_PAGE.hero.title}
+      secondTitle={CHARTER_PAGE.hero.secondTitle}
       subtitle={CHARTER_PAGE.hero.subtitle}
       breadcrumb="Charter"
       imageName="charter-hero"

@@ -7,6 +7,7 @@ export function LuxuryCabinsPageContent() {
   return (
     <ResidenceScrollPage
       heroTitle={LUXURY_CABINS_PAGE.hero.title}
+      heroSecondTitle={LUXURY_CABINS_PAGE.hero.secondTitle}
       heroSubtitle={LUXURY_CABINS_PAGE.hero.subtitle}
       breadcrumb="Luxury Rooms"
       heroImageName="room-luxury"

@@ -10,14 +10,12 @@ import {
   CruisesPageListingsGrid,
 } from "@/components/pages/CruisesPageListings";
 import { useCruisesRedesignMotion } from "@/hooks/useCruisesRedesignMotion";
-import { splitHeroTitle } from "@/lib/split-hero-title";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 import { CRUISES_PAGE } from "@/lib/page-content";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 
 export function CruisesPageContent() {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [lineRight, lineLeft] = splitHeroTitle(CRUISES_PAGE.hero.title);
   useCruisesRedesignMotion(rootRef);
 
   const totalRooms = HATHOR_CRUISES.reduce(
@@ -30,8 +28,8 @@ export function CruisesPageContent() {
     <CruisesListingProvider cruises={HATHOR_CRUISES}>
       <div ref={rootRef} className="venetian-page page-cruises cruises-page">
         <PublicSiteHero
-          lineRight={lineRight}
-          lineLeft={lineLeft}
+          lineRight={CRUISES_PAGE.hero.title}
+          lineLeft={CRUISES_PAGE.hero.secondTitle}
           subtitle={CRUISES_PAGE.hero.subtitle}
           posterImageName="cruises-hero"
         />

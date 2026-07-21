@@ -50,6 +50,7 @@ export function WellnessPageContent() {
   return (
     <PageScrollTransition
       title={WELLNESS_PAGE.hero.title}
+      secondTitle={WELLNESS_PAGE.hero.secondTitle}
       subtitle={WELLNESS_PAGE.hero.subtitle}
       breadcrumb="Wellness"
       imageName="wellness-hero"

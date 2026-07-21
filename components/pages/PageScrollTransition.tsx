@@ -7,6 +7,11 @@ import { splitHeroTitle } from "@/lib/split-hero-title";
 export type PageScrollTransitionProps = {
   title: string;
   heroTitle?: string;
+  /**
+   * Elegant second hero line (homepage-style script).
+   * When set, the full title stays on the main line — no mid-title split.
+   */
+  secondTitle?: string;
   subtitle?: string;
   breadcrumb: string;
   parentBreadcrumb?: { label: string; href: string };
@@ -21,13 +26,16 @@ export type PageScrollTransitionProps = {
 export function PageScrollTransition({
   title,
   heroTitle,
+  secondTitle,
   subtitle,
   imageName,
   sheetBelowLanding,
   children,
 }: PageScrollTransitionProps) {
   const displayTitle = heroTitle ?? title;
-  const [lineRight, lineLeft] = splitHeroTitle(displayTitle);
+  const [lineRight, lineLeft] = secondTitle
+    ? ([displayTitle, secondTitle] as [string, string])
+    : splitHeroTitle(displayTitle);
 
   return (
     <div className="public-page-with-hero">
