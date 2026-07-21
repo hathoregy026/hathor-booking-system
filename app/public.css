@@ -906,7 +906,7 @@
   );
 }
 
-/* ─── Floating corner actions (chat left + book right) ─── */
+/* ─── Floating corner actions (BOOK NOW + chat, fixed bottom-right) ─── */
 .public-fab {
   position: fixed;
   z-index: 60;
@@ -914,26 +914,18 @@
   pointer-events: none;
 }
 
-.public-fab--left {
-  left: max(clamp(1rem, 2.8vw, 1.75rem), env(safe-area-inset-left));
-}
-
 .public-fab--right {
   right: max(clamp(1rem, 2.8vw, 1.75rem), env(safe-area-inset-right));
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(12px) scale(0.96);
-  transition:
-    opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-    visibility 0.4s;
 }
 
-.public-fab--right.public-fab--book-visible {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0) scale(1);
-  pointer-events: auto;
+.public-fab__cluster {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.55rem;
+  pointer-events: none;
 }
 
 .public-fab__backdrop {
@@ -948,6 +940,26 @@
   pointer-events: auto;
 }
 
+.public-fab__book-slot {
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(10px) scale(0.96);
+  pointer-events: none;
+  transition:
+    opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0.4s;
+}
+
+.public-fab__book-slot--visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0) scale(1);
+  pointer-events: auto;
+}
+
 .public-fab__chat {
   position: relative;
   z-index: 1;
@@ -955,6 +967,7 @@
   flex-direction: column;
   align-items: center;
   pointer-events: auto;
+  flex-shrink: 0;
 }
 
 .public-fab__chat-menu {
@@ -978,11 +991,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 3.15rem;
-  height: 3.15rem;
+  width: 2.85rem;
+  height: 2.85rem;
   border-radius: 9999px;
-  border: 1px solid #b69f64;
-  background: #ece8df;
+  border: 1px solid #2c2419;
+  background: #f5efe4;
   color: #2c2419;
   box-shadow: 0 6px 18px rgba(44, 36, 25, 0.12);
   cursor: pointer;
@@ -997,8 +1010,8 @@
 }
 
 .public-fab__icon-btn {
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 2.55rem;
+  height: 2.55rem;
   opacity: 0;
   visibility: hidden;
   transform: translateY(14px) scale(0.88);
@@ -1031,14 +1044,14 @@
 }
 
 .public-fab__chat-icon {
-  width: 1.35rem;
-  height: 1.35rem;
+  width: 1.25rem;
+  height: 1.25rem;
   stroke-width: 1.7;
 }
 
 .public-fab__lucide {
-  width: 1.15rem;
-  height: 1.15rem;
+  width: 1.1rem;
+  height: 1.1rem;
   stroke-width: 1.7;
 }
 
@@ -1053,12 +1066,12 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  min-width: 10.5rem;
+  min-width: 9.5rem;
   min-height: 2.85rem;
   height: 2.85rem;
-  padding: 0 1.75rem;
+  padding: 0 1.55rem;
   border-radius: 999px;
-  border: 1px solid #b69f64;
+  border: 1px solid #2c2419;
   background: #f5efe4;
   color: #2c2419;
   box-shadow: 0 8px 22px rgba(44, 36, 25, 0.1);
@@ -1096,24 +1109,34 @@
 }
 
 @media (min-width: 640px) {
+  .public-fab__chat-main,
+  .public-fab__book {
+    height: 3.1rem;
+    min-height: 3.1rem;
+  }
+
   .public-fab__chat-main {
-    width: 3.4rem;
-    height: 3.4rem;
+    width: 3.1rem;
   }
 
   .public-fab__chat-icon {
-    width: 1.45rem;
-    height: 1.45rem;
+    width: 1.35rem;
+    height: 1.35rem;
   }
 
   .public-fab__icon-btn {
-    width: 2.95rem;
-    height: 2.95rem;
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .public-fab__book {
+    min-width: 10.5rem;
+    padding: 0 1.75rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .public-fab--right,
+  .public-fab__book-slot,
   .public-fab__chat-main,
   .public-fab__icon-btn,
   .public-fab__book {

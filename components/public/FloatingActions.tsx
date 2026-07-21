@@ -67,16 +67,25 @@ export function FloatingActions() {
   }, [chatOpen]);
 
   return (
-    <>
-      <div className="public-fab public-fab--left">
-        {chatOpen ? (
-          <button
-            type="button"
-            className="public-fab__backdrop"
-            aria-label="Close contact links"
-            onClick={() => setChatOpen(false)}
-          />
-        ) : null}
+    <div className="public-fab public-fab--right">
+      {chatOpen ? (
+        <button
+          type="button"
+          className="public-fab__backdrop"
+          aria-label="Close contact links"
+          onClick={() => setChatOpen(false)}
+        />
+      ) : null}
+
+      <div className="public-fab__cluster">
+        <div
+          className={`public-fab__book-slot${showBook ? " public-fab__book-slot--visible" : ""}`}
+          aria-hidden={!showBook}
+        >
+          <BookNowTrigger className="public-fab__book">
+            <span className="public-fab__book-text">{HOMEPAGE_HERO.cta}</span>
+          </BookNowTrigger>
+        </div>
 
         <div
           className={`public-fab__chat${chatOpen ? " public-fab__chat--open" : ""}`}
@@ -150,15 +159,6 @@ export function FloatingActions() {
           </button>
         </div>
       </div>
-
-      <div
-        className={`public-fab public-fab--right${showBook ? " public-fab--book-visible" : ""}`}
-        aria-hidden={!showBook}
-      >
-        <BookNowTrigger className="public-fab__book">
-          <span className="public-fab__book-text">{HOMEPAGE_HERO.cta}</span>
-        </BookNowTrigger>
-      </div>
-    </>
+    </div>
   );
 }
