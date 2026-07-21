@@ -29,6 +29,12 @@ export function PageHero({
   const image = useSiteImage(imageName);
   const titleStyle = useTypographyInlineStyle("page_title");
   const subtitleStyle = useTypographyInlineStyle("page_subtitle");
+  const onImagesStyle = useTypographyInlineStyle("on_images");
+  const onImageColor = {
+    color: onImagesStyle.color,
+    WebkitTextFillColor: onImagesStyle.color,
+    textShadow: onImagesStyle.textShadow,
+  } as const;
 
   return (
     <section
@@ -55,11 +61,17 @@ export function PageHero({
           ) : null}
           <span aria-current="page">{breadcrumb}</span>
         </nav>
-        <h1 className="hathor-page-hero__title" style={titleStyle}>
+        <h1
+          className="hathor-page-hero__title typo-on-images"
+          style={{ ...titleStyle, ...onImageColor }}
+        >
           {title}
         </h1>
         {subtitle ? (
-          <p className="hathor-page-hero__subtitle" style={subtitleStyle}>
+          <p
+            className="hathor-page-hero__subtitle typo-on-images"
+            style={{ ...subtitleStyle, ...onImageColor }}
+          >
             {subtitle}
           </p>
         ) : null}

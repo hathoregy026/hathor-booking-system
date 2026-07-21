@@ -34,7 +34,8 @@ type EditorGroup =
   | "page_title"
   | "page_subtitle"
   | "sub_subtitle"
-  | "body_text";
+  | "body_text"
+  | "on_images";
 
 const GROUP_LABELS: Record<EditorGroup, string> = {
   hero: "Hero (all pages)",
@@ -42,6 +43,7 @@ const GROUP_LABELS: Record<EditorGroup, string> = {
   page_subtitle: "Small indication",
   sub_subtitle: "Sub-sub title",
   body_text: "Body text",
+  on_images: "On images",
 };
 
 const GROUP_WHERE: Record<EditorGroup, string> = {
@@ -52,6 +54,8 @@ const GROUP_WHERE: Record<EditorGroup, string> = {
   sub_subtitle:
     "Script line under a title — e.g. lines between suite image blocks.",
   body_text: "Normal paragraph text in page content.",
+  on_images:
+    "Color for all copy sitting on photos — landmarks stack, suite blocks, dining frames, page heroes, etc. Default white.",
 };
 
 const SAMPLES: Record<TypographyRole, string> = {
@@ -62,6 +66,7 @@ const SAMPLES: Record<TypographyRole, string> = {
   sub_subtitle: "Luxury on the water",
   body_text:
     "Sail the Nile aboard a private dahabiya — unhurried days, fine dining, and suites crafted for quiet luxury from Luxor to Aswan.",
+  on_images: "Every landmark, a pleasure.",
 };
 
 const HERO_LINE_LABELS: Record<"hero_title" | "hero_subtitle", string> = {
@@ -294,11 +299,13 @@ export function TypographyStylesPanel() {
     group === "hero" ? heroLine : group;
   const value = settings[activeRole];
   const layout = settings.hero_layout;
-  const stageTone = group === "hero" ? "dark" : "light";
+  const stageTone =
+    group === "hero" || group === "on_images" ? "dark" : "light";
   const editingLabel =
     group === "hero"
       ? `Hero · ${HERO_LINE_LABELS[heroLine]}`
       : GROUP_LABELS[group];
+  const colorOnly = group === "on_images";
 
   const patch = (partial: Partial<TypographyTextStyle>) => {
     setSettings((prev) => ({
@@ -534,7 +541,18 @@ export function TypographyStylesPanel() {
             </div>
           </>
         ) : (
-          <p className="typo-stage__sample" style={liveVars(value)}>
+          <p
+            className="typo-stage__sample"
+            style={liveVars(
+              colorOnly
+                ? {
+                    ...value,
+                    fontFamily: settings.page_title.fontFamily,
+                    fontSize: Math.max(36, settings.page_title.fontSize),
+                  }
+                : value,
+            )}
+          >
             {SAMPLES[activeRole]}
           </p>
         )}
@@ -542,7 +560,9 @@ export function TypographyStylesPanel() {
         <p className="typo-stage__readout">
           {group === "hero"
             ? `Align ${layout.align} · ${HERO_LINE_LABELS[heroLine]} at ${activeOffset.x}px, ${activeOffset.y}px · ${value.fontFamily} ${value.fontSize}px`
-            : `Font: ${value.fontFamily} · Size: ${value.fontSize}px · Color: ${value.color}`}
+            : colorOnly
+              ? `On images color: ${value.color}`
+              : `Font: ${value.fontFamily} · Size: ${value.fontSize}px · Color: ${value.color}`}
         </p>
       </div>
 
@@ -609,7 +629,13 @@ export function TypographyStylesPanel() {
           </>
         ) : null}
 
-        <SimpleField label="Font (click a family — preview updates above)">
+        {colorOnly ? (
+          <p className="typo-easy__controls-hint">
+            Sets the colour for every text block on photos. Fonts and sizes still
+            come from Page title / Small indication / Body text.
+          </p>
+        ) : (
+          <SimpleField label="Font (click a family — preview updates above)">
           <div className="typo-easy__font-grid">
             {HATHOR_FONT_GROUPS.map((group) => {
               const selected = isFaceInGroup(value.fontFamily, group);
@@ -665,8 +691,10 @@ export function TypographyStylesPanel() {
             );
           })()}
         </SimpleField>
+        )}
 
         <div className="typo-easy__row">
+          {colorOnly ? null : (
           <SimpleField label="Size">
             <NumberInput
               aria-label="Font size"
@@ -678,6 +706,7 @@ export function TypographyStylesPanel() {
               onChange={(n) => patch({ fontSize: n })}
             />
           </SimpleField>
+          )}
 
           <SimpleField label="Color">
             <HexColorInput
@@ -687,6 +716,7 @@ export function TypographyStylesPanel() {
           </SimpleField>
         </div>
 
+        {colorOnly ? null : (
         <div className="typo-easy__row">
           <SimpleField label="Line height">
             <NumberInput
@@ -711,6 +741,7 @@ export function TypographyStylesPanel() {
             />
           </SimpleField>
         </div>
+        )}
 
         <div className="typo-easy__row typo-easy__row--actions">
           <button

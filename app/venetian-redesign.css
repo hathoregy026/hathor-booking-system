@@ -1784,7 +1784,7 @@
   color: var(--gold-soft);
 }
 
-/* Fullscreen residence overlays — white for title/body; Small indication uses dashboard color */
+/* Fullscreen residence overlays — on-images color from typography dashboard */
 .public-site .venetian-page .room-fs-ui,
 .public-site .venetian-page .room-fs-ui .room-fs-title,
 .public-site .venetian-page .room-fs-ui .room-fs-meta,
@@ -1792,18 +1792,13 @@
 .public-site .venetian-page .room-fs-ui .char,
 .public-site .venetian-page .room-fs-ui .word,
 .public-site .venetian-page .room-fs-ui .line {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
   background: none !important;
   background-image: none !important;
   filter: none !important;
-  text-shadow: 0 10px 36px rgba(0, 0, 0, 0.45);
 }
 
 .public-site .venetian-page .room-fs-ui .room-fs-meta,
 .public-site .venetian-page .room-fs-ui .room-fs-desc {
-  color: rgba(255, 255, 255, 0.9) !important;
-  -webkit-text-fill-color: rgba(255, 255, 255, 0.9) !important;
   text-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
 }
 

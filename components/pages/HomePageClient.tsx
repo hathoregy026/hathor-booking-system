@@ -71,7 +71,14 @@ export function HomePageClient({
   const stackEyebrowStyle = useTypographyInlineStyle("page_subtitle");
   const stackTitleStyle = useTypographyInlineStyle("page_title");
   const stackBodyStyle = useTypographyInlineStyle("body_text");
+  const onImagesStyle = useTypographyInlineStyle("on_images");
   const itinerariesIndicationStyle = useTypographyInlineStyle("page_subtitle");
+
+  const onImageColor = {
+    color: onImagesStyle.color,
+    WebkitTextFillColor: onImagesStyle.color,
+    textShadow: onImagesStyle.textShadow,
+  } as CSSProperties;
 
   const [liveTune, setLiveTune] = useState(heroLogoTune);
 
@@ -281,19 +288,34 @@ export function HomePageClient({
               ))}
             </div>
 
-            <div className="ex-stack-scroll__copy">
-              <p className="ex-stack-scroll__eyebrow" style={stackEyebrowStyle}>
+            <div className="ex-stack-scroll__copy typo-on-images">
+              <p
+                className="ex-stack-scroll__eyebrow"
+                style={{ ...stackEyebrowStyle, ...onImageColor }}
+              >
                 Nile · Hathor
               </p>
-              <h2 className="ex-stack-scroll__title" style={stackTitleStyle}>
-                <span className="ex-stack-scroll__title-line" style={stackTitleStyle}>
+              <h2
+                className="ex-stack-scroll__title"
+                style={{ ...stackTitleStyle, ...onImageColor }}
+              >
+                <span
+                  className="ex-stack-scroll__title-line"
+                  style={{ ...stackTitleStyle, ...onImageColor }}
+                >
                   Every landmark,
                 </span>
-                <span className="ex-stack-scroll__title-line" style={stackTitleStyle}>
+                <span
+                  className="ex-stack-scroll__title-line"
+                  style={{ ...stackTitleStyle, ...onImageColor }}
+                >
                   a pleasure.
                 </span>
               </h2>
-              <p className="ex-stack-scroll__body" style={stackBodyStyle}>
+              <p
+                className="ex-stack-scroll__body"
+                style={{ ...stackBodyStyle, ...onImageColor }}
+              >
                 {EX_PINNED.body}
               </p>
             </div>

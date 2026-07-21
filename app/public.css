@@ -6288,10 +6288,9 @@ html:not([data-ex-experience]) .public-site .cruises-scroll-route .cruises-hero_
   text-shadow: var(--hathor-title-engraved-white);
 }
 
-/* Homepage body titles only — never the hero */
+/* Homepage body titles only — never the hero; stack titles use On images color */
 html[data-ex-experience] .ex-root .radius-heading h2,
 html[data-ex-experience] .ex-root .home-carousel-h2 h2,
-html[data-ex-experience] .ex-root .ex-stack-scroll__title,
 html[data-ex-experience] .ex-root .home-text-h2 h2,
 html[data-ex-experience] .ex-root .gallery-h2 h2,
 html[data-ex-experience] .ex-root .gallery-sm h2,
@@ -6302,5 +6301,12 @@ html[data-ex-experience] .ex-root .cta-inner h2 {
   font-synthesis: none;
   text-transform: none;
   text-shadow: var(--hathor-title-engraved-gold);
+}
+
+html[data-ex-experience] .ex-root .ex-stack-scroll__title {
+  font-weight: 400;
+  font-style: normal;
+  font-synthesis: none;
+  text-transform: none;
 }
 

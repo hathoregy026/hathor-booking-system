@@ -131,6 +131,7 @@ export const TYPOGRAPHY_ROLES = [
   "page_subtitle",
   "sub_subtitle",
   "body_text",
+  "on_images",
 ] as const;
 
 export type TypographyRole = (typeof TYPOGRAPHY_ROLES)[number];
@@ -144,6 +145,8 @@ export const TYPOGRAPHY_ROLE_LABELS: Record<TypographyRole, string> = {
   /** Script line under a title / between blocks */
   sub_subtitle: "Sub-sub title",
   body_text: "Body text",
+  /** Color for any copy sitting on photos / video stills */
+  on_images: "On images",
 };
 
 const hexColor = z
@@ -192,6 +195,7 @@ export const typographySettingsSchema = z.object({
   page_subtitle: typographyTextStyleSchema,
   sub_subtitle: typographyTextStyleSchema,
   body_text: typographyTextStyleSchema,
+  on_images: typographyTextStyleSchema,
   hero_layout: heroLayoutSchema,
 });
 
@@ -243,6 +247,14 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
     fontSize: 17,
     color: "#3D3A36",
     lineHeight: 1.7,
+    letterSpacing: 0,
+    innerShadow: false,
+  },
+  on_images: {
+    fontFamily: "Gamgote",
+    fontSize: 17,
+    color: "#FFFFFF",
+    lineHeight: 1.5,
     letterSpacing: 0,
     innerShadow: false,
   },
@@ -387,6 +399,7 @@ export function parseTypographySettings(raw: unknown): TypographySettings {
       DEFAULT_TYPOGRAPHY_SETTINGS.sub_subtitle,
     ),
     body_text: parseTextStyle(src.body_text, DEFAULT_TYPOGRAPHY_SETTINGS.body_text),
+    on_images: parseTextStyle(src.on_images, DEFAULT_TYPOGRAPHY_SETTINGS.on_images),
     hero_layout: parseHeroLayout(src.hero_layout),
   };
 }
@@ -626,5 +639,58 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__body,
 .public-site .typo-body-text`,
   "body_text",
 )}
+${(() => {
+  const p = "--typo-on-images";
+  return `/* On images — color only for copy sitting on photos */
+.public-site .typo-on-images,
+.public-site .typo-on-images *,
+html[data-ex-experience] .ex-root .ex-stack-scroll__eyebrow,
+html[data-ex-experience] .ex-root .ex-stack-scroll__title,
+html[data-ex-experience] .ex-root .ex-stack-scroll__title-line,
+html[data-ex-experience] .ex-root .ex-stack-scroll__body,
+html[data-ex-experience] .ex-root .ex-stack-scroll__copy,
+.public-site .venetian-page .room-fs-ui,
+.public-site .venetian-page .room-fs-ui .room-fs-title,
+.public-site .venetian-page .room-fs-ui .room-fs-route,
+.public-site .venetian-page .room-fs-ui .room-fs-label,
+.public-site .venetian-page .room-fs-ui .room-fs-count,
+.public-site .venetian-page .room-fs-ui .room-fs-count i,
+.public-site .venetian-page .room-fs-ui .room-fs-meta,
+.public-site .venetian-page .room-fs-ui .room-fs-desc,
+.public-site .venetian-page .room-fs-ui .char,
+.public-site .venetian-page .room-fs-ui .word,
+.public-site .venetian-page .room-fs-ui .line,
+.public-site .venetian-page .spx-frame-ui,
+.public-site .venetian-page .spx-frame-ui .lux-kicker,
+.public-site .venetian-page .spx-frame-ui .lux-gold,
+.public-site .venetian-page .spx-frame-ui .lux-lead,
+.public-site .venetian-page .spx-frame-ui .lux-copy,
+.public-site .venetian-page .spx-frame-ui .lux-copy p,
+.public-site .venetian-page .hlx-panel-copy,
+.public-site .venetian-page .hlx-panel-copy .lux-kicker,
+.public-site .venetian-page .hlx-panel-copy h3,
+.public-site .venetian-page .hlx-panel-copy p,
+.public-site .venetian-page .dnx-panel,
+.public-site .venetian-page .dnx-panel .lux-kicker,
+.public-site .venetian-page .dnx-panel .lux-gold,
+.public-site .venetian-page .dnx-panel .lux-copy,
+.public-site .venetian-page .dnx-panel .lux-copy p,
+.public-site .hathor-page-hero__title,
+.public-site .hathor-page-hero__subtitle,
+.public-site [data-page-transition] .pt-hero__copy .hathor-page-hero__title,
+.public-site [data-page-transition] .pt-hero__copy .hathor-page-hero__subtitle,
+.public-site .cruises-scroll-route .cruises-hero__title,
+.public-site .cruises-scroll-route .cruises-hero__subtitle,
+.public-site .owo-bento__title,
+.public-site .owo-bento__text,
+.public-site .hathor-full-media__title,
+.public-site .hathor-full-media__text,
+.public-site .lux-testimonials__quote,
+.public-site .lux-testimonials__name {
+  color: var(${p}-color) !important;
+  -webkit-text-fill-color: var(${p}-color) !important;
+  text-shadow: var(${p}-shadow) !important;
+}`;
+})()}
 `.trim();
 }
