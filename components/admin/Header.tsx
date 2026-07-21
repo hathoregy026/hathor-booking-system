@@ -36,7 +36,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
   };
 
   return (
-    <header className="admin-header sticky top-0 z-30">
+    <header className="admin-header sticky top-0 z-30 shrink-0">
       {/* Mobile: compact bar — no logo (logo lives in drawer) */}
       <div className="admin-header__mobile flex items-center gap-2 px-3 py-2 md:hidden">
         <button

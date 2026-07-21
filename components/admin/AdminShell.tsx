@@ -27,17 +27,17 @@ function AdminShellInner({ children }: { children: React.ReactNode }) {
   }, [mobileMenuOpen]);
 
   return (
-    <div className="admin-shell flex min-h-screen overflow-x-hidden" data-theme={theme}>
+    <div className="admin-shell flex h-dvh max-h-dvh overflow-hidden" data-theme={theme}>
       <div className="admin-shell__glow" aria-hidden />
-      <div className="admin-shell__content flex min-h-screen w-full">
+      <div className="admin-shell__content flex h-full min-h-0 w-full">
         <Sidebar
           mobileOpen={mobileMenuOpen}
           onMobileClose={() => setMobileMenuOpen(false)}
         />
 
-        <div className="flex min-w-0 flex-1 flex-col">
+        <div className="admin-shell__main flex min-h-0 min-w-0 flex-1 flex-col">
           <Header onMenuToggle={() => setMobileMenuOpen((open) => !open)} />
-          <main className="flex-1 overflow-x-hidden px-3 py-4 pb-24 sm:px-5 md:px-6 md:pb-6 lg:px-8 lg:py-6">
+          <main className="admin-main min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-4 pb-24 sm:px-5 md:px-6 md:pb-6 lg:px-8 lg:py-6">
             {children}
           </main>
         </div>

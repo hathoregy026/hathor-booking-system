@@ -131,7 +131,11 @@
   transition:
     background-color 300ms ease,
     color 300ms ease;
-  min-height: 100vh;
+  /* App shell: chrome stays put; only .admin-main scrolls */
+  height: 100dvh;
+  max-height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
   animation: adminFadeIn 0.3s ease;
 }
 
@@ -169,10 +173,26 @@
 .admin-shell__content {
   position: relative;
   z-index: 1;
+  height: 100%;
+  min-height: 0;
+}
+
+.admin-shell__main {
+  min-height: 0;
 }
 
 .admin-sidebar {
   background: var(--bg-sidebar);
+  height: 100%;
+  min-height: 0;
+  align-self: stretch;
+}
+
+.admin-main {
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .admin-card {
@@ -381,6 +401,7 @@ select.admin-input option:checked {
 .admin-header {
   background: var(--header-bg);
   border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
 }
 
 .admin-header__mobile {
