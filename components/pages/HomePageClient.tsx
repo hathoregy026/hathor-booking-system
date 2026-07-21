@@ -392,7 +392,16 @@ export function HomePageClient({
 
           <div className="gallery-container">
             <div className="gallery-sm">
-              <h2>{EX_GALLERY.ctaTitle}</h2>
+              <h2>
+                <a
+                  href={EX_GALLERY.ctaHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Hathor Cruise on Instagram"
+                >
+                  {EX_GALLERY.ctaTitle}
+                </a>
+              </h2>
             </div>
             <BookNowTrigger className="btn btn-dark gallery-button">
               Book Your Cruise

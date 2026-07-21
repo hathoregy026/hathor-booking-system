@@ -106,7 +106,7 @@ export const EX_TEXT_BLOCKS = [
 ] as const;
 
 export const EX_GALLERY = {
-  title: "@hathorcruise",
+  title: "Sail with Hathor",
   images: [
     {
       imageName: "home-collage-living" as SiteImageName,
@@ -129,7 +129,8 @@ export const EX_GALLERY = {
       alt: "Suite interior aboard Hathor",
     },
   ],
-  ctaTitle: "Sail with Hathor",
+  ctaTitle: "@hathorcruise",
+  ctaHref: "https://www.instagram.com/hathorcruise/",
 } as const;
 
 export const EX_TESTIMONIALS = {

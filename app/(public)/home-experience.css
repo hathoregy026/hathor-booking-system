@@ -1710,6 +1710,16 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   text-transform: uppercase;
 }
 
+.gallery-sm h2 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.gallery-sm h2 a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
 /* ---------- TESTIMONIALS ---------- */
 .testimonials-section {
   background: var(--cream);
