@@ -35,7 +35,7 @@ type TestimonialsCarouselProps = {
 };
 
 export function TestimonialsCarousel({
-  backgroundImageName = "home-testimonials-bg",
+  backgroundImageName = "home-hero-poster",
 }: TestimonialsCarouselProps) {
   const managedBackground = useSiteImage(backgroundImageName);
   const background = managedBackground.src;

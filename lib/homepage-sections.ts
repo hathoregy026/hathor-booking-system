@@ -27,7 +27,7 @@ export const HOMEPAGE_SCROLL_STORY: readonly HomeChapter[] = [
       alt: "Ornate interior corridor aboard a luxury Dahabiya",
     },
     imageSecondary: {
-      name: "home-story-craft-small",
+      name: "home-collage-small",
       alt: "Detailed craftsmanship on the Hathor Dahabiya",
     },
   },
@@ -60,7 +60,7 @@ export const HOMEPAGE_LEGACY_ROOM_STACK = {
       body: "Expansive suites blend modern elegance with timeless Egyptian charm aboard our luxury Dahabiya.",
       image: {
         name: "room-suite",
-        alt: "Luxury suite aboard Hathor Dahabiya",
+        alt: "Luxury suite aboard Hathor",
       },
     },
     {
@@ -77,7 +77,7 @@ export const HOMEPAGE_LEGACY_ROOM_STACK = {
       label: "Suite Interiors",
       body: "Each room is tailored for the Nile journey — bespoke details, panoramic views, and quiet luxury.",
       image: {
-        name: "home-residences-kitchen",
+        name: "home-cinematic-still",
         alt: "Luxury cabin interior aboard Hathor Dahabiya",
       },
     },
@@ -94,7 +94,7 @@ export const HOMEPAGE_SPLIT_CHAPTERS: readonly HomeChapter[] = [
     headline: "Legendary Service",
     body: "From the moment you step aboard, experience the warmth of Hathor's genuine hospitality — bespoke attention, intimate service, and the tranquil rhythm of the Nile.",
     image: {
-      name: "home-split-service",
+      name: "home-split-courtyard",
       alt: "Elegant hallway aboard the Hathor Dahabiya",
     },
   },
@@ -103,7 +103,7 @@ export const HOMEPAGE_SPLIT_CHAPTERS: readonly HomeChapter[] = [
     headline: "Exquisite Interiors",
     body: "Handsome cabins and suites overlook iconic Nile landmarks. Each expansive room blends modern comfort with timeless Egyptian charm aboard our luxury Dahabiya.",
     image: {
-      name: "home-split-interiors",
+      name: "home-cinematic-still",
       alt: "Luxury suite interior on the Hathor Dahabiya",
     },
   },
@@ -112,7 +112,7 @@ export const HOMEPAGE_SPLIT_CHAPTERS: readonly HomeChapter[] = [
     headline: "An Iconic Journey",
     body: "From magnificent temples to lively riverbanks, Hathor Dahabiya heralds a new era of Nile cruising — history, comfort, and style on Egypt's legendary waterway.",
     image: {
-      name: "home-split-venue",
+      name: "home-alt-highlights",
       alt: "Temple of Hatshepsut along the Nile cruise route",
     },
   },
@@ -124,7 +124,7 @@ export const HOMEPAGE_RESIDENCES_CHAPTERS: readonly HomeChapter[] = [
     headline: "The Finest Details",
     body: "Each cabin and suite is tailored for the Nile journey — refined luxury rooms, thoughtful design, and panoramic views from the best Dahabiya on the river.",
     image: {
-      name: "home-residences-kitchen",
+      name: "room-luxury",
       alt: "Luxury cabin interior aboard Hathor Dahabiya",
     },
   },
@@ -133,7 +133,7 @@ export const HOMEPAGE_RESIDENCES_CHAPTERS: readonly HomeChapter[] = [
     headline: "Exclusive Access",
     body: "Unrivalled amenities offer relaxation, wellness, and entertainment with intimate spaces separate from the crowds — a private Nile cruise Egypt at its finest.",
     image: {
-      name: "home-residences-lounge",
+      name: "home-collage-living",
       alt: "Luxury lounge aboard the Hathor Dahabiya",
     },
   },
@@ -145,7 +145,7 @@ export const HOMEPAGE_ALTERNATING_CHAPTERS: readonly HomeChapter[] = [
     headline: "A World of Taste",
     body: "There is a culinary experience for every occasion from morning until night — fine dining prepared with the freshest locally sourced ingredients aboard Egypt's finest Dahabiya.",
     image: {
-      name: "home-alt-dining",
+      name: "gastronomy-restaurant",
       alt: "Fine dining restaurant aboard Hathor Dahabiya",
     },
     discoverLabel: "Discover gastronomy",
@@ -156,7 +156,7 @@ export const HOMEPAGE_ALTERNATING_CHAPTERS: readonly HomeChapter[] = [
     headline: "The Pinnacle of Wellness",
     body: "Holistic wellbeing at Hathor with the exclusive Seneb Spa and world-class wellness — a peaceful oasis on your luxury Dahabiya Nile cruise.",
     image: {
-      name: "home-alt-wellness",
+      name: "wellness-hero",
       alt: "Seneb Spa wellness pool aboard Hathor",
     },
     discoverLabel: "Discover Seneb Spa",
@@ -189,13 +189,13 @@ export const HOMEPAGE_LAYERED_COLLAGE = {
       alt: "Marble and mosaic detail aboard Hathor Dahabiya",
     },
   },
-  backgroundName: "home-collage-bg" as const,
+  backgroundName: "home-split-courtyard" as const,
 } as const;
 
 export const HOMEPAGE_SKETCH = {
   headline: "A Nile Landmark",
   body: "Hathor's extraordinary experience includes luxury accommodations, fine dining, Seneb Spa, and active wellness — sailing the legendary route between Luxor and Aswan.",
-  imageName: "home-sketch-boat" as const,
+  imageName: "home-story-legacy-large" as const,
   links: [
     { label: "Luxury Rooms & Suites", href: "/rooms" },
     { label: "Hathor Itineraries", href: "/cruises" },

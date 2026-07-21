@@ -57,7 +57,7 @@ export function HomePageContent() {
 
       <LegacyScrollSection />
 
-      <FullBleedMedia imageName="home-cinematic-video" showCta={false} />
+      <FullBleedMedia imageName="home-cinematic-still" showCta={false} />
       <TextBridge
         headline={HOMEPAGE_CINEMATIC_BRIDGE.headline}
         body={HOMEPAGE_CINEMATIC_BRIDGE.body}
@@ -75,7 +75,7 @@ export function HomePageContent() {
         variant="split"
         id="residences"
       />
-      <FullBleedMedia imageName="home-residences-rooftop" showCta={false} />
+      <FullBleedMedia imageName="home-split-courtyard" showCta={false} />
       <SketchSection />
 
       <AccommodationsBento />
@@ -131,7 +131,7 @@ export function HomePageContent() {
         </div>
       </section>
 
-      <TestimonialsCarousel backgroundImageName="home-testimonials-bg" />
+      <TestimonialsCarousel backgroundImageName="home-hero-poster" />
 
       <section className="lux-cta-band">
         <div className="hathor-container">

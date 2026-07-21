@@ -432,8 +432,7 @@ export default function AdminContentPage() {
           <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
             Choose a page below, then replace or clear any photo. Replacing
             publishes to the live site immediately. The Homepage tab lists only
-            photos that appear on the live homepage; unused leftovers from the
-            old layout are under Unused (old homepage).
+            photos that appear on the live homepage.
           </p>
         </div>
 
