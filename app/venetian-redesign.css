@@ -30,57 +30,52 @@
 .venetian-page ul { list-style: none; margin: 0; padding: 0; }
 .venetian-page h1, .venetian-page h2, .venetian-page h3, .venetian-page h4, .venetian-page p { margin: 0; }
 
-/* ---- buttons ---- */
-.btn {
+/* ---- buttons: cream idle / gold hover (hero .hero-cta excluded) ---- */
+.btn:not(.hero-cta) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 14px 28px;
+  box-sizing: border-box;
+  min-height: 2.85rem;
+  height: 2.85rem;
+  padding: 0 1.75rem;
   border-radius: 999px;
-  border: 1px solid var(--gold);
+  border: 1px solid var(--gold, #b69f64);
+  background: #f5efe4;
+  color: var(--ink, #2c2419);
   font-size: 0.72rem;
+  font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  transition: background 0.35s var(--ease-out), color 0.35s var(--ease-out),
-    border-color 0.35s var(--ease-out), transform 0.35s var(--ease-out);
+  line-height: 1;
+  text-decoration: none;
+  box-shadow: 0 8px 22px rgba(44, 36, 25, 0.1);
+  cursor: pointer;
+  transition: background 0.35s var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)),
+    color 0.35s var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)),
+    border-color 0.35s ease,
+    box-shadow 0.35s ease,
+    transform 0.35s var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
-.btn:hover {
+.btn:not(.hero-cta):hover,
+.btn-light:not(.hero-cta):hover,
+.btn-dark:not(.hero-cta):hover,
+.btn-filled:not(.hero-cta):hover {
+  background: var(--gold, #b69f64);
+  border-color: var(--gold, #b69f64);
+  color: #fff;
+  box-shadow: 0 10px 26px rgba(182, 159, 100, 0.35);
   transform: translateY(-2px);
 }
 
-.btn-light {
-  color: var(--white);
-  border-color: rgba(255, 255, 255, 0.55);
-  background: transparent;
-}
-
-.btn-light:hover {
-  background: var(--white);
-  color: var(--ink);
-}
-
-.btn-dark {
-  color: var(--ink);
-  border-color: var(--gold);
-  background: transparent;
-}
-
-.btn-dark:hover {
-  background: var(--gold);
-  color: var(--white);
-}
-
-.btn-filled {
-  background: var(--gold);
-  color: var(--white);
-  border-color: var(--gold);
-}
-
-.btn-filled:hover {
-  background: var(--ink);
-  border-color: var(--ink);
+.btn-light:not(.hero-cta),
+.btn-dark:not(.hero-cta),
+.btn-filled:not(.hero-cta) {
+  background: #f5efe4;
+  color: var(--ink, #2c2419);
+  border-color: var(--gold, #b69f64);
 }
 
 
@@ -316,18 +311,6 @@
   color: rgba(245, 239, 228, 0.82);
   margin: 0 0 28px;
   max-width: 34ch;
-}
-
-.room-fs-cta {
-  border-color: rgba(245, 239, 228, 0.55) !important;
-  color: #fff !important;
-  background: rgba(255, 255, 255, 0.06) !important;
-}
-
-.room-fs-cta:hover {
-  background: var(--gold, #b69f64) !important;
-  border-color: var(--gold, #b69f64) !important;
-  color: #1a1410 !important;
 }
 
 /* 4-segment progress for current room */
@@ -719,14 +702,12 @@
 
 .cruise-card-actions .btn {
   width: 100%;
-  padding: 14px 12px;
-  font-size: 0.62rem;
-  letter-spacing: 0.14em;
+  min-height: 2.85rem;
+  height: 2.85rem;
+  padding: 0 1rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
   text-align: center;
-}
-
-.cruise-card-actions .btn-dark {
-  background: transparent;
 }
 
 /* ---- Experience strip ---- */
@@ -1138,17 +1119,6 @@
 
 .spx-frame--right .spx-frame-ui .lux-copy {
   margin-left: auto;
-}
-
-.spx-frame-ui .btn-light {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.45);
-}
-
-.spx-frame-ui .btn-light:hover {
-  background: var(--lux-gold);
-  border-color: var(--lux-gold);
-  color: #1a1410;
 }
 
 .spx-metrics {
@@ -1744,9 +1714,33 @@
   color: var(--muted);
 }
 .venetian-page .cruise-filter--cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 2.85rem;
+  height: 2.85rem;
+  padding: 0 1.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--gold);
+  background: #f5efe4;
+  color: var(--ink);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  line-height: 1;
+  box-shadow: 0 8px 22px rgba(44, 36, 25, 0.1);
+  transition: background 0.35s ease, color 0.35s ease, border-color 0.35s ease,
+    box-shadow 0.35s ease, transform 0.35s ease;
+}
+.venetian-page .cruise-filter--cta:hover,
+.venetian-page .cruise-filter--cta.is-active {
   background: var(--gold);
-  color: #fff;
   border-color: var(--gold);
+  color: #fff;
+  box-shadow: 0 10px 26px rgba(182, 159, 100, 0.35);
+  transform: translateY(-2px);
 }
 .venetian-page .cruise-exp-list a {
   color: inherit;

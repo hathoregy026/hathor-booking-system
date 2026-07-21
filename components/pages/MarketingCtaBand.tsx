@@ -25,7 +25,7 @@ export function MarketingCtaBand({
             {body}
           </p>
           <div className="mt-8">
-            <BookNowTrigger className="public-btn-gold px-10 py-3.5 text-xs tracking-[0.2em] uppercase">
+            <BookNowTrigger className="public-btn-gold">
               {ctaLabel}
             </BookNowTrigger>
           </div>

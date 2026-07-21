@@ -98,7 +98,7 @@ export function RoyalSuitesPageContent() {
               <h2 className="hathor-section-title">{ROYAL_SUITES_PAGE.bookCta.title}</h2>
               <div className="hathor-gold-line" />
               <p className="hathor-body-text mt-6">{ROYAL_SUITES_PAGE.bookCta.body}</p>
-              <BookNowTrigger className="public-btn-gold mt-8 px-10 py-3.5 text-xs tracking-[0.2em] uppercase">
+              <BookNowTrigger className="public-btn-gold mt-8">
                 Book Now
               </BookNowTrigger>
             </div>

@@ -117,7 +117,7 @@ export function CruisesListing({ cruises }: CruisesListingProps) {
             ))}
           </div>
 
-          <Link href="/book" className="public-btn-gold mt-6 w-full py-3 text-center text-xs">
+          <Link href="/book" className="public-btn-gold mt-6 w-full text-center">
             Check Availability
           </Link>
         </aside>

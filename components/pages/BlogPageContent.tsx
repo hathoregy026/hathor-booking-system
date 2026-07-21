@@ -90,7 +90,7 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
             <div className="mt-12 text-center">
               <button
                 type="button"
-                className="public-btn-outline-gold px-10 py-3.5 text-sm"
+                className="public-btn-outline-gold"
                 onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
               >
                 Show More

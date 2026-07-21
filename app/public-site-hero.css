@@ -434,12 +434,14 @@
   justify-content: center;
   width: 168px;
   height: 52px;
+  min-height: 52px;
   padding: 0 28px;
   border-radius: 999px;
   backdrop-filter: blur(8px);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(212, 194, 138, 0.7);
-  color: var(--site-hero-white);
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(212, 194, 138, 0.7) !important;
+  color: var(--site-hero-white, #fff) !important;
+  box-shadow: none !important;
   box-sizing: border-box;
   overflow: hidden;
   will-change: width;
@@ -447,8 +449,11 @@
 }
 
 .hero-cta:hover {
-  background: rgba(182, 159, 100, 0.35);
-  border-color: var(--site-hero-gold-soft);
+  background: rgba(182, 159, 100, 0.35) !important;
+  border-color: var(--site-hero-gold-soft, #d4c28a) !important;
+  color: var(--site-hero-white, #fff) !important;
+  box-shadow: none !important;
+  transform: none !important;
 }
 
 .hero-cta-text {

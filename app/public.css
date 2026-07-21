@@ -131,83 +131,45 @@
 }
 
 /* ─── Buttons ─── */
-.public-btn-gold {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  border-radius: 0;
-  border: none;
-  background: linear-gradient(
-    135deg,
-    var(--lux-gold-bright) 0%,
-    var(--lux-gold) 50%,
-    var(--lux-gold-bright) 100%
-  );
-  background-size: 200% 100%;
-  color: var(--lux-dark);
-  font-size: 0.8125rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  padding: 0.875rem 2rem;
-  box-shadow: 0 4px 24px rgb(182 159 100 / 0.35);
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease,
-    background-position 0.5s ease;
-  animation: luxShimmer 4s ease infinite;
-}
-
-.public-btn-gold:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgb(182 159 100 / 0.5);
-  background-position: 100% 0;
-}
-
-.public-btn-outline-gold {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  border: 1px solid var(--lux-gold);
-  background: transparent;
-  color: var(--lux-gold-cream);
-  font-size: 0.8125rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  padding: 0.875rem 2rem;
-  transition:
-    background 0.3s ease,
-    color 0.3s ease,
-    transform 0.3s ease;
-}
-
-.public-btn-outline-gold:hover {
-  background: var(--lux-gold);
-  color: var(--lux-dark);
-  transform: translateY(-2px);
-}
-
+.public-btn-gold,
+.public-btn-outline-gold,
 .public-btn-dark {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border: 1px solid var(--lux-gold);
-  background: var(--lux-dark);
-  color: var(--lux-gold-cream);
-  font-size: 0.8125rem;
+  box-sizing: border-box;
+  min-height: 2.85rem;
+  height: 2.85rem;
+  padding: 0 1.75rem;
+  border-radius: 999px;
+  border: 1px solid #b69f64;
+  background: #f5efe4;
+  color: #2c2419;
+  font-size: 0.72rem;
   font-weight: 500;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  padding: 0.875rem 2rem;
-  transition: background 0.3s ease, transform 0.3s ease;
+  line-height: 1;
+  text-decoration: none;
+  box-shadow: 0 8px 22px rgba(44, 36, 25, 0.1);
+  cursor: pointer;
+  transition:
+    background 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s ease,
+    box-shadow 0.35s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: none;
 }
 
+.public-btn-gold:hover,
+.public-btn-outline-gold:hover,
 .public-btn-dark:hover {
-  background: var(--lux-dark-2);
+  background: #b69f64;
+  border-color: #b69f64;
+  color: #fff;
+  box-shadow: 0 10px 26px rgba(182, 159, 100, 0.35);
   transform: translateY(-2px);
 }
 
@@ -1087,14 +1049,16 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
   min-width: 10.5rem;
+  min-height: 2.85rem;
   height: 2.85rem;
-  padding: 0 1.65rem;
+  padding: 0 1.75rem;
   border-radius: 999px;
   border: 1px solid #b69f64;
-  background: #ece8df;
+  background: #f5efe4;
   color: #2c2419;
-  box-shadow: 0 6px 18px rgba(44, 36, 25, 0.12);
+  box-shadow: 0 8px 22px rgba(44, 36, 25, 0.1);
   cursor: pointer;
   transition:
     background 0.35s cubic-bezier(0.22, 1, 0.36, 1),
@@ -1107,9 +1071,9 @@
 .public-fab__book-text {
   display: inline-block;
   font-family: var(--font-hathor-body), "Plus Jakarta Sans", system-ui, sans-serif;
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   font-weight: 500;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   white-space: nowrap;
   line-height: 1;
@@ -6131,19 +6095,12 @@ body.has-page-scroll-transition .pin-spacer {
 .public-btn-outline-gold {
   position: relative;
   overflow: hidden;
-  transform: translateY(0);
-  transition:
-    transform 0.6s var(--hathor-lux-ease),
-    box-shadow 0.6s var(--hathor-lux-ease),
-    background-color 0.6s var(--hathor-lux-ease),
-    border-color 0.6s var(--hathor-lux-ease),
-    color 0.6s var(--hathor-lux-ease);
 }
 
 .public-btn-gold:hover,
 .public-btn-outline-gold:hover {
   transform: translateY(-2px);
-  box-shadow: 0 20px 40px rgb(182 159 100 / 0.3);
+  box-shadow: 0 10px 26px rgba(182, 159, 100, 0.35);
 }
 
 .hathor-discover-link,

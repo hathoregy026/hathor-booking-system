@@ -221,7 +221,7 @@ export function InquiryForm({
 
         <button
           type="submit"
-          className="public-btn-gold w-full py-3.5"
+          className="public-btn-gold w-full"
           disabled={state === "submitting"}
         >
           {state === "submitting" ? "Sending…" : submitLabel}
