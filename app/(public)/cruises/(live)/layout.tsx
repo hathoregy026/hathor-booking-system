@@ -40,7 +40,7 @@ html[data-cruises-experience] .cruises-sheet::before {
   opacity: 0.056 !important;
 }
 html[data-public-theme="night"][data-cruises-experience] .cruises-sheet::before {
-  opacity: 0.021 !important;
+  opacity: 0.3 !important;
 }
 html[data-cruises-experience] .cruises-sheet > * {
   position: relative;
