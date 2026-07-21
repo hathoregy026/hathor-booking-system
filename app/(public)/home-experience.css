@@ -1666,6 +1666,82 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   text-transform: uppercase;
 }
 
+.gallery-ig-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  margin: 0.85rem auto 0;
+  max-width: max-content;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  padding-bottom: 0.35rem;
+  transition: color 0.35s ease, opacity 0.35s ease;
+}
+
+.gallery-ig-link::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 1.75rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.45;
+  transform: translateX(-50%);
+  transition: width 0.45s ease, opacity 0.35s ease, background-color 0.35s ease;
+}
+
+.gallery-ig-link__icon {
+  width: 0.85em;
+  height: 0.85em;
+  flex-shrink: 0;
+  opacity: 0.72;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.gallery-ig-link__handle {
+  display: inline-block;
+}
+
+.gallery-ig-link__cue {
+  display: inline-block;
+  margin-left: 0.15rem;
+  padding-left: 0.65rem;
+  border-left: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+  opacity: 0.55;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-size: 0.85em;
+  transition: opacity 0.35s ease, border-color 0.35s ease;
+}
+
+.gallery-ig-link:hover,
+.gallery-ig-link:focus-visible {
+  color: var(--gold);
+  outline: none;
+}
+
+.gallery-ig-link:hover::after,
+.gallery-ig-link:focus-visible::after {
+  width: 100%;
+  opacity: 0.85;
+  background: var(--gold);
+}
+
+.gallery-ig-link:hover .gallery-ig-link__icon,
+.gallery-ig-link:focus-visible .gallery-ig-link__icon {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.gallery-ig-link:hover .gallery-ig-link__cue,
+.gallery-ig-link:focus-visible .gallery-ig-link__cue {
+  opacity: 0.9;
+  border-left-color: color-mix(in srgb, var(--gold) 55%, transparent);
+}
+
 .gallery-grid {
   width: min(1180px, 100%);
   margin: 0 auto;
@@ -1708,16 +1784,6 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   font-size: clamp(1.6rem, 3vw, 2.4rem);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-}
-
-.gallery-sm h2 a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.gallery-sm h2 a:hover {
-  text-decoration: underline;
-  text-underline-offset: 0.18em;
 }
 
 /* ---------- TESTIMONIALS ---------- */

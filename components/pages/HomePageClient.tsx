@@ -5,6 +5,7 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import type { CSSProperties } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { HathorLogoTuner } from "@/components/public/HathorLogoTuner";
+import { SocialBrandIcon } from "@/components/public/SocialBrandIcon";
 import { PublicSiteHero } from "@/components/pages/PublicSiteHero";
 import { GoldDustParticles } from "@/components/ui/GoldDustParticles";
 import { ManagedImage } from "@/components/ui/ManagedImage";
@@ -73,6 +74,7 @@ export function HomePageClient({
   const stackBodyStyle = useTypographyInlineStyle("body_text");
   const onImagesStyle = useTypographyInlineStyle("on_images");
   const itinerariesIndicationStyle = useTypographyInlineStyle("page_subtitle");
+  const galleryIndicationStyle = useTypographyInlineStyle("page_subtitle");
 
   const onImageColor = {
     color: onImagesStyle.color,
@@ -359,6 +361,25 @@ export function HomePageClient({
           <div className="gallery-header">
             <div className="gallery-h2">
               <h2>{EX_GALLERY.title}</h2>
+              <a
+                className="gallery-ig-link typo-page-subtitle"
+                href={EX_GALLERY.indicationHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={galleryIndicationStyle}
+                aria-label="Follow Hathor Cruise on Instagram"
+              >
+                <SocialBrandIcon
+                  platform="instagram"
+                  className="gallery-ig-link__icon"
+                />
+                <span className="gallery-ig-link__handle">
+                  {EX_GALLERY.indication}
+                </span>
+                <span className="gallery-ig-link__cue" aria-hidden="true">
+                  Follow
+                </span>
+              </a>
             </div>
           </div>
 
@@ -392,16 +413,7 @@ export function HomePageClient({
 
           <div className="gallery-container">
             <div className="gallery-sm">
-              <h2>
-                <a
-                  href={EX_GALLERY.ctaHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Hathor Cruise on Instagram"
-                >
-                  {EX_GALLERY.ctaTitle}
-                </a>
-              </h2>
+              <h2>{EX_GALLERY.title}</h2>
             </div>
             <BookNowTrigger className="btn btn-dark gallery-button">
               Book Your Cruise

@@ -129,8 +129,9 @@ export const EX_GALLERY = {
       alt: "Suite interior aboard Hathor",
     },
   ],
-  ctaTitle: "@hathorcruise",
-  ctaHref: "https://www.instagram.com/hathorcruise/",
+  /** Small indication under the gallery title — Instagram handle */
+  indication: "@hathorcruise",
+  indicationHref: "https://www.instagram.com/hathorcruise/",
 } as const;
 
 export const EX_TESTIMONIALS = {
