@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-const STORAGE_KEY = "hathor-deploy-id";
+const STORAGE_KEY = "hathor-deploy-id-v2";
 
 /**
  * After a new Vercel deploy, soft-nav / SPA tabs can keep the previous
@@ -17,7 +17,9 @@ export function DeployFreshness({ deployId }: { deployId: string }) {
       const prev = window.sessionStorage.getItem(STORAGE_KEY);
       window.sessionStorage.setItem(STORAGE_KEY, deployId);
       if (prev && prev !== deployId) {
-        window.location.reload();
+        const url = new URL(window.location.href);
+        url.searchParams.set("_d", deployId);
+        window.location.replace(url.toString());
       }
     } catch {
       /* private mode / blocked storage */
