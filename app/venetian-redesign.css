@@ -7,8 +7,8 @@
   --ink: #3e3026;
   --ink-soft: #5c4b3c;
   --muted: #7a6a58;
-  --white: #ffffff;
-  --blush: #e8d6c8;
+  --white: #faf8f5;
+  --blush: #ebe3d4;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --font-display: "Cormorant Garamond", "Times New Roman", serif;
   --font-body: "Inter", system-ui, -apple-system, sans-serif;
@@ -43,7 +43,7 @@
   padding: 3px 1.75rem 1px;
   border-radius: 999px;
   border: 1px solid var(--gold, #b69f64);
-  background: #ffffff;
+  background: #faf8f5;
   color: #b69f64;
   font-size: 0.72rem;
   font-weight: 500;
@@ -82,7 +82,7 @@
 .btn-light:not(.hero-cta),
 .btn-dark:not(.hero-cta),
 .btn-filled:not(.hero-cta) {
-  background: #ffffff;
+  background: #faf8f5;
   color: #b69f64;
   border-color: var(--gold, #b69f64);
 }
@@ -1287,7 +1287,7 @@
 }
 
 .spx-suite-card {
-  background: #fff;
+  background: #faf8f5;
   border: 1px solid rgba(182, 159, 100, 0.22);
   border-radius: 12px;
   overflow: hidden;
@@ -1384,7 +1384,7 @@
   border: 1px solid rgba(182, 159, 100, 0.25);
   border-radius: 14px;
   overflow: hidden;
-  background: #fff;
+  background: #faf8f5;
 }
 
 .hlx-compare-row {
@@ -1495,7 +1495,7 @@
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
   gap: 0;
-  background: #fff;
+  background: #faf8f5;
   border: 1px solid rgba(182, 159, 100, 0.25);
   border-radius: 14px;
   overflow: hidden;
@@ -2088,16 +2088,16 @@ html[data-public-theme="night"] .venetian-page {
 }
 
 html[data-public-theme="day"] .venetian-page {
-  --cream: #f5efe4;
+  --cream: #ece8df;
   --cream-deep: #ebe3d4;
   --ink: #3e3026;
   --ink-soft: #5c4b3c;
   --muted: #7a6a58;
-  --white: #ffffff;
-  --blush: #e8d6c8;
-  --lux-paper: #f5efe4;
+  --white: #faf8f5;
+  --blush: #ebe3d4;
+  --lux-paper: #ece8df;
   --lux-paper-deep: #ebe3d4;
-  background: #f5efe4;
+  background: #ece8df;
   color: #3e3026;
 }
 

@@ -7,31 +7,32 @@
 }
 
 .public-site {
-  --lux-dark: #0a0a0a;
-  --lux-dark-2: #1a1a1a;
+  /* Day defaults — cream + gold only (night mode overrides via night-mode.css) */
+  --lux-dark: #faf8f5;
+  --lux-dark-2: #f5f0e8;
   --lux-gold: #b69f64;
   --lux-gold-bright: #b69f64;
   --lux-gold-cream: #b69f64;
-  --lux-cream: #faf8f5;
+  --lux-cream: #ece8df;
   --lux-beige: #f5f0e8;
-  --lux-white: #ffffff;
-  --lux-text-light: #e8e2d9;
-  --lux-text-grey: #b8b8b8;
+  --lux-white: #faf8f5;
+  --lux-text-light: #3d3834;
+  --lux-text-grey: #6b6560;
   --lux-success: #2d6a4f;
 
-  --public-bg: var(--lux-dark);
-  --public-surface: var(--lux-dark-2);
-  --public-card: var(--lux-dark-2);
-  --public-navy: var(--lux-dark-2);
-  --public-navy-deep: var(--lux-dark);
+  --public-bg: #ece8df;
+  --public-surface: #f5f0e8;
+  --public-card: #f0ebe3;
+  --public-navy: #ebe4da;
+  --public-navy-deep: #faf8f5;
   --public-gold: var(--lux-gold);
   --public-gold-hover: var(--lux-gold-bright);
-  --public-text: var(--lux-gold-cream);
-  --public-muted: #9a9590;
-  --public-border: rgb(182 159 100 / 0.18);
+  --public-text: #2c2824;
+  --public-muted: #6b6560;
+  --public-border: rgb(44 40 36 / 0.12);
   --public-serif: var(--font-hathor-display, "Playfair Display", Georgia, serif);
   --public-title: var(--font-hathor-gamgote, "Gamgote"), var(--public-serif);
-  --public-sans: var(--font-hathor-body, "Plus Jakarta Sans", system-ui, sans-serif);
+  --public-sans: var(--font-hathor-body, "Plus Jakarta Sans"), system-ui, sans-serif;
 
   background: var(--public-bg);
   color: var(--public-text);
@@ -145,7 +146,7 @@
   padding: 3px 1.75rem 1px;
   border-radius: 999px;
   border: 1px solid #b69f64;
-  background: #ffffff;
+  background: #faf8f5;
   color: #b69f64;
   font-size: 0.72rem;
   font-weight: 500;
@@ -1211,13 +1212,13 @@
 .hathor-site {
   --hathor-gold: #b69f64;
   --hathor-gold-bright: #b69f64;
-  --hathor-dark: #0a0a0a;
-  --hathor-dark-2: #1a1a1a;
-  --hathor-cream: #faf8f5;
-  --hathor-surface: #1a1a1a;
-  --hathor-muted: #9a9590;
-  --hathor-accent: #2f4f4f;
-  --hathor-text-light: #e8e2d9;
+  --hathor-dark: #faf8f5;
+  --hathor-dark-2: #f5f0e8;
+  --hathor-cream: #1c1917;
+  --hathor-surface: #f0ebe3;
+  --hathor-muted: #6b6560;
+  --hathor-accent: #b69f64;
+  --hathor-text-light: #3d3834;
 }
 
 .hathor-container {
@@ -1260,18 +1261,18 @@
 }
 
 .hathor-section--cream {
-  background: var(--hathor-dark);
-  color: var(--hathor-text-light);
+  background: var(--public-bg, #ece8df);
+  color: var(--public-text, #2c2824);
 }
 
 .hathor-section--dark {
-  background: var(--hathor-dark);
-  color: var(--hathor-text-light);
+  background: var(--public-surface, #f5f0e8);
+  color: var(--public-text, #2c2824);
 }
 
 .hathor-section--dark-2 {
-  background: var(--hathor-dark-2);
-  color: var(--hathor-text-light);
+  background: var(--hathor-surface, #f0ebe3);
+  color: var(--public-text, #2c2824);
 }
 
 .hathor-section-header {
@@ -2437,7 +2438,7 @@
   font-family: var(--public-serif);
   font-size: clamp(2.5rem, 5vw, 3.5rem);
   font-weight: 500;
-  color: var(--hathor-gold);
+  color: #faf8f5;
   line-height: 1;
 }
 
@@ -2447,7 +2448,7 @@
   font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgb(250 248 245 / 0.75);
+  color: rgb(250 248 245 / 0.88);
 }
 
 /* Editorial sections */
@@ -4434,7 +4435,7 @@ html[data-public-theme="day"] .hathor-site {
   --hathor-cream: #1c1917;
   --hathor-text-light: #3d3834;
   --hathor-muted: #6b6560;
-  --hathor-accent: #e4ddd2;
+  --hathor-accent: #b69f64;
 }
 
 html[data-public-theme="day"] .hathor-brand-logo--night {

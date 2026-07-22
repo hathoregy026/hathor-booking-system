@@ -146,7 +146,7 @@ html[data-public-theme="day"][data-ex-experience] .ex-root {
   --ink: #2c2419;
   --ink-soft: #4a3f32;
   --muted: #6b5d4d;
-  --blush: #e8dcc8;
+  --blush: #ebe3d4;
   background-color: #ece8df !important;
   color: #2c2419 !important;
 }
@@ -161,14 +161,15 @@ html[data-public-theme="day"][data-ex-experience] .ex-root .cta-section {
 html[data-public-theme="day"] .venetian-page,
 html[data-public-theme="day"] .page-accommodation,
 html[data-public-theme="day"] .page-cruises {
-  --cream: #f5efe4;
+  --cream: #ece8df;
   --cream-deep: #ebe3d4;
   --ink: #3e3026;
   --ink-soft: #5c4b3c;
   --muted: #7a6a58;
-  --lux-paper: #f5efe4;
+  --lux-paper: #ece8df;
   --lux-paper-deep: #ebe3d4;
-  background: #f5efe4 !important;
+  --blush: #ebe3d4;
+  background: #ece8df !important;
   color: #3e3026;
 }
 

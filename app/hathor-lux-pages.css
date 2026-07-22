@@ -373,7 +373,7 @@
 }
 
 .spx-suite-card {
-  background: #fff;
+  background: #faf8f5;
   border: 1px solid rgba(182, 159, 100, 0.22);
   border-radius: 12px;
   overflow: hidden;
@@ -470,7 +470,7 @@
   border: 1px solid rgba(182, 159, 100, 0.25);
   border-radius: 14px;
   overflow: hidden;
-  background: #fff;
+  background: #faf8f5;
 }
 
 .hlx-compare-row {
@@ -581,7 +581,7 @@
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
   gap: 0;
-  background: #fff;
+  background: #faf8f5;
   border: 1px solid rgba(182, 159, 100, 0.25);
   border-radius: 14px;
   overflow: hidden;
@@ -1081,7 +1081,7 @@
 }
 
 .cruise-card-actions .btn-dark {
-  background: #ffffff;
+  background: #faf8f5;
   color: #b69f64;
   border-color: var(--lux-gold, #b69f64);
 }
@@ -1323,7 +1323,7 @@
   border-radius: 14px;
   overflow: hidden;
   border: 1px solid rgba(182, 159, 100, 0.22);
-  background: #fff;
+  background: #faf8f5;
   box-shadow: 0 18px 40px rgba(62, 48, 38, 0.08);
   transition: transform 0.45s var(--lux-ease), box-shadow 0.45s var(--lux-ease);
 }
@@ -1351,7 +1351,7 @@
   cursor: pointer;
   transition: background 0.35s var(--lux-ease), color 0.35s, border-color 0.35s,
     box-shadow 0.35s, transform 0.35s;
-  background: #ffffff;
+  background: #faf8f5;
   color: #b69f64;
   box-shadow: 0 8px 22px rgba(44, 36, 25, 0.1);
 }
@@ -1366,7 +1366,7 @@
 }
 .hathor-lux .btn-filled,
 .hathor-lux .btn-dark {
-  background: #ffffff;
+  background: #faf8f5;
   color: #b69f64;
   border-color: var(--lux-gold);
 }
