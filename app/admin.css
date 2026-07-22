@@ -2055,6 +2055,19 @@ select.admin-input option:checked {
   color: var(--text-secondary);
 }
 
+.typo-easy__text,
+.typo-easy__textarea {
+  width: 100%;
+  max-width: none;
+}
+
+.typo-easy__textarea {
+  min-height: 5.5rem;
+  resize: vertical;
+  line-height: 1.45;
+  font-family: inherit;
+}
+
 .typo-easy__color {
   display: inline-flex;
   align-items: center;

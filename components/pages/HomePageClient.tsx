@@ -20,7 +20,10 @@ import {
   EX_TEXT_BLOCKS,
 } from "@/lib/ex-page-content";
 import { useExScrollMotion } from "@/hooks/useExScrollMotion";
-import { useTypographyInlineStyle } from "@/components/public/TypographySettingsProvider";
+import {
+  useTypographyInlineStyle,
+  useTypographySettings,
+} from "@/components/public/TypographySettingsProvider";
 import {
   DEFAULT_HERO_LOGO_TUNE,
   type HeroLogoTune,
@@ -84,20 +87,29 @@ export function HomePageClient({
 }: HomePageClientProps) {
   useExScrollMotion();
 
-  const stackEyebrowStyle = useTypographyInlineStyle("page_subtitle");
-  const stackTitleStyle = useTypographyInlineStyle("page_title");
-  const stackBodyStyle = useTypographyInlineStyle("body_text");
-  const onImagesStyle = useTypographyInlineStyle("on_images");
+  const typography = useTypographySettings();
+  const stackEyebrowStyle = useTypographyInlineStyle("on_images_indication");
+  const stackTitleStyle = useTypographyInlineStyle("on_images_title");
+  const stackBodyStyle = useTypographyInlineStyle("on_images_body");
   const itinerariesIndicationStyle = useTypographyInlineStyle("page_subtitle");
   const galleryIndicationStyle = useTypographyInlineStyle("page_subtitle");
   const aboutTitleStyle = useTypographyInlineStyle("page_title");
   const aboutBodyStyle = useTypographyInlineStyle("body_text");
 
-  const onImageColor = {
-    color: onImagesStyle.color,
-    WebkitTextFillColor: onImagesStyle.color,
-    textShadow: onImagesStyle.textShadow,
-  } as CSSProperties;
+  const heroLineRight =
+    typography.hero_copy.main.trim() || EX_HERO.lineRight;
+  const heroLineLeft =
+    typography.hero_copy.second.trim() || EX_HERO.lineLeft;
+  const onImagesTitleLines = (
+    typography.on_images_copy.title.trim() || EX_PINNED.title
+  )
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const onImagesIndication =
+    typography.on_images_copy.indication.trim() || "Nile · Hathor";
+  const onImagesBody =
+    typography.on_images_copy.body.trim() || EX_PINNED.body;
 
   const [liveTune, setLiveTune] = useState(heroLogoTune);
 
@@ -144,8 +156,8 @@ export function HomePageClient({
           animate={false}
           splitLetterLogo
           playVideo
-          lineRight={EX_HERO.lineRight}
-          lineLeft={EX_HERO.lineLeft}
+          lineRight={heroLineRight}
+          lineLeft={heroLineLeft}
           posterImageName={EX_HERO.imageName}
           logoPartsVariant={liveTune.partsVariant}
         />
@@ -305,34 +317,28 @@ export function HomePageClient({
             </div>
 
             <div className="ex-stack-scroll__copy typo-on-images">
-              <h2
-                className="ex-stack-scroll__title"
-                style={{ ...stackTitleStyle, ...onImageColor }}
-              >
-                <span
-                  className="ex-stack-scroll__title-line"
-                  style={{ ...stackTitleStyle, ...onImageColor }}
-                >
-                  Every landmark,
-                </span>
-                <span
-                  className="ex-stack-scroll__title-line"
-                  style={{ ...stackTitleStyle, ...onImageColor }}
-                >
-                  a pleasure.
-                </span>
+              <h2 className="ex-stack-scroll__title" style={stackTitleStyle}>
+                {onImagesTitleLines.map((line) => (
+                  <span
+                    key={line}
+                    className="ex-stack-scroll__title-line"
+                    style={stackTitleStyle}
+                  >
+                    {line}
+                  </span>
+                ))}
               </h2>
               <p
-                className="ex-stack-scroll__eyebrow"
-                style={{ ...stackEyebrowStyle, ...onImageColor }}
+                className="ex-stack-scroll__eyebrow typo-on-images-indication"
+                style={stackEyebrowStyle}
               >
-                Nile · Hathor
+                {onImagesIndication}
               </p>
               <p
-                className="ex-stack-scroll__body"
-                style={{ ...stackBodyStyle, ...onImageColor }}
+                className="ex-stack-scroll__body typo-on-images-body"
+                style={stackBodyStyle}
               >
-                {EX_PINNED.body}
+                {onImagesBody}
               </p>
             </div>
           </div>

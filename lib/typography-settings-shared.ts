@@ -131,7 +131,9 @@ export const TYPOGRAPHY_ROLES = [
   "page_subtitle",
   "sub_subtitle",
   "body_text",
-  "on_images",
+  "on_images_title",
+  "on_images_indication",
+  "on_images_body",
 ] as const;
 
 export type TypographyRole = (typeof TYPOGRAPHY_ROLES)[number];
@@ -145,9 +147,22 @@ export const TYPOGRAPHY_ROLE_LABELS: Record<TypographyRole, string> = {
   /** Script line under a title / between blocks */
   sub_subtitle: "Sub-sub title",
   body_text: "Body text",
-  /** Color for any copy sitting on photos / video stills */
-  on_images: "On images",
+  /** Title sitting on photos / video stills */
+  on_images_title: "On images · title",
+  /** Small indication / eyebrow on photos */
+  on_images_indication: "On images · indication",
+  /** Body copy on photos */
+  on_images_body: "On images · body",
 };
+
+/** Sub-roles edited inside the On images dashboard group */
+export const ON_IMAGES_ROLES = [
+  "on_images_title",
+  "on_images_indication",
+  "on_images_body",
+] as const;
+
+export type OnImagesRole = (typeof ON_IMAGES_ROLES)[number];
 
 const hexColor = z
   .string()
@@ -188,6 +203,37 @@ export const DEFAULT_HERO_LAYOUT: HeroLayout = {
   secondY: -28,
 };
 
+const copyLine = z.string().max(160);
+const copyBody = z.string().max(1200);
+
+/** Editable homepage hero title lines */
+export const heroCopySchema = z.object({
+  main: copyLine,
+  second: copyLine,
+});
+
+export type HeroCopy = z.infer<typeof heroCopySchema>;
+
+/** Editable homepage on-image title / indication / body */
+export const onImagesCopySchema = z.object({
+  title: copyLine,
+  indication: copyLine,
+  body: copyBody,
+});
+
+export type OnImagesCopy = z.infer<typeof onImagesCopySchema>;
+
+export const DEFAULT_HERO_COPY: HeroCopy = {
+  main: "Ultra Luxury",
+  second: "Dahabiya Cruise",
+};
+
+export const DEFAULT_ON_IMAGES_COPY: OnImagesCopy = {
+  title: "Every landmark,\na pleasure.",
+  indication: "Nile · Hathor",
+  body: "The ancient Nile welcomes you aboard the luxurious Hathor Dahabiya Cruise. This private, five-star small boat blends history, comfort, and style.",
+};
+
 export const typographySettingsSchema = z.object({
   hero_title: typographyTextStyleSchema,
   hero_subtitle: typographyTextStyleSchema,
@@ -195,8 +241,12 @@ export const typographySettingsSchema = z.object({
   page_subtitle: typographyTextStyleSchema,
   sub_subtitle: typographyTextStyleSchema,
   body_text: typographyTextStyleSchema,
-  on_images: typographyTextStyleSchema,
+  on_images_title: typographyTextStyleSchema,
+  on_images_indication: typographyTextStyleSchema,
+  on_images_body: typographyTextStyleSchema,
   hero_layout: heroLayoutSchema,
+  hero_copy: heroCopySchema,
+  on_images_copy: onImagesCopySchema,
 });
 
 export type TypographySettings = z.infer<typeof typographySettingsSchema>;
@@ -250,7 +300,23 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
     letterSpacing: 0,
     innerShadow: false,
   },
-  on_images: {
+  on_images_title: {
+    fontFamily: "Gamgote",
+    fontSize: 44,
+    color: "#FFFFFF",
+    lineHeight: 1.22,
+    letterSpacing: -0.5,
+    innerShadow: false,
+  },
+  on_images_indication: {
+    fontFamily: "Lavenir",
+    fontSize: 13,
+    color: "#FFFFFF",
+    lineHeight: 1.35,
+    letterSpacing: 4,
+    innerShadow: false,
+  },
+  on_images_body: {
     fontFamily: "Gamgote",
     fontSize: 17,
     color: "#FFFFFF",
@@ -259,6 +325,8 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
     innerShadow: false,
   },
   hero_layout: { ...DEFAULT_HERO_LAYOUT },
+  hero_copy: { ...DEFAULT_HERO_COPY },
+  on_images_copy: { ...DEFAULT_ON_IMAGES_COPY },
 };
 
 const INNER_SHADOW = "inset 0 1px 2px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.2)";
@@ -380,9 +448,60 @@ function parseHeroLayout(raw: unknown): HeroLayout {
   };
 }
 
+function parseHeroCopy(raw: unknown): HeroCopy {
+  const src =
+    raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
+  const main =
+    typeof src.main === "string" ? src.main.slice(0, 160) : DEFAULT_HERO_COPY.main;
+  const second =
+    typeof src.second === "string"
+      ? src.second.slice(0, 160)
+      : DEFAULT_HERO_COPY.second;
+  const candidate = { main, second };
+  const parsed = heroCopySchema.safeParse(candidate);
+  return parsed.success ? parsed.data : { ...DEFAULT_HERO_COPY };
+}
+
+function parseOnImagesCopy(raw: unknown): OnImagesCopy {
+  const src =
+    raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
+  const title =
+    typeof src.title === "string"
+      ? src.title.slice(0, 160)
+      : DEFAULT_ON_IMAGES_COPY.title;
+  const indication =
+    typeof src.indication === "string"
+      ? src.indication.slice(0, 160)
+      : DEFAULT_ON_IMAGES_COPY.indication;
+  const body =
+    typeof src.body === "string"
+      ? src.body.slice(0, 1200)
+      : DEFAULT_ON_IMAGES_COPY.body;
+  const candidate = { title, indication, body };
+  const parsed = onImagesCopySchema.safeParse(candidate);
+  return parsed.success ? parsed.data : { ...DEFAULT_ON_IMAGES_COPY };
+}
+
+function withOnImageColor(
+  base: TypographyTextStyle,
+  color: string,
+): TypographyTextStyle {
+  return { ...base, color: asHex(color, base.color) };
+}
+
 export function parseTypographySettings(raw: unknown): TypographySettings {
   const src =
     raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
+
+  /* Legacy single on_images color → seed the three on-image roles */
+  const legacyOnImages =
+    src.on_images && typeof src.on_images === "object"
+      ? parseTextStyle(src.on_images, {
+          ...DEFAULT_TYPOGRAPHY_SETTINGS.on_images_body,
+        })
+      : null;
+  const legacyColor = legacyOnImages?.color ?? "#FFFFFF";
+
   return {
     hero_title: parseTextStyle(src.hero_title, DEFAULT_TYPOGRAPHY_SETTINGS.hero_title),
     hero_subtitle: parseTextStyle(
@@ -399,8 +518,30 @@ export function parseTypographySettings(raw: unknown): TypographySettings {
       DEFAULT_TYPOGRAPHY_SETTINGS.sub_subtitle,
     ),
     body_text: parseTextStyle(src.body_text, DEFAULT_TYPOGRAPHY_SETTINGS.body_text),
-    on_images: parseTextStyle(src.on_images, DEFAULT_TYPOGRAPHY_SETTINGS.on_images),
+    on_images_title: parseTextStyle(
+      src.on_images_title,
+      legacyOnImages
+        ? withOnImageColor(DEFAULT_TYPOGRAPHY_SETTINGS.on_images_title, legacyColor)
+        : DEFAULT_TYPOGRAPHY_SETTINGS.on_images_title,
+    ),
+    on_images_indication: parseTextStyle(
+      src.on_images_indication,
+      legacyOnImages
+        ? withOnImageColor(
+            DEFAULT_TYPOGRAPHY_SETTINGS.on_images_indication,
+            legacyColor,
+          )
+        : DEFAULT_TYPOGRAPHY_SETTINGS.on_images_indication,
+    ),
+    on_images_body: parseTextStyle(
+      src.on_images_body,
+      legacyOnImages
+        ? withOnImageColor(DEFAULT_TYPOGRAPHY_SETTINGS.on_images_body, legacyColor)
+        : DEFAULT_TYPOGRAPHY_SETTINGS.on_images_body,
+    ),
     hero_layout: parseHeroLayout(src.hero_layout),
+    hero_copy: parseHeroCopy(src.hero_copy),
+    on_images_copy: parseOnImagesCopy(src.on_images_copy),
   };
 }
 
@@ -414,8 +555,18 @@ export function isTypographySettingsEqual(
     ),
   );
   if (!rolesEqual) return false;
-  return (Object.keys(a.hero_layout) as (keyof HeroLayout)[]).every(
+  const layoutEqual = (Object.keys(a.hero_layout) as (keyof HeroLayout)[]).every(
     (key) => a.hero_layout[key] === b.hero_layout[key],
+  );
+  if (!layoutEqual) return false;
+  const heroCopyEqual =
+    a.hero_copy.main === b.hero_copy.main &&
+    a.hero_copy.second === b.hero_copy.second;
+  if (!heroCopyEqual) return false;
+  return (
+    a.on_images_copy.title === b.on_images_copy.title &&
+    a.on_images_copy.indication === b.on_images_copy.indication &&
+    a.on_images_copy.body === b.on_images_copy.body
   );
 }
 
@@ -487,7 +638,10 @@ export function typographyToImportantCss(settings: TypographySettings): string {
       role === "page_title" ||
       role === "page_subtitle" ||
       role === "sub_subtitle" ||
-      role === "body_text"
+      role === "body_text" ||
+      role === "on_images_title" ||
+      role === "on_images_indication" ||
+      role === "on_images_body"
         ? `\n  text-transform: none !important;\n  font-weight: 400 !important;`
         : "";
     return `${selector} {
@@ -641,56 +795,63 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__body,
   "body_text",
 )}
 ${(() => {
-  const p = "--typo-on-images";
-  return `/* On images — color only for copy sitting on photos */
-.public-site .typo-on-images,
-.public-site .typo-on-images *,
-html[data-ex-experience] .ex-root .ex-stack-scroll__eyebrow,
+  return `${block(
+    `/* On images · title */
+.public-site .typo-on-images-title,
 html[data-ex-experience] .ex-root .ex-stack-scroll__title,
 html[data-ex-experience] .ex-root .ex-stack-scroll__title-line,
-html[data-ex-experience] .ex-root .ex-stack-scroll__body,
-html[data-ex-experience] .ex-root .ex-stack-scroll__copy,
-.public-site .venetian-page .room-fs-ui,
 .public-site .venetian-page .room-fs-ui .room-fs-title,
-.public-site .venetian-page .room-fs-ui .room-fs-route,
+.public-site .venetian-page .spx-frame-ui .lux-gold,
+.public-site .venetian-page .hlx-panel-copy h3,
+.public-site .venetian-page .dnx-panel .lux-gold,
+.public-site .hathor-page-hero__title,
+.public-site [data-page-transition] .pt-hero__copy .hathor-page-hero__title,
+.public-site .cruises-scroll-route .cruises-hero__title,
+.public-site .owo-bento__title,
+.public-site .hathor-full-media__title`,
+    "on_images_title",
+  )}
+${block(
+  `/* On images · indication */
+.public-site .typo-on-images-indication,
+html[data-ex-experience] .ex-root .ex-stack-scroll__eyebrow,
 .public-site .venetian-page .room-fs-ui .room-fs-label,
+.public-site .venetian-page .room-fs-ui .room-fs-route,
 .public-site .venetian-page .room-fs-ui .room-fs-count,
 .public-site .venetian-page .room-fs-ui .room-fs-count i,
-.public-site .venetian-page .room-fs-ui .room-fs-meta,
-.public-site .venetian-page .room-fs-ui .room-fs-desc,
-.public-site .venetian-page .room-fs-ui .char,
-.public-site .venetian-page .room-fs-ui .word,
-.public-site .venetian-page .room-fs-ui .line,
-.public-site .venetian-page .spx-frame-ui,
 .public-site .venetian-page .spx-frame-ui .lux-kicker,
-.public-site .venetian-page .spx-frame-ui .lux-gold,
+.public-site .venetian-page .hlx-panel-copy .lux-kicker,
+.public-site .venetian-page .dnx-panel .lux-kicker,
+.public-site .hathor-page-hero__subtitle,
+.public-site [data-page-transition] .pt-hero__copy .hathor-page-hero__subtitle,
+.public-site .cruises-scroll-route .cruises-hero__subtitle`,
+  "on_images_indication",
+)}
+${block(
+  `/* On images · body */
+.public-site .typo-on-images-body,
+html[data-ex-experience] .ex-root .ex-stack-scroll__body,
+.public-site .venetian-page .room-fs-ui .room-fs-desc,
+.public-site .venetian-page .room-fs-ui .room-fs-meta,
 .public-site .venetian-page .spx-frame-ui .lux-lead,
 .public-site .venetian-page .spx-frame-ui .lux-copy,
 .public-site .venetian-page .spx-frame-ui .lux-copy p,
-.public-site .venetian-page .hlx-panel-copy,
-.public-site .venetian-page .hlx-panel-copy .lux-kicker,
-.public-site .venetian-page .hlx-panel-copy h3,
 .public-site .venetian-page .hlx-panel-copy p,
-.public-site .venetian-page .dnx-panel,
-.public-site .venetian-page .dnx-panel .lux-kicker,
-.public-site .venetian-page .dnx-panel .lux-gold,
 .public-site .venetian-page .dnx-panel .lux-copy,
 .public-site .venetian-page .dnx-panel .lux-copy p,
-.public-site .hathor-page-hero__title,
-.public-site .hathor-page-hero__subtitle,
-.public-site [data-page-transition] .pt-hero__copy .hathor-page-hero__title,
-.public-site [data-page-transition] .pt-hero__copy .hathor-page-hero__subtitle,
-.public-site .cruises-scroll-route .cruises-hero__title,
-.public-site .cruises-scroll-route .cruises-hero__subtitle,
-.public-site .owo-bento__title,
 .public-site .owo-bento__text,
-.public-site .hathor-full-media__title,
 .public-site .hathor-full-media__text,
 .public-site .lux-testimonials__quote,
-.public-site .lux-testimonials__name {
-  color: var(${p}-color) !important;
-  -webkit-text-fill-color: var(${p}-color) !important;
-  text-shadow: var(${p}-shadow) !important;
+.public-site .lux-testimonials__name`,
+  "on_images_body",
+)}
+.public-site .typo-on-images,
+.public-site .typo-on-images *,
+.public-site .venetian-page .room-fs-ui .char,
+.public-site .venetian-page .room-fs-ui .word,
+.public-site .venetian-page .room-fs-ui .line {
+  color: var(--typo-on-images-title-color) !important;
+  -webkit-text-fill-color: var(--typo-on-images-title-color) !important;
 }`;
 })()}
 `.trim();

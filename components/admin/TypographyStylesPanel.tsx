@@ -12,11 +12,14 @@ import { AlignCenter, AlignLeft, AlignRight, Loader2, RotateCcw, Save, Undo2 } f
 import { useToast } from "@/components/admin/ToastProvider";
 import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
 import {
+  DEFAULT_HERO_COPY,
   DEFAULT_HERO_LAYOUT,
+  DEFAULT_ON_IMAGES_COPY,
   DEFAULT_TYPOGRAPHY_SETTINGS,
   HATHOR_FONT_GROUPS,
   HATHOR_FONT_STACKS,
   HERO_ALIGNS,
+  ON_IMAGES_ROLES,
   fontGroupForFace,
   isFaceInGroup,
   isTypographySettingsEqual,
@@ -24,6 +27,7 @@ import {
   type HathorLuxuryFont,
   type HeroAlign,
   type HeroLayout,
+  type OnImagesRole,
   type TypographyRole,
   type TypographySettings,
   type TypographyTextStyle,
@@ -47,7 +51,7 @@ const GROUP_LABELS: Record<EditorGroup, string> = {
 };
 
 const GROUP_WHERE: Record<EditorGroup, string> = {
-  hero: "Drag either title freely (they can overlap). Align left / center / right. Saves to every page hero.",
+  hero: "Edit the first line and second title wording, then drag either title freely (they can overlap). Align left / center / right. Styles save to every page hero; wording updates the homepage hero.",
   page_title: "Big section titles — Suites intro, Hathor itineraries, amenities, etc.",
   page_subtitle:
     "Small indication labels — exact font, size, color, and case from this editor (no forced uppercase). Includes Explore, Relax, Discover under Hathor itineraries.",
@@ -55,23 +59,29 @@ const GROUP_WHERE: Record<EditorGroup, string> = {
     "Script line under a title — e.g. lines between suite image blocks.",
   body_text: "Normal paragraph text in page content.",
   on_images:
-    "Color for all copy sitting on photos — landmarks stack, suite blocks, dining frames, page heroes, etc. Default white.",
+    "Copy on photos — edit the title, small indication, and body wording, plus each one’s font and colour. Styles apply site-wide on imagery; wording updates the homepage landmarks stack.",
 };
 
-const SAMPLES: Record<TypographyRole, string> = {
-  hero_title: "Ultra Luxury",
-  hero_subtitle: "Dahabiya Cruise",
+const ON_IMAGES_LINE_LABELS: Record<OnImagesRole, string> = {
+  on_images_title: "Title",
+  on_images_indication: "Indication",
+  on_images_body: "Body",
+};
+
+const HERO_LINE_LABELS: Record<"hero_title" | "hero_subtitle", string> = {
+  hero_title: "First line",
+  hero_subtitle: "Second title (script)",
+};
+
+const PAGE_SAMPLES: Record<
+  Exclude<TypographyRole, "hero_title" | "hero_subtitle" | OnImagesRole>,
+  string
+> = {
   page_title: "Hathor itineraries",
   page_subtitle: "Explore, Relax, Discover",
   sub_subtitle: "Luxury on the water",
   body_text:
     "Sail the Nile aboard a private dahabiya — unhurried days, fine dining, and suites crafted for quiet luxury from Luxor to Aswan.",
-  on_images: "Every landmark, a pleasure.",
-};
-
-const HERO_LINE_LABELS: Record<"hero_title" | "hero_subtitle", string> = {
-  hero_title: "Main title",
-  hero_subtitle: "Second title (script)",
 };
 
 function clampOffset(n: number): number {
@@ -256,6 +266,8 @@ export function TypographyStylesPanel() {
   const [heroLine, setHeroLine] = useState<"hero_title" | "hero_subtitle">(
     "hero_title",
   );
+  const [onImagesLine, setOnImagesLine] =
+    useState<OnImagesRole>("on_images_title");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const dragRef = useRef<{
@@ -296,16 +308,23 @@ export function TypographyStylesPanel() {
 
   const dirty = !isTypographySettingsEqual(settings, saved);
   const activeRole: TypographyRole =
-    group === "hero" ? heroLine : group;
+    group === "hero"
+      ? heroLine
+      : group === "on_images"
+        ? onImagesLine
+        : group;
   const value = settings[activeRole];
   const layout = settings.hero_layout;
+  const heroCopy = settings.hero_copy;
+  const onImagesCopy = settings.on_images_copy;
   const stageTone =
     group === "hero" || group === "on_images" ? "dark" : "light";
   const editingLabel =
     group === "hero"
       ? `Hero · ${HERO_LINE_LABELS[heroLine]}`
-      : GROUP_LABELS[group];
-  const colorOnly = group === "on_images";
+      : group === "on_images"
+        ? `On images · ${ON_IMAGES_LINE_LABELS[onImagesLine]}`
+        : GROUP_LABELS[group];
 
   const patch = (partial: Partial<TypographyTextStyle>) => {
     setSettings((prev) => ({
@@ -320,6 +339,27 @@ export function TypographyStylesPanel() {
       hero_layout: { ...prev.hero_layout, ...partial },
     }));
   };
+
+  const patchHeroCopy = (partial: Partial<typeof heroCopy>) => {
+    setSettings((prev) => ({
+      ...prev,
+      hero_copy: { ...prev.hero_copy, ...partial },
+    }));
+  };
+
+  const patchOnImagesCopy = (partial: Partial<typeof onImagesCopy>) => {
+    setSettings((prev) => ({
+      ...prev,
+      on_images_copy: { ...prev.on_images_copy, ...partial },
+    }));
+  };
+
+  const onImagesPreviewText =
+    onImagesLine === "on_images_title"
+      ? onImagesCopy.title
+      : onImagesLine === "on_images_indication"
+        ? onImagesCopy.indication
+        : onImagesCopy.body;
 
   const activeOffset =
     heroLine === "hero_title"
@@ -396,7 +436,7 @@ export function TypographyStylesPanel() {
       const next = parseTypographySettings(data.settings ?? payload);
       setSettings(next);
       setSaved(next);
-      showToast("success", "Saved to live site — all page heroes updated.");
+      showToast("success", "Saved to live site — typography and wording updated.");
       void fetch(`/api/typography?t=${Date.now()}`, { cache: "no-store" }).catch(
         () => {},
       );
@@ -448,6 +488,7 @@ export function TypographyStylesPanel() {
               onClick={() => {
                 setGroup(key);
                 if (key === "hero") setHeroLine("hero_title");
+                if (key === "on_images") setOnImagesLine("on_images_title");
               }}
             >
               {GROUP_LABELS[key]}
@@ -515,9 +556,9 @@ export function TypographyStylesPanel() {
                 onPointerUp={onDragEnd}
                 onPointerCancel={onDragEnd}
               >
-                <span className="typo-stage__line-tag">Main · drag</span>
+                <span className="typo-stage__line-tag">First · drag</span>
                 <span className="typo-stage__sample typo-stage__sample--inline">
-                  {SAMPLES.hero_title}
+                  {heroCopy.main || "First line"}
                 </span>
               </button>
               <button
@@ -535,34 +576,47 @@ export function TypographyStylesPanel() {
               >
                 <span className="typo-stage__line-tag">Second · drag</span>
                 <span className="typo-stage__sample typo-stage__sample--inline">
-                  {SAMPLES.hero_subtitle}
+                  {heroCopy.second || "Second title"}
                 </span>
               </button>
             </div>
           </>
+        ) : group === "on_images" ? (
+          <>
+            <div className="typo-stage__align" role="tablist" aria-label="On-image text role">
+              {ON_IMAGES_ROLES.map((role) => (
+                <button
+                  key={role}
+                  type="button"
+                  role="tab"
+                  aria-selected={onImagesLine === role}
+                  className={`typo-stage__align-btn${onImagesLine === role ? " typo-stage__align-btn--on" : ""}`}
+                  onClick={() => setOnImagesLine(role)}
+                >
+                  {ON_IMAGES_LINE_LABELS[role]}
+                </button>
+              ))}
+            </div>
+            <p
+              className="typo-stage__sample"
+              style={{
+                ...liveVars(value),
+                whiteSpace: "pre-wrap",
+              }}
+            >
+              {onImagesPreviewText || ON_IMAGES_LINE_LABELS[onImagesLine]}
+            </p>
+          </>
         ) : (
-          <p
-            className="typo-stage__sample"
-            style={liveVars(
-              colorOnly
-                ? {
-                    ...value,
-                    fontFamily: settings.page_title.fontFamily,
-                    fontSize: Math.max(36, settings.page_title.fontSize),
-                  }
-                : value,
-            )}
-          >
-            {SAMPLES[activeRole]}
+          <p className="typo-stage__sample" style={liveVars(value)}>
+            {PAGE_SAMPLES[group]}
           </p>
         )}
 
         <p className="typo-stage__readout">
           {group === "hero"
             ? `Align ${layout.align} · ${HERO_LINE_LABELS[heroLine]} at ${activeOffset.x}px, ${activeOffset.y}px · ${value.fontFamily} ${value.fontSize}px`
-            : colorOnly
-              ? `On images color: ${value.color}`
-              : `Font: ${value.fontFamily} · Size: ${value.fontSize}px · Color: ${value.color}`}
+            : `Font: ${value.fontFamily} · Size: ${value.fontSize}px · Color: ${value.color}`}
         </p>
       </div>
 
@@ -570,9 +624,35 @@ export function TypographyStylesPanel() {
         {group === "hero" ? (
           <>
             <p className="typo-easy__controls-hint">
-              Editing <strong>{HERO_LINE_LABELS[heroLine]}</strong> — drag in
-              the preview or use the sliders. Overlap is allowed.
+              Editing <strong>{HERO_LINE_LABELS[heroLine]}</strong> — change the
+              wording below, then drag in the preview or use the sliders.
+              Overlap is allowed.
             </p>
+
+            <div className="typo-easy__row">
+              <SimpleField label="First line text">
+                <input
+                  type="text"
+                  className="admin-input typo-easy__text"
+                  value={heroCopy.main}
+                  maxLength={160}
+                  aria-label="First line text"
+                  onChange={(e) => patchHeroCopy({ main: e.target.value })}
+                  onFocus={() => setHeroLine("hero_title")}
+                />
+              </SimpleField>
+              <SimpleField label="Second title text">
+                <input
+                  type="text"
+                  className="admin-input typo-easy__text"
+                  value={heroCopy.second}
+                  maxLength={160}
+                  aria-label="Second title text"
+                  onChange={(e) => patchHeroCopy({ second: e.target.value })}
+                  onFocus={() => setHeroLine("hero_subtitle")}
+                />
+              </SimpleField>
+            </div>
 
             <div className="typo-easy__row">
               <SimpleField label="Move X">
@@ -613,6 +693,19 @@ export function TypographyStylesPanel() {
                 <RotateCcw className="h-3.5 w-3.5" />
                 Reset positions
               </button>
+              <button
+                type="button"
+                className="typo-easy__reset-role"
+                onClick={() =>
+                  setSettings((prev) => ({
+                    ...prev,
+                    hero_copy: { ...DEFAULT_HERO_COPY },
+                  }))
+                }
+              >
+                <RotateCcw className="h-3.5 w-3.5" />
+                Reset wording
+              </button>
               <div className="typo-stage__align typo-stage__align--inline">
                 {HERO_ALIGNS.map((align) => (
                   <button
@@ -629,32 +722,104 @@ export function TypographyStylesPanel() {
           </>
         ) : null}
 
-        {colorOnly ? (
-          <p className="typo-easy__controls-hint">
-            Sets the colour for every text block on photos. Fonts and sizes still
-            come from Page title / Small indication / Body text.
-          </p>
-        ) : (
-          <SimpleField label="Font (click a family — preview updates above)">
+        {group === "on_images" ? (
+          <>
+            <p className="typo-easy__controls-hint">
+              Editing <strong>{ON_IMAGES_LINE_LABELS[onImagesLine]}</strong> on
+              images — wording, font, and colour.
+            </p>
+            <div className="typo-easy__row">
+              {ON_IMAGES_ROLES.map((role) => (
+                <button
+                  key={role}
+                  type="button"
+                  className={`typo-stage__align-btn${onImagesLine === role ? " typo-stage__align-btn--on" : ""}`}
+                  onClick={() => setOnImagesLine(role)}
+                >
+                  {ON_IMAGES_LINE_LABELS[role]}
+                </button>
+              ))}
+            </div>
+            <SimpleField
+              label={
+                onImagesLine === "on_images_title"
+                  ? "Title text (use Enter for a second line)"
+                  : onImagesLine === "on_images_indication"
+                    ? "Indication text"
+                    : "Body text"
+              }
+            >
+              {onImagesLine === "on_images_body" ||
+              onImagesLine === "on_images_title" ? (
+                <textarea
+                  className="admin-input typo-easy__textarea"
+                  value={
+                    onImagesLine === "on_images_title"
+                      ? onImagesCopy.title
+                      : onImagesCopy.body
+                  }
+                  maxLength={onImagesLine === "on_images_title" ? 160 : 1200}
+                  rows={onImagesLine === "on_images_title" ? 3 : 5}
+                  aria-label={ON_IMAGES_LINE_LABELS[onImagesLine]}
+                  onChange={(e) =>
+                    patchOnImagesCopy(
+                      onImagesLine === "on_images_title"
+                        ? { title: e.target.value }
+                        : { body: e.target.value },
+                    )
+                  }
+                />
+              ) : (
+                <input
+                  type="text"
+                  className="admin-input typo-easy__text"
+                  value={onImagesCopy.indication}
+                  maxLength={160}
+                  aria-label="Indication text"
+                  onChange={(e) =>
+                    patchOnImagesCopy({ indication: e.target.value })
+                  }
+                />
+              )}
+            </SimpleField>
+            <div className="typo-easy__row typo-easy__row--actions">
+              <button
+                type="button"
+                className="typo-easy__reset-role"
+                onClick={() =>
+                  setSettings((prev) => ({
+                    ...prev,
+                    on_images_copy: { ...DEFAULT_ON_IMAGES_COPY },
+                  }))
+                }
+              >
+                <RotateCcw className="h-3.5 w-3.5" />
+                Reset all on-image wording
+              </button>
+            </div>
+          </>
+        ) : null}
+
+        <SimpleField label="Font (click a family — preview updates above)">
           <div className="typo-easy__font-grid">
-            {HATHOR_FONT_GROUPS.map((group) => {
-              const selected = isFaceInGroup(value.fontFamily, group);
+            {HATHOR_FONT_GROUPS.map((fontGroup) => {
+              const selected = isFaceInGroup(value.fontFamily, fontGroup);
               const previewFace = selected
                 ? value.fontFamily
-                : group.variants[0]!.id;
+                : fontGroup.variants[0]!.id;
               return (
                 <button
-                  key={group.family}
+                  key={fontGroup.family}
                   type="button"
                   className={`typo-easy__font-btn${selected ? " typo-easy__font-btn--active" : ""}`}
                   style={{ fontFamily: HATHOR_FONT_STACKS[previewFace] }}
                   onClick={() => {
                     if (selected) return;
-                    patch({ fontFamily: group.variants[0]!.id });
+                    patch({ fontFamily: fontGroup.variants[0]!.id });
                   }}
-                  title={group.family}
+                  title={fontGroup.family}
                 >
-                  <span className="typo-easy__font-btn-name">{group.family}</span>
+                  <span className="typo-easy__font-btn-name">{fontGroup.family}</span>
                   <span
                     className="typo-easy__font-btn-demo"
                     style={{ fontFamily: HATHOR_FONT_STACKS[previewFace] }}
@@ -666,8 +831,8 @@ export function TypographyStylesPanel() {
             })}
           </div>
           {(() => {
-            const group = fontGroupForFace(value.fontFamily);
-            if (group.variants.length < 2) return null;
+            const fontGroup = fontGroupForFace(value.fontFamily);
+            if (fontGroup.variants.length < 2) return null;
             return (
               <label className="typo-easy__variant">
                 <span className="typo-easy__variant-label">Style</span>
@@ -679,9 +844,9 @@ export function TypographyStylesPanel() {
                       fontFamily: e.target.value as HathorLuxuryFont,
                     })
                   }
-                  aria-label={`${group.family} style`}
+                  aria-label={`${fontGroup.family} style`}
                 >
-                  {group.variants.map((v) => (
+                  {fontGroup.variants.map((v) => (
                     <option key={v.id} value={v.id}>
                       {v.label}
                     </option>
@@ -691,10 +856,8 @@ export function TypographyStylesPanel() {
             );
           })()}
         </SimpleField>
-        )}
 
         <div className="typo-easy__row">
-          {colorOnly ? null : (
           <SimpleField label="Size">
             <NumberInput
               aria-label="Font size"
@@ -706,7 +869,6 @@ export function TypographyStylesPanel() {
               onChange={(n) => patch({ fontSize: n })}
             />
           </SimpleField>
-          )}
 
           <SimpleField label="Color">
             <HexColorInput
@@ -716,7 +878,6 @@ export function TypographyStylesPanel() {
           </SimpleField>
         </div>
 
-        {colorOnly ? null : (
         <div className="typo-easy__row">
           <SimpleField label="Line height">
             <NumberInput
@@ -741,7 +902,6 @@ export function TypographyStylesPanel() {
             />
           </SimpleField>
         </div>
-        )}
 
         <div className="typo-easy__row typo-easy__row--actions">
           <button
@@ -765,7 +925,7 @@ export function TypographyStylesPanel() {
             }}
           >
             <RotateCcw className="h-3.5 w-3.5" />
-            Reset this text
+            Reset this style
           </button>
         </div>
       </div>
