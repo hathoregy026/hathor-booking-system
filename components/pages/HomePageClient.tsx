@@ -387,7 +387,13 @@ export function HomePageClient({
                 href={EX_GALLERY.indicationHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={galleryIndicationStyle}
+                style={{
+                  fontFamily: galleryIndicationStyle.fontFamily,
+                  fontSize: galleryIndicationStyle.fontSize,
+                  lineHeight: galleryIndicationStyle.lineHeight,
+                  letterSpacing: galleryIndicationStyle.letterSpacing,
+                  textShadow: galleryIndicationStyle.textShadow,
+                }}
                 aria-label="Hathor Cruise on Instagram"
               >
                 <SocialBrandIcon

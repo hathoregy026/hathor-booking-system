@@ -1844,10 +1844,11 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   gap: 0.55rem;
   margin: 0.85rem 0 0;
   text-decoration: none;
-  color: inherit;
+  color: var(--gold) !important;
+  -webkit-text-fill-color: var(--gold) !important;
   position: relative;
   padding-bottom: 0.35rem;
-  transition: color 0.35s ease, opacity 0.35s ease;
+  transition: opacity 0.35s ease;
 }
 
 .gallery-ig-link::after {
@@ -1857,41 +1858,47 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   bottom: 0;
   width: 1.75rem;
   height: 1px;
-  background: currentColor;
-  opacity: 0.45;
+  background: var(--gold);
+  opacity: 0.55;
   transform: translateX(-50%);
-  transition: width 0.45s ease, opacity 0.35s ease, background-color 0.35s ease;
+  transition: width 0.45s ease, opacity 0.35s ease;
 }
 
 .gallery-ig-link__icon {
   width: 0.85em;
   height: 0.85em;
   flex-shrink: 0;
-  opacity: 0.72;
+  color: var(--gold) !important;
+  fill: currentColor;
+  opacity: 0.95;
   transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
 .gallery-ig-link__handle {
   display: inline-block;
+  color: var(--gold) !important;
+  -webkit-text-fill-color: var(--gold) !important;
 }
 
 .gallery-ig-link:hover,
 .gallery-ig-link:focus-visible {
-  color: var(--gold);
+  color: var(--gold) !important;
+  -webkit-text-fill-color: var(--gold) !important;
   outline: none;
+  opacity: 1;
 }
 
 .gallery-ig-link:hover::after,
 .gallery-ig-link:focus-visible::after {
   width: 100%;
-  opacity: 0.85;
-  background: var(--gold);
+  opacity: 0.9;
 }
 
 .gallery-ig-link:hover .gallery-ig-link__icon,
 .gallery-ig-link:focus-visible .gallery-ig-link__icon {
   opacity: 1;
   transform: translateY(-1px);
+  color: var(--gold) !important;
 }
 
 .gallery-grid {
