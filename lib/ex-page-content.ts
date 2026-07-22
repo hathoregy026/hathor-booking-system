@@ -155,22 +155,27 @@ export const EX_GALLERY = {
     {
       imageName: "home-collage-living" as SiteImageName,
       alt: "Luxury lounge aboard Hathor",
+      href: "/about",
     },
     {
       imageName: "home-alt-highlights" as SiteImageName,
       alt: "Nile cruise highlights",
+      href: "/highlights",
     },
     {
       imageName: "gastronomy-restaurant" as SiteImageName,
       alt: "Gastronomy on the Nile",
+      href: "/gastronomy",
     },
     {
       imageName: "wellness-hero" as SiteImageName,
       alt: "Wellness aboard Hathor",
+      href: "/wellness",
     },
     {
       imageName: "home-cinematic-still" as SiteImageName,
       alt: "Suite interior aboard Hathor",
+      href: "/rooms",
     },
   ],
   /** Small indication under the gallery title — Instagram handle */

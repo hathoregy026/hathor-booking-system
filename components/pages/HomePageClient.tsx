@@ -240,7 +240,11 @@ export function HomePageClient({
               <div>
                 <div className="radius-img-container">
                   <div className="radius-img-container-inner">
-                    <div className="general-reveal-img">
+                    <Link
+                      href="/about"
+                      className="general-reveal-img media-hover"
+                      aria-label="Discover more about Hathor"
+                    >
                       <ManagedImage
                         name={EX_ABOUT.imageName}
                         alt={EX_ABOUT.imageAlt}
@@ -249,7 +253,7 @@ export function HomePageClient({
                         sizes="(max-width: 768px) 100vw, 42vw"
                         className="h-auto w-full object-cover"
                       />
-                    </div>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -418,7 +422,11 @@ export function HomePageClient({
               className={`text-img-row${index % 2 === 1 ? " is-reverse" : ""}`}
             >
               <div className="home-text-img-parent">
-                <div className="home-text-img-container">
+                <Link
+                  href={block.href}
+                  className="home-text-img-container media-hover"
+                  aria-label={block.cta}
+                >
                   <ManagedImage
                     name={block.imageName}
                     alt={block.alt}
@@ -427,7 +435,7 @@ export function HomePageClient({
                     className="object-cover"
                     previewAnchor={HOMEPAGE_PREVIEW_SLOTS.has(block.imageName)}
                   />
-                </div>
+                </Link>
               </div>
               <div className="home-text-img-copy">
                 <div className="home-text-h2">
@@ -482,9 +490,10 @@ export function HomePageClient({
 
           <div className="gallery-grid">
             {EX_GALLERY.images.map((item, index) => (
-              <div
+              <Link
                 key={`${item.imageName}-${index}`}
-                className="gallery-item"
+                href={item.href}
+                className="gallery-item media-hover"
                 id={
                   GALLERY_PREVIEW_ANCHORS.has(item.imageName)
                     ? siteImageAnchorId(item.imageName)
@@ -495,6 +504,7 @@ export function HomePageClient({
                     ? item.imageName
                     : undefined
                 }
+                aria-label={item.alt}
               >
                 <ManagedImage
                   name={item.imageName}
@@ -504,7 +514,7 @@ export function HomePageClient({
                   className="object-cover"
                   previewAnchor={false}
                 />
-              </div>
+              </Link>
             ))}
           </div>
 

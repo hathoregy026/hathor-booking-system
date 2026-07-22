@@ -1324,7 +1324,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   margin-top: 0;
   padding:
     clamp(88px, 12vw, 140px)
-    clamp(20px, 5vw, 64px)
+    var(--content-gutter, clamp(12px, 2.2vw, 28px))
     clamp(80px, 10vw, 120px);
   /* Solid opaque cover — no logo bleed */
   isolation: isolate;
@@ -1344,7 +1344,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 }
 
 .section-inner {
-  width: min(1180px, 100%);
+  width: var(--content-shell, 100%);
+  max-width: none;
   margin: 0 auto;
 }
 
@@ -1435,12 +1436,13 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 /* ---------- SERVICES / CAROUSEL ---------- */
 .services-section {
   background: var(--cream);
-  padding: 0 clamp(12px, 2.2vw, 28px) clamp(80px, 10vw, 140px);
+  padding: 0 var(--content-gutter, clamp(12px, 2.2vw, 28px)) clamp(80px, 10vw, 140px);
   z-index: 20;
 }
 
 .services-intro {
-  width: min(1180px, 100%);
+  width: var(--content-shell, 100%);
+  max-width: none;
   margin: 0 auto 40px;
   text-align: center;
 }
@@ -1786,11 +1788,12 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 /* ---------- TEXT + IMAGE BLOCKS ---------- */
 .text-img-section {
   background: var(--cream);
-  padding: clamp(80px, 10vw, 140px) clamp(20px, 5vw, 64px);
+  padding: clamp(80px, 10vw, 140px) var(--content-gutter, clamp(12px, 2.2vw, 28px));
 }
 
 .text-img-row {
-  width: min(1180px, 100%);
+  width: var(--content-shell, 100%);
+  max-width: none;
   margin: 0 auto;
   display: flex;
   flex-direction: row;
@@ -1860,11 +1863,12 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 /* ---------- GALLERY ---------- */
 .gallery-section {
   background: var(--cream-deep);
-  padding: clamp(80px, 10vw, 140px) clamp(20px, 5vw, 64px);
+  padding: clamp(80px, 10vw, 140px) var(--content-gutter, clamp(12px, 2.2vw, 28px));
 }
 
 .gallery-header {
-  width: min(1180px, 100%);
+  width: var(--content-shell, 100%);
+  max-width: none;
   margin: 0 auto 48px;
   text-align: center;
 }
@@ -1948,7 +1952,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 }
 
 .gallery-grid {
-  width: min(1180px, 100%);
+  width: var(--content-shell, 100%);
+  max-width: none;
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -1974,7 +1979,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 }
 
 .gallery-container {
-  width: min(1180px, 100%);
+  width: var(--content-shell, 100%);
+  max-width: none;
   margin: 56px auto 0;
   display: flex;
   align-items: center;
@@ -1994,11 +2000,12 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 /* ---------- TESTIMONIALS ---------- */
 .testimonials-section {
   background: var(--cream);
-  padding: clamp(80px, 10vw, 140px) clamp(20px, 5vw, 64px);
+  padding: clamp(80px, 10vw, 140px) var(--content-gutter, clamp(12px, 2.2vw, 28px));
 }
 
 .testimonials-header {
-  width: min(900px, 100%);
+  width: var(--content-shell, 100%);
+  max-width: none;
   margin: 0 auto 56px;
   text-align: center;
 }
@@ -2013,7 +2020,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 }
 
 .testimonials-grid {
-  width: min(1180px, 100%);
+  width: var(--content-shell, 100%);
+  max-width: none;
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -2054,7 +2062,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   position: relative;
   background: var(--cream);
   color: var(--ink);
-  padding: clamp(90px, 12vw, 160px) clamp(20px, 5vw, 64px);
+  padding: clamp(90px, 12vw, 160px) var(--content-gutter, clamp(12px, 2.2vw, 28px));
   text-align: center;
   overflow: hidden;
 }
@@ -2071,7 +2079,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 
 .cta-inner {
   position: relative;
-  width: min(760px, 100%);
+  width: var(--content-shell, 100%);
+  max-width: none;
   margin: 0 auto;
 }
 
@@ -2095,11 +2104,12 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 .site-footer {
   background: #ece8df;
   color: #5c4b3c;
-  padding: 48px clamp(20px, 5vw, 64px);
+  padding: 48px var(--content-gutter, clamp(12px, 2.2vw, 28px));
 }
 
 .footer-inner {
-  width: min(1180px, 100%);
+  width: var(--content-shell, 100%);
+  max-width: none;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;

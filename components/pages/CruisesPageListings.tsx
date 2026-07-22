@@ -239,7 +239,11 @@ export function CruisesPageListingsGrid() {
     <div className="cruise-grid" aria-label="Cruise listings">
       {filtered.map((item) => (
         <article key={item.key} className="cruise-card">
-          <div className="cruise-card-media">
+          <Link
+            href={item.detailHref}
+            className="cruise-card-media media-hover"
+            aria-label={`View details: ${item.roomName}`}
+          >
             <ManagedImage
               name={item.imageName}
               alt={`${item.roomName} — ${item.cruiseName}`}
@@ -252,7 +256,7 @@ export function CruisesPageListingsGrid() {
               {item.nights}N / {item.days}D
             </div>
             <div className="cruise-card-shine" aria-hidden="true" />
-          </div>
+          </Link>
           <div className="cruise-card-body">
             <p className="cruise-card-region">Departs {item.departureDay}</p>
             <h3 className="cruise-card-title">{item.roomName}</h3>

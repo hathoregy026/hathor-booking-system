@@ -1,5 +1,64 @@
 /* Hathor — Award-winning luxury public site */
 
+/* Site-wide content edges — matches homepage itinerary carousel */
+:root {
+  --content-gutter: clamp(12px, 2.2vw, 28px);
+  --content-shell: 100%;
+}
+
+/* Soft image hover veil (same as itinerary cards) */
+.media-hover {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.media-hover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(22, 16, 12, 0.28);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+}
+
+.media-hover img,
+.media-hover .object-cover {
+  transition: transform 0.7s ease, opacity 0.45s ease;
+}
+
+.media-hover:is(:hover, :focus-visible)::after {
+  opacity: 1;
+}
+
+.media-hover:is(:hover, :focus-visible) img,
+.media-hover:is(:hover, :focus-visible) .object-cover {
+  transform: scale(1.045);
+  opacity: 0.88;
+}
+
+.media-hover:focus-visible {
+  outline: 2px solid var(--lux-gold, #b69f64);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .media-hover img,
+  .media-hover .object-cover {
+    transition: none;
+  }
+
+  .media-hover:is(:hover, :focus-visible) img,
+  .media-hover:is(:hover, :focus-visible) .object-cover {
+    transform: none;
+  }
+}
+
 /* Admin “View on Live Site” image anchors — clear the fixed navbar */
 [id^="site-image-"],
 [data-site-image] {
@@ -7,6 +66,10 @@
 }
 
 .public-site {
+  /* Matches homepage itinerary carousel edges — site-wide content alignment */
+  --content-gutter: clamp(12px, 2.2vw, 28px);
+  --content-shell: 100%;
+
   /* Day defaults — cream + gold only (night mode overrides via night-mode.css) */
   --lux-dark: #faf8f5;
   --lux-dark-2: #f5f0e8;
@@ -391,22 +454,10 @@
 }
 
 .lux-container {
-  width: 100%;
-  max-width: 80rem;
+  width: var(--content-shell, 100%);
+  max-width: none;
   margin: 0 auto;
-  padding: 0 1.25rem;
-}
-
-@media (min-width: 640px) {
-  .lux-container {
-    padding: 0 1.5rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .lux-container {
-    padding: 0 2rem;
-  }
+  padding-inline: var(--content-gutter, clamp(12px, 2.2vw, 28px));
 }
 
 .lux-section-header {
@@ -1222,22 +1273,10 @@
 }
 
 .hathor-container {
-  width: 100%;
-  max-width: 87.5rem;
+  width: var(--content-shell, 100%);
+  max-width: none;
   margin: 0 auto;
-  padding: 0 1.25rem;
-}
-
-@media (min-width: 640px) {
-  .hathor-container {
-    padding: 0 1.5rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .hathor-container {
-    padding: 0 2rem;
-  }
+  padding-inline: var(--content-gutter, clamp(12px, 2.2vw, 28px));
 }
 
 .hathor-section {
@@ -4800,7 +4839,7 @@ html[data-public-theme="day"] .preview-header--transparent:not(.preview-header--
   }
 
   .hathor-container {
-    padding-inline: 1rem;
+    padding-inline: var(--content-gutter, clamp(12px, 2.2vw, 28px));
   }
 }
 
@@ -5304,12 +5343,12 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-pag
 }
 
 .page-layout__inner {
-  width: 100%;
-  max-width: 87.5rem;
+  width: var(--content-shell, 100%);
+  max-width: none;
   margin-inline: auto;
   margin-top: 0;
   padding-top: clamp(2rem, 5vh, 3rem);
-  padding-inline: clamp(1rem, 4vw, 2rem);
+  padding-inline: var(--content-gutter, clamp(12px, 2.2vw, 28px));
   padding-bottom: clamp(2.5rem, 6vh, 4rem);
 }
 
@@ -5939,8 +5978,8 @@ html[data-public-theme="day"] .preview-header--over-hero,
 }
 
 .hathor-container {
-  max-width: 1400px;
-  padding-inline: clamp(2rem, 5vw, 4rem);
+  max-width: none;
+  padding-inline: var(--content-gutter, clamp(12px, 2.2vw, 28px));
 }
 
 .hathor-page-hero__title {
@@ -6238,7 +6277,7 @@ body.has-page-scroll-transition .pin-spacer {
 
 @media (max-width: 767px) {
   .hathor-container {
-    padding-inline: clamp(1.25rem, 6vw, 2rem);
+    padding-inline: var(--content-gutter, clamp(12px, 2.2vw, 28px));
   }
 
   .hathor-page-hero__title {

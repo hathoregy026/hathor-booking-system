@@ -93,7 +93,7 @@
   position: relative;
   background: var(--ink);
   color: var(--white);
-  padding: clamp(90px, 12vw, 160px) clamp(20px, 5vw, 64px);
+  padding: clamp(90px, 12vw, 160px) var(--content-gutter, clamp(12px, 2.2vw, 28px));
   text-align: center;
   overflow: hidden;
 }
@@ -191,7 +191,7 @@
   z-index: 6;
   background: var(--cream, #f5efe4);
   color: var(--ink, #3e3026);
-  padding: clamp(72px, 12vw, 140px) clamp(20px, 5vw, 64px);
+  padding: clamp(72px, 12vw, 140px) var(--content-gutter, clamp(12px, 2.2vw, 28px));
   text-align: center;
   /* Soft handoff from dark pin spacer into cream */
   box-shadow: 0 -40px 60px rgba(12, 10, 8, 0.12);
@@ -513,7 +513,7 @@
   position: relative;
   z-index: 20;
   background: var(--cream);
-  padding: 8px clamp(20px, 5vw, 64px) 40px;
+  padding: 8px var(--content-gutter, clamp(12px, 2.2vw, 28px)) 40px;
   border-bottom: 1px solid rgba(182, 159, 100, 0.18);
   transition: box-shadow 0.35s var(--ease-out), background 0.35s;
 }
@@ -531,7 +531,8 @@
 }
 
 .cruise-filter-inner {
-  width: min(1180px, 100%);
+  width: var(--content-shell, 100%);
+  max-width: none;
   margin: 0 auto;
   display: flex;
   flex-wrap: wrap;
@@ -563,11 +564,12 @@
   position: relative;
   z-index: 20;
   background: var(--cream);
-  padding: clamp(48px, 8vw, 100px) clamp(20px, 5vw, 64px) clamp(80px, 12vw, 140px);
+  padding: clamp(48px, 8vw, 100px) var(--content-gutter, clamp(12px, 2.2vw, 28px)) clamp(80px, 12vw, 140px);
 }
 
 .cruise-grid {
-  width: min(1240px, 100%);
+  width: var(--content-shell, 100%);
+  max-width: none;
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -597,9 +599,12 @@
 
 .cruise-card-media {
   position: relative;
+  display: block;
   aspect-ratio: 4 / 5;
   overflow: hidden;
   background: var(--cream-deep);
+  color: inherit;
+  text-decoration: none;
 }
 
 .cruise-card-media img {
@@ -638,6 +643,7 @@
 .cruise-card-shine {
   position: absolute;
   inset: 0;
+  z-index: 2;
   background: linear-gradient(
     115deg,
     transparent 30%,
@@ -747,11 +753,12 @@
   z-index: 20;
   background: var(--ink);
   color: var(--white);
-  padding: clamp(80px, 12vw, 140px) clamp(20px, 5vw, 64px);
+  padding: clamp(80px, 12vw, 140px) var(--content-gutter, clamp(12px, 2.2vw, 28px));
 }
 
 .cruise-experience-inner {
-  width: min(1180px, 100%);
+  width: var(--content-shell, 100%);
+  max-width: none;
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;
@@ -1010,8 +1017,11 @@
 }
 
 .lux-wrap {
-  width: min(1200px, calc(100% - clamp(1.5rem, 5vw, 4rem)));
+  width: var(--content-shell, 100%);
+  max-width: none;
   margin: 0 auto;
+  padding-inline: var(--content-gutter, clamp(12px, 2.2vw, 28px));
+  box-sizing: border-box;
 }
 
 .lux-mask {
@@ -1689,10 +1699,12 @@
   z-index: 20;
 }
 .venetian-page .section-inner {
-  width: min(1180px, 100%);
+  width: var(--content-shell, 100%);
+  max-width: none;
   margin: 0 auto;
-  padding-left: clamp(20px, 5vw, 64px);
-  padding-right: clamp(20px, 5vw, 64px);
+  padding-left: var(--content-gutter, clamp(12px, 2.2vw, 28px));
+  padding-right: var(--content-gutter, clamp(12px, 2.2vw, 28px));
+  box-sizing: border-box;
 }
 .venetian-page .btn {
   text-decoration: none;
