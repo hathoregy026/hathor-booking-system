@@ -783,8 +783,9 @@ export function TypographyStylesPanel() {
 
             <div className="typo-easy__gradient">
               <p className="typo-easy__controls-hint">
-                Second title · luxury gold gradient — champagne highlight through
-                bronze depth. Applies to every page hero’s second line.
+                Second title · static specular conic gold — same sheen as the
+                Discover More buttons, without the spin. Angle rotates the
+                highlight; colours match the button palette.
               </p>
               <button
                 type="button"
@@ -799,13 +800,13 @@ export function TypographyStylesPanel() {
               </button>
 
               <div className="typo-easy__row">
-                <SimpleField label="Highlight">
+                <SimpleField label="Cream highlight">
                   <HexColorInput
                     value={secondGradient.highlight}
                     onChange={(hex) => patchSecondGradient({ highlight: hex })}
                   />
                 </SimpleField>
-                <SimpleField label="Mid gold">
+                <SimpleField label="Hathor gold">
                   <HexColorInput
                     value={secondGradient.mid}
                     onChange={(hex) => patchSecondGradient({ mid: hex })}
@@ -813,13 +814,13 @@ export function TypographyStylesPanel() {
                 </SimpleField>
               </div>
               <div className="typo-easy__row">
-                <SimpleField label="Deep bronze">
+                <SimpleField label="Soft gold">
                   <HexColorInput
                     value={secondGradient.deep}
                     onChange={(hex) => patchSecondGradient({ deep: hex })}
                   />
                 </SimpleField>
-                <SimpleField label="Shadow bronze">
+                <SimpleField label="Dark brass">
                   <HexColorInput
                     value={secondGradient.bronze}
                     onChange={(hex) => patchSecondGradient({ bronze: hex })}

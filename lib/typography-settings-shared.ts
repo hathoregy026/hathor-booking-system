@@ -227,12 +227,17 @@ export type HeroSecondGradient = z.infer<typeof heroSecondGradientSchema>;
 
 export const DEFAULT_HERO_SECOND_GRADIENT: HeroSecondGradient = {
   enabled: true,
-  highlight: "#FFF6D4",
-  mid: "#D4AF37",
-  deep: "#8A6B2E",
-  bronze: "#3D2A14",
-  angle: 145,
-  intensity: 90,
+  /** Cream specular flash — matches button --sb-cream */
+  highlight: "#F5EFE4",
+  /** Hathor gold — matches button --sb-gold */
+  mid: "#B69F64",
+  /** Soft gold — matches button --sb-gold-soft / #8a7340 blend */
+  deep: "#D4C28A",
+  /** Dark brass rim — matches button #6a5a35 */
+  bronze: "#6A5A35",
+  /** Static conic start angle (buttons spin this; titles stay fixed) */
+  angle: 40,
+  intensity: 100,
 };
 
 /** Editable homepage hero title lines */
@@ -575,7 +580,10 @@ function parseHeroSecondGradient(raw: unknown): HeroSecondGradient {
   return parsed.success ? parsed.data : { ...fb };
 }
 
-/** Multi-stop brushed-metal gold gradient for hero second titles. */
+/**
+ * Static specular conic gold — same stops as `.btn` / Discover More buttons
+ * (`app/specular-button.css`), without the rotating --sb-angle animation.
+ */
 export function heroSecondGradientBackground(
   gradient: HeroSecondGradient,
 ): string {
@@ -598,24 +606,23 @@ export function heroSecondGradientBackground(
     const bch = ab + (bb - ab) * amount;
     return `#${to(r)}${to(g)}${to(bch)}`;
   };
-  /* Low intensity collapses toward mid gold; high intensity opens full metallic range */
-  const highlight = mix(gradient.mid, gradient.highlight, t);
-  const midSoft = mix(gradient.mid, gradient.highlight, t * 0.35);
-  const deep = mix(gradient.mid, gradient.deep, t);
-  const bronze = mix(gradient.deep, gradient.bronze, t);
-  const rim = mix(gradient.mid, gradient.highlight, t * 0.7);
-  return `linear-gradient(${gradient.angle}deg, ${highlight} 0%, ${midSoft} 16%, ${gradient.mid} 34%, ${deep} 52%, ${bronze} 70%, ${deep} 84%, ${rim} 100%)`;
+
+  /* Intensity collapses toward mid gold; full intensity = full button sheen */
+  const cream = mix(gradient.mid, gradient.highlight, t);
+  const gold = mix(gradient.mid, gradient.mid, 1);
+  const goldSoft = mix(gradient.mid, gradient.deep, t);
+  const darkBrass = mix(gradient.mid, gradient.bronze, t);
+  const midBrass = mix(gradient.bronze, gradient.deep, t * 0.55);
+
+  return `conic-gradient(from ${gradient.angle}deg, ${darkBrass} 0deg, ${gold} 50deg, ${cream} 90deg, ${goldSoft} 130deg, ${gold} 180deg, ${midBrass} 230deg, ${goldSoft} 280deg, ${darkBrass} 360deg)`;
 }
 
 export function heroSecondGradientShadow(gradient: HeroSecondGradient): string {
   if (!gradient.enabled) return "none";
   const t = Math.min(1, Math.max(0, gradient.intensity / 100));
-  const soft = (0.28 + t * 0.42).toFixed(2);
-  const tight = (0.35 + t * 0.4).toFixed(2);
-  return `drop-shadow(0 1px 0 rgba(61, 42, 20, ${tight})) drop-shadow(0 6px 14px rgba(0, 0, 0, ${soft})) drop-shadow(0 0 18px rgba(212, 175, 55, ${(
-    0.12 +
-    t * 0.22
-  ).toFixed(2)}))`;
+  const glowA = (0.35 + t * 0.35).toFixed(2);
+  const glowB = (0.18 + t * 0.22).toFixed(2);
+  return `drop-shadow(0 0 16px rgba(212, 194, 138, ${glowA})) drop-shadow(0 0 32px rgba(182, 159, 100, ${glowB})) drop-shadow(0 2px 4px rgba(42, 32, 18, 0.45))`;
 }
 
 export function heroSecondGradientInlineStyle(
