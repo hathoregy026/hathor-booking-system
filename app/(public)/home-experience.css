@@ -1179,31 +1179,11 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left.hero-line--word
   display: none !important;
 }
 
-/* Gentle top fade inside glyphs (no harsh clip) */
+/* Gentle top fade inside glyphs — disabled: typography -webkit-text-fill-color
+   !important made attr(data-text) render as a broken duplicate script title. */
 html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
-  content: attr(data-text);
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0.14em;
-  bottom: 0;
-  pointer-events: none;
-  font: inherit;
-  letter-spacing: inherit;
-  line-height: inherit;
-  white-space: nowrap;
-  text-align: center;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  background-image: linear-gradient(
-    180deg,
-    rgba(35, 24, 10, 0.22) 0%,
-    rgba(35, 24, 10, 0.06) 38%,
-    transparent 72%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  opacity: 0.55;
+  content: none !important;
+  display: none !important;
 }
 
 .hero-sub {

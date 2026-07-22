@@ -5,7 +5,6 @@ import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { HathorLogoSplit } from "@/components/public/HathorLogoSplit";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
-import { EX_HERO } from "@/lib/ex-page-content";
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 import { useTypographyInlineStyle } from "@/components/public/TypographySettingsProvider";
 import { usePublicSiteHeroMotion } from "@/hooks/usePublicSiteHeroMotion";
@@ -18,8 +17,11 @@ export type PublicSiteHeroProps = {
   lineLeft: string;
   /** When set, replaces lineLeft text with this image (same scroll animation). */
   lineLeftImageSrc?: string;
+  /** @deprecated Heroes show two titles only — not rendered. */
   subtitle?: string;
+  /** @deprecated Heroes show two titles only — not rendered. */
   sideLeft?: string;
+  /** @deprecated Heroes show two titles only — not rendered. */
   sideRight?: string;
   showCta?: boolean;
   ctaLabel?: string;
@@ -54,9 +56,6 @@ export function PublicSiteHero({
   lineRight,
   lineLeft,
   lineLeftImageSrc,
-  subtitle,
-  sideLeft = EX_HERO.sideLeft,
-  sideRight = EX_HERO.sideRight,
   showCta = true,
   ctaLabel = HOMEPAGE_HERO.cta,
   animate = true,
@@ -141,20 +140,11 @@ export function PublicSiteHero({
               />
             </span>
           ) : lineLeft ? (
-            <span
-              className="hero-line hero-line--left"
-              data-text={lineLeft}
-              style={heroSubtitleStyle}
-            >
+            <span className="hero-line hero-line--left" style={heroSubtitleStyle}>
               {lineLeft}
             </span>
           ) : null}
         </h1>
-        {subtitle ? (
-          <p className="hero-sub" style={heroSubtitleStyle}>
-            {subtitle}
-          </p>
-        ) : null}
       </div>
 
       {showCta ? (
@@ -168,13 +158,6 @@ export function PublicSiteHero({
           <div className="hero-cta" />
         </div>
       )}
-
-      <div className="hero-side hero-side--left" aria-hidden="true">
-        <span>{sideLeft}</span>
-      </div>
-      <div className="hero-side hero-side--right" aria-hidden="true">
-        <span>{sideRight}</span>
-      </div>
 
       <div className="hero-scroll-hint" aria-hidden="true">
         Scroll

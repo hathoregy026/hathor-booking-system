@@ -402,6 +402,17 @@
   z-index: 2;
 }
 
+.home-hero-container .hero-side,
+.home-hero-container .hero-sub,
+.home-hero-container .hero-kicker {
+  display: none !important;
+}
+
+.home-hero-container .hero-heading .hero-line--left::after {
+  content: none !important;
+  display: none !important;
+}
+
 .hero-sub {
   margin-top: 20px;
   max-width: 34ch;
