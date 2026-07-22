@@ -2,8 +2,8 @@
 
 .editorial {
   --rooms-bg-light: #ece8df;
-  --rooms-bg-dark: #0a0a0a;
-  --rooms-surface: #ebe5d9;
+  --rooms-bg-dark: #b69f64;
+  --rooms-surface: #ebe3d4;
   --rooms-ink: #12100d;
   --rooms-ink-muted: rgb(18 16 13 / 0.62);
   --rooms-cream: #f8f3ea;
@@ -54,8 +54,25 @@
 
 .sectionDark {
   composes: section;
-  color: var(--rooms-cream);
+  color: var(--rooms-ink);
   background: var(--rooms-bg-dark);
+}
+
+.sectionDark .eyebrow,
+.sectionDark .statValue,
+.sectionDark .magneticLink {
+  color: var(--rooms-ink);
+}
+
+.sectionDark .subtitle,
+.sectionDark .statLabel,
+.sectionDark .bodyText,
+.sectionDark .introText {
+  color: rgb(18 16 13 / 0.72);
+}
+
+.sectionDark .magneticLink:hover {
+  color: #2c2824;
 }
 
 .introBlock {
@@ -164,11 +181,6 @@
   line-height: 1.9;
   letter-spacing: 0.085em;
   color: var(--rooms-ink-muted);
-}
-
-.sectionDark .bodyText,
-.sectionDark .introText {
-  color: rgb(248 243 234 / 0.68);
 }
 
 .bodyText + .bodyText,

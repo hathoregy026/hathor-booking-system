@@ -4,18 +4,18 @@
 @import "./admin.css";
 
 :root {
-  --background: #f8fafc;
-  --foreground: #1e293b;
-  --hathor-navy: #1e3a5f;
+  --background: #ece8df;
+  --foreground: #2c2824;
+  --hathor-navy: #b69f64;
   --hathor-gold: #b69f64;
 
   /* Luxury public site tokens */
-  --lux-dark: #0a0a0a;
-  --lux-dark-2: #1a1a1a;
+  --lux-dark: #faf8f5;
+  --lux-dark-2: #f5f0e8;
   --lux-gold: #b69f64;
   --lux-gold-bright: #b69f64;
   --lux-gold-cream: #b69f64;
-  --lux-cream: #faf8f5;
+  --lux-cream: #ece8df;
   --lux-beige: #f5f0e8;
 }
 

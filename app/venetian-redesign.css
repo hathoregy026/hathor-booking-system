@@ -2,7 +2,7 @@
 .venetian-page {
   --gold: #b69f64;
   --gold-soft: #d4c28a;
-  --cream: #f5efe4;
+  --cream: #ece8df;
   --cream-deep: #ebe3d4;
   --ink: #3e3026;
   --ink-soft: #5c4b3c;
@@ -1757,7 +1757,7 @@
   padding: 0 1.75rem;
   border-radius: 999px;
   border: 1px solid var(--gold);
-  background: #f5efe4;
+  background: #faf8f5;
   color: var(--ink);
   font-size: 0.72rem;
   font-weight: 500;
