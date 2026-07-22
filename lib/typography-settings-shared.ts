@@ -226,7 +226,8 @@ export const heroSecondGradientSchema = z.object({
 export type HeroSecondGradient = z.infer<typeof heroSecondGradientSchema>;
 
 export const DEFAULT_HERO_SECOND_GRADIENT: HeroSecondGradient = {
-  enabled: true,
+  /** Off — solid typography color only (metallic clip caused hollow cutouts). */
+  enabled: false,
   /** Near-white specular ridge — Shine polished highlight */
   highlight: "#FFF9E3",
   /** Classic warm metallic gold */
@@ -587,7 +588,10 @@ function parseHeroSecondGradient(raw: unknown): HeroSecondGradient {
     ),
   };
   const parsed = heroSecondGradientSchema.safeParse(candidate);
-  return parsed.success ? parsed.data : { ...fb };
+  const result = parsed.success ? parsed.data : { ...fb };
+  /* Solid second-title color only — metallic background-clip + filter caused
+     hollow mid-letter cutouts and clipped glyph edges on heroes. */
+  return { ...result, enabled: false };
 }
 
 /**

@@ -1130,6 +1130,11 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--right {
   position: relative;
   z-index: 1;
   overflow: visible;
+  background: none !important;
+  background-image: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  filter: none !important;
 }
 
 /* Home hero line 2 — layout only; font/size/color from typography admin */
@@ -1139,9 +1144,11 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left {
   position: relative;
   z-index: 2;
   overflow: visible;
-  background: none;
-  background-image: none;
-  filter: none;
+  background: none !important;
+  background-image: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  filter: none !important;
 }
 
 /* Wordmark — light overlap only: ~upper third of Dahabiya over bottom of Ultra Luxury */

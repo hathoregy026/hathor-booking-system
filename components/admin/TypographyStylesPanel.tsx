@@ -14,7 +14,6 @@ import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
 import {
   DEFAULT_HERO_LAYOUT,
   DEFAULT_HERO_PAGES,
-  DEFAULT_HERO_SECOND_GRADIENT,
   DEFAULT_ON_IMAGES_COPY,
   DEFAULT_TYPOGRAPHY_SETTINGS,
   HATHOR_FONT_GROUPS,
@@ -24,8 +23,6 @@ import {
   HERO_PAGE_LABELS,
   ON_IMAGES_ROLES,
   fontGroupForFace,
-  heroSecondGradientBackground,
-  heroSecondGradientShadow,
   isFaceInGroup,
   isTypographySettingsEqual,
   parseTypographySettings,
@@ -33,7 +30,6 @@ import {
   type HeroAlign,
   type HeroLayout,
   type HeroPageKey,
-  type HeroSecondGradient,
   type OnImagesRole,
   type TypographyRole,
   type TypographySettings,
@@ -96,11 +92,8 @@ function clampOffset(n: number): number {
 }
 
 /** CSS vars — admin.css applies them with !important so Inter never wins. */
-function liveVars(
-  style: TypographyTextStyle,
-  gradient?: HeroSecondGradient,
-): CSSProperties {
-  const base: CSSProperties = {
+function liveVars(style: TypographyTextStyle): CSSProperties {
+  return {
     ["--typo-live-font" as string]: HATHOR_FONT_STACKS[style.fontFamily],
     ["--typo-live-size" as string]: `${style.fontSize}px`,
     ["--typo-live-color" as string]: style.color,
@@ -109,13 +102,6 @@ function liveVars(
     ["--typo-live-shadow" as string]: style.innerShadow
       ? "1px 1px 0 rgba(0,0,0,0.35), -0.5px -0.5px 0 rgba(255,255,255,0.25)"
       : "none",
-  };
-  if (!gradient?.enabled) return base;
-  return {
-    ...base,
-    ["--typo-live-gradient" as string]: heroSecondGradientBackground(gradient),
-    ["--typo-live-gradient-filter" as string]:
-      heroSecondGradientShadow(gradient),
   };
 }
 
@@ -335,7 +321,6 @@ export function TypographyStylesPanel() {
   const layout = settings.hero_layout;
   const heroCopy = settings.hero_pages[heroPage] ?? DEFAULT_HERO_PAGES[heroPage];
   const onImagesCopy = settings.on_images_copy;
-  const secondGradient = settings.hero_second_gradient;
   const stageTone =
     group === "hero" || group === "on_images" ? "dark" : "light";
   const editingLabel =
@@ -375,16 +360,6 @@ export function TypographyStylesPanel() {
     setSettings((prev) => ({
       ...prev,
       on_images_copy: { ...prev.on_images_copy, ...partial },
-    }));
-  };
-
-  const patchSecondGradient = (partial: Partial<HeroSecondGradient>) => {
-    setSettings((prev) => ({
-      ...prev,
-      hero_second_gradient: {
-        ...prev.hero_second_gradient,
-        ...partial,
-      },
     }));
   };
 
@@ -609,8 +584,8 @@ export function TypographyStylesPanel() {
               >
                 <span className="typo-stage__line-tag">Second · drag</span>
                 <span
-                  className={`typo-stage__sample typo-stage__sample--inline${secondGradient.enabled ? " typo-stage__sample--luxury-gradient" : ""}`}
-                  style={liveVars(settings.hero_subtitle, secondGradient)}
+                  className="typo-stage__sample typo-stage__sample--inline"
+                  style={liveVars(settings.hero_subtitle)}
                 >
                   {heroCopy.second || "Second title"}
                 </span>
@@ -783,90 +758,10 @@ export function TypographyStylesPanel() {
 
             <div className="typo-easy__gradient">
               <p className="typo-easy__controls-hint">
-                Second title · polished metallic gold (Shine look) — bright
-                ridge highlight, warm body gold, deep bronze underside. Static;
-                angle tilts the light. Applies to every page hero’s second line.
+                Second title uses the solid color from Second title styles above
+                (metallic gradient removed — it cut hollow bands through the
+                letters).
               </p>
-              <button
-                type="button"
-                role="switch"
-                aria-checked={secondGradient.enabled}
-                className={`typo-easy__shadow${secondGradient.enabled ? " typo-easy__shadow--on" : ""}`}
-                onClick={() =>
-                  patchSecondGradient({ enabled: !secondGradient.enabled })
-                }
-              >
-                Luxury gradient: {secondGradient.enabled ? "On" : "Off"}
-              </button>
-
-              <div className="typo-easy__row">
-                <SimpleField label="Highlight (ridge)">
-                  <HexColorInput
-                    value={secondGradient.highlight}
-                    onChange={(hex) => patchSecondGradient({ highlight: hex })}
-                  />
-                </SimpleField>
-                <SimpleField label="Body gold">
-                  <HexColorInput
-                    value={secondGradient.mid}
-                    onChange={(hex) => patchSecondGradient({ mid: hex })}
-                  />
-                </SimpleField>
-              </div>
-              <div className="typo-easy__row">
-                <SimpleField label="Deep amber">
-                  <HexColorInput
-                    value={secondGradient.deep}
-                    onChange={(hex) => patchSecondGradient({ deep: hex })}
-                  />
-                </SimpleField>
-                <SimpleField label="Bronze recess">
-                  <HexColorInput
-                    value={secondGradient.bronze}
-                    onChange={(hex) => patchSecondGradient({ bronze: hex })}
-                  />
-                </SimpleField>
-              </div>
-              <div className="typo-easy__row">
-                <SimpleField label="Angle" valueLabel={`${secondGradient.angle}°`}>
-                  <NumberInput
-                    aria-label="Gradient angle"
-                    value={secondGradient.angle}
-                    min={0}
-                    max={360}
-                    step={1}
-                    suffix="deg"
-                    onChange={(n) => patchSecondGradient({ angle: n })}
-                  />
-                </SimpleField>
-                <SimpleField
-                  label="Intensity"
-                  valueLabel={`${secondGradient.intensity}%`}
-                >
-                  <NumberInput
-                    aria-label="Gradient intensity"
-                    value={secondGradient.intensity}
-                    min={0}
-                    max={100}
-                    step={1}
-                    suffix="%"
-                    onChange={(n) => patchSecondGradient({ intensity: n })}
-                  />
-                </SimpleField>
-              </div>
-              <button
-                type="button"
-                className="typo-easy__reset-role"
-                onClick={() =>
-                  setSettings((prev) => ({
-                    ...prev,
-                    hero_second_gradient: { ...DEFAULT_HERO_SECOND_GRADIENT },
-                  }))
-                }
-              >
-                <RotateCcw className="h-3.5 w-3.5" />
-                Reset luxury gradient
-              </button>
             </div>
           </>
         ) : null}

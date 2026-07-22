@@ -12,7 +12,6 @@ import { GoldDustParticles } from "@/components/ui/GoldDustParticles";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 import type { HathorLogoPartsVariant } from "@/lib/hathor-logo-letters";
 import {
-  heroSecondGradientInlineStyle,
   resolveHeroPageCopy,
   type HeroPageKey,
 } from "@/lib/typography-settings-shared";
@@ -92,11 +91,8 @@ export function PublicSiteHero({
   const displayLeft = resolved.second;
   const secondTitleStyle = {
     ...heroSubtitleStyle,
-    ...heroSecondGradientInlineStyle(typography.hero_second_gradient),
   };
-  const secondTitleClass = typography.hero_second_gradient.enabled
-    ? "hero-line hero-line--left hero-line--luxury-gradient"
-    : "hero-line hero-line--left";
+  const secondTitleClass = "hero-line hero-line--left";
 
   useLayoutEffect(() => {
     if (!playVideo) return;

@@ -391,6 +391,11 @@
   font-style: normal;
   position: relative;
   z-index: 1;
+  background: none !important;
+  background-image: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  filter: none !important;
 }
 
 /* Line 2 — layout only; font/size/color from typography admin */
@@ -400,6 +405,11 @@
   text-transform: none !important;
   position: relative;
   z-index: 2;
+  background: none !important;
+  background-image: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  filter: none !important;
 }
 
 .home-hero-container .hero-side,
