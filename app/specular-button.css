@@ -115,3 +115,50 @@
     );
   }
 }
+
+/* Idle label + FAB icon colour — Hathor gold */
+.public-site a.btn,
+.public-site button.btn,
+.public-site .public-btn-gold,
+.public-site .public-btn-outline-gold,
+.public-site .public-btn-dark,
+.public-site .hero-cta,
+.public-site .hero-cta-text,
+.public-site .public-fab__book,
+.public-site .public-fab__book-text,
+.public-site .public-fab__chat-main,
+.public-site .public-fab__icon-btn,
+.public-site .public-fab__chat-icon,
+.public-site .public-fab__lucide,
+.public-site .public-fab__brand-icon {
+  color: #b69f64;
+}
+
+.public-site .public-fab__chat-icon,
+.public-site .public-fab__lucide {
+  stroke: #b69f64;
+}
+
+.public-site a.btn:hover,
+.public-site button.btn:hover,
+.public-site .public-btn-gold:hover,
+.public-site .public-btn-outline-gold:hover,
+.public-site .public-btn-dark:hover,
+.public-site .public-fab__book:hover,
+.public-site .public-fab__book:hover .public-fab__book-text,
+.public-site .public-fab__chat-main:hover,
+.public-site .public-fab__icon-btn:hover {
+  color: #ffffff;
+}
+
+.public-site .public-fab__chat-main:hover .public-fab__chat-icon,
+.public-site .public-fab__icon-btn:hover .public-fab__lucide,
+.public-site .public-fab__chat-main:hover .public-fab__lucide {
+  stroke: #ffffff;
+  color: #ffffff;
+}
+
+.public-site .hero-cta:hover,
+.public-site .hero-cta:hover .hero-cta-text {
+  color: #ffffff;
+}

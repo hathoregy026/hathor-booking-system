@@ -687,7 +687,7 @@ h1, h2, h3, h4, p {
   border-radius: 999px;
   border: 1px solid var(--gold);
   background: #ffffff;
-  color: var(--ink);
+  color: #b69f64;
   font-size: 0.72rem;
   font-weight: 500;
   letter-spacing: 0.18em;
@@ -720,7 +720,7 @@ h1, h2, h3, h4, p {
 .btn-dark,
 .btn-filled {
   background: #ffffff;
-  color: var(--ink);
+  color: #b69f64;
   border-color: var(--gold);
 }
 
@@ -742,7 +742,7 @@ h1, h2, h3, h4, p {
   padding: 3px 28px 1px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(212, 194, 138, 0.7);
-  color: var(--white);
+  color: #b69f64;
   box-shadow: none;
 }
 

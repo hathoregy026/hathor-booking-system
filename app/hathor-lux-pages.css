@@ -221,14 +221,14 @@
 }
 
 .spx-frame-ui .btn-light {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.45);
+  color: #b69f64;
+  border-color: rgba(182, 159, 100, 0.7);
 }
 
 .spx-frame-ui .btn-light:hover {
   background: var(--lux-gold);
   border-color: var(--lux-gold);
-  color: #1a1410;
+  color: #ffffff;
 }
 
 .spx-metrics {
@@ -1082,7 +1082,7 @@
 
 .cruise-card-actions .btn-dark {
   background: #ffffff;
-  color: var(--lux-ink, #2c2419);
+  color: #b69f64;
   border-color: var(--lux-gold, #b69f64);
 }
 
@@ -1352,7 +1352,7 @@
   transition: background 0.35s var(--lux-ease), color 0.35s, border-color 0.35s,
     box-shadow 0.35s, transform 0.35s;
   background: #ffffff;
-  color: var(--lux-ink);
+  color: #b69f64;
   box-shadow: 0 8px 22px rgba(44, 36, 25, 0.1);
 }
 .hathor-lux .btn:hover,
@@ -1367,7 +1367,7 @@
 .hathor-lux .btn-filled,
 .hathor-lux .btn-dark {
   background: #ffffff;
-  color: var(--lux-ink);
+  color: #b69f64;
   border-color: var(--lux-gold);
 }
 .hathor-lux .cta-section {
@@ -1424,14 +1424,14 @@
   position: relative;
 }
 .hathor-lux .btn-light {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.55);
+  color: #b69f64;
+  border-color: rgba(182, 159, 100, 0.7);
   background: transparent;
 }
 .hathor-lux .btn-light:hover {
   background: var(--lux-gold);
   border-color: var(--lux-gold);
-  color: #1a1410;
+  color: #ffffff;
 }
 .hathor-lux .spx-frame-ui .btn,
 .hathor-lux .acc-fs-ui .btn {

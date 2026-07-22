@@ -146,7 +146,7 @@
   border-radius: 999px;
   border: 1px solid #b69f64;
   background: #ffffff;
-  color: #2c2419;
+  color: #b69f64;
   font-size: 0.72rem;
   font-weight: 500;
   letter-spacing: 0.18em;
@@ -996,7 +996,7 @@
   border-radius: 9999px;
   border: 1px solid var(--lux-gold, #b69f64);
   background: #f5efe4;
-  color: #2c2419;
+  color: #b69f64;
   box-shadow: 0 6px 18px rgba(44, 36, 25, 0.12);
   cursor: pointer;
   transition:
@@ -1073,7 +1073,7 @@
   border-radius: 999px;
   border: 1px solid var(--lux-gold, #b69f64);
   background: #f5efe4;
-  color: #2c2419;
+  color: #b69f64;
   box-shadow: 0 8px 22px rgba(44, 36, 25, 0.1);
   cursor: pointer;
   transition:

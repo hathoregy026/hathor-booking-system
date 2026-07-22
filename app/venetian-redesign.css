@@ -44,7 +44,7 @@
   border-radius: 999px;
   border: 1px solid var(--gold, #b69f64);
   background: #ffffff;
-  color: var(--ink, #2c2419);
+  color: #b69f64;
   font-size: 0.72rem;
   font-weight: 500;
   letter-spacing: 0.18em;
@@ -83,7 +83,7 @@
 .btn-dark:not(.hero-cta),
 .btn-filled:not(.hero-cta) {
   background: #ffffff;
-  color: var(--ink, #2c2419);
+  color: #b69f64;
   border-color: var(--gold, #b69f64);
 }
 
