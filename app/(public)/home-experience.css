@@ -1322,9 +1322,10 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   width: 100%;
   background: var(--cream);
   margin-top: 0;
+  /* Pre–edge-align shell — keep this section’s classic 50/50 composition */
   padding:
     clamp(88px, 12vw, 140px)
-    var(--content-gutter, clamp(12px, 2.2vw, 28px))
+    clamp(20px, 5vw, 64px)
     clamp(80px, 10vw, 120px);
   /* Solid opaque cover — no logo bleed */
   isolation: isolate;
@@ -1347,6 +1348,12 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   width: var(--content-shell, 100%);
   max-width: none;
   margin: 0 auto;
+}
+
+/* About keeps the original centered max-width composition */
+.about-section .section-inner {
+  width: min(1180px, 100%);
+  max-width: min(1180px, 100%);
 }
 
 .about-layout,
