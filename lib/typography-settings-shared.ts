@@ -1080,7 +1080,9 @@ ${block(
 .public-site .venetian-page .room-fs-ui .room-fs-count i,
 html[data-ex-experience] .ex-root .ex-stack-scroll__eyebrow,
 html[data-ex-experience] .ex-root .home-carousel-h3 h3,
-html[data-ex-experience] .ex-root .home-carousel-h3 .typo-page-subtitle`,
+html[data-ex-experience] .ex-root .home-carousel-h3 .typo-page-subtitle,
+html[data-ex-experience] .ex-root .radius-indication .typo-page-subtitle,
+html[data-ex-experience] .ex-root .radius-sub-heading .typo-page-subtitle`,
   "page_subtitle",
 )}
 ${block(

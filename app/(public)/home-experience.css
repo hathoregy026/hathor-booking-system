@@ -1349,14 +1349,21 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   align-items: center;
 }
 
-.radius-sub-heading h3 {
-  font-family: var(--font-body);
+.radius-sub-heading h3,
+.radius-indication .typo-page-subtitle {
+  margin: 0 0 22px;
+  /* Font/size/case/color from dashboard typography (page_subtitle / Small indication) */
+}
+
+.radius-heading h2 {
+  font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(0.85rem, 1.3vw, 1rem);
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 28px;
+  font-size: clamp(2.4rem, 5vw, 4.2rem);
+  line-height: 1.05;
+  letter-spacing: 0.02em;
+  /* Case + color come from dashboard typography (page_title) — never force ink/uppercase */
+  text-transform: none;
+  margin-bottom: 14px;
 }
 
 .radius-img-container {
@@ -1394,17 +1401,6 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   border-radius: 50%;
   object-fit: cover;
   border: 1px solid rgba(182, 159, 100, 0.4);
-}
-
-.radius-heading h2 {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(2.4rem, 5vw, 4.2rem);
-  line-height: 1.05;
-  letter-spacing: 0.02em;
-  /* Case + color come from dashboard typography (page_title) — never force ink/uppercase */
-  text-transform: none;
-  margin-bottom: 24px;
 }
 
 .radius-heading h2 .char,

@@ -94,6 +94,7 @@ export function HomePageClient({
   const itinerariesIndicationStyle = useTypographyInlineStyle("page_subtitle");
   const galleryIndicationStyle = useTypographyInlineStyle("page_subtitle");
   const aboutTitleStyle = useTypographyInlineStyle("page_title");
+  const aboutIndicationStyle = useTypographyInlineStyle("page_subtitle");
   const aboutBodyStyle = useTypographyInlineStyle("body_text");
 
   const onImagesTitleLines = (
@@ -166,9 +167,6 @@ export function HomePageClient({
           <div className="section-inner">
             <div className="about-layout">
               <div>
-                <div className="radius-sub-heading">
-                  <h3>{EX_ABOUT.eyebrow}</h3>
-                </div>
                 <div className="radius-img-container">
                   <div className="radius-img-container-inner">
                     <div className="general-reveal-img">
@@ -205,6 +203,14 @@ export function HomePageClient({
                     <br />
                     a way of life.
                   </h2>
+                </div>
+                <div className="radius-sub-heading radius-indication">
+                  <h3
+                    className="typo-page-subtitle"
+                    style={aboutIndicationStyle}
+                  >
+                    {EX_ABOUT.eyebrow}
+                  </h3>
                 </div>
                 <div className="radius-p">
                   <p className="typo-body-text" style={aboutBodyStyle}>
