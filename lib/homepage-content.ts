@@ -111,7 +111,7 @@ export const HOMEPAGE_WELCOME = {
 } as const;
 
 export const HOMEPAGE_DINING = {
-  title: "Luxury Dining on Egypt's Finest Dahabiya",
+  title: "Fine Dining on\nDahabiya",
   body: "Where fancy dining meets warm hospitality in unforgettable culinary delight on Hathor Dahabiya, the very best Luxury Dahabiya Nile Cruise offers. Dishes are prepared with restaurant-level expertise using the freshest locally sourced ingredients, blending Egyptian and international flavors. Each meal indulges your taste buds in a symphony of flavors.",
   tag: "Gastronomy",
   href: "/gastronomy",
