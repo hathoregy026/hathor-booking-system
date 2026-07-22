@@ -8,7 +8,60 @@ import {
   HOMEPAGE_REVIEWS,
   HOMEPAGE_WELLNESS,
 } from "@/lib/homepage-content";
+import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
+import type {
+  LuxuryRoomTypeValue,
+  StayDurationValue,
+} from "@/lib/booking-search-config";
 import type { SiteImageName } from "@/lib/site-image-slots";
+
+function formatCruisePorts(ports: string) {
+  return ports.replace(/→/g, "/").replace(/\s*\/\s*/g, " / ").trim();
+}
+
+function roomImageName(roomType: string): SiteImageName {
+  if (roomType.includes("Royal")) return "room-royal";
+  if (roomType.includes("Suite")) return "room-suite";
+  return "room-luxury";
+}
+
+function roomSearchType(roomType: string): LuxuryRoomTypeValue {
+  if (roomType.includes("Royal")) return "luxury-royal-suites";
+  if (roomType.includes("Suite")) return "luxury-suites";
+  return "luxury-rooms";
+}
+
+function roomTitleSuffix(roomType: string) {
+  if (roomType.includes("Royal")) return "Royal Suite";
+  if (roomType.includes("Suite")) return "Suite";
+  return "Cabin";
+}
+
+/** Homepage itineraries carousel — one slide per cruise room option. */
+export type ExCarouselSlide = {
+  key: string;
+  title: string;
+  imageName: SiteImageName;
+  alt: string;
+  duration: StayDurationValue;
+  roomType: LuxuryRoomTypeValue;
+};
+
+function buildCarouselSlides(): ExCarouselSlide[] {
+  return HATHOR_CRUISES.flatMap((cruise) => {
+    const ports = formatCruisePorts(cruise.ports);
+    const duration = cruise.slug as StayDurationValue;
+
+    return cruise.rooms.map((room) => ({
+      key: `${cruise.slug}-${room.roomNumber}`,
+      title: `${ports} · ${roomTitleSuffix(room.roomType)}`,
+      imageName: roomImageName(room.roomType),
+      alt: `${room.name} — ${cruise.name}`,
+      duration,
+      roomType: roomSearchType(room.roomType),
+    }));
+  });
+}
 
 export const EX_GOLD_LOGO_SRC = "/branding/gold.svg";
 
@@ -39,28 +92,7 @@ export const EX_ABOUT = {
 export const EX_CAROUSEL = {
   title: HOMEPAGE_ITINERARIES.title,
   subtitle: HOMEPAGE_ITINERARIES.subtitle,
-  slides: [
-    {
-      title: HOMEPAGE_ITINERARIES.cards[0].title,
-      imageName: "cruises-hero" as SiteImageName,
-      alt: "Hathor Dahabiya on the Nile",
-    },
-    {
-      title: HOMEPAGE_ITINERARIES.cards[1].title,
-      imageName: "room-suite" as SiteImageName,
-      alt: "Luxury suite aboard Hathor",
-    },
-    {
-      title: HOMEPAGE_ITINERARIES.cards[2].title,
-      imageName: "room-royal" as SiteImageName,
-      alt: "Royal suite aboard Hathor",
-    },
-    {
-      title: "Luxury Cabins",
-      imageName: "room-luxury" as SiteImageName,
-      alt: "Luxury cabin aboard Hathor Dahabiya",
-    },
-  ],
+  slides: buildCarouselSlides(),
 } as const;
 
 export const EX_PINNED = {

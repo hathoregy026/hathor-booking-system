@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
 import type { CSSProperties } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
@@ -18,6 +19,7 @@ import {
   EX_PINNED,
   EX_TESTIMONIALS,
   EX_TEXT_BLOCKS,
+  type ExCarouselSlide,
 } from "@/lib/ex-page-content";
 import { useExScrollMotion } from "@/hooks/useExScrollMotion";
 import {
@@ -33,6 +35,7 @@ import {
   parseHeroLogoTune,
 } from "@/lib/hero-logo-tune-shared";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
+import { useBookingStore } from "@/store/bookingStore";
 
 const GALLERY_PREVIEW_ANCHORS = new Set([
   "home-collage-living",
@@ -80,6 +83,52 @@ function paintLogoTune(tune: HeroLogoTune) {
     document.head.appendChild(tag);
   }
   tag.textContent = heroLogoTuneToImportantCss(tune);
+}
+
+function ItineraryCarouselSlide({ slide }: { slide: ExCarouselSlide }) {
+  const router = useRouter();
+  const hydrateFromModal = useBookingStore((state) => state.hydrateFromModal);
+
+  const openCruise = () => {
+    hydrateFromModal({
+      duration: slide.duration,
+      roomConfigs: [
+        {
+          roomType: slide.roomType,
+          adults: 1,
+          children: 0,
+        },
+      ],
+    });
+    router.push("/booking");
+  };
+
+  return (
+    <article className="carousel-slide">
+      <button
+        type="button"
+        className="carousel-slide__hit"
+        onClick={openCruise}
+        aria-label={`Book ${slide.title}`}
+      >
+        <div className="carousel-container-parent">
+          <div className="carousel-container">
+            <ManagedImage
+              name={slide.imageName}
+              alt={slide.alt}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 38vw"
+              className="object-cover"
+              previewAnchor={HOMEPAGE_PREVIEW_SLOTS.has(slide.imageName)}
+            />
+            <div className="carousel-heading">
+              <h2>{slide.title}</h2>
+            </div>
+          </div>
+        </div>
+      </button>
+    </article>
+  );
 }
 
 export function HomePageClient({
@@ -240,23 +289,7 @@ export function HomePageClient({
           <div className="home-carousel">
             <div className="carousel-track">
               {EX_CAROUSEL.slides.map((slide) => (
-                <article key={slide.title} className="carousel-slide">
-                  <div className="carousel-container-parent">
-                    <div className="carousel-container">
-                      <ManagedImage
-                        name={slide.imageName}
-                        alt={slide.alt}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                        className="object-cover"
-                        previewAnchor={HOMEPAGE_PREVIEW_SLOTS.has(slide.imageName)}
-                      />
-                      <div className="carousel-heading">
-                        <h2>{slide.title}</h2>
-                      </div>
-                    </div>
-                  </div>
-                </article>
+                <ItineraryCarouselSlide key={slide.key} slide={slide} />
               ))}
             </div>
 

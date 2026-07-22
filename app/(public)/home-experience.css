@@ -1428,13 +1428,13 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 /* ---------- SERVICES / CAROUSEL ---------- */
 .services-section {
   background: var(--cream);
-  padding: 0 clamp(20px, 5vw, 64px) clamp(80px, 10vw, 140px);
+  padding: 0 clamp(12px, 2.2vw, 28px) clamp(80px, 10vw, 140px);
   z-index: 20;
 }
 
 .services-intro {
   width: min(1180px, 100%);
-  margin: 0 auto 48px;
+  margin: 0 auto 40px;
   text-align: center;
 }
 
@@ -1455,7 +1455,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 }
 
 .home-carousel {
-  width: min(1280px, 100%);
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
   position: relative;
   overflow: hidden;
@@ -1472,6 +1473,26 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   min-width: 0;
 }
 
+.carousel-slide__hit {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.carousel-slide__hit:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
 .carousel-container-parent {
   height: 100%;
 }
@@ -1480,15 +1501,36 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   position: relative;
   overflow: hidden;
   border-radius: 6px;
-  aspect-ratio: 4 / 5;
+  height: clamp(520px, 68vh, 880px);
   background: var(--cream-deep);
   will-change: transform, clip-path;
+}
+
+.carousel-container::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(22, 16, 12, 0.28);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
 }
 
 .carousel-container img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.7s ease, opacity 0.45s ease;
+}
+
+.carousel-slide:is(:hover, :focus-within) .carousel-container::after {
+  opacity: 1;
+}
+
+.carousel-slide:is(:hover, :focus-within) .carousel-container img {
+  transform: scale(1.045);
+  opacity: 0.88;
 }
 
 .carousel-heading {
@@ -1496,6 +1538,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: 2;
   padding: 28px 22px;
   background: linear-gradient(180deg, transparent, rgba(30, 22, 16, 0.72));
   color: var(--white);
@@ -1504,7 +1547,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 .carousel-heading h2 {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(1.3rem, 2vw, 1.7rem);
+  font-size: clamp(1.15rem, 1.8vw, 1.55rem);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -2096,6 +2139,10 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
     flex: 0 0 calc((100% - 22px) / 2);
   }
 
+  .carousel-container {
+    height: clamp(440px, 58vh, 720px);
+  }
+
   .gallery-grid {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -2175,6 +2222,10 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
     flex: 0 0 100%;
   }
 
+  .carousel-container {
+    height: clamp(420px, 62vh, 640px);
+  }
+
   .gallery-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -2192,6 +2243,14 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 
   .hero-scroll-hint::after {
     animation: none;
+  }
+
+  .carousel-container img {
+    transition: none;
+  }
+
+  .carousel-slide:is(:hover, :focus-within) .carousel-container img {
+    transform: none;
   }
 }
 
