@@ -1714,6 +1714,26 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   /* No separate shadow panel — veil lives on the card edges */
   background: none;
   box-shadow: none;
+  min-height: min(42vh, 22rem);
+}
+
+.ex-stack-scroll__copy-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: inherit;
+  padding-bottom: inherit;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
+.ex-stack-scroll__copy-panel[data-stack-copy-index="0"] {
+  opacity: 1;
+  visibility: visible;
 }
 
 .ex-stack-scroll__copy::before {
@@ -1730,15 +1750,15 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 }
 
 .ex-stack-scroll__eyebrow {
-  margin: 0 0 1.1rem;
-  /* Font/size/case/color from dashboard typography (page_subtitle) */
+  margin: 0.15rem 0 1rem;
+  /* Font/size/case/color from dashboard typography (On images · indication) */
 }
 
 .ex-stack-scroll__title {
   font-weight: 400;
-  margin: 0 0 0.85rem;
+  margin: 0 0 0.35rem;
   max-width: 15ch;
-  /* Font/size/color/tracking from dashboard typography (page_title) */
+  /* Font/size/color/tracking from dashboard typography (On images · title) */
 }
 
 .ex-stack-scroll__title-line {

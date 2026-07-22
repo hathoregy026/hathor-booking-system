@@ -152,10 +152,32 @@ export function HomePageClient({
     .split("\n")
     .map((line) => line.trim())
     .filter(Boolean);
-  const onImagesIndication =
-    typography.on_images_copy.indication.trim() || "Nile · Hathor";
-  const onImagesBody =
-    typography.on_images_copy.body.trim() || EX_PINNED.body;
+
+  const stackSlides = EX_PINNED.slides.map((slide, index) => {
+    const useCms = index === 0;
+    const titleRaw = useCms
+      ? typography.on_images_copy.title.trim() || slide.title
+      : slide.title;
+    const titleLines = titleRaw
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean);
+    return {
+      ...slide,
+      titleLines:
+        titleLines.length > 0
+          ? titleLines
+          : index === 0
+            ? onImagesTitleLines
+            : [slide.title],
+      indication: useCms
+        ? typography.on_images_copy.indication.trim() || slide.indication
+        : slide.indication,
+      body: useCms
+        ? typography.on_images_copy.body.trim() || slide.body
+        : slide.body,
+    };
+  });
 
   const [liveTune, setLiveTune] = useState(heroLogoTune);
 
@@ -322,7 +344,7 @@ export function HomePageClient({
         >
           <div className="ex-stack-scroll__viewport">
             <div className="ex-stack-scroll__cards" aria-hidden="true">
-              {EX_PINNED.slides.map((slide, index) => (
+              {stackSlides.map((slide, index) => (
                 <div key={slide.imageName} className="ex-stack-scroll__card">
                   <div
                     className="ex-stack-scroll__card-media"
@@ -337,7 +359,7 @@ export function HomePageClient({
                         : undefined
                     }
                     data-site-image-pin-index={String(index)}
-                    data-site-image-pin-total={String(EX_PINNED.slides.length)}
+                    data-site-image-pin-total={String(stackSlides.length)}
                   >
                     <ManagedImage
                       name={slide.imageName}
@@ -353,29 +375,38 @@ export function HomePageClient({
             </div>
 
             <div className="ex-stack-scroll__copy typo-on-images">
-              <h2 className="ex-stack-scroll__title" style={stackTitleStyle}>
-                {onImagesTitleLines.map((line) => (
-                  <span
-                    key={line}
-                    className="ex-stack-scroll__title-line"
-                    style={stackTitleStyle}
+              {stackSlides.map((slide, index) => (
+                <div
+                  key={`copy-${slide.imageName}`}
+                  className="ex-stack-scroll__copy-panel"
+                  data-stack-copy-index={String(index)}
+                  aria-hidden={index === 0 ? "false" : "true"}
+                >
+                  <h2 className="ex-stack-scroll__title" style={stackTitleStyle}>
+                    {slide.titleLines.map((line) => (
+                      <span
+                        key={`${slide.imageName}-${line}`}
+                        className="ex-stack-scroll__title-line"
+                        style={stackTitleStyle}
+                      >
+                        {line}
+                      </span>
+                    ))}
+                  </h2>
+                  <p
+                    className="ex-stack-scroll__eyebrow typo-on-images-indication"
+                    style={stackEyebrowStyle}
                   >
-                    {line}
-                  </span>
-                ))}
-              </h2>
-              <p
-                className="ex-stack-scroll__eyebrow typo-on-images-indication"
-                style={stackEyebrowStyle}
-              >
-                {onImagesIndication}
-              </p>
-              <p
-                className="ex-stack-scroll__body typo-on-images-body"
-                style={stackBodyStyle}
-              >
-                {onImagesBody}
-              </p>
+                    {slide.indication}
+                  </p>
+                  <p
+                    className="ex-stack-scroll__body typo-on-images-body"
+                    style={stackBodyStyle}
+                  >
+                    {slide.body}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
         </section>

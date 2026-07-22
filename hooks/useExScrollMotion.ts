@@ -570,10 +570,13 @@ export function useExScrollMotion() {
    * EX stack scroll — fullscreen luxury card stack + text
    * ----------------------------------------------------- */
   function initExStackScrollText(section: Element) {
-    const titleLines = section.querySelectorAll(".ex-stack-scroll__title-line");
-    const body = section.querySelector(".ex-stack-scroll__body");
-    const eyebrow = section.querySelector(".ex-stack-scroll__eyebrow");
-    if (!titleLines.length) return;
+    const firstPanel = section.querySelector(
+      '.ex-stack-scroll__copy-panel[data-stack-copy-index="0"]',
+    );
+    const titleLines = firstPanel?.querySelectorAll(".ex-stack-scroll__title-line");
+    const body = firstPanel?.querySelector(".ex-stack-scroll__body");
+    const eyebrow = firstPanel?.querySelector(".ex-stack-scroll__eyebrow");
+    if (!titleLines?.length) return;
 
     if (prefersReduced) return;
 
@@ -649,6 +652,9 @@ export function useExScrollMotion() {
     const section = document.querySelector(".ex-stack-scroll");
     const viewport = section?.querySelector(".ex-stack-scroll__viewport");
     const copy = section?.querySelector(".ex-stack-scroll__copy");
+    const copyPanels = gsap.utils.toArray<HTMLElement>(
+      ".ex-stack-scroll__copy-panel",
+    );
     const cards = gsap.utils.toArray<HTMLElement>(".ex-stack-scroll__card");
     if (!section || !viewport || cards.length < 2) return;
 
@@ -658,6 +664,13 @@ export function useExScrollMotion() {
       gsap.set(cards, { yPercent: 0, scale: 1, filter: "brightness(1)" });
       cards.slice(1).forEach((card) => {
         gsap.set(card, { autoAlpha: 0 });
+      });
+      copyPanels.forEach((panel, index) => {
+        gsap.set(panel, {
+          autoAlpha: index === 0 ? 1 : 0,
+          y: 0,
+        });
+        panel.setAttribute("aria-hidden", index === 0 ? "false" : "true");
       });
       return;
     }
@@ -703,6 +716,15 @@ export function useExScrollMotion() {
         }
       });
 
+      copyPanels.forEach((panel, index) => {
+        gsap.set(panel, {
+          autoAlpha: index === 0 ? 1 : 0,
+          y: index === 0 ? 0 : 18,
+          visibility: index === 0 ? "visible" : "hidden",
+        });
+        panel.setAttribute("aria-hidden", index === 0 ? "false" : "true");
+      });
+
       const tl = gsap.timeline({
         scrollTrigger: {
           id: "ex-stack-scroll",
@@ -737,6 +759,8 @@ export function useExScrollMotion() {
         const at = (i - 1) * step;
         const card = cards[i];
         const media = getCardMedia(card);
+        const prevPanel = copyPanels[i - 1];
+        const nextPanel = copyPanels[i];
 
         tl.fromTo(
           card,
@@ -751,6 +775,33 @@ export function useExScrollMotion() {
             { scale: 1.08, x: 0 },
             { scale: 1.04, x: 0, ease: "none", duration: step },
             at,
+          );
+        }
+
+        /* Elegant copy crossfade — synced to the same scrub step as the card */
+        if (prevPanel && nextPanel) {
+          tl.to(
+            prevPanel,
+            {
+              autoAlpha: 0,
+              y: -14,
+              ease: "power1.in",
+              duration: step * 0.42,
+              onStart: () => prevPanel.setAttribute("aria-hidden", "true"),
+            },
+            at,
+          );
+          tl.fromTo(
+            nextPanel,
+            { autoAlpha: 0, y: 18, visibility: "visible" },
+            {
+              autoAlpha: 1,
+              y: 0,
+              ease: "power2.out",
+              duration: step * 0.55,
+              onStart: () => nextPanel.setAttribute("aria-hidden", "false"),
+            },
+            at + step * 0.28,
           );
         }
 
