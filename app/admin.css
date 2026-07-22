@@ -1790,6 +1790,27 @@ select.admin-input option:checked {
   pointer-events: none;
 }
 
+.typo-stage__sample--luxury-gradient {
+  background-image: var(--typo-live-gradient) !important;
+  background-size: 100% 100% !important;
+  background-repeat: no-repeat !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: none !important;
+  filter: var(--typo-live-gradient-filter, none);
+}
+
+.typo-easy__gradient {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
 .typo-stage__align {
   display: flex;
   flex-wrap: wrap;

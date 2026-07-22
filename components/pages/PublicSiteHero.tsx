@@ -12,6 +12,7 @@ import { GoldDustParticles } from "@/components/ui/GoldDustParticles";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 import type { HathorLogoPartsVariant } from "@/lib/hathor-logo-letters";
 import {
+  heroSecondGradientInlineStyle,
   resolveHeroPageCopy,
   type HeroPageKey,
 } from "@/lib/typography-settings-shared";
@@ -89,6 +90,13 @@ export function PublicSiteHero({
     : { main: lineRight, second: lineLeft };
   const displayRight = resolved.main;
   const displayLeft = resolved.second;
+  const secondTitleStyle = {
+    ...heroSubtitleStyle,
+    ...heroSecondGradientInlineStyle(typography.hero_second_gradient),
+  };
+  const secondTitleClass = typography.hero_second_gradient.enabled
+    ? "hero-line hero-line--left hero-line--luxury-gradient"
+    : "hero-line hero-line--left";
 
   useLayoutEffect(() => {
     if (!playVideo) return;
@@ -159,10 +167,7 @@ export function PublicSiteHero({
               />
             </span>
           ) : displayLeft ? (
-            <span
-              className="hero-line hero-line--left"
-              style={heroSubtitleStyle}
-            >
+            <span className={secondTitleClass} style={secondTitleStyle}>
               {displayLeft}
             </span>
           ) : null}

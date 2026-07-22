@@ -206,6 +206,35 @@ export const DEFAULT_HERO_LAYOUT: HeroLayout = {
 const copyLine = z.string().max(160);
 const copyBody = z.string().max(1200);
 
+/** Metallic luxury gradient for the hero second title (script line) */
+export const heroSecondGradientSchema = z.object({
+  enabled: z.boolean(),
+  /** Champagne / specular highlight */
+  highlight: hexColor,
+  /** Classic metallic gold mid-tone */
+  mid: hexColor,
+  /** Warm bronze body shadow */
+  deep: hexColor,
+  /** Deep chocolate recess */
+  bronze: hexColor,
+  /** Gradient angle in degrees */
+  angle: z.number().min(0).max(360),
+  /** Contrast / emboss strength 0–100 */
+  intensity: z.number().min(0).max(100),
+});
+
+export type HeroSecondGradient = z.infer<typeof heroSecondGradientSchema>;
+
+export const DEFAULT_HERO_SECOND_GRADIENT: HeroSecondGradient = {
+  enabled: true,
+  highlight: "#FFF6D4",
+  mid: "#D4AF37",
+  deep: "#8A6B2E",
+  bronze: "#3D2A14",
+  angle: 145,
+  intensity: 90,
+};
+
 /** Editable homepage hero title lines */
 export const heroCopySchema = z.object({
   main: copyLine,
@@ -314,6 +343,7 @@ export const typographySettingsSchema = z.object({
   on_images_indication: typographyTextStyleSchema,
   on_images_body: typographyTextStyleSchema,
   hero_layout: heroLayoutSchema,
+  hero_second_gradient: heroSecondGradientSchema,
   /** @deprecated Prefer hero_pages.home — kept for older saved payloads */
   hero_copy: heroCopySchema,
   hero_pages: heroPagesSchema,
@@ -396,6 +426,7 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
     innerShadow: false,
   },
   hero_layout: { ...DEFAULT_HERO_LAYOUT },
+  hero_second_gradient: { ...DEFAULT_HERO_SECOND_GRADIENT },
   hero_copy: { ...DEFAULT_HERO_COPY },
   hero_pages: Object.fromEntries(
     HERO_PAGE_KEYS.map((key) => [key, { ...DEFAULT_HERO_PAGES[key] }]),
@@ -519,6 +550,85 @@ function parseHeroLayout(raw: unknown): HeroLayout {
     mainY: clampNum(candidate.mainY, -240, 240, DEFAULT_HERO_LAYOUT.mainY),
     secondX: clampNum(candidate.secondX, -240, 240, DEFAULT_HERO_LAYOUT.secondX),
     secondY: clampNum(candidate.secondY, -240, 240, DEFAULT_HERO_LAYOUT.secondY),
+  };
+}
+
+function parseHeroSecondGradient(raw: unknown): HeroSecondGradient {
+  const src =
+    raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
+  const fb = DEFAULT_HERO_SECOND_GRADIENT;
+  const candidate: HeroSecondGradient = {
+    enabled: typeof src.enabled === "boolean" ? src.enabled : fb.enabled,
+    highlight: asHex(src.highlight, fb.highlight),
+    mid: asHex(src.mid, fb.mid),
+    deep: asHex(src.deep, fb.deep),
+    bronze: asHex(src.bronze, fb.bronze),
+    angle: clampNum(asFiniteNumber(src.angle) ?? fb.angle, 0, 360, fb.angle),
+    intensity: clampNum(
+      asFiniteNumber(src.intensity) ?? fb.intensity,
+      0,
+      100,
+      fb.intensity,
+    ),
+  };
+  const parsed = heroSecondGradientSchema.safeParse(candidate);
+  return parsed.success ? parsed.data : { ...fb };
+}
+
+/** Multi-stop brushed-metal gold gradient for hero second titles. */
+export function heroSecondGradientBackground(
+  gradient: HeroSecondGradient,
+): string {
+  const t = Math.min(1, Math.max(0, gradient.intensity / 100));
+  const mix = (a: string, b: string, amount: number) => {
+    const parse = (hex: string) => {
+      const h = hex.replace("#", "");
+      return [
+        Number.parseInt(h.slice(0, 2), 16),
+        Number.parseInt(h.slice(2, 4), 16),
+        Number.parseInt(h.slice(4, 6), 16),
+      ] as const;
+    };
+    const [ar, ag, ab] = parse(a);
+    const [br, bg, bb] = parse(b);
+    const to = (n: number) =>
+      Math.round(n).toString(16).padStart(2, "0").toUpperCase();
+    const r = ar + (br - ar) * amount;
+    const g = ag + (bg - ag) * amount;
+    const bch = ab + (bb - ab) * amount;
+    return `#${to(r)}${to(g)}${to(bch)}`;
+  };
+  /* Low intensity collapses toward mid gold; high intensity opens full metallic range */
+  const highlight = mix(gradient.mid, gradient.highlight, t);
+  const midSoft = mix(gradient.mid, gradient.highlight, t * 0.35);
+  const deep = mix(gradient.mid, gradient.deep, t);
+  const bronze = mix(gradient.deep, gradient.bronze, t);
+  const rim = mix(gradient.mid, gradient.highlight, t * 0.7);
+  return `linear-gradient(${gradient.angle}deg, ${highlight} 0%, ${midSoft} 16%, ${gradient.mid} 34%, ${deep} 52%, ${bronze} 70%, ${deep} 84%, ${rim} 100%)`;
+}
+
+export function heroSecondGradientShadow(gradient: HeroSecondGradient): string {
+  if (!gradient.enabled) return "none";
+  const t = Math.min(1, Math.max(0, gradient.intensity / 100));
+  const soft = (0.28 + t * 0.42).toFixed(2);
+  const tight = (0.35 + t * 0.4).toFixed(2);
+  return `drop-shadow(0 1px 0 rgba(61, 42, 20, ${tight})) drop-shadow(0 6px 14px rgba(0, 0, 0, ${soft})) drop-shadow(0 0 18px rgba(212, 175, 55, ${(
+    0.12 +
+    t * 0.22
+  ).toFixed(2)}))`;
+}
+
+export function heroSecondGradientInlineStyle(
+  gradient: HeroSecondGradient,
+): CSSProperties {
+  if (!gradient.enabled) return {};
+  return {
+    backgroundImage: heroSecondGradientBackground(gradient),
+    WebkitBackgroundClip: "text",
+    backgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+    color: "transparent",
+    filter: heroSecondGradientShadow(gradient),
   };
 }
 
@@ -649,6 +759,7 @@ export function parseTypographySettings(raw: unknown): TypographySettings {
         : DEFAULT_TYPOGRAPHY_SETTINGS.on_images_body,
     ),
     hero_layout: parseHeroLayout(src.hero_layout),
+    hero_second_gradient: parseHeroSecondGradient(src.hero_second_gradient),
     hero_copy: (() => {
       const pages = parseHeroPages(src.hero_pages, parseHeroCopy(src.hero_copy));
       return { ...pages.home };
@@ -672,6 +783,12 @@ export function isTypographySettingsEqual(
     (key) => a.hero_layout[key] === b.hero_layout[key],
   );
   if (!layoutEqual) return false;
+  const gradientEqual = (
+    Object.keys(a.hero_second_gradient) as (keyof HeroSecondGradient)[]
+  ).every(
+    (key) => a.hero_second_gradient[key] === b.hero_second_gradient[key],
+  );
+  if (!gradientEqual) return false;
   const pagesEqual = HERO_PAGE_KEYS.every(
     (key) =>
       a.hero_pages[key].main === b.hero_pages[key].main &&
@@ -729,6 +846,18 @@ function heroLayoutCssVars(layout: HeroLayout): Record<string, string> {
   };
 }
 
+function heroSecondGradientCssVars(
+  gradient: HeroSecondGradient,
+): Record<string, string> {
+  return {
+    "--typo-hero-second-gradient": heroSecondGradientBackground(gradient),
+    "--typo-hero-second-gradient-filter": gradient.enabled
+      ? heroSecondGradientShadow(gradient)
+      : "none",
+    "--typo-hero-second-gradient-on": gradient.enabled ? "1" : "0",
+  };
+}
+
 export function typographyToCssVars(
   settings: TypographySettings,
 ): Record<string, string> {
@@ -736,7 +865,11 @@ export function typographyToCssVars(
     (acc, role) => ({ ...acc, ...roleCssVars(role, settings[role]) }),
     {} as Record<string, string>,
   );
-  return { ...roleVars, ...heroLayoutCssVars(settings.hero_layout) };
+  return {
+    ...roleVars,
+    ...heroLayoutCssVars(settings.hero_layout),
+    ...heroSecondGradientCssVars(settings.hero_second_gradient),
+  };
 }
 
 /** Beats stylesheet cascade for hero + page titles/subtitles. */
@@ -819,6 +952,25 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
   top: var(--typo-hero-second-y, 0px) !important;
   margin-top: 0 !important;
   padding-top: 0 !important;
+}
+${
+  settings.hero_second_gradient.enabled
+    ? `.public-site .hero-line--left:not(.hero-line--wordmark),
+.public-site .home-hero-container .hero-heading .hero-line--left:not(.hero-line--wordmark),
+html[data-ex-experience] .public-site .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
+html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
+.public-site .hero-line--left.hero-line--luxury-gradient {
+  background-image: var(--typo-hero-second-gradient) !important;
+  background-size: 100% 100% !important;
+  background-repeat: no-repeat !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: none !important;
+  filter: var(--typo-hero-second-gradient-filter) !important;
+}`
+    : ""
 }
 .public-site .hero-sub,
 html[data-ex-experience] .ex-root .hero-sub,
