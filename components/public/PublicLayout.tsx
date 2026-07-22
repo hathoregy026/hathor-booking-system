@@ -7,7 +7,6 @@ import { LuxuryTextAnimations } from "@/components/public/LuxuryTextAnimations";
 import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
 import { ScrollPositionRestore } from "@/components/public/ScrollPositionRestore";
 import { SiteImagePreviewScroll } from "@/components/public/SiteImagePreviewScroll";
-import { SpecularButtons } from "@/components/public/SpecularButtons";
 import { PageTransition } from "@/components/ui/PageTransition";
 import type { ReactNode } from "react";
 
@@ -37,7 +36,6 @@ export function PublicLayout({ children }: PublicLayoutProps) {
           <DeployFreshness deployId={deployId} />
           <ScrollPositionRestore />
           <LuxuryTextAnimations />
-          <SpecularButtons />
           <SiteImagePreviewScroll />
           <PublicNavbar />
           <main className="public-main public-main--hero">

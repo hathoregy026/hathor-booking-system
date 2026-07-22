@@ -1,38 +1,33 @@
-/* Hathor specular CTAs — gold liquid-glass rim (reliable, no mask) */
+/* Button stroke shine on hover — fill hover stays the normal gold */
 
-@property --sb-angle {
+@property --sb-shine {
   syntax: "<angle>";
   inherits: false;
   initial-value: 0deg;
 }
 
-@keyframes hathor-sb-spin {
+@keyframes hathor-stroke-shine {
   to {
-    --sb-angle: 360deg;
+    --sb-shine: 360deg;
   }
 }
 
-/*
-  Technique: paint a spinning conic disc BEHIND the opaque button (z-index: -1
-  inside isolation). Only the 3px ring that sticks out past the button edge
-  is visible — no mask-composite required.
-*/
 .public-site a.btn,
 .public-site button.btn,
 .public-site .public-btn-gold,
 .public-site .public-btn-outline-gold,
 .public-site .public-btn-dark,
 .public-site .hero-cta {
-  --sb-angle: 0deg;
-  --sb-gold: #b69f64;
-  --sb-gold-soft: #d4c28a;
-  --sb-cream: #f5efe4;
   position: relative;
   isolation: isolate;
-  overflow: visible !important;
-  z-index: 0;
+  overflow: visible;
 }
 
+/*
+  Stroke-only gold + white shine.
+  Mask keeps the gradient on the border ring — never fills the button.
+  Idle: hidden. Hover: fades in and travels around the stroke.
+*/
 .public-site a.btn::before,
 .public-site button.btn::before,
 .public-site .public-btn-gold::before,
@@ -41,49 +36,49 @@
 .public-site .hero-cta::before {
   content: "";
   position: absolute;
-  inset: -3px;
+  inset: -2px;
   border-radius: inherit;
-  z-index: -1;
+  padding: 1.5px;
   pointer-events: none;
+  z-index: 3;
+  opacity: 0;
   background: conic-gradient(
-    from var(--sb-angle),
-    #6a5a35 0deg,
-    var(--sb-gold) 50deg,
-    var(--sb-cream) 90deg,
-    var(--sb-gold-soft) 130deg,
-    var(--sb-gold) 180deg,
-    #8a7340 230deg,
-    var(--sb-gold-soft) 280deg,
-    #6a5a35 360deg
+    from var(--sb-shine),
+    transparent 0deg,
+    transparent 55deg,
+    rgba(255, 252, 245, 0.15) 95deg,
+    #ffffff 125deg,
+    #d4c28a 155deg,
+    #b69f64 185deg,
+    rgba(212, 194, 138, 0.35) 220deg,
+    transparent 270deg,
+    transparent 360deg
   );
-  box-shadow:
-    0 0 16px rgba(212, 194, 138, 0.55),
-    0 0 32px rgba(182, 159, 100, 0.3);
-  animation: hathor-sb-spin 2.4s linear infinite;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.public-site .hero-cta::before {
-  inset: -4px;
-  box-shadow:
-    0 0 22px rgba(212, 194, 138, 0.65),
-    0 0 44px rgba(182, 159, 100, 0.35);
-}
-
-.public-site a.btn::after,
-.public-site button.btn::after,
-.public-site .public-btn-gold::after,
-.public-site .public-btn-outline-gold::after,
-.public-site .public-btn-dark::after,
-.public-site .hero-cta::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  z-index: 1;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 252, 245, 0.5),
-    inset 0 -1px 0 rgba(182, 159, 100, 0.16);
+.public-site a.btn:hover::before,
+.public-site button.btn:hover::before,
+.public-site .public-btn-gold:hover::before,
+.public-site .public-btn-outline-gold:hover::before,
+.public-site .public-btn-dark:hover::before,
+.public-site .hero-cta:hover::before,
+.public-site a.btn:focus-visible::before,
+.public-site button.btn:focus-visible::before,
+.public-site .public-btn-gold:focus-visible::before,
+.public-site .public-btn-outline-gold:focus-visible::before,
+.public-site .public-btn-dark:focus-visible::before,
+.public-site .hero-cta:focus-visible::before {
+  opacity: 1;
+  animation: hathor-stroke-shine 1.35s linear infinite;
 }
 
 .public-site a.btn > *,
@@ -93,90 +88,30 @@
 .public-site .public-btn-dark > *,
 .public-site .hero-cta > * {
   position: relative;
-  z-index: 2;
-}
-
-.public-site [data-specular-live="1"]::before {
-  animation: none;
-}
-
-.public-site a.btn:hover::before,
-.public-site button.btn:hover::before,
-.public-site .public-btn-gold:hover::before,
-.public-site .public-btn-outline-gold:hover::before,
-.public-site .public-btn-dark:hover::before,
-.public-site .hero-cta:hover::before {
-  box-shadow:
-    0 0 28px rgba(212, 194, 138, 0.75),
-    0 0 52px rgba(182, 159, 100, 0.4);
-  filter: brightness(1.12);
-}
-
-.public-site a.btn:active,
-.public-site button.btn:active,
-.public-site .public-btn-gold:active,
-.public-site .public-btn-outline-gold:active,
-.public-site .public-btn-dark:active {
-  transform: scale(0.97);
-}
-
-.public-site .hero-cta:active {
-  transform: none;
-}
-
-.public-site a.btn:focus-visible,
-.public-site button.btn:focus-visible,
-.public-site .public-btn-gold:focus-visible,
-.public-site .public-btn-outline-gold:focus-visible,
-.public-site .public-btn-dark:focus-visible,
-.public-site .hero-cta:focus-visible {
-  outline: 2px solid color-mix(in srgb, #d4c28a 75%, transparent);
-  outline-offset: 3px;
-}
-
-.specular-button {
-  --sb-radius: 999px;
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  isolation: isolate;
-  overflow: visible;
-  border-radius: var(--sb-radius);
-  cursor: pointer;
-}
-
-.specular-button__fx {
-  display: none !important;
-}
-
-.specular-button__label {
-  position: relative;
-  z-index: 2;
+  z-index: 4;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .public-site a.btn::before,
-  .public-site button.btn::before,
-  .public-site .public-btn-gold::before,
-  .public-site .public-btn-outline-gold::before,
-  .public-site .public-btn-dark::before,
-  .public-site .hero-cta::before {
+  .public-site a.btn:hover::before,
+  .public-site button.btn:hover::before,
+  .public-site .public-btn-gold:hover::before,
+  .public-site .public-btn-outline-gold:hover::before,
+  .public-site .public-btn-dark:hover::before,
+  .public-site .hero-cta:hover::before,
+  .public-site a.btn:focus-visible::before,
+  .public-site button.btn:focus-visible::before,
+  .public-site .public-btn-gold:focus-visible::before,
+  .public-site .public-btn-outline-gold:focus-visible::before,
+  .public-site .public-btn-dark:focus-visible::before,
+  .public-site .hero-cta:focus-visible::before {
     animation: none;
     background: linear-gradient(
-      135deg,
-      #8a7340,
-      var(--sb-cream),
-      var(--sb-gold),
-      #8a7340
+      120deg,
+      transparent 10%,
+      #ffffff 40%,
+      #d4c28a 55%,
+      #b69f64 70%,
+      transparent 90%
     );
-  }
-
-  .public-site a.btn:active,
-  .public-site button.btn:active,
-  .public-site .public-btn-gold:active,
-  .public-site .public-btn-outline-gold:active,
-  .public-site .public-btn-dark:active {
-    transform: none;
   }
 }
