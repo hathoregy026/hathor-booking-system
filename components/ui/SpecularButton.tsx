@@ -1,19 +1,13 @@
 "use client";
 
-import {
-  useEffect,
-  useRef,
-  type ButtonHTMLAttributes,
-  type ReactNode,
-} from "react";
-import { mountSpecularButtonFx } from "@/lib/specular-button-fx";
+import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 type SpecularButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: ReactNode;
   size?: "sm" | "md" | "lg";
 };
 
-/** Explicit specular CTA — gold rim FX + Hathor chrome. */
+/** Explicit specular CTA — uses site-wide gold rim CSS via .btn classes. */
 export function SpecularButton({
   children,
   className = "",
@@ -21,21 +15,17 @@ export function SpecularButton({
   type = "button",
   ...props
 }: SpecularButtonProps) {
-  const ref = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const handle = mountSpecularButtonFx(el);
-    return () => handle.destroy();
-  }, []);
+  const sizeClass =
+    size === "sm"
+      ? "specular-button--sm"
+      : size === "lg"
+        ? "specular-button--lg"
+        : "specular-button--md";
 
   return (
     <button
-      ref={ref}
       type={type}
-      className={`specular-button specular-button--${size} ${className}`.trim()}
+      className={`btn btn-filled specular-button ${sizeClass} ${className}`.trim()}
       {...props}
     >
       <span className="specular-button__label">{children}</span>
