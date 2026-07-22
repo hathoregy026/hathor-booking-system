@@ -139,7 +139,7 @@
   --sb-tint-opacity: 0.1;
   --sb-blur: 10px;
   --sb-text-color: #f5efe4;
-  overflow: visible;
+  overflow: visible !important;
   border-color: rgba(212, 194, 138, 0.72);
   box-shadow:
     inset 0 1px 0 rgba(255, 252, 245, 0.22),
