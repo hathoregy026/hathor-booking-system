@@ -783,9 +783,9 @@ export function TypographyStylesPanel() {
 
             <div className="typo-easy__gradient">
               <p className="typo-easy__controls-hint">
-                Second title · static specular conic gold — same sheen as the
-                Discover More buttons, without the spin. Angle rotates the
-                highlight; colours match the button palette.
+                Second title · polished metallic gold (Shine look) — bright
+                ridge highlight, warm body gold, deep bronze underside. Static;
+                angle tilts the light. Applies to every page hero’s second line.
               </p>
               <button
                 type="button"
@@ -800,13 +800,13 @@ export function TypographyStylesPanel() {
               </button>
 
               <div className="typo-easy__row">
-                <SimpleField label="Cream highlight">
+                <SimpleField label="Highlight (ridge)">
                   <HexColorInput
                     value={secondGradient.highlight}
                     onChange={(hex) => patchSecondGradient({ highlight: hex })}
                   />
                 </SimpleField>
-                <SimpleField label="Hathor gold">
+                <SimpleField label="Body gold">
                   <HexColorInput
                     value={secondGradient.mid}
                     onChange={(hex) => patchSecondGradient({ mid: hex })}
@@ -814,13 +814,13 @@ export function TypographyStylesPanel() {
                 </SimpleField>
               </div>
               <div className="typo-easy__row">
-                <SimpleField label="Soft gold">
+                <SimpleField label="Deep amber">
                   <HexColorInput
                     value={secondGradient.deep}
                     onChange={(hex) => patchSecondGradient({ deep: hex })}
                   />
                 </SimpleField>
-                <SimpleField label="Dark brass">
+                <SimpleField label="Bronze recess">
                   <HexColorInput
                     value={secondGradient.bronze}
                     onChange={(hex) => patchSecondGradient({ bronze: hex })}

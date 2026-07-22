@@ -227,16 +227,16 @@ export type HeroSecondGradient = z.infer<typeof heroSecondGradientSchema>;
 
 export const DEFAULT_HERO_SECOND_GRADIENT: HeroSecondGradient = {
   enabled: true,
-  /** Cream specular flash — matches button --sb-cream */
-  highlight: "#F5EFE4",
-  /** Hathor gold — matches button --sb-gold */
-  mid: "#B69F64",
-  /** Soft gold — matches button --sb-gold-soft / #8a7340 blend */
-  deep: "#D4C28A",
-  /** Dark brass rim — matches button #6a5a35 */
-  bronze: "#6A5A35",
-  /** Static conic start angle (buttons spin this; titles stay fixed) */
-  angle: 40,
+  /** Near-white specular ridge — Shine polished highlight */
+  highlight: "#FFF9E3",
+  /** Classic warm metallic gold */
+  mid: "#D4AF37",
+  /** Deep amber / bronze body */
+  deep: "#8B5E1A",
+  /** Chocolate recess / underside */
+  bronze: "#3D2B0D",
+  /** Slight tilt = light from upper-left (metallic lettering) */
+  angle: 192,
   intensity: 100,
 };
 
@@ -562,6 +562,16 @@ function parseHeroSecondGradient(raw: unknown): HeroSecondGradient {
   const src =
     raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
   const fb = DEFAULT_HERO_SECOND_GRADIENT;
+
+  /* Migrate prior button-conic defaults → Shine metallic palette */
+  const legacyButton =
+    asHex(src.mid, "").toUpperCase() === "#B69F64" &&
+    asHex(src.highlight, "").toUpperCase() === "#F5EFE4" &&
+    asHex(src.bronze, "").toUpperCase() === "#6A5A35";
+  if (legacyButton || raw == null) {
+    return { ...fb };
+  }
+
   const candidate: HeroSecondGradient = {
     enabled: typeof src.enabled === "boolean" ? src.enabled : fb.enabled,
     highlight: asHex(src.highlight, fb.highlight),
@@ -581,8 +591,9 @@ function parseHeroSecondGradient(raw: unknown): HeroSecondGradient {
 }
 
 /**
- * Static specular conic gold — same stops as `.btn` / Discover More buttons
- * (`app/specular-button.css`), without the rotating --sb-angle animation.
+ * Polished 3D metallic gold for hero second titles — Shine / luxury-metal vibe.
+ * Vertical multi-stop linear fill (not conic): letterforms need top→bottom
+ * light falloff to read as beveled gold, not a button ring.
  */
 export function heroSecondGradientBackground(
   gradient: HeroSecondGradient,
@@ -607,22 +618,54 @@ export function heroSecondGradientBackground(
     return `#${to(r)}${to(g)}${to(bch)}`;
   };
 
-  /* Intensity collapses toward mid gold; full intensity = full button sheen */
-  const cream = mix(gradient.mid, gradient.highlight, t);
-  const gold = mix(gradient.mid, gradient.mid, 1);
-  const goldSoft = mix(gradient.mid, gradient.deep, t);
-  const darkBrass = mix(gradient.mid, gradient.bronze, t);
-  const midBrass = mix(gradient.bronze, gradient.deep, t * 0.55);
+  const white = mix(gradient.highlight, "#FFFFFF", t * 0.55);
+  const tip = mix(gradient.mid, gradient.highlight, t);
+  const bright = mix(gradient.mid, gradient.highlight, t * 0.72);
+  const body = gradient.mid;
+  const shade = mix(gradient.mid, gradient.deep, t);
+  const recess = mix(gradient.deep, gradient.bronze, t);
+  const under = mix(gradient.bronze, "#1A1208", t * 0.65);
+  const bounce = mix(gradient.deep, gradient.mid, t * 0.4);
+  const rim = mix(gradient.mid, gradient.highlight, t * 0.5);
 
-  return `conic-gradient(from ${gradient.angle}deg, ${darkBrass} 0deg, ${gold} 50deg, ${cream} 90deg, ${goldSoft} 130deg, ${gold} 180deg, ${midBrass} 230deg, ${goldSoft} 280deg, ${darkBrass} 360deg)`;
+  /* Specular band + metal body — high-contrast polished gold */
+  const metal = `linear-gradient(${gradient.angle}deg,
+    ${white} 0%,
+    ${tip} 7%,
+    ${bright} 16%,
+    ${body} 28%,
+    ${shade} 42%,
+    ${recess} 52%,
+    ${under} 58%,
+    ${bounce} 70%,
+    ${body} 82%,
+    ${rim} 92%,
+    ${shade} 100%)`;
+
+  const sheen = `linear-gradient(${(gradient.angle + 75) % 360}deg,
+    transparent 0%,
+    transparent 38%,
+    ${mix("#FFFFFF", gradient.highlight, t * 0.5)}66 47%,
+    transparent 56%,
+    transparent 100%)`;
+
+  return `${sheen}, ${metal}`;
 }
 
 export function heroSecondGradientShadow(gradient: HeroSecondGradient): string {
   if (!gradient.enabled) return "none";
   const t = Math.min(1, Math.max(0, gradient.intensity / 100));
-  const glowA = (0.35 + t * 0.35).toFixed(2);
-  const glowB = (0.18 + t * 0.22).toFixed(2);
-  return `drop-shadow(0 0 16px rgba(212, 194, 138, ${glowA})) drop-shadow(0 0 32px rgba(182, 159, 100, ${glowB})) drop-shadow(0 2px 4px rgba(42, 32, 18, 0.45))`;
+  const edge = (0.55 + t * 0.4).toFixed(2);
+  const depth = (0.35 + t * 0.4).toFixed(2);
+  const glow = (0.2 + t * 0.28).toFixed(2);
+  /* Top rim catch + hard underside + soft lift + warm gold bloom */
+  return [
+    `drop-shadow(0 -0.5px 0 rgba(255, 249, 227, ${(0.25 + t * 0.35).toFixed(2)}))`,
+    `drop-shadow(0 1px 0 rgba(61, 43, 13, ${edge}))`,
+    `drop-shadow(0 2px 2px rgba(0, 0, 0, ${depth}))`,
+    `drop-shadow(0 10px 18px rgba(0, 0, 0, ${(0.28 + t * 0.25).toFixed(2)}))`,
+    `drop-shadow(0 0 14px rgba(212, 175, 55, ${glow}))`,
+  ].join(" ");
 }
 
 export function heroSecondGradientInlineStyle(
@@ -968,7 +1011,8 @@ html[data-ex-experience] .public-site .ex-root .hero-heading .hero-line--left:no
 html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
 .public-site .hero-line--left.hero-line--luxury-gradient {
   background-image: var(--typo-hero-second-gradient) !important;
-  background-size: 100% 100% !important;
+  background-size: 140% 140%, 100% 100% !important;
+  background-position: center, center !important;
   background-repeat: no-repeat !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
