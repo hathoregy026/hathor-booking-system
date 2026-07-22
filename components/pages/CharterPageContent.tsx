@@ -15,6 +15,7 @@ export function CharterPageContent() {
       subtitle={CHARTER_PAGE.hero.subtitle}
       breadcrumb="Charter"
       imageName="charter-hero"
+      heroPage="charter"
     >
 
       <section className="hathor-section hathor-section--dark">

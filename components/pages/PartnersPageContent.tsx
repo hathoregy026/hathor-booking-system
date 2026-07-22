@@ -12,6 +12,7 @@ export function PartnersPageContent() {
       subtitle={HOMEPAGE_PARTNERS.chapter}
       breadcrumb="Partners"
       imageName="about-hero"
+      heroPage="partners"
     >
       <section className="hathor-section hathor-section--dark">
         <div className="hathor-container">

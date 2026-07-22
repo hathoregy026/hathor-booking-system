@@ -41,6 +41,7 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
       subtitle={BLOG_PAGE.hero.subtitle}
       breadcrumb="Blog"
       imageName="blog-hero"
+      heroPage="blog"
     >
 
       <section className="hathor-section hathor-section--dark">

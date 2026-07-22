@@ -9,6 +9,7 @@ export function RoyalSuitesPageContent() {
       heroTitle={ROYAL_SUITES_PAGE.hero.title}
       heroSecondTitle={ROYAL_SUITES_PAGE.hero.secondTitle}
       heroSubtitle={ROYAL_SUITES_PAGE.hero.subtitle}
+      heroPage="royal_suites"
       breadcrumb="Royal Suites"
       heroImageName="room-royal"
       heroImageAlt="Royal suite with panoramic Nile view aboard Hathor Dahabiya"

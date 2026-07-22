@@ -43,6 +43,7 @@ export function ContactPageContent() {
       subtitle={CONTACT_PAGE.hero.subtitle}
       breadcrumb="Contact"
       imageName="contact-hero"
+      heroPage="contact"
     >
 
       <section className="hathor-section hathor-section--dark">

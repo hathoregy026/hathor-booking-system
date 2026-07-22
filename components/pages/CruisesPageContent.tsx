@@ -28,6 +28,7 @@ export function CruisesPageContent() {
     <CruisesListingProvider cruises={HATHOR_CRUISES}>
       <div ref={rootRef} className="venetian-page page-cruises cruises-page">
         <PublicSiteHero
+          heroPage="cruises"
           lineRight={CRUISES_PAGE.hero.title}
           lineLeft={CRUISES_PAGE.hero.secondTitle}
           subtitle={CRUISES_PAGE.hero.subtitle}

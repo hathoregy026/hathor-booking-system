@@ -6,15 +6,23 @@ import { HathorLogoSplit } from "@/components/public/HathorLogoSplit";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
-import { useTypographyInlineStyle } from "@/components/public/TypographySettingsProvider";
+import { useTypographyInlineStyle, useTypographySettings } from "@/components/public/TypographySettingsProvider";
 import { usePublicSiteHeroMotion } from "@/hooks/usePublicSiteHeroMotion";
 import { GoldDustParticles } from "@/components/ui/GoldDustParticles";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 import type { HathorLogoPartsVariant } from "@/lib/hathor-logo-letters";
+import {
+  resolveHeroPageCopy,
+  type HeroPageKey,
+} from "@/lib/typography-settings-shared";
 
 export type PublicSiteHeroProps = {
   lineRight: string;
   lineLeft: string;
+  /**
+   * When set, live typography dashboard copy for this page overrides lineRight / lineLeft.
+   */
+  heroPage?: HeroPageKey;
   /** When set, replaces lineLeft text with this image (same scroll animation). */
   lineLeftImageSrc?: string;
   /** @deprecated Heroes show two titles only — not rendered. */
@@ -55,6 +63,7 @@ export type PublicSiteHeroProps = {
 export function PublicSiteHero({
   lineRight,
   lineLeft,
+  heroPage,
   lineLeftImageSrc,
   showCta = true,
   ctaLabel = HOMEPAGE_HERO.cta,
@@ -67,9 +76,19 @@ export function PublicSiteHero({
 }: PublicSiteHeroProps) {
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const heroImage = useSiteImage(posterImageName ?? "about-hero");
+  const typography = useTypographySettings();
   const heroTitleStyle = useTypographyInlineStyle("hero_title");
   const heroSubtitleStyle = useTypographyInlineStyle("hero_subtitle");
   usePublicSiteHeroMotion(animate);
+
+  const resolved = heroPage
+    ? resolveHeroPageCopy(typography, heroPage, {
+        main: lineRight,
+        second: lineLeft,
+      })
+    : { main: lineRight, second: lineLeft };
+  const displayRight = resolved.main;
+  const displayLeft = resolved.second;
 
   useLayoutEffect(() => {
     if (!playVideo) return;
@@ -125,7 +144,7 @@ export function PublicSiteHero({
       <div className="hero-content">
         <h1 className="hero-heading" style={heroTitleStyle}>
           <span className="hero-line hero-line--right" style={heroTitleStyle}>
-            {lineRight}
+            {displayRight}
           </span>
           {lineLeftImageSrc ? (
             <span className="hero-line hero-line--left hero-line--wordmark">
@@ -133,15 +152,18 @@ export function PublicSiteHero({
               <img
                 className="hero-line-wordmark-img"
                 src={lineLeftImageSrc}
-                alt={lineLeft || "Dahabiya Cruise"}
+                alt={displayLeft || "Dahabiya Cruise"}
                 width={1600}
                 height={302}
                 draggable={false}
               />
             </span>
-          ) : lineLeft ? (
-            <span className="hero-line hero-line--left" style={heroSubtitleStyle}>
-              {lineLeft}
+          ) : displayLeft ? (
+            <span
+              className="hero-line hero-line--left"
+              style={heroSubtitleStyle}
+            >
+              {displayLeft}
             </span>
           ) : null}
         </h1>

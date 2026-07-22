@@ -37,6 +37,7 @@ export function AboutPageContent() {
       subtitle={ABOUT_PAGE.hero.subtitle}
       breadcrumb="About"
       imageName="about-hero"
+      heroPage="about"
     >
 
       <section className="hathor-section hathor-section--cream">

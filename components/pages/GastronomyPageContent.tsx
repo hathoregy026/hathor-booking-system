@@ -43,6 +43,7 @@ export function GastronomyPageContent() {
       subtitle={GASTRONOMY_PAGE.hero.subtitle}
       breadcrumb="Dining"
       imageName="gastronomy-hero"
+      heroPage="gastronomy"
     >
       <div ref={rootRef} className="venetian-page lux-page">
         <section className="dnx" id="table">

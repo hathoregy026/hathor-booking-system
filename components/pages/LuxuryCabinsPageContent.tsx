@@ -9,6 +9,7 @@ export function LuxuryCabinsPageContent() {
       heroTitle={LUXURY_CABINS_PAGE.hero.title}
       heroSecondTitle={LUXURY_CABINS_PAGE.hero.secondTitle}
       heroSubtitle={LUXURY_CABINS_PAGE.hero.subtitle}
+      heroPage="luxury_cabins"
       breadcrumb="Luxury Rooms"
       heroImageName="room-luxury"
       heroImageAlt="Luxury cabin with Nile view aboard Hathor Dahabiya"

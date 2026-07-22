@@ -54,6 +54,7 @@ export function WellnessPageContent() {
       subtitle={WELLNESS_PAGE.hero.subtitle}
       breadcrumb="Wellness"
       imageName="wellness-hero"
+      heroPage="wellness"
     >
       <div ref={rootRef} className="venetian-page lux-page">
         <section className="lux-shell">

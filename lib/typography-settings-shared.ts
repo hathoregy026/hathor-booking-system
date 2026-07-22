@@ -228,6 +228,75 @@ export const DEFAULT_HERO_COPY: HeroCopy = {
   second: "Dahabiya Cruise",
 };
 
+/** Every public page that uses the two-line PublicSiteHero */
+export const HERO_PAGE_KEYS = [
+  "home",
+  "cruises",
+  "highlights",
+  "about",
+  "gastronomy",
+  "wellness",
+  "charter",
+  "contact",
+  "blog",
+  "partners",
+  "suites",
+  "luxury_cabins",
+  "royal_suites",
+] as const;
+
+export type HeroPageKey = (typeof HERO_PAGE_KEYS)[number];
+
+export const HERO_PAGE_LABELS: Record<HeroPageKey, string> = {
+  home: "Homepage",
+  cruises: "Cruises",
+  highlights: "Highlights",
+  about: "About",
+  gastronomy: "Gastronomy",
+  wellness: "Wellness",
+  charter: "Charter",
+  contact: "Contact",
+  blog: "Blog",
+  partners: "Partners",
+  suites: "Suites",
+  luxury_cabins: "Luxury Cabins",
+  royal_suites: "Royal Suites",
+};
+
+export const DEFAULT_HERO_PAGES: Record<HeroPageKey, HeroCopy> = {
+  home: { ...DEFAULT_HERO_COPY },
+  cruises: { main: "Dahabiya Cruises List", second: "Sail Egypt" },
+  highlights: { main: "Dahabiya Cruise", second: "Highlights" },
+  about: { main: "Welcome Aboard Hathor", second: "Dahabiya Cruise" },
+  gastronomy: { main: "Hathor Flavors", second: "Fine Dining" },
+  wellness: { main: "A Floating Oasis of Wellness", second: "Seneb Spa" },
+  charter: { main: "Charter Dahabiya Cruise", second: "Private Voyage" },
+  contact: { main: "Contact", second: "Us" },
+  blog: { main: "Sail on", second: "the Nile" },
+  partners: { main: "Our Partners", second: "Trusted Worldwide" },
+  suites: { main: "Cabins & Suits", second: "River Suites" },
+  luxury_cabins: { main: "Luxury Rooms", second: "Nile Cabins" },
+  royal_suites: { main: "Luxury Royal Suites", second: "Royal Views" },
+};
+
+export const heroPagesSchema = z.object({
+  home: heroCopySchema,
+  cruises: heroCopySchema,
+  highlights: heroCopySchema,
+  about: heroCopySchema,
+  gastronomy: heroCopySchema,
+  wellness: heroCopySchema,
+  charter: heroCopySchema,
+  contact: heroCopySchema,
+  blog: heroCopySchema,
+  partners: heroCopySchema,
+  suites: heroCopySchema,
+  luxury_cabins: heroCopySchema,
+  royal_suites: heroCopySchema,
+});
+
+export type HeroPages = z.infer<typeof heroPagesSchema>;
+
 export const DEFAULT_ON_IMAGES_COPY: OnImagesCopy = {
   title: "Every landmark,\na pleasure.",
   indication: "Nile · Hathor",
@@ -245,7 +314,9 @@ export const typographySettingsSchema = z.object({
   on_images_indication: typographyTextStyleSchema,
   on_images_body: typographyTextStyleSchema,
   hero_layout: heroLayoutSchema,
+  /** @deprecated Prefer hero_pages.home — kept for older saved payloads */
   hero_copy: heroCopySchema,
+  hero_pages: heroPagesSchema,
   on_images_copy: onImagesCopySchema,
 });
 
@@ -326,6 +397,9 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
   },
   hero_layout: { ...DEFAULT_HERO_LAYOUT },
   hero_copy: { ...DEFAULT_HERO_COPY },
+  hero_pages: Object.fromEntries(
+    HERO_PAGE_KEYS.map((key) => [key, { ...DEFAULT_HERO_PAGES[key] }]),
+  ) as HeroPages,
   on_images_copy: { ...DEFAULT_ON_IMAGES_COPY },
 };
 
@@ -462,6 +536,41 @@ function parseHeroCopy(raw: unknown): HeroCopy {
   return parsed.success ? parsed.data : { ...DEFAULT_HERO_COPY };
 }
 
+function parseHeroPages(raw: unknown, legacyHome?: HeroCopy): HeroPages {
+  const src =
+    raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
+  const pages = {} as HeroPages;
+  for (const key of HERO_PAGE_KEYS) {
+    if (src[key] !== undefined) {
+      pages[key] = parseHeroCopy(src[key]);
+      continue;
+    }
+    pages[key] = {
+      ...(key === "home" && legacyHome
+        ? legacyHome
+        : DEFAULT_HERO_PAGES[key]),
+    };
+  }
+  return pages;
+}
+
+export function resolveHeroPageCopy(
+  settings: Pick<TypographySettings, "hero_pages" | "hero_copy">,
+  page: HeroPageKey,
+  fallback?: Partial<HeroCopy>,
+): HeroCopy {
+  const stored = settings.hero_pages?.[page] ?? DEFAULT_HERO_PAGES[page];
+  const main =
+    stored.main.trim() ||
+    fallback?.main?.trim() ||
+    DEFAULT_HERO_PAGES[page].main;
+  const second =
+    stored.second.trim() ||
+    fallback?.second?.trim() ||
+    DEFAULT_HERO_PAGES[page].second;
+  return { main, second };
+}
+
 function parseOnImagesCopy(raw: unknown): OnImagesCopy {
   const src =
     raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
@@ -540,7 +649,11 @@ export function parseTypographySettings(raw: unknown): TypographySettings {
         : DEFAULT_TYPOGRAPHY_SETTINGS.on_images_body,
     ),
     hero_layout: parseHeroLayout(src.hero_layout),
-    hero_copy: parseHeroCopy(src.hero_copy),
+    hero_copy: (() => {
+      const pages = parseHeroPages(src.hero_pages, parseHeroCopy(src.hero_copy));
+      return { ...pages.home };
+    })(),
+    hero_pages: parseHeroPages(src.hero_pages, parseHeroCopy(src.hero_copy)),
     on_images_copy: parseOnImagesCopy(src.on_images_copy),
   };
 }
@@ -559,10 +672,12 @@ export function isTypographySettingsEqual(
     (key) => a.hero_layout[key] === b.hero_layout[key],
   );
   if (!layoutEqual) return false;
-  const heroCopyEqual =
-    a.hero_copy.main === b.hero_copy.main &&
-    a.hero_copy.second === b.hero_copy.second;
-  if (!heroCopyEqual) return false;
+  const pagesEqual = HERO_PAGE_KEYS.every(
+    (key) =>
+      a.hero_pages[key].main === b.hero_pages[key].main &&
+      a.hero_pages[key].second === b.hero_pages[key].second,
+  );
+  if (!pagesEqual) return false;
   return (
     a.on_images_copy.title === b.on_images_copy.title &&
     a.on_images_copy.indication === b.on_images_copy.indication &&

@@ -96,10 +96,6 @@ export function HomePageClient({
   const aboutTitleStyle = useTypographyInlineStyle("page_title");
   const aboutBodyStyle = useTypographyInlineStyle("body_text");
 
-  const heroLineRight =
-    typography.hero_copy.main.trim() || EX_HERO.lineRight;
-  const heroLineLeft =
-    typography.hero_copy.second.trim() || EX_HERO.lineLeft;
   const onImagesTitleLines = (
     typography.on_images_copy.title.trim() || EX_PINNED.title
   )
@@ -156,8 +152,9 @@ export function HomePageClient({
           animate={false}
           splitLetterLogo
           playVideo
-          lineRight={heroLineRight}
-          lineLeft={heroLineLeft}
+          lineRight={EX_HERO.lineRight}
+          lineLeft={EX_HERO.lineLeft}
+          heroPage="home"
           posterImageName={EX_HERO.imageName}
           logoPartsVariant={liveTune.partsVariant}
         />

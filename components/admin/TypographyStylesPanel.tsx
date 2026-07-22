@@ -12,13 +12,15 @@ import { AlignCenter, AlignLeft, AlignRight, Loader2, RotateCcw, Save, Undo2 } f
 import { useToast } from "@/components/admin/ToastProvider";
 import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
 import {
-  DEFAULT_HERO_COPY,
   DEFAULT_HERO_LAYOUT,
+  DEFAULT_HERO_PAGES,
   DEFAULT_ON_IMAGES_COPY,
   DEFAULT_TYPOGRAPHY_SETTINGS,
   HATHOR_FONT_GROUPS,
   HATHOR_FONT_STACKS,
   HERO_ALIGNS,
+  HERO_PAGE_KEYS,
+  HERO_PAGE_LABELS,
   ON_IMAGES_ROLES,
   fontGroupForFace,
   isFaceInGroup,
@@ -27,6 +29,7 @@ import {
   type HathorLuxuryFont,
   type HeroAlign,
   type HeroLayout,
+  type HeroPageKey,
   type OnImagesRole,
   type TypographyRole,
   type TypographySettings,
@@ -51,7 +54,7 @@ const GROUP_LABELS: Record<EditorGroup, string> = {
 };
 
 const GROUP_WHERE: Record<EditorGroup, string> = {
-  hero: "Edit the first line and second title wording, then drag either title freely (they can overlap). Align left / center / right. Styles save to every page hero; wording updates the homepage hero.",
+  hero: "Pick a page, edit its first line and second title, then drag either title freely. Font/size/color/position apply to every page hero; wording is per page.",
   page_title: "Big section titles — Suites intro, Hathor itineraries, amenities, etc.",
   page_subtitle:
     "Small indication labels — exact font, size, color, and case from this editor (no forced uppercase). Includes Explore, Relax, Discover under Hathor itineraries.",
@@ -266,6 +269,7 @@ export function TypographyStylesPanel() {
   const [heroLine, setHeroLine] = useState<"hero_title" | "hero_subtitle">(
     "hero_title",
   );
+  const [heroPage, setHeroPage] = useState<HeroPageKey>("home");
   const [onImagesLine, setOnImagesLine] =
     useState<OnImagesRole>("on_images_title");
   const [loading, setLoading] = useState(true);
@@ -315,13 +319,13 @@ export function TypographyStylesPanel() {
         : group;
   const value = settings[activeRole];
   const layout = settings.hero_layout;
-  const heroCopy = settings.hero_copy;
+  const heroCopy = settings.hero_pages[heroPage] ?? DEFAULT_HERO_PAGES[heroPage];
   const onImagesCopy = settings.on_images_copy;
   const stageTone =
     group === "hero" || group === "on_images" ? "dark" : "light";
   const editingLabel =
     group === "hero"
-      ? `Hero · ${HERO_LINE_LABELS[heroLine]}`
+      ? `Hero · ${HERO_PAGE_LABELS[heroPage]} · ${HERO_LINE_LABELS[heroLine]}`
       : group === "on_images"
         ? `On images · ${ON_IMAGES_LINE_LABELS[onImagesLine]}`
         : GROUP_LABELS[group];
@@ -341,10 +345,15 @@ export function TypographyStylesPanel() {
   };
 
   const patchHeroCopy = (partial: Partial<typeof heroCopy>) => {
-    setSettings((prev) => ({
-      ...prev,
-      hero_copy: { ...prev.hero_copy, ...partial },
-    }));
+    setSettings((prev) => {
+      const nextPage = { ...prev.hero_pages[heroPage], ...partial };
+      const hero_pages = { ...prev.hero_pages, [heroPage]: nextPage };
+      return {
+        ...prev,
+        hero_pages,
+        hero_copy: heroPage === "home" ? nextPage : prev.hero_copy,
+      };
+    });
   };
 
   const patchOnImagesCopy = (partial: Partial<typeof onImagesCopy>) => {
@@ -469,8 +478,8 @@ export function TypographyStylesPanel() {
         <div>
           <h1 className="admin-page-title">Typography &amp; Styles</h1>
           <p className="admin-page-subtitle">
-            Hero preview: both titles together — drag to move, overlap freely,
-            or align. Save applies to every page.
+            Pick any page hero, rewrite its two title lines, drag to place, then
+            Save. Styles apply site-wide; wording is per page.
           </p>
         </div>
       </header>
@@ -624,10 +633,26 @@ export function TypographyStylesPanel() {
         {group === "hero" ? (
           <>
             <p className="typo-easy__controls-hint">
-              Editing <strong>{HERO_LINE_LABELS[heroLine]}</strong> — change the
+              Editing <strong>{HERO_PAGE_LABELS[heroPage]}</strong> ·{" "}
+              <strong>{HERO_LINE_LABELS[heroLine]}</strong> — change the
               wording below, then drag in the preview or use the sliders.
               Overlap is allowed.
             </p>
+
+            <SimpleField label="Page hero">
+              <select
+                className="admin-input typo-easy__text"
+                value={heroPage}
+                aria-label="Which page hero to edit"
+                onChange={(e) => setHeroPage(e.target.value as HeroPageKey)}
+              >
+                {HERO_PAGE_KEYS.map((key) => (
+                  <option key={key} value={key}>
+                    {HERO_PAGE_LABELS[key]}
+                  </option>
+                ))}
+              </select>
+            </SimpleField>
 
             <div className="typo-easy__row">
               <SimpleField label="First line text">
@@ -697,14 +722,23 @@ export function TypographyStylesPanel() {
                 type="button"
                 className="typo-easy__reset-role"
                 onClick={() =>
-                  setSettings((prev) => ({
-                    ...prev,
-                    hero_copy: { ...DEFAULT_HERO_COPY },
-                  }))
+                  setSettings((prev) => {
+                    const nextPage = { ...DEFAULT_HERO_PAGES[heroPage] };
+                    const hero_pages = {
+                      ...prev.hero_pages,
+                      [heroPage]: nextPage,
+                    };
+                    return {
+                      ...prev,
+                      hero_pages,
+                      hero_copy:
+                        heroPage === "home" ? nextPage : prev.hero_copy,
+                    };
+                  })
                 }
               >
                 <RotateCcw className="h-3.5 w-3.5" />
-                Reset wording
+                Reset this page wording
               </button>
               <div className="typo-stage__align typo-stage__align--inline">
                 {HERO_ALIGNS.map((align) => (

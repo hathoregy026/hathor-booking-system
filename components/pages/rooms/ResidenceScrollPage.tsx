@@ -6,6 +6,7 @@ import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useAccommodationMotion } from "@/hooks/useAccommodationMotion";
+import type { HeroPageKey } from "@/lib/typography-settings-shared";
 
 export type ResidenceChapter = {
   id: string;
@@ -31,6 +32,8 @@ export type ResidenceScrollPageProps = {
   /** Elegant second hero line (script) — keeps full title on the main line */
   heroSecondTitle?: string;
   heroSubtitle: string;
+  /** Typography dashboard hero copy key */
+  heroPage?: HeroPageKey;
   breadcrumb: string;
   heroImageName: string;
   heroImageAlt: string;
@@ -113,6 +116,7 @@ export function ResidenceScrollPage({
   heroTitle,
   heroSecondTitle,
   heroSubtitle,
+  heroPage,
   breadcrumb,
   heroImageName,
   heroImageAlt,
@@ -138,6 +142,7 @@ export function ResidenceScrollPage({
       breadcrumb={breadcrumb}
       imageName={heroImageName}
       imageAlt={heroImageAlt}
+      heroPage={heroPage}
     >
       <div ref={rootRef} className="venetian-page page-accommodation">
         <section className="about-section acc-intro-block" id="intro">

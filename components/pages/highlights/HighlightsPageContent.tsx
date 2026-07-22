@@ -23,6 +23,7 @@ export function HighlightsPageContent() {
   return (
     <div ref={rootRef} className="venetian-page lux-page">
       <PublicSiteHero
+        heroPage="highlights"
         lineRight={lineRight}
         lineLeft={lineLeft}
         subtitle={HIGHLIGHTS_PAGE.hero.subtitle}
