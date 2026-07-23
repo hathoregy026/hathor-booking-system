@@ -131,7 +131,7 @@ html[data-ex-experience] .ex-root .hero-logo-img {
 
 /*
   Full-bleed split logo: each side = (100vw − gap) / 2.
-  Gap matches .hero-cta width (168px) so Book Now sits dead-center.
+  Gap matches .hero-cta width (200px) so Book Now sits dead-center.
 */
 html[data-ex-experience] .ex-root .hathor-logo-split.hero-logo-img {
   display: flex !important;
@@ -912,7 +912,7 @@ h1, h2, h3, h4, p {
   gap: 0;
   width: 100vw !important;
   max-width: none !important;
-  height: var(--hathor-logo-h, calc((100vw - 168px) / 2 * 2200 / 2683)) !important;
+  height: var(--hathor-logo-h, calc((100vw - 200px) / 2 * 2200 / 2683)) !important;
   margin: 0 !important;
   padding: 0 !important;
   box-sizing: border-box;
@@ -1046,8 +1046,8 @@ h1, h2, h3, h4, p {
 
 /* Spacer so fixed Book Now sits between HAT and HOR */
 .hathor-logo-split__gap {
-  flex: 0 0 var(--hathor-logo-gap, 168px) !important;
-  width: var(--hathor-logo-gap, 168px) !important;
+  flex: 0 0 var(--hathor-logo-gap, 200px) !important;
+  width: var(--hathor-logo-gap, 200px) !important;
   height: 1px;
   pointer-events: none;
 }
@@ -2271,9 +2271,11 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   }
 
   .hero-cta {
-    width: 148px;
-    height: 48px;
-    padding: 0 22px;
+    width: var(--hathor-btn-min-width, 12.5rem);
+    min-width: var(--hathor-btn-min-width, 12.5rem);
+    height: var(--hathor-btn-height, 2.85rem);
+    min-height: var(--hathor-btn-height, 2.85rem);
+    padding: 0 var(--hathor-btn-pad-x, 1.75rem);
   }
 
   .carousel-slide {

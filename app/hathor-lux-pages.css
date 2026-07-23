@@ -1337,17 +1337,19 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  min-height: 2.85rem;
-  height: 2.85rem;
-  padding: 3px 1.75rem 1px;
+  min-width: var(--hathor-btn-min-width, 12.5rem);
+  min-height: var(--hathor-btn-height, 2.85rem);
+  height: var(--hathor-btn-height, 2.85rem);
+  padding: 3px var(--hathor-btn-pad-x, 1.75rem) 1px;
   border-radius: 999px;
   border: 1px solid var(--lux-gold);
-  font-size: 0.72rem;
+  font-size: var(--hathor-btn-font-size, 0.72rem);
   font-weight: 500;
-  letter-spacing: 0.18em;
+  letter-spacing: var(--hathor-btn-tracking, 0.18em);
   text-transform: uppercase;
   line-height: 1;
   text-decoration: none;
+  white-space: nowrap;
   cursor: pointer;
   transition: background 0.35s var(--lux-ease), color 0.35s, border-color 0.35s,
     box-shadow 0.35s, transform 0.35s;

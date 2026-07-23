@@ -16,9 +16,9 @@ export type HeroLogoVAlign = z.infer<typeof heroLogoVAlignSchema>;
 export const heroLogoPartsVariantSchema = z.enum(HATHOR_LOGO_PARTS_VARIANTS);
 export type { HathorLogoPartsVariant };
 
-/** Fixed Book Now slot width — matches live .hero-cta. */
-export const HATHOR_BTN_SLOT_PX = 168;
-export const HATHOR_BTN_HEIGHT_PX = 52;
+/** Fixed Book Now slot width — matches live .hero-cta / Discover More. */
+export const HATHOR_BTN_SLOT_PX = 200;
+export const HATHOR_BTN_HEIGHT_PX = 46;
 
 /** Admin preview viewport — desktop hero is full-bleed 100vw; we mirror 1440px. */
 export const HERO_DESKTOP_PREVIEW_WIDTH = 1440;
