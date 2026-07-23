@@ -14,6 +14,7 @@ import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
 import {
   DEFAULT_HERO_LAYOUT,
   DEFAULT_HERO_PAGES,
+  DEFAULT_MARQUEE_COPY,
   DEFAULT_ON_IMAGES_COPY,
   DEFAULT_TYPOGRAPHY_SETTINGS,
   HATHOR_FONT_GROUPS,
@@ -25,6 +26,7 @@ import {
   fontGroupForFace,
   isFaceInGroup,
   isTypographySettingsEqual,
+  parseMarqueePhrases,
   parseTypographySettings,
   type HathorLuxuryFont,
   type HeroAlign,
@@ -42,7 +44,8 @@ type EditorGroup =
   | "page_subtitle"
   | "sub_subtitle"
   | "body_text"
-  | "on_images";
+  | "on_images"
+  | "luxury_marquee";
 
 const GROUP_LABELS: Record<EditorGroup, string> = {
   hero: "Hero (all pages)",
@@ -51,6 +54,7 @@ const GROUP_LABELS: Record<EditorGroup, string> = {
   sub_subtitle: "Sub-sub title",
   body_text: "Body text",
   on_images: "On images",
+  luxury_marquee: "Luxury marquee",
 };
 
 const GROUP_WHERE: Record<EditorGroup, string> = {
@@ -63,6 +67,8 @@ const GROUP_WHERE: Record<EditorGroup, string> = {
   body_text: "Normal paragraph text in page content.",
   on_images:
     "Copy on photos — edit the title, small indication, and body wording, plus each one’s font and colour. Styles apply site-wide on imagery; wording updates the homepage landmarks stack.",
+  luxury_marquee:
+    "Homepage text strip under the hero — edit font, size, colour, and the scrolling phrases (one phrase per line). Dividers (✦) are added automatically between phrases.",
 };
 
 const ON_IMAGES_LINE_LABELS: Record<OnImagesRole, string> = {
@@ -77,7 +83,10 @@ const HERO_LINE_LABELS: Record<"hero_title" | "hero_subtitle", string> = {
 };
 
 const PAGE_SAMPLES: Record<
-  Exclude<TypographyRole, "hero_title" | "hero_subtitle" | OnImagesRole>,
+  Exclude<
+    TypographyRole,
+    "hero_title" | "hero_subtitle" | OnImagesRole | "luxury_marquee"
+  >,
   string
 > = {
   page_title: "Hathor itineraries",
@@ -321,8 +330,14 @@ export function TypographyStylesPanel() {
   const layout = settings.hero_layout;
   const heroCopy = settings.hero_pages[heroPage] ?? DEFAULT_HERO_PAGES[heroPage];
   const onImagesCopy = settings.on_images_copy;
+  const marqueeCopy = settings.marquee_copy;
+  const marqueePreview =
+    parseMarqueePhrases(marqueeCopy.text).slice(0, 4).join("  ✦  ") ||
+    "HATHOR  ✦  Ultra Luxury";
   const stageTone =
-    group === "hero" || group === "on_images" ? "dark" : "light";
+    group === "hero" || group === "on_images" || group === "luxury_marquee"
+      ? "dark"
+      : "light";
   const editingLabel =
     group === "hero"
       ? `Hero · ${HERO_PAGE_LABELS[heroPage]} · ${HERO_LINE_LABELS[heroLine]}`
@@ -360,6 +375,13 @@ export function TypographyStylesPanel() {
     setSettings((prev) => ({
       ...prev,
       on_images_copy: { ...prev.on_images_copy, ...partial },
+    }));
+  };
+
+  const patchMarqueeCopy = (partial: Partial<typeof marqueeCopy>) => {
+    setSettings((prev) => ({
+      ...prev,
+      marquee_copy: { ...prev.marquee_copy, ...partial },
     }));
   };
 
@@ -618,6 +640,19 @@ export function TypographyStylesPanel() {
               {onImagesPreviewText || ON_IMAGES_LINE_LABELS[onImagesLine]}
             </p>
           </>
+        ) : group === "luxury_marquee" ? (
+          <p
+            className="typo-stage__sample"
+            style={{
+              ...liveVars(value),
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              maxWidth: "100%",
+            }}
+          >
+            {marqueePreview}
+          </p>
         ) : (
           <p className="typo-stage__sample" style={liveVars(value)}>
             {PAGE_SAMPLES[group]}
@@ -839,6 +874,40 @@ export function TypographyStylesPanel() {
               >
                 <RotateCcw className="h-3.5 w-3.5" />
                 Reset all on-image wording
+              </button>
+            </div>
+          </>
+        ) : null}
+
+        {group === "luxury_marquee" ? (
+          <>
+            <p className="typo-easy__controls-hint">
+              Editing <strong>Luxury marquee</strong> — homepage strip under the
+              hero. One phrase per line; ✦ dividers appear automatically.
+            </p>
+            <SimpleField label="Marquee phrases (one per line)">
+              <textarea
+                className="admin-input typo-easy__textarea"
+                value={marqueeCopy.text}
+                maxLength={1200}
+                rows={8}
+                aria-label="Marquee phrases"
+                onChange={(e) => patchMarqueeCopy({ text: e.target.value })}
+              />
+            </SimpleField>
+            <div className="typo-easy__row typo-easy__row--actions">
+              <button
+                type="button"
+                className="typo-easy__reset-role"
+                onClick={() =>
+                  setSettings((prev) => ({
+                    ...prev,
+                    marquee_copy: { ...DEFAULT_MARQUEE_COPY },
+                  }))
+                }
+              >
+                <RotateCcw className="h-3.5 w-3.5" />
+                Reset marquee wording
               </button>
             </div>
           </>

@@ -1,25 +1,24 @@
+"use client";
+
 import "./luxury-marquee.css";
+import {
+  useTypographyInlineStyle,
+  useTypographySettings,
+} from "@/components/public/TypographySettingsProvider";
+import { parseMarqueePhrases } from "@/lib/typography-settings-shared";
 
-const MARQUEE_PHRASES = [
-  { text: "HATHOR", tone: "upper" },
-  { text: "Ultra Luxury", tone: "italic" },
-  { text: "DAHABIYA", tone: "upper" },
-  { text: "Private Sailing", tone: "italic" },
-  { text: "Luxor to Aswan", tone: "italic" },
-  { text: "Fine Dining", tone: "italic" },
-  { text: "Exclusive Suites", tone: "italic" },
-  { text: "Timeless Elegance", tone: "italic" },
-] as const;
-
-function MarqueeGroup({ ariaHidden }: { ariaHidden?: boolean }) {
+function MarqueeGroup({
+  phrases,
+  ariaHidden,
+}: {
+  phrases: string[];
+  ariaHidden?: boolean;
+}) {
   return (
     <span className="luxury-marquee__group" aria-hidden={ariaHidden || undefined}>
-      {MARQUEE_PHRASES.map((phrase) => (
-        <span
-          key={`${phrase.text}-${phrase.tone}`}
-          className={`luxury-marquee__item luxury-marquee__item--${phrase.tone}`}
-        >
-          <span>{phrase.text}</span>
+      {phrases.map((phrase, index) => (
+        <span key={`${phrase}-${index}`} className="luxury-marquee__item typo-luxury-marquee">
+          <span className="luxury-marquee__text">{phrase}</span>
           <span className="luxury-marquee__divider" aria-hidden="true">
             ✦
           </span>
@@ -30,11 +29,15 @@ function MarqueeGroup({ ariaHidden }: { ariaHidden?: boolean }) {
 }
 
 export function LuxuryMarquee() {
+  const typography = useTypographySettings();
+  const style = useTypographyInlineStyle("luxury_marquee");
+  const phrases = parseMarqueePhrases(typography.marquee_copy.text);
+
   return (
-    <div className="luxury-marquee" aria-hidden="true">
+    <div className="luxury-marquee" aria-hidden="true" style={style}>
       <div className="luxury-marquee__track">
-        <MarqueeGroup />
-        <MarqueeGroup ariaHidden />
+        <MarqueeGroup phrases={phrases} />
+        <MarqueeGroup phrases={phrases} ariaHidden />
       </div>
     </div>
   );

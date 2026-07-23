@@ -134,6 +134,7 @@ export const TYPOGRAPHY_ROLES = [
   "on_images_title",
   "on_images_indication",
   "on_images_body",
+  "luxury_marquee",
 ] as const;
 
 export type TypographyRole = (typeof TYPOGRAPHY_ROLES)[number];
@@ -153,6 +154,8 @@ export const TYPOGRAPHY_ROLE_LABELS: Record<TypographyRole, string> = {
   on_images_indication: "On images · indication",
   /** Body copy on photos */
   on_images_body: "On images · body",
+  /** Homepage infinite text strip under the hero */
+  luxury_marquee: "Luxury marquee",
 };
 
 /** Sub-roles edited inside the On images dashboard group */
@@ -258,6 +261,37 @@ export const onImagesCopySchema = z.object({
 
 export type OnImagesCopy = z.infer<typeof onImagesCopySchema>;
 
+/** Homepage luxury marquee — one phrase per line (✦ dividers added on site) */
+export const marqueeCopySchema = z.object({
+  text: z.string().max(1200),
+});
+
+export type MarqueeCopy = z.infer<typeof marqueeCopySchema>;
+
+export const DEFAULT_MARQUEE_COPY: MarqueeCopy = {
+  text: [
+    "HATHOR",
+    "Ultra Luxury",
+    "DAHABIYA",
+    "Private Sailing",
+    "Luxor to Aswan",
+    "Fine Dining",
+    "Exclusive Suites",
+    "Timeless Elegance",
+  ].join("\n"),
+};
+
+/** Split marquee copy into display phrases (newlines, ✦, |, or •). */
+export function parseMarqueePhrases(text: string): string[] {
+  const phrases = text
+    .split(/\r?\n|✦|•|\|/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+  return phrases.length > 0
+    ? phrases
+    : parseMarqueePhrases(DEFAULT_MARQUEE_COPY.text);
+}
+
 export const DEFAULT_HERO_COPY: HeroCopy = {
   main: "Ultra Luxury",
   second: "Dahabiya Cruise",
@@ -348,12 +382,14 @@ export const typographySettingsSchema = z.object({
   on_images_title: typographyTextStyleSchema,
   on_images_indication: typographyTextStyleSchema,
   on_images_body: typographyTextStyleSchema,
+  luxury_marquee: typographyTextStyleSchema,
   hero_layout: heroLayoutSchema,
   hero_second_gradient: heroSecondGradientSchema,
   /** @deprecated Prefer hero_pages.home — kept for older saved payloads */
   hero_copy: heroCopySchema,
   hero_pages: heroPagesSchema,
   on_images_copy: onImagesCopySchema,
+  marquee_copy: marqueeCopySchema,
 });
 
 export type TypographySettings = z.infer<typeof typographySettingsSchema>;
@@ -431,6 +467,14 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
     letterSpacing: 0,
     innerShadow: false,
   },
+  luxury_marquee: {
+    fontFamily: "Playfair Display",
+    fontSize: 42,
+    color: "#B69F64",
+    lineHeight: 1,
+    letterSpacing: 6,
+    innerShadow: false,
+  },
   hero_layout: { ...DEFAULT_HERO_LAYOUT },
   hero_second_gradient: { ...DEFAULT_HERO_SECOND_GRADIENT },
   hero_copy: { ...DEFAULT_HERO_COPY },
@@ -438,6 +482,7 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
     HERO_PAGE_KEYS.map((key) => [key, { ...DEFAULT_HERO_PAGES[key] }]),
   ) as HeroPages,
   on_images_copy: { ...DEFAULT_ON_IMAGES_COPY },
+  marquee_copy: { ...DEFAULT_MARQUEE_COPY },
 };
 
 const INNER_SHADOW = "inset 0 1px 2px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.2)";
@@ -755,6 +800,17 @@ function parseOnImagesCopy(raw: unknown): OnImagesCopy {
   return parsed.success ? parsed.data : { ...DEFAULT_ON_IMAGES_COPY };
 }
 
+function parseMarqueeCopy(raw: unknown): MarqueeCopy {
+  const src =
+    raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
+  const text =
+    typeof src.text === "string"
+      ? src.text.slice(0, 1200)
+      : DEFAULT_MARQUEE_COPY.text;
+  const parsed = marqueeCopySchema.safeParse({ text });
+  return parsed.success ? parsed.data : { ...DEFAULT_MARQUEE_COPY };
+}
+
 function withOnImageColor(
   base: TypographyTextStyle,
   color: string,
@@ -812,6 +868,10 @@ export function parseTypographySettings(raw: unknown): TypographySettings {
         ? withOnImageColor(DEFAULT_TYPOGRAPHY_SETTINGS.on_images_body, legacyColor)
         : DEFAULT_TYPOGRAPHY_SETTINGS.on_images_body,
     ),
+    luxury_marquee: parseTextStyle(
+      src.luxury_marquee,
+      DEFAULT_TYPOGRAPHY_SETTINGS.luxury_marquee,
+    ),
     hero_layout: parseHeroLayout(src.hero_layout),
     hero_second_gradient: parseHeroSecondGradient(src.hero_second_gradient),
     hero_copy: (() => {
@@ -820,6 +880,7 @@ export function parseTypographySettings(raw: unknown): TypographySettings {
     })(),
     hero_pages: parseHeroPages(src.hero_pages, parseHeroCopy(src.hero_copy)),
     on_images_copy: parseOnImagesCopy(src.on_images_copy),
+    marquee_copy: parseMarqueeCopy(src.marquee_copy),
   };
 }
 
@@ -852,7 +913,8 @@ export function isTypographySettingsEqual(
   return (
     a.on_images_copy.title === b.on_images_copy.title &&
     a.on_images_copy.indication === b.on_images_copy.indication &&
-    a.on_images_copy.body === b.on_images_copy.body
+    a.on_images_copy.body === b.on_images_copy.body &&
+    a.marquee_copy.text === b.marquee_copy.text
   );
 }
 
@@ -943,7 +1005,8 @@ export function typographyToImportantCss(settings: TypographySettings): string {
       role === "body_text" ||
       role === "on_images_title" ||
       role === "on_images_indication" ||
-      role === "on_images_body"
+      role === "on_images_body" ||
+      role === "luxury_marquee"
         ? `\n  text-transform: none !important;\n  font-weight: 400 !important;`
         : "";
     return `${selector} {
@@ -1168,6 +1231,13 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__body,
 .public-site .lux-testimonials__quote,
 .public-site .lux-testimonials__name`,
   "on_images_body",
+)}
+${block(
+  `/* Luxury marquee strip under homepage hero */
+.public-site .typo-luxury-marquee,
+html[data-ex-experience] .ex-root .luxury-marquee__item,
+html[data-ex-experience] .ex-root .typo-luxury-marquee`,
+  "luxury_marquee",
 )}
 .public-site .typo-on-images,
 .public-site .typo-on-images *,

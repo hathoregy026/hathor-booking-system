@@ -1,17 +1,19 @@
 /* Luxurious infinite text strip — homepage hero → content seam */
 
 .luxury-marquee {
-  --lm-gold: #b69f64;
-  --lm-gold-soft: #d4c28a;
-  --lm-charcoal: #1a1612;
+  --lm-band: color-mix(in srgb, currentColor 14%, transparent);
+  --lm-stroke: color-mix(in srgb, currentColor 55%, transparent);
   position: relative;
   z-index: 2;
   overflow: hidden;
   white-space: nowrap;
   padding: clamp(1.75rem, 3.5vw, 2.75rem) 0;
-  background: var(--lm-charcoal);
-  color: var(--lm-gold);
-  border-block: 1px solid color-mix(in srgb, var(--lm-gold) 28%, transparent);
+  color: #b69f64;
+  background: var(--lm-band);
+  border-block: 1px solid var(--lm-stroke);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, currentColor 35%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, currentColor 22%, transparent);
   -webkit-mask-image: linear-gradient(
     to right,
     transparent 0%,
@@ -53,26 +55,19 @@
   align-items: center;
   gap: clamp(1.25rem, 2.5vw, 2.5rem);
   padding-inline: clamp(1.25rem, 2.5vw, 2.5rem);
-  font-family: var(--font-hathor-display, "Playfair Display"), Georgia, serif;
-  font-size: clamp(1.65rem, 3.4vw, 3.25rem);
-  line-height: 1;
-  letter-spacing: 0.18em;
-  color: var(--lm-gold);
-}
-
-.luxury-marquee__item--upper {
-  font-style: normal;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.28em;
-}
-
-.luxury-marquee__item--italic {
-  font-style: italic;
-  font-weight: 400;
-  letter-spacing: 0.12em;
-  color: var(--lm-gold-soft);
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  -webkit-text-fill-color: inherit;
+  font-weight: inherit;
   text-transform: none;
+}
+
+.luxury-marquee__text {
+  -webkit-text-stroke: 0.65px color-mix(in srgb, currentColor 75%, transparent);
+  paint-order: stroke fill;
 }
 
 .luxury-marquee__divider {
@@ -80,7 +75,9 @@
   flex-shrink: 0;
   font-size: 0.35em;
   line-height: 1;
-  color: color-mix(in srgb, var(--lm-gold) 75%, transparent);
+  color: color-mix(in srgb, currentColor 80%, transparent);
+  -webkit-text-fill-color: color-mix(in srgb, currentColor 80%, transparent);
+  -webkit-text-stroke: 0.4px color-mix(in srgb, currentColor 55%, transparent);
   letter-spacing: 0;
   transform: translateY(-0.05em);
   user-select: none;
@@ -112,14 +109,6 @@
       #000 95%,
       transparent 100%
     );
-  }
-
-  .luxury-marquee__item {
-    letter-spacing: 0.14em;
-  }
-
-  .luxury-marquee__item--upper {
-    letter-spacing: 0.2em;
   }
 }
 
