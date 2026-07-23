@@ -55,57 +55,57 @@ const EMOJI_GLYPHS = [
   { glyph: "✨", label: "sparkles" },
 ] as const;
 
-/** Soft ease-in-out — no snap, soap-bubble drift */
-const BURST_EASE = "cubic-bezier(0.37, 0.01, 0.2, 1)";
+/** Almost-linear drift — constant soft float, no acceleration snap */
+const BURST_EASE = "linear";
 
 function rand(min: number, max: number) {
   return min + Math.random() * (max - min);
 }
 
 function buildBurst(width: number, height: number, key: number): BurstParticle[] {
-  const reachX = Math.max(width * 0.48, 240);
-  const reachY = Math.max(height * 0.42, 180);
+  // Short gentle drift — float nearby, don't race across the section
+  const reachX = Math.max(width * 0.22, 90);
+  const reachY = Math.max(height * 0.2, 70);
   const particles: BurstParticle[] = [];
 
   EX_GALLERY.followPreviews.forEach((preview, index) => {
-    // Prefer a gentle upward float with sideways wander
-    const angle = rand(-Math.PI * 0.95, -Math.PI * 0.05) + rand(-0.35, 0.35);
-    const dist = rand(0.55, 1.05);
-    const ex = Math.cos(angle) * reachX * dist + rand(-36, 36);
-    const ey = Math.sin(angle) * reachY * dist * rand(0.85, 1.15) - rand(24, 70);
+    const angle = rand(-Math.PI * 0.9, -Math.PI * 0.1) + rand(-0.25, 0.25);
+    const dist = rand(0.35, 0.85);
+    const ex = Math.cos(angle) * reachX * dist + rand(-18, 18);
+    const ey = Math.sin(angle) * reachY * dist - rand(30, 90);
     particles.push({
       id: `img-${key}-${preview.imageName}-${index}`,
       kind: "image",
       imageName: preview.imageName,
       alt: preview.alt,
-      delay: rand(0.12, 0.55) + index * 0.18,
-      duration: rand(5.8, 7.6),
-      mx: ex * rand(0.22, 0.42) + rand(-48, 48),
-      my: ey * rand(0.18, 0.38) + rand(-28, 20),
+      delay: rand(0.2, 0.8) + index * 0.35,
+      duration: rand(11, 14.5),
+      mx: ex * rand(0.25, 0.45) + rand(-22, 22),
+      my: ey * rand(0.2, 0.4) + rand(-16, 10),
       ex,
       ey,
-      rot: rand(-16, 16),
-      scale: rand(0.94, 1.12),
+      rot: rand(-8, 8),
+      scale: rand(0.96, 1.06),
     });
   });
 
   EMOJI_GLYPHS.forEach((item, index) => {
-    const angle = rand(-Math.PI * 0.98, -Math.PI * 0.02) + rand(-0.4, 0.4);
-    const dist = rand(0.5, 1.12);
-    const ex = Math.cos(angle) * reachX * dist + rand(-40, 40);
-    const ey = Math.sin(angle) * reachY * dist * rand(0.8, 1.2) - rand(20, 80);
+    const angle = rand(-Math.PI * 0.95, -Math.PI * 0.05) + rand(-0.3, 0.3);
+    const dist = rand(0.3, 0.9);
+    const ex = Math.cos(angle) * reachX * dist + rand(-22, 22);
+    const ey = Math.sin(angle) * reachY * dist - rand(36, 110);
     particles.push({
       id: `emo-${key}-${item.label}-${index}`,
       kind: "emoji",
       glyph: item.glyph,
-      delay: rand(0.2, 0.75) + index * 0.14,
-      duration: rand(5.4, 7.2),
-      mx: ex * rand(0.2, 0.45) + rand(-56, 56),
-      my: ey * rand(0.15, 0.4) + rand(-32, 24),
+      delay: rand(0.35, 1.1) + index * 0.28,
+      duration: rand(10.5, 14),
+      mx: ex * rand(0.22, 0.48) + rand(-26, 26),
+      my: ey * rand(0.18, 0.42) + rand(-18, 12),
       ex,
       ey,
-      rot: rand(-22, 22),
-      scale: rand(0.9, 1.18),
+      rot: rand(-12, 12),
+      scale: rand(0.94, 1.1),
     });
   });
 
@@ -222,6 +222,8 @@ export function GalleryInstagramFollow({
               }
               style={
                 {
+                  "--ig-sx": `${particle.mx * 0.45}px`,
+                  "--ig-sy": `${particle.my * 0.45}px`,
                   "--ig-mx": `${particle.mx}px`,
                   "--ig-my": `${particle.my}px`,
                   "--ig-hx": `${(particle.mx + particle.ex) * 0.5}px`,

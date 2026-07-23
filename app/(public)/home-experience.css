@@ -1991,24 +1991,24 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 .instagram-burst-particle {
   position: absolute;
   left: 50%;
-  top: 36%;
+  top: 38%;
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.55);
+  transform: translate(-50%, -50%) scale(0.9);
   will-change: transform, opacity;
   animation-name: ig-soap-float;
-  animation-duration: var(--ig-dur, 6.4s);
+  animation-duration: var(--ig-dur, 12s);
   animation-delay: var(--ig-delay, 0s);
-  animation-timing-function: var(--ig-ease, cubic-bezier(0.37, 0.01, 0.2, 1));
+  animation-timing-function: var(--ig-ease, linear);
   animation-fill-mode: both;
 }
 
 .instagram-burst-particle--emoji {
-  top: 38%;
+  top: 40%;
 }
 
 .instagram-burst-particle--image .instagram-circle--burst,
 .instagram-burst-particle--emoji .instagram-float-emoji__inner {
-  animation: ig-soap-wobble 3.4s ease-in-out infinite;
+  animation: ig-soap-wobble 5.8s ease-in-out infinite;
   animation-delay: var(--ig-delay, 0s);
 }
 
@@ -2083,43 +2083,46 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 @keyframes ig-soap-float {
   0% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.48);
+    transform: translate(-50%, -50%) scale(0.9);
   }
-  10% {
-    opacity: 0.92;
-    transform: translate(-50%, -50%) scale(1.02);
-  }
-  18% {
+  6% {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
   }
-  42% {
-    opacity: 0.96;
+  22% {
+    opacity: 1;
+    transform:
+      translate(calc(-50% + var(--ig-sx)), calc(-50% + var(--ig-sy)))
+      rotate(calc(var(--ig-rot) * 0.25))
+      scale(1.01);
+  }
+  48% {
+    opacity: 1;
     transform:
       translate(calc(-50% + var(--ig-mx)), calc(-50% + var(--ig-my)))
-      rotate(calc(var(--ig-rot) * 0.4))
-      scale(1.03);
+      rotate(calc(var(--ig-rot) * 0.5))
+      scale(1.02);
   }
-  70% {
-    opacity: 0.78;
+  72% {
+    opacity: 0.96;
     transform:
       translate(calc(-50% + var(--ig-hx)), calc(-50% + var(--ig-hy)))
       rotate(calc(var(--ig-rot) * 0.75))
       scale(var(--ig-sc));
   }
   88% {
-    opacity: 0.28;
+    opacity: 0.75;
     transform:
       translate(calc(-50% + var(--ig-ex)), calc(-50% + var(--ig-ey)))
       rotate(var(--ig-rot))
-      scale(calc(var(--ig-sc) * 1.04));
+      scale(calc(var(--ig-sc) * 1.02));
   }
   100% {
     opacity: 0;
     transform:
-      translate(calc(-50% + var(--ig-ex)), calc(-50% + var(--ig-ey) - 18px))
+      translate(calc(-50% + var(--ig-ex)), calc(-50% + var(--ig-ey) - 24px))
       rotate(var(--ig-rot))
-      scale(calc(var(--ig-sc) * 1.1));
+      scale(calc(var(--ig-sc) * 1.05));
   }
 }
 
@@ -2129,7 +2132,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
     transform: translateY(0) scale(1);
   }
   50% {
-    transform: translateY(-4px) scale(1.035);
+    transform: translateY(-6px) scale(1.025);
   }
 }
 
