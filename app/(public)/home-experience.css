@@ -1850,7 +1850,12 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   box-sizing: border-box;
 }
 
-/* Height is assigned in JS per row to that row's title+body+button */
+/* Pin button to the bottom so image bottom always meets the CTA */
+.home-text-img-copy .home-text-button {
+  margin-top: auto;
+}
+
+/* Shared height set in JS — both rows use the taller title+body+button stack */
 .home-text-img-parent {
   position: relative;
   overflow: hidden;
@@ -1874,6 +1879,10 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   object-position: center center;
 }
 
+.home-text-h2 {
+  width: 100%;
+}
+
 .home-text-h2 h2 {
   font-family: var(--font-display);
   font-weight: 400;
@@ -1881,7 +1890,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   line-height: 1.08;
   letter-spacing: 0.03em;
   text-transform: uppercase;
-  margin-bottom: 22px;
+  margin: 0 0 22px;
   white-space: pre-line;
 }
 
@@ -1890,7 +1899,12 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   font-size: 1.02rem;
   line-height: 1.75;
   max-width: 42ch;
-  margin-bottom: 28px;
+  margin: 0 0 28px;
+  width: 100%;
+}
+
+.home-text-p p {
+  margin: 0;
 }
 
 /* ---------- GALLERY ---------- */
