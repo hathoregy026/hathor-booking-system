@@ -1,0 +1,131 @@
+/* Luxurious infinite text strip — homepage hero → content seam */
+
+.luxury-marquee {
+  --lm-gold: #b69f64;
+  --lm-gold-soft: #d4c28a;
+  --lm-charcoal: #1a1612;
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: clamp(1.75rem, 3.5vw, 2.75rem) 0;
+  background: var(--lm-charcoal);
+  color: var(--lm-gold);
+  border-block: 1px solid color-mix(in srgb, var(--lm-gold) 28%, transparent);
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+}
+
+.luxury-marquee__track {
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  will-change: transform;
+  animation: luxury-marquee-scroll 50s linear infinite;
+}
+
+.luxury-marquee:hover .luxury-marquee__track {
+  animation-play-state: paused;
+}
+
+.luxury-marquee__group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+  padding-right: 0.15em;
+}
+
+.luxury-marquee__item {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(1.25rem, 2.5vw, 2.5rem);
+  padding-inline: clamp(1.25rem, 2.5vw, 2.5rem);
+  font-family: var(--font-hathor-display, "Playfair Display"), Georgia, serif;
+  font-size: clamp(1.65rem, 3.4vw, 3.25rem);
+  line-height: 1;
+  letter-spacing: 0.18em;
+  color: var(--lm-gold);
+}
+
+.luxury-marquee__item--upper {
+  font-style: normal;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+}
+
+.luxury-marquee__item--italic {
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  color: var(--lm-gold-soft);
+  text-transform: none;
+}
+
+.luxury-marquee__divider {
+  display: inline-block;
+  flex-shrink: 0;
+  font-size: 0.35em;
+  line-height: 1;
+  color: color-mix(in srgb, var(--lm-gold) 75%, transparent);
+  letter-spacing: 0;
+  transform: translateY(-0.05em);
+  user-select: none;
+}
+
+@keyframes luxury-marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 640px) {
+  .luxury-marquee {
+    padding: 1.35rem 0;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      #000 5%,
+      #000 95%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      #000 5%,
+      #000 95%,
+      transparent 100%
+    );
+  }
+
+  .luxury-marquee__item {
+    letter-spacing: 0.14em;
+  }
+
+  .luxury-marquee__item--upper {
+    letter-spacing: 0.2em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .luxury-marquee__track {
+    animation: none;
+    transform: none;
+  }
+}

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
 import type { CSSProperties } from "react";
+import { LuxuryMarquee } from "@/components/home/LuxuryMarquee";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { HathorLogoTuner } from "@/components/public/HathorLogoTuner";
 import { SocialBrandIcon } from "@/components/public/SocialBrandIcon";
@@ -290,6 +291,8 @@ export function HomePageClient({
           posterImageName={EX_HERO.imageName}
           logoPartsVariant={liveTune.partsVariant}
         />
+
+        <LuxuryMarquee />
 
         <div className="ex-content-dust" style={{ position: "relative" }}>
           <GoldDustParticles />
