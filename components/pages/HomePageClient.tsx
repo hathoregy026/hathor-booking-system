@@ -189,6 +189,52 @@ export function HomePageClient({
     paintLogoTune(liveTune);
   }, [liveTune]);
 
+  /* Equalize both text+image rows to the taller copy so both images share one size. */
+  useLayoutEffect(() => {
+    const section = document.getElementById("escape");
+    if (!section) return;
+
+    const mq = window.matchMedia("(max-width: 1024px)");
+    const rows = Array.from(
+      section.querySelectorAll<HTMLElement>(".text-img-row"),
+    );
+
+    const sync = () => {
+      rows.forEach((row) => {
+        row.style.minHeight = "";
+      });
+      if (mq.matches || rows.length === 0) return;
+
+      const maxCopy = Math.max(
+        ...rows.map(
+          (row) =>
+            row.querySelector<HTMLElement>(".home-text-img-copy")
+              ?.offsetHeight ?? 0,
+        ),
+      );
+      if (maxCopy <= 0) return;
+      rows.forEach((row) => {
+        row.style.minHeight = `${maxCopy}px`;
+      });
+    };
+
+    const ro = new ResizeObserver(sync);
+    rows.forEach((row) => {
+      const copy = row.querySelector(".home-text-img-copy");
+      if (copy) ro.observe(copy);
+    });
+    mq.addEventListener("change", sync);
+    sync();
+
+    return () => {
+      ro.disconnect();
+      mq.removeEventListener("change", sync);
+      rows.forEach((row) => {
+        row.style.minHeight = "";
+      });
+    };
+  }, []);
+
   /* Re-fetch so a stale HTML shell still picks up the latest Save. */
   useEffect(() => {
     let cancelled = false;
