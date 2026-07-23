@@ -189,7 +189,7 @@ export function HomePageClient({
     paintLogoTune(liveTune);
   }, [liveTune]);
 
-  /* Lock both text+image frames to the taller title+body+button stack. */
+  /* Each text+image row: image height = that row's title+body+button height. */
   useLayoutEffect(() => {
     const section = document.getElementById("escape");
     if (!section) return;
@@ -202,12 +202,7 @@ export function HomePageClient({
     const clearHeights = () => {
       rows.forEach((row) => {
         const parent = row.querySelector<HTMLElement>(".home-text-img-parent");
-        const copy = row.querySelector<HTMLElement>(".home-text-img-copy");
         if (parent) parent.style.height = "";
-        if (copy) {
-          copy.style.height = "";
-          copy.style.minHeight = "";
-        }
       });
     };
 
@@ -215,20 +210,12 @@ export function HomePageClient({
       clearHeights();
       if (mq.matches || rows.length === 0) return;
 
-      const maxCopy = Math.max(
-        ...rows.map((row) => {
-          const copy = row.querySelector<HTMLElement>(".home-text-img-copy");
-          return copy ? Math.ceil(copy.getBoundingClientRect().height) : 0;
-        }),
-      );
-      if (maxCopy <= 0) return;
-
       rows.forEach((row) => {
         const parent = row.querySelector<HTMLElement>(".home-text-img-parent");
         const copy = row.querySelector<HTMLElement>(".home-text-img-copy");
-        const px = `${maxCopy}px`;
-        if (parent) parent.style.height = px;
-        if (copy) copy.style.height = px;
+        if (!parent || !copy) return;
+        const h = Math.ceil(copy.getBoundingClientRect().height);
+        if (h > 0) parent.style.height = `${h}px`;
       });
     };
 

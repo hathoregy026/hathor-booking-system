@@ -1850,11 +1850,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   box-sizing: border-box;
 }
 
-.home-text-img-copy .home-text-button {
-  margin-top: auto;
-}
-
-/* Height is assigned in JS to match title+body+button (both rows share one size) */
+/* Height is assigned in JS per row to that row's title+body+button */
 .home-text-img-parent {
   position: relative;
   overflow: hidden;
