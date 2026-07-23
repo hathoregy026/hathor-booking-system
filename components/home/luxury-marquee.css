@@ -4,21 +4,24 @@
   --lm-cream: var(--cream, #ece8df);
   --lm-band: color-mix(in srgb, #b69f64 12%, transparent);
   --lm-stroke: color-mix(in srgb, #b69f64 45%, transparent);
-  --lm-edge: min(9.5rem, 18vw);
+  --lm-edge: min(5.5rem, 12vw);
   position: relative;
   z-index: 2;
   overflow: hidden;
   white-space: nowrap;
-  padding: clamp(1.75rem, 3.5vw, 2.75rem) 0;
+  /* Slimmer vertical band */
+  padding: clamp(0.7rem, 1.4vw, 1.05rem) 0;
   color: #b69f64;
   background: var(--lm-band);
   border-block: 1px solid var(--lm-stroke);
   box-shadow:
     inset 0 1px 0 color-mix(in srgb, #d4af37 28%, transparent),
     inset 0 -1px 0 color-mix(in srgb, #b69f64 18%, transparent);
+  /* Room for glyph overhang (italics, shadows) inside the clip */
+  line-height: 1.35 !important;
 }
 
-/* Soft cream fade + edge blur — fixed to strip edges (not the scrolling track) */
+/* Soft cream fade — gentler, narrower so letters aren’t eaten at the sides */
 .luxury-marquee::before,
 .luxury-marquee::after {
   content: "";
@@ -35,10 +38,9 @@
   background: linear-gradient(
     to right,
     var(--lm-cream) 0%,
-    color-mix(in srgb, var(--lm-cream) 55%, transparent) 38%,
+    color-mix(in srgb, var(--lm-cream) 40%, transparent) 55%,
     transparent 100%
   );
-  box-shadow: inset 40px 0 28px -12px color-mix(in srgb, var(--lm-cream) 55%, transparent);
 }
 
 .luxury-marquee::after {
@@ -46,36 +48,35 @@
   background: linear-gradient(
     to left,
     var(--lm-cream) 0%,
-    color-mix(in srgb, var(--lm-cream) 55%, transparent) 38%,
+    color-mix(in srgb, var(--lm-cream) 40%, transparent) 55%,
     transparent 100%
   );
-  box-shadow: inset -40px 0 28px -12px color-mix(in srgb, var(--lm-cream) 55%, transparent);
 }
 
-/* Separate blur veils — stronger at edges, clear in the center */
+/* Light edge blur only — avoid hard cutouts */
 .luxury-marquee__blur {
   position: absolute;
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  -webkit-backdrop-filter: blur(2px);
-  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(1.25px);
+  backdrop-filter: blur(1.25px);
   -webkit-mask-image: linear-gradient(
     to right,
     #000 0%,
-    rgb(0 0 0 / 0.55) 8%,
-    transparent 18%,
-    transparent 82%,
-    rgb(0 0 0 / 0.55) 92%,
+    rgb(0 0 0 / 0.35) 5%,
+    transparent 12%,
+    transparent 88%,
+    rgb(0 0 0 / 0.35) 95%,
     #000 100%
   );
   mask-image: linear-gradient(
     to right,
     #000 0%,
-    rgb(0 0 0 / 0.55) 8%,
-    transparent 18%,
-    transparent 82%,
-    rgb(0 0 0 / 0.55) 92%,
+    rgb(0 0 0 / 0.35) 5%,
+    transparent 12%,
+    transparent 88%,
+    rgb(0 0 0 / 0.35) 95%,
     #000 100%
   );
 }
@@ -84,6 +85,8 @@
   display: inline-flex;
   align-items: center;
   width: max-content;
+  /* Extra vertical room so ascenders / descenders / drop-shadow aren’t clipped */
+  padding-block: 0.2em;
   will-change: transform;
   animation: luxury-marquee-scroll 50s linear infinite;
 }
@@ -107,7 +110,7 @@
   padding-inline: clamp(1.1rem, 2.2vw, 2.25rem);
   font-family: inherit;
   font-size: inherit;
-  line-height: inherit;
+  line-height: 1.35 !important;
   font-weight: inherit;
   text-transform: none;
   letter-spacing: 0.1em;
@@ -121,6 +124,10 @@
 }
 
 .luxury-marquee__text {
+  display: inline-block;
+  /* Padding expands the clip box so italic / serif edges aren’t cut */
+  padding: 0.12em 0.18em;
+  margin: -0.12em -0.06em;
   background-image: linear-gradient(
     135deg,
     #d4af37 0%,
@@ -134,13 +141,14 @@
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
   animation: luxury-marquee-shimmer 10s linear infinite;
-  /* drop-shadow works with clipped metallic text; text-shadow does not */
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  /* Softer depth — less likely to look clipped at the band edges */
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.08));
   transition: filter 0.6s ease;
+  line-height: inherit;
 }
 
 .luxury-marquee:hover .luxury-marquee__text {
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.14));
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.12));
 }
 
 .luxury-marquee__divider {
@@ -149,6 +157,7 @@
   font-size: 0.35em;
   line-height: 1;
   letter-spacing: 0;
+  padding: 0.2em;
   transform: translateY(-0.05em);
   user-select: none;
   background-image: linear-gradient(
@@ -163,7 +172,7 @@
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
   animation: luxury-marquee-shimmer 10s linear infinite;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.08));
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.06));
   opacity: 0.85;
 }
 
@@ -187,8 +196,8 @@
 
 @media (max-width: 640px) {
   .luxury-marquee {
-    --lm-edge: min(4.5rem, 16vw);
-    padding: 1.35rem 0;
+    --lm-edge: min(3.25rem, 11vw);
+    padding: 0.65rem 0;
   }
 
   .luxury-marquee:hover .luxury-marquee__item {

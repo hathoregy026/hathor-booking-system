@@ -471,7 +471,7 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
     fontFamily: "Playfair Display",
     fontSize: 42,
     color: "#B69F64",
-    lineHeight: 1,
+    lineHeight: 1.35,
     letterSpacing: 6,
     innerShadow: false,
   },
@@ -1242,6 +1242,7 @@ html[data-ex-experience] .ex-root .luxury-marquee`,
 .public-site .luxury-marquee .luxury-marquee__item,
 html[data-ex-experience] .ex-root .luxury-marquee .luxury-marquee__item {
   letter-spacing: 0.1em !important;
+  line-height: 1.35 !important;
 }
 .public-site .luxury-marquee:hover .luxury-marquee__item,
 html[data-ex-experience] .ex-root .luxury-marquee:hover .luxury-marquee__item {
