@@ -1233,12 +1233,20 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__body,
   "on_images_body",
 )}
 ${block(
-  `/* Luxury marquee strip under homepage hero */
-.public-site .typo-luxury-marquee,
-html[data-ex-experience] .ex-root .luxury-marquee__item,
-html[data-ex-experience] .ex-root .typo-luxury-marquee`,
+  `/* Luxury marquee — font/size on strip; metallic fill handled in luxury-marquee.css */
+.public-site .luxury-marquee,
+html[data-ex-experience] .ex-root .luxury-marquee`,
   "luxury_marquee",
 )}
+/* Base tracking; hover expands in luxury-marquee.css */
+.public-site .luxury-marquee .luxury-marquee__item,
+html[data-ex-experience] .ex-root .luxury-marquee .luxury-marquee__item {
+  letter-spacing: 0.1em !important;
+}
+.public-site .luxury-marquee:hover .luxury-marquee__item,
+html[data-ex-experience] .ex-root .luxury-marquee:hover .luxury-marquee__item {
+  letter-spacing: 0.3em !important;
+}
 .public-site .typo-on-images,
 .public-site .typo-on-images *,
 .public-site .venetian-page .room-fs-ui .char,

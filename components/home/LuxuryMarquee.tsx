@@ -35,6 +35,7 @@ export function LuxuryMarquee() {
 
   return (
     <div className="luxury-marquee" aria-hidden="true" style={style}>
+      <div className="luxury-marquee__blur" />
       <div className="luxury-marquee__track">
         <MarqueeGroup phrases={phrases} />
         <MarqueeGroup phrases={phrases} ariaHidden />
