@@ -1839,6 +1839,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   overflow: hidden;
   border-radius: 6px;
   align-self: center;
+  width: 100%;
+  max-height: min(52vh, 28rem);
 }
 
 .home-text-img-container {
@@ -1847,10 +1849,11 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   border-radius: 6px;
   flex: none;
   width: 100%;
-  height: auto;
+  height: 100%;
   min-height: 0;
-  /* Same frame for every text+image block — no stretch-to-copy mismatch */
-  aspect-ratio: 4 / 5;
+  max-height: inherit;
+  /* Wider frame — same size for both blocks, fits a screen without towering */
+  aspect-ratio: 16 / 11;
   will-change: transform, clip-path;
 }
 
@@ -2183,6 +2186,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   .home-text-img-parent {
     width: 100%;
     align-self: stretch;
+    max-height: min(42vh, 22rem);
   }
 
   .home-text-img-container {
@@ -2190,7 +2194,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
     width: 100%;
     height: auto;
     min-height: 0;
-    aspect-ratio: 4 / 5;
+    max-height: inherit;
+    aspect-ratio: 16 / 11;
   }
 
   .carousel-slide {
