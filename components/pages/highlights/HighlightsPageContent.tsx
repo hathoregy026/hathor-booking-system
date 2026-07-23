@@ -80,7 +80,7 @@ export function HighlightsPageContent() {
                   <p className="lux-kicker">Landmark</p>
                   <p>{landmark.body}</p>
                   <Link className="btn btn-dark" href="/cruises">
-                    Sail this route
+                    View Route
                   </Link>
                 </div>
               </article>

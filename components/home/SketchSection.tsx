@@ -45,7 +45,7 @@ export function SketchSection() {
                 </Link>
               ))}
               <Link href="/cruises" className="owo-discover cursor-hover">
-                <span>Discover Hathor</span>
+                <span>Discover More</span>
                 <ArrowRight className="h-4 w-4" aria-hidden />
               </Link>
             </nav>

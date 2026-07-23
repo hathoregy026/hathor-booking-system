@@ -51,7 +51,7 @@ export function HomePageContent() {
         intro={`${HOMEPAGE_ITINERARIES.subtitle}. ${HOMEPAGE_ITINERARIES.intro}`}
         pillars={ITINERARY_PILLARS}
         discoverHref="/cruises"
-        discoverLabel="Discover itineraries"
+        discoverLabel="Explore More"
         variant="dark"
       />
 

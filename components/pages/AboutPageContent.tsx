@@ -150,7 +150,7 @@ export function AboutPageContent() {
                   {ABOUT_PAGE.diningPromo.body}
                 </p>
                 <Link href="/gastronomy" className="hathor-discover-link mt-6 inline-flex cursor-hover">
-                  <span>Explore Gastronomy</span>
+                  <span>Explore Dining</span>
                   <ArrowRight className="h-4 w-4" aria-hidden />
                 </Link>
               </div>

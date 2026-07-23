@@ -395,7 +395,7 @@ export function HomePageClient({
 
           <div className="services-cta">
             <Link className="btn btn-dark general-button" href="/cruises">
-              Explore Our Itineraries
+              Explore More
             </Link>
           </div>
         </section>
@@ -580,7 +580,7 @@ export function HomePageClient({
 
           <div className="gallery-container">
             <BookNowTrigger className="btn btn-dark gallery-button">
-              Book Your Cruise
+              Book Now
             </BookNowTrigger>
           </div>
         </section>
@@ -609,7 +609,7 @@ export function HomePageClient({
           <div className="cta-inner">
             <h2>{EX_CTA.title}</h2>
             <p>{EX_CTA.body}</p>
-            <BookNowTrigger className="btn btn-filled">Book Your Experience</BookNowTrigger>
+            <BookNowTrigger className="btn btn-filled">Book Now</BookNowTrigger>
           </div>
         </section>
         </div>

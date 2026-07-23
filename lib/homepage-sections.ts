@@ -148,7 +148,7 @@ export const HOMEPAGE_ALTERNATING_CHAPTERS: readonly HomeChapter[] = [
       name: "gastronomy-restaurant",
       alt: "Fine dining restaurant aboard Hathor Dahabiya",
     },
-    discoverLabel: "Discover gastronomy",
+    discoverLabel: "Explore Dining",
     discoverHref: "/gastronomy",
   },
   {
@@ -159,7 +159,7 @@ export const HOMEPAGE_ALTERNATING_CHAPTERS: readonly HomeChapter[] = [
       name: "wellness-hero",
       alt: "Seneb Spa wellness pool aboard Hathor",
     },
-    discoverLabel: "Discover Seneb Spa",
+    discoverLabel: "Explore Spa",
     discoverHref: "/wellness",
   },
   {
@@ -170,7 +170,7 @@ export const HOMEPAGE_ALTERNATING_CHAPTERS: readonly HomeChapter[] = [
       name: "home-alt-highlights",
       alt: "Ancient landmarks along the Nile",
     },
-    discoverLabel: "Discover highlights",
+    discoverLabel: "Explore More",
     discoverHref: "/highlights",
   },
 ] as const;

@@ -46,7 +46,7 @@ export function AccommodationsBento() {
       <div className="hathor-container">
         <ScrollReveal delay={120}>
           <Link href="/luxury-cabins-Nile-Cruise" className="owo-discover cursor-hover">
-            <span>Discover luxury rooms</span>
+            <span>View Rooms</span>
             <ArrowRight className="h-4 w-4" aria-hidden />
           </Link>
         </ScrollReveal>

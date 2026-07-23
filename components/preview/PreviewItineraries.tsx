@@ -36,7 +36,7 @@ export function PreviewItineraries() {
 
         <ScrollReveal delay={200}>
           <Link href="/cruises" className="preview-discover cursor-hover">
-            <span>Discover itineraries</span>
+            <span>Explore More</span>
             <ArrowRight className="h-4 w-4" aria-hidden />
           </Link>
         </ScrollReveal>

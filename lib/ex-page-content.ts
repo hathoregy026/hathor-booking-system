@@ -136,7 +136,7 @@ export const EX_TEXT_BLOCKS = [
     body: HOMEPAGE_LIFESTYLE.body,
     imageName: "home-split-courtyard" as SiteImageName,
     alt: "Hathor Dahabiya on the Nile",
-    cta: "Discover Hathor",
+    cta: "Discover More",
     href: "/about",
   },
   {
@@ -144,7 +144,7 @@ export const EX_TEXT_BLOCKS = [
     body: HOMEPAGE_DINING.body,
     imageName: "gastronomy-restaurant" as SiteImageName,
     alt: "Fine dining aboard Hathor Dahabiya",
-    cta: "Explore Gastronomy",
+    cta: "Explore Dining",
     href: "/gastronomy",
   },
 ] as const;

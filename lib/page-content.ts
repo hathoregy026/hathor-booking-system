@@ -263,7 +263,7 @@ export const ROOMS_PAGE = {
       title: "Luxury Rooms",
       body: "Discover Luxury Dahabiya Nile Cruise luxury rooms, the best Dahabiya suitable for a truly elegant Nile cruise. Relish the comfort of refined luxury.",
       href: "/luxury-cabins-Nile-Cruise",
-      hrefLabel: "Explore luxury rooms",
+      hrefLabel: "View Rooms",
       imageName: "room-luxury",
     },
     {
@@ -275,7 +275,7 @@ export const ROOMS_PAGE = {
       title: "Luxury Royal Suites",
       body: "Enjoy the Royal Suites on Hathor Dahabiya, with the highest level of comfort and feel the real charm on Luxury Dahabiya Nile Cruise Hathor, with the breathtaking Nile view.",
       href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
-      hrefLabel: "Discover royal suites",
+      hrefLabel: "View Suites",
       imageName: "room-royal",
     },
   ],
