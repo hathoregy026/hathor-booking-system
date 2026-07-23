@@ -548,34 +548,48 @@ export function HomePageClient({
             </div>
           </div>
 
-          <div className="gallery-grid">
-            {EX_GALLERY.images.map((item, index) => (
-              <Link
-                key={`${item.imageName}-${index}`}
-                href={item.href}
-                className="gallery-item media-hover"
-                id={
-                  GALLERY_PREVIEW_ANCHORS.has(item.imageName)
-                    ? siteImageAnchorId(item.imageName)
-                    : undefined
-                }
-                data-site-image={
-                  GALLERY_PREVIEW_ANCHORS.has(item.imageName)
-                    ? item.imageName
-                    : undefined
-                }
-                aria-label={item.alt}
-              >
-                <ManagedImage
-                  name={item.imageName}
-                  alt={item.alt}
-                  fill
-                  sizes="(max-width: 768px) 50vw, 20vw"
-                  className="object-cover"
-                  previewAnchor={false}
-                />
-              </Link>
-            ))}
+          <div
+            className="gallery-marquee"
+            aria-label="Hathor gallery — scrolling images"
+          >
+            <div className="gallery-marquee__track">
+              {[0, 1].map((copy) => (
+                <div
+                  key={`gallery-copy-${copy}`}
+                  className="gallery-marquee__group"
+                  aria-hidden={copy === 1 ? "true" : undefined}
+                >
+                  {EX_GALLERY.images.map((item, index) => (
+                    <Link
+                      key={`${copy}-${item.imageName}-${index}`}
+                      href={item.href}
+                      className="gallery-item media-hover"
+                      tabIndex={copy === 1 ? -1 : undefined}
+                      id={
+                        copy === 0 && GALLERY_PREVIEW_ANCHORS.has(item.imageName)
+                          ? siteImageAnchorId(item.imageName)
+                          : undefined
+                      }
+                      data-site-image={
+                        copy === 0 && GALLERY_PREVIEW_ANCHORS.has(item.imageName)
+                          ? item.imageName
+                          : undefined
+                      }
+                      aria-label={item.alt}
+                    >
+                      <ManagedImage
+                        name={item.imageName}
+                        alt={item.alt}
+                        fill
+                        sizes="(max-width: 768px) 45vw, 20vw"
+                        className="object-cover"
+                        previewAnchor={false}
+                      />
+                    </Link>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="gallery-container">

@@ -1014,19 +1014,18 @@ export function useExScrollMotion() {
    * ----------------------------------------------------- */
   function initGalleryItems() {
     if (prefersReduced) return;
-    gsap.utils.toArray(".gallery-item").forEach((item, i) => {
-      gsap.from(item, {
-        y: 40,
-        opacity: 0,
-        duration: 0.7,
-        ease: "power2.out",
-        delay: (i % 5) * 0.08,
-        scrollTrigger: {
-          trigger: item,
-          start: "top 90%",
-          once: true,
-        },
-      });
+    const marquee = document.querySelector(".gallery-marquee");
+    if (!marquee) return;
+    gsap.from(marquee, {
+      y: 28,
+      opacity: 0,
+      duration: 0.75,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: marquee,
+        start: "top 90%",
+        once: true,
+      },
     });
   }
 
