@@ -1979,7 +1979,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   color: var(--gold) !important;
 }
 
-/* ---------- Instagram follow + soft burst overlay ---------- */
+/* ---------- Instagram follow + soft soap-bubble float ---------- */
 .instagram-burst-field {
   position: absolute;
   inset: 0;
@@ -1991,19 +1991,25 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 .instagram-burst-particle {
   position: absolute;
   left: 50%;
-  top: 32%;
+  top: 36%;
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.35);
+  transform: translate(-50%, -50%) scale(0.55);
   will-change: transform, opacity;
-  animation-name: ig-soft-explode;
-  animation-duration: var(--ig-dur, 3.2s);
+  animation-name: ig-soap-float;
+  animation-duration: var(--ig-dur, 6.4s);
   animation-delay: var(--ig-delay, 0s);
-  animation-timing-function: var(--ig-ease, cubic-bezier(0.16, 0.84, 0.22, 1));
+  animation-timing-function: var(--ig-ease, cubic-bezier(0.37, 0.01, 0.2, 1));
   animation-fill-mode: both;
 }
 
 .instagram-burst-particle--emoji {
-  top: 34%;
+  top: 38%;
+}
+
+.instagram-burst-particle--image .instagram-circle--burst,
+.instagram-burst-particle--emoji .instagram-float-emoji__inner {
+  animation: ig-soap-wobble 3.4s ease-in-out infinite;
+  animation-delay: var(--ig-delay, 0s);
 }
 
 .instagram-circle {
@@ -2012,11 +2018,12 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  border: 1px solid rgba(182, 159, 100, 0.85);
+  border: 1px solid rgba(182, 159, 100, 0.55);
   overflow: hidden;
   box-shadow:
-    0 4px 20px rgba(92, 74, 48, 0.08),
-    0 0 0 4px rgba(245, 239, 228, 0.55);
+    0 8px 28px rgba(92, 74, 48, 0.07),
+    0 0 0 5px rgba(245, 239, 228, 0.42),
+    inset 0 1px 0 rgba(255, 252, 245, 0.55);
   background:
     radial-gradient(circle at 30% 25%, #faf6ee 0%, #f0e6d4 55%, #e8dcc8 100%);
 }
@@ -2024,6 +2031,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 .instagram-circle--burst {
   width: clamp(64px, 8vw, 88px);
   height: clamp(64px, 8vw, 88px);
+  opacity: 0.94;
 }
 
 .instagram-circle::after {
@@ -2031,19 +2039,25 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: linear-gradient(
-    160deg,
-    rgba(245, 239, 228, 0.18) 0%,
-    transparent 42%,
-    rgba(182, 159, 100, 0.12) 100%
-  );
+  background:
+    radial-gradient(
+      circle at 28% 22%,
+      rgba(255, 252, 245, 0.55) 0%,
+      transparent 42%
+    ),
+    linear-gradient(
+      160deg,
+      rgba(245, 239, 228, 0.22) 0%,
+      transparent 45%,
+      rgba(182, 159, 100, 0.1) 100%
+    );
   pointer-events: none;
   z-index: 1;
 }
 
 .instagram-circle img {
   object-fit: cover;
-  filter: saturate(0.88) brightness(1.02) sepia(0.08);
+  filter: saturate(0.86) brightness(1.03) sepia(0.1);
 }
 
 .instagram-float-emoji__inner {
@@ -2053,44 +2067,69 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   width: 2.35rem;
   height: 2.35rem;
   border-radius: 50%;
-  border: 1px solid rgba(182, 159, 100, 0.55);
+  border: 1px solid rgba(182, 159, 100, 0.45);
   background:
-    radial-gradient(circle at 35% 30%, #faf7f0 0%, #f3eadc 48%, #e6d9c4 100%);
+    radial-gradient(circle at 32% 26%, #fffdf8 0%, #f3eadc 48%, #e6d9c4 100%);
   box-shadow:
-    0 3px 14px rgba(92, 74, 48, 0.08),
-    inset 0 1px 0 rgba(255, 252, 245, 0.75);
+    0 6px 18px rgba(92, 74, 48, 0.07),
+    inset 0 1px 0 rgba(255, 252, 245, 0.8);
   color: #b69f64;
   font-size: 0.95rem;
   line-height: 1;
-  filter: sepia(0.35) saturate(0.75) brightness(0.95);
+  filter: sepia(0.3) saturate(0.7) brightness(0.97);
+  opacity: 0.92;
 }
 
-@keyframes ig-soft-explode {
+@keyframes ig-soap-float {
   0% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.22);
+    transform: translate(-50%, -50%) scale(0.48);
   }
-  8% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1.08);
+  10% {
+    opacity: 0.92;
+    transform: translate(-50%, -50%) scale(1.02);
   }
-  16% {
+  18% {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
   }
-  78% {
-    opacity: 0.72;
+  42% {
+    opacity: 0.96;
+    transform:
+      translate(calc(-50% + var(--ig-mx)), calc(-50% + var(--ig-my)))
+      rotate(calc(var(--ig-rot) * 0.4))
+      scale(1.03);
+  }
+  70% {
+    opacity: 0.78;
+    transform:
+      translate(calc(-50% + var(--ig-hx)), calc(-50% + var(--ig-hy)))
+      rotate(calc(var(--ig-rot) * 0.75))
+      scale(var(--ig-sc));
+  }
+  88% {
+    opacity: 0.28;
     transform:
       translate(calc(-50% + var(--ig-ex)), calc(-50% + var(--ig-ey)))
       rotate(var(--ig-rot))
-      scale(var(--ig-sc));
+      scale(calc(var(--ig-sc) * 1.04));
   }
   100% {
     opacity: 0;
     transform:
-      translate(calc(-50% + var(--ig-ex)), calc(-50% + var(--ig-ey)))
+      translate(calc(-50% + var(--ig-ex)), calc(-50% + var(--ig-ey) - 18px))
       rotate(var(--ig-rot))
-      scale(0.7);
+      scale(calc(var(--ig-sc) * 1.1));
+  }
+}
+
+@keyframes ig-soap-wobble {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.035);
   }
 }
 
@@ -2579,6 +2618,11 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   .instagram-burst-field,
   .instagram-burst-particle {
     display: none !important;
+  }
+
+  .instagram-burst-particle--image .instagram-circle--burst,
+  .instagram-burst-particle--emoji .instagram-float-emoji__inner {
+    animation: none !important;
   }
 
   .carousel-container img {
