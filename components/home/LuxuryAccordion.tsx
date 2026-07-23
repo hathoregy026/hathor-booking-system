@@ -2,13 +2,15 @@
 
 import { useState, type KeyboardEvent } from "react";
 import styles from "./LuxuryAccordion.module.css";
+import type { HomepageAccordionCruise } from "@/lib/homepage-accordion-cruises";
 
 export type LuxuryAccordionItem = {
-  id: number;
+  id: string;
   name: string;
   description: string;
   imageUrl: string;
   romanNumeral: string;
+  meta?: string;
 };
 
 export type LuxuryAccordionProps = {
@@ -16,44 +18,35 @@ export type LuxuryAccordionProps = {
   items?: LuxuryAccordionItem[];
 };
 
-const defaultItems: LuxuryAccordionItem[] = [
-  {
-    id: 1,
-    name: "The Hathor Suite",
-    description:
-      "Our flagship suite with panoramic Nile views, private terrace, and exclusive butler service. 45 sqm of pure elegance.",
-    imageUrl: "/images/suites/hathor-suite.jpg",
-    romanNumeral: "I",
-  },
-  {
-    id: 2,
-    name: "Deluxe Cabin",
-    description:
-      "Spacious comfort with floor-to-ceiling windows, private balcony, and luxurious en-suite bathroom. 28 sqm.",
-    imageUrl: "/images/suites/deluxe-cabin.jpg",
-    romanNumeral: "II",
-  },
-  {
-    id: 3,
-    name: "Standard Cabin",
-    description:
-      "Elegant simplicity with Nile-facing windows, premium linens, and dedicated housekeeping. 22 sqm.",
-    imageUrl: "/images/suites/standard-cabin.jpg",
-    romanNumeral: "III",
-  },
-];
+function toItems(cruises: HomepageAccordionCruise[]): LuxuryAccordionItem[] {
+  return cruises.map((cruise) => ({
+    id: cruise.id,
+    name: cruise.name,
+    description: cruise.description,
+    imageUrl: cruise.imageUrl,
+    romanNumeral: cruise.romanNumeral,
+    meta: cruise.meta,
+  }));
+}
 
 export default function LuxuryAccordion({
-  title = "Our Suites",
-  items = defaultItems,
+  title = "Our Voyages",
+  items,
 }: LuxuryAccordionProps) {
-  const [activeId, setActiveId] = useState<number | null>(null);
+  const list = items ?? [];
+  const [activeId, setActiveId] = useState<string | null>(
+    () => list[0]?.id ?? null,
+  );
 
-  const handleToggle = (id: number) => {
+  if (list.length === 0) {
+    return null;
+  }
+
+  const handleToggle = (id: string) => {
     setActiveId((current) => (current === id ? null : id));
   };
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLLIElement>, id: number) => {
+  const handleKeyDown = (event: KeyboardEvent<HTMLLIElement>, id: string) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       handleToggle(id);
@@ -69,7 +62,7 @@ export default function LuxuryAccordion({
       <div className={styles.container}>
         <h2 className={styles.title}>{title}</h2>
         <ul className={styles.accordionList}>
-          {items.map((item) => {
+          {list.map((item) => {
             const isActive = activeId === item.id;
 
             return (
@@ -87,7 +80,7 @@ export default function LuxuryAccordion({
                   {item.romanNumeral}
                 </span>
 
-                {/* eslint-disable-next-line @next/next/no-img-element -- isolated placeholder; swap for next/image when assets exist */}
+                {/* eslint-disable-next-line @next/next/no-img-element -- CMS cruise imageUrl from Admin → Cruises */}
                 <img
                   className={styles.backgroundImage}
                   src={item.imageUrl}
@@ -97,19 +90,25 @@ export default function LuxuryAccordion({
 
                 <div className={styles.vignette} aria-hidden="true" />
 
-                <div className={styles.row}>
-                  <h3 className={styles.name}>{item.name}</h3>
-                  <span className={styles.icon} aria-hidden="true">
-                    +
-                  </span>
+                <div className={styles.collapsedLabel} aria-hidden={isActive}>
+                  <h3 className={styles.collapsedName}>{item.name}</h3>
                 </div>
 
                 <div
                   id={`hathor-accordion-panel-${item.id}`}
-                  className={styles.body}
+                  className={styles.expandedContent}
                   role="region"
                   aria-hidden={!isActive}
                 >
+                  <div className={styles.row}>
+                    <h3 className={styles.name}>{item.name}</h3>
+                    <span className={styles.icon} aria-hidden="true">
+                      +
+                    </span>
+                  </div>
+                  {item.meta ? (
+                    <p className={styles.meta}>{item.meta}</p>
+                  ) : null}
                   <p className={styles.description}>{item.description}</p>
                 </div>
               </li>
@@ -120,3 +119,5 @@ export default function LuxuryAccordion({
     </section>
   );
 }
+
+export { toItems as mapCruisesToAccordionItems };

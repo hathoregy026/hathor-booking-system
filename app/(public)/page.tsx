@@ -4,6 +4,7 @@ import { preload } from "react-dom";
 import { HomeExperienceShell } from "@/components/pages/HomeExperienceShell";
 import { HomePageClient } from "@/components/pages/HomePageClient";
 import { HATHOR_HERO_POSTER_SRC, HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
+import { getHomepageAccordionCruisesSafe } from "@/lib/homepage-accordion-cruises";
 import { getHeroLogoTuneSafe } from "@/lib/hero-logo-tune";
 import { heroLogoTuneToImportantCss } from "@/lib/hero-logo-tune-shared";
 import "./home-experience.css";
@@ -52,7 +53,10 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   noStore();
   preload(HATHOR_HERO_VIDEO_SRC, { as: "fetch", fetchPriority: "high" });
-  const heroLogoTune = await getHeroLogoTuneSafe();
+  const [heroLogoTune, accordionCruises] = await Promise.all([
+    getHeroLogoTuneSafe(),
+    getHomepageAccordionCruisesSafe(),
+  ]);
   const logoTuneCss = heroLogoTuneToImportantCss(heroLogoTune);
 
   return (
@@ -68,7 +72,10 @@ export default async function HomePage() {
         type="video/mp4"
         fetchPriority="high"
       />
-      <HomePageClient heroLogoTune={heroLogoTune} />
+      <HomePageClient
+        heroLogoTune={heroLogoTune}
+        accordionCruises={accordionCruises}
+      />
     </HomeExperienceShell>
   );
 }

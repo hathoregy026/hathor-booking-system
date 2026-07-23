@@ -23,6 +23,7 @@ import {
   EX_TEXT_BLOCKS,
   type ExCarouselSlide,
 } from "@/lib/ex-page-content";
+import type { HomepageAccordionCruise } from "@/lib/homepage-accordion-cruises";
 import { useExScrollMotion } from "@/hooks/useExScrollMotion";
 import {
   useTypographyInlineStyle,
@@ -66,6 +67,7 @@ const HOMEPAGE_PREVIEW_SLOTS = new Set([
 
 type HomePageClientProps = {
   heroLogoTune?: HeroLogoTune;
+  accordionCruises?: HomepageAccordionCruise[];
 };
 
 function paintLogoTune(tune: HeroLogoTune) {
@@ -135,6 +137,7 @@ function ItineraryCarouselSlide({ slide }: { slide: ExCarouselSlide }) {
 
 export function HomePageClient({
   heroLogoTune = DEFAULT_HERO_LOGO_TUNE,
+  accordionCruises = [],
 }: HomePageClientProps) {
   useExScrollMotion();
 
@@ -479,7 +482,17 @@ export function HomePageClient({
           </div>
         </section>
 
-        <LuxuryAccordion title="Our Suites" />
+        <LuxuryAccordion
+          title="Our Voyages"
+          items={accordionCruises.map((cruise) => ({
+            id: cruise.id,
+            name: cruise.name,
+            description: cruise.description,
+            imageUrl: cruise.imageUrl,
+            romanNumeral: cruise.romanNumeral,
+            meta: cruise.meta,
+          }))}
+        />
 
         <section className="text-img-section ex-content-section" id="escape">
           {EX_TEXT_BLOCKS.map((block, index) => (
