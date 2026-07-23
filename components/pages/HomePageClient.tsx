@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
 import type { CSSProperties } from "react";
+import LuxuryAccordion from "@/components/home/LuxuryAccordion";
 import { LuxuryMarquee } from "@/components/home/LuxuryMarquee";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { GalleryInstagramFollow } from "@/components/public/GalleryInstagramFollow";
@@ -477,6 +478,8 @@ export function HomePageClient({
             </div>
           </div>
         </section>
+
+        <LuxuryAccordion title="Our Suites" />
 
         <section className="text-img-section ex-content-section" id="escape">
           {EX_TEXT_BLOCKS.map((block, index) => (
