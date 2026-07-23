@@ -2,7 +2,6 @@
 
 import { useState, type KeyboardEvent } from "react";
 import styles from "./LuxuryAccordion.module.css";
-import type { HomepageAccordionCruise } from "@/lib/homepage-accordion-cruises";
 
 export type LuxuryAccordionItem = {
   id: string;
@@ -18,22 +17,11 @@ export type LuxuryAccordionProps = {
   items?: LuxuryAccordionItem[];
 };
 
-function toItems(cruises: HomepageAccordionCruise[]): LuxuryAccordionItem[] {
-  return cruises.map((cruise) => ({
-    id: cruise.id,
-    name: cruise.name,
-    description: cruise.description,
-    imageUrl: cruise.imageUrl,
-    romanNumeral: cruise.romanNumeral,
-    meta: cruise.meta,
-  }));
-}
-
 export default function LuxuryAccordion({
   title = "Our Voyages",
-  items,
+  items = [],
 }: LuxuryAccordionProps) {
-  const list = items ?? [];
+  const list = items;
   const [activeId, setActiveId] = useState<string | null>(
     () => list[0]?.id ?? null,
   );
@@ -119,5 +107,3 @@ export default function LuxuryAccordion({
     </section>
   );
 }
-
-export { toItems as mapCruisesToAccordionItems };

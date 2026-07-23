@@ -85,12 +85,15 @@ export async function getHomepageAccordionCruises(): Promise<
   return rows.map((cruise, index) => {
     const roomCount = cruise._count.rooms;
     const roomLabel = roomCount === 1 ? "1 room" : `${roomCount} rooms`;
+    const ports = cruise.ports?.trim() || "";
+    const description =
+      cruise.description?.trim() || ports || cruise.name;
     return {
       id: cruise.id,
       name: cruise.name,
-      description: cruise.description?.trim() || cruise.ports,
+      description,
       imageUrl: resolveImageUrl(cruise.slug, cruise.imageUrl, index),
-      ports: cruise.ports,
+      ports,
       basePriceCents: cruise.basePriceCents,
       roomCount,
       slug: cruise.slug,
