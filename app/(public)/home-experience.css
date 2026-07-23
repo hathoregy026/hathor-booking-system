@@ -680,9 +680,12 @@ h1, h2, h3, h4, p {
   justify-content: center;
   gap: 10px;
   box-sizing: border-box;
-  min-width: var(--hathor-btn-min-width, 12.5rem);
+  width: var(--hathor-btn-width, 12.5rem);
+  min-width: var(--hathor-btn-width, 12.5rem);
+  max-width: var(--hathor-btn-width, 12.5rem);
   min-height: var(--hathor-btn-height, 2.85rem);
   height: var(--hathor-btn-height, 2.85rem);
+  max-height: var(--hathor-btn-height, 2.85rem);
   /* ALL CAPS sit high in the em-box — bias padding so the label looks centered */
   padding: 3px var(--hathor-btn-pad-x, 1.75rem) 1px;
   border-radius: 999px;
@@ -696,6 +699,7 @@ h1, h2, h3, h4, p {
   line-height: 1;
   text-decoration: none;
   white-space: nowrap;
+  overflow: hidden;
   box-shadow: 0 8px 22px rgba(44, 36, 25, 0.1);
   transition: background 0.35s var(--ease-out), color 0.35s var(--ease-out),
     border-color 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out),
@@ -738,10 +742,12 @@ h1, h2, h3, h4, p {
 .hero-cta.btn,
 .btn.hero-cta,
 .hero-button .hero-cta {
-  min-width: var(--hathor-btn-min-width, 12.5rem);
-  width: var(--hathor-btn-min-width, 12.5rem);
+  width: var(--hathor-btn-width, 12.5rem);
+  min-width: var(--hathor-btn-width, 12.5rem);
+  max-width: var(--hathor-btn-width, 12.5rem);
   min-height: var(--hathor-btn-height, 2.85rem);
   height: var(--hathor-btn-height, 2.85rem);
+  max-height: var(--hathor-btn-height, 2.85rem);
   padding: 3px var(--hathor-btn-pad-x, 1.75rem) 1px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(212, 194, 138, 0.7);
@@ -1227,10 +1233,12 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: var(--hathor-btn-min-width, 12.5rem);
-  min-width: var(--hathor-btn-min-width, 12.5rem);
+  width: var(--hathor-btn-width, 12.5rem);
+  min-width: var(--hathor-btn-width, 12.5rem);
+  max-width: var(--hathor-btn-width, 12.5rem);
   height: var(--hathor-btn-height, 2.85rem);
   min-height: var(--hathor-btn-height, 2.85rem);
+  max-height: var(--hathor-btn-height, 2.85rem);
   padding: 3px var(--hathor-btn-pad-x, 1.75rem) 1px;
   border-radius: 999px;
   backdrop-filter: blur(8px);
@@ -2276,10 +2284,12 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   }
 
   .hero-cta {
-    width: var(--hathor-btn-min-width, 12.5rem);
-    min-width: var(--hathor-btn-min-width, 12.5rem);
+    width: var(--hathor-btn-width, 12.5rem);
+    min-width: var(--hathor-btn-width, 12.5rem);
+    max-width: var(--hathor-btn-width, 12.5rem);
     height: var(--hathor-btn-height, 2.85rem);
     min-height: var(--hathor-btn-height, 2.85rem);
+    max-height: var(--hathor-btn-height, 2.85rem);
     padding: 0 var(--hathor-btn-pad-x, 1.75rem);
   }
 

@@ -37,9 +37,12 @@
   justify-content: center;
   gap: 10px;
   box-sizing: border-box;
-  min-width: var(--hathor-btn-min-width, 12.5rem);
+  width: var(--hathor-btn-width, 12.5rem);
+  min-width: var(--hathor-btn-width, 12.5rem);
+  max-width: var(--hathor-btn-width, 12.5rem);
   min-height: var(--hathor-btn-height, 2.85rem);
   height: var(--hathor-btn-height, 2.85rem);
+  max-height: var(--hathor-btn-height, 2.85rem);
   /* ALL CAPS sit high in the em-box — bias padding so the label looks centered */
   padding: 3px var(--hathor-btn-pad-x, 1.75rem) 1px;
   border-radius: 999px;
@@ -53,6 +56,7 @@
   line-height: 1;
   text-decoration: none;
   white-space: nowrap;
+  overflow: hidden;
   box-shadow: 0 8px 22px rgba(44, 36, 25, 0.1);
   cursor: pointer;
   transition: background 0.35s var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)),
@@ -733,20 +737,22 @@
 }
 
 .cruise-card-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin-top: 6px;
+  justify-content: flex-start;
 }
 
 .cruise-card-actions .btn {
-  width: 100%;
-  min-width: 0;
+  width: var(--hathor-btn-width, 12.5rem);
+  min-width: var(--hathor-btn-width, 12.5rem);
+  max-width: var(--hathor-btn-width, 12.5rem);
   min-height: var(--hathor-btn-height, 2.85rem);
   height: var(--hathor-btn-height, 2.85rem);
-  padding: 0 1rem;
-  font-size: 0.68rem;
-  letter-spacing: 0.16em;
+  padding: 0 var(--hathor-btn-pad-x, 1.75rem);
+  font-size: var(--hathor-btn-font-size, 0.72rem);
+  letter-spacing: var(--hathor-btn-tracking, 0.18em);
   text-align: center;
 }
 
@@ -1767,7 +1773,9 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  min-width: var(--hathor-btn-min-width, 12.5rem);
+  width: var(--hathor-btn-width, 12.5rem);
+  min-width: var(--hathor-btn-width, 12.5rem);
+  max-width: var(--hathor-btn-width, 12.5rem);
   min-height: var(--hathor-btn-height, 2.85rem);
   height: var(--hathor-btn-height, 2.85rem);
   padding: 0 var(--hathor-btn-pad-x, 1.75rem);
@@ -1781,6 +1789,7 @@
   text-transform: uppercase;
   line-height: 1;
   white-space: nowrap;
+  overflow: hidden;
   box-shadow: 0 8px 22px rgba(44, 36, 25, 0.1);
   transition: background 0.35s ease, color 0.35s ease, border-color 0.35s ease,
     box-shadow 0.35s ease, transform 0.35s ease;

@@ -4,12 +4,49 @@
 :root {
   --content-gutter: clamp(12px, 2.2vw, 28px);
   --content-shell: 100%;
-  /* Canonical CTA size — matches homepage “Discover More” */
+  /* Exact Discover More button box — all public pill buttons use this */
+  --hathor-btn-width: 12.5rem;
   --hathor-btn-height: 2.85rem;
-  --hathor-btn-min-width: 12.5rem;
   --hathor-btn-pad-x: 1.75rem;
   --hathor-btn-font-size: 0.72rem;
   --hathor-btn-tracking: 0.18em;
+}
+
+/*
+  Lock every public pill button to the same width + height.
+  (Chat icon circles are excluded — those are not text buttons.)
+*/
+.public-site a.btn,
+.public-site button.btn,
+.public-site .btn,
+.public-site .public-btn-gold,
+.public-site .public-btn-outline-gold,
+.public-site .public-btn-dark,
+.public-site .public-fab__book,
+.public-fab__book,
+.public-site .hero-cta,
+.venetian-page a.btn,
+.venetian-page button.btn,
+.venetian-page .btn,
+.venetian-page .cruise-filter--cta {
+  box-sizing: border-box !important;
+  width: var(--hathor-btn-width) !important;
+  min-width: var(--hathor-btn-width) !important;
+  max-width: var(--hathor-btn-width) !important;
+  height: var(--hathor-btn-height) !important;
+  min-height: var(--hathor-btn-height) !important;
+  max-height: var(--hathor-btn-height) !important;
+  padding-left: var(--hathor-btn-pad-x) !important;
+  padding-right: var(--hathor-btn-pad-x) !important;
+  font-size: var(--hathor-btn-font-size) !important;
+  letter-spacing: var(--hathor-btn-tracking) !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 /* Soft image hover veil (same as itinerary cards) */
@@ -209,7 +246,9 @@
   justify-content: center;
   gap: 0.5rem;
   box-sizing: border-box;
-  min-width: var(--hathor-btn-min-width, 12.5rem);
+  min-width: var(--hathor-btn-width, 12.5rem);
+  width: var(--hathor-btn-width, 12.5rem);
+  max-width: var(--hathor-btn-width, 12.5rem);
   min-height: var(--hathor-btn-height, 2.85rem);
   height: var(--hathor-btn-height, 2.85rem);
   /* ALL CAPS sit high in the em-box — bias padding so the label looks centered */
@@ -1126,8 +1165,9 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  min-width: var(--hathor-btn-min-width, 12.5rem);
-  width: var(--hathor-btn-min-width, 12.5rem);
+  min-width: var(--hathor-btn-width, 12.5rem);
+  width: var(--hathor-btn-width, 12.5rem);
+  max-width: var(--hathor-btn-width, 12.5rem);
   min-height: var(--hathor-btn-height, 2.85rem);
   height: var(--hathor-btn-height, 2.85rem);
   padding: 0 var(--hathor-btn-pad-x, 1.75rem);
@@ -4773,7 +4813,12 @@ html[data-public-theme="day"] .preview-header--transparent:not(.preview-header--
 
   .hathor-cruise-card .public-btn-outline-gold,
   .hathor-cruise-card .public-btn-gold {
-    min-height: 2.75rem;
+    width: var(--hathor-btn-width, 12.5rem);
+    min-width: var(--hathor-btn-width, 12.5rem);
+    max-width: var(--hathor-btn-width, 12.5rem);
+    height: var(--hathor-btn-height, 2.85rem);
+    min-height: var(--hathor-btn-height, 2.85rem);
+    max-height: var(--hathor-btn-height, 2.85rem);
   }
 
   .hathor-blog-card__title {
