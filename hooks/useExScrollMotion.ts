@@ -597,42 +597,41 @@ export function useExScrollMotion() {
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
       if (eyebrow) {
-        gsap.set(eyebrow, { opacity: 0, y: 18 });
-        tl.to(eyebrow, { opacity: 1, y: 0, duration: 0.75 });
+        gsap.set(eyebrow, { opacity: 0, y: 14 });
+        tl.to(eyebrow, { opacity: 1, y: 0, duration: 0.8 });
       }
 
-      titleLines.forEach((line, index) => {
-        const split = new SplitType(line as HTMLElement, { types: "chars" });
-        splits.push(split);
-        if (!split.chars?.length) return;
-        gsap.set(split.chars, { opacity: 0, yPercent: 110 });
-        tl.to(
-          split.chars,
-          {
-            opacity: 1,
-            yPercent: 0,
-            duration: 0.7,
-            stagger: 0.032,
-          },
-          index === 0 ? (eyebrow ? "-=0.35" : 0) : "-=0.48",
-        );
-      });
+      /* Whole-line reveal — char SplitType + overflow clip cut italic titles */
+      gsap.set(titleLines, { opacity: 0, y: 22 });
+      tl.to(
+        titleLines,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.85,
+          stagger: 0.12,
+        },
+        eyebrow ? "-=0.4" : 0,
+      );
 
       if (body) {
         const splitBody = new SplitType(body as HTMLElement, { types: "lines" });
         splits.push(splitBody);
         if (splitBody.lines?.length) {
-          gsap.set(splitBody.lines, { opacity: 0, y: 24 });
+          gsap.set(splitBody.lines, { opacity: 0, y: 20 });
           tl.to(
             splitBody.lines,
             {
               opacity: 1,
               y: 0,
-              duration: 0.8,
-              stagger: 0.14,
+              duration: 0.85,
+              stagger: 0.12,
             },
-            "-=0.28",
+            "-=0.35",
           );
+        } else {
+          gsap.set(body, { opacity: 0, y: 20 });
+          tl.to(body, { opacity: 1, y: 0, duration: 0.85 }, "-=0.35");
         }
       }
     };

@@ -62,7 +62,7 @@ html[data-ex-experience] .ex-root {
   --hathor-logo-anim-duration: 2;
   --hathor-logo-edge-l: 3px;
   --hathor-logo-edge-r: 3px;
-  --hathor-logo-gap: 168px;
+  --hathor-logo-gap: 200px;
   --hathor-gap-t-btn: 24px;
   --hathor-gap-btn-h: 24px;
   --hathor-logo-align-items: center;
@@ -81,8 +81,8 @@ html[data-ex-experience] .ex-root {
 
 html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) {
   /* Edge insets do not change letter size — only push H / R in from the screen */
-  --hathor-logo-side-w: calc((100vw - var(--hathor-logo-gap, 168px)) / 2);
-  --hathor-cta-half-h: 26px;
+  --hathor-logo-side-w: calc((100vw - var(--hathor-logo-gap, 200px)) / 2);
+  --hathor-cta-half-h: 23px;
   --hathor-cta-nudge: 0px;
   /* Artboard 2200×2683 (HAT) — keeps internal padding so O accent sits above H tops */
   --hathor-logo-h: calc(
@@ -680,20 +680,22 @@ h1, h2, h3, h4, p {
   justify-content: center;
   gap: 10px;
   box-sizing: border-box;
-  min-height: 2.85rem;
-  height: 2.85rem;
+  min-width: var(--hathor-btn-min-width, 12.5rem);
+  min-height: var(--hathor-btn-height, 2.85rem);
+  height: var(--hathor-btn-height, 2.85rem);
   /* ALL CAPS sit high in the em-box — bias padding so the label looks centered */
-  padding: 3px 1.75rem 1px;
+  padding: 3px var(--hathor-btn-pad-x, 1.75rem) 1px;
   border-radius: 999px;
   border: 1px solid var(--gold);
   background: #faf8f5;
   color: #b69f64;
-  font-size: 0.72rem;
+  font-size: var(--hathor-btn-font-size, 0.72rem);
   font-weight: 500;
-  letter-spacing: 0.18em;
+  letter-spacing: var(--hathor-btn-tracking, 0.18em);
   text-transform: uppercase;
   line-height: 1;
   text-decoration: none;
+  white-space: nowrap;
   box-shadow: 0 8px 22px rgba(44, 36, 25, 0.1);
   transition: background 0.35s var(--ease-out), color 0.35s var(--ease-out),
     border-color 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out),
@@ -702,7 +704,7 @@ h1, h2, h3, h4, p {
 
 @supports (text-box-trim: trim-both) {
   .btn:not(.hero-cta) {
-    padding: 0 1.75rem;
+    padding: 0 var(--hathor-btn-pad-x, 1.75rem);
     text-box-trim: trim-both;
     text-box-edge: cap alphabetic;
   }
@@ -732,14 +734,15 @@ h1, h2, h3, h4, p {
   color: #ffffff;
 }
 
-/* Hero Book Now keeps its own glass style */
+/* Hero Book Now — same outer size as site CTAs; glass style kept for hero */
 .hero-cta.btn,
 .btn.hero-cta,
 .hero-button .hero-cta {
-  min-height: 52px;
-  height: 52px;
-  width: 168px;
-  padding: 3px 28px 1px;
+  min-width: var(--hathor-btn-min-width, 12.5rem);
+  width: var(--hathor-btn-min-width, 12.5rem);
+  min-height: var(--hathor-btn-height, 2.85rem);
+  height: var(--hathor-btn-height, 2.85rem);
+  padding: 3px var(--hathor-btn-pad-x, 1.75rem) 1px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(212, 194, 138, 0.7);
   color: #b69f64;
@@ -1224,10 +1227,11 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 168px;
-  height: 52px;
-  min-height: 52px;
-  padding: 3px 28px 1px;
+  width: var(--hathor-btn-min-width, 12.5rem);
+  min-width: var(--hathor-btn-min-width, 12.5rem);
+  height: var(--hathor-btn-height, 2.85rem);
+  min-height: var(--hathor-btn-height, 2.85rem);
+  padding: 3px var(--hathor-btn-pad-x, 1.75rem) 1px;
   border-radius: 999px;
   backdrop-filter: blur(8px);
   background: rgba(255, 255, 255, 0.06);
@@ -1241,7 +1245,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 
 @supports (text-box-trim: trim-both) {
   .hero-cta {
-    padding: 0 28px;
+    padding: 0 var(--hathor-btn-pad-x, 1.75rem);
     text-box-trim: trim-both;
     text-box-edge: cap alphabetic;
   }
@@ -1765,20 +1769,23 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 
 .ex-stack-scroll__title {
   font-weight: 400;
-  margin: 0 0 0.35rem;
+  margin: 0 0 0.45rem;
   max-width: 15ch;
+  text-wrap: balance;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   /* Font/size/color/tracking from dashboard typography (On images · title) */
 }
 
 .ex-stack-scroll__title-line {
   display: block;
-  overflow: hidden;
-  padding-bottom: 0.06em;
-}
-
-.ex-stack-scroll__title-line .char {
-  display: inline-block;
-  will-change: transform, opacity;
+  /* Visible — overflow:hidden + italic glyphs caused mid-letter cuts */
+  overflow: visible;
+  padding: 0.06em 0.04em 0.12em;
+  /* Soft depth on photography — elegant, not engraved/hollow */
+  text-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.3),
+    0 10px 28px rgba(0, 0, 0, 0.42) !important;
 }
 
 .ex-stack-scroll__body {

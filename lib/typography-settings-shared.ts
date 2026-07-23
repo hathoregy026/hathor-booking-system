@@ -411,7 +411,7 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
     fontFamily: "Gamgote",
     fontSize: 44,
     color: "#FFFFFF",
-    lineHeight: 1.22,
+    lineHeight: 1.3,
     letterSpacing: -0.5,
     innerShadow: false,
   },
