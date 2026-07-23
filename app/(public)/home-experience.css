@@ -1909,6 +1909,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 
 /* ---------- GALLERY ---------- */
 .gallery-section {
+  position: relative;
   background: var(--cream-deep);
   padding: clamp(80px, 10vw, 140px) var(--content-gutter, clamp(12px, 2.2vw, 28px));
 }
@@ -1916,7 +1917,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 .gallery-header {
   width: var(--content-shell, 100%);
   max-width: none;
-  margin: 0 auto 56px;
+  margin: 0 auto 40px;
   text-align: center;
 }
 
@@ -1978,7 +1979,121 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   color: var(--gold) !important;
 }
 
-/* ---------- Instagram follow (under Sail with Hathor) ---------- */
+/* ---------- Instagram follow + soft burst overlay ---------- */
+.instagram-burst-field {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.instagram-burst-particle {
+  position: absolute;
+  left: 50%;
+  top: 32%;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.35);
+  will-change: transform, opacity;
+  animation-name: ig-soft-explode;
+  animation-duration: var(--ig-dur, 3.2s);
+  animation-delay: var(--ig-delay, 0s);
+  animation-timing-function: var(--ig-ease, cubic-bezier(0.16, 0.84, 0.22, 1));
+  animation-fill-mode: both;
+}
+
+.instagram-burst-particle--emoji {
+  top: 34%;
+}
+
+.instagram-circle {
+  position: relative;
+  display: block;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 1px solid rgba(182, 159, 100, 0.85);
+  overflow: hidden;
+  box-shadow:
+    0 4px 20px rgba(92, 74, 48, 0.08),
+    0 0 0 4px rgba(245, 239, 228, 0.55);
+  background:
+    radial-gradient(circle at 30% 25%, #faf6ee 0%, #f0e6d4 55%, #e8dcc8 100%);
+}
+
+.instagram-circle--burst {
+  width: clamp(64px, 8vw, 88px);
+  height: clamp(64px, 8vw, 88px);
+}
+
+.instagram-circle::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(
+    160deg,
+    rgba(245, 239, 228, 0.18) 0%,
+    transparent 42%,
+    rgba(182, 159, 100, 0.12) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.instagram-circle img {
+  object-fit: cover;
+  filter: saturate(0.88) brightness(1.02) sepia(0.08);
+}
+
+.instagram-float-emoji__inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 50%;
+  border: 1px solid rgba(182, 159, 100, 0.55);
+  background:
+    radial-gradient(circle at 35% 30%, #faf7f0 0%, #f3eadc 48%, #e6d9c4 100%);
+  box-shadow:
+    0 3px 14px rgba(92, 74, 48, 0.08),
+    inset 0 1px 0 rgba(255, 252, 245, 0.75);
+  color: #b69f64;
+  font-size: 0.95rem;
+  line-height: 1;
+  filter: sepia(0.35) saturate(0.75) brightness(0.95);
+}
+
+@keyframes ig-soft-explode {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.22);
+  }
+  8% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+  16% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  78% {
+    opacity: 0.72;
+    transform:
+      translate(calc(-50% + var(--ig-ex)), calc(-50% + var(--ig-ey)))
+      rotate(var(--ig-rot))
+      scale(var(--ig-sc));
+  }
+  100% {
+    opacity: 0;
+    transform:
+      translate(calc(-50% + var(--ig-ex)), calc(-50% + var(--ig-ey)))
+      rotate(var(--ig-rot))
+      scale(0.7);
+  }
+}
+
 .instagram-follow {
   display: flex;
   flex-direction: column;
@@ -2003,7 +2118,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   align-items: center;
   justify-content: center;
   gap: 0.65rem;
-  margin: 1.1rem 0 0.4rem;
+  margin: 1.1rem 0 0;
   width: min(12rem, 42vw);
   color: var(--gold);
 }
@@ -2045,171 +2160,6 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 .instagram-follow.is-visible .instagram-follow__copy {
   opacity: 1;
   transform: translateY(0);
-}
-
-.instagram-follow__stage {
-  position: relative;
-  width: min(28rem, 92vw);
-  margin-top: 0.85rem;
-  padding: 2.75rem 0 1.25rem;
-  overflow: visible;
-}
-
-.instagram-follow__circles {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.instagram-follow__bubble {
-  opacity: 0;
-  transform: translateY(36px) scale(0.92);
-  will-change: transform, opacity;
-}
-
-.instagram-follow.is-visible .instagram-follow__bubble {
-  animation: ig-bubble-float-fade 5.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  animation-delay: var(--ig-bubble-delay, 0.2s);
-}
-
-.instagram-circle {
-  position: relative;
-  display: block;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  border: 1px solid rgba(182, 159, 100, 0.85);
-  overflow: hidden;
-  box-shadow:
-    0 4px 20px rgba(92, 74, 48, 0.08),
-    0 0 0 4px rgba(245, 239, 228, 0.55);
-  background:
-    radial-gradient(circle at 30% 25%, #faf6ee 0%, #f0e6d4 55%, #e8dcc8 100%);
-  transition: transform 0.6s ease, box-shadow 0.6s ease;
-}
-
-.instagram-circle::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: linear-gradient(
-    160deg,
-    rgba(245, 239, 228, 0.18) 0%,
-    transparent 42%,
-    rgba(182, 159, 100, 0.12) 100%
-  );
-  pointer-events: none;
-  z-index: 1;
-}
-
-.instagram-circle:hover,
-.instagram-circle:focus-visible {
-  transform: scale(1.05);
-  outline: none;
-  box-shadow:
-    0 8px 28px rgba(92, 74, 48, 0.12),
-    0 0 0 4px rgba(245, 239, 228, 0.7);
-}
-
-.instagram-circle img {
-  object-fit: cover;
-  filter: saturate(0.88) brightness(1.02) sepia(0.08);
-}
-
-.instagram-follow__emoji-field {
-  position: absolute;
-  inset: 0 0 18%;
-  z-index: 3;
-  pointer-events: none;
-}
-
-.instagram-float-emoji {
-  position: absolute;
-  bottom: 8%;
-  opacity: 0;
-  transform: translate3d(var(--ig-emoji-drift, 0), 24px, 0) scale(0.86);
-  will-change: transform, opacity;
-}
-
-.instagram-follow.is-visible .instagram-float-emoji {
-  animation: ig-emoji-float-fade 5.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  animation-delay: var(--ig-emoji-delay, 0.4s);
-}
-
-.instagram-float-emoji__inner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.15rem;
-  height: 2.15rem;
-  border-radius: 50%;
-  border: 1px solid rgba(182, 159, 100, 0.55);
-  background:
-    radial-gradient(circle at 35% 30%, #faf7f0 0%, #f3eadc 48%, #e6d9c4 100%);
-  box-shadow:
-    0 3px 14px rgba(92, 74, 48, 0.08),
-    inset 0 1px 0 rgba(255, 252, 245, 0.75);
-  color: #b69f64;
-  font-size: 0.92rem;
-  line-height: 1;
-  filter: sepia(0.35) saturate(0.75) brightness(0.95);
-}
-
-@keyframes ig-bubble-float-fade {
-  0% {
-    opacity: 0;
-    transform: translateY(36px) scale(0.9);
-  }
-  16% {
-    opacity: 1;
-    transform: translateY(-10px) scale(1.03);
-  }
-  36% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  62% {
-    opacity: 0.42;
-    transform: translateY(-22px) scale(0.98);
-  }
-  82% {
-    opacity: 0.15;
-    transform: translateY(-36px) scale(0.96);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes ig-emoji-float-fade {
-  0% {
-    opacity: 0;
-    transform: translate3d(var(--ig-emoji-drift, 0), 28px, 0) scale(0.82);
-  }
-  16% {
-    opacity: 0.95;
-    transform: translate3d(calc(var(--ig-emoji-drift, 0) * 0.4), -6px, 0) scale(1.04);
-  }
-  42% {
-    opacity: 0.88;
-    transform: translate3d(calc(var(--ig-emoji-drift, 0) * -0.2), -36px, 0) scale(1);
-  }
-  72% {
-    opacity: 0.45;
-    transform: translate3d(var(--ig-emoji-drift, 0), -68px, 0) scale(0.96);
-  }
-  100% {
-    opacity: 0;
-    transform: translate3d(calc(var(--ig-emoji-drift, 0) * 0.5), -96px, 0) scale(0.9);
-  }
 }
 
 .gallery-marquee {
@@ -2492,17 +2442,9 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
     --gallery-card: clamp(140px, 38vw, 200px);
   }
 
-  .instagram-follow__circles {
-    gap: 16px;
-  }
-
-  .instagram-circle {
+  .instagram-circle--burst {
     width: 68px;
     height: 68px;
-  }
-
-  .instagram-follow__circles .instagram-follow__bubble:nth-child(4) {
-    display: none;
   }
 
   .instagram-float-emoji__inner {
@@ -2599,25 +2541,13 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
     margin-top: 1.1rem;
   }
 
-  .instagram-follow__stage {
-    padding-top: 2.25rem;
-  }
-
-  .instagram-follow__circles {
-    gap: 14px;
-  }
-
-  .instagram-circle {
+  .instagram-circle--burst {
     width: 60px;
     height: 60px;
   }
 
-  .instagram-follow__circles .instagram-follow__bubble:nth-child(n + 4) {
-    display: none;
-  }
-
-  .instagram-float-emoji:nth-child(n + 5) {
-    display: none;
+  .instagram-burst-particle {
+    top: 28%;
   }
 
   .testimonials-grid {
@@ -2640,37 +2570,15 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
     transform: none;
   }
 
-  .instagram-follow__copy,
-  .instagram-follow__bubble,
-  .instagram-float-emoji {
+  .instagram-follow__copy {
     opacity: 1;
     transform: none;
-    animation: none !important;
     transition: none;
   }
 
-  .instagram-float-emoji {
-    position: relative;
-    left: auto !important;
-    bottom: auto;
-    display: inline-flex;
-  }
-
-  .instagram-follow__emoji-field {
-    position: static;
-    display: flex;
-    justify-content: center;
-    gap: 0.55rem;
-    margin-bottom: 0.85rem;
-  }
-
-  .instagram-circle {
-    transition: none;
-  }
-
-  .instagram-circle:hover,
-  .instagram-circle:focus-visible {
-    transform: none;
+  .instagram-burst-field,
+  .instagram-burst-particle {
+    display: none !important;
   }
 
   .carousel-container img {

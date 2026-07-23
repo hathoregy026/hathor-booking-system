@@ -526,20 +526,16 @@ export function HomePageClient({
         </section>
 
         <section className="gallery-section ex-content-section" id="gallery">
-          <div className="gallery-header">
-            <div className="gallery-h2">
-              <h2>{EX_GALLERY.title}</h2>
-              <GalleryInstagramFollow
-                handleStyle={{
-                  fontFamily: galleryIndicationStyle.fontFamily,
-                  fontSize: galleryIndicationStyle.fontSize,
-                  lineHeight: galleryIndicationStyle.lineHeight,
-                  letterSpacing: galleryIndicationStyle.letterSpacing,
-                  textShadow: galleryIndicationStyle.textShadow,
-                }}
-              />
-            </div>
-          </div>
+          <GalleryInstagramFollow
+            title={EX_GALLERY.title}
+            handleStyle={{
+              fontFamily: galleryIndicationStyle.fontFamily,
+              fontSize: galleryIndicationStyle.fontSize,
+              lineHeight: galleryIndicationStyle.lineHeight,
+              letterSpacing: galleryIndicationStyle.letterSpacing,
+              textShadow: galleryIndicationStyle.textShadow,
+            }}
+          />
 
           <div
             className="gallery-marquee"
