@@ -6,8 +6,8 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import type { CSSProperties } from "react";
 import { LuxuryMarquee } from "@/components/home/LuxuryMarquee";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
+import { GalleryInstagramFollow } from "@/components/public/GalleryInstagramFollow";
 import { HathorLogoTuner } from "@/components/public/HathorLogoTuner";
-import { SocialBrandIcon } from "@/components/public/SocialBrandIcon";
 import { PublicSiteHero } from "@/components/pages/PublicSiteHero";
 import { GoldDustParticles } from "@/components/ui/GoldDustParticles";
 import { ManagedImage } from "@/components/ui/ManagedImage";
@@ -526,28 +526,15 @@ export function HomePageClient({
           <div className="gallery-header">
             <div className="gallery-h2">
               <h2>{EX_GALLERY.title}</h2>
-              <a
-                className="gallery-ig-link typo-page-subtitle"
-                href={EX_GALLERY.indicationHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
+              <GalleryInstagramFollow
+                handleStyle={{
                   fontFamily: galleryIndicationStyle.fontFamily,
                   fontSize: galleryIndicationStyle.fontSize,
                   lineHeight: galleryIndicationStyle.lineHeight,
                   letterSpacing: galleryIndicationStyle.letterSpacing,
                   textShadow: galleryIndicationStyle.textShadow,
                 }}
-                aria-label="Hathor Cruise on Instagram"
-              >
-                <SocialBrandIcon
-                  platform="instagram"
-                  className="gallery-ig-link__icon"
-                />
-                <span className="gallery-ig-link__handle">
-                  {EX_GALLERY.indication}
-                </span>
-              </a>
+              />
             </div>
           </div>
 

@@ -181,6 +181,26 @@ export const EX_GALLERY = {
   /** Small indication under the gallery title — Instagram handle */
   indication: "@hathorcruise",
   indicationHref: "https://www.instagram.com/hathorcruise/",
+  followEyebrow: "Follow our journey",
+  /** Circular Instagram preview placeholders — replace with live IG stills later */
+  followPreviews: [
+    {
+      imageName: "home-collage-living" as SiteImageName,
+      alt: "Hathor Instagram — lounge",
+    },
+    {
+      imageName: "home-alt-highlights" as SiteImageName,
+      alt: "Hathor Instagram — Nile highlights",
+    },
+    {
+      imageName: "gastronomy-restaurant" as SiteImageName,
+      alt: "Hathor Instagram — dining",
+    },
+    {
+      imageName: "home-cinematic-still" as SiteImageName,
+      alt: "Hathor Instagram — suite",
+    },
+  ],
 } as const;
 
 export const EX_TESTIMONIALS = {

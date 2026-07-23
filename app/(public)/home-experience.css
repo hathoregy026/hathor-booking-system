@@ -1916,7 +1916,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 .gallery-header {
   width: var(--content-shell, 100%);
   max-width: none;
-  margin: 0 auto 48px;
+  margin: 0 auto 56px;
   text-align: center;
 }
 
@@ -1939,26 +1939,13 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   align-items: center;
   justify-content: center;
   gap: 0.55rem;
-  margin: 0.85rem 0 0;
+  margin: 0;
   text-decoration: none;
   color: var(--gold) !important;
   -webkit-text-fill-color: var(--gold) !important;
   position: relative;
-  padding-bottom: 0.35rem;
-  transition: opacity 0.35s ease;
-}
-
-.gallery-ig-link::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  width: 1.75rem;
-  height: 1px;
-  background: var(--gold);
-  opacity: 0.55;
-  transform: translateX(-50%);
-  transition: width 0.45s ease, opacity 0.35s ease;
+  font-style: italic;
+  transition: opacity 0.45s ease;
 }
 
 .gallery-ig-link__icon {
@@ -1968,7 +1955,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   color: var(--gold) !important;
   fill: currentColor;
   opacity: 0.95;
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transition: opacity 0.45s ease;
 }
 
 .gallery-ig-link__handle {
@@ -1982,20 +1969,119 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   color: var(--gold) !important;
   -webkit-text-fill-color: var(--gold) !important;
   outline: none;
-  opacity: 1;
-}
-
-.gallery-ig-link:hover::after,
-.gallery-ig-link:focus-visible::after {
-  width: 100%;
-  opacity: 0.9;
+  opacity: 0.82;
 }
 
 .gallery-ig-link:hover .gallery-ig-link__icon,
 .gallery-ig-link:focus-visible .gallery-ig-link__icon {
   opacity: 1;
-  transform: translateY(-1px);
   color: var(--gold) !important;
+}
+
+/* ---------- Instagram follow (under Sail with Hathor) ---------- */
+.instagram-follow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1.35rem;
+  width: 100%;
+}
+
+.instagram-follow__eyebrow {
+  margin: 0 0 0.7rem;
+  font-family: var(--font-body, inherit);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  -webkit-text-fill-color: var(--gold);
+}
+
+.instagram-follow__divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  margin: 1.1rem 0 1.35rem;
+  width: min(12rem, 42vw);
+  color: var(--gold);
+}
+
+.instagram-follow__divider-line {
+  flex: 1;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.45;
+}
+
+.instagram-follow__divider-mark {
+  font-size: 0.55rem;
+  line-height: 1;
+  opacity: 0.7;
+  letter-spacing: 0;
+}
+
+.instagram-follow__circles {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.instagram-circle {
+  position: relative;
+  display: block;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 1px solid #b69f64;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.6s ease;
+  background: var(--cream-deep, #f5efe4);
+}
+
+.instagram-circle:hover,
+.instagram-circle:focus-visible {
+  transform: scale(1.05);
+  outline: none;
+}
+
+.instagram-circle img {
+  object-fit: cover;
+}
+
+.instagram-follow__item {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 2s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.instagram-follow__eyebrow.instagram-follow__item {
+  transition-delay: 0s;
+}
+
+.instagram-follow a.instagram-follow__item {
+  transition-delay: 0.3s;
+}
+
+.instagram-follow__divider.instagram-follow__item {
+  transition-delay: 0.6s;
+}
+
+.instagram-follow__circles .instagram-follow__item {
+  transition-delay: var(--ig-stagger, 0.9s);
+}
+
+.instagram-follow.is-visible .instagram-follow__item {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .gallery-marquee {
@@ -2278,6 +2364,19 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
     --gallery-card: clamp(140px, 38vw, 200px);
   }
 
+  .instagram-follow__circles {
+    gap: 16px;
+  }
+
+  .instagram-circle {
+    width: 68px;
+    height: 68px;
+  }
+
+  .instagram-follow__circles .instagram-follow__item:nth-child(4) {
+    display: none;
+  }
+
   .testimonials-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -2362,6 +2461,23 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
     --gallery-gap: 10px;
   }
 
+  .instagram-follow {
+    margin-top: 1.1rem;
+  }
+
+  .instagram-follow__circles {
+    gap: 14px;
+  }
+
+  .instagram-circle {
+    width: 60px;
+    height: 60px;
+  }
+
+  .instagram-follow__circles .instagram-follow__item:nth-child(n + 4) {
+    display: none;
+  }
+
   .testimonials-grid {
     grid-template-columns: 1fr;
   }
@@ -2379,6 +2495,21 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 
   .gallery-marquee__track {
     animation: none;
+    transform: none;
+  }
+
+  .instagram-follow__item {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .instagram-circle {
+    transition: none;
+  }
+
+  .instagram-circle:hover,
+  .instagram-circle:focus-visible {
     transform: none;
   }
 
