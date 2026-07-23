@@ -1819,7 +1819,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  align-items: stretch;
+  /* Top edges share one line; heights are set in JS to match copy stack */
+  align-items: start;
   gap: clamp(36px, 6vw, 90px);
 }
 
@@ -1838,21 +1839,27 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 .home-text-img-parent,
 .home-text-img-copy {
   min-width: 0;
+  width: 100%;
 }
 
 .home-text-img-copy {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  align-items: flex-start;
+  box-sizing: border-box;
 }
 
-/* Image column height = row height = text+button height (no aspect-ratio tall frames) */
+.home-text-img-copy .home-text-button {
+  margin-top: auto;
+}
+
+/* Height is assigned in JS to match title+body+button (both rows share one size) */
 .home-text-img-parent {
   position: relative;
   overflow: hidden;
   border-radius: 6px;
-  min-height: 0;
-  /* Absolute child does not inflate the row — copy alone sets height */
+  box-sizing: border-box;
 }
 
 .home-text-img-container {
