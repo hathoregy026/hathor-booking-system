@@ -37,6 +37,10 @@ export const HOMEPAGE_LIVE_SLOT_NAMES = new Set<string>([
   "home-alt-highlights",
   "wellness-hero",
   "home-cinematic-still",
+  "home-voyage-3n-aswan-luxor",
+  "home-voyage-4n-luxor-aswan",
+  "home-voyage-7n-roundtrip",
+  "home-voyage-nile-majesty",
 ]);
 
 /**
@@ -53,6 +57,10 @@ const SITE_IMAGE_PRIMARY_PAGE: Partial<Record<string, string>> = {
   "home-collage-living": "/",
   "home-alt-highlights": "/",
   "home-cinematic-still": "/",
+  "home-voyage-3n-aswan-luxor": "/",
+  "home-voyage-4n-luxor-aswan": "/",
+  "home-voyage-7n-roundtrip": "/",
+  "home-voyage-nile-majesty": "/",
 
   "cruises-hero": "/cruises",
   "room-luxury": "/luxury-cabins-Nile-Cruise",

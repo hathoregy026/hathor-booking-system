@@ -1,36 +1,38 @@
 import { withDb, logDbError } from "@/lib/db-safe";
-import { HATHOR_MEDIA } from "@/lib/hathor-media";
 import { prisma } from "@/lib/prisma";
+import type { SiteImageName } from "@/lib/site-image-slots";
 
 export type HomepageAccordionCruise = {
   id: string;
   name: string;
   description: string;
-  imageUrl: string;
+  /** Dedicated Site Images CMS slot — not shared with other pages. */
+  imageName: SiteImageName;
   ports: string;
   basePriceCents: number;
   roomCount: number;
   slug: string;
   romanNumeral: string;
   meta: string;
+  href: string;
 };
 
 const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"] as const;
 
-/** Placeholder backgrounds until a cruise image is set in Admin → Cruises. */
-const FALLBACK_BY_SLUG: Record<string, string> = {
-  "3-nights-aswan-luxor": HATHOR_MEDIA.heroCruises,
-  "4-nights-luxor-aswan": HATHOR_MEDIA.splitCourtyard,
-  "7-nights-luxor-aswan-luxor": HATHOR_MEDIA.storyLegacyLarge,
-  "nile-majesty": HATHOR_MEDIA.collageLiving,
-};
+/** Accordion-only CMS slots — editable under Admin → Site Images → Homepage. */
+export const VOYAGE_ACCORDION_IMAGE_SLOTS = [
+  "home-voyage-3n-aswan-luxor",
+  "home-voyage-4n-luxor-aswan",
+  "home-voyage-7n-roundtrip",
+  "home-voyage-nile-majesty",
+] as const satisfies readonly SiteImageName[];
 
-const FALLBACK_BY_INDEX = [
-  HATHOR_MEDIA.heroCruises,
-  HATHOR_MEDIA.splitCourtyard,
-  HATHOR_MEDIA.storyLegacyLarge,
-  HATHOR_MEDIA.collageLiving,
-] as const;
+const IMAGE_SLOT_BY_SLUG: Partial<Record<string, SiteImageName>> = {
+  "3-nights-aswan-luxor": "home-voyage-3n-aswan-luxor",
+  "4-nights-luxor-aswan": "home-voyage-4n-luxor-aswan",
+  "7-nights-luxor-aswan-luxor": "home-voyage-7n-roundtrip",
+  "nile-majesty": "home-voyage-nile-majesty",
+};
 
 function formatBasePrice(cents: number): string {
   return new Intl.NumberFormat("en-US", {
@@ -40,23 +42,16 @@ function formatBasePrice(cents: number): string {
   }).format(cents / 100);
 }
 
-function resolveImageUrl(
-  slug: string,
-  imageUrl: string | null,
-  index: number,
-): string {
-  const trimmed = imageUrl?.trim();
-  if (trimmed) return trimmed;
+function resolveImageSlot(slug: string, index: number): SiteImageName {
   return (
-    FALLBACK_BY_SLUG[slug] ??
-    FALLBACK_BY_INDEX[index % FALLBACK_BY_INDEX.length] ??
-    HATHOR_MEDIA.heroCruises
+    IMAGE_SLOT_BY_SLUG[slug] ??
+    VOYAGE_ACCORDION_IMAGE_SLOTS[index % VOYAGE_ACCORDION_IMAGE_SLOTS.length]!
   );
 }
 
 /**
  * Active cruises for the homepage luxury accordion.
- * Background images prefer Admin → Cruises `imageUrl` (dashboard CMS upload).
+ * Background images use dedicated Site Images slots (Admin → Content / Site Images).
  */
 export async function getHomepageAccordionCruises(): Promise<
   HomepageAccordionCruise[]
@@ -71,7 +66,6 @@ export async function getHomepageAccordionCruises(): Promise<
         description: true,
         ports: true,
         basePriceCents: true,
-        imageUrl: true,
         _count: {
           select: {
             rooms: { where: { deletedAt: null } },
@@ -92,13 +86,14 @@ export async function getHomepageAccordionCruises(): Promise<
       id: cruise.id,
       name: cruise.name,
       description,
-      imageUrl: resolveImageUrl(cruise.slug, cruise.imageUrl, index),
+      imageName: resolveImageSlot(cruise.slug, index),
       ports,
       basePriceCents: cruise.basePriceCents,
       roomCount,
       slug: cruise.slug,
       romanNumeral: ROMAN[index] ?? String(index + 1),
       meta: `${roomLabel} · Base ${formatBasePrice(cruise.basePriceCents)}`,
+      href: "/cruises",
     };
   });
 }

@@ -62,6 +62,10 @@ const HOMEPAGE_PREVIEW_SLOTS = new Set([
   "about-hero",
   "home-story-legacy-large",
   "gastronomy-restaurant",
+  "home-voyage-3n-aswan-luxor",
+  "home-voyage-4n-luxor-aswan",
+  "home-voyage-7n-roundtrip",
+  "home-voyage-nile-majesty",
   ...GALLERY_PREVIEW_ANCHORS,
 ]);
 
@@ -488,9 +492,11 @@ export function HomePageClient({
             id: cruise.id,
             name: cruise.name,
             description: cruise.description,
-            imageUrl: cruise.imageUrl,
+            imageName: cruise.imageName,
             romanNumeral: cruise.romanNumeral,
             meta: cruise.meta,
+            href: cruise.href,
+            ctaLabel: "Check Voyages",
           }))}
         />
 

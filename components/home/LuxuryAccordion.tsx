@@ -1,15 +1,20 @@
 "use client";
 
-import { useState, type KeyboardEvent } from "react";
+import Link from "next/link";
+import { useState, type KeyboardEvent, type MouseEvent } from "react";
+import { ManagedImage } from "@/components/ui/ManagedImage";
+import type { SiteImageName } from "@/lib/site-image-slots";
 import styles from "./LuxuryAccordion.module.css";
 
 export type LuxuryAccordionItem = {
   id: string;
   name: string;
   description: string;
-  imageUrl: string;
+  imageName: SiteImageName;
   romanNumeral: string;
   meta?: string;
+  href?: string;
+  ctaLabel?: string;
 };
 
 export type LuxuryAccordionProps = {
@@ -39,6 +44,10 @@ export default function LuxuryAccordion({
     }
   };
 
+  const stopRowClick = (event: MouseEvent) => {
+    event.stopPropagation();
+  };
+
   return (
     <section
       className={styles.section}
@@ -50,6 +59,8 @@ export default function LuxuryAccordion({
         <ul className={styles.accordionList}>
           {list.map((item) => {
             const isActive = activeId === item.id;
+            const href = item.href ?? "/cruises";
+            const ctaLabel = item.ctaLabel ?? "Check Voyages";
 
             return (
               <li
@@ -66,12 +77,13 @@ export default function LuxuryAccordion({
                   {item.romanNumeral}
                 </span>
 
-                {/* eslint-disable-next-line @next/next/no-img-element -- CMS cruise imageUrl from Admin → Cruises */}
-                <img
-                  className={styles.backgroundImage}
-                  src={item.imageUrl}
+                <ManagedImage
+                  name={item.imageName}
                   alt=""
-                  aria-hidden="true"
+                  fill
+                  sizes="100vw"
+                  className={styles.backgroundImage}
+                  previewAnchor
                 />
 
                 <div className={styles.vignette} aria-hidden="true" />
@@ -93,6 +105,13 @@ export default function LuxuryAccordion({
                     <p className={styles.meta}>{item.meta}</p>
                   ) : null}
                   <p className={styles.description}>{item.description}</p>
+                  <Link
+                    href={href}
+                    className={`btn btn-dark ${styles.cta}`}
+                    onClick={stopRowClick}
+                  >
+                    {ctaLabel}
+                  </Link>
                 </div>
               </li>
             );

@@ -85,6 +85,39 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     pagePath: "/",
     displayOrder: 62,
   },
+  // Homepage “Our Voyages” accordion — dedicated slots (not shared with other pages)
+  {
+    name: "home-voyage-3n-aswan-luxor",
+    altText: "3 Nights / 4 Days Aswan to Luxor voyage aboard Hathor",
+    url: HATHOR_MEDIA.heroCruises,
+    category: "general",
+    pagePath: "/",
+    displayOrder: 70,
+  },
+  {
+    name: "home-voyage-4n-luxor-aswan",
+    altText: "4 Nights / 5 Days Luxor to Aswan voyage aboard Hathor",
+    url: HATHOR_MEDIA.splitCourtyard,
+    category: "general",
+    pagePath: "/",
+    displayOrder: 71,
+  },
+  {
+    name: "home-voyage-7n-roundtrip",
+    altText: "7 Nights / 8 Days Luxor to Aswan to Luxor voyage aboard Hathor",
+    url: HATHOR_MEDIA.storyLegacyLarge,
+    category: "general",
+    pagePath: "/",
+    displayOrder: 72,
+  },
+  {
+    name: "home-voyage-nile-majesty",
+    altText: "Nile Majesty voyage aboard Hathor",
+    url: HATHOR_MEDIA.collageLiving,
+    category: "general",
+    pagePath: "/",
+    displayOrder: 73,
+  },
   // Shared accommodations
   {
     name: "room-luxury",

@@ -51,6 +51,22 @@ const HOMEPAGE_LIVE_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> 
     { name: "home-alt-highlights", label: "Gallery — landmarks photo" },
     { name: "wellness-hero", label: "Gallery — wellness photo" },
     { name: "home-cinematic-still", label: "Gallery — suite photo" },
+    {
+      name: "home-voyage-3n-aswan-luxor",
+      label: "Our Voyages accordion — 3 Nights Aswan to Luxor",
+    },
+    {
+      name: "home-voyage-4n-luxor-aswan",
+      label: "Our Voyages accordion — 4 Nights Luxor to Aswan",
+    },
+    {
+      name: "home-voyage-7n-roundtrip",
+      label: "Our Voyages accordion — 7 Nights round trip",
+    },
+    {
+      name: "home-voyage-nile-majesty",
+      label: "Our Voyages accordion — Nile Majesty",
+    },
   ];
 
 const SLOT_LABELS: Partial<Record<SiteImageSlot["name"], string>> = {
