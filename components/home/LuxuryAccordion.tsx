@@ -22,9 +22,7 @@ export default function LuxuryAccordion({
   items = [],
 }: LuxuryAccordionProps) {
   const list = items;
-  const [activeId, setActiveId] = useState<string | null>(
-    () => list[0]?.id ?? null,
-  );
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   if (list.length === 0) {
     return null;
@@ -78,22 +76,19 @@ export default function LuxuryAccordion({
 
                 <div className={styles.vignette} aria-hidden="true" />
 
-                <div className={styles.collapsedLabel} aria-hidden={isActive}>
-                  <h3 className={styles.collapsedName}>{item.name}</h3>
+                <div className={styles.row}>
+                  <h3 className={styles.name}>{item.name}</h3>
+                  <span className={styles.icon} aria-hidden="true">
+                    +
+                  </span>
                 </div>
 
                 <div
                   id={`hathor-accordion-panel-${item.id}`}
-                  className={styles.expandedContent}
+                  className={styles.body}
                   role="region"
                   aria-hidden={!isActive}
                 >
-                  <div className={styles.row}>
-                    <h3 className={styles.name}>{item.name}</h3>
-                    <span className={styles.icon} aria-hidden="true">
-                      +
-                    </span>
-                  </div>
                   {item.meta ? (
                     <p className={styles.meta}>{item.meta}</p>
                   ) : null}

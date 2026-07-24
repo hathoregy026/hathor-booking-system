@@ -1,7 +1,7 @@
-/* Isolated Luxury Accordion — 4-column horizontal, CSS Modules scoped */
+/* Isolated Luxury Accordion — horizontal rows, CSS Modules scoped */
 
 .section {
-  --hathor-accordion-cream: #f5f1e8;
+  --hathor-accordion-cream: var(--cream, #ece8df);
   --hathor-accordion-gold: #b69f64;
   --hathor-accordion-text: #1a1a1a;
   --hathor-accordion-muted: #8b7355;
@@ -26,7 +26,7 @@
   );
   font-size: clamp(2.5rem, 5vw, 4rem);
   color: var(--hathor-accordion-text);
-  margin-bottom: 3.5rem;
+  margin-bottom: 4rem;
   text-align: center;
 }
 
@@ -34,52 +34,43 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  height: 560px;
-  width: 100%;
-  border: 1px solid rgba(182, 159, 100, 0.2);
 }
 
 .accordionItem {
   position: relative;
-  flex: 1 1 0;
-  min-width: 0;
-  height: 100%;
+  height: 120px;
+  border-bottom: 1px solid rgba(182, 159, 100, 0.15);
   overflow: hidden;
   cursor: pointer;
-  transition: flex 0.8s var(--hathor-accordion-ease);
+  transition: height 0.8s var(--hathor-accordion-ease);
   background: var(--hathor-accordion-cream);
-  border-right: 1px solid rgba(182, 159, 100, 0.15);
-}
-
-.accordionItem:last-child {
-  border-right: none;
 }
 
 .accordionItem.isActive {
-  flex: 3.2 1 0;
+  height: 500px;
 }
 
 .romanNumeral {
   position: absolute;
-  left: 1.25rem;
-  top: 1.25rem;
+  left: 5vw;
+  top: 50%;
+  transform: translateY(-50%);
   font-family: var(
     --font-heading,
     var(--font-display, "Playfair Display", Georgia, serif)
   );
-  font-size: clamp(3rem, 6vw, 5.5rem);
-  color: rgba(182, 159, 100, 0.1);
+  font-size: 8rem;
+  color: rgba(182, 159, 100, 0.06);
   line-height: 1;
   pointer-events: none;
-  z-index: 2;
+  z-index: 1;
   transition: color 0.5s ease;
 }
 
 .accordionItem.isActive .romanNumeral {
-  color: rgba(182, 159, 100, 0.22);
+  top: 2.5rem;
+  transform: none;
+  color: rgba(255, 255, 255, 0.28);
 }
 
 .backgroundImage {
@@ -95,7 +86,7 @@
 }
 
 .accordionItem.isActive .backgroundImage {
-  opacity: 0.55;
+  opacity: 1;
   animation: hathorAccordionKenBurns 14s ease-in-out infinite alternate;
 }
 
@@ -108,14 +99,16 @@
   }
 }
 
+/* Slight bottom fade only — keeps the image clear */
 .vignette {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(245, 241, 232, 0.15) 0%,
-    rgba(245, 241, 232, 0.55) 45%,
-    rgba(245, 241, 232, 0.92) 100%
+    transparent 0%,
+    transparent 55%,
+    rgba(20, 16, 12, 0.35) 78%,
+    rgba(20, 16, 12, 0.55) 100%
   );
   opacity: 0;
   transition: opacity 0.8s ease;
@@ -127,67 +120,14 @@
   opacity: 1;
 }
 
-.collapsedLabel {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding: 2rem 0.75rem;
-  transition: opacity 0.45s ease;
-}
-
-.accordionItem.isActive .collapsedLabel {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.collapsedName {
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  font-family: var(
-    --font-heading,
-    var(--font-display, "Playfair Display", Georgia, serif)
-  );
-  font-size: clamp(1rem, 1.4vw, 1.35rem);
-  letter-spacing: 0.06em;
-  color: var(--hathor-accordion-text);
-  margin: 0;
-  max-height: 85%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.expandedContent {
+.row {
   position: relative;
   z-index: 2;
-  height: 100%;
+  height: 120px;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 2.5rem 2.25rem 2.75rem;
-  opacity: 0;
-  transform: translateY(18px);
-  transition:
-    opacity 0.6s ease 0.12s,
-    transform 0.6s ease 0.12s;
-  pointer-events: none;
-}
-
-.accordionItem.isActive .expandedContent {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-.row {
-  display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
+  padding: 0 5vw 0 calc(5vw + 6rem);
 }
 
 .name {
@@ -195,23 +135,48 @@
     --font-heading,
     var(--font-display, "Playfair Display", Georgia, serif)
   );
-  font-size: clamp(1.35rem, 2.2vw, 2rem);
+  font-size: clamp(1.35rem, 2.4vw, 2.5rem);
   color: var(--hathor-accordion-text);
   margin: 0;
   line-height: 1.2;
-  max-width: 18ch;
+  transition: color 0.5s ease;
+}
+
+.accordionItem.isActive .name {
+  color: #fff;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.25);
 }
 
 .icon {
-  flex-shrink: 0;
-  font-size: 1.75rem;
+  font-size: 2rem;
   color: var(--hathor-accordion-gold);
   line-height: 1;
-  transition: transform 0.4s ease;
+  transition:
+    transform 0.4s ease,
+    color 0.5s ease;
 }
 
 .accordionItem.isActive .icon {
   transform: rotate(45deg);
+  color: #fff;
+}
+
+.body {
+  position: relative;
+  z-index: 2;
+  padding: 0 5vw 3rem calc(5vw + 6rem);
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.6s ease 0.1s,
+    transform 0.6s ease 0.1s;
+  pointer-events: none;
+}
+
+.accordionItem.isActive .body {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 .meta {
@@ -222,7 +187,7 @@
   font-size: 0.8rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--hathor-accordion-gold);
+  color: rgba(255, 255, 255, 0.85);
   margin: 0 0 0.85rem;
 }
 
@@ -231,76 +196,42 @@
     --font-body,
     var(--font-hathor-body, "Plus Jakarta Sans", system-ui, sans-serif)
   );
-  font-size: 0.95rem;
-  color: var(--hathor-accordion-muted);
-  max-width: 36ch;
-  line-height: 1.75;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.92);
+  max-width: 600px;
+  line-height: 1.8;
   margin: 0;
-}
-
-@media (max-width: 900px) {
-  .accordionList {
-    flex-direction: column;
-    height: auto;
-  }
-
-  .accordionItem {
-    flex: none;
-    height: 88px;
-    border-right: none;
-    border-bottom: 1px solid rgba(182, 159, 100, 0.15);
-    transition: height 0.8s var(--hathor-accordion-ease);
-  }
-
-  .accordionItem:last-child {
-    border-bottom: none;
-  }
-
-  .accordionItem.isActive {
-    flex: none;
-    height: 380px;
-  }
-
-  .collapsedLabel {
-    align-items: center;
-    justify-content: space-between;
-    flex-direction: row;
-    padding: 0 1.25rem;
-  }
-
-  .collapsedName {
-    writing-mode: horizontal-tb;
-    transform: none;
-    font-size: 1.15rem;
-    max-height: none;
-    white-space: normal;
-  }
-
-  .romanNumeral {
-    font-size: 3rem;
-    left: auto;
-    right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-
-  .accordionItem.isActive .romanNumeral {
-    top: 1rem;
-    transform: none;
-  }
-
-  .expandedContent {
-    padding: 1.5rem 1.25rem 1.75rem;
-  }
-
-  .name {
-    max-width: none;
-    font-size: 1.35rem;
-  }
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 768px) {
   .section {
     padding: 80px 0;
+  }
+
+  .accordionItem {
+    height: 88px;
+  }
+
+  .accordionItem.isActive {
+    height: 360px;
+  }
+
+  .romanNumeral {
+    font-size: 4rem;
+    left: 3vw;
+  }
+
+  .row {
+    height: 88px;
+    padding: 0 5vw 0 calc(3vw + 4rem);
+  }
+
+  .name {
+    font-size: 1.2rem;
+  }
+
+  .body {
+    padding: 0 5vw 2rem calc(3vw + 4rem);
   }
 }
