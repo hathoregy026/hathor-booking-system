@@ -9,8 +9,8 @@
   z-index: 2;
   overflow: hidden;
   white-space: nowrap;
-  /* Slimmer vertical band */
-  padding: clamp(0.7rem, 1.4vw, 1.05rem) 0;
+  /* Half previous band height */
+  padding: clamp(0.35rem, 0.7vw, 0.525rem) 0;
   color: #b69f64;
   background: var(--lm-band);
   border-block: 1px solid var(--lm-stroke);
@@ -18,7 +18,7 @@
     inset 0 1px 0 color-mix(in srgb, #d4af37 28%, transparent),
     inset 0 -1px 0 color-mix(in srgb, #b69f64 18%, transparent);
   /* Room for glyph overhang (italics, shadows) inside the clip */
-  line-height: 1.35 !important;
+  line-height: 1.15 !important;
 }
 
 /* Soft cream fade — gentler, narrower so letters aren’t eaten at the sides */
@@ -86,7 +86,7 @@
   align-items: center;
   width: max-content;
   /* Extra vertical room so ascenders / descenders / drop-shadow aren’t clipped */
-  padding-block: 0.2em;
+  padding-block: 0.1em;
   will-change: transform;
   animation: luxury-marquee-scroll 50s linear infinite;
 }
@@ -110,7 +110,7 @@
   padding-inline: clamp(1.1rem, 2.2vw, 2.25rem);
   font-family: inherit;
   font-size: inherit;
-  line-height: 1.35 !important;
+  line-height: 1.15 !important;
   font-weight: inherit;
   text-transform: none;
   letter-spacing: 0.1em;
@@ -126,8 +126,8 @@
 .luxury-marquee__text {
   display: inline-block;
   /* Padding expands the clip box so italic / serif edges aren’t cut */
-  padding: 0.12em 0.18em;
-  margin: -0.12em -0.06em;
+  padding: 0.06em 0.18em;
+  margin: -0.06em -0.06em;
   background-image: linear-gradient(
     135deg,
     #d4af37 0%,
@@ -197,7 +197,7 @@
 @media (max-width: 640px) {
   .luxury-marquee {
     --lm-edge: min(3.25rem, 11vw);
-    padding: 0.65rem 0;
+    padding: 0.325rem 0;
   }
 
   .luxury-marquee:hover .luxury-marquee__item {

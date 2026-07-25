@@ -469,9 +469,9 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
   },
   luxury_marquee: {
     fontFamily: "Playfair Display",
-    fontSize: 42,
+    fontSize: 21,
     color: "#B69F64",
-    lineHeight: 1.35,
+    lineHeight: 1.15,
     letterSpacing: 6,
     innerShadow: false,
   },
