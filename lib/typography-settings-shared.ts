@@ -829,30 +829,29 @@ export function heroSecondShimmerBackground(
     ${amber} 88%,
     ${bronze} 100%)`;
 
-  /* Brighten the photo; soft veil mutes hard facet edges */
+  /* Heavy soft veil — mutes hard facet streaks inside the letters */
   const grade = `linear-gradient(180deg,
-    rgba(255, 254, 249, ${0.5 + s * 0.12}) 0%,
-    rgba(240, 226, 190, ${0.28 + s * 0.1}) 16%,
-    rgba(182, 159, 100, ${0.22 + s * 0.08}) 45%,
-    rgba(182, 159, 100, ${0.16 + s * 0.06}) 62%,
-    rgba(182, 159, 100, ${0.12 + (1 - s) * 0.05}) 82%,
-    rgba(122, 107, 72, ${0.1 + (1 - s) * 0.06}) 100%)`;
+    rgba(255, 254, 249, ${0.55 + s * 0.1}) 0%,
+    rgba(240, 226, 190, ${0.4 + s * 0.08}) 18%,
+    rgba(182, 159, 100, ${0.38 + s * 0.06}) 48%,
+    rgba(182, 159, 100, ${0.32 + s * 0.05}) 70%,
+    rgba(154, 134, 88, ${0.28 + (1 - s) * 0.05}) 100%)`;
 
   /*
-   * Moving sheen with long faded tails — peak stays gentle,
-   * ends dissolve to transparent (no hard yellow cut).
+   * Whisper sheen — long dissolve both sides, peak barely there.
+   * Ends fade to 00 so lines never cut hard.
    */
   const sheen = `linear-gradient(100deg,
     transparent 0%,
-    transparent 12%,
-    ${champagne}00 24%,
-    ${champagne}0a 36%,
-    ${crest}12 44%,
-    ${crest}1c 50%,
-    ${crest}12 56%,
-    ${champagne}0a 64%,
-    ${champagne}00 76%,
-    transparent 88%,
+    transparent 8%,
+    ${champagne}00 20%,
+    ${champagne}06 32%,
+    ${crest}0a 40%,
+    ${crest}10 50%,
+    ${crest}0a 60%,
+    ${champagne}06 68%,
+    ${champagne}00 80%,
+    transparent 92%,
     transparent 100%)`;
 
   const metal = `url(${HERO_GOLD_METAL_TEXTURE})`;
@@ -884,8 +883,8 @@ export function heroSecondShimmerInlineStyle(
   if (!shimmer.enabled) return {};
   return {
     backgroundImage: heroSecondShimmerBackground(shimmer),
-    backgroundSize: "260% 1em, 100% 1.05em, 140% 140%, 100% 1.05em",
-    backgroundRepeat: "no-repeat, no-repeat, repeat, no-repeat",
+    backgroundSize: "300% 1.2em, 100% 1.05em, 120% 120%, 100% 1.05em",
+    backgroundRepeat: "no-repeat, no-repeat, no-repeat, no-repeat",
     WebkitBackgroundClip: "text",
     backgroundClip: "text",
     WebkitTextFillColor: "transparent",
@@ -1319,8 +1318,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
   overflow: visible !important;
   will-change: background-position !important;
   background-image: var(--typo-hero-second-shimmer) !important;
-  background-size: 260% 1em, 100% 1.05em, 140% 140%, 100% 1.05em !important;
-  background-repeat: no-repeat, no-repeat, repeat, no-repeat !important;
+  background-size: 300% 1.2em, 100% 1.05em, 120% 120%, 100% 1.05em !important;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat !important;
   /* background-position owned by @keyframes — never !important here */
   -webkit-background-clip: text !important;
   background-clip: text !important;
@@ -1340,9 +1339,9 @@ html[data-ex-experience] .ex-root .hero-line-shimmer-wrap {
   filter: var(--typo-hero-second-shimmer-filter) !important;
 }
 @keyframes hero-second-shimmer {
-  /* Soft sheen drifts with faded tails; metal barely moves (avoids hard facet streaks) */
-  0% { background-position: 0% center, center top, 8% 6%, center top; }
-  100% { background-position: 100% center, center top, 12% 10%, center bottom; }
+  /* Only the whisper sheen drifts; metal stays put (no hard streak travel) */
+  0% { background-position: 0% center, center top, center center, center top; }
+  100% { background-position: 100% center, center top, center center, center bottom; }
 }
 @media (prefers-reduced-motion: reduce) {
   .public-site .hero-line--left:not(.hero-line--wordmark),
@@ -1351,7 +1350,7 @@ html[data-ex-experience] .ex-root .hero-line-shimmer-wrap {
   html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
   .public-site .hero-line--left.hero-line--shimmer {
     animation: none !important;
-    background-position: 40% center, center top, 10% 8%, center top !important;
+    background-position: 40% center, center top, center center, center top !important;
   }
 }`
     : ""
