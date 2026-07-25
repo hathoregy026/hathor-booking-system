@@ -1994,12 +1994,12 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   left: 50%;
   top: 38%;
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.9);
+  transform: translate(-50%, -50%) scale(0.72);
   will-change: transform, opacity;
   animation-name: ig-soap-float;
-  animation-duration: var(--ig-dur, 7.5s);
+  animation-duration: var(--ig-dur, 3.6s);
   animation-delay: var(--ig-delay, 0s);
-  animation-timing-function: var(--ig-ease, cubic-bezier(0.25, 0.1, 0.25, 1));
+  animation-timing-function: var(--ig-ease, cubic-bezier(0.22, 0.8, 0.28, 1));
   animation-fill-mode: both;
 }
 
@@ -2009,8 +2009,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 
 .instagram-burst-particle--image .instagram-circle--burst,
 .instagram-burst-particle--emoji .instagram-float-emoji__inner {
-  animation: ig-soap-wobble 4.2s ease-in-out infinite;
-  animation-delay: var(--ig-delay, 0s);
+  animation: none;
 }
 
 .instagram-circle {
@@ -2084,46 +2083,36 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 @keyframes ig-soap-float {
   0% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.88);
+    transform: translate(-50%, -50%) scale(0.55);
   }
-  8% {
+  10% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.04);
+  }
+  18% {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
   }
-  28% {
-    opacity: 1;
-    transform:
-      translate(calc(-50% + var(--ig-sx)), calc(-50% + var(--ig-sy)))
-      rotate(calc(var(--ig-rot) * 0.3))
-      scale(1.02);
-  }
-  52% {
+  55% {
     opacity: 1;
     transform:
       translate(calc(-50% + var(--ig-mx)), calc(-50% + var(--ig-my)))
       rotate(calc(var(--ig-rot) * 0.55))
       scale(1.03);
   }
-  78% {
-    opacity: 0.92;
-    transform:
-      translate(calc(-50% + var(--ig-hx)), calc(-50% + var(--ig-hy)))
-      rotate(calc(var(--ig-rot) * 0.8))
-      scale(var(--ig-sc));
-  }
-  92% {
-    opacity: 0.45;
+  82% {
+    opacity: 0.85;
     transform:
       translate(calc(-50% + var(--ig-ex)), calc(-50% + var(--ig-ey)))
       rotate(var(--ig-rot))
-      scale(calc(var(--ig-sc) * 1.02));
+      scale(var(--ig-sc));
   }
   100% {
     opacity: 0;
     transform:
       translate(calc(-50% + var(--ig-ex)), calc(-50% + var(--ig-ey)))
       rotate(var(--ig-rot))
-      scale(calc(var(--ig-sc) * 1.04));
+      scale(calc(var(--ig-sc) * 1.06));
   }
 }
 
