@@ -9,8 +9,8 @@
   z-index: 2;
   overflow: hidden;
   white-space: nowrap;
-  /* Half previous band height */
-  padding: clamp(0.35rem, 0.7vw, 0.525rem) 0;
+  /* Band height (~20% above half-height pass) */
+  padding: clamp(0.42rem, 0.84vw, 0.63rem) 0;
   color: #b69f64;
   background: var(--lm-band);
   border-block: 1px solid var(--lm-stroke);
@@ -86,13 +86,9 @@
   align-items: center;
   width: max-content;
   /* Extra vertical room so ascenders / descenders / drop-shadow aren’t clipped */
-  padding-block: 0.1em;
+  padding-block: 0.12em;
   will-change: transform;
   animation: luxury-marquee-scroll 50s linear infinite;
-}
-
-.luxury-marquee:hover .luxury-marquee__track {
-  animation-play-state: paused;
 }
 
 .luxury-marquee__group {
@@ -114,13 +110,6 @@
   font-weight: inherit;
   text-transform: none;
   letter-spacing: 0.1em;
-  transition: letter-spacing 0.6s ease, gap 0.6s ease, padding-inline 0.6s ease;
-}
-
-.luxury-marquee:hover .luxury-marquee__item {
-  letter-spacing: 0.3em;
-  gap: clamp(1.5rem, 3vw, 3rem);
-  padding-inline: clamp(1.35rem, 2.8vw, 2.75rem);
 }
 
 .luxury-marquee__text {
@@ -143,12 +132,7 @@
   animation: luxury-marquee-shimmer 10s linear infinite;
   /* Softer depth — less likely to look clipped at the band edges */
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.08));
-  transition: filter 0.6s ease;
   line-height: inherit;
-}
-
-.luxury-marquee:hover .luxury-marquee__text {
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.12));
 }
 
 .luxury-marquee__divider {
@@ -197,11 +181,7 @@
 @media (max-width: 640px) {
   .luxury-marquee {
     --lm-edge: min(3.25rem, 11vw);
-    padding: 0.325rem 0;
-  }
-
-  .luxury-marquee:hover .luxury-marquee__item {
-    letter-spacing: 0.2em;
+    padding: 0.39rem 0;
   }
 }
 
@@ -214,12 +194,6 @@
 
   .luxury-marquee__track {
     transform: none;
-  }
-
-  .luxury-marquee__item,
-  .luxury-marquee:hover .luxury-marquee__item {
-    letter-spacing: 0.1em;
-    transition: none;
   }
 
   .luxury-marquee__blur {

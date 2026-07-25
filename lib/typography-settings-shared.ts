@@ -469,7 +469,7 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
   },
   luxury_marquee: {
     fontFamily: "Playfair Display",
-    fontSize: 21,
+    fontSize: 25,
     color: "#B69F64",
     lineHeight: 1.15,
     letterSpacing: 6,
@@ -1238,15 +1238,11 @@ ${block(
 html[data-ex-experience] .ex-root .luxury-marquee`,
   "luxury_marquee",
 )}
-/* Base tracking; hover expands in luxury-marquee.css */
+/* Base tracking — no hover interaction */
 .public-site .luxury-marquee .luxury-marquee__item,
 html[data-ex-experience] .ex-root .luxury-marquee .luxury-marquee__item {
   letter-spacing: 0.1em !important;
-  line-height: 1.35 !important;
-}
-.public-site .luxury-marquee:hover .luxury-marquee__item,
-html[data-ex-experience] .ex-root .luxury-marquee:hover .luxury-marquee__item {
-  letter-spacing: 0.3em !important;
+  line-height: 1.15 !important;
 }
 .public-site .typo-on-images,
 .public-site .typo-on-images *,
