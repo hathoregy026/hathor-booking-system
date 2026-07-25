@@ -14,10 +14,8 @@
   color: #b69f64;
   background: var(--lm-band);
   border-block: 1px solid var(--lm-stroke);
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, #d4af37 28%, transparent),
-    inset 0 -1px 0 color-mix(in srgb, #b69f64 18%, transparent);
-  /* Room for glyph overhang (italics, shadows) inside the clip */
+  /* Flat band — no metallic inset shine */
+  box-shadow: none;
   line-height: 1.15 !important;
 }
 
@@ -53,32 +51,9 @@
   );
 }
 
-/* Light edge blur only — avoid hard cutouts */
+/* Light edge fade only — no blur (blur reads as metallic shimmer) */
 .luxury-marquee__blur {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  -webkit-backdrop-filter: blur(1.25px);
-  backdrop-filter: blur(1.25px);
-  -webkit-mask-image: linear-gradient(
-    to right,
-    #000 0%,
-    rgb(0 0 0 / 0.35) 5%,
-    transparent 12%,
-    transparent 88%,
-    rgb(0 0 0 / 0.35) 95%,
-    #000 100%
-  );
-  mask-image: linear-gradient(
-    to right,
-    #000 0%,
-    rgb(0 0 0 / 0.35) 5%,
-    transparent 12%,
-    transparent 88%,
-    rgb(0 0 0 / 0.35) 95%,
-    #000 100%
-  );
+  display: none;
 }
 
 .luxury-marquee__track {
@@ -110,6 +85,17 @@
   font-weight: inherit;
   text-transform: none;
   letter-spacing: 0.1em;
+}
+
+.luxury-marquee__text,
+.luxury-marquee__divider {
+  background: none !important;
+  background-image: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  animation: none !important;
+  filter: none !important;
+  text-shadow: none !important;
 }
 
 .luxury-marquee__text {
@@ -155,10 +141,5 @@
   .luxury-marquee__track {
     animation: none;
     transform: none;
-  }
-
-  .luxury-marquee__blur {
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
   }
 }

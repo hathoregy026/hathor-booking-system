@@ -1289,11 +1289,26 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__body,
   "on_images_body",
 )}
 ${block(
-  `/* Luxury marquee — font/size on strip; metallic fill handled in luxury-marquee.css */
+  `/* Luxury marquee — font/size on strip; solid #B69F64 fill (no shimmer) */
 .public-site .luxury-marquee,
 html[data-ex-experience] .ex-root .luxury-marquee`,
   "luxury_marquee",
 )}
+/* Force flat gold letter fill — never metallic clip / shimmer */
+.public-site .luxury-marquee .luxury-marquee__text,
+.public-site .luxury-marquee .luxury-marquee__divider,
+html[data-ex-experience] .ex-root .luxury-marquee .luxury-marquee__text,
+html[data-ex-experience] .ex-root .luxury-marquee .luxury-marquee__divider {
+  color: #b69f64 !important;
+  -webkit-text-fill-color: #b69f64 !important;
+  background: none !important;
+  background-image: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  animation: none !important;
+  filter: none !important;
+  text-shadow: none !important;
+}
 ${block(
   `/* Our Voyages · title */
 .public-site .typo-our-voyages-title,
