@@ -144,23 +144,23 @@ export default function LuxuryAccordion({
                   role="region"
                   aria-hidden={!isActive}
                 >
-                  {item.meta ? (
+                  <div className={styles.bodyCopy}>
                     <p
                       className={`${styles.meta} typo-our-voyages-indication-hover`}
                       style={metaHoverStyle}
                     >
-                      {item.meta}
+                      {item.meta?.trim() ? item.meta : "\u00A0"}
                     </p>
-                  ) : null}
-                  <p
-                    className={`${styles.description} typo-our-voyages-body-hover`}
-                    style={bodyHoverStyle}
-                  >
-                    {item.description}
-                  </p>
+                    <p
+                      className={`${styles.description} typo-our-voyages-body-hover`}
+                      style={bodyHoverStyle}
+                    >
+                      {item.description}
+                    </p>
+                  </div>
                   <Link
                     href={href}
-                    className={`btn btn-dark ${styles.cta}`}
+                    className={`btn btn-dark home-text-button ${styles.cta}`}
                     onClick={stopRowClick}
                   >
                     {ctaLabel}
