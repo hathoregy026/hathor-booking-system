@@ -859,17 +859,6 @@ export function heroSecondShimmerBackground(
   return `${sheen}, ${grade}, ${metal}, ${foil}`;
 }
 
-export function heroSecondShimmerTextShadow(shimmer: HeroSecondShimmer): string {
-  if (!shimmer.enabled) return "none";
-  const t = Math.min(1, Math.max(0, shimmer.shadow / 100));
-  const near = (0.18 + t * 0.22).toFixed(2);
-  const soft = (0.12 + t * 0.2).toFixed(2);
-  return [
-    `0 2px 4px rgba(12, 8, 4, ${near})`,
-    `0 6px 14px rgba(8, 5, 2, ${soft})`,
-  ].join(", ");
-}
-
 /**
  * Clipped glyph fill. Only the first background layer moves; the text itself
  * remains in its existing layout position.
@@ -888,7 +877,11 @@ export function heroSecondShimmerInlineStyle(
     backgroundClip: "text",
     WebkitTextFillColor: "transparent",
     color: "transparent",
-    textShadow: heroSecondShimmerTextShadow(shimmer),
+    /*
+     * A shadow on transparent clipped text shows through the glyphs and turns
+     * the gold brown. Keep the polished material clean and bright.
+     */
+    textShadow: "none",
     filter: "none",
     animation: `hero-second-shimmer ${shimmer.speed}s linear infinite`,
     display: "inline-block",
@@ -1179,9 +1172,7 @@ function heroSecondShimmerCssVars(
 ): Record<string, string> {
   return {
     "--typo-hero-second-shimmer": heroSecondShimmerBackground(shimmer),
-    "--typo-hero-second-shimmer-shadow": shimmer.enabled
-      ? heroSecondShimmerTextShadow(shimmer)
-      : "none",
+    "--typo-hero-second-shimmer-shadow": "none",
     "--typo-hero-second-shimmer-duration": `${shimmer.speed}s`,
     "--typo-hero-second-shimmer-on": shimmer.enabled ? "1" : "0",
   };
