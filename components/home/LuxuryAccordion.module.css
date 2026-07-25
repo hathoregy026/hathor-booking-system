@@ -8,7 +8,8 @@
   --hathor-accordion-ease: cubic-bezier(0.22, 1, 0.36, 1);
 
   padding: 120px 0;
-  background: var(--hathor-accordion-cream);
+  /* Transparent so page cream + hieroglyph tile (.ex-root::before) show through */
+  background: transparent;
   position: relative;
   overflow: hidden;
 }
@@ -47,7 +48,7 @@
   overflow: hidden;
   cursor: pointer;
   transition: height 0.8s var(--hathor-accordion-ease);
-  background: var(--hathor-accordion-cream);
+  background: transparent;
 }
 
 .accordionItem.isActive {

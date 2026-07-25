@@ -66,7 +66,7 @@ export default function LuxuryAccordion({
 
   return (
     <section
-      className={styles.section}
+      className={`${styles.section} ex-content-section`}
       data-hathor-accordion
       aria-label={sectionTitle}
     >
