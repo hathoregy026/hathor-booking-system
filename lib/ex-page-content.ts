@@ -182,22 +182,22 @@ export const EX_GALLERY = {
   indication: "@hathorcruise",
   indicationHref: "https://www.instagram.com/hathorcruise/",
   followEyebrow: "Follow our journey",
-  /** Circular Instagram preview placeholders — replace with live IG stills later */
+  /** Dedicated Floating IG slots — editable under Admin → Floating IG images */
   followPreviews: [
     {
-      imageName: "home-collage-living" as SiteImageName,
+      imageName: "floating-ig-1" as SiteImageName,
       alt: "Hathor Instagram — lounge",
     },
     {
-      imageName: "home-alt-highlights" as SiteImageName,
+      imageName: "floating-ig-2" as SiteImageName,
       alt: "Hathor Instagram — Nile highlights",
     },
     {
-      imageName: "gastronomy-restaurant" as SiteImageName,
+      imageName: "floating-ig-3" as SiteImageName,
       alt: "Hathor Instagram — dining",
     },
     {
-      imageName: "home-cinematic-still" as SiteImageName,
+      imageName: "floating-ig-4" as SiteImageName,
       alt: "Hathor Instagram — suite",
     },
   ],

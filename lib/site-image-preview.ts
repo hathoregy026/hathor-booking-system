@@ -41,6 +41,10 @@ export const HOMEPAGE_LIVE_SLOT_NAMES = new Set<string>([
   "home-voyage-4n-luxor-aswan",
   "home-voyage-7n-roundtrip",
   "home-voyage-nile-majesty",
+  "floating-ig-1",
+  "floating-ig-2",
+  "floating-ig-3",
+  "floating-ig-4",
 ]);
 
 /**
@@ -61,6 +65,11 @@ const SITE_IMAGE_PRIMARY_PAGE: Partial<Record<string, string>> = {
   "home-voyage-4n-luxor-aswan": "/",
   "home-voyage-7n-roundtrip": "/",
   "home-voyage-nile-majesty": "/",
+
+  "floating-ig-1": "/",
+  "floating-ig-2": "/",
+  "floating-ig-3": "/",
+  "floating-ig-4": "/",
 
   "cruises-hero": "/cruises",
   "room-luxury": "/luxury-cabins-Nile-Cruise",
@@ -161,6 +170,10 @@ export function resolveSiteImageLivePath(
   name: string,
   adminGroupPagePath: string,
 ): string | null {
+  if (adminGroupPagePath === "/#floating-ig") {
+    return buildSiteImageLivePath("/", name);
+  }
+
   if (adminGroupPagePath === "/" && HOMEPAGE_LIVE_SLOT_NAMES.has(name)) {
     return buildSiteImageLivePath("/", name);
   }

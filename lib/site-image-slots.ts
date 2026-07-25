@@ -481,6 +481,39 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     pagePath: "/luxury-cabins-Nile-Cruise",
     displayOrder: 17,
   },
+  // Floating Instagram bubbles — Sail with Hathor only (independent of other page photos)
+  {
+    name: "floating-ig-1",
+    altText: "Hathor Instagram float — lounge",
+    url: HATHOR_MEDIA.collageLiving,
+    category: "general",
+    pagePath: "/#floating-ig",
+    displayOrder: 1,
+  },
+  {
+    name: "floating-ig-2",
+    altText: "Hathor Instagram float — Nile highlights",
+    url: HATHOR_MEDIA.altHighlights,
+    category: "general",
+    pagePath: "/#floating-ig",
+    displayOrder: 2,
+  },
+  {
+    name: "floating-ig-3",
+    altText: "Hathor Instagram float — dining",
+    url: HATHOR_MEDIA.restaurant,
+    category: "general",
+    pagePath: "/#floating-ig",
+    displayOrder: 3,
+  },
+  {
+    name: "floating-ig-4",
+    altText: "Hathor Instagram float — suite",
+    url: HATHOR_MEDIA.cinematicStill,
+    category: "general",
+    pagePath: "/#floating-ig",
+    displayOrder: 4,
+  },
 ];
 
 export type SiteImageName = (typeof SITE_IMAGE_SLOTS)[number]["name"];

@@ -1912,6 +1912,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   position: relative;
   background: var(--cream-deep);
   padding: clamp(80px, 10vw, 140px) var(--content-gutter, clamp(12px, 2.2vw, 28px));
+  overflow: visible;
 }
 
 .gallery-header {
@@ -1985,7 +1986,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   inset: 0;
   z-index: 6;
   pointer-events: none;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .instagram-burst-particle {
@@ -1996,9 +1997,9 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   transform: translate(-50%, -50%) scale(0.9);
   will-change: transform, opacity;
   animation-name: ig-soap-float;
-  animation-duration: var(--ig-dur, 12s);
+  animation-duration: var(--ig-dur, 7.5s);
   animation-delay: var(--ig-delay, 0s);
-  animation-timing-function: var(--ig-ease, linear);
+  animation-timing-function: var(--ig-ease, cubic-bezier(0.25, 0.1, 0.25, 1));
   animation-fill-mode: both;
 }
 
@@ -2008,7 +2009,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 
 .instagram-burst-particle--image .instagram-circle--burst,
 .instagram-burst-particle--emoji .instagram-float-emoji__inner {
-  animation: ig-soap-wobble 5.8s ease-in-out infinite;
+  animation: ig-soap-wobble 4.2s ease-in-out infinite;
   animation-delay: var(--ig-delay, 0s);
 }
 
@@ -2083,35 +2084,35 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 @keyframes ig-soap-float {
   0% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.9);
+    transform: translate(-50%, -50%) scale(0.88);
   }
-  6% {
+  8% {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
   }
-  22% {
+  28% {
     opacity: 1;
     transform:
       translate(calc(-50% + var(--ig-sx)), calc(-50% + var(--ig-sy)))
-      rotate(calc(var(--ig-rot) * 0.25))
-      scale(1.01);
+      rotate(calc(var(--ig-rot) * 0.3))
+      scale(1.02);
   }
-  48% {
+  52% {
     opacity: 1;
     transform:
       translate(calc(-50% + var(--ig-mx)), calc(-50% + var(--ig-my)))
-      rotate(calc(var(--ig-rot) * 0.5))
-      scale(1.02);
+      rotate(calc(var(--ig-rot) * 0.55))
+      scale(1.03);
   }
-  72% {
-    opacity: 0.96;
+  78% {
+    opacity: 0.92;
     transform:
       translate(calc(-50% + var(--ig-hx)), calc(-50% + var(--ig-hy)))
-      rotate(calc(var(--ig-rot) * 0.75))
+      rotate(calc(var(--ig-rot) * 0.8))
       scale(var(--ig-sc));
   }
-  88% {
-    opacity: 0.75;
+  92% {
+    opacity: 0.45;
     transform:
       translate(calc(-50% + var(--ig-ex)), calc(-50% + var(--ig-ey)))
       rotate(var(--ig-rot))
@@ -2120,9 +2121,9 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   100% {
     opacity: 0;
     transform:
-      translate(calc(-50% + var(--ig-ex)), calc(-50% + var(--ig-ey) - 24px))
+      translate(calc(-50% + var(--ig-ex)), calc(-50% + var(--ig-ey)))
       rotate(var(--ig-rot))
-      scale(calc(var(--ig-sc) * 1.05));
+      scale(calc(var(--ig-sc) * 1.04));
   }
 }
 

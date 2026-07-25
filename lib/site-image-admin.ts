@@ -181,6 +181,7 @@ function layoutForSlot(slot: SiteImageSlot): SiteImageLayoutKind {
 export function getSiteImageGroupHeading(pageTitle: string): string {
   if (pageTitle === "Homepage" || pageTitle === "Home") return "Homepage Images";
   if (pageTitle === "About Us") return "About Us Images";
+  if (pageTitle === "Floating IG images") return "Floating IG Images";
   return `${pageTitle} Images`;
 }
 
@@ -214,9 +215,29 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
     homepageItems.push(toAdminItem(slot, "/", card.label, index + 1));
   });
 
+  const floatingIgNames = [
+    "floating-ig-1",
+    "floating-ig-2",
+    "floating-ig-3",
+    "floating-ig-4",
+  ] as const;
+  const floatingIgItems: SiteImageAdminItem[] = [];
+  floatingIgNames.forEach((name, index) => {
+    const slot = byName.get(name);
+    if (!slot) return;
+    floatingIgItems.push(
+      toAdminItem(
+        slot,
+        "/#floating-ig",
+        `Floating IG — ${index + 1}`,
+        index + 1,
+      ),
+    );
+  });
+
   const byPage = new Map<string, SiteImageAdminItem[]>();
   for (const slot of SITE_IMAGE_SLOTS) {
-    if (slot.pagePath === "/") continue;
+    if (slot.pagePath === "/" || slot.pagePath === "/#floating-ig") continue;
     const items = byPage.get(slot.pagePath) ?? [];
     items.push(toAdminItem(slot, slot.pagePath));
     byPage.set(slot.pagePath, items);
@@ -248,6 +269,13 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
       description:
         "Only photos that appear on the live homepage. Edit here to change what guests see on /.",
       items: homepageItems,
+    },
+    {
+      pagePath: "/#floating-ig",
+      title: "Floating IG images",
+      description:
+        "Photos for the Sail with Hathor floating Instagram bubbles only. Independent from all other page images.",
+      items: floatingIgItems,
     },
     ...orderedPaths.map((pagePath) => ({
       pagePath,

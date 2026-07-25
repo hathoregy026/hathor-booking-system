@@ -55,57 +55,56 @@ const EMOJI_GLYPHS = [
   { glyph: "✨", label: "sparkles" },
 ] as const;
 
-/** Almost-linear drift — constant soft float, no acceleration snap */
-const BURST_EASE = "linear";
+/** Soft float — medium pace, no snap */
+const BURST_EASE = "cubic-bezier(0.25, 0.1, 0.25, 1)";
 
 function rand(min: number, max: number) {
   return min + Math.random() * (max - min);
 }
 
 function buildBurst(width: number, height: number, key: number): BurstParticle[] {
-  // Short gentle drift — float nearby, don't race across the section
-  const reachX = Math.max(width * 0.22, 90);
-  const reachY = Math.max(height * 0.2, 70);
+  const reachX = Math.max(width * 0.38, 160);
+  const reachY = Math.max(height * 0.34, 120);
   const particles: BurstParticle[] = [];
 
   EX_GALLERY.followPreviews.forEach((preview, index) => {
-    const angle = rand(-Math.PI * 0.9, -Math.PI * 0.1) + rand(-0.25, 0.25);
-    const dist = rand(0.35, 0.85);
-    const ex = Math.cos(angle) * reachX * dist + rand(-18, 18);
-    const ey = Math.sin(angle) * reachY * dist - rand(30, 90);
+    const angle = rand(-Math.PI, Math.PI);
+    const dist = rand(0.45, 1.05);
+    const ex = Math.cos(angle) * reachX * dist + rand(-40, 40);
+    const ey = Math.sin(angle) * reachY * dist + rand(-36, 36);
     particles.push({
       id: `img-${key}-${preview.imageName}-${index}`,
       kind: "image",
       imageName: preview.imageName,
       alt: preview.alt,
-      delay: rand(0.2, 0.8) + index * 0.35,
-      duration: rand(11, 14.5),
-      mx: ex * rand(0.25, 0.45) + rand(-22, 22),
-      my: ey * rand(0.2, 0.4) + rand(-16, 10),
+      delay: rand(0.05, 0.55) + index * 0.12,
+      duration: rand(6.5, 8.5),
+      mx: ex * rand(0.2, 0.55) + rand(-50, 50),
+      my: ey * rand(0.18, 0.5) + rand(-44, 44),
       ex,
       ey,
-      rot: rand(-8, 8),
-      scale: rand(0.96, 1.06),
+      rot: rand(-22, 22),
+      scale: rand(0.92, 1.12),
     });
   });
 
   EMOJI_GLYPHS.forEach((item, index) => {
-    const angle = rand(-Math.PI * 0.95, -Math.PI * 0.05) + rand(-0.3, 0.3);
-    const dist = rand(0.3, 0.9);
-    const ex = Math.cos(angle) * reachX * dist + rand(-22, 22);
-    const ey = Math.sin(angle) * reachY * dist - rand(36, 110);
+    const angle = rand(-Math.PI, Math.PI);
+    const dist = rand(0.4, 1.15);
+    const ex = Math.cos(angle) * reachX * dist + rand(-48, 48);
+    const ey = Math.sin(angle) * reachY * dist + rand(-40, 40);
     particles.push({
       id: `emo-${key}-${item.label}-${index}`,
       kind: "emoji",
       glyph: item.glyph,
-      delay: rand(0.35, 1.1) + index * 0.28,
-      duration: rand(10.5, 14),
-      mx: ex * rand(0.22, 0.48) + rand(-26, 26),
-      my: ey * rand(0.18, 0.42) + rand(-18, 12),
+      delay: rand(0.08, 0.7) + index * 0.1,
+      duration: rand(6.5, 8.5),
+      mx: ex * rand(0.18, 0.58) + rand(-56, 56),
+      my: ey * rand(0.15, 0.52) + rand(-48, 48),
       ex,
       ey,
-      rot: rand(-12, 12),
-      scale: rand(0.94, 1.1),
+      rot: rand(-28, 28),
+      scale: rand(0.9, 1.18),
     });
   });
 
