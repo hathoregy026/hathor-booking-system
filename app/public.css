@@ -42,7 +42,7 @@
   letter-spacing: var(--hathor-btn-tracking) !important;
   line-height: 1 !important;
   white-space: nowrap !important;
-  overflow: hidden !important;
+  overflow: visible !important;
   text-overflow: clip !important;
   display: inline-flex !important;
   align-items: center !important;

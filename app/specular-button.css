@@ -1,4 +1,5 @@
-/* Button stroke shine on hover — fill hover stays the normal gold */
+/* Button stroke shine on hover — fill hover stays the normal gold.
+   Applies to every public pill button — no exceptions. */
 
 @property --sb-shine {
   syntax: "<angle>";
@@ -14,13 +15,21 @@
 
 .public-site a.btn,
 .public-site button.btn,
+.public-site .btn,
 .public-site .public-btn-gold,
 .public-site .public-btn-outline-gold,
 .public-site .public-btn-dark,
-.public-site .hero-cta {
+.public-site .public-fab__book,
+.public-site .hero-cta,
+.public-site .cruise-filter--cta,
+.venetian-page a.btn,
+.venetian-page button.btn,
+.venetian-page .btn,
+.venetian-page .cruise-filter--cta {
   position: relative;
   isolation: isolate;
-  overflow: visible;
+  /* Stroke ring sits slightly outside the pill — must not clip */
+  overflow: visible !important;
 }
 
 /*
@@ -30,10 +39,17 @@
 */
 .public-site a.btn::before,
 .public-site button.btn::before,
+.public-site .btn::before,
 .public-site .public-btn-gold::before,
 .public-site .public-btn-outline-gold::before,
 .public-site .public-btn-dark::before,
-.public-site .hero-cta::before {
+.public-site .public-fab__book::before,
+.public-site .hero-cta::before,
+.public-site .cruise-filter--cta::before,
+.venetian-page a.btn::before,
+.venetian-page button.btn::before,
+.venetian-page .btn::before,
+.venetian-page .cruise-filter--cta::before {
   content: "";
   position: absolute;
   inset: -2px;
@@ -67,26 +83,47 @@
 
 .public-site a.btn:hover::before,
 .public-site button.btn:hover::before,
+.public-site .btn:hover::before,
 .public-site .public-btn-gold:hover::before,
 .public-site .public-btn-outline-gold:hover::before,
 .public-site .public-btn-dark:hover::before,
+.public-site .public-fab__book:hover::before,
 .public-site .hero-cta:hover::before,
+.public-site .cruise-filter--cta:hover::before,
+.venetian-page a.btn:hover::before,
+.venetian-page button.btn:hover::before,
+.venetian-page .btn:hover::before,
+.venetian-page .cruise-filter--cta:hover::before,
 .public-site a.btn:focus-visible::before,
 .public-site button.btn:focus-visible::before,
+.public-site .btn:focus-visible::before,
 .public-site .public-btn-gold:focus-visible::before,
 .public-site .public-btn-outline-gold:focus-visible::before,
 .public-site .public-btn-dark:focus-visible::before,
-.public-site .hero-cta:focus-visible::before {
+.public-site .public-fab__book:focus-visible::before,
+.public-site .hero-cta:focus-visible::before,
+.public-site .cruise-filter--cta:focus-visible::before,
+.venetian-page a.btn:focus-visible::before,
+.venetian-page button.btn:focus-visible::before,
+.venetian-page .btn:focus-visible::before,
+.venetian-page .cruise-filter--cta:focus-visible::before {
   opacity: 1;
   animation: hathor-stroke-shine 1.35s linear infinite;
 }
 
 .public-site a.btn > *,
 .public-site button.btn > *,
+.public-site .btn > *,
 .public-site .public-btn-gold > *,
 .public-site .public-btn-outline-gold > *,
 .public-site .public-btn-dark > *,
-.public-site .hero-cta > * {
+.public-site .public-fab__book > *,
+.public-site .hero-cta > *,
+.public-site .cruise-filter--cta > *,
+.venetian-page a.btn > *,
+.venetian-page button.btn > *,
+.venetian-page .btn > *,
+.venetian-page .cruise-filter--cta > * {
   position: relative;
   z-index: 4;
 }
@@ -94,16 +131,30 @@
 @media (prefers-reduced-motion: reduce) {
   .public-site a.btn:hover::before,
   .public-site button.btn:hover::before,
+  .public-site .btn:hover::before,
   .public-site .public-btn-gold:hover::before,
   .public-site .public-btn-outline-gold:hover::before,
   .public-site .public-btn-dark:hover::before,
+  .public-site .public-fab__book:hover::before,
   .public-site .hero-cta:hover::before,
+  .public-site .cruise-filter--cta:hover::before,
+  .venetian-page a.btn:hover::before,
+  .venetian-page button.btn:hover::before,
+  .venetian-page .btn:hover::before,
+  .venetian-page .cruise-filter--cta:hover::before,
   .public-site a.btn:focus-visible::before,
   .public-site button.btn:focus-visible::before,
+  .public-site .btn:focus-visible::before,
   .public-site .public-btn-gold:focus-visible::before,
   .public-site .public-btn-outline-gold:focus-visible::before,
   .public-site .public-btn-dark:focus-visible::before,
-  .public-site .hero-cta:focus-visible::before {
+  .public-site .public-fab__book:focus-visible::before,
+  .public-site .hero-cta:focus-visible::before,
+  .public-site .cruise-filter--cta:focus-visible::before,
+  .venetian-page a.btn:focus-visible::before,
+  .venetian-page button.btn:focus-visible::before,
+  .venetian-page .btn:focus-visible::before,
+  .venetian-page .cruise-filter--cta:focus-visible::before {
     animation: none;
     background: linear-gradient(
       120deg,

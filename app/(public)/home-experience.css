@@ -699,7 +699,7 @@ h1, h2, h3, h4, p {
   line-height: 1;
   text-decoration: none;
   white-space: nowrap;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: 0 8px 22px rgba(44, 36, 25, 0.1);
   transition: background 0.35s var(--ease-out), color 0.35s var(--ease-out),
     border-color 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out),
