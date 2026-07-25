@@ -28,6 +28,7 @@ import {
   OUR_VOYAGES_DEFAULT_ROLES,
   OUR_VOYAGES_HOVER_ROLES,
   fontGroupForFace,
+  heroSecondShimmerFilter,
   heroSecondShimmerInlineStyle,
   isFaceInGroup,
   isTypographySettingsEqual,
@@ -681,15 +682,24 @@ export function TypographyStylesPanel() {
               >
                 <span className="typo-stage__line-tag">Second · drag</span>
                 <span
-                  className={`typo-stage__sample typo-stage__sample--inline${shimmer.enabled ? " typo-stage__sample--shimmer" : ""}`}
-                  style={{
-                    ...liveVars(settings.hero_subtitle),
-                    ...(shimmer.enabled
-                      ? heroSecondShimmerInlineStyle(shimmer)
-                      : {}),
-                  }}
+                  className="typo-stage__shimmer-wrap"
+                  style={
+                    shimmer.enabled
+                      ? { filter: heroSecondShimmerFilter(shimmer) }
+                      : undefined
+                  }
                 >
-                  {heroCopy.second || "Second title"}
+                  <span
+                    className={`typo-stage__sample typo-stage__sample--inline${shimmer.enabled ? " typo-stage__sample--shimmer" : ""}`}
+                    style={{
+                      ...liveVars(settings.hero_subtitle),
+                      ...(shimmer.enabled
+                        ? heroSecondShimmerInlineStyle(shimmer)
+                        : {}),
+                    }}
+                  >
+                    {heroCopy.second || "Second title"}
+                  </span>
                 </span>
               </button>
             </div>

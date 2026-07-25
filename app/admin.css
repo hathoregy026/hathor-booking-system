@@ -1791,12 +1791,22 @@ select.admin-input option:checked {
 }
 
 .typo-stage__sample--shimmer {
-  background-size: 200% auto !important;
+  background-size: 200% 100% !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
   text-shadow: none !important;
+  filter: none !important;
+  line-height: 1.35 !important;
+  padding: 0.28em 0.2em 0.35em !important;
+  overflow: visible !important;
+}
+
+.typo-stage__shimmer-wrap {
+  display: inline-block;
+  overflow: visible;
+  line-height: 0;
 }
 
 @keyframes hero-second-shimmer {

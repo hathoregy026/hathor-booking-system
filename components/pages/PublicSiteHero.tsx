@@ -12,6 +12,8 @@ import { GoldDustParticles } from "@/components/ui/GoldDustParticles";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 import type { HathorLogoPartsVariant } from "@/lib/hathor-logo-letters";
 import {
+  heroSecondShimmerFilter,
+  heroSecondShimmerInlineStyle,
   resolveHeroPageCopy,
   type HeroPageKey,
 } from "@/lib/typography-settings-shared";
@@ -89,10 +91,22 @@ export function PublicSiteHero({
     : { main: lineRight, second: lineLeft };
   const displayRight = resolved.main;
   const displayLeft = resolved.second;
+  const shimmer = typography.hero_second_shimmer;
   const secondTitleStyle = {
     ...heroSubtitleStyle,
+    ...(shimmer.enabled
+      ? {
+          ...heroSecondShimmerInlineStyle(shimmer),
+          /* Kill solid fill from typography inline so shimmer gradient shows */
+          color: "transparent",
+          WebkitTextFillColor: "transparent",
+          textShadow: "none",
+        }
+      : {}),
   };
-  const secondTitleClass = "hero-line hero-line--left";
+  const secondTitleClass = shimmer.enabled
+    ? "hero-line hero-line--left hero-line--shimmer"
+    : "hero-line hero-line--left";
 
   useLayoutEffect(() => {
     if (!playVideo) return;
@@ -163,9 +177,20 @@ export function PublicSiteHero({
               />
             </span>
           ) : displayLeft ? (
-            <span className={secondTitleClass} style={secondTitleStyle}>
-              {displayLeft}
-            </span>
+            shimmer.enabled ? (
+              <span
+                className="hero-line-shimmer-wrap"
+                style={{ filter: heroSecondShimmerFilter(shimmer) }}
+              >
+                <span className={secondTitleClass} style={secondTitleStyle}>
+                  {displayLeft}
+                </span>
+              </span>
+            ) : (
+              <span className={secondTitleClass} style={secondTitleStyle}>
+                {displayLeft}
+              </span>
+            )
           ) : null}
         </h1>
       </div>

@@ -759,7 +759,8 @@ export function heroSecondShimmerBackground(
   const bright = mixHex(body, "#D4AF37", s);
   const highlight = mixHex(body, "#F4E5C2", s);
   const deep = mixHex(body, "#8B7355", s * 0.55);
-  return `linear-gradient(135deg, ${bright} 0%, ${highlight} 28%, ${body} 55%, ${deep} 78%, ${bright} 100%)`;
+  /* Same sliding gold band as the former marquee shimmer */
+  return `linear-gradient(135deg, ${bright} 0%, ${highlight} 30%, ${body} 55%, ${deep} 72%, ${bright} 100%)`;
 }
 
 export function heroSecondShimmerFilter(shimmer: HeroSecondShimmer): string {
@@ -773,19 +774,28 @@ export function heroSecondShimmerFilter(shimmer: HeroSecondShimmer): string {
   ].join(" ");
 }
 
+/** Styles for the clipped glyph fill — never put filter here (crops script fonts). */
 export function heroSecondShimmerInlineStyle(
   shimmer: HeroSecondShimmer,
 ): CSSProperties {
   if (!shimmer.enabled) return {};
   return {
     backgroundImage: heroSecondShimmerBackground(shimmer),
-    backgroundSize: "200% auto",
+    backgroundSize: "200% 100%",
+    backgroundRepeat: "repeat",
     WebkitBackgroundClip: "text",
     backgroundClip: "text",
     WebkitTextFillColor: "transparent",
     color: "transparent",
-    filter: heroSecondShimmerFilter(shimmer),
+    textShadow: "none",
+    filter: "none",
     animation: `hero-second-shimmer ${shimmer.speed}s linear infinite`,
+    display: "inline-block",
+    lineHeight: 1.35,
+    padding: "0.28em 0.2em 0.35em",
+    margin: "-0.12em -0.08em",
+    overflow: "visible",
+    willChange: "background-position",
   };
 }
 
@@ -1185,17 +1195,35 @@ ${
     ? `.public-site .hero-line--left:not(.hero-line--wordmark),
 .public-site .home-hero-container .hero-heading .hero-line--left:not(.hero-line--wordmark),
 html[data-ex-experience] .public-site .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
-html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark) {
+html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
+.public-site .hero-line--left.hero-line--shimmer {
+  display: inline-block !important;
+  /* Script fonts need room — dashboard line-height 0.9 was cropping glyphs */
+  line-height: 1.35 !important;
+  padding: 0.28em 0.2em 0.35em !important;
+  margin-top: -0.12em !important;
+  margin-bottom: -0.12em !important;
+  overflow: visible !important;
+  will-change: background-position !important;
   background-image: var(--typo-hero-second-shimmer) !important;
-  background-size: 200% auto !important;
-  background-repeat: no-repeat !important;
+  background-size: 200% 100% !important;
+  background-repeat: repeat !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
   text-shadow: none !important;
-  filter: var(--typo-hero-second-shimmer-filter) !important;
+  /* Filter must stay off the clipped glyphs — applied on .hero-line-shimmer-wrap */
+  filter: none !important;
   animation: hero-second-shimmer var(--typo-hero-second-shimmer-duration) linear infinite !important;
+}
+.public-site .hero-line-shimmer-wrap,
+.public-site .home-hero-container .hero-line-shimmer-wrap,
+html[data-ex-experience] .ex-root .hero-line-shimmer-wrap {
+  display: inline-block !important;
+  overflow: visible !important;
+  filter: var(--typo-hero-second-shimmer-filter) !important;
+  line-height: 0 !important;
 }
 @keyframes hero-second-shimmer {
   0% { background-position: 0% center; }
@@ -1205,7 +1233,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
   .public-site .hero-line--left:not(.hero-line--wordmark),
   .public-site .home-hero-container .hero-heading .hero-line--left:not(.hero-line--wordmark),
   html[data-ex-experience] .public-site .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
-  html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark) {
+  html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
+  .public-site .hero-line--left.hero-line--shimmer {
     animation: none !important;
     background-position: 40% center !important;
   }
