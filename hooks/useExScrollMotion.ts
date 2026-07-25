@@ -568,82 +568,95 @@ export function useExScrollMotion() {
 
   /* -------------------------------------------------------
    * EX stack scroll — fullscreen luxury card stack + text
+   * Masked letter rise/fall (atelier split) per slide
    * ----------------------------------------------------- */
-  function initExStackScrollText(section: Element) {
-    const firstPanel = section.querySelector(
-      '.ex-stack-scroll__copy-panel[data-stack-copy-index="0"]',
-    );
-    const titleLines = firstPanel?.querySelectorAll(".ex-stack-scroll__title-line");
-    const body = firstPanel?.querySelector(".ex-stack-scroll__body");
-    const eyebrow = firstPanel?.querySelector(".ex-stack-scroll__eyebrow");
-    if (!titleLines?.length) return;
+  function splitStackText(el: HTMLElement) {
+    if (!el || el.dataset.splitDone === "1") {
+      return Array.from(
+        el.querySelectorAll<HTMLElement>(".split-char"),
+      );
+    }
 
-    if (prefersReduced) return;
+    const chars: HTMLElement[] = [];
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+    const textNodes: Text[] = [];
+    while (walker.nextNode()) textNodes.push(walker.currentNode as Text);
 
-    ScrollTrigger.getAll().forEach((st) => {
-      if (st.vars && st.vars.id === "ex-stack-text") st.kill();
+    textNodes.forEach((node) => {
+      const parent = node.parentElement;
+      if (!parent || parent.classList.contains("split-char")) return;
+      const text = node.textContent;
+      if (!text || !text.trim()) return;
+
+      const frag = document.createDocumentFragment();
+      [...text].forEach((ch) => {
+        const wrap = document.createElement("span");
+        wrap.className = "split-heading";
+        const span = document.createElement("span");
+        span.className = "split-char";
+        span.textContent = ch === " " ? "\u00A0" : ch;
+        wrap.appendChild(span);
+        frag.appendChild(wrap);
+        chars.push(span);
+      });
+      parent.replaceChild(frag, node);
     });
 
-    const splits: Array<{ chars?: Element[]; lines?: Element[] }> = [];
+    el.dataset.splitDone = "1";
+    return chars;
+  }
 
-    const runReveal = () => {
-      gsap.killTweensOf([
-        eyebrow,
-        body,
-        ...titleLines,
-        ...splits.flatMap((s) => s.chars ?? s.lines ?? []),
-      ]);
-
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-
-      if (eyebrow) {
-        gsap.set(eyebrow, { opacity: 0, y: 14 });
-        tl.to(eyebrow, { opacity: 1, y: 0, duration: 0.8 });
-      }
-
-      /* Whole-line reveal — char SplitType + overflow clip cut italic titles */
-      gsap.set(titleLines, { opacity: 0, y: 22 });
-      tl.to(
-        titleLines,
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.85,
-          stagger: 0.12,
-        },
-        eyebrow ? "-=0.4" : 0,
+  function prepareStackPanelSplits(panels: HTMLElement[]) {
+    panels.forEach((panel) => {
+      const targets = panel.querySelectorAll<HTMLElement>(
+        ".ex-stack-scroll__title-line, .ex-stack-scroll__eyebrow, .ex-stack-scroll__body",
       );
-
-      if (body) {
-        const splitBody = new SplitType(body as HTMLElement, { types: "lines" });
-        splits.push(splitBody);
-        if (splitBody.lines?.length) {
-          gsap.set(splitBody.lines, { opacity: 0, y: 20 });
-          tl.to(
-            splitBody.lines,
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.85,
-              stagger: 0.12,
-            },
-            "-=0.35",
-          );
-        } else {
-          gsap.set(body, { opacity: 0, y: 20 });
-          tl.to(body, { opacity: 1, y: 0, duration: 0.85 }, "-=0.35");
-        }
-      }
-    };
-
-    document.fonts.ready.then(() => {
-      ScrollTrigger.create({
-        id: "ex-stack-text",
-        trigger: section,
-        start: "top top",
-        onEnter: runReveal,
-        onEnterBack: runReveal,
+      const chars: HTMLElement[] = [];
+      targets.forEach((el) => {
+        chars.push(...splitStackText(el));
       });
+      (panel as HTMLElement & { __stackChars?: HTMLElement[] }).__stackChars =
+        chars;
+      if (chars.length) {
+        gsap.set(chars, { yPercent: 100, opacity: 0 });
+      }
+    });
+  }
+
+  function playStackSplit(panel: HTMLElement | undefined) {
+    if (!panel || prefersReduced) return;
+    const chars =
+      (panel as HTMLElement & { __stackChars?: HTMLElement[] }).__stackChars;
+    if (!chars?.length) return;
+    gsap.killTweensOf(chars);
+    gsap.fromTo(
+      chars,
+      { yPercent: 100, opacity: 0 },
+      {
+        yPercent: 0,
+        opacity: 1,
+        duration: 1,
+        stagger: 0.03,
+        ease: "power3.out",
+        onComplete: () => {
+          chars.forEach((c) => c.style.removeProperty("will-change"));
+        },
+      },
+    );
+  }
+
+  function reverseStackSplit(panel: HTMLElement | undefined) {
+    if (!panel || prefersReduced) return;
+    const chars =
+      (panel as HTMLElement & { __stackChars?: HTMLElement[] }).__stackChars;
+    if (!chars?.length) return;
+    gsap.killTweensOf(chars);
+    gsap.to(chars, {
+      yPercent: 100,
+      opacity: 0,
+      duration: 0.7,
+      stagger: 0.02,
+      ease: "power3.in",
     });
   }
 
@@ -656,9 +669,15 @@ export function useExScrollMotion() {
     const cards = gsap.utils.toArray<HTMLElement>(".ex-stack-scroll__card");
     if (!section || !viewport || cards.length < 2) return;
 
-    initExStackScrollText(section);
+    prepareStackPanelSplits(copyPanels);
 
     if (prefersReduced) {
+      copyPanels.forEach((panel) => {
+        const chars =
+          (panel as HTMLElement & { __stackChars?: HTMLElement[] })
+            .__stackChars;
+        if (chars?.length) gsap.set(chars, { yPercent: 0, opacity: 1 });
+      });
       gsap.set(cards, { yPercent: 0, scale: 1, filter: "brightness(1)" });
       cards.slice(1).forEach((card) => {
         gsap.set(card, { autoAlpha: 0 });
@@ -676,7 +695,13 @@ export function useExScrollMotion() {
     const killExisting = () => {
       ScrollTrigger.getAll().forEach((st) => {
         const id = st.vars && String(st.vars.id || "");
-        if (id.startsWith("ex-stack-scroll") || id === "ex-stack-copy") st.kill();
+        if (
+          id.startsWith("ex-stack-scroll") ||
+          id === "ex-stack-copy" ||
+          id === "ex-stack-text"
+        ) {
+          st.kill();
+        }
       });
     };
 
@@ -718,11 +743,18 @@ export function useExScrollMotion() {
       });
 
       copyPanels.forEach((panel, index) => {
+        const chars =
+          (panel as HTMLElement & { __stackChars?: HTMLElement[] })
+            .__stackChars;
         gsap.set(panel, {
           autoAlpha: index === 0 ? 1 : 0,
           y: 0,
           visibility: index === 0 ? "visible" : "hidden",
         });
+        if (chars?.length) {
+          gsap.killTweensOf(chars);
+          gsap.set(chars, { yPercent: 100, opacity: 0 });
+        }
         panel.setAttribute("aria-hidden", index === 0 ? "false" : "true");
       });
 
@@ -743,9 +775,24 @@ export function useExScrollMotion() {
           onRefresh: (self) => {
             const pin = self.pin as HTMLElement | null;
             if (!pin) return;
-            gsap.set(pin, { x: 0, left: 0, marginLeft: 0, clearProps: "marginRight" });
+            gsap.set(pin, {
+              x: 0,
+              left: 0,
+              marginLeft: 0,
+              clearProps: "marginRight",
+            });
           },
         },
+      });
+
+      /* First slide letters — play on enter, reverse on leave-back */
+      ScrollTrigger.create({
+        id: "ex-stack-text",
+        trigger: section,
+        start: "top top",
+        onEnter: () => playStackSplit(copyPanels[0]),
+        onEnterBack: () => playStackSplit(copyPanels[0]),
+        onLeaveBack: () => reverseStackSplit(copyPanels[0]),
       });
 
       for (let i = 1; i < total; i++) {
@@ -792,6 +839,13 @@ export function useExScrollMotion() {
             },
             moveAt + move * 0.08,
           );
+          /* Letters fall out / rise in — direction-aware for scrub reverse */
+          tl.add(() => {
+            const dir = tl.scrollTrigger?.direction ?? 1;
+            if (dir === 1) reverseStackSplit(prevPanel);
+            else playStackSplit(prevPanel);
+          }, moveAt + move * 0.08);
+
           tl.fromTo(
             nextPanel,
             { autoAlpha: 0, y: 0, visibility: "visible" },
@@ -804,6 +858,11 @@ export function useExScrollMotion() {
             },
             moveAt + move * 0.42,
           );
+          tl.add(() => {
+            const dir = tl.scrollTrigger?.direction ?? 1;
+            if (dir === 1) playStackSplit(nextPanel);
+            else reverseStackSplit(nextPanel);
+          }, moveAt + move * 0.42);
         }
 
         for (let j = 0; j < i; j++) {
@@ -842,7 +901,10 @@ export function useExScrollMotion() {
       }
     };
 
-    build();
+    document.fonts.ready.then(() => {
+      build();
+      ScrollTrigger.refresh();
+    });
 
     let resizeTimer: ReturnType<typeof setTimeout>;
     window.addEventListener("resize", () => {

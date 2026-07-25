@@ -1853,6 +1853,28 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   will-change: transform, opacity;
 }
 
+/* Masked letter rise/fall — atelier split (stack copy only) */
+.ex-stack-scroll .split-heading {
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: top;
+  /* Slight pad so italic/script glyphs aren’t clipped by the mask */
+  padding: 0.06em 0.05em 0.14em;
+  margin: 0 -0.03em;
+}
+
+.ex-stack-scroll .split-char {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ex-stack-scroll .split-char {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+
 /* ---------- TEXT + IMAGE BLOCKS ---------- */
 .text-img-section {
   background: var(--cream);
