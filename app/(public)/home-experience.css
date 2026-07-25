@@ -1246,7 +1246,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   border: 1px solid rgba(212, 194, 138, 0.7);
   color: #ffffff;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow: visible;
   will-change: width;
   transform-origin: center center;
 }
