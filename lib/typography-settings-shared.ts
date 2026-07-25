@@ -309,9 +309,9 @@ export type HeroSecondShimmer = z.infer<typeof heroSecondShimmerSchema>;
 
 export const DEFAULT_HERO_SECOND_SHIMMER: HeroSecondShimmer = {
   enabled: true,
-  speed: 10,
-  shine: 70,
-  shadow: 35,
+  speed: 12,
+  shine: 75,
+  shadow: 30,
 };
 
 /** Editable homepage hero title lines */
@@ -801,19 +801,34 @@ function mixHex(a: string, b: string, amount: number): string {
 }
 
 /**
- * Sliding metallic gold fill for hero second titles (former marquee shimmer).
- * Shine controls how bright the moving highlight band is.
+ * Soft sliding gold fill for hero second titles.
+ * Highlight is whitish and feathered into the body gold — no hard edge as it moves.
  */
 export function heroSecondShimmerBackground(
   shimmer: HeroSecondShimmer,
 ): string {
   const s = Math.min(1, Math.max(0, shimmer.shine / 100));
   const body = "#B69F64";
-  const bright = mixHex(body, "#D4AF37", s);
-  const highlight = mixHex(body, "#F4E5C2", s);
-  const deep = mixHex(body, "#8B7355", s * 0.55);
-  /* Same sliding gold band as the former marquee shimmer */
-  return `linear-gradient(135deg, ${bright} 0%, ${highlight} 30%, ${body} 55%, ${deep} 72%, ${bright} 100%)`;
+  /* Peak goes toward warm white; mid ramps stay close to gold so edges dissolve */
+  const peak = mixHex(body, "#FFFCF5", 0.45 + s * 0.55);
+  const nearWhite = mixHex(body, "#F7EFD8", 0.35 + s * 0.4);
+  const softGold = mixHex(body, "#D4C28A", 0.25 + s * 0.35);
+  const deep = mixHex(body, "#9A8450", s * 0.25);
+  /*
+   * Wide feathered lobe: long body → soft gold → near-white → peak → fade back.
+   * Stops are spaced so the moving highlight reads as light in the metal, not a stripe.
+   */
+  return `linear-gradient(125deg,
+    ${body} 0%,
+    ${body} 22%,
+    ${softGold} 34%,
+    ${nearWhite} 42%,
+    ${peak} 48%,
+    ${nearWhite} 54%,
+    ${softGold} 62%,
+    ${body} 74%,
+    ${deep} 88%,
+    ${body} 100%)`;
 }
 
 export function heroSecondShimmerFilter(shimmer: HeroSecondShimmer): string {
@@ -834,7 +849,7 @@ export function heroSecondShimmerInlineStyle(
   if (!shimmer.enabled) return {};
   return {
     backgroundImage: heroSecondShimmerBackground(shimmer),
-    backgroundSize: "200% 100%",
+    backgroundSize: "280% 100%",
     backgroundRepeat: "repeat",
     WebkitBackgroundClip: "text",
     backgroundClip: "text",
@@ -1259,7 +1274,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
   overflow: visible !important;
   will-change: background-position !important;
   background-image: var(--typo-hero-second-shimmer) !important;
-  background-size: 200% 100% !important;
+  background-size: 280% 100% !important;
   background-repeat: repeat !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
