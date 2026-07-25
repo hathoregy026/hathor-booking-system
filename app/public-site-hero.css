@@ -398,18 +398,14 @@
   filter: none !important;
 }
 
-/* Line 2 — layout only; font/size/color from typography admin */
+/* Line 2 — layout only; font/size from typography admin.
+   Metallic shimmer (when enabled) is applied via typography important CSS. */
 .home-hero-container .hero-heading .hero-line--left {
   font-weight: 400 !important;
   font-style: normal;
   text-transform: none !important;
   position: relative;
   z-index: 2;
-  background: none !important;
-  background-image: none !important;
-  -webkit-background-clip: border-box !important;
-  background-clip: border-box !important;
-  filter: none !important;
 }
 
 .home-hero-container .hero-side,

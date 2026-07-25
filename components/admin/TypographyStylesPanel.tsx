@@ -14,6 +14,7 @@ import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
 import {
   DEFAULT_HERO_LAYOUT,
   DEFAULT_HERO_PAGES,
+  DEFAULT_HERO_SECOND_SHIMMER,
   DEFAULT_MARQUEE_COPY,
   DEFAULT_ON_IMAGES_COPY,
   DEFAULT_OUR_VOYAGES_COPY,
@@ -26,6 +27,7 @@ import {
   ON_IMAGES_ROLES,
   OUR_VOYAGES_ROLES,
   fontGroupForFace,
+  heroSecondShimmerInlineStyle,
   isFaceInGroup,
   isTypographySettingsEqual,
   parseMarqueePhrases,
@@ -34,6 +36,7 @@ import {
   type HeroAlign,
   type HeroLayout,
   type HeroPageKey,
+  type HeroSecondShimmer,
   type OnImagesRole,
   type OurVoyagesRole,
   type TypographyRole,
@@ -349,6 +352,7 @@ export function TypographyStylesPanel() {
           : group;
   const value = settings[activeRole];
   const layout = settings.hero_layout;
+  const shimmer = settings.hero_second_shimmer;
   const heroCopy = settings.hero_pages[heroPage] ?? DEFAULT_HERO_PAGES[heroPage];
   const onImagesCopy = settings.on_images_copy;
   const ourVoyagesCopy = settings.our_voyages_copy;
@@ -392,6 +396,13 @@ export function TypographyStylesPanel() {
     setSettings((prev) => ({
       ...prev,
       hero_layout: { ...prev.hero_layout, ...partial },
+    }));
+  };
+
+  const patchShimmer = (partial: Partial<HeroSecondShimmer>) => {
+    setSettings((prev) => ({
+      ...prev,
+      hero_second_shimmer: { ...prev.hero_second_shimmer, ...partial },
     }));
   };
 
@@ -643,8 +654,13 @@ export function TypographyStylesPanel() {
               >
                 <span className="typo-stage__line-tag">Second · drag</span>
                 <span
-                  className="typo-stage__sample typo-stage__sample--inline"
-                  style={liveVars(settings.hero_subtitle)}
+                  className={`typo-stage__sample typo-stage__sample--inline${shimmer.enabled ? " typo-stage__sample--shimmer" : ""}`}
+                  style={{
+                    ...liveVars(settings.hero_subtitle),
+                    ...(shimmer.enabled
+                      ? heroSecondShimmerInlineStyle(shimmer)
+                      : {}),
+                  }}
                 >
                   {heroCopy.second || "Second title"}
                 </span>
@@ -860,10 +876,81 @@ export function TypographyStylesPanel() {
 
             <div className="typo-easy__gradient">
               <p className="typo-easy__controls-hint">
-                Second title uses the solid color from Second title styles above
-                (metallic gradient removed — it cut hollow bands through the
-                letters).
+                Second title <strong>metallic shimmer</strong> — moving gold shine
+                across the script line on every page hero.
               </p>
+              <label className="typo-easy__toggle">
+                <input
+                  type="checkbox"
+                  checked={shimmer.enabled}
+                  onChange={(e) => patchShimmer({ enabled: e.target.checked })}
+                />
+                <span>Enable shimmer</span>
+              </label>
+              <div className="typo-easy__row">
+                <SimpleField
+                  label="Speed"
+                  valueLabel={`${shimmer.speed}s`}
+                >
+                  <input
+                    type="range"
+                    className="typo-easy__range"
+                    min={2}
+                    max={40}
+                    step={1}
+                    value={shimmer.speed}
+                    disabled={!shimmer.enabled}
+                    aria-label="Shimmer speed in seconds"
+                    onChange={(e) =>
+                      patchShimmer({ speed: Number(e.target.value) })
+                    }
+                  />
+                </SimpleField>
+                <SimpleField label="Shine" valueLabel={`${shimmer.shine}%`}>
+                  <input
+                    type="range"
+                    className="typo-easy__range"
+                    min={0}
+                    max={100}
+                    step={1}
+                    value={shimmer.shine}
+                    disabled={!shimmer.enabled}
+                    aria-label="Shine amount"
+                    onChange={(e) =>
+                      patchShimmer({ shine: Number(e.target.value) })
+                    }
+                  />
+                </SimpleField>
+                <SimpleField label="Shadow" valueLabel={`${shimmer.shadow}%`}>
+                  <input
+                    type="range"
+                    className="typo-easy__range"
+                    min={0}
+                    max={100}
+                    step={1}
+                    value={shimmer.shadow}
+                    disabled={!shimmer.enabled}
+                    aria-label="Shadow amount"
+                    onChange={(e) =>
+                      patchShimmer({ shadow: Number(e.target.value) })
+                    }
+                  />
+                </SimpleField>
+              </div>
+              <button
+                type="button"
+                className="typo-easy__reset-role"
+                disabled={!shimmer.enabled}
+                onClick={() =>
+                  setSettings((prev) => ({
+                    ...prev,
+                    hero_second_shimmer: { ...DEFAULT_HERO_SECOND_SHIMMER },
+                  }))
+                }
+              >
+                <RotateCcw className="h-3.5 w-3.5" />
+                Reset shimmer
+              </button>
             </div>
           </>
         ) : null}

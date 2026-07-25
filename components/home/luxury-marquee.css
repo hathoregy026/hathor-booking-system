@@ -1,4 +1,4 @@
-/* Luxurious infinite text strip — metallic shimmer + soft edge fade */
+/* Luxurious infinite text strip — solid gold type + soft edge fade */
 
 .luxury-marquee {
   --lm-cream: var(--cream, #ece8df);
@@ -114,24 +114,10 @@
 
 .luxury-marquee__text {
   display: inline-block;
-  /* Padding expands the clip box so italic / serif edges aren’t cut */
   padding: 0.06em 0.18em;
   margin: -0.06em -0.06em;
-  background-image: linear-gradient(
-    135deg,
-    #d4af37 0%,
-    #f4e5c2 30%,
-    #b69f64 60%,
-    #d4af37 100%
-  );
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent !important;
-  -webkit-text-fill-color: transparent !important;
-  animation: luxury-marquee-shimmer 10s linear infinite;
-  /* Softer depth — less likely to look clipped at the band edges */
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.08));
+  color: #b69f64 !important;
+  -webkit-text-fill-color: #b69f64 !important;
   line-height: inherit;
 }
 
@@ -144,19 +130,8 @@
   padding: 0.2em;
   transform: translateY(-0.05em);
   user-select: none;
-  background-image: linear-gradient(
-    135deg,
-    #d4af37 0%,
-    #f4e5c2 45%,
-    #b69f64 100%
-  );
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent !important;
-  -webkit-text-fill-color: transparent !important;
-  animation: luxury-marquee-shimmer 10s linear infinite;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.06));
+  color: #b69f64 !important;
+  -webkit-text-fill-color: #b69f64 !important;
   opacity: 0.85;
 }
 
@@ -169,15 +144,6 @@
   }
 }
 
-@keyframes luxury-marquee-shimmer {
-  0% {
-    background-position: 0% center;
-  }
-  100% {
-    background-position: 200% center;
-  }
-}
-
 @media (max-width: 640px) {
   .luxury-marquee {
     --lm-edge: min(3.25rem, 11vw);
@@ -186,13 +152,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .luxury-marquee__track,
-  .luxury-marquee__text,
-  .luxury-marquee__divider {
-    animation: none;
-  }
-
   .luxury-marquee__track {
+    animation: none;
     transform: none;
   }
 

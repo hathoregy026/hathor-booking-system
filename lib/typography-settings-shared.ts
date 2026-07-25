@@ -227,39 +227,24 @@ export const DEFAULT_HERO_LAYOUT: HeroLayout = {
 const copyLine = z.string().max(160);
 const copyBody = z.string().max(1200);
 
-/** Metallic luxury gradient for the hero second title (script line) */
-export const heroSecondGradientSchema = z.object({
+/** Animated metallic shimmer for the hero second title (script line) */
+export const heroSecondShimmerSchema = z.object({
   enabled: z.boolean(),
-  /** Champagne / specular highlight */
-  highlight: hexColor,
-  /** Classic metallic gold mid-tone */
-  mid: hexColor,
-  /** Warm bronze body shadow */
-  deep: hexColor,
-  /** Deep chocolate recess */
-  bronze: hexColor,
-  /** Gradient angle in degrees */
-  angle: z.number().min(0).max(360),
-  /** Contrast / emboss strength 0–100 */
-  intensity: z.number().min(0).max(100),
+  /** Loop duration in seconds (higher = slower) */
+  speed: z.number().min(2).max(40),
+  /** Highlight strength 0–100 */
+  shine: z.number().min(0).max(100),
+  /** Drop-shadow / glow strength 0–100 */
+  shadow: z.number().min(0).max(100),
 });
 
-export type HeroSecondGradient = z.infer<typeof heroSecondGradientSchema>;
+export type HeroSecondShimmer = z.infer<typeof heroSecondShimmerSchema>;
 
-export const DEFAULT_HERO_SECOND_GRADIENT: HeroSecondGradient = {
-  /** Off — solid typography color only (metallic clip caused hollow cutouts). */
-  enabled: false,
-  /** Near-white specular ridge — Shine polished highlight */
-  highlight: "#FFF9E3",
-  /** Classic warm metallic gold */
-  mid: "#D4AF37",
-  /** Deep amber / bronze body */
-  deep: "#8B5E1A",
-  /** Chocolate recess / underside */
-  bronze: "#3D2B0D",
-  /** Slight tilt = light from upper-left (metallic lettering) */
-  angle: 192,
-  intensity: 100,
+export const DEFAULT_HERO_SECOND_SHIMMER: HeroSecondShimmer = {
+  enabled: true,
+  speed: 10,
+  shine: 70,
+  shadow: 35,
 };
 
 /** Editable homepage hero title lines */
@@ -418,7 +403,7 @@ export const typographySettingsSchema = z.object({
   our_voyages_indication: typographyTextStyleSchema,
   our_voyages_main: typographyTextStyleSchema,
   hero_layout: heroLayoutSchema,
-  hero_second_gradient: heroSecondGradientSchema,
+  hero_second_shimmer: heroSecondShimmerSchema,
   /** @deprecated Prefer hero_pages.home — kept for older saved payloads */
   hero_copy: heroCopySchema,
   hero_pages: heroPagesSchema,
@@ -535,7 +520,7 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
     innerShadow: false,
   },
   hero_layout: { ...DEFAULT_HERO_LAYOUT },
-  hero_second_gradient: { ...DEFAULT_HERO_SECOND_GRADIENT },
+  hero_second_shimmer: { ...DEFAULT_HERO_SECOND_SHIMMER },
   hero_copy: { ...DEFAULT_HERO_COPY },
   hero_pages: Object.fromEntries(
     HERO_PAGE_KEYS.map((key) => [key, { ...DEFAULT_HERO_PAGES[key] }]),
@@ -664,130 +649,92 @@ function parseHeroLayout(raw: unknown): HeroLayout {
   };
 }
 
-function parseHeroSecondGradient(raw: unknown): HeroSecondGradient {
-  const src =
-    raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
-  const fb = DEFAULT_HERO_SECOND_GRADIENT;
+function parseHeroSecondShimmer(raw: unknown): HeroSecondShimmer {
+  const fb = DEFAULT_HERO_SECOND_SHIMMER;
+  if (raw == null || typeof raw !== "object") return { ...fb };
+  const src = raw as Record<string, unknown>;
 
-  /* Migrate prior button-conic defaults → Shine metallic palette */
-  const legacyButton =
-    asHex(src.mid, "").toUpperCase() === "#B69F64" &&
-    asHex(src.highlight, "").toUpperCase() === "#F5EFE4" &&
-    asHex(src.bronze, "").toUpperCase() === "#6A5A35";
-  if (legacyButton || raw == null) {
+  /* Legacy metallic gradient payloads (highlight/mid/bronze) → fresh shimmer defaults */
+  const isLegacyGradient =
+    typeof src.highlight === "string" ||
+    typeof src.mid === "string" ||
+    typeof src.bronze === "string" ||
+    typeof src.angle === "number";
+  if (isLegacyGradient && typeof src.shine !== "number") {
     return { ...fb };
   }
 
-  const candidate: HeroSecondGradient = {
+  const candidate: HeroSecondShimmer = {
     enabled: typeof src.enabled === "boolean" ? src.enabled : fb.enabled,
-    highlight: asHex(src.highlight, fb.highlight),
-    mid: asHex(src.mid, fb.mid),
-    deep: asHex(src.deep, fb.deep),
-    bronze: asHex(src.bronze, fb.bronze),
-    angle: clampNum(asFiniteNumber(src.angle) ?? fb.angle, 0, 360, fb.angle),
-    intensity: clampNum(
-      asFiniteNumber(src.intensity) ?? fb.intensity,
+    speed: clampNum(asFiniteNumber(src.speed) ?? fb.speed, 2, 40, fb.speed),
+    shine: clampNum(asFiniteNumber(src.shine) ?? fb.shine, 0, 100, fb.shine),
+    shadow: clampNum(
+      asFiniteNumber(src.shadow) ?? fb.shadow,
       0,
       100,
-      fb.intensity,
+      fb.shadow,
     ),
   };
-  const parsed = heroSecondGradientSchema.safeParse(candidate);
-  const result = parsed.success ? parsed.data : { ...fb };
-  /* Solid second-title color only — metallic background-clip + filter caused
-     hollow mid-letter cutouts and clipped glyph edges on heroes. */
-  return { ...result, enabled: false };
+  const parsed = heroSecondShimmerSchema.safeParse(candidate);
+  return parsed.success ? parsed.data : { ...fb };
+}
+
+function mixHex(a: string, b: string, amount: number): string {
+  const parse = (hex: string) => {
+    const h = hex.replace("#", "");
+    return [
+      Number.parseInt(h.slice(0, 2), 16),
+      Number.parseInt(h.slice(2, 4), 16),
+      Number.parseInt(h.slice(4, 6), 16),
+    ] as const;
+  };
+  const [ar, ag, ab] = parse(a);
+  const [br, bg, bb] = parse(b);
+  const to = (n: number) =>
+    Math.round(n).toString(16).padStart(2, "0").toUpperCase();
+  const t = Math.min(1, Math.max(0, amount));
+  return `#${to(ar + (br - ar) * t)}${to(ag + (bg - ag) * t)}${to(ab + (bb - ab) * t)}`;
 }
 
 /**
- * Polished 3D metallic gold for hero second titles — Shine / luxury-metal vibe.
- * Vertical multi-stop linear fill (not conic): letterforms need top→bottom
- * light falloff to read as beveled gold, not a button ring.
+ * Sliding metallic gold fill for hero second titles (former marquee shimmer).
+ * Shine controls how bright the moving highlight band is.
  */
-export function heroSecondGradientBackground(
-  gradient: HeroSecondGradient,
+export function heroSecondShimmerBackground(
+  shimmer: HeroSecondShimmer,
 ): string {
-  const t = Math.min(1, Math.max(0, gradient.intensity / 100));
-  const mix = (a: string, b: string, amount: number) => {
-    const parse = (hex: string) => {
-      const h = hex.replace("#", "");
-      return [
-        Number.parseInt(h.slice(0, 2), 16),
-        Number.parseInt(h.slice(2, 4), 16),
-        Number.parseInt(h.slice(4, 6), 16),
-      ] as const;
-    };
-    const [ar, ag, ab] = parse(a);
-    const [br, bg, bb] = parse(b);
-    const to = (n: number) =>
-      Math.round(n).toString(16).padStart(2, "0").toUpperCase();
-    const r = ar + (br - ar) * amount;
-    const g = ag + (bg - ag) * amount;
-    const bch = ab + (bb - ab) * amount;
-    return `#${to(r)}${to(g)}${to(bch)}`;
-  };
-
-  const white = mix(gradient.highlight, "#FFFFFF", t * 0.55);
-  const tip = mix(gradient.mid, gradient.highlight, t);
-  const bright = mix(gradient.mid, gradient.highlight, t * 0.72);
-  const body = gradient.mid;
-  const shade = mix(gradient.mid, gradient.deep, t);
-  const recess = mix(gradient.deep, gradient.bronze, t);
-  const under = mix(gradient.bronze, "#1A1208", t * 0.65);
-  const bounce = mix(gradient.deep, gradient.mid, t * 0.4);
-  const rim = mix(gradient.mid, gradient.highlight, t * 0.5);
-
-  /* Specular band + metal body — high-contrast polished gold */
-  const metal = `linear-gradient(${gradient.angle}deg,
-    ${white} 0%,
-    ${tip} 7%,
-    ${bright} 16%,
-    ${body} 28%,
-    ${shade} 42%,
-    ${recess} 52%,
-    ${under} 58%,
-    ${bounce} 70%,
-    ${body} 82%,
-    ${rim} 92%,
-    ${shade} 100%)`;
-
-  const sheen = `linear-gradient(${(gradient.angle + 75) % 360}deg,
-    transparent 0%,
-    transparent 38%,
-    ${mix("#FFFFFF", gradient.highlight, t * 0.5)}66 47%,
-    transparent 56%,
-    transparent 100%)`;
-
-  return `${sheen}, ${metal}`;
+  const s = Math.min(1, Math.max(0, shimmer.shine / 100));
+  const body = "#B69F64";
+  const bright = mixHex(body, "#D4AF37", s);
+  const highlight = mixHex(body, "#F4E5C2", s);
+  const deep = mixHex(body, "#8B7355", s * 0.55);
+  return `linear-gradient(135deg, ${bright} 0%, ${highlight} 28%, ${body} 55%, ${deep} 78%, ${bright} 100%)`;
 }
 
-export function heroSecondGradientShadow(gradient: HeroSecondGradient): string {
-  if (!gradient.enabled) return "none";
-  const t = Math.min(1, Math.max(0, gradient.intensity / 100));
-  const edge = (0.55 + t * 0.4).toFixed(2);
-  const depth = (0.35 + t * 0.4).toFixed(2);
-  const glow = (0.2 + t * 0.28).toFixed(2);
-  /* Top rim catch + hard underside + soft lift + warm gold bloom */
+export function heroSecondShimmerFilter(shimmer: HeroSecondShimmer): string {
+  if (!shimmer.enabled || shimmer.shadow <= 0) return "none";
+  const t = Math.min(1, Math.max(0, shimmer.shadow / 100));
+  const soft = (0.06 + t * 0.12).toFixed(2);
+  const glow = (t * 0.32).toFixed(2);
   return [
-    `drop-shadow(0 -0.5px 0 rgba(255, 249, 227, ${(0.25 + t * 0.35).toFixed(2)}))`,
-    `drop-shadow(0 1px 0 rgba(61, 43, 13, ${edge}))`,
-    `drop-shadow(0 2px 2px rgba(0, 0, 0, ${depth}))`,
-    `drop-shadow(0 10px 18px rgba(0, 0, 0, ${(0.28 + t * 0.25).toFixed(2)}))`,
-    `drop-shadow(0 0 14px rgba(212, 175, 55, ${glow}))`,
+    `drop-shadow(0 1px ${1 + t * 2}px rgba(0, 0, 0, ${soft}))`,
+    `drop-shadow(0 0 ${4 + t * 12}px rgba(212, 175, 55, ${glow}))`,
   ].join(" ");
 }
 
-export function heroSecondGradientInlineStyle(
-  gradient: HeroSecondGradient,
+export function heroSecondShimmerInlineStyle(
+  shimmer: HeroSecondShimmer,
 ): CSSProperties {
-  if (!gradient.enabled) return {};
+  if (!shimmer.enabled) return {};
   return {
-    backgroundImage: heroSecondGradientBackground(gradient),
+    backgroundImage: heroSecondShimmerBackground(shimmer),
+    backgroundSize: "200% auto",
     WebkitBackgroundClip: "text",
     backgroundClip: "text",
     WebkitTextFillColor: "transparent",
     color: "transparent",
-    filter: heroSecondGradientShadow(gradient),
+    filter: heroSecondShimmerFilter(shimmer),
+    animation: `hero-second-shimmer ${shimmer.speed}s linear infinite`,
   };
 }
 
@@ -961,7 +908,9 @@ export function parseTypographySettings(raw: unknown): TypographySettings {
       DEFAULT_TYPOGRAPHY_SETTINGS.our_voyages_main,
     ),
     hero_layout: parseHeroLayout(src.hero_layout),
-    hero_second_gradient: parseHeroSecondGradient(src.hero_second_gradient),
+    hero_second_shimmer: parseHeroSecondShimmer(
+      src.hero_second_shimmer ?? src.hero_second_gradient,
+    ),
     hero_copy: (() => {
       const pages = parseHeroPages(src.hero_pages, parseHeroCopy(src.hero_copy));
       return { ...pages.home };
@@ -987,12 +936,12 @@ export function isTypographySettingsEqual(
     (key) => a.hero_layout[key] === b.hero_layout[key],
   );
   if (!layoutEqual) return false;
-  const gradientEqual = (
-    Object.keys(a.hero_second_gradient) as (keyof HeroSecondGradient)[]
+  const shimmerEqual = (
+    Object.keys(a.hero_second_shimmer) as (keyof HeroSecondShimmer)[]
   ).every(
-    (key) => a.hero_second_gradient[key] === b.hero_second_gradient[key],
+    (key) => a.hero_second_shimmer[key] === b.hero_second_shimmer[key],
   );
-  if (!gradientEqual) return false;
+  if (!shimmerEqual) return false;
   const pagesEqual = HERO_PAGE_KEYS.every(
     (key) =>
       a.hero_pages[key].main === b.hero_pages[key].main &&
@@ -1053,15 +1002,16 @@ function heroLayoutCssVars(layout: HeroLayout): Record<string, string> {
   };
 }
 
-function heroSecondGradientCssVars(
-  gradient: HeroSecondGradient,
+function heroSecondShimmerCssVars(
+  shimmer: HeroSecondShimmer,
 ): Record<string, string> {
   return {
-    "--typo-hero-second-gradient": heroSecondGradientBackground(gradient),
-    "--typo-hero-second-gradient-filter": gradient.enabled
-      ? heroSecondGradientShadow(gradient)
+    "--typo-hero-second-shimmer": heroSecondShimmerBackground(shimmer),
+    "--typo-hero-second-shimmer-filter": shimmer.enabled
+      ? heroSecondShimmerFilter(shimmer)
       : "none",
-    "--typo-hero-second-gradient-on": gradient.enabled ? "1" : "0",
+    "--typo-hero-second-shimmer-duration": `${shimmer.speed}s`,
+    "--typo-hero-second-shimmer-on": shimmer.enabled ? "1" : "0",
   };
 }
 
@@ -1075,7 +1025,7 @@ export function typographyToCssVars(
   return {
     ...roleVars,
     ...heroLayoutCssVars(settings.hero_layout),
-    ...heroSecondGradientCssVars(settings.hero_second_gradient),
+    ...heroSecondShimmerCssVars(settings.hero_second_shimmer),
   };
 }
 
@@ -1165,22 +1115,34 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
   padding-top: 0 !important;
 }
 ${
-  settings.hero_second_gradient.enabled
+  settings.hero_second_shimmer.enabled
     ? `.public-site .hero-line--left:not(.hero-line--wordmark),
 .public-site .home-hero-container .hero-heading .hero-line--left:not(.hero-line--wordmark),
 html[data-ex-experience] .public-site .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
-html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
-.public-site .hero-line--left.hero-line--luxury-gradient {
-  background-image: var(--typo-hero-second-gradient) !important;
-  background-size: 140% 140%, 100% 100% !important;
-  background-position: center, center !important;
+html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark) {
+  background-image: var(--typo-hero-second-shimmer) !important;
+  background-size: 200% auto !important;
   background-repeat: no-repeat !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
   text-shadow: none !important;
-  filter: var(--typo-hero-second-gradient-filter) !important;
+  filter: var(--typo-hero-second-shimmer-filter) !important;
+  animation: hero-second-shimmer var(--typo-hero-second-shimmer-duration) linear infinite !important;
+}
+@keyframes hero-second-shimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .public-site .hero-line--left:not(.hero-line--wordmark),
+  .public-site .home-hero-container .hero-heading .hero-line--left:not(.hero-line--wordmark),
+  html[data-ex-experience] .public-site .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
+  html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark) {
+    animation: none !important;
+    background-position: 40% center !important;
+  }
 }`
     : ""
 }
