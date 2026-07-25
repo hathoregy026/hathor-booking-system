@@ -113,7 +113,7 @@
 
 /*
   Tiny white inner hairline — sits between the pill border and the fill
-  so the outer shine reads more clearly on hover.
+  so the outer shine reads more clearly on hover (barely visible).
 */
 .public-site a.btn::after,
 .public-site button.btn::after,
@@ -130,9 +130,9 @@
 .venetian-page .cruise-filter--cta::after {
   content: "";
   position: absolute;
-  inset: 1.5px;
+  inset: 1px;
   border-radius: inherit;
-  padding: 1px;
+  padding: 0.5px;
   pointer-events: none;
   z-index: 2;
   opacity: 0;
@@ -174,7 +174,7 @@
 .venetian-page button.btn:focus-visible::after,
 .venetian-page .btn:focus-visible::after,
 .venetian-page .cruise-filter--cta:focus-visible::after {
-  opacity: 0.92;
+  opacity: 0.55;
 }
 
 .public-site a.btn > *,
