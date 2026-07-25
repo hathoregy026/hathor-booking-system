@@ -309,9 +309,9 @@ export type HeroSecondShimmer = z.infer<typeof heroSecondShimmerSchema>;
 
 export const DEFAULT_HERO_SECOND_SHIMMER: HeroSecondShimmer = {
   enabled: true,
-  speed: 12,
-  shine: 80,
-  shadow: 40,
+  speed: 11,
+  shine: 88,
+  shadow: 50,
 };
 
 /** Editable homepage hero title lines */
@@ -801,46 +801,52 @@ function mixHex(a: string, b: string, amount: number): string {
 }
 
 /**
- * Soft sliding metallic gold fill for hero second titles.
- * Stays in the gold family only — bright polished gold specular, never white-on-yellow.
+ * Sunlit metallic gold for hero second titles.
+ * Whole glyph reads as polished gold; a soft white-gold sun catch feathers across it.
  */
 export function heroSecondShimmerBackground(
   shimmer: HeroSecondShimmer,
 ): string {
   const s = Math.min(1, Math.max(0, shimmer.shine / 100));
+  /* Full gold metal palette — text always looks golden, not flat yellow */
+  const deep = mixHex("#6E5630", "#8B6914", 0.35);
+  const bronze = "#8A6F3A";
   const body = "#B69F64";
-  /* Polished gold ladder — all warm yellow-metal, no cream/white peak */
-  const deep = mixHex(body, "#7A6238", 0.35 + s * 0.25);
-  const shade = mixHex(body, "#9A8048", 0.4);
-  const bright = mixHex(body, "#D4AF37", 0.5 + s * 0.45);
-  const polish = mixHex(bright, "#E6C35C", 0.35 + s * 0.5);
-  const specular = mixHex(polish, "#F0D06A", 0.2 + s * 0.45);
+  const rich = mixHex(body, "#D4AF37", 0.65 + s * 0.25);
+  const bright = mixHex(rich, "#E8C34A", 0.45 + s * 0.4);
+  const sunCatch = mixHex(bright, "#F5E6C0", 0.35 + s * 0.4);
+  const whiteGold = mixHex(sunCatch, "#FFF8EC", 0.4 + s * 0.45);
   /*
-   * Soft metallic band: deep → body → bright → polish → specular → fade back.
-   * Specular is yellow-gold (foil shine), not white.
+   * Continuous gold metal with a soft sun beam:
+   * deep bronze → rich gold body → bright polish → white-gold catch → back through gold.
+   * Most of the loop stays golden so every letter feels metal under sun.
    */
-  return `linear-gradient(125deg,
+  return `linear-gradient(118deg,
     ${deep} 0%,
-    ${shade} 14%,
-    ${body} 28%,
-    ${bright} 40%,
-    ${polish} 47%,
-    ${specular} 50%,
-    ${polish} 53%,
-    ${bright} 60%,
-    ${body} 74%,
-    ${shade} 88%,
+    ${bronze} 10%,
+    ${body} 22%,
+    ${rich} 34%,
+    ${bright} 42%,
+    ${sunCatch} 47%,
+    ${whiteGold} 50%,
+    ${sunCatch} 53%,
+    ${bright} 58%,
+    ${rich} 68%,
+    ${body} 80%,
+    ${bronze} 92%,
     ${deep} 100%)`;
 }
 
 export function heroSecondShimmerFilter(shimmer: HeroSecondShimmer): string {
   if (!shimmer.enabled || shimmer.shadow <= 0) return "none";
   const t = Math.min(1, Math.max(0, shimmer.shadow / 100));
-  const soft = (0.05 + t * 0.1).toFixed(2);
-  const glow = (0.18 + t * 0.35).toFixed(2);
+  const soft = (0.06 + t * 0.12).toFixed(2);
+  const goldGlow = (0.22 + t * 0.4).toFixed(2);
+  const warm = (0.1 + t * 0.2).toFixed(2);
   return [
-    `drop-shadow(0 1px ${1 + t * 1.5}px rgba(90, 70, 30, ${soft}))`,
-    `drop-shadow(0 0 ${5 + t * 12}px rgba(182, 159, 100, ${glow}))`,
+    `drop-shadow(0 1px ${1 + t}px rgba(80, 55, 20, ${soft}))`,
+    `drop-shadow(0 0 ${8 + t * 14}px rgba(212, 175, 55, ${goldGlow}))`,
+    `drop-shadow(0 0 ${3 + t * 6}px rgba(255, 236, 180, ${warm}))`,
   ].join(" ");
 }
 
