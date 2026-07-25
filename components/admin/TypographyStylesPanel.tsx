@@ -27,13 +27,10 @@ import {
   ON_IMAGES_ROLES,
   OUR_VOYAGES_DEFAULT_ROLES,
   OUR_VOYAGES_HOVER_ROLES,
-  fontGroupForFace,
   heroSecondShimmerInlineStyle,
-  isFaceInGroup,
   isTypographySettingsEqual,
   parseMarqueePhrases,
   parseTypographySettings,
-  type HathorLuxuryFont,
   type HeroAlign,
   type HeroLayout,
   type HeroPageKey,
@@ -312,7 +309,8 @@ export function TypographyStylesPanel() {
   );
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [fontQuery, setFontQuery] = useState("");
+  const [fontMenuOpen, setFontMenuOpen] = useState(false);
+  const fontMenuRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{
     line: "hero_title" | "hero_subtitle";
     startX: number;
@@ -348,6 +346,28 @@ export function TypographyStylesPanel() {
       cancelled = true;
     };
   }, [showToast]);
+
+  useEffect(() => {
+    if (!fontMenuOpen) return;
+    const onDoc = (event: MouseEvent) => {
+      if (!fontMenuRef.current?.contains(event.target as Node)) {
+        setFontMenuOpen(false);
+      }
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setFontMenuOpen(false);
+    };
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [fontMenuOpen]);
+
+  useEffect(() => {
+    setFontMenuOpen(false);
+  }, [group]);
 
   const dirty = !isTypographySettingsEqual(settings, saved);
   const activeRole: TypographyRole =
@@ -590,7 +610,6 @@ export function TypographyStylesPanel() {
               className={`typo-rolebar__btn${on ? " typo-rolebar__btn--on" : ""}`}
               onClick={() => {
                 setGroup(key);
-                setFontQuery("");
                 if (key === "hero") setHeroLine("hero_title");
                 if (key === "on_images") setOnImagesLine("on_images_title");
                 if (key === "our_voyages") {
@@ -605,292 +624,66 @@ export function TypographyStylesPanel() {
         })}
       </div>
 
-      <div className="typo-easy__workspace">
-      <div
-        className={`typo-stage typo-stage--${stageTone}${group === "hero" ? " typo-stage--hero-pair" : ""}`}
-        key={group}
-      >
-        <div className="typo-stage__banner">
-          <span className="typo-stage__editing">You are editing</span>
-          <strong className="typo-stage__role">{editingLabel}</strong>
-        </div>
-        <p className="typo-stage__where">{GROUP_WHERE[group]}</p>
-
-        {group === "hero" ? (
-          <>
-            <div className="typo-stage__align">
-              {(
-                [
-                  ["left", AlignLeft, "Left"],
-                  ["center", AlignCenter, "Center"],
-                  ["right", AlignRight, "Right"],
-                ] as const
-              ).map(([align, Icon, label]) => (
-                <button
-                  key={align}
-                  type="button"
-                  className={`typo-stage__align-btn${layout.align === align ? " typo-stage__align-btn--on" : ""}`}
-                  onClick={() => patchLayout({ align })}
-                  aria-pressed={layout.align === align}
-                  title={label}
-                >
-                  <Icon className="h-4 w-4" />
-                  {label}
-                </button>
-              ))}
-            </div>
-
-            <div
-              className="typo-stage__canvas"
-              style={{
-                justifyContent:
-                  layout.align === "left"
-                    ? "flex-start"
-                    : layout.align === "right"
-                      ? "flex-end"
-                      : "center",
-                textAlign: layout.align,
-              }}
-            >
-              <button
-                type="button"
-                className={`typo-stage__drag${heroLine === "hero_title" ? " typo-stage__drag--on" : ""}`}
-                style={{
-                  ...liveVars(settings.hero_title),
-                  transform: `translate(${layout.mainX}px, ${layout.mainY}px)`,
-                  zIndex: heroLine === "hero_title" ? 3 : 2,
-                }}
-                onPointerDown={onDragStart("hero_title")}
-                onPointerMove={onDragMove}
-                onPointerUp={onDragEnd}
-                onPointerCancel={onDragEnd}
-              >
-                <span className="typo-stage__line-tag">First · drag</span>
-                <span className="typo-stage__sample typo-stage__sample--inline">
-                  {heroCopy.main || "First line"}
-                </span>
-              </button>
-              <button
-                type="button"
-                className={`typo-stage__drag${heroLine === "hero_subtitle" ? " typo-stage__drag--on" : ""}`}
-                style={{
-                  transform: `translate(${layout.secondX}px, ${layout.secondY}px)`,
-                  zIndex: heroLine === "hero_subtitle" ? 3 : 1,
-                }}
-                onPointerDown={onDragStart("hero_subtitle")}
-                onPointerMove={onDragMove}
-                onPointerUp={onDragEnd}
-                onPointerCancel={onDragEnd}
-              >
-                <span className="typo-stage__line-tag">Second · drag</span>
-                <span
-                  className={`typo-stage__sample typo-stage__sample--inline${shimmer.enabled ? " typo-stage__sample--shimmer" : ""}`}
-                  style={{
-                    ...liveVars(settings.hero_subtitle),
-                    ...(shimmer.enabled
-                      ? heroSecondShimmerInlineStyle(shimmer)
-                      : {}),
-                  }}
-                >
-                  {heroCopy.second || "Second title"}
-                </span>
-              </button>
-            </div>
-          </>
-        ) : group === "on_images" ? (
-          <>
-            <div className="typo-stage__align" role="tablist" aria-label="On-image text role">
-              {ON_IMAGES_ROLES.map((role) => (
-                <button
-                  key={role}
-                  type="button"
-                  role="tab"
-                  aria-selected={onImagesLine === role}
-                  className={`typo-stage__align-btn${onImagesLine === role ? " typo-stage__align-btn--on" : ""}`}
-                  onClick={() => setOnImagesLine(role)}
-                >
-                  {ON_IMAGES_LINE_LABELS[role]}
-                </button>
-              ))}
-            </div>
-            <p
-              className="typo-stage__sample"
-              style={{
-                ...liveVars(value),
-                whiteSpace: "pre-wrap",
-              }}
-            >
-              {onImagesPreviewText || ON_IMAGES_LINE_LABELS[onImagesLine]}
-            </p>
-          </>
-        ) : group === "our_voyages" ? (
-          <>
-            <div
-              className="typo-stage__align"
-              role="tablist"
-              aria-label="Our Voyages state"
-            >
-              <button
-                type="button"
-                role="tab"
-                aria-selected={ourVoyagesMode === "default"}
-                className={`typo-stage__align-btn${ourVoyagesMode === "default" ? " typo-stage__align-btn--on" : ""}`}
-                onClick={() => setOurVoyagesModeAndLine("default")}
-              >
-                Default
-              </button>
-              <button
-                type="button"
-                role="tab"
-                aria-selected={ourVoyagesMode === "hover"}
-                className={`typo-stage__align-btn${ourVoyagesMode === "hover" ? " typo-stage__align-btn--on" : ""}`}
-                onClick={() => setOurVoyagesModeAndLine("hover")}
-              >
-                Hovered column
-              </button>
-            </div>
-            <div
-              className="typo-stage__align"
-              role="tablist"
-              aria-label="Our Voyages text role"
-            >
-              {ourVoyagesRoles.map((role) => (
-                <button
-                  key={role}
-                  type="button"
-                  role="tab"
-                  aria-selected={ourVoyagesLine === role}
-                  className={`typo-stage__align-btn${ourVoyagesLine === role ? " typo-stage__align-btn--on" : ""}`}
-                  onClick={() => setOurVoyagesLine(role)}
-                >
-                  {OUR_VOYAGES_LINE_LABELS[role]}
-                </button>
-              ))}
-            </div>
-            <p
-              className="typo-stage__sample"
-              style={{
-                ...liveVars(value),
-                whiteSpace: "pre-wrap",
-              }}
-            >
-              {ourVoyagesPreviewText || OUR_VOYAGES_LINE_LABELS[ourVoyagesLine]}
-            </p>
-          </>
-        ) : group === "luxury_marquee" ? (
-          <p
-            className="typo-stage__sample"
-            style={{
-              ...liveVars(value),
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              maxWidth: "100%",
-            }}
-          >
-            {marqueePreview}
-          </p>
-        ) : (
-          <p className="typo-stage__sample" style={liveVars(value)}>
-            {PAGE_SAMPLES[group]}
-          </p>
-        )}
-
-        <p className="typo-stage__readout">
-          {group === "hero"
-            ? `Align ${layout.align} · ${HERO_LINE_LABELS[heroLine]} at ${activeOffset.x}px, ${activeOffset.y}px · ${value.fontFamily} ${value.fontSize}px`
-            : `Font: ${value.fontFamily} · Size: ${value.fontSize}px · Color: ${value.color}`}
-        </p>
-      </div>
-
       <div className="typo-easy__controls admin-card">
-        <SimpleField label="Font (search or click — preview updates live)">
-          <input
-            type="search"
-            className="admin-input typo-easy__font-search"
-            value={fontQuery}
-            placeholder="Search fonts… e.g. Playfair, Gabigaile"
-            aria-label="Search fonts"
-            onChange={(e) => setFontQuery(e.target.value)}
-          />
-          <div className="typo-easy__font-grid">
-            {HATHOR_FONT_GROUPS.filter((fontGroup) => {
-              const q = fontQuery.trim().toLowerCase();
-              if (!q) return true;
-              return (
-                fontGroup.family.toLowerCase().includes(q) ||
-                fontGroup.variants.some(
-                  (v) =>
-                    v.id.toLowerCase().includes(q) ||
-                    v.label.toLowerCase().includes(q),
-                )
-              );
-            }).map((fontGroup) => {
-              const selected = isFaceInGroup(value.fontFamily, fontGroup);
-              const previewFace = selected
-                ? value.fontFamily
-                : fontGroup.variants[0]!.id;
-              return (
-                <button
-                  key={fontGroup.family}
-                  type="button"
-                  className={`typo-easy__font-btn${selected ? " typo-easy__font-btn--active" : ""}`}
-                  style={{ fontFamily: HATHOR_FONT_STACKS[previewFace] }}
-                  onClick={() => {
-                    patch({ fontFamily: fontGroup.variants[0]!.id });
-                  }}
-                  title={fontGroup.family}
-                >
-                  <span className="typo-easy__font-btn-name">{fontGroup.family}</span>
-                  <span
-                    className="typo-easy__font-btn-demo"
-                    style={{ fontFamily: HATHOR_FONT_STACKS[previewFace] }}
-                  >
-                    Aa
-                  </span>
-                </button>
-              );
-            })}
+        <SimpleField label="Font">
+          <div className="typo-easy__font-dd" ref={fontMenuRef}>
+            <button
+              type="button"
+              className={`typo-easy__font-dd-trigger${fontMenuOpen ? " typo-easy__font-dd-trigger--open" : ""}`}
+              aria-haspopup="listbox"
+              aria-expanded={fontMenuOpen}
+              aria-label="Choose font"
+              onClick={() => setFontMenuOpen((open) => !open)}
+            >
+              <span
+                className="typo-easy__font-dd-sample"
+                style={{ fontFamily: HATHOR_FONT_STACKS[value.fontFamily] }}
+              >
+                {value.fontFamily}
+              </span>
+              <span className="typo-easy__font-dd-chevron" aria-hidden>
+                {fontMenuOpen ? "▴" : "▾"}
+              </span>
+            </button>
+            {fontMenuOpen ? (
+              <div
+                className="typo-easy__font-dd-menu"
+                role="listbox"
+                aria-label="Fonts"
+              >
+                {HATHOR_FONT_GROUPS.flatMap((fontGroup) =>
+                  fontGroup.variants.map((variant) => {
+                    const selected = value.fontFamily === variant.id;
+                    const label =
+                      fontGroup.variants.length > 1
+                        ? `${fontGroup.family} · ${variant.label}`
+                        : fontGroup.family;
+                    return (
+                      <button
+                        key={variant.id}
+                        type="button"
+                        role="option"
+                        aria-selected={selected}
+                        className={`typo-easy__font-dd-option${selected ? " typo-easy__font-dd-option--on" : ""}`}
+                        style={{ fontFamily: HATHOR_FONT_STACKS[variant.id] }}
+                        onClick={() => {
+                          patch({ fontFamily: variant.id });
+                          setFontMenuOpen(false);
+                        }}
+                      >
+                        <span className="typo-easy__font-dd-option-label">
+                          {label}
+                        </span>
+                        <span className="typo-easy__font-dd-option-demo">
+                          Hathor
+                        </span>
+                      </button>
+                    );
+                  }),
+                )}
+              </div>
+            ) : null}
           </div>
-          {fontQuery.trim() &&
-          !HATHOR_FONT_GROUPS.some((fontGroup) => {
-            const q = fontQuery.trim().toLowerCase();
-            return (
-              fontGroup.family.toLowerCase().includes(q) ||
-              fontGroup.variants.some(
-                (v) =>
-                  v.id.toLowerCase().includes(q) ||
-                  v.label.toLowerCase().includes(q),
-              )
-            );
-          }) ? (
-            <p className="typo-easy__controls-hint">No fonts match “{fontQuery.trim()}”.</p>
-          ) : null}
-          {(() => {
-            const fontGroup = fontGroupForFace(value.fontFamily);
-            if (fontGroup.variants.length < 2) return null;
-            return (
-              <label className="typo-easy__variant">
-                <span className="typo-easy__variant-label">Style</span>
-                <select
-                  className="typo-easy__variant-select admin-input"
-                  value={value.fontFamily}
-                  onChange={(e) =>
-                    patch({
-                      fontFamily: e.target.value as HathorLuxuryFont,
-                    })
-                  }
-                  aria-label={`${fontGroup.family} style`}
-                >
-                  {fontGroup.variants.map((v) => (
-                    <option key={v.id} value={v.id}>
-                      {v.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            );
-          })()}
         </SimpleField>
 
         <div className="typo-easy__row">
@@ -1381,6 +1174,202 @@ export function TypographyStylesPanel() {
           </button>
         </div>
       </div>
+
+      <div
+        className={`typo-stage typo-stage--${stageTone}${group === "hero" ? " typo-stage--hero-pair" : ""}`}
+        key={group}
+      >
+        <div className="typo-stage__banner">
+          <span className="typo-stage__editing">You are editing</span>
+          <strong className="typo-stage__role">{editingLabel}</strong>
+        </div>
+        <p className="typo-stage__where">{GROUP_WHERE[group]}</p>
+
+        {group === "hero" ? (
+          <>
+            <div className="typo-stage__align">
+              {(
+                [
+                  ["left", AlignLeft, "Left"],
+                  ["center", AlignCenter, "Center"],
+                  ["right", AlignRight, "Right"],
+                ] as const
+              ).map(([align, Icon, label]) => (
+                <button
+                  key={align}
+                  type="button"
+                  className={`typo-stage__align-btn${layout.align === align ? " typo-stage__align-btn--on" : ""}`}
+                  onClick={() => patchLayout({ align })}
+                  aria-pressed={layout.align === align}
+                  title={label}
+                >
+                  <Icon className="h-4 w-4" />
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <div
+              className="typo-stage__canvas"
+              style={{
+                justifyContent:
+                  layout.align === "left"
+                    ? "flex-start"
+                    : layout.align === "right"
+                      ? "flex-end"
+                      : "center",
+                textAlign: layout.align,
+              }}
+            >
+              <button
+                type="button"
+                className={`typo-stage__drag${heroLine === "hero_title" ? " typo-stage__drag--on" : ""}`}
+                style={{
+                  ...liveVars(settings.hero_title),
+                  transform: `translate(${layout.mainX}px, ${layout.mainY}px)`,
+                  zIndex: heroLine === "hero_title" ? 3 : 2,
+                }}
+                onPointerDown={onDragStart("hero_title")}
+                onPointerMove={onDragMove}
+                onPointerUp={onDragEnd}
+                onPointerCancel={onDragEnd}
+              >
+                <span className="typo-stage__line-tag">First · drag</span>
+                <span className="typo-stage__sample typo-stage__sample--inline">
+                  {heroCopy.main || "First line"}
+                </span>
+              </button>
+              <button
+                type="button"
+                className={`typo-stage__drag${heroLine === "hero_subtitle" ? " typo-stage__drag--on" : ""}`}
+                style={{
+                  transform: `translate(${layout.secondX}px, ${layout.secondY}px)`,
+                  zIndex: heroLine === "hero_subtitle" ? 3 : 1,
+                }}
+                onPointerDown={onDragStart("hero_subtitle")}
+                onPointerMove={onDragMove}
+                onPointerUp={onDragEnd}
+                onPointerCancel={onDragEnd}
+              >
+                <span className="typo-stage__line-tag">Second · drag</span>
+                <span
+                  className={`typo-stage__sample typo-stage__sample--inline${shimmer.enabled ? " typo-stage__sample--shimmer" : ""}`}
+                  style={{
+                    ...liveVars(settings.hero_subtitle),
+                    ...(shimmer.enabled
+                      ? heroSecondShimmerInlineStyle(shimmer)
+                      : {}),
+                  }}
+                >
+                  {heroCopy.second || "Second title"}
+                </span>
+              </button>
+            </div>
+          </>
+        ) : group === "on_images" ? (
+          <>
+            <div className="typo-stage__align" role="tablist" aria-label="On-image text role">
+              {ON_IMAGES_ROLES.map((role) => (
+                <button
+                  key={role}
+                  type="button"
+                  role="tab"
+                  aria-selected={onImagesLine === role}
+                  className={`typo-stage__align-btn${onImagesLine === role ? " typo-stage__align-btn--on" : ""}`}
+                  onClick={() => setOnImagesLine(role)}
+                >
+                  {ON_IMAGES_LINE_LABELS[role]}
+                </button>
+              ))}
+            </div>
+            <p
+              className="typo-stage__sample"
+              style={{
+                ...liveVars(value),
+                whiteSpace: "pre-wrap",
+              }}
+            >
+              {onImagesPreviewText || ON_IMAGES_LINE_LABELS[onImagesLine]}
+            </p>
+          </>
+        ) : group === "our_voyages" ? (
+          <>
+            <div
+              className="typo-stage__align"
+              role="tablist"
+              aria-label="Our Voyages state"
+            >
+              <button
+                type="button"
+                role="tab"
+                aria-selected={ourVoyagesMode === "default"}
+                className={`typo-stage__align-btn${ourVoyagesMode === "default" ? " typo-stage__align-btn--on" : ""}`}
+                onClick={() => setOurVoyagesModeAndLine("default")}
+              >
+                Default
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={ourVoyagesMode === "hover"}
+                className={`typo-stage__align-btn${ourVoyagesMode === "hover" ? " typo-stage__align-btn--on" : ""}`}
+                onClick={() => setOurVoyagesModeAndLine("hover")}
+              >
+                Hovered column
+              </button>
+            </div>
+            <div
+              className="typo-stage__align"
+              role="tablist"
+              aria-label="Our Voyages text role"
+            >
+              {ourVoyagesRoles.map((role) => (
+                <button
+                  key={role}
+                  type="button"
+                  role="tab"
+                  aria-selected={ourVoyagesLine === role}
+                  className={`typo-stage__align-btn${ourVoyagesLine === role ? " typo-stage__align-btn--on" : ""}`}
+                  onClick={() => setOurVoyagesLine(role)}
+                >
+                  {OUR_VOYAGES_LINE_LABELS[role]}
+                </button>
+              ))}
+            </div>
+            <p
+              className="typo-stage__sample"
+              style={{
+                ...liveVars(value),
+                whiteSpace: "pre-wrap",
+              }}
+            >
+              {ourVoyagesPreviewText || OUR_VOYAGES_LINE_LABELS[ourVoyagesLine]}
+            </p>
+          </>
+        ) : group === "luxury_marquee" ? (
+          <p
+            className="typo-stage__sample"
+            style={{
+              ...liveVars(value),
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              maxWidth: "100%",
+            }}
+          >
+            {marqueePreview}
+          </p>
+        ) : (
+          <p className="typo-stage__sample" style={liveVars(value)}>
+            {PAGE_SAMPLES[group]}
+          </p>
+        )}
+
+        <p className="typo-stage__readout">
+          {group === "hero"
+            ? `Align ${layout.align} · ${HERO_LINE_LABELS[heroLine]} at ${activeOffset.x}px, ${activeOffset.y}px · ${value.fontFamily} ${value.fontSize}px`
+            : `Font: ${value.fontFamily} · Size: ${value.fontSize}px · Color: ${value.color}`}
+        </p>
       </div>
 
       <div
