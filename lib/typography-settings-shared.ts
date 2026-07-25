@@ -800,49 +800,51 @@ function mixHex(a: string, b: string, amount: number): string {
   return `#${to(ar + (br - ar) * t)}${to(ag + (bg - ag) * t)}${to(ab + (bb - ab) * t)}`;
 }
 
+/** Public liquid-metal gold texture for hero second titles */
+export const HERO_GOLD_METAL_TEXTURE = "/textures/hero-gold-metal.svg";
+
 /**
- * Smooth metallic gold for hero second titles (matches polished “Gold” ref vibe).
- * Vertical bevel only — no brushed/stripe layers.
+ * Poured metallic gold (Gold-ref style): texture with white crest → rich gold →
+ * deep umber, plus a moving sun specular. No brushed/stripe layers.
+ * Metal is sized to 1em so bevel maps onto glyph strokes, not the line-box.
  */
 export function heroSecondShimmerBackground(
   shimmer: HeroSecondShimmer,
 ): string {
   const s = Math.min(1, Math.max(0, shimmer.shine / 100));
-  const crest = mixHex("#FFFCF0", "#FFFFFF", 0.35 + s * 0.4);
-  const highlight = mixHex("#FFE566", "#F8E7A0", 0.4 + s * 0.35);
-  const rich = mixHex("#E8C547", "#D4AF37", 0.5);
-  const body = mixHex("#C9A84A", "#B89B3F", 0.45);
-  const shade = mixHex("#9A7B28", "#8A6914", 0.4);
-  const deep = mixHex("#5C4010", "#3D2A0A", 0.35);
+  const crest = mixHex("#FFFFFF", "#FFF8E0", 0.15 + s * 0.25);
+  const peak = mixHex(crest, "#FFE566", 0.2);
 
-  const metal = `linear-gradient(180deg,
-    ${crest} 0%,
-    ${highlight} 18%,
-    ${rich} 38%,
-    ${body} 55%,
-    ${shade} 78%,
-    ${deep} 100%)`;
-
-  const glint = `linear-gradient(105deg,
+  /* Hard sun catch — sharp like the Gold ref, not foggy bloom */
+  const glint = `linear-gradient(100deg,
     transparent 0%,
-    transparent 45%,
-    ${mixHex(crest, highlight, 0.5)}55 48.5%,
+    transparent 44%,
+    ${peak}00 46%,
+    ${peak}cc 49%,
     ${crest} 50%,
-    ${mixHex(crest, highlight, 0.5)}55 51.5%,
-    transparent 55%,
+    ${peak}cc 51%,
+    ${peak}00 54%,
+    transparent 56%,
     transparent 100%)`;
 
-  return `${glint}, ${metal}`;
+  /* Warm grade so shine dial brightens without washing to silver */
+  const grade = `linear-gradient(180deg,
+    rgba(255, 252, 240, ${0.12 + s * 0.18}) 0%,
+    transparent 35%,
+    transparent 65%,
+    rgba(40, 24, 6, ${0.08 + (1 - s) * 0.12}) 100%)`;
+
+  return `${glint}, ${grade}, url("${HERO_GOLD_METAL_TEXTURE}")`;
 }
 
 export function heroSecondShimmerFilter(shimmer: HeroSecondShimmer): string {
   if (!shimmer.enabled || shimmer.shadow <= 0) return "none";
   const t = Math.min(1, Math.max(0, shimmer.shadow / 100));
-  const rim = (0.35 + t * 0.3).toFixed(2);
-  const glow = (0.12 + t * 0.22).toFixed(2);
+  const rim = (0.3 + t * 0.28).toFixed(2);
+  const glow = (0.14 + t * 0.26).toFixed(2);
   return [
-    `drop-shadow(0 1px 0 rgba(60, 42, 12, ${rim}))`,
-    `drop-shadow(0 0 4px rgba(212, 175, 55, ${glow}))`,
+    `drop-shadow(0 1px 0 rgba(50, 34, 8, ${rim}))`,
+    `drop-shadow(0 0 6px rgba(212, 175, 55, ${glow}))`,
   ].join(" ");
 }
 
@@ -853,9 +855,10 @@ export function heroSecondShimmerInlineStyle(
   if (!shimmer.enabled) return {};
   return {
     backgroundImage: heroSecondShimmerBackground(shimmer),
-    backgroundSize: "220% 100%, 100% 100%",
-    backgroundRepeat: "no-repeat, no-repeat",
-    backgroundPosition: "0% center, center center",
+    /* 1em height = metal bevel lands on strokes (critical for Gold look) */
+    backgroundSize: "240% 1em, 100% 1em, 160% 1em",
+    backgroundRepeat: "no-repeat, no-repeat, repeat",
+    backgroundPosition: "0% center, center center, 0% center",
     WebkitBackgroundClip: "text",
     backgroundClip: "text",
     WebkitTextFillColor: "transparent",
@@ -1289,9 +1292,9 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
   overflow: visible !important;
   will-change: background-position !important;
   background-image: var(--typo-hero-second-shimmer) !important;
-  background-size: 220% 100%, 100% 100% !important;
-  background-repeat: no-repeat, no-repeat !important;
-  background-position: 0% center, center center !important;
+  background-size: 240% 1em, 100% 1em, 160% 1em !important;
+  background-repeat: no-repeat, no-repeat, repeat !important;
+  background-position: 0% center, center center, 0% center !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   color: transparent !important;
@@ -1310,8 +1313,8 @@ html[data-ex-experience] .ex-root .hero-line-shimmer-wrap {
   filter: var(--typo-hero-second-shimmer-filter) !important;
 }
 @keyframes hero-second-shimmer {
-  0% { background-position: 0% center, center center; }
-  100% { background-position: 100% center, center center; }
+  0% { background-position: 0% center, center center, 0% center; }
+  100% { background-position: 100% center, center center, 45% center; }
 }
 @media (prefers-reduced-motion: reduce) {
   .public-site .hero-line--left:not(.hero-line--wordmark),
@@ -1320,7 +1323,7 @@ html[data-ex-experience] .ex-root .hero-line-shimmer-wrap {
   html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
   .public-site .hero-line--left.hero-line--shimmer {
     animation: none !important;
-    background-position: 40% center, center center !important;
+    background-position: 40% center, center center, 20% center !important;
   }
 }`
     : ""
