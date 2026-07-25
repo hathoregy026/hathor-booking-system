@@ -256,7 +256,8 @@
 /* Hero Book Now — white label (readable on gold blinds); left alone otherwise */
 .public-site .hero-cta,
 .public-site .hero-cta-text {
-  color: #ffffff;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 .public-site .public-fab__chat-icon,
@@ -285,5 +286,6 @@
 
 .public-site .hero-cta:hover,
 .public-site .hero-cta:hover .hero-cta-text {
-  color: #ffffff;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
