@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import { useState, type KeyboardEvent, type MouseEvent } from "react";
-import { useTypographyInlineStyle } from "@/components/public/TypographySettingsProvider";
+import {
+  useTypographyInlineStyle,
+  useTypographySettings,
+} from "@/components/public/TypographySettingsProvider";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import type { SiteImageName } from "@/lib/site-image-slots";
 import styles from "./LuxuryAccordion.module.css";
@@ -19,27 +22,25 @@ export type LuxuryAccordionItem = {
 };
 
 export type LuxuryAccordionProps = {
+  /** Optional override; defaults to Typography → Our Voyages title copy */
   title?: string;
   items?: LuxuryAccordionItem[];
 };
 
 export default function LuxuryAccordion({
-  title = "Our Voyages",
+  title,
   items = [],
 }: LuxuryAccordionProps) {
   const list = items;
   const [activeId, setActiveId] = useState<string | null>(null);
-  const titleStyle = useTypographyInlineStyle("page_title");
-  const nameStyle = useTypographyInlineStyle("page_title");
+  const { our_voyages_copy: voyagesCopy } = useTypographySettings();
+  const titleStyle = useTypographyInlineStyle("our_voyages_title");
+  const indicationStyle = useTypographyInlineStyle("our_voyages_indication");
+  const nameStyle = useTypographyInlineStyle("our_voyages_main");
   const bodyStyle = useTypographyInlineStyle("body_text");
 
-  const nameTypeStyle = {
-    fontFamily: nameStyle.fontFamily,
-    color: nameStyle.color,
-    lineHeight: nameStyle.lineHeight,
-    letterSpacing: nameStyle.letterSpacing,
-    textShadow: nameStyle.textShadow,
-  };
+  const sectionTitle = (title ?? voyagesCopy.title).trim() || "Our Voyages";
+  const indication = voyagesCopy.indication.trim();
 
   if (list.length === 0) {
     return null;
@@ -67,12 +68,25 @@ export default function LuxuryAccordion({
     <section
       className={styles.section}
       data-hathor-accordion
-      aria-label={title}
+      aria-label={sectionTitle}
     >
       <div className={styles.container}>
-        <h2 className={`${styles.title} typo-page-title`} style={titleStyle}>
-          {title}
-        </h2>
+        <header className={styles.heading}>
+          <h2
+            className={`${styles.title} typo-our-voyages-title`}
+            style={titleStyle}
+          >
+            {sectionTitle}
+          </h2>
+          {indication ? (
+            <p
+              className={`${styles.indication} typo-our-voyages-indication`}
+              style={indicationStyle}
+            >
+              {indication}
+            </p>
+          ) : null}
+        </header>
         <ul className={styles.accordionList}>
           {list.map((item) => {
             const isActive = activeId === item.id;
@@ -110,8 +124,8 @@ export default function LuxuryAccordion({
 
                 <div className={styles.row}>
                   <h3
-                    className={`${styles.name} typo-page-title`}
-                    style={nameTypeStyle}
+                    className={`${styles.name} typo-our-voyages-main`}
+                    style={nameStyle}
                   >
                     {item.name}
                   </h3>

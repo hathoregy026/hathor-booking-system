@@ -487,7 +487,6 @@ export function HomePageClient({
         </section>
 
         <LuxuryAccordion
-          title="Our Voyages"
           items={accordionCruises.map((cruise) => ({
             id: cruise.id,
             name: cruise.name,

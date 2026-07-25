@@ -135,6 +135,9 @@ export const TYPOGRAPHY_ROLES = [
   "on_images_indication",
   "on_images_body",
   "luxury_marquee",
+  "our_voyages_title",
+  "our_voyages_indication",
+  "our_voyages_main",
 ] as const;
 
 export type TypographyRole = (typeof TYPOGRAPHY_ROLES)[number];
@@ -156,6 +159,12 @@ export const TYPOGRAPHY_ROLE_LABELS: Record<TypographyRole, string> = {
   on_images_body: "On images · body",
   /** Homepage infinite text strip under the hero */
   luxury_marquee: "Luxury marquee",
+  /** Homepage Our Voyages accordion — section title */
+  our_voyages_title: "Our Voyages · title",
+  /** Homepage Our Voyages accordion — small indication under title */
+  our_voyages_indication: "Our Voyages · indication",
+  /** Homepage Our Voyages accordion — row / voyage names */
+  our_voyages_main: "Our Voyages · main",
 };
 
 /** Sub-roles edited inside the On images dashboard group */
@@ -166,6 +175,15 @@ export const ON_IMAGES_ROLES = [
 ] as const;
 
 export type OnImagesRole = (typeof ON_IMAGES_ROLES)[number];
+
+/** Sub-roles edited inside the Our Voyages dashboard group */
+export const OUR_VOYAGES_ROLES = [
+  "our_voyages_title",
+  "our_voyages_indication",
+  "our_voyages_main",
+] as const;
+
+export type OurVoyagesRole = (typeof OUR_VOYAGES_ROLES)[number];
 
 const hexColor = z
   .string()
@@ -260,6 +278,19 @@ export const onImagesCopySchema = z.object({
 });
 
 export type OnImagesCopy = z.infer<typeof onImagesCopySchema>;
+
+/** Editable homepage Our Voyages accordion title + indication */
+export const ourVoyagesCopySchema = z.object({
+  title: copyLine,
+  indication: copyLine,
+});
+
+export type OurVoyagesCopy = z.infer<typeof ourVoyagesCopySchema>;
+
+export const DEFAULT_OUR_VOYAGES_COPY: OurVoyagesCopy = {
+  title: "Our Voyages",
+  indication: "Private dahabiya itineraries",
+};
 
 /** Homepage luxury marquee — one phrase per line (✦ dividers added on site) */
 export const marqueeCopySchema = z.object({
@@ -383,6 +414,9 @@ export const typographySettingsSchema = z.object({
   on_images_indication: typographyTextStyleSchema,
   on_images_body: typographyTextStyleSchema,
   luxury_marquee: typographyTextStyleSchema,
+  our_voyages_title: typographyTextStyleSchema,
+  our_voyages_indication: typographyTextStyleSchema,
+  our_voyages_main: typographyTextStyleSchema,
   hero_layout: heroLayoutSchema,
   hero_second_gradient: heroSecondGradientSchema,
   /** @deprecated Prefer hero_pages.home — kept for older saved payloads */
@@ -390,6 +424,7 @@ export const typographySettingsSchema = z.object({
   hero_pages: heroPagesSchema,
   on_images_copy: onImagesCopySchema,
   marquee_copy: marqueeCopySchema,
+  our_voyages_copy: ourVoyagesCopySchema,
 });
 
 export type TypographySettings = z.infer<typeof typographySettingsSchema>;
@@ -475,6 +510,30 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
     letterSpacing: 6,
     innerShadow: false,
   },
+  our_voyages_title: {
+    fontFamily: "Gamgote",
+    fontSize: 52,
+    color: "#1A1A1A",
+    lineHeight: 1.15,
+    letterSpacing: -0.5,
+    innerShadow: false,
+  },
+  our_voyages_indication: {
+    fontFamily: "Lavenir",
+    fontSize: 13,
+    color: "#7A6A58",
+    lineHeight: 1.35,
+    letterSpacing: 4,
+    innerShadow: false,
+  },
+  our_voyages_main: {
+    fontFamily: "Gamgote",
+    fontSize: 28,
+    color: "#1A1A1A",
+    lineHeight: 1.2,
+    letterSpacing: -0.3,
+    innerShadow: false,
+  },
   hero_layout: { ...DEFAULT_HERO_LAYOUT },
   hero_second_gradient: { ...DEFAULT_HERO_SECOND_GRADIENT },
   hero_copy: { ...DEFAULT_HERO_COPY },
@@ -483,6 +542,7 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
   ) as HeroPages,
   on_images_copy: { ...DEFAULT_ON_IMAGES_COPY },
   marquee_copy: { ...DEFAULT_MARQUEE_COPY },
+  our_voyages_copy: { ...DEFAULT_OUR_VOYAGES_COPY },
 };
 
 const INNER_SHADOW = "inset 0 1px 2px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.2)";
@@ -800,6 +860,22 @@ function parseOnImagesCopy(raw: unknown): OnImagesCopy {
   return parsed.success ? parsed.data : { ...DEFAULT_ON_IMAGES_COPY };
 }
 
+function parseOurVoyagesCopy(raw: unknown): OurVoyagesCopy {
+  const src =
+    raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
+  const title =
+    typeof src.title === "string"
+      ? src.title.slice(0, 160)
+      : DEFAULT_OUR_VOYAGES_COPY.title;
+  const indication =
+    typeof src.indication === "string"
+      ? src.indication.slice(0, 160)
+      : DEFAULT_OUR_VOYAGES_COPY.indication;
+  const candidate = { title, indication };
+  const parsed = ourVoyagesCopySchema.safeParse(candidate);
+  return parsed.success ? parsed.data : { ...DEFAULT_OUR_VOYAGES_COPY };
+}
+
 function parseMarqueeCopy(raw: unknown): MarqueeCopy {
   const src =
     raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
@@ -872,6 +948,18 @@ export function parseTypographySettings(raw: unknown): TypographySettings {
       src.luxury_marquee,
       DEFAULT_TYPOGRAPHY_SETTINGS.luxury_marquee,
     ),
+    our_voyages_title: parseTextStyle(
+      src.our_voyages_title,
+      DEFAULT_TYPOGRAPHY_SETTINGS.our_voyages_title,
+    ),
+    our_voyages_indication: parseTextStyle(
+      src.our_voyages_indication,
+      DEFAULT_TYPOGRAPHY_SETTINGS.our_voyages_indication,
+    ),
+    our_voyages_main: parseTextStyle(
+      src.our_voyages_main,
+      DEFAULT_TYPOGRAPHY_SETTINGS.our_voyages_main,
+    ),
     hero_layout: parseHeroLayout(src.hero_layout),
     hero_second_gradient: parseHeroSecondGradient(src.hero_second_gradient),
     hero_copy: (() => {
@@ -881,6 +969,7 @@ export function parseTypographySettings(raw: unknown): TypographySettings {
     hero_pages: parseHeroPages(src.hero_pages, parseHeroCopy(src.hero_copy)),
     on_images_copy: parseOnImagesCopy(src.on_images_copy),
     marquee_copy: parseMarqueeCopy(src.marquee_copy),
+    our_voyages_copy: parseOurVoyagesCopy(src.our_voyages_copy),
   };
 }
 
@@ -914,7 +1003,9 @@ export function isTypographySettingsEqual(
     a.on_images_copy.title === b.on_images_copy.title &&
     a.on_images_copy.indication === b.on_images_copy.indication &&
     a.on_images_copy.body === b.on_images_copy.body &&
-    a.marquee_copy.text === b.marquee_copy.text
+    a.marquee_copy.text === b.marquee_copy.text &&
+    a.our_voyages_copy.title === b.our_voyages_copy.title &&
+    a.our_voyages_copy.indication === b.our_voyages_copy.indication
   );
 }
 
@@ -1006,7 +1097,10 @@ export function typographyToImportantCss(settings: TypographySettings): string {
       role === "on_images_title" ||
       role === "on_images_indication" ||
       role === "on_images_body" ||
-      role === "luxury_marquee"
+      role === "luxury_marquee" ||
+      role === "our_voyages_title" ||
+      role === "our_voyages_indication" ||
+      role === "our_voyages_main"
         ? `\n  text-transform: none !important;\n  font-weight: 400 !important;`
         : "";
     return `${selector} {
@@ -1125,8 +1219,6 @@ html[data-ex-experience] .ex-root .gallery-h2 h2,
 html[data-ex-experience] .ex-root .gallery-sm h2,
 html[data-ex-experience] .ex-root .testimonial-h2 h2,
 html[data-ex-experience] .ex-root .cta-inner h2,
-html[data-ex-experience] .ex-root [data-hathor-accordion] h2,
-html[data-ex-experience] .ex-root [data-hathor-accordion] h3,
 .public-site .typo-page-title`,
   "page_title",
 )}
@@ -1239,6 +1331,24 @@ ${block(
 .public-site .luxury-marquee,
 html[data-ex-experience] .ex-root .luxury-marquee`,
   "luxury_marquee",
+)}
+${block(
+  `/* Our Voyages · title */
+.public-site .typo-our-voyages-title,
+html[data-ex-experience] .ex-root [data-hathor-accordion] .typo-our-voyages-title`,
+  "our_voyages_title",
+)}
+${block(
+  `/* Our Voyages · indication */
+.public-site .typo-our-voyages-indication,
+html[data-ex-experience] .ex-root [data-hathor-accordion] .typo-our-voyages-indication`,
+  "our_voyages_indication",
+)}
+${block(
+  `/* Our Voyages · main (row names) */
+.public-site .typo-our-voyages-main,
+html[data-ex-experience] .ex-root [data-hathor-accordion] .typo-our-voyages-main`,
+  "our_voyages_main",
 )}
 /* Base tracking — no hover interaction */
 .public-site .luxury-marquee .luxury-marquee__item,

@@ -19,10 +19,19 @@
   padding: 0 5vw;
 }
 
-.title {
-  font-size: clamp(2.5rem, 5vw, 4rem);
+.heading {
   margin-bottom: 4rem;
   text-align: center;
+}
+
+.title {
+  /* Font/size/colour from dashboard Typography → Our Voyages · Big title */
+  margin: 0;
+}
+
+.indication {
+  /* Font/size/colour from dashboard Typography → Our Voyages · Indication */
+  margin: 0.85rem 0 0;
 }
 
 .accordionList {
@@ -126,9 +135,8 @@
 }
 
 .name {
-  font-size: clamp(1.35rem, 2.4vw, 2.5rem);
+  /* Font/size from dashboard Typography → Our Voyages · Main */
   margin: 0;
-  line-height: 1.2;
   transition: color 0.5s ease;
 }
 
@@ -216,10 +224,6 @@
   .row {
     height: 88px;
     padding: 0 5vw 0 calc(3vw + 4rem);
-  }
-
-  .name {
-    font-size: 1.2rem;
   }
 
   .body {

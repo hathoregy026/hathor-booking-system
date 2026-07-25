@@ -16,6 +16,7 @@ import {
   DEFAULT_HERO_PAGES,
   DEFAULT_MARQUEE_COPY,
   DEFAULT_ON_IMAGES_COPY,
+  DEFAULT_OUR_VOYAGES_COPY,
   DEFAULT_TYPOGRAPHY_SETTINGS,
   HATHOR_FONT_GROUPS,
   HATHOR_FONT_STACKS,
@@ -23,6 +24,7 @@ import {
   HERO_PAGE_KEYS,
   HERO_PAGE_LABELS,
   ON_IMAGES_ROLES,
+  OUR_VOYAGES_ROLES,
   fontGroupForFace,
   isFaceInGroup,
   isTypographySettingsEqual,
@@ -33,6 +35,7 @@ import {
   type HeroLayout,
   type HeroPageKey,
   type OnImagesRole,
+  type OurVoyagesRole,
   type TypographyRole,
   type TypographySettings,
   type TypographyTextStyle,
@@ -45,7 +48,8 @@ type EditorGroup =
   | "sub_subtitle"
   | "body_text"
   | "on_images"
-  | "luxury_marquee";
+  | "luxury_marquee"
+  | "our_voyages";
 
 const GROUP_LABELS: Record<EditorGroup, string> = {
   hero: "Hero (all pages)",
@@ -55,6 +59,7 @@ const GROUP_LABELS: Record<EditorGroup, string> = {
   body_text: "Body text",
   on_images: "On images",
   luxury_marquee: "Luxury marquee",
+  our_voyages: "Our Voyages",
 };
 
 const GROUP_WHERE: Record<EditorGroup, string> = {
@@ -69,12 +74,20 @@ const GROUP_WHERE: Record<EditorGroup, string> = {
     "Copy on photos — edit the title, small indication, and body wording, plus each one’s font and colour. Styles apply site-wide on imagery; wording updates the homepage landmarks stack.",
   luxury_marquee:
     "Homepage text strip under the hero — edit font, size, colour, and the scrolling phrases (one phrase per line). Dividers (✦) are added automatically between phrases.",
+  our_voyages:
+    "Homepage Our Voyages accordion — edit the big title, small indication under it, and the main voyage row names (font, size, colour). Title and indication wording are editable here; row names come from each voyage.",
 };
 
 const ON_IMAGES_LINE_LABELS: Record<OnImagesRole, string> = {
   on_images_title: "Title",
   on_images_indication: "Indication",
   on_images_body: "Body",
+};
+
+const OUR_VOYAGES_LINE_LABELS: Record<OurVoyagesRole, string> = {
+  our_voyages_title: "Big title",
+  our_voyages_indication: "Indication",
+  our_voyages_main: "Main",
 };
 
 const HERO_LINE_LABELS: Record<"hero_title" | "hero_subtitle", string> = {
@@ -85,7 +98,11 @@ const HERO_LINE_LABELS: Record<"hero_title" | "hero_subtitle", string> = {
 const PAGE_SAMPLES: Record<
   Exclude<
     TypographyRole,
-    "hero_title" | "hero_subtitle" | OnImagesRole | "luxury_marquee"
+    | "hero_title"
+    | "hero_subtitle"
+    | OnImagesRole
+    | OurVoyagesRole
+    | "luxury_marquee"
   >,
   string
 > = {
@@ -281,6 +298,8 @@ export function TypographyStylesPanel() {
   const [heroPage, setHeroPage] = useState<HeroPageKey>("home");
   const [onImagesLine, setOnImagesLine] =
     useState<OnImagesRole>("on_images_title");
+  const [ourVoyagesLine, setOurVoyagesLine] =
+    useState<OurVoyagesRole>("our_voyages_title");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const dragRef = useRef<{
@@ -325,15 +344,30 @@ export function TypographyStylesPanel() {
       ? heroLine
       : group === "on_images"
         ? onImagesLine
-        : group;
+        : group === "our_voyages"
+          ? ourVoyagesLine
+          : group;
   const value = settings[activeRole];
   const layout = settings.hero_layout;
   const heroCopy = settings.hero_pages[heroPage] ?? DEFAULT_HERO_PAGES[heroPage];
   const onImagesCopy = settings.on_images_copy;
+  const ourVoyagesCopy = settings.our_voyages_copy;
   const marqueeCopy = settings.marquee_copy;
   const marqueePreview =
     parseMarqueePhrases(marqueeCopy.text).slice(0, 4).join("  ✦  ") ||
     "HATHOR  ✦  Ultra Luxury";
+  const onImagesPreviewText =
+    onImagesLine === "on_images_title"
+      ? onImagesCopy.title
+      : onImagesLine === "on_images_indication"
+        ? onImagesCopy.indication
+        : onImagesCopy.body;
+  const ourVoyagesPreviewText =
+    ourVoyagesLine === "our_voyages_title"
+      ? ourVoyagesCopy.title
+      : ourVoyagesLine === "our_voyages_indication"
+        ? ourVoyagesCopy.indication
+        : "3 Nights / 4 Days – Aswan to Luxor";
   const stageTone =
     group === "hero" || group === "on_images" || group === "luxury_marquee"
       ? "dark"
@@ -343,7 +377,9 @@ export function TypographyStylesPanel() {
       ? `Hero · ${HERO_PAGE_LABELS[heroPage]} · ${HERO_LINE_LABELS[heroLine]}`
       : group === "on_images"
         ? `On images · ${ON_IMAGES_LINE_LABELS[onImagesLine]}`
-        : GROUP_LABELS[group];
+        : group === "our_voyages"
+          ? `Our Voyages · ${OUR_VOYAGES_LINE_LABELS[ourVoyagesLine]}`
+          : GROUP_LABELS[group];
 
   const patch = (partial: Partial<TypographyTextStyle>) => {
     setSettings((prev) => ({
@@ -378,19 +414,19 @@ export function TypographyStylesPanel() {
     }));
   };
 
+  const patchOurVoyagesCopy = (partial: Partial<typeof ourVoyagesCopy>) => {
+    setSettings((prev) => ({
+      ...prev,
+      our_voyages_copy: { ...prev.our_voyages_copy, ...partial },
+    }));
+  };
+
   const patchMarqueeCopy = (partial: Partial<typeof marqueeCopy>) => {
     setSettings((prev) => ({
       ...prev,
       marquee_copy: { ...prev.marquee_copy, ...partial },
     }));
   };
-
-  const onImagesPreviewText =
-    onImagesLine === "on_images_title"
-      ? onImagesCopy.title
-      : onImagesLine === "on_images_indication"
-        ? onImagesCopy.indication
-        : onImagesCopy.body;
 
   const activeOffset =
     heroLine === "hero_title"
@@ -520,6 +556,7 @@ export function TypographyStylesPanel() {
                 setGroup(key);
                 if (key === "hero") setHeroLine("hero_title");
                 if (key === "on_images") setOnImagesLine("on_images_title");
+                if (key === "our_voyages") setOurVoyagesLine("our_voyages_title");
               }}
             >
               {GROUP_LABELS[key]}
@@ -638,6 +675,36 @@ export function TypographyStylesPanel() {
               }}
             >
               {onImagesPreviewText || ON_IMAGES_LINE_LABELS[onImagesLine]}
+            </p>
+          </>
+        ) : group === "our_voyages" ? (
+          <>
+            <div
+              className="typo-stage__align"
+              role="tablist"
+              aria-label="Our Voyages text role"
+            >
+              {OUR_VOYAGES_ROLES.map((role) => (
+                <button
+                  key={role}
+                  type="button"
+                  role="tab"
+                  aria-selected={ourVoyagesLine === role}
+                  className={`typo-stage__align-btn${ourVoyagesLine === role ? " typo-stage__align-btn--on" : ""}`}
+                  onClick={() => setOurVoyagesLine(role)}
+                >
+                  {OUR_VOYAGES_LINE_LABELS[role]}
+                </button>
+              ))}
+            </div>
+            <p
+              className="typo-stage__sample"
+              style={{
+                ...liveVars(value),
+                whiteSpace: "pre-wrap",
+              }}
+            >
+              {ourVoyagesPreviewText || OUR_VOYAGES_LINE_LABELS[ourVoyagesLine]}
             </p>
           </>
         ) : group === "luxury_marquee" ? (
@@ -874,6 +941,77 @@ export function TypographyStylesPanel() {
               >
                 <RotateCcw className="h-3.5 w-3.5" />
                 Reset all on-image wording
+              </button>
+            </div>
+          </>
+        ) : null}
+
+        {group === "our_voyages" ? (
+          <>
+            <p className="typo-easy__controls-hint">
+              Editing{" "}
+              <strong>{OUR_VOYAGES_LINE_LABELS[ourVoyagesLine]}</strong> for the
+              Our Voyages accordion — wording (title &amp; indication), font,
+              and size.
+            </p>
+            <div className="typo-easy__row">
+              {OUR_VOYAGES_ROLES.map((role) => (
+                <button
+                  key={role}
+                  type="button"
+                  className={`typo-stage__align-btn${ourVoyagesLine === role ? " typo-stage__align-btn--on" : ""}`}
+                  onClick={() => setOurVoyagesLine(role)}
+                >
+                  {OUR_VOYAGES_LINE_LABELS[role]}
+                </button>
+              ))}
+            </div>
+            {ourVoyagesLine !== "our_voyages_main" ? (
+              <SimpleField
+                label={
+                  ourVoyagesLine === "our_voyages_title"
+                    ? "Big title text"
+                    : "Indication text"
+                }
+              >
+                <input
+                  type="text"
+                  className="admin-input typo-easy__text"
+                  value={
+                    ourVoyagesLine === "our_voyages_title"
+                      ? ourVoyagesCopy.title
+                      : ourVoyagesCopy.indication
+                  }
+                  maxLength={160}
+                  aria-label={OUR_VOYAGES_LINE_LABELS[ourVoyagesLine]}
+                  onChange={(e) =>
+                    patchOurVoyagesCopy(
+                      ourVoyagesLine === "our_voyages_title"
+                        ? { title: e.target.value }
+                        : { indication: e.target.value },
+                    )
+                  }
+                />
+              </SimpleField>
+            ) : (
+              <p className="typo-easy__controls-hint">
+                Main styles the voyage row names on the homepage. Names come
+                from each cruise; only font, size, and colour are edited here.
+              </p>
+            )}
+            <div className="typo-easy__row typo-easy__row--actions">
+              <button
+                type="button"
+                className="typo-easy__reset-role"
+                onClick={() =>
+                  setSettings((prev) => ({
+                    ...prev,
+                    our_voyages_copy: { ...DEFAULT_OUR_VOYAGES_COPY },
+                  }))
+                }
+              >
+                <RotateCcw className="h-3.5 w-3.5" />
+                Reset Our Voyages wording
               </button>
             </div>
           </>
