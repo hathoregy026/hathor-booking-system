@@ -544,12 +544,12 @@
   50% { opacity: 1; transform: scaleY(1); }
 }
 
-/* Hero second-title gold — crest rolls through strokes (not a cut slash) */
+/* Hero second-title gold — soft sheen + top-lit foil breath */
 @keyframes hero-second-shimmer {
   0% {
-    background-position: 0% center, center 0%;
+    background-position: 0% center, center top;
   }
   100% {
-    background-position: 100% center, center 100%;
+    background-position: 100% center, center bottom;
   }
 }
