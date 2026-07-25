@@ -544,13 +544,12 @@
   50% { opacity: 1; transform: scaleY(1); }
 }
 
-/* Hero second-title liquid gold shimmer — keep keyframes in the site CSS
-   so animation still runs if injected typography CSS is delayed. */
+/* Hero second-title gold — crest rolls through strokes (not a cut slash) */
 @keyframes hero-second-shimmer {
   0% {
-    background-position: center center, 0% center;
+    background-position: 0% center, center 0%;
   }
   100% {
-    background-position: center center, 100% center;
+    background-position: 100% center, center 100%;
   }
 }

@@ -801,86 +801,65 @@ function mixHex(a: string, b: string, amount: number): string {
 }
 
 /**
- * Faceted polished gold (matches low-poly gold ref):
- * hard jumps white-specular ↔ honey gold ↔ deep bronze — not soft yellow paint.
- * Moving the facet map = shine leaping across planes like the ref.
- * Never !important on background-position (freezes animation).
+ * Polished gold foil — the MATERIAL is gold, not a cut stripe across yellow.
+ * Vertical poured-metal bevel (crest → honey → bronze) mapped to 1em.
+ * Shine = that crest slowly rolling through the strokes (sun on a gold bar),
+ * not a hard white slash. Gold-family colors only.
  */
 export function heroSecondShimmerBackground(
   shimmer: HeroSecondShimmer,
 ): string {
   const s = Math.min(1, Math.max(0, shimmer.shine / 100));
-  const spec = mixHex("#FFFCF0", "#FFF6A0", 0.2 + s * 0.35);
-  const hot = mixHex("#FFE566", "#F5D060", 0.4 + s * 0.35);
+  const crest = mixHex("#FFF8DC", "#FFE566", 0.25 + s * 0.35);
+  const bright = mixHex("#F5D76E", "#E8C34A", 0.4 + s * 0.35);
   const honey = "#D4AF37";
   const rich = "#C9A227";
-  const amber = "#8B6914";
-  const bronze = "#5C3A0A";
-  const recess = "#2A1808";
-  const void_ = "#1A1005";
+  const amber = "#A07818";
+  const bronze = "#6B4E10";
+  const deep = "#3D2808";
+
+  /* Poured gold bar — bright foil band in the metal, not flat yellow */
+  const foil = `linear-gradient(180deg,
+    ${bronze} 0%,
+    ${amber} 10%,
+    ${rich} 20%,
+    ${honey} 30%,
+    ${bright} 40%,
+    ${crest} 48%,
+    ${bright} 56%,
+    ${honey} 66%,
+    ${rich} 76%,
+    ${amber} 88%,
+    ${deep} 100%)`;
 
   /*
-   * Hard facet stops (adjacent planes). Soft mid-ramps = flat paint;
-   * abrupt white→bronze is what reads as polished metal.
+   * Soft gold-on-gold environment wash (feathered). Never a white knife-cut.
+   * Shine dial only brightens within gold, not into silver.
    */
-  const facets = `linear-gradient(118deg,
-    ${void_} 0%,
-    ${recess} 5%,
-    ${honey} 5.2%,
-    ${hot} 8%,
-    ${spec} 10%,
-    ${amber} 10.2%,
-    ${amber} 16%,
-    ${rich} 16.2%,
-    ${honey} 19%,
-    ${spec} 22%,
-    ${bronze} 22.2%,
-    ${recess} 28%,
-    ${honey} 28.2%,
-    ${hot} 32%,
-    ${spec} 35%,
-    ${amber} 35.2%,
-    ${bronze} 42%,
-    ${rich} 42.2%,
-    ${honey} 46%,
-    ${hot} 49%,
-    ${spec} 50%,
-    ${hot} 51%,
-    ${honey} 54%,
-    ${amber} 54.2%,
-    ${recess} 60%,
-    ${honey} 60.2%,
-    ${hot} 64%,
-    ${spec} 67%,
-    ${bronze} 67.2%,
-    ${amber} 74%,
-    ${rich} 74.2%,
-    ${honey} 78%,
-    ${hot} 82%,
-    ${spec} 84%,
-    ${recess} 84.2%,
-    ${void_} 90%,
-    ${amber} 90.2%,
-    ${honey} 94%,
-    ${bronze} 98%,
-    ${void_} 100%)`;
-
-  /* Light top catch only — keep hard; no foggy wash */
-  const bevel = `linear-gradient(180deg,
-    rgba(255, 252, 240, ${0.22 + s * 0.2}) 0%,
-    transparent 28%,
+  const sheenA = s > 0.55 ? "66" : s > 0.3 ? "44" : "28";
+  const sheenPeak = s > 0.55 ? "99" : s > 0.3 ? "77" : "55";
+  const sheen = `linear-gradient(105deg,
+    transparent 0%,
+    transparent 38%,
+    ${bright}${sheenA} 46%,
+    ${crest}${sheenPeak} 50%,
+    ${bright}${sheenA} 54%,
     transparent 62%,
-    rgba(26, 16, 5, ${0.22 + (1 - s) * 0.15}) 100%)`;
+    transparent 100%)`;
 
-  return `${bevel}, ${facets}`;
+  return `${sheen}, ${foil}`;
 }
 
 export function heroSecondShimmerFilter(shimmer: HeroSecondShimmer): string {
   if (!shimmer.enabled || shimmer.shadow <= 0) return "none";
   const t = Math.min(1, Math.max(0, shimmer.shadow / 100));
-  const rim = (0.35 + t * 0.35).toFixed(2);
-  /* Hard edge only — soft gold bloom kills the faceted metal look */
-  return `drop-shadow(0 1px 0 rgba(26, 16, 5, ${rim}))`;
+  const hi = (0.25 + t * 0.3).toFixed(2);
+  const lo = (0.4 + t * 0.35).toFixed(2);
+  /* Emboss: warm highlight rim + bronze weight — reads as cast metal */
+  return [
+    `drop-shadow(0 -1px 0 rgba(255, 240, 180, ${hi}))`,
+    `drop-shadow(0 1px 0 rgba(61, 40, 8, ${lo}))`,
+  ].join(" ");
 }
 
 /** Styles for the clipped glyph fill — never put filter here (crops script fonts). */
@@ -890,7 +869,8 @@ export function heroSecondShimmerInlineStyle(
   if (!shimmer.enabled) return {};
   return {
     backgroundImage: heroSecondShimmerBackground(shimmer),
-    backgroundSize: "100% 1em, 320% 1em",
+    /* foil taller than 1em so Y-roll moves the crest through strokes */
+    backgroundSize: "220% 1em, 100% 160%",
     backgroundRepeat: "no-repeat, no-repeat",
     WebkitBackgroundClip: "text",
     backgroundClip: "text",
@@ -898,7 +878,7 @@ export function heroSecondShimmerInlineStyle(
     color: "transparent",
     textShadow: "none",
     filter: "none",
-    animation: `hero-second-shimmer ${shimmer.speed}s linear infinite`,
+    animation: `hero-second-shimmer ${shimmer.speed}s ease-in-out infinite alternate`,
     display: "inline-block",
     lineHeight: 1.2,
     overflow: "visible",
@@ -1325,7 +1305,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
   overflow: visible !important;
   will-change: background-position !important;
   background-image: var(--typo-hero-second-shimmer) !important;
-  background-size: 100% 1em, 320% 1em !important;
+  background-size: 220% 1em, 100% 160% !important;
   background-repeat: no-repeat, no-repeat !important;
   /* background-position owned by @keyframes — never !important here */
   -webkit-background-clip: text !important;
@@ -1334,7 +1314,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
   -webkit-text-fill-color: transparent !important;
   text-shadow: none !important;
   filter: none !important;
-  animation: hero-second-shimmer var(--typo-hero-second-shimmer-duration, 6s) linear infinite !important;
+  animation: hero-second-shimmer var(--typo-hero-second-shimmer-duration, 6s) ease-in-out infinite alternate !important;
 }
 .public-site .hero-line-shimmer-wrap,
 .public-site .home-hero-container .hero-line-shimmer-wrap,
@@ -1346,8 +1326,9 @@ html[data-ex-experience] .ex-root .hero-line-shimmer-wrap {
   filter: var(--typo-hero-second-shimmer-filter) !important;
 }
 @keyframes hero-second-shimmer {
-  0% { background-position: center center, 0% center; }
-  100% { background-position: center center, 100% center; }
+  /* Crest rolls through the letter (sun on gold), soft sheen drifts */
+  0% { background-position: 0% center, center 0%; }
+  100% { background-position: 100% center, center 100%; }
 }
 @media (prefers-reduced-motion: reduce) {
   .public-site .hero-line--left:not(.hero-line--wordmark),
@@ -1356,7 +1337,7 @@ html[data-ex-experience] .ex-root .hero-line-shimmer-wrap {
   html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
   .public-site .hero-line--left.hero-line--shimmer {
     animation: none !important;
-    background-position: center center, 35% center !important;
+    background-position: 40% center, center 35% !important;
   }
 }`
     : ""

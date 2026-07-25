@@ -1791,7 +1791,7 @@ select.admin-input option:checked {
 }
 
 .typo-stage__sample--shimmer {
-  background-size: 100% 1em, 320% 1em !important;
+  background-size: 220% 1em, 100% 160% !important;
   background-repeat: no-repeat, no-repeat !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
@@ -1801,7 +1801,7 @@ select.admin-input option:checked {
   filter: none !important;
   line-height: 1.2 !important;
   overflow: visible !important;
-  animation: hero-second-shimmer 6s linear infinite;
+  animation: hero-second-shimmer 6s ease-in-out infinite alternate;
 }
 
 .typo-stage__shimmer-wrap {
@@ -1811,17 +1811,17 @@ select.admin-input option:checked {
 
 @keyframes hero-second-shimmer {
   0% {
-    background-position: center center, 0% center;
+    background-position: 0% center, center 0%;
   }
   100% {
-    background-position: center center, 100% center;
+    background-position: 100% center, center 100%;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .typo-stage__sample--shimmer {
     animation: none !important;
-    background-position: center center, 35% center !important;
+    background-position: 40% center, center 35% !important;
   }
 }
 
