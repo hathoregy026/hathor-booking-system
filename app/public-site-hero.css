@@ -550,6 +550,6 @@
     background-position: 0% center, center top, center center, center top;
   }
   100% {
-    background-position: 100% center, center top, center center, center bottom;
+    background-position: 100% center, center top, center center, center top;
   }
 }

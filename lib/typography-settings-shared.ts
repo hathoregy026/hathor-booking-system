@@ -829,29 +829,29 @@ export function heroSecondShimmerBackground(
     ${amber} 88%,
     ${bronze} 100%)`;
 
-  /* Heavy soft veil — mutes hard facet streaks inside the letters */
+  /* Soft veil — mutes hard facets, still lets gold photo read */
   const grade = `linear-gradient(180deg,
-    rgba(255, 254, 249, ${0.55 + s * 0.1}) 0%,
-    rgba(240, 226, 190, ${0.4 + s * 0.08}) 18%,
-    rgba(182, 159, 100, ${0.38 + s * 0.06}) 48%,
-    rgba(182, 159, 100, ${0.32 + s * 0.05}) 70%,
-    rgba(154, 134, 88, ${0.28 + (1 - s) * 0.05}) 100%)`;
+    rgba(255, 254, 249, ${0.48 + s * 0.1}) 0%,
+    rgba(240, 226, 190, ${0.32 + s * 0.08}) 18%,
+    rgba(182, 159, 100, ${0.28 + s * 0.06}) 48%,
+    rgba(182, 159, 100, ${0.22 + s * 0.05}) 72%,
+    rgba(154, 134, 88, ${0.2 + (1 - s) * 0.05}) 100%)`;
 
   /*
-   * Whisper sheen — long dissolve both sides, peak barely there.
-   * Ends fade to 00 so lines never cut hard.
+   * Softly moving sheen — visible travel, but ends dissolve (no hard cut).
+   * Peak stays gentle; long 00 tails on both sides.
    */
   const sheen = `linear-gradient(100deg,
     transparent 0%,
-    transparent 8%,
-    ${champagne}00 20%,
-    ${champagne}06 32%,
-    ${crest}0a 40%,
-    ${crest}10 50%,
-    ${crest}0a 60%,
-    ${champagne}06 68%,
-    ${champagne}00 80%,
-    transparent 92%,
+    transparent 10%,
+    ${champagne}00 22%,
+    ${champagne}10 34%,
+    ${crest}18 42%,
+    ${crest}28 50%,
+    ${crest}18 58%,
+    ${champagne}10 66%,
+    ${champagne}00 78%,
+    transparent 90%,
     transparent 100%)`;
 
   const metal = `url(${HERO_GOLD_METAL_TEXTURE})`;
@@ -883,7 +883,7 @@ export function heroSecondShimmerInlineStyle(
   if (!shimmer.enabled) return {};
   return {
     backgroundImage: heroSecondShimmerBackground(shimmer),
-    backgroundSize: "300% 1.2em, 100% 1.05em, 120% 120%, 100% 1.05em",
+    backgroundSize: "280% 1.15em, 100% 1.05em, 120% 120%, 100% 1.05em",
     backgroundRepeat: "no-repeat, no-repeat, no-repeat, no-repeat",
     WebkitBackgroundClip: "text",
     backgroundClip: "text",
@@ -891,7 +891,7 @@ export function heroSecondShimmerInlineStyle(
     color: "transparent",
     textShadow: "none",
     filter: "none",
-    animation: `hero-second-shimmer ${shimmer.speed}s ease-in-out infinite alternate`,
+    animation: `hero-second-shimmer ${shimmer.speed}s linear infinite`,
     display: "inline-block",
     lineHeight: 1.2,
     overflow: "visible",
@@ -1318,7 +1318,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
   overflow: visible !important;
   will-change: background-position !important;
   background-image: var(--typo-hero-second-shimmer) !important;
-  background-size: 300% 1.2em, 100% 1.05em, 120% 120%, 100% 1.05em !important;
+  background-size: 280% 1.15em, 100% 1.05em, 120% 120%, 100% 1.05em !important;
   background-repeat: no-repeat, no-repeat, no-repeat, no-repeat !important;
   /* background-position owned by @keyframes — never !important here */
   -webkit-background-clip: text !important;
@@ -1327,7 +1327,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
   -webkit-text-fill-color: transparent !important;
   text-shadow: none !important;
   filter: none !important;
-  animation: hero-second-shimmer var(--typo-hero-second-shimmer-duration, 6s) ease-in-out infinite alternate !important;
+  animation: hero-second-shimmer var(--typo-hero-second-shimmer-duration, 6s) linear infinite !important;
 }
 .public-site .hero-line-shimmer-wrap,
 .public-site .home-hero-container .hero-line-shimmer-wrap,
@@ -1339,9 +1339,9 @@ html[data-ex-experience] .ex-root .hero-line-shimmer-wrap {
   filter: var(--typo-hero-second-shimmer-filter) !important;
 }
 @keyframes hero-second-shimmer {
-  /* Only the whisper sheen drifts; metal stays put (no hard streak travel) */
+  /* Soft faded sheen keeps traveling; metal stays put */
   0% { background-position: 0% center, center top, center center, center top; }
-  100% { background-position: 100% center, center top, center center, center bottom; }
+  100% { background-position: 100% center, center top, center center, center top; }
 }
 @media (prefers-reduced-motion: reduce) {
   .public-site .hero-line--left:not(.hero-line--wordmark),
