@@ -559,43 +559,55 @@ export function HomePageClient({
             className="gallery-marquee"
             aria-label="Hathor gallery — scrolling images"
           >
-            <div className="gallery-marquee__track">
-              {[0, 1].map((copy) => (
-                <div
-                  key={`gallery-copy-${copy}`}
-                  className="gallery-marquee__group"
-                  aria-hidden={copy === 1 ? "true" : undefined}
-                >
-                  {EX_GALLERY.images.map((item, index) => (
-                    <Link
-                      key={`${copy}-${item.imageName}-${index}`}
-                      href={item.href}
-                      className="gallery-item media-hover"
-                      tabIndex={copy === 1 ? -1 : undefined}
-                      id={
-                        copy === 0 && GALLERY_PREVIEW_ANCHORS.has(item.imageName)
-                          ? siteImageAnchorId(item.imageName)
-                          : undefined
-                      }
-                      data-site-image={
-                        copy === 0 && GALLERY_PREVIEW_ANCHORS.has(item.imageName)
-                          ? item.imageName
-                          : undefined
-                      }
-                      aria-label={item.alt}
+            <div className="gallery-marquee__stage">
+              <div className="gallery-marquee__band">
+                <div className="gallery-marquee__track">
+                  {[0, 1].map((copy) => (
+                    <div
+                      key={`gallery-copy-${copy}`}
+                      className="gallery-marquee__group"
+                      aria-hidden={copy === 1 ? "true" : undefined}
                     >
-                      <ManagedImage
-                        name={item.imageName}
-                        alt={item.alt}
-                        fill
-                        sizes="(max-width: 768px) 45vw, 20vw"
-                        className="object-cover"
-                        previewAnchor={false}
-                      />
-                    </Link>
+                      {EX_GALLERY.images.map((item, index) => (
+                        <Link
+                          key={`${copy}-${item.imageName}-${index}`}
+                          href={item.href}
+                          className={
+                            copy === 1
+                              ? "gallery-item gallery-item--visual media-hover"
+                              : "gallery-item media-hover"
+                          }
+                          tabIndex={copy === 1 ? -1 : undefined}
+                          id={
+                            copy === 0 &&
+                            GALLERY_PREVIEW_ANCHORS.has(item.imageName)
+                              ? siteImageAnchorId(item.imageName)
+                              : undefined
+                          }
+                          data-site-image={
+                            copy === 0 &&
+                            GALLERY_PREVIEW_ANCHORS.has(item.imageName)
+                              ? item.imageName
+                              : undefined
+                          }
+                          aria-label={item.alt}
+                        >
+                          <span className="gallery-item__frame" aria-hidden="true">
+                            <ManagedImage
+                              name={item.imageName}
+                              alt={item.alt}
+                              fill
+                              sizes="(max-width: 768px) 48vw, 26vw"
+                              className="object-cover"
+                              previewAnchor={false}
+                            />
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
                   ))}
                 </div>
-              ))}
+              </div>
             </div>
           </div>
 
