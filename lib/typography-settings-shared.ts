@@ -802,51 +802,66 @@ function mixHex(a: string, b: string, amount: number): string {
 
 /**
  * Polished metallic gold matching the “Gold” script ref:
- * vertical bevel (white crest → gold → deep amber) on every stroke,
- * plus a soft white sun glint that slides across.
- * Dialed slightly under full chrome intensity.
+ * high-contrast vertical bevel (near-white crest → rich gold → deep amber),
+ * brushed micro-grain, and a sharp sun glint that slides across.
+ * Gradient must map tightly to glyph ink (tight line-box) or strokes read flat.
  */
 export function heroSecondShimmerBackground(
   shimmer: HeroSecondShimmer,
 ): string {
   const s = Math.min(1, Math.max(0, shimmer.shine / 100));
-  const white = mixHex("#FFF8E0", "#FFFFFF", 0.4 + s * 0.5);
-  const pale = mixHex("#F5E19A", "#FFE566", 0.35 + s * 0.3);
-  const mid = mixHex("#D4AF37", "#E8C34A", 0.4);
-  const body = "#B69F64";
-  const amber = mixHex("#8B6914", "#A67C00", 0.35);
-  const deep = mixHex("#4A3010", "#2E1E08", 0.3);
+  const crest = mixHex("#FFFFFF", "#FFF6D5", 0.2 + s * 0.15);
+  const bright = mixHex("#FFE566", "#F7D45A", 0.35 + s * 0.35);
+  const rich = mixHex("#E2B93A", "#D4AF37", 0.45);
+  const body = mixHex("#C4A23A", "#B89B3F", 0.4);
+  const shade = mixHex("#8A6914", "#A07818", 0.35);
+  const deep = "#3D2808";
+  const abyss = "#160E04";
 
-  /* Static vertical metal — top lit like the ref letters */
+  /* Static vertical metal — extreme range like the 3D Gold ref */
   const metal = `linear-gradient(180deg,
-    ${white} 0%,
-    ${pale} 10%,
-    ${mid} 28%,
-    ${body} 48%,
-    ${amber} 72%,
-    ${deep} 100%)`;
+    ${crest} 0%,
+    ${bright} 14%,
+    ${rich} 30%,
+    ${body} 45%,
+    ${shade} 64%,
+    ${deep} 84%,
+    ${abyss} 100%)`;
 
-  /* Soft moving sun glint (white kept, feathered) */
-  const glint = `linear-gradient(100deg,
+  /* Fine brushed grain so mid-stroke samples still look metallic */
+  const brush = `repeating-linear-gradient(180deg,
+    rgba(255, 255, 255, ${0.1 + s * 0.08}) 0px,
+    rgba(255, 255, 255, ${0.1 + s * 0.08}) 1px,
+    transparent 1px,
+    transparent 3px)`;
+
+  /* Narrow hard specular — sun on polished metal, not fog */
+  const glint = `linear-gradient(105deg,
     transparent 0%,
-    transparent 42%,
-    ${mixHex(white, pale, 0.5)}66 48%,
-    ${white} 50%,
-    ${mixHex(white, pale, 0.5)}66 52%,
-    transparent 58%,
+    transparent 46%,
+    ${crest}00 47.5%,
+    ${crest}99 49.5%,
+    #FFFFFF 50%,
+    ${crest}99 50.5%,
+    ${crest}00 52.5%,
+    transparent 54%,
     transparent 100%)`;
 
-  return `${glint}, ${metal}`;
+  return `${glint}, ${brush}, ${metal}`;
 }
 
 export function heroSecondShimmerFilter(shimmer: HeroSecondShimmer): string {
   if (!shimmer.enabled || shimmer.shadow <= 0) return "none";
   const t = Math.min(1, Math.max(0, shimmer.shadow / 100));
-  const rim = (0.4 + t * 0.35).toFixed(2);
-  const glow = (0.15 + t * 0.25).toFixed(2);
+  const hi = (0.28 + t * 0.35).toFixed(2);
+  const rim = (0.5 + t * 0.35).toFixed(2);
+  const depth = (0.28 + t * 0.3).toFixed(2);
+  const glow = (0.12 + t * 0.22).toFixed(2);
   return [
+    `drop-shadow(0 -1px 0 rgba(255, 246, 210, ${hi}))`,
     `drop-shadow(0 1px 0 rgba(40, 28, 8, ${rim}))`,
-    `drop-shadow(0 0 3px rgba(212, 175, 55, ${glow}))`,
+    `drop-shadow(0 2px 2px rgba(18, 10, 2, ${depth}))`,
+    `drop-shadow(0 0 5px rgba(212, 175, 55, ${glow}))`,
   ].join(" ");
 }
 
@@ -857,9 +872,9 @@ export function heroSecondShimmerInlineStyle(
   if (!shimmer.enabled) return {};
   return {
     backgroundImage: heroSecondShimmerBackground(shimmer),
-    backgroundSize: "200% 100%, 100% 115%",
-    backgroundRepeat: "no-repeat, no-repeat",
-    backgroundPosition: "0% center, center top",
+    backgroundSize: "220% 100%, 100% 100%, 100% 100%",
+    backgroundRepeat: "no-repeat, repeat, no-repeat",
+    backgroundPosition: "0% center, 0 0, center center",
     WebkitBackgroundClip: "text",
     backgroundClip: "text",
     WebkitTextFillColor: "transparent",
@@ -868,9 +883,10 @@ export function heroSecondShimmerInlineStyle(
     filter: "none",
     animation: `hero-second-shimmer ${shimmer.speed}s linear infinite`,
     display: "inline-block",
-    lineHeight: 1.35,
-    padding: "0.28em 0.2em 0.35em",
-    margin: "-0.12em -0.08em",
+    /* Tight box so vertical bevel maps onto stroke height, not empty padding */
+    lineHeight: 1.08,
+    padding: "0.06em 0.04em 0.1em",
+    margin: 0,
     overflow: "visible",
     willChange: "background-position",
   };
@@ -1291,17 +1307,19 @@ html[data-ex-experience] .public-site .ex-root .hero-heading .hero-line--left:no
 html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
 .public-site .hero-line--left.hero-line--shimmer {
   display: inline-block !important;
-  /* Script fonts need room — dashboard line-height 0.9 was cropping glyphs */
-  line-height: 1.35 !important;
-  padding: 0.28em 0.2em 0.35em !important;
-  margin-top: -0.12em !important;
-  margin-bottom: -0.12em !important;
+  /* Tight line-box so metal bevel lands on strokes (tall padding = flat yellow) */
+  line-height: 1.08 !important;
+  padding: 0.06em 0.04em 0.1em !important;
+  margin: 0 !important;
+  /* Wrap owns X/Y — do not offset the glyph box (was shifting title left) */
+  left: auto !important;
+  top: auto !important;
   overflow: visible !important;
   will-change: background-position !important;
   background-image: var(--typo-hero-second-shimmer) !important;
-  background-size: 200% 100%, 100% 115% !important;
-  background-repeat: no-repeat, no-repeat !important;
-  background-position: 0% center, center top !important;
+  background-size: 220% 100%, 100% 100%, 100% 100% !important;
+  background-repeat: no-repeat, repeat, no-repeat !important;
+  background-position: 0% center, 0 0, center center !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   color: transparent !important;
@@ -1313,16 +1331,20 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
 .public-site .hero-line-shimmer-wrap,
 .public-site .home-hero-container .hero-line-shimmer-wrap,
 html[data-ex-experience] .ex-root .hero-line-shimmer-wrap {
-  display: inline-block !important;
+  display: block !important;
+  width: 100% !important;
+  text-align: center !important;
   overflow: visible !important;
   position: relative !important;
+  left: var(--typo-hero-second-x, 0px) !important;
+  top: var(--typo-hero-second-y, 0px) !important;
   z-index: 4 !important;
   filter: var(--typo-hero-second-shimmer-filter) !important;
-  line-height: 0 !important;
+  line-height: normal !important;
 }
 @keyframes hero-second-shimmer {
-  0% { background-position: 0% center, center top; }
-  100% { background-position: 100% center, center top; }
+  0% { background-position: 0% center, 0 0, center center; }
+  100% { background-position: 100% center, 0 0, center center; }
 }
 @media (prefers-reduced-motion: reduce) {
   .public-site .hero-line--left:not(.hero-line--wordmark),
@@ -1331,7 +1353,7 @@ html[data-ex-experience] .ex-root .hero-line-shimmer-wrap {
   html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
   .public-site .hero-line--left.hero-line--shimmer {
     animation: none !important;
-    background-position: 35% center, center top !important;
+    background-position: 40% center, 0 0, center center !important;
   }
 }`
     : ""

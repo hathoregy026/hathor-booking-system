@@ -182,8 +182,6 @@ export function PublicSiteHero({
                 className="hero-line-shimmer-wrap"
                 style={{
                   filter: heroSecondShimmerFilter(shimmer),
-                  position: "relative",
-                  zIndex: 4,
                 }}
               >
                 <span className={secondTitleClass} style={secondTitleStyle}>
