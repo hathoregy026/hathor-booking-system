@@ -104,17 +104,24 @@
   }
 }
 
-/* Slight bottom fade only — keeps the image clear */
+/* Soft dark wash so white / bright photos still leave text readable */
 .vignette {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    transparent 55%,
-    rgba(20, 16, 12, 0.35) 78%,
-    rgba(20, 16, 12, 0.55) 100%
-  );
+  background:
+    linear-gradient(
+      105deg,
+      rgba(18, 14, 10, 0.55) 0%,
+      rgba(18, 14, 10, 0.28) 32%,
+      transparent 62%
+    ),
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      transparent 42%,
+      rgba(18, 14, 10, 0.28) 68%,
+      rgba(18, 14, 10, 0.62) 100%
+    );
   opacity: 0;
   transition: opacity 0.8s ease;
   pointer-events: none;
@@ -139,9 +146,22 @@
   /* Font/size from dashboard Typography → Our Voyages · Main / Main hover */
   margin: 0;
   transition:
-    color 0.5s ease,
-    font-size 0.5s ease,
-    letter-spacing 0.5s ease;
+    color 0.5s var(--hathor-accordion-ease),
+    font-size 0.5s var(--hathor-accordion-ease),
+    letter-spacing 0.55s var(--hathor-accordion-ease),
+    text-shadow 0.55s ease,
+    transform 0.55s var(--hathor-accordion-ease);
+}
+
+/* Layered soft shadow — readable on cream / white as well as dark photos */
+.accordionItem.isActive .name {
+  letter-spacing: 0.02em;
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.35),
+    0 2px 8px rgba(0, 0, 0, 0.45),
+    0 8px 28px rgba(0, 0, 0, 0.4),
+    0 0 40px rgba(0, 0, 0, 0.22) !important;
+  animation: hathorAccordionNameReveal 0.75s var(--hathor-accordion-ease) both;
 }
 
 .icon {
@@ -150,12 +170,14 @@
   line-height: 1;
   transition:
     transform 0.4s ease,
-    color 0.5s ease;
+    color 0.5s ease,
+    text-shadow 0.5s ease;
 }
 
 .accordionItem.isActive .icon {
   transform: rotate(45deg);
   color: #fff;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
 }
 
 .body {
@@ -198,6 +220,8 @@
   /* Font/size/colour from dashboard Typography → Our Voyages · Hovered · Indication */
   margin: 0;
   min-height: 1.35em;
+  opacity: 0;
+  transform: translateY(12px);
 }
 
 .description {
@@ -207,6 +231,25 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 4;
   overflow: hidden;
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+.accordionItem.isActive .meta,
+.accordionItem.isActive .description {
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.4),
+    0 2px 10px rgba(0, 0, 0, 0.45),
+    0 6px 22px rgba(0, 0, 0, 0.35) !important;
+  animation: hathorAccordionCopyReveal 0.7s var(--hathor-accordion-ease) both;
+}
+
+.accordionItem.isActive .meta {
+  animation-delay: 0.12s;
+}
+
+.accordionItem.isActive .description {
+  animation-delay: 0.22s;
 }
 
 .cta {
@@ -216,6 +259,66 @@
   flex: 0 0 auto;
   margin-top: auto;
   align-self: flex-start;
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+.accordionItem.isActive .cta {
+  animation: hathorAccordionCtaReveal 0.75s var(--hathor-accordion-ease) 0.32s
+    both;
+}
+
+@keyframes hathorAccordionNameReveal {
+  from {
+    opacity: 0.65;
+    transform: translateY(6px);
+    letter-spacing: -0.02em;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    letter-spacing: 0.02em;
+  }
+}
+
+@keyframes hathorAccordionCopyReveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes hathorAccordionCtaReveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .accordionItem.isActive .name,
+  .accordionItem.isActive .meta,
+  .accordionItem.isActive .description,
+  .accordionItem.isActive .cta {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+
+  .backgroundImage {
+    animation: none !important;
+  }
 }
 
 @media (max-width: 768px) {
