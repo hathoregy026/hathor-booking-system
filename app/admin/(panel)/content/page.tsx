@@ -431,8 +431,9 @@ export default function AdminContentPage() {
           <h2 className="admin-heading text-xl">Website Images</h2>
           <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
             Choose a page below, then replace or clear any photo. Replacing
-            publishes to the live site immediately. The Homepage tab lists only
-            photos that appear on the live homepage.
+            publishes to the live site immediately. Use the{" "}
+            <strong>Our Voyages</strong> tab for the homepage voyage accordion
+            backgrounds (four dedicated photos, not shared with other pages).
           </p>
         </div>
 

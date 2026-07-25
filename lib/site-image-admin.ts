@@ -51,21 +51,25 @@ const HOMEPAGE_LIVE_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> 
     { name: "home-alt-highlights", label: "Gallery — landmarks photo" },
     { name: "wellness-hero", label: "Gallery — wellness photo" },
     { name: "home-cinematic-still", label: "Gallery — suite photo" },
+  ];
+
+const OUR_VOYAGES_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> =
+  [
     {
       name: "home-voyage-3n-aswan-luxor",
-      label: "Our Voyages accordion — 3 Nights Aswan to Luxor",
+      label: "Row 1 — 3 Nights / 4 Days Aswan to Luxor",
     },
     {
       name: "home-voyage-4n-luxor-aswan",
-      label: "Our Voyages accordion — 4 Nights Luxor to Aswan",
+      label: "Row 2 — 4 Nights / 5 Days Luxor to Aswan",
     },
     {
       name: "home-voyage-7n-roundtrip",
-      label: "Our Voyages accordion — 7 Nights round trip",
+      label: "Row 3 — 7 Nights / 8 Days round trip",
     },
     {
       name: "home-voyage-nile-majesty",
-      label: "Our Voyages accordion — Nile Majesty",
+      label: "Row 4 — Nile Majesty",
     },
   ];
 
@@ -235,9 +239,24 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
     );
   });
 
+  const ourVoyagesItems: SiteImageAdminItem[] = [];
+  OUR_VOYAGES_ADMIN_CARDS.forEach((card, index) => {
+    const slot = byName.get(card.name);
+    if (!slot) return;
+    ourVoyagesItems.push(
+      toAdminItem(slot, "/#our-voyages", card.label, index + 1),
+    );
+  });
+
   const byPage = new Map<string, SiteImageAdminItem[]>();
   for (const slot of SITE_IMAGE_SLOTS) {
-    if (slot.pagePath === "/" || slot.pagePath === "/#floating-ig") continue;
+    if (
+      slot.pagePath === "/" ||
+      slot.pagePath === "/#floating-ig" ||
+      slot.pagePath === "/#our-voyages"
+    ) {
+      continue;
+    }
     const items = byPage.get(slot.pagePath) ?? [];
     items.push(toAdminItem(slot, slot.pagePath));
     byPage.set(slot.pagePath, items);
@@ -269,6 +288,13 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
       description:
         "Only photos that appear on the live homepage. Edit here to change what guests see on /.",
       items: homepageItems,
+    },
+    {
+      pagePath: "/#our-voyages",
+      title: "Our Voyages",
+      description:
+        "Background photos for the homepage Our Voyages accordion only. These four images are independent from every other page.",
+      items: ourVoyagesItems,
     },
     {
       pagePath: "/#floating-ig",
