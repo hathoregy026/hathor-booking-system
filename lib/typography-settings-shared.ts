@@ -802,44 +802,45 @@ function mixHex(a: string, b: string, amount: number): string {
 
 /**
  * Soft sliding metallic gold fill for hero second titles.
- * Warm gold body with a champagne specular that feathers in — golden feel, no hard stripe.
+ * Stays in the gold family only — bright polished gold specular, never white-on-yellow.
  */
 export function heroSecondShimmerBackground(
   shimmer: HeroSecondShimmer,
 ): string {
   const s = Math.min(1, Math.max(0, shimmer.shine / 100));
   const body = "#B69F64";
-  const richGold = mixHex(body, "#D4AF37", 0.55 + s * 0.35);
-  const champagne = mixHex(richGold, "#F8E7C0", 0.4 + s * 0.45);
-  const peak = mixHex(champagne, "#FFF6E0", 0.25 + s * 0.35);
-  const amber = mixHex(body, "#C4A35A", 0.35 + s * 0.3);
-  const bronze = mixHex(body, "#8A7348", 0.2 + s * 0.35);
+  /* Polished gold ladder — all warm yellow-metal, no cream/white peak */
+  const deep = mixHex(body, "#7A6238", 0.35 + s * 0.25);
+  const shade = mixHex(body, "#9A8048", 0.4);
+  const bright = mixHex(body, "#D4AF37", 0.5 + s * 0.45);
+  const polish = mixHex(bright, "#E6C35C", 0.35 + s * 0.5);
+  const specular = mixHex(polish, "#F0D06A", 0.2 + s * 0.45);
   /*
-   * Metallic gold falloff: bronze → body → amber → champagne → soft peak → back.
-   * Peak stays warm (champagne), not pure white, so it still reads as gold.
+   * Soft metallic band: deep → body → bright → polish → specular → fade back.
+   * Specular is yellow-gold (foil shine), not white.
    */
   return `linear-gradient(125deg,
-    ${bronze} 0%,
-    ${body} 18%,
-    ${amber} 32%,
-    ${richGold} 40%,
-    ${champagne} 46%,
-    ${peak} 50%,
-    ${champagne} 54%,
-    ${richGold} 60%,
-    ${amber} 68%,
-    ${body} 82%,
-    ${bronze} 100%)`;
+    ${deep} 0%,
+    ${shade} 14%,
+    ${body} 28%,
+    ${bright} 40%,
+    ${polish} 47%,
+    ${specular} 50%,
+    ${polish} 53%,
+    ${bright} 60%,
+    ${body} 74%,
+    ${shade} 88%,
+    ${deep} 100%)`;
 }
 
 export function heroSecondShimmerFilter(shimmer: HeroSecondShimmer): string {
   if (!shimmer.enabled || shimmer.shadow <= 0) return "none";
   const t = Math.min(1, Math.max(0, shimmer.shadow / 100));
   const soft = (0.05 + t * 0.1).toFixed(2);
-  const glow = (0.12 + t * 0.28).toFixed(2);
+  const glow = (0.18 + t * 0.35).toFixed(2);
   return [
-    `drop-shadow(0 1px ${1 + t * 1.5}px rgba(0, 0, 0, ${soft}))`,
-    `drop-shadow(0 0 ${6 + t * 10}px rgba(212, 175, 55, ${glow}))`,
+    `drop-shadow(0 1px ${1 + t * 1.5}px rgba(90, 70, 30, ${soft}))`,
+    `drop-shadow(0 0 ${5 + t * 12}px rgba(182, 159, 100, ${glow}))`,
   ].join(" ");
 }
 
