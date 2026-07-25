@@ -1125,6 +1125,8 @@ html[data-ex-experience] .ex-root .gallery-h2 h2,
 html[data-ex-experience] .ex-root .gallery-sm h2,
 html[data-ex-experience] .ex-root .testimonial-h2 h2,
 html[data-ex-experience] .ex-root .cta-inner h2,
+html[data-ex-experience] .ex-root [data-hathor-accordion] h2,
+html[data-ex-experience] .ex-root [data-hathor-accordion] h3,
 .public-site .typo-page-title`,
   "page_title",
 )}

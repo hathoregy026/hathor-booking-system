@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState, type KeyboardEvent, type MouseEvent } from "react";
+import { useTypographyInlineStyle } from "@/components/public/TypographySettingsProvider";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import type { SiteImageName } from "@/lib/site-image-slots";
 import styles from "./LuxuryAccordion.module.css";
@@ -28,10 +29,24 @@ export default function LuxuryAccordion({
 }: LuxuryAccordionProps) {
   const list = items;
   const [activeId, setActiveId] = useState<string | null>(null);
+  const titleStyle = useTypographyInlineStyle("page_title");
+  const nameStyle = useTypographyInlineStyle("page_title");
+  const bodyStyle = useTypographyInlineStyle("body_text");
+
+  const nameTypeStyle = {
+    fontFamily: nameStyle.fontFamily,
+    color: nameStyle.color,
+    lineHeight: nameStyle.lineHeight,
+    letterSpacing: nameStyle.letterSpacing,
+    textShadow: nameStyle.textShadow,
+  };
 
   if (list.length === 0) {
     return null;
   }
+
+  const openItem = (id: string) => setActiveId(id);
+  const closeItem = () => setActiveId(null);
 
   const handleToggle = (id: string) => {
     setActiveId((current) => (current === id ? null : id));
@@ -55,7 +70,9 @@ export default function LuxuryAccordion({
       aria-label={title}
     >
       <div className={styles.container}>
-        <h2 className={styles.title}>{title}</h2>
+        <h2 className={`${styles.title} typo-page-title`} style={titleStyle}>
+          {title}
+        </h2>
         <ul className={styles.accordionList}>
           {list.map((item) => {
             const isActive = activeId === item.id;
@@ -66,6 +83,9 @@ export default function LuxuryAccordion({
               <li
                 key={item.id}
                 className={`${styles.accordionItem} ${isActive ? styles.isActive : ""}`}
+                onMouseEnter={() => openItem(item.id)}
+                onMouseLeave={closeItem}
+                onFocus={() => openItem(item.id)}
                 onClick={() => handleToggle(item.id)}
                 onKeyDown={(event) => handleKeyDown(event, item.id)}
                 role="button"
@@ -89,7 +109,12 @@ export default function LuxuryAccordion({
                 <div className={styles.vignette} aria-hidden="true" />
 
                 <div className={styles.row}>
-                  <h3 className={styles.name}>{item.name}</h3>
+                  <h3
+                    className={`${styles.name} typo-page-title`}
+                    style={nameTypeStyle}
+                  >
+                    {item.name}
+                  </h3>
                   <span className={styles.icon} aria-hidden="true">
                     +
                   </span>
@@ -102,9 +127,19 @@ export default function LuxuryAccordion({
                   aria-hidden={!isActive}
                 >
                   {item.meta ? (
-                    <p className={styles.meta}>{item.meta}</p>
+                    <p
+                      className={`${styles.meta} typo-body-text`}
+                      style={bodyStyle}
+                    >
+                      {item.meta}
+                    </p>
                   ) : null}
-                  <p className={styles.description}>{item.description}</p>
+                  <p
+                    className={`${styles.description} typo-body-text`}
+                    style={bodyStyle}
+                  >
+                    {item.description}
+                  </p>
                   <Link
                     href={href}
                     className={`btn btn-dark ${styles.cta}`}
