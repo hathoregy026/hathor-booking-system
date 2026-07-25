@@ -1148,11 +1148,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--right {
   filter: none !important;
 }
 
-/* Home hero line 2 — centered under first title; always in front */
+/* Home hero line 2 — always in front of the first title */
 html[data-ex-experience] .ex-root .hero-heading .hero-line-shimmer-wrap {
-  display: block;
-  width: 100%;
-  text-align: center;
   position: relative;
   z-index: 4;
 }

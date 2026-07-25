@@ -400,11 +400,8 @@
   filter: none !important;
 }
 
-/* Second title + shimmer wrap — centered under first title; always above it */
+/* Second title + shimmer wrap — always above the first title */
 .home-hero-container .hero-heading .hero-line-shimmer-wrap {
-  display: block;
-  width: 100%;
-  text-align: center;
   position: relative;
   z-index: 4;
 }
