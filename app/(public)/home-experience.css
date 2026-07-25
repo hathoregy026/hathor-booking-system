@@ -1758,6 +1758,12 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   visibility: hidden;
   pointer-events: none;
   will-change: opacity, transform;
+  /* Uniform stack: same gap between every line / block, flush left */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
+  text-align: left;
 }
 
 .ex-stack-scroll__copy-panel[data-stack-copy-index="0"] {
@@ -1779,38 +1785,53 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 }
 
 .ex-stack-scroll__eyebrow {
-  margin: 0.15rem 0 1rem;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  text-indent: 0;
+  align-self: flex-start;
+  max-width: min(36rem, 100%);
   /* Font/size/case/color from dashboard typography (On images · indication) */
 }
 
 .ex-stack-scroll__title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* Same gap as panel — title lines match title→indication→body spacing */
+  gap: 0.45rem;
   font-weight: 400;
-  margin: 0 0 0.45rem;
-  max-width: 15ch;
-  text-wrap: balance;
+  margin: 0;
+  padding: 0;
+  max-width: min(18ch, 100%);
+  text-align: left;
+  text-indent: 0;
+  text-wrap: pretty;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* Font/size/color/tracking from dashboard typography (On images · title) */
 }
 
-.ex-stack-scroll__title-line {
-  display: block;
-  /* Visible — overflow:hidden + italic glyphs caused mid-letter cuts */
-  overflow: visible;
-  padding: 0.06em 0.04em 0.12em;
-}
-
-/*
-  Same layered soft halo as Our Voyages open-column copy —
-  readable contrast on bright/dark photography (beats typography shadow:none).
-*/
 html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__title,
 html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__title-line {
+  /* Gap owns vertical rhythm — don’t let typography line-height inflate spaces */
+  line-height: 1.05 !important;
   text-shadow:
     0 1px 0 rgba(0, 0, 0, 0.35),
     0 2px 8px rgba(0, 0, 0, 0.45),
     0 8px 28px rgba(0, 0, 0, 0.4),
     0 0 40px rgba(0, 0, 0, 0.22) !important;
+}
+
+.ex-stack-scroll__title-line {
+  display: block;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  text-align: left;
+  text-indent: 0;
+  width: auto;
+  max-width: 100%;
 }
 
 html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebrow,
@@ -1823,12 +1844,20 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
 
 .ex-stack-scroll__body {
   margin: 0;
-  max-width: 40ch;
-  /* Font/size/color from dashboard typography (body_text) */
+  padding: 0;
+  max-width: min(40ch, 100%);
+  text-align: left;
+  text-indent: 0;
+  align-self: flex-start;
+  /* Font/size/color from dashboard typography (On images · body) */
 }
 
 .ex-stack-scroll__body .line {
   display: block;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  text-indent: 0;
   will-change: transform, opacity;
 }
 

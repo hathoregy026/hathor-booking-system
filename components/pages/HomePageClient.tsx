@@ -457,11 +457,14 @@ export function HomePageClient({
                   data-stack-copy-index={String(index)}
                   aria-hidden={index === 0 ? "false" : "true"}
                 >
-                  <h2 className="ex-stack-scroll__title" style={stackTitleStyle}>
+                  <h2
+                    className="ex-stack-scroll__title typo-on-images-title"
+                    style={stackTitleStyle}
+                  >
                     {slide.titleLines.map((line) => (
                       <span
                         key={`${slide.imageName}-${line}`}
-                        className="ex-stack-scroll__title-line"
+                        className="ex-stack-scroll__title-line typo-on-images-title"
                         style={stackTitleStyle}
                       >
                         {line}
