@@ -17,34 +17,26 @@ type GalleryInstagramFollowProps = {
   handleStyle?: CSSProperties;
 };
 
-type BurstParticle =
-  | {
-      id: string;
-      kind: "image";
-      imageName: SiteImageName;
-      alt: string;
-      delay: number;
-      duration: number;
-      mx: number;
-      my: number;
-      ex: number;
-      ey: number;
-      rot: number;
-      scale: number;
-    }
-  | {
-      id: string;
-      kind: "emoji";
-      glyph: string;
-      delay: number;
-      duration: number;
-      mx: number;
-      my: number;
-      ex: number;
-      ey: number;
-      rot: number;
-      scale: number;
-    };
+type BurstParticle = {
+  id: string;
+  kind: "image" | "emoji";
+  imageName?: SiteImageName;
+  alt?: string;
+  glyph?: string;
+  delay: number;
+  duration: number;
+  bobDuration: number;
+  p1x: number;
+  p1y: number;
+  p2x: number;
+  p2y: number;
+  p3x: number;
+  p3y: number;
+  p4x: number;
+  p4y: number;
+  rot: number;
+  scale: number;
+};
 
 const EMOJI_GLYPHS = [
   { glyph: "☺", label: "smile" },
@@ -55,56 +47,79 @@ const EMOJI_GLYPHS = [
   { glyph: "✨", label: "sparkles" },
 ] as const;
 
-/** Smooth blow — lively but not snappy */
-const BURST_EASE = "cubic-bezier(0.22, 0.8, 0.28, 1)";
+/** Continuous drift — no ease-out stall / push */
+const FLOAT_EASE = "linear";
 
 function rand(min: number, max: number) {
   return min + Math.random() * (max - min);
 }
 
+/** Soft wandering path that keeps moving (never parks mid-flight). */
+function wanderPath(reachX: number, reachY: number) {
+  const angle = rand(-Math.PI, Math.PI);
+  const step = (t: number, wobble: number) => {
+    const a = angle + rand(-0.55, 0.55) + wobble;
+    const d = t * rand(0.85, 1.15);
+    return {
+      x: Math.cos(a) * reachX * d + rand(-28, 28),
+      y: Math.sin(a) * reachY * d + rand(-24, 24) - t * rand(18, 48),
+    };
+  };
+
+  const p1 = step(0.22, 0);
+  const p2 = step(0.48, rand(-0.35, 0.35));
+  const p3 = step(0.74, rand(-0.45, 0.45));
+  const p4 = step(1.05, rand(-0.55, 0.55));
+  return { p1, p2, p3, p4 };
+}
+
 function buildBurst(width: number, height: number, key: number): BurstParticle[] {
-  const reachX = Math.max(width * 0.48, 200);
-  const reachY = Math.max(height * 0.42, 160);
+  const reachX = Math.max(width * 0.42, 180);
+  const reachY = Math.max(height * 0.38, 140);
   const particles: BurstParticle[] = [];
 
   EX_GALLERY.followPreviews.forEach((preview, index) => {
-    const angle = rand(-Math.PI, Math.PI);
-    const dist = rand(0.55, 1.2);
-    const ex = Math.cos(angle) * reachX * dist + rand(-52, 52);
-    const ey = Math.sin(angle) * reachY * dist + rand(-48, 48);
+    const path = wanderPath(reachX, reachY);
     particles.push({
       id: `img-${key}-${preview.imageName}-${index}`,
       kind: "image",
       imageName: preview.imageName,
       alt: preview.alt,
-      delay: rand(0, 0.28) + index * 0.05,
-      duration: rand(3.0, 4.2),
-      mx: ex * rand(0.28, 0.5) + rand(-36, 36),
-      my: ey * rand(0.25, 0.48) + rand(-32, 32),
-      ex,
-      ey,
-      rot: rand(-26, 26),
-      scale: rand(0.94, 1.14),
+      delay: rand(0, 0.35) + index * 0.06,
+      duration: rand(5.2, 7.2),
+      bobDuration: rand(2.4, 3.6),
+      p1x: path.p1.x,
+      p1y: path.p1.y,
+      p2x: path.p2.x,
+      p2y: path.p2.y,
+      p3x: path.p3.x,
+      p3y: path.p3.y,
+      p4x: path.p4.x,
+      p4y: path.p4.y,
+      rot: rand(-22, 22),
+      scale: rand(0.94, 1.12),
     });
   });
 
   EMOJI_GLYPHS.forEach((item, index) => {
-    const angle = rand(-Math.PI, Math.PI);
-    const dist = rand(0.5, 1.28);
-    const ex = Math.cos(angle) * reachX * dist + rand(-60, 60);
-    const ey = Math.sin(angle) * reachY * dist + rand(-56, 56);
+    const path = wanderPath(reachX * 1.05, reachY * 1.05);
     particles.push({
       id: `emo-${key}-${item.label}-${index}`,
       kind: "emoji",
       glyph: item.glyph,
-      delay: rand(0.02, 0.35) + index * 0.04,
-      duration: rand(2.9, 4.1),
-      mx: ex * rand(0.25, 0.52) + rand(-40, 40),
-      my: ey * rand(0.22, 0.5) + rand(-36, 36),
-      ex,
-      ey,
-      rot: rand(-32, 32),
-      scale: rand(0.9, 1.2),
+      delay: rand(0.04, 0.42) + index * 0.05,
+      duration: rand(4.8, 6.8),
+      bobDuration: rand(2.1, 3.4),
+      p1x: path.p1.x,
+      p1y: path.p1.y,
+      p2x: path.p2.x,
+      p2y: path.p2.y,
+      p3x: path.p3.x,
+      p3y: path.p3.y,
+      p4x: path.p4.x,
+      p4y: path.p4.y,
+      rot: rand(-28, 28),
+      scale: rand(0.9, 1.16),
     });
   });
 
@@ -126,9 +141,12 @@ export function GalleryInstagramFollow({
     if (reducedRef.current) return;
     if (cooldownRef.current) return;
 
-    const section = fieldRef.current?.closest(".gallery-section") as HTMLElement | null;
+    const section = fieldRef.current?.closest(
+      ".gallery-section",
+    ) as HTMLElement | null;
     const width = section?.clientWidth || fieldRef.current?.clientWidth || 900;
-    const height = section?.clientHeight || fieldRef.current?.clientHeight || 520;
+    const height =
+      section?.clientHeight || fieldRef.current?.clientHeight || 520;
 
     cooldownRef.current = true;
     setParticles(buildBurst(width, height, Date.now()));
@@ -150,10 +168,11 @@ export function GalleryInstagramFollow({
   }, []);
 
   useEffect(() => {
-    const section = fieldRef.current?.closest(".gallery-section") as HTMLElement | null;
+    const section = fieldRef.current?.closest(
+      ".gallery-section",
+    ) as HTMLElement | null;
     if (!section) return;
 
-    // Reveal copy as soon as the section is near view.
     const copyObserver = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -221,36 +240,41 @@ export function GalleryInstagramFollow({
               }
               style={
                 {
-                  "--ig-sx": `${particle.mx * 0.45}px`,
-                  "--ig-sy": `${particle.my * 0.45}px`,
-                  "--ig-mx": `${particle.mx}px`,
-                  "--ig-my": `${particle.my}px`,
-                  "--ig-hx": `${(particle.mx + particle.ex) * 0.5}px`,
-                  "--ig-hy": `${(particle.my + particle.ey) * 0.5}px`,
-                  "--ig-ex": `${particle.ex}px`,
-                  "--ig-ey": `${particle.ey}px`,
+                  "--ig-p1x": `${particle.p1x}px`,
+                  "--ig-p1y": `${particle.p1y}px`,
+                  "--ig-p2x": `${particle.p2x}px`,
+                  "--ig-p2y": `${particle.p2y}px`,
+                  "--ig-p3x": `${particle.p3x}px`,
+                  "--ig-p3y": `${particle.p3y}px`,
+                  "--ig-p4x": `${particle.p4x}px`,
+                  "--ig-p4y": `${particle.p4y}px`,
                   "--ig-rot": `${particle.rot}deg`,
                   "--ig-sc": particle.scale,
                   "--ig-delay": `${particle.delay}s`,
                   "--ig-dur": `${particle.duration}s`,
-                  "--ig-ease": BURST_EASE,
+                  "--ig-bob-dur": `${particle.bobDuration}s`,
+                  "--ig-ease": FLOAT_EASE,
                 } as CSSProperties
               }
             >
-              {particle.kind === "image" ? (
-                <span className="instagram-circle instagram-circle--burst">
-                  <ManagedImage
-                    name={particle.imageName}
-                    alt=""
-                    fill
-                    sizes="80px"
-                    className="object-cover"
-                    previewAnchor={false}
-                  />
-                </span>
-              ) : (
-                <span className="instagram-float-emoji__inner">{particle.glyph}</span>
-              )}
+              <span className="instagram-burst-particle__bob">
+                {particle.kind === "image" && particle.imageName ? (
+                  <span className="instagram-circle instagram-circle--burst">
+                    <ManagedImage
+                      name={particle.imageName}
+                      alt=""
+                      fill
+                      sizes="80px"
+                      className="object-cover"
+                      previewAnchor={false}
+                    />
+                  </span>
+                ) : (
+                  <span className="instagram-float-emoji__inner">
+                    {particle.glyph}
+                  </span>
+                )}
+              </span>
             </span>
           ))}
       </div>

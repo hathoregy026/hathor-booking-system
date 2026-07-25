@@ -1996,17 +1996,25 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   left: 50%;
   top: 38%;
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.72);
+  transform: translate(-50%, -50%) scale(0.85);
   will-change: transform, opacity;
   animation-name: ig-soap-float;
-  animation-duration: var(--ig-dur, 3.6s);
+  animation-duration: var(--ig-dur, 6s);
   animation-delay: var(--ig-delay, 0s);
-  animation-timing-function: var(--ig-ease, cubic-bezier(0.22, 0.8, 0.28, 1));
+  animation-timing-function: var(--ig-ease, linear);
   animation-fill-mode: both;
 }
 
 .instagram-burst-particle--emoji {
   top: 40%;
+}
+
+/* Continuous bob while the outer path keeps drifting — never parks */
+.instagram-burst-particle__bob {
+  display: block;
+  transform-origin: center center;
+  animation: ig-soap-bob var(--ig-bob-dur, 2.8s) ease-in-out infinite;
+  will-change: transform;
 }
 
 .instagram-burst-particle--image .instagram-circle--burst,
@@ -2082,39 +2090,78 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   opacity: 0.92;
 }
 
+/*
+  Continuous float path — even keyframe spacing + linear timing
+  so motion never eases out, stops, then pushes again.
+  Fade only in the final stretch while still drifting.
+*/
 @keyframes ig-soap-float {
   0% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.55);
+    transform:
+      translate(-50%, -50%)
+      rotate(0deg)
+      scale(0.82);
   }
-  10% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1.04);
-  }
-  18% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  55% {
+  6% {
     opacity: 1;
     transform:
-      translate(calc(-50% + var(--ig-mx)), calc(-50% + var(--ig-my)))
+      translate(calc(-50% + var(--ig-p1x) * 0.35), calc(-50% + var(--ig-p1y) * 0.35))
+      rotate(calc(var(--ig-rot) * 0.15))
+      scale(0.96);
+  }
+  22% {
+    opacity: 1;
+    transform:
+      translate(calc(-50% + var(--ig-p1x)), calc(-50% + var(--ig-p1y)))
+      rotate(calc(var(--ig-rot) * 0.35))
+      scale(1);
+  }
+  42% {
+    opacity: 1;
+    transform:
+      translate(calc(-50% + var(--ig-p2x)), calc(-50% + var(--ig-p2y)))
       rotate(calc(var(--ig-rot) * 0.55))
-      scale(1.03);
+      scale(calc(0.5 + var(--ig-sc) * 0.5));
+  }
+  64% {
+    opacity: 0.96;
+    transform:
+      translate(calc(-50% + var(--ig-p3x)), calc(-50% + var(--ig-p3y)))
+      rotate(calc(var(--ig-rot) * 0.8))
+      scale(var(--ig-sc));
   }
   82% {
-    opacity: 0.85;
+    opacity: 0.55;
     transform:
-      translate(calc(-50% + var(--ig-ex)), calc(-50% + var(--ig-ey)))
+      translate(calc(-50% + var(--ig-p4x) * 0.92), calc(-50% + var(--ig-p4y) * 0.92))
       rotate(var(--ig-rot))
-      scale(var(--ig-sc));
+      scale(calc(var(--ig-sc) * 1.02));
   }
   100% {
     opacity: 0;
     transform:
-      translate(calc(-50% + var(--ig-ex)), calc(-50% + var(--ig-ey)))
-      rotate(var(--ig-rot))
-      scale(calc(var(--ig-sc) * 1.06));
+      translate(calc(-50% + var(--ig-p4x)), calc(-50% + var(--ig-p4y)))
+      rotate(calc(var(--ig-rot) * 1.08))
+      scale(calc(var(--ig-sc) * 1.05));
+  }
+}
+
+@keyframes ig-soap-bob {
+  0% {
+    transform: translate(0, 0) rotate(-2deg);
+  }
+  25% {
+    transform: translate(5px, -7px) rotate(1.5deg);
+  }
+  50% {
+    transform: translate(-4px, -11px) rotate(2deg);
+  }
+  75% {
+    transform: translate(6px, -5px) rotate(-1deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(-2deg);
   }
 }
 
