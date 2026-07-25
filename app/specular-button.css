@@ -116,14 +116,12 @@
   }
 }
 
-/* Idle label + FAB icon colour — Hathor gold */
+/* Idle label + FAB icon colour — Hathor gold (hero CTA stays white on gold blinds) */
 .public-site a.btn,
 .public-site button.btn,
 .public-site .public-btn-gold,
 .public-site .public-btn-outline-gold,
 .public-site .public-btn-dark,
-.public-site .hero-cta,
-.public-site .hero-cta-text,
 .public-site .public-fab__book,
 .public-site .public-fab__book-text,
 .public-site .public-fab__chat-main,
@@ -132,6 +130,12 @@
 .public-site .public-fab__lucide,
 .public-site .public-fab__brand-icon {
   color: #b69f64;
+}
+
+/* Hero Book Now — white label + gold stroke (readable on gold blinds) */
+.public-site .hero-cta,
+.public-site .hero-cta-text {
+  color: #ffffff;
 }
 
 .public-site .public-fab__chat-icon,
