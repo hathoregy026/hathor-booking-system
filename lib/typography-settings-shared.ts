@@ -802,48 +802,46 @@ function mixHex(a: string, b: string, amount: number): string {
 
 /**
  * Liquid metallic gold for hero second titles (Gold-ref style).
- * Layer 1: moving poured-metal spectrum (the shine that travels).
- * Layer 2: static top-lit bevel so strokes read 3D.
+ * Warm gold family only — no cold chrome/silver, no near-black troughs.
+ * Layer 1: soft top-lit bevel. Layer 2: moving sunlit gold ribbon.
  * Never put !important on background-position — it freezes the animation.
  */
 export function heroSecondShimmerBackground(
   shimmer: HeroSecondShimmer,
 ): string {
   const s = Math.min(1, Math.max(0, shimmer.shine / 100));
-  const white = mixHex("#FFFFFF", "#FFF8E0", 0.15 + s * 0.2);
-  const hot = mixHex("#FFE566", "#FFF0B0", 0.4 + s * 0.45);
-  const rich = "#E8C34A";
-  const body = "#D4AF37";
-  const mid = "#B8962E";
-  const shade = "#8B6914";
-  const deep = "#3D2808";
-  const abyss = "#1A1005";
+  /* Warm ladder — stays golden at every stop */
+  const whiteGold = mixHex("#FFFCF2", "#FFE9A8", 0.15 + s * 0.2);
+  const champagne = mixHex("#FFE566", "#F8E7B0", 0.35 + s * 0.4);
+  const bright = mixHex("#F0D060", "#E8C34A", 0.45);
+  const rich = "#D4AF37";
+  const body = mixHex("#C9A227", "#B8962E", 0.4);
+  const amber = mixHex("#A07818", "#8B6914", 0.45);
+  const bronze = mixHex("#6B4E10", "#5C3A0A", 0.35);
 
-  /* Wide liquid-metal ribbon — slides across (this IS the shimmer) */
+  /* Sunlit gold ribbon — light moves through gold, not chrome */
   const metal = `linear-gradient(105deg,
-    ${abyss} 0%,
-    ${deep} 10%,
-    ${shade} 20%,
-    ${mid} 28%,
-    ${body} 34%,
-    ${rich} 40%,
-    ${hot} 45%,
-    ${white} 50%,
-    ${hot} 55%,
-    ${rich} 60%,
-    ${body} 66%,
-    ${mid} 72%,
-    ${shade} 82%,
-    ${deep} 92%,
-    ${abyss} 100%)`;
+    ${bronze} 0%,
+    ${amber} 14%,
+    ${body} 26%,
+    ${rich} 36%,
+    ${bright} 44%,
+    ${champagne} 48%,
+    ${whiteGold} 50%,
+    ${champagne} 52%,
+    ${bright} 56%,
+    ${rich} 64%,
+    ${body} 74%,
+    ${amber} 88%,
+    ${bronze} 100%)`;
 
-  /* Soft top-lit bevel (static) for 3D stroke depth */
+  /* Gentle vertical bevel — top catch / bottom weight, still gold */
   const bevel = `linear-gradient(180deg,
-    rgba(255, 255, 255, ${0.45 + s * 0.25}) 0%,
-    rgba(255, 230, 120, ${0.15 + s * 0.1}) 22%,
-    transparent 48%,
-    rgba(40, 24, 6, ${0.2 + (1 - s) * 0.15}) 78%,
-    rgba(20, 10, 2, ${0.35 + (1 - s) * 0.2}) 100%)`;
+    rgba(255, 252, 235, ${0.4 + s * 0.25}) 0%,
+    rgba(255, 229, 102, ${0.18 + s * 0.12}) 18%,
+    transparent 45%,
+    rgba(90, 58, 10, ${0.18 + (1 - s) * 0.12}) 75%,
+    rgba(60, 40, 8, ${0.28 + (1 - s) * 0.15}) 100%)`;
 
   return `${bevel}, ${metal}`;
 }
