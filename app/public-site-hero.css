@@ -361,8 +361,8 @@
   justify-content: center;
   text-align: center;
   pointer-events: none;
-  /* Dead vertical center, then 20px down */
-  transform: translateY(20px);
+  /* Dead vertical center, then 50px down */
+  transform: translateY(50px);
 }
 
 .hero-heading {
