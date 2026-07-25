@@ -12,7 +12,7 @@ import { GoldDustParticles } from "@/components/ui/GoldDustParticles";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 import type { HathorLogoPartsVariant } from "@/lib/hathor-logo-letters";
 import {
-  heroSecondShimmerFilter,
+  heroSecondShimmerCastStyle,
   heroSecondShimmerInlineStyle,
   resolveHeroPageCopy,
   type HeroPageKey,
@@ -180,12 +180,16 @@ export function PublicSiteHero({
             shimmer.enabled ? (
               <span className="hero-line-shimmer-wrap">
                 <span
-                  className={secondTitleClass}
+                  className="hero-line hero-line--left hero-line-shimmer-cast"
+                  aria-hidden="true"
                   style={{
-                    ...secondTitleStyle,
-                    filter: heroSecondShimmerFilter(shimmer),
+                    ...heroSubtitleStyle,
+                    ...heroSecondShimmerCastStyle(shimmer),
                   }}
                 >
+                  {displayLeft}
+                </span>
+                <span className={secondTitleClass} style={secondTitleStyle}>
                   {displayLeft}
                 </span>
               </span>

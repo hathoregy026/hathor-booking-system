@@ -1792,7 +1792,7 @@ select.admin-input option:checked {
 
 .typo-stage__sample--shimmer {
   --hero-shine-x: 0%;
-  background-size: 300% 1.2em, 100% 1.05em, 120% 120%, 100% 1.05em !important;
+  background-size: 280% 1.2em, 100% 1.05em, 120% 120%, 100% 1.05em !important;
   background-repeat: no-repeat, no-repeat, no-repeat, no-repeat !important;
   background-position: var(--hero-shine-x) center, center top, center center, center top !important;
   -webkit-background-clip: text !important;
@@ -1800,14 +1800,28 @@ select.admin-input option:checked {
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
   text-shadow: none !important;
+  filter: none !important;
   line-height: 1.2 !important;
   overflow: visible !important;
+  position: relative;
+  z-index: 1;
   animation: hero-second-shimmer 5s linear infinite;
 }
 
 .typo-stage__shimmer-wrap {
   display: inline-block;
   overflow: visible;
+  position: relative;
+  filter: none;
+}
+
+.typo-stage__shimmer-cast {
+  position: absolute !important;
+  left: 0;
+  top: 0;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
 }
 
 @property --hero-shine-x {
@@ -1819,9 +1833,11 @@ select.admin-input option:checked {
 @keyframes hero-second-shimmer {
   0% {
     --hero-shine-x: 0%;
+    background-position: 0% center, center top, center center, center top;
   }
   100% {
     --hero-shine-x: 100%;
+    background-position: 100% center, center top, center center, center top;
   }
 }
 
@@ -1829,6 +1845,7 @@ select.admin-input option:checked {
   .typo-stage__sample--shimmer {
     animation: none !important;
     --hero-shine-x: 40%;
+    background-position: 40% center, center top, center center, center top !important;
   }
 }
 
