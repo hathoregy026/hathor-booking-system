@@ -859,25 +859,20 @@ export function heroSecondShimmerBackground(
   return `${sheen}, ${grade}, ${metal}, ${foil}`;
 }
 
-export function heroSecondShimmerFilter(shimmer: HeroSecondShimmer): string {
+export function heroSecondShimmerTextShadow(shimmer: HeroSecondShimmer): string {
   if (!shimmer.enabled) return "none";
   const t = Math.min(1, Math.max(0, shimmer.shadow / 100));
-  const hi = (0.18 + t * 0.2).toFixed(2);
-  const lo = (0.22 + t * 0.2).toFixed(2);
-  const veil = (0.28 + t * 0.35).toFixed(2);
-  const soft = (0.18 + t * 0.22).toFixed(2);
+  const near = (0.18 + t * 0.22).toFixed(2);
+  const soft = (0.12 + t * 0.2).toFixed(2);
   return [
-    `drop-shadow(0 2px 4px rgba(12, 8, 4, ${veil}))`,
-    `drop-shadow(0 6px 14px rgba(8, 5, 2, ${soft}))`,
-    `drop-shadow(0 -1px 0 rgba(255, 250, 235, ${hi}))`,
-    `drop-shadow(0 1px 0 rgba(122, 107, 72, ${lo}))`,
-    `brightness(${(1.06 + t * 0.05).toFixed(2)})`,
-  ].join(" ");
+    `0 2px 4px rgba(12, 8, 4, ${near})`,
+    `0 6px 14px rgba(8, 5, 2, ${soft})`,
+  ].join(", ");
 }
 
 /**
- * Clipped glyph fill. Never put CSS filter on this node — it freezes
- * background / @property shine travel in Chromium. Shadow uses .hero-line-shimmer-cast.
+ * Clipped glyph fill. Only the first background layer moves; the text itself
+ * remains in its existing layout position.
  */
 export function heroSecondShimmerInlineStyle(
   shimmer: HeroSecondShimmer,
@@ -893,38 +888,13 @@ export function heroSecondShimmerInlineStyle(
     backgroundClip: "text",
     WebkitTextFillColor: "transparent",
     color: "transparent",
-    textShadow: "none",
+    textShadow: heroSecondShimmerTextShadow(shimmer),
     filter: "none",
     animation: `hero-second-shimmer ${shimmer.speed}s linear infinite`,
     display: "inline-block",
-    position: "relative",
-    zIndex: 1,
     lineHeight: 1.2,
     overflow: "visible",
     willChange: "background-position, --hero-shine-x",
-  };
-}
-
-/** Soft back-shadow for the cast layer behind the shimmer text (filter OK here). */
-export function heroSecondShimmerCastStyle(
-  shimmer: HeroSecondShimmer,
-): CSSProperties {
-  if (!shimmer.enabled) return {};
-  return {
-    position: "absolute",
-    left: 0,
-    top: 0,
-    zIndex: 0,
-    pointerEvents: "none",
-    userSelect: "none",
-    color: "rgba(10, 6, 2, 0.55)",
-    WebkitTextFillColor: "rgba(10, 6, 2, 0.55)",
-    textShadow: "none",
-    backgroundImage: "none",
-    filter: heroSecondShimmerFilter(shimmer),
-    display: "inline-block",
-    lineHeight: 1.2,
-    whiteSpace: "nowrap",
   };
 }
 
@@ -1209,8 +1179,8 @@ function heroSecondShimmerCssVars(
 ): Record<string, string> {
   return {
     "--typo-hero-second-shimmer": heroSecondShimmerBackground(shimmer),
-    "--typo-hero-second-shimmer-filter": shimmer.enabled
-      ? heroSecondShimmerFilter(shimmer)
+    "--typo-hero-second-shimmer-shadow": shimmer.enabled
+      ? heroSecondShimmerTextShadow(shimmer)
       : "none",
     "--typo-hero-second-shimmer-duration": `${shimmer.speed}s`,
     "--typo-hero-second-shimmer-on": shimmer.enabled ? "1" : "0",
@@ -1356,33 +1326,9 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
   background-clip: text !important;
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
-  text-shadow: none !important;
-  /* Filter freezes shine — shadow is .hero-line-shimmer-cast */
+  text-shadow: var(--typo-hero-second-shimmer-shadow) !important;
   filter: none !important;
   animation: hero-second-shimmer var(--typo-hero-second-shimmer-duration, 5s) linear infinite !important;
-}
-.public-site .hero-line-shimmer-wrap,
-.public-site .home-hero-container .hero-line-shimmer-wrap,
-html[data-ex-experience] .ex-root .hero-line-shimmer-wrap {
-  display: inline-block !important;
-  overflow: visible !important;
-  position: relative !important;
-  z-index: 4 !important;
-  filter: none !important;
-}
-.public-site .hero-line-shimmer-cast,
-.public-site .home-hero-container .hero-line-shimmer-cast,
-html[data-ex-experience] .ex-root .hero-line-shimmer-cast {
-  position: absolute !important;
-  left: 0 !important;
-  top: 0 !important;
-  z-index: 0 !important;
-  pointer-events: none !important;
-  filter: var(--typo-hero-second-shimmer-filter) !important;
-  color: rgba(10, 6, 2, 0.55) !important;
-  -webkit-text-fill-color: rgba(10, 6, 2, 0.55) !important;
-  background: none !important;
-  background-image: none !important;
 }
 @property --hero-shine-x {
   syntax: "<percentage>";

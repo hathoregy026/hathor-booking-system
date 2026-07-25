@@ -28,7 +28,6 @@ import {
   OUR_VOYAGES_DEFAULT_ROLES,
   OUR_VOYAGES_HOVER_ROLES,
   fontGroupForFace,
-  heroSecondShimmerCastStyle,
   heroSecondShimmerInlineStyle,
   isFaceInGroup,
   isTypographySettingsEqual,
@@ -681,30 +680,16 @@ export function TypographyStylesPanel() {
                 onPointerCancel={onDragEnd}
               >
                 <span className="typo-stage__line-tag">Second · drag</span>
-                <span className="typo-stage__shimmer-wrap">
-                  {shimmer.enabled ? (
-                    <span
-                      className="typo-stage__sample typo-stage__sample--inline typo-stage__shimmer-cast"
-                      aria-hidden="true"
-                      style={{
-                        ...liveVars(settings.hero_subtitle),
-                        ...heroSecondShimmerCastStyle(shimmer),
-                      }}
-                    >
-                      {heroCopy.second || "Second title"}
-                    </span>
-                  ) : null}
-                  <span
-                    className={`typo-stage__sample typo-stage__sample--inline${shimmer.enabled ? " typo-stage__sample--shimmer" : ""}`}
-                    style={{
-                      ...liveVars(settings.hero_subtitle),
-                      ...(shimmer.enabled
-                        ? heroSecondShimmerInlineStyle(shimmer)
-                        : {}),
-                    }}
-                  >
-                    {heroCopy.second || "Second title"}
-                  </span>
+                <span
+                  className={`typo-stage__sample typo-stage__sample--inline${shimmer.enabled ? " typo-stage__sample--shimmer" : ""}`}
+                  style={{
+                    ...liveVars(settings.hero_subtitle),
+                    ...(shimmer.enabled
+                      ? heroSecondShimmerInlineStyle(shimmer)
+                      : {}),
+                  }}
+                >
+                  {heroCopy.second || "Second title"}
                 </span>
               </button>
             </div>

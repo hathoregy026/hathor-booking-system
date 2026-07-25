@@ -12,7 +12,6 @@ import { GoldDustParticles } from "@/components/ui/GoldDustParticles";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 import type { HathorLogoPartsVariant } from "@/lib/hathor-logo-letters";
 import {
-  heroSecondShimmerCastStyle,
   heroSecondShimmerInlineStyle,
   resolveHeroPageCopy,
   type HeroPageKey,
@@ -100,7 +99,6 @@ export function PublicSiteHero({
           /* Kill solid fill from typography inline so shimmer gradient shows */
           color: "transparent",
           WebkitTextFillColor: "transparent",
-          textShadow: "none",
         }
       : {}),
   };
@@ -177,27 +175,9 @@ export function PublicSiteHero({
               />
             </span>
           ) : displayLeft ? (
-            shimmer.enabled ? (
-              <span className="hero-line-shimmer-wrap">
-                <span
-                  className="hero-line hero-line--left hero-line-shimmer-cast"
-                  aria-hidden="true"
-                  style={{
-                    ...heroSubtitleStyle,
-                    ...heroSecondShimmerCastStyle(shimmer),
-                  }}
-                >
-                  {displayLeft}
-                </span>
-                <span className={secondTitleClass} style={secondTitleStyle}>
-                  {displayLeft}
-                </span>
-              </span>
-            ) : (
-              <span className={secondTitleClass} style={secondTitleStyle}>
-                {displayLeft}
-              </span>
-            )
+            <span className={secondTitleClass} style={secondTitleStyle}>
+              {displayLeft}
+            </span>
           ) : null}
         </h1>
       </div>

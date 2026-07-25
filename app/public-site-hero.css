@@ -400,12 +400,6 @@
   filter: none !important;
 }
 
-/* Second title + shimmer wrap — always above the first title */
-.home-hero-container .hero-heading .hero-line-shimmer-wrap {
-  position: relative;
-  z-index: 4;
-}
-
 .home-hero-container .hero-heading .hero-line--left {
   font-weight: 400 !important;
   font-style: normal;
@@ -548,7 +542,7 @@
 }
 
 /* Hero second-title gold — soft sheen + top-lit foil breath */
-/* Soft back-shadow is .hero-line-shimmer-cast; shine travels on the text fill */
+/* The title stays fixed; only its first background layer travels. */
 @property --hero-shine-x {
   syntax: "<percentage>";
   inherits: false;
