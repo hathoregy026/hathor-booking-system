@@ -309,9 +309,9 @@ export type HeroSecondShimmer = z.infer<typeof heroSecondShimmerSchema>;
 
 export const DEFAULT_HERO_SECOND_SHIMMER: HeroSecondShimmer = {
   enabled: true,
-  speed: 12,
-  shine: 72,
-  shadow: 28,
+  speed: 9,
+  shine: 78,
+  shadow: 35,
 };
 
 /** Editable homepage hero title lines */
@@ -801,50 +801,52 @@ function mixHex(a: string, b: string, amount: number): string {
 }
 
 /**
- * Liquid metallic gold for hero second titles — matched to the polished “Gold” ref.
- * High-contrast chrome-gold band (white crest, rich mid, deep amber) slides as sun catch.
- * Softened slightly from full chrome (“not 100% goldy”); no foggy bloom trails.
+ * Polished metallic gold matching the “Gold” script ref:
+ * vertical bevel (white crest → gold → deep amber) on every stroke,
+ * plus a soft white sun glint that slides across.
+ * Dialed slightly under full chrome intensity.
  */
 export function heroSecondShimmerBackground(
   shimmer: HeroSecondShimmer,
 ): string {
   const s = Math.min(1, Math.max(0, shimmer.shine / 100));
-  /* Chrome-gold stops — like cast/polished metal under a hard light */
-  const dark = mixHex("#3D2A10", "#5C4018", 0.35);
-  const bronze = mixHex("#8B6914", "#A67C1A", 0.4);
-  const gold = mixHex("#B69F64", "#D4AF37", 0.55);
-  const rich = mixHex("#D4AF37", "#E8C34A", 0.45 + s * 0.25);
-  const pale = mixHex("#F0D878", "#F8EBB0", 0.4 + s * 0.3);
-  const crest = mixHex("#FFF6D8", "#FFFFFF", 0.35 + s * 0.45);
+  const white = mixHex("#FFF8E0", "#FFFFFF", 0.4 + s * 0.5);
+  const pale = mixHex("#F5E19A", "#FFE566", 0.35 + s * 0.3);
+  const mid = mixHex("#D4AF37", "#E8C34A", 0.4);
+  const body = "#B69F64";
+  const amber = mixHex("#8B6914", "#A67C00", 0.35);
+  const deep = mixHex("#4A3010", "#2E1E08", 0.3);
 
-  /*
-   * Horizontal metal reflection (classic liquid-gold):
-   * dark → bronze → gold → pale → white crest → pale → gold → bronze → dark
-   * Animating background-position sweeps the crest like sun on metal.
-   */
-  return `linear-gradient(105deg,
-    ${dark} 0%,
-    ${bronze} 12%,
-    ${gold} 24%,
-    ${rich} 34%,
-    ${pale} 42%,
-    ${crest} 48%,
-    ${pale} 52%,
-    ${rich} 60%,
-    ${gold} 72%,
-    ${bronze} 86%,
-    ${dark} 100%)`;
+  /* Static vertical metal — top lit like the ref letters */
+  const metal = `linear-gradient(180deg,
+    ${white} 0%,
+    ${pale} 10%,
+    ${mid} 28%,
+    ${body} 48%,
+    ${amber} 72%,
+    ${deep} 100%)`;
+
+  /* Soft moving sun glint (white kept, feathered) */
+  const glint = `linear-gradient(100deg,
+    transparent 0%,
+    transparent 42%,
+    ${mixHex(white, pale, 0.5)}66 48%,
+    ${white} 50%,
+    ${mixHex(white, pale, 0.5)}66 52%,
+    transparent 58%,
+    transparent 100%)`;
+
+  return `${glint}, ${metal}`;
 }
 
 export function heroSecondShimmerFilter(shimmer: HeroSecondShimmer): string {
   if (!shimmer.enabled || shimmer.shadow <= 0) return "none";
   const t = Math.min(1, Math.max(0, shimmer.shadow / 100));
-  /* Tight rim + small gold halo — crisp like the ref, not foggy light trails */
-  const rim = (0.35 + t * 0.35).toFixed(2);
-  const halo = (0.2 + t * 0.3).toFixed(2);
+  const rim = (0.4 + t * 0.35).toFixed(2);
+  const glow = (0.15 + t * 0.25).toFixed(2);
   return [
-    `drop-shadow(0 1px 0 rgba(45, 30, 8, ${rim}))`,
-    `drop-shadow(0 0 4px rgba(212, 175, 55, ${halo}))`,
+    `drop-shadow(0 1px 0 rgba(40, 28, 8, ${rim}))`,
+    `drop-shadow(0 0 3px rgba(212, 175, 55, ${glow}))`,
   ].join(" ");
 }
 
@@ -855,9 +857,9 @@ export function heroSecondShimmerInlineStyle(
   if (!shimmer.enabled) return {};
   return {
     backgroundImage: heroSecondShimmerBackground(shimmer),
-    backgroundSize: "220% 100%",
-    backgroundRepeat: "no-repeat",
-    backgroundPosition: "0% center",
+    backgroundSize: "200% 100%, 100% 115%",
+    backgroundRepeat: "no-repeat, no-repeat",
+    backgroundPosition: "0% center, center top",
     WebkitBackgroundClip: "text",
     backgroundClip: "text",
     WebkitTextFillColor: "transparent",
@@ -1248,13 +1250,29 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--right {
   top: var(--typo-hero-main-y, 0px) !important;
   margin-top: 0 !important;
 }
-${block(
+${
+  settings.hero_second_shimmer.enabled
+    ? `.public-site .hero-line--left:not(.hero-line--wordmark),
+.public-site .home-hero-container .hero-heading .hero-line--left:not(.hero-line--wordmark),
+html[data-ex-experience] .public-site .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
+html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark) {
+  font-family: var(--typo-hero-subtitle-font) !important;
+  font-size: var(--typo-hero-subtitle-size) !important;
+  line-height: 1.35 !important;
+  letter-spacing: var(--typo-hero-subtitle-letter-spacing) !important;
+  /* Metallic fill owns color — do not paint solid subtitle yellow */
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: none !important;
+}`
+    : block(
   `.public-site .hero-line--left:not(.hero-line--wordmark),
 .public-site .home-hero-container .hero-heading .hero-line--left:not(.hero-line--wordmark),
 html[data-ex-experience] .public-site .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
 html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark)`,
   "hero_subtitle",
-)}
+)
+}
 .public-site .hero-line--left:not(.hero-line--wordmark),
 .public-site .home-hero-container .hero-heading .hero-line--left:not(.hero-line--wordmark),
 html[data-ex-experience] .public-site .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
@@ -1281,15 +1299,14 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
   overflow: visible !important;
   will-change: background-position !important;
   background-image: var(--typo-hero-second-shimmer) !important;
-  background-size: 240% 100%, 100% 100% !important;
+  background-size: 200% 100%, 100% 115% !important;
   background-repeat: no-repeat, no-repeat !important;
-  background-position: 0% center, center !important;
+  background-position: 0% center, center top !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
   text-shadow: none !important;
-  /* Filter must stay off the clipped glyphs — applied on .hero-line-shimmer-wrap */
   filter: none !important;
   animation: hero-second-shimmer var(--typo-hero-second-shimmer-duration) linear infinite !important;
 }
@@ -1304,8 +1321,8 @@ html[data-ex-experience] .ex-root .hero-line-shimmer-wrap {
   line-height: 0 !important;
 }
 @keyframes hero-second-shimmer {
-  0% { background-position: 0% center, center; }
-  100% { background-position: 200% center, center; }
+  0% { background-position: 0% center, center top; }
+  100% { background-position: 100% center, center top; }
 }
 @media (prefers-reduced-motion: reduce) {
   .public-site .hero-line--left:not(.hero-line--wordmark),
@@ -1314,7 +1331,7 @@ html[data-ex-experience] .ex-root .hero-line-shimmer-wrap {
   html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
   .public-site .hero-line--left.hero-line--shimmer {
     animation: none !important;
-    background-position: 40% center, center !important;
+    background-position: 35% center, center top !important;
   }
 }`
     : ""

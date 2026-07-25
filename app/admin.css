@@ -1791,9 +1791,9 @@ select.admin-input option:checked {
 }
 
 .typo-stage__sample--shimmer {
-  background-size: 220% 100% !important;
-  background-repeat: no-repeat !important;
-  background-position: 0% center !important;
+  background-size: 200% 100%, 100% 115% !important;
+  background-repeat: no-repeat, no-repeat !important;
+  background-position: 0% center, center top !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   color: transparent !important;
