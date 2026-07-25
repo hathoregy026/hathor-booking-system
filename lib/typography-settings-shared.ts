@@ -800,19 +800,21 @@ function mixHex(a: string, b: string, amount: number): string {
   return `#${to(ar + (br - ar) * t)}${to(ag + (bg - ag) * t)}${to(ab + (bb - ab) * t)}`;
 }
 
+/** Real polished-gold photo (faceted metal ref) — clipped into the letters */
+export const HERO_GOLD_METAL_TEXTURE = "/textures/gold-metal.webp";
+
 /**
- * Polished gold like the “Gold” script PSD:
- * top-lit bevel (bright crest on top of each stroke → honey → deep amber),
- * soft gold sheen (never a white knife-cut), warm emboss rim.
+ * Real gold material in the glyphs (not yellow paint + a cut slash).
+ * Stack (top → bottom): soft gold sheen, top-lit grade, metal photo, opaque foil fallback.
+ * Photo = your gold ref; foil underneath so letters never go invisible if the image fails.
  */
 export function heroSecondShimmerBackground(
   shimmer: HeroSecondShimmer,
 ): string {
   const s = Math.min(1, Math.max(0, shimmer.shine / 100));
-  /* Top of stroke = hot specular; bottom = deep metal — matches the ref */
-  const crest = mixHex("#FFFFFF", "#FFF6C8", 0.2 + s * 0.35);
-  const lemon = mixHex("#FFE566", "#FFF0A0", 0.35 + s * 0.4);
-  const bright = mixHex("#F0D060", "#E8C34A", 0.45);
+  const crest = mixHex("#FFFFFF", "#FFF6C8", 0.25 + s * 0.4);
+  const lemon = mixHex("#FFE566", "#FFF0A0", 0.4 + s * 0.4);
+  const bright = mixHex("#F0D060", "#E8C34A", 0.5);
   const honey = "#D4AF37";
   const rich = "#C9A227";
   const ochre = "#A67C00";
@@ -820,46 +822,57 @@ export function heroSecondShimmerBackground(
   const bronze = "#5C3A0A";
   const deep = "#2A1808";
 
-  /*
-   * Top-lit poured gold (crest at TOP, not mid-band).
-   * Extra bright ridge ~18% mimics the tubular highlight on the PSD.
-   */
+  /* Opaque top-lit foil — always paints if texture fails */
   const foil = `linear-gradient(180deg,
     ${crest} 0%,
-    ${lemon} 10%,
-    ${bright} 18%,
-    ${honey} 32%,
-    ${rich} 48%,
-    ${ochre} 62%,
-    ${amber} 76%,
-    ${bronze} 90%,
+    ${lemon} 8%,
+    ${bright} 16%,
+    ${honey} 30%,
+    ${rich} 45%,
+    ${ochre} 58%,
+    ${amber} 72%,
+    ${bronze} 88%,
     ${deep} 100%)`;
 
-  /* Soft gold bloom only — feathered, no hard slash */
-  const sheenA = s > 0.55 ? "55" : "38";
-  const sheenPeak = s > 0.55 ? "88" : "66";
+  /* Grade over the photo: hot ridge on top, weight in the troughs */
+  const grade = `linear-gradient(180deg,
+    rgba(255, 252, 240, ${0.5 + s * 0.25}) 0%,
+    rgba(255, 229, 102, ${0.22 + s * 0.15}) 10%,
+    transparent 32%,
+    transparent 58%,
+    rgba(42, 24, 8, ${0.28 + (1 - s) * 0.15}) 82%,
+    rgba(20, 12, 4, ${0.45 + (1 - s) * 0.15}) 100%)`;
+
+  /* Soft gold bloom — feathered, never a white knife */
+  const sheenA = s > 0.55 ? "60" : "40";
+  const sheenPeak = s > 0.55 ? "90" : "70";
   const sheen = `linear-gradient(100deg,
     transparent 0%,
-    transparent 40%,
-    ${lemon}${sheenA} 47%,
+    transparent 42%,
+    ${lemon}${sheenA} 48%,
     ${crest}${sheenPeak} 50%,
-    ${lemon}${sheenA} 53%,
-    transparent 60%,
+    ${lemon}${sheenA} 52%,
+    transparent 58%,
     transparent 100%)`;
 
-  return `${sheen}, ${foil}`;
+  /* No quotes in url() — safer in CSS vars + React inline styles */
+  const metal = `url(${HERO_GOLD_METAL_TEXTURE})`;
+
+  return `${sheen}, ${grade}, ${metal}, ${foil}`;
 }
 
 export function heroSecondShimmerFilter(shimmer: HeroSecondShimmer): string {
   if (!shimmer.enabled || shimmer.shadow <= 0) return "none";
   const t = Math.min(1, Math.max(0, shimmer.shadow / 100));
-  const hi = (0.3 + t * 0.35).toFixed(2);
-  const lo = (0.45 + t * 0.35).toFixed(2);
-  const bloom = (0.12 + t * 0.2).toFixed(2);
+  const hi = (0.32 + t * 0.35).toFixed(2);
+  const lo = (0.48 + t * 0.35).toFixed(2);
+  const bloom = (0.14 + t * 0.22).toFixed(2);
   return [
     `drop-shadow(0 -1px 0 rgba(255, 246, 200, ${hi}))`,
     `drop-shadow(0 1px 0 rgba(42, 24, 8, ${lo}))`,
-    `drop-shadow(0 0 6px rgba(212, 175, 55, ${bloom}))`,
+    `drop-shadow(0 0 8px rgba(212, 175, 55, ${bloom}))`,
+    `saturate(${(1.1 + t * 0.25).toFixed(2)})`,
+    `contrast(${(1.05 + t * 0.12).toFixed(2)})`,
   ].join(" ");
 }
 
@@ -870,9 +883,8 @@ export function heroSecondShimmerInlineStyle(
   if (!shimmer.enabled) return {};
   return {
     backgroundImage: heroSecondShimmerBackground(shimmer),
-    /* Foil = 1em so top→bottom bevel lands on stroke height */
-    backgroundSize: "200% 1em, 100% 1.05em",
-    backgroundRepeat: "no-repeat, no-repeat",
+    backgroundSize: "200% 1em, 100% 1.05em, 160% 160%, 100% 1.05em",
+    backgroundRepeat: "no-repeat, no-repeat, repeat, no-repeat",
     WebkitBackgroundClip: "text",
     backgroundClip: "text",
     WebkitTextFillColor: "transparent",
@@ -1306,8 +1318,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
   overflow: visible !important;
   will-change: background-position !important;
   background-image: var(--typo-hero-second-shimmer) !important;
-  background-size: 200% 1em, 100% 1.05em !important;
-  background-repeat: no-repeat, no-repeat !important;
+  background-size: 200% 1em, 100% 1.05em, 160% 160%, 100% 1.05em !important;
+  background-repeat: no-repeat, no-repeat, repeat, no-repeat !important;
   /* background-position owned by @keyframes — never !important here */
   -webkit-background-clip: text !important;
   background-clip: text !important;
@@ -1327,9 +1339,9 @@ html[data-ex-experience] .ex-root .hero-line-shimmer-wrap {
   filter: var(--typo-hero-second-shimmer-filter) !important;
 }
 @keyframes hero-second-shimmer {
-  /* Soft sheen drifts; foil nods slightly so top light breathes */
-  0% { background-position: 0% center, center top; }
-  100% { background-position: 100% center, center bottom; }
+  /* Sheen drifts; metal photo slides (facet reflections move); foil breathes */
+  0% { background-position: 0% center, center top, 0% 0%, center top; }
+  100% { background-position: 100% center, center top, 35% 28%, center bottom; }
 }
 @media (prefers-reduced-motion: reduce) {
   .public-site .hero-line--left:not(.hero-line--wordmark),
@@ -1338,7 +1350,7 @@ html[data-ex-experience] .ex-root .hero-line-shimmer-wrap {
   html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
   .public-site .hero-line--left.hero-line--shimmer {
     animation: none !important;
-    background-position: 40% center, center top !important;
+    background-position: 40% center, center top, 15% 10%, center top !important;
   }
 }`
     : ""

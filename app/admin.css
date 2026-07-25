@@ -1791,8 +1791,8 @@ select.admin-input option:checked {
 }
 
 .typo-stage__sample--shimmer {
-  background-size: 200% 1em, 100% 1.05em !important;
-  background-repeat: no-repeat, no-repeat !important;
+  background-size: 200% 1em, 100% 1.05em, 160% 160%, 100% 1.05em !important;
+  background-repeat: no-repeat, no-repeat, repeat, no-repeat !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   color: transparent !important;
@@ -1811,17 +1811,17 @@ select.admin-input option:checked {
 
 @keyframes hero-second-shimmer {
   0% {
-    background-position: 0% center, center top;
+    background-position: 0% center, center top, 0% 0%, center top;
   }
   100% {
-    background-position: 100% center, center bottom;
+    background-position: 100% center, center top, 35% 28%, center bottom;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .typo-stage__sample--shimmer {
     animation: none !important;
-    background-position: 40% center, center top !important;
+    background-position: 40% center, center top, 15% 10%, center top !important;
   }
 }
 

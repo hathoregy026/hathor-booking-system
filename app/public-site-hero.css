@@ -547,9 +547,9 @@
 /* Hero second-title gold — soft sheen + top-lit foil breath */
 @keyframes hero-second-shimmer {
   0% {
-    background-position: 0% center, center top;
+    background-position: 0% center, center top, 0% 0%, center top;
   }
   100% {
-    background-position: 100% center, center bottom;
+    background-position: 100% center, center top, 35% 28%, center bottom;
   }
 }
