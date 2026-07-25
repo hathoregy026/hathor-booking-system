@@ -197,3 +197,91 @@
   font-style: normal;
   font-display: swap;
 }
+
+/* —— more-fonts (Admin → Typography picker) —— */
+
+@font-face {
+  font-family: "Adobe Bloom";
+  src: url("/fonts/more-fonts/adobe-bloom-script.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Adorebloom";
+  src: url("/fonts/more-fonts/adorebloom.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Besty Script";
+  src: url("/fonts/more-fonts/Besty-Script-Exfont208d.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Canthira";
+  src: url("/fonts/more-fonts/canthira.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Carista";
+  src:
+    url("/fonts/more-fonts/carista-calligraphy.otf") format("opentype"),
+    url("/fonts/more-fonts/carista-calligraphy.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Italiana";
+  src: url("/fonts/more-fonts/Italiana-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Piloner Thin";
+  src: url("/fonts/more-fonts/Fontspring-DEMO-piloner-thin-iF66b5d28bd9725.otf")
+    format("opentype");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Piloner Thin Italic";
+  src: url("/fonts/more-fonts/Fontspring-DEMO-piloner-thinitalic-iF66b5d28bdf68e.otf")
+    format("opentype");
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Piloner Semibold";
+  src: url("/fonts/more-fonts/Fontspring-DEMO-piloner-semibold-iF66b5d28bcf566.otf")
+    format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Piloner Semibold Italic";
+  src: url("/fonts/more-fonts/Fontspring-DEMO-piloner-semibolditalic-iF66b5d28bd44fe.otf")
+    format("opentype");
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}

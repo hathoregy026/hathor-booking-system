@@ -30,6 +30,16 @@ export const HATHOR_LUXURY_FONTS = [
   "Rolling Fonte",
   "Playfair Display",
   "Playfair Display Italic",
+  "Adobe Bloom",
+  "Adorebloom",
+  "Besty Script",
+  "Canthira",
+  "Carista",
+  "Italiana",
+  "Piloner Thin",
+  "Piloner Thin Italic",
+  "Piloner Semibold",
+  "Piloner Semibold Italic",
 ] as const;
 
 export type HathorLuxuryFont = (typeof HATHOR_LUXURY_FONTS)[number];
@@ -95,6 +105,39 @@ export const HATHOR_FONT_GROUPS: readonly HathorFontFamilyGroup[] = [
   {
     family: "Playfair Display Italic",
     variants: [{ id: "Playfair Display Italic", label: "Italic" }],
+  },
+  {
+    family: "Adobe Bloom",
+    variants: [{ id: "Adobe Bloom", label: "Script" }],
+  },
+  {
+    family: "Adorebloom",
+    variants: [{ id: "Adorebloom", label: "Regular" }],
+  },
+  {
+    family: "Besty Script",
+    variants: [{ id: "Besty Script", label: "Script" }],
+  },
+  {
+    family: "Canthira",
+    variants: [{ id: "Canthira", label: "Regular" }],
+  },
+  {
+    family: "Carista",
+    variants: [{ id: "Carista", label: "Calligraphy" }],
+  },
+  {
+    family: "Italiana",
+    variants: [{ id: "Italiana", label: "Regular" }],
+  },
+  {
+    family: "Piloner",
+    variants: [
+      { id: "Piloner Thin", label: "Thin" },
+      { id: "Piloner Thin Italic", label: "Thin Italic" },
+      { id: "Piloner Semibold", label: "Semibold" },
+      { id: "Piloner Semibold Italic", label: "Semibold Italic" },
+    ],
   },
 ] as const;
 
@@ -607,6 +650,16 @@ export const HATHOR_FONT_STACKS: Record<HathorLuxuryFont, string> = {
   "Rolling Fonte": '"Rolling Fonte", serif',
   "Playfair Display": '"Playfair Display", Georgia, serif',
   "Playfair Display Italic": '"Playfair Display Italic", Georgia, serif',
+  "Adobe Bloom": '"Adobe Bloom", cursive',
+  Adorebloom: '"Adorebloom", cursive',
+  "Besty Script": '"Besty Script", cursive',
+  Canthira: '"Canthira", serif',
+  Carista: '"Carista", cursive',
+  Italiana: '"Italiana", Georgia, serif',
+  "Piloner Thin": '"Piloner Thin", "Piloner", sans-serif',
+  "Piloner Thin Italic": '"Piloner Thin Italic", "Piloner", sans-serif',
+  "Piloner Semibold": '"Piloner Semibold", "Piloner", sans-serif',
+  "Piloner Semibold Italic": '"Piloner Semibold Italic", "Piloner", sans-serif',
 };
 
 function fontStack(font: HathorLuxuryFont): string {
