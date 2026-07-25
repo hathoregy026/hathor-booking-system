@@ -109,6 +109,39 @@ export default function AdminContentPage() {
     SITE_IMAGE_GROUPS[0]?.pagePath ?? "/",
   );
 
+  useEffect(() => {
+    const applyHash = () => {
+      const raw = window.location.hash.replace(/^#/, "").toLowerCase();
+      if (!raw) return;
+
+      const match = SITE_IMAGE_GROUPS.find((group) => {
+        const path = group.pagePath.toLowerCase();
+        const slug = path.replace(/^\/#?/, "").replace(/\//g, "-") || "home";
+        return (
+          raw === "site-images" ||
+          raw === slug ||
+          raw === path ||
+          path.endsWith(raw) ||
+          (raw === "floating-ig" && path.includes("floating-ig")) ||
+          (raw === "our-voyages" && path.includes("our-voyages"))
+        );
+      });
+
+      if (match) {
+        setOpenImageGroup(match.pagePath);
+        window.requestAnimationFrame(() => {
+          document
+            .getElementById("site-images")
+            ?.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      }
+    };
+
+    applyHash();
+    window.addEventListener("hashchange", applyHash);
+    return () => window.removeEventListener("hashchange", applyHash);
+  }, []);
+
   const loadContent = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -430,10 +463,11 @@ export default function AdminContentPage() {
         <div>
           <h2 className="admin-heading text-xl">Website Images</h2>
           <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
-            Choose a page below, then replace or clear any photo. Replacing
-            publishes to the live site immediately. Use the{" "}
-            <strong>Our Voyages</strong> tab for the homepage voyage accordion
-            backgrounds (four dedicated photos, not shared with other pages).
+            Choose a tab below, then replace any photo. Uploads publish to the
+            live site immediately. Dedicated sections:{" "}
+            <strong>Our Voyages</strong> (homepage accordion backgrounds) and{" "}
+            <strong>Floating IG</strong> (Sail with Hathor Instagram bubbles) —
+            each photo is separate and not shared with other pages.
           </p>
         </div>
 
@@ -447,7 +481,17 @@ export default function AdminContentPage() {
                 role="tab"
                 aria-selected={isActive}
                 className={`site-images-tab${isActive ? " is-active" : ""}`}
-                onClick={() => setOpenImageGroup(group.pagePath)}
+                onClick={() => {
+                  setOpenImageGroup(group.pagePath);
+                  const slug =
+                    group.pagePath.replace(/^\/#?/, "").replace(/\//g, "-") ||
+                    "home";
+                  window.history.replaceState(
+                    null,
+                    "",
+                    `#${slug === "" || slug === "home" ? "site-images" : slug}`,
+                  );
+                }}
               >
                 {group.title}
               </button>

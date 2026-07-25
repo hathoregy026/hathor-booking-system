@@ -185,7 +185,10 @@ function layoutForSlot(slot: SiteImageSlot): SiteImageLayoutKind {
 export function getSiteImageGroupHeading(pageTitle: string): string {
   if (pageTitle === "Homepage" || pageTitle === "Home") return "Homepage Images";
   if (pageTitle === "About Us") return "About Us Images";
-  if (pageTitle === "Floating IG images") return "Floating IG Images";
+  if (pageTitle === "Our Voyages") return "Our Voyages Accordion Images";
+  if (pageTitle === "Floating IG" || pageTitle === "Floating IG images") {
+    return "Floating IG Bubble Images";
+  }
   return `${pageTitle} Images`;
 }
 
@@ -219,23 +222,18 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
     homepageItems.push(toAdminItem(slot, "/", card.label, index + 1));
   });
 
-  const floatingIgNames = [
-    "floating-ig-1",
-    "floating-ig-2",
-    "floating-ig-3",
-    "floating-ig-4",
-  ] as const;
+  const floatingIgCards: ReadonlyArray<{ name: string; label: string }> = [
+    { name: "floating-ig-1", label: "Bubble 1 — Lounge" },
+    { name: "floating-ig-2", label: "Bubble 2 — Nile highlights" },
+    { name: "floating-ig-3", label: "Bubble 3 — Dining" },
+    { name: "floating-ig-4", label: "Bubble 4 — Suite" },
+  ];
   const floatingIgItems: SiteImageAdminItem[] = [];
-  floatingIgNames.forEach((name, index) => {
-    const slot = byName.get(name);
+  floatingIgCards.forEach((card, index) => {
+    const slot = byName.get(card.name);
     if (!slot) return;
     floatingIgItems.push(
-      toAdminItem(
-        slot,
-        "/#floating-ig",
-        `Floating IG — ${index + 1}`,
-        index + 1,
-      ),
+      toAdminItem(slot, "/#floating-ig", card.label, index + 1),
     );
   });
 
@@ -298,9 +296,9 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
     },
     {
       pagePath: "/#floating-ig",
-      title: "Floating IG images",
+      title: "Floating IG",
       description:
-        "Photos for the Sail with Hathor floating Instagram bubbles only. Independent from all other page images.",
+        "Photos for the Sail with Hathor floating Instagram bubbles only. Each bubble has its own upload — independent from Homepage, Our Voyages, and every other page.",
       items: floatingIgItems,
     },
     ...orderedPaths.map((pagePath) => ({
