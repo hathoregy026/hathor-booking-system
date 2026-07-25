@@ -804,58 +804,52 @@ function mixHex(a: string, b: string, amount: number): string {
 export const HERO_GOLD_METAL_TEXTURE = "/textures/gold-metal.webp";
 
 /**
- * Real gold material in the glyphs (not yellow paint + a cut slash).
- * Stack (top → bottom): soft gold sheen, top-lit grade, metal photo, opaque foil fallback.
- * Photo = your gold ref; foil underneath so letters never go invisible if the image fails.
+ * Real gold material in the glyphs — lean brand gold (#B69F64), not too dark.
+ * Soft feathered sheen (no hard cut). Photo + light wash + foil fallback.
  */
 export function heroSecondShimmerBackground(
   shimmer: HeroSecondShimmer,
 ): string {
   const s = Math.min(1, Math.max(0, shimmer.shine / 100));
-  const crest = mixHex("#FFFFFF", "#FFF6C8", 0.25 + s * 0.4);
-  const lemon = mixHex("#FFE566", "#FFF0A0", 0.4 + s * 0.4);
-  const bright = mixHex("#F0D060", "#E8C34A", 0.5);
-  const honey = "#D4AF37";
-  const rich = "#C9A227";
-  const ochre = "#A67C00";
-  const amber = "#8B6914";
-  const bronze = "#5C3A0A";
-  const deep = "#2A1808";
+  const brand = "#B69F64";
+  const crest = mixHex("#FFFCF5", "#F5E6C0", 0.35 + s * 0.25);
+  const champagne = mixHex("#E8D5A0", brand, 0.45);
+  const honey = mixHex(brand, "#D4AF37", 0.55);
+  const rich = mixHex(brand, "#C4A35A", 0.4);
+  const amber = mixHex(brand, "#9A8048", 0.45);
+  const bronze = mixHex("#8A7348", "#6B5A38", 0.4);
 
-  /* Opaque top-lit foil — always paints if texture fails */
+  /* Lighter brand-gold foil — no near-black troughs */
   const foil = `linear-gradient(180deg,
     ${crest} 0%,
-    ${lemon} 8%,
-    ${bright} 16%,
-    ${honey} 30%,
-    ${rich} 45%,
-    ${ochre} 58%,
-    ${amber} 72%,
-    ${bronze} 88%,
-    ${deep} 100%)`;
+    ${champagne} 12%,
+    ${honey} 28%,
+    ${brand} 48%,
+    ${rich} 68%,
+    ${amber} 86%,
+    ${bronze} 100%)`;
 
-  /* Grade over the photo: hot ridge on top, weight in the troughs */
+  /* Lift the photo toward brand gold; keep troughs soft, not black */
   const grade = `linear-gradient(180deg,
-    rgba(255, 252, 240, ${0.5 + s * 0.25}) 0%,
-    rgba(255, 229, 102, ${0.22 + s * 0.15}) 10%,
-    transparent 32%,
-    transparent 58%,
-    rgba(42, 24, 8, ${0.28 + (1 - s) * 0.15}) 82%,
-    rgba(20, 12, 4, ${0.45 + (1 - s) * 0.15}) 100%)`;
+    rgba(255, 252, 245, ${0.35 + s * 0.15}) 0%,
+    rgba(230, 213, 160, ${0.18 + s * 0.1}) 12%,
+    rgba(182, 159, 100, ${0.12 + s * 0.08}) 40%,
+    transparent 55%,
+    rgba(182, 159, 100, ${0.14 + (1 - s) * 0.08}) 78%,
+    rgba(107, 90, 56, ${0.18 + (1 - s) * 0.1}) 100%)`;
 
-  /* Soft gold bloom — feathered, never a white knife */
-  const sheenA = s > 0.55 ? "60" : "40";
-  const sheenPeak = s > 0.55 ? "90" : "70";
+  /* Wide faded sheen — soft bloom, never a hard cut line */
   const sheen = `linear-gradient(100deg,
     transparent 0%,
-    transparent 42%,
-    ${lemon}${sheenA} 48%,
-    ${crest}${sheenPeak} 50%,
-    ${lemon}${sheenA} 52%,
-    transparent 58%,
+    transparent 28%,
+    ${champagne}18 38%,
+    ${crest}33 46%,
+    ${crest}55 50%,
+    ${crest}33 54%,
+    ${champagne}18 62%,
+    transparent 72%,
     transparent 100%)`;
 
-  /* No quotes in url() — safer in CSS vars + React inline styles */
   const metal = `url(${HERO_GOLD_METAL_TEXTURE})`;
 
   return `${sheen}, ${grade}, ${metal}, ${foil}`;
@@ -864,15 +858,15 @@ export function heroSecondShimmerBackground(
 export function heroSecondShimmerFilter(shimmer: HeroSecondShimmer): string {
   if (!shimmer.enabled || shimmer.shadow <= 0) return "none";
   const t = Math.min(1, Math.max(0, shimmer.shadow / 100));
-  const hi = (0.32 + t * 0.35).toFixed(2);
-  const lo = (0.48 + t * 0.35).toFixed(2);
-  const bloom = (0.14 + t * 0.22).toFixed(2);
+  const hi = (0.22 + t * 0.25).toFixed(2);
+  const lo = (0.28 + t * 0.25).toFixed(2);
+  const bloom = (0.1 + t * 0.15).toFixed(2);
   return [
-    `drop-shadow(0 -1px 0 rgba(255, 246, 200, ${hi}))`,
-    `drop-shadow(0 1px 0 rgba(42, 24, 8, ${lo}))`,
-    `drop-shadow(0 0 8px rgba(212, 175, 55, ${bloom}))`,
-    `saturate(${(1.1 + t * 0.25).toFixed(2)})`,
-    `contrast(${(1.05 + t * 0.12).toFixed(2)})`,
+    `drop-shadow(0 -1px 0 rgba(245, 230, 192, ${hi}))`,
+    `drop-shadow(0 1px 0 rgba(107, 90, 56, ${lo}))`,
+    `drop-shadow(0 0 6px rgba(182, 159, 100, ${bloom}))`,
+    `saturate(${(1.05 + t * 0.12).toFixed(2)})`,
+    `brightness(${(1.04 + t * 0.06).toFixed(2)})`,
   ].join(" ");
 }
 
