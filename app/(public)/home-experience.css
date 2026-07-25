@@ -738,7 +738,8 @@ h1, h2, h3, h4, p {
   color: #ffffff;
 }
 
-/* Hero Book Now — same outer size as site CTAs; glass style kept for hero */
+/* Hero Book Now — same outer size as site CTAs; glass style kept for hero.
+   Do not add stroke/hairline chrome here — hero is excluded from specular effects. */
 .hero-cta.btn,
 .btn.hero-cta,
 .hero-button .hero-cta {
@@ -750,8 +751,8 @@ h1, h2, h3, h4, p {
   max-height: var(--hathor-btn-height, 2.85rem);
   padding: 3px var(--hathor-btn-pad-x, 1.75rem) 1px;
   background: rgba(255, 255, 255, 0.06);
-  border: 1px solid #b69f64;
-  color: #b69f64;
+  border: 1px solid rgba(212, 194, 138, 0.7);
+  color: #ffffff;
   box-shadow: none;
 }
 
@@ -1245,8 +1246,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   border-radius: 999px;
   backdrop-filter: blur(8px);
   background: rgba(255, 255, 255, 0.06);
-  border: 1px solid #b69f64;
-  color: #b69f64;
+  border: 1px solid rgba(212, 194, 138, 0.7);
+  color: #ffffff;
   box-sizing: border-box;
   overflow: visible;
   will-change: width;
