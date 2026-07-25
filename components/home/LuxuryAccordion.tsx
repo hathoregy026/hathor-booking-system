@@ -37,7 +37,11 @@ export default function LuxuryAccordion({
   const titleStyle = useTypographyInlineStyle("our_voyages_title");
   const indicationStyle = useTypographyInlineStyle("our_voyages_indication");
   const nameStyle = useTypographyInlineStyle("our_voyages_main");
-  const bodyStyle = useTypographyInlineStyle("body_text");
+  const nameHoverStyle = useTypographyInlineStyle("our_voyages_main_hover");
+  const metaHoverStyle = useTypographyInlineStyle(
+    "our_voyages_indication_hover",
+  );
+  const bodyHoverStyle = useTypographyInlineStyle("our_voyages_body_hover");
 
   const sectionTitle = (title ?? voyagesCopy.title).trim() || "Our Voyages";
   const indication = voyagesCopy.indication.trim();
@@ -124,8 +128,8 @@ export default function LuxuryAccordion({
 
                 <div className={styles.row}>
                   <h3
-                    className={`${styles.name} typo-our-voyages-main`}
-                    style={nameStyle}
+                    className={`${styles.name} ${isActive ? "typo-our-voyages-main-hover" : "typo-our-voyages-main"}`}
+                    style={isActive ? nameHoverStyle : nameStyle}
                   >
                     {item.name}
                   </h3>
@@ -142,15 +146,15 @@ export default function LuxuryAccordion({
                 >
                   {item.meta ? (
                     <p
-                      className={`${styles.meta} typo-body-text`}
-                      style={bodyStyle}
+                      className={`${styles.meta} typo-our-voyages-indication-hover`}
+                      style={metaHoverStyle}
                     >
                       {item.meta}
                     </p>
                   ) : null}
                   <p
-                    className={`${styles.description} typo-body-text`}
-                    style={bodyStyle}
+                    className={`${styles.description} typo-our-voyages-body-hover`}
+                    style={bodyHoverStyle}
                   >
                     {item.description}
                   </p>

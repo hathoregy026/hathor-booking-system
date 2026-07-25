@@ -25,7 +25,8 @@ import {
   HERO_PAGE_KEYS,
   HERO_PAGE_LABELS,
   ON_IMAGES_ROLES,
-  OUR_VOYAGES_ROLES,
+  OUR_VOYAGES_DEFAULT_ROLES,
+  OUR_VOYAGES_HOVER_ROLES,
   fontGroupForFace,
   heroSecondShimmerInlineStyle,
   isFaceInGroup,
@@ -78,7 +79,7 @@ const GROUP_WHERE: Record<EditorGroup, string> = {
   luxury_marquee:
     "Homepage text strip under the hero — edit font, size, colour, and the scrolling phrases (one phrase per line). Dividers (✦) are added automatically between phrases.",
   our_voyages:
-    "Homepage Our Voyages accordion — edit the big title, small indication under it, and the main voyage row names (font, size, colour). Title and indication wording are editable here; row names come from each voyage.",
+    "Homepage Our Voyages accordion — Default styles for the section title, indication, and closed row names; Hovered styles for open columns (main name, meta indication, and body).",
 };
 
 const ON_IMAGES_LINE_LABELS: Record<OnImagesRole, string> = {
@@ -91,6 +92,9 @@ const OUR_VOYAGES_LINE_LABELS: Record<OurVoyagesRole, string> = {
   our_voyages_title: "Big title",
   our_voyages_indication: "Indication",
   our_voyages_main: "Main",
+  our_voyages_main_hover: "Main",
+  our_voyages_indication_hover: "Indication",
+  our_voyages_body_hover: "Body",
 };
 
 const HERO_LINE_LABELS: Record<"hero_title" | "hero_subtitle", string> = {
@@ -303,6 +307,9 @@ export function TypographyStylesPanel() {
     useState<OnImagesRole>("on_images_title");
   const [ourVoyagesLine, setOurVoyagesLine] =
     useState<OurVoyagesRole>("our_voyages_title");
+  const [ourVoyagesMode, setOurVoyagesMode] = useState<"default" | "hover">(
+    "default",
+  );
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const dragRef = useRef<{
@@ -371,9 +378,26 @@ export function TypographyStylesPanel() {
       ? ourVoyagesCopy.title
       : ourVoyagesLine === "our_voyages_indication"
         ? ourVoyagesCopy.indication
-        : "3 Nights / 4 Days – Aswan to Luxor";
+        : ourVoyagesLine === "our_voyages_indication_hover"
+          ? "3 Nights · Aswan to Luxor"
+          : ourVoyagesLine === "our_voyages_body_hover"
+            ? "Private dahabiya sailing with suites, fine dining, and unhurried days on the Nile."
+            : "3 Nights / 4 Days – Aswan to Luxor";
+  const ourVoyagesRoles =
+    ourVoyagesMode === "hover"
+      ? OUR_VOYAGES_HOVER_ROLES
+      : OUR_VOYAGES_DEFAULT_ROLES;
+  const setOurVoyagesModeAndLine = (mode: "default" | "hover") => {
+    setOurVoyagesMode(mode);
+    setOurVoyagesLine(
+      mode === "hover" ? "our_voyages_main_hover" : "our_voyages_title",
+    );
+  };
   const stageTone =
-    group === "hero" || group === "on_images" || group === "luxury_marquee"
+    group === "hero" ||
+    group === "on_images" ||
+    group === "luxury_marquee" ||
+    (group === "our_voyages" && ourVoyagesMode === "hover")
       ? "dark"
       : "light";
   const editingLabel =
@@ -382,7 +406,7 @@ export function TypographyStylesPanel() {
       : group === "on_images"
         ? `On images · ${ON_IMAGES_LINE_LABELS[onImagesLine]}`
         : group === "our_voyages"
-          ? `Our Voyages · ${OUR_VOYAGES_LINE_LABELS[ourVoyagesLine]}`
+          ? `Our Voyages · ${ourVoyagesMode === "hover" ? "Hovered · " : ""}${OUR_VOYAGES_LINE_LABELS[ourVoyagesLine]}`
           : GROUP_LABELS[group];
 
   const patch = (partial: Partial<TypographyTextStyle>) => {
@@ -567,7 +591,10 @@ export function TypographyStylesPanel() {
                 setGroup(key);
                 if (key === "hero") setHeroLine("hero_title");
                 if (key === "on_images") setOnImagesLine("on_images_title");
-                if (key === "our_voyages") setOurVoyagesLine("our_voyages_title");
+                if (key === "our_voyages") {
+                  setOurVoyagesMode("default");
+                  setOurVoyagesLine("our_voyages_title");
+                }
               }}
             >
               {GROUP_LABELS[key]}
@@ -698,9 +725,33 @@ export function TypographyStylesPanel() {
             <div
               className="typo-stage__align"
               role="tablist"
+              aria-label="Our Voyages state"
+            >
+              <button
+                type="button"
+                role="tab"
+                aria-selected={ourVoyagesMode === "default"}
+                className={`typo-stage__align-btn${ourVoyagesMode === "default" ? " typo-stage__align-btn--on" : ""}`}
+                onClick={() => setOurVoyagesModeAndLine("default")}
+              >
+                Default
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={ourVoyagesMode === "hover"}
+                className={`typo-stage__align-btn${ourVoyagesMode === "hover" ? " typo-stage__align-btn--on" : ""}`}
+                onClick={() => setOurVoyagesModeAndLine("hover")}
+              >
+                Hovered column
+              </button>
+            </div>
+            <div
+              className="typo-stage__align"
+              role="tablist"
               aria-label="Our Voyages text role"
             >
-              {OUR_VOYAGES_ROLES.map((role) => (
+              {ourVoyagesRoles.map((role) => (
                 <button
                   key={role}
                   type="button"
@@ -1037,12 +1088,36 @@ export function TypographyStylesPanel() {
           <>
             <p className="typo-easy__controls-hint">
               Editing{" "}
-              <strong>{OUR_VOYAGES_LINE_LABELS[ourVoyagesLine]}</strong> for the
-              Our Voyages accordion — wording (title &amp; indication), font,
-              and size.
+              <strong>
+                {ourVoyagesMode === "hover" ? "Hovered column · " : ""}
+                {OUR_VOYAGES_LINE_LABELS[ourVoyagesLine]}
+              </strong>{" "}
+              — font, size, and colour
+              {ourVoyagesMode === "default" &&
+              (ourVoyagesLine === "our_voyages_title" ||
+                ourVoyagesLine === "our_voyages_indication")
+                ? ", plus wording"
+                : ""}
+              .
             </p>
             <div className="typo-easy__row">
-              {OUR_VOYAGES_ROLES.map((role) => (
+              <button
+                type="button"
+                className={`typo-stage__align-btn${ourVoyagesMode === "default" ? " typo-stage__align-btn--on" : ""}`}
+                onClick={() => setOurVoyagesModeAndLine("default")}
+              >
+                Default
+              </button>
+              <button
+                type="button"
+                className={`typo-stage__align-btn${ourVoyagesMode === "hover" ? " typo-stage__align-btn--on" : ""}`}
+                onClick={() => setOurVoyagesModeAndLine("hover")}
+              >
+                Hovered column
+              </button>
+            </div>
+            <div className="typo-easy__row">
+              {ourVoyagesRoles.map((role) => (
                 <button
                   key={role}
                   type="button"
@@ -1053,7 +1128,8 @@ export function TypographyStylesPanel() {
                 </button>
               ))}
             </div>
-            {ourVoyagesLine !== "our_voyages_main" ? (
+            {ourVoyagesLine === "our_voyages_title" ||
+            ourVoyagesLine === "our_voyages_indication" ? (
               <SimpleField
                 label={
                   ourVoyagesLine === "our_voyages_title"
@@ -1082,25 +1158,28 @@ export function TypographyStylesPanel() {
               </SimpleField>
             ) : (
               <p className="typo-easy__controls-hint">
-                Main styles the voyage row names on the homepage. Names come
-                from each cruise; only font, size, and colour are edited here.
+                {ourVoyagesMode === "hover"
+                  ? "Hovered styles apply when a voyage column is open. Wording comes from each cruise; only font, size, and colour are edited here."
+                  : "Main styles the closed voyage row names. Names come from each cruise; only font, size, and colour are edited here."}
               </p>
             )}
-            <div className="typo-easy__row typo-easy__row--actions">
-              <button
-                type="button"
-                className="typo-easy__reset-role"
-                onClick={() =>
-                  setSettings((prev) => ({
-                    ...prev,
-                    our_voyages_copy: { ...DEFAULT_OUR_VOYAGES_COPY },
-                  }))
-                }
-              >
-                <RotateCcw className="h-3.5 w-3.5" />
-                Reset Our Voyages wording
-              </button>
-            </div>
+            {ourVoyagesMode === "default" ? (
+              <div className="typo-easy__row typo-easy__row--actions">
+                <button
+                  type="button"
+                  className="typo-easy__reset-role"
+                  onClick={() =>
+                    setSettings((prev) => ({
+                      ...prev,
+                      our_voyages_copy: { ...DEFAULT_OUR_VOYAGES_COPY },
+                    }))
+                  }
+                >
+                  <RotateCcw className="h-3.5 w-3.5" />
+                  Reset Our Voyages wording
+                </button>
+              </div>
+            ) : null}
           </>
         ) : null}
 

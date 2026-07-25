@@ -138,6 +138,9 @@ export const TYPOGRAPHY_ROLES = [
   "our_voyages_title",
   "our_voyages_indication",
   "our_voyages_main",
+  "our_voyages_main_hover",
+  "our_voyages_indication_hover",
+  "our_voyages_body_hover",
 ] as const;
 
 export type TypographyRole = (typeof TYPOGRAPHY_ROLES)[number];
@@ -165,6 +168,12 @@ export const TYPOGRAPHY_ROLE_LABELS: Record<TypographyRole, string> = {
   our_voyages_indication: "Our Voyages · indication",
   /** Homepage Our Voyages accordion — row / voyage names */
   our_voyages_main: "Our Voyages · main",
+  /** Row / voyage names when a column is hovered / open */
+  our_voyages_main_hover: "Our Voyages · main (hover)",
+  /** Meta line inside an open column */
+  our_voyages_indication_hover: "Our Voyages · indication (hover)",
+  /** Description inside an open column */
+  our_voyages_body_hover: "Our Voyages · body (hover)",
 };
 
 /** Sub-roles edited inside the On images dashboard group */
@@ -176,14 +185,29 @@ export const ON_IMAGES_ROLES = [
 
 export type OnImagesRole = (typeof ON_IMAGES_ROLES)[number];
 
-/** Sub-roles edited inside the Our Voyages dashboard group */
-export const OUR_VOYAGES_ROLES = [
+/** Default (closed) roles in the Our Voyages dashboard group */
+export const OUR_VOYAGES_DEFAULT_ROLES = [
   "our_voyages_title",
   "our_voyages_indication",
   "our_voyages_main",
 ] as const;
 
+/** Hovered / open column roles in the Our Voyages dashboard group */
+export const OUR_VOYAGES_HOVER_ROLES = [
+  "our_voyages_main_hover",
+  "our_voyages_indication_hover",
+  "our_voyages_body_hover",
+] as const;
+
+/** All sub-roles edited inside the Our Voyages dashboard group */
+export const OUR_VOYAGES_ROLES = [
+  ...OUR_VOYAGES_DEFAULT_ROLES,
+  ...OUR_VOYAGES_HOVER_ROLES,
+] as const;
+
 export type OurVoyagesRole = (typeof OUR_VOYAGES_ROLES)[number];
+export type OurVoyagesDefaultRole = (typeof OUR_VOYAGES_DEFAULT_ROLES)[number];
+export type OurVoyagesHoverRole = (typeof OUR_VOYAGES_HOVER_ROLES)[number];
 
 const hexColor = z
   .string()
@@ -402,6 +426,9 @@ export const typographySettingsSchema = z.object({
   our_voyages_title: typographyTextStyleSchema,
   our_voyages_indication: typographyTextStyleSchema,
   our_voyages_main: typographyTextStyleSchema,
+  our_voyages_main_hover: typographyTextStyleSchema,
+  our_voyages_indication_hover: typographyTextStyleSchema,
+  our_voyages_body_hover: typographyTextStyleSchema,
   hero_layout: heroLayoutSchema,
   hero_second_shimmer: heroSecondShimmerSchema,
   /** @deprecated Prefer hero_pages.home — kept for older saved payloads */
@@ -517,6 +544,30 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
     color: "#1A1A1A",
     lineHeight: 1.2,
     letterSpacing: -0.3,
+    innerShadow: false,
+  },
+  our_voyages_main_hover: {
+    fontFamily: "Gamgote",
+    fontSize: 28,
+    color: "#FFFFFF",
+    lineHeight: 1.2,
+    letterSpacing: -0.3,
+    innerShadow: false,
+  },
+  our_voyages_indication_hover: {
+    fontFamily: "Lavenir",
+    fontSize: 13,
+    color: "#FFFFFF",
+    lineHeight: 1.35,
+    letterSpacing: 4,
+    innerShadow: false,
+  },
+  our_voyages_body_hover: {
+    fontFamily: "Gamgote",
+    fontSize: 16,
+    color: "#FFFFFF",
+    lineHeight: 1.8,
+    letterSpacing: 0,
     innerShadow: false,
   },
   hero_layout: { ...DEFAULT_HERO_LAYOUT },
@@ -907,6 +958,18 @@ export function parseTypographySettings(raw: unknown): TypographySettings {
       src.our_voyages_main,
       DEFAULT_TYPOGRAPHY_SETTINGS.our_voyages_main,
     ),
+    our_voyages_main_hover: parseTextStyle(
+      src.our_voyages_main_hover,
+      DEFAULT_TYPOGRAPHY_SETTINGS.our_voyages_main_hover,
+    ),
+    our_voyages_indication_hover: parseTextStyle(
+      src.our_voyages_indication_hover,
+      DEFAULT_TYPOGRAPHY_SETTINGS.our_voyages_indication_hover,
+    ),
+    our_voyages_body_hover: parseTextStyle(
+      src.our_voyages_body_hover,
+      DEFAULT_TYPOGRAPHY_SETTINGS.our_voyages_body_hover,
+    ),
     hero_layout: parseHeroLayout(src.hero_layout),
     hero_second_shimmer: parseHeroSecondShimmer(
       src.hero_second_shimmer ?? src.hero_second_gradient,
@@ -1050,7 +1113,10 @@ export function typographyToImportantCss(settings: TypographySettings): string {
       role === "luxury_marquee" ||
       role === "our_voyages_title" ||
       role === "our_voyages_indication" ||
-      role === "our_voyages_main"
+      role === "our_voyages_main" ||
+      role === "our_voyages_main_hover" ||
+      role === "our_voyages_indication_hover" ||
+      role === "our_voyages_body_hover"
         ? `\n  text-transform: none !important;\n  font-weight: 400 !important;`
         : "";
     return `${selector} {
@@ -1326,6 +1392,24 @@ ${block(
 .public-site .typo-our-voyages-main,
 html[data-ex-experience] .ex-root [data-hathor-accordion] .typo-our-voyages-main`,
   "our_voyages_main",
+)}
+${block(
+  `/* Our Voyages · main when column hovered / open */
+.public-site .typo-our-voyages-main-hover,
+html[data-ex-experience] .ex-root [data-hathor-accordion] .typo-our-voyages-main-hover`,
+  "our_voyages_main_hover",
+)}
+${block(
+  `/* Our Voyages · indication (meta) in open column */
+.public-site .typo-our-voyages-indication-hover,
+html[data-ex-experience] .ex-root [data-hathor-accordion] .typo-our-voyages-indication-hover`,
+  "our_voyages_indication_hover",
+)}
+${block(
+  `/* Our Voyages · body (description) in open column */
+.public-site .typo-our-voyages-body-hover,
+html[data-ex-experience] .ex-root [data-hathor-accordion] .typo-our-voyages-body-hover`,
+  "our_voyages_body_hover",
 )}
 /* Base tracking — no hover interaction */
 .public-site .luxury-marquee .luxury-marquee__item,
