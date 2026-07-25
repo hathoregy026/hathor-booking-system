@@ -312,6 +312,7 @@ export function TypographyStylesPanel() {
   );
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [fontQuery, setFontQuery] = useState("");
   const dragRef = useRef<{
     line: "hero_title" | "hero_subtitle";
     startX: number;
@@ -589,6 +590,7 @@ export function TypographyStylesPanel() {
               className={`typo-rolebar__btn${on ? " typo-rolebar__btn--on" : ""}`}
               onClick={() => {
                 setGroup(key);
+                setFontQuery("");
                 if (key === "hero") setHeroLine("hero_title");
                 if (key === "on_images") setOnImagesLine("on_images_title");
                 if (key === "our_voyages") {
@@ -603,6 +605,7 @@ export function TypographyStylesPanel() {
         })}
       </div>
 
+      <div className="typo-easy__workspace">
       <div
         className={`typo-stage typo-stage--${stageTone}${group === "hero" ? " typo-stage--hero-pair" : ""}`}
         key={group}
@@ -801,6 +804,141 @@ export function TypographyStylesPanel() {
       </div>
 
       <div className="typo-easy__controls admin-card">
+        <SimpleField label="Font (search or click — preview updates live)">
+          <input
+            type="search"
+            className="admin-input typo-easy__font-search"
+            value={fontQuery}
+            placeholder="Search fonts… e.g. Playfair, Gabigaile"
+            aria-label="Search fonts"
+            onChange={(e) => setFontQuery(e.target.value)}
+          />
+          <div className="typo-easy__font-grid">
+            {HATHOR_FONT_GROUPS.filter((fontGroup) => {
+              const q = fontQuery.trim().toLowerCase();
+              if (!q) return true;
+              return (
+                fontGroup.family.toLowerCase().includes(q) ||
+                fontGroup.variants.some(
+                  (v) =>
+                    v.id.toLowerCase().includes(q) ||
+                    v.label.toLowerCase().includes(q),
+                )
+              );
+            }).map((fontGroup) => {
+              const selected = isFaceInGroup(value.fontFamily, fontGroup);
+              const previewFace = selected
+                ? value.fontFamily
+                : fontGroup.variants[0]!.id;
+              return (
+                <button
+                  key={fontGroup.family}
+                  type="button"
+                  className={`typo-easy__font-btn${selected ? " typo-easy__font-btn--active" : ""}`}
+                  style={{ fontFamily: HATHOR_FONT_STACKS[previewFace] }}
+                  onClick={() => {
+                    patch({ fontFamily: fontGroup.variants[0]!.id });
+                  }}
+                  title={fontGroup.family}
+                >
+                  <span className="typo-easy__font-btn-name">{fontGroup.family}</span>
+                  <span
+                    className="typo-easy__font-btn-demo"
+                    style={{ fontFamily: HATHOR_FONT_STACKS[previewFace] }}
+                  >
+                    Aa
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          {fontQuery.trim() &&
+          !HATHOR_FONT_GROUPS.some((fontGroup) => {
+            const q = fontQuery.trim().toLowerCase();
+            return (
+              fontGroup.family.toLowerCase().includes(q) ||
+              fontGroup.variants.some(
+                (v) =>
+                  v.id.toLowerCase().includes(q) ||
+                  v.label.toLowerCase().includes(q),
+              )
+            );
+          }) ? (
+            <p className="typo-easy__controls-hint">No fonts match “{fontQuery.trim()}”.</p>
+          ) : null}
+          {(() => {
+            const fontGroup = fontGroupForFace(value.fontFamily);
+            if (fontGroup.variants.length < 2) return null;
+            return (
+              <label className="typo-easy__variant">
+                <span className="typo-easy__variant-label">Style</span>
+                <select
+                  className="typo-easy__variant-select admin-input"
+                  value={value.fontFamily}
+                  onChange={(e) =>
+                    patch({
+                      fontFamily: e.target.value as HathorLuxuryFont,
+                    })
+                  }
+                  aria-label={`${fontGroup.family} style`}
+                >
+                  {fontGroup.variants.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            );
+          })()}
+        </SimpleField>
+
+        <div className="typo-easy__row">
+          <SimpleField label="Size">
+            <NumberInput
+              aria-label="Font size"
+              value={value.fontSize}
+              min={8}
+              max={200}
+              step={1}
+              suffix="px"
+              onChange={(n) => patch({ fontSize: n })}
+            />
+          </SimpleField>
+
+          <SimpleField label="Color">
+            <HexColorInput
+              value={value.color}
+              onChange={(hex) => patch({ color: hex })}
+            />
+          </SimpleField>
+        </div>
+
+        <div className="typo-easy__row">
+          <SimpleField label="Line height">
+            <NumberInput
+              aria-label="Line height"
+              value={value.lineHeight}
+              min={0.8}
+              max={3}
+              step={0.05}
+              onChange={(n) => patch({ lineHeight: n })}
+            />
+          </SimpleField>
+
+          <SimpleField label="Letter spacing">
+            <NumberInput
+              aria-label="Letter spacing"
+              value={value.letterSpacing}
+              min={-10}
+              max={40}
+              step={0.5}
+              suffix="px"
+              onChange={(n) => patch({ letterSpacing: n })}
+            />
+          </SimpleField>
+        </div>
+
         {group === "hero" ? (
           <>
             <p className="typo-easy__controls-hint">
@@ -1217,109 +1355,6 @@ export function TypographyStylesPanel() {
           </>
         ) : null}
 
-        <SimpleField label="Font (click a family — preview updates above)">
-          <div className="typo-easy__font-grid">
-            {HATHOR_FONT_GROUPS.map((fontGroup) => {
-              const selected = isFaceInGroup(value.fontFamily, fontGroup);
-              const previewFace = selected
-                ? value.fontFamily
-                : fontGroup.variants[0]!.id;
-              return (
-                <button
-                  key={fontGroup.family}
-                  type="button"
-                  className={`typo-easy__font-btn${selected ? " typo-easy__font-btn--active" : ""}`}
-                  style={{ fontFamily: HATHOR_FONT_STACKS[previewFace] }}
-                  onClick={() => {
-                    if (selected) return;
-                    patch({ fontFamily: fontGroup.variants[0]!.id });
-                  }}
-                  title={fontGroup.family}
-                >
-                  <span className="typo-easy__font-btn-name">{fontGroup.family}</span>
-                  <span
-                    className="typo-easy__font-btn-demo"
-                    style={{ fontFamily: HATHOR_FONT_STACKS[previewFace] }}
-                  >
-                    Aa
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-          {(() => {
-            const fontGroup = fontGroupForFace(value.fontFamily);
-            if (fontGroup.variants.length < 2) return null;
-            return (
-              <label className="typo-easy__variant">
-                <span className="typo-easy__variant-label">Style</span>
-                <select
-                  className="typo-easy__variant-select admin-input"
-                  value={value.fontFamily}
-                  onChange={(e) =>
-                    patch({
-                      fontFamily: e.target.value as HathorLuxuryFont,
-                    })
-                  }
-                  aria-label={`${fontGroup.family} style`}
-                >
-                  {fontGroup.variants.map((v) => (
-                    <option key={v.id} value={v.id}>
-                      {v.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            );
-          })()}
-        </SimpleField>
-
-        <div className="typo-easy__row">
-          <SimpleField label="Size">
-            <NumberInput
-              aria-label="Font size"
-              value={value.fontSize}
-              min={8}
-              max={200}
-              step={1}
-              suffix="px"
-              onChange={(n) => patch({ fontSize: n })}
-            />
-          </SimpleField>
-
-          <SimpleField label="Color">
-            <HexColorInput
-              value={value.color}
-              onChange={(hex) => patch({ color: hex })}
-            />
-          </SimpleField>
-        </div>
-
-        <div className="typo-easy__row">
-          <SimpleField label="Line height">
-            <NumberInput
-              aria-label="Line height"
-              value={value.lineHeight}
-              min={0.8}
-              max={3}
-              step={0.05}
-              onChange={(n) => patch({ lineHeight: n })}
-            />
-          </SimpleField>
-
-          <SimpleField label="Letter spacing">
-            <NumberInput
-              aria-label="Letter spacing"
-              value={value.letterSpacing}
-              min={-10}
-              max={40}
-              step={0.5}
-              suffix="px"
-              onChange={(n) => patch({ letterSpacing: n })}
-            />
-          </SimpleField>
-        </div>
-
         <div className="typo-easy__row typo-easy__row--actions">
           <button
             type="button"
@@ -1345,6 +1380,7 @@ export function TypographyStylesPanel() {
             Reset this style
           </button>
         </div>
+      </div>
       </div>
 
       <div

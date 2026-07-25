@@ -1659,6 +1659,33 @@ select.admin-input option:checked {
   gap: 1rem;
 }
 
+/* Preview + controls side by side so font/text edits stay next to the sample */
+.typo-easy__workspace {
+  display: grid;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (min-width: 1100px) {
+  .typo-easy__workspace {
+    grid-template-columns: minmax(0, 1.1fr) minmax(24rem, 0.9fr);
+  }
+
+  .typo-easy__workspace .typo-stage {
+    position: sticky;
+    top: 0.85rem;
+    z-index: 2;
+    max-height: calc(100vh - 7.5rem);
+    overflow: auto;
+  }
+
+  .typo-easy__workspace .typo-easy__controls {
+    max-height: calc(100vh - 7.5rem);
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+}
+
 /* Which text type — big clear tabs */
 .typo-rolebar {
   display: flex;
@@ -2015,17 +2042,30 @@ select.admin-input option:checked {
 
 .typo-easy__font-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
-  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
+  gap: 0.6rem;
+  max-height: min(22rem, 42vh);
+  overflow: auto;
+  padding: 0.15rem;
+  overscroll-behavior: contain;
+}
+
+.typo-easy__font-search {
+  width: 100%;
+  margin-bottom: 0.75rem;
+  min-height: 2.65rem;
+  font-size: 0.95rem !important;
 }
 
 .typo-easy__font-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.85rem 0.75rem;
-  border-radius: 12px;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 5.25rem;
+  padding: 1rem 0.85rem;
+  border-radius: 14px;
   border: 1px solid var(--border);
   background: var(--input-bg);
   color: var(--text-primary);
@@ -2033,24 +2073,26 @@ select.admin-input option:checked {
   line-height: 1.2;
   cursor: pointer;
   text-align: center;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease,
+    transform 0.15s ease;
 }
 
 .typo-easy__font-btn-name {
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   font-weight: 650;
   color: var(--text-muted);
   font-family: var(--font-admin, Inter), system-ui, sans-serif !important;
 }
 
 .typo-easy__font-btn-demo {
-  font-size: 1.55rem;
+  font-size: 1.85rem;
   line-height: 1;
   color: var(--text-primary);
 }
 
 .typo-easy__font-btn:hover:not(:disabled) {
   border-color: var(--accent);
+  transform: translateY(-1px);
 }
 
 .typo-easy__font-btn--active {
@@ -2126,12 +2168,14 @@ select.admin-input option:checked {
 .typo-easy__textarea {
   width: 100%;
   max-width: none;
+  min-height: 2.75rem;
+  font-size: 1rem !important;
+  line-height: 1.45;
 }
 
 .typo-easy__textarea {
-  min-height: 5.5rem;
+  min-height: 7.5rem;
   resize: vertical;
-  line-height: 1.45;
   font-family: inherit;
 }
 
