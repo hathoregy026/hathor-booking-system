@@ -1089,14 +1089,16 @@ h1, h2, h3, h4, p {
   width: 100%;
   max-width: 920px;
   margin: 0 auto;
-  padding: 0 28px 120px;
+  /* Equal padding so flex centers on true hero midline */
+  padding: 0 28px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
   pointer-events: none;
-  transform: translateY(30px);
+  /* Dead vertical center, then 20px down */
+  transform: translateY(20px);
 }
 
 .hero-kicker {
