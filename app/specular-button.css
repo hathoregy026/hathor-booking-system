@@ -111,6 +111,72 @@
   animation: hathor-stroke-shine 1.35s linear infinite;
 }
 
+/*
+  Tiny white inner hairline — sits between the pill border and the fill
+  so the outer shine reads more clearly on hover.
+*/
+.public-site a.btn::after,
+.public-site button.btn::after,
+.public-site .btn::after,
+.public-site .public-btn-gold::after,
+.public-site .public-btn-outline-gold::after,
+.public-site .public-btn-dark::after,
+.public-site .public-fab__book::after,
+.public-site .hero-cta::after,
+.public-site .cruise-filter--cta::after,
+.venetian-page a.btn::after,
+.venetian-page button.btn::after,
+.venetian-page .btn::after,
+.venetian-page .cruise-filter--cta::after {
+  content: "";
+  position: absolute;
+  inset: 1.5px;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  background: #ffffff;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.public-site a.btn:hover::after,
+.public-site button.btn:hover::after,
+.public-site .btn:hover::after,
+.public-site .public-btn-gold:hover::after,
+.public-site .public-btn-outline-gold:hover::after,
+.public-site .public-btn-dark:hover::after,
+.public-site .public-fab__book:hover::after,
+.public-site .hero-cta:hover::after,
+.public-site .cruise-filter--cta:hover::after,
+.venetian-page a.btn:hover::after,
+.venetian-page button.btn:hover::after,
+.venetian-page .btn:hover::after,
+.venetian-page .cruise-filter--cta:hover::after,
+.public-site a.btn:focus-visible::after,
+.public-site button.btn:focus-visible::after,
+.public-site .btn:focus-visible::after,
+.public-site .public-btn-gold:focus-visible::after,
+.public-site .public-btn-outline-gold:focus-visible::after,
+.public-site .public-btn-dark:focus-visible::after,
+.public-site .public-fab__book:focus-visible::after,
+.public-site .hero-cta:focus-visible::after,
+.public-site .cruise-filter--cta:focus-visible::after,
+.venetian-page a.btn:focus-visible::after,
+.venetian-page button.btn:focus-visible::after,
+.venetian-page .btn:focus-visible::after,
+.venetian-page .cruise-filter--cta:focus-visible::after {
+  opacity: 0.92;
+}
+
 .public-site a.btn > *,
 .public-site button.btn > *,
 .public-site .btn > *,
