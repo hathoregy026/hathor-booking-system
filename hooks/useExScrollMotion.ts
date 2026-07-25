@@ -1016,8 +1016,8 @@ export function useExScrollMotion() {
     if (prefersReduced) return;
     const marquee = document.querySelector(".gallery-marquee");
     if (!marquee) return;
+    /* Opacity only — a transform here flattens the 3D tilted band */
     gsap.from(marquee, {
-      y: 28,
       opacity: 0,
       duration: 0.75,
       ease: "power2.out",
