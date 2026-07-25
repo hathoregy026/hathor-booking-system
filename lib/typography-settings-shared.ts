@@ -310,8 +310,8 @@ export type HeroSecondShimmer = z.infer<typeof heroSecondShimmerSchema>;
 export const DEFAULT_HERO_SECOND_SHIMMER: HeroSecondShimmer = {
   enabled: true,
   speed: 12,
-  shine: 75,
-  shadow: 30,
+  shine: 80,
+  shadow: 40,
 };
 
 /** Editable homepage hero title lines */
@@ -801,44 +801,45 @@ function mixHex(a: string, b: string, amount: number): string {
 }
 
 /**
- * Soft sliding gold fill for hero second titles.
- * Highlight is whitish and feathered into the body gold — no hard edge as it moves.
+ * Soft sliding metallic gold fill for hero second titles.
+ * Warm gold body with a champagne specular that feathers in — golden feel, no hard stripe.
  */
 export function heroSecondShimmerBackground(
   shimmer: HeroSecondShimmer,
 ): string {
   const s = Math.min(1, Math.max(0, shimmer.shine / 100));
   const body = "#B69F64";
-  /* Peak goes toward warm white; mid ramps stay close to gold so edges dissolve */
-  const peak = mixHex(body, "#FFFCF5", 0.45 + s * 0.55);
-  const nearWhite = mixHex(body, "#F7EFD8", 0.35 + s * 0.4);
-  const softGold = mixHex(body, "#D4C28A", 0.25 + s * 0.35);
-  const deep = mixHex(body, "#9A8450", s * 0.25);
+  const richGold = mixHex(body, "#D4AF37", 0.55 + s * 0.35);
+  const champagne = mixHex(richGold, "#F8E7C0", 0.4 + s * 0.45);
+  const peak = mixHex(champagne, "#FFF6E0", 0.25 + s * 0.35);
+  const amber = mixHex(body, "#C4A35A", 0.35 + s * 0.3);
+  const bronze = mixHex(body, "#8A7348", 0.2 + s * 0.35);
   /*
-   * Wide feathered lobe: long body → soft gold → near-white → peak → fade back.
-   * Stops are spaced so the moving highlight reads as light in the metal, not a stripe.
+   * Metallic gold falloff: bronze → body → amber → champagne → soft peak → back.
+   * Peak stays warm (champagne), not pure white, so it still reads as gold.
    */
   return `linear-gradient(125deg,
-    ${body} 0%,
-    ${body} 22%,
-    ${softGold} 34%,
-    ${nearWhite} 42%,
-    ${peak} 48%,
-    ${nearWhite} 54%,
-    ${softGold} 62%,
-    ${body} 74%,
-    ${deep} 88%,
-    ${body} 100%)`;
+    ${bronze} 0%,
+    ${body} 18%,
+    ${amber} 32%,
+    ${richGold} 40%,
+    ${champagne} 46%,
+    ${peak} 50%,
+    ${champagne} 54%,
+    ${richGold} 60%,
+    ${amber} 68%,
+    ${body} 82%,
+    ${bronze} 100%)`;
 }
 
 export function heroSecondShimmerFilter(shimmer: HeroSecondShimmer): string {
   if (!shimmer.enabled || shimmer.shadow <= 0) return "none";
   const t = Math.min(1, Math.max(0, shimmer.shadow / 100));
-  const soft = (0.06 + t * 0.12).toFixed(2);
-  const glow = (t * 0.32).toFixed(2);
+  const soft = (0.05 + t * 0.1).toFixed(2);
+  const glow = (0.12 + t * 0.28).toFixed(2);
   return [
-    `drop-shadow(0 1px ${1 + t * 2}px rgba(0, 0, 0, ${soft}))`,
-    `drop-shadow(0 0 ${4 + t * 12}px rgba(212, 175, 55, ${glow}))`,
+    `drop-shadow(0 1px ${1 + t * 1.5}px rgba(0, 0, 0, ${soft}))`,
+    `drop-shadow(0 0 ${6 + t * 10}px rgba(212, 175, 55, ${glow}))`,
   ].join(" ");
 }
 
