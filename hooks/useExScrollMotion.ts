@@ -687,8 +687,8 @@ export function useExScrollMotion() {
       killExisting();
 
       const total = cards.length;
-      /* Hold each full-screen slide long enough to read, then a shorter wipe */
-      const dwell = 0.85;
+      /* Hold each full-screen slide to read, then a shorter wipe (dwell halved) */
+      const dwell = 0.42;
       const move = 0.55;
       const step = dwell + move;
       const scrollSpan = (total - 1) * step + dwell;
