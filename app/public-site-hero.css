@@ -545,11 +545,18 @@
 }
 
 /* Hero second-title gold — soft sheen + top-lit foil breath */
+/* Soft back-shadow lives on the text; shine uses --hero-shine-x */
+@property --hero-shine-x {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
 @keyframes hero-second-shimmer {
   0% {
-    background-position: 0% center, center top, center center, center top;
+    --hero-shine-x: 0%;
   }
   100% {
-    background-position: 100% center, center top, center center, center top;
+    --hero-shine-x: 100%;
   }
 }

@@ -178,13 +178,14 @@ export function PublicSiteHero({
             </span>
           ) : displayLeft ? (
             shimmer.enabled ? (
-              <span
-                className="hero-line-shimmer-wrap"
-                style={{
-                  filter: heroSecondShimmerFilter(shimmer),
-                }}
-              >
-                <span className={secondTitleClass} style={secondTitleStyle}>
+              <span className="hero-line-shimmer-wrap">
+                <span
+                  className={secondTitleClass}
+                  style={{
+                    ...secondTitleStyle,
+                    filter: heroSecondShimmerFilter(shimmer),
+                  }}
+                >
                   {displayLeft}
                 </span>
               </span>

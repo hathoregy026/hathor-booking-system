@@ -838,20 +838,20 @@ export function heroSecondShimmerBackground(
     rgba(154, 134, 88, ${0.2 + (1 - s) * 0.05}) 100%)`;
 
   /*
-   * Softly moving sheen — visible travel, but ends dissolve (no hard cut).
-   * Peak stays gentle; long 00 tails on both sides.
+   * Softly moving sheen — visible travel, faded ends (no hard cut).
+   * Peak is readable so motion is obvious; long 00 tails dissolve.
    */
   const sheen = `linear-gradient(100deg,
     transparent 0%,
-    transparent 10%,
-    ${champagne}00 22%,
-    ${champagne}10 34%,
-    ${crest}18 42%,
-    ${crest}28 50%,
-    ${crest}18 58%,
-    ${champagne}10 66%,
-    ${champagne}00 78%,
-    transparent 90%,
+    transparent 8%,
+    ${champagne}00 18%,
+    ${champagne}14 30%,
+    ${crest}22 40%,
+    ${crest}3a 50%,
+    ${crest}22 60%,
+    ${champagne}14 70%,
+    ${champagne}00 82%,
+    transparent 92%,
     transparent 100%)`;
 
   const metal = `url(${HERO_GOLD_METAL_TEXTURE})`;
@@ -864,7 +864,6 @@ export function heroSecondShimmerFilter(shimmer: HeroSecondShimmer): string {
   const t = Math.min(1, Math.max(0, shimmer.shadow / 100));
   const hi = (0.18 + t * 0.2).toFixed(2);
   const lo = (0.22 + t * 0.2).toFixed(2);
-  /* Soft elegant back-shadow for video contrast + light rim */
   const veil = (0.28 + t * 0.35).toFixed(2);
   const soft = (0.18 + t * 0.22).toFixed(2);
   return [
@@ -876,15 +875,18 @@ export function heroSecondShimmerFilter(shimmer: HeroSecondShimmer): string {
   ].join(" ");
 }
 
-/** Styles for the clipped glyph fill — never put filter here (crops script fonts). */
+/** Styles for the clipped glyph fill — filter stays on wrap (see CSS); animate via --hero-shine-x. */
 export function heroSecondShimmerInlineStyle(
   shimmer: HeroSecondShimmer,
 ): CSSProperties {
   if (!shimmer.enabled) return {};
   return {
     backgroundImage: heroSecondShimmerBackground(shimmer),
-    backgroundSize: "280% 1.15em, 100% 1.05em, 120% 120%, 100% 1.05em",
+    backgroundSize: "300% 1.2em, 100% 1.05em, 120% 120%, 100% 1.05em",
     backgroundRepeat: "no-repeat, no-repeat, no-repeat, no-repeat",
+    /* Initial; keyframes drive --hero-shine-x */
+    backgroundPosition:
+      "var(--hero-shine-x, 0%) center, center top, center center, center top",
     WebkitBackgroundClip: "text",
     backgroundClip: "text",
     WebkitTextFillColor: "transparent",
@@ -895,7 +897,7 @@ export function heroSecondShimmerInlineStyle(
     display: "inline-block",
     lineHeight: 1.2,
     overflow: "visible",
-    willChange: "background-position",
+    willChange: "--hero-shine-x",
   };
 }
 
@@ -1316,18 +1318,21 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
   display: inline-block !important;
   line-height: 1.2 !important;
   overflow: visible !important;
-  will-change: background-position !important;
+  /* Shine travels via --hero-shine-x (more reliable than multi-bg-position) */
+  --hero-shine-x: 0%;
+  will-change: --hero-shine-x !important;
   background-image: var(--typo-hero-second-shimmer) !important;
-  background-size: 280% 1.15em, 100% 1.05em, 120% 120%, 100% 1.05em !important;
+  background-size: 300% 1.2em, 100% 1.05em, 120% 120%, 100% 1.05em !important;
   background-repeat: no-repeat, no-repeat, no-repeat, no-repeat !important;
-  /* background-position owned by @keyframes — never !important here */
+  background-position: var(--hero-shine-x) center, center top, center center, center top !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
   text-shadow: none !important;
-  filter: none !important;
-  animation: hero-second-shimmer var(--typo-hero-second-shimmer-duration, 6s) linear infinite !important;
+  /* Shadow on same node — do NOT put filter on the wrap (freezes shine) */
+  filter: var(--typo-hero-second-shimmer-filter) !important;
+  animation: hero-second-shimmer var(--typo-hero-second-shimmer-duration, 5s) linear infinite !important;
 }
 .public-site .hero-line-shimmer-wrap,
 .public-site .home-hero-container .hero-line-shimmer-wrap,
@@ -1336,12 +1341,16 @@ html[data-ex-experience] .ex-root .hero-line-shimmer-wrap {
   overflow: visible !important;
   position: relative !important;
   z-index: 4 !important;
-  filter: var(--typo-hero-second-shimmer-filter) !important;
+  filter: none !important;
+}
+@property --hero-shine-x {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
 }
 @keyframes hero-second-shimmer {
-  /* Soft faded sheen keeps traveling; metal stays put */
-  0% { background-position: 0% center, center top, center center, center top; }
-  100% { background-position: 100% center, center top, center center, center top; }
+  0% { --hero-shine-x: 0%; }
+  100% { --hero-shine-x: 100%; }
 }
 @media (prefers-reduced-motion: reduce) {
   .public-site .hero-line--left:not(.hero-line--wordmark),
@@ -1350,7 +1359,7 @@ html[data-ex-experience] .ex-root .hero-line-shimmer-wrap {
   html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
   .public-site .hero-line--left.hero-line--shimmer {
     animation: none !important;
-    background-position: 40% center, center top, center center, center top !important;
+    --hero-shine-x: 40% !important;
   }
 }`
     : ""
