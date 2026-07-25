@@ -801,60 +801,86 @@ function mixHex(a: string, b: string, amount: number): string {
 }
 
 /**
- * Liquid metallic gold for hero second titles (Gold-ref style).
- * Warm gold family only — no cold chrome/silver, no near-black troughs.
- * Layer 1: soft top-lit bevel. Layer 2: moving sunlit gold ribbon.
- * Never put !important on background-position — it freezes the animation.
+ * Faceted polished gold (matches low-poly gold ref):
+ * hard jumps white-specular ↔ honey gold ↔ deep bronze — not soft yellow paint.
+ * Moving the facet map = shine leaping across planes like the ref.
+ * Never !important on background-position (freezes animation).
  */
 export function heroSecondShimmerBackground(
   shimmer: HeroSecondShimmer,
 ): string {
   const s = Math.min(1, Math.max(0, shimmer.shine / 100));
-  /* Warm ladder — stays golden at every stop */
-  const whiteGold = mixHex("#FFFCF2", "#FFE9A8", 0.15 + s * 0.2);
-  const champagne = mixHex("#FFE566", "#F8E7B0", 0.35 + s * 0.4);
-  const bright = mixHex("#F0D060", "#E8C34A", 0.45);
-  const rich = "#D4AF37";
-  const body = mixHex("#C9A227", "#B8962E", 0.4);
-  const amber = mixHex("#A07818", "#8B6914", 0.45);
-  const bronze = mixHex("#6B4E10", "#5C3A0A", 0.35);
+  const spec = mixHex("#FFFCF0", "#FFF6A0", 0.2 + s * 0.35);
+  const hot = mixHex("#FFE566", "#F5D060", 0.4 + s * 0.35);
+  const honey = "#D4AF37";
+  const rich = "#C9A227";
+  const amber = "#8B6914";
+  const bronze = "#5C3A0A";
+  const recess = "#2A1808";
+  const void_ = "#1A1005";
 
-  /* Sunlit gold ribbon — light moves through gold, not chrome */
-  const metal = `linear-gradient(105deg,
-    ${bronze} 0%,
-    ${amber} 14%,
-    ${body} 26%,
-    ${rich} 36%,
-    ${bright} 44%,
-    ${champagne} 48%,
-    ${whiteGold} 50%,
-    ${champagne} 52%,
-    ${bright} 56%,
-    ${rich} 64%,
-    ${body} 74%,
-    ${amber} 88%,
-    ${bronze} 100%)`;
+  /*
+   * Hard facet stops (adjacent planes). Soft mid-ramps = flat paint;
+   * abrupt white→bronze is what reads as polished metal.
+   */
+  const facets = `linear-gradient(118deg,
+    ${void_} 0%,
+    ${recess} 5%,
+    ${honey} 5.2%,
+    ${hot} 8%,
+    ${spec} 10%,
+    ${amber} 10.2%,
+    ${amber} 16%,
+    ${rich} 16.2%,
+    ${honey} 19%,
+    ${spec} 22%,
+    ${bronze} 22.2%,
+    ${recess} 28%,
+    ${honey} 28.2%,
+    ${hot} 32%,
+    ${spec} 35%,
+    ${amber} 35.2%,
+    ${bronze} 42%,
+    ${rich} 42.2%,
+    ${honey} 46%,
+    ${hot} 49%,
+    ${spec} 50%,
+    ${hot} 51%,
+    ${honey} 54%,
+    ${amber} 54.2%,
+    ${recess} 60%,
+    ${honey} 60.2%,
+    ${hot} 64%,
+    ${spec} 67%,
+    ${bronze} 67.2%,
+    ${amber} 74%,
+    ${rich} 74.2%,
+    ${honey} 78%,
+    ${hot} 82%,
+    ${spec} 84%,
+    ${recess} 84.2%,
+    ${void_} 90%,
+    ${amber} 90.2%,
+    ${honey} 94%,
+    ${bronze} 98%,
+    ${void_} 100%)`;
 
-  /* Gentle vertical bevel — top catch / bottom weight, still gold */
+  /* Light top catch only — keep hard; no foggy wash */
   const bevel = `linear-gradient(180deg,
-    rgba(255, 252, 235, ${0.4 + s * 0.25}) 0%,
-    rgba(255, 229, 102, ${0.18 + s * 0.12}) 18%,
-    transparent 45%,
-    rgba(90, 58, 10, ${0.18 + (1 - s) * 0.12}) 75%,
-    rgba(60, 40, 8, ${0.28 + (1 - s) * 0.15}) 100%)`;
+    rgba(255, 252, 240, ${0.22 + s * 0.2}) 0%,
+    transparent 28%,
+    transparent 62%,
+    rgba(26, 16, 5, ${0.22 + (1 - s) * 0.15}) 100%)`;
 
-  return `${bevel}, ${metal}`;
+  return `${bevel}, ${facets}`;
 }
 
 export function heroSecondShimmerFilter(shimmer: HeroSecondShimmer): string {
   if (!shimmer.enabled || shimmer.shadow <= 0) return "none";
   const t = Math.min(1, Math.max(0, shimmer.shadow / 100));
-  const rim = (0.28 + t * 0.3).toFixed(2);
-  const glow = (0.16 + t * 0.28).toFixed(2);
-  return [
-    `drop-shadow(0 1px 0 rgba(50, 34, 8, ${rim}))`,
-    `drop-shadow(0 0 8px rgba(212, 175, 55, ${glow}))`,
-  ].join(" ");
+  const rim = (0.35 + t * 0.35).toFixed(2);
+  /* Hard edge only — soft gold bloom kills the faceted metal look */
+  return `drop-shadow(0 1px 0 rgba(26, 16, 5, ${rim}))`;
 }
 
 /** Styles for the clipped glyph fill — never put filter here (crops script fonts). */
@@ -864,10 +890,8 @@ export function heroSecondShimmerInlineStyle(
   if (!shimmer.enabled) return {};
   return {
     backgroundImage: heroSecondShimmerBackground(shimmer),
-    /* Bevel = 1em tall; metal ribbon = wide so travel is obvious */
-    backgroundSize: "100% 1em, 280% 1em",
+    backgroundSize: "100% 1em, 320% 1em",
     backgroundRepeat: "no-repeat, no-repeat",
-    /* Do NOT set backgroundPosition here — keyframes own it */
     WebkitBackgroundClip: "text",
     backgroundClip: "text",
     WebkitTextFillColor: "transparent",
@@ -1301,7 +1325,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
   overflow: visible !important;
   will-change: background-position !important;
   background-image: var(--typo-hero-second-shimmer) !important;
-  background-size: 100% 1em, 280% 1em !important;
+  background-size: 100% 1em, 320% 1em !important;
   background-repeat: no-repeat, no-repeat !important;
   /* background-position owned by @keyframes — never !important here */
   -webkit-background-clip: text !important;
