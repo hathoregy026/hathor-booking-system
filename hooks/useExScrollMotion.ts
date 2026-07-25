@@ -650,7 +650,6 @@ export function useExScrollMotion() {
   function initExStackScroll() {
     const section = document.querySelector(".ex-stack-scroll");
     const viewport = section?.querySelector(".ex-stack-scroll__viewport");
-    const copy = section?.querySelector(".ex-stack-scroll__copy");
     const copyPanels = gsap.utils.toArray<HTMLElement>(
       ".ex-stack-scroll__copy-panel",
     );
@@ -688,8 +687,11 @@ export function useExScrollMotion() {
       killExisting();
 
       const total = cards.length;
-      const step = 1;
-      const scrollSpan = (total - 1) * step;
+      /* Hold each full-screen slide long enough to read, then a shorter wipe */
+      const dwell = 0.85;
+      const move = 0.55;
+      const step = dwell + move;
+      const scrollSpan = (total - 1) * step + dwell;
 
       cards.forEach((card, index) => {
         const media = getCardMedia(card);
@@ -718,7 +720,7 @@ export function useExScrollMotion() {
       copyPanels.forEach((panel, index) => {
         gsap.set(panel, {
           autoAlpha: index === 0 ? 1 : 0,
-          y: index === 0 ? 0 : 18,
+          y: 0,
           visibility: index === 0 ? "visible" : "hidden",
         });
         panel.setAttribute("aria-hidden", index === 0 ? "false" : "true");
@@ -730,7 +732,8 @@ export function useExScrollMotion() {
           trigger: section,
           start: "top top",
           end: `+=${scrollSpan * 100}%`,
-          scrub: 1.15,
+          /* Slight lag so the wipe feels smooth, not twitchy */
+          scrub: 1.55,
           pin: viewport,
           pinSpacing: true,
           anticipatePin: 0,
@@ -745,17 +748,9 @@ export function useExScrollMotion() {
         },
       });
 
-      if (copy) {
-        tl.fromTo(
-          copy,
-          { y: 0, opacity: 1, x: 0 },
-          { y: -28, opacity: 0.92, x: 0, ease: "none", duration: scrollSpan },
-          0,
-        );
-      }
-
       for (let i = 1; i < total; i++) {
         const at = (i - 1) * step;
+        const moveAt = at + dwell;
         const card = cards[i];
         const media = getCardMedia(card);
         const prevPanel = copyPanels[i - 1];
@@ -764,43 +759,50 @@ export function useExScrollMotion() {
         tl.fromTo(
           card,
           { yPercent: 100, scale: 1, x: 0, xPercent: 0 },
-          { yPercent: 0, scale: 1, x: 0, xPercent: 0, ease: "none", duration: step },
-          at,
+          {
+            yPercent: 0,
+            scale: 1,
+            x: 0,
+            xPercent: 0,
+            ease: "none",
+            duration: move,
+          },
+          moveAt,
         );
 
         if (media) {
           tl.fromTo(
             media,
             { scale: 1.08, x: 0 },
-            { scale: 1.04, x: 0, ease: "none", duration: step },
-            at,
+            { scale: 1.04, x: 0, ease: "none", duration: move },
+            moveAt,
           );
         }
 
-        /* Elegant copy crossfade — synced to the same scrub step as the card */
+        /* Copy stays readable through dwell, then crossfades mid-wipe */
         if (prevPanel && nextPanel) {
           tl.to(
             prevPanel,
             {
               autoAlpha: 0,
-              y: -14,
+              y: 0,
               ease: "power1.in",
-              duration: step * 0.42,
+              duration: move * 0.4,
               onStart: () => prevPanel.setAttribute("aria-hidden", "true"),
             },
-            at,
+            moveAt + move * 0.08,
           );
           tl.fromTo(
             nextPanel,
-            { autoAlpha: 0, y: 18, visibility: "visible" },
+            { autoAlpha: 0, y: 0, visibility: "visible" },
             {
               autoAlpha: 1,
               y: 0,
               ease: "power2.out",
-              duration: step * 0.55,
+              duration: move * 0.5,
               onStart: () => nextPanel.setAttribute("aria-hidden", "false"),
             },
-            at + step * 0.28,
+            moveAt + move * 0.42,
           );
         }
 
@@ -819,9 +821,9 @@ export function useExScrollMotion() {
               scale: 1,
               filter: `brightness(${Math.max(0.55, 1 - depth * 0.1)})`,
               ease: "none",
-              duration: step,
+              duration: move,
             },
-            at,
+            moveAt,
           );
 
           if (underMedia) {
@@ -831,9 +833,9 @@ export function useExScrollMotion() {
                 scale: 1.04 + depth * 0.01,
                 x: 0,
                 ease: "none",
-                duration: step,
+                duration: move,
               },
-              at,
+              moveAt,
             );
           }
         }

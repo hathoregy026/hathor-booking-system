@@ -1731,38 +1731,42 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 }
 
 .ex-stack-scroll__copy {
+  --stack-copy-gap: 0.55rem;
   position: absolute;
   z-index: 40;
   left: 0;
   right: 0;
   bottom: 0;
   margin: 0;
-  padding: clamp(2.25rem, 7vh, 4.5rem) clamp(1.75rem, 5.5vw, 5rem);
-  padding-bottom: max(clamp(2.25rem, 7vh, 4.5rem), env(safe-area-inset-bottom, 0px));
+  /* Bottom-left corner of the image — not mid-frame */
+  padding:
+    0
+    clamp(1.25rem, 4vw, 2.75rem)
+    max(1.15rem, env(safe-area-inset-bottom, 0px))
+    clamp(1.25rem, 4vw, 2.75rem);
   pointer-events: none;
-  /* No separate shadow panel — veil lives on the card edges */
   background: none;
   box-shadow: none;
-  min-height: min(42vh, 22rem);
+  min-height: 0;
 }
 
 .ex-stack-scroll__copy-panel {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  left: clamp(1.25rem, 4vw, 2.75rem);
+  right: auto;
+  bottom: max(1.15rem, env(safe-area-inset-bottom, 0px));
+  width: min(40rem, calc(100% - clamp(2.5rem, 8vw, 5.5rem)));
   margin: 0;
-  padding: inherit;
-  padding-bottom: inherit;
+  padding: 0;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
   will-change: opacity, transform;
-  /* Uniform stack: same gap between every line / block, flush left */
+  /* Fixed gap between title · indication · body — stays equal if title size changes */
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.45rem;
+  gap: var(--stack-copy-gap);
   text-align: left;
 }
 
@@ -1795,11 +1799,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 }
 
 .ex-stack-scroll__title {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  /* Same gap as panel — title lines match title→indication→body spacing */
-  gap: 0.45rem;
+  display: block;
   font-weight: 400;
   margin: 0;
   padding: 0;
@@ -1809,13 +1809,11 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   text-wrap: pretty;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Font/size/color/tracking from dashboard typography (On images · title) */
+  /* Font/size/color/tracking/line-height from dashboard (On images · title) */
 }
 
 html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__title,
 html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__title-line {
-  /* Gap owns vertical rhythm — don’t let typography line-height inflate spaces */
-  line-height: 1.05 !important;
   text-shadow:
     0 1px 0 rgba(0, 0, 0, 0.35),
     0 2px 8px rgba(0, 0, 0, 0.45),
