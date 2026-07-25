@@ -309,9 +309,9 @@ export type HeroSecondShimmer = z.infer<typeof heroSecondShimmerSchema>;
 
 export const DEFAULT_HERO_SECOND_SHIMMER: HeroSecondShimmer = {
   enabled: true,
-  speed: 9,
-  shine: 78,
-  shadow: 35,
+  speed: 5,
+  shine: 85,
+  shadow: 40,
 };
 
 /** Editable homepage hero title lines */
@@ -801,67 +801,61 @@ function mixHex(a: string, b: string, amount: number): string {
 }
 
 /**
- * Poured metallic gold for hero second titles (Gold-ref style).
- * Opaque CSS metal is the base so letters never go invisible if a layer fails.
- * Sized to 1em so the bevel maps onto glyph strokes. No external texture URL
- * (url() in clipped text was dropping the fill entirely).
+ * Liquid metallic gold for hero second titles (Gold-ref style).
+ * Layer 1: moving poured-metal spectrum (the shine that travels).
+ * Layer 2: static top-lit bevel so strokes read 3D.
+ * Never put !important on background-position — it freezes the animation.
  */
 export function heroSecondShimmerBackground(
   shimmer: HeroSecondShimmer,
 ): string {
   const s = Math.min(1, Math.max(0, shimmer.shine / 100));
-  const crest = mixHex("#FFFFFF", "#FFF8E0", 0.2 + s * 0.35);
-  const hot = mixHex("#FFE566", "#FFF0A8", 0.35 + s * 0.4);
-  const rich = mixHex("#F0D060", "#E2B83A", 0.45);
-  const body = mixHex("#D4AF37", "#C9A227", 0.5);
-  const shade = mixHex("#A07818", "#8B6914", 0.4);
-  const deep = mixHex("#5C3A0A", "#2E1A06", 0.35);
+  const white = mixHex("#FFFFFF", "#FFF8E0", 0.15 + s * 0.2);
+  const hot = mixHex("#FFE566", "#FFF0B0", 0.4 + s * 0.45);
+  const rich = "#E8C34A";
+  const body = "#D4AF37";
+  const mid = "#B8962E";
+  const shade = "#8B6914";
+  const deep = "#3D2808";
+  const abyss = "#1A1005";
 
-  /* Opaque liquid-metal bevel — always paints */
-  const metal = `linear-gradient(180deg,
-    ${crest} 0%,
-    ${hot} 10%,
-    ${rich} 28%,
-    ${body} 48%,
-    ${shade} 72%,
-    ${deep} 100%)`;
+  /* Wide liquid-metal ribbon — slides across (this IS the shimmer) */
+  const metal = `linear-gradient(105deg,
+    ${abyss} 0%,
+    ${deep} 10%,
+    ${shade} 20%,
+    ${mid} 28%,
+    ${body} 34%,
+    ${rich} 40%,
+    ${hot} 45%,
+    ${white} 50%,
+    ${hot} 55%,
+    ${rich} 60%,
+    ${body} 66%,
+    ${mid} 72%,
+    ${shade} 82%,
+    ${deep} 92%,
+    ${abyss} 100%)`;
 
-  /* Chrome horizon bands across the metal (smooth, not hatched) */
-  const chrome = `linear-gradient(100deg,
-    ${deep}99 0%,
-    ${shade}55 18%,
-    ${crest}00 32%,
-    ${crest}bb 38%,
-    ${hot}88 42%,
-    ${body}44 50%,
-    ${crest}aa 58%,
-    ${shade}66 72%,
-    ${deep}aa 88%,
-    ${body}33 100%)`;
+  /* Soft top-lit bevel (static) for 3D stroke depth */
+  const bevel = `linear-gradient(180deg,
+    rgba(255, 255, 255, ${0.45 + s * 0.25}) 0%,
+    rgba(255, 230, 120, ${0.15 + s * 0.1}) 22%,
+    transparent 48%,
+    rgba(40, 24, 6, ${0.2 + (1 - s) * 0.15}) 78%,
+    rgba(20, 10, 2, ${0.35 + (1 - s) * 0.2}) 100%)`;
 
-  /* Moving sun specular */
-  const glint = `linear-gradient(100deg,
-    transparent 0%,
-    transparent 44%,
-    ${crest}00 46%,
-    ${crest}dd 49%,
-    #FFFFFF 50%,
-    ${crest}dd 51%,
-    ${crest}00 54%,
-    transparent 56%,
-    transparent 100%)`;
-
-  return `${glint}, ${chrome}, ${metal}`;
+  return `${bevel}, ${metal}`;
 }
 
 export function heroSecondShimmerFilter(shimmer: HeroSecondShimmer): string {
   if (!shimmer.enabled || shimmer.shadow <= 0) return "none";
   const t = Math.min(1, Math.max(0, shimmer.shadow / 100));
-  const rim = (0.3 + t * 0.28).toFixed(2);
-  const glow = (0.14 + t * 0.26).toFixed(2);
+  const rim = (0.28 + t * 0.3).toFixed(2);
+  const glow = (0.16 + t * 0.28).toFixed(2);
   return [
     `drop-shadow(0 1px 0 rgba(50, 34, 8, ${rim}))`,
-    `drop-shadow(0 0 6px rgba(212, 175, 55, ${glow}))`,
+    `drop-shadow(0 0 8px rgba(212, 175, 55, ${glow}))`,
   ].join(" ");
 }
 
@@ -872,10 +866,10 @@ export function heroSecondShimmerInlineStyle(
   if (!shimmer.enabled) return {};
   return {
     backgroundImage: heroSecondShimmerBackground(shimmer),
-    /* 1em height = metal bevel lands on strokes */
-    backgroundSize: "240% 1em, 180% 1em, 100% 1em",
-    backgroundRepeat: "no-repeat, no-repeat, no-repeat",
-    backgroundPosition: "0% center, 0% center, center center",
+    /* Bevel = 1em tall; metal ribbon = wide so travel is obvious */
+    backgroundSize: "100% 1em, 280% 1em",
+    backgroundRepeat: "no-repeat, no-repeat",
+    /* Do NOT set backgroundPosition here — keyframes own it */
     WebkitBackgroundClip: "text",
     backgroundClip: "text",
     WebkitTextFillColor: "transparent",
@@ -1309,16 +1303,16 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
   overflow: visible !important;
   will-change: background-position !important;
   background-image: var(--typo-hero-second-shimmer) !important;
-  background-size: 240% 1em, 180% 1em, 100% 1em !important;
-  background-repeat: no-repeat, no-repeat, no-repeat !important;
-  background-position: 0% center, 0% center, center center !important;
+  background-size: 100% 1em, 280% 1em !important;
+  background-repeat: no-repeat, no-repeat !important;
+  /* background-position owned by @keyframes — never !important here */
   -webkit-background-clip: text !important;
   background-clip: text !important;
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
   text-shadow: none !important;
   filter: none !important;
-  animation: hero-second-shimmer var(--typo-hero-second-shimmer-duration) linear infinite !important;
+  animation: hero-second-shimmer var(--typo-hero-second-shimmer-duration, 6s) linear infinite !important;
 }
 .public-site .hero-line-shimmer-wrap,
 .public-site .home-hero-container .hero-line-shimmer-wrap,
@@ -1330,8 +1324,8 @@ html[data-ex-experience] .ex-root .hero-line-shimmer-wrap {
   filter: var(--typo-hero-second-shimmer-filter) !important;
 }
 @keyframes hero-second-shimmer {
-  0% { background-position: 0% center, 0% center, center center; }
-  100% { background-position: 100% center, 40% center, center center; }
+  0% { background-position: center center, 0% center; }
+  100% { background-position: center center, 100% center; }
 }
 @media (prefers-reduced-motion: reduce) {
   .public-site .hero-line--left:not(.hero-line--wordmark),
@@ -1340,7 +1334,7 @@ html[data-ex-experience] .ex-root .hero-line-shimmer-wrap {
   html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
   .public-site .hero-line--left.hero-line--shimmer {
     animation: none !important;
-    background-position: 40% center, 20% center, center center !important;
+    background-position: center center, 35% center !important;
   }
 }`
     : ""

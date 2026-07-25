@@ -543,3 +543,14 @@
   0%, 100% { opacity: 0.3; transform: scaleY(0.7); }
   50% { opacity: 1; transform: scaleY(1); }
 }
+
+/* Hero second-title liquid gold shimmer — keep keyframes in the site CSS
+   so animation still runs if injected typography CSS is delayed. */
+@keyframes hero-second-shimmer {
+  0% {
+    background-position: center center, 0% center;
+  }
+  100% {
+    background-position: center center, 100% center;
+  }
+}
