@@ -15,16 +15,16 @@
 /*
   Lock every public pill button to the same width + height.
   (Chat icon circles are excluded — those are not text buttons.)
+  Hero Book Now (.hero-cta) is excluded — scroll stage stretches its width.
 */
-.public-site a.btn,
-.public-site button.btn,
-.public-site .btn,
+.public-site a.btn:not(.hero-cta),
+.public-site button.btn:not(.hero-cta),
+.public-site .btn:not(.hero-cta),
 .public-site .public-btn-gold,
 .public-site .public-btn-outline-gold,
 .public-site .public-btn-dark,
 .public-site .public-fab__book,
 .public-fab__book,
-.public-site .hero-cta,
 .venetian-page a.btn,
 .venetian-page button.btn,
 .venetian-page .btn,
@@ -40,6 +40,25 @@
   padding-right: var(--hathor-btn-pad-x) !important;
   font-size: var(--hathor-btn-font-size) !important;
   letter-spacing: var(--hathor-btn-tracking) !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Hero CTA — height locked; width free so GSAP can stretch the whole pill */
+.public-site .hero-cta {
+  box-sizing: border-box !important;
+  height: var(--hathor-btn-height) !important;
+  min-height: var(--hathor-btn-height) !important;
+  max-height: var(--hathor-btn-height) !important;
+  max-width: none !important;
+  padding-left: var(--hathor-btn-pad-x) !important;
+  padding-right: var(--hathor-btn-pad-x) !important;
+  font-size: var(--hathor-btn-font-size) !important;
   line-height: 1 !important;
   white-space: nowrap !important;
   overflow: hidden !important;
