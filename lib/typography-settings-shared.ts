@@ -1290,6 +1290,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
 html[data-ex-experience] .ex-root .hero-line-shimmer-wrap {
   display: inline-block !important;
   overflow: visible !important;
+  position: relative !important;
+  z-index: 4 !important;
   filter: var(--typo-hero-second-shimmer-filter) !important;
   line-height: 0 !important;
 }

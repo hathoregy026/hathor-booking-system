@@ -398,14 +398,18 @@
   filter: none !important;
 }
 
-/* Line 2 — layout only; font/size from typography admin.
-   Metallic shimmer (when enabled) is applied via typography important CSS. */
+/* Second title + shimmer wrap — always above the first title */
+.home-hero-container .hero-heading .hero-line-shimmer-wrap {
+  position: relative;
+  z-index: 4;
+}
+
 .home-hero-container .hero-heading .hero-line--left {
   font-weight: 400 !important;
   font-style: normal;
   text-transform: none !important;
   position: relative;
-  z-index: 2;
+  z-index: 4;
 }
 
 .home-hero-container .hero-side,

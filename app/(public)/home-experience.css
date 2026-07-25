@@ -1146,13 +1146,17 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--right {
   filter: none !important;
 }
 
-/* Home hero line 2 — layout only; font/size from typography admin.
-   Metallic shimmer (when enabled) is applied via typography important CSS. */
+/* Home hero line 2 — always in front of the first title */
+html[data-ex-experience] .ex-root .hero-heading .hero-line-shimmer-wrap {
+  position: relative;
+  z-index: 4;
+}
+
 html[data-ex-experience] .ex-root .hero-heading .hero-line--left {
   font-weight: 400 !important;
   text-transform: none !important;
   position: relative;
-  z-index: 2;
+  z-index: 4;
   overflow: visible;
 }
 
