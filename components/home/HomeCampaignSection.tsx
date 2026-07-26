@@ -26,7 +26,8 @@ type LenisLike = {
 
 /**
  * Call-to-action stage — zero layout mutation.
- * Hero-scale gold invite on site cream lifts away to the photograph.
+ * Scrubbed: gold invite rises → image rises to cover while invite reverses →
+ * on-image title. Scroll up reverses the whole story.
  */
 export function HomeCampaignSection({
   title,
@@ -46,7 +47,7 @@ export function HomeCampaignSection({
     ).matches;
 
     const frame = track.querySelector<HTMLElement>("[data-hcta-frame]");
-    const silk = track.querySelector<HTMLElement>("[data-hcta-silk]");
+    const reveal = track.querySelector<HTMLElement>("[data-hcta-reveal]");
     const silkChars = gsap.utils.toArray<HTMLElement>(
       track.querySelectorAll(".hcta-silk-char"),
     );
@@ -60,7 +61,6 @@ export function HomeCampaignSection({
     let killed = false;
     let ctx: gsap.Context | null = null;
     let st: ScrollTrigger | null = null;
-    let silkTextTween: gsap.core.Tween | null = null;
     let removeLenis: (() => void) | null = null;
     let bootTimer = 0;
 
@@ -69,23 +69,24 @@ export function HomeCampaignSection({
 
       ctx?.revert();
       st?.kill();
-      silkTextTween?.kill();
       ScrollTrigger.getById("hcta-silk-text")?.kill();
+      ScrollTrigger.getById("hcta-stage")?.kill();
 
       ctx = gsap.context(() => {
         if (reduced) {
           gsap.set(frame, { clearProps: "transform" });
-          if (silk) gsap.set(silk, { yPercent: -101, autoAlpha: 0 });
+          if (reveal) gsap.set(reveal, { yPercent: 0 });
           if (silkChars.length) {
-            gsap.set(silkChars, { yPercent: 0, autoAlpha: 1 });
+            gsap.set(silkChars, { yPercent: 0, autoAlpha: 0 });
           }
           if (chars.length) gsap.set(chars, { yPercent: 0, autoAlpha: 1 });
           if (book) gsap.set(book, { autoAlpha: 1 });
           return;
         }
 
-        if (silk) {
-          gsap.set(silk, { yPercent: 0, autoAlpha: 1 });
+        /* Image panel starts below the cream invite */
+        if (reveal) {
+          gsap.set(reveal, { yPercent: 100, force3D: true });
         }
         if (silkChars.length) {
           gsap.set(silkChars, { yPercent: 120, autoAlpha: 0, force3D: true });
@@ -98,34 +99,17 @@ export function HomeCampaignSection({
         }
         gsap.set(frame, { y: 0, force3D: true });
 
-        /* Hero invite — clear letter rise when the cream stage enters view */
-        if (silkChars.length) {
-          silkTextTween = gsap.to(silkChars, {
-            yPercent: 0,
-            autoAlpha: 1,
-            stagger: 0.028,
-            duration: 0.7,
-            ease: "power3.out",
-            force3D: true,
-            scrollTrigger: {
-              id: "hcta-silk-text",
-              trigger: track,
-              start: "top 90%",
-              end: "top top",
-              toggleActions: "play none none reverse",
-              invalidateOnRefresh: true,
-            },
-          });
-        }
-
         const story = gsap.timeline({ paused: true });
 
-        if (silk) {
+        /* 1) Invite letters rise — fully scrubbed with scroll */
+        if (silkChars.length) {
           story.to(
-            silk,
+            silkChars,
             {
-              yPercent: -101,
-              duration: 0.28,
+              yPercent: 0,
+              autoAlpha: 1,
+              stagger: 0.02,
+              duration: 0.22,
               ease: "none",
               force3D: true,
             },
@@ -133,8 +117,38 @@ export function HomeCampaignSection({
           );
         }
 
-        story.to({}, { duration: 0.08 }, 0.28);
+        /* 2) Image rises to cover while invite animates back */
+        if (silkChars.length) {
+          story.to(
+            silkChars,
+            {
+              yPercent: 120,
+              autoAlpha: 0,
+              stagger: 0.016,
+              duration: 0.28,
+              ease: "none",
+              force3D: true,
+            },
+            0.24,
+          );
+        }
+        if (reveal) {
+          story.to(
+            reveal,
+            {
+              yPercent: 0,
+              duration: 0.32,
+              ease: "none",
+              force3D: true,
+            },
+            0.24,
+          );
+        }
 
+        /* 3) Quiet beat on the photograph */
+        story.to({}, { duration: 0.08 }, 0.54);
+
+        /* 4) On-image title + Book Now */
         if (chars.length) {
           story.to(
             chars,
@@ -146,7 +160,7 @@ export function HomeCampaignSection({
               ease: "none",
               force3D: true,
             },
-            0.34,
+            0.6,
           );
         }
         if (book) {
@@ -157,11 +171,12 @@ export function HomeCampaignSection({
               duration: 0.08,
               ease: "none",
             },
-            0.42,
+            0.68,
           );
         }
 
-        story.to({}, { duration: 0.22 }, 0.52);
+        /* 5) Reading pause */
+        story.to({}, { duration: 0.2 }, 0.78);
 
         const sync = (progress: number) => {
           const maxY = Math.max(0, track.offsetHeight - window.innerHeight);
@@ -174,7 +189,7 @@ export function HomeCampaignSection({
           trigger: track,
           start: "top top",
           end: "bottom bottom",
-          scrub: 0.45,
+          scrub: 0.5,
           invalidateOnRefresh: true,
           onUpdate: (self) => sync(self.progress),
           onRefresh: (self) => sync(self.progress),
@@ -215,8 +230,7 @@ export function HomeCampaignSection({
       window.removeEventListener("load", onLoad);
       removeLenis?.();
       st?.kill();
-      silkTextTween?.kill();
-      ScrollTrigger.getById("hcta-silk-text")?.kill();
+      ScrollTrigger.getById("hcta-stage")?.kill();
       ctx?.revert();
     };
   }, []);
@@ -230,19 +244,7 @@ export function HomeCampaignSection({
       data-hcta-track
     >
       <div className="hcta-frame" data-hcta-frame>
-        <div className="hcta-media" data-hcta-media>
-          <ManagedImage
-            name={imageName}
-            alt={imageAlt}
-            fill
-            sizes="100vw"
-            className="hcta-bg object-cover"
-            previewAnchor={previewAnchor}
-          />
-        </div>
-
-        <div className="hcta-veil" aria-hidden="true" />
-
+        {/* Cream + gold invite — stays put; image rises over it */}
         <div className="hcta-silk" data-hcta-silk>
           <div className="hcta-silk-copy" aria-hidden="true">
             {SILK_ROWS.map((row) => (
@@ -257,6 +259,21 @@ export function HomeCampaignSection({
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Photograph panel — rises from below to cover the invite */}
+        <div className="hcta-reveal" data-hcta-reveal>
+          <div className="hcta-media" data-hcta-media>
+            <ManagedImage
+              name={imageName}
+              alt={imageAlt}
+              fill
+              sizes="100vw"
+              className="hcta-bg object-cover"
+              previewAnchor={previewAnchor}
+            />
+          </div>
+          <div className="hcta-veil" aria-hidden="true" />
         </div>
 
         <div className="hcta-copy">
