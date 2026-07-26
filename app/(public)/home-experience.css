@@ -1983,6 +1983,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
 
 /* ---------- GALLERY ---------- */
 .gallery-section {
+  --gallery-content-tilt: -3deg;
   position: relative;
   background: var(--cream-deep);
   padding: clamp(80px, 10vw, 140px) var(--content-gutter, clamp(12px, 2.2vw, 28px));
@@ -2008,6 +2009,13 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   font-size: clamp(2rem, 4.5vw, 3.6rem);
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+.gallery-h2 > h2,
+.instagram-follow,
+.gallery-container .gallery-button {
+  rotate: var(--gallery-content-tilt);
+  transform-origin: center;
 }
 
 .gallery-ig-link {
@@ -2932,6 +2940,10 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
     --gallery-card: clamp(200px, 62vw, 280px);
     --gallery-gap: 10px;
     margin-bottom: 72px;
+  }
+
+  .gallery-section {
+    --gallery-content-tilt: -2deg;
   }
 
   .gallery-marquee__band {
