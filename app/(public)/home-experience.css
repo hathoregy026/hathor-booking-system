@@ -2622,11 +2622,29 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
 }
 
 .campaign-fg {
-  position: relative;
+  position: absolute;
+  inset: 0;
   z-index: 2;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 0 clamp(1.25rem, 4vw, 3rem);
+  pointer-events: none;
+}
+
+.campaign-fg-motion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   will-change: transform;
+  pointer-events: none;
+}
+
+.campaign-fg-motion .campaign-heading,
+.campaign-fg-motion .campaign-book-btn {
+  pointer-events: auto;
 }
 
 .campaign-heading {

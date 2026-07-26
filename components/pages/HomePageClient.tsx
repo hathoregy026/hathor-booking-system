@@ -666,17 +666,27 @@ export function HomePageClient({
 
           <div className="campaign-overlay" aria-hidden="true" />
 
-          <div className="campaign-fg" data-parallax="fg">
-            <h2
-              className="campaign-heading typo-on-images-title"
-              style={campaignTitleStyle}
-              data-campaign-split
-            >
-              {EX_CAMPAIGN.title}
-            </h2>
-            <BookNowTrigger className="btn campaign-book-btn">
-              Book Now
-            </BookNowTrigger>
+          <div className="campaign-fg">
+            <div className="campaign-fg-motion" data-parallax="fg">
+              <h2
+                className="campaign-heading typo-on-images-title"
+                style={campaignTitleStyle}
+                data-campaign-split
+                data-split-done="1"
+                aria-label={EX_CAMPAIGN.title}
+              >
+                {Array.from(EX_CAMPAIGN.title).map((ch, index) => (
+                  <span className="split-heading" key={`${ch}-${index}`}>
+                    <span className="split-char">
+                      {ch === " " ? "\u00A0" : ch}
+                    </span>
+                  </span>
+                ))}
+              </h2>
+              <BookNowTrigger className="btn campaign-book-btn">
+                Book Now
+              </BookNowTrigger>
+            </div>
           </div>
         </section>
 

@@ -867,17 +867,23 @@ export function useExScrollMotion() {
         media.style.clipPath = "inset(0)";
         media.style.transform = "scale(1)";
       }
+      if (splitEl instanceof HTMLElement) {
+        splitEl.querySelectorAll(".split-char").forEach((ch) => {
+          gsap.set(ch, { yPercent: 0, opacity: 1, clearProps: "transform" });
+        });
+      }
       return;
     }
 
     /* Image clip reveal — opens on enter, reverses on leave-back */
     if (revealWrap && media) {
+      gsap.set(media, { clipPath: "inset(100% 0 0 0)", scale: 1.15 });
       gsap.to(media, {
         clipPath: "inset(0% 0% 0% 0%)",
         duration: 1.5,
         ease: "power3.inOut",
         scrollTrigger: {
-          trigger: revealWrap,
+          trigger: section,
           start: "top 80%",
           toggleActions: "play none none reverse",
         },
@@ -902,9 +908,11 @@ export function useExScrollMotion() {
       );
     }
 
-    /* Letter rise on THE CALLING — reverses on scroll up */
+    /* Letter rise — React owns .split-char nodes so typography re-renders keep them */
     if (splitEl instanceof HTMLElement) {
-      const chars = splitAtelierText(splitEl);
+      const chars = Array.from(
+        splitEl.querySelectorAll(".split-char"),
+      );
       if (chars.length) {
         gsap.set(chars, { yPercent: 100, opacity: 0 });
         gsap.to(chars, {
@@ -914,15 +922,15 @@ export function useExScrollMotion() {
           stagger: 0.03,
           ease: "power3.out",
           scrollTrigger: {
-            trigger: splitEl,
-            start: "top 85%",
+            trigger: section,
+            start: "top 75%",
             toggleActions: "play none none reverse",
           },
         });
       }
     }
 
-    /* Parallax — desktop only */
+    /* Parallax — desktop only; soft fg drift so copy stays near dead center */
     if (touch || mobile) return;
 
     section.querySelectorAll('[data-parallax="bg"]').forEach((el) => {
@@ -945,9 +953,9 @@ export function useExScrollMotion() {
     section.querySelectorAll('[data-parallax="fg"]').forEach((el) => {
       gsap.fromTo(
         el,
-        { yPercent: -12 },
+        { yPercent: -4 },
         {
-          yPercent: 12,
+          yPercent: 4,
           ease: "none",
           scrollTrigger: {
             trigger: section,
