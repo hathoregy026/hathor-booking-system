@@ -13,6 +13,7 @@ import { mountHeroScrollStage } from "@/lib/hero-scroll-stage";
 import { splitAtelierText } from "@/lib/atelier-text-split";
 import {
   registerHathorLenis,
+  readSavedScrollY,
   restoreScrollPositionIfReload,
   shouldRestoreScrollOnMount,
 } from "@/lib/scroll-position-restore";
@@ -78,16 +79,14 @@ export function useExScrollMotion() {
   }
 
   /*
-   * Soft nav (Suites → Home) often keeps the previous page's scrollY for a frame.
-   * Mounting the hero scrub ScrollTrigger at that Y opens gold blinds + huge logo.
-   * Hard reload of Home may restore a saved Y — only once, before ST mounts.
+   * Always boot ScrollTrigger from Y=0 so the hero never mounts mid-scrub
+   * (giant letters / open blinds). Restore saved Y only AFTER boot, while
+   * still hidden behind ex-pending / ex-scroll-ready.
    */
   const path = window.location.pathname || "/";
-  if (shouldRestoreScrollOnMount(path)) {
-    restoreScrollPositionIfReload(path);
-  } else {
-    resetWindowScrollTop(lenis);
-  }
+  const willRestore = shouldRestoreScrollOnMount(path);
+  const savedY = willRestore ? readSavedScrollY(path) : 0;
+  resetWindowScrollTop(lenis);
 
   /* -------------------------------------------------------
    * 3. Nav entrance + solid state on scroll
@@ -340,7 +339,12 @@ export function useExScrollMotion() {
    *  - Book Now: HORIZONTAL stretch ×4 (left+right), letter-spacing expands
    * ----------------------------------------------------- */
   function initHeroScrollStage() {
-    heroCleanup = mountHeroScrollStage({ prefersReduced, lenis });
+    heroCleanup = mountHeroScrollStage({
+      prefersReduced,
+      lenis,
+      /* Mid-page refresh: snap logo — never play the rise tween under the veil. */
+      skipLanding: savedY > 80,
+    });
   }
 
   function initHeroBlinds() {
@@ -853,17 +857,25 @@ export function useExScrollMotion() {
     if (prefersReduced) return;
     const marquee = document.querySelector(".gallery-marquee");
     if (!marquee) return;
-    /* Opacity only — a transform here flattens the 3D tilted band */
-    gsap.from(marquee, {
-      opacity: 0,
-      duration: 0.75,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: marquee,
-        start: "top 90%",
-        once: true,
+    /*
+     * Opacity-only, once — never reverse. Avoids a scroll hitch beside IG bubbles.
+     */
+    gsap.fromTo(
+      marquee,
+      { autoAlpha: 0.001 },
+      {
+        autoAlpha: 1,
+        duration: 0.85,
+        ease: "power2.out",
+        immediateRender: false,
+        scrollTrigger: {
+          trigger: marquee,
+          start: "top 92%",
+          once: true,
+          toggleActions: "play none none none",
+        },
       },
-    });
+    );
   }
 
   /* -------------------------------------------------------
@@ -957,41 +969,73 @@ export function useExScrollMotion() {
       document.documentElement.classList.add("has-ex-scroll-motion");
     }
 
+    const markScrollReady = () => {
+      const root = document.documentElement;
+      root.classList.add("ex-scroll-ready");
+      root.classList.remove("ex-pending");
+    };
+
     const restoreNow = () => {
-      // No-op after first restore / on soft nav (gated inside helper)
-      restoreScrollPositionIfReload(path);
+      if (savedY > 0) {
+        restoreScrollPositionIfReload(path);
+      }
       try {
         ScrollTrigger.refresh();
+        ScrollTrigger.update();
       } catch {
         /* ignore */
       }
     };
+
+    /* Boot finished at Y=0 — now jump to saved Y while still hidden, then reveal. */
     restoreNow();
-    requestAnimationFrame(restoreNow);
+    requestAnimationFrame(() => {
+      restoreNow();
+      requestAnimationFrame(() => {
+        try {
+          ScrollTrigger.refresh();
+          ScrollTrigger.update();
+        } catch {
+          /* ignore */
+        }
+        requestAnimationFrame(markScrollReady);
+      });
+    });
 
     const onLoad = () => {
       try {
-        ScrollTrigger.refresh();
         restoreNow();
+        markScrollReady();
       } catch (error) {
         console.warn("[useExScrollMotion] refresh failed", error);
+        markScrollReady();
       }
     };
     window.addEventListener("load", onLoad);
 
+    const readyFallback = window.setTimeout(markScrollReady, 900);
+
     return () => {
+      window.clearTimeout(readyFallback);
       window.removeEventListener("load", onLoad);
       heroCleanup?.();
       if (tickerFn) gsap.ticker.remove(tickerFn);
       registerHathorLenis(null);
       lenis?.destroy();
       try {
-        ScrollTrigger.getAll().forEach((st) => st.kill());
+        /* Do not kill CTA stage triggers — HomeCampaignSection owns those */
+        ScrollTrigger.getAll().forEach((st) => {
+          const id = String(st.vars?.id || "");
+          if (id.startsWith("hcta-")) return;
+          st.kill();
+        });
       } catch {
         /* ignore */
       }
       document.body.classList.remove("has-ex-scroll-motion");
       document.documentElement.classList.remove("has-ex-scroll-motion");
+      document.documentElement.classList.remove("ex-scroll-ready");
+      document.documentElement.classList.remove("ex-pending");
     };
   }, []);
 }
