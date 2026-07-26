@@ -16,7 +16,6 @@ import {
   restoreScrollPositionIfReload,
   shouldRestoreScrollOnMount,
 } from "@/lib/scroll-position-restore";
-import { HATHOR_LENIS_PREMIUM } from "@/lib/hathor-lenis-premium";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -53,7 +52,7 @@ export function useExScrollMotion() {
 
   /* -------------------------------------------------------
    * 2. Lenis smooth scroll (site foundation)
-   *    Premium lerp inertia only — same wiring (ST sync, ticker, anchors)
+   *    duration 1.4, expo-ish easing, no smoothTouch
    * ----------------------------------------------------- */
   let lenis: Lenis | null = null;
   let tickerFn: ((time: number) => void) | null = null;
@@ -61,7 +60,10 @@ export function useExScrollMotion() {
 
   if (!prefersReduced) {
     lenis = new Lenis({
-      ...HATHOR_LENIS_PREMIUM,
+      duration: 1.4,
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      syncTouch: false,
     });
 
     // Keep ScrollTrigger in sync with Lenis
@@ -835,41 +837,6 @@ export function useExScrollMotion() {
   }
 
   /* -------------------------------------------------------
-   * Soft editorial parallax on key stills (≤18% travel).
-   * Layered on existing reveal tweens — yPercent only, no listener changes.
-   * Skips stack / campaign / hero (those own their scrub already).
-   * ----------------------------------------------------- */
-  function initEditorialImageParallax() {
-    if (prefersReduced) return;
-
-    const targets = gsap.utils.toArray<HTMLElement>(
-      ".general-reveal-img img, .home-text-img-container img",
-    );
-
-    targets.forEach((img) => {
-      const frame =
-        img.closest(".radius-img-container, .home-text-img-parent") ||
-        img.parentElement;
-      if (!frame) return;
-
-      gsap.fromTo(
-        img,
-        { yPercent: -9 },
-        {
-          yPercent: 9,
-          ease: "none",
-          scrollTrigger: {
-            trigger: frame,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
-          },
-        },
-      );
-    });
-  }
-
-  /* -------------------------------------------------------
    * Testimonial cards stagger in
    * ----------------------------------------------------- */
   function initTestimonialCards() {
@@ -939,7 +906,6 @@ export function useExScrollMotion() {
       initGalleryH2,
       initGalleryContainers,
       initGalleryItems,
-      initEditorialImageParallax,
       initTestimonialH2,
       initTestimonialCards,
       initCta,

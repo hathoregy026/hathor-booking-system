@@ -26,9 +26,9 @@ export function ParallaxHeroImage({
     target: containerRef,
     offset: ["start start", "end start"],
   });
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "28%"]);
   /* Keep parallax, but avoid heavy upscale — sources are ~1536px */
-  const scale = useTransform(scrollYProgress, [0, 1], [1.02, 1.05]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1.02, 1.06]);
 
   return (
     <div ref={containerRef} className={`hathor-parallax-hero__frame ${className}`}>

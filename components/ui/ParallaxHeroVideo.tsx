@@ -30,8 +30,8 @@ export function ParallaxHeroVideo({
     target: containerRef,
     offset: ["start start", "end start"],
   });
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1.06, 1.12]);
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "28%"]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1.08, 1.18]);
 
   useLayoutEffect(() => {
     const root = containerRef.current?.closest(".owo-hero, .preview-hero");

@@ -14,7 +14,6 @@ import {
   registerHathorLenis,
   restoreScrollPositionIfReload,
 } from "@/lib/scroll-position-restore";
-import { HATHOR_LENIS_PREMIUM } from "@/lib/hathor-lenis-premium";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -37,7 +36,10 @@ export function useAccommodationMotion(
 
     if (!prefersReduced) {
       lenis = new Lenis({
-        ...HATHOR_LENIS_PREMIUM,
+        duration: 1.55,
+        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        syncTouch: false,
       });
       lenis.on("scroll", ScrollTrigger.update);
       registerHathorLenis(lenis);
