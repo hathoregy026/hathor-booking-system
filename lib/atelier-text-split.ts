@@ -103,6 +103,7 @@ const SKIP_CLOSEST = [
   ".cruise-exp-title",
   ".booking-modal",
   ".admin-shell",
+  ".hcta-track",
   ".campaign-section",
   "button",
   "input",

@@ -847,87 +847,6 @@ export function useExScrollMotion() {
   }
 
   /* -------------------------------------------------------
-   * Campaign — short pin hold + scrubbed letter rise (reverses up)
-   * Same Lenis/ScrollTrigger boot as stack so pinSpacing is stable.
-   * ----------------------------------------------------- */
-  function initCampaign() {
-    const section = document.querySelector<HTMLElement>(".campaign-section");
-    if (!section) return;
-
-    const media =
-      section.querySelector<HTMLElement>("img.campaign-bg") ||
-      section.querySelector<HTMLElement>("img");
-    const chars = gsap.utils.toArray<HTMLElement>(
-      ".campaign-section .campaign-heading .split-char",
-    );
-
-    ScrollTrigger.getAll().forEach((st) => {
-      const id = st.vars && String(st.vars.id || "");
-      if (id.startsWith("campaign-")) st.kill();
-    });
-
-    if (prefersReduced) {
-      if (chars.length) gsap.set(chars, { yPercent: 0, autoAlpha: 1 });
-      if (media) gsap.set(media, { scale: 1 });
-      return;
-    }
-
-    if (chars.length) {
-      gsap.set(chars, { yPercent: 100, autoAlpha: 0, force3D: true });
-    }
-    if (media) {
-      gsap.set(media, { scale: 1.1, force3D: true });
-    }
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        id: "campaign-hold",
-        trigger: section,
-        start: "top top",
-        /* Small pause — about half a viewport of scroll while pinned */
-        end: "+=55%",
-        scrub: 1.1,
-        pin: true,
-        pinSpacing: true,
-        anticipatePin: 0,
-        invalidateOnRefresh: true,
-        fastScrollEnd: true,
-      },
-    });
-
-    if (media) {
-      tl.to(
-        media,
-        {
-          scale: 1,
-          duration: 1,
-          ease: "none",
-          force3D: true,
-        },
-        0,
-      );
-    }
-
-    if (chars.length) {
-      tl.to(
-        chars,
-        {
-          yPercent: 0,
-          autoAlpha: 1,
-          stagger: 0.028,
-          duration: 0.42,
-          ease: "none",
-          force3D: true,
-        },
-        0.12,
-      );
-    }
-
-    /* Quiet reading beat after letters finish rising */
-    tl.to({}, { duration: 0.32 }, 0.62);
-  }
-
-  /* -------------------------------------------------------
    * Boot
    * ----------------------------------------------------- */
   function boot() {
@@ -956,7 +875,6 @@ export function useExScrollMotion() {
       initGalleryItems,
       initTestimonialH2,
       initTestimonialCards,
-      initCampaign,
       initCta,
     ];
     for (const step of steps) {
