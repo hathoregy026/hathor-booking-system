@@ -18,9 +18,11 @@ type HomeCampaignSectionProps = {
 };
 
 /**
- * Full-bleed campaign — no pin (avoids layout jumps).
- * Letters rise when the image nearly fills the viewport; reverse on scroll up.
- * Book Now stays fixed; image keeps soft zoom/parallax only.
+ * Luxury campaign pause without layout jump:
+ * - `.campaign-shell` is 190vh in CSS from first paint (space reserved)
+ * - Section pins inside it with pinSpacing:false (no late spacer)
+ * - Scrubbed letters sync to the pause; reverse on scroll up
+ * - Book Now stays fixed
  */
 export function HomeCampaignSection({
   title,
@@ -29,11 +31,13 @@ export function HomeCampaignSection({
   titleStyle,
   previewAnchor = true,
 }: HomeCampaignSectionProps) {
-  const rootRef = useRef<HTMLElement>(null);
+  const shellRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
+    const shell = shellRef.current;
+    const section = sectionRef.current;
+    if (!shell || !section) return;
 
     const reduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
@@ -42,150 +46,118 @@ export function HomeCampaignSection({
     const mobile = window.innerWidth < 1024;
 
     const media =
-      root.querySelector<HTMLElement>("img.campaign-bg") ||
-      root.querySelector<HTMLElement>("img");
+      section.querySelector<HTMLElement>("img.campaign-bg") ||
+      section.querySelector<HTMLElement>("img");
     const chars = Array.from(
-      root.querySelectorAll<HTMLElement>(".campaign-heading .split-char"),
+      section.querySelectorAll<HTMLElement>(".campaign-heading .split-char"),
     );
-    const headingMotion = root.querySelector<HTMLElement>(
+    const headingMotion = section.querySelector<HTMLElement>(
       "[data-parallax='fg']",
     );
-    const bg = root.querySelector<HTMLElement>("[data-parallax='bg']");
+    const bg = section.querySelector<HTMLElement>("[data-parallax='bg']");
 
-    let revealed = false;
-    let charTween: gsap.core.Tween | null = null;
-    const scrubTriggers: ScrollTrigger[] = [];
-    let io: IntersectionObserver | null = null;
+    const ctx = gsap.context(() => {
+      if (reduced) {
+        if (chars.length) gsap.set(chars, { yPercent: 0, autoAlpha: 1 });
+        if (media) gsap.set(media, { scale: 1 });
+        return;
+      }
 
-    const playLetters = () => {
-      if (revealed || !chars.length) return;
-      revealed = true;
-      charTween?.kill();
-      charTween = gsap.fromTo(
-        chars,
-        { yPercent: 100, autoAlpha: 0 },
-        {
-          yPercent: 0,
-          autoAlpha: 1,
-          duration: 1.05,
-          stagger: 0.035,
-          ease: "power3.out",
-          overwrite: true,
-          force3D: true,
-        },
-      );
-    };
-
-    const reverseLetters = () => {
-      if (!revealed || !chars.length) return;
-      revealed = false;
-      charTween?.kill();
-      charTween = gsap.to(chars, {
-        yPercent: 100,
-        autoAlpha: 0,
-        duration: 0.55,
-        stagger: 0.02,
-        ease: "power2.in",
-        overwrite: true,
-        force3D: true,
-      });
-    };
-
-    if (reduced) {
-      if (chars.length) gsap.set(chars, { yPercent: 0, autoAlpha: 1 });
-      if (media) gsap.set(media, { scale: 1 });
-    } else {
       if (chars.length) {
         gsap.set(chars, { yPercent: 100, autoAlpha: 0, force3D: true });
       }
-
-      /*
-       * Letter rise when image is nearly full-bleed (high ratio).
-       * No ScrollTrigger pin — pin-spacer was jumping the page.
-       */
-      io = new IntersectionObserver(
-        (entries) => {
-          const entry = entries[0];
-          if (!entry) return;
-          const top = entry.boundingClientRect.top;
-          if (entry.isIntersecting && entry.intersectionRatio >= 0.72) {
-            playLetters();
-          } else if (!entry.isIntersecting && top > 0) {
-            reverseLetters();
-          }
-        },
-        {
-          threshold: [0, 0.4, 0.55, 0.72, 0.85, 1],
-          rootMargin: "0px",
-        },
-      );
-      io.observe(root);
-
       if (media) {
-        gsap.set(media, { scale: 1.1, force3D: true });
-        scrubTriggers.push(
-          ScrollTrigger.create({
-            id: "campaign-zoom",
-            trigger: root,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
-            invalidateOnRefresh: true,
-            onUpdate: (self) => {
-              gsap.set(media, {
-                scale: gsap.utils.interpolate(1.1, 1, self.progress),
-              });
-            },
-          }),
+        gsap.set(media, { scale: 1.08, force3D: true });
+      }
+
+      const tl = gsap.timeline({
+        defaults: { ease: "none" },
+        scrollTrigger: {
+          id: "campaign-hold",
+          trigger: section,
+          start: "top top",
+          endTrigger: shell,
+          end: "bottom bottom",
+          pin: true,
+          pinSpacing: false,
+          anticipatePin: 0,
+          scrub: 1.25,
+          invalidateOnRefresh: true,
+          fastScrollEnd: true,
+          onRefresh: (self) => {
+            const pin = self.pin as HTMLElement | null;
+            if (!pin) return;
+            gsap.set(pin, {
+              x: 0,
+              left: 0,
+              marginLeft: 0,
+              clearProps: "marginRight",
+            });
+          },
+        },
+      });
+
+      /* Rise through the first half of the hold */
+      if (chars.length) {
+        tl.to(
+          chars,
+          {
+            yPercent: 0,
+            autoAlpha: 1,
+            stagger: { each: 0.045, ease: "none" },
+            duration: 0.5,
+            force3D: true,
+          },
+          0,
         );
       }
 
-      if (!touch && !mobile) {
-        if (bg) {
-          scrubTriggers.push(
-            ScrollTrigger.create({
-              id: "campaign-parallax-bg",
-              trigger: root,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: 0.35,
-              invalidateOnRefresh: true,
-              onUpdate: (self) => {
-                gsap.set(bg, {
-                  yPercent: gsap.utils.interpolate(-3, 3, self.progress),
-                });
-              },
-            }),
-          );
-        }
-        if (headingMotion) {
-          scrubTriggers.push(
-            ScrollTrigger.create({
-              id: "campaign-parallax-fg",
-              trigger: root,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: 0.45,
-              invalidateOnRefresh: true,
-              onUpdate: (self) => {
-                gsap.set(headingMotion, {
-                  yPercent: gsap.utils.interpolate(-5, 5, self.progress),
-                });
-              },
-            }),
-          );
-        }
+      if (media) {
+        tl.to(media, { scale: 1, duration: 1, force3D: true }, 0);
       }
 
-      requestAnimationFrame(() => {
-        const rect = root.getBoundingClientRect();
-        const vh = window.innerHeight || 1;
-        const visible = Math.min(rect.bottom, vh) - Math.max(rect.top, 0);
-        if (visible / Math.min(rect.height, vh) >= 0.72) {
-          playLetters();
-        }
-      });
-    }
+      /* Second half — settled hold */
+      tl.to({}, { duration: 0.5 }, 0.5);
+
+      if (!touch && !mobile && bg) {
+        gsap.fromTo(
+          bg,
+          { yPercent: -3 },
+          {
+            yPercent: 3,
+            ease: "none",
+            scrollTrigger: {
+              id: "campaign-parallax-bg",
+              trigger: shell,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 0.4,
+              invalidateOnRefresh: true,
+            },
+          },
+        );
+      }
+
+      if (!touch && !mobile && headingMotion) {
+        gsap.fromTo(
+          headingMotion,
+          { yPercent: -3 },
+          {
+            yPercent: 3,
+            ease: "none",
+            scrollTrigger: {
+              id: "campaign-parallax-fg",
+              trigger: section,
+              start: "top top",
+              endTrigger: shell,
+              end: "bottom bottom",
+              scrub: 0.55,
+              invalidateOnRefresh: true,
+            },
+          },
+        );
+      }
+    }, shell);
 
     const refresh = () => {
       try {
@@ -194,65 +166,62 @@ export function HomeCampaignSection({
         /* ignore */
       }
     };
+    refresh();
     const t1 = window.setTimeout(refresh, 200);
+    const t2 = window.setTimeout(refresh, 800);
     void document.fonts?.ready?.then(refresh);
 
     return () => {
       window.clearTimeout(t1);
-      io?.disconnect();
-      charTween?.kill();
-      scrubTriggers.forEach((st) => st.kill());
-      if (media) gsap.set(media, { clearProps: "transform" });
-      if (bg) gsap.set(bg, { clearProps: "transform" });
-      if (headingMotion) gsap.set(headingMotion, { clearProps: "transform" });
-      if (chars.length) {
-        gsap.set(chars, { clearProps: "transform,opacity,visibility" });
-      }
+      window.clearTimeout(t2);
+      ctx.revert();
     };
   }, []);
 
   return (
-    <section
-      ref={rootRef}
-      className="campaign-section"
-      id="campaign"
-      aria-label="Campaign call to action"
-    >
-      <div className="campaign-img-reveal" data-parallax="bg">
-        <ManagedImage
-          name={imageName}
-          alt={imageAlt}
-          fill
-          sizes="100vw"
-          className="campaign-bg object-cover"
-          previewAnchor={previewAnchor}
-        />
-      </div>
-
-      <div className="campaign-overlay" aria-hidden="true" />
-
-      <div className="campaign-fg">
-        <div className="campaign-fg-stack">
-          <div className="campaign-fg-motion" data-parallax="fg">
-            <h2
-              className="campaign-heading typo-on-images-title"
-              style={titleStyle}
-              aria-label={title}
-            >
-              {Array.from(title).map((ch, index) => (
-                <span className="split-heading" key={`${ch}-${index}`}>
-                  <span className="split-char">
-                    {ch === " " ? "\u00A0" : ch}
-                  </span>
-                </span>
-              ))}
-            </h2>
-          </div>
-          <BookNowTrigger className="btn campaign-book-btn">
-            Book Now
-          </BookNowTrigger>
+    <div ref={shellRef} className="campaign-shell">
+      <section
+        ref={sectionRef}
+        className="campaign-section"
+        id="campaign"
+        aria-label="Campaign call to action"
+      >
+        <div className="campaign-img-reveal" data-parallax="bg">
+          <ManagedImage
+            name={imageName}
+            alt={imageAlt}
+            fill
+            sizes="100vw"
+            className="campaign-bg object-cover"
+            previewAnchor={previewAnchor}
+          />
         </div>
-      </div>
-    </section>
+
+        <div className="campaign-overlay" aria-hidden="true" />
+
+        <div className="campaign-fg">
+          <div className="campaign-fg-stack">
+            <div className="campaign-fg-motion" data-parallax="fg">
+              <h2
+                className="campaign-heading typo-on-images-title"
+                style={titleStyle}
+                aria-label={title}
+              >
+                {Array.from(title).map((ch, index) => (
+                  <span className="split-heading" key={`${ch}-${index}`}>
+                    <span className="split-char">
+                      {ch === " " ? "\u00A0" : ch}
+                    </span>
+                  </span>
+                ))}
+              </h2>
+            </div>
+            <BookNowTrigger className="btn campaign-book-btn">
+              Book Now
+            </BookNowTrigger>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }

@@ -1364,6 +1364,12 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   background-color: #0b0907;
 }
 
+.campaign-shell {
+  position: relative;
+  z-index: 20;
+  background-color: #0b0907;
+}
+
 .section-inner {
   width: var(--content-shell, 100%);
   max-width: none;
@@ -2557,14 +2563,31 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
 }
 
 /* ---------- CAMPAIGN / CALL TO ACTION ---------- */
-.campaign-section {
+/*
+  Shell is 190vh in the document from first paint (100vh frame + ~90vh pause).
+  GSAP pins the inner section with pinSpacing:false — no late spacer jump.
+*/
+.campaign-shell {
   position: relative;
   z-index: 20;
   width: 100%;
+  height: 190vh;
+  height: 190dvh;
   margin: 0;
   padding: 0;
+  background: #0b0907;
+}
+
+.campaign-section {
+  position: relative;
+  z-index: 21;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
   min-height: 100vh;
   min-height: 100dvh;
+  margin: 0;
+  padding: 0;
   display: block;
   overflow: hidden;
   background: #0b0907 !important;

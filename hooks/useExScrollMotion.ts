@@ -931,7 +931,8 @@ export function useExScrollMotion() {
           const trigger = st.trigger;
           if (
             trigger instanceof Element &&
-            trigger.closest(".campaign-section")
+            (trigger.closest(".campaign-section") ||
+              trigger.closest(".campaign-shell"))
           ) {
             return;
           }
