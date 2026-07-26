@@ -26,8 +26,11 @@ type LenisLike = {
 
 /**
  * Call-to-action stage — zero layout mutation.
- * Scrubbed: gold invite rises → image rises to cover while invite reverses →
- * on-image title. Scroll up reverses the whole story.
+ *
+ * Phase A (section approaches): gold invite rises and is fully up by the time
+ * the stage locks.
+ * Phase B (locked): short hold, then the photograph rises elegantly to cover
+ * while the invite reverses — then on-image title.
  */
 export function HomeCampaignSection({
   title,
@@ -60,17 +63,20 @@ export function HomeCampaignSection({
 
     let killed = false;
     let ctx: gsap.Context | null = null;
-    let st: ScrollTrigger | null = null;
     let removeLenis: (() => void) | null = null;
     let bootTimer = 0;
+
+    const killOwned = () => {
+      ["hcta-invite", "hcta-stage"].forEach((id) => {
+        ScrollTrigger.getById(id)?.kill();
+      });
+    };
 
     const boot = () => {
       if (killed || !track.isConnected) return;
 
       ctx?.revert();
-      st?.kill();
-      ScrollTrigger.getById("hcta-silk-text")?.kill();
-      ScrollTrigger.getById("hcta-stage")?.kill();
+      killOwned();
 
       ctx = gsap.context(() => {
         if (reduced) {
@@ -84,7 +90,6 @@ export function HomeCampaignSection({
           return;
         }
 
-        /* Image panel starts below the cream invite */
         if (reveal) {
           gsap.set(reveal, { yPercent: 100, force3D: true });
         }
@@ -99,17 +104,19 @@ export function HomeCampaignSection({
         }
         gsap.set(frame, { y: 0, force3D: true });
 
-        const story = gsap.timeline({ paused: true });
-
-        /* 1) Invite letters rise — fully scrubbed with scroll */
+        /*
+         * Phase A — invite completes as you arrive (before / as stage locks).
+         * Fully up when progress hits 1 (= section top meets viewport top).
+         */
+        const inviteTl = gsap.timeline({ paused: true });
         if (silkChars.length) {
-          story.to(
+          inviteTl.to(
             silkChars,
             {
               yPercent: 0,
               autoAlpha: 1,
-              stagger: 0.02,
-              duration: 0.22,
+              stagger: 0.022,
+              duration: 1,
               ease: "none",
               force3D: true,
             },
@@ -117,85 +124,121 @@ export function HomeCampaignSection({
           );
         }
 
-        /* 2) Image rises to cover while invite animates back */
+        ScrollTrigger.create({
+          id: "hcta-invite",
+          trigger: track,
+          start: "top 88%",
+          end: "top top",
+          scrub: 0.35,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            inviteTl.progress(self.progress);
+          },
+          onRefresh: (self) => {
+            inviteTl.progress(self.progress);
+          },
+        });
+
+        /*
+         * Phase B — hold the finished invite, then elegant image cover.
+         * Image does not move until ~half of this locked range.
+         */
+        const coverTl = gsap.timeline({ paused: true });
+
+        /* Keep invite readable at the start of the lock */
         if (silkChars.length) {
-          story.to(
+          coverTl.set(
+            silkChars,
+            { yPercent: 0, autoAlpha: 1, force3D: true },
+            0,
+          );
+        }
+        if (reveal) {
+          coverTl.set(reveal, { yPercent: 100, force3D: true }, 0);
+        }
+
+        /* First half: hold — text fully up, image still waiting below */
+        coverTl.to({}, { duration: 0.48 }, 0);
+
+        /* Second half: image rises; invite reverses underneath */
+        if (silkChars.length) {
+          coverTl.to(
             silkChars,
             {
               yPercent: 120,
               autoAlpha: 0,
-              stagger: 0.016,
-              duration: 0.28,
-              ease: "none",
-              force3D: true,
-            },
-            0.24,
-          );
-        }
-        if (reveal) {
-          story.to(
-            reveal,
-            {
-              yPercent: 0,
+              stagger: 0.014,
               duration: 0.32,
               ease: "none",
               force3D: true,
             },
-            0.24,
+            0.5,
+          );
+        }
+        if (reveal) {
+          coverTl.to(
+            reveal,
+            {
+              yPercent: 0,
+              duration: 0.38,
+              ease: "power1.inOut",
+              force3D: true,
+            },
+            0.5,
           );
         }
 
-        /* 3) Quiet beat on the photograph */
-        story.to({}, { duration: 0.08 }, 0.54);
+        coverTl.to({}, { duration: 0.06 }, 0.86);
 
-        /* 4) On-image title + Book Now */
         if (chars.length) {
-          story.to(
+          coverTl.to(
             chars,
             {
               yPercent: 0,
               autoAlpha: 1,
               stagger: 0.014,
-              duration: 0.16,
+              duration: 0.14,
               ease: "none",
               force3D: true,
             },
-            0.6,
+            0.88,
           );
         }
         if (book) {
-          story.to(
+          coverTl.to(
             book,
             {
               autoAlpha: 1,
               duration: 0.08,
               ease: "none",
             },
-            0.68,
+            0.94,
           );
         }
 
-        /* 5) Reading pause */
-        story.to({}, { duration: 0.2 }, 0.78);
+        coverTl.to({}, { duration: 0.12 }, 1.02);
 
-        const sync = (progress: number) => {
-          const maxY = Math.max(0, track.offsetHeight - window.innerHeight);
-          gsap.set(frame, { y: progress * maxY, force3D: true });
-          story.progress(progress);
-        };
-
-        st = ScrollTrigger.create({
+        ScrollTrigger.create({
           id: "hcta-stage",
           trigger: track,
           start: "top top",
           end: "bottom bottom",
-          scrub: 0.5,
+          scrub: 0.55,
           invalidateOnRefresh: true,
-          onUpdate: (self) => sync(self.progress),
-          onRefresh: (self) => sync(self.progress),
+          onUpdate: (self) => {
+            const maxY = Math.max(0, track.offsetHeight - window.innerHeight);
+            gsap.set(frame, { y: self.progress * maxY, force3D: true });
+            /* Invite stays complete while the cover phase runs */
+            inviteTl.progress(1);
+            coverTl.progress(self.progress);
+          },
+          onRefresh: (self) => {
+            const maxY = Math.max(0, track.offsetHeight - window.innerHeight);
+            gsap.set(frame, { y: self.progress * maxY, force3D: true });
+            if (self.progress > 0) inviteTl.progress(1);
+            coverTl.progress(self.progress);
+          },
         });
-
-        sync(st.progress);
       }, track);
 
       ScrollTrigger.refresh();
@@ -229,8 +272,7 @@ export function HomeCampaignSection({
       window.clearTimeout(bootTimer);
       window.removeEventListener("load", onLoad);
       removeLenis?.();
-      st?.kill();
-      ScrollTrigger.getById("hcta-stage")?.kill();
+      killOwned();
       ctx?.revert();
     };
   }, []);
@@ -244,7 +286,6 @@ export function HomeCampaignSection({
       data-hcta-track
     >
       <div className="hcta-frame" data-hcta-frame>
-        {/* Cream + gold invite — stays put; image rises over it */}
         <div className="hcta-silk" data-hcta-silk>
           <div className="hcta-silk-copy" aria-hidden="true">
             {SILK_ROWS.map((row) => (
@@ -261,7 +302,6 @@ export function HomeCampaignSection({
           </div>
         </div>
 
-        {/* Photograph panel — rises from below to cover the invite */}
         <div className="hcta-reveal" data-hcta-reveal>
           <div className="hcta-media" data-hcta-media>
             <ManagedImage
