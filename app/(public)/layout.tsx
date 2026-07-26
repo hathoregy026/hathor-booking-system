@@ -16,6 +16,7 @@ import {
 import { getWebsiteTextSafe } from "@/lib/website-text";
 import "../hathor-fonts.css";
 import "../public.css";
+import "../lux-footer.css";
 import "../interior-design-system.css";
 import "../atelier-text-split.css";
 import "../site-nav.css";
