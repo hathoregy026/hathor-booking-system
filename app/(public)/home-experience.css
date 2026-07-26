@@ -2388,7 +2388,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   display: block;
   flex: 0 0 auto;
   width: var(--gallery-card);
-  aspect-ratio: 16 / 10;
+  height: clamp(237.5px, calc(16.25vw + 50px), 337.5px);
   overflow: hidden;
   border: 1px solid rgba(182, 159, 100, 0.38);
   border-radius: 0;
