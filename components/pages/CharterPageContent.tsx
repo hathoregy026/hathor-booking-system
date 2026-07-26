@@ -5,9 +5,13 @@ import { InquiryForm } from "@/components/pages/InquiryForm";
 import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { ManagedImage } from "@/components/ui/ManagedImage";
+import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { CHARTER_PAGE } from "@/lib/page-content";
 
 export function CharterPageContent() {
+  const { pages } = useWebsiteText();
+  const charter = pages.charter;
+
   return (
     <PageScrollTransition
       title={CHARTER_PAGE.hero.title}
@@ -23,21 +27,21 @@ export function CharterPageContent() {
           <div className="grid gap-12 lg:grid-cols-2">
             <ScrollReveal>
               <div>
-                <h2 className="hathor-section-title">{CHARTER_PAGE.overview.title}</h2>
+                <h2 className="hathor-section-title">{charter.overviewTitle}</h2>
                 <div className="hathor-gold-line hathor-gold-line--left" />
-                <p className="hathor-body-text">{CHARTER_PAGE.overview.intro}</p>
+                <p className="hathor-body-text">{charter.overviewIntro}</p>
                 <p className="hathor-body-text mt-4">
-                  {CHARTER_PAGE.overview.benefitsIntro}
+                  {charter.benefitsIntro}
                 </p>
                 <ul className="mt-6 space-y-3">
-                  {CHARTER_PAGE.overview.benefits.map((benefit) => (
+                  {charter.benefits.map((benefit) => (
                     <li key={benefit} className="hathor-feature-card">
                       <p className="hathor-body-text">{benefit}</p>
                     </li>
                   ))}
                 </ul>
                 <p className="hathor-body-text mt-8 font-medium">
-                  {CHARTER_PAGE.overview.cta}
+                  {charter.cta}
                 </p>
               </div>
             </ScrollReveal>

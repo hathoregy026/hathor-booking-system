@@ -5,36 +5,39 @@ import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ManagedImage } from "@/components/ui/ManagedImage";
+import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { useHathorLuxBodyMotion } from "@/hooks/useHathorLuxBodyMotion";
 import { GASTRONOMY_PAGE } from "@/lib/page-content";
-
-const CHAPTERS = [
-  {
-    kicker: "01 / Service",
-    title: GASTRONOMY_PAGE.restaurant.title,
-    body: GASTRONOMY_PAGE.restaurant.service,
-    imageName: "gastronomy-restaurant" as const,
-    right: false,
-  },
-  {
-    kicker: "02 / Atmosphere",
-    title: GASTRONOMY_PAGE.restaurant.atmosphereTitle,
-    body: GASTRONOMY_PAGE.restaurant.atmosphere,
-    imageName: "gastronomy-hero" as const,
-    right: true,
-  },
-  {
-    kicker: "03 / Memory",
-    title: "Meals that linger",
-    body: GASTRONOMY_PAGE.restaurant.closing,
-    imageName: "gastronomy-restaurant" as const,
-    right: false,
-  },
-] as const;
 
 export function GastronomyPageContent() {
   const rootRef = useRef<HTMLDivElement>(null);
   useHathorLuxBodyMotion(rootRef);
+  const { pages } = useWebsiteText();
+  const gastronomy = pages.gastronomy;
+
+  const chapters = [
+    {
+      kicker: "01 / Service",
+      title: gastronomy.restaurantTitle,
+      body: gastronomy.restaurantService,
+      imageName: "gastronomy-restaurant" as const,
+      right: false,
+    },
+    {
+      kicker: "02 / Atmosphere",
+      title: gastronomy.atmosphereTitle,
+      body: gastronomy.atmosphere,
+      imageName: "gastronomy-hero" as const,
+      right: true,
+    },
+    {
+      kicker: "03 / Memory",
+      title: "Meals that linger",
+      body: gastronomy.closing,
+      imageName: "gastronomy-restaurant" as const,
+      right: false,
+    },
+  ] as const;
 
   return (
     <PageScrollTransition
@@ -58,13 +61,13 @@ export function GastronomyPageContent() {
               A sensory journey through Egypt&apos;s culinary heritage on the Nile.
             </p>
             <div className="lux-copy" data-lux-reveal>
-              {GASTRONOMY_PAGE.intro.map((paragraph) => (
+              {gastronomy.intro.map((paragraph) => (
                 <p key={paragraph.slice(0, 40)}>{paragraph}</p>
               ))}
             </div>
           </div>
 
-          {CHAPTERS.map((chapter) => (
+          {chapters.map((chapter) => (
             <article
               key={chapter.kicker}
               className={`dnx-chapter${chapter.right ? " dnx-chapter--right" : ""}`}
@@ -109,7 +112,7 @@ export function GastronomyPageContent() {
               </p>
             </header>
             <div className="spx-suite-grid">
-              {GASTRONOMY_PAGE.venues.map((venue) => (
+              {gastronomy.venues.map((venue) => (
                 <article key={venue.title} className="spx-suite-card">
                   <div className="spx-suite-body">
                     <h3>{venue.title}</h3>

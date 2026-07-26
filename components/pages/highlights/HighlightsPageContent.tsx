@@ -5,6 +5,7 @@ import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { PublicSiteHero } from "@/components/pages/PublicSiteHero";
 import { ManagedImage } from "@/components/ui/ManagedImage";
+import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { useHathorLuxBodyMotion } from "@/hooks/useHathorLuxBodyMotion";
 import { splitHeroTitle } from "@/lib/split-hero-title";
 import { HIGHLIGHTS_PAGE } from "@/lib/page-content";
@@ -19,6 +20,8 @@ export function HighlightsPageContent() {
   const rootRef = useRef<HTMLDivElement>(null);
   const [lineRight, lineLeft] = splitHeroTitle(HIGHLIGHTS_PAGE.hero.title);
   useHathorLuxBodyMotion(rootRef);
+  const { pages } = useWebsiteText();
+  const highlights = pages.highlights;
 
   return (
     <div ref={rootRef} className="venetian-page lux-page">
@@ -42,7 +45,7 @@ export function HighlightsPageContent() {
             {HIGHLIGHTS_PAGE.hero.subtitle}
           </p>
           <div className="lux-copy" data-lux-reveal>
-            {HIGHLIGHTS_PAGE.intro.map((paragraph) => (
+            {highlights.intro.map((paragraph) => (
               <p key={paragraph.slice(0, 48)}>{paragraph}</p>
             ))}
           </div>
@@ -53,7 +56,7 @@ export function HighlightsPageContent() {
 
         <div className="hlx-pin">
           <div className="hlx-track" id="hlx-track">
-            {HIGHLIGHTS_PAGE.landmarks.map((landmark, index) => (
+            {highlights.landmarks.map((landmark, index) => (
               <article
                 key={landmark.title}
                 className="hlx-panel"
@@ -89,7 +92,7 @@ export function HighlightsPageContent() {
         </div>
 
         <div className="hlx-progress" aria-hidden="true">
-          {HIGHLIGHTS_PAGE.landmarks.map((landmark) => (
+          {highlights.landmarks.map((landmark) => (
             <span key={landmark.title}>
               <i />
             </span>

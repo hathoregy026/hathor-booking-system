@@ -1,9 +1,13 @@
 "use client";
 
 import { ResidenceScrollPage } from "@/components/pages/rooms/ResidenceScrollPage";
+import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { ROYAL_SUITES_PAGE } from "@/lib/page-content";
 
 export function RoyalSuitesPageContent() {
+  const { pages } = useWebsiteText();
+  const royal = pages.royal;
+
   return (
     <ResidenceScrollPage
       heroTitle={ROYAL_SUITES_PAGE.hero.title}
@@ -15,7 +19,7 @@ export function RoyalSuitesPageContent() {
       heroImageAlt="Royal suite with panoramic Nile view aboard Hathor Dahabiya"
       intro={{
         eyebrow: "Luxury Royal Suites",
-        title: ROYAL_SUITES_PAGE.overview.title,
+        title: royal.overviewTitle,
         copy: ROYAL_SUITES_PAGE.copyPlacement.afterHero,
         stats: ["2 Luxury Suites & 2 Royal Suites", "56 Square Meters", "Panoramic Nile view"],
       }}
@@ -32,7 +36,7 @@ export function RoyalSuitesPageContent() {
       }))}
       amenities={{
         title: ROYAL_SUITES_PAGE.amenities.title,
-        body: ROYAL_SUITES_PAGE.bookCta.body,
+        body: royal.overviewIntro,
         features: ROYAL_SUITES_PAGE.amenities.features,
       }}
       cta={{

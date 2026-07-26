@@ -31,6 +31,7 @@ import {
   useTypographyInlineStyle,
   useTypographySettings,
 } from "@/components/public/TypographySettingsProvider";
+import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import {
   DEFAULT_HERO_LOGO_TUNE,
   type HeroLogoTune,
@@ -149,6 +150,7 @@ export function HomePageClient({
   useExScrollMotion();
 
   const typography = useTypographySettings();
+  const websiteText = useWebsiteText();
   const stackEyebrowStyle = useTypographyInlineStyle("on_images_indication");
   const stackTitleStyle = useTypographyInlineStyle("on_images_title");
   const stackBodyStyle = useTypographyInlineStyle("on_images_body");
@@ -159,36 +161,34 @@ export function HomePageClient({
   const aboutBodyStyle = useTypographyInlineStyle("body_text");
   const campaignTitleStyle = useTypographyInlineStyle("on_images_title");
 
-  const onImagesTitleLines = (
-    typography.on_images_copy.title.trim() || EX_PINNED.title
-  )
+  const aboutHeadingLines = websiteText.home.about.heading
     .split("\n")
     .map((line) => line.trim())
     .filter(Boolean);
 
   const stackSlides = EX_PINNED.slides.map((slide, index) => {
-    const useCms = index === 0;
-    const titleRaw = useCms
-      ? typography.on_images_copy.title.trim() || slide.title
-      : slide.title;
+    const cms = websiteText.home.stackSlides[index];
+    const titleRaw =
+      cms?.title?.trim() ||
+      (index === 0 ? typography.on_images_copy.title.trim() : "") ||
+      slide.title;
     const titleLines = titleRaw
       .split("\n")
       .map((line) => line.trim())
       .filter(Boolean);
     return {
       ...slide,
-      titleLines:
-        titleLines.length > 0
-          ? titleLines
-          : index === 0
-            ? onImagesTitleLines
-            : [slide.title],
-      indication: useCms
-        ? typography.on_images_copy.indication.trim() || slide.indication
-        : slide.indication,
-      body: useCms
-        ? typography.on_images_copy.body.trim() || slide.body
-        : slide.body,
+      titleLines: titleLines.length > 0 ? titleLines : [slide.title],
+      indication:
+        cms?.indication?.trim() ||
+        (index === 0
+          ? typography.on_images_copy.indication.trim()
+          : "") ||
+        slide.indication,
+      body:
+        cms?.body?.trim() ||
+        (index === 0 ? typography.on_images_copy.body.trim() : "") ||
+        slide.body,
     };
   });
 
@@ -349,9 +349,12 @@ export function HomePageClient({
                 </div>
                 <div className="radius-heading">
                   <h2 className="typo-page-title" style={aboutTitleStyle}>
-                    Elegance is
-                    <br />
-                    a way of life.
+                    {aboutHeadingLines.map((line, index) => (
+                      <span key={`${line}-${index}`}>
+                        {index > 0 ? <br /> : null}
+                        {line}
+                      </span>
+                    ))}
                   </h2>
                 </div>
                 <div className="radius-sub-heading radius-indication">
@@ -359,16 +362,16 @@ export function HomePageClient({
                     className="typo-page-subtitle"
                     style={aboutIndicationStyle}
                   >
-                    {EX_ABOUT.eyebrow}
+                    {websiteText.home.about.eyebrow}
                   </h3>
                 </div>
                 <div className="radius-p">
                   <p className="typo-body-text" style={aboutBodyStyle}>
-                    {EX_ABOUT.body}
+                    {websiteText.home.about.body}
                   </p>
                 </div>
                 <Link className="btn btn-dark radius-button" href="/about">
-                  Discover More
+                  {websiteText.home.about.cta}
                 </Link>
               </div>
             </div>
@@ -378,11 +381,11 @@ export function HomePageClient({
         <section className="services-section ex-content-section" id="services">
           <div className="services-intro">
             <div className="home-carousel-h2">
-              <h2>{EX_CAROUSEL.title}</h2>
+              <h2>{websiteText.home.carousel.title}</h2>
             </div>
             <div className="home-carousel-h3">
               <h3 className="typo-page-subtitle" style={itinerariesIndicationStyle}>
-                {EX_CAROUSEL.subtitle}
+                {websiteText.home.carousel.subtitle}
               </h3>
             </div>
           </div>
@@ -410,7 +413,7 @@ export function HomePageClient({
 
           <div className="services-cta">
             <Link className="btn btn-dark general-button" href="/cruises">
-              Explore More
+              {websiteText.home.carousel.exploreCta}
             </Link>
           </div>
         </section>
@@ -507,16 +510,21 @@ export function HomePageClient({
         />
 
         <section className="text-img-section ex-content-section" id="escape">
-          {EX_TEXT_BLOCKS.map((block, index) => (
+          {EX_TEXT_BLOCKS.map((block, index) => {
+            const cms = websiteText.home.textBlocks[index];
+            const title = cms?.title ?? block.title;
+            const body = cms?.body ?? block.body;
+            const cta = cms?.cta ?? block.cta;
+            return (
             <div
-              key={block.title}
+              key={block.href}
               className={`text-img-row${index % 2 === 1 ? " is-reverse" : ""}`}
             >
               <div className="home-text-img-parent">
                 <Link
                   href={block.href}
                   className="home-text-img-container media-hover"
-                  aria-label={block.cta}
+                  aria-label={cta}
                 >
                   <ManagedImage
                     name={block.imageName}
@@ -531,8 +539,8 @@ export function HomePageClient({
               <div className="home-text-img-copy">
                 <div className="home-text-h2">
                   <h2>
-                    {block.title.split("\n").map((line, lineIndex, lines) => (
-                      <span key={`${block.title}-${lineIndex}`}>
+                    {title.split("\n").map((line, lineIndex, lines) => (
+                      <span key={`${title}-${lineIndex}`}>
                         {line}
                         {lineIndex < lines.length - 1 ? <br /> : null}
                       </span>
@@ -540,19 +548,20 @@ export function HomePageClient({
                   </h2>
                 </div>
                 <div className="home-text-p">
-                  <p>{block.body}</p>
+                  <p>{body}</p>
                 </div>
                 <Link className="btn btn-dark home-text-button" href={block.href}>
-                  {block.cta}
+                  {cta}
                 </Link>
               </div>
             </div>
-          ))}
+            );
+          })}
         </section>
 
         <section className="gallery-section ex-content-section" id="gallery">
           <GalleryInstagramFollow
-            title={EX_GALLERY.title}
+            title={websiteText.home.gallery.title}
             handleStyle={{
               fontFamily: galleryIndicationStyle.fontFamily,
               fontSize: galleryIndicationStyle.fontSize,
@@ -629,12 +638,12 @@ export function HomePageClient({
         <section className="testimonials-section ex-content-section" id="reviews">
           <div className="testimonials-header">
             <div className="testimonial-h2">
-              <h2>{EX_TESTIMONIALS.title}</h2>
+              <h2>{websiteText.home.testimonials.title}</h2>
             </div>
           </div>
 
           <div className="testimonials-grid">
-            {EX_TESTIMONIALS.cards.map((card) => (
+            {websiteText.home.testimonials.cards.map((card) => (
               <article key={card.name} className="testimonial-card">
                 <div className="testimonial-stars" aria-label="5 stars">
                   ★★★★★
@@ -647,7 +656,7 @@ export function HomePageClient({
         </section>
 
         <HomeCampaignSection
-          title={EX_CAMPAIGN.title}
+          title={websiteText.home.campaign.title}
           imageName={EX_CAMPAIGN.imageName}
           imageAlt={EX_CAMPAIGN.imageAlt}
           titleStyle={campaignTitleStyle}
@@ -656,8 +665,8 @@ export function HomePageClient({
 
         <section className="cta-section ex-content-section" id="visit">
           <div className="cta-inner">
-            <h2>{EX_CTA.title}</h2>
-            <p>{EX_CTA.body}</p>
+            <h2>{websiteText.home.cta.title}</h2>
+            <p>{websiteText.home.cta.body}</p>
             <BookNowTrigger className="btn btn-filled">Book Now</BookNowTrigger>
           </div>
         </section>

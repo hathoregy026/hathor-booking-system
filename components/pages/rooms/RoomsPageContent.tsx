@@ -1,10 +1,14 @@
 "use client";
 
 import { ResidenceScrollPage } from "@/components/pages/rooms/ResidenceScrollPage";
+import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { LUXURY_SUITES_PAGE } from "@/lib/page-content";
 
 /** /rooms — Cabins & Suits content from hathorcruise.com/rooms */
 export function RoomsPageContent() {
+  const { pages } = useWebsiteText();
+  const rooms = pages.rooms;
+
   return (
     <ResidenceScrollPage
       heroTitle={LUXURY_SUITES_PAGE.hero.title}
@@ -16,7 +20,7 @@ export function RoomsPageContent() {
       heroImageAlt="Cabins and suites aboard Hathor Dahabiya"
       intro={{
         eyebrow: "Cabins & Suits",
-        title: LUXURY_SUITES_PAGE.overview.title,
+        title: rooms.overviewTitle,
         copy: LUXURY_SUITES_PAGE.copyPlacement.afterHero,
       }}
       copyPlacement={LUXURY_SUITES_PAGE.copyPlacement}
@@ -44,7 +48,7 @@ export function RoomsPageContent() {
       ]}
       amenities={{
         title: LUXURY_SUITES_PAGE.amenities.title,
-        body: LUXURY_SUITES_PAGE.overview.body,
+        body: rooms.overviewIntro,
         features: LUXURY_SUITES_PAGE.amenities.features,
       }}
       cta={{

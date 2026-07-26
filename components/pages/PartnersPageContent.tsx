@@ -2,14 +2,18 @@
 
 import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { HOMEPAGE_PARTNERS } from "@/lib/homepage-content";
 
 export function PartnersPageContent() {
+  const { pages } = useWebsiteText();
+  const partners = pages.partners;
+
   return (
     <PageScrollTransition
-      title={HOMEPAGE_PARTNERS.title}
+      title={partners.title}
       secondTitle="Trusted Worldwide"
-      subtitle={HOMEPAGE_PARTNERS.chapter}
+      subtitle={partners.chapter}
       breadcrumb="Partners"
       imageName="about-hero"
       heroPage="partners"
@@ -18,8 +22,7 @@ export function PartnersPageContent() {
         <div className="hathor-container">
           <ScrollReveal>
             <p className="hathor-section-lead mx-auto max-w-2xl text-center">
-              We sail with trusted names in travel and hospitality — partners who
-              share our care for the Nile and our guests.
+              {partners.lead}
             </p>
           </ScrollReveal>
 

@@ -1,9 +1,13 @@
 "use client";
 
 import { ResidenceScrollPage } from "@/components/pages/rooms/ResidenceScrollPage";
+import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { LUXURY_CABINS_PAGE } from "@/lib/page-content";
 
 export function LuxuryCabinsPageContent() {
+  const { pages } = useWebsiteText();
+  const cabins = pages.cabins;
+
   return (
     <ResidenceScrollPage
       heroTitle={LUXURY_CABINS_PAGE.hero.title}
@@ -15,7 +19,7 @@ export function LuxuryCabinsPageContent() {
       heroImageAlt="Luxury cabin with Nile view aboard Hathor Dahabiya"
       intro={{
         eyebrow: "Luxury Rooms",
-        title: LUXURY_CABINS_PAGE.overview.title,
+        title: cabins.overviewTitle,
         copy: LUXURY_CABINS_PAGE.copyPlacement.afterHero,
         stats: ["12 Luxury Cabins & Suites", "22 Square Meters", "Nile View"],
       }}
@@ -32,7 +36,7 @@ export function LuxuryCabinsPageContent() {
       }))}
       amenities={{
         title: LUXURY_CABINS_PAGE.amenities.title,
-        body: LUXURY_CABINS_PAGE.overview.body,
+        body: cabins.overviewIntro,
         features: LUXURY_CABINS_PAGE.amenities.features,
       }}
       cta={{

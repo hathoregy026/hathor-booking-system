@@ -7,6 +7,7 @@ import { MarketingCtaBand } from "@/components/pages/MarketingCtaBand";
 import { EditorialSection } from "@/components/pages/EditorialSection";
 import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ManagedImage } from "@/components/ui/ManagedImage";
+import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { ABOUT_PAGE } from "@/lib/page-content";
 
 const ACCOMMODATION_SECTIONS = [
@@ -31,6 +32,9 @@ const ACCOMMODATION_SECTIONS = [
 ] as const;
 
 export function AboutPageContent() {
+  const { pages } = useWebsiteText();
+  const about = pages.about;
+
   return (
     <PageScrollTransition
       title={ABOUT_PAGE.hero.title}
@@ -44,7 +48,7 @@ export function AboutPageContent() {
         <div className="hathor-container">
           <ScrollReveal>
             <div className="mx-auto max-w-3xl text-center">
-              {ABOUT_PAGE.intro.map((paragraph) => (
+              {about.intro.map((paragraph) => (
                 <p key={paragraph.slice(0, 48)} className="hathor-body-text mt-6 first:mt-0">
                   {paragraph}
                 </p>
@@ -58,10 +62,10 @@ export function AboutPageContent() {
         <div className="hathor-container">
           <ScrollReveal>
             <div className="hathor-section-header">
-              <h2 className="hathor-section-title">{ABOUT_PAGE.accommodations.title}</h2>
+              <h2 className="hathor-section-title">{about.accommodationsTitle}</h2>
               <div className="hathor-gold-line" />
               <p className="hathor-body-text mx-auto mt-6 max-w-2xl text-center">
-                {ABOUT_PAGE.accommodations.intro}
+                {about.accommodationsIntro}
               </p>
             </div>
           </ScrollReveal>
@@ -83,7 +87,7 @@ export function AboutPageContent() {
 
           <ScrollReveal delay={120}>
             <p className="hathor-body-text mx-auto mt-12 max-w-3xl text-center">
-              {ABOUT_PAGE.accommodations.outro}
+              {about.accommodationsOutro}
             </p>
           </ScrollReveal>
         </div>
@@ -111,10 +115,10 @@ export function AboutPageContent() {
         <div className="hathor-container">
           <ScrollReveal>
             <div className="hathor-section-header">
-              <h2 className="hathor-section-title">{ABOUT_PAGE.dining.title}</h2>
+              <h2 className="hathor-section-title">{about.diningTitle}</h2>
               <div className="hathor-gold-line" />
               <p className="hathor-body-text mx-auto mt-6 max-w-2xl text-center">
-                {ABOUT_PAGE.dining.intro}
+                {about.diningIntro}
               </p>
             </div>
           </ScrollReveal>
@@ -131,7 +135,7 @@ export function AboutPageContent() {
 
           <ScrollReveal delay={160}>
             <p className="hathor-body-text mx-auto mt-12 max-w-3xl text-center">
-              {ABOUT_PAGE.dining.outro}
+              {about.diningOutro}
             </p>
           </ScrollReveal>
         </div>
@@ -179,9 +183,9 @@ export function AboutPageContent() {
         <div className="hathor-container">
           <ScrollReveal>
             <div className="mx-auto max-w-3xl text-center">
-              <h2 className="hathor-section-title">{ABOUT_PAGE.welcome.title}</h2>
+              <h2 className="hathor-section-title">{about.welcomeTitle}</h2>
               <div className="hathor-gold-line" />
-              <p className="hathor-body-text mt-6">{ABOUT_PAGE.welcome.body}</p>
+              <p className="hathor-body-text mt-6">{about.welcomeBody}</p>
             </div>
           </ScrollReveal>
         </div>

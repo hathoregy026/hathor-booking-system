@@ -5,47 +5,50 @@ import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ManagedImage } from "@/components/ui/ManagedImage";
+import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { useHathorLuxBodyMotion } from "@/hooks/useHathorLuxBodyMotion";
 import { WELLNESS_PAGE } from "@/lib/page-content";
-
-const FRAMES = [
-  {
-    kicker: "01 / Seneb Spa",
-    title: "A floating oasis",
-    lead: WELLNESS_PAGE.hero.subtitle,
-    body: WELLNESS_PAGE.spa.paragraphs[0]!,
-    imageName: "wellness-hero" as const,
-    right: false,
-  },
-  {
-    kicker: "02 / Nile rhythm",
-    title: "Surrender to calm",
-    lead: "Ancient wisdom · Holistic care",
-    body: WELLNESS_PAGE.spa.paragraphs[1]!,
-    imageName: "wellness-fitness" as const,
-    right: true,
-  },
-  {
-    kicker: "03 / Signature therapies",
-    title: "Rituals restored",
-    lead: "Aromatherapy · Herbal wraps",
-    body: WELLNESS_PAGE.spa.paragraphs[2]!,
-    imageName: "wellness-hero" as const,
-    right: false,
-  },
-  {
-    kicker: "04 / Historia Fitness",
-    title: WELLNESS_PAGE.fitness.title,
-    lead: "Train with a view of the Nile",
-    body: WELLNESS_PAGE.fitness.body,
-    imageName: "wellness-fitness" as const,
-    right: true,
-  },
-] as const;
 
 export function WellnessPageContent() {
   const rootRef = useRef<HTMLDivElement>(null);
   useHathorLuxBodyMotion(rootRef);
+  const { pages } = useWebsiteText();
+  const wellness = pages.wellness;
+
+  const frames = [
+    {
+      kicker: "01 / Seneb Spa",
+      title: "A floating oasis",
+      lead: WELLNESS_PAGE.hero.subtitle,
+      body: wellness.spaParagraphs[0]!,
+      imageName: "wellness-hero" as const,
+      right: false,
+    },
+    {
+      kicker: "02 / Nile rhythm",
+      title: "Surrender to calm",
+      lead: "Ancient wisdom · Holistic care",
+      body: wellness.spaParagraphs[1]!,
+      imageName: "wellness-fitness" as const,
+      right: true,
+    },
+    {
+      kicker: "03 / Signature therapies",
+      title: "Rituals restored",
+      lead: "Aromatherapy · Herbal wraps",
+      body: wellness.spaParagraphs[2]!,
+      imageName: "wellness-hero" as const,
+      right: false,
+    },
+    {
+      kicker: "04 / Historia Fitness",
+      title: wellness.fitnessTitle,
+      lead: "Train with a view of the Nile",
+      body: wellness.fitnessBody,
+      imageName: "wellness-fitness" as const,
+      right: true,
+    },
+  ] as const;
 
   return (
     <PageScrollTransition
@@ -60,7 +63,7 @@ export function WellnessPageContent() {
         <section className="lux-shell">
           <header className="spx-intro" id="performance">
             <h2 className="lux-gold lux-gold-xl" data-lux-title>
-              {WELLNESS_PAGE.spa.title}
+              {wellness.spaTitle}
             </h2>
             <p className="lux-kicker" data-lux-reveal>
               Wellness aboard Hathor
@@ -69,13 +72,13 @@ export function WellnessPageContent() {
               Health and well-being — Seneb — shaped by timeless Egyptian wisdom.
             </p>
             <div className="lux-copy" data-lux-reveal>
-              <p>{WELLNESS_PAGE.spa.paragraphs[3]}</p>
+              <p>{wellness.spaParagraphs[3]}</p>
             </div>
           </header>
         </section>
 
         <div className="spx">
-          {FRAMES.map((frame) => (
+          {frames.map((frame) => (
             <section
               key={frame.kicker}
               className={`spx-frame${frame.right ? " spx-frame--right" : ""}`}
@@ -125,7 +128,7 @@ export function WellnessPageContent() {
               </div>
               <div className="spx-atelier-copy">
                 <h2 className="lux-gold lux-gold-lg" data-lux-title>
-                  {WELLNESS_PAGE.fitness.title}
+                  {wellness.fitnessTitle}
                 </h2>
                 <p className="lux-kicker" data-lux-reveal>
                   Historia Fitness
@@ -134,7 +137,7 @@ export function WellnessPageContent() {
                   Your personal oasis overlooking the River Nile.
                 </p>
                 <div className="lux-copy" data-lux-reveal>
-                  <p>{WELLNESS_PAGE.fitness.body}</p>
+                  <p>{wellness.fitnessBody}</p>
                 </div>
                 <BookNowTrigger className="btn btn-dark">Book Now</BookNowTrigger>
               </div>

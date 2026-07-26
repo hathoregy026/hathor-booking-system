@@ -1,0 +1,389 @@
+/**
+ * Client-safe Website Text CMS defaults & helpers (no Prisma).
+ * Defaults mirror live copy from homepage / page content modules.
+ */
+
+import {
+  HOMEPAGE_ABOUT,
+  HOMEPAGE_DINING,
+  HOMEPAGE_HIGHLIGHTS,
+  HOMEPAGE_ITINERARIES,
+  HOMEPAGE_LIFESTYLE,
+  HOMEPAGE_PARTNERS,
+  HOMEPAGE_REVIEWS,
+} from "@/lib/homepage-content";
+import {
+  ABOUT_PAGE,
+  BLOG_PAGE,
+  CHARTER_PAGE,
+  CONTACT_PAGE,
+  CRUISES_PAGE,
+  GASTRONOMY_PAGE,
+  HIGHLIGHTS_PAGE,
+  LUXURY_CABINS_PAGE,
+  LUXURY_SUITES_PAGE,
+  ROYAL_SUITES_PAGE,
+  WELLNESS_PAGE,
+} from "@/lib/page-content";
+
+export const WEBSITE_TEXT_KEY = "website-text";
+
+export type WebsiteText = {
+  home: {
+    about: { heading: string; eyebrow: string; body: string; cta: string };
+    carousel: { title: string; subtitle: string; exploreCta: string };
+    stackSlides: Array<{ title: string; indication: string; body: string }>;
+    textBlocks: Array<{ title: string; body: string; cta: string }>;
+    gallery: { title: string; indication: string; followEyebrow: string };
+    testimonials: {
+      title: string;
+      cards: Array<{ name: string; quote: string }>;
+    };
+    campaign: { title: string };
+    cta: { title: string; body: string };
+  };
+  pages: {
+    about: {
+      intro: string[];
+      accommodationsTitle: string;
+      accommodationsIntro: string;
+      accommodationsOutro: string;
+      diningTitle: string;
+      diningIntro: string;
+      diningOutro: string;
+      welcomeTitle: string;
+      welcomeBody: string;
+    };
+    cruises: {
+      sectionTitle: string;
+      continueTitle: string;
+      continueBody: string;
+    };
+    highlights: {
+      intro: string[];
+      landmarks: Array<{ title: string; body: string }>;
+    };
+    gastronomy: {
+      intro: string[];
+      restaurantTitle: string;
+      restaurantService: string;
+      atmosphereTitle: string;
+      atmosphere: string;
+      closing: string;
+      venues: Array<{ title: string; description: string }>;
+    };
+    wellness: {
+      spaTitle: string;
+      spaParagraphs: string[];
+      fitnessTitle: string;
+      fitnessBody: string;
+    };
+    charter: {
+      overviewTitle: string;
+      overviewIntro: string;
+      benefitsIntro: string;
+      benefits: string[];
+      cta: string;
+    };
+    contact: {
+      formTitle: string;
+      formIntro: string;
+    };
+    blog: {
+      intro: string;
+    };
+    partners: {
+      title: string;
+      chapter: string;
+      lead: string;
+    };
+    rooms: {
+      overviewTitle: string;
+      overviewIntro: string;
+    };
+    cabins: {
+      overviewTitle: string;
+      overviewIntro: string;
+    };
+    royal: {
+      overviewTitle: string;
+      overviewIntro: string;
+    };
+  };
+};
+
+export type WebsiteTextNavItem = {
+  id: string;
+  label: string;
+  href: string;
+  hash?: string;
+};
+
+export const WEBSITE_TEXT_NAV: WebsiteTextNavItem[] = [
+  { id: "home", label: "Home", href: "/" },
+  { id: "about", label: "About", href: "/about" },
+  { id: "cruises", label: "Cruises", href: "/cruises" },
+  { id: "highlights", label: "Highlights", href: "/highlights" },
+  { id: "gastronomy", label: "Gastronomy", href: "/gastronomy" },
+  { id: "wellness", label: "Wellness", href: "/wellness" },
+  { id: "charter", label: "Charter", href: "/charter" },
+  { id: "contact", label: "Contact", href: "/contact" },
+  { id: "blog", label: "Blog", href: "/blogs" },
+  { id: "partners", label: "Partners", href: "/partners" },
+  { id: "rooms", label: "Rooms", href: "/rooms" },
+  {
+    id: "cabins",
+    label: "Luxury Cabins",
+    href: "/luxury-cabins-Nile-Cruise",
+  },
+  {
+    id: "royal",
+    label: "Royal Suites",
+    href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+  },
+];
+
+export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
+  home: {
+    about: {
+      heading: "Elegance is\na way of life.",
+      eyebrow: HOMEPAGE_ABOUT.subtitle,
+      body: HOMEPAGE_ABOUT.body,
+      cta: "Discover More",
+    },
+    carousel: {
+      title: HOMEPAGE_ITINERARIES.title,
+      subtitle: HOMEPAGE_ITINERARIES.subtitle,
+      exploreCta: "Explore More",
+    },
+    stackSlides: [
+      {
+        title: "Every landmark,\na pleasure.",
+        indication: "Sail The Nile On Hathor",
+        body: HOMEPAGE_HIGHLIGHTS.body,
+      },
+      {
+        title: "Where time\nmoves gently.",
+        indication: "Private Nile Sailing",
+        body: "Glide between Luxor and Aswan on an intimate dahabiya — unhurried days, soft light on the water, and Egypt unfolding at a gracious pace.",
+      },
+      {
+        title: "Welcome aboard\nHathor.",
+        indication: "Five-Star Small Boat",
+        body: "A private, five-star vessel where refined cabins, attentive hospitality, and timeless Egyptian charm meet for a truly exclusive Nile voyage.",
+      },
+      {
+        title: "Golden hour\non the Nile.",
+        indication: "History · Comfort · Style",
+        body: "From ancient landmarks to quiet decks at dusk, every moment aboard Hathor is composed for wonder, serenity, and lasting memory.",
+      },
+    ],
+    textBlocks: [
+      {
+        title: HOMEPAGE_LIFESTYLE.title,
+        body: HOMEPAGE_LIFESTYLE.body,
+        cta: "Discover More",
+      },
+      {
+        title: HOMEPAGE_DINING.title,
+        body: HOMEPAGE_DINING.body,
+        cta: "Explore Dining",
+      },
+    ],
+    gallery: {
+      title: "Sail with Hathor",
+      indication: "@hathorcruise",
+      followEyebrow: "Follow our journey",
+    },
+    testimonials: {
+      title: HOMEPAGE_REVIEWS.title,
+      cards: [
+        {
+          name: "Sarah Mitchell",
+          quote:
+            "An absolutely magical journey. The Hathor Dahabiya exceeded every expectation — impeccable service, breathtaking views, and true luxury on the Nile.",
+        },
+        {
+          name: "James & Elena Torres",
+          quote:
+            "The most elegant way to experience Egypt. Every detail was curated to perfection, from gourmet dining to our beautifully appointed suite.",
+        },
+        {
+          name: "Dr. Amira Hassan",
+          quote:
+            "A once-in-a-lifetime cruise. The intimate atmosphere and personalized attention made us feel like royalty sailing through ancient history.",
+        },
+        {
+          name: "Michael Chen",
+          quote:
+            "From the moment we stepped aboard, Hathor felt like a floating sanctuary. The crew, the cuisine, and the Nile views were unforgettable.",
+        },
+      ],
+    },
+    campaign: {
+      title: "THE CALLING",
+    },
+    cta: {
+      title: "Begin your Nile escape",
+      body: "Whether you are planning a private charter, selecting the perfect sailing dates, or reserving your suite, our team is here to make it effortless.",
+    },
+  },
+  pages: {
+    about: {
+      intro: [...ABOUT_PAGE.intro],
+      accommodationsTitle: ABOUT_PAGE.accommodations.title,
+      accommodationsIntro: ABOUT_PAGE.accommodations.intro,
+      accommodationsOutro: ABOUT_PAGE.accommodations.outro,
+      diningTitle: ABOUT_PAGE.dining.title,
+      diningIntro: ABOUT_PAGE.dining.intro,
+      diningOutro: ABOUT_PAGE.dining.outro,
+      welcomeTitle: ABOUT_PAGE.welcome.title,
+      welcomeBody: ABOUT_PAGE.welcome.body,
+    },
+    cruises: {
+      sectionTitle: CRUISES_PAGE.sectionTitle,
+      continueTitle: "Continue exploring\naboard Hathor",
+      // No body copy in CruisesPageContent — short line for CMS completeness
+      continueBody:
+        "Discover Luxury Rooms, Suites, Royal Suites, and Dining — Hathor Flavors.",
+    },
+    highlights: {
+      intro: [...HIGHLIGHTS_PAGE.intro],
+      landmarks: HIGHLIGHTS_PAGE.landmarks.map((l) => ({
+        title: l.title,
+        body: l.body,
+      })),
+    },
+    gastronomy: {
+      intro: [...GASTRONOMY_PAGE.intro],
+      restaurantTitle: GASTRONOMY_PAGE.restaurant.title,
+      restaurantService: GASTRONOMY_PAGE.restaurant.service,
+      atmosphereTitle: GASTRONOMY_PAGE.restaurant.atmosphereTitle,
+      atmosphere: GASTRONOMY_PAGE.restaurant.atmosphere,
+      closing: GASTRONOMY_PAGE.restaurant.closing,
+      venues: GASTRONOMY_PAGE.venues.map((v) => ({
+        title: v.title,
+        description: v.description,
+      })),
+    },
+    wellness: {
+      spaTitle: WELLNESS_PAGE.spa.title,
+      spaParagraphs: [...WELLNESS_PAGE.spa.paragraphs],
+      fitnessTitle: WELLNESS_PAGE.fitness.title,
+      fitnessBody: WELLNESS_PAGE.fitness.body,
+    },
+    charter: {
+      overviewTitle: CHARTER_PAGE.overview.title,
+      overviewIntro: CHARTER_PAGE.overview.intro,
+      benefitsIntro: CHARTER_PAGE.overview.benefitsIntro,
+      benefits: [...CHARTER_PAGE.overview.benefits],
+      cta: CHARTER_PAGE.overview.cta,
+    },
+    contact: {
+      formTitle: CONTACT_PAGE.form.title,
+      formIntro: CONTACT_PAGE.form.intro,
+    },
+    blog: {
+      intro: BLOG_PAGE.intro,
+    },
+    partners: {
+      title: HOMEPAGE_PARTNERS.title,
+      chapter: HOMEPAGE_PARTNERS.chapter,
+      lead: "We sail with trusted names in travel and hospitality — partners who share our care for the Nile and our guests.",
+    },
+    rooms: {
+      overviewTitle: LUXURY_SUITES_PAGE.overview.title,
+      overviewIntro: LUXURY_SUITES_PAGE.overview.body,
+    },
+    cabins: {
+      overviewTitle: LUXURY_CABINS_PAGE.overview.title,
+      overviewIntro: LUXURY_CABINS_PAGE.overview.body,
+    },
+    royal: {
+      overviewTitle: ROYAL_SUITES_PAGE.overview.title,
+      overviewIntro: ROYAL_SUITES_PAGE.overview.body,
+    },
+  },
+};
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function mergeValue(base: unknown, patch: unknown): unknown {
+  if (patch === undefined || patch === null) return base;
+
+  if (Array.isArray(base)) {
+    if (!Array.isArray(patch)) return base;
+
+    const baseIsStringArray =
+      base.length === 0 || typeof base[0] === "string";
+    if (baseIsStringArray) {
+      if (patch.every((item) => typeof item === "string")) {
+        return patch as string[];
+      }
+      return base;
+    }
+
+    // Arrays of objects: merge by index; keep base length (fixed CMS slots)
+    return base.map((item, index) => {
+      if (index >= patch.length) return item;
+      return mergeValue(item, patch[index]);
+    });
+  }
+
+  if (isPlainObject(base) && isPlainObject(patch)) {
+    const out: Record<string, unknown> = { ...base };
+    for (const key of Object.keys(base)) {
+      if (Object.prototype.hasOwnProperty.call(patch, key)) {
+        out[key] = mergeValue(base[key], patch[key]);
+      }
+    }
+    return out;
+  }
+
+  if (typeof patch === typeof base) return patch;
+  return base;
+}
+
+/** Recursive merge; object arrays merge by index; string arrays replace when patch is provided. */
+export function deepMergeWebsiteText(
+  base: WebsiteText,
+  patch: unknown,
+): WebsiteText {
+  return mergeValue(base, patch) as WebsiteText;
+}
+
+/** Merge over defaults; never throws. */
+export function parseWebsiteText(raw: unknown): WebsiteText {
+  try {
+    let value = raw;
+    if (typeof value === "string") {
+      try {
+        value = JSON.parse(value) as unknown;
+      } catch {
+        return structuredClone(DEFAULT_WEBSITE_TEXT);
+      }
+    }
+    if (value === null || value === undefined) {
+      return structuredClone(DEFAULT_WEBSITE_TEXT);
+    }
+    return deepMergeWebsiteText(
+      structuredClone(DEFAULT_WEBSITE_TEXT),
+      value,
+    );
+  } catch {
+    return structuredClone(DEFAULT_WEBSITE_TEXT);
+  }
+}
+
+export function paragraphsToText(arr: string[]): string {
+  return arr.join("\n\n");
+}
+
+export function textToParagraphs(s: string): string[] {
+  return s
+    .split(/\n\n+/)
+    .map((p) => p.trim())
+    .filter((p) => p.length > 0);
+}

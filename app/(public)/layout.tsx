@@ -5,6 +5,7 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import { PublicLayout } from "@/components/public/PublicLayout";
 import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
 import { TypographySettingsProvider } from "@/components/public/TypographySettingsProvider";
+import { WebsiteTextProvider } from "@/components/public/WebsiteTextProvider";
 import { resolveSiteImageMap } from "@/lib/resolve-site-images";
 import { getHeroLogoTuneSafe } from "@/lib/hero-logo-tune";
 import { heroLogoTuneToImportantCss } from "@/lib/hero-logo-tune-shared";
@@ -12,6 +13,7 @@ import {
   getTypographySettingsSafe,
   typographyToImportantCss,
 } from "@/lib/typography-settings";
+import { getWebsiteTextSafe } from "@/lib/website-text";
 import "../hathor-fonts.css";
 import "../public.css";
 import "../atelier-text-split.css";
@@ -105,10 +107,11 @@ export default async function PublicSiteLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
-  const [siteImages, typography, heroLogoTune] = await Promise.all([
+  const [siteImages, typography, heroLogoTune, websiteText] = await Promise.all([
     resolveSiteImageMap(),
     getTypographySettingsSafe(),
     getHeroLogoTuneSafe(),
+    getWebsiteTextSafe(),
   ]);
 
   const displayFontStyle = {
@@ -134,7 +137,9 @@ export default async function PublicSiteLayout({
       />
       <SiteImagesProvider images={siteImages}>
         <TypographySettingsProvider initial={typography}>
-          <PublicLayout>{children}</PublicLayout>
+          <WebsiteTextProvider initial={websiteText}>
+            <PublicLayout>{children}</PublicLayout>
+          </WebsiteTextProvider>
         </TypographySettingsProvider>
       </SiteImagesProvider>
     </div>

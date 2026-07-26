@@ -13,10 +13,17 @@ import { useCruisesRedesignMotion } from "@/hooks/useCruisesRedesignMotion";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 import { CRUISES_PAGE } from "@/lib/page-content";
 import { ManagedImage } from "@/components/ui/ManagedImage";
+import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 
 export function CruisesPageContent() {
   const rootRef = useRef<HTMLDivElement>(null);
   useCruisesRedesignMotion(rootRef);
+  const { pages } = useWebsiteText();
+  const cruisesText = pages.cruises;
+  const continueLines = cruisesText.continueTitle
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
 
   const totalRooms = HATHOR_CRUISES.reduce(
     (sum, cruise) => sum + cruise.rooms.length,
@@ -38,7 +45,7 @@ export function CruisesPageContent() {
         <section className="about-section cruise-intro" id="intro">
           <div className="section-inner cruise-intro-inner">
             <h2 className="cruise-intro-title">
-              <span className="cruise-intro-line">{CRUISES_PAGE.sectionTitle}</span>
+              <span className="cruise-intro-line">{cruisesText.sectionTitle}</span>
             </h2>
             <p className="cruise-eyebrow cruise-reveal">Hathor Voyages</p>
             <p className="cruise-intro-copy cruise-reveal">
@@ -73,10 +80,16 @@ export function CruisesPageContent() {
           <div className="cruise-experience-inner">
             <div className="cruise-exp-copy">
               <h2 className="cruise-exp-title">
-                <span className="cruise-intro-line">Continue exploring</span>
-                <span className="cruise-intro-line">aboard Hathor</span>
+                {continueLines.map((line) => (
+                  <span key={line} className="cruise-intro-line">
+                    {line}
+                  </span>
+                ))}
               </h2>
               <p className="cruise-eyebrow cruise-reveal">Onboard</p>
+              <p className="cruise-intro-copy cruise-reveal">
+                {cruisesText.continueBody}
+              </p>
               <ul className="cruise-exp-list">
                 <li className="cruise-reveal">
                   <Link href="/luxury-cabins-Nile-Cruise">Luxury Rooms</Link>

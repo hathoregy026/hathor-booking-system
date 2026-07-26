@@ -5,6 +5,7 @@ import { MarketingCtaBand } from "@/components/pages/MarketingCtaBand";
 import { InquiryForm } from "@/components/pages/InquiryForm";
 import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { CONTACT_PAGE } from "@/lib/page-content";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 
@@ -37,6 +38,9 @@ const CONTACT_ITEMS = [
 ] as const;
 
 export function ContactPageContent() {
+  const { pages } = useWebsiteText();
+  const contact = pages.contact;
+
   return (
     <PageScrollTransition
       title={CONTACT_PAGE.hero.title}
@@ -101,8 +105,8 @@ export function ContactPageContent() {
             <ScrollReveal delay={120}>
               <InquiryForm
                 type="contact"
-                title={CONTACT_PAGE.form.title}
-                intro={CONTACT_PAGE.form.intro}
+                title={contact.formTitle}
+                intro={contact.formIntro}
                 submitLabel="Send Request"
               />
             </ScrollReveal>

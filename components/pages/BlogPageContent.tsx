@@ -12,6 +12,7 @@ import {
 } from "@/lib/blog-display";
 import { BLOG_PAGE } from "@/lib/page-content";
 import { ManagedImage } from "@/components/ui/ManagedImage";
+import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 
 const BLOG_IMAGE_NAMES = [
   "highlights-hero",
@@ -34,6 +35,7 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
     () => posts.slice(0, visibleCount),
     [posts, visibleCount],
   );
+  const { pages } = useWebsiteText();
 
   return (
     <PageScrollTransition
@@ -48,7 +50,7 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
         <div className="hathor-container">
           <ScrollReveal>
             <p className="hathor-body-text mx-auto max-w-3xl text-center">
-              {BLOG_PAGE.intro}
+              {pages.blog.intro}
             </p>
           </ScrollReveal>
 

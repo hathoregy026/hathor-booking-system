@@ -9,11 +9,14 @@ import {
 } from "react";
 import { SocialBrandIcon } from "@/components/public/SocialBrandIcon";
 import { ManagedImage } from "@/components/ui/ManagedImage";
+import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { EX_GALLERY } from "@/lib/ex-page-content";
 import type { SiteImageName } from "@/lib/site-image-slots";
 
 type GalleryInstagramFollowProps = {
   title: string;
+  indication?: string;
+  followEyebrow?: string;
   handleStyle?: CSSProperties;
 };
 
@@ -128,8 +131,15 @@ function buildBurst(width: number, height: number, key: number): BurstParticle[]
 
 export function GalleryInstagramFollow({
   title,
+  indication: indicationProp,
+  followEyebrow: followEyebrowProp,
   handleStyle,
 }: GalleryInstagramFollowProps) {
+  const websiteText = useWebsiteText();
+  const indication =
+    indicationProp ?? websiteText.home.gallery.indication;
+  const followEyebrow =
+    followEyebrowProp ?? websiteText.home.gallery.followEyebrow;
   const copyRef = useRef<HTMLDivElement>(null);
   const fieldRef = useRef<HTMLDivElement>(null);
   const cooldownRef = useRef(false);
@@ -288,7 +298,7 @@ export function GalleryInstagramFollow({
             aria-label="Follow Hathor on Instagram"
           >
             <p className="instagram-follow__eyebrow instagram-follow__copy">
-              {EX_GALLERY.followEyebrow}
+              {followEyebrow}
             </p>
 
             <a
@@ -304,7 +314,7 @@ export function GalleryInstagramFollow({
                 className="gallery-ig-link__icon"
               />
               <span className="gallery-ig-link__handle">
-                {EX_GALLERY.indication}
+                {indication}
               </span>
             </a>
 
