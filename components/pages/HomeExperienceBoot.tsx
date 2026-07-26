@@ -23,7 +23,6 @@ export function HomeExperienceBoot({ children }: { children: ReactNode }) {
     return () => {
       root.removeAttribute("data-ex-experience");
       root.classList.remove("has-ex-scroll-motion");
-      root.classList.remove("ex-scroll-ready");
       document.body.classList.remove("has-ex-scroll-motion");
     };
   }, []);

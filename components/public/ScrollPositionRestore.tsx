@@ -34,12 +34,6 @@ function isSoftClientNavigation(pathname: string): boolean {
 }
 
 /**
- * Paths whose GSAP boot owns hard-refresh scroll restore.
- * ScrollPositionRestore still persists Y — it must not race ST mount.
- */
-const GSAP_OWNED_SCROLL_RESTORE = new Set(["/"]);
-
-/**
  * On hard refresh of the current path, land at the last scroll position.
  * Soft navigations always reset to top so GSAP pages never boot mid-scrub.
  */
@@ -48,8 +42,6 @@ export function ScrollPositionRestore() {
 
   useEffect(() => {
     setScrollRestorationManual();
-    const path = normalizePath(pathname);
-    const gsapOwnsRestore = GSAP_OWNED_SCROLL_RESTORE.has(path);
 
     if (isSoftClientNavigation(pathname)) {
       try {
@@ -64,12 +56,6 @@ export function ScrollPositionRestore() {
     }
 
     const unbind = bindScrollPositionPersistence(pathname);
-
-    if (gsapOwnsRestore) {
-      return () => {
-        unbind();
-      };
-    }
 
     const restore = () => {
       if (restoreScrollPositionIfReload(pathname)) {

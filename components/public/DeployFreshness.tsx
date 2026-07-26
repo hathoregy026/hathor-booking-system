@@ -80,9 +80,8 @@ export function DeployFreshness({ deployId }: { deployId: string }) {
       if (document.visibilityState === "visible") void sync();
     };
     const onPageShow = (event: PageTransitionEvent) => {
-      /* bfcache restore — re-check deploy id without forcing a second hard flash */
       if (event.persisted) {
-        void sync();
+        hardNavigateToFresh(deployId);
         return;
       }
       void sync();
