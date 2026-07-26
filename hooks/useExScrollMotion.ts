@@ -1,6 +1,6 @@
 /**
- * EX page — homepage3 Venetian scroll-reveal motion (GSAP, SplitType, Lenis).
- * Ported from assets/homepage3/venetian-scroll-clone/js/main.js
+ * EX page — homepage Venetian scroll-reveal motion (GSAP, Lenis).
+ * Atelier masked letter rise/fall for homepage copy + stack slides.
  */
 // @ts-nocheck
 "use client";
@@ -9,7 +9,6 @@ import { useLayoutEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
-import SplitType from "split-type";
 import { mountHeroScrollStage } from "@/lib/hero-scroll-stage";
 import {
   registerHathorLenis,
@@ -116,331 +115,199 @@ export function useExScrollMotion() {
     /* handled by initHeroScrollStage */
   }
 
-  // .radius-sub-heading — words
-  function initRadiusSubHeading() {
-    document.querySelectorAll(".radius-sub-heading").forEach((headingElement) => {
-      const h3 = headingElement.querySelector("h3");
-      if (!h3) return;
-      if (prefersReduced) return;
 
-      const split = new SplitType(h3, { types: "words" });
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: headingElement,
-          start: "top 80%",
-        },
+  /* -------------------------------------------------------
+   * Atelier masked letter rise/fall — shared helpers
+   * ----------------------------------------------------- */
+  function splitAtelierText(el) {
+    if (!el || el.dataset.splitDone === "1") {
+      return Array.from(el.querySelectorAll(".split-char"));
+    }
+
+    const chars = [];
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+    const textNodes = [];
+    while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+    textNodes.forEach((node) => {
+      const parent = node.parentElement;
+      if (!parent || parent.classList.contains("split-char")) return;
+      const text = node.textContent;
+      if (!text || !text.trim()) return;
+
+      const frag = document.createDocumentFragment();
+      [...text].forEach((ch) => {
+        const wrap = document.createElement("span");
+        wrap.className = "split-heading";
+        const span = document.createElement("span");
+        span.className = "split-char";
+        span.textContent = ch === " " ? "\u00A0" : ch;
+        wrap.appendChild(span);
+        frag.appendChild(wrap);
+        chars.push(span);
       });
+      parent.replaceChild(frag, node);
+    });
 
-      tl.from(split.words, {
-        y: 30,
-        opacity: 0,
-        duration: 0.3,
-        stagger: 0.05,
-        ease: "power2.out",
+    el.dataset.splitDone = "1";
+    return chars;
+  }
+
+  function animateAtelierSplit(el, triggerEl) {
+    const chars = splitAtelierText(el);
+    if (!chars.length) return;
+
+    gsap.set(chars, { yPercent: 100, opacity: 0 });
+    const stagger =
+      chars.length > 60 ? Math.min(0.03, 1.2 / chars.length) : 0.03;
+
+    gsap.to(chars, {
+      yPercent: 0,
+      opacity: 1,
+      duration: 1,
+      stagger,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: triggerEl || el,
+        start: "top 85%",
+        toggleActions: "play none none reverse",
+      },
+      onComplete: () => {
+        chars.forEach((c) => c.style.removeProperty("will-change"));
+      },
+    });
+  }
+
+  /**
+   * Homepage-wide atelier letter reveal (all content text except hero,
+   * marquee, nav, and stack-scroll which has its own per-slide timing).
+   */
+  function initHomepageAtelierSplit() {
+    if (prefersReduced) return;
+
+    const selectors = [
+      ".ex-root .about-section .radius-heading h2",
+      ".ex-root .about-section .radius-sub-heading h3",
+      ".ex-root .about-section .radius-p p",
+      ".ex-root .services-intro .home-carousel-h2 h2",
+      ".ex-root .services-intro .home-carousel-h3 h3",
+      ".ex-root .home-carousel .carousel-heading h2",
+      ".ex-root [data-hathor-accordion] .typo-our-voyages-title",
+      ".ex-root [data-hathor-accordion] .typo-our-voyages-indication",
+      ".ex-root .home-text-h2 h2",
+      ".ex-root .home-text-p p",
+      ".ex-root .gallery-h2 h2",
+      ".ex-root .instagram-follow__eyebrow",
+      ".ex-root .gallery-ig-link__handle",
+      ".ex-root .testimonial-h2 h2",
+      ".ex-root .testimonial-card h3",
+      ".ex-root .testimonial-card p",
+      ".ex-root .cta-inner h2",
+      ".ex-root .cta-inner p",
+    ];
+
+    document.fonts.ready.then(() => {
+      const seen = new Set();
+      selectors.forEach((sel) => {
+        document.querySelectorAll(sel).forEach((el) => {
+          if (seen.has(el)) return;
+          if (el.closest(".ex-stack-scroll")) return;
+          if (el.closest(".luxury-marquee")) return;
+          if (el.closest(".home-hero-container")) return;
+          seen.add(el);
+          const trigger =
+            el.closest(
+              ".about-layout, .services-intro, .carousel-slide, [data-hathor-accordion], .home-text-img-copy, .gallery-header, .instagram-follow, .testimonial-card, .testimonials-header, .cta-inner",
+            ) || el;
+          animateAtelierSplit(el, trigger);
+        });
       });
     });
+  }
+  // .radius-sub-heading — words
+  function initRadiusSubHeading() {
+    /* Text: initHomepageAtelierSplit */
   }
 
   // .radius-heading (chars) + .radius-p (whole) + .radius-button
   // Do NOT SplitType body lines — italic descenders ghost/clip inside overflow:hidden lines.
   function initRadiusHeadingPara() {
-    document.fonts.ready.then(() => {
-      const animHeadingPara = document.querySelectorAll(".radius-heading");
-
-      animHeadingPara.forEach((headingElement, index) => {
-        const h2 = headingElement.querySelector("h2");
-        const pWrap = document.querySelectorAll(".radius-p")[index];
-        const p = pWrap ? pWrap.querySelector("p") : null;
-        if (!h2) return;
-        if (prefersReduced) return;
-
-        const splitHeading = new SplitType(h2, { types: "chars" });
-        const button = headingElement.parentElement.querySelector(".radius-button");
-
-        const headingParaTimeline = gsap.timeline({
-          scrollTrigger: {
-            trigger: headingElement,
-            scroller: "body",
-            start: "top 80%",
-          },
-        });
-
-        headingParaTimeline.from(splitHeading.chars, {
-          y: 30,
-          opacity: 0,
-          duration: 0.3,
-          stagger: 0.05,
-          ease: "power2.out",
-        });
-
-        if (p) {
-          headingParaTimeline.from(
-            p,
-            {
-              y: 16,
-              opacity: 0,
-              duration: 0.45,
-              ease: "power2.out",
-            },
-            "-=0.15"
-          );
-        }
-
-        if (button) {
-          headingParaTimeline.from(
-            button,
-            {
-              y: 20,
-              opacity: 0,
-              duration: 0.4,
-              ease: "power2.out",
-            },
-            "+=0"
-          );
-        }
+    if (prefersReduced) return;
+    document.querySelectorAll(".radius-heading").forEach((headingElement) => {
+      const button = headingElement.parentElement?.querySelector(".radius-button");
+      if (!button) return;
+      gsap.from(button, {
+        y: 20,
+        opacity: 0,
+        duration: 0.4,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: headingElement,
+          start: "top 80%",
+          toggleActions: "play none none reverse",
+        },
       });
     });
   }
 
   // .home-carousel-h2 (chars) + .home-carousel-h3 (words)
   function initCarouselHeadings() {
-    const animElements = document.querySelectorAll(".home-carousel-h2");
-
-    animElements.forEach((headingElement, index) => {
-      const h2 = headingElement.querySelector("h2");
-      const h3Wrap = document.querySelectorAll(".home-carousel-h3")[index];
-      const h3 = h3Wrap ? h3Wrap.querySelector("h3") : null;
-      if (!h2) return;
-      if (prefersReduced) return;
-
-      const splitH2 = new SplitType(h2, { types: "chars" });
-      const splitH3 = h3 ? new SplitType(h3, { types: "words" }) : null;
-
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: headingElement,
-          scroller: "body",
-          start: "top 80%",
-        },
-      });
-
-      timeline.from(splitH2.chars, {
-        y: 30,
-        opacity: 0,
-        duration: 0.3,
-        stagger: 0.05,
-        ease: "power2.out",
-      });
-
-      if (splitH3) {
-        timeline.from(
-          splitH3.words,
-          {
-            y: 15,
-            opacity: 0,
-            duration: 0.3,
-            stagger: 0.1,
-            ease: "power2.out",
-          },
-          "-=0.2"
-        );
-      }
-    });
+    /* Text: initHomepageAtelierSplit */
   }
 
   // .home-scroll-h2 (chars) + .home-scroll-p (whole)
   function initHomeScrollText() {
-    document.fonts.ready.then(() => {
-      const animElements = document.querySelectorAll(".home-scroll-h2");
-
-      animElements.forEach((headingElement, index) => {
-        const h2 = headingElement.querySelector("h2");
-        const pWrap = document.querySelectorAll(".home-scroll-p")[index];
-        const p = pWrap ? pWrap.querySelector("p") : null;
-        if (!h2) return;
-        if (prefersReduced) return;
-
-        const splitH2 = new SplitType(h2, { types: "chars" });
-
-        const timeline = gsap.timeline({
-          scrollTrigger: {
-            trigger: headingElement,
-            scroller: "body",
-            start: "top 80%",
-          },
-        });
-
-        timeline.from(splitH2.chars, {
-          y: 30,
-          opacity: 0,
-          duration: 0.3,
-          stagger: 0.05,
-          ease: "power2.out",
-        });
-
-        if (p) {
-          timeline.from(
-            p,
-            {
-              y: 16,
-              opacity: 0,
-              duration: 0.45,
-              ease: "power2.out",
-            },
-            "-=0.15"
-          );
-        }
-      });
-    });
+    /* Text: initHomepageAtelierSplit */
   }
 
   // .home-text-h2 (chars) + .home-text-p (whole) + .home-text-button
   function initHomeTextBlocks() {
-    document.fonts.ready.then(() => {
-      const animHeadingPara = document.querySelectorAll(".home-text-h2");
-
-      animHeadingPara.forEach((headingElement, index) => {
-        const h2 = headingElement.querySelector("h2");
-        const pWrap = document.querySelectorAll(".home-text-p")[index];
-        const p = pWrap ? pWrap.querySelector("p") : null;
-        if (!h2) return;
-        if (prefersReduced) return;
-
-        const splitHeading = new SplitType(h2, { types: "chars" });
-        const button =
-          headingElement.parentElement.querySelector(".home-text-button");
-
-        const headingParaTimeline = gsap.timeline({
-          scrollTrigger: {
-            trigger: headingElement,
-            scroller: "body",
-            start: "top 80%",
-          },
-        });
-
-        headingParaTimeline.from(splitHeading.chars, {
-          y: 30,
-          opacity: 0,
-          duration: 0.3,
-          stagger: 0.05,
-          ease: "power2.out",
-        });
-
-        if (p) {
-          headingParaTimeline.from(
-            p,
-            {
-              y: 16,
-              opacity: 0,
-              duration: 0.45,
-              ease: "power2.out",
-            },
-            "-=0.15"
-          );
-        }
-
-        if (button) {
-          headingParaTimeline.from(
-            button,
-            {
-              y: 20,
-              opacity: 0,
-              duration: 0.4,
-              ease: "power2.out",
-            },
-            "+=0"
-          );
-        }
+    if (prefersReduced) return;
+    document.querySelectorAll(".home-text-h2").forEach((headingElement) => {
+      const button = headingElement.parentElement?.querySelector(".home-text-button");
+      if (!button) return;
+      gsap.from(button, {
+        y: 20,
+        opacity: 0,
+        duration: 0.4,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: headingElement,
+          start: "top 80%",
+          toggleActions: "play none none reverse",
+        },
       });
     });
   }
 
   // .gallery-h2 — chars
   function initGalleryH2() {
-    document.querySelectorAll(".gallery-h2").forEach((headingElement) => {
-      const h2 = headingElement.querySelector("h2");
-      if (!h2 || prefersReduced) return;
-
-      const split = new SplitType(h2, { types: "chars" });
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: headingElement,
-          start: "top 80%",
-        },
-      });
-
-      tl.from(split.chars, {
-        y: 30,
-        opacity: 0,
-        duration: 0.3,
-        stagger: 0.05,
-        ease: "power2.out",
-      });
-    });
+    /* Text: initHomepageAtelierSplit */
   }
 
   // .gallery-container — small heading chars + button
   function initGalleryContainers() {
+    if (prefersReduced) return;
     document.querySelectorAll(".gallery-container").forEach((container) => {
-      const heading = container.querySelector(".gallery-sm h2");
-      if (!heading || prefersReduced) return;
-
-      const split = new SplitType(heading, { types: "chars" });
-      const button = container.querySelector(".gallery-button");
-
-      const tl = gsap.timeline({
+      const btn = container.querySelector(".btn, .gallery-button");
+      if (!btn) return;
+      gsap.from(btn, {
+        y: 20,
+        opacity: 0,
+        duration: 0.4,
+        ease: "power2.out",
         scrollTrigger: {
           trigger: container,
-          start: "top 80%",
+          start: "top 90%",
+          toggleActions: "play none none reverse",
         },
       });
-
-      tl.from(split.chars, {
-        y: 30,
-        opacity: 0,
-        duration: 0.3,
-        stagger: 0.05,
-        ease: "power2.out",
-      });
-
-      if (button) {
-        tl.from(
-          button,
-          {
-            y: 20,
-            opacity: 0,
-            duration: 0.4,
-            ease: "power2.out",
-          },
-          "+=0"
-        );
-      }
     });
   }
 
   // .testimonial-h2 — chars
   function initTestimonialH2() {
-    document.querySelectorAll(".testimonial-h2").forEach((headingElement) => {
-      const h2 = headingElement.querySelector("h2");
-      if (!h2 || prefersReduced) return;
-
-      const splitH2 = new SplitType(h2, { types: "chars" });
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: headingElement,
-          scroller: "body",
-          start: "top 80%",
-        },
-      });
-
-      timeline.from(splitH2.chars, {
-        y: 30,
-        opacity: 0,
-        duration: 0.3,
-        stagger: 0.05,
-        ease: "power2.out",
-      });
-    });
+    /* Text: initHomepageAtelierSplit */
   }
 
   // .general-button — simple fade up, start top 98%
@@ -571,39 +438,7 @@ export function useExScrollMotion() {
    * Masked letter rise/fall (atelier split) per slide
    * ----------------------------------------------------- */
   function splitStackText(el: HTMLElement) {
-    if (!el || el.dataset.splitDone === "1") {
-      return Array.from(
-        el.querySelectorAll<HTMLElement>(".split-char"),
-      );
-    }
-
-    const chars: HTMLElement[] = [];
-    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
-    const textNodes: Text[] = [];
-    while (walker.nextNode()) textNodes.push(walker.currentNode as Text);
-
-    textNodes.forEach((node) => {
-      const parent = node.parentElement;
-      if (!parent || parent.classList.contains("split-char")) return;
-      const text = node.textContent;
-      if (!text || !text.trim()) return;
-
-      const frag = document.createDocumentFragment();
-      [...text].forEach((ch) => {
-        const wrap = document.createElement("span");
-        wrap.className = "split-heading";
-        const span = document.createElement("span");
-        span.className = "split-char";
-        span.textContent = ch === " " ? "\u00A0" : ch;
-        wrap.appendChild(span);
-        frag.appendChild(wrap);
-        chars.push(span);
-      });
-      parent.replaceChild(frag, node);
-    });
-
-    el.dataset.splitDone = "1";
-    return chars;
+    return splitAtelierText(el);
   }
 
   function prepareStackPanelSplits(panels: HTMLElement[]) {
@@ -992,13 +827,6 @@ export function useExScrollMotion() {
         const container = slide.querySelector(".carousel-container");
         if (!container) return;
 
-        const headingWrapper = container.querySelector(".carousel-heading");
-        if (!headingWrapper) return;
-
-        const heading = headingWrapper.querySelector("h2");
-        if (!heading) return;
-
-        const split = new SplitType(heading, { types: "chars" });
         const delayPerSlide = 0.25;
         const startDelay = i * delayPerSlide;
 
@@ -1023,17 +851,7 @@ export function useExScrollMotion() {
           }
         );
 
-        tl.from(
-          split.chars,
-          {
-            y: 30,
-            opacity: 0,
-            duration: 0.3,
-            stagger: 0.05,
-            ease: "power2.out",
-          },
-          "-=0.3"
-        );
+        /* Heading letters: initHomepageAtelierSplit */
 
         if (i === slides.length - 1) {
           tl.add(() => {
@@ -1118,43 +936,22 @@ export function useExScrollMotion() {
    * CTA section text
    * ----------------------------------------------------- */
   function initCta() {
+    if (prefersReduced) return;
     const cta = document.querySelector(".cta-inner");
-    if (!cta || prefersReduced) return;
-
-    const h2 = cta.querySelector("h2");
-    const p = cta.querySelector("p");
+    if (!cta) return;
     const btn = cta.querySelector(".btn");
-
-    if (h2) {
-      const split = new SplitType(h2, { types: "chars" });
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: cta,
-          start: "top 80%",
-        },
-      });
-      tl.from(split.chars, {
-        y: 30,
-        opacity: 0,
-        duration: 0.3,
-        stagger: 0.04,
-        ease: "power2.out",
-      });
-      if (p) {
-        tl.from(
-          p,
-          { y: 20, opacity: 0, duration: 0.4, ease: "power2.out" },
-          "-=0.1"
-        );
-      }
-      if (btn) {
-        tl.from(
-          btn,
-          { y: 20, opacity: 0, duration: 0.4, ease: "power2.out" },
-          "+=0"
-        );
-      }
-    }
+    if (!btn) return;
+    gsap.from(btn, {
+      y: 20,
+      opacity: 0,
+      duration: 0.4,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: cta,
+        start: "top 80%",
+        toggleActions: "play none none reverse",
+      },
+    });
   }
 
   /* -------------------------------------------------------
@@ -1171,6 +968,7 @@ export function useExScrollMotion() {
       initHeroText,
       initHeroBlinds,
       initRadiusMorph,
+      initHomepageAtelierSplit,
       initRadiusSubHeading,
       initGeneralRevealImages,
       initRadiusHeadingPara,

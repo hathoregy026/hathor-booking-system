@@ -1853,8 +1853,8 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   will-change: transform, opacity;
 }
 
-/* Masked letter rise/fall — atelier split (stack copy only) */
-.ex-stack-scroll .split-heading {
+/* Masked letter rise/fall — atelier split (homepage text) */
+.ex-root .split-heading {
   overflow: hidden;
   display: inline-block;
   vertical-align: top;
@@ -1863,13 +1863,13 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   margin: 0 -0.03em;
 }
 
-.ex-stack-scroll .split-char {
+.ex-root .split-char {
   display: inline-block;
   will-change: transform, opacity;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ex-stack-scroll .split-char {
+  .ex-root .split-char {
     transform: none !important;
     opacity: 1 !important;
   }
