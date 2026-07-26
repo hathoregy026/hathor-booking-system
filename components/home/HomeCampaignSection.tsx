@@ -9,7 +9,7 @@ import { ManagedImage } from "@/components/ui/ManagedImage";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const SILK_LINE = "TAKE YOUR VOYAGE TODAY";
+const SILK_ROWS = ["TAKE YOUR", "VOYAGE", "TODAY"] as const;
 
 type HomeCampaignSectionProps = {
   title: string;
@@ -26,8 +26,7 @@ type LenisLike = {
 
 /**
  * Call-to-action stage — zero layout mutation.
- * Site-cream silk with invite line lifts to reveal the photograph, then
- * on-image title rises. No pin, no black plate.
+ * Hero-scale gold invite on site cream lifts away to the photograph.
  */
 export function HomeCampaignSection({
   title,
@@ -61,6 +60,7 @@ export function HomeCampaignSection({
     let killed = false;
     let ctx: gsap.Context | null = null;
     let st: ScrollTrigger | null = null;
+    let silkTextTween: gsap.core.Tween | null = null;
     let removeLenis: (() => void) | null = null;
     let bootTimer = 0;
 
@@ -69,6 +69,8 @@ export function HomeCampaignSection({
 
       ctx?.revert();
       st?.kill();
+      silkTextTween?.kill();
+      ScrollTrigger.getById("hcta-silk-text")?.kill();
 
       ctx = gsap.context(() => {
         if (reduced) {
@@ -86,7 +88,7 @@ export function HomeCampaignSection({
           gsap.set(silk, { yPercent: 0, autoAlpha: 1 });
         }
         if (silkChars.length) {
-          gsap.set(silkChars, { yPercent: 110, autoAlpha: 0, force3D: true });
+          gsap.set(silkChars, { yPercent: 120, autoAlpha: 0, force3D: true });
         }
         if (chars.length) {
           gsap.set(chars, { yPercent: 115, autoAlpha: 0, force3D: true });
@@ -96,30 +98,28 @@ export function HomeCampaignSection({
         }
         gsap.set(frame, { y: 0, force3D: true });
 
-        /*
-         * Invite letters play once as the stage approaches — fast & big —
-         * not scrubbed (scrub made them feel tiny/slow).
-         */
+        /* Hero invite — clear letter rise when the cream stage enters view */
         if (silkChars.length) {
-          gsap.to(silkChars, {
+          silkTextTween = gsap.to(silkChars, {
             yPercent: 0,
             autoAlpha: 1,
-            stagger: 0.018,
-            duration: 0.55,
+            stagger: 0.028,
+            duration: 0.7,
             ease: "power3.out",
             force3D: true,
             scrollTrigger: {
               id: "hcta-silk-text",
               trigger: track,
-              start: "top 85%",
+              start: "top 90%",
+              end: "top top",
               toggleActions: "play none none reverse",
+              invalidateOnRefresh: true,
             },
           });
         }
 
         const story = gsap.timeline({ paused: true });
 
-        /* 1) Silk lifts quickly — photograph covers the invite */
         if (silk) {
           story.to(
             silk,
@@ -133,10 +133,8 @@ export function HomeCampaignSection({
           );
         }
 
-        /* 2) Brief beat */
         story.to({}, { duration: 0.08 }, 0.28);
 
-        /* 3) On-image title + Book Now */
         if (chars.length) {
           story.to(
             chars,
@@ -163,7 +161,6 @@ export function HomeCampaignSection({
           );
         }
 
-        /* 4) Reading pause */
         story.to({}, { duration: 0.22 }, 0.52);
 
         const sync = (progress: number) => {
@@ -218,6 +215,8 @@ export function HomeCampaignSection({
       window.removeEventListener("load", onLoad);
       removeLenis?.();
       st?.kill();
+      silkTextTween?.kill();
+      ScrollTrigger.getById("hcta-silk-text")?.kill();
       ctx?.revert();
     };
   }, []);
@@ -242,19 +241,22 @@ export function HomeCampaignSection({
           />
         </div>
 
-        {/* Soft veil sits under silk so cream matches the site; tints photo only */}
         <div className="hcta-veil" aria-hidden="true" />
 
         <div className="hcta-silk" data-hcta-silk>
-          <p className="hcta-silk-line" aria-hidden="true">
-            {Array.from(SILK_LINE).map((ch, index) => (
-              <span className="hcta-silk-letter" key={`${ch}-${index}`}>
-                <span className="hcta-silk-char">
-                  {ch === " " ? "\u00A0" : ch}
-                </span>
-              </span>
+          <div className="hcta-silk-copy" aria-hidden="true">
+            {SILK_ROWS.map((row) => (
+              <div className="hcta-silk-row" key={row}>
+                {Array.from(row).map((ch, index) => (
+                  <span className="hcta-silk-letter" key={`${row}-${index}`}>
+                    <span className="hcta-silk-char">
+                      {ch === " " ? "\u00A0" : ch}
+                    </span>
+                  </span>
+                ))}
+              </div>
             ))}
-          </p>
+          </div>
         </div>
 
         <div className="hcta-copy">
