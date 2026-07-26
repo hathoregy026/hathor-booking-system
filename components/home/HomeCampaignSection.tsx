@@ -11,6 +11,9 @@ gsap.registerPlugin(ScrollTrigger);
 
 const SILK_ROWS = ["TAKE YOUR", "VOYAGE", "TODAY"] as const;
 
+/** How quickly the photograph eases toward its scroll target (lower = silkier). */
+const REVEAL_LERP = 0.032;
+
 type HomeCampaignSectionProps = {
   title: string;
   imageName: string;
@@ -26,10 +29,8 @@ type LenisLike = {
 
 /**
  * Call-to-action stage — zero layout mutation.
- *
- * Phase A (section approaches): gold invite rises and locks fully up.
- * Phase B (locked): unhurried hold, then photograph rises over the locked
- * invite (no reverse) — then on-image title.
+ * Invite rises and locks. Photograph covers it via a long scroll range
+ * with frame-by-frame lerp so the rise stays slow and silky.
  */
 export function HomeCampaignSection({
   title,
@@ -64,6 +65,7 @@ export function HomeCampaignSection({
     let ctx: gsap.Context | null = null;
     let removeLenis: (() => void) | null = null;
     let bootTimer = 0;
+    let tickerFn: (() => void) | null = null;
 
     const killOwned = () => {
       ["hcta-invite", "hcta-stage"].forEach((id) => {
@@ -74,6 +76,10 @@ export function HomeCampaignSection({
     const boot = () => {
       if (killed || !track.isConnected) return;
 
+      if (tickerFn) {
+        gsap.ticker.remove(tickerFn);
+        tickerFn = null;
+      }
       ctx?.revert();
       killOwned();
 
@@ -89,6 +95,9 @@ export function HomeCampaignSection({
           return;
         }
 
+        let revealY = 100;
+        let revealTarget = 100;
+
         if (reveal) {
           gsap.set(reveal, { yPercent: 100, force3D: true });
         }
@@ -103,10 +112,7 @@ export function HomeCampaignSection({
         }
         gsap.set(frame, { y: 0, force3D: true });
 
-        /*
-         * Phase A — invite completes as you arrive (before / as stage locks).
-         * Fully up when progress hits 1 (= section top meets viewport top).
-         */
+        /* Phase A — invite completes as the section arrives, then locks */
         const inviteTl = gsap.timeline({ paused: true });
         if (silkChars.length) {
           inviteTl.to(
@@ -128,104 +134,85 @@ export function HomeCampaignSection({
           trigger: track,
           start: "top 88%",
           end: "top top",
-          scrub: 0.65,
+          scrub: 0.7,
           invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            inviteTl.progress(self.progress);
-          },
-          onRefresh: (self) => {
-            inviteTl.progress(self.progress);
-          },
+          onUpdate: (self) => inviteTl.progress(self.progress),
+          onRefresh: (self) => inviteTl.progress(self.progress),
         });
 
-        /*
-         * Phase B — hold locked invite, then a LONG unhurried photograph rise.
-         * Most of the locked scroll is spent on the image cover alone.
-         */
-        const coverTl = gsap.timeline({ paused: true });
-
-        if (silkChars.length) {
-          coverTl.set(
-            silkChars,
-            { yPercent: 0, autoAlpha: 1, force3D: true },
-            0,
-          );
-        }
-        if (reveal) {
-          coverTl.set(reveal, { yPercent: 100, force3D: true }, 0);
-        }
-
-        /* Brief hold — invite locked, fully readable */
-        coverTl.to({}, { duration: 0.16 }, 0);
-
-        /*
-         * Photograph rises for the majority of the stage scroll.
-         * power3.inOut + heavy scrub = luxury glide, not a snap.
-         */
-        if (reveal) {
-          coverTl.to(
-            reveal,
-            {
-              yPercent: 0,
-              duration: 0.72,
-              ease: "power3.inOut",
-              force3D: true,
-            },
-            0.16,
-          );
-        }
-
-        /* Settle before on-image copy */
-        coverTl.to({}, { duration: 0.06 }, 0.88);
-
+        /* On-image title — only after the photograph has mostly settled */
+        const copyTl = gsap.timeline({ paused: true });
         if (chars.length) {
-          coverTl.to(
+          copyTl.to(
             chars,
             {
               yPercent: 0,
               autoAlpha: 1,
               stagger: 0.02,
-              duration: 0.16,
+              duration: 0.7,
               ease: "none",
               force3D: true,
             },
-            0.92,
+            0,
           );
         }
         if (book) {
-          coverTl.to(
+          copyTl.to(
             book,
             {
               autoAlpha: 1,
-              duration: 0.1,
+              duration: 0.35,
               ease: "none",
             },
-            1.0,
+            0.35,
           );
         }
 
-        coverTl.to({}, { duration: 0.18 }, 1.08);
+        /*
+         * Soft lerp: scroll only sets a target. The photograph eases toward
+         * it every frame — never snaps with the wheel.
+         */
+        tickerFn = () => {
+          if (!reveal) return;
+          revealY += (revealTarget - revealY) * REVEAL_LERP;
+          if (Math.abs(revealTarget - revealY) < 0.02) {
+            revealY = revealTarget;
+          }
+          gsap.set(reveal, { yPercent: revealY, force3D: true });
+        };
+        gsap.ticker.add(tickerFn);
+
+        const applyStage = (progress: number) => {
+          const maxY = Math.max(0, track.offsetHeight - window.innerHeight);
+          gsap.set(frame, { y: progress * maxY, force3D: true });
+          inviteTl.progress(1);
+
+          /*
+           * 0.00–0.14  hold (invite locked, image waiting)
+           * 0.14–0.90  image target eases from 100 → 0 over most of the stage
+           * 0.90–1.00  on-image title
+           */
+          if (progress <= 0.14) {
+            revealTarget = 100;
+            copyTl.progress(0);
+          } else if (progress < 0.9) {
+            const t = (progress - 0.14) / (0.9 - 0.14);
+            revealTarget = 100 * (1 - t);
+            copyTl.progress(0);
+          } else {
+            revealTarget = 0;
+            copyTl.progress((progress - 0.9) / 0.1);
+          }
+        };
 
         ScrollTrigger.create({
           id: "hcta-stage",
           trigger: track,
           start: "top top",
           end: "bottom bottom",
-          /* Heavy lag so the image eases behind the wheel */
-          scrub: 2.1,
           invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            const maxY = Math.max(0, track.offsetHeight - window.innerHeight);
-            gsap.set(frame, { y: self.progress * maxY, force3D: true });
-            inviteTl.progress(1);
-            coverTl.progress(self.progress);
-          },
-          onRefresh: (self) => {
-            const maxY = Math.max(0, track.offsetHeight - window.innerHeight);
-            gsap.set(frame, { y: self.progress * maxY, force3D: true });
-            if (self.progress > 0) inviteTl.progress(1);
-            coverTl.progress(self.progress);
-          },
+          onUpdate: (self) => applyStage(self.progress),
+          onRefresh: (self) => applyStage(self.progress),
         });
       }, track);
 
@@ -260,6 +247,7 @@ export function HomeCampaignSection({
       window.clearTimeout(bootTimer);
       window.removeEventListener("load", onLoad);
       removeLenis?.();
+      if (tickerFn) gsap.ticker.remove(tickerFn);
       killOwned();
       ctx?.revert();
     };
