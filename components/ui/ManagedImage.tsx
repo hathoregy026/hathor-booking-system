@@ -25,12 +25,14 @@ export function ManagedImage({
   previewAnchor = true,
   id,
   quality = SITE_IMAGE_QUALITY,
+  unoptimized: unoptimizedProp,
   ...props
 }: ManagedImageProps) {
   const image = useSiteImage(name);
   const resolvedAlt = alt ?? image.alt;
   const anchorId = previewAnchor ? siteImageAnchorId(name) : undefined;
-  const unoptimized = isRemoteCmsImageUrl(image.src);
+  const unoptimized =
+    unoptimizedProp ?? isRemoteCmsImageUrl(image.src);
 
   if (props.fill) {
     return (

@@ -605,7 +605,8 @@ export function HomePageClient({
                               alt={item.alt}
                               fill
                               sizes="(max-width: 768px) 300px, 460px"
-                              className="object-contain"
+                              className="object-cover"
+                              unoptimized
                               previewAnchor={false}
                             />
                           </span>

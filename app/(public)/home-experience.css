@@ -2423,16 +2423,8 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   pointer-events: none;
 }
 
-.gallery-item__frame::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background:
-    linear-gradient(180deg, rgba(245, 239, 228, 0.04), rgba(44, 36, 25, 0.18)),
-    linear-gradient(90deg, rgba(92, 74, 48, 0.12), transparent 38%, rgba(92, 74, 48, 0.08));
-  transition: background 0.3s ease;
+.gallery-item.media-hover::after {
+  content: none;
 }
 
 .gallery-item img {
@@ -2441,8 +2433,10 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   width: 100%;
   height: 100%;
   max-width: none;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
+  filter: none;
+  opacity: 1;
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
@@ -2464,16 +2458,9 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   outline-offset: 3px;
 }
 
-.gallery-item:hover .gallery-item__frame::after,
-.gallery-item:focus-visible .gallery-item__frame::after {
-  background:
-    linear-gradient(180deg, rgba(182, 159, 100, 0.14), rgba(44, 36, 25, 0.28)),
-    linear-gradient(90deg, rgba(182, 159, 100, 0.16), transparent 42%, rgba(182, 159, 100, 0.1));
-}
-
-.gallery-item:hover img,
-.gallery-item:focus-visible img {
-  transform: scale(1.04);
+.gallery-item.media-hover:is(:hover, :focus-visible) img {
+  transform: none;
+  opacity: 1;
 }
 
 html[data-public-theme="night"][data-ex-experience] .gallery-item {
