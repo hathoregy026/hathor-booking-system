@@ -20,25 +20,25 @@ type GalleryInstagramFollowProps = {
   handleStyle?: CSSProperties;
 };
 
-type BurstParticle = {
+type FloaterKind = "image" | "emoji";
+
+type FloaterSeed = {
   id: string;
-  kind: "image" | "emoji";
+  kind: FloaterKind;
   imageName?: SiteImageName;
   alt?: string;
   glyph?: string;
-  delay: number;
-  duration: number;
-  bobDuration: number;
-  p1x: number;
-  p1y: number;
-  p2x: number;
-  p2y: number;
-  p3x: number;
-  p3y: number;
-  p4x: number;
-  p4y: number;
+  size: number;
+};
+
+type FloaterState = FloaterSeed & {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
   rot: number;
-  scale: number;
+  rotV: number;
+  phase: number;
 };
 
 const EMOJI_GLYPHS = [
@@ -50,83 +50,63 @@ const EMOJI_GLYPHS = [
   { glyph: "✨", label: "sparkles" },
 ] as const;
 
-/** Continuous drift — no ease-out stall / push */
-const FLOAT_EASE = "linear";
-
 function rand(min: number, max: number) {
   return min + Math.random() * (max - min);
 }
 
-/** Soft wandering path that keeps moving (never parks mid-flight). */
-function wanderPath(reachX: number, reachY: number) {
-  const angle = rand(-Math.PI, Math.PI);
-  const step = (t: number, wobble: number) => {
-    const a = angle + rand(-0.55, 0.55) + wobble;
-    const d = t * rand(0.85, 1.15);
-    return {
-      x: Math.cos(a) * reachX * d + rand(-28, 28),
-      y: Math.sin(a) * reachY * d + rand(-24, 24) - t * rand(18, 48),
-    };
-  };
-
-  const p1 = step(0.22, 0);
-  const p2 = step(0.48, rand(-0.35, 0.35));
-  const p3 = step(0.74, rand(-0.45, 0.45));
-  const p4 = step(1.05, rand(-0.55, 0.55));
-  return { p1, p2, p3, p4 };
+function bounceAxis(
+  pos: number,
+  vel: number,
+  min: number,
+  max: number,
+): { pos: number; vel: number } {
+  if (pos < min) return { pos: min, vel: Math.abs(vel) * 0.82 };
+  if (pos > max) return { pos: max, vel: -Math.abs(vel) * 0.82 };
+  return { pos, vel };
 }
 
-function buildBurst(width: number, height: number, key: number): BurstParticle[] {
-  const reachX = Math.max(width * 0.42, 180);
-  const reachY = Math.max(height * 0.38, 140);
-  const particles: BurstParticle[] = [];
+function createFloaters(width: number, height: number): FloaterState[] {
+  const floaters: FloaterState[] = [];
+  const pad = 48;
+  const w = Math.max(width, 320);
+  const h = Math.max(height, 280);
 
   EX_GALLERY.followPreviews.forEach((preview, index) => {
-    const path = wanderPath(reachX, reachY);
-    particles.push({
-      id: `img-${key}-${preview.imageName}-${index}`,
+    const size = rand(64, 86);
+    floaters.push({
+      id: `img-${preview.imageName}-${index}`,
       kind: "image",
       imageName: preview.imageName,
       alt: preview.alt,
-      delay: rand(0, 0.35) + index * 0.06,
-      duration: rand(5.2, 7.2),
-      bobDuration: rand(2.4, 3.6),
-      p1x: path.p1.x,
-      p1y: path.p1.y,
-      p2x: path.p2.x,
-      p2y: path.p2.y,
-      p3x: path.p3.x,
-      p3y: path.p3.y,
-      p4x: path.p4.x,
-      p4y: path.p4.y,
-      rot: rand(-22, 22),
-      scale: rand(0.94, 1.12),
+      size,
+      x: rand(pad, Math.max(pad + 1, w - size - pad)),
+      y: rand(pad, Math.max(pad + 1, h - size - pad)),
+      vx: rand(-0.28, 0.28) || 0.16,
+      vy: rand(-0.22, 0.22) || -0.14,
+      rot: rand(-8, 8),
+      rotV: rand(-0.012, 0.012),
+      phase: rand(0, Math.PI * 2),
     });
   });
 
   EMOJI_GLYPHS.forEach((item, index) => {
-    const path = wanderPath(reachX * 1.05, reachY * 1.05);
-    particles.push({
-      id: `emo-${key}-${item.label}-${index}`,
+    const size = rand(36, 44);
+    floaters.push({
+      id: `emo-${item.label}-${index}`,
       kind: "emoji",
       glyph: item.glyph,
-      delay: rand(0.04, 0.42) + index * 0.05,
-      duration: rand(4.8, 6.8),
-      bobDuration: rand(2.1, 3.4),
-      p1x: path.p1.x,
-      p1y: path.p1.y,
-      p2x: path.p2.x,
-      p2y: path.p2.y,
-      p3x: path.p3.x,
-      p3y: path.p3.y,
-      p4x: path.p4.x,
-      p4y: path.p4.y,
-      rot: rand(-28, 28),
-      scale: rand(0.9, 1.16),
+      size,
+      x: rand(pad, Math.max(pad + 1, w - size - pad)),
+      y: rand(pad, Math.max(pad + 1, h - size - pad)),
+      vx: rand(-0.32, 0.32) || 0.18,
+      vy: rand(-0.26, 0.26) || 0.12,
+      rot: rand(-10, 10),
+      rotV: rand(-0.018, 0.018),
+      phase: rand(0, Math.PI * 2),
     });
   });
 
-  return particles;
+  return floaters;
 }
 
 export function GalleryInstagramFollow({
@@ -142,33 +122,35 @@ export function GalleryInstagramFollow({
     followEyebrowProp ?? websiteText.home.gallery.followEyebrow;
   const copyRef = useRef<HTMLDivElement>(null);
   const fieldRef = useRef<HTMLDivElement>(null);
-  const cooldownRef = useRef(false);
-  const [phase, setPhase] = useState<"idle" | "bursting" | "done">("idle");
-  const [particles, setParticles] = useState<BurstParticle[]>([]);
+  const floatersRef = useRef<FloaterState[]>([]);
+  const nodeRefs = useRef<Map<string, HTMLSpanElement>>(new Map());
+  const rafRef = useRef(0);
+  const timeRef = useRef(0);
+  const [seeds, setSeeds] = useState<FloaterSeed[]>([]);
+  const [active, setActive] = useState(false);
   const reducedRef = useRef(false);
 
-  const playBurst = useCallback(() => {
+  const startFloat = useCallback(() => {
     if (reducedRef.current) return;
-    if (cooldownRef.current) return;
-
     const section = fieldRef.current?.closest(
       ".gallery-section",
     ) as HTMLElement | null;
     const width = section?.clientWidth || fieldRef.current?.clientWidth || 900;
     const height =
       section?.clientHeight || fieldRef.current?.clientHeight || 520;
-
-    cooldownRef.current = true;
-    setParticles(buildBurst(width, height, Date.now()));
-    setPhase("bursting");
-  }, []);
-
-  const finishBurst = useCallback(() => {
-    setPhase("done");
-    setParticles([]);
-    window.setTimeout(() => {
-      cooldownRef.current = false;
-    }, 600);
+    const next = createFloaters(width, height);
+    floatersRef.current = next;
+    setSeeds(
+      next.map(({ id, kind, imageName, alt, glyph, size }) => ({
+        id,
+        kind,
+        imageName,
+        alt,
+        glyph,
+        size,
+      })),
+    );
+    setActive(true);
   }, []);
 
   useEffect(() => {
@@ -199,94 +181,141 @@ export function GalleryInstagramFollow({
       return () => copyObserver.disconnect();
     }
 
-    let armed = false;
-    const burstObserver = new IntersectionObserver(
+    let started = false;
+    const floatObserver = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !armed) {
-          armed = true;
-          playBurst();
-          burstObserver.unobserve(section);
+        if (entry.isIntersecting && !started) {
+          started = true;
+          startFloat();
+          floatObserver.disconnect();
         }
       },
-      { threshold: 0.18, rootMargin: "0px 0px -8% 0px" },
+      { threshold: 0.12, rootMargin: "0px 0px -6% 0px" },
     );
-
-    burstObserver.observe(section);
-
-    const onEnter = () => playBurst();
-    section.addEventListener("mouseenter", onEnter);
+    floatObserver.observe(section);
 
     return () => {
       copyObserver.disconnect();
-      burstObserver.disconnect();
-      section.removeEventListener("mouseenter", onEnter);
+      floatObserver.disconnect();
     };
-  }, [playBurst]);
+  }, [startFloat]);
 
   useEffect(() => {
-    if (phase !== "bursting" || particles.length === 0) return;
+    if (!active || reducedRef.current || seeds.length === 0) return;
 
-    const maxMs =
-      Math.max(...particles.map((p) => (p.delay + p.duration) * 1000)) + 120;
-    const timer = window.setTimeout(finishBurst, maxMs);
-    return () => window.clearTimeout(timer);
-  }, [phase, particles, finishBurst]);
+    const field = fieldRef.current;
+    if (!field) return;
+
+    /* Paint initial positions without waiting a frame */
+    floatersRef.current.forEach((f) => {
+      const el = nodeRefs.current.get(f.id);
+      if (el) {
+        el.style.transform = `translate3d(${f.x}px, ${f.y}px, 0) rotate(${f.rot}deg)`;
+      }
+    });
+
+    let last = performance.now();
+    timeRef.current = 0;
+
+    const tick = (now: number) => {
+      const dtMs = Math.min(32, now - last);
+      last = now;
+      const dt = dtMs / 16.67;
+      timeRef.current += dtMs / 1000;
+
+      const width = field.clientWidth;
+      const height = field.clientHeight;
+      const t = timeRef.current;
+
+      for (const f of floatersRef.current) {
+        const ax = Math.sin(t * 0.35 + f.phase) * 0.008;
+        const ay = Math.cos(t * 0.28 + f.phase * 1.3) * 0.0065;
+
+        let vx = f.vx + ax * dt;
+        let vy = f.vy + ay * dt;
+
+        const speed = Math.hypot(vx, vy);
+        const maxSpeed = f.kind === "image" ? 0.55 : 0.7;
+        if (speed > maxSpeed) {
+          vx = (vx / speed) * maxSpeed;
+          vy = (vy / speed) * maxSpeed;
+        }
+
+        let x = f.x + vx * dt * 0.92;
+        let y = f.y + vy * dt * 0.92;
+        const rot = f.rot + f.rotV * dt * 16.67;
+
+        const minX = 8;
+        const minY = 8;
+        const maxX = Math.max(minX, width - f.size - 8);
+        const maxY = Math.max(minY, height - f.size - 8);
+
+        const bx = bounceAxis(x, vx, minX, maxX);
+        const by = bounceAxis(y, vy, minY, maxY);
+
+        f.x = bx.pos;
+        f.vx = bx.vel;
+        f.y = by.pos;
+        f.vy = by.vel;
+        f.rot = rot;
+
+        const el = nodeRefs.current.get(f.id);
+        if (el) {
+          el.style.transform = `translate3d(${f.x}px, ${f.y}px, 0) rotate(${f.rot}deg)`;
+        }
+      }
+
+      rafRef.current = window.requestAnimationFrame(tick);
+    };
+
+    rafRef.current = window.requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current) window.cancelAnimationFrame(rafRef.current);
+    };
+  }, [active, seeds]);
 
   return (
     <>
       <div
         ref={fieldRef}
-        className={`instagram-burst-field${phase === "bursting" ? " is-active" : ""}`}
+        className={`instagram-burst-field${active ? " is-active" : ""}`}
         aria-hidden="true"
       >
-        {phase === "bursting" &&
-          particles.map((particle) => (
-            <span
-              key={particle.id}
-              className={
-                particle.kind === "image"
-                  ? "instagram-burst-particle instagram-burst-particle--image"
-                  : "instagram-burst-particle instagram-burst-particle--emoji"
-              }
-              style={
-                {
-                  "--ig-p1x": `${particle.p1x}px`,
-                  "--ig-p1y": `${particle.p1y}px`,
-                  "--ig-p2x": `${particle.p2x}px`,
-                  "--ig-p2y": `${particle.p2y}px`,
-                  "--ig-p3x": `${particle.p3x}px`,
-                  "--ig-p3y": `${particle.p3y}px`,
-                  "--ig-p4x": `${particle.p4x}px`,
-                  "--ig-p4y": `${particle.p4y}px`,
-                  "--ig-rot": `${particle.rot}deg`,
-                  "--ig-sc": particle.scale,
-                  "--ig-delay": `${particle.delay}s`,
-                  "--ig-dur": `${particle.duration}s`,
-                  "--ig-bob-dur": `${particle.bobDuration}s`,
-                  "--ig-ease": FLOAT_EASE,
-                } as CSSProperties
-              }
-            >
-              <span className="instagram-burst-particle__bob">
-                {particle.kind === "image" && particle.imageName ? (
-                  <span className="instagram-circle instagram-circle--burst">
-                    <ManagedImage
-                      name={particle.imageName}
-                      alt=""
-                      fill
-                      sizes="80px"
-                      className="object-cover"
-                      previewAnchor={false}
-                    />
-                  </span>
-                ) : (
-                  <span className="instagram-float-emoji__inner">
-                    {particle.glyph}
-                  </span>
-                )}
+        {seeds.map((floater) => (
+          <span
+            key={floater.id}
+            ref={(el) => {
+              if (el) nodeRefs.current.set(floater.id, el);
+              else nodeRefs.current.delete(floater.id);
+            }}
+            className={
+              floater.kind === "image"
+                ? "instagram-burst-particle instagram-burst-particle--image"
+                : "instagram-burst-particle instagram-burst-particle--emoji"
+            }
+            style={{
+              width: floater.size,
+              height: floater.size,
+            }}
+          >
+            {floater.kind === "image" && floater.imageName ? (
+              <span className="instagram-circle instagram-circle--burst">
+                <ManagedImage
+                  name={floater.imageName}
+                  alt=""
+                  fill
+                  sizes="88px"
+                  className="object-cover"
+                  previewAnchor={false}
+                />
               </span>
-            </span>
-          ))}
+            ) : (
+              <span className="instagram-float-emoji__inner">
+                {floater.glyph}
+              </span>
+            )}
+          </span>
+        ))}
       </div>
 
       <div className="gallery-header">
@@ -313,9 +342,7 @@ export function GalleryInstagramFollow({
                 platform="instagram"
                 className="gallery-ig-link__icon"
               />
-              <span className="gallery-ig-link__handle">
-                {indication}
-              </span>
+              <span className="gallery-ig-link__handle">{indication}</span>
             </a>
 
             <div

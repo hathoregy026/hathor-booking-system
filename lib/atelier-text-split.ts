@@ -189,6 +189,13 @@ function animateAtelierSplit(el: HTMLElement, triggerEl?: Element) {
   const stagger =
     chars.length > 60 ? Math.min(0.03, 1.2 / chars.length) : 0.03;
 
+  /* Gallery band: play once — reverse letter fall causes a visible jump */
+  const inGallery = Boolean(
+    (triggerEl instanceof Element ? triggerEl : el).closest?.(
+      ".gallery-section",
+    ),
+  );
+
   gsap.to(chars, {
     yPercent: 0,
     opacity: 1,
@@ -198,7 +205,8 @@ function animateAtelierSplit(el: HTMLElement, triggerEl?: Element) {
     scrollTrigger: {
       trigger: triggerEl || el,
       start: "top 85%",
-      toggleActions: "play none none reverse",
+      toggleActions: inGallery ? "play none none none" : "play none none reverse",
+      once: inGallery,
       id: `atelier-split-${Math.random().toString(36).slice(2, 9)}`,
     },
     onComplete: () => {

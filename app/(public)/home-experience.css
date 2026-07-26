@@ -1988,10 +1988,15 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   position: relative;
   background: var(--cream-deep);
   padding: clamp(80px, 10vw, 140px) var(--content-gutter, clamp(12px, 2.2vw, 28px));
-  overflow: visible;
+  /* Contain floaters; marquee still full-bleeds via its own layer */
+  overflow-x: clip;
+  overflow-y: visible;
+  isolation: isolate;
 }
 
 .gallery-header {
+  position: relative;
+  z-index: 2;
   width: var(--content-shell, 100%);
   max-width: none;
   margin: 0 auto 40px;
@@ -2010,6 +2015,14 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   font-size: clamp(2rem, 4.5vw, 3.6rem);
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+/* Avoid split-mask padding looking like a doubled cream box */
+.gallery-section .gallery-h2 h2.split-heading,
+.gallery-section .instagram-follow__eyebrow.split-heading,
+.gallery-section .gallery-ig-link__handle.split-heading {
+  padding: 0.02em 0.02em 0.06em;
+  margin: 0;
 }
 
 .gallery-ig-link {
@@ -2056,51 +2069,43 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   color: var(--gold) !important;
 }
 
-/* ---------- Instagram follow + soft soap-bubble float ---------- */
+/* ---------- Instagram follow + elegant edge-bounce float ---------- */
 .instagram-burst-field {
   position: absolute;
   inset: 0;
-  z-index: 6;
+  z-index: 1;
   pointer-events: none;
-  overflow: visible;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.9s ease;
+}
+
+.instagram-burst-field.is-active {
+  opacity: 1;
 }
 
 .instagram-burst-particle {
   position: absolute;
-  left: 50%;
-  top: 38%;
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0.85);
-  will-change: transform, opacity;
-  animation-name: ig-soap-float;
-  animation-duration: var(--ig-dur, 6s);
-  animation-delay: var(--ig-delay, 0s);
-  animation-timing-function: var(--ig-ease, linear);
-  animation-fill-mode: both;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.92;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 
 .instagram-burst-particle--emoji {
-  top: 40%;
-}
-
-/* Continuous bob while the outer path keeps drifting — never parks */
-.instagram-burst-particle__bob {
-  display: block;
-  transform-origin: center center;
-  animation: ig-soap-bob var(--ig-bob-dur, 2.8s) ease-in-out infinite;
-  will-change: transform;
-}
-
-.instagram-burst-particle--image .instagram-circle--burst,
-.instagram-burst-particle--emoji .instagram-float-emoji__inner {
-  animation: none;
+  opacity: 0.88;
 }
 
 .instagram-circle {
   position: relative;
   display: block;
-  width: 80px;
-  height: 80px;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   border: 1px solid rgba(182, 159, 100, 0.55);
   overflow: hidden;
@@ -2113,8 +2118,6 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
 }
 
 .instagram-circle--burst {
-  width: clamp(64px, 8vw, 88px);
-  height: clamp(64px, 8vw, 88px);
   opacity: 0.94;
 }
 
@@ -2148,8 +2151,8 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.35rem;
-  height: 2.35rem;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   border: 1px solid rgba(182, 159, 100, 0.45);
   background:
@@ -2162,91 +2165,6 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   line-height: 1;
   filter: sepia(0.3) saturate(0.7) brightness(0.97);
   opacity: 0.92;
-}
-
-/*
-  Continuous float path — even keyframe spacing + linear timing
-  so motion never eases out, stops, then pushes again.
-  Fade only in the final stretch while still drifting.
-*/
-@keyframes ig-soap-float {
-  0% {
-    opacity: 0;
-    transform:
-      translate(-50%, -50%)
-      rotate(0deg)
-      scale(0.82);
-  }
-  6% {
-    opacity: 1;
-    transform:
-      translate(calc(-50% + var(--ig-p1x) * 0.35), calc(-50% + var(--ig-p1y) * 0.35))
-      rotate(calc(var(--ig-rot) * 0.15))
-      scale(0.96);
-  }
-  22% {
-    opacity: 1;
-    transform:
-      translate(calc(-50% + var(--ig-p1x)), calc(-50% + var(--ig-p1y)))
-      rotate(calc(var(--ig-rot) * 0.35))
-      scale(1);
-  }
-  42% {
-    opacity: 1;
-    transform:
-      translate(calc(-50% + var(--ig-p2x)), calc(-50% + var(--ig-p2y)))
-      rotate(calc(var(--ig-rot) * 0.55))
-      scale(calc(0.5 + var(--ig-sc) * 0.5));
-  }
-  64% {
-    opacity: 0.96;
-    transform:
-      translate(calc(-50% + var(--ig-p3x)), calc(-50% + var(--ig-p3y)))
-      rotate(calc(var(--ig-rot) * 0.8))
-      scale(var(--ig-sc));
-  }
-  82% {
-    opacity: 0.55;
-    transform:
-      translate(calc(-50% + var(--ig-p4x) * 0.92), calc(-50% + var(--ig-p4y) * 0.92))
-      rotate(var(--ig-rot))
-      scale(calc(var(--ig-sc) * 1.02));
-  }
-  100% {
-    opacity: 0;
-    transform:
-      translate(calc(-50% + var(--ig-p4x)), calc(-50% + var(--ig-p4y)))
-      rotate(calc(var(--ig-rot) * 1.08))
-      scale(calc(var(--ig-sc) * 1.05));
-  }
-}
-
-@keyframes ig-soap-bob {
-  0% {
-    transform: translate(0, 0) rotate(-2deg);
-  }
-  25% {
-    transform: translate(5px, -7px) rotate(1.5deg);
-  }
-  50% {
-    transform: translate(-4px, -11px) rotate(2deg);
-  }
-  75% {
-    transform: translate(6px, -5px) rotate(-1deg);
-  }
-  100% {
-    transform: translate(0, 0) rotate(-2deg);
-  }
-}
-
-@keyframes ig-soap-wobble {
-  0%,
-  100% {
-    transform: translateY(0) scale(1);
-  }
-  50% {
-    transform: translateY(-6px) scale(1.025);
-  }
 }
 
 .instagram-follow {
@@ -2294,10 +2212,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
 
 .instagram-follow__copy {
   opacity: 0;
-  transform: translateY(14px);
-  transition:
-    opacity 1.6s cubic-bezier(0.2, 0.8, 0.2, 1),
-    transform 1.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: opacity 1.1s ease;
 }
 
 .instagram-follow__eyebrow.instagram-follow__copy {
@@ -2305,16 +2220,15 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
 }
 
 .instagram-follow a.instagram-follow__copy {
-  transition-delay: 0.2s;
+  transition-delay: 0.15s;
 }
 
 .instagram-follow__divider.instagram-follow__copy {
-  transition-delay: 0.4s;
+  transition-delay: 0.3s;
 }
 
 .instagram-follow.is-visible .instagram-follow__copy {
   opacity: 1;
-  transform: translateY(0);
 }
 
 /* 3D tilted gallery strip — cream/gold adaptation of the marquee band */
