@@ -604,8 +604,8 @@ export function HomePageClient({
                               name={item.imageName}
                               alt={item.alt}
                               fill
-                              sizes="(max-width: 768px) 48vw, 26vw"
-                              className="object-cover"
+                              sizes="(max-width: 768px) 300px, 460px"
+                              className="object-contain"
                               previewAnchor={false}
                             />
                           </span>
