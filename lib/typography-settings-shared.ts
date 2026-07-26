@@ -801,89 +801,76 @@ function mixHex(a: string, b: string, amount: number): string {
 }
 
 /** Real polished-gold photo (faceted metal ref) — clipped into the letters */
-export const HERO_GOLD_METAL_TEXTURE = "/textures/gold-metal.webp?v=2";
+export const HERO_GOLD_METAL_TEXTURE = "/textures/gold-metal.webp?v=3";
 
 /**
- * Polished gold fill for the hero second title.
- * Bright yellow-metal body, real metal facets, golden traveling shine
- * with a second offset glint for a liquid / wavy surface feel.
+ * How shiny gold works in light:
+ * 1) Vertical bevel on every stroke (hot crest → honey body → amber recess)
+ * 2) Faceted metal surface from the photo
+ * 3) One narrow specular lobe that travels — bright white-gold core, soft gold halo
+ * Soft multi-washes read as paint; hard specular + bevel reads as metal.
  */
 export function heroSecondShimmerBackground(
   shimmer: HeroSecondShimmer,
 ): string {
   const s = Math.min(1, Math.max(0, shimmer.shine / 100));
-  /* Classic polished gold ladder — keep brand #B69F64 as mid, never muddy bronze */
-  const crest = mixHex("#FFFFFF", "#FFF6C8", 0.3 + s * 0.35);
-  const lemon = mixHex("#FFE566", "#FFF0A0", 0.45 + s * 0.35);
-  const bright = mixHex("#F0D060", "#E8C34A", 0.55);
-  const honey = mixHex("#D4AF37", "#B69F64", 0.35);
-  const body = "#B69F64";
-  const softFloor = mixHex(body, "#C4A35A", 0.45);
+  const white = mixHex("#FFFFFF", "#FFF8E0", 0.35 + s * 0.4);
+  const pale = mixHex("#FFF0A0", "#FFE566", 0.4 + s * 0.35);
+  const hot = mixHex("#F0D060", "#E8C34A", 0.55);
+  const honey = "#D4AF37";
+  const rich = mixHex(honey, "#B69F64", 0.35);
+  const amber = "#8B6914";
+  const recess = mixHex("#5C3A0A", "#3D2A10", 0.35);
 
-  /* Opaque fallback — always reads as gold if the photo fails */
-  const foil = `linear-gradient(180deg,
-    ${crest} 0%,
-    ${lemon} 12%,
-    ${bright} 28%,
-    ${honey} 48%,
-    ${body} 72%,
-    ${softFloor} 100%)`;
+  /* Static metal form — top-lit polished gold (PSD “Gold” bevel) */
+  const bevel = `linear-gradient(180deg,
+    ${white} 0%,
+    ${pale} 10%,
+    ${hot} 22%,
+    ${honey} 42%,
+    ${rich} 62%,
+    ${amber} 84%,
+    ${recess} 100%)`;
 
-  /* Lift the metal photo into sunlit gold (no dark olive veil) */
+  /* Photo facets sit under a light gold lift so they stay yellow-metal */
   const grade = `linear-gradient(180deg,
-    rgba(255, 252, 230, ${0.38 + s * 0.18}) 0%,
-    rgba(255, 229, 102, ${0.18 + s * 0.1}) 16%,
-    rgba(232, 195, 74, ${0.08 + s * 0.06}) 40%,
-    transparent 58%,
-    rgba(212, 175, 55, ${0.06 + (1 - s) * 0.04}) 86%,
-    rgba(182, 159, 100, ${0.08 + (1 - s) * 0.05}) 100%)`;
+    rgba(255, 248, 224, ${0.35 + s * 0.2}) 0%,
+    rgba(255, 229, 102, ${0.12 + s * 0.1}) 18%,
+    transparent 45%,
+    transparent 70%,
+    rgba(139, 105, 20, ${0.12 + (1 - s) * 0.08}) 100%)`;
 
   /*
-   * Primary golden specular — warmer and brighter than a flat white stripe.
-   * Wide soft tails so it feels poured, not cut.
+   * Specular lobe (how sun on polished gold looks):
+   * narrow hot core, short gold falloff — not a wide foggy stripe.
    */
-  const sheen = `linear-gradient(105deg,
+  const coreA = Math.round((0.82 + s * 0.16) * 255)
+    .toString(16)
+    .padStart(2, "0");
+  const haloA = Math.round((0.32 + s * 0.28) * 255)
+    .toString(16)
+    .padStart(2, "0");
+  const specular = `linear-gradient(112deg,
     transparent 0%,
-    transparent 6%,
-    ${lemon}00 16%,
-    ${lemon}44 32%,
-    ${bright}66 42%,
-    ${crest}a0 49%,
-    ${crest}b8 50%,
-    ${crest}a0 51%,
-    ${bright}66 58%,
-    ${lemon}44 70%,
-    ${lemon}00 84%,
-    transparent 94%,
-    transparent 100%)`;
-
-  /*
-   * Secondary wavy glint — offset angle + twin soft peaks so the surface
-   * reads as undulating metal, not one flat sweep.
-   */
-  const wave = `linear-gradient(122deg,
-    transparent 0%,
-    transparent 18%,
-    ${bright}00 28%,
-    ${lemon}2e 36%,
-    ${crest}55 41%,
-    ${lemon}22 46%,
-    transparent 52%,
-    ${bright}00 58%,
-    ${lemon}38 66%,
-    ${crest}48 71%,
-    ${lemon}1a 78%,
-    transparent 88%,
+    transparent 38%,
+    ${pale}00 42%,
+    ${pale}${haloA} 46%,
+    ${white}${coreA} 49.2%,
+    #FFFFFFF0 50%,
+    ${white}${coreA} 50.8%,
+    ${pale}${haloA} 54%,
+    ${pale}00 58%,
+    transparent 62%,
     transparent 100%)`;
 
   const metal = `url(${HERO_GOLD_METAL_TEXTURE})`;
 
-  return `${sheen}, ${wave}, ${grade}, ${metal}, ${foil}`;
+  /* Specular on top → grade → facets → bevel body */
+  return `${specular}, ${grade}, ${metal}, ${bevel}`;
 }
 
 /**
- * Clipped glyph fill. Only the first backgrounds move; the text itself
- * remains in its existing layout position.
+ * Clipped glyph fill. Text stays put; only the specular lobe travels.
  */
 export function heroSecondShimmerInlineStyle(
   shimmer: HeroSecondShimmer,
@@ -891,22 +878,17 @@ export function heroSecondShimmerInlineStyle(
   if (!shimmer.enabled) return {};
   return {
     backgroundImage: heroSecondShimmerBackground(shimmer),
-    backgroundSize:
-      "260% 1.2em, 220% 1.35em, 100% 1.05em, 170% 170%, 100% 1.05em",
-    backgroundRepeat: "no-repeat, no-repeat, no-repeat, repeat, no-repeat",
+    backgroundSize: "220% 1.15em, 100% 1.05em, 150% 150%, 100% 1.05em",
+    backgroundRepeat: "no-repeat, no-repeat, repeat, no-repeat",
     backgroundPosition:
-      "var(--hero-shine-x, 0%) 42%, var(--hero-wave-x, -10%) 58%, center top, var(--hero-metal-x, 0%) var(--hero-metal-y, 0%), center top",
+      "var(--hero-shine-x, 0%) center, center top, center center, center top",
     WebkitBackgroundClip: "text",
     backgroundClip: "text",
     WebkitTextFillColor: "transparent",
     color: "transparent",
-    /*
-     * A shadow on transparent clipped text shows through the glyphs and turns
-     * the gold brown. Keep the polished material clean and bright.
-     */
     textShadow: "none",
     filter: "none",
-    animation: `hero-second-shimmer ${shimmer.speed}s ease-in-out infinite`,
+    animation: `hero-second-shimmer ${shimmer.speed}s linear infinite`,
     display: "inline-block",
     lineHeight: 1.2,
     overflow: "visible",
@@ -1329,40 +1311,22 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
   display: inline-block !important;
   line-height: 1.2 !important;
   overflow: visible !important;
-  /* Shine + wave travel; metal facets drift slowly for a liquid surface */
+  /* Specular lobe travels across stationary bevel + metal facets */
   --hero-shine-x: 0%;
-  --hero-wave-x: -10%;
-  --hero-metal-x: 0%;
-  --hero-metal-y: 0%;
   will-change: background-position, --hero-shine-x !important;
   background-image: var(--typo-hero-second-shimmer) !important;
-  background-size: 260% 1.2em, 220% 1.35em, 100% 1.05em, 170% 170%, 100% 1.05em !important;
-  background-repeat: no-repeat, no-repeat, no-repeat, repeat, no-repeat !important;
-  background-position: var(--hero-shine-x) 42%, var(--hero-wave-x) 58%, center top, var(--hero-metal-x) var(--hero-metal-y), center top !important;
+  background-size: 220% 1.15em, 100% 1.05em, 150% 150%, 100% 1.05em !important;
+  background-repeat: no-repeat, no-repeat, repeat, no-repeat !important;
+  background-position: var(--hero-shine-x) center, center top, center center, center top !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
-  text-shadow: var(--typo-hero-second-shimmer-shadow) !important;
+  text-shadow: none !important;
   filter: none !important;
-  animation: hero-second-shimmer var(--typo-hero-second-shimmer-duration, 5s) ease-in-out infinite !important;
+  animation: hero-second-shimmer var(--typo-hero-second-shimmer-duration, 5s) linear infinite !important;
 }
 @property --hero-shine-x {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 0%;
-}
-@property --hero-wave-x {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: -10%;
-}
-@property --hero-metal-x {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 0%;
-}
-@property --hero-metal-y {
   syntax: "<percentage>";
   inherits: false;
   initial-value: 0%;
@@ -1370,24 +1334,11 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
 @keyframes hero-second-shimmer {
   0% {
     --hero-shine-x: 0%;
-    --hero-wave-x: -18%;
-    --hero-metal-x: 0%;
-    --hero-metal-y: 0%;
-    background-position: 0% 42%, -18% 58%, center top, 0% 0%, center top;
-  }
-  50% {
-    --hero-shine-x: 52%;
-    --hero-wave-x: 48%;
-    --hero-metal-x: 7%;
-    --hero-metal-y: 4%;
-    background-position: 52% 48%, 48% 38%, center top, 7% 4%, center top;
+    background-position: 0% center, center top, center center, center top;
   }
   100% {
     --hero-shine-x: 100%;
-    --hero-wave-x: 118%;
-    --hero-metal-x: 14%;
-    --hero-metal-y: 8%;
-    background-position: 100% 44%, 118% 55%, center top, 14% 8%, center top;
+    background-position: 100% center, center top, center center, center top;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1397,9 +1348,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
   html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
   .public-site .hero-line--left.hero-line--shimmer {
     animation: none !important;
-    --hero-shine-x: 40% !important;
-    --hero-wave-x: 36% !important;
-    background-position: 40% 42%, 36% 58%, center top, 4% 2%, center top !important;
+    --hero-shine-x: 42% !important;
+    background-position: 42% center, center top, center center, center top !important;
   }
 }`
     : ""
