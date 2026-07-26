@@ -6,7 +6,6 @@ import { resolveSiteImageMap } from "@/lib/resolve-site-images";
 import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import "../public.css";
-import "../responsive-foundation.css";
 import "../site-nav.css";
 import "../booking-modal.css";
 import "./preview.css";
