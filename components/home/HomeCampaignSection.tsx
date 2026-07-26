@@ -24,9 +24,8 @@ type LenisLike = {
 
 /**
  * Call-to-action stage — zero layout mutation.
- * Tall CSS track reserves space from first paint. The frame is transform-stuck
- * inside that track (no GSAP pin / no pin-spacer). Scroll progress drives
- * soft exposure + drift → quiet beat → letter rise → hold → release.
+ * Tall CSS track reserves space from first paint. Transform-stick (no pin).
+ * Image: crystal focus-pull over a sharp base plate (never black) + gold sheen.
  */
 export function HomeCampaignSection({
   title,
@@ -46,11 +45,9 @@ export function HomeCampaignSection({
     ).matches;
 
     const frame = track.querySelector<HTMLElement>("[data-hcta-frame]");
-    const mediaWrap = track.querySelector<HTMLElement>("[data-hcta-media]");
-    const media =
-      track.querySelector<HTMLElement>("img.hcta-bg") ||
-      track.querySelector<HTMLElement>("img");
-    const veil = track.querySelector<HTMLElement>(".hcta-veil");
+    const base = track.querySelector<HTMLElement>("[data-hcta-base]");
+    const frost = track.querySelector<HTMLElement>("[data-hcta-frost]");
+    const sheen = track.querySelector<HTMLElement>("[data-hcta-sheen]");
     const chars = gsap.utils.toArray<HTMLElement>(
       track.querySelectorAll(".hcta-heading .hcta-char"),
     );
@@ -73,38 +70,29 @@ export function HomeCampaignSection({
       ctx = gsap.context(() => {
         if (reduced) {
           gsap.set(frame, { clearProps: "transform" });
-          if (media) {
-            gsap.set(media, {
-              clearProps: "filter,transform",
-              yPercent: 0,
-              autoAlpha: 1,
-            });
-          }
-          if (veil) gsap.set(veil, { autoAlpha: 1 });
+          if (frost) gsap.set(frost, { autoAlpha: 0, clearProps: "filter" });
+          if (sheen) gsap.set(sheen, { autoAlpha: 0 });
           if (chars.length) gsap.set(chars, { yPercent: 0, autoAlpha: 1 });
           if (book) gsap.set(book, { autoAlpha: 1 });
           return;
         }
 
         /*
-         * Full-bleed always (no inset clip, no Ken Burns zoom).
-         * Image motion: soft exposure lift + slow vertical drift —
-         * editorial / luxury, layout untouched.
+         * Sharp base plate is always full-bleed underneath — nothing black
+         * can ever show. Frosted twin resolves into clarity; gold sheen sweeps.
          */
-        if (mediaWrap) {
-          gsap.set(mediaWrap, { clearProps: "clipPath" });
+        if (base) {
+          gsap.set(base, { autoAlpha: 1 });
         }
-        if (media) {
-          gsap.set(media, {
-            scale: 1,
-            yPercent: 10,
-            filter: "brightness(0.48) saturate(0.78)",
+        if (frost) {
+          gsap.set(frost, {
             autoAlpha: 1,
+            filter: "blur(28px)",
             force3D: true,
           });
         }
-        if (veil) {
-          gsap.set(veil, { autoAlpha: 0.92 });
+        if (sheen) {
+          gsap.set(sheen, { autoAlpha: 0.85, xPercent: -120 });
         }
         if (chars.length) {
           gsap.set(chars, { yPercent: 115, autoAlpha: 0, force3D: true });
@@ -116,34 +104,43 @@ export function HomeCampaignSection({
 
         const story = gsap.timeline({ paused: true });
 
-        /* 1) Dawn / exposure — image wakes into full light */
-        if (media) {
+        /* 1) Crystal focus — frost lifts while gold light travels */
+        if (frost) {
           story.to(
-            media,
+            frost,
             {
-              yPercent: 0,
-              filter: "brightness(1) saturate(1)",
-              duration: 0.36,
+              autoAlpha: 0,
+              filter: "blur(0px)",
+              duration: 0.38,
               ease: "none",
               force3D: true,
             },
             0,
           );
         }
-        if (veil) {
+        if (sheen) {
           story.to(
-            veil,
+            sheen,
             {
-              autoAlpha: 1,
-              duration: 0.36,
+              xPercent: 120,
+              duration: 0.42,
               ease: "none",
             },
-            0,
+            0.02,
+          );
+          story.to(
+            sheen,
+            {
+              autoAlpha: 0,
+              duration: 0.12,
+              ease: "none",
+            },
+            0.32,
           );
         }
 
-        /* 2) Quiet beat before copy */
-        story.to({}, { duration: 0.1 }, 0.36);
+        /* 2) Quiet beat */
+        story.to({}, { duration: 0.1 }, 0.4);
 
         /* 3) Letter rise */
         if (chars.length) {
@@ -157,7 +154,7 @@ export function HomeCampaignSection({
               ease: "none",
               force3D: true,
             },
-            0.46,
+            0.5,
           );
         }
         if (book) {
@@ -168,17 +165,16 @@ export function HomeCampaignSection({
               duration: 0.1,
               ease: "none",
             },
-            0.54,
+            0.58,
           );
         }
 
-        /* 4) Reading pause while still stuck */
-        story.to({}, { duration: 0.28 }, 0.66);
+        /* 4) Reading pause */
+        story.to({}, { duration: 0.28 }, 0.7);
 
         const sync = (progress: number) => {
           const maxY = Math.max(0, track.offsetHeight - window.innerHeight);
-          const y = progress * maxY;
-          gsap.set(frame, { y, force3D: true });
+          gsap.set(frame, { y: progress * maxY, force3D: true });
           story.progress(progress);
         };
 
@@ -187,14 +183,10 @@ export function HomeCampaignSection({
           trigger: track,
           start: "top top",
           end: "bottom bottom",
-          scrub: 0.65,
+          scrub: 0.7,
           invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            sync(self.progress);
-          },
-          onRefresh: (self) => {
-            sync(self.progress);
-          },
+          onUpdate: (self) => sync(self.progress),
+          onRefresh: (self) => sync(self.progress),
         });
 
         sync(st.progress);
@@ -203,10 +195,6 @@ export function HomeCampaignSection({
       ScrollTrigger.refresh();
     };
 
-    /*
-     * Child layout effects run before Lenis boots in useExScrollMotion.
-     * Wait two frames so ST measures against the live Lenis scroller.
-     */
     bootTimer = window.setTimeout(() => {
       requestAnimationFrame(() => {
         requestAnimationFrame(boot);
@@ -250,16 +238,35 @@ export function HomeCampaignSection({
     >
       <div className="hcta-frame" data-hcta-frame>
         <div className="hcta-media" data-hcta-media>
-          <ManagedImage
-            name={imageName}
-            alt={imageAlt}
-            fill
-            sizes="100vw"
-            className="hcta-bg object-cover"
-            previewAnchor={previewAnchor}
-          />
+          {/* Sharp plate — always visible, always full-bleed */}
+          <div className="hcta-shot hcta-shot--base" data-hcta-base>
+            <ManagedImage
+              name={imageName}
+              alt={imageAlt}
+              fill
+              sizes="100vw"
+              className="hcta-bg object-cover"
+              previewAnchor={previewAnchor}
+            />
+          </div>
+          {/* Frosted twin — dissolves to reveal the plate (no black ever) */}
+          <div
+            className="hcta-shot hcta-shot--frost"
+            data-hcta-frost
+            aria-hidden="true"
+          >
+            <ManagedImage
+              name={imageName}
+              alt=""
+              fill
+              sizes="100vw"
+              className="hcta-bg object-cover"
+              previewAnchor={false}
+            />
+          </div>
         </div>
 
+        <div className="hcta-sheen" data-hcta-sheen aria-hidden="true" />
         <div className="hcta-veil" aria-hidden="true" />
 
         <div className="hcta-copy">
