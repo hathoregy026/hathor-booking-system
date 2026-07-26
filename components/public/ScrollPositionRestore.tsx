@@ -34,8 +34,8 @@ function isSoftClientNavigation(pathname: string): boolean {
 }
 
 /**
- * On hard refresh of the current path, land at the last scroll position.
- * Soft navigations always reset to top so GSAP pages never boot mid-scrub.
+ * Persist scroll Y everywhere. Restore on hard refresh for non-GSAP routes.
+ * Homepage (`/`) restore is owned by useExScrollMotion (boot at 0 → restore → ready).
  */
 export function ScrollPositionRestore() {
   const pathname = usePathname() || "/";
@@ -56,6 +56,13 @@ export function ScrollPositionRestore() {
     }
 
     const unbind = bindScrollPositionPersistence(pathname);
+
+    /* `/` — persist only; GSAP owns restore after boot. */
+    if (normalizePath(pathname) === "/") {
+      return () => {
+        unbind();
+      };
+    }
 
     const restore = () => {
       if (restoreScrollPositionIfReload(pathname)) {

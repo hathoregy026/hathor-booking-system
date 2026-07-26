@@ -21,11 +21,36 @@ export function getPublicThemeBlockingScript(): string {
 }
 
 /**
- * Home hard-load gate: hide the public site until GSAP/Lenis mark ex-scroll-ready.
- * Also force scrollTop 0 so the browser never paints a mid-scrub restore flash.
+ * Critical home CSS in <head> — kills unstyled giant letter images before any CSS bundle.
+ * Full-page veil (ex-pending-deep) only when a mid-page scroll restore is pending.
+ */
+export function getHomeBootCriticalStyle(): string {
+  return [
+    "html.ex-home:not(.ex-scroll-ready) .hero-logo-mark,",
+    "html.ex-home:not(.ex-scroll-ready) .hathor-logo-split,",
+    "html.ex-home:not(.ex-scroll-ready) .hathor-logo-split .logo-letter-wrap,",
+    "html.ex-home:not(.ex-scroll-ready) .hathor-logo-split img,",
+    "html.ex-home:not(.ex-scroll-ready) .blind-strip-v{",
+    "opacity:0!important;visibility:hidden!important;pointer-events:none!important;",
+    "}",
+    "html.ex-home:not(.ex-scroll-ready) .hathor-logo-split img{",
+    "width:0!important;height:0!important;max-width:0!important;max-height:0!important;",
+    "}",
+    "html.ex-home.ex-pending-deep:not(.ex-scroll-ready) .public-site{",
+    "opacity:0!important;pointer-events:none!important;",
+    "}",
+    "html.ex-home.ex-pending-deep:not(.ex-scroll-ready),",
+    "html.ex-home.ex-pending-deep:not(.ex-scroll-ready) body{",
+    "background:#ece8df!important;",
+    "}",
+  ].join("");
+}
+
+/**
+ * Home boot: tag html.ex-home, force scrollTop 0, deep-veil only if restoring mid-page.
  */
 export function getHomeScrollPendingBlockingScript(): string {
-  return `(function(){try{var p=(location.pathname||"/").replace(/\\/+$/,"")||"/";if(p!=="/")return;var d=document.documentElement;d.classList.add("ex-pending");if("scrollRestoration"in history)history.scrollRestoration="manual";window.scrollTo(0,0);d.scrollTop=0;if(document.body)document.body.scrollTop=0;}catch(e){}})();`;
+  return `(function(){try{var p=(location.pathname||"/").replace(/\\/+$/,"")||"/";if(p!=="/")return;var d=document.documentElement;d.classList.add("ex-home");if("scrollRestoration"in history)history.scrollRestoration="manual";window.scrollTo(0,0);d.scrollTop=0;if(document.body)document.body.scrollTop=0;var y=0;try{y=Number(sessionStorage.getItem("hathor:scroll-y:/")||0)||0;}catch(e){}if(y>120)d.classList.add("ex-pending-deep");}catch(e){}})();`;
 }
 
 export function readPublicThemeFromDocument(): PublicTheme {

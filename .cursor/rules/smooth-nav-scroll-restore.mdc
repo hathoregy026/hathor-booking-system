@@ -1,0 +1,36 @@
+---
+description: Instant home load, no FOUC, smooth nav, scroll restore on refresh
+alwaysApply: true
+---
+
+# Smooth navigation & refresh (LOCKED)
+
+These requirements are permanent. Do not weaken, remove, or “simplify” them.
+
+## Requirements
+
+1. **Instant first paint, zero broken flash**  
+   Never show unstyled giant HATHOR letter images or mid-scrub GSAP states. Critical logo-hide CSS must live in `<head>` (`getHomeBootCriticalStyle`). Full-page veil (`ex-pending-deep`) only when restoring mid-page scroll (>120px). Land loads stay visible immediately (hero/media/nav); only logo/blinds stay hidden until `ex-scroll-ready`.
+
+2. **Refresh lands where you were**  
+   Hard refresh restores last scroll Y after GSAP boots at Y=0 (`useExScrollMotion`). Soft navigations reset to top.
+
+3. **Navigating between pages is smooth and instant**  
+   Soft nav must not full-reload. Do not race `ScrollPositionRestore` timers against homepage GSAP (`/` is GSAP-owned — persist only).
+
+## Do not
+
+- Remove head critical logo-hide CSS or `ex-home` / `ex-scroll-ready` gates
+- Reintroduce full-site `opacity: 0` on every home load (kills “instant”)
+- Let letter `<img>` paint at intrinsic size before CSS
+- Mount ScrollTrigger at a restored mid-page Y
+- Let `ScrollPositionRestore` restore on `/`
+
+## Touch points
+
+- `lib/public-theme.ts` — `getHomeBootCriticalStyle`, `getHomeScrollPendingBlockingScript`
+- `app/layout.tsx` — head style + script
+- `hooks/useExScrollMotion.ts` — boot at 0 → restore → `ex-scroll-ready`
+- `lib/hero-scroll-stage.ts` — `skipLanding` on mid-page reload
+- `lib/scroll-position-restore.ts` — `claimScrollRestore`, `applyScrollY`
+- `components/public/ScrollPositionRestore.tsx` — persist always; no restore race on `/`

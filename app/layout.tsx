@@ -4,6 +4,7 @@ import { HATHOR_BRAND_NAME, HATHOR_FAVICON_SRC } from "@/lib/branding";
 import {
   PUBLIC_THEME_DEFAULT,
   getPublicThemeBlockingScript,
+  getHomeBootCriticalStyle,
   getHomeScrollPendingBlockingScript,
 } from "@/lib/public-theme";
 import "./hathor-fonts.css";
@@ -49,6 +50,9 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{ __html: getPublicThemeBlockingScript() }}
+        />
+        <style
+          dangerouslySetInnerHTML={{ __html: getHomeBootCriticalStyle() }}
         />
         <script
           dangerouslySetInnerHTML={{

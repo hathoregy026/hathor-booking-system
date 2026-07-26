@@ -141,6 +141,33 @@ export function shouldRestoreScrollOnMount(pathname: string): boolean {
   return readSavedScrollY(path) > 0;
 }
 
+/** Claim restore ownership so competing callers cannot race this path. */
+export function claimScrollRestore(pathname: string): void {
+  restoredThisDocument.add(normalizePath(pathname));
+}
+
+/** Jump to an absolute Y (Lenis if present). Does not touch the once-gate. */
+export function applyScrollY(y: number): void {
+  if (typeof window === "undefined") return;
+  const target = Math.max(0, Math.round(y));
+  const lenis = (window as HathorWindow).__hathorLenis;
+  try {
+    if (lenis?.scrollTo) {
+      lenis.scrollTo(target, { immediate: true, force: true });
+    } else {
+      window.scrollTo(0, target);
+    }
+  } catch {
+    window.scrollTo(0, target);
+  }
+
+  try {
+    ScrollTrigger.update();
+  } catch {
+    /* ScrollTrigger may not be ready yet */
+  }
+}
+
 /** Restore only on hard refresh of this path — not on client navigations back. */
 export function restoreScrollPositionIfReload(pathname: string): boolean {
   if (typeof window === "undefined") return false;
@@ -150,24 +177,7 @@ export function restoreScrollPositionIfReload(pathname: string): boolean {
   const y = readSavedScrollY(path);
   if (y <= 0) return false;
 
-  restoredThisDocument.add(path);
-
-  const lenis = (window as HathorWindow).__hathorLenis;
-  try {
-    if (lenis?.scrollTo) {
-      lenis.scrollTo(y, { immediate: true, force: true });
-    } else {
-      window.scrollTo(0, y);
-    }
-  } catch {
-    window.scrollTo(0, y);
-  }
-
-  try {
-    ScrollTrigger.update();
-  } catch {
-    /* ScrollTrigger may not be ready yet */
-  }
-
+  claimScrollRestore(path);
+  applyScrollY(y);
   return true;
 }

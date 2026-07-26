@@ -12,9 +12,10 @@ import Lenis from "lenis";
 import { mountHeroScrollStage } from "@/lib/hero-scroll-stage";
 import { splitAtelierText } from "@/lib/atelier-text-split";
 import {
+  applyScrollY,
+  claimScrollRestore,
   registerHathorLenis,
   readSavedScrollY,
-  restoreScrollPositionIfReload,
   shouldRestoreScrollOnMount,
 } from "@/lib/scroll-position-restore";
 
@@ -81,11 +82,12 @@ export function useExScrollMotion() {
   /*
    * Always boot ScrollTrigger from Y=0 so the hero never mounts mid-scrub
    * (giant letters / open blinds). Restore saved Y only AFTER boot, while
-   * still hidden behind ex-pending / ex-scroll-ready.
+   * logo/blinds stay CSS-hidden (and deep-veil if mid-page).
    */
   const path = window.location.pathname || "/";
   const willRestore = shouldRestoreScrollOnMount(path);
   const savedY = willRestore ? readSavedScrollY(path) : 0;
+  if (willRestore) claimScrollRestore(path);
   resetWindowScrollTop(lenis);
 
   /* -------------------------------------------------------
@@ -973,11 +975,12 @@ export function useExScrollMotion() {
       const root = document.documentElement;
       root.classList.add("ex-scroll-ready");
       root.classList.remove("ex-pending");
+      root.classList.remove("ex-pending-deep");
     };
 
     const restoreNow = () => {
       if (savedY > 0) {
-        restoreScrollPositionIfReload(path);
+        applyScrollY(savedY);
       }
       try {
         ScrollTrigger.refresh();
@@ -987,19 +990,11 @@ export function useExScrollMotion() {
       }
     };
 
-    /* Boot finished at Y=0 — now jump to saved Y while still hidden, then reveal. */
+    /* Boot finished at Y=0 — restore while logo still CSS-hidden, then reveal logo. */
     restoreNow();
     requestAnimationFrame(() => {
       restoreNow();
-      requestAnimationFrame(() => {
-        try {
-          ScrollTrigger.refresh();
-          ScrollTrigger.update();
-        } catch {
-          /* ignore */
-        }
-        requestAnimationFrame(markScrollReady);
-      });
+      requestAnimationFrame(markScrollReady);
     });
 
     const onLoad = () => {
@@ -1013,7 +1008,7 @@ export function useExScrollMotion() {
     };
     window.addEventListener("load", onLoad);
 
-    const readyFallback = window.setTimeout(markScrollReady, 900);
+    const readyFallback = window.setTimeout(markScrollReady, 600);
 
     return () => {
       window.clearTimeout(readyFallback);
@@ -1036,6 +1031,8 @@ export function useExScrollMotion() {
       document.documentElement.classList.remove("has-ex-scroll-motion");
       document.documentElement.classList.remove("ex-scroll-ready");
       document.documentElement.classList.remove("ex-pending");
+      document.documentElement.classList.remove("ex-pending-deep");
+      document.documentElement.classList.remove("ex-home");
     };
   }, []);
 }
