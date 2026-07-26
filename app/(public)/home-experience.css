@@ -2077,7 +2077,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   pointer-events: none;
   overflow: hidden;
   opacity: 0;
-  transition: opacity 0.9s ease;
+  transition: opacity 0.55s ease;
 }
 
 .instagram-burst-field.is-active {
@@ -2091,14 +2091,13 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.92;
-  will-change: transform;
+  will-change: transform, opacity;
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
 }
 
 .instagram-burst-particle--emoji {
-  opacity: 0.88;
+  /* opacity driven in JS */
 }
 
 .instagram-circle {
