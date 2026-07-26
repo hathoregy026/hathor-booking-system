@@ -74,6 +74,43 @@ function bounceAxis(
   return { pos, vel };
 }
 
+function shuffleInPlace<T>(items: T[]): T[] {
+  for (let i = items.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const tmp = items[i]!;
+    items[i] = items[j]!;
+    items[j] = tmp;
+  }
+  return items;
+}
+
+/**
+ * Fresh random pop directions each time.
+ * Angles are shuffled so images and icons are mixed — never typed into arcs.
+ */
+function randomPopPlan(count: number): Array<{
+  angle: number;
+  impulse: number;
+  stagger: number;
+}> {
+  const n = Math.max(count, 1);
+  const spin = rand(0, Math.PI * 2);
+  const angles = Array.from({ length: n }, (_, i) => {
+    const base = spin + (i / n) * Math.PI * 2;
+    return base + rand(-0.65, 0.65);
+  });
+  shuffleInPlace(angles);
+
+  const staggers = Array.from({ length: n }, () => rand(0, 0.35));
+  shuffleInPlace(staggers);
+
+  return angles.map((angle, i) => ({
+    angle,
+    impulse: rand(5.6, 10.8),
+    stagger: staggers[i] ?? rand(0, 0.3),
+  }));
+}
+
 /** Center of the IG icon + @handle, in field-local coordinates. */
 function getPopOrigin(
   field: HTMLElement,
@@ -115,54 +152,61 @@ function buildSeeds(): FloaterSeed[] {
     });
   });
 
-  return seeds;
+  return shuffleInPlace(seeds);
+}
+
+function applyRandomPop(
+  floater: FloaterState,
+  origin: { cx: number; cy: number },
+  plan: { angle: number; impulse: number; stagger: number },
+) {
+  floater.size =
+    floater.kind === "image" ? rand(96, 128) : rand(48, 60);
+  floater.x = origin.cx - floater.size / 2;
+  floater.y = origin.cy - floater.size / 2;
+  floater.vx = Math.cos(plan.angle) * plan.impulse;
+  floater.vy = Math.sin(plan.angle) * plan.impulse;
+  floater.rot = rand(-18, 18);
+  floater.rotV = rand(-0.028, 0.028);
+  floater.phase = rand(0, Math.PI * 2);
+  floater.mode = "pop";
+  floater.popAge = -plan.stagger;
+  floater.opacity = 0;
 }
 
 function seedsToFloaters(
   seeds: FloaterSeed[],
   origin: { cx: number; cy: number },
 ): FloaterState[] {
-  const n = Math.max(seeds.length, 1);
-
+  const plan = randomPopPlan(seeds.length);
   return seeds.map((seed, index) => {
-    const angle = (index / n) * Math.PI * 2 + rand(-0.28, 0.28);
-    /* Strong impulse so bubbles travel far from the IG handle */
-    const impulse = seed.kind === "image" ? rand(6.2, 9.4) : rand(6.8, 10.2);
-    return {
+    const floater: FloaterState = {
       ...seed,
-      x: origin.cx - seed.size / 2,
-      y: origin.cy - seed.size / 2,
-      vx: Math.cos(angle) * impulse,
-      vy: Math.sin(angle) * impulse,
-      rot: rand(-12, 12),
-      rotV: rand(-0.02, 0.02),
-      phase: rand(0, Math.PI * 2),
-      mode: "pop" as const,
-      popAge: -index * 0.04,
+      x: 0,
+      y: 0,
+      vx: 0,
+      vy: 0,
+      rot: 0,
+      rotV: 0,
+      phase: 0,
+      mode: "pop",
+      popAge: 0,
       opacity: 0,
     };
+    applyRandomPop(floater, origin, plan[index]!);
+    return floater;
   });
 }
 
-/** Re-aim an existing set from the IG hotspot — pop again, keep same nodes. */
+/** Re-aim from the IG hotspot — fully random directions each time. */
 function reburstFloaters(
   floaters: FloaterState[],
   origin: { cx: number; cy: number },
 ) {
-  const n = Math.max(floaters.length, 1);
-
-  floaters.forEach((f, index) => {
-    const angle = (index / n) * Math.PI * 2 + rand(-0.3, 0.3);
-    const impulse = f.kind === "image" ? rand(6.0, 9.2) : rand(6.6, 10.0);
-    f.x = origin.cx - f.size / 2;
-    f.y = origin.cy - f.size / 2;
-    f.vx = Math.cos(angle) * impulse;
-    f.vy = Math.sin(angle) * impulse;
-    f.rot = rand(-14, 14);
-    f.rotV = rand(-0.022, 0.022);
-    f.mode = "pop";
-    f.popAge = -index * 0.035;
-    f.opacity = 0;
+  const plan = randomPopPlan(floaters.length);
+  const order = shuffleInPlace(floaters.map((_, i) => i));
+  order.forEach((floaterIndex, planIndex) => {
+    applyRandomPop(floaters[floaterIndex]!, origin, plan[planIndex]!);
   });
 }
 
@@ -193,6 +237,8 @@ export function GalleryInstagramFollow({
   const paintFloater = (f: FloaterState) => {
     const el = nodeRefs.current.get(f.id);
     if (!el) return;
+    el.style.width = `${f.size}px`;
+    el.style.height = `${f.size}px`;
     el.style.transform = `translate3d(${f.x}px, ${f.y}px, 0) rotate(${f.rot}deg)`;
     el.style.opacity = String(f.opacity);
   };
