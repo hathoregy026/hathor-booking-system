@@ -1958,19 +1958,17 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
 .instagram-burst-field {
   position: absolute;
   inset: 0;
-  /* Above gallery marquee cards; below header text so IG stays clickable */
-  z-index: 5;
+  /*
+   * Above gallery header, marquee cards, and section chrome.
+   * pointer-events:none keeps IG link / cards clickable underneath.
+   */
+  z-index: 80;
   pointer-events: none;
   overflow: hidden;
-  opacity: 0;
-  transition: opacity 0.7s ease;
-  /* Isolate paint so pop/fade never jolts gallery scroll layout */
+  /* Never fade the whole field — that promoted a full-section layer mid-scroll */
+  opacity: 1;
   contain: layout style paint;
   transform: translateZ(0);
-}
-
-.instagram-burst-field.is-active {
-  opacity: 1;
 }
 
 .instagram-burst-particle {
@@ -1984,6 +1982,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   transform-origin: center center;
+  z-index: 1;
 }
 
 .instagram-circle {

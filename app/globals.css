@@ -88,26 +88,6 @@ body:has(.booking-page) {
   background: #faf8f5;
 }
 
-/*
-  Home refresh gate (set in <head>): hide until ex-scroll-ready.
-  Prevents giant logo / overlapping title FOUC before GSAP boots.
-*/
-html.ex-pending,
-html.ex-pending body {
-  background: #ece8df !important;
-}
-
-html.ex-pending .public-site {
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
-
-html.ex-scroll-ready .public-site,
-html:not(.ex-pending) .public-site {
-  opacity: 1;
-  pointer-events: auto;
-}
-
 ::selection {
   background: var(--lux-gold);
   color: var(--lux-dark);

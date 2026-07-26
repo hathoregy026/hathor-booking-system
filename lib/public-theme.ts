@@ -20,14 +20,6 @@ export function getPublicThemeBlockingScript(): string {
   return `(function(){try{var k=${JSON.stringify(key)};var t=localStorage.getItem(k);var theme=t==="night"?"night":"day";document.documentElement.setAttribute("data-public-theme",theme);}catch(e){document.documentElement.setAttribute("data-public-theme",${JSON.stringify(fallback)});}})();`;
 }
 
-/**
- * Home hard-load gate: hide the public site until GSAP/Lenis mark ex-scroll-ready.
- * Also force scrollTop 0 so the browser never paints a mid-scrub restore flash.
- */
-export function getHomeScrollPendingBlockingScript(): string {
-  return `(function(){try{var p=(location.pathname||"/").replace(/\\/+$/,"")||"/";if(p!=="/")return;var d=document.documentElement;d.classList.add("ex-pending");if("scrollRestoration"in history)history.scrollRestoration="manual";window.scrollTo(0,0);d.scrollTop=0;if(document.body)document.body.scrollTop=0;}catch(e){}})();`;
-}
-
 export function readPublicThemeFromDocument(): PublicTheme {
   if (typeof document === "undefined") return PUBLIC_THEME_DEFAULT;
   const fromDom = document.documentElement.getAttribute("data-public-theme");

@@ -41,12 +41,17 @@ type FloaterState = FloaterTemplate & {
   rotV: number;
   phase: number;
   scale: number;
-  mode: "pop" | "float" | "fade";
+  mode: "pop" | "float" | "fade" | "dead";
   /** Seconds since pop started; negative = stagger wait at origin */
   popAge: number;
   /** Seconds since the bubble became visible (popAge >= 0) */
   lifeAge: number;
   opacity: number;
+};
+
+type ParticleRender = FloaterTemplate & {
+  instanceId: string;
+  size: number;
 };
 
 const EMOJI_GLYPHS = [
@@ -204,10 +209,26 @@ function spawnGeneration(
   );
 }
 
-type ParticleRender = FloaterTemplate & {
-  instanceId: string;
-  size: number;
-};
+function reviveAsPop(
+  f: FloaterState,
+  origin: { cx: number; cy: number },
+  plan: { angle: number; impulse: number; stagger: number },
+) {
+  const size = f.kind === "image" ? rand(96, 128) : rand(48, 60);
+  f.size = size;
+  f.x = origin.cx - size / 2;
+  f.y = origin.cy - size / 2;
+  f.vx = Math.cos(plan.angle) * plan.impulse;
+  f.vy = Math.sin(plan.angle) * plan.impulse;
+  f.rot = rand(-14, 14);
+  f.rotV = rand(-0.022, 0.022);
+  f.phase = rand(0, Math.PI * 2);
+  f.scale = 0.55;
+  f.mode = "pop";
+  f.popAge = -plan.stagger;
+  f.lifeAge = 0;
+  f.opacity = 0;
+}
 
 export function GalleryInstagramFollow({
   title,
@@ -230,8 +251,8 @@ export function GalleryInstagramFollow({
   const timeRef = useRef(0);
   const cooldownRef = useRef(false);
   const loopRunningRef = useRef(false);
+  const idleSyncRef = useRef<number | null>(null);
   const [particles, setParticles] = useState<ParticleRender[]>([]);
-  const [fieldActive, setFieldActive] = useState(false);
   const reducedRef = useRef(false);
 
   const syncParticleList = useCallback((list: FloaterState[]) => {
@@ -247,6 +268,30 @@ export function GalleryInstagramFollow({
       })),
     );
   }, []);
+
+  /** React sync only when idle — never during the scroll-critical pop frame */
+  const scheduleIdleSync = useCallback(() => {
+    if (idleSyncRef.current != null) return;
+    const run = () => {
+      idleSyncRef.current = null;
+      const kept = floatersRef.current.filter((f) => f.mode !== "dead");
+      floatersRef.current = kept;
+      syncParticleList(kept);
+    };
+    const ric = (
+      window as Window & {
+        requestIdleCallback?: (
+          cb: () => void,
+          opts?: { timeout: number },
+        ) => number;
+      }
+    ).requestIdleCallback;
+    if (typeof ric === "function") {
+      idleSyncRef.current = ric(run, { timeout: 1200 });
+    } else {
+      idleSyncRef.current = window.setTimeout(run, 400);
+    }
+  }, [syncParticleList]);
 
   const paintFloater = (f: FloaterState) => {
     const el = nodeRefs.current.get(f.instanceId);
@@ -265,6 +310,7 @@ export function GalleryInstagramFollow({
     loopRunningRef.current = true;
     let last = performance.now();
     timeRef.current = 0;
+    let needsIdleSync = false;
 
     const tick = (now: number) => {
       const dtMs = Math.min(32, now - last);
@@ -277,24 +323,36 @@ export function GalleryInstagramFollow({
       const height = field.clientHeight;
       const minX = 8;
       const minY = 8;
-      let removed = false;
+      let liveCount = 0;
 
       for (const f of floatersRef.current) {
+        if (f.mode === "dead") continue;
+
         const maxX = Math.max(minX, width - f.size - 8);
         const maxY = Math.max(minY, height - f.size - 8);
 
         if (f.mode === "fade") {
           f.lifeAge += dtMs / 1000;
           f.opacity = Math.max(0, f.opacity - dtMs / 1000 / FADE_DURATION_SEC);
-          f.scale = Math.max(0.7, f.scale - dtMs / 1000 * 0.12);
+          f.scale = Math.max(0.7, f.scale - (dtMs / 1000) * 0.12);
           f.x += f.vx * dt * 0.55;
           f.y += f.vy * dt * 0.55;
           f.vx *= Math.pow(0.985, dt);
           f.vy *= Math.pow(0.985, dt);
           f.rot += f.rotV * dt * 8;
+          if (f.opacity <= 0.01) {
+            f.opacity = 0;
+            f.mode = "dead";
+            paintFloater(f);
+            needsIdleSync = true;
+            continue;
+          }
           paintFloater(f);
+          liveCount += 1;
           continue;
         }
+
+        liveCount += 1;
 
         if (f.mode === "pop") {
           f.popAge += dtMs / 1000;
@@ -311,7 +369,6 @@ export function GalleryInstagramFollow({
           f.opacity = popT;
           f.scale = 0.55 + popT * 0.45;
 
-          /* Soft drag — luxury glide out from the handle */
           f.vx *= Math.pow(0.982, dt);
           f.vy *= Math.pow(0.982, dt);
           f.x += f.vx * dt * 1.05;
@@ -350,7 +407,6 @@ export function GalleryInstagramFollow({
           continue;
         }
 
-        /* Elegant float — soft sine drift, bounce only at edges */
         f.lifeAge += dtMs / 1000;
         const ax = Math.sin(t * 0.28 + f.phase) * 0.009;
         const ay = Math.cos(t * 0.22 + f.phase * 1.25) * 0.007;
@@ -385,19 +441,14 @@ export function GalleryInstagramFollow({
         paintFloater(f);
       }
 
-      const alive = floatersRef.current.filter((f) => f.opacity > 0.01 || f.mode !== "fade");
-      if (alive.length !== floatersRef.current.length) {
-        floatersRef.current = alive;
-        removed = true;
+      if (needsIdleSync) {
+        needsIdleSync = false;
+        scheduleIdleSync();
       }
 
-      if (removed) {
-        syncParticleList(floatersRef.current);
-      }
-
-      if (floatersRef.current.length === 0) {
+      if (liveCount === 0) {
         loopRunningRef.current = false;
-        setFieldActive(false);
+        scheduleIdleSync();
         return;
       }
 
@@ -405,7 +456,7 @@ export function GalleryInstagramFollow({
     };
 
     rafRef.current = window.requestAnimationFrame(tick);
-  }, [syncParticleList]);
+  }, [scheduleIdleSync]);
 
   const playPop = useCallback(() => {
     if (reducedRef.current) return;
@@ -425,50 +476,52 @@ export function GalleryInstagramFollow({
     }, POP_COOLDOWN_MS);
 
     const existing = floatersRef.current;
-    const onlyWarmShells =
+    const reusable = existing.filter(
+      (f) => f.mode === "dead" || (f.opacity <= 0.01 && f.mode === "fade"),
+    );
+    const onlyWarmOrDead =
       existing.length > 0 &&
-      existing.every((f) => f.opacity <= 0.01 && f.mode === "fade");
+      existing.every(
+        (f) =>
+          f.mode === "dead" ||
+          (f.opacity <= 0.01 && (f.mode === "fade" || f.mode === "pop")),
+      );
 
     /*
-     * First pop: reuse preloaded DOM nodes (images already warm) so
-     * scroll does not hitch from a sudden image mount storm.
+     * First pop / recycle: mutate existing nodes only.
+     * Zero React setState on the scroll path — this is what stopped the jump.
      */
-    if (onlyWarmShells) {
+    if (onlyWarmOrDead && reusable.length >= templatesRef.current.length) {
+      const plan = randomPopPlan(reusable.length);
+      const order = shuffleInPlace(reusable.map((_, i) => i));
+      order.forEach((idx, planIndex) => {
+        reviveAsPop(reusable[idx]!, origin, plan[planIndex]!);
+      });
+      reusable.forEach(paintFloater);
+      ensureLoop();
+      return;
+    }
+
+    if (onlyWarmOrDead && existing.length > 0) {
       const plan = randomPopPlan(existing.length);
       const order = shuffleInPlace(existing.map((_, i) => i));
       order.forEach((floaterIndex, planIndex) => {
-        const f = existing[floaterIndex]!;
-        const p = plan[planIndex]!;
-        const size = f.kind === "image" ? rand(96, 128) : rand(48, 60);
-        f.size = size;
-        f.x = origin.cx - size / 2;
-        f.y = origin.cy - size / 2;
-        f.vx = Math.cos(p.angle) * p.impulse;
-        f.vy = Math.sin(p.angle) * p.impulse;
-        f.rot = rand(-14, 14);
-        f.rotV = rand(-0.022, 0.022);
-        f.phase = rand(0, Math.PI * 2);
-        f.scale = 0.55;
-        f.mode = "pop";
-        f.popAge = -p.stagger;
-        f.lifeAge = 0;
-        f.opacity = 0;
+        reviveAsPop(existing[floaterIndex]!, origin, plan[planIndex]!);
       });
-      setFieldActive(true);
       existing.forEach(paintFloater);
       ensureLoop();
       return;
     }
 
-    /* Later pops / hover: fade current burst, spawn a fresh random one */
+    /* Hover while live: fade current burst, spawn a fresh random generation */
     for (const f of existing) {
-      if (f.mode !== "fade") f.mode = "fade";
+      if (f.mode !== "fade" && f.mode !== "dead") f.mode = "fade";
     }
 
     const next = spawnGeneration(templatesRef.current, origin);
     floatersRef.current = [...existing, ...next];
+    /* Hover is user-driven — React mount here is fine */
     syncParticleList(floatersRef.current);
-    setFieldActive(true);
 
     requestAnimationFrame(() => {
       next.forEach(paintFloater);
@@ -481,7 +534,7 @@ export function GalleryInstagramFollow({
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    /* Preload templates + invisible particles so first pop does not mount images mid-scroll */
+    /* Preload bubble images at page idle — well before the gallery is reached */
     if (!reducedRef.current && !templatesRef.current.length) {
       templatesRef.current = buildTemplates();
       const field = fieldRef.current;
@@ -502,7 +555,7 @@ export function GalleryInstagramFollow({
           rotV: 0,
           phase: 0,
           scale: 0.55,
-          mode: "fade" as const,
+          mode: "dead" as const,
           popAge: 0,
           lifeAge: FLOAT_LIFE_SEC,
           opacity: 0,
@@ -526,7 +579,7 @@ export function GalleryInstagramFollow({
           copyObserver.disconnect();
         }
       },
-      { threshold: 0.12, rootMargin: "0px 0px -4% 0px" },
+      { threshold: 0.08, rootMargin: "0px 0px -2% 0px" },
     );
     copyObserver.observe(section);
 
@@ -536,15 +589,24 @@ export function GalleryInstagramFollow({
     }
 
     let started = false;
+    /*
+     * Start the pop early (while section is still approaching) so the
+     * first physics frame never coincides with the user "arriving".
+     */
     const popObserver = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !started) {
           started = true;
-          playPop();
           popObserver.disconnect();
+          /* Double-rAF: wait until Lenis/ST have painted this scroll frame */
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              playPop();
+            });
+          });
         }
       },
-      { threshold: 0.2, rootMargin: "0px 0px -10% 0px" },
+      { threshold: 0.02, rootMargin: "28% 0px 0px 0px" },
     );
     popObserver.observe(section);
 
@@ -557,55 +619,22 @@ export function GalleryInstagramFollow({
   useEffect(() => {
     return () => {
       if (rafRef.current) window.cancelAnimationFrame(rafRef.current);
+      if (idleSyncRef.current != null) {
+        const cic = (
+          window as Window & {
+            cancelIdleCallback?: (id: number) => void;
+          }
+        ).cancelIdleCallback;
+        if (typeof cic === "function") cic(idleSyncRef.current);
+        else window.clearTimeout(idleSyncRef.current);
+        idleSyncRef.current = null;
+      }
       loopRunningRef.current = false;
     };
   }, []);
 
   return (
     <>
-      <div
-        ref={fieldRef}
-        className={`instagram-burst-field${fieldActive ? " is-active" : ""}`}
-        aria-hidden="true"
-      >
-        {particles.map((floater) => (
-          <span
-            key={floater.instanceId}
-            ref={(el) => {
-              if (el) nodeRefs.current.set(floater.instanceId, el);
-              else nodeRefs.current.delete(floater.instanceId);
-            }}
-            className={
-              floater.kind === "image"
-                ? "instagram-burst-particle instagram-burst-particle--image"
-                : "instagram-burst-particle instagram-burst-particle--emoji"
-            }
-            style={{
-              width: floater.size,
-              height: floater.size,
-              opacity: 0,
-            }}
-          >
-            {floater.kind === "image" && floater.imageName ? (
-              <span className="instagram-circle instagram-circle--burst">
-                <ManagedImage
-                  name={floater.imageName}
-                  alt=""
-                  fill
-                  sizes="128px"
-                  className="object-cover"
-                  previewAnchor={false}
-                />
-              </span>
-            ) : (
-              <span className="instagram-float-emoji__inner">
-                {floater.glyph}
-              </span>
-            )}
-          </span>
-        ))}
-      </div>
-
       <div className="gallery-header">
         <div className="gallery-h2">
           <h2>{title}</h2>
@@ -646,6 +675,50 @@ export function GalleryInstagramFollow({
             </div>
           </div>
         </div>
+      </div>
+
+      {/* After header in DOM + high z-index → always paints above cards & copy */}
+      <div
+        ref={fieldRef}
+        className="instagram-burst-field is-ready"
+        aria-hidden="true"
+      >
+        {particles.map((floater) => (
+          <span
+            key={floater.instanceId}
+            ref={(el) => {
+              if (el) nodeRefs.current.set(floater.instanceId, el);
+              else nodeRefs.current.delete(floater.instanceId);
+            }}
+            className={
+              floater.kind === "image"
+                ? "instagram-burst-particle instagram-burst-particle--image"
+                : "instagram-burst-particle instagram-burst-particle--emoji"
+            }
+            style={{
+              width: floater.size,
+              height: floater.size,
+              opacity: 0,
+            }}
+          >
+            {floater.kind === "image" && floater.imageName ? (
+              <span className="instagram-circle instagram-circle--burst">
+                <ManagedImage
+                  name={floater.imageName}
+                  alt=""
+                  fill
+                  sizes="128px"
+                  className="object-cover"
+                  previewAnchor={false}
+                />
+              </span>
+            ) : (
+              <span className="instagram-float-emoji__inner">
+                {floater.glyph}
+              </span>
+            )}
+          </span>
+        ))}
       </div>
     </>
   );
