@@ -3,13 +3,19 @@
 import { useLayoutEffect, useRef } from "react";
 import type { CSSProperties } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 
-gsap.registerPlugin(ScrollTrigger);
-
 const SILK_ROWS = ["TAKE YOUR", "VOYAGE", "TODAY"] as const;
+
+/** Exponential damp — silky catch-up, frame-rate independent */
+function damp(current: number, target: number, lambda: number, dt: number) {
+  return current + (target - current) * (1 - Math.exp(-lambda * dt));
+}
+
+function clamp01(n: number) {
+  return Math.max(0, Math.min(1, n));
+}
 
 type HomeCampaignSectionProps = {
   title: string;
@@ -20,11 +26,13 @@ type HomeCampaignSectionProps = {
 };
 
 /**
- * Call-to-action stage — same visual as the working pre-pin version.
+ * Call-to-action stage — elegant layout-driven motion.
  *
- * Motion is driven from layout (track rect) every ticker frame so Lenis /
- * ScrollTrigger scrub desync and overflow-x:clip cannot freeze the stage.
- * No pin, no manual ST scrub for the cover.
+ * 1) Gold invite rises as the section arrives
+ * 2) Brief hold, then photograph glides up and erases the invite
+ * 3) On-image title + Book Now rise in
+ *
+ * All values are damped toward scroll targets so Lenis never writes jumps.
  */
 export function HomeCampaignSection({
   title,
@@ -57,70 +65,13 @@ export function HomeCampaignSection({
 
     let killed = false;
     let inviteTl: gsap.core.Timeline | null = null;
-    let coverTl: gsap.core.Timeline | null = null;
-    let silkLocked = false;
-    let lastInvite = -1;
-    let lastCover = -1;
-    let lastStick = -1;
 
-    const showSilk = () => {
-      if (!silkChars.length || silkLocked) return;
-      silkLocked = true;
-      gsap.set(silkChars, { yPercent: 0, autoAlpha: 1, force3D: true });
-    };
-
-    const clamp01 = (n: number) => Math.max(0, Math.min(1, n));
-
-    const sync = () => {
-      if (killed || reduced || !coverTl || !inviteTl) return;
-
-      const vh = window.innerHeight;
-      const rect = track.getBoundingClientRect();
-      const trackH = track.offsetHeight;
-      const frameH = frame.offsetHeight || vh;
-      const travel = Math.max(1, trackH - frameH);
-
-      /* Phase A — invite while section approaches */
-      const inviteStart = vh * 0.92;
-      const inviteEnd = vh * 0.18;
-      let inviteP = 0;
-      if (rect.top <= inviteEnd) inviteP = 1;
-      else if (rect.top < inviteStart) {
-        inviteP = 1 - (rect.top - inviteEnd) / (inviteStart - inviteEnd);
-      }
-      inviteP = clamp01(inviteP);
-      if (Math.abs(inviteP - lastInvite) > 0.001) {
-        lastInvite = inviteP;
-        if (!silkLocked) inviteTl.progress(inviteP);
-      }
-
-      /* Phase B — stick + cover while track owns the viewport */
-      let coverP = 0;
-      let stickY = 0;
-      if (rect.top <= 0 && rect.bottom >= vh) {
-        coverP = clamp01(-rect.top / travel);
-        stickY = coverP * travel;
-        inviteTl.progress(1);
-        showSilk();
-      } else if (rect.top > 0) {
-        coverP = 0;
-        stickY = 0;
-      } else {
-        coverP = 1;
-        stickY = travel;
-        inviteTl.progress(1);
-        showSilk();
-      }
-
-      if (Math.abs(stickY - lastStick) > 0.25) {
-        lastStick = stickY;
-        gsap.set(frame, { y: stickY, force3D: true });
-      }
-      if (Math.abs(coverP - lastCover) > 0.001) {
-        lastCover = coverP;
-        coverTl.progress(coverP);
-      }
-    };
+    /* Smoothed state */
+    let inviteS = 0;
+    let stageS = 0;
+    let imageS = 0;
+    let titleS = 0;
+    let stickS = 0;
 
     if (reduced) {
       gsap.set(frame, { clearProps: "transform" });
@@ -133,14 +84,15 @@ export function HomeCampaignSection({
 
     if (reveal) gsap.set(reveal, { yPercent: 100, force3D: true });
     if (silkChars.length) {
-      gsap.set(silkChars, { yPercent: 120, autoAlpha: 0, force3D: true });
+      gsap.set(silkChars, { yPercent: 110, autoAlpha: 0, force3D: true });
     }
     if (chars.length) {
-      gsap.set(chars, { yPercent: 115, autoAlpha: 0, force3D: true });
+      gsap.set(chars, { yPercent: 110, autoAlpha: 0, force3D: true });
     }
-    if (book) gsap.set(book, { autoAlpha: 0 });
+    if (book) gsap.set(book, { autoAlpha: 0, y: 12 });
     gsap.set(frame, { y: 0, force3D: true });
 
+    /* Invite letter rise — scrubbed by smoothed invite progress */
     inviteTl = gsap.timeline({ paused: true });
     if (silkChars.length) {
       const rows = gsap.utils.toArray<HTMLElement>(
@@ -153,61 +105,108 @@ export function HomeCampaignSection({
           {
             yPercent: 0,
             autoAlpha: 1,
-            stagger: 0.014,
-            duration: 0.42,
+            stagger: 0.018,
+            duration: 0.55,
             ease: "none",
             force3D: true,
           },
-          rowIndex * 0.1,
+          rowIndex * 0.12,
         );
       });
     }
 
-    coverTl = gsap.timeline({ paused: true });
-    coverTl.call(showSilk, undefined, 0);
-    if (reveal) coverTl.set(reveal, { yPercent: 100, force3D: true }, 0);
-    coverTl.to({}, { duration: 0.16 }, 0);
-    if (reveal) {
-      coverTl.to(
-        reveal,
-        {
-          yPercent: 0,
-          duration: 0.72,
-          ease: "power3.inOut",
+    const sync = () => {
+      if (killed || !inviteTl) return;
+
+      const dt = gsap.ticker.deltaRatio(60);
+      const vh = window.innerHeight;
+      const rect = track.getBoundingClientRect();
+      const travel = Math.max(1, track.offsetHeight - (frame.offsetHeight || vh));
+
+      /* --- targets from layout --- */
+      let inviteT = 0;
+      const inviteStart = vh * 0.9;
+      const inviteEnd = vh * 0.12;
+      if (rect.top <= inviteEnd) inviteT = 1;
+      else if (rect.top < inviteStart) {
+        inviteT = 1 - (rect.top - inviteEnd) / (inviteStart - inviteEnd);
+      }
+      inviteT = clamp01(inviteT);
+
+      /* Stick distance while the tall track owns the viewport */
+      const stickT = clamp01(-rect.top / travel) * travel;
+      const stageT = clamp01(stickT / travel);
+
+      /*
+       * Stage remap (elegant pacing on the locked scroll):
+       *  0.00–0.14  hold gold invite
+       *  0.14–0.78  photograph rises / erases invite
+       *  0.78–1.00  on-image title + book
+       */
+      let imageT = 0;
+      let titleT = 0;
+      if (stageT <= 0.14) {
+        imageT = 0;
+        titleT = 0;
+      } else if (stageT < 0.78) {
+        imageT = (stageT - 0.14) / 0.64;
+        titleT = 0;
+      } else {
+        imageT = 1;
+        titleT = (stageT - 0.78) / 0.22;
+      }
+      imageT = clamp01(imageT);
+      titleT = clamp01(titleT);
+
+      /* Soft ease on the wipe so it never feels mechanical */
+      const imageEased = imageT * imageT * (3 - 2 * imageT); /* smoothstep */
+
+      /*
+       * Damping — stick tracks scroll closely; cover & title stay lazier.
+       * Higher lambda = snappier. Values tuned for luxury glide.
+       */
+      inviteS = damp(inviteS, inviteT, 7.5, dt);
+      stickS = damp(stickS, stickT, 14, dt);
+      stageS = damp(stageS, stageT, 9, dt);
+      imageS = damp(imageS, imageEased, 5.5, dt);
+      titleS = damp(titleS, titleT, 6.2, dt);
+
+      if (stageS > 0.02) {
+        inviteS = damp(inviteS, 1, 12, dt);
+      }
+
+      inviteTl.progress(inviteS);
+      gsap.set(frame, { y: stickS, force3D: true });
+
+      if (reveal) {
+        gsap.set(reveal, {
+          yPercent: (1 - imageS) * 100,
           force3D: true,
-        },
-        0.16,
-      );
-    }
-    coverTl.to({}, { duration: 0.06 }, 0.88);
-    if (chars.length) {
-      coverTl.to(
-        chars,
-        {
-          yPercent: 0,
-          autoAlpha: 1,
-          stagger: 0.02,
-          duration: 0.16,
-          ease: "none",
+        });
+      }
+
+      if (chars.length) {
+        const y = (1 - titleS) * 110;
+        const a = titleS;
+        gsap.set(chars, {
+          yPercent: y,
+          autoAlpha: a,
           force3D: true,
-        },
-        0.92,
-      );
-    }
-    if (book) {
-      coverTl.to(book, { autoAlpha: 1, duration: 0.1, ease: "none" }, 1.0);
-    }
-    coverTl.to({}, { duration: 0.18 }, 1.08);
+        });
+      }
+      if (book) {
+        gsap.set(book, {
+          autoAlpha: titleS,
+          y: (1 - titleS) * 14,
+          force3D: true,
+        });
+      }
+    };
 
     gsap.ticker.add(sync);
     sync();
 
-    const onResize = () => {
-      lastStick = -1;
-      lastCover = -1;
-      lastInvite = -1;
-      sync();
-    };
+    const onResize = () => sync();
     window.addEventListener("resize", onResize);
 
     return () => {
@@ -215,6 +214,7 @@ export function HomeCampaignSection({
       window.removeEventListener("resize", onResize);
       gsap.ticker.remove(sync);
       gsap.set(frame, { clearProps: "transform" });
+      if (reveal) gsap.set(reveal, { clearProps: "transform" });
     };
   }, []);
 
