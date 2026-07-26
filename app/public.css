@@ -1,10 +1,10 @@
-/* Hathor — Award-winning luxury public site */
+/* Hathor ? Award-winning luxury public site */
 
-/* Site-wide content edges — matches homepage itinerary carousel */
+/* Site-wide content edges ? matches homepage itinerary carousel */
 :root {
   --content-gutter: clamp(12px, 2.2vw, 28px);
   --content-shell: 100%;
-  /* Exact Discover More button box — all public pill buttons use this */
+  /* Exact Discover More button box ? all public pill buttons use this */
   --hathor-btn-width: 12.5rem;
   --hathor-btn-height: 2.85rem;
   --hathor-btn-pad-x: 1.75rem;
@@ -14,8 +14,8 @@
 
 /*
   Lock every public pill button to the same width + height.
-  (Chat icon circles are excluded — those are not text buttons.)
-  Hero Book Now (.hero-cta) is excluded — scroll stage stretches its width.
+  (Chat icon circles are excluded ? those are not text buttons.)
+  Hero Book Now (.hero-cta) is excluded ? scroll stage stretches its width.
 */
 .public-site a.btn:not(.hero-cta),
 .public-site button.btn:not(.hero-cta),
@@ -55,8 +55,8 @@
   justify-content: center !important;
 }
 
-/* Hero CTA — height locked; width free so GSAP can stretch the whole pill.
-   overflow must stay visible so the specular stroke shine (::before) isn’t clipped. */
+/* Hero CTA ? height locked; width free so GSAP can stretch the whole pill.
+   overflow must stay visible so the specular stroke shine (::before) isn?t clipped. */
 .public-site .hero-cta {
   box-sizing: border-box !important;
   height: var(--hathor-btn-height) !important;
@@ -128,18 +128,18 @@
   }
 }
 
-/* Admin “View on Live Site” image anchors — clear the fixed navbar */
+/* Admin ?View on Live Site? image anchors ? clear the fixed navbar */
 [id^="site-image-"],
 [data-site-image] {
   scroll-margin-top: 5.5rem;
 }
 
 .public-site {
-  /* Matches homepage itinerary carousel edges — site-wide content alignment */
+  /* Matches homepage itinerary carousel edges ? site-wide content alignment */
   --content-gutter: clamp(12px, 2.2vw, 28px);
   --content-shell: 100%;
 
-  /* Day defaults — cream + gold only (night mode overrides via night-mode.css) */
+  /* Day defaults ? cream + gold only (night mode overrides via night-mode.css) */
   --lux-dark: #faf8f5;
   --lux-dark-2: #f5f0e8;
   --lux-gold: #b69f64;
@@ -183,7 +183,7 @@
   font-family: var(--public-serif);
 }
 
-/* ─── Header ─── */
+/* ??? Header ??? */
 .public-header {
   position: fixed;
   top: 0;
@@ -263,7 +263,7 @@
   font-family: var(--public-serif);
 }
 
-/* ─── Buttons: white + gold stroke idle / gold + white text hover ─── */
+/* ??? Buttons: white + gold stroke idle / gold + white text hover ??? */
 .public-btn-gold,
 .public-btn-outline-gold,
 .public-btn-dark {
@@ -277,7 +277,7 @@
   max-width: var(--hathor-btn-width, 12.5rem);
   min-height: var(--hathor-btn-height, 2.85rem);
   height: var(--hathor-btn-height, 2.85rem);
-  /* ALL CAPS sit high in the em-box — bias padding so the label looks centered */
+  /* ALL CAPS sit high in the em-box ? bias padding so the label looks centered */
   padding: 3px var(--hathor-btn-pad-x, 1.75rem) 1px;
   border-radius: 999px;
   border: 1px solid #b69f64;
@@ -336,7 +336,7 @@
   color: var(--lux-gold);
 }
 
-/* ─── Mobile nav ─── */
+/* ??? Mobile nav ??? */
 .public-mobile-nav {
   position: fixed;
   inset: 0;
@@ -373,7 +373,7 @@
   }
 }
 
-/* ─── Layout ─── */
+/* ??? Layout ??? */
 .public-main {
   flex: 1;
   max-width: 100%;
@@ -394,7 +394,7 @@
   }
 }
 
-/* ─── Hero ─── */
+/* ??? Hero ??? */
 .lux-hero {
   position: relative;
   display: flex;
@@ -501,7 +501,7 @@
   }
 }
 
-/* ─── Sections ─── */
+/* ??? Sections ??? */
 .lux-section {
   padding: 5rem 0;
 }
@@ -559,7 +559,7 @@
   background: linear-gradient(90deg, transparent, var(--lux-gold), transparent);
 }
 
-/* ─── Cards ─── */
+/* ??? Cards ??? */
 .lux-card {
   background: var(--lux-dark-2);
   border: 1px solid rgb(182 159 100 / 0.15);
@@ -620,7 +620,7 @@
   color: var(--public-muted);
 }
 
-/* ─── Cruise cards ─── */
+/* ??? Cruise cards ??? */
 .lux-cruise-card {
   position: relative;
   overflow: hidden;
@@ -697,7 +697,7 @@
   color: var(--lux-gold-bright);
 }
 
-/* ─── Page hero (inner pages) ─── */
+/* ??? Page hero (inner pages) ??? */
 .lux-page-hero {
   position: relative;
   padding: 8rem 0 4rem;
@@ -751,7 +751,7 @@
   color: var(--lux-gold);
 }
 
-/* ─── Testimonials ─── */
+/* ??? Testimonials ??? */
 .lux-testimonials {
   position: relative;
   padding: 6rem 0;
@@ -785,7 +785,7 @@
   color: var(--lux-gold-bright);
 }
 
-/* ─── CTA band ─── */
+/* ??? CTA band ??? */
 .lux-cta-band {
   padding: 5rem 0;
   background: var(--lux-dark);
@@ -818,7 +818,7 @@
   background: var(--lux-gold);
 }
 
-/* ─── Content sections ─── */
+/* ??? Content sections ??? */
 .lux-content-block {
   overflow: hidden;
   background: var(--lux-white);
@@ -846,7 +846,7 @@
   overflow: hidden;
 }
 
-/* ─── Forms ─── */
+/* ??? Forms ??? */
 .lux-input {
   width: 100%;
   border: 1px solid rgb(182 159 100 / 0.22);
@@ -875,7 +875,7 @@
   color: var(--public-muted);
 }
 
-/* ─── Timeline ─── */
+/* ??? Timeline ??? */
 .lux-timeline {
   position: relative;
   padding-left: 2rem;
@@ -899,7 +899,7 @@
   box-shadow: 0 0 0 4px rgb(182 159 100 / 0.2);
 }
 
-/* ─── Sticky booking widget ─── */
+/* ??? Sticky booking widget ??? */
 .lux-booking-widget {
   position: sticky;
   top: 6rem;
@@ -909,7 +909,7 @@
   box-shadow: 0 16px 48px rgb(0 0 0 / 0.3);
 }
 
-/* ─── Scroll reveal ─── */
+/* ??? Scroll reveal ??? */
 .lux-reveal {
   opacity: 0;
   transform: translate3d(0, 1.5rem, 0);
@@ -926,7 +926,7 @@
   filter: blur(0);
 }
 
-/* ─── Luxury text motion ─── */
+/* ??? Luxury text motion ??? */
 @keyframes hathor-lux-text-land {
   from {
     opacity: 0;
@@ -958,7 +958,7 @@
   filter: blur(0);
 }
 
-/* Homepage hero — landing sequence */
+/* Homepage hero ? landing sequence */
 .owo-hero__title,
 .owo-hero__subtitle {
   opacity: 0;
@@ -973,7 +973,7 @@
   animation-delay: 0.52s;
 }
 
-/* Inner-page scroll heroes — landing sequence (CSS only, no GSAP changes) */
+/* Inner-page scroll heroes ? landing sequence (CSS only, no GSAP changes) */
 [data-page-transition] .pt-hero__copy .hathor-breadcrumb,
 [data-page-transition] .pt-hero__copy .hathor-page-hero__title,
 [data-page-transition] .pt-hero__copy .hathor-page-hero__subtitle,
@@ -1014,7 +1014,7 @@
   }
 }
 
-/* ─── Footer ─── */
+/* ??? Footer ??? */
 .public-footer {
   background: var(--lux-dark);
   color: var(--lux-text-light);
@@ -1031,7 +1031,7 @@
   );
 }
 
-/* ─── Floating corner actions (BOOK NOW + chat, fixed bottom-right) ─── */
+/* ??? Floating corner actions (BOOK NOW + chat, fixed bottom-right) ??? */
 .public-fab {
   position: fixed;
   z-index: 60;
@@ -1267,7 +1267,7 @@
   display: none !important;
 }
 
-/* ─── Filter sidebar ─── */
+/* ??? Filter sidebar ??? */
 .lux-filter {
   padding: 1.5rem;
   background: var(--lux-white);
@@ -1296,7 +1296,7 @@
   background: rgb(182 159 100 / 0.1);
 }
 
-/* ─── Grid helpers ─── */
+/* ??? Grid helpers ??? */
 .lux-grid-3 {
   display: grid;
   gap: 1.5rem;
@@ -1322,9 +1322,9 @@
   }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   HATHOR DESIGN DNA — Phase 1 (Editorial Nile Luxury)
-   ═══════════════════════════════════════════════════════════ */
+/* ???????????????????????????????????????????????????????????
+   HATHOR DESIGN DNA ? Phase 1 (Editorial Nile Luxury)
+   ??????????????????????????????????????????????????????????? */
 
 .hathor-site {
   --hathor-gold: #b69f64;
@@ -1499,7 +1499,7 @@
   transform: scale(1.1);
 }
 
-/* Header — The OWO inspired */
+/* Header ? The OWO inspired */
 .hathor-header {
   position: fixed;
   top: 0;
@@ -1551,7 +1551,7 @@
   gap: 1rem;
 }
 
-/* OWO hero — logo centered above full-width nav */
+/* OWO hero ? logo centered above full-width nav */
 .hathor-header--owo-hero-layout .hathor-header__inner--owo {
   display: flex;
   flex-direction: column;
@@ -1785,7 +1785,7 @@
   backdrop-filter: none;
 }
 
-/* Scrolling / bar visible — dark transparent (default, not hover) */
+/* Scrolling / bar visible ? dark transparent (default, not hover) */
 .hathor-header--owo-hero-layout.hathor-header--menu-active:not(.hathor-header--menu-hovered) {
   background: rgb(10 10 10 / 0.58);
   backdrop-filter: blur(10px);
@@ -1823,7 +1823,7 @@
   pointer-events: auto;
 }
 
-/* Default over imagery — light links & icon */
+/* Default over imagery ? light links & icon */
 .hathor-header--owo-hero-layout:not(.hathor-header--menu-hovered) .hathor-header__nav-link,
 .hathor-header--owo-hero-layout:not(.hathor-header--menu-hovered) .hathor-header__menu-btn {
   color: #faf8f5;
@@ -1835,7 +1835,7 @@
   color: #faf8f5;
 }
 
-/* Hover only — white overlay (::before), not animated background */
+/* Hover only ? white overlay (::before), not animated background */
 .hathor-header--owo-hero-layout.hathor-header--menu-hovered {
   background: transparent;
   backdrop-filter: none;
@@ -2111,7 +2111,7 @@
   color: var(--hathor-gold);
 }
 
-/* Explore overlay — above pinned scroll stage */
+/* Explore overlay ? above pinned scroll stage */
 .hathor-explore {
   position: fixed;
   inset: 0;
@@ -2445,7 +2445,7 @@
   color: var(--hathor-muted);
 }
 
-/* Accommodation cards — bento-style asymmetric on desktop */
+/* Accommodation cards ? bento-style asymmetric on desktop */
 .hathor-accommodation-grid {
   display: grid;
   gap: 1.5rem;
@@ -2651,7 +2651,7 @@
   color: var(--hathor-text-light);
 }
 
-/* ─── Inner page hero ─── */
+/* ??? Inner page hero ??? */
 .hathor-page-hero {
   position: relative;
   min-height: 85vh;
@@ -2794,7 +2794,7 @@
   color: var(--hathor-text-light);
 }
 
-/* ─── Cruise listing cards ─── */
+/* ??? Cruise listing cards ??? */
 .hathor-filter-panel {
   padding: 1.5rem;
   background: var(--hathor-dark);
@@ -2916,7 +2916,7 @@
 }
 
 .hathor-cruise-card__features li::before {
-  content: "· ";
+  content: "? ";
   color: var(--hathor-gold);
 }
 
@@ -2933,7 +2933,7 @@
   color: var(--public-muted);
 }
 
-/* ─── Venue cards ─── */
+/* ??? Venue cards ??? */
 .hathor-venue-card {
   overflow: hidden;
   background: var(--hathor-dark-2);
@@ -2957,7 +2957,7 @@
   color: var(--hathor-cream);
 }
 
-/* ─── Blog cards ─── */
+/* ??? Blog cards ??? */
 .hathor-blog-card {
   height: 100%;
   background: var(--hathor-dark-2);
@@ -3002,7 +3002,7 @@
   overflow: hidden;
 }
 
-/* ─── Blog article (detail) ─── */
+/* ??? Blog article (detail) ??? */
 .hathor-blog-article {
   padding: clamp(3.5rem, 8vw, 5.5rem) 0 clamp(4.5rem, 10vw, 7rem);
   background: var(--hathor-dark);
@@ -3148,7 +3148,7 @@
   margin-bottom: 0;
 }
 
-/* ─── Contact & forms ─── */
+/* ??? Contact & forms ??? */
 .hathor-contact-card {
   padding: 1.5rem;
   background: var(--hathor-dark);
@@ -3192,7 +3192,7 @@
   background: var(--hathor-dark);
 }
 
-/* ─── Parallax hero ─── */
+/* ??? Parallax hero ??? */
 .hathor-parallax-hero__frame {
   position: absolute;
   inset: 0;
@@ -3254,7 +3254,7 @@
   height: 1.125rem;
 }
 
-/* ─── OWO chapter headers ─── */
+/* ??? OWO chapter headers ??? */
 .hathor-chapter-header {
   margin-bottom: 4rem;
 }
@@ -3300,7 +3300,7 @@
   margin-right: auto;
 }
 
-/* ─── Partners ─── */
+/* ??? Partners ??? */
 .hathor-partners-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -3343,9 +3343,9 @@
   letter-spacing: 0.02em;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   OWO Homepage — Dark luxury editorial structure
-   ═══════════════════════════════════════════════════════════ */
+/* ???????????????????????????????????????????????????????????
+   OWO Homepage ? Dark luxury editorial structure
+   ??????????????????????????????????????????????????????????? */
 
 .owo-hero {
   position: relative;
@@ -3655,7 +3655,7 @@
   padding: clamp(3rem, 6vw, 5rem) clamp(1.5rem, 5vw, 4rem);
 }
 
-/* Accommodations bento — edge-to-edge, no radius */
+/* Accommodations bento ? edge-to-edge, no radius */
 .owo-bento {
   display: grid;
   grid-template-columns: 1fr;
@@ -3767,7 +3767,7 @@
   letter-spacing: 0.02em;
 }
 
-/* ═══ Hathor homepage — OWO scroll structure (dark luxury) ═══ */
+/* ??? Hathor homepage ? OWO scroll structure (dark luxury) ??? */
 
 .hathor-intro {
   padding: clamp(5rem, 12vw, 8rem) 0;
@@ -3865,7 +3865,7 @@
   color: var(--hathor-muted);
 }
 
-/* Scroll story — tilted image stack */
+/* Scroll story ? tilted image stack */
 .hathor-scroll-story__sticky,
 .hathor-split-scroll__sticky,
 .hathor-alt-split__sticky {
@@ -3951,7 +3951,7 @@
   color: var(--hathor-muted);
 }
 
-/* Legacy stack scroll — sticky 400vh, images pile up, text crossfade */
+/* Legacy stack scroll ? sticky 400vh, images pile up, text crossfade */
 .hathor-legacy-stack {
   position: relative;
   background: var(--hathor-dark);
@@ -4334,19 +4334,90 @@
   }
 }
 
-/* Premium site footer */
+/* Premium site footer ? cream + gold, contact / brand / legal */
 .owo-footer {
   margin-top: 0;
-  padding: clamp(3.5rem, 7vw, 5rem) 0 clamp(2rem, 4vw, 2.5rem);
+  padding: 0;
   background: var(--public-surface);
   border-top: 1px solid var(--public-border);
   color: var(--public-text);
 }
 
 .owo-footer__inner {
+  width: 100%;
+}
+
+.owo-footer__contact-bar {
+  padding: clamp(1.75rem, 4vw, 2.5rem) 0;
+  border-bottom: 1px solid var(--public-border);
+}
+
+.owo-footer__contact-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .owo-footer__contact-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+}
+
+.owo-footer__contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  text-decoration: none;
+  color: inherit;
+  min-width: 0;
+}
+
+.owo-footer__contact-icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--public-gold);
+}
+
+.owo-footer__contact-icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  stroke-width: 1.6;
+}
+
+.owo-footer__contact-copy {
   display: flex;
   flex-direction: column;
-  gap: clamp(2.5rem, 5vw, 3.5rem);
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.owo-footer__contact-title {
+  font-family: var(--public-title, var(--public-serif));
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--public-text);
+}
+
+.owo-footer__contact-text {
+  font-size: 0.8125rem;
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--public-muted);
+}
+
+.owo-footer__contact-item:hover .owo-footer__contact-title {
+  color: var(--public-gold);
+}
+
+.owo-footer__main {
+  padding: clamp(2.5rem, 5vw, 3.75rem) 0;
 }
 
 .owo-footer__grid {
@@ -4355,28 +4426,34 @@
   gap: clamp(2rem, 4vw, 3rem);
 }
 
-@media (min-width: 768px) {
+@media (min-width: 900px) {
   .owo-footer__grid {
-    grid-template-columns: 1.4fr repeat(3, 1fr);
-    gap: 2rem 3rem;
+    grid-template-columns: 1.35fr 1.1fr 1fr;
+    gap: 2.5rem 3rem;
+    align-items: start;
   }
 }
 
 .owo-footer__brand {
-  max-width: 22rem;
+  max-width: 26rem;
 }
 
 .owo-footer__wordmark {
+  margin: 0;
   font-family: var(--public-title, var(--public-serif));
-  font-size: clamp(1.375rem, 2.5vw, 1.75rem);
+  font-size: clamp(1.5rem, 2.8vw, 1.9rem);
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--public-text);
 }
 
+.owo-footer__wordmark-gold {
+  color: var(--public-gold);
+}
+
 .owo-footer__tag {
-  margin-top: 0.5rem;
+  margin-top: 0.4rem;
   font-size: 0.625rem;
   font-weight: 500;
   letter-spacing: 0.22em;
@@ -4384,21 +4461,88 @@
   color: var(--public-muted);
 }
 
-.owo-footer__address {
-  margin-top: 1rem;
+.owo-footer__blurb {
+  margin-top: 1.1rem;
   font-size: 0.8125rem;
   font-weight: 300;
-  line-height: 1.7;
+  line-height: 1.75;
   color: var(--public-muted);
+}
+
+.owo-footer__follow {
+  margin-top: 1.5rem;
+}
+
+.owo-footer__follow-label {
+  margin: 0 0 0.75rem;
+  font-family: var(--public-title, var(--public-serif));
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--public-text);
+}
+
+.owo-footer__social {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.owo-footer__social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 999px;
+  border: 1px solid rgb(182 159 100 / 0.45);
+  background: var(--public-card);
+  color: var(--public-gold);
+  transition:
+    background 0.35s var(--hathor-lux-ease),
+    color 0.35s var(--hathor-lux-ease),
+    border-color 0.35s var(--hathor-lux-ease);
+}
+
+.owo-footer__social-link svg {
+  width: 1rem;
+  height: 1rem;
+  display: block;
+}
+
+.owo-footer__social-link:hover {
+  background: var(--public-gold);
+  border-color: var(--public-gold);
+  color: #fff;
 }
 
 .owo-footer__col-label {
   margin: 0 0 1rem;
-  font-size: 0.625rem;
+  font-family: var(--public-title, var(--public-serif));
+  font-size: 1.05rem;
   font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--public-muted);
+  letter-spacing: 0.02em;
+  color: var(--public-text);
+  position: relative;
+  padding-bottom: 0.55rem;
+}
+
+.owo-footer__col-label::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 2.5rem;
+  height: 2px;
+  background: var(--public-gold);
+}
+
+.owo-footer__links-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem 1.75rem;
 }
 
 .owo-footer__links,
@@ -4422,11 +4566,11 @@
   display: inline-block;
   width: fit-content;
   padding-bottom: 0.15rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--public-text);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--public-muted);
   transition: color 0.5s var(--hathor-lux-ease);
 }
 
@@ -4444,15 +4588,93 @@
 }
 
 .owo-footer__link:hover {
-  color: var(--hathor-gold);
+  color: var(--public-gold);
 }
 
 .owo-footer__link:hover::after {
   transform: scaleX(1);
 }
 
+.owo-footer__subscribe-copy {
+  margin: 0 0 1.1rem;
+  font-size: 0.8125rem;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--public-muted);
+}
+
+.owo-footer__subscribe-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 22rem;
+}
+
+.owo-footer__subscribe-row {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+}
+
+.owo-footer__subscribe-input {
+  flex: 1;
+  min-width: 0;
+  height: 2.85rem;
+  padding: 0 1rem;
+  border: 1px solid var(--public-border);
+  border-right: none;
+  border-radius: 0;
+  background: var(--public-card);
+  color: var(--public-text);
+  font-family: var(--public-sans);
+  font-size: 0.8125rem;
+  outline: none;
+  transition: border-color 0.3s var(--hathor-lux-ease);
+}
+
+.owo-footer__subscribe-input::placeholder {
+  color: var(--public-muted);
+}
+
+.owo-footer__subscribe-input:focus {
+  border-color: var(--public-gold);
+}
+
+.owo-footer__subscribe-btn {
+  flex-shrink: 0;
+  width: 2.85rem;
+  height: 2.85rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 0;
+  background: var(--public-gold);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.3s var(--hathor-lux-ease), color 0.3s var(--hathor-lux-ease);
+}
+
+.owo-footer__subscribe-btn:hover {
+  background: var(--public-text);
+  color: var(--public-gold);
+}
+
+.owo-footer__subscribe-icon {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.owo-footer__subscribe-status {
+  margin: 0;
+  font-size: 0.7rem;
+  line-height: 1.4;
+  color: var(--public-muted);
+}
+
 .owo-footer__legal {
-  padding-top: clamp(1.5rem, 3vw, 2rem);
+  padding: 1.15rem 0;
+  background: color-mix(in srgb, var(--public-bg) 72%, var(--public-text) 6%);
   border-top: 1px solid var(--public-border);
 }
 
@@ -4461,22 +4683,22 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem 1.5rem;
+  gap: 0.85rem 1.5rem;
 }
 
 .owo-footer__legal-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem 1.25rem;
+  gap: 0.65rem 1.15rem;
 }
 
 .owo-footer__legal-link {
   position: relative;
   padding-bottom: 0.15rem;
-  font-size: 0.625rem;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: none;
   color: var(--public-muted);
   transition: color 0.5s var(--hathor-lux-ease);
 }
@@ -4495,7 +4717,7 @@
 }
 
 .owo-footer__legal-link:hover {
-  color: var(--hathor-gold);
+  color: var(--public-gold);
 }
 
 .owo-footer__legal-link:hover::after {
@@ -4503,15 +4725,25 @@
 }
 
 .owo-footer__copy {
-  font-size: 0.625rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
   color: var(--public-muted);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   Public theme — Day (default cream) / Night (black)
-   ═══════════════════════════════════════════════════════════ */
+.owo-footer__copy-brand {
+  color: var(--public-gold);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.owo-footer__copy-brand:hover {
+  text-decoration: underline;
+}
+
+/* ???????????????????????????????????????????????????????????
+   Public theme ? Day (default cream) / Night (black)
+   ??????????????????????????????????????????????????????????? */
 
 .hathor-brand-logo--day {
   display: none;
@@ -4684,9 +4916,9 @@ html[data-public-theme="day"] .preview-header--transparent:not(.preview-header--
   color: var(--hathor-cream);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   Mobile & tablet — touch-friendly, safe areas, comfortable use
-   ═══════════════════════════════════════════════════════════ */
+/* ???????????????????????????????????????????????????????????
+   Mobile & tablet ? touch-friendly, safe areas, comfortable use
+   ??????????????????????????????????????????????????????????? */
 
 @supports not (overflow: clip) {
   .public-site,
@@ -4711,9 +4943,30 @@ html[data-public-theme="day"] .preview-header--transparent:not(.preview-header--
 }
 
 .owo-footer {
-  padding-bottom: max(2rem, calc(env(safe-area-inset-bottom) + 1rem));
+  padding-bottom: max(0rem, env(safe-area-inset-bottom));
+  padding-left: max(0rem, env(safe-area-inset-left));
+  padding-right: max(0rem, env(safe-area-inset-right));
+}
+
+.owo-footer__inner.hathor-container {
   padding-left: max(1.5rem, env(safe-area-inset-left));
   padding-right: max(1.5rem, env(safe-area-inset-right));
+}
+
+.owo-footer__legal {
+  padding-bottom: max(1.15rem, calc(env(safe-area-inset-bottom) + 0.75rem));
+}
+
+.owo-footer .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 @media (pointer: coarse), (max-width: 767px) {
@@ -5011,8 +5264,8 @@ html[data-public-theme="day"] .preview-header--transparent:not(.preview-header--
   -webkit-tap-highlight-color: rgb(182 159 100 / 0.15);
 }
 
-/* ─── Inner page scroll transition (not homepage) ─── */
-/* Background gap fixes — CSS ONLY, scroll-reveal pages via body class from existing hook */
+/* ??? Inner page scroll transition (not homepage) ??? */
+/* Background gap fixes ? CSS ONLY, scroll-reveal pages via body class from existing hook */
 body.has-page-scroll-transition,
 html.has-page-scroll-transition {
   background-color: var(--public-bg);
@@ -5317,7 +5570,7 @@ body.has-page-scroll-transition .public-site > .owo-footer {
   margin-top: 0;
 }
 
-/* ─── Inner pages: same cream layout as /test-scroll-reveal (not test route) ─── */
+/* ??? Inner pages: same cream layout as /test-scroll-reveal (not test route) ??? */
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) {
   background: transparent !important;
 }
@@ -5378,7 +5631,7 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
   background-color: var(--public-bg);
 }
 
-/* Filters inside sheet (cruises) — below landing, above rise-cap */
+/* Filters inside sheet (cruises) ? below landing, above rise-cap */
 body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-reveal]) .pt-sheet__landing {
   padding-top: clamp(10rem, 21vh, 13rem);
   padding-bottom: 0;
@@ -5551,7 +5804,7 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-pag
   display: none;
 }
 
-/* Scroll-transition pages — theme-aware continuity */
+/* Scroll-transition pages ? theme-aware continuity */
 .hathor-page-scroll-transition {
   margin-bottom: 0;
 }
@@ -5565,7 +5818,7 @@ body.has-page-scroll-transition [data-page-transition]:not([data-test-scroll-rev
   padding-top: 0;
 }
 
-/* Cruises only — Venetian sticky layout (never used on /test-scroll-reveal) */
+/* Cruises only ? Venetian sticky layout (never used on /test-scroll-reveal) */
 body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .hathor-page-cream-floor .hathor-filter-panel {
   background-color: rgb(236 232 223 / 0.85);
   border-color: rgb(10 10 10 / 0.08);
@@ -5584,7 +5837,7 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__
   background-color: var(--public-bg);
 }
 
-/* ─── /test-scroll-reveal isolated layout (does not affect other pages) ─── */
+/* ??? /test-scroll-reveal isolated layout (does not affect other pages) ??? */
 .test-scroll-reveal-route,
 .test-scroll-reveal-route .public-site,
 .test-scroll-reveal-route .public-main,
@@ -5602,7 +5855,7 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__
   background: transparent !important;
 }
 
-/* Ship hero ONLY in the pinned viewport top — absolute, never fixed */
+/* Ship hero ONLY in the pinned viewport top ? absolute, never fixed */
 .test-scroll-reveal-route [data-test-scroll-reveal] .pt-stage {
   z-index: 40;
   background-color: #ece8df;
@@ -5646,7 +5899,7 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__
   z-index: 10;
 }
 
-/* Hide ship image only — keep pt-mask (gold stripes) and pt-sheet animation intact */
+/* Hide ship image only ? keep pt-mask (gold stripes) and pt-sheet animation intact */
 .test-scroll-reveal-route [data-test-scroll-reveal].test-scroll-reveal--media-gone .pt-hero__media {
   display: none !important;
 }
@@ -5659,7 +5912,7 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__
   background-color: #ece8df !important;
 }
 
-/* Cream floor below pinned stage — must NOT sit above scroll reveal (stage is z-index 40) */
+/* Cream floor below pinned stage ? must NOT sit above scroll reveal (stage is z-index 40) */
 .test-scroll-reveal-route .test-scroll-reveal__cream-floor {
   position: relative;
   z-index: 1;
@@ -5709,7 +5962,7 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__
   color: #0a0a0a;
 }
 
-/* Cream floor below pinned stage — test page sibling content only */
+/* Cream floor below pinned stage ? test page sibling content only */
 .test-scroll-reveal-route .test-scroll-reveal__cream-floor {
   position: relative;
   z-index: 1;
@@ -5729,7 +5982,7 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__
   padding-top: 0;
 }
 
-/* Cruises dead-zone fixes — dome-container + next-section (scroll reveal untouched) */
+/* Cruises dead-zone fixes ? dome-container + next-section (scroll reveal untouched) */
 .test-scroll-reveal-route [data-cruises-scroll] .dome-container {
   position: relative;
   height: 100vh;
@@ -5753,7 +6006,7 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__
   display: none !important;
 }
 
-/* Cruises — simple sticky dome scroll (no ScrollTrigger) */
+/* Cruises ? simple sticky dome scroll (no ScrollTrigger) */
 .dome-scroll-section {
   height: 200vh;
   position: relative;
@@ -5879,7 +6132,7 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__
   background: #f5f0eb;
 }
 
-/* Venetian-style scroll reveal — cruises */
+/* Venetian-style scroll reveal ? cruises */
 .scroll-reveal-container {
   position: relative;
 }
@@ -5963,7 +6216,7 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__
   transform: translateY(0);
 }
 
-/* Titles — Agraham, refined scale + line spacing */
+/* Titles ? Agraham, refined scale + line spacing */
 .public-site [class*="__title"],
 .public-site [class*="__headline"],
 .public-site .hathor-chapter-title,
@@ -5974,7 +6227,7 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__
   text-wrap: balance;
 }
 
-/* Listing cards — keep readable spacing; Agraham swashes clash at small sizes */
+/* Listing cards ? keep readable spacing; Agraham swashes clash at small sizes */
 .public-site .hathor-cruise-card__title {
   font-family: var(--public-serif);
   line-height: 1.55;
@@ -5988,10 +6241,10 @@ body.has-page-scroll-transition:not(:has([data-test-scroll-reveal])) .pt-sheet__
   line-height: 1.55;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   Agency Design System — editorial luxury reset
+/* ???????????????????????????????????????????????????????????
+   Agency Design System ? editorial luxury reset
    Applies to public inner pages without touching route logic.
-   ═══════════════════════════════════════════════════════════ */
+   ??????????????????????????????????????????????????????????? */
 
 :root,
 html[data-public-theme="day"],
@@ -6370,11 +6623,11 @@ body.has-page-scroll-transition .pin-spacer {
   }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   Title engraving defaults — font/size/color owned by Typography admin
+/* ???????????????????????????????????????????????????????????
+   Title engraving defaults ? font/size/color owned by Typography admin
    (see typographyToImportantCss / #hathor-typography-live)
    Excludes: homepage hero (data-ex-experience hero) and booking shell
-   ═══════════════════════════════════════════════════════════ */
+   ??????????????????????????????????????????????????????????? */
 
 .public-site {
   --hathor-title-font: var(--typo-page-title-font, var(--font-hathor-gamgote), "Gamgote", var(--public-serif));
@@ -6394,7 +6647,7 @@ body.has-page-scroll-transition .pin-spacer {
     1px 2px 6px rgba(0, 0, 0, 0.28);
 }
 
-/* Body / sheet main titles — engraving only; typography admin owns type */
+/* Body / sheet main titles ? engraving only; typography admin owns type */
 .public-site .hathor-section-title,
 .public-site .hathor-chapter-title,
 .public-site .lux-cta-band__title,
@@ -6409,7 +6662,7 @@ body.has-page-scroll-transition .pin-spacer {
   text-shadow: var(--hathor-title-engraved-gold);
 }
 
-/* Page heroes (About, Wellness, Blog, …) — white engraved fallback */
+/* Page heroes (About, Wellness, Blog, ?) ? white engraved fallback */
 .public-site .hathor-page-hero__title,
 .public-site [data-page-transition] .pt-hero__copy .hathor-page-hero__title {
   font-weight: 400;
@@ -6418,7 +6671,7 @@ body.has-page-scroll-transition .pin-spacer {
   text-shadow: var(--hathor-title-engraved-white);
 }
 
-/* Non-home PublicSiteHero — layout defaults; typography admin owns font/size/color */
+/* Non-home PublicSiteHero ? layout defaults; typography admin owns font/size/color */
 html:not([data-ex-experience]) .public-site .home-hero-container .hero-heading,
 html:not([data-ex-experience]) .public-site .home-hero-container .hero-line--right {
   font-weight: 400 !important;
@@ -6434,7 +6687,7 @@ html:not([data-ex-experience]) .public-site .cruises-scroll-route .cruises-hero_
   text-shadow: var(--hathor-title-engraved-white);
 }
 
-/* Homepage body titles only — never the hero; stack titles use On images color */
+/* Homepage body titles only ? never the hero; stack titles use On images color */
 html[data-ex-experience] .ex-root .radius-heading h2,
 html[data-ex-experience] .ex-root .home-carousel-h2 h2,
 html[data-ex-experience] .ex-root .home-text-h2 h2,
