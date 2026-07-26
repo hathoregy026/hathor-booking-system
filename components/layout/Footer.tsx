@@ -4,39 +4,20 @@ import Link from "next/link";
 import { useEffect, useRef, type ReactNode } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Cinzel, Inter, Playfair_Display, Space_Grotesk } from "next/font/google";
 import { HATHOR_BRAND_NAME } from "@/lib/branding";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { PUBLIC_SOCIAL_LINKS } from "@/lib/public-social";
 import { FooterSubscribe } from "@/components/layout/FooterSubscribe";
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-lux-playfair",
-  display: "swap",
-});
-
-const cinzel = Cinzel({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-lux-cinzel",
-  display: "swap",
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["300", "400"],
-  variable: "--font-lux-inter",
-  display: "swap",
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-lux-space",
-  display: "swap",
-});
+/** Resolve live theme tokens so hover motion stays on-brand. */
+function footerTheme(el: Element) {
+  const styles = getComputedStyle(el);
+  return {
+    gold: styles.getPropertyValue("--lux-gold").trim() || "#b69f64",
+    text: styles.getPropertyValue("--lux-ink-soft").trim() || "#4a3f32",
+    muted: styles.getPropertyValue("--lux-muted").trim() || "#6b6560",
+  };
+}
 
 const EXPLORE_LINKS = [
   { href: "/about", label: "The Ship" },
@@ -128,10 +109,11 @@ function FooterNavLink({
     if (reduceMotion) return;
 
     gsap.set(line, { scaleX: 0, transformOrigin: "left center" });
+    const theme = footerTheme(el);
 
     const handleEnter = () => {
       gsap.to(el, {
-        color: "#C9A227",
+        color: theme.gold,
         duration: 0.35,
         ease: "power2.out",
         overwrite: "auto",
@@ -146,7 +128,7 @@ function FooterNavLink({
 
     const handleLeave = () => {
       gsap.to(el, {
-        color: "#F5F1E8",
+        color: theme.text,
         duration: 0.4,
         ease: "power2.out",
         overwrite: "auto",
@@ -263,11 +245,12 @@ export function Footer() {
 
     const icons = root.querySelectorAll<HTMLElement>(".lux-footer__social-link");
     const cleanups: Array<() => void> = [];
+    const theme = footerTheme(root);
 
     icons.forEach((icon) => {
       const onEnter = () => {
         gsap.to(icon, {
-          color: "#C9A227",
+          color: theme.gold,
           scale: 1.1,
           rotation: 5,
           duration: 0.4,
@@ -277,7 +260,7 @@ export function Footer() {
       };
       const onLeave = () => {
         gsap.to(icon, {
-          color: "#94A3B8",
+          color: theme.muted,
           scale: 1,
           rotation: 0,
           duration: 0.45,
@@ -298,10 +281,7 @@ export function Footer() {
   }, []);
 
   return (
-    <footer
-      ref={rootRef}
-      className={`lux-footer ${playfair.variable} ${cinzel.variable} ${inter.variable} ${spaceGrotesk.variable}`}
-    >
+    <footer ref={rootRef} className="lux-footer">
       <div className="lux-footer__noise" aria-hidden />
       <div className="lux-footer__glow" aria-hidden />
 

@@ -1,26 +1,44 @@
 /* =========================================================
-   Lux Editorial Footer — midnight navy, champagne, pharaoh gold
+   Lux Editorial Footer — Hathor cream / ink / gold
    Scoped to .lux-footer so CruisesFooter (.owo-footer) stays intact
    ========================================================= */
 
 .lux-footer {
-  --lux-bg: #0a0f1c;
-  --lux-surface: #111827;
-  --lux-text: #f5f1e8;
-  --lux-muted: #94a3b8;
-  --lux-gold: #c9a227;
-  --lux-font-display: var(--font-lux-playfair), "Playfair Display", Georgia, serif;
-  --lux-font-brand: var(--font-lux-cinzel), "Cinzel", Georgia, serif;
-  --lux-font-body: var(--font-lux-inter), "Inter", system-ui, sans-serif;
-  --lux-font-mono: var(--font-lux-space), "Space Grotesk", system-ui, sans-serif;
+  --lux-bg: var(--public-bg, #ece8df);
+  --lux-surface: var(--public-surface, #f5f0e8);
+  --lux-card: var(--public-card, #f0ebe3);
+  --lux-text: var(--public-text, #2c2824);
+  --lux-muted: var(--public-muted, #6b6560);
+  --lux-gold: var(--public-gold, #b69f64);
+  --lux-gold-soft: #d4c28a;
+  --lux-ink-soft: #4a3f32;
+  --lux-border: var(--public-border, rgb(44 40 36 / 0.12));
+  --lux-font-display: var(--public-title, var(--public-serif, "Playfair Display", Georgia, serif));
+  --lux-font-brand: var(--public-title, var(--public-serif, Georgia, serif));
+  --lux-font-body: var(--public-sans, "Plus Jakarta Sans", system-ui, sans-serif);
+  --lux-font-mono: var(--public-sans, "Plus Jakarta Sans", system-ui, sans-serif);
 
   position: relative;
   isolation: isolate;
   overflow: hidden;
   margin-top: 0;
   background:
-    radial-gradient(ellipse 85% 70% at 50% -10%, var(--lux-surface) 0%, transparent 58%),
-    linear-gradient(180deg, var(--lux-surface) 0%, var(--lux-bg) 100%);
+    radial-gradient(
+      ellipse 70% 55% at 12% 0%,
+      rgb(182 159 100 / 0.1),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 55% 45% at 90% 100%,
+      rgb(232 220 200 / 0.55),
+      transparent 50%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--lux-surface) 88%, var(--lux-gold) 4%) 0%,
+      var(--lux-bg) 42%,
+      color-mix(in srgb, var(--lux-bg) 92%, #ebe3d4 8%) 100%
+    );
   color: var(--lux-text);
   font-family: var(--lux-font-body);
   font-weight: 300;
@@ -35,8 +53,8 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.03;
-  mix-blend-mode: overlay;
+  opacity: 0.035;
+  mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 180px 180px;
@@ -48,10 +66,31 @@
   z-index: 0;
   pointer-events: none;
   background: radial-gradient(
-    ellipse 60% 40% at 70% 20%,
-    rgba(201, 162, 39, 0.06),
+    ellipse 55% 35% at 78% 12%,
+    rgb(182 159 100 / 0.08),
     transparent 70%
   );
+}
+
+.lux-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 2;
+  width: min(12rem, 28vw);
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--lux-gold-soft),
+    var(--lux-gold),
+    var(--lux-gold-soft),
+    transparent
+  );
+  opacity: 0.85;
+  pointer-events: none;
 }
 
 .lux-footer__inner {
@@ -69,10 +108,11 @@
 .lux-footer__headline {
   margin: 0;
   font-family: var(--lux-font-display);
-  font-size: 6vw;
+  font-size: clamp(2.4rem, 6vw, 5.5rem);
   font-weight: 400;
   line-height: 1.1;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--lux-text);
 }
 
@@ -114,7 +154,7 @@
   appearance: none;
   background: transparent;
   border: none;
-  border-bottom: 1px solid rgba(245, 241, 232, 0.2);
+  border-bottom: 1px solid rgb(44 40 36 / 0.18);
   border-radius: 0;
   padding: 1rem 0 1rem;
   color: var(--lux-text);
@@ -165,7 +205,7 @@
   border: none;
   border-radius: 999px;
   background: var(--lux-gold);
-  color: var(--lux-bg);
+  color: #faf8f5;
   cursor: pointer;
   will-change: transform;
 }
@@ -192,7 +232,7 @@
 }
 
 .lux-footer__subscribe-status[role="alert"] {
-  color: #e8b4a0;
+  color: #9a5b4a;
 }
 
 /* ——— Main: Navigation ——— */
@@ -226,7 +266,8 @@
   font-family: var(--lux-font-brand);
   font-size: 1.5rem;
   font-weight: 400;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
   color: var(--lux-gold);
 }
 
@@ -245,7 +286,7 @@
   font-family: var(--lux-font-mono);
   font-size: 0.75rem;
   font-weight: 500;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--lux-gold);
 }
@@ -264,7 +305,7 @@
   font-family: var(--lux-font-body);
   font-size: 1rem;
   font-weight: 300;
-  color: var(--lux-text);
+  color: var(--lux-ink-soft);
   text-decoration: none;
   width: fit-content;
 }
@@ -330,7 +371,7 @@
 .lux-footer__bottom {
   padding: 3rem 5vw;
   padding-bottom: max(3rem, calc(env(safe-area-inset-bottom) + 1.5rem));
-  border-top: 1px solid rgba(245, 241, 232, 0.08);
+  border-top: 1px solid rgb(182 159 100 / 0.28);
 }
 
 .lux-footer__bottom-row {
@@ -370,7 +411,7 @@
   }
 
   .lux-footer__headline {
-    font-size: 10vw;
+    font-size: clamp(2rem, 10vw, 3.25rem);
   }
 
   .lux-footer__main {
@@ -405,7 +446,6 @@
   }
 }
 
-/* Prefer reduced motion: keep layout, skip aggressive motion defaults */
 @media (prefers-reduced-motion: reduce) {
   .lux-footer__headline,
   .lux-footer__subhead,
