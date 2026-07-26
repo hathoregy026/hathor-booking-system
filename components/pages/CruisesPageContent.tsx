@@ -123,9 +123,9 @@ export function CruisesPageContent() {
           <div className="cta-inner">
             <h2>Reserve your voyage</h2>
             <p>{CRUISES_PAGE.hero.subtitle}</p>
-            <BookNowTrigger className="btn btn-filled">Book Now</BookNowTrigger>
+            <BookNowTrigger className="btn btn-secondary">Book Now</BookNowTrigger>
             <div style={{ marginTop: "1rem" }}>
-              <Link className="btn btn-dark" href="/luxury-cabins-Nile-Cruise">
+              <Link className="btn btn-primary" href="/luxury-cabins-Nile-Cruise">
                 Luxury Rooms
               </Link>
             </div>

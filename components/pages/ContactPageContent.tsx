@@ -51,7 +51,7 @@ export function ContactPageContent() {
     >
 
       <section className="hathor-section hathor-section--dark">
-        <div className="hathor-container">
+        <div className="page-container">
           <div className="grid gap-10 lg:grid-cols-2">
             <ScrollReveal>
               <div className="grid gap-4 sm:grid-cols-2">
@@ -62,7 +62,7 @@ export function ContactPageContent() {
                       <div className="hathor-contact-card__icon">
                         <Icon className="h-5 w-5" aria-hidden />
                       </div>
-                      <p className="hathor-section-eyebrow mt-4">{item.label}</p>
+                      <p className="section-indication typo-page-subtitle mt-4">{item.label}</p>
                       <p className="mt-2 text-sm font-medium leading-relaxed">
                         {item.value}
                       </p>
@@ -96,9 +96,9 @@ export function ContactPageContent() {
               </div>
 
               <div className="hathor-contact-card mt-6 text-center">
-                <h3 className="hathor-section-title text-xl">Working Hours</h3>
-                <p className="hathor-body-text mt-3">{PUBLIC_CONTACT.workingHours}</p>
-                <p className="hathor-body-text">{PUBLIC_CONTACT.dayOff}</p>
+                <h3 className="section-title typo-page-title text-xl">Working Hours</h3>
+                <p className="section-body typo-body-text mt-3">{PUBLIC_CONTACT.workingHours}</p>
+                <p className="section-body typo-body-text">{PUBLIC_CONTACT.dayOff}</p>
               </div>
             </ScrollReveal>
 

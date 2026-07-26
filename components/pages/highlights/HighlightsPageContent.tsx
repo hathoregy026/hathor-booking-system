@@ -49,7 +49,7 @@ export function HighlightsPageContent() {
               <p key={paragraph.slice(0, 48)}>{paragraph}</p>
             ))}
           </div>
-          <BookNowTrigger className="btn btn-dark" data-lux-reveal>
+          <BookNowTrigger className="btn btn-primary" data-lux-reveal>
             Book Now
           </BookNowTrigger>
         </header>
@@ -82,7 +82,7 @@ export function HighlightsPageContent() {
                   <h3>{landmark.title}</h3>
                   <p className="lux-kicker">Landmark</p>
                   <p>{landmark.body}</p>
-                  <Link className="btn btn-dark" href="/cruises">
+                  <Link className="btn btn-primary" href="/cruises">
                     View Route
                   </Link>
                 </div>
@@ -136,8 +136,8 @@ export function HighlightsPageContent() {
             Reserve your voyage and experience Hathor highlights on the Nile.
           </p>
           <div className="hathor-cta-actions">
-            <BookNowTrigger className="btn btn-filled">Book Now</BookNowTrigger>
-            <Link className="btn btn-dark" href="/cruises">
+            <BookNowTrigger className="btn btn-secondary">Book Now</BookNowTrigger>
+            <Link className="btn btn-primary" href="/cruises">
               View Voyages
             </Link>
           </div>

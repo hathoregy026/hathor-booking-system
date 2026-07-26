@@ -13,13 +13,14 @@ export function CtaBand({
 }: CtaBandProps) {
   return (
     <section className="lux-cta-band">
-      <div className="hathor-container">
+      <div className="page-container">
         <ScrollReveal>
-          <div className="lux-cta-band__decor" aria-hidden />
-          <h2 className="lux-cta-band__title">{title}</h2>
-          <p className="mx-auto mt-4 max-w-lg text-sm font-light text-[var(--lux-text-grey)]">
-            {body}
-          </p>
+          <div className="section-header">
+            <h2 className="section-title typo-page-title lux-cta-band__title">
+              {title}
+            </h2>
+            <p className="section-body typo-body-text">{body}</p>
+          </div>
         </ScrollReveal>
       </div>
     </section>

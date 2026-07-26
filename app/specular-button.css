@@ -16,6 +16,12 @@
 .public-site a.btn:not(.hero-cta),
 .public-site button.btn:not(.hero-cta),
 .public-site .btn:not(.hero-cta),
+.public-site .btn-primary,
+.public-site .btn-secondary,
+.public-site a.btn-primary,
+.public-site a.btn-secondary,
+.public-site button.btn-primary,
+.public-site button.btn-secondary,
 .public-site .public-btn-gold,
 .public-site .public-btn-outline-gold,
 .public-site .public-btn-dark,
@@ -24,6 +30,8 @@
 .venetian-page a.btn:not(.hero-cta),
 .venetian-page button.btn:not(.hero-cta),
 .venetian-page .btn:not(.hero-cta),
+.venetian-page .btn-primary,
+.venetian-page .btn-secondary,
 .venetian-page .cruise-filter--cta {
   position: relative;
   isolation: isolate;

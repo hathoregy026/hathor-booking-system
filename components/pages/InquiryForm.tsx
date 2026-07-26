@@ -78,8 +78,8 @@ export function InquiryForm({
   if (state === "success") {
     return (
       <div className="hathor-form-card hathor-form-card--success">
-        <h2 className="hathor-section-title text-2xl">Thank You</h2>
-        <p className="hathor-body-text mt-4">
+        <h2 className="section-title typo-page-title text-2xl">Thank You</h2>
+        <p className="section-body typo-body-text mt-4">
           Your message has been received. Our reservations team will respond
           within 24 hours.
         </p>
@@ -89,8 +89,8 @@ export function InquiryForm({
 
   return (
     <form className="hathor-form-card" onSubmit={handleSubmit} noValidate>
-      <h2 className="hathor-section-title text-2xl">{title}</h2>
-      {intro ? <p className="hathor-body-text mt-3">{intro}</p> : null}
+      <h2 className="section-title typo-page-title text-2xl">{title}</h2>
+      {intro ? <p className="section-body typo-body-text mt-3">{intro}</p> : null}
 
       <div className="mt-8 space-y-4">
         <div>
@@ -221,7 +221,7 @@ export function InquiryForm({
 
         <button
           type="submit"
-          className="public-btn-gold w-full"
+          className="btn btn-primary"
           disabled={state === "submitting"}
         >
           {state === "submitting" ? "Sending…" : submitLabel}

@@ -23,24 +23,24 @@ export function CharterPageContent() {
     >
 
       <section className="hathor-section hathor-section--dark">
-        <div className="hathor-container">
+        <div className="page-container">
           <div className="grid gap-12 lg:grid-cols-2">
             <ScrollReveal>
               <div>
-                <h2 className="hathor-section-title">{charter.overviewTitle}</h2>
+                <h2 className="section-title typo-page-title">{charter.overviewTitle}</h2>
                 <div className="hathor-gold-line hathor-gold-line--left" />
-                <p className="hathor-body-text">{charter.overviewIntro}</p>
-                <p className="hathor-body-text mt-4">
+                <p className="section-body typo-body-text">{charter.overviewIntro}</p>
+                <p className="section-body typo-body-text mt-4">
                   {charter.benefitsIntro}
                 </p>
                 <ul className="mt-6 space-y-3">
                   {charter.benefits.map((benefit) => (
                     <li key={benefit} className="hathor-feature-card">
-                      <p className="hathor-body-text">{benefit}</p>
+                      <p className="section-body typo-body-text">{benefit}</p>
                     </li>
                   ))}
                 </ul>
-                <p className="hathor-body-text mt-8 font-medium">
+                <p className="section-body typo-body-text mt-8 font-medium">
                   {charter.cta}
                 </p>
               </div>
@@ -66,8 +66,8 @@ export function CharterPageContent() {
 
           <ScrollReveal>
             <div className="mt-12">
-              <h3 className="hathor-section-title text-2xl">Your Private Itinerary</h3>
-              <p className="hathor-section-eyebrow">Route Options</p>
+              <h3 className="section-title typo-page-title text-2xl">Your Private Itinerary</h3>
+              <p className="section-indication typo-page-subtitle">Route Options</p>
               <div className="hathor-gold-line hathor-gold-line--left" />
               <div className="mt-6 flex flex-wrap gap-3">
                 {CHARTER_PAGE.overview.routes.map((route) => (
@@ -82,7 +82,7 @@ export function CharterPageContent() {
       </section>
 
       <section className="hathor-section hathor-section--dark-2">
-        <div className="hathor-container">
+        <div className="page-container">
           <div className="mx-auto max-w-2xl">
             <ScrollReveal>
               <InquiryForm

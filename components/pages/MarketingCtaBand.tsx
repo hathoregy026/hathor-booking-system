@@ -17,17 +17,16 @@ export function MarketingCtaBand({
 }: MarketingCtaBandProps) {
   return (
     <section className="lux-cta-band">
-      <div className="hathor-container">
+      <div className="page-container">
         <ScrollReveal>
-          <div className="lux-cta-band__decor" aria-hidden />
-          <h2 className="lux-cta-band__title">{title}</h2>
-          <p className="mx-auto mt-4 max-w-lg text-sm font-light text-[var(--lux-text-grey)]">
-            {body}
-          </p>
-          <div className="mt-8">
-            <BookNowTrigger className="public-btn-gold">
-              {ctaLabel}
-            </BookNowTrigger>
+          <div className="section-header">
+            <h2 className="section-title typo-page-title lux-cta-band__title">
+              {title}
+            </h2>
+            <p className="section-body typo-body-text">{body}</p>
+          </div>
+          <div className="mt-2 flex justify-center">
+            <BookNowTrigger className="btn btn-primary">{ctaLabel}</BookNowTrigger>
           </div>
         </ScrollReveal>
       </div>

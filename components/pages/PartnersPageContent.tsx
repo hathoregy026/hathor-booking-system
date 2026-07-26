@@ -19,11 +19,13 @@ export function PartnersPageContent() {
       heroPage="partners"
     >
       <section className="hathor-section hathor-section--dark">
-        <div className="hathor-container">
+        <div className="page-container">
           <ScrollReveal>
-            <p className="hathor-section-lead mx-auto max-w-2xl text-center">
-              {partners.lead}
-            </p>
+            <div className="section-header">
+              <p className="section-body typo-body-text mx-auto max-w-2xl text-center">
+                {partners.lead}
+              </p>
+            </div>
           </ScrollReveal>
 
           <ScrollReveal className="mt-12">

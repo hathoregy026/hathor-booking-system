@@ -94,7 +94,7 @@ export function GastronomyPageContent() {
                   <p>{chapter.body}</p>
                 </div>
                 {chapter.kicker === "03 / Memory" ? (
-                  <BookNowTrigger className="btn btn-dark">Book Now</BookNowTrigger>
+                  <BookNowTrigger className="btn btn-primary">Book Now</BookNowTrigger>
                 ) : null}
               </div>
             </article>
@@ -132,9 +132,9 @@ export function GastronomyPageContent() {
             <p data-lux-reveal>
               Request a table when you are ready to linger aboard Hathor Dahabiya.
             </p>
-            <BookNowTrigger className="btn btn-filled">Book Now</BookNowTrigger>
+            <BookNowTrigger className="btn btn-secondary">Book Now</BookNowTrigger>
             <div style={{ marginTop: "1rem" }}>
-              <Link className="btn btn-dark" href="/wellness">
+              <Link className="btn btn-primary" href="/wellness">
                 Wellness
               </Link>
             </div>

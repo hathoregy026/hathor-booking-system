@@ -281,10 +281,10 @@ export function CruisesPageListingsGrid() {
               <span className="cruise-price-unit">/ cabin</span>
             </div>
             <div className="cruise-card-actions">
-              <Link href={item.detailHref} className="btn btn-dark cruise-avail">
+              <Link href={item.detailHref} className="btn btn-primary cruise-avail">
                 View Details
               </Link>
-              <BookNowTrigger className="btn btn-filled cruise-book">
+              <BookNowTrigger className="btn btn-secondary cruise-book">
                 Book Now
               </BookNowTrigger>
             </div>

@@ -105,7 +105,7 @@ export function WellnessPageContent() {
                 <div className="lux-copy">
                   <p>{frame.body}</p>
                 </div>
-                <BookNowTrigger className="btn btn-light">Book Now</BookNowTrigger>
+                <BookNowTrigger className="btn btn-primary">Book Now</BookNowTrigger>
               </div>
             </section>
           ))}
@@ -139,7 +139,7 @@ export function WellnessPageContent() {
                 <div className="lux-copy" data-lux-reveal>
                   <p>{wellness.fitnessBody}</p>
                 </div>
-                <BookNowTrigger className="btn btn-dark">Book Now</BookNowTrigger>
+                <BookNowTrigger className="btn btn-primary">Book Now</BookNowTrigger>
               </div>
             </div>
           </div>
@@ -153,9 +153,9 @@ export function WellnessPageContent() {
             <p data-lux-reveal>
               Reserve your voyage and step into Seneb Spa and Historia Fitness on the Nile.
             </p>
-            <BookNowTrigger className="btn btn-filled">Book Now</BookNowTrigger>
+            <BookNowTrigger className="btn btn-secondary">Book Now</BookNowTrigger>
             <div style={{ marginTop: "1rem" }}>
-              <Link className="btn btn-dark" href="/gastronomy">
+              <Link className="btn btn-primary" href="/gastronomy">
                 Dining
               </Link>
             </div>

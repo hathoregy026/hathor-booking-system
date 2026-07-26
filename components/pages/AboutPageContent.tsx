@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { MarketingCtaBand } from "@/components/pages/MarketingCtaBand";
 import { EditorialSection } from "@/components/pages/EditorialSection";
@@ -45,11 +44,11 @@ export function AboutPageContent() {
     >
 
       <section className="hathor-section hathor-section--cream">
-        <div className="hathor-container">
+        <div className="page-container">
           <ScrollReveal>
-            <div className="mx-auto max-w-3xl text-center">
+            <div className="section-header mx-auto max-w-3xl">
               {about.intro.map((paragraph) => (
-                <p key={paragraph.slice(0, 48)} className="hathor-body-text mt-6 first:mt-0">
+                <p key={paragraph.slice(0, 48)} className="section-body typo-body-text mt-6 first:mt-0">
                   {paragraph}
                 </p>
               ))}
@@ -59,12 +58,12 @@ export function AboutPageContent() {
       </section>
 
       <section className="hathor-section hathor-section--surface">
-        <div className="hathor-container">
+        <div className="page-container">
           <ScrollReveal>
-            <div className="hathor-section-header">
-              <h2 className="hathor-section-title">{about.accommodationsTitle}</h2>
+            <div className="section-header">
+              <h2 className="section-title typo-page-title">{about.accommodationsTitle}</h2>
               <div className="hathor-gold-line" />
-              <p className="hathor-body-text mx-auto mt-6 max-w-2xl text-center">
+              <p className="section-body typo-body-text mx-auto mt-6 max-w-2xl text-center">
                 {about.accommodationsIntro}
               </p>
             </div>
@@ -86,7 +85,7 @@ export function AboutPageContent() {
           </div>
 
           <ScrollReveal delay={120}>
-            <p className="hathor-body-text mx-auto mt-12 max-w-3xl text-center">
+            <p className="section-body typo-body-text mx-auto mt-12 max-w-3xl text-center">
               {about.accommodationsOutro}
             </p>
           </ScrollReveal>
@@ -112,12 +111,12 @@ export function AboutPageContent() {
       ))}
 
       <section className="hathor-section hathor-section--cream">
-        <div className="hathor-container">
+        <div className="page-container">
           <ScrollReveal>
-            <div className="hathor-section-header">
-              <h2 className="hathor-section-title">{about.diningTitle}</h2>
+            <div className="section-header">
+              <h2 className="section-title typo-page-title">{about.diningTitle}</h2>
               <div className="hathor-gold-line" />
-              <p className="hathor-body-text mx-auto mt-6 max-w-2xl text-center">
+              <p className="section-body typo-body-text mx-auto mt-6 max-w-2xl text-center">
                 {about.diningIntro}
               </p>
             </div>
@@ -127,14 +126,14 @@ export function AboutPageContent() {
             {ABOUT_PAGE.dining.venues.map((venue, index) => (
               <ScrollReveal key={venue} delay={index * 80}>
                 <div className="hathor-feature-card">
-                  <p className="hathor-body-text">{venue}</p>
+                  <p className="section-body typo-body-text">{venue}</p>
                 </div>
               </ScrollReveal>
             ))}
           </div>
 
           <ScrollReveal delay={160}>
-            <p className="hathor-body-text mx-auto mt-12 max-w-3xl text-center">
+            <p className="section-body typo-body-text mx-auto mt-12 max-w-3xl text-center">
               {about.diningOutro}
             </p>
           </ScrollReveal>
@@ -142,20 +141,19 @@ export function AboutPageContent() {
       </section>
 
       <section className="hathor-section hathor-section--dark">
-        <div className="hathor-container">
+        <div className="page-container">
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <ScrollReveal>
               <div>
-                <h2 className="hathor-section-title text-[var(--hathor-cream)]">
+                <h2 className="section-title typo-page-title">
                   {ABOUT_PAGE.diningPromo.title}
                 </h2>
                 <div className="hathor-gold-line hathor-gold-line--left" />
-                <p className="hathor-body-text text-[var(--hathor-text-light)]">
+                <p className="section-body typo-body-text">
                   {ABOUT_PAGE.diningPromo.body}
                 </p>
-                <Link href="/gastronomy" className="hathor-discover-link mt-6 inline-flex cursor-hover">
-                  <span>Explore Dining</span>
-                  <ArrowRight className="h-4 w-4" aria-hidden />
+                <Link href="/gastronomy" className="btn btn-primary mt-6">
+                  Explore Dining
                 </Link>
               </div>
             </ScrollReveal>
@@ -180,12 +178,12 @@ export function AboutPageContent() {
       </section>
 
       <section className="hathor-section hathor-section--surface">
-        <div className="hathor-container">
+        <div className="page-container">
           <ScrollReveal>
-            <div className="mx-auto max-w-3xl text-center">
-              <h2 className="hathor-section-title">{about.welcomeTitle}</h2>
+            <div className="section-header mx-auto max-w-3xl">
+              <h2 className="section-title typo-page-title">{about.welcomeTitle}</h2>
               <div className="hathor-gold-line" />
-              <p className="hathor-body-text mt-6">{about.welcomeBody}</p>
+              <p className="section-body typo-body-text mt-6">{about.welcomeBody}</p>
             </div>
           </ScrollReveal>
         </div>

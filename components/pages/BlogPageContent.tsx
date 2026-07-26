@@ -47,11 +47,13 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
     >
 
       <section className="hathor-section hathor-section--dark">
-        <div className="hathor-container">
+        <div className="page-container">
           <ScrollReveal>
-            <p className="hathor-body-text mx-auto max-w-3xl text-center">
-              {pages.blog.intro}
-            </p>
+            <div className="section-header">
+              <p className="section-body typo-body-text mx-auto max-w-3xl text-center">
+                {pages.blog.intro}
+              </p>
+            </div>
           </ScrollReveal>
 
           <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -72,13 +74,13 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
                     <div className="hathor-blog-card__body">
                       <time
                         dateTime={post.publishedAt}
-                        className="hathor-section-eyebrow"
+                        className="section-indication typo-page-subtitle"
                       >
                         {formatBlogPublishedDate(post.publishedAt)}
                       </time>
                       <h2 className="hathor-blog-card__title">{post.title}</h2>
                       <p className="hathor-blog-card__excerpt">{post.excerpt}</p>
-                      <span className="hathor-discover-link mt-4 inline-flex">
+                      <span className="btn btn-primary mt-4">
                         <span>Read more</span>
                         <ArrowRight className="h-4 w-4" aria-hidden />
                       </span>
@@ -93,7 +95,7 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
             <div className="mt-12 text-center">
               <button
                 type="button"
-                className="public-btn-outline-gold"
+                className="btn btn-primary"
                 onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
               >
                 Show More

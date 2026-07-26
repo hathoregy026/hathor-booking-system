@@ -31,10 +31,10 @@ export function BlogPostPageContent({
     >
 
       <article className="hathor-blog-article">
-        <div className="hathor-container">
+        <div className="page-container">
           <ScrollReveal>
             <div className="hathor-blog-article__header">
-              <Link href="/blogs" className="hathor-discover-link cursor-hover">
+              <Link href="/blogs" className="btn btn-primary cursor-hover">
                 <ArrowLeft className="h-4 w-4" aria-hidden />
                 <span>Back to Blog</span>
               </Link>

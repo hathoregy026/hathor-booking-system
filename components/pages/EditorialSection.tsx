@@ -2,7 +2,6 @@
 
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
@@ -15,9 +14,8 @@ export function DiscoverLink({
   children: ReactNode;
 }) {
   return (
-    <Link href={href} className="hathor-discover-link cursor-hover">
-      <span>{children}</span>
-      <ArrowRight className="h-4 w-4" aria-hidden />
+    <Link href={href} className="btn btn-primary">
+      {children}
     </Link>
   );
 }
@@ -66,7 +64,7 @@ export function EditorialSection({
       data-site-image={imageName}
       className={`hathor-editorial ${dark ? "hathor-editorial--dark" : ""} ${fullBleed ? "hathor-editorial--bleed" : ""}`}
     >
-      <div className={fullBleed ? "" : "hathor-container"}>
+      <div className={fullBleed ? "" : "page-container"}>
         <div
           className={`hathor-editorial__grid ${imageLeft ? "hathor-editorial__grid--reverse" : ""}`}
         >
@@ -92,16 +90,20 @@ export function EditorialSection({
             viewportMargin={motionViewportMargin}
           >
             <div
-              className={`hathor-editorial__content ${fullBleed ? "hathor-container py-16 lg:py-24" : ""}`}
+              className={`hathor-editorial__content ${fullBleed ? "page-container py-16 lg:py-24" : ""}`}
             >
-              <h2 className="hathor-section-title">{title}</h2>
-              {label ? <p className="hathor-chapter-eyebrow">{label}</p> : null}
-              {subtitle ? (
-                <p className="hathor-section-subtitle">{subtitle}</p>
+              {label ? (
+                <p className="section-indication typo-page-subtitle">{label}</p>
               ) : null}
-              <div className="hathor-gold-line hathor-gold-line--left" />
+              <h2 className="section-title typo-page-title">{title}</h2>
+              {subtitle ? (
+                <p className="section-indication typo-page-subtitle">{subtitle}</p>
+              ) : null}
               {paragraphs.map((paragraph) => (
-                <p key={paragraph.slice(0, 40)} className="hathor-body-text">
+                <p
+                  key={paragraph.slice(0, 40)}
+                  className="section-body typo-body-text"
+                >
                   {paragraph}
                 </p>
               ))}

@@ -255,13 +255,13 @@ export function ResidenceScrollPage({
                       </p>
                       {chapter.ctaHref && chapter.ctaLabel ? (
                         <Link
-                          className="btn btn-light room-fs-cta"
+                          className="btn btn-primary room-fs-cta"
                           href={chapter.ctaHref}
                         >
                           {chapter.ctaLabel}
                         </Link>
                       ) : (
-                        <BookNowTrigger className="btn btn-light room-fs-cta">
+                        <BookNowTrigger className="btn btn-primary room-fs-cta">
                           Book Now
                         </BookNowTrigger>
                       )}
@@ -345,10 +345,10 @@ export function ResidenceScrollPage({
             <h2 className="typo-page-title">{cta.title}</h2>
             <p className="typo-body-text">{cta.body}</p>
             <div className="hathor-cta-actions">
-              <Link className="btn btn-filled" href={cta.href}>
+              <Link className="btn btn-secondary" href={cta.href}>
                 {cta.hrefLabel}
               </Link>
-              <BookNowTrigger className="btn btn-dark">Book Now</BookNowTrigger>
+              <BookNowTrigger className="btn btn-primary">Book Now</BookNowTrigger>
             </div>
           </div>
         </section>
