@@ -2389,7 +2389,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   display: block;
   flex: 0 0 auto;
   width: var(--gallery-card);
-  height: clamp(237.5px, calc(16.25vw + 50px), 337.5px);
+  height: clamp(257.5px, calc(16.25vw + 70px), 357.5px);
   overflow: hidden;
   border: 1px solid rgba(182, 159, 100, 0.38);
   border-radius: 0;
@@ -2437,7 +2437,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   height: 100%;
   max-width: none;
   object-fit: cover;
-  object-position: top center;
+  object-position: center;
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
