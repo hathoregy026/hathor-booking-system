@@ -19,24 +19,17 @@ type HomeCampaignSectionProps = {
   previewAnchor?: boolean;
 };
 
+type LenisLike = {
+  on: (event: string, handler: () => void) => void;
+  off?: (event: string, handler: () => void) => void;
+};
+
 /**
- * Call-to-action stage.
+ * Call-to-action stage — zero layout mutation.
  *
- * No ScrollTrigger pin — ancestors use overflow-x:clip which prevents
- * position:fixed pins (frame stayed relative inside a 100vh spacer while
- * the 420vh track painted empty cream).
- *
- * Instead: absolute frame + per-frame layout stick from track rect, and
- * cover progress derived from the same layout. Lenis-safe.
- *
- * Phase A — gold invite rises as the section approaches.
- * Phase B — photograph rises over the locked invite, then on-image title.
- *
- * Conflict checks:
- * - Does not pin (won't fight overflow-x:clip / pin-spacers).
- * - Only kills own ids (hcta-invite / hcta-stage).
- * - Silk never CSS-hidden (stalled motion ≠ void).
- * - Does not call ScrollTrigger.getAll().kill().
+ * Phase A (section approaches): gold invite rises and locks fully up.
+ * Phase B (locked): unhurried hold, then photograph rises over the locked
+ * invite (no reverse) — then on-image title.
  */
 export function HomeCampaignSection({
   title,
@@ -69,10 +62,8 @@ export function HomeCampaignSection({
 
     let killed = false;
     let ctx: gsap.Context | null = null;
-    let tickerFn: ((time: number) => void) | null = null;
-    let inviteTl: gsap.core.Timeline | null = null;
-    let coverTl: gsap.core.Timeline | null = null;
-    let silkLocked = false;
+    let removeLenis: (() => void) | null = null;
+    let bootTimer = 0;
 
     const killOwned = () => {
       ["hcta-invite", "hcta-stage"].forEach((id) => {
@@ -80,46 +71,16 @@ export function HomeCampaignSection({
       });
     };
 
-    const showSilk = () => {
-      if (!silkChars.length || silkLocked) return;
-      silkLocked = true;
-      gsap.set(silkChars, { yPercent: 0, autoAlpha: 1, force3D: true });
-    };
-
-    /** Layout progress 0–1 while the tall track owns the viewport. */
-    const stageProgress = () => {
-      const total = Math.max(1, track.offsetHeight - window.innerHeight);
-      const scrolled = Math.min(total, Math.max(0, -track.getBoundingClientRect().top));
-      return scrolled / total;
-    };
-
-    const stickFrame = (progress: number) => {
-      const maxY = Math.max(0, track.offsetHeight - frame.offsetHeight);
-      gsap.set(frame, { y: progress * maxY, force3D: true });
-    };
-
-    const syncStage = () => {
-      if (killed || reduced || !coverTl) return;
-      const p = stageProgress();
-      stickFrame(p);
-      if (p > 0 || track.getBoundingClientRect().top <= 0) {
-        inviteTl?.progress(1);
-        showSilk();
-      }
-      coverTl.progress(p);
-    };
-
     const boot = () => {
       if (killed || !track.isConnected) return;
 
       ctx?.revert();
       killOwned();
-      silkLocked = false;
 
       ctx = gsap.context(() => {
         if (reduced) {
           gsap.set(frame, { clearProps: "transform" });
-          if (reveal) gsap.set(reveal, { yPercent: 0, clearProps: "transform" });
+          if (reveal) gsap.set(reveal, { yPercent: 0 });
           if (silkChars.length) {
             gsap.set(silkChars, { yPercent: 0, autoAlpha: 0 });
           }
@@ -142,15 +103,19 @@ export function HomeCampaignSection({
         }
         gsap.set(frame, { y: 0, force3D: true });
 
-        inviteTl = gsap.timeline({ paused: true });
+        /*
+         * Phase A — invite finishes well BEFORE the stage locks.
+         * Tight per-row stagger so TODAY is fully up (not half-risen)
+         * while the cream stage still fills the screen.
+         */
+        const inviteTl = gsap.timeline({ paused: true });
         if (silkChars.length) {
           const rows = gsap.utils.toArray<HTMLElement>(
             track.querySelectorAll(".hcta-silk-row"),
           );
           rows.forEach((row, rowIndex) => {
-            const rowChars =
-              row.querySelectorAll<HTMLElement>(".hcta-silk-char");
-            inviteTl!.to(
+            const rowChars = row.querySelectorAll<HTMLElement>(".hcta-silk-char");
+            inviteTl.to(
               rowChars,
               {
                 yPercent: 0,
@@ -169,23 +134,42 @@ export function HomeCampaignSection({
           id: "hcta-invite",
           trigger: track,
           start: "top 92%",
-          end: "top top",
+          /* Complete while section is still arriving — never leave TODAY clipped */
+          end: "top 18%",
           scrub: 0.45,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
-            if (!silkLocked) inviteTl?.progress(self.progress);
+            inviteTl.progress(self.progress);
           },
           onRefresh: (self) => {
-            if (!silkLocked) inviteTl?.progress(self.progress);
+            inviteTl.progress(self.progress);
           },
         });
 
-        coverTl = gsap.timeline({ paused: true });
-        coverTl.call(showSilk, undefined, 0);
+        /*
+         * Phase B — hold locked invite, then a LONG unhurried photograph rise.
+         * Most of the locked scroll is spent on the image cover alone.
+         */
+        const coverTl = gsap.timeline({ paused: true });
+
+        if (silkChars.length) {
+          coverTl.set(
+            silkChars,
+            { yPercent: 0, autoAlpha: 1, force3D: true },
+            0,
+          );
+        }
         if (reveal) {
           coverTl.set(reveal, { yPercent: 100, force3D: true }, 0);
         }
-        coverTl.to({}, { duration: 0.14 }, 0);
+
+        /* Brief hold — invite locked, fully readable */
+        coverTl.to({}, { duration: 0.16 }, 0);
+
+        /*
+         * Photograph rises for the majority of the stage scroll.
+         * power3.inOut + heavy scrub = luxury glide, not a snap.
+         */
         if (reveal) {
           coverTl.to(
             reveal,
@@ -195,10 +179,13 @@ export function HomeCampaignSection({
               ease: "power3.inOut",
               force3D: true,
             },
-            0.14,
+            0.16,
           );
         }
-        coverTl.to({}, { duration: 0.06 }, 0.86);
+
+        /* Settle before on-image copy */
+        coverTl.to({}, { duration: 0.06 }, 0.88);
+
         if (chars.length) {
           coverTl.to(
             chars,
@@ -210,65 +197,90 @@ export function HomeCampaignSection({
               ease: "none",
               force3D: true,
             },
-            0.9,
+            0.92,
           );
         }
         if (book) {
           coverTl.to(
             book,
-            { autoAlpha: 1, duration: 0.1, ease: "none" },
-            0.98,
+            {
+              autoAlpha: 1,
+              duration: 0.1,
+              ease: "none",
+            },
+            1.0,
           );
         }
-        coverTl.to({}, { duration: 0.16 }, 1.06);
 
-        /*
-         * Lightweight ST only for refresh hooks — motion is layout-driven
-         * via ticker so Lenis / overflow-x:clip cannot desync the stick.
-         */
+        coverTl.to({}, { duration: 0.18 }, 1.08);
+
         ScrollTrigger.create({
           id: "hcta-stage",
           trigger: track,
           start: "top top",
           end: "bottom bottom",
+          /* Heavy lag so the image eases behind the wheel */
+          scrub: 2.1,
           invalidateOnRefresh: true,
-          onRefresh: () => syncStage(),
+          onUpdate: (self) => {
+            /* Match frame CSS height (100dvh), not raw innerHeight */
+            const maxY = Math.max(0, track.offsetHeight - frame.offsetHeight);
+            gsap.set(frame, { y: self.progress * maxY, force3D: true });
+            inviteTl.progress(1);
+            coverTl.progress(self.progress);
+          },
+          onRefresh: (self) => {
+            const maxY = Math.max(0, track.offsetHeight - frame.offsetHeight);
+            gsap.set(frame, { y: self.progress * maxY, force3D: true });
+            if (self.progress > 0) inviteTl.progress(1);
+            coverTl.progress(self.progress);
+          },
         });
       }, track);
 
-      syncStage();
       ScrollTrigger.refresh();
-      syncStage();
     };
 
-    boot();
-
-    tickerFn = () => {
-      syncStage();
-    };
-    if (!reduced) {
-      gsap.ticker.add(tickerFn);
-    }
+    bootTimer = window.setTimeout(() => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(boot);
+      });
+    }, 0);
 
     const onLoad = () => {
       try {
         ScrollTrigger.refresh();
-        syncStage();
       } catch {
         /* ignore */
       }
     };
     window.addEventListener("load", onLoad);
-    window.addEventListener("resize", syncStage);
+
+    /* Parent Lenis may mount after this child — retry briefly */
+    const bindLenis = () => {
+      if (removeLenis) return;
+      const lenis = (window as Window & { __hathorLenis?: LenisLike | null })
+        .__hathorLenis;
+      if (!lenis?.on) return;
+      const onLenisScroll = () => ScrollTrigger.update();
+      lenis.on("scroll", onLenisScroll);
+      removeLenis = () => lenis.off?.("scroll", onLenisScroll);
+    };
+    bindLenis();
+    const lenisPoll = window.setInterval(() => {
+      bindLenis();
+      if (removeLenis || killed) window.clearInterval(lenisPoll);
+    }, 50);
+    window.setTimeout(() => window.clearInterval(lenisPoll), 2500);
 
     return () => {
       killed = true;
+      window.clearTimeout(bootTimer);
+      window.clearInterval(lenisPoll);
       window.removeEventListener("load", onLoad);
-      window.removeEventListener("resize", syncStage);
-      if (tickerFn) gsap.ticker.remove(tickerFn);
+      removeLenis?.();
       killOwned();
       ctx?.revert();
-      gsap.set(frame, { clearProps: "transform" });
     };
   }, []);
 
