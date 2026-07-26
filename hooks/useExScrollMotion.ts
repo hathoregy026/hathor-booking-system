@@ -363,97 +363,61 @@ export function useExScrollMotion() {
     return splitAtelierText(el);
   }
 
-  type StackPanelMeta = HTMLElement & {
-    __stackChars?: HTMLElement[];
-    __stackBody?: HTMLElement | null;
-  };
-
   function prepareStackPanelSplits(panels: HTMLElement[]) {
     panels.forEach((panel) => {
-      const meta = panel as StackPanelMeta;
-      /* Title + eyebrow keep letter rise; body is one unit so long copy
-         is fully readable by the time the slide is full-bleed. */
-      const letterTargets = panel.querySelectorAll<HTMLElement>(
-        ".ex-stack-scroll__title-line, .ex-stack-scroll__eyebrow",
+      const targets = panel.querySelectorAll<HTMLElement>(
+        ".ex-stack-scroll__title-line, .ex-stack-scroll__eyebrow, .ex-stack-scroll__body",
       );
-      const body = panel.querySelector<HTMLElement>(".ex-stack-scroll__body");
       const chars: HTMLElement[] = [];
-      letterTargets.forEach((el) => {
+      targets.forEach((el) => {
         chars.push(...splitStackText(el));
       });
-      meta.__stackChars = chars;
-      meta.__stackBody = body;
+      (panel as HTMLElement & { __stackChars?: HTMLElement[] }).__stackChars =
+        chars;
       if (chars.length) {
         gsap.set(chars, { yPercent: 100, opacity: 0 });
-      }
-      if (body) {
-        gsap.set(body, { y: 10, opacity: 0 });
       }
     });
   }
 
   function playStackSplit(panel: HTMLElement | undefined) {
     if (!panel || prefersReduced) return;
-    const meta = panel as StackPanelMeta;
-    const chars = meta.__stackChars;
-    const body = meta.__stackBody;
-    if (chars?.length) {
-      gsap.killTweensOf(chars);
-      gsap.fromTo(
-        chars,
-        { yPercent: 100, opacity: 0 },
-        {
-          yPercent: 0,
-          opacity: 1,
-          duration: 0.75,
-          stagger: 0.018,
-          ease: "power3.out",
-          onComplete: () => {
-            chars.forEach((c) => c.style.removeProperty("will-change"));
-          },
+    const chars =
+      (panel as HTMLElement & { __stackChars?: HTMLElement[] }).__stackChars;
+    if (!chars?.length) return;
+    /* Same letter rise — just a bit snappier so long body finishes sooner */
+    const stagger =
+      chars.length > 60 ? Math.min(0.022, 0.95 / chars.length) : 0.022;
+    gsap.killTweensOf(chars);
+    gsap.fromTo(
+      chars,
+      { yPercent: 100, opacity: 0 },
+      {
+        yPercent: 0,
+        opacity: 1,
+        duration: 0.75,
+        stagger,
+        ease: "power3.out",
+        onComplete: () => {
+          chars.forEach((c) => c.style.removeProperty("will-change"));
         },
-      );
-    }
-    if (body) {
-      gsap.killTweensOf(body);
-      /* Near-instant so body is solid as soon as the full-screen frame lands */
-      gsap.fromTo(
-        body,
-        { y: 8, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.22,
-          ease: "power2.out",
-        },
-      );
-    }
+      },
+    );
   }
 
   function reverseStackSplit(panel: HTMLElement | undefined) {
     if (!panel || prefersReduced) return;
-    const meta = panel as StackPanelMeta;
-    const chars = meta.__stackChars;
-    const body = meta.__stackBody;
-    if (chars?.length) {
-      gsap.killTweensOf(chars);
-      gsap.to(chars, {
-        yPercent: 100,
-        opacity: 0,
-        duration: 0.55,
-        stagger: 0.015,
-        ease: "power3.in",
-      });
-    }
-    if (body) {
-      gsap.killTweensOf(body);
-      gsap.to(body, {
-        y: 8,
-        opacity: 0,
-        duration: 0.2,
-        ease: "power2.in",
-      });
-    }
+    const chars =
+      (panel as HTMLElement & { __stackChars?: HTMLElement[] }).__stackChars;
+    if (!chars?.length) return;
+    gsap.killTweensOf(chars);
+    gsap.to(chars, {
+      yPercent: 100,
+      opacity: 0,
+      duration: 0.55,
+      stagger: 0.015,
+      ease: "power3.in",
+    });
   }
 
   function initExStackScroll() {
@@ -469,13 +433,10 @@ export function useExScrollMotion() {
 
     if (prefersReduced) {
       copyPanels.forEach((panel) => {
-        const meta = panel as StackPanelMeta;
-        if (meta.__stackChars?.length) {
-          gsap.set(meta.__stackChars, { yPercent: 0, opacity: 1 });
-        }
-        if (meta.__stackBody) {
-          gsap.set(meta.__stackBody, { y: 0, opacity: 1 });
-        }
+        const chars =
+          (panel as HTMLElement & { __stackChars?: HTMLElement[] })
+            .__stackChars;
+        if (chars?.length) gsap.set(chars, { yPercent: 0, opacity: 1 });
       });
       gsap.set(cards, { yPercent: 0, scale: 1, filter: "brightness(1)" });
       cards.slice(1).forEach((card) => {
@@ -542,19 +503,17 @@ export function useExScrollMotion() {
       });
 
       copyPanels.forEach((panel, index) => {
-        const meta = panel as StackPanelMeta;
+        const chars =
+          (panel as HTMLElement & { __stackChars?: HTMLElement[] })
+            .__stackChars;
         gsap.set(panel, {
           autoAlpha: index === 0 ? 1 : 0,
           y: 0,
           visibility: index === 0 ? "visible" : "hidden",
         });
-        if (meta.__stackChars?.length) {
-          gsap.killTweensOf(meta.__stackChars);
-          gsap.set(meta.__stackChars, { yPercent: 100, opacity: 0 });
-        }
-        if (meta.__stackBody) {
-          gsap.killTweensOf(meta.__stackBody);
-          gsap.set(meta.__stackBody, { y: 10, opacity: 0 });
+        if (chars?.length) {
+          gsap.killTweensOf(chars);
+          gsap.set(chars, { yPercent: 100, opacity: 0 });
         }
         panel.setAttribute("aria-hidden", index === 0 ? "false" : "true");
       });
@@ -647,7 +606,6 @@ export function useExScrollMotion() {
             else playStackSplit(prevPanel);
           }, moveAt + move * 0.08);
 
-          /* Reveal copy early in the wipe so body is solid at full-bleed */
           tl.fromTo(
             nextPanel,
             { autoAlpha: 0, y: 0, visibility: "visible" },
@@ -655,16 +613,16 @@ export function useExScrollMotion() {
               autoAlpha: 1,
               y: 0,
               ease: "power2.out",
-              duration: move * 0.45,
+              duration: move * 0.5,
               onStart: () => nextPanel.setAttribute("aria-hidden", "false"),
             },
-            moveAt + move * 0.12,
+            moveAt + move * 0.42,
           );
           tl.add(() => {
             const dir = tl.scrollTrigger?.direction ?? 1;
             if (dir === 1) playStackSplit(nextPanel);
             else reverseStackSplit(nextPanel);
-          }, moveAt + move * 0.12);
+          }, moveAt + move * 0.42);
         }
 
         for (let j = 0; j < i; j++) {
