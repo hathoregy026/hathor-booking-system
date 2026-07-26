@@ -27,10 +27,9 @@ type LenisLike = {
 /**
  * Call-to-action stage — zero layout mutation.
  *
- * Phase A (section approaches): gold invite rises and is fully up by the time
- * the stage locks.
- * Phase B (locked): short hold, then the photograph rises elegantly to cover
- * while the invite reverses — then on-image title.
+ * Phase A (section approaches): gold invite rises and locks fully up.
+ * Phase B (locked): unhurried hold, then photograph rises over the locked
+ * invite (no reverse) — then on-image title.
  */
 export function HomeCampaignSection({
   title,
@@ -115,7 +114,7 @@ export function HomeCampaignSection({
             {
               yPercent: 0,
               autoAlpha: 1,
-              stagger: 0.022,
+              stagger: 0.028,
               duration: 1,
               ease: "none",
               force3D: true,
@@ -129,7 +128,7 @@ export function HomeCampaignSection({
           trigger: track,
           start: "top 88%",
           end: "top top",
-          scrub: 0.35,
+          scrub: 0.65,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
             inviteTl.progress(self.progress);
@@ -140,12 +139,11 @@ export function HomeCampaignSection({
         });
 
         /*
-         * Phase B — hold the finished invite, then elegant image cover.
-         * Image does not move until ~half of this locked range.
+         * Phase B — hold finished invite (locked, no reverse), then a slow
+         * elegant photograph rise that simply covers the text.
          */
         const coverTl = gsap.timeline({ paused: true });
 
-        /* Keep invite readable at the start of the lock */
         if (silkChars.length) {
           coverTl.set(
             silkChars,
@@ -157,38 +155,25 @@ export function HomeCampaignSection({
           coverTl.set(reveal, { yPercent: 100, force3D: true }, 0);
         }
 
-        /* First half: hold — text fully up, image still waiting below */
-        coverTl.to({}, { duration: 0.48 }, 0);
+        /* Hold — invite stays locked and fully readable */
+        coverTl.to({}, { duration: 0.38 }, 0);
 
-        /* Second half: image rises; invite reverses underneath */
-        if (silkChars.length) {
-          coverTl.to(
-            silkChars,
-            {
-              yPercent: 120,
-              autoAlpha: 0,
-              stagger: 0.014,
-              duration: 0.32,
-              ease: "none",
-              force3D: true,
-            },
-            0.5,
-          );
-        }
+        /* Slow silk cover — text does not reverse; image simply rises over it */
         if (reveal) {
           coverTl.to(
             reveal,
             {
               yPercent: 0,
-              duration: 0.38,
-              ease: "power1.inOut",
+              duration: 0.48,
+              ease: "power2.inOut",
               force3D: true,
             },
-            0.5,
+            0.38,
           );
         }
 
-        coverTl.to({}, { duration: 0.06 }, 0.86);
+        /* Settle on the photograph before title */
+        coverTl.to({}, { duration: 0.08 }, 0.86);
 
         if (chars.length) {
           coverTl.to(
@@ -196,12 +181,12 @@ export function HomeCampaignSection({
             {
               yPercent: 0,
               autoAlpha: 1,
-              stagger: 0.014,
-              duration: 0.14,
+              stagger: 0.018,
+              duration: 0.18,
               ease: "none",
               force3D: true,
             },
-            0.88,
+            0.9,
           );
         }
         if (book) {
@@ -209,26 +194,26 @@ export function HomeCampaignSection({
             book,
             {
               autoAlpha: 1,
-              duration: 0.08,
+              duration: 0.12,
               ease: "none",
             },
-            0.94,
+            0.98,
           );
         }
 
-        coverTl.to({}, { duration: 0.12 }, 1.02);
+        coverTl.to({}, { duration: 0.16 }, 1.08);
 
         ScrollTrigger.create({
           id: "hcta-stage",
           trigger: track,
           start: "top top",
           end: "bottom bottom",
-          scrub: 0.55,
+          /* Higher scrub = softer, less rushy lag behind the wheel */
+          scrub: 1.15,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
             const maxY = Math.max(0, track.offsetHeight - window.innerHeight);
             gsap.set(frame, { y: self.progress * maxY, force3D: true });
-            /* Invite stays complete while the cover phase runs */
             inviteTl.progress(1);
             coverTl.progress(self.progress);
           },

@@ -2563,9 +2563,9 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
   position: relative;
   z-index: 21;
   width: 100%;
-  /* Room for: arrive+invite → hold → elegant cover */
-  height: 220vh;
-  height: 220dvh;
+  /* Extra scroll room so the cover can feel slow and unhurried */
+  height: 260vh;
+  height: 260dvh;
   margin: 0;
   padding: 0;
   background: var(--cream, #ece8df);
