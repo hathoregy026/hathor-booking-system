@@ -438,7 +438,12 @@ export function useExScrollMotion() {
             .__stackChars;
         if (chars?.length) gsap.set(chars, { yPercent: 0, opacity: 1 });
       });
-      gsap.set(cards, { yPercent: 0, scale: 1, filter: "brightness(1)" });
+      gsap.set(cards, {
+        yPercent: 0,
+        scale: 1,
+        filter: "brightness(1)",
+        clipPath: "inset(0% 0% 0% 0%)",
+      });
       cards.slice(1).forEach((card) => {
         gsap.set(card, { autoAlpha: 0 });
       });
@@ -482,12 +487,17 @@ export function useExScrollMotion() {
         const media = getCardMedia(card);
         gsap.set(card, {
           zIndex: index + 1,
-          /* 100 = flush cover — never park below the fold (108 showed a dark gap) */
-          yPercent: index === 0 ? 0 : 100,
+          /* Stay full-frame — reveal via clip so the next image eats the previous */
+          yPercent: 0,
           x: 0,
           xPercent: 0,
           scale: 1,
           filter: "brightness(1)",
+          clipPath:
+            index === 0 ? "inset(0% 0% 0% 0%)" : "inset(100% 0% 0% 0%)",
+          WebkitClipPath:
+            index === 0 ? "inset(0% 0% 0% 0%)" : "inset(100% 0% 0% 0%)",
+          autoAlpha: 1,
           force3D: true,
           clearProps: "",
         });
@@ -496,7 +506,8 @@ export function useExScrollMotion() {
           gsap.set(media, {
             x: 0,
             xPercent: 0,
-            scale: index === 0 ? 1.04 : 1.08,
+            scale: index === 0 ? 1.04 : 1.1,
+            yPercent: index === 0 ? 0 : 6,
             force3D: true,
           });
         }
@@ -525,7 +536,7 @@ export function useExScrollMotion() {
           start: "top top",
           end: `+=${scrollSpan * 100}%`,
           /* Slight lag so the wipe feels smooth, not twitchy */
-          scrub: 1.55,
+          scrub: 1.65,
           pin: viewport,
           pinSpacing: true,
           anticipatePin: 0,
@@ -563,15 +574,25 @@ export function useExScrollMotion() {
         const prevPanel = copyPanels[i - 1];
         const nextPanel = copyPanels[i];
 
+        /* Cover wipe: next image stays full-bleed and reveals upward over the last */
         tl.fromTo(
           card,
-          { yPercent: 100, scale: 1, x: 0, xPercent: 0 },
           {
-            yPercent: 0,
+            clipPath: "inset(100% 0% 0% 0%)",
+            WebkitClipPath: "inset(100% 0% 0% 0%)",
             scale: 1,
+            yPercent: 0,
             x: 0,
             xPercent: 0,
-            ease: "none",
+          },
+          {
+            clipPath: "inset(0% 0% 0% 0%)",
+            WebkitClipPath: "inset(0% 0% 0% 0%)",
+            scale: 1,
+            yPercent: 0,
+            x: 0,
+            xPercent: 0,
+            ease: "power1.inOut",
             duration: move,
           },
           moveAt,
@@ -580,8 +601,8 @@ export function useExScrollMotion() {
         if (media) {
           tl.fromTo(
             media,
-            { scale: 1.08, x: 0 },
-            { scale: 1.04, x: 0, ease: "none", duration: move },
+            { scale: 1.1, yPercent: 8, x: 0 },
+            { scale: 1.04, yPercent: 0, x: 0, ease: "power1.out", duration: move },
             moveAt,
           );
         }
@@ -649,7 +670,8 @@ export function useExScrollMotion() {
             tl.to(
               underMedia,
               {
-                scale: 1.04 + depth * 0.01,
+                scale: 1.04 + depth * 0.012,
+                yPercent: 0,
                 x: 0,
                 ease: "none",
                 duration: move,
