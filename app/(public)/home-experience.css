@@ -1989,7 +1989,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
 
 /* ---------- GALLERY ---------- */
 .gallery-section {
-  --gallery-content-tilt: -3deg;
+  --gallery-content-tilt: -6deg;
   position: relative;
   background: var(--cream-deep);
   padding: clamp(80px, 10vw, 140px) var(--content-gutter, clamp(12px, 2.2vw, 28px));
@@ -2966,7 +2966,7 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
   }
 
   .gallery-section {
-    --gallery-content-tilt: -2deg;
+    --gallery-content-tilt: -4deg;
   }
 
   .gallery-marquee__band {
