@@ -2320,7 +2320,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
 /* 3D tilted gallery strip — cream/gold adaptation of the marquee band */
 .gallery-marquee {
   --gallery-gap: clamp(18px, 2vw, 28px);
-  --gallery-card: clamp(300px, 26vw, 460px);
+  --gallery-card: clamp(420px, 36vw, 640px);
   --gallery-duration: 90s;
   position: relative;
   z-index: 2;
@@ -2344,7 +2344,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
     the whole marquee texture → soft/pixelated cards.
   */
   overflow: hidden;
-  padding: 56px 0 96px;
+  padding: 72px 0 120px;
   transform: rotateZ(-3deg);
   transform-origin: 50% 55%;
 }
@@ -2388,7 +2388,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   display: block;
   flex: 0 0 auto;
   width: var(--gallery-card);
-  height: clamp(257.5px, calc(16.25vw + 70px), 357.5px);
+  height: clamp(360px, calc(22.75vw + 98px), 500px);
   overflow: hidden;
   border: 1px solid rgba(182, 159, 100, 0.38);
   border-radius: 0;
@@ -2868,8 +2868,12 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
   }
 
   .gallery-marquee {
-    --gallery-card: clamp(240px, 48vw, 340px);
+    --gallery-card: clamp(336px, 58vw, 476px);
     margin-bottom: 88px;
+  }
+
+  .gallery-item {
+    height: clamp(300px, calc(30vw + 60px), 420px);
   }
 
   .gallery-marquee__band {
@@ -2880,7 +2884,7 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
 
   .gallery-marquee__stage {
     transform: rotateZ(-2.5deg);
-    padding: 48px 0 80px;
+    padding: 60px 0 100px;
   }
 
   .instagram-circle--burst {
@@ -2974,7 +2978,7 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
   }
 
   .gallery-marquee {
-    --gallery-card: clamp(200px, 62vw, 280px);
+    --gallery-card: clamp(280px, 72vw, 390px);
     --gallery-gap: 14px;
     margin-bottom: 72px;
   }
@@ -2987,7 +2991,7 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
 
   .gallery-marquee__stage {
     transform: rotateZ(-2deg);
-    padding: 40px 0 64px;
+    padding: 48px 0 80px;
   }
 
   .instagram-follow {
