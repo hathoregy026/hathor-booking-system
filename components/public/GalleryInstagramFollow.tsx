@@ -55,8 +55,9 @@ const EMOJI_GLYPHS = [
 ] as const;
 
 const POP_COOLDOWN_MS = 1100;
-const FLOAT_SPEED_CAP_IMG = 0.48;
-const FLOAT_SPEED_CAP_EMO = 0.62;
+/** After pop, keep roaming farther across the section */
+const FLOAT_SPEED_CAP_IMG = 0.92;
+const FLOAT_SPEED_CAP_EMO = 1.15;
 
 function rand(min: number, max: number) {
   return min + Math.random() * (max - min);
@@ -73,6 +74,25 @@ function bounceAxis(
   return { pos, vel };
 }
 
+/** Center of the IG icon + @handle, in field-local coordinates. */
+function getPopOrigin(
+  field: HTMLElement,
+  hotspot: HTMLElement | null,
+): { cx: number; cy: number } {
+  const fieldRect = field.getBoundingClientRect();
+  if (hotspot) {
+    const r = hotspot.getBoundingClientRect();
+    return {
+      cx: r.left + r.width / 2 - fieldRect.left,
+      cy: r.top + r.height / 2 - fieldRect.top,
+    };
+  }
+  return {
+    cx: fieldRect.width * 0.5,
+    cy: Math.min(fieldRect.height * 0.28, 220),
+  };
+}
+
 function buildSeeds(): FloaterSeed[] {
   const seeds: FloaterSeed[] = [];
 
@@ -82,7 +102,7 @@ function buildSeeds(): FloaterSeed[] {
       kind: "image",
       imageName: preview.imageName,
       alt: preview.alt,
-      size: rand(64, 86),
+      size: rand(96, 128),
     });
   });
 
@@ -91,7 +111,7 @@ function buildSeeds(): FloaterSeed[] {
       id: `emo-${item.label}-${index}`,
       kind: "emoji",
       glyph: item.glyph,
-      size: rand(36, 44),
+      size: rand(48, 60),
     });
   });
 
@@ -100,27 +120,25 @@ function buildSeeds(): FloaterSeed[] {
 
 function seedsToFloaters(
   seeds: FloaterSeed[],
-  width: number,
-  height: number,
+  origin: { cx: number; cy: number },
 ): FloaterState[] {
-  const cx = width * 0.5;
-  const cy = height * 0.34;
   const n = Math.max(seeds.length, 1);
 
   return seeds.map((seed, index) => {
     const angle = (index / n) * Math.PI * 2 + rand(-0.28, 0.28);
-    const impulse = seed.kind === "image" ? rand(2.6, 4.1) : rand(2.9, 4.6);
+    /* Strong impulse so bubbles travel far from the IG handle */
+    const impulse = seed.kind === "image" ? rand(6.2, 9.4) : rand(6.8, 10.2);
     return {
       ...seed,
-      x: cx - seed.size / 2,
-      y: cy - seed.size / 2,
+      x: origin.cx - seed.size / 2,
+      y: origin.cy - seed.size / 2,
       vx: Math.cos(angle) * impulse,
-      vy: Math.sin(angle) * impulse * 0.92,
+      vy: Math.sin(angle) * impulse,
       rot: rand(-12, 12),
       rotV: rand(-0.02, 0.02),
       phase: rand(0, Math.PI * 2),
       mode: "pop" as const,
-      popAge: -index * 0.045,
+      popAge: -index * 0.04,
       opacity: 0,
     };
   });
@@ -129,24 +147,21 @@ function seedsToFloaters(
 /** Re-aim an existing set from the IG hotspot — pop again, keep same nodes. */
 function reburstFloaters(
   floaters: FloaterState[],
-  width: number,
-  height: number,
+  origin: { cx: number; cy: number },
 ) {
-  const cx = width * 0.5;
-  const cy = height * 0.34;
   const n = Math.max(floaters.length, 1);
 
   floaters.forEach((f, index) => {
     const angle = (index / n) * Math.PI * 2 + rand(-0.3, 0.3);
-    const impulse = f.kind === "image" ? rand(2.5, 4.0) : rand(2.8, 4.5);
-    f.x = cx - f.size / 2;
-    f.y = cy - f.size / 2;
+    const impulse = f.kind === "image" ? rand(6.0, 9.2) : rand(6.6, 10.0);
+    f.x = origin.cx - f.size / 2;
+    f.y = origin.cy - f.size / 2;
     f.vx = Math.cos(angle) * impulse;
-    f.vy = Math.sin(angle) * impulse * 0.92;
+    f.vy = Math.sin(angle) * impulse;
     f.rot = rand(-14, 14);
     f.rotV = rand(-0.022, 0.022);
     f.mode = "pop";
-    f.popAge = -index * 0.04;
+    f.popAge = -index * 0.035;
     f.opacity = 0;
   });
 }
@@ -163,6 +178,7 @@ export function GalleryInstagramFollow({
   const followEyebrow =
     followEyebrowProp ?? websiteText.home.gallery.followEyebrow;
   const copyRef = useRef<HTMLDivElement>(null);
+  const igLinkRef = useRef<HTMLAnchorElement>(null);
   const fieldRef = useRef<HTMLDivElement>(null);
   const floatersRef = useRef<FloaterState[]>([]);
   const nodeRefs = useRef<Map<string, HTMLSpanElement>>(new Map());
@@ -186,9 +202,9 @@ export function GalleryInstagramFollow({
     if (cooldownRef.current) return;
 
     const field = fieldRef.current;
-    const section = field?.closest(".gallery-section") as HTMLElement | null;
-    const width = section?.clientWidth || field?.clientWidth || 900;
-    const height = section?.clientHeight || field?.clientHeight || 520;
+    if (!field) return;
+
+    const origin = getPopOrigin(field, igLinkRef.current);
 
     cooldownRef.current = true;
     window.setTimeout(() => {
@@ -198,13 +214,13 @@ export function GalleryInstagramFollow({
     if (!seedsRef.current.length) {
       const nextSeeds = buildSeeds();
       seedsRef.current = nextSeeds;
-      floatersRef.current = seedsToFloaters(nextSeeds, width, height);
+      floatersRef.current = seedsToFloaters(nextSeeds, origin);
       setSeeds(nextSeeds);
       setActive(true);
       return;
     }
 
-    reburstFloaters(floatersRef.current, width, height);
+    reburstFloaters(floatersRef.current, origin);
     floatersRef.current.forEach(paintFloater);
     setActive(true);
   }, []);
@@ -296,11 +312,11 @@ export function GalleryInstagramFollow({
 
           f.opacity = Math.min(1, f.popAge * 4);
 
-          /* Outward pop with smooth drag — no bob */
-          f.vx *= Math.pow(0.965, dt);
-          f.vy *= Math.pow(0.965, dt);
-          f.x += f.vx * dt * 0.95;
-          f.y += f.vy * dt * 0.95;
+          /* Outward pop with light drag — travels far from the IG handle */
+          f.vx *= Math.pow(0.988, dt);
+          f.vy *= Math.pow(0.988, dt);
+          f.x += f.vx * dt * 1.15;
+          f.y += f.vy * dt * 1.15;
           f.rot += f.rotV * dt * 18;
 
           const bx = bounceAxis(f.x, f.vx, minX, maxX);
@@ -311,18 +327,17 @@ export function GalleryInstagramFollow({
           f.vy = by.vel;
 
           const speed = Math.hypot(f.vx, f.vy);
-          if (f.popAge > 1.15 || speed < 0.55) {
+          if (f.popAge > 1.85 || speed < 0.9) {
             f.mode = "float";
-            /* Hand off to gentle float speed */
             const cap =
               f.kind === "image" ? FLOAT_SPEED_CAP_IMG : FLOAT_SPEED_CAP_EMO;
             if (speed > cap) {
               f.vx = (f.vx / speed) * cap;
               f.vy = (f.vy / speed) * cap;
-            } else if (speed < 0.12) {
+            } else if (speed < 0.2) {
               const a = rand(0, Math.PI * 2);
-              f.vx = Math.cos(a) * cap * 0.55;
-              f.vy = Math.sin(a) * cap * 0.55;
+              f.vx = Math.cos(a) * cap * 0.7;
+              f.vy = Math.sin(a) * cap * 0.7;
             }
             f.opacity = 1;
           }
@@ -332,8 +347,8 @@ export function GalleryInstagramFollow({
         }
 
         /* Elegant float — soft sine drift, bounce only at edges */
-        const ax = Math.sin(t * 0.32 + f.phase) * 0.007;
-        const ay = Math.cos(t * 0.26 + f.phase * 1.25) * 0.0055;
+        const ax = Math.sin(t * 0.28 + f.phase) * 0.01;
+        const ay = Math.cos(t * 0.22 + f.phase * 1.25) * 0.008;
         let vx = f.vx + ax * dt;
         let vy = f.vy + ay * dt;
 
@@ -345,8 +360,8 @@ export function GalleryInstagramFollow({
           vy = (vy / speed) * maxSpeed;
         }
 
-        f.x += vx * dt * 0.9;
-        f.y += vy * dt * 0.9;
+        f.x += vx * dt * 1.05;
+        f.y += vy * dt * 1.05;
         f.rot += f.rotV * dt * 14;
 
         const bx = bounceAxis(f.x, vx, minX, maxX);
@@ -400,7 +415,7 @@ export function GalleryInstagramFollow({
                   name={floater.imageName}
                   alt=""
                   fill
-                  sizes="88px"
+                  sizes="128px"
                   className="object-cover"
                   previewAnchor={false}
                 />
@@ -429,6 +444,7 @@ export function GalleryInstagramFollow({
             </p>
 
             <a
+              ref={igLinkRef}
               className="gallery-ig-link typo-page-subtitle instagram-follow__copy"
               href={EX_GALLERY.indicationHref}
               target="_blank"

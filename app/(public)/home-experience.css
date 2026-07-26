@@ -1996,7 +1996,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
 
 .gallery-header {
   position: relative;
-  z-index: 2;
+  z-index: 6;
   width: var(--content-shell, 100%);
   max-width: none;
   margin: 0 auto 40px;
@@ -2073,7 +2073,8 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
 .instagram-burst-field {
   position: absolute;
   inset: 0;
-  z-index: 1;
+  /* Above gallery marquee cards; below header text so IG stays clickable */
+  z-index: 5;
   pointer-events: none;
   overflow: hidden;
   opacity: 0;
