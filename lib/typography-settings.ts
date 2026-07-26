@@ -4,6 +4,7 @@ import { resolveDatabaseUrl } from "@/lib/database-config";
 import {
   DEFAULT_TYPOGRAPHY_SETTINGS,
   TYPOGRAPHY_SETTINGS_KEY,
+  TYPOGRAPHY_SETTINGS_MOBILE_KEY,
   typographySettingsSchema,
   parseTypographySettings,
   type TypographySettings,
@@ -13,6 +14,7 @@ import { prisma } from "@/lib/prisma";
 export {
   DEFAULT_TYPOGRAPHY_SETTINGS,
   TYPOGRAPHY_SETTINGS_KEY,
+  TYPOGRAPHY_SETTINGS_MOBILE_KEY,
   typographySettingsSchema,
   typographyToCssVars,
   typographyToImportantCss,
@@ -115,4 +117,81 @@ export async function saveTypographySettings(
   }
 
   return safe;
+}
+
+async function getTypographyByKey(
+  key: string,
+): Promise<TypographySettings | null> {
+  try {
+    const row = await withDb(() =>
+      prisma.siteSetting.findUnique({
+        where: { key },
+        select: { value: true },
+      }),
+    );
+    if (!row?.value) return null;
+    return parseTypographySettings(readStored(row.value));
+  } catch (error) {
+    logDbError(`typography-settings.get.prisma.${key}`, error);
+    const pool = getSharedPgPool(resolveDatabaseUrl());
+    const result = await pool.query<{ value: string }>(
+      `SELECT value FROM "SiteSetting" WHERE key = $1 LIMIT 1`,
+      [key],
+    );
+    const raw = result.rows[0]?.value;
+    if (!raw) return null;
+    return parseTypographySettings(readStored(raw));
+  }
+}
+
+async function saveTypographyByKey(
+  key: string,
+  settings: TypographySettings,
+): Promise<TypographySettings> {
+  const safe = typographySettingsSchema.parse(settings);
+  const payload = JSON.stringify(safe);
+
+  try {
+    await withDb(() =>
+      prisma.siteSetting.upsert({
+        where: { key },
+        create: { key, value: payload },
+        update: { value: payload },
+      }),
+    );
+  } catch (error) {
+    logDbError(`typography-settings.save.prisma.${key}`, error);
+    const pool = getSharedPgPool(resolveDatabaseUrl());
+    await pool.query(
+      `INSERT INTO "SiteSetting" (key, value, "updatedAt")
+       VALUES ($1, $2, NOW())
+       ON CONFLICT (key) DO UPDATE
+         SET value = EXCLUDED.value, "updatedAt" = NOW()`,
+      [key, payload],
+    );
+  }
+
+  return safe;
+}
+
+/** Phone typography — falls back to desktop when never saved. */
+export async function getTypographySettingsMobile(): Promise<TypographySettings> {
+  const mobile = await getTypographyByKey(TYPOGRAPHY_SETTINGS_MOBILE_KEY);
+  if (mobile) return mobile;
+  return getTypographySettings();
+}
+
+export async function getTypographySettingsMobileSafe(): Promise<TypographySettings> {
+  try {
+    return await getTypographySettingsMobile();
+  } catch (error) {
+    console.error("[typography-settings-mobile] get failed:", error);
+    return getTypographySettingsSafe();
+  }
+}
+
+export async function saveTypographySettingsMobile(
+  settings: TypographySettings,
+): Promise<TypographySettings> {
+  return saveTypographyByKey(TYPOGRAPHY_SETTINGS_MOBILE_KEY, settings);
 }

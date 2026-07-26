@@ -2,6 +2,8 @@ import { z } from "zod";
 import type { CSSProperties } from "react";
 
 export const TYPOGRAPHY_SETTINGS_KEY = "typography-styles";
+/** Phone-only typography (applied on live site at max-width 767px). */
+export const TYPOGRAPHY_SETTINGS_MOBILE_KEY = "typography-styles-mobile";
 
 /**
  * Exact CSS font-family names (one per face).

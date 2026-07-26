@@ -15,20 +15,45 @@ import {
 
 const WebsiteTextContext = createContext<WebsiteText>(DEFAULT_WEBSITE_TEXT);
 
+function useIsPhoneViewport() {
+  const [isPhone, setIsPhone] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const sync = () => setIsPhone(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  return isPhone;
+}
+
 export function WebsiteTextProvider({
   initial,
+  initialMobile,
   children,
 }: {
   initial?: WebsiteText;
+  initialMobile?: WebsiteText;
   children: ReactNode;
 }) {
-  const [settings, setSettings] = useState<WebsiteText>(
+  const [desktop, setDesktop] = useState<WebsiteText>(
     initial ?? DEFAULT_WEBSITE_TEXT,
   );
+  const [mobile, setMobile] = useState<WebsiteText>(
+    initialMobile ?? initial ?? DEFAULT_WEBSITE_TEXT,
+  );
+  const isPhone = useIsPhoneViewport();
 
   useEffect(() => {
-    if (initial) setSettings(initial);
+    if (initial) setDesktop(initial);
   }, [initial]);
+
+  useEffect(() => {
+    if (initialMobile) setMobile(initialMobile);
+    else if (initial) setMobile(initial);
+  }, [initial, initialMobile]);
 
   useEffect(() => {
     if (initial) return;
@@ -40,9 +65,16 @@ export function WebsiteTextProvider({
           cache: "no-store",
         });
         if (!res.ok) return;
-        const data = (await res.json()) as { settings?: unknown };
+        const data = (await res.json()) as {
+          settings?: unknown;
+          settingsMobile?: unknown;
+        };
         if (cancelled) return;
-        setSettings(parseWebsiteText(data.settings));
+        const next = parseWebsiteText(data.settings);
+        setDesktop(next);
+        setMobile(
+          data.settingsMobile ? parseWebsiteText(data.settingsMobile) : next,
+        );
       } catch {
         /* keep defaults */
       }
@@ -54,7 +86,7 @@ export function WebsiteTextProvider({
   }, [initial]);
 
   return (
-    <WebsiteTextContext.Provider value={settings}>
+    <WebsiteTextContext.Provider value={isPhone ? mobile : desktop}>
       {children}
     </WebsiteTextContext.Provider>
   );

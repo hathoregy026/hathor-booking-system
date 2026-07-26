@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
-import type { CSSProperties } from "react";
 import LuxuryAccordion from "@/components/home/LuxuryAccordion";
 import { HomeCampaignSection } from "@/components/home/HomeCampaignSection";
 import { LuxuryMarquee } from "@/components/home/LuxuryMarquee";
@@ -34,11 +33,10 @@ import {
   useTypographySettings,
 } from "@/components/public/TypographySettingsProvider";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
+import { combineDesktopAndPhoneCss } from "@/lib/admin-device-preview";
 import {
   DEFAULT_HERO_LOGO_TUNE,
   type HeroLogoTune,
-  applyHeroLogoTuneToElement,
-  heroLogoTuneToCssVars,
   heroLogoTuneToImportantCss,
   parseHeroLogoTune,
 } from "@/lib/hero-logo-tune-shared";
@@ -92,17 +90,12 @@ const HOMEPAGE_PREVIEW_SLOTS = new Set([
 
 type HomePageClientProps = {
   heroLogoTune?: HeroLogoTune;
+  heroLogoTuneMobile?: HeroLogoTune;
   accordionCruises?: HomepageAccordionCruise[];
 };
 
-function paintLogoTune(tune: HeroLogoTune) {
-  const root = document.querySelector<HTMLElement>(".ex-root");
-  const hero = document.querySelector<HTMLElement>(
-    ".ex-root .home-hero-container",
-  );
-  applyHeroLogoTuneToElement(root, tune);
-  applyHeroLogoTuneToElement(hero, tune);
-
+function paintLogoTune(desktop: HeroLogoTune, phone: HeroLogoTune) {
+  /* CSS only — inline vars would beat phone @media overrides. */
   let tag = document.querySelector<HTMLStyleElement>(
     "style[data-hathor-logo-tune-live]",
   );
@@ -111,7 +104,10 @@ function paintLogoTune(tune: HeroLogoTune) {
     tag.setAttribute("data-hathor-logo-tune-live", "");
     document.head.appendChild(tag);
   }
-  tag.textContent = heroLogoTuneToImportantCss(tune);
+  tag.textContent = combineDesktopAndPhoneCss(
+    heroLogoTuneToImportantCss(desktop),
+    heroLogoTuneToImportantCss(phone),
+  );
 }
 
 function ItineraryCarouselSlide({ slide }: { slide: ExCarouselSlide }) {
@@ -162,6 +158,7 @@ function ItineraryCarouselSlide({ slide }: { slide: ExCarouselSlide }) {
 
 export function HomePageClient({
   heroLogoTune = DEFAULT_HERO_LOGO_TUNE,
+  heroLogoTuneMobile = heroLogoTune,
   accordionCruises = [],
 }: HomePageClientProps) {
   useExScrollMotion();
@@ -210,14 +207,19 @@ export function HomePageClient({
   });
 
   const [liveTune, setLiveTune] = useState(heroLogoTune);
+  const [liveTuneMobile, setLiveTuneMobile] = useState(heroLogoTuneMobile);
 
   useEffect(() => {
     setLiveTune(heroLogoTune);
   }, [heroLogoTune]);
 
+  useEffect(() => {
+    setLiveTuneMobile(heroLogoTuneMobile);
+  }, [heroLogoTuneMobile]);
+
   useLayoutEffect(() => {
-    paintLogoTune(liveTune);
-  }, [liveTune]);
+    paintLogoTune(liveTune, liveTuneMobile);
+  }, [liveTune, liveTuneMobile]);
 
   /* Both rows share one height: taller title+body+button stack. Image matches that. */
   useLayoutEffect(() => {
@@ -292,9 +294,16 @@ export function HomePageClient({
         if (!res.ok) return;
         const contentType = res.headers.get("content-type") ?? "";
         if (!contentType.includes("application/json")) return;
-        const data = (await res.json()) as { tune?: unknown };
+        const data = (await res.json()) as {
+          tune?: unknown;
+          tuneMobile?: unknown;
+        };
         if (cancelled) return;
-        setLiveTune(parseHeroLogoTune(data.tune));
+        const next = parseHeroLogoTune(data.tune);
+        setLiveTune(next);
+        setLiveTuneMobile(
+          data.tuneMobile ? parseHeroLogoTune(data.tuneMobile) : next,
+        );
       } catch {
         /* keep SSR tune — Cloudflare challenges / offline */
       }
@@ -304,10 +313,21 @@ export function HomePageClient({
     };
   }, []);
 
-  const logoTuneStyle = heroLogoTuneToCssVars(liveTune) as CSSProperties;
+  const [isPhone, setIsPhone] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const sync = () => setIsPhone(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  const logoPartsVariant = isPhone
+    ? liveTuneMobile.partsVariant
+    : liveTune.partsVariant;
 
   return (
-    <div className="ex-root" style={logoTuneStyle} data-hathor-logo-tuned="">
+    <div className="ex-root" data-hathor-logo-tuned="">
       <HathorLogoTuner />
       <main id="top">
         <PublicSiteHero
@@ -318,7 +338,7 @@ export function HomePageClient({
           lineLeft={EX_HERO.lineLeft}
           heroPage="home"
           posterImageName={EX_HERO.imageName}
-          logoPartsVariant={liveTune.partsVariant}
+          logoPartsVariant={logoPartsVariant}
         />
 
         <LuxuryMarquee />

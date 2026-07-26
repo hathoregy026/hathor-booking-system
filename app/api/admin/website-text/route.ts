@@ -1,22 +1,46 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import { isAdminDevicePreview } from "@/lib/admin-device-preview";
 import { handleRouteError } from "@/lib/api";
 import { logDbError } from "@/lib/db-safe";
 import {
   DEFAULT_WEBSITE_TEXT,
   getWebsiteText,
+  getWebsiteTextMobile,
   parseWebsiteText,
   saveWebsiteText,
+  saveWebsiteTextMobile,
 } from "@/lib/website-text";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+const REVALIDATE_PATHS = [
+  "/",
+  "/about",
+  "/cruises",
+  "/highlights",
+  "/gastronomy",
+  "/wellness",
+  "/charter",
+  "/contact",
+  "/blogs",
+  "/partners",
+  "/rooms",
+  "/luxury-cabins-Nile-Cruise",
+  "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+  "/admin/website-text",
+  "/admin/content",
+] as const;
+
 export async function GET() {
   try {
-    const settings = await getWebsiteText();
+    const [settings, settingsMobile] = await Promise.all([
+      getWebsiteText(),
+      getWebsiteTextMobile(),
+    ]);
     return NextResponse.json(
-      { settings, ok: true },
+      { settings, settingsMobile, ok: true },
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {
@@ -24,6 +48,7 @@ export async function GET() {
     return NextResponse.json(
       {
         settings: DEFAULT_WEBSITE_TEXT,
+        settingsMobile: DEFAULT_WEBSITE_TEXT,
         error: "Could not load website text settings.",
         ok: false,
       },
@@ -37,29 +62,29 @@ export async function GET() {
 
 export async function PUT(request: NextRequest) {
   try {
-    const body = (await request.json()) as { settings?: unknown };
+    const body = (await request.json()) as {
+      settings?: unknown;
+      device?: unknown;
+    };
+    const device = isAdminDevicePreview(body.device) ? body.device : "desktop";
     const settings = parseWebsiteText(body.settings);
-    const saved = await saveWebsiteText(settings);
+    const saved =
+      device === "phone"
+        ? await saveWebsiteTextMobile(settings)
+        : await saveWebsiteText(settings);
 
     revalidatePath("/", "layout");
-    revalidatePath("/");
-    revalidatePath("/about");
-    revalidatePath("/cruises");
-    revalidatePath("/highlights");
-    revalidatePath("/gastronomy");
-    revalidatePath("/wellness");
-    revalidatePath("/charter");
-    revalidatePath("/contact");
-    revalidatePath("/blogs");
-    revalidatePath("/partners");
-    revalidatePath("/rooms");
-    revalidatePath("/luxury-cabins-Nile-Cruise");
-    revalidatePath("/Luxury-Royal-Suites-Nile-Dahabiya-Cruise");
-    revalidatePath("/admin/website-text");
-    revalidatePath("/admin/content");
+    for (const path of REVALIDATE_PATHS) {
+      revalidatePath(path);
+    }
 
     return NextResponse.json(
-      { settings: saved, ok: true, savedAt: new Date().toISOString() },
+      {
+        settings: saved,
+        device,
+        ok: true,
+        savedAt: new Date().toISOString(),
+      },
       {
         headers: {
           "Cache-Control": "no-store, max-age=0",

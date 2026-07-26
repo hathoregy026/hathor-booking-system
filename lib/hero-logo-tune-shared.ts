@@ -7,6 +7,8 @@ import {
 
 /** Temporary homepage HATHOR letter tune — will be hardcoded then removed. */
 export const HERO_LOGO_TUNE_KEY = "hero-logo-tune";
+/** Phone-only logo tune (applied on live site at max-width 767px). */
+export const HERO_LOGO_TUNE_MOBILE_KEY = "hero-logo-tune-mobile";
 
 const px = (min: number, max: number) => z.number().min(min).max(max);
 

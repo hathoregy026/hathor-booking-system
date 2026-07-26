@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import { isAdminDevicePreview } from "@/lib/admin-device-preview";
 import { handleRouteError } from "@/lib/api";
 import { logDbError } from "@/lib/db-safe";
 import {
   DEFAULT_HERO_LOGO_TUNE,
   getHeroLogoTune,
+  getHeroLogoTuneMobile,
   parseHeroLogoTune,
   saveHeroLogoTune,
+  saveHeroLogoTuneMobile,
 } from "@/lib/hero-logo-tune";
 
 export const dynamic = "force-dynamic";
@@ -14,9 +17,12 @@ export const revalidate = 0;
 
 export async function GET() {
   try {
-    const tune = await getHeroLogoTune();
+    const [tune, tuneMobile] = await Promise.all([
+      getHeroLogoTune(),
+      getHeroLogoTuneMobile(),
+    ]);
     return NextResponse.json(
-      { tune, ok: true },
+      { tune, tuneMobile, ok: true },
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {
@@ -24,6 +30,7 @@ export async function GET() {
     return NextResponse.json(
       {
         tune: DEFAULT_HERO_LOGO_TUNE,
+        tuneMobile: DEFAULT_HERO_LOGO_TUNE,
         error: "Could not load logo tune.",
         ok: false,
       },
@@ -37,16 +44,28 @@ export async function GET() {
 
 export async function PUT(request: NextRequest) {
   try {
-    const body = (await request.json()) as { tune?: unknown };
+    const body = (await request.json()) as {
+      tune?: unknown;
+      device?: unknown;
+    };
+    const device = isAdminDevicePreview(body.device) ? body.device : "desktop";
     const tune = parseHeroLogoTune(body.tune);
-    const saved = await saveHeroLogoTune(tune);
+    const saved =
+      device === "phone"
+        ? await saveHeroLogoTuneMobile(tune)
+        : await saveHeroLogoTune(tune);
 
     revalidatePath("/", "layout");
     revalidatePath("/");
     revalidatePath("/admin/hero-logo-tune");
 
     return NextResponse.json(
-      { tune: saved, ok: true, savedAt: new Date().toISOString() },
+      {
+        tune: saved,
+        device,
+        ok: true,
+        savedAt: new Date().toISOString(),
+      },
       {
         headers: {
           "Cache-Control": "no-store, max-age=0",

@@ -14,16 +14,26 @@ import {
 
 /**
  * Same per-letter math as live — each letter moves on its own control.
+ * Pass `stageWidth` for phone preview (fixed 390); omit for live browser width.
  */
-export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
-  const [stageW, setStageW] = useState(1440);
+export function HeroLogoTunePreview({
+  tune,
+  stageWidth,
+}: {
+  tune: HeroLogoTune;
+  stageWidth?: number;
+}) {
+  const [browserW, setBrowserW] = useState(1440);
 
   useEffect(() => {
-    const sync = () => setStageW(window.innerWidth);
+    if (stageWidth != null) return;
+    const sync = () => setBrowserW(window.innerWidth);
     sync();
     window.addEventListener("resize", sync);
     return () => window.removeEventListener("resize", sync);
-  }, []);
+  }, [stageWidth]);
+
+  const stageW = stageWidth ?? browserW;
 
   const letters = getHathorLogoLetters(tune.partsVariant);
   const sideW = (stageW - HATHOR_BTN_SLOT_PX) / 2;
@@ -101,7 +111,11 @@ export function HeroLogoTunePreview({ tune }: { tune: HeroLogoTune }) {
   return (
     <div className="hlt-preview" data-hlt-preview="">
       <div className="hlt-preview__toolbar">
-        <strong>1:1 hero width · {stageW}px</strong>
+        <strong>
+          {stageWidth != null
+            ? `Phone preview · ${stageW}px`
+            : `1:1 hero width · ${stageW}px`}
+        </strong>
         <span>Each letter moves on its own — not as a HAT/HOR block</span>
       </div>
 

@@ -2,9 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { ExternalLink, Loader2, RotateCcw, Save } from "lucide-react";
+import { AdminDevicePreviewToggle } from "@/components/admin/AdminDevicePreviewToggle";
 import { HeroLogoTunePreview } from "@/components/admin/HeroLogoTunePreview";
 import { useToast } from "@/components/admin/ToastProvider";
 import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
+import {
+  ADMIN_PHONE_PREVIEW_WIDTH,
+  type AdminDevicePreview,
+} from "@/lib/admin-device-preview";
 import {
   DEFAULT_HERO_LOGO_TUNE,
   type HeroLogoTune,
@@ -156,10 +161,25 @@ function NumberField({
 
 export function HeroLogoTunePanel() {
   const { showToast } = useToast();
-  const [tune, setTune] = useState<HeroLogoTune>(DEFAULT_HERO_LOGO_TUNE);
-  const [saved, setSaved] = useState<HeroLogoTune>(DEFAULT_HERO_LOGO_TUNE);
+  const [device, setDevice] = useState<AdminDevicePreview>("desktop");
+  const [desktopTune, setDesktopTune] = useState<HeroLogoTune>(
+    DEFAULT_HERO_LOGO_TUNE,
+  );
+  const [phoneTune, setPhoneTune] = useState<HeroLogoTune>(
+    DEFAULT_HERO_LOGO_TUNE,
+  );
+  const [savedDesktop, setSavedDesktop] = useState<HeroLogoTune>(
+    DEFAULT_HERO_LOGO_TUNE,
+  );
+  const [savedPhone, setSavedPhone] = useState<HeroLogoTune>(
+    DEFAULT_HERO_LOGO_TUNE,
+  );
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+
+  const tune = device === "phone" ? phoneTune : desktopTune;
+  const setTune = device === "phone" ? setPhoneTune : setDesktopTune;
+  const saved = device === "phone" ? savedPhone : savedDesktop;
 
   useEffect(() => {
     let cancelled = false;
@@ -169,11 +189,15 @@ export function HeroLogoTunePanel() {
         const response = await adminFetch("/api/admin/hero-logo-tune");
         const data = (await response.json().catch(() => ({}))) as {
           tune?: unknown;
+          tuneMobile?: unknown;
         };
         if (cancelled) return;
-        const next = parseHeroLogoTune(data.tune);
-        setTune(next);
-        setSaved(next);
+        const nextDesktop = parseHeroLogoTune(data.tune);
+        const nextPhone = parseHeroLogoTune(data.tuneMobile ?? data.tune);
+        setDesktopTune(nextDesktop);
+        setSavedDesktop(nextDesktop);
+        setPhoneTune(nextPhone);
+        setSavedPhone(nextPhone);
       } catch (error) {
         if (!cancelled && !isTransientFetchError(error)) {
           showToast("error", "Could not load logo settings — editing defaults.");
@@ -190,6 +214,8 @@ export function HeroLogoTunePanel() {
   }, []);
 
   const dirty = !isHeroLogoTuneEqual(tune, saved);
+  const desktopDirty = !isHeroLogoTuneEqual(desktopTune, savedDesktop);
+  const phoneDirty = !isHeroLogoTuneEqual(phoneTune, savedPhone);
 
   const patch = (partial: Partial<HeroLogoTune>) =>
     setTune((t) => ({ ...t, ...partial }));
@@ -215,7 +241,7 @@ export function HeroLogoTunePanel() {
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ tune: payload }),
+          body: JSON.stringify({ tune: payload, device }),
         },
         60_000,
       );
@@ -232,12 +258,14 @@ export function HeroLogoTunePanel() {
       }
       const next = parseHeroLogoTune(data.tune ?? payload);
       setTune(next);
-      setSaved(next);
+      if (device === "phone") setSavedPhone(next);
+      else setSavedDesktop(next);
       showToast(
         "success",
-        "Saved. Open the site homepage (/) and hard-refresh to confirm.",
+        device === "phone"
+          ? "Phone logo saved. Check the live site on a phone (or DevTools ≤767px)."
+          : "Desktop logo saved. Open the homepage and hard-refresh to confirm.",
       );
-      /* Bust Cloudflare / browser cache on the public homepage. */
       void fetch(`/api/hero-logo-tune?t=${Date.now()}`, { cache: "no-store" }).catch(
         () => undefined,
       );
@@ -264,12 +292,23 @@ export function HeroLogoTunePanel() {
         </p>
         <h1 className="admin-page-title">Hero Logo Tune</h1>
         <p className="admin-page-subtitle max-w-2xl">
-          Preview is your real browser width — every gap pixel matches the live
-          hero. Letters keep their natural shape (not stretched).
+          Switch Desktop / Phone to edit each version separately. Phone preview
+          is a fixed {ADMIN_PHONE_PREVIEW_WIDTH}px frame linked to the live phone
+          site (≤767px).
         </p>
       </div>
 
-      <div className="admin-card space-y-8 p-6">
+      <AdminDevicePreviewToggle
+        value={device}
+        onChange={setDevice}
+        desktopDirty={desktopDirty}
+        phoneDirty={phoneDirty}
+        disabled={loading || saving}
+      />
+
+      <div
+        className={`admin-card space-y-8 p-6${device === "phone" ? " admin-phone-preview-shell" : ""}`}
+      >
         {loading ? (
           <div
             className="flex items-center gap-2 text-sm"
@@ -280,7 +319,12 @@ export function HeroLogoTunePanel() {
           </div>
         ) : null}
 
-        <HeroLogoTunePreview tune={tune} />
+        <HeroLogoTunePreview
+          tune={tune}
+          stageWidth={
+            device === "phone" ? ADMIN_PHONE_PREVIEW_WIDTH : undefined
+          }
+        />
 
         <fieldset
           disabled={saving}
@@ -536,7 +580,11 @@ export function HeroLogoTunePanel() {
             ) : (
               <Save className="h-4 w-4" aria-hidden />
             )}
-            {dirty ? "Save to live site" : "Save again to live"}
+            {dirty
+              ? device === "phone"
+                ? "Save phone to live site"
+                : "Save desktop to live site"
+              : "Save again to live"}
           </button>
           <button
             type="button"

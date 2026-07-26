@@ -1,13 +1,19 @@
 import { NextResponse } from "next/server";
-import { getWebsiteTextSafe } from "@/lib/website-text";
+import {
+  getWebsiteTextSafe,
+  getWebsiteTextMobileSafe,
+} from "@/lib/website-text";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function GET() {
-  const settings = await getWebsiteTextSafe();
+  const [settings, settingsMobile] = await Promise.all([
+    getWebsiteTextSafe(),
+    getWebsiteTextMobileSafe(),
+  ]);
   return NextResponse.json(
-    { settings, ok: true },
+    { settings, settingsMobile, ok: true },
     { headers: { "Cache-Control": "no-store" } },
   );
 }

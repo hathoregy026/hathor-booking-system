@@ -27,6 +27,8 @@ import {
 } from "@/lib/page-content";
 
 export const WEBSITE_TEXT_KEY = "website-text";
+/** Phone-only website copy (used on live site at max-width 767px). */
+export const WEBSITE_TEXT_MOBILE_KEY = "website-text-mobile";
 
 export type WebsiteText = {
   home: {

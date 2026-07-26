@@ -2810,3 +2810,98 @@ textarea.wt-field__input {
 .wt-savebar--dirty .wt-savebar__status {
   color: var(--text-primary);
 }
+
+/* —— Desktop / Phone CMS preview —— */
+.admin-device-toggle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem 0.85rem;
+  margin: 0.85rem 0 1.1rem;
+}
+
+.admin-device-toggle__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.5rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-secondary, var(--bg-primary));
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.admin-device-toggle__btn.is-active {
+  border-color: var(--accent);
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+.admin-device-toggle__dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.admin-device-toggle__hint {
+  flex: 1 1 100%;
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--muted, var(--text-secondary));
+}
+
+.admin-phone-preview-shell .hlt-preview__viewport {
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+}
+
+.typo-stage-wrap--phone {
+  margin-inline: auto;
+  width: 100%;
+}
+
+.typo-stage--phone {
+  border-radius: 1.25rem;
+  box-shadow: 0 12px 40px rgb(0 0 0 / 0.18);
+}
+
+.admin-phone-iframe-shell {
+  margin: 0 0 1.25rem;
+  padding: 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  background: var(--bg-secondary, var(--bg-primary));
+}
+
+.admin-phone-iframe-shell__label {
+  margin: 0 0 0.65rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.admin-phone-iframe {
+  display: block;
+  margin: 0 auto;
+  height: min(72vh, 780px);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: #fff;
+}
+
+.typo-easy__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}

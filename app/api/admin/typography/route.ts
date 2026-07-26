@@ -1,22 +1,46 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import { isAdminDevicePreview } from "@/lib/admin-device-preview";
 import { handleRouteError } from "@/lib/api";
 import { logDbError } from "@/lib/db-safe";
 import {
   DEFAULT_TYPOGRAPHY_SETTINGS,
   getTypographySettings,
+  getTypographySettingsMobile,
   parseTypographySettings,
   saveTypographySettings,
+  saveTypographySettingsMobile,
 } from "@/lib/typography-settings";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+const REVALIDATE_PATHS = [
+  "/",
+  "/cruises",
+  "/admin/typography",
+  "/suites",
+  "/experiences",
+  "/about",
+  "/blog",
+  "/contact",
+  "/wellness",
+  "/gastronomy",
+  "/highlights",
+  "/charter",
+  "/rooms",
+  "/royal-suites",
+  "/luxury-cabins",
+] as const;
+
 export async function GET() {
   try {
-    const settings = await getTypographySettings();
+    const [settings, settingsMobile] = await Promise.all([
+      getTypographySettings(),
+      getTypographySettingsMobile(),
+    ]);
     return NextResponse.json(
-      { settings, ok: true },
+      { settings, settingsMobile, ok: true },
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {
@@ -24,6 +48,7 @@ export async function GET() {
     return NextResponse.json(
       {
         settings: DEFAULT_TYPOGRAPHY_SETTINGS,
+        settingsMobile: DEFAULT_TYPOGRAPHY_SETTINGS,
         error: "Could not load typography settings.",
         ok: false,
       },
@@ -37,29 +62,29 @@ export async function GET() {
 
 export async function PUT(request: NextRequest) {
   try {
-    const body = (await request.json()) as { settings?: unknown };
+    const body = (await request.json()) as {
+      settings?: unknown;
+      device?: unknown;
+    };
+    const device = isAdminDevicePreview(body.device) ? body.device : "desktop";
     const settings = parseTypographySettings(body.settings);
-    const saved = await saveTypographySettings(settings);
+    const saved =
+      device === "phone"
+        ? await saveTypographySettingsMobile(settings)
+        : await saveTypographySettings(settings);
 
     revalidatePath("/", "layout");
-    revalidatePath("/");
-    revalidatePath("/cruises");
-    revalidatePath("/admin/typography");
-    revalidatePath("/suites");
-    revalidatePath("/experiences");
-    revalidatePath("/about");
-    revalidatePath("/blog");
-    revalidatePath("/contact");
-    revalidatePath("/wellness");
-    revalidatePath("/gastronomy");
-    revalidatePath("/highlights");
-    revalidatePath("/charter");
-    revalidatePath("/rooms");
-    revalidatePath("/royal-suites");
-    revalidatePath("/luxury-cabins");
+    for (const path of REVALIDATE_PATHS) {
+      revalidatePath(path);
+    }
 
     return NextResponse.json(
-      { settings: saved, ok: true, savedAt: new Date().toISOString() },
+      {
+        settings: saved,
+        device,
+        ok: true,
+        savedAt: new Date().toISOString(),
+      },
       {
         headers: {
           "Cache-Control": "no-store, max-age=0",

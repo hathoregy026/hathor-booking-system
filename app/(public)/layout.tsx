@@ -7,13 +7,15 @@ import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
 import { TypographySettingsProvider } from "@/components/public/TypographySettingsProvider";
 import { WebsiteTextProvider } from "@/components/public/WebsiteTextProvider";
 import { resolveSiteImageMap } from "@/lib/resolve-site-images";
-import { getHeroLogoTuneSafe } from "@/lib/hero-logo-tune";
+import { getHeroLogoTuneSafe, getHeroLogoTuneMobileSafe } from "@/lib/hero-logo-tune";
 import { heroLogoTuneToImportantCss } from "@/lib/hero-logo-tune-shared";
 import {
   getTypographySettingsSafe,
-  typographyToImportantCss,
+  getTypographySettingsMobileSafe,
 } from "@/lib/typography-settings";
-import { getWebsiteTextSafe } from "@/lib/website-text";
+import { typographyToImportantCss } from "@/lib/typography-settings-shared";
+import { getWebsiteTextSafe, getWebsiteTextMobileSafe } from "@/lib/website-text";
+import { combineDesktopAndPhoneCss } from "@/lib/admin-device-preview";
 import "../hathor-fonts.css";
 import "../public.css";
 import "../lux-footer.css";
@@ -109,17 +111,37 @@ export default async function PublicSiteLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
-  const [siteImages, typography, heroLogoTune, websiteText] = await Promise.all([
+  const [
+    siteImages,
+    typography,
+    typographyMobile,
+    heroLogoTune,
+    heroLogoTuneMobile,
+    websiteText,
+    websiteTextMobile,
+  ] = await Promise.all([
     resolveSiteImageMap(),
     getTypographySettingsSafe(),
+    getTypographySettingsMobileSafe(),
     getHeroLogoTuneSafe(),
+    getHeroLogoTuneMobileSafe(),
     getWebsiteTextSafe(),
+    getWebsiteTextMobileSafe(),
   ]);
 
   const displayFontStyle = {
     /* Installed local display face until Playfair file is added */
     ["--font-hathor-display" as string]: '"Gamgote", Georgia, serif',
   } as CSSProperties;
+
+  const typographyCss = combineDesktopAndPhoneCss(
+    typographyToImportantCss(typography),
+    typographyToImportantCss(typographyMobile),
+  );
+  const logoTuneCss = combineDesktopAndPhoneCss(
+    heroLogoTuneToImportantCss(heroLogoTune),
+    heroLogoTuneToImportantCss(heroLogoTuneMobile),
+  );
 
   return (
     <div
@@ -128,18 +150,24 @@ export default async function PublicSiteLayout({
     >
       <style
         dangerouslySetInnerHTML={{
-          __html: typographyToImportantCss(typography),
+          __html: typographyCss,
         }}
       />
       <style
         data-hathor-logo-tune-site
         dangerouslySetInnerHTML={{
-          __html: heroLogoTuneToImportantCss(heroLogoTune),
+          __html: logoTuneCss,
         }}
       />
       <SiteImagesProvider images={siteImages}>
-        <TypographySettingsProvider initial={typography}>
-          <WebsiteTextProvider initial={websiteText}>
+        <TypographySettingsProvider
+          initial={typography}
+          initialMobile={typographyMobile}
+        >
+          <WebsiteTextProvider
+            initial={websiteText}
+            initialMobile={websiteTextMobile}
+          >
             <PublicLayout>{children}</PublicLayout>
           </WebsiteTextProvider>
         </TypographySettingsProvider>

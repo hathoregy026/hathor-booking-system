@@ -9,8 +9,13 @@ import {
   type ReactNode,
 } from "react";
 import { AlignCenter, AlignLeft, AlignRight, Loader2, RotateCcw, Save, Undo2 } from "lucide-react";
+import { AdminDevicePreviewToggle } from "@/components/admin/AdminDevicePreviewToggle";
 import { useToast } from "@/components/admin/ToastProvider";
 import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
+import {
+  ADMIN_PHONE_PREVIEW_WIDTH,
+  type AdminDevicePreview,
+} from "@/lib/admin-device-preview";
 import {
   DEFAULT_HERO_LAYOUT,
   DEFAULT_HERO_PAGES,
@@ -321,12 +326,23 @@ function HexColorInput({
 
 export function TypographyStylesPanel() {
   const { showToast } = useToast();
-  const [settings, setSettings] = useState<TypographySettings>(
+  const [device, setDevice] = useState<AdminDevicePreview>("desktop");
+  const [desktopSettings, setDesktopSettings] = useState<TypographySettings>(
     DEFAULT_TYPOGRAPHY_SETTINGS,
   );
-  const [saved, setSaved] = useState<TypographySettings>(
+  const [phoneSettings, setPhoneSettings] = useState<TypographySettings>(
     DEFAULT_TYPOGRAPHY_SETTINGS,
   );
+  const [savedDesktop, setSavedDesktop] = useState<TypographySettings>(
+    DEFAULT_TYPOGRAPHY_SETTINGS,
+  );
+  const [savedPhone, setSavedPhone] = useState<TypographySettings>(
+    DEFAULT_TYPOGRAPHY_SETTINGS,
+  );
+  const settings = device === "phone" ? phoneSettings : desktopSettings;
+  const setSettings =
+    device === "phone" ? setPhoneSettings : setDesktopSettings;
+  const saved = device === "phone" ? savedPhone : savedDesktop;
   const [group, setGroup] = useState<EditorGroup>("hero");
   const [heroLine, setHeroLine] = useState<"hero_title" | "hero_subtitle">(
     "hero_title",
@@ -356,11 +372,19 @@ export function TypographyStylesPanel() {
     (async () => {
       try {
         const response = await adminFetch("/api/admin/typography");
-        const data = (await response.json()) as { settings?: unknown };
+        const data = (await response.json()) as {
+          settings?: unknown;
+          settingsMobile?: unknown;
+        };
         if (cancelled) return;
-        const next = parseTypographySettings(data.settings);
-        setSettings(next);
-        setSaved(next);
+        const nextDesktop = parseTypographySettings(data.settings);
+        const nextPhone = parseTypographySettings(
+          data.settingsMobile ?? data.settings,
+        );
+        setDesktopSettings(nextDesktop);
+        setSavedDesktop(nextDesktop);
+        setPhoneSettings(nextPhone);
+        setSavedPhone(nextPhone);
       } catch (error) {
         if (!cancelled) {
           showToast(
@@ -402,6 +426,11 @@ export function TypographyStylesPanel() {
   }, [group]);
 
   const dirty = !isTypographySettingsEqual(settings, saved);
+  const desktopDirty = !isTypographySettingsEqual(
+    desktopSettings,
+    savedDesktop,
+  );
+  const phoneDirty = !isTypographySettingsEqual(phoneSettings, savedPhone);
   const activeRole: TypographyRole =
     group === "hero"
       ? heroLine
@@ -578,7 +607,7 @@ export function TypographyStylesPanel() {
       const response = await adminFetch("/api/admin/typography", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ settings: payload }),
+        body: JSON.stringify({ settings: payload, device }),
       });
       const data = (await response.json()) as {
         settings?: unknown;
@@ -590,8 +619,14 @@ export function TypographyStylesPanel() {
       }
       const next = parseTypographySettings(data.settings ?? payload);
       setSettings(next);
-      setSaved(next);
-      showToast("success", "Saved to live site — typography and wording updated.");
+      if (device === "phone") setSavedPhone(next);
+      else setSavedDesktop(next);
+      showToast(
+        "success",
+        device === "phone"
+          ? "Phone typography saved — live phones (≤767px) updated."
+          : "Desktop typography saved — live site updated.",
+      );
       void fetch(`/api/typography?t=${Date.now()}`, { cache: "no-store" }).catch(
         () => {},
       );
@@ -624,10 +659,18 @@ export function TypographyStylesPanel() {
         <div>
           <h1 className="admin-page-title">Typography &amp; Styles</h1>
           <p className="admin-page-subtitle">
-            Pick any page hero, rewrite its two title lines, drag to place, then
-            Save. Styles apply site-wide; wording is per page.
+            Switch Desktop / Phone to edit each version. Phone preview is a{" "}
+            {ADMIN_PHONE_PREVIEW_WIDTH}px frame linked to the live phone site
+            (≤767px).
           </p>
         </div>
+        <AdminDevicePreviewToggle
+          value={device}
+          onChange={setDevice}
+          desktopDirty={desktopDirty}
+          phoneDirty={phoneDirty}
+          disabled={saving}
+        />
       </header>
 
       <div className="typo-easy__workspace">
@@ -1209,11 +1252,21 @@ export function TypographyStylesPanel() {
         </aside>
 
       <div
-        className={`typo-stage typo-stage--${stageTone}${group === "hero" ? " typo-stage--hero-pair" : ""}`}
-        key={group}
+        className={`typo-stage-wrap${device === "phone" ? " typo-stage-wrap--phone" : ""}`}
+        style={
+          device === "phone"
+            ? { maxWidth: ADMIN_PHONE_PREVIEW_WIDTH }
+            : undefined
+        }
+      >
+      <div
+        className={`typo-stage typo-stage--${stageTone}${group === "hero" ? " typo-stage--hero-pair" : ""}${device === "phone" ? " typo-stage--phone" : ""}`}
+        key={`${group}-${device}`}
       >
         <div className="typo-stage__banner">
-          <span className="typo-stage__editing">You are editing</span>
+          <span className="typo-stage__editing">
+            You are editing ({device === "phone" ? "phone" : "desktop"})
+          </span>
           <strong className="typo-stage__role">{editingLabel}</strong>
         </div>
         <p className="typo-stage__where">{GROUP_WHERE[group]}</p>
@@ -1405,14 +1458,17 @@ export function TypographyStylesPanel() {
         </p>
       </div>
       </div>
+      </div>
 
       <div
         className={`typo-easy__savebar${dirty ? " typo-easy__savebar--dirty" : ""}`}
       >
         <p className="typo-easy__savebar-status">
           {dirty
-            ? "Draft only — click Save to update the live website."
-            : "Saved — live site matches this."}
+            ? device === "phone"
+              ? "Phone draft — Save updates phones only (≤767px)."
+              : "Desktop draft — Save updates desktops / tablets."
+            : "Saved — live site matches this device."}
         </p>
         <div className="typo-easy__savebar-actions">
           <button
@@ -1435,7 +1491,7 @@ export function TypographyStylesPanel() {
             ) : (
               <Save className="h-4 w-4" />
             )}
-            Save to live site
+            {device === "phone" ? "Save phone to live site" : "Save desktop to live site"}
           </button>
         </div>
       </div>

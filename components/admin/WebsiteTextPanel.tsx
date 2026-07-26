@@ -2,8 +2,13 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ExternalLink, Loader2, RotateCcw, Save } from "lucide-react";
+import { AdminDevicePreviewToggle } from "@/components/admin/AdminDevicePreviewToggle";
 import { useToast } from "@/components/admin/ToastProvider";
 import { adminFetch } from "@/lib/admin-fetch";
+import {
+  ADMIN_PHONE_PREVIEW_WIDTH,
+  type AdminDevicePreview,
+} from "@/lib/admin-device-preview";
 import {
   DEFAULT_WEBSITE_TEXT,
   WEBSITE_TEXT_NAV,
@@ -147,13 +152,33 @@ export function WebsiteTextPanel() {
   const { showToast } = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [text, setText] = useState<WebsiteText>(DEFAULT_WEBSITE_TEXT);
-  const [savedText, setSavedText] = useState<WebsiteText>(DEFAULT_WEBSITE_TEXT);
-  const [typo, setTypo] = useState<TypographySettings>(DEFAULT_TYPOGRAPHY_SETTINGS);
-  const [savedTypo, setSavedTypo] = useState<TypographySettings>(
+  const [device, setDevice] = useState<AdminDevicePreview>("desktop");
+  const [desktopText, setDesktopText] = useState<WebsiteText>(DEFAULT_WEBSITE_TEXT);
+  const [phoneText, setPhoneText] = useState<WebsiteText>(DEFAULT_WEBSITE_TEXT);
+  const [savedDesktopText, setSavedDesktopText] =
+    useState<WebsiteText>(DEFAULT_WEBSITE_TEXT);
+  const [savedPhoneText, setSavedPhoneText] =
+    useState<WebsiteText>(DEFAULT_WEBSITE_TEXT);
+  const [desktopTypo, setDesktopTypo] = useState<TypographySettings>(
+    DEFAULT_TYPOGRAPHY_SETTINGS,
+  );
+  const [phoneTypo, setPhoneTypo] = useState<TypographySettings>(
+    DEFAULT_TYPOGRAPHY_SETTINGS,
+  );
+  const [savedDesktopTypo, setSavedDesktopTypo] = useState<TypographySettings>(
+    DEFAULT_TYPOGRAPHY_SETTINGS,
+  );
+  const [savedPhoneTypo, setSavedPhoneTypo] = useState<TypographySettings>(
     DEFAULT_TYPOGRAPHY_SETTINGS,
   );
   const [activePage, setActivePage] = useState<PageId>("home");
+
+  const text = device === "phone" ? phoneText : desktopText;
+  const setText = device === "phone" ? setPhoneText : setDesktopText;
+  const savedText = device === "phone" ? savedPhoneText : savedDesktopText;
+  const typo = device === "phone" ? phoneTypo : desktopTypo;
+  const setTypo = device === "phone" ? setPhoneTypo : setDesktopTypo;
+  const savedTypo = device === "phone" ? savedPhoneTypo : savedDesktopTypo;
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -163,16 +188,32 @@ export function WebsiteTextPanel() {
         adminFetch("/api/admin/typography"),
       ]);
       if (textRes.ok) {
-        const data = (await textRes.json()) as { settings?: unknown };
-        const parsed = parseWebsiteText(data.settings);
-        setText(parsed);
-        setSavedText(parsed);
+        const data = (await textRes.json()) as {
+          settings?: unknown;
+          settingsMobile?: unknown;
+        };
+        const parsedDesktop = parseWebsiteText(data.settings);
+        const parsedPhone = parseWebsiteText(
+          data.settingsMobile ?? data.settings,
+        );
+        setDesktopText(parsedDesktop);
+        setSavedDesktopText(parsedDesktop);
+        setPhoneText(parsedPhone);
+        setSavedPhoneText(parsedPhone);
       }
       if (typoRes.ok) {
-        const data = (await typoRes.json()) as { settings?: unknown };
-        const parsed = parseTypographySettings(data.settings);
-        setTypo(parsed);
-        setSavedTypo(parsed);
+        const data = (await typoRes.json()) as {
+          settings?: unknown;
+          settingsMobile?: unknown;
+        };
+        const parsedDesktop = parseTypographySettings(data.settings);
+        const parsedPhone = parseTypographySettings(
+          data.settingsMobile ?? data.settings,
+        );
+        setDesktopTypo(parsedDesktop);
+        setSavedDesktopTypo(parsedDesktop);
+        setPhoneTypo(parsedPhone);
+        setSavedPhoneTypo(parsedPhone);
       }
     } catch {
       showToast("error", "Failed to load website text");
@@ -214,6 +255,22 @@ export function WebsiteTextPanel() {
     [text, savedText, typo, savedTypo],
   );
 
+  const desktopDirty = useMemo(
+    () =>
+      JSON.stringify(desktopText) !== JSON.stringify(savedDesktopText) ||
+      JSON.stringify(desktopTypo.hero_pages) !==
+        JSON.stringify(savedDesktopTypo.hero_pages),
+    [desktopText, savedDesktopText, desktopTypo, savedDesktopTypo],
+  );
+
+  const phoneDirty = useMemo(
+    () =>
+      JSON.stringify(phoneText) !== JSON.stringify(savedPhoneText) ||
+      JSON.stringify(phoneTypo.hero_pages) !==
+        JSON.stringify(savedPhoneTypo.hero_pages),
+    [phoneText, savedPhoneText, phoneTypo, savedPhoneTypo],
+  );
+
   const patchHome = <K extends keyof WebsiteText["home"]>(
     key: K,
     value: WebsiteText["home"][K],
@@ -251,12 +308,12 @@ export function WebsiteTextPanel() {
         adminFetch("/api/admin/website-text", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ settings: text }),
+          body: JSON.stringify({ settings: text, device }),
         }),
         adminFetch("/api/admin/typography", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ settings: nextTypo }),
+          body: JSON.stringify({ settings: nextTypo, device }),
         }),
       ]);
 
@@ -265,11 +322,23 @@ export function WebsiteTextPanel() {
 
       const textData = (await textRes.json()) as { settings?: unknown };
       const typoData = (await typoRes.json()) as { settings?: unknown };
-      setText(parseWebsiteText(textData.settings));
-      setSavedText(parseWebsiteText(textData.settings));
-      setTypo(parseTypographySettings(typoData.settings));
-      setSavedTypo(parseTypographySettings(typoData.settings));
-      showToast("success", "Website text saved to live site");
+      const nextText = parseWebsiteText(textData.settings);
+      const nextSavedTypo = parseTypographySettings(typoData.settings);
+      setText(nextText);
+      setTypo(nextSavedTypo);
+      if (device === "phone") {
+        setSavedPhoneText(nextText);
+        setSavedPhoneTypo(nextSavedTypo);
+      } else {
+        setSavedDesktopText(nextText);
+        setSavedDesktopTypo(nextSavedTypo);
+      }
+      showToast(
+        "success",
+        device === "phone"
+          ? "Phone text saved — live phones (≤767px) updated."
+          : "Website text saved to live site",
+      );
     } catch (err) {
       showToast(
         "error",
@@ -335,9 +404,16 @@ export function WebsiteTextPanel() {
         <div className="wt-topbar__copy">
           <h1 className="wt-topbar__title">Website Text</h1>
           <p className="wt-topbar__subtitle">
-            Edit copy page by page, in site order. Images stay under Website
-            Images.
+            Switch Desktop / Phone to edit each version. Phone preview shows the
+            live page in a {ADMIN_PHONE_PREVIEW_WIDTH}px frame.
           </p>
+          <AdminDevicePreviewToggle
+            value={device}
+            onChange={setDevice}
+            desktopDirty={desktopDirty}
+            phoneDirty={phoneDirty}
+            disabled={saving}
+          />
         </div>
         <div className="wt-topbar__actions">
           <button
@@ -360,7 +436,7 @@ export function WebsiteTextPanel() {
             ) : (
               <Save className="h-4 w-4" aria-hidden />
             )}
-            Save text
+            {device === "phone" ? "Save phone text" : "Save text"}
           </button>
         </div>
       </header>
@@ -392,9 +468,25 @@ export function WebsiteTextPanel() {
               rel="noopener noreferrer"
             >
               <ExternalLink className="h-3.5 w-3.5" aria-hidden />
-              Preview
+              Open live
             </a>
           </div>
+
+          {device === "phone" ? (
+            <div className="admin-phone-iframe-shell">
+              <p className="admin-phone-iframe-shell__label">
+                Phone live preview · {ADMIN_PHONE_PREVIEW_WIDTH}px — save first
+                to see copy changes
+              </p>
+              <iframe
+                key={`${activeMeta.href}-phone`}
+                title={`Phone preview · ${activeMeta.label}`}
+                src={`${activeMeta.href}${activeMeta.href.includes("?") ? "&" : "?"}adminPhonePreview=1`}
+                className="admin-phone-iframe"
+                style={{ width: ADMIN_PHONE_PREVIEW_WIDTH }}
+              />
+            </div>
+          ) : null}
 
           <div className="wt-editor__form">
             <Section
