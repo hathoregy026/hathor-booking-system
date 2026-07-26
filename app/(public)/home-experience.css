@@ -2338,8 +2338,15 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   position: relative;
   width: 100vw;
   max-width: 100vw;
-  overflow: visible !important;
-  /* Perspective lives on the band transform — survives ancestor overflow-x */
+  /*
+    Clip to a viewport-sized layer, then rotate that layer.
+    Rotating an unclipped full-strip layer makes Chrome downsample
+    the whole marquee texture → soft/pixelated cards.
+  */
+  overflow: hidden;
+  padding: 56px 0 96px;
+  transform: rotateZ(-3deg);
+  transform-origin: 50% 55%;
 }
 
 .gallery-marquee__band {
@@ -2349,16 +2356,8 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   width: 130vw;
   max-width: none;
   margin-left: -15vw;
-  overflow: visible !important;
-  /*
-    Tilted strip via rotateZ only.
-    rotateY/perspective made on-screen gaps look unequal and softened images.
-    Motion, card size, and marquee behavior stay the same.
-  */
-  transform:
-    translateX(-6vw)
-    translateY(140px)
-    rotateZ(-3deg);
+  overflow: visible;
+  transform: translateX(-6vw) translateY(48px);
   transform-origin: 0% 100%;
   transform-style: flat;
   pointer-events: none;
@@ -2368,7 +2367,6 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   display: flex;
   width: max-content;
   gap: var(--gallery-gap);
-  will-change: transform;
   animation: gallery-marquee-rtl var(--gallery-duration) linear infinite;
   pointer-events: none;
   padding-block: clamp(10px, 1.2vw, 16px);
@@ -2417,9 +2415,8 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
 }
 
 /*
-  2× supersample inside the card: browser rasterizes at higher res, then
-  scales down — sharper than painting the full-res bitmap through a tilted layer.
-  Layout box (card size / gap) is unchanged.
+  Decode/paint each photo at 2× the card size, then scale into the frame
+  so tilted/composited output stays sharp.
 */
 .gallery-item img {
   position: absolute;
@@ -2844,10 +2841,12 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
   .gallery-marquee__band {
     width: 145vw;
     margin-left: -22vw;
-    transform:
-      translateX(-4vw)
-      translateY(100px)
-      rotateZ(-2.5deg);
+    transform: translateX(-4vw) translateY(36px);
+  }
+
+  .gallery-marquee__stage {
+    transform: rotateZ(-2.5deg);
+    padding: 48px 0 80px;
   }
 
   .instagram-circle--burst {
@@ -2949,10 +2948,12 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
   .gallery-marquee__band {
     width: 160vw;
     margin-left: -28vw;
-    transform:
-      translateX(-2vw)
-      translateY(72px)
-      rotateZ(-2deg);
+    transform: translateX(-2vw) translateY(28px);
+  }
+
+  .gallery-marquee__stage {
+    transform: rotateZ(-2deg);
+    padding: 40px 0 64px;
   }
 
   .instagram-follow {
@@ -2993,6 +2994,12 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
     width: 100vw;
     max-width: 100vw;
     margin-left: 0;
+  }
+
+  .gallery-marquee__stage {
+    transform: none;
+    overflow: visible;
+    padding: 0;
   }
 
   .instagram-follow__copy {
