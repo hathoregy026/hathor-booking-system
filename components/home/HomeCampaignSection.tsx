@@ -139,8 +139,8 @@ export function HomeCampaignSection({
         });
 
         /*
-         * Phase B — hold finished invite (locked, no reverse), then a slow
-         * elegant photograph rise that simply covers the text.
+         * Phase B — hold locked invite, then a LONG unhurried photograph rise.
+         * Most of the locked scroll is spent on the image cover alone.
          */
         const coverTl = gsap.timeline({ paused: true });
 
@@ -155,25 +155,28 @@ export function HomeCampaignSection({
           coverTl.set(reveal, { yPercent: 100, force3D: true }, 0);
         }
 
-        /* Hold — invite stays locked and fully readable */
-        coverTl.to({}, { duration: 0.38 }, 0);
+        /* Brief hold — invite locked, fully readable */
+        coverTl.to({}, { duration: 0.16 }, 0);
 
-        /* Slow silk cover — text does not reverse; image simply rises over it */
+        /*
+         * Photograph rises for the majority of the stage scroll.
+         * power3.inOut + heavy scrub = luxury glide, not a snap.
+         */
         if (reveal) {
           coverTl.to(
             reveal,
             {
               yPercent: 0,
-              duration: 0.48,
-              ease: "power2.inOut",
+              duration: 0.72,
+              ease: "power3.inOut",
               force3D: true,
             },
-            0.38,
+            0.16,
           );
         }
 
-        /* Settle on the photograph before title */
-        coverTl.to({}, { duration: 0.08 }, 0.86);
+        /* Settle before on-image copy */
+        coverTl.to({}, { duration: 0.06 }, 0.88);
 
         if (chars.length) {
           coverTl.to(
@@ -181,12 +184,12 @@ export function HomeCampaignSection({
             {
               yPercent: 0,
               autoAlpha: 1,
-              stagger: 0.018,
-              duration: 0.18,
+              stagger: 0.02,
+              duration: 0.16,
               ease: "none",
               force3D: true,
             },
-            0.9,
+            0.92,
           );
         }
         if (book) {
@@ -194,22 +197,22 @@ export function HomeCampaignSection({
             book,
             {
               autoAlpha: 1,
-              duration: 0.12,
+              duration: 0.1,
               ease: "none",
             },
-            0.98,
+            1.0,
           );
         }
 
-        coverTl.to({}, { duration: 0.16 }, 1.08);
+        coverTl.to({}, { duration: 0.18 }, 1.08);
 
         ScrollTrigger.create({
           id: "hcta-stage",
           trigger: track,
           start: "top top",
           end: "bottom bottom",
-          /* Higher scrub = softer, less rushy lag behind the wheel */
-          scrub: 1.15,
+          /* Heavy lag so the image eases behind the wheel */
+          scrub: 2.1,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
             const maxY = Math.max(0, track.offsetHeight - window.innerHeight);
