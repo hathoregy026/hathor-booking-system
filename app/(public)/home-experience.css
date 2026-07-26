@@ -2638,6 +2638,15 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
   pointer-events: none;
 }
 
+.campaign-fg-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+}
+
 .campaign-fg-motion {
   display: flex;
   flex-direction: column;
@@ -2649,7 +2658,7 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
 }
 
 .campaign-fg-motion .campaign-heading,
-.campaign-fg-motion .campaign-book-btn {
+.campaign-fg-stack .campaign-book-btn {
   pointer-events: auto;
 }
 
@@ -2676,17 +2685,23 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
   will-change: transform, opacity;
 }
 
-.campaign-book-btn {
-  background: rgba(250, 248, 245, 0.92);
-  border-color: var(--gold);
-  color: var(--gold);
-  box-shadow: 0 10px 28px rgba(11, 9, 7, 0.28);
+/* Stroke-only pill — same footprint as site .btn, transparent fill, white type + border */
+.campaign-section .btn.campaign-book-btn {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.92) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: none !important;
 }
 
-.campaign-book-btn:hover {
-  background: var(--gold);
-  border-color: var(--gold);
-  color: #0b0907;
+.campaign-section .btn.campaign-book-btn:hover {
+  background: transparent !important;
+  background-color: transparent !important;
+  border-color: #ffffff !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

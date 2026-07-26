@@ -926,6 +926,8 @@ export function useExScrollMotion() {
       lenis?.destroy();
       try {
         ScrollTrigger.getAll().forEach((st) => {
+          const id = st.vars && String(st.vars.id || "");
+          if (id.startsWith("campaign-")) return;
           const trigger = st.trigger;
           if (
             trigger instanceof Element &&
