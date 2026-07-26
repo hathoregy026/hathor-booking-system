@@ -2584,7 +2584,7 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
   backface-visibility: hidden;
 }
 
-/* Full-bleed media — always edge-to-edge, never inset/clipped window */
+/* Full-bleed media — oversized vertically so soft drift never shows edges */
 .hcta-media {
   position: absolute;
   inset: 0;
@@ -2599,14 +2599,17 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
 .hcta-media span,
 .hcta-media > span {
   position: absolute !important;
-  inset: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: -9% !important;
+  bottom: auto !important;
   width: 100% !important;
-  height: 100% !important;
+  height: 118% !important;
   max-width: none !important;
   object-fit: cover !important;
   object-position: center center !important;
   transform-origin: center center;
-  will-change: transform;
+  will-change: transform, filter;
 }
 
 .hcta-veil {
@@ -2693,6 +2696,7 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
   .hcta-media .hcta-bg,
   .hcta-media img.hcta-bg {
     transform: none !important;
+    filter: none !important;
   }
 }
 

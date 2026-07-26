@@ -26,7 +26,7 @@ type LenisLike = {
  * Call-to-action stage — zero layout mutation.
  * Tall CSS track reserves space from first paint. The frame is transform-stuck
  * inside that track (no GSAP pin / no pin-spacer). Scroll progress drives
- * image reveal → quiet beat → letter rise → hold → release.
+ * soft exposure + drift → quiet beat → letter rise → hold → release.
  */
 export function HomeCampaignSection({
   title,
@@ -50,6 +50,7 @@ export function HomeCampaignSection({
     const media =
       track.querySelector<HTMLElement>("img.hcta-bg") ||
       track.querySelector<HTMLElement>("img");
+    const veil = track.querySelector<HTMLElement>(".hcta-veil");
     const chars = gsap.utils.toArray<HTMLElement>(
       track.querySelectorAll(".hcta-heading .hcta-char"),
     );
@@ -72,21 +73,38 @@ export function HomeCampaignSection({
       ctx = gsap.context(() => {
         if (reduced) {
           gsap.set(frame, { clearProps: "transform" });
-          if (media) gsap.set(media, { scale: 1, autoAlpha: 1 });
+          if (media) {
+            gsap.set(media, {
+              clearProps: "filter,transform",
+              yPercent: 0,
+              autoAlpha: 1,
+            });
+          }
+          if (veil) gsap.set(veil, { autoAlpha: 1 });
           if (chars.length) gsap.set(chars, { yPercent: 0, autoAlpha: 1 });
           if (book) gsap.set(book, { autoAlpha: 1 });
           return;
         }
 
         /*
-         * Full-bleed always — never inset/clip (that painted the black box).
-         * Entrance is Ken Burns zoom inside overflow:hidden, so edges stay covered.
+         * Full-bleed always (no inset clip, no Ken Burns zoom).
+         * Image motion: soft exposure lift + slow vertical drift —
+         * editorial / luxury, layout untouched.
          */
         if (mediaWrap) {
           gsap.set(mediaWrap, { clearProps: "clipPath" });
         }
         if (media) {
-          gsap.set(media, { scale: 1.18, autoAlpha: 1, force3D: true });
+          gsap.set(media, {
+            scale: 1,
+            yPercent: 10,
+            filter: "brightness(0.48) saturate(0.78)",
+            autoAlpha: 1,
+            force3D: true,
+          });
+        }
+        if (veil) {
+          gsap.set(veil, { autoAlpha: 0.92 });
         }
         if (chars.length) {
           gsap.set(chars, { yPercent: 115, autoAlpha: 0, force3D: true });
@@ -98,22 +116,34 @@ export function HomeCampaignSection({
 
         const story = gsap.timeline({ paused: true });
 
-        /* 1) Full-screen image settles from soft zoom */
+        /* 1) Dawn / exposure — image wakes into full light */
         if (media) {
           story.to(
             media,
             {
-              scale: 1,
-              duration: 0.34,
+              yPercent: 0,
+              filter: "brightness(1) saturate(1)",
+              duration: 0.36,
               ease: "none",
               force3D: true,
             },
             0,
           );
         }
+        if (veil) {
+          story.to(
+            veil,
+            {
+              autoAlpha: 1,
+              duration: 0.36,
+              ease: "none",
+            },
+            0,
+          );
+        }
 
         /* 2) Quiet beat before copy */
-        story.to({}, { duration: 0.1 }, 0.34);
+        story.to({}, { duration: 0.1 }, 0.36);
 
         /* 3) Letter rise */
         if (chars.length) {
@@ -127,7 +157,7 @@ export function HomeCampaignSection({
               ease: "none",
               force3D: true,
             },
-            0.44,
+            0.46,
           );
         }
         if (book) {
@@ -138,12 +168,12 @@ export function HomeCampaignSection({
               duration: 0.1,
               ease: "none",
             },
-            0.52,
+            0.54,
           );
         }
 
         /* 4) Reading pause while still stuck */
-        story.to({}, { duration: 0.28 }, 0.64);
+        story.to({}, { duration: 0.28 }, 0.66);
 
         const sync = (progress: number) => {
           const maxY = Math.max(0, track.offsetHeight - window.innerHeight);
