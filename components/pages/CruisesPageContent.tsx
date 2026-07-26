@@ -44,11 +44,11 @@ export function CruisesPageContent() {
 
         <section className="about-section cruise-intro" id="intro">
           <div className="section-inner cruise-intro-inner">
-            <h2 className="cruise-intro-title">
+            <p className="cruise-eyebrow cruise-reveal">Hathor Voyages</p>
+            <h2 className="cruise-intro-title typo-page-title">
               <span className="cruise-intro-line">{cruisesText.sectionTitle}</span>
             </h2>
-            <p className="cruise-eyebrow cruise-reveal">Hathor Voyages</p>
-            <p className="cruise-intro-copy cruise-reveal">
+            <p className="cruise-intro-copy cruise-reveal typo-body-text">
               {CRUISES_PAGE.hero.subtitle}
             </p>
             <div className="cruise-stats cruise-reveal">
@@ -79,6 +79,7 @@ export function CruisesPageContent() {
         <section className="cruise-experience">
           <div className="cruise-experience-inner">
             <div className="cruise-exp-copy">
+              <p className="cruise-eyebrow cruise-reveal">Onboard</p>
               <h2 className="cruise-exp-title">
                 {continueLines.map((line) => (
                   <span key={line} className="cruise-intro-line">
@@ -86,7 +87,6 @@ export function CruisesPageContent() {
                   </span>
                 ))}
               </h2>
-              <p className="cruise-eyebrow cruise-reveal">Onboard</p>
               <p className="cruise-intro-copy cruise-reveal">
                 {cruisesText.continueBody}
               </p>

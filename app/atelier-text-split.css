@@ -9,6 +9,12 @@
   margin: 0 -0.03em;
 }
 
+/* Prevent mid-word line breaks from per-character masks */
+.public-site .split-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
 .public-site .split-char {
   display: inline-block;
   will-change: transform, opacity;

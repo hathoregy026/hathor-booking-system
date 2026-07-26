@@ -130,15 +130,26 @@ export function splitAtelierText(el: HTMLElement): HTMLElement[] {
     if (!text || !text.trim()) return;
 
     const frag = document.createDocumentFragment();
-    [...text].forEach((ch) => {
-      const wrap = document.createElement("span");
-      wrap.className = "split-heading";
-      const span = document.createElement("span");
-      span.className = "split-char";
-      span.textContent = ch === " " ? "\u00A0" : ch;
-      wrap.appendChild(span);
-      frag.appendChild(wrap);
-      chars.push(span);
+    /* Keep words intact so chars never wrap mid-word (e.g. "legendary"). */
+    text.split(/(\s+)/).forEach((token) => {
+      if (!token) return;
+      if (/^\s+$/.test(token)) {
+        frag.appendChild(document.createTextNode(token));
+        return;
+      }
+      const word = document.createElement("span");
+      word.className = "split-word";
+      [...token].forEach((ch) => {
+        const wrap = document.createElement("span");
+        wrap.className = "split-heading";
+        const span = document.createElement("span");
+        span.className = "split-char";
+        span.textContent = ch;
+        wrap.appendChild(span);
+        word.appendChild(wrap);
+        chars.push(span);
+      });
+      frag.appendChild(word);
     });
     parent.replaceChild(frag, node);
   });

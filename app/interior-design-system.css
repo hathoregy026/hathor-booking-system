@@ -215,7 +215,10 @@ html:not([data-ex-experience]) .public-site .venetian-page .lux-kicker {
   color: #7a6a58;
 }
 
-html:not([data-ex-experience]) .public-site .venetian-page .lux-lead {
+html:not([data-ex-experience]) .public-site .venetian-page .lux-end .lux-lead,
+html:not([data-ex-experience]) .public-site .venetian-page .hlx-head .lux-lead,
+html:not([data-ex-experience]) .public-site .venetian-page .dnx .lux-lead,
+html:not([data-ex-experience]) .public-site .venetian-page .spx-intro .lux-lead {
   font-family: var(--public-title, var(--public-serif));
   font-style: normal;
   font-size: 1.0625rem;
@@ -224,14 +227,27 @@ html:not([data-ex-experience]) .public-site .venetian-page .lux-lead {
   max-width: 42rem;
 }
 
-html:not([data-ex-experience]) .public-site .venetian-page .lux-copy,
-html:not([data-ex-experience]) .public-site .venetian-page .lux-copy p {
+html:not([data-ex-experience]) .public-site .venetian-page .lux-end .lux-copy,
+html:not([data-ex-experience]) .public-site .venetian-page .lux-end .lux-copy p,
+html:not([data-ex-experience]) .public-site .venetian-page .hlx-head .lux-copy,
+html:not([data-ex-experience]) .public-site .venetian-page .hlx-head .lux-copy p,
+html:not([data-ex-experience]) .public-site .venetian-page .dnx .lux-copy,
+html:not([data-ex-experience]) .public-site .venetian-page .dnx .lux-copy p,
+html:not([data-ex-experience]) .public-site .venetian-page .spx-intro .lux-copy,
+html:not([data-ex-experience]) .public-site .venetian-page .spx-intro .lux-copy p {
   font-family: var(--public-title, var(--public-serif));
   font-size: 1.0625rem;
   font-weight: 400;
   line-height: 1.7;
   color: #3d3a36;
   max-width: 42rem;
+}
+
+/* Keep cream type on dark media frames */
+html:not([data-ex-experience]) .public-site .venetian-page .spx-frame-ui .lux-lead,
+html:not([data-ex-experience]) .public-site .venetian-page .spx-frame-ui .lux-copy,
+html:not([data-ex-experience]) .public-site .venetian-page .spx-frame-ui .lux-copy p {
+  color: rgba(245, 239, 228, 0.9) !important;
 }
 
 html:not([data-ex-experience]) .public-site .venetian-page .lux-end {
@@ -256,3 +272,40 @@ html:not([data-ex-experience]) .public-site .venetian-page .lux-cta-row {
   gap: 0.85rem;
 }
 
+
+/* Cruises experience — force readable cream type on dark (beats typography inject) */
+html:not([data-ex-experience]) .public-site .cruise-experience,
+html:not([data-ex-experience]) .public-site .cruise-experience .cruise-exp-title,
+html:not([data-ex-experience]) .public-site .cruise-experience .cruise-intro-line,
+html:not([data-ex-experience]) .public-site .cruise-experience .cruise-intro-copy,
+html:not([data-ex-experience]) .public-site .cruise-experience .cruise-exp-list,
+html:not([data-ex-experience]) .public-site .cruise-experience .cruise-exp-list a {
+  color: #f5efe4 !important;
+}
+
+html:not([data-ex-experience]) .public-site .cruise-experience .cruise-eyebrow {
+  color: #d4c28a !important;
+}
+
+html:not([data-ex-experience]) .public-site .cruise-experience .cruise-intro-copy {
+  opacity: 0.9;
+}
+
+/* No mid-word hyphens on marketing copy */
+html:not([data-ex-experience]) .public-site .cruise-intro-copy,
+html:not([data-ex-experience]) .public-site .section-body,
+html:not([data-ex-experience]) .public-site .lux-copy,
+html:not([data-ex-experience]) .public-site .lux-lead {
+  hyphens: none !important;
+  -webkit-hyphens: none !important;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+/* Stats stay even on small screens */
+@media (max-width: 640px) {
+  .cruise-stats {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+}
