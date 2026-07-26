@@ -18,11 +18,9 @@ type HomeCampaignSectionProps = {
 };
 
 /**
- * Full-bleed campaign:
- * - Short scroll pin when the image fills the viewport (pause to read)
- * - Letter-rise plays during that pause; reverses on scroll back up
- * - Book Now stays fixed (no motion); stroke-only pill
- * - Image keeps scrubbed zoom + soft parallax
+ * Full-bleed campaign — no pin (avoids layout jumps).
+ * Letters rise when the image nearly fills the viewport; reverse on scroll up.
+ * Book Now stays fixed; image keeps soft zoom/parallax only.
  */
 export function HomeCampaignSection({
   title,
@@ -43,10 +41,6 @@ export function HomeCampaignSection({
     const touch = window.matchMedia("(pointer: coarse)").matches;
     const mobile = window.innerWidth < 1024;
 
-    let charTween: gsap.core.Tween | null = null;
-    let revealed = false;
-    let disposed = false;
-
     const media =
       root.querySelector<HTMLElement>("img.campaign-bg") ||
       root.querySelector<HTMLElement>("img");
@@ -58,8 +52,13 @@ export function HomeCampaignSection({
     );
     const bg = root.querySelector<HTMLElement>("[data-parallax='bg']");
 
+    let revealed = false;
+    let charTween: gsap.core.Tween | null = null;
+    const scrubTriggers: ScrollTrigger[] = [];
+    let io: IntersectionObserver | null = null;
+
     const playLetters = () => {
-      if (disposed || revealed || !chars.length) return;
+      if (revealed || !chars.length) return;
       revealed = true;
       charTween?.kill();
       charTween = gsap.fromTo(
@@ -78,7 +77,7 @@ export function HomeCampaignSection({
     };
 
     const reverseLetters = () => {
-      if (disposed || !revealed || !chars.length) return;
+      if (!revealed || !chars.length) return;
       revealed = false;
       charTween?.kill();
       charTween = gsap.to(chars, {
@@ -92,44 +91,39 @@ export function HomeCampaignSection({
       });
     };
 
-    const triggers: ScrollTrigger[] = [];
-
-    const setup = () => {
-      if (disposed) return;
-
-      if (reduced) {
-        if (chars.length) gsap.set(chars, { yPercent: 0, autoAlpha: 1 });
-        if (media) gsap.set(media, { scale: 1 });
-        return;
-      }
-
+    if (reduced) {
+      if (chars.length) gsap.set(chars, { yPercent: 0, autoAlpha: 1 });
+      if (media) gsap.set(media, { scale: 1 });
+    } else {
       if (chars.length) {
         gsap.set(chars, { yPercent: 100, autoAlpha: 0, force3D: true });
       }
 
       /*
-       * Pin = scroll pause while the full-bleed image holds.
-       * Letter rise fires on enter; reverse only when leaving back upward.
+       * Letter rise when image is nearly full-bleed (high ratio).
+       * No ScrollTrigger pin — pin-spacer was jumping the page.
        */
-      triggers.push(
-        ScrollTrigger.create({
-          id: "campaign-pin",
-          trigger: root,
-          start: "top top",
-          end: () => `+=${Math.round(window.innerHeight * 0.75)}`,
-          pin: true,
-          pinSpacing: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          onEnter: playLetters,
-          onEnterBack: playLetters,
-          onLeaveBack: reverseLetters,
-        }),
+      io = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          if (!entry) return;
+          const top = entry.boundingClientRect.top;
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.72) {
+            playLetters();
+          } else if (!entry.isIntersecting && top > 0) {
+            reverseLetters();
+          }
+        },
+        {
+          threshold: [0, 0.4, 0.55, 0.72, 0.85, 1],
+          rootMargin: "0px",
+        },
       );
+      io.observe(root);
 
       if (media) {
         gsap.set(media, { scale: 1.1, force3D: true });
-        triggers.push(
+        scrubTriggers.push(
           ScrollTrigger.create({
             id: "campaign-zoom",
             trigger: root,
@@ -148,7 +142,7 @@ export function HomeCampaignSection({
 
       if (!touch && !mobile) {
         if (bg) {
-          triggers.push(
+          scrubTriggers.push(
             ScrollTrigger.create({
               id: "campaign-parallax-bg",
               trigger: root,
@@ -158,24 +152,24 @@ export function HomeCampaignSection({
               invalidateOnRefresh: true,
               onUpdate: (self) => {
                 gsap.set(bg, {
-                  yPercent: gsap.utils.interpolate(-4, 4, self.progress),
+                  yPercent: gsap.utils.interpolate(-3, 3, self.progress),
                 });
               },
             }),
           );
         }
         if (headingMotion) {
-          triggers.push(
+          scrubTriggers.push(
             ScrollTrigger.create({
               id: "campaign-parallax-fg",
               trigger: root,
               start: "top bottom",
               end: "bottom top",
-              scrub: 0.5,
+              scrub: 0.45,
               invalidateOnRefresh: true,
               onUpdate: (self) => {
                 gsap.set(headingMotion, {
-                  yPercent: gsap.utils.interpolate(-6, 6, self.progress),
+                  yPercent: gsap.utils.interpolate(-5, 5, self.progress),
                 });
               },
             }),
@@ -183,42 +177,31 @@ export function HomeCampaignSection({
         }
       }
 
-      /* Already sitting on the pinned frame (restore / deep link) */
-      const rect = root.getBoundingClientRect();
-      if (rect.top <= 2 && rect.bottom >= window.innerHeight * 0.85) {
-        playLetters();
-      }
+      requestAnimationFrame(() => {
+        const rect = root.getBoundingClientRect();
+        const vh = window.innerHeight || 1;
+        const visible = Math.min(rect.bottom, vh) - Math.max(rect.top, 0);
+        if (visible / Math.min(rect.height, vh) >= 0.72) {
+          playLetters();
+        }
+      });
+    }
 
+    const refresh = () => {
       try {
         ScrollTrigger.refresh();
       } catch {
         /* ignore */
       }
     };
-
-    /* Let Lenis + homepage ST finish booting so pin metrics stay stable */
-    const tBoot = window.setTimeout(setup, 80);
-    const tRefresh = window.setTimeout(() => {
-      try {
-        ScrollTrigger.refresh();
-      } catch {
-        /* ignore */
-      }
-    }, 500);
-    void document.fonts?.ready?.then(() => {
-      try {
-        ScrollTrigger.refresh();
-      } catch {
-        /* ignore */
-      }
-    });
+    const t1 = window.setTimeout(refresh, 200);
+    void document.fonts?.ready?.then(refresh);
 
     return () => {
-      disposed = true;
-      window.clearTimeout(tBoot);
-      window.clearTimeout(tRefresh);
+      window.clearTimeout(t1);
+      io?.disconnect();
       charTween?.kill();
-      triggers.forEach((st) => st.kill());
+      scrubTriggers.forEach((st) => st.kill());
       if (media) gsap.set(media, { clearProps: "transform" });
       if (bg) gsap.set(bg, { clearProps: "transform" });
       if (headingMotion) gsap.set(headingMotion, { clearProps: "transform" });
