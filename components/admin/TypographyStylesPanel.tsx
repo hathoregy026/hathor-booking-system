@@ -157,13 +157,14 @@ function SimpleField({
   );
 }
 
-/** Typeable number with spinner arrows (up/down). */
+/** Typeable number with explicit up/down steppers. */
 function NumberInput({
   value,
   min,
   max,
   step,
   suffix,
+  disabled,
   onChange,
   "aria-label": ariaLabel,
 }: {
@@ -172,6 +173,7 @@ function NumberInput({
   max: number;
   step: number;
   suffix?: string;
+  disabled?: boolean;
   onChange: (n: number) => void;
   "aria-label": string;
 }) {
@@ -194,8 +196,17 @@ function NumberInput({
     if (next !== value) onChange(next);
   };
 
+  const nudge = (dir: 1 | -1) => {
+    if (disabled) return;
+    const next = clamp(Number((value + dir * step).toFixed(4)));
+    setDraft(String(next));
+    if (next !== value) onChange(next);
+  };
+
   return (
-    <div className="typo-easy__number-wrap">
+    <div
+      className={`typo-easy__number-wrap${disabled ? " typo-easy__number-wrap--disabled" : ""}`}
+    >
       <input
         type="number"
         className="typo-easy__number admin-input"
@@ -203,6 +214,7 @@ function NumberInput({
         min={min}
         max={max}
         step={step}
+        disabled={disabled}
         aria-label={ariaLabel}
         onChange={(e) => {
           const raw = e.target.value;
@@ -220,6 +232,26 @@ function NumberInput({
           }
         }}
       />
+      <div className="typo-easy__number-steppers">
+        <button
+          type="button"
+          className="typo-easy__number-step"
+          aria-label={`Increase ${ariaLabel}`}
+          disabled={disabled}
+          onClick={() => nudge(1)}
+        >
+          ▲
+        </button>
+        <button
+          type="button"
+          className="typo-easy__number-step"
+          aria-label={`Decrease ${ariaLabel}`}
+          disabled={disabled}
+          onClick={() => nudge(-1)}
+        >
+          ▼
+        </button>
+      </div>
       {suffix ? <span className="typo-easy__number-suffix">{suffix}</span> : null}
     </div>
   );
@@ -598,33 +630,40 @@ export function TypographyStylesPanel() {
         </div>
       </header>
 
-      <div className="typo-rolebar" role="tablist" aria-label="Which text to edit">
-        {(Object.keys(GROUP_LABELS) as EditorGroup[]).map((key) => {
-          const on = group === key;
-          return (
-            <button
-              key={key}
-              type="button"
-              role="tab"
-              aria-selected={on}
-              className={`typo-rolebar__btn${on ? " typo-rolebar__btn--on" : ""}`}
-              onClick={() => {
-                setGroup(key);
-                if (key === "hero") setHeroLine("hero_title");
-                if (key === "on_images") setOnImagesLine("on_images_title");
-                if (key === "our_voyages") {
-                  setOurVoyagesMode("default");
-                  setOurVoyagesLine("our_voyages_title");
-                }
-              }}
-            >
-              {GROUP_LABELS[key]}
-            </button>
-          );
-        })}
-      </div>
+      <div className="typo-easy__workspace">
+        <aside className="typo-easy__rail" aria-label="Typography choices">
+          <div className="typo-rolebar typo-rolebar--rail" role="tablist">
+            {(Object.keys(GROUP_LABELS) as EditorGroup[]).map((key) => {
+              const on = group === key;
+              return (
+                <div
+                  key={key}
+                  className={`typo-rolebar__item${on ? " typo-rolebar__item--on" : ""}`}
+                >
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={on}
+                    aria-expanded={on}
+                    className={`typo-rolebar__btn${on ? " typo-rolebar__btn--on" : ""}`}
+                    onClick={() => {
+                      setGroup(key);
+                      if (key === "hero") setHeroLine("hero_title");
+                      if (key === "on_images") setOnImagesLine("on_images_title");
+                      if (key === "our_voyages") {
+                        setOurVoyagesMode("default");
+                        setOurVoyagesLine("our_voyages_title");
+                      }
+                    }}
+                  >
+                    <span>{GROUP_LABELS[key]}</span>
+                    <span className="typo-rolebar__chevron" aria-hidden>
+                      {on ? "▾" : "▸"}
+                    </span>
+                  </button>
 
-      <div className="typo-easy__controls admin-card">
+                  {on ? (
+                    <div className="typo-easy__controls admin-card">
         <SimpleField label="Font">
           <div className="typo-easy__font-dd" ref={fontMenuRef}>
             <button
@@ -737,7 +776,7 @@ export function TypographyStylesPanel() {
             <p className="typo-easy__controls-hint">
               Editing <strong>{HERO_PAGE_LABELS[heroPage]}</strong> ·{" "}
               <strong>{HERO_LINE_LABELS[heroLine]}</strong> — change the
-              wording below, then drag in the preview or use the sliders.
+              wording below, then drag in the preview or use Move X / Move Y.
               Overlap is allowed.
             </p>
 
@@ -870,52 +909,40 @@ export function TypographyStylesPanel() {
                 <span>Enable shimmer</span>
               </label>
               <div className="typo-easy__row">
-                <SimpleField
-                  label="Speed"
-                  valueLabel={`${shimmer.speed}s`}
-                >
-                  <input
-                    type="range"
-                    className="typo-easy__range"
+                <SimpleField label="Speed" valueLabel={`${shimmer.speed}s`}>
+                  <NumberInput
+                    value={shimmer.speed}
                     min={2}
                     max={40}
                     step={1}
-                    value={shimmer.speed}
+                    suffix="s"
                     disabled={!shimmer.enabled}
                     aria-label="Shimmer speed in seconds"
-                    onChange={(e) =>
-                      patchShimmer({ speed: Number(e.target.value) })
-                    }
+                    onChange={(n) => patchShimmer({ speed: n })}
                   />
                 </SimpleField>
                 <SimpleField label="Shine" valueLabel={`${shimmer.shine}%`}>
-                  <input
-                    type="range"
-                    className="typo-easy__range"
+                  <NumberInput
+                    value={shimmer.shine}
                     min={0}
                     max={100}
                     step={1}
-                    value={shimmer.shine}
+                    suffix="%"
                     disabled={!shimmer.enabled}
                     aria-label="Shine amount"
-                    onChange={(e) =>
-                      patchShimmer({ shine: Number(e.target.value) })
-                    }
+                    onChange={(n) => patchShimmer({ shine: n })}
                   />
                 </SimpleField>
                 <SimpleField label="Shadow" valueLabel={`${shimmer.shadow}%`}>
-                  <input
-                    type="range"
-                    className="typo-easy__range"
+                  <NumberInput
+                    value={shimmer.shadow}
                     min={0}
                     max={100}
                     step={1}
-                    value={shimmer.shadow}
+                    suffix="%"
                     disabled={!shimmer.enabled}
                     aria-label="Shadow amount"
-                    onChange={(e) =>
-                      patchShimmer({ shadow: Number(e.target.value) })
-                    }
+                    onChange={(n) => patchShimmer({ shadow: n })}
                   />
                 </SimpleField>
               </div>
@@ -1173,7 +1200,13 @@ export function TypographyStylesPanel() {
             Reset this style
           </button>
         </div>
-      </div>
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+        </aside>
 
       <div
         className={`typo-stage typo-stage--${stageTone}${group === "hero" ? " typo-stage--hero-pair" : ""}`}
@@ -1370,6 +1403,7 @@ export function TypographyStylesPanel() {
             ? `Align ${layout.align} · ${HERO_LINE_LABELS[heroLine]} at ${activeOffset.x}px, ${activeOffset.y}px · ${value.fontFamily} ${value.fontSize}px`
             : `Font: ${value.fontFamily} · Size: ${value.fontSize}px · Color: ${value.color}`}
         </p>
+      </div>
       </div>
 
       <div
