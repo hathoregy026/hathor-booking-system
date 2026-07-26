@@ -22,16 +22,17 @@ type GalleryInstagramFollowProps = {
 
 type FloaterKind = "image" | "emoji";
 
-type FloaterSeed = {
-  id: string;
+type FloaterTemplate = {
+  key: string;
   kind: FloaterKind;
   imageName?: SiteImageName;
   alt?: string;
   glyph?: string;
-  size: number;
 };
 
-type FloaterState = FloaterSeed & {
+type FloaterState = FloaterTemplate & {
+  instanceId: string;
+  size: number;
   x: number;
   y: number;
   vx: number;
@@ -39,9 +40,12 @@ type FloaterState = FloaterSeed & {
   rot: number;
   rotV: number;
   phase: number;
-  mode: "pop" | "float";
+  scale: number;
+  mode: "pop" | "float" | "fade";
   /** Seconds since pop started; negative = stagger wait at origin */
   popAge: number;
+  /** Seconds since the bubble became visible (popAge >= 0) */
+  lifeAge: number;
   opacity: number;
 };
 
@@ -54,10 +58,14 @@ const EMOJI_GLYPHS = [
   { glyph: "✨", label: "sparkles" },
 ] as const;
 
-const POP_COOLDOWN_MS = 1100;
-/** After pop, keep roaming farther across the section */
-const FLOAT_SPEED_CAP_IMG = 0.92;
-const FLOAT_SPEED_CAP_EMO = 1.15;
+/** Soft rate-limit only — never blocks a hover from starting a new burst */
+const POP_COOLDOWN_MS = 380;
+/** Live float duration before fade begins */
+const FLOAT_LIFE_SEC = 15;
+const FADE_DURATION_SEC = 1.15;
+const FLOAT_SPEED_CAP_IMG = 0.78;
+const FLOAT_SPEED_CAP_EMO = 0.98;
+const POP_DURATION_SEC = 2.35;
 
 function rand(min: number, max: number) {
   return min + Math.random() * (max - min);
@@ -69,8 +77,8 @@ function bounceAxis(
   min: number,
   max: number,
 ): { pos: number; vel: number } {
-  if (pos < min) return { pos: min, vel: Math.abs(vel) * 0.78 };
-  if (pos > max) return { pos: max, vel: -Math.abs(vel) * 0.78 };
+  if (pos < min) return { pos: min, vel: Math.abs(vel) * 0.62 };
+  if (pos > max) return { pos: max, vel: -Math.abs(vel) * 0.62 };
   return { pos, vel };
 }
 
@@ -84,10 +92,11 @@ function shuffleInPlace<T>(items: T[]): T[] {
   return items;
 }
 
-/**
- * Fresh random pop directions each time.
- * Angles are shuffled so images and icons are mixed — never typed into arcs.
- */
+function easeOutCubic(t: number) {
+  const x = Math.min(1, Math.max(0, t));
+  return 1 - Math.pow(1 - x, 3);
+}
+
 function randomPopPlan(count: number): Array<{
   angle: number;
   impulse: number;
@@ -97,17 +106,17 @@ function randomPopPlan(count: number): Array<{
   const spin = rand(0, Math.PI * 2);
   const angles = Array.from({ length: n }, (_, i) => {
     const base = spin + (i / n) * Math.PI * 2;
-    return base + rand(-0.65, 0.65);
+    return base + rand(-0.7, 0.7);
   });
   shuffleInPlace(angles);
 
-  const staggers = Array.from({ length: n }, () => rand(0, 0.35));
+  const staggers = Array.from({ length: n }, () => rand(0, 0.22));
   shuffleInPlace(staggers);
 
   return angles.map((angle, i) => ({
     angle,
-    impulse: rand(5.6, 10.8),
-    stagger: staggers[i] ?? rand(0, 0.3),
+    impulse: rand(4.2, 7.8),
+    stagger: staggers[i] ?? rand(0, 0.18),
   }));
 }
 
@@ -130,85 +139,75 @@ function getPopOrigin(
   };
 }
 
-function buildSeeds(): FloaterSeed[] {
-  const seeds: FloaterSeed[] = [];
+function buildTemplates(): FloaterTemplate[] {
+  const templates: FloaterTemplate[] = [];
 
   EX_GALLERY.followPreviews.forEach((preview, index) => {
-    seeds.push({
-      id: `img-${preview.imageName}-${index}`,
+    templates.push({
+      key: `img-${preview.imageName}-${index}`,
       kind: "image",
       imageName: preview.imageName,
       alt: preview.alt,
-      size: rand(96, 128),
     });
   });
 
   EMOJI_GLYPHS.forEach((item, index) => {
-    seeds.push({
-      id: `emo-${item.label}-${index}`,
+    templates.push({
+      key: `emo-${item.label}-${index}`,
       kind: "emoji",
       glyph: item.glyph,
-      size: rand(48, 60),
     });
   });
 
-  return shuffleInPlace(seeds);
+  return shuffleInPlace(templates);
 }
 
-function applyRandomPop(
-  floater: FloaterState,
+let instanceSeq = 0;
+function nextInstanceId(key: string) {
+  instanceSeq += 1;
+  return `${key}__${instanceSeq}_${Math.floor(Math.random() * 1e6)}`;
+}
+
+function createPoppedFloater(
+  template: FloaterTemplate,
   origin: { cx: number; cy: number },
   plan: { angle: number; impulse: number; stagger: number },
-) {
-  floater.size =
-    floater.kind === "image" ? rand(96, 128) : rand(48, 60);
-  floater.x = origin.cx - floater.size / 2;
-  floater.y = origin.cy - floater.size / 2;
-  floater.vx = Math.cos(plan.angle) * plan.impulse;
-  floater.vy = Math.sin(plan.angle) * plan.impulse;
-  floater.rot = rand(-18, 18);
-  floater.rotV = rand(-0.028, 0.028);
-  floater.phase = rand(0, Math.PI * 2);
-  floater.mode = "pop";
-  floater.popAge = -plan.stagger;
-  floater.opacity = 0;
+): FloaterState {
+  const size = template.kind === "image" ? rand(96, 128) : rand(48, 60);
+  return {
+    ...template,
+    instanceId: nextInstanceId(template.key),
+    size,
+    x: origin.cx - size / 2,
+    y: origin.cy - size / 2,
+    vx: Math.cos(plan.angle) * plan.impulse,
+    vy: Math.sin(plan.angle) * plan.impulse,
+    rot: rand(-14, 14),
+    rotV: rand(-0.022, 0.022),
+    phase: rand(0, Math.PI * 2),
+    scale: 0.55,
+    mode: "pop",
+    popAge: -plan.stagger,
+    lifeAge: 0,
+    opacity: 0,
+  };
 }
 
-function seedsToFloaters(
-  seeds: FloaterSeed[],
+function spawnGeneration(
+  templates: FloaterTemplate[],
   origin: { cx: number; cy: number },
 ): FloaterState[] {
-  const plan = randomPopPlan(seeds.length);
-  return seeds.map((seed, index) => {
-    const floater: FloaterState = {
-      ...seed,
-      x: 0,
-      y: 0,
-      vx: 0,
-      vy: 0,
-      rot: 0,
-      rotV: 0,
-      phase: 0,
-      mode: "pop",
-      popAge: 0,
-      opacity: 0,
-    };
-    applyRandomPop(floater, origin, plan[index]!);
-    return floater;
-  });
+  const plan = randomPopPlan(templates.length);
+  const order = shuffleInPlace(templates.map((_, i) => i));
+  return order.map((templateIndex, planIndex) =>
+    createPoppedFloater(templates[templateIndex]!, origin, plan[planIndex]!),
+  );
 }
 
-/** Re-aim from the IG hotspot — fully random directions each time. */
-function reburstFloaters(
-  floaters: FloaterState[],
-  origin: { cx: number; cy: number },
-) {
-  const plan = randomPopPlan(floaters.length);
-  const order = shuffleInPlace(floaters.map((_, i) => i));
-  order.forEach((floaterIndex, planIndex) => {
-    applyRandomPop(floaters[floaterIndex]!, origin, plan[planIndex]!);
-  });
-}
+type ParticleRender = FloaterTemplate & {
+  instanceId: string;
+  size: number;
+};
 
 export function GalleryInstagramFollow({
   title,
@@ -225,23 +224,188 @@ export function GalleryInstagramFollow({
   const igLinkRef = useRef<HTMLAnchorElement>(null);
   const fieldRef = useRef<HTMLDivElement>(null);
   const floatersRef = useRef<FloaterState[]>([]);
+  const templatesRef = useRef<FloaterTemplate[]>([]);
   const nodeRefs = useRef<Map<string, HTMLSpanElement>>(new Map());
   const rafRef = useRef(0);
   const timeRef = useRef(0);
   const cooldownRef = useRef(false);
-  const seedsRef = useRef<FloaterSeed[]>([]);
-  const [seeds, setSeeds] = useState<FloaterSeed[]>([]);
-  const [active, setActive] = useState(false);
+  const loopRunningRef = useRef(false);
+  const [particles, setParticles] = useState<ParticleRender[]>([]);
+  const [fieldActive, setFieldActive] = useState(false);
   const reducedRef = useRef(false);
 
+  const syncParticleList = useCallback((list: FloaterState[]) => {
+    setParticles(
+      list.map((f) => ({
+        instanceId: f.instanceId,
+        key: f.key,
+        kind: f.kind,
+        imageName: f.imageName,
+        alt: f.alt,
+        glyph: f.glyph,
+        size: f.size,
+      })),
+    );
+  }, []);
+
   const paintFloater = (f: FloaterState) => {
-    const el = nodeRefs.current.get(f.id);
+    const el = nodeRefs.current.get(f.instanceId);
     if (!el) return;
     el.style.width = `${f.size}px`;
     el.style.height = `${f.size}px`;
-    el.style.transform = `translate3d(${f.x}px, ${f.y}px, 0) rotate(${f.rot}deg)`;
+    el.style.transform = `translate3d(${f.x}px, ${f.y}px, 0) rotate(${f.rot}deg) scale(${f.scale})`;
     el.style.opacity = String(f.opacity);
   };
+
+  const ensureLoop = useCallback(() => {
+    if (loopRunningRef.current || reducedRef.current) return;
+    const field = fieldRef.current;
+    if (!field) return;
+
+    loopRunningRef.current = true;
+    let last = performance.now();
+    timeRef.current = 0;
+
+    const tick = (now: number) => {
+      const dtMs = Math.min(32, now - last);
+      last = now;
+      const dt = dtMs / 16.67;
+      timeRef.current += dtMs / 1000;
+      const t = timeRef.current;
+
+      const width = field.clientWidth;
+      const height = field.clientHeight;
+      const minX = 8;
+      const minY = 8;
+      let removed = false;
+
+      for (const f of floatersRef.current) {
+        const maxX = Math.max(minX, width - f.size - 8);
+        const maxY = Math.max(minY, height - f.size - 8);
+
+        if (f.mode === "fade") {
+          f.lifeAge += dtMs / 1000;
+          f.opacity = Math.max(0, f.opacity - dtMs / 1000 / FADE_DURATION_SEC);
+          f.scale = Math.max(0.7, f.scale - dtMs / 1000 * 0.12);
+          f.x += f.vx * dt * 0.55;
+          f.y += f.vy * dt * 0.55;
+          f.vx *= Math.pow(0.985, dt);
+          f.vy *= Math.pow(0.985, dt);
+          f.rot += f.rotV * dt * 8;
+          paintFloater(f);
+          continue;
+        }
+
+        if (f.mode === "pop") {
+          f.popAge += dtMs / 1000;
+
+          if (f.popAge < 0) {
+            f.opacity = 0;
+            f.scale = 0.55;
+            paintFloater(f);
+            continue;
+          }
+
+          f.lifeAge += dtMs / 1000;
+          const popT = easeOutCubic(Math.min(1, f.popAge / 0.55));
+          f.opacity = popT;
+          f.scale = 0.55 + popT * 0.45;
+
+          /* Soft drag — luxury glide out from the handle */
+          f.vx *= Math.pow(0.982, dt);
+          f.vy *= Math.pow(0.982, dt);
+          f.x += f.vx * dt * 1.05;
+          f.y += f.vy * dt * 1.05;
+          f.rot += f.rotV * dt * 14;
+
+          const bx = bounceAxis(f.x, f.vx, minX, maxX);
+          const by = bounceAxis(f.y, f.vy, minY, maxY);
+          f.x = bx.pos;
+          f.vx = bx.vel;
+          f.y = by.pos;
+          f.vy = by.vel;
+
+          const speed = Math.hypot(f.vx, f.vy);
+          if (f.popAge > POP_DURATION_SEC || speed < 0.55) {
+            f.mode = "float";
+            const cap =
+              f.kind === "image" ? FLOAT_SPEED_CAP_IMG : FLOAT_SPEED_CAP_EMO;
+            if (speed > cap) {
+              f.vx = (f.vx / speed) * cap;
+              f.vy = (f.vy / speed) * cap;
+            } else if (speed < 0.18) {
+              const a = rand(0, Math.PI * 2);
+              f.vx = Math.cos(a) * cap * 0.65;
+              f.vy = Math.sin(a) * cap * 0.65;
+            }
+            f.opacity = 1;
+            f.scale = 1;
+          }
+
+          if (f.lifeAge >= FLOAT_LIFE_SEC) {
+            f.mode = "fade";
+          }
+
+          paintFloater(f);
+          continue;
+        }
+
+        /* Elegant float — soft sine drift, bounce only at edges */
+        f.lifeAge += dtMs / 1000;
+        const ax = Math.sin(t * 0.28 + f.phase) * 0.009;
+        const ay = Math.cos(t * 0.22 + f.phase * 1.25) * 0.007;
+        let vx = f.vx + ax * dt;
+        let vy = f.vy + ay * dt;
+
+        const speed = Math.hypot(vx, vy);
+        const maxSpeed =
+          f.kind === "image" ? FLOAT_SPEED_CAP_IMG : FLOAT_SPEED_CAP_EMO;
+        if (speed > maxSpeed) {
+          vx = (vx / speed) * maxSpeed;
+          vy = (vy / speed) * maxSpeed;
+        }
+
+        f.x += vx * dt * 0.98;
+        f.y += vy * dt * 0.98;
+        f.rot += f.rotV * dt * 12;
+
+        const bx = bounceAxis(f.x, vx, minX, maxX);
+        const by = bounceAxis(f.y, vy, minY, maxY);
+        f.x = bx.pos;
+        f.vx = bx.vel;
+        f.y = by.pos;
+        f.vy = by.vel;
+        f.opacity = 1;
+        f.scale = 1;
+
+        if (f.lifeAge >= FLOAT_LIFE_SEC) {
+          f.mode = "fade";
+        }
+
+        paintFloater(f);
+      }
+
+      const alive = floatersRef.current.filter((f) => f.opacity > 0.01 || f.mode !== "fade");
+      if (alive.length !== floatersRef.current.length) {
+        floatersRef.current = alive;
+        removed = true;
+      }
+
+      if (removed) {
+        syncParticleList(floatersRef.current);
+      }
+
+      if (floatersRef.current.length === 0) {
+        loopRunningRef.current = false;
+        setFieldActive(false);
+        return;
+      }
+
+      rafRef.current = window.requestAnimationFrame(tick);
+    };
+
+    rafRef.current = window.requestAnimationFrame(tick);
+  }, [syncParticleList]);
 
   const playPop = useCallback(() => {
     if (reducedRef.current) return;
@@ -249,6 +413,9 @@ export function GalleryInstagramFollow({
 
     const field = fieldRef.current;
     if (!field) return;
+    if (!templatesRef.current.length) {
+      templatesRef.current = buildTemplates();
+    }
 
     const origin = getPopOrigin(field, igLinkRef.current);
 
@@ -257,25 +424,94 @@ export function GalleryInstagramFollow({
       cooldownRef.current = false;
     }, POP_COOLDOWN_MS);
 
-    if (!seedsRef.current.length) {
-      const nextSeeds = buildSeeds();
-      seedsRef.current = nextSeeds;
-      floatersRef.current = seedsToFloaters(nextSeeds, origin);
-      setSeeds(nextSeeds);
-      setActive(true);
+    const existing = floatersRef.current;
+    const onlyWarmShells =
+      existing.length > 0 &&
+      existing.every((f) => f.opacity <= 0.01 && f.mode === "fade");
+
+    /*
+     * First pop: reuse preloaded DOM nodes (images already warm) so
+     * scroll does not hitch from a sudden image mount storm.
+     */
+    if (onlyWarmShells) {
+      const plan = randomPopPlan(existing.length);
+      const order = shuffleInPlace(existing.map((_, i) => i));
+      order.forEach((floaterIndex, planIndex) => {
+        const f = existing[floaterIndex]!;
+        const p = plan[planIndex]!;
+        const size = f.kind === "image" ? rand(96, 128) : rand(48, 60);
+        f.size = size;
+        f.x = origin.cx - size / 2;
+        f.y = origin.cy - size / 2;
+        f.vx = Math.cos(p.angle) * p.impulse;
+        f.vy = Math.sin(p.angle) * p.impulse;
+        f.rot = rand(-14, 14);
+        f.rotV = rand(-0.022, 0.022);
+        f.phase = rand(0, Math.PI * 2);
+        f.scale = 0.55;
+        f.mode = "pop";
+        f.popAge = -p.stagger;
+        f.lifeAge = 0;
+        f.opacity = 0;
+      });
+      setFieldActive(true);
+      existing.forEach(paintFloater);
+      ensureLoop();
       return;
     }
 
-    reburstFloaters(floatersRef.current, origin);
-    floatersRef.current.forEach(paintFloater);
-    setActive(true);
-  }, []);
+    /* Later pops / hover: fade current burst, spawn a fresh random one */
+    for (const f of existing) {
+      if (f.mode !== "fade") f.mode = "fade";
+    }
+
+    const next = spawnGeneration(templatesRef.current, origin);
+    floatersRef.current = [...existing, ...next];
+    syncParticleList(floatersRef.current);
+    setFieldActive(true);
+
+    requestAnimationFrame(() => {
+      next.forEach(paintFloater);
+      ensureLoop();
+    });
+  }, [ensureLoop, syncParticleList]);
 
   useEffect(() => {
     reducedRef.current =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  }, []);
+
+    /* Preload templates + invisible particles so first pop does not mount images mid-scroll */
+    if (!reducedRef.current && !templatesRef.current.length) {
+      templatesRef.current = buildTemplates();
+      const field = fieldRef.current;
+      const origin = field
+        ? getPopOrigin(field, igLinkRef.current)
+        : { cx: 0, cy: 0 };
+      const warm = templatesRef.current.map((template) => {
+        const size = template.kind === "image" ? 112 : 54;
+        return {
+          ...template,
+          instanceId: nextInstanceId(`warm-${template.key}`),
+          size,
+          x: origin.cx - size / 2,
+          y: origin.cy - size / 2,
+          vx: 0,
+          vy: 0,
+          rot: 0,
+          rotV: 0,
+          phase: 0,
+          scale: 0.55,
+          mode: "fade" as const,
+          popAge: 0,
+          lifeAge: FLOAT_LIFE_SEC,
+          opacity: 0,
+        };
+      });
+      floatersRef.current = warm;
+      syncParticleList(warm);
+    }
+  }, [syncParticleList]);
 
   useEffect(() => {
     const section = fieldRef.current?.closest(
@@ -308,7 +544,7 @@ export function GalleryInstagramFollow({
           popObserver.disconnect();
         }
       },
-      { threshold: 0.14, rootMargin: "0px 0px -6% 0px" },
+      { threshold: 0.2, rootMargin: "0px 0px -10% 0px" },
     );
     popObserver.observe(section);
 
@@ -319,130 +555,25 @@ export function GalleryInstagramFollow({
   }, [playPop]);
 
   useEffect(() => {
-    if (!active || reducedRef.current || seeds.length === 0) return;
-
-    const field = fieldRef.current;
-    if (!field) return;
-
-    /* Sync first paint after nodes mount */
-    floatersRef.current.forEach(paintFloater);
-
-    let last = performance.now();
-    timeRef.current = 0;
-
-    const tick = (now: number) => {
-      const dtMs = Math.min(32, now - last);
-      last = now;
-      const dt = dtMs / 16.67;
-      timeRef.current += dtMs / 1000;
-      const t = timeRef.current;
-
-      const width = field.clientWidth;
-      const height = field.clientHeight;
-      const minX = 8;
-      const minY = 8;
-
-      for (const f of floatersRef.current) {
-        const maxX = Math.max(minX, width - f.size - 8);
-        const maxY = Math.max(minY, height - f.size - 8);
-
-        if (f.mode === "pop") {
-          f.popAge += dtMs / 1000;
-
-          if (f.popAge < 0) {
-            /* Stagger hold at origin */
-            f.opacity = 0;
-            paintFloater(f);
-            continue;
-          }
-
-          f.opacity = Math.min(1, f.popAge * 4);
-
-          /* Outward pop with light drag — travels far from the IG handle */
-          f.vx *= Math.pow(0.988, dt);
-          f.vy *= Math.pow(0.988, dt);
-          f.x += f.vx * dt * 1.15;
-          f.y += f.vy * dt * 1.15;
-          f.rot += f.rotV * dt * 18;
-
-          const bx = bounceAxis(f.x, f.vx, minX, maxX);
-          const by = bounceAxis(f.y, f.vy, minY, maxY);
-          f.x = bx.pos;
-          f.vx = bx.vel;
-          f.y = by.pos;
-          f.vy = by.vel;
-
-          const speed = Math.hypot(f.vx, f.vy);
-          if (f.popAge > 1.85 || speed < 0.9) {
-            f.mode = "float";
-            const cap =
-              f.kind === "image" ? FLOAT_SPEED_CAP_IMG : FLOAT_SPEED_CAP_EMO;
-            if (speed > cap) {
-              f.vx = (f.vx / speed) * cap;
-              f.vy = (f.vy / speed) * cap;
-            } else if (speed < 0.2) {
-              const a = rand(0, Math.PI * 2);
-              f.vx = Math.cos(a) * cap * 0.7;
-              f.vy = Math.sin(a) * cap * 0.7;
-            }
-            f.opacity = 1;
-          }
-
-          paintFloater(f);
-          continue;
-        }
-
-        /* Elegant float — soft sine drift, bounce only at edges */
-        const ax = Math.sin(t * 0.28 + f.phase) * 0.01;
-        const ay = Math.cos(t * 0.22 + f.phase * 1.25) * 0.008;
-        let vx = f.vx + ax * dt;
-        let vy = f.vy + ay * dt;
-
-        const speed = Math.hypot(vx, vy);
-        const maxSpeed =
-          f.kind === "image" ? FLOAT_SPEED_CAP_IMG : FLOAT_SPEED_CAP_EMO;
-        if (speed > maxSpeed) {
-          vx = (vx / speed) * maxSpeed;
-          vy = (vy / speed) * maxSpeed;
-        }
-
-        f.x += vx * dt * 1.05;
-        f.y += vy * dt * 1.05;
-        f.rot += f.rotV * dt * 14;
-
-        const bx = bounceAxis(f.x, vx, minX, maxX);
-        const by = bounceAxis(f.y, vy, minY, maxY);
-        f.x = bx.pos;
-        f.vx = bx.vel;
-        f.y = by.pos;
-        f.vy = by.vel;
-        f.opacity = 1;
-
-        paintFloater(f);
-      }
-
-      rafRef.current = window.requestAnimationFrame(tick);
-    };
-
-    rafRef.current = window.requestAnimationFrame(tick);
     return () => {
       if (rafRef.current) window.cancelAnimationFrame(rafRef.current);
+      loopRunningRef.current = false;
     };
-  }, [active, seeds]);
+  }, []);
 
   return (
     <>
       <div
         ref={fieldRef}
-        className={`instagram-burst-field${active ? " is-active" : ""}`}
+        className={`instagram-burst-field${fieldActive ? " is-active" : ""}`}
         aria-hidden="true"
       >
-        {seeds.map((floater) => (
+        {particles.map((floater) => (
           <span
-            key={floater.id}
+            key={floater.instanceId}
             ref={(el) => {
-              if (el) nodeRefs.current.set(floater.id, el);
-              else nodeRefs.current.delete(floater.id);
+              if (el) nodeRefs.current.set(floater.instanceId, el);
+              else nodeRefs.current.delete(floater.instanceId);
             }}
             className={
               floater.kind === "image"
