@@ -175,6 +175,7 @@
   line-height: 1.7;
   --hathor-lux-ease: cubic-bezier(0.16, 1, 0.3, 1);
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
 }
@@ -852,7 +853,9 @@
   border: 1px solid rgb(182 159 100 / 0.22);
   background: var(--hathor-dark);
   padding: 1rem 1.125rem;
-  font-size: 0.9375rem;
+  /* 16px min prevents iOS Safari zoom-on-focus */
+  font-size: max(1rem, 16px);
+  min-height: 2.75rem;
   color: var(--hathor-cream);
   transition:
     border-color 0.3s ease,
@@ -2111,18 +2114,19 @@
   color: var(--hathor-gold);
 }
 
-/* Explore overlay ? above pinned scroll stage */
+/* Explore overlay ? above pinned scroll stage & fixed header */
 .hathor-explore {
   position: fixed;
   inset: 0;
-  z-index: 250;
+  z-index: 1300;
 }
 
 .hathor-explore__backdrop {
   position: absolute;
   inset: 0;
   background: rgb(0 0 0 / 0.65);
-  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   animation: hathorBackdropIn 280ms ease;
 }
 
@@ -4620,6 +4624,7 @@
   flex: 1;
   min-width: 0;
   height: 2.85rem;
+  min-height: 2.75rem;
   padding: 0 1rem;
   border: 1px solid var(--public-border);
   border-right: none;
@@ -4627,7 +4632,7 @@
   background: var(--public-card);
   color: var(--public-text);
   font-family: var(--public-sans);
-  font-size: 0.8125rem;
+  font-size: max(1rem, 16px);
   outline: none;
   transition: border-color 0.3s var(--hathor-lux-ease);
 }

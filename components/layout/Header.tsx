@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { PublicThemeToggle } from "@/components/public/PublicThemeToggle";
 import {
@@ -26,24 +26,77 @@ const HEADER_NAV_RIGHT = HEADER_NAV_ITEMS.slice(
   Math.ceil(HEADER_NAV_ITEMS.length / 2),
 );
 
+const EXPLORE_PANEL_ID = "hathor-explore-panel";
+
 function ExplorePanel({
   open,
   onClose,
+  panelId,
 }: {
   open: boolean;
   onClose: () => void;
+  panelId: string;
 }) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    closeBtnRef.current?.focus();
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onClose();
+        return;
+      }
+
+      if (event.key !== "Tab" || !panelRef.current) return;
+
+      const focusable = panelRef.current.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      previouslyFocused?.focus?.();
+    };
+  }, [open, onClose]);
+
   if (!open) return null;
 
   return (
-    <div className="hathor-explore" role="dialog" aria-modal="true" aria-label="Explore menu">
+    <div
+      className="hathor-explore"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Explore menu"
+      id={panelId}
+    >
       <button
         type="button"
         className="hathor-explore__backdrop"
         aria-label="Close explore menu"
         onClick={onClose}
       />
-      <div className="hathor-explore__panel">
+      <div className="hathor-explore__panel" ref={panelRef}>
         <div className="hathor-explore__header">
           <p className="hathor-explore__label">Explore</p>
           <button
@@ -51,6 +104,7 @@ function ExplorePanel({
             className="hathor-header-icon-btn"
             onClick={onClose}
             aria-label="Close menu"
+            ref={closeBtnRef}
           >
             <X className="h-5 w-5" aria-hidden />
           </button>
@@ -138,6 +192,7 @@ function isNavItemActive(pathname: string, item: HeaderNavItem): boolean {
 /** Primary site header — part of unified PublicNavbar (EX style on all routes). */
 export function Header() {
   const pathname = usePathname();
+  const explorePanelId = useId().replace(/:/g, "") || EXPLORE_PANEL_ID;
   const [exploreOpen, setExploreOpen] = useState(false);
   const [menuHovered, setMenuHovered] = useState(false);
   const [navCompact, setNavCompact] = useState(false);
@@ -145,6 +200,7 @@ export function Header() {
   const closeDropdownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
     null,
   );
+  const menuBtnRef = useRef<HTMLButtonElement>(null);
 
   const cancelDropdownClose = () => {
     if (closeDropdownTimerRef.current) {
@@ -160,6 +216,11 @@ export function Header() {
     }, 140);
   };
 
+  const closeExplore = () => {
+    setExploreOpen(false);
+    queueMicrotask(() => menuBtnRef.current?.focus());
+  };
+
   useEffect(() => {
     setMenuHovered(false);
     setOpenDropdown(null);
@@ -172,8 +233,15 @@ export function Header() {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = exploreOpen ? "hidden" : "";
+    if (exploreOpen) {
+      document.body.classList.add("nav-menu-open");
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.classList.remove("nav-menu-open");
+      document.body.style.overflow = "";
+    }
     return () => {
+      document.body.classList.remove("nav-menu-open");
       document.body.style.overflow = "";
     };
   }, [exploreOpen]);
@@ -198,11 +266,16 @@ export function Header() {
       if (target.closest(".hathor-header__nav")) return;
       closeDropdown();
     };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeDropdown();
+    };
 
     document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
 
     return () => {
       document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
     };
   }, [openDropdown]);
 
@@ -337,6 +410,7 @@ export function Header() {
                   height={46}
                   sizes="46px"
                   className="hathor-header__logo hathor-header__logo--icon"
+                  priority
                 />
               </Link>
             </div>
@@ -357,7 +431,10 @@ export function Header() {
               className="hathor-header__menu-btn md:hidden"
               onClick={() => setExploreOpen(true)}
               aria-expanded={exploreOpen}
+              aria-controls={explorePanelId}
+              aria-haspopup="dialog"
               aria-label="Open menu"
+              ref={menuBtnRef}
             >
               <Menu className="h-5 w-5" aria-hidden />
             </button>
@@ -367,7 +444,11 @@ export function Header() {
         </div>
       </header>
 
-      <ExplorePanel open={exploreOpen} onClose={() => setExploreOpen(false)} />
+      <ExplorePanel
+        open={exploreOpen}
+        onClose={closeExplore}
+        panelId={explorePanelId}
+      />
     </>
   );
 }

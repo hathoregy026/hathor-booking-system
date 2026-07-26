@@ -33,12 +33,19 @@ export function PublicLayout({ children }: PublicLayoutProps) {
       <BookingModalProvider>
         <div className="public-site hathor-site">
           <script dangerouslySetInnerHTML={{ __html: bootScript }} />
+          <a href="#main-content" className="skip-to-content">
+            Skip to content
+          </a>
           <DeployFreshness deployId={deployId} />
           <ScrollPositionRestore />
           <LuxuryTextAnimations />
           <SiteImagePreviewScroll />
           <PublicNavbar />
-          <main className="public-main public-main--hero">
+          <main
+            id="main-content"
+            className="public-main public-main--hero"
+            tabIndex={-1}
+          >
             <PageTransition>{children}</PageTransition>
           </main>
           <Footer />
