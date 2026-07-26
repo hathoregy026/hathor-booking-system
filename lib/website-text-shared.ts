@@ -120,7 +120,7 @@ export type WebsiteTextNavItem = {
 };
 
 export const WEBSITE_TEXT_NAV: WebsiteTextNavItem[] = [
-  { id: "home", label: "Home", href: "/" },
+  { id: "home", label: "Homepage", href: "/" },
   { id: "about", label: "About", href: "/about" },
   { id: "cruises", label: "Cruises", href: "/cruises" },
   { id: "highlights", label: "Highlights", href: "/highlights" },
@@ -128,9 +128,7 @@ export const WEBSITE_TEXT_NAV: WebsiteTextNavItem[] = [
   { id: "wellness", label: "Wellness", href: "/wellness" },
   { id: "charter", label: "Charter", href: "/charter" },
   { id: "contact", label: "Contact", href: "/contact" },
-  { id: "blog", label: "Blog", href: "/blogs" },
-  { id: "partners", label: "Partners", href: "/partners" },
-  { id: "rooms", label: "Rooms", href: "/rooms" },
+  { id: "rooms", label: "Rooms & Suites", href: "/rooms" },
   {
     id: "cabins",
     label: "Luxury Cabins",
@@ -141,6 +139,8 @@ export const WEBSITE_TEXT_NAV: WebsiteTextNavItem[] = [
     label: "Royal Suites",
     href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
   },
+  { id: "blog", label: "Blog", href: "/blogs" },
+  { id: "partners", label: "Partners", href: "/partners" },
 ];
 
 export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
