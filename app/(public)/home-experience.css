@@ -7,6 +7,45 @@ html[data-ex-experience] {
   overflow-x: clip !important;
 }
 
+/*
+ * Editorial friction (home only).
+ * Uses proximity — NOT mandatory — so Lenis + GSAP pin/scrub (hero, stack,
+ * campaign) are never trapped mid-timeline. Snap frames are sparse; grids,
+ * galleries, and long copy stay free (scroll-snap-align: none).
+ */
+@media (prefers-reduced-motion: no-preference) and (min-width: 1025px) {
+  html[data-ex-experience] {
+    scroll-snap-type: y proximity;
+  }
+
+  html[data-ex-experience] .home-hero-container,
+  html[data-ex-experience] .about-section,
+  html[data-ex-experience] .cta-section {
+    scroll-snap-align: start;
+    scroll-snap-stop: normal;
+  }
+
+  /* Free zones — product grids, text rows, carousels, reviews, pins */
+  html[data-ex-experience] .services-section,
+  html[data-ex-experience] .ex-stack-scroll,
+  html[data-ex-experience] .text-img-section,
+  html[data-ex-experience] .gallery-section,
+  html[data-ex-experience] .testimonials-section,
+  html[data-ex-experience] .gallery-container,
+  html[data-ex-experience] .gallery-marquee,
+  html[data-ex-experience] .hcta-track,
+  html[data-ex-experience] .luxury-marquee,
+  html[data-ex-experience] .ex-content-dust {
+    scroll-snap-align: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce), (max-width: 1024px) {
+  html[data-ex-experience] {
+    scroll-snap-type: none;
+  }
+}
+
 html[data-ex-experience] .ex-root {
   --gold: #b69f64;
   --gold-soft: #d4c28a;
@@ -2384,6 +2423,8 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
 }
 
 .gallery-container {
+  position: relative;
+  z-index: 6;
   width: var(--content-shell, 100%);
   max-width: none;
   margin: 56px auto 0;
