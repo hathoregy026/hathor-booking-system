@@ -363,58 +363,97 @@ export function useExScrollMotion() {
     return splitAtelierText(el);
   }
 
+  type StackPanelMeta = HTMLElement & {
+    __stackChars?: HTMLElement[];
+    __stackBody?: HTMLElement | null;
+  };
+
   function prepareStackPanelSplits(panels: HTMLElement[]) {
     panels.forEach((panel) => {
-      const targets = panel.querySelectorAll<HTMLElement>(
-        ".ex-stack-scroll__title-line, .ex-stack-scroll__eyebrow, .ex-stack-scroll__body",
+      const meta = panel as StackPanelMeta;
+      /* Title + eyebrow keep letter rise; body is one unit so long copy
+         is fully readable by the time the slide is full-bleed. */
+      const letterTargets = panel.querySelectorAll<HTMLElement>(
+        ".ex-stack-scroll__title-line, .ex-stack-scroll__eyebrow",
       );
+      const body = panel.querySelector<HTMLElement>(".ex-stack-scroll__body");
       const chars: HTMLElement[] = [];
-      targets.forEach((el) => {
+      letterTargets.forEach((el) => {
         chars.push(...splitStackText(el));
       });
-      (panel as HTMLElement & { __stackChars?: HTMLElement[] }).__stackChars =
-        chars;
+      meta.__stackChars = chars;
+      meta.__stackBody = body;
       if (chars.length) {
         gsap.set(chars, { yPercent: 100, opacity: 0 });
+      }
+      if (body) {
+        gsap.set(body, { y: 10, opacity: 0 });
       }
     });
   }
 
   function playStackSplit(panel: HTMLElement | undefined) {
     if (!panel || prefersReduced) return;
-    const chars =
-      (panel as HTMLElement & { __stackChars?: HTMLElement[] }).__stackChars;
-    if (!chars?.length) return;
-    gsap.killTweensOf(chars);
-    gsap.fromTo(
-      chars,
-      { yPercent: 100, opacity: 0 },
-      {
-        yPercent: 0,
-        opacity: 1,
-        duration: 1,
-        stagger: 0.03,
-        ease: "power3.out",
-        onComplete: () => {
-          chars.forEach((c) => c.style.removeProperty("will-change"));
+    const meta = panel as StackPanelMeta;
+    const chars = meta.__stackChars;
+    const body = meta.__stackBody;
+    if (chars?.length) {
+      gsap.killTweensOf(chars);
+      gsap.fromTo(
+        chars,
+        { yPercent: 100, opacity: 0 },
+        {
+          yPercent: 0,
+          opacity: 1,
+          duration: 0.75,
+          stagger: 0.018,
+          ease: "power3.out",
+          onComplete: () => {
+            chars.forEach((c) => c.style.removeProperty("will-change"));
+          },
         },
-      },
-    );
+      );
+    }
+    if (body) {
+      gsap.killTweensOf(body);
+      /* Near-instant so body is solid as soon as the full-screen frame lands */
+      gsap.fromTo(
+        body,
+        { y: 8, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.22,
+          ease: "power2.out",
+        },
+      );
+    }
   }
 
   function reverseStackSplit(panel: HTMLElement | undefined) {
     if (!panel || prefersReduced) return;
-    const chars =
-      (panel as HTMLElement & { __stackChars?: HTMLElement[] }).__stackChars;
-    if (!chars?.length) return;
-    gsap.killTweensOf(chars);
-    gsap.to(chars, {
-      yPercent: 100,
-      opacity: 0,
-      duration: 0.7,
-      stagger: 0.02,
-      ease: "power3.in",
-    });
+    const meta = panel as StackPanelMeta;
+    const chars = meta.__stackChars;
+    const body = meta.__stackBody;
+    if (chars?.length) {
+      gsap.killTweensOf(chars);
+      gsap.to(chars, {
+        yPercent: 100,
+        opacity: 0,
+        duration: 0.55,
+        stagger: 0.015,
+        ease: "power3.in",
+      });
+    }
+    if (body) {
+      gsap.killTweensOf(body);
+      gsap.to(body, {
+        y: 8,
+        opacity: 0,
+        duration: 0.2,
+        ease: "power2.in",
+      });
+    }
   }
 
   function initExStackScroll() {
@@ -430,10 +469,13 @@ export function useExScrollMotion() {
 
     if (prefersReduced) {
       copyPanels.forEach((panel) => {
-        const chars =
-          (panel as HTMLElement & { __stackChars?: HTMLElement[] })
-            .__stackChars;
-        if (chars?.length) gsap.set(chars, { yPercent: 0, opacity: 1 });
+        const meta = panel as StackPanelMeta;
+        if (meta.__stackChars?.length) {
+          gsap.set(meta.__stackChars, { yPercent: 0, opacity: 1 });
+        }
+        if (meta.__stackBody) {
+          gsap.set(meta.__stackBody, { y: 0, opacity: 1 });
+        }
       });
       gsap.set(cards, { yPercent: 0, scale: 1, filter: "brightness(1)" });
       cards.slice(1).forEach((card) => {
@@ -500,17 +542,19 @@ export function useExScrollMotion() {
       });
 
       copyPanels.forEach((panel, index) => {
-        const chars =
-          (panel as HTMLElement & { __stackChars?: HTMLElement[] })
-            .__stackChars;
+        const meta = panel as StackPanelMeta;
         gsap.set(panel, {
           autoAlpha: index === 0 ? 1 : 0,
           y: 0,
           visibility: index === 0 ? "visible" : "hidden",
         });
-        if (chars?.length) {
-          gsap.killTweensOf(chars);
-          gsap.set(chars, { yPercent: 100, opacity: 0 });
+        if (meta.__stackChars?.length) {
+          gsap.killTweensOf(meta.__stackChars);
+          gsap.set(meta.__stackChars, { yPercent: 100, opacity: 0 });
+        }
+        if (meta.__stackBody) {
+          gsap.killTweensOf(meta.__stackBody);
+          gsap.set(meta.__stackBody, { y: 10, opacity: 0 });
         }
         panel.setAttribute("aria-hidden", index === 0 ? "false" : "true");
       });
@@ -603,6 +647,7 @@ export function useExScrollMotion() {
             else playStackSplit(prevPanel);
           }, moveAt + move * 0.08);
 
+          /* Reveal copy early in the wipe so body is solid at full-bleed */
           tl.fromTo(
             nextPanel,
             { autoAlpha: 0, y: 0, visibility: "visible" },
@@ -610,16 +655,16 @@ export function useExScrollMotion() {
               autoAlpha: 1,
               y: 0,
               ease: "power2.out",
-              duration: move * 0.5,
+              duration: move * 0.45,
               onStart: () => nextPanel.setAttribute("aria-hidden", "false"),
             },
-            moveAt + move * 0.42,
+            moveAt + move * 0.12,
           );
           tl.add(() => {
             const dir = tl.scrollTrigger?.direction ?? 1;
             if (dir === 1) playStackSplit(nextPanel);
             else reverseStackSplit(nextPanel);
-          }, moveAt + move * 0.42);
+          }, moveAt + move * 0.12);
         }
 
         for (let j = 0; j < i; j++) {
