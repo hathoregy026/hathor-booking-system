@@ -2389,6 +2389,8 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   position: relative;
   z-index: 5;
   display: block;
+  contain: paint;
+  isolation: isolate;
   flex: 0 0 auto;
   width: var(--gallery-card);
   height: clamp(257.5px, calc(16.25vw + 70px), 357.5px);
@@ -2414,6 +2416,8 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   position: absolute;
   inset: 0;
   overflow: hidden;
+  transform: translateZ(0);
+  backface-visibility: hidden;
   pointer-events: none;
 }
 
@@ -2427,7 +2431,9 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   object-position: center;
   filter: none;
   opacity: 1;
-  image-rendering: -webkit-optimize-contrast;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  image-rendering: auto;
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
