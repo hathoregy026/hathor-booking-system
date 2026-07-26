@@ -18,11 +18,10 @@ type HomeCampaignSectionProps = {
 };
 
 /**
- * Luxury campaign pause without layout jump:
- * - `.campaign-shell` is 190vh in CSS from first paint (space reserved)
- * - Section pins inside it with pinSpacing:false (no late spacer)
- * - Scrubbed letters sync to the pause; reverse on scroll up
- * - Book Now stays fixed
+ * Luxury campaign pause without a JavaScript pin:
+ * - CSS sticky supplies the hold without injecting a pin spacer
+ * - One scrubbed timeline reveals/reverses the letters and zooms the image
+ * - Book Now remains fixed
  */
 export function HomeCampaignSection({
   title,
@@ -32,29 +31,20 @@ export function HomeCampaignSection({
   previewAnchor = true,
 }: HomeCampaignSectionProps) {
   const shellRef = useRef<HTMLDivElement>(null);
-  const sectionRef = useRef<HTMLElement>(null);
-
   useLayoutEffect(() => {
     const shell = shellRef.current;
-    const section = sectionRef.current;
-    if (!shell || !section) return;
+    if (!shell) return;
 
     const reduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    const touch = window.matchMedia("(pointer: coarse)").matches;
-    const mobile = window.innerWidth < 1024;
 
     const media =
-      section.querySelector<HTMLElement>("img.campaign-bg") ||
-      section.querySelector<HTMLElement>("img");
+      shell.querySelector<HTMLElement>("img.campaign-bg") ||
+      shell.querySelector<HTMLElement>("img");
     const chars = Array.from(
-      section.querySelectorAll<HTMLElement>(".campaign-heading .split-char"),
+      shell.querySelectorAll<HTMLElement>(".campaign-heading .split-char"),
     );
-    const headingMotion = section.querySelector<HTMLElement>(
-      "[data-parallax='fg']",
-    );
-    const bg = section.querySelector<HTMLElement>("[data-parallax='bg']");
 
     const ctx = gsap.context(() => {
       if (reduced) {
@@ -70,118 +60,60 @@ export function HomeCampaignSection({
         gsap.set(media, { scale: 1.08, force3D: true });
       }
 
+      /*
+       * The sticky frame is already holding when this range starts.
+       * Scrub makes the reveal deterministic in both directions:
+       * scrolling down raises the letters; scrolling up lowers them.
+       */
       const tl = gsap.timeline({
-        defaults: { ease: "none" },
         scrollTrigger: {
           id: "campaign-hold",
-          trigger: section,
+          trigger: shell,
           start: "top top",
-          endTrigger: shell,
           end: "bottom bottom",
-          pin: true,
-          pinSpacing: false,
-          anticipatePin: 0,
-          scrub: 1.25,
+          scrub: 0.8,
           invalidateOnRefresh: true,
-          fastScrollEnd: true,
-          onRefresh: (self) => {
-            const pin = self.pin as HTMLElement | null;
-            if (!pin) return;
-            gsap.set(pin, {
-              x: 0,
-              left: 0,
-              marginLeft: 0,
-              clearProps: "marginRight",
-            });
-          },
         },
       });
 
-      /* Rise through the first half of the hold */
-      if (chars.length) {
+      if (media) {
         tl.to(
-          chars,
+          media,
           {
-            yPercent: 0,
-            autoAlpha: 1,
-            stagger: { each: 0.045, ease: "none" },
-            duration: 0.5,
+            scale: 1,
+            duration: 1,
+            ease: "none",
             force3D: true,
           },
           0,
         );
       }
 
-      if (media) {
-        tl.to(media, { scale: 1, duration: 1, force3D: true }, 0);
-      }
-
-      /* Second half — settled hold */
-      tl.to({}, { duration: 0.5 }, 0.5);
-
-      if (!touch && !mobile && bg) {
-        gsap.fromTo(
-          bg,
-          { yPercent: -3 },
+      /* Rise early in the hold, then leave a quiet reading beat. */
+      if (chars.length) {
+        tl.to(
+          chars,
           {
-            yPercent: 3,
-            ease: "none",
-            scrollTrigger: {
-              id: "campaign-parallax-bg",
-              trigger: shell,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: 0.4,
-              invalidateOnRefresh: true,
-            },
+            yPercent: 0,
+            autoAlpha: 1,
+            stagger: 0.025,
+            duration: 0.38,
+            ease: "power3.out",
+            force3D: true,
           },
+          0.08,
         );
       }
 
-      if (!touch && !mobile && headingMotion) {
-        gsap.fromTo(
-          headingMotion,
-          { yPercent: -3 },
-          {
-            yPercent: 3,
-            ease: "none",
-            scrollTrigger: {
-              id: "campaign-parallax-fg",
-              trigger: section,
-              start: "top top",
-              endTrigger: shell,
-              end: "bottom bottom",
-              scrub: 0.55,
-              invalidateOnRefresh: true,
-            },
-          },
-        );
-      }
+      tl.to({}, { duration: 0.3 }, 0.7);
     }, shell);
 
-    const refresh = () => {
-      try {
-        ScrollTrigger.refresh();
-      } catch {
-        /* ignore */
-      }
-    };
-    refresh();
-    const t1 = window.setTimeout(refresh, 200);
-    const t2 = window.setTimeout(refresh, 800);
-    void document.fonts?.ready?.then(refresh);
-
-    return () => {
-      window.clearTimeout(t1);
-      window.clearTimeout(t2);
-      ctx.revert();
-    };
+    return () => ctx.revert();
   }, []);
 
   return (
     <div ref={shellRef} className="campaign-shell">
       <section
-        ref={sectionRef}
         className="campaign-section"
         id="campaign"
         aria-label="Campaign call to action"
