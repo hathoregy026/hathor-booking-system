@@ -55,6 +55,7 @@ export async function PUT(request: NextRequest) {
     revalidatePath("/rooms");
     revalidatePath("/luxury-cabins-Nile-Cruise");
     revalidatePath("/Luxury-Royal-Suites-Nile-Dahabiya-Cruise");
+    revalidatePath("/admin/website-text");
     revalidatePath("/admin/content");
 
     return NextResponse.json(

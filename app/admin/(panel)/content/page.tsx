@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ChevronDown, Loader2, Save } from "lucide-react";
 import { SiteImageSlotCard } from "@/components/admin/SiteImageSlotCard";
-import { WebsiteTextPanel } from "@/components/admin/WebsiteTextPanel";
 import { useToast } from "@/components/admin/ToastProvider";
 import { adminFetch } from "@/lib/admin-fetch";
 import {
@@ -83,11 +82,7 @@ export default function AdminContentPage() {
       if (!raw) return;
 
       if (raw === "website-text" || raw === "text") {
-        window.requestAnimationFrame(() => {
-          document
-            .getElementById("website-text")
-            ?.scrollIntoView({ behavior: "smooth", block: "start" });
-        });
+        window.location.replace("/admin/website-text");
         return;
       }
 
@@ -261,24 +256,23 @@ export default function AdminContentPage() {
         style={{ color: "var(--text-secondary)" }}
       >
         <Loader2 className="h-5 w-5 animate-spin" aria-hidden />
-        Loading website content…
+        Loading website images…
       </div>
     );
   }
 
   return (
     <div className="mx-auto max-w-7xl space-y-10 sm:space-y-12">
-      <WebsiteTextPanel />
-
       <div id="site-images" className="site-images-cms space-y-5">
         <div>
-          <h2 className="admin-heading text-xl">Website Images</h2>
+          <h1 className="admin-heading text-xl">Website Images</h1>
           <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
             Choose a tab below, then replace any photo. Uploads publish to the
-            live site immediately. Dedicated sections:{" "}
-            <strong>Our Voyages</strong>, <strong>Moving Tilted Cards</strong>,
-            and <strong>Floating IG</strong> — each photo is separate and not
-            shared with other pages.
+            live site immediately. Page wording is edited separately under{" "}
+            <a href="/admin/website-text" className="admin-inline-link">
+              Website Text
+            </a>
+            .
           </p>
         </div>
 

@@ -20,7 +20,28 @@ import {
   type TypographySettings,
 } from "@/lib/typography-settings-shared";
 
-type OpenId = string | null;
+type TabId = "heroes" | (typeof WEBSITE_TEXT_NAV)[number]["id"];
+
+const TABS: { id: TabId; label: string; href: string }[] = [
+  { id: "heroes", label: "Hero titles", href: "/" },
+  ...WEBSITE_TEXT_NAV.map((item) => ({
+    id: item.id as TabId,
+    label: item.label,
+    href: item.href,
+  })),
+];
+
+const HOME_SECTIONS = [
+  { id: "about", label: "About band" },
+  { id: "carousel", label: "Itineraries" },
+  { id: "stack", label: "Landmark slides" },
+  { id: "blocks", label: "Text + image" },
+  { id: "gallery", label: "Gallery" },
+  { id: "reviews", label: "Testimonials" },
+  { id: "campaign", label: "Campaign & CTA" },
+  { id: "marquee", label: "Marquee" },
+  { id: "voyages", label: "Our Voyages" },
+] as const;
 
 function Field({
   label,
@@ -28,27 +49,34 @@ function Field({
   onChange,
   multiline,
   rows = 3,
+  hint,
+  placeholder,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   multiline?: boolean;
   rows?: number;
+  hint?: string;
+  placeholder?: string;
 }) {
   return (
     <label className="wt-field">
       <span className="wt-field__label">{label}</span>
+      {hint ? <span className="wt-field__hint">{hint}</span> : null}
       {multiline ? (
         <textarea
           className="admin-input wt-field__input"
           value={value}
           rows={rows}
+          placeholder={placeholder}
           onChange={(e) => onChange(e.target.value)}
         />
       ) : (
         <input
           className="admin-input wt-field__input"
           value={value}
+          placeholder={placeholder}
           onChange={(e) => onChange(e.target.value)}
         />
       )}
@@ -56,55 +84,41 @@ function Field({
   );
 }
 
+function Section({
+  id,
+  title,
+  description,
+  children,
+}: {
+  id?: string;
+  title: string;
+  description?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section id={id} className="wt-section admin-card">
+      <header className="wt-section__head">
+        <h3 className="wt-section__title">{title}</h3>
+        {description ? (
+          <p className="wt-section__desc">{description}</p>
+        ) : null}
+      </header>
+      <div className="wt-section__body">{children}</div>
+    </section>
+  );
+}
+
 function ViewOnSite({ href }: { href: string }) {
-  const url = href.startsWith("http") ? href : href;
   return (
     <a
       className="wt-view-btn"
-      href={url}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
     >
       <ExternalLink className="h-3.5 w-3.5" aria-hidden />
-      View on site
+      Preview page
     </a>
-  );
-}
-
-function Accordion({
-  id,
-  openId,
-  setOpenId,
-  title,
-  href,
-  children,
-}: {
-  id: string;
-  openId: OpenId;
-  setOpenId: (id: OpenId) => void;
-  title: string;
-  href?: string;
-  children: React.ReactNode;
-}) {
-  const open = openId === id;
-  return (
-    <section className={`wt-acc admin-card${open ? " is-open" : ""}`}>
-      <div className="wt-acc__bar">
-        <button
-          type="button"
-          className="wt-acc__toggle"
-          aria-expanded={open}
-          onClick={() => setOpenId(open ? null : id)}
-        >
-          <span>{title}</span>
-          <span className="wt-acc__chevron" aria-hidden>
-            {open ? "▾" : "▸"}
-          </span>
-        </button>
-        {href ? <ViewOnSite href={href} /> : null}
-      </div>
-      {open ? <div className="wt-acc__body">{children}</div> : null}
-    </section>
   );
 }
 
@@ -118,7 +132,8 @@ export function WebsiteTextPanel() {
   const [savedTypo, setSavedTypo] = useState<TypographySettings>(
     DEFAULT_TYPOGRAPHY_SETTINGS,
   );
-  const [openId, setOpenId] = useState<OpenId>("home");
+  const [activeTab, setActiveTab] = useState<TabId>("home");
+  const [homeSection, setHomeSection] = useState<string>("about");
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -150,6 +165,22 @@ export function WebsiteTextPanel() {
     void load();
   }, [load]);
 
+  useEffect(() => {
+    const applyHash = () => {
+      const raw = window.location.hash.replace(/^#/, "").toLowerCase();
+      if (!raw) return;
+      const match = TABS.find(
+        (tab) =>
+          tab.id === raw ||
+          tab.label.toLowerCase().replace(/\s+/g, "-") === raw,
+      );
+      if (match) setActiveTab(match.id);
+    };
+    applyHash();
+    window.addEventListener("hashchange", applyHash);
+    return () => window.removeEventListener("hashchange", applyHash);
+  }, []);
+
   const dirty = useMemo(
     () =>
       JSON.stringify(text) !== JSON.stringify(savedText) ||
@@ -177,12 +208,16 @@ export function WebsiteTextPanel() {
     setText((prev) => ({ ...prev, pages: { ...prev.pages, [key]: value } }));
   };
 
+  const selectTab = (id: TabId) => {
+    setActiveTab(id);
+    window.history.replaceState(null, "", `#${id}`);
+  };
+
   const handleSave = async () => {
     setSaving(true);
     try {
       const nextTypo: TypographySettings = {
         ...typo,
-        // Keep stack slide 0 in sync with homepage stack editor when present
         on_images_copy: {
           title: text.home.stackSlides[0]?.title ?? typo.on_images_copy.title,
           indication:
@@ -232,6 +267,8 @@ export function WebsiteTextPanel() {
     setTypo(savedTypo);
   };
 
+  const activeMeta = TABS.find((tab) => tab.id === activeTab) ?? TABS[1];
+
   if (loading) {
     return (
       <div className="wt-panel wt-panel--loading">
@@ -241,18 +278,15 @@ export function WebsiteTextPanel() {
     );
   }
 
-  const navHref = (id: string) =>
-    WEBSITE_TEXT_NAV.find((item) => item.id === id)?.href ?? "/";
-
   return (
-    <div id="website-text" className="wt-panel space-y-5">
+    <div id="website-text" className="wt-panel">
       <div className="wt-panel__header">
         <div>
-          <h2 className="admin-heading text-xl">Website Text</h2>
+          <h1 className="admin-heading text-xl">Website Text</h1>
           <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
-            Edit live site copy by page. Hero titles, marquee, and Our Voyages
-            headers save with this panel. Fonts and colours stay in Typography
-            &amp; Styles.
+            Pick a page tab, edit the wording, then save. Images are managed
+            separately under Website Images. Fonts &amp; colours stay in
+            Typography &amp; Styles.
           </p>
         </div>
         <div className="wt-panel__actions">
@@ -281,847 +315,979 @@ export function WebsiteTextPanel() {
         </div>
       </div>
 
-      <Accordion
-        id="heroes"
-        openId={openId}
-        setOpenId={setOpenId}
-        title="Hero titles (all pages)"
-        href="/"
-      >
-        <p className="wt-hint">
-          First line + second script line shown on each page hero.
-        </p>
-        <div className="wt-grid">
-          {HERO_PAGE_KEYS.map((key) => {
-            const copy = typo.hero_pages[key];
-            return (
-              <div key={key} className="wt-card">
-                <div className="wt-card__title">
-                  <span>{HERO_PAGE_LABELS[key]}</span>
-                </div>
+      <div className="wt-tabs" role="tablist" aria-label="Choose a page">
+        {TABS.map((tab) => {
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              role="tab"
+              aria-selected={isActive}
+              className={`wt-tab${isActive ? " is-active" : ""}`}
+              onClick={() => selectTab(tab.id)}
+            >
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="wt-workspace">
+        <div className="wt-workspace__toolbar">
+          <div>
+            <p className="wt-workspace__eyebrow">Editing</p>
+            <h2 className="wt-workspace__title">{activeMeta.label}</h2>
+          </div>
+          <ViewOnSite href={activeMeta.href} />
+        </div>
+
+        {activeTab === "heroes" ? (
+          <Section
+            title="Hero titles"
+            description="First line and second script line on each page hero. Change one page at a time."
+          >
+            <div className="wt-grid wt-grid--heroes">
+              {HERO_PAGE_KEYS.map((key) => {
+                const copy = typo.hero_pages[key];
+                return (
+                  <div key={key} className="wt-card">
+                    <div className="wt-card__title">{HERO_PAGE_LABELS[key]}</div>
+                    <Field
+                      label="First line"
+                      value={copy.main}
+                      hint="Large hero headline"
+                      onChange={(main) =>
+                        setTypo((prev) => ({
+                          ...prev,
+                          hero_pages: {
+                            ...prev.hero_pages,
+                            [key]: { ...prev.hero_pages[key], main },
+                          },
+                        }))
+                      }
+                    />
+                    <Field
+                      label="Second line"
+                      value={copy.second}
+                      hint="Script / secondary title"
+                      onChange={(second) =>
+                        setTypo((prev) => ({
+                          ...prev,
+                          hero_pages: {
+                            ...prev.hero_pages,
+                            [key]: { ...prev.hero_pages[key], second },
+                          },
+                        }))
+                      }
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </Section>
+        ) : null}
+
+        {activeTab === "home" ? (
+          <>
+            <div className="wt-subnav" aria-label="Homepage sections">
+              {HOME_SECTIONS.map((section) => (
+                <button
+                  key={section.id}
+                  type="button"
+                  className={`wt-subnav__chip${homeSection === section.id ? " is-active" : ""}`}
+                  onClick={() => {
+                    setHomeSection(section.id);
+                    document
+                      .getElementById(`home-${section.id}`)
+                      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }}
+                >
+                  {section.label}
+                </button>
+              ))}
+            </div>
+
+            <Section
+              id="home-about"
+              title="About band"
+              description="Opening story block under the homepage hero."
+            >
+              <Field
+                label="Heading"
+                value={text.home.about.heading}
+                multiline
+                rows={2}
+                hint="Use a line break for two lines"
+                onChange={(heading) =>
+                  patchHome("about", { ...text.home.about, heading })
+                }
+              />
+              <div className="wt-grid wt-grid--2">
                 <Field
-                  label="First line"
-                  value={copy.main}
-                  onChange={(main) =>
+                  label="Small label"
+                  value={text.home.about.eyebrow}
+                  hint="Short line above or beside the heading"
+                  onChange={(eyebrow) =>
+                    patchHome("about", { ...text.home.about, eyebrow })
+                  }
+                />
+                <Field
+                  label="Button label"
+                  value={text.home.about.cta}
+                  onChange={(cta) =>
+                    patchHome("about", { ...text.home.about, cta })
+                  }
+                />
+              </div>
+              <Field
+                label="Body"
+                value={text.home.about.body}
+                multiline
+                rows={5}
+                onChange={(body) =>
+                  patchHome("about", { ...text.home.about, body })
+                }
+              />
+            </Section>
+
+            <Section
+              id="home-carousel"
+              title="Itineraries carousel"
+              description="Heading above the voyage cards."
+            >
+              <div className="wt-grid wt-grid--2">
+                <Field
+                  label="Title"
+                  value={text.home.carousel.title}
+                  onChange={(title) =>
+                    patchHome("carousel", { ...text.home.carousel, title })
+                  }
+                />
+                <Field
+                  label="Small label"
+                  value={text.home.carousel.subtitle}
+                  onChange={(subtitle) =>
+                    patchHome("carousel", { ...text.home.carousel, subtitle })
+                  }
+                />
+              </div>
+              <Field
+                label="Button label"
+                value={text.home.carousel.exploreCta}
+                onChange={(exploreCta) =>
+                  patchHome("carousel", { ...text.home.carousel, exploreCta })
+                }
+              />
+            </Section>
+
+            <Section
+              id="home-stack"
+              title="Landmark stack slides"
+              description="Four stacked story cards. Slide 1 also syncs with the on-image copy."
+            >
+              <div className="wt-grid wt-grid--2">
+                {text.home.stackSlides.map((slide, index) => (
+                  <div key={index} className="wt-card">
+                    <div className="wt-card__title">Slide {index + 1}</div>
+                    <Field
+                      label="Title"
+                      value={slide.title}
+                      multiline
+                      rows={2}
+                      onChange={(title) => {
+                        const stackSlides = text.home.stackSlides.map((s, i) =>
+                          i === index ? { ...s, title } : s,
+                        );
+                        patchHome("stackSlides", stackSlides);
+                      }}
+                    />
+                    <Field
+                      label="Small label"
+                      value={slide.indication}
+                      onChange={(indication) => {
+                        const stackSlides = text.home.stackSlides.map((s, i) =>
+                          i === index ? { ...s, indication } : s,
+                        );
+                        patchHome("stackSlides", stackSlides);
+                      }}
+                    />
+                    <Field
+                      label="Body"
+                      value={slide.body}
+                      multiline
+                      rows={4}
+                      onChange={(body) => {
+                        const stackSlides = text.home.stackSlides.map((s, i) =>
+                          i === index ? { ...s, body } : s,
+                        );
+                        patchHome("stackSlides", stackSlides);
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </Section>
+
+            <Section
+              id="home-blocks"
+              title="Text + image blocks"
+              description="Lifestyle and dining story bands."
+            >
+              <div className="wt-grid wt-grid--2">
+                {text.home.textBlocks.map((block, index) => (
+                  <div key={index} className="wt-card">
+                    <div className="wt-card__title">
+                      {index === 0 ? "Lifestyle" : "Dining"}
+                    </div>
+                    <Field
+                      label="Title"
+                      value={block.title}
+                      multiline
+                      rows={2}
+                      onChange={(title) => {
+                        const textBlocks = text.home.textBlocks.map((b, i) =>
+                          i === index ? { ...b, title } : b,
+                        );
+                        patchHome("textBlocks", textBlocks);
+                      }}
+                    />
+                    <Field
+                      label="Body"
+                      value={block.body}
+                      multiline
+                      rows={5}
+                      onChange={(body) => {
+                        const textBlocks = text.home.textBlocks.map((b, i) =>
+                          i === index ? { ...b, body } : b,
+                        );
+                        patchHome("textBlocks", textBlocks);
+                      }}
+                    />
+                    <Field
+                      label="Button label"
+                      value={block.cta}
+                      onChange={(cta) => {
+                        const textBlocks = text.home.textBlocks.map((b, i) =>
+                          i === index ? { ...b, cta } : b,
+                        );
+                        patchHome("textBlocks", textBlocks);
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </Section>
+
+            <Section
+              id="home-gallery"
+              title="Gallery"
+              description="Photo strip heading and Instagram follow line."
+            >
+              <Field
+                label="Title"
+                value={text.home.gallery.title}
+                onChange={(title) =>
+                  patchHome("gallery", { ...text.home.gallery, title })
+                }
+              />
+              <div className="wt-grid wt-grid--2">
+                <Field
+                  label="Instagram handle"
+                  value={text.home.gallery.indication}
+                  placeholder="@hathor…"
+                  onChange={(indication) =>
+                    patchHome("gallery", { ...text.home.gallery, indication })
+                  }
+                />
+                <Field
+                  label="Follow label"
+                  value={text.home.gallery.followEyebrow}
+                  onChange={(followEyebrow) =>
+                    patchHome("gallery", {
+                      ...text.home.gallery,
+                      followEyebrow,
+                    })
+                  }
+                />
+              </div>
+            </Section>
+
+            <Section
+              id="home-reviews"
+              title="Testimonials"
+              description="Guest quotes shown on the homepage."
+            >
+              <Field
+                label="Section title"
+                value={text.home.testimonials.title}
+                onChange={(title) =>
+                  patchHome("testimonials", {
+                    ...text.home.testimonials,
+                    title,
+                  })
+                }
+              />
+              <div className="wt-grid wt-grid--2">
+                {text.home.testimonials.cards.map((card, index) => (
+                  <div key={index} className="wt-card">
+                    <div className="wt-card__title">Guest {index + 1}</div>
+                    <Field
+                      label="Name"
+                      value={card.name}
+                      onChange={(name) => {
+                        const cards = text.home.testimonials.cards.map(
+                          (c, i) => (i === index ? { ...c, name } : c),
+                        );
+                        patchHome("testimonials", {
+                          ...text.home.testimonials,
+                          cards,
+                        });
+                      }}
+                    />
+                    <Field
+                      label="Quote"
+                      value={card.quote}
+                      multiline
+                      rows={4}
+                      onChange={(quote) => {
+                        const cards = text.home.testimonials.cards.map(
+                          (c, i) => (i === index ? { ...c, quote } : c),
+                        );
+                        patchHome("testimonials", {
+                          ...text.home.testimonials,
+                          cards,
+                        });
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </Section>
+
+            <Section
+              id="home-campaign"
+              title="Campaign & bottom CTA"
+              description="Closing call-to-action band."
+            >
+              <Field
+                label="Campaign title"
+                value={text.home.campaign.title}
+                onChange={(title) => patchHome("campaign", { title })}
+              />
+              <Field
+                label="CTA title"
+                value={text.home.cta.title}
+                onChange={(title) =>
+                  patchHome("cta", { ...text.home.cta, title })
+                }
+              />
+              <Field
+                label="CTA body"
+                value={text.home.cta.body}
+                multiline
+                rows={3}
+                onChange={(body) => patchHome("cta", { ...text.home.cta, body })}
+              />
+            </Section>
+
+            <Section
+              id="home-marquee"
+              title="Luxury marquee"
+              description="Scrolling phrases across the homepage."
+            >
+              <Field
+                label="Phrases"
+                value={typo.marquee_copy.text}
+                multiline
+                rows={7}
+                hint="One phrase per line"
+                onChange={(value) =>
+                  setTypo((prev) => ({
+                    ...prev,
+                    marquee_copy: { text: value },
+                  }))
+                }
+              />
+            </Section>
+
+            <Section
+              id="home-voyages"
+              title="Our Voyages header"
+              description="Title above the voyage accordion."
+            >
+              <div className="wt-grid wt-grid--2">
+                <Field
+                  label="Title"
+                  value={typo.our_voyages_copy.title}
+                  onChange={(title) =>
                     setTypo((prev) => ({
                       ...prev,
-                      hero_pages: {
-                        ...prev.hero_pages,
-                        [key]: { ...prev.hero_pages[key], main },
+                      our_voyages_copy: {
+                        ...prev.our_voyages_copy,
+                        title,
                       },
                     }))
                   }
                 />
                 <Field
-                  label="Second title"
-                  value={copy.second}
-                  onChange={(second) =>
+                  label="Small label"
+                  value={typo.our_voyages_copy.indication}
+                  onChange={(indication) =>
                     setTypo((prev) => ({
                       ...prev,
-                      hero_pages: {
-                        ...prev.hero_pages,
-                        [key]: { ...prev.hero_pages[key], second },
+                      our_voyages_copy: {
+                        ...prev.our_voyages_copy,
+                        indication,
                       },
                     }))
                   }
                 />
               </div>
-            );
-          })}
-        </div>
-      </Accordion>
+            </Section>
+          </>
+        ) : null}
 
-      <Accordion
-        id="home"
-        openId={openId}
-        setOpenId={setOpenId}
-        title="Homepage"
-        href={navHref("home")}
-      >
-        <div className="wt-stack">
-          <h4 className="wt-subhead">About band</h4>
-          <Field
-            label="Heading"
-            value={text.home.about.heading}
-            multiline
-            rows={2}
-            onChange={(heading) =>
-              patchHome("about", { ...text.home.about, heading })
-            }
-          />
-          <Field
-            label="Indication"
-            value={text.home.about.eyebrow}
-            onChange={(eyebrow) =>
-              patchHome("about", { ...text.home.about, eyebrow })
-            }
-          />
-          <Field
-            label="Body"
-            value={text.home.about.body}
-            multiline
-            rows={4}
-            onChange={(body) => patchHome("about", { ...text.home.about, body })}
-          />
-          <Field
-            label="Button"
-            value={text.home.about.cta}
-            onChange={(cta) => patchHome("about", { ...text.home.about, cta })}
-          />
-
-          <h4 className="wt-subhead">Itineraries carousel</h4>
-          <Field
-            label="Title"
-            value={text.home.carousel.title}
-            onChange={(title) =>
-              patchHome("carousel", { ...text.home.carousel, title })
-            }
-          />
-          <Field
-            label="Indication"
-            value={text.home.carousel.subtitle}
-            onChange={(subtitle) =>
-              patchHome("carousel", { ...text.home.carousel, subtitle })
-            }
-          />
-          <Field
-            label="Button"
-            value={text.home.carousel.exploreCta}
-            onChange={(exploreCta) =>
-              patchHome("carousel", { ...text.home.carousel, exploreCta })
-            }
-          />
-
-          <h4 className="wt-subhead">Landmark stack slides</h4>
-          {text.home.stackSlides.map((slide, index) => (
-            <div key={index} className="wt-card">
-              <div className="wt-card__title">Slide {index + 1}</div>
+        {activeTab === "about" ? (
+          <>
+            <Section title="Introduction" description="Opening paragraphs.">
+              <Field
+                label="Intro"
+                value={paragraphsToText(text.pages.about.intro)}
+                multiline
+                rows={8}
+                hint="Blank line between paragraphs"
+                onChange={(v) =>
+                  patchPage("about", {
+                    ...text.pages.about,
+                    intro: textToParagraphs(v),
+                  })
+                }
+              />
+            </Section>
+            <Section title="Accommodations">
               <Field
                 label="Title"
-                value={slide.title}
-                multiline
-                rows={2}
-                onChange={(title) => {
-                  const stackSlides = text.home.stackSlides.map((s, i) =>
-                    i === index ? { ...s, title } : s,
-                  );
-                  patchHome("stackSlides", stackSlides);
-                }}
+                value={text.pages.about.accommodationsTitle}
+                onChange={(accommodationsTitle) =>
+                  patchPage("about", {
+                    ...text.pages.about,
+                    accommodationsTitle,
+                  })
+                }
               />
               <Field
-                label="Indication"
-                value={slide.indication}
-                onChange={(indication) => {
-                  const stackSlides = text.home.stackSlides.map((s, i) =>
-                    i === index ? { ...s, indication } : s,
-                  );
-                  patchHome("stackSlides", stackSlides);
-                }}
-              />
-              <Field
-                label="Body"
-                value={slide.body}
+                label="Intro"
+                value={text.pages.about.accommodationsIntro}
                 multiline
                 rows={3}
-                onChange={(body) => {
-                  const stackSlides = text.home.stackSlides.map((s, i) =>
-                    i === index ? { ...s, body } : s,
-                  );
-                  patchHome("stackSlides", stackSlides);
-                }}
+                onChange={(accommodationsIntro) =>
+                  patchPage("about", {
+                    ...text.pages.about,
+                    accommodationsIntro,
+                  })
+                }
               />
-            </div>
-          ))}
-
-          <h4 className="wt-subhead">Text + image blocks</h4>
-          {text.home.textBlocks.map((block, index) => (
-            <div key={index} className="wt-card">
-              <div className="wt-card__title">Block {index + 1}</div>
+              <Field
+                label="Outro"
+                value={text.pages.about.accommodationsOutro}
+                multiline
+                rows={3}
+                onChange={(accommodationsOutro) =>
+                  patchPage("about", {
+                    ...text.pages.about,
+                    accommodationsOutro,
+                  })
+                }
+              />
+            </Section>
+            <Section title="Dining">
               <Field
                 label="Title"
-                value={block.title}
+                value={text.pages.about.diningTitle}
+                onChange={(diningTitle) =>
+                  patchPage("about", { ...text.pages.about, diningTitle })
+                }
+              />
+              <Field
+                label="Intro"
+                value={text.pages.about.diningIntro}
                 multiline
-                rows={2}
-                onChange={(title) => {
-                  const textBlocks = text.home.textBlocks.map((b, i) =>
-                    i === index ? { ...b, title } : b,
-                  );
-                  patchHome("textBlocks", textBlocks);
-                }}
+                rows={3}
+                onChange={(diningIntro) =>
+                  patchPage("about", { ...text.pages.about, diningIntro })
+                }
+              />
+              <Field
+                label="Outro"
+                value={text.pages.about.diningOutro}
+                multiline
+                rows={3}
+                onChange={(diningOutro) =>
+                  patchPage("about", { ...text.pages.about, diningOutro })
+                }
+              />
+            </Section>
+            <Section title="Welcome">
+              <Field
+                label="Title"
+                value={text.pages.about.welcomeTitle}
+                onChange={(welcomeTitle) =>
+                  patchPage("about", { ...text.pages.about, welcomeTitle })
+                }
               />
               <Field
                 label="Body"
-                value={block.body}
+                value={text.pages.about.welcomeBody}
                 multiline
                 rows={4}
-                onChange={(body) => {
-                  const textBlocks = text.home.textBlocks.map((b, i) =>
-                    i === index ? { ...b, body } : b,
-                  );
-                  patchHome("textBlocks", textBlocks);
-                }}
+                onChange={(welcomeBody) =>
+                  patchPage("about", { ...text.pages.about, welcomeBody })
+                }
               />
-              <Field
-                label="Button"
-                value={block.cta}
-                onChange={(cta) => {
-                  const textBlocks = text.home.textBlocks.map((b, i) =>
-                    i === index ? { ...b, cta } : b,
-                  );
-                  patchHome("textBlocks", textBlocks);
-                }}
-              />
-            </div>
-          ))}
+            </Section>
+          </>
+        ) : null}
 
-          <h4 className="wt-subhead">Gallery</h4>
-          <Field
-            label="Title"
-            value={text.home.gallery.title}
-            onChange={(title) =>
-              patchHome("gallery", { ...text.home.gallery, title })
-            }
-          />
-          <Field
-            label="Instagram handle"
-            value={text.home.gallery.indication}
-            onChange={(indication) =>
-              patchHome("gallery", { ...text.home.gallery, indication })
-            }
-          />
-          <Field
-            label="Follow eyebrow"
-            value={text.home.gallery.followEyebrow}
-            onChange={(followEyebrow) =>
-              patchHome("gallery", { ...text.home.gallery, followEyebrow })
-            }
-          />
-
-          <h4 className="wt-subhead">Testimonials</h4>
-          <Field
-            label="Section title"
-            value={text.home.testimonials.title}
-            onChange={(title) =>
-              patchHome("testimonials", { ...text.home.testimonials, title })
-            }
-          />
-          {text.home.testimonials.cards.map((card, index) => (
-            <div key={index} className="wt-card">
-              <div className="wt-card__title">Guest {index + 1}</div>
-              <Field
-                label="Name"
-                value={card.name}
-                onChange={(name) => {
-                  const cards = text.home.testimonials.cards.map((c, i) =>
-                    i === index ? { ...c, name } : c,
-                  );
-                  patchHome("testimonials", {
-                    ...text.home.testimonials,
-                    cards,
-                  });
-                }}
-              />
-              <Field
-                label="Quote"
-                value={card.quote}
-                multiline
-                rows={3}
-                onChange={(quote) => {
-                  const cards = text.home.testimonials.cards.map((c, i) =>
-                    i === index ? { ...c, quote } : c,
-                  );
-                  patchHome("testimonials", {
-                    ...text.home.testimonials,
-                    cards,
-                  });
-                }}
-              />
-            </div>
-          ))}
-
-          <h4 className="wt-subhead">Campaign &amp; bottom CTA</h4>
-          <Field
-            label="Campaign title"
-            value={text.home.campaign.title}
-            onChange={(title) => patchHome("campaign", { title })}
-          />
-          <Field
-            label="CTA title"
-            value={text.home.cta.title}
-            onChange={(title) => patchHome("cta", { ...text.home.cta, title })}
-          />
-          <Field
-            label="CTA body"
-            value={text.home.cta.body}
-            multiline
-            rows={3}
-            onChange={(body) => patchHome("cta", { ...text.home.cta, body })}
-          />
-
-          <h4 className="wt-subhead">Luxury marquee</h4>
-          <Field
-            label="Phrases (one per line)"
-            value={typo.marquee_copy.text}
-            multiline
-            rows={6}
-            onChange={(value) =>
-              setTypo((prev) => ({
-                ...prev,
-                marquee_copy: { text: value },
-              }))
-            }
-          />
-
-          <h4 className="wt-subhead">Our Voyages header</h4>
-          <Field
-            label="Title"
-            value={typo.our_voyages_copy.title}
-            onChange={(title) =>
-              setTypo((prev) => ({
-                ...prev,
-                our_voyages_copy: { ...prev.our_voyages_copy, title },
-              }))
-            }
-          />
-          <Field
-            label="Indication"
-            value={typo.our_voyages_copy.indication}
-            onChange={(indication) =>
-              setTypo((prev) => ({
-                ...prev,
-                our_voyages_copy: { ...prev.our_voyages_copy, indication },
-              }))
-            }
-          />
-        </div>
-      </Accordion>
-
-      <Accordion
-        id="about"
-        openId={openId}
-        setOpenId={setOpenId}
-        title="About"
-        href={navHref("about")}
-      >
-        <Field
-          label="Intro paragraphs"
-          value={paragraphsToText(text.pages.about.intro)}
-          multiline
-          rows={8}
-          onChange={(v) =>
-            patchPage("about", {
-              ...text.pages.about,
-              intro: textToParagraphs(v),
-            })
-          }
-        />
-        <Field
-          label="Accommodations title"
-          value={text.pages.about.accommodationsTitle}
-          onChange={(accommodationsTitle) =>
-            patchPage("about", { ...text.pages.about, accommodationsTitle })
-          }
-        />
-        <Field
-          label="Accommodations intro"
-          value={text.pages.about.accommodationsIntro}
-          multiline
-          rows={3}
-          onChange={(accommodationsIntro) =>
-            patchPage("about", { ...text.pages.about, accommodationsIntro })
-          }
-        />
-        <Field
-          label="Accommodations outro"
-          value={text.pages.about.accommodationsOutro}
-          multiline
-          rows={3}
-          onChange={(accommodationsOutro) =>
-            patchPage("about", { ...text.pages.about, accommodationsOutro })
-          }
-        />
-        <Field
-          label="Dining title"
-          value={text.pages.about.diningTitle}
-          onChange={(diningTitle) =>
-            patchPage("about", { ...text.pages.about, diningTitle })
-          }
-        />
-        <Field
-          label="Dining intro"
-          value={text.pages.about.diningIntro}
-          multiline
-          rows={3}
-          onChange={(diningIntro) =>
-            patchPage("about", { ...text.pages.about, diningIntro })
-          }
-        />
-        <Field
-          label="Dining outro"
-          value={text.pages.about.diningOutro}
-          multiline
-          rows={3}
-          onChange={(diningOutro) =>
-            patchPage("about", { ...text.pages.about, diningOutro })
-          }
-        />
-        <Field
-          label="Welcome title"
-          value={text.pages.about.welcomeTitle}
-          onChange={(welcomeTitle) =>
-            patchPage("about", { ...text.pages.about, welcomeTitle })
-          }
-        />
-        <Field
-          label="Welcome body"
-          value={text.pages.about.welcomeBody}
-          multiline
-          rows={4}
-          onChange={(welcomeBody) =>
-            patchPage("about", { ...text.pages.about, welcomeBody })
-          }
-        />
-      </Accordion>
-
-      <Accordion
-        id="cruises"
-        openId={openId}
-        setOpenId={setOpenId}
-        title="Cruises"
-        href={navHref("cruises")}
-      >
-        <Field
-          label="Section title"
-          value={text.pages.cruises.sectionTitle}
-          onChange={(sectionTitle) =>
-            patchPage("cruises", { ...text.pages.cruises, sectionTitle })
-          }
-        />
-        <Field
-          label="Continue exploring title"
-          value={text.pages.cruises.continueTitle}
-          onChange={(continueTitle) =>
-            patchPage("cruises", { ...text.pages.cruises, continueTitle })
-          }
-        />
-        <Field
-          label="Continue exploring body"
-          value={text.pages.cruises.continueBody}
-          multiline
-          rows={3}
-          onChange={(continueBody) =>
-            patchPage("cruises", { ...text.pages.cruises, continueBody })
-          }
-        />
-      </Accordion>
-
-      <Accordion
-        id="highlights"
-        openId={openId}
-        setOpenId={setOpenId}
-        title="Highlights"
-        href={navHref("highlights")}
-      >
-        <Field
-          label="Intro paragraphs"
-          value={paragraphsToText(text.pages.highlights.intro)}
-          multiline
-          rows={6}
-          onChange={(v) =>
-            patchPage("highlights", {
-              ...text.pages.highlights,
-              intro: textToParagraphs(v),
-            })
-          }
-        />
-        {text.pages.highlights.landmarks.map((item, index) => (
-          <div key={index} className="wt-card">
-            <div className="wt-card__title">Landmark {index + 1}</div>
+        {activeTab === "cruises" ? (
+          <Section
+            title="Cruises page copy"
+            description="Section heading and continue-exploring band."
+          >
             <Field
-              label="Title"
-              value={item.title}
-              onChange={(title) => {
-                const landmarks = text.pages.highlights.landmarks.map((l, i) =>
-                  i === index ? { ...l, title } : l,
-                );
-                patchPage("highlights", {
-                  ...text.pages.highlights,
-                  landmarks,
-                });
-              }}
+              label="Section title"
+              value={text.pages.cruises.sectionTitle}
+              onChange={(sectionTitle) =>
+                patchPage("cruises", { ...text.pages.cruises, sectionTitle })
+              }
             />
             <Field
-              label="Body"
-              value={item.body}
+              label="Continue exploring — title"
+              value={text.pages.cruises.continueTitle}
+              onChange={(continueTitle) =>
+                patchPage("cruises", { ...text.pages.cruises, continueTitle })
+              }
+            />
+            <Field
+              label="Continue exploring — body"
+              value={text.pages.cruises.continueBody}
               multiline
               rows={4}
-              onChange={(body) => {
-                const landmarks = text.pages.highlights.landmarks.map((l, i) =>
-                  i === index ? { ...l, body } : l,
-                );
-                patchPage("highlights", {
-                  ...text.pages.highlights,
-                  landmarks,
-                });
-              }}
+              onChange={(continueBody) =>
+                patchPage("cruises", { ...text.pages.cruises, continueBody })
+              }
             />
-          </div>
-        ))}
-      </Accordion>
+          </Section>
+        ) : null}
 
-      <Accordion
-        id="gastronomy"
-        openId={openId}
-        setOpenId={setOpenId}
-        title="Gastronomy"
-        href={navHref("gastronomy")}
-      >
-        <Field
-          label="Intro paragraphs"
-          value={paragraphsToText(text.pages.gastronomy.intro)}
-          multiline
-          rows={6}
-          onChange={(v) =>
-            patchPage("gastronomy", {
-              ...text.pages.gastronomy,
-              intro: textToParagraphs(v),
-            })
-          }
-        />
-        <Field
-          label="Restaurant title"
-          value={text.pages.gastronomy.restaurantTitle}
-          onChange={(restaurantTitle) =>
-            patchPage("gastronomy", {
-              ...text.pages.gastronomy,
-              restaurantTitle,
-            })
-          }
-        />
-        <Field
-          label="Service"
-          value={text.pages.gastronomy.restaurantService}
-          multiline
-          rows={3}
-          onChange={(restaurantService) =>
-            patchPage("gastronomy", {
-              ...text.pages.gastronomy,
-              restaurantService,
-            })
-          }
-        />
-        <Field
-          label="Atmosphere title"
-          value={text.pages.gastronomy.atmosphereTitle}
-          onChange={(atmosphereTitle) =>
-            patchPage("gastronomy", {
-              ...text.pages.gastronomy,
-              atmosphereTitle,
-            })
-          }
-        />
-        <Field
-          label="Atmosphere"
-          value={text.pages.gastronomy.atmosphere}
-          multiline
-          rows={3}
-          onChange={(atmosphere) =>
-            patchPage("gastronomy", { ...text.pages.gastronomy, atmosphere })
-          }
-        />
-        <Field
-          label="Closing"
-          value={text.pages.gastronomy.closing}
-          multiline
-          rows={3}
-          onChange={(closing) =>
-            patchPage("gastronomy", { ...text.pages.gastronomy, closing })
-          }
-        />
-        {text.pages.gastronomy.venues.map((venue, index) => (
-          <div key={index} className="wt-card">
-            <div className="wt-card__title">Venue {index + 1}</div>
+        {activeTab === "highlights" ? (
+          <>
+            <Section title="Introduction">
+              <Field
+                label="Intro"
+                value={paragraphsToText(text.pages.highlights.intro)}
+                multiline
+                rows={6}
+                hint="Blank line between paragraphs"
+                onChange={(v) =>
+                  patchPage("highlights", {
+                    ...text.pages.highlights,
+                    intro: textToParagraphs(v),
+                  })
+                }
+              />
+            </Section>
+            <Section title="Landmarks">
+              <div className="wt-grid wt-grid--2">
+                {text.pages.highlights.landmarks.map((item, index) => (
+                  <div key={index} className="wt-card">
+                    <div className="wt-card__title">Landmark {index + 1}</div>
+                    <Field
+                      label="Title"
+                      value={item.title}
+                      onChange={(title) => {
+                        const landmarks = text.pages.highlights.landmarks.map(
+                          (l, i) => (i === index ? { ...l, title } : l),
+                        );
+                        patchPage("highlights", {
+                          ...text.pages.highlights,
+                          landmarks,
+                        });
+                      }}
+                    />
+                    <Field
+                      label="Body"
+                      value={item.body}
+                      multiline
+                      rows={4}
+                      onChange={(body) => {
+                        const landmarks = text.pages.highlights.landmarks.map(
+                          (l, i) => (i === index ? { ...l, body } : l),
+                        );
+                        patchPage("highlights", {
+                          ...text.pages.highlights,
+                          landmarks,
+                        });
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </Section>
+          </>
+        ) : null}
+
+        {activeTab === "gastronomy" ? (
+          <>
+            <Section title="Introduction">
+              <Field
+                label="Intro"
+                value={paragraphsToText(text.pages.gastronomy.intro)}
+                multiline
+                rows={6}
+                hint="Blank line between paragraphs"
+                onChange={(v) =>
+                  patchPage("gastronomy", {
+                    ...text.pages.gastronomy,
+                    intro: textToParagraphs(v),
+                  })
+                }
+              />
+            </Section>
+            <Section title="Restaurant">
+              <Field
+                label="Title"
+                value={text.pages.gastronomy.restaurantTitle}
+                onChange={(restaurantTitle) =>
+                  patchPage("gastronomy", {
+                    ...text.pages.gastronomy,
+                    restaurantTitle,
+                  })
+                }
+              />
+              <Field
+                label="Service"
+                value={text.pages.gastronomy.restaurantService}
+                multiline
+                rows={3}
+                onChange={(restaurantService) =>
+                  patchPage("gastronomy", {
+                    ...text.pages.gastronomy,
+                    restaurantService,
+                  })
+                }
+              />
+            </Section>
+            <Section title="Atmosphere & closing">
+              <Field
+                label="Atmosphere title"
+                value={text.pages.gastronomy.atmosphereTitle}
+                onChange={(atmosphereTitle) =>
+                  patchPage("gastronomy", {
+                    ...text.pages.gastronomy,
+                    atmosphereTitle,
+                  })
+                }
+              />
+              <Field
+                label="Atmosphere"
+                value={text.pages.gastronomy.atmosphere}
+                multiline
+                rows={3}
+                onChange={(atmosphere) =>
+                  patchPage("gastronomy", {
+                    ...text.pages.gastronomy,
+                    atmosphere,
+                  })
+                }
+              />
+              <Field
+                label="Closing"
+                value={text.pages.gastronomy.closing}
+                multiline
+                rows={3}
+                onChange={(closing) =>
+                  patchPage("gastronomy", {
+                    ...text.pages.gastronomy,
+                    closing,
+                  })
+                }
+              />
+            </Section>
+            <Section title="Venues">
+              <div className="wt-grid wt-grid--2">
+                {text.pages.gastronomy.venues.map((venue, index) => (
+                  <div key={index} className="wt-card">
+                    <div className="wt-card__title">Venue {index + 1}</div>
+                    <Field
+                      label="Title"
+                      value={venue.title}
+                      onChange={(title) => {
+                        const venues = text.pages.gastronomy.venues.map(
+                          (v, i) => (i === index ? { ...v, title } : v),
+                        );
+                        patchPage("gastronomy", {
+                          ...text.pages.gastronomy,
+                          venues,
+                        });
+                      }}
+                    />
+                    <Field
+                      label="Description"
+                      value={venue.description}
+                      multiline
+                      rows={3}
+                      onChange={(description) => {
+                        const venues = text.pages.gastronomy.venues.map(
+                          (v, i) => (i === index ? { ...v, description } : v),
+                        );
+                        patchPage("gastronomy", {
+                          ...text.pages.gastronomy,
+                          venues,
+                        });
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </Section>
+          </>
+        ) : null}
+
+        {activeTab === "wellness" ? (
+          <>
+            <Section title="Spa">
+              <Field
+                label="Title"
+                value={text.pages.wellness.spaTitle}
+                onChange={(spaTitle) =>
+                  patchPage("wellness", { ...text.pages.wellness, spaTitle })
+                }
+              />
+              <Field
+                label="Paragraphs"
+                value={paragraphsToText(text.pages.wellness.spaParagraphs)}
+                multiline
+                rows={8}
+                hint="Blank line between paragraphs"
+                onChange={(v) =>
+                  patchPage("wellness", {
+                    ...text.pages.wellness,
+                    spaParagraphs: textToParagraphs(v),
+                  })
+                }
+              />
+            </Section>
+            <Section title="Fitness">
+              <Field
+                label="Title"
+                value={text.pages.wellness.fitnessTitle}
+                onChange={(fitnessTitle) =>
+                  patchPage("wellness", {
+                    ...text.pages.wellness,
+                    fitnessTitle,
+                  })
+                }
+              />
+              <Field
+                label="Body"
+                value={text.pages.wellness.fitnessBody}
+                multiline
+                rows={4}
+                onChange={(fitnessBody) =>
+                  patchPage("wellness", {
+                    ...text.pages.wellness,
+                    fitnessBody,
+                  })
+                }
+              />
+            </Section>
+          </>
+        ) : null}
+
+        {activeTab === "charter" ? (
+          <Section title="Private charter">
             <Field
-              label="Title"
-              value={venue.title}
-              onChange={(title) => {
-                const venues = text.pages.gastronomy.venues.map((v, i) =>
-                  i === index ? { ...v, title } : v,
-                );
-                patchPage("gastronomy", { ...text.pages.gastronomy, venues });
-              }}
+              label="Overview title"
+              value={text.pages.charter.overviewTitle}
+              onChange={(overviewTitle) =>
+                patchPage("charter", { ...text.pages.charter, overviewTitle })
+              }
             />
             <Field
-              label="Description"
-              value={venue.description}
+              label="Overview intro"
+              value={text.pages.charter.overviewIntro}
+              multiline
+              rows={4}
+              onChange={(overviewIntro) =>
+                patchPage("charter", { ...text.pages.charter, overviewIntro })
+              }
+            />
+            <Field
+              label="Benefits intro"
+              value={text.pages.charter.benefitsIntro}
+              onChange={(benefitsIntro) =>
+                patchPage("charter", { ...text.pages.charter, benefitsIntro })
+              }
+            />
+            <Field
+              label="Benefits"
+              value={text.pages.charter.benefits.join("\n")}
+              multiline
+              rows={6}
+              hint="One benefit per line"
+              onChange={(v) =>
+                patchPage("charter", {
+                  ...text.pages.charter,
+                  benefits: v
+                    .split("\n")
+                    .map((line) => line.trim())
+                    .filter(Boolean),
+                })
+              }
+            />
+            <Field
+              label="CTA"
+              value={text.pages.charter.cta}
               multiline
               rows={2}
-              onChange={(description) => {
-                const venues = text.pages.gastronomy.venues.map((v, i) =>
-                  i === index ? { ...v, description } : v,
-                );
-                patchPage("gastronomy", { ...text.pages.gastronomy, venues });
-              }}
+              onChange={(cta) =>
+                patchPage("charter", { ...text.pages.charter, cta })
+              }
             />
-          </div>
-        ))}
-      </Accordion>
+          </Section>
+        ) : null}
 
-      <Accordion
-        id="wellness"
-        openId={openId}
-        setOpenId={setOpenId}
-        title="Wellness"
-        href={navHref("wellness")}
-      >
-        <Field
-          label="Spa title"
-          value={text.pages.wellness.spaTitle}
-          onChange={(spaTitle) =>
-            patchPage("wellness", { ...text.pages.wellness, spaTitle })
-          }
-        />
-        <Field
-          label="Spa paragraphs"
-          value={paragraphsToText(text.pages.wellness.spaParagraphs)}
-          multiline
-          rows={8}
-          onChange={(v) =>
-            patchPage("wellness", {
-              ...text.pages.wellness,
-              spaParagraphs: textToParagraphs(v),
-            })
-          }
-        />
-        <Field
-          label="Fitness title"
-          value={text.pages.wellness.fitnessTitle}
-          onChange={(fitnessTitle) =>
-            patchPage("wellness", { ...text.pages.wellness, fitnessTitle })
-          }
-        />
-        <Field
-          label="Fitness body"
-          value={text.pages.wellness.fitnessBody}
-          multiline
-          rows={4}
-          onChange={(fitnessBody) =>
-            patchPage("wellness", { ...text.pages.wellness, fitnessBody })
-          }
-        />
-      </Accordion>
+        {activeTab === "contact" ? (
+          <Section title="Contact form">
+            <Field
+              label="Form title"
+              value={text.pages.contact.formTitle}
+              onChange={(formTitle) =>
+                patchPage("contact", { ...text.pages.contact, formTitle })
+              }
+            />
+            <Field
+              label="Form intro"
+              value={text.pages.contact.formIntro}
+              multiline
+              rows={4}
+              onChange={(formIntro) =>
+                patchPage("contact", { ...text.pages.contact, formIntro })
+              }
+            />
+          </Section>
+        ) : null}
 
-      <Accordion
-        id="charter"
-        openId={openId}
-        setOpenId={setOpenId}
-        title="Charter"
-        href={navHref("charter")}
-      >
-        <Field
-          label="Overview title"
-          value={text.pages.charter.overviewTitle}
-          onChange={(overviewTitle) =>
-            patchPage("charter", { ...text.pages.charter, overviewTitle })
-          }
-        />
-        <Field
-          label="Overview intro"
-          value={text.pages.charter.overviewIntro}
-          multiline
-          rows={3}
-          onChange={(overviewIntro) =>
-            patchPage("charter", { ...text.pages.charter, overviewIntro })
-          }
-        />
-        <Field
-          label="Benefits intro"
-          value={text.pages.charter.benefitsIntro}
-          onChange={(benefitsIntro) =>
-            patchPage("charter", { ...text.pages.charter, benefitsIntro })
-          }
-        />
-        <Field
-          label="Benefits (one per line)"
-          value={text.pages.charter.benefits.join("\n")}
-          multiline
-          rows={5}
-          onChange={(v) =>
-            patchPage("charter", {
-              ...text.pages.charter,
-              benefits: v
-                .split("\n")
-                .map((line) => line.trim())
-                .filter(Boolean),
-            })
-          }
-        />
-        <Field
-          label="CTA"
-          value={text.pages.charter.cta}
-          multiline
-          rows={2}
-          onChange={(cta) =>
-            patchPage("charter", { ...text.pages.charter, cta })
-          }
-        />
-      </Accordion>
+        {activeTab === "blog" ? (
+          <Section title="Blog">
+            <Field
+              label="Intro"
+              value={text.pages.blog.intro}
+              multiline
+              rows={6}
+              onChange={(intro) => patchPage("blog", { intro })}
+            />
+          </Section>
+        ) : null}
 
-      <Accordion
-        id="contact"
-        openId={openId}
-        setOpenId={setOpenId}
-        title="Contact"
-        href={navHref("contact")}
-      >
-        <Field
-          label="Form title"
-          value={text.pages.contact.formTitle}
-          onChange={(formTitle) =>
-            patchPage("contact", { ...text.pages.contact, formTitle })
-          }
-        />
-        <Field
-          label="Form intro"
-          value={text.pages.contact.formIntro}
-          multiline
-          rows={3}
-          onChange={(formIntro) =>
-            patchPage("contact", { ...text.pages.contact, formIntro })
-          }
-        />
-      </Accordion>
+        {activeTab === "partners" ? (
+          <Section title="Partners">
+            <Field
+              label="Title"
+              value={text.pages.partners.title}
+              onChange={(title) =>
+                patchPage("partners", { ...text.pages.partners, title })
+              }
+            />
+            <Field
+              label="Chapter"
+              value={text.pages.partners.chapter}
+              onChange={(chapter) =>
+                patchPage("partners", { ...text.pages.partners, chapter })
+              }
+            />
+            <Field
+              label="Lead"
+              value={text.pages.partners.lead}
+              multiline
+              rows={4}
+              onChange={(lead) =>
+                patchPage("partners", { ...text.pages.partners, lead })
+              }
+            />
+          </Section>
+        ) : null}
 
-      <Accordion
-        id="blog"
-        openId={openId}
-        setOpenId={setOpenId}
-        title="Blog"
-        href={navHref("blog")}
-      >
-        <Field
-          label="Intro"
-          value={text.pages.blog.intro}
-          multiline
-          rows={5}
-          onChange={(intro) => patchPage("blog", { intro })}
-        />
-      </Accordion>
+        {activeTab === "rooms" ? (
+          <Section title="Rooms & suites overview">
+            <Field
+              label="Title"
+              value={text.pages.rooms.overviewTitle}
+              onChange={(overviewTitle) =>
+                patchPage("rooms", { ...text.pages.rooms, overviewTitle })
+              }
+            />
+            <Field
+              label="Intro"
+              value={text.pages.rooms.overviewIntro}
+              multiline
+              rows={6}
+              onChange={(overviewIntro) =>
+                patchPage("rooms", { ...text.pages.rooms, overviewIntro })
+              }
+            />
+          </Section>
+        ) : null}
 
-      <Accordion
-        id="partners"
-        openId={openId}
-        setOpenId={setOpenId}
-        title="Partners"
-        href={navHref("partners")}
-      >
-        <Field
-          label="Title"
-          value={text.pages.partners.title}
-          onChange={(title) =>
-            patchPage("partners", { ...text.pages.partners, title })
-          }
-        />
-        <Field
-          label="Chapter"
-          value={text.pages.partners.chapter}
-          onChange={(chapter) =>
-            patchPage("partners", { ...text.pages.partners, chapter })
-          }
-        />
-        <Field
-          label="Lead"
-          value={text.pages.partners.lead}
-          multiline
-          rows={3}
-          onChange={(lead) =>
-            patchPage("partners", { ...text.pages.partners, lead })
-          }
-        />
-      </Accordion>
+        {activeTab === "cabins" ? (
+          <Section title="Luxury cabins overview">
+            <Field
+              label="Title"
+              value={text.pages.cabins.overviewTitle}
+              onChange={(overviewTitle) =>
+                patchPage("cabins", { ...text.pages.cabins, overviewTitle })
+              }
+            />
+            <Field
+              label="Intro"
+              value={text.pages.cabins.overviewIntro}
+              multiline
+              rows={6}
+              onChange={(overviewIntro) =>
+                patchPage("cabins", { ...text.pages.cabins, overviewIntro })
+              }
+            />
+          </Section>
+        ) : null}
 
-      <Accordion
-        id="rooms"
-        openId={openId}
-        setOpenId={setOpenId}
-        title="Rooms & Suites"
-        href={navHref("rooms")}
-      >
-        <Field
-          label="Overview title"
-          value={text.pages.rooms.overviewTitle}
-          onChange={(overviewTitle) =>
-            patchPage("rooms", { ...text.pages.rooms, overviewTitle })
-          }
-        />
-        <Field
-          label="Overview intro"
-          value={text.pages.rooms.overviewIntro}
-          multiline
-          rows={5}
-          onChange={(overviewIntro) =>
-            patchPage("rooms", { ...text.pages.rooms, overviewIntro })
-          }
-        />
-      </Accordion>
+        {activeTab === "royal" ? (
+          <Section title="Royal suites overview">
+            <Field
+              label="Title"
+              value={text.pages.royal.overviewTitle}
+              onChange={(overviewTitle) =>
+                patchPage("royal", { ...text.pages.royal, overviewTitle })
+              }
+            />
+            <Field
+              label="Intro"
+              value={text.pages.royal.overviewIntro}
+              multiline
+              rows={6}
+              onChange={(overviewIntro) =>
+                patchPage("royal", { ...text.pages.royal, overviewIntro })
+              }
+            />
+          </Section>
+        ) : null}
+      </div>
 
-      <Accordion
-        id="cabins"
-        openId={openId}
-        setOpenId={setOpenId}
-        title="Luxury Cabins"
-        href={navHref("cabins")}
-      >
-        <Field
-          label="Overview title"
-          value={text.pages.cabins.overviewTitle}
-          onChange={(overviewTitle) =>
-            patchPage("cabins", { ...text.pages.cabins, overviewTitle })
-          }
-        />
-        <Field
-          label="Overview intro"
-          value={text.pages.cabins.overviewIntro}
-          multiline
-          rows={5}
-          onChange={(overviewIntro) =>
-            patchPage("cabins", { ...text.pages.cabins, overviewIntro })
-          }
-        />
-      </Accordion>
-
-      <Accordion
-        id="royal"
-        openId={openId}
-        setOpenId={setOpenId}
-        title="Royal Suites"
-        href={navHref("royal")}
-      >
-        <Field
-          label="Overview title"
-          value={text.pages.royal.overviewTitle}
-          onChange={(overviewTitle) =>
-            patchPage("royal", { ...text.pages.royal, overviewTitle })
-          }
-        />
-        <Field
-          label="Overview intro"
-          value={text.pages.royal.overviewIntro}
-          multiline
-          rows={5}
-          onChange={(overviewIntro) =>
-            patchPage("royal", { ...text.pages.royal, overviewIntro })
-          }
-        />
-      </Accordion>
-
-      <div
-        className={`wt-savebar${dirty ? " wt-savebar--dirty" : ""}`}
-      >
+      <div className={`wt-savebar${dirty ? " wt-savebar--dirty" : ""}`}>
         <p className="wt-savebar__status">
           {dirty
-            ? "Unsaved text changes — click Save text to update the live site."
-            : "Saved — live site matches this text."}
+            ? "Unsaved changes — Save text to update the live site."
+            : "All text saved — live site matches this editor."}
         </p>
         <div className="wt-panel__actions">
           <button

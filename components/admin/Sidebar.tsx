@@ -4,13 +4,14 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   FileText,
-  Globe,
+  ImageIcon,
   LayoutDashboard,
   LogOut,
   Mail,
   Settings,
   Ship,
   Sparkles,
+  TextCursorInput,
   Ticket,
   Type,
   X,
@@ -30,7 +31,8 @@ const NAV_SECTIONS: { title: string; items: NavItem[] }[] = [
     items: [
       { href: "/admin/bookings", label: "Bookings", icon: Ticket },
       { href: "/admin/cruises", label: "Cruises & Rooms", icon: Ship },
-      { href: "/admin/content", label: "Website Content", icon: Globe },
+      { href: "/admin/website-text", label: "Website Text", icon: TextCursorInput },
+      { href: "/admin/content", label: "Website Images", icon: ImageIcon },
       { href: "/admin/hero-logo-tune", label: "Hero Logo Tune", icon: Sparkles },
       { href: "/admin/typography", label: "Typography & Styles", icon: Type },
       { href: "/admin/blogs", label: "Blog Posts", icon: FileText },

@@ -186,15 +186,18 @@ export function DashboardView() {
         <p className="admin-subheading mt-1">
           Common tasks to manage your cruise business
         </p>
-        <div className="mt-6 grid gap-3 sm:grid-cols-3">
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <ActionButton href="/admin/cruises" icon={Ship} variant="primary" className="w-full justify-center py-3">
             Add New Cruise
           </ActionButton>
           <ActionButton href="/admin/bookings" icon={List} variant="outline" className="w-full justify-center py-3">
             View All Bookings
           </ActionButton>
+          <ActionButton href="/admin/website-text" icon={Globe} variant="outline" className="w-full justify-center py-3">
+            Edit Website Text
+          </ActionButton>
           <ActionButton href="/admin/content" icon={Globe} variant="outline" className="w-full justify-center py-3">
-            Edit Website Content
+            Edit Website Images
           </ActionButton>
         </div>
       </section>
