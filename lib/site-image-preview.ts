@@ -33,10 +33,11 @@ export const HOMEPAGE_LIVE_SLOT_NAMES = new Set<string>([
   "about-hero",
   "home-story-legacy-large",
   "gastronomy-restaurant",
-  "home-collage-living",
-  "home-alt-highlights",
-  "wellness-hero",
-  "home-cinematic-still",
+  "moving-tilted-1",
+  "moving-tilted-2",
+  "moving-tilted-3",
+  "moving-tilted-4",
+  "moving-tilted-5",
   "home-voyage-3n-aswan-luxor",
   "home-voyage-4n-luxor-aswan",
   "home-voyage-7n-roundtrip",
@@ -58,9 +59,6 @@ const SITE_IMAGE_PRIMARY_PAGE: Partial<Record<string, string>> = {
   "home-collage-large": "/",
   "home-split-courtyard": "/",
   "home-story-legacy-large": "/",
-  "home-collage-living": "/",
-  "home-alt-highlights": "/",
-  "home-cinematic-still": "/",
   "home-voyage-3n-aswan-luxor": "/",
   "home-voyage-4n-luxor-aswan": "/",
   "home-voyage-7n-roundtrip": "/",
@@ -70,6 +68,12 @@ const SITE_IMAGE_PRIMARY_PAGE: Partial<Record<string, string>> = {
   "floating-ig-2": "/",
   "floating-ig-3": "/",
   "floating-ig-4": "/",
+
+  "moving-tilted-1": "/",
+  "moving-tilted-2": "/",
+  "moving-tilted-3": "/",
+  "moving-tilted-4": "/",
+  "moving-tilted-5": "/",
 
   "cruises-hero": "/cruises",
   "room-luxury": "/luxury-cabins-Nile-Cruise",
@@ -136,10 +140,11 @@ const SLOT_FALLBACK_SECTION: Partial<Record<string, string>> = {
   "room-luxury": "services",
   "about-hero": "details",
   "gastronomy-restaurant": "escape",
-  "home-collage-living": "gallery",
-  "home-alt-highlights": "gallery",
-  "wellness-hero": "gallery",
-  "home-cinematic-still": "gallery",
+  "moving-tilted-1": "gallery",
+  "moving-tilted-2": "gallery",
+  "moving-tilted-3": "gallery",
+  "moving-tilted-4": "gallery",
+  "moving-tilted-5": "gallery",
 };
 
 export function getSiteImageFallbackSectionId(name: string): string | undefined {
@@ -170,7 +175,10 @@ export function resolveSiteImageLivePath(
   name: string,
   adminGroupPagePath: string,
 ): string | null {
-  if (adminGroupPagePath === "/#floating-ig") {
+  if (
+    adminGroupPagePath === "/#floating-ig" ||
+    adminGroupPagePath === "/#moving-tilted-cards"
+  ) {
     return buildSiteImageLivePath("/", name);
   }
 

@@ -153,27 +153,27 @@ export const EX_GALLERY = {
   title: "Sail with Hathor",
   images: [
     {
-      imageName: "home-collage-living" as SiteImageName,
+      imageName: "moving-tilted-1" as SiteImageName,
       alt: "Luxury lounge aboard Hathor",
       href: "/about",
     },
     {
-      imageName: "home-alt-highlights" as SiteImageName,
+      imageName: "moving-tilted-2" as SiteImageName,
       alt: "Nile cruise highlights",
       href: "/highlights",
     },
     {
-      imageName: "gastronomy-restaurant" as SiteImageName,
+      imageName: "moving-tilted-3" as SiteImageName,
       alt: "Gastronomy on the Nile",
       href: "/gastronomy",
     },
     {
-      imageName: "wellness-hero" as SiteImageName,
+      imageName: "moving-tilted-4" as SiteImageName,
       alt: "Wellness aboard Hathor",
       href: "/wellness",
     },
     {
-      imageName: "home-cinematic-still" as SiteImageName,
+      imageName: "moving-tilted-5" as SiteImageName,
       alt: "Suite interior aboard Hathor",
       href: "/rooms",
     },

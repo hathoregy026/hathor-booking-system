@@ -42,11 +42,11 @@ import { siteImageAnchorId } from "@/lib/site-image-preview";
 import { useBookingStore } from "@/store/bookingStore";
 
 const GALLERY_PREVIEW_ANCHORS = new Set([
-  "home-collage-living",
-  "home-alt-highlights",
-  "home-cinematic-still",
-  "wellness-hero",
-  "gastronomy-restaurant",
+  "moving-tilted-1",
+  "moving-tilted-2",
+  "moving-tilted-3",
+  "moving-tilted-4",
+  "moving-tilted-5",
 ]);
 
 /** Every homepage-visible CMS slot should be findable for admin “View on live site”. */

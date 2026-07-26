@@ -466,8 +466,9 @@ export default function AdminContentPage() {
             Choose a tab below, then replace any photo. Uploads publish to the
             live site immediately. Dedicated sections:{" "}
             <strong>Our Voyages</strong> (homepage accordion backgrounds) and{" "}
-            <strong>Floating IG</strong> (Sail with Hathor Instagram bubbles) —
-            each photo is separate and not shared with other pages.
+            <strong>Moving Tilted Cards</strong> (homepage scrolling gallery)
+            and <strong>Floating IG</strong> (Sail with Hathor Instagram
+            bubbles) — each photo is separate and not shared with other pages.
           </p>
         </div>
 

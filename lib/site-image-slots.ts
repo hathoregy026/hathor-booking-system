@@ -522,6 +522,47 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     pagePath: "/#floating-ig",
     displayOrder: 4,
   },
+  // Moving tilted cards — homepage gallery only (independent of all other photos)
+  {
+    name: "moving-tilted-1",
+    altText: "Moving tilted card — luxury lounge aboard Hathor",
+    url: HATHOR_MEDIA.collageLiving,
+    category: "general",
+    pagePath: "/#moving-tilted-cards",
+    displayOrder: 1,
+  },
+  {
+    name: "moving-tilted-2",
+    altText: "Moving tilted card — Nile cruise highlights",
+    url: HATHOR_MEDIA.altHighlights,
+    category: "general",
+    pagePath: "/#moving-tilted-cards",
+    displayOrder: 2,
+  },
+  {
+    name: "moving-tilted-3",
+    altText: "Moving tilted card — gastronomy on the Nile",
+    url: HATHOR_MEDIA.restaurant,
+    category: "general",
+    pagePath: "/#moving-tilted-cards",
+    displayOrder: 3,
+  },
+  {
+    name: "moving-tilted-4",
+    altText: "Moving tilted card — wellness aboard Hathor",
+    url: HATHOR_MEDIA.wellness,
+    category: "general",
+    pagePath: "/#moving-tilted-cards",
+    displayOrder: 4,
+  },
+  {
+    name: "moving-tilted-5",
+    altText: "Moving tilted card — suite interior aboard Hathor",
+    url: HATHOR_MEDIA.cinematicStill,
+    category: "general",
+    pagePath: "/#moving-tilted-cards",
+    displayOrder: 5,
+  },
 ];
 
 export type SiteImageName = (typeof SITE_IMAGE_SLOTS)[number]["name"];

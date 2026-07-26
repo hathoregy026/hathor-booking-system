@@ -4,6 +4,7 @@ import { resolveSiteImageLivePath } from "@/lib/site-image-preview";
 /** Client-facing page names for tabs / accordion headers. */
 const PAGE_GROUP_TITLES: Record<string, string> = {
   "/": "Homepage",
+  "/#moving-tilted-cards": "Moving Tilted Cards",
   "/cruises": "Cruises",
   "/about": "About Us",
   "/gastronomy": "Gastronomy",
@@ -45,12 +46,8 @@ const HOMEPAGE_LIVE_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> 
     },
     {
       name: "gastronomy-restaurant",
-      label: "Dining section + gallery — Restaurant",
+      label: "Dining section — Restaurant",
     },
-    { name: "home-collage-living", label: "Gallery — lounge photo" },
-    { name: "home-alt-highlights", label: "Gallery — landmarks photo" },
-    { name: "wellness-hero", label: "Gallery — wellness photo" },
-    { name: "home-cinematic-still", label: "Gallery — suite photo" },
     { name: "home-call-to-action", label: "Call to action image" },
   ];
 
@@ -73,6 +70,17 @@ const OUR_VOYAGES_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> =
       label: "Row 4 — Nile Majesty",
     },
   ];
+
+const MOVING_TILTED_ADMIN_CARDS: ReadonlyArray<{
+  name: string;
+  label: string;
+}> = [
+  { name: "moving-tilted-1", label: "Card 1 — Lounge" },
+  { name: "moving-tilted-2", label: "Card 2 — Nile highlights" },
+  { name: "moving-tilted-3", label: "Card 3 — Dining" },
+  { name: "moving-tilted-4", label: "Card 4 — Wellness" },
+  { name: "moving-tilted-5", label: "Card 5 — Suite" },
+];
 
 const SLOT_LABELS: Partial<Record<SiteImageSlot["name"], string>> = {
   "room-luxury": "Hero — Luxury Rooms",
@@ -178,7 +186,11 @@ function labelForSlot(slot: SiteImageSlot): string {
 function layoutForSlot(slot: SiteImageSlot): SiteImageLayoutKind {
   if (SLOT_LAYOUT_KINDS[slot.name]) return SLOT_LAYOUT_KINDS[slot.name]!;
   if (slot.category === "hero") return "hero";
-  if (slot.name.includes("collage") || slot.name.startsWith("scraped-")) {
+  if (
+    slot.name.includes("collage") ||
+    slot.name.startsWith("scraped-") ||
+    slot.name.startsWith("moving-tilted-")
+  ) {
     return "gallery";
   }
   return "standard";
@@ -191,6 +203,7 @@ export function getSiteImageGroupHeading(pageTitle: string): string {
   if (pageTitle === "Floating IG" || pageTitle === "Floating IG images") {
     return "Floating IG Bubble Images";
   }
+  if (pageTitle === "Moving Tilted Cards") return "Moving Tilted Cards Images";
   return `${pageTitle} Images`;
 }
 
@@ -224,6 +237,15 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
     homepageItems.push(toAdminItem(slot, "/", card.label, index + 1));
   });
 
+  const movingTiltedItems: SiteImageAdminItem[] = [];
+  MOVING_TILTED_ADMIN_CARDS.forEach((card, index) => {
+    const slot = byName.get(card.name);
+    if (!slot) return;
+    movingTiltedItems.push(
+      toAdminItem(slot, "/#moving-tilted-cards", card.label, index + 1),
+    );
+  });
+
   const floatingIgCards: ReadonlyArray<{ name: string; label: string }> = [
     { name: "floating-ig-1", label: "Bubble 1 — Lounge" },
     { name: "floating-ig-2", label: "Bubble 2 — Nile highlights" },
@@ -252,6 +274,7 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
   for (const slot of SITE_IMAGE_SLOTS) {
     if (
       slot.pagePath === "/" ||
+      slot.pagePath === "/#moving-tilted-cards" ||
       slot.pagePath === "/#floating-ig" ||
       slot.pagePath === "/#our-voyages"
     ) {
@@ -295,6 +318,13 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
       description:
         "Background photos for the homepage Our Voyages accordion only. These four images are independent from every other page.",
       items: ourVoyagesItems,
+    },
+    {
+      pagePath: "/#moving-tilted-cards",
+      title: "Moving Tilted Cards",
+      description:
+        "Photos for the homepage moving tilted gallery cards only. Each card has its own upload and is independent from Homepage, Dining, Wellness, and every other page.",
+      items: movingTiltedItems,
     },
     {
       pagePath: "/#floating-ig",
