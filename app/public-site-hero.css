@@ -542,8 +542,26 @@
 }
 
 /* Hero second-title gold — soft sheen + top-lit foil breath */
-/* The title stays fixed; only its first background layer travels. */
+/* The title stays fixed; shine + wave + metal facets travel inside the fill. */
 @property --hero-shine-x {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+@property --hero-wave-x {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: -10%;
+}
+
+@property --hero-metal-x {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+@property --hero-metal-y {
   syntax: "<percentage>";
   inherits: false;
   initial-value: 0%;
@@ -552,10 +570,23 @@
 @keyframes hero-second-shimmer {
   0% {
     --hero-shine-x: 0%;
-    background-position: 0% center, center top, center center, center top;
+    --hero-wave-x: -18%;
+    --hero-metal-x: 0%;
+    --hero-metal-y: 0%;
+    background-position: 0% 42%, -18% 58%, center top, 0% 0%, center top;
+  }
+  50% {
+    --hero-shine-x: 52%;
+    --hero-wave-x: 48%;
+    --hero-metal-x: 7%;
+    --hero-metal-y: 4%;
+    background-position: 52% 48%, 48% 38%, center top, 7% 4%, center top;
   }
   100% {
     --hero-shine-x: 100%;
-    background-position: 100% center, center top, center center, center top;
+    --hero-wave-x: 118%;
+    --hero-metal-x: 14%;
+    --hero-metal-y: 8%;
+    background-position: 100% 44%, 118% 55%, center top, 14% 8%, center top;
   }
 }

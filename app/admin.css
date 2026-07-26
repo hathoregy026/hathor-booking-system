@@ -1792,9 +1792,12 @@ select.admin-input option:checked {
 
 .typo-stage__sample--shimmer {
   --hero-shine-x: 0%;
-  background-size: 240% 1.15em, 100% 1.05em, 160% 160%, 100% 1.05em !important;
-  background-repeat: no-repeat, no-repeat, repeat, no-repeat !important;
-  background-position: var(--hero-shine-x) center, center top, center center, center top !important;
+  --hero-wave-x: -10%;
+  --hero-metal-x: 0%;
+  --hero-metal-y: 0%;
+  background-size: 260% 1.2em, 220% 1.35em, 100% 1.05em, 170% 170%, 100% 1.05em !important;
+  background-repeat: no-repeat, no-repeat, no-repeat, repeat, no-repeat !important;
+  background-position: var(--hero-shine-x) 42%, var(--hero-wave-x) 58%, center top, var(--hero-metal-x) var(--hero-metal-y), center top !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   color: transparent !important;
@@ -1802,7 +1805,7 @@ select.admin-input option:checked {
   filter: none !important;
   line-height: 1.2 !important;
   overflow: visible !important;
-  animation: hero-second-shimmer 5s linear infinite;
+  animation: hero-second-shimmer 5s ease-in-out infinite;
 }
 
 @property --hero-shine-x {
@@ -1811,14 +1814,45 @@ select.admin-input option:checked {
   initial-value: 0%;
 }
 
+@property --hero-wave-x {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: -10%;
+}
+
+@property --hero-metal-x {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+@property --hero-metal-y {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
 @keyframes hero-second-shimmer {
   0% {
     --hero-shine-x: 0%;
-    background-position: 0% center, center top, center center, center top;
+    --hero-wave-x: -18%;
+    --hero-metal-x: 0%;
+    --hero-metal-y: 0%;
+    background-position: 0% 42%, -18% 58%, center top, 0% 0%, center top;
+  }
+  50% {
+    --hero-shine-x: 52%;
+    --hero-wave-x: 48%;
+    --hero-metal-x: 7%;
+    --hero-metal-y: 4%;
+    background-position: 52% 48%, 48% 38%, center top, 7% 4%, center top;
   }
   100% {
     --hero-shine-x: 100%;
-    background-position: 100% center, center top, center center, center top;
+    --hero-wave-x: 118%;
+    --hero-metal-x: 14%;
+    --hero-metal-y: 8%;
+    background-position: 100% 44%, 118% 55%, center top, 14% 8%, center top;
   }
 }
 
@@ -1826,7 +1860,8 @@ select.admin-input option:checked {
   .typo-stage__sample--shimmer {
     animation: none !important;
     --hero-shine-x: 40%;
-    background-position: 40% center, center top, center center, center top !important;
+    --hero-wave-x: 36%;
+    background-position: 40% 42%, 36% 58%, center top, 4% 2%, center top !important;
   }
 }
 

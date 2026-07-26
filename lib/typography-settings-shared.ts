@@ -805,7 +805,8 @@ export const HERO_GOLD_METAL_TEXTURE = "/textures/gold-metal.webp?v=2";
 
 /**
  * Polished gold fill for the hero second title.
- * Bright yellow-metal body (not bronze), real metal facets, soft moving sheen.
+ * Bright yellow-metal body, real metal facets, golden traveling shine
+ * with a second offset glint for a liquid / wavy surface feel.
  */
 export function heroSecondShimmerBackground(
   shimmer: HeroSecondShimmer,
@@ -830,34 +831,58 @@ export function heroSecondShimmerBackground(
 
   /* Lift the metal photo into sunlit gold (no dark olive veil) */
   const grade = `linear-gradient(180deg,
-    rgba(255, 252, 230, ${0.42 + s * 0.2}) 0%,
-    rgba(255, 229, 102, ${0.2 + s * 0.12}) 16%,
-    rgba(232, 195, 74, ${0.1 + s * 0.08}) 40%,
+    rgba(255, 252, 230, ${0.38 + s * 0.18}) 0%,
+    rgba(255, 229, 102, ${0.18 + s * 0.1}) 16%,
+    rgba(232, 195, 74, ${0.08 + s * 0.06}) 40%,
     transparent 58%,
-    rgba(212, 175, 55, ${0.08 + (1 - s) * 0.05}) 86%,
-    rgba(182, 159, 100, ${0.1 + (1 - s) * 0.06}) 100%)`;
+    rgba(212, 175, 55, ${0.06 + (1 - s) * 0.04}) 86%,
+    rgba(182, 159, 100, ${0.08 + (1 - s) * 0.05}) 100%)`;
 
-  /* Soft traveling shine — faded ends, readable peak */
-  const sheen = `linear-gradient(100deg,
+  /*
+   * Primary golden specular — warmer and brighter than a flat white stripe.
+   * Wide soft tails so it feels poured, not cut.
+   */
+  const sheen = `linear-gradient(105deg,
     transparent 0%,
-    transparent 8%,
-    ${lemon}00 20%,
-    ${lemon}36 36%,
-    ${crest}6e 48%,
-    ${crest}88 50%,
-    ${crest}6e 52%,
-    ${lemon}36 64%,
-    ${lemon}00 80%,
-    transparent 92%,
+    transparent 6%,
+    ${lemon}00 16%,
+    ${lemon}44 32%,
+    ${bright}66 42%,
+    ${crest}a0 49%,
+    ${crest}b8 50%,
+    ${crest}a0 51%,
+    ${bright}66 58%,
+    ${lemon}44 70%,
+    ${lemon}00 84%,
+    transparent 94%,
+    transparent 100%)`;
+
+  /*
+   * Secondary wavy glint — offset angle + twin soft peaks so the surface
+   * reads as undulating metal, not one flat sweep.
+   */
+  const wave = `linear-gradient(122deg,
+    transparent 0%,
+    transparent 18%,
+    ${bright}00 28%,
+    ${lemon}2e 36%,
+    ${crest}55 41%,
+    ${lemon}22 46%,
+    transparent 52%,
+    ${bright}00 58%,
+    ${lemon}38 66%,
+    ${crest}48 71%,
+    ${lemon}1a 78%,
+    transparent 88%,
     transparent 100%)`;
 
   const metal = `url(${HERO_GOLD_METAL_TEXTURE})`;
 
-  return `${sheen}, ${grade}, ${metal}, ${foil}`;
+  return `${sheen}, ${wave}, ${grade}, ${metal}, ${foil}`;
 }
 
 /**
- * Clipped glyph fill. Only the first background layer moves; the text itself
+ * Clipped glyph fill. Only the first backgrounds move; the text itself
  * remains in its existing layout position.
  */
 export function heroSecondShimmerInlineStyle(
@@ -866,10 +891,11 @@ export function heroSecondShimmerInlineStyle(
   if (!shimmer.enabled) return {};
   return {
     backgroundImage: heroSecondShimmerBackground(shimmer),
-    backgroundSize: "240% 1.15em, 100% 1.05em, 160% 160%, 100% 1.05em",
-    backgroundRepeat: "no-repeat, no-repeat, repeat, no-repeat",
+    backgroundSize:
+      "260% 1.2em, 220% 1.35em, 100% 1.05em, 170% 170%, 100% 1.05em",
+    backgroundRepeat: "no-repeat, no-repeat, no-repeat, repeat, no-repeat",
     backgroundPosition:
-      "var(--hero-shine-x, 0%) center, center top, center center, center top",
+      "var(--hero-shine-x, 0%) 42%, var(--hero-wave-x, -10%) 58%, center top, var(--hero-metal-x, 0%) var(--hero-metal-y, 0%), center top",
     WebkitBackgroundClip: "text",
     backgroundClip: "text",
     WebkitTextFillColor: "transparent",
@@ -880,7 +906,7 @@ export function heroSecondShimmerInlineStyle(
      */
     textShadow: "none",
     filter: "none",
-    animation: `hero-second-shimmer ${shimmer.speed}s linear infinite`,
+    animation: `hero-second-shimmer ${shimmer.speed}s ease-in-out infinite`,
     display: "inline-block",
     lineHeight: 1.2,
     overflow: "visible",
@@ -1303,22 +1329,40 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
   display: inline-block !important;
   line-height: 1.2 !important;
   overflow: visible !important;
-  /* Shine travels via --hero-shine-x (more reliable than multi-bg-position) */
+  /* Shine + wave travel; metal facets drift slowly for a liquid surface */
   --hero-shine-x: 0%;
-  will-change: --hero-shine-x !important;
+  --hero-wave-x: -10%;
+  --hero-metal-x: 0%;
+  --hero-metal-y: 0%;
+  will-change: background-position, --hero-shine-x !important;
   background-image: var(--typo-hero-second-shimmer) !important;
-  background-size: 240% 1.15em, 100% 1.05em, 160% 160%, 100% 1.05em !important;
-  background-repeat: no-repeat, no-repeat, repeat, no-repeat !important;
-  background-position: var(--hero-shine-x) center, center top, center center, center top !important;
+  background-size: 260% 1.2em, 220% 1.35em, 100% 1.05em, 170% 170%, 100% 1.05em !important;
+  background-repeat: no-repeat, no-repeat, no-repeat, repeat, no-repeat !important;
+  background-position: var(--hero-shine-x) 42%, var(--hero-wave-x) 58%, center top, var(--hero-metal-x) var(--hero-metal-y), center top !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
   text-shadow: var(--typo-hero-second-shimmer-shadow) !important;
   filter: none !important;
-  animation: hero-second-shimmer var(--typo-hero-second-shimmer-duration, 5s) linear infinite !important;
+  animation: hero-second-shimmer var(--typo-hero-second-shimmer-duration, 5s) ease-in-out infinite !important;
 }
 @property --hero-shine-x {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+@property --hero-wave-x {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: -10%;
+}
+@property --hero-metal-x {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+@property --hero-metal-y {
   syntax: "<percentage>";
   inherits: false;
   initial-value: 0%;
@@ -1326,11 +1370,24 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
 @keyframes hero-second-shimmer {
   0% {
     --hero-shine-x: 0%;
-    background-position: 0% center, center top, center center, center top;
+    --hero-wave-x: -18%;
+    --hero-metal-x: 0%;
+    --hero-metal-y: 0%;
+    background-position: 0% 42%, -18% 58%, center top, 0% 0%, center top;
+  }
+  50% {
+    --hero-shine-x: 52%;
+    --hero-wave-x: 48%;
+    --hero-metal-x: 7%;
+    --hero-metal-y: 4%;
+    background-position: 52% 48%, 48% 38%, center top, 7% 4%, center top;
   }
   100% {
     --hero-shine-x: 100%;
-    background-position: 100% center, center top, center center, center top;
+    --hero-wave-x: 118%;
+    --hero-metal-x: 14%;
+    --hero-metal-y: 8%;
+    background-position: 100% 44%, 118% 55%, center top, 14% 8%, center top;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1341,7 +1398,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
   .public-site .hero-line--left.hero-line--shimmer {
     animation: none !important;
     --hero-shine-x: 40% !important;
-    background-position: 40% center, center top, center center, center top !important;
+    --hero-wave-x: 36% !important;
+    background-position: 40% 42%, 36% 58%, center top, 4% 2%, center top !important;
   }
 }`
     : ""
