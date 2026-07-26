@@ -13,6 +13,7 @@ import { HathorLogoTuner } from "@/components/public/HathorLogoTuner";
 import { PublicSiteHero } from "@/components/pages/PublicSiteHero";
 import { GoldDustParticles } from "@/components/ui/GoldDustParticles";
 import { ManagedImage } from "@/components/ui/ManagedImage";
+import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import {
   EX_ABOUT,
   EX_CAMPAIGN,
@@ -26,6 +27,7 @@ import {
   type ExCarouselSlide,
 } from "@/lib/ex-page-content";
 import type { HomepageAccordionCruise } from "@/lib/homepage-accordion-cruises";
+import type { SiteImageName } from "@/lib/site-image-slots";
 import { useExScrollMotion } from "@/hooks/useExScrollMotion";
 import {
   useTypographyInlineStyle,
@@ -50,6 +52,21 @@ const GALLERY_PREVIEW_ANCHORS = new Set([
   "moving-tilted-4",
   "moving-tilted-5",
 ]);
+
+/** Full-resolution CMS photo for marquee cards (no Next image optimizer). */
+function GalleryMarqueePhoto({
+  name,
+  alt,
+}: {
+  name: SiteImageName;
+  alt: string;
+}) {
+  const image = useSiteImage(name);
+  return (
+    // eslint-disable-next-line @next/next/no-img-element -- intentional: native full-res for tilted marquee
+    <img src={image.src} alt={alt} decoding="async" draggable={false} />
+  );
+}
 
 /** Every homepage-visible CMS slot should be findable for admin “View on live site”. */
 const HOMEPAGE_PREVIEW_SLOTS = new Set([
@@ -609,14 +626,9 @@ export function HomePageClient({
                           aria-label={item.alt}
                         >
                           <span className="gallery-item__frame" aria-hidden="true">
-                            <ManagedImage
+                            <GalleryMarqueePhoto
                               name={item.imageName}
                               alt={item.alt}
-                              fill
-                              sizes="(max-width: 768px) 300px, 460px"
-                              className="object-cover"
-                              unoptimized
-                              previewAnchor={false}
                             />
                           </span>
                         </Link>

@@ -2351,19 +2351,17 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   margin-left: -15vw;
   overflow: visible !important;
   /*
-    Perspective is composed into this transform (not a parent perspective box).
-    Ancestor overflow-x:hidden flattens parent-perspective; this keeps real depth.
+    Same tilt (rotateY + rotateZ) without perspective().
+    Perspective foreshortens gaps unequally and softens the whole strip.
   */
   transform:
-    perspective(1200px)
     translateX(-6vw)
     translateY(140px)
     rotateY(-16deg)
     rotateZ(-3deg);
   transform-origin: 0% 100%;
-  transform-style: flat;
+  transform-style: preserve-3d;
   pointer-events: none;
-  will-change: transform;
 }
 
 .gallery-marquee__track {
@@ -2375,6 +2373,8 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   pointer-events: none;
   padding-block: clamp(10px, 1.2vw, 16px);
   overflow: visible;
+  transform: translateZ(0);
+  transform-style: preserve-3d;
 }
 
 .gallery-marquee__group {
@@ -2384,6 +2384,8 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   gap: var(--gallery-gap);
   padding: 0;
   pointer-events: none;
+  transform: translateZ(0);
+  transform-style: preserve-3d;
 }
 
 .gallery-item {
@@ -2393,6 +2395,10 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   flex: 0 0 auto;
   width: var(--gallery-card);
   height: clamp(257.5px, calc(16.25vw + 70px), 357.5px);
+  /* Own layer for crisp pixels — does not change size or gaps */
+  transform: translateZ(0.1px);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   overflow: hidden;
   border: 1px solid rgba(182, 159, 100, 0.38);
   border-radius: 0;
@@ -2415,6 +2421,9 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   position: absolute;
   inset: 0;
   overflow: hidden;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   pointer-events: none;
 }
 
@@ -2428,6 +2437,10 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   object-position: center;
   filter: none;
   opacity: 1;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  image-rendering: high-quality;
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
@@ -2835,7 +2848,6 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
     width: 145vw;
     margin-left: -22vw;
     transform:
-      perspective(1000px)
       translateX(-4vw)
       translateY(100px)
       rotateY(-14deg)
@@ -2942,7 +2954,6 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
     width: 160vw;
     margin-left: -28vw;
     transform:
-      perspective(900px)
       translateX(-2vw)
       translateY(72px)
       rotateY(-12deg)
