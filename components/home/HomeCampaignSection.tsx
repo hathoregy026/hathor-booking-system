@@ -256,27 +256,17 @@ export function HomeCampaignSection({
     };
     window.addEventListener("load", onLoad);
 
-    /* Parent Lenis may mount after this child — retry briefly */
-    const bindLenis = () => {
-      if (removeLenis) return;
-      const lenis = (window as Window & { __hathorLenis?: LenisLike | null })
-        .__hathorLenis;
-      if (!lenis?.on) return;
+    const lenis = (window as Window & { __hathorLenis?: LenisLike | null })
+      .__hathorLenis;
+    if (lenis?.on) {
       const onLenisScroll = () => ScrollTrigger.update();
       lenis.on("scroll", onLenisScroll);
       removeLenis = () => lenis.off?.("scroll", onLenisScroll);
-    };
-    bindLenis();
-    const lenisPoll = window.setInterval(() => {
-      bindLenis();
-      if (removeLenis || killed) window.clearInterval(lenisPoll);
-    }, 50);
-    window.setTimeout(() => window.clearInterval(lenisPoll), 2500);
+    }
 
     return () => {
       killed = true;
       window.clearTimeout(bootTimer);
-      window.clearInterval(lenisPoll);
       window.removeEventListener("load", onLoad);
       removeLenis?.();
       killOwned();

@@ -105,6 +105,19 @@ html[data-ex-experience] .site-nav-bar__logo {
   opacity: 1 !important;
   animation: none !important;
 }
+
+/*
+  Hide homepage until Lenis + ScrollTrigger boot and scroll restore finish.
+  Prevents the mid-scrub flash (giant H/O/R, overlapping titles) on refresh.
+*/
+html[data-ex-experience]:not(.ex-scroll-ready) .ex-root {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+html[data-ex-experience].ex-scroll-ready .ex-root {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
 `;
 
 export function HomeExperienceShell({ children }: { children: ReactNode }) {

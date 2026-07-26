@@ -791,6 +791,14 @@ h1, h2, h3, h4, p {
   opacity: 0;
 }
 
+/* Extra belt-and-suspenders until ex-scroll-ready (see HomeExperienceShell critical CSS) */
+html[data-ex-experience]:not(.ex-scroll-ready) .hero-logo-mark,
+html[data-ex-experience]:not(.ex-scroll-ready) .hathor-logo-split .logo-letter-wrap,
+html[data-ex-experience]:not(.ex-scroll-ready) .blind-strip-v {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
 .hero-logo-img {
   width: 100%;
   height: auto;

@@ -1,0 +1,33 @@
+---
+description: Smooth instant navigation, no refresh flash, restore scroll on reload — never regress
+alwaysApply: true
+---
+
+# Smooth navigation & refresh (LOCKED)
+
+These requirements are permanent. Do not weaken, remove, or “simplify” them.
+
+## Requirements
+
+1. **No broken flash on refresh / hard refresh**  
+   Never show mid-scrub GSAP states (giant HATHOR letters, overlapping hero titles, open blinds, pin gaps). Hide the homepage (and similar scroll stages) until Lenis + ScrollTrigger have booted and scroll restore has applied (`ex-scroll-ready` / equivalent ready class).
+
+2. **Refresh lands where you were**  
+   Hard refresh must restore the last scroll Y for that path (`lib/scroll-position-restore.ts`). Soft client navigations reset to top so GSAP never mounts mid-scrub.
+
+3. **Navigating between pages is smooth and instant**  
+   Keep soft nav snappy: no full reload for in-app links, no FOUC, no competing scroll restores racing homepage/cruises GSAP boot. Prefer persistence-only in `ScrollPositionRestore` for GSAP-owned routes (`/`); those routes restore after their own motion boot.
+
+## Do not
+
+- Remove `ex-scroll-ready` (or cruises `cruises-scroll-ready`) gates
+- Let `ScrollPositionRestore` timers fight homepage `useExScrollMotion` restore
+- Reintroduce CSS resets that unhide logo letters before GSAP sets them
+- Rely on browser `history.scrollRestoration = "auto"` for public marketing pages
+
+## Touch points
+
+- `hooks/useExScrollMotion.ts` — boot, restore, `ex-scroll-ready`
+- `components/pages/HomeExperienceShell.tsx` — critical CSS hide-until-ready
+- `components/public/ScrollPositionRestore.tsx` — persist always; restore when not GSAP-owned
+- `lib/scroll-position-restore.ts` — shared persistence helpers

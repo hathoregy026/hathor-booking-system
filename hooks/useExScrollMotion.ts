@@ -967,36 +967,47 @@ export function useExScrollMotion() {
       }
     };
     restoreNow();
-    requestAnimationFrame(restoreNow);
+
+    const markScrollReady = () => {
+      document.documentElement.classList.add("ex-scroll-ready");
+    };
+
+    /* Two frames: restore → ST scrub settles → reveal (no mid-scrub flash). */
+    requestAnimationFrame(() => {
+      restoreNow();
+      requestAnimationFrame(markScrollReady);
+    });
 
     const onLoad = () => {
       try {
         ScrollTrigger.refresh();
         restoreNow();
+        markScrollReady();
       } catch (error) {
         console.warn("[useExScrollMotion] refresh failed", error);
+        markScrollReady();
       }
     };
     window.addEventListener("load", onLoad);
 
+    /* Safety: never leave the page invisible if boot stalls. */
+    const readyFallback = window.setTimeout(markScrollReady, 1200);
+
     return () => {
+      window.clearTimeout(readyFallback);
       window.removeEventListener("load", onLoad);
       heroCleanup?.();
       if (tickerFn) gsap.ticker.remove(tickerFn);
       registerHathorLenis(null);
       lenis?.destroy();
       try {
-        /* Do not kill CTA stage triggers — HomeCampaignSection owns those */
-        ScrollTrigger.getAll().forEach((st) => {
-          const id = String(st.vars?.id || "");
-          if (id.startsWith("hcta-")) return;
-          st.kill();
-        });
+        ScrollTrigger.getAll().forEach((st) => st.kill());
       } catch {
         /* ignore */
       }
       document.body.classList.remove("has-ex-scroll-motion");
       document.documentElement.classList.remove("has-ex-scroll-motion");
+      document.documentElement.classList.remove("ex-scroll-ready");
     };
   }, []);
 }
