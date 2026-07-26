@@ -2345,20 +2345,13 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   max-width: none;
   margin-left: -15vw;
   overflow: visible !important;
-  /*
-    Perspective is composed into this transform (not a parent perspective box).
-    Ancestor overflow-x:hidden flattens parent-perspective; this keeps real depth.
-  */
   transform:
-    perspective(1200px)
     translateX(-6vw)
     translateY(140px)
-    rotateY(-16deg)
     rotateZ(-3deg);
   transform-origin: 0% 100%;
   transform-style: flat;
   pointer-events: none;
-  will-change: transform;
 }
 
 .gallery-marquee__track {
@@ -2821,10 +2814,8 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
     width: 145vw;
     margin-left: -22vw;
     transform:
-      perspective(1000px)
       translateX(-4vw)
       translateY(100px)
-      rotateY(-14deg)
       rotateZ(-2.5deg);
   }
 
@@ -2928,10 +2919,8 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
     width: 160vw;
     margin-left: -28vw;
     transform:
-      perspective(900px)
       translateX(-2vw)
       translateY(72px)
-      rotateY(-12deg)
       rotateZ(-2deg);
   }
 
