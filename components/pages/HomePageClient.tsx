@@ -14,6 +14,7 @@ import { GoldDustParticles } from "@/components/ui/GoldDustParticles";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import {
   EX_ABOUT,
+  EX_CAMPAIGN,
   EX_CAROUSEL,
   EX_CTA,
   EX_GALLERY,
@@ -66,6 +67,7 @@ const HOMEPAGE_PREVIEW_SLOTS = new Set([
   "home-voyage-4n-luxor-aswan",
   "home-voyage-7n-roundtrip",
   "home-voyage-nile-majesty",
+  "home-call-to-action",
   ...GALLERY_PREVIEW_ANCHORS,
 ]);
 
@@ -154,6 +156,7 @@ export function HomePageClient({
   const aboutTitleStyle = useTypographyInlineStyle("page_title");
   const aboutIndicationStyle = useTypographyInlineStyle("page_subtitle");
   const aboutBodyStyle = useTypographyInlineStyle("body_text");
+  const campaignTitleStyle = useTypographyInlineStyle("on_images_title");
 
   const onImagesTitleLines = (
     typography.on_images_copy.title.trim() || EX_PINNED.title
@@ -638,6 +641,42 @@ export function HomePageClient({
                 <p>&ldquo;{card.quote}&rdquo;</p>
               </article>
             ))}
+          </div>
+        </section>
+
+        <section
+          className="campaign-section ex-content-section"
+          id="campaign"
+          aria-label="Campaign call to action"
+        >
+          <div
+            className="campaign-img-reveal"
+            data-campaign-reveal
+            data-parallax="bg"
+          >
+            <ManagedImage
+              name={EX_CAMPAIGN.imageName}
+              alt={EX_CAMPAIGN.imageAlt}
+              fill
+              sizes="100vw"
+              className="campaign-bg object-cover"
+              previewAnchor={HOMEPAGE_PREVIEW_SLOTS.has(EX_CAMPAIGN.imageName)}
+            />
+          </div>
+
+          <div className="campaign-overlay" aria-hidden="true" />
+
+          <div className="campaign-fg" data-parallax="fg">
+            <h2
+              className="campaign-heading typo-on-images-title"
+              style={campaignTitleStyle}
+              data-campaign-split
+            >
+              {EX_CAMPAIGN.title}
+            </h2>
+            <BookNowTrigger className="btn campaign-book-btn">
+              Book Now
+            </BookNowTrigger>
           </div>
         </section>
 

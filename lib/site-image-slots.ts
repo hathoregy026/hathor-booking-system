@@ -85,6 +85,14 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     pagePath: "/",
     displayOrder: 62,
   },
+  {
+    name: "home-call-to-action",
+    altText: "Call to action — Hathor Dahabiya on the Nile at golden hour",
+    url: HATHOR_MEDIA.storyLegacyLarge,
+    category: "hero",
+    pagePath: "/",
+    displayOrder: 70,
+  },
   // Homepage “Our Voyages” accordion — dedicated slots (Admin tab: Our Voyages)
   {
     name: "home-voyage-3n-aswan-luxor",

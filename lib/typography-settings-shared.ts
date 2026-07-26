@@ -1451,6 +1451,7 @@ ${(() => {
 .public-site .typo-on-images-title,
 html[data-ex-experience] .ex-root .ex-stack-scroll__title,
 html[data-ex-experience] .ex-root .ex-stack-scroll__title-line,
+html[data-ex-experience] .ex-root .campaign-heading,
 .public-site .venetian-page .room-fs-ui .room-fs-title,
 .public-site .venetian-page .spx-frame-ui .lux-gold,
 .public-site .venetian-page .hlx-panel-copy h3,

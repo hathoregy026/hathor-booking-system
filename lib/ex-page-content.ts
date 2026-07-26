@@ -229,6 +229,12 @@ export const EX_TESTIMONIALS = {
   ],
 } as const;
 
+export const EX_CAMPAIGN = {
+  title: "THE CALLING",
+  imageName: "home-call-to-action",
+  imageAlt: "Call to action — Hathor Dahabiya on the Nile at golden hour",
+} as const;
+
 export const EX_CTA = {
   title: "Begin your Nile escape",
   body: "Whether you are planning a private charter, selecting the perfect sailing dates, or reserving your suite, our team is here to make it effortless.",

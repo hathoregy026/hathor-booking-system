@@ -51,6 +51,7 @@ const HOMEPAGE_LIVE_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> 
     { name: "home-alt-highlights", label: "Gallery — landmarks photo" },
     { name: "wellness-hero", label: "Gallery — wellness photo" },
     { name: "home-cinematic-still", label: "Gallery — suite photo" },
+    { name: "home-call-to-action", label: "Call to action image" },
   ];
 
 const OUR_VOYAGES_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> =
@@ -128,6 +129,7 @@ const SLOT_LAYOUT_KINDS: Partial<Record<SiteImageSlot["name"], SiteImageLayoutKi
     "home-hero-poster": "hero",
     "home-cinematic-still": "hero",
     "home-split-courtyard": "hero",
+    "home-call-to-action": "hero",
     "home-collage-large": "gallery",
     "home-collage-small": "gallery",
     "cruises-hero": "hero",
