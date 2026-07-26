@@ -801,57 +801,54 @@ function mixHex(a: string, b: string, amount: number): string {
 }
 
 /** Real polished-gold photo (faceted metal ref) — clipped into the letters */
-export const HERO_GOLD_METAL_TEXTURE = "/textures/gold-metal.webp";
+export const HERO_GOLD_METAL_TEXTURE = "/textures/gold-metal.webp?v=2";
 
 /**
- * Real gold material — light brand gold (#B69F64), soft faded sheen,
- * elegant soft back-shadow for contrast on video.
+ * Polished gold fill for the hero second title.
+ * Bright yellow-metal body (not bronze), real metal facets, soft moving sheen.
  */
 export function heroSecondShimmerBackground(
   shimmer: HeroSecondShimmer,
 ): string {
   const s = Math.min(1, Math.max(0, shimmer.shine / 100));
-  const brand = "#B69F64";
-  const crest = mixHex("#FFFEF9", "#F7ECD4", 0.25 + s * 0.2);
-  const champagne = mixHex("#F0E2BE", brand, 0.35);
-  const honey = mixHex("#D4C08A", brand, 0.55);
-  const rich = mixHex(brand, "#C9B07A", 0.35);
-  const amber = mixHex(brand, "#A89468", 0.4);
-  const bronze = mixHex("#9A8658", "#7A6B48", 0.35);
+  /* Classic polished gold ladder — keep brand #B69F64 as mid, never muddy bronze */
+  const crest = mixHex("#FFFFFF", "#FFF6C8", 0.3 + s * 0.35);
+  const lemon = mixHex("#FFE566", "#FFF0A0", 0.45 + s * 0.35);
+  const bright = mixHex("#F0D060", "#E8C34A", 0.55);
+  const honey = mixHex("#D4AF37", "#B69F64", 0.35);
+  const body = "#B69F64";
+  const softFloor = mixHex(body, "#C4A35A", 0.45);
 
-  /* Lighter foil — lifted midtones, soft floor */
+  /* Opaque fallback — always reads as gold if the photo fails */
   const foil = `linear-gradient(180deg,
     ${crest} 0%,
-    ${champagne} 14%,
-    ${honey} 30%,
-    ${brand} 50%,
-    ${rich} 70%,
-    ${amber} 88%,
-    ${bronze} 100%)`;
+    ${lemon} 12%,
+    ${bright} 28%,
+    ${honey} 48%,
+    ${body} 72%,
+    ${softFloor} 100%)`;
 
-  /* Soft veil — mutes hard facets, still lets gold photo read */
+  /* Lift the metal photo into sunlit gold (no dark olive veil) */
   const grade = `linear-gradient(180deg,
-    rgba(255, 254, 249, ${0.48 + s * 0.1}) 0%,
-    rgba(240, 226, 190, ${0.32 + s * 0.08}) 18%,
-    rgba(182, 159, 100, ${0.28 + s * 0.06}) 48%,
-    rgba(182, 159, 100, ${0.22 + s * 0.05}) 72%,
-    rgba(154, 134, 88, ${0.2 + (1 - s) * 0.05}) 100%)`;
+    rgba(255, 252, 230, ${0.42 + s * 0.2}) 0%,
+    rgba(255, 229, 102, ${0.2 + s * 0.12}) 16%,
+    rgba(232, 195, 74, ${0.1 + s * 0.08}) 40%,
+    transparent 58%,
+    rgba(212, 175, 55, ${0.08 + (1 - s) * 0.05}) 86%,
+    rgba(182, 159, 100, ${0.1 + (1 - s) * 0.06}) 100%)`;
 
-  /*
-   * Softly moving sheen — visible travel, faded ends (no hard cut).
-   * Peak must read clearly so motion is obvious; long transparent tails dissolve.
-   */
+  /* Soft traveling shine — faded ends, readable peak */
   const sheen = `linear-gradient(100deg,
     transparent 0%,
-    transparent 5%,
-    ${champagne}00 14%,
-    ${champagne}2e 28%,
-    ${crest}58 42%,
-    ${crest}78 50%,
-    ${crest}58 58%,
-    ${champagne}2e 72%,
-    ${champagne}00 86%,
-    transparent 95%,
+    transparent 8%,
+    ${lemon}00 20%,
+    ${lemon}36 36%,
+    ${crest}6e 48%,
+    ${crest}88 50%,
+    ${crest}6e 52%,
+    ${lemon}36 64%,
+    ${lemon}00 80%,
+    transparent 92%,
     transparent 100%)`;
 
   const metal = `url(${HERO_GOLD_METAL_TEXTURE})`;
@@ -869,8 +866,8 @@ export function heroSecondShimmerInlineStyle(
   if (!shimmer.enabled) return {};
   return {
     backgroundImage: heroSecondShimmerBackground(shimmer),
-    backgroundSize: "280% 1.2em, 100% 1.05em, 120% 120%, 100% 1.05em",
-    backgroundRepeat: "no-repeat, no-repeat, no-repeat, no-repeat",
+    backgroundSize: "240% 1.15em, 100% 1.05em, 160% 160%, 100% 1.05em",
+    backgroundRepeat: "no-repeat, no-repeat, repeat, no-repeat",
     backgroundPosition:
       "var(--hero-shine-x, 0%) center, center top, center center, center top",
     WebkitBackgroundClip: "text",
@@ -1310,8 +1307,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
   --hero-shine-x: 0%;
   will-change: --hero-shine-x !important;
   background-image: var(--typo-hero-second-shimmer) !important;
-  background-size: 280% 1.2em, 100% 1.05em, 120% 120%, 100% 1.05em !important;
-  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat !important;
+  background-size: 240% 1.15em, 100% 1.05em, 160% 160%, 100% 1.05em !important;
+  background-repeat: no-repeat, no-repeat, repeat, no-repeat !important;
   background-position: var(--hero-shine-x) center, center top, center center, center top !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;

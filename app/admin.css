@@ -1792,8 +1792,8 @@ select.admin-input option:checked {
 
 .typo-stage__sample--shimmer {
   --hero-shine-x: 0%;
-  background-size: 280% 1.2em, 100% 1.05em, 120% 120%, 100% 1.05em !important;
-  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat !important;
+  background-size: 240% 1.15em, 100% 1.05em, 160% 160%, 100% 1.05em !important;
+  background-repeat: no-repeat, no-repeat, repeat, no-repeat !important;
   background-position: var(--hero-shine-x) center, center top, center center, center top !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
