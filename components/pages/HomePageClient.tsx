@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
 import type { CSSProperties } from "react";
 import LuxuryAccordion from "@/components/home/LuxuryAccordion";
+import { HomeCampaignSection } from "@/components/home/HomeCampaignSection";
 import { LuxuryMarquee } from "@/components/home/LuxuryMarquee";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { GalleryInstagramFollow } from "@/components/public/GalleryInstagramFollow";
@@ -644,51 +645,13 @@ export function HomePageClient({
           </div>
         </section>
 
-        <section
-          className="campaign-section ex-content-section"
-          id="campaign"
-          aria-label="Campaign call to action"
-        >
-          <div
-            className="campaign-img-reveal"
-            data-campaign-reveal
-            data-parallax="bg"
-          >
-            <ManagedImage
-              name={EX_CAMPAIGN.imageName}
-              alt={EX_CAMPAIGN.imageAlt}
-              fill
-              sizes="100vw"
-              className="campaign-bg object-cover"
-              previewAnchor={HOMEPAGE_PREVIEW_SLOTS.has(EX_CAMPAIGN.imageName)}
-            />
-          </div>
-
-          <div className="campaign-overlay" aria-hidden="true" />
-
-          <div className="campaign-fg">
-            <div className="campaign-fg-motion" data-parallax="fg">
-              <h2
-                className="campaign-heading typo-on-images-title"
-                style={campaignTitleStyle}
-                data-campaign-split
-                data-split-done="1"
-                aria-label={EX_CAMPAIGN.title}
-              >
-                {Array.from(EX_CAMPAIGN.title).map((ch, index) => (
-                  <span className="split-heading" key={`${ch}-${index}`}>
-                    <span className="split-char">
-                      {ch === " " ? "\u00A0" : ch}
-                    </span>
-                  </span>
-                ))}
-              </h2>
-              <BookNowTrigger className="btn campaign-book-btn">
-                Book Now
-              </BookNowTrigger>
-            </div>
-          </div>
-        </section>
+        <HomeCampaignSection
+          title={EX_CAMPAIGN.title}
+          imageName={EX_CAMPAIGN.imageName}
+          imageAlt={EX_CAMPAIGN.imageAlt}
+          titleStyle={campaignTitleStyle}
+          previewAnchor={HOMEPAGE_PREVIEW_SLOTS.has(EX_CAMPAIGN.imageName)}
+        />
 
         <section className="cta-section ex-content-section" id="visit">
           <div className="cta-inner">

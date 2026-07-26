@@ -846,127 +846,7 @@ export function useExScrollMotion() {
     });
   }
 
-  /* -------------------------------------------------------
-   * Campaign section — clip reveal, zoom, parallax, letter rise
-   * ----------------------------------------------------- */
-  function initCampaign() {
-    const section = document.querySelector(".campaign-section");
-    if (!section) return;
-
-    const revealWrap = section.querySelector("[data-campaign-reveal]");
-    const media =
-      revealWrap?.querySelector("img.campaign-bg") ||
-      revealWrap?.querySelector("img");
-    const splitEl = section.querySelector("[data-campaign-split]");
-    const touch =
-      window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
-    const mobile = window.innerWidth < 1024;
-
-    if (prefersReduced) {
-      if (media instanceof HTMLElement) {
-        media.style.clipPath = "inset(0)";
-        media.style.transform = "scale(1)";
-      }
-      if (splitEl instanceof HTMLElement) {
-        splitEl.querySelectorAll(".split-char").forEach((ch) => {
-          gsap.set(ch, { yPercent: 0, opacity: 1, clearProps: "transform" });
-        });
-      }
-      return;
-    }
-
-    /* Image clip reveal — opens on enter, reverses on leave-back */
-    if (revealWrap && media) {
-      gsap.set(media, { clipPath: "inset(100% 0 0 0)", scale: 1.15 });
-      gsap.to(media, {
-        clipPath: "inset(0% 0% 0% 0%)",
-        duration: 1.5,
-        ease: "power3.inOut",
-        scrollTrigger: {
-          trigger: section,
-          start: "top 80%",
-          toggleActions: "play none none reverse",
-        },
-      });
-    }
-
-    /* Scrubbed Ken Burns zoom while section is in view */
-    if (media) {
-      gsap.fromTo(
-        media,
-        { scale: 1.15 },
-        {
-          scale: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: section,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
-          },
-        },
-      );
-    }
-
-    /* Letter rise — React owns .split-char nodes so typography re-renders keep them */
-    if (splitEl instanceof HTMLElement) {
-      const chars = Array.from(
-        splitEl.querySelectorAll(".split-char"),
-      );
-      if (chars.length) {
-        gsap.set(chars, { yPercent: 100, opacity: 0 });
-        gsap.to(chars, {
-          yPercent: 0,
-          opacity: 1,
-          duration: 1,
-          stagger: 0.03,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: section,
-            start: "top 75%",
-            toggleActions: "play none none reverse",
-          },
-        });
-      }
-    }
-
-    /* Parallax — desktop only; soft fg drift so copy stays near dead center */
-    if (touch || mobile) return;
-
-    section.querySelectorAll('[data-parallax="bg"]').forEach((el) => {
-      gsap.fromTo(
-        el,
-        { yPercent: -4 },
-        {
-          yPercent: 4,
-          ease: "none",
-          scrollTrigger: {
-            trigger: section,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 0.3,
-          },
-        },
-      );
-    });
-
-    section.querySelectorAll('[data-parallax="fg"]').forEach((el) => {
-      gsap.fromTo(
-        el,
-        { yPercent: -4 },
-        {
-          yPercent: 4,
-          ease: "none",
-          scrollTrigger: {
-            trigger: section,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 0.6,
-          },
-        },
-      );
-    });
-  }
+  /* Campaign motion lives in HomeCampaignSection (self-contained). */
 
   /* -------------------------------------------------------
    * Boot
@@ -997,7 +877,6 @@ export function useExScrollMotion() {
       initGalleryItems,
       initTestimonialH2,
       initTestimonialCards,
-      initCampaign,
       initCta,
     ];
     for (const step of steps) {
@@ -1046,7 +925,16 @@ export function useExScrollMotion() {
       registerHathorLenis(null);
       lenis?.destroy();
       try {
-        ScrollTrigger.getAll().forEach((st) => st.kill());
+        ScrollTrigger.getAll().forEach((st) => {
+          const trigger = st.trigger;
+          if (
+            trigger instanceof Element &&
+            trigger.closest(".campaign-section")
+          ) {
+            return;
+          }
+          st.kill();
+        });
       } catch {
         /* ignore */
       }
