@@ -96,17 +96,36 @@ export function HomeCampaignSection({
         }
         gsap.set(frame, { y: 0, force3D: true });
 
+        /*
+         * Invite letters play once as the stage approaches — fast & big —
+         * not scrubbed (scrub made them feel tiny/slow).
+         */
+        if (silkChars.length) {
+          gsap.to(silkChars, {
+            yPercent: 0,
+            autoAlpha: 1,
+            stagger: 0.018,
+            duration: 0.55,
+            ease: "power3.out",
+            force3D: true,
+            scrollTrigger: {
+              id: "hcta-silk-text",
+              trigger: track,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+          });
+        }
+
         const story = gsap.timeline({ paused: true });
 
-        /* 1) Invite line rises on site cream */
-        if (silkChars.length) {
+        /* 1) Silk lifts quickly — photograph covers the invite */
+        if (silk) {
           story.to(
-            silkChars,
+            silk,
             {
-              yPercent: 0,
-              autoAlpha: 1,
-              stagger: 0.022,
-              duration: 0.2,
+              yPercent: -101,
+              duration: 0.28,
               ease: "none",
               force3D: true,
             },
@@ -114,36 +133,22 @@ export function HomeCampaignSection({
           );
         }
 
-        /* 2) Silk lifts — photograph covers the invite */
-        if (silk) {
-          story.to(
-            silk,
-            {
-              yPercent: -101,
-              duration: 0.3,
-              ease: "none",
-              force3D: true,
-            },
-            0.22,
-          );
-        }
+        /* 2) Brief beat */
+        story.to({}, { duration: 0.08 }, 0.28);
 
-        /* 3) Quiet beat */
-        story.to({}, { duration: 0.08 }, 0.5);
-
-        /* 4) On-image title + Book Now */
+        /* 3) On-image title + Book Now */
         if (chars.length) {
           story.to(
             chars,
             {
               yPercent: 0,
               autoAlpha: 1,
-              stagger: 0.016,
-              duration: 0.18,
+              stagger: 0.014,
+              duration: 0.16,
               ease: "none",
               force3D: true,
             },
-            0.56,
+            0.34,
           );
         }
         if (book) {
@@ -151,15 +156,15 @@ export function HomeCampaignSection({
             book,
             {
               autoAlpha: 1,
-              duration: 0.1,
+              duration: 0.08,
               ease: "none",
             },
-            0.64,
+            0.42,
           );
         }
 
-        /* 5) Reading pause */
-        story.to({}, { duration: 0.24 }, 0.76);
+        /* 4) Reading pause */
+        story.to({}, { duration: 0.22 }, 0.52);
 
         const sync = (progress: number) => {
           const maxY = Math.max(0, track.offsetHeight - window.innerHeight);
@@ -172,7 +177,7 @@ export function HomeCampaignSection({
           trigger: track,
           start: "top top",
           end: "bottom bottom",
-          scrub: 0.7,
+          scrub: 0.45,
           invalidateOnRefresh: true,
           onUpdate: (self) => sync(self.progress),
           onRefresh: (self) => sync(self.progress),
