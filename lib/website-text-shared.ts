@@ -221,7 +221,7 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
       ],
     },
     campaign: {
-      title: "THE CALLING",
+      title: "Sail Beyond the Ordinary",
     },
     cta: {
       title: "Begin your Nile escape",

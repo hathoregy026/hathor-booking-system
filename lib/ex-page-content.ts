@@ -230,7 +230,7 @@ export const EX_TESTIMONIALS = {
 } as const;
 
 export const EX_CAMPAIGN = {
-  title: "THE CALLING",
+  title: "Sail Beyond the Ordinary",
   imageName: "home-call-to-action",
   imageAlt: "Call to action — Hathor Dahabiya on the Nile at golden hour",
 } as const;

@@ -9,6 +9,8 @@ import { ManagedImage } from "@/components/ui/ManagedImage";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const SILK_LINE = "TAKE YOUR VOYAGE TODAY";
+
 type HomeCampaignSectionProps = {
   title: string;
   imageName: string;
@@ -24,8 +26,8 @@ type LenisLike = {
 
 /**
  * Call-to-action stage — zero layout mutation.
- * Sharp full-bleed image always under a cream silk curtain that lifts on scroll,
- * then letter rise + short hold. No pin, no black plate, no zoom/blur gimmicks.
+ * Site-cream silk with invite line lifts to reveal the photograph, then
+ * on-image title rises. No pin, no black plate.
  */
 export function HomeCampaignSection({
   title,
@@ -46,6 +48,9 @@ export function HomeCampaignSection({
 
     const frame = track.querySelector<HTMLElement>("[data-hcta-frame]");
     const silk = track.querySelector<HTMLElement>("[data-hcta-silk]");
+    const silkChars = gsap.utils.toArray<HTMLElement>(
+      track.querySelectorAll(".hcta-silk-char"),
+    );
     const chars = gsap.utils.toArray<HTMLElement>(
       track.querySelectorAll(".hcta-heading .hcta-char"),
     );
@@ -69,6 +74,9 @@ export function HomeCampaignSection({
         if (reduced) {
           gsap.set(frame, { clearProps: "transform" });
           if (silk) gsap.set(silk, { yPercent: -101, autoAlpha: 0 });
+          if (silkChars.length) {
+            gsap.set(silkChars, { yPercent: 0, autoAlpha: 1 });
+          }
           if (chars.length) gsap.set(chars, { yPercent: 0, autoAlpha: 1 });
           if (book) gsap.set(book, { autoAlpha: 1 });
           return;
@@ -76,6 +84,9 @@ export function HomeCampaignSection({
 
         if (silk) {
           gsap.set(silk, { yPercent: 0, autoAlpha: 1 });
+        }
+        if (silkChars.length) {
+          gsap.set(silkChars, { yPercent: 110, autoAlpha: 0, force3D: true });
         }
         if (chars.length) {
           gsap.set(chars, { yPercent: 115, autoAlpha: 0, force3D: true });
@@ -87,13 +98,15 @@ export function HomeCampaignSection({
 
         const story = gsap.timeline({ paused: true });
 
-        /* 1) Cream silk lifts — reveals the sharp photograph */
-        if (silk) {
+        /* 1) Invite line rises on site cream */
+        if (silkChars.length) {
           story.to(
-            silk,
+            silkChars,
             {
-              yPercent: -101,
-              duration: 0.36,
+              yPercent: 0,
+              autoAlpha: 1,
+              stagger: 0.022,
+              duration: 0.2,
               ease: "none",
               force3D: true,
             },
@@ -101,22 +114,36 @@ export function HomeCampaignSection({
           );
         }
 
-        /* 2) Quiet beat with the image settled */
-        story.to({}, { duration: 0.1 }, 0.36);
+        /* 2) Silk lifts — photograph covers the invite */
+        if (silk) {
+          story.to(
+            silk,
+            {
+              yPercent: -101,
+              duration: 0.3,
+              ease: "none",
+              force3D: true,
+            },
+            0.22,
+          );
+        }
 
-        /* 3) Letter rise */
+        /* 3) Quiet beat */
+        story.to({}, { duration: 0.08 }, 0.5);
+
+        /* 4) On-image title + Book Now */
         if (chars.length) {
           story.to(
             chars,
             {
               yPercent: 0,
               autoAlpha: 1,
-              stagger: 0.02,
+              stagger: 0.016,
               duration: 0.18,
               ease: "none",
               force3D: true,
             },
-            0.46,
+            0.56,
           );
         }
         if (book) {
@@ -127,12 +154,12 @@ export function HomeCampaignSection({
               duration: 0.1,
               ease: "none",
             },
-            0.54,
+            0.64,
           );
         }
 
-        /* 4) Reading pause */
-        story.to({}, { duration: 0.28 }, 0.66);
+        /* 5) Reading pause */
+        story.to({}, { duration: 0.24 }, 0.76);
 
         const sync = (progress: number) => {
           const maxY = Math.max(0, track.offsetHeight - window.innerHeight);
@@ -210,8 +237,20 @@ export function HomeCampaignSection({
           />
         </div>
 
-        <div className="hcta-silk" data-hcta-silk aria-hidden="true" />
+        {/* Soft veil sits under silk so cream matches the site; tints photo only */}
         <div className="hcta-veil" aria-hidden="true" />
+
+        <div className="hcta-silk" data-hcta-silk>
+          <p className="hcta-silk-line" aria-hidden="true">
+            {Array.from(SILK_LINE).map((ch, index) => (
+              <span className="hcta-silk-letter" key={`${ch}-${index}`}>
+                <span className="hcta-silk-char">
+                  {ch === " " ? "\u00A0" : ch}
+                </span>
+              </span>
+            ))}
+          </p>
+        </div>
 
         <div className="hcta-copy">
           <h2
