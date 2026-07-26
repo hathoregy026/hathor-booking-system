@@ -903,6 +903,11 @@ h1, h2, h3, h4, p {
   visibility: hidden;
 }
 
+/* Hide split letters until GSAP sets inline opacity — prevents load flash of giant H/O/R */
+.hathor-logo-split .logo-letter-wrap {
+  opacity: 0;
+}
+
 .hero-logo-img {
   width: 100%;
   height: auto;
@@ -2571,15 +2576,20 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
   backface-visibility: hidden;
 }
 
+/* Full-bleed media — always edge-to-edge, never inset/clipped window */
 .hcta-media {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
-  will-change: clip-path;
+  clip-path: none !important;
 }
 
 .hcta-media .hcta-bg,
-.hcta-media img.hcta-bg {
+.hcta-media img.hcta-bg,
+.hcta-media span,
+.hcta-media > span {
   position: absolute !important;
   inset: 0 !important;
   width: 100% !important;

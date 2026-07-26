@@ -72,23 +72,21 @@ export function HomeCampaignSection({
       ctx = gsap.context(() => {
         if (reduced) {
           gsap.set(frame, { clearProps: "transform" });
-          if (mediaWrap) {
-            gsap.set(mediaWrap, { clipPath: "inset(0% 0% 0% 0%)" });
-          }
-          if (media) gsap.set(media, { scale: 1 });
+          if (media) gsap.set(media, { scale: 1, autoAlpha: 1 });
           if (chars.length) gsap.set(chars, { yPercent: 0, autoAlpha: 1 });
           if (book) gsap.set(book, { autoAlpha: 1 });
           return;
         }
 
-        /* Start states — image veiled, letters sunk, book quiet */
+        /*
+         * Full-bleed always — never inset/clip (that painted the black box).
+         * Entrance is Ken Burns zoom inside overflow:hidden, so edges stay covered.
+         */
         if (mediaWrap) {
-          gsap.set(mediaWrap, {
-            clipPath: "inset(14% 10% 14% 10%)",
-          });
+          gsap.set(mediaWrap, { clearProps: "clipPath" });
         }
         if (media) {
-          gsap.set(media, { scale: 1.28, force3D: true });
+          gsap.set(media, { scale: 1.18, autoAlpha: 1, force3D: true });
         }
         if (chars.length) {
           gsap.set(chars, { yPercent: 115, autoAlpha: 0, force3D: true });
@@ -98,51 +96,24 @@ export function HomeCampaignSection({
         }
         gsap.set(frame, { y: 0, force3D: true });
 
-        /*
-         * Scrubbed storyboard (progress 0→1 through the reserved track).
-         * No pin — layout height never changes after first paint.
-         */
         const story = gsap.timeline({ paused: true });
 
-        /* 1) Image opens into full-bleed */
-        if (mediaWrap) {
-          story.to(
-            mediaWrap,
-            {
-              clipPath: "inset(0% 0% 0% 0%)",
-              duration: 0.26,
-              ease: "none",
-            },
-            0,
-          );
-        }
-        if (media) {
-          story.to(
-            media,
-            {
-              scale: 1.06,
-              duration: 0.26,
-              ease: "none",
-              force3D: true,
-            },
-            0,
-          );
-        }
-
-        /* 2) Settle + small quiet beat before copy */
+        /* 1) Full-screen image settles from soft zoom */
         if (media) {
           story.to(
             media,
             {
               scale: 1,
-              duration: 0.12,
+              duration: 0.34,
               ease: "none",
               force3D: true,
             },
-            0.26,
+            0,
           );
         }
-        story.to({}, { duration: 0.08 }, 0.34);
+
+        /* 2) Quiet beat before copy */
+        story.to({}, { duration: 0.1 }, 0.34);
 
         /* 3) Letter rise */
         if (chars.length) {
@@ -156,7 +127,7 @@ export function HomeCampaignSection({
               ease: "none",
               force3D: true,
             },
-            0.42,
+            0.44,
           );
         }
         if (book) {
@@ -167,26 +138,12 @@ export function HomeCampaignSection({
               duration: 0.1,
               ease: "none",
             },
-            0.5,
+            0.52,
           );
         }
 
         /* 4) Reading pause while still stuck */
-        story.to({}, { duration: 0.28 }, 0.62);
-
-        /* 5) Soft finish into release */
-        if (media) {
-          story.to(
-            media,
-            {
-              scale: 1.02,
-              duration: 0.1,
-              ease: "none",
-              force3D: true,
-            },
-            0.9,
-          );
-        }
+        story.to({}, { duration: 0.28 }, 0.64);
 
         const sync = (progress: number) => {
           const maxY = Math.max(0, track.offsetHeight - window.innerHeight);
