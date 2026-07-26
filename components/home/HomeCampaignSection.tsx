@@ -27,12 +27,17 @@ type LenisLike = {
 /**
  * Call-to-action stage.
  *
- * Frame is pinned by ScrollTrigger (pinSpacing: false — track already
- * reserves height). Manual y-stick was failing under Lenis/refresh and
- * left an empty cream gap with the photo half off-screen.
+ * Flow-layout frame + ScrollTrigger pin (track already reserves height).
+ * Silk invite is never CSS-hidden — a stalled scrub must not leave a void.
  *
  * Phase A — gold invite rises as the section approaches.
  * Phase B — photograph rises over the locked invite, then on-image title.
+ *
+ * Conflict checks (do not regress):
+ * - Only kills own ST ids (hcta-invite / hcta-stage) — never getAll().
+ * - pinSpacing:false — track height owns scroll room (no spacer fight).
+ * - Lenis: bind after parent mounts; rely on global ST.update too.
+ * - overflow-x:clip on html breaks sticky — pin (fixed) is required.
  */
 export function HomeCampaignSection({
   title,
@@ -66,13 +71,17 @@ export function HomeCampaignSection({
     let killed = false;
     let ctx: gsap.Context | null = null;
     let removeLenis: (() => void) | null = null;
-    let bootTimer = 0;
     let lenisPoll = 0;
 
     const killOwned = () => {
       ["hcta-invite", "hcta-stage"].forEach((id) => {
         ScrollTrigger.getById(id)?.kill();
       });
+    };
+
+    const showSilk = () => {
+      if (!silkChars.length) return;
+      gsap.set(silkChars, { yPercent: 0, autoAlpha: 1, force3D: true });
     };
 
     const bindLenis = () => {
@@ -95,14 +104,14 @@ export function HomeCampaignSection({
       ctx = gsap.context(() => {
         if (reduced) {
           if (reveal) gsap.set(reveal, { yPercent: 0, clearProps: "transform" });
-          if (silkChars.length) {
-            gsap.set(silkChars, { yPercent: 0, autoAlpha: 0 });
-          }
+          showSilk();
+          gsap.set(silkChars, { autoAlpha: 0 });
           if (chars.length) gsap.set(chars, { yPercent: 0, autoAlpha: 1 });
           if (book) gsap.set(book, { autoAlpha: 1 });
           return;
         }
 
+        /* Image starts below — silk stays readable (never CSS-void) */
         if (reveal) {
           gsap.set(reveal, { yPercent: 100, force3D: true });
         }
@@ -116,9 +125,6 @@ export function HomeCampaignSection({
           gsap.set(book, { autoAlpha: 0 });
         }
 
-        /*
-         * Phase A — invite finishes well BEFORE the stage locks.
-         */
         const inviteTl = gsap.timeline({ paused: true });
         if (silkChars.length) {
           const rows = gsap.utils.toArray<HTMLElement>(
@@ -146,35 +152,22 @@ export function HomeCampaignSection({
           id: "hcta-invite",
           trigger: track,
           start: "top 92%",
-          end: "top 18%",
-          scrub: 0.45,
+          end: "top top",
+          scrub: 0.5,
           invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            inviteTl.progress(self.progress);
-          },
-          onRefresh: (self) => {
-            inviteTl.progress(self.progress);
-          },
+          onUpdate: (self) => inviteTl.progress(self.progress),
+          onRefresh: (self) => inviteTl.progress(self.progress),
         });
 
-        /*
-         * Phase B — pin the frame for the tall track; scrub only drives cover.
-         * pinSpacing: false — track height already creates the scroll room.
-         */
         const coverTl = gsap.timeline({ paused: true });
 
-        if (silkChars.length) {
-          coverTl.set(
-            silkChars,
-            { yPercent: 0, autoAlpha: 1, force3D: true },
-            0,
-          );
-        }
+        /* Failsafe — lock invite readable before cover, even if invite ST lagged */
+        coverTl.call(showSilk, undefined, 0);
         if (reveal) {
           coverTl.set(reveal, { yPercent: 100, force3D: true }, 0);
         }
 
-        coverTl.to({}, { duration: 0.16 }, 0);
+        coverTl.to({}, { duration: 0.14 }, 0);
 
         if (reveal) {
           coverTl.to(
@@ -185,11 +178,11 @@ export function HomeCampaignSection({
               ease: "power3.inOut",
               force3D: true,
             },
-            0.16,
+            0.14,
           );
         }
 
-        coverTl.to({}, { duration: 0.06 }, 0.88);
+        coverTl.to({}, { duration: 0.06 }, 0.86);
 
         if (chars.length) {
           coverTl.to(
@@ -202,23 +195,23 @@ export function HomeCampaignSection({
               ease: "none",
               force3D: true,
             },
-            0.92,
+            0.9,
           );
         }
         if (book) {
           coverTl.to(
             book,
-            {
-              autoAlpha: 1,
-              duration: 0.1,
-              ease: "none",
-            },
-            1.0,
+            { autoAlpha: 1, duration: 0.1, ease: "none" },
+            0.98,
           );
         }
 
-        coverTl.to({}, { duration: 0.18 }, 1.08);
+        coverTl.to({}, { duration: 0.16 }, 1.06);
 
+        /*
+         * Pin the in-flow frame. Track height = scroll distance.
+         * pinSpacing:false avoids spacer fighting the reserved 420vh.
+         */
         ScrollTrigger.create({
           id: "hcta-stage",
           trigger: track,
@@ -227,14 +220,25 @@ export function HomeCampaignSection({
           pin: frame,
           pinSpacing: false,
           anticipatePin: 1,
-          scrub: 1.65,
+          scrub: 1.35,
           invalidateOnRefresh: true,
+          onEnter: () => {
+            inviteTl.progress(1);
+            showSilk();
+          },
+          onEnterBack: () => {
+            inviteTl.progress(1);
+            showSilk();
+          },
           onUpdate: (self) => {
             inviteTl.progress(1);
             coverTl.progress(self.progress);
           },
           onRefresh: (self) => {
-            if (self.progress > 0) inviteTl.progress(1);
+            if (self.progress > 0) {
+              inviteTl.progress(1);
+              showSilk();
+            }
             coverTl.progress(self.progress);
           },
         });
@@ -243,13 +247,9 @@ export function HomeCampaignSection({
       ScrollTrigger.refresh();
     };
 
-    bootTimer = window.setTimeout(() => {
-      requestAnimationFrame(() => {
-        requestAnimationFrame(boot);
-      });
-    }, 0);
+    /* Sync boot in layout effect — no void frame before rAF */
+    boot();
 
-    /* Parent Lenis often mounts after this child effect — keep trying briefly */
     bindLenis();
     lenisPoll = window.setInterval(() => {
       bindLenis();
@@ -268,7 +268,6 @@ export function HomeCampaignSection({
 
     return () => {
       killed = true;
-      window.clearTimeout(bootTimer);
       window.clearInterval(lenisPoll);
       window.removeEventListener("load", onLoad);
       removeLenis?.();
