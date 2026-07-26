@@ -3,18 +3,26 @@
 import { useLayoutEffect, useRef } from "react";
 import type { CSSProperties } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 
+gsap.registerPlugin(ScrollTrigger);
+
 const SILK_ROWS = ["TAKE YOUR", "VOYAGE", "TODAY"] as const;
 
-/** Exponential damp — silky catch-up, frame-rate independent */
+/** Frame-rate independent exponential smooth toward target */
 function damp(current: number, target: number, lambda: number, dt: number) {
   return current + (target - current) * (1 - Math.exp(-lambda * dt));
 }
 
 function clamp01(n: number) {
   return Math.max(0, Math.min(1, n));
+}
+
+function smoothstep(t: number) {
+  const x = clamp01(t);
+  return x * x * (3 - 2 * x);
 }
 
 type HomeCampaignSectionProps = {
@@ -25,14 +33,18 @@ type HomeCampaignSectionProps = {
   previewAnchor?: boolean;
 };
 
+type LenisLike = {
+  on: (event: string, handler: () => void) => void;
+  off?: (event: string, handler: () => void) => void;
+};
+
 /**
- * Call-to-action stage — elegant layout-driven motion.
+ * Call-to-action stage — simple & silky.
  *
- * 1) Gold invite rises as the section arrives
- * 2) Brief hold, then photograph glides up and erases the invite
- * 3) On-image title + Book Now rise in
- *
- * All values are damped toward scroll targets so Lenis never writes jumps.
+ * - Stick is 1:1 with scroll (never damped — damping caused the jump).
+ * - Gold invite plays once on enter (not scrubbed — scrub made letters bounce).
+ * - Photograph y% is heavily damped toward scroll for a soft erase.
+ * - On-image title eases in after the wipe.
  */
 export function HomeCampaignSection({
   title,
@@ -64,119 +76,170 @@ export function HomeCampaignSection({
     if (!frame) return;
 
     let killed = false;
-    let inviteTl: gsap.core.Timeline | null = null;
-
-    /* Smoothed state */
-    let inviteS = 0;
-    let stageS = 0;
+    let removeLenis: (() => void) | null = null;
+    let invitePlaying = false;
+    let inviteShown = false;
+    let titleShown = false;
     let imageS = 0;
-    let titleS = 0;
-    let stickS = 0;
+
+    const playInvite = () => {
+      if (invitePlaying || inviteShown || !silkChars.length) return;
+      invitePlaying = true;
+      gsap.killTweensOf(silkChars);
+      gsap.fromTo(
+        silkChars,
+        { yPercent: 115, autoAlpha: 0 },
+        {
+          yPercent: 0,
+          autoAlpha: 1,
+          duration: 1.15,
+          stagger: 0.022,
+          ease: "power3.out",
+          force3D: true,
+          onComplete: () => {
+            invitePlaying = false;
+            inviteShown = true;
+          },
+        },
+      );
+    };
+
+    const reverseInvite = () => {
+      if (!silkChars.length) return;
+      invitePlaying = false;
+      inviteShown = false;
+      gsap.killTweensOf(silkChars);
+      gsap.to(silkChars, {
+        yPercent: 115,
+        autoAlpha: 0,
+        duration: 0.45,
+        stagger: 0.01,
+        ease: "power2.in",
+        force3D: true,
+        overwrite: true,
+      });
+    };
+
+    const playTitle = () => {
+      if (titleShown) return;
+      titleShown = true;
+      if (chars.length) {
+        gsap.killTweensOf(chars);
+        gsap.fromTo(
+          chars,
+          { yPercent: 110, autoAlpha: 0 },
+          {
+            yPercent: 0,
+            autoAlpha: 1,
+            duration: 0.95,
+            stagger: 0.018,
+            ease: "power3.out",
+            force3D: true,
+            overwrite: true,
+          },
+        );
+      }
+      if (book) {
+        gsap.killTweensOf(book);
+        gsap.fromTo(
+          book,
+          { autoAlpha: 0, y: 16 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.7,
+            delay: 0.2,
+            ease: "power3.out",
+            overwrite: true,
+          },
+        );
+      }
+    };
+
+    const hideTitle = () => {
+      if (!titleShown) return;
+      titleShown = false;
+      if (chars.length) {
+        gsap.killTweensOf(chars);
+        gsap.to(chars, {
+          yPercent: 110,
+          autoAlpha: 0,
+          duration: 0.35,
+          ease: "power2.in",
+          overwrite: true,
+        });
+      }
+      if (book) {
+        gsap.killTweensOf(book);
+        gsap.to(book, {
+          autoAlpha: 0,
+          y: 12,
+          duration: 0.3,
+          ease: "power2.in",
+          overwrite: true,
+        });
+      }
+    };
 
     if (reduced) {
       gsap.set(frame, { clearProps: "transform" });
       if (reveal) gsap.set(reveal, { yPercent: 0, clearProps: "transform" });
       if (silkChars.length) gsap.set(silkChars, { yPercent: 0, autoAlpha: 0 });
       if (chars.length) gsap.set(chars, { yPercent: 0, autoAlpha: 1 });
-      if (book) gsap.set(book, { autoAlpha: 1 });
+      if (book) gsap.set(book, { autoAlpha: 1, y: 0 });
       return;
     }
 
     if (reveal) gsap.set(reveal, { yPercent: 100, force3D: true });
     if (silkChars.length) {
-      gsap.set(silkChars, { yPercent: 110, autoAlpha: 0, force3D: true });
+      gsap.set(silkChars, { yPercent: 115, autoAlpha: 0, force3D: true });
     }
     if (chars.length) {
       gsap.set(chars, { yPercent: 110, autoAlpha: 0, force3D: true });
     }
-    if (book) gsap.set(book, { autoAlpha: 0, y: 12 });
+    if (book) gsap.set(book, { autoAlpha: 0, y: 16 });
     gsap.set(frame, { y: 0, force3D: true });
 
-    /* Invite letter rise — scrubbed by smoothed invite progress */
-    inviteTl = gsap.timeline({ paused: true });
-    if (silkChars.length) {
-      const rows = gsap.utils.toArray<HTMLElement>(
-        track.querySelectorAll(".hcta-silk-row"),
-      );
-      rows.forEach((row, rowIndex) => {
-        const rowChars = row.querySelectorAll<HTMLElement>(".hcta-silk-char");
-        inviteTl!.to(
-          rowChars,
-          {
-            yPercent: 0,
-            autoAlpha: 1,
-            stagger: 0.018,
-            duration: 0.55,
-            ease: "none",
-            force3D: true,
-          },
-          rowIndex * 0.12,
-        );
-      });
-    }
+    /*
+     * Invite: one-shot when the cream stage is approaching / locked.
+     * Never scrub letter progress — that was the rapid bounce.
+     */
+    ScrollTrigger.create({
+      id: "hcta-invite",
+      trigger: track,
+      start: "top 78%",
+      end: "top top",
+      onEnter: () => playInvite(),
+      onEnterBack: () => playInvite(),
+      onLeaveBack: () => reverseInvite(),
+    });
 
     const sync = () => {
-      if (killed || !inviteTl) return;
+      if (killed) return;
 
       const dt = gsap.ticker.deltaRatio(60);
       const vh = window.innerHeight;
       const rect = track.getBoundingClientRect();
-      const travel = Math.max(1, track.offsetHeight - (frame.offsetHeight || vh));
-
-      /* --- targets from layout --- */
-      let inviteT = 0;
-      const inviteStart = vh * 0.9;
-      const inviteEnd = vh * 0.12;
-      if (rect.top <= inviteEnd) inviteT = 1;
-      else if (rect.top < inviteStart) {
-        inviteT = 1 - (rect.top - inviteEnd) / (inviteStart - inviteEnd);
-      }
-      inviteT = clamp01(inviteT);
-
-      /* Stick distance while the tall track owns the viewport */
-      const stickT = clamp01(-rect.top / travel) * travel;
-      const stageT = clamp01(stickT / travel);
+      const frameH = frame.offsetHeight || vh;
+      const travel = Math.max(1, track.offsetHeight - frameH);
 
       /*
-       * Stage remap (elegant pacing on the locked scroll):
-       *  0.00–0.14  hold gold invite
-       *  0.14–0.78  photograph rises / erases invite
-       *  0.78–1.00  on-image title + book
+       * Stick MUST be exact — damping the frame vs scroll is what felt
+       * like text jumping up and down.
        */
+      const stickY = Math.min(travel, Math.max(0, -rect.top));
+      gsap.set(frame, { y: stickY, force3D: true });
+
+      const stage = clamp01(stickY / travel);
+
+      /* Hold invite, then long soft wipe, then title */
       let imageT = 0;
-      let titleT = 0;
-      if (stageT <= 0.14) {
-        imageT = 0;
-        titleT = 0;
-      } else if (stageT < 0.78) {
-        imageT = (stageT - 0.14) / 0.64;
-        titleT = 0;
-      } else {
-        imageT = 1;
-        titleT = (stageT - 0.78) / 0.22;
-      }
-      imageT = clamp01(imageT);
-      titleT = clamp01(titleT);
+      if (stage <= 0.12) imageT = 0;
+      else if (stage >= 0.8) imageT = 1;
+      else imageT = smoothstep((stage - 0.12) / 0.68);
 
-      /* Soft ease on the wipe so it never feels mechanical */
-      const imageEased = imageT * imageT * (3 - 2 * imageT); /* smoothstep */
-
-      /*
-       * Damping — stick tracks scroll closely; cover & title stay lazier.
-       * Higher lambda = snappier. Values tuned for luxury glide.
-       */
-      inviteS = damp(inviteS, inviteT, 7.5, dt);
-      stickS = damp(stickS, stickT, 14, dt);
-      stageS = damp(stageS, stageT, 9, dt);
-      imageS = damp(imageS, imageEased, 5.5, dt);
-      titleS = damp(titleS, titleT, 6.2, dt);
-
-      if (stageS > 0.02) {
-        inviteS = damp(inviteS, 1, 12, dt);
-      }
-
-      inviteTl.progress(inviteS);
-      gsap.set(frame, { y: stickS, force3D: true });
+      /* Heavy damp on the photograph only — silk erase glide */
+      imageS = damp(imageS, imageT, 3.8, dt);
 
       if (reveal) {
         gsap.set(reveal, {
@@ -185,34 +248,47 @@ export function HomeCampaignSection({
         });
       }
 
-      if (chars.length) {
-        const y = (1 - titleS) * 110;
-        const a = titleS;
-        gsap.set(chars, {
-          yPercent: y,
-          autoAlpha: a,
-          force3D: true,
-        });
-      }
-      if (book) {
-        gsap.set(book, {
-          autoAlpha: titleS,
-          y: (1 - titleS) * 14,
-          force3D: true,
-        });
-      }
+      if (imageS > 0.88) playTitle();
+      else if (imageS < 0.72) hideTitle();
+
+      if (stage > 0.02 || rect.top < vh * 0.5) playInvite();
     };
 
     gsap.ticker.add(sync);
     sync();
 
-    const onResize = () => sync();
+    const bindLenis = () => {
+      if (removeLenis) return;
+      const lenis = (window as Window & { __hathorLenis?: LenisLike | null })
+        .__hathorLenis;
+      if (!lenis?.on) return;
+      const onScroll = () => ScrollTrigger.update();
+      lenis.on("scroll", onScroll);
+      removeLenis = () => lenis.off?.("scroll", onScroll);
+    };
+    bindLenis();
+    const lenisPoll = window.setInterval(() => {
+      bindLenis();
+      if (removeLenis || killed) window.clearInterval(lenisPoll);
+    }, 50);
+    window.setTimeout(() => window.clearInterval(lenisPoll), 2000);
+
+    const onResize = () => {
+      ScrollTrigger.refresh();
+      sync();
+    };
     window.addEventListener("resize", onResize);
 
     return () => {
       killed = true;
+      window.clearInterval(lenisPoll);
       window.removeEventListener("resize", onResize);
+      removeLenis?.();
       gsap.ticker.remove(sync);
+      ScrollTrigger.getById("hcta-invite")?.kill();
+      gsap.killTweensOf(silkChars);
+      if (chars.length) gsap.killTweensOf(chars);
+      if (book) gsap.killTweensOf(book);
       gsap.set(frame, { clearProps: "transform" });
       if (reveal) gsap.set(reveal, { clearProps: "transform" });
     };
