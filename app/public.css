@@ -6458,7 +6458,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__title {
 
 
 /* ===========================================================
-   INTERIOR PAGE DESIGN SYSTEM — mirrors homepage tokens
+   INTERIOR PAGE DESIGN SYSTEM - mirrors homepage tokens
    (Do not apply these rules under html[data-ex-experience] home.)
    =========================================================== */
 
@@ -6512,7 +6512,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__title {
   transform: translateY(-2px);
 }
 
-/* Typography hierarchy — align with homepage / typography dashboard */
+/* Typography hierarchy - align with homepage / typography dashboard */
 html:not([data-ex-experience]) .public-site .section-title,
 html:not([data-ex-experience]) .public-site .hathor-section-title {
   margin: 0;
@@ -6583,7 +6583,7 @@ html:not([data-ex-experience]) .public-site .public-page-body .hathor-section {
   padding-block: clamp(80px, 10vw, 140px);
 }
 
-/* CTA band — cream surface + dark type (readable day theme) */
+/* CTA band - cream surface + dark type (readable day theme) */
 html:not([data-ex-experience]) .public-site .lux-cta-band {
   background: var(--public-surface, #f5f0e8);
   border-color: rgba(182, 159, 100, 0.28);
@@ -6602,7 +6602,7 @@ html:not([data-ex-experience]) .public-site .lux-cta-band p {
   margin-inline: auto;
 }
 
-/* Contact cards — consistent type contrast */
+/* Contact cards - consistent type contrast */
 html:not([data-ex-experience]) .public-site .hathor-contact-card {
   color: var(--public-text, #1a1a1a);
 }
@@ -6629,7 +6629,7 @@ html:not([data-ex-experience]) .public-site .hathor-editorial__content .section-
   max-width: 36rem;
 }
 
-/* Partner cards — centered, even grid */
+/* Partner cards - centered, even grid */
 html:not([data-ex-experience]) .public-site .hathor-partners-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
@@ -6654,7 +6654,7 @@ html:not([data-ex-experience]) .public-site .hathor-partner-card__name {
   letter-spacing: 0.02em;
 }
 
-/* Venetian / lux interior pages — align type hierarchy with homepage */
+/* Venetian / lux interior pages - align type hierarchy with homepage */
 html:not([data-ex-experience]) .public-site .venetian-page .lux-end,
 html:not([data-ex-experience]) .public-site .venetian-page .lux-wrap,
 html:not([data-ex-experience]) .public-site .venetian-page .hlx-head {
