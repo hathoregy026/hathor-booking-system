@@ -13,6 +13,8 @@ type MountHeroScrollStageOptions = {
   lenis?: Lenis | null;
   /** Split-letter land duration in seconds (from admin logo tune). */
   logoLandDuration?: number;
+  /** Hard-refresh mid-page: skip land tween and snap to rested logo. */
+  skipLanding?: boolean;
 };
 
 /** Extra downward offset at logo landing / scroll-scrub start (px). */
@@ -23,6 +25,7 @@ export function mountHeroScrollStage({
   prefersReduced,
   lenis = null,
   logoLandDuration = DEFAULT_LOGO_LAND_DURATION,
+  skipLanding = false,
 }: MountHeroScrollStageOptions): () => void {
   const hero = document.querySelector(".home-hero-container");
   const cover = document.querySelector(".home-hero-cover");
@@ -346,8 +349,33 @@ export function mountHeroScrollStage({
 
   build();
 
+  const snapLogoLanded = () => {
+    if (!logoMark) {
+      logoReadyForScroll = true;
+      return;
+    }
+    landingTween?.kill();
+    gsap.set(logoMark, {
+      y: getLogoLandedY(),
+      xPercent: -50,
+      x: 0,
+      yPercent: 0,
+      scale: 1,
+      autoAlpha: 1,
+    });
+    const wraps = logoMark.querySelectorAll(".logo-letter-wrap");
+    if (wraps.length) gsap.set(wraps, { y: 0, opacity: 1 });
+    const letters = logoMark.querySelectorAll(".logo-letter");
+    if (letters.length) gsap.set(letters, { y: 0, opacity: 1 });
+    logoReadyForScroll = true;
+  };
+
   const rafId = requestAnimationFrame(() => {
     requestAnimationFrame(() => {
+      if (skipLanding) {
+        snapLogoLanded();
+        return;
+      }
       const img = logoMark?.querySelector("img");
       if (img && !img.complete) {
         img.addEventListener("load", playLanding, { once: true });
@@ -362,19 +390,7 @@ export function mountHeroScrollStage({
     if (landingTween && landingTween.isActive()) {
       landingTween.progress(1).kill();
     }
-    logoReadyForScroll = true;
-    if (logoMark) {
-      gsap.set(logoMark, {
-        y: getLogoLandedY(),
-        xPercent: -50,
-        x: 0,
-        yPercent: 0,
-        scale: 1,
-        autoAlpha: 1,
-      });
-      const wraps = logoMark.querySelectorAll(".logo-letter-wrap");
-      if (wraps.length) gsap.set(wraps, { y: 0, opacity: 1 });
-    }
+    snapLogoLanded();
     window.removeEventListener("wheel", onFirstScroll);
     window.removeEventListener("touchstart", onFirstScroll);
     if (lenis) lenis.off("scroll", onFirstScroll);
