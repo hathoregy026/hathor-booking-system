@@ -1,6 +1,6 @@
 /**
  * EX page — homepage Venetian scroll-reveal motion (GSAP, Lenis).
- * Atelier masked letter rise/fall for homepage copy + stack slides.
+ * Stack-slide letter timing stays here; site-wide copy uses LuxuryTextAnimations.
  */
 // @ts-nocheck
 "use client";
@@ -10,6 +10,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import { mountHeroScrollStage } from "@/lib/hero-scroll-stage";
+import { splitAtelierText } from "@/lib/atelier-text-split";
 import {
   registerHathorLenis,
   restoreScrollPositionIfReload,
@@ -116,115 +117,6 @@ export function useExScrollMotion() {
   }
 
 
-  /* -------------------------------------------------------
-   * Atelier masked letter rise/fall — shared helpers
-   * ----------------------------------------------------- */
-  function splitAtelierText(el) {
-    if (!el || el.dataset.splitDone === "1") {
-      return Array.from(el.querySelectorAll(".split-char"));
-    }
-
-    const chars = [];
-    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
-    const textNodes = [];
-    while (walker.nextNode()) textNodes.push(walker.currentNode);
-
-    textNodes.forEach((node) => {
-      const parent = node.parentElement;
-      if (!parent || parent.classList.contains("split-char")) return;
-      const text = node.textContent;
-      if (!text || !text.trim()) return;
-
-      const frag = document.createDocumentFragment();
-      [...text].forEach((ch) => {
-        const wrap = document.createElement("span");
-        wrap.className = "split-heading";
-        const span = document.createElement("span");
-        span.className = "split-char";
-        span.textContent = ch === " " ? "\u00A0" : ch;
-        wrap.appendChild(span);
-        frag.appendChild(wrap);
-        chars.push(span);
-      });
-      parent.replaceChild(frag, node);
-    });
-
-    el.dataset.splitDone = "1";
-    return chars;
-  }
-
-  function animateAtelierSplit(el, triggerEl) {
-    const chars = splitAtelierText(el);
-    if (!chars.length) return;
-
-    gsap.set(chars, { yPercent: 100, opacity: 0 });
-    const stagger =
-      chars.length > 60 ? Math.min(0.03, 1.2 / chars.length) : 0.03;
-
-    gsap.to(chars, {
-      yPercent: 0,
-      opacity: 1,
-      duration: 1,
-      stagger,
-      ease: "power3.out",
-      scrollTrigger: {
-        trigger: triggerEl || el,
-        start: "top 85%",
-        toggleActions: "play none none reverse",
-      },
-      onComplete: () => {
-        chars.forEach((c) => c.style.removeProperty("will-change"));
-      },
-    });
-  }
-
-  /**
-   * Homepage-wide atelier letter reveal (all content text except hero,
-   * marquee, nav, and stack-scroll which has its own per-slide timing).
-   */
-  function initHomepageAtelierSplit() {
-    if (prefersReduced) return;
-
-    const selectors = [
-      ".ex-root .about-section .radius-heading h2",
-      ".ex-root .about-section .radius-sub-heading h3",
-      ".ex-root .about-section .radius-p p",
-      ".ex-root .services-intro .home-carousel-h2 h2",
-      ".ex-root .services-intro .home-carousel-h3 h3",
-      ".ex-root .home-carousel .carousel-heading h2",
-      ".ex-root [data-hathor-accordion] .typo-our-voyages-title",
-      ".ex-root [data-hathor-accordion] .typo-our-voyages-indication",
-      ".ex-root .home-text-h2 h2",
-      ".ex-root .home-text-p p",
-      ".ex-root .gallery-h2 h2",
-      ".ex-root .instagram-follow__eyebrow",
-      ".ex-root .gallery-ig-link__handle",
-      ".ex-root .testimonial-h2 h2",
-      ".ex-root .testimonial-card h3",
-      ".ex-root .testimonial-card p",
-      ".ex-root .cta-inner h2",
-      ".ex-root .cta-inner p",
-    ];
-
-    document.fonts.ready.then(() => {
-      const seen = new Set();
-      selectors.forEach((sel) => {
-        document.querySelectorAll(sel).forEach((el) => {
-          if (seen.has(el)) return;
-          if (el.closest(".ex-stack-scroll")) return;
-          if (el.closest(".luxury-marquee")) return;
-          if (el.closest(".home-hero-container")) return;
-          seen.add(el);
-          const trigger =
-            el.closest(
-              ".about-layout, .services-intro, .carousel-slide, [data-hathor-accordion], .home-text-img-copy, .gallery-header, .instagram-follow, .testimonial-card, .testimonials-header, .cta-inner",
-            ) || el;
-          animateAtelierSplit(el, trigger);
-        });
-      });
-    });
-  }
-  // .radius-sub-heading — words
   function initRadiusSubHeading() {
     /* Text: initHomepageAtelierSplit */
   }
@@ -968,7 +860,6 @@ export function useExScrollMotion() {
       initHeroText,
       initHeroBlinds,
       initRadiusMorph,
-      initHomepageAtelierSplit,
       initRadiusSubHeading,
       initGeneralRevealImages,
       initRadiusHeadingPara,

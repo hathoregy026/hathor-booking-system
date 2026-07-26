@@ -1,69 +1,22 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { mountAtelierTextSplit } from "@/lib/atelier-text-split";
 
-const SCROLL_TEXT_SELECTOR = [
-  ".public-site .owo-hero [class*='__title']",
-  ".public-site .owo-hero [class*='__subtitle']",
-  ".public-site .owo-chapter [class*='__title']",
-  ".public-site .owo-chapter .hathor-body-text",
-  ".public-site .hathor-intro__paragraph",
-  ".public-site .hathor-chapter-intro",
-].join(",");
-
-const SKIP_ANCESTOR_SELECTOR = [
-  "[data-test-scroll-reveal]",
-  "[data-page-transition]",
-  ".pt-hero__copy",
-  "[data-lux-scroll-reveal]",
-  ".pt-sheet__landing",
-  ".pt-sheet__filters",
-].join(",");
-
-function shouldSkip(el: Element): boolean {
-  return Boolean(el.closest(SKIP_ANCESTOR_SELECTOR));
-}
-
+/**
+ * Site-wide atelier letter rise/fall on public marketing copy.
+ * Text only — skips nav, forms, marquees, stack-scroll, and engines
+ * that already own their own SplitType (rooms kinetic / cruises intro).
+ */
 export function LuxuryTextAnimations() {
+  const pathname = usePathname();
+
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      return;
-    }
-
-    const seen = new WeakSet<Element>();
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("hathor-lux-text--in");
-          observer.unobserve(entry.target);
-        });
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -6% 0px" },
-    );
-
-    const register = () => {
-      document.querySelectorAll(SCROLL_TEXT_SELECTOR).forEach((el) => {
-        if (!(el instanceof HTMLElement)) return;
-        if (seen.has(el)) return;
-        if (shouldSkip(el)) return;
-        if (el.classList.contains("hathor-lux-text")) return;
-
-        seen.add(el);
-        el.classList.add("hathor-lux-text");
-        observer.observe(el);
-      });
-    };
-
-    register();
-    const timer = window.setTimeout(register, 400);
-
-    return () => {
-      window.clearTimeout(timer);
-      observer.disconnect();
-    };
-  }, []);
+    const root = document.querySelector(".public-site");
+    const handle = mountAtelierTextSplit(root);
+    return () => handle.destroy();
+  }, [pathname]);
 
   return null;
 }

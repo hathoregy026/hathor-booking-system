@@ -1,0 +1,22 @@
+/* Atelier masked letter rise/fall — text only (site-wide) */
+
+.public-site .split-heading {
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: top;
+  /* Slight pad so italic/script glyphs aren’t clipped by the mask */
+  padding: 0.06em 0.05em 0.14em;
+  margin: 0 -0.03em;
+}
+
+.public-site .split-char {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .public-site .split-char {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
