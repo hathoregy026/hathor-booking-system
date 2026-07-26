@@ -104,31 +104,39 @@ export function HomeCampaignSection({
         gsap.set(frame, { y: 0, force3D: true });
 
         /*
-         * Phase A — invite completes as you arrive (before / as stage locks).
-         * Fully up when progress hits 1 (= section top meets viewport top).
+         * Phase A — invite finishes well BEFORE the stage locks.
+         * Tight per-row stagger so TODAY is fully up (not half-risen)
+         * while the cream stage still fills the screen.
          */
         const inviteTl = gsap.timeline({ paused: true });
         if (silkChars.length) {
-          inviteTl.to(
-            silkChars,
-            {
-              yPercent: 0,
-              autoAlpha: 1,
-              stagger: 0.028,
-              duration: 1,
-              ease: "none",
-              force3D: true,
-            },
-            0,
+          const rows = gsap.utils.toArray<HTMLElement>(
+            track.querySelectorAll(".hcta-silk-row"),
           );
+          rows.forEach((row, rowIndex) => {
+            const rowChars = row.querySelectorAll<HTMLElement>(".hcta-silk-char");
+            inviteTl.to(
+              rowChars,
+              {
+                yPercent: 0,
+                autoAlpha: 1,
+                stagger: 0.014,
+                duration: 0.42,
+                ease: "none",
+                force3D: true,
+              },
+              rowIndex * 0.1,
+            );
+          });
         }
 
         ScrollTrigger.create({
           id: "hcta-invite",
           trigger: track,
-          start: "top 88%",
-          end: "top top",
-          scrub: 0.65,
+          start: "top 92%",
+          /* Complete while section is still arriving — never leave TODAY clipped */
+          end: "top 18%",
+          scrub: 0.45,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
             inviteTl.progress(self.progress);
@@ -215,13 +223,14 @@ export function HomeCampaignSection({
           scrub: 2.1,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
-            const maxY = Math.max(0, track.offsetHeight - window.innerHeight);
+            /* Match frame CSS height (100dvh), not raw innerHeight */
+            const maxY = Math.max(0, track.offsetHeight - frame.offsetHeight);
             gsap.set(frame, { y: self.progress * maxY, force3D: true });
             inviteTl.progress(1);
             coverTl.progress(self.progress);
           },
           onRefresh: (self) => {
-            const maxY = Math.max(0, track.offsetHeight - window.innerHeight);
+            const maxY = Math.max(0, track.offsetHeight - frame.offsetHeight);
             gsap.set(frame, { y: self.progress * maxY, force3D: true });
             if (self.progress > 0) inviteTl.progress(1);
             coverTl.progress(self.progress);
