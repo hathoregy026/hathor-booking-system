@@ -102,13 +102,55 @@ export function readSavedScrollY(pathname: string): number {
   }
 }
 
-/** Restore only on hard refresh — not on normal client navigations. */
-export function restoreScrollPositionIfReload(pathname: string): boolean {
+function normalizePath(pathname: string): string {
+  if (!pathname || pathname === "") return "/";
+  if (pathname.length > 1 && pathname.endsWith("/")) {
+    return pathname.slice(0, -1);
+  }
+  return pathname;
+}
+
+/** Path the document was first loaded on (hard navigation / reload). */
+export function getDocumentLoadPathname(): string {
+  try {
+    const nav = performance.getEntriesByType(
+      "navigation",
+    )[0] as PerformanceNavigationTiming | undefined;
+    if (nav?.name) {
+      return normalizePath(new URL(nav.name, window.location.origin).pathname);
+    }
+  } catch {
+    /* ignore */
+  }
+  return normalizePath(window.location.pathname || "/");
+}
+
+/**
+ * True only for the initial hard load/reload of this pathname — not for later
+ * App Router soft navigations (performance.navigation.type stays "reload" for
+ * the whole SPA session, which previously restored mid-page scroll on Home).
+ */
+const restoredThisDocument = new Set<string>();
+
+export function shouldRestoreScrollOnMount(pathname: string): boolean {
   if (typeof window === "undefined") return false;
   if (!isReloadNavigation()) return false;
+  const path = normalizePath(pathname);
+  if (restoredThisDocument.has(path)) return false;
+  if (normalizePath(getDocumentLoadPathname()) !== path) return false;
+  return readSavedScrollY(path) > 0;
+}
 
-  const y = readSavedScrollY(pathname);
+/** Restore only on hard refresh of this path — not on client navigations back. */
+export function restoreScrollPositionIfReload(pathname: string): boolean {
+  if (typeof window === "undefined") return false;
+  if (!shouldRestoreScrollOnMount(pathname)) return false;
+
+  const path = normalizePath(pathname);
+  const y = readSavedScrollY(path);
   if (y <= 0) return false;
+
+  restoredThisDocument.add(path);
 
   const lenis = (window as HathorWindow).__hathorLenis;
   try {

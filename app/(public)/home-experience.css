@@ -2609,11 +2609,10 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
   background:
     linear-gradient(
       180deg,
-      rgba(11, 9, 7, 0.38) 0%,
-      rgba(11, 9, 7, 0.2) 45%,
-      rgba(11, 9, 7, 0.48) 100%
-    ),
-    radial-gradient(ellipse at 50% 40%, transparent 0%, rgba(11, 9, 7, 0.3) 100%);
+      rgba(11, 9, 7, 0.22) 0%,
+      rgba(11, 9, 7, 0.08) 45%,
+      rgba(11, 9, 7, 0.28) 100%
+    );
 }
 
 .hcta-copy {

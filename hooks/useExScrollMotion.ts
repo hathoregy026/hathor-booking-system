@@ -14,9 +14,27 @@ import { splitAtelierText } from "@/lib/atelier-text-split";
 import {
   registerHathorLenis,
   restoreScrollPositionIfReload,
+  shouldRestoreScrollOnMount,
 } from "@/lib/scroll-position-restore";
 
 gsap.registerPlugin(ScrollTrigger);
+
+function resetWindowScrollTop(lenis: Lenis | null) {
+  try {
+    if (lenis?.scrollTo) {
+      lenis.scrollTo(0, { immediate: true, force: true });
+    }
+  } catch {
+    /* ignore */
+  }
+  try {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  } catch {
+    /* ignore */
+  }
+}
 
 export function useExScrollMotion() {
   useLayoutEffect(() => {
@@ -57,6 +75,18 @@ export function useExScrollMotion() {
     };
     gsap.ticker.add(tickerFn);
     gsap.ticker.lagSmoothing(0);
+  }
+
+  /*
+   * Soft nav (Suites → Home) often keeps the previous page's scrollY for a frame.
+   * Mounting the hero scrub ScrollTrigger at that Y opens gold blinds + huge logo.
+   * Hard reload of Home may restore a saved Y — only once, before ST mounts.
+   */
+  const path = window.location.pathname || "/";
+  if (shouldRestoreScrollOnMount(path)) {
+    restoreScrollPositionIfReload(path);
+  } else {
+    resetWindowScrollTop(lenis);
   }
 
   /* -------------------------------------------------------
@@ -894,8 +924,8 @@ export function useExScrollMotion() {
       document.documentElement.classList.add("has-ex-scroll-motion");
     }
 
-    const path = window.location.pathname || "/";
     const restoreNow = () => {
+      // No-op after first restore / on soft nav (gated inside helper)
       restoreScrollPositionIfReload(path);
       try {
         ScrollTrigger.refresh();

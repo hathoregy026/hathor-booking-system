@@ -5,19 +5,56 @@ import { usePathname } from "next/navigation";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   bindScrollPositionPersistence,
+  getDocumentLoadPathname,
+  isReloadNavigation,
   restoreScrollPositionIfReload,
   setScrollRestorationManual,
 } from "@/lib/scroll-position-restore";
 
+type HathorWindow = Window & {
+  __hathorLenis?: {
+    scrollTo: (
+      target: number | string | HTMLElement,
+      options?: { immediate?: boolean; force?: boolean },
+    ) => void;
+  } | null;
+};
+
+function normalizePath(pathname: string): string {
+  if (!pathname || pathname === "") return "/";
+  if (pathname.length > 1 && pathname.endsWith("/")) {
+    return pathname.slice(0, -1);
+  }
+  return pathname;
+}
+
+function isSoftClientNavigation(pathname: string): boolean {
+  if (!isReloadNavigation()) return true;
+  return normalizePath(getDocumentLoadPathname()) !== normalizePath(pathname);
+}
+
 /**
- * On hard refresh, land at the last scroll position instead of the hero.
- * Saves continuously; restores only when navigation type is reload.
+ * On hard refresh of the current path, land at the last scroll position.
+ * Soft navigations always reset to top so GSAP pages never boot mid-scrub.
  */
 export function ScrollPositionRestore() {
   const pathname = usePathname() || "/";
 
   useEffect(() => {
     setScrollRestorationManual();
+
+    if (isSoftClientNavigation(pathname)) {
+      try {
+        const lenis = (window as HathorWindow).__hathorLenis;
+        if (lenis?.scrollTo) {
+          lenis.scrollTo(0, { immediate: true, force: true });
+        }
+      } catch {
+        /* ignore */
+      }
+      window.scrollTo(0, 0);
+    }
+
     const unbind = bindScrollPositionPersistence(pathname);
 
     const restore = () => {
@@ -30,7 +67,6 @@ export function ScrollPositionRestore() {
       }
     };
 
-    // Lenis / GSAP mount across a few frames — retry until settled
     const timers = [0, 60, 180, 400, 900, 1600].map((ms) =>
       window.setTimeout(restore, ms),
     );

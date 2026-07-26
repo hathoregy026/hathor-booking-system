@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
+import { HomeExperienceBoot } from "@/components/pages/HomeExperienceBoot";
 
-/** Boot home experience + cream theme before hydration. */
+/** Boot home experience + cream theme before hydration (hard load only). */
 const HOME_BOOT = `(function(){try{var d=document.documentElement;d.setAttribute("data-ex-experience","");if("scrollRestoration"in history)history.scrollRestoration="manual";}catch(e){}})();`;
 
 const HOME_CRITICAL_CSS = `
@@ -111,7 +112,7 @@ export function HomeExperienceShell({ children }: { children: ReactNode }) {
     <div className="home-experience-route ex-route">
       <style dangerouslySetInnerHTML={{ __html: HOME_CRITICAL_CSS }} />
       <script dangerouslySetInnerHTML={{ __html: HOME_BOOT }} />
-      {children}
+      <HomeExperienceBoot>{children}</HomeExperienceBoot>
     </div>
   );
 }
