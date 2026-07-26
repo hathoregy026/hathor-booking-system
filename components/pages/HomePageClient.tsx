@@ -581,8 +581,8 @@ export function HomePageClient({
                           href={item.href}
                           className={
                             copy === 1
-                              ? "gallery-item gallery-item--visual media-hover"
-                              : "gallery-item media-hover"
+                              ? "gallery-item gallery-item--visual"
+                              : "gallery-item"
                           }
                           tabIndex={copy === 1 ? -1 : undefined}
                           id={

@@ -2374,11 +2374,6 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   overflow: visible;
 }
 
-.gallery-marquee:hover .gallery-marquee__track,
-.gallery-marquee:focus-within .gallery-marquee__track {
-  animation-play-state: paused;
-}
-
 .gallery-marquee__group {
   display: flex;
   flex-shrink: 0;
@@ -2404,9 +2399,6 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   box-shadow:
     0 22px 44px rgba(92, 74, 48, 0.14),
     0 1px 0 rgba(255, 252, 245, 0.45) inset;
-  transition:
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
   cursor: pointer;
   pointer-events: auto !important;
 }
@@ -2423,10 +2415,6 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   pointer-events: none;
 }
 
-.gallery-item.media-hover::after {
-  content: none;
-}
-
 .gallery-item img {
   position: absolute;
   inset: 0;
@@ -2440,10 +2428,8 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
-  transition: transform 0.8s var(--ease-out);
 }
 
-.gallery-item:hover,
 .gallery-item:focus-visible {
   border-color: var(--gold) !important;
   box-shadow:
@@ -2458,18 +2444,12 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   outline-offset: 3px;
 }
 
-.gallery-item.media-hover:is(:hover, :focus-visible) img {
-  transform: none;
-  opacity: 1;
-}
-
 html[data-public-theme="night"][data-ex-experience] .gallery-item {
   border-color: rgba(182, 159, 100, 0.4);
   background: #14110e;
   box-shadow: 0 22px 44px rgba(0, 0, 0, 0.4);
 }
 
-html[data-public-theme="night"][data-ex-experience] .gallery-item:hover,
 html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible {
   border-color: var(--gold) !important;
   box-shadow:
