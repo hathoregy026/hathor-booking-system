@@ -25,11 +25,14 @@ type LenisLike = {
 };
 
 /**
- * Call-to-action stage — zero layout mutation.
+ * Call-to-action stage.
  *
- * Phase A (section approaches): gold invite rises and locks fully up.
- * Phase B (locked): unhurried hold, then photograph rises over the locked
- * invite (no reverse) — then on-image title.
+ * Frame is pinned by ScrollTrigger (pinSpacing: false — track already
+ * reserves height). Manual y-stick was failing under Lenis/refresh and
+ * left an empty cream gap with the photo half off-screen.
+ *
+ * Phase A — gold invite rises as the section approaches.
+ * Phase B — photograph rises over the locked invite, then on-image title.
  */
 export function HomeCampaignSection({
   title,
@@ -64,6 +67,7 @@ export function HomeCampaignSection({
     let ctx: gsap.Context | null = null;
     let removeLenis: (() => void) | null = null;
     let bootTimer = 0;
+    let lenisPoll = 0;
 
     const killOwned = () => {
       ["hcta-invite", "hcta-stage"].forEach((id) => {
@@ -71,16 +75,26 @@ export function HomeCampaignSection({
       });
     };
 
+    const bindLenis = () => {
+      if (removeLenis) return;
+      const lenis = (window as Window & { __hathorLenis?: LenisLike | null })
+        .__hathorLenis;
+      if (!lenis?.on) return;
+      const onLenisScroll = () => ScrollTrigger.update();
+      lenis.on("scroll", onLenisScroll);
+      removeLenis = () => lenis.off?.("scroll", onLenisScroll);
+    };
+
     const boot = () => {
       if (killed || !track.isConnected) return;
 
       ctx?.revert();
       killOwned();
+      bindLenis();
 
       ctx = gsap.context(() => {
         if (reduced) {
-          gsap.set(frame, { clearProps: "transform" });
-          if (reveal) gsap.set(reveal, { yPercent: 0 });
+          if (reveal) gsap.set(reveal, { yPercent: 0, clearProps: "transform" });
           if (silkChars.length) {
             gsap.set(silkChars, { yPercent: 0, autoAlpha: 0 });
           }
@@ -101,12 +115,9 @@ export function HomeCampaignSection({
         if (book) {
           gsap.set(book, { autoAlpha: 0 });
         }
-        gsap.set(frame, { y: 0, force3D: true });
 
         /*
          * Phase A — invite finishes well BEFORE the stage locks.
-         * Tight per-row stagger so TODAY is fully up (not half-risen)
-         * while the cream stage still fills the screen.
          */
         const inviteTl = gsap.timeline({ paused: true });
         if (silkChars.length) {
@@ -114,7 +125,8 @@ export function HomeCampaignSection({
             track.querySelectorAll(".hcta-silk-row"),
           );
           rows.forEach((row, rowIndex) => {
-            const rowChars = row.querySelectorAll<HTMLElement>(".hcta-silk-char");
+            const rowChars =
+              row.querySelectorAll<HTMLElement>(".hcta-silk-char");
             inviteTl.to(
               rowChars,
               {
@@ -134,7 +146,6 @@ export function HomeCampaignSection({
           id: "hcta-invite",
           trigger: track,
           start: "top 92%",
-          /* Complete while section is still arriving — never leave TODAY clipped */
           end: "top 18%",
           scrub: 0.45,
           invalidateOnRefresh: true,
@@ -147,8 +158,8 @@ export function HomeCampaignSection({
         });
 
         /*
-         * Phase B — hold locked invite, then a LONG unhurried photograph rise.
-         * Most of the locked scroll is spent on the image cover alone.
+         * Phase B — pin the frame for the tall track; scrub only drives cover.
+         * pinSpacing: false — track height already creates the scroll room.
          */
         const coverTl = gsap.timeline({ paused: true });
 
@@ -163,13 +174,8 @@ export function HomeCampaignSection({
           coverTl.set(reveal, { yPercent: 100, force3D: true }, 0);
         }
 
-        /* Brief hold — invite locked, fully readable */
         coverTl.to({}, { duration: 0.16 }, 0);
 
-        /*
-         * Photograph rises for the majority of the stage scroll.
-         * power3.inOut + heavy scrub = luxury glide, not a snap.
-         */
         if (reveal) {
           coverTl.to(
             reveal,
@@ -183,7 +189,6 @@ export function HomeCampaignSection({
           );
         }
 
-        /* Settle before on-image copy */
         coverTl.to({}, { duration: 0.06 }, 0.88);
 
         if (chars.length) {
@@ -219,19 +224,16 @@ export function HomeCampaignSection({
           trigger: track,
           start: "top top",
           end: "bottom bottom",
-          /* Heavy lag so the image eases behind the wheel */
-          scrub: 2.1,
+          pin: frame,
+          pinSpacing: false,
+          anticipatePin: 1,
+          scrub: 1.65,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
-            /* Match frame CSS height (100dvh), not raw innerHeight */
-            const maxY = Math.max(0, track.offsetHeight - frame.offsetHeight);
-            gsap.set(frame, { y: self.progress * maxY, force3D: true });
             inviteTl.progress(1);
             coverTl.progress(self.progress);
           },
           onRefresh: (self) => {
-            const maxY = Math.max(0, track.offsetHeight - frame.offsetHeight);
-            gsap.set(frame, { y: self.progress * maxY, force3D: true });
             if (self.progress > 0) inviteTl.progress(1);
             coverTl.progress(self.progress);
           },
@@ -247,6 +249,14 @@ export function HomeCampaignSection({
       });
     }, 0);
 
+    /* Parent Lenis often mounts after this child effect — keep trying briefly */
+    bindLenis();
+    lenisPoll = window.setInterval(() => {
+      bindLenis();
+      if (removeLenis || killed) window.clearInterval(lenisPoll);
+    }, 50);
+    window.setTimeout(() => window.clearInterval(lenisPoll), 2000);
+
     const onLoad = () => {
       try {
         ScrollTrigger.refresh();
@@ -256,17 +266,10 @@ export function HomeCampaignSection({
     };
     window.addEventListener("load", onLoad);
 
-    const lenis = (window as Window & { __hathorLenis?: LenisLike | null })
-      .__hathorLenis;
-    if (lenis?.on) {
-      const onLenisScroll = () => ScrollTrigger.update();
-      lenis.on("scroll", onLenisScroll);
-      removeLenis = () => lenis.off?.("scroll", onLenisScroll);
-    }
-
     return () => {
       killed = true;
       window.clearTimeout(bootTimer);
+      window.clearInterval(lenisPoll);
       window.removeEventListener("load", onLoad);
       removeLenis?.();
       killOwned();
