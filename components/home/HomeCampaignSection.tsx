@@ -11,8 +11,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 const SILK_ROWS = ["TAKE YOUR", "VOYAGE", "TODAY"] as const;
 
-/** How quickly the photograph eases toward its scroll target (lower = silkier). */
-const REVEAL_LERP = 0.032;
+/** How quickly the photograph eases toward its scroll target (lower = silkier / slower). */
+const REVEAL_LERP = 0.014;
 
 type HomeCampaignSectionProps = {
   title: string;
@@ -188,20 +188,20 @@ export function HomeCampaignSection({
           inviteTl.progress(1);
 
           /*
-           * 0.00–0.14  hold (invite locked, image waiting)
-           * 0.14–0.90  image target eases from 100 → 0 over most of the stage
-           * 0.90–1.00  on-image title
+           * 0.00–0.18  hold (invite locked, image waiting)
+           * 0.18–0.94  image target eases 100 → 0 across almost the whole stage
+           * 0.94–1.00  on-image title
            */
-          if (progress <= 0.14) {
+          if (progress <= 0.18) {
             revealTarget = 100;
             copyTl.progress(0);
-          } else if (progress < 0.9) {
-            const t = (progress - 0.14) / (0.9 - 0.14);
+          } else if (progress < 0.94) {
+            const t = (progress - 0.18) / (0.94 - 0.18);
             revealTarget = 100 * (1 - t);
             copyTl.progress(0);
           } else {
             revealTarget = 0;
-            copyTl.progress((progress - 0.9) / 0.1);
+            copyTl.progress((progress - 0.94) / 0.06);
           }
         };
 
