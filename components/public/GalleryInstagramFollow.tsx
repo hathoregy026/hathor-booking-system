@@ -7,6 +7,7 @@ import {
   useState,
   type CSSProperties,
 } from "react";
+import gsap from "gsap";
 import { SocialBrandIcon } from "@/components/public/SocialBrandIcon";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
@@ -71,6 +72,22 @@ const FADE_DURATION_SEC = 1.15;
 const FLOAT_SPEED_CAP_IMG = 0.78;
 const FLOAT_SPEED_CAP_EMO = 0.98;
 const POP_DURATION_SEC = 2.35;
+/** IG handle sits ~30% down the gallery section — ratio avoids layout reads */
+const ORIGIN_X_RATIO = 0.5;
+const ORIGIN_Y_RATIO = 0.3;
+const SCROLL_IDLE_MS = 140;
+const SCROLL_VELOCITY_MAX = 0.55;
+
+type LenisScrollEvent = {
+  scroll: number;
+  velocity?: number;
+};
+
+type LenisLike = {
+  on: (event: string, handler: (e: LenisScrollEvent) => void) => void;
+  off?: (event: string, handler: (e: LenisScrollEvent) => void) => void;
+  scroll?: number;
+};
 
 function rand(min: number, max: number) {
   return min + Math.random() * (max - min);
@@ -125,22 +142,11 @@ function randomPopPlan(count: number): Array<{
   }));
 }
 
-/** Center of the IG icon + @handle, in field-local coordinates. */
-function getPopOrigin(
-  field: HTMLElement,
-  hotspot: HTMLElement | null,
-): { cx: number; cy: number } {
-  const fieldRect = field.getBoundingClientRect();
-  if (hotspot) {
-    const r = hotspot.getBoundingClientRect();
-    return {
-      cx: r.left + r.width / 2 - fieldRect.left,
-      cy: r.top + r.height / 2 - fieldRect.top,
-    };
-  }
+/** Ratio-based origin — zero getBoundingClientRect on the scroll path */
+function getRatioOrigin(width: number, height: number) {
   return {
-    cx: fieldRect.width * 0.5,
-    cy: Math.min(fieldRect.height * 0.28, 220),
+    cx: width * ORIGIN_X_RATIO,
+    cy: height * ORIGIN_Y_RATIO,
   };
 }
 
@@ -242,30 +248,46 @@ export function GalleryInstagramFollow({
   const followEyebrow =
     followEyebrowProp ?? websiteText.home.gallery.followEyebrow;
   const copyRef = useRef<HTMLDivElement>(null);
-  const igLinkRef = useRef<HTMLAnchorElement>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
   const fieldRef = useRef<HTMLDivElement>(null);
   const floatersRef = useRef<FloaterState[]>([]);
   const templatesRef = useRef<FloaterTemplate[]>([]);
   const nodeRefs = useRef<Map<string, HTMLSpanElement>>(new Map());
-  const rafRef = useRef(0);
   const timeRef = useRef(0);
   const cooldownRef = useRef(false);
-  const loopRunningRef = useRef(false);
+  const tickFnRef = useRef<(() => void) | null>(null);
   const idleSyncRef = useRef<number | null>(null);
-  /** Cached hotspot — updated on idle/resize only, never during scroll pop */
-  const originCacheRef = useRef<{ cx: number; cy: number } | null>(null);
+  const poppedRef = useRef(false);
   const fieldSizeRef = useRef({ w: 0, h: 0 });
+  const sectionMetricsRef = useRef({ top: 0, height: 0 });
+  const scrollGateRef = useRef({ lastY: 0, lastAt: 0, idleSince: 0 });
   const [particles, setParticles] = useState<ParticleRender[]>([]);
   const reducedRef = useRef(false);
 
-  const cachePopMetrics = useCallback(() => {
+  const cacheLayoutMetrics = useCallback(() => {
     const field = fieldRef.current;
-    if (!field) return;
-    fieldSizeRef.current = {
-      w: field.offsetWidth,
-      h: field.offsetHeight,
-    };
-    originCacheRef.current = getPopOrigin(field, igLinkRef.current);
+    const section =
+      sectionRef.current ??
+      (field?.closest(".gallery-section") as HTMLElement | null);
+    if (section) sectionRef.current = section;
+    if (field) {
+      fieldSizeRef.current = {
+        w: field.offsetWidth,
+        h: field.offsetHeight,
+      };
+    }
+    if (section) {
+      sectionMetricsRef.current = {
+        top: section.offsetTop,
+        height: section.offsetHeight,
+      };
+    }
+  }, []);
+
+  const getOrigin = useCallback(() => {
+    const { w, h } = fieldSizeRef.current;
+    if (w > 0 && h > 0) return getRatioOrigin(w, h);
+    return { cx: 0, cy: 0 };
   }, []);
 
   const syncParticleList = useCallback((list: FloaterState[]) => {
@@ -316,24 +338,27 @@ export function GalleryInstagramFollow({
   };
 
   const ensureLoop = useCallback(() => {
-    if (loopRunningRef.current || reducedRef.current) return;
-    const field = fieldRef.current;
-    if (!field) return;
+    if (tickFnRef.current || reducedRef.current) return;
 
-    loopRunningRef.current = true;
     let last = performance.now();
     timeRef.current = 0;
     let needsIdleSync = false;
 
-    const tick = (now: number) => {
+    const tick = () => {
+      const field = fieldRef.current;
+      if (!field) return;
+
+      const now = performance.now();
       const dtMs = Math.min(32, now - last);
       last = now;
       const dt = dtMs / 16.67;
       timeRef.current += dtMs / 1000;
       const t = timeRef.current;
 
-      const width = fieldSizeRef.current.w || field.clientWidth;
-      const height = fieldSizeRef.current.h || field.clientHeight;
+      const width = fieldSizeRef.current.w;
+      const height = fieldSizeRef.current.h;
+      if (!width || !height) return;
+
       const minX = 8;
       const minY = 8;
       let liveCount = 0;
@@ -460,15 +485,16 @@ export function GalleryInstagramFollow({
       }
 
       if (liveCount === 0) {
-        loopRunningRef.current = false;
+        if (tickFnRef.current) {
+          gsap.ticker.remove(tickFnRef.current);
+          tickFnRef.current = null;
+        }
         scheduleIdleSync();
-        return;
       }
-
-      rafRef.current = window.requestAnimationFrame(tick);
     };
 
-    rafRef.current = window.requestAnimationFrame(tick);
+    tickFnRef.current = tick;
+    gsap.ticker.add(tick);
   }, [scheduleIdleSync]);
 
   const playPop = useCallback(() => {
@@ -481,14 +507,8 @@ export function GalleryInstagramFollow({
       templatesRef.current = buildTemplates();
     }
 
-    /*
-     * Use cached origin only — never getBoundingClientRect on the scroll path.
-     * A forced reflow here was the remaining Lenis hitch.
-     */
-    const origin = originCacheRef.current ?? {
-      cx: field.offsetWidth * 0.5,
-      cy: Math.min(field.offsetHeight * 0.28, 220),
-    };
+    const origin = getOrigin();
+    if (!origin.cx && !origin.cy) return;
 
     cooldownRef.current = true;
     window.setTimeout(() => {
@@ -509,10 +529,7 @@ export function GalleryInstagramFollow({
 
     const kickPhysics = (targets: FloaterState[]) => {
       targets.forEach(paintFloater);
-      /* Defer rAF loop to the next task so this scroll frame stays clean */
-      window.setTimeout(() => {
-        ensureLoop();
-      }, 0);
+      ensureLoop();
     };
 
     if (onlyWarmOrDead && reusable.length >= templatesRef.current.length) {
@@ -535,15 +552,11 @@ export function GalleryInstagramFollow({
       return;
     }
 
-    /* Hover while live: refresh origin (user-driven, not scroll-critical) */
-    cachePopMetrics();
-    const hoverOrigin = originCacheRef.current ?? origin;
-
     for (const f of existing) {
       if (f.mode !== "fade" && f.mode !== "dead") f.mode = "fade";
     }
 
-    const next = spawnGeneration(templatesRef.current, hoverOrigin);
+    const next = spawnGeneration(templatesRef.current, origin);
     floatersRef.current = [...existing, ...next];
     syncParticleList(floatersRef.current);
 
@@ -551,18 +564,28 @@ export function GalleryInstagramFollow({
       next.forEach(paintFloater);
       ensureLoop();
     });
-  }, [cachePopMetrics, ensureLoop, syncParticleList]);
+  }, [ensureLoop, getOrigin, syncParticleList]);
+
+  const isGalleryArrivalZone = useCallback((scrollY: number) => {
+    const { top, height } = sectionMetricsRef.current;
+    if (!height) return false;
+    const viewH = window.innerHeight;
+    const headerTop = top;
+    const headerBottom = top + Math.min(height * 0.45, 560);
+    const viewTop = scrollY + viewH * 0.14;
+    const viewBottom = scrollY + viewH * 0.86;
+    return viewTop < headerBottom && viewBottom > headerTop;
+  }, []);
 
   useEffect(() => {
     reducedRef.current =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    /* Preload bubble images at page idle — well before the gallery is reached */
     if (!reducedRef.current && !templatesRef.current.length) {
       templatesRef.current = buildTemplates();
-      cachePopMetrics();
-      const origin = originCacheRef.current ?? { cx: 0, cy: 0 };
+      cacheLayoutMetrics();
+      const origin = getOrigin();
       const warm = templatesRef.current.map((template) => {
         const size = template.kind === "image" ? 112 : 54;
         return {
@@ -588,54 +611,88 @@ export function GalleryInstagramFollow({
     }
 
     const onResize = () => {
-      cachePopMetrics();
+      cacheLayoutMetrics();
     };
     window.addEventListener("resize", onResize, { passive: true });
-    /* Measure after layout settles — not during scroll */
-    const measureTimer = window.setTimeout(cachePopMetrics, 200);
-    const measureTimer2 = window.setTimeout(cachePopMetrics, 800);
+    const measureTimer = window.setTimeout(cacheLayoutMetrics, 250);
+    const measureTimer2 = window.setTimeout(cacheLayoutMetrics, 1200);
 
     return () => {
       window.removeEventListener("resize", onResize);
       window.clearTimeout(measureTimer);
       window.clearTimeout(measureTimer2);
     };
-  }, [cachePopMetrics, syncParticleList]);
+  }, [cacheLayoutMetrics, getOrigin, syncParticleList]);
 
   useEffect(() => {
     const section = fieldRef.current?.closest(
       ".gallery-section",
     ) as HTMLElement | null;
     if (!section || reducedRef.current) return;
+    sectionRef.current = section;
+    cacheLayoutMetrics();
 
-    let started = false;
     /*
-     * Fire when the section is still a full viewport below — so the pop
-     * warms up off-screen. No getBoundingClientRect / setState on arrival.
+     * Pop only after scroll is nearly idle in the gallery band.
+     * No IntersectionObserver / getBoundingClientRect on the scroll path.
      */
-    const popObserver = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting || started) return;
-        started = true;
-        popObserver.disconnect();
-        /* Defer measure + pop off the scroll sample that triggered IO */
-        window.setTimeout(() => {
-          cachePopMetrics();
-          playPop();
-        }, 64);
-      },
-      { threshold: 0, rootMargin: "110% 0px 0px 0px" },
-    );
-    popObserver.observe(section);
+    const onScroll = (event?: LenisScrollEvent) => {
+      if (poppedRef.current) return;
 
-    return () => {
-      popObserver.disconnect();
+      const lenis = (window as Window & { __hathorLenis?: LenisLike | null })
+        .__hathorLenis;
+      const scrollY =
+        event?.scroll ??
+        lenis?.scroll ??
+        window.scrollY ??
+        document.documentElement.scrollTop;
+
+      const now = performance.now();
+      const gate = scrollGateRef.current;
+      const dt = Math.max(16, now - (gate.lastAt || now));
+      const velocity =
+        typeof event?.velocity === "number"
+          ? Math.abs(event.velocity)
+          : Math.abs(scrollY - gate.lastY) / dt;
+
+      gate.lastY = scrollY;
+      gate.lastAt = now;
+
+      if (!isGalleryArrivalZone(scrollY)) {
+        gate.idleSince = 0;
+        return;
+      }
+
+      if (velocity > SCROLL_VELOCITY_MAX) {
+        gate.idleSince = 0;
+        return;
+      }
+
+      if (!gate.idleSince) gate.idleSince = now;
+      if (now - gate.idleSince < SCROLL_IDLE_MS) return;
+
+      poppedRef.current = true;
+      playPop();
     };
-  }, [cachePopMetrics, playPop]);
+
+    const lenis = (window as Window & { __hathorLenis?: LenisLike | null })
+      .__hathorLenis;
+    if (lenis?.on) {
+      lenis.on("scroll", onScroll);
+      return () => lenis.off?.("scroll", onScroll);
+    }
+
+    const onNativeScroll = () => onScroll();
+    window.addEventListener("scroll", onNativeScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onNativeScroll);
+  }, [cacheLayoutMetrics, isGalleryArrivalZone, playPop]);
 
   useEffect(() => {
     return () => {
-      if (rafRef.current) window.cancelAnimationFrame(rafRef.current);
+      if (tickFnRef.current) {
+        gsap.ticker.remove(tickFnRef.current);
+        tickFnRef.current = null;
+      }
       if (idleSyncRef.current != null) {
         const cic = (
           window as Window & {
@@ -646,7 +703,6 @@ export function GalleryInstagramFollow({
         else window.clearTimeout(idleSyncRef.current);
         idleSyncRef.current = null;
       }
-      loopRunningRef.current = false;
     };
   }, []);
 
@@ -667,7 +723,6 @@ export function GalleryInstagramFollow({
             </p>
 
             <a
-              ref={igLinkRef}
               className="gallery-ig-link typo-page-subtitle instagram-follow__copy"
               href={EX_GALLERY.indicationHref}
               target="_blank"

@@ -208,24 +208,9 @@ export function useExScrollMotion() {
     /* Text: initHomepageAtelierSplit */
   }
 
-  // .gallery-container — small heading chars + button
+  // .gallery-container — Book Now is static (scroll fade caused a Lenis hitch)
   function initGalleryContainers() {
-    if (prefersReduced) return;
-    document.querySelectorAll(".gallery-container").forEach((container) => {
-      const btn = container.querySelector(".btn, .gallery-button");
-      if (!btn) return;
-      gsap.from(btn, {
-        y: 20,
-        opacity: 0,
-        duration: 0.4,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: container,
-          start: "top 90%",
-          toggleActions: "play none none reverse",
-        },
-      });
-    });
+    /* intentionally empty */
   }
 
   // .testimonial-h2 — chars

@@ -1962,13 +1962,10 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
    * Above gallery header, marquee cards, and section chrome.
    * pointer-events:none keeps IG link / cards clickable underneath.
    */
-  z-index: 80;
+  z-index: 200;
   pointer-events: none;
   overflow: hidden;
-  /* Never fade the whole field — that promoted a full-section layer mid-scroll */
   opacity: 1;
-  contain: layout style paint;
-  transform: translateZ(0);
 }
 
 .instagram-burst-particle {
@@ -1978,7 +1975,6 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   display: flex;
   align-items: center;
   justify-content: center;
-  /* No will-change — promoting ~12 layers mid-scroll hitch Lenis */
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   transform-origin: center center;
