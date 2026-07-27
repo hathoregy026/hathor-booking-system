@@ -2190,9 +2190,10 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   background: #f7f1e6;
   color: inherit;
   text-decoration: none;
-  box-shadow:
-    0 22px 44px rgba(92, 74, 48, 0.14),
-    0 1px 0 rgba(255, 252, 245, 0.45) inset;
+  /* No drop shadow — large blurs clip against the stage and read as a
+     black gradient along the bottom of the moving cards. */
+  box-shadow: none;
+  filter: none;
   cursor: pointer;
   pointer-events: auto !important;
 }
@@ -2207,6 +2208,16 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   inset: 0;
   overflow: hidden;
   pointer-events: none;
+}
+
+/* Kill any leftover dark wash overlays on gallery cards */
+.gallery-item::after,
+.gallery-item__frame::after,
+.gallery-item.media-hover::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  opacity: 0 !important;
 }
 
 /*
@@ -2233,14 +2244,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
 
 .gallery-item:focus-visible {
   border-color: var(--gold) !important;
-  box-shadow:
-    0 28px 56px rgba(92, 74, 48, 0.2),
-    0 0 0 2px rgba(182, 159, 100, 0.72),
-    0 0 36px rgba(182, 159, 100, 0.28),
-    inset 0 0 0 1px rgba(212, 194, 138, 0.35) !important;
-}
-
-.gallery-item:focus-visible {
+  box-shadow: 0 0 0 2px rgba(182, 159, 100, 0.72) !important;
   outline: 2px solid rgba(182, 159, 100, 0.9);
   outline-offset: 3px;
 }
@@ -2248,15 +2252,12 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
 html[data-public-theme="night"][data-ex-experience] .gallery-item {
   border-color: rgba(182, 159, 100, 0.4);
   background: #14110e;
-  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.4);
+  box-shadow: none;
 }
 
 html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible {
   border-color: var(--gold) !important;
-  box-shadow:
-    0 28px 56px rgba(0, 0, 0, 0.5),
-    0 0 0 2px rgba(182, 159, 100, 0.65),
-    0 0 36px rgba(182, 159, 100, 0.22) !important;
+  box-shadow: 0 0 0 2px rgba(182, 159, 100, 0.65) !important;
 }
 
 @keyframes gallery-marquee-rtl {
