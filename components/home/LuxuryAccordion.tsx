@@ -50,9 +50,6 @@ export default function LuxuryAccordion({
     return null;
   }
 
-  const openItem = (id: string) => setActiveId(id);
-  const closeItem = () => setActiveId(null);
-
   const handleToggle = (id: string) => {
     setActiveId((current) => (current === id ? null : id));
   };
@@ -101,15 +98,17 @@ export default function LuxuryAccordion({
               <li
                 key={item.id}
                 className={`${styles.accordionItem} ${isActive ? styles.isActive : ""}`}
-                onMouseEnter={() => openItem(item.id)}
-                onMouseLeave={closeItem}
-                onFocus={() => openItem(item.id)}
                 onClick={() => handleToggle(item.id)}
                 onKeyDown={(event) => handleKeyDown(event, item.id)}
                 role="button"
                 tabIndex={0}
                 aria-expanded={isActive}
                 aria-controls={`hathor-accordion-panel-${item.id}`}
+                aria-label={
+                  isActive
+                    ? `${item.name}, expanded. Click to close.`
+                    : `${item.name}. Click to view details.`
+                }
               >
                 <span className={styles.romanNumeral} aria-hidden="true">
                   {item.romanNumeral}
@@ -134,7 +133,7 @@ export default function LuxuryAccordion({
                     {item.name}
                   </h3>
                   <span className={styles.icon} aria-hidden="true">
-                    +
+                    <span className={styles.iconMark}>+</span>
                   </span>
                 </div>
 

@@ -164,19 +164,44 @@
   animation: hathorAccordionNameReveal 0.75s var(--hathor-accordion-ease) both;
 }
 
+/* Small circular + — quiet cue that the row opens on click */
 .icon {
-  font-size: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  flex-shrink: 0;
+  border: 1px solid rgba(182, 159, 100, 0.42);
+  border-radius: 999px;
   color: var(--hathor-accordion-gold);
   line-height: 1;
   transition:
     transform 0.4s ease,
     color 0.5s ease,
+    border-color 0.4s ease,
+    background-color 0.4s ease,
     text-shadow 0.5s ease;
+}
+
+.iconMark {
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1;
+  transform: translateY(-0.5px);
+}
+
+.accordionItem:not(.isActive):hover .icon,
+.accordionItem:not(.isActive):focus-visible .icon {
+  border-color: rgba(182, 159, 100, 0.72);
+  background-color: rgba(182, 159, 100, 0.08);
 }
 
 .accordionItem.isActive .icon {
   transform: rotate(45deg);
   color: #fff;
+  border-color: rgba(255, 255, 255, 0.55);
+  background-color: rgba(255, 255, 255, 0.1);
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
 }
 
