@@ -517,9 +517,6 @@ export function useExScrollMotion() {
       const step = dwell + move;
       const scrollSpan = (total - 1) * step + dwell;
 
-      /* Progressive image unlock — stack cards share one viewport so native lazy fails. */
-      section.setAttribute("data-stack-unlock", "0");
-
       cards.forEach((card, index) => {
         const media = getCardMedia(card);
         gsap.set(card, {
@@ -600,15 +597,6 @@ export function useExScrollMotion() {
         onLeaveBack: () => reverseStackSplit(copyPanels[0]),
       });
 
-      /* Prefetch next stack frame mid-dwell so the wipe never waits on the network. */
-      if (total > 1) {
-        tl.call(
-          () => section.setAttribute("data-stack-unlock", "1"),
-          undefined,
-          dwell * 0.45,
-        );
-      }
-
       for (let i = 1; i < total; i++) {
         const at = (i - 1) * step;
         const moveAt = at + dwell;
@@ -627,10 +615,6 @@ export function useExScrollMotion() {
             reveal: 1,
             ease: "sine.inOut",
             duration: move,
-            onStart: () => {
-              const prefetch = Math.min(total - 1, i + 1);
-              section.setAttribute("data-stack-unlock", String(prefetch));
-            },
             onUpdate: () => {
               card.style.setProperty("--stack-fog-edge", `${fog.edge}%`);
               card.style.opacity = String(

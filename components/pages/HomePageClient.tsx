@@ -3,19 +3,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import movingShip from "@/assets/moving-on-site.webp";
 import LuxuryAccordion from "@/components/home/LuxuryAccordion";
 import { HomeCampaignSection } from "@/components/home/HomeCampaignSection";
 import { LuxuryMarquee } from "@/components/home/LuxuryMarquee";
-import { StackCardMedia } from "@/components/home/StackCardMedia";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { GalleryInstagramFollow } from "@/components/public/GalleryInstagramFollow";
 import { HathorLogoTuner } from "@/components/public/HathorLogoTuner";
 import { PublicSiteHero } from "@/components/pages/PublicSiteHero";
 import { GoldDustParticles } from "@/components/ui/GoldDustParticles";
 import { ManagedImage } from "@/components/ui/ManagedImage";
-import { NearViewport } from "@/components/ui/NearViewport";
+import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import {
   EX_ABOUT,
   EX_CAMPAIGN,
@@ -52,7 +51,7 @@ const GALLERY_PREVIEW_ANCHORS = new Set([
   "moving-tilted-5",
 ]);
 
-/** CMS photo for marquee cards — optimized, only when gallery is near. */
+/** Gallery marquee — native img (GSAP/CSS expect this structure), optimized via Next. */
 function GalleryMarqueePhoto({
   name,
   alt,
@@ -60,18 +59,24 @@ function GalleryMarqueePhoto({
   name: SiteImageName;
   alt: string;
 }) {
+  const image = useSiteImage(name);
+  const src = /^https?:\/\//i.test(image.src)
+    ? `/_next/image?${new URLSearchParams({
+        url: image.src,
+        w: "640",
+        q: "72",
+      }).toString()}`
+    : image.src;
+
   return (
-    <ManagedImage
-      name={name}
+    // eslint-disable-next-line @next/next/no-img-element -- marquee CSS depends on native img sizing
+    <img
+      src={src}
       alt={alt}
-      fill
-      sizes="280px"
-      quality={70}
-      unoptimized={false}
       loading="lazy"
+      decoding="async"
       fetchPriority="low"
-      className="object-cover"
-      previewAnchor={false}
+      draggable={false}
     />
   );
 }
@@ -120,42 +125,9 @@ function paintLogoTune(desktop: HeroLogoTune, phone: HeroLogoTune) {
   );
 }
 
-function ItineraryCarouselSlide({
-  slide,
-  index,
-}: {
-  slide: ExCarouselSlide;
-  index: number;
-}) {
+function ItineraryCarouselSlide({ slide }: { slide: ExCarouselSlide }) {
   const router = useRouter();
   const hydrateFromModal = useBookingStore((state) => state.hydrateFromModal);
-  const [showImage, setShowImage] = useState(index < 2);
-  const rootRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    if (showImage) return;
-    const el = rootRef.current;
-    if (!el) return;
-    const root = el.closest(".home-carousel");
-    if (typeof IntersectionObserver === "undefined") {
-      setShowImage(true);
-      return;
-    }
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry?.isIntersecting) return;
-        setShowImage(true);
-        observer.disconnect();
-      },
-      {
-        root: root instanceof Element ? root : null,
-        rootMargin: "48px",
-        threshold: 0.01,
-      },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [showImage]);
 
   const openCruise = () => {
     hydrateFromModal({
@@ -172,7 +144,7 @@ function ItineraryCarouselSlide({
   };
 
   return (
-    <article className="carousel-slide" ref={rootRef}>
+    <article className="carousel-slide">
       <button
         type="button"
         className="carousel-slide__hit"
@@ -181,20 +153,15 @@ function ItineraryCarouselSlide({
       >
         <div className="carousel-container-parent">
           <div className="carousel-container">
-            {showImage ? (
-              <ManagedImage
-                name={slide.imageName}
-                alt={slide.alt}
-                fill
-                sizes="(max-width: 768px) 85vw, (max-width: 1024px) 45vw, 380px"
-                quality={75}
-                unoptimized={false}
-                loading={index < 2 ? "eager" : "lazy"}
-                fetchPriority="low"
-                className="object-cover"
-                previewAnchor={HOMEPAGE_PREVIEW_SLOTS.has(slide.imageName)}
-              />
-            ) : null}
+            <ManagedImage
+              name={slide.imageName}
+              alt={slide.alt}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 38vw"
+              unoptimized={false}
+              className="object-cover"
+              previewAnchor={HOMEPAGE_PREVIEW_SLOTS.has(slide.imageName)}
+            />
             <div className="carousel-heading">
               <h2>{slide.title}</h2>
             </div>
@@ -374,19 +341,15 @@ export function HomePageClient({
                       className="general-reveal-img media-hover"
                       aria-label="Discover more about Hathor"
                     >
-                      <NearViewport rootMargin="120px 0px" minHeight={420}>
-                        <ManagedImage
-                          name={EX_ABOUT.imageName}
-                          alt={EX_ABOUT.imageAlt}
-                          width={900}
-                          height={1200}
-                          sizes="(max-width: 768px) 100vw, 42vw"
-                          quality={78}
-                          unoptimized={false}
-                          fetchPriority="low"
-                          className="h-auto w-full object-cover"
-                        />
-                      </NearViewport>
+                      <ManagedImage
+                        name={EX_ABOUT.imageName}
+                        alt={EX_ABOUT.imageAlt}
+                        width={900}
+                        height={1200}
+                        sizes="(max-width: 768px) 100vw, 42vw"
+                        unoptimized={false}
+                        className="h-auto w-full object-cover"
+                      />
                     </Link>
                   </div>
                 </div>
@@ -450,32 +413,26 @@ export function HomePageClient({
             </div>
           </div>
 
-          <NearViewport rootMargin="140px 0px" minHeight={380}>
-            <div className="home-carousel">
-              <div className="carousel-track">
-                {EX_CAROUSEL.slides.map((slide, index) => (
-                  <ItineraryCarouselSlide
-                    key={slide.key}
-                    slide={slide}
-                    index={index}
-                  />
-                ))}
-              </div>
-
-              <div className="carousel-nav">
-                <button type="button" data-carousel-prev aria-label="Previous slide">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M15 18l-6-6 6-6" />
-                  </svg>
-                </button>
-                <button type="button" data-carousel-next aria-label="Next slide">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M9 18l6-6-6-6" />
-                  </svg>
-                </button>
-              </div>
+          <div className="home-carousel">
+            <div className="carousel-track">
+              {EX_CAROUSEL.slides.map((slide) => (
+                <ItineraryCarouselSlide key={slide.key} slide={slide} />
+              ))}
             </div>
-          </NearViewport>
+
+            <div className="carousel-nav">
+              <button type="button" data-carousel-prev aria-label="Previous slide">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M15 18l-6-6 6-6" />
+                </svg>
+              </button>
+              <button type="button" data-carousel-next aria-label="Next slide">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M9 18l6-6-6-6" />
+                </svg>
+              </button>
+            </div>
+          </div>
 
           <div className="services-cta">
             <Link className="btn btn-dark general-button" href="/cruises">
@@ -494,13 +451,31 @@ export function HomePageClient({
             <div className="ex-stack-scroll__cards" aria-hidden="true">
               {stackSlides.map((slide, index) => (
                 <div key={slide.imageName} className="ex-stack-scroll__card">
-                  <StackCardMedia
-                    imageName={slide.imageName}
-                    alt={slide.alt}
-                    index={index}
-                    pinTotal={stackSlides.length}
-                    previewAnchor={HOMEPAGE_PREVIEW_SLOTS.has(slide.imageName)}
-                  />
+                  <div
+                    className="ex-stack-scroll__card-media"
+                    id={
+                      HOMEPAGE_PREVIEW_SLOTS.has(slide.imageName)
+                        ? `site-image-${slide.imageName}`
+                        : undefined
+                    }
+                    data-site-image={
+                      HOMEPAGE_PREVIEW_SLOTS.has(slide.imageName)
+                        ? slide.imageName
+                        : undefined
+                    }
+                    data-site-image-pin-index={String(index)}
+                    data-site-image-pin-total={String(stackSlides.length)}
+                  >
+                    <ManagedImage
+                      name={slide.imageName}
+                      alt={slide.alt}
+                      fill
+                      sizes="100vw"
+                      unoptimized={false}
+                      className="object-cover object-center"
+                      previewAnchor={false}
+                    />
+                  </div>
                 </div>
               ))}
             </div>
@@ -592,19 +567,15 @@ export function HomePageClient({
                   className="home-text-img-container media-hover"
                   aria-label={cta}
                 >
-                  <NearViewport rootMargin="140px 0px" className="absolute inset-0">
-                    <ManagedImage
-                      name={block.imageName}
-                      alt={block.alt}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      quality={78}
-                      unoptimized={false}
-                      fetchPriority="low"
-                      className="object-cover"
-                      previewAnchor={HOMEPAGE_PREVIEW_SLOTS.has(block.imageName)}
-                    />
-                  </NearViewport>
+                  <ManagedImage
+                    name={block.imageName}
+                    alt={block.alt}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    unoptimized={false}
+                    className="object-cover"
+                    previewAnchor={HOMEPAGE_PREVIEW_SLOTS.has(block.imageName)}
+                  />
                 </Link>
               </div>
               <div className="home-text-img-copy">
@@ -642,62 +613,57 @@ export function HomePageClient({
             }}
           />
 
-          <NearViewport rootMargin="160px 0px" minHeight={320}>
-            <div
-              className="gallery-marquee"
-              aria-label="Hathor gallery — scrolling images"
-            >
-              <div className="gallery-marquee__stage">
-                <div className="gallery-marquee__band">
-                  <div className="gallery-marquee__track">
-                    {[0, 1].map((copy) => (
-                      <div
-                        key={`gallery-copy-${copy}`}
-                        className="gallery-marquee__group"
-                        aria-hidden={copy === 1 ? "true" : undefined}
-                      >
-                        {EX_GALLERY.images.map((item, index) => (
-                          <Link
-                            key={`${copy}-${item.imageName}-${index}`}
-                            href={item.href}
-                            className={
-                              copy === 1
-                                ? "gallery-item gallery-item--visual"
-                                : "gallery-item"
-                            }
-                            tabIndex={copy === 1 ? -1 : undefined}
-                            id={
-                              copy === 0 &&
-                              GALLERY_PREVIEW_ANCHORS.has(item.imageName)
-                                ? siteImageAnchorId(item.imageName)
-                                : undefined
-                            }
-                            data-site-image={
-                              copy === 0 &&
-                              GALLERY_PREVIEW_ANCHORS.has(item.imageName)
-                                ? item.imageName
-                                : undefined
-                            }
-                            aria-label={item.alt}
-                          >
-                            <span
-                              className="gallery-item__frame"
-                              aria-hidden="true"
-                            >
-                              <GalleryMarqueePhoto
-                                name={item.imageName}
-                                alt={item.alt}
-                              />
-                            </span>
-                          </Link>
-                        ))}
-                      </div>
-                    ))}
-                  </div>
+          <div
+            className="gallery-marquee"
+            aria-label="Hathor gallery — scrolling images"
+          >
+            <div className="gallery-marquee__stage">
+              <div className="gallery-marquee__band">
+                <div className="gallery-marquee__track">
+                  {[0, 1].map((copy) => (
+                    <div
+                      key={`gallery-copy-${copy}`}
+                      className="gallery-marquee__group"
+                      aria-hidden={copy === 1 ? "true" : undefined}
+                    >
+                      {EX_GALLERY.images.map((item, index) => (
+                        <Link
+                          key={`${copy}-${item.imageName}-${index}`}
+                          href={item.href}
+                          className={
+                            copy === 1
+                              ? "gallery-item gallery-item--visual"
+                              : "gallery-item"
+                          }
+                          tabIndex={copy === 1 ? -1 : undefined}
+                          id={
+                            copy === 0 &&
+                            GALLERY_PREVIEW_ANCHORS.has(item.imageName)
+                              ? siteImageAnchorId(item.imageName)
+                              : undefined
+                          }
+                          data-site-image={
+                            copy === 0 &&
+                            GALLERY_PREVIEW_ANCHORS.has(item.imageName)
+                              ? item.imageName
+                              : undefined
+                          }
+                          aria-label={item.alt}
+                        >
+                          <span className="gallery-item__frame" aria-hidden="true">
+                            <GalleryMarqueePhoto
+                              name={item.imageName}
+                              alt={item.alt}
+                            />
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
-          </NearViewport>
+          </div>
 
           <div className="gallery-container">
             <BookNowTrigger className="btn btn-dark gallery-button">

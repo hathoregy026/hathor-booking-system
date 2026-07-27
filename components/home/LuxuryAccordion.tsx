@@ -117,19 +117,15 @@ export default function LuxuryAccordion({
                   {item.romanNumeral}
                 </span>
 
-                {/* Inactive rows keep opacity 0 — skip network until expanded. */}
-                {isActive ? (
-                  <ManagedImage
-                    name={item.imageName}
-                    alt=""
-                    fill
-                    sizes="100vw"
-                    quality={78}
-                    unoptimized={false}
-                    className={styles.backgroundImage}
-                    previewAnchor
-                  />
-                ) : null}
+                <ManagedImage
+                  name={item.imageName}
+                  alt=""
+                  fill
+                  sizes="100vw"
+                  unoptimized={false}
+                  className={styles.backgroundImage}
+                  previewAnchor
+                />
 
                 <div className={styles.vignette} aria-hidden="true" />
 

@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react";
 import type { CSSProperties } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { ManagedImage } from "@/components/ui/ManagedImage";
-import { NearViewport } from "@/components/ui/NearViewport";
 
 const SILK_ROWS = ["TAKE YOUR", "VOYAGE", "TODAY"] as const;
 
@@ -184,20 +183,17 @@ export function HomeCampaignSection({
 
         <div className="hcta-reveal" data-hcta-reveal>
           <div className="hcta-media" data-hcta-media>
-            <NearViewport rootMargin="160px 0px" className="absolute inset-0">
-              <ManagedImage
-                name={imageName}
-                alt={imageAlt}
-                fill
-                sizes="100vw"
-                quality={78}
-                loading="lazy"
-                fetchPriority="low"
-                unoptimized={false}
-                className="hcta-bg object-cover"
-                previewAnchor={previewAnchor}
-              />
-            </NearViewport>
+            <ManagedImage
+              name={imageName}
+              alt={imageAlt}
+              fill
+              sizes="100vw"
+              loading="lazy"
+              fetchPriority="low"
+              unoptimized={false}
+              className="hcta-bg object-cover"
+              previewAnchor={previewAnchor}
+            />
           </div>
           <div className="hcta-veil" aria-hidden="true" />
         </div>
