@@ -12,6 +12,26 @@ function clamp01(n: number) {
   return n < 0 ? 0 : n > 1 ? 1 : n;
 }
 
+function smoothstep(t: number) {
+  return t * t * (3 - 2 * t);
+}
+
+type LenisScroll = {
+  scroll: number;
+  on: (event: "scroll", fn: () => void) => void;
+  off: (event: "scroll", fn: () => void) => void;
+};
+
+type HathorWindow = Window & {
+  __hathorLenis?: LenisScroll | null;
+};
+
+function readScrollY(): number {
+  const lenis = (window as HathorWindow).__hathorLenis;
+  if (lenis && typeof lenis.scroll === "number") return lenis.scroll;
+  return window.scrollY || document.documentElement.scrollTop || 0;
+}
+
 type HomeCampaignSectionProps = {
   title: string;
   imageName: string;
@@ -21,11 +41,11 @@ type HomeCampaignSectionProps = {
 };
 
 /**
- * Home CTA — layout-locked stick + cover.
+ * Home CTA — Lenis-synced stick + wipe.
  *
- * Lenis and ScrollTrigger progress disagree on this page (frame was stuck
- * ~323px low and felt jumpy). Stick + timelines are driven only from
- * getBoundingClientRect — no ScrollTrigger, no damp.
+ * Driven from scroll Y (not gsap.ticker + rect) so motion stays locked to
+ * what Lenis renders. Direct transforms — no timeline progress scrub on
+ * letter stagger (that caused visible bounce when scrolling).
  */
 export function HomeCampaignSection({
   title,
@@ -46,6 +66,9 @@ export function HomeCampaignSection({
 
     const frame = track.querySelector<HTMLElement>("[data-hcta-frame]");
     const reveal = track.querySelector<HTMLElement>("[data-hcta-reveal]");
+    const silkRows = gsap.utils.toArray<HTMLElement>(
+      track.querySelectorAll(".hcta-silk-row"),
+    );
     const silkChars = gsap.utils.toArray<HTMLElement>(
       track.querySelectorAll(".hcta-silk-char"),
     );
@@ -57,11 +80,18 @@ export function HomeCampaignSection({
     if (!frame) return;
 
     let killed = false;
-    let inviteTl: gsap.core.Timeline | null = null;
-    let coverTl: gsap.core.Timeline | null = null;
-    let lastY = -1;
-    let lastInvite = -1;
-    let lastCover = -1;
+    let trackStart = 0;
+    let bindTimer = 0;
+
+    const setFrameY = gsap.quickSetter(frame, "y", "px");
+    const setRevealY =
+      reveal != null
+        ? gsap.quickSetter(reveal, "yPercent", "%")
+        : null;
+
+    const silkRowChars = silkRows.map((row) =>
+      gsap.utils.toArray<HTMLElement>(row.querySelectorAll(".hcta-silk-char")),
+    );
 
     if (reduced) {
       gsap.set(frame, { clearProps: "transform" });
@@ -82,108 +112,130 @@ export function HomeCampaignSection({
     }
     if (book) gsap.set(book, { autoAlpha: 0, y: 10 });
 
-    inviteTl = gsap.timeline({ paused: true });
-    if (silkChars.length) {
-      inviteTl.to(
-        silkChars,
-        {
-          yPercent: 0,
-          autoAlpha: 1,
-          stagger: 0.02,
-          duration: 1,
-          ease: "none",
-          force3D: true,
-        },
-        0,
-      );
-    }
+    const measure = () => {
+      trackStart = track.getBoundingClientRect().top + readScrollY();
+    };
 
-    coverTl = gsap.timeline({ paused: true });
-    /* Do not touch silk here — invite timeline owns those letters */
-    if (reveal) coverTl.set(reveal, { yPercent: 100, force3D: true }, 0);
-    coverTl.to({}, { duration: 0.12 }, 0);
-    if (reveal) {
-      coverTl.to(
-        reveal,
-        { yPercent: 0, duration: 0.72, ease: "none", force3D: true },
-        0.12,
-      );
-    }
-    coverTl.to({}, { duration: 0.04 }, 0.84);
-    if (chars.length) {
-      coverTl.to(
-        chars,
-        {
-          yPercent: 0,
-          autoAlpha: 1,
-          stagger: 0.016,
-          duration: 0.14,
-          ease: "none",
+    const applyInvite = (inviteP: number) => {
+      silkRowChars.forEach((rowChars, rowIndex) => {
+        const rowDelay = rowIndex * 0.16;
+        rowChars.forEach((char, charIndex) => {
+          const delay = rowDelay + charIndex * 0.012;
+          const denom = Math.max(0.001, 1 - delay);
+          const p = smoothstep(clamp01((inviteP - delay) / denom));
+          gsap.set(char, {
+            yPercent: 120 * (1 - p),
+            autoAlpha: p > 0.03 ? 1 : 0,
+            force3D: true,
+          });
+        });
+      });
+    };
+
+    const applyTitle = (titleP: number) => {
+      const p = smoothstep(titleP);
+      chars.forEach((char, index) => {
+        const delay = index * 0.012;
+        const denom = Math.max(0.001, 1 - delay);
+        const cp = clamp01((p - delay) / denom);
+        gsap.set(char, {
+          yPercent: 120 * (1 - cp),
+          autoAlpha: cp > 0.03 ? 1 : 0,
           force3D: true,
-        },
-        0.86,
-      );
-    }
-    if (book) {
-      coverTl.to(
-        book,
-        { autoAlpha: 1, y: 0, duration: 0.1, ease: "none" },
-        0.95,
-      );
-    }
-    coverTl.to({}, { duration: 0.1 }, 1.05);
+        });
+      });
+      if (book) {
+        const bp = clamp01((p - 0.35) / 0.65);
+        gsap.set(book, { autoAlpha: bp, y: 10 * (1 - bp) });
+      }
+    };
 
     const sync = () => {
-      if (killed || !inviteTl || !coverTl) return;
+      if (killed) return;
 
+      const scroll = readScrollY();
       const vh = window.innerHeight;
-      const rect = track.getBoundingClientRect();
-      const travel = Math.max(1, track.offsetHeight - vh);
+      const travel = Math.max(1, track.offsetHeight - frame.offsetHeight);
+      const offset = scroll - trackStart;
 
-      /* Exact stick from layout — matches what the eye sees with Lenis */
-      const y = Math.max(0, Math.min(travel, -rect.top));
-      if (y !== lastY) {
-        lastY = y;
-        gsap.set(frame, { y, force3D: true });
-      }
+      const stickY = Math.max(0, Math.min(travel, offset));
+      setFrameY(stickY);
 
-      let inviteP = 0;
-      let coverP = 0;
+      const inviteRange = vh * 0.88;
+      const inviteP =
+        offset < 0 ? clamp01(1 - (-offset) / inviteRange) : 1;
+      applyInvite(inviteP);
 
-      if (rect.top > 0) {
-        /* Approaching: rise gold invite */
-        const start = vh * 0.88;
-        inviteP = rect.top >= start ? 0 : clamp01(1 - rect.top / start);
-        coverP = 0;
-      } else {
-        /* Locked: invite fully up, photograph erase by scroll */
-        inviteP = 1;
-        coverP = clamp01(y / travel);
-      }
+      const coverP = clamp01(stickY / travel);
+      const wipeStart = 0.1;
+      const wipeEnd = 0.82;
+      const wipeP = smoothstep(
+        clamp01((coverP - wipeStart) / (wipeEnd - wipeStart)),
+      );
+      setRevealY?.((1 - wipeP) * 100);
 
-      if (Math.abs(inviteP - lastInvite) > 0.0005) {
-        lastInvite = inviteP;
-        inviteTl.progress(inviteP);
-      }
-      if (Math.abs(coverP - lastCover) > 0.0005) {
-        lastCover = coverP;
-        coverTl.progress(coverP);
-      }
+      const titleStart = 0.84;
+      const titleP = clamp01((coverP - titleStart) / (1 - titleStart));
+      applyTitle(titleP);
     };
 
-    gsap.ticker.add(sync);
+    measure();
     sync();
 
+    const remeasureSoon = () => {
+      requestAnimationFrame(() => {
+        measure();
+        sync();
+      });
+    };
+
+    const onScroll = () => sync();
     const onResize = () => {
-      lastY = -1;
+      measure();
       sync();
     };
+
+    let lenisBound: LenisScroll | null = null;
+    const bindLenis = () => {
+      const lenis = (window as HathorWindow).__hathorLenis;
+      if (!lenis?.on) return false;
+      lenis.on("scroll", onScroll);
+      lenisBound = lenis;
+      return true;
+    };
+
+    if (!bindLenis()) {
+      window.addEventListener("scroll", onScroll, { passive: true });
+      bindTimer = window.setInterval(() => {
+        if (bindLenis()) {
+          window.clearInterval(bindTimer);
+          window.removeEventListener("scroll", onScroll);
+        }
+      }, 40);
+    }
+
     window.addEventListener("resize", onResize);
+    window.addEventListener("load", remeasureSoon);
+
+    const rootObserver = new MutationObserver(() => {
+      if (document.documentElement.classList.contains("ex-scroll-ready")) {
+        remeasureSoon();
+        rootObserver.disconnect();
+      }
+    });
+    rootObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
 
     return () => {
       killed = true;
+      rootObserver.disconnect();
+      window.removeEventListener("load", remeasureSoon);
+      window.clearInterval(bindTimer);
       window.removeEventListener("resize", onResize);
-      gsap.ticker.remove(sync);
+      window.removeEventListener("scroll", onScroll);
+      lenisBound?.off("scroll", onScroll);
       gsap.set(frame, { clearProps: "transform" });
       if (reveal) gsap.set(reveal, { clearProps: "transform" });
     };
