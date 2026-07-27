@@ -30,7 +30,8 @@ import "../booking-modal.css";
 import "../venetian-redesign.css";
 import "../night-mode.css";
 
-export const dynamic = "force-dynamic";
+/** Public CMS data is edge-cached; admin save routes invalidate this layout. */
+export const revalidate = 300;
 
 const agraham = localFont({
   src: "../../public/fonts/agraham-regular.ttf",

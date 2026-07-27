@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { handleRouteError } from "@/lib/api";
 import { prisma } from "@/lib/prisma";
 import { roomAdminSelect } from "@/lib/query-selects";
+import { revalidatePublicCatalog } from "@/lib/revalidate-public-catalog";
 
 type RouteContext = {
   params: Promise<{ id: string }>;
@@ -64,6 +65,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       select: roomAdminSelect,
     });
 
+    revalidatePublicCatalog();
     return NextResponse.json({
       room: {
         ...room,

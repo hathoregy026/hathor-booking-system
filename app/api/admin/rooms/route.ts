@@ -3,6 +3,7 @@ import { handleRouteError } from "@/lib/api";
 import { purgeRoomIfAllowed } from "@/lib/catalog-bin";
 import { prisma } from "@/lib/prisma";
 import { roomAdminSelect } from "@/lib/query-selects";
+import { revalidatePublicCatalog } from "@/lib/revalidate-public-catalog";
 
 export async function PATCH(request: NextRequest) {
   try {
@@ -28,6 +29,7 @@ export async function PATCH(request: NextRequest) {
         data: { deletedAt: new Date() },
       });
 
+      revalidatePublicCatalog();
       return NextResponse.json({ updated: result.count });
     }
 
@@ -41,6 +43,7 @@ export async function PATCH(request: NextRequest) {
         data: { deletedAt: null },
       });
 
+      revalidatePublicCatalog();
       return NextResponse.json({ updated: result.count });
     }
 
@@ -61,6 +64,7 @@ export async function PATCH(request: NextRequest) {
         else skipped += 1;
       }
 
+      revalidatePublicCatalog();
       return NextResponse.json({ deleted, skipped });
     }
 

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { unstable_noStore as noStore } from "next/cache";
 import { HomeExperienceShell } from "@/components/pages/HomeExperienceShell";
 import { HomePageClient } from "@/components/pages/HomePageClient";
 import { HATHOR_HERO_POSTER_SRC } from "@/lib/branding";
@@ -9,9 +8,7 @@ import { heroLogoTuneToImportantCss } from "@/lib/hero-logo-tune-shared";
 import { combineDesktopAndPhoneCss } from "@/lib/admin-device-preview";
 import "./home-experience.css";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-export const fetchCache = "force-no-store";
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Luxury Dahabiya Nile Cruise | Hathor Dahabiya",
@@ -51,7 +48,6 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  noStore();
   const [heroLogoTune, heroLogoTuneMobile, accordionCruises] = await Promise.all([
     getHeroLogoTuneSafe(),
     getHeroLogoTuneMobileSafe(),

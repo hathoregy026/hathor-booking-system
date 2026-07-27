@@ -45,14 +45,14 @@ function withCachePurge(response: NextResponse): NextResponse {
   return response;
 }
 
-const DEPLOY_COOKIE = "hathor_v";
-
-function resolveDeployId(): string {
-  const sha = process.env.VERCEL_GIT_COMMIT_SHA?.trim();
-  if (sha) return sha.slice(0, 12);
-  const deployment = process.env.VERCEL_DEPLOYMENT_ID?.trim();
-  if (deployment) return deployment.slice(0, 12);
-  return "dev";
+function requiresPrivateHtml(pathname: string): boolean {
+  return (
+    pathname === "/book" ||
+    pathname.startsWith("/booking") ||
+    pathname.startsWith("/preview") ||
+    pathname.startsWith("/test-scroll-reveal") ||
+    pathname.startsWith("/transition")
+  );
 }
 
 export async function middleware(request: NextRequest) {
@@ -83,25 +83,17 @@ export async function middleware(request: NextRequest) {
         return NextResponse.next();
       }
 
-      const deployId = resolveDeployId();
-      const seen = request.cookies.get(DEPLOY_COOKIE)?.value;
-      /* First hit after a new deploy (or never-seen): wipe stuck HTTP cache. */
-      const needsPurge = deployId !== "dev" && seen !== deployId;
-
-      const response = needsPurge
-        ? withCachePurge(NextResponse.next())
-        : withHtmlNoStore(NextResponse.next());
-
-      if (needsPurge) {
-        response.cookies.set(DEPLOY_COOKIE, deployId, {
-          path: "/",
-          sameSite: "lax",
-          secure: true,
-          maxAge: 60 * 60 * 24 * 365,
-        });
+      if (requiresPrivateHtml(pathname)) {
+        return withHtmlNoStore(NextResponse.next());
       }
 
-      return response;
+      /*
+       * Marketing pages use their App Router ISR policy. Vercel invalidates
+       * route output on deploy, while DeployFreshness handles already-open
+       * stale tabs. Do not overwrite those cache headers or clear storage on
+       * every visitor's first request.
+       */
+      return NextResponse.next();
     }
 
     const session = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;

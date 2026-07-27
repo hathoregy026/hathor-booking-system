@@ -10,6 +10,7 @@ import { logDbError, withDb } from "@/lib/db-safe";
 import { withDbRetry } from "@/lib/db-retry";
 import { prisma } from "@/lib/prisma";
 import { buildCruiseListSelect, roomAdminSelect } from "@/lib/query-selects";
+import { revalidatePublicCatalog } from "@/lib/revalidate-public-catalog";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -146,6 +147,7 @@ export async function PATCH(request: NextRequest) {
         updated += 1;
       }
 
+      revalidatePublicCatalog();
       return NextResponse.json({ updated });
     }
 
@@ -191,6 +193,7 @@ export async function PATCH(request: NextRequest) {
         updated += 1;
       }
 
+      revalidatePublicCatalog();
       return NextResponse.json({ updated });
     }
 
@@ -211,6 +214,7 @@ export async function PATCH(request: NextRequest) {
         else skipped += 1;
       }
 
+      revalidatePublicCatalog();
       return NextResponse.json({ deleted, skipped });
     }
 
@@ -313,6 +317,7 @@ export async function POST(request: NextRequest) {
         });
 
         console.log("Cruise created successfully:", cruise);
+        revalidatePublicCatalog();
         return NextResponse.json(
           { cruise: serializeCruise(cruise) },
           { status: 201 },

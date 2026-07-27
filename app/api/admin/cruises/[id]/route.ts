@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { handleRouteError } from "@/lib/api";
 import { prisma } from "@/lib/prisma";
 import { buildCruiseListSelect } from "@/lib/query-selects";
+import { revalidatePublicCatalog } from "@/lib/revalidate-public-catalog";
 
 type RouteContext = {
   params: Promise<{ id: string }>;
@@ -54,6 +55,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       select: buildCruiseListSelect({ bin: false }),
     });
 
+    revalidatePublicCatalog();
     return NextResponse.json({
       cruise: {
         ...cruise,

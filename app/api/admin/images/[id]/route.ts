@@ -52,6 +52,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       data: { displayOrder },
     });
 
+    revalidateSiteImagePages(image.name ? [image.name] : undefined);
     return NextResponse.json({ image });
   } catch (error) {
     return handleRouteError(error);

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { handleRouteError } from "@/lib/api";
 import { ensureDefaultTicketType } from "@/lib/cruise-setup";
 import { prisma } from "@/lib/prisma";
+import { revalidatePublicCatalog } from "@/lib/revalidate-public-catalog";
 
 type RouteContext = {
   params: Promise<{ id: string }>;
@@ -59,6 +60,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
       select: roomSelect,
     });
 
+    revalidatePublicCatalog();
     return NextResponse.json({ room }, { status: 201 });
   } catch (error) {
     return handleRouteError(error);
