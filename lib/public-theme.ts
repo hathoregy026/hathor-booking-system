@@ -36,11 +36,6 @@ export function getHomeBootCriticalStyle(): string {
     "html.ex-home:not(.ex-scroll-ready) .hathor-logo-split img{",
     "width:0!important;height:0!important;max-width:0!important;max-height:0!important;",
     "}",
-    /* Hero titles + CTA — avoid overlapping mid-scrub text before GSAP boots */
-    "html.ex-home:not(.ex-scroll-ready) .hero-heading,",
-    "html.ex-home:not(.ex-scroll-ready) .hero-button{",
-    "opacity:0!important;visibility:hidden!important;pointer-events:none!important;",
-    "}",
     "html.ex-home.ex-pending-deep:not(.ex-scroll-ready) .public-site{",
     "opacity:0!important;pointer-events:none!important;",
     "}",
@@ -54,8 +49,8 @@ export function getHomeBootCriticalStyle(): string {
 /** Critical CSS for inner public heroes (cruises, about, etc.) before motion hook runs. */
 export function getPublicHeroBootCriticalStyle(): string {
   return [
-    "html:not(.hero-motion-ready):not(.ex-scroll-ready) .home-hero-container .hero-heading,",
-    "html:not(.hero-motion-ready):not(.ex-scroll-ready) .home-hero-container .hero-button{",
+    "html:not(.ex-home):not(.hero-motion-ready):not(.ex-scroll-ready) .home-hero-container .hero-heading,",
+    "html:not(.ex-home):not(.hero-motion-ready):not(.ex-scroll-ready) .home-hero-container .hero-button{",
     "opacity:0!important;visibility:hidden!important;pointer-events:none!important;",
     "}",
   ].join("");

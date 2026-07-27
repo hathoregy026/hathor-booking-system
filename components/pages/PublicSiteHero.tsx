@@ -17,6 +17,18 @@ import {
   type HeroPageKey,
 } from "@/lib/typography-settings-shared";
 
+function optimizedVideoPoster(src: string): string {
+  const trimmed = src.trim();
+  if (!/^https?:\/\//i.test(trimmed)) return trimmed;
+
+  const params = new URLSearchParams({
+    url: trimmed,
+    w: "1920",
+    q: "75",
+  });
+  return `/_next/image?${params.toString()}`;
+}
+
 export type PublicSiteHeroProps = {
   lineRight: string;
   lineLeft: string;
@@ -77,6 +89,9 @@ export function PublicSiteHero({
 }: PublicSiteHeroProps) {
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const heroImage = useSiteImage(posterImageName ?? "about-hero");
+  const videoPoster = playVideo
+    ? optimizedVideoPoster(heroImage.src)
+    : heroImage.src;
   const typography = useTypographySettings();
   const heroTitleStyle = useTypographyInlineStyle("hero_title");
   const heroSubtitleStyle = useTypographyInlineStyle("hero_subtitle");
@@ -122,19 +137,13 @@ export function PublicSiteHero({
     };
 
     const root = document.documentElement;
-    if (
-      root.classList.contains("ex-scroll-ready") ||
-      root.classList.contains("hero-motion-ready")
-    ) {
+    if (root.classList.contains("ex-scroll-ready")) {
       startVideo();
       return;
     }
 
     const observer = new MutationObserver(() => {
-      if (
-        root.classList.contains("ex-scroll-ready") ||
-        root.classList.contains("hero-motion-ready")
-      ) {
+      if (root.classList.contains("ex-scroll-ready")) {
         observer.disconnect();
         startVideo();
       }
@@ -144,7 +153,7 @@ export function PublicSiteHero({
     const fallback = window.setTimeout(() => {
       observer.disconnect();
       startVideo();
-    }, 900);
+    }, 4000);
 
     return () => {
       observer.disconnect();
@@ -163,7 +172,7 @@ export function PublicSiteHero({
         {playVideo ? (
           <video
             ref={heroVideoRef}
-            poster={heroImage.src}
+            poster={videoPoster}
             autoPlay
             loop
             muted

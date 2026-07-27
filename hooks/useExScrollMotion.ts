@@ -372,6 +372,18 @@ export function useExScrollMotion() {
       /* Mid-page refresh: snap logo — never play the rise tween under the veil. */
       skipLanding: savedY > 80,
     });
+
+    /*
+     * The landing hero is already visible on first paint. Cancel only the
+     * hydration-time chrome entrance tween so text never disappears while
+     * the heavier scroll scene boots. The scroll-controlled title exit is
+     * built on the next animation frame and remains intact.
+     */
+    const chrome = document.querySelectorAll(
+      ".home-hero-container .hero-heading, .home-hero-container .hero-button",
+    );
+    gsap.killTweensOf(chrome);
+    gsap.set(chrome, { opacity: 1, y: 0 });
   }
 
   function initHeroBlinds() {

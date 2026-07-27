@@ -39,7 +39,6 @@ import {
   DEFAULT_HERO_LOGO_TUNE,
   type HeroLogoTune,
   heroLogoTuneToImportantCss,
-  parseHeroLogoTune,
 } from "@/lib/hero-logo-tune-shared";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 import { useBookingStore } from "@/store/bookingStore";
@@ -63,7 +62,14 @@ function GalleryMarqueePhoto({
   const image = useSiteImage(name);
   return (
     // eslint-disable-next-line @next/next/no-img-element -- intentional: native full-res for tilted marquee
-    <img src={image.src} alt={alt} decoding="async" draggable={false} />
+    <img
+      src={image.src}
+      alt={alt}
+      loading="lazy"
+      decoding="async"
+      fetchPriority="low"
+      draggable={false}
+    />
   );
 }
 
@@ -279,38 +285,6 @@ export function HomePageClient({
       window.removeEventListener("resize", sync);
       mq.removeEventListener("change", sync);
       clearHeights();
-    };
-  }, []);
-
-  /* Re-fetch so a stale HTML shell still picks up the latest Save. */
-  useEffect(() => {
-    let cancelled = false;
-    void (async () => {
-      try {
-        const bust = Date.now();
-        const res = await fetch(`/api/hero-logo-tune?t=${bust}`, {
-          cache: "no-store",
-          headers: { Accept: "application/json" },
-        });
-        if (!res.ok) return;
-        const contentType = res.headers.get("content-type") ?? "";
-        if (!contentType.includes("application/json")) return;
-        const data = (await res.json()) as {
-          tune?: unknown;
-          tuneMobile?: unknown;
-        };
-        if (cancelled) return;
-        const next = parseHeroLogoTune(data.tune);
-        setLiveTune(next);
-        setLiveTuneMobile(
-          data.tuneMobile ? parseHeroLogoTune(data.tuneMobile) : next,
-        );
-      } catch {
-        /* keep SSR tune — Cloudflare challenges / offline */
-      }
-    })();
-    return () => {
-      cancelled = true;
     };
   }, []);
 

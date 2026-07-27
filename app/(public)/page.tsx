@@ -68,12 +68,6 @@ export default async function HomePage() {
         data-hathor-logo-tune-ssr
         dangerouslySetInnerHTML={{ __html: logoTuneCss }}
       />
-      <link
-        rel="preload"
-        href={HATHOR_HERO_POSTER_SRC}
-        as="image"
-        fetchPriority="high"
-      />
       <HomePageClient
         heroLogoTune={heroLogoTune}
         heroLogoTuneMobile={heroLogoTuneMobile}
