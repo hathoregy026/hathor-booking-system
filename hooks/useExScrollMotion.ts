@@ -511,9 +511,9 @@ export function useExScrollMotion() {
       killExisting();
 
       const total = cards.length;
-      /* Lazier luxury pacing — longer hold, slower eat wipe */
-      const dwell = 0.72;
-      const move = 0.95;
+      /* Slightly tighter pacing — still elegant, less “end of page” drag */
+      const dwell = 0.48;
+      const move = 0.68;
       const step = dwell + move;
       const scrollSpan = (total - 1) * step + dwell;
 
@@ -566,8 +566,8 @@ export function useExScrollMotion() {
           trigger: section,
           start: "top top",
           end: `+=${scrollSpan * 100}%`,
-          /* High scrub lag = lazy, luxurious catch-up after the wheel */
-          scrub: 2.85,
+          /* Scrub lag — smooth catch-up without feeling endless */
+          scrub: 2.2,
           pin: viewport,
           pinSpacing: true,
           anticipatePin: 0,
