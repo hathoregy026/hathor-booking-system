@@ -17,7 +17,6 @@ import {
   EX_ABOUT,
   EX_CAMPAIGN,
   EX_CAROUSEL,
-  EX_CTA,
   EX_GALLERY,
   EX_HERO,
   EX_PINNED,
@@ -694,14 +693,6 @@ export function HomePageClient({
           titleStyle={campaignTitleStyle}
           previewAnchor={HOMEPAGE_PREVIEW_SLOTS.has(EX_CAMPAIGN.imageName)}
         />
-
-        <section className="cta-section ex-content-section" id="visit">
-          <div className="cta-inner">
-            <h2>{websiteText.home.cta.title}</h2>
-            <p>{websiteText.home.cta.body}</p>
-            <BookNowTrigger className="btn btn-filled">Book Now</BookNowTrigger>
-          </div>
-        </section>
         </div>
       </main>
     </div>
