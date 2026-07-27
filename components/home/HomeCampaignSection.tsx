@@ -9,18 +9,18 @@ const SILK_ROWS = ["TAKE YOUR", "VOYAGE", "TODAY"] as const;
 
 /*
  * One linear scroll sequence:
- *  0% — 19%  gold invitation rises
- * 19% — 30%  full invitation holds briefly
- * 30% — 62%  photograph fog dissolves upward through the invitation
- * 62% — 78%  completed photograph holds (pause before copy)
- * 78% — 96%  on-image title rises slowly, button follows later
+ *  0% — 14%  gold invitation rises
+ * 14% — 22%  full invitation holds briefly
+ * 22% — 46%  photograph fog dissolves upward through the invitation
+ * 46% — 70%  completed photograph holds (long pause before copy)
+ * 70% — 97%  on-image title rises slowly (~2× prior), button follows later
  */
 const PHASE = {
-  textEnd: 0.19,
-  imageStart: 0.3,
-  imageEnd: 0.62,
-  copyStart: 0.78,
-  copyEnd: 0.96,
+  textEnd: 0.14,
+  imageStart: 0.22,
+  imageEnd: 0.46,
+  copyStart: 0.7,
+  copyEnd: 0.97,
 } as const;
 
 function clamp(value: number) {
@@ -120,17 +120,17 @@ export function HomeCampaignSection({
         media.style.transform = `scale(${1.035 - imageEffectProgress * 0.035})`;
       }
 
-      /* Soft ease-out so title/button feel lazy and elegant */
+      /* Soft ease-out — title/button ~2× slower, button waits for title */
       const copyRaw = between(progress, PHASE.copyStart, PHASE.copyEnd);
-      const copyProgress = 1 - Math.pow(1 - copyRaw, 2.4);
-      revealCharacters(imageCopy, copyProgress, 0.52);
+      const copyProgress = 1 - Math.pow(1 - copyRaw, 2.8);
+      revealCharacters(imageCopy, copyProgress, 0.62);
 
       if (button) {
-        const buttonRaw = between(copyProgress, 0.68, 1);
-        const buttonProgress = 1 - Math.pow(1 - buttonRaw, 2.2);
+        const buttonRaw = between(copyProgress, 0.78, 1);
+        const buttonProgress = 1 - Math.pow(1 - buttonRaw, 2.6);
         button.style.opacity = buttonProgress.toFixed(3);
         button.style.transform = `translate3d(0, ${
-          (1 - buttonProgress) * 22
+          (1 - buttonProgress) * 24
         }px, 0)`;
       }
     };
