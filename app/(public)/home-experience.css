@@ -276,56 +276,82 @@ html[data-ex-experience] .ex-root .hathor-logo-split .letter-r .logo-letter {
 }
 
 /*
-  Empty-bg variant — a moonlit Nile-gold tide fills the traced glyphs.
-  The existing regular letter alpha is used only as a silhouette mask, so
-  neither animated layer can paint outside the matching outline artwork.
+  Empty-bg variant — one full-width Nile-gold waterline, seen through six
+  traced glyph masks. Each side shows its slice of the same 100vw wave, so
+  the letters read as one container while the center CTA gap stays empty.
 */
 html[data-ex-experience]
   .ex-root
+  .hathor-logo-split[data-hathor-logo-parts="empty-bg"] {
+  --hathor-liquid-side-w: calc(
+    (100vw - var(--hathor-logo-gap, 200px)) / 2
+  );
+  --hathor-liquid-right-start: calc(
+    var(--hathor-liquid-side-w) + var(--hathor-logo-gap, 200px)
+  );
+  --hathor-liquid-h1-w: calc(var(--hathor-logo-h) * 855 / 2200);
+  --hathor-liquid-a-w: calc(var(--hathor-logo-h) * 1070 / 2200);
+  --hathor-liquid-t-w: calc(var(--hathor-logo-h) * 758 / 2200);
+  --hathor-liquid-h2-w: calc(var(--hathor-logo-h) * 840 / 2200);
+  --hathor-liquid-o-w: calc(var(--hathor-logo-h) * 1019 / 2200);
+  --hathor-liquid-r-w: calc(var(--hathor-logo-h) * 764 / 2200);
+  --hathor-liquid-a-left: min(
+    calc(var(--hathor-liquid-h1-w) + var(--hathor-gap-ha, 0px)),
+    calc(
+      var(--hathor-liquid-side-w) - var(--hathor-gap-t-btn, 0px) -
+        var(--hathor-liquid-t-w) - var(--hathor-gap-at, 0px) -
+        var(--hathor-liquid-a-w)
+    )
+  );
+  --hathor-liquid-t-left: calc(
+    var(--hathor-liquid-side-w) - var(--hathor-liquid-t-w) -
+      var(--hathor-gap-t-btn, 0px)
+  );
+  --hathor-liquid-h2-left: calc(
+    var(--hathor-liquid-right-start) + var(--hathor-gap-btn-h, 0px)
+  );
+  --hathor-liquid-o-left: calc(
+    var(--hathor-liquid-right-start) +
+      max(
+        calc(
+          var(--hathor-gap-btn-h, 0px) + var(--hathor-liquid-h2-w) +
+            var(--hathor-gap-ho, 0px)
+        ),
+        calc(
+          var(--hathor-liquid-side-w) - var(--hathor-liquid-r-w) -
+            var(--hathor-gap-or, 0px) - var(--hathor-liquid-o-w)
+        )
+      )
+  );
+  --hathor-liquid-r-left: calc(100vw - var(--hathor-liquid-r-w));
+}
+
+html[data-ex-experience]
+  .ex-root
   .hathor-logo-split[data-hathor-logo-parts="empty-bg"]
-  .logo-letter-wrap {
+  .hathor-logo-split__side {
   isolation: isolate;
 }
 
 html[data-ex-experience]
   .ex-root
   .hathor-logo-split[data-hathor-logo-parts="empty-bg"]
-  .logo-letter-wrap::before,
+  .logo-letter-wrap {
+  z-index: 2;
+}
+
 html[data-ex-experience]
   .ex-root
   .hathor-logo-split[data-hathor-logo-parts="empty-bg"]
-  .logo-letter-wrap::after {
+  .hathor-logo-split__side::after {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 100vw;
+  height: 100%;
   content: "";
   pointer-events: none;
-  -webkit-mask: var(--hathor-letter-fill-mask) top center / contain no-repeat;
-  mask: var(--hathor-letter-fill-mask) top center / contain no-repeat;
-  transform: translateY(var(--hathor-letter-fill-y, 0px));
-  transform-origin: center;
-}
-
-html[data-ex-experience]
-  .ex-root
-  .hathor-logo-split[data-hathor-logo-parts="empty-bg"]
-  .logo-letter-wrap::before {
-  z-index: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(239, 229, 197, 0.72) 0%,
-    rgba(182, 159, 100, 0.68) 48%,
-    rgba(91, 68, 28, 0.82) 100%
-  );
-  opacity: 0.62;
-  animation: hathor-logo-nile-tide-back 7.4s ease-in-out infinite;
-  animation-delay: var(--hathor-letter-wave-delay, 0s);
-}
-
-html[data-ex-experience]
-  .ex-root
-  .hathor-logo-split[data-hathor-logo-parts="empty-bg"]
-  .logo-letter-wrap::after {
-  z-index: 1;
   background:
     linear-gradient(
       108deg,
@@ -342,73 +368,73 @@ html[data-ex-experience]
     100% 100%;
   opacity: 0.92;
   animation:
-    hathor-logo-nile-tide-front 5.8s ease-in-out infinite,
-    hathor-logo-nile-shimmer 8.6s linear infinite;
-  animation-delay:
-    var(--hathor-letter-wave-delay, 0s),
-    var(--hathor-letter-wave-delay, 0s);
+    hathor-logo-nile-tide-front 5.8s ease-in-out -1.2s infinite,
+    hathor-logo-nile-shimmer 8.6s linear -1.2s infinite;
 }
 
 html[data-ex-experience]
   .ex-root
   .hathor-logo-split[data-hathor-logo-parts="empty-bg"]
-  .logo-letter {
-  position: relative;
-  z-index: 2;
+  .hathor-logo-split__side--left::after {
+  -webkit-mask-image:
+    url("/branding/letters/variants/regular/hathor-h1.png"),
+    url("/branding/letters/variants/regular/hathor-a.png"),
+    url("/branding/letters/variants/regular/hathor-t.png");
+  mask-image:
+    url("/branding/letters/variants/regular/hathor-h1.png"),
+    url("/branding/letters/variants/regular/hathor-a.png"),
+    url("/branding/letters/variants/regular/hathor-t.png");
+  -webkit-mask-position:
+    0 var(--hathor-y-h1, 0px),
+    var(--hathor-liquid-a-left) var(--hathor-y-a, 0px),
+    var(--hathor-liquid-t-left) var(--hathor-y-t, 0px);
+  mask-position:
+    0 var(--hathor-y-h1, 0px),
+    var(--hathor-liquid-a-left) var(--hathor-y-a, 0px),
+    var(--hathor-liquid-t-left) var(--hathor-y-t, 0px);
+  -webkit-mask-size:
+    var(--hathor-liquid-h1-w) auto,
+    var(--hathor-liquid-a-w) auto,
+    var(--hathor-liquid-t-w) auto;
+  mask-size:
+    var(--hathor-liquid-h1-w) auto,
+    var(--hathor-liquid-a-w) auto,
+    var(--hathor-liquid-t-w) auto;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
 }
 
 html[data-ex-experience]
   .ex-root
   .hathor-logo-split[data-hathor-logo-parts="empty-bg"]
-  .letter-h1 {
-  --hathor-letter-fill-mask: url("/branding/letters/variants/regular/hathor-h1.png");
-  --hathor-letter-fill-y: var(--hathor-y-h1, 0px);
-  --hathor-letter-wave-delay: -0.35s;
-}
-
-html[data-ex-experience]
-  .ex-root
-  .hathor-logo-split[data-hathor-logo-parts="empty-bg"]
-  .letter-a {
-  --hathor-letter-fill-mask: url("/branding/letters/variants/regular/hathor-a.png");
-  --hathor-letter-fill-y: var(--hathor-y-a, 0px);
-  --hathor-letter-wave-delay: -1.1s;
-}
-
-html[data-ex-experience]
-  .ex-root
-  .hathor-logo-split[data-hathor-logo-parts="empty-bg"]
-  .letter-t {
-  --hathor-letter-fill-mask: url("/branding/letters/variants/regular/hathor-t.png");
-  --hathor-letter-fill-y: var(--hathor-y-t, 0px);
-  --hathor-letter-wave-delay: -1.85s;
-}
-
-html[data-ex-experience]
-  .ex-root
-  .hathor-logo-split[data-hathor-logo-parts="empty-bg"]
-  .letter-h2 {
-  --hathor-letter-fill-mask: url("/branding/letters/variants/regular/hathor-h2.png");
-  --hathor-letter-fill-y: var(--hathor-y-h2, 0px);
-  --hathor-letter-wave-delay: -2.6s;
-}
-
-html[data-ex-experience]
-  .ex-root
-  .hathor-logo-split[data-hathor-logo-parts="empty-bg"]
-  .letter-o {
-  --hathor-letter-fill-mask: url("/branding/letters/variants/regular/hathor-o.png");
-  --hathor-letter-fill-y: var(--hathor-y-o, 0px);
-  --hathor-letter-wave-delay: -3.35s;
-}
-
-html[data-ex-experience]
-  .ex-root
-  .hathor-logo-split[data-hathor-logo-parts="empty-bg"]
-  .letter-r {
-  --hathor-letter-fill-mask: url("/branding/letters/variants/regular/hathor-r.png");
-  --hathor-letter-fill-y: var(--hathor-y-r, 0px);
-  --hathor-letter-wave-delay: -4.1s;
+  .hathor-logo-split__side--right::after {
+  left: calc(-1 * var(--hathor-liquid-right-start));
+  -webkit-mask-image:
+    url("/branding/letters/variants/regular/hathor-h2.png"),
+    url("/branding/letters/variants/regular/hathor-o.png"),
+    url("/branding/letters/variants/regular/hathor-r.png");
+  mask-image:
+    url("/branding/letters/variants/regular/hathor-h2.png"),
+    url("/branding/letters/variants/regular/hathor-o.png"),
+    url("/branding/letters/variants/regular/hathor-r.png");
+  -webkit-mask-position:
+    var(--hathor-liquid-h2-left) var(--hathor-y-h2, 0px),
+    var(--hathor-liquid-o-left) var(--hathor-y-o, 0px),
+    var(--hathor-liquid-r-left) var(--hathor-y-r, 0px);
+  mask-position:
+    var(--hathor-liquid-h2-left) var(--hathor-y-h2, 0px),
+    var(--hathor-liquid-o-left) var(--hathor-y-o, 0px),
+    var(--hathor-liquid-r-left) var(--hathor-y-r, 0px);
+  -webkit-mask-size:
+    var(--hathor-liquid-h2-w) auto,
+    var(--hathor-liquid-o-w) auto,
+    var(--hathor-liquid-r-w) auto;
+  mask-size:
+    var(--hathor-liquid-h2-w) auto,
+    var(--hathor-liquid-o-w) auto,
+    var(--hathor-liquid-r-w) auto;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
 }
 
 @keyframes hathor-logo-nile-tide-front {
@@ -464,59 +490,6 @@ html[data-ex-experience]
   }
 }
 
-@keyframes hathor-logo-nile-tide-back {
-  0%,
-  100% {
-    -webkit-clip-path: polygon(
-      0% 55%,
-      18% 61%,
-      36% 58%,
-      54% 49%,
-      73% 45%,
-      88% 49%,
-      100% 54%,
-      100% 100%,
-      0% 100%
-    );
-    clip-path: polygon(
-      0% 55%,
-      18% 61%,
-      36% 58%,
-      54% 49%,
-      73% 45%,
-      88% 49%,
-      100% 54%,
-      100% 100%,
-      0% 100%
-    );
-  }
-
-  50% {
-    -webkit-clip-path: polygon(
-      0% 48%,
-      17% 45%,
-      35% 51%,
-      52% 60%,
-      70% 64%,
-      87% 59%,
-      100% 52%,
-      100% 100%,
-      0% 100%
-    );
-    clip-path: polygon(
-      0% 48%,
-      17% 45%,
-      35% 51%,
-      52% 60%,
-      70% 64%,
-      87% 59%,
-      100% 52%,
-      100% 100%,
-      0% 100%
-    );
-  }
-}
-
 @keyframes hathor-logo-nile-shimmer {
   from {
     background-position:
@@ -534,11 +507,7 @@ html[data-ex-experience]
   html[data-ex-experience]
     .ex-root
     .hathor-logo-split[data-hathor-logo-parts="empty-bg"]
-    .logo-letter-wrap::before,
-  html[data-ex-experience]
-    .ex-root
-    .hathor-logo-split[data-hathor-logo-parts="empty-bg"]
-    .logo-letter-wrap::after {
+    .hathor-logo-split__side::after {
     animation: none !important;
   }
 }
