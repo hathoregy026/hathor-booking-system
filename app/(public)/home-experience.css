@@ -1792,7 +1792,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
 .home-ship-passage {
   position: relative;
   z-index: 20;
-  height: clamp(220px, 27vw, 360px);
+  height: clamp(300px, 42vw, 520px);
   overflow: hidden;
   isolation: isolate;
   background: transparent;
@@ -1829,7 +1829,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
 
 @media (max-width: 767px) {
   .home-ship-passage {
-    height: clamp(170px, 48vw, 220px);
+    height: clamp(200px, 62vw, 270px);
   }
 
   .home-ship-passage__vessel {

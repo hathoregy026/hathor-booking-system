@@ -333,24 +333,25 @@ export function useExScrollMotion() {
     });
 
     gsap.set(vessel, { x: startX(), force3D: true });
-    const passage = ScrollTrigger.create({
-      id: "home-ship-passage",
-      trigger: section,
-      start: "center center",
-      end: () => `+=${Math.round(window.innerHeight * 1.35)}`,
-      pin: true,
-      pinSpacing: true,
-      anticipatePin: 1,
-      invalidateOnRefresh: true,
-      onUpdate: (self) => {
-        glideTo(gsap.utils.interpolate(startX(), endX(), self.progress));
-      },
-      onLeave: () => glideTo(endX()),
-      onLeaveBack: () => glideTo(startX()),
-    });
+    const update = () => {
+      const rect = section.getBoundingClientRect();
+      const start = window.innerHeight * 0.92;
+      const finish = window.innerHeight * 0.08 - rect.height;
+      const progress = gsap.utils.clamp(
+        0,
+        1,
+        (start - rect.top) / (start - finish),
+      );
+      glideTo(gsap.utils.interpolate(startX(), endX(), progress));
+    };
+
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    update();
 
     shipCleanup = () => {
-      passage.kill();
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
       gsap.killTweensOf(vessel);
     };
   }
