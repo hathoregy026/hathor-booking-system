@@ -1790,12 +1790,22 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
 
 /* ---------- HOMEPAGE SHIP PASSAGE ---------- */
 .home-ship-passage {
+  --home-ship-stage-height: clamp(300px, 42vw, 520px);
   position: relative;
   z-index: 20;
-  height: clamp(300px, 42vw, 520px);
-  overflow: hidden;
+  height: 180vh;
+  overflow: clip;
   isolation: isolate;
   background: transparent;
+}
+
+.home-ship-passage__stage {
+  position: sticky;
+  top: 50vh;
+  width: 100%;
+  height: var(--home-ship-stage-height);
+  overflow: hidden;
+  transform: translateY(-50%);
 }
 
 .home-ship-passage__vessel {
@@ -1829,7 +1839,8 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
 
 @media (max-width: 767px) {
   .home-ship-passage {
-    height: clamp(200px, 62vw, 270px);
+    --home-ship-stage-height: clamp(200px, 62vw, 270px);
+    height: 175vh;
   }
 
   .home-ship-passage__vessel {

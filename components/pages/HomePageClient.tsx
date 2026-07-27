@@ -529,14 +529,16 @@ export function HomePageClient({
           className="home-ship-passage ex-content-section"
           aria-label="Hathor sailing across the Nile"
         >
-          <div className="home-ship-passage__vessel" data-home-moving-ship>
-            <Image
-              src={movingShip}
-              alt="Hathor Dahabiya sailing"
-              className="home-ship-passage__image"
-              sizes="(max-width: 767px) 84vw, 62vw"
-              priority={false}
-            />
+          <div className="home-ship-passage__stage">
+            <div className="home-ship-passage__vessel" data-home-moving-ship>
+              <Image
+                src={movingShip}
+                alt="Hathor Dahabiya sailing"
+                className="home-ship-passage__image"
+                sizes="(max-width: 767px) 94vw, 72vw"
+                priority={false}
+              />
+            </div>
           </div>
         </section>
 

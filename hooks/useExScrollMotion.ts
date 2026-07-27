@@ -328,7 +328,7 @@ export function useExScrollMotion() {
     const startX = () => -(vessel.offsetWidth + edgeGap());
     const endX = () => window.innerWidth + edgeGap();
     const glideTo = gsap.quickTo(vessel, "x", {
-      duration: 1.25,
+      duration: 2.5,
       ease: "power2.out",
     });
 
