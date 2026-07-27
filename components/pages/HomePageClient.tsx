@@ -533,8 +533,8 @@ export function HomePageClient({
           <div className="home-helm-portal__viewport">
             <div className="home-helm-portal__media" data-home-helm-media>
               <ManagedImage
-                name={EX_TEXT_BLOCKS[0].imageName}
-                alt={EX_TEXT_BLOCKS[0].alt}
+                name={EX_CAMPAIGN.imageName}
+                alt={EX_CAMPAIGN.imageAlt}
                 fill
                 sizes="100vw"
                 className="home-helm-portal__media-image object-cover"
@@ -543,7 +543,11 @@ export function HomePageClient({
               <div className="home-helm-portal__shade" aria-hidden="true" />
             </div>
 
-            <div className="home-helm-portal__aura" data-home-helm-aura aria-hidden="true" />
+            <div
+              className="home-helm-portal__aura"
+              data-home-helm-aura
+              aria-hidden="true"
+            />
 
             <div className="home-helm-portal__wheel" data-home-helm-wheel>
               <Image
@@ -556,7 +560,7 @@ export function HomePageClient({
             </div>
 
             <div className="home-helm-portal__invitation" data-home-helm-invitation>
-              <span>Scroll to set sail</span>
+              <span>Turn toward the timeless Nile</span>
               <i aria-hidden="true" />
             </div>
           </div>

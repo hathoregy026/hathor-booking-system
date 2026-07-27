@@ -333,6 +333,12 @@ export function useExScrollMotion() {
       return;
     }
 
+    const isPhone = window.matchMedia("(max-width: 767px)").matches;
+    const wheelOpenScale = isPhone ? 2.7 : 3.15;
+    const wheelExitScale = isPhone ? 4.35 : 5.4;
+    const auraOpenScale = isPhone ? 2.85 : 3.25;
+    const auraExitScale = isPhone ? 3.45 : 4;
+
     gsap.set(wheel, {
       xPercent: -50,
       yPercent: -50,
@@ -352,7 +358,7 @@ export function useExScrollMotion() {
       clipPath: "circle(0vmax at 50% 50%)",
       WebkitClipPath: "circle(0vmax at 50% 50%)",
     });
-    gsap.set(mediaImage, { scale: 1.34, force3D: true });
+    gsap.set(mediaImage, { scale: 1.34, xPercent: -2.5, force3D: true });
     gsap.set(invitation, { autoAlpha: 1, y: 0 });
     if (shade) gsap.set(shade, { opacity: 1 });
 
@@ -363,90 +369,104 @@ export function useExScrollMotion() {
         {
           autoAlpha: 0,
           y: 12,
-          duration: 0.11,
+          duration: 0.12,
           ease: "power2.out",
         },
-        0.02,
+        0.07,
       )
       .to(
         wheel,
         {
-          rotation: 760,
-          scale: 3.15,
-          duration: 0.6,
+          rotation: 640,
+          scale: wheelOpenScale,
+          duration: 0.55,
           ease: "sine.inOut",
         },
-        0.06,
+        0.11,
       )
       .to(
         aura,
         {
-          scale: 3.25,
-          duration: 0.6,
+          scale: auraOpenScale,
+          duration: 0.55,
           ease: "sine.inOut",
         },
-        0.06,
+        0.11,
       )
       .to(
         media,
         {
           clipPath: "circle(13vmax at 50% 50%)",
           WebkitClipPath: "circle(13vmax at 50% 50%)",
-          duration: 0.46,
+          duration: 0.42,
           ease: "sine.inOut",
         },
-        0.16,
+        0.24,
       )
       .to(
         mediaImage,
         {
-          scale: 1.1,
-          duration: 0.6,
+          scale: 1.08,
+          xPercent: -0.35,
+          duration: 0.62,
           ease: "sine.inOut",
         },
-        0.08,
+        0.14,
       )
       .to(
         wheel,
         {
-          rotation: 980,
-          scale: 5.4,
-          autoAlpha: 0,
-          duration: 0.24,
-          ease: "power2.in",
-        },
-        0.62,
-      )
-      .to(
-        aura,
-        {
-          scale: 4,
+          rotation: 850,
+          scale: wheelExitScale,
           autoAlpha: 0,
           duration: 0.2,
           ease: "power2.in",
         },
-        0.62,
+        0.66,
+      )
+      .to(
+        aura,
+        {
+          scale: auraExitScale,
+          autoAlpha: 0,
+          duration: 0.2,
+          ease: "power2.in",
+        },
+        0.66,
       )
       .to(
         media,
         {
           clipPath: "circle(75vmax at 50% 50%)",
           WebkitClipPath: "circle(75vmax at 50% 50%)",
-          duration: 0.24,
+          duration: 0.22,
           ease: "power2.inOut",
         },
-        0.62,
+        0.66,
       )
       .to(
         mediaImage,
         {
           scale: 1,
-          duration: 0.34,
+          xPercent: 0,
+          duration: 0.3,
           ease: "power2.out",
         },
-        0.62,
+        0.66,
       )
-      .to({}, { duration: 0.14 }, 0.86);
+      .to({}, { duration: 0.04 }, 0.96);
+
+    if (shade) {
+      portalTimeline.to(
+        shade,
+        {
+          opacity: 0.78,
+          duration: 0.3,
+          ease: "power1.out",
+        },
+        0.66,
+      );
+    }
 
     const update = () => {
       const rect = section.getBoundingClientRect();
