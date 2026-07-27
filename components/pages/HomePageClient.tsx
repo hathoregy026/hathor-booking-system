@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
-import movingShip from "@/assets/moving-on-site.webp";
+import rotatingWheel from "@/assets/LOGOS/rotating wheel.png";
 import LuxuryAccordion from "@/components/home/LuxuryAccordion";
 import { HomeCampaignSection } from "@/components/home/HomeCampaignSection";
 import { LuxuryMarquee } from "@/components/home/LuxuryMarquee";
@@ -526,18 +526,38 @@ export function HomePageClient({
         />
 
         <section
-          className="home-ship-passage ex-content-section"
-          aria-label="Hathor sailing across the Nile"
+          className="home-helm-portal ex-content-section"
+          aria-label="Enter the Hathor voyage"
+          data-home-helm-portal
         >
-          <div className="home-ship-passage__stage">
-            <div className="home-ship-passage__vessel" data-home-moving-ship>
+          <div className="home-helm-portal__viewport">
+            <div className="home-helm-portal__media" data-home-helm-media>
+              <ManagedImage
+                name={EX_TEXT_BLOCKS[0].imageName}
+                alt={EX_TEXT_BLOCKS[0].alt}
+                fill
+                sizes="100vw"
+                className="home-helm-portal__media-image object-cover"
+                previewAnchor={false}
+              />
+              <div className="home-helm-portal__shade" aria-hidden="true" />
+            </div>
+
+            <div className="home-helm-portal__aura" data-home-helm-aura aria-hidden="true" />
+
+            <div className="home-helm-portal__wheel" data-home-helm-wheel>
               <Image
-                src={movingShip}
-                alt="Hathor Dahabiya sailing"
-                className="home-ship-passage__image"
-                sizes="(max-width: 767px) 94vw, 72vw"
+                src={rotatingWheel}
+                alt=""
+                className="home-helm-portal__wheel-image"
+                sizes="(max-width: 767px) 76vw, min(48vw, 68vh)"
                 priority={false}
               />
+            </div>
+
+            <div className="home-helm-portal__invitation" data-home-helm-invitation>
+              <span>Scroll to set sail</span>
+              <i aria-hidden="true" />
             </div>
           </div>
         </section>

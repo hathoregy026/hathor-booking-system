@@ -59,7 +59,7 @@ export function useExScrollMotion() {
   let lenis: Lenis | null = null;
   let tickerFn: ((time: number) => void) | null = null;
   let heroCleanup: (() => void) | null = null;
-  let shipCleanup: (() => void) | null = null;
+  let helmCleanup: (() => void) | null = null;
 
   if (!prefersReduced) {
     lenis = new Lenis({
@@ -317,42 +317,162 @@ export function useExScrollMotion() {
     });
   }
 
-  function initHomeShipPassage() {
+  function initHomeHelmPortal() {
     if (prefersReduced) return;
 
-    const section = document.querySelector<HTMLElement>(".home-ship-passage");
-    const vessel = section?.querySelector<HTMLElement>("[data-home-moving-ship]");
-    if (!section || !vessel) return;
+    const section = document.querySelector<HTMLElement>("[data-home-helm-portal]");
+    const media = section?.querySelector<HTMLElement>("[data-home-helm-media]");
+    const mediaImage = media?.querySelector<HTMLElement>("img");
+    const shade = media?.querySelector<HTMLElement>(".home-helm-portal__shade");
+    const wheel = section?.querySelector<HTMLElement>("[data-home-helm-wheel]");
+    const aura = section?.querySelector<HTMLElement>("[data-home-helm-aura]");
+    const invitation = section?.querySelector<HTMLElement>(
+      "[data-home-helm-invitation]",
+    );
+    if (!section || !media || !mediaImage || !wheel || !aura || !invitation) {
+      return;
+    }
 
-    const edgeGap = () => Math.max(32, window.innerWidth * 0.06);
-    const startX = () => -(vessel.offsetWidth + edgeGap());
-    const endX = () => window.innerWidth + edgeGap();
-    const glideTo = gsap.quickTo(vessel, "x", {
-      duration: 2.5,
-      ease: "power2.out",
+    gsap.set(wheel, {
+      xPercent: -50,
+      yPercent: -50,
+      scale: 1,
+      rotation: 0,
+      autoAlpha: 1,
+      force3D: true,
     });
+    gsap.set(aura, {
+      xPercent: -50,
+      yPercent: -50,
+      scale: 1,
+      autoAlpha: 1,
+      force3D: true,
+    });
+    gsap.set(media, {
+      clipPath: "circle(0vmax at 50% 50%)",
+      WebkitClipPath: "circle(0vmax at 50% 50%)",
+    });
+    gsap.set(mediaImage, { scale: 1.34, force3D: true });
+    gsap.set(invitation, { autoAlpha: 1, y: 0 });
+    if (shade) gsap.set(shade, { opacity: 1 });
 
-    gsap.set(vessel, { x: startX(), force3D: true });
+    const portalTimeline = gsap.timeline({ paused: true });
+    portalTimeline
+      .to(
+        invitation,
+        {
+          autoAlpha: 0,
+          y: 12,
+          duration: 0.11,
+          ease: "power2.out",
+        },
+        0.02,
+      )
+      .to(
+        wheel,
+        {
+          rotation: 760,
+          scale: 3.15,
+          duration: 0.6,
+          ease: "sine.inOut",
+        },
+        0.06,
+      )
+      .to(
+        aura,
+        {
+          scale: 3.25,
+          duration: 0.6,
+          ease: "sine.inOut",
+        },
+        0.06,
+      )
+      .to(
+        media,
+        {
+          clipPath: "circle(13vmax at 50% 50%)",
+          WebkitClipPath: "circle(13vmax at 50% 50%)",
+          duration: 0.46,
+          ease: "sine.inOut",
+        },
+        0.16,
+      )
+      .to(
+        mediaImage,
+        {
+          scale: 1.1,
+          duration: 0.6,
+          ease: "sine.inOut",
+        },
+        0.08,
+      )
+      .to(
+        wheel,
+        {
+          rotation: 980,
+          scale: 5.4,
+          autoAlpha: 0,
+          duration: 0.24,
+          ease: "power2.in",
+        },
+        0.62,
+      )
+      .to(
+        aura,
+        {
+          scale: 4,
+          autoAlpha: 0,
+          duration: 0.2,
+          ease: "power2.in",
+        },
+        0.62,
+      )
+      .to(
+        media,
+        {
+          clipPath: "circle(75vmax at 50% 50%)",
+          WebkitClipPath: "circle(75vmax at 50% 50%)",
+          duration: 0.24,
+          ease: "power2.inOut",
+        },
+        0.62,
+      )
+      .to(
+        mediaImage,
+        {
+          scale: 1,
+          duration: 0.34,
+          ease: "power2.out",
+        },
+        0.62,
+      )
+      .to({}, { duration: 0.14 }, 0.86);
+
     const update = () => {
       const rect = section.getBoundingClientRect();
-      const start = window.innerHeight * 0.92;
-      const finish = window.innerHeight * 0.08 - rect.height;
+      const scrollable = Math.max(1, section.offsetHeight - window.innerHeight);
       const progress = gsap.utils.clamp(
         0,
         1,
-        (start - rect.top) / (start - finish),
+        -rect.top / scrollable,
       );
-      glideTo(gsap.utils.interpolate(startX(), endX(), progress));
+      gsap.to(portalTimeline, {
+        progress,
+        duration: 0.85,
+        ease: "power3.out",
+        overwrite: true,
+      });
     };
 
     window.addEventListener("scroll", update, { passive: true });
     window.addEventListener("resize", update);
     update();
 
-    shipCleanup = () => {
+    helmCleanup = () => {
       window.removeEventListener("scroll", update);
       window.removeEventListener("resize", update);
-      gsap.killTweensOf(vessel);
+      gsap.killTweensOf(portalTimeline);
+      portalTimeline.kill();
     };
   }
 
@@ -955,7 +1075,7 @@ export function useExScrollMotion() {
       initGeneralButtons,
       initHomeScrollText,
       initExStackScroll,
-      initHomeShipPassage,
+      initHomeHelmPortal,
       initHomeTextImgReveal,
       initHomeTextBlocks,
       initGalleryH2,
@@ -1024,7 +1144,7 @@ export function useExScrollMotion() {
       window.clearTimeout(readyFallback);
       window.removeEventListener("load", onLoad);
       heroCleanup?.();
-      shipCleanup?.();
+      helmCleanup?.();
       if (tickerFn) gsap.ticker.remove(tickerFn);
       registerHathorLenis(null);
       lenis?.destroy();
