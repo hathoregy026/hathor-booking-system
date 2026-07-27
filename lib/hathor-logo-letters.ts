@@ -1,6 +1,11 @@
 /** Homepage hero HATHOR wordmark — one image per letter for per-glyph animation. */
 
-export const HATHOR_LOGO_PARTS_VARIANTS = ["current", "regular", "white"] as const;
+export const HATHOR_LOGO_PARTS_VARIANTS = [
+  "current",
+  "regular",
+  "white",
+  "empty-bg",
+] as const;
 export type HathorLogoPartsVariant = (typeof HATHOR_LOGO_PARTS_VARIANTS)[number];
 
 export const HATHOR_LOGO_PARTS_VARIANT_LABELS: Record<
@@ -10,6 +15,7 @@ export const HATHOR_LOGO_PARTS_VARIANT_LABELS: Record<
   current: "Current (live gold)",
   regular: "Parts · Regular",
   white: "Parts · White",
+  "empty-bg": "Parts · Empty BG",
 };
 
 type LetterMeta = {

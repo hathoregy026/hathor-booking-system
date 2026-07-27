@@ -55,7 +55,7 @@ export const heroLogoTuneSchema = z.object({
   yR: px(-300, 300),
   /**
    * Letter colour set. Default `current` = existing live WebPs.
-   * `regular` / `white` swap images only — same seats, gaps, and animation.
+   * `regular` / `white` / `empty-bg` swap images only — same seats, gaps, and animation.
    */
   partsVariant: heroLogoPartsVariantSchema,
 });
