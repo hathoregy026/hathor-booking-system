@@ -1,8 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
+import movingShip from "@/assets/moving-on-site.webp";
 import LuxuryAccordion from "@/components/home/LuxuryAccordion";
 import { HomeCampaignSection } from "@/components/home/HomeCampaignSection";
 import { LuxuryMarquee } from "@/components/home/LuxuryMarquee";
@@ -544,6 +546,21 @@ export function HomePageClient({
             ctaLabel: "Check Voyages",
           }))}
         />
+
+        <section
+          className="home-ship-passage ex-content-section"
+          aria-label="Hathor sailing across the Nile"
+        >
+          <div className="home-ship-passage__vessel" data-home-moving-ship>
+            <Image
+              src={movingShip}
+              alt="Hathor Dahabiya sailing"
+              className="home-ship-passage__image"
+              sizes="(max-width: 767px) 84vw, 62vw"
+              priority={false}
+            />
+          </div>
+        </section>
 
         <section className="text-img-section ex-content-section" id="escape">
           {EX_TEXT_BLOCKS.map((block, index) => {

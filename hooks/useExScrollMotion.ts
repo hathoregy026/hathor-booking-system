@@ -316,6 +316,36 @@ export function useExScrollMotion() {
     });
   }
 
+  function initHomeShipPassage() {
+    if (prefersReduced) return;
+
+    const section = document.querySelector<HTMLElement>(".home-ship-passage");
+    const vessel = section?.querySelector<HTMLElement>("[data-home-moving-ship]");
+    if (!section || !vessel) return;
+
+    const edgeGap = () => Math.max(32, window.innerWidth * 0.06);
+
+    gsap.fromTo(
+      vessel,
+      {
+        x: () => -(vessel.offsetWidth + edgeGap()),
+      },
+      {
+        x: () => window.innerWidth + edgeGap(),
+        ease: "none",
+        force3D: true,
+        scrollTrigger: {
+          id: "home-ship-passage",
+          trigger: section,
+          start: "top 92%",
+          end: "bottom 8%",
+          scrub: 1.65,
+          invalidateOnRefresh: true,
+        },
+      },
+    );
+  }
+
   /* -------------------------------------------------------
    * HERO SCROLL STAGE (pinned 100vh, SHORT scroll)
    *  - Stripes FULLY hidden on land (opacity 0 + edge-on)
@@ -910,6 +940,7 @@ export function useExScrollMotion() {
       initGeneralButtons,
       initHomeScrollText,
       initExStackScroll,
+      initHomeShipPassage,
       initHomeTextImgReveal,
       initHomeTextBlocks,
       initGalleryH2,
