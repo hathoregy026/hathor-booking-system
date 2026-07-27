@@ -1435,14 +1435,16 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   background: rgba(22, 16, 12, 0.28);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.45s ease;
+  transition: opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .carousel-container img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.7s ease, opacity 0.45s ease;
+  transition:
+    transform 1.45s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .carousel-slide:is(:hover, :focus-within) .carousel-container::after {
@@ -1450,8 +1452,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 }
 
 .carousel-slide:is(:hover, :focus-within) .carousel-container img {
-  transform: scale(1.045);
-  opacity: 0.88;
+  transform: scale(1.035);
+  opacity: 0.9;
 }
 
 .carousel-heading {

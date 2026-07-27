@@ -733,7 +733,7 @@ export function useExScrollMotion() {
       const slideW = slides[0].getBoundingClientRect().width;
       const x = -(index * (slideW + gap));
       if (animate) {
-        gsap.to(track, { x, duration: 0.7, ease: "power2.out" });
+        gsap.to(track, { x, duration: 1.15, ease: "power3.out" });
       } else {
         gsap.set(track, { x });
       }
@@ -773,13 +773,13 @@ export function useExScrollMotion() {
         const container = slide.querySelector(".carousel-container");
         if (!container) return;
 
-        const delayPerSlide = 0.25;
+        const delayPerSlide = 0.42;
         const startDelay = i * delayPerSlide;
 
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: root,
-            start: "top 50%",
+            start: "top 55%",
             toggleActions: "play none none none",
             once: true,
           },
@@ -788,12 +788,12 @@ export function useExScrollMotion() {
 
         tl.fromTo(
           container,
-          { clipPath: "polygon(0 0, 0 0, 0 0, 0 0)", scale: 1.5 },
+          { clipPath: "polygon(0 0, 0 0, 0 0, 0 0)", scale: 1.28 },
           {
             clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
             scale: 1,
-            duration: 0.8,
-            ease: "power2.out",
+            duration: 1.75,
+            ease: "power3.out",
           }
         );
 
