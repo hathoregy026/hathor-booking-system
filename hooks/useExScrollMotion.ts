@@ -934,9 +934,24 @@ export function useExScrollMotion() {
       if (nextBtn) nextBtn.style.pointerEvents = "none";
       if (prevBtn) prevBtn.style.pointerEvents = "none";
 
+      /*
+       * Only wipe the cards currently in view (3 desktop / 2 tablet / 1 phone).
+       * Off-screen slides stay fully revealed so arrow/autoplay never flash
+       * clipped cards — same effect, same scroll trigger, smaller scope.
+       */
+      const visibleCount = Math.min(slidesPerView(), slides.length);
+
       slides.forEach((slide, i) => {
         const container = slide.querySelector(".carousel-container");
         if (!container) return;
+
+        if (i >= visibleCount) {
+          gsap.set(container, {
+            clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
+            scale: 1,
+          });
+          return;
+        }
 
         const delayPerSlide = 0.42;
         const startDelay = i * delayPerSlide;
@@ -964,7 +979,7 @@ export function useExScrollMotion() {
 
         /* Heading letters: initHomepageAtelierSplit */
 
-        if (i === slides.length - 1) {
+        if (i === visibleCount - 1) {
           tl.add(() => {
             revealed = true;
             startAutoplay();
