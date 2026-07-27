@@ -9,18 +9,18 @@ const SILK_ROWS = ["TAKE YOUR", "VOYAGE", "TODAY"] as const;
 
 /*
  * One linear scroll sequence:
- *  0% — 20%  gold invitation rises
- * 20% — 44%  full invitation holds (roughly two seconds at normal wheel speed)
- * 44% — 72%  photograph rises over and erases the invitation
- * 76% — 90%  on-image title and button rise
- * 90% — 100% finished photograph holds before the page continues
+ *  0% — 19%  gold invitation rises
+ * 19% — 30%  full invitation holds briefly
+ * 30% — 62%  photograph fog dissolves upward through the invitation
+ * 62% — 70%  completed photograph holds
+ * 70% — 88%  on-image title rises, then the button follows
  */
 const PHASE = {
-  textEnd: 0.2,
-  imageStart: 0.44,
-  imageEnd: 0.72,
-  copyStart: 0.76,
-  copyEnd: 0.9,
+  textEnd: 0.19,
+  imageStart: 0.3,
+  imageEnd: 0.62,
+  copyStart: 0.7,
+  copyEnd: 0.88,
 } as const;
 
 function clamp(value: number) {
@@ -107,9 +107,11 @@ export function HomeCampaignSection({
       const imageProgress = ease(
         between(progress, PHASE.imageStart, PHASE.imageEnd),
       );
-      image.style.transform = `translate3d(0, ${
-        (1 - imageProgress) * 100
-      }%, 0)`;
+      image.style.setProperty(
+        "--hcta-fog-edge",
+        `${imageProgress * 140}%`,
+      );
+      image.style.opacity = clamp(imageProgress * 1.8).toFixed(3);
 
       const imageEffectProgress = ease(
         between(progress, PHASE.imageStart, PHASE.copyEnd),
@@ -124,7 +126,7 @@ export function HomeCampaignSection({
       revealCharacters(imageCopy, copyProgress, 0.34);
 
       if (button) {
-        const buttonProgress = ease(between(copyProgress, 0.42, 1));
+        const buttonProgress = ease(between(copyProgress, 0.5, 1));
         button.style.opacity = buttonProgress.toFixed(3);
         button.style.transform = `translate3d(0, ${
           (1 - buttonProgress) * 18
