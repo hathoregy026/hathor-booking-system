@@ -8,7 +8,7 @@ import {
   type CSSProperties,
 } from "react";
 import { SocialBrandIcon } from "@/components/public/SocialBrandIcon";
-import { ManagedImage } from "@/components/ui/ManagedImage";
+import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { EX_GALLERY } from "@/lib/ex-page-content";
 import type { SiteImageName } from "@/lib/site-image-slots";
@@ -61,7 +61,7 @@ const EMOJI_GLYPHS = [
   { glyph: "✨", label: "sparkles" },
 ] as const;
 
-const POP_COOLDOWN_MS = 380;
+const POP_COOLDOWN_MS = 420;
 const FLOAT_LIFE_SEC = 15;
 const FADE_DURATION_SEC = 1.15;
 const FLOAT_SPEED_CAP_IMG = 0.78;
@@ -162,42 +162,6 @@ function nextInstanceId(key: string) {
   return `${key}__${instanceSeq}_${Math.floor(Math.random() * 1e6)}`;
 }
 
-function createPoppedFloater(
-  template: FloaterTemplate,
-  origin: { cx: number; cy: number },
-  plan: { angle: number; impulse: number; stagger: number },
-): FloaterState {
-  const size = template.kind === "image" ? rand(96, 128) : rand(48, 60);
-  return {
-    ...template,
-    instanceId: nextInstanceId(template.key),
-    size,
-    x: origin.cx - size / 2,
-    y: origin.cy - size / 2,
-    vx: Math.cos(plan.angle) * plan.impulse,
-    vy: Math.sin(plan.angle) * plan.impulse,
-    rot: rand(-14, 14),
-    rotV: rand(-0.022, 0.022),
-    phase: rand(0, Math.PI * 2),
-    scale: 0.55,
-    mode: "pop",
-    popAge: -plan.stagger,
-    lifeAge: 0,
-    opacity: 0,
-  };
-}
-
-function spawnGeneration(
-  templates: FloaterTemplate[],
-  origin: { cx: number; cy: number },
-): FloaterState[] {
-  const plan = randomPopPlan(templates.length);
-  const order = shuffleInPlace(templates.map((_, i) => i));
-  return order.map((templateIndex, planIndex) =>
-    createPoppedFloater(templates[templateIndex]!, origin, plan[planIndex]!),
-  );
-}
-
 function reviveAsPop(
   f: FloaterState,
   origin: { cx: number; cy: number },
@@ -219,13 +183,20 @@ function reviveAsPop(
   f.opacity = 0;
 }
 
-/** Schedule work completely outside scroll / IO / Lenis call stacks */
-function runOffScrollStack(fn: () => void) {
-  queueMicrotask(() => {
-    requestAnimationFrame(() => {
-      requestAnimationFrame(fn);
-    });
-  });
+/** Burst photos — native eager imgs so decode never hits on scroll-into-view */
+function BurstPhoto({ name }: { name: SiteImageName }) {
+  const image = useSiteImage(name);
+  return (
+    // eslint-disable-next-line @next/next/no-img-element -- intentional: eager native decode, no Next lazy
+    <img
+      src={image.src}
+      alt=""
+      decoding="async"
+      loading="eager"
+      fetchPriority="low"
+      draggable={false}
+    />
+  );
 }
 
 export function GalleryInstagramFollow({
@@ -248,15 +219,17 @@ export function GalleryInstagramFollow({
   const timeRef = useRef(0);
   const cooldownRef = useRef(false);
   const loopRunningRef = useRef(false);
-  const idleSyncRef = useRef<number | null>(null);
   const poppedRef = useRef(false);
+  const scrollingRef = useRef(false);
+  const scrollIdleTimerRef = useRef<number | null>(null);
   const fieldSizeRef = useRef({ w: FALLBACK_FIELD_W, h: FALLBACK_FIELD_H });
-  const [particles, setParticles] = useState<ParticleRender[]>([]);
   const reducedRef = useRef(false);
+  const [particles, setParticles] = useState<ParticleRender[]>([]);
 
   const cacheFieldSize = useCallback(() => {
     const field = fieldRef.current;
     if (!field) return;
+    /* clientWidth/Height only — no getBoundingClientRect (avoids scroll layout sync) */
     const w = field.clientWidth;
     const h = field.clientHeight;
     if (w > 0 && h > 0) {
@@ -268,43 +241,6 @@ export function GalleryInstagramFollow({
     const { w, h } = fieldSizeRef.current;
     return getRatioOrigin(w, h);
   }, []);
-
-  const syncParticleList = useCallback((list: FloaterState[]) => {
-    setParticles(
-      list.map((f) => ({
-        instanceId: f.instanceId,
-        key: f.key,
-        kind: f.kind,
-        imageName: f.imageName,
-        alt: f.alt,
-        glyph: f.glyph,
-        size: f.size,
-      })),
-    );
-  }, []);
-
-  const scheduleIdleSync = useCallback(() => {
-    if (idleSyncRef.current != null) return;
-    const run = () => {
-      idleSyncRef.current = null;
-      const kept = floatersRef.current.filter((f) => f.mode !== "dead");
-      floatersRef.current = kept;
-      syncParticleList(kept);
-    };
-    const ric = (
-      window as Window & {
-        requestIdleCallback?: (
-          cb: () => void,
-          opts?: { timeout: number },
-        ) => number;
-      }
-    ).requestIdleCallback;
-    if (typeof ric === "function") {
-      idleSyncRef.current = ric(run, { timeout: 1200 });
-    } else {
-      idleSyncRef.current = window.setTimeout(run, 400);
-    }
-  }, [syncParticleList]);
 
   const paintFloater = (f: FloaterState) => {
     const el = nodeRefs.current.get(f.instanceId);
@@ -321,7 +257,6 @@ export function GalleryInstagramFollow({
 
     let last = performance.now();
     timeRef.current = 0;
-    let needsIdleSync = false;
 
     const tick = (now: number) => {
       const dtMs = Math.min(32, now - last);
@@ -355,7 +290,6 @@ export function GalleryInstagramFollow({
             f.opacity = 0;
             f.mode = "dead";
             paintFloater(f);
-            needsIdleSync = true;
             continue;
           }
           paintFloater(f);
@@ -452,14 +386,8 @@ export function GalleryInstagramFollow({
         paintFloater(f);
       }
 
-      if (needsIdleSync) {
-        needsIdleSync = false;
-        scheduleIdleSync();
-      }
-
       if (liveCount === 0) {
         loopRunningRef.current = false;
-        scheduleIdleSync();
         return;
       }
 
@@ -467,160 +395,180 @@ export function GalleryInstagramFollow({
     };
 
     rafRef.current = requestAnimationFrame(tick);
-  }, [scheduleIdleSync]);
+  }, []);
 
-  const playPop = useCallback(() => {
-    if (reducedRef.current) return;
-    if (cooldownRef.current) return;
+  /**
+   * Pop uses the fixed warm pool only — never React setState, never new DOM,
+   * never layout reads. Transform/opacity only.
+   */
+  const playPop = useCallback(
+    (opts?: { fromHover?: boolean }) => {
+      if (reducedRef.current) return;
+      if (cooldownRef.current) return;
+      if (!fieldRef.current) return;
+      /* Hover during active scroll = Lenis hitch — ignore until wheel settles */
+      if (opts?.fromHover && scrollingRef.current) return;
 
-    if (!fieldRef.current) return;
-    if (!templatesRef.current.length) {
-      templatesRef.current = buildTemplates();
-    }
+      if (!templatesRef.current.length) {
+        templatesRef.current = buildTemplates();
+      }
+      if (!floatersRef.current.length) return;
 
-    const origin = getOrigin();
+      const origin = getOrigin();
+      const pool = floatersRef.current;
 
-    cooldownRef.current = true;
-    window.setTimeout(() => {
-      cooldownRef.current = false;
-    }, POP_COOLDOWN_MS);
+      cooldownRef.current = true;
+      window.setTimeout(() => {
+        cooldownRef.current = false;
+      }, POP_COOLDOWN_MS);
 
-    const existing = floatersRef.current;
-    const reusable = existing.filter(
-      (f) => f.mode === "dead" || (f.opacity <= 0.01 && f.mode === "fade"),
-    );
-    const onlyWarmOrDead =
-      existing.length > 0 &&
-      existing.every(
-        (f) =>
-          f.mode === "dead" ||
-          (f.opacity <= 0.01 && (f.mode === "fade" || f.mode === "pop")),
+      const live = pool.filter(
+        (f) => f.mode === "pop" || f.mode === "float",
       );
+      if (live.length > 0) {
+        for (const f of live) f.mode = "fade";
+      }
 
-    const kickPhysics = (targets: FloaterState[]) => {
-      targets.forEach(paintFloater);
-      runOffScrollStack(() => ensureLoop());
-    };
-
-    if (onlyWarmOrDead && reusable.length >= templatesRef.current.length) {
-      const plan = randomPopPlan(reusable.length);
-      const order = shuffleInPlace(reusable.map((_, i) => i));
-      order.forEach((idx, planIndex) => {
-        reviveAsPop(reusable[idx]!, origin, plan[planIndex]!);
-      });
-      kickPhysics(reusable);
-      return;
-    }
-
-    if (onlyWarmOrDead && existing.length > 0) {
-      const plan = randomPopPlan(existing.length);
-      const order = shuffleInPlace(existing.map((_, i) => i));
+      const plan = randomPopPlan(pool.length);
+      const order = shuffleInPlace(pool.map((_, i) => i));
       order.forEach((floaterIndex, planIndex) => {
-        reviveAsPop(existing[floaterIndex]!, origin, plan[planIndex]!);
+        reviveAsPop(pool[floaterIndex]!, origin, plan[planIndex]!);
       });
-      kickPhysics(existing);
-      return;
-    }
 
-    for (const f of existing) {
-      if (f.mode !== "fade" && f.mode !== "dead") f.mode = "fade";
-    }
+      for (const f of pool) paintFloater(f);
+      /* Start physics on next frame — never inside IO/scroll/hover stack */
+      requestAnimationFrame(() => ensureLoop());
+    },
+    [ensureLoop, getOrigin],
+  );
 
-    const next = spawnGeneration(templatesRef.current, origin);
-    floatersRef.current = [...existing, ...next];
-    syncParticleList(floatersRef.current);
-
-    runOffScrollStack(() => {
-      next.forEach(paintFloater);
-      ensureLoop();
-    });
-  }, [ensureLoop, getOrigin, syncParticleList]);
-
+  /* Mount fixed pool once + preload images long before the section is reached */
   useEffect(() => {
     reducedRef.current =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    if (!reducedRef.current && !templatesRef.current.length) {
-      templatesRef.current = buildTemplates();
-      cacheFieldSize();
-      const origin = getOrigin();
-      const warm = templatesRef.current.map((template) => {
-        const size = template.kind === "image" ? 112 : 54;
-        return {
-          ...template,
-          instanceId: nextInstanceId(`warm-${template.key}`),
-          size,
-          x: origin.cx - size / 2,
-          y: origin.cy - size / 2,
-          vx: 0,
-          vy: 0,
-          rot: 0,
-          rotV: 0,
-          phase: 0,
-          scale: 0.55,
-          mode: "dead" as const,
-          popAge: 0,
-          lifeAge: FLOAT_LIFE_SEC,
-          opacity: 0,
-        };
-      });
-      floatersRef.current = warm;
-      syncParticleList(warm);
-    }
+    if (reducedRef.current) return;
+
+    templatesRef.current = buildTemplates();
+    cacheFieldSize();
+    const origin = getOrigin();
+    const warm = templatesRef.current.map((template) => {
+      const size = template.kind === "image" ? 112 : 54;
+      return {
+        ...template,
+        instanceId: nextInstanceId(`warm-${template.key}`),
+        size,
+        x: origin.cx - size / 2,
+        y: origin.cy - size / 2,
+        vx: 0,
+        vy: 0,
+        rot: 0,
+        rotV: 0,
+        phase: 0,
+        scale: 0.55,
+        mode: "dead" as const,
+        popAge: 0,
+        lifeAge: FLOAT_LIFE_SEC,
+        opacity: 0,
+      };
+    });
+    floatersRef.current = warm;
+    /* Sole React commit for particles — never again during scroll/pop */
+    setParticles(
+      warm.map((f) => ({
+        instanceId: f.instanceId,
+        key: f.key,
+        kind: f.kind,
+        imageName: f.imageName,
+        alt: f.alt,
+        glyph: f.glyph,
+        size: f.size,
+      })),
+    );
 
     const onResize = () => cacheFieldSize();
     window.addEventListener("resize", onResize, { passive: true });
-    const t1 = window.setTimeout(cacheFieldSize, 300);
-    const t2 = window.setTimeout(cacheFieldSize, 1500);
+    const t1 = window.setTimeout(cacheFieldSize, 200);
+    const t2 = window.setTimeout(cacheFieldSize, 1200);
 
     return () => {
       window.removeEventListener("resize", onResize);
       window.clearTimeout(t1);
       window.clearTimeout(t2);
     };
-  }, [cacheFieldSize, getOrigin, syncParticleList]);
+  }, [cacheFieldSize, getOrigin]);
 
+  /* Track scroll activity — hover pops must not run mid-wheel */
+  useEffect(() => {
+    const onScroll = () => {
+      scrollingRef.current = true;
+      if (scrollIdleTimerRef.current != null) {
+        window.clearTimeout(scrollIdleTimerRef.current);
+      }
+      scrollIdleTimerRef.current = window.setTimeout(() => {
+        scrollingRef.current = false;
+        scrollIdleTimerRef.current = null;
+      }, 140);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (scrollIdleTimerRef.current != null) {
+        window.clearTimeout(scrollIdleTimerRef.current);
+      }
+    };
+  }, []);
+
+  /* First pop: IO only, after scroll has been idle briefly */
   useEffect(() => {
     const trigger = triggerRef.current;
     if (!trigger || reducedRef.current) return;
 
-    /*
-     * Pop trigger is 100% decoupled from Lenis / GSAP / window scroll.
-     * Browser IntersectionObserver only — no layout reads in the callback.
-     */
+    let armed = false;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (!entry?.isIntersecting || poppedRef.current) return;
-        poppedRef.current = true;
+        if (!entry?.isIntersecting || poppedRef.current || armed) return;
+        armed = true;
         observer.disconnect();
-        runOffScrollStack(playPop);
+
+        const fire = () => {
+          if (poppedRef.current) return;
+          poppedRef.current = true;
+          playPop();
+        };
+
+        /* If user is still scrolling into the section, wait for settle */
+        if (scrollingRef.current) {
+          const wait = window.setInterval(() => {
+            if (!scrollingRef.current) {
+              window.clearInterval(wait);
+              requestAnimationFrame(fire);
+            }
+          }, 50);
+          window.setTimeout(() => {
+            window.clearInterval(wait);
+            requestAnimationFrame(fire);
+          }, 600);
+          return;
+        }
+
+        requestAnimationFrame(fire);
       },
       {
         root: null,
-        threshold: 0.22,
+        threshold: 0.35,
         rootMargin: "0px",
       },
     );
 
     observer.observe(trigger);
-
     return () => observer.disconnect();
   }, [playPop]);
 
   useEffect(() => {
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      if (idleSyncRef.current != null) {
-        const cic = (
-          window as Window & {
-            cancelIdleCallback?: (id: number) => void;
-          }
-        ).cancelIdleCallback;
-        if (typeof cic === "function") cic(idleSyncRef.current);
-        else window.clearTimeout(idleSyncRef.current);
-        idleSyncRef.current = null;
-      }
       loopRunningRef.current = false;
     };
   }, []);
@@ -633,8 +581,8 @@ export function GalleryInstagramFollow({
           <div
             className="instagram-follow"
             aria-label="Follow Hathor on Instagram"
-            onMouseEnter={playPop}
-            onFocusCapture={playPop}
+            onMouseEnter={() => playPop({ fromHover: true })}
+            onFocusCapture={() => playPop({ fromHover: true })}
           >
             <p className="instagram-follow__eyebrow instagram-follow__copy">
               {followEyebrow}
@@ -692,14 +640,7 @@ export function GalleryInstagramFollow({
           >
             {floater.kind === "image" && floater.imageName ? (
               <span className="instagram-circle instagram-circle--burst">
-                <ManagedImage
-                  name={floater.imageName}
-                  alt=""
-                  fill
-                  sizes="128px"
-                  className="object-cover"
-                  previewAnchor={false}
-                />
+                <BurstPhoto name={floater.imageName} />
               </span>
             ) : (
               <span className="instagram-float-emoji__inner">

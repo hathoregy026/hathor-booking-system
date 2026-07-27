@@ -2086,7 +2086,10 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   position: relative;
   z-index: 30;
   isolation: isolate;
-  overflow: visible;
+  /* Clip abspos overflow so floating bubbles never expand page scroll height */
+  overflow: hidden;
+  contain: layout style paint;
+  transform: translateZ(0);
 }
 
 .instagram-burst-field {
@@ -2094,8 +2097,10 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   inset: 0;
   z-index: 200;
   pointer-events: none;
-  overflow: visible;
+  overflow: hidden;
   opacity: 1;
+  contain: layout style paint;
+  transform: translateZ(0);
 }
 
 .instagram-burst-particle {
@@ -2109,6 +2114,9 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   backface-visibility: hidden;
   transform-origin: center center;
   z-index: 1;
+  will-change: transform, opacity;
+  contain: layout style paint;
+  pointer-events: none;
 }
 
 .instagram-circle {
@@ -2153,8 +2161,13 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
 }
 
 .instagram-circle img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   filter: saturate(0.86) brightness(1.03) sepia(0.1);
+  pointer-events: none;
 }
 
 .instagram-float-emoji__inner {
