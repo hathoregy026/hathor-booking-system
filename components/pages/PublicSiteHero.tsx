@@ -111,10 +111,45 @@ export function PublicSiteHero({
     const video = heroVideoRef.current;
     if (!video) return;
 
-    video.muted = true;
-    video.defaultMuted = true;
-    video.setAttribute("muted", "");
-    void video.play().catch(() => {});
+    const startVideo = () => {
+      if (!video.getAttribute("src")) {
+        video.src = HATHOR_HERO_VIDEO_SRC;
+      }
+      video.muted = true;
+      video.defaultMuted = true;
+      video.setAttribute("muted", "");
+      void video.play().catch(() => {});
+    };
+
+    const root = document.documentElement;
+    if (
+      root.classList.contains("ex-scroll-ready") ||
+      root.classList.contains("hero-motion-ready")
+    ) {
+      startVideo();
+      return;
+    }
+
+    const observer = new MutationObserver(() => {
+      if (
+        root.classList.contains("ex-scroll-ready") ||
+        root.classList.contains("hero-motion-ready")
+      ) {
+        observer.disconnect();
+        startVideo();
+      }
+    });
+    observer.observe(root, { attributes: true, attributeFilter: ["class"] });
+
+    const fallback = window.setTimeout(() => {
+      observer.disconnect();
+      startVideo();
+    }, 900);
+
+    return () => {
+      observer.disconnect();
+      window.clearTimeout(fallback);
+    };
   }, [playVideo]);
 
   return (
@@ -128,13 +163,12 @@ export function PublicSiteHero({
         {playVideo ? (
           <video
             ref={heroVideoRef}
-            src={HATHOR_HERO_VIDEO_SRC}
             poster={heroImage.src}
             autoPlay
             loop
             muted
             playsInline
-            preload="metadata"
+            preload="none"
             aria-label={heroImage.alt || "Hathor Dahabiya sailing on the Nile"}
           />
         ) : (

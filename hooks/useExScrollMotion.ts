@@ -1005,11 +1005,10 @@ export function useExScrollMotion() {
 
     const onLoad = () => {
       try {
-        restoreNow();
-        markScrollReady();
-      } catch (error) {
-        console.warn("[useExScrollMotion] refresh failed", error);
-        markScrollReady();
+        ScrollTrigger.refresh();
+        ScrollTrigger.update();
+      } catch {
+        /* ignore */
       }
     };
     window.addEventListener("load", onLoad);

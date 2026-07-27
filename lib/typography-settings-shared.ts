@@ -290,7 +290,7 @@ export const DEFAULT_HERO_LAYOUT: HeroLayout = {
   mainX: 0,
   mainY: 0,
   secondX: 0,
-  secondY: -28,
+  secondY: 0,
 };
 
 const copyLine = z.string().max(160);

@@ -56,15 +56,29 @@ export function mountHeroScrollStage({
 
   document.querySelectorAll(".hero-logo-bridge").forEach((el) => el.remove());
 
-  if (!prefersReduced && chrome.length) {
-    gsap.from(chrome, {
-      opacity: 0,
-      y: 16,
-      duration: 0.8,
-      ease: "power2.out",
-      delay: 0.15,
-      stagger: 0.05,
-    });
+  const root = document.documentElement;
+  const markHeroMotionReady = () => {
+    root.classList.add("hero-motion-ready");
+  };
+
+  if (chrome.length) {
+    if (prefersReduced) {
+      gsap.set(chrome, { opacity: 1, y: 0 });
+      markHeroMotionReady();
+    } else {
+      gsap.set(chrome, { opacity: 0, y: 16 });
+      markHeroMotionReady();
+      gsap.from(chrome, {
+        opacity: 0,
+        y: 16,
+        duration: 0.8,
+        ease: "power2.out",
+        delay: 0.15,
+        stagger: 0.05,
+      });
+    }
+  } else {
+    markHeroMotionReady();
   }
 
   function isSplitLetterLogo() {
@@ -421,5 +435,6 @@ export function mountHeroScrollStage({
     if (lenis) lenis.off("scroll", onFirstScroll);
     landingTween?.kill();
     killByPrefix("hero-stage");
+    root.classList.remove("hero-motion-ready");
   };
 }

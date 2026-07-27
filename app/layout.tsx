@@ -6,6 +6,7 @@ import {
   getPublicThemeBlockingScript,
   getHomeBootCriticalStyle,
   getHomeScrollPendingBlockingScript,
+  getPublicHeroBootCriticalStyle,
 } from "@/lib/public-theme";
 import "./hathor-fonts.css";
 import "./globals.css";
@@ -52,7 +53,9 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: getPublicThemeBlockingScript() }}
         />
         <style
-          dangerouslySetInnerHTML={{ __html: getHomeBootCriticalStyle() }}
+          dangerouslySetInnerHTML={{
+            __html: getHomeBootCriticalStyle() + getPublicHeroBootCriticalStyle(),
+          }}
         />
         <script
           dangerouslySetInnerHTML={{

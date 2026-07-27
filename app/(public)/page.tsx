@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { unstable_noStore as noStore } from "next/cache";
-import { preload } from "react-dom";
 import { HomeExperienceShell } from "@/components/pages/HomeExperienceShell";
 import { HomePageClient } from "@/components/pages/HomePageClient";
-import { HATHOR_HERO_POSTER_SRC, HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
+import { HATHOR_HERO_POSTER_SRC } from "@/lib/branding";
 import { getHomepageAccordionCruisesSafe } from "@/lib/homepage-accordion-cruises";
 import { getHeroLogoTuneSafe, getHeroLogoTuneMobileSafe } from "@/lib/hero-logo-tune";
 import { heroLogoTuneToImportantCss } from "@/lib/hero-logo-tune-shared";
@@ -53,7 +52,6 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   noStore();
-  preload(HATHOR_HERO_VIDEO_SRC, { as: "fetch", fetchPriority: "high" });
   const [heroLogoTune, heroLogoTuneMobile, accordionCruises] = await Promise.all([
     getHeroLogoTuneSafe(),
     getHeroLogoTuneMobileSafe(),
@@ -72,9 +70,8 @@ export default async function HomePage() {
       />
       <link
         rel="preload"
-        href={HATHOR_HERO_VIDEO_SRC}
-        as="video"
-        type="video/mp4"
+        href={HATHOR_HERO_POSTER_SRC}
+        as="image"
         fetchPriority="high"
       />
       <HomePageClient

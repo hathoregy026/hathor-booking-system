@@ -1014,7 +1014,7 @@ h1, h2, h3, h4, p {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0;
+  gap: 0.12em;
   margin: 0;
   overflow: visible;
 }
