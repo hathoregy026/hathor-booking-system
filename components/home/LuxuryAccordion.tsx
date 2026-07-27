@@ -122,6 +122,7 @@ export default function LuxuryAccordion({
                   alt=""
                   fill
                   sizes="100vw"
+                  unoptimized={false}
                   className={styles.backgroundImage}
                   previewAnchor
                 />

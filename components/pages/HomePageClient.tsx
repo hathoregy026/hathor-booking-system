@@ -150,6 +150,7 @@ function ItineraryCarouselSlide({ slide }: { slide: ExCarouselSlide }) {
               alt={slide.alt}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 38vw"
+              unoptimized={false}
               className="object-cover"
               previewAnchor={HOMEPAGE_PREVIEW_SLOTS.has(slide.imageName)}
             />
@@ -338,6 +339,7 @@ export function HomePageClient({
                         width={900}
                         height={1200}
                         sizes="(max-width: 768px) 100vw, 42vw"
+                        unoptimized={false}
                         className="h-auto w-full object-cover"
                       />
                     </Link>
@@ -355,6 +357,7 @@ export function HomePageClient({
                       width={42}
                       height={42}
                       sizes="42px"
+                      unoptimized={false}
                       previewAnchor={HOMEPAGE_PREVIEW_SLOTS.has(item.name)}
                     />
                   ))}
@@ -460,6 +463,7 @@ export function HomePageClient({
                       alt={slide.alt}
                       fill
                       sizes="100vw"
+                      unoptimized={false}
                       className="object-cover object-center"
                       previewAnchor={false}
                     />
@@ -558,6 +562,7 @@ export function HomePageClient({
                     alt={block.alt}
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
+                    unoptimized={false}
                     className="object-cover"
                     previewAnchor={HOMEPAGE_PREVIEW_SLOTS.has(block.imageName)}
                   />

@@ -190,6 +190,7 @@ export function HomeCampaignSection({
               sizes="100vw"
               loading="lazy"
               fetchPriority="low"
+              unoptimized={false}
               className="hcta-bg object-cover"
               previewAnchor={previewAnchor}
             />
