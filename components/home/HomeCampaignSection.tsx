@@ -1,35 +1,57 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import type { CSSProperties } from "react";
-import gsap from "gsap";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 
 const SILK_ROWS = ["TAKE YOUR", "VOYAGE", "TODAY"] as const;
 
-function clamp01(n: number) {
-  return n < 0 ? 0 : n > 1 ? 1 : n;
+/*
+ * One linear scroll sequence:
+ *  0% — 20%  gold invitation rises
+ * 20% — 44%  full invitation holds (roughly two seconds at normal wheel speed)
+ * 44% — 72%  photograph rises over and erases the invitation
+ * 76% — 90%  on-image title and button rise
+ * 90% — 100% finished photograph holds before the page continues
+ */
+const PHASE = {
+  textEnd: 0.2,
+  imageStart: 0.44,
+  imageEnd: 0.72,
+  copyStart: 0.76,
+  copyEnd: 0.9,
+} as const;
+
+function clamp(value: number) {
+  return Math.min(1, Math.max(0, value));
 }
 
-function smoothstep(t: number) {
-  return t * t * (3 - 2 * t);
+function between(value: number, start: number, end: number) {
+  return clamp((value - start) / (end - start));
 }
 
-type LenisScroll = {
-  scroll: number;
-  on: (event: "scroll", fn: () => void) => void;
-  off: (event: "scroll", fn: () => void) => void;
-};
+function ease(value: number) {
+  return value * value * (3 - 2 * value);
+}
 
-type HathorWindow = Window & {
-  __hathorLenis?: LenisScroll | null;
-};
+function revealCharacters(
+  characters: HTMLElement[],
+  progress: number,
+  staggerSpan: number,
+) {
+  const finalIndex = Math.max(1, characters.length - 1);
+  const movementSpan = 1 - staggerSpan;
 
-function readScrollY(): number {
-  const lenis = (window as HathorWindow).__hathorLenis;
-  if (lenis && typeof lenis.scroll === "number") return lenis.scroll;
-  return window.scrollY || document.documentElement.scrollTop || 0;
+  characters.forEach((character, index) => {
+    const delay = (index / finalIndex) * staggerSpan;
+    const localProgress = ease(clamp((progress - delay) / movementSpan));
+
+    character.style.opacity = localProgress.toFixed(3);
+    character.style.transform = `translate3d(0, ${
+      (1 - localProgress) * 115
+    }%, 0)`;
+  });
 }
 
 type HomeCampaignSectionProps = {
@@ -40,13 +62,6 @@ type HomeCampaignSectionProps = {
   previewAnchor?: boolean;
 };
 
-/**
- * Home CTA — Lenis-synced stick + wipe.
- *
- * Driven from scroll Y (not gsap.ticker + rect) so motion stays locked to
- * what Lenis renders. Direct transforms — no timeline progress scrub on
- * letter stagger (that caused visible bounce when scrolling).
- */
 export function HomeCampaignSection({
   title,
   imageName,
@@ -54,195 +69,92 @@ export function HomeCampaignSection({
   titleStyle,
   previewAnchor = true,
 }: HomeCampaignSectionProps) {
-  const trackRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLElement>(null);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const track = trackRef.current;
-    if (!track) return;
-
-    const reduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
-    const frame = track.querySelector<HTMLElement>("[data-hcta-frame]");
-    const reveal = track.querySelector<HTMLElement>("[data-hcta-reveal]");
-    const silkRows = gsap.utils.toArray<HTMLElement>(
-      track.querySelectorAll(".hcta-silk-row"),
-    );
-    const silkChars = gsap.utils.toArray<HTMLElement>(
-      track.querySelectorAll(".hcta-silk-char"),
-    );
-    const chars = gsap.utils.toArray<HTMLElement>(
-      track.querySelectorAll(".hcta-heading .hcta-char"),
-    );
-    const book = track.querySelector<HTMLElement>(".hcta-book");
-
-    if (!frame) return;
-
-    let killed = false;
-    let trackStart = 0;
-    let bindTimer = 0;
-
-    const setFrameY = gsap.quickSetter(frame, "y", "px");
-    const setRevealY =
-      reveal != null
-        ? gsap.quickSetter(reveal, "yPercent", "%")
-        : null;
-
-    const silkRowChars = silkRows.map((row) =>
-      gsap.utils.toArray<HTMLElement>(row.querySelectorAll(".hcta-silk-char")),
-    );
-
-    if (reduced) {
-      gsap.set(frame, { clearProps: "transform" });
-      if (reveal) gsap.set(reveal, { yPercent: 0, clearProps: "transform" });
-      if (silkChars.length) gsap.set(silkChars, { yPercent: 0, autoAlpha: 0 });
-      if (chars.length) gsap.set(chars, { yPercent: 0, autoAlpha: 1 });
-      if (book) gsap.set(book, { autoAlpha: 1, y: 0 });
+    if (
+      !track ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
       return;
     }
 
-    gsap.set(frame, { y: 0, force3D: true });
-    if (reveal) gsap.set(reveal, { yPercent: 100, force3D: true });
-    if (silkChars.length) {
-      gsap.set(silkChars, { yPercent: 120, autoAlpha: 0, force3D: true });
-    }
-    if (chars.length) {
-      gsap.set(chars, { yPercent: 120, autoAlpha: 0, force3D: true });
-    }
-    if (book) gsap.set(book, { autoAlpha: 0, y: 10 });
+    const frame = track.querySelector<HTMLElement>("[data-hcta-frame]");
+    const image = track.querySelector<HTMLElement>("[data-hcta-reveal]");
+    const media = track.querySelector<HTMLElement>("[data-hcta-media]");
+    const invitation = Array.from(
+      track.querySelectorAll<HTMLElement>(".hcta-silk-char"),
+    );
+    const imageCopy = Array.from(
+      track.querySelectorAll<HTMLElement>(".hcta-heading .hcta-char"),
+    );
+    const button = track.querySelector<HTMLElement>(".hcta-book");
 
-    const measure = () => {
-      trackStart = track.getBoundingClientRect().top + readScrollY();
-    };
+    if (!frame || !image) return;
 
-    const applyInvite = (inviteP: number) => {
-      silkRowChars.forEach((rowChars, rowIndex) => {
-        const rowDelay = rowIndex * 0.16;
-        rowChars.forEach((char, charIndex) => {
-          const delay = rowDelay + charIndex * 0.012;
-          const denom = Math.max(0.001, 1 - delay);
-          const p = smoothstep(clamp01((inviteP - delay) / denom));
-          gsap.set(char, {
-            yPercent: 120 * (1 - p),
-            autoAlpha: p > 0.03 ? 1 : 0,
-            force3D: true,
-          });
-        });
-      });
-    };
+    let animationFrame = 0;
 
-    const applyTitle = (titleP: number) => {
-      const p = smoothstep(titleP);
-      chars.forEach((char, index) => {
-        const delay = index * 0.012;
-        const denom = Math.max(0.001, 1 - delay);
-        const cp = clamp01((p - delay) / denom);
-        gsap.set(char, {
-          yPercent: 120 * (1 - cp),
-          autoAlpha: cp > 0.03 ? 1 : 0,
-          force3D: true,
-        });
-      });
-      if (book) {
-        const bp = clamp01((p - 0.35) / 0.65);
-        gsap.set(book, { autoAlpha: bp, y: 10 * (1 - bp) });
-      }
-    };
+    const render = () => {
+      animationFrame = 0;
 
-    const sync = () => {
-      if (killed) return;
-
-      const scroll = readScrollY();
-      const vh = window.innerHeight;
       const travel = Math.max(1, track.offsetHeight - frame.offsetHeight);
-      const offset = scroll - trackStart;
+      const progress = clamp(-track.getBoundingClientRect().top / travel);
 
-      const stickY = Math.max(0, Math.min(travel, offset));
-      setFrameY(stickY);
+      const textProgress = ease(between(progress, 0, PHASE.textEnd));
+      revealCharacters(invitation, textProgress, 0.42);
 
-      const inviteRange = vh * 0.88;
-      const inviteP =
-        offset < 0 ? clamp01(1 - (-offset) / inviteRange) : 1;
-      applyInvite(inviteP);
-
-      const coverP = clamp01(stickY / travel);
-      const wipeStart = 0.1;
-      const wipeEnd = 0.82;
-      const wipeP = smoothstep(
-        clamp01((coverP - wipeStart) / (wipeEnd - wipeStart)),
+      const imageProgress = ease(
+        between(progress, PHASE.imageStart, PHASE.imageEnd),
       );
-      setRevealY?.((1 - wipeP) * 100);
+      image.style.transform = `translate3d(0, ${
+        (1 - imageProgress) * 100
+      }%, 0)`;
 
-      const titleStart = 0.84;
-      const titleP = clamp01((coverP - titleStart) / (1 - titleStart));
-      applyTitle(titleP);
-    };
-
-    measure();
-    sync();
-
-    const remeasureSoon = () => {
-      requestAnimationFrame(() => {
-        measure();
-        sync();
-      });
-    };
-
-    const onScroll = () => sync();
-    const onResize = () => {
-      measure();
-      sync();
-    };
-
-    let lenisBound: LenisScroll | null = null;
-    const bindLenis = () => {
-      const lenis = (window as HathorWindow).__hathorLenis;
-      if (!lenis?.on) return false;
-      lenis.on("scroll", onScroll);
-      lenisBound = lenis;
-      return true;
-    };
-
-    if (!bindLenis()) {
-      window.addEventListener("scroll", onScroll, { passive: true });
-      bindTimer = window.setInterval(() => {
-        if (bindLenis()) {
-          window.clearInterval(bindTimer);
-          window.removeEventListener("scroll", onScroll);
-        }
-      }, 40);
-    }
-
-    window.addEventListener("resize", onResize);
-    window.addEventListener("load", remeasureSoon);
-
-    const rootObserver = new MutationObserver(() => {
-      if (document.documentElement.classList.contains("ex-scroll-ready")) {
-        remeasureSoon();
-        rootObserver.disconnect();
+      const imageEffectProgress = ease(
+        between(progress, PHASE.imageStart, PHASE.copyEnd),
+      );
+      if (media) {
+        media.style.transform = `scale(${1.035 - imageEffectProgress * 0.035})`;
       }
-    });
-    rootObserver.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
+
+      const copyProgress = ease(
+        between(progress, PHASE.copyStart, PHASE.copyEnd),
+      );
+      revealCharacters(imageCopy, copyProgress, 0.34);
+
+      if (button) {
+        const buttonProgress = ease(between(copyProgress, 0.42, 1));
+        button.style.opacity = buttonProgress.toFixed(3);
+        button.style.transform = `translate3d(0, ${
+          (1 - buttonProgress) * 18
+        }px, 0)`;
+      }
+    };
+
+    const requestRender = () => {
+      if (animationFrame) return;
+      animationFrame = window.requestAnimationFrame(render);
+    };
+
+    render();
+    animationFrame = window.requestAnimationFrame(render);
+    window.addEventListener("scroll", requestRender, { passive: true });
+    window.addEventListener("resize", requestRender);
+    window.addEventListener("load", requestRender);
+    window.addEventListener("pageshow", requestRender);
 
     return () => {
-      killed = true;
-      rootObserver.disconnect();
-      window.removeEventListener("load", remeasureSoon);
-      window.clearInterval(bindTimer);
-      window.removeEventListener("resize", onResize);
-      window.removeEventListener("scroll", onScroll);
-      lenisBound?.off("scroll", onScroll);
-      gsap.set(frame, { clearProps: "transform" });
-      if (reveal) gsap.set(reveal, { clearProps: "transform" });
+      window.cancelAnimationFrame(animationFrame);
+      window.removeEventListener("scroll", requestRender);
+      window.removeEventListener("resize", requestRender);
+      window.removeEventListener("load", requestRender);
+      window.removeEventListener("pageshow", requestRender);
     };
   }, []);
 
   return (
-    <div
+    <section
       ref={trackRef}
       className="hcta-track"
       id="campaign"
@@ -254,10 +166,10 @@ export function HomeCampaignSection({
           <div className="hcta-silk-copy" aria-hidden="true">
             {SILK_ROWS.map((row) => (
               <div className="hcta-silk-row" key={row}>
-                {Array.from(row).map((ch, index) => (
+                {Array.from(row).map((character, index) => (
                   <span className="hcta-silk-letter" key={`${row}-${index}`}>
                     <span className="hcta-silk-char">
-                      {ch === " " ? "\u00A0" : ch}
+                      {character === " " ? "\u00A0" : character}
                     </span>
                   </span>
                 ))}
@@ -287,10 +199,10 @@ export function HomeCampaignSection({
             aria-label={title}
             data-typo-role="on_images_title"
           >
-            {Array.from(title).map((ch, index) => (
-              <span className="hcta-letter" key={`${ch}-${index}`}>
+            {Array.from(title).map((character, index) => (
+              <span className="hcta-letter" key={`${character}-${index}`}>
                 <span className="hcta-char">
-                  {ch === " " ? "\u00A0" : ch}
+                  {character === " " ? "\u00A0" : character}
                 </span>
               </span>
             ))}
@@ -298,6 +210,6 @@ export function HomeCampaignSection({
           <BookNowTrigger className="btn hcta-book">Book Now</BookNowTrigger>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

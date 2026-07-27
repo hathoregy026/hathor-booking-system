@@ -983,12 +983,7 @@ export function useExScrollMotion() {
       registerHathorLenis(null);
       lenis?.destroy();
       try {
-        /* Do not kill CTA stage triggers — HomeCampaignSection owns those */
-        ScrollTrigger.getAll().forEach((st) => {
-          const id = String(st.vars?.id || "");
-          if (id.startsWith("hcta-")) return;
-          st.kill();
-        });
+        ScrollTrigger.getAll().forEach((st) => st.kill());
       } catch {
         /* ignore */
       }
