@@ -853,31 +853,11 @@ export function useExScrollMotion() {
   }
 
   /* -------------------------------------------------------
-   * Gallery image soft rise (extra polish, still scroll-reveal)
+   * Gallery marquee — no scroll-triggered tween.
+   * A fade here stacked with IG bubble pop and caused a Lenis hitch.
    * ----------------------------------------------------- */
   function initGalleryItems() {
-    if (prefersReduced) return;
-    const marquee = document.querySelector(".gallery-marquee");
-    if (!marquee) return;
-    /*
-     * Opacity-only, once — never reverse. Avoids a scroll hitch beside IG bubbles.
-     */
-    gsap.fromTo(
-      marquee,
-      { autoAlpha: 0.001 },
-      {
-        autoAlpha: 1,
-        duration: 0.85,
-        ease: "power2.out",
-        immediateRender: false,
-        scrollTrigger: {
-          trigger: marquee,
-          start: "top 92%",
-          once: true,
-          toggleActions: "play none none none",
-        },
-      },
-    );
+    /* intentionally empty — marquee is CSS-visible */
   }
 
   /* -------------------------------------------------------

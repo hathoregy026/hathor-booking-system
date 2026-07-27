@@ -252,8 +252,21 @@ export function GalleryInstagramFollow({
   const cooldownRef = useRef(false);
   const loopRunningRef = useRef(false);
   const idleSyncRef = useRef<number | null>(null);
+  /** Cached hotspot — updated on idle/resize only, never during scroll pop */
+  const originCacheRef = useRef<{ cx: number; cy: number } | null>(null);
+  const fieldSizeRef = useRef({ w: 0, h: 0 });
   const [particles, setParticles] = useState<ParticleRender[]>([]);
   const reducedRef = useRef(false);
+
+  const cachePopMetrics = useCallback(() => {
+    const field = fieldRef.current;
+    if (!field) return;
+    fieldSizeRef.current = {
+      w: field.offsetWidth,
+      h: field.offsetHeight,
+    };
+    originCacheRef.current = getPopOrigin(field, igLinkRef.current);
+  }, []);
 
   const syncParticleList = useCallback((list: FloaterState[]) => {
     setParticles(
@@ -319,8 +332,8 @@ export function GalleryInstagramFollow({
       timeRef.current += dtMs / 1000;
       const t = timeRef.current;
 
-      const width = field.clientWidth;
-      const height = field.clientHeight;
+      const width = fieldSizeRef.current.w || field.clientWidth;
+      const height = fieldSizeRef.current.h || field.clientHeight;
       const minX = 8;
       const minY = 8;
       let liveCount = 0;
@@ -468,7 +481,14 @@ export function GalleryInstagramFollow({
       templatesRef.current = buildTemplates();
     }
 
-    const origin = getPopOrigin(field, igLinkRef.current);
+    /*
+     * Use cached origin only — never getBoundingClientRect on the scroll path.
+     * A forced reflow here was the remaining Lenis hitch.
+     */
+    const origin = originCacheRef.current ?? {
+      cx: field.offsetWidth * 0.5,
+      cy: Math.min(field.offsetHeight * 0.28, 220),
+    };
 
     cooldownRef.current = true;
     window.setTimeout(() => {
@@ -487,18 +507,21 @@ export function GalleryInstagramFollow({
           (f.opacity <= 0.01 && (f.mode === "fade" || f.mode === "pop")),
       );
 
-    /*
-     * First pop / recycle: mutate existing nodes only.
-     * Zero React setState on the scroll path — this is what stopped the jump.
-     */
+    const kickPhysics = (targets: FloaterState[]) => {
+      targets.forEach(paintFloater);
+      /* Defer rAF loop to the next task so this scroll frame stays clean */
+      window.setTimeout(() => {
+        ensureLoop();
+      }, 0);
+    };
+
     if (onlyWarmOrDead && reusable.length >= templatesRef.current.length) {
       const plan = randomPopPlan(reusable.length);
       const order = shuffleInPlace(reusable.map((_, i) => i));
       order.forEach((idx, planIndex) => {
         reviveAsPop(reusable[idx]!, origin, plan[planIndex]!);
       });
-      reusable.forEach(paintFloater);
-      ensureLoop();
+      kickPhysics(reusable);
       return;
     }
 
@@ -508,26 +531,27 @@ export function GalleryInstagramFollow({
       order.forEach((floaterIndex, planIndex) => {
         reviveAsPop(existing[floaterIndex]!, origin, plan[planIndex]!);
       });
-      existing.forEach(paintFloater);
-      ensureLoop();
+      kickPhysics(existing);
       return;
     }
 
-    /* Hover while live: fade current burst, spawn a fresh random generation */
+    /* Hover while live: refresh origin (user-driven, not scroll-critical) */
+    cachePopMetrics();
+    const hoverOrigin = originCacheRef.current ?? origin;
+
     for (const f of existing) {
       if (f.mode !== "fade" && f.mode !== "dead") f.mode = "fade";
     }
 
-    const next = spawnGeneration(templatesRef.current, origin);
+    const next = spawnGeneration(templatesRef.current, hoverOrigin);
     floatersRef.current = [...existing, ...next];
-    /* Hover is user-driven — React mount here is fine */
     syncParticleList(floatersRef.current);
 
     requestAnimationFrame(() => {
       next.forEach(paintFloater);
       ensureLoop();
     });
-  }, [ensureLoop, syncParticleList]);
+  }, [cachePopMetrics, ensureLoop, syncParticleList]);
 
   useEffect(() => {
     reducedRef.current =
@@ -537,10 +561,8 @@ export function GalleryInstagramFollow({
     /* Preload bubble images at page idle — well before the gallery is reached */
     if (!reducedRef.current && !templatesRef.current.length) {
       templatesRef.current = buildTemplates();
-      const field = fieldRef.current;
-      const origin = field
-        ? getPopOrigin(field, igLinkRef.current)
-        : { cx: 0, cy: 0 };
+      cachePopMetrics();
+      const origin = originCacheRef.current ?? { cx: 0, cy: 0 };
       const warm = templatesRef.current.map((template) => {
         const size = template.kind === "image" ? 112 : 54;
         return {
@@ -564,57 +586,52 @@ export function GalleryInstagramFollow({
       floatersRef.current = warm;
       syncParticleList(warm);
     }
-  }, [syncParticleList]);
+
+    const onResize = () => {
+      cachePopMetrics();
+    };
+    window.addEventListener("resize", onResize, { passive: true });
+    /* Measure after layout settles — not during scroll */
+    const measureTimer = window.setTimeout(cachePopMetrics, 200);
+    const measureTimer2 = window.setTimeout(cachePopMetrics, 800);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+      window.clearTimeout(measureTimer);
+      window.clearTimeout(measureTimer2);
+    };
+  }, [cachePopMetrics, syncParticleList]);
 
   useEffect(() => {
     const section = fieldRef.current?.closest(
       ".gallery-section",
     ) as HTMLElement | null;
-    if (!section) return;
-
-    const copyObserver = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          copyRef.current?.classList.add("is-visible");
-          copyObserver.disconnect();
-        }
-      },
-      { threshold: 0.08, rootMargin: "0px 0px -2% 0px" },
-    );
-    copyObserver.observe(section);
-
-    if (reducedRef.current) {
-      copyRef.current?.classList.add("is-visible");
-      return () => copyObserver.disconnect();
-    }
+    if (!section || reducedRef.current) return;
 
     let started = false;
     /*
-     * Start the pop early (while section is still approaching) so the
-     * first physics frame never coincides with the user "arriving".
+     * Fire when the section is still a full viewport below — so the pop
+     * warms up off-screen. No getBoundingClientRect / setState on arrival.
      */
     const popObserver = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !started) {
-          started = true;
-          popObserver.disconnect();
-          /* Double-rAF: wait until Lenis/ST have painted this scroll frame */
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              playPop();
-            });
-          });
-        }
+        if (!entry.isIntersecting || started) return;
+        started = true;
+        popObserver.disconnect();
+        /* Defer measure + pop off the scroll sample that triggered IO */
+        window.setTimeout(() => {
+          cachePopMetrics();
+          playPop();
+        }, 64);
       },
-      { threshold: 0.02, rootMargin: "28% 0px 0px 0px" },
+      { threshold: 0, rootMargin: "110% 0px 0px 0px" },
     );
     popObserver.observe(section);
 
     return () => {
-      copyObserver.disconnect();
       popObserver.disconnect();
     };
-  }, [playPop]);
+  }, [cachePopMetrics, playPop]);
 
   useEffect(() => {
     return () => {

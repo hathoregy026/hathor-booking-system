@@ -69,9 +69,7 @@ const SELECTORS = [
   ".public-site .ex-root .home-carousel .carousel-heading h2",
   ".public-site .ex-root .home-text-h2 h2",
   ".public-site .ex-root .home-text-p p",
-  ".public-site .ex-root .gallery-h2 h2",
-  ".public-site .ex-root .instagram-follow__eyebrow",
-  ".public-site .ex-root .gallery-ig-link__handle",
+  /* Gallery title / IG copy: no atelier — ST letter rise beside bubble pop caused a scroll hitch */
   ".public-site .ex-root .testimonial-h2 h2",
   ".public-site .ex-root .testimonial-card h3",
   ".public-site .ex-root .testimonial-card p",
@@ -105,6 +103,7 @@ const SKIP_CLOSEST = [
   ".admin-shell",
   ".hcta-track",
   ".campaign-section",
+  ".gallery-section",
   "button",
   "input",
   "textarea",

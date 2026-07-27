@@ -2095,24 +2095,19 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
 }
 
 .instagram-follow__copy {
-  opacity: 0;
-  transition: opacity 1.1s ease;
+  opacity: 1;
 }
 
 .instagram-follow__eyebrow.instagram-follow__copy {
-  transition-delay: 0s;
+  transition: none;
 }
 
 .instagram-follow a.instagram-follow__copy {
-  transition-delay: 0.15s;
+  transition: none;
 }
 
 .instagram-follow__divider.instagram-follow__copy {
-  transition-delay: 0.3s;
-}
-
-.instagram-follow.is-visible .instagram-follow__copy {
-  opacity: 1;
+  transition: none;
 }
 
 /* 3D tilted gallery strip — cream/gold adaptation of the marquee band */
