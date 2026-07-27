@@ -1792,7 +1792,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
 .home-ship-passage {
   position: relative;
   z-index: 20;
-  height: clamp(190px, 23vw, 310px);
+  height: clamp(220px, 27vw, 360px);
   overflow: hidden;
   isolation: isolate;
   background: transparent;
@@ -1802,7 +1802,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   position: absolute;
   left: 0;
   top: 50%;
-  width: clamp(520px, 62vw, 1050px);
+  width: clamp(600px, 72vw, 1200px);
   transform: translate3d(calc(-100% - 8vw), 0, 0);
   pointer-events: none;
   user-select: none;
@@ -1829,11 +1829,11 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
 
 @media (max-width: 767px) {
   .home-ship-passage {
-    height: clamp(145px, 43vw, 190px);
+    height: clamp(170px, 48vw, 220px);
   }
 
   .home-ship-passage__vessel {
-    width: min(86vw, 680px);
+    width: min(94vw, 760px);
   }
 }
 
