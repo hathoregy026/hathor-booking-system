@@ -59,6 +59,7 @@ export function useExScrollMotion() {
   let lenis: Lenis | null = null;
   let tickerFn: ((time: number) => void) | null = null;
   let heroCleanup: (() => void) | null = null;
+  let shipCleanup: (() => void) | null = null;
 
   if (!prefersReduced) {
     lenis = new Lenis({
@@ -324,26 +325,35 @@ export function useExScrollMotion() {
     if (!section || !vessel) return;
 
     const edgeGap = () => Math.max(32, window.innerWidth * 0.06);
+    const startX = () => -(vessel.offsetWidth + edgeGap());
+    const endX = () => window.innerWidth + edgeGap();
+    const glideTo = gsap.quickTo(vessel, "x", {
+      duration: 0.72,
+      ease: "power3.out",
+    });
 
-    gsap.fromTo(
-      vessel,
-      {
-        x: () => -(vessel.offsetWidth + edgeGap()),
-      },
-      {
-        x: () => window.innerWidth + edgeGap(),
-        ease: "none",
-        force3D: true,
-        scrollTrigger: {
-          id: "home-ship-passage",
-          trigger: section,
-          start: "top 92%",
-          end: "bottom 8%",
-          scrub: 1.65,
-          invalidateOnRefresh: true,
-        },
-      },
-    );
+    const update = () => {
+      const rect = section.getBoundingClientRect();
+      const start = window.innerHeight * 0.92;
+      const finish = window.innerHeight * 0.08 - rect.height;
+      const progress = gsap.utils.clamp(
+        0,
+        1,
+        (start - rect.top) / (start - finish),
+      );
+      glideTo(gsap.utils.interpolate(startX(), endX(), progress));
+    };
+
+    gsap.set(vessel, { x: startX(), force3D: true });
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    update();
+
+    shipCleanup = () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      gsap.killTweensOf(vessel);
+    };
   }
 
   /* -------------------------------------------------------
@@ -1010,6 +1020,7 @@ export function useExScrollMotion() {
       window.clearTimeout(readyFallback);
       window.removeEventListener("load", onLoad);
       heroCleanup?.();
+      shipCleanup?.();
       if (tickerFn) gsap.ticker.remove(tickerFn);
       registerHathorLenis(null);
       lenis?.destroy();
