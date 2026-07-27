@@ -1567,20 +1567,40 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 }
 
 .ex-stack-scroll__card {
+  --stack-fog-edge: 140%;
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   overflow: hidden;
-  will-change: transform, filter, clip-path;
+  will-change: opacity, filter, mask-image;
   transform-origin: center top;
   border-radius: 0;
   border: 0;
   box-shadow: none;
   outline: none;
   background: #0c0806;
-  /* Default full; GSAP drives the eating reveal via clip-path */
-  clip-path: inset(0% 0% 0% 0%);
+  /* Soft fog dissolve upward — same language as Take Your Voyage Today */
+  -webkit-mask-image: linear-gradient(
+    to top,
+    #000 0%,
+    #000 calc(var(--stack-fog-edge) - 32%),
+    rgba(0, 0, 0, 0.86) calc(var(--stack-fog-edge) - 24%),
+    rgba(0, 0, 0, 0.46) calc(var(--stack-fog-edge) - 12%),
+    transparent var(--stack-fog-edge)
+  );
+  mask-image: linear-gradient(
+    to top,
+    #000 0%,
+    #000 calc(var(--stack-fog-edge) - 32%),
+    rgba(0, 0, 0, 0.86) calc(var(--stack-fog-edge) - 24%),
+    rgba(0, 0, 0, 0.46) calc(var(--stack-fog-edge) - 12%),
+    transparent var(--stack-fog-edge)
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
 }
 
 /* No inset gold frame — its bottom rule read as a dead-edge / gap line */
@@ -1635,6 +1655,14 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 .ex-stack-scroll__card-media img {
   transform: scale(1.04);
   will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ex-stack-scroll__card {
+    opacity: 1 !important;
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+  }
 }
 
 .ex-stack-scroll__copy {

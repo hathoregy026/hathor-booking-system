@@ -475,10 +475,11 @@ export function useExScrollMotion() {
         yPercent: 0,
         scale: 1,
         filter: "brightness(1)",
-        clipPath: "inset(0% 0% 0% 0%)",
+        autoAlpha: 1,
+        "--stack-fog-edge": "140%",
       });
       cards.slice(1).forEach((card) => {
-        gsap.set(card, { autoAlpha: 0 });
+        gsap.set(card, { autoAlpha: 0, "--stack-fog-edge": "0%" });
       });
       copyPanels.forEach((panel, index) => {
         gsap.set(panel, {
@@ -520,17 +521,14 @@ export function useExScrollMotion() {
         const media = getCardMedia(card);
         gsap.set(card, {
           zIndex: index + 1,
-          /* Stay full-frame — reveal via clip so the next image eats the previous */
+          /* Stay full-frame — next image dissolves up through soft fog */
           yPercent: 0,
           x: 0,
           xPercent: 0,
           scale: 1,
           filter: "brightness(1)",
-          clipPath:
-            index === 0 ? "inset(0% 0% 0% 0%)" : "inset(100% 0% 0% 0%)",
-          WebkitClipPath:
-            index === 0 ? "inset(0% 0% 0% 0%)" : "inset(100% 0% 0% 0%)",
-          autoAlpha: 1,
+          "--stack-fog-edge": index === 0 ? "140%" : "0%",
+          autoAlpha: index === 0 ? 1 : 0,
           force3D: true,
           clearProps: "",
         });
@@ -607,26 +605,33 @@ export function useExScrollMotion() {
         const prevPanel = copyPanels[i - 1];
         const nextPanel = copyPanels[i];
 
-        /* Cover wipe: next image stays full-bleed and reveals upward over the last */
+        /* Fog dissolve: next image rises through soft edge — same as campaign CTA */
+        const fog = { edge: 0, reveal: 0 };
         tl.fromTo(
-          card,
+          fog,
+          { edge: 0, reveal: 0 },
           {
-            clipPath: "inset(100% 0% 0% 0%)",
-            WebkitClipPath: "inset(100% 0% 0% 0%)",
-            scale: 1,
-            yPercent: 0,
-            x: 0,
-            xPercent: 0,
-          },
-          {
-            clipPath: "inset(0% 0% 0% 0%)",
-            WebkitClipPath: "inset(0% 0% 0% 0%)",
-            scale: 1,
-            yPercent: 0,
-            x: 0,
-            xPercent: 0,
+            edge: 140,
+            reveal: 1,
             ease: "sine.inOut",
             duration: move,
+            onUpdate: () => {
+              card.style.setProperty("--stack-fog-edge", `${fog.edge}%`);
+              card.style.opacity = String(
+                Math.min(1, Math.max(0, fog.reveal * 1.8)),
+              );
+              card.style.visibility = fog.reveal > 0.02 ? "visible" : "hidden";
+            },
+          },
+          moveAt,
+        );
+        tl.set(
+          card,
+          {
+            scale: 1,
+            yPercent: 0,
+            x: 0,
+            xPercent: 0,
           },
           moveAt,
         );
