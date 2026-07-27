@@ -1955,16 +1955,23 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
 }
 
 /* ---------- Instagram follow + elegant edge-bounce float ---------- */
+/*
+ * Header band only — burst layer is NOT tied to the full gallery section
+ * height (marquee), so scroll/layout there cannot hitch the pop.
+ */
+.gallery-hero-band {
+  position: relative;
+  z-index: 30;
+  isolation: isolate;
+  overflow: visible;
+}
+
 .instagram-burst-field {
   position: absolute;
   inset: 0;
-  /*
-   * Above gallery header, marquee cards, and section chrome.
-   * pointer-events:none keeps IG link / cards clickable underneath.
-   */
   z-index: 200;
   pointer-events: none;
-  overflow: hidden;
+  overflow: visible;
   opacity: 1;
 }
 
