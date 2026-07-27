@@ -187,6 +187,8 @@ export function HomeCampaignSection({
               alt={imageAlt}
               fill
               sizes="100vw"
+              loading="eager"
+              fetchPriority="low"
               className="hcta-bg object-cover"
               previewAnchor={previewAnchor}
             />
