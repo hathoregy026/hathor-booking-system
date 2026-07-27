@@ -12,15 +12,15 @@ const SILK_ROWS = ["TAKE YOUR", "VOYAGE", "TODAY"] as const;
  *  0% — 19%  gold invitation rises
  * 19% — 30%  full invitation holds briefly
  * 30% — 62%  photograph fog dissolves upward through the invitation
- * 62% — 70%  completed photograph holds
- * 70% — 88%  on-image title rises, then the button follows
+ * 62% — 78%  completed photograph holds (pause before copy)
+ * 78% — 96%  on-image title rises slowly, button follows later
  */
 const PHASE = {
   textEnd: 0.19,
   imageStart: 0.3,
   imageEnd: 0.62,
-  copyStart: 0.7,
-  copyEnd: 0.88,
+  copyStart: 0.78,
+  copyEnd: 0.96,
 } as const;
 
 function clamp(value: number) {
@@ -120,16 +120,17 @@ export function HomeCampaignSection({
         media.style.transform = `scale(${1.035 - imageEffectProgress * 0.035})`;
       }
 
-      const copyProgress = ease(
-        between(progress, PHASE.copyStart, PHASE.copyEnd),
-      );
-      revealCharacters(imageCopy, copyProgress, 0.34);
+      /* Soft ease-out so title/button feel lazy and elegant */
+      const copyRaw = between(progress, PHASE.copyStart, PHASE.copyEnd);
+      const copyProgress = 1 - Math.pow(1 - copyRaw, 2.4);
+      revealCharacters(imageCopy, copyProgress, 0.52);
 
       if (button) {
-        const buttonProgress = ease(between(copyProgress, 0.5, 1));
+        const buttonRaw = between(copyProgress, 0.68, 1);
+        const buttonProgress = 1 - Math.pow(1 - buttonRaw, 2.2);
         button.style.opacity = buttonProgress.toFixed(3);
         button.style.transform = `translate3d(0, ${
-          (1 - buttonProgress) * 18
+          (1 - buttonProgress) * 22
         }px, 0)`;
       }
     };
