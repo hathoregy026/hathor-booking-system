@@ -51,7 +51,7 @@ const GALLERY_PREVIEW_ANCHORS = new Set([
   "moving-tilted-5",
 ]);
 
-/** Gallery marquee — native img (GSAP/CSS expect this structure), optimized via Next. */
+/** Full-resolution CMS photo for marquee cards (no Next image optimizer). */
 function GalleryMarqueePhoto({
   name,
   alt,
@@ -60,18 +60,10 @@ function GalleryMarqueePhoto({
   alt: string;
 }) {
   const image = useSiteImage(name);
-  const src = /^https?:\/\//i.test(image.src)
-    ? `/_next/image?${new URLSearchParams({
-        url: image.src,
-        w: "640",
-        q: "72",
-      }).toString()}`
-    : image.src;
-
   return (
-    // eslint-disable-next-line @next/next/no-img-element -- marquee CSS depends on native img sizing
+    // eslint-disable-next-line @next/next/no-img-element -- intentional: native full-res for tilted marquee
     <img
-      src={src}
+      src={image.src}
       alt={alt}
       loading="lazy"
       decoding="async"
