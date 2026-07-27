@@ -110,7 +110,10 @@ export default function LuxuryAccordion({
                     : `${item.name}. Click to view details.`
                 }
               >
-                <span className={styles.romanNumeral} aria-hidden="true">
+                <span
+                  className={`${styles.romanNumeral} ${isActive ? styles.romanNumeralHidden : ""}`}
+                  aria-hidden="true"
+                >
                   {item.romanNumeral}
                 </span>
 
@@ -159,7 +162,7 @@ export default function LuxuryAccordion({
                   </div>
                   <Link
                     href={href}
-                    className={`btn btn-dark home-text-button ${styles.cta}`}
+                    className={`btn ${styles.cta}`}
                     onClick={stopRowClick}
                   >
                     {ctaLabel}
