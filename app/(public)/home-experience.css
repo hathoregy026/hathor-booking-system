@@ -2352,22 +2352,28 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
 }
 
 /*
-  Decode/paint each photo at 2× the card size, then scale into the frame
-  so tilted/composited output stays sharp.
+  Gallery frames use next/image fill — keep coverage sharp without the
+  old 200%/scale(0.5) native-img trick (that fought the optimizer).
 */
+.gallery-item__frame > span {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
 .gallery-item img {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 200%;
-  height: 200%;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
   max-width: none;
   object-fit: cover;
   object-position: center;
   filter: none;
   opacity: 1;
-  transform: scale(0.5);
-  transform-origin: 0 0;
+  transform: none;
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;

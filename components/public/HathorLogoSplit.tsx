@@ -26,7 +26,7 @@ function Letter({ letter }: { letter: HathorLogoLetter }) {
         height={letter.height}
         draggable={false}
         decoding="async"
-        fetchPriority="high"
+        fetchPriority="low"
         className="logo-letter"
       />
     </span>

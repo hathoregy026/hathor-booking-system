@@ -126,7 +126,26 @@ export function PublicSiteHero({
     const video = heroVideoRef.current;
     if (!video) return;
 
+    let started = false;
+    let idleId = 0;
+    let delayId = 0;
+    const cleanups: Array<() => void> = [];
+
     const startVideo = () => {
+      if (started) return;
+      started = true;
+
+      const connection = (
+        navigator as Navigator & {
+          connection?: { saveData?: boolean; effectiveType?: string };
+        }
+      ).connection;
+      const slow =
+        connection?.saveData === true ||
+        connection?.effectiveType === "slow-2g" ||
+        connection?.effectiveType === "2g";
+      if (slow) return;
+
       if (!video.getAttribute("src")) {
         video.src = HATHOR_HERO_VIDEO_SRC;
       }
@@ -136,28 +155,66 @@ export function PublicSiteHero({
       void video.play().catch(() => {});
     };
 
+    /** After motion is ready, wait for idle + buffer — or first real user intent. */
+    const armDeferredStart = () => {
+      const onIntent = () => startVideo();
+      window.addEventListener("scroll", onIntent, { once: true, passive: true });
+      window.addEventListener("pointerdown", onIntent, { once: true });
+      window.addEventListener("keydown", onIntent, { once: true });
+      cleanups.push(() => {
+        window.removeEventListener("scroll", onIntent);
+        window.removeEventListener("pointerdown", onIntent);
+        window.removeEventListener("keydown", onIntent);
+      });
+
+      const scheduleIdle = (cb: () => void) => {
+        const ric = (
+          window as Window & {
+            requestIdleCallback?: (
+              callback: IdleRequestCallback,
+              options?: IdleRequestOptions,
+            ) => number;
+            cancelIdleCallback?: (id: number) => void;
+          }
+        ).requestIdleCallback;
+        if (typeof ric === "function") {
+          idleId = ric(() => cb(), { timeout: 10_000 });
+          cleanups.push(() => {
+            window.cancelIdleCallback?.(idleId);
+          });
+          return;
+        }
+        delayId = window.setTimeout(cb, 4500);
+      };
+
+      scheduleIdle(() => {
+        delayId = window.setTimeout(startVideo, 2800);
+      });
+    };
+
     const root = document.documentElement;
     if (root.classList.contains("ex-scroll-ready")) {
-      startVideo();
-      return;
+      armDeferredStart();
+    } else {
+      const observer = new MutationObserver(() => {
+        if (!root.classList.contains("ex-scroll-ready")) return;
+        observer.disconnect();
+        armDeferredStart();
+      });
+      observer.observe(root, { attributes: true, attributeFilter: ["class"] });
+      cleanups.push(() => observer.disconnect());
+
+      /* Last resort: still defer — never yank 26MB mid-LCP. */
+      delayId = window.setTimeout(() => {
+        observer.disconnect();
+        armDeferredStart();
+      }, 6000);
     }
 
-    const observer = new MutationObserver(() => {
-      if (root.classList.contains("ex-scroll-ready")) {
-        observer.disconnect();
-        startVideo();
-      }
-    });
-    observer.observe(root, { attributes: true, attributeFilter: ["class"] });
-
-    const fallback = window.setTimeout(() => {
-      observer.disconnect();
-      startVideo();
-    }, 4000);
-
     return () => {
-      observer.disconnect();
-      window.clearTimeout(fallback);
+      cleanups.forEach((fn) => fn());
+      window.clearTimeout(delayId);
+      window.cancelIdleCallback?.(idleId);
     };
   }, [playVideo]);
 
