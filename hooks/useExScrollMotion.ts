@@ -673,7 +673,15 @@ export function useExScrollMotion() {
       const scrollSpan = introSpan + (total - 1) * step + dwell;
 
       if (silkChars.length) {
-        gsap.set(silkChars, { yPercent: 100, opacity: 0 });
+        /* Clear any prior transform so yPercent alone drives the rise mask */
+        gsap.set(silkChars, {
+          x: 0,
+          y: 0,
+          xPercent: 0,
+          yPercent: 100,
+          opacity: 0,
+          force3D: true,
+        });
       }
 
       cards.forEach((card, index) => {
@@ -759,13 +767,17 @@ export function useExScrollMotion() {
             : 0;
         tl.fromTo(
           silkChars,
-          { yPercent: 100, opacity: 0 },
+          { x: 0, y: 0, xPercent: 0, yPercent: 100, opacity: 0 },
           {
+            x: 0,
+            y: 0,
+            xPercent: 0,
             yPercent: 0,
             opacity: 1,
             ease: "none",
             duration: silkDuration,
             stagger: silkStagger,
+            force3D: true,
           },
           0,
         );
