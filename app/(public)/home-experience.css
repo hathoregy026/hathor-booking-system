@@ -1763,7 +1763,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 /* ---------- FULL-SCREEN STACK SCROLL (landmarks) ---------- */
 .ex-stack-scroll {
   position: relative;
-  background: #0c0806 !important;
+  background: var(--cream, #ece8df) !important;
   color: #faf8f5;
   margin: 0;
   padding: 0;
@@ -1787,7 +1787,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   min-height: 100vh;
   min-height: 100dvh;
   overflow: hidden;
-  background: #0c0806 !important;
+  background: var(--cream, #ece8df) !important;
   padding: 0;
   border: 0;
   border-radius: 0;
@@ -1797,9 +1797,80 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   transform: translateZ(0);
 }
 
+/* Cream gold invitation under the landmark fog — mirrors Take Your Voyage Today */
+.ex-stack-scroll__silk {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: calc(
+    var(--site-nav-bar-height, 2.85rem) + clamp(1.75rem, 4vh, 3.25rem)
+  );
+  padding-right: clamp(1.25rem, 4vw, 3rem);
+  padding-bottom: clamp(1.5rem, 4vh, 3rem);
+  padding-left: clamp(1.25rem, 4vw, 3rem);
+  box-sizing: border-box;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--cream, #ece8df);
+}
+
+.ex-stack-scroll__silk-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.04em;
+  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  text-align: center;
+}
+
+.ex-stack-scroll__silk-row {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-display), "Playfair Display", Georgia, serif !important;
+  font-weight: 400 !important;
+  font-size: clamp(2.6rem, min(12vw, 14svh), 8.75rem) !important;
+  line-height: 0.98 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+  color: var(--gold, #b69f64) !important;
+  -webkit-text-fill-color: var(--gold, #b69f64) !important;
+  white-space: nowrap;
+}
+
+.ex-stack-scroll__silk-letter {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding: 0.08em 0;
+  margin: -0.08em 0;
+}
+
+.ex-stack-scroll__silk-char {
+  display: inline-block;
+  opacity: 0;
+  transform: translate3d(0, 115%, 0);
+  will-change: transform, opacity;
+}
+
+@media (max-width: 640px) {
+  .ex-stack-scroll__silk-row {
+    font-size: clamp(2.15rem, min(11vw, 12svh), 3.75rem) !important;
+    letter-spacing: 0.03em !important;
+  }
+}
+
 .ex-stack-scroll__cards {
   position: absolute;
   inset: 0;
+  z-index: 1;
   width: 100%;
   height: 100%;
 }
@@ -1979,8 +2050,24 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 }
 
 .ex-stack-scroll__copy-panel[data-stack-copy-index="0"] {
-  opacity: 1;
-  visibility: visible;
+  opacity: 0;
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ex-stack-scroll__silk {
+    display: none;
+  }
+
+  .ex-stack-scroll__copy-panel[data-stack-copy-index="0"] {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .ex-stack-scroll__silk-char {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
 .ex-stack-scroll__copy::before {

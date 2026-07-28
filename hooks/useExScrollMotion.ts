@@ -598,6 +598,9 @@ export function useExScrollMotion() {
   function initExStackScroll() {
     const section = document.querySelector(".ex-stack-scroll");
     const viewport = section?.querySelector(".ex-stack-scroll__viewport");
+    const silkChars = gsap.utils.toArray<HTMLElement>(
+      ".ex-stack-scroll__silk-char",
+    );
     const copyPanels = gsap.utils.toArray<HTMLElement>(
       ".ex-stack-scroll__copy-panel",
     );
@@ -607,6 +610,7 @@ export function useExScrollMotion() {
     prepareStackPanelSplits(copyPanels);
 
     if (prefersReduced) {
+      if (silkChars.length) gsap.set(silkChars, { yPercent: 0, opacity: 0 });
       copyPanels.forEach((panel) => {
         const chars =
           (panel as HTMLElement & { __stackChars?: HTMLElement[] })
@@ -657,7 +661,20 @@ export function useExScrollMotion() {
       const dwell = 0.48;
       const move = 0.68;
       const step = dwell + move;
-      const scrollSpan = (total - 1) * step + dwell;
+      /*
+       * Cream invitation intro (same fog language as Take Your Voyage Today).
+       * Text rises faster than the campaign CTA — fog length stays luxurious.
+       */
+      const introText = 0.09;
+      const introHold = 0.05;
+      const introFog = 0.28;
+      const introSettle = 0.1;
+      const introSpan = introText + introHold + introFog + introSettle;
+      const scrollSpan = introSpan + (total - 1) * step + dwell;
+
+      if (silkChars.length) {
+        gsap.set(silkChars, { yPercent: 100, opacity: 0 });
+      }
 
       cards.forEach((card, index) => {
         const media = getCardMedia(card);
@@ -669,8 +686,9 @@ export function useExScrollMotion() {
           xPercent: 0,
           scale: 1,
           filter: "brightness(1)",
-          "--stack-fog-edge": index === 0 ? "140%" : "0%",
-          autoAlpha: index === 0 ? 1 : 0,
+          /* First card starts hidden under silk, then fog-rises over it */
+          "--stack-fog-edge": "0%",
+          autoAlpha: 0,
           force3D: true,
           clearProps: "",
         });
@@ -679,8 +697,8 @@ export function useExScrollMotion() {
           gsap.set(media, {
             x: 0,
             xPercent: 0,
-            scale: index === 0 ? 1.04 : 1.08,
-            yPercent: index === 0 ? 0 : 4,
+            scale: index === 0 ? 1.06 : 1.08,
+            yPercent: index === 0 ? 3 : 4,
             force3D: true,
           });
         }
@@ -691,18 +709,15 @@ export function useExScrollMotion() {
           (panel as HTMLElement & { __stackChars?: HTMLElement[] })
             .__stackChars;
         gsap.set(panel, {
-          autoAlpha: index === 0 ? 1 : 0,
+          autoAlpha: 0,
           y: 0,
-          visibility: index === 0 ? "visible" : "hidden",
+          visibility: "hidden",
         });
         if (chars?.length) {
           gsap.killTweensOf(chars);
-          gsap.set(chars, {
-            yPercent: index === 0 ? 0 : 100,
-            opacity: index === 0 ? 1 : 0,
-          });
+          gsap.set(chars, { yPercent: 100, opacity: 0 });
         }
-        panel.setAttribute("aria-hidden", index === 0 ? "false" : "true");
+        panel.setAttribute("aria-hidden", "true");
       });
 
       const tl = gsap.timeline({
@@ -735,22 +750,92 @@ export function useExScrollMotion() {
         },
       });
 
-      /* First slide letters — delayed so pin engage doesn't hitch */
-      ScrollTrigger.create({
-        id: "ex-stack-text",
-        trigger: section,
-        start: "top top",
-        onEnter: () => {
-          gsap.delayedCall(0.12, () => playStackSplit(copyPanels[0]));
+      /* Gold invitation rises quickly, then first landmark fog-covers it */
+      if (silkChars.length) {
+        const silkDuration = introText * 0.55;
+        const silkStagger =
+          silkChars.length > 1
+            ? (introText * 0.45) / (silkChars.length - 1)
+            : 0;
+        tl.fromTo(
+          silkChars,
+          { yPercent: 100, opacity: 0 },
+          {
+            yPercent: 0,
+            opacity: 1,
+            ease: "none",
+            duration: silkDuration,
+            stagger: silkStagger,
+          },
+          0,
+        );
+      }
+
+      const firstCard = cards[0];
+      const firstMedia = getCardMedia(firstCard);
+      const firstFog = { edge: 0, reveal: 0 };
+      const introFogAt = introText + introHold;
+      tl.fromTo(
+        firstFog,
+        { edge: 0, reveal: 0 },
+        {
+          edge: 140,
+          reveal: 1,
+          ease: "none",
+          duration: introFog,
+          onUpdate: () => {
+            firstCard.style.setProperty(
+              "--stack-fog-edge",
+              `${firstFog.edge}%`,
+            );
+            const op = Math.min(1, Math.max(0, firstFog.reveal * 1.8));
+            firstCard.style.opacity = String(op);
+            if (op > 0.001) firstCard.style.visibility = "visible";
+          },
         },
-        onEnterBack: () => {
-          gsap.delayedCall(0.08, () => playStackSplit(copyPanels[0]));
-        },
-        onLeaveBack: () => reverseStackSplit(copyPanels[0]),
-      });
+        introFogAt,
+      );
+
+      if (firstMedia) {
+        tl.fromTo(
+          firstMedia,
+          { scale: 1.06, yPercent: 3.5, x: 0 },
+          {
+            scale: 1.04,
+            yPercent: 0,
+            x: 0,
+            ease: "none",
+            duration: introFog,
+          },
+          introFogAt,
+        );
+      }
+
+      const firstPanel = copyPanels[0];
+      if (firstPanel) {
+        tl.fromTo(
+          firstPanel,
+          { autoAlpha: 0, y: 0, visibility: "visible" },
+          {
+            autoAlpha: 1,
+            y: 0,
+            ease: "none",
+            duration: introFog * 0.55,
+            onStart: () => firstPanel.setAttribute("aria-hidden", "false"),
+          },
+          introFogAt + introFog * 0.4,
+        );
+        scrubStackChars(
+          tl,
+          firstPanel,
+          introFogAt + introFog * 0.4,
+          introFog * 0.55,
+          "in",
+        );
+      }
 
       for (let i = 1; i < total; i++) {
-        const at = (i - 1) * step;
+        const at = introSpan + (i - 1) * step;
         const moveAt = at + dwell;
         const card = cards[i];
         const media = getCardMedia(card);

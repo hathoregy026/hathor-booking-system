@@ -51,6 +51,9 @@ const GALLERY_PREVIEW_ANCHORS = new Set([
   "moving-tilted-5",
 ]);
 
+/** Gold invitation under the landmark stack — same language as Take Your Voyage Today */
+const STACK_SILK_ROWS = ["SECURE YOUR", "PRIVATE", "PASSAGE"] as const;
+
 /** Full-resolution CMS photo for marquee cards (no Next image optimizer). */
 function GalleryMarqueePhoto({
   name,
@@ -441,6 +444,29 @@ export function HomePageClient({
           aria-label="Every landmark, a pleasure"
         >
           <div className="ex-stack-scroll__viewport">
+            <div
+              className="ex-stack-scroll__silk"
+              data-stack-silk
+              aria-hidden="true"
+            >
+              <div className="ex-stack-scroll__silk-copy">
+                {STACK_SILK_ROWS.map((row) => (
+                  <div className="ex-stack-scroll__silk-row" key={row}>
+                    {Array.from(row).map((character, index) => (
+                      <span
+                        className="ex-stack-scroll__silk-letter"
+                        key={`${row}-${index}`}
+                      >
+                        <span className="ex-stack-scroll__silk-char">
+                          {character === " " ? "\u00A0" : character}
+                        </span>
+                      </span>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <div className="ex-stack-scroll__cards" aria-hidden="true">
               {stackSlides.map((slide, index) => (
                 <div key={slide.imageName} className="ex-stack-scroll__card">
