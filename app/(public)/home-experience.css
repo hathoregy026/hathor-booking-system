@@ -1903,8 +1903,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   height: 100%;
   will-change: transform;
   transform-origin: center center;
-  /* Living drift on the wrapper — GSAP ken-burns the img inside, so they don't fight */
-  animation: ex-stack-media-breathe 22s ease-in-out infinite;
+  /* No CSS motion here — ambient animation fought scrub settle and caused jumps */
 }
 
 .ex-stack-scroll__card-media span,
@@ -1927,28 +1926,11 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   backface-visibility: hidden;
 }
 
-@keyframes ex-stack-media-breathe {
-  0%,
-  100% {
-    transform: scale(1) translate3d(0, 0, 0);
-  }
-  40% {
-    transform: scale(1.02) translate3d(0.35%, -0.45%, 0);
-  }
-  70% {
-    transform: scale(1.012) translate3d(-0.25%, 0.2%, 0);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .ex-stack-scroll__card {
     opacity: 1 !important;
     -webkit-mask-image: none !important;
     mask-image: none !important;
-  }
-
-  .ex-stack-scroll__card-media {
-    animation: none;
   }
 
   .ex-stack-scroll__card-media img {

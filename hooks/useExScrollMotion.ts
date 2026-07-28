@@ -513,9 +513,9 @@ export function useExScrollMotion() {
     const chars =
       (panel as HTMLElement & { __stackChars?: HTMLElement[] }).__stackChars;
     if (!chars?.length) return;
-    /* Slow letter rise — matches the lazy stack wipe */
+    /* Soft letter rise — no hard snap when a frame sits */
     const stagger =
-      chars.length > 60 ? Math.min(0.028, 1.15 / chars.length) : 0.028;
+      chars.length > 60 ? Math.min(0.022, 0.9 / chars.length) : 0.022;
     gsap.killTweensOf(chars);
     gsap.fromTo(
       chars,
@@ -523,7 +523,7 @@ export function useExScrollMotion() {
       {
         yPercent: 0,
         opacity: 1,
-        duration: 1.05,
+        duration: 0.85,
         stagger,
         ease: "power2.out",
         overwrite: true,
@@ -543,10 +543,55 @@ export function useExScrollMotion() {
     gsap.to(chars, {
       yPercent: 100,
       opacity: 0,
-      duration: 0.7,
-      stagger: 0.012,
+      duration: 0.55,
+      stagger: 0.01,
       ease: "power2.in",
       overwrite: true,
+    });
+  }
+
+  /** Scrub-linked letter motion — no sudden play() when a wipe settles */
+  function scrubStackChars(
+    tl: gsap.core.Timeline,
+    panel: HTMLElement | undefined,
+    at: number,
+    duration: number,
+    direction: "in" | "out",
+  ) {
+    if (!panel || prefersReduced) return;
+    const chars =
+      (panel as HTMLElement & { __stackChars?: HTMLElement[] }).__stackChars;
+    if (!chars?.length) return;
+
+    const staggerSpan = Math.min(duration * 0.35, 0.22);
+    const each = Math.max(0.001, staggerSpan / Math.max(1, chars.length - 1));
+
+    chars.forEach((ch, idx) => {
+      if (direction === "in") {
+        tl.fromTo(
+          ch,
+          { yPercent: 100, opacity: 0 },
+          {
+            yPercent: 0,
+            opacity: 1,
+            ease: "none",
+            duration: duration * 0.62,
+            immediateRender: false,
+          },
+          at + idx * each,
+        );
+      } else {
+        tl.to(
+          ch,
+          {
+            yPercent: 100,
+            opacity: 0,
+            ease: "none",
+            duration: duration * 0.5,
+          },
+          at + idx * each,
+        );
+      }
     });
   }
 
@@ -630,12 +675,12 @@ export function useExScrollMotion() {
           clearProps: "",
         });
         if (media) {
-          /* Soft ken burn — slightly more presence on land, same timing */
+          /* Soft ken burn — gentle settle, same wipe timing */
           gsap.set(media, {
             x: 0,
             xPercent: 0,
-            scale: index === 0 ? 1.05 : 1.1,
-            yPercent: index === 0 ? 0 : 5,
+            scale: index === 0 ? 1.04 : 1.08,
+            yPercent: index === 0 ? 0 : 4,
             force3D: true,
           });
         }
@@ -652,7 +697,10 @@ export function useExScrollMotion() {
         });
         if (chars?.length) {
           gsap.killTweensOf(chars);
-          gsap.set(chars, { yPercent: 100, opacity: 0 });
+          gsap.set(chars, {
+            yPercent: index === 0 ? 0 : 100,
+            opacity: index === 0 ? 1 : 0,
+          });
         }
         panel.setAttribute("aria-hidden", index === 0 ? "false" : "true");
       });
@@ -663,12 +711,15 @@ export function useExScrollMotion() {
           trigger: section,
           start: "top top",
           end: `+=${scrollSpan * 100}%`,
-          /* Scrub lag — smooth catch-up without feeling endless */
-          scrub: 2.2,
+          /*
+           * Lower scrub lag = less rubber-band catch-up when the wheel
+           * stops, so frames sit smoothly instead of jumping into place.
+           */
+          scrub: 1.15,
           pin: viewport,
           pinSpacing: true,
-          anticipatePin: 0,
-          fastScrollEnd: false,
+          anticipatePin: 1,
+          fastScrollEnd: true,
           invalidateOnRefresh: true,
           /* Keep pinned width stable — no 100vw recalculation on pin */
           onRefresh: (self) => {
@@ -684,13 +735,17 @@ export function useExScrollMotion() {
         },
       });
 
-      /* First slide letters — play on enter, reverse on leave-back */
+      /* First slide letters — delayed so pin engage doesn't hitch */
       ScrollTrigger.create({
         id: "ex-stack-text",
         trigger: section,
         start: "top top",
-        onEnter: () => playStackSplit(copyPanels[0]),
-        onEnterBack: () => playStackSplit(copyPanels[0]),
+        onEnter: () => {
+          gsap.delayedCall(0.12, () => playStackSplit(copyPanels[0]));
+        },
+        onEnterBack: () => {
+          gsap.delayedCall(0.08, () => playStackSplit(copyPanels[0]));
+        },
         onLeaveBack: () => reverseStackSplit(copyPanels[0]),
       });
 
@@ -710,25 +765,15 @@ export function useExScrollMotion() {
           {
             edge: 140,
             reveal: 1,
-            ease: "sine.inOut",
+            ease: "none",
             duration: move,
             onUpdate: () => {
               card.style.setProperty("--stack-fog-edge", `${fog.edge}%`);
-              card.style.opacity = String(
-                Math.min(1, Math.max(0, fog.reveal * 1.8)),
-              );
-              card.style.visibility = fog.reveal > 0.02 ? "visible" : "hidden";
+              /* Opacity only — visibility toggles caused settle flicker */
+              const op = Math.min(1, Math.max(0, fog.reveal * 1.8));
+              card.style.opacity = String(op);
+              if (op > 0.001) card.style.visibility = "visible";
             },
-          },
-          moveAt,
-        );
-        tl.set(
-          card,
-          {
-            scale: 1,
-            yPercent: 0,
-            x: 0,
-            xPercent: 0,
           },
           moveAt,
         );
@@ -736,12 +781,12 @@ export function useExScrollMotion() {
         if (media) {
           tl.fromTo(
             media,
-            { scale: 1.1, yPercent: 6, x: 0 },
+            { scale: 1.08, yPercent: 4.5, x: 0 },
             {
-              scale: 1.045,
+              scale: 1.035,
               yPercent: 0,
               x: 0,
-              ease: "sine.out",
+              ease: "none",
               duration: move,
             },
             moveAt,
@@ -755,18 +800,19 @@ export function useExScrollMotion() {
             {
               autoAlpha: 0,
               y: 0,
-              ease: "sine.in",
+              ease: "none",
               duration: move * 0.48,
               onStart: () => prevPanel.setAttribute("aria-hidden", "true"),
             },
             moveAt + move * 0.12,
           );
-          /* Letters fall out / rise in — direction-aware for scrub reverse */
-          tl.add(() => {
-            const dir = tl.scrollTrigger?.direction ?? 1;
-            if (dir === 1) reverseStackSplit(prevPanel);
-            else playStackSplit(prevPanel);
-          }, moveAt + move * 0.12);
+          scrubStackChars(
+            tl,
+            prevPanel,
+            moveAt + move * 0.12,
+            move * 0.48,
+            "out",
+          );
 
           tl.fromTo(
             nextPanel,
@@ -774,17 +820,19 @@ export function useExScrollMotion() {
             {
               autoAlpha: 1,
               y: 0,
-              ease: "sine.out",
+              ease: "none",
               duration: move * 0.58,
               onStart: () => nextPanel.setAttribute("aria-hidden", "false"),
             },
             moveAt + move * 0.38,
           );
-          tl.add(() => {
-            const dir = tl.scrollTrigger?.direction ?? 1;
-            if (dir === 1) playStackSplit(nextPanel);
-            else reverseStackSplit(nextPanel);
-          }, moveAt + move * 0.38);
+          scrubStackChars(
+            tl,
+            nextPanel,
+            moveAt + move * 0.38,
+            move * 0.58,
+            "in",
+          );
         }
 
         for (let j = 0; j < i; j++) {
@@ -801,7 +849,7 @@ export function useExScrollMotion() {
               xPercent: 0,
               scale: 1,
               filter: `brightness(${Math.max(0.58, 1 - depth * 0.08)})`,
-              ease: "sine.inOut",
+              ease: "none",
               duration: move,
             },
             moveAt,
@@ -811,10 +859,10 @@ export function useExScrollMotion() {
             tl.to(
               underMedia,
               {
-                scale: 1.045 + depth * 0.012,
+                scale: 1.035 + depth * 0.01,
                 yPercent: 0,
                 x: 0,
-                ease: "sine.out",
+                ease: "none",
                 duration: move,
               },
               moveAt,
