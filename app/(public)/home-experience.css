@@ -368,8 +368,9 @@ html[data-ex-experience]
     100% 100%;
   opacity: 0.92;
   animation:
-    hathor-logo-nile-tide-front 5.8s ease-in-out -1.2s infinite,
-    hathor-logo-nile-shimmer 8.6s linear -1.2s infinite;
+    hathor-logo-nile-tide-front 11.6s cubic-bezier(0.45, 0, 0.55, 1) -2.4s
+      infinite,
+    hathor-logo-nile-shimmer 17.2s linear -2.4s infinite;
 }
 
 html[data-ex-experience]
@@ -441,24 +442,24 @@ html[data-ex-experience]
   0%,
   100% {
     -webkit-clip-path: polygon(
-      0% 46%,
-      15% 43%,
-      32% 49%,
-      51% 59%,
-      69% 62%,
-      84% 58%,
-      100% 51%,
+      0% 32%,
+      15% 29%,
+      32% 35%,
+      51% 45%,
+      69% 48%,
+      84% 44%,
+      100% 37%,
       100% 100%,
       0% 100%
     );
     clip-path: polygon(
-      0% 46%,
-      15% 43%,
-      32% 49%,
-      51% 59%,
-      69% 62%,
-      84% 58%,
-      100% 51%,
+      0% 32%,
+      15% 29%,
+      32% 35%,
+      51% 45%,
+      69% 48%,
+      84% 44%,
+      100% 37%,
       100% 100%,
       0% 100%
     );
@@ -466,24 +467,24 @@ html[data-ex-experience]
 
   50% {
     -webkit-clip-path: polygon(
-      0% 59%,
-      15% 65%,
-      33% 66%,
-      51% 61%,
-      68% 50%,
-      84% 44%,
-      100% 47%,
+      0% 45%,
+      15% 51%,
+      33% 52%,
+      51% 47%,
+      68% 36%,
+      84% 30%,
+      100% 33%,
       100% 100%,
       0% 100%
     );
     clip-path: polygon(
-      0% 59%,
-      15% 65%,
-      33% 66%,
-      51% 61%,
-      68% 50%,
-      84% 44%,
-      100% 47%,
+      0% 45%,
+      15% 51%,
+      33% 52%,
+      51% 47%,
+      68% 36%,
+      84% 30%,
+      100% 33%,
       100% 100%,
       0% 100%
     );
