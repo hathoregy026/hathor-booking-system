@@ -14,6 +14,7 @@ import {
   TextCursorInput,
   Ticket,
   Type,
+  Wallpaper,
   X,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -34,6 +35,7 @@ const NAV_SECTIONS: { title: string; items: NavItem[] }[] = [
       { href: "/admin/website-text", label: "Website Text", icon: TextCursorInput },
       { href: "/admin/content", label: "Website Images", icon: ImageIcon },
       { href: "/admin/hero-logo-tune", label: "Hero Logo Tune", icon: Sparkles },
+      { href: "/admin/hieroglyph-tune", label: "Background Glyphs", icon: Wallpaper },
       { href: "/admin/typography", label: "Typography & Styles", icon: Type },
       { href: "/admin/blogs", label: "Blog Posts", icon: FileText },
       { href: "/admin/email-templates", label: "Email Templates", icon: Mail },

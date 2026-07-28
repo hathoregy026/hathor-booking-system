@@ -9,6 +9,8 @@ import { WebsiteTextProvider } from "@/components/public/WebsiteTextProvider";
 import { resolveSiteImageMap } from "@/lib/resolve-site-images";
 import { getHeroLogoTuneSafe, getHeroLogoTuneMobileSafe } from "@/lib/hero-logo-tune";
 import { heroLogoTuneToImportantCss } from "@/lib/hero-logo-tune-shared";
+import { getHieroglyphTuneSafe } from "@/lib/hieroglyph-tune";
+import { hieroglyphTuneToImportantCss } from "@/lib/hieroglyph-tune-shared";
 import {
   getTypographySettingsSafe,
   getTypographySettingsMobileSafe,
@@ -118,6 +120,7 @@ export default async function PublicSiteLayout({
     typographyMobile,
     heroLogoTune,
     heroLogoTuneMobile,
+    hieroglyphTune,
     websiteText,
     websiteTextMobile,
   ] = await Promise.all([
@@ -126,6 +129,7 @@ export default async function PublicSiteLayout({
     getTypographySettingsMobileSafe(),
     getHeroLogoTuneSafe(),
     getHeroLogoTuneMobileSafe(),
+    getHieroglyphTuneSafe(),
     getWebsiteTextSafe(),
     getWebsiteTextMobileSafe(),
   ]);
@@ -143,6 +147,7 @@ export default async function PublicSiteLayout({
     heroLogoTuneToImportantCss(heroLogoTune),
     heroLogoTuneToImportantCss(heroLogoTuneMobile),
   );
+  const hieroglyphTuneCss = hieroglyphTuneToImportantCss(hieroglyphTune);
 
   return (
     <div
@@ -158,6 +163,12 @@ export default async function PublicSiteLayout({
         data-hathor-logo-tune-site
         dangerouslySetInnerHTML={{
           __html: logoTuneCss,
+        }}
+      />
+      <style
+        data-hathor-hieroglyph-tune-site
+        dangerouslySetInnerHTML={{
+          __html: hieroglyphTuneCss,
         }}
       />
       <SiteImagesProvider images={siteImages}>

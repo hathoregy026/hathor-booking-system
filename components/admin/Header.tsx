@@ -15,6 +15,7 @@ const PAGE_META: Record<string, { section: string; title: string }> = {
   "/admin/website-text": { section: "Manage", title: "Website Text" },
   "/admin/content": { section: "Manage", title: "Website Images" },
   "/admin/hero-logo-tune": { section: "Manage", title: "Hero Logo Tune" },
+  "/admin/hieroglyph-tune": { section: "Manage", title: "Background Glyphs" },
   "/admin/typography": { section: "Manage", title: "Typography & Styles" },
   "/admin/email-templates": { section: "Manage", title: "Email Templates" },
   "/admin/settings": { section: "System", title: "Settings" },
