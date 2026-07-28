@@ -673,12 +673,12 @@ export function useExScrollMotion() {
           clearProps: "",
         });
         if (media) {
-          /* Soft ken burn — barely drifts while the wipe settles */
+          /* Soft ken burn — slightly more presence on land, same timing */
           gsap.set(media, {
             x: 0,
             xPercent: 0,
-            scale: index === 0 ? 1.035 : 1.07,
-            yPercent: index === 0 ? 0 : 4,
+            scale: index === 0 ? 1.05 : 1.1,
+            yPercent: index === 0 ? 0 : 5,
             force3D: true,
           });
         }
@@ -779,9 +779,9 @@ export function useExScrollMotion() {
         if (media) {
           tl.fromTo(
             media,
-            { scale: 1.07, yPercent: 5, x: 0 },
+            { scale: 1.1, yPercent: 6, x: 0 },
             {
-              scale: 1.035,
+              scale: 1.045,
               yPercent: 0,
               x: 0,
               ease: "sine.out",
@@ -854,7 +854,7 @@ export function useExScrollMotion() {
             tl.to(
               underMedia,
               {
-                scale: 1.035 + depth * 0.01,
+                scale: 1.045 + depth * 0.012,
                 yPercent: 0,
                 x: 0,
                 ease: "sine.out",

@@ -1841,30 +1841,57 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   mask-size: 100% 100%;
 }
 
-/* No inset gold frame — its bottom rule read as a dead-edge / gap line */
+/* Soft cinematic light — no frame/rules (those read as dead edges) */
 .ex-stack-scroll__card::before {
-  content: none;
-  display: none;
-}
-
-/* Text legibility veil — painted ON the image plane, flush to every edge */
-.ex-stack-scroll__card::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 1;
+  pointer-events: none;
   background:
+    radial-gradient(
+      ellipse 85% 58% at 48% 16%,
+      rgba(255, 248, 236, 0.16) 0%,
+      transparent 62%
+    ),
+    radial-gradient(
+      ellipse 70% 48% at 78% 82%,
+      rgba(182, 159, 100, 0.1) 0%,
+      transparent 58%
+    ),
+    radial-gradient(
+      ellipse 55% 40% at 18% 72%,
+      rgba(255, 236, 210, 0.06) 0%,
+      transparent 60%
+    );
+  mix-blend-mode: soft-light;
+  opacity: 0.9;
+}
+
+/* Photographic vignette + copy legibility — softer than a flat dark plate */
+.ex-stack-scroll__card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    radial-gradient(
+      ellipse 125% 95% at 50% 110%,
+      rgba(12, 8, 6, 0.58) 0%,
+      rgba(12, 8, 6, 0.22) 38%,
+      transparent 62%
+    ),
     linear-gradient(
       to top,
-      rgba(12, 8, 6, 0.45) 0%,
-      rgba(12, 8, 6, 0.18) 22%,
-      transparent 48%
+      rgba(12, 8, 6, 0.4) 0%,
+      rgba(12, 8, 6, 0.12) 28%,
+      transparent 52%
     ),
     linear-gradient(
       to right,
-      rgba(12, 8, 6, 0.42) 0%,
-      rgba(12, 8, 6, 0.16) 28%,
-      transparent 52%
+      rgba(12, 8, 6, 0.32) 0%,
+      rgba(12, 8, 6, 0.1) 26%,
+      transparent 50%
     );
   pointer-events: none;
 }
@@ -1876,6 +1903,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   height: 100%;
   will-change: transform;
   transform-origin: center center;
+  /* Living drift on the wrapper — GSAP ken-burns the img inside, so they don't fight */
+  animation: ex-stack-media-breathe 22s ease-in-out infinite;
 }
 
 .ex-stack-scroll__card-media span,
@@ -1891,8 +1920,24 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 }
 
 .ex-stack-scroll__card-media img {
+  /* Warm editorial grade — keeps photos from reading as flat slabs */
+  filter: saturate(1.12) contrast(1.06) brightness(1.02) sepia(0.045);
   transform: scale(1.04);
   will-change: transform;
+  backface-visibility: hidden;
+}
+
+@keyframes ex-stack-media-breathe {
+  0%,
+  100% {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  40% {
+    transform: scale(1.02) translate3d(0.35%, -0.45%, 0);
+  }
+  70% {
+    transform: scale(1.012) translate3d(-0.25%, 0.2%, 0);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1900,6 +1945,14 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
     opacity: 1 !important;
     -webkit-mask-image: none !important;
     mask-image: none !important;
+  }
+
+  .ex-stack-scroll__card-media {
+    animation: none;
+  }
+
+  .ex-stack-scroll__card-media img {
+    filter: none;
   }
 }
 
