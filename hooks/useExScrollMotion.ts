@@ -663,12 +663,12 @@ export function useExScrollMotion() {
       const step = dwell + move;
       /*
        * Cream invitation intro (same fog language as Take Your Voyage Today).
-       * Text rises faster than the campaign CTA — fog length stays luxurious.
+       * Text completes quickly; hold long enough to read; fog stays luxurious.
        */
-      const introText = 0.09;
-      const introHold = 0.05;
-      const introFog = 0.28;
-      const introSettle = 0.1;
+      const introText = 0.16;
+      const introHold = 0.14;
+      const introFog = 0.34;
+      const introSettle = 0.08;
       const introSpan = introText + introHold + introFog + introSettle;
       const scrollSpan = introSpan + (total - 1) * step + dwell;
 
