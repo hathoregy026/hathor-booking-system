@@ -92,6 +92,7 @@ const HOMEPAGE_PREVIEW_SLOTS = new Set([
   "home-voyage-7n-roundtrip",
   "home-voyage-nile-majesty",
   "home-call-to-action",
+  "home-wheel-image",
   ...GALLERY_PREVIEW_ANCHORS,
 ]);
 
@@ -533,21 +534,15 @@ export function HomePageClient({
           <div className="home-helm-portal__viewport">
             <div className="home-helm-portal__media" data-home-helm-media>
               <ManagedImage
-                name={EX_CAMPAIGN.imageName}
-                alt={EX_CAMPAIGN.imageAlt}
+                name="home-wheel-image"
+                alt="Wheel portal — Hathor Dahabiya on the Nile"
                 fill
                 sizes="100vw"
                 className="home-helm-portal__media-image object-cover"
-                previewAnchor={false}
+                previewAnchor
               />
               <div className="home-helm-portal__shade" aria-hidden="true" />
             </div>
-
-            <div
-              className="home-helm-portal__aura"
-              data-home-helm-aura
-              aria-hidden="true"
-            />
 
             <div className="home-helm-portal__wheel" data-home-helm-wheel>
               <Image
@@ -557,11 +552,6 @@ export function HomePageClient({
                 sizes="(max-width: 767px) 76vw, min(48vw, 68vh)"
                 priority={false}
               />
-            </div>
-
-            <div className="home-helm-portal__invitation" data-home-helm-invitation>
-              <span>Turn toward the timeless Nile</span>
-              <i aria-hidden="true" />
             </div>
           </div>
         </section>

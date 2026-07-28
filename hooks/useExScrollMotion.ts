@@ -325,19 +325,13 @@ export function useExScrollMotion() {
     const mediaImage = media?.querySelector<HTMLElement>("img");
     const shade = media?.querySelector<HTMLElement>(".home-helm-portal__shade");
     const wheel = section?.querySelector<HTMLElement>("[data-home-helm-wheel]");
-    const aura = section?.querySelector<HTMLElement>("[data-home-helm-aura]");
-    const invitation = section?.querySelector<HTMLElement>(
-      "[data-home-helm-invitation]",
-    );
-    if (!section || !media || !mediaImage || !wheel || !aura || !invitation) {
+    if (!section || !media || !mediaImage || !wheel) {
       return;
     }
 
     const isPhone = window.matchMedia("(max-width: 767px)").matches;
     const wheelOpenScale = isPhone ? 2.7 : 3.15;
     const wheelExitScale = isPhone ? 4.35 : 5.4;
-    const auraOpenScale = isPhone ? 2.85 : 3.25;
-    const auraExitScale = isPhone ? 3.45 : 4;
 
     gsap.set(wheel, {
       xPercent: -50,
@@ -347,47 +341,20 @@ export function useExScrollMotion() {
       autoAlpha: 1,
       force3D: true,
     });
-    gsap.set(aura, {
-      xPercent: -50,
-      yPercent: -50,
-      scale: 1,
-      autoAlpha: 1,
-      force3D: true,
-    });
     gsap.set(media, {
       clipPath: "circle(0vmax at 50% 50%)",
       WebkitClipPath: "circle(0vmax at 50% 50%)",
     });
     gsap.set(mediaImage, { scale: 1.34, xPercent: -2.5, force3D: true });
-    gsap.set(invitation, { autoAlpha: 1, y: 0 });
     if (shade) gsap.set(shade, { opacity: 1 });
 
     const portalTimeline = gsap.timeline({ paused: true });
     portalTimeline
       .to(
-        invitation,
-        {
-          autoAlpha: 0,
-          y: 12,
-          duration: 0.12,
-          ease: "power2.out",
-        },
-        0.07,
-      )
-      .to(
         wheel,
         {
           rotation: 640,
           scale: wheelOpenScale,
-          duration: 0.55,
-          ease: "sine.inOut",
-        },
-        0.11,
-      )
-      .to(
-        aura,
-        {
-          scale: auraOpenScale,
           duration: 0.55,
           ease: "sine.inOut",
         },
@@ -418,16 +385,6 @@ export function useExScrollMotion() {
         {
           rotation: 850,
           scale: wheelExitScale,
-          autoAlpha: 0,
-          duration: 0.2,
-          ease: "power2.in",
-        },
-        0.66,
-      )
-      .to(
-        aura,
-        {
-          scale: auraExitScale,
           autoAlpha: 0,
           duration: 0.2,
           ease: "power2.in",

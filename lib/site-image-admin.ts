@@ -49,6 +49,7 @@ const HOMEPAGE_LIVE_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> 
       label: "Dining section — Restaurant",
     },
     { name: "home-call-to-action", label: "Call to action image" },
+    { name: "home-wheel-image", label: "Wheel image" },
   ];
 
 const OUR_VOYAGES_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> =
@@ -138,6 +139,7 @@ const SLOT_LAYOUT_KINDS: Partial<Record<SiteImageSlot["name"], SiteImageLayoutKi
     "home-cinematic-still": "hero",
     "home-split-courtyard": "hero",
     "home-call-to-action": "hero",
+    "home-wheel-image": "hero",
     "home-collage-large": "gallery",
     "home-collage-small": "gallery",
     "cruises-hero": "hero",
