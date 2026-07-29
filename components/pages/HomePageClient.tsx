@@ -571,10 +571,13 @@ export function HomePageClient({
                     className="ex-stack-scroll__pager-line"
                     data-stack-pager-line
                     style={{
-                      width: `${100 / Math.max(stackSlides.length, 1)}%`,
+                      transform: `scaleY(${1 / Math.max(stackSlides.length, 1)})`,
                     }}
                   />
                 </div>
+                <span className="ex-stack-scroll__pager-total">
+                  {String(stackSlides.length).padStart(2, "0")}
+                </span>
               </div>
             </div>
           </div>

@@ -1973,7 +1973,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  will-change: opacity, filter, mask-image;
+  /* Avoid permanent will-change — forced layers caused settle flicker */
+  will-change: auto;
   transform-origin: center top;
   border-radius: 0;
   border: 0;
@@ -1984,17 +1985,17 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   -webkit-mask-image: linear-gradient(
     to top,
     #000 0%,
-    #000 calc(var(--stack-fog-edge) - 32%),
-    rgba(0, 0, 0, 0.86) calc(var(--stack-fog-edge) - 24%),
-    rgba(0, 0, 0, 0.46) calc(var(--stack-fog-edge) - 12%),
+    #000 calc(var(--stack-fog-edge) - 28%),
+    rgba(0, 0, 0, 0.78) calc(var(--stack-fog-edge) - 16%),
+    rgba(0, 0, 0, 0.32) calc(var(--stack-fog-edge) - 6%),
     transparent var(--stack-fog-edge)
   );
   mask-image: linear-gradient(
     to top,
     #000 0%,
-    #000 calc(var(--stack-fog-edge) - 32%),
-    rgba(0, 0, 0, 0.86) calc(var(--stack-fog-edge) - 24%),
-    rgba(0, 0, 0, 0.46) calc(var(--stack-fog-edge) - 12%),
+    #000 calc(var(--stack-fog-edge) - 28%),
+    rgba(0, 0, 0, 0.78) calc(var(--stack-fog-edge) - 16%),
+    rgba(0, 0, 0, 0.32) calc(var(--stack-fog-edge) - 6%),
     transparent var(--stack-fog-edge)
   );
   -webkit-mask-repeat: no-repeat;
@@ -2063,7 +2064,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   inset: 0;
   width: 100%;
   height: 100%;
-  will-change: transform;
+  will-change: auto;
   transform-origin: center center;
   /* No CSS motion here — ambient animation fought scrub settle and caused jumps */
 }
@@ -2083,8 +2084,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 .ex-stack-scroll__card-media img {
   /* Warm editorial grade — keeps photos from reading as flat slabs */
   filter: saturate(1.12) contrast(1.06) brightness(1.02) sepia(0.045);
-  transform: scale(1.04);
-  will-change: transform;
+  /* Scale only via GSAP ken-burns — CSS transform fought scrub and jumped */
   backface-visibility: hidden;
 }
 
@@ -2102,6 +2102,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 
 .ex-stack-scroll__copy {
   --stack-copy-gap: 0.55rem;
+  --stack-pager-gutter: clamp(2.65rem, 4.2vw, 3.35rem);
   position: absolute;
   z-index: 40;
   left: 0;
@@ -2122,22 +2123,35 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 
 .ex-stack-scroll__copy-panel {
   position: absolute;
-  left: clamp(1.25rem, 4vw, 2.75rem);
+  left: calc(
+    clamp(1.25rem, 4vw, 2.75rem) + var(--stack-pager-gutter)
+  );
   right: auto;
   bottom: max(1.15rem, env(safe-area-inset-bottom, 0px));
-  width: min(40rem, calc(100% - clamp(2.5rem, 8vw, 5.5rem)));
+  width: min(
+    40rem,
+    calc(100% - clamp(2.5rem, 8vw, 5.5rem) - var(--stack-pager-gutter))
+  );
   margin: 0;
   padding: 0;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  will-change: opacity, transform;
+  will-change: opacity;
   /* Fixed gap between title · indication · body — stays equal if title size changes */
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--stack-copy-gap);
   text-align: left;
+  /*
+   * One soft silhouette for the whole panel — cheaper / smoother than
+   * drop-shadow on each split text node during scrub.
+   */
+  filter:
+    drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))
+    drop-shadow(0 6px 18px rgba(0, 0, 0, 0.42))
+    drop-shadow(0 14px 36px rgba(0, 0, 0, 0.32));
 }
 
 .ex-stack-scroll__copy-panel[data-stack-copy-index="0"] {
@@ -2206,19 +2220,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .split-char,
 html[data-ex-experience] .ex-root .ex-stack-scroll__copy .split-word {
   /* Split text would turn text-shadow into per-glyph bars — kill it */
   text-shadow: none !important;
-}
-
-/*
- * Smooth overall contrast: one drop-shadow on each whole text block
- * (not on split letters). Composites as a single soft silhouette.
- */
-html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__title,
-html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebrow,
-html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body {
-  filter:
-    drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55))
-    drop-shadow(0 4px 14px rgba(0, 0, 0, 0.5))
-    drop-shadow(0 12px 32px rgba(0, 0, 0, 0.4));
+  filter: none;
 }
 
 .ex-stack-scroll__title-line {
@@ -2230,7 +2232,6 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   text-indent: 0;
   width: auto;
   max-width: 100%;
-  /* No filter here — parent title already casts the overall shadow */
   filter: none;
 }
 
@@ -2250,87 +2251,113 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   padding: 0;
   text-align: left;
   text-indent: 0;
-  will-change: transform, opacity;
+  will-change: auto;
 }
 
-/* Golden image counter — number sits on a Nile-gold progress line */
+/* Vertical gold index — sits left of the copy, editorial folio style */
 .ex-stack-scroll__pager {
   --stack-pager-gold: #c9a96e;
   --stack-pager-gold-soft: #e8d5a3;
+  --stack-pager-gold-deep: #8b6914;
   position: absolute;
   z-index: 42;
   left: clamp(1.25rem, 4vw, 2.75rem);
   bottom: max(1.15rem, env(safe-area-inset-bottom, 0px));
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 0.4rem;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.55rem;
+  width: 1.75rem;
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
   will-change: opacity;
 }
 
-.ex-stack-scroll__pager-num {
+.ex-stack-scroll__pager-num,
+.ex-stack-scroll__pager-total {
   margin: 0;
   padding: 0;
   font-family: var(--font-display, "Cormorant Garamond", "Times New Roman", serif);
-  font-size: 0.8125rem;
+  font-size: 0.6875rem;
   font-weight: 500;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.22em;
   line-height: 1;
   color: var(--stack-pager-gold-soft);
   text-shadow:
     0 1px 2px rgba(0, 0, 0, 0.55),
-    0 4px 16px rgba(0, 0, 0, 0.45);
+    0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+.ex-stack-scroll__pager-num {
+  font-size: 0.8125rem;
+  letter-spacing: 0.18em;
+  color: #f3e6c4;
+}
+
+.ex-stack-scroll__pager-total {
+  opacity: 0.55;
+  font-size: 0.625rem;
+  letter-spacing: 0.2em;
 }
 
 .ex-stack-scroll__pager-rail {
   position: relative;
-  width: clamp(3.75rem, 7vw, 5.25rem);
-  height: 1.5px;
+  width: 1px;
+  height: clamp(4.75rem, 14vh, 7.25rem);
   overflow: hidden;
   border-radius: 999px;
-  background: rgba(201, 169, 110, 0.22);
-  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
+  background: linear-gradient(
+    180deg,
+    rgba(232, 213, 163, 0.18) 0%,
+    rgba(201, 169, 110, 0.28) 50%,
+    rgba(139, 105, 20, 0.2) 100%
+  );
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.22);
 }
 
 .ex-stack-scroll__pager-line {
   position: absolute;
   left: 0;
+  right: 0;
   top: 0;
   bottom: 0;
-  width: 25%;
+  width: 100%;
+  height: 100%;
   border-radius: inherit;
+  transform-origin: top center;
+  transform: scaleY(0.25);
   background: linear-gradient(
-    90deg,
-    #8b6914 0%,
-    var(--stack-pager-gold) 45%,
-    var(--stack-pager-gold-soft) 100%
+    180deg,
+    #f0e0b4 0%,
+    var(--stack-pager-gold-soft) 28%,
+    var(--stack-pager-gold) 68%,
+    var(--stack-pager-gold-deep) 100%
   );
   box-shadow:
-    0 0 10px rgba(201, 169, 110, 0.45),
-    0 0 2px rgba(232, 213, 163, 0.7);
-  will-change: width;
+    0 0 8px rgba(201, 169, 110, 0.55),
+    0 0 1px rgba(243, 230, 196, 0.8);
+  transition: transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
 }
 
 /* Desktop: lift on-image copy ~2× from the bottom edge + stronger contrast */
 @media (min-width: 1025px) {
   .ex-stack-scroll__copy-panel {
     bottom: clamp(5.5rem, 16vh, 10rem);
+    filter:
+      drop-shadow(0 2px 3px rgba(0, 0, 0, 0.6))
+      drop-shadow(0 8px 22px rgba(0, 0, 0, 0.48))
+      drop-shadow(0 18px 44px rgba(0, 0, 0, 0.38));
   }
 
   .ex-stack-scroll__pager {
-    bottom: max(1.75rem, env(safe-area-inset-bottom, 0px));
+    bottom: clamp(5.5rem, 16vh, 10rem);
   }
 
-  html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__title,
-  html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebrow,
-  html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body {
-    filter:
-      drop-shadow(0 2px 3px rgba(0, 0, 0, 0.65))
-      drop-shadow(0 6px 18px rgba(0, 0, 0, 0.55))
-      drop-shadow(0 16px 40px rgba(0, 0, 0, 0.45));
+  .ex-stack-scroll__pager-rail {
+    height: clamp(5.5rem, 16vh, 8.5rem);
   }
 }
 
@@ -2341,28 +2368,36 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   }
 
   .ex-stack-scroll__pager {
-    bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
+    bottom: clamp(3.25rem, 9vh, 5.5rem);
   }
 
   .ex-stack-scroll__pager-rail {
-    width: clamp(3.25rem, 9vw, 4.5rem);
+    height: clamp(4rem, 11vh, 6rem);
   }
 }
 
 @media (max-width: 480px) {
+  .ex-stack-scroll__copy {
+    --stack-pager-gutter: 2.15rem;
+  }
+
   .ex-stack-scroll__pager {
     bottom: max(0.85rem, env(safe-area-inset-bottom, 0px));
-    gap: 0.32rem;
+    gap: 0.4rem;
+    width: 1.35rem;
   }
 
   .ex-stack-scroll__pager-num {
     font-size: 0.7rem;
-    letter-spacing: 0.22em;
+    letter-spacing: 0.14em;
+  }
+
+  .ex-stack-scroll__pager-total {
+    font-size: 0.55rem;
   }
 
   .ex-stack-scroll__pager-rail {
-    width: 3.25rem;
-    height: 1px;
+    height: 3.75rem;
   }
 }
 

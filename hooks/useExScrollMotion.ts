@@ -614,7 +614,7 @@ export function useExScrollMotion() {
     });
   }
 
-  /** Scrub-linked letter motion — no sudden play() when a wipe settles */
+  /** Soft panel fade only — per-glyph scrub caused scroll flicker on reverse/forward */
   function scrubStackChars(
     tl: gsap.core.Timeline,
     panel: HTMLElement | undefined,
@@ -627,36 +627,38 @@ export function useExScrollMotion() {
       (panel as HTMLElement & { __stackChars?: HTMLElement[] }).__stackChars;
     if (!chars?.length) return;
 
-    const staggerSpan = Math.min(duration * 0.35, 0.22);
-    const each = Math.max(0.001, staggerSpan / Math.max(1, chars.length - 1));
-
-    chars.forEach((ch, idx) => {
-      if (direction === "in") {
-        tl.fromTo(
-          ch,
-          { yPercent: 100, opacity: 0 },
-          {
-            yPercent: 0,
-            opacity: 1,
-            ease: "none",
-            duration: duration * 0.62,
-            immediateRender: false,
-          },
-          at + idx * each,
-        );
-      } else {
-        tl.to(
-          ch,
-          {
-            yPercent: 100,
-            opacity: 0,
-            ease: "none",
-            duration: duration * 0.5,
-          },
-          at + idx * each,
-        );
-      }
-    });
+    /*
+     * Scrub the whole glyph set as one unit (not hundreds of staggered
+     * per-letter tweens). Preserves the rise/fall language without
+     * barcode flicker when the wheel reverses mid-wipe.
+     */
+    if (direction === "in") {
+      tl.fromTo(
+        chars,
+        { yPercent: 28, opacity: 0 },
+        {
+          yPercent: 0,
+          opacity: 1,
+          ease: "none",
+          duration,
+          immediateRender: false,
+          stagger: 0,
+        },
+        at,
+      );
+    } else {
+      tl.to(
+        chars,
+        {
+          yPercent: 18,
+          opacity: 0,
+          ease: "none",
+          duration,
+          stagger: 0,
+        },
+        at,
+      );
+    }
   }
 
   function initExStackScroll() {
@@ -700,7 +702,8 @@ export function useExScrollMotion() {
         pagerNum.textContent = String(safe + 1).padStart(2, "0");
       }
       if (pagerLine) {
-        pagerLine.style.width = `${((safe + 1) / cards.length) * 100}%`;
+        const progress = (safe + 1) / cards.length;
+        pagerLine.style.transform = `scaleY(${progress})`;
       }
     };
 
@@ -756,9 +759,9 @@ export function useExScrollMotion() {
       killExisting();
 
       const total = cards.length;
-      /* Slightly tighter pacing — still elegant, less “end of page” drag */
-      const dwell = 0.48;
-      const move = 0.68;
+      /* Slightly longer wipe + calmer dwell — less rubber-band settle */
+      const dwell = 0.52;
+      const move = 0.82;
       const step = dwell + move;
       /*
        * Cream invitation intro (same fog language as Take Your Voyage Today).
@@ -766,8 +769,8 @@ export function useExScrollMotion() {
        */
       const introText = 0.22;
       const introHold = 0.22;
-      const introFog = 0.48;
-      const introSettle = 0.12;
+      const introFog = 0.52;
+      const introSettle = 0.14;
       const introSpan = introText + introHold + introFog + introSettle;
       const scrollSpan = introSpan + (total - 1) * step + dwell;
 
@@ -831,7 +834,6 @@ export function useExScrollMotion() {
       setStackPager(0);
 
       const isPhoneStack = isNarrowViewport;
-      const lightStack = lightenDevice || isPhone;
       const fogStepped = isPhone || lightenDevice;
 
       logPhonePerfDev({
@@ -851,9 +853,9 @@ export function useExScrollMotion() {
           end: isPhoneStack ? "bottom bottom" : `+=${scrollSpan * 100}%`,
           /*
            * Narrow/phone: CSS sticky section height is the runway.
-           * Direct scrub on touch — no lag catch-up.
+           * Desktop: short scrub lag — long lag felt rubbery/glitchy on settle.
            */
-          scrub: isPhoneStack ? true : 1.15,
+          scrub: isPhoneStack ? true : 0.55,
           /*
            * Narrow screens use a CSS-sticky viewport inside a tall section.
            * Preserves landmark storytelling without a GSAP pin spacer
@@ -969,9 +971,10 @@ export function useExScrollMotion() {
           onUpdate: () => {
             const edge = quantiseFogEdge(firstFog.edge, fogStepped);
             firstCard.style.setProperty("--stack-fog-edge", `${edge}%`);
-            const op = Math.min(1, Math.max(0, firstFog.reveal * 1.8));
+            /* Linear reveal — *1.8 saturated early and flickered at the lip */
+            const op = Math.min(1, Math.max(0, firstFog.reveal));
             firstCard.style.opacity = String(op);
-            if (op > 0.001) firstCard.style.visibility = "visible";
+            if (op > 0.02) firstCard.style.visibility = "visible";
           },
           onComplete: () => clearFogWillChange(firstCard, firstMedia),
         },
@@ -1057,10 +1060,10 @@ export function useExScrollMotion() {
             onUpdate: () => {
               const edge = quantiseFogEdge(fog.edge, fogStepped);
               card.style.setProperty("--stack-fog-edge", `${edge}%`);
-              /* Opacity only — visibility toggles caused settle flicker */
-              const op = Math.min(1, Math.max(0, fog.reveal * 1.8));
+              /* Opacity only — linear reveal avoids lip flicker */
+              const op = Math.min(1, Math.max(0, fog.reveal));
               card.style.opacity = String(op);
-              if (op > 0.001) card.style.visibility = "visible";
+              if (op > 0.02) card.style.visibility = "visible";
             },
             onComplete: () => clearFogWillChange(card, media),
           },
@@ -1143,7 +1146,7 @@ export function useExScrollMotion() {
           const underCard = cards[j];
           const underMedia = getCardMedia(underCard);
 
-          /* Keep full-bleed coverage — dim only, never shrink (scale < 1 = dark gaps) */
+          /* Keep full-bleed coverage — dim via opacity (filter:brightness thrashed GPU) */
           tl.to(
             underCard,
             {
@@ -1151,17 +1154,8 @@ export function useExScrollMotion() {
               x: 0,
               xPercent: 0,
               scale: 1,
-              /*
-               * filter:brightness every scrub frame is costly on phones.
-               * Same look via opacity dim of the under-card (still full-bleed).
-               */
-              ...(lightStack
-                ? {
-                    opacity: Math.max(0.62, 1 - depth * 0.1),
-                  }
-                : {
-                    filter: `brightness(${Math.max(0.58, 1 - depth * 0.08)})`,
-                  }),
+              opacity: Math.max(0.72, 1 - depth * 0.08),
+              filter: "brightness(1)",
               ease: "none",
               duration: move,
             },
