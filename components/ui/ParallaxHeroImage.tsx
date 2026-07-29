@@ -1,10 +1,11 @@
 "use client";
 
-import { useRef } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { isRemoteCmsImageUrl } from "@/lib/site-image-url";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
+import { shouldLightenMotionForDevice } from "@/lib/touch-device";
 
 type ParallaxHeroImageProps = {
   src: string;
@@ -22,16 +23,33 @@ export function ParallaxHeroImage({
   className = "",
 }: ParallaxHeroImageProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [lightTouch, setLightTouch] = useState(false);
+
+  useLayoutEffect(() => {
+    setLightTouch(shouldLightenMotionForDevice());
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"],
   });
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "28%"]);
-  /* Keep parallax, but avoid heavy upscale — sources are ~1536px */
-  const scale = useTransform(scrollYProgress, [0, 1], [1.02, 1.06]);
+  /* Same parallax language — half travel / scale on real phones. */
+  const y = useTransform(
+    scrollYProgress,
+    [0, 1],
+    lightTouch ? ["0%", "12%"] : ["0%", "28%"],
+  );
+  const scale = useTransform(
+    scrollYProgress,
+    [0, 1],
+    lightTouch ? [1, 1.02] : [1.02, 1.06],
+  );
 
   return (
-    <div ref={containerRef} className={`hathor-parallax-hero__frame ${className}`}>
+    <div
+      ref={containerRef}
+      className={`hathor-parallax-hero__frame ${className}`}
+    >
       <motion.div className="hathor-parallax-hero__motion" style={{ y, scale }}>
         <Image
           src={src}

@@ -1,0 +1,45 @@
+---
+description: Phone GPU adaptation — keep effects, lighten execution (never strip visuals)
+alwaysApply: true
+---
+
+# Phone effect adaptation (not removal)
+
+When editing anything that runs on a **real phone** (`pointer: coarse`, `is-touch-device`, `shouldLightenMotionForDevice()`, or ≤480 phone layout):
+
+## Rule
+
+**Keep the same visual idea.** Adapt cost for phone GPUs. Do **not** delete particles, text rises, mask reveals, fog, marquees, or menu staggers unless the user explicitly asks to remove them.
+
+## How to adapt (prefer in order)
+
+1. **Fewer nodes** — half particles, word-level split instead of per-char, ≤12 mask strips
+2. **Cheaper paint** — opacity/transform instead of `filter: blur`, `filter: brightness`, or live `backdrop-filter`
+3. **Stepped scrub** — quantize scroll progress (e.g. 16–32 steps) instead of every pixel for clip-path / CSS vars
+4. **Play once** — `once: true` / no reverse scrub on touch ScrollTriggers
+5. **CSS over perpetual GSAP** — open/close and staggers via transform transitions when possible
+6. **One field** — avoid stacking two continuous particle systems on the same page
+7. **Native scroll** — no Lenis on touch; no GSAP pin when sticky CSS works
+
+## Helpers
+
+- `shouldLightenMotionForDevice()` / `isTouchDevice()` in `lib/touch-device.ts`
+- Touch CSS overrides in `app/mobile-touch.css` under `html.is-touch-device` / `@media (pointer: coarse)`
+
+## Anti-patterns
+
+```ts
+// ❌ BAD — removes the effect on phone
+if (isTouchDevice()) return null;
+
+// ✅ GOOD — same effect, lighter
+const count = light ? 14 : 36;
+const filter = light ? undefined : `blur(${blur}px)`;
+```
+
+## Scope
+
+- Phone layout CSS stays ≤480 when the user says “in phone”
+- This rule is about **motion/GPU cost** on real touch devices (often all coarse pointers), not only 480px
+- Desktop (>1024, fine pointer) stays on the full-fidelity path
+- Still respect protected-area approval before editing cruises / booking / admin / `usePageScrollTransition`

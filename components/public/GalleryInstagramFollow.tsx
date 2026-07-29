@@ -12,6 +12,7 @@ import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { EX_GALLERY } from "@/lib/ex-page-content";
 import type { SiteImageName } from "@/lib/site-image-slots";
+import { shouldLightenMotionForDevice } from "@/lib/touch-device";
 
 type GalleryInstagramFollowProps = {
   title: string;
@@ -224,6 +225,7 @@ export function GalleryInstagramFollow({
   const scrollIdleTimerRef = useRef<number | null>(null);
   const fieldSizeRef = useRef({ w: FALLBACK_FIELD_W, h: FALLBACK_FIELD_H });
   const reducedRef = useRef(false);
+  const lightTouchRef = useRef(false);
   const [particles, setParticles] = useState<ParticleRender[]>([]);
 
   const cacheFieldSize = useCallback(() => {
@@ -410,7 +412,10 @@ export function GalleryInstagramFollow({
       if (opts?.fromHover && scrollingRef.current) return;
 
       if (!templatesRef.current.length) {
-        templatesRef.current = buildTemplates();
+        const all = buildTemplates();
+        templatesRef.current = lightTouchRef.current
+          ? all.slice(0, Math.max(6, Math.ceil(all.length * 0.45)))
+          : all;
       }
       if (!floatersRef.current.length) return;
 
@@ -447,14 +452,27 @@ export function GalleryInstagramFollow({
     reducedRef.current =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    lightTouchRef.current =
+      typeof window !== "undefined" && shouldLightenMotionForDevice();
 
     if (reducedRef.current) return;
 
-    templatesRef.current = buildTemplates();
+    const allTemplates = buildTemplates();
+    /* Same burst language — fewer floaters on phone GPUs */
+    templatesRef.current = lightTouchRef.current
+      ? allTemplates.slice(0, Math.max(6, Math.ceil(allTemplates.length * 0.45)))
+      : allTemplates;
     cacheFieldSize();
     const origin = getOrigin();
     const warm = templatesRef.current.map((template) => {
-      const size = template.kind === "image" ? 112 : 54;
+      const size =
+        template.kind === "image"
+          ? lightTouchRef.current
+            ? 88
+            : 112
+          : lightTouchRef.current
+            ? 44
+            : 54;
       return {
         ...template,
         instanceId: nextInstanceId(`warm-${template.key}`),
