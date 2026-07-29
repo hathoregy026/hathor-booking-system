@@ -14,7 +14,7 @@ import {
   registerHathorLenis,
   restoreScrollPositionIfReload,
 } from "@/lib/scroll-position-restore";
-import { lenisMobileSafeOptions } from "@/lib/touch-device";
+import { isTouchDevice, lenisMobileSafeOptions } from "@/lib/touch-device";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -40,7 +40,7 @@ export function useAccommodationMotion(
     let lenis: Lenis | null = null;
     let ticker: ((time: number) => void) | null = null;
 
-    if (!prefersReduced) {
+    if (!prefersReduced && !isTouchDevice()) {
       lenis = new Lenis(lenisMobileSafeOptions(1.55));
       lenis.on("scroll", ScrollTrigger.update);
       registerHathorLenis(lenis);

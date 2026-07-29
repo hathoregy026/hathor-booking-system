@@ -8,6 +8,9 @@ export const ADMIN_PHONE_PREVIEW_WIDTH = 390;
 /** Public site: phone settings apply at this max width (matches existing public.css). */
 export const PUBLIC_PHONE_MAX_WIDTH = 767;
 
+/** Narrow viewports where desktop hero tuck (negative Y) clips the logo/CTA. */
+export const PUBLIC_NARROW_MAX_WIDTH = 1023;
+
 export function isAdminDevicePreview(value: unknown): value is AdminDevicePreview {
   return value === "desktop" || value === "phone";
 }
@@ -19,6 +22,13 @@ export function wrapCssForPhoneViewport(css: string): string {
   return `@media (max-width: ${PUBLIC_PHONE_MAX_WIDTH}px) {\n${trimmed}\n}`;
 }
 
+/** Phone + tablet override (hero logo/CTA visibility). */
+export function wrapCssForNarrowViewport(css: string): string {
+  const trimmed = css.trim();
+  if (!trimmed) return "";
+  return `@media (max-width: ${PUBLIC_NARROW_MAX_WIDTH}px) {\n${trimmed}\n}`;
+}
+
 /** Desktop CSS + phone override block for live site injection. */
 export function combineDesktopAndPhoneCss(
   desktopCss: string,
@@ -27,4 +37,14 @@ export function combineDesktopAndPhoneCss(
   const desk = desktopCss.trim();
   const phone = wrapCssForPhoneViewport(phoneCss);
   return [desk, phone].filter(Boolean).join("\n\n");
+}
+
+/** Desktop + narrow (≤1023) override — use for hero logo so tablets aren't clipped. */
+export function combineDesktopAndNarrowCss(
+  desktopCss: string,
+  narrowCss: string,
+): string {
+  const desk = desktopCss.trim();
+  const narrow = wrapCssForNarrowViewport(narrowCss);
+  return [desk, narrow].filter(Boolean).join("\n\n");
 }

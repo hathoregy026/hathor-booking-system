@@ -39,7 +39,7 @@ function prefersReducedMotion() {
 }
 
 function setupOptionalLenis(enabled: boolean) {
-  if (!enabled || prefersReducedMotion()) return null;
+  if (!enabled || prefersReducedMotion() || isTouchDevice()) return null;
 
   const lenis = new Lenis(lenisMobileSafeOptions(1.55));
 

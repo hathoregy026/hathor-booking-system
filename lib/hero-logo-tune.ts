@@ -3,6 +3,8 @@ import { getSharedPgPool } from "@/lib/pg-pool";
 import { resolveDatabaseUrl } from "@/lib/database-config";
 import {
   DEFAULT_HERO_LOGO_TUNE,
+  DEFAULT_HERO_LOGO_TUNE_MOBILE,
+  ensurePhoneHeroLogoVisible,
   HERO_LOGO_TUNE_KEY,
   HERO_LOGO_TUNE_MOBILE_KEY,
   heroLogoTuneSchema,
@@ -13,6 +15,8 @@ import { prisma } from "@/lib/prisma";
 
 export {
   DEFAULT_HERO_LOGO_TUNE,
+  DEFAULT_HERO_LOGO_TUNE_MOBILE,
+  ensurePhoneHeroLogoVisible,
   HERO_LOGO_TUNE_KEY,
   HERO_LOGO_TUNE_MOBILE_KEY,
   heroLogoTuneSchema,
@@ -121,13 +125,13 @@ export async function saveHeroLogoTune(tune: HeroLogoTune): Promise<HeroLogoTune
 }
 
 /**
- * Phone tune. If never saved, falls back to desktop so phones match until
- * the admin saves a dedicated phone version.
+ * Phone/tablet tune. Never fall back to desktop y:-200 — that clips the
+ * logo and Book Now under .home-hero-container { overflow: hidden }.
  */
 export async function getHeroLogoTuneMobile(): Promise<HeroLogoTune> {
   const mobile = await getTuneByKey(HERO_LOGO_TUNE_MOBILE_KEY);
-  if (mobile) return mobile;
-  return getHeroLogoTune();
+  if (mobile) return ensurePhoneHeroLogoVisible(mobile);
+  return DEFAULT_HERO_LOGO_TUNE_MOBILE;
 }
 
 export async function getHeroLogoTuneMobileSafe(): Promise<HeroLogoTune> {
@@ -135,7 +139,7 @@ export async function getHeroLogoTuneMobileSafe(): Promise<HeroLogoTune> {
     return await getHeroLogoTuneMobile();
   } catch (error) {
     console.error("[hero-logo-tune-mobile] get failed:", error);
-    return getHeroLogoTuneSafe();
+    return DEFAULT_HERO_LOGO_TUNE_MOBILE;
   }
 }
 

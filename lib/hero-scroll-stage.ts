@@ -287,6 +287,9 @@ export function mountHeroScrollStage({
     if (ctaText) gsap.set(ctaText, { letterSpacing: "0.22em" });
 
     const titleTravel = Math.min(w * 0.38, 420);
+    const isTouch =
+      window.matchMedia("(pointer: coarse)").matches ||
+      window.matchMedia("(max-width: 1023px)").matches;
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -294,7 +297,8 @@ export function mountHeroScrollStage({
         trigger: hero,
         start: "top top",
         end: "+=130%",
-        scrub: 1.7,
+        // Direct scrub on touch — laggy scrub (1.7) feels like scroll jumping
+        scrub: isTouch ? true : 1.7,
         pin: true,
         pinSpacing: true,
         anticipatePin: 1,

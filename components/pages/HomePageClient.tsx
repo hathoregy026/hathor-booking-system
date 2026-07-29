@@ -34,7 +34,7 @@ import {
   useTypographySettings,
 } from "@/components/public/TypographySettingsProvider";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
-import { combineDesktopAndPhoneCss } from "@/lib/admin-device-preview";
+import { combineDesktopAndNarrowCss } from "@/lib/admin-device-preview";
 import {
   DEFAULT_HERO_LOGO_TUNE,
   type HeroLogoTune,
@@ -116,7 +116,7 @@ function paintLogoTune(desktop: HeroLogoTune, phone: HeroLogoTune) {
     tag.setAttribute("data-hathor-logo-tune-live", "");
     document.head.appendChild(tag);
   }
-  tag.textContent = combineDesktopAndPhoneCss(
+  tag.textContent = combineDesktopAndNarrowCss(
     heroLogoTuneToImportantCss(desktop),
     heroLogoTuneToImportantCss(phone),
   );

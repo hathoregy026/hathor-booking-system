@@ -86,6 +86,33 @@ export const DEFAULT_HERO_LOGO_TUNE: HeroLogoTune = {
   partsVariant: "current",
 };
 
+/**
+ * Phone/tablet baseline — desktop y:-200 tucks under the cream sheet and
+ * fully clips the logo + Book Now under overflow:hidden below ~810px width.
+ */
+export const DEFAULT_HERO_LOGO_TUNE_MOBILE: HeroLogoTune = {
+  ...DEFAULT_HERO_LOGO_TUNE,
+  size: 1.05,
+  y: 40,
+  ctaNudge: 12,
+  gapTButton: 14,
+  gapButtonH: 14,
+  gapHA: 6,
+  gapAT: 6,
+  gapHO: 8,
+  gapOR: 8,
+};
+
+/** Keep logo + CTA inside the hero on narrow screens. */
+export function ensurePhoneHeroLogoVisible(tune: HeroLogoTune): HeroLogoTune {
+  if (tune.y >= 24) return tune;
+  return {
+    ...tune,
+    y: 40,
+    size: Math.max(tune.size, 0.95),
+  };
+}
+
 const VALIGN_FLEX: Record<HeroLogoVAlign, string> = {
   top: "flex-start",
   middle: "center",

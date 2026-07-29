@@ -5,7 +5,7 @@ import { HATHOR_HERO_POSTER_SRC } from "@/lib/branding";
 import { getHomepageAccordionCruisesSafe } from "@/lib/homepage-accordion-cruises";
 import { getHeroLogoTuneSafe, getHeroLogoTuneMobileSafe } from "@/lib/hero-logo-tune";
 import { heroLogoTuneToImportantCss } from "@/lib/hero-logo-tune-shared";
-import { combineDesktopAndPhoneCss } from "@/lib/admin-device-preview";
+import { combineDesktopAndNarrowCss } from "@/lib/admin-device-preview";
 import "./home-experience.css";
 
 export const revalidate = 300;
@@ -53,7 +53,7 @@ export default async function HomePage() {
     getHeroLogoTuneMobileSafe(),
     getHomepageAccordionCruisesSafe(),
   ]);
-  const logoTuneCss = combineDesktopAndPhoneCss(
+  const logoTuneCss = combineDesktopAndNarrowCss(
     heroLogoTuneToImportantCss(heroLogoTune),
     heroLogoTuneToImportantCss(heroLogoTuneMobile),
   );

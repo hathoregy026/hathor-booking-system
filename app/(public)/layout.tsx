@@ -18,7 +18,7 @@ import {
 } from "@/lib/typography-settings";
 import { typographyToImportantCss } from "@/lib/typography-settings-shared";
 import { getWebsiteTextSafe, getWebsiteTextMobileSafe } from "@/lib/website-text";
-import { combineDesktopAndPhoneCss } from "@/lib/admin-device-preview";
+import { combineDesktopAndPhoneCss, combineDesktopAndNarrowCss } from "@/lib/admin-device-preview";
 import "../hathor-fonts.css";
 import "../public.css";
 import "../lux-footer.css";
@@ -144,7 +144,7 @@ export default async function PublicSiteLayout({
     typographyToImportantCss(typography),
     typographyToImportantCss(typographyMobile),
   );
-  const logoTuneCss = combineDesktopAndPhoneCss(
+  const logoTuneCss = combineDesktopAndNarrowCss(
     heroLogoTuneToImportantCss(heroLogoTune),
     heroLogoTuneToImportantCss(heroLogoTuneMobile),
   );

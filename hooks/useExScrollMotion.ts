@@ -18,7 +18,7 @@ import {
   readSavedScrollY,
   shouldRestoreScrollOnMount,
 } from "@/lib/scroll-position-restore";
-import { lenisMobileSafeOptions } from "@/lib/touch-device";
+import { lenisMobileSafeOptions, isTouchDevice } from "@/lib/touch-device";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -63,17 +63,26 @@ export function useExScrollMotion() {
   let helmCleanup: (() => void) | null = null;
 
   if (!prefersReduced) {
-    lenis = new Lenis(lenisMobileSafeOptions(1.4));
+    // Native finger scroll on phones/tablets — Lenis + scrubbed pins = jumpy lag.
+    if (!isTouchDevice()) {
+      lenis = new Lenis(lenisMobileSafeOptions(1.4));
 
-    // Keep ScrollTrigger in sync with Lenis
-    lenis.on("scroll", ScrollTrigger.update);
-    registerHathorLenis(lenis);
+      // Keep ScrollTrigger in sync with Lenis
+      lenis.on("scroll", ScrollTrigger.update);
+      registerHathorLenis(lenis);
 
-    tickerFn = (time: number) => {
-      lenis?.raf(time * 1000);
-    };
-    gsap.ticker.add(tickerFn);
-    gsap.ticker.lagSmoothing(0);
+      tickerFn = (time: number) => {
+        lenis?.raf(time * 1000);
+      };
+      gsap.ticker.add(tickerFn);
+      gsap.ticker.lagSmoothing(0);
+    }
+
+    try {
+      ScrollTrigger.config({ ignoreMobileResize: true });
+    } catch {
+      /* older GSAP */
+    }
   }
 
   /*

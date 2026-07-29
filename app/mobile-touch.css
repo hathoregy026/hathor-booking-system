@@ -120,6 +120,26 @@ body.is-touch-device .lux-cursor {
     display: block !important;
   }
 
+  /* Hard floor: keep logo + Book Now on-screen (beats stale desktop y:-200) */
+  .public-site .home-hero-container .hero-logo-mark--split,
+  html[data-ex-experience] .ex-root .hero-logo-mark--split {
+    bottom: max(1.5rem, var(--hathor-logo-bottom, 40px)) !important;
+  }
+
+  .public-site .home-hero-container:has(.hero-logo-mark--split) .hero-button,
+  html[data-ex-experience]
+    .ex-root
+    .home-hero-container:has(.hero-logo-mark--split)
+    .hero-button {
+    bottom: max(
+      2.5rem,
+      calc(
+        max(1.5rem, var(--hathor-logo-bottom, 40px)) + (var(--hathor-logo-h) / 2) -
+          26px + var(--hathor-cta-y-nudge, 12px)
+      )
+    ) !important;
+  }
+
   /* Forms: stop iOS input zoom */
   .public-site input,
   .public-site textarea,

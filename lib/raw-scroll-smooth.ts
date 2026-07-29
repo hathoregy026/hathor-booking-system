@@ -4,7 +4,7 @@ import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { registerHathorLenis } from "@/lib/scroll-position-restore";
-import { lenisMobileSafeOptions } from "@/lib/touch-device";
+import { isTouchDevice, lenisMobileSafeOptions } from "@/lib/touch-device";
 
 /** Match the proven homepage pacing; higher values felt laggy with hero scrub. */
 export const RAW_SCROLL_LENIS_DURATION = 1.4;
@@ -30,6 +30,8 @@ function prefersReducedMotion(): boolean {
 export function bindRawScrollSmooth(): () => void {
   if (typeof window === "undefined") return () => {};
   if (prefersReducedMotion()) return () => {};
+  // Touch devices: native scroll only (Lenis causes finger-scroll jumping).
+  if (isTouchDevice()) return () => {};
 
   // If the page already has its own Lenis (home/rooms), do nothing.
   if (pageOwnsLenis()) return () => {};
