@@ -1404,13 +1404,8 @@ ${block(
 .public-site .hathor-lux .lux-kicker,
 .public-site .acc-eyebrow,
 .public-site .room-interstitial__eyebrow,
-.public-site .venetian-page .room-fs-label,
 .public-site .venetian-page .room-fs-route,
-.public-site .venetian-page .room-fs-count,
-.public-site .venetian-page .room-fs-ui .room-fs-label,
 .public-site .venetian-page .room-fs-ui .room-fs-route,
-.public-site .venetian-page .room-fs-ui .room-fs-count,
-.public-site .venetian-page .room-fs-ui .room-fs-count i,
 html[data-ex-experience] .ex-root .ex-stack-scroll__eyebrow,
 html[data-ex-experience] .ex-root .home-carousel-h3 h3,
 html[data-ex-experience] .ex-root .home-carousel-h3 .typo-page-subtitle,
@@ -1470,10 +1465,7 @@ ${block(
   `/* On images · indication */
 .public-site .typo-on-images-indication,
 html[data-ex-experience] .ex-root .ex-stack-scroll__eyebrow,
-.public-site .venetian-page .room-fs-ui .room-fs-label,
 .public-site .venetian-page .room-fs-ui .room-fs-route,
-.public-site .venetian-page .room-fs-ui .room-fs-count,
-.public-site .venetian-page .room-fs-ui .room-fs-count i,
 .public-site .venetian-page .spx-frame-ui .lux-kicker,
 .public-site .venetian-page .hlx-panel-copy .lux-kicker,
 .public-site .venetian-page .dnx-panel .lux-kicker,
@@ -1500,6 +1492,20 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__body,
 .public-site .lux-testimonials__name`,
   "on_images_body",
 )}
+/* Room chrome (01/04 · Cabin) — body font family, compact label scale */
+.public-site .venetian-page .room-fs-ui .room-fs-count,
+.public-site .venetian-page .room-fs-ui .room-fs-count i,
+.public-site .venetian-page .room-fs-ui .room-fs-label,
+.public-site .venetian-page .room-fs-ui .room-fs-label .char {
+  font-family: var(--typo-on-images-body-font, var(--typo-body-text-font)) !important;
+  font-size: 0.8125rem !important;
+  line-height: 1.35 !important;
+  letter-spacing: 0.06em !important;
+  color: var(--typo-on-images-body-color, #ffffff) !important;
+  -webkit-text-fill-color: var(--typo-on-images-body-color, #ffffff) !important;
+  text-transform: none !important;
+  font-weight: 400 !important;
+}
 ${block(
   `/* Luxury marquee — font/size on strip; solid #B69F64 fill (no shimmer) */
 .public-site .luxury-marquee,

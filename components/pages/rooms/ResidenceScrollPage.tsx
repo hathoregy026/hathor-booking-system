@@ -231,10 +231,10 @@ export function ResidenceScrollPage({
                   <div className="room-fs-shade" aria-hidden="true" />
                   <div className="room-fs-ui">
                     <div className="room-fs-top">
-                      <span className="room-fs-count typo-page-subtitle">
+                      <span className="room-fs-count typo-on-images-body">
                         <i className="room-fs-current">01</i> / 04
                       </span>
-                      <span className="room-fs-label typo-page-subtitle">
+                      <span className="room-fs-label typo-on-images-body">
                         {chapter.label}
                       </span>
                     </div>

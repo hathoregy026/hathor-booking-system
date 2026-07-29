@@ -347,9 +347,6 @@
   position: absolute;
   inset: 0;
   z-index: 2;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  align-items: stretch;
   padding:
     clamp(100px, 14vh, 130px)
     clamp(24px, 6vw, 80px)
@@ -364,6 +361,10 @@
 }
 
 .room-fs-top {
+  position: absolute;
+  top: clamp(100px, 14vh, 130px);
+  left: clamp(24px, 6vw, 80px);
+  right: clamp(24px, 6vw, 80px);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -375,31 +376,40 @@
 }
 
 .room-fs-copy {
+  position: absolute;
+  top: 50%;
+  left: clamp(24px, 6vw, 80px);
+  right: auto;
   max-width: 560px;
-  /* Dead-center the title/body/CTA in the middle row */
-  align-self: center;
-  justify-self: start;
-  width: 100%;
+  width: min(560px, calc(100% - 2 * clamp(24px, 6vw, 80px)));
+  transform: translateY(-50%);
+}
+
+.room-fs-progress {
+  position: absolute;
+  left: clamp(24px, 6vw, 80px);
+  right: clamp(24px, 6vw, 80px);
+  bottom: clamp(36px, 6vh, 56px);
 }
 
 .room-fs-title {
   font-family: var(--font-display);
   font-weight: 400;
   font-size: clamp(2.6rem, 6.5vw, 5rem);
-  line-height: 1.12;
+  line-height: 1.05;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   /* Pull title + route (indication) into one tight pair */
-  margin: 0 0 4px;
+  margin: 0;
   /* Do not clip glyph bottoms — display faces need room below the line box */
   overflow: visible;
-  padding-bottom: 0.04em;
+  padding-bottom: 0.02em;
   text-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
 }
 
 /* Itinerary route under suite name — Small indication (typography tune) */
 .room-fs-route {
-  margin: 0 0 18px;
+  margin: 0.15em 0 18px;
 }
 
 .room-fs-meta {
@@ -407,7 +417,8 @@
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: rgba(245, 239, 228, 0.7);
-  margin: 0 0 18px;
+  /* Keep meta with the body paragraph; equal rhythm is route→body and body→cta */
+  margin: 0 0 8px;
 }
 
 .room-fs-desc {
