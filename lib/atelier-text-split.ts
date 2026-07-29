@@ -5,6 +5,7 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { shouldLightenMotionForDevice } from "@/lib/touch-device";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -231,12 +232,14 @@ export function mountAtelierTextSplit(
   const prefersReduced =
     typeof window !== "undefined" &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  /* Hundreds of char spans + ScrollTriggers thrash real phone CPUs. */
+  const lighten = typeof window !== "undefined" && shouldLightenMotionForDevice();
 
   let cancelled = false;
   const triggerIds: string[] = [];
 
   const run = () => {
-    if (cancelled || prefersReduced || !root) return;
+    if (cancelled || prefersReduced || lighten || !root) return;
     const seen = new Set<HTMLElement>();
 
     SELECTORS.forEach((sel) => {

@@ -41,6 +41,30 @@ html {
   [data-magnetic-arrow] {
     transform: none !important;
   }
+
+  /* Real phones: kill continuous particle paint + soft blur layers */
+  .gold-dust-particles {
+    display: none !important;
+  }
+
+  .luxury-marquee,
+  .luxury-marquee * {
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+/* Soften expensive glass on real touch devices */
+html.is-touch-device .public-site,
+body.is-touch-device .public-site {
+  --lux-blur: 0px;
+}
+
+html.is-touch-device .public-site [style*="backdrop-filter"],
+body.is-touch-device .public-site [style*="backdrop-filter"] {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 html.is-touch-device .lux-cursor,

@@ -18,7 +18,11 @@ import {
   readSavedScrollY,
   shouldRestoreScrollOnMount,
 } from "@/lib/scroll-position-restore";
-import { lenisMobileSafeOptions, shouldUseNativeScroll } from "@/lib/touch-device";
+import {
+  lenisMobileSafeOptions,
+  shouldLightenMotionForDevice,
+  shouldUseNativeScroll,
+} from "@/lib/touch-device";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -49,6 +53,7 @@ export function useExScrollMotion() {
     window.matchMedia &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const isNarrowViewport = window.matchMedia("(max-width: 1024px)").matches;
+  const lightenDevice = shouldLightenMotionForDevice();
 
   /* -------------------------------------------------------
    * 1. GSAP plugin
@@ -350,6 +355,8 @@ export function useExScrollMotion() {
     const isTouchPortal = isNarrowViewport;
     const wheelOpenScale = isTouchPortal ? 2.55 : 3.15;
     const wheelExitScale = isTouchPortal ? 4.1 : 5.4;
+    /* Real phones: clip-path circle scrub is a known GPU killer. */
+    const lightPortal = lightenDevice;
 
     gsap.set(wheel, {
       xPercent: 0,
@@ -361,88 +368,136 @@ export function useExScrollMotion() {
       autoAlpha: 1,
       force3D: true,
     });
-    gsap.set(media, {
-      clipPath: "circle(0vmax at 50% 50%)",
-      WebkitClipPath: "circle(0vmax at 50% 50%)",
-    });
-    gsap.set(mediaImage, { scale: 1.34, xPercent: -2.5, force3D: true });
+    if (lightPortal) {
+      gsap.set(media, {
+        clipPath: "none",
+        WebkitClipPath: "none",
+        opacity: 0,
+      });
+      gsap.set(mediaImage, { scale: 1.12, xPercent: 0, force3D: true });
+    } else {
+      gsap.set(media, {
+        clipPath: "circle(0vmax at 50% 50%)",
+        WebkitClipPath: "circle(0vmax at 50% 50%)",
+      });
+      gsap.set(mediaImage, { scale: 1.34, xPercent: -2.5, force3D: true });
+    }
     if (shade) gsap.set(shade, { opacity: 1 });
 
     const portalTimeline = gsap.timeline({ paused: true });
-    portalTimeline
-      .to(
-        wheel,
-        {
-          rotation: 640,
-          scale: wheelOpenScale,
-          duration: 0.55,
-          ease: "sine.inOut",
-        },
-        0.11,
-      )
-      .to(
-        media,
-        {
-          clipPath: "circle(13vmax at 50% 50%)",
-          WebkitClipPath: "circle(13vmax at 50% 50%)",
-          duration: 0.42,
-          ease: "sine.inOut",
-        },
-        0.24,
-      )
-      .to(
-        mediaImage,
-        {
-          scale: 1.08,
-          xPercent: -0.35,
-          duration: 0.62,
-          ease: "sine.inOut",
-        },
-        0.14,
-      )
-      .to(
-        wheel,
-        {
-          rotation: 850,
-          scale: wheelExitScale,
-          autoAlpha: 0,
-          duration: 0.2,
-          ease: "power2.in",
-        },
-        0.66,
-      )
-      .to(
-        media,
-        {
-          clipPath: "circle(75vmax at 50% 50%)",
-          WebkitClipPath: "circle(75vmax at 50% 50%)",
-          duration: 0.22,
-          ease: "power2.inOut",
-        },
-        0.66,
-      )
-      .to(
-        mediaImage,
-        {
-          scale: 1,
-          xPercent: 0,
-          duration: 0.3,
-          ease: "power2.out",
-        },
-        0.66,
-      )
-      .to({}, { duration: 0.04 }, 0.96);
+    if (lightPortal) {
+      portalTimeline
+        .to(
+          wheel,
+          {
+            rotation: 420,
+            scale: wheelOpenScale,
+            duration: 0.5,
+            ease: "sine.inOut",
+          },
+          0.08,
+        )
+        .to(media, { opacity: 1, duration: 0.45, ease: "sine.inOut" }, 0.2)
+        .to(
+          mediaImage,
+          { scale: 1, duration: 0.55, ease: "sine.inOut" },
+          0.16,
+        )
+        .to(
+          wheel,
+          {
+            rotation: 620,
+            scale: wheelExitScale,
+            autoAlpha: 0,
+            duration: 0.22,
+            ease: "power2.in",
+          },
+          0.62,
+        )
+        .to({}, { duration: 0.04 }, 0.9);
+      if (shade) {
+        portalTimeline.to(
+          shade,
+          { opacity: 0.78, duration: 0.28, ease: "power1.out" },
+          0.55,
+        );
+      }
+    } else {
+      portalTimeline
+        .to(
+          wheel,
+          {
+            rotation: 640,
+            scale: wheelOpenScale,
+            duration: 0.55,
+            ease: "sine.inOut",
+          },
+          0.11,
+        )
+        .to(
+          media,
+          {
+            clipPath: "circle(13vmax at 50% 50%)",
+            WebkitClipPath: "circle(13vmax at 50% 50%)",
+            duration: 0.42,
+            ease: "sine.inOut",
+          },
+          0.24,
+        )
+        .to(
+          mediaImage,
+          {
+            scale: 1.08,
+            xPercent: -0.35,
+            duration: 0.62,
+            ease: "sine.inOut",
+          },
+          0.14,
+        )
+        .to(
+          wheel,
+          {
+            rotation: 850,
+            scale: wheelExitScale,
+            autoAlpha: 0,
+            duration: 0.2,
+            ease: "power2.in",
+          },
+          0.66,
+        )
+        .to(
+          media,
+          {
+            clipPath: "circle(75vmax at 50% 50%)",
+            WebkitClipPath: "circle(75vmax at 50% 50%)",
+            duration: 0.22,
+            ease: "power2.inOut",
+          },
+          0.66,
+        )
+        .to(
+          mediaImage,
+          {
+            scale: 1,
+            xPercent: 0,
+            duration: 0.3,
+            ease: "power2.out",
+          },
+          0.66,
+        )
+        .to({}, { duration: 0.04 }, 0.96);
 
-    if (shade) {
-      portalTimeline.to(
-        shade,
-        {
-          opacity: 0.78,
-          duration: 0.3,
-          ease: "power1.out",
-        },
-        0.66,
-      );
+      if (shade) {
+        portalTimeline.to(
+          shade,
+          {
+            opacity: 0.78,
+            duration: 0.3,
+            ease: "power1.out",
+          },
+          0.66,
+        );
+      }
     }
 
     let animationFrame = 0;
@@ -529,6 +584,14 @@ export function useExScrollMotion() {
   }
 
   function prepareStackPanelSplits(panels: HTMLElement[]) {
+    /* Real phones: skip letter-split DOM inflation on stack copy. */
+    if (lightenDevice) {
+      panels.forEach((panel) => {
+        (panel as HTMLElement & { __stackChars?: HTMLElement[] }).__stackChars =
+          [];
+      });
+      return;
+    }
     panels.forEach((panel) => {
       const targets = panel.querySelectorAll<HTMLElement>(
         ".ex-stack-scroll__title-line, .ex-stack-scroll__eyebrow, .ex-stack-scroll__body",
@@ -710,15 +773,26 @@ export function useExScrollMotion() {
       const scrollSpan = introSpan + (total - 1) * step + dwell;
 
       if (silkChars.length) {
-        /* Clear any prior transform so yPercent alone drives the rise mask */
-        gsap.set(silkChars, {
-          x: 0,
-          y: 0,
-          xPercent: 0,
-          yPercent: 100,
-          opacity: 0,
-          force3D: true,
-        });
+        if (lightenDevice) {
+          gsap.set(silkChars, {
+            x: 0,
+            y: 0,
+            xPercent: 0,
+            yPercent: 0,
+            opacity: 1,
+            force3D: true,
+          });
+        } else {
+          /* Clear any prior transform so yPercent alone drives the rise mask */
+          gsap.set(silkChars, {
+            x: 0,
+            y: 0,
+            xPercent: 0,
+            yPercent: 100,
+            opacity: 0,
+            force3D: true,
+          });
+        }
       }
 
       cards.forEach((card, index) => {
@@ -766,6 +840,7 @@ export function useExScrollMotion() {
       });
 
       const isPhoneStack = isNarrowViewport;
+      const lightStack = lightenDevice;
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -804,7 +879,7 @@ export function useExScrollMotion() {
       });
 
       /* Gold invitation rises quickly, then first landmark fog-covers it */
-      if (silkChars.length) {
+      if (silkChars.length && !lightStack) {
         const silkDuration = introText * 0.55;
         const silkStagger =
           silkChars.length > 1
@@ -826,6 +901,19 @@ export function useExScrollMotion() {
           },
           0,
         );
+      } else if (silkChars.length && lightStack) {
+        /* Skip per-glyph scrub — fade the whole invitation once. */
+        gsap.set(silkChars, { yPercent: 0, opacity: 1 });
+        const silkHost = silkChars[0]?.parentElement?.parentElement;
+        if (silkHost) {
+          gsap.set(silkHost, { opacity: 0 });
+          tl.fromTo(
+            silkHost,
+            { opacity: 0 },
+            { opacity: 1, ease: "none", duration: introText * 0.7 },
+            0,
+          );
+        }
       }
 
       const firstCard = cards[0];
@@ -841,10 +929,14 @@ export function useExScrollMotion() {
           ease: "none",
           duration: introFog,
           onUpdate: () => {
-            firstCard.style.setProperty(
-              "--stack-fog-edge",
-              `${firstFog.edge}%`,
-            );
+            if (!lightStack) {
+              firstCard.style.setProperty(
+                "--stack-fog-edge",
+                `${firstFog.edge}%`,
+              );
+            } else if (firstFog.edge > 70) {
+              firstCard.style.setProperty("--stack-fog-edge", "140%");
+            }
             const op = Math.min(1, Math.max(0, firstFog.reveal * 1.8));
             firstCard.style.opacity = String(op);
             if (op > 0.001) firstCard.style.visibility = "visible";
@@ -910,7 +1002,11 @@ export function useExScrollMotion() {
             ease: "none",
             duration: move,
             onUpdate: () => {
-              card.style.setProperty("--stack-fog-edge", `${fog.edge}%`);
+              if (!lightStack) {
+                card.style.setProperty("--stack-fog-edge", `${fog.edge}%`);
+              } else if (fog.edge > 70) {
+                card.style.setProperty("--stack-fog-edge", "140%");
+              }
               /* Opacity only — visibility toggles caused settle flicker */
               const op = Math.min(1, Math.max(0, fog.reveal * 1.8));
               card.style.opacity = String(op);
@@ -990,7 +1086,12 @@ export function useExScrollMotion() {
               x: 0,
               xPercent: 0,
               scale: 1,
-              filter: `brightness(${Math.max(0.58, 1 - depth * 0.08)})`,
+              /* filter:brightness on scrub forces continuous layer repaints on phones */
+              ...(lightStack
+                ? {}
+                : {
+                    filter: `brightness(${Math.max(0.58, 1 - depth * 0.08)})`,
+                  }),
               ease: "none",
               duration: move,
             },

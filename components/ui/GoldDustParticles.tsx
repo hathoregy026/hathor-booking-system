@@ -3,10 +3,14 @@
 /**
  * Floating gold dust for heroes and homepage content.
  * Easy removal: delete `<GoldDustParticles />` usages and this file.
+ *
+ * Real touch devices skip this entirely — per-particle blur + perpetual
+ * GSAP wander is a common cause of “smooth in DevTools, laggy on phone”.
  */
 
-import { useLayoutEffect, useMemo, useRef } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
+import { shouldLightenMotionForDevice } from "@/lib/touch-device";
 
 const PARTICLE_COUNT = 36;
 const COLORS = ["#D4AF37", "#F4E5C2", "#E8C872", "#C9A227"] as const;
@@ -69,15 +73,20 @@ function startWander(
 export function GoldDustParticles() {
   const rootRef = useRef<HTMLDivElement>(null);
   const particles = useMemo(() => buildParticles(PARTICLE_COUNT), []);
+  const [enabled, setEnabled] = useState(false);
+
+  useLayoutEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced || shouldLightenMotionForDevice()) {
+      setEnabled(false);
+      return;
+    }
+    setEnabled(true);
+  }, []);
 
   useLayoutEffect(() => {
     const root = rootRef.current;
-    if (!root) return;
-
-    const reduced =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) return;
+    if (!root || !enabled) return;
 
     const allNodes = root.querySelectorAll<HTMLElement>("[data-gold-dust]");
     const narrow = window.matchMedia("(max-width: 1024px)").matches;
@@ -120,7 +129,9 @@ export function GoldDustParticles() {
       tweens.forEach((t) => t.kill());
       gsap.killTweensOf(allNodes);
     };
-  }, [particles]);
+  }, [particles, enabled]);
+
+  if (!enabled) return null;
 
   return (
     <div
@@ -151,7 +162,7 @@ export function GoldDustParticles() {
             borderRadius: "50%",
             background: p.color,
             opacity: p.opacity,
-            filter: `blur(${p.blur}px)`,
+            /* No CSS filter blur — soft edge via opacity only (GPU-cheap) */
             willChange: "transform, opacity",
           }}
         />

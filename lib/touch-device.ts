@@ -10,7 +10,24 @@ export const TOUCH_DEVICE_CLASS = "is-touch-device";
 /** Coarse pointer = primary input is touch (phones, most tablets). */
 export function isTouchDevice(): boolean {
   if (typeof window === "undefined") return false;
-  return window.matchMedia("(pointer: coarse)").matches;
+  /*
+   * DevTools “phone” emulation often keeps pointer:fine + a desktop GPU,
+   * so it feels smooth while a real handset with pointer:coarse lags.
+   * Prefer coarse; fall back to hover:none on narrow screens (iOS quirks).
+   */
+  if (window.matchMedia("(pointer: coarse)").matches) return true;
+  return (
+    window.matchMedia("(hover: none)").matches &&
+    window.matchMedia("(max-width: 1024px)").matches
+  );
+}
+
+/**
+ * Real devices with weak GPUs — skip particles, letter-splits, clip-path scrub.
+ * Desktop DevTools phone mode usually stays false (fine pointer + hover).
+ */
+export function shouldLightenMotionForDevice(): boolean {
+  return isTouchDevice();
 }
 
 /** Phone + tablet viewport band. Desktop begins strictly above 1024px. */
@@ -93,7 +110,7 @@ export function bindViewportHeightVar(): () => void {
  * Kept minimal; React bootstrap continues updates after hydrate.
  */
 export function getTouchDeviceBlockingScript(): string {
-  return `(function(){try{var d=document.documentElement;var coarse=window.matchMedia&&window.matchMedia("(pointer: coarse)").matches;if(coarse){d.classList.add("${TOUCH_DEVICE_CLASS}");if(document.body)document.body.classList.add("${TOUCH_DEVICE_CLASS}");else document.addEventListener("DOMContentLoaded",function(){document.body.classList.add("${TOUCH_DEVICE_CLASS}");});}var h=(window.visualViewport&&window.visualViewport.height)||window.innerHeight||0;if(h)d.style.setProperty("--vh",(h*0.01)+"px");}catch(e){}})();`;
+  return `(function(){try{var d=document.documentElement;var m=window.matchMedia;var coarse=m&&m("(pointer: coarse)").matches;var touchish=coarse||(m&&m("(hover: none)").matches&&m("(max-width: 1024px)").matches);if(touchish){d.classList.add("${TOUCH_DEVICE_CLASS}");if(document.body)document.body.classList.add("${TOUCH_DEVICE_CLASS}");else document.addEventListener("DOMContentLoaded",function(){document.body.classList.add("${TOUCH_DEVICE_CLASS}");});}var h=(window.visualViewport&&window.visualViewport.height)||window.innerHeight||0;if(h)d.style.setProperty("--vh",(h*0.01)+"px");}catch(e){}})();`;
 }
 
 /** Shared Lenis options: never sync touch (avoids fighting iOS rubber-band). */
