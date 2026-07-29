@@ -28,7 +28,7 @@ export function mountHeroScrollStage({
   skipLanding = false,
 }: MountHeroScrollStageOptions): () => void {
   const hero = document.querySelector(".home-hero-container");
-  const cover = document.querySelector(".home-hero-cover");
+  const cover = hero?.querySelector(".home-hero-cover");
   if (!hero || !cover) return () => {};
 
   const readLogoLandDuration = () => {

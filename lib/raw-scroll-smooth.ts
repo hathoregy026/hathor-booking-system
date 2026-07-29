@@ -2,13 +2,21 @@
  * Slow native (raw) document scroll via wheel hijack + rAF lerp.
  * Matches display refresh via requestAnimationFrame.
  * No-ops when a page already owns Lenis (`__hathorLenis` / `html.lenis`).
- * Does not alter GSAP pin/scrub timelines — only drives wheel → scrollY.
+ * Does not alter GSAP pin/scrub timelines.
  */
+
+import Lenis from "lenis";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { registerHathorLenis } from "@/lib/scroll-position-restore";
 
 export const RAW_SCROLL_WHEEL_FACTOR = 0.42;
 /** Per-frame approach toward target (higher = snappier). Tuned for ~60–120 Hz. */
 export const RAW_SCROLL_LERP = 0.14;
 const SETTLE_PX = 0.4;
+
+/** Lenis duration (higher = slower). Raw pages only (non-home / non-rooms). */
+const RAW_SCROLL_LENIS_DURATION = 1.85;
 
 type HathorWindow = Window & {
   __hathorLenis?: unknown;
@@ -77,75 +85,48 @@ function clampScrollY(y: number): number {
 }
 
 /**
- * Bind slowed raw wheel scroll with rAF smoothing. Returns cleanup.
- * Safe on Lenis routes — each wheel checks ownership and passes through.
+ * Bind slowed raw document scroll using Lenis (RAF-based).
+ * Only activates when the page does not already own Lenis.
  */
 export function bindRawScrollSmooth(
-  factor: number = RAW_SCROLL_WHEEL_FACTOR,
-  lerp: number = RAW_SCROLL_LERP,
+  _factor: number = RAW_SCROLL_WHEEL_FACTOR,
+  _lerp: number = RAW_SCROLL_LERP,
 ): () => void {
   if (typeof window === "undefined") return () => {};
   if (prefersReducedMotion()) return () => {};
 
-  let targetY = window.scrollY || 0;
-  let currentY = targetY;
-  let rafId = 0;
+  // If the page already has its own Lenis (home/rooms), do nothing.
+  if (pageOwnsLenis()) return () => {};
 
-  const stopLoop = () => {
-    if (rafId) {
-      cancelAnimationFrame(rafId);
-      rafId = 0;
-    }
+  const lenis = new Lenis({
+    duration: RAW_SCROLL_LENIS_DURATION,
+    easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+    syncTouch: false,
+  });
+
+  // Keep ScrollTrigger in sync with Lenis.
+  lenis.on("scroll", ScrollTrigger.update);
+  registerHathorLenis(lenis);
+
+  const ticker = (time: number) => {
+    lenis.raf(time * 1000);
   };
-
-  const tick = () => {
-    rafId = 0;
-    if (pageOwnsLenis()) {
-      stopLoop();
-      return;
-    }
-
-    const delta = targetY - currentY;
-    if (Math.abs(delta) < SETTLE_PX) {
-      currentY = targetY;
-      window.scrollTo(0, currentY);
-      return;
-    }
-
-    currentY += delta * lerp;
-    window.scrollTo(0, currentY);
-    rafId = requestAnimationFrame(tick);
-  };
-
-  const startLoop = () => {
-    if (!rafId) rafId = requestAnimationFrame(tick);
-  };
-
-  const onWheel = (event: WheelEvent) => {
-    if (pageOwnsLenis()) return;
-    if (event.ctrlKey) return; /* browser zoom */
-    if (event.defaultPrevented) return;
-    if (hasNestedScrollContainer(event.target)) return;
-
-    const { y } = normalizeWheelDelta(event);
-    if (y === 0) return;
-
-    event.preventDefault();
-
-    /* Re-sync if something else moved the page between frames */
-    if (!rafId) {
-      currentY = window.scrollY || 0;
-      targetY = currentY;
-    }
-
-    targetY = clampScrollY(targetY + y * factor);
-    startLoop();
-  };
-
-  window.addEventListener("wheel", onWheel, { passive: false });
+  gsap.ticker.add(ticker);
+  gsap.ticker.lagSmoothing(0);
 
   return () => {
-    stopLoop();
-    window.removeEventListener("wheel", onWheel);
+    try {
+      gsap.ticker.remove(ticker);
+      lenis.destroy();
+    } finally {
+      // Only clear ownership if this bind instance is still registered.
+      try {
+        const current = (window as HathorWindow).__hathorLenis;
+        if (current === lenis) registerHathorLenis(null);
+      } catch {
+        /* ignore */
+      }
+    }
   };
 }
