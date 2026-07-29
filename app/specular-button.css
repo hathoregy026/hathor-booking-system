@@ -174,26 +174,25 @@
 .venetian-page button.btn:not(.hero-cta):focus-visible::after,
 .venetian-page .btn:not(.hero-cta):focus-visible::after,
 .venetian-page .cruise-filter--cta:focus-visible::after {
-  opacity: 0.55;
+  opacity: 0;
 }
 
 /*
-  Homepage: user requested “outline only” buttons.
-  Remove the tiny inner white hairline (::after) while keeping:
-  - outer conic stroke ring (::before)
-  - hover shine + fill behavior coming from button base rules.
+  Global rule: no inner second stroke/hairline on public buttons.
+  Keep only the outer stroke shine (::before) + normal fill hover.
 */
-.home-experience-route .public-site a.btn:not(.hero-cta)::after,
-.home-experience-route .public-site button.btn:not(.hero-cta)::after,
-.home-experience-route .public-site .btn:not(.hero-cta)::after {
-  opacity: 0 !important;
-}
-.home-experience-route .public-site a.btn:not(.hero-cta):hover::after,
-.home-experience-route .public-site button.btn:not(.hero-cta):hover::after,
-.home-experience-route .public-site .btn:not(.hero-cta):hover::after,
-.home-experience-route .public-site a.btn:not(.hero-cta):focus-visible::after,
-.home-experience-route .public-site button.btn:not(.hero-cta):focus-visible::after,
-.home-experience-route .public-site .btn:not(.hero-cta):focus-visible::after {
+.public-site a.btn:not(.hero-cta)::after,
+.public-site button.btn:not(.hero-cta)::after,
+.public-site .btn:not(.hero-cta)::after,
+.public-site .public-btn-gold::after,
+.public-site .public-btn-outline-gold::after,
+.public-site .public-btn-dark::after,
+.public-site .public-fab__book::after,
+.public-site .cruise-filter--cta::after,
+.venetian-page a.btn:not(.hero-cta)::after,
+.venetian-page button.btn:not(.hero-cta)::after,
+.venetian-page .btn:not(.hero-cta)::after,
+.venetian-page .cruise-filter--cta::after {
   opacity: 0 !important;
 }
 
