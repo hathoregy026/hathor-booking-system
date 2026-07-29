@@ -422,6 +422,15 @@
     order: 2;
     margin-left: auto;
   }
+
+  /* Keep burger above staggered panel so it can close the menu */
+  .public-site .hathor-header--explore-open {
+    z-index: 1310;
+  }
+
+  .public-site .hathor-header--explore-open .hathor-header__menu-btn {
+    color: #1a1612;
+  }
 }
 
 .site-nav-bar {

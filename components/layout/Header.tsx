@@ -6,17 +6,20 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { PublicThemeToggle } from "@/components/public/PublicThemeToggle";
+import { StaggeredMenu } from "@/components/layout/StaggeredMenu";
 import {
   HATHOR_BRAND_NAME,
   HATHOR_HERO_ICON_DARK_SRC,
   HATHOR_HERO_ICON_SRC,
 } from "@/lib/branding";
 import {
+  EXPLORE_LINKS,
   HEADER_NAV_ITEMS,
   navHrefMatches,
   type HeaderNavItem,
 } from "@/lib/public-nav";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
+import { PUBLIC_SOCIAL_LINKS } from "@/lib/public-social";
 
 const HEADER_NAV_LEFT = HEADER_NAV_ITEMS.slice(
   0,
@@ -25,6 +28,20 @@ const HEADER_NAV_LEFT = HEADER_NAV_ITEMS.slice(
 const HEADER_NAV_RIGHT = HEADER_NAV_ITEMS.slice(
   Math.ceil(HEADER_NAV_ITEMS.length / 2),
 );
+
+const PHONE_MENU_ITEMS = EXPLORE_LINKS.map((link) => ({
+  label: link.label,
+  ariaLabel: `Go to ${link.label}`,
+  link: link.href,
+}));
+
+const PHONE_SOCIAL_ITEMS = PUBLIC_SOCIAL_LINKS.map((link) => ({
+  label: link.label,
+  link: link.href,
+}));
+
+/** Hathor gold / cream underlays for the staggered phone menu. */
+const PHONE_MENU_COLORS = ["#8b6914", "#c9a96e", "#ece8df"];
 
 function ExplorePanel({
   open,
@@ -139,6 +156,7 @@ function isNavItemActive(pathname: string, item: HeaderNavItem): boolean {
 export function Header() {
   const pathname = usePathname();
   const [exploreOpen, setExploreOpen] = useState(false);
+  const [isPhone, setIsPhone] = useState(false);
   const [menuHovered, setMenuHovered] = useState(false);
   const [navCompact, setNavCompact] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -159,6 +177,14 @@ export function Header() {
       setOpenDropdown(null);
     }, 140);
   };
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 480px)");
+    const sync = () => setIsPhone(media.matches);
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, []);
 
   useEffect(() => {
     setMenuHovered(false);
@@ -327,6 +353,7 @@ export function Header() {
     "hathor-header--menu-active",
     menuHovered && "hathor-header--menu-hovered",
     navCompact && "hathor-header--nav-compact",
+    exploreOpen && "hathor-header--explore-open",
   ]
     .filter(Boolean)
     .join(" ");
@@ -391,7 +418,21 @@ export function Header() {
         </div>
       </header>
 
-      <ExplorePanel open={exploreOpen} onClose={() => setExploreOpen(false)} />
+      {isPhone ? (
+        <StaggeredMenu
+          open={exploreOpen}
+          onClose={() => setExploreOpen(false)}
+          position="right"
+          items={PHONE_MENU_ITEMS}
+          socialItems={PHONE_SOCIAL_ITEMS}
+          displaySocials
+          displayItemNumbering
+          colors={PHONE_MENU_COLORS}
+          accentColor="#b69f64"
+        />
+      ) : (
+        <ExplorePanel open={exploreOpen} onClose={() => setExploreOpen(false)} />
+      )}
     </>
   );
 }

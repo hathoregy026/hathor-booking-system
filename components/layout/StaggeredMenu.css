@@ -1,0 +1,256 @@
+/**
+ * Hathor phone staggered menu — cream panel, hard gold underlays.
+ * Mounted only on phone (≤480px) via Header.
+ */
+
+.staggered-menu-wrapper {
+  --sm-cream: #faf8f5;
+  --sm-cream-deep: #ece8df;
+  --sm-gold: #b69f64;
+  --sm-gold-hard: #c9a96e;
+  --sm-gold-deep: #8b6914;
+  --sm-ink: #1a1612;
+  --sm-muted: #6b6560;
+  --sm-accent: var(--sm-gold);
+
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 40;
+  pointer-events: none;
+}
+
+.staggered-menu-wrapper.fixed-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  z-index: 1300;
+  overflow: hidden;
+}
+
+.staggered-menu-wrapper .sm-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: rgba(12, 8, 6, 0.28);
+  cursor: pointer;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.staggered-menu-wrapper.is-open .sm-backdrop {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+.sm-prelayers {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+[data-position="left"] .sm-prelayers {
+  right: auto;
+  left: 0;
+}
+
+.sm-prelayer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  transform: translateX(0);
+}
+
+.staggered-menu-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background:
+    linear-gradient(
+      165deg,
+      rgba(250, 248, 245, 0.98) 0%,
+      rgba(236, 232, 223, 0.99) 55%,
+      rgba(245, 239, 228, 1) 100%
+    );
+  display: flex;
+  flex-direction: column;
+  padding:
+    max(5.5rem, calc(env(safe-area-inset-top) + 4.25rem))
+    max(1.35rem, env(safe-area-inset-right))
+    max(1.75rem, env(safe-area-inset-bottom))
+    max(1.35rem, env(safe-area-inset-left));
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  z-index: 10;
+  pointer-events: none;
+  box-shadow: -18px 0 48px rgba(26, 22, 18, 0.18);
+}
+
+.staggered-menu-wrapper.is-open .staggered-menu-panel {
+  pointer-events: auto;
+}
+
+[data-position="left"] .staggered-menu-panel {
+  right: auto;
+  left: 0;
+}
+
+.sm-panel-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  min-height: min-content;
+}
+
+.sm-panel-kicker {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-body, var(--font-geist-sans), system-ui, sans-serif);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--sm-gold-deep);
+}
+
+.sm-panel-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.sm-panel-itemWrap {
+  position: relative;
+  overflow: hidden;
+  line-height: 1;
+}
+
+.sm-panel-item {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  padding: 0.35rem 1.6em 0.35rem 0;
+  color: var(--sm-ink);
+  font-family: var(--font-display, "Playfair Display", Georgia, serif);
+  font-weight: 400;
+  font-size: clamp(2rem, 9.5vw, 2.85rem);
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  text-decoration: none;
+  -webkit-font-smoothing: antialiased;
+  transition: color 0.3s ease;
+}
+
+.sm-panel-itemLabel {
+  display: inline-block;
+  will-change: transform;
+  transform-origin: 50% 100%;
+}
+
+.sm-panel-item:hover,
+.sm-panel-item:focus-visible {
+  color: var(--sm-accent, var(--sm-gold));
+  outline: none;
+}
+
+.sm-panel-list[data-numbering] {
+  counter-reset: smItem;
+}
+
+.sm-panel-list[data-numbering] .sm-panel-item::after {
+  counter-increment: smItem;
+  content: counter(smItem, decimal-leading-zero);
+  position: absolute;
+  top: 0.45em;
+  right: 0;
+  font-family: var(--font-body, var(--font-geist-sans), system-ui, sans-serif);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: var(--sm-accent, var(--sm-gold));
+  pointer-events: none;
+  user-select: none;
+  opacity: var(--sm-num-opacity, 0);
+}
+
+.sm-socials {
+  margin-top: auto;
+  padding-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  border-top: 1px solid rgba(182, 159, 100, 0.28);
+}
+
+.sm-socials-title {
+  margin: 0;
+  font-family: var(--font-body, var(--font-geist-sans), system-ui, sans-serif);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--sm-accent, var(--sm-gold));
+}
+
+.sm-socials-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.sm-socials-link {
+  font-family: var(--font-display, "Playfair Display", Georgia, serif);
+  font-size: 1.05rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--sm-ink);
+  text-decoration: none;
+  padding: 0.35rem 0;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  transition:
+    color 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.sm-socials-list:hover .sm-socials-link {
+  opacity: 0.4;
+}
+
+.sm-socials-list:hover .sm-socials-link:hover,
+.sm-socials-link:focus-visible {
+  opacity: 1;
+  color: var(--sm-accent, var(--sm-gold));
+  outline: none;
+}
+
+/* Keep tablet/desktop free of this overlay — Header only mounts ≤480px */
+@media (min-width: 481px) {
+  .staggered-menu-wrapper {
+    display: none !important;
+  }
+}
