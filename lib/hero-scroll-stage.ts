@@ -276,7 +276,7 @@ export function mountHeroScrollStage({
         trigger: hero,
         start: "top top",
         end: "+=130%",
-        scrub: 1.4,
+        scrub: 1.7,
         pin: true,
         pinSpacing: true,
         anticipatePin: 1,
