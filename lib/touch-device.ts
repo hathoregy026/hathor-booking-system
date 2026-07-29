@@ -6,6 +6,8 @@
  */
 
 export const TOUCH_DEVICE_CLASS = "is-touch-device";
+export const PHONE_VIEWPORT_MAX = 480;
+export const PHONE_VIEWPORT_MQ = `(max-width: ${PHONE_VIEWPORT_MAX}px)`;
 
 /** Coarse pointer = primary input is touch (phones, most tablets). */
 export function isTouchDevice(): boolean {
@@ -31,6 +33,12 @@ export function shouldLightenMotionForDevice(): boolean {
   return isTouchDevice();
 }
 
+/** Strict phone band (≤480px). Tablet 481–1024 is excluded. */
+export function isPhoneViewport(): boolean {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia(PHONE_VIEWPORT_MQ).matches;
+}
+
 /** Phone + tablet viewport band. Desktop begins strictly above 1024px. */
 export function isPhoneOrTabletViewport(): boolean {
   if (typeof window === "undefined") return false;
@@ -40,6 +48,20 @@ export function isPhoneOrTabletViewport(): boolean {
 /** Native scrolling avoids Lenis fighting mobile momentum or narrow emulators. */
 export function shouldUseNativeScroll(): boolean {
   return isTouchDevice() || isPhoneOrTabletViewport();
+}
+
+/** Never create Lenis on phones (≤480) or any native-scroll surface. */
+export function shouldDisableLenis(): boolean {
+  return isPhoneViewport() || shouldUseNativeScroll();
+}
+
+/**
+ * Dev-only performance breadcrumb — never logs in production.
+ */
+export function logPhonePerfDev(payload: Record<string, unknown>): void {
+  if (process.env.NODE_ENV === "production") return;
+  if (typeof console === "undefined" || typeof console.info !== "function") return;
+  console.info("[hathor-phone-perf]", payload);
 }
 
 /**
@@ -79,18 +101,20 @@ export function bindViewportHeightVar(): () => void {
 
   setViewportHeightCssVar();
   const touch = isTouchDevice();
+  const phone = isPhoneViewport();
 
   let timer: ReturnType<typeof setTimeout> | undefined;
   const onResize = () => {
     if (timer) clearTimeout(timer);
-    timer = setTimeout(() => setViewportHeightCssVar(), 150);
+    timer = setTimeout(() => setViewportHeightCssVar(), phone ? 250 : 150);
   };
 
   /*
-   * On touch browsers, URL-bar collapse emits resize during normal scrolling.
+   * On touch / phone browsers, URL-bar collapse emits resize during scrolling.
    * Updating a root CSS variable there forces full-page layout and causes jumps.
+   * Phones: orientationchange only. Desktop: resize + visualViewport.
    */
-  if (!touch) {
+  if (!touch && !phone) {
     window.addEventListener("resize", onResize, { passive: true });
     window.visualViewport?.addEventListener("resize", onResize);
   }
@@ -98,7 +122,7 @@ export function bindViewportHeightVar(): () => void {
 
   return () => {
     if (timer) clearTimeout(timer);
-    if (!touch) {
+    if (!touch && !phone) {
       window.removeEventListener("resize", onResize);
       window.visualViewport?.removeEventListener("resize", onResize);
     }
@@ -114,7 +138,6 @@ export function getTouchDeviceBlockingScript(): string {
   return `(function(){try{var d=document.documentElement;var m=window.matchMedia;var coarse=m&&m("(pointer: coarse)").matches;var touchish=coarse||(m&&m("(hover: none)").matches&&m("(max-width: 1024px)").matches);if(touchish){d.classList.add("${TOUCH_DEVICE_CLASS}");if(document.body)document.body.classList.add("${TOUCH_DEVICE_CLASS}");else document.addEventListener("DOMContentLoaded",function(){document.body.classList.add("${TOUCH_DEVICE_CLASS}");});}var h=(window.visualViewport&&window.visualViewport.height)||window.innerHeight||0;if(h)d.style.setProperty("--vh",(h*0.01)+"px");}catch(e){}})();`;
 }
 
-/** Shared Lenis options: never sync touch (avoids fighting iOS rubber-band). */
 export function lenisMobileSafeOptions(duration: number) {
   const touch = typeof window !== "undefined" && isTouchDevice();
   return {

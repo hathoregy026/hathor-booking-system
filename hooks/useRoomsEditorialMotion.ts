@@ -15,6 +15,7 @@ import { deferEditorialMotionInit } from "@/lib/defer-editorial-motion";
 import { refreshPageScrollTransition } from "@/components/pages/pageScrollTransitionEngine";
 import {
   isTouchDevice,
+  isPhoneViewport,
   lenisMobileSafeOptions,
   parallaxIntensityScale,
 } from "@/lib/touch-device";
@@ -39,7 +40,14 @@ function prefersReducedMotion() {
 }
 
 function setupOptionalLenis(enabled: boolean) {
-  if (!enabled || prefersReducedMotion() || isTouchDevice()) return null;
+  if (
+    !enabled ||
+    prefersReducedMotion() ||
+    isTouchDevice() ||
+    isPhoneViewport()
+  ) {
+    return null;
+  }
 
   const lenis = new Lenis(lenisMobileSafeOptions(1.55));
 

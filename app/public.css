@@ -6735,3 +6735,36 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__title {
   text-transform: none;
 }
 
+/* Phone ≤480 only — opacity/translate reveals (no animated blur). Tablet/desktop unchanged. */
+@media (max-width: 480px) {
+  .lux-reveal {
+    filter: none;
+    transition:
+      opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .lux-reveal--visible {
+    filter: none;
+  }
+
+  .hathor-lux-text,
+  .hathor-lux-text--in {
+    filter: none;
+  }
+
+  @keyframes hathor-lux-text-land {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 1.2rem, 0);
+      filter: none;
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+      filter: none;
+    }
+  }
+}
+
+

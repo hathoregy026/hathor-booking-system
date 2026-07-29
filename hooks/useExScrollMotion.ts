@@ -22,6 +22,8 @@ import {
   lenisMobileSafeOptions,
   shouldLightenMotionForDevice,
   shouldUseNativeScroll,
+  isPhoneViewport,
+  logPhonePerfDev,
 } from "@/lib/touch-device";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -54,15 +56,15 @@ export function useExScrollMotion() {
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const isNarrowViewport = window.matchMedia("(max-width: 1024px)").matches;
   const lightenDevice = shouldLightenMotionForDevice();
+  const isPhone = isPhoneViewport();
+  const ownedTriggerIds: string[] = [];
 
-  /* -------------------------------------------------------
-   * 1. GSAP plugin
-   * ----------------------------------------------------- */
+  const trackTrigger = (st: ScrollTrigger) => {
+    const id = st.vars?.id;
+    if (id) ownedTriggerIds.push(String(id));
+    return st;
+  };
 
-  /* -------------------------------------------------------
-   * 2. Lenis smooth scroll (site foundation)
-   *    duration 1.4, expo-ish easing, no smoothTouch
-   * ----------------------------------------------------- */
   let lenis: Lenis | null = null;
   let tickerFn: ((time: number) => void) | null = null;
   let heroCleanup: (() => void) | null = null;
@@ -71,7 +73,8 @@ export function useExScrollMotion() {
 
   if (!prefersReduced) {
     // Native finger scroll on phones/tablets — Lenis + scrubbed pins = jumpy lag.
-    if (!shouldUseNativeScroll()) {
+    // Phones ≤480 never get Lenis (even if DevTools reports fine pointer).
+    if (!shouldUseNativeScroll() && !isPhone) {
       lenis = new Lenis(lenisMobileSafeOptions(1.4));
 
       // Keep ScrollTrigger in sync with Lenis
@@ -83,10 +86,17 @@ export function useExScrollMotion() {
       };
       gsap.ticker.add(tickerFn);
       gsap.ticker.lagSmoothing(0);
+      logPhonePerfDev({ surface: "ex-scroll", lenis: true, phone: false });
     } else {
       // Unlock logo immediately on real phones (critical CSS skips hide for is-touch-device)
       document.documentElement.classList.add("ex-scroll-ready");
       document.documentElement.classList.remove("ex-pending", "ex-pending-deep");
+      logPhonePerfDev({
+        surface: "ex-scroll",
+        lenis: false,
+        phone: isPhone,
+        nativeScroll: true,
+      });
     }
 
     try {
@@ -801,9 +811,10 @@ export function useExScrollMotion() {
            * Narrow screens use a CSS-sticky viewport inside a tall section.
            * This preserves the landmark sequence without a GSAP pin spacer,
            * which is unstable during mobile browser toolbar resizing.
+           * Phones ≤480: never pin.
            */
-          pin: isPhoneStack ? false : viewport,
-          pinSpacing: !isPhoneStack,
+          pin: isPhone || isPhoneStack ? false : viewport,
+          pinSpacing: !(isPhone || isPhoneStack),
           anticipatePin: 1,
           fastScrollEnd: true,
           invalidateOnRefresh: true,
@@ -820,6 +831,7 @@ export function useExScrollMotion() {
           },
         },
       });
+      if (tl.scrollTrigger) trackTrigger(tl.scrollTrigger);
 
       /* Gold invitation rises quickly, then first landmark fog-covers it */
       if (silkChars.length) {
@@ -1046,6 +1058,7 @@ export function useExScrollMotion() {
     };
 
     let active = true;
+    let lastStackWidth = window.innerWidth;
     document.fonts.ready.then(() => {
       if (!active) return;
       build();
@@ -1058,9 +1071,14 @@ export function useExScrollMotion() {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
         if (!active) return;
+        if (isPhone) {
+          const w = window.innerWidth;
+          if (Math.abs(w - lastStackWidth) < 20) return;
+          lastStackWidth = w;
+        }
         build();
         ScrollTrigger.refresh();
-      }, 200);
+      }, isPhone ? 250 : 200);
     };
     window.addEventListener(viewportEvent, onViewportChange);
     motionCleanups.push(() => {
@@ -1433,7 +1451,24 @@ export function useExScrollMotion() {
       registerHathorLenis(null);
       lenis?.destroy();
       try {
-        ScrollTrigger.getAll().forEach((st) => st.kill());
+        /* Kill only triggers owned by this homepage hook — never global getAll().kill() */
+        const owned = new Set(ownedTriggerIds);
+        ScrollTrigger.getAll().forEach((st) => {
+          const id = String(st.vars?.id || "");
+          if (owned.has(id) || id.startsWith("ex-")) {
+            st.kill();
+            return;
+          }
+          const el = st.trigger as Element | undefined;
+          if (el?.closest?.(".ex-root")) {
+            st.kill();
+          }
+        });
+        logPhonePerfDev({
+          surface: "ex-scroll",
+          cleanupOwned: ownedTriggerIds.length,
+          remaining: ScrollTrigger.getAll().length,
+        });
       } catch {
         /* ignore */
       }

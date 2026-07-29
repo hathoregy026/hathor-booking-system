@@ -8,7 +8,7 @@ import { useLayoutEffect, useId, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
-import { lenisMobileSafeOptions, isTouchDevice, shouldLightenMotionForDevice } from "@/lib/touch-device";
+import { lenisMobileSafeOptions, isTouchDevice, isPhoneViewport, logPhonePerfDev } from "@/lib/touch-device";
 
 const PT_GOLD = "#B69F64";
 
@@ -24,6 +24,7 @@ const MASK = {
 
 const PIN_VH = 0.65;
 const SCRUB = 1.2;
+const PHONE_STRIP_COUNT = 8;
 
 export const CRUISES_HERO_REFRESH_EVENT = "cruises-hero-stripe-refresh";
 
@@ -59,14 +60,8 @@ function easeInOutQuad(t: number) {
   return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
 }
 
-function stripCount(light = false) {
+function stripCount() {
   const w = window.innerWidth;
-  /* Same gold blinds — fewer wider strips on phone GPUs */
-  if (light) {
-    if (w <= 767) return 12;
-    if (w <= 1024) return 16;
-    return 28;
-  }
   if (w <= 767) return 25;
   if (w <= 1024) return 35;
   return 52;
@@ -76,7 +71,7 @@ function setupSmoothScroll() {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     return null;
   }
-  if (isTouchDevice()) return null;
+  if (isPhoneViewport() || isTouchDevice()) return null;
 
   const lenis = new Lenis(lenisMobileSafeOptions(2.1));
 
@@ -89,7 +84,138 @@ function setupSmoothScroll() {
   gsap.ticker.add(ticker);
   gsap.ticker.lagSmoothing(0);
 
+  logPhonePerfDev({ lenis: true, surface: "cruises-hero-stripes" });
   return { lenis, ticker };
+}
+
+function setupPhoneCruisesCurtain(opts: {
+  stageEl: HTMLElement;
+  mask: HTMLElement;
+  headline: HTMLElement | null;
+  instanceId: string;
+}): () => void {
+  const { stageEl, mask, headline, instanceId } = opts;
+  const prefersReduced = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+  let strips: HTMLDivElement[] = [];
+  let played = false;
+  let lastWidth = window.innerWidth;
+  let orientTimer: ReturnType<typeof setTimeout> | null = null;
+  let openTl: gsap.core.Timeline | null = null;
+
+  function buildStrips() {
+    const n = PHONE_STRIP_COUNT;
+    const w = Math.max(mask.clientWidth, stageEl.clientWidth, 1);
+    if (!w) return false;
+    const colW = w / n;
+    mask.innerHTML = "";
+    strips = [];
+    for (let i = 0; i < n; i++) {
+      const col = document.createElement("div");
+      col.className = "cruises-hero-mask__col";
+      col.style.left = `${i * colW}px`;
+      col.style.width =
+        i === n - 1 ? `${w - (n - 1) * colW}px` : `${colW}px`;
+      const strip = document.createElement("div");
+      strip.className = "cruises-hero-mask__strip";
+      strip.style.width = "100%";
+      strip.style.transformOrigin = "left center";
+      col.appendChild(strip);
+      mask.appendChild(col);
+      strips.push(strip);
+    }
+    return true;
+  }
+
+  function setClosed() {
+    mask.classList.add("is-active");
+    gsap.set(mask, { opacity: 1 });
+    gsap.set(strips, {
+      scaleX: 1,
+      opacity: 1,
+      clearProps: "rotationY,width",
+    });
+    if (headline) gsap.set(headline, { opacity: 1 });
+  }
+
+  function playOpen() {
+    if (played) return;
+    played = true;
+    if (prefersReduced) {
+      gsap.set(mask, { opacity: 0 });
+      mask.classList.remove("is-active");
+      if (headline) gsap.set(headline, { opacity: 0 });
+      return;
+    }
+    strips.forEach((el) => {
+      el.style.willChange = "transform, opacity";
+    });
+    openTl?.kill();
+    openTl = gsap.timeline({
+      onComplete: () => {
+        strips.forEach((el) => {
+          el.style.willChange = "auto";
+        });
+        gsap.set(mask, { opacity: 0 });
+        mask.classList.remove("is-active");
+      },
+    });
+    openTl.to(strips, {
+      scaleX: 0,
+      opacity: 0,
+      duration: 0.65,
+      ease: "power2.out",
+      stagger: { each: 0.04, from: "start" },
+    });
+    if (headline) {
+      openTl.to(headline, { opacity: 0, duration: 0.4 }, 0.15);
+    }
+  }
+
+  buildStrips();
+  setClosed();
+  logPhonePerfDev({
+    surface: "cruises-hero-stripes",
+    phoneLightweight: true,
+    strips: strips.length,
+    lenis: false,
+    pin: false,
+    instanceId,
+  });
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((e) => e.isIntersecting && e.intersectionRatio > 0.15)) {
+        playOpen();
+        io.disconnect();
+      }
+    },
+    { threshold: [0.15, 0.3] },
+  );
+  io.observe(stageEl);
+
+  const onOrient = () => {
+    if (orientTimer) clearTimeout(orientTimer);
+    orientTimer = setTimeout(() => {
+      const w = window.innerWidth;
+      if (Math.abs(w - lastWidth) < 20) return;
+      lastWidth = w;
+      if (!isPhoneViewport()) return;
+      played = false;
+      openTl?.kill();
+      buildStrips();
+      setClosed();
+    }, 250);
+  };
+  window.addEventListener("orientationchange", onOrient, { passive: true });
+
+  return () => {
+    io.disconnect();
+    window.removeEventListener("orientationchange", onOrient);
+    if (orientTimer) clearTimeout(orientTimer);
+    openTl?.kill();
+  };
 }
 
 export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
@@ -112,14 +238,27 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
     document.body.classList.add("has-page-scroll-transition");
     document.documentElement.classList.add("has-page-scroll-transition");
 
+    if (isPhoneViewport()) {
+      const phoneCleanup = setupPhoneCruisesCurtain({
+        stageEl,
+        mask,
+        headline,
+        instanceId,
+      });
+      return () => {
+        phoneCleanup();
+        document.body.classList.remove("has-page-scroll-transition");
+        document.documentElement.classList.remove("has-page-scroll-transition");
+      };
+    }
+
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
     const smoothScroll = setupSmoothScroll();
-    const lightTouch = shouldLightenMotionForDevice();
-    let lastSteppedProgress = -1;
+    let lastWidth = window.innerWidth;
 
     function buildMaskStrips() {
-      const n = stripCount(lightTouch);
+      const n = stripCount();
       const w = Math.max(mask.clientWidth, stageEl.clientWidth, 1);
       if (!w) return false;
 
@@ -214,7 +353,6 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
       ScrollTrigger.getById(`cruises-hero-${instanceId}`)?.kill();
       if (!buildMaskStrips()) return;
       applyProgress(0);
-      lastSteppedProgress = -1;
 
       ScrollTrigger.create({
         id: `cruises-hero-${instanceId}`,
@@ -223,16 +361,10 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
         end: () => `+=${window.innerHeight * PIN_VH}`,
         pin: stageEl,
         pinSpacing: true,
-        scrub: lightTouch ? true : SCRUB,
+        scrub: SCRUB,
         invalidateOnRefresh: true,
         anticipatePin: 0,
-        onUpdate: (self) => {
-          const raw = getSafeProgress(self);
-          const p = lightTouch ? Math.round(raw * 28) / 28 : raw;
-          if (lightTouch && p === lastSteppedProgress) return;
-          lastSteppedProgress = p;
-          applyProgress(p);
-        },
+        onUpdate: (self) => applyProgress(getSafeProgress(self)),
       });
     }
 
@@ -255,22 +387,24 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
 
     const onResize = () => {
       if (resizeTimer) clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(refreshEngine, 150);
+      resizeTimer = setTimeout(() => {
+        const w = window.innerWidth;
+        if (Math.abs(w - lastWidth) < 20 && isTouchDevice()) return;
+        lastWidth = w;
+        refreshEngine();
+      }, 250);
     };
 
     window.addEventListener("resize", onResize);
-    window.visualViewport?.addEventListener("resize", onResize);
+    window.addEventListener("orientationchange", onResize, { passive: true });
     window.addEventListener(CRUISES_HERO_REFRESH_EVENT, refreshEngine);
 
-    const resizeObserver = new ResizeObserver(() => onResize());
-    resizeObserver.observe(stageEl);
-    resizeObserver.observe(mask);
+    /* Do not ResizeObserver stage/mask — animation mutates geometry */
 
     return () => {
       window.removeEventListener("resize", onResize);
-      window.visualViewport?.removeEventListener("resize", onResize);
+      window.removeEventListener("orientationchange", onResize);
       window.removeEventListener(CRUISES_HERO_REFRESH_EVENT, refreshEngine);
-      resizeObserver.disconnect();
       if (resizeTimer) clearTimeout(resizeTimer);
       if (smoothScroll) {
         gsap.ticker.remove(smoothScroll.ticker);

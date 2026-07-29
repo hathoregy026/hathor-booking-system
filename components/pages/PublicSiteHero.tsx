@@ -1,11 +1,12 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { useHeroLogoSettings } from "@/components/public/HeroLogoSettingsProvider";
 import { HathorLogoSplit } from "@/components/public/HathorLogoSplit";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
+import { isPhoneViewport, logPhonePerfDev } from "@/lib/touch-device";
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 import { useTypographyInlineStyle, useTypographySettings } from "@/components/public/TypographySettingsProvider";
 import { usePublicSiteHeroMotion } from "@/hooks/usePublicSiteHeroMotion";
@@ -17,6 +18,9 @@ import {
   resolveHeroPageCopy,
   type HeroPageKey,
 } from "@/lib/typography-settings-shared";
+
+/** No compressed mobile MP4 yet — phones keep poster until an asset is added. */
+const HATHOR_HERO_VIDEO_MOBILE_SRC: string | null = null;
 
 function optimizedVideoPoster(src: string): string {
   const trimmed = src.trim();
@@ -93,6 +97,11 @@ export function PublicSiteHero({
 }: PublicSiteHeroProps) {
   const heroRef = useRef<HTMLElement>(null);
   const heroVideoRef = useRef<HTMLVideoElement>(null);
+  /**
+   * Start on poster; enable `<video>` only after client confirms desktop
+   * (or phone when a mobile MP4 exists). Avoids downloading the desktop file on phones.
+   */
+  const [useLiveVideo, setUseLiveVideo] = useState(false);
   const heroImage = useSiteImage(posterImageName ?? "about-hero");
   const videoPoster = playVideo
     ? optimizedVideoPoster(heroImage.src)
@@ -133,24 +142,64 @@ export function PublicSiteHero({
 
   useLayoutEffect(() => {
     if (!playVideo) return;
-    const video = heroVideoRef.current;
-    if (!video) return;
     /*
-     * The source is a large cinematic asset. Decoding it on the first finger
-     * scroll was the main real-device hitch; phones/tablets keep the optimized
-     * poster while desktop retains the full video treatment.
+     * Large cinematic asset. Phones ≤480: mobile source if present, else poster.
+     * Never download the desktop MP4 on phones. Tablet keeps poster (existing).
      */
-    if (
-      window.matchMedia("(max-width: 1024px)").matches ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
+    const phone = isPhoneViewport();
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const narrowTablet = window.matchMedia("(max-width: 1024px)").matches;
+
+    if (phone && !HATHOR_HERO_VIDEO_MOBILE_SRC) {
+      setUseLiveVideo(false);
+      logPhonePerfDev({
+        surface: "public-site-hero",
+        phone: true,
+        videoSource: "poster-only",
+        reason: "no-mobile-mp4-yet",
+      });
+      return;
+    }
+    if (reduced || (narrowTablet && !phone)) {
+      setUseLiveVideo(false);
+      logPhonePerfDev({
+        surface: "public-site-hero",
+        phone,
+        videoSource: "poster-only",
+        reason: reduced ? "reduced-motion" : "tablet-poster",
+      });
       return;
     }
 
+    setUseLiveVideo(true);
+  }, [playVideo]);
+
+  useLayoutEffect(() => {
+    if (!playVideo || !useLiveVideo) return;
+    const video = heroVideoRef.current;
+    if (!video) return;
+
+    const phone = isPhoneViewport();
     let started = false;
     let idleId = 0;
     let delayId = 0;
     const cleanups: Array<() => void> = [];
+    const source =
+      phone && HATHOR_HERO_VIDEO_MOBILE_SRC
+        ? HATHOR_HERO_VIDEO_MOBILE_SRC
+        : HATHOR_HERO_VIDEO_SRC;
+
+    const pauseVideo = () => {
+      if (!video.paused) video.pause();
+    };
+
+    const tryPlay = () => {
+      if (document.hidden) return;
+      video.muted = true;
+      video.defaultMuted = true;
+      video.setAttribute("muted", "");
+      void video.play().catch(() => {});
+    };
 
     const startVideo = () => {
       if (started) return;
@@ -168,13 +217,39 @@ export function PublicSiteHero({
       if (slow) return;
 
       if (!video.getAttribute("src")) {
-        video.src = HATHOR_HERO_VIDEO_SRC;
+        video.src = source;
+        logPhonePerfDev({
+          surface: "public-site-hero",
+          phone,
+          videoSource: phone ? "mobile-mp4" : "desktop-mp4",
+        });
       }
-      video.muted = true;
-      video.defaultMuted = true;
-      video.setAttribute("muted", "");
-      void video.play().catch(() => {});
+      tryPlay();
     };
+
+    const onVisibility = () => {
+      if (document.hidden) pauseVideo();
+      else if (started) tryPlay();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    cleanups.push(() =>
+      document.removeEventListener("visibilitychange", onVisibility),
+    );
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.some(
+          (e) => e.isIntersecting && e.intersectionRatio > 0.15,
+        );
+        if (!started) return;
+        if (visible) tryPlay();
+        else pauseVideo();
+      },
+      { threshold: [0, 0.15, 0.35] },
+    );
+    const heroEl = heroRef.current;
+    if (heroEl) io.observe(heroEl);
+    cleanups.push(() => io.disconnect());
 
     /** After motion is ready, wait for idle + buffer — or first real user intent. */
     const armDeferredStart = () => {
@@ -237,7 +312,7 @@ export function PublicSiteHero({
       window.clearTimeout(delayId);
       window.cancelIdleCallback?.(idleId);
     };
-  }, [playVideo]);
+  }, [playVideo, useLiveVideo]);
 
   return (
     <section
@@ -248,7 +323,7 @@ export function PublicSiteHero({
       aria-label="Hero"
     >
       <div className="hero-media">
-        {playVideo ? (
+        {playVideo && useLiveVideo ? (
           <video
             ref={heroVideoRef}
             poster={videoPoster}
@@ -256,13 +331,26 @@ export function PublicSiteHero({
             loop
             muted
             playsInline
-            preload="none"
+            preload="metadata"
             aria-label={heroImage.alt || "Hathor Dahabiya sailing on the Nile"}
-          />
+          >
+            {HATHOR_HERO_VIDEO_MOBILE_SRC ? (
+              <source
+                src={HATHOR_HERO_VIDEO_MOBILE_SRC}
+                type="video/mp4"
+                media="(max-width: 480px)"
+              />
+            ) : null}
+            <source
+              src={HATHOR_HERO_VIDEO_SRC}
+              type="video/mp4"
+              media="(min-width: 481px)"
+            />
+          </video>
         ) : (
           // eslint-disable-next-line @next/next/no-img-element -- CMS hero still; next/image fill not needed here
           <img
-            src={heroImage.src}
+            src={playVideo ? videoPoster : heroImage.src}
             alt={heroImage.alt}
             decoding="async"
             fetchPriority="high"

@@ -12,7 +12,7 @@ import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { EX_GALLERY } from "@/lib/ex-page-content";
 import type { SiteImageName } from "@/lib/site-image-slots";
-import { shouldLightenMotionForDevice } from "@/lib/touch-device";
+import { shouldLightenMotionForDevice, isPhoneViewport } from "@/lib/touch-device";
 
 type GalleryInstagramFollowProps = {
   title: string;
@@ -455,8 +455,9 @@ export function GalleryInstagramFollow({
     if (reducedRef.current) return;
 
     const allTemplates = buildTemplates();
-    /* Same burst — full set on phones, slightly smaller tiles for GPU cost */
-    templatesRef.current = allTemplates;
+    /* Phone ≤480: ~8 floaters; tablet/desktop keep full burst */
+    const phone = typeof window !== "undefined" && isPhoneViewport();
+    templatesRef.current = phone ? allTemplates.slice(0, 8) : allTemplates;
     cacheFieldSize();
     const origin = getOrigin();
     const warm = templatesRef.current.map((template) => {

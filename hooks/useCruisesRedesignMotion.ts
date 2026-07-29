@@ -9,7 +9,7 @@ import { useLayoutEffect, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplitType from "split-type";
-import { isPhoneOrTabletViewport } from "@/lib/touch-device";
+import { isPhoneOrTabletViewport, isPhoneViewport, logPhonePerfDev } from "@/lib/touch-device";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -65,13 +65,14 @@ export function useCruisesRedesignMotion(
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const isNarrow = isPhoneOrTabletViewport();
+    const isPhone = isPhoneViewport();
 
     const ctx = gsap.context(() => {
       const cards = gsap.utils.toArray<HTMLElement>(
         root.querySelectorAll(".cruise-card"),
       );
 
-      if (!prefersReduced && isNarrow) {
+      if (!prefersReduced && (isNarrow || isPhone)) {
         runLightweightReveals(root);
         if (cards.length) runLightweightCardReveals(cards);
 
@@ -89,6 +90,12 @@ export function useCruisesRedesignMotion(
             },
           });
         }
+        logPhonePerfDev({
+          surface: "cruises-redesign",
+          phoneLightweight: isPhone,
+          narrow: isNarrow,
+          lenis: false,
+        });
         return;
       }
 
@@ -263,7 +270,10 @@ export function useCruisesRedesignMotion(
       }
     }, root);
 
-    const onLoad = () => ScrollTrigger.refresh();
+    const onLoad = () => {
+      if (isPhoneViewport()) return;
+      ScrollTrigger.refresh();
+    };
     window.addEventListener("load", onLoad);
 
     return () => {

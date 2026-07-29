@@ -50,10 +50,10 @@ html {
   }
 }
 
-/* Soften expensive glass on real touch devices — keep structure, drop blur cost */
+/* Soften expensive glass on real touch devices — tablet/coarse; phone ≤480 overrides below */
 html.is-touch-device .public-site,
 body.is-touch-device .public-site {
-  --lux-blur: 0px;
+  --lux-blur: 4px;
 }
 
 html.is-touch-device .lux-cursor,
@@ -307,104 +307,94 @@ body.is-touch-device .lux-cursor {
 }
 
 /* --------------------------------------------------------------------------
- * REAL TOUCH — ADAPT cost, never strip the effect
- * Softer blur / slower marquee / clear will-change. Same visuals.
+ * PHONE ≤480 — performance adaptations only (tablet/desktop untouched)
  * -------------------------------------------------------------------------- */
-html.is-touch-device .public-site .lux-reveal,
-body.is-touch-device .public-site .lux-reveal {
-  filter: blur(3px);
-  transition:
-    opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
-    filter 0.85s cubic-bezier(0.16, 1, 0.3, 1);
-}
+@media (max-width: 480px) {
+  .public-site {
+    --lux-blur: 3px;
+  }
 
-html.is-touch-device .public-site .lux-reveal--visible,
-body.is-touch-device .public-site .lux-reveal--visible {
-  filter: blur(0);
-}
+  .public-site .lux-reveal {
+    filter: none !important;
+    transition:
+      opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.75s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
 
-html.is-touch-device .public-site .hathor-lux-text,
-body.is-touch-device .public-site .hathor-lux-text {
-  filter: blur(3px);
-}
+  .public-site .lux-reveal--visible {
+    filter: none !important;
+  }
 
-html.is-touch-device .public-site .hathor-lux-text--in,
-body.is-touch-device .public-site .hathor-lux-text--in {
-  filter: blur(0);
-}
+  .public-site .hathor-lux-text,
+  .public-site .hathor-lux-text--in {
+    filter: none !important;
+  }
 
-@media (pointer: coarse) {
   @keyframes hathor-lux-text-land {
     from {
       opacity: 0;
-      transform: translate3d(0, 1.35rem, 0);
-      filter: blur(4px);
+      transform: translate3d(0, 1.2rem, 0);
+      filter: none;
     }
     to {
       opacity: 1;
       transform: translate3d(0, 0, 0);
-      filter: blur(0);
+      filter: none;
     }
   }
-}
 
-/* Glass stays — lighter live blur on phone GPUs */
-html.is-touch-device .public-site,
-body.is-touch-device .public-site {
-  --lux-blur: 4px;
-}
-
-html.is-touch-device .site-nav,
-body.is-touch-device .site-nav,
-html.is-touch-device .public-navbar,
-body.is-touch-device .public-navbar {
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-}
-
-/* Marquee keeps scrolling — slower, no permanent will-change thrash */
-html.is-touch-device .luxury-marquee__track,
-body.is-touch-device .luxury-marquee__track {
-  will-change: auto;
-  animation-duration: 75s;
-}
-
-/* Clear long-lived compositor hints after first paint language */
-html.is-touch-device .ex-stack-scroll__card,
-html.is-touch-device .ex-stack-scroll__card-media,
-html.is-touch-device [data-home-helm-media],
-html.is-touch-device [data-home-helm-wheel],
-body.is-touch-device .ex-stack-scroll__card,
-body.is-touch-device .ex-stack-scroll__card-media,
-body.is-touch-device [data-home-helm-media],
-body.is-touch-device [data-home-helm-wheel] {
-  will-change: auto;
-}
-
-/* Soft infinite shimmers — same animation, calmer cadence */
-html.is-touch-device .public-site [class*="shimmer"],
-html.is-touch-device .public-site [class*="specular"],
-body.is-touch-device .public-site [class*="shimmer"],
-body.is-touch-device .public-site [class*="specular"] {
-  animation-duration: 4s !important;
-}
-
-/* Booking glass — keep blur, use a lighter radius on touch */
-@media (pointer: coarse) {
-  .hathor-booking-modal__backdrop {
+  .site-nav,
+  .public-navbar {
     backdrop-filter: blur(3px);
     -webkit-backdrop-filter: blur(3px);
   }
 
-  .booking-mobile-sheet__backdrop {
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
+  .public-mobile-nav__backdrop,
+  .sm-backdrop {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(12, 8, 6, 0.55) !important;
   }
 
-  .booking-mobile-sticky-bar {
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+  .home-hero-container {
+    height: 100svh !important;
+    min-height: 100svh !important;
+    max-height: none !important;
+  }
+
+  .luxury-marquee__track {
+    will-change: auto;
+    animation-duration: 90s;
+  }
+
+  .gold-dust-particles [data-gold-dust-index]:nth-child(n + 9) {
+    display: none !important;
+  }
+
+  .instagram-burst-field .instagram-burst-particle:nth-child(n + 9) {
+    display: none !important;
+  }
+
+  .public-site [class*="shimmer"],
+  .public-site [class*="specular"] {
+    animation-duration: 5s !important;
+  }
+
+  .public-site,
+  .public-site * {
+    background-attachment: scroll !important;
+  }
+}
+
+@media (max-width: 480px) and (hover: none) {
+  .public-site .media-hover:hover,
+  .public-site .lux-card:hover,
+  .public-site .lux-cruise-card:hover,
+  .public-site .cruise-card:hover,
+  .public-site button:hover,
+  .public-site .public-fab:hover,
+  .public-site [class*="fab"]:hover {
+    transform: none !important;
   }
 }
 
