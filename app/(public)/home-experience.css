@@ -2199,13 +2199,26 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 }
 
 html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__title,
-html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__title-line {
-  text-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.55),
-    0 2px 12px rgba(0, 0, 0, 0.65),
-    0 6px 28px rgba(0, 0, 0, 0.55),
-    0 12px 48px rgba(0, 0, 0, 0.45),
-    0 0 60px rgba(0, 0, 0, 0.35) !important;
+html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__title-line,
+html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebrow,
+html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body,
+html[data-ex-experience] .ex-root .ex-stack-scroll__copy .split-char,
+html[data-ex-experience] .ex-root .ex-stack-scroll__copy .split-word {
+  /* Split text would turn text-shadow into per-glyph bars — kill it */
+  text-shadow: none !important;
+}
+
+/*
+ * Smooth overall contrast: one drop-shadow on each whole text block
+ * (not on split letters). Composites as a single soft silhouette.
+ */
+html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__title,
+html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebrow,
+html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body {
+  filter:
+    drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55))
+    drop-shadow(0 4px 14px rgba(0, 0, 0, 0.5))
+    drop-shadow(0 12px 32px rgba(0, 0, 0, 0.4));
 }
 
 .ex-stack-scroll__title-line {
@@ -2217,15 +2230,8 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__title
   text-indent: 0;
   width: auto;
   max-width: 100%;
-}
-
-html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebrow,
-html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body {
-  text-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.6),
-    0 2px 14px rgba(0, 0, 0, 0.6),
-    0 8px 28px rgba(0, 0, 0, 0.5),
-    0 0 40px rgba(0, 0, 0, 0.35) !important;
+  /* No filter here — parent title already casts the overall shadow */
+  filter: none;
 }
 
 .ex-stack-scroll__body {
@@ -2319,22 +2325,12 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   }
 
   html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__title,
-  html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__title-line {
-    text-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.7),
-      0 3px 16px rgba(0, 0, 0, 0.75),
-      0 10px 36px rgba(0, 0, 0, 0.6),
-      0 18px 56px rgba(0, 0, 0, 0.5),
-      0 0 72px rgba(0, 0, 0, 0.4) !important;
-  }
-
   html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebrow,
   html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body {
-    text-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.7),
-      0 3px 16px rgba(0, 0, 0, 0.7),
-      0 10px 32px rgba(0, 0, 0, 0.55),
-      0 0 48px rgba(0, 0, 0, 0.4) !important;
+    filter:
+      drop-shadow(0 2px 3px rgba(0, 0, 0, 0.65))
+      drop-shadow(0 6px 18px rgba(0, 0, 0, 0.55))
+      drop-shadow(0 16px 40px rgba(0, 0, 0, 0.45));
   }
 }
 
@@ -3571,9 +3567,11 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
   /*
    * Landmark stack — CSS sticky viewport (no GSAP pin spacer).
    * Scroll distance comes from section height; JS scrubs without pinning.
+   * overflow must stay visible — hidden ancestors kill position:sticky.
    */
   .ex-stack-scroll {
     height: 420svh;
+    overflow: visible;
   }
 
   .ex-stack-scroll__viewport {
