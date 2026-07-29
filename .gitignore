@@ -31,8 +31,22 @@
 # large media — synced locally; host on CDN/Vercel Blob for production
 /assets/*.mp4
 /assets/TEMPORARY IMAGES FOR HATHOR/
+/assets/HATHOR IMAGES/
+/assets/homepage2 example/
+/assets/homepage3/
+/assets/pages redesign/
 /public/videos/*.mp4
 /public/media/hathor/videos/hero-reel.mp4
+/public/media/hathor/videos/hero-promo.mp4
+
+# local audit / measure dumps (never ship)
+/lighthouse-*.json
+/PROJECT-FILES-GPT.md
+/build-output.txt
+/scripts/out-*
+/public/branding/_hieroglyph-tmp.webp
+/public/fonts/**/._*
+/public/media/hathor/videos/*.llc
 
 # debug
 npm-debug.log*

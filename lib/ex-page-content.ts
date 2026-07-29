@@ -63,8 +63,6 @@ function buildCarouselSlides(): ExCarouselSlide[] {
   });
 }
 
-export const EX_GOLD_LOGO_SRC = "/branding/gold.svg";
-
 export const EX_HERO = {
   kicker: "Nile · Egypt",
   lineRight: "Ultra Luxury",

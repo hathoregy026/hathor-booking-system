@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { createClient } from "@supabase/supabase-js";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -13,9 +13,21 @@ const supabase = createClient(supabaseUrl, serviceKey, {
 });
 
 async function main() {
-  const buffer = readFileSync(
-    join(root, "public", "media", "hathor", "videos", "hero-promo.mp4"),
+  const localPath = join(
+    root,
+    "public",
+    "media",
+    "hathor",
+    "videos",
+    "hero-promo.mp4",
   );
+  if (!existsSync(localPath)) {
+    console.warn(
+      "hero-promo.mp4 not found locally (optional legacy upload source). Nothing to upload.",
+    );
+    return;
+  }
+  const buffer = readFileSync(localPath);
   const { error } = await supabase.storage.from("videos").upload("hathor-hero-promo.mp4", buffer, {
     contentType: "video/mp4",
     cacheControl: "31536000",

@@ -1,7 +1,16 @@
 # Large local media — not deployable via CLI; use poster fallback or host on CDN/Blob
 assets/*.mp4
 assets/TEMPORARY IMAGES FOR HATHOR/
+assets/HATHOR IMAGES/
+assets/homepage2 example/
+assets/homepage3/
+assets/pages redesign/
 public/videos/*.mp4
 public/media/hathor/videos/hero-reel.mp4
+public/media/hathor/videos/hero-promo.mp4
+lighthouse-*.json
+PROJECT-FILES-GPT.md
+build-output.txt
+scripts/out-*
 node_modules
 .git

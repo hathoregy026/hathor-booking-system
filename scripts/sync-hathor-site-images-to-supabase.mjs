@@ -56,7 +56,10 @@ async function uploadWebp(fileName) {
 async function uploadHeroVideo() {
   const localPath = join(mediaDir, "videos", "hero-promo.mp4");
   if (!existsSync(localPath)) {
-    throw new Error("hero-promo.mp4 not found");
+    console.warn(
+      "[sync-hathor-supabase] hero-promo.mp4 not present locally — skipping video upload (optional legacy asset).",
+    );
+    return null;
   }
 
   const objectPath = "hathor-hero-promo.mp4";
