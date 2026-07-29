@@ -1,17 +1,17 @@
 "use client";
 
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 import { usePathname } from "next/navigation";
 import { bindRawScrollSmooth } from "@/lib/raw-scroll-smooth";
 
 /**
- * Site-wide slowed raw document scroll (wheel hijack + rAF lerp).
- * Only where Lenis is absent — home/rooms keep their custom scroll engines.
+ * Homepage-equivalent Lenis on pages without a custom scroll owner.
+ * Layout timing avoids overlapping Lenis instances during route changes.
  */
 export function RawScrollSmooth() {
   const pathname = usePathname();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     return bindRawScrollSmooth();
   }, [pathname]);
 

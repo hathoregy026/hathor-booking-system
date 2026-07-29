@@ -2,6 +2,7 @@
 
 import { useLayoutEffect, useRef } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
+import { useHeroLogoSettings } from "@/components/public/HeroLogoSettingsProvider";
 import { HathorLogoSplit } from "@/components/public/HathorLogoSplit";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
@@ -71,6 +72,8 @@ export type PublicSiteHeroProps = {
   playVideo?: boolean;
   /** Letter colour set from Hero Logo Tune — default keeps live gold WebPs. */
   logoPartsVariant?: HathorLogoPartsVariant;
+  /** Optional phone override; otherwise the global phone Hero Logo Tune applies. */
+  mobileLogoPartsVariant?: HathorLogoPartsVariant;
 };
 
 export function PublicSiteHero({
@@ -85,17 +88,24 @@ export function PublicSiteHero({
   goldTint = true,
   goldDust = true,
   playVideo = false,
-  logoPartsVariant = "current",
+  logoPartsVariant,
+  mobileLogoPartsVariant,
 }: PublicSiteHeroProps) {
+  const heroRef = useRef<HTMLElement>(null);
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const heroImage = useSiteImage(posterImageName ?? "about-hero");
   const videoPoster = playVideo
     ? optimizedVideoPoster(heroImage.src)
     : heroImage.src;
   const typography = useTypographySettings();
+  const globalLogo = useHeroLogoSettings();
+  const desktopLogoParts =
+    logoPartsVariant ?? globalLogo.desktopPartsVariant;
+  const phoneLogoParts =
+    mobileLogoPartsVariant ?? globalLogo.mobilePartsVariant;
   const heroTitleStyle = useTypographyInlineStyle("hero_title");
   const heroSubtitleStyle = useTypographyInlineStyle("hero_subtitle");
-  usePublicSiteHeroMotion(animate);
+  usePublicSiteHeroMotion(heroRef, animate);
 
   const resolved = heroPage
     ? resolveHeroPageCopy(typography, heroPage, {
@@ -220,6 +230,7 @@ export function PublicSiteHero({
 
   return (
     <section
+      ref={heroRef}
       id={posterImageName ? siteImageAnchorId(posterImageName) : undefined}
       data-site-image={posterImageName}
       className={`home-hero-container${goldTint ? " hero-gold-tint" : ""}`}
@@ -254,7 +265,10 @@ export function PublicSiteHero({
       {goldDust ? <GoldDustParticles /> : null}
 
       <div className="hero-logo-mark hero-logo-mark--split" aria-hidden="true">
-        <HathorLogoSplit partsVariant={logoPartsVariant} />
+        <HathorLogoSplit
+          partsVariant={desktopLogoParts}
+          mobilePartsVariant={phoneLogoParts}
+        />
       </div>
 
       <div className="hero-content">

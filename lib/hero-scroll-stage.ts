@@ -11,6 +11,8 @@ gsap.registerPlugin(ScrollTrigger);
 type MountHeroScrollStageOptions = {
   prefersReduced: boolean;
   lenis?: Lenis | null;
+  /** Exact hero instance. Inner pages pass a ref to avoid stale route nodes. */
+  hero?: HTMLElement | null;
   /** Split-letter land duration in seconds (from admin logo tune). */
   logoLandDuration?: number;
   /** Hard-refresh mid-page: skip land tween and snap to rested logo. */
@@ -24,6 +26,7 @@ const DEFAULT_LOGO_LAND_DURATION = 2.6;
 export function mountHeroScrollStage({
   prefersReduced,
   lenis = null,
+  hero: requestedHero = null,
   logoLandDuration = DEFAULT_LOGO_LAND_DURATION,
   skipLanding = false,
 }: MountHeroScrollStageOptions): () => void {
@@ -33,13 +36,16 @@ export function mountHeroScrollStage({
   // Pick the hero instance that actually has the scroll cover + heading/button.
   // Some routes can momentarily keep multiple hero nodes around during transitions.
   const hero =
+    requestedHero ??
     heroes.find((h) => {
       return Boolean(
-        h.querySelector(".home-hero-cover") &&
+        h.isConnected &&
+          h.querySelector(".home-hero-cover") &&
           h.querySelector(".hero-heading") &&
           h.querySelector(".hero-button"),
       );
-    }) ?? heroes[0];
+    }) ??
+    heroes[0];
   const cover = hero?.querySelector(".home-hero-cover");
   if (!hero || !cover) return () => {};
 
@@ -80,9 +86,9 @@ export function mountHeroScrollStage({
     } else {
       gsap.set(chrome, { opacity: 0, y: 16 });
       markHeroMotionReady();
-      gsap.from(chrome, {
-        opacity: 0,
-        y: 16,
+      gsap.to(chrome, {
+        opacity: 1,
+        y: 0,
         duration: 0.8,
         ease: "power2.out",
         delay: 0.15,

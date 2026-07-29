@@ -293,19 +293,6 @@ export function HomePageClient({
     };
   }, []);
 
-  const [isPhone, setIsPhone] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const sync = () => setIsPhone(mq.matches);
-    sync();
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
-  }, []);
-
-  const logoPartsVariant = isPhone
-    ? liveTuneMobile.partsVariant
-    : liveTune.partsVariant;
-
   return (
     <div className="ex-root" data-hathor-logo-tuned="">
       <HathorLogoTuner />
@@ -318,7 +305,8 @@ export function HomePageClient({
           lineLeft={EX_HERO.lineLeft}
           heroPage="home"
           posterImageName={EX_HERO.imageName}
-          logoPartsVariant={logoPartsVariant}
+          logoPartsVariant={liveTune.partsVariant}
+          mobileLogoPartsVariant={liveTuneMobile.partsVariant}
         />
 
         <LuxuryMarquee />

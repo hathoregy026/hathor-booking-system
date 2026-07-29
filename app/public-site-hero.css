@@ -225,6 +225,12 @@
   will-change: transform, opacity;
 }
 
+.hathor-logo-split .logo-letter-wrap > picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 /*
   Full free zone edge ↔ Book Now (gap 0 = flush to the button).
   T / right-H are anchored only to Book Now — letter gaps never block that.

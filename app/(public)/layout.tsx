@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { PublicLayout } from "@/components/public/PublicLayout";
+import { HeroLogoSettingsProvider } from "@/components/public/HeroLogoSettingsProvider";
 import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
 import { TypographySettingsProvider } from "@/components/public/TypographySettingsProvider";
 import { WebsiteTextProvider } from "@/components/public/WebsiteTextProvider";
@@ -171,19 +172,24 @@ export default async function PublicSiteLayout({
           __html: hieroglyphTuneCss,
         }}
       />
-      <SiteImagesProvider images={siteImages}>
-        <TypographySettingsProvider
-          initial={typography}
-          initialMobile={typographyMobile}
-        >
-          <WebsiteTextProvider
-            initial={websiteText}
-            initialMobile={websiteTextMobile}
+      <HeroLogoSettingsProvider
+        desktopPartsVariant={heroLogoTune.partsVariant}
+        mobilePartsVariant={heroLogoTuneMobile.partsVariant}
+      >
+        <SiteImagesProvider images={siteImages}>
+          <TypographySettingsProvider
+            initial={typography}
+            initialMobile={typographyMobile}
           >
-            <PublicLayout>{children}</PublicLayout>
-          </WebsiteTextProvider>
-        </TypographySettingsProvider>
-      </SiteImagesProvider>
+            <WebsiteTextProvider
+              initial={websiteText}
+              initialMobile={websiteTextMobile}
+            >
+              <PublicLayout>{children}</PublicLayout>
+            </WebsiteTextProvider>
+          </TypographySettingsProvider>
+        </SiteImagesProvider>
+      </HeroLogoSettingsProvider>
     </div>
   );
 }
