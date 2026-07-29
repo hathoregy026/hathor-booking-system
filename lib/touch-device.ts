@@ -55,6 +55,7 @@ export function bindViewportHeightVar(): () => void {
   if (typeof window === "undefined") return () => {};
 
   setViewportHeightCssVar();
+  const touch = isTouchDevice();
 
   let timer: ReturnType<typeof setTimeout> | undefined;
   const onResize = () => {
@@ -62,15 +63,23 @@ export function bindViewportHeightVar(): () => void {
     timer = setTimeout(() => setViewportHeightCssVar(), 150);
   };
 
-  window.addEventListener("resize", onResize, { passive: true });
+  /*
+   * On touch browsers, URL-bar collapse emits resize during normal scrolling.
+   * Updating a root CSS variable there forces full-page layout and causes jumps.
+   */
+  if (!touch) {
+    window.addEventListener("resize", onResize, { passive: true });
+    window.visualViewport?.addEventListener("resize", onResize);
+  }
   window.addEventListener("orientationchange", onResize, { passive: true });
-  window.visualViewport?.addEventListener("resize", onResize);
 
   return () => {
     if (timer) clearTimeout(timer);
-    window.removeEventListener("resize", onResize);
+    if (!touch) {
+      window.removeEventListener("resize", onResize);
+      window.visualViewport?.removeEventListener("resize", onResize);
+    }
     window.removeEventListener("orientationchange", onResize);
-    window.visualViewport?.removeEventListener("resize", onResize);
   };
 }
 

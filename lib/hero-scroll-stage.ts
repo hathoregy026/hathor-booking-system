@@ -145,8 +145,11 @@ export function mountHeroScrollStage({
   };
 
   /**
-   * PHONE / TABLET: same hero visuals (video + logo + Book Now), ZERO pin/scrub.
-   * iOS + pinned 3D blinds + scrub = jumpy broken scroll. Desktop keeps the full stage.
+   * PHONE / TABLET: preserve the gold-blind design without pinning the page.
+   *
+   * ScrollTrigger pin + scrub fights native momentum scrolling on iOS. Instead,
+   * the same stripes play once on the first native scroll gesture while the
+   * hero remains in normal document flow. Desktop keeps the full pinned stage.
    */
   const isPhoneHero =
     window.matchMedia("(pointer: coarse)").matches ||
@@ -195,7 +198,63 @@ export function mountHeroScrollStage({
     document.documentElement.classList.add("ex-scroll-ready");
     document.documentElement.classList.remove("ex-pending", "ex-pending-deep");
 
+    let mobileBlinds: gsap.core.Timeline | null = null;
+    let mobileBlindsPlayed = false;
+
+    const playMobileBlinds = () => {
+      if (mobileBlindsPlayed || !mobileBlinds) return;
+      mobileBlindsPlayed = true;
+      mobileBlinds.play(0);
+      window.removeEventListener("scroll", playMobileBlinds);
+      window.removeEventListener("touchmove", playMobileBlinds);
+    };
+
+    if (isPhoneHero && !prefersReduced) {
+      const width = hero.clientWidth || window.innerWidth;
+      const count = width <= 767 ? 18 : 24;
+      const stripWidth = width / count;
+
+      for (let index = 0; index < count; index += 1) {
+        const strip = document.createElement("div");
+        strip.classList.add("blind-strip-v", "blind-strip-v--mobile");
+        strip.style.left = `${index * stripWidth - 0.5}px`;
+        strip.style.width = `${stripWidth + 1}px`;
+        strip.style.top = "0";
+        strip.style.height = "100%";
+        strip.style.position = "absolute";
+        strip.style.transformOrigin = "left center";
+        cover.appendChild(strip);
+      }
+
+      const strips = gsap.utils.toArray(
+        cover.querySelectorAll(".blind-strip-v--mobile"),
+      ) as Element[];
+
+      gsap.set(strips, {
+        rotationY: 0,
+        scaleX: 0,
+        opacity: 0,
+        visibility: "hidden",
+        force3D: true,
+      });
+
+      mobileBlinds = gsap.timeline({ paused: true }).to(strips, {
+        scaleX: 1,
+        opacity: 1,
+        visibility: "visible",
+        duration: 0.58,
+        stagger: { each: 0.028, from: "start" },
+        ease: "power1.inOut",
+      });
+
+      window.addEventListener("scroll", playMobileBlinds, { passive: true });
+      window.addEventListener("touchmove", playMobileBlinds, { passive: true });
+    }
+
     return () => {
+      window.removeEventListener("scroll", playMobileBlinds);
+      window.removeEventListener("touchmove", playMobileBlinds);
+      mobileBlinds?.kill();
       killByPrefix("hero-stage");
       root.classList.remove("hero-motion-ready");
     };

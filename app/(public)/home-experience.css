@@ -2322,12 +2322,12 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
 
 .home-helm-portal__wheel {
   position: absolute;
-  left: 50%;
-  top: 50%;
+  inset: 0;
+  margin: auto;
   z-index: 5;
   width: min(48vw, 68vh, 620px);
   aspect-ratio: 1;
-  transform: translate(-50%, -50%);
+  transform: none;
   transform-origin: center;
   pointer-events: none;
   user-select: none;
@@ -2350,7 +2350,8 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   }
 
   .home-helm-portal__wheel {
-    width: min(76vw, 58vh);
+    width: min(78vw, 58svh);
+    max-width: 32rem;
   }
 }
 

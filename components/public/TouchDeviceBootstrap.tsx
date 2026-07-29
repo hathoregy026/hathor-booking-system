@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   applyTouchDeviceClass,
   bindViewportHeightVar,
+  isTouchDevice,
 } from "@/lib/touch-device";
 
 type WindowWithScrollTrigger = Window & {
@@ -30,15 +31,26 @@ function bindDebouncedScrollTriggerRefresh(debounceMs = 200): () => void {
     }, debounceMs);
   };
 
-  window.addEventListener("resize", refresh, { passive: true });
+  const touch = isTouchDevice();
+
+  /*
+   * Mobile browser chrome changes viewport height while the finger scrolls.
+   * Refreshing every ScrollTrigger during that resize is the page jump.
+   * Phones refresh after orientation only; fine-pointer devices keep resize.
+   */
+  if (!touch) {
+    window.addEventListener("resize", refresh, { passive: true });
+    window.visualViewport?.addEventListener("resize", refresh);
+  }
   window.addEventListener("orientationchange", refresh, { passive: true });
-  window.visualViewport?.addEventListener("resize", refresh);
 
   return () => {
     if (timer) clearTimeout(timer);
-    window.removeEventListener("resize", refresh);
+    if (!touch) {
+      window.removeEventListener("resize", refresh);
+      window.visualViewport?.removeEventListener("resize", refresh);
+    }
     window.removeEventListener("orientationchange", refresh);
-    window.visualViewport?.removeEventListener("resize", refresh);
   };
 }
 

@@ -86,10 +86,19 @@ body.is-touch-device .lux-cursor {
     display: block !important;
   }
 
-  /* No gold blinds on phone — pin scrub is disabled in JS */
-  .home-hero-container .home-hero-cover,
-  .home-hero-container .blind-strip-v {
-    display: none !important;
+  /*
+   * Preserve the gold-blind design on phones. JS plays a lightweight,
+   * non-pinned one-shot reveal so native momentum scrolling stays smooth.
+   */
+  .home-hero-container .home-hero-cover {
+    display: block !important;
+    pointer-events: none !important;
+  }
+
+  .home-hero-container .blind-strip-v--mobile {
+    display: block !important;
+    backface-visibility: hidden;
+    will-change: transform, opacity;
   }
 
   /*

@@ -338,13 +338,17 @@ export function useExScrollMotion() {
       return;
     }
 
-    const isPhone = window.matchMedia("(max-width: 767px)").matches;
-    const wheelOpenScale = isPhone ? 2.7 : 3.15;
-    const wheelExitScale = isPhone ? 4.35 : 5.4;
+    const isTouchPortal =
+      window.matchMedia("(pointer: coarse)").matches ||
+      window.matchMedia("(max-width: 1023px)").matches;
+    const wheelOpenScale = isTouchPortal ? 2.55 : 3.15;
+    const wheelExitScale = isTouchPortal ? 4.1 : 5.4;
 
     gsap.set(wheel, {
-      xPercent: -50,
-      yPercent: -50,
+      xPercent: 0,
+      yPercent: 0,
+      x: 0,
+      y: 0,
       scale: 1,
       rotation: 0,
       autoAlpha: 1,
@@ -442,12 +446,20 @@ export function useExScrollMotion() {
         1,
         -rect.top / scrollable,
       );
-      gsap.to(portalTimeline, {
-        progress,
-        duration: 0.85,
-        ease: "power3.out",
-        overwrite: true,
-      });
+      if (isTouchPortal) {
+        /*
+         * Native touch scroll must track the finger directly. A catch-up tween
+         * here makes the wheel appear to drift and the page feel laggy.
+         */
+        portalTimeline.progress(progress);
+      } else {
+        gsap.to(portalTimeline, {
+          progress,
+          duration: 0.85,
+          ease: "power3.out",
+          overwrite: true,
+        });
+      }
     };
 
     window.addEventListener("scroll", update, { passive: true });
