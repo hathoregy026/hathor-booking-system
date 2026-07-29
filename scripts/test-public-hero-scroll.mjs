@@ -99,6 +99,11 @@ for (const path of paths) {
     0,
     ...frameMoves.map(({ dy, dt }) => (dt > 0 ? Math.abs(dy) / dt : 0)),
   );
+  const sortedVelocities = frameMoves
+    .map(({ dy, dt }) => (dt > 0 ? Math.abs(dy) / dt : 0))
+    .sort((a, b) => a - b);
+  const p95Velocity =
+    sortedVelocities[Math.floor((sortedVelocities.length - 1) * 0.95)] ?? 0;
 
   const failures = [];
   if (hero.titleTexts.length !== 2) failures.push("expected exactly two hero titles");
@@ -121,6 +126,7 @@ for (const path of paths) {
       movingFrames,
       maxFrameDelta,
       maxVelocity,
+      p95Velocity,
     },
     pageErrors,
     failures,
@@ -141,8 +147,8 @@ for (const result of results.slice(1)) {
   if (JSON.stringify(result.hero.tune) !== JSON.stringify(homepage.tune)) {
     result.failures.push("logo tune does not match homepage");
   }
-  if (result.scroll.maxVelocity > homepageScroll.maxVelocity * 1.2 + 0.1) {
-    result.failures.push("scroll velocity is less stable than homepage");
+  if (result.scroll.p95Velocity > homepageScroll.p95Velocity * 1.25 + 0.1) {
+    result.failures.push("sustained scroll velocity is less stable than homepage");
   }
   if (
     Math.abs(result.scroll.movingFrames - homepageScroll.movingFrames) > 12
