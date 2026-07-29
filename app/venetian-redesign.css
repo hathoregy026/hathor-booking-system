@@ -388,8 +388,11 @@
 .room-fs-progress {
   position: absolute;
   left: clamp(24px, 6vw, 80px);
-  right: clamp(24px, 6vw, 80px);
   bottom: clamp(36px, 6vh, 56px);
+  display: flex;
+  gap: 8px;
+  width: min(280px, 50vw);
+  margin-top: 0;
 }
 
 .room-fs-title {
@@ -429,14 +432,7 @@
   max-width: 34ch;
 }
 
-/* 4-segment progress for current room */
-.room-fs-progress {
-  display: flex;
-  gap: 8px;
-  width: min(280px, 50vw);
-  margin-top: 28px;
-}
-
+/* 4-segment progress for current room — position set with .room-fs-ui chrome */
 .room-fs-progress span {
   flex: 1;
   height: 2px;
@@ -498,6 +494,20 @@
   .room-fs-ui {
     padding-left: 20px;
     padding-right: 20px;
+  }
+
+  .room-fs-top,
+  .room-fs-copy,
+  .room-fs-progress {
+    left: 20px;
+  }
+
+  .room-fs-top {
+    right: 20px;
+  }
+
+  .room-fs-copy {
+    width: min(560px, calc(100% - 40px));
   }
 
   .room-fs-title {
