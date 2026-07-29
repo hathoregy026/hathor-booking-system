@@ -330,6 +330,52 @@ body.is-touch-device .lux-cursor {
     filter: none !important;
   }
 
+  /*
+   * Signature fog-rise storytelling — do NOT strip blur / mask from these.
+   * Ordinary lux-reveal rules above must not cascade into fog sections.
+   */
+  .public-site [data-mobile-fog-rise] .ex-stack-scroll__card,
+  .public-site [data-mobile-fog-rise] .ex-stack-scroll__card::before,
+  .public-site [data-mobile-fog-rise] .hcta-reveal,
+  .public-site [data-mobile-fog-rise] .hcta-reveal::after,
+  .public-site .signature-fog-rise .ex-stack-scroll__card,
+  .public-site .signature-fog-rise .hcta-reveal {
+    filter: unset;
+  }
+
+  .public-site [data-mobile-fog-rise] .ex-stack-scroll__card::before,
+  .public-site [data-mobile-fog-rise] .hcta-reveal::after {
+    filter: blur(2.5px) !important;
+  }
+
+  /* ~65% of desktop cinematic runway — sticky, not a multi-viewport hard pin */
+  .public-site .ex-stack-scroll[data-mobile-fog-rise],
+  .public-site .ex-stack-scroll.signature-fog-rise {
+    height: 340svh;
+  }
+
+  .public-site .hcta-track[data-mobile-fog-rise],
+  .public-site .hcta-track.signature-fog-rise {
+    height: 470svh;
+  }
+
+  .public-site [data-mobile-fog-rise] .hcta-reveal::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(100% - var(--hcta-fog-edge, 0%));
+    height: 18%;
+    pointer-events: none;
+    z-index: 3;
+    background: linear-gradient(
+      to top,
+      rgba(236, 232, 223, 0.35) 0%,
+      rgba(236, 232, 223, 0.12) 45%,
+      transparent 100%
+    );
+  }
+
   @keyframes hathor-lux-text-land {
     from {
       opacity: 0;

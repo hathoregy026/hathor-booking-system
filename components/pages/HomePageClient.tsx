@@ -455,8 +455,9 @@ export function HomePageClient({
         </section>
 
         <section
-          className="ex-stack-scroll ex-content-section"
+          className="ex-stack-scroll ex-content-section signature-fog-rise"
           id="details"
+          data-mobile-fog-rise
           data-site-image-pin-root
           aria-label="Every landmark, a pleasure"
         >

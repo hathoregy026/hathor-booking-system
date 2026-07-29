@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import type { CSSProperties } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { ManagedImage } from "@/components/ui/ManagedImage";
+import { isPhoneViewport, logPhonePerfDev } from "@/lib/touch-device";
 
 const SILK_ROWS = ["TAKE YOUR", "VOYAGE", "TODAY"] as const;
 
@@ -23,6 +24,10 @@ const PHASE = {
   copyEnd: 0.97,
 } as const;
 
+/** ~24 steps across the 0–140 fog range — smoother than every-frame CSS vars. */
+const FOG_STEPS = 24;
+const FOG_RANGE = 140;
+
 function clamp(value: number) {
   return Math.min(1, Math.max(0, value));
 }
@@ -33,6 +38,30 @@ function between(value: number, start: number, end: number) {
 
 function ease(value: number) {
   return value * value * (3 - 2 * value);
+}
+
+function quantiseFog(progress: number) {
+  const raw = progress * FOG_RANGE;
+  const step = FOG_RANGE / FOG_STEPS;
+  return Math.round(raw / step) * step;
+}
+
+function groupWordUnits(characters: HTMLElement[]): HTMLElement[][] {
+  const words: HTMLElement[][] = [];
+  let current: HTMLElement[] = [];
+  characters.forEach((character) => {
+    const text = character.textContent ?? "";
+    if (text === "\u00A0" || text === " " || text.trim() === "") {
+      if (current.length) {
+        words.push(current);
+        current = [];
+      }
+      return;
+    }
+    current.push(character);
+  });
+  if (current.length) words.push(current);
+  return words;
 }
 
 function revealCharacters(
@@ -51,6 +80,32 @@ function revealCharacters(
     character.style.transform = `translate3d(0, ${
       (1 - localProgress) * 115
     }%, 0)`;
+  });
+}
+
+/** Phone: same rise language, one transform per word instead of every glyph. */
+function revealWords(
+  characters: HTMLElement[],
+  progress: number,
+  staggerSpan: number,
+) {
+  const words = groupWordUnits(characters);
+  if (!words.length) {
+    revealCharacters(characters, progress, staggerSpan);
+    return;
+  }
+  const finalIndex = Math.max(1, words.length - 1);
+  const movementSpan = 1 - staggerSpan;
+
+  words.forEach((wordChars, index) => {
+    const delay = (index / finalIndex) * staggerSpan;
+    const localProgress = ease(clamp((progress - delay) / movementSpan));
+    const opacity = localProgress.toFixed(3);
+    const transform = `translate3d(0, ${(1 - localProgress) * 115}%, 0)`;
+    wordChars.forEach((character) => {
+      character.style.opacity = opacity;
+      character.style.transform = transform;
+    });
   });
 }
 
@@ -93,37 +148,54 @@ export function HomeCampaignSection({
 
     if (!frame || !image) return;
 
+    const phone = isPhoneViewport();
     let animationFrame = 0;
+    let inView = true;
+    let lastFogEdge = -1;
+    const revealText = phone ? revealWords : revealCharacters;
+
+    logPhonePerfDev({
+      surface: "hcta-fog-rise",
+      phoneLightweight: phone,
+      fogSteps: phone ? FOG_STEPS : "continuous",
+      wordText: phone,
+    });
 
     const render = () => {
       animationFrame = 0;
+      if (!inView) return;
 
       const travel = Math.max(1, track.offsetHeight - frame.offsetHeight);
       const progress = clamp(-track.getBoundingClientRect().top / travel);
 
       const textProgress = ease(between(progress, 0, PHASE.textEnd));
-      revealCharacters(invitation, textProgress, 0.42);
+      revealText(invitation, textProgress, phone ? 0.28 : 0.42);
 
       const imageProgress = ease(
         between(progress, PHASE.imageStart, PHASE.imageEnd),
       );
-      image.style.setProperty(
-        "--hcta-fog-edge",
-        `${imageProgress * 140}%`,
-      );
+      const fogEdge = phone
+        ? quantiseFog(imageProgress)
+        : imageProgress * FOG_RANGE;
+      if (fogEdge !== lastFogEdge) {
+        lastFogEdge = fogEdge;
+        image.style.setProperty("--hcta-fog-edge", `${fogEdge}%`);
+      }
       image.style.opacity = clamp(imageProgress * 1.8).toFixed(3);
 
       const imageEffectProgress = ease(
         between(progress, PHASE.imageStart, PHASE.copyEnd),
       );
       if (media) {
-        media.style.transform = `scale(${1.035 - imageEffectProgress * 0.035})`;
+        media.style.transform = `translate3d(0,0,0) scale(${
+          1.035 - imageEffectProgress * 0.035
+        })`;
       }
 
       /* Soft ease-out — title/button ~2× slower, button waits for title */
       const copyRaw = between(progress, PHASE.copyStart, PHASE.copyEnd);
       const copyProgress = 1 - Math.pow(1 - copyRaw, 2.8);
-      revealCharacters(imageCopy, copyProgress, 0.62);
+      revealText(imageCopy, copyProgress, phone ? 0.4 : 0.62);
 
       if (button) {
         const buttonRaw = between(copyProgress, 0.78, 1);
@@ -133,12 +205,33 @@ export function HomeCampaignSection({
           (1 - buttonProgress) * 24
         }px, 0)`;
       }
+
+      if (imageProgress >= 0.999) {
+        image.style.willChange = "auto";
+        if (media) media.style.willChange = "auto";
+      } else if (imageProgress > 0.01) {
+        image.style.willChange = "opacity";
+        if (media) media.style.willChange = "transform";
+      }
     };
 
     const requestRender = () => {
-      if (animationFrame) return;
+      if (!inView || animationFrame) return;
       animationFrame = window.requestAnimationFrame(render);
     };
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        inView = Boolean(entry?.isIntersecting);
+        if (inView) requestRender();
+        else {
+          image.style.willChange = "auto";
+          if (media) media.style.willChange = "auto";
+        }
+      },
+      { root: null, threshold: 0.01, rootMargin: "8% 0px" },
+    );
+    io.observe(track);
 
     render();
     animationFrame = window.requestAnimationFrame(render);
@@ -148,6 +241,7 @@ export function HomeCampaignSection({
     window.addEventListener("pageshow", requestRender);
 
     return () => {
+      io.disconnect();
       window.cancelAnimationFrame(animationFrame);
       window.removeEventListener("scroll", requestRender);
       window.removeEventListener("resize", requestRender);
@@ -159,10 +253,11 @@ export function HomeCampaignSection({
   return (
     <section
       ref={trackRef}
-      className="hcta-track"
+      className="hcta-track signature-fog-rise"
       id="campaign"
       aria-label="Campaign call to action"
       data-hcta-track
+      data-mobile-fog-rise
     >
       <div className="hcta-frame" data-hcta-frame>
         <div className="hcta-silk" data-hcta-silk>

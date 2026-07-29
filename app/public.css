@@ -6735,7 +6735,9 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__title {
   text-transform: none;
 }
 
-/* Phone ≤480 only — opacity/translate reveals (no animated blur). Tablet/desktop unchanged. */
+/* Phone ≤480 only — ordinary reveals: opacity/translate (no animated blur).
+ * Signature fog-rise ([data-mobile-fog-rise] / .signature-fog-rise) keeps its
+ * lightweight fog fringe in home-experience.css + mobile-touch.css — not here. */
 @media (max-width: 480px) {
   .lux-reveal {
     filter: none;
