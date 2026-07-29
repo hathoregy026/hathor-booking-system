@@ -6,6 +6,7 @@ import { AdminDevicePreviewToggle } from "@/components/admin/AdminDevicePreviewT
 import { HeroLogoTunePreview } from "@/components/admin/HeroLogoTunePreview";
 import { useToast } from "@/components/admin/ToastProvider";
 import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
+import { AdminPhoneDeviceFrame } from "@/components/admin/AdminPhoneDeviceFrame";
 import {
   ADMIN_PHONE_PREVIEW_WIDTH,
   type AdminDevicePreview,
@@ -319,12 +320,21 @@ export function HeroLogoTunePanel() {
           </div>
         ) : null}
 
-        <HeroLogoTunePreview
-          tune={tune}
-          stageWidth={
-            device === "phone" ? ADMIN_PHONE_PREVIEW_WIDTH : undefined
-          }
-        />
+        {device === "phone" ? (
+          <AdminPhoneDeviceFrame
+            width={ADMIN_PHONE_PREVIEW_WIDTH}
+            height={844}
+            label="Phone bezel preview"
+          >
+            <HeroLogoTunePreview
+              tune={tune}
+              stageWidth={ADMIN_PHONE_PREVIEW_WIDTH}
+              chrome="phone"
+            />
+          </AdminPhoneDeviceFrame>
+        ) : (
+          <HeroLogoTunePreview tune={tune} />
+        )}
 
         <fieldset
           disabled={saving}

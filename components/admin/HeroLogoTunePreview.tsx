@@ -19,10 +19,14 @@ import {
 export function HeroLogoTunePreview({
   tune,
   stageWidth,
+  chrome,
 }: {
   tune: HeroLogoTune;
   stageWidth?: number;
+  /** Hide admin chrome for phone mode to match a real device view. */
+  chrome?: "full" | "phone";
 }) {
+  const effectiveChrome = chrome ?? (stageWidth != null ? "phone" : "full");
   const [browserW, setBrowserW] = useState(1440);
 
   useEffect(() => {
@@ -109,26 +113,33 @@ export function HeroLogoTunePreview({
   };
 
   return (
-    <div className="hlt-preview" data-hlt-preview="">
-      <div className="hlt-preview__toolbar">
-        <strong>
-          {stageWidth != null
-            ? `Phone preview · ${stageW}px`
-            : `1:1 hero width · ${stageW}px`}
-        </strong>
-        <span>Each letter moves on its own — not as a HAT/HOR block</span>
-      </div>
+    <div
+      className={`hlt-preview${effectiveChrome === "phone" ? " hlt-preview--phone" : ""}`}
+      data-hlt-preview=""
+    >
+      {effectiveChrome === "full" ? (
+        <div className="hlt-preview__toolbar">
+          <strong>
+            {stageWidth != null
+              ? `Phone preview · ${stageW}px`
+              : `1:1 hero width · ${stageW}px`}
+          </strong>
+          <span>Each letter moves on its own — not as a HAT/HOR block</span>
+        </div>
+      ) : null}
 
-      <div className="hlt-preview__hud" aria-live="polite">
-        <span>edge L {tune.edgeLeft}</span>
-        <span>edge R {tune.edgeRight}</span>
-        <span>H→A {tune.gapHA}</span>
-        <span>A→T {tune.gapAT}</span>
-        <span>T→btn {tune.gapTButton}</span>
-        <span>btn→H {tune.gapButtonH}</span>
-        <span>H→O {tune.gapHO}</span>
-        <span>O→R {tune.gapOR}</span>
-      </div>
+      {effectiveChrome === "full" ? (
+        <div className="hlt-preview__hud" aria-live="polite">
+          <span>edge L {tune.edgeLeft}</span>
+          <span>edge R {tune.edgeRight}</span>
+          <span>H→A {tune.gapHA}</span>
+          <span>A→T {tune.gapAT}</span>
+          <span>T→btn {tune.gapTButton}</span>
+          <span>btn→H {tune.gapButtonH}</span>
+          <span>H→O {tune.gapHO}</span>
+          <span>O→R {tune.gapOR}</span>
+        </div>
+      ) : null}
 
       <div className="hlt-preview__viewport">
         <div
@@ -195,10 +206,12 @@ export function HeroLogoTunePreview({
             </div>
           </div>
 
-          <p className="hlt-preview__y-note">
-            H / A / T each free on the left · H / O / R each free on the right ·
-            edges hard-clip
-          </p>
+          {effectiveChrome === "full" ? (
+            <p className="hlt-preview__y-note">
+              H / A / T each free on the left · H / O / R each free on the
+              right · edges hard-clip
+            </p>
+          ) : null}
         </div>
       </div>
     </div>

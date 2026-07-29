@@ -1,4 +1,4 @@
-/* Hathor Admin — glass UI (night) + clay soft UI (day) */
+/* Hathor Admin ? glass UI (night) + clay soft UI (day) */
 
 [data-theme="night"] {
   --bg-primary: #0a0a0a;
@@ -856,7 +856,7 @@ select.admin-input option:checked {
   border-radius: 24px;
 }
 
-/* ——— Notification dropdown (solid, opaque) ——— */
+/* ??? Notification dropdown (solid, opaque) ??? */
 .admin-notification-panel {
   background: var(--popover-bg);
   border: 1px solid var(--popover-border);
@@ -874,7 +874,7 @@ select.admin-input option:checked {
   background: var(--popover-bg);
 }
 
-/* ——— Custom scrollbars (admin) ——— */
+/* ??? Custom scrollbars (admin) ??? */
 .admin-shell,
 .admin-shell * {
   scrollbar-width: thin;
@@ -907,7 +907,7 @@ select.admin-input option:checked {
   background: transparent;
 }
 
-/* ─── Client-friendly website images CMS ─── */
+/* ??? Client-friendly website images CMS ??? */
 .site-images-tabs {
   display: flex;
   flex-wrap: wrap;
@@ -1014,7 +1014,7 @@ select.admin-input option:checked {
   }
 }
 
-/* ─── Visual Context Cards (gallery grid) ─── */
+/* ??? Visual Context Cards (gallery grid) ??? */
 .vcc-card {
   display: flex;
   flex-direction: column;
@@ -1359,7 +1359,7 @@ select.admin-input option:checked {
   }
 }
 
-/* ——— Temporary Hero Logo Tune number fields ——— */
+/* ??? Temporary Hero Logo Tune number fields ??? */
 .hlt-section {
   display: flex;
   flex-direction: column;
@@ -1479,7 +1479,7 @@ select.admin-input option:checked {
   color: var(--accent);
 }
 
-/* ——— Hero Logo Tune instant preview (admin only) ——— */
+/* ??? Hero Logo Tune instant preview (admin only) ??? */
 .hlt-preview {
   display: flex;
   flex-direction: column;
@@ -1523,7 +1523,7 @@ select.admin-input option:checked {
   white-space: nowrap;
 }
 
-/* Break out of the admin card — match real hero 100vw */
+/* Break out of the admin card ? match real hero 100vw */
 .hlt-preview__viewport {
   width: 100vw;
   max-width: 100vw;
@@ -1635,7 +1635,7 @@ select.admin-input option:checked {
   text-align: center;
 }
 
-/* Typography & Styles — simple editor */
+/* Typography & Styles ? simple editor */
 .typo-easy {
   display: flex;
   flex-direction: column;
@@ -1659,7 +1659,7 @@ select.admin-input option:checked {
   gap: 1rem;
 }
 
-/* Which text type — left accordion + big preview */
+/* Which text type ? left accordion + big preview */
 .typo-easy__workspace {
   display: grid;
   grid-template-columns: minmax(280px, 22rem) minmax(0, 1fr);
@@ -1781,7 +1781,7 @@ select.admin-input option:checked {
   }
 }
 
-/* One big preview — only the text you are editing */
+/* One big preview ? only the text you are editing */
 .typo-stage {
   display: flex;
   flex-direction: column;
@@ -1850,7 +1850,7 @@ select.admin-input option:checked {
   color: #5c564e;
 }
 
-/* Forced live styles — beats admin Inter inheritance */
+/* Forced live styles ? beats admin Inter inheritance */
 .typo-stage__sample {
   margin: 0.75rem 0 0;
   flex: 1 1 auto;
@@ -2444,7 +2444,7 @@ select.admin-input option:checked {
   opacity: 0.45;
 }
 
-/* Website Text CMS — page-by-page editor */
+/* Website Text CMS ? page-by-page editor */
 .wt-panel {
   display: flex;
   flex-direction: column;
@@ -2811,7 +2811,7 @@ textarea.wt-field__input {
   color: var(--text-primary);
 }
 
-/* �� Desktop / Phone CMS preview �� */
+/* ?? Desktop / Phone CMS preview ?? */
 .admin-device-toggle {
   display: flex;
   flex-wrap: wrap;
@@ -2863,14 +2863,83 @@ textarea.wt-field__input {
   overflow-x: auto;
 }
 
+.admin-phone-device-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 3rem;
+  background: #0b0b0b;
+  box-shadow:
+    0 22px 60px rgba(0, 0, 0, 0.35),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.admin-phone-device-frame__screen {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.admin-phone-device-frame::before {
+  content: "";
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 122px;
+  height: 26px;
+  border-radius: 999px;
+  background: #0b0b0b;
+  z-index: 3;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.admin-phone-device-frame .hlt-preview__viewport {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  overflow-x: hidden !important;
+}
+
+.hlt-preview--phone {
+  gap: 0 !important;
+  margin-bottom: 0 !important;
+}
+
 .typo-stage-wrap--phone {
+  position: relative;
   margin-inline: auto;
   width: 100%;
+  overflow: hidden;
+  border-radius: 3rem;
+  background: #0b0b0b;
+  aspect-ratio: 390 / 844;
+  box-shadow:
+    0 22px 60px rgba(0, 0, 0, 0.35),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
 .typo-stage--phone {
-  border-radius: 1.25rem;
-  box-shadow: 0 12px 40px rgb(0 0 0 / 0.18);
+  height: 100%;
+  border-radius: 2.25rem;
+  box-shadow: none;
+}
+
+.typo-stage-wrap--phone::before {
+  content: "";
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 26px;
+  border-radius: 999px;
+  background: #0b0b0b;
+  z-index: 3;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
 .admin-phone-iframe-shell {
