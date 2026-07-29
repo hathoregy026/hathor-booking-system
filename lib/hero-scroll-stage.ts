@@ -27,7 +27,19 @@ export function mountHeroScrollStage({
   logoLandDuration = DEFAULT_LOGO_LAND_DURATION,
   skipLanding = false,
 }: MountHeroScrollStageOptions): () => void {
-  const hero = document.querySelector(".home-hero-container");
+  const heroes = Array.from(
+    document.querySelectorAll<HTMLElement>(".home-hero-container"),
+  );
+  // Pick the hero instance that actually has the scroll cover + heading/button.
+  // Some routes can momentarily keep multiple hero nodes around during transitions.
+  const hero =
+    heroes.find((h) => {
+      return Boolean(
+        h.querySelector(".home-hero-cover") &&
+          h.querySelector(".hero-heading") &&
+          h.querySelector(".hero-button"),
+      );
+    }) ?? heroes[0];
   const cover = hero?.querySelector(".home-hero-cover");
   if (!hero || !cover) return () => {};
 
