@@ -8,6 +8,10 @@ import {
   bindViewportHeightVar,
 } from "@/lib/touch-device";
 
+type WindowWithScrollTrigger = Window & {
+  ScrollTrigger?: typeof ScrollTrigger;
+};
+
 function bindDebouncedScrollTriggerRefresh(debounceMs = 200): () => void {
   if (typeof window === "undefined") return () => {};
 
@@ -47,6 +51,20 @@ function bindDebouncedScrollTriggerRefresh(debounceMs = 200): () => void {
 export function TouchDeviceBootstrap() {
   useEffect(() => {
     applyTouchDeviceClass();
+
+    gsap.registerPlugin(ScrollTrigger);
+    const win = window as WindowWithScrollTrigger;
+    win.ScrollTrigger = ScrollTrigger;
+
+    // Fix broken GSAP/ScrollTrigger pins after mobile resize / rotate
+    window.addEventListener("resize", () => {
+      if (win.ScrollTrigger) win.ScrollTrigger.refresh();
+    });
+    window.addEventListener("orientationchange", () => {
+      setTimeout(() => {
+        if (win.ScrollTrigger) win.ScrollTrigger.refresh();
+      }, 300);
+    });
 
     const onPointerChange = () => applyTouchDeviceClass();
     const mq = window.matchMedia("(pointer: coarse)");
