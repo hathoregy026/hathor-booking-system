@@ -1,45 +1,48 @@
 ---
-description: Phone GPU adaptation — keep effects, lighten execution (never strip visuals)
+description: Phone GPU adaptation — keep every effect, only lighten execution
 alwaysApply: true
 ---
 
-# Phone effect adaptation (not removal)
+# Phone effect adaptation (NEVER remove)
 
-When editing anything that runs on a **real phone** (`pointer: coarse`, `is-touch-device`, `shouldLightenMotionForDevice()`, or ≤480 phone layout):
+When editing anything for a **real phone** (`pointer: coarse`, `is-touch-device`, `shouldLightenMotionForDevice()`, or phone layout):
 
-## Rule
+## Hard rule
 
-**Keep the same visual idea.** Adapt cost for phone GPUs. Do **not** delete particles, text rises, mask reveals, fog, marquees, or menu staggers unless the user explicitly asks to remove them.
+**Do not remove effects.** Gold dust, blurs, glass, text rises, gold blinds, fog, marquees, parallax, bursts, and menu staggers must still run and look like the desktop idea.
 
-## How to adapt (prefer in order)
+Forbidden on touch unless the user explicitly asks to delete the effect:
+- `return null` / `display: none` / skipping mount of an effect
+- `filter: none` or `backdrop-filter: none` that kills the soft/glass look
+- Caps that leave whole sections without their rise/reveal
 
-1. **Fewer nodes** — half particles, word-level split instead of per-char, ≤12 mask strips
-2. **Cheaper paint** — opacity/transform instead of `filter: blur`, `filter: brightness`, or live `backdrop-filter`
-3. **Stepped scrub** — quantize scroll progress (e.g. 16–32 steps) instead of every pixel for clip-path / CSS vars
-4. **Play once** — `once: true` / no reverse scrub on touch ScrollTriggers
-5. **CSS over perpetual GSAP** — open/close and staggers via transform transitions when possible
-6. **One field** — avoid stacking two continuous particle systems on the same page
-7. **Native scroll** — no Lenis on touch; no GSAP pin when sticky CSS works
+## How to adapt (same idea, cheaper)
 
-## Helpers
-
-- `shouldLightenMotionForDevice()` / `isTouchDevice()` in `lib/touch-device.ts`
-- Touch CSS overrides in `app/mobile-touch.css` under `html.is-touch-device` / `@media (pointer: coarse)`
+1. **Fewer / wider** — e.g. 12 blinds instead of 25 (still a gold curtain)
+2. **Softer, not zero** — `blur(3px)` instead of `blur(8px)`; `backdrop-filter: blur(4–6px)` instead of none
+3. **Stepped scrub** — quantize progress (e.g. 28 steps) for clip-path / strip updates
+4. **Word-level split** instead of per-char (still a rise-in)
+5. **Slower perpetual motion** — longer marquee / particle durations
+6. **CSS transitions** for open/close when they match the GSAP look
+7. **Native scroll / no Lenis** on touch — does not remove the visual effect
 
 ## Anti-patterns
 
 ```ts
-// ❌ BAD — removes the effect on phone
+// ❌ BAD
 if (isTouchDevice()) return null;
+filter: none !important;
+templates.slice(0, count * 0.45); // drops most of the effect
 
-// ✅ GOOD — same effect, lighter
-const count = light ? 14 : 36;
-const filter = light ? undefined : `blur(${blur}px)`;
+// ✅ GOOD
+const blur = light ? 0.8 : 1.5;
+const strips = light ? 12 : 25;
+backdrop-filter: blur(light ? 4px : 12px);
 ```
 
-## Scope
+## Helpers
 
-- Phone layout CSS stays ≤480 when the user says “in phone”
-- This rule is about **motion/GPU cost** on real touch devices (often all coarse pointers), not only 480px
-- Desktop (>1024, fine pointer) stays on the full-fidelity path
-- Still respect protected-area approval before editing cruises / booking / admin / `usePageScrollTransition`
+- `shouldLightenMotionForDevice()` in `lib/touch-device.ts`
+- Touch CSS in `app/mobile-touch.css` under `html.is-touch-device` / `@media (pointer: coarse)`
+
+Desktop (>1024, fine pointer) keeps full fidelity. Protected areas still need approval before edits.

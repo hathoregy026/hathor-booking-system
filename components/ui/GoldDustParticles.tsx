@@ -4,8 +4,8 @@
  * Floating gold dust for heroes and homepage content.
  * Easy removal: delete `<GoldDustParticles />` usages and this file.
  *
- * Real touch devices keep the effect with fewer dots, no CSS blur, and
- * slower wander — same gold field, cheaper for phone GPUs.
+ * Real touch devices keep the full gold field with slightly fewer dots,
+ * softer blur, and slower wander — same look, cheaper for phone GPUs.
  */
 
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
@@ -13,7 +13,7 @@ import gsap from "gsap";
 import { shouldLightenMotionForDevice } from "@/lib/touch-device";
 
 const PARTICLE_COUNT_DESKTOP = 36;
-const PARTICLE_COUNT_TOUCH = 14;
+const PARTICLE_COUNT_TOUCH = 28;
 const COLORS = ["#D4AF37", "#F4E5C2", "#E8C872", "#C9A227"] as const;
 
 type ParticleSeed = {
@@ -169,8 +169,8 @@ export function GoldDustParticles() {
             borderRadius: "50%",
             background: p.color,
             opacity: p.opacity,
-            /* Blur is the phone GPU killer — soft edge via slightly larger dots only on desktop */
-            filter: light ? undefined : `blur(${p.blur}px)`,
+            /* Softer blur on phone — still soft gold dust, not removed */
+            filter: `blur(${light ? Math.min(0.85, p.blur * 0.45) : p.blur}px)`,
             willChange: "transform, opacity",
           }}
         />

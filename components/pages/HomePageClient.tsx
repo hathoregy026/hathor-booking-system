@@ -14,7 +14,6 @@ import { HathorLogoTuner } from "@/components/public/HathorLogoTuner";
 import { PublicSiteHero } from "@/components/pages/PublicSiteHero";
 import { GoldDustParticles } from "@/components/ui/GoldDustParticles";
 import { ManagedImage } from "@/components/ui/ManagedImage";
-import { shouldLightenMotionForDevice } from "@/lib/touch-device";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import {
   EX_ABOUT,
@@ -223,8 +222,6 @@ export function HomePageClient({
 
   const [liveTune, setLiveTune] = useState(heroLogoTune);
   const [liveTuneMobile, setLiveTuneMobile] = useState(heroLogoTuneMobile);
-  /* Hero already has gold dust — skip a second perpetual field on real phones. */
-  const [contentGoldDust, setContentGoldDust] = useState(true);
 
   useEffect(() => {
     setLiveTune(heroLogoTune);
@@ -264,10 +261,6 @@ export function HomePageClient({
   useLayoutEffect(() => {
     paintLogoTune(liveTune, liveTuneMobile);
   }, [liveTune, liveTuneMobile]);
-
-  useLayoutEffect(() => {
-    setContentGoldDust(!shouldLightenMotionForDevice());
-  }, []);
 
   /* Both rows share one height: taller title+body+button stack. Image matches that. */
   useLayoutEffect(() => {
@@ -348,7 +341,7 @@ export function HomePageClient({
         <LuxuryMarquee />
 
         <div className="ex-content-dust" style={{ position: "relative" }}>
-          {contentGoldDust ? <GoldDustParticles /> : null}
+          <GoldDustParticles />
 
         <section className="about-section ex-content-section" id="about">
           <div className="section-inner">

@@ -307,30 +307,31 @@ body.is-touch-device .lux-cursor {
 }
 
 /* --------------------------------------------------------------------------
- * REAL TOUCH (coarse / .is-touch-device) — adapt effects, don’t remove them
- * Same motion language: opacity + transform. Drop blur / backdrop-filter cost.
+ * REAL TOUCH — ADAPT cost, never strip the effect
+ * Softer blur / slower marquee / clear will-change. Same visuals.
  * -------------------------------------------------------------------------- */
 html.is-touch-device .public-site .lux-reveal,
 body.is-touch-device .public-site .lux-reveal {
-  filter: none !important;
+  filter: blur(3px);
   transition:
     opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.85s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 html.is-touch-device .public-site .lux-reveal--visible,
 body.is-touch-device .public-site .lux-reveal--visible {
-  filter: none !important;
+  filter: blur(0);
 }
 
 html.is-touch-device .public-site .hathor-lux-text,
 body.is-touch-device .public-site .hathor-lux-text {
-  filter: none !important;
+  filter: blur(3px);
 }
 
 html.is-touch-device .public-site .hathor-lux-text--in,
 body.is-touch-device .public-site .hathor-lux-text--in {
-  filter: none !important;
+  filter: blur(0);
 }
 
 @media (pointer: coarse) {
@@ -338,30 +339,28 @@ body.is-touch-device .public-site .hathor-lux-text--in {
     from {
       opacity: 0;
       transform: translate3d(0, 1.35rem, 0);
-      filter: none;
+      filter: blur(4px);
     }
     to {
       opacity: 1;
       transform: translate3d(0, 0, 0);
-      filter: none;
+      filter: blur(0);
     }
   }
 }
 
-/* Glass chrome → solid/semi fill (same look, no live backdrop blur) */
+/* Glass stays — lighter live blur on phone GPUs */
 html.is-touch-device .public-site,
 body.is-touch-device .public-site {
-  --lux-blur: 0px;
+  --lux-blur: 4px;
 }
 
-html.is-touch-device .public-site *,
-body.is-touch-device .public-site *,
 html.is-touch-device .site-nav,
 body.is-touch-device .site-nav,
 html.is-touch-device .public-navbar,
 body.is-touch-device .public-navbar {
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 /* Marquee keeps scrolling — slower, no permanent will-change thrash */
@@ -383,12 +382,30 @@ body.is-touch-device [data-home-helm-wheel] {
   will-change: auto;
 }
 
-/* Soft infinite shimmers → cheap opacity pulse only */
+/* Soft infinite shimmers — same animation, calmer cadence */
 html.is-touch-device .public-site [class*="shimmer"],
 html.is-touch-device .public-site [class*="specular"],
 body.is-touch-device .public-site [class*="shimmer"],
 body.is-touch-device .public-site [class*="specular"] {
   animation-duration: 4s !important;
+}
+
+/* Booking glass — keep blur, use a lighter radius on touch */
+@media (pointer: coarse) {
+  .hathor-booking-modal__backdrop {
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+  }
+
+  .booking-mobile-sheet__backdrop {
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+  }
+
+  .booking-mobile-sticky-bar {
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
 }
 
 /* --------------------------------------------------------------------------

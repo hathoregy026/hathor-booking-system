@@ -403,18 +403,18 @@
   }
 }
 
-/* Same expand reveal on phones — opacity/translate only (blur is GPU-costly) */
+/* Same expand reveal on phones — softer blur (still present) */
 @media (pointer: coarse) {
   @keyframes hathorAccordionCopyReveal {
     from {
       opacity: 0;
       transform: translateY(14px);
-      filter: none;
+      filter: blur(1.5px);
     }
     to {
       opacity: 1;
       transform: translateY(0);
-      filter: none;
+      filter: blur(0);
     }
   }
 

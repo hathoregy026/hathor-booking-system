@@ -412,10 +412,7 @@ export function GalleryInstagramFollow({
       if (opts?.fromHover && scrollingRef.current) return;
 
       if (!templatesRef.current.length) {
-        const all = buildTemplates();
-        templatesRef.current = lightTouchRef.current
-          ? all.slice(0, Math.max(6, Math.ceil(all.length * 0.45)))
-          : all;
+        templatesRef.current = buildTemplates();
       }
       if (!floatersRef.current.length) return;
 
@@ -458,20 +455,18 @@ export function GalleryInstagramFollow({
     if (reducedRef.current) return;
 
     const allTemplates = buildTemplates();
-    /* Same burst language — fewer floaters on phone GPUs */
-    templatesRef.current = lightTouchRef.current
-      ? allTemplates.slice(0, Math.max(6, Math.ceil(allTemplates.length * 0.45)))
-      : allTemplates;
+    /* Same burst — full set on phones, slightly smaller tiles for GPU cost */
+    templatesRef.current = allTemplates;
     cacheFieldSize();
     const origin = getOrigin();
     const warm = templatesRef.current.map((template) => {
       const size =
         template.kind === "image"
           ? lightTouchRef.current
-            ? 88
+            ? 96
             : 112
           : lightTouchRef.current
-            ? 44
+            ? 48
             : 54;
       return {
         ...template,

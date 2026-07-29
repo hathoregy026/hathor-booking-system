@@ -8,7 +8,7 @@ import { useLayoutEffect, useId, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
-import { lenisMobileSafeOptions, isTouchDevice } from "@/lib/touch-device";
+import { lenisMobileSafeOptions, isTouchDevice, shouldLightenMotionForDevice } from "@/lib/touch-device";
 
 const PT_GOLD = "#B69F64";
 
@@ -59,8 +59,14 @@ function easeInOutQuad(t: number) {
   return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
 }
 
-function stripCount() {
+function stripCount(light = false) {
   const w = window.innerWidth;
+  /* Same gold blinds — fewer wider strips on phone GPUs */
+  if (light) {
+    if (w <= 767) return 12;
+    if (w <= 1024) return 16;
+    return 28;
+  }
   if (w <= 767) return 25;
   if (w <= 1024) return 35;
   return 52;
@@ -109,9 +115,11 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
     const smoothScroll = setupSmoothScroll();
+    const lightTouch = shouldLightenMotionForDevice();
+    let lastSteppedProgress = -1;
 
     function buildMaskStrips() {
-      const n = stripCount();
+      const n = stripCount(lightTouch);
       const w = Math.max(mask.clientWidth, stageEl.clientWidth, 1);
       if (!w) return false;
 
@@ -206,6 +214,7 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
       ScrollTrigger.getById(`cruises-hero-${instanceId}`)?.kill();
       if (!buildMaskStrips()) return;
       applyProgress(0);
+      lastSteppedProgress = -1;
 
       ScrollTrigger.create({
         id: `cruises-hero-${instanceId}`,
@@ -214,10 +223,16 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
         end: () => `+=${window.innerHeight * PIN_VH}`,
         pin: stageEl,
         pinSpacing: true,
-        scrub: SCRUB,
+        scrub: lightTouch ? true : SCRUB,
         invalidateOnRefresh: true,
         anticipatePin: 0,
-        onUpdate: (self) => applyProgress(getSafeProgress(self)),
+        onUpdate: (self) => {
+          const raw = getSafeProgress(self);
+          const p = lightTouch ? Math.round(raw * 28) / 28 : raw;
+          if (lightTouch && p === lastSteppedProgress) return;
+          lastSteppedProgress = p;
+          applyProgress(p);
+        },
       });
     }
 

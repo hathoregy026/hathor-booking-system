@@ -11,7 +11,7 @@ import { useLayoutEffect, useId, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
-import { lenisMobileSafeOptions, isTouchDevice } from "@/lib/touch-device";
+import { lenisMobileSafeOptions, isTouchDevice, shouldLightenMotionForDevice } from "@/lib/touch-device";
 
 const PT_CREAM_DEFAULT = "#ECE8DF";
 const PT_CREAM_HOMEPAGE_2 = "#f4f1ea";
@@ -30,6 +30,8 @@ const MASK = {
 
 const PEEK_VH = 0.065;
 const PIN_VH = 4.2;
+/** Same pin distance on touch — slightly shorter scrub lag via scrub:true below */
+const PIN_VH_TOUCH = 4.2;
 
 type Strip = { el: HTMLDivElement; colW: number; slatW: number };
 
@@ -60,8 +62,14 @@ function mapRange(
   return outMin + t * (outMax - outMin);
 }
 
-function stripCount() {
+function stripCount(light = false) {
   const w = window.innerWidth;
+  /* Same gold blind curtain — fewer wider strips on phone GPUs */
+  if (light) {
+    if (w <= 767) return 12;
+    if (w <= 1024) return 16;
+    return 28;
+  }
   if (w <= 767) return 25;
   if (w <= 1024) return 35;
   return 52;
@@ -121,9 +129,11 @@ export function usePageScrollTransition(config: PageScrollTransitionConfig) {
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
     const smoothScroll = setupSmoothScroll();
+    const lightTouch = shouldLightenMotionForDevice();
+    let lastSteppedProgress = -1;
 
     function buildMaskStrips() {
-      const n = stripCount();
+      const n = stripCount(lightTouch);
       const w = Math.max(mask.clientWidth, stageEl.clientWidth, 1);
       if (!w) return false;
 
@@ -250,18 +260,28 @@ export function usePageScrollTransition(config: PageScrollTransitionConfig) {
       const setup = () => {
         if (!buildMaskStrips()) return false;
         applyProgress(0);
+        lastSteppedProgress = -1;
 
         ScrollTrigger.create({
           id: `page-scroll-transition-${instanceId}`,
           trigger,
           start: "top top",
-          end: () => `+=${window.innerHeight * PIN_VH}`,
+          end: () =>
+            `+=${window.innerHeight * (lightTouch ? PIN_VH_TOUCH : PIN_VH)}`,
           pin: stage,
           pinSpacing: true,
-          scrub: 0.55,
+          /* Touch: direct scrub (same reveal), less catch-up thrash */
+          scrub: lightTouch ? true : 0.55,
           invalidateOnRefresh: true,
           anticipatePin: 1,
-          onUpdate: (self) => applyProgress(self.progress),
+          onUpdate: (self) => {
+            const p = lightTouch
+              ? Math.round(self.progress * 28) / 28
+              : self.progress;
+            if (lightTouch && p === lastSteppedProgress) return;
+            lastSteppedProgress = p;
+            applyProgress(p);
+          },
         });
 
         return true;

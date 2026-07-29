@@ -294,8 +294,6 @@ export function mountAtelierTextSplit(
   const run = () => {
     if (cancelled || prefersReduced || !root) return;
     const seen = new Set<HTMLElement>();
-    let bound = 0;
-    const maxOnTouch = 28;
 
     SELECTORS.forEach((sel) => {
       root.querySelectorAll(sel).forEach((node) => {
@@ -305,7 +303,6 @@ export function mountAtelierTextSplit(
           return;
         }
         if (shouldSkip(node)) return;
-        if (light && bound >= maxOnTouch) return;
         seen.add(node);
 
         const trigger =
@@ -315,7 +312,6 @@ export function mountAtelierTextSplit(
 
         animateAtelierSplit(node, trigger, light);
         node.dataset.atelierBound = "1";
-        bound += 1;
       });
     });
   };
