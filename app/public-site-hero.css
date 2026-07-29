@@ -463,8 +463,9 @@
   max-height: var(--hathor-btn-height, 2.85rem);
   padding: 0 var(--hathor-btn-pad-x, 1.75rem);
   border-radius: 999px;
-  backdrop-filter: blur(8px);
-  background: rgba(255, 255, 255, 0.06) !important;
+  /* Empty inside at rest: keep only the outline stroke */
+  backdrop-filter: blur(0px);
+  background: transparent !important;
   border: 1px solid #b69f64 !important;
   /* White label — must use !important (beats older gold idle rule / cascade) */
   color: #ffffff !important;
