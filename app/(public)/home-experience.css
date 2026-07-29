@@ -2370,25 +2370,6 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body 
   }
 }
 
-.ex-stack-scroll__body {
-  margin: 0;
-  padding: 0;
-  max-width: min(40ch, 100%);
-  text-align: left;
-  text-indent: 0;
-  align-self: flex-start;
-  /* Font/size/color from dashboard typography (On images · body) */
-}
-
-.ex-stack-scroll__body .line {
-  display: block;
-  margin: 0;
-  padding: 0;
-  text-align: left;
-  text-indent: 0;
-  will-change: transform, opacity;
-}
-
 /* Masked letter rise/fall — atelier split (homepage text) */
 .ex-root .split-heading {
   overflow: hidden;
