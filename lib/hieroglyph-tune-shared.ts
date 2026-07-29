@@ -4,6 +4,8 @@ export const HIEROGLYPH_TUNE_KEY = "hieroglyph-tune";
 
 /** Matches live defaults in `app/hieroglyph-pattern.css` + night-mode. */
 export const hieroglyphTuneSchema = z.object({
+  /** Master visibility toggle. Tune values are preserved while disabled. */
+  enabled: z.boolean(),
   /** Day-mode glyph layer opacity (0 = invisible, 1 = solid). */
   dayOpacity: z.number().min(0).max(1),
   /** Night-mode glyph layer opacity. */
@@ -17,6 +19,7 @@ export const hieroglyphTuneSchema = z.object({
 export type HieroglyphTune = z.infer<typeof hieroglyphTuneSchema>;
 
 export const DEFAULT_HIEROGLYPH_TUNE: HieroglyphTune = {
+  enabled: true,
   dayOpacity: 0.056,
   nightOpacity: 0.02,
   tileSize: 320,
@@ -43,6 +46,10 @@ export function parseHieroglyphTune(raw: unknown): HieroglyphTune {
     raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
 
   const candidate: HieroglyphTune = {
+    enabled:
+      typeof src.enabled === "boolean"
+        ? src.enabled
+        : DEFAULT_HIEROGLYPH_TUNE.enabled,
     dayOpacity:
       asFiniteNumber(src.dayOpacity) ?? DEFAULT_HIEROGLYPH_TUNE.dayOpacity,
     nightOpacity:
@@ -57,6 +64,7 @@ export function parseHieroglyphTune(raw: unknown): HieroglyphTune {
   if (parsed.success) return parsed.data;
 
   return {
+    enabled: candidate.enabled,
     dayOpacity: clamp(candidate.dayOpacity, 0, 1, DEFAULT_HIEROGLYPH_TUNE.dayOpacity),
     nightOpacity: clamp(
       candidate.nightOpacity,
@@ -79,8 +87,8 @@ export function parseHieroglyphTune(raw: unknown): HieroglyphTune {
  * Save → live always shows.
  */
 export function hieroglyphTuneToImportantCss(tune: HieroglyphTune): string {
-  const day = tune.dayOpacity;
-  const night = tune.nightOpacity;
+  const day = tune.enabled ? tune.dayOpacity : 0;
+  const night = tune.enabled ? tune.nightOpacity : 0;
   const size = `${tune.tileSize}px`;
   const sizeMobile = `${tune.tileSizeMobile}px`;
 

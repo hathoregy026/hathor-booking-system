@@ -1,7 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ExternalLink, Loader2, RotateCcw, Save } from "lucide-react";
+import {
+  ExternalLink,
+  Eye,
+  EyeOff,
+  Loader2,
+  RotateCcw,
+  Save,
+} from "lucide-react";
 import { useToast } from "@/components/admin/ToastProvider";
 import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
 import {
@@ -237,6 +244,37 @@ export function HieroglyphTunePanel() {
           </div>
         ) : null}
 
+        <section className="hlt-section">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h2 className="admin-heading text-base">Glyph background</h2>
+              <p className="hlt-section__hint">
+                Turn the pattern off everywhere without losing your opacity or
+                size settings.
+              </p>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={tune.enabled}
+              disabled={saving || loading}
+              onClick={() => patch({ enabled: !tune.enabled })}
+              className={
+                tune.enabled
+                  ? "admin-btn-primary inline-flex items-center gap-2 px-4 py-2.5 text-sm disabled:opacity-60"
+                  : "admin-btn-outline inline-flex items-center gap-2 px-4 py-2.5 text-sm disabled:opacity-60"
+              }
+            >
+              {tune.enabled ? (
+                <Eye className="h-4 w-4" aria-hidden />
+              ) : (
+                <EyeOff className="h-4 w-4" aria-hidden />
+              )}
+              {tune.enabled ? "Glyphs on" : "Glyphs off"}
+            </button>
+          </div>
+        </section>
+
         <div
           className="grid gap-4 sm:grid-cols-2"
           style={{ opacity: loading ? 0.7 : 1 }}
@@ -244,13 +282,13 @@ export function HieroglyphTunePanel() {
           <GlyphPreview
             label="Day preview"
             cream="#ece8df"
-            opacity={tune.dayOpacity}
+            opacity={tune.enabled ? tune.dayOpacity : 0}
             tileSize={tune.tileSize}
           />
           <GlyphPreview
             label="Night preview"
             cream="#0b0907"
-            opacity={tune.nightOpacity}
+            opacity={tune.enabled ? tune.nightOpacity : 0}
             tileSize={tune.tileSize}
           />
         </div>

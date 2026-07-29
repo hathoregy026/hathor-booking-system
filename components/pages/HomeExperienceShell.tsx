@@ -33,11 +33,8 @@ html[data-ex-experience] .ex-root::before {
   background-image: var(--hieroglyph-tile) !important;
   background-repeat: repeat !important;
   background-position: center top !important;
-  background-size: 320px auto !important;
-  opacity: 0.056 !important;
-}
-html[data-public-theme="night"][data-ex-experience] .ex-root::before {
-  opacity: 0.02 !important;
+  background-size: var(--hieroglyph-tile-size, 320px) auto !important;
+  opacity: var(--hieroglyph-opacity, 0.056) !important;
 }
 html[data-ex-experience] .ex-root > * {
   position: relative;
