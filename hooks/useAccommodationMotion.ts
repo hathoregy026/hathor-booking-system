@@ -19,6 +19,11 @@ import { lenisMobileSafeOptions } from "@/lib/touch-device";
 gsap.registerPlugin(ScrollTrigger);
 
 const SLIDE_COUNT = 4;
+/** Fade/scale into full view (timeline units → scrub distance). */
+const REVEAL = 1;
+/** Empty dwell after 100% so next fade does not start immediately. */
+const HOLD = 0.85;
+const STEP = REVEAL + HOLD;
 
 export function useAccommodationMotion(
   rootRef: RefObject<HTMLElement | null>,
@@ -185,8 +190,8 @@ export function useAccommodationMotion(
           return;
         }
 
-        /* Extra settle room after last slide so unpin doesn't feel abrupt */
-        const pinEnd = `+=${SLIDE_COUNT * 85}%`;
+        /* Pin distance scaled for reveal + hold per slide */
+        const pinEnd = `+=${SLIDE_COUNT * STEP * 85}%`;
 
         const tl = gsap.timeline({
           scrollTrigger: {
@@ -210,10 +215,18 @@ export function useAccommodationMotion(
               playText();
             },
             onUpdate: (self) => {
-              const p = self.progress;
-              const raw = Math.min(SLIDE_COUNT - 0.001, p * SLIDE_COUNT);
-              const active = Math.floor(raw);
-              const segProgress = raw - active;
+              /* Map scrub progress through reveal→hold steps (same as timeline). */
+              const slideSpan = SLIDE_COUNT * STEP;
+              const endHold = 0.35;
+              const t = Math.min(
+                slideSpan - 0.0001,
+                self.progress * (slideSpan + endHold),
+              );
+              const active = Math.min(SLIDE_COUNT - 1, Math.floor(t / STEP));
+              const intoStep = t - active * STEP;
+              /* During HOLD, bar stays full */
+              const segProgress =
+                intoStep < REVEAL ? intoStep / REVEAL : 1;
 
               if (currentEl) {
                 currentEl.textContent = String(active + 1).padStart(2, "0");
@@ -231,35 +244,38 @@ export function useAccommodationMotion(
           },
         });
 
+        /* reveal → hold → reveal → hold … */
         if (imgs[0]) {
           tl.fromTo(
             imgs[0],
             { scale: 1.04 },
-            { scale: 1.0, duration: 1, ease: "none" },
+            { scale: 1.0, duration: REVEAL, ease: "none" },
             0,
           );
         }
+        tl.to({}, { duration: HOLD }, REVEAL);
 
         for (let i = 1; i < slides.length; i++) {
           const slide = slides[i]!;
           const img = imgs[i];
-          const t0 = i;
+          const t0 = i * STEP;
 
           tl.set(slide, { visibility: "visible" }, t0);
           tl.fromTo(
             slide,
             { opacity: 0 },
-            { opacity: 1, duration: 1, ease: "none" },
+            { opacity: 1, duration: REVEAL, ease: "none" },
             t0,
           );
           if (img) {
             tl.fromTo(
               img,
               { scale: 1.05 },
-              { scale: 1.0, duration: 1, ease: "none" },
+              { scale: 1.0, duration: REVEAL, ease: "none" },
               t0,
             );
           }
+          tl.to({}, { duration: HOLD }, t0 + REVEAL);
         }
 
         /* Soft hold at end before unpin */
