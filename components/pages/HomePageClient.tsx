@@ -39,6 +39,7 @@ import {
   DEFAULT_HERO_LOGO_TUNE,
   type HeroLogoTune,
   heroLogoTuneToImportantCss,
+  parseHeroLogoTune,
 } from "@/lib/hero-logo-tune-shared";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 import { useBookingStore } from "@/store/bookingStore";
@@ -227,6 +228,33 @@ export function HomePageClient({
 
   useEffect(() => {
     setLiveTuneMobile(heroLogoTuneMobile);
+  }, [heroLogoTuneMobile]);
+
+  /* Soft refresh so phone logo saves show even if ISR HTML is briefly stale. */
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const res = await fetch(`/api/hero-logo-tune?t=${Date.now()}`, {
+          cache: "no-store",
+        });
+        if (!res.ok) return;
+        const data = (await res.json()) as {
+          tune?: unknown;
+          tuneMobile?: unknown;
+        };
+        if (cancelled) return;
+        if (data.tune) setLiveTune(parseHeroLogoTune(data.tune));
+        setLiveTuneMobile(
+          parseHeroLogoTune(data.tuneMobile ?? data.tune ?? heroLogoTuneMobile),
+        );
+      } catch {
+        /* keep SSR */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [heroLogoTuneMobile]);
 
   useLayoutEffect(() => {

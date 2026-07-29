@@ -204,7 +204,7 @@ html[data-cruises-experience] .cruises-page,
   z-index: 1200;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .public-site {
     --hieroglyph-tile-size: 240px;
   }

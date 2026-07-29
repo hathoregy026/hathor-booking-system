@@ -210,9 +210,13 @@ export function parseHeroLogoTune(raw: unknown): HeroLogoTune {
 }
 
 export function heroLogoTuneToCssVars(tune: HeroLogoTune): Record<string, string> {
+  const logoH = `calc((100vw - ${HATHOR_BTN_SLOT_PX}px) / 2 * 2200 / 2683 * ${tune.size})`;
   return {
     "--hathor-logo-size": String(tune.size),
+    /* Keep letter-width math + mobile-touch.css in sync with Size edits */
+    "--hathor-logo-h": logoH,
     "--hathor-logo-y": `${tune.y}px`,
+    "--hathor-logo-bottom": `${tune.y}px`,
     "--hathor-cta-y-nudge": `${tune.ctaNudge}px`,
     "--hathor-logo-anim-duration": String(tune.animDuration),
     "--hathor-logo-edge-l": `${tune.edgeLeft}px`,
@@ -243,8 +247,6 @@ export function heroLogoTuneToImportantCss(tune: HeroLogoTune): string {
     .map(([key, value]) => `  ${key}: ${value} !important;`)
     .join("\n");
 
-  const logoH = `calc((100vw - ${HATHOR_BTN_SLOT_PX}px) / 2 * 2200 / 2683 * ${tune.size})`;
-
   return `
 html[data-ex-experience] .ex-root,
 html[data-ex-experience] .ex-root .home-hero-container,
@@ -256,7 +258,7 @@ html[data-ex-experience] .ex-root .hathor-logo-split.hero-logo-img,
 html[data-ex-experience] .ex-root .hathor-logo-split,
 .public-site .home-hero-container .hathor-logo-split.hero-logo-img,
 .public-site .home-hero-container .hathor-logo-split {
-  height: ${logoH} !important;
+  height: var(--hathor-logo-h) !important;
 }
 html[data-ex-experience] .ex-root .hero-logo-mark--split,
 .public-site .home-hero-container .hero-logo-mark--split {
@@ -276,7 +278,7 @@ html[data-ex-experience] .ex-root .hathor-logo-split__side--right,
 }
 html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) .hero-button,
 .public-site .home-hero-container:has(.hero-logo-mark--split) .hero-button {
-  bottom: calc(${tune.y}px + (${logoH} / 2) - 26px + ${tune.ctaNudge}px) !important;
+  bottom: calc(${tune.y}px + (var(--hathor-logo-h) / 2) - 26px + ${tune.ctaNudge}px) !important;
 }
 `.trim();
 }

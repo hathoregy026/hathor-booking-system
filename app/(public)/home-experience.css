@@ -610,9 +610,9 @@ html[data-ex-experience] .ex-root .hathor-logo-split__gap {
   pointer-events: none;
 }
 
-@media (max-width: 768px) {
+/* Match PUBLIC_PHONE_MAX_WIDTH (767) used by logo / typography phone tunes */
+@media (max-width: 767px) {
   html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) {
-    --hathor-logo-gap: clamp(7.25rem, 28vw, 9.5rem);
     --hathor-cta-half-h: 24px;
   }
 }

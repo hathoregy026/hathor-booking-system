@@ -117,7 +117,7 @@ html[data-public-theme="night"] .public-site .lux-section--cream {
   --hieroglyph-opacity: ${night} !important;
   --hieroglyph-tile-size: ${size} !important;
 }
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .public-site,
   html[data-public-theme="day"] .public-site,
   html[data-public-theme="night"] .public-site,

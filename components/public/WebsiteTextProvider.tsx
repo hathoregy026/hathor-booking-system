@@ -7,6 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { useIsPhoneViewport } from "@/hooks/useIsPhoneViewport";
 import {
   DEFAULT_WEBSITE_TEXT,
   parseWebsiteText,
@@ -14,20 +15,6 @@ import {
 } from "@/lib/website-text-shared";
 
 const WebsiteTextContext = createContext<WebsiteText>(DEFAULT_WEBSITE_TEXT);
-
-function useIsPhoneViewport() {
-  const [isPhone, setIsPhone] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const sync = () => setIsPhone(mq.matches);
-    sync();
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
-  }, []);
-
-  return isPhone;
-}
 
 export function WebsiteTextProvider({
   initial,
@@ -55,9 +42,8 @@ export function WebsiteTextProvider({
     else if (initial) setMobile(initial);
   }, [initial, initialMobile]);
 
+  /* Soft refresh so admin phone saves appear even if ISR HTML is briefly stale. */
   useEffect(() => {
-    if (initial) return;
-
     let cancelled = false;
     const load = async () => {
       try {
@@ -76,14 +62,14 @@ export function WebsiteTextProvider({
           data.settingsMobile ? parseWebsiteText(data.settingsMobile) : next,
         );
       } catch {
-        /* keep defaults */
+        /* keep SSR / defaults */
       }
     };
     void load();
     return () => {
       cancelled = true;
     };
-  }, [initial]);
+  }, []);
 
   return (
     <WebsiteTextContext.Provider value={isPhone ? mobile : desktop}>

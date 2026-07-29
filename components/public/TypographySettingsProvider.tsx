@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { combineDesktopAndPhoneCss } from "@/lib/admin-device-preview";
+import { useIsPhoneViewport } from "@/hooks/useIsPhoneViewport";
 import {
   DEFAULT_TYPOGRAPHY_SETTINGS,
   parseTypographySettings,
@@ -44,20 +45,6 @@ function applyLiveCss(
   document.head.appendChild(el);
 }
 
-function useIsPhoneViewport() {
-  const [isPhone, setIsPhone] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const sync = () => setIsPhone(mq.matches);
-    sync();
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
-  }, []);
-
-  return isPhone;
-}
-
 export function TypographySettingsProvider({
   initial,
   initialMobile,
@@ -89,10 +76,8 @@ export function TypographySettingsProvider({
     applyLiveCss(desktop, mobile);
   }, [desktop, mobile]);
 
-  /* Trust SSR typography when provided — client refetch morphs old→new and reads as a flashback. */
+  /* Soft refresh so admin phone saves appear even if ISR HTML is briefly stale. */
   useEffect(() => {
-    if (initial) return;
-
     let cancelled = false;
     const load = async () => {
       try {
@@ -106,21 +91,20 @@ export function TypographySettingsProvider({
         };
         if (cancelled) return;
         const next = parseTypographySettings(data.settings);
+        const nextMobile = data.settingsMobile
+          ? parseTypographySettings(data.settingsMobile)
+          : next;
         setDesktop(next);
-        setMobile(
-          data.settingsMobile
-            ? parseTypographySettings(data.settingsMobile)
-            : next,
-        );
+        setMobile(nextMobile);
       } catch {
-        /* keep defaults */
+        /* keep SSR / defaults */
       }
     };
     void load();
     return () => {
       cancelled = true;
     };
-  }, [initial]);
+  }, []);
 
   const active = isPhone ? mobile : desktop;
 
