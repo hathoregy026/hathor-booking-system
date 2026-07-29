@@ -104,17 +104,16 @@
   overflow: hidden;
 }
 
-/* Suites / cabins / rooms — center CTA; no tall empty void under the buttons */
+/* Suites / cabins / rooms — compact CTA (no tall empty void under the buttons) */
 .page-accommodation .cta-section {
   box-sizing: border-box;
-  min-height: 100vh;
-  min-height: 100svh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-top: clamp(64px, 8vh, 110px);
-  padding-bottom: clamp(64px, 8vh, 110px);
+  min-height: 0;
+  padding-top: clamp(56px, 7vh, 96px);
+  padding-bottom: clamp(56px, 7vh, 96px);
   margin-bottom: 0;
 }
 
@@ -131,6 +130,11 @@
 .public-page-body:has(> .page-accommodation) {
   padding-bottom: 0;
   margin-bottom: 0;
+}
+
+/* Pin spacers stay dark like the room stack — cream voids looked like empty pages */
+.page-accommodation .pin-spacer {
+  background: #0c0a08 !important;
 }
 
 .cta-section::before {
@@ -251,14 +255,14 @@
 
 .page-accommodation .room-interstitial {
   box-sizing: border-box;
-  min-height: 100vh;
-  min-height: 100svh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-top: clamp(64px, 8vh, 110px);
-  padding-bottom: clamp(64px, 8vh, 110px);
+  /* Hug copy — do not force a full empty viewport between rooms */
+  min-height: 0;
+  padding-top: clamp(56px, 8vh, 100px);
+  padding-bottom: clamp(56px, 8vh, 100px);
 }
 
 .room-interstitial__inner {
@@ -343,9 +347,9 @@
   position: absolute;
   inset: 0;
   z-index: 2;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  align-items: stretch;
   padding:
     clamp(100px, 14vh, 130px)
     clamp(24px, 6vw, 80px)
@@ -354,7 +358,8 @@
   color: #f5efe4;
 }
 
-.room-fs-ui a {
+.room-fs-ui a,
+.room-fs-ui button {
   pointer-events: auto;
 }
 
@@ -371,6 +376,10 @@
 
 .room-fs-copy {
   max-width: 560px;
+  /* Dead-center the title/body/CTA in the middle row */
+  align-self: center;
+  justify-self: start;
+  width: 100%;
 }
 
 .room-fs-title {
@@ -380,16 +389,17 @@
   line-height: 1.12;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  margin: 0 0 10px;
+  /* Pull title + route (indication) into one tight pair */
+  margin: 0 0 4px;
   /* Do not clip glyph bottoms — display faces need room below the line box */
   overflow: visible;
-  padding-bottom: 0.08em;
+  padding-bottom: 0.04em;
   text-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
 }
 
 /* Itinerary route under suite name — Small indication (typography tune) */
 .room-fs-route {
-  margin: 0 0 14px;
+  margin: 0 0 18px;
 }
 
 .room-fs-meta {
@@ -397,14 +407,14 @@
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: rgba(245, 239, 228, 0.7);
-  margin: 0 0 16px;
+  margin: 0 0 18px;
 }
 
 .room-fs-desc {
   font-size: clamp(1rem, 1.5vw, 1.15rem);
   line-height: 1.65;
   color: rgba(245, 239, 228, 0.82);
-  margin: 0 0 28px;
+  margin: 0 0 18px;
   max-width: 34ch;
 }
 
