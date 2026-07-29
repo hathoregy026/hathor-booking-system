@@ -47,7 +47,7 @@
   padding: 3px var(--hathor-btn-pad-x, 1.75rem) 1px;
   border-radius: 999px;
   border: 1px solid var(--gold, #b69f64);
-  background: transparent;
+  background: #faf8f5;
   color: #b69f64;
   font-size: var(--hathor-btn-font-size, 0.72rem);
   font-weight: 500;
@@ -88,7 +88,7 @@
 .btn-light:not(.hero-cta),
 .btn-dark:not(.hero-cta),
 .btn-filled:not(.hero-cta) {
-  background: transparent;
+  background: #faf8f5;
   color: #b69f64;
   border-color: var(--gold, #b69f64);
 }
