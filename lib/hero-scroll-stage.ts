@@ -144,16 +144,16 @@ export function mountHeroScrollStage({
     });
   };
 
-  /**
-   * PHONE / TABLET: preserve the gold-blind design without pinning the page.
-   *
-   * ScrollTrigger pin + scrub fights native momentum scrolling on iOS. Instead,
-   * the same stripes play once on the first native scroll gesture while the
-   * hero remains in normal document flow. Desktop keeps the full pinned stage.
-   */
-  const isPhoneHero = window.matchMedia("(max-width: 1024px)").matches;
+  const isPhoneHero = window.matchMedia("(max-width: 480px)").matches;
+  const isTabletHero = window.matchMedia(
+    "(min-width: 481px) and (max-width: 1024px)",
+  ).matches;
 
-  if (isPhoneHero || prefersReduced) {
+  /**
+   * Tablet only: keep the existing lightweight native-scroll fallback exactly
+   * as-is. Phone ≤480 gets its own scrubbed choreography below.
+   */
+  if (isTabletHero || prefersReduced) {
     killByPrefix("hero-stage");
     cover.innerHTML = "";
 
@@ -207,7 +207,7 @@ export function mountHeroScrollStage({
       window.removeEventListener("touchmove", playMobileBlinds);
     };
 
-    if (isPhoneHero && !prefersReduced) {
+    if (isTabletHero && !prefersReduced) {
       const width = hero.clientWidth || window.innerWidth;
       const count = width <= 767 ? 14 : 18;
       const stripWidth = width / count;
@@ -430,13 +430,14 @@ export function mountHeroScrollStage({
 
     const titleTravel = Math.min(w * 0.38, 420);
     const isTouch = window.matchMedia("(max-width: 1024px)").matches;
+    const isPhoneTouch = window.matchMedia("(max-width: 480px)").matches;
 
     const tl = gsap.timeline({
       scrollTrigger: {
         id: "hero-stage",
         trigger: hero,
         start: "top top",
-        end: "+=130%",
+        end: isPhoneTouch ? "+=290%" : "+=130%",
         // Direct scrub on touch — laggy scrub (1.7) feels like scroll jumping
         scrub: isTouch ? true : 1.7,
         pin: true,
@@ -444,70 +445,205 @@ export function mountHeroScrollStage({
         anticipatePin: 1,
         invalidateOnRefresh: true,
         onLeave: () => {
-          if (logoMark) gsap.set(logoMark, { autoAlpha: 0, y: getLogoHiddenY() });
+          if (!isPhoneTouch && logoMark) {
+            gsap.set(logoMark, { autoAlpha: 0, y: getLogoHiddenY() });
+          }
         },
       },
     });
 
-    tl.to(
-      strips,
-      {
-        rotationY: 0,
-        opacity: 1,
+    if (isPhoneTouch) {
+      const phoneStripStagger = strips.length > 1 ? 0.02 : 0;
+
+      gsap.set(strips, {
+        rotationY: -90,
+        opacity: 0,
         visibility: "visible",
-        ease: "none",
-        stagger: { each: 0.028, from: "start" },
-        duration: 1,
-      },
-      0,
-    );
+        force3D: true,
+      });
 
-    if (lineRight) {
-      tl.to(lineRight, { x: titleTravel, opacity: 0, ease: "none", duration: 1 }, 0);
-    }
-    if (lineLeft) {
-      tl.to(lineLeft, { x: -titleTravel, opacity: 0, ease: "none", duration: 1 }, 0);
-    }
-    if (kicker) tl.to(kicker, { opacity: 0, y: -10, ease: "none", duration: 0.65 }, 0);
-    if (sub) tl.to(sub, { opacity: 0, y: 8, ease: "none", duration: 0.65 }, 0);
-    if (scrollHint) tl.to(scrollHint, { opacity: 0, ease: "none", duration: 0.35 }, 0);
-
-    if (cta) tl.to(cta, { width: targetW, ease: "none", duration: 1 }, 0);
-    if (ctaText) tl.to(ctaText, { letterSpacing: "1.15em", ease: "none", duration: 1 }, 0);
-
-    if (logoMark) {
-      if (logoReadyForScroll || !(landingTween && landingTween.isActive())) {
+      if (logoMark) {
         const landedY = getLogoLandedY();
-        gsap.set(logoMark, {
-          xPercent: -50,
-          yPercent: 0,
-          x: 0,
-          y: landedY,
-          scale: 1,
-          autoAlpha: 1,
-        });
+        if (isSplitLetterLogo()) {
+          gsap.set(logoMark, {
+            xPercent: -50,
+            yPercent: 0,
+            x: 0,
+            y: 0,
+            scale: 1,
+            autoAlpha: 1,
+          });
+          gsap.set(logoMark.querySelectorAll(".logo-letter-wrap"), {
+            y: getLogoHiddenY(),
+            opacity: 0,
+            force3D: true,
+          });
+        } else {
+          gsap.set(logoMark, {
+            xPercent: -50,
+            yPercent: 0,
+            x: 0,
+            y: getLogoHiddenY(),
+            scale: 1,
+            autoAlpha: 0,
+            force3D: true,
+          });
+          const letters = logoMark.querySelectorAll(".logo-letter");
+          if (letters.length) {
+            gsap.set(letters, { y: 48, opacity: 0, force3D: true });
+          }
+          void landedY;
+        }
       }
 
-      const landedY = getLogoLandedY();
-      tl.fromTo(
-        logoMark,
+      tl.to(
+        strips,
         {
-          y: landedY,
-          autoAlpha: 1,
-          xPercent: -50,
-          x: 0,
-          yPercent: 0,
-          scale: 1,
-        },
-        {
-          y: getLogoHiddenY(),
-          autoAlpha: 0,
+          rotationY: 0,
+          opacity: 1,
           ease: "none",
+          stagger: { each: phoneStripStagger, from: "start" },
+          duration: 0.82,
+        },
+        0.08,
+      );
+
+      if (lineRight) {
+        tl.to(
+          lineRight,
+          { x: titleTravel, opacity: 0, ease: "none", duration: 0.52 },
+          0,
+        );
+      }
+      if (lineLeft) {
+        tl.to(
+          lineLeft,
+          { x: -titleTravel, opacity: 0, ease: "none", duration: 0.52 },
+          0,
+        );
+      }
+      if (kicker) {
+        tl.to(kicker, { opacity: 0, y: -10, ease: "none", duration: 0.42 }, 0.04);
+      }
+      if (sub) {
+        tl.to(sub, { opacity: 0, y: 8, ease: "none", duration: 0.42 }, 0.06);
+      }
+      if (scrollHint) {
+        tl.to(scrollHint, { opacity: 0, ease: "none", duration: 0.26 }, 0.1);
+      }
+
+      if (cta) {
+        tl.to(cta, { width: targetW, ease: "none", duration: 0.42 }, 0.48);
+      }
+      if (ctaText) {
+        tl.to(
+          ctaText,
+          { letterSpacing: "1.15em", ease: "none", duration: 0.42 },
+          0.48,
+        );
+      }
+
+      if (logoMark) {
+        if (isSplitLetterLogo()) {
+          tl.to(
+            logoMark.querySelectorAll(".logo-letter-wrap"),
+            {
+              y: 0,
+              opacity: 1,
+              ease: "power2.out",
+              duration: 0.34,
+              stagger: 0.085,
+            },
+            0.38,
+          );
+        } else {
+          tl.to(
+            logoMark,
+            {
+              y: getLogoLandedY(),
+              autoAlpha: 1,
+              ease: "power2.out",
+              duration: 0.34,
+            },
+            0.38,
+          );
+          const letters = logoMark.querySelectorAll(".logo-letter");
+          if (letters.length) {
+            tl.to(
+              letters,
+              {
+                y: 0,
+                opacity: 1,
+                ease: "power2.out",
+                duration: 0.26,
+                stagger: 0.09,
+              },
+              0.42,
+            );
+          }
+        }
+      }
+    } else {
+      tl.to(
+        strips,
+        {
+          rotationY: 0,
+          opacity: 1,
+          visibility: "visible",
+          ease: "none",
+          stagger: { each: 0.028, from: "start" },
           duration: 1,
-          immediateRender: false,
         },
         0,
       );
+
+      if (lineRight) {
+        tl.to(lineRight, { x: titleTravel, opacity: 0, ease: "none", duration: 1 }, 0);
+      }
+      if (lineLeft) {
+        tl.to(lineLeft, { x: -titleTravel, opacity: 0, ease: "none", duration: 1 }, 0);
+      }
+      if (kicker) tl.to(kicker, { opacity: 0, y: -10, ease: "none", duration: 0.65 }, 0);
+      if (sub) tl.to(sub, { opacity: 0, y: 8, ease: "none", duration: 0.65 }, 0);
+      if (scrollHint) tl.to(scrollHint, { opacity: 0, ease: "none", duration: 0.35 }, 0);
+
+      if (cta) tl.to(cta, { width: targetW, ease: "none", duration: 1 }, 0);
+      if (ctaText) tl.to(ctaText, { letterSpacing: "1.15em", ease: "none", duration: 1 }, 0);
+
+      if (logoMark) {
+        if (logoReadyForScroll || !(landingTween && landingTween.isActive())) {
+          const landedY = getLogoLandedY();
+          gsap.set(logoMark, {
+            xPercent: -50,
+            yPercent: 0,
+            x: 0,
+            y: landedY,
+            scale: 1,
+            autoAlpha: 1,
+          });
+        }
+
+        const landedY = getLogoLandedY();
+        tl.fromTo(
+          logoMark,
+          {
+            y: landedY,
+            autoAlpha: 1,
+            xPercent: -50,
+            x: 0,
+            yPercent: 0,
+            scale: 1,
+          },
+          {
+            y: getLogoHiddenY(),
+            autoAlpha: 0,
+            ease: "none",
+            duration: 1,
+            immediateRender: false,
+          },
+          0,
+        );
+      }
     }
   };
 
