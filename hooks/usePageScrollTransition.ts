@@ -11,6 +11,7 @@ import { useLayoutEffect, useId, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
+import { lenisMobileSafeOptions } from "@/lib/touch-device";
 
 const PT_CREAM_DEFAULT = "#ECE8DF";
 const PT_CREAM_HOMEPAGE_2 = "#f4f1ea";
@@ -75,12 +76,7 @@ function setupSmoothScroll() {
     return null;
   }
 
-  const lenis = new Lenis({
-    duration: 2.1,
-    easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smoothWheel: true,
-    syncTouch: false,
-  });
+  const lenis = new Lenis(lenisMobileSafeOptions(2.1));
 
   lenis.on("scroll", ScrollTrigger.update);
 

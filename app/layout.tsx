@@ -8,8 +8,11 @@ import {
   getHomeScrollPendingBlockingScript,
   getPublicHeroBootCriticalStyle,
 } from "@/lib/public-theme";
+import { getTouchDeviceBlockingScript } from "@/lib/touch-device";
+import { TouchDeviceBootstrap } from "@/components/public/TouchDeviceBootstrap";
 import "./hathor-fonts.css";
 import "./globals.css";
+import "./mobile-touch.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +36,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
   viewportFit: "cover",
 };
 
@@ -62,10 +67,16 @@ export default function RootLayout({
             __html: getHomeScrollPendingBlockingScript(),
           }}
         />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: getTouchDeviceBlockingScript(),
+          }}
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <TouchDeviceBootstrap />
         {children}
       </body>
     </html>

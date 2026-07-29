@@ -3,6 +3,7 @@
 import { useLayoutEffect, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { isTouchDevice, parallaxIntensityScale } from "@/lib/touch-device";
 
 const HIGHLIGHTS_EASE = "expo.out" as const;
 const HIGHLIGHTS_SCRUB = 1;
@@ -103,21 +104,22 @@ function setupKineticTitles(root: HTMLElement) {
   });
 }
 
-function setupParallax(root: HTMLElement, enableParallax: boolean) {
+function setupParallax(root: HTMLElement, intensity = 1) {
   root.querySelectorAll<HTMLElement>(SELECTORS.parallaxWrap).forEach((wrap) => {
     const img = wrap.querySelector<HTMLElement>(SELECTORS.parallaxImg);
     if (!img) return;
 
-    if (!enableParallax) {
+    const amount = MOTION.parallax.yPercent * intensity;
+    if (amount <= 0) {
       gsap.set(img, { yPercent: 0 });
       return;
     }
 
     gsap.fromTo(
       img,
-      { yPercent: -MOTION.parallax.yPercent, force3D: true },
+      { yPercent: -amount, force3D: true },
       {
-        yPercent: MOTION.parallax.yPercent,
+        yPercent: amount,
         ease: "none",
         scrollTrigger: {
           trigger: wrap,
@@ -159,6 +161,9 @@ function setupChapterCopy(root: HTMLElement) {
 }
 
 function setupMagneticLinks(root: HTMLElement) {
+  // Magnetic pull feels sticky/glitchy on touch — skip entirely.
+  if (isTouchDevice()) return;
+
   root.querySelectorAll<HTMLElement>(SELECTORS.magneticLink).forEach((link) => {
     const arrow = link.querySelector<HTMLElement>(SELECTORS.magneticArrow);
     const linkX = gsap.quickTo(link, "x", { duration: 0.65, ease: HIGHLIGHTS_EASE });
@@ -208,10 +213,10 @@ function cleanupMagneticLinks(root: HTMLElement) {
   });
 }
 
-function setupEditorial(root: HTMLElement, enableParallax: boolean) {
+function setupEditorial(root: HTMLElement, parallaxIntensity = 1) {
   setupIntroFade(root);
   setupKineticTitles(root);
-  setupParallax(root, enableParallax);
+  setupParallax(root, parallaxIntensity);
   setupChapterCopy(root);
   setupMagneticLinks(root);
 }
@@ -238,9 +243,11 @@ export function useHighlightsEditorialMotion(
         return;
       }
 
+      // Desktop full parallax; phone/tablet at 50% intensity.
       ScrollTrigger.matchMedia({
-        "(min-width: 768px)": () => setupEditorial(root, true),
-        "(max-width: 767px)": () => setupEditorial(root, false),
+        "(min-width: 1024px)": () => setupEditorial(root, 1),
+        "(max-width: 1023px)": () =>
+          setupEditorial(root, parallaxIntensityScale()),
       });
     }, root);
 

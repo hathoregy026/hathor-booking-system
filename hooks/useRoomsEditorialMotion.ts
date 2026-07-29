@@ -13,6 +13,11 @@ import {
 } from "@/lib/rooms-motion";
 import { deferEditorialMotionInit } from "@/lib/defer-editorial-motion";
 import { refreshPageScrollTransition } from "@/components/pages/pageScrollTransitionEngine";
+import {
+  isTouchDevice,
+  lenisMobileSafeOptions,
+  parallaxIntensityScale,
+} from "@/lib/touch-device";
 
 type UseRoomsEditorialMotionOptions = {
   /**
@@ -36,12 +41,7 @@ function prefersReducedMotion() {
 function setupOptionalLenis(enabled: boolean) {
   if (!enabled || prefersReducedMotion()) return null;
 
-  const lenis = new Lenis({
-    duration: 1.55,
-    easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smoothWheel: true,
-    syncTouch: false,
-  });
+  const lenis = new Lenis(lenisMobileSafeOptions(1.55));
 
   lenis.on("scroll", ScrollTrigger.update);
 
@@ -181,14 +181,15 @@ function setupIntroMasks(root: HTMLElement) {
   });
 }
 
-function setupImageUnveils(root: HTMLElement, enableParallax: boolean) {
+function setupImageUnveils(root: HTMLElement, intensity = 1) {
   root.querySelectorAll<HTMLElement>(ROOMS_SELECTORS.parallaxWrap).forEach((wrap) => {
     const img = wrap.querySelector<HTMLElement>(ROOMS_SELECTORS.parallaxImg);
     if (!img) return;
 
     const direction = wrap.dataset.parallaxDirection === "down" ? 1 : -1;
-    const yStart = direction * -ROOMS_MOTION.parallax.yPercent;
-    const yEnd = direction * ROOMS_MOTION.parallax.yPercent;
+    const amount = ROOMS_MOTION.parallax.yPercent * intensity;
+    const yStart = direction * -amount;
+    const yEnd = direction * amount;
 
     gsap.set(wrap, {
       clipPath: "inset(100% 0 0 0)",
@@ -206,7 +207,7 @@ function setupImageUnveils(root: HTMLElement, enableParallax: boolean) {
       },
     });
 
-    if (!enableParallax) {
+    if (amount <= 0) {
       gsap.set(img, { yPercent: 0 });
       return;
     }
@@ -322,17 +323,18 @@ function setupWelcome(root: HTMLElement) {
   });
 }
 
-function setupCta(root: HTMLElement, enableParallax: boolean) {
+function setupCta(root: HTMLElement, intensity = 1) {
   root.querySelectorAll<HTMLElement>(ROOMS_SELECTORS.ctaWrap).forEach((frame) => {
     const img = frame.querySelector<HTMLElement>(ROOMS_SELECTORS.ctaImg);
     const copy = frame.querySelector<HTMLElement>(ROOMS_SELECTORS.ctaCopy);
+    const amount = ROOMS_MOTION.ctaParallax.yPercent * intensity;
 
-    if (img && enableParallax) {
+    if (img && amount > 0) {
       gsap.fromTo(
         img,
-        { yPercent: -ROOMS_MOTION.ctaParallax.yPercent, force3D: true },
+        { yPercent: -amount, force3D: true },
         {
-          yPercent: ROOMS_MOTION.ctaParallax.yPercent,
+          yPercent: amount,
           ease: "none",
           scrollTrigger: {
             trigger: frame,
@@ -367,6 +369,8 @@ function setupCta(root: HTMLElement, enableParallax: boolean) {
 }
 
 function setupMagneticLinks(root: HTMLElement) {
+  if (isTouchDevice()) return;
+
   root.querySelectorAll<HTMLElement>(ROOMS_SELECTORS.magneticLink).forEach((link) => {
     const arrow = link.querySelector<HTMLElement>(ROOMS_SELECTORS.magneticArrow);
     const linkX = gsap.quickTo(link, "x", { duration: 0.65, ease: ROOMS_EASE });
@@ -416,14 +420,14 @@ function cleanupMagneticLinks(root: HTMLElement) {
   });
 }
 
-function setupEditorial(root: HTMLElement, enableParallax: boolean, splits: SplitInstance[]) {
+function setupEditorial(root: HTMLElement, parallaxIntensity: number, splits: SplitInstance[]) {
   setupIntroMasks(root);
   setupKineticTypography(root, splits);
-  setupImageUnveils(root, enableParallax);
+  setupImageUnveils(root, parallaxIntensity);
   setupChapterCopy(root);
   setupStatsAndBento(root);
   setupWelcome(root);
-  setupCta(root, enableParallax);
+  setupCta(root, parallaxIntensity);
   setupMagneticLinks(root);
 }
 
@@ -467,8 +471,9 @@ export function useRoomsEditorialMotion(
 
       cancelDeferred = deferEditorialMotionInit(() => {
         ScrollTrigger.matchMedia({
-          "(min-width: 768px)": () => setupEditorial(root, true, splits),
-          "(max-width: 767px)": () => setupEditorial(root, false, splits),
+          "(min-width: 1024px)": () => setupEditorial(root, 1, splits),
+          "(max-width: 1023px)": () =>
+            setupEditorial(root, parallaxIntensityScale(), splits),
         });
       }, layoutDelayMs);
     }, root);

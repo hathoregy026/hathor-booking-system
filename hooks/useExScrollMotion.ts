@@ -18,6 +18,7 @@ import {
   readSavedScrollY,
   shouldRestoreScrollOnMount,
 } from "@/lib/scroll-position-restore";
+import { lenisMobileSafeOptions } from "@/lib/touch-device";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -62,12 +63,7 @@ export function useExScrollMotion() {
   let helmCleanup: (() => void) | null = null;
 
   if (!prefersReduced) {
-    lenis = new Lenis({
-      duration: 1.4,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-      syncTouch: false,
-    });
+    lenis = new Lenis(lenisMobileSafeOptions(1.4));
 
     // Keep ScrollTrigger in sync with Lenis
     lenis.on("scroll", ScrollTrigger.update);

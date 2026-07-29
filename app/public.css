@@ -5283,6 +5283,13 @@ html[data-public-theme="day"] .preview-header--transparent:not(.preview-header--
   -webkit-tap-highlight-color: rgb(182 159 100 / 0.15);
 }
 
+@media (pointer: coarse) {
+  .public-site a,
+  .public-site button {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
 /* ??? Inner page scroll transition (not homepage) ??? */
 /* Background gap fixes ? CSS ONLY, scroll-reveal pages via body class from existing hook */
 body.has-page-scroll-transition,

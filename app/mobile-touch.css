@@ -1,0 +1,330 @@
+/**
+ * Mobile & tablet overrides ONLY (≤1023px / coarse pointer).
+ * Desktop (≥1024px, fine pointer) is intentionally untouched.
+ */
+
+/* --------------------------------------------------------------------------
+ * 1. Viewport height + safe areas + horizontal overflow guard
+ * -------------------------------------------------------------------------- */
+:root {
+  /* JS sets --vh; fallback matches classic 1vh */
+  --vh: 1vh;
+  --app-dvh: 100dvh;
+  --app-dvh-fallback: calc(var(--vh) * 100);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  max-width: 100vw;
+  position: relative;
+}
+
+@media (max-width: 1023px) {
+  html,
+  body {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  /* Prefer dynamic viewport for full-bleed stages (keep explicit heights intact) */
+  .home-hero-container {
+    height: var(--app-dvh-fallback);
+    height: 100dvh;
+    min-height: var(--app-dvh-fallback);
+    min-height: 100dvh;
+  }
+
+  .hathor-page-hero,
+  .ex-hero,
+  .hero-scroll-stage,
+  .pt-stage,
+  .cruises-hero-stage,
+  .page-scroll-transition__stage,
+  [data-page-scroll-stage] {
+    min-height: var(--app-dvh-fallback);
+    min-height: 100dvh;
+  }
+
+  /* Safe areas: notches + home indicator */
+  .public-site,
+  .booking-page {
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+
+  .public-site {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  .public-site .owo-footer,
+  .booking-page,
+  .public-main {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Reduce huge vertical padding bands */
+  .hathor-section,
+  .hathor-editorial,
+  .owo-chapter {
+    padding-block: clamp(3rem, 10vh, 5rem);
+  }
+}
+
+/* Coarse pointer: reduce rubber-band fighting Lenis without killing PTR globally */
+@media (pointer: coarse) {
+  html.is-touch-device,
+  body.is-touch-device {
+    overscroll-behavior-y: contain;
+  }
+
+  html.is-touch-device {
+    overscroll-behavior-x: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+ * 2. Custom cursor + hover-only UX on touch
+ * -------------------------------------------------------------------------- */
+@media (pointer: coarse) {
+  .lux-cursor,
+  .custom-cursor,
+  .cursor-dot,
+  .cursor-follower {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    opacity: 0 !important;
+  }
+
+  /* Tap affordances: prefer :active / :focus-visible over sticky :hover */
+  .public-site .hathor-discover-link:active,
+  .public-site .owo-discover:active,
+  .public-site a:active,
+  .public-site button:active {
+    opacity: 0.92;
+  }
+}
+
+/* --------------------------------------------------------------------------
+ * 3. Tap highlight, touch-action, 44px targets
+ * -------------------------------------------------------------------------- */
+@media (pointer: coarse), (max-width: 1023px) {
+  html,
+  body,
+  .public-site,
+  .booking-page {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .public-site a,
+  .public-site button,
+  .public-site [role="button"],
+  .public-site summary,
+  .booking-page a,
+  .booking-page button,
+  .booking-page [role="button"],
+  .booking-page summary,
+  .booking-page label,
+  .booking-page input[type="checkbox"],
+  .booking-page input[type="radio"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .public-site a[href],
+  .public-site button,
+  .public-site [role="button"],
+  .public-site summary,
+  .booking-page a[href],
+  .booking-page button,
+  .booking-page [role="button"],
+  .booking-page summary,
+  .booking-page .booking-search-mode__button,
+  .booking-page .booking-btn,
+  .booking-page .booking-btn-outline,
+  .booking-page .historia-room-card__book {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .booking-page input[type="checkbox"],
+  .booking-page input[type="radio"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    min-width: 1.25rem;
+    min-height: 1.25rem;
+  }
+
+  /* Expand hit area for small checkboxes via label padding */
+  .booking-page label:has(input[type="checkbox"]),
+  .booking-page label:has(input[type="radio"]),
+  .booking-page .historia-room-card__rate-option {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+ * 4. Typography, wrapping, fluid headlines (phone + tablet)
+ * -------------------------------------------------------------------------- */
+@media (max-width: 1023px) {
+  .public-site,
+  .booking-page {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .public-site p,
+  .public-site li,
+  .public-site .hathor-body-text,
+  .booking-page p,
+  .booking-page li {
+    font-size: max(1rem, 16px);
+    line-height: 1.65;
+  }
+
+  .public-site h1,
+  .public-site .hathor-page-hero__title,
+  .public-site .owo-hero__title,
+  .public-site .gallery-h2 h2,
+  .public-site .split-heading {
+    font-size: clamp(2rem, 8vw, 3.75rem);
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+
+  .public-site h2,
+  .public-site .hathor-section-title {
+    font-size: clamp(1.5rem, 5.5vw, 2.5rem);
+    overflow-wrap: break-word;
+  }
+
+  .public-site h3 {
+    font-size: clamp(1.25rem, 4vw, 1.75rem);
+  }
+
+  .public-site img,
+  .booking-page img,
+  .public-site video,
+  .booking-page video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .public-site img {
+    display: block;
+  }
+}
+
+/* --------------------------------------------------------------------------
+ * 5. Forms — prevent iOS zoom + keyboard overlap (booking + public)
+ * -------------------------------------------------------------------------- */
+@media (max-width: 1023px) {
+  .public-site input,
+  .public-site textarea,
+  .public-site select,
+  .booking-page input,
+  .booking-page textarea,
+  .booking-page select,
+  .booking-page .booking-input,
+  .booking-page .booking-widget-select,
+  .booking-page .booking-cruise-select,
+  .booking-page .lux-input,
+  .booking-modal input,
+  .booking-modal textarea,
+  .booking-modal select {
+    font-size: 16px !important;
+    scroll-margin-bottom: 100px;
+    scroll-margin-top: 24px;
+  }
+
+  .booking-page input[type="date"],
+  .booking-page input[type="time"],
+  .booking-page input[type="datetime-local"],
+  .booking-modal input[type="date"] {
+    -webkit-appearance: none;
+    appearance: none;
+    min-height: 44px;
+    line-height: 1.25;
+  }
+}
+
+/* --------------------------------------------------------------------------
+ * 6. Layout grids → single column on phones; soften on tablets
+ * -------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  .public-site .hathor-editorial__grid,
+  .public-site .hathor-stats-grid,
+  .public-site .hathor-explore__grid,
+  .public-site .owo-footer__grid,
+  .booking-page .booking-widget,
+  .booking-page .historia-room-selection__list {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Native horizontal snap for suite / gallery style tracks */
+  .public-site .gallery-marquee,
+  .public-site .carousel-track,
+  .public-site [data-horizontal-scroll],
+  .public-site .suite-gallery,
+  .public-site .rooms-gallery {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+  }
+
+  .public-site .gallery-marquee > *,
+  .public-site .carousel-slide,
+  .public-site [data-horizontal-scroll] > *,
+  .public-site .suite-gallery > *,
+  .public-site .rooms-gallery > * {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .public-site .hathor-editorial__grid,
+  .public-site .hathor-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* --------------------------------------------------------------------------
+ * 7. Absolute / wide elements — contain within viewport on small screens
+ * -------------------------------------------------------------------------- */
+@media (max-width: 1023px) {
+  .public-site .pin-spacer,
+  .public-site [class*="pin-spacer"] {
+    max-width: 100vw;
+  }
+
+  .public-site .hathor-collage__images,
+  .public-site .hathor-scroll-story__images {
+    overflow: hidden;
+    max-width: 100%;
+  }
+}
+
+/* --------------------------------------------------------------------------
+ * 8. Touch-device class hooks (from JS bootstrap)
+ * -------------------------------------------------------------------------- */
+html.is-touch-device .lux-cursor,
+body.is-touch-device .lux-cursor {
+  display: none !important;
+}
+
+/* Disable CSS magnetic / hover translate tricks on touch */
+@media (pointer: coarse) {
+  [data-magnetic-link],
+  [data-magnetic-arrow] {
+    transform: none !important;
+  }
+}

@@ -4,6 +4,7 @@ import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { registerHathorLenis } from "@/lib/scroll-position-restore";
+import { lenisMobileSafeOptions } from "@/lib/touch-device";
 
 /** Match the proven homepage pacing; higher values felt laggy with hero scrub. */
 export const RAW_SCROLL_LENIS_DURATION = 1.4;
@@ -33,12 +34,7 @@ export function bindRawScrollSmooth(): () => void {
   // If the page already has its own Lenis (home/rooms), do nothing.
   if (pageOwnsLenis()) return () => {};
 
-  const lenis = new Lenis({
-    duration: RAW_SCROLL_LENIS_DURATION,
-    easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smoothWheel: true,
-    syncTouch: false,
-  });
+  const lenis = new Lenis(lenisMobileSafeOptions(RAW_SCROLL_LENIS_DURATION));
 
   // Keep ScrollTrigger in sync with Lenis.
   lenis.on("scroll", ScrollTrigger.update);

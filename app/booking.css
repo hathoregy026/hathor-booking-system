@@ -2015,3 +2015,53 @@
     min-width: 9rem;
   }
 }
+
+/* --------------------------------------------------------------------------
+ * Mobile / tablet booking form fixes (≤1023px) — desktop unchanged
+ * -------------------------------------------------------------------------- */
+@media (max-width: 1023px) {
+  .booking-page input,
+  .booking-page textarea,
+  .booking-page select,
+  .booking-page .booking-input,
+  .booking-page .booking-widget-select,
+  .booking-page .booking-cruise-select select,
+  .booking-page .lux-input {
+    font-size: 16px !important;
+    scroll-margin-bottom: 100px;
+    scroll-margin-top: 24px;
+  }
+
+  .booking-page a,
+  .booking-page button,
+  .booking-page [role="button"],
+  .booking-page .booking-search-mode__button,
+  .booking-page .booking-btn,
+  .booking-page .booking-btn-outline,
+  .booking-page .historia-room-card__book {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 44px;
+  }
+
+  .booking-page input[type="checkbox"],
+  .booking-page input[type="radio"] {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .booking-page .historia-room-card__rate-option,
+  .booking-page label:has(input[type="checkbox"]),
+  .booking-page label:has(input[type="radio"]) {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .booking-page input[type="date"],
+  .booking-page input[type="time"],
+  .booking-page input[type="datetime-local"] {
+    min-height: 44px;
+    line-height: 1.25;
+  }
+}
