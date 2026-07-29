@@ -8,11 +8,12 @@ import {
   bindViewportHeightVar,
 } from "@/lib/touch-device";
 
-type WindowWithScrollTrigger = Window & {
-  ScrollTrigger?: typeof ScrollTrigger;
-};
-
-function bindDebouncedScrollTriggerRefresh(debounceMs = 200): () => void {
+/**
+ * Debounced ScrollTrigger.refresh only.
+ * Undebounced resize refresh on mobile Safari (URL bar show/hide) causes
+ * lag, pin glitches, and “nothing scrolls” freezes.
+ */
+function bindDebouncedScrollTriggerRefresh(debounceMs = 250): () => void {
   if (typeof window === "undefined") return () => {};
 
   gsap.registerPlugin(ScrollTrigger);
@@ -30,48 +31,41 @@ function bindDebouncedScrollTriggerRefresh(debounceMs = 200): () => void {
     }, debounceMs);
   };
 
+  const onOrientation = () => {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      try {
+        ScrollTrigger.refresh();
+      } catch {
+        /* ignore */
+      }
+    }, 300);
+  };
+
   window.addEventListener("resize", refresh, { passive: true });
-  window.addEventListener("orientationchange", refresh, { passive: true });
-  window.visualViewport?.addEventListener("resize", refresh);
+  window.addEventListener("orientationchange", onOrientation, { passive: true });
+  // Do not bind visualViewport.resize — iOS URL-bar show/hide spams it and freezes pins.
 
   return () => {
     if (timer) clearTimeout(timer);
     window.removeEventListener("resize", refresh);
-    window.removeEventListener("orientationchange", refresh);
-    window.visualViewport?.removeEventListener("resize", refresh);
+    window.removeEventListener("orientationchange", onOrientation);
   };
 }
 
 /**
- * Client-side touch bootstrap:
- * - Keeps `is-touch-device` class in sync
- * - Maintains `--vh` for iOS dynamic viewport fallback
- * - Debounced ScrollTrigger.refresh on resize/orientation (pin fix)
+ * Real-phone bootstrap (DevTools often stays pointer:fine — phones are coarse).
  */
 export function TouchDeviceBootstrap() {
   useEffect(() => {
     applyTouchDeviceClass();
-
-    gsap.registerPlugin(ScrollTrigger);
-    const win = window as WindowWithScrollTrigger;
-    win.ScrollTrigger = ScrollTrigger;
-
-    // Fix broken GSAP/ScrollTrigger pins after mobile resize / rotate
-    window.addEventListener("resize", () => {
-      if (win.ScrollTrigger) win.ScrollTrigger.refresh();
-    });
-    window.addEventListener("orientationchange", () => {
-      setTimeout(() => {
-        if (win.ScrollTrigger) win.ScrollTrigger.refresh();
-      }, 300);
-    });
 
     const onPointerChange = () => applyTouchDeviceClass();
     const mq = window.matchMedia("(pointer: coarse)");
     mq.addEventListener?.("change", onPointerChange);
 
     const unbindVh = bindViewportHeightVar();
-    const unbindSt = bindDebouncedScrollTriggerRefresh(200);
+    const unbindSt = bindDebouncedScrollTriggerRefresh(250);
 
     return () => {
       mq.removeEventListener?.("change", onPointerChange);

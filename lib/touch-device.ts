@@ -47,25 +47,30 @@ export function setViewportHeightCssVar(): void {
 }
 
 /**
- * Keep `--vh` current across rotate / URL bar show-hide.
- * Returns cleanup.
+ * Keep `--vh` current on rotate / chrome resize.
+ * Do NOT bind visualViewport `scroll` — that fires constantly on iOS while
+ * scrolling and causes lag + ScrollTrigger pin glitches.
  */
 export function bindViewportHeightVar(): () => void {
   if (typeof window === "undefined") return () => {};
 
   setViewportHeightCssVar();
 
-  const onResize = () => setViewportHeightCssVar();
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const onResize = () => {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => setViewportHeightCssVar(), 150);
+  };
+
   window.addEventListener("resize", onResize, { passive: true });
   window.addEventListener("orientationchange", onResize, { passive: true });
   window.visualViewport?.addEventListener("resize", onResize);
-  window.visualViewport?.addEventListener("scroll", onResize);
 
   return () => {
+    if (timer) clearTimeout(timer);
     window.removeEventListener("resize", onResize);
     window.removeEventListener("orientationchange", onResize);
     window.visualViewport?.removeEventListener("resize", onResize);
-    window.visualViewport?.removeEventListener("scroll", onResize);
   };
 }
 

@@ -3481,6 +3481,9 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
   .home-hero-container {
     height: 100vh;
     height: 100svh;
+    height: 100dvh;
+    min-height: 100svh;
+    min-height: 100dvh;
   }
 
   .hero-kicker {
