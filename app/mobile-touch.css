@@ -126,48 +126,6 @@ body.is-touch-device .lux-cursor {
     will-change: transform, opacity;
   }
 
-  /* Logo + Book Now always visible — composition from narrow logo CSS */
-  html.ex-home .home-hero-container .hero-logo-mark,
-  html.ex-home .home-hero-container .hero-logo-mark--split,
-  html.ex-home .home-hero-container .hathor-logo-split,
-  html.ex-home .home-hero-container .hathor-logo-split .logo-letter-wrap,
-  html.ex-home .home-hero-container .hathor-logo-split img,
-  html.ex-home .home-hero-container .hathor-logo-split .logo-letter,
-  .public-site .home-hero-container .hero-logo-mark,
-  .public-site .home-hero-container .hero-logo-mark--split,
-  .public-site .home-hero-container .hathor-logo-split,
-  .public-site .home-hero-container .hathor-logo-split .logo-letter-wrap,
-  .public-site .home-hero-container .hathor-logo-split img,
-  .public-site .home-hero-container .hathor-logo-split .logo-letter {
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: none !important;
-    max-width: none !important;
-    max-height: none !important;
-  }
-
-  html.ex-home .home-hero-container .hathor-logo-split img,
-  .public-site .home-hero-container .hathor-logo-split img,
-  html.ex-home .home-hero-container .hathor-logo-split .logo-letter,
-  .public-site .home-hero-container .hathor-logo-split .logo-letter {
-    width: 100% !important;
-    height: 100% !important;
-  }
-
-  .public-site .home-hero-container .hero-button .hero-cta,
-  html.ex-home .home-hero-container .hero-button .hero-cta {
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-    display: inline-flex !important;
-    align-items: center;
-    justify-content: center;
-    min-height: 44px;
-    min-width: 44px;
-    width: var(--hathor-logo-gap, clamp(156px, 22vw, 220px)) !important;
-    max-width: var(--hathor-logo-gap, clamp(156px, 22vw, 220px)) !important;
-  }
-
   /* Kill dashboard X/Y offsets that shove titles off narrow frames */
   .public-site .hathor-page-hero__title,
   .public-site .hathor-page-hero__subtitle,
@@ -307,6 +265,53 @@ body.is-touch-device .lux-cursor {
 }
 
 /* --------------------------------------------------------------------------
+ * TABLET 481–1024 — one-shot hero fallback: keep logo/CTA composition visible
+ * Phone ≤480 uses scrubbed choreography — do not force opacity/width there.
+ * -------------------------------------------------------------------------- */
+@media (min-width: 481px) and (max-width: 1024px) {
+  html.ex-home .home-hero-container .hero-logo-mark,
+  html.ex-home .home-hero-container .hero-logo-mark--split,
+  html.ex-home .home-hero-container .hathor-logo-split,
+  html.ex-home .home-hero-container .hathor-logo-split .logo-letter-wrap,
+  html.ex-home .home-hero-container .hathor-logo-split img,
+  html.ex-home .home-hero-container .hathor-logo-split .logo-letter,
+  .public-site .home-hero-container .hero-logo-mark,
+  .public-site .home-hero-container .hero-logo-mark--split,
+  .public-site .home-hero-container .hathor-logo-split,
+  .public-site .home-hero-container .hathor-logo-split .logo-letter-wrap,
+  .public-site .home-hero-container .hathor-logo-split img,
+  .public-site .home-hero-container .hathor-logo-split .logo-letter {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: none !important;
+    max-width: none !important;
+    max-height: none !important;
+  }
+
+  html.ex-home .home-hero-container .hathor-logo-split img,
+  .public-site .home-hero-container .hathor-logo-split img,
+  html.ex-home .home-hero-container .hathor-logo-split .logo-letter,
+  .public-site .home-hero-container .hathor-logo-split .logo-letter {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .public-site .home-hero-container .hero-button .hero-cta,
+  html.ex-home .home-hero-container .hero-button .hero-cta {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 44px;
+    width: var(--hathor-logo-gap, clamp(156px, 22vw, 220px)) !important;
+    max-width: var(--hathor-logo-gap, clamp(156px, 22vw, 220px)) !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
  * PHONE ≤480 — performance adaptations only (tablet/desktop untouched)
  * -------------------------------------------------------------------------- */
 @media (max-width: 480px) {
@@ -356,10 +361,87 @@ body.is-touch-device .lux-cursor {
     background: rgba(12, 8, 6, 0.55) !important;
   }
 
+  /*
+   * Phone hero — sticky stage inside tall runway (no GSAP pin spacer).
+   * ~390svh ≈ 100svh viewport + ~290% scrub runway.
+   */
+  .home-hero-runway {
+    position: relative;
+    width: 100%;
+    height: 390svh;
+    overflow: visible;
+  }
+
+  .home-hero-runway .home-hero-container,
   .home-hero-container {
+    position: sticky;
+    top: 0;
     height: 100svh !important;
     min-height: 100svh !important;
-    max-height: none !important;
+    max-height: 100svh !important;
+  }
+
+  .home-hero-container .hero-button .hero-cta {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 44px;
+    /* width driven by GSAP scaleX — do not lock with !important */
+    will-change: transform;
+  }
+
+  .home-hero-container .blind-strip-v {
+    backface-visibility: hidden;
+    will-change: transform, opacity;
+    transition: none !important;
+  }
+
+  /*
+   * Signature fog-rise storytelling — do NOT strip blur / mask from these.
+   * Ordinary lux-reveal rules above must not cascade into fog sections.
+   */
+  .public-site [data-mobile-fog-rise] .ex-stack-scroll__card,
+  .public-site [data-mobile-fog-rise] .ex-stack-scroll__card::before,
+  .public-site [data-mobile-fog-rise] .hcta-reveal,
+  .public-site [data-mobile-fog-rise] .hcta-reveal::after,
+  .public-site .signature-fog-rise .ex-stack-scroll__card,
+  .public-site .signature-fog-rise .hcta-reveal {
+    filter: unset;
+  }
+
+  .public-site [data-mobile-fog-rise] .ex-stack-scroll__card::before,
+  .public-site [data-mobile-fog-rise] .hcta-reveal::after {
+    filter: blur(2.5px) !important;
+  }
+
+  /* ~65% of desktop cinematic runway — sticky, not a multi-viewport hard pin */
+  .public-site .ex-stack-scroll[data-mobile-fog-rise],
+  .public-site .ex-stack-scroll.signature-fog-rise {
+    height: 340svh;
+    overflow: visible;
+  }
+
+  .public-site .hcta-track[data-mobile-fog-rise],
+  .public-site .hcta-track.signature-fog-rise {
+    height: 470svh;
+  }
+
+  .public-site [data-mobile-fog-rise] .hcta-reveal::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(100% - var(--hcta-fog-edge, 0%));
+    height: 18%;
+    pointer-events: none;
+    z-index: 3;
+    background: linear-gradient(
+      to top,
+      rgba(236, 232, 223, 0.35) 0%,
+      rgba(236, 232, 223, 0.12) 45%,
+      transparent 100%
+    );
   }
 
   .luxury-marquee__track {

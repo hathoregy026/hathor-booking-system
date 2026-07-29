@@ -1,0 +1,174 @@
+---
+description: Protected signature brand experiences — hero, fog stack, layered menu, editorial scroll stories, page transitions must keep choreography across all devices
+alwaysApply: true
+---
+
+# Protected Signature Experiences
+
+The following are protected signature experiences and form the core identity of the Hathor website.
+
+These are not ordinary animations.
+
+They are part of the brand experience and must always preserve their choreography, pacing, timing, layering and emotional impact across desktop, tablet and phone.
+
+## Protected Experience 1 — Homepage Hero
+
+This includes:
+
+* Gold Venetian strip animation
+* Scroll-controlled strip progression
+* Hero logo rise
+* Letter stagger and landing
+* Book Now button expansion
+* Book Now letter-spacing animation
+* Hero release timing
+
+### Protection Rules
+
+Do not:
+
+* Convert to a one-time reveal
+* Finish the strips too early
+* Remove the scroll relationship
+* Change the order of events
+* Compress the animation into a short sequence
+* Replace with a generic hero animation
+
+You may:
+
+* Optimise rendering
+* Reduce GPU cost
+* Shorten the scroll runway slightly for phones
+* Use fewer strips where visually equivalent
+* Replace expensive rendering with cheaper rendering
+
+The visual story must remain identical.
+
+---
+
+## Protected Experience 2 — Four-Image Fog Storytelling Section
+
+This includes:
+
+* Four sequential image transitions
+* Fog-rise transitions
+* Large editorial text
+* Image-over-text reveal
+* Scroll-controlled storytelling
+* Image stacking
+* Per-image dwell time
+
+### Protection Rules
+
+Every image must complete its own sequence.
+
+Never:
+
+* Stop after the first image
+* Collapse multiple stages into one
+* Convert to a single reveal
+* Remove the fog transition
+* Remove the image-covering behaviour
+* Reduce the section to static cards
+
+The section must remain a cinematic four-stage story.
+
+---
+
+## Protected Experience 3 — Three-Layer Luxury Navigation
+
+This includes:
+
+* Dark gold panel
+* Light gold panel
+* Cream panel
+* Sequential layered opening
+* Sequential layered closing
+* Link stagger
+* Premium pacing
+
+Never:
+
+* Collapse into one drawer
+* Open all layers simultaneously
+* Remove stagger
+* Replace with a standard mobile navigation
+* Shorten into a generic fast transition
+
+The menu should feel architectural rather than functional.
+
+---
+
+## Protected Experience 4 — Editorial Scroll Stories
+
+This includes every section intentionally designed as a cinematic scroll experience.
+
+Examples include:
+
+* Slow image storytelling
+* Editorial reveals
+* Luxury product showcases
+* Cruise storytelling
+* Scroll-driven image transitions
+* Long-form immersive sections
+
+These sections are designed to control pacing.
+
+Never automatically convert them into:
+
+* One-time fades
+* Simple IntersectionObserver reveals
+* Generic scroll animations
+
+Maintain:
+
+* Reading rhythm
+* Dwell time
+* Scene progression
+* Scroll relationship
+* Luxury pacing
+
+Optimise rendering without changing the storytelling.
+
+---
+
+## Protected Experience 5 — Luxury Page Transitions
+
+This includes:
+
+* Route transitions
+* Page-entry choreography
+* Gold reveals
+* Curtain transitions
+* Editorial transitions
+* Cinematic loading sequences
+
+Do not:
+
+* Replace with instant page changes
+* Replace with generic fades
+* Shorten dramatically
+* Remove the luxury feeling
+
+Phone implementations may be lighter but must preserve the same experience.
+
+---
+
+# Protected Experience Rule
+
+Whenever editing any protected experience:
+
+1. Identify the current choreography.
+2. Preserve the choreography.
+3. Preserve the visual story.
+4. Optimise the implementation.
+5. Verify the animation still feels luxurious.
+6. Compare against the previous working version before replacing logic.
+
+If an optimisation changes the experience instead of the implementation:
+
+STOP.
+
+Explain the conflict and wait for approval before making that change.
+
+Protected experiences must never be automatically redesigned during performance optimisation.

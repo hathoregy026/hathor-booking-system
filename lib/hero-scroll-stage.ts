@@ -5,6 +5,7 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type Lenis from "lenis";
+import { logPhonePerfDev } from "@/lib/touch-device";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -395,7 +396,8 @@ export function mountHeroScrollStage({
 
     const w = window.innerWidth;
     let blindsCount = 48;
-    if (w <= 767) blindsCount = 26;
+    if (w <= 480) blindsCount = 14;
+    else if (w <= 767) blindsCount = 26;
     else if (w <= 1024) blindsCount = 36;
 
     const heroWidth = hero.clientWidth || w;
@@ -425,25 +427,50 @@ export function mountHeroScrollStage({
 
     const baseW = cta ? cta.offsetWidth || 168 : 168;
     const targetW = baseW * 4;
-    if (cta) gsap.set(cta, { width: baseW, height: 52 });
+    const phoneCtaScale = targetW / Math.max(baseW, 1);
+    if (cta) {
+      if (window.matchMedia("(max-width: 480px)").matches) {
+        gsap.set(cta, {
+          height: 52,
+          scaleX: 1,
+          transformOrigin: "50% 50%",
+          force3D: true,
+        });
+      } else {
+        gsap.set(cta, { width: baseW, height: 52 });
+      }
+    }
     if (ctaText) gsap.set(ctaText, { letterSpacing: "0.22em" });
 
     const titleTravel = Math.min(w * 0.38, 420);
     const isTouch = window.matchMedia("(max-width: 1024px)").matches;
     const isPhoneTouch = window.matchMedia("(max-width: 480px)").matches;
+    /*
+     * Phone: sticky runway (`.home-hero-runway`) + direct scrub.
+     * Avoid GSAP pin — pin-spacer + mobile browser chrome = jumpy strips.
+     */
+    const phoneRunway = isPhoneTouch
+      ? (hero.closest(".home-hero-runway") as HTMLElement | null)
+      : null;
+    const heroTrigger = phoneRunway || hero;
 
     const tl = gsap.timeline({
       scrollTrigger: {
         id: "hero-stage",
-        trigger: hero,
+        trigger: heroTrigger,
         start: "top top",
-        end: isPhoneTouch ? "+=290%" : "+=130%",
+        end:
+          isPhoneTouch && phoneRunway
+            ? "bottom bottom"
+            : isPhoneTouch
+              ? "+=290%"
+              : "+=130%",
         // Direct scrub on touch — laggy scrub (1.7) feels like scroll jumping
         scrub: isTouch ? true : 1.7,
-        pin: true,
-        pinSpacing: true,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
+        pin: !isPhoneTouch,
+        pinSpacing: !isPhoneTouch,
+        anticipatePin: isPhoneTouch ? 0 : 1,
+        invalidateOnRefresh: !isPhoneTouch,
         onLeave: () => {
           if (!isPhoneTouch && logoMark) {
             gsap.set(logoMark, { autoAlpha: 0, y: getLogoHiddenY() });
@@ -451,6 +478,17 @@ export function mountHeroScrollStage({
         },
       },
     });
+
+    if (isPhoneTouch) {
+      logPhonePerfDev({
+        surface: "hero-stage",
+        triggerCount: 1,
+        pin: false,
+        stickyRunway: Boolean(phoneRunway),
+        scrub: true,
+        strips: strips.length,
+      });
+    }
 
     if (isPhoneTouch) {
       const phoneStripStagger = strips.length > 1 ? 0.02 : 0;
@@ -532,8 +570,13 @@ export function mountHeroScrollStage({
         tl.to(scrollHint, { opacity: 0, ease: "none", duration: 0.26 }, 0.1);
       }
 
+      /* Phone CTA: scaleX — CSS often locks width with !important on narrow */
       if (cta) {
-        tl.to(cta, { width: targetW, ease: "none", duration: 0.42 }, 0.48);
+        tl.to(
+          cta,
+          { scaleX: phoneCtaScale, ease: "none", duration: 0.42 },
+          0.48,
+        );
       }
       if (ctaText) {
         tl.to(
@@ -682,23 +725,42 @@ export function mountHeroScrollStage({
     logoReadyForScroll = true;
   };
 
-  const rafId = requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      if (skipLanding) {
-        snapLogoLanded();
-        return;
-      }
-      const img = logoMark?.querySelector("img");
-      if (img && !img.complete) {
-        img.addEventListener("load", playLanding, { once: true });
-        setTimeout(playLanding, 500);
-      } else {
-        playLanding();
-      }
+  /*
+   * Phone scrub owns logo rise — never run free-landing / touchstart snap
+   * (those fight the scrubbed timeline and jump strips).
+   */
+  let rafId = 0;
+  if (isPhoneHero) {
+    logoReadyForScroll = true;
+    markHeroMotionReady();
+    document.documentElement.classList.add("ex-scroll-ready");
+    document.documentElement.classList.remove("ex-pending", "ex-pending-deep");
+    logPhonePerfDev({
+      surface: "hero-stage",
+      phoneSticky: true,
+      landingSkipped: true,
+      rebuildDebounceMs: 250,
     });
-  });
+  } else {
+    rafId = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (skipLanding) {
+          snapLogoLanded();
+          return;
+        }
+        const img = logoMark?.querySelector("img");
+        if (img && !img.complete) {
+          img.addEventListener("load", playLanding, { once: true });
+          setTimeout(playLanding, 500);
+        } else {
+          playLanding();
+        }
+      });
+    });
+  }
 
   const onFirstScroll = () => {
+    if (isPhoneHero) return;
     if (landingTween && landingTween.isActive()) {
       landingTween.progress(1).kill();
     }
@@ -708,26 +770,47 @@ export function mountHeroScrollStage({
     if (lenis) lenis.off("scroll", onFirstScroll);
   };
 
-  if (logoMark) {
+  if (logoMark && !isPhoneHero) {
     window.addEventListener("wheel", onFirstScroll, { passive: true });
     window.addEventListener("touchstart", onFirstScroll, { passive: true });
     if (lenis) lenis.on("scroll", onFirstScroll);
   }
 
   let resizeTimer: ReturnType<typeof setTimeout>;
+  let lastHeroWidth = window.innerWidth;
+  let heroRebuildCount = 0;
   const onResize = () => {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      build();
-      ScrollTrigger.refresh();
-    }, 200);
+    resizeTimer = setTimeout(
+      () => {
+        if (isPhoneHero) {
+          const w = window.innerWidth;
+          /* Ignore height-only chrome resize — only rebuild on real width change */
+          if (Math.abs(w - lastHeroWidth) < 20) return;
+          lastHeroWidth = w;
+          heroRebuildCount += 1;
+          logPhonePerfDev({
+            surface: "hero-stage",
+            rebuild: heroRebuildCount,
+            reason: "width-or-orientation",
+          });
+        }
+        build();
+        ScrollTrigger.refresh();
+      },
+      isPhoneHero ? 250 : 200,
+    );
   };
   window.addEventListener("resize", onResize);
+  if (isPhoneHero) {
+    window.addEventListener("orientationchange", onResize, { passive: true });
+  }
 
   return () => {
-    cancelAnimationFrame(rafId);
+    if (rafId) cancelAnimationFrame(rafId);
     clearTimeout(resizeTimer);
     window.removeEventListener("resize", onResize);
+    window.removeEventListener("orientationchange", onResize);
     window.removeEventListener("wheel", onFirstScroll);
     window.removeEventListener("touchstart", onFirstScroll);
     if (lenis) lenis.off("scroll", onFirstScroll);

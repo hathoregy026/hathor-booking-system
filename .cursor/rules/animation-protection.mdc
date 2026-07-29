@@ -1,0 +1,54 @@
+---
+description: HIGHEST PRIORITY — protect existing animation choreography; optimise implementation, never redesign signature behaviour without approval
+alwaysApply: true
+---
+
+# Animation Protection Rule (Highest Priority)
+
+This rule outranks ordinary mobile/performance simplifications when they conflict with existing animation behaviour.
+
+For any future modification to an existing animation or interaction:
+
+Before changing the implementation, first identify:
+
+* What the animation is trying to communicate.
+* The existing choreography.
+* The animation phases.
+* The timing between phases.
+* The scroll relationship.
+* The intended emotional experience.
+
+Treat these as requirements, not implementation details.
+
+When optimising for tablet or phone:
+
+* Preserve the choreography first.
+* Preserve the visual story second.
+* Optimise the rendering third.
+
+Never redesign or simplify an existing signature animation unless I explicitly request a redesign.
+
+If an optimisation would change:
+
+* animation order
+* scroll timing
+* pacing
+* dwell time
+* stagger
+* progression
+* layering
+* choreography
+
+stop and choose a different optimisation instead.
+
+If preserving both the choreography and the performance is impossible, do not decide automatically.
+
+Instead:
+
+1. Explain the trade-off.
+2. State exactly what would have to change.
+3. Wait for my approval before altering the experience.
+
+When working on existing signature animations, always compare against the previous working implementation (Git history if available) before replacing logic.
+
+Optimise implementation, not behaviour.

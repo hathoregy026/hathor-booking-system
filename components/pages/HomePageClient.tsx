@@ -326,17 +326,19 @@ export function HomePageClient({
     <div className="ex-root" data-hathor-logo-tuned="">
       <HathorLogoTuner />
       <main id="top">
-        <PublicSiteHero
-          animate={false}
-          splitLetterLogo
-          playVideo
-          lineRight={EX_HERO.lineRight}
-          lineLeft={EX_HERO.lineLeft}
-          heroPage="home"
-          posterImageName={EX_HERO.imageName}
-          logoPartsVariant={liveTune.partsVariant}
-          mobileLogoPartsVariant={liveTuneMobile.partsVariant}
-        />
+        <div className="home-hero-runway">
+          <PublicSiteHero
+            animate={false}
+            splitLetterLogo
+            playVideo
+            lineRight={EX_HERO.lineRight}
+            lineLeft={EX_HERO.lineLeft}
+            heroPage="home"
+            posterImageName={EX_HERO.imageName}
+            logoPartsVariant={liveTune.partsVariant}
+            mobileLogoPartsVariant={liveTuneMobile.partsVariant}
+          />
+        </div>
 
         <LuxuryMarquee />
 
@@ -455,9 +457,10 @@ export function HomePageClient({
         </section>
 
         <section
-          className="ex-stack-scroll ex-content-section"
+          className="ex-stack-scroll ex-content-section signature-fog-rise"
           id="details"
           data-site-image-pin-root
+          data-mobile-fog-rise=""
           aria-label="Every landmark, a pleasure"
         >
           <div className="ex-stack-scroll__viewport">

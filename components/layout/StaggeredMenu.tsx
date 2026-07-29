@@ -53,7 +53,7 @@ export function StaggeredMenu({
       setOpenGroupId(null);
       return;
     }
-    const timer = window.setTimeout(() => setMounted(false), 900);
+    const timer = window.setTimeout(() => setMounted(false), 1200);
     return () => window.clearTimeout(timer);
   }, [open]);
 
@@ -70,8 +70,8 @@ export function StaggeredMenu({
 
   const layerColors =
     colors && colors.length
-      ? colors.slice(0, 2)
-      : ["#8b6914", "#c9a96e"];
+      ? colors.slice(0, 3)
+      : ["#8b6914", "#c9a96e", "#ece8df"];
 
   const style = {
     ["--sm-accent"]: accentColor,

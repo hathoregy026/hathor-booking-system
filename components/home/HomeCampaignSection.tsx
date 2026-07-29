@@ -93,6 +93,14 @@ export function HomeCampaignSection({
 
     if (!frame || !image) return;
 
+    const isPhone = window.matchMedia("(max-width: 480px)").matches;
+    const FOG_STEPS = 24;
+    const quantiseFog = (edgePct: number) => {
+      if (!isPhone) return edgePct;
+      const step = 140 / FOG_STEPS;
+      return Math.round(edgePct / step) * step;
+    };
+
     let animationFrame = 0;
 
     const render = () => {
@@ -102,14 +110,14 @@ export function HomeCampaignSection({
       const progress = clamp(-track.getBoundingClientRect().top / travel);
 
       const textProgress = ease(between(progress, 0, PHASE.textEnd));
-      revealCharacters(invitation, textProgress, 0.42);
+      revealCharacters(invitation, textProgress, isPhone ? 0.28 : 0.42);
 
       const imageProgress = ease(
         between(progress, PHASE.imageStart, PHASE.imageEnd),
       );
       image.style.setProperty(
         "--hcta-fog-edge",
-        `${imageProgress * 140}%`,
+        `${quantiseFog(imageProgress * 140)}%`,
       );
       image.style.opacity = clamp(imageProgress * 1.8).toFixed(3);
 
@@ -159,10 +167,11 @@ export function HomeCampaignSection({
   return (
     <section
       ref={trackRef}
-      className="hcta-track"
+      className="hcta-track signature-fog-rise"
       id="campaign"
       aria-label="Campaign call to action"
       data-hcta-track
+      data-mobile-fog-rise=""
     >
       <div className="hcta-frame" data-hcta-frame>
         <div className="hcta-silk" data-hcta-silk>

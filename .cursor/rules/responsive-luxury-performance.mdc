@@ -1,0 +1,576 @@
+---
+description: Permanent responsive luxury + performance — every design/animation change must preserve cinematic experience across desktop, tablet, and phone
+alwaysApply: true
+---
+
+# Permanent Responsive Luxury and Performance Rule
+
+This project must remain visually luxurious, cinematic and consistent across desktop, tablet and real mobile devices.
+
+Every future design, animation, layout or interaction change must be reviewed for all three device groups:
+
+```text
+Desktop: above 1024px
+Tablet: 481px–1024px
+Phone: 480px and below
+```
+
+Do not treat mobile and tablet as smaller copies of desktop.
+
+Preserve the same visual idea, emotional impact, hierarchy and premium feeling, but adapt the implementation to suit each device’s screen size, input method and performance limits.
+
+This rule applies to every future edit, even when the request only mentions desktop.
+
+---
+
+# 1. Every desktop change requires responsive adaptation
+
+Whenever modifying a desktop section, component, animation or interaction:
+
+1. Implement the requested desktop change.
+2. Inspect how the same change behaves on tablet.
+3. Inspect how the same change behaves on phone.
+4. Create adapted tablet and phone behaviour where necessary.
+5. Preserve the same design language and intended experience.
+6. Validate that the adaptation does not damage existing mobile choreography.
+
+Do not finish a task after checking desktop only.
+
+Never assume desktop CSS, animation distances, blur values, video assets, hover states or scroll behaviour will work correctly on touch devices.
+
+---
+
+# 2. Preserve the luxury experience
+
+Mobile optimisation must not mean removing the character of the website.
+
+Preserve:
+
+* Cinematic pacing
+* Gold curtain and Venetian-strip effects
+* Fog-rise transitions
+* Layered menu panels
+* Large editorial typography
+* Slow storytelling sections
+* Logo choreography
+* Book Now button choreography
+* Image stacking
+* Soft shadows
+* Gold highlights
+* Elegant staggered movement
+* Premium spacing
+* Controlled text reveals
+* Purposeful dwell time
+* Parallax where safe
+* Decorative particles where safe
+
+Do not replace a signature animation with a generic fade unless explicitly requested.
+
+Do not simplify the design into a standard mobile layout.
+
+The goal is:
+
+```text
+Same luxury idea
+Same emotional impact
+Adapted implementation
+Smooth real-device performance
+```
+
+---
+
+# 3. Distinguish signature effects from ordinary effects
+
+Before changing an animation, classify it.
+
+## Signature effects
+
+Examples:
+
+* Homepage gold strips
+* Homepage logo rise
+* Book Now stretching animation
+* Four-image fog storytelling sequence
+* Layered three-colour mobile menu
+* Major hero transitions
+* Scroll-controlled editorial sections
+
+Signature effects must preserve:
+
+* Original order
+* Original visual story
+* Scroll relationship
+* Timing hierarchy
+* Stagger
+* Dwell time
+* Progression between phases
+
+They may be optimised internally, but must not be converted into a generic one-time reveal.
+
+## Ordinary effects
+
+Examples:
+
+* Standard card reveals
+* Supporting paragraphs
+* Small headings
+* Decorative hover movement
+* Minor icon animations
+* Non-essential blur reveals
+
+Ordinary effects may use cheaper phone implementations such as:
+
+* Opacity
+* Translate
+* Short one-time transitions
+* Reduced particle counts
+* Reduced blur
+* Disabled hover-only transforms
+
+Do not apply ordinary mobile simplifications to signature effects.
+
+---
+
+# 4. Phone animation adaptation rules
+
+At `max-width: 480px`:
+
+## Scrolling
+
+* Use native scrolling.
+* Do not instantiate Lenis.
+* Do not attach Lenis to the GSAP ticker.
+* Do not create multiple scrolling engines.
+* Preserve native momentum scrolling.
+* Avoid rebuilding animations during browser-bar height changes.
+* Ignore height-only viewport resize events.
+* Rebuild only after meaningful width changes or orientation changes.
+
+## ScrollTrigger
+
+ScrollTrigger is allowed on phones when necessary for signature choreography.
+
+Do not globally ban pinning.
+
+Use this decision:
+
+```text
+Ordinary reveal:
+Use IntersectionObserver or a short one-time reveal.
+
+Signature scroll story:
+Use a controlled ScrollTrigger timeline, sticky stage or shorter pin.
+```
+
+For phone pins:
+
+* Keep the runway shorter than desktop.
+* Avoid unnecessary 4–5 viewport hard pins.
+* Use the minimum scroll distance that preserves pacing.
+* Do not allow the sequence to finish before the user meaningfully scrolls through the section.
+* Do not convert scroll-controlled signature sequences into automatic timelines.
+* Do not complete the full sequence on section entry.
+
+## Animation properties
+
+Prefer:
+
+* `transform`
+* `translate3d`
+* `scale`
+* `opacity`
+* CSS masks
+* Gradient overlays
+* Clip paths used carefully
+* GSAP quick setters
+* One requestAnimationFrame update path
+
+Avoid:
+
+* Animating width every frame when transform can produce the same result
+* Large animated full-screen blur
+* Repeated filter transitions
+* Layout-affecting properties during scroll
+* Updating many inactive elements on every scroll event
+* Repeated `gsap.set()` loops for every element
+* Permanent JavaScript animation loops
+
+## Blur and fog
+
+Do not globally remove blur.
+
+For ordinary reveals:
+
+* Use opacity and translate.
+* Remove animated blur.
+
+For signature fog effects:
+
+* Keep a visible lightweight fog.
+* Use approximately 2–3px blur where needed.
+* Prefer a gradient, mask or pseudo-element.
+* Preserve the soft image-covering transition.
+* Do not turn the fog transition into a simple fade.
+
+## Text animation
+
+* Preserve large editorial text.
+* Use word-level splitting on phones where character splitting is expensive.
+* Preserve the intended stagger and hierarchy.
+* Do not animate hundreds of characters individually unless performance is verified.
+
+## Particles
+
+* Keep decorative particles when they contribute to the design.
+* Reduce the quantity on phones.
+* Use transform and opacity only.
+* Pause when outside the viewport.
+* Pause when the document is hidden.
+* Avoid permanent JavaScript loops.
+
+---
+
+# 5. Tablet adaptation rules
+
+For `481px–1024px`:
+
+Tablet must not automatically inherit either desktop or phone behaviour.
+
+Evaluate:
+
+* Portrait tablet
+* Landscape tablet
+* Touch input
+* Medium GPU capability
+* Reduced available width
+* Browser chrome and safe areas
+
+Tablet may keep more desktop animation detail than phone, but should use:
+
+* Reduced scroll distances where needed
+* Fewer simultaneous effects
+* Smaller blur radii
+* Responsive type sizes
+* Adapted spacing
+* Touch-safe controls
+* No hover-dependent functionality
+* Optimised media assets
+* Stable viewport units
+
+Do not alter tablet behaviour merely because a phone-specific fix exists.
+
+Use explicit media queries and `gsap.matchMedia()` branches.
+
+---
+
+# 6. Protect existing signature choreography
+
+Before modifying any animation file:
+
+1. Inspect the existing timeline.
+2. Identify each phase.
+3. Record its progress range.
+4. Identify the elements controlled by each phase.
+5. Preserve the order unless the user explicitly asks to redesign it.
+
+For scroll-controlled experiences, document the choreography internally using comments such as:
+
+```ts
+// 0.00–0.18: strips begin closing
+// 0.18–0.52: logo rises
+// 0.45–0.90: Book Now stretches
+// 0.88–1.00: final landing and release
+```
+
+Do not compress all phases into one shared transition.
+
+Do not use one global completed boolean for a multi-scene sequence.
+
+Do not let one image transition complete the entire four-image story.
+
+Do not remove future cards from the animation array.
+
+Do not apply broad phone CSS that overrides GSAP-controlled opacity, transform, visibility or z-index.
+
+---
+
+# 7. Protect these specific experiences
+
+## Four-image fog section
+
+This section must always:
+
+* Contain all four image transitions
+* Reveal each image in order
+* Allow each image to rise through fog
+* Cover the previous visual
+* Display the corresponding text
+* Include dwell time
+* Remain controlled by scroll
+* Never stop after the first image
+
+When changing this section, test every stage individually.
+
+## Homepage hero
+
+The homepage hero must preserve this progression:
+
+1. Gold strips begin moving with scroll.
+2. Strips continue progressively rather than finishing immediately.
+3. The large logo rises back into view.
+4. Logo letters retain their stagger.
+5. The Book Now button stretches progressively.
+6. Book Now letter spacing increases progressively.
+7. Around 85–90% of hero progress, the button is near full width.
+8. The hero releases only after the sequence is nearly complete.
+
+Do not replace this with a one-time IntersectionObserver reveal.
+
+## Mobile menu
+
+The menu must keep three visibly separate layers:
+
+```text
+Dark gold: #8b6914
+Light gold: #c9a96e
+Cream: #ece8df
+```
+
+Opening order:
+
+1. Dark gold
+2. Light gold
+3. Cream
+4. Menu content
+5. Link stagger
+
+Closing order:
+
+1. Content exits
+2. Cream
+3. Light gold
+4. Dark gold
+
+Do not collapse this into one fast panel.
+
+Do not set all delays to zero.
+
+Do not use a generic 200ms mobile drawer.
+
+---
+
+# 8. Media rules
+
+Whenever adding or changing media:
+
+## Video
+
+* Provide a mobile source where possible.
+* Use `<source media>` to prevent phones downloading the desktop asset.
+* Use a poster.
+* Pause outside the viewport.
+* Pause when the document is hidden.
+* Avoid repeated `play()` calls.
+* Keep `muted` and `playsInline`.
+* Respect reduced motion.
+* Do not reduce desktop video quality.
+
+## Images
+
+* Use responsive image sizes.
+* Use modern formats where possible.
+* Avoid loading desktop-resolution images on phones.
+* Provide correct `sizes`.
+* Preserve art direction.
+* Do not crop important luxury composition incorrectly.
+
+---
+
+# 9. Responsive layout rules
+
+For every new section or change, verify:
+
+* No horizontal overflow
+* No clipped text
+* No overlapping navigation
+* No unsafe fixed-width containers
+* No layout dependent on hover
+* Correct safe-area padding
+* Stable hero height
+* Correct portrait and landscape behaviour
+* Buttons remain tappable
+* Typography remains editorial and intentional
+* Spacing remains premium rather than cramped
+* Fixed elements do not cover content
+* Browser chrome changes do not cause jumps
+
+Use:
+
+* `svh` for stable minimum heights
+* `dvh` only when resizing will not produce visual jumps
+* `clamp()` for responsive typography and spacing
+* Logical safe-area insets
+* Component-specific media queries
+
+Avoid global phone overrides that affect unrelated components.
+
+---
+
+# 10. CSS safety
+
+When editing mobile CSS:
+
+* Use selectors scoped to the component.
+* Avoid broad selectors such as `*`, global `div` rules or generic animation classes.
+* Do not add large groups of `!important` rules.
+* Check whether CSS overrides GSAP inline styles.
+* Consolidate conflicting custom properties.
+* Do not create duplicate mobile definitions in several files.
+* Keep phone rules under `max-width: 480px`.
+* Keep tablet rules separate.
+* Do not accidentally change desktop styles.
+
+When possible, place responsive behaviour beside the component it controls.
+
+---
+
+# 11. Animation lifecycle and cleanup
+
+Every animation must:
+
+* Use a GSAP context or stored references.
+* Clean up only its own triggers and observers.
+* Never call:
+
+```ts
+ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+```
+
+* Avoid duplicate timelines after route changes.
+* Avoid duplicate observers.
+* Pause when hidden where appropriate.
+* Remove temporary `will-change`.
+* Avoid multiple resize listeners controlling the same animation.
+* Avoid rebuilding from height-only mobile viewport changes.
+* Avoid hydration-dependent layout jumps.
+
+---
+
+# 12. Git and regression protection
+
+Before modifying a signature animation:
+
+* Review the current Git diff.
+* Preserve the last working choreography.
+* Create a checkpoint when making a substantial animation change.
+* Do not mix unrelated refactoring into animation work.
+* Prefer small, reversible edits.
+* Do not rewrite entire animation hooks unless necessary.
+
+When a change affects mobile, compare against the last working mobile version rather than recreating the behaviour from memory.
+
+---
+
+# 13. Required validation for every future visual change
+
+Before declaring a visual or animation task complete, validate:
+
+```text
+Desktop:
+1440 × 900
+
+Tablet portrait:
+768 × 1024
+
+Tablet landscape:
+1024 × 768
+
+Phone:
+390 × 844
+393 × 852
+430 × 932
+```
+
+Also test:
+
+* Touch input
+* Reduced-motion mode
+* Opening and closing navigation
+* Full homepage scroll
+* Back navigation
+* Orientation change
+* Browser-bar movement
+* Page visibility changes
+
+Check:
+
+* No horizontal overflow
+* No animation skipped
+* No stuck transforms
+* No blank sections
+* No duplicate scroll engine
+* No premature animation completion
+* No console errors
+* No hydration errors
+* No repeated video loading
+* No excessive ScrollTrigger rebuilding
+* All signature animation stages complete
+* Desktop appearance remains unchanged unless requested
+
+Run:
+
+```bash
+npm run lint
+npm run build
+```
+
+---
+
+# 14. Required completion report
+
+After every future design or animation change, report:
+
+```text
+Desktop change:
+- what changed
+
+Tablet adaptation:
+- how the same idea was adapted
+
+Phone adaptation:
+- how the same idea was adapted
+
+Signature choreography:
+- confirmation that ordering, timing and scroll progression were preserved
+
+Performance safeguards:
+- optimisations applied
+
+Files changed:
+- exact paths
+
+Validation:
+- sizes tested
+- lint result
+- build result
+
+Remaining risks:
+- anything that still requires real-device testing
+```
+
+---
+
+# Final decision rule
+
+When choosing between visual quality and performance, do not blindly remove the effect.
+
+Use this order:
+
+1. Preserve the visual concept.
+2. Preserve the choreography.
+3. Reduce simultaneous work.
+4. Replace expensive rendering with cheaper rendering.
+5. Reduce detail only when necessary.
+6. Remove an effect only when explicitly approved.
+
+Every future edit must maintain a luxurious experience on desktop, tablet and real phones.

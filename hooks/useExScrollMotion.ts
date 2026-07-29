@@ -674,6 +674,26 @@ export function useExScrollMotion() {
     const pagerLine = section?.querySelector<HTMLElement>("[data-stack-pager-line]");
     if (!section || !viewport || cards.length < 2) return;
 
+    section.setAttribute("data-mobile-fog-rise", "");
+    section.classList.add("signature-fog-rise");
+
+    /** ~24 fog steps on phone — lighter than continuous CSS var thrash. */
+    const FOG_STEPS = 24;
+    const FOG_RANGE = 140;
+    const quantiseFogEdge = (edge: number, stepped: boolean) => {
+      if (!stepped) return edge;
+      const step = FOG_RANGE / FOG_STEPS;
+      return Math.round(edge / step) * step;
+    };
+
+    const clearFogWillChange = (
+      card: HTMLElement,
+      media: HTMLElement | null,
+    ) => {
+      card.style.willChange = "auto";
+      if (media) media.style.willChange = "auto";
+    };
+
     const setStackPager = (index: number) => {
       const safe = Math.max(0, Math.min(index, cards.length - 1));
       if (pagerNum) {
@@ -811,7 +831,17 @@ export function useExScrollMotion() {
       setStackPager(0);
 
       const isPhoneStack = isNarrowViewport;
-      const lightStack = lightenDevice;
+      const lightStack = lightenDevice || isPhone;
+      const fogStepped = isPhone || lightenDevice;
+
+      logPhonePerfDev({
+        surface: "ex-stack-fog-rise",
+        cards: total,
+        phoneLightweight: isPhone,
+        pin: !(isPhone || isPhoneStack),
+        stickyRunway: isPhone || isPhoneStack,
+        fogSteps: fogStepped ? FOG_STEPS : "continuous",
+      });
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -820,22 +850,28 @@ export function useExScrollMotion() {
           start: "top top",
           end: isPhoneStack ? "bottom bottom" : `+=${scrollSpan * 100}%`,
           /*
-           * Lower scrub lag = less rubber-band catch-up when the wheel
-           * stops, so frames sit smoothly instead of jumping into place.
-           * Touch: direct scrub (no lag) — laggy scrub feels like scroll jumping.
+           * Narrow/phone: CSS sticky section height is the runway.
+           * Direct scrub on touch — no lag catch-up.
            */
           scrub: isPhoneStack ? true : 1.15,
           /*
            * Narrow screens use a CSS-sticky viewport inside a tall section.
-           * This preserves the landmark sequence without a GSAP pin spacer,
-           * which is unstable during mobile browser toolbar resizing.
-           * Phones ≤480: never pin.
+           * Preserves landmark storytelling without a GSAP pin spacer
+           * (unstable during mobile browser toolbar resizing).
            */
           pin: isPhone || isPhoneStack ? false : viewport,
           pinSpacing: !(isPhone || isPhoneStack),
           anticipatePin: 1,
           fastScrollEnd: true,
-          invalidateOnRefresh: true,
+          invalidateOnRefresh: !isPhone,
+          onToggle: (self) => {
+            section.classList.toggle("is-fog-active", self.isActive);
+            if (!self.isActive) {
+              cards.forEach((card) =>
+                clearFogWillChange(card, getCardMedia(card)),
+              );
+            }
+          },
           /* Keep pinned width stable — no 100vw recalculation on pin */
           onRefresh: (self) => {
             const pin = self.pin as HTMLElement | null;
@@ -854,26 +890,64 @@ export function useExScrollMotion() {
       /* Gold invitation rises quickly, then first landmark fog-covers it */
       if (silkChars.length) {
         const silkDuration = introText * 0.55;
-        const silkStagger =
-          silkChars.length > 1
-            ? (introText * 0.45) / (silkChars.length - 1)
-            : 0;
-        tl.fromTo(
-          silkChars,
-          { x: 0, y: 0, xPercent: 0, yPercent: 100, opacity: 0 },
-          {
-            x: 0,
-            y: 0,
-            xPercent: 0,
-            yPercent: 0,
-            opacity: 1,
-            ease: "none",
-            duration: silkDuration,
-            stagger: silkStagger,
-            force3D: true,
-          },
-          0,
-        );
+        if (isPhone) {
+          /* Word-level rise — same motion, far fewer staggered nodes */
+          const words: HTMLElement[][] = [];
+          let bucket: HTMLElement[] = [];
+          silkChars.forEach((el) => {
+            const text = el.textContent ?? "";
+            if (text === "\u00A0" || text === " " || text.trim() === "") {
+              if (bucket.length) {
+                words.push(bucket);
+                bucket = [];
+              }
+              return;
+            }
+            bucket.push(el);
+          });
+          if (bucket.length) words.push(bucket);
+          const wordCount = Math.max(1, words.length);
+          const silkStagger =
+            wordCount > 1 ? (introText * 0.45) / (wordCount - 1) : 0;
+          words.forEach((wordChars, wi) => {
+            tl.fromTo(
+              wordChars,
+              { x: 0, y: 0, xPercent: 0, yPercent: 100, opacity: 0 },
+              {
+                x: 0,
+                y: 0,
+                xPercent: 0,
+                yPercent: 0,
+                opacity: 1,
+                ease: "none",
+                duration: silkDuration,
+                force3D: true,
+              },
+              wi * silkStagger,
+            );
+          });
+        } else {
+          const silkStagger =
+            silkChars.length > 1
+              ? (introText * 0.45) / (silkChars.length - 1)
+              : 0;
+          tl.fromTo(
+            silkChars,
+            { x: 0, y: 0, xPercent: 0, yPercent: 100, opacity: 0 },
+            {
+              x: 0,
+              y: 0,
+              xPercent: 0,
+              yPercent: 0,
+              opacity: 1,
+              ease: "none",
+              duration: silkDuration,
+              stagger: silkStagger,
+              force3D: true,
+            },
+            0,
+          );
+        }
       }
 
       const firstCard = cards[0];
@@ -884,19 +958,22 @@ export function useExScrollMotion() {
         firstFog,
         { edge: 0, reveal: 0 },
         {
-          edge: 140,
+          edge: FOG_RANGE,
           reveal: 1,
           ease: "none",
           duration: introFog,
+          onStart: () => {
+            firstCard.style.willChange = "opacity";
+            if (firstMedia) firstMedia.style.willChange = "transform";
+          },
           onUpdate: () => {
-            const edge = lightStack
-              ? Math.round(firstFog.edge / 8) * 8
-              : firstFog.edge;
+            const edge = quantiseFogEdge(firstFog.edge, fogStepped);
             firstCard.style.setProperty("--stack-fog-edge", `${edge}%`);
             const op = Math.min(1, Math.max(0, firstFog.reveal * 1.8));
             firstCard.style.opacity = String(op);
             if (op > 0.001) firstCard.style.visibility = "visible";
           },
+          onComplete: () => clearFogWillChange(firstCard, firstMedia),
         },
         introFogAt,
       );
@@ -969,20 +1046,23 @@ export function useExScrollMotion() {
           fog,
           { edge: 0, reveal: 0 },
           {
-            edge: 140,
+            edge: FOG_RANGE,
             reveal: 1,
             ease: "none",
             duration: move,
+            onStart: () => {
+              card.style.willChange = "opacity";
+              if (media) media.style.willChange = "transform";
+            },
             onUpdate: () => {
-              const edge = lightStack
-                ? Math.round(fog.edge / 8) * 8
-                : fog.edge;
+              const edge = quantiseFogEdge(fog.edge, fogStepped);
               card.style.setProperty("--stack-fog-edge", `${edge}%`);
               /* Opacity only — visibility toggles caused settle flicker */
               const op = Math.min(1, Math.max(0, fog.reveal * 1.8));
               card.style.opacity = String(op);
               if (op > 0.001) card.style.visibility = "visible";
             },
+            onComplete: () => clearFogWillChange(card, media),
           },
           moveAt,
         );
@@ -1053,7 +1133,12 @@ export function useExScrollMotion() {
           );
         }
 
-        for (let j = 0; j < i; j++) {
+        /*
+         * Phone: only dim the immediately previous scene (active + previous).
+         * Desktop/tablet: keep full depth stack for luxury layering.
+         */
+        const underStart = isPhone ? i - 1 : 0;
+        for (let j = Math.max(0, underStart); j < i; j++) {
           const depth = i - j;
           const underCard = cards[j];
           const underMedia = getCardMedia(underCard);
