@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { ExternalLink, Loader2, RotateCcw, Save } from "lucide-react";
 import { AdminDevicePreviewToggle } from "@/components/admin/AdminDevicePreviewToggle";
+import { AdminPhoneDeviceFrame } from "@/components/admin/AdminPhoneDeviceFrame";
 import { HeroLogoTunePreview } from "@/components/admin/HeroLogoTunePreview";
 import { useToast } from "@/components/admin/ToastProvider";
 import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
-import { AdminPhoneDeviceFrame } from "@/components/admin/AdminPhoneDeviceFrame";
 import {
   ADMIN_PHONE_PREVIEW_WIDTH,
   type AdminDevicePreview,
@@ -23,6 +23,19 @@ import {
   HATHOR_LOGO_PARTS_VARIANTS,
   HATHOR_LOGO_PARTS_VARIANT_LABELS,
 } from "@/lib/hathor-logo-letters";
+
+const EDITOR_SECTIONS = [
+  { id: "preview", label: "Preview" },
+  { id: "colour", label: "Letter colour" },
+  { id: "align", label: "Alignment" },
+  { id: "overall", label: "Overall" },
+  { id: "edges", label: "Screen edges" },
+  { id: "center", label: "Center gaps" },
+  { id: "spacing", label: "Letter spacing" },
+  { id: "nudge", label: "Fine nudge" },
+] as const;
+
+type SectionId = (typeof EDITOR_SECTIONS)[number]["id"];
 
 function AlignIcon({ kind }: { kind: HeroLogoVAlign }) {
   if (kind === "top") {
@@ -69,6 +82,33 @@ const VALIGN_OPTIONS: { value: HeroLogoVAlign; label: string }[] = [
   { value: "middle", label: "Align middles" },
   { value: "bottom", label: "Align bottoms" },
 ];
+
+function Section({
+  id,
+  step,
+  title,
+  description,
+  children,
+}: {
+  id: SectionId;
+  step: number;
+  title: string;
+  description?: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="wt-section" id={`hlt-${id}`}>
+      <header className="wt-section__head">
+        <span className="wt-section__step">{String(step).padStart(2, "0")}</span>
+        <div className="wt-section__titles">
+          <h3 className="wt-section__title">{title}</h3>
+          {description ? <p className="wt-section__desc">{description}</p> : null}
+        </div>
+      </header>
+      <div className="wt-section__body">{children}</div>
+    </section>
+  );
+}
 
 function NumberField({
   label,
@@ -177,6 +217,7 @@ export function HeroLogoTunePanel() {
   );
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [activeSection, setActiveSection] = useState<SectionId>("preview");
 
   const tune = device === "phone" ? phoneTune : desktopTune;
   const setTune = device === "phone" ? setPhoneTune : setDesktopTune;
@@ -233,6 +274,16 @@ export function HeroLogoTunePanel() {
     });
   };
 
+  const discard = () => setTune(saved);
+
+  const jumpTo = (id: SectionId) => {
+    setActiveSection(id);
+    const el = document.getElementById(`hlt-${id}`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   const save = async () => {
     setSaving(true);
     try {
@@ -282,71 +333,147 @@ export function HeroLogoTunePanel() {
     }
   };
 
-  return (
-    <div className="space-y-6">
-      <div>
-        <p
-          className="admin-section-label mb-2"
-          style={{ color: "var(--accent)" }}
-        >
-          Temporary
-        </p>
-        <h1 className="admin-page-title">Hero Logo Tune</h1>
-        <p className="admin-page-subtitle max-w-2xl">
-          Switch Desktop / Phone to edit each version separately. Phone preview
-          is a fixed {ADMIN_PHONE_PREVIEW_WIDTH}px frame linked to the live phone
-          site (≤767px).
-        </p>
+  if (loading) {
+    return (
+      <div className="wt-panel wt-panel--loading">
+        <Loader2 className="h-5 w-5 animate-spin" aria-hidden />
+        Loading logo tune…
       </div>
+    );
+  }
 
-      <AdminDevicePreviewToggle
-        value={device}
-        onChange={setDevice}
-        desktopDirty={desktopDirty}
-        phoneDirty={phoneDirty}
-        disabled={loading || saving}
-      />
-
-      <div
-        className={`admin-card space-y-8 p-6${device === "phone" ? " admin-phone-preview-shell" : ""}`}
-      >
-        {loading ? (
-          <div
-            className="flex items-center gap-2 text-sm"
-            style={{ color: "var(--muted)" }}
+  return (
+    <div className="wt-panel hlt-panel">
+      <header className="wt-topbar">
+        <div className="wt-topbar__copy">
+          <h1 className="wt-topbar__title">Hero Logo Tune</h1>
+          <p className="wt-topbar__subtitle">
+            Switch Desktop / Phone to edit each version separately. Phone
+            preview uses a real {ADMIN_PHONE_PREVIEW_WIDTH}×844 device frame
+            (≤767px live).
+          </p>
+          <AdminDevicePreviewToggle
+            value={device}
+            onChange={setDevice}
+            desktopDirty={desktopDirty}
+            phoneDirty={phoneDirty}
+            disabled={saving}
+          />
+        </div>
+        <div className="wt-topbar__actions">
+          <button
+            type="button"
+            className="admin-btn admin-btn--ghost"
+            disabled={!dirty || saving}
+            onClick={discard}
           >
-            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-            Loading saved values…
+            <RotateCcw className="h-4 w-4" aria-hidden />
+            Discard
+          </button>
+          <button
+            type="button"
+            className="admin-btn admin-btn--primary"
+            disabled={!dirty || saving}
+            onClick={() => void save()}
+          >
+            {saving ? (
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+            ) : (
+              <Save className="h-4 w-4" aria-hidden />
+            )}
+            {device === "phone" ? "Save phone logo" : "Save desktop logo"}
+          </button>
+        </div>
+      </header>
+
+      <div className="wt-layout">
+        <aside className="wt-nav" aria-label="Logo tune sections">
+          <p className="wt-nav__label">Sections</p>
+          <div className="wt-nav__list">
+            {EDITOR_SECTIONS.map((item) => {
+              const active = activeSection === item.id;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  className={`wt-nav__item${active ? " is-active" : ""}`}
+                  aria-current={active ? "true" : undefined}
+                  onClick={() => jumpTo(item.id)}
+                >
+                  {item.label}
+                </button>
+              );
+            })}
           </div>
-        ) : null}
+        </aside>
 
-        {device === "phone" ? (
-          <AdminPhoneDeviceFrame
-            width={ADMIN_PHONE_PREVIEW_WIDTH}
-            height={844}
-            label="Phone bezel preview"
-          >
-            <HeroLogoTunePreview
-              tune={tune}
-              stageWidth={ADMIN_PHONE_PREVIEW_WIDTH}
-              chrome="phone"
-            />
-          </AdminPhoneDeviceFrame>
-        ) : (
-          <HeroLogoTunePreview tune={tune} />
-        )}
-
-        <fieldset
-          disabled={saving}
-          className="space-y-8 border-0 p-0 m-0 min-w-0"
-          style={{ opacity: loading ? 0.7 : 1 }}
-        >
-            <section className="hlt-section">
-              <h2 className="admin-heading text-base">Letter colour set</h2>
-              <p className="hlt-section__hint">
-                Swaps only the letter images. Positions, gaps, and animation stay
-                exactly as tuned. Current = live gold WebPs (unchanged).
+        <div className="wt-editor">
+          <div className="wt-editor__toolbar">
+            <div>
+              <p className="wt-editor__eyebrow">
+                Editing {device === "phone" ? "phone" : "desktop"} logo
               </p>
+              <h2 className="wt-editor__title">
+                {device === "phone" ? "Phone layout" : "Desktop layout"}
+              </h2>
+            </div>
+            <a
+              className="wt-preview"
+              href={`/?logoRefresh=1&t=${Date.now()}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+              Open live
+            </a>
+          </div>
+
+          <fieldset
+            disabled={saving}
+            className="hlt-editor-form border-0 p-0 m-0 min-w-0"
+          >
+            <Section
+              id="preview"
+              step={1}
+              title="Live preview"
+              description={
+                device === "phone"
+                  ? "Real phone bezel at 390×844 — tune phone values here."
+                  : "Full-width hero preview at your current browser width."
+              }
+            >
+              <div
+                className={`hlt-preview-shell${device === "phone" ? " hlt-preview-shell--phone" : ""}`}
+              >
+                {device === "phone" ? (
+                  <div className="admin-phone-iframe-shell hlt-phone-shell">
+                    <p className="admin-phone-iframe-shell__label">
+                      Phone preview · {ADMIN_PHONE_PREVIEW_WIDTH}×844
+                    </p>
+                    <AdminPhoneDeviceFrame
+                      width={ADMIN_PHONE_PREVIEW_WIDTH}
+                      height={844}
+                      label="Phone bezel preview"
+                    >
+                      <HeroLogoTunePreview
+                        tune={tune}
+                        stageWidth={ADMIN_PHONE_PREVIEW_WIDTH}
+                        chrome="phone"
+                      />
+                    </AdminPhoneDeviceFrame>
+                  </div>
+                ) : (
+                  <HeroLogoTunePreview tune={tune} />
+                )}
+              </div>
+            </Section>
+
+            <Section
+              id="colour"
+              step={2}
+              title="Letter colour set"
+              description="Swaps only the letter images. Positions, gaps, and animation stay exactly as tuned."
+            >
               <label className="hlt-field">
                 <span className="hlt-field__label">Parts variant</span>
                 <span className="hlt-field__input-wrap">
@@ -368,13 +495,14 @@ export function HeroLogoTunePanel() {
                   </select>
                 </span>
               </label>
-            </section>
+            </Section>
 
-            <section className="hlt-section">
-              <h2 className="admin-heading text-base">Position · Alignment</h2>
-              <p className="hlt-section__hint">
-                Shared top / middle / bottom line for letter frames (like Figma).
-              </p>
+            <Section
+              id="align"
+              step={3}
+              title="Position · Alignment"
+              description="Shared top / middle / bottom line for letter frames (like Figma)."
+            >
               <div className="hlt-align-row" role="group" aria-label="Alignment">
                 {VALIGN_OPTIONS.map((opt) => {
                   const active = tune.vAlign === opt.value;
@@ -393,10 +521,14 @@ export function HeroLogoTunePanel() {
                   );
                 })}
               </div>
-            </section>
+            </Section>
 
-            <section className="hlt-section">
-              <h2 className="admin-heading text-base">Overall</h2>
+            <Section
+              id="overall"
+              step={4}
+              title="Overall"
+              description="Size, vertical position, Book Now nudge, and land animation speed."
+            >
               <div className="hlt-grid">
                 <NumberField
                   label="Size"
@@ -434,14 +566,14 @@ export function HeroLogoTunePanel() {
                   onChange={(animDuration) => patch({ animDuration })}
                 />
               </div>
-            </section>
+            </Section>
 
-            <section className="hlt-section">
-              <h2 className="admin-heading text-base">Screen edge → outer letters</h2>
-              <p className="hlt-section__hint">
-                Hard limits. 0 = flush on the edge. Letters cannot cross outside
-                — extra spacing only pushes toward Book Now.
-              </p>
+            <Section
+              id="edges"
+              step={5}
+              title="Screen edge → outer letters"
+              description="Hard limits. 0 = flush on the edge. Letters cannot cross outside."
+            >
               <div className="hlt-grid">
                 <NumberField
                   label="Left edge → H"
@@ -458,16 +590,14 @@ export function HeroLogoTunePanel() {
                   onChange={(edgeRight) => patch({ edgeRight })}
                 />
               </div>
-            </section>
+            </Section>
 
-            <section className="hlt-section">
-              <h2 className="admin-heading text-base">
-                T ↔ Book Now ↔ H (center)
-              </h2>
-              <p className="hlt-section__hint">
-                Full free zone to the Book Now edge. 0 = letter flush on the
-                button. Moves T / right H only.
-              </p>
+            <Section
+              id="center"
+              step={6}
+              title="T ↔ Book Now ↔ H (center)"
+              description="Full free zone to the Book Now edge. 0 = letter flush on the button."
+            >
               <div className="hlt-grid">
                 <NumberField
                   label="T → Book Now"
@@ -486,14 +616,14 @@ export function HeroLogoTunePanel() {
                   onChange={(gapButtonH) => patch({ gapButtonH })}
                 />
               </div>
-            </section>
+            </Section>
 
-            <section className="hlt-section">
-              <h2 className="admin-heading text-base">Spacing between letters</h2>
-              <p className="hlt-section__hint">
-                Exact pixels between two letters. Each control moves the next
-                letter only — letters stay independent.
-              </p>
+            <Section
+              id="spacing"
+              step={7}
+              title="Spacing between letters"
+              description="Exact pixels between two letters. Each control moves the next letter only."
+            >
               <div className="hlt-grid">
                 <NumberField
                   label="H → A"
@@ -524,13 +654,14 @@ export function HeroLogoTunePanel() {
                   onChange={(gapOR) => patch({ gapOR })}
                 />
               </div>
-            </section>
+            </Section>
 
-            <section className="hlt-section">
-              <h2 className="admin-heading text-base">Fine nudge (per letter)</h2>
-              <p className="hlt-section__hint">
-                Extra up (−) / down (+) after alignment. Independent per letter.
-              </p>
+            <Section
+              id="nudge"
+              step={8}
+              title="Fine nudge (per letter)"
+              description="Extra up (−) / down (+) after alignment. Independent per letter."
+            >
               <div className="hlt-grid">
                 <NumberField
                   label="H (left)"
@@ -575,45 +706,8 @@ export function HeroLogoTunePanel() {
                   onChange={(yR) => patch({ yR })}
                 />
               </div>
-            </section>
-        </fieldset>
-
-        <div className="flex flex-wrap gap-3 pt-2">
-          <button
-            type="button"
-            className="admin-btn-primary inline-flex items-center gap-2 px-4 py-2.5 text-sm disabled:opacity-60"
-            disabled={saving}
-            onClick={() => void save()}
-          >
-            {saving ? (
-              <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-            ) : (
-              <Save className="h-4 w-4" aria-hidden />
-            )}
-            {dirty
-              ? device === "phone"
-                ? "Save phone to live site"
-                : "Save desktop to live site"
-              : "Save again to live"}
-          </button>
-          <button
-            type="button"
-            className="admin-btn-outline inline-flex items-center gap-2 px-4 py-2.5 text-sm disabled:opacity-60"
-            disabled={saving || !dirty}
-            onClick={() => setTune(saved)}
-          >
-            <RotateCcw className="h-4 w-4" aria-hidden />
-            Undo unsaved
-          </button>
-          <a
-            href={`/?logoRefresh=1&t=${Date.now()}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="admin-btn-outline inline-flex items-center gap-2 px-4 py-2.5 text-sm"
-          >
-            <ExternalLink className="h-4 w-4" aria-hidden />
-            Open homepage
-          </a>
+            </Section>
+          </fieldset>
         </div>
       </div>
     </div>

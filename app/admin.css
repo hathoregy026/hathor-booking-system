@@ -1446,6 +1446,36 @@ select.admin-input option:checked {
   color: var(--text-muted);
 }
 
+/* Hero Logo Tune ? Website Text-style editor shell */
+.hlt-panel .hlt-editor-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.hlt-panel .hlt-editor-form {
+  max-width: none;
+}
+
+.hlt-preview-shell--phone {
+  display: flex;
+  justify-content: center;
+}
+
+.hlt-phone-shell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.hlt-panel #hlt-preview .wt-section__body {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 .hlt-align-row {
   display: inline-flex;
   align-items: center;
