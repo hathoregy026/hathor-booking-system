@@ -299,7 +299,10 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    padding: 0.65rem 1rem;
+    padding-top: max(0.65rem, env(safe-area-inset-top));
+    padding-bottom: 0.65rem;
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
   }
 
   .public-site .hathor-header--owo-hero-layout .hathor-header__menu-zone {

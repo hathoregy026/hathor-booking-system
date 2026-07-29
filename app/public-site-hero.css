@@ -393,6 +393,17 @@
   white-space: nowrap;
 }
 
+@media (max-width: 1024px) {
+  .hero-line,
+  .public-page-with-hero .hero-heading .hero-line,
+  .page-cruises .hero-line,
+  .home-hero-container .hero-heading .hero-line {
+    white-space: normal;
+    text-wrap: balance;
+    overflow-wrap: break-word;
+  }
+}
+
 /* Line 1 — layout only; font/size/color from typography admin */
 .home-hero-container .hero-heading .hero-line--right {
   font-weight: 400 !important;

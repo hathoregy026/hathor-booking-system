@@ -2115,11 +2115,11 @@
   color: var(--hathor-gold);
 }
 
-/* Explore overlay ? above pinned scroll stage */
+/* Explore overlay — above public navbar (1200) */
 .hathor-explore {
   position: fixed;
   inset: 0;
-  z-index: 250;
+  z-index: 1300;
 }
 
 .hathor-explore__backdrop {

@@ -25,7 +25,8 @@
 
   position: fixed;
   inset: 0;
-  z-index: 100;
+  /* Above public navbar (1200) so close/controls remain tappable */
+  z-index: 1300;
   display: flex;
   align-items: center;
   justify-content: center;
