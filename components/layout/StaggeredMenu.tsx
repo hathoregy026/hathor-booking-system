@@ -2,7 +2,7 @@
 
 /**
  * Phone-only staggered explore menu — React Bits StaggeredMenu adapted for Hathor.
- * Gold / cream palette; luxurious display typography.
+ * Desktop-matching dropdown groups; gold / cream palette.
  */
 
 import Link from "next/link";
@@ -11,20 +11,18 @@ import {
   useEffect,
   useLayoutEffect,
   useRef,
+  useState,
   type CSSProperties,
+  type ReactNode,
 } from "react";
+import { ChevronDown, X } from "lucide-react";
 import gsap from "gsap";
+import type { HeaderNavItem } from "@/lib/public-nav";
+import type { SocialLink } from "@/lib/public-social";
 import "./StaggeredMenu.css";
 
-export type StaggeredMenuItem = {
-  label: string;
-  ariaLabel?: string;
-  link: string;
-};
-
-export type StaggeredMenuSocialItem = {
-  label: string;
-  link: string;
+export type StaggeredMenuSocialItem = SocialLink & {
+  icon?: ReactNode;
 };
 
 type StaggeredMenuProps = {
@@ -32,10 +30,9 @@ type StaggeredMenuProps = {
   onClose: () => void;
   position?: "left" | "right";
   colors?: string[];
-  items?: StaggeredMenuItem[];
+  navItems?: HeaderNavItem[];
   socialItems?: StaggeredMenuSocialItem[];
   displaySocials?: boolean;
-  displayItemNumbering?: boolean;
   accentColor?: string;
   className?: string;
 };
@@ -45,10 +42,9 @@ export function StaggeredMenu({
   onClose,
   position = "right",
   colors = ["#8b6914", "#c9a96e", "#ece8df"],
-  items = [],
+  navItems = [],
   socialItems = [],
   displaySocials = true,
-  displayItemNumbering = true,
   accentColor = "#b69f64",
   className,
 }: StaggeredMenuProps) {
@@ -59,7 +55,7 @@ export function StaggeredMenu({
   const openTlRef = useRef<gsap.core.Timeline | null>(null);
   const closeTweenRef = useRef<gsap.core.Tween | null>(null);
   const busyRef = useRef(false);
-  const itemEntranceTweenRef = useRef<gsap.core.Tween | null>(null);
+  const [openGroupId, setOpenGroupId] = useState<string | null>(null);
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -91,31 +87,24 @@ export function StaggeredMenu({
       closeTweenRef.current.kill();
       closeTweenRef.current = null;
     }
-    itemEntranceTweenRef.current?.kill();
 
-    const itemEls = Array.from(
-      panel.querySelectorAll<HTMLElement>(".sm-panel-itemLabel"),
-    );
-    const numberEls = Array.from(
-      panel.querySelectorAll<HTMLElement>(
-        ".sm-panel-list[data-numbering] .sm-panel-item",
-      ),
+    const rowEls = Array.from(
+      panel.querySelectorAll<HTMLElement>(".sm-panel-row"),
     );
     const socialTitle = panel.querySelector<HTMLElement>(".sm-socials-title");
     const socialLinks = Array.from(
       panel.querySelectorAll<HTMLElement>(".sm-socials-link"),
     );
+    const closeBtn = panel.querySelector<HTMLElement>(".sm-panel-close");
 
     const offscreen = position === "left" ? -100 : 100;
 
-    if (itemEls.length) {
-      gsap.set(itemEls, { yPercent: 140, rotate: 8 });
-    }
-    if (numberEls.length) {
-      gsap.set(numberEls, { "--sm-num-opacity": 0 });
+    if (rowEls.length) {
+      gsap.set(rowEls, { y: 28, opacity: 0 });
     }
     if (socialTitle) gsap.set(socialTitle, { opacity: 0 });
-    if (socialLinks.length) gsap.set(socialLinks, { y: 20, opacity: 0 });
+    if (socialLinks.length) gsap.set(socialLinks, { y: 16, opacity: 0 });
+    if (closeBtn) gsap.set(closeBtn, { opacity: 0 });
 
     const tl = gsap.timeline({ paused: true });
 
@@ -139,39 +128,35 @@ export function StaggeredMenu({
       panelInsertTime,
     );
 
-    if (itemEls.length) {
-      const itemsStart = panelInsertTime + panelDuration * 0.15;
+    if (closeBtn) {
       tl.to(
-        itemEls,
+        closeBtn,
+        { opacity: 1, duration: 0.35, ease: "power2.out" },
+        panelInsertTime + 0.2,
+      );
+    }
+
+    if (rowEls.length) {
+      const itemsStart = panelInsertTime + panelDuration * 0.12;
+      tl.to(
+        rowEls,
         {
-          yPercent: 0,
-          rotate: 0,
-          duration: 1,
-          ease: "power4.out",
-          stagger: { each: 0.08, from: "start" },
+          y: 0,
+          opacity: 1,
+          duration: 0.7,
+          ease: "power3.out",
+          stagger: { each: 0.06, from: "start" },
         },
         itemsStart,
       );
-      if (numberEls.length) {
-        tl.to(
-          numberEls,
-          {
-            duration: 0.6,
-            ease: "power2.out",
-            "--sm-num-opacity": 1,
-            stagger: { each: 0.07, from: "start" },
-          },
-          itemsStart + 0.1,
-        );
-      }
     }
 
     if (socialTitle || socialLinks.length) {
-      const socialsStart = panelInsertTime + panelDuration * 0.4;
+      const socialsStart = panelInsertTime + panelDuration * 0.45;
       if (socialTitle) {
         tl.to(
           socialTitle,
-          { opacity: 1, duration: 0.5, ease: "power2.out" },
+          { opacity: 1, duration: 0.45, ease: "power2.out" },
           socialsStart,
         );
       }
@@ -181,9 +166,9 @@ export function StaggeredMenu({
           {
             y: 0,
             opacity: 1,
-            duration: 0.55,
+            duration: 0.5,
             ease: "power3.out",
-            stagger: { each: 0.08, from: "start" },
+            stagger: { each: 0.06, from: "start" },
             onComplete: () => {
               gsap.set(socialLinks, { clearProps: "opacity" });
             },
@@ -200,6 +185,7 @@ export function StaggeredMenu({
   const playOpen = useCallback(() => {
     if (busyRef.current) return;
     busyRef.current = true;
+    setOpenGroupId(null);
     const tl = buildOpenTimeline();
     if (tl) {
       tl.eventCallback("onComplete", () => {
@@ -214,7 +200,6 @@ export function StaggeredMenu({
   const playClose = useCallback(() => {
     openTlRef.current?.kill();
     openTlRef.current = null;
-    itemEntranceTweenRef.current?.kill();
 
     const panel = panelRef.current;
     const layers = preLayerElsRef.current;
@@ -229,26 +214,17 @@ export function StaggeredMenu({
       ease: "power3.in",
       overwrite: "auto",
       onComplete: () => {
-        const itemEls = Array.from(
-          panel.querySelectorAll<HTMLElement>(".sm-panel-itemLabel"),
+        const rowEls = Array.from(
+          panel.querySelectorAll<HTMLElement>(".sm-panel-row"),
         );
-        if (itemEls.length) {
-          gsap.set(itemEls, { yPercent: 140, rotate: 8 });
-        }
-        const numberEls = Array.from(
-          panel.querySelectorAll<HTMLElement>(
-            ".sm-panel-list[data-numbering] .sm-panel-item",
-          ),
-        );
-        if (numberEls.length) {
-          gsap.set(numberEls, { "--sm-num-opacity": 0 });
-        }
+        if (rowEls.length) gsap.set(rowEls, { y: 28, opacity: 0 });
         const socialTitle = panel.querySelector<HTMLElement>(".sm-socials-title");
         const socialLinks = Array.from(
           panel.querySelectorAll<HTMLElement>(".sm-socials-link"),
         );
         if (socialTitle) gsap.set(socialTitle, { opacity: 0 });
-        if (socialLinks.length) gsap.set(socialLinks, { y: 20, opacity: 0 });
+        if (socialLinks.length) gsap.set(socialLinks, { y: 16, opacity: 0 });
+        setOpenGroupId(null);
         busyRef.current = false;
       },
     });
@@ -288,6 +264,10 @@ export function StaggeredMenu({
     ["--sm-accent"]: accentColor,
   } as CSSProperties;
 
+  const toggleGroup = (id: string) => {
+    setOpenGroupId((current) => (current === id ? null : id));
+  };
+
   return (
     <div
       className={`staggered-menu-wrapper fixed-wrapper${className ? ` ${className}` : ""}${open ? " is-open" : ""}`}
@@ -322,50 +302,114 @@ export function StaggeredMenu({
         aria-label="Explore"
       >
         <div className="sm-panel-inner">
-          <p className="sm-panel-kicker">Explore</p>
-          <ul
-            className="sm-panel-list"
-            role="list"
-            data-numbering={displayItemNumbering || undefined}
-          >
-            {items.length ? (
-              items.map((item, index) => (
-                <li className="sm-panel-itemWrap" key={`${item.label}-${index}`}>
-                  <Link
-                    className="sm-panel-item"
-                    href={item.link}
-                    aria-label={item.ariaLabel ?? item.label}
-                    data-index={index + 1}
-                    onClick={onClose}
+          <div className="sm-panel-top">
+            <p className="sm-panel-kicker">Explore</p>
+            <button
+              type="button"
+              className="sm-panel-close"
+              onClick={onClose}
+              aria-label="Close menu"
+              tabIndex={open ? 0 : -1}
+            >
+              <X className="sm-panel-close-icon" aria-hidden />
+            </button>
+          </div>
+
+          <nav className="sm-panel-nav" aria-label="Primary">
+            {navItems.map((item) => {
+              if (item.type === "link") {
+                return (
+                  <div className="sm-panel-row" key={item.href}>
+                    <Link
+                      className="sm-panel-link sm-panel-link--top"
+                      href={item.href}
+                      onClick={onClose}
+                      tabIndex={open ? 0 : -1}
+                    >
+                      {item.label}
+                    </Link>
+                  </div>
+                );
+              }
+
+              const expanded = openGroupId === item.id;
+
+              return (
+                <div
+                  className={`sm-panel-row sm-panel-group${expanded ? " is-open" : ""}`}
+                  key={item.id}
+                >
+                  <button
+                    type="button"
+                    className="sm-panel-group-trigger"
+                    aria-expanded={expanded}
+                    aria-controls={`sm-group-${item.id}`}
+                    onClick={() => toggleGroup(item.id)}
                     tabIndex={open ? 0 : -1}
                   >
-                    <span className="sm-panel-itemLabel">{item.label}</span>
-                  </Link>
-                </li>
-              ))
-            ) : (
-              <li className="sm-panel-itemWrap" aria-hidden="true">
-                <span className="sm-panel-item">
-                  <span className="sm-panel-itemLabel">No items</span>
-                </span>
-              </li>
-            )}
-          </ul>
+                    <span>{item.label}</span>
+                    <ChevronDown
+                      className="sm-panel-group-chevron"
+                      aria-hidden
+                    />
+                  </button>
+                  <div
+                    id={`sm-group-${item.id}`}
+                    className="sm-panel-group-panel"
+                    hidden={!expanded}
+                  >
+                    <ul className="sm-panel-group-links" role="list">
+                      <li>
+                        <Link
+                          href={item.href}
+                          className="sm-panel-link sm-panel-link--child sm-panel-link--overview"
+                          onClick={onClose}
+                          tabIndex={open && expanded ? 0 : -1}
+                        >
+                          Overview
+                        </Link>
+                      </li>
+                      {item.links.map((link) => (
+                        <li key={`${item.id}-${link.href}-${link.label}`}>
+                          <Link
+                            href={link.href}
+                            className="sm-panel-link sm-panel-link--child"
+                            onClick={onClose}
+                            tabIndex={open && expanded ? 0 : -1}
+                          >
+                            <span className="sm-panel-link-label">
+                              {link.label}
+                            </span>
+                            {link.description ? (
+                              <span className="sm-panel-link-desc">
+                                {link.description}
+                              </span>
+                            ) : null}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              );
+            })}
+          </nav>
 
           {displaySocials && socialItems.length > 0 ? (
             <div className="sm-socials" aria-label="Social links">
-              <h3 className="sm-socials-title">Follow</h3>
+              <h3 className="sm-socials-title">Follow the Voyage</h3>
               <ul className="sm-socials-list" role="list">
-                {socialItems.map((social, index) => (
-                  <li key={`${social.label}-${index}`} className="sm-socials-item">
+                {socialItems.map((social) => (
+                  <li key={social.key} className="sm-socials-item">
                     <a
-                      href={social.link}
+                      href={social.href}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="sm-socials-link"
+                      aria-label={social.label}
                       tabIndex={open ? 0 : -1}
                     >
-                      {social.label}
+                      {social.icon}
                     </a>
                   </li>
                 ))}

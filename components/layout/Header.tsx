@@ -13,13 +13,13 @@ import {
   HATHOR_HERO_ICON_SRC,
 } from "@/lib/branding";
 import {
-  EXPLORE_LINKS,
   HEADER_NAV_ITEMS,
   navHrefMatches,
   type HeaderNavItem,
 } from "@/lib/public-nav";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { PUBLIC_SOCIAL_LINKS } from "@/lib/public-social";
+import type { ReactNode } from "react";
 
 const HEADER_NAV_LEFT = HEADER_NAV_ITEMS.slice(
   0,
@@ -29,16 +29,46 @@ const HEADER_NAV_RIGHT = HEADER_NAV_ITEMS.slice(
   Math.ceil(HEADER_NAV_ITEMS.length / 2),
 );
 
-const PHONE_MENU_ITEMS = EXPLORE_LINKS.map((link) => ({
-  label: link.label,
-  ariaLabel: `Go to ${link.label}`,
-  link: link.href,
-}));
+/** Same social order + glyphs as the desktop footer. */
+type FooterSocialKey = "instagram" | "linkedin" | "facebook";
+const FOOTER_SOCIAL_ORDER: FooterSocialKey[] = [
+  "instagram",
+  "linkedin",
+  "facebook",
+];
 
-const PHONE_SOCIAL_ITEMS = PUBLIC_SOCIAL_LINKS.map((link) => ({
-  label: link.label,
-  link: link.href,
-}));
+function PhoneSocialGlyph({ platform }: { platform: FooterSocialKey }) {
+  const icons: Record<FooterSocialKey, ReactNode> = {
+    instagram: (
+      <svg viewBox="0 0 24 24" aria-hidden>
+        <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+        <circle cx="12" cy="12" r="4" />
+        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+      </svg>
+    ),
+    linkedin: (
+      <svg viewBox="0 0 24 24" aria-hidden>
+        <rect x="3.5" y="3.5" width="17" height="17" rx="2" />
+        <path d="M8 11v6M8 8.2v.1M12 17v-3.8c0-1.2.8-2 2-2s2 .8 2 2V17" />
+      </svg>
+    ),
+    facebook: (
+      <svg viewBox="0 0 24 24" aria-hidden>
+        <path d="M14 8h2.5V5.5H14c-2.2 0-4 1.8-4 4V12H7.5v2.5H10V21h3v-6.5h2.5V12H13v-2c0-.55.45-1 1-1Z" />
+      </svg>
+    ),
+  };
+  return icons[platform];
+}
+
+const PHONE_SOCIAL_ITEMS = FOOTER_SOCIAL_ORDER.map((key) =>
+  PUBLIC_SOCIAL_LINKS.find((link) => link.key === key),
+)
+  .filter((link): link is NonNullable<typeof link> => Boolean(link))
+  .map((link) => ({
+    ...link,
+    icon: <PhoneSocialGlyph platform={link.key as FooterSocialKey} />,
+  }));
 
 /** Hathor gold / cream underlays for the staggered phone menu. */
 const PHONE_MENU_COLORS = ["#8b6914", "#c9a96e", "#ece8df"];
@@ -423,10 +453,9 @@ export function Header() {
           open={exploreOpen}
           onClose={() => setExploreOpen(false)}
           position="right"
-          items={PHONE_MENU_ITEMS}
+          navItems={HEADER_NAV_ITEMS}
           socialItems={PHONE_SOCIAL_ITEMS}
           displaySocials
-          displayItemNumbering
           colors={PHONE_MENU_COLORS}
           accentColor="#b69f64"
         />
