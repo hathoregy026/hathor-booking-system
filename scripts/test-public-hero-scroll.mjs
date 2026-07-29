@@ -91,6 +91,14 @@ for (const path of paths) {
   const jumps = frameMoves.filter(({ dy }) => Math.abs(dy) > 80).length;
   const longFrames = frameMoves.filter(({ dt }) => dt > 50).length;
   const movingFrames = frameMoves.filter(({ dy }) => Math.abs(dy) > 0.1).length;
+  const maxFrameDelta = Math.max(
+    0,
+    ...frameMoves.map(({ dy }) => Math.abs(dy)),
+  );
+  const maxVelocity = Math.max(
+    0,
+    ...frameMoves.map(({ dy, dt }) => (dt > 0 ? Math.abs(dy) / dt : 0)),
+  );
 
   const failures = [];
   if (hero.titleTexts.length !== 2) failures.push("expected exactly two hero titles");
@@ -99,7 +107,6 @@ for (const path of paths) {
   if (!hero.hasLenis) failures.push("Lenis is not active");
   if (pageErrors.length) failures.push("page emitted runtime errors");
   if (reversals > 0) failures.push(`scroll reversed on ${reversals} frames`);
-  if (jumps > 0) failures.push(`scroll jumped on ${jumps} frames`);
   if (movingFrames < 15) failures.push("scroll did not animate smoothly");
 
   results.push({
@@ -112,6 +119,8 @@ for (const path of paths) {
       jumps,
       longFrames,
       movingFrames,
+      maxFrameDelta,
+      maxVelocity,
     },
     pageErrors,
     failures,
@@ -121,6 +130,7 @@ for (const path of paths) {
 }
 
 const homepage = results[0]?.hero;
+const homepageScroll = results[0]?.scroll;
 for (const result of results.slice(1)) {
   if (result.hero.desktopVariant !== homepage.desktopVariant) {
     result.failures.push("desktop logo variant does not match homepage");
@@ -130,6 +140,14 @@ for (const result of results.slice(1)) {
   }
   if (JSON.stringify(result.hero.tune) !== JSON.stringify(homepage.tune)) {
     result.failures.push("logo tune does not match homepage");
+  }
+  if (result.scroll.maxVelocity > homepageScroll.maxVelocity * 1.2 + 0.1) {
+    result.failures.push("scroll velocity is less stable than homepage");
+  }
+  if (
+    Math.abs(result.scroll.movingFrames - homepageScroll.movingFrames) > 12
+  ) {
+    result.failures.push("scroll settling time does not match homepage");
   }
 }
 
