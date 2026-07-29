@@ -211,9 +211,12 @@ async function main() {
     console.log("[replace-images] keeping hero video:", heroVideo);
   }
   if (!existsSync(goldLogo)) {
-    console.warn("[replace-images] WARNING: gold logo missing:", goldLogo);
+    console.warn(
+      "[replace-images] gold.svg not present (intentionally removed from deploy) — ok:",
+      goldLogo,
+    );
   } else {
-    console.log("[replace-images] keeping gold logo:", goldLogo);
+    console.log("[replace-images] found gold logo (unused by live site):", goldLogo);
   }
 
   mkdirSync(outDir, { recursive: true });
