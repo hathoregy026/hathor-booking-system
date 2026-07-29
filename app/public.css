@@ -1746,13 +1746,13 @@
   overflow: visible;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1025px) {
   .hathor-header--owo-hero-layout .hathor-header__menu-btn {
     display: none;
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1024px) {
   .hathor-header--owo-hero-layout .hathor-header__nav {
     display: none;
   }
@@ -2001,7 +2001,7 @@
   color: var(--hathor-gold);
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1025px) {
   .hathor-header__menu-btn {
     display: none;
   }

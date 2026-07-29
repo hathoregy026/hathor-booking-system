@@ -490,6 +490,140 @@
   transform: scale(1.5);
 }
 
+/* Phone + tablet: native horizontal scroll-snap galleries (no pin) */
+@media (max-width: 1024px) {
+  .room-fs.room-fs--native-scroll {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+    contain: none;
+  }
+
+  .room-fs--native-scroll .room-fs-slides {
+    position: relative;
+    inset: auto;
+    z-index: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    height: min(72vh, 640px);
+    min-height: min(52vh, 420px);
+  }
+
+  .room-fs--native-scroll .room-fs-slides::-webkit-scrollbar {
+    display: none;
+  }
+
+  .room-fs--native-scroll .room-fs-slide {
+    position: relative;
+    inset: auto;
+    flex: 0 0 100%;
+    width: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    opacity: 1;
+    visibility: visible;
+    height: 100%;
+    min-height: inherit;
+    overflow: hidden;
+  }
+
+  .room-fs--native-scroll .room-fs-slide img {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: none;
+  }
+
+  .room-fs--native-scroll .room-fs-shade {
+    display: none;
+  }
+
+  .room-fs--native-scroll .room-fs-ui {
+    position: relative;
+    inset: auto;
+    z-index: 2;
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding:
+      clamp(20px, 5vw, 28px)
+      clamp(20px, 5vw, 28px)
+      clamp(28px, 6vw, 40px);
+    pointer-events: auto;
+    color: #f5efe4;
+    background: #0c0a08;
+  }
+
+  .room-fs--native-scroll .room-fs-top,
+  .room-fs--native-scroll .room-fs-copy,
+  .room-fs--native-scroll .room-fs-progress {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    transform: none;
+    width: 100%;
+    max-width: none;
+  }
+
+  .room-fs--native-scroll .room-fs-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .room-fs--native-scroll .room-fs-copy {
+    margin: 0;
+  }
+
+  .room-fs--native-scroll .room-fs-progress {
+    width: min(280px, 100%);
+    margin-top: 4px;
+  }
+
+  .room-fs--native-scroll .room-fs-title {
+    font-size: clamp(2rem, 8vw, 3rem);
+    text-shadow: none;
+  }
+
+  .room-fs--native-scroll .room-fs-desc {
+    color: rgba(245, 239, 228, 0.88);
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+  }
+
+  .room-fs--native-scroll .room-fs-cta,
+  .room-fs--native-scroll .room-fs-ui a.btn,
+  .room-fs--native-scroll .room-fs-ui button {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .rooms-rail {
+    display: none;
+  }
+}
+
 @media (max-width: 767px) {
   .room-fs-ui {
     padding-left: 20px;
@@ -512,10 +646,6 @@
 
   .room-fs-title {
     font-size: clamp(2.2rem, 11vw, 3.2rem);
-  }
-
-  .rooms-rail {
-    display: none;
   }
 }
 
@@ -1080,6 +1210,46 @@
 
   .cruise-experience-inner {
     grid-template-columns: 1fr;
+  }
+
+  /* CSS sticky filter bar + horizontal chip scroll (no ScrollTrigger on narrow) */
+  .cruise-filter-bar {
+    position: sticky;
+    top: calc(var(--site-nav-offset, 78px) + env(safe-area-inset-top, 0px));
+    z-index: 40;
+    padding-top: 10px;
+    padding-bottom: 12px;
+    background: rgba(245, 239, 228, 0.96);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 8px 24px rgba(62, 48, 38, 0.06);
+  }
+
+  .cruise-filter-inner {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+    mask-image: linear-gradient(
+      90deg,
+      transparent 0,
+      #000 12px,
+      #000 calc(100% - 12px),
+      transparent 100%
+    );
+  }
+
+  .cruise-filter-inner::-webkit-scrollbar {
+    display: none;
+  }
+
+  .cruise-filter {
+    flex-shrink: 0;
+    scroll-snap-align: start;
   }
 }
 
@@ -1830,17 +2000,103 @@
 
 @media (max-width: 1024px) {
   .spx-metrics { grid-template-columns: 1fr 1fr; }
+
+  /* Wellness — unpin frames; stack media + copy vertically */
+  .spx-frame {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .spx-frame-media {
+    position: relative;
+    inset: auto;
+    aspect-ratio: 4 / 5;
+    min-height: 280px;
+    flex-shrink: 0;
+  }
+
+  .spx-frame-shade {
+    border-radius: 0;
+  }
+
+  .spx-frame-ui {
+    position: relative;
+    height: auto;
+    flex: 1 1 auto;
+    padding:
+      clamp(2rem, 5vw, 3rem)
+      clamp(1.25rem, 5vw, 2rem)
+      clamp(2.5rem, 6vw, 3.5rem);
+    background: #1a1410;
+  }
+
+  .spx-frame--right .spx-frame-ui {
+    margin-left: 0;
+    text-align: left;
+    align-items: flex-start;
+  }
+
+  /* Highlights — native horizontal scroll-snap (no GSAP pin) */
+  .hlx-pin {
+    height: auto;
+    min-height: 0;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: clamp(1.25rem, 5vw, 4rem);
+    display: block;
+    padding-block: 0.5rem 1rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(182, 159, 100, 0.45) transparent;
+  }
+
+  .hlx-pin::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .hlx-pin::-webkit-scrollbar-thumb {
+    background: rgba(182, 159, 100, 0.45);
+    border-radius: 999px;
+  }
+
+  .hlx-track {
+    will-change: auto;
+    transform: none !important;
+    padding-bottom: 0.25rem;
+  }
+
   .hlx-panel {
     grid-template-columns: 1fr;
     width: min(88vw, 420px);
     min-height: auto;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
   }
+
   .hlx-panel-media {
     position: relative;
     aspect-ratio: 4 / 5;
     min-height: 280px;
   }
+
+  .hlx-panel-media img {
+    transform: none !important;
+  }
+
+  .hlx-progress {
+    display: none;
+  }
+
   .dnx-chapter { min-height: 78vh; }
+
+  .dnx-chapter-media img {
+    transform: none !important;
+  }
+
   .dnx-panel,
   .dnx-chapter--right .dnx-panel {
     margin-left: 1.25rem;
@@ -1850,7 +2106,6 @@
 
 @media (max-width: 700px) {
   .spx-metrics { grid-template-columns: 1fr; }
-  .spx-frame { min-height: 100svh; }
   .lux-gold-xl { font-size: clamp(2.1rem, 10vw, 2.9rem); }
 }
 
@@ -1911,6 +2166,24 @@
   width: 100% !important;
   height: 100% !important;
   object-fit: cover !important;
+}
+
+@media (max-width: 1024px) {
+  .venetian-page .room-fs--native-scroll .room-fs-slide span {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: inherit;
+  }
+
+  .venetian-page .room-fs--native-scroll .room-fs-slide img {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
 }
 .venetian-page .cruise-card-amenities {
   list-style: none;

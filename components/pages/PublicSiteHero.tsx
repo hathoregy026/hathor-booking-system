@@ -135,6 +135,17 @@ export function PublicSiteHero({
     if (!playVideo) return;
     const video = heroVideoRef.current;
     if (!video) return;
+    /*
+     * The source is a large cinematic asset. Decoding it on the first finger
+     * scroll was the main real-device hitch; phones/tablets keep the optimized
+     * poster while desktop retains the full video treatment.
+     */
+    if (
+      window.matchMedia("(max-width: 1024px)").matches ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return;
+    }
 
     let started = false;
     let idleId = 0;

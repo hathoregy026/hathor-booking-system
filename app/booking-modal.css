@@ -739,3 +739,100 @@
   border-radius: 8px;
   background: #fff;
 }
+
+/* --------------------------------------------------------------------------
+ * Phone / tablet modal — safe bottom sheet (≤1024px)
+ * -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .hathor-booking-modal {
+    align-items: flex-end;
+    justify-content: stretch;
+    padding: 0;
+  }
+
+  .hathor-booking-modal__dialog {
+    width: 100%;
+    max-width: none;
+    max-height: min(92dvh, calc(var(--vh, 1vh) * 92));
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    border-radius: 16px 16px 0 0 !important;
+    animation: hathorModalSheetUp 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @keyframes hathorModalSheetUp {
+    from {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hathor-booking-modal__header {
+    padding:
+      calc(1.25rem + env(safe-area-inset-top, 0px))
+      3rem
+      1rem
+      1rem;
+  }
+
+  .hathor-booking-modal__close {
+    top: calc(0.75rem + env(safe-area-inset-top, 0px));
+    right: calc(0.75rem + env(safe-area-inset-right, 0px));
+    width: 2.75rem;
+    height: 2.75rem;
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .hathor-booking-modal__body {
+    padding:
+      1rem
+      calc(1rem + env(safe-area-inset-right, 0px))
+      1rem
+      calc(1rem + env(safe-area-inset-left, 0px));
+  }
+
+  .hathor-booking-modal__footer {
+    padding:
+      0.875rem
+      calc(1rem + env(safe-area-inset-right, 0px))
+      calc(1rem + env(safe-area-inset-bottom, 0px))
+      calc(1rem + env(safe-area-inset-left, 0px));
+  }
+
+  .hathor-modal-select,
+  .hathor-modal-readonly,
+  .hathor-guest-selector .booking-widget-select {
+    font-size: 16px;
+    min-height: 44px;
+  }
+
+  .hathor-modal-counter__btn,
+  .hathor-guest-selector .booking-counter-btn {
+    width: 2.75rem;
+    height: 2.75rem;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .hathor-modal-btn {
+    min-height: 44px;
+    width: 100%;
+  }
+
+  .hathor-modal-btn--primary {
+    width: 100%;
+  }
+}
+
+@media (max-width: 380px) {
+  .hathor-modal-dates-grid,
+  .hathor-modal-guests {
+    grid-template-columns: 1fr;
+  }
+}

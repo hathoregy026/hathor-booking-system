@@ -9,7 +9,10 @@ import { TypographySettingsProvider } from "@/components/public/TypographySettin
 import { WebsiteTextProvider } from "@/components/public/WebsiteTextProvider";
 import { resolveSiteImageMap } from "@/lib/resolve-site-images";
 import { getHeroLogoTuneSafe, getHeroLogoTuneMobileSafe } from "@/lib/hero-logo-tune";
-import { heroLogoTuneToImportantCss } from "@/lib/hero-logo-tune-shared";
+import {
+  heroLogoTuneToImportantCss,
+  heroLogoTuneToNarrowImportantCss,
+} from "@/lib/hero-logo-tune-shared";
 import { getHieroglyphTuneSafe } from "@/lib/hieroglyph-tune";
 import { hieroglyphTuneToImportantCss } from "@/lib/hieroglyph-tune-shared";
 import {
@@ -146,7 +149,7 @@ export default async function PublicSiteLayout({
   );
   const logoTuneCss = combineDesktopAndNarrowCss(
     heroLogoTuneToImportantCss(heroLogoTune),
-    heroLogoTuneToImportantCss(heroLogoTuneMobile),
+    heroLogoTuneToNarrowImportantCss(heroLogoTuneMobile),
   );
   const hieroglyphTuneCss = hieroglyphTuneToImportantCss(hieroglyphTune);
 

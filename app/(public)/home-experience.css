@@ -3442,9 +3442,69 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
   .testimonials-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  /*
+   * Landmark stack — CSS sticky viewport (no GSAP pin spacer).
+   * Scroll distance comes from section height; JS scrubs without pinning.
+   */
+  .ex-stack-scroll {
+    height: 420svh;
+  }
+
+  .ex-stack-scroll__viewport {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    min-height: 100svh;
+  }
+
+  .home-helm-portal {
+    height: 280svh;
+  }
+
+  .home-helm-portal__wheel {
+    width: min(72vw, 52svh, 420px);
+  }
+
+  .hcta-track {
+    height: 400svh;
+  }
+
+  /* Native swipe carousel — JS clears GSAP transform on narrow */
+  .home-carousel .carousel-track {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    transform: none !important;
+    will-change: auto;
+  }
+
+  .home-carousel .carousel-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .home-carousel .carousel-slide {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
 }
 
 @media (max-width: 767px) {
+  .ex-stack-scroll {
+    height: 380svh;
+  }
+
+  .hcta-track {
+    height: 360svh;
+  }
+
+  .home-helm-portal {
+    height: 260svh;
+  }
+
   .nav-links {
     display: none;
   }

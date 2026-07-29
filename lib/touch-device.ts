@@ -1,6 +1,6 @@
 /**
  * Touch / coarse-pointer helpers for mobile & tablet.
- * Desktop (fine pointer, ≥1024px) behavior must remain unchanged.
+ * Desktop (fine pointer, >1024px) behavior must remain unchanged.
  *
  * Keep this module free of GSAP so it can run from the root layout (RSC).
  */
@@ -13,10 +13,15 @@ export function isTouchDevice(): boolean {
   return window.matchMedia("(pointer: coarse)").matches;
 }
 
-/** Phone + tablet viewport band (does not include desktop ≥1024). */
+/** Phone + tablet viewport band. Desktop begins strictly above 1024px. */
 export function isPhoneOrTabletViewport(): boolean {
   if (typeof window === "undefined") return false;
-  return window.matchMedia("(max-width: 1023px)").matches;
+  return window.matchMedia("(max-width: 1024px)").matches;
+}
+
+/** Native scrolling avoids Lenis fighting mobile momentum or narrow emulators. */
+export function shouldUseNativeScroll(): boolean {
+  return isTouchDevice() || isPhoneOrTabletViewport();
 }
 
 /**

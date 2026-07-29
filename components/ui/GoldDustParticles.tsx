@@ -22,33 +22,46 @@ type ParticleSeed = {
 };
 
 function buildParticles(count: number): ParticleSeed[] {
+  const random = createSeededRandom(0x48415448);
   return Array.from({ length: count }, (_, id) => {
-    const size = 2.5 + Math.random() * 4;
+    const size = 2.5 + random() * 4;
     return {
       id,
-      left: `${Math.random() * 100}%`,
-      top: `${Math.random() * 100}%`,
+      left: `${random() * 100}%`,
+      top: `${random() * 100}%`,
       size,
-      color: COLORS[Math.floor(Math.random() * COLORS.length)]!,
-      blur: 1 + Math.random() * 1.5,
-      opacity: 0.4 + Math.random() * 0.4,
+      color: COLORS[Math.floor(random() * COLORS.length)]!,
+      blur: 1 + random() * 1.5,
+      opacity: 0.4 + random() * 0.4,
     };
   });
 }
 
-/** Continuous random wander — never the same path twice. */
-function startWander(node: HTMLElement, tweens: gsap.core.Tween[]) {
+/** Stable server/client output prevents particle fields causing hydration drift. */
+function createSeededRandom(initialSeed: number) {
+  let seed = initialSeed >>> 0;
+  return () => {
+    seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+    return seed / 4294967296;
+  };
+}
+
+/** Continuous, low-cost wander with a deterministic path per particle. */
+function startWander(
+  node: HTMLElement,
+  random: () => number,
+  isCancelled: () => boolean,
+) {
   const step = () => {
-    const duration = 3.5 + Math.random() * 4.5; /* 3.5–8s */
-    const tween = gsap.to(node, {
-      x: (Math.random() - 0.5) * 110,
-      y: (Math.random() - 0.5) * 130,
-      duration,
+    if (isCancelled()) return;
+    gsap.to(node, {
+      x: (random() - 0.5) * 110,
+      y: (random() - 0.5) * 130,
+      duration: 3.5 + random() * 4.5,
       ease: "sine.inOut",
       force3D: true,
       onComplete: step,
     });
-    tweens.push(tween);
   };
   step();
 }
@@ -66,32 +79,35 @@ export function GoldDustParticles() {
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) return;
 
-    const nodes = root.querySelectorAll<HTMLElement>("[data-gold-dust]");
+    const allNodes = root.querySelectorAll<HTMLElement>("[data-gold-dust]");
+    const narrow = window.matchMedia("(max-width: 1024px)").matches;
+    const nodes = Array.from(allNodes).slice(0, narrow ? 10 : PARTICLE_COUNT);
     const tweens: gsap.core.Tween[] = [];
     let cancelled = false;
 
     nodes.forEach((node, i) => {
       const seed = particles[i];
       if (!seed) return;
+      const random = createSeededRandom(0x44555354 + i * 97);
 
       gsap.set(node, {
-        x: (Math.random() - 0.5) * 40,
-        y: (Math.random() - 0.5) * 40,
+        x: (random() - 0.5) * 40,
+        y: (random() - 0.5) * 40,
         opacity: seed.opacity,
       });
 
       /* Stagger first move so the field doesn't pulse in sync */
-      const kick = gsap.delayedCall(Math.random() * 2.5, () => {
+      const kick = gsap.delayedCall(random() * 2.5, () => {
         if (cancelled) return;
-        startWander(node, tweens);
+        startWander(node, random, () => cancelled);
       });
       tweens.push(kick as unknown as gsap.core.Tween);
 
       tweens.push(
         gsap.to(node, {
           opacity: Math.min(0.95, seed.opacity + 0.35),
-          duration: 2.8 + Math.random() * 3.2,
-          delay: Math.random() * 1.5,
+          duration: 2.8 + random() * 3.2,
+          delay: random() * 1.5,
           ease: "sine.inOut",
           yoyo: true,
           repeat: -1,
@@ -102,7 +118,7 @@ export function GoldDustParticles() {
     return () => {
       cancelled = true;
       tweens.forEach((t) => t.kill());
-      gsap.killTweensOf(nodes);
+      gsap.killTweensOf(allNodes);
     };
   }, [particles]);
 
@@ -125,6 +141,7 @@ export function GoldDustParticles() {
         <div
           key={p.id}
           data-gold-dust=""
+          data-gold-dust-index={p.id}
           style={{
             position: "absolute",
             left: p.left,

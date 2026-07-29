@@ -151,9 +151,7 @@ export function mountHeroScrollStage({
    * the same stripes play once on the first native scroll gesture while the
    * hero remains in normal document flow. Desktop keeps the full pinned stage.
    */
-  const isPhoneHero =
-    window.matchMedia("(pointer: coarse)").matches ||
-    window.matchMedia("(max-width: 1023px)").matches;
+  const isPhoneHero = window.matchMedia("(max-width: 1024px)").matches;
 
   if (isPhoneHero || prefersReduced) {
     killByPrefix("hero-stage");
@@ -211,7 +209,7 @@ export function mountHeroScrollStage({
 
     if (isPhoneHero && !prefersReduced) {
       const width = hero.clientWidth || window.innerWidth;
-      const count = width <= 767 ? 18 : 24;
+      const count = width <= 767 ? 14 : 18;
       const stripWidth = width / count;
 
       for (let index = 0; index < count; index += 1) {
@@ -231,21 +229,48 @@ export function mountHeroScrollStage({
       ) as Element[];
 
       gsap.set(strips, {
-        rotationY: 0,
-        scaleX: 0,
+        rotationY: -28,
+        scaleX: 0.08,
         opacity: 0,
         visibility: "hidden",
         force3D: true,
       });
 
-      mobileBlinds = gsap.timeline({ paused: true }).to(strips, {
-        scaleX: 1,
-        opacity: 1,
-        visibility: "visible",
-        duration: 0.58,
-        stagger: { each: 0.028, from: "start" },
-        ease: "power1.inOut",
-      });
+      mobileBlinds = gsap
+        .timeline({
+          paused: true,
+          onComplete: () => {
+            /*
+             * The sweep is a transition accent, not a permanent paint layer.
+             * Removing it prevents the hero reappearing as a solid gold block
+             * when mobile Safari composites the page after toolbar changes.
+             */
+            cover.replaceChildren();
+            mobileBlinds = null;
+          },
+        })
+        .to(strips, {
+          rotationY: 0,
+          scaleX: 1,
+          opacity: 0.72,
+          visibility: "visible",
+          duration: 0.34,
+          stagger: { each: 0.018, from: "start" },
+          ease: "power1.out",
+        })
+        .to(
+          strips,
+          {
+            rotationY: 22,
+            scaleX: 0.18,
+            opacity: 0,
+            duration: 0.36,
+            stagger: { each: 0.015, from: "start" },
+            ease: "power2.in",
+          },
+          0.24,
+        )
+        .set(strips, { visibility: "hidden" });
 
       window.addEventListener("scroll", playMobileBlinds, { passive: true });
       window.addEventListener("touchmove", playMobileBlinds, { passive: true });
@@ -255,6 +280,7 @@ export function mountHeroScrollStage({
       window.removeEventListener("scroll", playMobileBlinds);
       window.removeEventListener("touchmove", playMobileBlinds);
       mobileBlinds?.kill();
+      cover.replaceChildren();
       killByPrefix("hero-stage");
       root.classList.remove("hero-motion-ready");
     };
@@ -403,9 +429,7 @@ export function mountHeroScrollStage({
     if (ctaText) gsap.set(ctaText, { letterSpacing: "0.22em" });
 
     const titleTravel = Math.min(w * 0.38, 420);
-    const isTouch =
-      window.matchMedia("(pointer: coarse)").matches ||
-      window.matchMedia("(max-width: 1023px)").matches;
+    const isTouch = window.matchMedia("(max-width: 1024px)").matches;
 
     const tl = gsap.timeline({
       scrollTrigger: {

@@ -101,8 +101,22 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
       resetModal();
     }
 
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    const scrollY = window.scrollY;
+    const body = document.body;
+    const previousOverflow = body.style.overflow;
+    const previousPosition = body.style.position;
+    const previousTop = body.style.top;
+    const previousWidth = body.style.width;
+    const previousPaddingRight = body.style.paddingRight;
+
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    body.style.overflow = "hidden";
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.width = "100%";
+    if (scrollbarWidth > 0) {
+      body.style.paddingRight = `${scrollbarWidth}px`;
+    }
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") handleClose();
@@ -112,7 +126,12 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
     dialogRef.current?.focus();
 
     return () => {
-      document.body.style.overflow = previousOverflow;
+      body.style.overflow = previousOverflow;
+      body.style.position = previousPosition;
+      body.style.top = previousTop;
+      body.style.width = previousWidth;
+      body.style.paddingRight = previousPaddingRight;
+      window.scrollTo(0, scrollY);
       window.removeEventListener("keydown", onKeyDown);
     };
   }, [open, handleClose, itineraryConfigured, resetModal, storeDuration, storeRoomConfigs]);

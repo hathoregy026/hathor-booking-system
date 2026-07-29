@@ -39,6 +39,7 @@ import {
   DEFAULT_HERO_LOGO_TUNE,
   type HeroLogoTune,
   heroLogoTuneToImportantCss,
+  heroLogoTuneToNarrowImportantCss,
   parseHeroLogoTune,
 } from "@/lib/hero-logo-tune-shared";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
@@ -118,7 +119,7 @@ function paintLogoTune(desktop: HeroLogoTune, phone: HeroLogoTune) {
   }
   tag.textContent = combineDesktopAndNarrowCss(
     heroLogoTuneToImportantCss(desktop),
-    heroLogoTuneToImportantCss(phone),
+    heroLogoTuneToNarrowImportantCss(phone),
   );
 }
 

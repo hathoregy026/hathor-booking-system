@@ -18,7 +18,7 @@ export type HeroLogoVAlign = z.infer<typeof heroLogoVAlignSchema>;
 export const heroLogoPartsVariantSchema = z.enum(HATHOR_LOGO_PARTS_VARIANTS);
 export type { HathorLogoPartsVariant };
 
-/** Fixed Book Now slot width — matches live .hero-cta / Discover More. */
+/** Desktop Book Now slot width — matches live .hero-cta / Discover More. */
 export const HATHOR_BTN_SLOT_PX = 200;
 export const HATHOR_BTN_HEIGHT_PX = 46;
 
@@ -92,24 +92,38 @@ export const DEFAULT_HERO_LOGO_TUNE: HeroLogoTune = {
  */
 export const DEFAULT_HERO_LOGO_TUNE_MOBILE: HeroLogoTune = {
   ...DEFAULT_HERO_LOGO_TUNE,
-  size: 1.05,
-  y: 40,
-  ctaNudge: 12,
-  gapTButton: 14,
-  gapButtonH: 14,
-  gapHA: 6,
-  gapAT: 6,
-  gapHO: 8,
-  gapOR: 8,
+  size: 0.8,
+  y: 24,
+  ctaNudge: 8,
+  gapTButton: 8,
+  gapButtonH: 8,
+  gapHA: 4,
+  gapAT: 4,
+  gapHO: 5,
+  gapOR: 5,
 };
 
 /** Keep logo + CTA inside the hero on narrow screens. */
 export function ensurePhoneHeroLogoVisible(tune: HeroLogoTune): HeroLogoTune {
-  if (tune.y >= 24) return tune;
   return {
     ...tune,
-    y: 40,
-    size: Math.max(tune.size, 0.95),
+    y: Math.min(48, Math.max(tune.y, 20)),
+    size: Math.min(0.86, Math.max(tune.size, 0.72)),
+    ctaNudge: Math.min(12, Math.max(tune.ctaNudge, -4)),
+    edgeLeft: Math.min(8, Math.max(tune.edgeLeft, 0)),
+    edgeRight: Math.min(8, Math.max(tune.edgeRight, 0)),
+    gapTButton: Math.min(10, Math.max(tune.gapTButton, 2)),
+    gapButtonH: Math.min(10, Math.max(tune.gapButtonH, 2)),
+    gapHA: Math.min(8, Math.max(tune.gapHA, 2)),
+    gapAT: Math.min(8, Math.max(tune.gapAT, 2)),
+    gapHO: Math.min(8, Math.max(tune.gapHO, 2)),
+    gapOR: Math.min(8, Math.max(tune.gapOR, 2)),
+    yH1: Math.min(8, Math.max(tune.yH1, -8)),
+    yA: Math.min(8, Math.max(tune.yA, -8)),
+    yT: Math.min(8, Math.max(tune.yT, -8)),
+    yH2: Math.min(8, Math.max(tune.yH2, -8)),
+    yO: Math.min(8, Math.max(tune.yO, -8)),
+    yR: Math.min(8, Math.max(tune.yR, -8)),
   };
 }
 
@@ -306,6 +320,67 @@ html[data-ex-experience] .ex-root .hathor-logo-split__side--right,
 html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) .hero-button,
 .public-site .home-hero-container:has(.hero-logo-mark--split) .hero-button {
   bottom: calc(${tune.y}px + (var(--hathor-logo-h) / 2) - 26px + ${tune.ctaNudge}px) !important;
+}
+`.trim();
+}
+
+/**
+ * Phone/tablet logo CSS with hard visual bounds.
+ *
+ * Saved dashboard values may be valid on a 1440px hero yet impossible inside
+ * a 320px viewport. This keeps the same split HAT · CTA · HOR composition while
+ * guaranteeing that all six letters and the CTA fit at 320–1024px.
+ */
+export function heroLogoTuneToNarrowImportantCss(tune: HeroLogoTune): string {
+  const safe = ensurePhoneHeroLogoVisible(tune);
+  const sizeFactor = safe.size / 0.8;
+  const logoHeight = `clamp(52px, calc(13vw * ${sizeFactor}), 120px)`;
+  const centerSlot = "clamp(156px, 22vw, 220px)";
+  const bottom = "max(20px, env(safe-area-inset-bottom))";
+  const vars: Record<string, string> = {
+    ...heroLogoTuneToCssVars(safe),
+    "--hathor-logo-h": logoHeight,
+    "--hathor-logo-y": bottom,
+    "--hathor-logo-bottom": bottom,
+    "--hathor-logo-gap": centerSlot,
+    "--hathor-btn-slot": centerSlot,
+  };
+  const rootBody = Object.entries(vars)
+    .map(([key, value]) => `  ${key}: ${value} !important;`)
+    .join("\n");
+
+  return `
+html[data-ex-experience] .ex-root,
+html[data-ex-experience] .ex-root .home-hero-container,
+.public-site .home-hero-container,
+.public-site .home-hero-container:has(.hero-logo-mark--split) {
+${rootBody}
+}
+html[data-ex-experience] .ex-root .hathor-logo-split.hero-logo-img,
+html[data-ex-experience] .ex-root .hathor-logo-split,
+.public-site .home-hero-container .hathor-logo-split.hero-logo-img,
+.public-site .home-hero-container .hathor-logo-split {
+  height: var(--hathor-logo-h) !important;
+}
+html[data-ex-experience] .ex-root .hero-logo-mark--split,
+.public-site .home-hero-container .hero-logo-mark--split {
+  bottom: ${bottom} !important;
+}
+html[data-ex-experience] .ex-root .hathor-logo-split__side--left,
+.public-site .home-hero-container .hathor-logo-split__side--left {
+  padding-left: ${safe.edgeLeft}px !important;
+  padding-right: 0 !important;
+  overflow: hidden !important;
+}
+html[data-ex-experience] .ex-root .hathor-logo-split__side--right,
+.public-site .home-hero-container .hathor-logo-split__side--right {
+  padding-left: 0 !important;
+  padding-right: ${safe.edgeRight}px !important;
+  overflow: hidden !important;
+}
+html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) .hero-button,
+.public-site .home-hero-container:has(.hero-logo-mark--split) .hero-button {
+  bottom: calc(${bottom} + (var(--hathor-logo-h) / 2) - 26px + ${safe.ctaNudge}px) !important;
 }
 `.trim();
 }

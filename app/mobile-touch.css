@@ -1,6 +1,6 @@
 /**
- * Phone / tablet — keep desktop look, kill broken mobile behaviors.
- * Desktop (≥1024px + fine pointer) is untouched by these rules.
+ * Phone / tablet adaptation (≤1024px).
+ * Desktop (>1024px) is untouched — no rules apply above that breakpoint.
  */
 
 :root {
@@ -48,15 +48,29 @@ body.is-touch-device .lux-cursor {
   display: none !important;
 }
 
+/* Hide excess gold dust on narrow — JS only animates first 10 */
+@media (max-width: 1024px) {
+  .gold-dust-particles [data-gold-dust-index]:nth-child(n + 11) {
+    display: none !important;
+  }
+}
+
 /* --------------------------------------------------------------------------
- * NARROW: static full-bleed hero — logo + Book Now MUST be visible
+ * NARROW ≤1024 — hero, typography, gutters, touch targets
  * -------------------------------------------------------------------------- */
-@media (max-width: 1023px) {
+@media (max-width: 1024px) {
   body {
     overflow-x: clip;
     max-width: 100%;
   }
 
+  .public-site {
+    --content-gutter: 20px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  /* ---- Hero shell ---- */
   .home-hero-container {
     width: 100% !important;
     max-width: 100% !important;
@@ -83,13 +97,10 @@ body.is-touch-device .lux-cursor {
     max-width: none !important;
     max-height: none !important;
     object-fit: cover !important;
+    object-position: center center !important;
     display: block !important;
   }
 
-  /*
-   * Preserve the gold-blind design on phones. JS plays a lightweight,
-   * non-pinned one-shot reveal so native momentum scrolling stays smooth.
-   */
   .home-hero-container .home-hero-cover {
     display: block !important;
     pointer-events: none !important;
@@ -101,10 +112,7 @@ body.is-touch-device .lux-cursor {
     will-change: transform, opacity;
   }
 
-  /*
-   * FORCE logo + letters + Book Now visible.
-   * Beats critical boot hide, stylesheet opacity:0, and desktop y:-200 tuck.
-   */
+  /* Logo + Book Now always visible — composition from narrow logo CSS */
   html.ex-home .home-hero-container .hero-logo-mark,
   html.ex-home .home-hero-container .hero-logo-mark--split,
   html.ex-home .home-hero-container .hathor-logo-split,
@@ -132,44 +140,105 @@ body.is-touch-device .lux-cursor {
     height: 100% !important;
   }
 
-  .public-site .home-hero-container .hero-logo-mark--split,
-  html[data-ex-experience] .ex-root .hero-logo-mark--split,
-  html.ex-home .home-hero-container .hero-logo-mark--split {
-    bottom: 40px !important;
-    top: auto !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-  }
-
-  .public-site .home-hero-container:has(.hero-logo-mark--split) .hero-button,
-  html[data-ex-experience]
-    .ex-root
-    .home-hero-container:has(.hero-logo-mark--split)
-    .hero-button,
-  html.ex-home .home-hero-container:has(.hero-logo-mark--split) .hero-button {
-    bottom: calc(40px + (var(--hathor-logo-h, 4rem) / 2) - 26px + 12px) !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-    display: flex !important;
-  }
-
   .public-site .home-hero-container .hero-button .hero-cta,
   html.ex-home .home-hero-container .hero-button .hero-cta {
     opacity: 1 !important;
     visibility: visible !important;
     pointer-events: auto !important;
     display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 44px;
+    width: var(--hathor-logo-gap, clamp(156px, 22vw, 220px)) !important;
+    max-width: var(--hathor-logo-gap, clamp(156px, 22vw, 220px)) !important;
   }
 
-  .hathor-logo-split {
-    height: var(
-      --hathor-logo-h,
-      calc((100vw - 200px) / 2 * 2200 / 2683 * var(--hathor-logo-size, 1.05))
-    ) !important;
+  /* Kill dashboard X/Y offsets that shove titles off narrow frames */
+  .public-site .hathor-page-hero__title,
+  .public-site .hathor-page-hero__subtitle,
+  .public-site .pt-hero__copy .hathor-page-hero__title,
+  .public-site .pt-hero__copy .hathor-page-hero__subtitle,
+  .public-site [data-page-transition] .pt-hero__copy .hathor-page-hero__title,
+  .public-site [data-page-transition] .pt-hero__copy .hathor-page-hero__subtitle {
+    transform: none !important;
+    translate: none !important;
+    left: auto !important;
+    right: auto !important;
+    max-width: 100% !important;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    hyphens: auto;
   }
 
-  /* Forms */
+  .public-site .hathor-page-hero__title,
+  .public-site .pt-hero__copy .hathor-page-hero__title,
+  .public-site [data-page-transition] .pt-hero__copy .hathor-page-hero__title {
+    font-size: clamp(1.75rem, 7.2vw, 3.25rem) !important;
+    line-height: 1.15 !important;
+    letter-spacing: 0.02em !important;
+  }
+
+  .public-site .hathor-page-hero__subtitle,
+  .public-site .pt-hero__copy .hathor-page-hero__subtitle {
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+  }
+
+  .public-site .hathor-page-hero__content,
+  .public-site .pt-hero__copy {
+    padding-left: var(--content-gutter, 20px) !important;
+    padding-right: var(--content-gutter, 20px) !important;
+    box-sizing: border-box;
+  }
+
+  /* Hide scroll hint — competes with logo/CTA on phones */
+  .public-site .hero-scroll-hint,
+  .public-site .scroll-hint,
+  .public-site [data-hero-scroll-hint] {
+    display: none !important;
+  }
+
+  /* Body / on-image copy */
+  .public-site .typo-body-text,
+  .public-site .typo-on-images-body,
+  .public-site p.typo-body-text {
+    font-size: 16px !important;
+    line-height: 1.55 !important;
+  }
+
+  .public-site .typo-page-title,
+  .public-site h1.typo-page-title,
+  .public-site h2.typo-page-title {
+    font-size: clamp(1.65rem, 5.5vw, 2.75rem) !important;
+    line-height: 1.2 !important;
+  }
+
+  .public-site .section-inner,
+  .public-site .public-page-body,
+  .public-site .hathor-editorial,
+  .public-site .content-shell {
+    padding-left: max(var(--content-gutter, 20px), env(safe-area-inset-left));
+    padding-right: max(var(--content-gutter, 20px), env(safe-area-inset-right));
+    box-sizing: border-box;
+  }
+
+  /* Touch targets */
+  .public-site a.btn,
+  .public-site button.btn,
+  .public-site .btn,
+  .public-site .hero-cta,
+  .public-site .hathor-header__menu-btn,
+  .public-site .hathor-explore a,
+  .public-site .carousel-nav button,
+  .public-site [data-carousel-prev],
+  .public-site [data-carousel-next] {
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+  }
+
+  /* Forms — 16px prevents iOS auto-zoom */
   .public-site input,
   .public-site textarea,
   .public-site select,
@@ -181,7 +250,7 @@ body.is-touch-device .lux-cursor {
   .booking-modal input,
   .booking-modal textarea,
   .booking-modal select {
-    font-size: 16px;
+    font-size: 16px !important;
     scroll-margin-bottom: 100px;
   }
 
@@ -194,11 +263,44 @@ body.is-touch-device .lux-cursor {
     min-height: 44px;
     touch-action: manipulation;
   }
+
+  /* Footer */
+  .public-site .site-footer,
+  .public-site footer {
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
+  }
 }
 
-@media (max-width: 767px) {
+/* --------------------------------------------------------------------------
+ * PHONE ≤768 — tighter gutters, single-column stacks
+ * -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .public-site {
+    --content-gutter: 16px;
+  }
+
   .public-site .hathor-editorial__grid,
-  .public-site .hathor-stats-grid {
-    grid-template-columns: 1fr;
+  .public-site .hathor-stats-grid,
+  .public-site .testimonials-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .public-site .hathor-page-hero__title,
+  .public-site .pt-hero__copy .hathor-page-hero__title {
+    font-size: clamp(1.6rem, 8vw, 2.35rem) !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+ * TABLET 769–1024 — slightly wider gutters
+ * -------------------------------------------------------------------------- */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .public-site {
+    --content-gutter: 28px;
+  }
+
+  .public-site .testimonials-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }

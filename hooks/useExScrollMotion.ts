@@ -18,7 +18,7 @@ import {
   readSavedScrollY,
   shouldRestoreScrollOnMount,
 } from "@/lib/scroll-position-restore";
-import { lenisMobileSafeOptions, isTouchDevice } from "@/lib/touch-device";
+import { lenisMobileSafeOptions, shouldUseNativeScroll } from "@/lib/touch-device";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -48,6 +48,7 @@ export function useExScrollMotion() {
   const prefersReduced =
     window.matchMedia &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const isNarrowViewport = window.matchMedia("(max-width: 1024px)").matches;
 
   /* -------------------------------------------------------
    * 1. GSAP plugin
@@ -61,10 +62,11 @@ export function useExScrollMotion() {
   let tickerFn: ((time: number) => void) | null = null;
   let heroCleanup: (() => void) | null = null;
   let helmCleanup: (() => void) | null = null;
+  const motionCleanups: Array<() => void> = [];
 
   if (!prefersReduced) {
     // Native finger scroll on phones/tablets — Lenis + scrubbed pins = jumpy lag.
-    if (!isTouchDevice()) {
+    if (!shouldUseNativeScroll()) {
       lenis = new Lenis(lenisMobileSafeOptions(1.4));
 
       // Keep ScrollTrigger in sync with Lenis
@@ -117,18 +119,21 @@ export function useExScrollMotion() {
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
+    motionCleanups.push(() => window.removeEventListener("scroll", onScroll));
 
     if (toggle) {
-      toggle.addEventListener("click", () => {
+      const onToggle = () => {
         nav.classList.toggle("is-open");
         const open = nav.classList.contains("is-open");
         toggle.setAttribute("aria-expanded", open ? "true" : "false");
-      });
+      };
+      toggle.addEventListener("click", onToggle);
+      motionCleanups.push(() => toggle.removeEventListener("click", onToggle));
     }
 
     // Smooth anchor links via Lenis when available
     document.querySelectorAll('a[href^="#"]').forEach((a) => {
-      a.addEventListener("click", (e) => {
+      const onAnchorClick = (e: Event) => {
         const id = a.getAttribute("href");
         if (!id || id === "#") return;
         const target = document.querySelector(id);
@@ -140,7 +145,11 @@ export function useExScrollMotion() {
         } else {
           target.scrollIntoView({ behavior: "smooth" });
         }
-      });
+      };
+      a.addEventListener("click", onAnchorClick);
+      motionCleanups.push(() =>
+        a.removeEventListener("click", onAnchorClick),
+      );
     });
   }
 
@@ -338,9 +347,7 @@ export function useExScrollMotion() {
       return;
     }
 
-    const isTouchPortal =
-      window.matchMedia("(pointer: coarse)").matches ||
-      window.matchMedia("(max-width: 1023px)").matches;
+    const isTouchPortal = isNarrowViewport;
     const wheelOpenScale = isTouchPortal ? 2.55 : 3.15;
     const wheelExitScale = isTouchPortal ? 4.1 : 5.4;
 
@@ -438,7 +445,9 @@ export function useExScrollMotion() {
       );
     }
 
-    const update = () => {
+    let animationFrame = 0;
+    const render = () => {
+      animationFrame = 0;
       const rect = section.getBoundingClientRect();
       const scrollable = Math.max(1, section.offsetHeight - window.innerHeight);
       const progress = gsap.utils.clamp(
@@ -462,13 +471,20 @@ export function useExScrollMotion() {
       }
     };
 
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    update();
+    const requestRender = () => {
+      if (animationFrame) return;
+      animationFrame = window.requestAnimationFrame(render);
+    };
+    const viewportEvent = isNarrowViewport ? "orientationchange" : "resize";
+
+    window.addEventListener("scroll", requestRender, { passive: true });
+    window.addEventListener(viewportEvent, requestRender);
+    render();
 
     helmCleanup = () => {
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
+      window.cancelAnimationFrame(animationFrame);
+      window.removeEventListener("scroll", requestRender);
+      window.removeEventListener(viewportEvent, requestRender);
       gsap.killTweensOf(portalTimeline);
       portalTimeline.kill();
     };
@@ -749,24 +765,27 @@ export function useExScrollMotion() {
         panel.setAttribute("aria-hidden", "true");
       });
 
-      const isPhoneStack =
-        window.matchMedia("(pointer: coarse)").matches ||
-        window.matchMedia("(max-width: 1023px)").matches;
+      const isPhoneStack = isNarrowViewport;
 
       const tl = gsap.timeline({
         scrollTrigger: {
           id: "ex-stack-scroll",
           trigger: section,
           start: "top top",
-          end: `+=${scrollSpan * 100}%`,
+          end: isPhoneStack ? "bottom bottom" : `+=${scrollSpan * 100}%`,
           /*
            * Lower scrub lag = less rubber-band catch-up when the wheel
            * stops, so frames sit smoothly instead of jumping into place.
            * Touch: direct scrub (no lag) — laggy scrub feels like scroll jumping.
            */
           scrub: isPhoneStack ? true : 1.15,
-          pin: viewport,
-          pinSpacing: true,
+          /*
+           * Narrow screens use a CSS-sticky viewport inside a tall section.
+           * This preserves the landmark sequence without a GSAP pin spacer,
+           * which is unstable during mobile browser toolbar resizing.
+           */
+          pin: isPhoneStack ? false : viewport,
+          pinSpacing: !isPhoneStack,
           anticipatePin: 1,
           fastScrollEnd: true,
           invalidateOnRefresh: true,
@@ -995,18 +1014,29 @@ export function useExScrollMotion() {
       }
     };
 
+    let active = true;
     document.fonts.ready.then(() => {
+      if (!active) return;
       build();
       ScrollTrigger.refresh();
     });
 
     let resizeTimer: ReturnType<typeof setTimeout>;
-    window.addEventListener("resize", () => {
+    const viewportEvent = isNarrowViewport ? "orientationchange" : "resize";
+    const onViewportChange = () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
+        if (!active) return;
         build();
         ScrollTrigger.refresh();
       }, 200);
+    };
+    window.addEventListener(viewportEvent, onViewportChange);
+    motionCleanups.push(() => {
+      active = false;
+      clearTimeout(resizeTimer);
+      window.removeEventListener(viewportEvent, onViewportChange);
+      killExisting();
     });
   }
 
@@ -1029,6 +1059,65 @@ export function useExScrollMotion() {
     let index = 0;
     let autoplayTimer = null;
     let revealed = false;
+
+    if (isNarrowViewport) {
+      /*
+       * Native horizontal momentum is substantially smoother than translating
+       * the track with GSAP on a finger drag. Arrow controls remain available,
+       * while users can swipe and snap directly between cards.
+       */
+      gsap.set(track, { clearProps: "transform" });
+      slides.forEach((slide) => {
+        const container = slide.querySelector(".carousel-container");
+        if (container) {
+          gsap.set(container, {
+            clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
+            scale: 1,
+          });
+        }
+      });
+      if (nextBtn) nextBtn.style.pointerEvents = "auto";
+      if (prevBtn) prevBtn.style.pointerEvents = "auto";
+
+      let scrollFrame = 0;
+      const scrollToIndex = (nextIndex) => {
+        index = Math.max(0, Math.min(nextIndex, slides.length - 1));
+        const target = slides[index];
+        track.scrollTo({
+          left: target.offsetLeft,
+          behavior: prefersReduced ? "auto" : "smooth",
+        });
+      };
+      const onNext = () => scrollToIndex(index + 1);
+      const onPrev = () => scrollToIndex(index - 1);
+      const onTrackScroll = () => {
+        if (scrollFrame) return;
+        scrollFrame = window.requestAnimationFrame(() => {
+          scrollFrame = 0;
+          let closest = 0;
+          let closestDistance = Number.POSITIVE_INFINITY;
+          slides.forEach((slide, slideIndex) => {
+            const distance = Math.abs(slide.offsetLeft - track.scrollLeft);
+            if (distance < closestDistance) {
+              closest = slideIndex;
+              closestDistance = distance;
+            }
+          });
+          index = closest;
+        });
+      };
+
+      nextBtn?.addEventListener("click", onNext);
+      prevBtn?.addEventListener("click", onPrev);
+      track.addEventListener("scroll", onTrackScroll, { passive: true });
+      motionCleanups.push(() => {
+        window.cancelAnimationFrame(scrollFrame);
+        nextBtn?.removeEventListener("click", onNext);
+        prevBtn?.removeEventListener("click", onPrev);
+        track.removeEventListener("scroll", onTrackScroll);
+      });
+      return;
+    }
 
     function slidesPerView() {
       if (window.innerWidth >= 1025) return 3;
@@ -1308,6 +1397,7 @@ export function useExScrollMotion() {
       window.removeEventListener("load", onLoad);
       heroCleanup?.();
       helmCleanup?.();
+      motionCleanups.forEach((cleanup) => cleanup());
       if (tickerFn) gsap.ticker.remove(tickerFn);
       registerHathorLenis(null);
       lenis?.destroy();

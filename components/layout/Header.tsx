@@ -172,9 +172,34 @@ export function Header() {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = exploreOpen ? "hidden" : "";
+    if (!exploreOpen) return;
+
+    const scrollY = window.scrollY || window.pageYOffset || 0;
+    const { style } = document.body;
+    const previous = {
+      overflow: style.overflow,
+      position: style.position,
+      top: style.top,
+      width: style.width,
+      left: style.left,
+      right: style.right,
+    };
+
+    style.overflow = "hidden";
+    style.position = "fixed";
+    style.top = `-${scrollY}px`;
+    style.width = "100%";
+    style.left = "0";
+    style.right = "0";
+
     return () => {
-      document.body.style.overflow = "";
+      style.overflow = previous.overflow;
+      style.position = previous.position;
+      style.top = previous.top;
+      style.width = previous.width;
+      style.left = previous.left;
+      style.right = previous.right;
+      window.scrollTo(0, scrollY);
     };
   }, [exploreOpen]);
 
@@ -354,7 +379,7 @@ export function Header() {
           <div className="hathor-header__col hathor-header__col--right">
             <button
               type="button"
-              className="hathor-header__menu-btn md:hidden"
+              className="hathor-header__menu-btn"
               onClick={() => setExploreOpen(true)}
               aria-expanded={exploreOpen}
               aria-label="Open menu"

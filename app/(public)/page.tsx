@@ -4,7 +4,10 @@ import { HomePageClient } from "@/components/pages/HomePageClient";
 import { HATHOR_HERO_POSTER_SRC } from "@/lib/branding";
 import { getHomepageAccordionCruisesSafe } from "@/lib/homepage-accordion-cruises";
 import { getHeroLogoTuneSafe, getHeroLogoTuneMobileSafe } from "@/lib/hero-logo-tune";
-import { heroLogoTuneToImportantCss } from "@/lib/hero-logo-tune-shared";
+import {
+  heroLogoTuneToImportantCss,
+  heroLogoTuneToNarrowImportantCss,
+} from "@/lib/hero-logo-tune-shared";
 import { combineDesktopAndNarrowCss } from "@/lib/admin-device-preview";
 import "./home-experience.css";
 
@@ -55,7 +58,7 @@ export default async function HomePage() {
   ]);
   const logoTuneCss = combineDesktopAndNarrowCss(
     heroLogoTuneToImportantCss(heroLogoTune),
-    heroLogoTuneToImportantCss(heroLogoTuneMobile),
+    heroLogoTuneToNarrowImportantCss(heroLogoTuneMobile),
   );
 
   return (

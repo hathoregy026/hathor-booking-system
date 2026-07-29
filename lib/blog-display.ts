@@ -56,6 +56,7 @@ export function formatBlogPublishedDate(value: string | Date): string {
     month: "long",
     day: "numeric",
     year: "numeric",
+    timeZone: "UTC",
   }).format(date);
 }
 

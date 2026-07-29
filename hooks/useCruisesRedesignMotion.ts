@@ -2,14 +2,56 @@
 
 /**
  * Faithful port of assets/pages redesign/.../js/cruises.js
+ * Phone/tablet (≤1024px): lightweight reveals only — no SplitType or clip-path.
  */
 
 import { useLayoutEffect, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplitType from "split-type";
+import { isPhoneOrTabletViewport } from "@/lib/touch-device";
 
 gsap.registerPlugin(ScrollTrigger);
+
+function runLightweightReveals(root: HTMLElement) {
+  gsap.utils
+    .toArray<HTMLElement>(
+      root.querySelectorAll(
+        ".cruise-reveal, .cruise-intro-line, .cruise-exp-title .cruise-intro-line",
+      ),
+    )
+    .forEach((el, i) => {
+      gsap.from(el, {
+        y: 20,
+        opacity: 0,
+        duration: 0.55,
+        ease: "power2.out",
+        delay: (i % 5) * 0.04,
+        scrollTrigger: {
+          trigger: el,
+          start: "top 92%",
+          once: true,
+        },
+      });
+    });
+}
+
+function runLightweightCardReveals(cards: HTMLElement[]) {
+  cards.forEach((card, i) => {
+    gsap.from(card, {
+      y: 32,
+      opacity: 0,
+      duration: 0.65,
+      ease: "power2.out",
+      delay: (i % 3) * 0.08,
+      scrollTrigger: {
+        trigger: card,
+        start: "top 90%",
+        once: true,
+      },
+    });
+  });
+}
 
 export function useCruisesRedesignMotion(
   rootRef: RefObject<HTMLElement | null>,
@@ -22,8 +64,34 @@ export function useCruisesRedesignMotion(
     const prefersReduced =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isNarrow = isPhoneOrTabletViewport();
 
     const ctx = gsap.context(() => {
+      const cards = gsap.utils.toArray<HTMLElement>(
+        root.querySelectorAll(".cruise-card"),
+      );
+
+      if (!prefersReduced && isNarrow) {
+        runLightweightReveals(root);
+        if (cards.length) runLightweightCardReveals(cards);
+
+        const visual = root.querySelector<HTMLElement>(".cruise-exp-visual");
+        if (visual) {
+          gsap.from(visual, {
+            y: 24,
+            opacity: 0,
+            duration: 0.7,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: visual,
+              start: "top 82%",
+              once: true,
+            },
+          });
+        }
+        return;
+      }
+
       if (!prefersReduced) {
         const runSplits = () => {
           root.querySelectorAll<HTMLElement>(".cruise-intro-title").forEach((title) => {
@@ -84,9 +152,6 @@ export function useCruisesRedesignMotion(
       }
 
       /* Card cascade */
-      const cards = gsap.utils.toArray<HTMLElement>(
-        root.querySelectorAll(".cruise-card"),
-      );
       if (cards.length && !prefersReduced) {
         cards.forEach((card) => {
           const media = card.querySelector<HTMLElement>(".cruise-card-media");
@@ -182,8 +247,8 @@ export function useCruisesRedesignMotion(
         }
       }
 
-      /* Filter sticky */
-      if (!prefersReduced) {
+      /* Filter sticky — desktop only; narrow uses CSS sticky + horizontal scroll */
+      if (!prefersReduced && !isNarrow) {
         const bar = root.querySelector<HTMLElement>(".cruise-filter-bar");
         if (bar) {
           ScrollTrigger.create({

@@ -471,8 +471,8 @@ export function useRoomsEditorialMotion(
 
       cancelDeferred = deferEditorialMotionInit(() => {
         ScrollTrigger.matchMedia({
-          "(min-width: 1024px)": () => setupEditorial(root, 1, splits),
-          "(max-width: 1023px)": () =>
+          "(min-width: 1025px)": () => setupEditorial(root, 1, splits),
+          "(max-width: 1024px)": () =>
             setupEditorial(root, parallaxIntensityScale(), splits),
         });
       }, layoutDelayMs);

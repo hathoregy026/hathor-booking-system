@@ -3,10 +3,13 @@
 import { useLayoutEffect, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { isTouchDevice, parallaxIntensityScale } from "@/lib/touch-device";
+import { isTouchDevice, shouldUseNativeScroll } from "@/lib/touch-device";
 
 const HIGHLIGHTS_EASE = "expo.out" as const;
 const HIGHLIGHTS_SCRUB = 1;
+
+const DESKTOP_MQ = "(min-width: 1025px)";
+const NARROW_MQ = "(max-width: 1024px)";
 
 const MOTION = {
   introFade: { duration: 1.1, y: 30 },
@@ -14,6 +17,7 @@ const MOTION = {
   parallax: { yPercent: 10 },
   chapterReveal: { duration: 1, stagger: 0.07, y: 24 },
   goldRule: { duration: 1, delay: 0.2 },
+  narrowFade: { duration: 0.9, y: 24 },
 } as const;
 
 const SELECTORS = {
@@ -101,6 +105,22 @@ function setupKineticTitles(root: HTMLElement) {
         `>-${MOTION.goldRule.delay}`,
       );
     }
+  });
+}
+
+function setupKineticTitlesFade(root: HTMLElement) {
+  root.querySelectorAll<HTMLElement>(SELECTORS.kineticTitle).forEach((title) => {
+    gsap.from(title, {
+      opacity: 0,
+      y: MOTION.narrowFade.y,
+      duration: MOTION.narrowFade.duration,
+      ease: HIGHLIGHTS_EASE,
+      scrollTrigger: {
+        trigger: title.closest("[data-highlights-chapter]") ?? title,
+        start: "top 84%",
+        once: true,
+      },
+    });
   });
 }
 
@@ -221,6 +241,12 @@ function setupEditorial(root: HTMLElement, parallaxIntensity = 1) {
   setupMagneticLinks(root);
 }
 
+function setupNarrowEditorial(root: HTMLElement) {
+  setupIntroFade(root);
+  setupKineticTitlesFade(root);
+  setupChapterCopy(root);
+}
+
 export function useHighlightsEditorialMotion(
   rootRef: RefObject<HTMLElement | null>,
 ) {
@@ -243,11 +269,15 @@ export function useHighlightsEditorialMotion(
         return;
       }
 
-      // Desktop full parallax; phone/tablet at 50% intensity.
       ScrollTrigger.matchMedia({
-        "(min-width: 1024px)": () => setupEditorial(root, 1),
-        "(max-width: 1023px)": () =>
-          setupEditorial(root, parallaxIntensityScale()),
+        [DESKTOP_MQ]: () => {
+          if (shouldUseNativeScroll()) {
+            setupNarrowEditorial(root);
+            return;
+          }
+          setupEditorial(root, 1);
+        },
+        [NARROW_MQ]: () => setupNarrowEditorial(root),
       });
     }, root);
 

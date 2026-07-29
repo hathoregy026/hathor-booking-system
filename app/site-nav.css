@@ -289,8 +289,11 @@
   }
 }
 
-/* Mobile — logo center + hamburger */
-@media (max-width: 767px) {
+/*
+ * Phone + tablet ≤1024 — logo center + Explore.
+ * Desktop (>1024) keeps the full flanking wordmark nav unchanged.
+ */
+@media (max-width: 1024px) {
   .public-site .hathor-header--owo-hero-layout .hathor-header__inner--owo {
     display: flex;
     flex-direction: row;
@@ -309,7 +312,7 @@
 
   .public-site .hathor-header__col--nav-left,
   .public-site .hathor-header__col--nav-right {
-    display: none;
+    display: none !important;
   }
 
   .public-site .hathor-header__col--logo {
@@ -319,6 +322,27 @@
 
   .public-site .hathor-header--owo-hero-layout .hathor-header__logo--icon {
     height: 2.35rem;
+  }
+
+  .public-site .hathor-header__menu-btn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .public-site .hathor-explore a,
+  .public-site .hathor-explore button {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+@media (min-width: 1025px) {
+  .public-site .hathor-header__menu-btn {
+    display: none !important;
   }
 }
 
