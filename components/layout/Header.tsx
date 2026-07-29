@@ -386,7 +386,6 @@ export function Header() {
             >
               <Menu className="h-5 w-5" aria-hidden />
             </button>
-
             <PublicThemeToggle />
           </div>
         </div>

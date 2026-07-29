@@ -1,0 +1,14 @@
+---
+description: When the user says "in phone" / "phone view", scope ALL changes to phone viewports only
+alwaysApply: true
+---
+
+# Phone-only scope ("in phone")
+
+When the user says **in phone**, **phone view**, **on phone**, or **phone only**:
+
+1. Apply CSS/layout changes **only** inside `@media (max-width: 480px)` (or `max-sm:` / equivalent that resolves to ≤480px).
+2. Do **not** change tablet (481–1024px) or desktop (>1024px) styles, markup, or behavior unless they explicitly ask.
+3. Prefer additive phone overrides over editing shared base rules that affect larger breakpoints.
+4. If a shared component must change, gate the new behavior so it only affects phone (CSS media query or a phone-only class).
+5. Confirm in the reply that the change is **phone-only (≤480px)**.

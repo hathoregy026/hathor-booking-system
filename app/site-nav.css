@@ -349,6 +349,81 @@
   }
 }
 
+/*
+ * Phone only (≤480px): mode left · logo dead-center · burger right.
+ * Equal edge inset; equal visual space between the three; vertical middle.
+ * Tablet/desktop layout above is unchanged.
+ */
+@media (max-width: 480px) {
+  .public-site .hathor-header--owo-hero-layout .hathor-header__inner--owo {
+    display: block;
+    position: relative;
+    min-height: 2.75rem;
+    padding-top: max(0.55rem, env(safe-area-inset-top));
+    padding-bottom: 0.55rem;
+    padding-left: max(0.75rem, env(safe-area-inset-left));
+    padding-right: max(0.75rem, env(safe-area-inset-right));
+  }
+
+  .public-site .hathor-header--owo-hero-layout .hathor-header__menu-zone {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+    max-width: none;
+    margin: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .public-site .hathor-header__col--logo,
+  .public-site .hathor-header__col--logo .hathor-header__brand {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .public-site .hathor-header--owo-hero-layout .hathor-header__logo--icon {
+    height: 2.35rem;
+    width: auto;
+  }
+
+  .public-site .hathor-header--owo-hero-layout .hathor-header__col--right {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    left: auto !important;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 2.75rem;
+    gap: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .public-site .hathor-header__col--right .public-theme-toggle,
+  .public-site .hathor-header__col--right .hathor-header__menu-btn {
+    pointer-events: auto;
+    flex: 0 0 auto;
+    margin: 0;
+  }
+
+  /* Theme far left, burger far right — equal gap to centered logo */
+  .public-site .hathor-header__col--right .public-theme-toggle {
+    order: 1;
+  }
+
+  .public-site .hathor-header__col--right .hathor-header__menu-btn {
+    order: 2;
+    margin-left: auto;
+  }
+}
+
 .site-nav-bar {
   --site-nav-bar-height: clamp(2.15rem, 4.8vh, 2.85rem);
   position: fixed;
