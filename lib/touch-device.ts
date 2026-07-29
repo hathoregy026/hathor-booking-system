@@ -23,7 +23,8 @@ export function isTouchDevice(): boolean {
 }
 
 /**
- * Real devices with weak GPUs — skip particles, letter-splits, clip-path scrub.
+ * Real devices with weaker GPUs — keep the same effects, use lighter variants
+ * (fewer particles, word-level text rise, stepped scrub, no CSS blur).
  * Desktop DevTools phone mode usually stays false (fine pointer + hover).
  */
 export function shouldLightenMotionForDevice(): boolean {

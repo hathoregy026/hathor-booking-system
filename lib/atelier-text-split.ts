@@ -159,6 +159,50 @@ export function splitAtelierText(el: HTMLElement): HTMLElement[] {
   return chars;
 }
 
+/**
+ * Same rise/fall look with one node per word — far fewer DOM nodes on phones.
+ */
+export function splitAtelierWords(el: HTMLElement): HTMLElement[] {
+  if (!el || el.dataset.splitDone === "1") {
+    return Array.from(
+      el.querySelectorAll<HTMLElement>(".split-char, .split-word-unit"),
+    );
+  }
+
+  const units: HTMLElement[] = [];
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+  const textNodes: Text[] = [];
+  while (walker.nextNode()) textNodes.push(walker.currentNode as Text);
+
+  textNodes.forEach((node) => {
+    const parent = node.parentElement;
+    if (!parent || parent.classList.contains("split-word-unit")) return;
+    const text = node.textContent;
+    if (!text || !text.trim()) return;
+
+    const frag = document.createDocumentFragment();
+    text.split(/(\s+)/).forEach((token) => {
+      if (!token) return;
+      if (/^\s+$/.test(token)) {
+        frag.appendChild(document.createTextNode(token));
+        return;
+      }
+      const wrap = document.createElement("span");
+      wrap.className = "split-heading";
+      const span = document.createElement("span");
+      span.className = "split-char split-word-unit";
+      span.textContent = token;
+      wrap.appendChild(span);
+      frag.appendChild(wrap);
+      units.push(span);
+    });
+    parent.replaceChild(frag, node);
+  });
+
+  el.dataset.splitDone = "1";
+  return units;
+}
+
 function shouldSkip(el: HTMLElement): boolean {
   if (el.closest(SKIP_CLOSEST)) return true;
   /* Titles owned by rooms / cruises SplitType engines */
@@ -181,13 +225,20 @@ function shouldSkip(el: HTMLElement): boolean {
   return false;
 }
 
-function animateAtelierSplit(el: HTMLElement, triggerEl?: Element) {
-  const chars = splitAtelierText(el);
-  if (!chars.length) return;
+function animateAtelierSplit(
+  el: HTMLElement,
+  triggerEl?: Element,
+  light = false,
+) {
+  const units = light ? splitAtelierWords(el) : splitAtelierText(el);
+  if (!units.length) return;
 
-  gsap.set(chars, { yPercent: 100, opacity: 0 });
-  const stagger =
-    chars.length > 60 ? Math.min(0.03, 1.2 / chars.length) : 0.03;
+  gsap.set(units, { yPercent: 100, opacity: 0 });
+  const stagger = light
+    ? Math.min(0.08, 0.9 / Math.max(1, units.length))
+    : units.length > 60
+      ? Math.min(0.03, 1.2 / units.length)
+      : 0.03;
 
   /* Gallery band: play once — reverse letter fall causes a visible jump */
   const inGallery = Boolean(
@@ -195,22 +246,24 @@ function animateAtelierSplit(el: HTMLElement, triggerEl?: Element) {
       ".gallery-section",
     ),
   );
+  /* Touch: play once — reverse re-scrub thrashes phone CPUs mid-scroll */
+  const playOnce = inGallery || light;
 
-  gsap.to(chars, {
+  gsap.to(units, {
     yPercent: 0,
     opacity: 1,
-    duration: 1,
+    duration: light ? 0.85 : 1,
     stagger,
     ease: "power3.out",
     scrollTrigger: {
       trigger: triggerEl || el,
       start: "top 85%",
-      toggleActions: inGallery ? "play none none none" : "play none none reverse",
-      once: inGallery,
+      toggleActions: playOnce ? "play none none none" : "play none none reverse",
+      once: playOnce,
       id: `atelier-split-${Math.random().toString(36).slice(2, 9)}`,
     },
     onComplete: () => {
-      chars.forEach((c) => c.style.removeProperty("will-change"));
+      units.forEach((c) => c.style.removeProperty("will-change"));
     },
   });
 }
@@ -223,6 +276,7 @@ export type AtelierTextSplitHandle = {
 /**
  * Mount letter rise/fall on matching text inside `root` (defaults to .public-site).
  * Safe to call on route changes — skips already-split nodes.
+ * Touch devices use word-level rise (same motion language, fewer nodes).
  */
 export function mountAtelierTextSplit(
   root: ParentNode | null = typeof document !== "undefined"
@@ -232,15 +286,16 @@ export function mountAtelierTextSplit(
   const prefersReduced =
     typeof window !== "undefined" &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  /* Hundreds of char spans + ScrollTriggers thrash real phone CPUs. */
-  const lighten = typeof window !== "undefined" && shouldLightenMotionForDevice();
+  const light = typeof window !== "undefined" && shouldLightenMotionForDevice();
 
   let cancelled = false;
   const triggerIds: string[] = [];
 
   const run = () => {
-    if (cancelled || prefersReduced || lighten || !root) return;
+    if (cancelled || prefersReduced || !root) return;
     const seen = new Set<HTMLElement>();
+    let bound = 0;
+    const maxOnTouch = 28;
 
     SELECTORS.forEach((sel) => {
       root.querySelectorAll(sel).forEach((node) => {
@@ -250,6 +305,7 @@ export function mountAtelierTextSplit(
           return;
         }
         if (shouldSkip(node)) return;
+        if (light && bound >= maxOnTouch) return;
         seen.add(node);
 
         const trigger =
@@ -257,8 +313,9 @@ export function mountAtelierTextSplit(
             "section, article, .about-layout, .services-intro, .carousel-slide, [data-hathor-accordion], .home-text-img-copy, .gallery-header, .instagram-follow, .testimonial-card, .testimonials-header, .cta-inner, .lux-section, .owo-chapter, .hathor-chapter, .venetian-page, .cruises-sheet, .public-page-body",
           ) || node;
 
-        animateAtelierSplit(node, trigger);
+        animateAtelierSplit(node, trigger, light);
         node.dataset.atelierBound = "1";
+        bound += 1;
       });
     });
   };

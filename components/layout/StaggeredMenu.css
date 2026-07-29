@@ -84,7 +84,11 @@
 }
 
 .staggered-menu-wrapper.is-open .sm-prelayer:nth-child(2) {
-  transition-delay: 0.05s;
+  transition-delay: 0.06s;
+}
+
+.staggered-menu-wrapper.is-open .sm-prelayer:nth-child(3) {
+  transition-delay: 0.12s;
 }
 
 .staggered-menu-wrapper:not(.is-open) .sm-prelayer {
@@ -184,10 +188,16 @@
   background: transparent;
   color: var(--sm-ink);
   cursor: pointer;
+  opacity: 0;
   transition:
     color 0.25s ease,
     border-color 0.25s ease,
-    background-color 0.25s ease;
+    background-color 0.25s ease,
+    opacity 0.35s ease 0.2s;
+}
+
+.staggered-menu-wrapper.is-open .sm-panel-close {
+  opacity: 1;
 }
 
 .sm-panel-close:hover,
@@ -211,6 +221,35 @@
 
 .sm-panel-row {
   border-bottom: 1px solid rgba(182, 159, 100, 0.18);
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  transition:
+    opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.staggered-menu-wrapper.is-open .sm-panel-row {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.staggered-menu-wrapper.is-open .sm-panel-row:nth-child(1) {
+  transition-delay: 0.18s;
+}
+.staggered-menu-wrapper.is-open .sm-panel-row:nth-child(2) {
+  transition-delay: 0.24s;
+}
+.staggered-menu-wrapper.is-open .sm-panel-row:nth-child(3) {
+  transition-delay: 0.3s;
+}
+.staggered-menu-wrapper.is-open .sm-panel-row:nth-child(4) {
+  transition-delay: 0.36s;
+}
+.staggered-menu-wrapper.is-open .sm-panel-row:nth-child(5) {
+  transition-delay: 0.42s;
+}
+.staggered-menu-wrapper.is-open .sm-panel-row:nth-child(6) {
+  transition-delay: 0.48s;
 }
 
 .sm-panel-link {
@@ -347,6 +386,12 @@
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--sm-accent, var(--sm-gold));
+  opacity: 0;
+  transition: opacity 0.4s ease 0.4s;
+}
+
+.staggered-menu-wrapper.is-open .sm-socials-title {
+  opacity: 1;
 }
 
 .sm-socials-list {
@@ -369,10 +414,19 @@
   color: var(--sm-ink);
   border: 1px solid rgba(182, 159, 100, 0.35);
   text-decoration: none;
+  opacity: 0;
+  transform: translate3d(0, 12px, 0);
   transition:
     color 0.25s ease,
     border-color 0.25s ease,
-    background-color 0.25s ease;
+    background-color 0.25s ease,
+    opacity 0.4s ease 0.45s,
+    transform 0.4s ease 0.45s;
+}
+
+.staggered-menu-wrapper.is-open .sm-socials-link {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
 }
 
 .sm-socials-link svg {

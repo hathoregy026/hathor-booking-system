@@ -1,8 +1,8 @@
 "use client";
 
 /**
- * Phone-only explore menu — CSS-driven open/close (no GSAP layers).
- * Real phones lag on multi-layer GSAP stagger; transform/opacity CSS is enough.
+ * Phone-only explore menu — same staggered gold/cream open as before,
+ * driven by CSS transforms (GPU-friendly) instead of a heavy GSAP timeline.
  */
 
 import Link from "next/link";
@@ -68,16 +68,10 @@ export function StaggeredMenu({
 
   if (!mounted && !open) return null;
 
-  const layerColors = (() => {
-    const raw =
-      colors && colors.length ? colors.slice(0, 4) : ["#8b6914", "#c9a96e"];
-    const arr = [...raw];
-    if (arr.length >= 3) {
-      const mid = Math.floor(arr.length / 2);
-      arr.splice(mid, 1);
-    }
-    return arr.slice(0, 2);
-  })();
+  const layerColors =
+    colors && colors.length
+      ? colors.slice(0, 3)
+      : ["#8b6914", "#c9a96e", "#ece8df"];
 
   const style = {
     ["--sm-accent"]: accentColor,

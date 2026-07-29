@@ -4,15 +4,16 @@
  * Floating gold dust for heroes and homepage content.
  * Easy removal: delete `<GoldDustParticles />` usages and this file.
  *
- * Real touch devices skip this entirely — per-particle blur + perpetual
- * GSAP wander is a common cause of “smooth in DevTools, laggy on phone”.
+ * Real touch devices keep the effect with fewer dots, no CSS blur, and
+ * slower wander — same gold field, cheaper for phone GPUs.
  */
 
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
 import { shouldLightenMotionForDevice } from "@/lib/touch-device";
 
-const PARTICLE_COUNT = 36;
+const PARTICLE_COUNT_DESKTOP = 36;
+const PARTICLE_COUNT_TOUCH = 14;
 const COLORS = ["#D4AF37", "#F4E5C2", "#E8C872", "#C9A227"] as const;
 
 type ParticleSeed = {
@@ -50,18 +51,20 @@ function createSeededRandom(initialSeed: number) {
   };
 }
 
-/** Continuous, low-cost wander with a deterministic path per particle. */
+/** Continuous wander with a deterministic path per particle. */
 function startWander(
   node: HTMLElement,
   random: () => number,
   isCancelled: () => boolean,
+  light: boolean,
 ) {
+  const travel = light ? 55 : 110;
   const step = () => {
     if (isCancelled()) return;
     gsap.to(node, {
-      x: (random() - 0.5) * 110,
-      y: (random() - 0.5) * 130,
-      duration: 3.5 + random() * 4.5,
+      x: (random() - 0.5) * travel,
+      y: (random() - 0.5) * (light ? 70 : 130),
+      duration: (light ? 5.5 : 3.5) + random() * (light ? 5 : 4.5),
       ease: "sine.inOut",
       force3D: true,
       onComplete: step,
@@ -72,25 +75,30 @@ function startWander(
 
 export function GoldDustParticles() {
   const rootRef = useRef<HTMLDivElement>(null);
-  const particles = useMemo(() => buildParticles(PARTICLE_COUNT), []);
-  const [enabled, setEnabled] = useState(false);
+  const [light, setLight] = useState(false);
+  const [ready, setReady] = useState(false);
+  const particles = useMemo(
+    () =>
+      buildParticles(light ? PARTICLE_COUNT_TOUCH : PARTICLE_COUNT_DESKTOP),
+    [light],
+  );
 
   useLayoutEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced || shouldLightenMotionForDevice()) {
-      setEnabled(false);
+    if (reduced) {
+      setReady(false);
       return;
     }
-    setEnabled(true);
+    setLight(shouldLightenMotionForDevice());
+    setReady(true);
   }, []);
 
   useLayoutEffect(() => {
     const root = rootRef.current;
-    if (!root || !enabled) return;
+    if (!root || !ready) return;
 
     const allNodes = root.querySelectorAll<HTMLElement>("[data-gold-dust]");
-    const narrow = window.matchMedia("(max-width: 1024px)").matches;
-    const nodes = Array.from(allNodes).slice(0, narrow ? 10 : PARTICLE_COUNT);
+    const nodes = Array.from(allNodes);
     const tweens: gsap.core.Tween[] = [];
     let cancelled = false;
 
@@ -100,22 +108,21 @@ export function GoldDustParticles() {
       const random = createSeededRandom(0x44555354 + i * 97);
 
       gsap.set(node, {
-        x: (random() - 0.5) * 40,
-        y: (random() - 0.5) * 40,
+        x: (random() - 0.5) * (light ? 20 : 40),
+        y: (random() - 0.5) * (light ? 20 : 40),
         opacity: seed.opacity,
       });
 
-      /* Stagger first move so the field doesn't pulse in sync */
-      const kick = gsap.delayedCall(random() * 2.5, () => {
+      const kick = gsap.delayedCall(random() * (light ? 1.2 : 2.5), () => {
         if (cancelled) return;
-        startWander(node, random, () => cancelled);
+        startWander(node, random, () => cancelled, light);
       });
       tweens.push(kick as unknown as gsap.core.Tween);
 
       tweens.push(
         gsap.to(node, {
-          opacity: Math.min(0.95, seed.opacity + 0.35),
-          duration: 2.8 + random() * 3.2,
+          opacity: Math.min(0.95, seed.opacity + (light ? 0.2 : 0.35)),
+          duration: (light ? 3.6 : 2.8) + random() * 3.2,
           delay: random() * 1.5,
           ease: "sine.inOut",
           yoyo: true,
@@ -129,14 +136,14 @@ export function GoldDustParticles() {
       tweens.forEach((t) => t.kill());
       gsap.killTweensOf(allNodes);
     };
-  }, [particles, enabled]);
+  }, [particles, ready, light]);
 
-  if (!enabled) return null;
+  if (!ready) return null;
 
   return (
     <div
       ref={rootRef}
-      className="gold-dust-particles"
+      className={`gold-dust-particles${light ? " gold-dust-particles--touch" : ""}`}
       aria-hidden="true"
       style={{
         position: "absolute",
@@ -157,12 +164,13 @@ export function GoldDustParticles() {
             position: "absolute",
             left: p.left,
             top: p.top,
-            width: p.size,
-            height: p.size,
+            width: light ? Math.max(2, p.size * 0.85) : p.size,
+            height: light ? Math.max(2, p.size * 0.85) : p.size,
             borderRadius: "50%",
             background: p.color,
             opacity: p.opacity,
-            /* No CSS filter blur — soft edge via opacity only (GPU-cheap) */
+            /* Blur is the phone GPU killer — soft edge via slightly larger dots only on desktop */
+            filter: light ? undefined : `blur(${p.blur}px)`,
             willChange: "transform, opacity",
           }}
         />
