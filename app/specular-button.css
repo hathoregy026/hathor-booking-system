@@ -177,6 +177,26 @@
   opacity: 0.55;
 }
 
+/*
+  Homepage: user requested “outline only” buttons.
+  Remove the tiny inner white hairline (::after) while keeping:
+  - outer conic stroke ring (::before)
+  - hover shine + fill behavior coming from button base rules.
+*/
+.home-experience-route .public-site a.btn:not(.hero-cta)::after,
+.home-experience-route .public-site button.btn:not(.hero-cta)::after,
+.home-experience-route .public-site .btn:not(.hero-cta)::after {
+  opacity: 0 !important;
+}
+.home-experience-route .public-site a.btn:not(.hero-cta):hover::after,
+.home-experience-route .public-site button.btn:not(.hero-cta):hover::after,
+.home-experience-route .public-site .btn:not(.hero-cta):hover::after,
+.home-experience-route .public-site a.btn:not(.hero-cta):focus-visible::after,
+.home-experience-route .public-site button.btn:not(.hero-cta):focus-visible::after,
+.home-experience-route .public-site .btn:not(.hero-cta):focus-visible::after {
+  opacity: 0 !important;
+}
+
 .public-site a.btn:not(.hero-cta) > *,
 .public-site button.btn:not(.hero-cta) > *,
 .public-site .btn:not(.hero-cta) > *,
