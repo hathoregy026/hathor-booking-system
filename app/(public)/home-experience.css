@@ -2201,10 +2201,11 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__title,
 html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__title-line {
   text-shadow:
-    0 1px 0 rgba(0, 0, 0, 0.35),
-    0 2px 8px rgba(0, 0, 0, 0.45),
-    0 8px 28px rgba(0, 0, 0, 0.4),
-    0 0 40px rgba(0, 0, 0, 0.22) !important;
+    0 1px 2px rgba(0, 0, 0, 0.55),
+    0 2px 12px rgba(0, 0, 0, 0.65),
+    0 6px 28px rgba(0, 0, 0, 0.55),
+    0 12px 48px rgba(0, 0, 0, 0.45),
+    0 0 60px rgba(0, 0, 0, 0.35) !important;
 }
 
 .ex-stack-scroll__title-line {
@@ -2221,9 +2222,152 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__title
 html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebrow,
 html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body {
   text-shadow:
-    0 1px 0 rgba(0, 0, 0, 0.4),
-    0 2px 10px rgba(0, 0, 0, 0.45),
-    0 6px 22px rgba(0, 0, 0, 0.35) !important;
+    0 1px 2px rgba(0, 0, 0, 0.6),
+    0 2px 14px rgba(0, 0, 0, 0.6),
+    0 8px 28px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(0, 0, 0, 0.35) !important;
+}
+
+.ex-stack-scroll__body {
+  margin: 0;
+  padding: 0;
+  max-width: min(40ch, 100%);
+  text-align: left;
+  text-indent: 0;
+  align-self: flex-start;
+  /* Font/size/color from dashboard typography (On images · body) */
+}
+
+.ex-stack-scroll__body .line {
+  display: block;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  text-indent: 0;
+  will-change: transform, opacity;
+}
+
+/* Golden image counter — number sits on a Nile-gold progress line */
+.ex-stack-scroll__pager {
+  --stack-pager-gold: #c9a96e;
+  --stack-pager-gold-soft: #e8d5a3;
+  position: absolute;
+  z-index: 42;
+  left: clamp(1.25rem, 4vw, 2.75rem);
+  bottom: max(1.15rem, env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  will-change: opacity;
+}
+
+.ex-stack-scroll__pager-num {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-display, "Cormorant Garamond", "Times New Roman", serif);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  line-height: 1;
+  color: var(--stack-pager-gold-soft);
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.55),
+    0 4px 16px rgba(0, 0, 0, 0.45);
+}
+
+.ex-stack-scroll__pager-rail {
+  position: relative;
+  width: clamp(3.75rem, 7vw, 5.25rem);
+  height: 1.5px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(201, 169, 110, 0.22);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
+}
+
+.ex-stack-scroll__pager-line {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 25%;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    #8b6914 0%,
+    var(--stack-pager-gold) 45%,
+    var(--stack-pager-gold-soft) 100%
+  );
+  box-shadow:
+    0 0 10px rgba(201, 169, 110, 0.45),
+    0 0 2px rgba(232, 213, 163, 0.7);
+  will-change: width;
+}
+
+/* Desktop: lift on-image copy ~2× from the bottom edge + stronger contrast */
+@media (min-width: 1025px) {
+  .ex-stack-scroll__copy-panel {
+    bottom: clamp(5.5rem, 16vh, 10rem);
+  }
+
+  .ex-stack-scroll__pager {
+    bottom: max(1.75rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__title,
+  html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__title-line {
+    text-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.7),
+      0 3px 16px rgba(0, 0, 0, 0.75),
+      0 10px 36px rgba(0, 0, 0, 0.6),
+      0 18px 56px rgba(0, 0, 0, 0.5),
+      0 0 72px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebrow,
+  html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__body {
+    text-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.7),
+      0 3px 16px rgba(0, 0, 0, 0.7),
+      0 10px 32px rgba(0, 0, 0, 0.55),
+      0 0 48px rgba(0, 0, 0, 0.4) !important;
+  }
+}
+
+/* Tablet: same counter idea, modest lift — keep phone near bottom */
+@media (min-width: 481px) and (max-width: 1024px) {
+  .ex-stack-scroll__copy-panel {
+    bottom: clamp(3.25rem, 9vh, 5.5rem);
+  }
+
+  .ex-stack-scroll__pager {
+    bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  .ex-stack-scroll__pager-rail {
+    width: clamp(3.25rem, 9vw, 4.5rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .ex-stack-scroll__pager {
+    bottom: max(0.85rem, env(safe-area-inset-bottom, 0px));
+    gap: 0.32rem;
+  }
+
+  .ex-stack-scroll__pager-num {
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+  }
+
+  .ex-stack-scroll__pager-rail {
+    width: 3.25rem;
+    height: 1px;
+  }
 }
 
 .ex-stack-scroll__body {

@@ -552,6 +552,27 @@ export function HomePageClient({
                   </p>
                 </div>
               ))}
+              <div
+                className="ex-stack-scroll__pager"
+                data-stack-pager
+                aria-hidden="true"
+              >
+                <span
+                  className="ex-stack-scroll__pager-num"
+                  data-stack-pager-num
+                >
+                  01
+                </span>
+                <div className="ex-stack-scroll__pager-rail">
+                  <span
+                    className="ex-stack-scroll__pager-line"
+                    data-stack-pager-line
+                    style={{
+                      width: `${100 / Math.max(stackSlides.length, 1)}%`,
+                    }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </section>

@@ -669,7 +669,20 @@ export function useExScrollMotion() {
       ".ex-stack-scroll__copy-panel",
     );
     const cards = gsap.utils.toArray<HTMLElement>(".ex-stack-scroll__card");
+    const pager = section?.querySelector<HTMLElement>("[data-stack-pager]");
+    const pagerNum = section?.querySelector<HTMLElement>("[data-stack-pager-num]");
+    const pagerLine = section?.querySelector<HTMLElement>("[data-stack-pager-line]");
     if (!section || !viewport || cards.length < 2) return;
+
+    const setStackPager = (index: number) => {
+      const safe = Math.max(0, Math.min(index, cards.length - 1));
+      if (pagerNum) {
+        pagerNum.textContent = String(safe + 1).padStart(2, "0");
+      }
+      if (pagerLine) {
+        pagerLine.style.width = `${((safe + 1) / cards.length) * 100}%`;
+      }
+    };
 
     prepareStackPanelSplits(copyPanels);
 
@@ -698,6 +711,8 @@ export function useExScrollMotion() {
         });
         panel.setAttribute("aria-hidden", index === 0 ? "false" : "true");
       });
+      if (pager) gsap.set(pager, { autoAlpha: 1 });
+      setStackPager(0);
       return;
     }
 
@@ -791,6 +806,9 @@ export function useExScrollMotion() {
         }
         panel.setAttribute("aria-hidden", "true");
       });
+
+      if (pager) gsap.set(pager, { autoAlpha: 0, visibility: "hidden" });
+      setStackPager(0);
 
       const isPhoneStack = isNarrowViewport;
       const lightStack = lightenDevice;
@@ -908,7 +926,10 @@ export function useExScrollMotion() {
             y: 0,
             ease: "none",
             duration: introFog * 0.55,
-            onStart: () => firstPanel.setAttribute("aria-hidden", "false"),
+            onStart: () => {
+              firstPanel.setAttribute("aria-hidden", "false");
+              setStackPager(0);
+            },
           },
           introFogAt + introFog * 0.4,
         );
@@ -918,6 +939,19 @@ export function useExScrollMotion() {
           introFogAt + introFog * 0.4,
           introFog * 0.55,
           "in",
+        );
+      }
+
+      if (pager) {
+        tl.fromTo(
+          pager,
+          { autoAlpha: 0, visibility: "visible" },
+          {
+            autoAlpha: 1,
+            ease: "none",
+            duration: introFog * 0.45,
+          },
+          introFogAt + introFog * 0.4,
         );
       }
 
@@ -978,6 +1012,10 @@ export function useExScrollMotion() {
               ease: "none",
               duration: move * 0.48,
               onStart: () => prevPanel.setAttribute("aria-hidden", "true"),
+              onReverseComplete: () => {
+                prevPanel.setAttribute("aria-hidden", "false");
+                setStackPager(i - 1);
+              },
             },
             moveAt + move * 0.12,
           );
@@ -997,7 +1035,12 @@ export function useExScrollMotion() {
               y: 0,
               ease: "none",
               duration: move * 0.58,
-              onStart: () => nextPanel.setAttribute("aria-hidden", "false"),
+              onStart: () => {
+                nextPanel.setAttribute("aria-hidden", "false");
+                setStackPager(i);
+              },
+              onReverseComplete: () =>
+                nextPanel.setAttribute("aria-hidden", "true"),
             },
             moveAt + move * 0.38,
           );
