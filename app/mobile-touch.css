@@ -1,7 +1,6 @@
 /**
- * Phone / tablet SAFETY layer — does NOT rewrite desktop design.
- * Never use blanket !important on img/svg/section/padding — that broke
- * the hero video, HATHOR letter logo, and real-device scrolling.
+ * Phone / tablet — keep desktop look, kill broken mobile behaviors.
+ * Desktop (≥1024px + fine pointer) is untouched by these rules.
  */
 
 :root {
@@ -13,10 +12,6 @@ html {
   text-size-adjust: 100%;
 }
 
-/* --------------------------------------------------------------------------
- * Touch-only: hide luxury cursor (do NOT match [class*="cursor"] — that
- * hides Tailwind `cursor-pointer` buttons on real phones)
- * -------------------------------------------------------------------------- */
 @media (pointer: coarse) {
   .lux-cursor,
   .custom-cursor,
@@ -54,7 +49,7 @@ body.is-touch-device .lux-cursor {
 }
 
 /* --------------------------------------------------------------------------
- * Phone + tablet: overflow guard (body only — never lock html scroll)
+ * NARROW: static full-bleed hero — logo + Book Now MUST be visible
  * -------------------------------------------------------------------------- */
 @media (max-width: 1023px) {
   body {
@@ -62,85 +57,110 @@ body.is-touch-device .lux-cursor {
     max-width: 100%;
   }
 
-  /* Full-bleed hero media — do not force height/padding (GSAP pin owns layout) */
   .home-hero-container {
-    width: 100%;
-    max-width: 100%;
-    min-height: 100svh;
-    min-height: 100dvh;
-    margin-left: 0;
-    margin-right: 0;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100svh !important;
+    height: 100dvh !important;
+    min-height: 100svh !important;
+    min-height: 100dvh !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden;
   }
 
   .hero-media {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
   }
 
   .hero-media video,
   .hero-media img {
-    width: 100%;
-    height: 100%;
-    max-width: none;
-    max-height: none;
-    object-fit: cover;
-    display: block;
-  }
-
-  /*
-   * Protect split HATHOR logo — never force height:auto / max-width:100%
-   * on letter images (that disconnects the wordmark on phones).
-   */
-  .hathor-logo-split,
-  .hathor-logo-split__side,
-  .hathor-logo-split .logo-letter-wrap,
-  .hathor-logo-split .logo-letter,
-  .hathor-logo-split img,
-  .hathor-logo-split picture,
-  .hero-logo-mark,
-  .hero-logo-mark img {
-    max-width: none !important;
-  }
-
-  .hathor-logo-split {
-    /* Fallback if tune CSS vars have not hydrated yet */
-    height: var(
-      --hathor-logo-h,
-      calc((100vw - 200px) / 2 * 2200 / 2683 * var(--hathor-logo-size, 1))
-    ) !important;
-  }
-
-  .hathor-logo-split .logo-letter {
     width: 100% !important;
     height: 100% !important;
+    max-width: none !important;
     max-height: none !important;
-    object-fit: contain !important;
+    object-fit: cover !important;
     display: block !important;
   }
 
-  /* Hard floor: keep logo + Book Now on-screen (beats stale desktop y:-200) */
+  /* No gold blinds on phone — pin scrub is disabled in JS */
+  .home-hero-container .home-hero-cover,
+  .home-hero-container .blind-strip-v {
+    display: none !important;
+  }
+
+  /*
+   * FORCE logo + letters + Book Now visible.
+   * Beats critical boot hide, stylesheet opacity:0, and desktop y:-200 tuck.
+   */
+  html.ex-home .home-hero-container .hero-logo-mark,
+  html.ex-home .home-hero-container .hero-logo-mark--split,
+  html.ex-home .home-hero-container .hathor-logo-split,
+  html.ex-home .home-hero-container .hathor-logo-split .logo-letter-wrap,
+  html.ex-home .home-hero-container .hathor-logo-split img,
+  html.ex-home .home-hero-container .hathor-logo-split .logo-letter,
+  .public-site .home-hero-container .hero-logo-mark,
   .public-site .home-hero-container .hero-logo-mark--split,
-  html[data-ex-experience] .ex-root .hero-logo-mark--split {
-    bottom: max(1.5rem, var(--hathor-logo-bottom, 40px)) !important;
+  .public-site .home-hero-container .hathor-logo-split,
+  .public-site .home-hero-container .hathor-logo-split .logo-letter-wrap,
+  .public-site .home-hero-container .hathor-logo-split img,
+  .public-site .home-hero-container .hathor-logo-split .logo-letter {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: none !important;
+    max-width: none !important;
+    max-height: none !important;
+  }
+
+  html.ex-home .home-hero-container .hathor-logo-split img,
+  .public-site .home-hero-container .hathor-logo-split img,
+  html.ex-home .home-hero-container .hathor-logo-split .logo-letter,
+  .public-site .home-hero-container .hathor-logo-split .logo-letter {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .public-site .home-hero-container .hero-logo-mark--split,
+  html[data-ex-experience] .ex-root .hero-logo-mark--split,
+  html.ex-home .home-hero-container .hero-logo-mark--split {
+    bottom: 40px !important;
+    top: auto !important;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 
   .public-site .home-hero-container:has(.hero-logo-mark--split) .hero-button,
   html[data-ex-experience]
     .ex-root
     .home-hero-container:has(.hero-logo-mark--split)
-    .hero-button {
-    bottom: max(
-      2.5rem,
-      calc(
-        max(1.5rem, var(--hathor-logo-bottom, 40px)) + (var(--hathor-logo-h) / 2) -
-          26px + var(--hathor-cta-y-nudge, 12px)
-      )
+    .hero-button,
+  html.ex-home .home-hero-container:has(.hero-logo-mark--split) .hero-button {
+    bottom: calc(40px + (var(--hathor-logo-h, 4rem) / 2) - 26px + 12px) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    display: flex !important;
+  }
+
+  .public-site .home-hero-container .hero-button .hero-cta,
+  html.ex-home .home-hero-container .hero-button .hero-cta {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    display: inline-flex !important;
+  }
+
+  .hathor-logo-split {
+    height: var(
+      --hathor-logo-h,
+      calc((100vw - 200px) / 2 * 2200 / 2683 * var(--hathor-logo-size, 1.05))
     ) !important;
   }
 
-  /* Forms: stop iOS input zoom */
+  /* Forms */
   .public-site input,
   .public-site textarea,
   .public-site select,
@@ -167,7 +187,6 @@ body.is-touch-device .lux-cursor {
   }
 }
 
-/* Soft stack only known multi-column marketing grids (not hero / not nav) */
 @media (max-width: 767px) {
   .public-site .hathor-editorial__grid,
   .public-site .hathor-stats-grid {

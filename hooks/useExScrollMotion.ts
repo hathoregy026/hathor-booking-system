@@ -76,6 +76,10 @@ export function useExScrollMotion() {
       };
       gsap.ticker.add(tickerFn);
       gsap.ticker.lagSmoothing(0);
+    } else {
+      // Unlock logo immediately on real phones (critical CSS skips hide for is-touch-device)
+      document.documentElement.classList.add("ex-scroll-ready");
+      document.documentElement.classList.remove("ex-pending", "ex-pending-deep");
     }
 
     try {
@@ -733,6 +737,10 @@ export function useExScrollMotion() {
         panel.setAttribute("aria-hidden", "true");
       });
 
+      const isPhoneStack =
+        window.matchMedia("(pointer: coarse)").matches ||
+        window.matchMedia("(max-width: 1023px)").matches;
+
       const tl = gsap.timeline({
         scrollTrigger: {
           id: "ex-stack-scroll",
@@ -742,8 +750,9 @@ export function useExScrollMotion() {
           /*
            * Lower scrub lag = less rubber-band catch-up when the wheel
            * stops, so frames sit smoothly instead of jumping into place.
+           * Touch: direct scrub (no lag) — laggy scrub feels like scroll jumping.
            */
-          scrub: 1.15,
+          scrub: isPhoneStack ? true : 1.15,
           pin: viewport,
           pinSpacing: true,
           anticipatePin: 1,

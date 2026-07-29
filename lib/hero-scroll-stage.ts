@@ -125,8 +125,81 @@ export function mountHeroScrollStage({
     return delta + LOGO_FINISH_Y_OFFSET_PX;
   }
 
+  const killByPrefix = (prefix: string) => {
+    ScrollTrigger.getAll().forEach((st) => {
+      if (st.vars && String(st.vars.id || "").startsWith(prefix)) st.kill();
+    });
+  };
+
   let landingTween: gsap.core.Tween | null = null;
   let logoReadyForScroll = false;
+
+  const markLogoReady = () => {
+    logoReadyForScroll = true;
+    if (logoMark) {
+      gsap.set(logoMark, { y: getLogoLandedY() });
+    }
+    ScrollTrigger.getAll().forEach((st) => {
+      if (st.vars && st.vars.id === "hero-stage") st.refresh();
+    });
+  };
+
+  /**
+   * PHONE / TABLET: same hero visuals (video + logo + Book Now), ZERO pin/scrub.
+   * iOS + pinned 3D blinds + scrub = jumpy broken scroll. Desktop keeps the full stage.
+   */
+  const isPhoneHero =
+    window.matchMedia("(pointer: coarse)").matches ||
+    window.matchMedia("(max-width: 1023px)").matches;
+
+  if (isPhoneHero || prefersReduced) {
+    killByPrefix("hero-stage");
+    cover.innerHTML = "";
+
+    if (chrome.length) {
+      gsap.set(chrome, { opacity: 1, y: 0, clearProps: "transform" });
+    }
+    if (lineRight) gsap.set(lineRight, { x: 0, opacity: 1, clearProps: "transform" });
+    if (lineLeft) gsap.set(lineLeft, { x: 0, opacity: 1, clearProps: "transform" });
+    if (kicker) gsap.set(kicker, { opacity: 1, y: 0 });
+    if (sub) gsap.set(sub, { opacity: 1, y: 0 });
+    if (scrollHint) gsap.set(scrollHint, { opacity: 1 });
+    if (cta) gsap.set(cta, { clearProps: "width,height,letterSpacing" });
+    if (ctaText) gsap.set(ctaText, { clearProps: "letterSpacing" });
+
+    if (logoMark) {
+      gsap.set(logoMark, {
+        xPercent: -50,
+        yPercent: 0,
+        x: 0,
+        y: 0,
+        scale: 1,
+        autoAlpha: 1,
+        force3D: true,
+        transformOrigin: "50% 50%",
+      });
+      gsap.set(logoMark.querySelectorAll(".logo-letter-wrap"), {
+        y: 0,
+        opacity: 1,
+        clearProps: "transform",
+      });
+      gsap.set(logoMark.querySelectorAll(".logo-letter"), {
+        y: 0,
+        opacity: 1,
+        clearProps: "transform",
+      });
+    }
+
+    logoReadyForScroll = true;
+    markHeroMotionReady();
+    document.documentElement.classList.add("ex-scroll-ready");
+    document.documentElement.classList.remove("ex-pending", "ex-pending-deep");
+
+    return () => {
+      killByPrefix("hero-stage");
+      root.classList.remove("hero-motion-ready");
+    };
+  }
 
   if (logoMark) {
     if (isSplitLetterLogo()) {
@@ -159,22 +232,6 @@ export function mountHeroScrollStage({
       });
     }
   }
-
-  const killByPrefix = (prefix: string) => {
-    ScrollTrigger.getAll().forEach((st) => {
-      if (st.vars && String(st.vars.id || "").startsWith(prefix)) st.kill();
-    });
-  };
-
-  const markLogoReady = () => {
-    logoReadyForScroll = true;
-    if (logoMark) {
-      gsap.set(logoMark, { y: getLogoLandedY() });
-    }
-    ScrollTrigger.getAll().forEach((st) => {
-      if (st.vars && st.vars.id === "hero-stage") st.refresh();
-    });
-  };
 
   const playLanding = () => {
     if (!logoMark) return;

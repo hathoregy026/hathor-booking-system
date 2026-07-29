@@ -26,14 +26,14 @@ export function getPublicThemeBlockingScript(): string {
  */
 export function getHomeBootCriticalStyle(): string {
   return [
-    "html.ex-home:not(.ex-scroll-ready) .hero-logo-mark,",
-    "html.ex-home:not(.ex-scroll-ready) .hathor-logo-split,",
-    "html.ex-home:not(.ex-scroll-ready) .hathor-logo-split .logo-letter-wrap,",
-    "html.ex-home:not(.ex-scroll-ready) .hathor-logo-split img,",
+    "html.ex-home:not(.ex-scroll-ready):not(.is-touch-device) .hero-logo-mark,",
+    "html.ex-home:not(.ex-scroll-ready):not(.is-touch-device) .hathor-logo-split,",
+    "html.ex-home:not(.ex-scroll-ready):not(.is-touch-device) .hathor-logo-split .logo-letter-wrap,",
+    "html.ex-home:not(.ex-scroll-ready):not(.is-touch-device) .hathor-logo-split img,",
     "html.ex-home:not(.ex-scroll-ready) .blind-strip-v{",
     "opacity:0!important;visibility:hidden!important;pointer-events:none!important;",
     "}",
-    "html.ex-home:not(.ex-scroll-ready) .hathor-logo-split img{",
+    "html.ex-home:not(.ex-scroll-ready):not(.is-touch-device) .hathor-logo-split img{",
     "width:0!important;height:0!important;max-width:0!important;max-height:0!important;",
     "}",
     "html.ex-home.ex-pending-deep:not(.ex-scroll-ready) .public-site{",
