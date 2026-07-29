@@ -1845,6 +1845,8 @@ select.admin-input option:checked {
   flex-wrap: wrap;
   align-items: baseline;
   gap: 0.35rem 0.55rem;
+  position: relative;
+  z-index: 4;
 }
 
 .typo-stage__editing {
@@ -1874,6 +1876,8 @@ select.admin-input option:checked {
   line-height: 1.45;
   color: rgba(245, 240, 232, 0.65);
   font-family: var(--font-admin, Inter), system-ui, sans-serif !important;
+  position: relative;
+  z-index: 4;
 }
 
 .typo-stage--light .typo-stage__where {
@@ -1908,6 +1912,11 @@ select.admin-input option:checked {
   flex: 0 1 auto;
   display: block;
   pointer-events: none;
+  /* Preview must wrap at word boundaries ? never mid-glyph chunks */
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
+  max-width: 100%;
 }
 
 .typo-stage__sample--shimmer {
@@ -1982,6 +1991,8 @@ select.admin-input option:checked {
   flex-wrap: wrap;
   gap: 0.4rem;
   margin-top: 0.35rem;
+  position: relative;
+  z-index: 4;
 }
 
 .typo-stage__align--inline {
@@ -2023,6 +2034,7 @@ select.admin-input option:checked {
 
 .typo-stage__canvas {
   position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2034,9 +2046,31 @@ select.admin-input option:checked {
   border-radius: 14px;
   border: 1px dashed rgba(182, 159, 100, 0.35);
   background: rgba(0, 0, 0, 0.18);
-  overflow: visible;
+  overflow: hidden;
   touch-action: none;
   user-select: none;
+}
+
+/* Hero pair preview: readable stage without mid-word wrap / spillover */
+.typo-stage--hero-pair .typo-stage__canvas {
+  min-height: 17rem;
+  gap: 1.15rem;
+  padding: 2rem 1.35rem 2.25rem;
+  justify-content: center;
+}
+
+.typo-stage--hero-pair .typo-stage__drag {
+  width: 100%;
+  max-width: 100%;
+  align-items: inherit;
+}
+
+.typo-stage--hero-pair .typo-stage__sample--inline {
+  /* Keep relative sizing, but clamp so the admin stage stays readable */
+  font-size: min(var(--typo-live-size), 2.75rem) !important;
+  line-height: 1.2 !important;
+  white-space: normal;
+  text-wrap: balance;
 }
 
 .typo-stage__drag {
