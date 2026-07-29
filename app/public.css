@@ -1855,9 +1855,13 @@
 }
 
 .hathor-header--owo-hero-layout.hathor-header--menu-hovered .hathor-header__nav-link,
-.hathor-header--owo-hero-layout.hathor-header--menu-hovered .hathor-header__nav-link:hover,
 .hathor-header--owo-hero-layout.hathor-header--menu-hovered .hathor-header__nav-link--active {
   color: #1c1917;
+  background: transparent;
+}
+
+.hathor-header--owo-hero-layout.hathor-header--menu-hovered .hathor-header__nav-link:hover {
+  color: #b69f64;
   background: transparent;
 }
 
@@ -1974,7 +1978,7 @@
 
 .hathor-header--owo-hero-layout.hathor-header--menu-hovered .hathor-header__nav-link:hover,
 .hathor-header--owo-hero-layout.hathor-header--menu-hovered .hathor-header__nav-link--active {
-  color: #1c1917;
+  color: #b69f64;
   background: transparent;
 }
 
@@ -4808,11 +4812,26 @@ html[data-public-theme="day"] .hathor-header--owo-hero-layout.hathor-header--men
 }
 
 html[data-public-theme="day"] .hathor-header--owo-hero-layout.hathor-header--menu-hovered .hathor-header__nav-link,
-html[data-public-theme="day"] .hathor-header--owo-hero-layout.hathor-header--menu-hovered .hathor-header__nav-link:hover,
-html[data-public-theme="day"] .hathor-header--owo-hero-layout.hathor-header--menu-hovered .hathor-header__nav-link--active,
 html[data-public-theme="day"] .hathor-header--owo-hero-layout.hathor-header--menu-hovered .hathor-header__dropdown-link,
 html[data-public-theme="day"] .hathor-header--owo-hero-layout.hathor-header--menu-hovered .hathor-header__dropdown-link:hover {
   color: #1c1917;
+}
+
+html[data-public-theme="day"]
+  .hathor-header--owo-hero-layout.hathor-header--menu-hovered
+  .hathor-header__nav-link:hover,
+html[data-public-theme="day"]
+  .hathor-header--owo-hero-layout.hathor-header--menu-hovered
+  .hathor-header__nav-link--active,
+html[data-public-theme="day"]
+  .hathor-header--owo-hero-layout.hathor-header--menu-hovered
+  .hathor-header__dropdown-zone:hover
+  .hathor-header__nav-link,
+html[data-public-theme="day"]
+  .hathor-header--owo-hero-layout.hathor-header--menu-hovered
+  .hathor-header__dropdown-zone:has(.hathor-header__dropdown.is-open)
+  .hathor-header__nav-link {
+  color: #b69f64;
 }
 
 html[data-public-theme="day"] .owo-hero__subtitle,

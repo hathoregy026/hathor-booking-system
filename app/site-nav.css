@@ -425,12 +425,14 @@
     border-radius: 999px;
     white-space: nowrap !important;
     text-align: center;
+    /* Fixed padding — never expand on hover (avoids shoving neighbors) */
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 0;
+    padding-right: 0;
     transition:
       background-color var(--hp2-drop-open-ms) var(--hp2-drop-ease),
-      color var(--hp2-drop-open-ms) var(--hp2-drop-ease),
-      padding var(--hp2-drop-open-ms) var(--hp2-drop-ease),
-      width var(--hp2-drop-open-ms) var(--hp2-drop-ease),
-      min-width var(--hp2-drop-open-ms) var(--hp2-drop-ease);
+      color var(--hp2-drop-open-ms) var(--hp2-drop-ease);
   }
 
   .public-site .hathor-header__nav-item--dropdown .hathor-header__nav-link-label {
@@ -472,7 +474,7 @@
   .public-site
     .hathor-header__dropdown-zone:has(.hathor-header__dropdown.is-open)
     .hathor-header__nav-link {
-    color: #f6efe2;
+    color: #b69f64;
   }
 
   .public-site:has(.hathor-header--menu-hovered)
@@ -481,7 +483,7 @@
   .public-site:has(.hathor-header--menu-hovered)
     .hathor-header__dropdown-zone:has(.hathor-header__dropdown.is-open)
     .hathor-header__nav-link {
-    color: #f6efe2;
+    color: #b69f64;
   }
 
   .public-site .hathor-header__dropdown-zone:hover .hathor-header__nav-link-label::after,
@@ -755,18 +757,6 @@
   .public-site .hathor-header__nav-item--dropdown .hathor-header__dropdown-link {
     transform: none;
     transition: background-color 0.2s ease, color 0.2s ease;
-  }
-}
-
-@media (min-width: 768px) {
-  .public-site .hathor-header__dropdown-zone:hover .hathor-header__nav-link,
-  .public-site
-    .hathor-header__dropdown-zone:has(.hathor-header__dropdown.is-open)
-    .hathor-header__nav-link {
-    padding-top: 0.32rem;
-    padding-bottom: 0.32rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
   }
 }
 
