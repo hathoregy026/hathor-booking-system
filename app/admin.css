@@ -1474,6 +1474,16 @@ select.admin-input option:checked {
 .hlt-panel #hlt-preview .wt-section__body {
   padding-left: 0;
   padding-right: 0;
+  /* Keep full-bleed preview from covering the sticky section nav */
+  overflow-x: clip;
+}
+
+/* Contain preview inside the editor column (sidebar stays clickable) */
+.hlt-panel .hlt-preview__viewport {
+  width: 100%;
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .hlt-align-row {
@@ -2066,11 +2076,15 @@ select.admin-input option:checked {
 }
 
 .typo-stage--hero-pair .typo-stage__sample--inline {
-  /* Keep relative sizing, but clamp so the admin stage stays readable */
-  font-size: min(var(--typo-live-size), 2.75rem) !important;
+  /* Use the real edited size so Size slider feedback is visible */
+  font-size: var(--typo-live-size) !important;
   line-height: 1.2 !important;
   white-space: normal;
   text-wrap: balance;
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
+  max-width: 100%;
 }
 
 .typo-stage__drag {
