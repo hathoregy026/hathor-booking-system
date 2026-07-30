@@ -1,4 +1,5 @@
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { PUBLIC_CMS_CACHE_TAG } from "@/lib/public-cms-bundle";
 import { HOMEPAGE_LIVE_SLOT_NAMES } from "@/lib/site-image-preview";
 import { getSiteImageSlot } from "@/lib/site-image-slots";
 
@@ -25,6 +26,7 @@ const SITE_IMAGE_REVALIDATE_PATHS = [
  * Pass slot names to limit work to the pages that actually use those slots.
  */
 export function revalidateSiteImagePages(slotNames?: string[]): void {
+  revalidateTag(PUBLIC_CMS_CACHE_TAG, "max");
   revalidatePath("/", "layout");
 
   if (!slotNames?.length) {

@@ -10,6 +10,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplitType from "split-type";
 import { isPhoneOrTabletViewport, isPhoneViewport, logPhonePerfDev } from "@/lib/touch-device";
+import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -272,7 +273,7 @@ export function useCruisesRedesignMotion(
 
     const onLoad = () => {
       if (isPhoneViewport()) return;
-      ScrollTrigger.refresh();
+      requestScrollRefresh("cruises-redesign-load");
     };
     window.addEventListener("load", onLoad);
 

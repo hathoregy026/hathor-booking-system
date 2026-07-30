@@ -41,7 +41,7 @@
   cursor: pointer;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.35s ease;
+  transition: none;
 }
 
 .staggered-menu-wrapper.is-open .sm-backdrop {
@@ -72,7 +72,7 @@
   width: 100%;
   transform: translate3d(100%, 0, 0);
   /* Deliberate sheet race — long enough for lead edges to stay visible */
-  transition: transform 1.05s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: none;
   will-change: transform;
 }
 
@@ -88,46 +88,8 @@
   z-index: 3;
 }
 
-.staggered-menu-wrapper.is-open .sm-prelayer {
-  transform: translate3d(0, 0, 0);
-}
-
-/* Dark gold leads, light gold chases, cream prelayer follows */
-.staggered-menu-wrapper.is-open .sm-prelayer:nth-child(1) {
-  transition-delay: 0s;
-}
-
-.staggered-menu-wrapper.is-open .sm-prelayer:nth-child(2) {
-  transition-delay: 0.13s;
-}
-
-.staggered-menu-wrapper.is-open .sm-prelayer:nth-child(3) {
-  transition-delay: 0.26s;
-}
-
-.staggered-menu-wrapper:not(.is-open) .sm-prelayer {
-  transition-duration: 0.78s;
-}
-
-/* Close: cream first, then light gold, dark gold last */
-.staggered-menu-wrapper:not(.is-open) .sm-prelayer:nth-child(1) {
-  transition-delay: 0.26s;
-}
-
-.staggered-menu-wrapper:not(.is-open) .sm-prelayer:nth-child(2) {
-  transition-delay: 0.13s;
-}
-
-.staggered-menu-wrapper:not(.is-open) .sm-prelayer:nth-child(3) {
-  transition-delay: 0s;
-}
-
 [data-position="left"] .sm-prelayer {
   transform: translate3d(-100%, 0, 0);
-}
-
-[data-position="left"].staggered-menu-wrapper.is-open .sm-prelayer {
-  transform: translate3d(0, 0, 0);
 }
 
 .staggered-menu-panel {
@@ -156,20 +118,12 @@
   pointer-events: none;
   box-shadow: -18px 0 48px rgba(26, 22, 18, 0.18);
   transform: translate3d(100%, 0, 0);
-  transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: none;
   will-change: transform;
 }
 
 .staggered-menu-wrapper.is-open .staggered-menu-panel {
   pointer-events: auto;
-  transform: translate3d(0, 0, 0);
-  /* Start after cream prelayer (~70% of its race) so all three colours show */
-  transition-delay: 0.42s;
-}
-
-.staggered-menu-wrapper:not(.is-open) .staggered-menu-panel {
-  transition-duration: 0.68s;
-  transition-delay: 0.08s;
 }
 
 [data-position="left"] .staggered-menu-panel {
@@ -225,12 +179,7 @@
   transition:
     color 0.25s ease,
     border-color 0.25s ease,
-    background-color 0.25s ease,
-    opacity 0.42s ease 1.05s;
-}
-
-.staggered-menu-wrapper.is-open .sm-panel-close {
-  opacity: 1;
+    background-color 0.25s ease;
 }
 
 .sm-panel-close:hover,
@@ -256,38 +205,7 @@
   border-bottom: 1px solid rgba(182, 159, 100, 0.18);
   opacity: 0;
   transform: translate3d(0, 22px, 0);
-  transition:
-    opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.staggered-menu-wrapper.is-open .sm-panel-row {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
-}
-
-.staggered-menu-wrapper.is-open .sm-panel-row:nth-child(1) {
-  transition-delay: 1.05s;
-}
-.staggered-menu-wrapper.is-open .sm-panel-row:nth-child(2) {
-  transition-delay: 1.12s;
-}
-.staggered-menu-wrapper.is-open .sm-panel-row:nth-child(3) {
-  transition-delay: 1.19s;
-}
-.staggered-menu-wrapper.is-open .sm-panel-row:nth-child(4) {
-  transition-delay: 1.26s;
-}
-.staggered-menu-wrapper.is-open .sm-panel-row:nth-child(5) {
-  transition-delay: 1.33s;
-}
-.staggered-menu-wrapper.is-open .sm-panel-row:nth-child(6) {
-  transition-delay: 1.4s;
-}
-
-.staggered-menu-wrapper:not(.is-open) .sm-panel-row {
-  transition-duration: 0.28s, 0.28s;
-  transition-delay: 0s;
+  transition: none;
 }
 
 .sm-panel-link {
@@ -425,11 +343,7 @@
   text-transform: uppercase;
   color: var(--sm-accent, var(--sm-gold));
   opacity: 0;
-  transition: opacity 0.45s ease 0.88s;
-}
-
-.staggered-menu-wrapper.is-open .sm-socials-title {
-  opacity: 1;
+  transition: none;
 }
 
 .sm-socials-list {
@@ -457,14 +371,7 @@
   transition:
     color 0.25s ease,
     border-color 0.25s ease,
-    background-color 0.25s ease,
-    opacity 0.45s ease 0.94s,
-    transform 0.45s ease 0.94s;
-}
-
-.staggered-menu-wrapper.is-open .sm-socials-link {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
+    background-color 0.25s ease;
 }
 
 .sm-socials-link svg {

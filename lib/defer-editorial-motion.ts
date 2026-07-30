@@ -1,5 +1,6 @@
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { refreshPageScrollTransition } from "@/components/pages/pageScrollTransitionEngine";
+import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 
 /**
  * PageScrollTransition pins the hero sheet before editorial ScrollTriggers
@@ -19,7 +20,8 @@ export function deferEditorialMotionInit(
       refreshPageScrollTransition();
       timer = setTimeout(() => {
         run();
-        ScrollTrigger.refresh();
+        requestScrollRefresh("defer-editorial-motion");
+        ScrollTrigger.update();
       }, delayMs);
     });
   });

@@ -13,6 +13,7 @@ import {
   parseWebsiteText,
   type WebsiteText,
 } from "@/lib/website-text-shared";
+import { shouldSoftRefreshCms } from "@/lib/cms-soft-refresh";
 
 const WebsiteTextContext = createContext<WebsiteText>(DEFAULT_WEBSITE_TEXT);
 
@@ -42,8 +43,9 @@ export function WebsiteTextProvider({
     else if (initial) setMobile(initial);
   }, [initial, initialMobile]);
 
-  /* Soft refresh so admin phone saves appear even if ISR HTML is briefly stale. */
+  /* Soft refresh only for admin preview (?cmsRefresh=1 / ?logoTune=1). */
   useEffect(() => {
+    if (!shouldSoftRefreshCms()) return;
     let cancelled = false;
     const load = async () => {
       try {

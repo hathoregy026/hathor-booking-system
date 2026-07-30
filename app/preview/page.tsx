@@ -4,6 +4,9 @@ import { PreviewPostHeroIntro } from "@/components/preview/PreviewPostHeroIntro"
 import { PreviewItineraries } from "@/components/preview/PreviewItineraries";
 import { HATHOR_HERO_POSTER_SRC } from "@/lib/branding";
 
+/** Preview shell — avoid static-gen pool thrash; render on demand. */
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Homepage Preview | Hathor Dahabiya",
   description:

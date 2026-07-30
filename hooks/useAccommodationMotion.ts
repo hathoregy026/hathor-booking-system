@@ -12,20 +12,18 @@
 import { useLayoutEffect, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Lenis from "lenis";
 import {
-  registerHathorLenis,
   restoreScrollPositionIfReload,
 } from "@/lib/scroll-position-restore";
 import {
-  lenisMobileSafeOptions,
   shouldLightenMotionForDevice,
-  shouldUseNativeScroll,
 } from "@/lib/touch-device";
 import {
   splitAtelierText,
   splitAtelierWords,
 } from "@/lib/atelier-text-split";
+import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
+import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -187,19 +185,7 @@ export function useAccommodationMotion(
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    let lenis: Lenis | null = null;
-    let ticker: ((time: number) => void) | null = null;
-
-    if (!prefersReduced && !shouldUseNativeScroll()) {
-      lenis = new Lenis(lenisMobileSafeOptions(1.55));
-      lenis.on("scroll", ScrollTrigger.update);
-      registerHathorLenis(lenis);
-      ticker = (time: number) => {
-        lenis?.raf(time * 1000);
-      };
-      gsap.ticker.add(ticker);
-      gsap.ticker.lagSmoothing(0);
-    }
+    ensurePublicScrollController();
 
     const ctx = gsap.context(() => {
       /* Intro — soft fades only (no hard pop-ins) */
@@ -276,7 +262,7 @@ export function useAccommodationMotion(
           };
 
           const refreshWhenReady = () => {
-            ScrollTrigger.refresh();
+            requestScrollRefresh("accommodation-image-load");
           };
 
           rooms.forEach((room, roomIndex) => {
@@ -343,7 +329,7 @@ export function useAccommodationMotion(
                 trigger: room,
                 start: "top top",
                 end: pinEnd,
-                scrub: 1.15,
+                scrub: 0.25,
                 pin: true,
                 pinSpacing: true,
                 anticipatePin: 0,
@@ -565,21 +551,24 @@ export function useAccommodationMotion(
         });
     };
 
-    const onLoad = () => ScrollTrigger.refresh();
+    const onLoad = () => requestScrollRefresh("accommodation-load");
     window.addEventListener("load", onLoad);
 
     let resizeTimer: number | undefined;
     const onResize = () => {
       if (isNarrowViewport()) return;
       window.clearTimeout(resizeTimer);
-      resizeTimer = window.setTimeout(() => ScrollTrigger.refresh(), 200);
+      resizeTimer = window.setTimeout(
+        () => requestScrollRefresh("accommodation-resize"),
+        200,
+      );
     };
 
     const onOrientationChange = () => {
       if (!isNarrowViewport()) return;
       window.clearTimeout(resizeTimer);
       resizeTimer = window.setTimeout(() => {
-        ScrollTrigger.refresh();
+        requestScrollRefresh("accommodation-orientation");
         refreshNativeGalleries();
       }, 200);
     };
@@ -588,10 +577,10 @@ export function useAccommodationMotion(
     window.addEventListener("orientationchange", onOrientationChange);
 
     requestAnimationFrame(() => {
-      ScrollTrigger.refresh();
+      requestScrollRefresh("accommodation-initial");
       restoreScrollPositionIfReload(window.location.pathname || "/");
       requestAnimationFrame(() => {
-        ScrollTrigger.refresh();
+        requestScrollRefresh("accommodation-secondary");
         restoreScrollPositionIfReload(window.location.pathname || "/");
         refreshNativeGalleries();
       });
@@ -603,9 +592,6 @@ export function useAccommodationMotion(
       window.removeEventListener("orientationchange", onOrientationChange);
       window.clearTimeout(resizeTimer);
       document.querySelectorAll(".rooms-rail").forEach((el) => el.remove());
-      if (ticker) gsap.ticker.remove(ticker);
-      registerHathorLenis(null);
-      lenis?.destroy();
       ctx.revert();
     };
   }, [rootRef, enabled]);

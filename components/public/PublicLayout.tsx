@@ -4,8 +4,8 @@ import { BookingModalProvider } from "@/components/booking/BookingModalProvider"
 import { DeployFreshness } from "@/components/public/DeployFreshness";
 import { FloatingActions } from "@/components/public/FloatingActions";
 import { LuxuryTextAnimations } from "@/components/public/LuxuryTextAnimations";
+import { PublicScrollInfrastructure } from "@/components/public/PublicScrollInfrastructure";
 import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
-import { RawScrollSmooth } from "@/components/public/RawScrollSmooth";
 import { ScrollPositionRestore } from "@/components/public/ScrollPositionRestore";
 import { SiteImagePreviewScroll } from "@/components/public/SiteImagePreviewScroll";
 import { PageTransition } from "@/components/ui/PageTransition";
@@ -35,8 +35,8 @@ export function PublicLayout({ children }: PublicLayoutProps) {
         <div className="public-site hathor-site">
           <script dangerouslySetInnerHTML={{ __html: bootScript }} />
           <DeployFreshness deployId={deployId} />
+          <PublicScrollInfrastructure />
           <ScrollPositionRestore />
-          <RawScrollSmooth />
           <LuxuryTextAnimations />
           <SiteImagePreviewScroll />
           <PublicNavbar />

@@ -7,8 +7,9 @@
 import { useLayoutEffect, useId, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Lenis from "lenis";
-import { lenisMobileSafeOptions, isTouchDevice, isPhoneViewport, logPhonePerfDev } from "@/lib/touch-device";
+import { isTouchDevice, isPhoneViewport, logPhonePerfDev } from "@/lib/touch-device";
+import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
+import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 
 const PT_GOLD = "#B69F64";
 
@@ -23,7 +24,7 @@ const MASK = {
 };
 
 const PIN_VH = 0.65;
-const SCRUB = 1.2;
+const SCRUB = 0.25;
 const PHONE_STRIP_COUNT = 8;
 
 export const CRUISES_HERO_REFRESH_EVENT = "cruises-hero-stripe-refresh";
@@ -65,27 +66,6 @@ function stripCount() {
   if (w <= 767) return 25;
   if (w <= 1024) return 35;
   return 52;
-}
-
-function setupSmoothScroll() {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    return null;
-  }
-  if (isPhoneViewport() || isTouchDevice()) return null;
-
-  const lenis = new Lenis(lenisMobileSafeOptions(2.1));
-
-  lenis.on("scroll", ScrollTrigger.update);
-
-  const ticker = (time: number) => {
-    lenis.raf(time * 1000);
-  };
-
-  gsap.ticker.add(ticker);
-  gsap.ticker.lagSmoothing(0);
-
-  logPhonePerfDev({ lenis: true, surface: "cruises-hero-stripes" });
-  return { lenis, ticker };
 }
 
 function setupPhoneCruisesCurtain(opts: {
@@ -254,7 +234,11 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
 
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
-    const smoothScroll = setupSmoothScroll();
+    const scrollController = ensurePublicScrollController();
+    logPhonePerfDev({
+      lenis: scrollController.mode === "lenis",
+      surface: "cruises-hero-stripes",
+    });
     let lastWidth = window.innerWidth;
 
     function buildMaskStrips() {
@@ -371,7 +355,7 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
     const ctx = gsap.context(() => {
       gsap.registerPlugin(ScrollTrigger);
       initScroll();
-      ScrollTrigger.refresh();
+      requestScrollRefresh("cruises-hero-init");
       if (window.scrollY <= 2) applyProgress(0);
     }, trigger);
 
@@ -381,7 +365,7 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
       releasePinWidth();
       initScroll();
       applyProgress(progress);
-      ScrollTrigger.refresh();
+      requestScrollRefresh("cruises-hero-refresh-engine");
       if (window.scrollY <= 2) applyProgress(0);
     }
 
@@ -406,10 +390,6 @@ export function useCruisesHeroStripes(config: CruisesHeroStripeRefs) {
       window.removeEventListener("orientationchange", onResize);
       window.removeEventListener(CRUISES_HERO_REFRESH_EVENT, refreshEngine);
       if (resizeTimer) clearTimeout(resizeTimer);
-      if (smoothScroll) {
-        gsap.ticker.remove(smoothScroll.ticker);
-        smoothScroll.lenis.destroy();
-      }
       document.body.classList.remove("has-page-scroll-transition");
       document.documentElement.classList.remove("has-page-scroll-transition");
       ctx.revert();

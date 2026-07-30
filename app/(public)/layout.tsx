@@ -7,21 +7,17 @@ import { HeroLogoSettingsProvider } from "@/components/public/HeroLogoSettingsPr
 import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
 import { TypographySettingsProvider } from "@/components/public/TypographySettingsProvider";
 import { WebsiteTextProvider } from "@/components/public/WebsiteTextProvider";
-import { resolveSiteImageMap } from "@/lib/resolve-site-images";
-import { getHeroLogoTuneSafe, getHeroLogoTuneMobileSafe } from "@/lib/hero-logo-tune";
+import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import {
   heroLogoTuneToImportantCss,
   heroLogoTuneToNarrowImportantCss,
 } from "@/lib/hero-logo-tune-shared";
-import { getHieroglyphTuneSafe } from "@/lib/hieroglyph-tune";
 import { hieroglyphTuneToImportantCss } from "@/lib/hieroglyph-tune-shared";
-import {
-  getTypographySettingsSafe,
-  getTypographySettingsMobileSafe,
-} from "@/lib/typography-settings";
 import { typographyToImportantCss } from "@/lib/typography-settings-shared";
-import { getWebsiteTextSafe, getWebsiteTextMobileSafe } from "@/lib/website-text";
-import { combineDesktopAndPhoneCss, combineDesktopAndNarrowCss } from "@/lib/admin-device-preview";
+import {
+  combineDesktopAndPhoneCss,
+  combineDesktopAndNarrowCss,
+} from "@/lib/admin-device-preview";
 import "../hathor-fonts.css";
 import "../public.css";
 import "../lux-footer.css";
@@ -118,25 +114,11 @@ export default async function PublicSiteLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
-  const [
-    siteImages,
-    typography,
-    typographyMobile,
-    heroLogoTune,
-    heroLogoTuneMobile,
-    hieroglyphTune,
-    websiteText,
-    websiteTextMobile,
-  ] = await Promise.all([
-    resolveSiteImageMap(),
-    getTypographySettingsSafe(),
-    getTypographySettingsMobileSafe(),
-    getHeroLogoTuneSafe(),
-    getHeroLogoTuneMobileSafe(),
-    getHieroglyphTuneSafe(),
-    getWebsiteTextSafe(),
-    getWebsiteTextMobileSafe(),
-  ]);
+  /*
+   * Previously 8 parallel SiteSetting/image queries (plus mobile cascades).
+   * Now one request-scoped bundle: ≤2 DB round-trips.
+   */
+  const cms = await loadPublicCmsBundle();
 
   const displayFontStyle = {
     /* Installed local display face until Playfair file is added */
@@ -144,14 +126,14 @@ export default async function PublicSiteLayout({
   } as CSSProperties;
 
   const typographyCss = combineDesktopAndPhoneCss(
-    typographyToImportantCss(typography),
-    typographyToImportantCss(typographyMobile),
+    typographyToImportantCss(cms.typography),
+    typographyToImportantCss(cms.typographyMobile),
   );
   const logoTuneCss = combineDesktopAndNarrowCss(
-    heroLogoTuneToImportantCss(heroLogoTune),
-    heroLogoTuneToNarrowImportantCss(heroLogoTuneMobile),
+    heroLogoTuneToImportantCss(cms.heroLogoTune),
+    heroLogoTuneToNarrowImportantCss(cms.heroLogoTuneMobile),
   );
-  const hieroglyphTuneCss = hieroglyphTuneToImportantCss(hieroglyphTune);
+  const hieroglyphTuneCss = hieroglyphTuneToImportantCss(cms.hieroglyphTune);
 
   return (
     <div
@@ -176,17 +158,17 @@ export default async function PublicSiteLayout({
         }}
       />
       <HeroLogoSettingsProvider
-        desktopPartsVariant={heroLogoTune.partsVariant}
-        mobilePartsVariant={heroLogoTuneMobile.partsVariant}
+        desktopPartsVariant={cms.heroLogoTune.partsVariant}
+        mobilePartsVariant={cms.heroLogoTuneMobile.partsVariant}
       >
-        <SiteImagesProvider images={siteImages}>
+        <SiteImagesProvider images={cms.siteImages}>
           <TypographySettingsProvider
-            initial={typography}
-            initialMobile={typographyMobile}
+            initial={cms.typography}
+            initialMobile={cms.typographyMobile}
           >
             <WebsiteTextProvider
-              initial={websiteText}
-              initialMobile={websiteTextMobile}
+              initial={cms.websiteText}
+              initialMobile={cms.websiteTextMobile}
             >
               <PublicLayout>{children}</PublicLayout>
             </WebsiteTextProvider>

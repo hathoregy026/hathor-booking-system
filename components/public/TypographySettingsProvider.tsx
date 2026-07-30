@@ -19,6 +19,7 @@ import {
   type TypographySettings,
   type TypographyTextStyle,
 } from "@/lib/typography-settings-shared";
+import { shouldSoftRefreshCms } from "@/lib/cms-soft-refresh";
 
 const STYLE_ID = "hathor-typography-live";
 
@@ -76,8 +77,9 @@ export function TypographySettingsProvider({
     applyLiveCss(desktop, mobile);
   }, [desktop, mobile]);
 
-  /* Soft refresh so admin phone saves appear even if ISR HTML is briefly stale. */
+  /* Soft refresh only for admin preview (?cmsRefresh=1 / ?logoTune=1). */
   useEffect(() => {
+    if (!shouldSoftRefreshCms()) return;
     let cancelled = false;
     const load = async () => {
       try {

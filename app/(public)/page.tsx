@@ -3,7 +3,7 @@ import { HomeExperienceShell } from "@/components/pages/HomeExperienceShell";
 import { HomePageClient } from "@/components/pages/HomePageClient";
 import { HATHOR_HERO_POSTER_SRC } from "@/lib/branding";
 import { getHomepageAccordionCruisesSafe } from "@/lib/homepage-accordion-cruises";
-import { getHeroLogoTuneSafe, getHeroLogoTuneMobileSafe } from "@/lib/hero-logo-tune";
+import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import {
   heroLogoTuneToImportantCss,
   heroLogoTuneToNarrowImportantCss,
@@ -51,14 +51,16 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const [heroLogoTune, heroLogoTuneMobile, accordionCruises] = await Promise.all([
-    getHeroLogoTuneSafe(),
-    getHeroLogoTuneMobileSafe(),
-    getHomepageAccordionCruisesSafe(),
-  ]);
+  /*
+   * Logo tune comes from the request-scoped public CMS bundle (shared with layout).
+   * Accordion must not run in parallel with the bundle — concurrent Prisma adapter
+   * queries against the Supabase transaction pooler can stall indefinitely.
+   */
+  const cms = await loadPublicCmsBundle();
+  const accordionCruises = await getHomepageAccordionCruisesSafe();
   const logoTuneCss = combineDesktopAndNarrowCss(
-    heroLogoTuneToImportantCss(heroLogoTune),
-    heroLogoTuneToNarrowImportantCss(heroLogoTuneMobile),
+    heroLogoTuneToImportantCss(cms.heroLogoTune),
+    heroLogoTuneToNarrowImportantCss(cms.heroLogoTuneMobile),
   );
 
   return (
@@ -68,8 +70,8 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: logoTuneCss }}
       />
       <HomePageClient
-        heroLogoTune={heroLogoTune}
-        heroLogoTuneMobile={heroLogoTuneMobile}
+        heroLogoTune={cms.heroLogoTune}
+        heroLogoTuneMobile={cms.heroLogoTuneMobile}
         accordionCruises={accordionCruises}
       />
     </HomeExperienceShell>

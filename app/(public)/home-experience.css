@@ -2138,6 +2138,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   visibility: hidden;
   pointer-events: none;
   will-change: opacity;
+  /* GSAP owns opacity/visibility — never inherit transition: all */
+  transition: none !important;
   /* Fixed gap between title · indication · body — stays equal if title size changes */
   display: flex;
   flex-direction: column;

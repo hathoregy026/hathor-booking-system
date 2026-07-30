@@ -1,6 +1,8 @@
+import { cache } from "react";
 import { withDb, logDbError } from "@/lib/db-safe";
 import { getSharedPgPool } from "@/lib/pg-pool";
 import { resolveDatabaseUrl } from "@/lib/database-config";
+import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import {
   DEFAULT_HERO_LOGO_TUNE,
   DEFAULT_HERO_LOGO_TUNE_MOBILE,
@@ -27,28 +29,6 @@ export {
   type HeroLogoTune,
 } from "@/lib/hero-logo-tune-shared";
 
-function readStoredTune(value: unknown): unknown {
-  if (typeof value === "string") {
-    try {
-      return JSON.parse(value) as unknown;
-    } catch {
-      return value;
-    }
-  }
-  return value;
-}
-
-async function readTuneViaSql(key: string): Promise<HeroLogoTune | null> {
-  const pool = getSharedPgPool(resolveDatabaseUrl());
-  const result = await pool.query<{ value: string }>(
-    `SELECT value FROM "SiteSetting" WHERE key = $1 LIMIT 1`,
-    [key],
-  );
-  const raw = result.rows[0]?.value;
-  if (!raw) return null;
-  return parseHeroLogoTune(readStoredTune(raw));
-}
-
 async function writeTuneViaSql(key: string, payload: string): Promise<void> {
   const pool = getSharedPgPool(resolveDatabaseUrl());
   await pool.query(
@@ -58,22 +38,6 @@ async function writeTuneViaSql(key: string, payload: string): Promise<void> {
        SET value = EXCLUDED.value, "updatedAt" = NOW()`,
     [key, payload],
   );
-}
-
-async function getTuneByKey(key: string): Promise<HeroLogoTune | null> {
-  try {
-    const row = await withDb(() =>
-      prisma.siteSetting.findUnique({
-        where: { key },
-        select: { value: true },
-      }),
-    );
-    if (!row?.value) return null;
-    return parseHeroLogoTune(readStoredTune(row.value));
-  } catch (error) {
-    logDbError(`hero-logo-tune.get.prisma.${key}`, error);
-    return readTuneViaSql(key);
-  }
 }
 
 async function saveTuneByKey(
@@ -99,49 +63,39 @@ async function saveTuneByKey(
   return safe;
 }
 
-export async function getHeroLogoTune(): Promise<HeroLogoTune> {
-  const tune = await getTuneByKey(HERO_LOGO_TUNE_KEY);
-  return tune ?? DEFAULT_HERO_LOGO_TUNE;
-}
+/** Request-memoized — shares the public CMS bundle with the layout. */
+export const getHeroLogoTune = cache(async (): Promise<HeroLogoTune> => {
+  const cms = await loadPublicCmsBundle();
+  return cms.heroLogoTune;
+});
 
 /** Homepage-safe read — never throws; logs and falls back. */
-export async function getHeroLogoTuneSafe(): Promise<HeroLogoTune> {
+export const getHeroLogoTuneSafe = cache(async (): Promise<HeroLogoTune> => {
   try {
     return await getHeroLogoTune();
   } catch (error) {
     console.error("[hero-logo-tune] get failed:", error);
-    try {
-      const viaSql = await readTuneViaSql(HERO_LOGO_TUNE_KEY);
-      if (viaSql) return viaSql;
-    } catch (sqlError) {
-      logDbError("hero-logo-tune.get.sql", sqlError);
-    }
     return DEFAULT_HERO_LOGO_TUNE;
   }
-}
+});
 
 export async function saveHeroLogoTune(tune: HeroLogoTune): Promise<HeroLogoTune> {
   return saveTuneByKey(HERO_LOGO_TUNE_KEY, tune);
 }
 
-/**
- * Phone/tablet tune. Never fall back to desktop y:-200 — that clips the
- * logo and Book Now under .home-hero-container { overflow: hidden }.
- */
-export async function getHeroLogoTuneMobile(): Promise<HeroLogoTune> {
-  const mobile = await getTuneByKey(HERO_LOGO_TUNE_MOBILE_KEY);
-  if (mobile) return ensurePhoneHeroLogoVisible(mobile);
-  return DEFAULT_HERO_LOGO_TUNE_MOBILE;
-}
+export const getHeroLogoTuneMobile = cache(async (): Promise<HeroLogoTune> => {
+  const cms = await loadPublicCmsBundle();
+  return ensurePhoneHeroLogoVisible(cms.heroLogoTuneMobile);
+});
 
-export async function getHeroLogoTuneMobileSafe(): Promise<HeroLogoTune> {
+export const getHeroLogoTuneMobileSafe = cache(async (): Promise<HeroLogoTune> => {
   try {
     return await getHeroLogoTuneMobile();
   } catch (error) {
     console.error("[hero-logo-tune-mobile] get failed:", error);
     return DEFAULT_HERO_LOGO_TUNE_MOBILE;
   }
-}
+});
 
 export async function saveHeroLogoTuneMobile(
   tune: HeroLogoTune,

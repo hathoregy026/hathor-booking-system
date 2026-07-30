@@ -8,31 +8,30 @@
 import { useLayoutEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Lenis from "lenis";
 import { mountHeroScrollStage } from "@/lib/hero-scroll-stage";
 import { splitAtelierText, splitAtelierWords } from "@/lib/atelier-text-split";
 import {
   applyScrollY,
   claimScrollRestore,
-  registerHathorLenis,
   readSavedScrollY,
   shouldRestoreScrollOnMount,
 } from "@/lib/scroll-position-restore";
 import {
-  lenisMobileSafeOptions,
   shouldLightenMotionForDevice,
   shouldUseNativeScroll,
   isPhoneViewport,
   logPhonePerfDev,
 } from "@/lib/touch-device";
+import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
+import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 
 gsap.registerPlugin(ScrollTrigger);
 
-function resetWindowScrollTop(lenis: Lenis | null) {
+function resetWindowScrollTop(
+  scrollController: ReturnType<typeof ensurePublicScrollController>,
+) {
   try {
-    if (lenis?.scrollTo) {
-      lenis.scrollTo(0, { immediate: true, force: true });
-    }
+    scrollController.scrollTo(0, { immediate: true, force: true });
   } catch {
     /* ignore */
   }
@@ -65,27 +64,21 @@ export function useExScrollMotion() {
     return st;
   };
 
-  let lenis: Lenis | null = null;
-  let tickerFn: ((time: number) => void) | null = null;
+  const scrollController = ensurePublicScrollController();
+  const lenis = scrollController.lenis;
   let heroCleanup: (() => void) | null = null;
   let helmCleanup: (() => void) | null = null;
   const motionCleanups: Array<() => void> = [];
 
+  if (process.env.NODE_ENV !== "production") {
+    (window as Window & { ScrollTrigger?: typeof ScrollTrigger }).ScrollTrigger =
+      ScrollTrigger;
+  }
+
   if (!prefersReduced) {
     // Native finger scroll on phones/tablets — Lenis + scrubbed pins = jumpy lag.
     // Phones ≤480 never get Lenis (even if DevTools reports fine pointer).
-    if (!shouldUseNativeScroll() && !isPhone) {
-      lenis = new Lenis(lenisMobileSafeOptions(1.4));
-
-      // Keep ScrollTrigger in sync with Lenis
-      lenis.on("scroll", ScrollTrigger.update);
-      registerHathorLenis(lenis);
-
-      tickerFn = (time: number) => {
-        lenis?.raf(time * 1000);
-      };
-      gsap.ticker.add(tickerFn);
-      gsap.ticker.lagSmoothing(0);
+    if (!shouldUseNativeScroll() && !isPhone && scrollController.mode === "lenis") {
       logPhonePerfDev({ surface: "ex-scroll", lenis: true, phone: false });
     } else {
       // Unlock logo immediately on real phones (critical CSS skips hide for is-touch-device)
@@ -115,7 +108,7 @@ export function useExScrollMotion() {
   const willRestore = shouldRestoreScrollOnMount(path);
   const savedY = willRestore ? readSavedScrollY(path) : 0;
   if (willRestore) claimScrollRestore(path);
-  resetWindowScrollTop(lenis);
+  resetWindowScrollTop(scrollController);
 
   /* -------------------------------------------------------
    * 3. Nav entrance + solid state on scroll
@@ -464,15 +457,26 @@ export function useExScrollMotion() {
 
     let animationFrame = 0;
     let lastStepped = -1;
+    let cachedSectionTop = 0;
+    let cachedScrollable = 1;
+    let hasLayoutCache = false;
+
+    const refreshLayoutCache = () => {
+      const sectionRect = section.getBoundingClientRect();
+      cachedSectionTop = sectionRect.top + window.scrollY;
+      cachedScrollable = Math.max(1, section.offsetHeight - window.innerHeight);
+      hasLayoutCache = true;
+    };
+
+    const readProgress = () => {
+      if (!hasLayoutCache) refreshLayoutCache();
+      const y = window.scrollY;
+      return gsap.utils.clamp(0, 1, (y - cachedSectionTop) / cachedScrollable);
+    };
+
     const render = () => {
       animationFrame = 0;
-      const rect = section.getBoundingClientRect();
-      const scrollable = Math.max(1, section.offsetHeight - window.innerHeight);
-      const progress = gsap.utils.clamp(
-        0,
-        1,
-        -rect.top / scrollable,
-      );
+      const progress = readProgress();
       if (isTouchPortal) {
         /*
          * Native touch scroll must track the finger directly. A catch-up tween
@@ -486,12 +490,7 @@ export function useExScrollMotion() {
         lastStepped = stepped;
         portalTimeline.progress(stepped);
       } else {
-        gsap.to(portalTimeline, {
-          progress,
-          duration: 0.85,
-          ease: "power3.out",
-          overwrite: true,
-        });
+        portalTimeline.progress(progress);
       }
     };
 
@@ -500,15 +499,20 @@ export function useExScrollMotion() {
       animationFrame = window.requestAnimationFrame(render);
     };
     const viewportEvent = isNarrowViewport ? "orientationchange" : "resize";
+    const onViewportRefresh = () => {
+      refreshLayoutCache();
+      requestRender();
+    };
 
     window.addEventListener("scroll", requestRender, { passive: true });
-    window.addEventListener(viewportEvent, requestRender);
+    window.addEventListener(viewportEvent, onViewportRefresh);
+    refreshLayoutCache();
     render();
 
     helmCleanup = () => {
       window.cancelAnimationFrame(animationFrame);
       window.removeEventListener("scroll", requestRender);
-      window.removeEventListener(viewportEvent, requestRender);
+      window.removeEventListener(viewportEvent, onViewportRefresh);
       gsap.killTweensOf(portalTimeline);
       portalTimeline.kill();
     };
@@ -679,8 +683,8 @@ export function useExScrollMotion() {
     section.setAttribute("data-mobile-fog-rise", "");
     section.classList.add("signature-fog-rise");
 
-    /** ~24 fog steps on phone — lighter than continuous CSS var thrash. */
-    const FOG_STEPS = 24;
+    /** Finer fog steps on phone — 24 was visibly stepped during slow finger drag. */
+    const FOG_STEPS = 56;
     const FOG_RANGE = 140;
     const quantiseFogEdge = (edge: number, stepped: boolean) => {
       if (!stepped) return edge;
@@ -762,6 +766,7 @@ export function useExScrollMotion() {
       /* Slightly longer wipe + calmer dwell — less rubber-band settle */
       const dwell = 0.52;
       const move = 0.82;
+      const release = 0.7;
       const step = dwell + move;
       /*
        * Cream invitation intro (same fog language as Take Your Voyage Today).
@@ -772,7 +777,7 @@ export function useExScrollMotion() {
       const introFog = 0.52;
       const introSettle = 0.14;
       const introSpan = introText + introHold + introFog + introSettle;
-      const scrollSpan = introSpan + (total - 1) * step + dwell;
+      const scrollSpan = introSpan + total * (move + dwell) + release;
 
       if (silkChars.length) {
         /* Clear any prior transform so yPercent alone drives the rise mask */
@@ -855,7 +860,7 @@ export function useExScrollMotion() {
            * Narrow/phone: CSS sticky section height is the runway.
            * Desktop: short scrub lag — long lag felt rubbery/glitchy on settle.
            */
-          scrub: isPhoneStack ? true : 0.55,
+          scrub: isPhoneStack ? true : 0.25,
           /*
            * Narrow screens use a CSS-sticky viewport inside a tall section.
            * Preserves landmark storytelling without a GSAP pin spacer
@@ -1036,8 +1041,7 @@ export function useExScrollMotion() {
       }
 
       for (let i = 1; i < total; i++) {
-        const at = introSpan + (i - 1) * step;
-        const moveAt = at + dwell;
+        const moveAt = introSpan + (i - 1) * (move + dwell) + dwell;
         const card = cards[i];
         const media = getCardMedia(card);
         const prevPanel = copyPanels[i - 1];
@@ -1177,14 +1181,45 @@ export function useExScrollMotion() {
           }
         }
       }
+
+      tl.to({}, { duration: release });
+
+      if (process.env.NODE_ENV !== "production") {
+        const stageRanges = Array.from({ length: total }, (_, index) => {
+          if (index === 0) {
+            return {
+              card: 1,
+              rise: [introFogAt, introFogAt + introFog],
+              dwell: [introFogAt + introFog, introSpan + dwell],
+            };
+          }
+          const riseStart = introSpan + (index - 1) * (move + dwell) + dwell;
+          return {
+            card: index + 1,
+            rise: [riseStart, riseStart + move],
+            dwell: [riseStart + move, riseStart + move + dwell],
+          };
+        });
+        console.info("[fog-stage-ranges]", {
+          cards: cards.length,
+          copyPanels: copyPanels.length,
+          timelineStages: stageRanges.length,
+          introRange: [0, introSpan],
+          stages: stageRanges,
+          finalDwellRange: [introSpan + (total - 1) * (move + dwell) + move, introSpan + total * (move + dwell)],
+          releaseRange: [introSpan + total * (move + dwell), scrollSpan],
+        });
+      }
     };
 
     let active = true;
     let lastStackWidth = window.innerWidth;
+    let fogRebuildCount = 0;
+    let fogRebuildDuringActiveScroll = 0;
     document.fonts.ready.then(() => {
       if (!active) return;
       build();
-      ScrollTrigger.refresh();
+      requestScrollRefresh("ex-stack-font-ready");
     });
 
     let resizeTimer: ReturnType<typeof setTimeout>;
@@ -1198,8 +1233,34 @@ export function useExScrollMotion() {
           if (Math.abs(w - lastStackWidth) < 20) return;
           lastStackWidth = w;
         }
+        fogRebuildCount += 1;
+        if (process.env.NODE_ENV !== "production") {
+          const debug = (
+            window as Window & {
+              __hathorRefreshDebug?: { lastActiveAt?: number };
+              __hathorFogDebug?: {
+                rebuilds: number;
+                rebuildsDuringActiveScroll: number;
+              };
+            }
+          ).__hathorRefreshDebug;
+          if (Date.now() - Number(debug?.lastActiveAt || 0) < 180) {
+            fogRebuildDuringActiveScroll += 1;
+          }
+          (
+            window as Window & {
+              __hathorFogDebug?: {
+                rebuilds: number;
+                rebuildsDuringActiveScroll: number;
+              };
+            }
+          ).__hathorFogDebug = {
+            rebuilds: fogRebuildCount,
+            rebuildsDuringActiveScroll: fogRebuildDuringActiveScroll,
+          };
+        }
         build();
-        ScrollTrigger.refresh();
+        requestScrollRefresh("ex-stack-viewport-change");
       }, isPhone ? 250 : 200);
     };
     window.addEventListener(viewportEvent, onViewportChange);
@@ -1537,7 +1598,7 @@ export function useExScrollMotion() {
         applyScrollY(savedY);
       }
       try {
-        ScrollTrigger.refresh();
+        requestScrollRefresh("ex-restore-now");
         ScrollTrigger.update();
       } catch {
         /* ignore */
@@ -1553,7 +1614,7 @@ export function useExScrollMotion() {
 
     const onLoad = () => {
       try {
-        ScrollTrigger.refresh();
+        requestScrollRefresh("ex-load");
         ScrollTrigger.update();
       } catch {
         /* ignore */
@@ -1569,9 +1630,6 @@ export function useExScrollMotion() {
       heroCleanup?.();
       helmCleanup?.();
       motionCleanups.forEach((cleanup) => cleanup());
-      if (tickerFn) gsap.ticker.remove(tickerFn);
-      registerHathorLenis(null);
-      lenis?.destroy();
       try {
         /* Kill only triggers owned by this homepage hook — never global getAll().kill() */
         const owned = new Set(ownedTriggerIds);

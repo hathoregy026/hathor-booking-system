@@ -8,6 +8,8 @@ import {
   bindViewportHeightVar,
   isTouchDevice,
 } from "@/lib/touch-device";
+import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
+import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
 
 type WindowWithScrollTrigger = Window & {
   ScrollTrigger?: typeof ScrollTrigger;
@@ -23,11 +25,7 @@ function bindDebouncedScrollTriggerRefresh(debounceMs = 200): () => void {
   const refresh = () => {
     if (timer) clearTimeout(timer);
     timer = setTimeout(() => {
-      try {
-        ScrollTrigger.refresh();
-      } catch {
-        /* ignore */
-      }
+      requestScrollRefresh("touch-bootstrap");
     }, debounceMs);
   };
 
@@ -69,11 +67,12 @@ export function TouchDeviceBootstrap() {
     win.ScrollTrigger = ScrollTrigger;
 
     const onPointerChange = () => applyTouchDeviceClass();
+    ensurePublicScrollController();
     const mq = window.matchMedia("(pointer: coarse)");
     mq.addEventListener?.("change", onPointerChange);
 
     const unbindVh = bindViewportHeightVar();
-    /* Single debounced refresh path — undebounced + debounced double-fires caused scroll glitches */
+    /* Route refreshes through coordinator to avoid active-scroll refreshes. */
     const unbindSt = bindDebouncedScrollTriggerRefresh(200);
 
     return () => {

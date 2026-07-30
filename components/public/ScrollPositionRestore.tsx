@@ -10,15 +10,8 @@ import {
   restoreScrollPositionIfReload,
   setScrollRestorationManual,
 } from "@/lib/scroll-position-restore";
-
-type HathorWindow = Window & {
-  __hathorLenis?: {
-    scrollTo: (
-      target: number | string | HTMLElement,
-      options?: { immediate?: boolean; force?: boolean },
-    ) => void;
-  } | null;
-};
+import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
+import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
 
 function normalizePath(pathname: string): string {
   if (!pathname || pathname === "") return "/";
@@ -44,14 +37,7 @@ export function ScrollPositionRestore() {
     setScrollRestorationManual();
 
     if (isSoftClientNavigation(pathname)) {
-      try {
-        const lenis = (window as HathorWindow).__hathorLenis;
-        if (lenis?.scrollTo) {
-          lenis.scrollTo(0, { immediate: true, force: true });
-        }
-      } catch {
-        /* ignore */
-      }
+      ensurePublicScrollController().scrollTo(0, { immediate: true, force: true });
       window.scrollTo(0, 0);
     }
 
@@ -67,7 +53,8 @@ export function ScrollPositionRestore() {
     const restore = () => {
       if (restoreScrollPositionIfReload(pathname)) {
         try {
-          ScrollTrigger.refresh();
+          requestScrollRefresh("scroll-restore");
+          ScrollTrigger.update();
         } catch {
           /* ignore */
         }

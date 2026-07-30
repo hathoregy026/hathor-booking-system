@@ -17,6 +17,8 @@ import {
   navHrefMatches,
   type HeaderNavItem,
 } from "@/lib/public-nav";
+import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
+import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { PUBLIC_SOCIAL_LINKS } from "@/lib/public-social";
 import type { ReactNode } from "react";
@@ -230,6 +232,8 @@ export function Header() {
   useEffect(() => {
     if (!exploreOpen) return;
 
+    const scrollController = ensurePublicScrollController();
+    scrollController.stop();
     const scrollY = window.scrollY || window.pageYOffset || 0;
     const { style } = document.body;
     const previous = {
@@ -256,6 +260,9 @@ export function Header() {
       style.left = previous.left;
       style.right = previous.right;
       window.scrollTo(0, scrollY);
+      scrollController.start();
+      scrollController.syncToCurrentScroll();
+      requestScrollRefresh("menu-close");
     };
   }, [exploreOpen]);
 

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { PUBLIC_CMS_CACHE_TAG } from "@/lib/public-cms-bundle";
 import { isAdminDevicePreview } from "@/lib/admin-device-preview";
 import { handleRouteError } from "@/lib/api";
 import { logDbError } from "@/lib/db-safe";
@@ -73,6 +74,7 @@ export async function PUT(request: NextRequest) {
         ? await saveTypographySettingsMobile(settings)
         : await saveTypographySettings(settings);
 
+    revalidateTag(PUBLIC_CMS_CACHE_TAG, "max");
     revalidatePath("/", "layout");
     for (const path of REVALIDATE_PATHS) {
       revalidatePath(path);

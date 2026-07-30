@@ -10,8 +10,9 @@
 import { useLayoutEffect, useId, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Lenis from "lenis";
-import { lenisMobileSafeOptions, isTouchDevice, isPhoneViewport, logPhonePerfDev } from "@/lib/touch-device";
+import { isTouchDevice, isPhoneViewport, logPhonePerfDev } from "@/lib/touch-device";
+import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
+import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 
 const PT_CREAM_DEFAULT = "#ECE8DF";
 const PT_CREAM_HOMEPAGE_2 = "#f4f1ea";
@@ -70,28 +71,6 @@ function stripCount() {
 
 function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3);
-}
-
-function setupSmoothScroll() {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    return null;
-  }
-  /* Phones + touch / narrow: never Lenis */
-  if (isPhoneViewport() || isTouchDevice()) return null;
-
-  const lenis = new Lenis(lenisMobileSafeOptions(2.1));
-
-  lenis.on("scroll", ScrollTrigger.update);
-
-  const ticker = (time: number) => {
-    lenis.raf(time * 1000);
-  };
-
-  gsap.ticker.add(ticker);
-  gsap.ticker.lagSmoothing(0);
-
-  logPhonePerfDev({ lenis: true, surface: "page-scroll-transition" });
-  return { lenis, ticker };
 }
 
 /**
@@ -315,7 +294,11 @@ export function usePageScrollTransition(config: PageScrollTransitionConfig) {
 
     let strips: Strip[] = [];
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
-    const smoothScroll = setupSmoothScroll();
+    const scrollController = ensurePublicScrollController();
+    logPhonePerfDev({
+      lenis: scrollController.mode === "lenis",
+      surface: "page-scroll-transition",
+    });
     let lastWidth = window.innerWidth;
 
     function buildMaskStrips() {
@@ -454,7 +437,7 @@ export function usePageScrollTransition(config: PageScrollTransitionConfig) {
           end: () => `+=${window.innerHeight * PIN_VH}`,
           pin: stage,
           pinSpacing: true,
-          scrub: 0.55,
+          scrub: 0.3,
           invalidateOnRefresh: true,
           anticipatePin: 1,
           onUpdate: (self) => applyProgress(self.progress),
@@ -466,7 +449,7 @@ export function usePageScrollTransition(config: PageScrollTransitionConfig) {
       if (!setup()) {
         requestAnimationFrame(() => {
           setup();
-          ScrollTrigger.refresh();
+          requestScrollRefresh("page-transition-deferred-setup");
         });
       }
     }, trigger);
@@ -486,7 +469,7 @@ export function usePageScrollTransition(config: PageScrollTransitionConfig) {
         if (buildMaskStrips()) {
           applyProgress(progress);
         }
-        ScrollTrigger.refresh();
+        requestScrollRefresh("page-transition-resize");
       }, 150);
     };
 
@@ -508,17 +491,13 @@ export function usePageScrollTransition(config: PageScrollTransitionConfig) {
       /* Do not observe mask — GSAP mutates strip geometry */
     }
 
-    ScrollTrigger.refresh();
+    requestScrollRefresh("page-transition-mount");
 
     return () => {
       window.removeEventListener("resize", onResize);
       window.removeEventListener("orientationchange", onResize);
       resizeObserver?.disconnect();
       if (resizeTimer) clearTimeout(resizeTimer);
-      if (smoothScroll) {
-        gsap.ticker.remove(smoothScroll.ticker);
-        smoothScroll.lenis.destroy();
-      }
       ctx.revert();
       document.body.classList.remove("has-page-scroll-transition");
       document.documentElement.classList.remove("has-page-scroll-transition");
@@ -538,5 +517,5 @@ export function usePageScrollTransition(config: PageScrollTransitionConfig) {
 export function refreshPageScrollTransition() {
   if (typeof window === "undefined") return;
   gsap.registerPlugin(ScrollTrigger);
-  ScrollTrigger.refresh();
+  requestScrollRefresh("page-transition-manual");
 }

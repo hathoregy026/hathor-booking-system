@@ -43,6 +43,7 @@ import {
   parseHeroLogoTune,
 } from "@/lib/hero-logo-tune-shared";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
+import { shouldSoftRefreshCms } from "@/lib/cms-soft-refresh";
 import { useBookingStore } from "@/store/bookingStore";
 
 const GALLERY_PREVIEW_ANCHORS = new Set([
@@ -231,8 +232,10 @@ export function HomePageClient({
     setLiveTuneMobile(heroLogoTuneMobile);
   }, [heroLogoTuneMobile]);
 
-  /* Soft refresh so phone logo saves show even if ISR HTML is briefly stale. */
+  /* Soft refresh so phone logo saves show even if ISR HTML is briefly stale.
+   * Gated to admin preview (?logoTune=1 / ?cmsRefresh=1) to avoid live DB hits. */
   useEffect(() => {
+    if (!shouldSoftRefreshCms()) return;
     let cancelled = false;
     void (async () => {
       try {

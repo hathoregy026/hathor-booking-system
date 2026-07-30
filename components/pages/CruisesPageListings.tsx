@@ -16,6 +16,7 @@ import { ManagedImage } from "@/components/ui/ManagedImage";
 import { refreshCruisesHeroStripes } from "@/hooks/useCruisesHeroStripes";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -101,7 +102,7 @@ function stabilizeListingsLayoutDuringFilterChange() {
   refreshCruisesHeroStripes();
   window.requestAnimationFrame(() => {
     if (content) content.style.minHeight = "";
-    ScrollTrigger.refresh();
+    requestScrollRefresh("cruises-list-filter-change");
   });
 }
 

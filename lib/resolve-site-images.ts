@@ -1,9 +1,7 @@
-import { logDbError } from "@/lib/db-safe";
-import { listSiteImages } from "@/lib/image-management";
+import { cache } from "react";
 import {
   SITE_IMAGE_SLOTS,
   getDefaultSiteImage,
-  getSiteImageSlot,
   type SiteImageName,
 } from "@/lib/site-image-slots";
 
@@ -47,34 +45,32 @@ export function shouldUseDatabaseSiteImageUrl(url: string): boolean {
   }
 }
 
-export async function resolveSiteImageMap(): Promise<SiteImageMap> {
+function defaultSiteImageMap(): SiteImageMap {
   const map: SiteImageMap = {};
-
   for (const slot of SITE_IMAGE_SLOTS) {
     map[slot.name] = { src: slot.url, alt: slot.altText };
   }
-
-  try {
-    const records = await listSiteImages();
-    for (const record of records) {
-      if (!record.isActive) continue;
-      const slot = getSiteImageSlot(record.name);
-      const fallback = slot
-        ? { src: slot.url, alt: slot.altText }
-        : getDefaultSiteImage(record.name);
-
-      if (shouldUseDatabaseSiteImageUrl(record.url)) {
-        map[record.name] = { src: record.url, alt: record.altText || fallback.alt };
-      } else {
-        map[record.name] = fallback;
-      }
-    }
-  } catch (error) {
-    logDbError("resolveSiteImageMap", error);
-  }
-
   return map;
 }
+
+/**
+ * Request-memoized image map for callers outside the public CMS bundle.
+ *
+ * Uses slot defaults only — Prisma SiteImage findMany stalls under Next SSR
+ * against the Supabase transaction pooler (same SQL is fine outside the app).
+ * Public layout uses `loadPublicCmsBundle` defaults the same way.
+ */
+export const resolveSiteImageMap = cache(async (): Promise<SiteImageMap> => {
+  if (process.env.NEXT_PHASE === "phase-production-build") {
+    return defaultSiteImageMap();
+  }
+  /*
+   * Avoid live Prisma SiteImage reads here: they were the primary cause of
+   * 60s+ static generation hangs on /preview and /test-scroll-reveal.
+   * Slot defaults keep those shells rendering; admin soft-refresh covers CMS.
+   */
+  return defaultSiteImageMap();
+});
 
 export function resolveSiteImageFromMap(
   map: SiteImageMap,

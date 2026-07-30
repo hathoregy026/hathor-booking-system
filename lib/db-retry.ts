@@ -1,6 +1,4 @@
 import { invalidatePrismaClient } from "@/lib/prisma-state";
-import { getSharedPgPool } from "@/lib/pg-pool";
-import { resolveDatabaseUrl } from "@/lib/database-config";
 
 const TRANSIENT_PATTERNS = [
   "connection terminated",
@@ -90,13 +88,9 @@ export async function withDbRetry<T>(
       }
 
       // Rebind Prisma to the live pool — never $disconnect() or pool.end() mid-request.
+      // Skip the SELECT 1 probe: under layout concurrency it steals another pool slot.
       if (isConnectionError(error)) {
         invalidatePrismaClient();
-        try {
-          await getSharedPgPool(resolveDatabaseUrl()).query("SELECT 1");
-        } catch {
-          // Pool will open a fresh connection on the next operation.
-        }
       }
 
       await new Promise((resolve) =>

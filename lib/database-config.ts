@@ -128,11 +128,40 @@ export function normalizeDatabaseUrl(connectionString: string): string {
   }
 }
 
+function stripEnvQuotes(value: string): string {
+  const trimmed = value.trim();
+  if (
+    (trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+    (trimmed.startsWith("'") && trimmed.endsWith("'"))
+  ) {
+    return trimmed.slice(1, -1);
+  }
+  // Orphan leading quote (broken .env line) — common on Windows editors.
+  if (trimmed.startsWith('"') || trimmed.startsWith("'")) {
+    const withoutLeading = trimmed.slice(1);
+    if (withoutLeading.endsWith('"') || withoutLeading.endsWith("'")) {
+      return withoutLeading.slice(0, -1);
+    }
+    return withoutLeading;
+  }
+  return trimmed;
+}
+
 export function resolveDatabaseUrl(): string {
-  const pooled = process.env.DATABASE_URL?.trim();
+  const pooled = process.env.DATABASE_URL
+    ? stripEnvQuotes(process.env.DATABASE_URL)
+    : "";
   if (!pooled) {
     throw new Error("DATABASE_URL is not set");
   }
 
   return normalizeDatabaseUrl(pooled);
+}
+
+/** Direct (non-pooler) URL for migrations — strip editor quotes the same way. */
+export function resolveDirectUrl(): string | undefined {
+  const direct = process.env.DIRECT_URL
+    ? stripEnvQuotes(process.env.DIRECT_URL)
+    : "";
+  return direct || undefined;
 }

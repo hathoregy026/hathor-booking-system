@@ -17,10 +17,10 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion"],
-    // Never reuse Flight/RSC payloads across soft nav — prevents post-deploy "old UI" flashbacks.
+    // Prefer fresh Flight/RSC payloads on soft nav (min static staleTimes is 30s in Next 16).
     staleTimes: {
       dynamic: 0,
-      static: 0,
+      static: 30,
     },
   },
   async headers() {
@@ -90,6 +90,16 @@ const nextConfig: NextConfig = {
       {
         source: "/Nile-Cruise-Luxury-Suites",
         destination: "/rooms",
+        permanent: true,
+      },
+      {
+        source: "/homepage-2",
+        destination: "/",
+        permanent: true,
+      },
+      {
+        source: "/homepage-3",
+        destination: "/",
         permanent: true,
       },
       // Live-site room detail paths (same links) → cruises until detail pages exist

@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type Lenis from "lenis";
 import { logPhonePerfDev } from "@/lib/touch-device";
+import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -150,11 +151,7 @@ export function mountHeroScrollStage({
     "(min-width: 481px) and (max-width: 1024px)",
   ).matches;
 
-  /**
-   * Tablet only: keep the existing lightweight native-scroll fallback exactly
-   * as-is. Phone ≤480 gets its own scrubbed choreography below.
-   */
-  if (isTabletHero || prefersReduced) {
+  if (prefersReduced) {
     killByPrefix("hero-stage");
     cover.innerHTML = "";
 
@@ -197,90 +194,7 @@ export function mountHeroScrollStage({
     document.documentElement.classList.add("ex-scroll-ready");
     document.documentElement.classList.remove("ex-pending", "ex-pending-deep");
 
-    let mobileBlinds: gsap.core.Timeline | null = null;
-    let mobileBlindsPlayed = false;
-
-    const playMobileBlinds = () => {
-      if (mobileBlindsPlayed || !mobileBlinds) return;
-      mobileBlindsPlayed = true;
-      mobileBlinds.play(0);
-      window.removeEventListener("scroll", playMobileBlinds);
-      window.removeEventListener("touchmove", playMobileBlinds);
-    };
-
-    if (isTabletHero && !prefersReduced) {
-      const width = hero.clientWidth || window.innerWidth;
-      const count = width <= 767 ? 14 : 18;
-      const stripWidth = width / count;
-
-      for (let index = 0; index < count; index += 1) {
-        const strip = document.createElement("div");
-        strip.classList.add("blind-strip-v", "blind-strip-v--mobile");
-        strip.style.left = `${index * stripWidth - 0.5}px`;
-        strip.style.width = `${stripWidth + 1}px`;
-        strip.style.top = "0";
-        strip.style.height = "100%";
-        strip.style.position = "absolute";
-        strip.style.transformOrigin = "left center";
-        cover.appendChild(strip);
-      }
-
-      const strips = gsap.utils.toArray(
-        cover.querySelectorAll(".blind-strip-v--mobile"),
-      ) as Element[];
-
-      gsap.set(strips, {
-        rotationY: -28,
-        scaleX: 0.08,
-        opacity: 0,
-        visibility: "hidden",
-        force3D: true,
-      });
-
-      mobileBlinds = gsap
-        .timeline({
-          paused: true,
-          onComplete: () => {
-            /*
-             * The sweep is a transition accent, not a permanent paint layer.
-             * Removing it prevents the hero reappearing as a solid gold block
-             * when mobile Safari composites the page after toolbar changes.
-             */
-            cover.replaceChildren();
-            mobileBlinds = null;
-          },
-        })
-        .to(strips, {
-          rotationY: 0,
-          scaleX: 1,
-          opacity: 0.72,
-          visibility: "visible",
-          duration: 0.34,
-          stagger: { each: 0.018, from: "start" },
-          ease: "power1.out",
-        })
-        .to(
-          strips,
-          {
-            rotationY: 22,
-            scaleX: 0.18,
-            opacity: 0,
-            duration: 0.36,
-            stagger: { each: 0.015, from: "start" },
-            ease: "power2.in",
-          },
-          0.24,
-        )
-        .set(strips, { visibility: "hidden" });
-
-      window.addEventListener("scroll", playMobileBlinds, { passive: true });
-      window.addEventListener("touchmove", playMobileBlinds, { passive: true });
-    }
-
     return () => {
-      window.removeEventListener("scroll", playMobileBlinds);
-      window.removeEventListener("touchmove", playMobileBlinds);
-      mobileBlinds?.kill();
       cover.replaceChildren();
       killByPrefix("hero-stage");
       root.classList.remove("hero-motion-ready");
@@ -452,7 +366,10 @@ export function mountHeroScrollStage({
     const phoneRunway = isPhoneTouch
       ? (hero.closest(".home-hero-runway") as HTMLElement | null)
       : null;
-    const heroTrigger = phoneRunway || hero;
+    const tabletRunway = isTabletHero
+      ? (hero.closest(".home-hero-runway") as HTMLElement | null)
+      : null;
+    const heroTrigger = phoneRunway || tabletRunway || hero;
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -462,15 +379,19 @@ export function mountHeroScrollStage({
         end:
           isPhoneTouch && phoneRunway
             ? "bottom bottom"
+            : isTabletHero && tabletRunway
+              ? "bottom bottom" /* runway height: 360svh (100 + 260 scrub) */
+              : isTabletHero
+                ? "+=260%" /* fallback only if .home-hero-runway missing */
             : isPhoneTouch
               ? "+=290%"
               : "+=130%",
         // Direct scrub on touch — laggy scrub (1.7) feels like scroll jumping
-        scrub: isTouch ? true : 1.7,
-        pin: !isPhoneTouch,
-        pinSpacing: !isPhoneTouch,
-        anticipatePin: isPhoneTouch ? 0 : 1,
-        invalidateOnRefresh: !isPhoneTouch,
+        scrub: isTouch ? true : 0.25,
+        pin: !(isPhoneTouch || isTabletHero),
+        pinSpacing: !(isPhoneTouch || isTabletHero),
+        anticipatePin: isPhoneTouch || isTabletHero ? 0 : 1,
+        invalidateOnRefresh: !(isPhoneTouch || isTabletHero),
         onLeave: () => {
           if (!isPhoneTouch && logoMark) {
             gsap.set(logoMark, { autoAlpha: 0, y: getLogoHiddenY() });
@@ -626,6 +547,118 @@ export function mountHeroScrollStage({
           }
         }
       }
+    } else if (isTabletHero) {
+      const tabletStripStagger = strips.length > 1 ? 0.018 : 0;
+      const tabletLogoRiseAt = 0.34;
+      const tabletCtaStart = 0.48;
+      const tabletCtaDuration = 0.34;
+
+      gsap.set(strips, {
+        rotationY: -90,
+        opacity: 0,
+        visibility: "visible",
+        force3D: true,
+      });
+      if (logoMark && isSplitLetterLogo()) {
+        gsap.set(logoMark.querySelectorAll(".logo-letter-wrap"), {
+          y: getLogoHiddenY(),
+          opacity: 0,
+          force3D: true,
+        });
+      }
+
+      tl.to(
+        strips,
+        {
+          rotationY: 0,
+          opacity: 1,
+          ease: "none",
+          stagger: { each: tabletStripStagger, from: "start" },
+          duration: 0.82,
+        },
+        0.1,
+      );
+      if (lineRight) {
+        tl.to(
+          lineRight,
+          { x: titleTravel, opacity: 0, ease: "none", duration: 0.5 },
+          0.04,
+        );
+      }
+      if (lineLeft) {
+        tl.to(
+          lineLeft,
+          { x: -titleTravel, opacity: 0, ease: "none", duration: 0.5 },
+          0.04,
+        );
+      }
+      if (kicker) {
+        tl.to(kicker, { opacity: 0, y: -10, ease: "none", duration: 0.42 }, 0.06);
+      }
+      if (sub) {
+        tl.to(sub, { opacity: 0, y: 8, ease: "none", duration: 0.42 }, 0.08);
+      }
+      if (scrollHint) {
+        tl.to(scrollHint, { opacity: 0, ease: "none", duration: 0.24 }, 0.1);
+      }
+      if (cta) {
+        gsap.set(cta, {
+          scaleX: 1,
+          transformOrigin: "50% 50%",
+          force3D: true,
+        });
+        tl.to(
+          cta,
+          { scaleX: phoneCtaScale, ease: "none", duration: tabletCtaDuration },
+          tabletCtaStart,
+        );
+      }
+      if (ctaText) {
+        tl.to(
+          ctaText,
+          { letterSpacing: "1.15em", ease: "none", duration: tabletCtaDuration },
+          tabletCtaStart,
+        );
+      }
+      if (logoMark) {
+        if (isSplitLetterLogo()) {
+          tl.to(
+            logoMark.querySelectorAll(".logo-letter-wrap"),
+            {
+              y: 0,
+              opacity: 1,
+              ease: "power2.out",
+              duration: 0.32,
+              stagger: 0.08,
+            },
+            tabletLogoRiseAt,
+          );
+        } else {
+          tl.to(
+            logoMark,
+            {
+              y: getLogoLandedY(),
+              autoAlpha: 1,
+              ease: "power2.out",
+              duration: 0.32,
+            },
+            tabletLogoRiseAt,
+          );
+        }
+      }
+      tl.to({}, { duration: 0.08 }, 0.92);
+      if (process.env.NODE_ENV !== "production") {
+        console.info("[hero-tablet-stages]", {
+          introStill: [0, 0.1],
+          stripOpen: [0.1, 0.92],
+          copyExit: [0.04, 0.58],
+          logoRise: [tabletLogoRiseAt, 0.66],
+          ctaExpand: [tabletCtaStart, tabletCtaStart + tabletCtaDuration],
+          finalDwell: [0.92, 1],
+          pin: false,
+          scrub: true,
+        });
+      }
     } else {
       tl.to(
         strips,
@@ -779,6 +812,7 @@ export function mountHeroScrollStage({
   let resizeTimer: ReturnType<typeof setTimeout>;
   let lastHeroWidth = window.innerWidth;
   let heroRebuildCount = 0;
+  let heroRebuildDuringActiveScroll = 0;
   const onResize = () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(
@@ -796,7 +830,32 @@ export function mountHeroScrollStage({
           });
         }
         build();
-        ScrollTrigger.refresh();
+        if (process.env.NODE_ENV !== "production") {
+          const debug = (
+            window as Window & {
+              __hathorRefreshDebug?: { lastActiveAt?: number };
+              __hathorHeroDebug?: {
+                rebuilds: number;
+                rebuildsDuringActiveScroll: number;
+              };
+            }
+          ).__hathorRefreshDebug;
+          if (Date.now() - Number(debug?.lastActiveAt || 0) < 180) {
+            heroRebuildDuringActiveScroll += 1;
+          }
+          (
+            window as Window & {
+              __hathorHeroDebug?: {
+                rebuilds: number;
+                rebuildsDuringActiveScroll: number;
+              };
+            }
+          ).__hathorHeroDebug = {
+            rebuilds: heroRebuildCount,
+            rebuildsDuringActiveScroll: heroRebuildDuringActiveScroll,
+          };
+        }
+        requestScrollRefresh("hero-stage-resize");
       },
       isPhoneHero ? 250 : 200,
     );

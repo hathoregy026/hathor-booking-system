@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { PUBLIC_CMS_CACHE_TAG } from "@/lib/public-cms-bundle";
 import { handleRouteError } from "@/lib/api";
 import { logDbError } from "@/lib/db-safe";
 import {
@@ -41,6 +42,7 @@ export async function PUT(request: NextRequest) {
     const tune = parseHieroglyphTune(body.tune);
     const saved = await saveHieroglyphTune(tune);
 
+    revalidateTag(PUBLIC_CMS_CACHE_TAG, "max");
     revalidatePath("/", "layout");
     revalidatePath("/");
     revalidatePath("/admin/hieroglyph-tune");

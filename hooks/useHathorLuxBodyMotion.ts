@@ -9,6 +9,7 @@
 import { useLayoutEffect, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -178,7 +179,7 @@ function setupDesktopWellnessPins(root: HTMLElement) {
         trigger: frame,
         start: "top top",
         end: "+=145%",
-        scrub: 0.85,
+        scrub: 0.3,
         pin: true,
         pinSpacing: true,
         anticipatePin: 1,
@@ -261,7 +262,7 @@ function setupDesktopHighlightsPin(root: HTMLElement, ease: string) {
       trigger: pin,
       start: "top top",
       end: () => `+=${getScroll()}`,
-      scrub: 0.75,
+      scrub: 0.25,
       pin: true,
       pinSpacing: true,
       anticipatePin: 1,
@@ -491,16 +492,19 @@ export function useHathorLuxBodyMotion(
       });
     }, root);
 
-    const onLoad = () => ScrollTrigger.refresh();
+    const onLoad = () => requestScrollRefresh("lux-body-load");
     window.addEventListener("load", onLoad);
     let resizeTimer: number | undefined;
     const onResize = () => {
       window.clearTimeout(resizeTimer);
-      resizeTimer = window.setTimeout(() => ScrollTrigger.refresh(), 200);
+      resizeTimer = window.setTimeout(
+        () => requestScrollRefresh("lux-body-resize"),
+        200,
+      );
     };
     window.addEventListener("resize", onResize);
 
-    requestAnimationFrame(() => ScrollTrigger.refresh());
+    requestAnimationFrame(() => requestScrollRefresh("lux-body-mount"));
 
     return () => {
       window.removeEventListener("load", onLoad);
