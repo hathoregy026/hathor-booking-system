@@ -255,13 +255,13 @@ export function ResidenceScrollPage({
                       </p>
                       {chapter.ctaHref && chapter.ctaLabel ? (
                         <Link
-                          className="btn btn-primary room-fs-cta"
+                          className="btn room-fs-cta"
                           href={chapter.ctaHref}
                         >
                           {chapter.ctaLabel}
                         </Link>
                       ) : (
-                        <BookNowTrigger className="btn btn-primary room-fs-cta">
+                        <BookNowTrigger className="btn room-fs-cta">
                           Book Now
                         </BookNowTrigger>
                       )}
