@@ -44,6 +44,8 @@
 /PROJECT-FILES-GPT.md
 /build-output.txt
 /scripts/out-*
+/scripts/_tmp-*
+/SCROLL-SYSTEM-AUDIT*.md
 /public/branding/_hieroglyph-tmp.webp
 /public/fonts/**/._*
 /public/media/hathor/videos/*.llc
