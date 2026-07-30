@@ -376,38 +376,62 @@
 }
 
 .room-fs-copy {
+  --room-fs-copy-top: clamp(7.5rem, 16vh, 9.5rem);
+  --room-fs-copy-bottom: clamp(4.75rem, 9vh, 6.5rem);
   position: absolute;
-  top: 50%;
+  top: var(--room-fs-copy-top);
+  bottom: var(--room-fs-copy-bottom);
   left: clamp(24px, 6vw, 80px);
   right: auto;
-  max-width: 560px;
-  width: min(560px, calc(100% - 2 * clamp(24px, 6vw, 80px)));
-  transform: translateY(-50%);
+  max-width: min(34rem, 44vw);
+  width: min(34rem, calc(100% - 2 * clamp(24px, 6vw, 80px)));
+  transform: none;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: clamp(0.55rem, 1.4vh, 0.95rem);
+  box-sizing: border-box;
+  padding: clamp(1.25rem, 2.5vh, 2rem) clamp(1.1rem, 2vw, 1.75rem)
+    clamp(1.35rem, 2.8vh, 2.15rem);
+  /*
+   * Homepage stack language: one soft silhouette on the whole copy block
+   * (not per-letter text-shadow).
+   */
+  filter:
+    drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55))
+    drop-shadow(0 6px 18px rgba(0, 0, 0, 0.45))
+    drop-shadow(0 14px 36px rgba(0, 0, 0, 0.35));
 }
 
-/* Soft dark pool behind copy — contrast without per-letter shadows */
+/* Full-height left column scrim — matches the copy runway (red box) */
 .room-fs-copy::before {
   content: "";
   position: absolute;
   z-index: -1;
-  inset: -1.35rem -2.25rem -2.5rem -1.85rem;
+  inset: 0;
   pointer-events: none;
-  border-radius: 2rem;
+  border-radius: 1.75rem;
   background:
-    radial-gradient(
-      ellipse 95% 85% at 18% 42%,
-      rgba(8, 6, 4, 0.62) 0%,
-      rgba(8, 6, 4, 0.32) 42%,
-      transparent 72%
+    linear-gradient(
+      180deg,
+      rgba(8, 6, 4, 0.42) 0%,
+      rgba(8, 6, 4, 0.52) 18%,
+      rgba(8, 6, 4, 0.55) 50%,
+      rgba(8, 6, 4, 0.5) 82%,
+      rgba(8, 6, 4, 0.38) 100%
     ),
     linear-gradient(
-      105deg,
-      rgba(8, 6, 4, 0.55) 0%,
-      rgba(8, 6, 4, 0.28) 48%,
-      transparent 78%
+      90deg,
+      rgba(8, 6, 4, 0.58) 0%,
+      rgba(8, 6, 4, 0.34) 58%,
+      rgba(8, 6, 4, 0.1) 88%,
+      transparent 100%
     );
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.28),
+    inset 0 0 60px rgba(0, 0, 0, 0.12);
 }
 
 .room-fs-progress {
@@ -427,17 +451,15 @@
   line-height: 1.05;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  /* Pull title + route (indication) into one tight pair */
   margin: 0;
-  /* Do not clip glyph bottoms — display faces need room below the line box */
   overflow: visible;
   padding-bottom: 0.02em;
-  text-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  text-shadow: none;
 }
 
 /* Itinerary route under suite name — Small indication (typography tune) */
 .room-fs-route {
-  margin: 0.15em 0 18px;
+  margin: 0;
 }
 
 .room-fs-meta {
@@ -445,8 +467,7 @@
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: rgba(245, 239, 228, 0.7);
-  /* Keep meta with the body paragraph; equal rhythm is route→body and body→cta */
-  margin: 0 0 8px;
+  margin: 0;
 }
 
 .room-fs-desc {
@@ -455,6 +476,7 @@
   color: rgba(245, 239, 228, 0.82);
   margin: 0;
   max-width: 34ch;
+  text-shadow: none;
 }
 
 /* Ghost white stroke CTA — transparent fill, keeps specular stroke shine */
@@ -464,7 +486,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-top: clamp(1.85rem, 4.2vh, 2.85rem);
+  margin-top: clamp(0.85rem, 2vh, 1.35rem);
   min-width: 11.5rem;
   width: auto;
   max-width: none;
@@ -659,6 +681,19 @@
 
   .room-fs--native-scroll .room-fs-copy {
     margin: 0;
+    top: auto;
+    bottom: auto;
+    max-width: none;
+    width: 100%;
+    padding: 0;
+    gap: 0.55rem;
+    filter:
+      drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45))
+      drop-shadow(0 6px 16px rgba(0, 0, 0, 0.35));
+  }
+
+  .room-fs--native-scroll .room-fs-copy::before {
+    display: none;
   }
 
   .room-fs--native-scroll .room-fs-progress {
@@ -689,11 +724,6 @@
     padding-top: 10px;
     padding-bottom: 10px;
     margin-top: 1.5rem;
-  }
-
-  .room-fs--native-scroll .room-fs-copy::before {
-    inset: -1rem -1.25rem -1.75rem -1.1rem;
-    border-radius: 1.35rem;
   }
 
   .rooms-rail {
@@ -2320,36 +2350,49 @@
   border-bottom-color: #d4c28a;
 }
 
-/* Fullscreen residence overlays — on-images color from typography dashboard */
-.public-site .venetian-page .room-fs-ui,
+/* Fullscreen residence overlays — keep on-images colour; allow copy-panel silhouette */
 .public-site .venetian-page .room-fs-ui .room-fs-title,
 .public-site .venetian-page .room-fs-ui .room-fs-meta,
 .public-site .venetian-page .room-fs-ui .room-fs-desc,
+.public-site .venetian-page .room-fs-ui .room-fs-route,
 .public-site .venetian-page .room-fs-ui .char,
 .public-site .venetian-page .room-fs-ui .word,
 .public-site .venetian-page .room-fs-ui .line {
   background: none !important;
   background-image: none !important;
+  /* Per-glyph shadows look barred — homepage uses whole-block drop-shadow */
+  text-shadow: none !important;
   filter: none !important;
 }
 
-.public-site .venetian-page .room-fs-ui .room-fs-meta,
-.public-site .venetian-page .room-fs-ui .room-fs-desc {
-  text-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.45),
-    0 8px 28px rgba(0, 0, 0, 0.4);
+.public-site .venetian-page .room-fs-ui .room-fs-copy {
+  background: none !important;
+  background-image: none !important;
+  filter:
+    drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55))
+    drop-shadow(0 6px 18px rgba(0, 0, 0, 0.45))
+    drop-shadow(0 14px 36px rgba(0, 0, 0, 0.35)) !important;
 }
 
-.public-site .venetian-page .room-fs-ui .room-fs-title {
-  text-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.4),
-    0 10px 36px rgba(0, 0, 0, 0.38);
-}
-
-.public-site .venetian-page .room-fs-ui .room-fs-route,
-.public-site .venetian-page .room-fs-ui .room-fs-count,
-.public-site .venetian-page .room-fs-ui .room-fs-label {
-  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+.public-site .venetian-page .room-fs-ui .room-fs-copy::before {
+  /* Full-height column scrim must keep its gradient */
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(8, 6, 4, 0.42) 0%,
+      rgba(8, 6, 4, 0.52) 18%,
+      rgba(8, 6, 4, 0.55) 50%,
+      rgba(8, 6, 4, 0.5) 82%,
+      rgba(8, 6, 4, 0.38) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(8, 6, 4, 0.58) 0%,
+      rgba(8, 6, 4, 0.34) 58%,
+      rgba(8, 6, 4, 0.1) 88%,
+      transparent 100%
+    ) !important;
+  filter: none !important;
 }
 
 /* ---------- Elegant typography alignment (content unchanged) ---------- */
