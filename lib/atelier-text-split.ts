@@ -89,6 +89,9 @@ const SKIP_CLOSEST = [
   ".luxury-marquee",
   ".ex-stack-scroll",
   ".home-hero-container",
+  /* Footer has its own reveal — atelier char hide made dashboard-linked copy invisible */
+  ".lux-footer",
+  "footer",
   "[data-test-scroll-reveal]",
   "[data-page-transition] .pt-hero__copy",
   ".pt-hero__copy",

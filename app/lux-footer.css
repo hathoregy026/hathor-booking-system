@@ -108,13 +108,24 @@
 .lux-footer__headline {
   margin: 0;
   font-weight: 400;
-  /* Font / size / color / tracking from dashboard · Page title */
+  /* Font / size / tracking from dashboard · Page title */
+  /* Keep a readable cream-footer fallback if typography vars lag */
+  color: var(--lux-text, #2c2824);
 }
 
 .lux-footer__subhead {
   margin: 2rem auto 0;
   max-width: 500px;
-  /* Font / size / color / leading from dashboard · Body text */
+  /* Font / size / leading from dashboard · Body text */
+  color: var(--lux-muted, #6b6560);
+}
+
+/* Ensure invitation copy is never left at GSAP/atelier opacity 0 after mount */
+.lux-footer.is-copy-ready .lux-footer__headline,
+.lux-footer.is-copy-ready .lux-footer__subhead,
+.lux-footer.is-copy-ready .lux-footer__subscribe {
+  opacity: 1;
+  transform: none;
 }
 
 .lux-footer__subscribe {

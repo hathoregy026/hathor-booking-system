@@ -201,6 +201,7 @@ export function Footer() {
           trigger: root,
           start: "top 85%",
           once: true,
+          onEnter: () => root.classList.add("is-copy-ready"),
         },
       });
 
@@ -231,6 +232,18 @@ export function Footer() {
           },
           "-=0.45",
         );
+
+      /* Refresh mid-page: if footer already intersects, show invitation copy */
+      requestAnimationFrame(() => {
+        const top = root.getBoundingClientRect().top;
+        if (top < window.innerHeight * 0.95) {
+          gsap.set([headline, subhead, subscribe, ...columns], {
+            y: 0,
+            opacity: 1,
+          });
+          root.classList.add("is-copy-ready");
+        }
+      });
     }, root);
 
     return () => ctx.revert();
