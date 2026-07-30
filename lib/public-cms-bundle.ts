@@ -1,10 +1,6 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
-import pg from "pg";
 import { logDbError } from "@/lib/db-safe";
-import { resolveDatabaseUrl } from "@/lib/database-config";
-import { SITE_IMAGE_SLOTS } from "@/lib/site-image-slots";
-import type { SiteImageMap } from "@/lib/resolve-site-images";
 import {
   DEFAULT_HERO_LOGO_TUNE,
   DEFAULT_HERO_LOGO_TUNE_MOBILE,
@@ -34,8 +30,28 @@ import {
   parseWebsiteText,
   type WebsiteText,
 } from "@/lib/website-text-shared";
+import type { SiteImageMap } from "@/lib/resolve-site-images";
+import {
+  SITE_IMAGE_PUBLIC_MAP_KEY,
+  defaultStoredSiteImageMap,
+  parseStoredSiteImageMap,
+  storedMapToSiteImageMap,
+} from "@/lib/site-image-public-map";
+import type { Client } from "pg";
+import {
+  ensureCmsWarmup,
+  getCmsLastGood,
+  setCmsLastGood,
+  singleFlightCms,
+  withPublicCmsClient,
+  withTimeout,
+  CMS_QUERY_TIMEOUT_MS,
+  type CmsTimingStages,
+} from "@/lib/public-cms-client";
 
 export const PUBLIC_CMS_CACHE_TAG = "public-cms";
+export const PUBLIC_CMS_CACHE_KEY = "public-cms-bundle-v6";
+export const PUBLIC_CMS_REVALIDATE_SECONDS = 300;
 
 const PUBLIC_CMS_KEYS = [
   HERO_LOGO_TUNE_KEY,
@@ -45,9 +61,47 @@ const PUBLIC_CMS_KEYS = [
   TYPOGRAPHY_SETTINGS_MOBILE_KEY,
   WEBSITE_TEXT_KEY,
   WEBSITE_TEXT_MOBILE_KEY,
+  SITE_IMAGE_PUBLIC_MAP_KEY,
 ] as const;
 
-const CMS_QUERY_TIMEOUT_MS = 5_000;
+/** Keys known to exceed ~2KB — full SELECT value hangs on some pooler paths. */
+const CHUNKED_SETTING_KEYS = new Set<string>([SITE_IMAGE_PUBLIC_MAP_KEY]);
+/** Max expected public image-map payload (src-only overrides). */
+const IMAGE_MAP_MAX_CHARS = 12_000;
+
+async function readSettingValue(
+  client: Client,
+  key: string,
+): Promise<string | null> {
+  if (!CHUNKED_SETTING_KEYS.has(key)) {
+    const result = await withTimeout(
+      client.query<{ value: string }>(
+        `SELECT value::text AS value FROM "SiteSetting" WHERE key = $1`,
+        [key],
+      ),
+      `setting:${key}`,
+      CMS_QUERY_TIMEOUT_MS,
+    );
+    return result.rows[0]?.value ?? null;
+  }
+
+  /*
+   * Prefer a single compact left() under the known max — avoids multi-substr
+   * response stalls observed on the Supabase transaction pooler under Next.
+   */
+  const result = await withTimeout(
+    client.query<{ v: string | null; len: number }>(
+      `SELECT left(value::text, $2) AS v, length(value::text)::int AS len
+       FROM "SiteSetting" WHERE key = $1`,
+      [key, IMAGE_MAP_MAX_CHARS],
+    ),
+    `setting-map:${key}`,
+    CMS_QUERY_TIMEOUT_MS,
+  );
+  const row = result.rows[0];
+  if (!row?.v) return null;
+  return row.v.slice(0, Number(row.len) || row.v.length);
+}
 
 export type PublicCmsBundle = {
   siteImages: SiteImageMap;
@@ -60,6 +114,8 @@ export type PublicCmsBundle = {
   websiteTextMobile: WebsiteText;
 };
 
+type SettingRow = { key: string; value: string };
+
 function readStored(value: unknown): unknown {
   if (typeof value === "string") {
     try {
@@ -71,15 +127,11 @@ function readStored(value: unknown): unknown {
   return value;
 }
 
-function defaultSiteImageMap(): SiteImageMap {
-  const map: SiteImageMap = {};
-  for (const slot of SITE_IMAGE_SLOTS) {
-    map[slot.name] = { src: slot.url, alt: slot.altText };
-  }
-  return map;
+export function defaultSiteImageMap(): SiteImageMap {
+  return storedMapToSiteImageMap(defaultStoredSiteImageMap());
 }
 
-function parseSettingMap(rows: Array<{ key: string; value: string }>) {
+function parseSettingMap(rows: SettingRow[]) {
   const byKey = new Map(rows.map((row) => [row.key, row.value]));
 
   const typography = byKey.has(TYPOGRAPHY_SETTINGS_KEY)
@@ -111,7 +163,15 @@ function parseSettingMap(rows: Array<{ key: string; value: string }>) {
     ? parseHieroglyphTune(readStored(byKey.get(HIEROGLYPH_TUNE_KEY)))
     : DEFAULT_HIEROGLYPH_TUNE;
 
+  let siteImages = defaultSiteImageMap();
+  if (byKey.has(SITE_IMAGE_PUBLIC_MAP_KEY)) {
+    siteImages = storedMapToSiteImageMap(
+      parseStoredSiteImageMap(readStored(byKey.get(SITE_IMAGE_PUBLIC_MAP_KEY))),
+    );
+  }
+
   return {
+    siteImages,
     typography,
     typographyMobile,
     websiteText,
@@ -122,9 +182,9 @@ function parseSettingMap(rows: Array<{ key: string; value: string }>) {
   };
 }
 
-function defaultBundle(siteImages: SiteImageMap): PublicCmsBundle {
+export function defaultPublicCmsBundle(): PublicCmsBundle {
   return {
-    siteImages,
+    siteImages: defaultSiteImageMap(),
     typography: DEFAULT_TYPOGRAPHY_SETTINGS,
     typographyMobile: DEFAULT_TYPOGRAPHY_SETTINGS,
     heroLogoTune: DEFAULT_HERO_LOGO_TUNE,
@@ -135,92 +195,132 @@ function defaultBundle(siteImages: SiteImageMap): PublicCmsBundle {
   };
 }
 
-function withTimeout<T>(promise: Promise<T>, label: string): Promise<T> {
-  return new Promise<T>((resolve, reject) => {
-    const timer = setTimeout(() => {
-      reject(
-        new Error(
-          `[public-cms-bundle] ${label} timed out after ${CMS_QUERY_TIMEOUT_MS}ms`,
-        ),
-      );
-    }, CMS_QUERY_TIMEOUT_MS);
-    promise.then(
-      (value) => {
-        clearTimeout(timer);
-        resolve(value);
-      },
-      (error: unknown) => {
-        clearTimeout(timer);
-        reject(error);
-      },
-    );
-  });
-}
-
-type SettingRow = { key: string; value: string };
-
 /**
- * Dedicated short-lived client — avoids the process-wide Prisma/pg Pool,
- * which intermittently stalls under Next SSR against the transaction pooler.
+ * One short-lived pool checkout, chunked read for large image map.
+ * SiteImage table is not scanned on the public request path.
  */
-async function fetchSettingsRows(): Promise<SettingRow[]> {
-  const connectionString = resolveDatabaseUrl();
-  const client = new pg.Client({
-    connectionString,
-    connectionTimeoutMillis: CMS_QUERY_TIMEOUT_MS,
-    ssl: connectionString.includes("localhost")
-      ? false
-      : { rejectUnauthorized: false },
-  });
-  try {
-    await withTimeout(client.connect(), "connect");
-    const result = await withTimeout(
+export async function fetchPublicCmsBundleFromDb(): Promise<{
+  bundle: PublicCmsBundle;
+  timing: CmsTimingStages;
+}> {
+  const t0 = Date.now();
+  let connectMs = 0;
+  let settingsMs = 0;
+  let settingsCount = 0;
+  let imagesCount = 0;
+
+  const smallRows = await withPublicCmsClient(async (client) => {
+    connectMs = Date.now() - t0;
+    const tSettings = Date.now();
+    const smallKeys = PUBLIC_CMS_KEYS.filter(
+      (key) => !CHUNKED_SETTING_KEYS.has(key),
+    );
+    const smallResult = await withTimeout(
       client.query<SettingRow>(
-        `SELECT key, value FROM "SiteSetting" WHERE key = ANY($1::text[])`,
-        [[...PUBLIC_CMS_KEYS]],
+        `SELECT key, value::text AS value FROM "SiteSetting" WHERE key = ANY($1::text[])`,
+        [[...smallKeys]],
       ),
-      "settings",
+      "settings-small",
+      CMS_QUERY_TIMEOUT_MS,
     );
-    return result.rows;
-  } finally {
-    await client.end().catch(() => {});
+    settingsMs = Date.now() - tSettings;
+    return smallResult.rows;
+  });
+
+  const collected: SettingRow[] = [...smallRows];
+
+  /* Fresh client for the image map — second query on the same pooler session was stalling. */
+  for (const key of CHUNKED_SETTING_KEYS) {
+    const value = await withPublicCmsClient((client) =>
+      readSettingValue(client, key),
+    );
+    if (value != null) collected.push({ key, value });
   }
+
+  settingsCount = collected.length;
+  const rows = collected;
+  const hasImageMap = rows.some((row) => row.key === SITE_IMAGE_PUBLIC_MAP_KEY);
+  if (!hasImageMap && process.env.NODE_ENV === "development") {
+    console.warn(
+      `[public-cms-bundle] missing ${SITE_IMAGE_PUBLIC_MAP_KEY}; using slot defaults until admin rebuild`,
+    );
+  }
+
+  const parsed = parseSettingMap(rows);
+  const defaults = defaultSiteImageMap();
+  for (const [name, img] of Object.entries(parsed.siteImages)) {
+    if (defaults[name] && defaults[name].src !== img.src) imagesCount += 1;
+  }
+
+  return {
+    bundle: parsed,
+    timing: {
+      connectMs,
+      settingsMs,
+      imagesMs: 0,
+      totalMs: Date.now() - t0,
+      settingsCount,
+      imagesCount,
+      fromStale: false,
+      fromDefaults: false,
+    },
+  };
 }
 
-/**
- * Cross-request cached CMS load (ISR 300s). Request-scoped via React cache().
- *
- * Critical path: SiteSetting only via a dedicated client.
- * SiteImage SSR uses slot defaults — full-table scans stall under Next+pooler.
- * During `next build`, skip live DB (parallel workers thrash the pooler) and
- * use defaults — runtime ISR refreshes from DB after deploy.
- */
-const loadPublicCmsBundleCached = unstable_cache(
-  async (): Promise<PublicCmsBundle> => {
-    if (process.env.NEXT_PHASE === "phase-production-build") {
-      return defaultBundle(defaultSiteImageMap());
-    }
-    const t0 = Date.now();
+async function loadPublicCmsBundleUncached(): Promise<PublicCmsBundle> {
+  ensureCmsWarmup();
+
+  if (process.env.NEXT_PHASE === "phase-production-build") {
+    /* Build-time: never hit the pooler; prefer last-good over fake empty maps. */
+    return getCmsLastGood<PublicCmsBundle>() ?? defaultPublicCmsBundle();
+  }
+
+  return singleFlightCms(async () => {
     try {
-      const settings = await fetchSettingsRows();
+      const { bundle, timing } = await fetchPublicCmsBundleFromDb();
+      setCmsLastGood(bundle);
       if (process.env.NODE_ENV === "development") {
         console.log(
-          `[public-cms-bundle] ok ${Date.now() - t0}ms (settings=${settings.length}, images=defaults)`,
+          `[public-cms-bundle] ok ${timing.totalMs}ms (settings=${timing.settingsCount}, imageOverrides=${timing.imagesCount}, connect=${timing.connectMs}ms)`,
         );
       }
-      return {
-        siteImages: defaultSiteImageMap(),
-        ...parseSettingMap(settings),
-      };
+      return bundle;
     } catch (error) {
-      logDbError("public-cms-bundle", error);
-      return defaultBundle(defaultSiteImageMap());
+      logDbError("public-cms-bundle.fetch", error);
+      const stale = getCmsLastGood<PublicCmsBundle>();
+      if (stale) {
+        if (process.env.NODE_ENV === "development") {
+          console.warn(
+            "[public-cms-bundle] serving in-process last-good after DB failure",
+          );
+        }
+        return stale;
+      }
+      /*
+       * First-ever miss with no valid cache: slot defaults only.
+       * Do not invent CMS overrides; admin rebuild seeds site-image-public-map.
+       */
+      throw error;
     }
+  });
+}
+
+const loadPublicCmsBundleCached = unstable_cache(
+  loadPublicCmsBundleUncached,
+  [PUBLIC_CMS_CACHE_KEY],
+  {
+    revalidate: PUBLIC_CMS_REVALIDATE_SECONDS,
+    tags: [PUBLIC_CMS_CACHE_TAG],
   },
-  ["public-cms-bundle-v2"],
-  { revalidate: 300, tags: [PUBLIC_CMS_CACHE_TAG] },
 );
 
 export const loadPublicCmsBundle = cache(async (): Promise<PublicCmsBundle> => {
-  return loadPublicCmsBundleCached();
+  try {
+    return await loadPublicCmsBundleCached();
+  } catch (error) {
+    logDbError("public-cms-bundle.cache", error);
+    const stale = getCmsLastGood<PublicCmsBundle>();
+    if (stale) return stale;
+    return defaultPublicCmsBundle();
+  }
 });

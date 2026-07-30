@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const input = parseSiteImageInput(body);
     const image = await createSiteImage(input);
-    revalidateSiteImagePages(image.name ? [image.name] : undefined);
+    await revalidateSiteImagePages(image.name ? [image.name] : undefined);
     return NextResponse.json({ image }, { status: 201 });
   } catch (error) {
     return handleRouteError(error);

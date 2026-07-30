@@ -1,5 +1,6 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { PUBLIC_CMS_CACHE_TAG } from "@/lib/public-cms-bundle";
+import { rebuildSiteImagePublicMap } from "@/lib/site-image-public-map";
 import { HOMEPAGE_LIVE_SLOT_NAMES } from "@/lib/site-image-preview";
 import { getSiteImageSlot } from "@/lib/site-image-slots";
 
@@ -22,10 +23,12 @@ const SITE_IMAGE_REVALIDATE_PATHS = [
 ] as const;
 
 /**
- * Revalidate public pages after CMS image saves.
- * Pass slot names to limit work to the pages that actually use those slots.
+ * Rebuild denormalized public image map, then invalidate CMS cache + paths.
  */
-export function revalidateSiteImagePages(slotNames?: string[]): void {
+export async function revalidateSiteImagePages(
+  slotNames?: string[],
+): Promise<void> {
+  await rebuildSiteImagePublicMap();
   revalidateTag(PUBLIC_CMS_CACHE_TAG, "max");
   revalidatePath("/", "layout");
 

@@ -18,4 +18,11 @@ export async function register() {
   } catch (error) {
     console.error("[db] pool warmup failed:", error);
   }
+
+  try {
+    const { ensureCmsWarmup } = await import("@/lib/public-cms-client");
+    ensureCmsWarmup();
+  } catch {
+    /* optional */
+  }
 }

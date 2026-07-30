@@ -32,7 +32,6 @@ export function shouldUseDatabaseSiteImageUrl(url: string): boolean {
     ) {
       return true;
     }
-    /* Absolute site URLs that still point at local media paths */
     if (
       parsed.pathname.startsWith("/media/") ||
       parsed.pathname.startsWith("/uploads/")
@@ -54,22 +53,17 @@ function defaultSiteImageMap(): SiteImageMap {
 }
 
 /**
- * Request-memoized image map for callers outside the public CMS bundle.
- *
- * Uses slot defaults only — Prisma SiteImage findMany stalls under Next SSR
- * against the Supabase transaction pooler (same SQL is fine outside the app).
- * Public layout uses `loadPublicCmsBundle` defaults the same way.
+ * Shared public SiteImage map — same source as the public layout CMS bundle
+ * (React.cache + unstable_cache). No per-slot queries; no nested findMany.
  */
 export const resolveSiteImageMap = cache(async (): Promise<SiteImageMap> => {
-  if (process.env.NEXT_PHASE === "phase-production-build") {
+  const { loadPublicCmsBundle } = await import("@/lib/public-cms-bundle");
+  try {
+    const cms = await loadPublicCmsBundle();
+    return cms.siteImages;
+  } catch {
     return defaultSiteImageMap();
   }
-  /*
-   * Avoid live Prisma SiteImage reads here: they were the primary cause of
-   * 60s+ static generation hangs on /preview and /test-scroll-reveal.
-   * Slot defaults keep those shells rendering; admin soft-refresh covers CMS.
-   */
-  return defaultSiteImageMap();
 });
 
 export function resolveSiteImageFromMap(

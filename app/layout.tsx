@@ -51,6 +51,7 @@ export default function RootLayout({
       lang="en"
       data-public-theme={PUBLIC_THEME_DEFAULT}
       style={{ ["--font-playfair" as string]: '"Gamgote", Georgia, serif' }}
+      /* Blocking scripts set data-public-theme + touch/home classes on <html> before hydrate. */
       suppressHydrationWarning
     >
       <head>

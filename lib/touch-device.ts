@@ -74,13 +74,13 @@ export function parallaxIntensityScale(): number {
   return 1;
 }
 
-export function applyTouchDeviceClass(root: HTMLElement = document.body): void {
+export function applyTouchDeviceClass(): void {
+  if (typeof document === "undefined") return;
+  const root = document.documentElement;
   if (isTouchDevice()) {
     root.classList.add(TOUCH_DEVICE_CLASS);
-    document.documentElement.classList.add(TOUCH_DEVICE_CLASS);
   } else {
     root.classList.remove(TOUCH_DEVICE_CLASS);
-    document.documentElement.classList.remove(TOUCH_DEVICE_CLASS);
   }
 }
 
@@ -135,7 +135,12 @@ export function bindViewportHeightVar(): () => void {
  * Kept minimal; React bootstrap continues updates after hydrate.
  */
 export function getTouchDeviceBlockingScript(): string {
-  return `(function(){try{var d=document.documentElement;var m=window.matchMedia;var coarse=m&&m("(pointer: coarse)").matches;var touchish=coarse||(m&&m("(hover: none)").matches&&m("(max-width: 1024px)").matches);if(touchish){d.classList.add("${TOUCH_DEVICE_CLASS}");if(document.body)document.body.classList.add("${TOUCH_DEVICE_CLASS}");else document.addEventListener("DOMContentLoaded",function(){document.body.classList.add("${TOUCH_DEVICE_CLASS}");});}var h=(window.visualViewport&&window.visualViewport.height)||window.innerHeight||0;if(h)d.style.setProperty("--vh",(h*0.01)+"px");}catch(e){}})();`;
+  /*
+   * Only mutate <html> before hydrate. Mutating <body> className here races
+   * React hydration (body is a React-owned node). TouchDeviceBootstrap mirrors
+   * the class onto body after mount. html already has suppressHydrationWarning.
+   */
+  return `(function(){try{var d=document.documentElement;var m=window.matchMedia;var coarse=m&&m("(pointer: coarse)").matches;var touchish=coarse||(m&&m("(hover: none)").matches&&m("(max-width: 1024px)").matches);if(touchish){d.classList.add("${TOUCH_DEVICE_CLASS}");}var h=(window.visualViewport&&window.visualViewport.height)||window.innerHeight||0;if(h)d.style.setProperty("--vh",(h*0.01)+"px");}catch(e){}})();`;
 }
 
 export function lenisMobileSafeOptions(duration: number) {

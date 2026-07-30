@@ -1,9 +1,12 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
-import pg from "pg";
 import { logDbError } from "@/lib/db-safe";
-import { resolveDatabaseUrl } from "@/lib/database-config";
 import { PUBLIC_CMS_CACHE_TAG } from "@/lib/public-cms-bundle";
+import {
+  CMS_QUERY_TIMEOUT_MS,
+  withPublicCmsClient,
+  withTimeout,
+} from "@/lib/public-cms-client";
 import type { SiteImageName } from "@/lib/site-image-slots";
 
 export type HomepageAccordionCruise = {
@@ -38,8 +41,6 @@ const IMAGE_SLOT_BY_SLUG: Partial<Record<string, SiteImageName>> = {
   "nile-majesty": "home-voyage-nile-majesty",
 };
 
-const QUERY_TIMEOUT_MS = 5_000;
-
 function formatBasePrice(cents: number): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -65,31 +66,17 @@ type CruiseRow = {
   roomCount: number;
 };
 
-function createReadClient(): pg.Client {
-  const connectionString = resolveDatabaseUrl();
-  return new pg.Client({
-    connectionString,
-    connectionTimeoutMillis: QUERY_TIMEOUT_MS,
-    ssl: connectionString.includes("localhost")
-      ? false
-      : { rejectUnauthorized: false },
-    query_timeout: QUERY_TIMEOUT_MS,
-  } as pg.ClientConfig);
-}
+type AccordionGlobal = {
+  accordionInflight?: Promise<HomepageAccordionCruise[]>;
+  accordionLastGood?: HomepageAccordionCruise[];
+};
 
-/**
- * Active cruises for the homepage luxury accordion.
- * Dedicated short-lived client — does not use the shared Prisma/pg Pool.
- */
-const getHomepageAccordionCruisesCached = unstable_cache(
-  async (): Promise<HomepageAccordionCruise[]> => {
-    if (process.env.NEXT_PHASE === "phase-production-build") {
-      return [];
-    }
-    const client = createReadClient();
-    try {
-      await client.connect();
-      const result = await client.query<CruiseRow>(
+const accordionGlobal = globalThis as unknown as AccordionGlobal;
+
+async function fetchAccordionFromDb(): Promise<HomepageAccordionCruise[]> {
+  return withPublicCmsClient(async (client) => {
+    const result = await withTimeout(
+      client.query<CruiseRow>(
         `SELECT
            c.id,
            c.name,
@@ -105,32 +92,64 @@ const getHomepageAccordionCruisesCached = unstable_cache(
          FROM "Cruise" c
          WHERE c."deletedAt" IS NULL
          ORDER BY c.name ASC`,
-      );
-      return result.rows.map((cruise, index) => {
-        const roomLabel =
-          cruise.roomCount === 1 ? "1 cabin" : `${cruise.roomCount} cabins`;
-        return {
-          id: cruise.id,
-          name: cruise.name,
-          description: cruise.description ?? "",
-          imageName: resolveImageSlot(cruise.slug, index),
-          ports: cruise.ports ?? "",
-          basePriceCents: cruise.basePriceCents,
-          roomCount: cruise.roomCount,
-          slug: cruise.slug,
-          romanNumeral: ROMAN[index] ?? String(index + 1),
-          meta: `${roomLabel} · Base ${formatBasePrice(cruise.basePriceCents)}`,
-          href: "/cruises",
-        };
-      });
-    } finally {
-      await client.end().catch(() => {});
+      ),
+      "accordion",
+      CMS_QUERY_TIMEOUT_MS,
+    );
+    return result.rows.map((cruise, index) => {
+      const roomLabel =
+        cruise.roomCount === 1 ? "1 cabin" : `${cruise.roomCount} cabins`;
+      return {
+        id: cruise.id,
+        name: cruise.name,
+        description: cruise.description ?? "",
+        imageName: resolveImageSlot(cruise.slug, index),
+        ports: cruise.ports ?? "",
+        basePriceCents: cruise.basePriceCents,
+        roomCount: cruise.roomCount,
+        slug: cruise.slug,
+        romanNumeral: ROMAN[index] ?? String(index + 1),
+        meta: `${roomLabel} · Base ${formatBasePrice(cruise.basePriceCents)}`,
+        href: "/cruises",
+      };
+    });
+  });
+}
+
+const getHomepageAccordionCruisesCached = unstable_cache(
+  async (): Promise<HomepageAccordionCruise[]> => {
+    if (process.env.NEXT_PHASE === "phase-production-build") {
+      return accordionGlobal.accordionLastGood ?? [];
     }
+
+    if (accordionGlobal.accordionInflight) {
+      return accordionGlobal.accordionInflight;
+    }
+
+    const pending = (async () => {
+      try {
+        const rows = await fetchAccordionFromDb();
+        accordionGlobal.accordionLastGood = rows;
+        return rows;
+      } catch (error) {
+        logDbError("homepage-accordion-cruises.fetch", error);
+        return accordionGlobal.accordionLastGood ?? [];
+      } finally {
+        accordionGlobal.accordionInflight = undefined;
+      }
+    })();
+
+    accordionGlobal.accordionInflight = pending;
+    return pending;
   },
-  ["homepage-accordion-cruises-v1"],
+  ["homepage-accordion-cruises-v2"],
   { revalidate: 300, tags: [PUBLIC_CMS_CACHE_TAG] },
 );
 
+/**
+ * Active cruises for the homepage luxury accordion.
+ * Hardened short-lived client + stale-on-failure (never invents cruises).
+ */
 export const getHomepageAccordionCruises = cache(async (): Promise<
   HomepageAccordionCruise[]
 > => {
@@ -144,6 +163,6 @@ export const getHomepageAccordionCruisesSafe = cache(async (): Promise<
     return await getHomepageAccordionCruises();
   } catch (error) {
     logDbError("homepage-accordion-cruises.get", error);
-    return [];
+    return accordionGlobal.accordionLastGood ?? [];
   }
 });

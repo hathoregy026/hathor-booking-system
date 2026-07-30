@@ -195,6 +195,15 @@ export function Header() {
   const closeDropdownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
     null,
   );
+  const [navPathname, setNavPathname] = useState(pathname);
+
+  /* Reset ephemeral nav UI when the route changes (render-time adjust, not an effect). */
+  if (pathname !== navPathname) {
+    setNavPathname(pathname);
+    setMenuHovered(false);
+    setOpenDropdown(null);
+    setExploreOpen(false);
+  }
 
   const cancelDropdownClose = () => {
     if (closeDropdownTimerRef.current) {
@@ -219,15 +228,12 @@ export function Header() {
   }, []);
 
   useEffect(() => {
-    setMenuHovered(false);
-    setOpenDropdown(null);
-    setExploreOpen(false);
-    cancelDropdownClose();
-  }, [pathname]);
-
-  useEffect(() => {
     return () => cancelDropdownClose();
   }, []);
+
+  useEffect(() => {
+    cancelDropdownClose();
+  }, [navPathname]);
 
   useEffect(() => {
     if (!exploreOpen) return;
@@ -252,7 +258,13 @@ export function Header() {
     style.left = "0";
     style.right = "0";
 
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setExploreOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+
     return () => {
+      document.removeEventListener("keydown", onKey);
       style.overflow = previous.overflow;
       style.position = previous.position;
       style.top = previous.top;

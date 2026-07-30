@@ -1,16 +1,15 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
+/**
+ * Native flat config from eslint-config-next (ESLint 9+).
+ * Avoids @eslint/eslintrc FlatCompat, which threw:
+ *   TypeError: Converting circular structure to JSON
+ * when validating the react plugin graph.
+ */
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...nextVitals,
+  ...nextTs,
   {
     ignores: [
       "node_modules/**",
@@ -18,6 +17,10 @@ const eslintConfig = [
       "out/**",
       "build/**",
       "next-env.d.ts",
+      "_local/**",
+      "scripts/_tmp-*/**",
+      "scripts/_tmp-*.mjs",
+      "scripts/_tmp-*.json",
     ],
   },
 ];
