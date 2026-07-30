@@ -19,8 +19,13 @@ import {
 } from "@/lib/scroll-position-restore";
 import {
   lenisMobileSafeOptions,
+  shouldLightenMotionForDevice,
   shouldUseNativeScroll,
 } from "@/lib/touch-device";
+import {
+  splitAtelierText,
+  splitAtelierWords,
+} from "@/lib/atelier-text-split";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -33,8 +38,100 @@ const REVEAL = 1;
 const HOLD = 0.85;
 const STEP = REVEAL + HOLD;
 
-const UI_SELECTOR =
-  ".room-fs-label, .room-fs-title, .room-fs-route, .room-fs-meta, .room-fs-desc, .room-fs-cta, .room-fs-top";
+const CHROME_SELECTOR = ".room-fs-top, .room-fs-cta";
+const COPY_SPLIT_SELECTOR =
+  ".room-fs-title, .room-fs-route, .room-fs-meta, .room-fs-desc";
+
+type RoomCopyState = {
+  copy: HTMLElement | null;
+  chars: HTMLElement[];
+  chrome: HTMLElement[];
+};
+
+function prepareRoomCopy(room: HTMLElement, light: boolean): RoomCopyState {
+  const copy = room.querySelector<HTMLElement>(".room-fs-copy");
+  const chrome = gsap.utils.toArray<HTMLElement>(
+    room.querySelectorAll(CHROME_SELECTOR),
+  );
+  const targets = room.querySelectorAll<HTMLElement>(COPY_SPLIT_SELECTOR);
+  const splitFn = light ? splitAtelierWords : splitAtelierText;
+  const chars: HTMLElement[] = [];
+  targets.forEach((el) => {
+    chars.push(...splitFn(el));
+  });
+
+  if (copy) {
+    copy.style.setProperty("--room-scrim", "0");
+  }
+
+  return { copy, chars, chrome };
+}
+
+function playRoomCopyEntrance(
+  state: RoomCopyState,
+  light: boolean,
+  prefersReduced: boolean,
+) {
+  const { copy, chars, chrome } = state;
+
+  if (prefersReduced) {
+    if (copy) copy.style.setProperty("--room-scrim", "1");
+    if (chars.length) gsap.set(chars, { yPercent: 0, opacity: 1 });
+    if (chrome.length) gsap.set(chrome, { y: 0, opacity: 1 });
+    return;
+  }
+
+  const tl = gsap.timeline({ defaults: { overwrite: "auto" } });
+
+  /* Soft fog pool grows from the left while copy rises — homepage language */
+  if (copy) {
+    const scrim = { v: 0 };
+    copy.style.setProperty("--room-scrim", "0");
+    tl.to(
+      scrim,
+      {
+        v: 1,
+        duration: 1.1,
+        ease: "power3.out",
+        onUpdate: () => {
+          copy.style.setProperty("--room-scrim", String(scrim.v));
+        },
+      },
+      0,
+    );
+  }
+
+  if (chars.length) {
+    tl.fromTo(
+      chars,
+      { yPercent: light ? 55 : 90, opacity: 0 },
+      {
+        yPercent: 0,
+        opacity: 1,
+        duration: 0.95,
+        /* Light cascade — still reads as one rise, not barred letter shadows */
+        stagger: light ? 0.028 : 0.014,
+        ease: "power2.out",
+      },
+      0.06,
+    );
+  }
+
+  if (chrome.length) {
+    tl.fromTo(
+      chrome,
+      { y: 20, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        stagger: 0.07,
+        ease: "power2.out",
+      },
+      0.12,
+    );
+  }
+}
 
 function isNarrowViewport() {
   return (
@@ -195,9 +292,21 @@ export function useAccommodationMotion(
             const progressRoot =
               room.querySelector<HTMLElement>(".room-fs-progress");
 
-            const uiBits = room.querySelectorAll<HTMLElement>(UI_SELECTOR);
+            const lightCopy = shouldLightenMotionForDevice();
+            const copyState = prepareRoomCopy(room, lightCopy);
+
             if (!prefersReduced) {
-              gsap.set(uiBits, { opacity: 0.92, y: 8 });
+              if (copyState.chars.length) {
+                gsap.set(copyState.chars, { yPercent: 90, opacity: 0 });
+              }
+              if (copyState.chrome.length) {
+                gsap.set(copyState.chrome, { opacity: 0, y: 20 });
+              }
+              if (copyState.copy) {
+                copyState.copy.style.setProperty("--room-scrim", "0");
+              }
+            } else {
+              playRoomCopyEntrance(copyState, lightCopy, true);
             }
 
             ensureProgressFills(progressRoot);
@@ -218,20 +327,12 @@ export function useAccommodationMotion(
 
             let textPlayed = false;
             const playText = () => {
-              if (textPlayed || prefersReduced) return;
+              if (textPlayed) return;
               textPlayed = true;
-              gsap.to(uiBits, {
-                opacity: 1,
-                y: 0,
-                duration: 0.85,
-                stagger: 0.04,
-                ease: "power2.out",
-                overwrite: "auto",
-              });
+              playRoomCopyEntrance(copyState, lightCopy, prefersReduced);
             };
 
             if (prefersReduced) {
-              gsap.set(uiBits, { opacity: 1, y: 0 });
               return;
             }
 
@@ -330,20 +431,46 @@ export function useAccommodationMotion(
             const currentEl = room.querySelector<HTMLElement>(".room-fs-current");
             const progressRoot =
               room.querySelector<HTMLElement>(".room-fs-progress");
-            const uiBits = room.querySelectorAll<HTMLElement>(UI_SELECTOR);
+            const lightCopy = shouldLightenMotionForDevice();
+            const copyState = prepareRoomCopy(room, lightCopy);
 
             gsap.set(slides, {
               clearProps: "opacity,visibility,zIndex,transform",
             });
-            gsap.set(
-              slidesContainer,
-              { clearProps: "transform" },
-            );
-            gsap.set(uiBits, { opacity: 1, y: 0, clearProps: "transform" });
+            gsap.set(slidesContainer, { clearProps: "transform" });
+
+            if (!prefersReduced) {
+              if (copyState.chars.length) {
+                gsap.set(copyState.chars, { yPercent: 55, opacity: 0 });
+              }
+              if (copyState.chrome.length) {
+                gsap.set(copyState.chrome, { opacity: 0, y: 16 });
+              }
+            } else {
+              playRoomCopyEntrance(copyState, lightCopy, true);
+            }
 
             ensureProgressFills(progressRoot);
 
             if (!slidesContainer || !slides.length) return;
+
+            let textPlayed = false;
+            const playText = () => {
+              if (textPlayed) return;
+              textPlayed = true;
+              playRoomCopyEntrance(copyState, lightCopy, prefersReduced);
+            };
+
+            const io = new IntersectionObserver(
+              (entries) => {
+                if (entries.some((e) => e.isIntersecting && e.intersectionRatio > 0.35)) {
+                  playText();
+                }
+              },
+              { threshold: [0.35, 0.5] },
+            );
+            io.observe(room);
+            cleanups.push(() => io.disconnect());
 
             const onScroll = () => {
               const slideWidth = slidesContainer.clientWidth;
