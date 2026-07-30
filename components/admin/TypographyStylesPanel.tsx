@@ -70,12 +70,13 @@ const GROUP_LABELS: Record<EditorGroup, string> = {
 
 const GROUP_WHERE: Record<EditorGroup, string> = {
   hero: "Pick a page, edit its first line and second title, then drag either title freely. Font/size/color/position apply to every page hero; wording is per page.",
-  page_title: "Big section titles — Suites intro, Hathor itineraries, amenities, etc.",
+  page_title: "Big section titles — Suites intro, Hathor itineraries, amenities, footer “BEGIN YOUR JOURNEY”, etc.",
   page_subtitle:
     "Small indication labels — exact font, size, color, and case from this editor (no forced uppercase). Includes Explore, Relax, Discover under Hathor itineraries.",
   sub_subtitle:
     "Script line under a title — e.g. lines between suite image blocks.",
-  body_text: "Normal paragraph text in page content.",
+  body_text:
+    "Normal paragraph text in page content — including the footer invitation line under BEGIN YOUR JOURNEY.",
   on_images:
     "Copy on photos — edit the title, small indication, and body wording, plus each one’s font and colour. Styles apply site-wide on imagery; wording updates the homepage landmarks stack.",
   luxury_marquee:

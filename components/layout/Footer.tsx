@@ -287,8 +287,10 @@ export function Footer() {
 
       <div className="lux-footer__inner">
         <div className="lux-footer__top">
-          <h2 className="lux-footer__headline">BEGIN YOUR JOURNEY</h2>
-          <p className="lux-footer__subhead">
+          <h2 className="lux-footer__headline typo-page-title">
+            BEGIN YOUR JOURNEY
+          </h2>
+          <p className="lux-footer__subhead typo-body-text">
             Join our exclusive circle for private itineraries and early access to rare
             voyages.
           </p>

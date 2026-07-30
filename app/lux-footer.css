@@ -107,23 +107,14 @@
 
 .lux-footer__headline {
   margin: 0;
-  font-family: var(--lux-font-display);
-  font-size: clamp(2.4rem, 6vw, 5.5rem);
   font-weight: 400;
-  line-height: 1.1;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--lux-text);
+  /* Font / size / color / tracking from dashboard · Page title */
 }
 
 .lux-footer__subhead {
   margin: 2rem auto 0;
   max-width: 500px;
-  font-family: var(--lux-font-body);
-  font-size: 1.125rem;
-  font-weight: 300;
-  line-height: 1.65;
-  color: var(--lux-muted);
+  /* Font / size / color / leading from dashboard · Body text */
 }
 
 .lux-footer__subscribe {
@@ -408,10 +399,6 @@
 @media (max-width: 768px) {
   .lux-footer__top {
     padding: 4rem 5vw;
-  }
-
-  .lux-footer__headline {
-    font-size: clamp(2rem, 10vw, 3.25rem);
   }
 
   .lux-footer__main {
