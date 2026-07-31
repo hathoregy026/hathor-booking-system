@@ -387,8 +387,18 @@ export function useExScrollMotion() {
     const isTouchPortal = isNarrowViewport;
     const wheelOpenScale = isTouchPortal ? 2.55 : 3.15;
     const wheelExitScale = isTouchPortal ? 4.1 : 5.4;
-    /* Same circle reveal on phones â€” stepped progress cuts GPU mask paints. */
+    /* Same circle reveal on phones — stepped progress cuts GPU mask paints. */
     const stepPortal = lightenDevice;
+    /*
+     * Scroll split (preserves wheel choreography, adds fog exit after):
+     * 0.00–0.62  wheel opens to fullscreen
+     * 0.62–0.70  brief hold on fullscreen image
+     * 0.70–1.00  fog dissolves image upward from the bottom → next section
+     */
+    const WHEEL_END = 0.62;
+    const FOG_START = 0.7;
+    const FOG_EDGE_START = -40;
+    const FOG_EDGE_END = 138;
 
     gsap.set(wheel, {
       xPercent: 0,
@@ -403,8 +413,9 @@ export function useExScrollMotion() {
     gsap.set(media, {
       clipPath: "circle(0vmax at 50% 50%)",
       WebkitClipPath: "circle(0vmax at 50% 50%)",
+      "--helm-fog-edge": `${FOG_EDGE_START}%`,
     });
-    /* No x/y shift â€” image sun center must stay under the wheel hub (50% 50%). */
+    /* No x/y shift — image sun center must stay under the wheel hub (50% 50%). */
     gsap.set(mediaImage, { scale: 1.34, xPercent: 0, yPercent: 0, x: 0, y: 0, force3D: true });
     if (shade) gsap.set(shade, { opacity: 1 });
 
@@ -495,11 +506,27 @@ export function useExScrollMotion() {
      */
     let animationFrame = 0;
     let lastStepped = -1;
+    let lastFogKey = -1;
+
+    const applyFogEdge = (sectionProgress: number) => {
+      const fogRaw =
+        sectionProgress <= FOG_START
+          ? 0
+          : gsap.utils.clamp(0, 1, (sectionProgress - FOG_START) / (1 - FOG_START));
+      const fogStepped = stepPortal ? Math.round(fogRaw * 28) / 28 : fogRaw;
+      if (stepPortal && fogStepped === lastFogKey) return;
+      lastFogKey = fogStepped;
+      const edge = FOG_EDGE_START + (FOG_EDGE_END - FOG_EDGE_START) * fogStepped;
+      media.style.setProperty("--helm-fog-edge", `${edge}%`);
+    };
+
     const render = () => {
       animationFrame = 0;
       const rect = section.getBoundingClientRect();
       const scrollable = Math.max(1, section.offsetHeight - window.innerHeight);
       const progress = gsap.utils.clamp(0, 1, -rect.top / scrollable);
+      const wheelProgress = gsap.utils.clamp(0, 1, progress / WHEEL_END);
+
       if (isTouchPortal) {
         /*
          * Native touch scroll must track the finger directly. A catch-up tween
@@ -507,18 +534,21 @@ export function useExScrollMotion() {
          * On real phones, quantize progress so clip-path isn't repainted every px.
          */
         const stepped = stepPortal
-          ? Math.round(progress * 32) / 32
-          : progress;
-        if (stepPortal && stepped === lastStepped) return;
-        lastStepped = stepped;
-        portalTimeline.progress(stepped);
+          ? Math.round(wheelProgress * 32) / 32
+          : wheelProgress;
+        if (!stepPortal || stepped !== lastStepped) {
+          lastStepped = stepped;
+          portalTimeline.progress(stepped);
+        }
+        applyFogEdge(progress);
       } else {
         gsap.to(portalTimeline, {
-          progress,
+          progress: wheelProgress,
           duration: 0.85,
           ease: "power3.out",
           overwrite: true,
         });
+        applyFogEdge(progress);
       }
     };
 
@@ -538,6 +568,7 @@ export function useExScrollMotion() {
       window.removeEventListener(viewportEvent, requestRender);
       gsap.killTweensOf(portalTimeline);
       portalTimeline.kill();
+      media.style.removeProperty("--helm-fog-edge");
     };
   }
 

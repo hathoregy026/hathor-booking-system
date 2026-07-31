@@ -2461,7 +2461,8 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .split-word {
 .home-helm-portal {
   position: relative;
   z-index: 20;
-  height: 400vh;
+  /* Extra runway after wheel opens for bottom→up fog dissolve into next section */
+  height: 480vh;
   isolation: isolate;
   /* Transparent so page cream + hieroglyph tile (.ex-root::before) show through */
   background: transparent;
@@ -2478,12 +2479,36 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .split-word {
 }
 
 .home-helm-portal__media {
+  --helm-fog-edge: -40%;
   position: absolute;
   inset: 0;
   z-index: 3;
   overflow: hidden;
   clip-path: circle(0vmax at 50% 50%);
   -webkit-clip-path: circle(0vmax at 50% 50%);
+  /* Soft fog dissolve upward after wheel opens — same language as HCTA / stack */
+  -webkit-mask-image: linear-gradient(
+    to top,
+    transparent 0%,
+    transparent var(--helm-fog-edge),
+    rgba(0, 0, 0, 0.32) calc(var(--helm-fog-edge) + 8%),
+    rgba(0, 0, 0, 0.78) calc(var(--helm-fog-edge) + 18%),
+    #000 calc(var(--helm-fog-edge) + 32%),
+    #000 100%
+  );
+  mask-image: linear-gradient(
+    to top,
+    transparent 0%,
+    transparent var(--helm-fog-edge),
+    rgba(0, 0, 0, 0.32) calc(var(--helm-fog-edge) + 8%),
+    rgba(0, 0, 0, 0.78) calc(var(--helm-fog-edge) + 18%),
+    #000 calc(var(--helm-fog-edge) + 32%),
+    #000 100%
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
   will-change: clip-path;
 }
 
@@ -2537,7 +2562,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .split-word {
 
 @media (max-width: 767px) {
   .home-helm-portal {
-    height: 340vh;
+    height: 400vh;
   }
 
   .home-helm-portal__wheel {
@@ -2601,6 +2626,9 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .split-word {
   .home-helm-portal__media {
     clip-path: circle(75vmax at 50% 50%);
     -webkit-clip-path: circle(75vmax at 50% 50%);
+    --helm-fog-edge: -40%;
+    -webkit-mask-image: none;
+    mask-image: none;
   }
 
   .home-helm-portal__media-image {
@@ -3687,7 +3715,7 @@ html[data-public-theme="night"][data-ex-experience] .gallery-item:focus-visible 
   }
 
   .home-helm-portal {
-    height: 280svh;
+    height: 340svh;
   }
 
   .home-helm-portal__wheel {
