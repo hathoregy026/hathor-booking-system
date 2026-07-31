@@ -119,7 +119,7 @@ export function HomeLifestyleSection({
               </div>
             ) : null}
 
-            <div className="home-lifestyle__heading home-text-h2">
+            <div className="home-lifestyle__heading">
               <h2 id={headingId} className="typo-page-title">
                 <span className="home-lifestyle__title-line home-lifestyle__title-line--primary">
                   {lineOne}
@@ -137,7 +137,7 @@ export function HomeLifestyleSection({
             </div>
 
             {paragraphs.length > 0 ? (
-              <div className="home-lifestyle__body home-text-p typo-body-text">
+              <div className="home-lifestyle__body typo-body-text">
                 {paragraphs.map((paragraph) => (
                   <p key={paragraph.slice(0, 48)}>{paragraph}</p>
                 ))}
@@ -148,7 +148,7 @@ export function HomeLifestyleSection({
               <div className="home-lifestyle__actions">
                 {cta ? (
                   <Link
-                    className="home-lifestyle__cta home-lifestyle__cta--primary home-text-button btn"
+                    className="home-lifestyle__cta home-lifestyle__cta--primary btn"
                     href={href}
                   >
                     <span>{cta}</span>
@@ -157,7 +157,7 @@ export function HomeLifestyleSection({
                 ) : null}
                 {showSecondary ? (
                   <Link
-                    className="home-lifestyle__cta home-lifestyle__cta--secondary home-text-button btn"
+                    className="home-lifestyle__cta home-lifestyle__cta--secondary btn"
                     href={secondaryHref!}
                   >
                     <span>{secondaryCta}</span>

@@ -2522,10 +2522,12 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .split-word {
   box-shadow: 0 -28px 70px rgba(45, 33, 17, 0.08);
 }
 
-/* Lifestyle: tighter dome pad so hero+features read as one screen */
+/* Lifestyle one-screen: keep dome, shrink vertical pad so panel fits 100svh */
 @media (min-width: 1025px) {
   .home-helm-portal + .home-lifestyle {
-    padding-top: calc(clamp(52px, 6.5vw, 96px) + 12vh);
+    margin-top: -10vh;
+    padding-top: calc(clamp(28px, 3.8vw, 56px) + 10vh);
+    padding-bottom: 0.65rem;
   }
 }
 
