@@ -30,7 +30,7 @@ export function LuxuryCabinsPageContent() {
         eyebrow: "Luxury Rooms",
         title: cabins.overviewTitle,
         copy: introParagraphs,
-        stats: ["12 Luxury Cabins & Suites", "22 Square Meters", "Nile View"],
+        stats: ["12 Luxury Cabins & Suites", "22 Square Meters", "Panoramic Nile View"],
       }}
       copyPlacement={{
         ...LUXURY_CABINS_PAGE.copyPlacement,

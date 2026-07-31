@@ -112,6 +112,60 @@ function CopyParagraphs({
   );
 }
 
+type ParsedResidenceStat = {
+  key: string;
+  value: string;
+  label: string;
+  kind: "number" | "vista";
+};
+
+/** Split "12 Luxury Cabins" → number + label; non-numeric (Nile View) → vista mark. */
+function parseResidenceStat(stat: string): ParsedResidenceStat {
+  const trimmed = stat.trim();
+  const numeric = trimmed.match(/^(\d+)\s*(.*)$/);
+  if (numeric) {
+    return {
+      key: trimmed,
+      value: numeric[1] ?? trimmed,
+      label: (numeric[2] ?? "").trim() || trimmed,
+      kind: "number",
+    };
+  }
+  return {
+    key: trimmed,
+    value: "vista",
+    label: trimmed,
+    kind: "vista",
+  };
+}
+
+function ResidenceVistaMark() {
+  return (
+    <svg
+      className="residence-stat-vista"
+      viewBox="0 0 64 40"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <circle cx="32" cy="14" r="7.5" stroke="currentColor" strokeWidth="1.25" />
+      <path
+        d="M4 28c6.5-7 13-10.5 28-10.5S53.5 21 60 28"
+        stroke="currentColor"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+      />
+      <path
+        d="M8 33c5.5-4.5 12-7 24-7s18.5 2.5 24 7"
+        stroke="currentColor"
+        strokeWidth="1"
+        strokeLinecap="round"
+        opacity="0.55"
+      />
+    </svg>
+  );
+}
+
 export function ResidenceScrollPage({
   heroTitle,
   heroSecondTitle,
@@ -173,21 +227,23 @@ export function ResidenceScrollPage({
               </p>
             ))}
             {intro.stats && intro.stats.length > 0 ? (
-              <div
-                className="cruise-stats acc-reveal"
-                style={{ marginTop: "2.5rem" }}
-              >
-                {intro.stats.map((stat) => (
-                  <div key={stat} className="cruise-stat">
-                    <span className="cruise-stat-num">
-                      {stat.match(/^\d+/)?.[0] ?? "·"}
-                    </span>
-                    <span className="cruise-stat-label">
-                      {stat.replace(/^\d+\s*/, "")}
-                    </span>
-                  </div>
-                ))}
-              </div>
+              <ul className="residence-stats acc-reveal" aria-label="Highlights">
+                {intro.stats.map((stat) => {
+                  const parsed = parseResidenceStat(stat);
+                  return (
+                    <li key={parsed.key} className="residence-stat">
+                      <span className="residence-stat-value">
+                        {parsed.kind === "vista" ? (
+                          <ResidenceVistaMark />
+                        ) : (
+                          parsed.value
+                        )}
+                      </span>
+                      <span className="residence-stat-label">{parsed.label}</span>
+                    </li>
+                  );
+                })}
+              </ul>
             ) : null}
           </div>
         </section>
