@@ -19,6 +19,7 @@ type HomeTextStorySectionProps = {
   slides: HomeTextStorySlide[];
 };
 
+/** Both slides share one layout: image = box 1 (left), copy = box 2 (right). */
 export function HomeTextStorySection({ slides }: HomeTextStorySectionProps) {
   if (slides.length === 0) return null;
 
@@ -34,12 +35,11 @@ export function HomeTextStorySection({ slides }: HomeTextStorySectionProps) {
             .split("\n")
             .map((line) => line.trim())
             .filter(Boolean);
-          const reverse = index % 2 === 1;
 
           return (
             <article
               key={`${slide.href}-${slide.imageName}`}
-              className={`home-story__slide${reverse ? " is-reverse" : ""}`}
+              className="home-story__slide"
               data-home-story-slide={String(index)}
               aria-hidden={index === 0 ? "false" : "true"}
             >

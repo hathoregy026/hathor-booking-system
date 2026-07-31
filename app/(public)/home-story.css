@@ -1,4 +1,7 @@
-/* Homepage Way of Life ↔ Dining — one-screen pin, top-aligned side-by-side */
+/* Homepage Way of Life ↔ Dining
+   Layout (BOTH slides identical):
+   [1 image — full column] [2 title + body + CTA]
+   Pin scrub swaps slide content in place, then releases scroll. */
 
 .home-story {
   --hs-bg: var(--cream, #ece8df);
@@ -10,10 +13,8 @@
   --hs-pad-bottom: clamp(1.25rem, 2.5vh, 2rem);
   --hs-pad-x: var(--content-gutter, clamp(12px, 2.2vw, 28px));
   --hs-gap: clamp(36px, 6vw, 90px);
-  --hs-media-h: min(
-    68svh,
-    calc(100svh - var(--hs-pad-top) - var(--hs-pad-bottom))
-  );
+  --hs-stage-h: calc(100svh - var(--hs-pad-top) - var(--hs-pad-bottom));
+  --hs-media-h: min(68svh, var(--hs-stage-h));
   position: relative;
   z-index: 22;
   width: 100%;
@@ -35,11 +36,6 @@
   transform: translateZ(0);
 }
 
-/*
- * Position inside the padded stage only.
- * Do NOT use top+bottom stretch — that put copy under the nav and
- * pinned the CTA to the floor with a huge empty gap.
- */
 .home-story__slide {
   position: absolute;
   left: var(--hs-pad-x);
@@ -54,9 +50,10 @@
   margin-inline: auto;
   padding: 0;
   display: grid;
+  /* Box 1 | Box 2 — identical for every slide */
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-areas: "media copy";
   align-items: start;
-  justify-items: stretch;
   column-gap: var(--hs-gap);
   box-sizing: border-box;
   opacity: 0;
@@ -68,34 +65,19 @@
   pointer-events: auto;
 }
 
-.home-story__slide.is-reverse .home-story__media {
-  order: 2;
-}
-
-.home-story__slide.is-reverse .home-story__copy {
-  order: 1;
-}
-
-/*
- * True 4:5 portrait. Cap height to the stage, then derive width so the
- * frame never stretches into a tall full-bleed crop.
- */
 .home-story__media {
+  grid-area: media;
   position: relative;
   box-sizing: border-box;
   align-self: start;
-  justify-self: start;
-  width: min(100%, calc(var(--hs-media-h) * 4 / 5));
-  height: var(--hs-media-h);
+  justify-self: stretch;
+  /* Fill ALL of box 1 — no empty strip beside the image */
+  width: 100%;
   max-width: 100%;
+  height: var(--hs-media-h);
   max-height: var(--hs-media-h);
-  aspect-ratio: 4 / 5;
   border-radius: 6px;
   overflow: hidden;
-}
-
-.home-story__slide.is-reverse .home-story__media {
-  justify-self: end;
 }
 
 .home-story__media-link {
@@ -109,6 +91,7 @@
   will-change: transform, clip-path;
 }
 
+/* Cover crops to fill the frame — never stretches the photo */
 .home-story__media-link img {
   width: 100%;
   height: 100%;
@@ -116,20 +99,18 @@
   object-position: center center;
 }
 
-/* Title → body → CTA as one tight stack; top flush with image top */
 .home-story__copy {
+  grid-area: copy;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
   align-self: start;
-  justify-self: stretch;
   gap: 1.25rem;
   width: 100%;
   min-width: 0;
   height: auto !important;
   min-height: 0 !important;
-  max-height: none;
   box-sizing: border-box;
 }
 
@@ -195,24 +176,15 @@
 
   .home-story__slide {
     grid-template-columns: 1fr;
+    grid-template-areas:
+      "media"
+      "copy";
     row-gap: 1rem;
   }
 
-  .home-story__slide.is-reverse .home-story__media,
-  .home-story__slide.is-reverse .home-story__copy {
-    order: unset;
-  }
-
   .home-story__media {
-    width: min(100%, 28rem);
-    height: auto;
-    max-height: var(--hs-media-h);
-    aspect-ratio: 16 / 11;
-    justify-self: start;
-  }
-
-  .home-story__slide.is-reverse .home-story__media {
-    justify-self: start;
+    width: 100%;
+    height: var(--hs-media-h);
   }
 
   .home-story__title {
@@ -240,7 +212,6 @@
   }
 
   .home-story__media {
-    width: 100%;
     border-radius: 8px;
   }
 
@@ -293,7 +264,6 @@
   }
 
   .home-story__media {
-    width: 100%;
     height: auto;
     max-height: none;
     aspect-ratio: 4 / 5;
@@ -308,14 +278,7 @@
   @media (min-width: 1025px) {
     .home-story__slide {
       grid-template-columns: 1fr 1fr;
-    }
-
-    .home-story__slide.is-reverse .home-story__media {
-      order: 2;
-    }
-
-    .home-story__slide.is-reverse .home-story__copy {
-      order: 1;
+      grid-template-areas: "media copy";
     }
   }
 }
