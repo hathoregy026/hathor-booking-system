@@ -246,13 +246,18 @@ function animateAtelierSplit(
       : 0.03;
 
   /* Gallery band: play once — reverse letter fall causes a visible jump */
-  const inGallery = Boolean(
-    (triggerEl instanceof Element ? triggerEl : el).closest?.(
-      ".gallery-section",
-    ),
+  const anchor =
+    triggerEl instanceof Element ? triggerEl : el;
+  const inGallery = Boolean(anchor.closest?.(".gallery-section"));
+  /*
+   * Itineraries carousel sits above the landmark pin. Pin refresh can reverse
+   * letter tweens back to opacity 0 while the section is still on screen.
+   */
+  const inServices = Boolean(
+    anchor.closest?.(".services-section, .services-intro, .home-carousel"),
   );
   /* Touch: play once — reverse re-scrub thrashes phone CPUs mid-scroll */
-  const playOnce = inGallery || light;
+  const playOnce = inGallery || light || inServices;
 
   gsap.to(units, {
     yPercent: 0,
@@ -265,10 +270,25 @@ function animateAtelierSplit(
       start: "top 85%",
       toggleActions: playOnce ? "play none none none" : "play none none reverse",
       once: playOnce,
+      invalidateOnRefresh: true,
       id: `atelier-split-${Math.random().toString(36).slice(2, 9)}`,
+      onRefresh: (self) => {
+        if (!playOnce) return;
+        if (self.progress === 1 || self.isActive) return;
+        const node = triggerEl instanceof Element ? triggerEl : el;
+        const rect = node.getBoundingClientRect();
+        const vh = window.innerHeight || 1;
+        if (rect.top < vh * 0.92 && rect.bottom > vh * 0.08) {
+          self.animation?.progress(1);
+        }
+      },
     },
     onComplete: () => {
-      units.forEach((c) => c.style.removeProperty("will-change"));
+      units.forEach((c) => {
+        c.style.removeProperty("will-change");
+        c.style.opacity = "1";
+        c.style.transform = "none";
+      });
     },
   });
 }

@@ -852,7 +852,7 @@ export function useExScrollMotion() {
     prepareStackPanelSplits(copyPanels);
 
     if (prefersReduced) {
-      if (silkChars.length) gsap.set(silkChars, { yPercent: 0, opacity: 0 });
+      if (silkChars.length) gsap.set(silkChars, { yPercent: 0, opacity: 1 });
       copyPanels.forEach((panel) => {
         const chars =
           (panel as HTMLElement & { __stackChars?: HTMLElement[] })
@@ -1814,7 +1814,21 @@ export function useExScrollMotion() {
 
     // Sequential reveal of each card
     function initCarouselSequentialReveal() {
+      const OPEN_CLIP = "polygon(0 0, 100% 0, 100% 100%, 0 100%)";
+      const CLOSED_CLIP = "polygon(0 0, 0 0, 0 0, 0 0)";
+
       if (prefersReduced) {
+        slides.forEach((slide) => {
+          const container = slide.querySelector(".carousel-container");
+          if (container) {
+            gsap.set(container, {
+              clipPath: OPEN_CLIP,
+              WebkitClipPath: OPEN_CLIP,
+              scale: 1,
+              clearProps: "clipPath,WebkitClipPath,transform",
+            });
+          }
+        });
         revealed = true;
         if (nextBtn) nextBtn.style.pointerEvents = "auto";
         if (prevBtn) prevBtn.style.pointerEvents = "auto";
@@ -1829,9 +1843,18 @@ export function useExScrollMotion() {
       /*
        * Only wipe the cards currently in view (3 desktop / 2 tablet / 1 phone).
        * Off-screen slides stay fully revealed so arrow/autoplay never flash
-       * clipped cards â€” same effect, same scroll trigger, smaller scope.
+       * clipped cards — same effect, same scroll trigger, smaller scope.
        */
       const visibleCount = Math.min(slidesPerView(), slides.length);
+
+      const finishRevealChrome = () => {
+        if (revealed) return;
+        revealed = true;
+        startAutoplay();
+        if (root.matches(":hover")) stopAutoplay();
+        if (nextBtn) nextBtn.style.pointerEvents = "auto";
+        if (prevBtn) prevBtn.style.pointerEvents = "auto";
+      };
 
       slides.forEach((slide, i) => {
         const container = slide.querySelector(".carousel-container");
@@ -1839,7 +1862,8 @@ export function useExScrollMotion() {
 
         if (i >= visibleCount) {
           gsap.set(container, {
-            clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
+            clipPath: OPEN_CLIP,
+            WebkitClipPath: OPEN_CLIP,
             scale: 1,
           });
           return;
@@ -1850,36 +1874,55 @@ export function useExScrollMotion() {
 
         const tl = gsap.timeline({
           scrollTrigger: {
+            id: `ex-carousel-wipe-${i}`,
             trigger: root,
             start: "top 55%",
             toggleActions: "play none none none",
             once: true,
+            invalidateOnRefresh: true,
+            /*
+             * Landmark pin refresh can reset once:true wipes to the closed clip
+             * without replaying — force open when the carousel is on screen.
+             */
+            onRefresh: (self) => {
+              if (self.progress === 1 || self.isActive) return;
+              const rect = root.getBoundingClientRect();
+              const vh = window.innerHeight || 1;
+              if (rect.top < vh * 0.92 && rect.bottom > vh * 0.08) {
+                self.animation?.progress(1);
+                finishRevealChrome();
+              }
+            },
           },
           delay: startDelay,
         });
 
         tl.fromTo(
           container,
-          { clipPath: "polygon(0 0, 0 0, 0 0, 0 0)", scale: 1.28 },
           {
-            clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
+            clipPath: CLOSED_CLIP,
+            WebkitClipPath: CLOSED_CLIP,
+            scale: 1.28,
+          },
+          {
+            clipPath: OPEN_CLIP,
+            WebkitClipPath: OPEN_CLIP,
             scale: 1,
             duration: 1.75,
             ease: "power3.out",
-          }
+            onComplete: () => {
+              gsap.set(container, {
+                clearProps: "clipPath,WebkitClipPath,transform",
+              });
+            },
+          },
         );
 
-        /* Heading letters: initHomepageAtelierSplit */
-
         if (i === visibleCount - 1) {
-          tl.add(() => {
-            revealed = true;
-            startAutoplay();
-            if (root.matches(":hover")) stopAutoplay();
-            if (nextBtn) nextBtn.style.pointerEvents = "auto";
-            if (prevBtn) prevBtn.style.pointerEvents = "auto";
-          });
+          tl.add(finishRevealChrome);
         }
+
+        if (tl.scrollTrigger) trackTrigger(tl.scrollTrigger);
       });
     }
 
