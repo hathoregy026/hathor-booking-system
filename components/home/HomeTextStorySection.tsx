@@ -86,9 +86,11 @@ export function HomeTextStorySection({ slides }: HomeTextStorySectionProps) {
                   <p className="home-story__body typo-body-text">{slide.body}</p>
                 ) : null}
                 {slide.cta ? (
-                  <Link className="btn btn-dark home-story__cta" href={slide.href}>
-                    {slide.cta}
-                  </Link>
+                  <div className="home-story__actions">
+                    <Link className="btn btn-dark home-story__cta" href={slide.href}>
+                      {slide.cta}
+                    </Link>
+                  </div>
                 ) : null}
               </div>
             </article>
