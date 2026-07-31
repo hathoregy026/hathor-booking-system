@@ -762,6 +762,9 @@ export function useExScrollMotion() {
     /** Copy/chrome only after the photo mostly covers cream silk. */
     const COPY_AFTER_FOG = 0.78;
     const SOLID_LOCK = 0.97;
+    /** Hide covered plates once the next photo is this far through its rise. */
+    const RETIRE_UNDER_AT = 0.92;
+    let photoReady = false;
     const quantiseFogEdge = (edge: number, stepped: boolean) => {
       if (!stepped) return edge;
       const step = FOG_RANGE / FOG_STEPS;
@@ -776,18 +779,16 @@ export function useExScrollMotion() {
       if (media) media.style.willChange = "auto";
     };
 
-    const syncStackPhotoReady = () => {
-      const ready = cards.some((card) => {
-        if (card.classList.contains("is-stack-solid")) return true;
-        const op = Number.parseFloat(card.style.opacity || "0");
-        return Number.isFinite(op) && op >= 0.85;
-      });
+    const syncStackPhotoReady = (ready: boolean) => {
+      if (ready === photoReady) return;
+      photoReady = ready;
       section.classList.toggle("is-stack-photo-ready", ready);
     };
 
     /**
-     * Drive fog mask + opacity together. Once fully risen, lock the card solid
-     * (no mask) so cream silk can never punch through mid-scroll / rebuild.
+     * Fog mask + opacity for the rising card only.
+     * Keep the CSS mask always (set edge to 140% when solid) — never toggle
+     * mask-image on/off; that discrete switch flashed previous plates.
      */
     const applyFogReveal = (
       card: HTMLElement,
@@ -796,22 +797,46 @@ export function useExScrollMotion() {
     ) => {
       const op = Math.min(1, Math.max(0, reveal));
       const qEdge = quantiseFogEdge(edge, isPhone || lightenDevice);
-      card.style.setProperty("--stack-fog-edge", `${qEdge}%`);
-      card.style.opacity = String(op);
-      if (op > 0.02) {
+      const solid = op >= SOLID_LOCK && qEdge >= FOG_RANGE - 0.5;
+      card.style.setProperty(
+        "--stack-fog-edge",
+        `${solid ? FOG_RANGE : qEdge}%`,
+      );
+      card.style.opacity = solid ? "1" : String(op);
+      if (solid || op > 0.02) {
         card.style.visibility = "visible";
       } else if (op <= 0.01) {
         card.style.visibility = "hidden";
       }
-      if (op >= SOLID_LOCK && qEdge >= FOG_RANGE - 0.5) {
-        card.classList.add("is-stack-solid");
-        card.style.opacity = "1";
-        card.style.visibility = "visible";
-        card.style.setProperty("--stack-fog-edge", `${FOG_RANGE}%`);
-      } else {
-        card.classList.remove("is-stack-solid");
+      card.classList.toggle("is-stack-solid", solid);
+      if (solid) syncStackPhotoReady(true);
+    };
+
+    /** Keep the plate under a rising fog dissolve fully solid and visible. */
+    const holdUnderCard = (index: number) => {
+      const under = cards[index];
+      if (!under) return;
+      under.classList.add("is-stack-solid");
+      under.style.setProperty("--stack-fog-edge", `${FOG_RANGE}%`);
+      under.style.opacity = "1";
+      under.style.visibility = "visible";
+    };
+
+    /**
+     * Once the next photo has covered, retire every plate beneath it so no
+     * image can flash back on later scrolls. Reverse scrub restores them.
+     */
+    const setRetiredUnderCards = (activeIndex: number, retire: boolean) => {
+      for (let j = 0; j < activeIndex; j++) {
+        const under = cards[j];
+        if (!under) continue;
+        if (retire) {
+          under.style.opacity = "0";
+          under.style.visibility = "hidden";
+        } else {
+          holdUnderCard(j);
+        }
       }
-      syncStackPhotoReady();
     };
 
     const setStackPager = (index: number) => {
@@ -850,6 +875,7 @@ export function useExScrollMotion() {
         }
       });
       section.classList.add("is-stack-photo-ready");
+      photoReady = true;
       copyPanels.forEach((panel, index) => {
         gsap.set(panel, {
           autoAlpha: index === 0 ? 1 : 0,
@@ -940,6 +966,7 @@ export function useExScrollMotion() {
         }
       });
       section.classList.remove("is-stack-photo-ready");
+      photoReady = false;
 
       copyPanels.forEach((panel, index) => {
         const chars =
@@ -1100,9 +1127,11 @@ export function useExScrollMotion() {
           },
           onUpdate: () => {
             applyFogReveal(firstCard, firstFog.edge, firstFog.reveal);
+            if (firstFog.reveal >= 0.85) syncStackPhotoReady(true);
           },
           onComplete: () => {
             applyFogReveal(firstCard, FOG_RANGE, 1);
+            syncStackPhotoReady(true);
             clearFogWillChange(firstCard, firstMedia);
           },
         },
@@ -1196,13 +1225,30 @@ export function useExScrollMotion() {
             onStart: () => {
               card.style.willChange = "opacity";
               if (media) media.style.willChange = "transform";
+              /* Immediate previous stays under the fog lip; older plates stay retired */
+              holdUnderCard(i - 1);
+              setRetiredUnderCards(i - 1, true);
             },
             onUpdate: () => {
               applyFogReveal(card, fog.edge, fog.reveal);
+              if (fog.reveal < RETIRE_UNDER_AT) {
+                holdUnderCard(i - 1);
+                setRetiredUnderCards(i - 1, true);
+              } else {
+                /* Covered — retire every older plate so none can flash back */
+                setRetiredUnderCards(i, true);
+              }
             },
             onComplete: () => {
               applyFogReveal(card, FOG_RANGE, 1);
+              setRetiredUnderCards(i, true);
               clearFogWillChange(card, media);
+            },
+            onReverseComplete: () => {
+              /* Scrubbed back off this card — only the previous plate returns */
+              applyFogReveal(card, 0, 0);
+              holdUnderCard(i - 1);
+              setRetiredUnderCards(i - 1, true);
             },
           },
           moveAt,
@@ -1276,45 +1322,20 @@ export function useExScrollMotion() {
           );
         }
 
-        /*
-         * Phone: only dim the immediately previous scene (active + previous).
-         * Desktop/tablet: keep full depth stack for luxury layering.
-         */
-        const underStart = isPhone ? i - 1 : 0;
-        for (let j = Math.max(0, underStart); j < i; j++) {
-          const depth = i - j;
-          const underCard = cards[j];
-          const underMedia = getCardMedia(underCard);
-
-          /* Keep full-bleed coverage — never dim opacity (cream silk punches through fog lips) */
+        /* Gentle ken-burns settle on the plate being covered — no opacity fights */
+        const underMedia = getCardMedia(cards[i - 1]);
+        if (underMedia) {
           tl.to(
-            underCard,
+            underMedia,
             {
+              scale: 1.035,
               yPercent: 0,
               x: 0,
-              xPercent: 0,
-              scale: 1,
-              opacity: 1,
-              filter: "brightness(1)",
               ease: "none",
               duration: move,
             },
             moveAt,
           );
-
-          if (underMedia) {
-            tl.to(
-              underMedia,
-              {
-                scale: 1.035 + depth * 0.01,
-                yPercent: 0,
-                x: 0,
-                ease: "none",
-                duration: move,
-              },
-              moveAt,
-            );
-          }
         }
       }
 

@@ -2004,12 +2004,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   mask-size: 100% 100%;
 }
 
-/* Fully risen landmark — drop the fog mask so silk can never show through */
+/* Fully risen landmark — keep mask at 140% via JS; class is a state marker only */
 .ex-stack-scroll__card.is-stack-solid {
-  -webkit-mask-image: none !important;
-  mask-image: none !important;
-  -webkit-mask-size: auto !important;
-  mask-size: auto !important;
   background-color: #0c0806 !important;
 }
 
