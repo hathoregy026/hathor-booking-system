@@ -468,7 +468,8 @@
   justify-content: center;
   width: var(--hathor-btn-width, 12.5rem);
   min-width: var(--hathor-btn-width, 12.5rem);
-  max-width: var(--hathor-btn-width, 12.5rem);
+  /* Free max-width so GSAP scroll stretch works (homepage parity). */
+  max-width: none;
   height: var(--hathor-btn-height, 2.85rem);
   min-height: var(--hathor-btn-height, 2.85rem);
   max-height: var(--hathor-btn-height, 2.85rem);
