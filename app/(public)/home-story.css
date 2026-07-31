@@ -109,8 +109,10 @@
   gap: 1.25rem;
   width: 100%;
   min-width: 0;
-  height: auto !important;
-  min-height: 0 !important;
+  /* Same height as the image so the CTA locks to one spot on every slide */
+  height: var(--hs-media-h);
+  min-height: var(--hs-media-h);
+  max-height: var(--hs-media-h);
   box-sizing: border-box;
 }
 
@@ -142,10 +144,14 @@
   color: var(--hs-muted);
   font-size: 1.02rem;
   line-height: 1.75;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .home-story__cta {
-  margin-top: 0.35rem !important;
+  /* Pin to bottom of the shared media-height column — identical Y on both slides */
+  margin-top: auto !important;
   margin-bottom: 0 !important;
   flex: 0 0 auto;
   align-self: flex-start;
@@ -185,6 +191,16 @@
   .home-story__media {
     width: 100%;
     height: var(--hs-media-h);
+  }
+
+  .home-story__copy {
+    height: auto;
+    min-height: 0;
+    max-height: none;
+  }
+
+  .home-story__cta {
+    margin-top: 0.35rem !important;
   }
 
   .home-story__title {
