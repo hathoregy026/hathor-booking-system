@@ -1,15 +1,24 @@
-/* Homepage Way of Life ↔ Dining — pin stage only.
-   Inner row/image/copy/type use the SAME classic `.text-img-*` rules. */
+/* Homepage Way of Life ↔ Dining — one-screen pin, top-aligned side-by-side */
 
 .home-story {
   --hs-bg: var(--cream, #ece8df);
-  --hs-pad-top: calc(var(--site-nav-bar-height, 2.85rem) + clamp(1rem, 2.2vh, 1.75rem));
-  --hs-pad-bottom: clamp(1rem, 2.2vh, 1.75rem);
+  --hs-text: #2d2926;
+  --hs-muted: var(--muted, #3a342f);
+  --hs-serif: var(--font-display, "Cormorant Garamond", Georgia, serif);
+  --hs-nav: var(--site-nav-bar-height, 2.85rem);
+  --hs-pad-top: calc(var(--hs-nav) + clamp(1.25rem, 2.5vh, 2rem));
+  --hs-pad-bottom: clamp(1.25rem, 2.5vh, 2rem);
   --hs-pad-x: var(--content-gutter, clamp(12px, 2.2vw, 28px));
+  --hs-gap: clamp(36px, 6vw, 90px);
+  --hs-media-h: min(
+    68svh,
+    calc(100svh - var(--hs-pad-top) - var(--hs-pad-bottom))
+  );
   position: relative;
   z-index: 22;
   width: 100%;
   background: var(--hs-bg);
+  color: var(--hs-text);
   overflow: hidden;
   box-sizing: border-box;
 }
@@ -19,7 +28,6 @@
   width: 100%;
   height: 100svh;
   max-height: 100svh;
-  min-height: 0;
   overflow: hidden;
   background: var(--hs-bg);
   box-sizing: border-box;
@@ -27,82 +35,155 @@
   transform: translateZ(0);
 }
 
-/* Absolute slides; layout itself is classic `.text-img-row` */
-.home-story__slide.text-img-row {
+/*
+ * Position inside the padded stage only.
+ * Do NOT use top+bottom stretch — that put copy under the nav and
+ * pinned the CTA to the floor with a huge empty gap.
+ */
+.home-story__slide {
   position: absolute;
   left: var(--hs-pad-x);
   right: var(--hs-pad-x);
-  top: 0;
-  bottom: 0;
+  top: var(--hs-pad-top);
+  bottom: var(--hs-pad-bottom);
   width: var(--content-shell, 100%);
   max-width: none;
-  height: fit-content;
+  height: max-content;
   max-height: 100%;
   margin-block: auto;
   margin-inline: auto;
   padding: 0;
-  /* Exact classic alignment: tops share one line */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: start;
-  gap: clamp(36px, 6vw, 90px);
+  justify-items: stretch;
+  column-gap: var(--hs-gap);
+  box-sizing: border-box;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  box-sizing: border-box;
 }
 
-.home-story__slide.text-img-row[aria-hidden="false"] {
+.home-story__slide[aria-hidden="false"] {
   pointer-events: auto;
 }
 
-/* Copy stacks tight under the title — same top line as the image, no dead gap */
-.home-story .home-text-img-copy {
+.home-story__slide.is-reverse .home-story__media {
+  order: 2;
+}
+
+.home-story__slide.is-reverse .home-story__copy {
+  order: 1;
+}
+
+/*
+ * True 4:5 portrait. Cap height to the stage, then derive width so the
+ * frame never stretches into a tall full-bleed crop.
+ */
+.home-story__media {
+  position: relative;
+  box-sizing: border-box;
   align-self: start;
-  height: auto;
-  min-height: 0;
-  justify-content: flex-start;
-}
-
-.home-story .home-text-img-copy .home-text-button {
-  margin-top: 0;
-}
-
-/* Keep classic 4:5 — never flatten with a max-height that breaks the ratio */
-.home-story .home-text-img-parent {
+  justify-self: start;
+  width: min(100%, calc(var(--hs-media-h) * 4 / 5));
+  height: var(--hs-media-h);
+  max-width: 100%;
+  max-height: var(--hs-media-h);
   aspect-ratio: 4 / 5;
-  min-height: 0;
-  max-height: none;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.home-story__slide.is-reverse .home-story__media {
+  justify-self: end;
+}
+
+.home-story__media-link {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  border-radius: 6px;
   width: 100%;
-  height: auto;
+  height: 100%;
+  will-change: transform, clip-path;
+}
+
+.home-story__media-link img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+/* Title → body → CTA as one tight stack; top flush with image top */
+.home-story__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
   align-self: start;
+  justify-self: stretch;
+  gap: 1.25rem;
+  width: 100%;
+  min-width: 0;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none;
+  box-sizing: border-box;
+}
+
+.home-story__title {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.04em;
+  font-family: var(--hs-serif);
+  font-weight: 400;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 1.08;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--hs-text);
+  max-width: 14ch;
 }
 
 .home-story__title-line {
   display: block;
   overflow: hidden;
+  text-wrap: balance;
 }
 
-/* Title lines stack like classic pre-line headings */
-.home-story .home-text-h2 h2 {
-  display: flex;
-  flex-direction: column;
+.home-story__body {
+  margin: 0;
+  max-width: 42ch;
+  width: 100%;
+  color: var(--hs-muted);
+  font-size: 1.02rem;
+  line-height: 1.75;
 }
 
-@media (min-width: 1025px) {
-  .home-story {
-    overflow: hidden;
-  }
-
-  /* Same column fill as classic — full 1fr width, true 4:5, no flatten */
-  .home-story .home-text-img-parent {
-    width: 100%;
-    max-height: none;
-    aspect-ratio: 4 / 5;
-    min-height: 0;
-  }
+.home-story__cta {
+  margin-top: 0.35rem !important;
+  margin-bottom: 0 !important;
+  flex: 0 0 auto;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.55rem;
+  padding: 0.55rem 1.35rem;
+  border-radius: 999px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 0.68rem;
+  text-decoration: none;
 }
 
 @media (max-width: 1024px) {
   .home-story {
+    --hs-media-h: min(38svh, 18rem);
+    --hs-gap: 1rem;
     height: 240svh;
     overflow: visible;
   }
@@ -110,51 +191,70 @@
   .home-story__viewport {
     position: sticky;
     top: 0;
-    height: 100svh;
-    max-height: 100svh;
-    display: flex;
-    align-items: center;
   }
 
-  .home-story__slide.text-img-row {
-    position: absolute;
-    left: var(--hs-pad-x);
-    right: var(--hs-pad-x);
-    top: 0;
-    bottom: 0;
-    margin-block: auto;
-    transform: none;
-    height: fit-content;
-    max-height: 100%;
-    align-content: start;
+  .home-story__slide {
+    grid-template-columns: 1fr;
+    row-gap: 1rem;
   }
 
-  .home-story .home-text-img-parent {
-    width: 100%;
+  .home-story__slide.is-reverse .home-story__media,
+  .home-story__slide.is-reverse .home-story__copy {
+    order: unset;
+  }
+
+  .home-story__media {
+    width: min(100%, 28rem);
+    height: auto;
+    max-height: var(--hs-media-h);
     aspect-ratio: 16 / 11;
-    max-height: min(42vh, 22rem);
+    justify-self: start;
   }
 
-  .home-story .home-text-img-copy {
-    min-height: 0;
-    align-self: start;
+  .home-story__slide.is-reverse .home-story__media {
+    justify-self: start;
   }
 
-  .home-story .home-text-img-copy .home-text-button {
-    margin-top: 1.25rem;
+  .home-story__title {
+    font-size: clamp(1.7rem, 5vw, 2.35rem);
+    max-width: 18ch;
+  }
+
+  .home-story__body {
+    font-size: 0.95rem;
+    line-height: 1.55;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+    overflow: hidden;
   }
 }
 
 @media (max-width: 767px) {
   .home-story {
-    --hs-pad-top: calc(var(--site-nav-bar-height, 2.85rem) + 0.55rem);
-    --hs-pad-bottom: 0.75rem;
+    --hs-pad-top: calc(var(--hs-nav) + 0.65rem);
+    --hs-pad-bottom: 0.85rem;
     --hs-pad-x: max(1rem, env(safe-area-inset-left));
+    --hs-media-h: min(34svh, 16rem);
     height: 220svh;
   }
 
-  .home-story__slide.text-img-row {
-    padding-right: max(0px, env(safe-area-inset-right));
+  .home-story__media {
+    width: 100%;
+    border-radius: 8px;
+  }
+
+  .home-story__media-link {
+    border-radius: 8px;
+  }
+
+  .home-story__copy {
+    gap: 0.85rem;
+  }
+
+  .home-story__body {
+    -webkit-line-clamp: 4;
+    font-size: 0.88rem;
   }
 }
 
@@ -171,28 +271,51 @@
     display: flex;
     flex-direction: column;
     gap: clamp(80px, 10vw, 140px);
-    padding-block: clamp(80px, 10vw, 140px);
   }
 
-  .home-story__slide.text-img-row {
+  .home-story__slide {
     position: relative;
-    inset: auto;
-    transform: none;
+    left: auto;
+    right: auto;
+    top: auto;
+    bottom: auto;
+    margin: 0;
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
     max-height: none;
   }
 
-  .home-story__slide.text-img-row[aria-hidden="true"] {
+  .home-story__slide[aria-hidden="true"] {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
   }
 
-  .home-story .home-text-img-parent {
+  .home-story__media {
     width: 100%;
+    height: auto;
     max-height: none;
     aspect-ratio: 4 / 5;
+  }
+
+  .home-story__body {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+  }
+
+  @media (min-width: 1025px) {
+    .home-story__slide {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .home-story__slide.is-reverse .home-story__media {
+      order: 2;
+    }
+
+    .home-story__slide.is-reverse .home-story__copy {
+      order: 1;
+    }
   }
 }
