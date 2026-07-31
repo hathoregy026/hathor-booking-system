@@ -2603,12 +2603,16 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .split-word {
   margin-top: auto;
 }
 
-/* Shared height set in JS — both rows use the taller title+body+button stack */
+/* Shared height set in JS — both rows use the taller title+body+button stack.
+   Aspect-ratio + min-height keep the absolute image visible if JS height sync
+   is late or skipped (otherwise the frame collapses to 0 and looks “missing”). */
 .home-text-img-parent {
   position: relative;
   overflow: hidden;
   border-radius: 6px;
   box-sizing: border-box;
+  aspect-ratio: 4 / 5;
+  min-height: min(42vh, 22rem);
 }
 
 .home-text-img-container {

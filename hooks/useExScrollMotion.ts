@@ -314,32 +314,59 @@ export function useExScrollMotion() {
   function initHomeTextImgReveal() {
     if (prefersReduced) return;
 
-    gsap.utils.toArray(".home-text-img-parent").forEach((parent) => {
-      const container = parent.querySelector(".home-text-img-container");
+    const OPEN_CLIP = "polygon(0 0, 100% 0, 100% 100%, 0 100%)";
+    const CLOSED_CLIP = "polygon(0 0, 0 0, 0 0, 0 0)";
+
+    gsap.utils.toArray<HTMLElement>(".home-text-img-parent").forEach((parent, index) => {
+      const container = parent.querySelector<HTMLElement>(".home-text-img-container");
       if (!container) return;
       if (parent.dataset.revealInitialized) return;
       parent.dataset.revealInitialized = "true";
 
-      gsap
-        .timeline({
-          scrollTrigger: {
-            trigger: parent,
-            start: "top 65%",
-            toggleActions: "play none none none",
-            once: true,
-            invalidateOnRefresh: true,
+      const triggerId = `ex-text-img-${index}`;
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          id: triggerId,
+          trigger: parent,
+          start: "top 75%",
+          toggleActions: "play none none none",
+          once: true,
+          invalidateOnRefresh: true,
+          // If mid-page restore / refresh leaves the row in view, finish open
+          // so the dining/lifestyle photos never stay fully clipped.
+          onRefresh: (self) => {
+            if (self.progress === 1 || self.isActive) return;
+            const rect = parent.getBoundingClientRect();
+            const vh = window.innerHeight || 1;
+            if (rect.top < vh * 0.9 && rect.bottom > vh * 0.1) {
+              self.animation?.progress(1);
+            }
           },
-        })
-        .fromTo(
-          container,
-          { clipPath: "polygon(0 0, 0 0, 0 0, 0 0)", scale: 1.5 },
-          {
-            clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
-            scale: 1,
-            duration: 1,
-            ease: "power1.out",
-          }
-        );
+        },
+      });
+
+      tl.fromTo(
+        container,
+        { clipPath: CLOSED_CLIP, WebkitClipPath: CLOSED_CLIP, scale: 1.5 },
+        {
+          clipPath: OPEN_CLIP,
+          WebkitClipPath: OPEN_CLIP,
+          scale: 1,
+          duration: 1,
+          ease: "power1.out",
+        },
+      );
+
+      if (tl.scrollTrigger) trackTrigger(tl.scrollTrigger);
+
+      motionCleanups.push(() => {
+        tl.scrollTrigger?.kill();
+        tl.kill();
+        gsap.set(container, {
+          clearProps: "clipPath,WebkitClipPath,transform",
+        });
+        delete parent.dataset.revealInitialized;
+      });
     });
   }
 
