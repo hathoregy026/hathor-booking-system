@@ -234,8 +234,9 @@ export const EX_CAMPAIGN = {
 } as const;
 
 export const EX_CTA = {
-  title: "Begin your Nile escape",
-  body: "Whether you are planning a private charter, selecting the perfect sailing dates, or reserving your suite, our team is here to make it effortless.",
+  /** @deprecated Prefer WebsiteText `home.cta` → MarketingCtaBand */
+  title: "Ready to Embark on Your Journey?",
+  body: "Reserve your place aboard Hathor Dahabiya and discover the Nile as it was meant to be experienced.",
 } as const;
 
 export const EX_WELLNESS = {

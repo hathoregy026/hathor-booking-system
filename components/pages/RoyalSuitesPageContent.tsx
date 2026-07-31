@@ -3,7 +3,10 @@
 import { ResidenceScrollPage } from "@/components/pages/rooms/ResidenceScrollPage";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { ROYAL_SUITES_PAGE } from "@/lib/page-content";
-import { resolveOverviewIntroParagraphs } from "@/lib/website-text-shared";
+import {
+  resolveCmsText,
+  resolveOverviewIntroParagraphs,
+} from "@/lib/website-text-shared";
 
 export function RoyalSuitesPageContent() {
   const { pages } = useWebsiteText();
@@ -27,7 +30,11 @@ export function RoyalSuitesPageContent() {
         eyebrow: "Luxury Royal Suites",
         title: royal.overviewTitle,
         copy: introParagraphs,
-        stats: ["2 Luxury Suites & 2 Royal Suites", "56 Square Meters", "Panoramic Nile view"],
+        stats: [
+          "2 Luxury Suites & 2 Royal Suites",
+          "56 Square Meters",
+          "Panoramic Nile view",
+        ],
       }}
       copyPlacement={{
         ...ROYAL_SUITES_PAGE.copyPlacement,
@@ -44,8 +51,14 @@ export function RoyalSuitesPageContent() {
         ctaLabel: "Read More",
       }))}
       amenities={{
-        title: ROYAL_SUITES_PAGE.amenities.title,
-        body: ROYAL_SUITES_PAGE.overview.body,
+        title: resolveCmsText(
+          royal.amenitiesTitle,
+          ROYAL_SUITES_PAGE.amenities.title,
+        ),
+        body: resolveCmsText(
+          royal.amenitiesIntro,
+          ROYAL_SUITES_PAGE.overview.body,
+        ),
         features: ROYAL_SUITES_PAGE.amenities.features,
       }}
       cta={{

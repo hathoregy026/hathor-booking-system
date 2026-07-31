@@ -7,6 +7,8 @@
     "build": "node scripts/sync-email-assets.mjs && node scripts/sync-hathor-media.mjs && prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "verify:website-text": "npx tsx scripts/verify-website-text-mapping.ts",
     "postinstall": "prisma generate",
     "seed:hathor": "node scripts/seed-hathor-data.mjs",
     "seed:content": "node scripts/seed-raw-content.mjs",

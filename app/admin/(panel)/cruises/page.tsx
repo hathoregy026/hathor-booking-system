@@ -100,52 +100,55 @@ export default function AdminCruisesPage() {
       loadId?: number;
     }) => {
       const loadId = options?.loadId ?? ++loadIdRef.current;
-      const attempt = options?.attempt ?? 0;
+      let attempt = options?.attempt ?? 0;
       const silent = options?.silent ?? false;
 
-      if (!silent && attempt === 0) {
-        setIsLoading(true);
-      }
-      if (attempt === 0) setLoadFailed(false);
-
-      try {
-        const params = new URLSearchParams({
-          bin: viewMode === "bin" ? "true" : "false",
-        });
-        const response = await adminFetch(
-          `/api/admin/cruises?${params.toString()}`,
-        );
-        if (loadId !== loadIdRef.current) return;
-
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.error ?? "Failed to load cruises");
+      for (;;) {
+        if (!silent && attempt === 0) {
+          setIsLoading(true);
         }
+        if (attempt === 0) setLoadFailed(false);
 
-        setCruises(data.cruises);
-        setDeletedRooms(data.deletedRooms ?? []);
-        setSelectedKeys(new Set());
-        setLoadFailed(false);
-      } catch (err) {
-        if (loadId !== loadIdRef.current) return;
-
-        if (attempt < 1 && isTransientFetchError(err)) {
-          await new Promise((resolve) => setTimeout(resolve, 800));
-          return loadCruises({
-            silent,
-            attempt: attempt + 1,
-            loadId,
+        try {
+          const params = new URLSearchParams({
+            bin: viewMode === "bin" ? "true" : "false",
           });
-        }
+          const response = await adminFetch(
+            `/api/admin/cruises?${params.toString()}`,
+          );
+          if (loadId !== loadIdRef.current) return;
 
-        setLoadFailed(true);
-        showToast(
-          "error",
-          err instanceof Error ? err.message : "Failed to load cruises",
-        );
-      } finally {
-        if (loadId === loadIdRef.current && !silent) {
-          setIsLoading(false);
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.error ?? "Failed to load cruises");
+          }
+
+          setCruises(data.cruises);
+          setDeletedRooms(data.deletedRooms ?? []);
+          setSelectedKeys(new Set());
+          setLoadFailed(false);
+          if (loadId === loadIdRef.current && !silent) {
+            setIsLoading(false);
+          }
+          return;
+        } catch (err) {
+          if (loadId !== loadIdRef.current) return;
+
+          if (attempt < 1 && isTransientFetchError(err)) {
+            await new Promise((resolve) => setTimeout(resolve, 800));
+            attempt += 1;
+            continue;
+          }
+
+          setLoadFailed(true);
+          showToast(
+            "error",
+            err instanceof Error ? err.message : "Failed to load cruises",
+          );
+          if (loadId === loadIdRef.current && !silent) {
+            setIsLoading(false);
+          }
+          return;
         }
       }
     },
@@ -153,7 +156,7 @@ export default function AdminCruisesPage() {
   );
 
   useEffect(() => {
-    loadCruises();
+    void loadCruises(); // eslint-disable-line react-hooks/set-state-in-effect -- dashboard data load
   }, [loadCruises]);
 
   const visibleKeys = useMemo(() => {

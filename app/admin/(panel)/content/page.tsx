@@ -140,7 +140,8 @@ export default function AdminContentPage() {
   }, [showToast]);
 
   useEffect(() => {
-    void loadContent();
+    // Admin dashboard mount fetch (images form). Cascading loading state is intentional.
+    void loadContent(); // eslint-disable-line react-hooks/set-state-in-effect -- dashboard mount fetch
   }, [loadContent]);
 
   const updateSiteImage = (name: string, patch: Partial<SiteImageFormItem>) => {

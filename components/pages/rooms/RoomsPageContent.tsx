@@ -3,7 +3,10 @@
 import { ResidenceScrollPage } from "@/components/pages/rooms/ResidenceScrollPage";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { LUXURY_SUITES_PAGE } from "@/lib/page-content";
-import { resolveOverviewIntroParagraphs } from "@/lib/website-text-shared";
+import {
+  resolveCmsText,
+  resolveOverviewIntroParagraphs,
+} from "@/lib/website-text-shared";
 
 /** /rooms — Cabins & Suits content from hathorcruise.com/rooms */
 export function RoomsPageContent() {
@@ -56,9 +59,14 @@ export function RoomsPageContent() {
         })),
       ]}
       amenities={{
-        title: LUXURY_SUITES_PAGE.amenities.title,
-        // Amenities lead stays static until a dedicated CMS amenitiesBody field is approved.
-        body: LUXURY_SUITES_PAGE.overview.body,
+        title: resolveCmsText(
+          rooms.amenitiesTitle,
+          LUXURY_SUITES_PAGE.amenities.title,
+        ),
+        body: resolveCmsText(
+          rooms.amenitiesIntro,
+          LUXURY_SUITES_PAGE.overview.body,
+        ),
         features: LUXURY_SUITES_PAGE.amenities.features,
       }}
       cta={{

@@ -42,6 +42,10 @@ export type WebsiteText = {
       cards: Array<{ name: string; quote: string }>;
     };
     campaign: { title: string };
+    /**
+     * Shared marketing CTA band (`MarketingCtaBand`) on About, Contact, Blog, etc.
+     * Not a homepage-only block — homepage uses `campaign` + Book Now choreography.
+     */
     cta: { title: string; body: string };
   };
   pages: {
@@ -57,9 +61,16 @@ export type WebsiteText = {
       welcomeBody: string;
     };
     cruises: {
-      sectionTitle: string;
+      /** Intro / overview heading under the hero */
+      overviewTitle: string;
+      /** Intro / overview body (must not reuse hero subtitle) */
+      overviewIntro: string;
       continueTitle: string;
       continueBody: string;
+      /** Bottom reserve CTA heading */
+      ctaTitle: string;
+      /** Bottom reserve CTA body */
+      ctaBody: string;
     };
     highlights: {
       intro: string[];
@@ -102,14 +113,20 @@ export type WebsiteText = {
     rooms: {
       overviewTitle: string;
       overviewIntro: string;
+      amenitiesTitle: string;
+      amenitiesIntro: string;
     };
     cabins: {
       overviewTitle: string;
       overviewIntro: string;
+      amenitiesTitle: string;
+      amenitiesIntro: string;
     };
     royal: {
       overviewTitle: string;
       overviewIntro: string;
+      amenitiesTitle: string;
+      amenitiesIntro: string;
     };
   };
 };
@@ -226,8 +243,9 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
       title: "Sail Beyond the Ordinary",
     },
     cta: {
-      title: "Begin your Nile escape",
-      body: "Whether you are planning a private charter, selecting the perfect sailing dates, or reserving your suite, our team is here to make it effortless.",
+      // Matches live MarketingCtaBand defaults so wiring does not change copy.
+      title: "Ready to Embark on Your Journey?",
+      body: "Reserve your place aboard Hathor Dahabiya and discover the Nile as it was meant to be experienced.",
     },
   },
   pages: {
@@ -243,11 +261,13 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
       welcomeBody: ABOUT_PAGE.welcome.body,
     },
     cruises: {
-      sectionTitle: CRUISES_PAGE.sectionTitle,
+      overviewTitle: CRUISES_PAGE.sectionTitle,
+      overviewIntro: CRUISES_PAGE.hero.subtitle,
       continueTitle: "Continue exploring\naboard Hathor",
-      // No body copy in CruisesPageContent — short line for CMS completeness
       continueBody:
         "Discover Luxury Rooms, Suites, Royal Suites, and Dining — Hathor Flavors.",
+      ctaTitle: "Reserve your voyage",
+      ctaBody: CRUISES_PAGE.hero.subtitle,
     },
     highlights: {
       intro: [...HIGHLIGHTS_PAGE.intro],
@@ -297,14 +317,20 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
       overviewTitle: LUXURY_SUITES_PAGE.overview.title,
       // Maps to intro body (not amenities). Default matches afterHero so visuals stay stable.
       overviewIntro: LUXURY_SUITES_PAGE.copyPlacement.afterHero.join("\n\n"),
+      amenitiesTitle: LUXURY_SUITES_PAGE.amenities.title,
+      amenitiesIntro: LUXURY_SUITES_PAGE.overview.body,
     },
     cabins: {
       overviewTitle: LUXURY_CABINS_PAGE.overview.title,
       overviewIntro: LUXURY_CABINS_PAGE.copyPlacement.afterHero.join("\n\n"),
+      amenitiesTitle: LUXURY_CABINS_PAGE.amenities.title,
+      amenitiesIntro: LUXURY_CABINS_PAGE.overview.body,
     },
     royal: {
       overviewTitle: ROYAL_SUITES_PAGE.overview.title,
       overviewIntro: ROYAL_SUITES_PAGE.copyPlacement.afterHero.join("\n\n"),
+      amenitiesTitle: ROYAL_SUITES_PAGE.amenities.title,
+      amenitiesIntro: ROYAL_SUITES_PAGE.overview.body,
     },
   },
 };
@@ -357,7 +383,57 @@ export function deepMergeWebsiteText(
   return mergeValue(base, patch) as WebsiteText;
 }
 
-/** Merge over defaults; never throws. */
+/**
+ * One-shot shape migration before deep-merge.
+ * Does not overwrite already-populated canonical fields.
+ *
+ * Legacy → destination:
+ * - pages.cruises.sectionTitle → pages.cruises.overviewTitle
+ * - home.cta EX_CTA copy → MarketingCtaBand defaults (only when still the old EX_CTA strings)
+ */
+const LEGACY_EX_CTA_TITLE = "Begin your Nile escape";
+
+export function migrateLegacyWebsiteTextFields(raw: unknown): unknown {
+  if (!isPlainObject(raw)) return raw;
+  const next: Record<string, unknown> = { ...raw };
+
+  const home = isPlainObject(next.home) ? { ...next.home } : null;
+  if (home && isPlainObject(home.cta)) {
+    const cta = { ...home.cta };
+    if (
+      typeof cta.title === "string" &&
+      cta.title.trim() === LEGACY_EX_CTA_TITLE
+    ) {
+      // Drop legacy orphan EX_CTA strings so MarketingCtaBand defaults apply.
+      delete cta.title;
+      delete cta.body;
+    }
+    home.cta = cta;
+    next.home = home;
+  }
+
+  const pages = isPlainObject(next.pages) ? { ...next.pages } : null;
+  if (!pages) return next;
+
+  const cruises = isPlainObject(pages.cruises) ? { ...pages.cruises } : null;
+  if (cruises) {
+    const overviewTitle = cruises.overviewTitle;
+    const sectionTitle = cruises.sectionTitle;
+    if (
+      (typeof overviewTitle !== "string" || !overviewTitle.trim()) &&
+      typeof sectionTitle === "string" &&
+      sectionTitle.trim()
+    ) {
+      cruises.overviewTitle = sectionTitle;
+    }
+    pages.cruises = cruises;
+  }
+
+  next.pages = pages;
+  return next;
+}
+
+/** Merge over defaults; never throws. Applies legacy field migration first. */
 export function parseWebsiteText(raw: unknown): WebsiteText {
   try {
     let value = raw;
@@ -371,9 +447,10 @@ export function parseWebsiteText(raw: unknown): WebsiteText {
     if (value === null || value === undefined) {
       return structuredClone(DEFAULT_WEBSITE_TEXT);
     }
+    const migrated = migrateLegacyWebsiteTextFields(value);
     return deepMergeWebsiteText(
       structuredClone(DEFAULT_WEBSITE_TEXT),
-      value,
+      migrated,
     );
   } catch {
     return structuredClone(DEFAULT_WEBSITE_TEXT);
@@ -416,4 +493,12 @@ export function resolveOverviewIntroParagraphs(
   if (legacy && normalized === legacy) return [...fallback];
   const paragraphs = textToParagraphs(normalized);
   return paragraphs.length > 0 ? paragraphs : [...fallback];
+}
+
+/** Resolve a CMS string with a static fallback (empty-safe). */
+export function resolveCmsText(
+  cmsValue: string | null | undefined,
+  fallback: string,
+): string {
+  return normalizeOptionalText(cmsValue) ?? fallback;
 }

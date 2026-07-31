@@ -338,3 +338,122 @@ Document architecture and issues (this file).
 - `/cruises` scroll / stripes
 - Mobile three-layer menu
 - Page sheet transitions on about/wellness/etc.
+
+---
+
+# Second Pass (post-`bccdab8`)
+
+**Scope completed:** Cruises CMS intro, amenities CMS fields, homepage CTA decision, duplicate-source documentation, responsive text shells, image/font/JS notes, lint remediation for touched files, typecheck + verify scripts.
+
+## Second Pass Scope
+
+| Item | Result |
+|------|--------|
+| Cruises CMS intro | Added `overviewTitle`, `overviewIntro`, `ctaTitle`, `ctaBody`; stopped hero subtitle reuse for intro/CTA body |
+| Amenities CMS fields | Added `amenitiesTitle` + `amenitiesIntro` for rooms, cabins, royal |
+| Homepage CTA decision | `home.cta` wired to shared `MarketingCtaBand` (About/Contact/Blog/etc.); not a new homepage section |
+| Duplicate content cleanup | `SiteContent` marked `@deprecated`; `EX_CTA` aligned with MarketingCtaBand defaults |
+| Responsive audit | `page-container` + cruise/residence text shells: `min-width: 0`, `overflow-wrap: anywhere` |
+| Image performance | Accordion sizes (pass 1); remote CMS still `unoptimized` (Supabase 400 risk on `/_next/image`) |
+| CMS image delivery | No width/format transform params in storage URLs; Next optimizes local only |
+| Font audit | Catalog kept — Typography dashboard offers all faces; removing `@font-face` would break picker |
+| JavaScript audit | Homepage logo-tune sync effects removed (soft override only) |
+| Scroll/animation | No choreography changes; `prefer-const` fix in scroll-refresh-coordinator |
+| Lint remediation | Touched admin/page/CMS files clean; full-repo lint still has unrelated legacy errors |
+
+## Content Mapping Table
+
+| Page | Dashboard field | Frontend destination | Semantic element | Fallback | Status |
+|------|-----------------|----------------------|------------------|----------|--------|
+| Home | `home.about.*` | About section | heading/eyebrow/body/cta | homepage-content | OK |
+| Home | `home.carousel.*` | Itineraries carousel | title/subtitle/cta | homepage-content | OK |
+| Home | `home.stackSlides[]` | Fog stack slides | title/indication/body | EX_PINNED / typography | OK (multi-source) |
+| Home | `home.textBlocks[]` | Text+image rows | title/body/cta | EX_TEXT_BLOCKS | OK |
+| Home | `home.gallery.*` | Gallery header | title/indication | EX_GALLERY | OK |
+| Home | `home.testimonials.*` | Reviews | title/cards | defaults | OK |
+| Home | `home.campaign.title` | HomeCampaignSection | on-image title | EX_CAMPAIGN | OK |
+| Home | `home.cta.title/body` | MarketingCtaBand (shared) | h2 + body | MarketingCtaBand defaults | OK (wired) |
+| Cruises | Typography `hero_pages.cruises` | PublicSiteHero | hero titles | page-content hero | OK |
+| Cruises | `pages.cruises.overviewTitle` | Intro H2 | overview title | `CRUISES_PAGE.sectionTitle` | OK |
+| Cruises | `pages.cruises.overviewIntro` | Intro body | overview body | hero.subtitle default | OK |
+| Cruises | `pages.cruises.continueTitle/Body` | Onboard column | continue exploring | defaults | OK |
+| Cruises | `pages.cruises.ctaTitle/Body` | Bottom CTA | reserve CTA | hardcoded previous copy | OK |
+| Rooms | `pages.rooms.overviewTitle` | Intro H2 | overview title | suites overview title | OK |
+| Rooms | `pages.rooms.overviewIntro` | Intro paragraphs | overview body | afterHero (+ soft migrate) | OK |
+| Rooms | `pages.rooms.amenitiesTitle` | Amenities H2 | amenities title | amenities.title | OK |
+| Rooms | `pages.rooms.amenitiesIntro` | Amenities lead | amenities body | overview.body | OK |
+| Cabins | `pages.cabins.overview*` / `amenities*` | Same pattern | intro + amenities | page-content | OK |
+| Royal | `pages.royal.overview*` / `amenities*` | Same pattern | intro + amenities | page-content | OK |
+| Partners | `pages.partners.title` | Hero title | h1 path | HOMEPAGE_PARTNERS | OK |
+| Partners | `pages.partners.chapter` | Hero secondTitle | secondary title | Trusted Worldwide | OK |
+| Partners | `pages.partners.lead` | Section lead | body | default lead | OK |
+| Charter | `pages.charter.*` | Overview + benefits | section copy | CHARTER_PAGE | OK |
+| Contact | `pages.contact.formTitle/Intro` | InquiryForm | form header | CONTACT_PAGE.form | OK |
+| About | `pages.about.*` | About sections | intro/accommodations/dining/welcome | ABOUT_PAGE | OK |
+| Nav | `lib/public-nav.ts` | Header links | nav labels | code | Interface (not WebsiteText) |
+| Footer | Footer components | Footer copy | mixed | code + CMS images | Partial hardcoded |
+| Accordion | Typography `our_voyages_copy` | LuxuryAccordion | title/indication | defaults | OK |
+| Legacy | Prisma `SiteContent` | none (public) | — | — | Deprecated |
+
+## Migration Notes
+
+| Legacy source | Destination | Condition | Fallback period |
+|---------------|-------------|-----------|-----------------|
+| `pages.cruises.sectionTitle` | `pages.cruises.overviewTitle` | overviewTitle empty | Until editors re-save cruises |
+| Hero subtitle as cruises intro | `pages.cruises.overviewIntro` default | New field | Defaults preserve visible copy |
+| Hero subtitle as cruises CTA body | `pages.cruises.ctaBody` default | New field | Same |
+| `overview.body` used as amenities | `amenitiesIntro` defaults | New fields | Defaults = previous visible amenities body |
+| Overview intro == overview.body | Soft-migrate to afterHero for intro | Exact string match | Permanent soft rule |
+| `home.cta` EX_CTA strings | Dropped → MarketingCtaBand defaults | Title == “Begin your Nile escape” | Until custom CTA saved |
+| Prisma SiteContent | — | Unused on public | Deprecate; keep API/seeds |
+
+New edits always save to canonical fields. Migration runs inside `parseWebsiteText` before deep-merge (read path only; does not rewrite DB until next admin save).
+
+## Performance Findings (observed)
+
+- Remote Supabase CMS images remain `unoptimized` because `/_next/image` often 400s on large remotes (`lib/site-image-url.ts`) — measured pattern from existing comments/code, not a Lighthouse score.
+- Local Optimized images use quality 90 + WebP (`next.config.ts`).
+- Font catalogue in `hathor-fonts.css` is required by Typography admin picker; not removed.
+- Homepage logo-tune no longer double-syncs provider props into state every render cycle.
+- Accordion image `sizes` tightened in pass 1.
+
+## Files Changed (second pass)
+
+| File | Purpose |
+|------|---------|
+| `lib/website-text-shared.ts` | Schema + migration + helpers |
+| `components/pages/CruisesPageContent.tsx` | Dedicated overview/CTA CMS wiring |
+| `components/pages/rooms/RoomsPageContent.tsx` | Amenities CMS |
+| `components/pages/LuxuryCabinsPageContent.tsx` | Amenities CMS |
+| `components/pages/RoyalSuitesPageContent.tsx` | Amenities CMS |
+| `components/pages/MarketingCtaBand.tsx` | Wire `home.cta` |
+| `components/pages/HomePageClient.tsx` | Logo-tune lint-safe soft override |
+| `components/admin/WebsiteTextPanel.tsx` | Field groups + new fields |
+| `lib/site-content.ts` | Deprecation notice |
+| `lib/ex-page-content.ts` | EX_CTA aligned / deprecated note |
+| `app/interior-design-system.css` | Responsive text shell safety |
+| `app/admin/(panel)/bookings/page.tsx` | Retry loop lint fix |
+| `app/admin/(panel)/cruises/page.tsx` | Retry loop lint fix |
+| `app/admin/(panel)/content/page.tsx` | Mount-fetch lint scope |
+| `lib/scroll-refresh-coordinator.ts` | prefer-const |
+| `package.json` | `typecheck`, `verify:website-text` |
+| `scripts/verify-website-text-mapping.ts` | Mapping/migration checks |
+| `CONTENT-RESPONSIVE-PERFORMANCE-AUDIT.md` | This update |
+
+## Validation Results (second pass)
+
+- `npm run typecheck` — pass
+- `npm run verify:website-text` — pass
+- `npm run build` — pass
+- Touched-file eslint (CMS/pages/admin panels listed above) — pass
+- Full `npm run lint` — still fails on unrelated legacy issues (see Remaining Risks)
+
+## Remaining Risks
+
+1. Full-repo `npm run lint`: `lib/hero-scroll-stage.ts` still has `@ts-nocheck` (`@typescript-eslint/ban-ts-comment`) — protected hero stage; not removed.
+2. `components/pages/PublicSiteHero.tsx:154` — `setUseLiveVideo` in effect (`react-hooks/set-state-in-effect`); hero video gate — behaviour preserved, not refactored.
+3. Additional unused-var warnings across scripts/admin helpers.
+4. Remote CMS images still full-resolution downloads (no Supabase transform pipeline).
+5. Font catalogue weight remains for dashboard font choices.
+6. Partner names, residence listings, and many hero titles remain hardcoded / Typography-owned by design.
+7. No Jest/Vitest framework — mapping checks via `npm run verify:website-text` only.

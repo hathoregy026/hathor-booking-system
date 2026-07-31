@@ -7,7 +7,7 @@ type PendingReason = string;
 const ACTIVE_SCROLL_IDLE_MS = 180;
 const REFRESH_DEBOUNCE_MS = 140;
 
-let pendingReasons = new Set<PendingReason>();
+const pendingReasons = new Set<PendingReason>();
 let refreshTimer: ReturnType<typeof setTimeout> | null = null;
 let lastActiveAt = 0;
 let initialized = false;

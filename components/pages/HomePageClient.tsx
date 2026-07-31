@@ -22,7 +22,6 @@ import {
   EX_GALLERY,
   EX_HERO,
   EX_PINNED,
-  EX_TESTIMONIALS,
   EX_TEXT_BLOCKS,
   type ExCarouselSlide,
 } from "@/lib/ex-page-content";
@@ -40,7 +39,6 @@ import {
   type HeroLogoTune,
   heroLogoTuneToImportantCss,
   heroLogoTuneToNarrowImportantCss,
-  parseHeroLogoTune,
 } from "@/lib/hero-logo-tune-shared";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 import { shouldSoftRefreshCms } from "@/lib/cms-soft-refresh";
@@ -221,16 +219,12 @@ export function HomePageClient({
     };
   });
 
-  const [liveTune, setLiveTune] = useState(heroLogoTune);
-  const [liveTuneMobile, setLiveTuneMobile] = useState(heroLogoTuneMobile);
-
-  useEffect(() => {
-    setLiveTune(heroLogoTune);
-  }, [heroLogoTune]);
-
-  useEffect(() => {
-    setLiveTuneMobile(heroLogoTuneMobile);
-  }, [heroLogoTuneMobile]);
+  const [softTune, setSoftTune] = useState<typeof heroLogoTune | null>(null);
+  const [softTuneMobile, setSoftTuneMobile] = useState<
+    typeof heroLogoTuneMobile | null
+  >(null);
+  const liveTune = softTune ?? heroLogoTune;
+  const liveTuneMobile = softTuneMobile ?? heroLogoTuneMobile;
 
   /* Soft refresh so phone logo saves show even if ISR HTML is briefly stale.
    * Gated to admin preview (?logoTune=1 / ?cmsRefresh=1) to avoid live DB hits. */
@@ -248,18 +242,27 @@ export function HomePageClient({
           tuneMobile?: unknown;
         };
         if (cancelled) return;
-        if (data.tune) setLiveTune(parseHeroLogoTune(data.tune));
-        setLiveTuneMobile(
-          parseHeroLogoTune(data.tuneMobile ?? data.tune ?? heroLogoTuneMobile),
-        );
+        if (data.tune) {
+          // Soft override only — provider props remain the SSR source of truth.
+          const { parseHeroLogoTune } = await import(
+            "@/lib/hero-logo-tune-shared"
+          );
+          setSoftTune(parseHeroLogoTune(data.tune));
+        }
+        if (data.tuneMobile) {
+          const { parseHeroLogoTune } = await import(
+            "@/lib/hero-logo-tune-shared"
+          );
+          setSoftTuneMobile(parseHeroLogoTune(data.tuneMobile));
+        }
       } catch {
-        /* keep SSR */
+        /* ignore */
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [heroLogoTuneMobile]);
+  }, []);
 
   useLayoutEffect(() => {
     paintLogoTune(liveTune, liveTuneMobile);

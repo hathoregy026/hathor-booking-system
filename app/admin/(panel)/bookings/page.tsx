@@ -58,64 +58,69 @@ export default function AdminBookingsPage() {
   const loadBookings = useCallback(
     async (options?: { attempt?: number; loadId?: number }) => {
       const loadId = options?.loadId ?? ++loadIdRef.current;
-      const attempt = options?.attempt ?? 0;
+      let attempt = options?.attempt ?? 0;
 
-      if (attempt === 0) {
-        abortRef.current?.abort();
-        abortRef.current = new AbortController();
-        setIsLoading(true);
-        setLoadFailed(false);
-      }
-
-      const controller = abortRef.current;
-      if (!controller) return;
-
-      try {
-        const params = new URLSearchParams({
-          bin: viewMode === "bin" ? "true" : "false",
-        });
-
-        if (layoutView === "calendar" && viewMode === "active") {
-          params.set("calendar", "true");
-        } else {
-          params.set("status", statusFilter);
+      for (;;) {
+        if (attempt === 0) {
+          abortRef.current?.abort();
+          abortRef.current = new AbortController();
+          setIsLoading(true);
+          setLoadFailed(false);
         }
 
-        const response = await adminFetch(
-          `/api/admin/bookings?${params.toString()}`,
-          { signal: controller.signal },
-          ADMIN_BOOKINGS_TIMEOUT_MS,
-        );
-        if (loadId !== loadIdRef.current) return;
+        const controller = abortRef.current;
+        if (!controller) return;
 
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.error ?? "Failed to load bookings");
-        }
+        try {
+          const params = new URLSearchParams({
+            bin: viewMode === "bin" ? "true" : "false",
+          });
 
-        setBookings(Array.isArray(data.bookings) ? data.bookings : []);
-        setSelectedIds(new Set());
-        setLoadFailed(false);
-        if (loadId === loadIdRef.current) {
-          setIsLoading(false);
-        }
-      } catch (err) {
-        if (loadId !== loadIdRef.current) return;
+          if (layoutView === "calendar" && viewMode === "active") {
+            params.set("calendar", "true");
+          } else {
+            params.set("status", statusFilter);
+          }
 
-        if (attempt < 1 && isTransientFetchError(err)) {
-          await new Promise((resolve) =>
-            setTimeout(resolve, 800 * (attempt + 1)),
+          const response = await adminFetch(
+            `/api/admin/bookings?${params.toString()}`,
+            { signal: controller.signal },
+            ADMIN_BOOKINGS_TIMEOUT_MS,
           );
-          return loadBookings({ attempt: attempt + 1, loadId });
-        }
+          if (loadId !== loadIdRef.current) return;
 
-        setLoadFailed(true);
-        showToast(
-          "error",
-          err instanceof Error ? err.message : "Failed to load bookings",
-        );
-        if (loadId === loadIdRef.current) {
-          setIsLoading(false);
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.error ?? "Failed to load bookings");
+          }
+
+          setBookings(Array.isArray(data.bookings) ? data.bookings : []);
+          setSelectedIds(new Set());
+          setLoadFailed(false);
+          if (loadId === loadIdRef.current) {
+            setIsLoading(false);
+          }
+          return;
+        } catch (err) {
+          if (loadId !== loadIdRef.current) return;
+
+          if (attempt < 1 && isTransientFetchError(err)) {
+            await new Promise((resolve) =>
+              setTimeout(resolve, 800 * (attempt + 1)),
+            );
+            attempt += 1;
+            continue;
+          }
+
+          setLoadFailed(true);
+          showToast(
+            "error",
+            err instanceof Error ? err.message : "Failed to load bookings",
+          );
+          if (loadId === loadIdRef.current) {
+            setIsLoading(false);
+          }
+          return;
         }
       }
     },
@@ -123,7 +128,8 @@ export default function AdminBookingsPage() {
   );
 
   useEffect(() => {
-    loadBookings();
+    // Admin list mount/filter fetch — loading flags are intentional.
+    void loadBookings(); // eslint-disable-line react-hooks/set-state-in-effect -- dashboard data load
   }, [loadBookings]);
 
   const visibleIds = useMemo(

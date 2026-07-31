@@ -14,13 +14,31 @@ import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 import { CRUISES_PAGE } from "@/lib/page-content";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
+import {
+  normalizeOptionalText,
+  resolveCmsText,
+} from "@/lib/website-text-shared";
 
 export function CruisesPageContent() {
   const rootRef = useRef<HTMLDivElement>(null);
   useCruisesRedesignMotion(rootRef);
   const { pages } = useWebsiteText();
   const cruisesText = pages.cruises;
-  const continueLines = cruisesText.continueTitle
+
+  const overviewTitle = resolveCmsText(
+    cruisesText.overviewTitle,
+    CRUISES_PAGE.sectionTitle,
+  );
+  const overviewIntro = normalizeOptionalText(cruisesText.overviewIntro);
+  const continueTitle = resolveCmsText(
+    cruisesText.continueTitle,
+    "Continue exploring\naboard Hathor",
+  );
+  const continueBody = normalizeOptionalText(cruisesText.continueBody);
+  const ctaTitle = resolveCmsText(cruisesText.ctaTitle, "Reserve your voyage");
+  const ctaBody = normalizeOptionalText(cruisesText.ctaBody);
+
+  const continueLines = continueTitle
     .split("\n")
     .map((line) => line.trim())
     .filter(Boolean);
@@ -43,14 +61,24 @@ export function CruisesPageContent() {
         />
 
         <section className="about-section cruise-intro" id="intro">
-          <div className="section-inner cruise-intro-inner">
-            <p className="cruise-eyebrow cruise-reveal">Hathor Voyages</p>
-            <h2 className="cruise-intro-title typo-page-title">
-              <span className="cruise-intro-line">{cruisesText.sectionTitle}</span>
-            </h2>
-            <p className="cruise-intro-copy cruise-reveal typo-body-text">
-              {CRUISES_PAGE.hero.subtitle}
-            </p>
+          <div
+            className="section-inner cruise-intro-inner"
+            style={{ minWidth: 0 }}
+          >
+            <header>
+              <p className="cruise-eyebrow cruise-reveal">Hathor Voyages</p>
+              <h2 className="cruise-intro-title typo-page-title">
+                <span className="cruise-intro-line">{overviewTitle}</span>
+              </h2>
+            </header>
+            {overviewIntro ? (
+              <p
+                className="cruise-intro-copy cruise-reveal typo-body-text"
+                style={{ overflowWrap: "anywhere" }}
+              >
+                {overviewIntro}
+              </p>
+            ) : null}
             <div className="cruise-stats cruise-reveal">
               <div className="cruise-stat">
                 <span className="cruise-stat-num">{HATHOR_CRUISES.length}</span>
@@ -78,18 +106,25 @@ export function CruisesPageContent() {
 
         <section className="cruise-experience">
           <div className="cruise-experience-inner">
-            <div className="cruise-exp-copy">
-              <p className="cruise-eyebrow cruise-reveal">Onboard</p>
-              <h2 className="cruise-exp-title">
-                {continueLines.map((line) => (
-                  <span key={line} className="cruise-intro-line">
-                    {line}
-                  </span>
-                ))}
-              </h2>
-              <p className="cruise-intro-copy cruise-reveal">
-                {cruisesText.continueBody}
-              </p>
+            <div className="cruise-exp-copy" style={{ minWidth: 0 }}>
+              <header>
+                <p className="cruise-eyebrow cruise-reveal">Onboard</p>
+                <h2 className="cruise-exp-title">
+                  {continueLines.map((line) => (
+                    <span key={line} className="cruise-intro-line">
+                      {line}
+                    </span>
+                  ))}
+                </h2>
+              </header>
+              {continueBody ? (
+                <p
+                  className="cruise-intro-copy cruise-reveal"
+                  style={{ overflowWrap: "anywhere" }}
+                >
+                  {continueBody}
+                </p>
+              ) : null}
               <ul className="cruise-exp-list">
                 <li className="cruise-reveal">
                   <Link href="/luxury-cabins-Nile-Cruise">Luxury Rooms</Link>
@@ -120,9 +155,11 @@ export function CruisesPageContent() {
         </section>
 
         <section className="cta-section" id="book">
-          <div className="cta-inner">
-            <h2>Reserve your voyage</h2>
-            <p>{CRUISES_PAGE.hero.subtitle}</p>
+          <div className="cta-inner" style={{ minWidth: 0 }}>
+            {ctaTitle ? <h2>{ctaTitle}</h2> : null}
+            {ctaBody ? (
+              <p style={{ overflowWrap: "anywhere" }}>{ctaBody}</p>
+            ) : null}
             <BookNowTrigger className="btn btn-secondary">Book Now</BookNowTrigger>
             <div style={{ marginTop: "1rem" }}>
               <Link className="btn btn-primary" href="/luxury-cabins-Nile-Cruise">

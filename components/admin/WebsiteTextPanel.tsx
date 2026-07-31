@@ -223,7 +223,7 @@ export function WebsiteTextPanel() {
   }, [showToast]);
 
   useEffect(() => {
-    void load();
+    void load(); // eslint-disable-line react-hooks/set-state-in-effect -- dashboard mount fetch
   }, [load]);
 
   useEffect(() => {
@@ -744,27 +744,34 @@ export function WebsiteTextPanel() {
                   ))}
                 </Section>
 
-                <Section step={8} title="Campaign & bottom CTA">
+                <Section
+                  step={8}
+                  title="Shared marketing CTA"
+                  description="Controls the MarketingCtaBand on About, Contact, Blog, and similar pages. Homepage campaign title is separate (below the fog CTA)."
+                >
                   <Field
-                    label="Campaign title"
+                    label="Campaign title (homepage fog CTA)"
                     value={text.home.campaign.title}
                     onChange={(title) => patchHome("campaign", { title })}
+                    hint="HomeCampaignSection on-image title"
                   />
                   <Field
-                    label="CTA title"
+                    label="Marketing CTA title"
                     value={text.home.cta.title}
                     onChange={(title) =>
                       patchHome("cta", { ...text.home.cta, title })
                     }
+                    hint="MarketingCtaBand heading on secondary pages"
                   />
                   <Field
-                    label="CTA body"
+                    label="Marketing CTA body"
                     value={text.home.cta.body}
                     multiline
                     rows={3}
                     onChange={(body) =>
                       patchHome("cta", { ...text.home.cta, body })
                     }
+                    hint="MarketingCtaBand supporting paragraph"
                   />
                 </Section>
 
@@ -936,40 +943,95 @@ export function WebsiteTextPanel() {
             ) : null}
 
             {activePage === "cruises" ? (
-              <Section step={2} title="Page copy">
-                <Field
-                  label="Section title"
-                  value={text.pages.cruises.sectionTitle}
-                  onChange={(sectionTitle) =>
-                    patchPage("cruises", {
-                      ...text.pages.cruises,
-                      sectionTitle,
-                    })
-                  }
-                />
-                <Field
-                  label="Continue exploring — title"
-                  value={text.pages.cruises.continueTitle}
-                  onChange={(continueTitle) =>
-                    patchPage("cruises", {
-                      ...text.pages.cruises,
-                      continueTitle,
-                    })
-                  }
-                />
-                <Field
-                  label="Continue exploring — body"
-                  value={text.pages.cruises.continueBody}
-                  multiline
-                  rows={4}
-                  onChange={(continueBody) =>
-                    patchPage("cruises", {
-                      ...text.pages.cruises,
-                      continueBody,
-                    })
-                  }
-                />
-              </Section>
+              <>
+                <Section
+                  step={2}
+                  title="Introduction"
+                  description="Overview block under the hero (not the hero titles — those are Typography → Hero pages)."
+                >
+                  <Field
+                    label="Overview title"
+                    value={text.pages.cruises.overviewTitle}
+                    hint="H2 in the cruises intro section"
+                    onChange={(overviewTitle) =>
+                      patchPage("cruises", {
+                        ...text.pages.cruises,
+                        overviewTitle,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Overview intro"
+                    value={text.pages.cruises.overviewIntro}
+                    multiline
+                    rows={4}
+                    hint="Body under the overview title"
+                    onChange={(overviewIntro) =>
+                      patchPage("cruises", {
+                        ...text.pages.cruises,
+                        overviewIntro,
+                      })
+                    }
+                  />
+                </Section>
+                <Section
+                  step={3}
+                  title="Continue exploring"
+                  description="Onboard experience column beside the cruises image."
+                >
+                  <Field
+                    label="Continue exploring — title"
+                    value={text.pages.cruises.continueTitle}
+                    hint="Use a line break for stacked title lines"
+                    onChange={(continueTitle) =>
+                      patchPage("cruises", {
+                        ...text.pages.cruises,
+                        continueTitle,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Continue exploring — body"
+                    value={text.pages.cruises.continueBody}
+                    multiline
+                    rows={4}
+                    onChange={(continueBody) =>
+                      patchPage("cruises", {
+                        ...text.pages.cruises,
+                        continueBody,
+                      })
+                    }
+                  />
+                </Section>
+                <Section
+                  step={4}
+                  title="Reserve CTA"
+                  description="Bottom call-to-action before booking actions."
+                >
+                  <Field
+                    label="CTA title"
+                    value={text.pages.cruises.ctaTitle}
+                    onChange={(ctaTitle) =>
+                      patchPage("cruises", {
+                        ...text.pages.cruises,
+                        ctaTitle,
+                      })
+                    }
+                  />
+                  <Field
+                    label="CTA body"
+                    value={text.pages.cruises.ctaBody}
+                    multiline
+                    rows={3}
+                    onChange={(ctaBody) =>
+                      patchPage("cruises", {
+                        ...text.pages.cruises,
+                        ctaBody,
+                      })
+                    }
+                  />
+                </Section>
+              </>
             ) : null}
 
             {activePage === "highlights" ? (
@@ -1285,84 +1347,195 @@ export function WebsiteTextPanel() {
             ) : null}
 
             {activePage === "rooms" ? (
-              <Section step={2} title="Overview">
-                <Field
-                  label="Title"
-                  value={text.pages.rooms.overviewTitle}
-                  onChange={(overviewTitle) =>
-                    patchPage("rooms", {
-                      ...text.pages.rooms,
-                      overviewTitle,
-                    })
-                  }
-                />
-                <Field
-                  label="Intro"
-                  value={text.pages.rooms.overviewIntro}
-                  multiline
-                  rows={6}
-                  onChange={(overviewIntro) =>
-                    patchPage("rooms", {
-                      ...text.pages.rooms,
-                      overviewIntro,
-                    })
-                  }
-                />
-              </Section>
+              <>
+                <Section
+                  step={2}
+                  title="Introduction"
+                  description="Overview block at the top of the suites page."
+                >
+                  <Field
+                    label="Overview title"
+                    value={text.pages.rooms.overviewTitle}
+                    hint="Intro section H2"
+                    onChange={(overviewTitle) =>
+                      patchPage("rooms", {
+                        ...text.pages.rooms,
+                        overviewTitle,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Overview intro"
+                    value={text.pages.rooms.overviewIntro}
+                    multiline
+                    rows={6}
+                    hint="Intro body paragraphs (blank line between paragraphs)"
+                    onChange={(overviewIntro) =>
+                      patchPage("rooms", {
+                        ...text.pages.rooms,
+                        overviewIntro,
+                      })
+                    }
+                  />
+                </Section>
+                <Section
+                  step={3}
+                  title="Amenities"
+                  description="Amenities section near the bottom of the page."
+                >
+                  <Field
+                    label="Amenities title"
+                    value={text.pages.rooms.amenitiesTitle}
+                    onChange={(amenitiesTitle) =>
+                      patchPage("rooms", {
+                        ...text.pages.rooms,
+                        amenitiesTitle,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Amenities intro"
+                    value={text.pages.rooms.amenitiesIntro}
+                    multiline
+                    rows={5}
+                    hint="Lead paragraph above the amenity feature cards"
+                    onChange={(amenitiesIntro) =>
+                      patchPage("rooms", {
+                        ...text.pages.rooms,
+                        amenitiesIntro,
+                      })
+                    }
+                  />
+                </Section>
+              </>
             ) : null}
 
             {activePage === "cabins" ? (
-              <Section step={2} title="Overview">
-                <Field
-                  label="Title"
-                  value={text.pages.cabins.overviewTitle}
-                  onChange={(overviewTitle) =>
-                    patchPage("cabins", {
-                      ...text.pages.cabins,
-                      overviewTitle,
-                    })
-                  }
-                />
-                <Field
-                  label="Intro"
-                  value={text.pages.cabins.overviewIntro}
-                  multiline
-                  rows={6}
-                  onChange={(overviewIntro) =>
-                    patchPage("cabins", {
-                      ...text.pages.cabins,
-                      overviewIntro,
-                    })
-                  }
-                />
-              </Section>
+              <>
+                <Section
+                  step={2}
+                  title="Introduction"
+                  description="Overview block at the top of the luxury cabins page."
+                >
+                  <Field
+                    label="Overview title"
+                    value={text.pages.cabins.overviewTitle}
+                    hint="Intro section H2"
+                    onChange={(overviewTitle) =>
+                      patchPage("cabins", {
+                        ...text.pages.cabins,
+                        overviewTitle,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Overview intro"
+                    value={text.pages.cabins.overviewIntro}
+                    multiline
+                    rows={6}
+                    hint="Intro body paragraphs (blank line between paragraphs)"
+                    onChange={(overviewIntro) =>
+                      patchPage("cabins", {
+                        ...text.pages.cabins,
+                        overviewIntro,
+                      })
+                    }
+                  />
+                </Section>
+                <Section
+                  step={3}
+                  title="Amenities"
+                  description="Amenities section near the bottom of the page."
+                >
+                  <Field
+                    label="Amenities title"
+                    value={text.pages.cabins.amenitiesTitle}
+                    onChange={(amenitiesTitle) =>
+                      patchPage("cabins", {
+                        ...text.pages.cabins,
+                        amenitiesTitle,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Amenities intro"
+                    value={text.pages.cabins.amenitiesIntro}
+                    multiline
+                    rows={5}
+                    hint="Lead paragraph above the amenity feature cards"
+                    onChange={(amenitiesIntro) =>
+                      patchPage("cabins", {
+                        ...text.pages.cabins,
+                        amenitiesIntro,
+                      })
+                    }
+                  />
+                </Section>
+              </>
             ) : null}
 
             {activePage === "royal" ? (
-              <Section step={2} title="Overview">
-                <Field
-                  label="Title"
-                  value={text.pages.royal.overviewTitle}
-                  onChange={(overviewTitle) =>
-                    patchPage("royal", {
-                      ...text.pages.royal,
-                      overviewTitle,
-                    })
-                  }
-                />
-                <Field
-                  label="Intro"
-                  value={text.pages.royal.overviewIntro}
-                  multiline
-                  rows={6}
-                  onChange={(overviewIntro) =>
-                    patchPage("royal", {
-                      ...text.pages.royal,
-                      overviewIntro,
-                    })
-                  }
-                />
-              </Section>
+              <>
+                <Section
+                  step={2}
+                  title="Introduction"
+                  description="Overview block at the top of the royal suites page."
+                >
+                  <Field
+                    label="Overview title"
+                    value={text.pages.royal.overviewTitle}
+                    hint="Intro section H2"
+                    onChange={(overviewTitle) =>
+                      patchPage("royal", {
+                        ...text.pages.royal,
+                        overviewTitle,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Overview intro"
+                    value={text.pages.royal.overviewIntro}
+                    multiline
+                    rows={6}
+                    hint="Intro body paragraphs (blank line between paragraphs)"
+                    onChange={(overviewIntro) =>
+                      patchPage("royal", {
+                        ...text.pages.royal,
+                        overviewIntro,
+                      })
+                    }
+                  />
+                </Section>
+                <Section
+                  step={3}
+                  title="Amenities"
+                  description="Amenities section near the bottom of the page."
+                >
+                  <Field
+                    label="Amenities title"
+                    value={text.pages.royal.amenitiesTitle}
+                    onChange={(amenitiesTitle) =>
+                      patchPage("royal", {
+                        ...text.pages.royal,
+                        amenitiesTitle,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Amenities intro"
+                    value={text.pages.royal.amenitiesIntro}
+                    multiline
+                    rows={5}
+                    hint="Lead paragraph above the amenity feature cards"
+                    onChange={(amenitiesIntro) =>
+                      patchPage("royal", {
+                        ...text.pages.royal,
+                        amenitiesIntro,
+                      })
+                    }
+                  />
+                </Section>
+              </>
             ) : null}
 
             {activePage === "blog" ? (
@@ -1378,10 +1551,15 @@ export function WebsiteTextPanel() {
             ) : null}
 
             {activePage === "partners" ? (
-              <Section step={2} title="Partners">
+              <Section
+                step={2}
+                title="Partners"
+                description="Hero title/chapter come from Website Text; partner names remain curated in code."
+              >
                 <Field
-                  label="Title"
+                  label="Hero title"
                   value={text.pages.partners.title}
+                  hint="Primary hero title"
                   onChange={(title) =>
                     patchPage("partners", {
                       ...text.pages.partners,
@@ -1390,8 +1568,9 @@ export function WebsiteTextPanel() {
                   }
                 />
                 <Field
-                  label="Chapter"
+                  label="Hero secondary title"
                   value={text.pages.partners.chapter}
+                  hint="secondTitle under the main hero title"
                   onChange={(chapter) =>
                     patchPage("partners", {
                       ...text.pages.partners,
@@ -1400,10 +1579,11 @@ export function WebsiteTextPanel() {
                   }
                 />
                 <Field
-                  label="Lead"
+                  label="Section lead"
                   value={text.pages.partners.lead}
                   multiline
                   rows={4}
+                  hint="Intro paragraph above the partner grid"
                   onChange={(lead) =>
                     patchPage("partners", {
                       ...text.pages.partners,

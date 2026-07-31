@@ -3,7 +3,10 @@
 import { ResidenceScrollPage } from "@/components/pages/rooms/ResidenceScrollPage";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { LUXURY_CABINS_PAGE } from "@/lib/page-content";
-import { resolveOverviewIntroParagraphs } from "@/lib/website-text-shared";
+import {
+  resolveCmsText,
+  resolveOverviewIntroParagraphs,
+} from "@/lib/website-text-shared";
 
 export function LuxuryCabinsPageContent() {
   const { pages } = useWebsiteText();
@@ -44,8 +47,14 @@ export function LuxuryCabinsPageContent() {
         ctaLabel: "Read More",
       }))}
       amenities={{
-        title: LUXURY_CABINS_PAGE.amenities.title,
-        body: LUXURY_CABINS_PAGE.overview.body,
+        title: resolveCmsText(
+          cabins.amenitiesTitle,
+          LUXURY_CABINS_PAGE.amenities.title,
+        ),
+        body: resolveCmsText(
+          cabins.amenitiesIntro,
+          LUXURY_CABINS_PAGE.overview.body,
+        ),
         features: LUXURY_CABINS_PAGE.amenities.features,
       }}
       cta={{

@@ -4,6 +4,12 @@ import { HATHOR_SITE_CONTENT } from "@/lib/hathor-catalog";
 import { prisma } from "@/lib/prisma";
 import { siteContentSelect } from "@/lib/query-selects";
 
+/**
+ * @deprecated Legacy Prisma SiteContent corpus.
+ * Public pages use WebsiteText (`lib/website-text-shared.ts`) via `loadPublicCmsBundle`.
+ * Kept for `/api/admin/content` and seed scripts only — do not wire new UI to this module.
+ * Removal path: drop admin API consumers → stop seeding → migrate table off in a later DB cleanup.
+ */
 export type SiteContentItem = {
   section: ContentSection;
   title: string;
