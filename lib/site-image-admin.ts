@@ -30,7 +30,7 @@ const HOMEPAGE_LIVE_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> 
     { name: "home-collage-large", label: "About — large decor tile" },
     {
       name: "home-split-courtyard",
-      label: "About decor / landmarks / lifestyle photo",
+      label: "Landmarks scroll — lifestyle photo",
     },
     {
       name: "cruises-hero",
@@ -45,8 +45,12 @@ const HOMEPAGE_LIVE_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> 
       label: "Landmarks scroll — Nile ship photo",
     },
     {
-      name: "gastronomy-restaurant",
-      label: "Dining section — Restaurant",
+      name: "home-story-way-of-life",
+      label: "Way of Life — photo (home story)",
+    },
+    {
+      name: "home-story-dining",
+      label: "Fine Dining — photo (home story)",
     },
     { name: "home-call-to-action", label: "Call to action image" },
     { name: "home-wheel-image", label: "Wheel image" },
@@ -93,6 +97,8 @@ const SLOT_LABELS: Partial<Record<SiteImageSlot["name"], string>> = {
   "about-dining": "About Us - Dining Photo",
   "gastronomy-hero": "Hero — Gastronomy",
   "gastronomy-restaurant": "Gastronomy - Restaurant Photo",
+  "home-story-way-of-life": "Way of Life — photo (home story)",
+  "home-story-dining": "Fine Dining — photo (home story)",
   "wellness-hero": "Hero — Wellness",
   "wellness-fitness": "Wellness - Fitness Photo",
   "highlights-hero": "Hero — Highlights",

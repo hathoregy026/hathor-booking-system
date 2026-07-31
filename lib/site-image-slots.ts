@@ -38,6 +38,22 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     displayOrder: 13,
   },
   {
+    name: "home-story-way-of-life",
+    altText: "Guests enjoying a Nile sunset moment aboard Hathor Dahabiya",
+    url: HATHOR_MEDIA.storyWayOfLife,
+    category: "general",
+    pagePath: "/",
+    displayOrder: 14,
+  },
+  {
+    name: "home-story-dining",
+    altText: "Fine dining aboard Hathor Dahabiya",
+    url: HATHOR_MEDIA.storyDining,
+    category: "dining",
+    pagePath: "/",
+    displayOrder: 15,
+  },
+  {
     name: "home-cinematic-still",
     altText: HATHOR_MEDIA.cinematicStillAlt,
     url: HATHOR_MEDIA.cinematicStill,

@@ -132,15 +132,15 @@ export const EX_TEXT_BLOCKS = [
   {
     title: HOMEPAGE_LIFESTYLE.title,
     body: HOMEPAGE_LIFESTYLE.body,
-    imageName: "home-split-courtyard" as SiteImageName,
-    alt: "Hathor Dahabiya on the Nile",
+    imageName: "home-story-way-of-life" as SiteImageName,
+    alt: "Guests enjoying a Nile sunset moment aboard Hathor Dahabiya",
     cta: "Discover More",
     href: "/about",
   },
   {
     title: HOMEPAGE_DINING.title,
     body: HOMEPAGE_DINING.body,
-    imageName: "gastronomy-restaurant" as SiteImageName,
+    imageName: "home-story-dining" as SiteImageName,
     alt: "Fine dining aboard Hathor Dahabiya",
     cta: "Explore Dining",
     href: "/gastronomy",

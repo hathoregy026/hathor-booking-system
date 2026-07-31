@@ -20,6 +20,9 @@ export const HATHOR_MEDIA = {
   storyTransform: hathorImage("home-story-transform"),
   storyLegacyLarge: hathorImage("home-story-legacy-large"),
   storyLegacySmall: hathorImage("home-story-legacy-small"),
+  /** Homepage Way of Life ↔ Dining pin — dedicated slots (not shared with other pages). */
+  storyWayOfLife: hathorImage("home-split-courtyard"),
+  storyDining: hathorImage("gastronomy-hero"),
   /** Helm portal backdrop — sun authored at dead center (3000×1900). */
   wheelBack: hathorImage("home-wheel-back"),
   cinematicVideo: hathorImage("home-cinematic-video"),
