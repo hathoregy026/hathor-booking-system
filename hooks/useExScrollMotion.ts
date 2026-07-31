@@ -1,5 +1,5 @@
 /**
- * EX page — homepage Venetian scroll-reveal motion (GSAP, Lenis).
+ * EX page â€” homepage Venetian scroll-reveal motion (GSAP, Lenis).
  * Stack-slide letter timing stays here; site-wide copy uses LuxuryTextAnimations.
  */
 // @ts-nocheck
@@ -48,7 +48,7 @@ export function useExScrollMotion() {
   useLayoutEffect(() => {
 
   /* -------------------------------------------------------
-   * 0. Reduced motion — skip heavy motion, still show content
+   * 0. Reduced motion â€” skip heavy motion, still show content
    * ----------------------------------------------------- */
   const prefersReduced =
     window.matchMedia &&
@@ -76,8 +76,8 @@ export function useExScrollMotion() {
   }
 
   if (!prefersReduced) {
-    // Native finger scroll on phones/tablets — Lenis + scrubbed pins = jumpy lag.
-    // Phones ≤480 never get Lenis (even if DevTools reports fine pointer).
+    // Native finger scroll on phones/tablets â€” Lenis + scrubbed pins = jumpy lag.
+    // Phones â‰¤480 never get Lenis (even if DevTools reports fine pointer).
     if (!shouldUseNativeScroll() && !isPhone && scrollController.mode === "lenis") {
       logPhonePerfDev({ surface: "ex-scroll", lenis: true, phone: false });
     } else {
@@ -162,14 +162,14 @@ export function useExScrollMotion() {
   }
 
   /* -------------------------------------------------------
-   * PATTERN A — Character / word / line text reveals
+   * PATTERN A â€” Character / word / line text reveals
    *   start: "top 80%"
    *   chars: y:30 opacity:0 duration:0.3 stagger:0.05 power2.out
    *   lines: y:20 opacity:0 duration:0.35 stagger:0.1
    *   button: y:20 opacity:0 duration:0.4
    * ----------------------------------------------------- */
 
-  // Legacy stub — hero text is driven by initHeroScrollStage
+  // Legacy stub â€” hero text is driven by initHeroScrollStage
   function initHeroText() {
     /* handled by initHeroScrollStage */
   }
@@ -180,7 +180,7 @@ export function useExScrollMotion() {
   }
 
   // .radius-heading (chars) + .radius-p (whole) + .radius-button
-  // Do NOT SplitType body lines — italic descenders ghost/clip inside overflow:hidden lines.
+  // Do NOT SplitType body lines â€” italic descenders ghost/clip inside overflow:hidden lines.
   function initRadiusHeadingPara() {
     if (prefersReduced) return;
     document.querySelectorAll(".radius-heading").forEach((headingElement) => {
@@ -230,22 +230,22 @@ export function useExScrollMotion() {
     });
   }
 
-  // .gallery-h2 — chars
+  // .gallery-h2 â€” chars
   function initGalleryH2() {
     /* Text: initHomepageAtelierSplit */
   }
 
-  // .gallery-container — Book Now is static (scroll fade caused a Lenis hitch)
+  // .gallery-container â€” Book Now is static (scroll fade caused a Lenis hitch)
   function initGalleryContainers() {
     /* intentionally empty */
   }
 
-  // .testimonial-h2 — chars
+  // .testimonial-h2 â€” chars
   function initTestimonialH2() {
     /* Text: initHomepageAtelierSplit */
   }
 
-  // .general-button — simple fade up, start top 98%
+  // .general-button â€” simple fade up, start top 98%
   function initGeneralButtons() {
     document.querySelectorAll(".general-button").forEach((button) => {
       if (prefersReduced) return;
@@ -267,10 +267,10 @@ export function useExScrollMotion() {
   }
 
   /* -------------------------------------------------------
-   * PATTERN B — Image wipe + zoom (clip-path)
+   * PATTERN B â€” Image wipe + zoom (clip-path)
    *   start: "top 65%", once: true
-   *   clip: point → full rect, duration 1, power1.out
-   *   img scale 1.5 → 1, duration 1, power2.out (parallel)
+   *   clip: point â†’ full rect, duration 1, power1.out
+   *   img scale 1.5 â†’ 1, duration 1, power2.out (parallel)
    * ----------------------------------------------------- */
   function initGeneralRevealImages() {
     if (prefersReduced) return;
@@ -387,7 +387,7 @@ export function useExScrollMotion() {
     const isTouchPortal = isNarrowViewport;
     const wheelOpenScale = isTouchPortal ? 2.55 : 3.15;
     const wheelExitScale = isTouchPortal ? 4.1 : 5.4;
-    /* Same circle reveal on phones — stepped progress cuts GPU mask paints. */
+    /* Same circle reveal on phones â€” stepped progress cuts GPU mask paints. */
     const stepPortal = lightenDevice;
 
     gsap.set(wheel, {
@@ -404,7 +404,7 @@ export function useExScrollMotion() {
       clipPath: "circle(0vmax at 50% 50%)",
       WebkitClipPath: "circle(0vmax at 50% 50%)",
     });
-    /* No x/y shift — image sun center must stay under the wheel hub (50% 50%). */
+    /* No x/y shift â€” image sun center must stay under the wheel hub (50% 50%). */
     gsap.set(mediaImage, { scale: 1.34, xPercent: 0, yPercent: 0, x: 0, y: 0, force3D: true });
     if (shade) gsap.set(shade, { opacity: 1 });
 
@@ -544,17 +544,17 @@ export function useExScrollMotion() {
   /* -------------------------------------------------------
    * HERO SCROLL STAGE (pinned 100vh, SHORT scroll)
    *  - Stripes FULLY hidden on land (opacity 0 + edge-on)
-   *  - On scroll: reveal one-by-one L→R over a photo hero
+   *  - On scroll: reveal one-by-one Lâ†’R over a photo hero
    *  - Title IN FRONT of stripes
-   *  - "A refined glow" → right + fade
-   *  - "the Venetian way" → left + fade
-   *  - Book Now: HORIZONTAL stretch ×4 (left+right), letter-spacing expands
+   *  - "A refined glow" â†’ right + fade
+   *  - "the Venetian way" â†’ left + fade
+   *  - Book Now: HORIZONTAL stretch Ã—4 (left+right), letter-spacing expands
    * ----------------------------------------------------- */
   function initHeroScrollStage() {
     heroCleanup = mountHeroScrollStage({
       prefersReduced,
       lenis,
-      /* Mid-page refresh: snap logo — never play the rise tween under the veil. */
+      /* Mid-page refresh: snap logo â€” never play the rise tween under the veil. */
       skipLanding: savedY > 80,
     });
   }
@@ -564,7 +564,7 @@ export function useExScrollMotion() {
   }
 
   function initRadiusMorph() {
-    /* removed — no dome */
+    /* removed â€” no dome */
   }
 
   function initHeroLuxuryChrome() {
@@ -572,11 +572,11 @@ export function useExScrollMotion() {
   }
 
   /* -------------------------------------------------------
-   * EX stack scroll — fullscreen luxury card stack + text
+   * EX stack scroll â€” fullscreen luxury card stack + text
    * Masked letter rise/fall (atelier split) per slide
    * ----------------------------------------------------- */
   function splitStackText(el: HTMLElement) {
-    /* Same rise language on phones — words instead of every glyph. */
+    /* Same rise language on phones â€” words instead of every glyph. */
     return lightenDevice ? splitAtelierWords(el) : splitAtelierText(el);
   }
 
@@ -604,7 +604,7 @@ export function useExScrollMotion() {
     const chars =
       (panel as HTMLElement & { __stackChars?: HTMLElement[] }).__stackChars;
     if (!chars?.length) return;
-    /* Soft letter rise — no hard snap when a frame sits */
+    /* Soft letter rise â€” no hard snap when a frame sits */
     const stagger =
       chars.length > 60 ? Math.min(0.022, 0.9 / chars.length) : 0.022;
     gsap.killTweensOf(chars);
@@ -641,7 +641,7 @@ export function useExScrollMotion() {
     });
   }
 
-  /** Soft panel fade only — per-glyph scrub caused scroll flicker on reverse/forward */
+  /** Soft panel fade only â€” per-glyph scrub caused scroll flicker on reverse/forward */
   function scrubStackChars(
     tl: gsap.core.Timeline,
     panel: HTMLElement | undefined,
@@ -706,7 +706,7 @@ export function useExScrollMotion() {
     section.setAttribute("data-mobile-fog-rise", "");
     section.classList.add("signature-fog-rise");
 
-    /** Finer fog steps on phone — 24 was visibly stepped during slow finger drag. */
+    /** Finer fog steps on phone â€” 24 was visibly stepped during slow finger drag. */
     const FOG_STEPS = 56;
     const FOG_RANGE = 140;
     const quantiseFogEdge = (edge: number, stepped: boolean) => {
@@ -786,7 +786,7 @@ export function useExScrollMotion() {
       killExisting();
 
       const total = cards.length;
-      /* Slightly longer wipe + calmer dwell — less rubber-band settle */
+      /* Slightly longer wipe + calmer dwell â€” less rubber-band settle */
       const dwell = 0.52;
       const move = 0.82;
       const release = 0.7;
@@ -818,7 +818,7 @@ export function useExScrollMotion() {
         const media = getCardMedia(card);
         gsap.set(card, {
           zIndex: index + 1,
-          /* Stay full-frame — next image dissolves up through soft fog */
+          /* Stay full-frame â€” next image dissolves up through soft fog */
           yPercent: 0,
           x: 0,
           xPercent: 0,
@@ -831,7 +831,7 @@ export function useExScrollMotion() {
           clearProps: "",
         });
         if (media) {
-          /* Soft ken burn — gentle settle, same wipe timing */
+          /* Soft ken burn â€” gentle settle, same wipe timing */
           gsap.set(media, {
             x: 0,
             xPercent: 0,
@@ -881,7 +881,7 @@ export function useExScrollMotion() {
           end: isPhoneStack ? "bottom bottom" : `+=${scrollSpan * 100}%`,
           /*
            * Narrow/phone: CSS sticky section height is the runway.
-           * Desktop: short scrub lag — long lag felt rubbery/glitchy on settle.
+           * Desktop: short scrub lag â€” long lag felt rubbery/glitchy on settle.
            */
           scrub: isPhoneStack ? true : 0.25,
           /*
@@ -902,7 +902,7 @@ export function useExScrollMotion() {
               );
             }
           },
-          /* Keep pinned width stable — no 100vw recalculation on pin */
+          /* Keep pinned width stable â€” no 100vw recalculation on pin */
           onRefresh: (self) => {
             const pin = self.pin as HTMLElement | null;
             if (!pin) return;
@@ -921,7 +921,7 @@ export function useExScrollMotion() {
       if (silkChars.length) {
         const silkDuration = introText * 0.55;
         if (isPhone) {
-          /* Word-level rise — same motion, far fewer staggered nodes */
+          /* Word-level rise â€” same motion, far fewer staggered nodes */
           const words: HTMLElement[][] = [];
           let bucket: HTMLElement[] = [];
           silkChars.forEach((el) => {
@@ -999,7 +999,7 @@ export function useExScrollMotion() {
           onUpdate: () => {
             const edge = quantiseFogEdge(firstFog.edge, fogStepped);
             firstCard.style.setProperty("--stack-fog-edge", `${edge}%`);
-            /* Linear reveal — *1.8 saturated early and flickered at the lip */
+            /* Linear reveal â€” *1.8 saturated early and flickered at the lip */
             const op = Math.min(1, Math.max(0, firstFog.reveal));
             firstCard.style.opacity = String(op);
             if (op > 0.02) firstCard.style.visibility = "visible";
@@ -1070,7 +1070,7 @@ export function useExScrollMotion() {
         const prevPanel = copyPanels[i - 1];
         const nextPanel = copyPanels[i];
 
-        /* Fog dissolve: next image rises through soft edge — same as campaign CTA */
+        /* Fog dissolve: next image rises through soft edge â€” same as campaign CTA */
         const fog = { edge: 0, reveal: 0 };
         tl.fromTo(
           fog,
@@ -1087,7 +1087,7 @@ export function useExScrollMotion() {
             onUpdate: () => {
               const edge = quantiseFogEdge(fog.edge, fogStepped);
               card.style.setProperty("--stack-fog-edge", `${edge}%`);
-              /* Opacity only — linear reveal avoids lip flicker */
+              /* Opacity only â€” linear reveal avoids lip flicker */
               const op = Math.min(1, Math.max(0, fog.reveal));
               card.style.opacity = String(op);
               if (op > 0.02) card.style.visibility = "visible";
@@ -1173,7 +1173,7 @@ export function useExScrollMotion() {
           const underCard = cards[j];
           const underMedia = getCardMedia(underCard);
 
-          /* Keep full-bleed coverage — dim via opacity (filter:brightness thrashed GPU) */
+          /* Keep full-bleed coverage â€” dim via opacity (filter:brightness thrashed GPU) */
           tl.to(
             underCard,
             {
@@ -1296,58 +1296,25 @@ export function useExScrollMotion() {
   }
 
   /* -------------------------------------------------------
-   * Home text story — Way of Life → Dining stacked scrub
-   * Media above, copy below; fog image swap + rising text
+   * Home text story — Way of Life - Dining side-by-side pin
+   * Same itineraries clip wipe + rising copy; layout L/R then reverse
    * ----------------------------------------------------- */
   function initHomeTextStory() {
     const section = document.querySelector<HTMLElement>(".home-story");
     const viewport = section?.querySelector<HTMLElement>(".home-story__viewport");
-    const cards = gsap.utils.toArray<HTMLElement>(".home-story__card");
-    const panels = gsap.utils.toArray<HTMLElement>(".home-story__panel");
-    const pager = section?.querySelector<HTMLElement>("[data-home-story-pager]");
-    const pagerNum = section?.querySelector<HTMLElement>(
-      "[data-home-story-pager-num]",
-    );
-    const pagerLine = section?.querySelector<HTMLElement>(
-      "[data-home-story-pager-line]",
-    );
-    if (!section || !viewport || cards.length < 1) return;
+    const slides = gsap.utils.toArray<HTMLElement>(".home-story__slide");
+    if (!section || !viewport || slides.length < 1) return;
 
-    section.setAttribute("data-mobile-fog-rise", "");
-    section.classList.add("signature-fog-rise");
+    const OPEN_CLIP = "polygon(0 0, 100% 0, 100% 100%, 0 100%)";
+    const CLOSED_CLIP = "polygon(0 0, 0 0, 0 0, 0 0)";
 
-    const FOG_STEPS = 56;
-    const FOG_RANGE = 140;
-    const quantiseFogEdge = (edge: number, stepped: boolean) => {
-      if (!stepped) return edge;
-      const step = FOG_RANGE / FOG_STEPS;
-      return Math.round(edge / step) * step;
-    };
+    const getMedia = (slide: HTMLElement) =>
+      slide.querySelector<HTMLElement>(".home-story__media-link");
+    const getImg = (slide: HTMLElement) =>
+      slide.querySelector<HTMLElement>(".home-story__media-link img");
 
-    const clearFogWillChange = (
-      card: HTMLElement,
-      media: HTMLElement | null,
-    ) => {
-      card.style.willChange = "auto";
-      if (media) media.style.willChange = "auto";
-    };
-
-    const setPager = (index: number) => {
-      const safe = Math.max(0, Math.min(index, cards.length - 1));
-      if (pagerNum) {
-        pagerNum.textContent = String(safe + 1).padStart(2, "0");
-      }
-      if (pagerLine) {
-        const progress = (safe + 1) / cards.length;
-        pagerLine.style.transform = `scaleY(${progress})`;
-      }
-    };
-
-    const getCardMedia = (card: HTMLElement) =>
-      card.querySelector<HTMLElement>(".home-story__card-media img");
-
-    panels.forEach((panel) => {
-      const targets = panel.querySelectorAll<HTMLElement>(
+    slides.forEach((slide) => {
+      const targets = slide.querySelectorAll<HTMLElement>(
         lightenDevice
           ? ".home-story__title-line"
           : ".home-story__title-line, .home-story__body",
@@ -1358,27 +1325,27 @@ export function useExScrollMotion() {
           ...(lightenDevice ? splitAtelierWords(el) : splitAtelierText(el)),
         );
       });
-      (panel as HTMLElement & { __stackChars?: HTMLElement[] }).__stackChars =
+      (slide as HTMLElement & { __stackChars?: HTMLElement[] }).__stackChars =
         chars;
     });
 
     if (prefersReduced) {
-      cards.forEach((card, index) => {
-        gsap.set(card, {
-          autoAlpha: index === 0 ? 1 : 0,
-          "--stack-fog-edge": index === 0 ? "140%" : "0%",
-        });
-      });
-      panels.forEach((panel) => {
+      slides.forEach((slide, index) => {
+        const media = getMedia(slide);
         const chars =
-          (panel as HTMLElement & { __stackChars?: HTMLElement[] })
+          (slide as HTMLElement & { __stackChars?: HTMLElement[] })
             .__stackChars;
-        gsap.set(panel, { autoAlpha: 1, visibility: "visible" });
+        gsap.set(slide, {
+          autoAlpha: 1,
+          visibility: "visible",
+        });
+        if (media) gsap.set(media, { clipPath: OPEN_CLIP, scale: 1 });
         if (chars?.length) gsap.set(chars, { yPercent: 0, opacity: 1 });
-        panel.setAttribute("aria-hidden", "false");
+        slide.setAttribute("aria-hidden", "false");
+        if (index > 0) {
+          /* Keep document order readable; CSS stacks them statically */
+        }
       });
-      if (pager) gsap.set(pager, { autoAlpha: 0 });
-      setPager(0);
       return;
     }
 
@@ -1392,62 +1359,50 @@ export function useExScrollMotion() {
     const build = () => {
       killExisting();
 
-      const total = cards.length;
-      const dwell = 0.55;
-      const move = 0.85;
-      const release = 0.55;
-      const introHold = 0.12;
-      const introFog = 0.55;
-      const introSpan = introHold + introFog;
+      const total = slides.length;
+      /* 0.00–0.18 hold - 0.18–0.70 first wipe+rise - dwell - swap wipe - release */
+      const introHold = 0.1;
+      const land = 0.72;
+      const dwell = 0.48;
+      const swap = 0.85;
+      const release = 0.45;
+      const introSpan = introHold + land;
       const scrollSpan =
         total <= 1
           ? introSpan + dwell + release
-          : introSpan + total * (move + dwell) + release;
-      const fogStepped = isPhone || lightenDevice;
+          : introSpan + dwell + (total - 1) * (swap + dwell) + release;
       const stickyRunway = isPhone || isNarrowViewport;
 
-      cards.forEach((card, index) => {
-        const media = getCardMedia(card);
-        gsap.set(card, {
-          zIndex: index + 1,
-          yPercent: 0,
-          scale: 1,
-          filter: "brightness(1)",
-          "--stack-fog-edge": "0%",
+      slides.forEach((slide, index) => {
+        const media = getMedia(slide);
+        const chars =
+          (slide as HTMLElement & { __stackChars?: HTMLElement[] })
+            .__stackChars;
+        gsap.set(slide, {
           autoAlpha: 0,
-          force3D: true,
+          visibility: "hidden",
+          zIndex: index + 1,
         });
         if (media) {
           gsap.set(media, {
-            scale: index === 0 ? 1.08 : 1.1,
-            yPercent: index === 0 ? 3 : 4,
-            force3D: true,
+            clipPath: CLOSED_CLIP,
+            WebkitClipPath: CLOSED_CLIP,
+            scale: 1.28,
           });
         }
-      });
-
-      panels.forEach((panel) => {
-        const chars =
-          (panel as HTMLElement & { __stackChars?: HTMLElement[] })
-            .__stackChars;
-        gsap.set(panel, { autoAlpha: 0, visibility: "hidden" });
         if (chars?.length) {
           gsap.killTweensOf(chars);
           gsap.set(chars, { yPercent: 100, opacity: 0 });
         }
-        panel.setAttribute("aria-hidden", "true");
+        slide.setAttribute("aria-hidden", "true");
       });
 
-      if (pager) gsap.set(pager, { autoAlpha: 0, visibility: "hidden" });
-      setPager(0);
-
       logPhonePerfDev({
-        surface: "home-story-fog-rise",
+        surface: "home-story-itineraries-wipe",
         cards: total,
         phoneLightweight: isPhone,
         pin: !stickyRunway,
         stickyRunway,
-        fogSteps: fogStepped ? FOG_STEPS : "continuous",
       });
 
       const tl = gsap.timeline({
@@ -1455,21 +1410,13 @@ export function useExScrollMotion() {
           id: "home-story-scroll",
           trigger: section,
           start: "top top",
-          end: stickyRunway ? "bottom bottom" : `+=${scrollSpan * 90}%`,
-          scrub: stickyRunway ? true : 0.25,
+          end: stickyRunway ? "bottom bottom" : `+=${scrollSpan * 95}%`,
+          scrub: stickyRunway ? true : 0.3,
           pin: stickyRunway ? false : viewport,
           pinSpacing: !stickyRunway,
           anticipatePin: 1,
           fastScrollEnd: true,
           invalidateOnRefresh: !isPhone,
-          onToggle: (self) => {
-            section.classList.toggle("is-fog-active", self.isActive);
-            if (!self.isActive) {
-              cards.forEach((card) =>
-                clearFogWillChange(card, getCardMedia(card)),
-              );
-            }
-          },
           onRefresh: (self) => {
             const pin = self.pin as HTMLElement | null;
             if (!pin) return;
@@ -1484,193 +1431,100 @@ export function useExScrollMotion() {
       });
       if (tl.scrollTrigger) trackTrigger(tl.scrollTrigger);
 
-      // 0.00–introHold: brief dwell before first reveal
-      // introHold–introSpan: first image fog-rises + first copy rises
-      const firstCard = cards[0];
-      const firstMedia = getCardMedia(firstCard);
-      const firstFog = { edge: 0, reveal: 0 };
-      tl.fromTo(
-        firstFog,
-        { edge: 0, reveal: 0 },
-        {
-          edge: FOG_RANGE,
-          reveal: 1,
-          ease: "none",
-          duration: introFog,
-          onStart: () => {
-            firstCard.style.willChange = "opacity";
-            if (firstMedia) firstMedia.style.willChange = "transform";
-          },
-          onUpdate: () => {
-            const edge = quantiseFogEdge(firstFog.edge, fogStepped);
-            firstCard.style.setProperty("--stack-fog-edge", `${edge}%`);
-            const op = Math.min(1, Math.max(0, firstFog.reveal));
-            firstCard.style.opacity = String(op);
-            if (op > 0.02) firstCard.style.visibility = "visible";
-          },
-          onComplete: () => clearFogWillChange(firstCard, firstMedia),
-        },
-        introHold,
-      );
+      const landSlide = (
+        slide: HTMLElement,
+        at: number,
+        duration: number,
+      ) => {
+        const media = getMedia(slide);
+        const img = getImg(slide);
+        const chars =
+          (slide as HTMLElement & { __stackChars?: HTMLElement[] })
+            .__stackChars;
 
-      if (firstMedia) {
-        tl.fromTo(
-          firstMedia,
-          { scale: 1.1, yPercent: 4, x: 0 },
-          {
-            scale: 1.03,
-            yPercent: 0,
-            x: 0,
-            ease: "none",
-            duration: introFog,
-          },
-          introHold,
+        tl.set(
+          slide,
+          { autoAlpha: 1, visibility: "visible" },
+          at,
         );
-      }
-
-      const firstPanel = panels[0];
-      if (firstPanel) {
-        tl.fromTo(
-          firstPanel,
-          { autoAlpha: 0, visibility: "visible" },
-          {
-            autoAlpha: 1,
-            ease: "none",
-            duration: introFog * 0.55,
-            onStart: () => {
-              firstPanel.setAttribute("aria-hidden", "false");
-              setPager(0);
-            },
-          },
-          introHold + introFog * 0.35,
-        );
-        scrubStackChars(
-          tl,
-          firstPanel,
-          introHold + introFog * 0.35,
-          introFog * 0.55,
-          "in",
-        );
-      }
-
-      if (pager) {
-        tl.fromTo(
-          pager,
-          { autoAlpha: 0, visibility: "visible" },
-          { autoAlpha: 1, ease: "none", duration: introFog * 0.4 },
-          introHold + introFog * 0.35,
-        );
-      }
-
-      // Subsequent slides: image covers previous + copy rises
-      for (let i = 1; i < total; i++) {
-        const moveAt = introSpan + (i - 1) * (move + dwell) + dwell;
-        const card = cards[i];
-        const media = getCardMedia(card);
-        const prevPanel = panels[i - 1];
-        const nextPanel = panels[i];
-        const fog = { edge: 0, reveal: 0 };
-
-        tl.fromTo(
-          fog,
-          { edge: 0, reveal: 0 },
-          {
-            edge: FOG_RANGE,
-            reveal: 1,
-            ease: "none",
-            duration: move,
-            onStart: () => {
-              card.style.willChange = "opacity";
-              if (media) media.style.willChange = "transform";
-            },
-            onUpdate: () => {
-              const edge = quantiseFogEdge(fog.edge, fogStepped);
-              card.style.setProperty("--stack-fog-edge", `${edge}%`);
-              const op = Math.min(1, Math.max(0, fog.reveal));
-              card.style.opacity = String(op);
-              if (op > 0.02) card.style.visibility = "visible";
-            },
-            onComplete: () => clearFogWillChange(card, media),
-          },
-          moveAt,
+        tl.call(
+          () => slide.setAttribute("aria-hidden", "false"),
+          undefined,
+          at,
         );
 
         if (media) {
+          /* Same itineraries wipe: closed clip + scale 1.28 > open + 1 */
           tl.fromTo(
             media,
-            { scale: 1.1, yPercent: 4.5, x: 0 },
             {
-              scale: 1.03,
-              yPercent: 0,
-              x: 0,
-              ease: "none",
-              duration: move,
+              clipPath: CLOSED_CLIP,
+              WebkitClipPath: CLOSED_CLIP,
+              scale: lightenDevice ? 1.18 : 1.28,
             },
-            moveAt,
+            {
+              clipPath: OPEN_CLIP,
+              WebkitClipPath: OPEN_CLIP,
+              scale: 1,
+              ease: "none",
+              duration,
+            },
+            at,
           );
         }
 
-        if (prevPanel && nextPanel) {
-          tl.to(
-            prevPanel,
-            {
-              autoAlpha: 0,
-              ease: "none",
-              duration: move * 0.45,
-              onStart: () => prevPanel.setAttribute("aria-hidden", "true"),
-              onReverseComplete: () => {
-                prevPanel.setAttribute("aria-hidden", "false");
-                setPager(i - 1);
-              },
-            },
-            moveAt + move * 0.12,
-          );
-          scrubStackChars(
-            tl,
-            prevPanel,
-            moveAt + move * 0.12,
-            move * 0.45,
-            "out",
-          );
-
+        if (img && !lightenDevice) {
           tl.fromTo(
-            nextPanel,
-            { autoAlpha: 0, visibility: "visible" },
-            {
-              autoAlpha: 1,
-              ease: "none",
-              duration: move * 0.55,
-              onStart: () => {
-                nextPanel.setAttribute("aria-hidden", "false");
-                setPager(i);
-              },
-              onReverseComplete: () =>
-                nextPanel.setAttribute("aria-hidden", "true"),
-            },
-            moveAt + move * 0.38,
-          );
-          scrubStackChars(
-            tl,
-            nextPanel,
-            moveAt + move * 0.38,
-            move * 0.55,
-            "in",
+            img,
+            { scale: 1.08 },
+            { scale: 1, ease: "none", duration },
+            at,
           );
         }
 
-        const underStart = isPhone ? i - 1 : 0;
-        for (let j = Math.max(0, underStart); j < i; j++) {
-          const depth = i - j;
-          tl.to(
-            cards[j],
-            {
-              opacity: Math.max(0.72, 1 - depth * 0.08),
-              ease: "none",
-              duration: move,
-            },
-            moveAt,
-          );
+        if (chars?.length) {
+          scrubStackChars(tl, slide, at + duration * 0.28, duration * 0.55, "in");
         }
+      };
+
+      const exitSlide = (
+        slide: HTMLElement,
+        at: number,
+        duration: number,
+      ) => {
+        const chars =
+          (slide as HTMLElement & { __stackChars?: HTMLElement[] })
+            .__stackChars;
+        if (chars?.length) {
+          scrubStackChars(tl, slide, at, duration * 0.55, "out");
+        }
+        tl.to(
+          slide,
+          {
+            autoAlpha: 0,
+            ease: "none",
+            duration: duration * 0.65,
+            onComplete: () => {
+              slide.setAttribute("aria-hidden", "true");
+              slide.style.visibility = "hidden";
+            },
+            onReverseComplete: () => {
+              slide.setAttribute("aria-hidden", "false");
+              slide.style.visibility = "visible";
+            },
+          },
+          at + duration * 0.15,
+        );
+      };
+
+      // First slide lands (itineraries wipe + text rise)
+      landSlide(slides[0], introHold, land);
+
+      // Further slides: previous exits, next lands — page stays pinned
+      for (let i = 1; i < total; i++) {
+        const swapAt = introSpan + dwell + (i - 1) * (swap + dwell);
+        exitSlide(slides[i - 1], swapAt, swap * 0.55);
+        landSlide(slides[i], swapAt + swap * 0.22, swap * 0.78);
       }
 
       tl.to({}, { duration: release });
@@ -1707,11 +1561,10 @@ export function useExScrollMotion() {
       killExisting();
     });
   }
-
   /* -------------------------------------------------------
-   * PATTERN B variant — Carousel sequential wipe reveal
+   * PATTERN B variant â€” Carousel sequential wipe reveal
    *   start top 50%, once, delay i*0.25
-   *   clip + scale 1.5→1 duration 0.8, then chars
+   *   clip + scale 1.5â†’1 duration 0.8, then chars
    *   custom lightweight carousel (no Elementor Swiper)
    * ----------------------------------------------------- */
   function initCarousel() {
@@ -1842,7 +1695,7 @@ export function useExScrollMotion() {
       /*
        * Only wipe the cards currently in view (3 desktop / 2 tablet / 1 phone).
        * Off-screen slides stay fully revealed so arrow/autoplay never flash
-       * clipped cards — same effect, same scroll trigger, smaller scope.
+       * clipped cards â€” same effect, same scroll trigger, smaller scope.
        */
       const visibleCount = Math.min(slidesPerView(), slides.length);
 
@@ -1923,11 +1776,11 @@ export function useExScrollMotion() {
   }
 
   /* -------------------------------------------------------
-   * Gallery marquee — no scroll-triggered tween.
+   * Gallery marquee â€” no scroll-triggered tween.
    * A fade here stacked with IG bubble pop and caused a Lenis hitch.
    * ----------------------------------------------------- */
   function initGalleryItems() {
-    /* intentionally empty — marquee is CSS-visible */
+    /* intentionally empty â€” marquee is CSS-visible */
   }
 
   /* -------------------------------------------------------
@@ -2042,7 +1895,7 @@ export function useExScrollMotion() {
       }
     };
 
-    /* Boot finished at Y=0 — restore while logo still CSS-hidden, then reveal logo. */
+    /* Boot finished at Y=0 â€” restore while logo still CSS-hidden, then reveal logo. */
     restoreNow();
     requestAnimationFrame(() => {
       restoreNow();
@@ -2068,7 +1921,7 @@ export function useExScrollMotion() {
       helmCleanup?.();
       motionCleanups.forEach((cleanup) => cleanup());
       try {
-        /* Kill only triggers owned by this homepage hook — never global getAll().kill() */
+        /* Kill only triggers owned by this homepage hook â€” never global getAll().kill() */
         const owned = new Set(ownedTriggerIds);
         ScrollTrigger.getAll().forEach((st) => {
           const id = String(st.vars?.id || "");

@@ -24,22 +24,30 @@ export function HomeTextStorySection({ slides }: HomeTextStorySectionProps) {
 
   return (
     <section
-      className="home-story ex-content-section signature-fog-rise"
+      className="home-story ex-content-section"
       id="escape"
-      data-mobile-fog-rise=""
       aria-label="Hathor experiences"
     >
       <div className="home-story__viewport">
-        <div className="home-story__stage">
-          <div className="home-story__media" aria-hidden="true">
-            {slides.map((slide, index) => (
-              <div
-                key={slide.imageName}
-                className="home-story__card"
-                data-home-story-card={String(index)}
-              >
-                <div
-                  className="home-story__card-media"
+        {slides.map((slide, index) => {
+          const titleLines = slide.title
+            .split("\n")
+            .map((line) => line.trim())
+            .filter(Boolean);
+          const reverse = index % 2 === 1;
+
+          return (
+            <article
+              key={`${slide.href}-${slide.imageName}`}
+              className={`home-story__slide${reverse ? " is-reverse" : ""}`}
+              data-home-story-slide={String(index)}
+              aria-hidden={index === 0 ? "false" : "true"}
+            >
+              <div className="home-story__media home-text-img-parent">
+                <Link
+                  href={slide.href}
+                  className="home-story__media-link home-text-img-container"
+                  aria-label={slide.cta}
                   id={
                     slide.previewAnchor
                       ? siteImageAnchorId(slide.imageName)
@@ -53,29 +61,16 @@ export function HomeTextStorySection({ slides }: HomeTextStorySectionProps) {
                     name={slide.imageName}
                     alt={slide.imageAlt}
                     fill
-                    sizes="(max-width: 768px) 100vw, min(1200px, 92vw)"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
                     unoptimized={false}
                     className="object-cover object-center"
                     previewAnchor={false}
                   />
-                </div>
+                </Link>
               </div>
-            ))}
-          </div>
 
-          <div className="home-story__copy">
-            {slides.map((slide, index) => {
-              const titleLines = slide.title
-                .split("\n")
-                .map((line) => line.trim())
-                .filter(Boolean);
-              return (
-                <div
-                  key={`copy-${slide.href}-${slide.imageName}`}
-                  className="home-story__panel"
-                  data-home-story-panel={String(index)}
-                  aria-hidden={index === 0 ? "false" : "true"}
-                >
+              <div className="home-story__copy">
+                <div className="home-story__heading">
                   <h2 className="home-story__title typo-page-title">
                     {titleLines.map((line) => (
                       <span
@@ -86,49 +81,19 @@ export function HomeTextStorySection({ slides }: HomeTextStorySectionProps) {
                       </span>
                     ))}
                   </h2>
-                  {slide.body ? (
-                    <p className="home-story__body typo-body-text">{slide.body}</p>
-                  ) : null}
-                  {slide.cta ? (
-                    <Link
-                      className="btn btn-dark home-story__cta"
-                      href={slide.href}
-                    >
-                      {slide.cta}
-                    </Link>
-                  ) : null}
                 </div>
-              );
-            })}
-
-            {slides.length > 1 ? (
-              <div
-                className="home-story__pager"
-                data-home-story-pager
-                aria-hidden="true"
-              >
-                <span
-                  className="home-story__pager-num"
-                  data-home-story-pager-num
-                >
-                  01
-                </span>
-                <div className="home-story__pager-rail">
-                  <span
-                    className="home-story__pager-line"
-                    data-home-story-pager-line
-                    style={{
-                      transform: `scaleY(${1 / Math.max(slides.length, 1)})`,
-                    }}
-                  />
-                </div>
-                <span className="home-story__pager-total">
-                  {String(slides.length).padStart(2, "0")}
-                </span>
+                {slide.body ? (
+                  <p className="home-story__body typo-body-text">{slide.body}</p>
+                ) : null}
+                {slide.cta ? (
+                  <Link className="btn btn-dark home-story__cta" href={slide.href}>
+                    {slide.cta}
+                  </Link>
+                ) : null}
               </div>
-            ) : null}
-          </div>
-        </div>
+            </article>
+          );
+        })}
       </div>
     </section>
   );
