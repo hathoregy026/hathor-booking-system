@@ -65,9 +65,7 @@ const SELECTORS = [
   ".public-site .ex-root .radius-heading h2",
   ".public-site .ex-root .radius-sub-heading h3",
   ".public-site .ex-root .radius-p p",
-  ".public-site .ex-root .home-carousel-h2 h2",
-  ".public-site .ex-root .home-carousel-h3 h3",
-  ".public-site .ex-root .home-carousel .carousel-heading h2",
+  /* Carousel titles: visible always — atelier hide + pin refresh left empty cream */
   ".public-site .ex-root .home-text-h2 h2",
   ".public-site .ex-root .home-text-p p",
   /* Gallery title / IG copy: no atelier — ST letter rise beside bubble pop caused a scroll hitch */
@@ -110,6 +108,10 @@ const SKIP_CLOSEST = [
   ".hcta-track",
   ".campaign-section",
   ".gallery-section",
+  /* Itineraries titles must never park at opacity 0 after pin refresh */
+  ".services-section",
+  ".services-intro",
+  ".home-carousel",
   "button",
   "input",
   "textarea",

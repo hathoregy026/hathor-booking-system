@@ -762,8 +762,6 @@ export function useExScrollMotion() {
     /** Copy/chrome only after the photo mostly covers cream silk. */
     const COPY_AFTER_FOG = 0.78;
     const SOLID_LOCK = 0.97;
-    /** Hide covered plates once the next photo is this far through its rise. */
-    const RETIRE_UNDER_AT = 0.92;
     let photoReady = false;
     const quantiseFogEdge = (edge: number, stepped: boolean) => {
       if (!stepped) return edge;
@@ -812,30 +810,35 @@ export function useExScrollMotion() {
       if (solid) syncStackPhotoReady(true);
     };
 
-    /** Keep the plate under a rising fog dissolve fully solid and visible. */
+    /**
+     * Lock covered plates to a full fog mask so cream never punches through
+     * the soft lip. Opacity/visibility stay owned by each card's fog tween —
+     * writing opacity here left later plates stuck visible after reverse scrub.
+     */
     const holdUnderCard = (index: number) => {
       const under = cards[index];
       if (!under) return;
       under.classList.add("is-stack-solid");
       under.style.setProperty("--stack-fog-edge", `${FOG_RANGE}%`);
-      under.style.opacity = "1";
-      under.style.visibility = "visible";
     };
 
-    /**
-     * Once the next photo has covered, retire every plate beneath it so no
-     * image can flash back on later scrolls. Reverse scrub restores them.
-     */
-    const setRetiredUnderCards = (activeIndex: number, retire: boolean) => {
-      for (let j = 0; j < activeIndex; j++) {
-        const under = cards[j];
-        if (!under) continue;
-        if (retire) {
-          under.style.opacity = "0";
-          under.style.visibility = "hidden";
-        } else {
-          holdUnderCard(j);
-        }
+    const holdUnderCardsThrough = (activeIndex: number) => {
+      for (let j = 0; j < activeIndex; j++) holdUnderCard(j);
+    };
+
+    const resetStackToSilk = () => {
+      cards.forEach((card) => {
+        applyFogReveal(card, 0, 0);
+        card.classList.remove("is-stack-solid");
+      });
+      syncStackPhotoReady(false);
+      copyPanels.forEach((panel, index) => {
+        gsap.set(panel, { autoAlpha: 0, visibility: "hidden" });
+        panel.setAttribute("aria-hidden", "true");
+      });
+      if (pager) gsap.set(pager, { autoAlpha: 0, visibility: "hidden" });
+      if (progressRoot) {
+        gsap.set(progressRoot, { autoAlpha: 0, visibility: "hidden" });
       }
     };
 
@@ -1010,7 +1013,7 @@ export function useExScrollMotion() {
           end: isPhoneStack ? "bottom bottom" : `+=${scrollSpan * 100}%`,
           /*
            * Narrow/phone: CSS sticky section height is the runway.
-           * Desktop: short scrub lag â€” long lag felt rubbery/glitchy on settle.
+           * Desktop: short scrub lag — long lag felt rubbery/glitchy on settle.
            */
           scrub: isPhoneStack ? true : 0.25,
           /*
@@ -1023,6 +1026,10 @@ export function useExScrollMotion() {
           anticipatePin: 1,
           fastScrollEnd: true,
           invalidateOnRefresh: !isPhone,
+          onUpdate: (self) => {
+            /* Hard snap back to cream invitation if scrub lands at the start */
+            if (self.progress <= 0.001) resetStackToSilk();
+          },
           onToggle: (self) => {
             section.classList.toggle("is-fog-active", self.isActive);
             if (!self.isActive) {
@@ -1031,7 +1038,7 @@ export function useExScrollMotion() {
               );
             }
           },
-          /* Keep pinned width stable â€” no 100vw recalculation on pin */
+          /* Keep pinned width stable — no 100vw recalculation on pin */
           onRefresh: (self) => {
             const pin = self.pin as HTMLElement | null;
             if (!pin) return;
@@ -1134,6 +1141,11 @@ export function useExScrollMotion() {
             syncStackPhotoReady(true);
             clearFogWillChange(firstCard, firstMedia);
           },
+          onReverseComplete: () => {
+            applyFogReveal(firstCard, 0, 0);
+            syncStackPhotoReady(false);
+            firstCard.classList.remove("is-stack-solid");
+          },
         },
         introFogAt,
       );
@@ -1225,30 +1237,23 @@ export function useExScrollMotion() {
             onStart: () => {
               card.style.willChange = "opacity";
               if (media) media.style.willChange = "transform";
-              /* Immediate previous stays under the fog lip; older plates stay retired */
-              holdUnderCard(i - 1);
-              setRetiredUnderCards(i - 1, true);
+              /* Keep every covered plate solid underneath — z-index hides them */
+              holdUnderCardsThrough(i);
             },
             onUpdate: () => {
               applyFogReveal(card, fog.edge, fog.reveal);
-              if (fog.reveal < RETIRE_UNDER_AT) {
-                holdUnderCard(i - 1);
-                setRetiredUnderCards(i - 1, true);
-              } else {
-                /* Covered — retire every older plate so none can flash back */
-                setRetiredUnderCards(i, true);
-              }
+              holdUnderCardsThrough(i);
             },
             onComplete: () => {
               applyFogReveal(card, FOG_RANGE, 1);
-              setRetiredUnderCards(i, true);
+              holdUnderCardsThrough(i);
               clearFogWillChange(card, media);
             },
             onReverseComplete: () => {
-              /* Scrubbed back off this card — only the previous plate returns */
+              /* Scrubbed back off this card — hide it; restore previous plate */
               applyFogReveal(card, 0, 0);
+              holdUnderCardsThrough(i);
               holdUnderCard(i - 1);
-              setRetiredUnderCards(i - 1, true);
             },
           },
           moveAt,
@@ -1815,20 +1820,24 @@ export function useExScrollMotion() {
     // Sequential reveal of each card
     function initCarouselSequentialReveal() {
       const OPEN_CLIP = "polygon(0 0, 100% 0, 100% 100%, 0 100%)";
-      const CLOSED_CLIP = "polygon(0 0, 0 0, 0 0, 0 0)";
+
+      /*
+       * Always leave cards fully open. Closed clip-path + once:true + landmark
+       * pin refresh repeatedly left this band as empty cream (arrows + CTA only).
+       * Soft fade-up still reads as a reveal without a stuck-hidden failure mode.
+       */
+      slides.forEach((slide) => {
+        const container = slide.querySelector(".carousel-container");
+        if (!container) return;
+        gsap.set(container, {
+          clipPath: OPEN_CLIP,
+          WebkitClipPath: OPEN_CLIP,
+          scale: 1,
+          clearProps: "clipPath,WebkitClipPath,transform",
+        });
+      });
 
       if (prefersReduced) {
-        slides.forEach((slide) => {
-          const container = slide.querySelector(".carousel-container");
-          if (container) {
-            gsap.set(container, {
-              clipPath: OPEN_CLIP,
-              WebkitClipPath: OPEN_CLIP,
-              scale: 1,
-              clearProps: "clipPath,WebkitClipPath,transform",
-            });
-          }
-        });
         revealed = true;
         if (nextBtn) nextBtn.style.pointerEvents = "auto";
         if (prevBtn) prevBtn.style.pointerEvents = "auto";
@@ -1836,16 +1845,14 @@ export function useExScrollMotion() {
         return;
       }
 
-      // Disable nav until reveal finishes (matches original)
       if (nextBtn) nextBtn.style.pointerEvents = "none";
       if (prevBtn) prevBtn.style.pointerEvents = "none";
 
-      /*
-       * Only wipe the cards currently in view (3 desktop / 2 tablet / 1 phone).
-       * Off-screen slides stay fully revealed so arrow/autoplay never flash
-       * clipped cards — same effect, same scroll trigger, smaller scope.
-       */
       const visibleCount = Math.min(slidesPerView(), slides.length);
+      const revealTargets = slides
+        .slice(0, visibleCount)
+        .map((slide) => slide.querySelector(".carousel-container"))
+        .filter(Boolean);
 
       const finishRevealChrome = () => {
         if (revealed) return;
@@ -1856,73 +1863,58 @@ export function useExScrollMotion() {
         if (prevBtn) prevBtn.style.pointerEvents = "auto";
       };
 
-      slides.forEach((slide, i) => {
-        const container = slide.querySelector(".carousel-container");
-        if (!container) return;
+      if (!revealTargets.length) {
+        finishRevealChrome();
+        return;
+      }
 
-        if (i >= visibleCount) {
-          gsap.set(container, {
-            clipPath: OPEN_CLIP,
-            WebkitClipPath: OPEN_CLIP,
-            scale: 1,
-          });
-          return;
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          id: "ex-carousel-wipe",
+          trigger: root,
+          start: "top 70%",
+          toggleActions: "play none none none",
+          once: true,
+          invalidateOnRefresh: true,
+          onRefresh: (self) => {
+            if (self.progress === 1 || self.isActive) {
+              finishRevealChrome();
+              return;
+            }
+            const rect = root.getBoundingClientRect();
+            const vh = window.innerHeight || 1;
+            if (rect.top < vh * 0.92 && rect.bottom > vh * 0.08) {
+              self.animation?.progress(1);
+              finishRevealChrome();
+            }
+          },
+        },
+      });
+
+      tl.fromTo(
+        revealTargets,
+        { autoAlpha: 0.35, y: 28 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.85,
+          stagger: 0.12,
+          ease: "power3.out",
+          immediateRender: false,
+        },
+      );
+      tl.add(finishRevealChrome);
+
+      if (tl.scrollTrigger) trackTrigger(tl.scrollTrigger);
+
+      /* If already on screen at boot, finish immediately */
+      requestAnimationFrame(() => {
+        const rect = root.getBoundingClientRect();
+        const vh = window.innerHeight || 1;
+        if (rect.top < vh * 0.85 && rect.bottom > vh * 0.15) {
+          tl.progress(1);
+          finishRevealChrome();
         }
-
-        const delayPerSlide = 0.42;
-        const startDelay = i * delayPerSlide;
-
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            id: `ex-carousel-wipe-${i}`,
-            trigger: root,
-            start: "top 55%",
-            toggleActions: "play none none none",
-            once: true,
-            invalidateOnRefresh: true,
-            /*
-             * Landmark pin refresh can reset once:true wipes to the closed clip
-             * without replaying — force open when the carousel is on screen.
-             */
-            onRefresh: (self) => {
-              if (self.progress === 1 || self.isActive) return;
-              const rect = root.getBoundingClientRect();
-              const vh = window.innerHeight || 1;
-              if (rect.top < vh * 0.92 && rect.bottom > vh * 0.08) {
-                self.animation?.progress(1);
-                finishRevealChrome();
-              }
-            },
-          },
-          delay: startDelay,
-        });
-
-        tl.fromTo(
-          container,
-          {
-            clipPath: CLOSED_CLIP,
-            WebkitClipPath: CLOSED_CLIP,
-            scale: 1.28,
-          },
-          {
-            clipPath: OPEN_CLIP,
-            WebkitClipPath: OPEN_CLIP,
-            scale: 1,
-            duration: 1.75,
-            ease: "power3.out",
-            onComplete: () => {
-              gsap.set(container, {
-                clearProps: "clipPath,WebkitClipPath,transform",
-              });
-            },
-          },
-        );
-
-        if (i === visibleCount - 1) {
-          tl.add(finishRevealChrome);
-        }
-
-        if (tl.scrollTrigger) trackTrigger(tl.scrollTrigger);
       });
     }
 
