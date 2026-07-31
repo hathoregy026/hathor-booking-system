@@ -116,7 +116,6 @@ export function HomeLifestyleSection({
                   </span>
                   <span className="home-lifestyle__eyebrow-rule" aria-hidden />
                 </p>
-                <span className="home-lifestyle__eyebrow-mark" aria-hidden />
               </div>
             ) : null}
 
@@ -134,9 +133,7 @@ export function HomeLifestyleSection({
             </div>
 
             <div className="home-lifestyle__divider" aria-hidden>
-              <span className="home-lifestyle__divider-rule" />
               <span className="home-lifestyle__divider-mark" />
-              <span className="home-lifestyle__divider-rule" />
             </div>
 
             {paragraphs.length > 0 ? (
@@ -201,7 +198,6 @@ export function HomeLifestyleSection({
                 </span>
                 <div className="home-lifestyle__feature-copy">
                   <p className="home-lifestyle__feature-title">{feature.title}</p>
-                  <span className="home-lifestyle__feature-rule" aria-hidden />
                   <p className="home-lifestyle__feature-body">{feature.body}</p>
                 </div>
               </li>

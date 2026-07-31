@@ -27,6 +27,7 @@ import {
   type ExCarouselSlide,
 } from "@/lib/ex-page-content";
 import type { HomepageAccordionCruise } from "@/lib/homepage-accordion-cruises";
+import { HOMEPAGE_LIFESTYLE } from "@/lib/homepage-content";
 import type { SiteImageName } from "@/lib/site-image-slots";
 import { useExScrollMotion } from "@/hooks/useExScrollMotion";
 import {
@@ -641,6 +642,8 @@ export function HomePageClient({
           body={websiteText.home.textBlocks[0]?.body ?? EX_TEXT_BLOCKS[0].body}
           cta={websiteText.home.textBlocks[0]?.cta ?? EX_TEXT_BLOCKS[0].cta}
           href={EX_TEXT_BLOCKS[0].href}
+          secondaryCta={HOMEPAGE_LIFESTYLE.secondaryCta}
+          secondaryHref={HOMEPAGE_LIFESTYLE.secondaryHref}
           imageName={EX_TEXT_BLOCKS[0].imageName}
           imageAlt={EX_TEXT_BLOCKS[0].alt}
           previewAnchor={HOMEPAGE_PREVIEW_SLOTS.has(EX_TEXT_BLOCKS[0].imageName)}
