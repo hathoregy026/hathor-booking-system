@@ -700,8 +700,27 @@ export function useExScrollMotion() {
     const cards = gsap.utils.toArray<HTMLElement>(".ex-stack-scroll__card");
     const pager = section?.querySelector<HTMLElement>("[data-stack-pager]");
     const pagerNum = section?.querySelector<HTMLElement>("[data-stack-pager-num]");
-    const pagerLine = section?.querySelector<HTMLElement>("[data-stack-pager-line]");
+    const progressRoot = section?.querySelector<HTMLElement>(
+      "[data-stack-progress]",
+    );
     if (!section || !viewport || cards.length < 2) return;
+
+    const ensureStackProgressFills = () => {
+      if (!progressRoot) return;
+      progressRoot.querySelectorAll("span").forEach((seg) => {
+        let fill = seg.querySelector("i");
+        if (!fill) {
+          fill = document.createElement("i");
+          fill.style.cssText =
+            "position:absolute;inset:0;background:var(--gold-soft,#d4c28a);transform:scaleX(0);transform-origin:left center;display:block;";
+          (seg as HTMLElement).style.position = "relative";
+          (seg as HTMLElement).style.overflow = "hidden";
+          seg.appendChild(fill);
+        }
+        gsap.set(fill, { scaleX: 0 });
+      });
+    };
+    ensureStackProgressFills();
 
     section.setAttribute("data-mobile-fog-rise", "");
     section.classList.add("signature-fog-rise");
@@ -728,10 +747,9 @@ export function useExScrollMotion() {
       if (pagerNum) {
         pagerNum.textContent = String(safe + 1).padStart(2, "0");
       }
-      if (pagerLine) {
-        const progress = (safe + 1) / cards.length;
-        pagerLine.style.transform = `scaleY(${progress})`;
-      }
+      progressRoot?.querySelectorAll("span i").forEach((fill, i) => {
+        gsap.set(fill, { scaleX: i <= safe ? 1 : 0 });
+      });
     };
 
     prepareStackPanelSplits(copyPanels);
@@ -762,6 +780,7 @@ export function useExScrollMotion() {
         panel.setAttribute("aria-hidden", index === 0 ? "false" : "true");
       });
       if (pager) gsap.set(pager, { autoAlpha: 1 });
+      if (progressRoot) gsap.set(progressRoot, { autoAlpha: 1 });
       setStackPager(0);
       return;
     }
@@ -859,6 +878,9 @@ export function useExScrollMotion() {
       });
 
       if (pager) gsap.set(pager, { autoAlpha: 0, visibility: "hidden" });
+      if (progressRoot) {
+        gsap.set(progressRoot, { autoAlpha: 0, visibility: "hidden" });
+      }
       setStackPager(0);
 
       const isPhoneStack = isNarrowViewport;
@@ -1053,6 +1075,18 @@ export function useExScrollMotion() {
       if (pager) {
         tl.fromTo(
           pager,
+          { autoAlpha: 0, visibility: "visible" },
+          {
+            autoAlpha: 1,
+            ease: "none",
+            duration: introFog * 0.45,
+          },
+          introFogAt + introFog * 0.4,
+        );
+      }
+      if (progressRoot) {
+        tl.fromTo(
+          progressRoot,
           { autoAlpha: 0, visibility: "visible" },
           {
             autoAlpha: 1,

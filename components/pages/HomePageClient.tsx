@@ -468,6 +468,22 @@ export function HomePageClient({
             </div>
 
             <div className="ex-stack-scroll__copy typo-on-images">
+              <span
+                className="ex-stack-scroll__pager"
+                data-stack-pager
+                aria-hidden="true"
+              >
+                <i
+                  className="ex-stack-scroll__pager-num"
+                  data-stack-pager-num
+                >
+                  01
+                </i>
+                {" / "}
+                <span className="ex-stack-scroll__pager-total">
+                  {String(stackSlides.length).padStart(2, "0")}
+                </span>
+              </span>
               {stackSlides.map((slide, index) => (
                 <div
                   key={`copy-${slide.imageName}`}
@@ -504,28 +520,13 @@ export function HomePageClient({
                 </div>
               ))}
               <div
-                className="ex-stack-scroll__pager"
-                data-stack-pager
+                className="ex-stack-scroll__progress"
+                data-stack-progress
                 aria-hidden="true"
               >
-                <span
-                  className="ex-stack-scroll__pager-num"
-                  data-stack-pager-num
-                >
-                  01
-                </span>
-                <div className="ex-stack-scroll__pager-rail">
-                  <span
-                    className="ex-stack-scroll__pager-line"
-                    data-stack-pager-line
-                    style={{
-                      transform: `scaleY(${1 / Math.max(stackSlides.length, 1)})`,
-                    }}
-                  />
-                </div>
-                <span className="ex-stack-scroll__pager-total">
-                  {String(stackSlides.length).padStart(2, "0")}
-                </span>
+                {stackSlides.map((slide) => (
+                  <span key={`progress-${slide.imageName}`} />
+                ))}
               </div>
             </div>
           </div>
