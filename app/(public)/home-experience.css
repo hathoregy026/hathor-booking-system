@@ -2513,7 +2513,8 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .split-word {
   }
 }
 
-.home-helm-portal + .text-img-section {
+.home-helm-portal + .text-img-section,
+.home-helm-portal + .home-lifestyle {
   z-index: 22;
   margin-top: -12vh;
   padding-top: calc(clamp(80px, 10vw, 140px) + 12vh);
@@ -2522,7 +2523,8 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .split-word {
 }
 
 @media (max-width: 767px) {
-  .home-helm-portal + .text-img-section {
+  .home-helm-portal + .text-img-section,
+  .home-helm-portal + .home-lifestyle {
     margin-top: -8vh;
     padding-top: calc(clamp(80px, 10vw, 140px) + 8vh);
     border-radius: 50% 50% 0 0 / 48px 48px 0 0;
@@ -2548,7 +2550,8 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .split-word {
     display: none;
   }
 
-  .home-helm-portal + .text-img-section {
+  .home-helm-portal + .text-img-section,
+  .home-helm-portal + .home-lifestyle {
     margin-top: 0;
     padding-top: clamp(80px, 10vw, 140px);
   }

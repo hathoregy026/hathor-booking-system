@@ -10,6 +10,7 @@ import {
 } from "@/lib/hero-logo-tune-shared";
 import { combineDesktopAndNarrowCss } from "@/lib/admin-device-preview";
 import "./home-experience.css";
+import "./home-lifestyle.css";
 
 export const revalidate = 300;
 

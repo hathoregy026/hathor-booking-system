@@ -7,6 +7,7 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import rotatingWheel from "@/assets/LOGOS/rotating wheel.png";
 import LuxuryAccordion from "@/components/home/LuxuryAccordion";
 import { HomeCampaignSection } from "@/components/home/HomeCampaignSection";
+import { HomeLifestyleSection } from "@/components/home/HomeLifestyleSection";
 import { LuxuryMarquee } from "@/components/home/LuxuryMarquee";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { GalleryInstagramFollow } from "@/components/public/GalleryInstagramFollow";
@@ -633,16 +634,29 @@ export function HomePageClient({
           </div>
         </section>
 
-        <section className="text-img-section ex-content-section" id="escape">
-          {EX_TEXT_BLOCKS.map((block, index) => {
-            const cms = websiteText.home.textBlocks[index];
+        <HomeLifestyleSection
+          title={
+            websiteText.home.textBlocks[0]?.title ?? EX_TEXT_BLOCKS[0].title
+          }
+          body={websiteText.home.textBlocks[0]?.body ?? EX_TEXT_BLOCKS[0].body}
+          cta={websiteText.home.textBlocks[0]?.cta ?? EX_TEXT_BLOCKS[0].cta}
+          href={EX_TEXT_BLOCKS[0].href}
+          imageName={EX_TEXT_BLOCKS[0].imageName}
+          imageAlt={EX_TEXT_BLOCKS[0].alt}
+          previewAnchor={HOMEPAGE_PREVIEW_SLOTS.has(EX_TEXT_BLOCKS[0].imageName)}
+        />
+
+        <section className="text-img-section ex-content-section" id="dining">
+          {EX_TEXT_BLOCKS.slice(1).map((block, index) => {
+            const cmsIndex = index + 1;
+            const cms = websiteText.home.textBlocks[cmsIndex];
             const title = cms?.title ?? block.title;
             const body = cms?.body ?? block.body;
             const cta = cms?.cta ?? block.cta;
             return (
             <div
               key={block.href}
-              className={`text-img-row${index % 2 === 1 ? " is-reverse" : ""}`}
+              className={`text-img-row${cmsIndex % 2 === 1 ? " is-reverse" : ""}`}
             >
               <div className="home-text-img-parent">
                 <Link
