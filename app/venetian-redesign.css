@@ -362,7 +362,11 @@
 
 .room-fs-top {
   position: absolute;
-  top: clamp(100px, 14vh, 130px);
+  /* Snug under the fixed site logo bar — cabin index sits at the top of the image */
+  top: calc(
+    clamp(1rem, 2.5vh, 1.75rem) + var(--site-nav-bar-height, 2.85rem) +
+      clamp(0.35rem, 1vh, 0.65rem)
+  );
   left: clamp(24px, 6vw, 80px);
   right: clamp(24px, 6vw, 80px);
   display: flex;
@@ -401,9 +405,9 @@
    * (not per-letter text-shadow).
    */
   filter:
-    drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55))
-    drop-shadow(0 6px 18px rgba(0, 0, 0, 0.45))
-    drop-shadow(0 14px 36px rgba(0, 0, 0, 0.35));
+    drop-shadow(0 1px 2px rgba(182, 159, 100, 0.55))
+    drop-shadow(0 6px 18px rgba(182, 159, 100, 0.45))
+    drop-shadow(0 14px 36px rgba(182, 159, 100, 0.35));
 }
 
 /* Full-height copy runway — soft fade to the right; grows from the left */
@@ -2476,9 +2480,9 @@
   background: none !important;
   background-image: none !important;
   filter:
-    drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55))
-    drop-shadow(0 6px 18px rgba(0, 0, 0, 0.45))
-    drop-shadow(0 14px 36px rgba(0, 0, 0, 0.35)) !important;
+    drop-shadow(0 1px 2px rgba(182, 159, 100, 0.55))
+    drop-shadow(0 6px 18px rgba(182, 159, 100, 0.45))
+    drop-shadow(0 14px 36px rgba(182, 159, 100, 0.35)) !important;
 }
 
 .public-site .venetian-page .room-fs-ui .room-fs-copy::before {
