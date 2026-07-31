@@ -455,28 +455,19 @@ export function useExScrollMotion() {
       );
     }
 
+    /*
+     * Progress must be derived live from getBoundingClientRect().
+     * Caching sectionTop + scrollY (a3d3b73) went stale after fog/stack pin
+     * spacers shifted layout, so the wheel finished before entering the
+     * sticky viewport. Restore 63b084c live -rect.top / scrollable mapping.
+     */
     let animationFrame = 0;
     let lastStepped = -1;
-    let cachedSectionTop = 0;
-    let cachedScrollable = 1;
-    let hasLayoutCache = false;
-
-    const refreshLayoutCache = () => {
-      const sectionRect = section.getBoundingClientRect();
-      cachedSectionTop = sectionRect.top + window.scrollY;
-      cachedScrollable = Math.max(1, section.offsetHeight - window.innerHeight);
-      hasLayoutCache = true;
-    };
-
-    const readProgress = () => {
-      if (!hasLayoutCache) refreshLayoutCache();
-      const y = window.scrollY;
-      return gsap.utils.clamp(0, 1, (y - cachedSectionTop) / cachedScrollable);
-    };
-
     const render = () => {
       animationFrame = 0;
-      const progress = readProgress();
+      const rect = section.getBoundingClientRect();
+      const scrollable = Math.max(1, section.offsetHeight - window.innerHeight);
+      const progress = gsap.utils.clamp(0, 1, -rect.top / scrollable);
       if (isTouchPortal) {
         /*
          * Native touch scroll must track the finger directly. A catch-up tween
@@ -490,7 +481,12 @@ export function useExScrollMotion() {
         lastStepped = stepped;
         portalTimeline.progress(stepped);
       } else {
-        portalTimeline.progress(progress);
+        gsap.to(portalTimeline, {
+          progress,
+          duration: 0.85,
+          ease: "power3.out",
+          overwrite: true,
+        });
       }
     };
 
@@ -499,20 +495,15 @@ export function useExScrollMotion() {
       animationFrame = window.requestAnimationFrame(render);
     };
     const viewportEvent = isNarrowViewport ? "orientationchange" : "resize";
-    const onViewportRefresh = () => {
-      refreshLayoutCache();
-      requestRender();
-    };
 
     window.addEventListener("scroll", requestRender, { passive: true });
-    window.addEventListener(viewportEvent, onViewportRefresh);
-    refreshLayoutCache();
+    window.addEventListener(viewportEvent, requestRender);
     render();
 
     helmCleanup = () => {
       window.cancelAnimationFrame(animationFrame);
       window.removeEventListener("scroll", requestRender);
-      window.removeEventListener(viewportEvent, onViewportRefresh);
+      window.removeEventListener(viewportEvent, requestRender);
       gsap.killTweensOf(portalTimeline);
       portalTimeline.kill();
     };
