@@ -4,7 +4,10 @@ import Link from "next/link";
 import { useEffect, useRef, type ReactNode } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { HATHOR_BRAND_NAME } from "@/lib/branding";
+import {
+  HATHOR_BRAND_NAME,
+  HATHOR_FOOTER_BG_WORDMARK_SRC,
+} from "@/lib/branding";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { PUBLIC_SOCIAL_LINKS } from "@/lib/public-social";
 import { FooterSubscribe } from "@/components/layout/FooterSubscribe";
@@ -313,6 +316,15 @@ export function Footer() {
         </div>
 
         <div className="lux-footer__main">
+          <div className="lux-footer__bg-logo" aria-hidden>
+            <img
+              src={HATHOR_FOOTER_BG_WORDMARK_SRC}
+              alt=""
+              className="lux-footer__bg-logo-img"
+              decoding="async"
+              draggable={false}
+            />
+          </div>
           <div className="lux-footer__grid">
             <div className="lux-footer__col lux-footer__col--brand">
               <Link href="/" className="lux-footer__brand-mark cursor-hover">

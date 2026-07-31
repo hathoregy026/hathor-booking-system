@@ -239,10 +239,39 @@
 
 /* ——— Main: Navigation ——— */
 .lux-footer__main {
+  position: relative;
+  isolation: isolate;
   padding: 4rem 5vw;
+  overflow: hidden;
+}
+
+/* Full-bleed HATHOR wordmark — centered, behind columns, 20% opacity */
+.lux-footer__bg-logo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.lux-footer__bg-logo-img {
+  width: min(96vw, 1600px);
+  max-width: none;
+  height: auto;
+  max-height: 88%;
+  object-fit: contain;
+  object-position: center;
+  opacity: 0.2;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .lux-footer__grid {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: 1.5fr 1fr 1fr 1.5fr;
   gap: 4rem;
@@ -416,6 +445,11 @@
     padding: 3rem 5vw;
   }
 
+  .lux-footer__bg-logo-img {
+    width: min(110vw, 900px);
+    max-height: 70%;
+  }
+
   .lux-footer__grid {
     grid-template-columns: 1fr;
     gap: 3rem;
@@ -441,6 +475,13 @@
 
   .lux-footer__crafted {
     justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .lux-footer__bg-logo-img {
+    width: min(120vw, 640px);
+    max-height: 55%;
   }
 }
 
