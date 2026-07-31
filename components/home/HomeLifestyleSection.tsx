@@ -69,6 +69,9 @@ type HomeLifestyleSectionProps = {
   body: string;
   cta: string;
   href: string;
+  /** Optional second CTA — omitted when empty so no empty button renders. */
+  secondaryCta?: string;
+  secondaryHref?: string;
   imageName: SiteImageName;
   imageAlt: string;
   previewAnchor?: boolean;
@@ -79,6 +82,8 @@ export function HomeLifestyleSection({
   body,
   cta,
   href,
+  secondaryCta,
+  secondaryHref,
   imageName,
   imageAlt,
   previewAnchor = false,
@@ -91,6 +96,7 @@ export function HomeLifestyleSection({
   const lineTwo = titleLines.slice(1).join(" ").trim();
   const paragraphs = splitLifestyleBody(body);
   const headingId = "home-lifestyle-heading";
+  const showSecondary = Boolean(secondaryCta?.trim() && secondaryHref?.trim());
 
   return (
     <section
@@ -100,35 +106,18 @@ export function HomeLifestyleSection({
     >
       <div className="home-lifestyle__inner">
         <div className="home-lifestyle__grid">
-          <div className="home-lifestyle__media home-text-img-parent">
-            <Link
-              href={href}
-              className="home-lifestyle__media-link home-text-img-container media-hover"
-              aria-label={cta}
-              id={previewAnchor ? siteImageAnchorId(imageName) : undefined}
-              data-site-image={previewAnchor ? imageName : undefined}
-            >
-              <ManagedImage
-                name={imageName}
-                alt={imageAlt}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 60vw, 980px"
-                unoptimized={false}
-                className="object-cover object-center"
-                previewAnchor={false}
-              />
-            </Link>
-          </div>
-
           <div className="home-lifestyle__copy">
             {HOMEPAGE_LIFESTYLE.eyebrow ? (
-              <p className="home-lifestyle__eyebrow">
-                <span className="home-lifestyle__eyebrow-rule" aria-hidden />
-                <span className="home-lifestyle__eyebrow-text">
-                  {HOMEPAGE_LIFESTYLE.eyebrow}
-                </span>
-                <span className="home-lifestyle__eyebrow-rule" aria-hidden />
-              </p>
+              <div className="home-lifestyle__eyebrow-block">
+                <p className="home-lifestyle__eyebrow">
+                  <span className="home-lifestyle__eyebrow-rule" aria-hidden />
+                  <span className="home-lifestyle__eyebrow-text">
+                    {HOMEPAGE_LIFESTYLE.eyebrow}
+                  </span>
+                  <span className="home-lifestyle__eyebrow-rule" aria-hidden />
+                </p>
+                <span className="home-lifestyle__eyebrow-mark" aria-hidden />
+              </div>
             ) : null}
 
             <div className="home-lifestyle__heading home-text-h2">
@@ -158,17 +147,48 @@ export function HomeLifestyleSection({
               </div>
             ) : null}
 
-            {cta ? (
+            {cta || showSecondary ? (
               <div className="home-lifestyle__actions">
-                <Link
-                  className="home-lifestyle__cta home-lifestyle__cta--primary home-text-button btn"
-                  href={href}
-                >
-                  <span>{cta}</span>
-                  <ArrowRight className="home-lifestyle__cta-icon" aria-hidden />
-                </Link>
+                {cta ? (
+                  <Link
+                    className="home-lifestyle__cta home-lifestyle__cta--primary home-text-button btn"
+                    href={href}
+                  >
+                    <span>{cta}</span>
+                    <ArrowRight className="home-lifestyle__cta-icon" aria-hidden />
+                  </Link>
+                ) : null}
+                {showSecondary ? (
+                  <Link
+                    className="home-lifestyle__cta home-lifestyle__cta--secondary home-text-button btn"
+                    href={secondaryHref!}
+                  >
+                    <span>{secondaryCta}</span>
+                    <ArrowRight className="home-lifestyle__cta-icon" aria-hidden />
+                  </Link>
+                ) : null}
               </div>
             ) : null}
+          </div>
+
+          <div className="home-lifestyle__media home-text-img-parent">
+            <Link
+              href={href}
+              className="home-lifestyle__media-link home-text-img-container media-hover"
+              aria-label={cta}
+              id={previewAnchor ? siteImageAnchorId(imageName) : undefined}
+              data-site-image={previewAnchor ? imageName : undefined}
+            >
+              <ManagedImage
+                name={imageName}
+                alt={imageAlt}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 62vw, 980px"
+                unoptimized={false}
+                className="object-cover object-center"
+                previewAnchor={false}
+              />
+            </Link>
           </div>
         </div>
 
