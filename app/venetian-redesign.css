@@ -410,39 +410,39 @@
   padding: clamp(1.25rem, 2.5vh, 2rem) clamp(1.1rem, 2vw, 1.75rem)
     clamp(1.35rem, 2.8vh, 2.15rem);
   /*
-   * Homepage stack language: one soft silhouette on the whole copy block
-   * (not per-letter text-shadow).
+   * Soft gold glow only — keep it light so the right fade stays edge-free.
    */
   filter:
-    drop-shadow(0 1px 2px rgba(182, 159, 100, 0.55))
-    drop-shadow(0 6px 18px rgba(182, 159, 100, 0.45))
-    drop-shadow(0 14px 36px rgba(182, 159, 100, 0.35));
+    drop-shadow(0 2px 10px rgba(182, 159, 100, 0.28))
+    drop-shadow(0 8px 28px rgba(182, 159, 100, 0.18));
 }
 
-/* Full-height copy runway — gold only (no black/ink in scrim or glow) */
+/* Gold runway: open on the right — no hard corner/edge, fades into the photo */
 .room-fs-copy::before {
   content: "";
   position: absolute;
   z-index: -1;
   inset: 0;
+  /* Bleed past the right so the fade never ends on a box edge */
+  right: -18%;
   pointer-events: none;
-  border-radius: 1.75rem;
+  border-radius: 1.75rem 0 0 1.75rem;
   transform: scaleX(var(--room-scrim, 0));
   transform-origin: left center;
   will-change: transform;
   background:
     radial-gradient(
-      ellipse 110% 95% at 12% 50%,
-      rgba(182, 159, 100, 0.52) 0%,
-      rgba(182, 159, 100, 0.28) 40%,
-      transparent 72%
+      ellipse 95% 90% at 8% 50%,
+      rgba(182, 159, 100, 0.32) 0%,
+      rgba(182, 159, 100, 0.14) 38%,
+      transparent 68%
     ),
     linear-gradient(
-      105deg,
-      rgba(182, 159, 100, 0.48) 0%,
-      rgba(182, 159, 100, 0.26) 42%,
-      rgba(182, 159, 100, 0.1) 68%,
-      transparent 88%
+      90deg,
+      rgba(182, 159, 100, 0.3) 0%,
+      rgba(182, 159, 100, 0.16) 28%,
+      rgba(182, 159, 100, 0.06) 52%,
+      transparent 78%
     );
 }
 
@@ -700,8 +700,8 @@
     padding: 0;
     gap: 0.55rem;
     filter:
-      drop-shadow(0 1px 2px rgba(182, 159, 100, 0.55))
-      drop-shadow(0 6px 16px rgba(182, 159, 100, 0.4));
+      drop-shadow(0 2px 10px rgba(182, 159, 100, 0.28))
+      drop-shadow(0 8px 24px rgba(182, 159, 100, 0.16));
   }
 
   .room-fs--native-scroll .room-fs-copy::before {
@@ -2489,26 +2489,28 @@
   background: none !important;
   background-image: none !important;
   filter:
-    drop-shadow(0 1px 2px rgba(182, 159, 100, 0.55))
-    drop-shadow(0 6px 18px rgba(182, 159, 100, 0.45))
-    drop-shadow(0 14px 36px rgba(182, 159, 100, 0.35)) !important;
+    drop-shadow(0 2px 10px rgba(182, 159, 100, 0.28))
+    drop-shadow(0 8px 28px rgba(182, 159, 100, 0.18)) !important;
 }
 
 .public-site .venetian-page .room-fs-ui .room-fs-copy::before {
-  /* Gold runway only — no black/ink in the scrim */
+  /* Open right edge — gold fades out; no corner/box line on that side */
+  inset: 0;
+  right: -18%;
+  border-radius: 1.75rem 0 0 1.75rem;
   background-image:
     radial-gradient(
-      ellipse 110% 95% at 12% 50%,
-      rgba(182, 159, 100, 0.52) 0%,
-      rgba(182, 159, 100, 0.28) 40%,
-      transparent 72%
+      ellipse 95% 90% at 8% 50%,
+      rgba(182, 159, 100, 0.32) 0%,
+      rgba(182, 159, 100, 0.14) 38%,
+      transparent 68%
     ),
     linear-gradient(
-      105deg,
-      rgba(182, 159, 100, 0.48) 0%,
-      rgba(182, 159, 100, 0.26) 42%,
-      rgba(182, 159, 100, 0.1) 68%,
-      transparent 88%
+      90deg,
+      rgba(182, 159, 100, 0.3) 0%,
+      rgba(182, 159, 100, 0.16) 28%,
+      rgba(182, 159, 100, 0.06) 52%,
+      transparent 78%
     ) !important;
   filter: none !important;
   box-shadow: none !important;
