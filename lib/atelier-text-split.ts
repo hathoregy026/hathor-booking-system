@@ -92,6 +92,8 @@ const SKIP_CLOSEST = [
   /* Footer has its own reveal — atelier char hide made dashboard-linked copy invisible */
   ".lux-footer",
   "footer",
+  /* Home text story owns its own scrubbed splits */
+  ".home-story",
   "[data-test-scroll-reveal]",
   "[data-page-transition] .pt-hero__copy",
   ".pt-hero__copy",

@@ -318,6 +318,8 @@ export function useExScrollMotion() {
     const CLOSED_CLIP = "polygon(0 0, 0 0, 0 0, 0 0)";
 
     gsap.utils.toArray<HTMLElement>(".home-text-img-parent").forEach((parent, index) => {
+      /* Stacked home-story owns its own scrubbed reveals */
+      if (parent.closest(".home-story")) return;
       const container = parent.querySelector<HTMLElement>(".home-text-img-container");
       if (!container) return;
       if (parent.dataset.revealInitialized) return;
@@ -1294,6 +1296,419 @@ export function useExScrollMotion() {
   }
 
   /* -------------------------------------------------------
+   * Home text story — Way of Life → Dining stacked scrub
+   * Media above, copy below; fog image swap + rising text
+   * ----------------------------------------------------- */
+  function initHomeTextStory() {
+    const section = document.querySelector<HTMLElement>(".home-story");
+    const viewport = section?.querySelector<HTMLElement>(".home-story__viewport");
+    const cards = gsap.utils.toArray<HTMLElement>(".home-story__card");
+    const panels = gsap.utils.toArray<HTMLElement>(".home-story__panel");
+    const pager = section?.querySelector<HTMLElement>("[data-home-story-pager]");
+    const pagerNum = section?.querySelector<HTMLElement>(
+      "[data-home-story-pager-num]",
+    );
+    const pagerLine = section?.querySelector<HTMLElement>(
+      "[data-home-story-pager-line]",
+    );
+    if (!section || !viewport || cards.length < 1) return;
+
+    section.setAttribute("data-mobile-fog-rise", "");
+    section.classList.add("signature-fog-rise");
+
+    const FOG_STEPS = 56;
+    const FOG_RANGE = 140;
+    const quantiseFogEdge = (edge: number, stepped: boolean) => {
+      if (!stepped) return edge;
+      const step = FOG_RANGE / FOG_STEPS;
+      return Math.round(edge / step) * step;
+    };
+
+    const clearFogWillChange = (
+      card: HTMLElement,
+      media: HTMLElement | null,
+    ) => {
+      card.style.willChange = "auto";
+      if (media) media.style.willChange = "auto";
+    };
+
+    const setPager = (index: number) => {
+      const safe = Math.max(0, Math.min(index, cards.length - 1));
+      if (pagerNum) {
+        pagerNum.textContent = String(safe + 1).padStart(2, "0");
+      }
+      if (pagerLine) {
+        const progress = (safe + 1) / cards.length;
+        pagerLine.style.transform = `scaleY(${progress})`;
+      }
+    };
+
+    const getCardMedia = (card: HTMLElement) =>
+      card.querySelector<HTMLElement>(".home-story__card-media img");
+
+    panels.forEach((panel) => {
+      const targets = panel.querySelectorAll<HTMLElement>(
+        lightenDevice
+          ? ".home-story__title-line"
+          : ".home-story__title-line, .home-story__body",
+      );
+      const chars: HTMLElement[] = [];
+      targets.forEach((el) => {
+        chars.push(
+          ...(lightenDevice ? splitAtelierWords(el) : splitAtelierText(el)),
+        );
+      });
+      (panel as HTMLElement & { __stackChars?: HTMLElement[] }).__stackChars =
+        chars;
+    });
+
+    if (prefersReduced) {
+      cards.forEach((card, index) => {
+        gsap.set(card, {
+          autoAlpha: index === 0 ? 1 : 0,
+          "--stack-fog-edge": index === 0 ? "140%" : "0%",
+        });
+      });
+      panels.forEach((panel) => {
+        const chars =
+          (panel as HTMLElement & { __stackChars?: HTMLElement[] })
+            .__stackChars;
+        gsap.set(panel, { autoAlpha: 1, visibility: "visible" });
+        if (chars?.length) gsap.set(chars, { yPercent: 0, opacity: 1 });
+        panel.setAttribute("aria-hidden", "false");
+      });
+      if (pager) gsap.set(pager, { autoAlpha: 0 });
+      setPager(0);
+      return;
+    }
+
+    const killExisting = () => {
+      ScrollTrigger.getAll().forEach((st) => {
+        const id = st.vars && String(st.vars.id || "");
+        if (id.startsWith("home-story")) st.kill();
+      });
+    };
+
+    const build = () => {
+      killExisting();
+
+      const total = cards.length;
+      const dwell = 0.55;
+      const move = 0.85;
+      const release = 0.55;
+      const introHold = 0.12;
+      const introFog = 0.55;
+      const introSpan = introHold + introFog;
+      const scrollSpan =
+        total <= 1
+          ? introSpan + dwell + release
+          : introSpan + total * (move + dwell) + release;
+      const fogStepped = isPhone || lightenDevice;
+      const stickyRunway = isPhone || isNarrowViewport;
+
+      cards.forEach((card, index) => {
+        const media = getCardMedia(card);
+        gsap.set(card, {
+          zIndex: index + 1,
+          yPercent: 0,
+          scale: 1,
+          filter: "brightness(1)",
+          "--stack-fog-edge": "0%",
+          autoAlpha: 0,
+          force3D: true,
+        });
+        if (media) {
+          gsap.set(media, {
+            scale: index === 0 ? 1.08 : 1.1,
+            yPercent: index === 0 ? 3 : 4,
+            force3D: true,
+          });
+        }
+      });
+
+      panels.forEach((panel) => {
+        const chars =
+          (panel as HTMLElement & { __stackChars?: HTMLElement[] })
+            .__stackChars;
+        gsap.set(panel, { autoAlpha: 0, visibility: "hidden" });
+        if (chars?.length) {
+          gsap.killTweensOf(chars);
+          gsap.set(chars, { yPercent: 100, opacity: 0 });
+        }
+        panel.setAttribute("aria-hidden", "true");
+      });
+
+      if (pager) gsap.set(pager, { autoAlpha: 0, visibility: "hidden" });
+      setPager(0);
+
+      logPhonePerfDev({
+        surface: "home-story-fog-rise",
+        cards: total,
+        phoneLightweight: isPhone,
+        pin: !stickyRunway,
+        stickyRunway,
+        fogSteps: fogStepped ? FOG_STEPS : "continuous",
+      });
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          id: "home-story-scroll",
+          trigger: section,
+          start: "top top",
+          end: stickyRunway ? "bottom bottom" : `+=${scrollSpan * 90}%`,
+          scrub: stickyRunway ? true : 0.25,
+          pin: stickyRunway ? false : viewport,
+          pinSpacing: !stickyRunway,
+          anticipatePin: 1,
+          fastScrollEnd: true,
+          invalidateOnRefresh: !isPhone,
+          onToggle: (self) => {
+            section.classList.toggle("is-fog-active", self.isActive);
+            if (!self.isActive) {
+              cards.forEach((card) =>
+                clearFogWillChange(card, getCardMedia(card)),
+              );
+            }
+          },
+          onRefresh: (self) => {
+            const pin = self.pin as HTMLElement | null;
+            if (!pin) return;
+            gsap.set(pin, {
+              x: 0,
+              left: 0,
+              marginLeft: 0,
+              clearProps: "marginRight",
+            });
+          },
+        },
+      });
+      if (tl.scrollTrigger) trackTrigger(tl.scrollTrigger);
+
+      // 0.00–introHold: brief dwell before first reveal
+      // introHold–introSpan: first image fog-rises + first copy rises
+      const firstCard = cards[0];
+      const firstMedia = getCardMedia(firstCard);
+      const firstFog = { edge: 0, reveal: 0 };
+      tl.fromTo(
+        firstFog,
+        { edge: 0, reveal: 0 },
+        {
+          edge: FOG_RANGE,
+          reveal: 1,
+          ease: "none",
+          duration: introFog,
+          onStart: () => {
+            firstCard.style.willChange = "opacity";
+            if (firstMedia) firstMedia.style.willChange = "transform";
+          },
+          onUpdate: () => {
+            const edge = quantiseFogEdge(firstFog.edge, fogStepped);
+            firstCard.style.setProperty("--stack-fog-edge", `${edge}%`);
+            const op = Math.min(1, Math.max(0, firstFog.reveal));
+            firstCard.style.opacity = String(op);
+            if (op > 0.02) firstCard.style.visibility = "visible";
+          },
+          onComplete: () => clearFogWillChange(firstCard, firstMedia),
+        },
+        introHold,
+      );
+
+      if (firstMedia) {
+        tl.fromTo(
+          firstMedia,
+          { scale: 1.1, yPercent: 4, x: 0 },
+          {
+            scale: 1.03,
+            yPercent: 0,
+            x: 0,
+            ease: "none",
+            duration: introFog,
+          },
+          introHold,
+        );
+      }
+
+      const firstPanel = panels[0];
+      if (firstPanel) {
+        tl.fromTo(
+          firstPanel,
+          { autoAlpha: 0, visibility: "visible" },
+          {
+            autoAlpha: 1,
+            ease: "none",
+            duration: introFog * 0.55,
+            onStart: () => {
+              firstPanel.setAttribute("aria-hidden", "false");
+              setPager(0);
+            },
+          },
+          introHold + introFog * 0.35,
+        );
+        scrubStackChars(
+          tl,
+          firstPanel,
+          introHold + introFog * 0.35,
+          introFog * 0.55,
+          "in",
+        );
+      }
+
+      if (pager) {
+        tl.fromTo(
+          pager,
+          { autoAlpha: 0, visibility: "visible" },
+          { autoAlpha: 1, ease: "none", duration: introFog * 0.4 },
+          introHold + introFog * 0.35,
+        );
+      }
+
+      // Subsequent slides: image covers previous + copy rises
+      for (let i = 1; i < total; i++) {
+        const moveAt = introSpan + (i - 1) * (move + dwell) + dwell;
+        const card = cards[i];
+        const media = getCardMedia(card);
+        const prevPanel = panels[i - 1];
+        const nextPanel = panels[i];
+        const fog = { edge: 0, reveal: 0 };
+
+        tl.fromTo(
+          fog,
+          { edge: 0, reveal: 0 },
+          {
+            edge: FOG_RANGE,
+            reveal: 1,
+            ease: "none",
+            duration: move,
+            onStart: () => {
+              card.style.willChange = "opacity";
+              if (media) media.style.willChange = "transform";
+            },
+            onUpdate: () => {
+              const edge = quantiseFogEdge(fog.edge, fogStepped);
+              card.style.setProperty("--stack-fog-edge", `${edge}%`);
+              const op = Math.min(1, Math.max(0, fog.reveal));
+              card.style.opacity = String(op);
+              if (op > 0.02) card.style.visibility = "visible";
+            },
+            onComplete: () => clearFogWillChange(card, media),
+          },
+          moveAt,
+        );
+
+        if (media) {
+          tl.fromTo(
+            media,
+            { scale: 1.1, yPercent: 4.5, x: 0 },
+            {
+              scale: 1.03,
+              yPercent: 0,
+              x: 0,
+              ease: "none",
+              duration: move,
+            },
+            moveAt,
+          );
+        }
+
+        if (prevPanel && nextPanel) {
+          tl.to(
+            prevPanel,
+            {
+              autoAlpha: 0,
+              ease: "none",
+              duration: move * 0.45,
+              onStart: () => prevPanel.setAttribute("aria-hidden", "true"),
+              onReverseComplete: () => {
+                prevPanel.setAttribute("aria-hidden", "false");
+                setPager(i - 1);
+              },
+            },
+            moveAt + move * 0.12,
+          );
+          scrubStackChars(
+            tl,
+            prevPanel,
+            moveAt + move * 0.12,
+            move * 0.45,
+            "out",
+          );
+
+          tl.fromTo(
+            nextPanel,
+            { autoAlpha: 0, visibility: "visible" },
+            {
+              autoAlpha: 1,
+              ease: "none",
+              duration: move * 0.55,
+              onStart: () => {
+                nextPanel.setAttribute("aria-hidden", "false");
+                setPager(i);
+              },
+              onReverseComplete: () =>
+                nextPanel.setAttribute("aria-hidden", "true"),
+            },
+            moveAt + move * 0.38,
+          );
+          scrubStackChars(
+            tl,
+            nextPanel,
+            moveAt + move * 0.38,
+            move * 0.55,
+            "in",
+          );
+        }
+
+        const underStart = isPhone ? i - 1 : 0;
+        for (let j = Math.max(0, underStart); j < i; j++) {
+          const depth = i - j;
+          tl.to(
+            cards[j],
+            {
+              opacity: Math.max(0.72, 1 - depth * 0.08),
+              ease: "none",
+              duration: move,
+            },
+            moveAt,
+          );
+        }
+      }
+
+      tl.to({}, { duration: release });
+    };
+
+    let active = true;
+    let lastWidth = window.innerWidth;
+    document.fonts.ready.then(() => {
+      if (!active) return;
+      build();
+      requestScrollRefresh("home-story-font-ready");
+    });
+
+    let resizeTimer: ReturnType<typeof setTimeout>;
+    const viewportEvent = isNarrowViewport ? "orientationchange" : "resize";
+    const onViewportChange = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (!active) return;
+        if (isPhone) {
+          const w = window.innerWidth;
+          if (Math.abs(w - lastWidth) < 20) return;
+          lastWidth = w;
+        }
+        build();
+        requestScrollRefresh("home-story-viewport-change");
+      }, isPhone ? 250 : 200);
+    };
+    window.addEventListener(viewportEvent, onViewportChange);
+    motionCleanups.push(() => {
+      active = false;
+      clearTimeout(resizeTimer);
+      window.removeEventListener(viewportEvent, onViewportChange);
+      killExisting();
+    });
+  }
+
+  /* -------------------------------------------------------
    * PATTERN B variant — Carousel sequential wipe reveal
    *   start top 50%, once, delay i*0.25
    *   clip + scale 1.5→1 duration 0.8, then chars
@@ -1581,6 +1996,7 @@ export function useExScrollMotion() {
       initHomeScrollText,
       initExStackScroll,
       initHomeHelmPortal,
+      initHomeTextStory,
       initHomeTextImgReveal,
       initHomeTextBlocks,
       initGalleryH2,

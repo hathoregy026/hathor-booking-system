@@ -7,6 +7,7 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import rotatingWheel from "@/assets/LOGOS/rotating wheel.png";
 import LuxuryAccordion from "@/components/home/LuxuryAccordion";
 import { HomeCampaignSection } from "@/components/home/HomeCampaignSection";
+import { HomeTextStorySection } from "@/components/home/HomeTextStorySection";
 import { LuxuryMarquee } from "@/components/home/LuxuryMarquee";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { GalleryInstagramFollow } from "@/components/public/GalleryInstagramFollow";
@@ -267,66 +268,6 @@ export function HomePageClient({
   useLayoutEffect(() => {
     paintLogoTune(liveTune, liveTuneMobile);
   }, [liveTune, liveTuneMobile]);
-
-  /* Both rows share one height: taller title+body+button stack. Image matches that. */
-  useLayoutEffect(() => {
-    const section = document.getElementById("escape");
-    if (!section) return;
-
-    const mq = window.matchMedia("(max-width: 1024px)");
-    const rows = Array.from(
-      section.querySelectorAll<HTMLElement>(".text-img-row"),
-    );
-
-    const clearHeights = () => {
-      rows.forEach((row) => {
-        const parent = row.querySelector<HTMLElement>(".home-text-img-parent");
-        const copy = row.querySelector<HTMLElement>(".home-text-img-copy");
-        if (parent) parent.style.height = "";
-        if (copy) copy.style.height = "";
-      });
-    };
-
-    const sync = () => {
-      clearHeights();
-      if (mq.matches || rows.length === 0) return;
-
-      const maxCopy = Math.max(
-        ...rows.map((row) => {
-          const copy = row.querySelector<HTMLElement>(".home-text-img-copy");
-          return copy ? Math.ceil(copy.getBoundingClientRect().height) : 0;
-        }),
-      );
-      if (maxCopy <= 0) return;
-
-      const px = `${maxCopy}px`;
-      rows.forEach((row) => {
-        const parent = row.querySelector<HTMLElement>(".home-text-img-parent");
-        const copy = row.querySelector<HTMLElement>(".home-text-img-copy");
-        if (parent) parent.style.height = px;
-        if (copy) copy.style.height = px;
-      });
-    };
-
-    const ro = new ResizeObserver(() => {
-      sync();
-    });
-    rows.forEach((row) => {
-      row
-        .querySelectorAll(".home-text-h2, .home-text-p, .home-text-button")
-        .forEach((el) => ro.observe(el));
-    });
-    window.addEventListener("resize", sync);
-    mq.addEventListener("change", sync);
-    sync();
-
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", sync);
-      mq.removeEventListener("change", sync);
-      clearHeights();
-    };
-  }, []);
 
   return (
     <div className="ex-root" data-hathor-logo-tuned="">
@@ -633,56 +574,20 @@ export function HomePageClient({
           </div>
         </section>
 
-        <section className="text-img-section ex-content-section" id="escape">
-          {EX_TEXT_BLOCKS.map((block, index) => {
+        <HomeTextStorySection
+          slides={EX_TEXT_BLOCKS.map((block, index) => {
             const cms = websiteText.home.textBlocks[index];
-            const title = cms?.title ?? block.title;
-            const body = cms?.body ?? block.body;
-            const cta = cms?.cta ?? block.cta;
-            return (
-            <div
-              key={block.href}
-              className={`text-img-row${index % 2 === 1 ? " is-reverse" : ""}`}
-            >
-              <div className="home-text-img-parent">
-                <Link
-                  href={block.href}
-                  className="home-text-img-container media-hover"
-                  aria-label={cta}
-                >
-                  <ManagedImage
-                    name={block.imageName}
-                    alt={block.alt}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    unoptimized={false}
-                    className="object-cover"
-                    previewAnchor={HOMEPAGE_PREVIEW_SLOTS.has(block.imageName)}
-                  />
-                </Link>
-              </div>
-              <div className="home-text-img-copy">
-                <div className="home-text-h2">
-                  <h2>
-                    {title.split("\n").map((line, lineIndex, lines) => (
-                      <span key={`${title}-${lineIndex}`}>
-                        {line}
-                        {lineIndex < lines.length - 1 ? <br /> : null}
-                      </span>
-                    ))}
-                  </h2>
-                </div>
-                <div className="home-text-p">
-                  <p>{body}</p>
-                </div>
-                <Link className="btn btn-dark home-text-button" href={block.href}>
-                  {cta}
-                </Link>
-              </div>
-            </div>
-            );
+            return {
+              title: cms?.title ?? block.title,
+              body: cms?.body ?? block.body,
+              cta: cms?.cta ?? block.cta,
+              href: block.href,
+              imageName: block.imageName,
+              imageAlt: block.alt,
+              previewAnchor: HOMEPAGE_PREVIEW_SLOTS.has(block.imageName),
+            };
           })}
-        </section>
+        />
 
         <section className="gallery-section ex-content-section" id="gallery">
           <GalleryInstagramFollow
