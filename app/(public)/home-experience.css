@@ -2546,8 +2546,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .split-word {
   }
 }
 
-.home-helm-portal + .text-img-section,
-.home-helm-portal + .home-story {
+.home-helm-portal + .text-img-section {
   z-index: 22;
   margin-top: -12vh;
   padding-top: calc(clamp(80px, 10vw, 140px) + 12vh);
@@ -2555,27 +2554,41 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .split-word {
   box-shadow: 0 -28px 70px rgba(45, 33, 17, 0.08);
 }
 
+/* Home story: dome on the pin stage — no external pad so one 100svh screen fits the design */
+.home-helm-portal + .home-story {
+  z-index: 22;
+  margin-top: -12vh;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-radius: 50% 50% 0 0 / clamp(54px, 8vw, 110px) clamp(54px, 8vw, 110px) 0 0;
+  box-shadow: 0 -28px 70px rgba(45, 33, 17, 0.08);
+  overflow: hidden;
+}
+
+.home-helm-portal + .home-story .home-story__viewport {
+  border-radius: inherit;
+}
+
 /* Home story: dome curve on the pin stage itself so design fills one screen */
 @media (min-width: 1025px) {
   .home-helm-portal + .home-story {
     margin-top: -10vh;
-    padding-top: 0;
-    padding-bottom: 0;
-    border-radius: 50% 50% 0 0 / clamp(48px, 7vw, 96px) clamp(48px, 7vw, 96px) 0 0;
-    overflow: hidden;
-  }
-
-  .home-helm-portal + .home-story .home-story__viewport {
-    border-radius: inherit;
   }
 }
 
 @media (max-width: 767px) {
-  .home-helm-portal + .text-img-section,
-  .home-helm-portal + .home-story {
+  .home-helm-portal + .text-img-section {
     margin-top: -8vh;
     padding-top: calc(clamp(56px, 8vw, 100px) + 8vh);
     border-radius: 50% 50% 0 0 / 48px 48px 0 0;
+  }
+
+  .home-helm-portal + .home-story {
+    margin-top: -8vh;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-radius: 50% 50% 0 0 / 48px 48px 0 0;
+    overflow: hidden;
   }
 }
 

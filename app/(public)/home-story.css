@@ -157,7 +157,8 @@
 
 @media (min-width: 1025px) {
   .home-story {
-    overflow: visible;
+    /* Keep overflow hidden so the cream dome clips cleanly in one screen */
+    overflow: hidden;
   }
 }
 
