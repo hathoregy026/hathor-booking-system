@@ -58,6 +58,11 @@ export default function LuxuryAccordion({
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       handleToggle(id);
+      return;
+    }
+    if (event.key === "Escape" && activeId === id) {
+      event.preventDefault();
+      setActiveId(null);
     }
   };
 
@@ -121,7 +126,7 @@ export default function LuxuryAccordion({
                   name={item.imageName}
                   alt=""
                   fill
-                  sizes="100vw"
+                  sizes="(max-width: 768px) 100vw, min(1200px, 100vw)"
                   unoptimized={false}
                   className={styles.backgroundImage}
                   previewAnchor

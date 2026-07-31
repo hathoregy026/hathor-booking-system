@@ -146,18 +146,28 @@ export function ResidenceScrollPage({
     >
       <div ref={rootRef} className="venetian-page page-accommodation">
         <section className="about-section acc-intro-block" id="intro">
-          <div className="section-inner acc-intro-inner">
-            <h2 className="acc-intro-title typo-page-title">
-              <span className="acc-intro-line">{intro.title}</span>
-            </h2>
-            <p className="acc-eyebrow acc-reveal typo-page-subtitle">
-              {intro.eyebrow}
-            </p>
-            {afterHero.map((paragraph) => (
+          <div className="section-inner acc-intro-inner" style={{ minWidth: 0 }}>
+            <header className="acc-intro-header">
+              {intro.title.trim() ? (
+                <h2 className="acc-intro-title typo-page-title">
+                  <span className="acc-intro-line">{intro.title}</span>
+                </h2>
+              ) : null}
+              {intro.eyebrow.trim() ? (
+                <p className="acc-eyebrow acc-reveal typo-page-subtitle">
+                  {intro.eyebrow}
+                </p>
+              ) : null}
+            </header>
+            {afterHero.map((paragraph, index) => (
               <p
-                key={paragraph.slice(0, 48)}
+                key={`intro-${index}-${paragraph.slice(0, 32)}`}
                 className="acc-intro-copy acc-reveal typo-body-text"
-                style={{ marginTop: "1.25rem", marginBottom: "1.5rem" }}
+                style={{
+                  marginTop: "1.25rem",
+                  marginBottom: "1.5rem",
+                  overflowWrap: "anywhere",
+                }}
               >
                 {paragraph}
               </p>
@@ -314,22 +324,29 @@ export function ResidenceScrollPage({
             <div className="lux-wrap">
               <header
                 className="spx-intro"
-                style={{ paddingTop: 0, paddingBottom: "2rem" }}
+                style={{ paddingTop: 0, paddingBottom: "2rem", minWidth: 0 }}
               >
-                <h2 className="lux-gold lux-gold-lg typo-page-title">
-                  {amenities.title}
-                </h2>
+                {amenities.title.trim() ? (
+                  <h2 className="lux-gold lux-gold-lg typo-page-title">
+                    {amenities.title}
+                  </h2>
+                ) : null}
                 <p className="lux-kicker acc-reveal typo-page-subtitle">
                   Amenities
                 </p>
-                <p className="lux-lead acc-reveal typo-body-text">
-                  {amenities.body}
-                </p>
+                {amenities.body.trim() ? (
+                  <p
+                    className="lux-lead acc-reveal typo-body-text"
+                    style={{ overflowWrap: "anywhere" }}
+                  >
+                    {amenities.body}
+                  </p>
+                ) : null}
               </header>
               <div className="spx-suite-grid">
                 {amenities.features.map((feature) => (
                   <article key={feature} className="spx-suite-card">
-                    <div className="spx-suite-body">
+                    <div className="spx-suite-body" style={{ minWidth: 0 }}>
                       <h3>{feature}</h3>
                       <p>Included aboard Hathor Dahabiya.</p>
                     </div>
@@ -341,13 +358,27 @@ export function ResidenceScrollPage({
         ) : null}
 
         <section className="cta-section" id="reserve">
-          <div className="cta-inner hathor-cta-copy">
-            <h2 className="typo-page-title">{cta.title}</h2>
-            <p className="typo-body-text">{cta.body}</p>
+          <div
+            className="cta-inner hathor-cta-copy"
+            style={{ minWidth: 0 }}
+          >
+            {cta.title.trim() ? (
+              <h2 className="typo-page-title">{cta.title}</h2>
+            ) : null}
+            {cta.body.trim() ? (
+              <p
+                className="typo-body-text"
+                style={{ overflowWrap: "anywhere" }}
+              >
+                {cta.body}
+              </p>
+            ) : null}
             <div className="hathor-cta-actions">
-              <Link className="btn btn-secondary" href={cta.href}>
-                {cta.hrefLabel}
-              </Link>
+              {cta.href.trim() && cta.hrefLabel.trim() ? (
+                <Link className="btn btn-secondary" href={cta.href}>
+                  {cta.hrefLabel}
+                </Link>
+              ) : null}
               <BookNowTrigger className="btn btn-primary">Book Now</BookNowTrigger>
             </div>
           </div>

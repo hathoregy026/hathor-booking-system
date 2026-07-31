@@ -295,15 +295,16 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
     },
     rooms: {
       overviewTitle: LUXURY_SUITES_PAGE.overview.title,
-      overviewIntro: LUXURY_SUITES_PAGE.overview.body,
+      // Maps to intro body (not amenities). Default matches afterHero so visuals stay stable.
+      overviewIntro: LUXURY_SUITES_PAGE.copyPlacement.afterHero.join("\n\n"),
     },
     cabins: {
       overviewTitle: LUXURY_CABINS_PAGE.overview.title,
-      overviewIntro: LUXURY_CABINS_PAGE.overview.body,
+      overviewIntro: LUXURY_CABINS_PAGE.copyPlacement.afterHero.join("\n\n"),
     },
     royal: {
       overviewTitle: ROYAL_SUITES_PAGE.overview.title,
-      overviewIntro: ROYAL_SUITES_PAGE.overview.body,
+      overviewIntro: ROYAL_SUITES_PAGE.copyPlacement.afterHero.join("\n\n"),
     },
   },
 };
@@ -388,4 +389,31 @@ export function textToParagraphs(s: string): string[] {
     .split(/\n\n+/)
     .map((p) => p.trim())
     .filter((p) => p.length > 0);
+}
+
+/** Trim; empty / whitespace-only → undefined (skip empty wrappers). */
+export function normalizeOptionalText(
+  value: string | null | undefined,
+): string | undefined {
+  if (typeof value !== "string") return undefined;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
+/**
+ * CMS overview intro → paragraph list for section bodies.
+ * Falls back to static paragraphs when CMS value is empty.
+ * Soft-migrates legacy values that were the old amenities default (`overview.body`).
+ */
+export function resolveOverviewIntroParagraphs(
+  cmsIntro: string | null | undefined,
+  fallback: readonly string[],
+  legacyAmenitiesDefault?: string,
+): string[] {
+  const normalized = normalizeOptionalText(cmsIntro);
+  if (!normalized) return [...fallback];
+  const legacy = normalizeOptionalText(legacyAmenitiesDefault);
+  if (legacy && normalized === legacy) return [...fallback];
+  const paragraphs = textToParagraphs(normalized);
+  return paragraphs.length > 0 ? paragraphs : [...fallback];
 }

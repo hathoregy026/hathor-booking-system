@@ -328,7 +328,8 @@ export function HomePageClient({
   return (
     <div className="ex-root" data-hathor-logo-tuned="">
       <HathorLogoTuner />
-      <main id="top">
+      {/* Layout already provides <main>; keep #top for hash / scroll targets */}
+      <div id="top">
         <div className="home-hero-runway">
           <PublicSiteHero
             animate={false}
@@ -779,7 +780,7 @@ export function HomePageClient({
           previewAnchor={HOMEPAGE_PREVIEW_SLOTS.has(EX_CAMPAIGN.imageName)}
         />
         </div>
-      </main>
+      </div>
     </div>
   );
 }

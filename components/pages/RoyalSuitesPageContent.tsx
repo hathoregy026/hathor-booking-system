@@ -3,10 +3,16 @@
 import { ResidenceScrollPage } from "@/components/pages/rooms/ResidenceScrollPage";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { ROYAL_SUITES_PAGE } from "@/lib/page-content";
+import { resolveOverviewIntroParagraphs } from "@/lib/website-text-shared";
 
 export function RoyalSuitesPageContent() {
   const { pages } = useWebsiteText();
   const royal = pages.royal;
+  const introParagraphs = resolveOverviewIntroParagraphs(
+    royal.overviewIntro,
+    ROYAL_SUITES_PAGE.copyPlacement.afterHero,
+    ROYAL_SUITES_PAGE.overview.body,
+  );
 
   return (
     <ResidenceScrollPage
@@ -20,10 +26,13 @@ export function RoyalSuitesPageContent() {
       intro={{
         eyebrow: "Luxury Royal Suites",
         title: royal.overviewTitle,
-        copy: ROYAL_SUITES_PAGE.copyPlacement.afterHero,
+        copy: introParagraphs,
         stats: ["2 Luxury Suites & 2 Royal Suites", "56 Square Meters", "Panoramic Nile view"],
       }}
-      copyPlacement={ROYAL_SUITES_PAGE.copyPlacement}
+      copyPlacement={{
+        ...ROYAL_SUITES_PAGE.copyPlacement,
+        afterHero: introParagraphs,
+      }}
       chapters={ROYAL_SUITES_PAGE.listings.map((listing, index) => ({
         id: String(index + 1),
         label: `Royal ${String(index + 1).padStart(2, "0")}`,
@@ -36,12 +45,12 @@ export function RoyalSuitesPageContent() {
       }))}
       amenities={{
         title: ROYAL_SUITES_PAGE.amenities.title,
-        body: royal.overviewIntro,
+        body: ROYAL_SUITES_PAGE.overview.body,
         features: ROYAL_SUITES_PAGE.amenities.features,
       }}
       cta={{
         title: ROYAL_SUITES_PAGE.bookCta.title,
-        body: ROYAL_SUITES_PAGE.cruisesCta.body,
+        body: ROYAL_SUITES_PAGE.bookCta.body,
         href: ROYAL_SUITES_PAGE.cruisesCta.href,
         hrefLabel: ROYAL_SUITES_PAGE.cruisesCta.hrefLabel,
       }}

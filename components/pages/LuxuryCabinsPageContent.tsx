@@ -3,10 +3,16 @@
 import { ResidenceScrollPage } from "@/components/pages/rooms/ResidenceScrollPage";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { LUXURY_CABINS_PAGE } from "@/lib/page-content";
+import { resolveOverviewIntroParagraphs } from "@/lib/website-text-shared";
 
 export function LuxuryCabinsPageContent() {
   const { pages } = useWebsiteText();
   const cabins = pages.cabins;
+  const introParagraphs = resolveOverviewIntroParagraphs(
+    cabins.overviewIntro,
+    LUXURY_CABINS_PAGE.copyPlacement.afterHero,
+    LUXURY_CABINS_PAGE.overview.body,
+  );
 
   return (
     <ResidenceScrollPage
@@ -20,10 +26,13 @@ export function LuxuryCabinsPageContent() {
       intro={{
         eyebrow: "Luxury Rooms",
         title: cabins.overviewTitle,
-        copy: LUXURY_CABINS_PAGE.copyPlacement.afterHero,
+        copy: introParagraphs,
         stats: ["12 Luxury Cabins & Suites", "22 Square Meters", "Nile View"],
       }}
-      copyPlacement={LUXURY_CABINS_PAGE.copyPlacement}
+      copyPlacement={{
+        ...LUXURY_CABINS_PAGE.copyPlacement,
+        afterHero: introParagraphs,
+      }}
       chapters={LUXURY_CABINS_PAGE.listings.map((listing, index) => ({
         id: String(index + 1),
         label: `Cabin ${String(index + 1).padStart(2, "0")}`,
@@ -36,7 +45,7 @@ export function LuxuryCabinsPageContent() {
       }))}
       amenities={{
         title: LUXURY_CABINS_PAGE.amenities.title,
-        body: cabins.overviewIntro,
+        body: LUXURY_CABINS_PAGE.overview.body,
         features: LUXURY_CABINS_PAGE.amenities.features,
       }}
       cta={{

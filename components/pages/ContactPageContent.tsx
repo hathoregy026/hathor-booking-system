@@ -105,8 +105,8 @@ export function ContactPageContent() {
             <ScrollReveal delay={120}>
               <InquiryForm
                 type="contact"
-                title={contact.formTitle}
-                intro={contact.formIntro}
+                title={contact.formTitle.trim() || CONTACT_PAGE.form.title}
+                intro={contact.formIntro.trim() || CONTACT_PAGE.form.intro}
                 submitLabel="Send Request"
               />
             </ScrollReveal>

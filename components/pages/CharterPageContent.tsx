@@ -7,10 +7,18 @@ import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { CHARTER_PAGE } from "@/lib/page-content";
+import { normalizeOptionalText } from "@/lib/website-text-shared";
 
 export function CharterPageContent() {
   const { pages } = useWebsiteText();
   const charter = pages.charter;
+  const overviewTitle = normalizeOptionalText(charter.overviewTitle);
+  const overviewIntro = normalizeOptionalText(charter.overviewIntro);
+  const benefitsIntro = normalizeOptionalText(charter.benefitsIntro);
+  const cta = normalizeOptionalText(charter.cta);
+  const benefits = charter.benefits
+    .map((benefit) => normalizeOptionalText(benefit))
+    .filter((benefit): benefit is string => Boolean(benefit));
 
   return (
     <PageScrollTransition
@@ -21,28 +29,46 @@ export function CharterPageContent() {
       imageName="charter-hero"
       heroPage="charter"
     >
-
       <section className="hathor-section hathor-section--dark">
         <div className="page-container">
           <div className="grid gap-12 lg:grid-cols-2">
             <ScrollReveal>
-              <div>
-                <h2 className="section-title typo-page-title">{charter.overviewTitle}</h2>
-                <div className="hathor-gold-line hathor-gold-line--left" />
-                <p className="section-body typo-body-text">{charter.overviewIntro}</p>
-                <p className="section-body typo-body-text mt-4">
-                  {charter.benefitsIntro}
-                </p>
-                <ul className="mt-6 space-y-3">
-                  {charter.benefits.map((benefit) => (
-                    <li key={benefit} className="hathor-feature-card">
-                      <p className="section-body typo-body-text">{benefit}</p>
-                    </li>
-                  ))}
-                </ul>
-                <p className="section-body typo-body-text mt-8 font-medium">
-                  {charter.cta}
-                </p>
+              <div style={{ minWidth: 0 }}>
+                <header>
+                  {overviewTitle ? (
+                    <h2 className="section-title typo-page-title">
+                      {overviewTitle}
+                    </h2>
+                  ) : null}
+                  <div className="hathor-gold-line hathor-gold-line--left" />
+                  {overviewIntro ? (
+                    <p
+                      className="section-body typo-body-text"
+                      style={{ overflowWrap: "anywhere" }}
+                    >
+                      {overviewIntro}
+                    </p>
+                  ) : null}
+                </header>
+                {benefitsIntro ? (
+                  <p className="section-body typo-body-text mt-4">
+                    {benefitsIntro}
+                  </p>
+                ) : null}
+                {benefits.length > 0 ? (
+                  <ul className="mt-6 space-y-3">
+                    {benefits.map((benefit) => (
+                      <li key={benefit} className="hathor-feature-card">
+                        <p className="section-body typo-body-text">{benefit}</p>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+                {cta ? (
+                  <p className="section-body typo-body-text mt-8 font-medium">
+                    {cta}
+                  </p>
+                ) : null}
               </div>
             </ScrollReveal>
 
@@ -66,9 +92,15 @@ export function CharterPageContent() {
 
           <ScrollReveal>
             <div className="mt-12">
-              <h3 className="section-title typo-page-title text-2xl">Your Private Itinerary</h3>
-              <p className="section-indication typo-page-subtitle">Route Options</p>
-              <div className="hathor-gold-line hathor-gold-line--left" />
+              <header>
+                <h3 className="section-title typo-page-title text-2xl">
+                  Your Private Itinerary
+                </h3>
+                <p className="section-indication typo-page-subtitle">
+                  Route Options
+                </p>
+                <div className="hathor-gold-line hathor-gold-line--left" />
+              </header>
               <div className="mt-6 flex flex-wrap gap-3">
                 {CHARTER_PAGE.overview.routes.map((route) => (
                   <span key={route} className="hathor-route-chip">

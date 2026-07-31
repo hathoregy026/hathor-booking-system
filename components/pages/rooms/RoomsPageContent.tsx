@@ -3,11 +3,17 @@
 import { ResidenceScrollPage } from "@/components/pages/rooms/ResidenceScrollPage";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { LUXURY_SUITES_PAGE } from "@/lib/page-content";
+import { resolveOverviewIntroParagraphs } from "@/lib/website-text-shared";
 
 /** /rooms — Cabins & Suits content from hathorcruise.com/rooms */
 export function RoomsPageContent() {
   const { pages } = useWebsiteText();
   const rooms = pages.rooms;
+  const introParagraphs = resolveOverviewIntroParagraphs(
+    rooms.overviewIntro,
+    LUXURY_SUITES_PAGE.copyPlacement.afterHero,
+    LUXURY_SUITES_PAGE.overview.body,
+  );
 
   return (
     <ResidenceScrollPage
@@ -21,9 +27,12 @@ export function RoomsPageContent() {
       intro={{
         eyebrow: "Cabins & Suits",
         title: rooms.overviewTitle,
-        copy: LUXURY_SUITES_PAGE.copyPlacement.afterHero,
+        copy: introParagraphs,
       }}
-      copyPlacement={LUXURY_SUITES_PAGE.copyPlacement}
+      copyPlacement={{
+        ...LUXURY_SUITES_PAGE.copyPlacement,
+        afterHero: introParagraphs,
+      }}
       chapters={[
         ...LUXURY_SUITES_PAGE.categories.map((category, index) => ({
           id: `cat-${index + 1}`,
@@ -48,7 +57,8 @@ export function RoomsPageContent() {
       ]}
       amenities={{
         title: LUXURY_SUITES_PAGE.amenities.title,
-        body: rooms.overviewIntro,
+        // Amenities lead stays static until a dedicated CMS amenitiesBody field is approved.
+        body: LUXURY_SUITES_PAGE.overview.body,
         features: LUXURY_SUITES_PAGE.amenities.features,
       }}
       cta={{
