@@ -419,7 +419,7 @@
     drop-shadow(0 14px 36px rgba(182, 159, 100, 0.35));
 }
 
-/* Full-height copy runway — soft fade to the right; grows from the left */
+/* Full-height copy runway — gold only (no black/ink in scrim or glow) */
 .room-fs-copy::before {
   content: "";
   position: absolute;
@@ -433,15 +433,15 @@
   background:
     radial-gradient(
       ellipse 110% 95% at 12% 50%,
-      rgba(8, 6, 4, 0.58) 0%,
-      rgba(8, 6, 4, 0.3) 40%,
+      rgba(182, 159, 100, 0.52) 0%,
+      rgba(182, 159, 100, 0.28) 40%,
       transparent 72%
     ),
     linear-gradient(
       105deg,
-      rgba(8, 6, 4, 0.52) 0%,
-      rgba(8, 6, 4, 0.28) 42%,
-      rgba(8, 6, 4, 0.1) 68%,
+      rgba(182, 159, 100, 0.48) 0%,
+      rgba(182, 159, 100, 0.26) 42%,
+      rgba(182, 159, 100, 0.1) 68%,
       transparent 88%
     );
 }
@@ -700,8 +700,8 @@
     padding: 0;
     gap: 0.55rem;
     filter:
-      drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45))
-      drop-shadow(0 6px 16px rgba(0, 0, 0, 0.35));
+      drop-shadow(0 1px 2px rgba(182, 159, 100, 0.55))
+      drop-shadow(0 6px 16px rgba(182, 159, 100, 0.4));
   }
 
   .room-fs--native-scroll .room-fs-copy::before {
@@ -2495,19 +2495,19 @@
 }
 
 .public-site .venetian-page .room-fs-ui .room-fs-copy::before {
-  /* Tall runway, soft right fade — revealed from the left via --room-scrim */
+  /* Gold runway only — no black/ink in the scrim */
   background-image:
     radial-gradient(
       ellipse 110% 95% at 12% 50%,
-      rgba(8, 6, 4, 0.58) 0%,
-      rgba(8, 6, 4, 0.3) 40%,
+      rgba(182, 159, 100, 0.52) 0%,
+      rgba(182, 159, 100, 0.28) 40%,
       transparent 72%
     ),
     linear-gradient(
       105deg,
-      rgba(8, 6, 4, 0.52) 0%,
-      rgba(8, 6, 4, 0.28) 42%,
-      rgba(8, 6, 4, 0.1) 68%,
+      rgba(182, 159, 100, 0.48) 0%,
+      rgba(182, 159, 100, 0.26) 42%,
+      rgba(182, 159, 100, 0.1) 68%,
       transparent 88%
     ) !important;
   filter: none !important;
