@@ -249,7 +249,7 @@
   min-height: clamp(20rem, 42vh, 32rem);
 }
 
-/* Full-bleed HATHOR wordmark — centered, behind columns, 10% opacity */
+/* Full-bleed HATHOR wordmark — centered, behind columns, 5% opacity */
 .lux-footer__bg-logo {
   position: absolute;
   inset: 0;
@@ -265,7 +265,7 @@
   display: block;
   width: min(118vw, 1900px);
   height: auto;
-  opacity: 0.1;
+  opacity: 0.05;
   user-select: none;
 }
 
