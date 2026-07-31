@@ -759,6 +759,9 @@ export function useExScrollMotion() {
     /** Finer fog steps on phone â€” 24 was visibly stepped during slow finger drag. */
     const FOG_STEPS = 56;
     const FOG_RANGE = 140;
+    /** Copy/chrome only after the photo mostly covers cream silk. */
+    const COPY_AFTER_FOG = 0.78;
+    const SOLID_LOCK = 0.97;
     const quantiseFogEdge = (edge: number, stepped: boolean) => {
       if (!stepped) return edge;
       const step = FOG_RANGE / FOG_STEPS;
@@ -771,6 +774,44 @@ export function useExScrollMotion() {
     ) => {
       card.style.willChange = "auto";
       if (media) media.style.willChange = "auto";
+    };
+
+    const syncStackPhotoReady = () => {
+      const ready = cards.some((card) => {
+        if (card.classList.contains("is-stack-solid")) return true;
+        const op = Number.parseFloat(card.style.opacity || "0");
+        return Number.isFinite(op) && op >= 0.85;
+      });
+      section.classList.toggle("is-stack-photo-ready", ready);
+    };
+
+    /**
+     * Drive fog mask + opacity together. Once fully risen, lock the card solid
+     * (no mask) so cream silk can never punch through mid-scroll / rebuild.
+     */
+    const applyFogReveal = (
+      card: HTMLElement,
+      edge: number,
+      reveal: number,
+    ) => {
+      const op = Math.min(1, Math.max(0, reveal));
+      const qEdge = quantiseFogEdge(edge, isPhone || lightenDevice);
+      card.style.setProperty("--stack-fog-edge", `${qEdge}%`);
+      card.style.opacity = String(op);
+      if (op > 0.02) {
+        card.style.visibility = "visible";
+      } else if (op <= 0.01) {
+        card.style.visibility = "hidden";
+      }
+      if (op >= SOLID_LOCK && qEdge >= FOG_RANGE - 0.5) {
+        card.classList.add("is-stack-solid");
+        card.style.opacity = "1";
+        card.style.visibility = "visible";
+        card.style.setProperty("--stack-fog-edge", `${FOG_RANGE}%`);
+      } else {
+        card.classList.remove("is-stack-solid");
+      }
+      syncStackPhotoReady();
     };
 
     const setStackPager = (index: number) => {
@@ -800,9 +841,15 @@ export function useExScrollMotion() {
         autoAlpha: 1,
         "--stack-fog-edge": "140%",
       });
-      cards.slice(1).forEach((card) => {
-        gsap.set(card, { autoAlpha: 0, "--stack-fog-edge": "0%" });
+      cards.forEach((card, index) => {
+        if (index === 0) {
+          card.classList.add("is-stack-solid");
+        } else {
+          card.classList.remove("is-stack-solid");
+          gsap.set(card, { autoAlpha: 0, "--stack-fog-edge": "0%" });
+        }
       });
+      section.classList.add("is-stack-photo-ready");
       copyPanels.forEach((panel, index) => {
         gsap.set(panel, {
           autoAlpha: index === 0 ? 1 : 0,
@@ -866,6 +913,7 @@ export function useExScrollMotion() {
 
       cards.forEach((card, index) => {
         const media = getCardMedia(card);
+        card.classList.remove("is-stack-solid");
         gsap.set(card, {
           zIndex: index + 1,
           /* Stay full-frame â€” next image dissolves up through soft fog */
@@ -891,6 +939,7 @@ export function useExScrollMotion() {
           });
         }
       });
+      section.classList.remove("is-stack-photo-ready");
 
       copyPanels.forEach((panel, index) => {
         const chars =
@@ -1050,14 +1099,12 @@ export function useExScrollMotion() {
             if (firstMedia) firstMedia.style.willChange = "transform";
           },
           onUpdate: () => {
-            const edge = quantiseFogEdge(firstFog.edge, fogStepped);
-            firstCard.style.setProperty("--stack-fog-edge", `${edge}%`);
-            /* Linear reveal â€” *1.8 saturated early and flickered at the lip */
-            const op = Math.min(1, Math.max(0, firstFog.reveal));
-            firstCard.style.opacity = String(op);
-            if (op > 0.02) firstCard.style.visibility = "visible";
+            applyFogReveal(firstCard, firstFog.edge, firstFog.reveal);
           },
-          onComplete: () => clearFogWillChange(firstCard, firstMedia),
+          onComplete: () => {
+            applyFogReveal(firstCard, FOG_RANGE, 1);
+            clearFogWillChange(firstCard, firstMedia);
+          },
         },
         introFogAt,
       );
@@ -1078,6 +1125,7 @@ export function useExScrollMotion() {
       }
 
       const firstPanel = copyPanels[0];
+      const firstCopyAt = introFogAt + introFog * COPY_AFTER_FOG;
       if (firstPanel) {
         tl.fromTo(
           firstPanel,
@@ -1086,19 +1134,19 @@ export function useExScrollMotion() {
             autoAlpha: 1,
             y: 0,
             ease: "none",
-            duration: introFog * 0.55,
+            duration: introFog * (1 - COPY_AFTER_FOG),
             onStart: () => {
               firstPanel.setAttribute("aria-hidden", "false");
               setStackPager(0);
             },
           },
-          introFogAt + introFog * 0.4,
+          firstCopyAt,
         );
         scrubStackChars(
           tl,
           firstPanel,
-          introFogAt + introFog * 0.4,
-          introFog * 0.55,
+          firstCopyAt,
+          introFog * (1 - COPY_AFTER_FOG),
           "in",
         );
       }
@@ -1110,9 +1158,9 @@ export function useExScrollMotion() {
           {
             autoAlpha: 1,
             ease: "none",
-            duration: introFog * 0.45,
+            duration: introFog * (1 - COPY_AFTER_FOG),
           },
-          introFogAt + introFog * 0.4,
+          firstCopyAt,
         );
       }
       if (progressRoot) {
@@ -1122,9 +1170,9 @@ export function useExScrollMotion() {
           {
             autoAlpha: 1,
             ease: "none",
-            duration: introFog * 0.45,
+            duration: introFog * (1 - COPY_AFTER_FOG),
           },
-          introFogAt + introFog * 0.4,
+          firstCopyAt,
         );
       }
 
@@ -1150,14 +1198,12 @@ export function useExScrollMotion() {
               if (media) media.style.willChange = "transform";
             },
             onUpdate: () => {
-              const edge = quantiseFogEdge(fog.edge, fogStepped);
-              card.style.setProperty("--stack-fog-edge", `${edge}%`);
-              /* Opacity only â€” linear reveal avoids lip flicker */
-              const op = Math.min(1, Math.max(0, fog.reveal));
-              card.style.opacity = String(op);
-              if (op > 0.02) card.style.visibility = "visible";
+              applyFogReveal(card, fog.edge, fog.reveal);
             },
-            onComplete: () => clearFogWillChange(card, media),
+            onComplete: () => {
+              applyFogReveal(card, FOG_RANGE, 1);
+              clearFogWillChange(card, media);
+            },
           },
           moveAt,
         );
@@ -1177,28 +1223,30 @@ export function useExScrollMotion() {
           );
         }
 
-        /* Copy stays readable through dwell, then crossfades mid-wipe */
+        /* Copy stays readable through dwell, then crossfades once next photo covers */
         if (prevPanel && nextPanel) {
+          const nextCopyAt = moveAt + move * COPY_AFTER_FOG;
+          const nextCopyDur = move * (1 - COPY_AFTER_FOG);
           tl.to(
             prevPanel,
             {
               autoAlpha: 0,
               y: 0,
               ease: "none",
-              duration: move * 0.48,
+              duration: move * 0.35,
               onStart: () => prevPanel.setAttribute("aria-hidden", "true"),
               onReverseComplete: () => {
                 prevPanel.setAttribute("aria-hidden", "false");
                 setStackPager(i - 1);
               },
             },
-            moveAt + move * 0.12,
+            moveAt + move * 0.55,
           );
           scrubStackChars(
             tl,
             prevPanel,
-            moveAt + move * 0.12,
-            move * 0.48,
+            moveAt + move * 0.55,
+            move * 0.35,
             "out",
           );
 
@@ -1209,7 +1257,7 @@ export function useExScrollMotion() {
               autoAlpha: 1,
               y: 0,
               ease: "none",
-              duration: move * 0.58,
+              duration: nextCopyDur,
               onStart: () => {
                 nextPanel.setAttribute("aria-hidden", "false");
                 setStackPager(i);
@@ -1217,13 +1265,13 @@ export function useExScrollMotion() {
               onReverseComplete: () =>
                 nextPanel.setAttribute("aria-hidden", "true"),
             },
-            moveAt + move * 0.38,
+            nextCopyAt,
           );
           scrubStackChars(
             tl,
             nextPanel,
-            moveAt + move * 0.38,
-            move * 0.58,
+            nextCopyAt,
+            nextCopyDur,
             "in",
           );
         }
@@ -1238,7 +1286,7 @@ export function useExScrollMotion() {
           const underCard = cards[j];
           const underMedia = getCardMedia(underCard);
 
-          /* Keep full-bleed coverage â€” dim via opacity (filter:brightness thrashed GPU) */
+          /* Keep full-bleed coverage — never dim opacity (cream silk punches through fog lips) */
           tl.to(
             underCard,
             {
@@ -1246,7 +1294,7 @@ export function useExScrollMotion() {
               x: 0,
               xPercent: 0,
               scale: 1,
-              opacity: Math.max(0.72, 1 - depth * 0.08),
+              opacity: 1,
               filter: "brightness(1)",
               ease: "none",
               duration: move,

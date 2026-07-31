@@ -1981,27 +1981,36 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   box-shadow: none;
   outline: none;
   background: #0c0806;
-  /* Soft fog dissolve upward — same language as Take Your Voyage Today */
+  /* Soft fog dissolve upward — clamp stops so early fog never fully punches to cream */
   -webkit-mask-image: linear-gradient(
     to top,
     #000 0%,
-    #000 calc(var(--stack-fog-edge) - 28%),
-    rgba(0, 0, 0, 0.78) calc(var(--stack-fog-edge) - 16%),
-    rgba(0, 0, 0, 0.32) calc(var(--stack-fog-edge) - 6%),
+    #000 max(0%, calc(var(--stack-fog-edge) - 28%)),
+    rgba(0, 0, 0, 0.78) max(0%, calc(var(--stack-fog-edge) - 16%)),
+    rgba(0, 0, 0, 0.32) max(0%, calc(var(--stack-fog-edge) - 6%)),
     transparent var(--stack-fog-edge)
   );
   mask-image: linear-gradient(
     to top,
     #000 0%,
-    #000 calc(var(--stack-fog-edge) - 28%),
-    rgba(0, 0, 0, 0.78) calc(var(--stack-fog-edge) - 16%),
-    rgba(0, 0, 0, 0.32) calc(var(--stack-fog-edge) - 6%),
+    #000 max(0%, calc(var(--stack-fog-edge) - 28%)),
+    rgba(0, 0, 0, 0.78) max(0%, calc(var(--stack-fog-edge) - 16%)),
+    rgba(0, 0, 0, 0.32) max(0%, calc(var(--stack-fog-edge) - 6%)),
     transparent var(--stack-fog-edge)
   );
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
+}
+
+/* Fully risen landmark — drop the fog mask so silk can never show through */
+.ex-stack-scroll__card.is-stack-solid {
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+  -webkit-mask-size: auto !important;
+  mask-size: auto !important;
+  background-color: #0c0806 !important;
 }
 
 /* Soft cinematic light — no frame/rules (those read as dead edges) */
@@ -2066,6 +2075,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   height: 100%;
   will-change: auto;
   transform-origin: center center;
+  /* Opaque fallback if the <img> is still decoding — never show cream through */
+  background: #0c0806;
   /* No CSS motion here — ambient animation fought scrub settle and caused jumps */
 }
 
@@ -2089,10 +2100,17 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ex-stack-scroll__card {
+  .ex-stack-scroll__card,
+  .ex-stack-scroll__card.is-stack-solid {
     opacity: 1 !important;
+    visibility: visible !important;
     -webkit-mask-image: none !important;
     mask-image: none !important;
+  }
+
+  .ex-stack-scroll.is-stack-photo-ready .ex-stack-scroll__copy-panel::before,
+  .ex-stack-scroll .ex-stack-scroll__copy-panel::before {
+    opacity: 1;
   }
 
   .ex-stack-scroll__card-media img {
@@ -2180,6 +2198,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   border-radius: 1.75rem 0 0 1.75rem;
   transform: scaleX(var(--stack-scrim, 1));
   transform-origin: left center;
+  opacity: 0;
+  transition: opacity 0.35s ease;
   background:
     radial-gradient(
       ellipse 95% 90% at 8% 50%,
@@ -2194,6 +2214,11 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
       rgba(182, 159, 100, 0.06) 52%,
       transparent 78%
     );
+}
+
+/* Only paint the gold scrim once a photo plate is covering cream silk */
+.ex-stack-scroll.is-stack-photo-ready .ex-stack-scroll__copy-panel::before {
+  opacity: 1;
 }
 
 .ex-stack-scroll__copy::before {
