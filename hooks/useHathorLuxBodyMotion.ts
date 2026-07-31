@@ -16,12 +16,10 @@ gsap.registerPlugin(ScrollTrigger);
 const DESKTOP_MQ = "(min-width: 1025px)";
 const NARROW_MQ = "(max-width: 1024px)";
 
-/** Book Now / pill CTAs stay visible like homepage — never park at opacity 0. */
+/** Book Now stays visible like homepage — never park at opacity 0. */
 function isBookNowOrPillCta(el: Element): boolean {
   if (!(el instanceof HTMLElement)) return false;
-  if (el.matches("button, a.btn, .btn, .public-fab__book, .cruise-filter--cta")) {
-    return true;
-  }
+  if (el.matches(".public-fab__book")) return true;
   return /book\s*now/i.test((el.textContent || "").trim());
 }
 
@@ -29,16 +27,39 @@ function keepCtaVisible(el: HTMLElement) {
   gsap.set(el, { opacity: 1, y: 0, clearProps: "opacity,visibility,transform" });
 }
 
+/** Recover elements that gsap.from parked at opacity 0 after ST refresh. */
+function ensureRevealVisible(targets: gsap.TweenTarget) {
+  gsap.set(targets, { opacity: 1, y: 0, clearProps: "visibility" });
+}
+
+function revealOnce(
+  targets: gsap.TweenTarget,
+  vars: Record<string, unknown>,
+  trigger: Element | string | null | undefined,
+  start: string,
+) {
+  gsap.from(targets, {
+    ...vars,
+    immediateRender: false,
+    scrollTrigger: {
+      trigger: trigger ?? undefined,
+      start,
+      once: true,
+      onRefresh(self: ScrollTrigger) {
+        if (self.progress === 1) ensureRevealVisible(targets);
+      },
+    },
+  });
+}
+
 function setupLuxTitlesAndReveals(root: HTMLElement, ease: string, lux: string) {
   root.querySelectorAll<HTMLElement>("[data-lux-title]").forEach((el) => {
-    gsap.from(el, {
-      y: 42,
-      opacity: 0,
-      duration: 1.05,
-      ease: lux,
-      immediateRender: false,
-      scrollTrigger: { trigger: el, start: "top 88%", once: true },
-    });
+    revealOnce(
+      el,
+      { y: 42, opacity: 0, duration: 1.05, ease: lux },
+      el,
+      "top 88%",
+    );
   });
 
   root.querySelectorAll<HTMLElement>("[data-lux-reveal]").forEach((el, i) => {
@@ -47,22 +68,18 @@ function setupLuxTitlesAndReveals(root: HTMLElement, ease: string, lux: string) 
       keepCtaVisible(el);
       return;
     }
-    gsap.from(el, {
-      y: 28,
-      opacity: 0,
-      duration: 0.85,
-      delay: (i % 6) * 0.05,
-      ease,
-      immediateRender: false,
-      scrollTrigger: {
-        trigger: el,
-        start: "top 92%",
-        once: true,
-        onRefresh(self) {
-          if (self.progress === 1) gsap.set(el, { opacity: 1, y: 0 });
-        },
+    revealOnce(
+      el,
+      {
+        y: 28,
+        opacity: 0,
+        duration: 0.85,
+        delay: (i % 6) * 0.05,
+        ease,
       },
-    });
+      el,
+      "top 92%",
+    );
   });
 }
 
@@ -70,14 +87,18 @@ function setupLuxBands(root: HTMLElement, ease: string, lux: string) {
   root
     .querySelectorAll<HTMLElement>(".spx-suite-card, .hlx-manifesto-item")
     .forEach((el, i) => {
-      gsap.from(el, {
-        y: 48,
-        opacity: 0,
-        duration: 0.9,
-        delay: (i % 4) * 0.08,
-        ease,
-        scrollTrigger: { trigger: el, start: "top 90%", once: true },
-      });
+      revealOnce(
+        el,
+        {
+          y: 48,
+          opacity: 0,
+          duration: 0.9,
+          delay: (i % 4) * 0.08,
+          ease,
+        },
+        el,
+        "top 90%",
+      );
     });
 
   const atelier = root.querySelector<HTMLElement>(".spx-atelier-grid");
@@ -85,13 +106,12 @@ function setupLuxBands(root: HTMLElement, ease: string, lux: string) {
     const media = atelier.querySelector<HTMLElement>(".spx-atelier-media");
     const copy = atelier.querySelector<HTMLElement>(".spx-atelier-copy");
     if (media) {
-      gsap.from(media, {
-        x: -40,
-        opacity: 0,
-        duration: 1.05,
-        ease,
-        scrollTrigger: { trigger: atelier, start: "top 78%", once: true },
-      });
+      revealOnce(
+        media,
+        { x: -40, opacity: 0, duration: 1.05, ease },
+        atelier,
+        "top 78%",
+      );
     }
     if (copy) {
       const kids = gsap.utils
@@ -102,61 +122,42 @@ function setupLuxBands(root: HTMLElement, ease: string, lux: string) {
         .filter(isBookNowOrPillCta)
         .forEach(keepCtaVisible);
       if (kids.length) {
-        gsap.from(kids, {
-          y: 30,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.08,
-          ease,
-          immediateRender: false,
-          scrollTrigger: {
-            trigger: atelier,
-            start: "top 78%",
-            once: true,
-            onRefresh(self) {
-              if (self.progress === 1) gsap.set(kids, { opacity: 1, y: 0 });
-            },
-          },
-        });
+        revealOnce(
+          kids,
+          { y: 30, opacity: 0, duration: 0.8, stagger: 0.08, ease },
+          atelier,
+          "top 78%",
+        );
       }
     }
   }
 
   const quote = root.querySelector<HTMLElement>(".spx-quote blockquote");
   if (quote) {
-    gsap.from(quote, {
-      y: 44,
-      opacity: 0,
-      duration: 1.1,
-      ease: lux,
-      scrollTrigger: {
-        trigger: root.querySelector(".spx-quote"),
-        start: "top 80%",
-        once: true,
-      },
-    });
+    revealOnce(
+      quote,
+      { y: 44, opacity: 0, duration: 1.1, ease: lux },
+      root.querySelector(".spx-quote") ?? quote,
+      "top 80%",
+    );
   }
 
   root.querySelectorAll<HTMLElement>(".hlx-compare-row").forEach((row, i) => {
-    gsap.from(row, {
-      y: 18,
-      opacity: 0,
-      duration: 0.55,
-      delay: i * 0.05,
-      ease,
-      scrollTrigger: { trigger: row, start: "top 94%", once: true },
-    });
+    revealOnce(
+      row,
+      { y: 18, opacity: 0, duration: 0.55, delay: i * 0.05, ease },
+      row,
+      "top 94%",
+    );
   });
 
   root.querySelectorAll<HTMLElement>(".spx-metric").forEach((m, i) => {
-    gsap.from(m, {
-      y: 24,
-      opacity: 0,
-      duration: 0.7,
-      delay: i * 0.08,
-      ease,
-      scrollTrigger: { trigger: m, start: "top 90%", once: true },
-    });
+    revealOnce(
+      m,
+      { y: 24, opacity: 0, duration: 0.7, delay: i * 0.08, ease },
+      m,
+      "top 90%",
+    );
   });
 
   root.querySelectorAll<HTMLElement>(".cta-section .cta-inner").forEach((cta) => {
@@ -170,22 +171,12 @@ function setupLuxBands(root: HTMLElement, ease: string, lux: string) {
       .filter((el) => !isBookNowOrPillCta(el));
     if (!copy.length) return;
 
-    gsap.from(copy, {
-      y: 28,
-      opacity: 0,
-      duration: 0.8,
-      stagger: 0.1,
-      ease,
-      immediateRender: false,
-      scrollTrigger: {
-        trigger: cta,
-        start: "top 82%",
-        once: true,
-        onRefresh(self) {
-          if (self.progress === 1) gsap.set(copy, { opacity: 1, y: 0 });
-        },
-      },
-    });
+    revealOnce(
+      copy,
+      { y: 28, opacity: 0, duration: 0.8, stagger: 0.1, ease },
+      cta,
+      "top 82%",
+    );
   });
 }
 
@@ -372,31 +363,35 @@ function setupDesktopHighlightsPin(root: HTMLElement, ease: string) {
   });
 
   root.querySelectorAll<HTMLElement>(".hlx-panel").forEach((panel, i) => {
-    gsap.from(panel, {
-      y: 50,
-      opacity: 0,
-      duration: 0.9,
-      delay: Math.min(i, 2) * 0.08,
-      ease,
-      scrollTrigger: {
-        trigger: pin,
-        start: "top 85%",
-        once: true,
+    revealOnce(
+      panel,
+      {
+        y: 50,
+        opacity: 0,
+        duration: 0.9,
+        delay: Math.min(i, 2) * 0.08,
+        ease,
       },
-    });
+      pin,
+      "top 85%",
+    );
   });
 }
 
 function setupNarrowHighlightsPanels(root: HTMLElement, ease: string) {
   root.querySelectorAll<HTMLElement>(".hlx-panel").forEach((panel, i) => {
-    gsap.from(panel, {
-      y: 32,
-      opacity: 0,
-      duration: 0.8,
-      delay: Math.min(i, 2) * 0.05,
-      ease,
-      scrollTrigger: { trigger: panel, start: "top 92%", once: true },
-    });
+    revealOnce(
+      panel,
+      {
+        y: 32,
+        opacity: 0,
+        duration: 0.8,
+        delay: Math.min(i, 2) * 0.05,
+        ease,
+      },
+      panel,
+      "top 92%",
+    );
   });
 }
 

@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
 import { logDbError } from "@/lib/db-safe";
+import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 import { PUBLIC_CMS_CACHE_TAG } from "@/lib/public-cms-bundle";
 import {
   CMS_QUERY_TIMEOUT_MS,
@@ -56,6 +57,53 @@ function resolveImageSlot(slug: string, index: number): SiteImageName {
   );
 }
 
+function toAccordionCruise(
+  cruise: {
+    id: string;
+    name: string;
+    slug: string;
+    description: string | null;
+    ports: string | null;
+    basePriceCents: number;
+    roomCount: number;
+  },
+  index: number,
+): HomepageAccordionCruise {
+  const roomLabel =
+    cruise.roomCount === 1 ? "1 cabin" : `${cruise.roomCount} cabins`;
+  return {
+    id: cruise.id,
+    name: cruise.name,
+    description: cruise.description ?? "",
+    imageName: resolveImageSlot(cruise.slug, index),
+    ports: cruise.ports ?? "",
+    basePriceCents: cruise.basePriceCents,
+    roomCount: cruise.roomCount,
+    slug: cruise.slug,
+    romanNumeral: ROMAN[index] ?? String(index + 1),
+    meta: `${roomLabel} · Base ${formatBasePrice(cruise.basePriceCents)}`,
+    href: "/cruises",
+  };
+}
+
+/** Catalog seed — keeps Our Voyages visible when CMS/build cannot load cruises. */
+function accordionFromCatalog(): HomepageAccordionCruise[] {
+  return HATHOR_CRUISES.map((cruise, index) =>
+    toAccordionCruise(
+      {
+        id: `catalog-${cruise.slug}`,
+        name: cruise.name,
+        slug: cruise.slug,
+        description: cruise.description,
+        ports: cruise.ports,
+        basePriceCents: cruise.basePriceCents,
+        roomCount: cruise.rooms.length,
+      },
+      index,
+    ),
+  );
+}
+
 type CruiseRow = {
   id: string;
   name: string;
@@ -96,30 +144,17 @@ async function fetchAccordionFromDb(): Promise<HomepageAccordionCruise[]> {
       "accordion",
       CMS_QUERY_TIMEOUT_MS,
     );
-    return result.rows.map((cruise, index) => {
-      const roomLabel =
-        cruise.roomCount === 1 ? "1 cabin" : `${cruise.roomCount} cabins`;
-      return {
-        id: cruise.id,
-        name: cruise.name,
-        description: cruise.description ?? "",
-        imageName: resolveImageSlot(cruise.slug, index),
-        ports: cruise.ports ?? "",
-        basePriceCents: cruise.basePriceCents,
-        roomCount: cruise.roomCount,
-        slug: cruise.slug,
-        romanNumeral: ROMAN[index] ?? String(index + 1),
-        meta: `${roomLabel} · Base ${formatBasePrice(cruise.basePriceCents)}`,
-        href: "/cruises",
-      };
-    });
+    return result.rows.map((cruise, index) => toAccordionCruise(cruise, index));
   });
 }
 
 const getHomepageAccordionCruisesCached = unstable_cache(
   async (): Promise<HomepageAccordionCruise[]> => {
+    /* Build must not return [] — that baked an empty Our Voyages into ISR HTML. */
     if (process.env.NEXT_PHASE === "phase-production-build") {
-      return accordionGlobal.accordionLastGood ?? [];
+      return accordionGlobal.accordionLastGood?.length
+        ? accordionGlobal.accordionLastGood
+        : accordionFromCatalog();
     }
 
     if (accordionGlobal.accordionInflight) {
@@ -129,11 +164,18 @@ const getHomepageAccordionCruisesCached = unstable_cache(
     const pending = (async () => {
       try {
         const rows = await fetchAccordionFromDb();
+        if (rows.length === 0) {
+          const fallback = accordionFromCatalog();
+          accordionGlobal.accordionLastGood = fallback;
+          return fallback;
+        }
         accordionGlobal.accordionLastGood = rows;
         return rows;
       } catch (error) {
         logDbError("homepage-accordion-cruises.fetch", error);
-        return accordionGlobal.accordionLastGood ?? [];
+        return accordionGlobal.accordionLastGood?.length
+          ? accordionGlobal.accordionLastGood
+          : accordionFromCatalog();
       } finally {
         accordionGlobal.accordionInflight = undefined;
       }
@@ -142,13 +184,13 @@ const getHomepageAccordionCruisesCached = unstable_cache(
     accordionGlobal.accordionInflight = pending;
     return pending;
   },
-  ["homepage-accordion-cruises-v2"],
+  ["homepage-accordion-cruises-v3"],
   { revalidate: 300, tags: [PUBLIC_CMS_CACHE_TAG] },
 );
 
 /**
  * Active cruises for the homepage luxury accordion.
- * Hardened short-lived client + stale-on-failure (never invents cruises).
+ * Hardened short-lived client + catalog fallback (never blank Our Voyages).
  */
 export const getHomepageAccordionCruises = cache(async (): Promise<
   HomepageAccordionCruise[]
@@ -160,9 +202,12 @@ export const getHomepageAccordionCruisesSafe = cache(async (): Promise<
   HomepageAccordionCruise[]
 > => {
   try {
-    return await getHomepageAccordionCruises();
+    const rows = await getHomepageAccordionCruises();
+    return rows.length > 0 ? rows : accordionFromCatalog();
   } catch (error) {
     logDbError("homepage-accordion-cruises.get", error);
-    return accordionGlobal.accordionLastGood ?? [];
+    return accordionGlobal.accordionLastGood?.length
+      ? accordionGlobal.accordionLastGood
+      : accordionFromCatalog();
   }
 });
