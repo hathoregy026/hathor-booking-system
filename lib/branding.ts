@@ -25,10 +25,6 @@ export const HATHOR_FOOTER_LOGO_SRC =
 export const HATHOR_FOOTER_LOGO_DAY_SRC =
   "/branding/hathor-logo-nile-cruise-panorama-on-nile-visit-egypt-black.svg";
 
-/** Footer background watermark — HATHOR wordmark only (subtitle cropped) */
-export const HATHOR_FOOTER_BG_WORDMARK_SRC =
-  "/branding/hathor-logo-nile-cruise-panorama-on-nile-visit-egypt-black-wordmark.svg";
-
 export const HATHOR_FAVICON_SRC = "/branding/hathor-logo-nile-cruise-favicon.webp";
 
 /** Homepage hero wordmark — centered over video */

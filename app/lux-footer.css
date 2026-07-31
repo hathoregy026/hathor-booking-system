@@ -241,8 +241,9 @@
 .lux-footer__main {
   position: relative;
   isolation: isolate;
-  padding: 4rem 5vw;
+  padding: 5rem 5vw 6rem;
   overflow: hidden;
+  min-height: clamp(18rem, 36vh, 28rem);
 }
 
 /* Full-bleed HATHOR wordmark — centered, behind columns, 20% opacity */
@@ -250,23 +251,19 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   pointer-events: none;
   overflow: hidden;
+  color: #2c2824;
 }
 
 .lux-footer__bg-logo-img {
-  width: min(96vw, 1600px);
-  max-width: none;
+  display: block;
+  width: min(94vw, 1400px);
   height: auto;
-  max-height: 88%;
-  object-fit: contain;
-  object-position: center;
   opacity: 0.2;
   user-select: none;
-  -webkit-user-drag: none;
 }
 
 .lux-footer__grid {
@@ -442,12 +439,12 @@
   }
 
   .lux-footer__main {
-    padding: 3rem 5vw;
+    padding: 3rem 5vw 4rem;
+    min-height: clamp(14rem, 32vh, 22rem);
   }
 
   .lux-footer__bg-logo-img {
-    width: min(110vw, 900px);
-    max-height: 70%;
+    width: min(100vw, 960px);
   }
 
   .lux-footer__grid {
@@ -480,8 +477,7 @@
 
 @media (max-width: 480px) {
   .lux-footer__bg-logo-img {
-    width: min(120vw, 640px);
-    max-height: 55%;
+    width: min(110vw, 720px);
   }
 }
 
