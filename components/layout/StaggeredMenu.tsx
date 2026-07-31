@@ -12,6 +12,7 @@ import {
   useRef,
   useState,
   type CSSProperties,
+  type MouseEvent,
   type ReactNode,
 } from "react";
 import gsap from "gsap";
@@ -27,6 +28,8 @@ export type StaggeredMenuSocialItem = SocialLink & {
 type StaggeredMenuProps = {
   open: boolean;
   onClose: () => void;
+  /** Close panel + unlock body synchronously, then navigate. */
+  onNavigate?: (href: string) => void;
   position?: "left" | "right";
   colors?: string[];
   navItems?: HeaderNavItem[];
@@ -39,6 +42,7 @@ type StaggeredMenuProps = {
 export function StaggeredMenu({
   open,
   onClose,
+  onNavigate,
   position = "right",
   colors = ["#8b6914", "#c9a96e", "#ece8df"],
   navItems = [],
@@ -48,6 +52,18 @@ export function StaggeredMenu({
   className,
 }: StaggeredMenuProps) {
   const [openGroupId, setOpenGroupId] = useState<string | null>(null);
+
+  const handleNavClick = (
+    event: MouseEvent<HTMLAnchorElement>,
+    href: string,
+  ) => {
+    if (!onNavigate) {
+      onClose();
+      return;
+    }
+    event.preventDefault();
+    onNavigate(href);
+  };
   const [mounted, setMounted] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
   const panelRef = useRef<HTMLElement | null>(null);
@@ -219,7 +235,7 @@ export function StaggeredMenu({
                     <Link
                       className="sm-panel-link sm-panel-link--top"
                       href={item.href}
-                      onClick={onClose}
+                      onClick={(event) => handleNavClick(event, item.href)}
                       tabIndex={open ? 0 : -1}
                     >
                       {item.label}
@@ -259,7 +275,7 @@ export function StaggeredMenu({
                         <Link
                           href={item.href}
                           className="sm-panel-link sm-panel-link--child sm-panel-link--overview"
-                          onClick={onClose}
+                          onClick={(event) => handleNavClick(event, item.href)}
                           tabIndex={open && expanded ? 0 : -1}
                         >
                           Overview
@@ -270,7 +286,7 @@ export function StaggeredMenu({
                           <Link
                             href={link.href}
                             className="sm-panel-link sm-panel-link--child"
-                            onClick={onClose}
+                            onClick={(event) => handleNavClick(event, link.href)}
                             tabIndex={open && expanded ? 0 : -1}
                           >
                             <span className="sm-panel-link-label">

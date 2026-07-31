@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { PublicThemeToggle } from "@/components/public/PublicThemeToggle";
 import { StaggeredMenu } from "@/components/layout/StaggeredMenu";
@@ -17,11 +17,16 @@ import {
   navHrefMatches,
   type HeaderNavItem,
 } from "@/lib/public-nav";
-import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
-import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
+import {
+  forceUnlockBodyScroll,
+  lockBodyScroll,
+  unlockBodyScroll,
+} from "@/lib/body-scroll-lock";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { PUBLIC_SOCIAL_LINKS } from "@/lib/public-social";
 import type { ReactNode } from "react";
+
+const EXPLORE_LOCK_OWNER = "explore-panel" as const;
 
 const HEADER_NAV_LEFT = HEADER_NAV_ITEMS.slice(
   0,
@@ -78,9 +83,11 @@ const PHONE_MENU_COLORS = ["#8b6914", "#c9a96e", "#ece8df"];
 function ExplorePanel({
   open,
   onClose,
+  onNavigate,
 }: {
   open: boolean;
   onClose: () => void;
+  onNavigate: (href: string) => void;
 }) {
   if (!open) return null;
 
@@ -115,7 +122,10 @@ function ExplorePanel({
                       <Link
                         href={item.href}
                         className="hathor-explore__link"
-                        onClick={onClose}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          onNavigate(item.href);
+                        }}
                       >
                         <span>{item.label}</span>
                       </Link>
@@ -134,7 +144,10 @@ function ExplorePanel({
                       <Link
                         href={link.href}
                         className="hathor-explore__link"
-                        onClick={onClose}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          onNavigate(link.href);
+                        }}
                       >
                         <span>{link.label}</span>
                         {link.description ? (
@@ -187,6 +200,7 @@ function isNavItemActive(pathname: string, item: HeaderNavItem): boolean {
 /** Primary site header — part of unified PublicNavbar (EX style on all routes). */
 export function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const [exploreOpen, setExploreOpen] = useState(false);
   const [isPhone, setIsPhone] = useState(false);
   const [menuHovered, setMenuHovered] = useState(false);
@@ -197,12 +211,38 @@ export function Header() {
   );
   const [navPathname, setNavPathname] = useState(pathname);
 
+  const closeExploreSync = useCallback(() => {
+    unlockBodyScroll(EXPLORE_LOCK_OWNER);
+    setExploreOpen(false);
+  }, []);
+
+  const toggleExplore = useCallback(() => {
+    setExploreOpen((current) => {
+      if (current) {
+        unlockBodyScroll(EXPLORE_LOCK_OWNER);
+        return false;
+      }
+      return true;
+    });
+  }, []);
+
+  const navigateFromExplore = useCallback(
+    (href: string) => {
+      unlockBodyScroll(EXPLORE_LOCK_OWNER);
+      setExploreOpen(false);
+      router.push(href);
+    },
+    [router],
+  );
+
   /* Reset ephemeral nav UI when the route changes (render-time adjust, not an effect). */
   if (pathname !== navPathname) {
     setNavPathname(pathname);
     setMenuHovered(false);
     setOpenDropdown(null);
-    setExploreOpen(false);
+    if (exploreOpen) {
+      setExploreOpen(false);
+    }
   }
 
   const cancelDropdownClose = () => {
@@ -221,62 +261,55 @@ export function Header() {
 
   useEffect(() => {
     const media = window.matchMedia("(max-width: 480px)");
-    const sync = () => setIsPhone(media.matches);
+    const sync = () => {
+      const next = media.matches;
+      setIsPhone((prev) => {
+        if (prev !== next) {
+          unlockBodyScroll(EXPLORE_LOCK_OWNER);
+          setExploreOpen(false);
+        }
+        return next;
+      });
+    };
     sync();
     media.addEventListener("change", sync);
     return () => media.removeEventListener("change", sync);
   }, []);
 
   useEffect(() => {
-    return () => cancelDropdownClose();
+    return () => {
+      cancelDropdownClose();
+      forceUnlockBodyScroll();
+    };
   }, []);
 
   useEffect(() => {
     cancelDropdownClose();
   }, [navPathname]);
 
-  useEffect(() => {
-    if (!exploreOpen) return;
+  /* Pathname safety: always drop explore lock on route change. */
+  useLayoutEffect(() => {
+    unlockBodyScroll(EXPLORE_LOCK_OWNER);
+  }, [pathname]);
 
-    const scrollController = ensurePublicScrollController();
-    scrollController.stop();
-    const scrollY = window.scrollY || window.pageYOffset || 0;
-    const { style } = document.body;
-    const previous = {
-      overflow: style.overflow,
-      position: style.position,
-      top: style.top,
-      width: style.width,
-      left: style.left,
-      right: style.right,
-    };
+  useLayoutEffect(() => {
+    if (!exploreOpen) {
+      unlockBodyScroll(EXPLORE_LOCK_OWNER);
+      return;
+    }
 
-    style.overflow = "hidden";
-    style.position = "fixed";
-    style.top = `-${scrollY}px`;
-    style.width = "100%";
-    style.left = "0";
-    style.right = "0";
+    lockBodyScroll(EXPLORE_LOCK_OWNER);
 
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setExploreOpen(false);
+      if (event.key === "Escape") closeExploreSync();
     };
     document.addEventListener("keydown", onKey);
 
     return () => {
       document.removeEventListener("keydown", onKey);
-      style.overflow = previous.overflow;
-      style.position = previous.position;
-      style.top = previous.top;
-      style.width = previous.width;
-      style.left = previous.left;
-      style.right = previous.right;
-      window.scrollTo(0, scrollY);
-      scrollController.start();
-      scrollController.syncToCurrentScroll();
-      requestScrollRefresh("menu-close");
+      unlockBodyScroll(EXPLORE_LOCK_OWNER);
     };
-  }, [exploreOpen]);
+  }, [exploreOpen, closeExploreSync]);
 
   useEffect(() => {
     const updateCompact = () => {
@@ -456,9 +489,9 @@ export function Header() {
             <button
               type="button"
               className="hathor-header__menu-btn"
-              onClick={() => setExploreOpen(true)}
+              onClick={toggleExplore}
               aria-expanded={exploreOpen}
-              aria-label="Open menu"
+              aria-label={exploreOpen ? "Close menu" : "Open menu"}
             >
               <Menu className="h-5 w-5" aria-hidden />
             </button>
@@ -470,7 +503,8 @@ export function Header() {
       {isPhone ? (
         <StaggeredMenu
           open={exploreOpen}
-          onClose={() => setExploreOpen(false)}
+          onClose={closeExploreSync}
+          onNavigate={navigateFromExplore}
           position="right"
           navItems={HEADER_NAV_ITEMS}
           socialItems={PHONE_SOCIAL_ITEMS}
@@ -479,7 +513,11 @@ export function Header() {
           accentColor="#b69f64"
         />
       ) : (
-        <ExplorePanel open={exploreOpen} onClose={() => setExploreOpen(false)} />
+        <ExplorePanel
+          open={exploreOpen}
+          onClose={closeExploreSync}
+          onNavigate={navigateFromExplore}
+        />
       )}
     </>
   );

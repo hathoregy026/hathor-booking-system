@@ -15,6 +15,7 @@
     "seed:site-images": "npx tsx scripts/seed-site-images.ts",
     "rebuild:site-image-map": "node --env-file=.env scripts/rebuild-site-image-public-map.mjs",
     "rebuild:site-image-map:force": "node --env-file=.env scripts/rebuild-site-image-public-map.mjs --force",
+    "postdeploy:cms": "node --env-file=.env scripts/post-deploy-cms.mjs",
     "seed:email-templates": "node scripts/seed-email-templates.mjs",
     "seed:email-template-urls": "node scripts/seed-email-template-urls.mjs",
     "optimize:email-images": "node --env-file=.env scripts/optimize-email-bucket-images.mjs",

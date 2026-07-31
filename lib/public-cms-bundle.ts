@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
+import { connection } from "next/server";
 import { logDbError } from "@/lib/db-safe";
 import {
   DEFAULT_HERO_LOGO_TUNE,
@@ -50,7 +51,8 @@ import {
 } from "@/lib/public-cms-client";
 
 export const PUBLIC_CMS_CACHE_TAG = "public-cms";
-export const PUBLIC_CMS_CACHE_KEY = "public-cms-bundle-v6";
+/** Bumped so prior build-time default entries are never reused. */
+export const PUBLIC_CMS_CACHE_KEY = "public-cms-bundle-v7";
 export const PUBLIC_CMS_REVALIDATE_SECONDS = 300;
 
 const PUBLIC_CMS_KEYS = [
@@ -68,6 +70,8 @@ const PUBLIC_CMS_KEYS = [
 const CHUNKED_SETTING_KEYS = new Set<string>([SITE_IMAGE_PUBLIC_MAP_KEY]);
 /** Max expected public image-map payload (src-only overrides). */
 const IMAGE_MAP_MAX_CHARS = 12_000;
+
+const CMS_BUILD_SKIP = "CMS_SKIP_BUILD_RESOLUTION";
 
 async function readSettingValue(
   client: Client,
@@ -113,6 +117,9 @@ export type PublicCmsBundle = {
   websiteText: WebsiteText;
   websiteTextMobile: WebsiteText;
 };
+
+/** Internal only — never serialized into public HTML. */
+export type PublicCmsLoadStatus = "success" | "fallback" | "stale";
 
 type SettingRow = { key: string; value: string };
 
@@ -195,8 +202,17 @@ export function defaultPublicCmsBundle(): PublicCmsBundle {
   };
 }
 
+function countImageOverrides(bundle: PublicCmsBundle): number {
+  const defaults = defaultSiteImageMap();
+  let imagesCount = 0;
+  for (const [name, img] of Object.entries(bundle.siteImages)) {
+    if (defaults[name] && defaults[name].src !== img.src) imagesCount += 1;
+  }
+  return imagesCount;
+}
+
 /**
- * One short-lived pool checkout, chunked read for large image map.
+ * One short-lived pooler checkout, chunked read for large image map.
  * SiteImage table is not scanned on the public request path.
  */
 export async function fetchPublicCmsBundleFromDb(): Promise<{
@@ -207,7 +223,6 @@ export async function fetchPublicCmsBundleFromDb(): Promise<{
   let connectMs = 0;
   let settingsMs = 0;
   let settingsCount = 0;
-  let imagesCount = 0;
 
   const smallRows = await withPublicCmsClient(async (client) => {
     connectMs = Date.now() - t0;
@@ -247,10 +262,7 @@ export async function fetchPublicCmsBundleFromDb(): Promise<{
   }
 
   const parsed = parseSettingMap(rows);
-  const defaults = defaultSiteImageMap();
-  for (const [name, img] of Object.entries(parsed.siteImages)) {
-    if (defaults[name] && defaults[name].src !== img.src) imagesCount += 1;
-  }
+  const imagesCount = countImageOverrides(parsed);
 
   return {
     bundle: parsed,
@@ -267,41 +279,27 @@ export async function fetchPublicCmsBundleFromDb(): Promise<{
   };
 }
 
+/**
+ * ONLY successful DB reads may return from this function.
+ * Throws on build-phase skip and on DB failure so unstable_cache never
+ * persists slot defaults / empty override maps as authoritative.
+ */
 async function loadPublicCmsBundleUncached(): Promise<PublicCmsBundle> {
   ensureCmsWarmup();
 
   if (process.env.NEXT_PHASE === "phase-production-build") {
-    /* Build-time: never hit the pooler; prefer last-good over fake empty maps. */
-    return getCmsLastGood<PublicCmsBundle>() ?? defaultPublicCmsBundle();
+    throw new Error(CMS_BUILD_SKIP);
   }
 
   return singleFlightCms(async () => {
-    try {
-      const { bundle, timing } = await fetchPublicCmsBundleFromDb();
-      setCmsLastGood(bundle);
-      if (process.env.NODE_ENV === "development") {
-        console.log(
-          `[public-cms-bundle] ok ${timing.totalMs}ms (settings=${timing.settingsCount}, imageOverrides=${timing.imagesCount}, connect=${timing.connectMs}ms)`,
-        );
-      }
-      return bundle;
-    } catch (error) {
-      logDbError("public-cms-bundle.fetch", error);
-      const stale = getCmsLastGood<PublicCmsBundle>();
-      if (stale) {
-        if (process.env.NODE_ENV === "development") {
-          console.warn(
-            "[public-cms-bundle] serving in-process last-good after DB failure",
-          );
-        }
-        return stale;
-      }
-      /*
-       * First-ever miss with no valid cache: slot defaults only.
-       * Do not invent CMS overrides; admin rebuild seeds site-image-public-map.
-       */
-      throw error;
+    const { bundle, timing } = await fetchPublicCmsBundleFromDb();
+    setCmsLastGood(bundle);
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        `[public-cms-bundle] ok ${timing.totalMs}ms (settings=${timing.settingsCount}, imageOverrides=${timing.imagesCount}, connect=${timing.connectMs}ms)`,
+      );
     }
+    return bundle;
   });
 }
 
@@ -314,11 +312,29 @@ const loadPublicCmsBundleCached = unstable_cache(
   },
 );
 
+function isBuildSkipError(error: unknown): boolean {
+  return error instanceof Error && error.message === CMS_BUILD_SKIP;
+}
+
+/**
+ * Request-scoped CMS bundle.
+ *
+ * - `connection()` defers resolution to request time so build never bakes
+ *   slot defaults into route HTML / Data Cache.
+ * - `unstable_cache` stores ONLY successful DB bundles.
+ * - Failures use in-process lastGood or one-shot defaults for that request;
+ *   they are never written into unstable_cache.
+ */
 export const loadPublicCmsBundle = cache(async (): Promise<PublicCmsBundle> => {
+  /* Defer until an actual request — prevents ISR shells with defaults. */
+  await connection();
+
   try {
     return await loadPublicCmsBundleCached();
   } catch (error) {
-    logDbError("public-cms-bundle.cache", error);
+    if (!isBuildSkipError(error)) {
+      logDbError("public-cms-bundle.cache", error);
+    }
     const stale = getCmsLastGood<PublicCmsBundle>();
     if (stale) return stale;
     return defaultPublicCmsBundle();

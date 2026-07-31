@@ -151,3 +151,31 @@ export async function rebuildSiteImagePublicMap(): Promise<StoredSiteImagePublic
     return {};
   }
 }
+
+/**
+ * Create the public image map only when missing or empty.
+ * Does not clobber a non-empty map (admin edits stay intact).
+ */
+export async function ensureSiteImagePublicMap(): Promise<{
+  created: boolean;
+  overrideCount: number;
+}> {
+  try {
+    const existing = await withDb(() =>
+      prisma.siteSetting.findUnique({
+        where: { key: SITE_IMAGE_PUBLIC_MAP_KEY },
+        select: { value: true },
+      }),
+    );
+    const parsed = parseStoredSiteImageMap(existing?.value);
+    const overrideCount = Object.keys(parsed).length;
+    if (overrideCount > 0) {
+      return { created: false, overrideCount };
+    }
+    const rebuilt = await rebuildSiteImagePublicMap();
+    return { created: true, overrideCount: Object.keys(rebuilt).length };
+  } catch (error) {
+    logDbError("site-image-public-map.ensure", error);
+    return { created: false, overrideCount: 0 };
+  }
+}
