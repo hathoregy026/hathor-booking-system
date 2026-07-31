@@ -1820,14 +1820,9 @@ export function useExScrollMotion() {
     // Sequential reveal of each card
     function initCarouselSequentialReveal() {
       const OPEN_CLIP = "polygon(0 0, 100% 0, 100% 100%, 0 100%)";
+      const CLOSED_CLIP = "polygon(0 0, 0 0, 0 0, 0 0)";
 
-      /*
-       * Always leave cards fully open. Closed clip-path + once:true + landmark
-       * pin refresh repeatedly left this band as empty cream (arrows + CTA only).
-       * Soft fade-up still reads as a reveal without a stuck-hidden failure mode.
-       */
-      slides.forEach((slide) => {
-        const container = slide.querySelector(".carousel-container");
+      const openCard = (container: Element | null) => {
         if (!container) return;
         gsap.set(container, {
           clipPath: OPEN_CLIP,
@@ -1835,9 +1830,34 @@ export function useExScrollMotion() {
           scale: 1,
           clearProps: "clipPath,WebkitClipPath,transform",
         });
-      });
+      };
 
-      if (prefersReduced) {
+      const openAllCards = () => {
+        slides.forEach((slide) =>
+          openCard(slide.querySelector(".carousel-container")),
+        );
+      };
+
+      const finishRevealChrome = () => {
+        if (revealed) return;
+        revealed = true;
+        root.setAttribute("data-carousel-revealed", "1");
+        openAllCards();
+        /* Kill wipe triggers so landmark pin refresh cannot re-close cards */
+        ScrollTrigger.getAll().forEach((st) => {
+          const id = st.vars && String(st.vars.id || "");
+          if (!id.startsWith("ex-carousel-wipe")) return;
+          st.animation?.kill();
+          st.kill();
+        });
+        startAutoplay();
+        if (root.matches(":hover")) stopAutoplay();
+        if (nextBtn) nextBtn.style.pointerEvents = "auto";
+        if (prevBtn) prevBtn.style.pointerEvents = "auto";
+      };
+
+      if (prefersReduced || root.getAttribute("data-carousel-revealed") === "1") {
+        openAllCards();
         revealed = true;
         if (nextBtn) nextBtn.style.pointerEvents = "auto";
         if (prevBtn) prevBtn.style.pointerEvents = "auto";
@@ -1849,72 +1869,63 @@ export function useExScrollMotion() {
       if (prevBtn) prevBtn.style.pointerEvents = "none";
 
       const visibleCount = Math.min(slidesPerView(), slides.length);
-      const revealTargets = slides
-        .slice(0, visibleCount)
-        .map((slide) => slide.querySelector(".carousel-container"))
-        .filter(Boolean);
 
-      const finishRevealChrome = () => {
-        if (revealed) return;
-        revealed = true;
-        startAutoplay();
-        if (root.matches(":hover")) stopAutoplay();
-        if (nextBtn) nextBtn.style.pointerEvents = "auto";
-        if (prevBtn) prevBtn.style.pointerEvents = "auto";
-      };
+      slides.forEach((slide, i) => {
+        const container = slide.querySelector(".carousel-container");
+        if (!container) return;
 
-      if (!revealTargets.length) {
-        finishRevealChrome();
-        return;
-      }
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          id: "ex-carousel-wipe",
-          trigger: root,
-          start: "top 70%",
-          toggleActions: "play none none none",
-          once: true,
-          invalidateOnRefresh: true,
-          onRefresh: (self) => {
-            if (self.progress === 1 || self.isActive) {
-              finishRevealChrome();
-              return;
-            }
-            const rect = root.getBoundingClientRect();
-            const vh = window.innerHeight || 1;
-            if (rect.top < vh * 0.92 && rect.bottom > vh * 0.08) {
-              self.animation?.progress(1);
-              finishRevealChrome();
-            }
-          },
-        },
-      });
-
-      tl.fromTo(
-        revealTargets,
-        { autoAlpha: 0.35, y: 28 },
-        {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.85,
-          stagger: 0.12,
-          ease: "power3.out",
-          immediateRender: false,
-        },
-      );
-      tl.add(finishRevealChrome);
-
-      if (tl.scrollTrigger) trackTrigger(tl.scrollTrigger);
-
-      /* If already on screen at boot, finish immediately */
-      requestAnimationFrame(() => {
-        const rect = root.getBoundingClientRect();
-        const vh = window.innerHeight || 1;
-        if (rect.top < vh * 0.85 && rect.bottom > vh * 0.15) {
-          tl.progress(1);
-          finishRevealChrome();
+        if (i >= visibleCount) {
+          openCard(container);
+          return;
         }
+
+        /* Start clipped — wipe opens on scroll (signature itineraries reveal) */
+        gsap.set(container, {
+          clipPath: CLOSED_CLIP,
+          WebkitClipPath: CLOSED_CLIP,
+          scale: 1.28,
+        });
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            id: `ex-carousel-wipe-${i}`,
+            trigger: root,
+            start: "top 55%",
+            toggleActions: "play none none none",
+            once: true,
+            /* Do NOT invalidateOnRefresh — that re-applied CLOSED_CLIP after pin refresh */
+            onRefresh: (self) => {
+              if (revealed || root.getAttribute("data-carousel-revealed") === "1") {
+                openCard(container);
+                self.kill();
+              }
+            },
+          },
+          delay: i * 0.42,
+        });
+
+        tl.fromTo(
+          container,
+          {
+            clipPath: CLOSED_CLIP,
+            WebkitClipPath: CLOSED_CLIP,
+            scale: 1.28,
+          },
+          {
+            clipPath: OPEN_CLIP,
+            WebkitClipPath: OPEN_CLIP,
+            scale: 1,
+            duration: 1.75,
+            ease: "power3.out",
+            onComplete: () => openCard(container),
+          },
+        );
+
+        if (i === visibleCount - 1) {
+          tl.add(finishRevealChrome);
+        }
+
+        if (tl.scrollTrigger) trackTrigger(tl.scrollTrigger);
       });
     }
 
