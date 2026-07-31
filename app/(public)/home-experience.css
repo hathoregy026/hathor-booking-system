@@ -2147,13 +2147,10 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   gap: var(--stack-copy-gap);
   text-align: left;
   /*
-   * One soft silhouette for the whole panel — cheaper / smoother than
-   * drop-shadow on each split text node during scrub.
+   * Soft glyph shadow only — avoid stacked panel drop-shadows, which paint
+   * as frosted “broken image” rectangles on the cream silk invitation.
    */
-  filter:
-    drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))
-    drop-shadow(0 6px 18px rgba(0, 0, 0, 0.42))
-    drop-shadow(0 14px 36px rgba(0, 0, 0, 0.32));
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.45));
 }
 
 .ex-stack-scroll__copy-panel[data-stack-copy-index="0"] {
