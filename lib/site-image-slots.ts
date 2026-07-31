@@ -96,7 +96,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-wheel-image",
     altText: "Wheel portal — Hathor Dahabiya on the Nile at golden hour",
-    url: HATHOR_MEDIA.storyLegacyLarge,
+    url: HATHOR_MEDIA.wheelBack,
     category: "hero",
     pagePath: "/",
     displayOrder: 71,

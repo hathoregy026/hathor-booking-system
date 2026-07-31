@@ -375,7 +375,8 @@ export function useExScrollMotion() {
       clipPath: "circle(0vmax at 50% 50%)",
       WebkitClipPath: "circle(0vmax at 50% 50%)",
     });
-    gsap.set(mediaImage, { scale: 1.34, xPercent: -2.5, force3D: true });
+    /* No x/y shift — image sun center must stay under the wheel hub (50% 50%). */
+    gsap.set(mediaImage, { scale: 1.34, xPercent: 0, yPercent: 0, x: 0, y: 0, force3D: true });
     if (shade) gsap.set(shade, { opacity: 1 });
 
     const portalTimeline = gsap.timeline({ paused: true });
@@ -404,7 +405,8 @@ export function useExScrollMotion() {
         mediaImage,
         {
           scale: 1.08,
-          xPercent: -0.35,
+          xPercent: 0,
+          yPercent: 0,
           duration: 0.62,
           ease: "sine.inOut",
         },
@@ -436,6 +438,7 @@ export function useExScrollMotion() {
         {
           scale: 1,
           xPercent: 0,
+          yPercent: 0,
           duration: 0.3,
           ease: "power2.out",
         },

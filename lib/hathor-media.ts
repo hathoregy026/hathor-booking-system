@@ -20,6 +20,8 @@ export const HATHOR_MEDIA = {
   storyTransform: hathorImage("home-story-transform"),
   storyLegacyLarge: hathorImage("home-story-legacy-large"),
   storyLegacySmall: hathorImage("home-story-legacy-small"),
+  /** Helm portal backdrop — sun authored at dead center (3000×1900). */
+  wheelBack: hathorImage("home-wheel-back"),
   cinematicVideo: hathorImage("home-cinematic-video"),
   cinematicVideoAlt: "Fine dining aboard Hathor Dahabiya",
   cinematicStill: hathorImage("home-cinematic-still"),

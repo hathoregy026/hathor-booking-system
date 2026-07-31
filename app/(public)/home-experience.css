@@ -2457,8 +2457,9 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .split-word {
 
 .home-helm-portal__media-image {
   transform: scale(1.34);
-  transform-origin: center;
-  object-position: center 52%;
+  transform-origin: center center;
+  /* Sun is authored at image dead-center — keep crop locked to hub (50% 50%). */
+  object-position: center center;
   will-change: transform;
 }
 
