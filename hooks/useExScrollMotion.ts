@@ -1422,15 +1422,15 @@ export function useExScrollMotion() {
     const CLOSED_CLIP = "polygon(0 0, 0 0, 0 0, 0 0)";
 
     const getMedia = (slide: HTMLElement) =>
-      slide.querySelector<HTMLElement>(".home-story__media-link");
+      slide.querySelector<HTMLElement>(".home-text-img-container");
     const getImg = (slide: HTMLElement) =>
-      slide.querySelector<HTMLElement>(".home-story__media-link img");
+      slide.querySelector<HTMLElement>(".home-text-img-container img");
 
     slides.forEach((slide) => {
       const targets = slide.querySelectorAll<HTMLElement>(
         lightenDevice
           ? ".home-story__title-line"
-          : ".home-story__title-line, .home-story__body",
+          : ".home-story__title-line, .home-text-p",
       );
       const chars: HTMLElement[] = [];
       targets.forEach((el) => {

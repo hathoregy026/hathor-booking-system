@@ -19,6 +19,10 @@ type HomeTextStorySectionProps = {
   slides: HomeTextStorySlide[];
 };
 
+/**
+ * Same layout DNA as classic `.text-img-row` (image + copy, 4:5, top-aligned).
+ * Pin/scrub chrome lives on `.home-story` / `__viewport` only.
+ */
 export function HomeTextStorySection({ slides }: HomeTextStorySectionProps) {
   if (slides.length === 0) return null;
 
@@ -39,14 +43,14 @@ export function HomeTextStorySection({ slides }: HomeTextStorySectionProps) {
           return (
             <article
               key={`${slide.href}-${slide.imageName}`}
-              className={`home-story__slide${reverse ? " is-reverse" : ""}`}
+              className={`home-story__slide text-img-row${reverse ? " is-reverse" : ""}`}
               data-home-story-slide={String(index)}
               aria-hidden={index === 0 ? "false" : "true"}
             >
-              <div className="home-story__media home-text-img-parent">
+              <div className="home-text-img-parent">
                 <Link
                   href={slide.href}
-                  className="home-story__media-link home-text-img-container"
+                  className="home-text-img-container"
                   aria-label={slide.cta}
                   id={
                     slide.previewAnchor
@@ -69,9 +73,9 @@ export function HomeTextStorySection({ slides }: HomeTextStorySectionProps) {
                 </Link>
               </div>
 
-              <div className="home-story__copy">
-                <div className="home-story__heading">
-                  <h2 className="home-story__title typo-page-title">
+              <div className="home-text-img-copy">
+                <div className="home-text-h2">
+                  <h2 className="typo-page-title">
                     {titleLines.map((line) => (
                       <span
                         key={`${slide.imageName}-${line}`}
@@ -83,14 +87,17 @@ export function HomeTextStorySection({ slides }: HomeTextStorySectionProps) {
                   </h2>
                 </div>
                 {slide.body ? (
-                  <p className="home-story__body typo-body-text">{slide.body}</p>
+                  <div className="home-text-p">
+                    <p className="typo-body-text">{slide.body}</p>
+                  </div>
                 ) : null}
                 {slide.cta ? (
-                  <div className="home-story__actions">
-                    <Link className="btn btn-dark home-story__cta" href={slide.href}>
-                      {slide.cta}
-                    </Link>
-                  </div>
+                  <Link
+                    className="btn btn-dark home-text-button"
+                    href={slide.href}
+                  >
+                    {slide.cta}
+                  </Link>
                 ) : null}
               </div>
             </article>
