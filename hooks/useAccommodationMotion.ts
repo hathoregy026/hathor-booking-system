@@ -515,28 +515,47 @@ export function useAccommodationMotion(
           });
       }
 
-      /* CTA */
+      /* CTA — keep Book Now fully visible (homepage parity); only rise the copy. */
       if (!prefersReduced) {
         const cta = root.querySelector(
           "#reserve .cta-inner, .cta-section .cta-inner",
         );
         if (cta) {
-          gsap.fromTo(
-            cta.querySelectorAll("h2, p, .btn"),
-            { y: 12, opacity: 0.4 },
-            {
-              y: 0,
-              opacity: 1,
-              duration: 0.85,
-              stagger: 0.08,
-              ease: "power2.out",
-              scrollTrigger: {
-                trigger: cta,
-                start: "top 85%",
-                once: true,
-              },
-            },
+          const buttons = gsap.utils.toArray<HTMLElement>(
+            cta.querySelectorAll(".btn, button, a.btn"),
           );
+          buttons.forEach((el) => {
+            gsap.set(el, {
+              opacity: 1,
+              y: 0,
+              clearProps: "opacity,visibility,transform",
+            });
+          });
+          const copy = gsap.utils
+            .toArray<HTMLElement>(cta.querySelectorAll("h2, p"))
+            .filter((el) => !el.closest(".btn"));
+          if (copy.length) {
+            gsap.fromTo(
+              copy,
+              { y: 12, opacity: 0.4 },
+              {
+                y: 0,
+                opacity: 1,
+                duration: 0.85,
+                stagger: 0.08,
+                ease: "power2.out",
+                immediateRender: false,
+                scrollTrigger: {
+                  trigger: cta,
+                  start: "top 85%",
+                  once: true,
+                  onRefresh(self) {
+                    if (self.progress === 1) gsap.set(copy, { opacity: 1, y: 0 });
+                  },
+                },
+              },
+            );
+          }
         }
       }
     }, root);

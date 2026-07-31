@@ -49,7 +49,7 @@ export function HighlightsPageContent() {
               <p key={paragraph.slice(0, 48)}>{paragraph}</p>
             ))}
           </div>
-          <BookNowTrigger className="btn btn-primary" data-lux-reveal>
+          <BookNowTrigger className="btn btn-primary">
             Book Now
           </BookNowTrigger>
         </header>

@@ -16,6 +16,19 @@ gsap.registerPlugin(ScrollTrigger);
 const DESKTOP_MQ = "(min-width: 1025px)";
 const NARROW_MQ = "(max-width: 1024px)";
 
+/** Book Now / pill CTAs stay visible like homepage — never park at opacity 0. */
+function isBookNowOrPillCta(el: Element): boolean {
+  if (!(el instanceof HTMLElement)) return false;
+  if (el.matches("button, a.btn, .btn, .public-fab__book, .cruise-filter--cta")) {
+    return true;
+  }
+  return /book\s*now/i.test((el.textContent || "").trim());
+}
+
+function keepCtaVisible(el: HTMLElement) {
+  gsap.set(el, { opacity: 1, y: 0, clearProps: "opacity,visibility,transform" });
+}
+
 function setupLuxTitlesAndReveals(root: HTMLElement, ease: string, lux: string) {
   root.querySelectorAll<HTMLElement>("[data-lux-title]").forEach((el) => {
     gsap.from(el, {
@@ -23,18 +36,32 @@ function setupLuxTitlesAndReveals(root: HTMLElement, ease: string, lux: string) 
       opacity: 0,
       duration: 1.05,
       ease: lux,
+      immediateRender: false,
       scrollTrigger: { trigger: el, start: "top 88%", once: true },
     });
   });
 
   root.querySelectorAll<HTMLElement>("[data-lux-reveal]").forEach((el, i) => {
+    /* Homepage Book Now is always painted — do not hide CTAs behind lux reveals. */
+    if (isBookNowOrPillCta(el)) {
+      keepCtaVisible(el);
+      return;
+    }
     gsap.from(el, {
       y: 28,
       opacity: 0,
       duration: 0.85,
       delay: (i % 6) * 0.05,
       ease,
-      scrollTrigger: { trigger: el, start: "top 92%", once: true },
+      immediateRender: false,
+      scrollTrigger: {
+        trigger: el,
+        start: "top 92%",
+        once: true,
+        onRefresh(self) {
+          if (self.progress === 1) gsap.set(el, { opacity: 1, y: 0 });
+        },
+      },
     });
   });
 }
@@ -67,14 +94,31 @@ function setupLuxBands(root: HTMLElement, ease: string, lux: string) {
       });
     }
     if (copy) {
-      gsap.from(copy.children, {
-        y: 30,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.08,
-        ease,
-        scrollTrigger: { trigger: atelier, start: "top 78%", once: true },
-      });
+      const kids = gsap.utils
+        .toArray<HTMLElement>(copy.children)
+        .filter((el) => !isBookNowOrPillCta(el));
+      gsap.utils
+        .toArray<HTMLElement>(copy.querySelectorAll(".btn, button, a.btn"))
+        .filter(isBookNowOrPillCta)
+        .forEach(keepCtaVisible);
+      if (kids.length) {
+        gsap.from(kids, {
+          y: 30,
+          opacity: 0,
+          duration: 0.8,
+          stagger: 0.08,
+          ease,
+          immediateRender: false,
+          scrollTrigger: {
+            trigger: atelier,
+            start: "top 78%",
+            once: true,
+            onRefresh(self) {
+              if (self.progress === 1) gsap.set(kids, { opacity: 1, y: 0 });
+            },
+          },
+        });
+      }
     }
   }
 
@@ -116,13 +160,31 @@ function setupLuxBands(root: HTMLElement, ease: string, lux: string) {
   });
 
   root.querySelectorAll<HTMLElement>(".cta-section .cta-inner").forEach((cta) => {
-    gsap.from(cta.querySelectorAll("h2, p, .btn, button, a"), {
+    const ctas = gsap.utils.toArray<HTMLElement>(
+      cta.querySelectorAll(".btn, button, a.btn"),
+    );
+    ctas.forEach(keepCtaVisible);
+
+    const copy = gsap.utils
+      .toArray<HTMLElement>(cta.querySelectorAll("h2, p, a"))
+      .filter((el) => !isBookNowOrPillCta(el));
+    if (!copy.length) return;
+
+    gsap.from(copy, {
       y: 28,
       opacity: 0,
       duration: 0.8,
       stagger: 0.1,
       ease,
-      scrollTrigger: { trigger: cta, start: "top 82%", once: true },
+      immediateRender: false,
+      scrollTrigger: {
+        trigger: cta,
+        start: "top 82%",
+        once: true,
+        onRefresh(self) {
+          if (self.progress === 1) gsap.set(copy, { opacity: 1, y: 0 });
+        },
+      },
     });
   });
 }
@@ -167,10 +229,20 @@ function setupDesktopWellnessPins(root: HTMLElement) {
     const shade = frame.querySelector<HTMLElement>(".spx-frame-shade");
     const ui = frame.querySelector<HTMLElement>(".spx-frame-ui");
     const bits = ui
-      ? ui.querySelectorAll<HTMLElement>(
-          ".lux-kicker, .lux-gold, .lux-lead, .lux-copy, .btn, a, button",
-        )
+      ? gsap.utils
+          .toArray<HTMLElement>(
+            ui.querySelectorAll(
+              ".lux-kicker, .lux-gold, .lux-lead, .lux-copy, .btn, a, button",
+            ),
+          )
+          .filter((el) => !isBookNowOrPillCta(el))
       : [];
+    const frameCtas = ui
+      ? gsap.utils
+          .toArray<HTMLElement>(ui.querySelectorAll(".btn, button, a.btn"))
+          .filter(isBookNowOrPillCta)
+      : [];
+    frameCtas.forEach(keepCtaVisible);
 
     if (bits.length) gsap.set(bits, { y: 42, opacity: 0 });
 
@@ -224,11 +296,20 @@ function setupDesktopWellnessPins(root: HTMLElement) {
 function setupNarrowWellnessFrames(root: HTMLElement, ease: string) {
   root.querySelectorAll<HTMLElement>(".spx-frame").forEach((frame) => {
     const ui = frame.querySelector<HTMLElement>(".spx-frame-ui");
-    const bits = ui
-      ? ui.querySelectorAll<HTMLElement>(
+    if (!ui) return;
+
+    gsap.utils
+      .toArray<HTMLElement>(ui.querySelectorAll(".btn, button, a.btn"))
+      .filter(isBookNowOrPillCta)
+      .forEach(keepCtaVisible);
+
+    const bits = gsap.utils
+      .toArray<HTMLElement>(
+        ui.querySelectorAll(
           ".lux-kicker, .lux-gold, .lux-lead, .lux-copy, .btn, a, button",
-        )
-      : [];
+        ),
+      )
+      .filter((el) => !isBookNowOrPillCta(el));
     if (!bits.length) return;
 
     gsap.from(bits, {
@@ -237,7 +318,15 @@ function setupNarrowWellnessFrames(root: HTMLElement, ease: string) {
       duration: 0.75,
       stagger: 0.06,
       ease,
-      scrollTrigger: { trigger: frame, start: "top 88%", once: true },
+      immediateRender: false,
+      scrollTrigger: {
+        trigger: frame,
+        start: "top 88%",
+        once: true,
+        onRefresh(self) {
+          if (self.progress === 1) gsap.set(bits, { opacity: 1, y: 0 });
+        },
+      },
     });
   });
 }
@@ -320,11 +409,16 @@ function setupDesktopDiningChapters(
     const panel = ch.querySelector<HTMLElement>(".dnx-panel");
     const media = ch.querySelector<HTMLElement>(".dnx-chapter-media img");
     const shade = ch.querySelector<HTMLElement>(".dnx-chapter-shade");
-    const bits = panel
-      ? panel.querySelectorAll<HTMLElement>(
-          ".lux-kicker, .lux-gold, .lux-copy, .lux-lead, .btn, a, button",
+    const allBits = panel
+      ? gsap.utils.toArray<HTMLElement>(
+          panel.querySelectorAll(
+            ".lux-kicker, .lux-gold, .lux-copy, .lux-lead, .btn, a, button",
+          ),
         )
       : [];
+    const bits = allBits.filter((el) => !isBookNowOrPillCta(el));
+    const chapterCtas = allBits.filter(isBookNowOrPillCta);
+    chapterCtas.forEach(keepCtaVisible);
 
     if (bits.length) gsap.set(bits, { y: 28, opacity: 0 });
 
@@ -368,6 +462,7 @@ function setupDesktopDiningChapters(
         opacity: 0,
         duration: 1.05,
         ease: lux,
+        immediateRender: false,
         scrollTrigger: {
           trigger: ch,
           start: "top 72%",
@@ -381,6 +476,13 @@ function setupDesktopDiningChapters(
               ease,
               delay: 0.12,
             });
+            chapterCtas.forEach(keepCtaVisible);
+          },
+          onRefresh(self) {
+            if (self.progress === 1) {
+              gsap.set(bits, { opacity: 1, y: 0 });
+              chapterCtas.forEach(keepCtaVisible);
+            }
           },
         },
       });
@@ -395,19 +497,23 @@ function setupNarrowDiningChapters(
 ) {
   root.querySelectorAll<HTMLElement>(".dnx-chapter").forEach((ch) => {
     const panel = ch.querySelector<HTMLElement>(".dnx-panel");
-    const bits = panel
-      ? panel.querySelectorAll<HTMLElement>(
-          ".lux-kicker, .lux-gold, .lux-copy, .lux-lead, .btn, a, button",
-        )
-      : [];
-
     if (!panel) return;
+
+    const allBits = gsap.utils.toArray<HTMLElement>(
+      panel.querySelectorAll(
+        ".lux-kicker, .lux-gold, .lux-copy, .lux-lead, .btn, a, button",
+      ),
+    );
+    const bits = allBits.filter((el) => !isBookNowOrPillCta(el));
+    const chapterCtas = allBits.filter(isBookNowOrPillCta);
+    chapterCtas.forEach(keepCtaVisible);
 
     gsap.from(panel, {
       y: 40,
       opacity: 0,
       duration: 0.9,
       ease: lux,
+      immediateRender: false,
       scrollTrigger: {
         trigger: ch,
         start: "top 82%",
@@ -422,6 +528,13 @@ function setupNarrowDiningChapters(
               ease,
               delay: 0.1,
             });
+          }
+          chapterCtas.forEach(keepCtaVisible);
+        },
+        onRefresh(self) {
+          if (self.progress === 1) {
+            gsap.set(bits, { opacity: 1, y: 0 });
+            chapterCtas.forEach(keepCtaVisible);
           }
         },
       },
