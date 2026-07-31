@@ -79,37 +79,8 @@ export const HOMEPAGE_ACCOMMODATIONS = {
 
 export const HOMEPAGE_LIFESTYLE = {
   title: "Not Just a Cruise\nA Way of Life",
-  eyebrow: "Experience",
   body: "Experience Egypt's soul from the quiet elegance of a Dahabiya Nile Cruise. Immerse yourself in a warm community atmosphere, exchanging stories with other travelers aboard a Luxury Dahabiya Nile Cruise, while the beauty of the Nile unfolds in the background on this intimate Small Nile Cruise Boat. Enjoy Hathor Dahabiya elegant cabins, intimate service, and a breathtaking journey on the tranquil river in a perfect blend of comfort, culture, and companionship — a truly unforgettable Nile cruise experience in Egypt.",
   href: "/about",
-  secondaryCta: "View Our Journeys",
-  secondaryHref: "/cruises",
-  features: [
-    {
-      id: "romantic",
-      title: "Romantic Experiences",
-      body: "Candlelit dinners, quiet decks at dusk, and private moments on the Nile.",
-      icon: "heart" as const,
-    },
-    {
-      id: "culture",
-      title: "Authentic Culture",
-      body: "Temples, villages, and living heritage encountered at an unhurried pace.",
-      icon: "horus" as const,
-    },
-    {
-      id: "scenic",
-      title: "Scenic Moments",
-      body: "Golden light on the water and landscapes that unfold between Luxor and Aswan.",
-      icon: "sun" as const,
-    },
-    {
-      id: "service",
-      title: "Personal Service",
-      body: "Attentive hospitality crafted for a select guest circle aboard Hathor.",
-      icon: "hands" as const,
-    },
-  ],
 } as const;
 
 export const HOMEPAGE_HIGHLIGHTS = {

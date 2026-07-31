@@ -2513,8 +2513,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .split-word {
   }
 }
 
-.home-helm-portal + .text-img-section,
-.home-helm-portal + .home-lifestyle {
+.home-helm-portal + .text-img-section {
   z-index: 22;
   margin-top: -12vh;
   padding-top: calc(clamp(80px, 10vw, 140px) + 12vh);
@@ -2522,18 +2521,8 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .split-word {
   box-shadow: 0 -28px 70px rgba(45, 33, 17, 0.08);
 }
 
-/* Lifestyle one-screen: keep dome, shrink vertical pad so panel fits 100svh */
-@media (min-width: 1025px) {
-  .home-helm-portal + .home-lifestyle {
-    margin-top: -10vh;
-    padding-top: calc(clamp(28px, 3.8vw, 56px) + 10vh);
-    padding-bottom: 0.65rem;
-  }
-}
-
 @media (max-width: 767px) {
-  .home-helm-portal + .text-img-section,
-  .home-helm-portal + .home-lifestyle {
+  .home-helm-portal + .text-img-section {
     margin-top: -8vh;
     padding-top: calc(clamp(80px, 10vw, 140px) + 8vh);
     border-radius: 50% 50% 0 0 / 48px 48px 0 0;
@@ -2559,8 +2548,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .split-word {
     display: none;
   }
 
-  .home-helm-portal + .text-img-section,
-  .home-helm-portal + .home-lifestyle {
+  .home-helm-portal + .text-img-section {
     margin-top: 0;
     padding-top: clamp(80px, 10vw, 140px);
   }

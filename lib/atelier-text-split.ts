@@ -92,8 +92,6 @@ const SKIP_CLOSEST = [
   /* Footer has its own reveal — atelier char hide made dashboard-linked copy invisible */
   ".lux-footer",
   "footer",
-  /* Lifestyle viewport panel — split chars left empty height + hidden second title line */
-  ".home-lifestyle",
   "[data-test-scroll-reveal]",
   "[data-page-transition] .pt-hero__copy",
   ".pt-hero__copy",
