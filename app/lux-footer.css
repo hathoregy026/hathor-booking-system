@@ -241,12 +241,15 @@
 .lux-footer__main {
   position: relative;
   isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 5rem 5vw 6rem;
   overflow: hidden;
-  min-height: clamp(18rem, 36vh, 28rem);
+  min-height: clamp(20rem, 42vh, 32rem);
 }
 
-/* Full-bleed HATHOR wordmark — centered, behind columns, 20% opacity */
+/* Full-bleed HATHOR wordmark — centered, behind columns, 10% opacity */
 .lux-footer__bg-logo {
   position: absolute;
   inset: 0;
@@ -260,9 +263,9 @@
 
 .lux-footer__bg-logo-img {
   display: block;
-  width: min(94vw, 1400px);
+  width: min(118vw, 1900px);
   height: auto;
-  opacity: 0.2;
+  opacity: 0.1;
   user-select: none;
 }
 
@@ -270,9 +273,13 @@
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr 1.5fr;
-  gap: 4rem;
+  grid-template-columns: auto auto auto auto;
+  gap: 3.5rem 4.5rem;
   align-items: start;
+  justify-content: center;
+  width: max-content;
+  max-width: 100%;
+  margin-inline: auto;
 }
 
 .lux-footer__brand-mark {
@@ -440,16 +447,40 @@
 
   .lux-footer__main {
     padding: 3rem 5vw 4rem;
-    min-height: clamp(14rem, 32vh, 22rem);
+    min-height: clamp(16rem, 36vh, 24rem);
   }
 
   .lux-footer__bg-logo-img {
-    width: min(100vw, 960px);
+    width: min(125vw, 1200px);
   }
 
   .lux-footer__grid {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 2.75rem;
+    width: 100%;
+    max-width: 22rem;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .lux-footer__col--brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .lux-footer__tagline {
+    max-width: 18rem;
+  }
+
+  .lux-footer__links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .lux-footer__social {
+    justify-content: center;
   }
 
   .lux-footer__field {
@@ -477,7 +508,7 @@
 
 @media (max-width: 480px) {
   .lux-footer__bg-logo-img {
-    width: min(110vw, 720px);
+    width: min(135vw, 880px);
   }
 }
 
