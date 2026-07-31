@@ -11,6 +11,27 @@
   z-index: 1200;
 }
 
+/*
+ * Explore overlay is z-index 1300. While open, lift the whole header above it
+ * so the burger can toggle closed (must beat .public-site .hathor-header).
+ */
+.public-site .hathor-header.hathor-header--explore-open {
+  z-index: 1400;
+  isolation: auto;
+  pointer-events: none;
+}
+
+.public-site .hathor-header.hathor-header--explore-open .hathor-header__col--right,
+.public-site .hathor-header.hathor-header--explore-open .hathor-header__menu-btn,
+.public-site .hathor-header.hathor-header--explore-open .public-theme-toggle {
+  pointer-events: auto;
+}
+
+.public-site .hathor-header.hathor-header--explore-open .hathor-header__menu-btn {
+  position: relative;
+  z-index: 1410;
+}
+
 .public-site .site-nav-bar {
   display: none;
 }

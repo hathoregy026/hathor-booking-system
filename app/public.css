@@ -1763,6 +1763,11 @@
   transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Isolation traps children below the explore overlay — disable while open. */
+.hathor-header--owo-hero-layout.hathor-header--explore-open {
+  isolation: auto;
+}
+
 .hathor-header--owo-hero-layout::before {
   content: "";
   position: absolute;
