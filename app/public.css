@@ -2120,6 +2120,21 @@
   position: fixed;
   inset: 0;
   z-index: 1300;
+  pointer-events: auto;
+}
+
+/*
+ * Keep the header (and menu toggle) above the explore backdrop so rapid
+ * open/close and Escape alternatives via the burger always receive clicks.
+ */
+.hathor-header.hathor-header--explore-open {
+  z-index: 1310;
+  pointer-events: none;
+}
+
+.hathor-header.hathor-header--explore-open .hathor-header__col--right,
+.hathor-header.hathor-header--explore-open .hathor-header__menu-btn {
+  pointer-events: auto;
 }
 
 .hathor-explore__backdrop {
