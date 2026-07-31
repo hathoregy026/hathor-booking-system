@@ -312,10 +312,10 @@ export const LUXURY_CABINS_PAGE = {
   hero: {
     title: "Luxury Rooms",
     secondTitle: "Nile Cabins",
-    subtitle: "Luxury Nile Cruise Rooms, Hathor Dahabiya",
+    subtitle: "Luxury Nile Cruise Rooms",
   },
   overview: {
-    title: "Luxury Nile Cruise Rooms, Hathor Dahabiya",
+    title: "Luxury Nile Cruise Rooms",
     subtitle: "22 Square Meters · Panoramic Nile view",
     body: "Every cabin in our Small Luxury Nile Cruise offers a peaceful and relaxing space, allowing guests to enjoy wide-ranging views of the Nile River in complete comfort. The Boutique Nile Cruise experience provides an exclusive Dahabiya-style journey, giving passengers private space to sail through the serene waters of the Nile without encountering other travelers.",
   },

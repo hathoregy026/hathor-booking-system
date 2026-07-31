@@ -227,6 +227,15 @@
   margin: 0 0 0.85rem;
 }
 
+.page-accommodation > .acc-intro-block#intro .acc-intro-title {
+  font-size: clamp(3.1rem, 7.2vw, 5.6rem);
+  line-height: 1.02;
+  letter-spacing: 0.02em;
+  max-width: 14ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .acc-intro-line {
   display: block;
   overflow: hidden;
