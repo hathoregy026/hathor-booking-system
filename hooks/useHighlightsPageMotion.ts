@@ -8,7 +8,7 @@ import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/** Highlights awards cinema — uses site Lenis only. Phone: no horizontal pin. */
+/** Highlights cream editorial — restrained typography & image reveals. */
 export function useHighlightsPageMotion(rootRef: RefObject<HTMLElement | null>) {
   useEffect(() => {
     const root = rootRef.current;
@@ -17,7 +17,7 @@ export function useHighlightsPageMotion(rootRef: RefObject<HTMLElement | null>) 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) {
       root
-        .querySelectorAll<HTMLElement>("[data-aw-hero-line], [data-aw-reveal]")
+        .querySelectorAll<HTMLElement>("[data-ce-line], [data-ce-reveal], [data-ce-image]")
         .forEach((el) => {
           el.style.opacity = "1";
           el.style.transform = "none";
@@ -26,96 +26,65 @@ export function useHighlightsPageMotion(rootRef: RefObject<HTMLElement | null>) 
     }
 
     const light = shouldLightenMotionForDevice();
-    const ease = "power3.out";
+    const duration = light ? 0.85 : 1.2;
+    const imgDuration = light ? 1.1 : 1.8;
 
     const ctx = gsap.context(() => {
-      const heroLines = gsap.utils.toArray<HTMLElement>("[data-aw-hero-line]");
-      gsap.set(heroLines, { opacity: 0, y: 40 });
-      gsap.to(heroLines, {
+      const hookLines = root.querySelectorAll<HTMLElement>(".hl-hook [data-ce-line]");
+      gsap.set(hookLines, { opacity: 0, y: 40 });
+      gsap.to(hookLines, {
         opacity: 1,
         y: 0,
-        duration: light ? 0.75 : 1,
-        stagger: 0.18,
-        ease,
-        delay: 0.1,
+        duration,
+        stagger: 0.12,
+        ease: "power3.out",
+        delay: 0.08,
       });
 
-      const heroImg = root.querySelector<HTMLElement>("[data-aw-hero-img]");
-      const hero = root.querySelector<HTMLElement>("[data-aw-hero]");
-      if (hero && heroImg) {
-        gsap.to(heroImg, {
-          yPercent: 12,
-          ease: "none",
-          scrollTrigger: {
-            trigger: hero,
-            start: "top top",
-            end: "bottom top",
-            scrub: true,
-          },
-        });
-      }
-
-      root.querySelectorAll<HTMLElement>("[data-aw-reveal]").forEach((el) => {
+      root.querySelectorAll<HTMLElement>("[data-ce-reveal]").forEach((el) => {
         gsap.from(el, {
-          y: 50,
+          y: 40,
           opacity: 0,
-          duration: light ? 0.75 : 1,
-          ease,
+          duration,
+          ease: "power3.out",
           scrollTrigger: {
             trigger: el,
-            start: "top 80%",
+            start: "top 85%",
             toggleActions: "play none none reverse",
           },
         });
       });
 
-      const templesImg = root.querySelector<HTMLElement>("[data-hl-temples-img]");
-      const temples = root.querySelector<HTMLElement>("[data-hl-temples]");
-      if (temples && templesImg) {
-        gsap.fromTo(
-          templesImg,
-          { scale: 1 },
-          {
-            scale: 1.1,
-            ease: "none",
+      root.querySelectorAll<HTMLElement>("[data-ce-image]").forEach((img) => {
+        if (light) {
+          gsap.from(img, {
+            opacity: 0,
+            duration: 0.9,
+            ease: "power2.out",
             scrollTrigger: {
-              trigger: temples,
-              start: "top top",
-              end: "bottom bottom",
-              scrub: true,
-            },
-          },
-        );
-      }
-
-      ScrollTrigger.matchMedia({
-        "(min-width: 1024px)": () => {
-          const pin = root.querySelector<HTMLElement>("[data-hl-gallery-pin]");
-          const track = root.querySelector<HTMLElement>("[data-hl-gallery-track]");
-          if (!pin || !track) return;
-
-          const getDistance = () =>
-            Math.max(0, track.scrollWidth - window.innerWidth);
-
-          gsap.to(track, {
-            x: () => -getDistance(),
-            ease: "none",
-            scrollTrigger: {
-              trigger: pin.parentElement ?? pin,
-              start: "top top",
-              end: () => `+=${getDistance()}`,
-              pin: pin,
-              scrub: 1,
-              invalidateOnRefresh: true,
+              trigger: img,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
             },
           });
-        },
+          return;
+        }
+        gsap.from(img, {
+          scale: 1.1,
+          duration: imgDuration,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: img,
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+        });
       });
     }, root);
 
-    const onLoad = () => requestScrollRefresh("highlights-awards-load");
+    const onLoad = () => requestScrollRefresh("highlights-cream-load");
     window.addEventListener("load", onLoad);
-    requestAnimationFrame(() => requestScrollRefresh("highlights-awards-mount"));
+    requestAnimationFrame(() => requestScrollRefresh("highlights-cream-mount"));
 
     return () => {
       window.removeEventListener("load", onLoad);

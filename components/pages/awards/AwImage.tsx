@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 
 type AwImageProps = {
   src: string;
@@ -8,25 +9,32 @@ type AwImageProps = {
   className?: string;
   priority?: boolean;
   sizes?: string;
+  fallbackSrc?: string;
 };
 
-/** Full-bleed Unsplash/remote image for awards cinema pages. */
+/** Full-bleed remote image for cream editorial pages. */
 export function AwImage({
   src,
   alt,
-  className = "aw-fill",
+  className = "ce-fill",
   priority = false,
   sizes = "100vw",
+  fallbackSrc,
 }: AwImageProps) {
+  const [current, setCurrent] = useState(src);
+
   return (
     <Image
-      src={src}
+      src={current}
       alt={alt}
       fill
       sizes={sizes}
       priority={priority}
       className={className}
       quality={90}
+      onError={() => {
+        if (fallbackSrc && current !== fallbackSrc) setCurrent(fallbackSrc);
+      }}
     />
   );
 }

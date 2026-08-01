@@ -25,11 +25,11 @@ export function CharterRouteSelector({
       className="ch-routes"
       aria-labelledby="charter-routes-heading"
     >
-      <h2 id="charter-routes-heading" className="ch-routes__title aw-display">
+      <h2 id="charter-routes-heading" className="ch-routes__title ce-display">
         Choose a Beginning
       </h2>
       <fieldset style={{ margin: 0, padding: 0, border: 0 }}>
-        <legend className="aw-sr">Preferred charter route</legend>
+        <legend className="ce-sr">Preferred charter route</legend>
         <ul className="ch-routes__list">
           {routes.map((route, index) => {
             const id = `charter-route-${index}`;

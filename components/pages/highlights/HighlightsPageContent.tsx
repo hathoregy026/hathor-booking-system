@@ -3,12 +3,13 @@
 import { useRef } from "react";
 import { Cinzel, Cormorant_Garamond, Inter } from "next/font/google";
 import {
-  HighlightsCta,
-  HighlightsGallery,
-  HighlightsHero,
+  HighlightsHook,
+  HighlightsInvite,
   HighlightsNile,
+  HighlightsOnboard,
   HighlightsTemples,
 } from "@/components/pages/highlights/HighlightsSections";
+import { CeCursor } from "@/components/pages/awards/CeCursor";
 import { useHighlightsPageMotion } from "@/hooks/useHighlightsPageMotion";
 
 const cinzel = Cinzel({
@@ -19,13 +20,14 @@ const cinzel = Cinzel({
 
 const inter = Inter({
   subsets: ["latin"],
+  weight: ["300", "400"],
   variable: "--font-aw-inter",
   display: "swap",
 });
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["400"],
   style: ["normal", "italic"],
   variable: "--font-aw-cormorant",
   display: "swap",
@@ -39,13 +41,14 @@ export function HighlightsPageContent() {
     <div
       ref={rootRef}
       data-highlights-page=""
-      className={`hl-page aw-page ${cinzel.variable} ${inter.variable} ${cormorant.variable}`}
+      className={`hl-page ce-page ${cinzel.variable} ${inter.variable} ${cormorant.variable}`}
     >
-      <HighlightsHero />
+      <CeCursor rootRef={rootRef} />
+      <HighlightsHook />
       <HighlightsTemples />
       <HighlightsNile />
-      <HighlightsGallery />
-      <HighlightsCta />
+      <HighlightsOnboard />
+      <HighlightsInvite />
     </div>
   );
 }

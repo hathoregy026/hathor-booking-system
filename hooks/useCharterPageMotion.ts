@@ -8,7 +8,7 @@ import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/** Charter awards cinema — site Lenis only. Phone: stack, no pin galleries. */
+/** Charter cream editorial — count-up specs + desktop suite pin scroll. */
 export function useCharterPageMotion(rootRef: RefObject<HTMLElement | null>) {
   useEffect(() => {
     const root = rootRef.current;
@@ -17,167 +17,120 @@ export function useCharterPageMotion(rootRef: RefObject<HTMLElement | null>) {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) {
       root
-        .querySelectorAll<HTMLElement>(
-          "[data-aw-hero-line], [data-aw-reveal], [data-ch-spec], [data-ch-dining-slide]",
-        )
+        .querySelectorAll<HTMLElement>("[data-ce-line], [data-ce-reveal], [data-ce-image], [data-ch-count]")
         .forEach((el) => {
           el.style.opacity = "1";
           el.style.transform = "none";
+          const target = el.getAttribute("data-target");
+          if (target) el.textContent = target;
         });
       return;
     }
 
     const light = shouldLightenMotionForDevice();
-    const ease = "power3.out";
+    const duration = light ? 0.85 : 1.2;
+    const imgDuration = light ? 1.1 : 1.8;
 
     const ctx = gsap.context(() => {
-      const heroLines = gsap.utils.toArray<HTMLElement>("[data-aw-hero-line]");
-      gsap.set(heroLines, { opacity: 0, y: 50 });
-      gsap.to(heroLines, {
+      const revealLines = root.querySelectorAll<HTMLElement>(".ch-reveal [data-ce-line]");
+      gsap.set(revealLines, { opacity: 0, y: 40 });
+      gsap.to(revealLines, {
         opacity: 1,
         y: 0,
-        duration: light ? 0.75 : 1,
-        stagger: 0.16,
-        ease,
+        duration,
+        stagger: 0.12,
+        ease: "power3.out",
       });
 
-      const heroImg = root.querySelector<HTMLElement>("[data-aw-hero-img]");
-      const hero = root.querySelector<HTMLElement>("[data-aw-hero]");
-      if (hero && heroImg) {
-        gsap.to(heroImg, {
-          yPercent: 16,
-          ease: "none",
-          scrollTrigger: {
-            trigger: hero,
-            start: "top top",
-            end: "bottom top",
-            scrub: true,
-          },
-        });
-      }
-
-      root.querySelectorAll<HTMLElement>("[data-aw-reveal]").forEach((el) => {
+      root.querySelectorAll<HTMLElement>("[data-ce-reveal]").forEach((el) => {
         gsap.from(el, {
-          y: 50,
+          y: 40,
           opacity: 0,
-          duration: light ? 0.75 : 1,
-          ease,
+          duration,
+          ease: "power3.out",
           scrollTrigger: {
             trigger: el,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+        });
+      });
+
+      root.querySelectorAll<HTMLElement>("[data-ce-image]").forEach((img) => {
+        if (light) {
+          gsap.from(img, {
+            opacity: 0,
+            duration: 0.9,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: img,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+          });
+          return;
+        }
+        gsap.from(img, {
+          scale: 1.1,
+          duration: imgDuration,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: img,
             start: "top 80%",
             toggleActions: "play none none reverse",
           },
         });
       });
 
-      const vessel = root.querySelector<HTMLElement>("[data-ch-vessel]");
-      const vesselImg = root.querySelector<HTMLElement>("[data-ch-vessel-img]");
-      if (vessel && vesselImg) {
-        gsap.fromTo(
-          vesselImg,
-          { scale: 1 },
-          {
-            scale: 1.1,
-            ease: "none",
-            scrollTrigger: {
-              trigger: vessel,
-              start: "top top",
-              end: "bottom bottom",
-              scrub: true,
-            },
-          },
-        );
-      }
-
-      const specs = gsap.utils.toArray<HTMLElement>("[data-ch-spec]");
-      const directions = [
-        { x: -40, y: 0 },
-        { x: 40, y: 0 },
-        { x: 0, y: 40 },
-        { x: 0, y: -40 },
-      ];
-      specs.forEach((spec, i) => {
-        const from = directions[i % directions.length]!;
-        gsap.from(spec, {
-          ...from,
-          opacity: 0,
-          duration: 0.9,
-          ease,
-          scrollTrigger: {
-            trigger: vessel ?? spec,
-            start: "top 60%",
-            toggleActions: "play none none reverse",
+      const specs = root.querySelector<HTMLElement>("[data-ch-specs]");
+      root.querySelectorAll<HTMLElement>("[data-ch-count]").forEach((el) => {
+        const target = Number(el.getAttribute("data-target") || "0");
+        const obj = { val: 0 };
+        ScrollTrigger.create({
+          trigger: specs ?? el,
+          start: "top 75%",
+          once: true,
+          onEnter: () => {
+            gsap.to(obj, {
+              val: target,
+              duration: light ? 1.2 : 1.8,
+              ease: "power2.out",
+              onUpdate: () => {
+                el.textContent = String(Math.round(obj.val));
+              },
+            });
           },
         });
       });
 
       ScrollTrigger.matchMedia({
         "(min-width: 1024px)": () => {
-          const diningPin = root.querySelector<HTMLElement>("[data-ch-dining-pin]");
-          const slides = gsap.utils.toArray<HTMLElement>("[data-ch-dining-slide]");
-          if (diningPin && slides.length > 1) {
-            gsap.set(slides, { opacity: 0 });
-            gsap.set(slides[0]!, { opacity: 1 });
-            const n = slides.length;
-            const tl = gsap.timeline({
-              defaults: { ease: "none" },
-              scrollTrigger: {
-                trigger: diningPin.parentElement ?? diningPin,
-                start: "top top",
-                end: "bottom bottom",
-                pin: diningPin,
-                scrub: true,
-              },
-            });
-            for (let i = 0; i < n - 1; i++) {
-              const at = (i + 1) / n;
-              tl.to(slides[i]!, { opacity: 0, duration: 0.2 }, at - 0.15);
-              tl.to(slides[i + 1]!, { opacity: 1, duration: 0.2 }, at - 0.15);
-            }
-          }
+          const pin = root.querySelector<HTMLElement>("[data-ch-suites-pin]");
+          const track = root.querySelector<HTMLElement>("[data-ch-suites-track]");
+          if (!pin || !track) return;
 
-          const exPin = root.querySelector<HTMLElement>("[data-ch-ex-pin]");
-          const exTrack = root.querySelector<HTMLElement>("[data-ch-ex-track]");
-          if (exPin && exTrack) {
-            const getDistance = () =>
-              Math.max(0, exTrack.scrollWidth - window.innerWidth);
-            gsap.to(exTrack, {
-              x: () => -getDistance(),
-              ease: "none",
-              scrollTrigger: {
-                trigger: exPin.parentElement ?? exPin,
-                start: "top top",
-                end: () => `+=${getDistance()}`,
-                pin: exPin,
-                scrub: 1,
-                invalidateOnRefresh: true,
-              },
-            });
+          const getDistance = () =>
+            Math.max(0, track.scrollWidth - window.innerWidth);
 
-            exTrack.querySelectorAll<HTMLElement>("[data-ch-ex-img]").forEach((img) => {
-              gsap.fromTo(
-                img,
-                { scale: 1 },
-                {
-                  scale: 1.12,
-                  ease: "none",
-                  scrollTrigger: {
-                    trigger: exPin.parentElement ?? exPin,
-                    start: "top top",
-                    end: () => `+=${getDistance()}`,
-                    scrub: true,
-                  },
-                },
-              );
-            });
-          }
+          gsap.to(track, {
+            x: () => -getDistance(),
+            ease: "none",
+            scrollTrigger: {
+              trigger: pin.parentElement ?? pin,
+              start: "top top",
+              end: () => `+=${getDistance()}`,
+              pin,
+              scrub: 1,
+              invalidateOnRefresh: true,
+            },
+          });
         },
       });
     }, root);
 
-    const onLoad = () => requestScrollRefresh("charter-awards-load");
+    const onLoad = () => requestScrollRefresh("charter-cream-load");
     window.addEventListener("load", onLoad);
-    requestAnimationFrame(() => requestScrollRefresh("charter-awards-mount"));
+    requestAnimationFrame(() => requestScrollRefresh("charter-cream-mount"));
 
     return () => {
       window.removeEventListener("load", onLoad);

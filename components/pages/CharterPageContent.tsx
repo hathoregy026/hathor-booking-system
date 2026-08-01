@@ -3,15 +3,14 @@
 import { useRef, useState } from "react";
 import { Cinzel, Cormorant_Garamond, Inter } from "next/font/google";
 import {
-  CharterCta,
-  CharterDining,
-  CharterExcursions,
-  CharterHero,
+  CharterInvite,
+  CharterReveal,
+  CharterSpecs,
   CharterSuites,
-  CharterVessel,
 } from "@/components/pages/charter/CharterSections";
 import { CharterRouteSelector } from "@/components/pages/charter/CharterRouteSelector";
 import { CharterRequestForm } from "@/components/pages/charter/CharterRequestForm";
+import { CeCursor } from "@/components/pages/awards/CeCursor";
 import { useCharterPageMotion } from "@/hooks/useCharterPageMotion";
 import { CHARTER_PAGE } from "@/lib/page-content";
 
@@ -23,13 +22,14 @@ const cinzel = Cinzel({
 
 const inter = Inter({
   subsets: ["latin"],
+  weight: ["300", "400"],
   variable: "--font-aw-inter",
   display: "swap",
 });
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["400"],
   style: ["normal", "italic"],
   variable: "--font-aw-cormorant",
   display: "swap",
@@ -46,14 +46,13 @@ export function CharterPageContent() {
     <div
       ref={rootRef}
       data-charter-page=""
-      className={`ch-page aw-page ${cinzel.variable} ${inter.variable} ${cormorant.variable}`}
+      className={`ch-page ce-page ${cinzel.variable} ${inter.variable} ${cormorant.variable}`}
     >
-      <CharterHero />
-      <CharterVessel />
+      <CeCursor rootRef={rootRef} />
+      <CharterReveal />
+      <CharterSpecs />
       <CharterSuites />
-      <CharterDining />
-      <CharterExcursions />
-      <CharterCta />
+      <CharterInvite />
       <CharterRouteSelector
         routes={routes}
         value={preferredRoute}
