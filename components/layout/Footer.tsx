@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useRef, type ReactNode } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { HATHOR_BRAND_NAME } from "@/lib/branding";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { PUBLIC_SOCIAL_LINKS } from "@/lib/public-social";
 import { FooterSubscribe } from "@/components/layout/FooterSubscribe";
@@ -19,11 +18,24 @@ function footerTheme(el: Element) {
   };
 }
 
-const EXPLORE_LINKS = [
-  { href: "/about", label: "The Ship" },
+const SUITES_LINKS = [
+  { href: "/luxury-cabins-Nile-Cruise", label: "Luxury Rooms" },
+  { href: "/rooms", label: "Luxury Suites" },
   { href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise", label: "Royal Suites" },
-  { href: "/cruises", label: "Journeys" },
+] as const;
+
+const VOYAGE_LINKS = [
+  { href: "/cruises", label: "Scheduled Voyages" },
+  { href: "/charter", label: "Private Charter" },
+  { href: "/highlights", label: "Highlights" },
+  { href: "/about", label: "Our Story" },
+] as const;
+
+const EXPERIENCE_LINKS = [
+  { href: "/wellness", label: "Wellness & Spa" },
   { href: "/gastronomy", label: "Dining" },
+  { href: "/blog", label: "Journal" },
+  { href: "/partners", label: "Partners" },
 ] as const;
 
 const INFO_LINKS = [
@@ -361,19 +373,34 @@ export function Footer() {
           </div>
           <div className="lux-footer__grid">
             <div className="lux-footer__col lux-footer__col--brand">
-              <Link href="/" className="lux-footer__brand-mark cursor-hover">
-                <AnkhIcon className="lux-footer__ankh" />
-                <p className="lux-footer__wordmark">{HATHOR_BRAND_NAME}</p>
-              </Link>
+              <p className="lux-footer__col-title">The Vessel</p>
               <p className="lux-footer__tagline">
                 Navigating the eternal Nile with unparalleled elegance since 2024.
+                A private dahabiya for travellers who prefer stillness, craft, and
+                rare itineraries.
+              </p>
+              <p className="lux-footer__brand-meta">
+                <a
+                  href={`mailto:${PUBLIC_CONTACT.email}`}
+                  className="lux-footer__meta-link cursor-hover"
+                >
+                  {PUBLIC_CONTACT.email}
+                </a>
+              </p>
+              <p className="lux-footer__brand-meta">
+                <a
+                  href={`tel:${PUBLIC_CONTACT.phone}`}
+                  className="lux-footer__meta-link cursor-hover"
+                >
+                  {PUBLIC_CONTACT.phoneDisplay}
+                </a>
               </p>
             </div>
 
             <div className="lux-footer__col">
-              <p className="lux-footer__col-title">Explore</p>
+              <p className="lux-footer__col-title">Suites</p>
               <ul className="lux-footer__links">
-                {EXPLORE_LINKS.map((link) => (
+                {SUITES_LINKS.map((link) => (
                   <li key={link.label}>
                     <FooterNavLink href={link.href} label={link.label} />
                   </li>
@@ -382,7 +409,29 @@ export function Footer() {
             </div>
 
             <div className="lux-footer__col">
-              <p className="lux-footer__col-title">Information</p>
+              <p className="lux-footer__col-title">Voyages</p>
+              <ul className="lux-footer__links">
+                {VOYAGE_LINKS.map((link) => (
+                  <li key={link.label}>
+                    <FooterNavLink href={link.href} label={link.label} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="lux-footer__col">
+              <p className="lux-footer__col-title">Experiences</p>
+              <ul className="lux-footer__links">
+                {EXPERIENCE_LINKS.map((link) => (
+                  <li key={link.label}>
+                    <FooterNavLink href={link.href} label={link.label} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="lux-footer__col">
+              <p className="lux-footer__col-title">Concierge</p>
               <ul className="lux-footer__links">
                 {INFO_LINKS.map((link) => (
                   <li key={link.label}>
@@ -413,6 +462,10 @@ export function Footer() {
                   </li>
                 ))}
               </ul>
+              <p className="lux-footer__social-note">
+                Dispatches from the river — private sailings, seasonal routes, and
+                moments reserved for our circle.
+              </p>
             </div>
           </div>
         </div>
