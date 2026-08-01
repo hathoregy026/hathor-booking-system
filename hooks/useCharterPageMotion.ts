@@ -3,56 +3,65 @@
 import { useEffect, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { shouldLightenMotionForDevice } from "@/lib/touch-device";
 import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/** Charter — masked reveal, count-up specs, sticky suite sections. */
+/** Exact brief animations — site Lenis already owns smooth scroll. */
 export function useCharterPageMotion(rootRef: RefObject<HTMLElement | null>) {
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       root
-        .querySelectorAll<HTMLElement>(
-          ".reveal-text, .reveal-label, .reveal-image, [data-ch-count]",
-        )
+        .querySelectorAll<HTMLElement>(".reveal-text, .reveal-label, .reveal-image")
         .forEach((el) => {
           el.style.opacity = "1";
           el.style.transform = "none";
-          const target = el.getAttribute("data-target");
-          if (target) el.textContent = target;
         });
       return;
     }
 
-    const light = shouldLightenMotionForDevice();
-
     const ctx = gsap.context(() => {
-      gsap.to(root.querySelectorAll(".reveal-label"), {
-        opacity: 1,
-        duration: light ? 0.8 : 1.2,
-        ease: "power3.out",
+      gsap.utils.toArray<HTMLElement>(".reveal-text", root).forEach((text) => {
+        if (text.closest(".min-h-screen")) return;
+        gsap.from(text, {
+          y: "100%",
+          duration: 1.4,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: text,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+        });
       });
 
-      const revealTexts = root.querySelectorAll<HTMLElement>(".ch-reveal .reveal-text");
-      gsap.from(revealTexts, {
-        y: "100%",
-        duration: light ? 0.9 : 1.4,
-        stagger: 0.12,
-        ease: "power3.out",
-        delay: 0.12,
-      });
+      const heroTexts = root.querySelectorAll<HTMLElement>(
+        ".min-h-screen .reveal-text",
+      );
+      if (heroTexts.length) {
+        gsap.from(heroTexts, {
+          y: "100%",
+          duration: 1.4,
+          stagger: 0.1,
+          ease: "power3.out",
+          delay: 0.1,
+        });
+      }
 
-      const revealImage = root.querySelector<HTMLElement>(".reveal-image");
-      if (revealImage) {
-        gsap.from(revealImage, {
-          y: light ? 24 : 40,
+      const label = root.querySelector<HTMLElement>(".reveal-label");
+      if (label) {
+        gsap.from(label, { opacity: 0, duration: 1.2, ease: "power3.out" });
+      }
+
+      const image = root.querySelector<HTMLElement>(".reveal-image");
+      if (image) {
+        gsap.from(image, {
           opacity: 0,
-          duration: light ? 1 : 1.5,
+          y: 40,
+          duration: 1.4,
           ease: "power3.out",
           delay: 0.35,
         });
@@ -62,6 +71,7 @@ export function useCharterPageMotion(rootRef: RefObject<HTMLElement | null>) {
       root.querySelectorAll<HTMLElement>("[data-ch-count]").forEach((el) => {
         const target = Number(el.getAttribute("data-target") || "0");
         const obj = { val: 0 };
+        el.textContent = "0";
         ScrollTrigger.create({
           trigger: specs ?? el,
           start: "top 75%",
@@ -69,7 +79,7 @@ export function useCharterPageMotion(rootRef: RefObject<HTMLElement | null>) {
           onEnter: () => {
             gsap.to(obj, {
               val: target,
-              duration: light ? 1.2 : 1.8,
+              duration: 1.8,
               ease: "power2.out",
               onUpdate: () => {
                 el.textContent = String(Math.round(obj.val));
@@ -78,30 +88,9 @@ export function useCharterPageMotion(rootRef: RefObject<HTMLElement | null>) {
           },
         });
       });
-
-      root.querySelectorAll<HTMLElement>(".ch-suite__copy").forEach((copy) => {
-        gsap.from(copy.children, {
-          y: 28,
-          opacity: 0,
-          duration: light ? 0.75 : 1.1,
-          stagger: 0.08,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: copy,
-            start: "top 80%",
-            toggleActions: "play none none reverse",
-          },
-        });
-      });
     }, root);
 
-    const onLoad = () => requestScrollRefresh("ch-cream-v2-load");
-    window.addEventListener("load", onLoad);
-    requestAnimationFrame(() => requestScrollRefresh("ch-cream-v2-mount"));
-
-    return () => {
-      window.removeEventListener("load", onLoad);
-      ctx.revert();
-    };
+    requestAnimationFrame(() => requestScrollRefresh("ch-exact-mount"));
+    return () => ctx.revert();
   }, [rootRef]);
 }
