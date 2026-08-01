@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { CharterPageContent } from "@/components/pages/CharterPageContent";
+import "../../charter-page.css";
 
 export const metadata: Metadata = {
   title: "Charter Dahabiya Cruise | Private Nile Experience",

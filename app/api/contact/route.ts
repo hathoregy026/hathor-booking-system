@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { sendInquiryEmail } from "@/lib/inquiry-email";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+import { CHARTER_PAGE } from "@/lib/page-content";
+
+const CHARTER_ROUTES = new Set<string>(CHARTER_PAGE.overview.routes);
 
 const inquirySchema = z.object({
   type: z.enum(["contact", "charter"]),
@@ -21,6 +24,22 @@ const inquirySchema = z.object({
   checkIn: z.string().trim().max(30).optional(),
   adults: z.coerce.number().int().min(0).max(50).optional(),
   children: z.coerce.number().int().min(0).max(50).optional(),
+  preferredRoute: z.preprocess(
+    (value) => {
+      if (value === undefined || value === null) return undefined;
+      if (typeof value !== "string") return value;
+      const trimmed = value.trim();
+      return trimmed.length === 0 ? undefined : trimmed;
+    },
+    z
+      .string()
+      .max(120)
+      .optional()
+      .refine(
+        (value) => !value || CHARTER_ROUTES.has(value),
+        "Invalid preferred route",
+      ),
+  ),
 });
 
 export async function POST(request: Request) {

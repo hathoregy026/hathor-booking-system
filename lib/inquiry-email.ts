@@ -23,6 +23,7 @@ export type InquiryPayload = {
   checkIn?: string;
   adults?: number;
   children?: number;
+  preferredRoute?: string;
 };
 
 function escapeHtml(value: string): string {
@@ -64,6 +65,11 @@ export async function sendInquiryEmail(payload: InquiryPayload): Promise<void> {
   if (payload.children !== undefined) {
     lines.push(`<p><strong>Children:</strong> ${payload.children}</p>`);
   }
+  if (payload.preferredRoute) {
+    lines.push(
+      `<p><strong>Preferred route:</strong> ${escapeHtml(payload.preferredRoute)}</p>`,
+    );
+  }
 
   lines.push(
     `<p><strong>Message:</strong></p><p>${escapeHtml(payload.message).replaceAll("\n", "<br>")}</p>`,
@@ -97,6 +103,9 @@ export function getInquiryFallbackMailto(payload: InquiryPayload): string {
       payload.checkIn ? `Check-in: ${payload.checkIn}` : "",
       payload.adults !== undefined ? `Adults: ${payload.adults}` : "",
       payload.children !== undefined ? `Children: ${payload.children}` : "",
+      payload.preferredRoute
+        ? `Preferred route: ${payload.preferredRoute}`
+        : "",
       "",
       payload.message,
     ]

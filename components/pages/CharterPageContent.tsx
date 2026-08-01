@@ -1,138 +1,153 @@
 "use client";
 
-import { MarketingCtaBand } from "@/components/pages/MarketingCtaBand";
-import { InquiryForm } from "@/components/pages/InquiryForm";
-import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
-import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { ManagedImage } from "@/components/ui/ManagedImage";
+import { useRef, useState } from "react";
+import { CharterHero } from "@/components/pages/charter/CharterHero";
+import { CharterRouteSelector } from "@/components/pages/charter/CharterRouteSelector";
+import { CharterRequestForm } from "@/components/pages/charter/CharterRequestForm";
+import {
+  CharterEditorialImage,
+  CharterExperienceBand,
+  CharterFinalCta,
+  CharterIntroduction,
+  CharterPrivileges,
+} from "@/components/pages/charter/CharterSections";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
+import {
+  useTypographySettings,
+} from "@/components/public/TypographySettingsProvider";
+import { useCharterPageMotion } from "@/hooks/useCharterPageMotion";
 import { CHARTER_PAGE } from "@/lib/page-content";
 import { normalizeOptionalText } from "@/lib/website-text-shared";
+import { resolveHeroPageCopy } from "@/lib/typography-settings-shared";
+
+const BENEFIT_FALLBACKS = [
+  {
+    title: "Complete Privacy",
+    body: "The entire vessel is reserved exclusively for you and your invited guests.",
+  },
+  {
+    title: "Dedicated Service",
+    body: "A private crew and chef shape every day around your preferences.",
+  },
+  {
+    title: "Refined Accommodation",
+    body: "Elegant suites, intimate spaces and attentive five-star hospitality.",
+  },
+  {
+    title: "A Personal Itinerary",
+    body: "Choose your pace, destinations and moments along the Nile.",
+  },
+] as const;
+
+function splitBenefit(raw: string, index: number): { title: string; body: string } {
+  const fallback = BENEFIT_FALLBACKS[index] ?? BENEFIT_FALLBACKS[0];
+  const cleaned = raw.trim();
+  if (!cleaned) return fallback;
+
+  const dashSplit = cleaned.split(/\s+[—–-]\s+/);
+  if (dashSplit.length >= 2) {
+    return {
+      title: dashSplit[0].trim(),
+      body: dashSplit.slice(1).join(" — ").trim() || fallback.body,
+    };
+  }
+
+  // Short CMS titles → keep title, use refined fallback body
+  if (cleaned.length <= 48) {
+    return { title: cleaned, body: fallback.body };
+  }
+
+  return { title: fallback.title, body: cleaned };
+}
 
 export function CharterPageContent() {
+  const rootRef = useRef<HTMLDivElement>(null);
   const { pages } = useWebsiteText();
+  const typography = useTypographySettings();
   const charter = pages.charter;
+  const routes = CHARTER_PAGE.overview.routes;
+  const [preferredRoute, setPreferredRoute] = useState<string>(routes[0]);
+
+  useCharterPageMotion(rootRef);
+
   const overviewTitle = normalizeOptionalText(charter.overviewTitle);
   const overviewIntro = normalizeOptionalText(charter.overviewIntro);
   const benefitsIntro = normalizeOptionalText(charter.benefitsIntro);
   const cta = normalizeOptionalText(charter.cta);
+
   const benefits = charter.benefits
-    .map((benefit) => normalizeOptionalText(benefit))
-    .filter((benefit): benefit is string => Boolean(benefit));
+    .map((benefit, index) => {
+      const text = normalizeOptionalText(benefit);
+      if (!text) return null;
+      return splitBenefit(text, index);
+    })
+    .filter((benefit): benefit is { title: string; body: string } =>
+      Boolean(benefit),
+    );
+
+  const resolvedBenefits =
+    benefits.length > 0
+      ? benefits
+      : BENEFIT_FALLBACKS.map((item) => ({ ...item }));
+
+  const heroCopy = resolveHeroPageCopy(typography, "charter", {
+    main: CHARTER_PAGE.hero.title,
+    second: CHARTER_PAGE.hero.secondTitle,
+  });
+
+  // Map known default CMS hero labels to the editorial two-line treatment.
+  const mainKey = heroCopy.main.trim().toLowerCase().replace(/\s+/g, " ");
+  const secondKey = heroCopy.second.trim().toLowerCase().replace(/\s+/g, " ");
+  const isDefaultMain =
+    !mainKey ||
+    mainKey === CHARTER_PAGE.hero.title.toLowerCase() ||
+    mainKey.includes("charter dahabiya") ||
+    mainKey.includes("dahabiya charter");
+  const isDefaultSecond =
+    !secondKey ||
+    secondKey === CHARTER_PAGE.hero.secondTitle.toLowerCase() ||
+    secondKey.includes("private voyage");
+
+  const titleMain = isDefaultMain ? "THE NILE" : heroCopy.main.toUpperCase();
+  const titleSecond = isDefaultSecond
+    ? "EXCLUSIVELY YOURS"
+    : heroCopy.second.toUpperCase();
 
   return (
-    <PageScrollTransition
-      title={CHARTER_PAGE.hero.title}
-      secondTitle={CHARTER_PAGE.hero.secondTitle}
-      subtitle={CHARTER_PAGE.hero.subtitle}
-      breadcrumb="Charter"
-      imageName="charter-hero"
-      heroPage="charter"
-    >
-      <section className="hathor-section hathor-section--dark">
-        <div className="page-container">
-          <div className="grid gap-12 lg:grid-cols-2">
-            <ScrollReveal>
-              <div style={{ minWidth: 0 }}>
-                <header>
-                  {overviewTitle ? (
-                    <h2 className="section-title typo-page-title">
-                      {overviewTitle}
-                    </h2>
-                  ) : null}
-                  <div className="hathor-gold-line hathor-gold-line--left" />
-                  {overviewIntro ? (
-                    <p
-                      className="section-body typo-body-text"
-                      style={{ overflowWrap: "anywhere" }}
-                    >
-                      {overviewIntro}
-                    </p>
-                  ) : null}
-                </header>
-                {benefitsIntro ? (
-                  <p className="section-body typo-body-text mt-4">
-                    {benefitsIntro}
-                  </p>
-                ) : null}
-                {benefits.length > 0 ? (
-                  <ul className="mt-6 space-y-3">
-                    {benefits.map((benefit) => (
-                      <li key={benefit} className="hathor-feature-card">
-                        <p className="section-body typo-body-text">{benefit}</p>
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-                {cta ? (
-                  <p className="section-body typo-body-text mt-8 font-medium">
-                    {cta}
-                  </p>
-                ) : null}
-              </div>
-            </ScrollReveal>
-
-            <ScrollReveal delay={120}>
-              <div
-                id="site-image-charter"
-                data-site-image="charter"
-                className="hathor-editorial__image-wrap hathor-editorial__image-wrap--tall"
-              >
-                <ManagedImage
-                  name="charter"
-                  alt="Private charter aboard Hathor Dahabiya"
-                  fill
-                  previewAnchor={false}
-                  className="hathor-editorial__image object-cover"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-              </div>
-            </ScrollReveal>
-          </div>
-
-          <ScrollReveal>
-            <div className="mt-12">
-              <header>
-                <h3 className="section-title typo-page-title text-2xl">
-                  Your Private Itinerary
-                </h3>
-                <p className="section-indication typo-page-subtitle">
-                  Route Options
-                </p>
-                <div className="hathor-gold-line hathor-gold-line--left" />
-              </header>
-              <div className="mt-6 flex flex-wrap gap-3">
-                {CHARTER_PAGE.overview.routes.map((route) => (
-                  <span key={route} className="hathor-route-chip">
-                    {route}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      <section className="hathor-section hathor-section--dark-2">
-        <div className="page-container">
-          <div className="mx-auto max-w-2xl">
-            <ScrollReveal>
-              <InquiryForm
-                type="charter"
-                title="Charter Request"
-                intro="Tell us about your group and preferred dates — we will craft a personalized offer."
-                submitLabel="Send Request"
-                showCharterFields
-              />
-            </ScrollReveal>
-          </div>
-        </div>
-      </section>
-
-      <MarketingCtaBand
-        title="The Nile, Exclusively Yours"
-        body="Charter the entire Hathor Dahabiya for your family, friends, or celebration."
+    <div ref={rootRef} data-charter-page className="charter-page">
+      <CharterHero
+        titleMain={titleMain}
+        titleSecond={titleSecond}
+        subtitle="A voyage composed entirely around you."
+        supporting="Charter Hathor in complete privacy and discover the Nile through an itinerary, rhythm and service created exclusively for your party."
       />
-    </PageScrollTransition>
+
+      <CharterIntroduction
+        overviewTitle={overviewTitle}
+        overviewIntro={overviewIntro}
+        benefitsIntro={benefitsIntro}
+        cta={cta}
+      />
+
+      <CharterPrivileges benefits={resolvedBenefits} />
+
+      <CharterEditorialImage />
+
+      <CharterRouteSelector
+        routes={routes}
+        value={preferredRoute}
+        onChange={setPreferredRoute}
+      />
+
+      <CharterExperienceBand />
+
+      <CharterRequestForm
+        preferredRoute={preferredRoute}
+        routes={routes}
+        onPreferredRouteChange={setPreferredRoute}
+      />
+
+      <CharterFinalCta />
+    </div>
   );
 }
