@@ -70,6 +70,10 @@ const SLOT_SOURCES = {
   "blog-hero": take(pools.lifestyle, 0),
   "highlights-hero": take(pools.lifestyle, 1),
   "highlights-lifestyle": take(pools.lifestyle, 2),
+  // NOTE: Landmark slots currently pull from ship overview/drone pools — there are
+  // no Unfinished Obelisk / Hatshepsut / Valley of the Kings photos in assets/.
+  // Content team must upload correct landmark images via the CMS image dashboard.
+  // Do not treat these defaults as accurate landmark photography.
   "landmark-obelisk": take(pools.overview, 7),
   "landmark-hatshepsut": take(pools.drone, 5),
   "landmark-valley-kings": take(pools.overview, 8),

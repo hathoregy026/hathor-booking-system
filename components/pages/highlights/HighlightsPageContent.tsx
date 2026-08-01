@@ -1,148 +1,59 @@
 "use client";
 
 import { useRef } from "react";
-import Link from "next/link";
-import { BookNowTrigger } from "@/components/public/BookNowTrigger";
-import { PublicSiteHero } from "@/components/pages/PublicSiteHero";
-import { ManagedImage } from "@/components/ui/ManagedImage";
+import { HighlightsHero } from "@/components/pages/highlights/HighlightsHero";
+import {
+  HighlightsFinalCta,
+  HighlightsIntroduction,
+  HighlightsJourneyPreview,
+  HighlightsManifesto,
+  HighlightsMovingStories,
+  HighlightsPrinciples,
+  HighlightsRiverInterlude,
+} from "@/components/pages/highlights/HighlightsSections";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
-import { useHathorLuxBodyMotion } from "@/hooks/useHathorLuxBodyMotion";
-import { splitHeroTitle } from "@/lib/split-hero-title";
+import { useTypographySettings } from "@/components/public/TypographySettingsProvider";
+import { useHighlightsPageMotion } from "@/hooks/useHighlightsPageMotion";
 import { HIGHLIGHTS_PAGE } from "@/lib/page-content";
-
-const LANDMARK_IMAGES = [
-  "landmark-obelisk",
-  "landmark-hatshepsut",
-  "landmark-valley-kings",
-] as const;
+import { resolveHeroPageCopy } from "@/lib/typography-settings-shared";
 
 export function HighlightsPageContent() {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [lineRight, lineLeft] = splitHeroTitle(HIGHLIGHTS_PAGE.hero.title);
-  useHathorLuxBodyMotion(rootRef);
   const { pages } = useWebsiteText();
+  const typography = useTypographySettings();
   const highlights = pages.highlights;
 
+  useHighlightsPageMotion(rootRef);
+
+  const hero = resolveHeroPageCopy(typography, "highlights", {
+    main: "DAHABIYA",
+    second: "CRUISE HIGHLIGHTS",
+  });
+
   return (
-    <div ref={rootRef} className="venetian-page lux-page">
-      <PublicSiteHero
-        heroPage="highlights"
-        lineRight={lineRight}
-        lineLeft={lineLeft}
-        subtitle={HIGHLIGHTS_PAGE.hero.subtitle}
-        posterImageName="highlights-hero"
+    <div ref={rootRef} data-highlights-page="" className="hl-page">
+      <HighlightsHero
+        titleMain={hero.main}
+        titleSecond={hero.second}
+        subtitle="Discover the ancient landmarks, quiet riverbanks and intimate experiences that define a voyage aboard Hathor."
       />
 
-      <section className="hlx" id="programs">
-        <header className="hlx-head">
-          <h2 className="lux-gold lux-gold-xl" data-lux-title>
-            {HIGHLIGHTS_PAGE.hero.title}
-          </h2>
-          <p className="lux-kicker" data-lux-reveal>
-            The Hathor Experience
-          </p>
-          <p className="lux-lead" data-lux-reveal>
-            {HIGHLIGHTS_PAGE.hero.subtitle}
-          </p>
-          <div className="lux-copy" data-lux-reveal>
-            {highlights.intro.map((paragraph) => (
-              <p key={paragraph.slice(0, 48)}>{paragraph}</p>
-            ))}
-          </div>
-          <BookNowTrigger className="btn btn-primary">
-            Book Now
-          </BookNowTrigger>
-        </header>
+      <HighlightsIntroduction
+        heading={HIGHLIGHTS_PAGE.hero.subtitle}
+        intro={highlights.intro}
+      />
 
-        <div className="hlx-pin">
-          <div className="hlx-track" id="hlx-track">
-            {highlights.landmarks.map((landmark, index) => (
-              <article
-                key={landmark.title}
-                className="hlx-panel"
-                id={`site-image-${LANDMARK_IMAGES[index]}`}
-                data-site-image={LANDMARK_IMAGES[index]}
-              >
-                <div className="hlx-panel-media">
-                  <div className="lux-mask">
-                    <ManagedImage
-                      name={LANDMARK_IMAGES[index]!}
-                      alt={landmark.title}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 88vw, 45vw"
-                      loading={index === 0 ? "eager" : "lazy"}
-                    />
-                  </div>
-                </div>
-                <div className="hlx-panel-copy">
-                  <div className="hlx-panel-num">
-                    {String(index + 1).padStart(2, "0")}
-                  </div>
-                  <h3>{landmark.title}</h3>
-                  <p className="lux-kicker">Landmark</p>
-                  <p>{landmark.body}</p>
-                  <Link className="btn btn-primary" href="/cruises">
-                    View Route
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
+      <HighlightsManifesto />
 
-        <div className="hlx-progress" aria-hidden="true">
-          {highlights.landmarks.map((landmark) => (
-            <span key={landmark.title}>
-              <i />
-            </span>
-          ))}
-        </div>
-      </section>
+      <HighlightsMovingStories landmarks={highlights.landmarks} />
 
-      <section className="hlx-manifesto">
-        <div className="hlx-manifesto-grid">
-          <article className="hlx-manifesto-item">
-            <h3>Private by design</h3>
-            <p className="lux-kicker">I</p>
-            <p>
-              Intimate Dahabiya sailing — cabins and suites composed for Nile light and
-              unhurried hospitality.
-            </p>
-          </article>
-          <article className="hlx-manifesto-item">
-            <h3>Temples by day</h3>
-            <p className="lux-kicker">II</p>
-            <p>
-              Ancient wonders paced with grace — then return to river quiet aboard Hathor.
-            </p>
-          </article>
-          <article className="hlx-manifesto-item">
-            <h3>Voyage-native</h3>
-            <p className="lux-kicker">III</p>
-            <p>
-              Dining, spa, and rest bend to itinerary along Luxor and Aswan.
-            </p>
-          </article>
-        </div>
-      </section>
+      <HighlightsRiverInterlude />
 
-      <section className="cta-section" id="reserve">
-        <div className="cta-inner hathor-cta-copy">
-          <h2 className="lux-gold lux-gold-md" data-lux-title>
-            Book Your Cruise Now
-          </h2>
-          <p data-lux-reveal>
-            Reserve your voyage and experience Hathor highlights on the Nile.
-          </p>
-          <div className="hathor-cta-actions">
-            <BookNowTrigger className="btn btn-secondary">Book Now</BookNowTrigger>
-            <Link className="btn btn-primary" href="/cruises">
-              View Voyages
-            </Link>
-          </div>
-        </div>
-      </section>
+      <HighlightsPrinciples />
+
+      <HighlightsJourneyPreview />
+
+      <HighlightsFinalCta />
     </div>
   );
 }
