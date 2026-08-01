@@ -23,21 +23,21 @@ export const CHARTER_CHAPTER_MEDIA: CharterChapterMedia[] = [
   {
     slot: "charter-privacy",
     alt: "Private sun deck reserved exclusively for your party",
-    objectPosition: "50% 35%",
+    objectPosition: "58% 28%",
   },
   {
     slot: "charter-service",
     alt: "Dedicated hospitality and service aboard Hathor",
-    objectPosition: "50% 40%",
+    objectPosition: "42% 48%",
   },
   {
     slot: "charter-rhythm",
     alt: "Unhurried sailing rhythm along the Nile",
-    objectPosition: "50% 45%",
+    objectPosition: "62% 40%",
   },
   {
     slot: "charter-itinerary",
     alt: "A voyage composed around your itinerary",
-    objectPosition: "48% 42%",
+    objectPosition: "35% 55%",
   },
 ];

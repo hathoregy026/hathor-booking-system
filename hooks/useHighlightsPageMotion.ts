@@ -51,60 +51,59 @@ export function useHighlightsPageMotion(rootRef: RefObject<HTMLElement | null>) 
       const copy = root.querySelector<HTMLElement>("[data-hl-hero-copy]");
       const cta = root.querySelector<HTMLElement>("[data-hl-hero-cta]");
 
-      if (heroImg) gsap.set(heroImg, { scale: 1.045 });
+      if (heroImg) gsap.set(heroImg, { scale: 1.08, yPercent: 0 });
       if (veil) gsap.set(veil, { scaleY: 1 });
-      if (label) gsap.set(label, { opacity: 0, y: 14 });
+      if (label) gsap.set(label, { opacity: 0, y: 18 });
       lines.forEach((line) => {
-        gsap.set(line.querySelector("span") ?? line, { yPercent: 112 });
+        gsap.set(line.querySelector("span") ?? line, { yPercent: 115 });
       });
       if (horizon) gsap.set(horizon, { scaleX: 0 });
-      if (copy) gsap.set(copy, { opacity: 0, y: 18 });
-      if (cta) gsap.set(cta, { opacity: 0, y: 16 });
+      if (copy) gsap.set(copy, { opacity: 0, y: 22 });
+      if (cta) gsap.set(cta, { opacity: 0, y: 18 });
+
+      /* Decode hero early to avoid scrub flash */
+      const heroBitmap = heroImg?.querySelector("img");
+      if (heroBitmap instanceof HTMLImageElement) {
+        heroBitmap.decoding = "async";
+        void heroBitmap.decode?.().catch(() => undefined);
+      }
 
       const open = gsap.timeline({ defaults: { ease } });
       if (veil) {
         open.to(
           veil,
-          { scaleY: 0, duration: light ? 0.9 : 1.15, ease: "power4.inOut" },
+          { scaleY: 0, duration: light ? 0.85 : 1.2, ease: "power4.inOut" },
           0,
         );
       }
-      if (label) open.to(label, { opacity: 1, y: 0, duration: 0.55 }, 0.35);
+      if (label) open.to(label, { opacity: 1, y: 0, duration: 0.6 }, 0.32);
       lines.forEach((line, i) => {
         open.to(
           line.querySelector("span") ?? line,
-          { yPercent: 0, duration: light ? 0.7 : 0.9 },
-          0.45 + i * 0.12,
+          { yPercent: 0, duration: light ? 0.75 : 0.95 },
+          0.42 + i * 0.14,
         );
       });
-      if (horizon) open.to(horizon, { scaleX: 1, duration: 0.75 }, 0.95);
-      if (copy) open.to(copy, { opacity: 1, y: 0, duration: 0.6 }, 1.05);
-      if (cta) open.to(cta, { opacity: 1, y: 0, duration: 0.55 }, 1.2);
+      if (horizon) open.to(horizon, { scaleX: 1, duration: 0.85 }, 0.9);
+      if (copy) open.to(copy, { opacity: 1, y: 0, duration: 0.65 }, 1.05);
+      if (cta) open.to(cta, { opacity: 1, y: 0, duration: 0.6 }, 1.2);
 
       if (hero && heroImg) {
         const title = root.querySelector<HTMLElement>(".hl-hero__title");
-        gsap
-          .timeline({
-            scrollTrigger: {
-              trigger: hero,
-              start: "top top",
-              end: "bottom top",
-              scrub: true,
-            },
-          })
-          .to(heroImg, { scale: 1, ease: "none" }, 0);
-        if (title) {
-          gsap.to(title, {
-            y: light ? -24 : -48,
-            ease: "none",
-            scrollTrigger: {
-              trigger: hero,
-              start: "top top",
-              end: "bottom top",
-              scrub: true,
-            },
-          });
-        }
+        const heroScrub = gsap.timeline({
+          defaults: { ease: "none" },
+          scrollTrigger: {
+            trigger: hero,
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+        heroScrub.to(heroImg, { scale: 1, yPercent: 6 }, 0);
+        if (title) heroScrub.to(title, { y: light ? -28 : -56, opacity: 0.35 }, 0);
+        if (copy) heroScrub.to(copy, { y: light ? -12 : -24, opacity: 0 }, 0);
+        if (cta) heroScrub.to(cta, { y: light ? -8 : -16, opacity: 0 }, 0);
+        if (horizon) heroScrub.to(horizon, { opacity: 0.2 }, 0);
       }
 
       root.querySelectorAll<HTMLElement>("[data-hl-reveal]").forEach((el) => {
@@ -121,14 +120,14 @@ export function useHighlightsPageMotion(rootRef: RefObject<HTMLElement | null>) 
       if (introCurtain) {
         gsap.fromTo(
           introCurtain,
-          { clipPath: "inset(12% 8% 12% 8%)" },
+          { clipPath: "inset(100% 0 0 0)" },
           {
-            clipPath: "inset(0% 0% 0% 0%)",
+            clipPath: "inset(0% 0 0 0)",
             ease: "none",
             scrollTrigger: {
               trigger: introCurtain,
-              start: "top 88%",
-              end: "top 42%",
+              start: "top 90%",
+              end: "top 38%",
               scrub: true,
             },
           },
@@ -137,14 +136,15 @@ export function useHighlightsPageMotion(rootRef: RefObject<HTMLElement | null>) 
         if (introImg) {
           gsap.fromTo(
             introImg,
-            { scale: 1.06 },
+            { scale: 1.08, yPercent: 4 },
             {
               scale: 1,
+              yPercent: 0,
               ease: "none",
               scrollTrigger: {
                 trigger: introCurtain,
-                start: "top 90%",
-                end: "top 35%",
+                start: "top 92%",
+                end: "top 30%",
                 scrub: true,
               },
             },
@@ -167,21 +167,30 @@ export function useHighlightsPageMotion(rootRef: RefObject<HTMLElement | null>) 
 
       const closeMedia = root.querySelector<HTMLElement>("[data-hl-close-media]");
       if (closeMedia) {
-        gsap.fromTo(
-          closeMedia,
-          { scale: 1.06, clipPath: "inset(8% 6% 8% 6%)" },
-          {
-            scale: 1,
-            clipPath: "inset(0% 0% 0% 0%)",
-            ease: "none",
-            scrollTrigger: {
-              trigger: closeMedia.closest("section") ?? closeMedia,
-              start: "top 85%",
-              end: "top 30%",
-              scrub: true,
-            },
+        const closeScrub = gsap.timeline({
+          defaults: { ease: "none" },
+          scrollTrigger: {
+            trigger: closeMedia.closest("section") ?? closeMedia,
+            start: "top 88%",
+            end: "top 28%",
+            scrub: true,
           },
+        });
+        closeScrub.fromTo(
+          closeMedia,
+          { scale: 1.08, clipPath: "inset(12% 0 0 0)" },
+          { scale: 1, clipPath: "inset(0% 0 0 0)" },
+          0,
         );
+        const closeCopy = root.querySelector<HTMLElement>(".hl-close__inner");
+        if (closeCopy) {
+          closeScrub.fromTo(
+            closeCopy,
+            { y: 36, opacity: 0.35 },
+            { y: 0, opacity: 1 },
+            0.15,
+          );
+        }
       }
 
       ScrollTrigger.matchMedia({
@@ -196,15 +205,21 @@ export function useHighlightsPageMotion(rootRef: RefObject<HTMLElement | null>) 
 
           const n = slides.length;
           const segment = 1 / n;
+          const holdRatio = 0.68;
 
           gsap.set(slides, {
             opacity: 0,
-            scale: 1.04,
+            scale: 1.06,
             clipPath: "inset(0 0 0 0)",
           });
-          gsap.set(slides[0]!, { opacity: 1, scale: 1.04, xPercent: -2 });
-          gsap.set(chapters, { autoAlpha: 0, y: 16, pointerEvents: "none" });
+          gsap.set(slides[0]!, { opacity: 1, scale: 1.06, xPercent: -3 });
+          gsap.set(chapters, { autoAlpha: 0, y: 28, pointerEvents: "none" });
           gsap.set(chapters[0]!, { autoAlpha: 1, y: 0, pointerEvents: "auto" });
+
+          const firstSlideImg = slides[0]?.querySelector("img");
+          if (firstSlideImg instanceof HTMLImageElement) {
+            void firstSlideImg.decode?.().catch(() => undefined);
+          }
 
           ScrollTrigger.create({
             trigger: runway,
@@ -214,10 +229,9 @@ export function useHighlightsPageMotion(rootRef: RefObject<HTMLElement | null>) 
             pinSpacing: false,
             scrub: true,
             onUpdate: (self) => {
-              /* Align counter with chapter text cuts (~0.62 into each segment). */
               const idx = Math.min(
                 n - 1,
-                Math.max(0, Math.floor(self.progress * n + (1 - 0.62))),
+                Math.max(0, Math.floor(self.progress * n + (1 - holdRatio))),
               );
               if (counter) counter.textContent = String(idx + 1).padStart(2, "0");
             },
@@ -236,7 +250,7 @@ export function useHighlightsPageMotion(rootRef: RefObject<HTMLElement | null>) 
           if (progress) tl.to(progress, { scaleX: 1, duration: 1 }, 0);
 
           for (let i = 0; i < n - 1; i++) {
-            const holdEnd = (i + 0.62) * segment;
+            const holdEnd = (i + holdRatio) * segment;
             const nextStart = (i + 1) * segment;
             const fade = nextStart - holdEnd;
             const cur = slides[i]!;
@@ -246,10 +260,15 @@ export function useHighlightsPageMotion(rootRef: RefObject<HTMLElement | null>) 
 
             const pan =
               i === 0
-                ? { xPercent: -6, scale: 1.02 }
+                ? { xPercent: -7, scale: 1.02 }
                 : i === 1
-                  ? { xPercent: 4, scale: 1.03 }
-                  : { xPercent: 0, scale: 1.02 };
+                  ? { xPercent: 5, scale: 1.03 }
+                  : { xPercent: 0, scale: 1.015 };
+
+            const revealFrom =
+              i % 2 === 0
+                ? { clipPath: "inset(0 100% 0 0)" }
+                : { clipPath: "inset(100% 0 0 0)" };
 
             tl.to(cur, { ...pan, duration: holdEnd - i * segment }, i * segment);
 
@@ -257,9 +276,9 @@ export function useHighlightsPageMotion(rootRef: RefObject<HTMLElement | null>) 
               nxt,
               {
                 opacity: 0,
-                clipPath: "inset(0 100% 0 0)",
-                ...pan,
-                scale: 1.05,
+                ...revealFrom,
+                scale: 1.08,
+                xPercent: i === 0 ? 4 : i === 1 ? -6 : 2,
               },
               {
                 opacity: 1,
@@ -270,15 +289,24 @@ export function useHighlightsPageMotion(rootRef: RefObject<HTMLElement | null>) 
               },
               holdEnd,
             );
-            tl.to(cur, { opacity: 0, duration: fade * 0.85 }, holdEnd + fade * 0.15);
+            tl.to(cur, { opacity: 0, duration: fade * 0.8 }, holdEnd + fade * 0.18);
 
             if (curCh && nxtCh) {
-              tl.set(curCh, { autoAlpha: 0, pointerEvents: "none" }, holdEnd);
+              tl.to(
+                curCh,
+                { autoAlpha: 0, y: -16, pointerEvents: "none", duration: fade * 0.35 },
+                holdEnd,
+              );
               tl.fromTo(
                 nxtCh,
-                { autoAlpha: 0, y: 20 },
-                { autoAlpha: 1, y: 0, pointerEvents: "auto", duration: fade * 0.55 },
-                holdEnd + fade * 0.2,
+                { autoAlpha: 0, y: 28 },
+                {
+                  autoAlpha: 1,
+                  y: 0,
+                  pointerEvents: "auto",
+                  duration: fade * 0.55,
+                },
+                holdEnd + fade * 0.22,
               );
             }
           }

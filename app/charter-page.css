@@ -14,6 +14,7 @@
 .ch-hero {
   position: relative;
   min-height: 100svh;
+  min-height: 100dvh;
   display: grid;
   align-items: end;
   color: var(--lx-ivory);
@@ -27,7 +28,8 @@
 
 .ch-hero__img-wrap {
   position: absolute;
-  inset: 0;
+  inset: -5% 0;
+  height: 110%;
   transform-origin: 58% 38%;
   will-change: transform;
 }
@@ -52,26 +54,34 @@
 }
 
 .ch-hero__shade {
-  --ch-shade-boost: 0.12;
+  --ch-shade-boost: 0.08;
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: linear-gradient(
-    100deg,
-    rgba(11, 9, 7, calc(0.68 + var(--ch-shade-boost))) 0%,
-    rgba(11, 9, 7, 0.22) 38%,
-    rgba(11, 9, 7, 0.08) 62%,
-    rgba(11, 9, 7, 0.28) 100%
-  );
+  background:
+    linear-gradient(
+      180deg,
+      rgba(11, 9, 7, 0.35) 0%,
+      transparent 32%,
+      transparent 55%,
+      rgba(11, 9, 7, 0.42) 100%
+    ),
+    linear-gradient(
+      100deg,
+      rgba(11, 9, 7, calc(0.72 + var(--ch-shade-boost))) 0%,
+      rgba(11, 9, 7, 0.2) 42%,
+      rgba(11, 9, 7, 0.1) 68%,
+      rgba(11, 9, 7, 0.32) 100%
+    );
   pointer-events: none;
 }
 
 .ch-hero__content {
   position: relative;
   z-index: 3;
-  width: min(28rem, 48%);
+  width: min(30rem, 52%);
   max-width: 100%;
-  padding-block: clamp(5.5rem, 12vh, 8rem) clamp(3.5rem, 8vh, 5.5rem);
+  padding-block: clamp(6rem, 14vh, 9rem) clamp(4rem, 10vh, 6.5rem);
 }
 
 .ch-hero__line {
@@ -79,9 +89,10 @@
 }
 
 .ch-hero__title {
-  font-size: clamp(3.4rem, 7.5vw, 6.75rem);
+  font-size: clamp(3.55rem, 8vw, 7.25rem);
   color: var(--lx-ivory);
   text-transform: none;
+  letter-spacing: -0.05em;
 }
 
 .ch-hero p.ch-hero__script,
@@ -106,22 +117,23 @@
 
 /* ─── Private chapters ─── */
 .ch-chapters {
-  padding-block: clamp(4rem, 9vh, 7rem);
+  padding-block: clamp(5rem, 11vh, 8.5rem);
   background: var(--lx-ivory);
 }
 
 .ch-chapters__head {
-  margin-bottom: clamp(2rem, 5vh, 3.5rem);
+  margin-bottom: clamp(2.5rem, 6vh, 4rem);
 }
 
 .ch-chapters__heading {
-  font-size: clamp(2.5rem, 5.2vw, 4.5rem);
+  font-size: clamp(2.65rem, 5.8vw, 5rem);
+  letter-spacing: -0.04em;
 }
 
 .ch-chapters__stage {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-  gap: clamp(1.5rem, 4vw, 3.5rem);
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.8fr);
+  gap: clamp(1.75rem, 4.5vw, 4rem);
   align-items: start;
 }
 
@@ -132,8 +144,22 @@
 
 .ch-chapters__media {
   position: relative;
-  height: min(78svh, 42rem);
+  height: min(82svh, 48rem);
   overflow: clip;
+}
+
+.ch-chapters__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(11, 9, 7, 0.08) 0%,
+    transparent 35%,
+    rgba(11, 9, 7, 0.22) 100%
+  );
 }
 
 .ch-chapters__slide {
@@ -147,6 +173,22 @@
   opacity: 1;
 }
 
+.ch-chapters__slide[data-index="0"] .ch-chapters__img {
+  filter: saturate(0.92) contrast(1.04);
+}
+
+.ch-chapters__slide[data-index="1"] .ch-chapters__img {
+  filter: saturate(1.05) brightness(1.02);
+}
+
+.ch-chapters__slide[data-index="2"] .ch-chapters__img {
+  filter: saturate(0.88) contrast(1.06);
+}
+
+.ch-chapters__slide[data-index="3"] .ch-chapters__img {
+  filter: saturate(0.95) brightness(0.98);
+}
+
 .ch-chapters__img {
   object-fit: cover;
   object-position: 50% 40%;
@@ -158,6 +200,7 @@
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: 2;
   height: 2px;
   background: rgba(11, 9, 7, 0.12);
 }
@@ -180,13 +223,13 @@
 }
 
 .ch-chapters__item {
-  min-height: min(72svh, 36rem);
+  min-height: min(78svh, 40rem);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: clamp(1.75rem, 3.5vh, 2.75rem) 0;
+  padding: clamp(2rem, 4vh, 3.25rem) 0;
   border-bottom: 1px solid var(--lx-border);
-  opacity: 0.22;
+  opacity: 0.2;
   transition: opacity 0.45s var(--lx-ease);
 }
 
@@ -204,12 +247,12 @@
 }
 
 .ch-chapters__title {
-  margin: 0 0 0.85rem;
+  margin: 0 0 0.95rem;
   font-family: var(--lx-serif);
-  font-size: clamp(1.7rem, 2.6vw, 2.45rem);
+  font-size: clamp(1.85rem, 2.9vw, 2.75rem);
   font-weight: 400;
-  letter-spacing: -0.03em;
-  line-height: 1.05;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
 }
 
 .ch-chapters__item .lx-copy {
@@ -219,7 +262,8 @@
 /* ─── Night ─── */
 .ch-night {
   position: relative;
-  min-height: clamp(75svh, 88svh, 95svh);
+  min-height: 100svh;
+  min-height: 100dvh;
   display: grid;
   align-items: end;
   color: var(--lx-ivory);
@@ -241,26 +285,34 @@
 .ch-night__shade {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    105deg,
-    rgba(11, 9, 7, 0.75) 0%,
-    rgba(11, 9, 7, 0.28) 40%,
-    rgba(11, 9, 7, 0.12) 100%
-  );
+  background:
+    linear-gradient(
+      180deg,
+      rgba(11, 9, 7, 0.2) 0%,
+      transparent 40%,
+      rgba(11, 9, 7, 0.55) 100%
+    ),
+    linear-gradient(
+      105deg,
+      rgba(11, 9, 7, 0.78) 0%,
+      rgba(11, 9, 7, 0.28) 45%,
+      rgba(11, 9, 7, 0.14) 100%
+    );
   pointer-events: none;
 }
 
 .ch-night__copy {
   position: relative;
   z-index: 2;
-  padding-block: clamp(3rem, 8vh, 5rem);
-  max-width: min(30rem, 42%);
+  padding-block: clamp(4rem, 11vh, 7rem);
+  max-width: min(32rem, 46%);
 }
 
 .ch-night__title {
-  font-size: clamp(2.5rem, 5.2vw, 4.25rem);
+  font-size: clamp(2.75rem, 5.8vw, 4.75rem);
   color: var(--lx-ivory);
-  margin-bottom: 1rem;
+  margin-bottom: 1.15rem;
+  letter-spacing: -0.04em;
 }
 
 .ch-night__em {
@@ -272,7 +324,7 @@
 
 /* ─── Routes ─── */
 .ch-routes {
-  padding-block: clamp(4.5rem, 10vh, 7.5rem);
+  padding-block: clamp(5.5rem, 12vh, 8.5rem);
   background: var(--lx-ink);
   color: var(--lx-ivory);
 }
@@ -340,9 +392,19 @@
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: 1rem;
-  min-height: 5.25rem;
-  padding: 1.15rem 0.75rem;
+  min-height: 5.75rem;
+  padding: 1.35rem 0.85rem;
   cursor: pointer;
+  transition: background-color 0.35s var(--lx-ease);
+}
+
+.ch-routes__row:hover {
+  background: rgba(245, 239, 228, 0.03);
+}
+
+.ch-routes__row:focus-within {
+  outline: 1px solid rgba(201, 169, 110, 0.45);
+  outline-offset: 2px;
 }
 
 .ch-routes__origin,
@@ -385,7 +447,7 @@
 
 /* ─── Form ─── */
 .ch-request {
-  padding-block: clamp(4.5rem, 10vh, 7.5rem);
+  padding-block: clamp(5.5rem, 12vh, 8.5rem);
   background: var(--lx-ivory);
   scroll-margin-top: 5rem;
 }
@@ -485,6 +547,10 @@
   border-bottom-color: var(--lx-gold);
 }
 
+.ch-form__input:focus-visible {
+  box-shadow: 0 1px 0 0 var(--lx-gold);
+}
+
 .ch-form__input[aria-invalid="true"] {
   border-bottom-color: #8b3a2a;
 }
@@ -524,9 +590,10 @@ textarea.ch-form__input {
 /* ─── Close ─── */
 .ch-close {
   position: relative;
-  min-height: clamp(70svh, 82svh, 90svh);
+  min-height: 100svh;
+  min-height: 100dvh;
   display: grid;
-  align-items: center;
+  align-items: end;
   color: var(--lx-ivory);
   background: var(--lx-ink);
 }
@@ -545,31 +612,57 @@ textarea.ch-form__input {
 .ch-close__shade {
   position: absolute;
   inset: 0;
-  background: rgba(11, 9, 7, 0.42);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(11, 9, 7, 0.2) 0%,
+      rgba(11, 9, 7, 0.35) 45%,
+      rgba(11, 9, 7, 0.72) 100%
+    ),
+    linear-gradient(
+      105deg,
+      rgba(11, 9, 7, 0.4) 0%,
+      transparent 55%
+    );
   pointer-events: none;
 }
 
 .ch-close__inner {
   position: relative;
   z-index: 2;
-  padding-block: clamp(4rem, 10vh, 6rem);
-  max-width: 36rem;
+  padding-block: clamp(5rem, 13vh, 8.5rem);
+  max-width: 40rem;
 }
 
 .ch-close__title {
-  font-size: clamp(2.75rem, 5.5vw, 4.75rem);
+  font-size: clamp(2.95rem, 6.2vw, 5.25rem);
   color: var(--lx-ivory);
-  margin-bottom: 1rem;
+  margin-bottom: 1.15rem;
+  letter-spacing: -0.045em;
 }
 
 .ch-close__inner .lx-copy {
   margin-bottom: 1.75rem;
 }
 
+@media (min-width: 481px) and (max-width: 1024px) {
+  .ch-chapters__media {
+    height: min(62svh, 34rem);
+  }
+
+  .ch-night {
+    min-height: 88svh;
+  }
+
+  .ch-night__copy {
+    max-width: min(36rem, 72%);
+  }
+}
+
 @media (max-width: 1024px) {
   .ch-hero__content {
     width: 100%;
-    max-width: min(32rem, 100%);
+    max-width: min(34rem, 100%);
   }
 
   .ch-chapters__stage {
@@ -662,6 +755,10 @@ textarea.ch-form__input {
 
   .ch-chapters__slide[data-index='0'] {
     opacity: 1 !important;
+  }
+
+  .ch-chapters__slide .ch-chapters__img {
+    filter: none !important;
   }
 
   .ch-chapters__item {

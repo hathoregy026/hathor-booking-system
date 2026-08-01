@@ -21,7 +21,7 @@ const PRIVILEGE_TITLES = [
 
 export function CharterPrivileges({ benefits }: CharterPrivilegesProps) {
   const items = benefits.map((b, i) => ({
-    title: b.title || PRIVILEGE_TITLES[i] || b.title,
+    title: PRIVILEGE_TITLES[i] ?? b.title,
     body: b.body,
   }));
 
