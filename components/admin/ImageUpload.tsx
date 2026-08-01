@@ -278,31 +278,44 @@ export function ImageUpload({
     };
   });
 
+  /* Revoke leftover blob URLs on unmount. */
+  const previewUrlRef = useRef<string | null>(null);
   useEffect(() => {
-    if (!selectedFile) {
-      setPreviewUrl(null);
-      return;
-    }
-
-    const objectUrl = URL.createObjectURL(selectedFile);
-    setPreviewUrl(objectUrl);
-    onLocalPreviewChange?.(objectUrl);
-
+    previewUrlRef.current = previewUrl;
+  }, [previewUrl]);
+  useEffect(() => {
     return () => {
-      URL.revokeObjectURL(objectUrl);
+      const current = previewUrlRef.current;
+      if (current?.startsWith("blob:")) {
+        URL.revokeObjectURL(current);
+      }
     };
-  }, [selectedFile, onLocalPreviewChange]);
+  }, []);
 
   const displayUrl = previewUrl ?? value;
+  const [brokenSrc, setBrokenSrc] = useState<string | null>(null);
+  const previewBroken = Boolean(displayUrl) && brokenSrc === displayUrl;
+
+  const replaceLocalPreview = (next: string | null) => {
+    setPreviewUrl((current) => {
+      if (current?.startsWith("blob:") && current !== next) {
+        URL.revokeObjectURL(current);
+      }
+      return next;
+    });
+    onLocalPreviewChange?.(next);
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     setError(null);
     setUploadProgress(null);
     setUploadComplete(false);
+    setBrokenSrc(null);
 
     if (!file) {
       setSelectedFile(null);
+      replaceLocalPreview(null);
       return;
     }
 
@@ -310,11 +323,13 @@ export function ImageUpload({
     if (validationError) {
       setError(validationError);
       setSelectedFile(null);
+      replaceLocalPreview(null);
       event.target.value = "";
       return;
     }
 
     setSelectedFile(file);
+    replaceLocalPreview(URL.createObjectURL(file));
   };
 
   const handleUpload = async () => {
@@ -381,6 +396,7 @@ export function ImageUpload({
       setUploadProgress(100);
       setUploadComplete(true);
       setSelectedFile(null);
+      replaceLocalPreview(null);
       if (inputRef.current) {
         inputRef.current.value = "";
       }
@@ -399,6 +415,8 @@ export function ImageUpload({
     setSelectedFile(null);
     setUploadProgress(null);
     setUploadComplete(false);
+    setBrokenSrc(null);
+    replaceLocalPreview(null);
     onChange(null);
     onDataUrlChange?.(null);
     if (inputRef.current) {
@@ -409,8 +427,9 @@ export function ImageUpload({
   const isAdmin = variant === "admin";
   const isCompact = layout === "compact" || layout === "actions-only";
   const isActionsOnly = layout === "actions-only";
-  const showLargePreview = !isCompact && Boolean(displayUrl);
-  const showEmptyPlaceholder = !isCompact && !displayUrl;
+  const showLargePreview = !isCompact && Boolean(displayUrl) && !previewBroken;
+  const showEmptyPlaceholder =
+    !isCompact && (!displayUrl || previewBroken);
   const uploadStatusText =
     uploadProgress !== null && uploadProgress >= 95 && uploadProgress < 100
       ? "Saving image..."
@@ -446,6 +465,10 @@ export function ImageUpload({
             src={displayUrl ?? ""}
             alt={`${label} preview`}
             className="max-h-48 w-full object-cover"
+            onError={() => {
+              if (displayUrl) setBrokenSrc(displayUrl);
+            }}
+            onLoad={() => setBrokenSrc(null)}
           />
         </div>
       ) : null}
@@ -454,8 +477,8 @@ export function ImageUpload({
         <div
           className={
             isAdmin
-              ? "flex h-32 items-center justify-center rounded-2xl border border-dashed"
-              : "flex h-32 items-center justify-center rounded-lg border border-dashed border-slate-300 bg-slate-50 text-slate-400"
+              ? "flex h-32 flex-col items-center justify-center gap-1 rounded-2xl border border-dashed"
+              : "flex h-32 flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-slate-300 bg-slate-50 text-slate-400"
           }
           style={
             isAdmin
@@ -468,6 +491,11 @@ export function ImageUpload({
           }
         >
           <ImageIcon className="h-8 w-8" aria-hidden />
+          {previewBroken ? (
+            <span className="px-3 text-center text-xs">
+              Preview broken — choose a new image
+            </span>
+          ) : null}
         </div>
       ) : null}
 

@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import type { SiteImageAdminItem } from "@/lib/site-image-admin";
+import { getSiteImageSlot } from "@/lib/site-image-slots";
 
 type SiteImageSlotCardProps = {
   item: SiteImageAdminItem;
@@ -18,6 +19,8 @@ type SiteImageSlotCardProps = {
   onAltTextChange: (altText: string) => void;
   onUrlChange: (url: string | null, meta?: { suggestedAltText?: string }) => void;
 };
+
+const MAX_REMOTE_RETRIES = 5;
 
 function withCacheBust(src: string, attempt: number): string {
   if (!src || src.startsWith("blob:") || src.startsWith("data:")) return src;
@@ -34,22 +37,31 @@ export function SiteImageSlotCard({
   onUrlChange,
 }: SiteImageSlotCardProps) {
   const hasImage = Boolean(url?.trim());
+  const slotDefaultUrl = getSiteImageSlot(item.name)?.url?.trim() || "";
   const [altOpen, setAltOpen] = useState(false);
   const [thumbBroken, setThumbBroken] = useState(false);
   const [localPreview, setLocalPreview] = useState<string | null>(null);
   const [remoteSrc, setRemoteSrc] = useState(url);
+  const [usedFallback, setUsedFallback] = useState(false);
+  const [syncedUrl, setSyncedUrl] = useState(url);
   const retryRef = useRef(0);
   const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const replaceTriggerRef = useRef<HTMLButtonElement>(null);
 
-  const displaySrc = localPreview || remoteSrc;
-  const showThumb = Boolean(displaySrc?.trim()) && !thumbBroken;
+  /* Sync preview state when the saved CMS URL changes (render-time adjust). */
+  if (url !== syncedUrl) {
+    setSyncedUrl(url);
+    setThumbBroken(false);
+    setUsedFallback(false);
+    setRemoteSrc(url);
+  }
 
   useEffect(() => {
-    setThumbBroken(false);
-    setRemoteSrc(url);
     retryRef.current = 0;
   }, [url]);
+
+  const displaySrc = localPreview || remoteSrc;
+  const showThumb = Boolean(displaySrc?.trim()) && !thumbBroken;
 
   /* After upload, keep the instant blob until the remote URL actually loads */
   useEffect(() => {
@@ -78,7 +90,6 @@ export function SiteImageSlotCard({
     probe.onerror = () => {
       /* Keep blob preview; remote retry handled by handleThumbError */
     };
-    probe.referrerPolicy = "no-referrer";
     probe.src = withCacheBust(url, 1);
 
     return () => {
@@ -96,7 +107,7 @@ export function SiteImageSlotCard({
   const handleThumbError = () => {
     /* Prefer keeping the local blob preview while remote CDN catches up */
     if (localPreview) {
-      if (retryRef.current >= 5) return;
+      if (retryRef.current >= MAX_REMOTE_RETRIES) return;
       retryRef.current += 1;
       retryTimerRef.current = setTimeout(() => {
         setRemoteSrc(withCacheBust(url, retryRef.current));
@@ -104,17 +115,31 @@ export function SiteImageSlotCard({
       return;
     }
 
-    if (!url?.trim() || retryRef.current >= 5) {
-      setThumbBroken(true);
+    if (url?.trim() && retryRef.current < MAX_REMOTE_RETRIES) {
+      retryRef.current += 1;
+      retryTimerRef.current = setTimeout(() => {
+        setThumbBroken(false);
+        setRemoteSrc(withCacheBust(url, retryRef.current));
+      }, 350 * retryRef.current);
       return;
     }
 
-    retryRef.current += 1;
-    retryTimerRef.current = setTimeout(() => {
+    /* CMS URL failed — try the built-in slot default so the card isn't blank */
+    if (
+      !usedFallback &&
+      slotDefaultUrl &&
+      slotDefaultUrl !== url.trim()
+    ) {
+      setUsedFallback(true);
       setThumbBroken(false);
-      setRemoteSrc(withCacheBust(url, retryRef.current));
-    }, 350 * retryRef.current);
+      setRemoteSrc(slotDefaultUrl);
+      return;
+    }
+
+    setThumbBroken(true);
   };
+
+  const previewFailed = hasImage && thumbBroken;
 
   return (
     <article className="vcc-card vcc-card--gallery">
@@ -127,7 +152,8 @@ export function SiteImageSlotCard({
               src={displaySrc}
               alt={altText || item.label}
               className="vcc-card__thumb-img"
-              referrerPolicy="no-referrer"
+              loading="lazy"
+              decoding="async"
               onError={handleThumbError}
               onLoad={() => {
                 setThumbBroken(false);
@@ -145,7 +171,13 @@ export function SiteImageSlotCard({
             ) : (
               <Upload className="vcc-card__empty-icon" aria-hidden />
             )}
-            <span>{hasImage ? "Preview unavailable" : "Upload Image"}</span>
+            <span>
+              {previewFailed
+                ? "Preview broken — re-upload"
+                : hasImage
+                  ? "Preview unavailable"
+                  : "Upload Image"}
+            </span>
           </button>
         )}
       </div>
@@ -155,9 +187,15 @@ export function SiteImageSlotCard({
           <div className="vcc-card__title-row">
             <h4 className="vcc-card__title">{item.label}</h4>
             <span
-              className={`vcc-status${hasImage ? " vcc-status--published" : " vcc-status--empty"}`}
+              className={`vcc-status${
+                previewFailed
+                  ? " vcc-status--broken"
+                  : hasImage
+                    ? " vcc-status--published"
+                    : " vcc-status--empty"
+              }`}
             >
-              {hasImage ? "Published" : "Empty"}
+              {previewFailed ? "Broken" : hasImage ? "Published" : "Empty"}
             </span>
           </div>
           <p className="vcc-card__info">
@@ -175,6 +213,7 @@ export function SiteImageSlotCard({
               onChange={(nextUrl, meta) => {
                 retryRef.current = 0;
                 setThumbBroken(false);
+                setUsedFallback(false);
                 if (meta?.localPreviewUrl) {
                   setLocalPreview(meta.localPreviewUrl);
                 } else if (!nextUrl) {

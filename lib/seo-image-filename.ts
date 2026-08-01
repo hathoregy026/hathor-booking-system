@@ -15,10 +15,13 @@ export function sanitizeStorageFolder(folder: string | null | undefined): string
     folder
       ?.trim()
       .toLowerCase()
+      .replace(/\\/g, "/")
       .replace(/[^a-z0-9/_-]+/gi, "")
       .replace(/\/+/g, "/")
       .replace(/^\/+|\/+$/g, "") ?? "";
-  return cleaned || "general";
+  /* Historical uploads glued "site-images" + slot name when "/" was stripped. */
+  const fixed = cleaned.replace(/^(site-images)(?=[a-z0-9])/i, "$1/");
+  return fixed || "general";
 }
 
 export function sanitizeFileExtension(

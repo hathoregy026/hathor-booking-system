@@ -119,7 +119,22 @@ export function EmailImageUpload({
             src={value}
             alt={`${label} preview`}
             className="max-h-40 w-full object-contain p-2"
+            onError={(event) => {
+              event.currentTarget.style.display = "none";
+              const fallback = event.currentTarget.nextElementSibling;
+              if (fallback instanceof HTMLElement) {
+                fallback.hidden = false;
+              }
+            }}
           />
+          <div
+            hidden
+            className="flex h-28 flex-col items-center justify-center gap-1 text-sm"
+            style={{ color: "var(--text-muted)" }}
+          >
+            <ImageIcon className="h-8 w-8" aria-hidden />
+            <span>Preview broken — re-upload</span>
+          </div>
         </div>
       ) : (
         <div
