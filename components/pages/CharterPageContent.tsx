@@ -7,7 +7,6 @@ import { CharterRequestForm } from "@/components/pages/charter/CharterRequestFor
 import {
   CharterEditorialImage,
   CharterFinalCta,
-  CharterIntroduction,
   CharterPrivileges,
 } from "@/components/pages/charter/CharterSections";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
@@ -27,11 +26,11 @@ const BENEFIT_FALLBACKS = [
     body: "A private crew and chef shape every day around your preferences.",
   },
   {
-    title: "A Voyage at Your Rhythm",
+    title: "Your Own Rhythm",
     body: "Spend longer at places that matter and move gently along the Nile.",
   },
   {
-    title: "An Itinerary of Your Own",
+    title: "A Voyage Created Around You",
     body: "Choose your pace, destinations and moments along the Nile.",
   },
 ] as const;
@@ -64,9 +63,6 @@ export function CharterPageContent() {
 
   useCharterPageMotion(rootRef);
 
-  const overviewTitle = normalizeOptionalText(charter.overviewTitle);
-  const overviewIntro = normalizeOptionalText(charter.overviewIntro);
-
   const benefits = charter.benefits
     .map((benefit, index) => {
       const text = normalizeOptionalText(benefit);
@@ -97,13 +93,9 @@ export function CharterPageContent() {
   return (
     <div ref={rootRef} data-charter-page="" className="ch-page">
       <CharterHero
-        titleLine1={useDefault ? "The Nile," : heroCopy.main}
-        titleLine2={useDefault ? "entirely yours" : heroCopy.second}
+        titleLine1={useDefault ? "The Nile" : heroCopy.main}
+        titleLine2={useDefault ? "Entirely Yours" : heroCopy.second}
         supporting="Charter Hathor in complete privacy — an itinerary, rhythm and service created exclusively for your party."
-      />
-      <CharterIntroduction
-        overviewTitle={overviewTitle}
-        overviewIntro={overviewIntro}
       />
       <CharterPrivileges benefits={resolvedBenefits} />
       <CharterEditorialImage />

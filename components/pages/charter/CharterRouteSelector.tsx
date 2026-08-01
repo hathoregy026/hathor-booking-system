@@ -26,7 +26,7 @@ export function CharterRouteSelector({
       aria-labelledby="charter-routes-heading"
     >
       <div className="lx-shell">
-        <div className="lx-grid ch-routes__grid">
+        <div className="ch-routes__grid">
           <div className="ch-routes__intro" data-ch-reveal="">
             <p className="lx-label lx-label--light">Your Itinerary</p>
             <h2 id="charter-routes-heading" className="lx-title ch-routes__title">

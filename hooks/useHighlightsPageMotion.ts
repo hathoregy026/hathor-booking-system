@@ -8,10 +8,7 @@ import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/**
- * Highlights page motion — rising ivory panel, landmark cinema, depth.
- * No second Lenis. Phone: no pin.
- */
+/** Highlights — cinematic Nile journey. No second Lenis. Phone: no pin. */
 export function useHighlightsPageMotion(rootRef: RefObject<HTMLElement | null>) {
   useEffect(() => {
     const root = rootRef.current;
@@ -21,15 +18,22 @@ export function useHighlightsPageMotion(rootRef: RefObject<HTMLElement | null>) 
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) {
+      root.setAttribute("data-highlights-reduced", "");
       root
         .querySelectorAll<HTMLElement>(
-          "[data-hl-hero-line] span, [data-hl-hero-label], [data-hl-hero-script], [data-hl-hero-copy], [data-hl-hero-actions], [data-hl-hero-rise], [data-hl-reveal], [data-hl-intro-curtain], [data-hl-stack-title] span",
+          "[data-hl-hero-veil], [data-hl-hero-line] span, [data-hl-hero-label], [data-hl-hero-horizon], [data-hl-hero-copy], [data-hl-hero-cta], [data-hl-intro-line] span, [data-hl-intro-curtain], [data-hl-reveal], [data-hl-slide], [data-hl-chapter]",
         )
         .forEach((el) => {
           el.style.opacity = "1";
           el.style.transform = "none";
           el.style.clipPath = "none";
+          el.style.visibility = "visible";
+          el.style.pointerEvents = "auto";
         });
+      const veil = root.querySelector<HTMLElement>("[data-hl-hero-veil]");
+      if (veil) {
+        veil.style.display = "none";
+      }
       return;
     }
 
@@ -37,85 +41,79 @@ export function useHighlightsPageMotion(rootRef: RefObject<HTMLElement | null>) 
     const ease = "power3.out";
 
     const ctx = gsap.context(() => {
-      /* Hero entrance */
+      /* Hero open */
+      const hero = root.querySelector<HTMLElement>("[data-hl-hero]");
       const heroImg = root.querySelector<HTMLElement>("[data-hl-hero-img]");
+      const veil = root.querySelector<HTMLElement>("[data-hl-hero-veil]");
       const label = root.querySelector<HTMLElement>("[data-hl-hero-label]");
       const lines = gsap.utils.toArray<HTMLElement>("[data-hl-hero-line]");
-      const script = root.querySelector<HTMLElement>("[data-hl-hero-script]");
+      const horizon = root.querySelector<HTMLElement>("[data-hl-hero-horizon]");
       const copy = root.querySelector<HTMLElement>("[data-hl-hero-copy]");
-      const actions = root.querySelector<HTMLElement>("[data-hl-hero-actions]");
-      const rise = root.querySelector<HTMLElement>("[data-hl-hero-rise]");
-      const hero = root.querySelector<HTMLElement>("[data-hl-hero]");
+      const cta = root.querySelector<HTMLElement>("[data-hl-hero-cta]");
 
-      if (heroImg) gsap.set(heroImg, { scale: 1.03 });
+      if (heroImg) gsap.set(heroImg, { scale: 1.045 });
+      if (veil) gsap.set(veil, { scaleY: 1 });
       if (label) gsap.set(label, { opacity: 0, y: 14 });
       lines.forEach((line) => {
-        const inner = line.querySelector("span") ?? line;
-        gsap.set(inner, { yPercent: 110 });
+        gsap.set(line.querySelector("span") ?? line, { yPercent: 112 });
       });
-      if (script) gsap.set(script, { opacity: 0, y: 12 });
-      if (copy) gsap.set(copy, { opacity: 0, y: 16 });
-      if (actions) gsap.set(actions, { opacity: 0, y: 14 });
+      if (horizon) gsap.set(horizon, { scaleX: 0 });
+      if (copy) gsap.set(copy, { opacity: 0, y: 18 });
+      if (cta) gsap.set(cta, { opacity: 0, y: 16 });
 
-      const enter = gsap.timeline({ defaults: { ease } });
-      if (label) enter.to(label, { opacity: 1, y: 0, duration: 0.55 }, 0.2);
+      const open = gsap.timeline({ defaults: { ease } });
+      if (veil) {
+        open.to(
+          veil,
+          { scaleY: 0, duration: light ? 0.9 : 1.15, ease: "power4.inOut" },
+          0,
+        );
+      }
+      if (label) open.to(label, { opacity: 1, y: 0, duration: 0.55 }, 0.35);
       lines.forEach((line, i) => {
-        const inner = line.querySelector("span") ?? line;
-        enter.to(
-          inner,
-          { yPercent: 0, duration: light ? 0.65 : 0.85 },
-          0.35 + i * 0.12,
+        open.to(
+          line.querySelector("span") ?? line,
+          { yPercent: 0, duration: light ? 0.7 : 0.9 },
+          0.45 + i * 0.12,
         );
       });
-      if (script) enter.to(script, { opacity: 1, y: 0, duration: 0.55 }, 0.75);
-      if (copy) enter.to(copy, { opacity: 1, y: 0, duration: 0.55 }, 0.9);
-      if (actions) enter.to(actions, { opacity: 1, y: 0, duration: 0.5 }, 1.05);
+      if (horizon) open.to(horizon, { scaleX: 1, duration: 0.75 }, 0.95);
+      if (copy) open.to(copy, { opacity: 1, y: 0, duration: 0.6 }, 1.05);
+      if (cta) open.to(cta, { opacity: 1, y: 0, duration: 0.55 }, 1.2);
 
-      /* Hero scroll → rising ivory + title lift */
       if (hero && heroImg) {
         const title = root.querySelector<HTMLElement>(".hl-hero__title");
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: hero,
-            start: "top top",
-            end: "bottom top",
-            scrub: true,
-          },
-        });
-        tl.to(heroImg, { scale: 1, ease: "none" }, 0);
-        if (title) tl.to(title, { y: light ? -20 : -40, ease: "none" }, 0);
-        if (rise) {
-          tl.to(rise, { y: 0, ease: "none" }, 0.35);
+        gsap
+          .timeline({
+            scrollTrigger: {
+              trigger: hero,
+              start: "top top",
+              end: "bottom top",
+              scrub: true,
+            },
+          })
+          .to(heroImg, { scale: 1, ease: "none" }, 0);
+        if (title) {
+          gsap.to(title, {
+            y: light ? -24 : -48,
+            ease: "none",
+            scrollTrigger: {
+              trigger: hero,
+              start: "top top",
+              end: "bottom top",
+              scrub: true,
+            },
+          });
         }
       }
 
-      /* Generic reveals */
       root.querySelectorAll<HTMLElement>("[data-hl-reveal]").forEach((el) => {
         gsap.from(el, {
           opacity: 0,
-          y: light ? 16 : 26,
-          duration: light ? 0.65 : 0.85,
+          y: light ? 18 : 28,
+          duration: light ? 0.65 : 0.9,
           ease,
-          scrollTrigger: {
-            trigger: el,
-            start: "top 88%",
-            once: true,
-          },
-        });
-      });
-
-      /* Intro masks + curtain */
-      root.querySelectorAll<HTMLElement>("[data-hl-intro-line]").forEach((line) => {
-        const inner = line.querySelector("span") ?? line;
-        gsap.from(inner, {
-          yPercent: 108,
-          duration: light ? 0.7 : 0.95,
-          ease,
-          scrollTrigger: {
-            trigger: line,
-            start: "top 88%",
-            once: true,
-          },
+          scrollTrigger: { trigger: el, start: "top 88%", once: true },
         });
       });
 
@@ -123,98 +121,106 @@ export function useHighlightsPageMotion(rootRef: RefObject<HTMLElement | null>) 
       if (introCurtain) {
         gsap.fromTo(
           introCurtain,
-          { clipPath: "inset(0 0 100% 0)" },
+          { clipPath: "inset(12% 8% 12% 8%)" },
           {
-            clipPath: "inset(0 0 0% 0)",
-            duration: light ? 0.9 : 1.15,
-            ease: "power3.inOut",
+            clipPath: "inset(0% 0% 0% 0%)",
+            ease: "none",
             scrollTrigger: {
               trigger: introCurtain,
-              start: "top 82%",
-              once: true,
+              start: "top 88%",
+              end: "top 42%",
+              scrub: true,
             },
           },
         );
+        const introImg = introCurtain.querySelector("img");
+        if (introImg) {
+          gsap.fromTo(
+            introImg,
+            { scale: 1.06 },
+            {
+              scale: 1,
+              ease: "none",
+              scrollTrigger: {
+                trigger: introCurtain,
+                start: "top 90%",
+                end: "top 35%",
+                scrub: true,
+              },
+            },
+          );
+        }
       }
 
-      /* Interlude depth */
-      const interlude = root.querySelector<HTMLElement>("[data-hl-interlude]");
-      const interludeMedia = root.querySelector<HTMLElement>("[data-hl-interlude-media]");
-      if (interlude && interludeMedia) {
-        const img = interludeMedia.querySelector("img") ?? interludeMedia;
+      root.querySelectorAll<HTMLElement>("[data-hl-intro-line]").forEach((line) => {
+        gsap.from(line.querySelector("span") ?? line, {
+          yPercent: 110,
+          ease: "none",
+          scrollTrigger: {
+            trigger: line,
+            start: "top 92%",
+            end: "top 68%",
+            scrub: true,
+          },
+        });
+      });
+
+      const closeMedia = root.querySelector<HTMLElement>("[data-hl-close-media]");
+      if (closeMedia) {
         gsap.fromTo(
-          img,
-          { scale: 1.05, yPercent: 2 },
+          closeMedia,
+          { scale: 1.06, clipPath: "inset(8% 6% 8% 6%)" },
           {
             scale: 1,
-            yPercent: -2,
+            clipPath: "inset(0% 0% 0% 0%)",
             ease: "none",
             scrollTrigger: {
-              trigger: interlude,
-              start: "top bottom",
-              end: "bottom top",
+              trigger: closeMedia.closest("section") ?? closeMedia,
+              start: "top 85%",
+              end: "top 30%",
               scrub: true,
             },
           },
         );
       }
 
-      /* Closing reveal */
-      const closeMedia = root.querySelector<HTMLElement>("[data-hl-close-media]");
-      if (closeMedia) {
-        gsap.from(closeMedia, {
-          scale: 1.04,
-          ease: "none",
-          scrollTrigger: {
-            trigger: closeMedia.closest("section") ?? closeMedia,
-            start: "top 80%",
-            end: "top 35%",
-            scrub: true,
-          },
-        });
-      }
-
-      /* Journey hover is CSS; focus-safe motion for touch: none */
-
       ScrollTrigger.matchMedia({
-        /* Desktop — master landmark timeline */
         "(min-width: 1025px)": () => {
-          const runway = root.querySelector<HTMLElement>(".hl-stories__runway");
-          const sticky = root.querySelector<HTMLElement>("[data-hl-stories-sticky]");
+          const runway = root.querySelector<HTMLElement>(".hl-timeline__runway");
+          const pin = root.querySelector<HTMLElement>("[data-hl-timeline-pin]");
           const slides = gsap.utils.toArray<HTMLElement>("[data-hl-slide]");
           const chapters = gsap.utils.toArray<HTMLElement>("[data-hl-chapter]");
           const progress = root.querySelector<HTMLElement>("[data-hl-progress]");
           const counter = root.querySelector<HTMLElement>("[data-hl-counter]");
-          if (!runway || !sticky || slides.length < 2) return;
+          if (!runway || !pin || slides.length < 2) return;
 
           const n = slides.length;
           const segment = 1 / n;
 
-          gsap.set(slides, { opacity: 0, xPercent: 0, scale: 1.02 });
-          gsap.set(slides[0]!, { opacity: 1, xPercent: -2, scale: 1.02 });
-          gsap.set(chapters, { autoAlpha: 0, y: 0, pointerEvents: "none" });
-          gsap.set(chapters[0]!, {
-            autoAlpha: 1,
-            pointerEvents: "auto",
+          gsap.set(slides, {
+            opacity: 0,
+            scale: 1.04,
+            clipPath: "inset(0 0 0 0)",
           });
+          gsap.set(slides[0]!, { opacity: 1, scale: 1.04, xPercent: -2 });
+          gsap.set(chapters, { autoAlpha: 0, y: 16, pointerEvents: "none" });
+          gsap.set(chapters[0]!, { autoAlpha: 1, y: 0, pointerEvents: "auto" });
 
-          /* Pin inside the runway — CSS sticky fails under Lenis html overflow */
           ScrollTrigger.create({
             trigger: runway,
             start: "top top",
             end: "bottom bottom",
-            pin: sticky,
+            pin,
             pinSpacing: false,
             scrub: true,
-              onUpdate: (self) => {
-                const idx = Math.min(
-                  n - 1,
-                  Math.floor((self.progress * n) + 0.0001),
-                );
-                if (counter) {
-                  counter.textContent = String(idx + 1).padStart(2, "0");
-                }
-              },
+            onUpdate: (self) => {
+              /* Align counter with chapter text cuts (~0.62 into each segment). */
+              const idx = Math.min(
+                n - 1,
+                Math.max(0, Math.floor(self.progress * n + (1 - 0.62))),
+              );
+              if (counter) counter.textContent = String(idx + 1).padStart(2, "0");
+            },
           });
 
           const tl = gsap.timeline({
@@ -227,14 +233,12 @@ export function useHighlightsPageMotion(rootRef: RefObject<HTMLElement | null>) 
             },
           });
 
-          if (progress) {
-            tl.to(progress, { scaleX: 1, duration: 1 }, 0);
-          }
+          if (progress) tl.to(progress, { scaleX: 1, duration: 1 }, 0);
 
           for (let i = 0; i < n - 1; i++) {
-            const holdEnd = (i + 0.68) * segment;
+            const holdEnd = (i + 0.62) * segment;
             const nextStart = (i + 1) * segment;
-            const fadeDur = nextStart - holdEnd;
+            const fade = nextStart - holdEnd;
             const cur = slides[i]!;
             const nxt = slides[i + 1]!;
             const curCh = chapters[i];
@@ -242,57 +246,66 @@ export function useHighlightsPageMotion(rootRef: RefObject<HTMLElement | null>) 
 
             const pan =
               i === 0
-                ? { xPercent: -5, scale: 1.01 }
+                ? { xPercent: -6, scale: 1.02 }
                 : i === 1
-                  ? { xPercent: 3, scale: 1.015 }
-                  : { xPercent: 0, scale: 1.01 };
+                  ? { xPercent: 4, scale: 1.03 }
+                  : { xPercent: 0, scale: 1.02 };
 
             tl.to(cur, { ...pan, duration: holdEnd - i * segment }, i * segment);
-            tl.to(nxt, { opacity: 1, ...pan, duration: fadeDur }, holdEnd);
-            tl.to(cur, { opacity: 0, duration: fadeDur }, holdEnd);
+
+            tl.fromTo(
+              nxt,
+              {
+                opacity: 0,
+                clipPath: "inset(0 100% 0 0)",
+                ...pan,
+                scale: 1.05,
+              },
+              {
+                opacity: 1,
+                clipPath: "inset(0 0% 0 0)",
+                ...pan,
+                scale: 1.03,
+                duration: fade,
+              },
+              holdEnd,
+            );
+            tl.to(cur, { opacity: 0, duration: fade * 0.85 }, holdEnd + fade * 0.15);
 
             if (curCh && nxtCh) {
-              /* Hard text swap — avoid overlapping titles during image crossfade */
               tl.set(curCh, { autoAlpha: 0, pointerEvents: "none" }, holdEnd);
-              tl.set(
+              tl.fromTo(
                 nxtCh,
-                { autoAlpha: 1, y: 0, pointerEvents: "auto" },
-                holdEnd,
+                { autoAlpha: 0, y: 20 },
+                { autoAlpha: 1, y: 0, pointerEvents: "auto", duration: fade * 0.55 },
+                holdEnd + fade * 0.2,
               );
             }
           }
         },
 
-        /* Tablet — bounded sticky per chapter */
         "(min-width: 481px) and (max-width: 1024px)": () => {
-          root.querySelectorAll<HTMLElement>("[data-hl-stack-chapter]").forEach((chapter) => {
-            const media = chapter.querySelector<HTMLElement>("[data-hl-stack-media]");
-            const titleInner =
-              chapter.querySelector<HTMLElement>("[data-hl-stack-title] span") ??
-              chapter.querySelector<HTMLElement>(".hl-chapter__title");
-
-            if (titleInner) {
-              gsap.from(titleInner, {
-                yPercent: 100,
-                duration: 0.8,
+          root.querySelectorAll<HTMLElement>("[data-hl-stack-chapter]").forEach((ch) => {
+            const media = ch.querySelector<HTMLElement>("[data-hl-stack-media]");
+            const title = ch.querySelector<HTMLElement>("[data-hl-stack-title] span");
+            if (title) {
+              gsap.from(title, {
+                yPercent: 105,
+                duration: 0.85,
                 ease,
-                scrollTrigger: {
-                  trigger: chapter,
-                  start: "top 85%",
-                  once: true,
-                },
+                scrollTrigger: { trigger: ch, start: "top 85%", once: true },
               });
             }
-
             if (media) {
               gsap.fromTo(
                 media,
-                { clipPath: "inset(8% 4% 8% 4%)" },
+                { clipPath: "inset(10% 5% 10% 5%)", scale: 1.04 },
                 {
                   clipPath: "inset(0% 0% 0% 0%)",
+                  scale: 1,
                   ease: "none",
                   scrollTrigger: {
-                    trigger: chapter,
+                    trigger: ch,
                     start: "top 80%",
                     end: "top 35%",
                     scrub: true,
@@ -303,52 +316,30 @@ export function useHighlightsPageMotion(rootRef: RefObject<HTMLElement | null>) 
           });
         },
 
-        /* Phone — light parallax + mask title */
         "(max-width: 480px)": () => {
-          root.querySelectorAll<HTMLElement>("[data-hl-stack-chapter]").forEach((chapter) => {
-            const media = chapter.querySelector<HTMLElement>("[data-hl-stack-media]");
-            const titleInner = chapter.querySelector<HTMLElement>(
-              "[data-hl-stack-title] span",
-            );
-
-            if (titleInner) {
-              gsap.from(titleInner, {
+          root.querySelectorAll<HTMLElement>("[data-hl-stack-chapter]").forEach((ch) => {
+            const media = ch.querySelector<HTMLElement>("[data-hl-stack-media]");
+            const title = ch.querySelector<HTMLElement>("[data-hl-stack-title] span");
+            if (title) {
+              gsap.from(title, {
                 yPercent: 100,
                 duration: 0.7,
                 ease,
-                scrollTrigger: {
-                  trigger: chapter,
-                  start: "top 88%",
-                  once: true,
-                },
+                scrollTrigger: { trigger: ch, start: "top 88%", once: true },
               });
             }
-
             if (media) {
               gsap.fromTo(
                 media,
-                { y: 18 },
+                { y: 22, clipPath: "inset(8% 0 8% 0)" },
                 {
-                  y: -18,
+                  y: -22,
+                  clipPath: "inset(0% 0 0% 0)",
                   ease: "none",
                   scrollTrigger: {
-                    trigger: chapter,
+                    trigger: ch,
                     start: "top bottom",
                     end: "bottom top",
-                    scrub: true,
-                  },
-                },
-              );
-              gsap.fromTo(
-                media,
-                { clipPath: "inset(6% 0% 6% 0%)" },
-                {
-                  clipPath: "inset(0% 0% 0% 0%)",
-                  ease: "none",
-                  scrollTrigger: {
-                    trigger: chapter,
-                    start: "top 90%",
-                    end: "top 50%",
                     scrub: true,
                   },
                 },

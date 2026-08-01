@@ -1,7 +1,45 @@
 /**
  * Highlights page enrichment — CMS still owns titles/bodies.
- * Metadata below fills presentation gaps until optional CMS fields exist.
+ *
+ * LANDMARK IMAGE PRECEDENCE (see lib/landmark-image-safety.ts):
+ * 1. Valid landmark-specific CMS asset (non-vessel)
+ * 2. Accurate local landmark-*.webp fallback
+ * 3. Documented placeholder only — never hospitality photography
+ *
+ * ATTRIBUTION — Wikimedia-derived local defaults (NOT cleared for production deploy):
+ * Resolve license + author credit before shipping these files publicly.
+ * | Slot | Commons file | Subject |
+ * | landmark-obelisk | File:Unfinished_obelisk.jpg | Unfinished Obelisk, Aswan |
+ * | landmark-hatshepsut | File:Temple_of_Hatshepsut.jpg | Temple of Hatshepsut |
+ * | landmark-valley-kings | File:Thebes, Luxor, Egypt, Valley of the Kings from above.jpg | Valley of the Kings |
  */
+
+export const LANDMARK_ASSET_ATTRIBUTION = [
+  {
+    slot: "landmark-obelisk",
+    commonsFile: "Unfinished_obelisk.jpg",
+    commonsUrl:
+      "https://commons.wikimedia.org/wiki/File:Unfinished_obelisk.jpg",
+    subject: "Unfinished Obelisk quarry, Aswan",
+    deployStatus: "blocked-pending-license-attribution" as const,
+  },
+  {
+    slot: "landmark-hatshepsut",
+    commonsFile: "Temple_of_Hatshepsut.jpg",
+    commonsUrl:
+      "https://commons.wikimedia.org/wiki/File:Temple_of_Hatshepsut.jpg",
+    subject: "Mortuary Temple of Hatshepsut, Deir el-Bahari",
+    deployStatus: "blocked-pending-license-attribution" as const,
+  },
+  {
+    slot: "landmark-valley-kings",
+    commonsFile: "Thebes, Luxor, Egypt, Valley of the Kings from above.jpg",
+    commonsUrl:
+      "https://commons.wikimedia.org/wiki/File:Thebes,_Luxor,_Egypt,_Valley_of_the_Kings_from_above.jpg",
+    subject: "Valley of the Kings from above, Luxor",
+    deployStatus: "blocked-pending-license-attribution" as const,
+  },
+] as const;
 
 export const HIGHLIGHTS_LANDMARK_SLOTS = [
   "landmark-obelisk",

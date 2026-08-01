@@ -1,34 +1,32 @@
-/* Shared restrained tokens — charter + highlights only
-   Maps exclusively to existing Hathor public tokens. */
+/* Shared cinematic storytelling tokens — /charter + /highlights
+   Maps only to existing Hathor public tokens. */
 
 [data-charter-page],
 [data-highlights-page] {
   --lx-ink: #0b0907;
   --lx-ivory: var(--lux-cream, #ece8df);
-  --lx-surface: var(--lux-dark-2, #f5f0e8);
   --lx-gold: var(--lux-gold, #b69f64);
+  --lx-gold-soft: var(--gold-soft, #d4c28a);
   --lx-text: var(--public-text, #2c2824);
   --lx-muted: var(--public-muted, #6b6560);
   --lx-copy-light: rgba(245, 239, 228, 0.78);
-  --lx-line: rgba(182, 159, 100, 0.35);
   --lx-border: var(--public-border, rgb(44 40 36 / 0.12));
   --lx-serif: var(--public-title, var(--font-hathor-gamgote, "Gamgote"), serif);
-  --lx-display: var(--public-serif, var(--font-hathor-display), serif);
+  /* Display titles also resolve to Gamgote — never a secondary display stack. */
+  --lx-display: var(--public-title, var(--font-hathor-gamgote, "Gamgote"), serif);
   --lx-script: var(--font-hathor-quiet-luxury, "Quiet Luxury"), var(--font-hathor-agraham, cursive);
   --lx-sans: var(--public-sans, var(--font-hathor-body, "Plus Jakarta Sans"), system-ui, sans-serif);
   --lx-ease: var(--hathor-lux-ease, cubic-bezier(0.16, 1, 0.3, 1));
-  --lx-gutter: clamp(1.25rem, 4vw, 3.25rem);
-  --lx-max: 90rem;
+  --lx-gutter: clamp(1.35rem, 4.2vw, 3.5rem);
+  --lx-max: 92rem;
 
   position: relative;
-  /* Keep overflow visible so privilege/landmark sticky stages work */
   overflow-x: visible;
   background: var(--lx-ivory);
   color: var(--lx-text);
   font-family: var(--lx-sans);
 }
 
-/* Allow sticky privilege/landmark stages (site shell uses overflow-x: clip) */
 body:has([data-charter-page]) .public-site,
 body:has([data-charter-page]) .public-main,
 body:has([data-highlights-page]) .public-site,
@@ -41,32 +39,33 @@ body:has([data-highlights-page]) .public-main {
   margin-inline: auto;
 }
 
-.lx-grid {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: clamp(0.75rem, 1.5vw, 1.5rem);
-}
-
 .lx-label {
-  margin: 0 0 1rem;
+  margin: 0 0 1.15rem;
   font-family: var(--lx-sans);
   font-size: 0.6875rem;
   font-weight: 500;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--lx-muted);
 }
 
+[data-charter-page] .lx-label,
+[data-highlights-page] .lx-label {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+}
+
 .lx-label--light {
-  color: rgba(245, 239, 228, 0.65);
+  color: rgba(245, 239, 228, 0.62);
 }
 
 .lx-title {
   margin: 0;
   font-family: var(--lx-serif);
   font-weight: 400;
-  letter-spacing: -0.035em;
-  line-height: 0.92;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
   text-wrap: balance;
 }
 
@@ -74,8 +73,8 @@ body:has([data-highlights-page]) .public-main {
   margin: 0;
   font-family: var(--lx-serif);
   font-weight: 400;
-  letter-spacing: -0.04em;
-  line-height: 0.88;
+  letter-spacing: -0.045em;
+  line-height: 0.86;
   text-wrap: balance;
 }
 
@@ -83,17 +82,26 @@ body:has([data-highlights-page]) .public-main {
   margin: 0;
   font-family: var(--lx-script);
   font-weight: 400;
-  font-size: clamp(1.35rem, 2.1vw, 1.85rem);
+  font-size: clamp(1.35rem, 2.2vw, 1.9rem);
   letter-spacing: 0.01em;
+  line-height: 1.2;
+  color: var(--lx-gold);
+}
+
+/* Beat .public-site p body clamp for editorial script accents */
+.public-site p.lx-script {
+  font-family: var(--lx-script);
+  font-size: clamp(1.35rem, 2.2vw, 1.9rem);
+  font-weight: 400;
   line-height: 1.2;
   color: var(--lx-gold);
 }
 
 .lx-copy {
   margin: 0;
-  max-width: 36ch;
+  max-width: 34ch;
   font-family: var(--lx-sans);
-  font-size: clamp(1rem, 1.1vw, 1.125rem);
+  font-size: clamp(1rem, 1.05vw, 1.125rem);
   line-height: 1.7;
   color: var(--lx-muted);
 }
@@ -109,6 +117,22 @@ body:has([data-highlights-page]) .public-main {
 
 .lx-mask > span {
   display: block;
+  will-change: transform;
+}
+
+.lx-horizon {
+  display: block;
+  width: min(12rem, 40%);
+  height: 1px;
+  margin: 1.5rem 0 0;
+  background: var(--lx-gold);
+  transform-origin: left center;
+  transform: scaleX(1);
+}
+
+[data-highlights-motion="on"] .lx-horizon,
+[data-charter-motion="on"] .lx-horizon {
+  transform: scaleX(0);
 }
 
 .lx-btn {
@@ -116,9 +140,8 @@ body:has([data-highlights-page]) .public-main {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.65rem;
   min-height: var(--hathor-btn-height, 2.85rem);
-  padding: var(--hathor-btn-pad-y, 0.85rem) 1.5rem;
+  padding: var(--hathor-btn-pad-y, 0.85rem) 1.65rem;
   border: 1px solid transparent;
   background: transparent;
   font-family: var(--lx-sans);
@@ -128,7 +151,7 @@ body:has([data-highlights-page]) .public-main {
   text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
-  transition: background 0.35s var(--lx-ease), color 0.35s var(--lx-ease), border-color 0.35s var(--lx-ease);
+  transition: background 0.4s var(--lx-ease), color 0.4s var(--lx-ease), border-color 0.4s var(--lx-ease);
 }
 
 .lx-btn--ivory {
@@ -142,7 +165,8 @@ body:has([data-highlights-page]) .public-main {
   background: transparent;
   color: var(--lx-ivory);
   border-color: rgba(245, 239, 228, 0.55);
-  outline: none;
+  outline: 2px solid var(--lx-gold);
+  outline-offset: 3px;
 }
 
 .lx-btn--ink {
@@ -156,14 +180,14 @@ body:has([data-highlights-page]) .public-main {
   background: transparent;
   color: var(--lx-ink);
   border-color: var(--lx-ink);
-  outline: none;
+  outline: 2px solid var(--lx-gold);
+  outline-offset: 3px;
 }
 
 .lx-link {
   appearance: none;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
   min-height: 44px;
   padding: 0;
   border: 0;
@@ -199,14 +223,14 @@ body:has([data-highlights-page]) .public-main {
 @media (max-width: 1024px) {
   [data-charter-page],
   [data-highlights-page] {
-    --lx-gutter: clamp(1.1rem, 4vw, 2rem);
+    --lx-gutter: clamp(1.15rem, 4vw, 2.25rem);
   }
 }
 
 @media (max-width: 480px) {
   [data-charter-page],
   [data-highlights-page] {
-    --lx-gutter: 1rem;
+    --lx-gutter: 1.05rem;
   }
 
   .lx-btn {

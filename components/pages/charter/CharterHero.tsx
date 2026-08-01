@@ -14,27 +14,25 @@ export function CharterHero({
   supporting,
 }: CharterHeroProps) {
   return (
-    <section className="ch-hero" aria-label="Private charter hero">
+    <section className="ch-hero" aria-label="Private charter" data-ch-hero="">
       <div className="ch-hero__media">
         <div className="ch-hero__img-wrap" data-ch-hero-img="">
           <ManagedImage
             name="charter-hero"
-            alt="Overhead view of the Hathor Dahabiya deck and pools on the Nile"
+            alt="Private deck and pools aboard Hathor Dahabiya"
             fill
             priority
             sizes="100vw"
             className="ch-hero__img"
           />
         </div>
-        <div className="ch-hero__curtain" data-ch-hero-curtain="" aria-hidden="true" />
+        <div className="ch-hero__veil" data-ch-hero-veil="" aria-hidden="true" />
         <div className="ch-hero__shade" data-ch-hero-shade="" aria-hidden="true" />
       </div>
 
       <div className="lx-shell">
         <div className="ch-hero__content">
-          <p className="lx-label lx-label--light" data-ch-hero-label="">
-            Private Charter
-          </p>
+          <span className="lx-horizon ch-hero__line" data-ch-hero-line-gold="" aria-hidden="true" />
           <h1 className="lx-display ch-hero__title">
             <span className="lx-mask" data-ch-hero-line="">
               <span>{titleLine1}</span>
@@ -44,24 +42,19 @@ export function CharterHero({
             </span>
           </h1>
           <p className="lx-script ch-hero__script" data-ch-hero-script="">
-            composed around you
+            composed for you
           </p>
           <p className="lx-copy lx-copy--light ch-hero__copy" data-ch-hero-copy="">
             {supporting}
           </p>
-          <div className="ch-hero__actions" data-ch-hero-actions="">
-            <a href="#charter-request" className="lx-btn lx-btn--ivory">
-              Request a Private Voyage
-            </a>
-            <a href="#charter-introduction" className="lx-link" data-ch-light-link="">
-              Discover the Experience
-            </a>
-          </div>
+          <a
+            href="#charter-request"
+            className="lx-btn lx-btn--ivory"
+            data-ch-hero-cta=""
+          >
+            Request a Private Voyage
+          </a>
         </div>
-      </div>
-
-      <div className="ch-hero__scroll" data-ch-hero-scroll="" aria-hidden="true">
-        <span />
       </div>
     </section>
   );

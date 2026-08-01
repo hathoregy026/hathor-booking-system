@@ -1,13 +1,12 @@
 "use client";
 
 import { ManagedImage } from "@/components/ui/ManagedImage";
+import {
+  CHARTER_CHAPTER_MEDIA,
+  type CharterChapterMedia,
+} from "@/lib/charter-chapters";
 
 type Privilege = { title: string; body: string };
-
-type CharterIntroductionProps = {
-  overviewTitle?: string | null;
-  overviewIntro?: string | null;
-};
 
 type CharterPrivilegesProps = {
   benefits: Privilege[];
@@ -16,65 +15,9 @@ type CharterPrivilegesProps = {
 const PRIVILEGE_TITLES = [
   "Complete Privacy",
   "Dedicated Service",
-  "A Voyage at Your Rhythm",
-  "An Itinerary of Your Own",
+  "Your Own Rhythm",
+  "A Voyage Created Around You",
 ] as const;
-
-export function CharterIntroduction({
-  overviewTitle,
-  overviewIntro,
-}: CharterIntroductionProps) {
-  const custom =
-    Boolean(overviewTitle?.trim()) &&
-    overviewTitle!.trim() !== "Charter Dahabiya Cruise";
-
-  return (
-    <section
-      id="charter-introduction"
-      className="ch-open"
-      aria-labelledby="charter-intro-heading"
-    >
-      <div className="lx-shell">
-        <div className="lx-grid ch-open__grid">
-          <div className="ch-open__text" data-ch-reveal="">
-            <p className="lx-label">Private Charter</p>
-            <h2 id="charter-intro-heading" className="lx-title ch-open__title">
-              {custom ? (
-                overviewTitle
-              ) : (
-                <>
-                  <span className="lx-mask" data-ch-open-line="">
-                    <span>A private vessel.</span>
-                  </span>
-                  <span className="lx-mask" data-ch-open-line="">
-                    <span>
-                      A journey shaped{" "}
-                      <em className="ch-open__em">entirely around you.</em>
-                    </span>
-                  </span>
-                </>
-              )}
-            </h2>
-            <p className="lx-copy ch-open__copy" data-ch-reveal="">
-              {overviewIntro ||
-                "Turn your Nile journey into a private experience. Book the entire Dahabiya exclusively for your group."}
-            </p>
-          </div>
-          <div className="ch-open__media" data-ch-curtain="">
-            <ManagedImage
-              name="charter-hero"
-              alt="Private deck and pools aboard Hathor Dahabiya"
-              fill
-              sizes="(max-width: 1024px) 100vw, 55vw"
-              className="object-cover"
-              previewAnchor={false}
-            />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
 
 export function CharterPrivileges({ benefits }: CharterPrivilegesProps) {
   const items = benefits.map((b, i) => ({
@@ -82,44 +25,70 @@ export function CharterPrivileges({ benefits }: CharterPrivilegesProps) {
     body: b.body,
   }));
 
+  const mediaSlides: CharterChapterMedia[] = items.map(
+    (_, index) =>
+      CHARTER_CHAPTER_MEDIA[index] ??
+      CHARTER_CHAPTER_MEDIA[CHARTER_CHAPTER_MEDIA.length - 1]!,
+  );
+
   return (
     <section
-      className="ch-priv"
-      aria-labelledby="charter-privileges-heading"
-      data-ch-priv=""
+      className="ch-chapters"
+      aria-labelledby="charter-chapters-heading"
+      data-ch-chapters=""
     >
       <div className="lx-shell">
-        <h2 id="charter-privileges-heading" className="lx-sr">
-          Charter privileges
-        </h2>
-        <div className="ch-priv__stage">
-          <div className="ch-priv__media-col">
-            <div className="ch-priv__media" data-ch-priv-media="">
-              <ManagedImage
-                name="charter-hero"
-                alt="Hathor Dahabiya — private charter"
-                fill
-                sizes="(max-width: 1024px) 100vw, 56vw"
-                className="ch-priv__img object-cover"
-                previewAnchor={false}
-              />
-              <div className="ch-priv__progress" aria-hidden="true">
-                <span data-ch-priv-progress="" />
+        <header className="ch-chapters__head" data-ch-reveal="">
+          <p className="lx-label">Private Chapters</p>
+          <h2 id="charter-chapters-heading" className="lx-title ch-chapters__heading">
+            Ownership of
+            <br />
+            the vessel.
+          </h2>
+        </header>
+
+        <div className="ch-chapters__stage">
+          <div className="ch-chapters__media-col">
+            <div className="ch-chapters__media" data-ch-chapters-media="">
+              {mediaSlides.map((meta, index) => (
+                <div
+                  key={meta.slot}
+                  className="ch-chapters__slide"
+                  data-ch-chapter-slide=""
+                  data-index={index}
+                  id={index === 0 ? `site-image-${meta.slot}` : undefined}
+                  data-site-image={meta.slot}
+                >
+                  <ManagedImage
+                    name={meta.slot}
+                    alt={meta.alt}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 56vw"
+                    className="ch-chapters__img object-cover"
+                    loading={index === 0 ? "eager" : "lazy"}
+                    previewAnchor={false}
+                    style={{ objectPosition: meta.objectPosition }}
+                  />
+                </div>
+              ))}
+              <div className="ch-chapters__progress" aria-hidden="true">
+                <span data-ch-chapters-progress="" />
               </div>
             </div>
           </div>
-          <ul className="ch-priv__list">
+
+          <ul className="ch-chapters__list">
             {items.map((item, index) => (
               <li
                 key={item.title}
-                className="ch-priv__item"
-                data-ch-priv-item=""
+                className="ch-chapters__item"
+                data-ch-chapter-item=""
                 data-index={index}
               >
-                <span className="ch-priv__num">
+                <span className="ch-chapters__num">
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <h3 className="ch-priv__title">{item.title}</h3>
+                <h3 className="ch-chapters__title">{item.title}</h3>
                 <p className="lx-copy">{item.body}</p>
               </li>
             ))}
@@ -146,8 +115,9 @@ export function CharterEditorialImage() {
       </div>
       <div className="lx-shell ch-night__copy" data-ch-night-copy="">
         <h2 id="charter-night-heading" className="lx-title ch-night__title">
-          Evenings,{" "}
-          <em className="ch-open__em">entirely your own.</em>
+          Evenings,
+          <br />
+          <em className="ch-night__em">entirely your own.</em>
         </h2>
         <p className="lx-copy lx-copy--light">
           Private dining, unhurried conversation and the Nile after dark.

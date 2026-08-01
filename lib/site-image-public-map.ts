@@ -9,6 +9,7 @@ import {
   shouldUseDatabaseSiteImageUrl,
   type SiteImageMap,
 } from "@/lib/resolve-site-images";
+import { isSafeLandmarkCmsOverride } from "@/lib/landmark-image-safety";
 
 /** SiteSetting key — v2 avoids a TOAST-stuck legacy row that hung full SELECT/UPDATE. */
 export const SITE_IMAGE_PUBLIC_MAP_KEY = "site-image-public-map-v2";
@@ -36,6 +37,7 @@ export function buildSiteImageOverridesMap(
   const overrides: StoredSiteImagePublicMap = {};
   for (const record of records) {
     if (!shouldUseDatabaseSiteImageUrl(record.url)) continue;
+    if (!isSafeLandmarkCmsOverride(record.name, record.url)) continue;
     const slot = getSiteImageSlot(record.name);
     const fallbackAlt = slot?.altText || record.name;
     const alt = (record.altText || fallbackAlt).slice(0, 120);
@@ -67,6 +69,7 @@ export function storedMapToSiteImageMap(
   for (const [name, value] of Object.entries(stored)) {
     if (!value || typeof value.src !== "string") continue;
     if (!shouldUseDatabaseSiteImageUrl(value.src)) continue;
+    if (!isSafeLandmarkCmsOverride(name, value.src)) continue;
     const slot = getSiteImageSlot(name);
     const fallback = slot
       ? { src: slot.url, alt: slot.altText }
@@ -96,6 +99,7 @@ export function parseStoredSiteImageMap(raw: unknown): StoredSiteImagePublicMap 
     /* Compact form: { "slot": "https://..." } */
     if (typeof entry === "string") {
       if (!shouldUseDatabaseSiteImageUrl(entry)) continue;
+      if (!isSafeLandmarkCmsOverride(name, entry)) continue;
       const slot = getSiteImageSlot(name);
       out[name] = { src: entry, alt: slot?.altText ?? name };
       continue;
@@ -104,6 +108,7 @@ export function parseStoredSiteImageMap(raw: unknown): StoredSiteImagePublicMap 
     const src = (entry as { src?: unknown }).src;
     const alt = (entry as { alt?: unknown }).alt;
     if (typeof src !== "string" || !shouldUseDatabaseSiteImageUrl(src)) continue;
+    if (!isSafeLandmarkCmsOverride(name, src)) continue;
     const slot = getSiteImageSlot(name);
     out[name] = {
       src,

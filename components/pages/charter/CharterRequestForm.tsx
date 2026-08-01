@@ -131,11 +131,11 @@ export function CharterRequestForm({
       aria-labelledby="charter-request-heading"
     >
       <div className="lx-shell">
-        <div className="lx-grid ch-request__grid">
+        <div className="ch-request__grid">
           <div className="ch-request__intro" data-ch-reveal="">
             <p className="lx-label">Private Concierge</p>
             <h2 id="charter-request-heading" className="lx-title">
-              Begin with a conversation.
+              Begin your private journey.
             </h2>
             <p className="lx-copy">
               Share your party, dates and preferences. We will prepare a
