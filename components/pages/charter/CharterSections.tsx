@@ -47,49 +47,65 @@ export function CharterIntroduction({
   return (
     <section
       id="charter-introduction"
-      className="charter-section charter-intro"
+      className="ch-intro"
       aria-labelledby="charter-intro-heading"
     >
-      <div className="charter-shell">
-        <div className="charter-intro__grid" data-charter-reveal="">
-          <div className="charter-index">
-            <span className="charter-index__num">02</span>
+      <div className="lux-ed-shell">
+        <div className="lux-ed-grid ch-intro__grid">
+          <aside className="lux-ed-rail ch-intro__rail" data-charter-reveal="">
+            <span className="lux-ed-rail__num">02</span>
             <span>A Private World</span>
-          </div>
+            <hr className="lux-ed-rule lux-ed-rule--gold ch-intro__rail-rule" />
+            <span>Exclusive · Invitation only</span>
+          </aside>
 
-          <div className="charter-intro__heading-col">
-            <h2 id="charter-intro-heading" className="charter-heading">
+          <div className="ch-intro__statement" data-charter-reveal="">
+            <h2 id="charter-intro-heading" className="lux-ed-title ch-intro__title">
               {hasCustomTitle ? (
                 overviewTitle
               ) : (
                 <>
                   Charter your own{" "}
-                  <em className="charter-heading__em">private sanctuary</em> on
-                  the Nile.
+                  <em className="ch-intro__em">private sanctuary</em>
+                  <br />
+                  on the eternal river.
                 </>
               )}
             </h2>
-            <hr className="charter-rule charter-rule--short" />
-            <p className="charter-signature">Hathor Private Voyages</p>
+            <p className="lux-ed-script ch-intro__script">composed entirely around you</p>
           </div>
 
-          <div className="charter-intro__body-col">
+          <div className="ch-intro__body" data-charter-reveal="">
             {overviewIntro ? (
-              <p className="charter-copy">{overviewIntro}</p>
+              <p className="lux-ed-copy">{overviewIntro}</p>
             ) : (
-              <p className="charter-copy">
+              <p className="lux-ed-copy">
                 Turn your Nile journey into a private experience. Book the
                 entire Dahabiya exclusively for your group.
               </p>
             )}
             {benefitsIntro ? (
-              <p className="charter-copy">{benefitsIntro}</p>
+              <p className="lux-ed-copy">{benefitsIntro}</p>
             ) : null}
-            {cta ? <p className="charter-micro">{cta}</p> : null}
-            <p className="charter-micro">
+            {cta ? <p className="ch-intro__micro">{cta}</p> : null}
+            <p className="ch-intro__micro">
               Created for families, friends, celebrations and extraordinary
               occasions.
             </p>
+          </div>
+
+          <div className="ch-intro__detail" data-charter-reveal="">
+            <div className="lux-ed-frame ch-intro__frame">
+              <ManagedImage
+                name="charter"
+                alt="Private moments aboard Hathor Dahabiya"
+                fill
+                sizes="(max-width: 768px) 70vw, 28vw"
+                className="object-cover"
+                previewAnchor={false}
+              />
+            </div>
+            <p className="ch-intro__caption">Detail · The vessel at rest</p>
           </div>
         </div>
       </div>
@@ -100,38 +116,61 @@ export function CharterIntroduction({
 export function CharterPrivileges({ benefits, intro }: CharterPrivilegesProps) {
   return (
     <section
-      className="charter-section charter-privileges"
+      className="ch-privileges"
       aria-labelledby="charter-privileges-heading"
+      data-charter-privileges=""
     >
-      <div className="charter-shell">
-        <header className="charter-privileges__header" data-charter-reveal="">
-          <p className="charter-eyebrow">The Privilege of Privacy</p>
-          <h2 id="charter-privileges-heading" className="charter-heading">
+      <div className="lux-ed-shell">
+        <header className="ch-privileges__head" data-charter-reveal="">
+          <p className="lux-ed-label">The Privilege of Privacy</p>
+          <h2 id="charter-privileges-heading" className="lux-ed-title">
             An exclusive world,
             <br />
             composed for you.
           </h2>
-          {intro ? <p className="charter-copy">{intro}</p> : null}
+          {intro ? <p className="lux-ed-copy">{intro}</p> : null}
         </header>
 
-        <ul className="charter-privileges__list">
-          {benefits.map((benefit, index) => (
-            <li
-              key={benefit.title}
-              className="charter-privilege"
-              data-charter-reveal=""
-            >
-              <span className="charter-privilege__num">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <div>
-                <h3 className="charter-privilege__title">{benefit.title}</h3>
-                <p className="charter-privilege__body">{benefit.body}</p>
-                <div className="charter-privilege__rule" aria-hidden="true" />
-              </div>
-            </li>
-          ))}
-        </ul>
+        <div className="ch-privileges__stage">
+          <div className="ch-privileges__media" data-charter-privilege-media="">
+            <div className="lux-ed-frame ch-privileges__frame">
+              <ManagedImage
+                name="charter-hero"
+                alt="Hathor Dahabiya — private charter vessel"
+                fill
+                sizes="(max-width: 1024px) 100vw, 48vw"
+                className="ch-privileges__img"
+                previewAnchor={false}
+              />
+            </div>
+            <div className="ch-privileges__progress" aria-hidden="true">
+              <span data-charter-privilege-progress="" />
+            </div>
+          </div>
+
+          <ul className="ch-privileges__list">
+            {benefits.map((benefit, index) => (
+              <li
+                key={benefit.title}
+                className="ch-privilege"
+                data-charter-privilege=""
+                data-index={index}
+              >
+                <span className="ch-privilege__bg" aria-hidden="true">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className="ch-privilege__num">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <div className="ch-privilege__copy">
+                  <h3 className="ch-privilege__title">{benefit.title}</h3>
+                  <hr className="lux-ed-rule lux-ed-rule--short lux-ed-rule--gold" />
+                  <p className="lux-ed-copy">{benefit.body}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   );
@@ -140,34 +179,47 @@ export function CharterPrivileges({ benefits, intro }: CharterPrivilegesProps) {
 export function CharterEditorialImage() {
   return (
     <section
-      className="charter-editorial"
+      className="ch-dining"
       aria-labelledby="charter-editorial-heading"
+      data-charter-dining=""
     >
-      <div
-        id="site-image-charter"
-        data-site-image="charter"
-        className="charter-editorial__frame"
-        data-charter-reveal=""
-      >
-        <ManagedImage
-          name="charter"
-          alt="Private dining under moonlight aboard Hathor Dahabiya"
-          fill
-          previewAnchor={false}
-          sizes="(max-width: 768px) 100vw, 88vw"
-          className="charter-editorial__img"
-        />
-        <div className="charter-editorial__veil" aria-hidden="true" />
-        <div className="charter-editorial__copy">
-          <h2 id="charter-editorial-heading" className="charter-editorial__title">
-            An evening,
-            <br />
-            entirely your own.
-          </h2>
-          <p className="charter-editorial__body">
-            Private dining, unhurried moments and the Nile after dark.
-          </p>
-          <p className="charter-editorial__caption">Hathor · Private Charter</p>
+      <div className="lux-ed-shell">
+        <div className="lux-ed-grid ch-dining__grid">
+          <div
+            id="site-image-charter"
+            data-site-image="charter"
+            className="ch-dining__media"
+            data-charter-dining-media=""
+          >
+            <div className="ch-dining__frame">
+              <ManagedImage
+                name="charter"
+                alt="Private dining under moonlight aboard Hathor Dahabiya"
+                fill
+                previewAnchor={false}
+                sizes="(max-width: 768px) 100vw, 62vw"
+                className="ch-dining__img"
+              />
+              <div className="ch-dining__veil" aria-hidden="true" />
+            </div>
+            <p className="ch-dining__meta">After dark · Private table</p>
+          </div>
+
+          <div className="ch-dining__type" data-charter-dining-type="">
+            <p className="lux-ed-label">Evening Ritual</p>
+            <h2 id="charter-editorial-heading" className="lux-ed-display ch-dining__title">
+              An evening,
+              <br />
+              entirely
+              <br />
+              your own.
+            </h2>
+            <p className="lux-ed-script ch-dining__script">under Nile moonlight</p>
+            <p className="lux-ed-copy">
+              Private dining, unhurried moments and the river after dark —
+              shaped only for your party.
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -177,22 +229,26 @@ export function CharterEditorialImage() {
 export function CharterExperienceBand() {
   return (
     <section
-      className="charter-section charter-experience"
+      className="ch-experience"
       aria-labelledby="charter-experience-heading"
     >
-      <div className="charter-shell">
-        <h2 id="charter-experience-heading" className="charter-sr-only">
+      <div className="lux-ed-shell">
+        <h2 id="charter-experience-heading" className="lux-ed-sr">
           A bespoke charter experience
         </h2>
-        <div className="charter-experience__grid" data-charter-reveal="">
-          {EXPERIENCE_ITEMS.map((item) => (
-            <article key={item.label} className="charter-experience__item">
-              <p className="charter-experience__label">{item.label}</p>
-              <p className="charter-experience__body">{item.body}</p>
+        <div className="lux-ed-grid ch-experience__grid" data-charter-reveal="">
+          {EXPERIENCE_ITEMS.map((item, i) => (
+            <article key={item.label} className="ch-experience__item">
+              <span className="ch-experience__idx" aria-hidden="true">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <p className="ch-experience__label">{item.label}</p>
+              <hr className="lux-ed-rule lux-ed-rule--short" />
+              <p className="lux-ed-copy">{item.body}</p>
             </article>
           ))}
         </div>
-        <p className="charter-experience__statement" data-charter-reveal="">
+        <p className="ch-experience__statement" data-charter-reveal="">
           No two private voyages should feel the same.
         </p>
       </div>
@@ -202,44 +258,46 @@ export function CharterExperienceBand() {
 
 export function CharterFinalCta() {
   return (
-    <section className="charter-final" aria-labelledby="charter-final-heading">
-      <div className="charter-final__media">
+    <section className="ch-final" aria-labelledby="charter-final-heading">
+      <div className="ch-final__media">
         <ManagedImage
           name="highlights-lifestyle"
-          alt="Scenic Nile views from Hathor Dahabiya at golden hour"
+          alt="Quiet Nile waters awaiting a private Hathor charter"
           fill
           previewAnchor={false}
           sizes="100vw"
-          className="charter-final__img"
+          className="ch-final__img"
         />
-        <div className="charter-final__overlay" aria-hidden="true" />
+        <div className="ch-final__overlay" aria-hidden="true" />
       </div>
 
-      <div className="charter-final__inner" data-charter-reveal="">
-        <p className="charter-eyebrow charter-eyebrow--gold">
-          A Journey Reserved for You
-        </p>
-        <h2 id="charter-final-heading" className="charter-heading charter-heading--light">
-          The Nile,
-          <br />
-          exclusively yours.
-        </h2>
-        <p className="charter-copy charter-copy--light">
-          Charter Hathor for the people, moments and memories that matter most.
-        </p>
-        <div className="charter-final__actions">
-          <a href="#charter-request" className="charter-btn charter-btn--ivory">
-            Request Your Charter
-            <span className="charter-btn__arrow" aria-hidden="true">
-              →
-            </span>
-          </a>
-          <a href="/contact" className="charter-link">
-            Speak With the Concierge
-            <span className="charter-link__arrow" aria-hidden="true">
-              →
-            </span>
-          </a>
+      <div className="lux-ed-shell ch-final__inner" data-charter-reveal="">
+        <div className="lux-ed-grid ch-final__grid">
+          <div className="ch-final__rail">
+            <span className="lux-ed-rail__num">08</span>
+            <span className="lux-ed-label lux-ed-label--gold">Ownership of the Journey</span>
+          </div>
+          <div className="ch-final__copy">
+            <h2 id="charter-final-heading" className="lux-ed-display ch-final__title">
+              The Nile,
+              <br />
+              exclusively yours.
+            </h2>
+            <p className="lux-ed-copy lux-ed-copy--light">
+              Charter Hathor for the people, moments and memories that matter
+              most — a voyage held entirely in your name.
+            </p>
+            <div className="ch-final__actions">
+              <a href="#charter-request" className="lux-ed-btn lux-ed-btn--ivory">
+                Request Your Charter
+                <span className="lux-ed-btn__arrow" aria-hidden="true">→</span>
+              </a>
+              <a href="/contact" className="lux-ed-link" style={{ color: "rgba(245,239,228,0.85)" }}>
+                Speak With the Concierge
+                <span className="lux-ed-link__arrow" aria-hidden="true">→</span>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </section>

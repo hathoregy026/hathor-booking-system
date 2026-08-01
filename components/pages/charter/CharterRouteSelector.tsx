@@ -21,109 +21,87 @@ export function CharterRouteSelector({
   return (
     <section
       id="charter-itinerary"
-      className="charter-section charter-routes"
+      className="ch-routes"
       aria-labelledby="charter-routes-heading"
+      data-charter-routes=""
     >
-      <svg
-        className="charter-routes__nile"
-        viewBox="0 0 320 520"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-        <path
-          d="M168 12c-18 42-48 74-52 128-4 48 22 78 18 128-5 58-42 92-38 148 3 42 34 72 28 118"
-          stroke="currentColor"
-          strokeWidth="1.25"
-          strokeLinecap="round"
-        />
-        <path
-          d="M188 28c-14 38-40 68-44 116-5 52 18 84 14 132-5 54-36 88-32 140"
-          stroke="currentColor"
-          strokeWidth="0.75"
-          strokeLinecap="round"
-          opacity="0.55"
-        />
-      </svg>
-
-      <div className="charter-shell">
-        <div className="charter-routes__grid">
-          <div className="charter-routes__intro" data-charter-reveal="">
-            <p className="charter-eyebrow charter-eyebrow--gold">
-              Your Private Itinerary
-            </p>
-            <h2 id="charter-routes-heading" className="charter-heading charter-heading--light">
+      <div className="lux-ed-shell">
+        <div className="lux-ed-grid ch-routes__grid">
+          <div className="ch-routes__intro" data-charter-reveal="">
+            <p className="lux-ed-label lux-ed-label--gold">Your Private Itinerary</p>
+            <h2 id="charter-routes-heading" className="lux-ed-title ch-routes__title">
               Choose the beginning.
               <br />
-              We will compose the rest.
+              We compose the rest.
             </h2>
-            <p className="charter-copy charter-copy--light">
+            <p className="lux-ed-copy lux-ed-copy--light">
               Select a preferred route as a starting point. Every charter can
               then be tailored to your dates, pace and interests.
             </p>
+            <p className="ch-routes__summary" aria-live="polite">
+              Selected · {value}
+            </p>
           </div>
 
-          <fieldset style={{ border: 0, margin: 0, padding: 0, minWidth: 0 }}>
-            <legend className="charter-sr-only">Preferred charter route</legend>
-            <p className="charter-sr-only" aria-live="polite">
-              Selected route: {value}
-            </p>
-            <ul className="charter-routes__list" data-charter-reveal="">
-              {routes.map((route, index) => {
-                const id = `charter-route-${index}`;
-                const stops = parseStops(route);
-                const checked = value === route;
+          <div className="ch-routes__atelier">
+            <svg
+              className="ch-routes__nile"
+              viewBox="0 0 80 420"
+              fill="none"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path
+                data-charter-nile-path=""
+                d="M42 8c-10 36-28 64-30 112-2 42 14 68 12 112-3 48-24 78-20 128 2 36 20 62 16 92"
+                stroke="currentColor"
+                strokeWidth="1.25"
+                strokeLinecap="round"
+              />
+            </svg>
 
-                return (
-                  <li key={route} className="charter-route">
-                    <input
-                      id={id}
-                      className="charter-route__input"
-                      type="radio"
-                      name="charterPreferredRoute"
-                      value={route}
-                      checked={checked}
-                      onChange={() => onChange(route)}
-                    />
-                    <label htmlFor={id} className="charter-route__label">
-                      <span className="charter-route__num">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                      <span className="charter-route__path">
-                        {stops.map((stop, stopIndex) => (
-                          <span
-                            key={`${route}-${stop}-${stopIndex}`}
-                            className="charter-route__fragment"
-                          >
-                            {stopIndex > 0 ? (
-                              <>
-                                <span
-                                  className="charter-route__line"
-                                  aria-hidden="true"
-                                />
-                                <span
-                                  className="charter-route__diamond"
-                                  aria-hidden="true"
-                                />
-                                <span
-                                  className="charter-route__line"
-                                  aria-hidden="true"
-                                />
-                              </>
-                            ) : null}
-                            <span className="charter-route__stop">{stop}</span>
-                          </span>
-                        ))}
-                      </span>
-                    </label>
-                    <p className="charter-route__selected" aria-hidden="true">
-                      Selected route
-                    </p>
-                  </li>
-                );
-              })}
-            </ul>
-          </fieldset>
+            <fieldset className="ch-routes__fieldset">
+              <legend className="lux-ed-sr">Preferred charter route</legend>
+              <ul className="ch-routes__list">
+                {routes.map((route, index) => {
+                  const id = `charter-route-${index}`;
+                  const stops = parseStops(route);
+                  const checked = value === route;
+                  const origin = stops[0] ?? route;
+                  const dest = stops[stops.length - 1] ?? "";
+
+                  return (
+                    <li
+                      key={route}
+                      className={`ch-route${checked ? " is-active" : ""}`}
+                    >
+                      <input
+                        id={id}
+                        className="ch-route__input"
+                        type="radio"
+                        name="charterPreferredRoute"
+                        value={route}
+                        checked={checked}
+                        onChange={() => onChange(route)}
+                      />
+                      <label htmlFor={id} className="ch-route__label">
+                        <span className="ch-route__num">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <span className="ch-route__origin">{origin}</span>
+                        <span className="ch-route__path" aria-hidden="true">
+                          <span className="ch-route__line" />
+                          <span className="ch-route__dot" />
+                          <span className="ch-route__line" />
+                        </span>
+                        <span className="ch-route__dest">{dest || "—"}</span>
+                      </label>
+                    </li>
+                  );
+                })}
+              </ul>
+            </fieldset>
+          </div>
         </div>
       </div>
     </section>

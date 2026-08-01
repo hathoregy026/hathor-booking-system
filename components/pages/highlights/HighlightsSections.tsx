@@ -27,31 +27,29 @@ export function HighlightsIntroduction({
   const { lead, groups } = layoutHighlightsIntro(intro);
   const pullQuote = extractHighlightsPullQuote(intro);
   const headingParts = heading.split(/\s+/);
-  const emphasisIndex = headingParts.findIndex((w) =>
-    /elegance/i.test(w),
-  );
+  const emphasisIndex = headingParts.findIndex((w) => /elegance/i.test(w));
 
   return (
     <section
       id="highlight-introduction"
-      className="hl-section hl-intro"
+      className="hl-intro"
       aria-labelledby="hl-intro-heading"
     >
-      <div className="hl-shell">
-        <div className="hl-intro__grid" data-hl-reveal="">
-          <div className="hl-index">
-            <span className="hl-index__num">02</span>
+      <div className="hl-intro__bridge" aria-hidden="true" />
+      <div className="lux-ed-shell">
+        <div className="lux-ed-grid hl-intro__grid" data-hl-reveal="">
+          <aside className="lux-ed-rail hl-intro__rail">
+            <span className="lux-ed-rail__num">02</span>
             <span>The Hathor Experience</span>
-          </div>
+            <span>Cultural · Editorial</span>
+          </aside>
 
-          <div className="hl-intro__heading-col">
-            <h2 id="hl-intro-heading" className="hl-heading">
+          <div className="hl-intro__statement">
+            <h2 id="hl-intro-heading" className="lux-ed-title">
               {emphasisIndex >= 0 ? (
                 <>
                   {headingParts.slice(0, emphasisIndex).join(" ")}{" "}
-                  <em className="hl-heading__em">
-                    {headingParts[emphasisIndex]}
-                  </em>
+                  <em className="hl-intro__em">{headingParts[emphasisIndex]}</em>
                   {headingParts.slice(emphasisIndex + 1).length
                     ? ` ${headingParts.slice(emphasisIndex + 1).join(" ")}`
                     : ""}
@@ -60,46 +58,47 @@ export function HighlightsIntroduction({
                 heading
               )}
             </h2>
-            <hr className="hl-rule hl-rule--short" />
-            <p className="hl-signature">Aboard the Hathor Dahabiya</p>
+            <p className="lux-ed-script hl-intro__script">a slower reading of Egypt</p>
           </div>
 
-          <div className="hl-intro__body-col">
-            <p className="hl-lead">{lead}</p>
+          <div className="hl-intro__lead">
+            <p className="lux-ed-copy lux-ed-copy--wide hl-intro__lead-text">{lead}</p>
+          </div>
 
+          <div className="hl-intro__columns">
             {groups.map((group, gi) => (
-              <div key={gi} className="hl-intro__group">
+              <div key={gi} className="hl-intro__col">
                 {group.map((sentence) => (
-                  <p key={sentence.slice(0, 40)} className="hl-body">
+                  <p key={sentence.slice(0, 40)} className="lux-ed-copy">
                     {sentence}
                   </p>
                 ))}
               </div>
             ))}
-
-            <blockquote className="hl-pullquote">
-              <p>“{pullQuote.replace(/^["“]|["”]$/g, "")}”</p>
-            </blockquote>
-
-            <BookNowTrigger className="hl-link">
-              Book Now
-              <span className="hl-link__arrow" aria-hidden="true">
-                →
-              </span>
-            </BookNowTrigger>
           </div>
 
-          <div className="hl-intro__frame" data-hl-reveal="">
-            <div className="hl-intro__frame-media">
+          <blockquote className="hl-intro__quote">
+            <p>“{pullQuote.replace(/^["“]|["”]$/g, "")}”</p>
+          </blockquote>
+
+          <div className="hl-intro__detail">
+            <div className="lux-ed-frame hl-intro__frame">
               <ManagedImage
                 name="highlights-lifestyle"
                 alt="Scenic Nile views from Hathor Dahabiya"
                 fill
-                sizes="(max-width: 768px) 88vw, 28vw"
+                sizes="(max-width: 768px) 80vw, 26vw"
                 className="object-cover"
               />
             </div>
-            <p className="hl-caption">Quiet river light · Hathor</p>
+            <p className="hl-caption">River light · Hathor</p>
+          </div>
+
+          <div className="hl-intro__cta">
+            <BookNowTrigger className="lux-ed-link">
+              Book Now
+              <span className="lux-ed-link__arrow" aria-hidden="true">→</span>
+            </BookNowTrigger>
           </div>
         </div>
       </div>
@@ -109,34 +108,25 @@ export function HighlightsIntroduction({
 
 export function HighlightsManifesto() {
   return (
-    <section
-      className="hl-section hl-manifesto"
-      aria-labelledby="hl-manifesto-heading"
-    >
-      <div className="hl-shell">
+    <section className="hl-manifesto" aria-labelledby="hl-manifesto-heading">
+      <div className="lux-ed-shell">
         <header className="hl-manifesto__head" data-hl-reveal="">
-          <p className="hl-eyebrow hl-eyebrow--gold">What Highlights Mean</p>
-          <h2 id="hl-manifesto-heading" className="hl-heading hl-heading--light">
+          <p className="lux-ed-label lux-ed-label--gold">What Highlights Mean</p>
+          <h2 id="hl-manifesto-heading" className="lux-ed-title hl-manifesto__title">
             Three movements of a Nile day.
           </h2>
         </header>
-
-        <div className="hl-manifesto__grid">
+        <div className="lux-ed-grid hl-manifesto__grid">
           {HIGHLIGHTS_MANIFESTO.map((item) => (
-            <article
-              key={item.title}
-              className="hl-manifesto__item"
-              data-hl-reveal=""
-            >
+            <article key={item.title} className="hl-manifesto__item" data-hl-reveal="">
               <span className="hl-manifesto__numeral" aria-hidden="true">
                 {item.numeral}
               </span>
               <h3>{item.title}</h3>
-              <p>{item.body}</p>
+              <p className="lux-ed-copy lux-ed-copy--light">{item.body}</p>
             </article>
           ))}
         </div>
-
         <svg
           className="hl-nile-line"
           viewBox="0 0 1200 80"
@@ -157,11 +147,7 @@ export function HighlightsManifesto() {
   );
 }
 
-type HighlightsMovingStoriesProps = {
-  landmarks: Landmark[];
-};
-
-function StoryChapter({
+function StoryPanel({
   landmark,
   meta,
   index,
@@ -170,70 +156,58 @@ function StoryChapter({
   meta: HighlightsLandmarkMeta;
   index: number;
 }) {
-  const reverse = index % 2 === 1;
   const num = String(index + 1).padStart(2, "0");
+  const layout = index === 0 ? "a" : index === 1 ? "b" : "c";
 
   return (
     <article
-      className={`hl-story${reverse ? " hl-story--reverse" : ""}`}
-      data-hl-story=""
+      className={`hl-chapter hl-chapter--${layout}`}
+      data-hl-chapter=""
+      data-index={index}
       id={`site-image-${meta.slot}`}
       data-site-image={meta.slot}
-      aria-labelledby={`hl-story-title-${index}`}
+      aria-labelledby={`hl-chapter-title-${index}`}
     >
-      <div className="hl-story__media" data-hl-story-media="">
-        <div className="hl-story__frame">
+      <div className="hl-chapter__media" data-hl-chapter-media="">
+        <div className="lux-ed-frame hl-chapter__frame">
           <div
-            className="hl-story__img-wrap"
-            data-hl-story-img=""
+            className="hl-chapter__img-wrap"
+            data-hl-chapter-img=""
             style={{ ["--hl-object-pos" as string]: meta.objectPosition }}
           >
             <ManagedImage
               name={meta.slot}
               alt={meta.caption || landmark.title}
               fill
-              sizes="(max-width: 480px) calc(100vw - 28px), (max-width: 1024px) calc(100vw - 64px), 60vw"
-              className="hl-story__img"
+              sizes="(max-width: 480px) calc(100vw - 28px), (max-width: 1024px) calc(100vw - 64px), 58vw"
+              className="hl-chapter__img"
               loading={index === 0 ? "eager" : "lazy"}
               previewAnchor={false}
             />
           </div>
-          <span className="hl-story__gold-frame" aria-hidden="true" />
         </div>
-        <p className="hl-caption hl-story__caption">{meta.caption}</p>
+        <p className="hl-caption hl-chapter__caption">{meta.caption}</p>
       </div>
 
-      <div className="hl-story__copy" data-hl-story-copy="">
-        <div className="hl-story__meta-row">
-          <span className="hl-story__index">{num}</span>
-          <span className="hl-story__category">{meta.category}</span>
+      <div className="hl-chapter__copy" data-hl-chapter-copy="">
+        <div className="hl-chapter__meta">
+          <span className="hl-chapter__index">{num}</span>
+          <span className="hl-chapter__category">{meta.category}</span>
         </div>
-
-        <h3
-          id={`hl-story-title-${index}`}
-          className="hl-story__title"
-          data-hl-story-title=""
-        >
+        <h3 id={`hl-chapter-title-${index}`} className="hl-chapter__title" data-hl-chapter-title="">
           <span>{landmark.title}</span>
         </h3>
-
-        <hr
-          className="hl-rule hl-rule--story"
-          data-hl-story-rule=""
-          aria-hidden="true"
-        />
-
-        <p className="hl-body" data-hl-story-body="">
+        <hr className="lux-ed-rule lux-ed-rule--gold hl-chapter__rule" data-hl-chapter-rule="" />
+        <p className="lux-ed-copy" data-hl-chapter-body="">
           {landmark.body}
         </p>
-
-        <dl className="hl-story__facts">
+        <dl className="hl-chapter__facts">
           <div>
             <dt>Location</dt>
             <dd>{meta.location}</dd>
           </div>
           <div>
-            <dt>Voyage connection</dt>
+            <dt>Voyage</dt>
             <dd>{meta.voyage}</dd>
           </div>
           {meta.fact ? (
@@ -243,17 +217,20 @@ function StoryChapter({
             </div>
           ) : null}
         </dl>
-
-        <Link className="hl-link" href="/cruises">
+        <Link className="lux-ed-link" href="/cruises">
           View Route
-          <span className="hl-link__arrow" aria-hidden="true">
-            →
-          </span>
+          <span className="lux-ed-link__arrow" aria-hidden="true">→</span>
         </Link>
       </div>
+
+      <span className="hl-chapter__divider" aria-hidden="true" data-hl-chapter-divider="" />
     </article>
   );
 }
+
+type HighlightsMovingStoriesProps = {
+  landmarks: Landmark[];
+};
 
 export function HighlightsMovingStories({
   landmarks,
@@ -261,47 +238,49 @@ export function HighlightsMovingStories({
   return (
     <section
       id="highlight-stories"
-      className="hl-section hl-stories"
+      className="hl-stories"
       aria-labelledby="hl-stories-heading"
+      data-hl-stories=""
     >
-      <div className="hl-shell">
+      <div className="lux-ed-shell hl-stories__head-shell">
         <header className="hl-stories__head" data-hl-reveal="">
-          <p className="hl-eyebrow">03 · Landmark Chapters</p>
-          <h2 id="hl-stories-heading" className="hl-heading">
+          <p className="lux-ed-label">03 · Landmark Chapters</p>
+          <h2 id="hl-stories-heading" className="lux-ed-title">
             Moving stories along the Nile.
           </h2>
-          <p className="hl-body hl-stories__lead">
+          <p className="lux-ed-copy">
             Large editorial chapters — image and word in measured motion —
             carrying you from Aswan granite to Luxor’s west bank.
           </p>
         </header>
+      </div>
 
-        <div
-          className="hl-stories__progress"
-          aria-hidden="true"
-          data-hl-progress=""
-        >
-          {landmarks.map((landmark, index) => (
-            <span key={landmark.title}>
-              <i data-hl-progress-fill="" />
-              <em>{String(index + 1).padStart(2, "0")}</em>
-            </span>
-          ))}
-        </div>
+      {/* Desktop sticky stage */}
+      <div className="hl-stories__pin" data-hl-stories-pin="">
+        <div className="hl-stories__stage" data-hl-stories-stage="">
+          <div className="hl-stories__progress" aria-hidden="true">
+            {landmarks.map((landmark, index) => (
+              <span key={landmark.title}>
+                <i data-hl-progress-fill="" />
+                <em>{String(index + 1).padStart(2, "0")}</em>
+              </span>
+            ))}
+          </div>
 
-        <div className="hl-stories__list">
-          {landmarks.map((landmark, index) => {
-            const meta =
-              HIGHLIGHTS_LANDMARK_META[index] ?? HIGHLIGHTS_LANDMARK_META[0]!;
-            return (
-              <StoryChapter
-                key={landmark.title}
-                landmark={landmark}
-                meta={meta}
-                index={index}
-              />
-            );
-          })}
+          <div className="hl-stories__panels">
+            {landmarks.map((landmark, index) => {
+              const meta =
+                HIGHLIGHTS_LANDMARK_META[index] ?? HIGHLIGHTS_LANDMARK_META[0]!;
+              return (
+                <StoryPanel
+                  key={landmark.title}
+                  landmark={landmark}
+                  meta={meta}
+                  index={index}
+                />
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
@@ -310,10 +289,7 @@ export function HighlightsMovingStories({
 
 export function HighlightsRiverInterlude() {
   return (
-    <section
-      className="hl-interlude"
-      aria-labelledby="hl-interlude-heading"
-    >
+    <section className="hl-interlude" aria-labelledby="hl-interlude-heading">
       <div className="hl-interlude__media">
         <div className="hl-interlude__img-wrap" data-hl-parallax-img="">
           <ManagedImage
@@ -327,19 +303,26 @@ export function HighlightsRiverInterlude() {
         </div>
         <div className="hl-interlude__shade" aria-hidden="true" />
       </div>
-
-      <div className="hl-shell hl-interlude__content" data-hl-reveal="">
-        <p className="hl-eyebrow hl-eyebrow--light">Between the Monuments</p>
-        <h2 id="hl-interlude-heading" className="hl-heading hl-heading--light">
-          The river becomes
-          <br />
-          part of the story.
-        </h2>
-        <p className="hl-body hl-body--light">
-          Between ancient landmarks, Hathor returns you to still water, open
-          skies and the quiet rhythm of the Nile.
-        </p>
-        <p className="hl-caption hl-caption--light">The Nile · Luxor–Aswan</p>
+      <div className="lux-ed-shell hl-interlude__content" data-hl-reveal="">
+        <div className="lux-ed-grid hl-interlude__grid">
+          <div className="hl-interlude__rail">
+            <span className="lux-ed-rail__num">04</span>
+            <span className="lux-ed-label lux-ed-label--light">Between Monuments</span>
+          </div>
+          <div className="hl-interlude__copy">
+            <h2 id="hl-interlude-heading" className="lux-ed-title hl-interlude__title">
+              The river becomes
+              <br />
+              part of the story.
+            </h2>
+            <hr className="lux-ed-rule lux-ed-rule--gold hl-interlude__horizon" data-hl-horizon="" />
+            <p className="lux-ed-copy lux-ed-copy--light">
+              Between ancient landmarks, Hathor returns you to still water, open
+              skies and the quiet rhythm of the Nile.
+            </p>
+            <p className="hl-caption hl-caption--light">The Nile · Luxor–Aswan</p>
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -347,34 +330,30 @@ export function HighlightsRiverInterlude() {
 
 export function HighlightsPrinciples() {
   return (
-    <section
-      className="hl-section hl-principles"
-      aria-labelledby="hl-principles-heading"
-    >
-      <div className="hl-shell">
+    <section className="hl-principles" aria-labelledby="hl-principles-heading">
+      <div className="lux-ed-shell">
         <header className="hl-principles__head" data-hl-reveal="">
-          <p className="hl-eyebrow">The Hathor Difference</p>
-          <h2 id="hl-principles-heading" className="hl-heading">
+          <p className="lux-ed-label">The Hathor Difference</p>
+          <h2 id="hl-principles-heading" className="lux-ed-title">
             Every highlight,
             <br />
             experienced differently.
           </h2>
         </header>
-
-        <div className="hl-principles__list">
-          {HIGHLIGHTS_PRINCIPLES.map((item) => (
+        <div className="hl-principles__bands">
+          {HIGHLIGHTS_PRINCIPLES.map((item, index) => (
             <article
               key={item.title}
-              className="hl-principles__item"
+              className={`hl-principle hl-principle--${index % 2 === 0 ? "left" : "right"}`}
               data-hl-reveal=""
             >
-              <span className="hl-principles__numeral" aria-hidden="true">
+              <span className="hl-principle__numeral" aria-hidden="true">
                 {item.numeral}
               </span>
-              <div>
+              <div className="hl-principle__copy">
                 <h3>{item.title}</h3>
-                <hr className="hl-rule hl-rule--short" />
-                <p className="hl-body">{item.body}</p>
+                <hr className="lux-ed-rule lux-ed-rule--short lux-ed-rule--gold" />
+                <p className="lux-ed-copy">{item.body}</p>
               </div>
             </article>
           ))}
@@ -386,29 +365,34 @@ export function HighlightsPrinciples() {
 
 export function HighlightsJourneyPreview() {
   return (
-    <section
-      className="hl-section hl-journey"
-      aria-labelledby="hl-journey-heading"
-    >
-      <div className="hl-shell">
+    <section className="hl-journey" aria-labelledby="hl-journey-heading">
+      <div className="lux-ed-shell">
         <header className="hl-journey__head" data-hl-reveal="">
-          <p className="hl-eyebrow hl-eyebrow--gold">Follow the Nile</p>
-          <h2 id="hl-journey-heading" className="hl-heading hl-heading--light">
+          <p className="lux-ed-label lux-ed-label--gold">Follow the Nile</p>
+          <h2 id="hl-journey-heading" className="lux-ed-title hl-journey__title">
             Discover where the
             <br />
             journey can lead.
           </h2>
         </header>
-
         <ul className="hl-journey__list">
-          {HIGHLIGHTS_JOURNEY_LINKS.map((link) => (
+          {HIGHLIGHTS_JOURNEY_LINKS.map((link, index) => (
             <li key={link.label} data-hl-reveal="">
               <Link href={link.href} className="hl-journey__row">
+                <span className="hl-journey__num">{String(index + 1).padStart(2, "0")}</span>
                 <span className="hl-journey__label">{link.label}</span>
                 <span className="hl-journey__body">{link.body}</span>
-                <span className="hl-journey__arrow" aria-hidden="true">
-                  →
+                <span className="hl-journey__visual" aria-hidden="true">
+                  <ManagedImage
+                    name={index === 2 ? "charter-hero" : "highlights-lifestyle"}
+                    alt=""
+                    fill
+                    sizes="160px"
+                    className="object-cover"
+                    previewAnchor={false}
+                  />
                 </span>
+                <span className="hl-journey__arrow" aria-hidden="true">→</span>
               </Link>
             </li>
           ))}
@@ -420,49 +404,47 @@ export function HighlightsJourneyPreview() {
 
 export function HighlightsFinalCta() {
   return (
-    <section
-      id="reserve"
-      className="hl-final-cta"
-      aria-labelledby="hl-cta-heading"
-    >
-      <div className="hl-final-cta__media">
-        <div className="hl-final-cta__img-wrap" data-hl-parallax-img="">
+    <section id="reserve" className="hl-final" aria-labelledby="hl-cta-heading">
+      <div className="hl-final__media">
+        <div className="hl-final__img-wrap" data-hl-parallax-img="">
           <ManagedImage
             name="highlights-hero"
-            alt="Reserve your voyage aboard Hathor Dahabiya"
+            alt="Discover ancient places aboard Hathor Dahabiya"
             fill
             sizes="100vw"
             className="object-cover"
             previewAnchor={false}
           />
         </div>
-        <div className="hl-final-cta__shade" aria-hidden="true" />
+        <div className="hl-final__shade" aria-hidden="true" />
       </div>
-
-      <div className="hl-shell hl-final-cta__content" data-hl-reveal="">
-        <p className="hl-eyebrow hl-eyebrow--gold">Your Voyage Awaits</p>
-        <h2 id="hl-cta-heading" className="hl-display hl-display--cta">
-          See the Nile
-          <br />
-          through Hathor.
-        </h2>
-        <p className="hl-body hl-body--light">
-          Reserve your voyage and experience the landmarks, river landscapes
-          and private hospitality that define Hathor.
-        </p>
-        <div className="hl-final-cta__actions">
-          <BookNowTrigger className="hl-btn hl-btn--ivory">
-            Book Your Cruise
-            <span className="hl-btn__arrow" aria-hidden="true">
-              →
-            </span>
-          </BookNowTrigger>
-          <Link href="/cruises" className="hl-link hl-link--light">
-            View Voyages
-            <span className="hl-link__arrow" aria-hidden="true">
-              →
-            </span>
-          </Link>
+      <div className="lux-ed-shell hl-final__content" data-hl-reveal="">
+        <div className="lux-ed-grid hl-final__grid">
+          <div className="hl-final__rail">
+            <span className="lux-ed-rail__num">07</span>
+            <span className="lux-ed-label lux-ed-label--gold">Discovery Awaits</span>
+          </div>
+          <div className="hl-final__copy">
+            <h2 id="hl-cta-heading" className="lux-ed-display hl-final__title">
+              See ancient places
+              <br />
+              through Hathor.
+            </h2>
+            <p className="lux-ed-copy lux-ed-copy--light">
+              Reserve your voyage and experience the landmarks, river landscapes
+              and private hospitality that define Hathor.
+            </p>
+            <div className="hl-final__actions">
+              <BookNowTrigger className="lux-ed-btn lux-ed-btn--ivory">
+                Book Your Cruise
+                <span className="lux-ed-btn__arrow" aria-hidden="true">→</span>
+              </BookNowTrigger>
+              <Link href="/cruises" className="lux-ed-link" style={{ color: "rgba(245,239,228,0.85)" }}>
+                View Voyages
+                <span className="lux-ed-link__arrow" aria-hidden="true">→</span>
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </section>

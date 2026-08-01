@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { CharterPageContent } from "@/components/pages/CharterPageContent";
+import "../../luxury-editorial.css";
 import "../../charter-page.css";
 
 export const metadata: Metadata = {

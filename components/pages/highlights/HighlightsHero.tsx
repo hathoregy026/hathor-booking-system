@@ -30,75 +30,58 @@ export function HighlightsHero({
             className="hl-hero__img"
           />
         </div>
-        <div
-          className="hl-hero__overlay"
-          data-hl-hero-overlay=""
-          aria-hidden="true"
-        />
-        <div className="hl-hero__vignette" aria-hidden="true" />
+        <div className="hl-hero__curtain" data-hl-hero-curtain="" aria-hidden="true" />
+        <div className="hl-hero__overlay" data-hl-hero-overlay="" aria-hidden="true" />
       </div>
 
-      <div className="hl-shell hl-hero__inner">
-        <div className="hl-hero__content">
-          <p
-            className="hl-eyebrow hl-eyebrow--light"
-            data-hl-hero-eyebrow=""
-          >
-            Hathor · The Nile
-          </p>
-          <p className="hl-hero__chapter" data-hl-hero-chapter="">
-            Voyage Highlights
-          </p>
+      <div className="lux-ed-shell hl-hero__shell">
+        <div className="lux-ed-grid hl-hero__grid">
+          <aside className="hl-hero__rail" data-hl-hero-marker="">
+            <span className="lux-ed-rail__num">01</span>
+            <span>Cultural Cinema</span>
+            <span className="hl-hero__rail-line" aria-hidden="true" />
+            <span>Voyage Highlights</span>
+          </aside>
 
-          <h1 className="hl-hero__title-block">
-            <span className="hl-display hl-hero__line" data-hl-hero-line="">
-              <span>{lineOne}</span>
-            </span>
-            <span className="hl-display hl-hero__line" data-hl-hero-line="">
-              <span>{lineTwo}</span>
-            </span>
-          </h1>
-
-          <p className="hl-script hl-hero__script" data-hl-hero-script="">
-            Moments shaped by the eternal river.
-          </p>
-
-          <p className="hl-body hl-body--light" data-hl-hero-copy="">
-            {subtitle ||
-              "Discover the ancient landmarks, quiet riverbanks and intimate experiences that define a voyage aboard Hathor."}
-          </p>
-
-          <div className="hl-hero__actions" data-hl-hero-actions="">
-            <a href="#highlight-stories" className="hl-btn hl-btn--ivory">
-              Explore the Highlights
-              <span className="hl-btn__arrow" aria-hidden="true">
-                →
+          <div className="hl-hero__lower">
+            <p className="lux-ed-label lux-ed-label--light" data-hl-hero-eyebrow="">
+              Hathor · The Nile
+            </p>
+            <h1 className="hl-hero__h1">
+              <span className="lux-ed-display lux-ed-mask-line" data-hl-hero-line="">
+                <span>{lineOne}</span>
               </span>
-            </a>
-            <BookNowTrigger className="hl-link hl-link--light">
-              Book Your Voyage
-              <span className="hl-link__arrow" aria-hidden="true">
-                →
+              <span className="lux-ed-script hl-hero__script" data-hl-hero-script="">
+                Moments shaped by the eternal river.
               </span>
-            </BookNowTrigger>
+              <span className="lux-ed-display lux-ed-mask-line" data-hl-hero-line="">
+                <span>{lineTwo}</span>
+              </span>
+            </h1>
+          </div>
+
+          <div className="hl-hero__aside" data-hl-hero-copy="">
+            <p className="hl-hero__float-caption" aria-hidden="true">
+              Ancient banks · Quiet water
+            </p>
+            <p className="lux-ed-copy lux-ed-copy--light">{subtitle}</p>
+            <div className="hl-hero__actions" data-hl-hero-actions="">
+              <a href="#highlight-stories" className="lux-ed-btn lux-ed-btn--ivory">
+                Enter the Chapters
+                <span className="lux-ed-btn__arrow" aria-hidden="true">→</span>
+              </a>
+              <BookNowTrigger className="lux-ed-link hl-hero__book">
+                Book Your Voyage
+                <span className="lux-ed-link__arrow" aria-hidden="true">→</span>
+              </BookNowTrigger>
+            </div>
           </div>
         </div>
-
-        <div className="hl-hero__marker" data-hl-hero-marker="">
-          <span className="hl-hero__marker-num">01</span>
-          <span>Highlights</span>
-        </div>
       </div>
 
-      <p className="hl-hero__caption" aria-hidden="true">
-        Hathor Dahabiya · The Nile
-      </p>
+      <div className="hl-hero__plane" data-hl-hero-plane="" aria-hidden="true" />
 
-      <div
-        className="hl-hero__scroll"
-        data-hl-hero-scroll=""
-        aria-hidden="true"
-      >
+      <div className="hl-hero__scroll" data-hl-hero-scroll="" aria-hidden="true">
         <span>Scroll to discover</span>
         <span className="hl-hero__scroll-line" />
       </div>

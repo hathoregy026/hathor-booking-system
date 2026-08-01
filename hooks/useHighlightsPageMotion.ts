@@ -8,14 +8,10 @@ import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const DESKTOP_MQ = "(min-width: 1025px)";
-const TABLET_MQ = "(min-width: 481px) and (max-width: 1024px)";
-const PHONE_MQ = "(max-width: 480px)";
+const DESKTOP = "(min-width: 1025px)";
+const TABLET = "(min-width: 481px) and (max-width: 1024px)";
+const PHONE = "(max-width: 480px)";
 
-/**
- * Highlights page motion — hero entrance + scroll-linked story chapters.
- * Desktop may pin the stories stage; tablet/phone use natural flow only.
- */
 export function useHighlightsPageMotion(
   rootRef: RefObject<HTMLElement | null>,
 ) {
@@ -25,18 +21,16 @@ export function useHighlightsPageMotion(
 
     const reduced =
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
     if (reduced) {
       root
         .querySelectorAll<HTMLElement>(
-          "[data-hl-reveal], [data-hl-hero-line] span, [data-hl-hero-eyebrow], [data-hl-hero-chapter], [data-hl-hero-copy], [data-hl-hero-actions], [data-hl-hero-marker], [data-hl-hero-scroll], [data-hl-hero-script]",
+          "[data-hl-reveal], [data-hl-hero-line] span, [data-hl-hero-eyebrow], [data-hl-hero-script], [data-hl-hero-copy], [data-hl-hero-actions], [data-hl-hero-marker], [data-hl-hero-scroll], [data-hl-hero-curtain], [data-hl-chapter]",
         )
         .forEach((el) => {
           el.style.opacity = "1";
           el.style.transform = "none";
+          el.style.visibility = "visible";
         });
-      const img = root.querySelector<HTMLElement>("[data-hl-hero-img]");
-      if (img) img.style.transform = "none";
       return;
     }
 
@@ -44,11 +38,12 @@ export function useHighlightsPageMotion(
     const ease = "power3.out";
 
     const ctx = gsap.context(() => {
-      /* ── Hero entrance ── */
+      /* Hero */
       const heroImg = root.querySelector<HTMLElement>("[data-hl-hero-img]");
+      const curtain = root.querySelector<HTMLElement>("[data-hl-hero-curtain]");
       const overlay = root.querySelector<HTMLElement>("[data-hl-hero-overlay]");
+      const plane = root.querySelector<HTMLElement>("[data-hl-hero-plane]");
       const eyebrow = root.querySelector<HTMLElement>("[data-hl-hero-eyebrow]");
-      const chapter = root.querySelector<HTMLElement>("[data-hl-hero-chapter]");
       const lines = gsap.utils.toArray<HTMLElement>("[data-hl-hero-line]");
       const script = root.querySelector<HTMLElement>("[data-hl-hero-script]");
       const copy = root.querySelector<HTMLElement>("[data-hl-hero-copy]");
@@ -56,81 +51,71 @@ export function useHighlightsPageMotion(
       const marker = root.querySelector<HTMLElement>("[data-hl-hero-marker]");
       const scrollCue = root.querySelector<HTMLElement>("[data-hl-hero-scroll]");
 
-      if (heroImg) gsap.set(heroImg, { scale: 1.035 });
-      if (overlay) gsap.set(overlay, { opacity: 0.88 });
+      if (heroImg) gsap.set(heroImg, { scale: 1.04 });
+      if (curtain) gsap.set(curtain, { scaleY: 1 });
+      if (overlay) gsap.set(overlay, { opacity: 0.75 });
       if (eyebrow) gsap.set(eyebrow, { opacity: 0, y: 14 });
-      if (chapter) gsap.set(chapter, { opacity: 0, y: 10 });
       lines.forEach((line) => {
         const inner = line.querySelector("span") ?? line;
-        gsap.set(inner, { yPercent: 108, opacity: 0 });
+        gsap.set(inner, { yPercent: 110, opacity: 0 });
       });
-      if (script) gsap.set(script, { opacity: 0, y: 12 });
-      if (copy) gsap.set(copy, { opacity: 0, y: 16 });
+      if (script) gsap.set(script, { opacity: 0, clipPath: "inset(0 100% 0 0)" });
+      if (copy) gsap.set(copy, { opacity: 0, y: 18 });
       if (actions) gsap.set(actions, { opacity: 0, y: 14 });
       if (marker) gsap.set(marker, { opacity: 0 });
       if (scrollCue) gsap.set(scrollCue, { opacity: 0 });
 
       const heroTl = gsap.timeline({ defaults: { ease } });
-      if (heroImg) {
-        heroTl.to(heroImg, { scale: 1, duration: light ? 1.15 : 1.55 }, 0);
+      if (curtain) {
+        heroTl.to(curtain, { scaleY: 0, duration: light ? 0.85 : 1.15, ease: "power4.inOut" }, 0);
       }
-      if (overlay) {
-        heroTl.to(overlay, { opacity: 1, duration: 1 }, 0.08);
-      }
-      if (eyebrow) {
-        heroTl.to(eyebrow, { opacity: 1, y: 0, duration: 0.65 }, 0.22);
-      }
-      if (chapter) {
-        heroTl.to(chapter, { opacity: 1, y: 0, duration: 0.55 }, 0.3);
-      }
+      if (heroImg) heroTl.to(heroImg, { scale: 1, duration: light ? 1.15 : 1.55 }, 0.12);
+      if (overlay) heroTl.to(overlay, { opacity: 1, duration: 1 }, 0.15);
+      if (eyebrow) heroTl.to(eyebrow, { opacity: 1, y: 0, duration: 0.6 }, 0.4);
       lines.forEach((line, i) => {
         const inner = line.querySelector("span") ?? line;
-        heroTl.to(
-          inner,
-          { yPercent: 0, opacity: 1, duration: light ? 0.7 : 0.9 },
-          0.35 + i * 0.11,
-        );
+        heroTl.to(inner, { yPercent: 0, opacity: 1, duration: light ? 0.7 : 0.9 }, 0.5 + i * 0.12);
       });
       if (script) {
-        heroTl.to(script, { opacity: 1, y: 0, duration: 0.65 }, 0.65);
+        heroTl.to(script, { opacity: 1, clipPath: "inset(0 0% 0 0)", duration: 0.8 }, 0.75);
       }
-      if (copy) {
-        heroTl.to(copy, { opacity: 1, y: 0, duration: 0.7 }, 0.85);
-      }
-      if (actions) {
-        heroTl.to(actions, { opacity: 1, y: 0, duration: 0.65 }, 1);
-      }
-      if (marker) {
-        heroTl.to(marker, { opacity: 1, duration: 0.55 }, 1.1);
-      }
-      if (scrollCue) {
-        heroTl.to(scrollCue, { opacity: 1, duration: 0.55 }, 1.2);
+      if (copy) heroTl.to(copy, { opacity: 1, y: 0, duration: 0.7 }, 1);
+      if (actions) heroTl.to(actions, { opacity: 1, y: 0, duration: 0.65 }, 1.15);
+      if (marker) heroTl.to(marker, { opacity: 1, duration: 0.5 }, 1.2);
+      if (scrollCue) heroTl.to(scrollCue, { opacity: 1, duration: 0.5 }, 1.3);
+
+      if (plane) {
+        gsap.fromTo(
+          plane,
+          { yPercent: 40 },
+          {
+            yPercent: 0,
+            ease: "none",
+            scrollTrigger: {
+              trigger: root.querySelector(".hl-hero"),
+              start: "top top",
+              end: "bottom top",
+              scrub: true,
+            },
+          },
+        );
       }
 
-      /* ── Section reveals ── */
       root.querySelectorAll<HTMLElement>("[data-hl-reveal]").forEach((el) => {
-        gsap.set(el, { opacity: 0, y: light ? 20 : 34 });
+        gsap.set(el, { opacity: 0, y: light ? 20 : 36 });
         gsap.to(el, {
           opacity: 1,
           y: 0,
           duration: light ? 0.65 : 0.9,
           ease,
-          scrollTrigger: {
-            trigger: el,
-            start: "top 88%",
-            once: true,
-          },
+          scrollTrigger: { trigger: el, start: "top 88%", once: true },
         });
       });
 
-      /* ── Nile line stroke ── */
       const nilePath = root.querySelector<SVGPathElement>("[data-hl-nile-path]");
       if (nilePath) {
         const length = nilePath.getTotalLength();
-        gsap.set(nilePath, {
-          strokeDasharray: length,
-          strokeDashoffset: length,
-        });
+        gsap.set(nilePath, { strokeDasharray: length, strokeDashoffset: length });
         gsap.to(nilePath, {
           strokeDashoffset: 0,
           ease: "none",
@@ -143,34 +128,49 @@ export function useHighlightsPageMotion(
         });
       }
 
+      const horizon = root.querySelector<HTMLElement>("[data-hl-horizon]");
+      if (horizon) {
+        gsap.fromTo(
+          horizon,
+          { scaleX: 0 },
+          {
+            scaleX: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: horizon.closest("section") ?? horizon,
+              start: "top 70%",
+              end: "top 40%",
+              scrub: true,
+            },
+          },
+        );
+      }
+
       ScrollTrigger.matchMedia({
-        [DESKTOP_MQ]: () => setupDesktopStories(root, light),
-        [TABLET_MQ]: () => setupTabletStories(root),
-        [PHONE_MQ]: () => setupPhoneStories(root),
+        [DESKTOP]: () => setupDesktopStories(root),
+        [TABLET]: () => setupFlowStories(root, false),
+        [PHONE]: () => setupFlowStories(root, true),
       });
 
-      /* Interlude + CTA parallax (desktop/tablet) */
       ScrollTrigger.matchMedia({
         "(min-width: 481px)": () => {
-          root
-            .querySelectorAll<HTMLElement>("[data-hl-parallax-img]")
-            .forEach((img) => {
-              gsap.fromTo(
-                img,
-                { scale: 1.04, yPercent: -2 },
-                {
-                  scale: 1,
-                  yPercent: 3,
-                  ease: "none",
-                  scrollTrigger: {
-                    trigger: img.closest("section") ?? img,
-                    start: "top bottom",
-                    end: "bottom top",
-                    scrub: true,
-                  },
+          root.querySelectorAll<HTMLElement>("[data-hl-parallax-img]").forEach((img) => {
+            gsap.fromTo(
+              img,
+              { scale: 1.04, yPercent: -2 },
+              {
+                scale: 1,
+                yPercent: 3,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: img.closest("section") ?? img,
+                  start: "top bottom",
+                  end: "bottom top",
+                  scrub: true,
                 },
-              );
-            });
+              },
+            );
+          });
         },
       });
     }, root);
@@ -197,178 +197,111 @@ export function useHighlightsPageMotion(
   }, [rootRef]);
 }
 
-function setupDesktopStories(root: HTMLElement, light: boolean) {
-  const stories = root.querySelectorAll<HTMLElement>("[data-hl-story]");
+/** Desktop: one pin, direct timeline progress — no chase tweens. */
+function setupDesktopStories(root: HTMLElement) {
+  const pin = root.querySelector<HTMLElement>("[data-hl-stories-pin]");
+  const stage = root.querySelector<HTMLElement>("[data-hl-stories-stage]");
+  const chapters = gsap.utils.toArray<HTMLElement>("[data-hl-chapter]");
   const fills = root.querySelectorAll<HTMLElement>("[data-hl-progress-fill]");
-  if (!stories.length) return;
+  if (!pin || !stage || chapters.length < 2) {
+    setupFlowStories(root, false);
+    return;
+  }
 
-  stories.forEach((story, index) => {
-    const media = story.querySelector<HTMLElement>("[data-hl-story-media]");
-    const img = story.querySelector<HTMLElement>("[data-hl-story-img]");
-    const copy = story.querySelector<HTMLElement>("[data-hl-story-copy]");
-    const rule = story.querySelector<HTMLElement>("[data-hl-story-rule]");
-
-    if (img) {
-      gsap.fromTo(
-        img,
-        { scale: 1.06, yPercent: light ? 4 : 8 },
-        {
-          scale: 1,
-          yPercent: light ? -2 : -5,
-          ease: "none",
-          scrollTrigger: {
-            trigger: story,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
-          },
-        },
-      );
-    }
-
-    if (media && copy) {
-      gsap.fromTo(
-        media,
-        { y: light ? 24 : 48 },
-        {
-          y: light ? -12 : -28,
-          ease: "none",
-          scrollTrigger: {
-            trigger: story,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
-          },
-        },
-      );
-      gsap.fromTo(
-        copy,
-        { y: light ? 16 : 32 },
-        {
-          y: light ? -8 : -18,
-          ease: "none",
-          scrollTrigger: {
-            trigger: story,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
-          },
-        },
-      );
-    }
-
-    if (rule) {
-      gsap.fromTo(
-        rule,
-        { scaleX: 0 },
-        {
-          scaleX: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: story,
-            start: "top 75%",
-            end: "top 45%",
-            scrub: true,
-          },
-        },
-      );
-    }
-
-    ScrollTrigger.create({
-      trigger: story,
-      start: "top 55%",
-      end: "bottom 45%",
-      onUpdate: (self) => {
-        const fill = fills[index];
-        if (fill) gsap.set(fill, { scaleX: self.progress });
-        fills.forEach((f, i) => {
-          if (i < index) gsap.set(f, { scaleX: 1 });
-          if (i > index) gsap.set(f, { scaleX: 0 });
-        });
-      },
+  chapters.forEach((ch, i) => {
+    gsap.set(ch, {
+      autoAlpha: i === 0 ? 1 : 0,
+      zIndex: i === 0 ? 2 : 1,
     });
   });
-}
 
-function setupTabletStories(root: HTMLElement) {
-  const stories = root.querySelectorAll<HTMLElement>("[data-hl-story]");
-  const fills = root.querySelectorAll<HTMLElement>("[data-hl-progress-fill]");
-
-  stories.forEach((story, index) => {
-    const img = story.querySelector<HTMLElement>("[data-hl-story-img]");
-    const rule = story.querySelector<HTMLElement>("[data-hl-story-rule]");
-
-    if (img) {
-      gsap.fromTo(
-        img,
-        { scale: 1.04, yPercent: 3 },
-        {
-          scale: 1,
-          yPercent: -2,
-          ease: "none",
-          scrollTrigger: {
-            trigger: story,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
-          },
-        },
-      );
-    }
-
-    if (rule) {
-      gsap.fromTo(
-        rule,
-        { scaleX: 0 },
-        {
-          scaleX: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: story,
-            start: "top 80%",
-            end: "top 50%",
-            scrub: true,
-          },
-        },
-      );
-    }
-
-    ScrollTrigger.create({
-      trigger: story,
-      start: "top 60%",
-      end: "bottom 40%",
+  const tl = gsap.timeline({
+    defaults: { ease: "none" },
+    scrollTrigger: {
+      trigger: pin,
+      start: "top top",
+      end: () => `+=${Math.round(window.innerHeight * 2.8)}`,
+      pin: true,
+      pinSpacing: true,
+      scrub: true,
+      anticipatePin: 1,
+      invalidateOnRefresh: true,
       onUpdate: (self) => {
-        const fill = fills[index];
-        if (fill) gsap.set(fill, { scaleX: self.progress });
-        fills.forEach((f, i) => {
-          if (i < index) gsap.set(f, { scaleX: 1 });
-          if (i > index) gsap.set(f, { scaleX: 0 });
+        const n = chapters.length;
+        const raw = self.progress * n;
+        const active = Math.min(n - 1, Math.floor(raw));
+        const seg = raw - active;
+        fills.forEach((fill, i) => {
+          let sx = 0;
+          if (i < active) sx = 1;
+          else if (i === active) sx = seg;
+          gsap.set(fill, { scaleX: sx });
         });
       },
-    });
+    },
   });
+
+  chapters.forEach((ch, i) => {
+    if (i === 0) return;
+    const prev = chapters[i - 1]!;
+    const start = (i - 0.35) / chapters.length;
+
+    tl.to(
+      prev,
+      {
+        autoAlpha: 0,
+        y: -36,
+        duration: 0.35 / chapters.length,
+      },
+      start,
+    );
+    tl.fromTo(
+      ch,
+      { autoAlpha: 0, y: 48 },
+      {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.35 / chapters.length,
+        zIndex: 3,
+      },
+      start,
+    );
+
+    const img = ch.querySelector<HTMLElement>("[data-hl-chapter-img]");
+    if (img) {
+      tl.fromTo(
+        img,
+        { scale: 1.06, yPercent: 4 },
+        { scale: 1, yPercent: 0, duration: 0.4 / chapters.length },
+        start,
+      );
+    }
+  });
+
+  /* subtle continuous depth on active-ish images via timeline scrub already */
 }
 
-function setupPhoneStories(root: HTMLElement) {
-  const stories = root.querySelectorAll<HTMLElement>("[data-hl-story]");
+function setupFlowStories(root: HTMLElement, phone: boolean) {
+  const chapters = root.querySelectorAll<HTMLElement>("[data-hl-chapter]");
   const fills = root.querySelectorAll<HTMLElement>("[data-hl-progress-fill]");
 
-  stories.forEach((story, index) => {
-    const img = story.querySelector<HTMLElement>("[data-hl-story-img]");
-    const title = story.querySelector<HTMLElement>("[data-hl-story-title]");
-    const rule = story.querySelector<HTMLElement>("[data-hl-story-rule]");
-    const body = story.querySelector<HTMLElement>("[data-hl-story-body]");
+  chapters.forEach((ch, index) => {
+    gsap.set(ch, { clearProps: "opacity,visibility,transform,zIndex" });
+
+    const img = ch.querySelector<HTMLElement>("[data-hl-chapter-img]");
+    const rule = ch.querySelector<HTMLElement>("[data-hl-chapter-rule]");
+    const title = ch.querySelector<HTMLElement>("[data-hl-chapter-title] span");
 
     if (img) {
       gsap.fromTo(
         img,
-        { scale: 1.025, y: 28 },
+        { scale: phone ? 1.025 : 1.04, y: phone ? 28 : 20 },
         {
           scale: 1,
-          y: -22,
+          y: phone ? -22 : -12,
           ease: "none",
           scrollTrigger: {
-            trigger: story,
+            trigger: ch,
             start: "top bottom",
             end: "bottom top",
             scrub: true,
@@ -378,16 +311,15 @@ function setupPhoneStories(root: HTMLElement) {
     }
 
     if (title) {
-      const inner = title.querySelector("span") ?? title;
       gsap.fromTo(
-        inner,
-        { yPercent: 40, opacity: 0.35 },
+        title,
+        { yPercent: phone ? 40 : 30, opacity: 0.4 },
         {
           yPercent: 0,
           opacity: 1,
           ease: "none",
           scrollTrigger: {
-            trigger: story,
+            trigger: ch,
             start: "top 85%",
             end: "top 55%",
             scrub: true,
@@ -404,37 +336,28 @@ function setupPhoneStories(root: HTMLElement) {
           scaleX: 1,
           ease: "none",
           scrollTrigger: {
-            trigger: story,
+            trigger: ch,
             start: "top 78%",
-            end: "top 55%",
+            end: "top 50%",
             scrub: true,
           },
         },
       );
     }
 
-    if (body) {
-      gsap.fromTo(
-        body,
-        { opacity: 0.4, y: 12 },
-        {
-          opacity: 1,
-          y: 0,
-          ease: "none",
-          scrollTrigger: {
-            trigger: story,
-            start: "top 75%",
-            end: "top 45%",
-            scrub: true,
-          },
-        },
-      );
+    if (!phone) {
+      const media = ch.querySelector<HTMLElement>("[data-hl-chapter-media]");
+      if (media) {
+        /* tablet: brief sticky media */
+        media.style.position = "sticky";
+        media.style.top = "5.5rem";
+      }
     }
 
     ScrollTrigger.create({
-      trigger: story,
-      start: "top 70%",
-      end: "bottom 30%",
+      trigger: ch,
+      start: "top 60%",
+      end: "bottom 40%",
       onUpdate: (self) => {
         const fill = fills[index];
         if (fill) gsap.set(fill, { scaleX: self.progress });

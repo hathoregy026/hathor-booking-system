@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { HighlightsPageContent } from "@/components/pages/highlights/HighlightsPageContent";
+import "../../luxury-editorial.css";
 import "../../highlights-page.css";
 
 export const metadata: Metadata = {

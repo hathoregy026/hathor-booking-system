@@ -105,16 +105,16 @@ export function CharterRequestForm({
     return (
       <section
         id="charter-request"
-        className="charter-section charter-request"
+        className="ch-request"
         aria-labelledby="charter-request-heading"
       >
-        <div className="charter-shell">
-          <div className="charter-form__success" role="status" aria-live="polite">
-            <p className="charter-eyebrow">Request Received</p>
-            <h2 id="charter-request-heading" className="charter-heading">
+        <div className="lux-ed-shell">
+          <div className="ch-form__success" role="status" aria-live="polite">
+            <p className="lux-ed-label lux-ed-label--gold">Request Received</p>
+            <h2 id="charter-request-heading" className="lux-ed-title">
               Thank you.
             </h2>
-            <p className="charter-copy">
+            <p className="lux-ed-copy">
               Your private voyage inquiry has been received. Our charter team
               will prepare a tailored response.
             </p>
@@ -127,31 +127,34 @@ export function CharterRequestForm({
   return (
     <section
       id="charter-request"
-      className="charter-section charter-request"
+      className="ch-request"
       aria-labelledby="charter-request-heading"
     >
-      <div className="charter-shell">
-        <div className="charter-request__grid">
-          <div className="charter-request__intro" data-charter-reveal="">
-            <p className="charter-eyebrow">Request a Private Voyage</p>
-            <h2 id="charter-request-heading" className="charter-heading">
+      <div className="lux-ed-shell">
+        <div className="lux-ed-grid ch-request__grid">
+          <div className="ch-request__intro" data-charter-reveal="">
+            <p className="lux-ed-label">Private Concierge Desk</p>
+            <h2 id="charter-request-heading" className="lux-ed-title">
               Your voyage begins
               <br />
               with a conversation.
             </h2>
-            <p className="charter-copy">
+            <p className="lux-ed-copy">
               Tell us about your party, preferred dates and the experience you
               have in mind. Our charter team will prepare a personalized
               proposal.
             </p>
-            <div className="charter-request__concierge">
-              <p className="charter-request__concierge-title">
+            <p className="ch-request__route-note">
+              Preferred route · <strong>{preferredRoute}</strong>
+            </p>
+            <div className="ch-request__concierge">
+              <p className="ch-request__concierge-title">
                 Private Charter Concierge
               </p>
-              <p className="charter-micro">
+              <p className="ch-intro__micro">
                 A tailored response will be prepared for your request.
               </p>
-              <p className="charter-micro">
+              <p className="ch-intro__micro">
                 <a href={`mailto:${PUBLIC_CONTACT.email}`}>
                   {PUBLIC_CONTACT.email}
                 </a>
@@ -161,21 +164,21 @@ export function CharterRequestForm({
 
           <form
             ref={formRef}
-            className="charter-form"
+            className="ch-form"
             onSubmit={handleSubmit}
             noValidate
             data-charter-reveal=""
           >
-            <div className="charter-form__row">
-              <div className="charter-form__field">
-                <label className="charter-form__label" htmlFor={`${formId}-name`}>
+            <div className="ch-form__row">
+              <div className="ch-form__field">
+                <label className="ch-form__label" htmlFor={`${formId}-name`}>
                   Name
                 </label>
                 <input
                   id={`${formId}-name`}
                   name="name"
                   type="text"
-                  className="charter-form__input"
+                  className="ch-form__input"
                   required
                   minLength={2}
                   maxLength={120}
@@ -186,14 +189,14 @@ export function CharterRequestForm({
                   }
                 />
                 {fieldErrors.name ? (
-                  <p id={`${formId}-name-error`} className="charter-form__error">
+                  <p id={`${formId}-name-error`} className="ch-form__error">
                     {fieldErrors.name}
                   </p>
                 ) : null}
               </div>
 
-              <div className="charter-form__field">
-                <label className="charter-form__label" htmlFor={`${formId}-email`}>
+              <div className="ch-form__field">
+                <label className="ch-form__label" htmlFor={`${formId}-email`}>
                   Email
                 </label>
                 <input
@@ -201,7 +204,7 @@ export function CharterRequestForm({
                   name="email"
                   type="email"
                   inputMode="email"
-                  className="charter-form__input"
+                  className="ch-form__input"
                   required
                   maxLength={254}
                   autoComplete="email"
@@ -211,16 +214,16 @@ export function CharterRequestForm({
                   }
                 />
                 {fieldErrors.email ? (
-                  <p id={`${formId}-email-error`} className="charter-form__error">
+                  <p id={`${formId}-email-error`} className="ch-form__error">
                     {fieldErrors.email}
                   </p>
                 ) : null}
               </div>
             </div>
 
-            <div className="charter-form__row">
-              <div className="charter-form__field">
-                <label className="charter-form__label" htmlFor={`${formId}-phone`}>
+            <div className="ch-form__row">
+              <div className="ch-form__field">
+                <label className="ch-form__label" htmlFor={`${formId}-phone`}>
                   Phone
                 </label>
                 <input
@@ -228,15 +231,15 @@ export function CharterRequestForm({
                   name="phone"
                   type="tel"
                   inputMode="tel"
-                  className="charter-form__input"
+                  className="ch-form__input"
                   maxLength={30}
                   autoComplete="tel"
                 />
               </div>
 
-              <div className="charter-form__field">
+              <div className="ch-form__field">
                 <label
-                  className="charter-form__label"
+                  className="ch-form__label"
                   htmlFor={`${formId}-address`}
                 >
                   Address
@@ -245,17 +248,17 @@ export function CharterRequestForm({
                   id={`${formId}-address`}
                   name="address"
                   type="text"
-                  className="charter-form__input"
+                  className="ch-form__input"
                   maxLength={300}
                   autoComplete="street-address"
                 />
               </div>
             </div>
 
-            <div className="charter-form__row">
-              <div className="charter-form__field">
+            <div className="ch-form__row">
+              <div className="ch-form__field">
                 <label
-                  className="charter-form__label"
+                  className="ch-form__label"
                   htmlFor={`${formId}-checkIn`}
                 >
                   Check In
@@ -264,13 +267,13 @@ export function CharterRequestForm({
                   id={`${formId}-checkIn`}
                   name="checkIn"
                   type="date"
-                  className="charter-form__input"
+                  className="ch-form__input"
                 />
               </div>
 
-              <div className="charter-form__field">
+              <div className="ch-form__field">
                 <label
-                  className="charter-form__label"
+                  className="ch-form__label"
                   htmlFor={`${formId}-route`}
                 >
                   Preferred Route
@@ -278,7 +281,7 @@ export function CharterRequestForm({
                 <select
                   id={`${formId}-route`}
                   name="preferredRoute"
-                  className="charter-form__select"
+                  className="ch-form__select"
                   value={preferredRoute}
                   onChange={(event) => onPreferredRouteChange(event.target.value)}
                 >
@@ -291,10 +294,10 @@ export function CharterRequestForm({
               </div>
             </div>
 
-            <div className="charter-form__row">
-              <div className="charter-form__field">
+            <div className="ch-form__row">
+              <div className="ch-form__field">
                 <label
-                  className="charter-form__label"
+                  className="ch-form__label"
                   htmlFor={`${formId}-adults`}
                 >
                   Adults
@@ -307,13 +310,13 @@ export function CharterRequestForm({
                   min={0}
                   max={50}
                   defaultValue={2}
-                  className="charter-form__input"
+                  className="ch-form__input"
                 />
               </div>
 
-              <div className="charter-form__field">
+              <div className="ch-form__field">
                 <label
-                  className="charter-form__label"
+                  className="ch-form__label"
                   htmlFor={`${formId}-children`}
                 >
                   Children
@@ -326,14 +329,14 @@ export function CharterRequestForm({
                   min={0}
                   max={50}
                   defaultValue={0}
-                  className="charter-form__input"
+                  className="ch-form__input"
                 />
               </div>
             </div>
 
-            <div className="charter-form__field charter-form__field--full">
+            <div className="ch-form__field ch-form__field--full">
               <label
-                className="charter-form__label"
+                className="ch-form__label"
                 htmlFor={`${formId}-message`}
               >
                 Message
@@ -342,7 +345,7 @@ export function CharterRequestForm({
                 id={`${formId}-message`}
                 name="message"
                 rows={5}
-                className="charter-form__textarea"
+                className="ch-form__textarea"
                 required
                 minLength={10}
                 maxLength={4000}
@@ -354,7 +357,7 @@ export function CharterRequestForm({
               {fieldErrors.message ? (
                 <p
                   id={`${formId}-message-error`}
-                  className="charter-form__error"
+                  className="ch-form__error"
                 >
                   {fieldErrors.message}
                 </p>
@@ -364,8 +367,8 @@ export function CharterRequestForm({
             <p
               className={
                 state === "error"
-                  ? "charter-form__status charter-form__status--error"
-                  : "charter-form__status"
+                  ? "ch-form__status ch-form__status--error"
+                  : "ch-form__status"
               }
               role="status"
               aria-live="polite"
@@ -375,13 +378,13 @@ export function CharterRequestForm({
 
             <button
               type="submit"
-              className="charter-btn charter-form__submit"
+              className="lux-ed-btn lux-ed-btn--ink ch-form__submit"
               disabled={state === "submitting"}
               aria-busy={state === "submitting"}
             >
               {state === "submitting" ? "Sending…" : "Send Private Request"}
               {state !== "submitting" ? (
-                <span className="charter-btn__arrow" aria-hidden="true">
+                <span className="lux-ed-btn__arrow" aria-hidden="true">
                   →
                 </span>
               ) : null}
