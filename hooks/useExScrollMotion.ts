@@ -1499,12 +1499,12 @@ export function useExScrollMotion() {
       killExisting();
 
       const total = slides.length;
-      /* 0.00–0.18 hold - 0.18–0.70 first wipe+rise - dwell - swap wipe - release */
+      /* Hold → land → dwell → swap → settle — release matches timeline so unpin is smooth */
       const introHold = 0.1;
       const land = 0.72;
       const dwell = 0.48;
       const swap = 0.85;
-      const release = 0.45;
+      const release = 0.55;
       const introSpan = introHold + land;
       const scrollSpan =
         total <= 1
@@ -1549,12 +1549,17 @@ export function useExScrollMotion() {
           id: "home-story-scroll",
           trigger: section,
           start: "top top",
-          end: stickyRunway ? "bottom bottom" : `+=${scrollSpan * 95}%`,
-          scrub: stickyRunway ? true : 0.3,
+          /* 100% of scrollSpan — keep pin distance in lockstep with timeline */
+          end: stickyRunway ? "bottom bottom" : `+=${scrollSpan * 100}%`,
+          /*
+           * True scrub (no lag) + no fastScrollEnd — lag + snap at pin release
+           * was the hard jump after Fine Dining finished.
+           */
+          scrub: true,
           pin: stickyRunway ? false : viewport,
           pinSpacing: !stickyRunway,
-          anticipatePin: 1,
-          fastScrollEnd: true,
+          anticipatePin: 0,
+          fastScrollEnd: false,
           invalidateOnRefresh: !isPhone,
           onRefresh: (self) => {
             const pin = self.pin as HTMLElement | null;

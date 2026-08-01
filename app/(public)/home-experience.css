@@ -2609,7 +2609,8 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .split-word {
   padding-bottom: 0;
   border-radius: 0;
   box-shadow: none;
-  overflow: hidden;
+  /* visible so GSAP pinSpacing can release without a jump */
+  overflow: visible;
 }
 
 .home-helm-portal + .home-story .home-story__viewport {
@@ -2628,7 +2629,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .split-word {
     padding-top: 0;
     padding-bottom: 0;
     border-radius: 0;
-    overflow: hidden;
+    overflow: visible;
   }
 }
 

@@ -20,7 +20,12 @@
   width: 100%;
   background: var(--hs-bg);
   color: var(--hs-text);
-  overflow: hidden;
+  /*
+   * Never overflow:hidden here — it breaks ScrollTrigger pinSpacing and
+   * causes a hard jump when the Way of Life / Dining pin releases.
+   * Clip the stage on .home-story__viewport instead.
+   */
+  overflow: visible;
   box-sizing: border-box;
 }
 
