@@ -56,7 +56,8 @@ export function CharterRequestForm({
       setState("error");
       setErrorMessage("Please check the highlighted fields.");
       const order = ["name", "email", "message"] as const;
-      const firstKey = order.find((key) => nextErrors[key]) ?? Object.keys(nextErrors)[0];
+      const firstKey =
+        order.find((key) => nextErrors[key]) ?? Object.keys(nextErrors)[0];
       const el = form.querySelector<HTMLElement>(`[name="${firstKey}"]`);
       el?.focus();
       el?.scrollIntoView({ block: "center", behavior: "smooth" });
@@ -108,13 +109,12 @@ export function CharterRequestForm({
         className="ch-request"
         aria-labelledby="charter-request-heading"
       >
-        <div className="lux-ed-shell">
+        <div className="lx-shell">
           <div className="ch-form__success" role="status" aria-live="polite">
-            <p className="lux-ed-label lux-ed-label--gold">Request Received</p>
-            <h2 id="charter-request-heading" className="lux-ed-title">
+            <h2 id="charter-request-heading" className="lx-title">
               Thank you.
             </h2>
-            <p className="lux-ed-copy">
+            <p className="lx-copy">
               Your private voyage inquiry has been received. Our charter team
               will prepare a tailored response.
             </p>
@@ -130,36 +130,23 @@ export function CharterRequestForm({
       className="ch-request"
       aria-labelledby="charter-request-heading"
     >
-      <div className="lux-ed-shell">
-        <div className="lux-ed-grid ch-request__grid">
-          <div className="ch-request__intro" data-charter-reveal="">
-            <p className="lux-ed-label">Private Concierge Desk</p>
-            <h2 id="charter-request-heading" className="lux-ed-title">
-              Your voyage begins
-              <br />
-              with a conversation.
+      <div className="lx-shell">
+        <div className="lx-grid ch-request__grid">
+          <div className="ch-request__intro" data-ch-reveal="">
+            <p className="lx-label">Private Concierge</p>
+            <h2 id="charter-request-heading" className="lx-title">
+              Begin with a conversation.
             </h2>
-            <p className="lux-ed-copy">
-              Tell us about your party, preferred dates and the experience you
-              have in mind. Our charter team will prepare a personalized
-              proposal.
+            <p className="lx-copy">
+              Share your party, dates and preferences. We will prepare a
+              personal proposal.
             </p>
-            <p className="ch-request__route-note">
-              Preferred route · <strong>{preferredRoute}</strong>
+            <p className="ch-request__route">Preferred · {preferredRoute}</p>
+            <p className="ch-request__email">
+              <a href={`mailto:${PUBLIC_CONTACT.email}`}>
+                {PUBLIC_CONTACT.email}
+              </a>
             </p>
-            <div className="ch-request__concierge">
-              <p className="ch-request__concierge-title">
-                Private Charter Concierge
-              </p>
-              <p className="ch-intro__micro">
-                A tailored response will be prepared for your request.
-              </p>
-              <p className="ch-intro__micro">
-                <a href={`mailto:${PUBLIC_CONTACT.email}`}>
-                  {PUBLIC_CONTACT.email}
-                </a>
-              </p>
-            </div>
           </div>
 
           <form
@@ -167,7 +154,7 @@ export function CharterRequestForm({
             className="ch-form"
             onSubmit={handleSubmit}
             noValidate
-            data-charter-reveal=""
+            data-ch-reveal=""
           >
             <div className="ch-form__row">
               <div className="ch-form__field">
@@ -184,17 +171,11 @@ export function CharterRequestForm({
                   maxLength={120}
                   autoComplete="name"
                   aria-invalid={Boolean(fieldErrors.name)}
-                  aria-describedby={
-                    fieldErrors.name ? `${formId}-name-error` : undefined
-                  }
                 />
                 {fieldErrors.name ? (
-                  <p id={`${formId}-name-error`} className="ch-form__error">
-                    {fieldErrors.name}
-                  </p>
+                  <p className="ch-form__error">{fieldErrors.name}</p>
                 ) : null}
               </div>
-
               <div className="ch-form__field">
                 <label className="ch-form__label" htmlFor={`${formId}-email`}>
                   Email
@@ -203,20 +184,14 @@ export function CharterRequestForm({
                   id={`${formId}-email`}
                   name="email"
                   type="email"
-                  inputMode="email"
                   className="ch-form__input"
                   required
                   maxLength={254}
                   autoComplete="email"
                   aria-invalid={Boolean(fieldErrors.email)}
-                  aria-describedby={
-                    fieldErrors.email ? `${formId}-email-error` : undefined
-                  }
                 />
                 {fieldErrors.email ? (
-                  <p id={`${formId}-email-error`} className="ch-form__error">
-                    {fieldErrors.email}
-                  </p>
+                  <p className="ch-form__error">{fieldErrors.email}</p>
                 ) : null}
               </div>
             </div>
@@ -230,18 +205,13 @@ export function CharterRequestForm({
                   id={`${formId}-phone`}
                   name="phone"
                   type="tel"
-                  inputMode="tel"
                   className="ch-form__input"
                   maxLength={30}
                   autoComplete="tel"
                 />
               </div>
-
               <div className="ch-form__field">
-                <label
-                  className="ch-form__label"
-                  htmlFor={`${formId}-address`}
-                >
+                <label className="ch-form__label" htmlFor={`${formId}-address`}>
                   Address
                 </label>
                 <input
@@ -257,10 +227,7 @@ export function CharterRequestForm({
 
             <div className="ch-form__row">
               <div className="ch-form__field">
-                <label
-                  className="ch-form__label"
-                  htmlFor={`${formId}-checkIn`}
-                >
+                <label className="ch-form__label" htmlFor={`${formId}-checkIn`}>
                   Check In
                 </label>
                 <input
@@ -270,20 +237,16 @@ export function CharterRequestForm({
                   className="ch-form__input"
                 />
               </div>
-
               <div className="ch-form__field">
-                <label
-                  className="ch-form__label"
-                  htmlFor={`${formId}-route`}
-                >
+                <label className="ch-form__label" htmlFor={`${formId}-route`}>
                   Preferred Route
                 </label>
                 <select
                   id={`${formId}-route`}
                   name="preferredRoute"
-                  className="ch-form__select"
+                  className="ch-form__input"
                   value={preferredRoute}
-                  onChange={(event) => onPreferredRouteChange(event.target.value)}
+                  onChange={(e) => onPreferredRouteChange(e.target.value)}
                 >
                   {routes.map((route) => (
                     <option key={route} value={route}>
@@ -296,36 +259,27 @@ export function CharterRequestForm({
 
             <div className="ch-form__row">
               <div className="ch-form__field">
-                <label
-                  className="ch-form__label"
-                  htmlFor={`${formId}-adults`}
-                >
+                <label className="ch-form__label" htmlFor={`${formId}-adults`}>
                   Adults
                 </label>
                 <input
                   id={`${formId}-adults`}
                   name="adults"
                   type="number"
-                  inputMode="numeric"
                   min={0}
                   max={50}
                   defaultValue={2}
                   className="ch-form__input"
                 />
               </div>
-
               <div className="ch-form__field">
-                <label
-                  className="ch-form__label"
-                  htmlFor={`${formId}-children`}
-                >
+                <label className="ch-form__label" htmlFor={`${formId}-children`}>
                   Children
                 </label>
                 <input
                   id={`${formId}-children`}
                   name="children"
                   type="number"
-                  inputMode="numeric"
                   min={0}
                   max={50}
                   defaultValue={0}
@@ -335,39 +289,28 @@ export function CharterRequestForm({
             </div>
 
             <div className="ch-form__field ch-form__field--full">
-              <label
-                className="ch-form__label"
-                htmlFor={`${formId}-message`}
-              >
+              <label className="ch-form__label" htmlFor={`${formId}-message`}>
                 Message
               </label>
               <textarea
                 id={`${formId}-message`}
                 name="message"
-                rows={5}
-                className="ch-form__textarea"
+                rows={4}
+                className="ch-form__input"
                 required
                 minLength={10}
                 maxLength={4000}
                 aria-invalid={Boolean(fieldErrors.message)}
-                aria-describedby={
-                  fieldErrors.message ? `${formId}-message-error` : undefined
-                }
               />
               {fieldErrors.message ? (
-                <p
-                  id={`${formId}-message-error`}
-                  className="ch-form__error"
-                >
-                  {fieldErrors.message}
-                </p>
+                <p className="ch-form__error">{fieldErrors.message}</p>
               ) : null}
             </div>
 
             <p
               className={
                 state === "error"
-                  ? "ch-form__status ch-form__status--error"
+                  ? "ch-form__status is-error"
                   : "ch-form__status"
               }
               role="status"
@@ -378,16 +321,11 @@ export function CharterRequestForm({
 
             <button
               type="submit"
-              className="lux-ed-btn lux-ed-btn--ink ch-form__submit"
+              className="lx-btn lx-btn--ink"
               disabled={state === "submitting"}
               aria-busy={state === "submitting"}
             >
               {state === "submitting" ? "Sending…" : "Send Private Request"}
-              {state !== "submitting" ? (
-                <span className="lux-ed-btn__arrow" aria-hidden="true">
-                  →
-                </span>
-              ) : null}
             </button>
           </form>
         </div>

@@ -6,7 +6,6 @@ import {
   HighlightsFinalCta,
   HighlightsIntroduction,
   HighlightsJourneyPreview,
-  HighlightsManifesto,
   HighlightsMovingStories,
   HighlightsPrinciples,
   HighlightsRiverInterlude,
@@ -26,24 +25,30 @@ export function HighlightsPageContent() {
   useHighlightsPageMotion(rootRef);
 
   const hero = resolveHeroPageCopy(typography, "highlights", {
-    main: "DAHABIYA",
-    second: "CRUISE HIGHLIGHTS",
+    main: "HIGHLIGHTS",
+    second: "OF THE NILE",
   });
+
+  const mainKey = hero.main.trim().toLowerCase();
+  const secondKey = hero.second.trim().toLowerCase();
+  const useDefault =
+    !mainKey ||
+    mainKey.includes("dahabiya") ||
+    !secondKey ||
+    secondKey.includes("cruise highlight");
 
   return (
     <div ref={rootRef} data-highlights-page="" className="hl-page">
       <HighlightsHero
-        titleMain={hero.main}
-        titleSecond={hero.second}
-        subtitle="Discover the ancient landmarks, quiet riverbanks and intimate experiences that define a voyage aboard Hathor."
+        titleLine1={useDefault ? "Highlights" : hero.main}
+        titleLine2={useDefault ? "of the Nile" : hero.second}
+        supporting="Ancient landmarks, quiet riverbanks and intimate moments that define a voyage aboard Hathor."
       />
 
       <HighlightsIntroduction
         heading={HIGHLIGHTS_PAGE.hero.subtitle}
         intro={highlights.intro}
       />
-
-      <HighlightsManifesto />
 
       <HighlightsMovingStories landmarks={highlights.landmarks} />
 

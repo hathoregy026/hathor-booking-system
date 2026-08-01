@@ -8,28 +8,27 @@ import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const DESKTOP = "(min-width: 1025px)";
-const TABLET = "(min-width: 481px) and (max-width: 1024px)";
-const PHONE = "(max-width: 480px)";
-
-export function useHighlightsPageMotion(
-  rootRef: RefObject<HTMLElement | null>,
-) {
+/**
+ * Highlights page motion — rising ivory panel, landmark cinema, depth.
+ * No second Lenis. Phone: no pin.
+ */
+export function useHighlightsPageMotion(rootRef: RefObject<HTMLElement | null>) {
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
 
-    const reduced =
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    root.setAttribute("data-highlights-motion", "on");
+
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) {
       root
         .querySelectorAll<HTMLElement>(
-          "[data-hl-reveal], [data-hl-hero-line] span, [data-hl-hero-eyebrow], [data-hl-hero-script], [data-hl-hero-copy], [data-hl-hero-actions], [data-hl-hero-marker], [data-hl-hero-scroll], [data-hl-hero-curtain], [data-hl-chapter]",
+          "[data-hl-hero-line] span, [data-hl-hero-label], [data-hl-hero-script], [data-hl-hero-copy], [data-hl-hero-actions], [data-hl-hero-rise], [data-hl-reveal], [data-hl-intro-curtain], [data-hl-stack-title] span",
         )
         .forEach((el) => {
           el.style.opacity = "1";
           el.style.transform = "none";
-          el.style.visibility = "visible";
+          el.style.clipPath = "none";
         });
       return;
     }
@@ -38,62 +37,121 @@ export function useHighlightsPageMotion(
     const ease = "power3.out";
 
     const ctx = gsap.context(() => {
-      /* Hero */
+      /* Hero entrance */
       const heroImg = root.querySelector<HTMLElement>("[data-hl-hero-img]");
-      const curtain = root.querySelector<HTMLElement>("[data-hl-hero-curtain]");
-      const overlay = root.querySelector<HTMLElement>("[data-hl-hero-overlay]");
-      const plane = root.querySelector<HTMLElement>("[data-hl-hero-plane]");
-      const eyebrow = root.querySelector<HTMLElement>("[data-hl-hero-eyebrow]");
+      const label = root.querySelector<HTMLElement>("[data-hl-hero-label]");
       const lines = gsap.utils.toArray<HTMLElement>("[data-hl-hero-line]");
       const script = root.querySelector<HTMLElement>("[data-hl-hero-script]");
       const copy = root.querySelector<HTMLElement>("[data-hl-hero-copy]");
       const actions = root.querySelector<HTMLElement>("[data-hl-hero-actions]");
-      const marker = root.querySelector<HTMLElement>("[data-hl-hero-marker]");
-      const scrollCue = root.querySelector<HTMLElement>("[data-hl-hero-scroll]");
+      const rise = root.querySelector<HTMLElement>("[data-hl-hero-rise]");
+      const hero = root.querySelector<HTMLElement>("[data-hl-hero]");
 
-      if (heroImg) gsap.set(heroImg, { scale: 1.04 });
-      if (curtain) gsap.set(curtain, { scaleY: 1 });
-      if (overlay) gsap.set(overlay, { opacity: 0.75 });
-      if (eyebrow) gsap.set(eyebrow, { opacity: 0, y: 14 });
+      if (heroImg) gsap.set(heroImg, { scale: 1.03 });
+      if (label) gsap.set(label, { opacity: 0, y: 14 });
       lines.forEach((line) => {
         const inner = line.querySelector("span") ?? line;
-        gsap.set(inner, { yPercent: 110, opacity: 0 });
+        gsap.set(inner, { yPercent: 110 });
       });
-      if (script) gsap.set(script, { opacity: 0, clipPath: "inset(0 100% 0 0)" });
-      if (copy) gsap.set(copy, { opacity: 0, y: 18 });
+      if (script) gsap.set(script, { opacity: 0, y: 12 });
+      if (copy) gsap.set(copy, { opacity: 0, y: 16 });
       if (actions) gsap.set(actions, { opacity: 0, y: 14 });
-      if (marker) gsap.set(marker, { opacity: 0 });
-      if (scrollCue) gsap.set(scrollCue, { opacity: 0 });
 
-      const heroTl = gsap.timeline({ defaults: { ease } });
-      if (curtain) {
-        heroTl.to(curtain, { scaleY: 0, duration: light ? 0.85 : 1.15, ease: "power4.inOut" }, 0);
-      }
-      if (heroImg) heroTl.to(heroImg, { scale: 1, duration: light ? 1.15 : 1.55 }, 0.12);
-      if (overlay) heroTl.to(overlay, { opacity: 1, duration: 1 }, 0.15);
-      if (eyebrow) heroTl.to(eyebrow, { opacity: 1, y: 0, duration: 0.6 }, 0.4);
+      const enter = gsap.timeline({ defaults: { ease } });
+      if (label) enter.to(label, { opacity: 1, y: 0, duration: 0.55 }, 0.2);
       lines.forEach((line, i) => {
         const inner = line.querySelector("span") ?? line;
-        heroTl.to(inner, { yPercent: 0, opacity: 1, duration: light ? 0.7 : 0.9 }, 0.5 + i * 0.12);
+        enter.to(
+          inner,
+          { yPercent: 0, duration: light ? 0.65 : 0.85 },
+          0.35 + i * 0.12,
+        );
       });
-      if (script) {
-        heroTl.to(script, { opacity: 1, clipPath: "inset(0 0% 0 0)", duration: 0.8 }, 0.75);
-      }
-      if (copy) heroTl.to(copy, { opacity: 1, y: 0, duration: 0.7 }, 1);
-      if (actions) heroTl.to(actions, { opacity: 1, y: 0, duration: 0.65 }, 1.15);
-      if (marker) heroTl.to(marker, { opacity: 1, duration: 0.5 }, 1.2);
-      if (scrollCue) heroTl.to(scrollCue, { opacity: 1, duration: 0.5 }, 1.3);
+      if (script) enter.to(script, { opacity: 1, y: 0, duration: 0.55 }, 0.75);
+      if (copy) enter.to(copy, { opacity: 1, y: 0, duration: 0.55 }, 0.9);
+      if (actions) enter.to(actions, { opacity: 1, y: 0, duration: 0.5 }, 1.05);
 
-      if (plane) {
+      /* Hero scroll → rising ivory + title lift */
+      if (hero && heroImg) {
+        const title = root.querySelector<HTMLElement>(".hl-hero__title");
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: hero,
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+        tl.to(heroImg, { scale: 1, ease: "none" }, 0);
+        if (title) tl.to(title, { y: light ? -20 : -40, ease: "none" }, 0);
+        if (rise) {
+          tl.to(rise, { y: 0, ease: "none" }, 0.35);
+        }
+      }
+
+      /* Generic reveals */
+      root.querySelectorAll<HTMLElement>("[data-hl-reveal]").forEach((el) => {
+        gsap.from(el, {
+          opacity: 0,
+          y: light ? 16 : 26,
+          duration: light ? 0.65 : 0.85,
+          ease,
+          scrollTrigger: {
+            trigger: el,
+            start: "top 88%",
+            once: true,
+          },
+        });
+      });
+
+      /* Intro masks + curtain */
+      root.querySelectorAll<HTMLElement>("[data-hl-intro-line]").forEach((line) => {
+        const inner = line.querySelector("span") ?? line;
+        gsap.from(inner, {
+          yPercent: 108,
+          duration: light ? 0.7 : 0.95,
+          ease,
+          scrollTrigger: {
+            trigger: line,
+            start: "top 88%",
+            once: true,
+          },
+        });
+      });
+
+      const introCurtain = root.querySelector<HTMLElement>("[data-hl-intro-curtain]");
+      if (introCurtain) {
         gsap.fromTo(
-          plane,
-          { yPercent: 40 },
+          introCurtain,
+          { clipPath: "inset(0 0 100% 0)" },
           {
-            yPercent: 0,
+            clipPath: "inset(0 0 0% 0)",
+            duration: light ? 0.9 : 1.15,
+            ease: "power3.inOut",
+            scrollTrigger: {
+              trigger: introCurtain,
+              start: "top 82%",
+              once: true,
+            },
+          },
+        );
+      }
+
+      /* Interlude depth */
+      const interlude = root.querySelector<HTMLElement>("[data-hl-interlude]");
+      const interludeMedia = root.querySelector<HTMLElement>("[data-hl-interlude-media]");
+      if (interlude && interludeMedia) {
+        const img = interludeMedia.querySelector("img") ?? interludeMedia;
+        gsap.fromTo(
+          img,
+          { scale: 1.05, yPercent: 2 },
+          {
+            scale: 1,
+            yPercent: -2,
             ease: "none",
             scrollTrigger: {
-              trigger: root.querySelector(".hl-hero"),
-              start: "top top",
+              trigger: interlude,
+              start: "top bottom",
               end: "bottom top",
               scrub: true,
             },
@@ -101,26 +159,14 @@ export function useHighlightsPageMotion(
         );
       }
 
-      root.querySelectorAll<HTMLElement>("[data-hl-reveal]").forEach((el) => {
-        gsap.set(el, { opacity: 0, y: light ? 20 : 36 });
-        gsap.to(el, {
-          opacity: 1,
-          y: 0,
-          duration: light ? 0.65 : 0.9,
-          ease,
-          scrollTrigger: { trigger: el, start: "top 88%", once: true },
-        });
-      });
-
-      const nilePath = root.querySelector<SVGPathElement>("[data-hl-nile-path]");
-      if (nilePath) {
-        const length = nilePath.getTotalLength();
-        gsap.set(nilePath, { strokeDasharray: length, strokeDashoffset: length });
-        gsap.to(nilePath, {
-          strokeDashoffset: 0,
+      /* Closing reveal */
+      const closeMedia = root.querySelector<HTMLElement>("[data-hl-close-media]");
+      if (closeMedia) {
+        gsap.from(closeMedia, {
+          scale: 1.04,
           ease: "none",
           scrollTrigger: {
-            trigger: nilePath.closest("section") ?? nilePath,
+            trigger: closeMedia.closest("section") ?? closeMedia,
             start: "top 80%",
             end: "top 35%",
             scrub: true,
@@ -128,48 +174,186 @@ export function useHighlightsPageMotion(
         });
       }
 
-      const horizon = root.querySelector<HTMLElement>("[data-hl-horizon]");
-      if (horizon) {
-        gsap.fromTo(
-          horizon,
-          { scaleX: 0 },
-          {
-            scaleX: 1,
-            ease: "none",
+      /* Journey hover is CSS; focus-safe motion for touch: none */
+
+      ScrollTrigger.matchMedia({
+        /* Desktop — master landmark timeline */
+        "(min-width: 1025px)": () => {
+          const runway = root.querySelector<HTMLElement>(".hl-stories__runway");
+          const sticky = root.querySelector<HTMLElement>("[data-hl-stories-sticky]");
+          const slides = gsap.utils.toArray<HTMLElement>("[data-hl-slide]");
+          const chapters = gsap.utils.toArray<HTMLElement>("[data-hl-chapter]");
+          const progress = root.querySelector<HTMLElement>("[data-hl-progress]");
+          const counter = root.querySelector<HTMLElement>("[data-hl-counter]");
+          if (!runway || !sticky || slides.length < 2) return;
+
+          const n = slides.length;
+          const segment = 1 / n;
+
+          gsap.set(slides, { opacity: 0, xPercent: 0, scale: 1.02 });
+          gsap.set(slides[0]!, { opacity: 1, xPercent: -2, scale: 1.02 });
+          gsap.set(chapters, { autoAlpha: 0, y: 0, pointerEvents: "none" });
+          gsap.set(chapters[0]!, {
+            autoAlpha: 1,
+            pointerEvents: "auto",
+          });
+
+          /* Pin inside the runway — CSS sticky fails under Lenis html overflow */
+          ScrollTrigger.create({
+            trigger: runway,
+            start: "top top",
+            end: "bottom bottom",
+            pin: sticky,
+            pinSpacing: false,
+            scrub: true,
+              onUpdate: (self) => {
+                const idx = Math.min(
+                  n - 1,
+                  Math.floor((self.progress * n) + 0.0001),
+                );
+                if (counter) {
+                  counter.textContent = String(idx + 1).padStart(2, "0");
+                }
+              },
+          });
+
+          const tl = gsap.timeline({
+            defaults: { ease: "none" },
             scrollTrigger: {
-              trigger: horizon.closest("section") ?? horizon,
-              start: "top 70%",
-              end: "top 40%",
+              trigger: runway,
+              start: "top top",
+              end: "bottom bottom",
               scrub: true,
             },
-          },
-        );
-      }
+          });
 
-      ScrollTrigger.matchMedia({
-        [DESKTOP]: () => setupDesktopStories(root),
-        [TABLET]: () => setupFlowStories(root, false),
-        [PHONE]: () => setupFlowStories(root, true),
-      });
+          if (progress) {
+            tl.to(progress, { scaleX: 1, duration: 1 }, 0);
+          }
 
-      ScrollTrigger.matchMedia({
-        "(min-width: 481px)": () => {
-          root.querySelectorAll<HTMLElement>("[data-hl-parallax-img]").forEach((img) => {
-            gsap.fromTo(
-              img,
-              { scale: 1.04, yPercent: -2 },
-              {
-                scale: 1,
-                yPercent: 3,
-                ease: "none",
+          for (let i = 0; i < n - 1; i++) {
+            const holdEnd = (i + 0.68) * segment;
+            const nextStart = (i + 1) * segment;
+            const fadeDur = nextStart - holdEnd;
+            const cur = slides[i]!;
+            const nxt = slides[i + 1]!;
+            const curCh = chapters[i];
+            const nxtCh = chapters[i + 1];
+
+            const pan =
+              i === 0
+                ? { xPercent: -5, scale: 1.01 }
+                : i === 1
+                  ? { xPercent: 3, scale: 1.015 }
+                  : { xPercent: 0, scale: 1.01 };
+
+            tl.to(cur, { ...pan, duration: holdEnd - i * segment }, i * segment);
+            tl.to(nxt, { opacity: 1, ...pan, duration: fadeDur }, holdEnd);
+            tl.to(cur, { opacity: 0, duration: fadeDur }, holdEnd);
+
+            if (curCh && nxtCh) {
+              /* Hard text swap — avoid overlapping titles during image crossfade */
+              tl.set(curCh, { autoAlpha: 0, pointerEvents: "none" }, holdEnd);
+              tl.set(
+                nxtCh,
+                { autoAlpha: 1, y: 0, pointerEvents: "auto" },
+                holdEnd,
+              );
+            }
+          }
+        },
+
+        /* Tablet — bounded sticky per chapter */
+        "(min-width: 481px) and (max-width: 1024px)": () => {
+          root.querySelectorAll<HTMLElement>("[data-hl-stack-chapter]").forEach((chapter) => {
+            const media = chapter.querySelector<HTMLElement>("[data-hl-stack-media]");
+            const titleInner =
+              chapter.querySelector<HTMLElement>("[data-hl-stack-title] span") ??
+              chapter.querySelector<HTMLElement>(".hl-chapter__title");
+
+            if (titleInner) {
+              gsap.from(titleInner, {
+                yPercent: 100,
+                duration: 0.8,
+                ease,
                 scrollTrigger: {
-                  trigger: img.closest("section") ?? img,
-                  start: "top bottom",
-                  end: "bottom top",
-                  scrub: true,
+                  trigger: chapter,
+                  start: "top 85%",
+                  once: true,
                 },
-              },
+              });
+            }
+
+            if (media) {
+              gsap.fromTo(
+                media,
+                { clipPath: "inset(8% 4% 8% 4%)" },
+                {
+                  clipPath: "inset(0% 0% 0% 0%)",
+                  ease: "none",
+                  scrollTrigger: {
+                    trigger: chapter,
+                    start: "top 80%",
+                    end: "top 35%",
+                    scrub: true,
+                  },
+                },
+              );
+            }
+          });
+        },
+
+        /* Phone — light parallax + mask title */
+        "(max-width: 480px)": () => {
+          root.querySelectorAll<HTMLElement>("[data-hl-stack-chapter]").forEach((chapter) => {
+            const media = chapter.querySelector<HTMLElement>("[data-hl-stack-media]");
+            const titleInner = chapter.querySelector<HTMLElement>(
+              "[data-hl-stack-title] span",
             );
+
+            if (titleInner) {
+              gsap.from(titleInner, {
+                yPercent: 100,
+                duration: 0.7,
+                ease,
+                scrollTrigger: {
+                  trigger: chapter,
+                  start: "top 88%",
+                  once: true,
+                },
+              });
+            }
+
+            if (media) {
+              gsap.fromTo(
+                media,
+                { y: 18 },
+                {
+                  y: -18,
+                  ease: "none",
+                  scrollTrigger: {
+                    trigger: chapter,
+                    start: "top bottom",
+                    end: "bottom top",
+                    scrub: true,
+                  },
+                },
+              );
+              gsap.fromTo(
+                media,
+                { clipPath: "inset(6% 0% 6% 0%)" },
+                {
+                  clipPath: "inset(0% 0% 0% 0%)",
+                  ease: "none",
+                  scrollTrigger: {
+                    trigger: chapter,
+                    start: "top 90%",
+                    end: "top 50%",
+                    scrub: true,
+                  },
+                },
+              );
+            }
           });
         },
       });
@@ -177,195 +361,11 @@ export function useHighlightsPageMotion(
 
     const onLoad = () => requestScrollRefresh("highlights-load");
     window.addEventListener("load", onLoad);
-    let resizeTimer: number | undefined;
-    const onResize = () => {
-      window.clearTimeout(resizeTimer);
-      resizeTimer = window.setTimeout(
-        () => requestScrollRefresh("highlights-resize"),
-        200,
-      );
-    };
-    window.addEventListener("resize", onResize);
     requestAnimationFrame(() => requestScrollRefresh("highlights-mount"));
 
     return () => {
       window.removeEventListener("load", onLoad);
-      window.removeEventListener("resize", onResize);
-      window.clearTimeout(resizeTimer);
       ctx.revert();
     };
   }, [rootRef]);
-}
-
-/** Desktop: one pin, direct timeline progress — no chase tweens. */
-function setupDesktopStories(root: HTMLElement) {
-  const pin = root.querySelector<HTMLElement>("[data-hl-stories-pin]");
-  const stage = root.querySelector<HTMLElement>("[data-hl-stories-stage]");
-  const chapters = gsap.utils.toArray<HTMLElement>("[data-hl-chapter]");
-  const fills = root.querySelectorAll<HTMLElement>("[data-hl-progress-fill]");
-  if (!pin || !stage || chapters.length < 2) {
-    setupFlowStories(root, false);
-    return;
-  }
-
-  chapters.forEach((ch, i) => {
-    gsap.set(ch, {
-      autoAlpha: i === 0 ? 1 : 0,
-      zIndex: i === 0 ? 2 : 1,
-    });
-  });
-
-  const tl = gsap.timeline({
-    defaults: { ease: "none" },
-    scrollTrigger: {
-      trigger: pin,
-      start: "top top",
-      end: () => `+=${Math.round(window.innerHeight * 2.8)}`,
-      pin: true,
-      pinSpacing: true,
-      scrub: true,
-      anticipatePin: 1,
-      invalidateOnRefresh: true,
-      onUpdate: (self) => {
-        const n = chapters.length;
-        const raw = self.progress * n;
-        const active = Math.min(n - 1, Math.floor(raw));
-        const seg = raw - active;
-        fills.forEach((fill, i) => {
-          let sx = 0;
-          if (i < active) sx = 1;
-          else if (i === active) sx = seg;
-          gsap.set(fill, { scaleX: sx });
-        });
-      },
-    },
-  });
-
-  chapters.forEach((ch, i) => {
-    if (i === 0) return;
-    const prev = chapters[i - 1]!;
-    const start = (i - 0.35) / chapters.length;
-
-    tl.to(
-      prev,
-      {
-        autoAlpha: 0,
-        y: -36,
-        duration: 0.35 / chapters.length,
-      },
-      start,
-    );
-    tl.fromTo(
-      ch,
-      { autoAlpha: 0, y: 48 },
-      {
-        autoAlpha: 1,
-        y: 0,
-        duration: 0.35 / chapters.length,
-        zIndex: 3,
-      },
-      start,
-    );
-
-    const img = ch.querySelector<HTMLElement>("[data-hl-chapter-img]");
-    if (img) {
-      tl.fromTo(
-        img,
-        { scale: 1.06, yPercent: 4 },
-        { scale: 1, yPercent: 0, duration: 0.4 / chapters.length },
-        start,
-      );
-    }
-  });
-
-  /* subtle continuous depth on active-ish images via timeline scrub already */
-}
-
-function setupFlowStories(root: HTMLElement, phone: boolean) {
-  const chapters = root.querySelectorAll<HTMLElement>("[data-hl-chapter]");
-  const fills = root.querySelectorAll<HTMLElement>("[data-hl-progress-fill]");
-
-  chapters.forEach((ch, index) => {
-    gsap.set(ch, { clearProps: "opacity,visibility,transform,zIndex" });
-
-    const img = ch.querySelector<HTMLElement>("[data-hl-chapter-img]");
-    const rule = ch.querySelector<HTMLElement>("[data-hl-chapter-rule]");
-    const title = ch.querySelector<HTMLElement>("[data-hl-chapter-title] span");
-
-    if (img) {
-      gsap.fromTo(
-        img,
-        { scale: phone ? 1.025 : 1.04, y: phone ? 28 : 20 },
-        {
-          scale: 1,
-          y: phone ? -22 : -12,
-          ease: "none",
-          scrollTrigger: {
-            trigger: ch,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
-          },
-        },
-      );
-    }
-
-    if (title) {
-      gsap.fromTo(
-        title,
-        { yPercent: phone ? 40 : 30, opacity: 0.4 },
-        {
-          yPercent: 0,
-          opacity: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: ch,
-            start: "top 85%",
-            end: "top 55%",
-            scrub: true,
-          },
-        },
-      );
-    }
-
-    if (rule) {
-      gsap.fromTo(
-        rule,
-        { scaleX: 0 },
-        {
-          scaleX: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: ch,
-            start: "top 78%",
-            end: "top 50%",
-            scrub: true,
-          },
-        },
-      );
-    }
-
-    if (!phone) {
-      const media = ch.querySelector<HTMLElement>("[data-hl-chapter-media]");
-      if (media) {
-        /* tablet: brief sticky media */
-        media.style.position = "sticky";
-        media.style.top = "5.5rem";
-      }
-    }
-
-    ScrollTrigger.create({
-      trigger: ch,
-      start: "top 60%",
-      end: "bottom 40%",
-      onUpdate: (self) => {
-        const fill = fills[index];
-        if (fill) gsap.set(fill, { scaleX: self.progress });
-        fills.forEach((f, i) => {
-          if (i < index) gsap.set(f, { scaleX: 1 });
-          if (i > index) gsap.set(f, { scaleX: 0 });
-        });
-      },
-    });
-  });
 }
