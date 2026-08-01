@@ -1,157 +1,264 @@
 "use client";
 
-import { ManagedImage } from "@/components/ui/ManagedImage";
-import {
-  CHARTER_CHAPTER_MEDIA,
-  type CharterChapterMedia,
-} from "@/lib/charter-chapters";
+import { AwImage } from "@/components/pages/awards/AwImage";
+import { AW_IMG } from "@/lib/awards-cinema-media";
 
-type Privilege = { title: string; body: string };
+export function CharterHero() {
+  return (
+    <section className="aw-hero" data-aw-hero="" aria-label="Charter hero">
+      <div className="aw-hero__media">
+        <div className="aw-hero__img" data-aw-hero-img="">
+          <AwImage
+            src={AW_IMG.deck}
+            alt="Luxury vessel on the Nile"
+            priority
+          />
+        </div>
+        <div className="aw-hero__shade--nile" aria-hidden="true" />
+      </div>
+      <div className="aw-hero__content">
+        <p className="aw-label" data-aw-hero-line="">
+          The Hathor Experience
+        </p>
+        <h1 className="aw-hero__title aw-display" data-aw-hero-line="">
+          Your Floating Palace
+        </h1>
+        <p className="aw-hero__sub aw-italic" data-aw-hero-line="">
+          Egyptian elegance navigating the world&apos;s greatest river —
+          chartered entirely for your party
+        </p>
+      </div>
+    </section>
+  );
+}
 
-type CharterPrivilegesProps = {
-  benefits: Privilege[];
-};
-
-const PRIVILEGE_TITLES = [
-  "Complete Privacy",
-  "Dedicated Service",
-  "Your Own Rhythm",
-  "A Voyage Created Around You",
+const SPECS = [
+  { value: "240 FT", label: "Length", pos: "ch-spec--tl" },
+  { value: "24", label: "Royal Suites", pos: "ch-spec--tr" },
+  { value: "45", label: "Crew Members", pos: "ch-spec--bl" },
+  { value: "5★", label: "Star Service", pos: "ch-spec--br" },
 ] as const;
 
-export function CharterPrivileges({ benefits }: CharterPrivilegesProps) {
-  const items = benefits.map((b, i) => ({
-    title: PRIVILEGE_TITLES[i] ?? b.title,
-    body: b.body,
-  }));
-
-  const mediaSlides: CharterChapterMedia[] = items.map(
-    (_, index) =>
-      CHARTER_CHAPTER_MEDIA[index] ??
-      CHARTER_CHAPTER_MEDIA[CHARTER_CHAPTER_MEDIA.length - 1]!,
-  );
-
+export function CharterVessel() {
   return (
-    <section
-      className="ch-chapters"
-      aria-labelledby="charter-chapters-heading"
-      data-ch-chapters=""
-    >
-      <div className="lx-shell">
-        <header className="ch-chapters__head" data-ch-reveal="">
-          <p className="lx-label">Private Chapters</p>
-          <h2 id="charter-chapters-heading" className="lx-title ch-chapters__heading">
-            Ownership of
-            <br />
-            the vessel.
-          </h2>
-        </header>
-
-        <div className="ch-chapters__stage">
-          <div className="ch-chapters__media-col">
-            <div className="ch-chapters__media" data-ch-chapters-media="">
-              {mediaSlides.map((meta, index) => (
-                <div
-                  key={meta.slot}
-                  className="ch-chapters__slide"
-                  data-ch-chapter-slide=""
-                  data-index={index}
-                  id={index === 0 ? `site-image-${meta.slot}` : undefined}
-                  data-site-image={meta.slot}
-                >
-                  <ManagedImage
-                    name={meta.slot}
-                    alt={meta.alt}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 56vw"
-                    className="ch-chapters__img object-cover"
-                    loading={index === 0 ? "eager" : "lazy"}
-                    previewAnchor={false}
-                    style={{ objectPosition: meta.objectPosition }}
-                  />
-                </div>
-              ))}
-              <div className="ch-chapters__progress" aria-hidden="true">
-                <span data-ch-chapters-progress="" />
-              </div>
+    <section className="ch-vessel" data-ch-vessel="" aria-label="The Vessel">
+      <div className="ch-vessel__sticky">
+        <div className="ch-vessel__img" data-ch-vessel-img="">
+          <AwImage src={AW_IMG.deck} alt="Hathor deck and pool from above" />
+        </div>
+        <div className="ch-vessel__shade" aria-hidden="true" />
+        <div className="ch-vessel__specs">
+          {SPECS.map((spec) => (
+            <div
+              key={spec.label}
+              className={`ch-spec ${spec.pos}`}
+              data-ch-spec=""
+            >
+              <p className="ch-spec__value">{spec.value}</p>
+              <p className="ch-spec__label">{spec.label}</p>
             </div>
-          </div>
-
-          <ul className="ch-chapters__list">
-            {items.map((item, index) => (
-              <li
-                key={item.title}
-                className="ch-chapters__item"
-                data-ch-chapter-item=""
-                data-index={index}
-              >
-                <span className="ch-chapters__num">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <h3 className="ch-chapters__title">{item.title}</h3>
-                <p className="lx-copy">{item.body}</p>
-              </li>
-            ))}
-          </ul>
+          ))}
         </div>
       </div>
     </section>
   );
 }
 
-export function CharterEditorialImage() {
+const SUITES = [
+  {
+    src: AW_IMG.suite,
+    name: "Royal Suite",
+    size: "45 m² · River View",
+    body: "A sanctuary of calm with panoramic Nile light, private seating and the quiet of a vessel held entirely for you.",
+    price: "From $1,850 / night",
+    flip: false,
+  },
+  {
+    src: AW_IMG.suite2,
+    name: "Grand Terrace Suite",
+    size: "55 m² · Upper Deck",
+    body: "Expansive terrace living above the water — mornings in soft gold, evenings under desert stars.",
+    price: "From $2,250 / night",
+    flip: true,
+  },
+  {
+    src: AW_IMG.suite3,
+    name: "Owner’s Cabin",
+    size: "70 m² · Full Privacy",
+    body: "The most intimate quarters aboard — composed for couples and hosts who want absolute stillness.",
+    price: "From $2,900 / night",
+    flip: false,
+  },
+] as const;
+
+export function CharterSuites() {
   return (
-    <section className="ch-night" aria-labelledby="charter-night-heading" data-ch-night="">
-      <div className="ch-night__media" data-ch-night-media="">
-        <ManagedImage
-          name="charter"
-          alt="Private dining under moonlight aboard Hathor"
-          fill
-          sizes="100vw"
-          className="object-cover"
-          id="site-image-charter"
-        />
-        <div className="ch-night__shade" aria-hidden="true" />
+    <div aria-label="Suites">
+      {SUITES.map((suite) => (
+        <section
+          key={suite.name}
+          className={`ch-suite${suite.flip ? " ch-suite--flip" : ""}`}
+          data-ch-suite=""
+        >
+          <div className="ch-suite__grid">
+            <div className="ch-suite__media">
+              <AwImage
+                src={suite.src}
+                alt={suite.name}
+                sizes="(max-width: 1023px) 100vw, 50vw"
+              />
+            </div>
+            <div className="ch-suite__copy" data-aw-reveal="">
+              <h2 className="ch-suite__name aw-display">{suite.name}</h2>
+              <p className="ch-suite__size">{suite.size}</p>
+              <p className="ch-suite__body">{suite.body}</p>
+              <p className="ch-suite__price aw-display">{suite.price}</p>
+              <a href="#charter-request" className="aw-btn aw-btn--ghost">
+                View Suite
+              </a>
+            </div>
+          </div>
+        </section>
+      ))}
+    </div>
+  );
+}
+
+const DINING = [
+  {
+    src: AW_IMG.dining,
+    title: "Fine Dining",
+    sub: "Chefs craft extraordinary menus shaped around your voyage",
+  },
+  {
+    src: AW_IMG.deckDining,
+    title: "Sunset Deck Dining",
+    sub: "Dine under the stars as ancient landscapes glide past",
+  },
+  {
+    src: AW_IMG.privateChef,
+    title: "Private Chef Experience",
+    sub: "Bespoke culinary journeys tailored to your desires",
+  },
+] as const;
+
+export function CharterDining() {
+  return (
+    <section className="ch-dining" data-ch-dining="" aria-label="Dining">
+      <div className="ch-dining__desktop">
+        <div className="ch-dining__runway">
+          <div className="ch-dining__pin" data-ch-dining-pin="">
+            {DINING.map((item, index) => (
+              <div
+                key={item.title}
+                className="ch-dining__slide"
+                data-ch-dining-slide=""
+                data-index={index}
+              >
+                <AwImage src={item.src} alt={item.title} />
+                <div className="ch-dining__shade" aria-hidden="true" />
+                <div className="ch-dining__copy" data-ch-dining-copy="">
+                  <h2 className="ch-dining__title aw-display">{item.title}</h2>
+                  <p className="ch-dining__sub aw-italic">{item.sub}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-      <div className="lx-shell ch-night__copy" data-ch-night-copy="">
-        <h2 id="charter-night-heading" className="lx-title ch-night__title">
-          Evenings,
-          <br />
-          <em className="ch-night__em">entirely your own.</em>
-        </h2>
-        <p className="lx-copy lx-copy--light">
-          Private dining, unhurried conversation and the Nile after dark.
-        </p>
+      <div className="ch-dining__stack">
+        {DINING.map((item) => (
+          <div key={item.title} className="ch-dining__stack-item" data-aw-reveal="">
+            <div className="ch-dining__slide">
+              <AwImage src={item.src} alt={item.title} />
+              <div className="ch-dining__shade" aria-hidden="true" />
+              <div className="ch-dining__copy">
+                <h2 className="ch-dining__title aw-display">{item.title}</h2>
+                <p className="ch-dining__sub aw-italic">{item.sub}</p>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );
 }
 
-export function CharterFinalCta() {
+const EXCURSIONS = [
+  {
+    src: AW_IMG.luxorTemple,
+    title: "Luxor Temple",
+    body: "Walk colonnades lit by evening lamps — a living corridor of kings.",
+    duration: "Half day",
+  },
+  {
+    src: AW_IMG.excursion,
+    title: "Valley of Kings",
+    body: "Descend into the royal necropolis with a private Egyptologist.",
+    duration: "Full day",
+  },
+  {
+    src: AW_IMG.nileGolden,
+    title: "Abu Simbel",
+    body: "Stand before Ramses’ colossi, carved into living rock.",
+    duration: "Full day",
+  },
+  {
+    src: AW_IMG.deck,
+    title: "Hot Air Balloon",
+    body: "Rise over Luxor at dawn as the west bank wakes in gold.",
+    duration: "Sunrise",
+  },
+] as const;
+
+export function CharterExcursions() {
   return (
-    <section className="ch-close" aria-labelledby="charter-final-heading">
-      <div className="ch-close__media" data-ch-close-media="">
-        <ManagedImage
-          name="about-hero"
-          alt="Sunset on the Nile from Hathor Dahabiya"
-          fill
-          sizes="100vw"
-          className="object-cover"
-          previewAnchor={false}
-        />
-        <div className="ch-close__shade" aria-hidden="true" />
+    <section
+      className="ch-ex"
+      data-ch-ex=""
+      aria-label="Excursions"
+    >
+      <div className="ch-ex__runway">
+        <div className="ch-ex__pin" data-ch-ex-pin="">
+          <div className="ch-ex__track" data-ch-ex-track="">
+            {EXCURSIONS.map((card) => (
+              <article key={card.title} className="ch-ex__card">
+                <div data-ch-ex-img="">
+                  <AwImage
+                    src={card.src}
+                    alt={card.title}
+                    sizes="(max-width: 1023px) 100vw, 50vw"
+                  />
+                </div>
+                <div className="ch-ex__shade" aria-hidden="true" />
+                <div className="ch-ex__copy">
+                  <h3 className="ch-ex__title aw-display">{card.title}</h3>
+                  <p className="ch-ex__body">{card.body}</p>
+                  <p className="ch-ex__dur">{card.duration}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
       </div>
-      <div className="lx-shell ch-close__inner" data-ch-reveal="">
-        <h2 id="charter-final-heading" className="lx-display ch-close__title">
-          The Nile,
-          <br />
-          exclusively yours.
-        </h2>
-        <p className="lx-copy lx-copy--light">
-          Charter Hathor for the people and moments that matter most.
+    </section>
+  );
+}
+
+export function CharterCta() {
+  return (
+    <section className="aw-cta" aria-label="Charter invitation">
+      <div className="aw-hero__media">
+        <AwImage src={AW_IMG.nileGolden} alt="Nile sunset" />
+        <div className="aw-hero__shade--dark" aria-hidden="true" />
+      </div>
+      <div className="aw-cta__content" data-aw-reveal="">
+        <h2 className="aw-cta__title aw-display">Your Journey Awaits</h2>
+        <p className="aw-cta__sub aw-italic">
+          Secure your private passage through ancient Egypt
         </p>
-        <a href="#charter-request" className="lx-btn lx-btn--ivory">
-          Request Your Charter
+        <a href="#charter-request" className="aw-btn">
+          Charter the Hathor
         </a>
       </div>
     </section>

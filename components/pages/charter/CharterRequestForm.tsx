@@ -109,16 +109,14 @@ export function CharterRequestForm({
         className="ch-request"
         aria-labelledby="charter-request-heading"
       >
-        <div className="lx-shell">
-          <div className="ch-form__success" role="status" aria-live="polite">
-            <h2 id="charter-request-heading" className="lx-title">
-              Thank you.
-            </h2>
-            <p className="lx-copy">
-              Your private voyage inquiry has been received. Our charter team
-              will prepare a tailored response.
-            </p>
-          </div>
+        <div className="ch-form__success" role="status" aria-live="polite">
+          <h2 id="charter-request-heading" className="aw-display">
+            Thank you.
+          </h2>
+          <p>
+            Your private voyage inquiry has been received. Our charter team will
+            prepare a tailored response.
+          </p>
         </div>
       </section>
     );
@@ -130,32 +128,27 @@ export function CharterRequestForm({
       className="ch-request"
       aria-labelledby="charter-request-heading"
     >
-      <div className="lx-shell">
-        <div className="ch-request__grid">
-          <div className="ch-request__intro" data-ch-reveal="">
-            <p className="lx-label">Private Concierge</p>
-            <h2 id="charter-request-heading" className="lx-title">
-              Begin your private journey.
-            </h2>
-            <p className="lx-copy">
-              Share your party, dates and preferences. We will prepare a
-              personal proposal.
-            </p>
-            <p className="ch-request__route">Preferred · {preferredRoute}</p>
-            <p className="ch-request__email">
-              <a href={`mailto:${PUBLIC_CONTACT.email}`}>
-                {PUBLIC_CONTACT.email}
-              </a>
-            </p>
-          </div>
+      <div className="ch-request__intro">
+        <p className="aw-label">Private Concierge</p>
+        <h2 id="charter-request-heading" className="aw-display">
+          Begin your private journey
+        </h2>
+        <p>
+          Share your party, dates and preferences. We will prepare a personal
+          proposal.
+        </p>
+        <p className="ch-request__route">Preferred · {preferredRoute}</p>
+        <p className="ch-request__email">
+          <a href={`mailto:${PUBLIC_CONTACT.email}`}>{PUBLIC_CONTACT.email}</a>
+        </p>
+      </div>
 
-          <form
-            ref={formRef}
-            className="ch-form"
-            onSubmit={handleSubmit}
-            noValidate
-            data-ch-reveal=""
-          >
+      <form
+        ref={formRef}
+        className="ch-form"
+        onSubmit={handleSubmit}
+        noValidate
+      >
             <div className="ch-form__row">
               <div className="ch-form__field">
                 <label className="ch-form__label" htmlFor={`${formId}-name`}>
@@ -321,15 +314,13 @@ export function CharterRequestForm({
 
             <button
               type="submit"
-              className="lx-btn lx-btn--ink"
+              className="aw-btn"
               disabled={state === "submitting"}
               aria-busy={state === "submitting"}
             >
               {state === "submitting" ? "Sending…" : "Send Private Request"}
             </button>
           </form>
-        </div>
-      </div>
     </section>
   );
 }
