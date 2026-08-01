@@ -26,8 +26,6 @@ const HOMEPAGE_LIVE_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> 
   [
     { name: "home-hero-poster", label: "Hero — video poster / cover" },
     { name: "home-story-craft-large", label: "About — main photo" },
-    { name: "home-collage-small", label: "About — small decor tile" },
-    { name: "home-collage-large", label: "About — large decor tile" },
     {
       name: "home-split-courtyard",
       label: "Landmarks scroll — lifestyle photo",
@@ -146,8 +144,6 @@ const SLOT_LAYOUT_KINDS: Partial<Record<SiteImageSlot["name"], SiteImageLayoutKi
     "home-split-courtyard": "hero",
     "home-call-to-action": "hero",
     "home-wheel-image": "hero",
-    "home-collage-large": "gallery",
-    "home-collage-small": "gallery",
     "cruises-hero": "hero",
     "about-hero": "hero",
     "gastronomy-hero": "hero",

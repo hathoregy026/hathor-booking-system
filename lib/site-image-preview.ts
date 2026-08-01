@@ -23,8 +23,6 @@ export function siteImageAnchorId(name: string): string {
 export const HOMEPAGE_LIVE_SLOT_NAMES = new Set<string>([
   "home-hero-poster",
   "home-story-craft-large",
-  "home-collage-small",
-  "home-collage-large",
   "home-split-courtyard",
   "cruises-hero",
   "room-suite",
@@ -57,8 +55,6 @@ export const HOMEPAGE_LIVE_SLOT_NAMES = new Set<string>([
 const SITE_IMAGE_PRIMARY_PAGE: Partial<Record<string, string>> = {
   "home-hero-poster": "/",
   "home-story-craft-large": "/",
-  "home-collage-small": "/",
-  "home-collage-large": "/",
   "home-split-courtyard": "/",
   "home-story-legacy-large": "/",
   "home-story-way-of-life": "/",
@@ -135,8 +131,6 @@ const SITE_IMAGE_PRIMARY_PAGE: Partial<Record<string, string>> = {
 const SLOT_FALLBACK_SECTION: Partial<Record<string, string>> = {
   "home-hero-poster": "top",
   "home-story-craft-large": "about",
-  "home-collage-small": "about",
-  "home-collage-large": "about",
   "home-split-courtyard": "details",
   "home-story-legacy-large": "details",
   "home-story-way-of-life": "escape",

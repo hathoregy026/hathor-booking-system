@@ -35,8 +35,6 @@ export const HATHOR_MEDIA = {
   splitInteriors: hathorImage("home-split-interiors"),
   splitVenue: hathorImage("home-split-venue"),
   collageBg: hathorImage("home-collage-bg"),
-  collageLarge: hathorImage("home-collage-large"),
-  collageSmall: hathorImage("home-collage-small"),
   collageLiving: hathorImage("home-collage-living"),
   residencesKitchen: hathorImage("home-residences-kitchen"),
   residencesLounge: hathorImage("home-residences-lounge"),

@@ -80,11 +80,6 @@ export const EX_ABOUT = {
   body: HOMEPAGE_ABOUT.body,
   imageName: "home-story-craft-large" as SiteImageName,
   imageAlt: "Ornate interior aboard Hathor Dahabiya",
-  decor: [
-    { name: "home-collage-small" as SiteImageName, alt: "" },
-    { name: "home-collage-large" as SiteImageName, alt: "" },
-    { name: "home-split-courtyard" as SiteImageName, alt: "" },
-  ],
 } as const;
 
 export const EX_CAROUSEL = {

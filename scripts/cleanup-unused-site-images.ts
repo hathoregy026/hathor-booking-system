@@ -16,6 +16,8 @@ export const REMOVED_SITE_IMAGE_NAMES = [
   "home-split-interiors",
   "home-split-venue",
   "home-collage-bg",
+  "home-collage-large",
+  "home-collage-small",
   "home-residences-kitchen",
   "home-residences-lounge",
   "home-residences-rooftop",

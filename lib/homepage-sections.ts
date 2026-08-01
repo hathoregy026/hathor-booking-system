@@ -26,10 +26,6 @@ export const HOMEPAGE_SCROLL_STORY: readonly HomeChapter[] = [
       name: "home-story-craft-large",
       alt: "Ornate interior corridor aboard a luxury Dahabiya",
     },
-    imageSecondary: {
-      name: "home-collage-small",
-      alt: "Detailed craftsmanship on the Hathor Dahabiya",
-    },
   },
 ] as const;
 
@@ -181,11 +177,11 @@ export const HOMEPAGE_LAYERED_COLLAGE = {
   body: "Hathor Dahabiya — an invitation to a superlative lifestyle on the Nile, within a vessel of illustrious Egyptian heritage and contemporary refinement.",
   images: {
     large: {
-      name: "home-collage-large" as const,
+      name: "home-cinematic-still" as const,
       alt: "Luxury corridor with chandelier aboard Hathor",
     },
     small: {
-      name: "home-collage-small" as const,
+      name: "home-collage-living" as const,
       alt: "Marble and mosaic detail aboard Hathor Dahabiya",
     },
   },

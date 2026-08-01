@@ -1657,20 +1657,6 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   will-change: transform, clip-path;
 }
 
-.radius-decor {
-  display: flex;
-  gap: 14px;
-  margin-bottom: 28px;
-}
-
-.radius-decor img {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1px solid rgba(182, 159, 100, 0.4);
-}
-
 .radius-heading h2 .char,
 .radius-heading h2 .word,
 .radius-heading h2 .line {

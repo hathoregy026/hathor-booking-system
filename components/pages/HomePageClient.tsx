@@ -82,8 +82,6 @@ function GalleryMarqueePhoto({
 const HOMEPAGE_PREVIEW_SLOTS = new Set([
   "home-hero-poster",
   "home-story-craft-large",
-  "home-collage-small",
-  "home-collage-large",
   "home-split-courtyard",
   "cruises-hero",
   "room-suite",
@@ -320,20 +318,6 @@ export function HomePageClient({
               </div>
 
               <div>
-                <div className="radius-decor" aria-hidden="true">
-                  {EX_ABOUT.decor.map((item) => (
-                    <ManagedImage
-                      key={item.name}
-                      name={item.name}
-                      alt={item.alt}
-                      width={42}
-                      height={42}
-                      sizes="42px"
-                      unoptimized={false}
-                      previewAnchor={HOMEPAGE_PREVIEW_SLOTS.has(item.name)}
-                    />
-                  ))}
-                </div>
                 <div className="radius-heading">
                   <h2 className="typo-page-title" style={aboutTitleStyle}>
                     {aboutHeadingLines.map((line, index) => (

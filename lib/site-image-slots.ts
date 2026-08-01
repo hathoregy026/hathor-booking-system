@@ -70,22 +70,6 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     displayOrder: 22,
   },
   {
-    name: "home-collage-large",
-    altText: "Luxury corridor with chandelier aboard Hathor",
-    url: HATHOR_MEDIA.collageLarge,
-    category: "general",
-    pagePath: "/",
-    displayOrder: 41,
-  },
-  {
-    name: "home-collage-small",
-    altText: "Marble and mosaic detail aboard Hathor Dahabiya",
-    url: HATHOR_MEDIA.collageSmall,
-    category: "general",
-    pagePath: "/",
-    displayOrder: 42,
-  },
-  {
     name: "home-collage-living",
     altText: "Luxury suite aboard Hathor Dahabiya",
     url: HATHOR_MEDIA.collageLiving,
