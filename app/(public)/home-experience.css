@@ -1337,13 +1337,16 @@ h1, h2, h3, h4, p {
   letter-spacing: 0.14em;
   color: var(--white);
   text-transform: none;
-  text-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.12em;
   margin: 0;
   overflow: visible;
+}
+
+.hero-heading .hero-line--right {
+  text-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
 }
 
 /*
