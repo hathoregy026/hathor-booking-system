@@ -437,61 +437,70 @@
 }
 
 /*
- * Homepage second title — single text layer, luminous gold + background-position shimmer.
- * GSAP owns transform/opacity on .hero-line--left; do not animate those here.
+ * Homepage second title — single text layer, polished gold + travelling highlight.
+ * GSAP owns transform/opacity on .hero-line--left; shimmer only moves --gold-shift.
+ *
+ * Do NOT put a static background-position !important here — that freezes the
+ * cascade and keyframes cannot move the highlight.
  */
+@property --gold-shift {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 120%;
+}
+
 .home-hero-container .hero-heading .hero-line--left.hero-second-title,
 html[data-ex-experience] .ex-root .hero-heading .hero-line--left.hero-second-title {
-  color: #e8bf60 !important;
+  --gold-shift: 120%;
+  color: #e8bd57 !important;
+
   background-image: linear-gradient(
-    105deg,
-    #9b5d16 0%,
-    #e3af3e 18%,
-    #fffbe0 32%,
-    #f4cf67 40%,
-    #d99b32 50%,
-    #e9bd55 62%,
-    #fff0a8 72%,
-    #fff5bd 78%,
-    #ca8120 90%,
-    #a66a1a 100%
+    110deg,
+    #8a5212 0%,
+    #c9811f 12%,
+    #efbd4f 23%,
+    #ffe797 32%,
+    #fffbe1 38%,
+    #ffe58c 42%,
+    #d79026 50%,
+    #a96216 59%,
+    #e5ae39 70%,
+    #fff2ac 78%,
+    #f5c454 84%,
+    #9a5914 100%
   ) !important;
-  background-size: 260% 100% !important;
-  background-position: 100% 50% !important;
+
+  background-size: 320% 100% !important;
+  background-position: var(--gold-shift) 50% !important;
   background-repeat: no-repeat !important;
   background-clip: text !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
-  /* Shimmer only — never touch transform/opacity (GSAP) */
-  animation-name: hero-gold-shimmer !important;
-  animation-duration: 5.5s !important;
-  animation-timing-function: ease-in-out !important;
+
+  /* Longhands only — never overwrite a GSAP-driven transform/opacity */
+  animation-name: hero-visible-gold-shimmer !important;
+  animation-duration: 4.8s !important;
+  animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1) !important;
   animation-iteration-count: infinite !important;
 }
 
-@keyframes hero-gold-shimmer {
-  0% {
-    background-position: 100% 50%;
+@keyframes hero-visible-gold-shimmer {
+  0%,
+  20% {
+    --gold-shift: 120%;
   }
 
-  35% {
-    background-position: 100% 50%;
-  }
-
-  65% {
-    background-position: 0% 50%;
-  }
-
+  58%,
   100% {
-    background-position: 0% 50%;
+    --gold-shift: -20%;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .home-hero-container .hero-heading .hero-line--left.hero-second-title,
   html[data-ex-experience] .ex-root .hero-heading .hero-line--left.hero-second-title {
-    animation: none;
-    background-position: 50% 50%;
+    animation-name: none !important;
+    --gold-shift: 50%;
   }
 }
 
