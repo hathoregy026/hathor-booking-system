@@ -440,20 +440,15 @@
 }
 
 /* =========================================================
-   LUXURY GOLD HERO TITLE
-   One text value.
-   Flat gold surface.
-   Moving internal reflection.
-   No pseudo-text.
-   No 3D.
-   No glow.
-   No shadow.
+   LUXURY GOLD HERO TITLE — SVG metallic fill
+   One SVG <text>. No CSS text-gradient / pseudo shimmer.
    ========================================================= */
 
 .luxuryGoldHeroTitle {
   position: relative;
   display: inline-block;
   max-width: 100%;
+  vertical-align: baseline;
 
   font: inherit;
   line-height: inherit;
@@ -461,231 +456,34 @@
   text-align: inherit;
   white-space: inherit;
 
-  color: #efc75f;
+  /* Fallback before SVG paints */
+  color: #f0c45a;
 
-  /*
-   * This wrapper must never control the hero's motion.
-   */
   transform: none;
   opacity: 1;
+  overflow: visible;
+}
+
+.luxuryGoldHeroTitle__svg {
+  display: inline-block;
+  vertical-align: baseline;
+  overflow: visible;
+  max-width: 100%;
+  height: auto;
+  /* Preserve measured proportions — do not stretch */
+  flex-shrink: 0;
 }
 
 .luxuryGoldHeroTitle__text {
-  position: relative;
-  display: inline-block;
-  max-width: 100%;
-
-  font: inherit;
-  line-height: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  font-style: inherit;
   letter-spacing: inherit;
-  text-align: inherit;
-  white-space: inherit;
-
-  /*
-   * FIVE-LAYER METALLIC GOLD SYSTEM
-   *
-   * Layer 1:
-   * Moving razor-thin white specular reflection.
-   *
-   * Layer 2:
-   * Moving warm secondary reflection.
-   *
-   * Layer 3:
-   * Fixed vertical polished-metal bands.
-   *
-   * Layer 4:
-   * Fixed horizontal gold lighting.
-   *
-   * Layer 5:
-   * Rich gold base.
-   */
-
-  background-image:
-    linear-gradient(
-      112deg,
-      transparent 0%,
-      transparent 46%,
-      rgba(255, 255, 255, 0) 47.4%,
-      rgba(255, 250, 220, 0.34) 48.3%,
-      rgba(255, 255, 246, 0.92) 49.2%,
-      #ffffff 50%,
-      rgba(255, 255, 239, 0.96) 50.8%,
-      rgba(255, 238, 159, 0.42) 51.8%,
-      rgba(255, 216, 94, 0.08) 53%,
-      transparent 54.5%,
-      transparent 100%
-    ),
-
-    linear-gradient(
-      112deg,
-      transparent 0%,
-      transparent 39%,
-      rgba(255, 191, 54, 0.04) 43%,
-      rgba(255, 220, 105, 0.16) 46%,
-      rgba(255, 235, 145, 0.34) 49%,
-      rgba(255, 205, 69, 0.18) 53%,
-      transparent 57%,
-      transparent 100%
-    ),
-
-    linear-gradient(
-      90deg,
-      #6f3707 0%,
-      #9c5810 7%,
-      #e0a42f 15%,
-      #fff0a2 22%,
-      #bf7517 29%,
-      #7b3e08 36%,
-      #d89424 44%,
-      #fff7c5 50%,
-      #d89a2c 57%,
-      #8a460a 65%,
-      #e8af38 74%,
-      #fff1a0 82%,
-      #b66812 90%,
-      #713707 100%
-    ),
-
-    linear-gradient(
-      180deg,
-      #fff7c6 0%,
-      #f7d46d 12%,
-      #c87b17 26%,
-      #8b4609 38%,
-      #e5ab34 49%,
-      #fff0a0 57%,
-      #d69122 67%,
-      #8c4709 80%,
-      #e4aa32 91%,
-      #fff3aa 100%
-    ),
-
-    linear-gradient(
-      180deg,
-      #f2ca5d 0%,
-      #c77b18 32%,
-      #8f490a 50%,
-      #d99b29 72%,
-      #f4cf63 100%
-    );
-
-  background-size:
-    330% 100%,
-    270% 100%,
-    180% 100%,
-    100% 100%,
-    100% 100%;
-
-  background-position:
-    150% 50%,
-    135% 50%,
-    50% 50%,
-    50% 50%,
-    50% 50%;
-
-  background-repeat: no-repeat;
-
-  background-blend-mode:
-    screen,
-    soft-light,
-    normal,
-    multiply,
-    normal;
-
-  -webkit-background-clip: text;
-  background-clip: text;
-
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-
-  animation-name: luxuryGoldMetalSweep;
-  animation-duration: 5.8s;
-  animation-timing-function: cubic-bezier(0.45, 0, 0.16, 1);
-  animation-delay: 0s;
-  animation-iteration-count: infinite;
-  animation-direction: normal;
-  animation-fill-mode: both;
-
-  will-change: background-position;
+  /* SVG text — no CSS gradient fill */
 }
 
-@keyframes luxuryGoldMetalSweep {
-  0%,
-  24% {
-    background-position:
-      150% 50%,
-      135% 50%,
-      50% 50%,
-      50% 50%,
-      50% 50%;
-  }
-
-  58% {
-    background-position:
-      -50% 50%,
-      -35% 50%,
-      50% 50%,
-      50% 50%,
-      50% 50%;
-  }
-
-  100% {
-    background-position:
-      -50% 50%,
-      -35% 50%,
-      50% 50%,
-      50% 50%,
-      50% 50%;
-  }
-}
-
-@media (min-width: 481px) and (max-width: 1024px) {
-  .luxuryGoldHeroTitle__text {
-    background-size:
-      310% 100%,
-      255% 100%,
-      170% 100%,
-      100% 100%,
-      100% 100%;
-
-    animation-duration: 6s;
-  }
-}
-
-@media (max-width: 480px) {
-  .luxuryGoldHeroTitle__text {
-    background-size:
-      290% 100%,
-      240% 100%,
-      160% 100%,
-      100% 100%,
-      100% 100%;
-
-    animation-duration: 6.2s;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .luxuryGoldHeroTitle__text {
-    animation: none;
-
-    background-position:
-      48% 50%,
-      52% 50%,
-      50% 50%,
-      50% 50%,
-      50% 50%;
-  }
-}
-
-/* Protect foil fill from future generic hero/span typography resets */
-.hero-line--left .luxuryGoldHeroTitle__text {
-  background-repeat: no-repeat;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-}
+/* Reduced motion: continuous sweep disabled in component JS; static metal kept. */
 
 .hero-sub {
   margin-top: 20px;
