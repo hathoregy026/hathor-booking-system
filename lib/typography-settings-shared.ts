@@ -1272,10 +1272,10 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--right {
 }
 ${
   settings.hero_second_shimmer.enabled
-    ? `.public-site .hero-line--left:not(.hero-line--wordmark),
-.public-site .home-hero-container .hero-heading .hero-line--left:not(.hero-line--wordmark),
-html[data-ex-experience] .public-site .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
-html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark) {
+    ? `.public-site .hero-line--left:not(.hero-line--wordmark):not(.hero-luxury-gold-title),
+.public-site .home-hero-container .hero-heading .hero-line--left:not(.hero-line--wordmark):not(.hero-luxury-gold-title),
+html[data-ex-experience] .public-site .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark):not(.hero-luxury-gold-title),
+html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark):not(.hero-luxury-gold-title) {
   font-family: var(--typo-hero-subtitle-font) !important;
   font-size: var(--typo-hero-subtitle-size) !important;
   line-height: 1.35 !important;
@@ -1286,12 +1286,30 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
   text-shadow: none !important;
 }`
     : block(
-  `.public-site .hero-line--left:not(.hero-line--wordmark),
-.public-site .home-hero-container .hero-heading .hero-line--left:not(.hero-line--wordmark),
-html[data-ex-experience] .public-site .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
-html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark)`,
+  `.public-site .hero-line--left:not(.hero-line--wordmark):not(.hero-luxury-gold-title),
+.public-site .home-hero-container .hero-heading .hero-line--left:not(.hero-line--wordmark):not(.hero-luxury-gold-title),
+html[data-ex-experience] .public-site .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark):not(.hero-luxury-gold-title),
+html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark):not(.hero-luxury-gold-title)`,
   "hero_subtitle",
 )
+}
+/* Homepage luxury gold second title — typography owns font metrics only */
+.public-site .hero-line--left.hero-luxury-gold-title,
+.public-site .home-hero-container .hero-heading .hero-line--left.hero-luxury-gold-title,
+html[data-ex-experience] .public-site .ex-root .hero-heading .hero-line--left.hero-luxury-gold-title,
+html[data-ex-experience] .ex-root .hero-heading .hero-line--left.hero-luxury-gold-title {
+  font-family: var(--typo-hero-subtitle-font) !important;
+  font-size: var(--typo-hero-subtitle-size) !important;
+  line-height: var(--typo-hero-subtitle-line-height, 1.1) !important;
+  letter-spacing: var(--typo-hero-subtitle-letter-spacing) !important;
+  /* Fallback gold before layered CSS paints the inner span */
+  color: #f2c968 !important;
+  -webkit-text-fill-color: #f2c968 !important;
+  text-shadow: none !important;
+  background: none !important;
+  background-image: none !important;
+  animation: none !important;
+  filter: none !important;
 }
 .public-site .hero-line--left:not(.hero-line--wordmark),
 .public-site .home-hero-container .hero-heading .hero-line--left:not(.hero-line--wordmark),
@@ -1305,11 +1323,11 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
 }
 ${
   settings.hero_second_shimmer.enabled
-    ? `.public-site .hero-line--left:not(.hero-line--wordmark),
-.public-site .home-hero-container .hero-heading .hero-line--left:not(.hero-line--wordmark),
-html[data-ex-experience] .public-site .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
-html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
-.public-site .hero-line--left.hero-line--shimmer {
+    ? `.public-site .hero-line--left:not(.hero-line--wordmark):not(.hero-luxury-gold-title),
+.public-site .home-hero-container .hero-heading .hero-line--left:not(.hero-line--wordmark):not(.hero-luxury-gold-title),
+html[data-ex-experience] .public-site .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark):not(.hero-luxury-gold-title),
+html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark):not(.hero-luxury-gold-title),
+.public-site .hero-line--left.hero-line--shimmer:not(.hero-luxury-gold-title) {
   display: inline-block !important;
   line-height: 1.2 !important;
   overflow: visible !important;
@@ -1344,11 +1362,11 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .public-site .hero-line--left:not(.hero-line--wordmark),
-  .public-site .home-hero-container .hero-heading .hero-line--left:not(.hero-line--wordmark),
-  html[data-ex-experience] .public-site .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
-  html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark),
-  .public-site .hero-line--left.hero-line--shimmer {
+  .public-site .hero-line--left:not(.hero-line--wordmark):not(.hero-luxury-gold-title),
+  .public-site .home-hero-container .hero-heading .hero-line--left:not(.hero-line--wordmark):not(.hero-luxury-gold-title),
+  html[data-ex-experience] .public-site .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark):not(.hero-luxury-gold-title),
+  html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line--wordmark):not(.hero-luxury-gold-title),
+  .public-site .hero-line--left.hero-line--shimmer:not(.hero-luxury-gold-title) {
     animation: none !important;
     --hero-shine-x: 42% !important;
     background-position: 42% center, center top, center center, center top !important;

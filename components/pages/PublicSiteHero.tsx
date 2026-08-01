@@ -125,20 +125,34 @@ export function PublicSiteHero({
   const displayRight = resolved.main;
   const displayLeft = resolved.second;
   const shimmer = typography.hero_second_shimmer;
-  const secondTitleStyle = {
-    ...heroSubtitleStyle,
-    ...(shimmer.enabled
-      ? {
-          ...heroSecondShimmerInlineStyle(shimmer),
-          /* Kill solid fill from typography inline so shimmer gradient shows */
-          color: "transparent",
-          WebkitTextFillColor: "transparent",
-        }
-      : {}),
-  };
-  const secondTitleClass = shimmer.enabled
-    ? "hero-line hero-line--left hero-line--shimmer"
-    : "hero-line hero-line--left";
+  /** Homepage second title — CSS metallic gold (not the admin shimmer fill). */
+  const useLuxuryGoldTitle = heroPage === "home" && !lineLeftImageSrc;
+  const secondTitleStyle = useLuxuryGoldTitle
+    ? {
+        fontFamily: heroSubtitleStyle.fontFamily,
+        fontSize: heroSubtitleStyle.fontSize,
+        lineHeight: heroSubtitleStyle.lineHeight,
+        letterSpacing: heroSubtitleStyle.letterSpacing,
+        textTransform: heroSubtitleStyle.textTransform,
+        fontWeight: heroSubtitleStyle.fontWeight,
+        /* Color / fill owned by .hero-luxury-gold-title CSS */
+      }
+    : {
+        ...heroSubtitleStyle,
+        ...(shimmer.enabled
+          ? {
+              ...heroSecondShimmerInlineStyle(shimmer),
+              /* Kill solid fill from typography inline so shimmer gradient shows */
+              color: "transparent",
+              WebkitTextFillColor: "transparent",
+            }
+          : {}),
+      };
+  const secondTitleClass = useLuxuryGoldTitle
+    ? "hero-line hero-line--left hero-luxury-gold-title"
+    : shimmer.enabled
+      ? "hero-line hero-line--left hero-line--shimmer"
+      : "hero-line hero-line--left";
 
   useLayoutEffect(() => {
     if (!playVideo) return;
@@ -389,7 +403,11 @@ export function PublicSiteHero({
             </span>
           ) : displayLeft ? (
             <span className={secondTitleClass} style={secondTitleStyle}>
-              {displayLeft}
+              {useLuxuryGoldTitle ? (
+                <span data-text={displayLeft}>{displayLeft}</span>
+              ) : (
+                displayLeft
+              )}
             </span>
           ) : null}
         </h1>

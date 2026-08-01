@@ -1428,8 +1428,9 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left.hero-line--word
 }
 
 /* Gentle top fade inside glyphs — disabled: typography -webkit-text-fill-color
-   !important made attr(data-text) render as a broken duplicate script title. */
-html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
+   !important made attr(data-text) render as a broken duplicate script title.
+   Luxury gold title restores ::after only for its jewellery glint (see public-site-hero.css). */
+html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-luxury-gold-title)::after {
   content: none !important;
   display: none !important;
 }
