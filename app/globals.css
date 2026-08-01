@@ -17,34 +17,6 @@
   --lux-gold-cream: #b69f64;
   --lux-cream: #ece8df;
   --lux-beige: #f5f0e8;
-
-  /* Cream editorial pages (/highlights, /charter) */
-  --color-cream: #faf8f5;
-  --color-sandstone: #f0ebe3;
-  --color-charcoal: #1c1c1c;
-  --color-nile-blue: #1b4965;
-  --color-gold: #c9a227;
-  --color-gray-600: #4b5563;
-}
-
-.label {
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--color-gold);
-}
-
-[data-highlights-page] h1,
-[data-highlights-page] h2,
-[data-highlights-page] h3,
-[data-charter-page] h1,
-[data-charter-page] h2,
-[data-charter-page] h3 {
-  font-family: var(--font-aw-cinzel), "Cinzel", serif;
-  font-weight: 400;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
 }
 
 @theme inline {
