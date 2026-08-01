@@ -436,71 +436,222 @@
   display: none !important;
 }
 
-/*
- * Homepage second title — single text layer, polished gold + travelling highlight.
- * GSAP owns transform/opacity on .hero-line--left; shimmer only moves --gold-shift.
- *
- * Do NOT put a static background-position !important here — that freezes the
- * cascade and keyframes cannot move the highlight.
- */
-@property --gold-shift {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 120%;
+/* =========================================================
+   LUXURY GOLD HERO TITLE
+   One text value.
+   Flat gold surface.
+   Moving internal reflection.
+   No pseudo-text.
+   No 3D.
+   No glow.
+   No shadow.
+   ========================================================= */
+
+.luxuryGoldHeroTitle {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  text-align: inherit;
+  white-space: inherit;
+
+  color: #efc75f;
+
+  /*
+   * This wrapper must never control the hero's motion.
+   */
+  transform: none;
+  opacity: 1;
 }
 
-.home-hero-container .hero-heading .hero-line--left.hero-second-title,
-html[data-ex-experience] .ex-root .hero-heading .hero-line--left.hero-second-title {
-  --gold-shift: 120%;
-  color: #e8bd57 !important;
+.luxuryGoldHeroTitle__text {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
 
-  background-image: linear-gradient(
-    110deg,
-    #8a5212 0%,
-    #c9811f 12%,
-    #efbd4f 23%,
-    #ffe797 32%,
-    #fffbe1 38%,
-    #ffe58c 42%,
-    #d79026 50%,
-    #a96216 59%,
-    #e5ae39 70%,
-    #fff2ac 78%,
-    #f5c454 84%,
-    #9a5914 100%
-  ) !important;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  text-align: inherit;
+  white-space: inherit;
 
-  background-size: 320% 100% !important;
-  background-position: var(--gold-shift) 50% !important;
-  background-repeat: no-repeat !important;
-  background-clip: text !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
+  /*
+   * Layer 1:
+   * Narrow moving champagne-white reflection.
+   *
+   * Layer 2:
+   * Static polished gold base.
+   */
+  background-image:
+    linear-gradient(
+      108deg,
+      transparent 0%,
+      transparent 40%,
+      rgba(255, 233, 142, 0.02) 43%,
+      rgba(255, 232, 137, 0.16) 45.5%,
+      rgba(255, 239, 165, 0.48) 47.5%,
+      rgba(255, 249, 207, 0.88) 49%,
+      #fffef1 50%,
+      rgba(255, 249, 207, 0.94) 51%,
+      rgba(255, 235, 147, 0.58) 52.5%,
+      rgba(255, 218, 82, 0.18) 55%,
+      transparent 58%,
+      transparent 100%
+    ),
+    linear-gradient(
+      180deg,
+      #fff8c9 0%,
+      #ffe996 9%,
+      #f7d36d 18%,
+      #e5ae3d 29%,
+      #c77b1a 40%,
+      #e9b33d 48%,
+      #ffe78d 57%,
+      #f5c75a 65%,
+      #d79328 75%,
+      #b96a15 86%,
+      #e5ad37 94%,
+      #fff0a6 100%
+    );
 
-  /* Longhands only — never overwrite a GSAP-driven transform/opacity */
-  animation-name: hero-visible-gold-shimmer !important;
-  animation-duration: 4.8s !important;
-  animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1) !important;
-  animation-iteration-count: infinite !important;
+  background-repeat: no-repeat;
+
+  background-size:
+    280% 100%,
+    100% 100%;
+
+  background-position:
+    145% 50%,
+    50% 50%;
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+
+  animation-name: luxuryGoldHeroShimmer;
+  animation-duration: 5.4s;
+  animation-timing-function: cubic-bezier(0.5, 0, 0.16, 1);
+  animation-delay: 0s;
+  animation-iteration-count: infinite;
+  animation-direction: normal;
+  animation-fill-mode: both;
+
+  will-change: background-position;
 }
 
-@keyframes hero-visible-gold-shimmer {
+@keyframes luxuryGoldHeroShimmer {
   0%,
-  20% {
-    --gold-shift: 120%;
+  22% {
+    background-position:
+      145% 50%,
+      50% 50%;
   }
 
-  58%,
+  58% {
+    background-position:
+      -45% 50%,
+      50% 50%;
+  }
+
   100% {
-    --gold-shift: -20%;
+    background-position:
+      -45% 50%,
+      50% 50%;
+  }
+}
+
+@media (min-width: 1025px) {
+  .luxuryGoldHeroTitle__text {
+    background-size:
+      285% 100%,
+      100% 100%;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 1024px) {
+  .luxuryGoldHeroTitle__text {
+    background-image:
+      linear-gradient(
+        108deg,
+        transparent 0%,
+        transparent 39%,
+        rgba(255, 235, 151, 0.04) 43%,
+        rgba(255, 237, 156, 0.22) 45.5%,
+        rgba(255, 244, 188, 0.62) 48%,
+        #fffde7 50%,
+        rgba(255, 240, 166, 0.7) 52%,
+        rgba(255, 219, 85, 0.18) 55%,
+        transparent 59%,
+        transparent 100%
+      ),
+      linear-gradient(
+        180deg,
+        #fff7bf 0%,
+        #f9d973 14%,
+        #e6ad36 29%,
+        #c87c1b 41%,
+        #eeb941 50%,
+        #ffe486 59%,
+        #dc9b2c 72%,
+        #b66a15 84%,
+        #ebb840 100%
+      );
+
+    background-size:
+      270% 100%,
+      100% 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .luxuryGoldHeroTitle__text {
+    background-image:
+      linear-gradient(
+        108deg,
+        transparent 0%,
+        transparent 38%,
+        rgba(255, 237, 159, 0.05) 42%,
+        rgba(255, 239, 166, 0.28) 45.5%,
+        rgba(255, 247, 199, 0.72) 48%,
+        #fffdea 50%,
+        rgba(255, 235, 146, 0.76) 52%,
+        rgba(255, 213, 71, 0.2) 55.5%,
+        transparent 60%,
+        transparent 100%
+      ),
+      linear-gradient(
+        180deg,
+        #fff5b7 0%,
+        #f7d168 16%,
+        #e0a330 31%,
+        #c47719 42%,
+        #edb43a 51%,
+        #ffdf7a 61%,
+        #d58e24 75%,
+        #ae6212 87%,
+        #e5ad36 100%
+      );
+
+    background-size:
+      260% 100%,
+      100% 100%;
+
+    animation-duration: 5.8s;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .home-hero-container .hero-heading .hero-line--left.hero-second-title,
-  html[data-ex-experience] .ex-root .hero-heading .hero-line--left.hero-second-title {
-    animation-name: none !important;
-    --gold-shift: 50%;
+  .luxuryGoldHeroTitle__text {
+    animation: none;
+
+    background-position:
+      50% 50%,
+      50% 50%;
   }
 }
 

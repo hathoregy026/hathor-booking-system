@@ -4,6 +4,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { useHeroLogoSettings } from "@/components/public/HeroLogoSettingsProvider";
 import { HathorLogoSplit } from "@/components/public/HathorLogoSplit";
+import { LuxuryGoldHeroTitle } from "@/components/public/LuxuryGoldHeroTitle";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
 import { isPhoneViewport, logPhonePerfDev } from "@/lib/touch-device";
@@ -125,9 +126,9 @@ export function PublicSiteHero({
   const displayRight = resolved.main;
   const displayLeft = resolved.second;
   const shimmer = typography.hero_second_shimmer;
-  /** Homepage second title — single-layer gold gradient (GSAP keeps transform/opacity). */
-  const useHomeGoldTitle = heroPage === "home" && !lineLeftImageSrc;
-  const secondTitleStyle = useHomeGoldTitle
+  /** Homepage second title — LuxuryGoldHeroTitle owns fill; outer keeps GSAP + typography. */
+  const useLuxuryGoldTitle = heroPage === "home" && !lineLeftImageSrc;
+  const secondTitleStyle = useLuxuryGoldTitle
     ? {
         fontFamily: heroSubtitleStyle.fontFamily,
         fontSize: heroSubtitleStyle.fontSize,
@@ -135,7 +136,6 @@ export function PublicSiteHero({
         letterSpacing: heroSubtitleStyle.letterSpacing,
         textTransform: heroSubtitleStyle.textTransform,
         fontWeight: heroSubtitleStyle.fontWeight,
-        /* Color / fill owned by .hero-second-title CSS */
       }
     : {
         ...heroSubtitleStyle,
@@ -148,8 +148,8 @@ export function PublicSiteHero({
             }
           : {}),
       };
-  const secondTitleClass = useHomeGoldTitle
-    ? "hero-line hero-line--left hero-second-title"
+  const secondTitleClass = useLuxuryGoldTitle
+    ? "hero-line hero-line--left"
     : shimmer.enabled
       ? "hero-line hero-line--left hero-line--shimmer"
       : "hero-line hero-line--left";
@@ -403,7 +403,11 @@ export function PublicSiteHero({
             </span>
           ) : displayLeft ? (
             <span className={secondTitleClass} style={secondTitleStyle}>
-              {displayLeft}
+              {useLuxuryGoldTitle ? (
+                <LuxuryGoldHeroTitle>{displayLeft}</LuxuryGoldHeroTitle>
+              ) : (
+                displayLeft
+              )}
             </span>
           ) : null}
         </h1>
