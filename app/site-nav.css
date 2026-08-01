@@ -602,18 +602,13 @@
     transform: translateY(-0.06em);
   }
 
-  .public-site .hathor-header__dropdown-zone:hover .hathor-header__nav-link,
-  .public-site
-    .hathor-header__dropdown-zone:has(.hathor-header__dropdown.is-open)
-    .hathor-header__nav-link {
+  /* Gold only on the hovered trigger — never paint siblings via open state */
+  .public-site .hathor-header__dropdown-zone:hover .hathor-header__nav-link {
     color: #b69f64;
   }
 
   .public-site:has(.hathor-header--menu-hovered)
     .hathor-header__dropdown-zone:hover
-    .hathor-header__nav-link,
-  .public-site:has(.hathor-header--menu-hovered)
-    .hathor-header__dropdown-zone:has(.hathor-header__dropdown.is-open)
     .hathor-header__nav-link {
     color: #b69f64;
   }
@@ -938,12 +933,13 @@
   );
 }
 
-/* Menu hover cream overlay — keep existing behavior */
+/* Menu hover — solid white bar (not translucent cream) */
 .public-site .hathor-header--owo-hero-layout.hathor-header--menu-hovered {
-  background: transparent;
+  background: #ffffff;
   border-bottom-color: transparent;
   box-shadow: none;
   backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .public-site .hathor-header--owo-hero-layout.hathor-header--menu-hovered::after {
@@ -952,6 +948,7 @@
 }
 
 .public-site .hathor-header--owo-hero-layout.hathor-header--menu-hovered::before {
-  opacity: 0.8;
+  opacity: 1;
+  background: #ffffff;
 }
 

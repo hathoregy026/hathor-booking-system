@@ -1774,7 +1774,7 @@
   inset: 0;
   z-index: 0;
   opacity: 0;
-  background: #faf8f5;
+  background: #ffffff;
   border-bottom: 1px solid rgb(44 40 36 / 0.08);
   box-shadow: 0 8px 32px rgb(0 0 0 / 0.08);
   pointer-events: none;
@@ -1783,6 +1783,7 @@
 
 .hathor-header--owo-hero-layout.hathor-header--menu-hovered::before {
   opacity: 1;
+  background: #ffffff;
 }
 
 .hathor-header--owo-hero-layout:not(.hathor-header--menu-hovered):not(.hathor-header--solid):not(.hathor-header--menu-active) {
@@ -1840,9 +1841,9 @@
   color: #faf8f5;
 }
 
-/* Hover only ? white overlay (::before), not animated background */
+/* Hover only — solid white bar */
 .hathor-header--owo-hero-layout.hathor-header--menu-hovered {
-  background: transparent;
+  background: #ffffff;
   backdrop-filter: none;
   border-bottom-color: transparent;
   box-shadow: none;
@@ -1865,7 +1866,9 @@
   background: transparent;
 }
 
-.hathor-header--owo-hero-layout.hathor-header--menu-hovered .hathor-header__nav-link:hover {
+/* Gold only on the link under the pointer — not every active route */
+.hathor-header--owo-hero-layout.hathor-header--menu-hovered .hathor-header__nav-link:hover,
+.hathor-header--owo-hero-layout.hathor-header--menu-hovered .hathor-header__nav-link--active:hover {
   color: #b69f64;
   background: transparent;
 }
@@ -1982,7 +1985,7 @@
 }
 
 .hathor-header--owo-hero-layout.hathor-header--menu-hovered .hathor-header__nav-link:hover,
-.hathor-header--owo-hero-layout.hathor-header--menu-hovered .hathor-header__nav-link--active {
+.hathor-header--owo-hero-layout.hathor-header--menu-hovered .hathor-header__nav-link--active:hover {
   color: #b69f64;
   background: transparent;
 }
@@ -4845,14 +4848,10 @@ html[data-public-theme="day"]
   .hathor-header__nav-link:hover,
 html[data-public-theme="day"]
   .hathor-header--owo-hero-layout.hathor-header--menu-hovered
-  .hathor-header__nav-link--active,
+  .hathor-header__nav-link--active:hover,
 html[data-public-theme="day"]
   .hathor-header--owo-hero-layout.hathor-header--menu-hovered
   .hathor-header__dropdown-zone:hover
-  .hathor-header__nav-link,
-html[data-public-theme="day"]
-  .hathor-header--owo-hero-layout.hathor-header--menu-hovered
-  .hathor-header__dropdown-zone:has(.hathor-header__dropdown.is-open)
   .hathor-header__nav-link {
   color: #b69f64;
 }
