@@ -14,7 +14,7 @@ export default function AdminPanelLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className={`${inter.variable} h-dvh min-h-0 overflow-hidden`}>
+    <div className={inter.variable}>
       <AdminShell>{children}</AdminShell>
     </div>
   );

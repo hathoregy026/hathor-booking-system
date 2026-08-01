@@ -148,7 +148,7 @@ export function Sidebar({
   return (
     <>
       <aside
-        className={`admin-sidebar hidden min-h-0 shrink-0 flex-col self-stretch md:flex ${
+        className={`admin-sidebar hidden min-h-0 shrink-0 flex-col md:flex ${
           collapsed ? "w-[72px]" : "w-[260px]"
         }`}
         style={{ borderRight: "1px solid var(--border)" }}

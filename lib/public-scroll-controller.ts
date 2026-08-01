@@ -38,6 +38,8 @@ const state: State = {
 
 function wantsNativeMode() {
   if (typeof window === "undefined") return true;
+  /* Admin is a normal document scroller — Lenis + nested overflow locks freeze the panel. */
+  if (window.location.pathname.startsWith("/admin")) return true;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return true;
   if (isTouchDevice()) return true;
   if (isPhoneOrTabletViewport()) return true;

@@ -123,13 +123,9 @@
   --table-row-alt: #faf8f5;
 }
 
-/* Document lock while admin panel is mounted — prevents body from stealing wheel/touch. */
-html.admin-app,
-html.admin-app body {
-  height: 100%;
-  max-height: 100%;
-  overflow: hidden !important;
-  overscroll-behavior: none;
+/* Admin uses normal document scroll (Lenis is forced off on /admin). */
+html.admin-app {
+  scroll-behavior: auto;
 }
 
 .admin-shell {
@@ -142,13 +138,9 @@ html.admin-app body {
   transition:
     background-color 300ms ease,
     color 300ms ease;
-  /* App shell: chrome stays put; only .admin-main scrolls */
-  height: 100%;
-  height: 100dvh;
-  max-height: 100%;
-  max-height: 100dvh;
-  min-height: 0;
-  overflow: hidden;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
   animation: adminFadeIn 0.3s ease;
 }
 
@@ -187,36 +179,36 @@ html.admin-app body {
   position: relative;
   z-index: 1;
   display: flex;
-  flex: 1 1 0%;
   width: 100%;
-  min-height: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
   min-width: 0;
 }
 
 .admin-shell__main {
   display: flex;
-  flex: 1 1 0%;
+  flex: 1 1 auto;
   flex-direction: column;
-  min-height: 0;
   min-width: 0;
 }
 
 .admin-sidebar {
   background: var(--bg-sidebar);
-  height: auto;
-  align-self: stretch;
-  min-height: 0;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  height: 100vh;
+  height: 100dvh;
   flex-shrink: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .admin-main {
-  flex: 1 1 0%;
-  min-height: 0;
+  flex: 1 1 auto;
   overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-y;
+  overflow-y: visible;
 }
 
 .admin-card {
@@ -425,6 +417,9 @@ select.admin-input option:checked {
 .admin-header {
   background: var(--header-bg);
   border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 30;
   flex-shrink: 0;
 }
 

@@ -7,8 +7,7 @@ import { AdminBottomNav } from "./AdminBottomNav";
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 import { ToastProvider } from "./ToastProvider";
-
-const ADMIN_APP_CLASS = "admin-app";
+import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
 
 function AdminShellInner({ children }: { children: React.ReactNode }) {
   const { theme } = useAdminTheme();
@@ -17,57 +16,50 @@ function AdminShellInner({ children }: { children: React.ReactNode }) {
   const [menuOpenForPath, setMenuOpenForPath] = useState<string | null>(null);
   const mobileMenuOpen = menuOpenForPath === pathname;
 
-  /* Lock document scroll so only .admin-main scrolls (avoids body stealing wheel). */
+  /*
+   * Force native document scroll on every admin route.
+   * Root TouchDeviceBootstrap can start Lenis on desktop; that + overflow locks
+   * freezes the dashboard. Tear it down here and keep the page on window scroll.
+   */
   useEffect(() => {
+    ensurePublicScrollController();
     const html = document.documentElement;
     const body = document.body;
-    const prev = {
-      htmlOverflow: html.style.overflow,
-      htmlHeight: html.style.height,
-      bodyOverflow: body.style.overflow,
-      bodyHeight: body.style.height,
-      bodyOverscroll: body.style.overscrollBehavior,
-    };
-
-    html.classList.add(ADMIN_APP_CLASS);
-    html.style.height = "100%";
-    html.style.overflow = "hidden";
-    body.style.height = "100%";
-    body.style.overflow = "hidden";
-    body.style.overscrollBehavior = "none";
+    html.classList.add("admin-app");
+    html.style.removeProperty("overflow");
+    body.style.removeProperty("overflow");
+    body.style.removeProperty("height");
+    html.style.removeProperty("height");
 
     return () => {
-      html.classList.remove(ADMIN_APP_CLASS);
-      html.style.overflow = prev.htmlOverflow;
-      html.style.height = prev.htmlHeight;
-      body.style.overflow = prev.bodyOverflow;
-      body.style.height = prev.bodyHeight;
-      body.style.overscrollBehavior = prev.bodyOverscroll;
+      html.classList.remove("admin-app");
+      /* Re-evaluate Lenis when leaving admin for a public route. */
+      ensurePublicScrollController();
     };
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     if (!mobileMenuOpen) return;
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = previous || "hidden";
+      document.body.style.overflow = previous;
     };
   }, [mobileMenuOpen]);
 
   return (
     <div
-      className="admin-shell flex h-dvh max-h-dvh flex-col overflow-hidden"
+      className="admin-shell flex min-h-screen overflow-x-hidden"
       data-theme={theme}
     >
       <div className="admin-shell__glow" aria-hidden />
-      <div className="admin-shell__content flex min-h-0 w-full flex-1">
+      <div className="admin-shell__content flex min-h-screen w-full">
         <Sidebar
           mobileOpen={mobileMenuOpen}
           onMobileClose={() => setMenuOpenForPath(null)}
         />
 
-        <div className="admin-shell__main flex min-h-0 min-w-0 flex-1 flex-col">
+        <div className="admin-shell__main flex min-w-0 flex-1 flex-col">
           <Header
             onMenuToggle={() =>
               setMenuOpenForPath((current) =>
@@ -75,7 +67,7 @@ function AdminShellInner({ children }: { children: React.ReactNode }) {
               )
             }
           />
-          <main className="admin-main min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-4 pb-24 sm:px-5 md:px-6 md:pb-6 lg:px-8 lg:py-6">
+          <main className="admin-main flex-1 overflow-x-hidden px-3 py-4 pb-24 sm:px-5 md:px-6 md:pb-6 lg:px-8 lg:py-6">
             {children}
           </main>
         </div>

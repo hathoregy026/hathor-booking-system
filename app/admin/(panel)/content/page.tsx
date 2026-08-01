@@ -104,17 +104,9 @@ export default function AdminContentPage() {
       if (match) {
         setOpenImageGroup(match.pagePath);
         window.requestAnimationFrame(() => {
-          const main = document.querySelector(".admin-main");
-          const target = document.getElementById("site-images");
-          if (main instanceof HTMLElement && target) {
-            const top =
-              target.getBoundingClientRect().top -
-              main.getBoundingClientRect().top +
-              main.scrollTop;
-            main.scrollTo({ top: Math.max(0, top - 12), behavior: "smooth" });
-            return;
-          }
-          target?.scrollIntoView({ behavior: "smooth", block: "start" });
+          document
+            .getElementById("site-images")
+            ?.scrollIntoView({ behavior: "smooth", block: "start" });
         });
       }
     };
