@@ -125,9 +125,9 @@ export function PublicSiteHero({
   const displayRight = resolved.main;
   const displayLeft = resolved.second;
   const shimmer = typography.hero_second_shimmer;
-  /** Homepage second title — CSS metallic gold (not the admin shimmer fill). */
-  const useLuxuryGoldTitle = heroPage === "home" && !lineLeftImageSrc;
-  const secondTitleStyle = useLuxuryGoldTitle
+  /** Homepage second title — single-layer gold gradient (GSAP keeps transform/opacity). */
+  const useHomeGoldTitle = heroPage === "home" && !lineLeftImageSrc;
+  const secondTitleStyle = useHomeGoldTitle
     ? {
         fontFamily: heroSubtitleStyle.fontFamily,
         fontSize: heroSubtitleStyle.fontSize,
@@ -135,7 +135,7 @@ export function PublicSiteHero({
         letterSpacing: heroSubtitleStyle.letterSpacing,
         textTransform: heroSubtitleStyle.textTransform,
         fontWeight: heroSubtitleStyle.fontWeight,
-        /* Color / fill owned by .hero-luxury-gold-title CSS */
+        /* Color / fill owned by .hero-second-title CSS */
       }
     : {
         ...heroSubtitleStyle,
@@ -148,8 +148,8 @@ export function PublicSiteHero({
             }
           : {}),
       };
-  const secondTitleClass = useLuxuryGoldTitle
-    ? "hero-line hero-line--left hero-luxury-gold-title"
+  const secondTitleClass = useHomeGoldTitle
+    ? "hero-line hero-line--left hero-second-title"
     : shimmer.enabled
       ? "hero-line hero-line--left hero-line--shimmer"
       : "hero-line hero-line--left";
@@ -403,11 +403,7 @@ export function PublicSiteHero({
             </span>
           ) : displayLeft ? (
             <span className={secondTitleClass} style={secondTitleStyle}>
-              {useLuxuryGoldTitle ? (
-                <span data-text={displayLeft}>{displayLeft}</span>
-              ) : (
-                displayLeft
-              )}
+              {displayLeft}
             </span>
           ) : null}
         </h1>
