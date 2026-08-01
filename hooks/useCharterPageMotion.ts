@@ -8,7 +8,7 @@ import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/** Charter cream editorial — count-up specs + desktop suite pin scroll. */
+/** Charter — masked reveal, count-up specs, sticky suite sections. */
 export function useCharterPageMotion(rootRef: RefObject<HTMLElement | null>) {
   useEffect(() => {
     const root = rootRef.current;
@@ -17,7 +17,9 @@ export function useCharterPageMotion(rootRef: RefObject<HTMLElement | null>) {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) {
       root
-        .querySelectorAll<HTMLElement>("[data-ce-line], [data-ce-reveal], [data-ce-image], [data-ch-count]")
+        .querySelectorAll<HTMLElement>(
+          ".reveal-text, .reveal-label, .reveal-image, [data-ch-count]",
+        )
         .forEach((el) => {
           el.style.opacity = "1";
           el.style.transform = "none";
@@ -28,59 +30,33 @@ export function useCharterPageMotion(rootRef: RefObject<HTMLElement | null>) {
     }
 
     const light = shouldLightenMotionForDevice();
-    const duration = light ? 0.85 : 1.2;
-    const imgDuration = light ? 1.1 : 1.8;
 
     const ctx = gsap.context(() => {
-      const revealLines = root.querySelectorAll<HTMLElement>(".ch-reveal [data-ce-line]");
-      gsap.set(revealLines, { opacity: 0, y: 40 });
-      gsap.to(revealLines, {
+      gsap.to(root.querySelectorAll(".reveal-label"), {
         opacity: 1,
-        y: 0,
-        duration,
-        stagger: 0.12,
+        duration: light ? 0.8 : 1.2,
         ease: "power3.out",
       });
 
-      root.querySelectorAll<HTMLElement>("[data-ce-reveal]").forEach((el) => {
-        gsap.from(el, {
-          y: 40,
-          opacity: 0,
-          duration,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: el,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
-          },
-        });
+      const revealTexts = root.querySelectorAll<HTMLElement>(".ch-reveal .reveal-text");
+      gsap.from(revealTexts, {
+        y: "100%",
+        duration: light ? 0.9 : 1.4,
+        stagger: 0.12,
+        ease: "power3.out",
+        delay: 0.12,
       });
 
-      root.querySelectorAll<HTMLElement>("[data-ce-image]").forEach((img) => {
-        if (light) {
-          gsap.from(img, {
-            opacity: 0,
-            duration: 0.9,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: img,
-              start: "top 85%",
-              toggleActions: "play none none reverse",
-            },
-          });
-          return;
-        }
-        gsap.from(img, {
-          scale: 1.1,
-          duration: imgDuration,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: img,
-            start: "top 80%",
-            toggleActions: "play none none reverse",
-          },
+      const revealImage = root.querySelector<HTMLElement>(".reveal-image");
+      if (revealImage) {
+        gsap.from(revealImage, {
+          y: light ? 24 : 40,
+          opacity: 0,
+          duration: light ? 1 : 1.5,
+          ease: "power3.out",
+          delay: 0.35,
         });
-      });
+      }
 
       const specs = root.querySelector<HTMLElement>("[data-ch-specs]");
       root.querySelectorAll<HTMLElement>("[data-ch-count]").forEach((el) => {
@@ -103,34 +79,25 @@ export function useCharterPageMotion(rootRef: RefObject<HTMLElement | null>) {
         });
       });
 
-      ScrollTrigger.matchMedia({
-        "(min-width: 1024px)": () => {
-          const pin = root.querySelector<HTMLElement>("[data-ch-suites-pin]");
-          const track = root.querySelector<HTMLElement>("[data-ch-suites-track]");
-          if (!pin || !track) return;
-
-          const getDistance = () =>
-            Math.max(0, track.scrollWidth - window.innerWidth);
-
-          gsap.to(track, {
-            x: () => -getDistance(),
-            ease: "none",
-            scrollTrigger: {
-              trigger: pin.parentElement ?? pin,
-              start: "top top",
-              end: () => `+=${getDistance()}`,
-              pin,
-              scrub: 1,
-              invalidateOnRefresh: true,
-            },
-          });
-        },
+      root.querySelectorAll<HTMLElement>(".ch-suite__copy").forEach((copy) => {
+        gsap.from(copy.children, {
+          y: 28,
+          opacity: 0,
+          duration: light ? 0.75 : 1.1,
+          stagger: 0.08,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: copy,
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+        });
       });
     }, root);
 
-    const onLoad = () => requestScrollRefresh("charter-cream-load");
+    const onLoad = () => requestScrollRefresh("ch-cream-v2-load");
     window.addEventListener("load", onLoad);
-    requestAnimationFrame(() => requestScrollRefresh("charter-cream-mount"));
+    requestAnimationFrame(() => requestScrollRefresh("ch-cream-v2-mount"));
 
     return () => {
       window.removeEventListener("load", onLoad);

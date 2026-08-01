@@ -6,71 +6,33 @@ import { CE_IMG } from "@/lib/awards-cinema-media";
 export function CharterReveal() {
   return (
     <section className="ch-reveal" aria-label="The Hathor">
-      <p className="ce-label" data-ce-line="">
+      <p className="ce-label reveal-label mb-8" style={{ opacity: 0 }}>
         The Hathor
       </p>
-      <h1 className="ch-reveal__title">
-        <span className="ch-reveal__line1 ce-display" data-ce-line="">
-          Your Floating
+      <h1 className="ch-reveal__h1 ce-serif">
+        <span className="ch-reveal__mask">
+          <span className="ch-reveal__line1 reveal-text">Your Floating</span>
         </span>
-        <span className="ch-reveal__line2 ce-italic" data-ce-line="">
-          Palace.
+        <span className="ch-reveal__mask">
+          <span className="ch-reveal__line2 reveal-text ce-italic">Palace.</span>
         </span>
       </h1>
-      <div className="ch-reveal__media ce-img-frame">
-        <div className="luxury-image" data-ce-image="">
-          <AwImage
-            src={CE_IMG.ship}
-            alt="Luxury vessel on the Nile"
-            priority
-            sizes="80vw"
-          />
-        </div>
+      <div className="ch-reveal__media reveal-image">
+        <AwImage
+          src={CE_IMG.ship}
+          alt="Luxury vessel on the Nile"
+          priority
+          sizes="(max-width: 1024px) 100vw, 64rem"
+        />
       </div>
     </section>
   );
 }
 
 const SPECS = [
-  {
-    value: 240,
-    label: "Feet of Pure Elegance",
-    icon: (
-      <svg viewBox="0 0 28 28" aria-hidden="true">
-        <path d="M4 20 L14 6 L24 20" />
-        <path d="M8 20 H20" />
-      </svg>
-    ),
-  },
-  {
-    value: 24,
-    label: "Royal Suites",
-    icon: (
-      <svg viewBox="0 0 28 28" aria-hidden="true">
-        <rect x="6" y="10" width="16" height="12" />
-        <path d="M10 10 V7 H18 V10" />
-      </svg>
-    ),
-  },
-  {
-    value: 45,
-    label: "Crew Members",
-    icon: (
-      <svg viewBox="0 0 28 28" aria-hidden="true">
-        <circle cx="14" cy="10" r="4" />
-        <path d="M6 22 C6 17 10 15 14 15 C18 15 22 17 22 22" />
-      </svg>
-    ),
-  },
-  {
-    value: 5,
-    label: "Star Service",
-    icon: (
-      <svg viewBox="0 0 28 28" aria-hidden="true">
-        <path d="M14 4 L16.5 11 H24 L18 15.5 L20.5 23 L14 18.5 L7.5 23 L10 15.5 L4 11 H11.5 Z" />
-      </svg>
-    ),
-  },
+  { value: 240, label: "Feet of Pure Elegance" },
+  { value: 24, label: "Royal Suites" },
+  { value: 5, label: "Star Service" },
 ] as const;
 
 export function CharterSpecs() {
@@ -78,16 +40,15 @@ export function CharterSpecs() {
     <section className="ch-specs" aria-label="Specifications" data-ch-specs="">
       <div className="ch-specs__grid">
         {SPECS.map((spec) => (
-          <div key={spec.label} className="ch-spec" data-ce-reveal="">
-            <span className="ch-spec__icon">{spec.icon}</span>
-            <p
-              className="ch-spec__value ce-display"
+          <div key={spec.label} className="ch-spec">
+            <span
+              className="ch-spec__value ce-serif counter-anim"
               data-ch-count=""
               data-target={spec.value}
             >
               0
-            </p>
-            <p className="ch-spec__label">{spec.label}</p>
+            </span>
+            <span className="ch-spec__label">{spec.label}</span>
           </div>
         ))}
       </div>
@@ -121,54 +82,44 @@ const SUITES = [
 
 export function CharterSuites() {
   return (
-    <section className="ch-suites" aria-label="The Suites" data-ch-suites="">
-      <div className="ch-suites__runway">
-        <div className="ch-suites__pin" data-ch-suites-pin="">
-          <div className="ch-suites__track" data-ch-suites-track="">
-            {SUITES.map((suite) => (
-              <article key={suite.name} className="ch-suites__slide">
-                <div className="ch-suites__media">
-                  <div className="luxury-image" data-ce-image="" style={{ position: "absolute", inset: 0 }}>
-                    <AwImage
-                      src={suite.src}
-                      alt={suite.name}
-                      sizes="(max-width: 1023px) 100vw, 55vw"
-                    />
-                  </div>
-                </div>
-                <div className="ch-suites__copy">
-                  <h2 className="ch-suites__name ce-display">{suite.name}</h2>
-                  <p className="ch-suites__size">{suite.size}</p>
-                  <p className="ch-suites__body">{suite.body}</p>
-                  <p className="ch-suites__price ce-display">{suite.price}</p>
-                  <a href="#charter-request" className="ce-btn ce-btn--ghost">
-                    View Suite Details
-                  </a>
-                </div>
-              </article>
-            ))}
+    <div aria-label="The Suites">
+      {SUITES.map((suite) => (
+        <section key={suite.name} className="ch-suite">
+          <div className="ch-suite__media">
+            <AwImage
+              src={suite.src}
+              alt={suite.name}
+              sizes="(max-width: 767px) 100vw, 50vw"
+            />
           </div>
-        </div>
-      </div>
-    </section>
+          <div className="ch-suite__copy">
+            <h2 className="ch-suite__name ce-serif">{suite.name}</h2>
+            <p className="ch-suite__size">{suite.size}</p>
+            <p className="ch-suite__body">{suite.body}</p>
+            <p className="ch-suite__price ce-serif">{suite.price}</p>
+            <a href="#charter-request" className="ce-btn-ghost">
+              View Suite Details
+            </a>
+          </div>
+        </section>
+      ))}
+    </div>
   );
 }
 
 export function CharterInvite() {
   return (
     <section className="ch-invite" aria-labelledby="ch-invite-title">
-      <h2 id="ch-invite-title" className="ch-invite__title ce-display" data-ce-reveal="">
-        Begin Your Legacy
+      <h2 id="ch-invite-title" className="ch-invite__title ce-serif">
+        Begin Your Legacy.
       </h2>
-      <p className="ch-invite__sub" data-ce-reveal="">
+      <p className="ce-body-copy ch-invite__sub">
         Spaces are strictly limited to ensure an intimate, bespoke experience.
         Secure your private passage today.
       </p>
-      <div data-ce-reveal="">
-        <a href="#charter-request" className="ce-btn">
-          Reserve Your Voyage
-        </a>
-      </div>
+      <a href="#charter-request" className="ce-btn">
+        Reserve Your Voyage
+      </a>
     </section>
   );
 }

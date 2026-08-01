@@ -8,7 +8,7 @@ import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/** Highlights cream editorial — restrained typography & image reveals. */
+/** Highlights — masked text + parallax images (site Lenis only). */
 export function useHighlightsPageMotion(rootRef: RefObject<HTMLElement | null>) {
   useEffect(() => {
     const root = rootRef.current;
@@ -17,7 +17,9 @@ export function useHighlightsPageMotion(rootRef: RefObject<HTMLElement | null>) 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) {
       root
-        .querySelectorAll<HTMLElement>("[data-ce-line], [data-ce-reveal], [data-ce-image]")
+        .querySelectorAll<HTMLElement>(
+          ".reveal-text, .reveal-label, .reveal-subtext, .parallax-img, .parallax-bg",
+        )
         .forEach((el) => {
           el.style.opacity = "1";
           el.style.transform = "none";
@@ -26,65 +28,127 @@ export function useHighlightsPageMotion(rootRef: RefObject<HTMLElement | null>) 
     }
 
     const light = shouldLightenMotionForDevice();
-    const duration = light ? 0.85 : 1.2;
-    const imgDuration = light ? 1.1 : 1.8;
 
     const ctx = gsap.context(() => {
-      const hookLines = root.querySelectorAll<HTMLElement>(".hl-hook [data-ce-line]");
-      gsap.set(hookLines, { opacity: 0, y: 40 });
-      gsap.to(hookLines, {
+      const labels = root.querySelectorAll<HTMLElement>(".reveal-label");
+      gsap.to(labels, {
         opacity: 1,
-        y: 0,
-        duration,
-        stagger: 0.12,
+        duration: light ? 0.8 : 1.2,
         ease: "power3.out",
-        delay: 0.08,
+        delay: 0.05,
       });
 
-      root.querySelectorAll<HTMLElement>("[data-ce-reveal]").forEach((el) => {
-        gsap.from(el, {
-          y: 40,
-          opacity: 0,
-          duration,
+      root.querySelectorAll<HTMLElement>(".reveal-text").forEach((text) => {
+        if (text.closest(".hl-hook")) return;
+        gsap.from(text, {
+          y: "100%",
+          duration: light ? 0.9 : 1.4,
           ease: "power3.out",
           scrollTrigger: {
-            trigger: el,
-            start: "top 85%",
+            trigger: text,
+            start: "top 90%",
             toggleActions: "play none none reverse",
           },
         });
       });
 
-      root.querySelectorAll<HTMLElement>("[data-ce-image]").forEach((img) => {
-        if (light) {
+      const hookTexts = root.querySelectorAll<HTMLElement>(".hl-hook .reveal-text");
+      gsap.from(hookTexts, {
+        y: "100%",
+        duration: light ? 0.9 : 1.4,
+        stagger: 0.12,
+        ease: "power3.out",
+        delay: 0.15,
+      });
+
+      root.querySelectorAll<HTMLElement>(".reveal-subtext").forEach((el) => {
+        if (el.closest(".hl-hook")) return;
+        gsap.fromTo(
+          el,
+          { opacity: 0, y: 24 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: light ? 0.8 : 1.2,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: el,
+              start: "top 88%",
+              toggleActions: "play none none reverse",
+            },
+          },
+        );
+      });
+
+      const hookSub = root.querySelector<HTMLElement>(".hl-hook .reveal-subtext");
+      if (hookSub) {
+        gsap.fromTo(
+          hookSub,
+          { opacity: 0, y: 24 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: light ? 0.8 : 1.2,
+            ease: "power3.out",
+            delay: 0.55,
+          },
+        );
+      }
+
+      if (!light) {
+        root.querySelectorAll<HTMLElement>(".parallax-img").forEach((img) => {
+          gsap.fromTo(
+            img,
+            { yPercent: 0, scale: 1.1 },
+            {
+              yPercent: 15,
+              scale: 1,
+              ease: "none",
+              scrollTrigger: {
+                trigger: img.parentElement,
+                start: "top bottom",
+                end: "bottom top",
+                scrub: true,
+              },
+            },
+          );
+        });
+
+        root.querySelectorAll<HTMLElement>(".parallax-bg").forEach((img) => {
+          gsap.fromTo(
+            img,
+            { yPercent: -6 },
+            {
+              yPercent: 6,
+              ease: "none",
+              scrollTrigger: {
+                trigger: img.parentElement,
+                start: "top bottom",
+                end: "bottom top",
+                scrub: true,
+              },
+            },
+          );
+        });
+      } else {
+        root.querySelectorAll<HTMLElement>(".parallax-img, .parallax-bg").forEach((img) => {
           gsap.from(img, {
             opacity: 0,
             duration: 0.9,
             ease: "power2.out",
             scrollTrigger: {
               trigger: img,
-              start: "top 85%",
+              start: "top 88%",
               toggleActions: "play none none reverse",
             },
           });
-          return;
-        }
-        gsap.from(img, {
-          scale: 1.1,
-          duration: imgDuration,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: img,
-            start: "top 80%",
-            toggleActions: "play none none reverse",
-          },
         });
-      });
+      }
     }, root);
 
-    const onLoad = () => requestScrollRefresh("highlights-cream-load");
+    const onLoad = () => requestScrollRefresh("hl-cream-v2-load");
     window.addEventListener("load", onLoad);
-    requestAnimationFrame(() => requestScrollRefresh("highlights-cream-mount"));
+    requestAnimationFrame(() => requestScrollRefresh("hl-cream-v2-mount"));
 
     return () => {
       window.removeEventListener("load", onLoad);

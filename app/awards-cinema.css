@@ -1,16 +1,16 @@
-/* Cream editorial luxury — /highlights + /charter */
+/* Cream editorial base — fonts & motion helpers for /highlights + /charter */
 
 .ce-page {
   --ce-bg: #faf8f5;
   --ce-sand: #f0ebe3;
-  --ce-ink: #1a1a1a;
+  --ce-ink: #1c1c1c;
   --ce-nile: #1b4965;
   --ce-gold: #c9a227;
   --ce-muted: #5d6d7e;
-  --ce-border: rgba(26, 26, 26, 0.08);
-  --ce-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ce-border: rgba(28, 28, 28, 0.08);
+  --ce-ease: cubic-bezier(0.16, 1, 0.3, 1);
 
-  --ce-display: var(--font-aw-cinzel), "Cinzel", Georgia, serif;
+  --ce-display: var(--font-aw-cinzel), "Cinzel", "Playfair Display", Georgia, serif;
   --ce-italic: var(--font-aw-cormorant), "Cormorant Garamond", Georgia, serif;
   --ce-body: var(--font-aw-inter), "Inter", system-ui, sans-serif;
 
@@ -22,13 +22,10 @@
   overflow-x: clip;
 }
 
-.ce-page h1,
-.ce-page h2,
-.ce-page h3,
-.ce-page .ce-display {
+.ce-page .ce-serif {
   font-family: var(--ce-display);
   font-weight: 400;
-  letter-spacing: 0;
+  letter-spacing: -0.02em;
 }
 
 .ce-page .ce-italic {
@@ -38,116 +35,81 @@
 }
 
 .ce-page .ce-label {
-  margin: 0;
   font-family: var(--ce-body);
   font-size: 0.75rem;
-  font-weight: 400;
+  font-weight: 500;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--ce-gold);
 }
 
-.ce-page .ce-body {
-  margin: 0;
-  font-size: 1.125rem;
+.ce-page .ce-body-copy {
+  font-size: clamp(1rem, 1.5vw, 1.125rem);
   font-weight: 300;
   line-height: 1.8;
+  letter-spacing: 0.02em;
   color: var(--ce-muted);
-}
-
-.ce-page .ce-link {
-  position: relative;
-  display: inline-block;
-  margin-top: 1.75rem;
-  font-size: 0.8125rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  text-decoration: none;
-  color: var(--ce-ink);
-}
-
-.ce-page .ce-link::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -0.35rem;
-  width: 100%;
-  height: 1px;
-  background: var(--ce-gold);
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform 0.45s var(--ce-ease);
-}
-
-.ce-page .ce-link:hover::after,
-.ce-page .ce-link:focus-visible::after {
-  transform: scaleX(1);
-}
-
-.ce-page .ce-gold-rule {
-  display: block;
-  width: 60px;
-  height: 1px;
-  margin: 1.75rem 0 0;
-  background: var(--ce-gold);
 }
 
 .ce-page .ce-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 3.25rem;
+  min-height: 44px;
   padding: 1.25rem 3rem;
-  border: 0;
-  background: var(--ce-nile);
-  color: var(--ce-bg);
-  font-family: var(--ce-body);
-  font-size: 0.8125rem;
-  font-weight: 400;
-  letter-spacing: 0.15em;
+  background: #1c1c1c;
+  color: #faf8f5;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   text-decoration: none;
-  cursor: pointer;
-  transition: background 0.4s var(--ce-ease);
-}
-
-.ce-page .ce-btn:hover,
-.ce-page .ce-btn:focus-visible {
-  background: var(--ce-gold);
-  outline: none;
-}
-
-.ce-page .ce-btn--ghost {
-  background: transparent;
-  color: var(--ce-gold);
-  border: 1px solid var(--ce-gold);
-}
-
-.ce-page .ce-btn--ghost:hover,
-.ce-page .ce-btn--ghost:focus-visible {
-  background: var(--ce-gold);
-  color: var(--ce-nile);
-}
-
-.ce-page .ce-sr {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
   border: 0;
+  cursor: pointer;
+  transition: background 0.7s var(--ce-ease), color 0.7s var(--ce-ease);
 }
 
-.ce-shell {
-  width: min(1120px, calc(100% - 10vw));
-  margin-inline: auto;
+.ce-page .ce-btn:hover {
+  background: #c9a227;
+  color: #1c1c1c;
 }
 
-.ce-shell--wide {
-  width: min(1280px, calc(100% - 8vw));
+.ce-page .ce-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  width: max-content;
+  padding: 1rem 2rem;
+  border: 1px solid #c9a227;
+  color: #c9a227;
+  background: transparent;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.7s var(--ce-ease), color 0.7s var(--ce-ease);
+}
+
+.ce-page .ce-btn-ghost:hover {
+  background: #c9a227;
+  color: #1b4965;
+}
+
+.ce-page .ce-story-link {
+  display: inline-block;
+  font-size: 0.875rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #1c1c1c;
+  text-decoration: none;
+  border-bottom: 1px solid #1c1c1c;
+  padding-bottom: 0.5rem;
+  transition: border-color 0.7s var(--ce-ease), color 0.7s var(--ce-ease);
+}
+
+.ce-page .ce-story-link:hover {
+  border-color: #c9a227;
+  color: #c9a227;
 }
 
 .ce-fill {
@@ -158,17 +120,14 @@
   object-fit: cover;
 }
 
-.ce-img-frame {
-  position: relative;
-  overflow: hidden;
-  border-radius: 2px;
+.ce-page .block {
+  display: block;
 }
 
-.ce-img-frame--gold {
-  box-shadow: inset 0 0 0 1px rgba(201, 162, 39, 0.35);
+.ce-page .mb-8 {
+  margin-bottom: 2rem;
 }
 
-/* Custom cursor — desktop fine pointer only */
 .ce-cursor {
   position: fixed;
   top: 0;
@@ -177,15 +136,15 @@
   height: 6px;
   margin: -3px 0 0 -3px;
   border-radius: 50%;
-  background: var(--ce-gold);
+  background: #c9a227;
   pointer-events: none;
   z-index: 9999;
-  mix-blend-mode: normal;
   transition:
     width 0.35s var(--ce-ease),
     height 0.35s var(--ce-ease),
     margin 0.35s var(--ce-ease),
     background 0.35s var(--ce-ease),
+    border 0.35s var(--ce-ease),
     mix-blend-mode 0.2s;
   will-change: transform;
 }
@@ -199,16 +158,18 @@
   mix-blend-mode: difference;
 }
 
-@media (pointer: coarse), (max-width: 1023px) {
+@media (pointer: coarse) {
   .ce-cursor {
     display: none !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ce-page [data-ce-reveal],
-  .ce-page [data-ce-line],
-  .ce-page .luxury-image {
+  .ce-page .reveal-text,
+  .ce-page .reveal-label,
+  .ce-page .reveal-subtext,
+  .ce-page .reveal-image,
+  .ce-page .parallax-img {
     opacity: 1 !important;
     transform: none !important;
   }
