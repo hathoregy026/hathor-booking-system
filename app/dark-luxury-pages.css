@@ -1,0 +1,66 @@
+/* Dark luxury — /highlights + /charter (Active Theory language) */
+
+[data-dark-luxury-page] {
+  --color-black: #0a0a0a;
+  --color-dark: #111111;
+  --color-charcoal: #1a1a1a;
+  --color-cream: #f5f2eb;
+  --color-gold: #c9a227;
+  --color-gray: #888888;
+
+  background: var(--color-black);
+  color: var(--color-cream);
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+}
+
+[data-dark-luxury-page] .reveal-text {
+  transform: translateY(100%);
+  will-change: transform;
+}
+
+[data-dark-luxury-page] .reveal-label,
+[data-dark-luxury-page] .reveal-subtext {
+  opacity: 0;
+  transform: translateY(12px);
+  will-change: opacity, transform;
+}
+
+[data-dark-luxury-page] .parallax-hero,
+[data-dark-luxury-page] .parallax-img,
+[data-dark-luxury-page] .parallax-bg {
+  will-change: transform;
+}
+
+@media (max-width: 768px) {
+  [data-dark-luxury-page] .dl-py-48 {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+
+  [data-dark-luxury-page] .dl-py-64 {
+    padding-top: 8rem;
+    padding-bottom: 8rem;
+  }
+
+  [data-dark-luxury-page] .parallax-hero,
+  [data-dark-luxury-page] .parallax-img,
+  [data-dark-luxury-page] .parallax-bg {
+    transform: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-dark-luxury-page] .reveal-text,
+  [data-dark-luxury-page] .reveal-label,
+  [data-dark-luxury-page] .reveal-subtext {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  [data-dark-luxury-page] .parallax-hero,
+  [data-dark-luxury-page] .parallax-img,
+  [data-dark-luxury-page] .parallax-bg {
+    transform: none !important;
+  }
+}
