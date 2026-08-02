@@ -57,12 +57,11 @@ function setupScrub(root: HTMLElement, scrubEl: HTMLElement) {
 
   let lastIndex = 0;
 
+  /* Callback-only ST — never set scrub without an animation (GSAP reads animation.end). */
   ScrollTrigger.create({
     trigger: pin,
     start: "top top",
     end: "bottom bottom",
-    scrub: 0.35,
-    anticipatePin: 1,
     invalidateOnRefresh: true,
     onUpdate(self) {
       const p = self.progress;
@@ -141,7 +140,6 @@ function setupLifeAboard(root: HTMLElement) {
     trigger: pin,
     start: "top top",
     end: "bottom bottom",
-    scrub: 0.3,
     invalidateOnRefresh: true,
     onUpdate(self) {
       const index = Math.min(
