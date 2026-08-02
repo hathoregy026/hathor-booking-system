@@ -4,7 +4,6 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { useHeroLogoSettings } from "@/components/public/HeroLogoSettingsProvider";
 import { HathorLogoSplit } from "@/components/public/HathorLogoSplit";
-import { LuxuryGoldHeroTitle } from "@/components/public/LuxuryGoldHeroTitle";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
 import { isPhoneViewport, logPhonePerfDev } from "@/lib/touch-device";
@@ -126,16 +125,13 @@ export function PublicSiteHero({
   const displayRight = resolved.main;
   const displayLeft = resolved.second;
   const shimmer = typography.hero_second_shimmer;
-  /** Homepage second title — LuxuryGoldHeroTitle owns fill; outer keeps GSAP + typography. */
-  const useLuxuryGoldTitle = heroPage === "home" && !lineLeftImageSrc;
-  const secondTitleStyle = useLuxuryGoldTitle
+  /** Homepage second title — plain solid color; no shimmer / gold effects. */
+  const usePlainSecondTitle = heroPage === "home" && !lineLeftImageSrc;
+  const secondTitleStyle = usePlainSecondTitle
     ? {
-        fontFamily: heroSubtitleStyle.fontFamily,
-        fontSize: heroSubtitleStyle.fontSize,
-        lineHeight: heroSubtitleStyle.lineHeight,
-        letterSpacing: heroSubtitleStyle.letterSpacing,
-        textTransform: heroSubtitleStyle.textTransform,
-        fontWeight: heroSubtitleStyle.fontWeight,
+        ...heroSubtitleStyle,
+        color: "#B69F64",
+        WebkitTextFillColor: "#B69F64",
       }
     : {
         ...heroSubtitleStyle,
@@ -148,8 +144,8 @@ export function PublicSiteHero({
             }
           : {}),
       };
-  const secondTitleClass = useLuxuryGoldTitle
-    ? "hero-line hero-line--left"
+  const secondTitleClass = usePlainSecondTitle
+    ? "hero-line hero-line--left hero-line--plain"
     : shimmer.enabled
       ? "hero-line hero-line--left hero-line--shimmer"
       : "hero-line hero-line--left";
@@ -403,11 +399,7 @@ export function PublicSiteHero({
             </span>
           ) : displayLeft ? (
             <span className={secondTitleClass} style={secondTitleStyle}>
-              {useLuxuryGoldTitle ? (
-                <LuxuryGoldHeroTitle>{displayLeft}</LuxuryGoldHeroTitle>
-              ) : (
-                displayLeft
-              )}
+              {displayLeft}
             </span>
           ) : null}
         </h1>

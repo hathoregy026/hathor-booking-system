@@ -439,51 +439,18 @@
   display: none !important;
 }
 
-/* =========================================================
-   LUXURY GOLD HERO TITLE — SVG metallic fill
-   One SVG <text>. No CSS text-gradient / pseudo shimmer.
-   ========================================================= */
-
-.luxuryGoldHeroTitle {
-  position: relative;
-  display: inline-block;
-  max-width: 100%;
-  vertical-align: baseline;
-
-  font: inherit;
-  line-height: inherit;
-  letter-spacing: inherit;
-  text-align: inherit;
-  white-space: inherit;
-
-  /* Fallback before SVG paints */
-  color: #f0c45a;
-
-  transform: none;
-  opacity: 1;
-  overflow: visible;
+/* Homepage second title — plain solid color (no gold effects) */
+.home-hero-container .hero-heading .hero-line--left.hero-line--plain {
+  color: #b69f64 !important;
+  -webkit-text-fill-color: #b69f64 !important;
+  background: none !important;
+  background-image: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  animation: none !important;
+  filter: none !important;
+  text-shadow: none !important;
 }
-
-.luxuryGoldHeroTitle__svg {
-  display: inline-block;
-  vertical-align: baseline;
-  overflow: visible;
-  max-width: 100%;
-  height: auto;
-  /* Preserve measured proportions — do not stretch */
-  flex-shrink: 0;
-}
-
-.luxuryGoldHeroTitle__text {
-  font-family: inherit;
-  font-size: inherit;
-  font-weight: inherit;
-  font-style: inherit;
-  letter-spacing: inherit;
-  /* SVG text — no CSS gradient fill */
-}
-
-/* Reduced motion: continuous sweep disabled in component JS; static metal kept. */
 
 .hero-sub {
   margin-top: 20px;
