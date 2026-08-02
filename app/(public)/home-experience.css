@@ -1956,7 +1956,10 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 }
 
 .ex-stack-scroll__card {
-  --stack-fog-edge: 140%;
+  /* Hidden until fog tween starts — never flash all plates at once on load */
+  --stack-fog-edge: 0%;
+  opacity: 0;
+  visibility: hidden;
   position: absolute;
   inset: 0;
   width: 100%;
@@ -1996,6 +1999,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 /* Fully risen landmark — keep mask at 140% via JS; class is a state marker only */
 .ex-stack-scroll__card.is-stack-solid {
   background-color: #0c0806 !important;
+  opacity: 1;
+  visibility: visible;
 }
 
 /* Soft cinematic light — no frame/rules (those read as dead edges) */
@@ -2253,6 +2258,26 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .split-word {
   /* Split text would turn text-shadow into per-glyph bars — kill it */
   text-shadow: none !important;
   filter: none;
+}
+
+/*
+ * Engraved gold shadow on the indication — drop-shadow on the whole line
+ * (not text-shadow on split glyphs) so it matches homepage gold titles.
+ */
+html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebrow {
+  filter:
+    drop-shadow(-1px -1px 0 rgba(255, 248, 235, 0.55))
+    drop-shadow(1px 1px 0 rgba(40, 28, 10, 0.48))
+    drop-shadow(1.5px 1.5px 2px rgba(0, 0, 0, 0.3))
+    drop-shadow(2px 3px 4px rgba(0, 0, 0, 0.2)) !important;
+}
+
+html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebrow .split-char,
+html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebrow .split-word,
+html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebrow .char,
+html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebrow .word {
+  filter: none !important;
+  text-shadow: none !important;
 }
 
 .ex-stack-scroll__title-line {

@@ -800,11 +800,17 @@ export function useExScrollMotion() {
         "--stack-fog-edge",
         `${solid ? FOG_RANGE : qEdge}%`,
       );
-      card.style.opacity = solid ? "1" : String(op);
-      if (solid || op > 0.02) {
+      if (solid) {
+        card.style.opacity = "1";
         card.style.visibility = "visible";
-      } else if (op <= 0.01) {
-        card.style.visibility = "hidden";
+        gsap.set(card, { autoAlpha: 1, opacity: 1 });
+      } else {
+        card.style.opacity = String(op);
+        if (op > 0.02) {
+          card.style.visibility = "visible";
+        } else if (op <= 0.01) {
+          card.style.visibility = "hidden";
+        }
       }
       card.classList.toggle("is-stack-solid", solid);
       if (solid) syncStackPhotoReady(true);
@@ -812,14 +818,17 @@ export function useExScrollMotion() {
 
     /**
      * Lock covered plates to a full fog mask so cream never punches through
-     * the soft lip. Opacity/visibility stay owned by each card's fog tween —
-     * writing opacity here left later plates stuck visible after reverse scrub.
+     * the soft lip. Also force full opacity — scrub jumps can skip a plate's
+     * fog tween mid-reveal and leave under-cards ghosted/transparent.
      */
     const holdUnderCard = (index: number) => {
       const under = cards[index];
       if (!under) return;
       under.classList.add("is-stack-solid");
       under.style.setProperty("--stack-fog-edge", `${FOG_RANGE}%`);
+      under.style.opacity = "1";
+      under.style.visibility = "visible";
+      gsap.set(under, { autoAlpha: 1, opacity: 1 });
     };
 
     const holdUnderCardsThrough = (activeIndex: number) => {
