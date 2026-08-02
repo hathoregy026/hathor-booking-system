@@ -1304,6 +1304,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left.hero-line--plai
   letter-spacing: var(--typo-hero-subtitle-letter-spacing) !important;
   color: #b69f64 !important;
   -webkit-text-fill-color: #b69f64 !important;
+  text-shadow: var(--hathor-title-engraved-gold) !important;
 }
 .public-site .hero-line--left:not(.hero-line--wordmark),
 .public-site .home-hero-container .hero-heading .hero-line--left:not(.hero-line--wordmark),

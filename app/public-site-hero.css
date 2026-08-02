@@ -439,7 +439,7 @@
   display: none !important;
 }
 
-/* Homepage second title — plain solid color (no gold effects) */
+/* Homepage second title — solid #B69F64 + same engraved gold shadow as body titles */
 .home-hero-container .hero-heading .hero-line--left.hero-line--plain {
   color: #b69f64 !important;
   -webkit-text-fill-color: #b69f64 !important;
@@ -449,7 +449,7 @@
   background-clip: border-box !important;
   animation: none !important;
   filter: none !important;
-  text-shadow: none !important;
+  text-shadow: var(--hathor-title-engraved-gold) !important;
 }
 
 .hero-sub {
