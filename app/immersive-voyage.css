@@ -1,0 +1,968 @@
+/* Immersive voyage — /charter + /highlights
+   Cream–gold Hathor DNA. Scoped to page roots only. */
+
+@import "./luxury-editorial.css";
+
+[data-charter-page],
+[data-highlights-page] {
+  --iv-cream: var(--lux-cream, #ece8df);
+  --iv-ink: #1a1714;
+  --iv-gold: var(--lux-gold, #b69f64);
+  --iv-muted: var(--public-muted, #6b6560);
+  --iv-border: rgb(44 40 36 / 0.12);
+  --iv-display: var(--public-title, var(--font-hathor-gamgote, "Gamgote"), serif);
+  --iv-script: var(--font-hathor-quiet-luxury, "Quiet Luxury"), cursive;
+  --iv-sans: var(--public-sans, var(--font-hathor-body, "Plus Jakarta Sans"), system-ui, sans-serif);
+  --iv-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --iv-gutter: clamp(1.25rem, 4vw, 3.5rem);
+  --iv-max: 92rem;
+
+  position: relative;
+  overflow-x: clip;
+  background: var(--iv-cream);
+  color: var(--iv-ink);
+  font-family: var(--iv-sans);
+}
+
+.iv-wrap {
+  width: min(calc(100% - (var(--iv-gutter) * 2)), var(--iv-max));
+  margin-inline: auto;
+}
+
+.iv-kicker {
+  margin: 0 0 1rem;
+  font-family: var(--iv-sans);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--iv-muted);
+}
+
+.iv-script {
+  margin: 0;
+  font-family: var(--iv-script);
+  font-weight: 400;
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  line-height: 1.2;
+  color: var(--iv-gold);
+}
+
+.public-site p.iv-script {
+  font-family: var(--iv-script);
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  color: var(--iv-gold);
+}
+
+.iv-lead {
+  margin: 0;
+  max-width: 38ch;
+  font-size: clamp(1.05rem, 1.2vw, 1.2rem);
+  line-height: 1.7;
+  color: var(--iv-muted);
+}
+
+.iv-copy {
+  margin: 0;
+  max-width: 42ch;
+  font-size: clamp(0.98rem, 1.05vw, 1.1rem);
+  line-height: 1.75;
+  color: var(--iv-muted);
+}
+
+.iv-copy p + p {
+  margin-top: 1rem;
+}
+
+/* ——— Manifesto ——— */
+.iv-manifesto {
+  padding: clamp(4.5rem, 10vw, 8.5rem) 0 clamp(3.5rem, 7vw, 6rem);
+}
+
+.iv-manifesto__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: end;
+}
+
+.iv-manifesto__statement {
+  margin: 0 0 1.25rem;
+  font-family: var(--iv-display);
+  font-weight: 400;
+  font-size: clamp(2.6rem, 6.2vw, 5.4rem);
+  letter-spacing: -0.045em;
+  line-height: 0.92;
+  text-wrap: balance;
+  color: var(--iv-ink);
+}
+
+.iv-manifesto__media {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+}
+
+.iv-manifesto__media img {
+  object-fit: cover;
+}
+
+/* ——— Residence / full-bleed ——— */
+.iv-bleed {
+  position: relative;
+  min-height: min(92svh, 920px);
+  display: grid;
+  align-items: end;
+}
+
+.iv-bleed__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.iv-bleed__media img {
+  object-fit: cover;
+}
+
+.iv-bleed__shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, transparent 18%, rgb(12 10 8 / 0.55) 100%),
+    linear-gradient(90deg, rgb(12 10 8 / 0.45) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+.iv-bleed__panel {
+  position: relative;
+  z-index: 2;
+  width: min(36rem, calc(100% - (var(--iv-gutter) * 2)));
+  margin: 0 var(--iv-gutter) clamp(2.5rem, 6vw, 4.5rem);
+  padding: clamp(1.75rem, 3vw, 2.5rem);
+  background: rgb(236 232 223 / 0.94);
+  color: var(--iv-ink);
+}
+
+.iv-bleed__panel .lux-gold,
+.iv-bleed__panel h2 {
+  color: var(--iv-ink);
+}
+
+.iv-lines {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.iv-lines li {
+  position: relative;
+  padding-left: 1.15rem;
+  font-family: var(--iv-display);
+  font-size: clamp(1.15rem, 1.8vw, 1.45rem);
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: var(--iv-ink);
+}
+
+.iv-lines li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 0.45rem;
+  height: 1px;
+  background: var(--iv-gold);
+}
+
+/* ——— Sticky scrub stages (desktop) ——— */
+.iv-scrub {
+  position: relative;
+  background: var(--iv-cream);
+}
+
+.iv-scrub__head {
+  padding: clamp(3.5rem, 7vw, 5.5rem) 0 1.5rem;
+}
+
+.iv-scrub__pin {
+  display: none;
+}
+
+.iv-scrub__stack {
+  display: grid;
+  gap: clamp(2.5rem, 6vw, 4rem);
+  padding: 1rem 0 clamp(4rem, 8vw, 6rem);
+}
+
+.iv-stack-card {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.iv-stack-card__media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+}
+
+.iv-stack-card__media img {
+  object-fit: cover;
+}
+
+.iv-stack-card h3 {
+  margin: 0.35rem 0 0.5rem;
+  font-family: var(--iv-display);
+  font-weight: 400;
+  font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+
+@media (min-width: 1025px) {
+  .iv-scrub__pin {
+    display: block;
+    height: var(--iv-scrub-runway, 400svh);
+  }
+
+  .iv-scrub__stage {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 0;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .iv-scrub__media {
+    position: relative;
+    height: 100%;
+  }
+
+  .iv-scrub__slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+
+  .iv-scrub__slide.is-active {
+    opacity: 1;
+    z-index: 1;
+  }
+
+  .iv-scrub__slide img {
+    object-fit: cover;
+  }
+
+  .iv-scrub__copy {
+    position: relative;
+    display: grid;
+    align-content: center;
+    padding: clamp(2rem, 4vw, 3.5rem);
+    background: var(--iv-cream);
+  }
+
+  .iv-scrub__chapter {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    align-content: center;
+    padding: inherit;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(18px);
+    will-change: opacity, transform;
+  }
+
+  .iv-scrub__chapter.is-active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+    z-index: 1;
+  }
+
+  .iv-scrub__chapter h3 {
+    margin: 0.4rem 0 0.85rem;
+    font-family: var(--iv-display);
+    font-weight: 400;
+    font-size: clamp(2rem, 3.4vw, 3.1rem);
+    letter-spacing: -0.04em;
+    line-height: 1.02;
+  }
+
+  .iv-scrub__progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: rgb(44 40 36 / 0.08);
+    z-index: 3;
+  }
+
+  .iv-scrub__progress > i {
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: var(--iv-gold);
+    transform-origin: left center;
+    transform: scaleX(0);
+    will-change: transform;
+  }
+
+  .iv-scrub__rail {
+    position: absolute;
+    left: clamp(1.25rem, 3vw, 2.5rem);
+    bottom: clamp(1.5rem, 3vw, 2.5rem);
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    pointer-events: none;
+  }
+
+  .iv-scrub__rail span {
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 0.55);
+    transition: color 0.35s var(--iv-ease);
+  }
+
+  .iv-scrub__rail span.is-active {
+    color: #fff;
+  }
+
+  .iv-scrub--day .iv-scrub__rail span {
+    color: rgb(44 40 36 / 0.4);
+  }
+
+  .iv-scrub--day .iv-scrub__rail span.is-active {
+    color: var(--iv-ink);
+  }
+
+  .iv-scrub__stack {
+    display: none;
+  }
+}
+
+/* Day rail variant: media left still, cream copy right */
+.iv-scrub--day .iv-scrub__stage {
+  background: var(--iv-cream);
+}
+
+/* ——— Routes ——— */
+.iv-routes {
+  padding: clamp(4rem, 8vw, 7rem) 0;
+  background: var(--iv-cream);
+}
+
+.iv-routes__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: start;
+}
+
+.iv-routes__media {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+}
+
+.iv-routes__media img {
+  object-fit: cover;
+}
+
+/* Form / enquiry */
+.iv-enquiry {
+  position: relative;
+  padding: clamp(4rem, 8vw, 7rem) 0;
+  background: #1a1714;
+  color: var(--iv-cream);
+}
+
+.iv-enquiry__media {
+  position: absolute;
+  inset: 0;
+  opacity: 0.38;
+}
+
+.iv-enquiry__media img {
+  object-fit: cover;
+}
+
+.iv-enquiry__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #1a1714 0%, transparent 30%, #1a1714 100%);
+}
+
+.iv-enquiry__inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: start;
+}
+
+.iv-enquiry .lux-gold,
+.iv-enquiry h2 {
+  color: var(--iv-cream);
+}
+
+.iv-enquiry .lux-lead,
+.iv-enquiry .iv-lead,
+.iv-enquiry .iv-copy {
+  color: rgb(236 232 223 / 0.72);
+}
+
+.iv-enquiry .ch-request {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.iv-enquiry .ch-request__intro {
+  display: none;
+}
+
+.iv-enquiry__aside {
+  display: grid;
+  gap: 1rem;
+}
+
+.iv-enquiry__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 1.25rem;
+}
+
+/* ——— Highlights: first light ——— */
+.iv-firstlight {
+  padding: clamp(3.5rem, 7vw, 6rem) 0 clamp(2rem, 4vw, 3rem);
+}
+
+.iv-firstlight__panorama {
+  position: relative;
+  aspect-ratio: 21 / 9;
+  overflow: hidden;
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.iv-firstlight__panorama img {
+  object-fit: cover;
+}
+
+.iv-firstlight__meta {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: start;
+}
+
+.iv-firstlight__stamp {
+  font-family: var(--iv-script);
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  color: var(--iv-gold);
+  line-height: 1.15;
+}
+
+.iv-firstlight__crop {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  max-width: 28rem;
+  justify-self: end;
+  width: 100%;
+}
+
+.iv-firstlight__crop img {
+  object-fit: cover;
+}
+
+/* Landmarks — three distinct layouts */
+.iv-landmark {
+  padding: clamp(3rem, 6vw, 5rem) 0;
+}
+
+.iv-landmark--obelisk {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: center;
+}
+
+.iv-landmark--obelisk .iv-landmark__media {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+}
+
+.iv-landmark--hatshepsut {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.iv-landmark--hatshepsut .iv-landmark__media {
+  position: relative;
+  aspect-ratio: 21 / 9;
+  overflow: hidden;
+}
+
+.iv-landmark--hatshepsut .iv-landmark__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+  align-items: start;
+}
+
+.iv-landmark--valley {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 0;
+  min-height: min(78svh, 720px);
+  background: #161310;
+  color: var(--iv-cream);
+}
+
+.iv-landmark--valley .iv-landmark__media {
+  position: relative;
+  min-height: 100%;
+}
+
+.iv-landmark--valley .iv-landmark__copy {
+  display: grid;
+  align-content: center;
+  padding: clamp(2rem, 4vw, 3.5rem);
+}
+
+.iv-landmark--valley .lux-gold,
+.iv-landmark--valley h2,
+.iv-landmark--valley h3 {
+  color: var(--iv-cream);
+}
+
+.iv-landmark--valley .iv-copy,
+.iv-landmark--valley .iv-kicker,
+.iv-landmark--valley .lux-kicker {
+  color: rgb(236 232 223 / 0.7);
+}
+
+.iv-landmark__media img {
+  object-fit: cover;
+}
+
+.iv-landmark__fact {
+  margin: 1rem 0 0;
+  font-family: var(--iv-script);
+  font-size: clamp(1.15rem, 1.8vw, 1.45rem);
+  color: var(--iv-gold);
+  line-height: 1.3;
+}
+
+.iv-landmark--valley .iv-landmark__fact {
+  color: var(--iv-gold);
+}
+
+/* Life aboard */
+.iv-life {
+  padding: clamp(3.5rem, 7vw, 6rem) 0;
+}
+
+.iv-life__rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(72vw, 28rem);
+  gap: 1.25rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 1rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.iv-life__rail::-webkit-scrollbar {
+  height: 3px;
+}
+
+.iv-life__rail::-webkit-scrollbar-thumb {
+  background: var(--iv-gold);
+}
+
+.iv-life__card {
+  scroll-snap-align: start;
+  display: grid;
+  gap: 1rem;
+}
+
+.iv-life__card-media {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+}
+
+.iv-life__card-media img {
+  object-fit: cover;
+}
+
+.iv-life__card h3 {
+  margin: 0;
+  font-family: var(--iv-display);
+  font-weight: 400;
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  letter-spacing: -0.03em;
+}
+
+@media (min-width: 1025px) {
+  .iv-life__pin {
+    height: var(--iv-life-runway, 300svh);
+  }
+
+  .iv-life__stage {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.75rem;
+    padding: 1.5rem var(--iv-gutter);
+    align-items: stretch;
+  }
+
+  .iv-life__stage .iv-life__card {
+    opacity: 0.35;
+    transform: translateY(24px) scale(0.97);
+    transition: opacity 0.45s var(--iv-ease), transform 0.45s var(--iv-ease);
+  }
+
+  .iv-life__stage .iv-life__card.is-active {
+    opacity: 1;
+    transform: none;
+  }
+
+  .iv-life__stage .iv-life__card-media {
+    height: min(62svh, 560px);
+    aspect-ratio: auto;
+  }
+
+  .iv-life__rail {
+    display: none;
+  }
+}
+
+@media (max-width: 1024px) {
+  .iv-life__pin {
+    display: none;
+  }
+}
+
+/* Details grid */
+.iv-details {
+  padding: clamp(3.5rem, 7vw, 6rem) 0;
+}
+
+.iv-details__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.iv-details__cell {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.iv-details__media {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+
+.iv-details__media img {
+  object-fit: cover;
+}
+
+.iv-details__cell figcaption {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--iv-muted);
+}
+
+/* Closing CTA */
+.iv-close {
+  position: relative;
+  min-height: min(78svh, 720px);
+  display: grid;
+  place-items: end stretch;
+  padding: clamp(3rem, 6vw, 5rem) 0;
+  color: var(--iv-cream);
+}
+
+.iv-close__media {
+  position: absolute;
+  inset: 0;
+}
+
+.iv-close__media img {
+  object-fit: cover;
+}
+
+.iv-close__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 20%, rgb(12 10 8 / 0.78) 100%);
+}
+
+.iv-close__inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 1rem;
+  max-width: 40rem;
+}
+
+.iv-close__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 0.75rem;
+}
+
+/* ——— Form + routes (existing component classes) ——— */
+.ch-routes__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.ch-routes__input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ch-routes__row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0.75rem;
+  align-items: center;
+  min-height: 3.25rem;
+  padding: 0.85rem 1.1rem;
+  border: 1px solid var(--iv-border);
+  cursor: pointer;
+  transition: border-color 0.3s var(--iv-ease), background 0.3s var(--iv-ease);
+}
+
+.ch-routes__list li.is-active .ch-routes__row,
+.ch-routes__input:focus-visible + .ch-routes__row {
+  border-color: var(--iv-gold);
+  background: rgb(182 159 100 / 0.08);
+  outline: 2px solid var(--iv-gold);
+  outline-offset: 2px;
+}
+
+.ch-routes__origin,
+.ch-routes__dest {
+  font-family: var(--iv-display);
+  font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+  letter-spacing: -0.02em;
+}
+
+.ch-routes__dest {
+  text-align: right;
+}
+
+.ch-routes__line {
+  width: 2.5rem;
+  height: 1px;
+  background: var(--iv-gold);
+}
+
+.ch-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.ch-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+}
+
+.ch-form__field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.ch-form__field--full {
+  grid-column: 1 / -1;
+}
+
+.ch-form__label,
+.ce-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgb(236 232 223 / 0.55);
+}
+
+.ch-form__input {
+  width: 100%;
+  min-height: 2.85rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid rgb(236 232 223 / 0.22);
+  background: rgb(236 232 223 / 0.06);
+  color: var(--iv-cream);
+  font-family: var(--iv-sans);
+  font-size: 1rem;
+  border-radius: 0;
+}
+
+.ch-form__input:focus-visible {
+  outline: 2px solid var(--iv-gold);
+  outline-offset: 2px;
+  border-color: var(--iv-gold);
+}
+
+.ch-form__error,
+.ch-form__status.is-error {
+  margin: 0;
+  color: #e8b4a0;
+  font-size: 0.85rem;
+}
+
+.ch-form__success {
+  padding: 2rem 0;
+}
+
+.ce-display {
+  margin: 0 0 0.75rem;
+  font-family: var(--iv-display);
+  font-weight: 400;
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  color: var(--iv-cream);
+}
+
+.ce-btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.85rem;
+  min-width: 12rem;
+  padding: 0.85rem 1.6rem;
+  border: 1px solid var(--iv-gold);
+  background: var(--iv-gold);
+  color: #1a1714;
+  font-family: var(--iv-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.35s var(--iv-ease), color 0.35s var(--iv-ease);
+}
+
+.ce-btn:hover,
+.ce-btn:focus-visible {
+  background: transparent;
+  color: var(--iv-cream);
+  outline: 2px solid var(--iv-gold);
+  outline-offset: 3px;
+}
+
+.ce-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ——— Responsive ——— */
+@media (max-width: 1024px) {
+  .iv-manifesto__grid,
+  .iv-routes__layout,
+  .iv-enquiry__inner,
+  .iv-landmark--obelisk,
+  .iv-landmark--hatshepsut .iv-landmark__body,
+  .iv-landmark--valley,
+  .iv-firstlight__meta,
+  .iv-details__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .iv-landmark--valley {
+    min-height: 0;
+  }
+
+  .iv-landmark--valley .iv-landmark__media {
+    aspect-ratio: 16 / 10;
+    min-height: 0;
+  }
+
+  .iv-firstlight__panorama {
+    aspect-ratio: 16 / 10;
+  }
+
+  .iv-firstlight__crop {
+    justify-self: stretch;
+    max-width: none;
+  }
+
+  .iv-details__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .iv-bleed {
+    min-height: min(78svh, 680px);
+  }
+
+  .iv-bleed__panel {
+    width: calc(100% - (var(--iv-gutter) * 2));
+  }
+}
+
+@media (max-width: 480px) {
+  .ch-form__row {
+    grid-template-columns: 1fr;
+  }
+
+  .iv-details__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.65rem;
+  }
+
+  .ce-btn,
+  .iv-enquiry__actions .btn,
+  .iv-close__actions .btn {
+    width: 100%;
+  }
+
+  .iv-manifesto__statement {
+    font-size: clamp(2.2rem, 11vw, 3.2rem);
+  }
+
+  .ch-form__input {
+    font-size: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iv-scrub__slide,
+  .iv-scrub__chapter,
+  .iv-life__stage .iv-life__card {
+    transition: none !important;
+  }
+}

@@ -1,189 +1,439 @@
 "use client";
 
-import { useRef } from "react";
-import Image from "next/image";
+import { useRef, useState } from "react";
 import Link from "next/link";
-import { Cinzel, Cormorant_Garamond } from "next/font/google";
-import "@/app/dark-luxury-pages.css";
+import "@/app/immersive-voyage.css";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
-import { useDarkLuxuryPageMotion } from "@/hooks/useDarkLuxuryPageMotion";
+import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
+import { CharterRequestForm } from "@/components/pages/charter/CharterRequestForm";
+import { CharterRouteSelector } from "@/components/pages/charter/CharterRouteSelector";
+import { ManagedImage } from "@/components/ui/ManagedImage";
+import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
+import { useHathorLuxBodyMotion } from "@/hooks/useHathorLuxBodyMotion";
+import { useImmersiveVoyageMotion } from "@/hooks/useImmersiveVoyageMotion";
+import { CHARTER_CHAPTER_MEDIA } from "@/lib/charter-chapters";
+import { CHARTER_PAGE } from "@/lib/page-content";
+import { PUBLIC_CONTACT } from "@/lib/public-contact";
 
-const cinzel = Cinzel({
-  subsets: ["latin"],
-  variable: "--font-dl-cinzel",
-  display: "swap",
-});
+const SERVICE_RITUAL = [
+  {
+    kicker: "01 · Privacy",
+    title: "No other guests. Ever.",
+    body: "The entire Dahabiya is yours — decks, dining, and silence shaped around your party alone.",
+    slot: "charter-privacy" as const,
+    alt: CHARTER_CHAPTER_MEDIA[0].alt,
+    objectPosition: CHARTER_CHAPTER_MEDIA[0].objectPosition,
+  },
+  {
+    kicker: "02 · Route",
+    title: "The Nile, rewritten for you.",
+    body: "Temples at dawn, quiet banks at dusk, or a shore chosen only because the light asked for it.",
+    slot: "charter-itinerary" as const,
+    alt: CHARTER_CHAPTER_MEDIA[3].alt,
+    objectPosition: CHARTER_CHAPTER_MEDIA[3].objectPosition,
+  },
+  {
+    kicker: "03 · Service",
+    title: "A crew that anticipates.",
+    body: "Dedicated hospitality and a private chef — present when wanted, invisible when not.",
+    slot: "charter-service" as const,
+    alt: CHARTER_CHAPTER_MEDIA[1].alt,
+    objectPosition: CHARTER_CHAPTER_MEDIA[1].objectPosition,
+  },
+  {
+    kicker: "04 · Celebration",
+    title: "An evening composed for one table.",
+    body: "Anniversary light, family gathering, or a retreat with no strangers aboard — the ship changes mood with you.",
+    slot: "charter-rhythm" as const,
+    alt: CHARTER_CHAPTER_MEDIA[2].alt,
+    objectPosition: CHARTER_CHAPTER_MEDIA[2].objectPosition,
+  },
+] as const;
 
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["italic", "normal"],
-  variable: "--font-dl-cormorant",
-  display: "swap",
-});
-
-const IMG = {
-  hero: "https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?auto=format&fit=crop&w=2400&q=90",
-  suite:
-    "https://images.unsplash.com/photo-1590496993476-241ec45a02fa?auto=format&fit=crop&w=1600&q=90",
-} as const;
+const DAY_ON_NILE = [
+  {
+    time: "06:40",
+    title: "First coffee on the deck",
+    body: "The river is still silver. Coffee arrives where the light is softest — no schedule but yours.",
+    slot: "charter-privacy" as const,
+  },
+  {
+    time: "09:15",
+    title: "A temple before the gates fill",
+    body: "Stone cool underfoot. Your guide waits until you are ready to enter.",
+    slot: "landmark-hatshepsut" as const,
+  },
+  {
+    time: "13:30",
+    title: "Lunch where the breeze settles",
+    body: "Menus composed around season and appetite — ceremonial or effortless, as you prefer.",
+    slot: "gastronomy-restaurant" as const,
+  },
+  {
+    time: "17:50",
+    title: "A bank chosen for sunset",
+    body: "Away from the known landings — palms, soft current, an hour that belongs to no timetable.",
+    slot: "charter-rhythm" as const,
+  },
+  {
+    time: "21:00",
+    title: "Dinner beneath an open sky",
+    body: "Candlelight, warm air, and conversation that stretches as far as the horizon.",
+    slot: "gastronomy-hero" as const,
+  },
+] as const;
 
 export function CharterPageContent() {
-  const rootRef = useRef<HTMLElement>(null);
-  useDarkLuxuryPageMotion(rootRef);
+  const rootRef = useRef<HTMLDivElement>(null);
+  useHathorLuxBodyMotion(rootRef);
+  useImmersiveVoyageMotion(rootRef);
+
+  const { pages } = useWebsiteText();
+  const charter = pages.charter;
+  const routes = CHARTER_PAGE.overview.routes;
+  const [preferredRoute, setPreferredRoute] = useState<string>(routes[0] ?? "");
 
   return (
-    <main
-      ref={rootRef}
-      data-dark-luxury-page=""
-      data-charter-page=""
-      className={`${cinzel.variable} ${cormorant.variable}`}
-      style={{
-        fontFamily: "system-ui, sans-serif",
-        backgroundColor: "var(--color-black)",
-      }}
+    <PageScrollTransition
+      title={CHARTER_PAGE.hero.title}
+      secondTitle={CHARTER_PAGE.hero.secondTitle}
+      subtitle={CHARTER_PAGE.hero.subtitle}
+      breadcrumb="Charter"
+      imageName="charter-hero"
+      heroPage="charter"
     >
-      {/* SECTION 1 — HERO */}
-      <section className="relative h-screen w-full overflow-hidden bg-[var(--color-black)]">
-        <div className="absolute inset-0 h-full w-full">
-          <Image
-            src={IMG.hero}
-            alt="Hathor yacht"
-            fill
-            priority
-            sizes="100vw"
-            quality={90}
-            className="parallax-hero h-full w-full scale-110 object-cover"
-          />
-          <div className="absolute inset-0 bg-black/30" />
-        </div>
-
-        <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
-          <p className="reveal-label mb-8 text-[0.75rem] uppercase tracking-[0.35em] text-[var(--color-gold)] opacity-0">
-            THE HATHOR
-          </p>
-          <h1
-            className="text-[clamp(3rem,12vw,9rem)] leading-[0.9] tracking-[-0.03em] text-[var(--color-cream)]"
-            style={{ fontFamily: "var(--font-dl-cinzel), Cinzel, serif" }}
-          >
-            <span className="block overflow-hidden">
-              <span className="reveal-text block translate-y-full">YOUR FLOATING</span>
-            </span>
-            <span className="block overflow-hidden">
-              <span
-                className="reveal-text block translate-y-full italic text-[var(--color-gold)]"
-                style={{
-                  fontFamily:
-                    "var(--font-dl-cormorant), 'Cormorant Garamond', serif",
-                }}
+      <div
+        ref={rootRef}
+        className="venetian-page lux-page"
+        data-charter-page=""
+      >
+        {/* Manifesto */}
+        <section className="iv-manifesto" aria-labelledby="ch-manifesto-title">
+          <div className="iv-wrap iv-manifesto__grid">
+            <div>
+              <p className="iv-kicker" data-lux-reveal>
+                Private charter
+              </p>
+              <h2
+                id="ch-manifesto-title"
+                className="iv-manifesto__statement"
+                data-lux-title
               >
-                PALACE
-              </span>
-            </span>
-          </h1>
-        </div>
-      </section>
-
-      {/* SECTION 2 — SPECS */}
-      <section className="dl-py-48 border-t border-[var(--color-charcoal)] bg-[var(--color-black)] px-6 py-48 md:dl-py-64 md:px-12 md:py-64">
-        <div className="mx-auto max-w-6xl">
-          <div className="grid grid-cols-1 gap-px bg-[var(--color-charcoal)] md:grid-cols-3">
-            <div className="bg-[var(--color-black)] p-12 text-center md:p-16">
-              <span
-                className="mb-4 block text-[clamp(3rem,6vw,5rem)] text-[var(--color-cream)]"
-                style={{ fontFamily: "var(--font-dl-cinzel), Cinzel, serif" }}
-              >
-                240
-              </span>
-              <span className="block text-[0.75rem] uppercase tracking-[0.25em] text-[var(--color-gray)]">
-                Feet of Elegance
-              </span>
+                {charter.overviewTitle}
+              </h2>
+              <p className="iv-script" data-lux-reveal>
+                Entirely yours.
+              </p>
+              <p className="iv-lead" data-lux-reveal style={{ marginTop: "1.5rem" }}>
+                {charter.overviewIntro}
+              </p>
             </div>
-            <div className="bg-[var(--color-black)] p-12 text-center md:p-16">
-              <span
-                className="mb-4 block text-[clamp(3rem,6vw,5rem)] text-[var(--color-cream)]"
-                style={{ fontFamily: "var(--font-dl-cinzel), Cinzel, serif" }}
-              >
-                24
-              </span>
-              <span className="block text-[0.75rem] uppercase tracking-[0.25em] text-[var(--color-gray)]">
-                Royal Suites
-              </span>
-            </div>
-            <div className="bg-[var(--color-black)] p-12 text-center md:p-16">
-              <span
-                className="mb-4 block text-[clamp(3rem,6vw,5rem)] text-[var(--color-cream)]"
-                style={{ fontFamily: "var(--font-dl-cinzel), Cinzel, serif" }}
-              >
-                5
-              </span>
-              <span className="block text-[0.75rem] uppercase tracking-[0.25em] text-[var(--color-gray)]">
-                Star Service
-              </span>
+            <div className="iv-manifesto__media lux-mask" data-iv-parallax="">
+              <ManagedImage
+                name="charter-privacy"
+                alt={CHARTER_CHAPTER_MEDIA[0].alt}
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 40vw"
+                style={{ objectPosition: CHARTER_CHAPTER_MEDIA[0].objectPosition }}
+              />
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* SECTION 3 — SUITES */}
-      <section className="bg-[var(--color-dark)]">
-        <div className="flex min-h-screen flex-col md:flex-row">
-          <div className="relative sticky top-0 h-[60vh] overflow-hidden md:h-screen md:w-1/2">
-            <Image
-              src={IMG.suite}
-              alt="Pharaoh Suite"
+        {/* Residence immersion */}
+        <section className="iv-bleed" aria-labelledby="ch-residence-title">
+          <div className="iv-bleed__media" data-iv-parallax="">
+            <ManagedImage
+              name="room-royal"
+              alt="Royal suite aboard a private Hathor charter"
               fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              quality={90}
-              className="parallax-img h-full w-full scale-110 object-cover"
+              className="object-cover"
+              sizes="100vw"
             />
           </div>
-          <div className="flex flex-col justify-center bg-[var(--color-black)] p-12 md:w-1/2 md:p-24">
-            <p className="mb-6 text-[0.75rem] uppercase tracking-[0.3em] text-[var(--color-gold)]">
-              01 / PHARAOH SUITE
+          <div className="iv-bleed__shade" aria-hidden="true" />
+          <div className="iv-bleed__panel">
+            <p className="iv-kicker" data-lux-reveal>
+              Residence
             </p>
-            <h3
-              className="mb-8 text-[clamp(2.5rem,5vw,4rem)] leading-[0.95] text-[var(--color-cream)]"
-              style={{ fontFamily: "var(--font-dl-cinzel), Cinzel, serif" }}
+            <h2
+              id="ch-residence-title"
+              className="lux-gold lux-gold-md"
+              data-lux-title
+              style={{ color: "var(--iv-ink)" }}
             >
-              Royal Sanctuary
-            </h3>
-            <p className="mb-12 text-lg leading-relaxed text-[var(--color-gray)]">
-              Panoramic Nile views, private balcony, and royal Egyptian
-              furnishings. A sanctuary designed for those who accept nothing less
-              than perfection.
+              A floating house for your party alone
+            </h2>
+            <p className="iv-copy" data-lux-reveal>
+              {charter.benefitsIntro}
             </p>
-            <p
-              className="mb-12 text-[clamp(1.5rem,3vw,2.5rem)] text-[var(--color-cream)]"
-              style={{ fontFamily: "var(--font-dl-cinzel), Cinzel, serif" }}
-            >
-              From $7,000 / night
-            </p>
-            <Link
-              href="/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"
-              className="inline-block w-max border border-[var(--color-gold)] px-8 py-4 text-sm uppercase tracking-[0.2em] text-[var(--color-cream)] transition-all duration-700 hover:bg-[var(--color-gold)] hover:text-[var(--color-black)]"
-            >
-              View Details
-            </Link>
+            <ul className="iv-lines" data-lux-reveal>
+              {charter.benefits.map((benefit) => (
+                <li key={benefit}>{benefit}</li>
+              ))}
+            </ul>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* SECTION 4 — CTA */}
-      <section className="dl-py-48 border-t border-[var(--color-charcoal)] bg-[var(--color-black)] px-6 py-48 text-center md:dl-py-64 md:py-64">
-        <h2
-          className="mb-8 text-[clamp(2.5rem,8vw,6rem)] leading-[0.95] text-[var(--color-cream)]"
-          style={{ fontFamily: "var(--font-dl-cinzel), Cinzel, serif" }}
+        {/* Service ritual scrub */}
+        <section
+          className="iv-scrub"
+          data-iv-scrub="service"
+          aria-labelledby="ch-service-title"
         >
-          Begin Your Legacy
-        </h2>
-        <p className="mx-auto mb-16 max-w-xl text-lg text-[var(--color-gray)]">
-          Spaces are strictly limited. Secure your private passage today.
-        </p>
-        <BookNowTrigger className="inline-block bg-[var(--color-gold)] px-12 py-5 text-xs uppercase tracking-[0.25em] text-[var(--color-black)] transition-colors duration-700 hover:bg-[var(--color-cream)]">
-          Reserve Your Voyage
-        </BookNowTrigger>
-      </section>
-    </main>
+          <div className="iv-wrap iv-scrub__head">
+            <p className="iv-kicker" data-lux-reveal>
+              The ritual
+            </p>
+            <h2
+              id="ch-service-title"
+              className="lux-gold lux-gold-lg"
+              data-lux-title
+            >
+              Four moments that define a private voyage
+            </h2>
+          </div>
+
+          <div className="iv-scrub__pin">
+            <div className="iv-scrub__stage">
+              <div className="iv-scrub__media">
+                {SERVICE_RITUAL.map((item, i) => (
+                  <div
+                    key={item.slot}
+                    className={`iv-scrub__slide${i === 0 ? " is-active" : ""}`}
+                  >
+                    <ManagedImage
+                      name={item.slot}
+                      alt={item.alt}
+                      fill
+                      className="object-cover"
+                      sizes="60vw"
+                      style={{ objectPosition: item.objectPosition }}
+                      previewAnchor={false}
+                    />
+                  </div>
+                ))}
+                <div className="iv-scrub__rail" aria-hidden="true">
+                  {SERVICE_RITUAL.map((item, i) => (
+                    <span
+                      key={item.kicker}
+                      className={i === 0 ? "is-active" : undefined}
+                    >
+                      {item.kicker.split(" · ")[1]}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="iv-scrub__copy">
+                {SERVICE_RITUAL.map((item, i) => (
+                  <div
+                    key={item.title}
+                    className={`iv-scrub__chapter${i === 0 ? " is-active" : ""}`}
+                  >
+                    <p className="iv-kicker">{item.kicker}</p>
+                    <h3>{item.title}</h3>
+                    <p className="iv-copy">{item.body}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="iv-scrub__progress" aria-hidden="true">
+                <i />
+              </div>
+            </div>
+          </div>
+
+          <div className="iv-wrap iv-scrub__stack">
+            {SERVICE_RITUAL.map((item) => (
+              <article key={item.title} className="iv-stack-card">
+                <div className="iv-stack-card__media lux-mask">
+                  <ManagedImage
+                    name={item.slot}
+                    alt={item.alt}
+                    fill
+                    className="object-cover"
+                    sizes="100vw"
+                    style={{ objectPosition: item.objectPosition }}
+                    previewAnchor={false}
+                  />
+                </div>
+                <p className="iv-kicker">{item.kicker}</p>
+                <h3>{item.title}</h3>
+                <p className="iv-copy">{item.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {/* Day on the Nile */}
+        <section
+          className="iv-scrub iv-scrub--day"
+          data-iv-scrub="day"
+          aria-labelledby="ch-day-title"
+        >
+          <div className="iv-wrap iv-scrub__head">
+            <p className="iv-kicker" data-lux-reveal>
+              A day composed
+            </p>
+            <h2 id="ch-day-title" className="lux-gold lux-gold-lg" data-lux-title>
+              Hours that belong to no timetable
+            </h2>
+            <p className="iv-script" data-lux-reveal>
+              One private day on the Nile
+            </p>
+          </div>
+
+          <div className="iv-scrub__pin">
+            <div className="iv-scrub__stage">
+              <div className="iv-scrub__media">
+                {DAY_ON_NILE.map((item, i) => (
+                  <div
+                    key={item.time}
+                    className={`iv-scrub__slide${i === 0 ? " is-active" : ""}`}
+                  >
+                    <ManagedImage
+                      name={item.slot}
+                      alt={item.title}
+                      fill
+                      className="object-cover"
+                      sizes="60vw"
+                      previewAnchor={false}
+                    />
+                  </div>
+                ))}
+                <div className="iv-scrub__rail" aria-hidden="true">
+                  {DAY_ON_NILE.map((item, i) => (
+                    <span
+                      key={item.time}
+                      className={i === 0 ? "is-active" : undefined}
+                    >
+                      {item.time}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="iv-scrub__copy">
+                {DAY_ON_NILE.map((item, i) => (
+                  <div
+                    key={item.title}
+                    className={`iv-scrub__chapter${i === 0 ? " is-active" : ""}`}
+                  >
+                    <p className="iv-kicker">{item.time}</p>
+                    <h3>{item.title}</h3>
+                    <p className="iv-copy">{item.body}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="iv-scrub__progress" aria-hidden="true">
+                <i />
+              </div>
+            </div>
+          </div>
+
+          <div className="iv-wrap iv-scrub__stack">
+            {DAY_ON_NILE.map((item) => (
+              <article key={item.time} className="iv-stack-card">
+                <div className="iv-stack-card__media lux-mask">
+                  <ManagedImage
+                    name={item.slot}
+                    alt={item.title}
+                    fill
+                    className="object-cover"
+                    sizes="100vw"
+                    previewAnchor={false}
+                  />
+                </div>
+                <p className="iv-kicker">{item.time}</p>
+                <h3>{item.title}</h3>
+                <p className="iv-copy">{item.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {/* Route composition */}
+        <section className="iv-routes" aria-labelledby="ch-routes-title">
+          <div className="iv-wrap iv-routes__layout">
+            <div className="iv-routes__media lux-mask" data-iv-parallax="">
+              <ManagedImage
+                name="charter-itinerary"
+                alt="Charter itinerary along the Nile"
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 45vw"
+              />
+            </div>
+            <div>
+              <p className="iv-kicker" data-lux-reveal>
+                Compose the voyage
+              </p>
+              <h2
+                id="ch-routes-title"
+                className="lux-gold lux-gold-lg"
+                data-lux-title
+              >
+                Choose your passage
+              </h2>
+              <p className="iv-lead" data-lux-reveal style={{ marginBottom: "1.75rem" }}>
+                Select a preferred route. We refine every stop, landing, and hour around your party.
+              </p>
+              <CharterRouteSelector
+                routes={routes}
+                value={preferredRoute}
+                onChange={setPreferredRoute}
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Enquiry finale */}
+        <section className="iv-enquiry" aria-labelledby="ch-enquiry-title">
+          <div className="iv-enquiry__media">
+            <ManagedImage
+              name="charter-service"
+              alt="Private charter hospitality at dusk"
+              fill
+              className="object-cover"
+              sizes="100vw"
+            />
+          </div>
+          <div className="iv-enquiry__shade" aria-hidden="true" />
+          <div className="iv-wrap iv-enquiry__inner">
+            <div className="iv-enquiry__aside">
+              <p className="iv-kicker" data-lux-reveal>
+                Private concierge
+              </p>
+              <h2
+                id="ch-enquiry-title"
+                className="lux-gold lux-gold-lg"
+                data-lux-title
+              >
+                Begin your private journey
+              </h2>
+              <p className="iv-lead" data-lux-reveal>
+                {charter.cta}
+              </p>
+              <p className="iv-copy" data-lux-reveal>
+                Preferred · {preferredRoute}
+              </p>
+              <p className="iv-copy" data-lux-reveal>
+                <a href={`mailto:${PUBLIC_CONTACT.email}`}>{PUBLIC_CONTACT.email}</a>
+              </p>
+              <div className="iv-enquiry__actions" data-lux-reveal>
+                <BookNowTrigger className="btn btn-secondary">Book Now</BookNowTrigger>
+                <Link className="btn btn-primary" href="/cruises">
+                  View cruises
+                </Link>
+              </div>
+            </div>
+            <CharterRequestForm
+              preferredRoute={preferredRoute}
+              routes={routes}
+              onPreferredRouteChange={setPreferredRoute}
+            />
+          </div>
+        </section>
+      </div>
+    </PageScrollTransition>
   );
 }

@@ -1,247 +1,507 @@
 "use client";
 
 import { useRef } from "react";
-import Image from "next/image";
-import { Cinzel, Cormorant_Garamond } from "next/font/google";
-import "@/app/dark-luxury-pages.css";
-import { useDarkLuxuryPageMotion } from "@/hooks/useDarkLuxuryPageMotion";
+import Link from "next/link";
+import "@/app/immersive-voyage.css";
+import { BookNowTrigger } from "@/components/public/BookNowTrigger";
+import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
+import { ManagedImage } from "@/components/ui/ManagedImage";
+import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
+import { useHathorLuxBodyMotion } from "@/hooks/useHathorLuxBodyMotion";
+import { useImmersiveVoyageMotion } from "@/hooks/useImmersiveVoyageMotion";
+import {
+  extractHighlightsPullQuote,
+  HIGHLIGHTS_LANDMARK_META,
+  HIGHLIGHTS_MANIFESTO,
+  layoutHighlightsIntro,
+} from "@/lib/highlights-content";
+import { HIGHLIGHTS_PAGE } from "@/lib/page-content";
 
-const cinzel = Cinzel({
-  subsets: ["latin"],
-  variable: "--font-dl-cinzel",
-  display: "swap",
-});
+const LIFE_ABOARD = [
+  {
+    title: "Dining",
+    body: "Egyptian flavours and international craft — breakfast light, lunches that linger, candlelit dinners under the stars.",
+    slot: "gastronomy-restaurant" as const,
+  },
+  {
+    title: "Suite",
+    body: "Cabins and royal suites composed for Nile light — private quarters after every day of discovery.",
+    slot: "room-royal" as const,
+  },
+  {
+    title: "Deck",
+    body: "Sun, soft current, and the quiet theatre of the river — a sanctuary waiting after every shore.",
+    slot: "highlights-lifestyle" as const,
+  },
+] as const;
 
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["italic", "normal"],
-  variable: "--font-dl-cormorant",
-  display: "swap",
-});
+const RIVER_RHYTHM = [
+  {
+    kicker: "Dawn",
+    title: "Silver water, first light",
+    body: "The Nile wakes slowly. Mist lifts from the banks while coffee finds the softest corner of the deck.",
+    slot: "highlights-lifestyle" as const,
+  },
+  {
+    kicker: "Midday",
+    title: "Heat held at a distance",
+    body: "Shade, cool interiors, and unhurried passage between temples and quiet villages.",
+    slot: "charter-rhythm" as const,
+  },
+  {
+    kicker: "Golden hour",
+    title: "Stone warmed by the sun",
+    body: "Landmarks catch amber light. The river turns copper. Time stretches.",
+    slot: "landmark-hatshepsut" as const,
+  },
+  {
+    kicker: "Night",
+    title: "Lanterns and dark silk",
+    body: "When the shore dissolves, Hathor becomes a sealed world of soft music and slow conversation.",
+    slot: "gastronomy-hero" as const,
+  },
+] as const;
 
-const IMG = {
-  hero: "https://images.unsplash.com/photo-1539650116574-8efeb43e2750?auto=format&fit=crop&w=2400&q=90",
-  temple:
-    "https://images.unsplash.com/photo-1568322445389-d6a4c9f3b7h5?auto=format&fit=crop&w=1600&q=90",
-  felucca:
-    "https://images.unsplash.com/photo-1539650116574-8efeb43e2750?auto=format&fit=crop&w=2400&q=90",
-  suite:
-    "https://images.unsplash.com/photo-1590496993476-241ec45a02fa?auto=format&fit=crop&w=1200&q=90",
-  dining:
-    "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1000&q=90",
-  spa: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1000&q=90",
-} as const;
+const DETAIL_CELLS = [
+  { slot: "room-royal" as const, caption: "Royal suite light" },
+  { slot: "gastronomy-restaurant" as const, caption: "The table" },
+  { slot: "charter-privacy" as const, caption: "Private deck" },
+  { slot: "landmark-obelisk" as const, caption: "Unfinished stone" },
+  { slot: "highlights-lifestyle" as const, caption: "River living" },
+  { slot: "charter-service" as const, caption: "Attentive hospitality" },
+] as const;
+
+const LANDMARK_LAYOUTS = ["obelisk", "hatshepsut", "valley"] as const;
 
 export function HighlightsPageContent() {
-  const rootRef = useRef<HTMLElement>(null);
-  useDarkLuxuryPageMotion(rootRef);
+  const rootRef = useRef<HTMLDivElement>(null);
+  useHathorLuxBodyMotion(rootRef);
+  useImmersiveVoyageMotion(rootRef);
+
+  const { pages } = useWebsiteText();
+  const highlights = pages.highlights;
+  const introLayout = layoutHighlightsIntro(highlights.intro);
+  const pullQuote = extractHighlightsPullQuote(highlights.intro);
+
+  const landmarks = highlights.landmarks.map((landmark, index) => ({
+    ...landmark,
+    meta: HIGHLIGHTS_LANDMARK_META[index]!,
+    layout: LANDMARK_LAYOUTS[index] ?? "obelisk",
+  }));
 
   return (
-    <main
-      ref={rootRef}
-      data-dark-luxury-page=""
-      data-highlights-page=""
-      className={`${cinzel.variable} ${cormorant.variable}`}
-      style={{
-        fontFamily: "system-ui, sans-serif",
-        backgroundColor: "var(--color-black)",
-      }}
+    <PageScrollTransition
+      title={HIGHLIGHTS_PAGE.hero.title}
+      secondTitle="Highlights"
+      subtitle={HIGHLIGHTS_PAGE.hero.subtitle}
+      breadcrumb="Highlights"
+      imageName="highlights-hero"
+      heroPage="highlights"
     >
-      {/* SECTION 1 — HERO */}
-      <section className="relative h-screen w-full overflow-hidden bg-[var(--color-black)]">
-        <div className="absolute inset-0 h-full w-full">
-          <Image
-            src={IMG.hero}
-            alt="Nile at golden hour"
-            fill
-            priority
-            sizes="100vw"
-            quality={90}
-            className="parallax-hero h-full w-full scale-110 object-cover"
-          />
-          <div className="absolute inset-0 bg-black/40" />
-        </div>
+      <div
+        ref={rootRef}
+        className="venetian-page lux-page"
+        data-highlights-page=""
+      >
+        {/* First light */}
+        <section className="iv-firstlight" aria-labelledby="hl-first-title">
+          <div className="iv-wrap">
+            <p className="iv-kicker" data-lux-reveal>
+              First light
+            </p>
+            <h2
+              id="hl-first-title"
+              className="lux-gold lux-gold-xl"
+              data-lux-title
+            >
+              {HIGHLIGHTS_PAGE.hero.subtitle}
+            </h2>
+            <p className="iv-lead" data-lux-reveal style={{ margin: "1.25rem 0 2rem" }}>
+              {introLayout.lead}
+            </p>
 
-        <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
-          <p className="reveal-label mb-8 text-[0.75rem] uppercase tracking-[0.35em] text-[var(--color-gold)] opacity-0">
-            THE JOURNEY
-          </p>
-          <h1
-            className="mb-6 text-[clamp(3rem,12vw,9rem)] leading-[0.9] tracking-[-0.03em] text-[var(--color-cream)]"
-            style={{ fontFamily: "var(--font-dl-cinzel), Cinzel, serif" }}
-          >
-            <span className="block overflow-hidden">
-              <span className="reveal-text block translate-y-full">WHERE TIME</span>
-            </span>
-            <span className="block overflow-hidden">
-              <span
-                className="reveal-text block translate-y-full italic text-[var(--color-gold)]"
-                style={{
-                  fontFamily:
-                    "var(--font-dl-cormorant), 'Cormorant Garamond', serif",
-                }}
-              >
-                STANDS STILL
-              </span>
-            </span>
-          </h1>
-          <p className="reveal-subtext mx-auto mt-12 max-w-lg text-lg text-[var(--color-gray)] opacity-0">
-            A curated voyage through ancient Egypt, designed for those who seek
-            the extraordinary.
-          </p>
-        </div>
+            <div className="iv-firstlight__panorama lux-mask" data-iv-parallax="">
+              <ManagedImage
+                name="highlights-lifestyle"
+                alt="Morning light aboard Hathor on the Nile"
+                fill
+                className="object-cover"
+                sizes="100vw"
+                priority
+              />
+            </div>
 
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2">
-          <div className="h-24 w-px animate-pulse bg-gradient-to-b from-[var(--color-gold)] to-transparent" />
-        </div>
-      </section>
-
-      {/* SECTION 2 — TEMPLES */}
-      <section className="dl-py-48 relative overflow-hidden bg-[var(--color-black)] px-6 py-48 md:dl-py-64 md:px-12 md:py-64">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-12 md:gap-24">
-            <div className="relative md:col-span-7">
-              <div className="relative aspect-[4/5] overflow-hidden md:aspect-[3/4]">
-                <Image
-                  src={IMG.temple}
-                  alt="Luxor Temple"
+            <div className="iv-firstlight__meta">
+              <div>
+                <p className="iv-firstlight__stamp" data-lux-reveal>
+                  {pullQuote}
+                </p>
+                <div className="iv-copy" data-lux-reveal style={{ marginTop: "1.5rem" }}>
+                  {introLayout.groups.flat().slice(0, 3).map((sentence) => (
+                    <p key={sentence.slice(0, 48)}>{sentence}</p>
+                  ))}
+                </div>
+              </div>
+              <div className="iv-firstlight__crop lux-mask">
+                <ManagedImage
+                  name="charter-rhythm"
+                  alt="Detail of life aboard Hathor"
                   fill
-                  sizes="(max-width: 768px) 100vw, 58vw"
-                  quality={90}
-                  className="parallax-img h-full w-full scale-110 object-cover"
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 40vw"
                 />
               </div>
-              <div className="absolute -bottom-12 -right-12 hidden h-48 w-48 border border-[var(--color-gold)]/30 md:block" />
-            </div>
-
-            <div className="md:col-span-5 md:col-start-8">
-              <p className="reveal-label mb-6 text-[0.75rem] uppercase tracking-[0.3em] text-[var(--color-gold)]">
-                01 / ANCIENT WONDERS
-              </p>
-              <h2
-                className="mb-8 text-[clamp(2.5rem,6vw,5rem)] leading-[0.95] tracking-[-0.02em] text-[var(--color-cream)]"
-                style={{ fontFamily: "var(--font-dl-cinzel), Cinzel, serif" }}
-              >
-                <span className="block overflow-hidden">
-                  <span className="reveal-text block translate-y-full">TEMPLES</span>
-                </span>
-                <span className="block overflow-hidden">
-                  <span
-                    className="reveal-text block translate-y-full italic text-[var(--color-gold)]"
-                    style={{
-                      fontFamily:
-                        "var(--font-dl-cormorant), 'Cormorant Garamond', serif",
-                    }}
-                  >
-                    OF THE GODS
-                  </span>
-                </span>
-              </h2>
-              <p className="reveal-subtext mb-12 text-lg leading-relaxed text-[var(--color-gray)] opacity-0">
-                Stand before monuments that have witnessed millennia of human
-                devotion. From the towering columns of Karnak to the intimate
-                sanctuaries of Luxor, each stone tells a story carved by the
-                hands of masters.
-              </p>
-              <a
-                href="/cruises"
-                className="inline-block border-b border-[var(--color-gold)] pb-2 text-sm uppercase tracking-[0.2em] text-[var(--color-cream)] transition-colors duration-500 hover:text-[var(--color-gold)]"
-              >
-                Explore the Temples
-              </a>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* SECTION 3 — FULL BLEED QUOTE */}
-      <section className="relative h-[100vh] w-full overflow-hidden">
-        <Image
-          src={IMG.felucca}
-          alt="Nile felucca"
-          fill
-          sizes="100vw"
-          quality={90}
-          className="parallax-bg absolute inset-0 h-full w-full scale-110 object-cover"
-        />
-        <div className="absolute inset-0 bg-black/50" />
-
-        <div className="relative z-10 flex h-full items-end px-6 pb-32 md:px-24">
-          <div className="max-w-3xl">
-            <blockquote
-              className="text-[clamp(2rem,5vw,4rem)] leading-[1.1] tracking-[-0.02em] text-[var(--color-cream)]"
-              style={{ fontFamily: "var(--font-dl-cinzel), Cinzel, serif" }}
-            >
-              &ldquo;The Nile has been the lifeblood of civilization for 5,000
-              years. Now, it carries you through time itself.&rdquo;
-            </blockquote>
-          </div>
-        </div>
-      </section>
-
-      {/* SECTION 4 — MASONRY GALLERY */}
-      <section className="dl-py-48 bg-[var(--color-dark)] px-6 py-48 md:dl-py-64 md:px-12 md:py-64">
-        <div className="mx-auto mb-24 max-w-7xl">
-          <p className="mb-6 text-[0.75rem] uppercase tracking-[0.3em] text-[var(--color-gold)]">
-            02 / ONBOARD LUXURY
-          </p>
-          <h2
-            className="text-[clamp(2.5rem,6vw,5rem)] leading-[0.95] text-[var(--color-cream)]"
-            style={{ fontFamily: "var(--font-dl-cinzel), Cinzel, serif" }}
+        {/* Manifesto numerals */}
+        <section className="iv-wrap" style={{ paddingBottom: "3rem" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(14rem, 1fr))",
+              gap: "1.75rem",
+            }}
           >
-            Sanctuaries at Sea
-          </h2>
-        </div>
+            {HIGHLIGHTS_MANIFESTO.map((item) => (
+              <article key={item.numeral} data-lux-reveal>
+                <p className="iv-kicker">{item.numeral}</p>
+                <h3
+                  className="lux-gold lux-gold-md"
+                  style={{ margin: "0.35rem 0 0.65rem" }}
+                >
+                  {item.title}
+                </h3>
+                <p className="iv-copy">{item.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
 
-        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 md:grid-cols-2 md:gap-12">
-          <div className="group relative aspect-[3/4] overflow-hidden md:row-span-2">
-            <Image
-              src={IMG.suite}
-              alt="Suite"
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              quality={90}
-              className="h-full w-full object-cover transition-transform duration-[1500ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-black/0 transition-colors duration-700 group-hover:bg-black/40" />
-            <div className="absolute bottom-0 left-0 p-8 opacity-0 transition-opacity duration-700 group-hover:opacity-100 md:p-12">
-              <h3
-                className="mb-2 text-3xl text-[var(--color-cream)]"
-                style={{ fontFamily: "var(--font-dl-cinzel), Cinzel, serif" }}
+        {/* Landmark chapters — three distinct layouts */}
+        {landmarks.map((landmark) => {
+          if (landmark.layout === "obelisk") {
+            return (
+              <section
+                key={landmark.meta.slot}
+                className="iv-wrap iv-landmark iv-landmark--obelisk"
+                aria-labelledby={`hl-${landmark.meta.slot}`}
               >
-                Pharaoh Suite
-              </h3>
-              <p className="text-sm uppercase tracking-[0.15em] text-[var(--color-gold)]">
-                850 SQ FT
-              </p>
+                <div className="iv-landmark__media lux-mask" data-iv-parallax="">
+                  <ManagedImage
+                    name={landmark.meta.slot}
+                    alt={landmark.meta.caption}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 48vw"
+                    style={{ objectPosition: landmark.meta.objectPosition }}
+                  />
+                </div>
+                <div>
+                  <p className="iv-kicker">{landmark.meta.category}</p>
+                  <h2
+                    id={`hl-${landmark.meta.slot}`}
+                    className="lux-gold lux-gold-lg"
+                    data-lux-title
+                  >
+                    {landmark.title}
+                  </h2>
+                  <p className="iv-script" data-lux-reveal>
+                    {landmark.meta.location}
+                  </p>
+                  <div className="iv-copy" data-lux-reveal style={{ marginTop: "1.25rem" }}>
+                    <p>{landmark.body}</p>
+                  </div>
+                  <p className="iv-landmark__fact" data-lux-reveal>
+                    {landmark.meta.fact}
+                  </p>
+                </div>
+              </section>
+            );
+          }
+
+          if (landmark.layout === "hatshepsut") {
+            return (
+              <section
+                key={landmark.meta.slot}
+                className="iv-wrap iv-landmark iv-landmark--hatshepsut"
+                aria-labelledby={`hl-${landmark.meta.slot}`}
+              >
+                <div className="iv-landmark__media lux-mask" data-iv-parallax="">
+                  <ManagedImage
+                    name={landmark.meta.slot}
+                    alt={landmark.meta.caption}
+                    fill
+                    className="object-cover"
+                    sizes="100vw"
+                    style={{ objectPosition: landmark.meta.objectPosition }}
+                  />
+                </div>
+                <div className="iv-landmark__body">
+                  <div>
+                    <p className="iv-kicker">{landmark.meta.category}</p>
+                    <h2
+                      id={`hl-${landmark.meta.slot}`}
+                      className="lux-gold lux-gold-lg"
+                      data-lux-title
+                    >
+                      {landmark.title}
+                    </h2>
+                    <p className="iv-script" data-lux-reveal>
+                      {landmark.meta.location}
+                    </p>
+                  </div>
+                  <div>
+                    <div className="iv-copy" data-lux-reveal>
+                      <p>{landmark.body}</p>
+                    </div>
+                    <p className="iv-landmark__fact" data-lux-reveal>
+                      {landmark.meta.fact}
+                    </p>
+                  </div>
+                </div>
+              </section>
+            );
+          }
+
+          return (
+            <section
+              key={landmark.meta.slot}
+              className="iv-landmark iv-landmark--valley"
+              aria-labelledby={`hl-${landmark.meta.slot}`}
+            >
+              <div className="iv-landmark__media" data-iv-parallax="">
+                <ManagedImage
+                  name={landmark.meta.slot}
+                  alt={landmark.meta.caption}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 55vw"
+                  style={{ objectPosition: landmark.meta.objectPosition }}
+                />
+              </div>
+              <div className="iv-landmark__copy">
+                <p className="iv-kicker">{landmark.meta.category}</p>
+                <h2
+                  id={`hl-${landmark.meta.slot}`}
+                  className="lux-gold lux-gold-lg"
+                  data-lux-title
+                >
+                  {landmark.title}
+                </h2>
+                <p className="iv-script" data-lux-reveal>
+                  {landmark.meta.location}
+                </p>
+                <div className="iv-copy" data-lux-reveal style={{ marginTop: "1.25rem" }}>
+                  <p>{landmark.body}</p>
+                </div>
+                <p className="iv-landmark__fact" data-lux-reveal>
+                  {landmark.meta.fact}
+                </p>
+              </div>
+            </section>
+          );
+        })}
+
+        {/* Life aboard */}
+        <section className="iv-life" aria-labelledby="hl-life-title">
+          <div className="iv-wrap" style={{ marginBottom: "1.75rem" }}>
+            <p className="iv-kicker" data-lux-reveal>
+              Life aboard
+            </p>
+            <h2 id="hl-life-title" className="lux-gold lux-gold-lg" data-lux-title>
+              Dining · Suite · Deck
+            </h2>
+          </div>
+
+          <div className="iv-life__pin">
+            <div className="iv-life__stage">
+              {LIFE_ABOARD.map((item, i) => (
+                <article
+                  key={item.title}
+                  className={`iv-life__card${i === 0 ? " is-active" : ""}`}
+                >
+                  <div className="iv-life__card-media">
+                    <ManagedImage
+                      name={item.slot}
+                      alt={item.title}
+                      fill
+                      className="object-cover"
+                      sizes="33vw"
+                    />
+                  </div>
+                  <h3>{item.title}</h3>
+                  <p className="iv-copy">{item.body}</p>
+                </article>
+              ))}
             </div>
           </div>
 
-          <div className="group relative aspect-[4/3] overflow-hidden">
-            <Image
-              src={IMG.dining}
-              alt="Dining"
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              quality={90}
-              className="h-full w-full object-cover transition-transform duration-[1500ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-black/0 transition-colors duration-700 group-hover:bg-black/40" />
+          <div className="iv-wrap iv-life__rail">
+            {LIFE_ABOARD.map((item) => (
+              <article key={item.title} className="iv-life__card">
+                <div className="iv-life__card-media lux-mask">
+                  <ManagedImage
+                    name={item.slot}
+                    alt={item.title}
+                    fill
+                    className="object-cover"
+                    sizes="80vw"
+                  />
+                </div>
+                <h3>{item.title}</h3>
+                <p className="iv-copy">{item.body}</p>
+              </article>
+            ))}
           </div>
-          <div className="group relative aspect-[4/3] overflow-hidden">
-            <Image
-              src={IMG.spa}
-              alt="Spa"
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              quality={90}
-              className="h-full w-full object-cover transition-transform duration-[1500ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-black/0 transition-colors duration-700 group-hover:bg-black/40" />
+        </section>
+
+        {/* River rhythm scrub */}
+        <section
+          className="iv-scrub"
+          data-iv-scrub="river"
+          aria-labelledby="hl-river-title"
+        >
+          <div className="iv-wrap iv-scrub__head">
+            <p className="iv-kicker" data-lux-reveal>
+              River rhythm
+            </p>
+            <h2 id="hl-river-title" className="lux-gold lux-gold-lg" data-lux-title>
+              Light changes. The day answers.
+            </h2>
           </div>
-        </div>
-      </section>
-    </main>
+
+          <div className="iv-scrub__pin">
+            <div className="iv-scrub__stage">
+              <div className="iv-scrub__media">
+                {RIVER_RHYTHM.map((item, i) => (
+                  <div
+                    key={item.kicker}
+                    className={`iv-scrub__slide${i === 0 ? " is-active" : ""}`}
+                  >
+                    <ManagedImage
+                      name={item.slot}
+                      alt={item.title}
+                      fill
+                      className="object-cover"
+                      sizes="60vw"
+                    />
+                  </div>
+                ))}
+                <div className="iv-scrub__rail" aria-hidden="true">
+                  {RIVER_RHYTHM.map((item, i) => (
+                    <span
+                      key={item.kicker}
+                      className={i === 0 ? "is-active" : undefined}
+                    >
+                      {item.kicker}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="iv-scrub__copy">
+                {RIVER_RHYTHM.map((item, i) => (
+                  <div
+                    key={item.title}
+                    className={`iv-scrub__chapter${i === 0 ? " is-active" : ""}`}
+                  >
+                    <p className="iv-kicker">{item.kicker}</p>
+                    <h3>{item.title}</h3>
+                    <p className="iv-copy">{item.body}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="iv-scrub__progress" aria-hidden="true">
+                <i />
+              </div>
+            </div>
+          </div>
+
+          <div className="iv-wrap iv-scrub__stack">
+            {RIVER_RHYTHM.map((item) => (
+              <article key={item.kicker} className="iv-stack-card">
+                <div className="iv-stack-card__media lux-mask">
+                  <ManagedImage
+                    name={item.slot}
+                    alt={item.title}
+                    fill
+                    className="object-cover"
+                    sizes="100vw"
+                  />
+                </div>
+                <p className="iv-kicker">{item.kicker}</p>
+                <h3>{item.title}</h3>
+                <p className="iv-copy">{item.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {/* Details grid */}
+        <section className="iv-details" aria-labelledby="hl-details-title">
+          <div className="iv-wrap">
+            <p className="iv-kicker" data-lux-reveal>
+              Details
+            </p>
+            <h2
+              id="hl-details-title"
+              className="lux-gold lux-gold-lg"
+              data-lux-title
+              style={{ marginBottom: "1.75rem" }}
+            >
+              Texture of the voyage
+            </h2>
+            <div className="iv-details__grid">
+              {DETAIL_CELLS.map((cell) => (
+                <figure key={cell.slot + cell.caption} className="iv-details__cell">
+                  <div className="iv-details__media lux-mask">
+                    <ManagedImage
+                      name={cell.slot}
+                      alt={cell.caption}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 50vw, 33vw"
+                    />
+                  </div>
+                  <figcaption>{cell.caption}</figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Closing invitation */}
+        <section className="iv-close" aria-labelledby="hl-close-title">
+          <div className="iv-close__media">
+            <ManagedImage
+              name="highlights-hero"
+              alt="Sunset invitation aboard Hathor"
+              fill
+              className="object-cover"
+              sizes="100vw"
+            />
+          </div>
+          <div className="iv-close__shade" aria-hidden="true" />
+          <div className="iv-wrap iv-close__inner">
+            <p className="iv-kicker" data-lux-reveal>
+              Continue the voyage
+            </p>
+            <h2 id="hl-close-title" className="lux-gold lux-gold-lg" data-lux-title>
+              Sail with Hathor
+            </h2>
+            <p className="iv-lead" data-lux-reveal>
+              Reserve a scheduled sailing — or charter the entire Dahabiya for your party alone.
+            </p>
+            <div className="iv-close__actions" data-lux-reveal>
+              <BookNowTrigger className="btn btn-secondary">Book Now</BookNowTrigger>
+              <Link className="btn btn-primary" href="/charter">
+                Private charter
+              </Link>
+            </div>
+          </div>
+        </section>
+      </div>
+    </PageScrollTransition>
   );
 }
