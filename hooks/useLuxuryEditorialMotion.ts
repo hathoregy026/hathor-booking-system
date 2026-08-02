@@ -7,266 +7,260 @@ import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 
 gsap.registerPlugin(ScrollTrigger);
 
-type LuxuryPageKind = "charter" | "highlights";
-
-/** Shared lux motion — single Lenis owner elsewhere. Page-local GSAP only. */
+/** Quiet-opulence motion — page-local only; single Lenis owner elsewhere. */
 export function useLuxuryEditorialMotion(
   rootRef: RefObject<HTMLElement | null>,
-  page: LuxuryPageKind,
 ) {
   useLayoutEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
+    const element = rootRef.current;
+    if (!element) return;
+
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
 
     const mm = gsap.matchMedia();
     const ctx = gsap.context(() => {
-      mm.add(
-        {
-          desktop: "(min-width: 1025px)",
-          touchLayout: "(max-width: 1024px)",
-          reduceMotion: "(prefers-reduced-motion: reduce)",
-        },
-        (context) => {
-          const { desktop, reduceMotion } = context.conditions as {
-            desktop: boolean;
-            touchLayout: boolean;
-            reduceMotion: boolean;
-          };
+      if (reducedMotion) {
+        gsap.set(
+          element.querySelectorAll(
+            "[data-lux-reveal], [data-lux-rule], [data-lux-media] img, [data-lux-media] video, [data-lux-line]",
+          ),
+          { clearProps: "all", autoAlpha: 1, y: 0, scale: 1, scaleX: 1 },
+        );
+        return;
+      }
 
-          const revealLines = gsap.utils.toArray<HTMLElement>(
-            "[data-lux-line]",
-            root,
-          );
-          const revealMedia = gsap.utils.toArray<HTMLElement>(
-            "[data-lux-media]",
-            root,
-          );
-          const rules = gsap.utils.toArray<HTMLElement>("[data-lux-rule]", root);
-
-          if (reduceMotion) {
-            gsap.set([revealLines, revealMedia, rules], {
-              clearProps: "all",
-              autoAlpha: 1,
-              x: 0,
+      gsap.utils
+        .toArray<HTMLElement>("[data-lux-reveal]", element)
+        .forEach((item) => {
+          gsap.fromTo(
+            item,
+            { y: 28, autoAlpha: 0 },
+            {
               y: 0,
-              xPercent: 0,
-              yPercent: 0,
-              scale: 1,
-              clipPath: "inset(0% 0% 0% 0%)",
-            });
-            return;
-          }
+              autoAlpha: 1,
+              duration: 1.05,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: item,
+                start: "top 86%",
+                once: true,
+              },
+            },
+          );
+        });
 
-          revealLines.forEach((line) => {
+      gsap.utils
+        .toArray<HTMLElement>("[data-lux-line]", element)
+        .forEach((line) => {
+          gsap.fromTo(
+            line,
+            { yPercent: 110, autoAlpha: 0 },
+            {
+              yPercent: 0,
+              autoAlpha: 1,
+              duration: 1.1,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: line,
+                start: "top 88%",
+                once: true,
+              },
+            },
+          );
+        });
+
+      gsap.utils
+        .toArray<HTMLElement>("[data-lux-rule]", element)
+        .forEach((rule) => {
+          gsap.fromTo(
+            rule,
+            { scaleX: 0 },
+            {
+              scaleX: 1,
+              duration: 1.15,
+              ease: "power3.inOut",
+              scrollTrigger: {
+                trigger: rule,
+                start: "top 90%",
+                once: true,
+              },
+            },
+          );
+        });
+
+      gsap.utils
+        .toArray<HTMLElement>("[data-lux-media]", element)
+        .forEach((media) => {
+          const image = media.querySelector("img, video");
+          if (!image) return;
+          const clip = media.dataset.luxClip === "up";
+
+          if (clip) {
             gsap.fromTo(
-              line,
-              { yPercent: 112, autoAlpha: 0 },
+              media,
+              { clipPath: "inset(100% 0 0 0)" },
               {
-                yPercent: 0,
-                autoAlpha: 1,
-                duration: 1.15,
-                ease: "power4.out",
+                clipPath: "inset(0% 0 0 0)",
+                duration: 1.25,
+                ease: "power3.inOut",
                 scrollTrigger: {
-                  trigger: line,
+                  trigger: media,
                   start: "top 88%",
                   once: true,
                 },
               },
             );
-          });
-
-          revealMedia.forEach((media) => {
-            const direction = media.dataset.luxMedia || "bottom";
-            const initialClip =
-              direction === "left"
-                ? "inset(0% 100% 0% 0%)"
-                : direction === "right"
-                  ? "inset(0% 0% 0% 100%)"
-                  : direction === "top"
-                    ? "inset(100% 0% 0% 0%)"
-                    : direction === "slit"
-                      ? "inset(0% 46% 0% 46%)"
-                      : "inset(0% 0% 100% 0%)";
-
-            gsap.fromTo(
-              media,
-              { clipPath: initialClip },
-              {
-                clipPath: "inset(0% 0% 0% 0%)",
-                duration: direction === "slit" ? 1.55 : 1.35,
-                ease: "power4.inOut",
-                scrollTrigger: {
-                  trigger: media,
-                  start: direction === "slit" ? "top 75%" : "top 86%",
-                  once: true,
-                },
-              },
-            );
-          });
-
-          rules.forEach((rule) => {
-            gsap.fromTo(
-              rule,
-              { scaleX: 0, transformOrigin: "left center" },
-              {
-                scaleX: 1,
-                duration: 1.1,
-                ease: "power3.inOut",
-                scrollTrigger: {
-                  trigger: rule,
-                  start: "top 92%",
-                  once: true,
-                },
-              },
-            );
-          });
-
-          /* Hero open */
-          const heroImg = root.querySelector<HTMLElement>("[data-lux-hero-img]");
-          if (heroImg) {
-            gsap.fromTo(
-              heroImg,
-              { scale: 1.045 },
-              { scale: 1, duration: 2, ease: "power3.out" },
-            );
           }
 
-          if (desktop) {
-            if (heroImg) {
-              const hero = root.querySelector<HTMLElement>("[data-lux-hero]");
-              if (hero) {
-                gsap.to(heroImg, {
-                  yPercent: 6,
-                  ease: "none",
-                  scrollTrigger: {
-                    trigger: hero,
-                    start: "top top",
-                    end: "bottom top",
-                    scrub: true,
-                  },
-                });
-              }
-            }
+          gsap.fromTo(
+            image,
+            { scale: 1.025 },
+            {
+              scale: 1,
+              duration: 1.4,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: media,
+                start: "top 88%",
+                once: true,
+              },
+            },
+          );
+        });
 
-            gsap.utils
-              .toArray<HTMLElement>("[data-lux-parallax]", root)
-              .forEach((item) => {
-                const amount = Number(item.dataset.luxParallax || 5);
-                gsap.fromTo(
-                  item,
-                  { yPercent: -amount },
-                  {
-                    yPercent: amount,
-                    ease: "none",
-                    scrollTrigger: {
-                      trigger: item,
-                      start: "top bottom",
-                      end: "bottom top",
-                      scrub: true,
-                    },
-                  },
-                );
-              });
+      const heroImg = element.querySelector<HTMLElement>("[data-lux-hero-img]");
+      if (heroImg) {
+        gsap.fromTo(
+          heroImg,
+          { scale: 1.035 },
+          { scale: 1, duration: 1.9, ease: "power3.out" },
+        );
+      }
 
-            const horizontal = root.querySelector<HTMLElement>(
-              "[data-lux-horizontal]",
-            );
-            const horizontalTrack = horizontal?.querySelector<HTMLElement>(
-              "[data-lux-horizontal-track]",
-            );
+      mm.add("(min-width: 1025px) and (hover: hover)", () => {
+        if (heroImg) {
+          const hero = element.querySelector<HTMLElement>("[data-lux-hero]");
+          if (hero) {
+            gsap.to(heroImg, {
+              yPercent: 5,
+              ease: "none",
+              scrollTrigger: {
+                trigger: hero,
+                start: "top top",
+                end: "bottom top",
+                scrub: true,
+              },
+            });
+          }
+        }
 
-            if (horizontal && horizontalTrack) {
-              const getDistance = () =>
-                Math.max(
-                  0,
-                  horizontalTrack.scrollWidth - horizontal.clientWidth,
-                );
-
-              gsap.to(horizontalTrack, {
-                x: () => -getDistance(),
+        gsap.utils
+          .toArray<HTMLElement>("[data-lux-parallax]", element)
+          .forEach((media) => {
+            const image = media.querySelector("img, video");
+            if (!image) return;
+            gsap.fromTo(
+              image,
+              { yPercent: -2.5 },
+              {
+                yPercent: 2.5,
                 ease: "none",
                 scrollTrigger: {
-                  trigger: horizontal,
-                  start: "top top",
-                  end: () => `+=${Math.max(getDistance(), window.innerHeight)}`,
-                  pin: true,
+                  trigger: media,
+                  start: "top bottom",
+                  end: "bottom top",
                   scrub: true,
-                  invalidateOnRefresh: true,
-                  anticipatePin: 1,
                 },
-              });
-            }
+              },
+            );
+          });
 
-            /* Day narrative scrub */
-            const day = root.querySelector<HTMLElement>("[data-lux-day]");
-            if (day) {
-              const moments = gsap.utils.toArray<HTMLElement>(
-                "[data-lux-day-moment]",
-                day,
-              );
-              const slides = gsap.utils.toArray<HTMLElement>(
-                "[data-lux-day-slide]",
-                day,
-              );
-              if (moments.length && slides.length) {
-                ScrollTrigger.create({
-                  trigger: day,
-                  start: "top top",
-                  end: "bottom bottom",
-                  scrub: true,
-                  onUpdate: (self) => {
-                    const idx = Math.min(
-                      moments.length - 1,
-                      Math.floor(self.progress * moments.length),
-                    );
-                    moments.forEach((m, i) =>
-                      m.toggleAttribute("data-active", i === idx),
-                    );
-                    slides.forEach((s, i) =>
-                      s.toggleAttribute("data-active", i === idx),
-                    );
-                  },
-                });
-              }
-            }
-
-            /* Immersive parallax columns — max 3 */
-            gsap.utils
-              .toArray<HTMLElement>("[data-lux-immerse]", root)
-              .slice(0, 3)
-              .forEach((col, i) => {
-                const amount = 4 + i * 2;
-                gsap.fromTo(
-                  col,
-                  { yPercent: -amount },
-                  {
-                    yPercent: amount,
-                    ease: "none",
-                    scrollTrigger: {
-                      trigger: col.parentElement,
-                      start: "top bottom",
-                      end: "bottom top",
-                      scrub: true,
-                    },
-                  },
+        /* Day narrative scrub */
+        const day = element.querySelector<HTMLElement>("[data-lux-day]");
+        if (day) {
+          const moments = gsap.utils.toArray<HTMLElement>(
+            "[data-lux-day-moment]",
+            day,
+          );
+          const slides = gsap.utils.toArray<HTMLElement>(
+            "[data-lux-day-slide]",
+            day,
+          );
+          if (moments.length && slides.length) {
+            ScrollTrigger.create({
+              trigger: day,
+              start: "top top",
+              end: "bottom bottom",
+              scrub: true,
+              onUpdate: (self) => {
+                const idx = Math.min(
+                  moments.length - 1,
+                  Math.floor(self.progress * moments.length),
                 );
-              });
+                moments.forEach((m, i) => {
+                  const on = i === idx;
+                  m.toggleAttribute("data-active", on);
+                });
+                slides.forEach((s, i) => {
+                  s.toggleAttribute("data-active", i === idx);
+                });
+              },
+            });
           }
+        }
 
-          root.dataset.luxMotionReady = page;
-        },
-      );
-    }, root);
+        /* Rhythm scrub */
+        const rhythm = element.querySelector<HTMLElement>("[data-lux-rhythm]");
+        if (rhythm) {
+          const slides = gsap.utils.toArray<HTMLElement>(
+            "[data-lux-rhythm-slide]",
+            rhythm,
+          );
+          const phrase = rhythm.querySelector<HTMLElement>(
+            "[data-lux-rhythm-phrase]",
+          );
+          const bar = rhythm.querySelector<HTMLElement>(
+            "[data-lux-rhythm-bar]",
+          );
+          const phrases = (rhythm.dataset.luxPhrases || "")
+            .split("|")
+            .filter(Boolean);
 
-    const onLoad = () => requestScrollRefresh(`${page}-lux-load`);
+          if (slides.length) {
+            ScrollTrigger.create({
+              trigger: rhythm,
+              start: "top top",
+              end: "bottom bottom",
+              scrub: true,
+              onUpdate: (self) => {
+                const idx = Math.min(
+                  slides.length - 1,
+                  Math.floor(self.progress * slides.length),
+                );
+                slides.forEach((s, i) =>
+                  s.toggleAttribute("data-active", i === idx),
+                );
+                if (phrase && phrases[idx]) phrase.textContent = phrases[idx];
+                if (bar) {
+                  bar.style.transform = `scaleX(${Math.max(0.08, self.progress)})`;
+                }
+              },
+            });
+          }
+        }
+      });
+    }, element);
+
+    const onLoad = () => requestScrollRefresh("lux-editorial-load");
     window.addEventListener("load", onLoad);
-    requestAnimationFrame(() => requestScrollRefresh(`${page}-lux-mount`));
+    requestAnimationFrame(() => requestScrollRefresh("lux-editorial-mount"));
 
     return () => {
       window.removeEventListener("load", onLoad);
-      delete root.dataset.luxMotionReady;
       mm.revert();
       ctx.revert();
     };
-  }, [page, rootRef]);
+  }, [rootRef]);
 }
