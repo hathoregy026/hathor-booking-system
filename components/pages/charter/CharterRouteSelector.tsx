@@ -20,12 +20,12 @@ export function CharterRouteSelector({
   onChange,
 }: CharterRouteSelectorProps) {
   return (
-    <div className="charterRoutes" id="charter-itinerary">
+    <div className="ch-routes" id="charter-itinerary">
       <fieldset style={{ margin: 0, padding: 0, border: 0 }}>
-        <legend className="luxMeta" style={{ marginBottom: "1.25rem" }}>
+        <legend className="lux-kicker" style={{ marginBottom: "1.25rem" }}>
           Preferred charter route
         </legend>
-        <ul className="charterRoutes__list">
+        <ul className="ch-routes__list">
           {routes.map((route, index) => {
             const id = `charter-route-${index}`;
             const [origin, dest] = parseStops(route);
@@ -34,19 +34,19 @@ export function CharterRouteSelector({
               <li key={route} className={active ? "is-active" : undefined}>
                 <input
                   id={id}
-                  className="charterRoutes__input"
+                  className="ch-routes__input"
                   type="radio"
                   name="charterPreferredRoute"
                   value={route}
                   checked={active}
                   onChange={() => onChange(route)}
                 />
-                <label htmlFor={id} className="charterRoutes__row">
-                  <span className="charterRoutes__origin">{origin}</span>
-                  <span className="charterRoutes__line" aria-hidden="true">
+                <label htmlFor={id} className="ch-routes__row">
+                  <span className="ch-routes__origin">{origin}</span>
+                  <span className="ch-routes__line" aria-hidden="true">
                     <i />
                   </span>
-                  <span className="charterRoutes__dest">{dest || "—"}</span>
+                  <span className="ch-routes__dest">{dest || "—"}</span>
                 </label>
               </li>
             );

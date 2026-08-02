@@ -1,17 +1,13 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import "@/app/luxury-editorial-pages.css";
+import { useRef, useState } from "react";
+import "@/app/luxury-editorial-shared.css";
+import "@/app/highlights-luxury.css";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import {
-  HighlightsEditorialIndex,
-  HighlightsGallery,
-  HighlightsRituals,
-} from "@/components/public/luxury-editorial/HighlightsModules";
-import { LuxuryMedia } from "@/components/public/luxury-editorial/LuxuryMedia";
-import { LuxuryTextLink } from "@/components/public/luxury-editorial/LuxuryTextLink";
+  LuxuryImageReveal,
+  LuxuryMagneticLink,
+} from "@/components/public/luxury-editorial/LuxuryPrimitives";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import {
   extractHighlightsPullQuote,
@@ -21,478 +17,473 @@ import {
 import { HIGHLIGHTS_PAGE } from "@/lib/page-content";
 import { useLuxuryEditorialMotion } from "@/hooks/useLuxuryEditorialMotion";
 
-gsap.registerPlugin(ScrollTrigger);
-
-const INDEX_CHAPTERS = [
+const BOARD = [
   {
-    id: "hl-story-1",
-    title: "The Nile at first light",
-    imageSlot: "highlights-hero",
-    imageAlt: "Nile at first light",
+    title: "Breakfast in open air",
+    caption: "Linen, soft light, and the river still carrying the coolness of night.",
+    slot: "gastronomy-restaurant",
+    alt: "Breakfast in open air aboard Hathor",
   },
   {
-    id: "hl-story-2",
-    title: "Ancient places, privately encountered",
-    imageSlot: "landmark-hatshepsut",
-    imageAlt: "Temple of Hatshepsut",
-  },
-  {
-    id: "hl-story-3",
-    title: "Life on deck",
-    imageSlot: "highlights-lifestyle",
-    imageAlt: "Life on deck aboard Hathor",
-  },
-  {
-    id: "hl-story-4",
-    title: "Dining as ceremony",
-    imageSlot: "gastronomy-restaurant",
-    imageAlt: "Dining aboard Hathor",
-  },
-  {
-    id: "hl-story-5",
-    title: "Night on the river",
-    imageSlot: "home-cinematic-still",
-    imageAlt: "Night on the Nile",
-  },
-] as const;
-
-const RHYTHM = [
-  {
-    phrase: "Light arrives slowly.",
-    slot: "highlights-hero",
-    alt: "Dawn light on the Nile",
-  },
-  {
-    phrase: "History appears at the river’s edge.",
-    slot: "landmark-obelisk",
-    alt: "Ancient stone at the river’s edge",
-  },
-  {
-    phrase: "Afternoons dissolve into gold.",
+    title: "A quiet hour by the pool",
+    caption: "Heat softens. The deck holds silence between shore and sky.",
     slot: "highlights-lifestyle",
-    alt: "Golden afternoon on deck",
+    alt: "Quiet hour by the pool aboard Hathor",
   },
   {
-    phrase: "The Nile becomes silence.",
-    slot: "home-cinematic-still",
-    alt: "Night silence on the Nile",
+    title: "Afternoon tea in the salon",
+    caption: "Shade, conversation, and the unhurried hospitality of a private house.",
+    slot: "home-collage-living",
+    alt: "Afternoon tea in the salon",
+  },
+  {
+    title: "Sunset from the upper deck",
+    caption: "The Nile turns gold, then violet, then a deep quiet blue.",
+    slot: "home-call-to-action",
+    alt: "Sunset from the upper deck",
   },
 ] as const;
 
-const RITUALS = [
+const RIVER = [
   {
-    id: "morning",
-    title: "Morning service",
-    body: "Coffee and quiet attention before the day opens.",
-    imageSlot: "gastronomy-restaurant",
-    imageAlt: "Morning service aboard Hathor",
+    title: "Temple Stone",
+    body: "Centuries of shadow remain between the columns. Arriving early allows the place to reveal itself slowly, before voices fill the courtyards.",
+    meta: "Luxor West Bank · first light",
+    slot: "landmark-hatshepsut",
+    alt: HIGHLIGHTS_LANDMARK_META[1].caption,
   },
   {
-    id: "guiding",
-    title: "Private guiding",
-    body: "Temples and sites encountered with time and context.",
-    imageSlot: "landmark-hatshepsut",
-    imageAlt: "Private temple encounter",
+    title: "Village Shore",
+    body: "Children call from the bank, palms lean over the water, and daily life passes close enough to feel unedited.",
+    meta: "Upper Nile · midday",
+    slot: "landmark-obelisk",
+    alt: HIGHLIGHTS_LANDMARK_META[0].caption,
   },
   {
-    id: "aperitif",
-    title: "Sunset aperitif",
-    body: "A soft pause as the river turns to bronze.",
-    imageSlot: "highlights-lifestyle",
-    imageAlt: "Sunset aperitif on deck",
-  },
-  {
-    id: "dining",
-    title: "Chef-led dining",
-    body: "Cuisine paced to the voyage, never to a clock.",
-    imageSlot: "home-story-dining",
-    imageAlt: "Chef-led dining aboard Hathor",
-  },
-  {
-    id: "turndown",
-    title: "Turndown ritual",
-    body: "Suites restored with the same care as the day.",
-    imageSlot: "room-suite",
-    imageAlt: "Suite turndown aboard Hathor",
-  },
-  {
-    id: "attention",
-    title: "Discreet personal attention",
-    body: "Needs met before they are spoken.",
-    imageSlot: "charter-service",
-    imageAlt: "Discreet hospitality aboard Hathor",
+    title: "Desert Horizon",
+    body: "Beyond the green edge of the Nile, the land becomes almost abstract—sand, sky, silence, and the long gold of evening.",
+    meta: "West bank · blue hour",
+    slot: "landmark-valley-kings",
+    alt: HIGHLIGHTS_LANDMARK_META[2].caption,
   },
 ] as const;
 
-const GALLERY = [
-  { id: "g1", label: "River", imageSlot: "highlights-hero", imageAlt: "Nile river light" },
-  { id: "g2", label: "Deck", imageSlot: "highlights-lifestyle", imageAlt: "Deck living" },
-  { id: "g3", label: "Suite", imageSlot: "room-royal", imageAlt: "Royal suite" },
-  { id: "g4", label: "Table", imageSlot: "gastronomy-hero", imageAlt: "Dining table" },
-  { id: "g5", label: "Temple", imageSlot: "landmark-valley-kings", imageAlt: "Valley of the Kings" },
-  { id: "g6", label: "Night", imageSlot: "home-call-to-action", imageAlt: "Night on the Nile" },
+const EVENING = [
+  {
+    id: "ingredient",
+    label: "The Ingredient",
+    body: "Seasonal produce and Nile-side flavours prepared with quiet precision—never a performance, always a craft.",
+  },
+  {
+    id: "table",
+    label: "The Table",
+    body: "Warm light, unhurried service, and conversation that becomes part of the landscape beyond the glass.",
+  },
+  {
+    id: "night",
+    label: "The Night",
+    body: "When the river darkens, the final course arrives with the soft ceremony of evening itself.",
+  },
 ] as const;
 
-function HighlightsRhythm() {
-  const rootRef = useRef<HTMLElement>(null);
-
-  useLayoutEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
-
-    const setIdx = (idx: number) => {
-      root.querySelectorAll<HTMLElement>("[data-lux-rhythm-slide]").forEach((el) => {
-        el.toggleAttribute("data-active", Number(el.dataset.index) === idx);
-      });
-      const phrase = root.querySelector<HTMLElement>("[data-lux-rhythm-phrase]");
-      if (phrase) phrase.textContent = RHYTHM[idx]?.phrase ?? "";
-    };
-
-    setIdx(0);
-
-    const mm = gsap.matchMedia();
-    mm.add("(min-width: 1025px)", () => {
-      const bar = root.querySelector<HTMLElement>("[data-lux-rhythm-bar]");
-      const trigger = ScrollTrigger.create({
-        trigger: root,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: true,
-        onUpdate: (self) => {
-          const idx = Math.min(
-            RHYTHM.length - 1,
-            Math.floor(self.progress * RHYTHM.length),
-          );
-          setIdx(idx);
-          if (bar) bar.style.transform = `scaleX(${Math.max(0.08, self.progress)})`;
-        },
-      });
-      return () => trigger.kill();
-    });
-    return () => mm.revert();
-  }, []);
-
-  return (
-    <section
-      ref={rootRef}
-      className="luxSection hlRhythm"
-      data-lux-rhythm=""
-      aria-labelledby="hl-rhythm-heading"
-    >
-      <div className="luxShell" style={{ marginBottom: "1.5rem" }}>
-        <p className="luxMeta">04 / RHYTHM</p>
-        <h2 id="hl-rhythm-heading" className="luxDisplay luxDisplay--md">
-          The rhythm of the river
-        </h2>
-      </div>
-
-      <div className="hlRhythm__pin luxShell">
-        <div className="hlRhythm__media luxMedia">
-          {RHYTHM.map((item, index) => (
-            <div
-              key={item.phrase}
-              className="hlRhythm__slide"
-              data-lux-rhythm-slide=""
-              data-index={index}
-              data-active={index === 0 ? "true" : "false"}
-            >
-              <ManagedImage
-                name={item.slot}
-                alt={item.alt}
-                fill
-                sizes="100vw"
-                className="object-cover"
-                previewAnchor={index === 0}
-              />
-            </div>
-          ))}
-        </div>
-        <p className="hlRhythm__phrase" data-lux-rhythm-phrase="">
-          {RHYTHM[0].phrase}
-        </p>
-        <div className="hlRhythm__progress" aria-hidden="true">
-          <span data-lux-rhythm-bar="" style={{ transform: "scaleX(0.08)" }} />
-        </div>
-      </div>
-
-      <div className="hlRhythm__stack luxShell">
-        {RHYTHM.map((item) => (
-          <article key={item.phrase}>
-            <LuxuryMedia
-              name={item.slot}
-              alt={item.alt}
-              sizes="100vw"
-              className="luxMedia--16x10"
-              previewAnchor={false}
-            />
-            <p className="hlRhythm__phrase">{item.phrase}</p>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
+const DETAILS = [
+  { slot: "home-story-craft-large", caption: "Linen catching the morning air", alt: "Linen detail" },
+  { slot: "home-story-legacy-large", caption: "Brass warmed by late sunlight", alt: "Brass detail" },
+  { slot: "highlights-lifestyle", caption: "The river reflected on the ceiling", alt: "Water reflection" },
+  { slot: "about-dining", caption: "A note left before dinner", alt: "Handwritten note atmosphere" },
+  { slot: "home-story-dining", caption: "Craft held close enough to notice", alt: "Table craft detail" },
+  { slot: "home-cinematic-still", caption: "The hour when every surface turns gold", alt: "Golden hour light" },
+] as const;
 
 export function HighlightsPageContent() {
   const rootRef = useRef<HTMLElement>(null);
-  useLuxuryEditorialMotion(rootRef);
+  useLuxuryEditorialMotion(rootRef, "highlights");
 
   const intro = layoutHighlightsIntro([...HIGHLIGHTS_PAGE.intro]);
   const quote = extractHighlightsPullQuote([...HIGHLIGHTS_PAGE.intro]);
-  const landmarks = HIGHLIGHTS_PAGE.landmarks;
+  const [board, setBoard] = useState(0);
+  const [evening, setEvening] = useState(0);
+  const nextBoard = (board + 1) % BOARD.length;
 
   return (
     <main
       ref={rootRef}
-      className="luxPage"
+      className="lux-page"
       data-highlights-page=""
       data-lux-page="highlights"
     >
-      {/* HL-01 */}
-      <section className="hlHero" data-lux-hero="" aria-labelledby="hl-hero-title">
-        <div className="hlHero__media">
-          <div data-lux-hero-img="" style={{ position: "absolute", inset: "-2%", height: "104%" }}>
+      {/* 1 Hero */}
+      <section className="hl-hero" data-lux-hero="" aria-labelledby="hl-hero-title">
+        <div className="hl-hero__media">
+          <div data-lux-hero-img="" style={{ position: "absolute", inset: "-3%", height: "106%" }}>
             <ManagedImage
               name="highlights-hero"
-              alt="Hathor Dahabiya on the Nile"
+              alt="Hathor Dahabiya moments along the Nile"
               fill
               priority
               sizes="100vw"
               className="object-cover"
             />
           </div>
-          <div className="hlHero__veil" aria-hidden="true" />
+          <div className="hl-hero__veil" aria-hidden="true" />
         </div>
-        <div className="luxShell hlHero__content">
-          <div className="luxGrid" style={{ width: "100%", flex: 1 }}>
-            <p className="luxMeta hlHero__label">THE HATHOR EXPERIENCE</p>
-            <h1 id="hl-hero-title" className="luxDisplay luxDisplay--xl hlHero__title">
-              <span className="luxLineMask">
-                <span data-lux-line="">Moments That</span>
+        <div className="lux-shell hl-hero__content">
+          <div className="lux-grid" style={{ width: "100%" }} data-lux-reveal-group="">
+            <p className="lux-kicker hl-hero__kicker">HIGHLIGHTS · MOMENTS ALONG THE NILE</p>
+            <h1 id="hl-hero-title" className="lux-display hl-hero__title">
+              <span className="lux-line-mask">
+                <span data-lux-line="">The river is</span>
               </span>
-              <span className="luxLineMask">
-                <span data-lux-line="">Stay With You</span>
+              <span className="lux-line-mask">
+                <span data-lux-line="">
+                  <span className="lux-gold-text">Remembered</span> in
+                </span>
+              </span>
+              <span className="lux-line-mask">
+                <span data-lux-line="">fragments of light.</span>
               </span>
             </h1>
-            <p className="luxLead hlHero__intro">
-              A journey shaped by light, history, ritual and rare access.
+            <p className="lux-body hl-hero__body" data-lux-body="">
+              Morning stone, linen moving in the breeze, distant palms, a table glowing after
+              sunset—each day leaves behind a different image.
             </p>
-            <nav className="hlHero__index" aria-label="Chapter index">
-              {INDEX_CHAPTERS.map((c, i) => (
-                <a key={c.id} href={`#${c.id}`}>
-                  {String(i + 1).padStart(2, "0")} {c.title.split(",")[0]}
-                </a>
-              ))}
-            </nav>
+            <div className="hl-hero__index" data-lux-body="">
+              <span>01 / 07</span>
+              <span>Scroll to begin</span>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* HL-02 */}
-      <HighlightsEditorialIndex chapters={[...INDEX_CHAPTERS]} />
-
-      {/* HL-03 Story 1 */}
-      <section
-        id="hl-story-1"
-        className="luxSection hlStory hlStory--light"
-        aria-labelledby="hl-s1-title"
-      >
-        <div className="luxShell luxGrid">
-          <LuxuryMedia
+      {/* 2 First light */}
+      <section className="lux-section lux-section--cream" aria-labelledby="hl-first-title">
+        <div className="lux-shell lux-grid" data-lux-reveal-group="">
+          <h2 id="hl-first-title" className="lux-display lux-display--medium hl-first__title">
+            <span className="lux-line-mask">
+              <span data-lux-line="">The day arrives</span>
+            </span>
+            <span className="lux-line-mask">
+              <span data-lux-line="">softly.</span>
+            </span>
+          </h2>
+          <p className="lux-body hl-first__body" data-lux-body="">
+            At first light, the river is silver and the air still carries the coolness of night.
+            The ship moves before the world feels awake.
+          </p>
+          <p className="hl-first__time" data-lux-body="">
+            05:48 · Upper Nile
+          </p>
+          <LuxuryImageReveal
             name="highlights-hero"
-            alt="The Nile at first light"
-            sizes="(max-width: 1024px) 100vw, 75vw"
-            className="luxMedia--16x10 hlStory__mediaA"
-            hover
+            alt="Panoramic Nile at first light"
+            sizes="100vw"
+            className="hl-first__panorama lux-image-link"
+            mediaClassName="lux-media--16x9"
             previewAnchor={false}
           />
-          <p className="hlStory__num" aria-hidden="true">
-            01
-          </p>
-          <h2 id="hl-s1-title" className="luxDisplay luxDisplay--md hlStory__title">
-            The Nile at first light
-          </h2>
-          <div className="hlStory__copy">
-            <p className="luxLead">{intro.lead}</p>
-            <p className="luxCaption">Dawn · soft mist · private deck</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Story 2 */}
-      <section
-        id="hl-story-2"
-        className="luxSection hlStory hlStory--ink"
-        aria-labelledby="hl-s2-title"
-      >
-        <div className="luxShell luxGrid">
-          <h2 id="hl-s2-title" className="luxDisplay luxDisplay--md hlStory__title">
-            Ancient places, privately encountered
-          </h2>
-          <LuxuryMedia
-            name="landmark-hatshepsut"
-            alt={HIGHLIGHTS_LANDMARK_META[1].caption}
-            sizes="(max-width: 1024px) 100vw, 45vw"
-            className="luxMedia--3x4 hlStory__mediaA"
-            objectPosition={HIGHLIGHTS_LANDMARK_META[1].objectPosition}
-            hover
-          />
-          <LuxuryMedia
-            name="landmark-obelisk"
-            alt={HIGHLIGHTS_LANDMARK_META[0].caption}
-            sizes="(max-width: 1024px) 100vw, 30vw"
-            className="luxMedia--4x3 hlStory__mediaB"
-            objectPosition={HIGHLIGHTS_LANDMARK_META[0].objectPosition}
-            previewAnchor={false}
-          />
-          <div className="hlStory__copy">
-            <p className="luxBody">
-              {landmarks[1]?.body ?? HIGHLIGHTS_LANDMARK_META[1].fact}
-            </p>
-            <p className="luxCaption">{HIGHLIGHTS_LANDMARK_META[1].location}</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Story 3 */}
-      <section
-        id="hl-story-3"
-        className="luxSection luxSection--parchment hlStory hlStory--deck"
-        aria-labelledby="hl-s3-title"
-      >
-        <div className="luxShell luxGrid">
-          <div className="hlStory__stage luxMedia" data-lux-media="">
-            <ManagedImage
-              name="highlights-lifestyle"
-              alt="Life on deck aboard Hathor"
-              fill
-              sizes="100vw"
-              className="object-cover"
-            />
-            <h2 id="hl-s3-title" className="luxDisplay luxDisplay--md hlStory__overlayTitle">
-              Life on deck
-            </h2>
-          </div>
-          <p className="luxBody hlStory__copy" data-lux-reveal="">
-            Open air, quiet water, and the unhurried hospitality that makes a Dahabiya
-            voyage feel like a private house on the river.
-          </p>
-        </div>
-      </section>
-
-      {/* Story 4 */}
-      <section
-        id="hl-story-4"
-        className="luxSection luxSection--paper hlStory hlStory--dining"
-        aria-labelledby="hl-s4-title"
-      >
-        <div className="luxShell luxGrid">
-          <h2 id="hl-s4-title" className="luxDisplay luxDisplay--md hlStory__title">
-            Dining as ceremony
-          </h2>
-          <LuxuryMedia
+          <LuxuryImageReveal
             name="gastronomy-restaurant"
-            alt="Dining detail aboard Hathor"
-            sizes="(max-width: 1024px) 100vw, 40vw"
-            className="luxMedia--3x4 hlStory__mediaA"
-            hover
-          />
-          <LuxuryMedia
-            name="home-story-dining"
-            alt="Lifestyle dining aboard Hathor"
-            sizes="(max-width: 1024px) 100vw, 55vw"
-            className="luxMedia--16x10 hlStory__mediaB"
-            hover
+            alt="Morning coffee detail"
+            sizes="(max-width: 1024px) 100vw, 24vw"
+            className="hl-first__detail lux-image-link"
+            mediaClassName="lux-media--2x3"
             previewAnchor={false}
+            caption="Coffee · linen · quiet"
           />
-          <div className="hlStory__copy">
-            <p className="luxLead">
-              {intro.groups[2]?.[0] ??
-                "Egyptian flavours and international cuisine, prepared fresh and served with genuine care."}
+        </div>
+      </section>
+
+      {/* 3 Life on board */}
+      <section className="lux-section lux-section--cream-50 hl-board" aria-labelledby="hl-board-title">
+        <div className="lux-shell" data-lux-reveal-group="">
+          <p className="lux-kicker">03 · LIFE ON BOARD</p>
+          <h2 id="hl-board-title" className="lux-display lux-display--medium" style={{ maxWidth: "12ch", marginTop: "1rem" }}>
+            <span className="lux-line-mask">
+              <span data-lux-line="">Hours that feel</span>
+            </span>
+            <span className="lux-line-mask">
+              <span data-lux-line="">like rooms.</span>
+            </span>
+          </h2>
+
+          <div className="hl-board__stage" style={{ marginTop: "2.5rem" }}>
+            <div className="hl-board__active lux-media lux-image-link">
+              <ManagedImage
+                key={BOARD[board].slot + board}
+                name={BOARD[board].slot}
+                alt={BOARD[board].alt}
+                fill
+                sizes="(max-width: 1024px) 100vw, 64vw"
+                className="object-cover"
+                previewAnchor={false}
+              />
+            </div>
+            <div className="hl-board__next lux-media">
+              <ManagedImage
+                name={BOARD[nextBoard].slot}
+                alt={BOARD[nextBoard].alt}
+                fill
+                sizes="30vw"
+                className="object-cover"
+                previewAnchor={false}
+              />
+            </div>
+          </div>
+
+          <div className="hl-board__copy">
+            <p className="lux-kicker">
+              {String(board + 1).padStart(2, "0")} / {String(BOARD.length).padStart(2, "0")}
             </p>
-            <p className="luxCaption">Table · light · unhurried service</p>
+            <div>
+              <h3 className="hl-board__title">{BOARD[board].title}</h3>
+              <p className="hl-board__caption">{BOARD[board].caption}</p>
+            </div>
+            <div className="hl-board__nav">
+              <button
+                type="button"
+                aria-label="Previous moment"
+                onClick={() => setBoard((b) => (b - 1 + BOARD.length) % BOARD.length)}
+              >
+                ←
+              </button>
+              <button
+                type="button"
+                aria-label="Next moment"
+                onClick={() => setBoard((b) => (b + 1) % BOARD.length)}
+              >
+                →
+              </button>
+            </div>
+          </div>
+          <div className="hl-board__progress" aria-hidden="true">
+            <span style={{ transform: `scaleX(${(board + 1) / BOARD.length})` }} />
+          </div>
+
+          <div className="hl-board__mobile" aria-label="Life on board">
+            {BOARD.map((item) => (
+              <article key={item.title} className="hl-board__mobileSlide">
+                <div className="lux-media">
+                  <ManagedImage
+                    name={item.slot}
+                    alt={item.alt}
+                    fill
+                    sizes="86vw"
+                    className="object-cover"
+                    previewAnchor={false}
+                  />
+                </div>
+                <h3 className="hl-board__title" style={{ marginTop: "1rem" }}>
+                  {item.title}
+                </h3>
+                <p className="hl-board__caption">{item.caption}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Story 5 */}
+      {/* 4 River opens */}
       <section
-        id="hl-story-5"
-        className="hlStory hlStory--night"
-        aria-labelledby="hl-s5-title"
+        className="hl-river"
+        data-hl-river=""
+        aria-labelledby="hl-river-title"
       >
-        <div className="hlStory__mediaFull">
+        <h2 id="hl-river-title" className="visually-hidden" style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}>
+          The river opens
+        </h2>
+        <div className="hl-river__pin">
+          <div className="hl-river__media">
+            {RIVER.map((chapter, index) => (
+              <div
+                key={chapter.title}
+                className="hl-river__slide"
+                data-hl-river-slide=""
+                data-active={index === 0 ? "true" : undefined}
+              >
+                <ManagedImage
+                  name={chapter.slot}
+                  alt={chapter.alt}
+                  fill
+                  sizes="100vw"
+                  className="object-cover"
+                  previewAnchor={index === 0}
+                />
+              </div>
+            ))}
+            <div className="hl-river__veil" aria-hidden="true" />
+          </div>
+          {RIVER.map((chapter, index) => (
+            <div
+              key={chapter.title}
+              className="lux-shell hl-river__overlay lux-grid"
+              data-hl-river-copy=""
+              style={{
+                position: index === 0 ? "relative" : "absolute",
+                inset: index === 0 ? undefined : 0,
+                opacity: index === 0 ? 1 : 0,
+                alignContent: "end",
+              }}
+            >
+              <p className="lux-kicker hl-river__num">
+                04 · {String(index + 1).padStart(2, "0")}
+              </p>
+              <h3 className="lux-display lux-display--medium hl-river__title">{chapter.title}</h3>
+              <p className="lux-body hl-river__copy">{chapter.body}</p>
+              <p className="lux-kicker hl-river__meta">{chapter.meta}</p>
+              <span className="lux-rule hl-river__rule" />
+            </div>
+          ))}
+        </div>
+
+        <div className="hl-river__stack">
+          {RIVER.map((chapter, index) => (
+            <article key={chapter.title} className="hl-river__stackArticle">
+              <ManagedImage
+                name={chapter.slot}
+                alt={chapter.alt}
+                fill
+                sizes="100vw"
+                className="object-cover"
+                previewAnchor={false}
+              />
+              <div className="hl-river__veil" aria-hidden="true" />
+              <div className="lux-shell" style={{ position: "relative", zIndex: 2, paddingBlock: "3rem" }}>
+                <p className="lux-kicker">
+                  04 · {String(index + 1).padStart(2, "0")}
+                </p>
+                <h3 className="lux-display lux-display--small" style={{ marginTop: "1rem" }}>
+                  {chapter.title}
+                </h3>
+                <p className="lux-body" style={{ marginTop: "1rem", color: "rgba(251,247,239,0.78)" }}>
+                  {chapter.body}
+                </p>
+                <p className="lux-kicker" style={{ marginTop: "1rem", color: "var(--lux-gold-light)" }}>
+                  {chapter.meta}
+                </p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* 5 Evening */}
+      <section className="lux-section lux-section--cream" aria-labelledby="hl-evening-title">
+        <div className="lux-shell lux-grid" data-lux-reveal-group="">
+          <h2 id="hl-evening-title" className="lux-display lux-display--medium hl-evening__title">
+            <span className="lux-line-mask">
+              <span data-lux-line="">Evening gathers</span>
+            </span>
+            <span className="lux-line-mask">
+              <span data-lux-line="">around the table.</span>
+            </span>
+          </h2>
+          <p className="lux-body hl-evening__body" data-lux-body="">
+            Dinner is not a pause between destinations. It is part of the landscape: local
+            ingredients, warm light, conversation, and the river becoming dark beyond the glass.
+          </p>
+          <LuxuryImageReveal
+            name="home-story-dining"
+            alt="Evening dining aboard Hathor"
+            sizes="(max-width: 1024px) 100vw, 66vw"
+            className="hl-evening__main lux-image-link"
+            mediaClassName="lux-media--3x2"
+          />
+          <LuxuryImageReveal
+            name="gastronomy-hero"
+            alt="Food detail aboard Hathor"
+            sizes="(max-width: 1024px) 100vw, 30vw"
+            className="hl-evening__detail lux-image-link"
+            mediaClassName="lux-media--3x4"
+            previewAnchor={false}
+          />
+          <ul className="hl-evening__links" role="tablist" aria-label="Evening ritual">
+            {EVENING.map((item, index) => (
+              <li key={item.id}>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={index === evening}
+                  onClick={() => setEvening(index)}
+                >
+                  {item.label}
+                </button>
+              </li>
+            ))}
+          </ul>
+          <p className="lux-body hl-evening__story" data-lux-body="">
+            {EVENING[evening].body}
+          </p>
+          <p className="hl-evening__quote lux-gold-text">{quote || "The final course arrives after the stars."}</p>
+        </div>
+      </section>
+
+      {/* 6 Details */}
+      <section className="lux-section lux-section--cream-50" aria-labelledby="hl-details-title">
+        <div className="lux-shell lux-grid" data-lux-reveal-group="">
+          <h2 id="hl-details-title" className="lux-display lux-display--medium hl-details__title">
+            <span className="lux-line-mask">
+              <span data-lux-line="">Details that remain.</span>
+            </span>
+          </h2>
+          <div className="hl-details__grid">
+            {DETAILS.map((item) => (
+              <figure key={item.caption} className="hl-details__item lux-media lux-image-link" data-lux-media="">
+                <ManagedImage
+                  name={item.slot}
+                  alt={item.alt}
+                  fill
+                  sizes="(max-width: 767px) 100vw, 33vw"
+                  className="object-cover"
+                  previewAnchor={false}
+                />
+                <figcaption className="hl-details__caption">{item.caption}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 7 Close */}
+      <section className="hl-close" aria-labelledby="hl-close-title">
+        <div className="hl-close__media">
           <ManagedImage
-            name="home-cinematic-still"
-            alt="Night on the river"
+            name="home-call-to-action"
+            alt="Blue hour on the Nile"
             fill
             sizes="100vw"
             className="object-cover"
             previewAnchor={false}
           />
-          <div className="hlStory__veil" aria-hidden="true" />
+          <div className="hl-close__veil" aria-hidden="true" />
         </div>
-        <div className="luxShell hlStory__inner luxGrid">
-          <p className="luxMeta" style={{ gridColumn: "1 / -1" }}>
-            05 / NIGHT
-          </p>
-          <h2 id="hl-s5-title" className="luxDisplay hlStory__phrase">
-            Night on the river
-          </h2>
-          <p className="luxLead" style={{ gridColumn: "1 / 8", marginTop: "1.25rem" }}>
-            {landmarks[2]?.title
-              ? `After ${landmarks[2].title}, return to a private vessel waiting in silence.`
-              : "Return to a private vessel waiting after every discovery."}
-          </p>
-        </div>
-      </section>
-
-      {/* HL-04 */}
-      <HighlightsRhythm />
-
-      {/* HL-05 */}
-      <HighlightsRituals rows={[...RITUALS]} />
-
-      {/* HL-06 */}
-      <HighlightsGallery slides={[...GALLERY]} />
-
-      {/* HL-07 */}
-      <section className="luxSection" aria-labelledby="hl-close-heading">
-        <div className="luxShell luxGrid">
-          <h2 id="hl-close-heading" className="luxDisplay luxDisplay--lg hlClose__title">
-            <span className="luxLineMask">
-              <span data-lux-line="">There are journeys</span>
+        <div className="lux-shell hl-close__inner lux-grid" data-lux-reveal-group="">
+          <p className="lux-kicker hl-close__chapter">07 · THE INVITATION</p>
+          <h2 id="hl-close-title" className="lux-display lux-display--medium hl-close__title">
+            <span className="lux-line-mask">
+              <span data-lux-line="">There is more to remember</span>
             </span>
-            <span className="luxLineMask">
-              <span data-lux-line="">you remember.</span>
-            </span>
-            <span className="luxLineMask">
-              <span data-lux-line="">And journeys that change</span>
-            </span>
-            <span className="luxLineMask">
-              <span data-lux-line="">how time feels.</span>
+            <span className="lux-line-mask">
+              <span data-lux-line="">than there is to photograph.</span>
             </span>
           </h2>
-          <p className="luxBody hlClose__body" data-lux-reveal="">
-            {quote}
+          <p className="lux-body hl-close__body" data-lux-body="">
+            Step aboard and let the Nile reveal itself at the pace it deserves.{" "}
+            {intro.lead}
           </p>
-          <div className="luxRule luxRule--full hlClose__rule" data-lux-rule="" />
-          <div className="hlClose__actions">
-            <BookNowTrigger className="luxTextLink">
-              <span>Book your voyage</span>
-              <span aria-hidden="true" className="luxTextLink__arrow">
-                ↗
+          <div className="hl-close__actions" data-lux-body="">
+            <BookNowTrigger className="lux-magnetic-link lux-magnetic-link--inverse">
+              <span className="lux-magnetic-link__label">Explore the Voyages</span>
+              <span className="lux-magnetic-link__line" aria-hidden="true" />
+              <span className="lux-magnetic-link__circle" aria-hidden="true">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="1.4" />
+                </svg>
               </span>
             </BookNowTrigger>
-            <LuxuryTextLink href="/charter">Enquire for private charter</LuxuryTextLink>
+            <LuxuryMagneticLink href="/charter" inverse>
+              View Private Charter
+            </LuxuryMagneticLink>
           </div>
-          <LuxuryMedia
-            name="about-dining"
-            alt="Final atmospheric detail"
-            sizes="(max-width: 1024px) 100vw, 40vw"
-            className="luxMedia--3x4 hlClose__media"
-            previewAnchor={false}
-          />
         </div>
       </section>
     </main>
