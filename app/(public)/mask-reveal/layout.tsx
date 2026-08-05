@@ -1,60 +1,27 @@
 import type { ReactNode } from "react";
-import { CruisesScrollBoot } from "../cruises/CruisesScrollBoot";
-import "../cruises/cruises-scroll.css";
+import { MaskRevealBoot } from "./MaskRevealBoot";
+import "./mask-reveal.css";
 
-const CRUISES_BOOT = `(function(){try{var d=document.documentElement,b=document.body;d.setAttribute("data-cruises-experience","");b.style.backgroundColor="#ece8df";}catch(e){}})();`;
+const MASK_REVEAL_BOOT = `(function(){try{var d=document.documentElement,b=document.body;d.setAttribute("data-mask-reveal","");b.style.backgroundColor="#1a1612";}catch(e){}})();`;
 
-const CRUISES_CRITICAL_CSS = `
-html[data-cruises-experience],
-html[data-cruises-experience] body,
-html[data-cruises-experience] .public-site {
-  background-color: #ece8df !important;
+const MASK_REVEAL_CRITICAL_CSS = `
+html[data-mask-reveal],
+html[data-mask-reveal] body,
+html[data-mask-reveal] .public-site {
+  background-color: #1a1612 !important;
   background-image: none !important;
 }
-html[data-cruises-experience] .public-site::before {
+html[data-mask-reveal] .public-site::before {
   content: none !important;
   display: none !important;
 }
-html[data-cruises-experience] .cruises-scroll-route,
-html[data-cruises-experience] .cruises-page {
-  background-color: transparent !important;
-  background-image: none !important;
-}
-html[data-cruises-experience] .cruises-sheet {
-  position: relative !important;
-  isolation: isolate !important;
-  background-color: #ece8df !important;
-  background-image: none !important;
-}
-html[data-cruises-experience] .cruises-sheet::before {
-  content: "" !important;
-  display: block !important;
-  position: absolute !important;
-  inset: 0 !important;
-  z-index: 0 !important;
-  pointer-events: none !important;
-  background-image: url("/branding/egyptian-hyroglyphs-hathor-cruise-solid-v2.webp") !important;
-  background-repeat: repeat !important;
-  background-position: center top !important;
-  background-size: 320px auto !important;
-  opacity: 0.056 !important;
-}
-html[data-public-theme="night"][data-cruises-experience] .cruises-sheet::before {
-  opacity: 0.02 !important;
-}
-html[data-cruises-experience] .cruises-sheet > * {
-  position: relative;
-  z-index: 1;
-}
-html[data-cruises-experience] .cruises-hero,
-html[data-cruises-experience] .cruises-hero__stage {
-  background-image: none !important;
-  z-index: 2 !important;
-}
-html[data-cruises-experience] .cruises-hero::before,
-html[data-cruises-experience] .cruises-hero__stage::before {
-  content: none !important;
-  display: none !important;
+html[data-mask-reveal] .public-main--hero,
+html[data-mask-reveal] .public-main {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+  max-width: none !important;
+  width: 100% !important;
+  background: transparent !important;
 }
 `;
 
@@ -65,10 +32,10 @@ export default function MaskRevealLayout({
 }>) {
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: CRUISES_CRITICAL_CSS }} />
-      <script dangerouslySetInnerHTML={{ __html: CRUISES_BOOT }} />
-      <div className="cruises-scroll-route">
-        <CruisesScrollBoot>{children}</CruisesScrollBoot>
+      <style dangerouslySetInnerHTML={{ __html: MASK_REVEAL_CRITICAL_CSS }} />
+      <script dangerouslySetInnerHTML={{ __html: MASK_REVEAL_BOOT }} />
+      <div className="mask-reveal-route">
+        <MaskRevealBoot>{children}</MaskRevealBoot>
       </div>
     </>
   );
