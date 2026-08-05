@@ -1,11 +1,10 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
-import { useMaskRevealStickyFilters } from "@/hooks/useMaskRevealStickyFilters";
 import { formatPrice } from "@/lib/client-dates";
 import { HATHOR_CRUISES, type HathorCruiseSeed } from "@/lib/hathor-catalog";
 import { CRUISES_PAGE } from "@/lib/page-content";
@@ -216,11 +215,6 @@ export function MaskRevealPageContent() {
   const [features, setFeatures] = useState<string[]>([]);
   const [favourites, setFavourites] = useState<Set<string>>(() => new Set());
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-
-  const shellRef = useRef<HTMLDivElement>(null);
-  const railRef = useRef<HTMLDivElement>(null);
-  const panelRef = useRef<HTMLElement>(null);
-  useMaskRevealStickyFilters(shellRef, railRef, panelRef);
 
   const filtered = useMemo(() => {
     const list = items.filter((item) => {
@@ -457,7 +451,7 @@ export function MaskRevealPageContent() {
 
   return (
     <div className="mask-reveal-page">
-      <div className="mr-shell" ref={shellRef}>
+      <div className="mr-shell">
         <div className="mr-mobile-bar">
           <button
             type="button"
@@ -470,16 +464,6 @@ export function MaskRevealPageContent() {
             {filtered.length} cabin{filtered.length === 1 ? "" : "s"}
           </p>
           <BookNowTrigger className="mr-btn mr-btn--solid">Book Now</BookNowTrigger>
-        </div>
-
-        <div className="mr-filters-desktop" ref={railRef}>
-          <aside
-            className="mr-filters"
-            aria-label="Voyage filters"
-            ref={panelRef}
-          >
-            {filtersBody}
-          </aside>
         </div>
 
         {mobileFiltersOpen ? (
@@ -496,8 +480,19 @@ export function MaskRevealPageContent() {
           </div>
         ) : null}
 
-        <section className="mr-results" aria-label="Cruise listings">
-          <div className="mr-listings">
+        {/*
+          Pin row = filters + cruise cards only.
+          Filters stay sticky on the left while cards scroll; when the row
+          ends (bottom of cruises), filters scroll up with it, then footer.
+        */}
+        <div className="mr-pin-row">
+          <div className="mr-filters-desktop">
+            <aside className="mr-filters" aria-label="Voyage filters">
+              {filtersBody}
+            </aside>
+          </div>
+
+          <section className="mr-listings" aria-label="Cruise listings">
             {filtered.length === 0 ? (
               <div className="mr-empty">
                 <h2>No cabins match</h2>
@@ -597,8 +592,10 @@ export function MaskRevealPageContent() {
                 })}
               </ul>
             )}
-          </div>
+          </section>
+        </div>
 
+        <div className="mr-after">
           <nav className="mr-explore" aria-label="Continue exploring">
             <p className="mr-explore__eyebrow">Onboard</p>
             <p className="mr-explore__title">
@@ -635,7 +632,7 @@ export function MaskRevealPageContent() {
               </Link>
             </div>
           </footer>
-        </section>
+        </div>
       </div>
     </div>
   );

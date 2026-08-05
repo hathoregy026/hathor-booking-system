@@ -40,6 +40,8 @@ function wantsNativeMode() {
   if (typeof window === "undefined") return true;
   /* Admin is a normal document scroller — Lenis + nested overflow locks freeze the panel. */
   if (window.location.pathname.startsWith("/admin")) return true;
+  /* Mask Reveal needs native sticky filters (Lenis breaks position:sticky). */
+  if (window.location.pathname.startsWith("/mask-reveal")) return true;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return true;
   if (isTouchDevice()) return true;
   if (isPhoneOrTabletViewport()) return true;

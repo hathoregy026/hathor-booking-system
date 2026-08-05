@@ -54,8 +54,7 @@ html[data-mask-reveal] .page-transition {
 
 .mr-shell {
   position: relative;
-  display: flex;
-  align-items: flex-start;
+  display: block;
   width: 100%;
   margin: 0;
   padding: 0;
@@ -67,24 +66,49 @@ html[data-mask-reveal] .page-transition {
   display: none;
 }
 
-.mr-filters-desktop {
+/*
+  Pin row: filters | cruise cards.
+  Sticky filters stay fixed on the left while cards scroll.
+  When this row ends (bottom of cruises), filters scroll up with it.
+*/
+.mr-pin-row {
   position: relative;
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  overflow: visible;
+}
+
+.mr-filters-desktop {
+  position: sticky;
+  top: calc(var(--mr-nav-offset) + 0.35rem);
   flex: 0 0 var(--mr-sidebar-w);
   width: var(--mr-sidebar-w);
+  align-self: flex-start;
   background: var(--mr-cream);
   color: var(--mr-ink);
   border-right: 1px solid var(--mr-card-line);
-  overflow: visible;
   z-index: 3;
 }
 
 .mr-filters-desktop .mr-filters {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
   box-sizing: border-box;
   width: 100%;
   padding: 0.35rem clamp(1rem, 1.8vw, 1.5rem) 2rem;
+  background: var(--mr-cream);
+}
+
+.mr-listings {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: var(--mr-cream);
+  padding: 0.35rem clamp(0.85rem, 1.8vw, 1.5rem) 1.5rem;
+}
+
+.mr-after {
+  width: 100%;
+  padding: 0 clamp(0.85rem, 1.8vw, 1.5rem) 3rem;
   background: var(--mr-cream);
 }
 
@@ -413,17 +437,6 @@ html[data-mask-reveal] .page-transition {
 
 .mr-btn--ghost:hover {
   color: var(--mr-gold);
-}
-
-.mr-results {
-  flex: 1 1 auto;
-  min-width: 0;
-  background: var(--mr-cream);
-  padding: 0.35rem clamp(0.85rem, 1.8vw, 1.5rem) 3rem;
-}
-
-.mr-listings {
-  min-width: 0;
 }
 
 .mr-grid {
@@ -763,7 +776,7 @@ html[data-mask-reveal] .page-transition {
     --mr-nav-offset: 4.5rem;
   }
 
-  .mr-shell {
+  .mr-pin-row {
     display: block;
   }
 
@@ -852,8 +865,12 @@ html[data-mask-reveal] .page-transition {
     cursor: pointer;
   }
 
-  .mr-results {
-    padding: 0.2rem 0.7rem 2.25rem;
+  .mr-listings {
+    padding: 0.2rem 0.7rem 1.25rem;
+  }
+
+  .mr-after {
+    padding: 0 0.7rem 2.25rem;
   }
 
   .mr-grid {
