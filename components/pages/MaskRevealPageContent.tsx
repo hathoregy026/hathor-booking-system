@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
+import { useMaskRevealStickyFilters } from "@/hooks/useMaskRevealStickyFilters";
 import { formatPrice } from "@/lib/client-dates";
 import { HATHOR_CRUISES, type HathorCruiseSeed } from "@/lib/hathor-catalog";
 import { CRUISES_PAGE } from "@/lib/page-content";
@@ -215,6 +216,10 @@ export function MaskRevealPageContent() {
   const [features, setFeatures] = useState<string[]>([]);
   const [favourites, setFavourites] = useState<Set<string>>(() => new Set());
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+
+  const pinRowRef = useRef<HTMLDivElement>(null);
+  const filtersRef = useRef<HTMLDivElement>(null);
+  useMaskRevealStickyFilters(pinRowRef, filtersRef);
 
   const filtered = useMemo(() => {
     const list = items.filter((item) => {
@@ -485,8 +490,8 @@ export function MaskRevealPageContent() {
           Filters stay sticky on the left while cards scroll; when the row
           ends (bottom of cruises), filters scroll up with it, then footer.
         */}
-        <div className="mr-pin-row">
-          <div className="mr-filters-desktop">
+        <div className="mr-pin-row" ref={pinRowRef}>
+          <div className="mr-filters-desktop" ref={filtersRef}>
             <aside className="mr-filters" aria-label="Voyage filters">
               {filtersBody}
             </aside>

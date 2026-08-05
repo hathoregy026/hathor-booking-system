@@ -10,6 +10,10 @@ html[data-mask-reveal] body,
 html[data-mask-reveal] .public-site {
   background-color: #ece8df !important;
   background-image: none !important;
+  /* overflow-x:clip on .public-site kills position:sticky / fixed pin math */
+  overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
 }
 html[data-mask-reveal] .public-site::before {
   content: none !important;
@@ -17,13 +21,18 @@ html[data-mask-reveal] .public-site::before {
 }
 html[data-mask-reveal] .public-main--hero,
 html[data-mask-reveal] .public-main,
-html[data-mask-reveal] .page-transition {
+html[data-mask-reveal] .page-transition,
+html[data-mask-reveal] .mask-reveal-route {
   padding-top: 0 !important;
   margin-top: 0 !important;
   max-width: none !important;
   width: 100% !important;
   background: transparent !important;
   overflow: visible !important;
+  overflow-x: visible !important;
+  transform: none !important;
+  filter: none !important;
+  perspective: none !important;
 }
 `;
 

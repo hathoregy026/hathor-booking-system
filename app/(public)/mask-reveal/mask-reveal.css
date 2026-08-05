@@ -24,6 +24,9 @@ html[data-mask-reveal] .public-site {
   background-color: var(--mr-cream) !important;
   background-image: none !important;
   color: var(--mr-ink);
+  overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
 }
 
 html[data-mask-reveal] .public-site::before {
@@ -33,13 +36,18 @@ html[data-mask-reveal] .public-site::before {
 
 html[data-mask-reveal] .public-main--hero,
 html[data-mask-reveal] .public-main,
-html[data-mask-reveal] .page-transition {
+html[data-mask-reveal] .page-transition,
+html[data-mask-reveal] .mask-reveal-route {
   padding-top: 0 !important;
   margin-top: 0 !important;
   max-width: none !important;
   width: 100% !important;
   background: transparent !important;
   overflow: visible !important;
+  overflow-x: visible !important;
+  transform: none !important;
+  filter: none !important;
+  perspective: none !important;
 }
 
 .mask-reveal-route .mask-reveal-page {
@@ -80,8 +88,7 @@ html[data-mask-reveal] .page-transition {
 }
 
 .mr-filters-desktop {
-  position: sticky;
-  top: calc(var(--mr-nav-offset) + 0.35rem);
+  position: relative;
   flex: 0 0 var(--mr-sidebar-w);
   width: var(--mr-sidebar-w);
   align-self: flex-start;
@@ -89,6 +96,24 @@ html[data-mask-reveal] .page-transition {
   color: var(--mr-ink);
   border-right: 1px solid var(--mr-card-line);
   z-index: 3;
+}
+
+.mr-filters-desktop.is-fixed {
+  /* left/top/width applied by JS */
+  z-index: 20;
+  border-right: 1px solid var(--mr-card-line);
+  background: var(--mr-cream);
+}
+
+.mr-filters-desktop.is-end {
+  position: absolute;
+  z-index: 3;
+}
+
+.mr-filters-spacer {
+  flex-shrink: 0;
+  pointer-events: none;
+  visibility: hidden;
 }
 
 .mr-filters-desktop .mr-filters {
