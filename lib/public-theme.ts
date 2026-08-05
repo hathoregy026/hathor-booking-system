@@ -56,6 +56,25 @@ export function getPublicHeroBootCriticalStyle(): string {
   ].join("");
 }
 
+/** Critical CSS for the welcome splash — paints full-screen cover before CSS bundles. */
+export function getWelcomeSplashCriticalStyle(): string {
+  return [
+    ".hathor-welcome-splash{",
+    "position:fixed;inset:0;z-index:2147483000;",
+    "background:#0a0a0a;margin:0;padding:0;",
+    "opacity:1;transition:opacity .5s ease-out;",
+    "pointer-events:auto;",
+    "}",
+    ".hathor-welcome-splash--out{",
+    "opacity:0;pointer-events:none;",
+    "}",
+    ".hathor-welcome-splash__img{",
+    "display:block;width:100%;height:100%;",
+    "object-fit:cover;object-position:center;",
+    "}",
+  ].join("");
+}
+
 /**
  * Home boot: tag html.ex-home, force scrollTop 0, deep-veil only if restoring mid-page.
  */

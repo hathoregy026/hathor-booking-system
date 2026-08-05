@@ -7,6 +7,7 @@ import {
   getHomeBootCriticalStyle,
   getHomeScrollPendingBlockingScript,
   getPublicHeroBootCriticalStyle,
+  getWelcomeSplashCriticalStyle,
 } from "@/lib/public-theme";
 import { getTouchDeviceBlockingScript } from "@/lib/touch-device";
 import { TouchDeviceBootstrap } from "@/components/public/TouchDeviceBootstrap";
@@ -60,7 +61,10 @@ export default function RootLayout({
         />
         <style
           dangerouslySetInnerHTML={{
-            __html: getHomeBootCriticalStyle() + getPublicHeroBootCriticalStyle(),
+            __html:
+              getHomeBootCriticalStyle() +
+              getPublicHeroBootCriticalStyle() +
+              getWelcomeSplashCriticalStyle(),
           }}
         />
         <script

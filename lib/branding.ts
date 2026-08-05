@@ -27,6 +27,9 @@ export const HATHOR_FOOTER_LOGO_DAY_SRC =
 
 export const HATHOR_FAVICON_SRC = "/branding/hathor-logo-nile-cruise-favicon.webp";
 
+/** Full-screen welcome splash shown before the public site on land */
+export const HATHOR_WELCOME_ABOARD_SRC = "/branding/hathor-welcome-aboard.webp";
+
 /** Homepage hero wordmark — centered over video */
 export const HATHOR_MAIN_LOGO_SRC =
   "/branding/hathor-main-logo-egypt-toors.svg";
