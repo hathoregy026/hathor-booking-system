@@ -497,105 +497,107 @@ export function MaskRevealPageContent() {
         ) : null}
 
         <section className="mr-results" aria-label="Cruise listings">
-          {filtered.length === 0 ? (
-            <div className="mr-empty">
-              <h2>No cabins match</h2>
-              <p>Adjust filters or reset to see all Hathor voyages.</p>
-              <button type="button" className="mr-btn mr-btn--outline" onClick={resetFilters}>
-                Reset filters
-              </button>
-            </div>
-          ) : (
-            <ul className="mr-grid">
-              {filtered.map((item) => {
-                const cardFeatures = item.amenities.slice(0, 3);
-                const favoured = favourites.has(item.key);
-                const unit = displayUnitCode(item.roomNumber);
+          <div className="mr-listings">
+            {filtered.length === 0 ? (
+              <div className="mr-empty">
+                <h2>No cabins match</h2>
+                <p>Adjust filters or reset to see all Hathor voyages.</p>
+                <button type="button" className="mr-btn mr-btn--outline" onClick={resetFilters}>
+                  Reset filters
+                </button>
+              </div>
+            ) : (
+              <ul className="mr-grid">
+                {filtered.map((item) => {
+                  const cardFeatures = item.amenities.slice(0, 3);
+                  const favoured = favourites.has(item.key);
+                  const unit = displayUnitCode(item.roomNumber);
 
-                return (
-                  <li key={item.key}>
-                    <article className="mr-card">
-                      <div className="mr-card__top">
-                        <div className="mr-card__features">
-                          {cardFeatures.map((amenity) => (
-                            <span
-                              key={amenity}
-                              className="mr-card__feature"
-                              title={amenity}
-                            >
-                              {amenity.split(/\s+/)[0]}
-                            </span>
-                          ))}
+                  return (
+                    <li key={item.key}>
+                      <article className="mr-card">
+                        <div className="mr-card__top">
+                          <div className="mr-card__features">
+                            {cardFeatures.map((amenity) => (
+                              <span
+                                key={amenity}
+                                className="mr-card__feature"
+                                title={amenity}
+                              >
+                                {amenity.split(/\s+/)[0]}
+                              </span>
+                            ))}
+                          </div>
+                          <button
+                            type="button"
+                            className={`mr-card__fav${favoured ? " is-active" : ""}`}
+                            aria-label={
+                              favoured
+                                ? `Remove ${item.roomName} from favourites`
+                                : `Save ${item.roomName}`
+                            }
+                            aria-pressed={favoured}
+                            onClick={() => toggleFavourite(item.key)}
+                          >
+                            <HeartIcon filled={favoured} />
+                          </button>
                         </div>
-                        <button
-                          type="button"
-                          className={`mr-card__fav${favoured ? " is-active" : ""}`}
-                          aria-label={
-                            favoured
-                              ? `Remove ${item.roomName} from favourites`
-                              : `Save ${item.roomName}`
-                          }
-                          aria-pressed={favoured}
-                          onClick={() => toggleFavourite(item.key)}
+
+                        <Link
+                          href={item.detailHref}
+                          className="mr-card__link"
+                          aria-label={`View details: ${item.roomName}`}
                         >
-                          <HeartIcon filled={favoured} />
-                        </button>
-                      </div>
-
-                      <Link
-                        href={item.detailHref}
-                        className="mr-card__link"
-                        aria-label={`View details: ${item.roomName}`}
-                      >
-                        <div className="mr-card__plan">
-                          <ManagedImage
-                            name={item.imageName}
-                            alt={`${item.roomName} — ${item.cruiseName}`}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 768px) 100vw, 25vw"
-                            previewAnchor={false}
-                          />
-                        </div>
-
-                        <div className="mr-card__footer">
-                          <div className="mr-card__price-row">
-                            <div>
-                              <p className="mr-card__price-meta">
-                                {item.nights}N / {item.days}D · {item.roomType}
-                              </p>
-                              <p className="mr-card__price">
-                                {formatPrice(item.priceCents)}
-                              </p>
-                            </div>
-                            <p className="mr-card__finish">per cabin</p>
+                          <div className="mr-card__plan">
+                            <ManagedImage
+                              name={item.imageName}
+                              alt={`${item.roomName} — ${item.cruiseName}`}
+                              fill
+                              className="object-cover"
+                              sizes="(max-width: 768px) 100vw, 25vw"
+                              previewAnchor={false}
+                            />
                           </div>
 
-                          <div className="mr-card__meta-row">
-                            <div className="mr-card__meta">
-                              <p>{item.roomName}</p>
-                              <p>up to {item.capacity} guests</p>
-                              <p>Departs {item.departureDay}</p>
+                          <div className="mr-card__footer">
+                            <div className="mr-card__price-row">
+                              <div>
+                                <p className="mr-card__price-meta">
+                                  {item.nights}N / {item.days}D · {item.roomType}
+                                </p>
+                                <p className="mr-card__price">
+                                  {formatPrice(item.priceCents)}
+                                </p>
+                              </div>
+                              <p className="mr-card__finish">per cabin</p>
                             </div>
-                            <p className="mr-card__unit">{unit}</p>
-                          </div>
-                        </div>
-                      </Link>
 
-                      <div className="mr-card__actions">
-                        <Link href={item.detailHref} className="mr-btn mr-btn--outline">
-                          View Details
+                            <div className="mr-card__meta-row">
+                              <div className="mr-card__meta">
+                                <p>{item.roomName}</p>
+                                <p>up to {item.capacity} guests</p>
+                                <p>Departs {item.departureDay}</p>
+                              </div>
+                              <p className="mr-card__unit">{unit}</p>
+                            </div>
+                          </div>
                         </Link>
-                        <BookNowTrigger className="mr-btn mr-btn--solid">
-                          Book Now
-                        </BookNowTrigger>
-                      </div>
-                    </article>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+
+                        <div className="mr-card__actions">
+                          <Link href={item.detailHref} className="mr-btn mr-btn--outline">
+                            View Details
+                          </Link>
+                          <BookNowTrigger className="mr-btn mr-btn--solid">
+                            Book Now
+                          </BookNowTrigger>
+                        </div>
+                      </article>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
 
           <nav className="mr-explore" aria-label="Continue exploring">
             <p className="mr-explore__eyebrow">Onboard</p>

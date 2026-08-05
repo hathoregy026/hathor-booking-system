@@ -13,6 +13,8 @@
   --mr-ease: cubic-bezier(0.25, 0.74, 0.22, 0.99);
   --mr-radius-pill: 999px;
   --mr-nav-offset: 5.25rem;
+  /* Extra air between fixed navbar and page content (nav itself untouched) */
+  --mr-page-top-gap: 1.75rem;
   --mr-sidebar-w: clamp(260px, 24vw, 340px);
 }
 
@@ -46,6 +48,8 @@ html[data-mask-reveal] .page-transition {
   background: var(--mr-cream);
   color: var(--mr-ink);
   overflow: visible;
+  /* Space under navbar — does not modify the nav component */
+  padding-top: calc(var(--mr-nav-offset) + var(--mr-page-top-gap));
 }
 
 .mr-shell {
@@ -80,7 +84,7 @@ html[data-mask-reveal] .page-transition {
   left: 0;
   box-sizing: border-box;
   width: 100%;
-  padding: calc(var(--mr-nav-offset) + 0.75rem) clamp(1rem, 1.8vw, 1.5rem) 2rem;
+  padding: 0.35rem clamp(1rem, 1.8vw, 1.5rem) 2rem;
   background: var(--mr-cream);
 }
 
@@ -415,7 +419,11 @@ html[data-mask-reveal] .page-transition {
   flex: 1 1 auto;
   min-width: 0;
   background: var(--mr-cream);
-  padding: calc(var(--mr-nav-offset) + 0.65rem) clamp(0.85rem, 1.8vw, 1.5rem) 3rem;
+  padding: 0.35rem clamp(0.85rem, 1.8vw, 1.5rem) 3rem;
+}
+
+.mr-listings {
+  min-width: 0;
 }
 
 .mr-grid {
