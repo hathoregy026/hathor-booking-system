@@ -72,7 +72,8 @@ export function getWelcomeSplashCriticalStyle(): string {
     "}",
     ".hathor-welcome-splash{",
     "position:fixed;inset:0;z-index:2147483000;",
-    "background:#0a0a0a;margin:0;padding:0;",
+    "display:flex;align-items:center;justify-content:center;",
+    "background:#c4a052;margin:0;padding:0;",
     "opacity:1;transition:opacity .4s ease-out;",
     "pointer-events:auto;",
     "}",
@@ -80,8 +81,9 @@ export function getWelcomeSplashCriticalStyle(): string {
     "opacity:0;pointer-events:none;",
     "}",
     ".hathor-welcome-splash__img{",
-    "display:block;width:100%;height:100%;",
-    "object-fit:cover;object-position:center;",
+    "display:block;width:auto;height:auto;",
+    "max-width:100%;max-height:100%;",
+    "object-fit:contain;object-position:center;",
     "}",
   ].join("");
 }
