@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
 import rotatingWheel from "@/assets/LOGOS/rotating-wheel-hathor-cruise.png";
+import helmStageBackdrop from "@/assets/hathor cruise nile trips luxur aswan.jpg";
 import LuxuryAccordion from "@/components/home/LuxuryAccordion";
 import { HomeCampaignSection } from "@/components/home/HomeCampaignSection";
 import { HomeTextStorySection } from "@/components/home/HomeTextStorySection";
@@ -536,6 +537,19 @@ export function HomePageClient({
           data-home-helm-portal
         >
           <div className="home-helm-portal__viewport">
+            {/* Parchment stage: full-viewport, sun/compass dead-center under the wheel.
+                Stays visible while the wheel opens; circle-reveal media sits above it. */}
+            <div className="home-helm-portal__stage" aria-hidden="true">
+              <Image
+                src={helmStageBackdrop}
+                alt=""
+                fill
+                sizes="100vw"
+                className="home-helm-portal__stage-image"
+                priority={false}
+              />
+            </div>
+
             <div className="home-helm-portal__media" data-home-helm-media>
               <ManagedImage
                 name="home-wheel-image"
