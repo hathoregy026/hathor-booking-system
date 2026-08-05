@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
+import { useMaskRevealStickyFilters } from "@/hooks/useMaskRevealStickyFilters";
 import { formatPrice } from "@/lib/client-dates";
 import { HATHOR_CRUISES, type HathorCruiseSeed } from "@/lib/hathor-catalog";
 import { CRUISES_PAGE } from "@/lib/page-content";
@@ -129,7 +130,7 @@ function DualRange({
           max={max}
           step={step}
           value={valueMin}
-          aria-label="Minimum"
+          aria-label="Minimum price"
           onChange={(e) => {
             const next = Math.min(Number(e.target.value), valueMax);
             onChange([next, valueMax]);
@@ -141,7 +142,7 @@ function DualRange({
           max={max}
           step={step}
           value={valueMax}
-          aria-label="Maximum"
+          aria-label="Maximum price"
           onChange={(e) => {
             const next = Math.max(Number(e.target.value), valueMin);
             onChange([valueMin, next]);
@@ -152,57 +153,22 @@ function DualRange({
   );
 }
 
-function FeatureIcon({ id }: { id: string }) {
-  if (id === "nile") {
-    return (
-      <svg viewBox="0 0 16 16" aria-hidden="true">
-        <path
-          d="M2 11c2-2 4-3 6-3s4 1 6 3M2 8c2-2 4-3 6-3s4 1 6 3M2 5c2-2 4-3 6-3s4 1 6 3"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.2"
-        />
-      </svg>
-    );
-  }
-  if (id === "jacuzzi" || id === "bathtub") {
-    return (
-      <svg viewBox="0 0 16 16" aria-hidden="true">
-        <path
-          d="M3 8h10v3.5A2.5 2.5 0 0 1 10.5 14h-5A2.5 2.5 0 0 1 3 11.5V8Zm1-3.5A2.5 2.5 0 0 1 6.5 2h1A2.5 2.5 0 0 1 10 4.5V8"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.2"
-        />
-      </svg>
-    );
-  }
-  if (id === "wifi") {
-    return (
-      <svg viewBox="0 0 16 16" aria-hidden="true">
-        <path
-          d="M2.5 6.5c3-3 8-3 11 0M4.5 9c2-2 5-2 7 0M8 12.2h.01"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.2"
-          strokeLinecap="round"
-        />
-      </svg>
-    );
-  }
+function HeartIcon({ filled }: { filled: boolean }) {
   return (
-    <svg viewBox="0 0 16 16" aria-hidden="true">
-      <rect
-        x="4"
-        y="3"
-        width="8"
-        height="10"
-        rx="1"
-        fill="none"
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      className="mr-card__fav-icon"
+    >
+      <path
+        d="M12.001 20.727s-7.35-4.52-9.55-8.52C.65 9.05 2.05 5.4 5.55 4.85c1.95-.3 3.75.6 4.7 2.05.95-1.45 2.75-2.35 4.7-2.05 3.5.55 4.9 4.2 3.1 7.35-2.2 4-9.12 8.52-9.12 8.52Z"
+        fill={filled ? "currentColor" : "none"}
         stroke="currentColor"
-        strokeWidth="1.2"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
       />
-      <path d="M6 7h4M6 10h4" stroke="currentColor" strokeWidth="1.2" />
     </svg>
   );
 }
@@ -233,20 +199,9 @@ export function MaskRevealPageContent() {
     () => [...new Set(items.map((i) => i.departureDay))],
     [items],
   );
-
   const priceBounds = useMemo(() => {
     const prices = items.map((i) => i.priceCents);
     return { min: Math.min(...prices), max: Math.max(...prices) };
-  }, [items]);
-
-  const nightBounds = useMemo(() => {
-    const nights = items.map((i) => i.nights);
-    return { min: Math.min(...nights), max: Math.max(...nights) };
-  }, [items]);
-
-  const guestBounds = useMemo(() => {
-    const caps = items.map((i) => i.capacity);
-    return { min: Math.min(...caps), max: Math.max(...caps) };
   }, [items]);
 
   const [sort, setSort] = useState<SortKey>("price-asc");
@@ -258,17 +213,14 @@ export function MaskRevealPageContent() {
     priceBounds.min,
     priceBounds.max,
   ]);
-  const [nightRange, setNightRange] = useState<[number, number]>([
-    nightBounds.min,
-    nightBounds.max,
-  ]);
-  const [guestRange, setGuestRange] = useState<[number, number]>([
-    guestBounds.min,
-    guestBounds.max,
-  ]);
   const [features, setFeatures] = useState<string[]>([]);
   const [favourites, setFavourites] = useState<Set<string>>(() => new Set());
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+
+  const shellRef = useRef<HTMLDivElement>(null);
+  const railRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLElement>(null);
+  useMaskRevealStickyFilters(shellRef, railRef, panelRef);
 
   const filtered = useMemo(() => {
     const list = items.filter((item) => {
@@ -278,10 +230,6 @@ export function MaskRevealPageContent() {
         return false;
       }
       if (item.priceCents < priceRange[0] || item.priceCents > priceRange[1]) {
-        return false;
-      }
-      if (item.nights < nightRange[0] || item.nights > nightRange[1]) return false;
-      if (item.capacity < guestRange[0] || item.capacity > guestRange[1]) {
         return false;
       }
       if (features.length > 0) {
@@ -316,8 +264,6 @@ export function MaskRevealPageContent() {
     durationFilter,
     departureFilter,
     priceRange,
-    nightRange,
-    guestRange,
     features,
     sort,
   ]);
@@ -351,26 +297,22 @@ export function MaskRevealPageContent() {
     setDurationFilter("all");
     setDepartureFilter("all");
     setPriceRange([priceBounds.min, priceBounds.max]);
-    setNightRange([nightBounds.min, nightBounds.max]);
-    setGuestRange([guestBounds.min, guestBounds.max]);
     setFeatures([]);
     setSort("price-asc");
   };
 
-  const renderFilters = (instance: "desktop" | "mobile") => (
-    <aside key={instance} className="mr-filters" aria-label="Voyage filters">
+  const filtersBody = (
+    <>
       <div className="mr-filters__title-row">
         <h1 className="mr-filters__title">{pageTitle}</h1>
-        {instance === "mobile" ? (
-          <button
-            type="button"
-            className="mr-filters__close"
-            onClick={() => setMobileFiltersOpen(false)}
-            aria-label="Close filters"
-          >
-            Close
-          </button>
-        ) : null}
+        <button
+          type="button"
+          className="mr-filters__close"
+          onClick={() => setMobileFiltersOpen(false)}
+          aria-label="Close filters"
+        >
+          Close
+        </button>
       </div>
 
       {overviewIntro ? (
@@ -477,6 +419,7 @@ export function MaskRevealPageContent() {
       </div>
 
       <div className="mr-range-block">
+        <p className="mr-range-block__label">Price</p>
         <DualRange
           min={priceBounds.min}
           max={priceBounds.max}
@@ -488,29 +431,6 @@ export function MaskRevealPageContent() {
         />
       </div>
 
-      <div className="mr-range-block">
-        <DualRange
-          min={nightBounds.min}
-          max={nightBounds.max}
-          valueMin={nightRange[0]}
-          valueMax={nightRange[1]}
-          onChange={setNightRange}
-          format={(n) => `${n} Nights`}
-        />
-      </div>
-
-      <div className="mr-range-block">
-        <DualRange
-          min={guestBounds.min}
-          max={guestBounds.max}
-          valueMin={guestRange[0]}
-          valueMax={guestRange[1]}
-          onChange={setGuestRange}
-          format={(n) => `${n} Guests`}
-        />
-      </div>
-
-      <p className="mr-features-label">Features</p>
       <div className="mr-features" role="group" aria-label="Amenities">
         {FEATURE_FILTERS.map((feature) => (
           <button
@@ -519,7 +439,6 @@ export function MaskRevealPageContent() {
             className={`mr-feature${features.includes(feature.id) ? " is-active" : ""}`}
             onClick={() => toggleFeature(feature.id)}
           >
-            <FeatureIcon id={feature.id} />
             {feature.label}
           </button>
         ))}
@@ -533,12 +452,12 @@ export function MaskRevealPageContent() {
           Check Availability
         </BookNowTrigger>
       </div>
-    </aside>
+    </>
   );
 
   return (
     <div className="mask-reveal-page">
-      <div className="mr-shell">
+      <div className="mr-shell" ref={shellRef}>
         <div className="mr-mobile-bar">
           <button
             type="button"
@@ -553,7 +472,15 @@ export function MaskRevealPageContent() {
           <BookNowTrigger className="mr-btn mr-btn--solid">Book Now</BookNowTrigger>
         </div>
 
-        <div className="mr-filters-desktop">{renderFilters("desktop")}</div>
+        <div className="mr-filters-desktop" ref={railRef}>
+          <aside
+            className="mr-filters"
+            aria-label="Voyage filters"
+            ref={panelRef}
+          >
+            {filtersBody}
+          </aside>
+        </div>
 
         {mobileFiltersOpen ? (
           <div className="mr-filters-drawer is-open">
@@ -563,7 +490,9 @@ export function MaskRevealPageContent() {
               aria-label="Dismiss filters"
               onClick={() => setMobileFiltersOpen(false)}
             />
-            {renderFilters("mobile")}
+            <aside className="mr-filters" aria-label="Voyage filters">
+              {filtersBody}
+            </aside>
           </div>
         ) : null}
 
@@ -579,9 +508,7 @@ export function MaskRevealPageContent() {
           ) : (
             <ul className="mr-grid">
               {filtered.map((item) => {
-                const cardFeatures = FEATURE_FILTERS.filter((f) =>
-                  f.match.test(item.amenities.join(" ")),
-                ).slice(0, 3);
+                const cardFeatures = item.amenities.slice(0, 3);
                 const favoured = favourites.has(item.key);
                 const unit = displayUnitCode(item.roomNumber);
 
@@ -590,13 +517,13 @@ export function MaskRevealPageContent() {
                     <article className="mr-card">
                       <div className="mr-card__top">
                         <div className="mr-card__features">
-                          {cardFeatures.map((feature) => (
+                          {cardFeatures.map((amenity) => (
                             <span
-                              key={feature.id}
+                              key={amenity}
                               className="mr-card__feature"
-                              title={feature.label}
+                              title={amenity}
                             >
-                              <FeatureIcon id={feature.id} />
+                              {amenity.split(/\s+/)[0]}
                             </span>
                           ))}
                         </div>
@@ -611,14 +538,7 @@ export function MaskRevealPageContent() {
                           aria-pressed={favoured}
                           onClick={() => toggleFavourite(item.key)}
                         >
-                          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-                            <path
-                              d="M12 20.5s-7.2-4.35-9.4-8.2C.8 9.2 2.1 5.8 5.4 5.2c1.9-.35 3.7.55 4.7 2 1-1.45 2.8-2.35 4.7-2 3.3.6 4.6 4 2.8 7.1C19.2 16.15 12 20.5 12 20.5Z"
-                              fill={favoured ? "currentColor" : "none"}
-                              stroke="currentColor"
-                              strokeWidth="1.4"
-                            />
-                          </svg>
+                          <HeartIcon filled={favoured} />
                         </button>
                       </div>
 
@@ -633,7 +553,7 @@ export function MaskRevealPageContent() {
                             alt={`${item.roomName} — ${item.cruiseName}`}
                             fill
                             className="object-cover"
-                            sizes="(max-width: 768px) 100vw, 33vw"
+                            sizes="(max-width: 768px) 100vw, 25vw"
                             previewAnchor={false}
                           />
                         </div>
