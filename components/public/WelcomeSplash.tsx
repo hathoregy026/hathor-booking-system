@@ -5,63 +5,23 @@ import { HATHOR_WELCOME_ABOARD_SRC } from "@/lib/branding";
 
 const HOLD_MS = 4000;
 const FADE_MS = 400;
-const SESSION_KEY = "hathor:welcome-splash-seen";
-
-declare global {
-  interface Window {
-    __hathorWelcomeT?: number;
-  }
-}
-
-function alreadySeenThisSession(): boolean {
-  try {
-    return sessionStorage.getItem(SESSION_KEY) === "1";
-  } catch {
-    return false;
-  }
-}
-
-function markSeen(): void {
-  try {
-    sessionStorage.setItem(SESSION_KEY, "1");
-  } catch {
-    /* ignore */
-  }
-}
 
 /**
- * Full-screen welcome on first hard land (once per tab session).
- * Hold is measured from early HTML parse so hydrate lag does not add extra wait.
- * Splash image uses low fetch priority so the real page keeps loading underneath.
+ * Full-screen welcome on every hard land of the public site.
+ * Holds a full 4s from when the splash mounts, then fades out.
  */
 export function WelcomeSplash() {
   const [phase, setPhase] = useState<"hold" | "fade" | "gone">("hold");
 
   useEffect(() => {
-    if (
-      alreadySeenThisSession() ||
-      document.documentElement.classList.contains("hathor-welcome-skip")
-    ) {
-      setPhase("gone");
-      return;
-    }
-
-    markSeen();
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
-    const started =
-      typeof window.__hathorWelcomeT === "number"
-        ? window.__hathorWelcomeT
-        : performance.now();
-    const elapsed = Math.max(0, performance.now() - started);
-    const holdLeft = Math.max(0, HOLD_MS - elapsed);
-
-    const fadeTimer = window.setTimeout(() => setPhase("fade"), holdLeft);
+    const fadeTimer = window.setTimeout(() => setPhase("fade"), HOLD_MS);
     const goneTimer = window.setTimeout(() => {
       setPhase("gone");
       document.body.style.overflow = previousOverflow;
-    }, holdLeft + FADE_MS);
+    }, HOLD_MS + FADE_MS);
 
     return () => {
       window.clearTimeout(fadeTimer);
@@ -84,7 +44,7 @@ export function WelcomeSplash() {
         alt=""
         className="hathor-welcome-splash__img"
         decoding="async"
-        fetchPriority="low"
+        fetchPriority="high"
       />
     </div>
   );

@@ -35,6 +35,7 @@ export function PublicLayout({ children }: PublicLayoutProps) {
       <BookingModalProvider>
         <div className="public-site hathor-site">
           <script dangerouslySetInnerHTML={{ __html: bootScript }} />
+          <link rel="preload" as="image" href="/branding/hathor-welcome-aboard.webp" fetchPriority="high" />
           <WelcomeSplash />
           <DeployFreshness deployId={deployId} />
           <PublicScrollInfrastructure />

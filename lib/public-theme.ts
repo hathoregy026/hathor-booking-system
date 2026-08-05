@@ -58,18 +58,10 @@ export function getPublicHeroBootCriticalStyle(): string {
 
 /** Critical CSS for the welcome splash — paints full-screen cover before CSS bundles. */
 /**
- * Early welcome gate: skip if already shown this tab session; else stamp land time.
- * Must run before paint so return visits are not blocked by the splash.
+ * Critical CSS for the welcome splash — paints full-screen cover before CSS bundles.
  */
-export function getWelcomeSplashBlockingScript(): string {
-  return `(function(){try{var k="hathor:welcome-splash-seen";if(sessionStorage.getItem(k)==="1"){document.documentElement.classList.add("hathor-welcome-skip");return;}window.__hathorWelcomeT=performance.now();}catch(e){}})();`;
-}
-
 export function getWelcomeSplashCriticalStyle(): string {
   return [
-    "html.hathor-welcome-skip .hathor-welcome-splash{",
-    "display:none!important;pointer-events:none!important;",
-    "}",
     ".hathor-welcome-splash{",
     "position:fixed;inset:0;z-index:2147483000;",
     "display:flex;align-items:center;justify-content:center;",
