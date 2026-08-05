@@ -56,12 +56,29 @@ export function getPublicHeroBootCriticalStyle(): string {
   ].join("");
 }
 
-/** Critical CSS for the welcome splash — paints full-screen cover before CSS bundles. */
+/**
+ * Early welcome gate: skip for prefers-reduced-motion; else lock scroll before paint.
+ * Must run in <head> so users cannot scroll behind the splash pre-hydrate.
+ */
+export function getWelcomeSplashBlockingScript(): string {
+  return `(function(){try{var d=document.documentElement;if(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches){d.classList.add("hathor-welcome-skip");return;}d.classList.add("hathor-welcome-lock");}catch(e){}})();`;
+}
+
 /**
  * Critical CSS for the welcome splash — paints full-screen cover before CSS bundles.
+ * Lives outside `.public-site` so mid-page `ex-pending-deep` opacity veil cannot hide it.
  */
 export function getWelcomeSplashCriticalStyle(): string {
   return [
+    "html.hathor-welcome-skip .hathor-welcome-splash{",
+    "display:none!important;pointer-events:none!important;",
+    "}",
+    "@media (prefers-reduced-motion: reduce){",
+    ".hathor-welcome-splash{display:none!important;pointer-events:none!important;}",
+    "}",
+    "html.hathor-welcome-lock,html.hathor-welcome-lock body{",
+    "overflow:hidden!important;overscroll-behavior:none;",
+    "}",
     ".hathor-welcome-splash{",
     "position:fixed;inset:0;z-index:2147483000;",
     "display:flex;align-items:center;justify-content:center;",

@@ -75,9 +75,15 @@ function exposeScrollDebug() {
   w.__hathorLenisCount = state.lenis ? 1 : 0;
 }
 
+function isWelcomeScrollLocked() {
+  if (typeof document === "undefined") return false;
+  return document.documentElement.classList.contains("hathor-welcome-lock");
+}
+
 function setupLenis() {
   if (state.lenis) {
     state.mode = "lenis";
+    if (isWelcomeScrollLocked()) state.lenis.stop();
     exposeScrollDebug();
     return;
   }
@@ -91,6 +97,8 @@ function setupLenis() {
   state.lenis = lenis;
   state.ticker = ticker;
   state.mode = "lenis";
+  /* Welcome splash may have locked before Lenis existed — stay stopped until unlock. */
+  if (isWelcomeScrollLocked()) lenis.stop();
   registerHathorLenis(lenis);
   exposeScrollDebug();
 }

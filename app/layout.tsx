@@ -7,6 +7,7 @@ import {
   getHomeBootCriticalStyle,
   getHomeScrollPendingBlockingScript,
   getPublicHeroBootCriticalStyle,
+  getWelcomeSplashBlockingScript,
   getWelcomeSplashCriticalStyle,
 } from "@/lib/public-theme";
 import { getTouchDeviceBlockingScript } from "@/lib/touch-device";
@@ -58,6 +59,11 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{ __html: getPublicThemeBlockingScript() }}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: getWelcomeSplashBlockingScript(),
+          }}
         />
         <style
           dangerouslySetInnerHTML={{
