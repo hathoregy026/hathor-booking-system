@@ -2573,7 +2573,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebr
   gap: 0.55rem;
   pointer-events: none;
   user-select: none;
-  color: #3a2a1c;
+  color: #1a1612;
 }
 
 .home-helm-portal__title {
@@ -2582,10 +2582,12 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebr
   flex-direction: column;
   align-items: center;
   gap: 0.02em;
-  /* Size/family/color from typo-page-title (dashboard) — same as site big titles */
+  /* Size/family from typo-page-title — ink locked to #1a1612 grades */
   text-transform: uppercase;
   line-height: 1.05;
   max-width: 12ch;
+  color: #1a1612 !important;
+  -webkit-text-fill-color: #1a1612 !important;
 }
 
 .home-helm-portal__title-line {
@@ -2599,7 +2601,8 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebr
   font-weight: 400;
   line-height: 1.25;
   letter-spacing: 0.01em;
-  color: #5a4330;
+  color: rgb(26 22 18 / 0.82) !important;
+  -webkit-text-fill-color: rgb(26 22 18 / 0.82) !important;
   text-transform: none;
 }
 
@@ -2610,7 +2613,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebr
   gap: 0.55rem;
   width: min(11rem, 70%);
   margin: 0.35rem 0 0.15rem;
-  color: #9a7a4a;
+  color: rgb(26 22 18 / 0.42);
 }
 
 .home-helm-portal__rule-line {
@@ -2631,7 +2634,8 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebr
   max-width: 28ch;
   font-size: clamp(0.92rem, 1.15vw, 1.05rem);
   line-height: 1.65;
-  color: #4a3728;
+  color: rgb(26 22 18 / 0.68) !important;
+  -webkit-text-fill-color: rgb(26 22 18 / 0.68) !important;
 }
 
 .home-helm-portal__media {
