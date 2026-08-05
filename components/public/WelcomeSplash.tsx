@@ -4,25 +4,64 @@ import { useEffect, useState } from "react";
 import { HATHOR_WELCOME_ABOARD_SRC } from "@/lib/branding";
 
 const HOLD_MS = 4000;
-const FADE_MS = 500;
+const FADE_MS = 400;
+const SESSION_KEY = "hathor:welcome-splash-seen";
+
+declare global {
+  interface Window {
+    __hathorWelcomeT?: number;
+  }
+}
+
+function alreadySeenThisSession(): boolean {
+  try {
+    return sessionStorage.getItem(SESSION_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function markSeen(): void {
+  try {
+    sessionStorage.setItem(SESSION_KEY, "1");
+  } catch {
+    /* ignore */
+  }
+}
 
 /**
- * Full-screen welcome image on hard land of the public site.
- * Holds 4s, fades out, then unmounts. Soft navigations keep the layout
- * mounted so this does not re-appear mid-session.
+ * Full-screen welcome on first hard land (once per tab session).
+ * Hold is measured from early HTML parse so hydrate lag does not add extra wait.
+ * Splash image uses low fetch priority so the real page keeps loading underneath.
  */
 export function WelcomeSplash() {
   const [phase, setPhase] = useState<"hold" | "fade" | "gone">("hold");
 
   useEffect(() => {
+    if (
+      alreadySeenThisSession() ||
+      document.documentElement.classList.contains("hathor-welcome-skip")
+    ) {
+      setPhase("gone");
+      return;
+    }
+
+    markSeen();
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
-    const fadeTimer = window.setTimeout(() => setPhase("fade"), HOLD_MS);
+    const started =
+      typeof window.__hathorWelcomeT === "number"
+        ? window.__hathorWelcomeT
+        : performance.now();
+    const elapsed = Math.max(0, performance.now() - started);
+    const holdLeft = Math.max(0, HOLD_MS - elapsed);
+
+    const fadeTimer = window.setTimeout(() => setPhase("fade"), holdLeft);
     const goneTimer = window.setTimeout(() => {
       setPhase("gone");
       document.body.style.overflow = previousOverflow;
-    }, HOLD_MS + FADE_MS);
+    }, holdLeft + FADE_MS);
 
     return () => {
       window.clearTimeout(fadeTimer);
@@ -39,14 +78,13 @@ export function WelcomeSplash() {
       aria-hidden="true"
       role="presentation"
     >
-      {/* Decorative full-bleed splash — next/image not needed for static cover */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={HATHOR_WELCOME_ABOARD_SRC}
         alt=""
         className="hathor-welcome-splash__img"
         decoding="async"
-        fetchPriority="high"
+        fetchPriority="low"
       />
     </div>
   );
