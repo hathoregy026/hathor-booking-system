@@ -564,7 +564,7 @@ export function HomePageClient({
 
             {/* Right of wheel — atelier typo rise; sits under circle-reveal so it clears as the portal opens */}
             <div className="home-helm-portal__copy" data-home-helm-copy>
-              <h2 className="home-helm-portal__title typo-page-title">
+              <h2 className="home-helm-portal__title">
                 <span className="home-helm-portal__title-line">JOURNEYS</span>
                 <span className="home-helm-portal__title-line">CRAFTED</span>
                 <span className="home-helm-portal__title-line">FOR YOU</span>
@@ -597,7 +597,7 @@ export function HomePageClient({
                 </svg>
                 <span className="home-helm-portal__rule-line" />
               </div>
-              <p className="home-helm-portal__body typo-body-text">
+              <p className="home-helm-portal__body">
                 Handpicked itineraries that reveal the soul of the Nile.
               </p>
             </div>
