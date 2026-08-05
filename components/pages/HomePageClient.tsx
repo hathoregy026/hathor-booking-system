@@ -562,6 +562,46 @@ export function HomePageClient({
               <div className="home-helm-portal__shade" aria-hidden="true" />
             </div>
 
+            {/* Right of wheel — atelier typo rise; sits under circle-reveal so it clears as the portal opens */}
+            <div className="home-helm-portal__copy" data-home-helm-copy>
+              <h2 className="home-helm-portal__title typo-page-title">
+                <span className="home-helm-portal__title-line">JOURNEYS</span>
+                <span className="home-helm-portal__title-line">CRAFTED</span>
+                <span className="home-helm-portal__title-line">FOR YOU</span>
+              </h2>
+              <p className="home-helm-portal__script">Explore. Indulge. Remember.</p>
+              <div className="home-helm-portal__rule" aria-hidden="true">
+                <span className="home-helm-portal__rule-line" />
+                <svg
+                  className="home-helm-portal__rule-lotus"
+                  viewBox="0 0 32 20"
+                  width="28"
+                  height="18"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M16 18c-2.2-3.4-5.8-5.6-9.8-6.2 2.8-1.2 5.4-3.4 7-6.4 1.6 3 4.2 5.2 7 6.4C16.2 12.8 16 18 16 18Z"
+                    fill="currentColor"
+                    opacity="0.85"
+                  />
+                  <path
+                    d="M16 18c-1.4-4.2-1.2-8.6.2-12.6 1.4 4 1.6 8.4.2 12.6Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    d="M6.2 11.8C4 10.2 2.4 8 1.6 5.4c2.6.6 4.8 2 6.4 4.2-.6.8-1.2 1.5-1.8 2.2Zm19.6 0c.6-.7 1.2-1.4 1.8-2.2 1.6-2.2 3.8-3.6 6.4-4.2-.8 2.6-2.4 4.8-4.6 6.4Z"
+                    fill="currentColor"
+                    opacity="0.7"
+                  />
+                </svg>
+                <span className="home-helm-portal__rule-line" />
+              </div>
+              <p className="home-helm-portal__body typo-body-text">
+                Handpicked itineraries that reveal the soul of the Nile.
+              </p>
+            </div>
+
             <div className="home-helm-portal__wheel" data-home-helm-wheel>
               <Image
                 src={rotatingWheel}
