@@ -98,6 +98,7 @@ function DualRange({
   valueMax,
   onChange,
   format,
+  step = 1,
 }: {
   min: number;
   max: number;
@@ -105,6 +106,7 @@ function DualRange({
   valueMax: number;
   onChange: (next: [number, number]) => void;
   format: (n: number) => string;
+  step?: number;
 }) {
   const span = Math.max(max - min, 1);
   const left = ((valueMin - min) / span) * 100;
@@ -125,6 +127,7 @@ function DualRange({
           type="range"
           min={min}
           max={max}
+          step={step}
           value={valueMin}
           aria-label="Minimum"
           onChange={(e) => {
@@ -136,6 +139,7 @@ function DualRange({
           type="range"
           min={min}
           max={max}
+          step={step}
           value={valueMax}
           aria-label="Maximum"
           onChange={(e) => {
@@ -145,6 +149,61 @@ function DualRange({
         />
       </div>
     </div>
+  );
+}
+
+function FeatureIcon({ id }: { id: string }) {
+  if (id === "nile") {
+    return (
+      <svg viewBox="0 0 16 16" aria-hidden="true">
+        <path
+          d="M2 11c2-2 4-3 6-3s4 1 6 3M2 8c2-2 4-3 6-3s4 1 6 3M2 5c2-2 4-3 6-3s4 1 6 3"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.2"
+        />
+      </svg>
+    );
+  }
+  if (id === "jacuzzi" || id === "bathtub") {
+    return (
+      <svg viewBox="0 0 16 16" aria-hidden="true">
+        <path
+          d="M3 8h10v3.5A2.5 2.5 0 0 1 10.5 14h-5A2.5 2.5 0 0 1 3 11.5V8Zm1-3.5A2.5 2.5 0 0 1 6.5 2h1A2.5 2.5 0 0 1 10 4.5V8"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.2"
+        />
+      </svg>
+    );
+  }
+  if (id === "wifi") {
+    return (
+      <svg viewBox="0 0 16 16" aria-hidden="true">
+        <path
+          d="M2.5 6.5c3-3 8-3 11 0M4.5 9c2-2 5-2 7 0M8 12.2h.01"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+        />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 16 16" aria-hidden="true">
+      <rect
+        x="4"
+        y="3"
+        width="8"
+        height="10"
+        rx="1"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.2"
+      />
+      <path d="M6 7h4M6 10h4" stroke="currentColor" strokeWidth="1.2" />
+    </svg>
   );
 }
 
@@ -177,10 +236,17 @@ export function MaskRevealPageContent() {
 
   const priceBounds = useMemo(() => {
     const prices = items.map((i) => i.priceCents);
-    return {
-      min: Math.min(...prices),
-      max: Math.max(...prices),
-    };
+    return { min: Math.min(...prices), max: Math.max(...prices) };
+  }, [items]);
+
+  const nightBounds = useMemo(() => {
+    const nights = items.map((i) => i.nights);
+    return { min: Math.min(...nights), max: Math.max(...nights) };
+  }, [items]);
+
+  const guestBounds = useMemo(() => {
+    const caps = items.map((i) => i.capacity);
+    return { min: Math.min(...caps), max: Math.max(...caps) };
   }, [items]);
 
   const [sort, setSort] = useState<SortKey>("price-asc");
@@ -191,6 +257,14 @@ export function MaskRevealPageContent() {
   const [priceRange, setPriceRange] = useState<[number, number]>([
     priceBounds.min,
     priceBounds.max,
+  ]);
+  const [nightRange, setNightRange] = useState<[number, number]>([
+    nightBounds.min,
+    nightBounds.max,
+  ]);
+  const [guestRange, setGuestRange] = useState<[number, number]>([
+    guestBounds.min,
+    guestBounds.max,
   ]);
   const [features, setFeatures] = useState<string[]>([]);
   const [favourites, setFavourites] = useState<Set<string>>(() => new Set());
@@ -204,6 +278,10 @@ export function MaskRevealPageContent() {
         return false;
       }
       if (item.priceCents < priceRange[0] || item.priceCents > priceRange[1]) {
+        return false;
+      }
+      if (item.nights < nightRange[0] || item.nights > nightRange[1]) return false;
+      if (item.capacity < guestRange[0] || item.capacity > guestRange[1]) {
         return false;
       }
       if (features.length > 0) {
@@ -238,6 +316,8 @@ export function MaskRevealPageContent() {
     durationFilter,
     departureFilter,
     priceRange,
+    nightRange,
+    guestRange,
     features,
     sort,
   ]);
@@ -271,16 +351,14 @@ export function MaskRevealPageContent() {
     setDurationFilter("all");
     setDepartureFilter("all");
     setPriceRange([priceBounds.min, priceBounds.max]);
+    setNightRange([nightBounds.min, nightBounds.max]);
+    setGuestRange([guestBounds.min, guestBounds.max]);
     setFeatures([]);
     setSort("price-asc");
   };
 
   const renderFilters = (instance: "desktop" | "mobile") => (
-    <aside
-      key={instance}
-      className="mr-filters"
-      aria-label="Voyage filters"
-    >
+    <aside key={instance} className="mr-filters" aria-label="Voyage filters">
       <div className="mr-filters__title-row">
         <h1 className="mr-filters__title">{pageTitle}</h1>
         {instance === "mobile" ? (
@@ -399,17 +477,40 @@ export function MaskRevealPageContent() {
       </div>
 
       <div className="mr-range-block">
-        <p className="mr-range-block__label">Price</p>
         <DualRange
           min={priceBounds.min}
           max={priceBounds.max}
           valueMin={priceRange[0]}
           valueMax={priceRange[1]}
           onChange={setPriceRange}
+          step={10000}
           format={(n) => formatPrice(n)}
         />
       </div>
 
+      <div className="mr-range-block">
+        <DualRange
+          min={nightBounds.min}
+          max={nightBounds.max}
+          valueMin={nightRange[0]}
+          valueMax={nightRange[1]}
+          onChange={setNightRange}
+          format={(n) => `${n} Nights`}
+        />
+      </div>
+
+      <div className="mr-range-block">
+        <DualRange
+          min={guestBounds.min}
+          max={guestBounds.max}
+          valueMin={guestRange[0]}
+          valueMax={guestRange[1]}
+          onChange={setGuestRange}
+          format={(n) => `${n} Guests`}
+        />
+      </div>
+
+      <p className="mr-features-label">Features</p>
       <div className="mr-features" role="group" aria-label="Amenities">
         {FEATURE_FILTERS.map((feature) => (
           <button
@@ -418,6 +519,7 @@ export function MaskRevealPageContent() {
             className={`mr-feature${features.includes(feature.id) ? " is-active" : ""}`}
             onClick={() => toggleFeature(feature.id)}
           >
+            <FeatureIcon id={feature.id} />
             {feature.label}
           </button>
         ))}
@@ -431,44 +533,11 @@ export function MaskRevealPageContent() {
           Check Availability
         </BookNowTrigger>
       </div>
-
-      <nav className="mr-explore" aria-label="Continue exploring">
-        <p className="mr-explore__eyebrow">Onboard</p>
-        <p className="mr-explore__title">
-          {continueTitle.split("\n").map((line) => (
-            <span key={line}>{line.trim()}</span>
-          ))}
-        </p>
-        {continueBody ? <p className="mr-explore__body">{continueBody}</p> : null}
-        <ul>
-          <li>
-            <Link href="/luxury-cabins-Nile-Cruise">Luxury Rooms</Link>
-          </li>
-          <li>
-            <Link href="/rooms">Luxury Suites</Link>
-          </li>
-          <li>
-            <Link href="/Luxury-Royal-Suites-Nile-Dahabiya-Cruise">
-              Royal Suites
-            </Link>
-          </li>
-          <li>
-            <Link href="/gastronomy">Dining — Hathor Flavors</Link>
-          </li>
-        </ul>
-      </nav>
     </aside>
   );
 
   return (
     <div className="mask-reveal-page">
-      <div className="mr-gradient" aria-hidden="true">
-        <div />
-        <div />
-        <div />
-        <div />
-      </div>
-
       <div className="mr-shell">
         <div className="mr-mobile-bar">
           <button
@@ -510,20 +579,24 @@ export function MaskRevealPageContent() {
           ) : (
             <ul className="mr-grid">
               {filtered.map((item) => {
-                const featuredAmenities = item.amenities.slice(0, 3);
+                const cardFeatures = FEATURE_FILTERS.filter((f) =>
+                  f.match.test(item.amenities.join(" ")),
+                ).slice(0, 3);
                 const favoured = favourites.has(item.key);
+                const unit = displayUnitCode(item.roomNumber);
+
                 return (
                   <li key={item.key}>
                     <article className="mr-card">
                       <div className="mr-card__top">
                         <div className="mr-card__features">
-                          {featuredAmenities.map((amenity) => (
+                          {cardFeatures.map((feature) => (
                             <span
-                              key={amenity}
+                              key={feature.id}
                               className="mr-card__feature"
-                              title={amenity}
+                              title={feature.label}
                             >
-                              {amenity.split(" ")[0]}
+                              <FeatureIcon id={feature.id} />
                             </span>
                           ))}
                         </div>
@@ -551,47 +624,51 @@ export function MaskRevealPageContent() {
 
                       <Link
                         href={item.detailHref}
-                        className="mr-card__plan"
+                        className="mr-card__link"
                         aria-label={`View details: ${item.roomName}`}
                       >
-                        <ManagedImage
-                          name={item.imageName}
-                          alt={`${item.roomName} — ${item.cruiseName}`}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 768px) 100vw, 33vw"
-                          previewAnchor={false}
-                        />
+                        <div className="mr-card__plan">
+                          <ManagedImage
+                            name={item.imageName}
+                            alt={`${item.roomName} — ${item.cruiseName}`}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 100vw, 33vw"
+                            previewAnchor={false}
+                          />
+                        </div>
+
+                        <div className="mr-card__footer">
+                          <div className="mr-card__price-row">
+                            <div>
+                              <p className="mr-card__price-meta">
+                                {item.nights}N / {item.days}D · {item.roomType}
+                              </p>
+                              <p className="mr-card__price">
+                                {formatPrice(item.priceCents)}
+                              </p>
+                            </div>
+                            <p className="mr-card__finish">per cabin</p>
+                          </div>
+
+                          <div className="mr-card__meta-row">
+                            <div className="mr-card__meta">
+                              <p>{item.roomName}</p>
+                              <p>up to {item.capacity} guests</p>
+                              <p>Departs {item.departureDay}</p>
+                            </div>
+                            <p className="mr-card__unit">{unit}</p>
+                          </div>
+                        </div>
                       </Link>
 
-                      <div className="mr-card__footer">
-                        <div className="mr-card__price-row">
-                          <div>
-                            <p className="mr-card__price-meta">
-                              {item.nights}N / {item.days}D · {item.roomType}
-                            </p>
-                            <p className="mr-card__price">{formatPrice(item.priceCents)}</p>
-                          </div>
-                          <p className="mr-card__finish">per cabin</p>
-                        </div>
-
-                        <div className="mr-card__meta-row">
-                          <div className="mr-card__meta">
-                            <p>{item.roomName}</p>
-                            <p>up to {item.capacity} guests</p>
-                            <p>Departs {item.departureDay}</p>
-                          </div>
-                          <p className="mr-card__unit">{displayUnitCode(item.roomNumber)}</p>
-                        </div>
-
-                        <div className="mr-card__actions">
-                          <Link href={item.detailHref} className="mr-btn mr-btn--outline">
-                            View Details
-                          </Link>
-                          <BookNowTrigger className="mr-btn mr-btn--solid">
-                            Book Now
-                          </BookNowTrigger>
-                        </div>
+                      <div className="mr-card__actions">
+                        <Link href={item.detailHref} className="mr-btn mr-btn--outline">
+                          View Details
+                        </Link>
+                        <BookNowTrigger className="mr-btn mr-btn--solid">
+                          Book Now
+                        </BookNowTrigger>
                       </div>
                     </article>
                   </li>
@@ -599,6 +676,32 @@ export function MaskRevealPageContent() {
               })}
             </ul>
           )}
+
+          <nav className="mr-explore" aria-label="Continue exploring">
+            <p className="mr-explore__eyebrow">Onboard</p>
+            <p className="mr-explore__title">
+              {continueTitle.split("\n").map((line) => (
+                <span key={line}>{line.trim()}</span>
+              ))}
+            </p>
+            {continueBody ? <p className="mr-explore__body">{continueBody}</p> : null}
+            <ul>
+              <li>
+                <Link href="/luxury-cabins-Nile-Cruise">Luxury Rooms</Link>
+              </li>
+              <li>
+                <Link href="/rooms">Luxury Suites</Link>
+              </li>
+              <li>
+                <Link href="/Luxury-Royal-Suites-Nile-Dahabiya-Cruise">
+                  Royal Suites
+                </Link>
+              </li>
+              <li>
+                <Link href="/gastronomy">Dining — Hathor Flavors</Link>
+              </li>
+            </ul>
+          </nav>
 
           <footer className="mr-cta">
             {ctaTitle ? <h2>{ctaTitle}</h2> : null}

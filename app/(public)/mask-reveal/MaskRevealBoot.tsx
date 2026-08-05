@@ -8,7 +8,7 @@ export function MaskRevealBoot({ children }: { children: ReactNode }) {
     const body = document.body;
 
     root.setAttribute("data-mask-reveal", "");
-    body.style.backgroundColor = "#1a1612";
+    body.style.backgroundColor = "#ece8df";
 
     return () => {
       root.removeAttribute("data-mask-reveal");
