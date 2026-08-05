@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
-import rotatingWheel from "@/assets/LOGOS/rotating wheel.png";
+import rotatingWheel from "@/assets/LOGOS/rotating-wheel-hathor-cruise.png";
 import LuxuryAccordion from "@/components/home/LuxuryAccordion";
 import { HomeCampaignSection } from "@/components/home/HomeCampaignSection";
 import { HomeTextStorySection } from "@/components/home/HomeTextStorySection";
