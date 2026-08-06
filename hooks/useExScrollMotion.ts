@@ -954,7 +954,6 @@ export function useExScrollMotion() {
       const scrollSpan = introSpan + total * (move + dwell) + release;
       const introFogAt = introText + introHold;
       const exitAt = introSpan + total * (move + dwell);
-      const exitProgressStart = exitAt / scrollSpan;
 
       if (silkChars.length) {
         /* Visible on land — fog covers later; do not start fully hidden */
@@ -1128,6 +1127,69 @@ export function useExScrollMotion() {
       });
       trackTrigger(enterSt);
 
+      const silkRootEl = () =>
+        section.querySelector<HTMLElement>(".ex-stack-scroll__silk");
+
+      /**
+       * Progress owns dock/plates/exit chrome — never one-shot callbacks.
+       * Scrub reverse (and fast jumps) must restore the stack every frame.
+       */
+      const syncStackFromProgress = (progress: number) => {
+        const t = progress * scrollSpan;
+        const silkEl = silkRootEl();
+
+        (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "140%");
+        section.classList.add("is-stack-docked");
+
+        if (progress <= 0.001) {
+          holdSilkOnly();
+          section.classList.remove("is-stack-plates-live", "is-stack-exiting");
+          if (silkEl) gsap.set(silkEl, { autoAlpha: 1 });
+          return;
+        }
+
+        /* Plates visible from first fog until exit fully clears the last plate */
+        if (t > introFogAt + 0.02) {
+          section.classList.add("is-stack-plates-live");
+        } else {
+          section.classList.remove("is-stack-plates-live");
+        }
+
+        if (t >= exitAt) {
+          section.classList.add("is-stack-exiting");
+          if (silkEl) gsap.set(silkEl, { autoAlpha: 0 });
+          /* Hide under-plates only deep in exit so cream shows through last fog */
+          const exitAmt = Math.min(1, Math.max(0, (t - exitAt) / release));
+          if (exitAmt > 0.1) {
+            for (let j = 0; j < total - 1; j++) {
+              applyFogReveal(cards[j], 0, 0);
+              cards[j].classList.remove("is-stack-solid");
+            }
+          } else {
+            holdUnderCardsThrough(total - 1);
+            holdUnderCard(total - 1);
+          }
+          return;
+        }
+
+        /* Mid-stack / reverse out of exit — restore solid under-stack */
+        section.classList.remove("is-stack-exiting");
+        if (silkEl) gsap.set(silkEl, { autoAlpha: 1 });
+        if (silkChars.length && t < introFogAt + introFog * 0.35) {
+          gsap.set(silkChars, { opacity: 1, yPercent: 0 });
+        }
+
+        if (t >= introFogAt + introFog * 0.45) {
+          let activeIndex = 0;
+          for (let i = 1; i < total; i++) {
+            const moveAt = introSpan + (i - 1) * (move + dwell) + dwell;
+            if (t >= moveAt) activeIndex = i;
+            else break;
+          }
+          holdUnderCardsThrough(activeIndex);
+        }
+      };
+
       const tl = gsap.timeline({
         scrollTrigger: {
           id: "ex-stack-scroll",
@@ -1138,31 +1200,11 @@ export function useExScrollMotion() {
           pin: false,
           pinSpacing: false,
           anticipatePin: 0,
-          fastScrollEnd: true,
+          /* false — skipping frames left exit/hide callbacks unreverted on reverse */
+          fastScrollEnd: false,
           invalidateOnRefresh: !isPhone,
           onUpdate: (self) => {
-            (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "140%");
-            section.classList.add("is-stack-docked");
-
-            if (self.progress < exitProgressStart - 0.001) {
-              section.classList.remove("is-stack-exiting");
-            }
-
-            /* Silk readable only before first photo fog */
-            const silkEl = section.querySelector<HTMLElement>(
-              ".ex-stack-scroll__silk",
-            );
-            if (self.progress < introFogAt / scrollSpan - 0.001) {
-              if (silkEl) gsap.set(silkEl, { autoAlpha: 1 });
-              if (silkChars.length) {
-                gsap.set(silkChars, { opacity: 1, yPercent: 0 });
-              }
-            }
-
-            if (self.progress <= 0.001) {
-              holdSilkOnly();
-              section.classList.remove("is-stack-plates-live", "is-stack-exiting");
-            }
+            syncStackFromProgress(self.progress);
           },
           onEnter: () => {
             (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "140%");
@@ -1174,20 +1216,16 @@ export function useExScrollMotion() {
             }
           },
           onEnterBack: () => {
-            /* Reverse from below — restore stage; scrub rewinds plate fog */
             section.classList.add("is-stack-docked", "is-stack-fixed-pin");
-            section.classList.remove("is-stack-exiting");
             (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "140%");
-            const silkEl = section.querySelector<HTMLElement>(
-              ".ex-stack-scroll__silk",
+            syncStackFromProgress(
+              ScrollTrigger.getById("ex-stack-scroll")?.progress ?? 1,
             );
-            if (silkEl) gsap.set(silkEl, { autoAlpha: 1 });
           },
           onLeave: () => {
             section.classList.remove("is-stack-fixed-pin");
           },
           onLeaveBack: () => {
-            /* Left upward past the dock — silk invitation only */
             section.classList.remove(
               "is-stack-fixed-pin",
               "is-stack-plates-live",
@@ -1200,6 +1238,7 @@ export function useExScrollMotion() {
             if (self.isActive) {
               section.classList.add("is-stack-fixed-pin", "is-stack-docked");
               (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "140%");
+              syncStackFromProgress(self.progress);
             } else {
               cards.forEach((card) =>
                 clearFogWillChange(card, getCardMedia(card)),
@@ -1259,10 +1298,9 @@ export function useExScrollMotion() {
             if (firstMedia) firstMedia.style.willChange = "transform";
           },
           onUpdate: () => {
+            /* plates-live owned by syncStackFromProgress — do not strip mid scrub */
             if (firstFog.reveal > 0.01) {
               section.classList.add("is-stack-plates-live");
-            } else {
-              section.classList.remove("is-stack-plates-live");
             }
             applyFogReveal(firstCard, firstFog.edge, firstFog.reveal);
             if (firstFog.reveal >= 0.85) syncStackPhotoReady(true);
@@ -1273,7 +1311,6 @@ export function useExScrollMotion() {
             clearFogWillChange(firstCard, firstMedia);
           },
           onReverseComplete: () => {
-            section.classList.remove("is-stack-plates-live");
             applyFogReveal(firstCard, 0, 0);
             syncStackPhotoReady(false);
             firstCard.classList.remove("is-stack-solid");
@@ -1503,22 +1540,7 @@ export function useExScrollMotion() {
         gsap.set(silkChars, { opacity: 1, yPercent: 0 });
       }
 
-      /* Kill silk so fog-out never flashes big invitation text behind the plate */
-      tl.call(
-        () => {
-          section.classList.add("is-stack-exiting");
-          if (silkRoot) gsap.set(silkRoot, { autoAlpha: 0 });
-          if (silkChars.length) gsap.set(silkChars, { opacity: 0 });
-          /* Hide under-plates — only the last photo should fog away */
-          for (let j = 0; j < total - 1; j++) {
-            applyFogReveal(cards[j], 0, 0);
-            cards[j].classList.remove("is-stack-solid");
-          }
-          holdUnderCard(total - 1);
-        },
-        undefined,
-        exitAt,
-      );
+      /* Exit chrome/under-plates: syncStackFromProgress (reversible). No tl.call. */
 
       if (exitChrome.length) {
         tl.to(
@@ -1553,6 +1575,11 @@ export function useExScrollMotion() {
           duration: release,
           onUpdate: () => {
             applyFogReveal(lastCard, exitFog.edge, exitFog.reveal);
+            /* Restore under-stack as soon as reverse brings the plate back */
+            if (exitFog.reveal > 0.55) {
+              holdUnderCardsThrough(total - 1);
+              holdUnderCard(total - 1);
+            }
           },
           onComplete: () => {
             applyFogReveal(lastCard, 0, 0);
