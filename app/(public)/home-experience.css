@@ -2545,10 +2545,11 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebr
     gap: 6px;
   }
 
-  /* Helm copy — still right of hub, tighter so it clears the larger wheel */
+  /* Helm copy — left of hub, tighter so it clears the larger wheel */
   .home-helm-portal__copy {
     top: 54%;
-    right: 0.55rem;
+    left: 0.55rem;
+    right: auto;
     width: min(48vw, 11.75rem);
     gap: 0.22rem;
   }
@@ -2558,8 +2559,6 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebr
   }
 
   .home-helm-portal__body {
-    font-size: 0.8rem;
-    line-height: 1.45;
     max-width: 22ch;
   }
 
@@ -2793,9 +2792,10 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebr
     max-width: 32rem;
   }
 
-  /* Tablet/phone: keep right-of-wheel idea, tighter column */
+  /* Tablet/phone: keep left-of-wheel idea, tighter column */
   .home-helm-portal__copy {
-    right: clamp(0.75rem, 3.5vw, 1.5rem);
+    left: clamp(0.75rem, 3.5vw, 1.5rem);
+    right: auto;
     width: min(42vw, 15.5rem);
     gap: 0.35rem;
   }
@@ -2804,13 +2804,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebr
     max-width: 11ch;
   }
 
-  .home-helm-portal__script {
-    font-size: clamp(0.95rem, 2.8vw, 1.2rem);
-  }
-
   .home-helm-portal__body {
-    font-size: 0.88rem;
-    line-height: 1.55;
     max-width: 24ch;
   }
 
