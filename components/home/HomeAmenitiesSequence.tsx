@@ -135,7 +135,7 @@ export function HomeAmenitiesSequence({
 
   if (!intro) return null;
 
-  // On images → site fonts + gold
+  // On images → site fonts + gold + tiny halo (CSS class handles halo)
   const onImageTitle = withColor(titleStyle, GOLD);
   const onImageIndication = withColor(indicationStyle, GOLD);
   const onImageBody = withColor(bodyStyle, GOLD);
@@ -172,12 +172,18 @@ export function HomeAmenitiesSequence({
           </div>
 
           <div className="home-am-intro__caption" data-am-intro-title>
-            <h2 className="home-am-intro__title" style={onImageTitle}>
+            <h2
+              className="home-am-intro__title home-am-on-image-text"
+              style={onImageTitle}
+            >
               {intro.titleLines.map((line) => (
                 <span key={line}>{line}</span>
               ))}
             </h2>
-            <p className="home-am-intro__indication" style={onImageIndication}>
+            <p
+              className="home-am-intro__indication home-am-on-image-text"
+              style={onImageIndication}
+            >
               {intro.indication}
             </p>
           </div>
@@ -214,11 +220,13 @@ export function HomeAmenitiesSequence({
             </div>
 
             <div className="home-am-video__copy" data-am-video-copy>
-              <p style={onImageBody}>{videoMain.body}</p>
+              <p className="home-am-on-image-text" style={onImageBody}>
+                {videoMain.body}
+              </p>
             </div>
 
             <div className="home-am-video__title" data-am-video-title>
-              <h2 style={onImageTitle}>
+              <h2 className="home-am-on-image-text" style={onImageTitle}>
                 {(videoMain.titleLines.length
                   ? videoMain.titleLines
                   : [videoMain.indication]
@@ -376,7 +384,10 @@ export function HomeAmenitiesSequence({
                           previewAnchor={card.previewAnchor}
                         />
                       </div>
-                      <figcaption style={onImageIndication}>
+                      <figcaption
+                        className="home-am-on-image-text"
+                        style={onImageIndication}
+                      >
                         {card.label}
                       </figcaption>
                     </figure>
