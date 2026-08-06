@@ -50,6 +50,12 @@ import {
   parseWelcomeSplashSettings,
   type WelcomeSplashSettings,
 } from "@/lib/welcome-splash-settings-shared";
+import {
+  DEFAULT_WHEEL_STAGE_SETTINGS,
+  WHEEL_STAGE_SETTINGS_KEY,
+  parseWheelStageSettings,
+  type WheelStageSettings,
+} from "@/lib/wheel-stage-settings-shared";
 import type { Client } from "pg";
 import {
   ensureCmsWarmup,
@@ -64,7 +70,7 @@ import {
 
 export const PUBLIC_CMS_CACHE_TAG = "public-cms";
 /** Bumped so prior build-time default entries are never reused. */
-export const PUBLIC_CMS_CACHE_KEY = "public-cms-bundle-v9";
+export const PUBLIC_CMS_CACHE_KEY = "public-cms-bundle-v10";
 export const PUBLIC_CMS_REVALIDATE_SECONDS = 300;
 
 const PUBLIC_CMS_KEYS = [
@@ -77,6 +83,7 @@ const PUBLIC_CMS_KEYS = [
   WEBSITE_TEXT_MOBILE_KEY,
   SITE_IMAGE_PUBLIC_MAP_KEY,
   WELCOME_SPLASH_SETTINGS_KEY,
+  WHEEL_STAGE_SETTINGS_KEY,
   PAGE_VISIBILITY_KEY,
 ] as const;
 
@@ -131,6 +138,7 @@ export type PublicCmsBundle = {
   websiteText: WebsiteText;
   websiteTextMobile: WebsiteText;
   welcomeSplash: WelcomeSplashSettings;
+  wheelStage: WheelStageSettings;
   pageVisibility: PageVisibilitySettings;
 };
 
@@ -199,6 +207,10 @@ function parseSettingMap(rows: SettingRow[]) {
       )
     : DEFAULT_WELCOME_SPLASH_SETTINGS;
 
+  const wheelStage = byKey.has(WHEEL_STAGE_SETTINGS_KEY)
+    ? parseWheelStageSettings(readStored(byKey.get(WHEEL_STAGE_SETTINGS_KEY)))
+    : DEFAULT_WHEEL_STAGE_SETTINGS;
+
   const pageVisibility = byKey.has(PAGE_VISIBILITY_KEY)
     ? parsePageVisibilitySettings(readStored(byKey.get(PAGE_VISIBILITY_KEY)))
     : DEFAULT_PAGE_VISIBILITY_SETTINGS;
@@ -213,6 +225,7 @@ function parseSettingMap(rows: SettingRow[]) {
     heroLogoTuneMobile,
     hieroglyphTune,
     welcomeSplash,
+    wheelStage,
     pageVisibility,
   };
 }
@@ -228,6 +241,7 @@ export function defaultPublicCmsBundle(): PublicCmsBundle {
     websiteText: DEFAULT_WEBSITE_TEXT,
     websiteTextMobile: DEFAULT_WEBSITE_TEXT,
     welcomeSplash: DEFAULT_WELCOME_SPLASH_SETTINGS,
+    wheelStage: DEFAULT_WHEEL_STAGE_SETTINGS,
     pageVisibility: DEFAULT_PAGE_VISIBILITY_SETTINGS,
   };
 }

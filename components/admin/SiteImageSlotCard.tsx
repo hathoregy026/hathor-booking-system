@@ -18,6 +18,11 @@ type SiteImageSlotCardProps = {
   altText: string;
   onAltTextChange: (altText: string) => void;
   onUrlChange: (url: string | null, meta?: { suggestedAltText?: string }) => void;
+  /** Optional opacity control (0–1), used for home-wheel-stage parchment. */
+  opacity?: number;
+  onOpacityChange?: (opacity: number) => void;
+  onOpacityCommit?: () => void;
+  opacitySaving?: boolean;
 };
 
 const MAX_REMOTE_RETRIES = 5;
@@ -35,6 +40,10 @@ export function SiteImageSlotCard({
   altText,
   onAltTextChange,
   onUrlChange,
+  opacity,
+  onOpacityChange,
+  onOpacityCommit,
+  opacitySaving = false,
 }: SiteImageSlotCardProps) {
   const hasImage = Boolean(url?.trim());
   const slotDefaultUrl = getSiteImageSlot(item.name)?.url?.trim() || "";
@@ -152,6 +161,11 @@ export function SiteImageSlotCard({
               src={displaySrc}
               alt={altText || item.label}
               className="vcc-card__thumb-img"
+              style={
+                typeof opacity === "number"
+                  ? { opacity: Math.min(1, Math.max(0, opacity)) }
+                  : undefined
+              }
               loading="lazy"
               decoding="async"
               onError={handleThumbError}
@@ -238,6 +252,49 @@ export function SiteImageSlotCard({
             />
           </div>
         </div>
+
+        {typeof opacity === "number" && onOpacityChange ? (
+          <div className="vcc-card__opacity mt-3 space-y-2 rounded-xl border border-[color:var(--border)] bg-[color:var(--surface-2,#f7f4ee)] px-3 py-3">
+            <div className="flex items-center justify-between gap-3">
+              <label
+                htmlFor={`opacity-${item.name}`}
+                className="text-sm font-medium text-[color:var(--text)]"
+              >
+                Background opacity
+              </label>
+              <span className="tabular-nums text-sm text-[color:var(--muted)]">
+                {Math.round(opacity * 100)}%
+                {opacitySaving ? " · saving…" : ""}
+              </span>
+            </div>
+            <input
+              id={`opacity-${item.name}`}
+              type="range"
+              min={0}
+              max={100}
+              step={1}
+              value={Math.round(Math.min(1, Math.max(0, opacity)) * 100)}
+              onChange={(event) =>
+                onOpacityChange(Number(event.target.value) / 100)
+              }
+              onPointerUp={() => onOpacityCommit?.()}
+              onKeyUp={(event) => {
+                if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+                  onOpacityCommit?.();
+                }
+              }}
+              className="w-full accent-[color:var(--gold,#c9a96e)]"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.round(opacity * 100)}
+              aria-label="Wheel background opacity"
+            />
+            <p className="text-xs text-[color:var(--muted)]">
+              How strong the parchment behind the wheel appears on the homepage.
+              Saves when you release the slider.
+            </p>
+          </div>
+        ) : null}
 
         <div className="vcc-card__links">
           {item.livePath ? (

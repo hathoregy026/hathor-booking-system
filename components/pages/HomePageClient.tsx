@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState, type CSSProperties } from "react";
 import rotatingWheel from "@/assets/LOGOS/rotating-wheel-hathor-cruise.png";
 import LuxuryAccordion from "@/components/home/LuxuryAccordion";
 import { HomeCampaignSection } from "@/components/home/HomeCampaignSection";
@@ -41,6 +41,10 @@ import {
   heroLogoTuneToImportantCss,
   heroLogoTuneToNarrowImportantCss,
 } from "@/lib/hero-logo-tune-shared";
+import {
+  DEFAULT_WHEEL_STAGE_SETTINGS,
+  type WheelStageSettings,
+} from "@/lib/wheel-stage-settings-shared";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 import { shouldSoftRefreshCms } from "@/lib/cms-soft-refresh";
 import { useBookingStore } from "@/store/bookingStore";
@@ -105,6 +109,7 @@ type HomePageClientProps = {
   heroLogoTune?: HeroLogoTune;
   heroLogoTuneMobile?: HeroLogoTune;
   accordionCruises?: HomepageAccordionCruise[];
+  wheelStage?: WheelStageSettings;
 };
 
 function paintLogoTune(desktop: HeroLogoTune, phone: HeroLogoTune) {
@@ -174,6 +179,7 @@ export function HomePageClient({
   heroLogoTune = DEFAULT_HERO_LOGO_TUNE,
   heroLogoTuneMobile = heroLogoTune,
   accordionCruises = [],
+  wheelStage = DEFAULT_WHEEL_STAGE_SETTINGS,
 }: HomePageClientProps) {
   useExScrollMotion();
 
@@ -540,7 +546,15 @@ export function HomePageClient({
             {/* Parchment stage: full-viewport, sun/compass dead-center under the wheel.
                 Stays visible while the wheel opens; circle-reveal media sits above it.
                 CMS slot: home-wheel-stage (dashboard → Homepage). */}
-            <div className="home-helm-portal__stage" aria-hidden="true">
+            <div
+              className="home-helm-portal__stage"
+              aria-hidden="true"
+              style={
+                {
+                  ["--home-wheel-stage-opacity"]: String(wheelStage.opacity),
+                } as CSSProperties
+              }
+            >
               <ManagedImage
                 name="home-wheel-stage"
                 alt=""

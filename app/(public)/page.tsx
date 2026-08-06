@@ -74,6 +74,7 @@ export default async function HomePage() {
         heroLogoTune={cms.heroLogoTune}
         heroLogoTuneMobile={cms.heroLogoTuneMobile}
         accordionCruises={accordionCruises}
+        wheelStage={cms.wheelStage}
       />
     </HomeExperienceShell>
   );

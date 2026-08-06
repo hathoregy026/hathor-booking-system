@@ -10,6 +10,12 @@ import {
   getSiteImageGroupHeading,
 } from "@/lib/site-image-admin";
 import { getSiteImageSlot } from "@/lib/site-image-slots";
+import {
+  DEFAULT_WHEEL_STAGE_SETTINGS,
+  isWheelStageSettingsEqual,
+  parseWheelStageSettings,
+  type WheelStageSettings,
+} from "@/lib/wheel-stage-settings-shared";
 
 type SiteImageRecord = {
   id: string;
@@ -72,6 +78,13 @@ export default function AdminContentPage() {
   >({});
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [opacitySaving, setOpacitySaving] = useState(false);
+  const [wheelStage, setWheelStage] = useState<WheelStageSettings>(
+    DEFAULT_WHEEL_STAGE_SETTINGS,
+  );
+  const [savedWheelStage, setSavedWheelStage] = useState<WheelStageSettings>(
+    DEFAULT_WHEEL_STAGE_SETTINGS,
+  );
   const [openImageGroup, setOpenImageGroup] = useState<string>(
     SITE_IMAGE_GROUPS[0]?.pagePath ?? "/",
   );
@@ -119,7 +132,10 @@ export default function AdminContentPage() {
   const loadContent = useCallback(async () => {
     setIsLoading(true);
     try {
-      const imagesRes = await adminFetch("/api/admin/images");
+      const [imagesRes, wheelRes] = await Promise.all([
+        adminFetch("/api/admin/images"),
+        adminFetch("/api/admin/wheel-stage"),
+      ]);
       if (imagesRes.ok) {
         const imagesData = (await imagesRes.json()) as {
           images: SiteImageRecord[];
@@ -131,6 +147,15 @@ export default function AdminContentPage() {
         const form = buildSiteImageForm([]);
         setSiteImages(form);
         setSavedSiteImages(form);
+      }
+      if (wheelRes.ok) {
+        const wheelData = (await wheelRes.json()) as { settings?: unknown };
+        const settings = parseWheelStageSettings(wheelData.settings);
+        setWheelStage(settings);
+        setSavedWheelStage(settings);
+      } else {
+        setWheelStage(DEFAULT_WHEEL_STAGE_SETTINGS);
+        setSavedWheelStage(DEFAULT_WHEEL_STAGE_SETTINGS);
       }
     } catch {
       showToast("error", "Failed to load website images");
@@ -160,6 +185,45 @@ export default function AdminContentPage() {
       };
     });
   };
+
+  const persistWheelStage = useCallback(
+    async (settings: WheelStageSettings) => {
+      setOpacitySaving(true);
+      try {
+        const response = await adminFetch("/api/admin/wheel-stage", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ settings }),
+        });
+        if (!response.ok) {
+          throw new Error(
+            await readAdminError(response, "Failed to save wheel opacity"),
+          );
+        }
+        const data = (await response.json()) as { settings?: unknown };
+        const saved = parseWheelStageSettings(data.settings);
+        setWheelStage(saved);
+        setSavedWheelStage(saved);
+        showToast("success", "Wheel background opacity saved.");
+      } catch (error) {
+        showToast(
+          "error",
+          error instanceof Error
+            ? error.message
+            : "Failed to save wheel opacity",
+        );
+        setWheelStage(savedWheelStage);
+      } finally {
+        setOpacitySaving(false);
+      }
+    },
+    [savedWheelStage, showToast],
+  );
+
+  const handleWheelOpacityCommit = useCallback(() => {
+    if (isWheelStageSettingsEqual(wheelStage, savedWheelStage)) return;
+    void persistWheelStage(wheelStage);
+  }, [persistWheelStage, savedWheelStage, wheelStage]);
 
   const persistSiteImageSlot = useCallback(
     async (name: string, url: string, altText: string) => {
@@ -382,6 +446,15 @@ export default function AdminContentPage() {
                             nextAlt,
                           );
                         }}
+                        {...(item.name === "home-wheel-stage"
+                          ? {
+                              opacity: wheelStage.opacity,
+                              onOpacityChange: (opacity: number) =>
+                                setWheelStage({ opacity }),
+                              onOpacityCommit: handleWheelOpacityCommit,
+                              opacitySaving,
+                            }
+                          : {})}
                       />
                     );
                   })}
