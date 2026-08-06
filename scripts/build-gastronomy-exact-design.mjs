@@ -9,6 +9,10 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = process.cwd();
+const hathorFontFaces = fs.readFileSync(
+  path.join(root, "app", "hathor-fonts.css"),
+  "utf8",
+);
 const source = path.join(
   root,
   "assets",
@@ -126,6 +130,7 @@ html = html
 
 const diningPalette = `
 <style data-hathor-dining-palette>
+  ${hathorFontFaces}
   @font-face {
     font-family: "Hathor Display";
     src: url("/fonts/Gamgote-Regular.otf") format("opentype");
@@ -228,7 +233,65 @@ const diningPalette = `
   }
 </style>`;
 
-html = html.replace("</head>", `${diningPalette}</head>`);
+const gastronomyRuntime = `
+<script data-gastronomy-dashboard-runtime>
+(() => {
+  const applyDashboardConfig = () => {
+  const slotTargets = {
+    "gastronomy-hero": "#de-intro",
+    "gastronomy-restaurant": "#de-projects",
+    "gastronomy-table": "#de-spiral",
+    "gastronomy-courses": "#de-captions",
+    "gastronomy-wine": "#de-gallery",
+    "gastronomy-chef": "#de-balcons",
+    "gastronomy-service": "#de-slider",
+    "gastronomy-celebration": "#de-more",
+  };
+  function replaceVisual(target, url, slot) {
+    const root = document.querySelector(target);
+    if (!root || !url) return;
+    root.setAttribute("data-gastronomy-slot", slot);
+    root.querySelectorAll("img").forEach((image) => {
+      image.setAttribute("data-gastronomy-slot", slot);
+      image.src = url;
+      image.removeAttribute("srcset");
+      image.setAttribute("data-src", url);
+    });
+    root.querySelectorAll("source").forEach((source) => {
+      source.srcset = url;
+      source.setAttribute("data-gastronomy-slot", slot);
+    });
+  }
+  fetch("/api/gastronomy-config", { cache: "no-store" })
+    .then((response) => response.ok ? response.json() : null)
+    .then((config) => {
+      if (!config) return;
+      Object.entries(slotTargets).forEach(([slot, target]) =>
+        replaceVisual(target, config.images && config.images[slot], slot)
+      );
+      const style = document.createElement("style");
+      style.dataset.gastronomyTypography = "true";
+      style.textContent = config.css || "";
+      document.head.appendChild(style);
+      if (config.phoneCss) {
+        const phone = document.createElement("style");
+        phone.dataset.gastronomyTypographyPhone = "true";
+        phone.textContent = "@media (max-width:480px){" + config.phoneCss + "}";
+        document.head.appendChild(phone);
+      }
+      window.dispatchEvent(new Event("resize"));
+    })
+    .catch(() => {});
+  };
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", applyDashboardConfig, { once: true });
+  } else {
+    applyDashboardConfig();
+  }
+})();
+</script>`;
+
+html = html.replace("</head>", `${diningPalette}${gastronomyRuntime}</head>`);
 
 // Serve captured scripts and styles from this app. They run in the standalone
 // document at parse time, exactly as in the captured Springs page.
