@@ -28,10 +28,11 @@ const DEFAULT_LOGO_LAND_DURATION = 1.4;
 const LOGO_LAND_STAGGER = 0.1;
 const LOGO_LAND_DELAY = 0.1;
 const LOGO_LAND_EASE = "power3.out";
-/** Desktop scrub: per-letter exit — mirrors land stagger, soft silk ease. */
-const LOGO_SCROLL_LETTER_DURATION = 0.55;
-const LOGO_SCROLL_LETTER_STAGGER = 0.09;
-const LOGO_SCROLL_LETTER_EASE = "power2.inOut";
+/** Desktop scrub: per-letter exit — long silk drift, one-by-one cascade. */
+const LOGO_SCROLL_LETTER_DURATION = 1.05;
+const LOGO_SCROLL_LETTER_STAGGER = 0.12;
+const LOGO_SCROLL_LETTER_AT = 0.06;
+const LOGO_SCROLL_LETTER_EASE = "power3.inOut";
 
 export function mountHeroScrollStage({
   prefersReduced,
@@ -393,7 +394,7 @@ export function mountHeroScrollStage({
                 ? "+=260%" /* fallback only if .home-hero-runway missing */
             : isPhoneTouch
               ? "+=290%"
-              : "+=130%",
+              : "+=175%", /* extra runway so per-letter logo exit can drift slowly */
         // Direct scrub on touch — laggy scrub (1.7) feels like scroll jumping
         scrub: isTouch ? true : 0.25,
         pin: !(isPhoneTouch || isTabletHero),
@@ -729,8 +730,10 @@ export function mountHeroScrollStage({
               duration: LOGO_SCROLL_LETTER_DURATION,
               stagger: LOGO_SCROLL_LETTER_STAGGER,
             },
-            0,
+            LOGO_SCROLL_LETTER_AT,
           );
+          /* Hold pin a beat so the last letter can finish its slow drift. */
+          tl.to({}, { duration: 0.18 }, LOGO_SCROLL_LETTER_AT + LOGO_SCROLL_LETTER_DURATION + LOGO_SCROLL_LETTER_STAGGER * 5);
         } else {
           tl.fromTo(
             logoMark,
