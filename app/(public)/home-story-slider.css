@@ -12,6 +12,8 @@
 .home-story__slide {
   display: block;
   background: var(--cream, #ece8df);
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .home-story__media {
@@ -39,7 +41,19 @@
   visibility: visible !important;
 }
 
+.home-story__media-link {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+}
+
 .home-story__media-link img {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
   opacity: 1 !important;
 }
 
@@ -66,7 +80,6 @@
 
 .home-story__title {
   max-width: 8ch !important;
-  color: var(--public-gold, #b69f64) !important;
   text-shadow: none !important;
 }
 
@@ -76,7 +89,6 @@
   bottom: clamp(1.5rem, 6vh, 5rem);
   left: clamp(1.25rem, 4vw, 4.5rem);
   max-width: none !important;
-  color: var(--hs-muted, #3a342f) !important;
   text-align: left;
   text-shadow: none !important;
 }

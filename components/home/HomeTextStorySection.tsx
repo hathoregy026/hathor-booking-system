@@ -76,31 +76,6 @@ export function HomeTextStorySection({ slides }: HomeTextStorySectionProps) {
                 </Link>
               </div>
 
-              <div className="home-story__art" aria-hidden="true">
-                <div className="home-story__art-frame home-story__art-frame--primary">
-                  <ManagedImage
-                    name={slide.imageName}
-                    alt=""
-                    fill
-                    sizes="(max-width: 1024px) 58vw, 38vw"
-                    unoptimized={false}
-                    className="object-cover"
-                    previewAnchor={false}
-                  />
-                </div>
-                <div className="home-story__art-frame home-story__art-frame--secondary">
-                  <ManagedImage
-                    name={slide.imageName}
-                    alt=""
-                    fill
-                    sizes="(max-width: 1024px) 36vw, 22vw"
-                    unoptimized={false}
-                    className="object-cover"
-                    previewAnchor={false}
-                  />
-                </div>
-              </div>
-
               <div className="home-story__copy">
                 <h2 className="home-story__title typo-page-title">
                   {titleLines.map((line) => (
