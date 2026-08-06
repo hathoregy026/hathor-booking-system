@@ -1,18 +1,19 @@
-/* Springs amenities layout sequence on homepage:
-   i-intro → i-video → i-slider → i-opening
-   Surfaces: gold #B69F64 / cream #ece8df
-   Type: site typography (inline) — on-image gold, on-panel dark ink */
+/* Springs amenities Fixed-Background Mask Reveal on homepage:
+   sticky--under-next chapters cover each other — no solid gold gaps */
 
 .home-am-sequence {
   --am-gold: #b69f64;
   --am-cream: #ece8df;
   --am-ink: #1c1712;
+  --am-under-next: 100svh;
   position: relative;
   z-index: 21;
   width: 100%;
   margin: 0;
-  background: var(--am-gold);
+  /* Transparent runway — gold only on intentional caption panels */
+  background: transparent;
   color: var(--am-ink);
+  isolation: isolate;
 }
 
 [data-hathor-accordion] + .home-am-sequence,
@@ -20,19 +21,38 @@
   margin-top: 0 !important;
 }
 
-/* ========== i-intro ========== */
-.home-am-intro {
+/* Amenities sticky--under-next grammar — next chapter covers previous */
+.home-am-chapter {
   position: relative;
-  height: 220svh;
-  z-index: 1;
+  margin: 0 0 calc(var(--am-under-next) * -1);
+  background: transparent;
 }
 
-.home-am-intro__sticky {
+.home-am-chapter::after {
+  content: "";
+  display: block;
+  height: var(--am-under-next);
+  pointer-events: none;
+}
+
+.home-am-chapter__stage {
   position: sticky;
   top: 0;
   height: 100svh;
   overflow: hidden;
-  background: var(--am-gold);
+  background: transparent;
+  will-change: clip-path;
+}
+
+.home-am-sequence + .home-helm-portal {
+  position: relative;
+  z-index: 26;
+}
+
+/* ========== i-intro ========== */
+.home-am-intro {
+  height: 220svh;
+  z-index: 1;
 }
 
 .home-am-intro__media {
@@ -120,19 +140,8 @@
 
 /* ========== i-video ========== */
 .home-am-video {
-  position: relative;
   height: 420svh;
   z-index: 2;
-  margin-top: -1px;
-  background: var(--am-gold);
-}
-
-.home-am-video__sticky {
-  position: sticky;
-  top: 0;
-  height: 100svh;
-  overflow: hidden;
-  background: var(--am-gold);
 }
 
 .home-am-video__hero {
@@ -140,6 +149,7 @@
   inset: 0;
   z-index: 1;
   will-change: transform;
+  background: #0f0c09;
 }
 
 .home-am-video__hero img {
@@ -202,7 +212,7 @@
   width: min(50%, 36rem);
   padding: clamp(1.5rem, 3.5vw, 3rem);
   background: var(--am-gold);
-  will-change: transform, opacity;
+  will-change: clip-path;
 }
 
 .home-am-video__caption h3 {
@@ -217,17 +227,8 @@
 
 /* ========== i-slider ========== */
 .home-am-slider {
-  position: relative;
   height: 560svh;
   z-index: 3;
-  background: var(--am-gold);
-}
-
-.home-am-slider__sticky {
-  position: sticky;
-  top: 0;
-  height: 100svh;
-  overflow: hidden;
 }
 
 .home-am-slider__row {
@@ -325,19 +326,13 @@
 
 /* ========== i-opening ========== */
 .home-am-opening {
-  position: relative;
   height: 280svh;
   z-index: 4;
-  background: var(--am-gold);
 }
 
 .home-am-opening__sticky {
-  position: sticky;
-  top: 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  height: 100svh;
-  overflow: hidden;
 }
 
 .home-am-opening__left {

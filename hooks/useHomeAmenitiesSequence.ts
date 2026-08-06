@@ -19,7 +19,11 @@ const seg = (p: number, a: number, b: number) => {
   return luxWipe(clamp((p - a) / (b - a)));
 };
 
-/** Full Springs amenities choreography: intro → video → slider → opening. */
+/**
+ * Springs amenities Fixed-Background Mask Reveal:
+ * each next sticky chapter slides/covers the previous (under-next),
+ * never as a solid gold block with a gap.
+ */
 export function useHomeAmenitiesSequence(
   rootRef: RefObject<HTMLElement | null>,
   sliderCount: number,
@@ -35,6 +39,34 @@ export function useHomeAmenitiesSequence(
     const context = gsap.context(() => {
       if (reduced) return;
 
+      const chapters = Array.from(
+        root.querySelectorAll<HTMLElement>("[data-am-chapter]"),
+      );
+
+      // Cover-reveal: each chapter after the first rises over the previous sticky stage.
+      chapters.forEach((chapter, index) => {
+        if (index === 0) return;
+        const stage =
+          chapter.querySelector<HTMLElement>("[data-am-stage]") ?? chapter;
+        gsap.set(stage, {
+          clipPath: amenitiesWipeClosed("up"),
+        });
+
+        ScrollTrigger.create({
+          id: `home-am-cover-${index}`,
+          trigger: chapter,
+          start: "top bottom",
+          end: "top top",
+          scrub: true,
+          refreshPriority: -89,
+          onUpdate: (self) => {
+            gsap.set(stage, {
+              clipPath: amenitiesWipeClip("up", seg(self.progress, 0, 1)),
+            });
+          },
+        });
+      });
+
       /* ---------- i-intro ---------- */
       const intro = root.querySelector<HTMLElement>("[data-am-intro]");
       if (intro) {
@@ -42,16 +74,12 @@ export function useHomeAmenitiesSequence(
         const dim = intro.querySelector<HTMLElement>("[data-am-intro-dim]");
         const title = intro.querySelector<HTMLElement>("[data-am-intro-title]");
         const cream = intro.querySelector<HTMLElement>("[data-am-intro-cream]");
+        const creamAngle = isPhone ? "up" : "right";
 
         gsap.set(media, { xPercent: 0, scale: 1.18 });
         gsap.set(dim, { autoAlpha: 0.55 });
         gsap.set(title, { autoAlpha: 1, y: 0 });
-        // Desktop: cream panel from the right (amenities i-intro).
-        // Phone: cream panel rises from bottom under the hero.
-        const creamAngle = isPhone ? "up" : "right";
-        gsap.set(cream, {
-          clipPath: amenitiesWipeClosed(creamAngle),
-        });
+        gsap.set(cream, { clipPath: amenitiesWipeClosed(creamAngle) });
 
         ScrollTrigger.create({
           id: "home-am-intro",
@@ -62,7 +90,6 @@ export function useHomeAmenitiesSequence(
           refreshPriority: -88,
           onUpdate: (self) => {
             const p = self.progress;
-            // Image slides left (amenities introImage)
             const slide = seg(p, 0.08, 0.72);
             gsap.set(media, {
               xPercent: isPhone ? slide * -12 : slide * -36,
@@ -87,9 +114,13 @@ export function useHomeAmenitiesSequence(
         const inset = video.querySelector<HTMLElement>("[data-am-video-inset]");
         const copy = video.querySelector<HTMLElement>("[data-am-video-copy]");
         const title = video.querySelector<HTMLElement>("[data-am-video-title]");
-        const caption = video.querySelector<HTMLElement>("[data-am-video-caption]");
+        const caption = video.querySelector<HTMLElement>(
+          "[data-am-video-caption]",
+        );
 
-        gsap.set(hero, { scale: 1.05, yPercent: 18 });
+        // Amenities i-video: full-bleed media is already in place under the cover wipe;
+        // only scale settles — never a gold empty stage.
+        gsap.set(hero, { scale: 1.12 });
         gsap.set(inset, {
           autoAlpha: 0,
           scale: 1.15,
@@ -98,8 +129,8 @@ export function useHomeAmenitiesSequence(
         });
         gsap.set([copy, title], { autoAlpha: 0, y: 28 });
         gsap.set(caption, {
-          yPercent: 110,
-          autoAlpha: 0,
+          clipPath: amenitiesWipeClosed("up"),
+          autoAlpha: 1,
         });
 
         ScrollTrigger.create({
@@ -111,38 +142,28 @@ export function useHomeAmenitiesSequence(
           refreshPriority: -87,
           onUpdate: (self) => {
             const p = self.progress;
-            // Huge image rises into place
-            const rise = seg(p, 0, 0.28);
-            gsap.set(hero, {
-              scale: 1.05 + rise * 0.12,
-              yPercent: 18 - rise * 18,
-            });
-            // Title + left copy
-            const textIn = seg(p, 0.12, 0.34);
+            const settle = seg(p, 0, 0.35);
+            gsap.set(hero, { scale: 1.12 - settle * 0.12 });
+
+            const textIn = seg(p, 0.08, 0.32);
             gsap.set(copy, { autoAlpha: textIn, y: (1 - textIn) * 24 });
             gsap.set(title, {
               autoAlpha: textIn,
               y: (1 - textIn) * 32,
               x: (1 - textIn) * (isPhone ? 0 : 20),
             });
-            // Small inset image enters
-            const insetIn = seg(p, 0.28, 0.52);
+
+            const insetIn = seg(p, 0.26, 0.5);
             gsap.set(inset, {
               autoAlpha: insetIn,
               scale: 1.15 - insetIn * 0.15,
               yPercent: 40 - insetIn * 40,
               clipPath: amenitiesWipeClip("up", insetIn),
             });
-            // Caption card slides up over image
-            const cap = seg(p, 0.48, 0.78);
+
+            const cap = seg(p, 0.48, 0.76);
             gsap.set(caption, {
-              yPercent: 110 - cap * 110,
-              autoAlpha: cap,
-            });
-            // Hero settles while caption holds
-            const settle = seg(p, 0.55, 0.95);
-            gsap.set(hero, {
-              scale: 1.17 - settle * 0.12,
+              clipPath: amenitiesWipeClip("up", cap),
             });
           },
         });
@@ -242,7 +263,11 @@ export function useHomeAmenitiesSequence(
                   const outLocal =
                     index === panels.length - 1
                       ? 0
-                      : seg(progress, key((index + 1) * 100 + 20), key((index + 1) * 100 + 75));
+                      : seg(
+                          progress,
+                          key((index + 1) * 100 + 20),
+                          key((index + 1) * 100 + 75),
+                        );
                   visibility =
                     Math.max(0, inLocal - outLocal) *
                     Math.max(entrance, 0.001);
@@ -271,14 +296,18 @@ export function useHomeAmenitiesSequence(
       /* ---------- i-opening ---------- */
       const opening = root.querySelector<HTMLElement>("[data-am-opening]");
       if (opening) {
-        const left = opening.querySelector<HTMLElement>("[data-am-opening-left]");
+        const left = opening.querySelector<HTMLElement>(
+          "[data-am-opening-left]",
+        );
         const right = opening.querySelector<HTMLElement>(
           "[data-am-opening-right]",
         );
         const title = opening.querySelector<HTMLElement>(
           "[data-am-opening-title]",
         );
-        const rail = opening.querySelector<HTMLElement>("[data-am-opening-rail]");
+        const rail = opening.querySelector<HTMLElement>(
+          "[data-am-opening-rail]",
+        );
         const cards = Array.from(
           opening.querySelectorAll<HTMLElement>("[data-am-opening-card]"),
         );
@@ -315,7 +344,6 @@ export function useHomeAmenitiesSequence(
               autoAlpha: titleIn,
               y: (1 - titleIn) * 36,
             });
-            // Right rail expands downward (amenities opening right-column)
             const railIn = seg(p, 0.32, 0.62);
             gsap.set(rail, {
               clipPath: `polygon(0% 0%, 100% 0%, 100% ${railIn * 100}%, 0% ${railIn * 100}%)`,
@@ -326,6 +354,28 @@ export function useHomeAmenitiesSequence(
                 autoAlpha: local,
                 y: (1 - local) * (36 + i * 10),
               });
+            });
+          },
+        });
+      }
+
+      // Hand off into helm portal with the same under-next cover (no gold bar).
+      const helm = document.querySelector<HTMLElement>(
+        "[data-home-helm-portal]",
+      );
+      const lastChapter = chapters[chapters.length - 1];
+      if (helm && lastChapter) {
+        gsap.set(helm, { clipPath: amenitiesWipeClosed("up") });
+        ScrollTrigger.create({
+          id: "home-am-to-helm",
+          trigger: helm,
+          start: "top bottom",
+          end: "top top",
+          scrub: true,
+          refreshPriority: -84,
+          onUpdate: (self) => {
+            gsap.set(helm, {
+              clipPath: amenitiesWipeClip("up", seg(self.progress, 0, 1)),
             });
           },
         });
@@ -351,7 +401,10 @@ export function useHomeAmenitiesSequence(
       lastW = window.innerWidth;
       ScrollTrigger.refresh();
     };
-    window.addEventListener(isCompact ? "orientationchange" : "resize", onViewport);
+    window.addEventListener(
+      isCompact ? "orientationchange" : "resize",
+      onViewport,
+    );
 
     return () => {
       active = false;

@@ -152,8 +152,12 @@ export function HomeAmenitiesSequence({
       aria-label="Amenities-style Nile stories"
     >
       {/* 1) i-intro — fullscreen → slides left → cream text */}
-      <div className="home-am-intro" data-am-intro>
-        <div className="home-am-intro__sticky">
+      <div
+        className="home-am-intro home-am-chapter"
+        data-am-intro
+        data-am-chapter
+      >
+        <div className="home-am-intro__sticky home-am-chapter__stage" data-am-stage>
           <div className="home-am-intro__media" data-am-intro-media>
             <ManagedImage
               name={intro.imageName}
@@ -192,8 +196,12 @@ export function HomeAmenitiesSequence({
 
       {/* 2) i-video — huge image rises, title, inset image, caption card */}
       {videoMain ? (
-        <div className="home-am-video" data-am-video>
-          <div className="home-am-video__sticky">
+        <div
+          className="home-am-video home-am-chapter"
+          data-am-video
+          data-am-chapter
+        >
+          <div className="home-am-video__sticky home-am-chapter__stage" data-am-stage>
             <div className="home-am-video__hero" data-am-video-hero>
               <ManagedImage
                 name={videoMain.imageName}
@@ -249,8 +257,12 @@ export function HomeAmenitiesSequence({
 
       {/* 3) i-slider — half text / half image stack */}
       {sliderSlides.length > 0 ? (
-        <div className="home-am-slider" data-am-slider>
-          <div className="home-am-slider__sticky">
+        <div
+          className="home-am-slider home-am-chapter"
+          data-am-slider
+          data-am-chapter
+        >
+          <div className="home-am-slider__sticky home-am-chapter__stage" data-am-stage>
             <div className="home-am-slider__row">
               <div
                 className="home-am-slider__caption-col"
@@ -313,8 +325,12 @@ export function HomeAmenitiesSequence({
 
       {/* 4) i-opening — fixed left image + right rail with small cards */}
       {openingLeft ? (
-        <div className="home-am-opening" data-am-opening>
-          <div className="home-am-opening__sticky">
+        <div
+          className="home-am-opening home-am-chapter"
+          data-am-opening
+          data-am-chapter
+        >
+          <div className="home-am-opening__sticky home-am-chapter__stage" data-am-stage>
             <div className="home-am-opening__left" data-am-opening-left>
               <ManagedImage
                 name={openingLeft.imageName}
