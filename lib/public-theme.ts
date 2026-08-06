@@ -57,11 +57,12 @@ export function getPublicHeroBootCriticalStyle(): string {
 }
 
 /**
- * Early welcome gate: skip for prefers-reduced-motion; else lock scroll before paint.
+ * Early welcome gate: skip admin + prefers-reduced-motion; else lock scroll before paint.
  * Must run in <head> so users cannot scroll behind the splash pre-hydrate.
+ * Admin never mounts WelcomeSplash, so locking here would freeze the dashboard forever.
  */
 export function getWelcomeSplashBlockingScript(): string {
-  return `(function(){try{var d=document.documentElement;if(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches){d.classList.add("hathor-welcome-skip");return;}d.classList.add("hathor-welcome-lock");}catch(e){}})();`;
+  return `(function(){try{var p=(location.pathname||"/");if(p==="/admin"||p.indexOf("/admin/")===0)return;var d=document.documentElement;if(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches){d.classList.add("hathor-welcome-skip");return;}d.classList.add("hathor-welcome-lock");}catch(e){}})();`;
 }
 
 /**
@@ -78,6 +79,10 @@ export function getWelcomeSplashCriticalStyle(): string {
     "}",
     "html.hathor-welcome-lock,html.hathor-welcome-lock body{",
     "overflow:hidden!important;overscroll-behavior:none;",
+    "}",
+    /* Admin never runs WelcomeSplash — never inherit the public scroll lock. */
+    "html.admin-app,html.admin-app body{",
+    "overflow:auto!important;overscroll-behavior:auto;",
     "}",
     ".hathor-welcome-splash{",
     "position:fixed;inset:0;z-index:2147483000;",
