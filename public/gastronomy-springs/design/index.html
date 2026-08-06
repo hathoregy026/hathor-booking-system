@@ -483,6 +483,43 @@
   .de-slider__mobile-scrollable-gradient div {
     background: radial-gradient(circle, rgba(182, 159, 100, 0.86) 0%, rgba(182, 159, 100, 0.38) 45%, rgba(182, 159, 100, 0) 74%) !important;
   }
+  /*
+   * Give every private-menu story panel the same complete editorial card:
+   * image on the left, balanced gold copy and details on the right.
+   */
+  #de-flats-80691 .de-flats__text,
+  #de-flats-251302 .de-flats__text,
+  #de-flats-644069 .de-flats__text {
+    background: #b69f64 !important;
+    color: #f5e8d1 !important;
+  }
+  #de-flats-80691 .de-flats__text p,
+  #de-flats-251302 .de-flats__text p,
+  #de-flats-644069 .de-flats__text p {
+    color: #f5e8d1 !important;
+  }
+  #de-flats-80691 .de-flats__list-item,
+  #de-flats-251302 .de-flats__list-item,
+  #de-flats-644069 .de-flats__list-item {
+    border-color: rgba(245, 232, 209, .3) !important;
+  }
+  @media (min-width: 1025px) {
+    #de-flats-80691 .de-flats__text,
+    #de-flats-251302 .de-flats__text,
+    #de-flats-644069 .de-flats__text {
+      display: flex !important;
+      flex-direction: column;
+      justify-content: center;
+      gap: clamp(1.5rem, 4vh, 3.5rem);
+    }
+  }
+  @media (max-width: 1024px) {
+    #de-flats-80691 .de-flats__text,
+    #de-flats-251302 .de-flats__text,
+    #de-flats-644069 .de-flats__text {
+      padding-block: clamp(2rem, 7vw, 4rem) !important;
+    }
+  }
 </style>
 <script data-gastronomy-dashboard-runtime>
 (() => {
