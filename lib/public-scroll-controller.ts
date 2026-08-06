@@ -42,6 +42,8 @@ function wantsNativeMode() {
   if (window.location.pathname.startsWith("/admin")) return true;
   /* Mask Reveal needs native sticky filters (Lenis breaks position:sticky). */
   if (window.location.pathname.startsWith("/mask-reveal")) return true;
+  /* GPT dining clone uses native scroll + CSS var scrub (Lenis breaks sticky runway). */
+  if (window.location.pathname.startsWith("/gastronomy")) return true;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return true;
   if (isTouchDevice()) return true;
   if (isPhoneOrTabletViewport()) return true;

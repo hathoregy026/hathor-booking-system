@@ -5,7 +5,7 @@ import { useEffect, type RefObject } from "react";
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
 
 const smoothstep = (edge0: number, edge1: number, value: number) => {
-  const t = clamp((edge0 === edge1 ? 0 : (value - edge0) / (edge1 - edge0)));
+  const t = clamp((value - edge0) / (edge1 - edge0));
   return t * t * (3 - 2 * t);
 };
 
@@ -51,19 +51,22 @@ function updateDiningPile(stage: HTMLElement, progress: number) {
   });
 }
 
+function motionDisabled() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return true;
+  return window.matchMedia("(pointer: coarse)").matches && window.innerWidth <= 1024;
+}
+
 export function useGastronomyDiningScroll(rootRef: RefObject<HTMLDivElement | null>) {
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
 
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
-    const stages = [...root.querySelectorAll<HTMLElement>("[data-gd-scroll]")].map((stage) => ({
+    const stages = [...root.querySelectorAll<HTMLElement>("[data-v6-scroll]")].map((stage) => ({
       stage,
       current: 0,
       target: 0,
     }));
-    const progressBar = root.querySelector<HTMLElement>("[data-gd-progress]");
+    const progressBar = root.querySelector<HTMLElement>("[data-v6-progress]");
     let smoothedDocProgress = 0;
     let targetDocProgress = 0;
     let frame = 0;
@@ -76,7 +79,7 @@ export function useGastronomyDiningScroll(rootRef: RefObject<HTMLDivElement | nu
       const range = Math.max(1, document.documentElement.scrollHeight - viewport);
       targetDocProgress = window.scrollY / range;
 
-      if (!reduceMotion && !(coarsePointer && window.innerWidth <= 1024)) {
+      if (!motionDisabled()) {
         stages.forEach((item) => {
           const rect = item.stage.getBoundingClientRect();
           const travel = Math.max(1, item.stage.offsetHeight - viewport);
@@ -102,7 +105,7 @@ export function useGastronomyDiningScroll(rootRef: RefObject<HTMLDivElement | nu
         progressBar.style.transform = `scaleX(${smoothedDocProgress})`;
       }
 
-      if (!reduceMotion && !(coarsePointer && window.innerWidth <= 1024)) {
+      if (!motionDisabled()) {
         stages.forEach((item) => {
           item.current += (item.target - item.current) * ease;
           if (Math.abs(item.target - item.current) > 0.00008) {
@@ -149,6 +152,10 @@ export function useGastronomyDiningScroll(rootRef: RefObject<HTMLDivElement | nu
     });
     if (progressBar) {
       progressBar.style.transform = `scaleX(${smoothedDocProgress})`;
+    }
+    if (!frame) {
+      lastTime = performance.now();
+      frame = requestAnimationFrame(tick);
     }
 
     return () => {

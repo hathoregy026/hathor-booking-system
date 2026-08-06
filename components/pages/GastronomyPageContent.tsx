@@ -4,26 +4,20 @@ import { useRef, type CSSProperties } from "react";
 import Link from "next/link";
 import "@/app/gastronomy-dining.css";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
-import { ManagedImage } from "@/components/ui/ManagedImage";
+import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { useGastronomyDiningScroll } from "@/hooks/useGastronomyDiningScroll";
 import { GASTRONOMY_PAGE } from "@/lib/page-content";
+import { siteImageAnchorId } from "@/lib/site-image-preview";
 
 function splitHeading(text: string): { line1: string; line2: string } {
   const words = text.trim().split(/\s+/);
-  if (words.length <= 1) {
-    return { line1: text, line2: "" };
-  }
+  if (words.length <= 1) return { line1: text, line2: "" };
   const mid = Math.ceil(words.length / 2);
   return {
     line1: words.slice(0, mid).join(" "),
     line2: words.slice(mid).join(" "),
   };
-}
-
-function firstSentence(text: string): string {
-  const match = text.match(/^[^.!?]+[.!?]?/);
-  return match?.[0]?.trim() ?? text;
 }
 
 function DiningHeading({
@@ -33,6 +27,9 @@ function DiningHeading({
   line1: string;
   line2: string;
 }) {
+  if (!line2.trim()) {
+    return <>{line1}</>;
+  }
   return (
     <>
       {line1}
@@ -42,28 +39,7 @@ function DiningHeading({
   );
 }
 
-function DiningFillImage({
-  name,
-  alt,
-  previewAnchor = true,
-}: {
-  name: string;
-  alt: string;
-  previewAnchor?: boolean;
-}) {
-  return (
-    <ManagedImage
-      name={name}
-      alt={alt}
-      fill
-      className="object-cover"
-      sizes="100vw"
-      previewAnchor={previewAnchor}
-    />
-  );
-}
-
-function DiningPlateImage({
+function DiningImg({
   name,
   alt,
   previewAnchor = false,
@@ -72,15 +48,13 @@ function DiningPlateImage({
   alt: string;
   previewAnchor?: boolean;
 }) {
+  const image = useSiteImage(name);
   return (
-    <ManagedImage
-      name={name}
+    <img
+      src={image.src}
       alt={alt}
-      width={800}
-      height={800}
-      className="h-auto w-full object-contain"
-      sizes="(max-width: 480px) 78vw, 40vw"
-      previewAnchor={previewAnchor}
+      id={previewAnchor ? siteImageAnchorId(name) : undefined}
+      data-site-image={name}
     />
   );
 }
@@ -91,15 +65,11 @@ export function GastronomyPageContent() {
   const { pages } = useWebsiteText();
   const gastronomy = pages.gastronomy;
   const hero = GASTRONOMY_PAGE.hero;
-  const atmosphereHeading = splitHeading(gastronomy.atmosphereTitle);
   const restaurantHeading = splitHeading(gastronomy.restaurantTitle);
-  const introLead = splitHeading(firstSentence(gastronomy.intro[1] ?? ""));
-  const closingHeading = splitHeading(firstSentence(gastronomy.closing));
-  const indoorBar = gastronomy.venues[2];
-  const outdoorBar = gastronomy.venues[3];
-  const barHeading = splitHeading(
-    `${indoorBar?.title ?? ""} ${outdoorBar?.title ?? ""}`.trim(),
-  );
+  const atmosphereHeading = splitHeading(gastronomy.atmosphereTitle);
+  const introHeading = splitHeading(gastronomy.intro[1] ?? "");
+  const closingHeading = splitHeading(gastronomy.closing);
+  const barHeading = splitHeading(gastronomy.venues[3]?.title ?? "Outdoor Bar");
   const venueLine = gastronomy.venues.map((venue) => venue.title).join(" · ");
   const venueCaption = gastronomy.venues
     .map((venue) => `${venue.title} — ${venue.description}`)
@@ -108,34 +78,22 @@ export function GastronomyPageContent() {
   return (
     <div ref={rootRef} className="gastronomy-dining-page">
       <div className="gastronomy-dining-progress" aria-hidden="true">
-        <i data-gd-progress />
+        <i data-v6-progress />
       </div>
 
-      <section className="dining-hero" data-gd-scroll>
+      <section className="dining-hero" data-v6-scroll>
         <div className="dining-hero__sticky">
           <figure className="dining-hero__layer dining-hero__layer--a">
-            <DiningFillImage name="gastronomy-hero" alt={hero.title} />
+            <DiningImg name="gastronomy-hero" alt="Candlelit private dining table" previewAnchor />
           </figure>
           <figure className="dining-hero__layer dining-hero__layer--b">
-            <DiningFillImage
-              name="gastronomy-table"
-              alt={gastronomy.venues[0]?.title ?? "Indoor Restaurant"}
-              previewAnchor={false}
-            />
+            <DiningImg name="gastronomy-table" alt="Long table set for a private party" />
           </figure>
           <figure className="dining-hero__layer dining-hero__layer--c">
-            <DiningFillImage
-              name="gastronomy-courses"
-              alt={gastronomy.venues[1]?.title ?? "Outdoor Restaurant"}
-              previewAnchor={false}
-            />
+            <DiningImg name="gastronomy-courses" alt="Tasting menu plates overhead" />
           </figure>
           <figure className="dining-hero__layer dining-hero__layer--d">
-            <DiningFillImage
-              name="gastronomy-wine"
-              alt={gastronomy.venues[2]?.title ?? "Indoor Bar"}
-              previewAnchor={false}
-            />
+            <DiningImg name="gastronomy-wine" alt="Wine and crystal in warm light" />
           </figure>
           <div className="dining-hero__veil" aria-hidden="true" />
           <div className="dining-hero__copy dining-hero__copy--open">
@@ -153,7 +111,6 @@ export function GastronomyPageContent() {
                 line2={atmosphereHeading.line2}
               />
             </h2>
-            <p>{gastronomy.atmosphere}</p>
           </div>
           <div className="dining-hero__copy dining-hero__copy--end">
             <span>{gastronomy.restaurantTitle}</span>
@@ -169,48 +126,41 @@ export function GastronomyPageContent() {
         </div>
       </section>
 
-      <section id="orbit" className="dining-orbit" data-gd-scroll>
+      <section id="orbit" className="dining-orbit" data-v6-scroll>
         <div className="dining-orbit__sticky">
           <div className="dining-orbit__word">{hero.secondTitle}</div>
           <figure className="dining-plate dining-plate--one">
-            <DiningPlateImage
-              name="gastronomy-plate-1"
-              alt={gastronomy.restaurantTitle}
-              previewAnchor
-            />
+            <DiningImg name="gastronomy-plate-1" alt="Signature tasting plate" />
           </figure>
           <figure className="dining-plate dining-plate--two">
-            <DiningPlateImage name="gastronomy-plate-2" alt={gastronomy.venues[0]?.title ?? "Indoor Restaurant"} />
+            <DiningImg name="gastronomy-plate-2" alt="Dessert plate" />
           </figure>
           <figure className="dining-plate dining-plate--three">
-            <DiningPlateImage name="gastronomy-plate-3" alt={gastronomy.venues[1]?.title ?? "Outdoor Restaurant"} />
+            <DiningImg name="gastronomy-plate-3" alt="Seafood tasting plate" />
           </figure>
           <figure className="dining-plate dining-plate--four">
-            <DiningPlateImage name="gastronomy-plate-4" alt={gastronomy.venues[2]?.title ?? "Indoor Bar"} />
+            <DiningImg name="gastronomy-plate-4" alt="Seasonal plate" />
           </figure>
           <div className="dining-orbit__copy">
             <span>{venueLine}</span>
             <h2>
-              <DiningHeading
-                line1={introLead.line1}
-                line2={introLead.line2}
-              />
+              <DiningHeading line1={introHeading.line1} line2={introHeading.line2} />
             </h2>
             <p>{gastronomy.intro[1]}</p>
           </div>
         </div>
       </section>
 
-      <section className="dining-course" data-gd-scroll>
+      <section className="dining-course" data-v6-scroll>
         <div className="dining-course__sticky">
           <figure className="dining-course__bg dining-course__bg--1">
-            <DiningFillImage name="gastronomy-hero" alt={gastronomy.restaurantTitle} previewAnchor={false} />
+            <DiningImg name="gastronomy-hero" alt="Restaurant atmosphere" />
           </figure>
           <figure className="dining-course__bg dining-course__bg--2">
-            <DiningFillImage name="gastronomy-restaurant" alt={gastronomy.restaurantTitle} />
+            <DiningImg name="gastronomy-restaurant" alt="Table detail" />
           </figure>
           <figure className="dining-course__cutout">
-            <DiningPlateImage name="gastronomy-plate-1" alt={gastronomy.restaurantTitle} previewAnchor={false} />
+            <DiningImg name="gastronomy-plate-1" alt="Opening plate" />
           </figure>
           <div className="dining-course__meta">
             <span>{gastronomy.restaurantTitle}</span>
@@ -225,16 +175,16 @@ export function GastronomyPageContent() {
         </div>
       </section>
 
-      <section className="dining-course dining-course--sea" data-gd-scroll>
+      <section className="dining-course dining-course--sea" data-v6-scroll>
         <div className="dining-course__sticky">
           <figure className="dining-course__bg dining-course__bg--1">
-            <DiningFillImage name="gastronomy-table" alt={gastronomy.atmosphereTitle} previewAnchor={false} />
+            <DiningImg name="gastronomy-table" alt="Dining atmosphere" />
           </figure>
           <figure className="dining-course__bg dining-course__bg--2">
-            <DiningFillImage name="gastronomy-wine" alt={gastronomy.atmosphereTitle} previewAnchor={false} />
+            <DiningImg name="gastronomy-wine" alt="Wine service" />
           </figure>
           <figure className="dining-course__cutout dining-course__cutout--right">
-            <DiningPlateImage name="gastronomy-plate-3" alt={gastronomy.atmosphereTitle} previewAnchor={false} />
+            <DiningImg name="gastronomy-plate-3" alt="Seafood plate" />
           </figure>
           <div className="dining-course__meta dining-course__meta--left">
             <span>{gastronomy.atmosphereTitle}</span>
@@ -249,53 +199,48 @@ export function GastronomyPageContent() {
         </div>
       </section>
 
-      <section className="dining-cascade" data-gd-scroll>
+      <section className="dining-cascade" data-v6-scroll>
         <div className="dining-cascade__sticky">
           <header>
             <span>{venueLine}</span>
             <h2>
               <DiningHeading
-                line1={gastronomy.venues[0]?.title ?? "Indoor Restaurant"}
-                line2={gastronomy.venues[1]?.title ?? "Outdoor Restaurant"}
+                line1={gastronomy.venues[0]?.title ?? ""}
+                line2={gastronomy.venues[1]?.title ?? ""}
               />
             </h2>
           </header>
           <div className="dining-cascade__stack">
             <figure style={{ "--i": 0 } as CSSProperties}>
-              <DiningFillImage name="gastronomy-courses" alt={gastronomy.venues[0]?.description ?? "Indoor Restaurant"} />
+              <DiningImg name="gastronomy-courses" alt="Course tableau" />
             </figure>
             <figure style={{ "--i": 1 } as CSSProperties}>
-              <DiningFillImage name="gastronomy-chef" alt={gastronomy.venues[1]?.description ?? "Outdoor Restaurant"} />
+              <DiningImg name="gastronomy-chef" alt="Chef finishing a plate" />
             </figure>
             <figure style={{ "--i": 2 } as CSSProperties}>
-              <DiningFillImage name="gastronomy-service" alt={gastronomy.venues[2]?.description ?? "Indoor Bar"} />
+              <DiningImg name="gastronomy-service" alt="Service at the table" />
             </figure>
             <figure style={{ "--i": 3 } as CSSProperties}>
-              <DiningFillImage name="gastronomy-restaurant" alt={gastronomy.venues[3]?.description ?? "Outdoor Bar"} previewAnchor={false} />
+              <DiningImg name="gastronomy-restaurant" alt="Table setting" />
             </figure>
             <figure style={{ "--i": 4 } as CSSProperties}>
-              <DiningFillImage name="gastronomy-table" alt={gastronomy.restaurantTitle} previewAnchor={false} />
+              <DiningImg name="gastronomy-table" alt="Dining atmosphere" />
             </figure>
             <figure style={{ "--i": 5 } as CSSProperties}>
-              <DiningFillImage name="gastronomy-celebration" alt={gastronomy.closing} />
+              <DiningImg name="gastronomy-celebration" alt="Evening celebration" />
             </figure>
           </div>
         </div>
       </section>
 
-      <section className="dining-wine" data-gd-scroll>
+      <section className="dining-wine" data-v6-scroll>
         <div className="dining-wine__sticky">
-          <div className="dining-wine__media">
-            <DiningFillImage name="gastronomy-wine" alt={indoorBar?.title ?? "Indoor Bar"} />
-          </div>
+          <DiningImg name="gastronomy-wine" alt="Wine service" />
           <div className="dining-wine__veil" aria-hidden="true" />
           <div className="dining-wine__copy">
             <span>{gastronomy.venues[2]?.title ?? "Indoor Bar"}</span>
             <h2>
-              <DiningHeading
-                line1={barHeading.line1}
-                line2={barHeading.line2}
-              />
+              <DiningHeading line1={barHeading.line1} line2={barHeading.line2} />
             </h2>
             <p>
               {gastronomy.venues[2]?.description} {gastronomy.venues[3]?.description}
@@ -304,13 +249,13 @@ export function GastronomyPageContent() {
         </div>
       </section>
 
-      <section className="dining-chef" data-gd-scroll>
+      <section className="dining-chef" data-v6-scroll>
         <div className="dining-chef__sticky">
           <figure className="dining-chef__frame dining-chef__frame--back">
-            <DiningFillImage name="gastronomy-table" alt={gastronomy.restaurantTitle} previewAnchor={false} />
+            <DiningImg name="gastronomy-table" alt="Dining room glow" />
           </figure>
           <figure className="dining-chef__frame dining-chef__frame--front">
-            <DiningFillImage name="gastronomy-chef" alt={gastronomy.restaurantTitle} previewAnchor={false} />
+            <DiningImg name="gastronomy-chef" alt="Private chef plating" />
           </figure>
           <div className="dining-chef__copy">
             <span>{gastronomy.restaurantTitle}</span>
@@ -320,21 +265,21 @@ export function GastronomyPageContent() {
                 line2={restaurantHeading.line2}
               />
             </h2>
-            <p>{gastronomy.atmosphere}</p>
+            <p>{gastronomy.restaurantService}</p>
           </div>
         </div>
       </section>
 
-      <section className="dining-course dining-course--sweet" data-gd-scroll>
+      <section className="dining-course dining-course--sweet" data-v6-scroll>
         <div className="dining-course__sticky">
           <figure className="dining-course__bg dining-course__bg--1">
-            <DiningFillImage name="gastronomy-courses" alt={gastronomy.closing} previewAnchor={false} />
+            <DiningImg name="gastronomy-courses" alt="Sweet course atmosphere" />
           </figure>
           <figure className="dining-course__bg dining-course__bg--2">
-            <DiningFillImage name="gastronomy-celebration" alt={gastronomy.closing} previewAnchor={false} />
+            <DiningImg name="gastronomy-celebration" alt="Celebration light" />
           </figure>
           <figure className="dining-course__cutout">
-            <DiningPlateImage name="gastronomy-plate-2" alt={gastronomy.closing} previewAnchor={false} />
+            <DiningImg name="gastronomy-plate-2" alt="Dessert plate" />
           </figure>
           <div className="dining-course__meta">
             <span>{gastronomy.restaurantTitle}</span>
@@ -349,35 +294,33 @@ export function GastronomyPageContent() {
         </div>
       </section>
 
-      <section className="dining-gallery" data-gd-scroll>
+      <section className="dining-gallery" data-v6-scroll>
         <div className="dining-gallery__sticky">
           <header>
             <span>{venueLine}</span>
             <h2>
               <DiningHeading
-                line1={gastronomy.venues[0]?.title ?? "Indoor Restaurant"}
-                line2={gastronomy.venues[1]?.title ?? "Outdoor Restaurant"}
+                line1={gastronomy.venues[0]?.title ?? ""}
+                line2={gastronomy.venues[1]?.title ?? ""}
               />
             </h2>
           </header>
           <figure className="dining-gallery__a">
-            <DiningPlateImage name="gastronomy-plate-5" alt={gastronomy.venues[0]?.title ?? "Indoor Restaurant"} previewAnchor />
+            <DiningImg name="gastronomy-plate-5" alt="Plate one" />
           </figure>
           <figure className="dining-gallery__b">
-            <DiningPlateImage name="gastronomy-plate-6" alt={gastronomy.venues[2]?.title ?? "Indoor Bar"} />
+            <DiningImg name="gastronomy-plate-6" alt="Plate two" />
           </figure>
           <figure className="dining-gallery__c">
-            <DiningPlateImage name="gastronomy-plate-7" alt={gastronomy.venues[3]?.title ?? "Outdoor Bar"} />
+            <DiningImg name="gastronomy-plate-7" alt="Plate three" />
           </figure>
           <div className="dining-gallery__caption">{venueCaption}</div>
         </div>
       </section>
 
-      <section id="reserve" className="dining-finale" data-gd-scroll>
+      <section id="reserve" className="dining-finale" data-v6-scroll>
         <div className="dining-finale__sticky">
-          <div className="dining-finale__media">
-            <DiningFillImage name="gastronomy-hero" alt={hero.title} previewAnchor={false} />
-          </div>
+          <DiningImg name="gastronomy-hero" alt="Private dining at night" />
           <div className="dining-finale__veil" aria-hidden="true" />
           <div className="dining-finale__copy">
             <span>{hero.subtitle}</span>
