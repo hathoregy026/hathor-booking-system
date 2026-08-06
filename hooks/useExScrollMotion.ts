@@ -877,7 +877,7 @@ export function useExScrollMotion() {
     if (prefersReduced) {
       if (silkChars.length) gsap.set(silkChars, { yPercent: 0, opacity: 1 });
       (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "140%");
-      section.classList.add("is-stack-docked");
+      section.classList.add("is-stack-docked", "is-stack-plates-live");
       copyPanels.forEach((panel) => {
         const chars =
           (panel as HTMLElement & { __stackChars?: HTMLElement[] })
@@ -1030,7 +1030,33 @@ export function useExScrollMotion() {
       );
       section.style.setProperty("--stack-runway-vh", `${runwayVh}svh`);
       (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "0%");
-      section.classList.remove("is-stack-docked");
+      section.classList.remove("is-stack-docked", "is-stack-plates-live");
+
+      const holdSilkOnly = () => {
+        cards.forEach((card) => {
+          applyFogReveal(card, 0, 0);
+          card.classList.remove("is-stack-solid");
+        });
+        syncStackPhotoReady(false);
+        if (silkChars.length) {
+          gsap.set(silkChars, {
+            x: 0,
+            y: 0,
+            xPercent: 0,
+            yPercent: 0,
+            opacity: 1,
+            force3D: true,
+          });
+        }
+        copyPanels.forEach((panel) => {
+          gsap.set(panel, { autoAlpha: 0, visibility: "hidden" });
+          panel.setAttribute("aria-hidden", "true");
+        });
+        if (pager) gsap.set(pager, { autoAlpha: 0, visibility: "hidden" });
+        if (progressRoot) {
+          gsap.set(progressRoot, { autoAlpha: 0, visibility: "hidden" });
+        }
+      };
 
       logPhonePerfDev({
         surface: "ex-stack-fog-rise",
@@ -1043,14 +1069,17 @@ export function useExScrollMotion() {
         fogSteps: fogStepped ? FOG_STEPS : "continuous",
       });
 
-      /* Smooth dock: stage fog-rises into view as it scrolls up to fullscreen */
+      /* Smooth dock: silk stage fog-rises into view (photos stay CSS-locked off). */
+      holdSilkOnly();
       const enterSt = ScrollTrigger.create({
         id: "ex-stack-enter",
         trigger: section,
         start: "top bottom",
         end: "top top",
-        scrub: isPhoneStack ? true : 0.45,
+        scrub: true,
         onUpdate: (self) => {
+          holdSilkOnly();
+          section.classList.remove("is-stack-plates-live");
           const edge = Math.min(140, Math.max(0, self.progress * 140));
           (viewport as HTMLElement).style.setProperty(
             "--stack-enter-fog",
@@ -1063,13 +1092,19 @@ export function useExScrollMotion() {
           }
         },
         onLeave: () => {
+          holdSilkOnly();
           (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "140%");
           section.classList.add("is-stack-docked");
         },
         onLeaveBack: () => {
+          holdSilkOnly();
+          section.classList.remove(
+            "is-stack-docked",
+            "is-fog-active",
+            "is-stack-fixed-pin",
+            "is-stack-plates-live",
+          );
           (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "0%");
-          section.classList.remove("is-stack-docked", "is-fog-active", "is-stack-fixed-pin");
-          resetStackToSilk();
         },
       });
       trackTrigger(enterSt);
@@ -1080,21 +1115,16 @@ export function useExScrollMotion() {
           trigger: section,
           start: "top top",
           end: "bottom bottom",
-          /*
-           * Sticky runway owns distance. Soft scrub on desktop = less rubber-band.
-           */
-          scrub: isPhoneStack ? true : 0.35,
+          /* Tight scrub — lag was letting fog jump ahead, then reset felt like a restart */
+          scrub: true,
           pin: false,
           pinSpacing: false,
           anticipatePin: 0,
           fastScrollEnd: true,
           invalidateOnRefresh: !isPhone,
-          onUpdate: (self) => {
-            /* Hard snap back to cream invitation if scrub lands at the start */
-            if (self.progress <= 0.02) resetStackToSilk();
-          },
           onEnter: () => {
-            resetStackToSilk();
+            holdSilkOnly();
+            section.classList.remove("is-stack-plates-live");
             (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "140%");
             section.classList.add("is-stack-docked", "is-stack-fixed-pin");
           },
@@ -1105,7 +1135,8 @@ export function useExScrollMotion() {
             section.classList.remove("is-stack-fixed-pin");
           },
           onLeaveBack: () => {
-            section.classList.remove("is-stack-fixed-pin");
+            section.classList.remove("is-stack-fixed-pin", "is-stack-plates-live");
+            holdSilkOnly();
           },
           onToggle: (self) => {
             section.classList.toggle("is-fog-active", self.isActive);
@@ -1114,6 +1145,7 @@ export function useExScrollMotion() {
               (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "140%");
             }
             if (!self.isActive) {
+              section.classList.remove("is-stack-plates-live");
               cards.forEach((card) =>
                 clearFogWillChange(card, getCardMedia(card)),
               );
@@ -1168,10 +1200,16 @@ export function useExScrollMotion() {
           ease: "none",
           duration: introFog,
           onStart: () => {
+            section.classList.add("is-stack-plates-live");
             firstCard.style.willChange = "opacity";
             if (firstMedia) firstMedia.style.willChange = "transform";
           },
           onUpdate: () => {
+            if (firstFog.reveal > 0.01) {
+              section.classList.add("is-stack-plates-live");
+            } else {
+              section.classList.remove("is-stack-plates-live");
+            }
             applyFogReveal(firstCard, firstFog.edge, firstFog.reveal);
             if (firstFog.reveal >= 0.85) syncStackPhotoReady(true);
           },
@@ -1181,6 +1219,7 @@ export function useExScrollMotion() {
             clearFogWillChange(firstCard, firstMedia);
           },
           onReverseComplete: () => {
+            section.classList.remove("is-stack-plates-live");
             applyFogReveal(firstCard, 0, 0);
             syncStackPhotoReady(false);
             firstCard.classList.remove("is-stack-solid");

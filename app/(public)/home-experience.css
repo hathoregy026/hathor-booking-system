@@ -1909,6 +1909,24 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   --stack-enter-fog: 140%;
 }
 
+/*
+ * Until the first fog plate actually starts, only the cream silk invitation
+ * may show. Prevents photos flashing during dock, then “restarting” to silk.
+ */
+.ex-stack-scroll:not(.is-stack-plates-live) .ex-stack-scroll__card {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.ex-stack-scroll:not(.is-stack-plates-live) .ex-stack-scroll__copy-panel,
+.ex-stack-scroll:not(.is-stack-plates-live) .ex-stack-scroll__pager,
+.ex-stack-scroll:not(.is-stack-plates-live) .ex-stack-scroll__progress {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 /* Sticky stage locked — photographs stay viewport-locked; fog mask moves */
 .ex-stack-scroll.is-stack-fixed-pin .ex-stack-scroll__viewport {
   width: 100% !important;
