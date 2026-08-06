@@ -38,6 +38,7 @@ export function ManagedImage({
     return (
       <Image
         {...props}
+        key={image.src}
         src={image.src}
         alt={resolvedAlt}
         fill
@@ -53,6 +54,7 @@ export function ManagedImage({
   return (
     <Image
       {...props}
+      key={image.src}
       src={image.src}
       alt={resolvedAlt}
       quality={quality}

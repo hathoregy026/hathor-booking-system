@@ -27,28 +27,31 @@ const HOMEPAGE_LIVE_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> 
     { name: "home-hero-poster", label: "Hero — video poster / cover" },
     { name: "home-story-craft-large", label: "About — main photo" },
     {
-      name: "home-split-courtyard",
-      label: "Landmarks scroll — lifestyle photo",
+      name: "cruises-hero",
+      label: "Amenities sequence 1 — fullscreen intro photo",
     },
     {
-      name: "cruises-hero",
-      label: "Itineraries carousel + landmarks — Cruises photo",
+      name: "home-split-courtyard",
+      label: "Amenities sequence 2 — rising full-bleed photo",
     },
     { name: "room-suite", label: "Itineraries carousel — Luxury Suite" },
     { name: "room-royal", label: "Itineraries carousel — Royal Suite" },
     { name: "room-luxury", label: "Itineraries carousel — Luxury Cabin" },
-    { name: "about-hero", label: "Landmarks scroll — About photo" },
+    {
+      name: "about-hero",
+      label: "Amenities sequence 3 — inset + half/half photo",
+    },
     {
       name: "home-story-legacy-large",
-      label: "Landmarks scroll — Nile ship photo",
+      label: "Amenities sequence 4 — fixed left + stack photo",
     },
     {
       name: "home-story-way-of-life",
-      label: "Way of Life — photo (home story)",
+      label: "Amenities sequence — Way of Life photo / card",
     },
     {
       name: "home-story-dining",
-      label: "Fine Dining — photo (home story)",
+      label: "Amenities sequence — Dining photo / card",
     },
     { name: "home-call-to-action", label: "Call to action image" },
     {

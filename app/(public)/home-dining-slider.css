@@ -16,13 +16,21 @@
   isolation: isolate;
 }
 
-/* Golden on-image type + tiny halo for contrast over photos */
-.home-am-sequence .home-am-on-image-text {
+/* Golden on-image type + tiny halo — beats CMS white WebkitTextFillColor */
+.public-site .home-am-sequence .home-am-on-image-text,
+.public-site .home-am-sequence .home-am-on-image-text *,
+html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text,
+html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   color: #b69f64 !important;
+  -webkit-text-fill-color: #b69f64 !important;
+  background: none !important;
+  background-image: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
   text-shadow:
     0 0 1px rgba(22, 18, 14, 0.55),
     0 1px 2px rgba(22, 18, 14, 0.45),
-    0 0 10px rgba(22, 18, 14, 0.35);
+    0 0 10px rgba(22, 18, 14, 0.35) !important;
 }
 
 [data-hathor-accordion] + .home-am-sequence,

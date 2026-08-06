@@ -538,7 +538,7 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
   on_images_title: {
     fontFamily: "Gamgote",
     fontSize: 44,
-    color: "#FFFFFF",
+    color: "#B69F64",
     lineHeight: 1.3,
     letterSpacing: -0.5,
     innerShadow: false,
@@ -546,7 +546,7 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
   on_images_indication: {
     fontFamily: "Lavenir",
     fontSize: 13,
-    color: "#FFFFFF",
+    color: "#B69F64",
     lineHeight: 1.35,
     letterSpacing: 4,
     innerShadow: false,
@@ -554,7 +554,7 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
   on_images_body: {
     fontFamily: "Gamgote",
     fontSize: 17,
-    color: "#FFFFFF",
+    color: "#B69F64",
     lineHeight: 1.5,
     letterSpacing: 0,
     innerShadow: false,
@@ -1012,7 +1012,7 @@ export function parseTypographySettings(raw: unknown): TypographySettings {
           ...DEFAULT_TYPOGRAPHY_SETTINGS.on_images_body,
         })
       : null;
-  const legacyColor = legacyOnImages?.color ?? "#FFFFFF";
+  const legacyColor = legacyOnImages?.color ?? "#B69F64";
 
   return {
     hero_title: parseTextStyle(src.hero_title, DEFAULT_TYPOGRAPHY_SETTINGS.hero_title),
@@ -1516,8 +1516,8 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__body,
   font-size: 0.8125rem !important;
   line-height: 1.35 !important;
   letter-spacing: 0.06em !important;
-  color: var(--typo-on-images-body-color, #ffffff) !important;
-  -webkit-text-fill-color: var(--typo-on-images-body-color, #ffffff) !important;
+  color: var(--typo-on-images-body-color, #b69f64) !important;
+  -webkit-text-fill-color: var(--typo-on-images-body-color, #b69f64) !important;
   text-transform: none !important;
   font-weight: 400 !important;
 }

@@ -42,7 +42,11 @@ function withColor(
   style: CSSProperties | undefined,
   color: string,
 ): CSSProperties {
-  return { ...style, color };
+  return {
+    ...style,
+    color,
+    WebkitTextFillColor: color,
+  };
 }
 
 /**
