@@ -51,9 +51,11 @@ export function GastronomySpringsDesignPage() {
 
   useEffect(() => {
     const root = document.documentElement;
+    const body = document.body;
     root.setAttribute("data-gastronomy-mask", "");
     root.classList.add("js", "has-hover");
     root.classList.remove("no-js", "not-ready");
+    body.setAttribute("data-barba", "wrapper");
     ensurePublicScrollController();
 
     for (const href of STYLE_HREFS) loadStylesheet(href);
@@ -69,9 +71,13 @@ export function GastronomySpringsDesignPage() {
           await loadScript(src);
           if (cancelled) return;
         }
-        // Springs plugins often boot on DOMContentLoaded — nudge a resize/scroll
+        // Springs / Barba listen for DOMContentLoaded; React mounts after it already fired
+        body.dispatchEvent(
+          new CustomEvent("DOMContentLoaded", { bubbles: true }),
+        );
         window.dispatchEvent(new Event("resize"));
         window.dispatchEvent(new Event("scroll"));
+        root.classList.remove("not-ready");
       } catch (err) {
         console.error("[gastronomy-springs]", err);
       }
@@ -80,6 +86,7 @@ export function GastronomySpringsDesignPage() {
     return () => {
       cancelled = true;
       root.removeAttribute("data-gastronomy-mask");
+      body.removeAttribute("data-barba");
       ensurePublicScrollController();
     };
   }, []);

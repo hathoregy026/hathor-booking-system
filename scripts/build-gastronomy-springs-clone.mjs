@@ -247,9 +247,14 @@ html = html.replace(
   "$1Hathor Flavors$2",
 );
 
-// Hide springs-only chrome that may remain
+// Match Springs design shell (barba container + page content wrappers)
 html = `
-<div class="page-content-wrapper ui-light-background gastronomy-springs-clone" data-gastronomy-springs-clone>
+<div
+  class="page-content-wrapper ui-light-background gastronomy-springs-clone"
+  data-gastronomy-springs-clone
+  data-barba="container"
+  data-barba-namespace="page"
+>
   <div class="page-content-wrapper__inner js-page-content-wrapper">
     <div class="page-content js-page-content">
       <main id="top">

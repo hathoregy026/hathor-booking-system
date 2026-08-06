@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { GastronomyMaskRevealBoot } from "@/components/pages/GastronomyMaskRevealBoot";
 
-const BOOT = `(function(){try{var d=document.documentElement;d.setAttribute("data-gastronomy-mask","");d.classList.add("js","has-hover");d.classList.remove("no-js","not-ready");document.body.style.backgroundColor="#ece8df";}catch(e){}})();`;
+const BOOT = `(function(){try{var d=document.documentElement;d.setAttribute("data-gastronomy-mask","");d.classList.add("js","has-hover");d.classList.remove("no-js","not-ready");if(document.body){document.body.setAttribute("data-barba","wrapper");document.body.style.backgroundColor="#ece8df";}}catch(e){}})();`;
 
 const CRITICAL = `
 html[data-gastronomy-mask],
