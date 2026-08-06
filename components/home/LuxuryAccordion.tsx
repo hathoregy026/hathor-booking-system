@@ -102,6 +102,7 @@ export default function LuxuryAccordion({
             return (
               <li
                 key={item.id}
+                data-voyage-row
                 className={`${styles.accordionItem} ${isActive ? styles.isActive : ""}`}
                 onClick={() => handleToggle(item.id)}
                 onKeyDown={(event) => handleKeyDown(event, item.id)}

@@ -2301,6 +2301,31 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   padding-top: calc(clamp(80px, 10vw, 140px) + 1px);
 }
 
+/* Tight handoff into Our Voyages — no empty cream canyon after last fog plate */
+.ex-stack-scroll + [data-hathor-accordion] {
+  position: relative;
+  z-index: 21;
+  margin-top: clamp(-7rem, -12vh, -3.5rem);
+  padding-top: clamp(2rem, 4vh, 3.25rem) !important;
+  padding-bottom: clamp(3.5rem, 7vh, 5.5rem) !important;
+}
+
+/* Exit: silk forced off so invitation never flashes through dissolving plate */
+.ex-stack-scroll.is-stack-exiting {
+  z-index: 28;
+}
+
+.ex-stack-scroll.is-stack-exiting .ex-stack-scroll__silk {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.ex-stack-scroll.is-stack-exiting .ex-stack-scroll__viewport {
+  pointer-events: none;
+  background: var(--cream, #ece8df) !important;
+}
+
 .ex-stack-scroll__eyebrow {
   margin: 0;
   padding: 0;

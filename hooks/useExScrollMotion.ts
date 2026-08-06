@@ -1026,8 +1026,8 @@ export function useExScrollMotion() {
        * Sticky locks the stage; fog masks (enter + cards) do the reveal work.
        */
       const runwayVh = Math.max(
-        isPhoneStack ? 380 : 480,
-        Math.round((1 + scrollSpan) * 100),
+        isPhoneStack ? 360 : 420,
+        Math.round(scrollSpan * 100 + 35),
       );
       section.style.setProperty("--stack-runway-vh", `${runwayVh}svh`);
       (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "0%");
@@ -1432,25 +1432,50 @@ export function useExScrollMotion() {
       }
 
       /*
-       * Exit handoff: last landmark slides up (Fixed-Background exit) while the
-       * next section rises into place — no hard cut after the final plate.
+       * Exit handoff: last plate dissolves upward with the same fog language,
+       * silk stays hidden underneath, voyage columns stagger in — no empty gap.
        */
       const exitAt = introSpan + total * (move + dwell);
+      const lastCard = cards[total - 1];
       const lastPanel = copyPanels[total - 1];
+      const lastMedia = getCardMedia(lastCard);
+      const silkRoot = section.querySelector<HTMLElement>(".ex-stack-scroll__silk");
       const nextSection = section.nextElementSibling as HTMLElement | null;
+      const voyageHeading = nextSection?.querySelector<HTMLElement>("header");
+      const voyageRows = nextSection
+        ? gsap.utils.toArray<HTMLElement>(
+            nextSection.querySelectorAll("[data-voyage-row]"),
+          )
+        : [];
       const exitChrome = [lastPanel, pager, progressRoot].filter(
         (el): el is HTMLElement => Boolean(el),
       );
 
-      gsap.set(viewport, { yPercent: 0, force3D: true });
+      gsap.set(viewport, { yPercent: 0, clearProps: "transform", force3D: true });
       section.classList.remove("is-stack-exiting");
-      if (nextSection) {
-        gsap.set(nextSection, {
-          y: 0,
-          force3D: true,
-          clearProps: "transform",
-        });
+      if (silkRoot) gsap.set(silkRoot, { autoAlpha: 1 });
+      if (silkChars.length) {
+        gsap.set(silkChars, { opacity: 1, yPercent: 0 });
       }
+      if (voyageHeading) gsap.set(voyageHeading, { autoAlpha: 0, y: 36 });
+      voyageRows.forEach((row) => gsap.set(row, { autoAlpha: 0, y: 48 }));
+
+      /* Kill silk so fog-out never flashes big invitation text behind the plate */
+      tl.call(
+        () => {
+          section.classList.add("is-stack-exiting");
+          if (silkRoot) gsap.set(silkRoot, { autoAlpha: 0 });
+          if (silkChars.length) gsap.set(silkChars, { opacity: 0 });
+          /* Hide under-plates — only the last photo should fog away */
+          for (let j = 0; j < total - 1; j++) {
+            applyFogReveal(cards[j], 0, 0);
+            cards[j].classList.remove("is-stack-solid");
+          }
+          holdUnderCard(total - 1);
+        },
+        undefined,
+        exitAt,
+      );
 
       if (exitChrome.length) {
         tl.to(
@@ -1458,7 +1483,7 @@ export function useExScrollMotion() {
           {
             autoAlpha: 0,
             ease: "none",
-            duration: release * 0.38,
+            duration: release * 0.28,
             onReverseComplete: () => {
               exitChrome.forEach((el) => {
                 gsap.set(el, { autoAlpha: 1, visibility: "visible" });
@@ -1469,49 +1494,86 @@ export function useExScrollMotion() {
           exitAt,
         );
         if (lastPanel) {
-          scrubStackChars(tl, lastPanel, exitAt, release * 0.38, "out");
+          scrubStackChars(tl, lastPanel, exitAt, release * 0.28, "out");
         }
       }
 
+      /* Same fog as entry — edge 140→0 dissolves the plate upward into cream */
+      const exitFog = { edge: FOG_RANGE, reveal: 1 };
       tl.fromTo(
-        viewport,
-        { yPercent: 0 },
+        exitFog,
+        { edge: FOG_RANGE, reveal: 1 },
         {
-          yPercent: -100,
+          edge: 0,
+          reveal: 0,
           ease: "none",
           duration: release,
-          onStart: () => {
-            section.classList.add("is-stack-exiting");
-            (viewport as HTMLElement).style.willChange = "transform";
+          onUpdate: () => {
+            applyFogReveal(lastCard, exitFog.edge, exitFog.reveal);
           },
           onComplete: () => {
-            (viewport as HTMLElement).style.willChange = "auto";
+            applyFogReveal(lastCard, 0, 0);
+            lastCard.classList.remove("is-stack-solid");
+            syncStackPhotoReady(false);
+            clearFogWillChange(lastCard, lastMedia);
           },
           onReverseComplete: () => {
             section.classList.remove("is-stack-exiting");
-            gsap.set(viewport, { yPercent: 0 });
-            (viewport as HTMLElement).style.willChange = "auto";
+            applyFogReveal(lastCard, FOG_RANGE, 1);
+            holdUnderCardsThrough(total - 1);
+            holdUnderCard(total - 1);
+            if (silkRoot) gsap.set(silkRoot, { autoAlpha: 1 });
+            if (silkChars.length) {
+              gsap.set(silkChars, { opacity: 1, yPercent: 0 });
+            }
           },
         },
         exitAt,
       );
 
-      if (nextSection) {
-        const lift = () => Math.min(160, window.innerHeight * 0.24);
-        tl.fromTo(
-          nextSection,
-          { y: lift },
+      if (lastMedia) {
+        tl.to(
+          lastMedia,
           {
-            y: 0,
+            yPercent: -8,
+            scale: 1.02,
             ease: "none",
             duration: release,
-            onReverseComplete: () => {
-              gsap.set(nextSection, { clearProps: "transform" });
-            },
           },
           exitAt,
         );
       }
+
+      /* Our Voyages — heading then each column, one by one */
+      if (voyageHeading) {
+        tl.fromTo(
+          voyageHeading,
+          { autoAlpha: 0, y: 40 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            ease: "none",
+            duration: release * 0.32,
+          },
+          exitAt + release * 0.12,
+        );
+      }
+      voyageRows.forEach((row, index) => {
+        const rowAt =
+          exitAt +
+          release * (0.28 + (index / Math.max(1, voyageRows.length)) * 0.62);
+        tl.fromTo(
+          row,
+          { autoAlpha: 0, y: 52 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            ease: "none",
+            duration: release * 0.3,
+          },
+          rowAt,
+        );
+      });
 
       if (process.env.NODE_ENV !== "production") {
         const stageRanges = Array.from({ length: total }, (_, index) => {
