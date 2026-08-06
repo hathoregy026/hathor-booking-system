@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
 import rotatingWheel from "@/assets/LOGOS/rotating-wheel-hathor-cruise.png";
-import helmStageBackdrop from "@/assets/hathor cruise nile trips luxur aswan.jpg";
 import LuxuryAccordion from "@/components/home/LuxuryAccordion";
 import { HomeCampaignSection } from "@/components/home/HomeCampaignSection";
 import { HomeTextStorySection } from "@/components/home/HomeTextStorySection";
@@ -97,6 +96,7 @@ const HOMEPAGE_PREVIEW_SLOTS = new Set([
   "home-voyage-7n-roundtrip",
   "home-voyage-nile-majesty",
   "home-call-to-action",
+  "home-wheel-stage",
   "home-wheel-image",
   ...GALLERY_PREVIEW_ANCHORS,
 ]);
@@ -538,15 +538,17 @@ export function HomePageClient({
         >
           <div className="home-helm-portal__viewport">
             {/* Parchment stage: full-viewport, sun/compass dead-center under the wheel.
-                Stays visible while the wheel opens; circle-reveal media sits above it. */}
+                Stays visible while the wheel opens; circle-reveal media sits above it.
+                CMS slot: home-wheel-stage (dashboard → Homepage). */}
             <div className="home-helm-portal__stage" aria-hidden="true">
-              <Image
-                src={helmStageBackdrop}
+              <ManagedImage
+                name="home-wheel-stage"
                 alt=""
                 fill
                 sizes="100vw"
                 className="home-helm-portal__stage-image"
                 priority={false}
+                previewAnchor
               />
             </div>
 

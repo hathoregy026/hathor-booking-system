@@ -51,7 +51,14 @@ const HOMEPAGE_LIVE_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> 
       label: "Fine Dining — photo (home story)",
     },
     { name: "home-call-to-action", label: "Call to action image" },
-    { name: "home-wheel-image", label: "Wheel image" },
+    {
+      name: "home-wheel-stage",
+      label: "Wheel stage — parchment behind the wheel (before it opens)",
+    },
+    {
+      name: "home-wheel-image",
+      label: "Wheel reveal — image the wheel opens into",
+    },
   ];
 
 const OUR_VOYAGES_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> =
@@ -160,6 +167,7 @@ const SLOT_LAYOUT_KINDS: Partial<Record<SiteImageSlot["name"], SiteImageLayoutKi
     "home-cinematic-still": "hero",
     "home-split-courtyard": "hero",
     "home-call-to-action": "hero",
+    "home-wheel-stage": "hero",
     "home-wheel-image": "hero",
     "cruises-hero": "hero",
     "about-hero": "hero",

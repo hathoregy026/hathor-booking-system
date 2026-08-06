@@ -95,12 +95,20 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     displayOrder: 70,
   },
   {
+    name: "home-wheel-stage",
+    altText: HATHOR_MEDIA.wheelStageAlt,
+    url: HATHOR_MEDIA.wheelStage,
+    category: "hero",
+    pagePath: "/",
+    displayOrder: 71,
+  },
+  {
     name: "home-wheel-image",
     altText: "Wheel portal — Hathor Dahabiya on the Nile at golden hour",
     url: HATHOR_MEDIA.wheelBack,
     category: "hero",
     pagePath: "/",
-    displayOrder: 71,
+    displayOrder: 72,
   },
   // Homepage “Our Voyages” accordion — dedicated slots (Admin tab: Our Voyages)
   {

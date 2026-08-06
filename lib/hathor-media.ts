@@ -23,8 +23,12 @@ export const HATHOR_MEDIA = {
   /** Homepage Way of Life ↔ Dining pin — dedicated slots (not shared with other pages). */
   storyWayOfLife: hathorImage("home-split-courtyard"),
   storyDining: hathorImage("gastronomy-hero"),
-  /** Helm portal backdrop — sun authored at dead center (3000×1900). */
+  /** Helm portal reveal — opens through the wheel circle. */
   wheelBack: hathorImage("home-wheel-back"),
+  /** Helm parchment stage — seen behind the wheel before it opens. */
+  wheelStage: "/media/hathor/home-wheel-stage.jpg",
+  wheelStageAlt:
+    "Egyptian parchment stage with compass rings behind the Hathor helm wheel",
   cinematicVideo: hathorImage("home-cinematic-video"),
   cinematicVideoAlt: "Fine dining aboard Hathor Dahabiya",
   cinematicStill: hathorImage("home-cinematic-still"),
