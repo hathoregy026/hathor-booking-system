@@ -230,7 +230,11 @@ export function PublicSiteHero({
         connection?.effectiveType === "2g";
       if (slow) return;
 
-      if (!video.getAttribute("src")) {
+      /*
+       * Never reassign `src` after <source>/autoPlay has already selected a
+       * stream — that reloads the MP4 mid-play and flashes the poster.
+       */
+      if (!video.currentSrc && !video.getAttribute("src")) {
         video.src = source;
         logPhonePerfDev({
           surface: "public-site-hero",
