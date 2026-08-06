@@ -650,6 +650,83 @@ html = html.replace(
   '$1<span class="hathor-dining-project-logo" aria-hidden="true"></span>',
 );
 
+/*
+ * Keep visitors on Hathor. The Dining page runs in an iframe, so every site
+ * navigation link must break out with target="_top" and never point at Springs.
+ */
+function rewriteDiningHref(documentHtml, fromHref, toHref) {
+  const escaped = fromHref.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return documentHtml.replace(
+    new RegExp(`(<a\\b)([^>]*?)\\shref="${escaped}"([^>]*>)`, "gi"),
+    (_match, open, before, after) => {
+      const beforeAttrs = before
+        .replace(/\s+target="[^"]*"/gi, "")
+        .replace(/\s+rel="[^"]*"/gi, "");
+      const afterAttrs = after
+        .replace(/\s+target="[^"]*"/gi, "")
+        .replace(/\s+rel="[^"]*"/gi, "");
+      const combined = `${beforeAttrs}${afterAttrs}`;
+      const hasIgnore = /(?:^|\s)data-ajax-page-ignore(?:\s|=|>|$)/i.test(
+        combined,
+      );
+      const ignore = hasIgnore ? "" : " data-ajax-page-ignore";
+      return `${open}${beforeAttrs} href="${toHref}" target="_top"${ignore}${afterAttrs}`;
+    },
+  );
+}
+
+const diningSiteLinks = [
+  ["https://springs.house/infrastructure", "/highlights"],
+  ["https://springs.house/privacy-policy", "/contact"],
+  ["https://springs.house/agreement", "/contact"],
+  ["https://springs.house/location", "/about"],
+  ["https://springs.house/gallery", "/highlights"],
+  ["https://springs.house/about", "/about"],
+  ["https://springs.house/visual-search", "/cruises"],
+  ["https://springs.estate/infrastructure", "/highlights"],
+  ["https://springs.estate/privacy-policy", "/contact"],
+  ["https://springs.estate/agreement", "/contact"],
+  ["https://springs.estate/location", "/about"],
+  ["https://springs.estate/gallery", "/highlights"],
+  ["https://springs.estate/about", "/about"],
+  ["https://springs.estate/visual-search", "/cruises"],
+  ["/flats", "/rooms"],
+  ["/design", "/gastronomy"],
+  ["/", "/"],
+];
+
+for (const [fromHref, toHref] of diningSiteLinks) {
+  html = rewriteDiningHref(html, fromHref, toHref);
+}
+
+// Remove the clone agency credit so it cannot send guests off-site.
+html = html.replace(
+  /<a\b[^>]*href="https:\/\/videinfra\.com\/"[^>]*>[\s\S]*?<\/a>/gi,
+  '<span class="text-c2-small leading-trim text-color-small text-right">Hathor Dahabiya</span>',
+);
+
+// Meta / share tags should not advertise the Springs clone source.
+html = html
+  .replaceAll('href="https://springs.house/design"', 'href="/gastronomy"')
+  .replaceAll(
+    'content="https://springs.house/design"',
+    'content="/gastronomy"',
+  )
+  .replaceAll(
+    'content="https://springs.house/assets/manifest/og.jpg"',
+    `content="${initialDiningMediaUrls["dining-hero.jpg"]}"`,
+  )
+  .replace(
+    /href="https:\/\/springs\.house\/favicon-light\.png[^"]*"/g,
+    'href="/favicon.ico"',
+  );
+
+// Final safety: no remaining Springs navigation hrefs.
+html = html.replace(
+  /(<a\b[^>]*?)\s+href="https:\/\/springs\.(?:estate|house)\/[^"]*"/gi,
+  '$1 href="/contact" target="_top" data-ajax-page-ignore',
+);
+
 fs.mkdirSync(destinationDir, { recursive: true });
 fs.writeFileSync(destination, html);
 console.log(`Wrote exact standalone Design document: ${destination}`);
