@@ -1,20 +1,22 @@
-/** Canonical dining clone assets — defaults from GPT SITE RESTORE dining.html */
-const BASE = "/media/gastronomy-dining";
+/** Canonical Dining media already managed in the production image library. */
+const BASE =
+  "https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images";
 
 export const GASTRONOMY_DINING_MEDIA = {
-  hero: `${BASE}/dining-hero.jpg`,
-  table: `${BASE}/dining-table.jpg`,
-  courses: `${BASE}/dining-courses.jpg`,
-  wine: `${BASE}/dining-wine.jpg`,
-  chef: `${BASE}/dining-chef.jpg`,
-  experience: `${BASE}/experience-dining.jpg`,
-  service: `${BASE}/charter-service.jpg`,
-  celebration: `${BASE}/charter-celebration.jpg`,
-  plate1: `${BASE}/dining-plate-1.png`,
-  plate2: `${BASE}/dining-plate-2.png`,
-  plate3: `${BASE}/dining-plate-3.png`,
-  plate4: `${BASE}/dining-plate-4.png`,
-  plate5: `${BASE}/dining-plate-5.png`,
-  plate6: `${BASE}/dining-plate-6.png`,
-  plate7: `${BASE}/dining-plate-7.png`,
+  hero: `${BASE}/gastronomy-hero/dining-hero-mshk3jtr.jpg`,
+  restaurant: `${BASE}/gastronomy-restaurant/dining-private-table-mshj7qm7.webp`,
+  experience: `${BASE}/gastronomy-restaurant/dining-private-table-mshj7qm7.webp`,
+  table: `${BASE}/gastronomy-table/dining-long-table-mshjq8sm.webp`,
+  courses: `${BASE}/gastronomy-courses/dining-courses-mshj8sas.jpg`,
+  wine: `${BASE}/gastronomy-wine/dining-wine-pairing-mshja14u.webp`,
+  chef: `${BASE}/gastronomy-chef/dining-chef-mshk1rrx.jpg`,
+  service: `${BASE}/gastronomy-service/dining-service-mshjqhah.webp`,
+  celebration: `${BASE}/gastronomy-celebration/dining-celebration-mshk2q6u.webp`,
+  plate1: `${BASE}/gastronomy-restaurant/dining-private-table-mshj7qm7.webp`,
+  plate2: `${BASE}/gastronomy-courses/dining-courses-mshj8sas.jpg`,
+  plate3: `${BASE}/gastronomy-wine/dining-wine-pairing-mshja14u.webp`,
+  plate4: `${BASE}/gastronomy-chef/dining-chef-mshk1rrx.jpg`,
+  plate5: `${BASE}/gastronomy-restaurant/dining-private-table-mshj7qm7.webp`,
+  plate6: `${BASE}/gastronomy-courses/dining-courses-mshj8sas.jpg`,
+  plate7: `${BASE}/gastronomy-wine/dining-wine-pairing-mshja14u.webp`,
 } as const;

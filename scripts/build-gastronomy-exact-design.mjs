@@ -145,6 +145,27 @@ html = html.replace(
   /https?:\/\/[^"'\s>]*uploads\/32\/image_1762521394\.webp/g,
   "/media/gastronomy-dining/dining-hero.jpg",
 );
+const diningMediaBase =
+  "https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images";
+const initialDiningMediaUrls = {
+  "dining-hero.jpg": `${diningMediaBase}/gastronomy-hero/dining-hero-mshk3jtr.jpg`,
+  "dining-table.jpg": `${diningMediaBase}/gastronomy-table/dining-long-table-mshjq8sm.webp`,
+  "dining-courses.jpg": `${diningMediaBase}/gastronomy-courses/dining-courses-mshj8sas.jpg`,
+  "dining-wine.jpg": `${diningMediaBase}/gastronomy-wine/dining-wine-pairing-mshja14u.webp`,
+  "dining-chef.jpg": `${diningMediaBase}/gastronomy-chef/dining-chef-mshk1rrx.jpg`,
+  "experience-dining.jpg": `${diningMediaBase}/gastronomy-restaurant/dining-private-table-mshj7qm7.webp`,
+  "charter-service.jpg": `${diningMediaBase}/gastronomy-service/dining-service-mshjqhah.webp`,
+  "charter-celebration.jpg": `${diningMediaBase}/gastronomy-celebration/dining-celebration-mshk2q6u.webp`,
+  "dining-plate-1.png": `${diningMediaBase}/gastronomy-restaurant/dining-private-table-mshj7qm7.webp`,
+  "dining-plate-2.png": `${diningMediaBase}/gastronomy-courses/dining-courses-mshj8sas.jpg`,
+  "dining-plate-3.png": `${diningMediaBase}/gastronomy-wine/dining-wine-pairing-mshja14u.webp`,
+  "dining-plate-4.png": `${diningMediaBase}/gastronomy-chef/dining-chef-mshk1rrx.jpg`,
+  "dining-plate-5.png": `${diningMediaBase}/gastronomy-restaurant/dining-private-table-mshj7qm7.webp`,
+  "dining-plate-6.png": `${diningMediaBase}/gastronomy-courses/dining-courses-mshj8sas.jpg`,
+};
+for (const [filename, url] of Object.entries(initialDiningMediaUrls)) {
+  html = html.replaceAll(`/media/gastronomy-dining/${filename}`, url);
+}
 
 // Source Design project overview: retain its original DOM container and
 // choreography, replacing only the editorial content displayed in that place.
