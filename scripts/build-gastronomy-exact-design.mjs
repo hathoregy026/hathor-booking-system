@@ -399,6 +399,23 @@ const diningPalette = `
   .de-slider__mobile-scrollable-gradient div {
     background: radial-gradient(circle, rgba(182, 159, 100, 0.86) 0%, rgba(182, 159, 100, 0.38) 45%, rgba(182, 159, 100, 0) 74%) !important;
   }
+  /* Dining course carousel: remove the source thumbnail rail and its
+     architectural studio mark, replacing it with the Hathor ring icon. */
+  #de-spiral .de-spiral__uptitle,
+  #de-projects .de-projects__pagination {
+    display: none !important;
+  }
+  #de-projects .de-projects__logo {
+    display: none !important;
+  }
+  .hathor-dining-project-logo {
+    display: block;
+    width: 44px;
+    height: 44px;
+    background: #b69f64;
+    -webkit-mask: url("/branding/hathor-logo-nile-cruise-panorama-on-nile-visit-egypt-HATHOR-ICON-dark.svg") center / contain no-repeat;
+    mask: url("/branding/hathor-logo-nile-cruise-panorama-on-nile-visit-egypt-HATHOR-ICON-dark.svg") center / contain no-repeat;
+  }
 </style>`;
 
 const gastronomyRuntime = `
@@ -569,6 +586,10 @@ html = html
     /Visual representations of&nbsp;the&nbsp;property,[\s\S]*?rights holder\./g,
     "Menus, pairings, and imagery are curated for illustration. Availability, pricing, and dietary arrangements are confirmed directly with Hathor&rsquo;s private dining desk. All Hathor content and design remain protected.",
   );
+html = html.replace(
+  /(<img class="de-projects__logo[\s\S]*?>)/,
+  '$1<span class="hathor-dining-project-logo" aria-hidden="true"></span>',
+);
 
 fs.mkdirSync(destinationDir, { recursive: true });
 fs.writeFileSync(destination, html);

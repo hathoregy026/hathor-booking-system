@@ -483,6 +483,23 @@
   .de-slider__mobile-scrollable-gradient div {
     background: radial-gradient(circle, rgba(182, 159, 100, 0.86) 0%, rgba(182, 159, 100, 0.38) 45%, rgba(182, 159, 100, 0) 74%) !important;
   }
+  /* Dining course carousel: remove the source thumbnail rail and its
+     architectural studio mark, replacing it with the Hathor ring icon. */
+  #de-spiral .de-spiral__uptitle,
+  #de-projects .de-projects__pagination {
+    display: none !important;
+  }
+  #de-projects .de-projects__logo {
+    display: none !important;
+  }
+  .hathor-dining-project-logo {
+    display: block;
+    width: 44px;
+    height: 44px;
+    background: #b69f64;
+    -webkit-mask: url("/branding/hathor-logo-nile-cruise-panorama-on-nile-visit-egypt-HATHOR-ICON-dark.svg") center / contain no-repeat;
+    mask: url("/branding/hathor-logo-nile-cruise-panorama-on-nile-visit-egypt-HATHOR-ICON-dark.svg") center / contain no-repeat;
+  }
 </style>
 <script data-gastronomy-dashboard-runtime>
 (() => {
@@ -1546,7 +1563,7 @@ One Kitchen · Your Hours
         draggable="false"
                                     width="59"                        height="30"                data-plugin="appear "
              data-src="https://springs.house/assets/images/media/design/3.projects/logo.webp"
-            src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2259%22%20height=%2230%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%2059%2030%22%3E%3C/svg%3E"    >
+            src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2259%22%20height=%2230%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%2059%2030%22%3E%3C/svg%3E"    ><span class="hathor-dining-project-logo" aria-hidden="true"></span>
 
                 <noscript>
             
