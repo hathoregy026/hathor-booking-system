@@ -1,0 +1,168 @@
+/* Isolated port of the dining page's #de-slider composition. */
+.home-dining-slider {
+  position: relative;
+  z-index: 22;
+  height: 400svh;
+  overflow: visible;
+  background: var(--cream, #ece8df);
+}
+
+.home-dining-slider__stage {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+  background: var(--cream, #ece8df);
+}
+
+.home-dining-slider__panel {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  background: var(--cream, #ece8df);
+  will-change: clip-path;
+}
+
+.home-dining-slider__image {
+  position: absolute;
+  inset: 0 0 0 34%;
+  z-index: 1;
+  overflow: hidden;
+  background: #171411;
+}
+
+.home-dining-slider__image-link,
+.home-dining-slider__image-link img {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.home-dining-slider__image-link img {
+  object-fit: cover !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.home-dining-slider__caption {
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: 2;
+  display: flex;
+  width: 34%;
+  padding: clamp(2rem, 5vw, 5.5rem);
+  align-items: center;
+  justify-content: center;
+  background: var(--cream, #ece8df);
+  text-align: center;
+}
+
+.home-dining-slider__title {
+  display: flex;
+  max-width: 8ch;
+  flex-direction: column;
+  gap: 0.04em;
+  margin: 0;
+}
+
+.home-dining-slider__title-line {
+  display: block;
+}
+
+.home-dining-slider__body {
+  position: absolute;
+  right: clamp(1.5rem, 4vw, 4.5rem);
+  bottom: clamp(4rem, 10vh, 7rem);
+  left: clamp(1.5rem, 4vw, 4.5rem);
+  margin: 0;
+  text-align: left;
+}
+
+.home-dining-slider__cta {
+  position: absolute;
+  bottom: clamp(1.5rem, 4vh, 3rem);
+  left: clamp(1.5rem, 4vw, 4.5rem);
+}
+
+@media (max-width: 1024px) {
+  .home-dining-slider {
+    height: 300svh;
+  }
+
+  .home-dining-slider__image {
+    left: 30%;
+  }
+
+  .home-dining-slider__caption {
+    width: 30%;
+    padding: 1rem;
+  }
+
+  .home-dining-slider__body,
+  .home-dining-slider__cta {
+    right: 1rem;
+    left: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-dining-slider {
+    height: 240svh;
+  }
+
+  .home-dining-slider__image {
+    inset: 0 0 43% 0;
+  }
+
+  .home-dining-slider__caption {
+    top: auto;
+    width: 100%;
+    height: 43%;
+    padding: 1.25rem;
+  }
+
+  .home-dining-slider__body {
+    bottom: 4rem;
+  }
+
+  .home-dining-slider__cta {
+    bottom: 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-dining-slider {
+    height: auto;
+  }
+
+  .home-dining-slider__stage {
+    position: relative;
+    height: auto;
+    overflow: visible;
+  }
+
+  .home-dining-slider__panel {
+    position: relative;
+    display: grid;
+    grid-template-columns: 34% 66%;
+    min-height: 100svh;
+    clip-path: none !important;
+  }
+
+  .home-dining-slider__image,
+  .home-dining-slider__caption {
+    position: relative;
+    inset: auto;
+    width: auto;
+    height: auto;
+  }
+
+  .home-dining-slider__body,
+  .home-dining-slider__cta {
+    position: static;
+  }
+}

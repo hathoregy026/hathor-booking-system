@@ -29,7 +29,7 @@ export function useHomeStoryFixedMaskReveal(
     const textTargets = panels.map((panel) =>
       Array.from(
         panel.querySelectorAll<HTMLElement>(
-          ".home-story__title-line, .home-story__body, .home-story__cta",
+          ".home-dining-slider__title-line, .home-dining-slider__body, .home-dining-slider__cta",
         ),
       ),
     );
