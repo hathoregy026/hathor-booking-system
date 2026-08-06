@@ -125,8 +125,8 @@ export function PublicSiteHero({
   const displayRight = resolved.main;
   const displayLeft = resolved.second;
   const shimmer = typography.hero_second_shimmer;
-  /** Homepage second title — plain solid color; no shimmer / gold effects. */
-  const usePlainSecondTitle = heroPage === "home" && !lineLeftImageSrc;
+  /** Text-based second titles share one clean, solid treatment site-wide. */
+  const usePlainSecondTitle = !lineLeftImageSrc;
   const secondTitleStyle = usePlainSecondTitle
     ? {
         ...heroSubtitleStyle,

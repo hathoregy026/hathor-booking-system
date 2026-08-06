@@ -1293,7 +1293,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left:not(.hero-line-
   "hero_subtitle",
 )
 }
-/* Homepage plain second title — solid color, typography font metrics */
+/* Plain second title — solid color and typography font metrics */
 .public-site .hero-line--left.hero-line--plain,
 .public-site .home-hero-container .hero-heading .hero-line--left.hero-line--plain,
 html[data-ex-experience] .public-site .ex-root .hero-heading .hero-line--left.hero-line--plain,
@@ -1304,7 +1304,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left.hero-line--plai
   letter-spacing: var(--typo-hero-subtitle-letter-spacing) !important;
   color: #b69f64 !important;
   -webkit-text-fill-color: #b69f64 !important;
-  text-shadow: var(--hathor-title-engraved-gold) !important;
+  text-shadow: none !important;
 }
 .public-site .hero-line--left:not(.hero-line--wordmark),
 .public-site .home-hero-container .hero-heading .hero-line--left:not(.hero-line--wordmark),
