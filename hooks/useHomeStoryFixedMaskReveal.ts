@@ -47,6 +47,14 @@ export function useHomeStoryFixedMaskReveal(
 
       const setProgress = (progress: number) => {
         const transitions = Math.max(1, panels.length - 1);
+        const revealStart = isCompact ? 0.52 : 0.58;
+        const revealEnd = isCompact ? 0.84 : 0.88;
+        const revealProgress = luxWipe(
+          clamp((progress - revealStart) / (revealEnd - revealStart)),
+        );
+        const firstExitProgress = luxWipe(
+          clamp((progress - (revealStart - 0.06)) / 0.22),
+        );
 
         panels.forEach((panel, index) => {
           if (index === 0) {
@@ -55,8 +63,11 @@ export function useHomeStoryFixedMaskReveal(
           } else {
             const start = (index - 1) / transitions;
             const end = index / transitions;
-            const localProgress = clamp((progress - start) / (end - start));
-            const inset = (1 - luxWipe(localProgress)) * 100;
+            const localProgress =
+              panels.length === 2
+                ? revealProgress
+                : luxWipe(clamp((progress - start) / (end - start)));
+            const inset = (1 - localProgress) * 100;
             panel.style.clipPath = isCompact
               ? `inset(0 0 0 ${inset}%)`
               : `inset(${inset}% 0 0 0)`;
@@ -64,7 +75,11 @@ export function useHomeStoryFixedMaskReveal(
           }
 
           const panelProgress =
-            index === 0 ? 1 - luxWipe(progress) : luxWipe(progress);
+            index === 0
+              ? 1 - firstExitProgress
+              : panels.length === 2
+                ? revealProgress
+                : luxWipe(progress);
           const active = panelProgress >= 0.5;
           panel.setAttribute("aria-hidden", active ? "false" : "true");
           gsap.set(textTargets[index], {
