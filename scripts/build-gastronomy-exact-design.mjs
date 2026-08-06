@@ -416,12 +416,22 @@ const diningPalette = `
     -webkit-mask: url("/branding/hathor-logo-nile-cruise-panorama-on-nile-visit-egypt-HATHOR-ICON-dark.svg") center / contain no-repeat;
     mask: url("/branding/hathor-logo-nile-cruise-panorama-on-nile-visit-egypt-HATHOR-ICON-dark.svg") center / contain no-repeat;
   }
+  /*
+   * Hard gate: never paint any photo until the Dining dashboard config has
+   * replaced every visual. This permanently kills Springs flashbacks.
+   */
+  html:not(.dining-media-ready) picture,
+  html:not(.dining-media-ready) img[data-src],
+  html:not(.dining-media-ready) img[src*="springs."],
+  html:not(.dining-media-ready) .de-captions__canvas {
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
 </style>`;
 
 const gastronomyRuntime = `
 <script data-gastronomy-dashboard-runtime>
 (() => {
-  const applyDashboardConfig = () => {
   const slotTargets = {
     "dining-intro-hero": "#de-intro .de-intro__background picture",
     "dining-spiral-bridge": "#de-spiral .de-spiral__background picture",
@@ -443,21 +453,34 @@ const gastronomyRuntime = `
     "dining-celebration": "#de-flats-644069 .background picture",
     "dining-closing": "#i-more .more-block__content .background picture",
   };
+  function isSpringsUrl(value) {
+    return typeof value === "string" && /springs\\.(estate|house)/i.test(value);
+  }
+  function scrubSpringsUrls(root) {
+    root.querySelectorAll("img, source").forEach((node) => {
+      ["src", "srcset", "data-src", "data-srcset"].forEach((attr) => {
+        const value = node.getAttribute(attr);
+        if (value && isSpringsUrl(value)) node.removeAttribute(attr);
+      });
+    });
+  }
   function replaceVisual(target, url, slot) {
     if (!url) return;
     document.querySelectorAll(target).forEach((root) => {
       root.setAttribute("data-dining-slot", slot);
-      const images = root.matches("img") ? [root] : root.querySelectorAll("img");
+      const images = root.matches("img") ? [root] : [...root.querySelectorAll("img")];
       images.forEach((image) => {
-      image.setAttribute("data-gastronomy-slot", slot);
-      image.src = url;
-      image.removeAttribute("srcset");
-      image.setAttribute("data-src", url);
-    });
+        image.setAttribute("data-dining-slot", slot);
+        image.src = url;
+        image.removeAttribute("srcset");
+        image.setAttribute("data-src", url);
+        image.removeAttribute("data-srcset");
+      });
       root.querySelectorAll("source").forEach((source) => {
-      source.srcset = url;
-      source.setAttribute("data-gastronomy-slot", slot);
-    });
+        source.srcset = url;
+        source.setAttribute("data-srcset", url);
+        source.setAttribute("data-dining-slot", slot);
+      });
     });
   }
   function replaceCaptionFrame(attribute, url, slot) {
@@ -468,7 +491,9 @@ const gastronomyRuntime = `
     try {
       const value = JSON.parse(raw);
       const replaceUrls = (entry) => {
-        if (typeof entry === "string") return entry.startsWith("http") ? url : entry;
+        if (typeof entry === "string") {
+          return entry.startsWith("http") || isSpringsUrl(entry) ? url : entry;
+        }
         if (Array.isArray(entry)) return entry.map(replaceUrls);
         if (entry && typeof entry === "object") {
           Object.keys(entry).forEach((key) => { entry[key] = replaceUrls(entry[key]); });
@@ -479,28 +504,36 @@ const gastronomyRuntime = `
       canvas.setAttribute("data-dining-slot", slot);
     } catch {}
   }
-  fetch("/api/gastronomy-config", { cache: "no-store" })
+  function revealDiningMedia() {
+    document.documentElement.classList.add("dining-media-ready");
+  }
+  const configPromise = fetch("/api/gastronomy-config", { cache: "no-store" })
     .then((response) => response.ok ? response.json() : null)
-    .then((config) => {
-      if (!config) return;
-      Object.entries(slotTargets).forEach(([slot, target]) =>
-        replaceVisual(target, config.images && config.images[slot], slot)
-      );
-      replaceCaptionFrame("data-image-scroll-image-start", config.images && config.images["dining-captions-start"], "dining-captions-start");
-      replaceCaptionFrame("data-image-scroll-image-end", config.images && config.images["dining-captions-end"], "dining-captions-end");
-      const style = document.createElement("style");
-      style.dataset.gastronomyTypography = "true";
-      style.textContent = config.css || "";
-      document.head.appendChild(style);
-      if (config.phoneCss) {
-        const phone = document.createElement("style");
-        phone.dataset.gastronomyTypographyPhone = "true";
-        phone.textContent = "@media (max-width:480px){" + config.phoneCss + "}";
-        document.head.appendChild(phone);
+    .catch(() => null);
+  const applyDashboardConfig = () => {
+    scrubSpringsUrls(document);
+    configPromise.then((config) => {
+      if (config && config.images) {
+        Object.entries(slotTargets).forEach(([slot, target]) =>
+          replaceVisual(target, config.images[slot], slot)
+        );
+        replaceCaptionFrame("data-image-scroll-image-start", config.images["dining-captions-start"], "dining-captions-start");
+        replaceCaptionFrame("data-image-scroll-image-end", config.images["dining-captions-end"], "dining-captions-end");
+        const style = document.createElement("style");
+        style.dataset.gastronomyTypography = "true";
+        style.textContent = config.css || "";
+        document.head.appendChild(style);
+        if (config.phoneCss) {
+          const phone = document.createElement("style");
+          phone.dataset.gastronomyTypographyPhone = "true";
+          phone.textContent = "@media (max-width:480px){" + config.phoneCss + "}";
+          document.head.appendChild(phone);
+        }
       }
+      scrubSpringsUrls(document);
+      revealDiningMedia();
       window.dispatchEvent(new Event("resize"));
-    })
-    .catch(() => {});
+    });
   };
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", applyDashboardConfig, { once: true });
@@ -543,22 +576,48 @@ html = html.replaceAll(
   'href="&#x2F;gastronomy-springs&#x2F;assets&#x2F;',
 );
 
-// The HAR capture keeps all content images at their original public source.
-// Preserve them as absolute assets rather than replacing them with unrelated
-// dining images or broken local cache paths.
-html = html.replaceAll("https://springs.estate/", "https://springs.house/");
+/*
+ * HARD DELETE of Springs photo flashbacks.
+ * Keep local CSS/JS under /gastronomy-springs/assets/, but never leave a
+ * springs.estate / springs.house content photo URL in the Dining document.
+ */
+const diningFallback = initialDiningMediaUrls["dining-hero.jpg"];
+const diningFallbackEncoded = diningFallback
+  .replaceAll(":", "&#x3A;")
+  .replaceAll("/", "&#x5C;&#x2F;");
+
 html = html.replace(
-  /(["'(])\/media\//g,
-  "$1https://springs.house/media/",
+  /https?:\/\/springs\.(?:estate|house)\/(?:media|assets\/images\/media)\/[^"'\\\s>]+/gi,
+  diningFallback,
 );
-html = html.replaceAll(
-  "/gastronomy-springs/assets/images/",
-  "https://springs.house/assets/images/",
+
+const captionStartUrl = initialDiningMediaUrls["dining-hero.jpg"];
+const captionEndUrl = initialDiningMediaUrls["experience-dining.jpg"];
+const captionFrame = (url) =>
+  JSON.stringify({
+    xs: { src: url, width: 720, height: 1280 },
+    md: { src: url, width: 720, height: 1280 },
+    xxl: { src: url, width: 1440, height: 900 },
+    xxxl: { src: url, width: 1440, height: 900 },
+  })
+    .replaceAll("&", "&amp;")
+    .replaceAll('"', "&quot;");
+
+html = html.replace(
+  /data-image-scroll-image-start="[^"]*"/,
+  `data-image-scroll-image-start="${captionFrame(captionStartUrl)}"`,
 );
-html = html.replaceAll(
-  "&#x2F;gastronomy-springs&#x2F;assets&#x2F;images&#x2F;",
-  "https:&#x2F;&#x2F;springs.house&#x2F;assets&#x2F;images&#x2F;",
+html = html.replace(
+  /data-image-scroll-image-end="[^"]*"/,
+  `data-image-scroll-image-end="${captionFrame(captionEndUrl)}"`,
 );
+
+// Any leftover entity-encoded Springs media URLs become Dining defaults.
+html = html.replace(
+  /https&#x3A;(?:&#x5C;&#x2F;){2}springs\.(?:estate|house)(?:&#x5C;&#x2F;(?:[A-Za-z0-9._@%-]|&#x25;[0-9A-Fa-f]{2})+)+/gi,
+  diningFallbackEncoded,
+);
+html = html.replaceAll("https://springs.estate/", "https://springs.house/");
 
 // Browser-message was not included in the capture and is nonessential to the
 // page itself. Omitting only that optional helper prevents a 404.
