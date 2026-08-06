@@ -185,6 +185,12 @@ html = html.replace(
   },
 );
 
+// Local clone assets that were never copied (spiral callback art, etc.)
+html = html.replace(
+  /\/gastronomy-springs\/assets\/images\/media\/landing\/callback\/spiral[^"'\s>]*/gi,
+  MEDIA.table,
+);
+
 // Text replacements (order matters — longer first)
 const bodyReplacements = [
   [
