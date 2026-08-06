@@ -11,6 +11,7 @@ import {
 import { combineDesktopAndNarrowCss } from "@/lib/admin-device-preview";
 import "./home-experience.css";
 import "./home-story.css";
+import "./home-story-dining.css";
 
 export const revalidate = 300;
 

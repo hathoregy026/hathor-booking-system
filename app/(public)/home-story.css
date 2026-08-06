@@ -1,3 +1,140 @@
+/* Scene-specific compositions must win over the generic fixed-stage rules. */
+.home-story__art {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.home-story__art-frame {
+  position: absolute;
+  overflow: hidden;
+  background: #090807;
+  box-shadow:
+    0 42px 100px rgba(0, 0, 0, 0.72),
+    0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.home-story__art-frame img {
+  object-fit: cover;
+}
+
+.home-story__slide[data-home-story-slide="0"] .home-story__media {
+  opacity: 0.18;
+  filter: saturate(0.68) contrast(1.08);
+}
+
+.home-story__slide[data-home-story-slide="0"] .home-story__art-frame--primary {
+  top: 14svh;
+  right: 13vw;
+  width: min(48vw, 680px);
+  height: min(68svh, 720px);
+  transform: rotate(2.5deg);
+}
+
+.home-story__slide[data-home-story-slide="0"] .home-story__art-frame--primary img {
+  transform: scale(1.13);
+}
+
+.home-story__slide[data-home-story-slide="0"] .home-story__art-frame--secondary {
+  bottom: 11svh;
+  right: 43vw;
+  width: min(22vw, 300px);
+  height: min(31svh, 340px);
+  transform: rotate(-9deg);
+}
+
+.home-story__slide[data-home-story-slide="0"] .home-story__copy {
+  z-index: 5;
+  top: auto;
+  right: auto;
+  bottom: 13svh;
+  left: 8vw;
+  width: min(32rem, 38vw);
+  padding: 0;
+  align-items: flex-start;
+  justify-content: flex-end;
+  text-align: left;
+}
+
+.home-story__slide[data-home-story-slide="1"] .home-story__media {
+  opacity: 0.68;
+}
+
+.home-story__slide[data-home-story-slide="1"] .home-story__art-frame--primary {
+  top: 16svh;
+  left: 8vw;
+  width: min(38vw, 550px);
+  height: min(62svh, 650px);
+  transform: rotate(-3deg);
+}
+
+.home-story__slide[data-home-story-slide="1"] .home-story__art-frame--primary img {
+  transform: scale(1.2);
+}
+
+.home-story__slide[data-home-story-slide="1"] .home-story__art-frame--secondary {
+  display: none;
+}
+
+.home-story__slide[data-home-story-slide="1"] .home-story__copy {
+  z-index: 5;
+  right: 9vw;
+  bottom: 15svh;
+  left: auto;
+  width: min(31rem, 34vw);
+  align-items: flex-start;
+}
+
+@media (max-width: 1024px) {
+  .home-story__slide[data-home-story-slide="0"] .home-story__art-frame--primary {
+    top: 19svh;
+    right: 8vw;
+    width: min(67vw, 510px);
+    height: min(50svh, 510px);
+  }
+
+  .home-story__slide[data-home-story-slide="0"] .home-story__art-frame--secondary {
+    right: 48vw;
+    width: min(30vw, 220px);
+    height: min(23svh, 240px);
+  }
+
+  .home-story__slide[data-home-story-slide="0"] .home-story__copy,
+  .home-story__slide[data-home-story-slide="1"] .home-story__copy {
+    right: var(--hs-panel-pad);
+    bottom: 9svh;
+    left: var(--hs-panel-pad);
+    width: auto;
+  }
+
+  .home-story__slide[data-home-story-slide="1"] .home-story__art-frame--primary {
+    top: 13svh;
+    left: 8vw;
+    width: min(58vw, 440px);
+    height: min(46svh, 480px);
+  }
+}
+
+@media (max-width: 480px) {
+  .home-story__art-frame--secondary {
+    display: none;
+  }
+
+  .home-story__slide[data-home-story-slide="0"] .home-story__art-frame--primary,
+  .home-story__slide[data-home-story-slide="1"] .home-story__art-frame--primary {
+    top: 15svh;
+    right: 7vw;
+    left: auto;
+    width: 72vw;
+    height: 44svh;
+  }
+
+  .home-story__slide[data-home-story-slide="0"] .home-story__copy,
+  .home-story__slide[data-home-story-slide="1"] .home-story__copy {
+    bottom: 7svh;
+  }
+}
 /* Homepage Way of Life ↔ Dining
    Layout (BOTH slides identical):
    [1 image — full column] [2 title + body + CTA]
@@ -441,6 +578,159 @@
   .home-story__body {
     color: var(--hs-text);
     text-shadow: none;
+  }
+}
+
+/* Two deliberately different dining-page scene grammars. */
+.home-story__art {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.home-story__art-frame {
+  position: absolute;
+  overflow: hidden;
+  background: #090807;
+  box-shadow:
+    0 42px 100px rgba(0, 0, 0, 0.72),
+    0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.home-story__art-frame img {
+  object-fit: cover;
+}
+
+/* Way of Life: a dark image cascade with small, offset editorial crops. */
+.home-story__slide[data-home-story-slide="0"] .home-story__media {
+  opacity: 0.18;
+  filter: saturate(0.68) contrast(1.08);
+}
+
+.home-story__slide[data-home-story-slide="0"] .home-story__art-frame--primary {
+  top: 14svh;
+  right: 13vw;
+  width: min(48vw, 680px);
+  height: min(68svh, 720px);
+  transform: rotate(2.5deg);
+}
+
+.home-story__slide[data-home-story-slide="0"] .home-story__art-frame--primary img {
+  transform: scale(1.13);
+}
+
+.home-story__slide[data-home-story-slide="0"] .home-story__art-frame--secondary {
+  bottom: 11svh;
+  right: 43vw;
+  width: min(22vw, 300px);
+  height: min(31svh, 340px);
+  transform: rotate(-9deg);
+}
+
+.home-story__slide[data-home-story-slide="0"] .home-story__copy {
+  z-index: 5;
+  top: auto;
+  right: auto;
+  bottom: 13svh;
+  left: 8vw;
+  width: min(32rem, 38vw);
+  padding: 0;
+  align-items: flex-start;
+  justify-content: flex-end;
+  text-align: left;
+}
+
+/* Fine Dining: a single dramatic course composition with one lifted cutout. */
+.home-story__slide[data-home-story-slide="1"] .home-story__media {
+  opacity: 0.68;
+}
+
+.home-story__slide[data-home-story-slide="1"] .home-story__art-frame--primary {
+  top: 16svh;
+  left: 8vw;
+  width: min(38vw, 550px);
+  height: min(62svh, 650px);
+  transform: rotate(-3deg);
+  clip-path: inset(0 0 0 0);
+}
+
+.home-story__slide[data-home-story-slide="1"] .home-story__art-frame--primary img {
+  transform: scale(1.2);
+}
+
+.home-story__slide[data-home-story-slide="1"] .home-story__art-frame--secondary {
+  display: none;
+}
+
+.home-story__slide[data-home-story-slide="1"] .home-story__copy {
+  z-index: 5;
+  right: 9vw;
+  bottom: 15svh;
+  left: auto;
+  width: min(31rem, 34vw);
+  align-items: flex-start;
+}
+
+@media (max-width: 1024px) {
+  .home-story__slide[data-home-story-slide="0"] .home-story__art-frame--primary {
+    top: 19svh;
+    right: 8vw;
+    width: min(67vw, 510px);
+    height: min(50svh, 510px);
+  }
+
+  .home-story__slide[data-home-story-slide="0"] .home-story__art-frame--secondary {
+    right: 48vw;
+    width: min(30vw, 220px);
+    height: min(23svh, 240px);
+  }
+
+  .home-story__slide[data-home-story-slide="0"] .home-story__copy,
+  .home-story__slide[data-home-story-slide="1"] .home-story__copy {
+    right: var(--hs-panel-pad);
+    bottom: 9svh;
+    left: var(--hs-panel-pad);
+    width: auto;
+  }
+
+  .home-story__slide[data-home-story-slide="1"] .home-story__art-frame--primary {
+    top: 13svh;
+    left: 8vw;
+    width: min(58vw, 440px);
+    height: min(46svh, 480px);
+  }
+}
+
+@media (max-width: 480px) {
+  .home-story__art-frame--secondary {
+    display: none;
+  }
+
+  .home-story__slide[data-home-story-slide="0"] .home-story__art-frame--primary,
+  .home-story__slide[data-home-story-slide="1"] .home-story__art-frame--primary {
+    top: 15svh;
+    right: 7vw;
+    left: auto;
+    width: 72vw;
+    height: 44svh;
+  }
+
+  .home-story__slide[data-home-story-slide="0"] .home-story__copy,
+  .home-story__slide[data-home-story-slide="1"] .home-story__copy {
+    bottom: 7svh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-story__art {
+    display: none;
+  }
+
+  .home-story__slide[data-home-story-slide="0"] .home-story__media,
+  .home-story__slide[data-home-story-slide="1"] .home-story__media {
+    opacity: 1;
+    filter: none;
   }
 }
 
