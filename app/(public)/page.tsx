@@ -5,10 +5,17 @@ import { HATHOR_HERO_POSTER_SRC } from "@/lib/branding";
 import { getHomepageAccordionCruisesSafe } from "@/lib/homepage-accordion-cruises";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import {
+  amenitiesTypographyToCss,
+  getAmenitiesTypography,
+} from "@/lib/amenities-typography";
+import {
   heroLogoTuneToImportantCss,
   heroLogoTuneToNarrowImportantCss,
 } from "@/lib/hero-logo-tune-shared";
-import { combineDesktopAndNarrowCss } from "@/lib/admin-device-preview";
+import {
+  combineDesktopAndNarrowCss,
+  combineDesktopAndPhoneCss,
+} from "@/lib/admin-device-preview";
 import "./home-experience.css";
 import "./home-dining-slider.css";
 
@@ -58,10 +65,17 @@ export default async function HomePage() {
    * queries against the Supabase transaction pooler can stall indefinitely.
    */
   const cms = await loadPublicCmsBundle();
+  /* After CMS bundle — avoid concurrent pooler stalls with the accordion query. */
   const accordionCruises = await getHomepageAccordionCruisesSafe();
+  const amenitiesTypo = await getAmenitiesTypography();
+  const amenitiesTypoMobile = await getAmenitiesTypography(true);
   const logoTuneCss = combineDesktopAndNarrowCss(
     heroLogoTuneToImportantCss(cms.heroLogoTune),
     heroLogoTuneToNarrowImportantCss(cms.heroLogoTuneMobile),
+  );
+  const amenitiesTypoCss = combineDesktopAndPhoneCss(
+    amenitiesTypographyToCss(amenitiesTypo),
+    amenitiesTypographyToCss(amenitiesTypoMobile),
   );
 
   return (
@@ -69,6 +83,10 @@ export default async function HomePage() {
       <style
         data-hathor-logo-tune-ssr
         dangerouslySetInnerHTML={{ __html: logoTuneCss }}
+      />
+      <style
+        data-hathor-amenities-typo-ssr
+        dangerouslySetInnerHTML={{ __html: amenitiesTypoCss }}
       />
       <HomePageClient
         heroLogoTune={cms.heroLogoTune}
