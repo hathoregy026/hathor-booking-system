@@ -1,3 +1,4 @@
+import { AMENITIES_SEQUENCE_IMAGE_SLOTS } from "@/lib/amenities-sequence-images";
 import { SITE_IMAGE_SLOTS, type SiteImageSlot } from "@/lib/site-image-slots";
 import { resolveSiteImageLivePath } from "@/lib/site-image-preview";
 
@@ -41,36 +42,14 @@ const HOMEPAGE_LIVE_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> 
     },
   ];
 
-/** Homepage amenities scroll sequence — Admin tab: Amenities Sequence. */
+/** Homepage amenities scroll sequence — Admin tab: Amenities Sequence (site order). */
 const AMENITIES_SEQUENCE_ADMIN_CARDS: ReadonlyArray<{
   name: string;
   label: string;
-}> = [
-  {
-    name: "home-amenities-1",
-    label: "1 — Fullscreen intro photo",
-  },
-  {
-    name: "home-amenities-2",
-    label: "2 — Rising full-bleed photo",
-  },
-  {
-    name: "home-amenities-3",
-    label: "3 — Inset + half/half photo",
-  },
-  {
-    name: "home-amenities-4",
-    label: "4 — Fixed left + stack photo",
-  },
-  {
-    name: "home-amenities-way-of-life",
-    label: "Way of Life — photo / card",
-  },
-  {
-    name: "home-amenities-dining",
-    label: "Dining — photo / card",
-  },
-];
+}> = AMENITIES_SEQUENCE_IMAGE_SLOTS.map((slot) => ({
+  name: slot.name,
+  label: slot.label,
+}));
 
 const OUR_VOYAGES_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> =
   [
@@ -176,6 +155,10 @@ const SLOT_LAYOUT_KINDS: Partial<Record<SiteImageSlot["name"], SiteImageLayoutKi
     "home-amenities-2": "hero",
     "home-amenities-3": "hero",
     "home-amenities-4": "hero",
+    "home-amenities-5": "hero",
+    "home-amenities-6": "hero",
+    "home-amenities-7": "hero",
+    "home-amenities-8": "hero",
     "cruises-hero": "hero",
     "about-hero": "hero",
     "gastronomy-hero": "hero",
@@ -375,7 +358,7 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
       pagePath: "/#amenities-sequence",
       title: "Amenities Sequence",
       description:
-        "Photos for the homepage amenities scroll sequence after Our Voyages (intro → rise → slider → opening). Each upload is independent from Cruises, About, and every other page.",
+        "Eleven unique photos for the homepage amenities scroll only, listed in the order guests see them (1 first → 11 last). Never shared with Cruises, About, Homepage, or any other page.",
       items: amenitiesItems,
     },
     {

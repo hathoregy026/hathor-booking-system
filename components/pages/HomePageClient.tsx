@@ -26,6 +26,7 @@ import {
   EX_TEXT_BLOCKS,
   type ExCarouselSlide,
 } from "@/lib/ex-page-content";
+import { AMENITIES_SEQUENCE_IMAGE_SLOTS } from "@/lib/amenities-sequence-images";
 import type { HomepageAccordionCruise } from "@/lib/homepage-accordion-cruises";
 import type { SiteImageName } from "@/lib/site-image-slots";
 import { useExScrollMotion } from "@/hooks/useExScrollMotion";
@@ -90,8 +91,13 @@ const HOMEPAGE_PREVIEW_SLOTS = new Set([
   "home-amenities-2",
   "home-amenities-3",
   "home-amenities-4",
-  "home-amenities-way-of-life",
-  "home-amenities-dining",
+  "home-amenities-5",
+  "home-amenities-6",
+  "home-amenities-7",
+  "home-amenities-8",
+  "home-amenities-9",
+  "home-amenities-10",
+  "home-amenities-11",
   "home-voyage-3n-aswan-luxor",
   "home-voyage-4n-luxor-aswan",
   "home-voyage-7n-roundtrip",
@@ -409,7 +415,7 @@ export function HomePageClient({
         <HomeLandmarkMaskSection
           slides={stackSlides.map((slide) => ({
             ...slide,
-            previewAnchor: HOMEPAGE_PREVIEW_SLOTS.has(slide.imageName),
+            previewAnchor: false,
           }))}
           stories={EX_TEXT_BLOCKS.map((block, index) => {
             const cms = websiteText.home.textBlocks[index];
@@ -420,9 +426,14 @@ export function HomePageClient({
               href: block.href,
               imageName: block.imageName,
               imageAlt: block.alt,
-              previewAnchor: HOMEPAGE_PREVIEW_SLOTS.has(block.imageName),
+              previewAnchor: false,
             };
           })}
+          images={AMENITIES_SEQUENCE_IMAGE_SLOTS.map((slot) => ({
+            name: slot.name as SiteImageName,
+            alt: slot.alt,
+            previewAnchor: HOMEPAGE_PREVIEW_SLOTS.has(slot.name),
+          }))}
           titleStyle={stackTitleStyle}
           indicationStyle={stackEyebrowStyle}
           bodyStyle={stackBodyStyle}

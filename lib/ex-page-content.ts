@@ -127,7 +127,8 @@ export const EX_TEXT_BLOCKS = [
   {
     title: HOMEPAGE_LIFESTYLE.title,
     body: HOMEPAGE_LIFESTYLE.body,
-    imageName: "home-amenities-way-of-life" as SiteImageName,
+    /** Text only — photo is amenities slot 6 / card 9. */
+    imageName: "home-amenities-6" as SiteImageName,
     alt: "Guests enjoying a Nile sunset moment aboard Hathor Dahabiya",
     cta: "Discover More",
     href: "/about",
@@ -135,7 +136,8 @@ export const EX_TEXT_BLOCKS = [
   {
     title: HOMEPAGE_DINING.title,
     body: HOMEPAGE_DINING.body,
-    imageName: "home-amenities-dining" as SiteImageName,
+    /** Text only — photo is amenities slot 7 / card 10. */
+    imageName: "home-amenities-7" as SiteImageName,
     alt: "Fine dining aboard Hathor Dahabiya",
     cta: "Explore Dining",
     href: "/gastronomy",

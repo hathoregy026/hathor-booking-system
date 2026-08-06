@@ -23,8 +23,14 @@ const AMENITIES_SEQUENCE_LEGACY_FALLBACK: Readonly<Record<string, string>> = {
   "home-amenities-2": "home-split-courtyard",
   "home-amenities-3": "about-hero",
   "home-amenities-4": "home-story-legacy-large",
-  "home-amenities-way-of-life": "home-story-way-of-life",
-  "home-amenities-dining": "home-story-dining",
+  /* Older shared story slots → new unique slider / card mounts */
+  "home-amenities-5": "home-amenities-4",
+  "home-amenities-6": "home-amenities-way-of-life",
+  "home-amenities-7": "home-amenities-dining",
+  "home-amenities-8": "home-story-legacy-large",
+  "home-amenities-9": "home-amenities-way-of-life",
+  "home-amenities-10": "home-amenities-dining",
+  "home-amenities-11": "home-amenities-2",
 };
 
 export type StoredSiteImagePublicMap = Record<
