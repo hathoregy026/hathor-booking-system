@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
 import { GastronomyMaskRevealBoot } from "@/components/pages/GastronomyMaskRevealBoot";
-import "@/app/gastronomy-springs-design.css";
 
-const BOOT = `(function(){try{var d=document.documentElement;d.setAttribute("data-gastronomy-mask","");document.body.style.backgroundColor="#ece8df";}catch(e){}})();`;
+const BOOT = `(function(){try{var d=document.documentElement;d.setAttribute("data-gastronomy-mask","");d.classList.add("js","has-hover");d.classList.remove("no-js","not-ready");document.body.style.backgroundColor="#ece8df";}catch(e){}})();`;
 
 const CRITICAL = `
 html[data-gastronomy-mask],
@@ -33,6 +32,9 @@ export default function GastronomyLayout({
 }: Readonly<{ children: ReactNode }>) {
   return (
     <>
+      <link rel="stylesheet" href="/gastronomy-springs/assets/stylesheets/global.css" />
+      <link rel="stylesheet" href="/gastronomy-springs/assets/stylesheets/design.css" />
+      <link rel="stylesheet" href="/gastronomy-springs/hathor-remap.css" />
       <style dangerouslySetInnerHTML={{ __html: CRITICAL }} />
       <script dangerouslySetInnerHTML={{ __html: BOOT }} />
       <div className="gastronomy-mask-route">

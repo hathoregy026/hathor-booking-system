@@ -1,0 +1,105 @@
+/* Hathor cream + gold remaps for Springs design clone — do not change layout */
+
+html[data-gastronomy-mask] {
+  /* Springs cream base → Hathor cream */
+  --c-beige-background: #ece8df !important;
+  --c-beige-background-rgb: 236, 232, 223 !important;
+  --c-beige: #f5f0e8 !important;
+  --c-beige-rgb: 245, 240, 232 !important;
+
+  /* Every Springs green/blue accent → gold / cream */
+  --c-dark-green: #5c4a2a !important;
+  --c-dark-green-rgb: 92, 74, 42 !important;
+  --c-green: #b69f64 !important;
+  --c-green-rgb: 182, 159, 100 !important;
+  --c-light-green: #c9a96e !important;
+  --c-light-green-rgb: 201, 169, 110 !important;
+  --c-olive: #8b6914 !important;
+  --c-olive-rgb: 139, 105, 20 !important;
+  --c-dark-blue: #6b5428 !important;
+  --c-dark-blue-rgb: 107, 84, 40 !important;
+  --c-blue: #b69f64 !important;
+  --c-blue-rgb: 182, 159, 100 !important;
+  --c-light-blue: #dcc99a !important;
+  --c-light-blue-rgb: 220, 201, 154 !important;
+  --c-sky: #ece8df !important;
+  --c-sky-rgb: 236, 232, 223 !important;
+
+  background: #ece8df !important;
+}
+
+html[data-gastronomy-mask] body {
+  background: #ece8df !important;
+  font-family: var(--font-hathor-body, "Plus Jakarta Sans", system-ui, sans-serif) !important;
+}
+
+html[data-gastronomy-mask] .g1,
+html[data-gastronomy-mask] .h0,
+html[data-gastronomy-mask] .h1,
+html[data-gastronomy-mask] .h3,
+html[data-gastronomy-mask] .de-spiral__title .h1,
+html[data-gastronomy-mask] .de-flats__caption-title .h0,
+html[data-gastronomy-mask] .de-flats__caption-title .g1 {
+  font-family: var(--font-hathor-display, "Instrument Serif", Georgia, serif) !important;
+}
+
+/* Unlock sticky (Springs sticky runways) */
+html[data-gastronomy-mask] .public-site,
+html[data-gastronomy-mask] .public-main,
+html[data-gastronomy-mask] .page-transition,
+html[data-gastronomy-mask] .gastronomy-mask-route {
+  overflow: visible !important;
+  overflow-x: visible !important;
+  max-width: none !important;
+  padding-top: 0 !important;
+  background: transparent !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+html[data-gastronomy-mask] .public-site::before {
+  display: none !important;
+}
+
+/* Force sticky to work even if Springs smooth-scroll class is applied */
+html[data-gastronomy-mask].has-scroll-smooth .sticky__layer--sticky,
+html[data-gastronomy-mask] .sticky__layer--sticky {
+  position: sticky !important;
+  top: 0 !important;
+}
+
+html[data-gastronomy-mask] .page-content-wrapper,
+html[data-gastronomy-mask] .page-content-wrapper__inner,
+html[data-gastronomy-mask] .page-content,
+html[data-gastronomy-mask] .gastronomy-springs-clone {
+  overflow: visible !important;
+  width: 100%;
+}
+
+/* Hide springs preloader / turn-message if any leaked */
+.gastronomy-springs-clone .preloader,
+.gastronomy-springs-clone .turn-message,
+.gastronomy-springs-clone .cookie-consent,
+.gastronomy-springs-clone .header {
+  display: none !important;
+}
+
+/* Space under Hathor public navbar */
+.gastronomy-springs-clone .de-intro__content,
+.gastronomy-springs-clone .de-intro__caption {
+  padding-top: 0;
+}
+
+/* Ensure cover images fill */
+.gastronomy-springs-clone .background--cover img,
+.gastronomy-springs-clone .img-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Never stretch plate PNGs as full-bleed covers — if a plate URL slips in */
+.gastronomy-springs-clone img[src*="dining-plate-"] {
+  object-fit: contain !important;
+  background: transparent !important;
+}
