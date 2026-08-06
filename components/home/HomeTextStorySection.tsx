@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useRef } from "react";
 import { ManagedImage } from "@/components/ui/ManagedImage";
+import { useHomeStoryFixedMaskReveal } from "@/hooks/useHomeStoryFixedMaskReveal";
 import type { SiteImageName } from "@/lib/site-image-slots";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 
@@ -19,12 +21,16 @@ type HomeTextStorySectionProps = {
   slides: HomeTextStorySlide[];
 };
 
-/** Both slides share one layout: image = box 1 (left), copy = box 2 (right). */
+/** Shared fixed-background mask story for the Way of Life and Dining slides. */
 export function HomeTextStorySection({ slides }: HomeTextStorySectionProps) {
+  const sectionRef = useRef<HTMLElement>(null);
+  useHomeStoryFixedMaskReveal(sectionRef, slides.length);
+
   if (slides.length === 0) return null;
 
   return (
     <section
+      ref={sectionRef}
       className="home-story ex-content-section"
       id="escape"
       aria-label="Hathor experiences"
@@ -41,6 +47,7 @@ export function HomeTextStorySection({ slides }: HomeTextStorySectionProps) {
               key={`${slide.href}-${slide.imageName}`}
               className="home-story__slide"
               data-home-story-slide={String(index)}
+              data-home-story-panel
               aria-hidden={index === 0 ? "false" : "true"}
             >
               <div className="home-story__media">

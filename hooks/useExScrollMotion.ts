@@ -1709,7 +1709,9 @@ export function useExScrollMotion() {
    * Same itineraries clip wipe + rising copy; layout L/R then reverse
    * ----------------------------------------------------- */
   function initHomeTextStory() {
-    const section = document.querySelector<HTMLElement>(".home-story");
+    const section = document.querySelector<HTMLElement>(
+      ".home-story[data-home-story-legacy]",
+    );
     const viewport = section?.querySelector<HTMLElement>(".home-story__viewport");
     const slides = gsap.utils.toArray<HTMLElement>(".home-story__slide");
     if (!section || !viewport || slides.length < 1) return;
