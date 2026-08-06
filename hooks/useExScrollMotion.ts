@@ -1004,12 +1004,15 @@ export function useExScrollMotion() {
 
       const isPhoneStack = isNarrowViewport;
       const fogStepped = isPhone || lightenDevice;
+      /* Desktop/tablet: Fixed-Background Mask Reveal — pinType fixed locks photos. */
+      const useFixedPin = !(isPhone || isPhoneStack);
 
       logPhonePerfDev({
         surface: "ex-stack-fog-rise",
         cards: total,
         phoneLightweight: isPhone,
-        pin: !(isPhone || isPhoneStack),
+        pin: useFixedPin,
+        pinType: useFixedPin ? "fixed" : "none",
         stickyRunway: isPhone || isPhoneStack,
         fogSteps: fogStepped ? FOG_STEPS : "continuous",
       });
@@ -1027,11 +1030,12 @@ export function useExScrollMotion() {
           scrub: isPhoneStack ? true : 0.25,
           /*
            * Narrow screens use a CSS-sticky viewport inside a tall section.
-           * Preserves landmark storytelling without a GSAP pin spacer
-           * (unstable during mobile browser toolbar resizing).
+           * Desktop: Fixed-Background Mask Reveal — pinType "fixed" keeps
+           * photographs locked to the viewport; only the fog mask moves.
            */
-          pin: isPhone || isPhoneStack ? false : viewport,
-          pinSpacing: !(isPhone || isPhoneStack),
+          pin: useFixedPin ? viewport : false,
+          pinSpacing: useFixedPin,
+          ...(useFixedPin ? { pinType: "fixed" as const } : {}),
           anticipatePin: 1,
           fastScrollEnd: true,
           invalidateOnRefresh: !isPhone,
@@ -1041,21 +1045,27 @@ export function useExScrollMotion() {
           },
           onToggle: (self) => {
             section.classList.toggle("is-fog-active", self.isActive);
+            section.classList.toggle("is-stack-fixed-pin", self.isActive && useFixedPin);
             if (!self.isActive) {
               cards.forEach((card) =>
                 clearFogWillChange(card, getCardMedia(card)),
               );
             }
           },
-          /* Keep pinned width stable — no 100vw recalculation on pin */
+          /* Keep fixed-pin geometry full-bleed — no 100vw / left jump */
           onRefresh: (self) => {
             const pin = self.pin as HTMLElement | null;
             if (!pin) return;
             gsap.set(pin, {
               x: 0,
+              y: 0,
               left: 0,
+              top: 0,
+              width: "100%",
+              maxWidth: "none",
               marginLeft: 0,
-              clearProps: "marginRight",
+              marginRight: 0,
+              boxSizing: "border-box",
             });
           },
         },

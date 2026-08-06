@@ -1875,6 +1875,25 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   transform: translateZ(0);
 }
 
+/* Desktop fixed-pin active — photographs stay viewport-locked; fog mask moves */
+.ex-stack-scroll.is-stack-fixed-pin .ex-stack-scroll__viewport {
+  width: 100% !important;
+  max-width: none !important;
+  left: 0 !important;
+  right: auto !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  /* Only while GSAP fixed-pin is active — never on sticky phone runway */
+  contain: paint;
+}
+
+.ex-stack-scroll.is-stack-fixed-pin .ex-stack-scroll__card-media,
+.ex-stack-scroll.is-stack-fixed-pin .ex-stack-scroll__card-media img {
+  /* Ken-burns via GSAP only — no independent scroll/parallax on media */
+  backface-visibility: hidden;
+  transform-origin: center center;
+}
+
 /* Cream gold invitation under the landmark fog — mirrors Take Your Voyage Today */
 .ex-stack-scroll__silk {
   position: absolute;
