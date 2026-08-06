@@ -7,7 +7,7 @@ import type { SiteImageName } from "@/lib/site-image-slots";
 
 const GOLD = "#B69F64";
 const CREAM = "#ece8df";
-const DARK = "#16120e";
+const INK = "#1c1712";
 
 export type AmenitiesLandmarkSlide = {
   titleLines: string[];
@@ -38,9 +38,20 @@ type HomeAmenitiesSequenceProps = {
   bodyStyle?: CSSProperties;
 };
 
+function withColor(
+  style: CSSProperties | undefined,
+  color: string,
+): CSSProperties {
+  return { ...style, color };
+}
+
 /**
  * Faithful Springs amenities layout sequence:
  * i-intro → i-video → i-slider → i-opening
+ *
+ * Surfaces: gold #B69F64 / cream #ece8df
+ * On-image type: site typography + #B69F64
+ * On-gold/cream panels: site typography + dark ink for contrast
  */
 export function HomeAmenitiesSequence({
   landmarks,
@@ -124,19 +135,15 @@ export function HomeAmenitiesSequence({
 
   if (!intro) return null;
 
-  const goldTitle = { ...titleStyle, color: GOLD } satisfies CSSProperties;
-  const goldIndication = {
-    ...indicationStyle,
-    color: GOLD,
-  } satisfies CSSProperties;
-  const goldBody = {
-    ...bodyStyle,
-    color: "rgba(182, 159, 100, 0.92)",
-  } satisfies CSSProperties;
-  const creamBody = {
-    ...bodyStyle,
-    color: "rgba(28, 23, 18, 0.82)",
-  } satisfies CSSProperties;
+  // On images → site fonts + gold
+  const onImageTitle = withColor(titleStyle, GOLD);
+  const onImageIndication = withColor(indicationStyle, GOLD);
+  const onImageBody = withColor(bodyStyle, GOLD);
+
+  // On gold / cream panels → site fonts + dark ink (contrast)
+  const onPanelTitle = withColor(titleStyle, INK);
+  const onPanelIndication = withColor(indicationStyle, INK);
+  const onPanelBody = withColor(bodyStyle, INK);
 
   return (
     <section
@@ -161,12 +168,12 @@ export function HomeAmenitiesSequence({
           </div>
 
           <div className="home-am-intro__caption" data-am-intro-title>
-            <h2 className="home-am-intro__title" style={goldTitle}>
+            <h2 className="home-am-intro__title" style={onImageTitle}>
               {intro.titleLines.map((line) => (
                 <span key={line}>{line}</span>
               ))}
             </h2>
-            <p className="home-am-intro__indication" style={goldIndication}>
+            <p className="home-am-intro__indication" style={onImageIndication}>
               {intro.indication}
             </p>
           </div>
@@ -176,7 +183,7 @@ export function HomeAmenitiesSequence({
             data-am-intro-cream
             style={{ background: CREAM }}
           >
-            <p className="home-am-intro__cream-text" style={creamBody}>
+            <p className="home-am-intro__cream-text" style={onPanelBody}>
               {intro.body}
             </p>
           </div>
@@ -199,11 +206,11 @@ export function HomeAmenitiesSequence({
             </div>
 
             <div className="home-am-video__copy" data-am-video-copy>
-              <p style={goldBody}>{videoMain.body}</p>
+              <p style={onImageBody}>{videoMain.body}</p>
             </div>
 
             <div className="home-am-video__title" data-am-video-title>
-              <h2 style={goldTitle}>
+              <h2 style={onImageTitle}>
                 {(videoMain.titleLines.length
                   ? videoMain.titleLines
                   : [videoMain.indication]
@@ -229,12 +236,12 @@ export function HomeAmenitiesSequence({
             <div
               className="home-am-video__caption"
               data-am-video-caption
-              style={{ background: DARK }}
+              style={{ background: GOLD }}
             >
-              <h3 style={goldTitle}>
+              <h3 style={onPanelTitle}>
                 {videoInset?.titleLines?.join(" ") || videoMain.indication}
               </h3>
-              <p style={goldBody}>{videoInset?.body || videoMain.body}</p>
+              <p style={onPanelBody}>{videoInset?.body || videoMain.body}</p>
             </div>
           </div>
         </div>
@@ -248,7 +255,7 @@ export function HomeAmenitiesSequence({
               <div
                 className="home-am-slider__caption-col"
                 data-amenities-caption-col
-                style={{ background: DARK }}
+                style={{ background: GOLD }}
               >
                 <div className="home-am-slider__caption-stack">
                   {sliderSlides.map((slide, index) => (
@@ -258,13 +265,13 @@ export function HomeAmenitiesSequence({
                       data-amenities-caption
                       aria-hidden={index === 0 ? "false" : "true"}
                     >
-                      <p style={goldIndication}>{slide.indication}</p>
-                      <h2 style={goldTitle}>
+                      <p style={onPanelIndication}>{slide.indication}</p>
+                      <h2 style={onPanelTitle}>
                         {slide.titleLines.map((line) => (
                           <span key={line}>{line}</span>
                         ))}
                       </h2>
-                      <p style={goldBody}>{slide.body}</p>
+                      <p style={onPanelBody}>{slide.body}</p>
                     </div>
                   ))}
                 </div>
@@ -322,18 +329,18 @@ export function HomeAmenitiesSequence({
             <div
               className="home-am-opening__right"
               data-am-opening-right
-              style={{ background: DARK }}
+              style={{ background: GOLD }}
             >
               <h2
                 className="home-am-opening__title"
                 data-am-opening-title
-                style={goldTitle}
+                style={onPanelTitle}
               >
                 {stories[0]?.title || openingLeft.titleLines.join(" ")}
               </h2>
 
               <div className="home-am-opening__rail" data-am-opening-rail>
-                <p className="home-am-opening__rail-text" style={goldBody}>
+                <p className="home-am-opening__rail-text" style={onPanelBody}>
                   {stories[0]?.body || openingLeft.body}
                 </p>
                 <div className="home-am-opening__cards">
@@ -353,7 +360,7 @@ export function HomeAmenitiesSequence({
                           previewAnchor={card.previewAnchor}
                         />
                       </div>
-                      <figcaption style={goldIndication}>
+                      <figcaption style={onImageIndication}>
                         {card.label}
                       </figcaption>
                     </figure>
@@ -363,7 +370,7 @@ export function HomeAmenitiesSequence({
                   <a
                     className="home-am-opening__cta"
                     href={stories[0].href}
-                    style={{ color: GOLD }}
+                    style={onPanelIndication}
                   >
                     {stories[0].cta}
                   </a>
@@ -372,7 +379,7 @@ export function HomeAmenitiesSequence({
                   <a
                     className="home-am-opening__cta"
                     href={stories[1].href}
-                    style={{ color: GOLD }}
+                    style={onPanelIndication}
                   >
                     {stories[1].cta}
                   </a>

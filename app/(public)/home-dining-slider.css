@@ -1,13 +1,18 @@
 /* Springs amenities layout sequence on homepage:
-   i-intro → i-video → i-slider → i-opening */
+   i-intro → i-video → i-slider → i-opening
+   Surfaces: gold #B69F64 / cream #ece8df
+   Type: site typography (inline) — on-image gold, on-panel dark ink */
 
 .home-am-sequence {
+  --am-gold: #b69f64;
+  --am-cream: #ece8df;
+  --am-ink: #1c1712;
   position: relative;
   z-index: 21;
   width: 100%;
   margin: 0;
-  background: #16120e;
-  color: #b69f64;
+  background: var(--am-gold);
+  color: var(--am-ink);
 }
 
 [data-hathor-accordion] + .home-am-sequence,
@@ -27,7 +32,7 @@
   top: 0;
   height: 100svh;
   overflow: hidden;
-  background: #16120e;
+  background: var(--am-gold);
 }
 
 .home-am-intro__media {
@@ -62,8 +67,8 @@
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(22, 18, 14, 0.15) 40%,
-    rgba(22, 18, 14, 0.55) 100%
+    rgba(22, 18, 14, 0.12) 40%,
+    rgba(22, 18, 14, 0.42) 100%
   );
   pointer-events: none;
 }
@@ -80,12 +85,7 @@
 
 .home-am-intro__title {
   margin: 0;
-  font-family: var(--font-display, inherit);
-  font-size: clamp(3rem, 7vw, 6.5rem);
-  font-weight: 400;
   line-height: 0.95;
-  letter-spacing: -0.03em;
-  color: #b69f64 !important;
 }
 
 .home-am-intro__title span {
@@ -94,10 +94,8 @@
 
 .home-am-intro__indication {
   margin: 0.75rem 0 0;
-  font-size: clamp(0.7rem, 1vw, 0.82rem);
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #b69f64 !important;
 }
 
 .home-am-intro__cream {
@@ -110,17 +108,14 @@
   display: flex;
   align-items: flex-end;
   padding: clamp(1.5rem, 4vw, 3.5rem);
-  background: #ece8df;
+  background: var(--am-cream);
   will-change: clip-path;
 }
 
 .home-am-intro__cream-text {
   margin: 0;
   max-width: 28rem;
-  font-family: var(--font-display, inherit);
-  font-size: clamp(1.35rem, 2.4vw, 2.35rem);
   line-height: 1.25;
-  color: rgba(28, 23, 18, 0.88) !important;
 }
 
 /* ========== i-video ========== */
@@ -129,7 +124,7 @@
   height: 420svh;
   z-index: 2;
   margin-top: -1px;
-  background: #16120e;
+  background: var(--am-gold);
 }
 
 .home-am-video__sticky {
@@ -137,7 +132,7 @@
   top: 0;
   height: 100svh;
   overflow: hidden;
-  background: #16120e;
+  background: var(--am-gold);
 }
 
 .home-am-video__hero {
@@ -162,10 +157,7 @@
 
 .home-am-video__copy p {
   margin: 0;
-  font-family: var(--font-display, inherit);
-  font-size: clamp(0.95rem, 1.2vw, 1.15rem);
   line-height: 1.45;
-  color: #b69f64 !important;
 }
 
 .home-am-video__title {
@@ -180,11 +172,7 @@
 
 .home-am-video__title h2 {
   margin: 0;
-  font-family: var(--font-display, inherit);
-  font-size: clamp(2.6rem, 5.5vw, 5.5rem);
-  font-weight: 400;
   line-height: 0.98;
-  color: #b69f64 !important;
 }
 
 .home-am-video__title span {
@@ -213,24 +201,18 @@
   z-index: 5;
   width: min(50%, 36rem);
   padding: clamp(1.5rem, 3.5vw, 3rem);
-  background: #16120e;
+  background: var(--am-gold);
   will-change: transform, opacity;
 }
 
 .home-am-video__caption h3 {
   margin: 0 0 1rem;
-  font-family: var(--font-display, inherit);
-  font-size: clamp(1.2rem, 2vw, 1.85rem);
-  font-weight: 400;
   line-height: 1.25;
-  color: #b69f64 !important;
 }
 
 .home-am-video__caption p {
   margin: 0;
-  font-size: clamp(0.92rem, 1.15vw, 1.05rem);
   line-height: 1.5;
-  color: rgba(182, 159, 100, 0.9) !important;
 }
 
 /* ========== i-slider ========== */
@@ -238,7 +220,7 @@
   position: relative;
   height: 560svh;
   z-index: 3;
-  background: #16120e;
+  background: var(--am-gold);
 }
 
 .home-am-slider__sticky {
@@ -261,7 +243,7 @@
   flex-direction: column;
   justify-content: center;
   padding: clamp(1.5rem, 4vw, 3.5rem);
-  background: #16120e;
+  background: var(--am-gold);
   will-change: clip-path;
 }
 
@@ -284,19 +266,13 @@
 
 .home-am-slider__caption p:first-child {
   margin: 0;
-  font-size: 0.75rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #b69f64 !important;
 }
 
 .home-am-slider__caption h2 {
   margin: 0;
-  font-family: var(--font-display, inherit);
-  font-size: clamp(2rem, 3.8vw, 3.4rem);
-  font-weight: 400;
   line-height: 1.05;
-  color: #b69f64 !important;
 }
 
 .home-am-slider__caption h2 span {
@@ -306,9 +282,7 @@
 .home-am-slider__caption p:last-child {
   margin: 0;
   max-width: 22rem;
-  font-size: clamp(0.95rem, 1.2vw, 1.08rem);
   line-height: 1.55;
-  color: rgba(182, 159, 100, 0.9) !important;
 }
 
 .home-am-slider__scrollbar {
@@ -317,7 +291,7 @@
   bottom: 2rem;
   width: 1px;
   height: 120px;
-  background: rgba(182, 159, 100, 0.22);
+  background: rgba(28, 23, 18, 0.22);
   overflow: hidden;
 }
 
@@ -326,13 +300,13 @@
   height: 100%;
   transform: scaleY(0);
   transform-origin: top center;
-  background: #b69f64;
+  background: var(--am-ink);
 }
 
 .home-am-slider__images-col {
   position: relative;
   overflow: hidden;
-  background: #0f0c09;
+  background: var(--am-ink);
   will-change: clip-path;
 }
 
@@ -354,7 +328,7 @@
   position: relative;
   height: 280svh;
   z-index: 4;
-  background: #16120e;
+  background: var(--am-gold);
 }
 
 .home-am-opening__sticky {
@@ -382,7 +356,7 @@
   flex-direction: column;
   justify-content: flex-end;
   padding: clamp(1.5rem, 3.5vw, 3rem);
-  background: #16120e;
+  background: var(--am-gold);
   overflow: hidden;
   will-change: clip-path;
 }
@@ -393,12 +367,8 @@
   margin: 0 0 1.5rem;
   max-width: 18rem;
   margin-left: auto;
-  font-family: var(--font-display, inherit);
-  font-size: clamp(2rem, 3.6vw, 3.4rem);
-  font-weight: 400;
   line-height: 1.05;
   text-align: right;
-  color: #b69f64 !important;
 }
 
 .home-am-opening__rail {
@@ -413,9 +383,7 @@
 .home-am-opening__rail-text {
   margin: 0;
   max-width: 24rem;
-  font-size: clamp(0.95rem, 1.15vw, 1.08rem);
   line-height: 1.5;
-  color: rgba(182, 159, 100, 0.9) !important;
 }
 
 .home-am-opening__cards {
@@ -447,10 +415,8 @@
   bottom: 0.65rem;
   margin: 0;
   max-width: 6.5rem;
-  font-size: 0.62rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #b69f64 !important;
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
 }
 
@@ -458,13 +424,11 @@
   display: inline-flex;
   width: fit-content;
   margin-top: 0.25rem;
-  font-size: 0.75rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   text-decoration: none;
-  border-bottom: 1px solid rgba(182, 159, 100, 0.5);
+  border-bottom: 1px solid rgba(28, 23, 18, 0.45);
   padding-bottom: 0.15rem;
-  color: #b69f64 !important;
 }
 
 /* ========== Tablet ========== */
@@ -511,10 +475,6 @@
     right: 1.15rem;
   }
 
-  .home-am-intro__title {
-    font-size: clamp(2.4rem, 12vw, 3.4rem);
-  }
-
   .home-am-intro__cream {
     width: 100%;
     height: 42%;
@@ -539,10 +499,6 @@
     bottom: 38vh;
     max-width: none;
     text-align: left;
-  }
-
-  .home-am-video__title h2 {
-    font-size: clamp(2.2rem, 10vw, 3rem);
   }
 
   .home-am-video__inset {
