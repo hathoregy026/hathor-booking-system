@@ -1,15 +1,38 @@
 "use client";
 
-import { useRef, type CSSProperties } from "react";
+import { useMemo, useRef, useState, type CSSProperties } from "react";
 import Link from "next/link";
-import "@/app/gastronomy-dining.css";
+import { AnimatePresence, motion } from "framer-motion";
+import "@/app/gastronomy-mask-reveal.css";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
-import { useGastronomyDiningScroll } from "@/hooks/useGastronomyDiningScroll";
+import { useGastronomyFixedMaskReveal } from "@/hooks/useGastronomyFixedMaskReveal";
 import { GASTRONOMY_PAGE } from "@/lib/page-content";
 import { resolveGastronomyDiningImageSrc } from "@/lib/gastronomy-dining-image-src";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
+
+const COPY_EASE = [0.22, 1, 0.36, 1] as const;
+
+const PLATE_SLOTS = [
+  "gastronomy-plate-1",
+  "gastronomy-plate-2",
+  "gastronomy-plate-3",
+  "gastronomy-plate-4",
+  "gastronomy-plate-5",
+  "gastronomy-plate-6",
+  "gastronomy-plate-7",
+] as const;
+
+type ExhibitionPanel = {
+  id: string;
+  image: string;
+  previewAnchor?: boolean;
+  kicker: string;
+  title: string;
+  titleEm?: string;
+  body: string;
+};
 
 function splitHeading(text: string): { line1: string; line2: string } {
   const words = text.trim().split(/\s+/);
@@ -28,9 +51,7 @@ function DiningHeading({
   line1: string;
   line2: string;
 }) {
-  if (!line2.trim()) {
-    return <>{line1}</>;
-  }
+  if (!line2.trim()) return <>{line1}</>;
   return (
     <>
       {line1}
@@ -44,10 +65,12 @@ function DiningImg({
   name,
   alt,
   previewAnchor = false,
+  className,
 }: {
   name: string;
   alt: string;
   previewAnchor?: boolean;
+  className?: string;
 }) {
   const image = useSiteImage(name);
   const src = resolveGastronomyDiningImageSrc(name, image.src);
@@ -55,288 +78,244 @@ function DiningImg({
     <img
       src={src}
       alt={alt}
+      className={className}
       id={previewAnchor ? siteImageAnchorId(name) : undefined}
       data-site-image={name}
+      draggable={false}
     />
   );
 }
 
 export function GastronomyPageContent() {
-  const rootRef = useRef<HTMLDivElement>(null);
-  useGastronomyDiningScroll(rootRef);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef<HTMLElement>(null);
+  const [active, setActive] = useState(0);
   const { pages } = useWebsiteText();
   const gastronomy = pages.gastronomy;
   const hero = GASTRONOMY_PAGE.hero;
+
   const restaurantHeading = splitHeading(gastronomy.restaurantTitle);
   const atmosphereHeading = splitHeading(gastronomy.atmosphereTitle);
-  const introHeading = splitHeading(gastronomy.intro[1] ?? "");
   const closingHeading = splitHeading(gastronomy.closing);
-  const barHeading = splitHeading(gastronomy.venues[3]?.title ?? "Outdoor Bar");
   const venueLine = gastronomy.venues.map((venue) => venue.title).join(" · ");
   const venueCaption = gastronomy.venues
     .map((venue) => `${venue.title} — ${venue.description}`)
     .join(" ");
 
+  const panels = useMemo<ExhibitionPanel[]>(
+    () => [
+      {
+        id: "hero",
+        image: "gastronomy-hero",
+        previewAnchor: true,
+        kicker: hero.subtitle,
+        title: hero.title,
+        titleEm: hero.secondTitle,
+        body: gastronomy.intro[0],
+      },
+      {
+        id: "restaurant",
+        image: "gastronomy-restaurant",
+        kicker: gastronomy.restaurantTitle,
+        title: restaurantHeading.line1,
+        titleEm: restaurantHeading.line2,
+        body: gastronomy.restaurantService,
+      },
+      {
+        id: "atmosphere",
+        image: "gastronomy-table",
+        kicker: gastronomy.atmosphereTitle,
+        title: atmosphereHeading.line1,
+        titleEm: atmosphereHeading.line2,
+        body: gastronomy.atmosphere,
+      },
+      {
+        id: "venues-dining",
+        image: "gastronomy-courses",
+        kicker: venueLine,
+        title: gastronomy.venues[0]?.title ?? "",
+        titleEm: gastronomy.venues[1]?.title ?? "",
+        body: `${gastronomy.venues[0]?.description ?? ""} ${gastronomy.venues[1]?.description ?? ""}`.trim(),
+      },
+      {
+        id: "venues-bars",
+        image: "gastronomy-wine",
+        kicker: `${gastronomy.venues[2]?.title ?? ""} · ${gastronomy.venues[3]?.title ?? ""}`,
+        title: gastronomy.venues[2]?.title ?? "",
+        titleEm: gastronomy.venues[3]?.title ?? "",
+        body: `${gastronomy.venues[2]?.description ?? ""} ${gastronomy.venues[3]?.description ?? ""}`.trim(),
+      },
+      {
+        id: "journey",
+        image: "gastronomy-chef",
+        kicker: hero.secondTitle,
+        title: hero.title,
+        titleEm: hero.secondTitle,
+        body: gastronomy.intro[1],
+      },
+      {
+        id: "closing",
+        image: "gastronomy-celebration",
+        kicker: gastronomy.restaurantTitle,
+        title: closingHeading.line1,
+        titleEm: closingHeading.line2,
+        body: gastronomy.closing,
+      },
+    ],
+    [
+      hero,
+      gastronomy,
+      restaurantHeading,
+      atmosphereHeading,
+      closingHeading,
+      venueLine,
+    ],
+  );
+
+  useGastronomyFixedMaskReveal(stageRef, progressRef, setActive);
+
+  const current = panels[active] ?? panels[0];
+  const panelCount = panels.length;
+
   return (
-    <div ref={rootRef} className="gastronomy-dining-page">
-      <div className="gastronomy-dining-progress" aria-hidden="true">
-        <i data-v6-progress />
-      </div>
+    <div
+      className="gastronomy-mask-page"
+      style={{ "--gm-wipes": panelCount - 1 } as CSSProperties}
+    >
+      <section className="gm-intro" aria-label="Gastronomy introduction">
+        <motion.span
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.1, ease: COPY_EASE }}
+          className="gm-intro__kicker"
+        >
+          {hero.subtitle}
+        </motion.span>
+        <motion.h1
+          initial={{ opacity: 0, y: 28 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.35, delay: 0.12, ease: COPY_EASE }}
+          className="gm-intro__title"
+        >
+          {hero.title}
+          <br />
+          <em>{hero.secondTitle}</em>
+        </motion.h1>
+        <motion.div
+          initial={{ scaleY: 0, opacity: 0 }}
+          animate={{ scaleY: 1, opacity: 1 }}
+          transition={{ duration: 1.2, delay: 0.45, ease: COPY_EASE }}
+          className="gm-intro__cue"
+          aria-hidden="true"
+        />
+      </section>
 
-      <section className="dining-hero" data-v6-scroll>
-        <div className="dining-hero__sticky">
-          <figure className="dining-hero__layer dining-hero__layer--a">
-            <DiningImg name="gastronomy-hero" alt="Candlelit private dining table" previewAnchor />
-          </figure>
-          <figure className="dining-hero__layer dining-hero__layer--b">
-            <DiningImg name="gastronomy-table" alt="Long table set for a private party" />
-          </figure>
-          <figure className="dining-hero__layer dining-hero__layer--c">
-            <DiningImg name="gastronomy-courses" alt="Tasting menu plates overhead" />
-          </figure>
-          <figure className="dining-hero__layer dining-hero__layer--d">
-            <DiningImg name="gastronomy-wine" alt="Wine and crystal in warm light" />
-          </figure>
-          <div className="dining-hero__veil" aria-hidden="true" />
-          <div className="dining-hero__copy dining-hero__copy--open">
-            <span>{hero.subtitle}</span>
-            <h1>
-              <DiningHeading line1={hero.title} line2={hero.secondTitle} />
-            </h1>
-            <p>{gastronomy.intro[0]}</p>
-          </div>
-          <div className="dining-hero__copy dining-hero__copy--mid">
-            <span>{gastronomy.atmosphereTitle}</span>
-            <h2>
-              <DiningHeading
-                line1={atmosphereHeading.line1}
-                line2={atmosphereHeading.line2}
+      <section
+        className="gm-exhibition"
+        aria-label="Gastronomy exhibition"
+        data-gastronomy-exhibition
+      >
+        <div ref={stageRef} className="gm-stage">
+          {panels.map((panel) => (
+            <div
+              key={panel.id}
+              data-gastronomy-panel
+              className="gm-panel"
+              aria-hidden={panel.id !== current.id}
+            >
+              <DiningImg
+                name={panel.image}
+                alt=""
+                previewAnchor={panel.previewAnchor}
               />
-            </h2>
-          </div>
-          <div className="dining-hero__copy dining-hero__copy--end">
-            <span>{gastronomy.restaurantTitle}</span>
-            <h2>
-              <DiningHeading
-                line1={restaurantHeading.line1}
-                line2={restaurantHeading.line2}
-              />
-            </h2>
-            <a href="#orbit">{hero.secondTitle}</a>
-          </div>
-          <div className="gastronomy-dining-hero__edge">GASTRONOMY 01 / 12</div>
-        </div>
-      </section>
-
-      <section id="orbit" className="dining-orbit" data-v6-scroll>
-        <div className="dining-orbit__sticky">
-          <div className="dining-orbit__word">{hero.secondTitle}</div>
-          <figure className="dining-plate dining-plate--one">
-            <DiningImg name="gastronomy-plate-1" alt="Signature tasting plate" />
-          </figure>
-          <figure className="dining-plate dining-plate--two">
-            <DiningImg name="gastronomy-plate-2" alt="Dessert plate" />
-          </figure>
-          <figure className="dining-plate dining-plate--three">
-            <DiningImg name="gastronomy-plate-3" alt="Seafood tasting plate" />
-          </figure>
-          <figure className="dining-plate dining-plate--four">
-            <DiningImg name="gastronomy-plate-4" alt="Seasonal plate" />
-          </figure>
-          <div className="dining-orbit__copy">
-            <span>{venueLine}</span>
-            <h2>
-              <DiningHeading line1={introHeading.line1} line2={introHeading.line2} />
-            </h2>
-            <p>{gastronomy.intro[1]}</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="dining-course" data-v6-scroll>
-        <div className="dining-course__sticky">
-          <figure className="dining-course__bg dining-course__bg--1">
-            <DiningImg name="gastronomy-hero" alt="Restaurant atmosphere" />
-          </figure>
-          <figure className="dining-course__bg dining-course__bg--2">
-            <DiningImg name="gastronomy-restaurant" alt="Table detail" />
-          </figure>
-          <figure className="dining-course__cutout">
-            <DiningImg name="gastronomy-plate-1" alt="Opening plate" />
-          </figure>
-          <div className="dining-course__meta">
-            <span>{gastronomy.restaurantTitle}</span>
-            <h2>
-              <DiningHeading
-                line1={restaurantHeading.line1}
-                line2={restaurantHeading.line2}
-              />
-            </h2>
-            <p>{gastronomy.restaurantService}</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="dining-course dining-course--sea" data-v6-scroll>
-        <div className="dining-course__sticky">
-          <figure className="dining-course__bg dining-course__bg--1">
-            <DiningImg name="gastronomy-table" alt="Dining atmosphere" />
-          </figure>
-          <figure className="dining-course__bg dining-course__bg--2">
-            <DiningImg name="gastronomy-wine" alt="Wine service" />
-          </figure>
-          <figure className="dining-course__cutout dining-course__cutout--right">
-            <DiningImg name="gastronomy-plate-3" alt="Seafood plate" />
-          </figure>
-          <div className="dining-course__meta dining-course__meta--left">
-            <span>{gastronomy.atmosphereTitle}</span>
-            <h2>
-              <DiningHeading
-                line1={atmosphereHeading.line1}
-                line2={atmosphereHeading.line2}
-              />
-            </h2>
-            <p>{gastronomy.atmosphere}</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="dining-cascade" data-v6-scroll>
-        <div className="dining-cascade__sticky">
-          <header>
-            <span>{venueLine}</span>
-            <h2>
-              <DiningHeading
-                line1={gastronomy.venues[0]?.title ?? ""}
-                line2={gastronomy.venues[1]?.title ?? ""}
-              />
-            </h2>
-          </header>
-          <div className="dining-cascade__stack">
-            <figure style={{ "--i": 0 } as CSSProperties}>
-              <DiningImg name="gastronomy-courses" alt="Course tableau" />
-            </figure>
-            <figure style={{ "--i": 1 } as CSSProperties}>
-              <DiningImg name="gastronomy-chef" alt="Chef finishing a plate" />
-            </figure>
-            <figure style={{ "--i": 2 } as CSSProperties}>
-              <DiningImg name="gastronomy-service" alt="Service at the table" />
-            </figure>
-            <figure style={{ "--i": 3 } as CSSProperties}>
-              <DiningImg name="gastronomy-restaurant" alt="Table setting" />
-            </figure>
-            <figure style={{ "--i": 4 } as CSSProperties}>
-              <DiningImg name="gastronomy-table" alt="Dining atmosphere" />
-            </figure>
-            <figure style={{ "--i": 5 } as CSSProperties}>
-              <DiningImg name="gastronomy-celebration" alt="Evening celebration" />
-            </figure>
-          </div>
-        </div>
-      </section>
-
-      <section className="dining-wine" data-v6-scroll>
-        <div className="dining-wine__sticky">
-          <DiningImg name="gastronomy-wine" alt="Wine service" />
-          <div className="dining-wine__veil" aria-hidden="true" />
-          <div className="dining-wine__copy">
-            <span>{gastronomy.venues[2]?.title ?? "Indoor Bar"}</span>
-            <h2>
-              <DiningHeading line1={barHeading.line1} line2={barHeading.line2} />
-            </h2>
-            <p>
-              {gastronomy.venues[2]?.description} {gastronomy.venues[3]?.description}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="dining-chef" data-v6-scroll>
-        <div className="dining-chef__sticky">
-          <figure className="dining-chef__frame dining-chef__frame--back">
-            <DiningImg name="gastronomy-table" alt="Dining room glow" />
-          </figure>
-          <figure className="dining-chef__frame dining-chef__frame--front">
-            <DiningImg name="gastronomy-chef" alt="Private chef plating" />
-          </figure>
-          <div className="dining-chef__copy">
-            <span>{gastronomy.restaurantTitle}</span>
-            <h2>
-              <DiningHeading
-                line1={restaurantHeading.line1}
-                line2={restaurantHeading.line2}
-              />
-            </h2>
-            <p>{gastronomy.restaurantService}</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="dining-course dining-course--sweet" data-v6-scroll>
-        <div className="dining-course__sticky">
-          <figure className="dining-course__bg dining-course__bg--1">
-            <DiningImg name="gastronomy-courses" alt="Sweet course atmosphere" />
-          </figure>
-          <figure className="dining-course__bg dining-course__bg--2">
-            <DiningImg name="gastronomy-celebration" alt="Celebration light" />
-          </figure>
-          <figure className="dining-course__cutout">
-            <DiningImg name="gastronomy-plate-2" alt="Dessert plate" />
-          </figure>
-          <div className="dining-course__meta">
-            <span>{gastronomy.restaurantTitle}</span>
-            <h2>
-              <DiningHeading
-                line1={closingHeading.line1}
-                line2={closingHeading.line2}
-              />
-            </h2>
-            <p>{gastronomy.closing}</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="dining-gallery" data-v6-scroll>
-        <div className="dining-gallery__sticky">
-          <header>
-            <span>{venueLine}</span>
-            <h2>
-              <DiningHeading
-                line1={gastronomy.venues[0]?.title ?? ""}
-                line2={gastronomy.venues[1]?.title ?? ""}
-              />
-            </h2>
-          </header>
-          <figure className="dining-gallery__a">
-            <DiningImg name="gastronomy-plate-5" alt="Plate one" />
-          </figure>
-          <figure className="dining-gallery__b">
-            <DiningImg name="gastronomy-plate-6" alt="Plate two" />
-          </figure>
-          <figure className="dining-gallery__c">
-            <DiningImg name="gastronomy-plate-7" alt="Plate three" />
-          </figure>
-          <div className="dining-gallery__caption">{venueCaption}</div>
-        </div>
-      </section>
-
-      <section id="reserve" className="dining-finale" data-v6-scroll>
-        <div className="dining-finale__sticky">
-          <DiningImg name="gastronomy-hero" alt="Private dining at night" />
-          <div className="dining-finale__veil" aria-hidden="true" />
-          <div className="dining-finale__copy">
-            <span>{hero.subtitle}</span>
-            <h2>
-              <DiningHeading line1={hero.title} line2={hero.secondTitle} />
-            </h2>
-            <p>{gastronomy.closing}</p>
-            <div className="dining-finale__actions">
-              <BookNowTrigger className="btn btn-primary">Book Now</BookNowTrigger>
-              <Link className="btn btn-secondary" href="/wellness">
-                Wellness
-              </Link>
+              <div className="gm-panel__veil" aria-hidden="true" />
             </div>
+          ))}
+
+          <div className="gm-progress" aria-hidden="true">
+            <i ref={progressRef} />
           </div>
+
+          <div className="gm-overlay">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`badge-${current.id}`}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 8 }}
+                transition={{ duration: 0.7, ease: COPY_EASE }}
+                className="gm-badge"
+              >
+                <div>
+                  <p className="gm-badge__kicker">
+                    {hero.secondTitle} 0{active + 1}
+                  </p>
+                  <h2 className="gm-badge__title">{current.kicker}</h2>
+                </div>
+                <span className="gm-badge__count">
+                  [{active + 1}/{panelCount}]
+                </span>
+              </motion.div>
+            </AnimatePresence>
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`copy-${current.id}`}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -16 }}
+                transition={{ duration: 0.85, ease: COPY_EASE }}
+                className="gm-copy-panel"
+              >
+                <p className="gm-copy-panel__kicker">{current.kicker}</p>
+                <h3 className="gm-copy-panel__title">
+                  <DiningHeading
+                    line1={current.title}
+                    line2={current.titleEm ?? ""}
+                  />
+                </h3>
+                <p className="gm-copy-panel__body">{current.body}</p>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
+      </section>
+
+      <section className="gm-plates" aria-label="Signature plates">
+        <header className="gm-plates__header">
+          <span>{venueLine}</span>
+          <h2>
+            <DiningHeading
+              line1={gastronomy.venues[0]?.title ?? ""}
+              line2={gastronomy.venues[1]?.title ?? ""}
+            />
+          </h2>
+        </header>
+        <div className="gm-plates__grid">
+          {PLATE_SLOTS.map((slot, index) => (
+            <figure key={slot} className="gm-plates__item">
+              <DiningImg
+                name={slot}
+                alt={`Signature plate ${index + 1}`}
+                previewAnchor={index === 0}
+              />
+            </figure>
+          ))}
+        </div>
+        <p className="gm-plates__caption">{venueCaption}</p>
+      </section>
+
+      <section className="gm-finale" id="reserve" aria-label="Reserve">
+        <span>{hero.subtitle}</span>
+        <h2>
+          <DiningHeading line1={hero.title} line2={hero.secondTitle} />
+        </h2>
+        <p>{gastronomy.closing}</p>
+        <div className="gm-finale__actions">
+          <BookNowTrigger className="btn btn-primary">Book Now</BookNowTrigger>
+          <Link className="btn btn-secondary" href="/wellness">
+            Wellness
+          </Link>
         </div>
       </section>
     </div>

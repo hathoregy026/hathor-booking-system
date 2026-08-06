@@ -77,7 +77,7 @@ function applyHorizontalWipe(
 }
 
 export function useGastronomyFixedMaskReveal(
-  stageRef: RefObject<HTMLElement | null>,
+  stageRef: RefObject<HTMLDivElement | null>,
   progressRef: RefObject<HTMLElement | null>,
   onActiveChange: (index: number) => void,
 ) {
