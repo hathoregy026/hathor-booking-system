@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useState, type CSSProperties } from "react";
 import rotatingWheel from "@/assets/LOGOS/rotating-wheel-hathor-cruise.png";
+import { HomeLandmarkMaskSection } from "@/components/home/HomeLandmarkMaskSection";
 import LuxuryAccordion from "@/components/home/LuxuryAccordion";
 import { HomeCampaignSection } from "@/components/home/HomeCampaignSection";
 import { HomeTextStorySection } from "@/components/home/HomeTextStorySection";
@@ -56,9 +57,6 @@ const GALLERY_PREVIEW_ANCHORS = new Set([
   "moving-tilted-4",
   "moving-tilted-5",
 ]);
-
-/** Gold invitation under the landmark stack — same language as Take Your Voyage Today */
-const STACK_SILK_ROWS = ["SECURE YOUR", "PRIVATE", "PASSAGE"] as const;
 
 /** Full-resolution CMS photo for marquee cards (no Next image optimizer). */
 function GalleryMarqueePhoto({
@@ -396,134 +394,6 @@ export function HomePageClient({
           </div>
         </section>
 
-        <section
-          className="ex-stack-scroll ex-content-section signature-fog-rise"
-          id="details"
-          data-site-image-pin-root
-          data-mobile-fog-rise=""
-          aria-label="Every landmark, a pleasure"
-        >
-          <div className="ex-stack-scroll__viewport">
-            <div
-              className="ex-stack-scroll__silk"
-              data-stack-silk
-              aria-hidden="true"
-            >
-              <div className="ex-stack-scroll__silk-copy">
-                {STACK_SILK_ROWS.map((row) => (
-                  <div className="ex-stack-scroll__silk-row" key={row}>
-                    {Array.from(row).map((character, index) => (
-                      <span
-                        className="ex-stack-scroll__silk-letter"
-                        key={`${row}-${index}`}
-                      >
-                        <span className="ex-stack-scroll__silk-char">
-                          {character === " " ? "\u00A0" : character}
-                        </span>
-                      </span>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="ex-stack-scroll__cards" aria-hidden="true">
-              {stackSlides.map((slide, index) => (
-                <div key={slide.imageName} className="ex-stack-scroll__card">
-                  <div
-                    className="ex-stack-scroll__card-media"
-                    id={
-                      HOMEPAGE_PREVIEW_SLOTS.has(slide.imageName)
-                        ? `site-image-${slide.imageName}`
-                        : undefined
-                    }
-                    data-site-image={
-                      HOMEPAGE_PREVIEW_SLOTS.has(slide.imageName)
-                        ? slide.imageName
-                        : undefined
-                    }
-                    data-site-image-pin-index={String(index)}
-                    data-site-image-pin-total={String(stackSlides.length)}
-                  >
-                    <ManagedImage
-                      name={slide.imageName}
-                      alt={slide.alt}
-                      fill
-                      sizes="100vw"
-                      unoptimized={false}
-                      className="object-cover object-center"
-                      previewAnchor={false}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="ex-stack-scroll__copy typo-on-images">
-              <span
-                className="ex-stack-scroll__pager"
-                data-stack-pager
-                aria-hidden="true"
-              >
-                <i
-                  className="ex-stack-scroll__pager-num"
-                  data-stack-pager-num
-                >
-                  01
-                </i>
-                {" / "}
-                <span className="ex-stack-scroll__pager-total">
-                  {String(stackSlides.length).padStart(2, "0")}
-                </span>
-              </span>
-              {stackSlides.map((slide, index) => (
-                <div
-                  key={`copy-${slide.imageName}`}
-                  className="ex-stack-scroll__copy-panel"
-                  data-stack-copy-index={String(index)}
-                  aria-hidden={index === 0 ? "false" : "true"}
-                >
-                  <h2
-                    className="ex-stack-scroll__title typo-on-images-title"
-                    style={stackTitleStyle}
-                  >
-                    {slide.titleLines.map((line) => (
-                      <span
-                        key={`${slide.imageName}-${line}`}
-                        className="ex-stack-scroll__title-line typo-on-images-title"
-                        style={stackTitleStyle}
-                      >
-                        {line}
-                      </span>
-                    ))}
-                  </h2>
-                  <p
-                    className="ex-stack-scroll__eyebrow typo-on-images-indication"
-                    style={stackEyebrowStyle}
-                  >
-                    {slide.indication}
-                  </p>
-                  <p
-                    className="ex-stack-scroll__body typo-on-images-body"
-                    style={stackBodyStyle}
-                  >
-                    {slide.body}
-                  </p>
-                </div>
-              ))}
-              <div
-                className="ex-stack-scroll__progress"
-                data-stack-progress
-                aria-hidden="true"
-              >
-                {stackSlides.map((slide) => (
-                  <span key={`progress-${slide.imageName}`} />
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
         <LuxuryAccordion
           items={accordionCruises.map((cruise) => ({
             id: cruise.id,
@@ -535,6 +405,31 @@ export function HomePageClient({
             href: cruise.href,
             ctaLabel: "Check Voyages",
           }))}
+        />
+
+        <HomeLandmarkMaskSection
+          slides={stackSlides.map((slide) => ({
+            ...slide,
+            previewAnchor: HOMEPAGE_PREVIEW_SLOTS.has(slide.imageName),
+          }))}
+          titleStyle={stackTitleStyle}
+          indicationStyle={stackEyebrowStyle}
+          bodyStyle={stackBodyStyle}
+        />
+
+        <HomeTextStorySection
+          slides={EX_TEXT_BLOCKS.map((block, index) => {
+            const cms = websiteText.home.textBlocks[index];
+            return {
+              title: cms?.title ?? block.title,
+              body: cms?.body ?? block.body,
+              cta: cms?.cta ?? block.cta,
+              href: block.href,
+              imageName: block.imageName,
+              imageAlt: block.alt,
+              previewAnchor: HOMEPAGE_PREVIEW_SLOTS.has(block.imageName),
+            };
+          })}
         />
 
         <section
@@ -589,21 +484,6 @@ export function HomePageClient({
             </div>
           </div>
         </section>
-
-        <HomeTextStorySection
-          slides={EX_TEXT_BLOCKS.map((block, index) => {
-            const cms = websiteText.home.textBlocks[index];
-            return {
-              title: cms?.title ?? block.title,
-              body: cms?.body ?? block.body,
-              cta: cms?.cta ?? block.cta,
-              href: block.href,
-              imageName: block.imageName,
-              imageAlt: block.alt,
-              previewAnchor: HOMEPAGE_PREVIEW_SLOTS.has(block.imageName),
-            };
-          })}
-        />
 
         <section className="gallery-section ex-content-section" id="gallery">
           <GalleryInstagramFollow

@@ -33,6 +33,7 @@ export function HomeTextStorySection({ slides }: HomeTextStorySectionProps) {
       ref={sectionRef}
       className="home-dining-slider ex-content-section"
       id="escape"
+      data-home-mask-id="home-dining-story-mask"
       aria-label="Hathor experiences"
     >
       <div className="home-dining-slider__stage">
@@ -97,6 +98,7 @@ export function HomeTextStorySection({ slides }: HomeTextStorySectionProps) {
                 <Link
                   href={slide.href}
                   className="home-dining-slider__image-link"
+                  data-home-mask-image
                   aria-label={slide.cta}
                   id={
                     slide.previewAnchor

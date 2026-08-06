@@ -1,5 +1,150 @@
-/* Homepage port of the dining page's #de-slider.
-   Layout is isolated so legacy home-story rules cannot affect it. */
+/* Shared dining-page Fixed-Background Mask Reveal language.
+   Both homepage stories are isolated from the retired fog stack. */
+.home-stack-mask {
+  position: relative;
+  z-index: 21;
+  width: 100%;
+  height: 560svh;
+  margin: 0;
+  overflow: visible;
+  background: #16120e;
+}
+
+.home-stack-mask__stage {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+  background: #16120e;
+}
+
+.home-stack-mask__images,
+.home-stack-mask__image-panel,
+.home-stack-mask__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.home-stack-mask__image-panel {
+  margin: 0;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+  will-change: clip-path;
+}
+
+.home-stack-mask__image {
+  will-change: transform;
+}
+
+.home-stack-mask__image img {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.home-stack-mask__shade {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(8, 6, 4, 0.7) 0%, rgba(8, 6, 4, 0.24) 43%, transparent 72%),
+    linear-gradient(0deg, rgba(8, 6, 4, 0.42) 0%, transparent 48%);
+}
+
+.home-stack-mask__captions {
+  position: absolute;
+  inset: 0;
+  z-index: 11;
+  color: #fffaf0;
+  pointer-events: none;
+}
+
+.home-stack-mask__pager {
+  position: absolute;
+  top: max(calc(var(--site-nav-total-height, 5.75rem) + 1rem), 7svh);
+  left: clamp(1.5rem, 3.5vw, 4rem);
+  z-index: 2;
+  font-size: 0.66rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.14em;
+  line-height: 1;
+}
+
+.home-stack-mask__pager i {
+  font-style: normal;
+}
+
+.home-stack-mask__caption-item {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  max-width: min(48rem, 68vw);
+  flex-direction: column;
+  justify-content: flex-end;
+  padding:
+    max(calc(var(--site-nav-total-height, 5.75rem) + 3rem), 16svh)
+    clamp(1.5rem, 3.5vw, 4rem)
+    clamp(5.5rem, 11vh, 8rem);
+  will-change: transform, opacity;
+}
+
+.home-stack-mask__title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.01em;
+  max-width: 12ch;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.home-stack-mask__title span {
+  display: block;
+}
+
+.home-stack-mask__indication {
+  margin: clamp(0.75rem, 2vh, 1.4rem) 0 0;
+}
+
+.home-stack-mask__body {
+  max-width: 44ch;
+  margin: clamp(0.8rem, 1.8vh, 1.25rem) 0 0;
+}
+
+.home-stack-mask__progress {
+  position: absolute;
+  right: clamp(1.5rem, 3.5vw, 4rem);
+  bottom: clamp(2.5rem, 5vh, 4rem);
+  left: clamp(1.5rem, 3.5vw, 4rem);
+  height: 1px;
+  overflow: hidden;
+  background: rgba(255, 250, 240, 0.34);
+}
+
+.home-stack-mask__progress span {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background: #fffaf0;
+  transform: scaleX(0);
+  transform-origin: left center;
+  will-change: transform;
+}
+
+.home-stack-mask + .home-dining-slider,
+.home-dining-slider + .home-helm-portal {
+  margin-top: 0 !important;
+}
+
 .home-dining-slider {
   --hds-caption-width: 40%;
   --hds-cream: var(--cream, #ece8df);
@@ -152,6 +297,16 @@
 }
 
 @media (max-width: 1024px) {
+  .home-stack-mask {
+    height: 500svh;
+  }
+
+  .home-stack-mask__caption-item {
+    max-width: min(40rem, 78vw);
+    padding-right: clamp(1.5rem, 5vw, 3rem);
+    padding-left: clamp(1.5rem, 5vw, 3rem);
+  }
+
   .home-dining-slider {
     --hds-caption-width: 48%;
     height: 320svh;
@@ -174,6 +329,48 @@
 }
 
 @media (max-width: 480px) {
+  .home-stack-mask {
+    height: 420svh;
+  }
+
+  .home-stack-mask__shade {
+    background:
+      linear-gradient(0deg, rgba(8, 6, 4, 0.78) 0%, rgba(8, 6, 4, 0.18) 68%, transparent 100%);
+  }
+
+  .home-stack-mask__pager {
+    top: max(calc(var(--site-nav-total-height, 4.25rem) + 0.8rem), 9svh);
+    left: max(1rem, env(safe-area-inset-left));
+  }
+
+  .home-stack-mask__caption-item {
+    max-width: none;
+    justify-content: flex-end;
+    padding:
+      calc(var(--site-nav-total-height, 4.25rem) + 4rem)
+      max(1rem, env(safe-area-inset-right))
+      max(5rem, calc(3.5rem + env(safe-area-inset-bottom)))
+      max(1rem, env(safe-area-inset-left));
+  }
+
+  .home-stack-mask__title {
+    max-width: 10ch;
+  }
+
+  .home-stack-mask__body {
+    display: -webkit-box;
+    max-width: 34ch;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+  }
+
+  .home-stack-mask__progress {
+    right: max(1rem, env(safe-area-inset-right));
+    bottom: max(2rem, env(safe-area-inset-bottom));
+    left: max(1rem, env(safe-area-inset-left));
+  }
+
   .home-dining-slider {
     --hds-caption-width: 100%;
     height: 260svh;
@@ -231,6 +428,27 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .home-stack-mask {
+    height: 100svh;
+  }
+
+  .home-stack-mask__stage {
+    position: relative;
+  }
+
+  .home-stack-mask__image-panel:not(:first-child),
+  .home-stack-mask__caption-item:not(:first-of-type) {
+    display: none;
+  }
+
+  .home-stack-mask__image-panel,
+  .home-stack-mask__caption-item {
+    opacity: 1 !important;
+    visibility: visible !important;
+    clip-path: none !important;
+    transform: none !important;
+  }
+
   .home-dining-slider {
     height: auto;
   }

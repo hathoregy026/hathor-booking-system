@@ -33,6 +33,13 @@ export function useHomeStoryFixedMaskReveal(
     const progressLine = section.querySelector<HTMLElement>(
       "[data-home-story-progress]",
     );
+    const pagerNumber = section.querySelector<HTMLElement>(
+      "[data-home-story-pager-num]",
+    );
+    const progressAxis =
+      progressLine?.dataset.homeStoryProgressAxis === "x" ? "x" : "y";
+    const triggerId =
+      section.dataset.homeMaskId ?? "home-story-fixed-mask";
 
     const context = gsap.context(() => {
       if (reducedMotion) {
@@ -53,9 +60,9 @@ export function useHomeStoryFixedMaskReveal(
           zIndex: index + 1,
         });
         const image = panel.querySelector<HTMLElement>(
-          ".home-dining-slider__image-link",
+          "[data-home-mask-image]",
         );
-        if (image) gsap.set(image, { scale: index === 0 ? 1.12 : 1.2 });
+        if (image) gsap.set(image, { scale: index === 0 ? 1.1 : 1.16 });
       });
       captions.forEach((caption, index) => {
         gsap.set(caption, {
@@ -63,63 +70,116 @@ export function useHomeStoryFixedMaskReveal(
           y: index === 0 ? 0 : 24,
         });
       });
-      if (progressLine) gsap.set(progressLine, { scaleY: 0 });
+      if (progressLine) {
+        gsap.set(progressLine, progressAxis === "x" ? { scaleX: 0 } : { scaleY: 0 });
+      }
 
       const setProgress = (progress: number) => {
-        // 0.00–0.30: first story holds for reading.
-        // 0.30–0.68: second image wipes upward and its caption crosses in.
-        // 0.68–1.00: second story settles and holds before release.
-        const revealStart = isCompact ? 0.26 : 0.3;
-        const revealEnd = isCompact ? 0.7 : 0.68;
-        const wipeProgress = luxWipe(
-          clamp((progress - revealStart) / (revealEnd - revealStart)),
-        );
-        const captionOut = luxWipe(
-          clamp((progress - revealStart) / 0.1),
-        );
-        const captionIn = luxWipe(
-          clamp((progress - (revealStart + 0.1)) / 0.1),
-        );
+        const isTwoSlideStory = panels.length === 2;
+        const twoSlideStart = isCompact ? 0.26 : 0.3;
+        const twoSlideEnd = isCompact ? 0.7 : 0.68;
+        const transitionProgress = panels.map((_, index) => {
+          if (index === 0) return 1;
+          if (isTwoSlideStory) {
+            return luxWipe(
+              clamp(
+                (progress - twoSlideStart) /
+                  (twoSlideEnd - twoSlideStart),
+              ),
+            );
+          }
+          const center = index / panels.length;
+          const halfWidth = isCompact ? 0.075 : 0.065;
+          return luxWipe(
+            clamp(
+              (progress - (center - halfWidth)) /
+                (halfWidth * 2),
+            ),
+          );
+        });
 
         panels.forEach((panel, index) => {
           if (index === 0) {
             const image = panel.querySelector<HTMLElement>(
-              ".home-dining-slider__image-link",
+              "[data-home-mask-image]",
             );
-            if (image) gsap.set(image, { scale: 1.12 - progress * 0.12 });
+            if (image) gsap.set(image, { scale: 1.1 - progress * 0.1 });
           } else {
+            const wipeProgress = transitionProgress[index];
             const inset = (1 - wipeProgress) * 100;
             gsap.set(panel, { clipPath: `inset(${inset}% 0 0 0)` });
             const image = panel.querySelector<HTMLElement>(
-              ".home-dining-slider__image-link",
+              "[data-home-mask-image]",
             );
-            if (image) gsap.set(image, { scale: 1.2 - wipeProgress * 0.2 });
+            if (image) gsap.set(image, { scale: 1.16 - wipeProgress * 0.16 });
           }
         });
 
         captions.forEach((caption, index) => {
-          const visibility = index === 0 ? 1 - captionOut : captionIn;
+          let visibility: number;
+          if (isTwoSlideStory) {
+            const captionOut = luxWipe(
+              clamp((progress - twoSlideStart) / 0.1),
+            );
+            const captionIn = luxWipe(
+              clamp((progress - (twoSlideStart + 0.1)) / 0.1),
+            );
+            visibility = index === 0 ? 1 - captionOut : captionIn;
+          } else {
+            const previousCenter = index / panels.length;
+            const nextCenter = (index + 1) / panels.length;
+            const visibilityIn =
+              index === 0
+                ? 1
+                : luxWipe(
+                    clamp((progress - (previousCenter - 0.01)) / 0.07),
+                  );
+            const visibilityOut =
+              index === panels.length - 1
+                ? 1
+                : 1 -
+                  luxWipe(
+                    clamp((progress - (nextCenter - 0.08)) / 0.07),
+                  );
+            visibility = Math.min(visibilityIn, visibilityOut);
+          }
           gsap.set(caption, {
             autoAlpha: visibility,
-            y: index === 0 ? -12 * captionOut : 18 * (1 - captionIn),
+            y: 18 * (1 - visibility),
           });
           caption.setAttribute(
             "aria-hidden",
             visibility < 0.5 ? "true" : "false",
           );
         });
+        const activeIndex = isTwoSlideStory
+          ? transitionProgress[1] >= 0.5
+            ? 1
+            : 0
+          : Math.min(
+              panels.length - 1,
+              Math.floor(progress * panels.length),
+            );
         panels.forEach((panel, index) => {
           panel.setAttribute(
             "aria-hidden",
-            index === (wipeProgress >= 0.5 ? 1 : 0) ? "false" : "true",
+            index === activeIndex ? "false" : "true",
           );
         });
-        if (progressLine) gsap.set(progressLine, { scaleY: progress });
+        if (pagerNumber) {
+          pagerNumber.textContent = String(activeIndex + 1).padStart(2, "0");
+        }
+        if (progressLine) {
+          gsap.set(
+            progressLine,
+            progressAxis === "x" ? { scaleX: progress } : { scaleY: progress },
+          );
+        }
       };
 
       setProgress(0);
       const trigger = ScrollTrigger.create({
-        id: "home-story-fixed-mask",
+        id: triggerId,
         trigger: section,
         start: () => section.getBoundingClientRect().top + window.scrollY,
         end: () =>
