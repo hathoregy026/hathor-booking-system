@@ -22,6 +22,7 @@ export const GASTRONOMY_DINING_SLOT_SRC: Record<string, string> = {
 /**
  * Keep the GPT dining visuals unless the dashboard has a real custom upload.
  * Legacy CMS rows still pointing at /media/hathor/r2/*.webp must not win.
+ * Prefer local optimized uploads over hardcoded Supabase defaults.
  */
 export function resolveGastronomyDiningImageSrc(
   name: string,
@@ -33,7 +34,12 @@ export function resolveGastronomyDiningImageSrc(
   const src = cmsSrc.trim();
   if (!src) return diningDefault;
   if (src.includes("/media/gastronomy-dining/")) return src;
-  if (/^https?:\/\//i.test(src) && !src.includes("/media/hathor/r2/")) {
+  if (src.includes("/media/hathor/optimized/")) return src;
+  if (
+    /^https?:\/\//i.test(src) &&
+    !src.includes("/media/hathor/r2/") &&
+    !src.includes("supabase.co/storage")
+  ) {
     return src;
   }
   return diningDefault;

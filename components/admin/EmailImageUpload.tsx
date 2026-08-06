@@ -3,7 +3,10 @@
 import { useRef, useState } from "react";
 import { AlertCircle, ImageIcon, Loader2, Upload } from "lucide-react";
 import { adminFetch } from "@/lib/admin-fetch";
-import { validateEmailImageFile } from "@/lib/image-upload";
+import {
+  STORAGE_CACHE_CONTROL,
+  validateEmailImageFile,
+} from "@/lib/image-upload";
 
 const ACCEPT = "image/jpeg,image/png,image/webp";
 
@@ -55,12 +58,12 @@ export function EmailImageUpload({
         throw new Error(signData.error ?? "Could not start upload");
       }
 
+      const form = new FormData();
+      form.append("cacheControl", STORAGE_CACHE_CONTROL);
+      form.append("", file);
       const uploadResponse = await fetch(signData.signedUrl, {
         method: "PUT",
-        body: file,
-        headers: {
-          "Content-Type": file.type || "application/octet-stream",
-        },
+        body: form,
       });
 
       if (!uploadResponse.ok) {

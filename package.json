@@ -18,6 +18,8 @@
     "reconcile:gastronomy-images": "npx tsx scripts/reconcile-gastronomy-images.ts",
     "rebuild:site-image-map": "node --env-file=.env scripts/rebuild-site-image-public-map.mjs",
     "rebuild:site-image-map:force": "node --env-file=.env scripts/rebuild-site-image-public-map.mjs --force",
+    "migrate:supabase-images-local": "node --env-file=.env scripts/migrate-supabase-site-images-to-local.mjs",
+    "storage:update-cache-control": "node --env-file=.env scripts/update-supabase-cache-control.mjs",
     "postdeploy:cms": "node --env-file=.env scripts/post-deploy-cms.mjs",
     "seed:email-templates": "node scripts/seed-email-templates.mjs",
     "seed:email-template-urls": "node scripts/seed-email-template-urls.mjs",

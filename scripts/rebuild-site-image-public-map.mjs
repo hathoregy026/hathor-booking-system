@@ -123,8 +123,12 @@ async function main() {
     for (const record of images.rows) {
       const url = String(record.url || "").trim();
       if (!shouldUse(url)) continue;
-      /* Persist remote CMS uploads only — local /media defaults stay in code. */
-      if (!/^https?:\/\//i.test(url)) continue;
+      /*
+       * Persist remote CMS uploads and local /media|/uploads overrides
+       * (including /media/hathor/optimized migrations). Never persist
+       * Supabase storage URLs — those cause Cached Egress on the free plan.
+       */
+      if (url.includes("supabase.co/storage")) continue;
       compact[record.name] = url;
     }
 

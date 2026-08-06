@@ -5,6 +5,9 @@ export const IMAGE_BUCKET = "website-images";
 /** Dedicated public bucket for email template images (logos, hero banners). */
 export const EMAIL_IMAGE_BUCKET = "email-images";
 
+/** 1-year browser/CDN cache for public storage objects (seconds as string). */
+export const STORAGE_CACHE_CONTROL = "31536000";
+
 export const EMAIL_IMAGE_FOLDER = "email-templates";
 
 /** Hard ceiling for raw uploads (oversized masters are compressed to ≤ maxBytes). */

@@ -1,5 +1,9 @@
 import { createSupabaseStorageAdminClient } from "@/lib/supabase-server";
-import { getPublicImageUrl, IMAGE_BUCKET } from "@/lib/image-upload";
+import {
+  getPublicImageUrl,
+  IMAGE_BUCKET,
+  STORAGE_CACHE_CONTROL,
+} from "@/lib/image-upload";
 import { toAbsolutePublicUrl } from "@/lib/public-url";
 import {
   buildSeoImageStorageName,
@@ -54,28 +58,24 @@ async function putBinaryViaSignedUrl(options: {
     .from(IMAGE_BUCKET)
     .createSignedUploadUrl(options.objectPath);
 
-  if (error || !data?.signedUrl) {
+  if (error || !data?.token) {
     throw new Error(error?.message ?? "Failed to create signed upload URL");
   }
 
-  /* Copy into a fresh Uint8Array so BodyInit typing stays clean on Vercel. */
-  const body = new Blob([Uint8Array.from(options.buffer)], {
-    type: options.contentType || "application/octet-stream",
-  });
+  /*
+   * Prefer Uint8Array + uploadToSignedUrl so we can set cacheControl without
+   * UTF-8-mangling binary through FormData/string paths on Vercel.
+   */
+  const body = new Uint8Array(options.buffer);
+  const { error: uploadError } = await supabase.storage
+    .from(IMAGE_BUCKET)
+    .uploadToSignedUrl(options.objectPath, data.token, body, {
+      contentType: options.contentType || "application/octet-stream",
+      cacheControl: STORAGE_CACHE_CONTROL,
+    });
 
-  const putRes = await fetch(data.signedUrl, {
-    method: "PUT",
-    headers: {
-      "Content-Type": options.contentType || "application/octet-stream",
-    },
-    body,
-  });
-
-  if (!putRes.ok) {
-    const detail = await putRes.text().catch(() => "");
-    throw new Error(
-      `Storage PUT failed (${putRes.status})${detail ? `: ${detail.slice(0, 200)}` : ""}`,
-    );
+  if (uploadError) {
+    throw new Error(uploadError.message || "Storage signed upload failed");
   }
 
   const { data: stored, error: downloadError } = await supabase.storage

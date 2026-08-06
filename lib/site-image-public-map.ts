@@ -46,6 +46,9 @@ export function buildSiteImageOverridesMap(
      * Skip identical /media defaults so the SiteSetting row stays small enough
      * for reliable Supabase pooler transfer (full ~12KB maps hung on SELECT).
      */
+    /* Never publish Supabase storage URLs into the public map (Cached Egress). */
+    if (record.url.includes("supabase.co/storage")) continue;
+
     const isRemote = /^https?:\/\//i.test(record.url);
     if (!isRemote && slot && record.url === slot.url && alt === slot.altText) {
       continue;

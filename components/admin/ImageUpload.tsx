@@ -16,7 +16,7 @@ import {
   Upload,
 } from "lucide-react";
 import { ADMIN_UPLOAD_TIMEOUT_MS, adminFetch } from "@/lib/admin-fetch";
-import { MAX_IMAGE_BYTES } from "@/lib/image-upload";
+import { MAX_IMAGE_BYTES, STORAGE_CACHE_CONTROL } from "@/lib/image-upload";
 import {
   parseImageProcessKind,
   resolveImageProcessKind,
@@ -236,8 +236,15 @@ function uploadFileToSignedUrl(
       reject(new Error("Upload cancelled."));
     };
 
-    request.setRequestHeader("Content-Type", file.type || "application/octet-stream");
-    request.send(file);
+    /*
+     * Match supabase-js uploadToSignedUrl(Blob): multipart FormData with
+     * cacheControl so public objects get long-lived Cache-Control headers.
+     * Do not set Content-Type — the browser sets the multipart boundary.
+     */
+    const form = new FormData();
+    form.append("cacheControl", STORAGE_CACHE_CONTROL);
+    form.append("", file);
+    request.send(form);
   });
 }
 
