@@ -104,6 +104,18 @@ for (const [from, to] of diningCopy) {
   html = html.split(from).join(to);
 }
 
+// Source Design project overview: retain its original DOM container and
+// choreography, replacing only the editorial content displayed in that place.
+html = html
+  .replace(
+    /The&nbsp;architects of&nbsp;the&nbsp;acclaimed Istanbul-based bureau Tabanlioglu masterfully frame the&nbsp;world’s leading megapolises with&nbsp;the&nbsp;silhouettes of&nbsp;their glistening buildings\./g,
+    "The table is composed around your party&mdash;from the first pour to the last quiet course on the Nile.",
+  )
+  .replaceAll("Bureau’s signature projects:", "Tonight’s private courses:")
+  .replaceAll("Dakar<br>International Conference Centre, Senegal", "Welcome<br>First course")
+  .replaceAll("Astana <br>Arena Stadium, Kazakhstan", "Main course<br>At your pace")
+  .replaceAll("Istanbul<br>Sapphire Skyscraper, Turkey", "Dessert<br>By candlelight");
+
 // Limit the wordmark substitution to the visual Design title: do not alter
 // unrelated words such as “Designer finishings”.
 html = html.replace(
@@ -221,6 +233,13 @@ const diningPalette = `
     font-family: "Hathor Display", "Gamgote", Georgia, serif;
     font-size: clamp(3rem, 13vw, 6rem);
     line-height: 0.9;
+  }
+  /* The source project overview is the active desktop item. Keep its original
+     left-column position visible after the standalone document boots. */
+  #de-projects .de-projects__slider-item[data-content-animation-item="4"] {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
   .header, .cookie-consent, .de-balcons__pin, .de-balcons__pin-tooltip {
     display: none !important;
