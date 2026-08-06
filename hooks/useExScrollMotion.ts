@@ -952,6 +952,9 @@ export function useExScrollMotion() {
       const introSettle = 0.14;
       const introSpan = introText + introHold + introFog + introSettle;
       const scrollSpan = introSpan + total * (move + dwell) + release;
+      const introFogAt = introText + introHold;
+      const exitAt = introSpan + total * (move + dwell);
+      const exitProgressStart = exitAt / scrollSpan;
 
       if (silkChars.length) {
         /* Visible on land — fog covers later; do not start fully hidden */
@@ -1070,8 +1073,12 @@ export function useExScrollMotion() {
         fogSteps: fogStepped ? FOG_STEPS : "continuous",
       });
 
-      /* Smooth dock: silk stage fog-rises into view (photos stay CSS-locked off). */
+      /* Smooth dock: silk rises into view. Once docked, main timeline owns plates —
+       * never call holdSilkOnly here while main progress > 0 (that wiped reverse scroll). */
       holdSilkOnly();
+      const getMainProgress = () =>
+        ScrollTrigger.getById("ex-stack-scroll")?.progress ?? 0;
+
       const enterSt = ScrollTrigger.create({
         id: "ex-stack-enter",
         trigger: section,
@@ -1079,8 +1086,6 @@ export function useExScrollMotion() {
         end: "top top",
         scrub: true,
         onUpdate: (self) => {
-          holdSilkOnly();
-          section.classList.remove("is-stack-plates-live");
           const edge = Math.min(140, Math.max(0, self.progress * 140));
           (viewport as HTMLElement).style.setProperty(
             "--stack-enter-fog",
@@ -1088,24 +1093,37 @@ export function useExScrollMotion() {
           );
           if (self.progress >= 0.98) {
             section.classList.add("is-stack-docked");
-          } else {
-            section.classList.remove("is-stack-docked");
+            return;
+          }
+          section.classList.remove("is-stack-docked");
+          /* Approach / undock only — do not fight mid-stack reverse scrub */
+          if (getMainProgress() <= 0.02) {
+            holdSilkOnly();
+            section.classList.remove("is-stack-plates-live", "is-stack-exiting");
           }
         },
         onLeave: () => {
-          holdSilkOnly();
+          /* Docked going down — keep silk; main ST takes over. Do not wipe plates. */
           (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "140%");
           section.classList.add("is-stack-docked");
         },
+        onEnterBack: () => {
+          /* Scrolling up into the enter range from below the dock line */
+          section.classList.add("is-stack-docked");
+          (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "140%");
+        },
         onLeaveBack: () => {
-          holdSilkOnly();
-          section.classList.remove(
-            "is-stack-docked",
-            "is-fog-active",
-            "is-stack-fixed-pin",
-            "is-stack-plates-live",
-          );
-          (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "0%");
+          if (getMainProgress() <= 0.02) {
+            holdSilkOnly();
+            section.classList.remove(
+              "is-stack-docked",
+              "is-fog-active",
+              "is-stack-fixed-pin",
+              "is-stack-plates-live",
+              "is-stack-exiting",
+            );
+            (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "0%");
+          }
         },
       });
       trackTrigger(enterSt);
@@ -1116,37 +1134,73 @@ export function useExScrollMotion() {
           trigger: section,
           start: "top top",
           end: "bottom bottom",
-          /* Tight scrub — lag was letting fog jump ahead, then reset felt like a restart */
           scrub: true,
           pin: false,
           pinSpacing: false,
           anticipatePin: 0,
           fastScrollEnd: true,
           invalidateOnRefresh: !isPhone,
+          onUpdate: (self) => {
+            (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "140%");
+            section.classList.add("is-stack-docked");
+
+            if (self.progress < exitProgressStart - 0.001) {
+              section.classList.remove("is-stack-exiting");
+            }
+
+            /* Silk readable only before first photo fog */
+            const silkEl = section.querySelector<HTMLElement>(
+              ".ex-stack-scroll__silk",
+            );
+            if (self.progress < introFogAt / scrollSpan - 0.001) {
+              if (silkEl) gsap.set(silkEl, { autoAlpha: 1 });
+              if (silkChars.length) {
+                gsap.set(silkChars, { opacity: 1, yPercent: 0 });
+              }
+            }
+
+            if (self.progress <= 0.001) {
+              holdSilkOnly();
+              section.classList.remove("is-stack-plates-live", "is-stack-exiting");
+            }
+          },
           onEnter: () => {
-            holdSilkOnly();
-            section.classList.remove("is-stack-plates-live");
             (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "140%");
             section.classList.add("is-stack-docked", "is-stack-fixed-pin");
+            section.classList.remove("is-stack-exiting");
+            if (getMainProgress() <= 0.02) {
+              holdSilkOnly();
+              section.classList.remove("is-stack-plates-live");
+            }
           },
           onEnterBack: () => {
-            section.classList.add("is-stack-fixed-pin");
+            /* Reverse from below — restore stage; scrub rewinds plate fog */
+            section.classList.add("is-stack-docked", "is-stack-fixed-pin");
+            section.classList.remove("is-stack-exiting");
+            (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "140%");
+            const silkEl = section.querySelector<HTMLElement>(
+              ".ex-stack-scroll__silk",
+            );
+            if (silkEl) gsap.set(silkEl, { autoAlpha: 1 });
           },
           onLeave: () => {
             section.classList.remove("is-stack-fixed-pin");
           },
           onLeaveBack: () => {
-            section.classList.remove("is-stack-fixed-pin", "is-stack-plates-live");
+            /* Left upward past the dock — silk invitation only */
+            section.classList.remove(
+              "is-stack-fixed-pin",
+              "is-stack-plates-live",
+              "is-stack-exiting",
+            );
             holdSilkOnly();
           },
           onToggle: (self) => {
             section.classList.toggle("is-fog-active", self.isActive);
             if (self.isActive) {
-              section.classList.add("is-stack-fixed-pin");
+              section.classList.add("is-stack-fixed-pin", "is-stack-docked");
               (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "140%");
-            }
-            if (!self.isActive) {
-              section.classList.remove("is-stack-plates-live");
+            } else {
               cards.forEach((card) =>
                 clearFogWillChange(card, getCardMedia(card)),
               );
@@ -1188,7 +1242,6 @@ export function useExScrollMotion() {
       const firstCard = cards[0];
       const firstMedia = getCardMedia(firstCard);
       const firstFog = { edge: 0, reveal: 0 };
-      const introFogAt = introText + introHold;
       /* Guarantee first plate is fully masked until fog starts */
       applyFogReveal(firstCard, 0, 0);
       firstCard.classList.remove("is-stack-solid");
@@ -1435,7 +1488,6 @@ export function useExScrollMotion() {
        * Exit handoff: last plate dissolves upward with the same fog language.
        * Our Voyages columns have their own scrubbed stagger (LuxuryAccordion).
        */
-      const exitAt = introSpan + total * (move + dwell);
       const lastCard = cards[total - 1];
       const lastPanel = copyPanels[total - 1];
       const lastMedia = getCardMedia(lastCard);
