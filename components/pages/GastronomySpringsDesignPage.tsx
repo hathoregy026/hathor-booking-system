@@ -11,6 +11,16 @@ import { GASTRONOMY_PAGE } from "@/lib/page-content";
 import { resolveGastronomyDiningImageSrc } from "@/lib/gastronomy-dining-image-src";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 
+const PLATE_SLOTS = [
+  "gastronomy-plate-1",
+  "gastronomy-plate-2",
+  "gastronomy-plate-3",
+  "gastronomy-plate-4",
+  "gastronomy-plate-5",
+  "gastronomy-plate-6",
+  "gastronomy-plate-7",
+] as const;
+
 function DiningImg({
   name,
   alt = "",
@@ -65,7 +75,7 @@ export function GastronomySpringsDesignPage() {
       gastronomy.venues.slice(0, 3).map((venue, i) => ({
         title: venue.title,
         text: venue.description,
-        image: ["gastronomy-plate-1", "gastronomy-plate-2", "gastronomy-plate-3"][i] ?? "gastronomy-plate-1",
+        thumb: ["gastronomy-restaurant", "gastronomy-table", "gastronomy-wine"][i] ?? "gastronomy-restaurant",
       })),
     [gastronomy.venues],
   );
@@ -74,6 +84,7 @@ export function GastronomySpringsDesignPage() {
     () => [
       { image: "gastronomy-hero", preview: true },
       { image: "gastronomy-restaurant" },
+      { image: "gastronomy-table" },
       { image: "gastronomy-courses" },
       { image: "gastronomy-wine" },
       { image: "gastronomy-chef" },
@@ -82,7 +93,14 @@ export function GastronomySpringsDesignPage() {
   );
 
   const captionBodies = useMemo(
-    () => [gastronomy.intro[0], gastronomy.restaurantService, gastronomy.atmosphere, gastronomy.intro[1], gastronomy.closing],
+    () => [
+      gastronomy.intro[0],
+      gastronomy.restaurantService,
+      gastronomy.atmosphere,
+      gastronomy.intro[1],
+      gastronomy.closing,
+      gastronomy.restaurantService,
+    ],
     [gastronomy],
   );
 
@@ -104,11 +122,14 @@ export function GastronomySpringsDesignPage() {
     [gastronomy.venues],
   );
 
+  const venueCaption = gastronomy.venues
+    .map((venue) => `${venue.title} — ${venue.description}`)
+    .join(" ");
+
   return (
-    <section ref={pageRef} className="gastronomy-springs-page de-section section ui-dark-background">
-      {/* ── INTRO ── */}
+    <section ref={pageRef} className="gastronomy-springs-page de-section section ui-light-background">
       <div
-        className="ui-dark ui-background de-intro sticky sticky--full-height sticky--under-next sticky--under-next:lg-up"
+        className="ui-light ui-background de-intro sticky sticky--full-height sticky--under-next sticky--under-next:lg-up"
         id="de-intro"
       >
         <div className="de-anchor" id="de-intro-next" />
@@ -144,7 +165,7 @@ export function GastronomySpringsDesignPage() {
 
           <div className="de-intro__text">
             <div className="row pl-layout pl-0:lg">
-              <div className="col col--md-6 ui-dark ui-background px-layout py-layout pt-1:md pb-2:md">
+              <div className="col col--md-6 ui-light ui-background px-layout py-layout pt-1:md pb-2:md">
                 <div data-gs-intro-text-inner>
                   <h3 className="h3 leading-trim">{gastronomy.intro[0]}</h3>
                 </div>
@@ -154,8 +175,7 @@ export function GastronomySpringsDesignPage() {
         </div>
       </div>
 
-      {/* ── SPIRAL ── */}
-      <div className="ui-dark ui-background de-spiral sticky sticky:lg-up sticky--under-next sticky--under-previous" id="de-spiral">
+      <div className="ui-light ui-background de-spiral sticky sticky:lg-up sticky--under-next sticky--under-previous" id="de-spiral">
         <div className="sticky__layer sticky__layer--sticky sticky--full-height">
           <div className="de-spiral__gradient ui-background background background--cover">
             <div /><div /><div /><div />
@@ -174,35 +194,25 @@ export function GastronomySpringsDesignPage() {
         </div>
       </div>
 
-      {/* ── PROJECTS ── */}
-      <div className="ui-dark ui-background de-projects sticky sticky--under-previous sticky--under-previous:lg-up sticky--under-next sticky--under-next:lg-up" id="de-projects">
+      <div className="ui-light ui-background de-projects sticky sticky--under-previous sticky--under-previous:lg-up sticky--under-next sticky--under-next:lg-up" id="de-projects">
         <div className="sticky__layer sticky__layer--sticky sticky--full-height">
           <div className="de-projects__background background background--cover">
             <DiningImg name="gastronomy-restaurant" />
           </div>
           <div className="de-projects__text">
             <div className="row pl-layout pl-0:lg">
-              <div className={`col col--md-6 ui-light ui-background pb-1 p-relative de-projects__slider-item ${projectActive === 0 ? "" : "is-hidden"}`}>
-                <p className="h3 leading-trim de-projects__slider-item__text pl-layout pl-6:md py-layout pr-layout">
-                  <strong>{projectSlides[0]?.title}</strong>
-                  <br />
-                  {projectSlides[0]?.text}
-                </p>
-              </div>
-              <div className={`col col--md-6 ui-light ui-background pb-1 p-relative de-projects__slider-item ${projectActive === 1 ? "" : "is-hidden"}`}>
-                <p className="h3 leading-trim de-projects__slider-item__text pl-layout pl-6:md py-layout pr-layout">
-                  <strong>{projectSlides[1]?.title}</strong>
-                  <br />
-                  {projectSlides[1]?.text}
-                </p>
-              </div>
-              <div className={`col col--md-6 ui-light ui-background pb-1 p-relative de-projects__slider-item ${projectActive === 2 ? "" : "is-hidden"}`}>
-                <p className="h3 leading-trim de-projects__slider-item__text pl-layout pl-6:md py-layout pr-layout">
-                  <strong>{projectSlides[2]?.title}</strong>
-                  <br />
-                  {projectSlides[2]?.text}
-                </p>
-              </div>
+              {projectSlides.map((slide, i) => (
+                <div
+                  key={slide.title}
+                  className={`col col--md-6 ui-light ui-background pb-1 p-relative de-projects__slider-item ${projectActive === i ? "" : "is-hidden"}`}
+                >
+                  <p className="h3 leading-trim de-projects__slider-item__text pl-layout pl-6:md py-layout pr-layout">
+                    <strong>{slide.title}</strong>
+                    <br />
+                    {slide.text}
+                  </p>
+                </div>
+              ))}
               <div className="de-projects__slider-item pt-1 pb-3 px-layout ui-background ui-light col col--md-6">
                 <div className="de-projects__pagination row">
                   {projectSlides.map((slide, i) => (
@@ -213,7 +223,7 @@ export function GastronomySpringsDesignPage() {
                       onClick={() => setProjectActive(i)}
                       aria-label={slide.title}
                     >
-                      <DiningImg name={slide.image} alt={slide.title} />
+                      <DiningImg name={slide.thumb} alt={slide.title} />
                     </button>
                   ))}
                 </div>
@@ -223,8 +233,7 @@ export function GastronomySpringsDesignPage() {
         </div>
       </div>
 
-      {/* ── CAPTIONS (Fixed-Background Mask Reveal) ── */}
-      <div className="ui-dark ui-background de-captions p-relative sticky sticky--under-previous sticky--under-previous:lg-up sticky--under-next sticky--under-next:lg-up js-captions-container" id="de-captions">
+      <div className="ui-light ui-background de-captions p-relative sticky sticky--under-previous sticky--under-previous:lg-up sticky--under-next sticky--under-next:lg-up js-captions-container" id="de-captions">
         <div className="sticky__layer sticky__layer--sticky sticky--full-height">
           <div className="de-captions__canvas background background--cover" data-gs-mask-stage>
             {captionPanels.map((panel) => (
@@ -244,7 +253,6 @@ export function GastronomySpringsDesignPage() {
         </div>
       </div>
 
-      {/* ── BALCONS / VENUES ── */}
       <div className="p-relative ui-light ui-background de-balcons px-layout pt-1 pt-2:lg" id="de-balcons">
         <div className="mb-3">
           <h3 className="h0 leading-trim text-right">{gastronomy.restaurantTitle}</h3>
@@ -252,14 +260,14 @@ export function GastronomySpringsDesignPage() {
         <div className="de-balcons__content-text col col--md-3 mb-1">
           <p className="leading-trim">{gastronomy.intro[1]}</p>
         </div>
-        <div className="de-balcons__content p-relative ui-dark">
+        <div className="de-balcons__content p-relative ui-light">
           <div className="parallax-image-move img-full">
-            <DiningImg name="gastronomy-table" />
+            <DiningImg name="gastronomy-courses" />
           </div>
           {balconPins.map((pin, i) => (
             <div
               key={pin.title}
-              className={`de-balcons__pin ui-dark is-hidden--sm-down${balconPin === i ? " is-active" : ""}`}
+              className={`de-balcons__pin ui-light is-hidden--sm-down${balconPin === i ? " is-active" : ""}`}
               style={{ "--left": pin.left, "--top": pin.top } as CSSProperties}
               tabIndex={0}
               onMouseEnter={() => setBalconPin(i)}
@@ -272,7 +280,7 @@ export function GastronomySpringsDesignPage() {
                   <span className="btn__text">{i + 1}</span>
                 </span>
               </span>
-              <div className={`de-balcons__pin-tooltip px-0.5 pt-3 pb-layout pb-0.5:lg ui-dark ui-background ${balconPin === i ? "" : ""}`}>
+              <div className="de-balcons__pin-tooltip px-0.5 pt-3 pb-layout pb-0.5:lg ui-light ui-background">
                 <p className="text-c2 leading-trim">
                   <strong>{pin.title}</strong> — {pin.description}
                 </p>
@@ -282,7 +290,6 @@ export function GastronomySpringsDesignPage() {
         </div>
       </div>
 
-      {/* ── MATERIALS ── */}
       <div className="p-relative ui-light ui-background de-materials px-layout pb-1 pb-2:lg pt-1" id="de-materials">
         <div className="de-materials__uptitle">
           <span className="text-c1 leading-trim">{hero.subtitle}</span>
@@ -291,14 +298,33 @@ export function GastronomySpringsDesignPage() {
           <h3 className="h1 leading-trim">{gastronomy.restaurantService}</h3>
         </div>
         <div className="de-materials__image">
-          <DiningImg name="gastronomy-plate-1" className="img-full" />
+          <DiningImg name="gastronomy-chef" className="img-full" />
         </div>
         <div className="de-materials__text ml-auto mr-0">
           <p className="leading-trim">{gastronomy.closing}</p>
         </div>
       </div>
 
-      {/* ── SLIDER (Fixed-Background Mask Reveal) ── */}
+      <div className="de-plates sticky sticky--full-height sticky--under-next sticky--under-next:lg-up ui-light ui-background" id="de-plates">
+        <div className="sticky__layer sticky__layer--sticky sticky--full-height ui-light-background">
+          <div className="de-plates__stage px-layout">
+            {PLATE_SLOTS.map((slot, i) => (
+              <figure
+                key={slot}
+                data-gs-floating-plate
+                className={`de-plates__plate de-plates__plate--${i + 1}`}
+              >
+                <DiningImg name={slot} alt={`Signature plate ${i + 1}`} previewAnchor={i === 0} />
+              </figure>
+            ))}
+          </div>
+          <div className="de-plates__copy px-layout">
+            <span className="text-c1 leading-trim">{gastronomy.venues[0]?.title}</span>
+            <h3 className="h3 leading-trim">{venueCaption}</h3>
+          </div>
+        </div>
+      </div>
+
       <div className="ui-light ui-background de-slider sticky sticky--full-height sticky--under-next sticky--under-next:lg-up is-hidden--sm-down" id="de-slider">
         <div className="sticky__layer sticky__layer--sticky sticky--full-height">
           <div className="de-slider__content row">
@@ -332,8 +358,7 @@ export function GastronomySpringsDesignPage() {
         </div>
       </div>
 
-      {/* ── GALLERY ── */}
-      <div className="p-relative ui-dark ui-background de-gallery pb-3 sticky sticky:lg-up sticky--under-next" id="de-gallery">
+      <div className="p-relative ui-light ui-background de-gallery pb-3 sticky sticky:lg-up sticky--under-next" id="de-gallery">
         <div className="sticky__layer sticky__layer--sticky">
           <div>
             <div className="de-gallery__gradient background background--cover">
@@ -350,7 +375,7 @@ export function GastronomySpringsDesignPage() {
                 </div>
               </div>
               <div className="col col--md-6 de-gallery__image col--reverse mt-3 mt-0:lg">
-                <DiningImg name="gastronomy-chef" className="img-full parallax-image-move" />
+                <DiningImg name="gastronomy-wine" className="img-full parallax-image-move" />
                 <div className="col col--md-3 de-gallery__col--no-stretch ml-1 pb-3 is-hidden--md-down">
                   <p className="leading-trim">{gastronomy.venues[1]?.description}</p>
                 </div>
@@ -360,8 +385,7 @@ export function GastronomySpringsDesignPage() {
         </div>
       </div>
 
-      {/* ── FLATS 1 ── */}
-      <div className="ui-dark de-flats de-flats--first de-flats--light sticky sticky--under-next sticky--under-next:lg-up" id="de-flats-1" data-gs-flat-reveal>
+      <div className="ui-light de-flats de-flats--first de-flats--light sticky sticky--under-next sticky--under-next:lg-up" id="de-flats-1" data-gs-flat-reveal>
         <div className="sticky__layer sticky__layer--sticky sticky--full-height ui-light-background">
           <div className="de-flats__content ui-light-background px-layout py-1 p-relative">
             <div className="background background--cover">
@@ -389,10 +413,9 @@ export function GastronomySpringsDesignPage() {
         </div>
       </div>
 
-      {/* ── FLATS 2 / FINALE ── */}
-      <div className="ui-dark de-flats sticky--under-previous sticky--under-previous:lg-up de-flats--dark sticky sticky--under-next sticky--under-next:lg-up" id="de-flats-2" data-gs-flat-reveal>
-        <div className="sticky__layer sticky__layer--sticky sticky--full-height ui-dark-background">
-          <div className="de-flats__content ui-dark-background px-layout py-1 p-relative">
+      <div className="ui-light de-flats sticky--under-previous sticky--under-previous:lg-up de-flats--light sticky sticky--under-next sticky--under-next:lg-up" id="de-flats-2" data-gs-flat-reveal>
+        <div className="sticky__layer sticky__layer--sticky sticky--full-height ui-light-background">
+          <div className="de-flats__content ui-light-background px-layout py-1 p-relative">
             <div className="background background--cover">
               <DiningImg name="gastronomy-hero" />
             </div>
@@ -405,7 +428,7 @@ export function GastronomySpringsDesignPage() {
               </div>
             </div>
           </div>
-          <div className="de-flats__text col col--lg-6 mr-0 ml-auto ui-dark px-layout py-layout is-hidden--md-down">
+          <div className="de-flats__text col col--lg-6 mr-0 ml-auto ui-light px-layout py-layout is-hidden--md-down">
             <div className="de-flats__text-text">
               <p className="leading-trim">{gastronomy.closing}</p>
             </div>
@@ -419,7 +442,7 @@ export function GastronomySpringsDesignPage() {
         </div>
       </div>
 
-      <div className="de-flats__text ui-dark-background col col--lg-6 mr-0 ml-auto ui-dark px-layout pt-1 is-hidden--lg-up">
+      <div className="de-flats__text ui-light-background col col--lg-6 mr-0 ml-auto ui-light px-layout pt-1 is-hidden--lg-up">
         <div className="de-flats__text-text mb-1 mb-2:lg p-relative">
           <p className="leading-trim">{gastronomy.closing}</p>
         </div>

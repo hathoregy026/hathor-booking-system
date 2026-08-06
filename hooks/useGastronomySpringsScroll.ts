@@ -18,7 +18,6 @@ type MaskStageConfig = {
   wipes?: number;
   onActive?: (index: number) => void;
   progressBar?: HTMLElement | null;
-  progressAxis?: "x" | "y";
 };
 
 function bindMaskStage({
@@ -29,7 +28,6 @@ function bindMaskStage({
   wipes = 1,
   onActive,
   progressBar,
-  progressAxis = "y",
 }: MaskStageConfig) {
   const panels = gsap.utils.toArray<HTMLElement>(
     panelRoot.querySelectorAll(panelSelector),
@@ -57,11 +55,10 @@ function bindMaskStage({
       const idx = applyVerticalWipe(panels, self.progress);
       onActive?.(idx);
       if (progressBar) {
-        if (progressAxis === "y") {
-          gsap.set(progressBar, { scaleY: self.progress, transformOrigin: "top center" });
-        } else {
-          gsap.set(progressBar, { scaleX: self.progress, transformOrigin: "left center" });
-        }
+        gsap.set(progressBar, {
+          scaleY: self.progress,
+          transformOrigin: "top center",
+        });
       }
     },
   });
@@ -144,9 +141,48 @@ export function useGastronomySpringsScroll(
             wipes: Math.max(1, panelCount - 1),
             onActive: onSliderActive,
             progressBar: sliderProgress,
-            progressAxis: "y",
           }),
         );
+      }
+
+      const platesSection = page.querySelector<HTMLElement>("#de-plates");
+      const platesLayer = platesSection?.querySelector<HTMLElement>(".sticky__layer");
+      const plates = gsap.utils.toArray<HTMLElement>(
+        page.querySelectorAll("[data-gs-floating-plate]"),
+      );
+      if (platesSection && platesLayer && plates.length) {
+        plates.forEach((plate, i) => {
+          gsap.set(plate, {
+            yPercent: 140 + i * 8,
+            opacity: 0,
+            rotation: -6 + i * 1.5,
+          });
+        });
+
+        const platesSt = ScrollTrigger.create({
+          trigger: platesSection,
+          start: "top top",
+          end: () => `+=${window.innerHeight * 2.4}`,
+          pin: platesLayer,
+          pinSpacing: true,
+          pinType: "fixed",
+          scrub: 1.1,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            const p = self.progress;
+            plates.forEach((plate, i) => {
+              const start = i * 0.07;
+              const local = Math.max(0, Math.min(1, (p - start) / (0.92 - start)));
+              const eased = 1 - Math.pow(1 - local, 2.4);
+              gsap.set(plate, {
+                yPercent: (1 - eased) * (120 + i * 6),
+                opacity: eased,
+                rotation: (1 - eased) * (-8 + i * 2),
+              });
+            });
+          },
+        });
+        cleanups.push(() => platesSt.kill());
       }
 
       page.querySelectorAll<HTMLElement>("[data-gs-flat-reveal]").forEach((flat) => {
@@ -189,7 +225,7 @@ export function useGastronomySpringsScroll(
       }
     }, page);
 
-    const refresh = window.setTimeout(() => ScrollTrigger.refresh(), 150);
+    const refresh = window.setTimeout(() => ScrollTrigger.refresh(), 200);
 
     return () => {
       window.clearTimeout(refresh);
