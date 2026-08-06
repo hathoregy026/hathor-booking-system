@@ -5,7 +5,6 @@ import {
   IMAGE_SIZE_POLICY,
   compressTargetBytes,
   parseImageProcessKind,
-  shouldCompressImage,
   type ImageProcessKind,
 } from "@/lib/image-size-policy";
 
@@ -15,7 +14,7 @@ export type ProcessedImage = {
   buffer: Buffer;
   contentType: "image/jpeg" | "image/png" | "image/webp";
   extension: "jpg" | "png" | "webp";
-  /** True when lossy compression ran (source was over the delivered max). */
+  /** True when the WebP pipeline ran (always for site uploads). */
   compressed: boolean;
   kind: ImageProcessKind;
 };
@@ -30,50 +29,35 @@ export type ProcessImageOptions = {
   kind?: ImageProcessKind | string | null;
 };
 
-function detectOutputFormat(
-  input: Buffer,
-): { contentType: ProcessedImage["contentType"]; extension: ProcessedImage["extension"] } {
-  if (input[0] === 0xff && input[1] === 0xd8) {
-    return { contentType: "image/jpeg", extension: "jpg" };
-  }
-  if (
-    input[0] === 0x89 &&
-    input[1] === 0x50 &&
-    input[2] === 0x4e &&
-    input[3] === 0x47
-  ) {
-    return { contentType: "image/png", extension: "png" };
-  }
-  return { contentType: "image/webp", extension: "webp" };
-}
-
-async function toFullQualityPassThrough(
-  input: Buffer,
-  kind: ImageProcessKind,
-): Promise<ProcessedImage> {
-  /* Under delivered max: keep original bytes — no lossy re-encode. */
-  const detected = detectOutputFormat(input);
-  return {
-    buffer: input,
-    contentType: detected.contentType,
-    extension: detected.extension,
-    compressed: false,
-    kind,
-  };
+function isWebpBuffer(input: Buffer): boolean {
+  return (
+    input.toString("ascii", 0, 4) === "RIFF" &&
+    input.toString("ascii", 8, 12) === "WEBP"
+  );
 }
 
 /**
- * Compress oversized sources down to the delivered max while preserving as
- * much quality as possible: high WebP quality first, then gently reduce edge
- * length only if still over the cap.
+ * Compress to WebP at the kind target. Prefer high quality first, then reduce
+ * edge length only if still over the cap.
  */
-async function compressOversizeToWebp(
+async function compressToWebp(
   input: Buffer,
   kind: ImageProcessKind,
 ): Promise<ProcessedImage> {
   const target = compressTargetBytes(kind);
   const { start, min, step } = IMAGE_SIZE_POLICY.compressQuality;
   const edgeSteps = IMAGE_SIZE_POLICY.compressMaxEdgeSteps;
+
+  /* Already a lean WebP under the kind target — keep bytes (no double encode). */
+  if (isWebpBuffer(input) && input.byteLength <= target) {
+    return {
+      buffer: input,
+      contentType: "image/webp",
+      extension: "webp",
+      compressed: false,
+      kind,
+    };
+  }
 
   let best: Buffer | null = null;
 
@@ -113,9 +97,10 @@ async function compressOversizeToWebp(
 }
 
 /**
- * Apply the site image size policy:
- * - ≤ delivered max → original bytes (full quality)
- * - > delivered max → compress to ≤ max at the highest quality that fits
+ * Apply the site image size policy for future uploads:
+ * - Always store WebP
+ * - Cap by kind (hero ≤800KB, gallery/content ≤400KB)
+ * - Skip re-encode only when input is already WebP under the kind target
  */
 export async function processImageToWebp(
   input: Buffer,
@@ -125,11 +110,7 @@ export async function processImageToWebp(
     typeof options.kind === "string" ? options.kind : options.kind ?? "content",
   );
 
-  if (!shouldCompressImage(input.byteLength)) {
-    return toFullQualityPassThrough(input, kind);
-  }
-
-  return compressOversizeToWebp(input, kind);
+  return compressToWebp(input, kind);
 }
 
 /** @deprecated Prefer processImageToWebp — kept name for call sites. */

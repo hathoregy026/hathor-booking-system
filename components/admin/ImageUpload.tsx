@@ -16,17 +16,14 @@ import {
   Upload,
 } from "lucide-react";
 import { ADMIN_UPLOAD_TIMEOUT_MS, adminFetch } from "@/lib/admin-fetch";
-import { MAX_IMAGE_BYTES, STORAGE_CACHE_CONTROL } from "@/lib/image-upload";
+import { MAX_IMAGE_BYTES } from "@/lib/image-upload";
 import {
   parseImageProcessKind,
   resolveImageProcessKind,
-  shouldCompressImage,
-  IMAGE_SIZE_POLICY,
   type ImageProcessKind,
 } from "@/lib/image-size-policy";
 
 const ACCEPTED_TYPES = "image/jpeg,image/png,image/webp";
-const DELIVERED_MAX_MB = Math.round(IMAGE_SIZE_POLICY.maxBytes / (1024 * 1024));
 
 type ImageUploadMeta = {
   suggestedAltText?: string;
@@ -79,7 +76,7 @@ function validateClientFile(file: File): string | null {
   }
 
   if (file.size > MAX_IMAGE_BYTES) {
-    return `Image must be ${Math.round(MAX_IMAGE_BYTES / (1024 * 1024))} MB or smaller (over ${DELIVERED_MAX_MB} MB will be compressed to ${DELIVERED_MAX_MB} MB).`;
+    return `Image must be ${Math.round(MAX_IMAGE_BYTES / (1024 * 1024))} MB or smaller (converted to WebP automatically).`;
   }
 
   return null;
@@ -159,95 +156,6 @@ async function uploadProcessedViaServer(
   };
 }
 
-async function requestSignedUpload(
-  file: File,
-  folder: string,
-  naming: {
-    pageName?: string;
-    imageTitle?: string;
-    imageLabel?: string;
-  },
-): Promise<UploadResponse> {
-  const response = await fetch("/api/admin/upload/sign", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "same-origin",
-    body: JSON.stringify({
-      folder,
-      fileName: file.name,
-      contentType: file.type || "application/octet-stream",
-      fileSize: file.size,
-      pageName: naming.pageName,
-      imageTitle: naming.imageTitle,
-      imageLabel: naming.imageLabel,
-    }),
-  });
-
-  const data = await parseUploadResponse(response);
-  if (!response.ok || !data.signedUrl || !data.publicUrl) {
-    throw new Error(data.error || "Could not start upload");
-  }
-
-  return data;
-}
-
-function uploadFileToSignedUrl(
-  file: File,
-  signedUrl: string,
-  onProgress: (progress: number) => void,
-): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const request = new XMLHttpRequest();
-
-    request.open("PUT", signedUrl);
-    request.timeout = ADMIN_UPLOAD_TIMEOUT_MS;
-
-    request.upload.onprogress = (event) => {
-      if (!event.lengthComputable) return;
-      const percent = 5 + Math.round((event.loaded / event.total) * 90);
-      onProgress(Math.min(percent, 95));
-    };
-
-    request.onload = () => {
-      if (request.status < 200 || request.status >= 300) {
-        reject(
-          new Error(
-            `Upload to storage failed (${request.status}). Please try again.`,
-          ),
-        );
-        return;
-      }
-
-      onProgress(100);
-      resolve();
-    };
-
-    request.onerror = () => {
-      reject(new Error("Upload failed. Check your connection and try again."));
-    };
-
-    request.ontimeout = () => {
-      reject(
-        new Error("Upload timed out. Try a smaller image or a stronger connection."),
-      );
-    };
-
-    request.onabort = () => {
-      reject(new Error("Upload cancelled."));
-    };
-
-    /*
-     * Match supabase-js uploadToSignedUrl(Blob): multipart FormData with
-     * cacheControl so public objects get long-lived Cache-Control headers.
-     * Do not set Content-Type — the browser sets the multipart boundary.
-     */
-    const form = new FormData();
-    form.append("cacheControl", STORAGE_CACHE_CONTROL);
-    form.append("", file);
-    request.send(form);
-  });
-}
-
 export function ImageUpload({
   label,
   value,
@@ -275,7 +183,8 @@ export function ImageUpload({
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [uploadComplete, setUploadComplete] = useState(false);
 
-  const policyHint = `Full original quality up to ${DELIVERED_MAX_MB} MB. Larger files are compressed to ${DELIVERED_MAX_MB} MB automatically so they render on the live site.`;
+  const policyHint =
+    "Uploads are converted to WebP automatically (heroes ≤ 800 KB, content/gallery ≤ 400 KB) so the live site stays fast.";
 
   useLayoutEffect(() => {
     if (!chooseButtonRef) return;
@@ -354,49 +263,27 @@ export function ImageUpload({
       setUploadProgress(5);
       const kind = resolveUploadKind({ imageKind, layoutKind, folder });
 
-      if (shouldCompressImage(selectedFile.size)) {
-        const processedUpload = await uploadProcessedViaServer(
-          selectedFile,
-          folder,
-          {
-            pageName: pageName ?? folder,
-            imageTitle: imageTitle ?? label,
-            imageLabel,
-            imageKind: kind,
-            layoutKind,
-          },
-          setUploadProgress,
-        );
-
-        const publicUrl = processedUpload.publicUrl ?? null;
-        onChange(publicUrl, {
-          suggestedAltText: processedUpload.suggestedAltText,
-          localPreviewUrl: publicUrl ? handoffPreview : undefined,
-        });
-        if (!publicUrl) {
-          URL.revokeObjectURL(handoffPreview);
-        }
-      } else {
-        const signedUpload = await requestSignedUpload(selectedFile, folder, {
+      /* Always process via server → WebP under kind caps (no original pass-through). */
+      const processedUpload = await uploadProcessedViaServer(
+        selectedFile,
+        folder,
+        {
           pageName: pageName ?? folder,
           imageTitle: imageTitle ?? label,
           imageLabel,
-        });
+          imageKind: kind,
+          layoutKind,
+        },
+        setUploadProgress,
+      );
 
-        if (!signedUpload.signedUrl || !signedUpload.publicUrl) {
-          throw new Error("Upload could not start. No signed URL was returned.");
-        }
-
-        await uploadFileToSignedUrl(
-          selectedFile,
-          signedUpload.signedUrl,
-          setUploadProgress,
-        );
-
-        onChange(signedUpload.publicUrl, {
-          suggestedAltText: signedUpload.suggestedAltText,
-          localPreviewUrl: handoffPreview,
-        });
+      const publicUrl = processedUpload.publicUrl ?? null;
+      onChange(publicUrl, {
+        suggestedAltText: processedUpload.suggestedAltText,
+        localPreviewUrl: publicUrl ? handoffPreview : undefined,
+      });
+      if (!publicUrl) {
+        URL.revokeObjectURL(handoffPreview);
       }
 
       onDataUrlChange?.(null);
@@ -643,10 +530,7 @@ export function ImageUpload({
           style={isAdmin ? { color: "var(--text-muted)" } : undefined}
         >
           Selected: {selectedFile.name} ({(selectedFile.size / 1024).toFixed(0)}{" "}
-          KB)
-          {shouldCompressImage(selectedFile.size)
-            ? ` — over ${DELIVERED_MAX_MB} MB, will be compressed to ≤ ${DELIVERED_MAX_MB} MB on upload.`
-            : ` — under ${DELIVERED_MAX_MB} MB, kept at original quality.`}
+          KB) — will be converted to optimized WebP on upload.
         </p>
       )}
 

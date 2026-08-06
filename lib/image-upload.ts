@@ -44,8 +44,7 @@ export function validateImageFile(
   }
 
   if (file.size > MAX_IMAGE_BYTES) {
-    const maxMb = Math.round(IMAGE_SIZE_POLICY.maxBytes / (1024 * 1024));
-    return `Image must be 25 MB or smaller (files over ${maxMb} MB are compressed automatically).`;
+    return "Image must be 25 MB or smaller (uploads are compressed to WebP automatically).";
   }
 
   return null;

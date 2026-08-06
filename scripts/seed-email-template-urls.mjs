@@ -9,11 +9,11 @@ import pg from "pg";
 
 const LOGO_URL =
   process.env.HATHOR_EMAIL_LOGO_URL?.trim() ??
-  "https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/email-images/hathor-email-logo.png";
+  "https://hathor-booking-system.vercel.app/email/hathor-email-logo.png";
 
 const HERO_URL =
   process.env.HATHOR_EMAIL_HERO_URL?.trim() ??
-  "https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/email-images/hathor-email-hero.jpg";
+  "https://hathor-booking-system.vercel.app/email/hathor-email-hero.jpg";
 
 const connectionString =
   process.env.DATABASE_URL?.trim() ||

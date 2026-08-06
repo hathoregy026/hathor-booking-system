@@ -39,6 +39,15 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        source: "/email/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
         // Branding can change in place — never pin forever or browsers keep old glyphs forever.
         source: "/branding/:path*",
         headers: [

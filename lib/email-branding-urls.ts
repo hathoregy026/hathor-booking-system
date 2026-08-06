@@ -1,9 +1,13 @@
-/** Hosted email brand images (Supabase Storage — public bucket `email-images`). */
+import { VERCEL_PRODUCTION_ORIGIN } from "@/lib/public-url";
 
+/**
+ * Default email brand images — served from this site (Vercel), not Supabase.
+ * Absolute HTTPS URLs are required so email clients can load them.
+ */
 export const HATHOR_EMAIL_LOGO_URL =
   process.env.HATHOR_EMAIL_LOGO_URL?.trim() ??
-  "https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/email-images/hathor-email-logo.png";
+  `${VERCEL_PRODUCTION_ORIGIN}/email/hathor-email-logo.png`;
 
 export const HATHOR_EMAIL_HERO_URL =
   process.env.HATHOR_EMAIL_HERO_URL?.trim() ??
-  "https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/email-images/hathor-email-hero.jpg";
+  `${VERCEL_PRODUCTION_ORIGIN}/email/hathor-email-hero.jpg`;
