@@ -47,7 +47,11 @@ export async function saveGastronomyTypography(value: unknown, phone = false) {
 }
 
 function roleCss(selector: string, style: TypographyTextStyle) {
-  return `${selector}{font-family:${HATHOR_FONT_STACKS[style.fontFamily]}!important;font-size:${style.fontSize}px!important;color:${style.color}!important;line-height:${style.lineHeight}!important;letter-spacing:${style.letterSpacing}px!important;}`;
+  const fontStack = HATHOR_FONT_STACKS[style.fontFamily].replace(
+    /var\([^)]*\),?\s*/g,
+    "",
+  );
+  return `${selector}{font-family:${fontStack}!important;font-size:${style.fontSize}px!important;color:${style.color}!important;line-height:${style.lineHeight}!important;letter-spacing:${style.letterSpacing}px!important;}`;
 }
 
 export function gastronomyTypographyToCss(settings: GastronomyTypography) {
