@@ -2,50 +2,33 @@
 
 import { CSSProperties } from "react";
 import {
-  HomeAmenitiesMaskSlider,
-  type AmenitiesMaskSlide,
-} from "@/components/home/HomeAmenitiesMaskSlider";
-import type { SiteImageName } from "@/lib/site-image-slots";
+  HomeAmenitiesSequence,
+  type AmenitiesLandmarkSlide,
+  type AmenitiesStorySlide,
+} from "@/components/home/HomeAmenitiesSequence";
 
-export type LandmarkMaskSlide = {
-  titleLines: string[];
-  indication: string;
-  body: string;
-  imageName: SiteImageName;
-  alt?: string;
-  imageAlt?: string;
-  previewAnchor?: boolean;
-};
+export type LandmarkMaskSlide = AmenitiesLandmarkSlide;
 
 type HomeLandmarkMaskSectionProps = {
   slides: LandmarkMaskSlide[];
+  stories?: AmenitiesStorySlide[];
   titleStyle?: CSSProperties;
   indicationStyle?: CSSProperties;
   bodyStyle?: CSSProperties;
 };
 
-/** Four-image landmark story — amenities `#i-slider` Fixed-Background Mask Reveal. */
+/** Homepage amenities-faithful sequence (intro → video → slider → opening). */
 export function HomeLandmarkMaskSection({
   slides,
+  stories = [],
   titleStyle,
   indicationStyle,
   bodyStyle,
 }: HomeLandmarkMaskSectionProps) {
-  const amenitiesSlides: AmenitiesMaskSlide[] = slides.map((slide) => ({
-    titleLines: slide.titleLines,
-    indication: slide.indication,
-    body: slide.body,
-    imageName: slide.imageName,
-    imageAlt: slide.imageAlt ?? slide.alt ?? "",
-    previewAnchor: slide.previewAnchor,
-  }));
-
   return (
-    <HomeAmenitiesMaskSlider
-      slides={amenitiesSlides}
-      theme="dark"
-      id="home-landmark-amenities"
-      ariaLabel="Landmark stories"
+    <HomeAmenitiesSequence
+      landmarks={slides}
+      stories={stories}
       titleStyle={titleStyle}
       indicationStyle={indicationStyle}
       bodyStyle={bodyStyle}

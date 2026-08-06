@@ -8,7 +8,6 @@ import rotatingWheel from "@/assets/LOGOS/rotating-wheel-hathor-cruise.png";
 import { HomeLandmarkMaskSection } from "@/components/home/HomeLandmarkMaskSection";
 import LuxuryAccordion from "@/components/home/LuxuryAccordion";
 import { HomeCampaignSection } from "@/components/home/HomeCampaignSection";
-import { HomeTextStorySection } from "@/components/home/HomeTextStorySection";
 import { LuxuryMarquee } from "@/components/home/LuxuryMarquee";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { GalleryInstagramFollow } from "@/components/public/GalleryInstagramFollow";
@@ -412,13 +411,7 @@ export function HomePageClient({
             ...slide,
             previewAnchor: HOMEPAGE_PREVIEW_SLOTS.has(slide.imageName),
           }))}
-          titleStyle={stackTitleStyle}
-          indicationStyle={stackEyebrowStyle}
-          bodyStyle={stackBodyStyle}
-        />
-
-        <HomeTextStorySection
-          slides={EX_TEXT_BLOCKS.map((block, index) => {
+          stories={EX_TEXT_BLOCKS.map((block, index) => {
             const cms = websiteText.home.textBlocks[index];
             return {
               title: cms?.title ?? block.title,
@@ -430,6 +423,9 @@ export function HomePageClient({
               previewAnchor: HOMEPAGE_PREVIEW_SLOTS.has(block.imageName),
             };
           })}
+          titleStyle={stackTitleStyle}
+          indicationStyle={stackEyebrowStyle}
+          bodyStyle={stackBodyStyle}
         />
 
         <section
