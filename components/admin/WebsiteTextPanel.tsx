@@ -580,16 +580,35 @@ export function WebsiteTextPanel() {
 
                 <Section
                   step={4}
-                  title="Landmark stack slides"
-                  description="Four stacked story cards, in order."
+                  title="Amenities sequence copy"
+                  description="Same four chapters as Homepage media (Amenities sequence 1–4). Slide 1 wording also syncs to Typography → On images."
                 >
                   {text.home.stackSlides.map((slide, index) => (
-                    <ItemCard key={index} title={`Slide ${index + 1}`}>
+                    <ItemCard
+                      key={index}
+                      title={
+                        [
+                          "1 — Fullscreen intro",
+                          "2 — Rising full-bleed",
+                          "3 — Inset + half/half",
+                          "4 — Fixed left + stack",
+                        ][index] ?? `Slide ${index + 1}`
+                      }
+                    >
                       <Field
                         label="Title"
                         value={slide.title}
                         multiline
                         rows={2}
+                        hint={
+                          index === 0
+                            ? "On the intro photo (line breaks = stacked lines)."
+                            : index === 1
+                              ? "Large title over the rising photo."
+                              : index === 2
+                                ? "Gold caption card + first slider panel."
+                                : "Fourth slider panel title (opening uses stories below)."
+                        }
                         onChange={(title) => {
                           const stackSlides = text.home.stackSlides.map(
                             (s, i) => (i === index ? { ...s, title } : s),
@@ -600,6 +619,11 @@ export function WebsiteTextPanel() {
                       <Field
                         label="Small label"
                         value={slide.indication}
+                        hint={
+                          index === 0
+                            ? "Indication under the intro title."
+                            : "Small label on that chapter / slider panel."
+                        }
                         onChange={(indication) => {
                           const stackSlides = text.home.stackSlides.map(
                             (s, i) =>
@@ -613,6 +637,11 @@ export function WebsiteTextPanel() {
                         value={slide.body}
                         multiline
                         rows={4}
+                        hint={
+                          index === 0
+                            ? "Cream panel after the intro photo slides."
+                            : "Body for that chapter / slider panel."
+                        }
                         onChange={(body) => {
                           const stackSlides = text.home.stackSlides.map(
                             (s, i) => (i === index ? { ...s, body } : s),
@@ -624,17 +653,30 @@ export function WebsiteTextPanel() {
                   ))}
                 </Section>
 
-                <Section step={5} title="Text + image blocks">
+                <Section
+                  step={5}
+                  title="Amenities sequence stories"
+                  description="Way of Life & Dining — opening rail, CTAs, cards, and extra slider panels (same slots as Homepage media)."
+                >
                   {text.home.textBlocks.map((block, index) => (
                     <ItemCard
                       key={index}
-                      title={index === 0 ? "Lifestyle" : "Dining"}
+                      title={
+                        index === 0
+                          ? "Way of Life — opening + slider"
+                          : "Dining — opening + slider"
+                      }
                     >
                       <Field
                         label="Title"
                         value={block.title}
                         multiline
                         rows={2}
+                        hint={
+                          index === 0
+                            ? "Opening chapter title (and card / slider)."
+                            : "Dining card, CTA row, and slider panel."
+                        }
                         onChange={(title) => {
                           const textBlocks = text.home.textBlocks.map((b, i) =>
                             i === index ? { ...b, title } : b,
@@ -647,6 +689,11 @@ export function WebsiteTextPanel() {
                         value={block.body}
                         multiline
                         rows={5}
+                        hint={
+                          index === 0
+                            ? "Opening rail body text."
+                            : "Dining story body on the slider panel."
+                        }
                         onChange={(body) => {
                           const textBlocks = text.home.textBlocks.map((b, i) =>
                             i === index ? { ...b, body } : b,
@@ -657,6 +704,7 @@ export function WebsiteTextPanel() {
                       <Field
                         label="Button label"
                         value={block.cta}
+                        hint="CTA link label in the opening chapter."
                         onChange={(cta) => {
                           const textBlocks = text.home.textBlocks.map((b, i) =>
                             i === index ? { ...b, cta } : b,

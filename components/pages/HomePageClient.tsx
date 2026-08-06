@@ -414,9 +414,9 @@ export function HomePageClient({
           stories={EX_TEXT_BLOCKS.map((block, index) => {
             const cms = websiteText.home.textBlocks[index];
             return {
-              title: cms?.title ?? block.title,
-              body: cms?.body ?? block.body,
-              cta: cms?.cta ?? block.cta,
+              title: cms?.title?.trim() || block.title,
+              body: cms?.body?.trim() || block.body,
+              cta: cms?.cta?.trim() || block.cta,
               href: block.href,
               imageName: block.imageName,
               imageAlt: block.alt,

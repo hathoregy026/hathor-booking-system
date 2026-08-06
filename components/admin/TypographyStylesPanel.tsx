@@ -46,6 +46,7 @@ import {
   type TypographySettings,
   type TypographyTextStyle,
 } from "@/lib/typography-settings-shared";
+import { parseWebsiteText } from "@/lib/website-text-shared";
 
 type EditorGroup =
   | "hero"
@@ -78,7 +79,7 @@ const GROUP_WHERE: Record<EditorGroup, string> = {
   body_text:
     "Normal paragraph text in page content — including the footer invitation line under BEGIN YOUR JOURNEY.",
   on_images:
-    "Copy on photos — edit the title, small indication, and body wording, plus each one’s font and colour. Styles apply site-wide on imagery; wording updates the homepage landmarks stack.",
+    "Copy on photos — edit title, indication, and body wording, plus each one’s font and colour. Styles apply site-wide on imagery; wording syncs to Homepage → Amenities sequence copy (slide 1 — fullscreen intro).",
   luxury_marquee:
     "Homepage text strip under the hero — edit font, size, colour, and the scrolling phrases (one phrase per line). Dividers (✦) are added automatically between phrases.",
   our_voyages:
@@ -622,6 +623,46 @@ export function TypographyStylesPanel() {
       setSettings(next);
       if (device === "phone") setSavedPhone(next);
       else setSavedDesktop(next);
+
+      /* Keep Website Text amenities slide 1 in sync (same path as Website Text save). */
+      try {
+        const textGet = await adminFetch("/api/admin/website-text");
+        if (textGet.ok) {
+          const textJson = (await textGet.json()) as {
+            settings?: unknown;
+            settingsMobile?: unknown;
+          };
+          const websiteText = parseWebsiteText(
+            device === "phone"
+              ? (textJson.settingsMobile ?? textJson.settings)
+              : textJson.settings,
+          );
+          const stackSlides = websiteText.home.stackSlides.map((slide, i) =>
+            i === 0
+              ? {
+                  ...slide,
+                  title: next.on_images_copy.title,
+                  indication: next.on_images_copy.indication,
+                  body: next.on_images_copy.body,
+                }
+              : slide,
+          );
+          await adminFetch("/api/admin/website-text", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              settings: {
+                ...websiteText,
+                home: { ...websiteText.home, stackSlides },
+              },
+              device,
+            }),
+          });
+        }
+      } catch {
+        /* typography already saved; wording sync is best-effort */
+      }
+
       showToast(
         "success",
         device === "phone"
@@ -631,6 +672,9 @@ export function TypographyStylesPanel() {
       void fetch(`/api/typography?t=${Date.now()}`, { cache: "no-store" }).catch(
         () => {},
       );
+      void fetch(`/api/website-text?t=${Date.now()}`, {
+        cache: "no-store",
+      }).catch(() => {});
     } catch (error) {
       showToast(
         "error",

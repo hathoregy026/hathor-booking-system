@@ -177,7 +177,7 @@ export function HomeAmenitiesSequence({
 
           <div className="home-am-intro__caption" data-am-intro-title>
             <h2
-              className="home-am-intro__title home-am-on-image-text"
+              className="home-am-intro__title home-am-on-image-text typo-on-images-title"
               style={onImageTitle}
             >
               {intro.titleLines.map((line) => (
@@ -185,7 +185,7 @@ export function HomeAmenitiesSequence({
               ))}
             </h2>
             <p
-              className="home-am-intro__indication home-am-on-image-text"
+              className="home-am-intro__indication home-am-on-image-text typo-on-images-indication"
               style={onImageIndication}
             >
               {intro.indication}
@@ -197,7 +197,10 @@ export function HomeAmenitiesSequence({
             data-am-intro-cream
             style={{ background: CREAM }}
           >
-            <p className="home-am-intro__cream-text" style={onPanelBody}>
+            <p
+              className="home-am-intro__cream-text typo-on-images-body"
+              style={onPanelBody}
+            >
               {intro.body}
             </p>
           </div>
@@ -224,13 +227,19 @@ export function HomeAmenitiesSequence({
             </div>
 
             <div className="home-am-video__copy" data-am-video-copy>
-              <p className="home-am-on-image-text" style={onImageBody}>
+              <p
+                className="home-am-on-image-text typo-on-images-body"
+                style={onImageBody}
+              >
                 {videoMain.body}
               </p>
             </div>
 
             <div className="home-am-video__title" data-am-video-title>
-              <h2 className="home-am-on-image-text" style={onImageTitle}>
+              <h2
+                className="home-am-on-image-text typo-on-images-title"
+                style={onImageTitle}
+              >
                 {(videoMain.titleLines.length
                   ? videoMain.titleLines
                   : [videoMain.indication]
@@ -258,10 +267,12 @@ export function HomeAmenitiesSequence({
               data-am-video-caption
               style={{ background: GOLD }}
             >
-              <h3 style={onPanelTitle}>
+              <h3 className="typo-on-images-title" style={onPanelTitle}>
                 {videoInset?.titleLines?.join(" ") || videoMain.indication}
               </h3>
-              <p style={onPanelBody}>{videoInset?.body || videoMain.body}</p>
+              <p className="typo-on-images-body" style={onPanelBody}>
+                {videoInset?.body || videoMain.body}
+              </p>
             </div>
           </div>
         </div>
@@ -289,13 +300,20 @@ export function HomeAmenitiesSequence({
                       data-amenities-caption
                       aria-hidden={index === 0 ? "false" : "true"}
                     >
-                      <p style={onPanelIndication}>{slide.indication}</p>
-                      <h2 style={onPanelTitle}>
+                      <p
+                        className="typo-on-images-indication"
+                        style={onPanelIndication}
+                      >
+                        {slide.indication}
+                      </p>
+                      <h2 className="typo-on-images-title" style={onPanelTitle}>
                         {slide.titleLines.map((line) => (
                           <span key={line}>{line}</span>
                         ))}
                       </h2>
-                      <p style={onPanelBody}>{slide.body}</p>
+                      <p className="typo-on-images-body" style={onPanelBody}>
+                        {slide.body}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -360,7 +378,7 @@ export function HomeAmenitiesSequence({
               style={{ background: GOLD }}
             >
               <h2
-                className="home-am-opening__title"
+                className="home-am-opening__title typo-on-images-title"
                 data-am-opening-title
                 style={onPanelTitle}
               >
@@ -368,7 +386,10 @@ export function HomeAmenitiesSequence({
               </h2>
 
               <div className="home-am-opening__rail" data-am-opening-rail>
-                <p className="home-am-opening__rail-text" style={onPanelBody}>
+                <p
+                  className="home-am-opening__rail-text typo-on-images-body"
+                  style={onPanelBody}
+                >
                   {stories[0]?.body || openingLeft.body}
                 </p>
                 <div className="home-am-opening__cards">
@@ -389,7 +410,7 @@ export function HomeAmenitiesSequence({
                         />
                       </div>
                       <figcaption
-                        className="home-am-on-image-text"
+                        className="home-am-on-image-text typo-on-images-indication"
                         style={onImageIndication}
                       >
                         {card.label}
@@ -399,7 +420,7 @@ export function HomeAmenitiesSequence({
                 </div>
                 {stories[0]?.href ? (
                   <a
-                    className="home-am-opening__cta"
+                    className="home-am-opening__cta typo-on-images-indication"
                     href={stories[0].href}
                     style={onPanelIndication}
                   >
@@ -408,7 +429,7 @@ export function HomeAmenitiesSequence({
                 ) : null}
                 {stories[1]?.href ? (
                   <a
-                    className="home-am-opening__cta"
+                    className="home-am-opening__cta typo-on-images-indication"
                     href={stories[1].href}
                     style={onPanelIndication}
                   >
