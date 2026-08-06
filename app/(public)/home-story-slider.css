@@ -11,6 +11,10 @@
 
 .home-story__slide {
   display: block;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-height: none !important;
   background: var(--cream, #ece8df);
   opacity: 1 !important;
   visibility: visible !important;
@@ -22,7 +26,7 @@
   bottom: 0;
   left: 34%;
   width: auto;
-  height: auto;
+  height: 100% !important;
   max-height: none;
   opacity: 1 !important;
   filter: none !important;
