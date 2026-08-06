@@ -1,0 +1,389 @@
+/* Springs design page base — Hathor tokens + grid/typography utilities */
+
+.gastronomy-springs-page {
+  --svh: 1svh;
+  --dvh: 1dvh;
+  --scale-px: 1px;
+  --scale-text-rem: 1rem;
+  --spacing: clamp(1rem, 2vw, 1.5rem);
+  --spacing-layout: clamp(1.25rem, 4vw, 3.5rem);
+  --grid-col: calc((100vw - var(--spacing-layout) * 2) / 12);
+  --cookie-height: 0px;
+
+  /* Hathor palette mapped onto springs design gradient slots */
+  --c-beige-background: #ece8df;
+  --c-dark-green: #1a1612;
+  --c-dark-green-rgb: 26, 22, 18;
+  --c-olive: #8b6914;
+  --c-olive-rgb: 139, 105, 20;
+  --c-green: #b69f64;
+  --c-green-rgb: 182, 159, 100;
+  --c-blue: #c9a96e;
+  --c-blue-rgb: 201, 169, 110;
+  --c-light-blue: #dcc99a;
+  --c-light-blue-rgb: 220, 201, 154;
+  --c-dark-blue: #5c4a2a;
+  --c-dark-blue-rgb: 92, 74, 42;
+
+  --t-primary: var(--c-green);
+  --t-line: rgba(182, 159, 100, 0.35);
+
+  --public-serif: var(--font-hathor-display, "Instrument Serif", Georgia, serif);
+  --public-sans: var(--font-hathor-body, "Plus Jakarta Sans", system-ui, sans-serif);
+
+  color: var(--c-dark-green);
+  font-family: var(--public-sans);
+  background: var(--c-beige-background);
+}
+
+.gastronomy-springs-page *,
+.gastronomy-springs-page *::before,
+.gastronomy-springs-page *::after {
+  box-sizing: border-box;
+}
+
+.gastronomy-springs-page img {
+  display: block;
+  max-width: 100%;
+}
+
+.gastronomy-springs-page .img-cover,
+.gastronomy-springs-page .img-full {
+  width: 100%;
+  height: 100%;
+}
+
+.gastronomy-springs-page .img-cover img,
+.gastronomy-springs-page .background--cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gastronomy-springs-page .img-full img {
+  width: 100%;
+  height: auto;
+}
+
+.gastronomy-springs-page .background {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.gastronomy-springs-page .background--bottom {
+  align-items: flex-end;
+  display: flex;
+}
+
+.gastronomy-springs-page .p-relative {
+  position: relative;
+}
+
+.gastronomy-springs-page .px-layout {
+  padding-left: var(--spacing-layout);
+  padding-right: var(--spacing-layout);
+}
+
+.gastronomy-springs-page .py-layout {
+  padding-top: var(--spacing-layout);
+  padding-bottom: var(--spacing-layout);
+}
+
+.gastronomy-springs-page .pl-layout {
+  padding-left: var(--spacing-layout);
+}
+
+.gastronomy-springs-page .pr-layout {
+  padding-right: var(--spacing-layout);
+}
+
+.gastronomy-springs-page .row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: calc(var(--spacing) * -0.5);
+  margin-right: calc(var(--spacing) * -0.5);
+}
+
+.gastronomy-springs-page .col {
+  min-width: 0;
+  padding-left: calc(var(--spacing) * 0.5);
+  padding-right: calc(var(--spacing) * 0.5);
+  width: 100%;
+}
+
+.gastronomy-springs-page .col--xs-4 {
+  width: 100%;
+}
+
+.gastronomy-springs-page .col--reverse {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+@media (min-width: 980px) {
+  .gastronomy-springs-page .col--md-3 {
+    width: 25%;
+  }
+  .gastronomy-springs-page .col--md-4 {
+    width: 33.333%;
+  }
+  .gastronomy-springs-page .col--md-6 {
+    width: 50%;
+  }
+  .gastronomy-springs-page .col--md-7 {
+    width: 58.333%;
+  }
+  .gastronomy-springs-page .col--md-8 {
+    width: 66.666%;
+  }
+  .gastronomy-springs-page .col--md-9 {
+    width: 75%;
+  }
+  .gastronomy-springs-page .col--md-10 {
+    width: 83.333%;
+  }
+  .gastronomy-springs-page .col--lg-6 {
+    width: 50%;
+  }
+  .gastronomy-springs-page .offset--md-3 {
+    margin-left: 25%;
+  }
+  .gastronomy-springs-page .mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .gastronomy-springs-page .ml-auto {
+    margin-left: auto;
+  }
+  .gastronomy-springs-page .mr-0 {
+    margin-right: 0;
+  }
+  .gastronomy-springs-page .text-right {
+    text-align: right;
+  }
+  .gastronomy-springs-page .text-left\:lg {
+    text-align: left;
+  }
+  .gastronomy-springs-page .is-hidden--md-down {
+    display: block !important;
+  }
+  .gastronomy-springs-page .is-hidden--lg-up {
+    display: none !important;
+  }
+  .gastronomy-springs-page .is-hidden--sm-down {
+    display: block !important;
+  }
+}
+
+@media (max-width: 979px) {
+  .gastronomy-springs-page .is-hidden--md-up {
+    display: block !important;
+  }
+  .gastronomy-springs-page .is-hidden--md-down {
+    display: none !important;
+  }
+  .gastronomy-springs-page .is-hidden--lg-up {
+    display: block !important;
+  }
+  .gastronomy-springs-page .is-hidden--sm-down {
+    display: none !important;
+  }
+}
+
+.gastronomy-springs-page .ui-dark,
+.gastronomy-springs-page .ui-dark-background {
+  background: var(--c-dark-green);
+  color: #f5f0e8;
+}
+
+.gastronomy-springs-page .ui-light,
+.gastronomy-springs-page .ui-light-background {
+  background: var(--c-beige-background);
+  color: var(--c-dark-green);
+}
+
+.gastronomy-springs-page .g1,
+.gastronomy-springs-page .h0,
+.gastronomy-springs-page .h1,
+.gastronomy-springs-page .h3 {
+  font-family: var(--public-serif);
+  font-weight: 400;
+  margin: 0;
+}
+
+.gastronomy-springs-page .g1 {
+  font-size: clamp(3rem, 8vw, 7rem);
+  letter-spacing: -0.03em;
+  line-height: 0.92;
+}
+
+.gastronomy-springs-page .h0 {
+  font-size: clamp(2.5rem, 6vw, 5.5rem);
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+}
+
+.gastronomy-springs-page .h1 {
+  font-size: clamp(1.75rem, 3.5vw, 3rem);
+  line-height: 1.05;
+}
+
+.gastronomy-springs-page .h3 {
+  font-size: clamp(1.1rem, 2vw, 1.45rem);
+  line-height: 1.35;
+}
+
+.gastronomy-springs-page .text-c1,
+.gastronomy-springs-page .text-c2,
+.gastronomy-springs-page .text-t1 {
+  font-family: var(--public-sans);
+  font-size: clamp(0.72rem, 1.2vw, 0.82rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.gastronomy-springs-page .text-t1 {
+  font-size: clamp(0.95rem, 1.5vw, 1.05rem);
+  letter-spacing: 0.02em;
+  line-height: 1.65;
+  text-transform: none;
+}
+
+.gastronomy-springs-page .leading-trim {
+  text-wrap: balance;
+}
+
+.gastronomy-springs-page .btn {
+  align-items: center;
+  background: transparent;
+  border: 1px solid currentColor;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--public-sans);
+  font-size: 0.72rem;
+  justify-content: center;
+  letter-spacing: 0.16em;
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  padding: 0 1rem;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background 0.35s ease, color 0.35s ease;
+}
+
+.gastronomy-springs-page .btn--outline:hover {
+  background: rgba(182, 159, 100, 0.14);
+}
+
+.gastronomy-springs-page .btn--square {
+  padding: 0;
+  width: 2.75rem;
+}
+
+.gastronomy-springs-page .btn--sm {
+  min-height: 2.35rem;
+  min-width: 2.35rem;
+  width: 2.35rem;
+}
+
+.gastronomy-springs-page .btn__icon svg {
+  display: block;
+}
+
+.gastronomy-springs-page .is-hidden {
+  display: none !important;
+}
+
+.gastronomy-springs-page [data-gs-mask-panel] {
+  position: absolute;
+  inset: 0;
+  will-change: clip-path;
+}
+
+.gastronomy-springs-page .de-captions__canvas {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.gastronomy-springs-page .de-captions__canvas [data-gs-mask-panel] img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Hathor gradient remap for springs design orbs */
+.gastronomy-springs-page .de-intro__gradient div:first-child {
+  background: radial-gradient(
+    circle,
+    var(--c-green) 0,
+    rgba(var(--c-green-rgb), 0.8) 5%,
+    rgba(var(--c-green-rgb), 0) 92%
+  ) !important;
+}
+
+.gastronomy-springs-page .de-spiral__gradient div:first-child {
+  background: radial-gradient(
+    circle,
+    var(--c-olive) 0,
+    rgba(var(--c-olive-rgb), 0.8) 5%,
+    rgba(var(--c-olive-rgb), 0) 62%
+  ) !important;
+}
+
+.gastronomy-springs-page .de-spiral__gradient div:nth-child(2) {
+  background: radial-gradient(
+    circle,
+    var(--c-light-blue) 0,
+    var(--c-light-blue) 5%,
+    rgba(var(--c-light-blue-rgb), 0) 90%
+  ) !important;
+}
+
+.gastronomy-springs-page .de-spiral__gradient div:nth-child(4) {
+  background: radial-gradient(
+    circle,
+    var(--c-green) 0,
+    var(--c-green) 25%,
+    rgba(var(--c-green-rgb), 0) 70%
+  ) !important;
+}
+
+.gastronomy-springs-page .de-gallery__gradient div:first-child {
+  background: radial-gradient(
+    circle,
+    var(--c-green) 0,
+    rgba(var(--c-green-rgb), 0.8) 5%,
+    rgba(var(--c-green-rgb), 0) 62%
+  ) !important;
+}
+
+.gastronomy-springs-page .de-gallery__gradient div:nth-child(2) {
+  background: radial-gradient(
+    circle,
+    var(--c-blue) 0,
+    var(--c-blue) 5%,
+    rgba(var(--c-blue-rgb), 0) 60%
+  ) !important;
+}
+
+.gastronomy-springs-page .de-projects__thumb.is-active {
+  border-color: var(--c-green) !important;
+}
+
+.gastronomy-springs-page .de-slider__scrollbar__progress {
+  background: var(--c-green) !important;
+}
+
+.gastronomy-springs-page .de-balcons__pin.is-active .de-balcons__pin-tooltip,
+.gastronomy-springs-page .de-balcons__pin:hover .de-balcons__pin-tooltip,
+.gastronomy-springs-page .de-balcons__pin:focus .de-balcons__pin-tooltip {
+  opacity: 1;
+}
+
+html[data-gastronomy-mask] .gastronomy-springs-page .sticky__layer--sticky {
+  position: sticky;
+  top: 0;
+}

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { GastronomyMaskRevealBoot } from "@/components/pages/GastronomyMaskRevealBoot";
-import "@/app/gastronomy-mask-reveal.css";
+import "@/app/gastronomy-springs-design.css";
 
 const GASTRONOMY_MASK_BOOT = `(function(){try{var d=document.documentElement,b=document.body;d.setAttribute("data-gastronomy-mask","");b.style.backgroundColor="#ece8df";}catch(e){}})();`;
 
