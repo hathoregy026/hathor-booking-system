@@ -24,6 +24,8 @@
   max-height: none;
   opacity: 1 !important;
   filter: none !important;
+  visibility: visible !important;
+  z-index: 1;
 }
 
 .home-story__media::after {
@@ -34,6 +36,11 @@
 .home-story__media-link img {
   border-radius: 0;
   transform: none !important;
+  visibility: visible !important;
+}
+
+.home-story__media-link img {
+  opacity: 1 !important;
 }
 
 .home-story__art {
@@ -59,6 +66,7 @@
 
 .home-story__title {
   max-width: 8ch !important;
+  color: var(--public-gold, #b69f64) !important;
   text-shadow: none !important;
 }
 
@@ -68,6 +76,7 @@
   bottom: clamp(1.5rem, 6vh, 5rem);
   left: clamp(1.25rem, 4vw, 4.5rem);
   max-width: none !important;
+  color: var(--hs-muted, #3a342f) !important;
   text-align: left;
   text-shadow: none !important;
 }
