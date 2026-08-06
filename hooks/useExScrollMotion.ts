@@ -841,7 +841,18 @@ export function useExScrollMotion() {
         card.classList.remove("is-stack-solid");
       });
       syncStackPhotoReady(false);
-      copyPanels.forEach((panel, index) => {
+      /* Invitation must be readable the moment the stage lands */
+      if (silkChars.length) {
+        gsap.set(silkChars, {
+          x: 0,
+          y: 0,
+          xPercent: 0,
+          yPercent: 0,
+          opacity: 1,
+          force3D: true,
+        });
+      }
+      copyPanels.forEach((panel) => {
         gsap.set(panel, { autoAlpha: 0, visibility: "hidden" });
         panel.setAttribute("aria-hidden", "true");
       });
@@ -928,23 +939,24 @@ export function useExScrollMotion() {
       const step = dwell + move;
       /*
        * Cream invitation intro (same fog language as Take Your Voyage Today).
-       * Text still rises ahead of fog; overall scroll is paced slower to read.
+       * Big gold text is already on stage when the pin lands, holds to read,
+       * then the first photograph fog-rises up to cover it.
        */
-      const introText = 0.22;
-      const introHold = 0.22;
-      const introFog = 0.52;
+      const introText = 0.1;
+      const introHold = 0.42;
+      const introFog = 0.55;
       const introSettle = 0.14;
       const introSpan = introText + introHold + introFog + introSettle;
       const scrollSpan = introSpan + total * (move + dwell) + release;
 
       if (silkChars.length) {
-        /* Clear any prior transform so yPercent alone drives the rise mask */
+        /* Visible on land — fog covers later; do not start fully hidden */
         gsap.set(silkChars, {
           x: 0,
           y: 0,
           xPercent: 0,
-          yPercent: 100,
-          opacity: 0,
+          yPercent: 0,
+          opacity: 1,
           force3D: true,
         });
       }
@@ -1041,7 +1053,13 @@ export function useExScrollMotion() {
           invalidateOnRefresh: !isPhone,
           onUpdate: (self) => {
             /* Hard snap back to cream invitation if scrub lands at the start */
-            if (self.progress <= 0.001) resetStackToSilk();
+            if (self.progress <= 0.02) resetStackToSilk();
+          },
+          onEnter: () => {
+            resetStackToSilk();
+          },
+          onEnterBack: () => {
+            /* Returning from below — keep plates; silk only if near start */
           },
           onToggle: (self) => {
             section.classList.toggle("is-fog-active", self.isActive);
@@ -1058,87 +1076,55 @@ export function useExScrollMotion() {
             if (!pin) return;
             gsap.set(pin, {
               x: 0,
-              y: 0,
               left: 0,
-              top: 0,
               width: "100%",
               maxWidth: "none",
               marginLeft: 0,
               marginRight: 0,
               boxSizing: "border-box",
             });
+            if (self.progress <= 0.02) resetStackToSilk();
           },
         },
       });
       if (tl.scrollTrigger) trackTrigger(tl.scrollTrigger);
 
-      /* Gold invitation rises quickly, then first landmark fog-covers it */
+      /*
+       * Big invitation stays fully readable through the hold, then the first
+       * landmark fog-covers it. Starting silk hidden made the first photo
+       * feel like it arrived with no text.
+       */
       if (silkChars.length) {
-        const silkDuration = introText * 0.55;
-        if (isPhone) {
-          /* Word-level rise â€” same motion, far fewer staggered nodes */
-          const words: HTMLElement[][] = [];
-          let bucket: HTMLElement[] = [];
-          silkChars.forEach((el) => {
-            const text = el.textContent ?? "";
-            if (text === "\u00A0" || text === " " || text.trim() === "") {
-              if (bucket.length) {
-                words.push(bucket);
-                bucket = [];
-              }
-              return;
-            }
-            bucket.push(el);
-          });
-          if (bucket.length) words.push(bucket);
-          const wordCount = Math.max(1, words.length);
-          const silkStagger =
-            wordCount > 1 ? (introText * 0.45) / (wordCount - 1) : 0;
-          words.forEach((wordChars, wi) => {
-            tl.fromTo(
-              wordChars,
-              { x: 0, y: 0, xPercent: 0, yPercent: 100, opacity: 0 },
-              {
-                x: 0,
-                y: 0,
-                xPercent: 0,
-                yPercent: 0,
-                opacity: 1,
-                ease: "none",
-                duration: silkDuration,
-                force3D: true,
-              },
-              wi * silkStagger,
-            );
-          });
-        } else {
-          const silkStagger =
-            silkChars.length > 1
-              ? (introText * 0.45) / (silkChars.length - 1)
-              : 0;
-          tl.fromTo(
-            silkChars,
-            { x: 0, y: 0, xPercent: 0, yPercent: 100, opacity: 0 },
-            {
-              x: 0,
-              y: 0,
-              xPercent: 0,
-              yPercent: 0,
-              opacity: 1,
-              ease: "none",
-              duration: silkDuration,
-              stagger: silkStagger,
-              force3D: true,
-            },
-            0,
-          );
-        }
+        gsap.set(silkChars, {
+          x: 0,
+          y: 0,
+          xPercent: 0,
+          yPercent: 0,
+          opacity: 1,
+          force3D: true,
+        });
+        /* Keep silk locked readable for introText + introHold (no hide-at-0 scrub) */
+        tl.set(
+          silkChars,
+          {
+            x: 0,
+            y: 0,
+            xPercent: 0,
+            yPercent: 0,
+            opacity: 1,
+            force3D: true,
+          },
+          0,
+        );
       }
 
       const firstCard = cards[0];
       const firstMedia = getCardMedia(firstCard);
       const firstFog = { edge: 0, reveal: 0 };
       const introFogAt = introText + introHold;
+      /* Guarantee first plate is fully masked until fog starts */
+      applyFogReveal(firstCard, 0, 0);
+      firstCard.classList.remove("is-stack-solid");
       tl.fromTo(
         firstFog,
         { edge: 0, reveal: 0 },
@@ -1164,6 +1150,14 @@ export function useExScrollMotion() {
             applyFogReveal(firstCard, 0, 0);
             syncStackPhotoReady(false);
             firstCard.classList.remove("is-stack-solid");
+            if (silkChars.length) {
+              gsap.set(silkChars, {
+                yPercent: 0,
+                opacity: 1,
+                x: 0,
+                xPercent: 0,
+              });
+            }
           },
         },
         introFogAt,

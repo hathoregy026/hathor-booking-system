@@ -1952,7 +1952,8 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 
 .ex-stack-scroll__silk-char {
   display: inline-block;
-  opacity: 0;
+  /* Visible by default so the invitation reads before fog JS/scrub catches up */
+  opacity: 1;
   /* No CSS transform — GSAP owns yPercent; a CSS translate stacks and clips letters forever */
   will-change: transform, opacity;
 }
