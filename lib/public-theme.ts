@@ -61,7 +61,10 @@ export function getPublicHeroBootCriticalStyle(): string {
  * Must run in <head> so users cannot scroll behind the splash pre-hydrate.
  * Admin never mounts WelcomeSplash, so locking here would freeze the dashboard forever.
  */
-export function getWelcomeSplashBlockingScript(): string {
+export function getWelcomeSplashBlockingScript(enabled = true): string {
+  if (!enabled) {
+    return `(function(){try{document.documentElement.classList.add("hathor-welcome-skip");}catch(e){}})();`;
+  }
   return `(function(){try{var p=(location.pathname||"/");if(p==="/admin"||p.indexOf("/admin/")===0)return;var d=document.documentElement;if(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches){d.classList.add("hathor-welcome-skip");return;}d.classList.add("hathor-welcome-lock");}catch(e){}})();`;
 }
 

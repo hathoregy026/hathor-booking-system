@@ -9,6 +9,10 @@ import { TypographySettingsProvider } from "@/components/public/TypographySettin
 import { WebsiteTextProvider } from "@/components/public/WebsiteTextProvider";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import {
+  getWelcomeSplashBlockingScript,
+  getWelcomeSplashCriticalStyle,
+} from "@/lib/public-theme";
+import {
   heroLogoTuneToImportantCss,
   heroLogoTuneToNarrowImportantCss,
 } from "@/lib/hero-logo-tune-shared";
@@ -119,6 +123,7 @@ export default async function PublicSiteLayout({
    * Now one request-scoped bundle: ≤2 DB round-trips.
    */
   const cms = await loadPublicCmsBundle();
+  const welcomeSplash = cms.welcomeSplash;
 
   const displayFontStyle = {
     /* Installed local display face until Playfair file is added */
@@ -140,6 +145,16 @@ export default async function PublicSiteLayout({
       className={`${agraham.variable} ${gabigaile.variable} ${gamgote.variable} ${quietLuxury.variable} ${plusJakarta.variable}`}
       style={displayFontStyle}
     >
+      <script
+        dangerouslySetInnerHTML={{
+          __html: getWelcomeSplashBlockingScript(welcomeSplash.enabled),
+        }}
+      />
+      <style
+        dangerouslySetInnerHTML={{
+          __html: getWelcomeSplashCriticalStyle(),
+        }}
+      />
       <style
         dangerouslySetInnerHTML={{
           __html: typographyCss,
@@ -170,7 +185,9 @@ export default async function PublicSiteLayout({
               initial={cms.websiteText}
               initialMobile={cms.websiteTextMobile}
             >
-              <PublicLayout>{children}</PublicLayout>
+              <PublicLayout welcomeSplash={welcomeSplash}>
+                {children}
+              </PublicLayout>
             </WebsiteTextProvider>
           </TypographySettingsProvider>
         </SiteImagesProvider>

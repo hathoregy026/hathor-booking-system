@@ -1,13 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { HATHOR_WELCOME_ABOARD_SRC } from "@/lib/branding";
 import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
+import type { WelcomeSplashSettings } from "@/lib/welcome-splash-settings-shared";
 
 const HOLD_MS = 4000;
 const FADE_MS = 400;
 
-function shouldSkipWelcomeSplash(): boolean {
+type WelcomeSplashProps = Pick<WelcomeSplashSettings, "enabled" | "imageUrl">;
+
+function shouldSkipWelcomeSplash(enabled: boolean): boolean {
+  if (!enabled) return true;
   if (typeof document === "undefined") return false;
   if (document.documentElement.classList.contains("hathor-welcome-skip")) {
     return true;
@@ -29,15 +32,15 @@ function releaseWelcomeScrollLock() {
 /**
  * Full-screen welcome on every hard land of the public site.
  * Holds a full 4s from mount, then fades out.
- * Skipped entirely when prefers-reduced-motion is set.
+ * Skipped when disabled in CMS or when prefers-reduced-motion is set.
  */
-export function WelcomeSplash() {
+export function WelcomeSplash({ enabled, imageUrl }: WelcomeSplashProps) {
   const [phase, setPhase] = useState<"hold" | "fade" | "gone">(() =>
-    shouldSkipWelcomeSplash() ? "gone" : "hold",
+    shouldSkipWelcomeSplash(enabled) ? "gone" : "hold",
   );
 
   useEffect(() => {
-    if (shouldSkipWelcomeSplash()) {
+    if (shouldSkipWelcomeSplash(enabled)) {
       document.documentElement.classList.remove("hathor-welcome-lock");
       document.documentElement.classList.add("hathor-welcome-skip");
       return;
@@ -58,9 +61,9 @@ export function WelcomeSplash() {
       window.clearTimeout(goneTimer);
       releaseWelcomeScrollLock();
     };
-  }, []);
+  }, [enabled]);
 
-  if (phase === "gone") return null;
+  if (phase === "gone" || !enabled) return null;
 
   return (
     <div
@@ -70,7 +73,7 @@ export function WelcomeSplash() {
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={HATHOR_WELCOME_ABOARD_SRC}
+        src={imageUrl}
         alt=""
         className="hathor-welcome-splash__img"
         decoding="async"

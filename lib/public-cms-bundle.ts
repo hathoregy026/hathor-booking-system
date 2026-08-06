@@ -38,6 +38,12 @@ import {
   parseStoredSiteImageMap,
   storedMapToSiteImageMap,
 } from "@/lib/site-image-public-map";
+import {
+  DEFAULT_WELCOME_SPLASH_SETTINGS,
+  WELCOME_SPLASH_SETTINGS_KEY,
+  parseWelcomeSplashSettings,
+  type WelcomeSplashSettings,
+} from "@/lib/welcome-splash-settings-shared";
 import type { Client } from "pg";
 import {
   ensureCmsWarmup,
@@ -52,7 +58,7 @@ import {
 
 export const PUBLIC_CMS_CACHE_TAG = "public-cms";
 /** Bumped so prior build-time default entries are never reused. */
-export const PUBLIC_CMS_CACHE_KEY = "public-cms-bundle-v7";
+export const PUBLIC_CMS_CACHE_KEY = "public-cms-bundle-v8";
 export const PUBLIC_CMS_REVALIDATE_SECONDS = 300;
 
 const PUBLIC_CMS_KEYS = [
@@ -64,6 +70,7 @@ const PUBLIC_CMS_KEYS = [
   WEBSITE_TEXT_KEY,
   WEBSITE_TEXT_MOBILE_KEY,
   SITE_IMAGE_PUBLIC_MAP_KEY,
+  WELCOME_SPLASH_SETTINGS_KEY,
 ] as const;
 
 /** Keys known to exceed ~2KB — full SELECT value hangs on some pooler paths. */
@@ -116,6 +123,7 @@ export type PublicCmsBundle = {
   hieroglyphTune: HieroglyphTune;
   websiteText: WebsiteText;
   websiteTextMobile: WebsiteText;
+  welcomeSplash: WelcomeSplashSettings;
 };
 
 /** Internal only — never serialized into public HTML. */
@@ -177,6 +185,12 @@ function parseSettingMap(rows: SettingRow[]) {
     );
   }
 
+  const welcomeSplash = byKey.has(WELCOME_SPLASH_SETTINGS_KEY)
+    ? parseWelcomeSplashSettings(
+        readStored(byKey.get(WELCOME_SPLASH_SETTINGS_KEY)),
+      )
+    : DEFAULT_WELCOME_SPLASH_SETTINGS;
+
   return {
     siteImages,
     typography,
@@ -186,6 +200,7 @@ function parseSettingMap(rows: SettingRow[]) {
     heroLogoTune,
     heroLogoTuneMobile,
     hieroglyphTune,
+    welcomeSplash,
   };
 }
 
@@ -199,6 +214,7 @@ export function defaultPublicCmsBundle(): PublicCmsBundle {
     hieroglyphTune: DEFAULT_HIEROGLYPH_TUNE,
     websiteText: DEFAULT_WEBSITE_TEXT,
     websiteTextMobile: DEFAULT_WEBSITE_TEXT,
+    welcomeSplash: DEFAULT_WELCOME_SPLASH_SETTINGS,
   };
 }
 
