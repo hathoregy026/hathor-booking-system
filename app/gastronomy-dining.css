@@ -1219,3 +1219,19 @@
   color: var(--gd-gold-soft);
   opacity: 1;
 }
+
+/* Sticky runway requires visible overflow — public-main uses overflow-x: clip globally. */
+html[data-gastronomy-dining] .public-site,
+html[data-gastronomy-dining] .public-main,
+html[data-gastronomy-dining] .page-transition {
+  overflow: visible !important;
+  overflow-x: visible !important;
+}
+
+html[data-gastronomy-dining] .public-main {
+  min-height: auto;
+}
+
+html[data-gastronomy-dining] .gastronomy-dining-page {
+  isolation: isolate;
+}

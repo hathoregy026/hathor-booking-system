@@ -8,6 +8,7 @@ import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { useGastronomyDiningScroll } from "@/hooks/useGastronomyDiningScroll";
 import { GASTRONOMY_PAGE } from "@/lib/page-content";
+import { resolveGastronomyDiningImageSrc } from "@/lib/gastronomy-dining-image-src";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 
 function splitHeading(text: string): { line1: string; line2: string } {
@@ -49,9 +50,10 @@ function DiningImg({
   previewAnchor?: boolean;
 }) {
   const image = useSiteImage(name);
+  const src = resolveGastronomyDiningImageSrc(name, image.src);
   return (
     <img
-      src={image.src}
+      src={src}
       alt={alt}
       id={previewAnchor ? siteImageAnchorId(name) : undefined}
       data-site-image={name}

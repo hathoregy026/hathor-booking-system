@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, type RefObject } from "react";
+import { useLayoutEffect, type RefObject } from "react";
 
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
 
@@ -57,7 +57,7 @@ function motionDisabled() {
 }
 
 export function useGastronomyDiningScroll(rootRef: RefObject<HTMLDivElement | null>) {
-  useEffect(() => {
+  useLayoutEffect(() => {
     const root = rootRef.current;
     if (!root) return;
 
@@ -66,7 +66,9 @@ export function useGastronomyDiningScroll(rootRef: RefObject<HTMLDivElement | nu
       current: 0,
       target: 0,
     }));
-    const progressBar = root.querySelector<HTMLElement>("[data-v6-progress]");
+    const progressBar = root.querySelector<HTMLElement>(
+      ".gastronomy-dining-progress [data-v6-progress]",
+    );
     let smoothedDocProgress = 0;
     let targetDocProgress = 0;
     let frame = 0;
@@ -141,18 +143,23 @@ export function useGastronomyDiningScroll(rootRef: RefObject<HTMLDivElement | nu
       onScroll();
     };
 
+    const boot = () => {
+      measure();
+      smoothedDocProgress = targetDocProgress;
+      stages.forEach((item) => {
+        item.current = item.target;
+        applyScrollVars(item.stage, item.current);
+      });
+      if (progressBar) {
+        progressBar.style.transform = `scaleX(${smoothedDocProgress})`;
+      }
+    };
+
     document.documentElement.style.scrollBehavior = "auto";
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize, { passive: true });
-    measure();
-    smoothedDocProgress = targetDocProgress;
-    stages.forEach((item) => {
-      item.current = item.target;
-      applyScrollVars(item.stage, item.current);
-    });
-    if (progressBar) {
-      progressBar.style.transform = `scaleX(${smoothedDocProgress})`;
-    }
+    boot();
+    requestAnimationFrame(boot);
     if (!frame) {
       lastTime = performance.now();
       frame = requestAnimationFrame(tick);
