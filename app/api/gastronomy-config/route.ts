@@ -12,7 +12,10 @@ export const revalidate = 0;
 
 export async function GET() {
   const defaults = Object.fromEntries(
-    SITE_IMAGE_SLOTS.filter((slot) => slot.pagePath === "/gastronomy").map((slot) => [
+    SITE_IMAGE_SLOTS.filter(
+      (slot) =>
+        slot.pagePath === "/gastronomy" && !slot.name.startsWith("gastronomy-"),
+    ).map((slot) => [
       slot.name,
       slot.url,
     ]),

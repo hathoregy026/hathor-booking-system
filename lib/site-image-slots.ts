@@ -11,8 +11,40 @@ export type SiteImageSlot = {
   displayOrder: number;
 };
 
+const DINING_SCENE_SLOTS: SiteImageSlot[] = [
+  ["dining-intro-hero", "Intro hero", GASTRONOMY_DINING_MEDIA.hero],
+  ["dining-spiral-bridge", "Spiral bridge", GASTRONOMY_DINING_MEDIA.table],
+  ["dining-projects-backdrop", "Courses backdrop", GASTRONOMY_DINING_MEDIA.experience],
+  ["dining-projects-course-1", "Welcome course", GASTRONOMY_DINING_MEDIA.hero],
+  ["dining-projects-course-2", "Main course", GASTRONOMY_DINING_MEDIA.courses],
+  ["dining-projects-course-3", "Dessert course", GASTRONOMY_DINING_MEDIA.wine],
+  ["dining-projects-thumb-1", "Course thumbnail 1", GASTRONOMY_DINING_MEDIA.plate1],
+  ["dining-projects-thumb-2", "Course thumbnail 2", GASTRONOMY_DINING_MEDIA.plate2],
+  ["dining-projects-thumb-3", "Course thumbnail 3", GASTRONOMY_DINING_MEDIA.plate3],
+  ["dining-captions-start", "Image story start", GASTRONOMY_DINING_MEDIA.hero],
+  ["dining-captions-end", "Image story end", GASTRONOMY_DINING_MEDIA.experience],
+  ["dining-first-light", "First light plate", GASTRONOMY_DINING_MEDIA.chef],
+  ["dining-course-layers", "Course layers", GASTRONOMY_DINING_MEDIA.courses],
+  ["dining-wine-pairing", "Wine pairing", GASTRONOMY_DINING_MEDIA.wine],
+  ["dining-dessert-hour", "Dessert hour", GASTRONOMY_DINING_MEDIA.plate4],
+  ["dining-gallery-left", "Gallery left", GASTRONOMY_DINING_MEDIA.plate5],
+  ["dining-gallery-right", "Gallery right", GASTRONOMY_DINING_MEDIA.plate6],
+  ["dining-private-menu", "Private menu panel", GASTRONOMY_DINING_MEDIA.experience],
+  ["dining-lounge", "Lounge panel", GASTRONOMY_DINING_MEDIA.service],
+  ["dining-celebration", "Celebration panel", GASTRONOMY_DINING_MEDIA.celebration],
+  ["dining-closing", "Closing scene", GASTRONOMY_DINING_MEDIA.table],
+].map(([name, altText, url], displayOrder) => ({
+  name,
+  altText: `Dining — ${altText}`,
+  url,
+  category: "dining" as ImageCategory,
+  pagePath: "/gastronomy",
+  displayOrder,
+}));
+
 /** Canonical image slots — seeded to SiteImage and editable in admin → Site Images. */
 export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
+  ...DINING_SCENE_SLOTS,
   // Homepage (live EX page only)
   {
     name: "home-hero-poster",

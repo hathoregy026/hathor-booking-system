@@ -205,6 +205,9 @@ export type SiteImageAdminGroup = {
 
 function labelForSlot(slot: SiteImageSlot): string {
   if (SLOT_LABELS[slot.name]) return SLOT_LABELS[slot.name]!;
+  if (slot.pagePath === "/gastronomy" && slot.name.startsWith("dining-")) {
+    return slot.altText;
+  }
   const page = PAGE_GROUP_TITLES[slot.pagePath] ?? "Site";
   return `${page} — ${slot.name.replace(/-/g, " ")}`;
 }
@@ -298,6 +301,11 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
 
   const byPage = new Map<string, SiteImageAdminItem[]>();
   for (const slot of SITE_IMAGE_SLOTS) {
+    // Legacy coarse Gastronomy slots are retained for older cross-page content,
+    // but the Dining dashboard exposes only source-scene image controls.
+    if (slot.pagePath === "/gastronomy" && slot.name.startsWith("gastronomy-")) {
+      continue;
+    }
     if (
       slot.pagePath === "/" ||
       slot.pagePath === "/#moving-tilted-cards" ||

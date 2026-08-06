@@ -488,29 +488,61 @@
 (() => {
   const applyDashboardConfig = () => {
   const slotTargets = {
-    "gastronomy-hero": "#de-intro",
-    "gastronomy-restaurant": "#de-projects",
-    "gastronomy-table": "#de-spiral",
-    "gastronomy-courses": "#de-captions",
-    "gastronomy-wine": "#de-gallery",
-    "gastronomy-chef": "#de-balcons",
-    "gastronomy-service": "#de-slider",
-    "gastronomy-celebration": "#de-more",
+    "dining-intro-hero": "#de-intro .de-intro__background picture",
+    "dining-spiral-bridge": "#de-spiral .de-spiral__background picture",
+    "dining-projects-backdrop": "#de-projects .de-projects__background picture",
+    "dining-projects-course-1": "#de-projects [data-content-animation-item='1'] img",
+    "dining-projects-course-2": "#de-projects [data-content-animation-item='2'] img",
+    "dining-projects-course-3": "#de-projects [data-content-animation-item='3'] img",
+    "dining-projects-thumb-1": "#de-projects [data-content-animation-id='1'] img",
+    "dining-projects-thumb-2": "#de-projects [data-content-animation-id='2'] img",
+    "dining-projects-thumb-3": "#de-projects [data-content-animation-id='3'] img",
+    "dining-first-light": "#de-balcons .de-balcons__content picture",
+    "dining-course-layers": "#de-materials .de-materials__image picture",
+    "dining-wine-pairing": "#de-slider .de-slider__images > div:first-child picture, #de-slider .de-slider__mobile-scrollable__item:first-child picture",
+    "dining-dessert-hour": "#de-slider .de-slider__images > div:nth-child(2) picture, #de-slider .de-slider__mobile-scrollable__item:nth-child(2) picture",
+    "dining-gallery-left": "#de-gallery .de-gallery__image:first-child picture",
+    "dining-gallery-right": "#de-gallery .de-gallery__image:nth-child(2) picture",
+    "dining-private-menu": "#de-flats-80691 .background picture",
+    "dining-lounge": "#de-flats-251302 .background picture",
+    "dining-celebration": "#de-flats-644069 .background picture",
+    "dining-closing": "#i-more .more-block__content .background picture",
   };
   function replaceVisual(target, url, slot) {
-    const root = document.querySelector(target);
-    if (!root || !url) return;
-    root.setAttribute("data-gastronomy-slot", slot);
-    root.querySelectorAll("img").forEach((image) => {
+    if (!url) return;
+    document.querySelectorAll(target).forEach((root) => {
+      root.setAttribute("data-dining-slot", slot);
+      const images = root.matches("img") ? [root] : root.querySelectorAll("img");
+      images.forEach((image) => {
       image.setAttribute("data-gastronomy-slot", slot);
       image.src = url;
       image.removeAttribute("srcset");
       image.setAttribute("data-src", url);
     });
-    root.querySelectorAll("source").forEach((source) => {
+      root.querySelectorAll("source").forEach((source) => {
       source.srcset = url;
       source.setAttribute("data-gastronomy-slot", slot);
     });
+    });
+  }
+  function replaceCaptionFrame(attribute, url, slot) {
+    const canvas = document.querySelector("#de-captions .de-captions__canvas");
+    if (!canvas || !url) return;
+    const raw = canvas.getAttribute(attribute);
+    if (!raw) return;
+    try {
+      const value = JSON.parse(raw);
+      const replaceUrls = (entry) => {
+        if (typeof entry === "string") return entry.startsWith("http") ? url : entry;
+        if (Array.isArray(entry)) return entry.map(replaceUrls);
+        if (entry && typeof entry === "object") {
+          Object.keys(entry).forEach((key) => { entry[key] = replaceUrls(entry[key]); });
+        }
+        return entry;
+      };
+      canvas.setAttribute(attribute, JSON.stringify(replaceUrls(value)));
+      canvas.setAttribute("data-dining-slot", slot);
+    } catch {}
   }
   fetch("/api/gastronomy-config", { cache: "no-store" })
     .then((response) => response.ok ? response.json() : null)
@@ -519,6 +551,8 @@
       Object.entries(slotTargets).forEach(([slot, target]) =>
         replaceVisual(target, config.images && config.images[slot], slot)
       );
+      replaceCaptionFrame("data-image-scroll-image-start", config.images && config.images["dining-captions-start"], "dining-captions-start");
+      replaceCaptionFrame("data-image-scroll-image-end", config.images && config.images["dining-captions-end"], "dining-captions-end");
       const style = document.createElement("style");
       style.dataset.gastronomyTypography = "true";
       style.textContent = config.css || "";
