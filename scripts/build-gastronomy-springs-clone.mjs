@@ -282,6 +282,26 @@ for (const [from, to] of Object.entries(TEXT)) {
   html = html.split(from).join(to);
 }
 
+// Residual Springs flats copy (nbps / curly apostrophes vary in the CLONE HTML)
+const looseReplacements = [
+  [
+    /Our boutique townhouses[\s\S]*?kisses your face\./g,
+    "With two elegant restaurants and relaxing lounge bars, every moment becomes a celebration of taste and tranquility.",
+  ],
+  [
+    /When you live in&nbsp;this penthouse[\s\S]*?here and now\./g,
+    "Hathor Cruise Egypt offers more than scenery &mdash; it offers a sensory journey through Egypt&rsquo;s culinary heritage.",
+  ],
+  [/Garden of&nbsp;Fulfilled Expectations/g, "Where Taste Meets the Nile"],
+  [/Ceiling heights up&nbsp;to&nbsp;4 meters/g, "Nile-front views"],
+  [/At&nbsp;Springs,/g, "Aboard Hathor,"],
+  [/Beauty at&nbsp;Your Fingertips/g, "Continue exploring"],
+];
+
+for (const [re, to] of looseReplacements) {
+  html = html.replace(re, to);
+}
+
 // Title SVG → real text heading for Hathor (keep structure, swap visible title)
 html = html.replace(
   /(<h1 class="g1 leading-trim[^"]*"[^>]*>)\s*Hathor Flavors\s*(<\/h1>)/,
