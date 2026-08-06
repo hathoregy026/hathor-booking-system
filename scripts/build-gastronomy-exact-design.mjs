@@ -249,6 +249,13 @@ const diningPalette = `
     visibility: visible !important;
     transform: none !important;
   }
+  #de-projects .de-projects__background {
+    z-index: 0 !important;
+  }
+  #de-projects .de-projects__text {
+    position: relative !important;
+    z-index: 10 !important;
+  }
   #de-projects .ui-light .h3,
   #de-projects .ui-light .text-c2,
   #de-projects .ui-light .de-projects__slider-item__text {
