@@ -888,9 +888,29 @@
   }
 }
 
-/* Navbar glass — translucent dark + blur (restored) */
+/* Land — no glass tint (hover + scroll styles unchanged) */
 .public-site
   .hathor-header.hathor-header--owo-hero-layout.hathor-header--menu-active:not(
+    .hathor-header--menu-hovered
+  ):not(.hathor-header--nav-compact) {
+  background: transparent;
+  border-bottom: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.public-site
+  .hathor-header.hathor-header--owo-hero-layout.hathor-header--menu-active:not(
+    .hathor-header--menu-hovered
+  ):not(.hathor-header--nav-compact)::after {
+  content: none;
+  opacity: 0;
+}
+
+/* Navbar glass on scroll — translucent dark + blur */
+.public-site
+  .hathor-header.hathor-header--owo-hero-layout.hathor-header--menu-active.hathor-header--nav-compact:not(
     .hathor-header--menu-hovered
   ),
 .public-site
@@ -904,9 +924,9 @@
   -webkit-backdrop-filter: blur(10px);
 }
 
-/* Gold bottom rule — bold in the middle, fades to both edges */
+/* Gold bottom rule — bold in the middle, fades to both edges (scroll only) */
 .public-site
-  .hathor-header.hathor-header--owo-hero-layout.hathor-header--menu-active:not(
+  .hathor-header.hathor-header--owo-hero-layout.hathor-header--menu-active.hathor-header--nav-compact:not(
     .hathor-header--menu-hovered
   )::after,
 .public-site
