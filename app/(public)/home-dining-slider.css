@@ -1,10 +1,13 @@
-/* Isolated port of the dining page's #de-slider composition. */
+/* Homepage port of the dining page's #de-slider.
+   Layout is isolated so legacy home-story rules cannot affect it. */
 .home-dining-slider {
+  --hds-caption-width: 40%;
+  --hds-cream: var(--cream, #ece8df);
   position: relative;
   z-index: 22;
+  width: 100%;
   height: 400svh;
-  overflow: visible;
-  background: var(--cream, #ece8df);
+  background: var(--hds-cream);
 }
 
 .home-dining-slider__stage {
@@ -13,124 +16,217 @@
   width: 100%;
   height: 100svh;
   overflow: hidden;
-  background: var(--cream, #ece8df);
-}
-
-.home-dining-slider__panel {
-  position: absolute;
-  inset: 0;
-  display: block;
-  overflow: hidden;
-  background: var(--cream, #ece8df);
-  will-change: clip-path;
-}
-
-.home-dining-slider__image {
-  position: absolute;
-  inset: 0 0 0 34%;
-  z-index: 1;
-  overflow: hidden;
-  background: #171411;
-}
-
-.home-dining-slider__image-link,
-.home-dining-slider__image-link img {
-  position: absolute !important;
-  inset: 0 !important;
-  display: block !important;
-  width: 100% !important;
-  height: 100% !important;
-}
-
-.home-dining-slider__image-link img {
-  object-fit: cover !important;
-  opacity: 1 !important;
-  visibility: visible !important;
+  background: var(--hds-cream);
 }
 
 .home-dining-slider__caption {
   position: absolute;
   inset: 0 auto 0 0;
-  z-index: 2;
-  display: flex;
-  width: 34%;
-  padding: clamp(2rem, 5vw, 5.5rem);
-  align-items: center;
-  justify-content: center;
-  background: var(--cream, #ece8df);
-  text-align: center;
+  z-index: 10;
+  width: var(--hds-caption-width);
+  overflow: hidden;
+  background: var(--hds-cream);
+}
+
+.home-dining-slider__caption-items {
+  position: absolute;
+  inset: 0;
+}
+
+.home-dining-slider__caption-item {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: clamp(1.25rem, 3vh, 2.5rem);
+  padding:
+    max(calc(var(--site-nav-total-height, 5.75rem) + 1rem), 9svh)
+    clamp(1.5rem, 4vw, 4.5rem)
+    clamp(1.5rem, 4vh, 3rem);
+  background: var(--hds-cream);
+  will-change: transform, opacity;
 }
 
 .home-dining-slider__title {
+  align-self: center;
+  justify-self: end;
   display: flex;
-  max-width: 8ch;
+  width: 100%;
+  max-width: none;
   flex-direction: column;
-  gap: 0.04em;
+  gap: 0.02em;
   margin: 0;
+  text-align: right;
+  text-wrap: balance;
 }
 
 .home-dining-slider__title-line {
   display: block;
 }
 
+.home-dining-slider__caption-footer {
+  align-self: end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(1rem, 2vh, 1.75rem);
+  min-height: 0;
+}
+
 .home-dining-slider__body {
-  position: absolute;
-  right: clamp(1.5rem, 4vw, 4.5rem);
-  bottom: clamp(4rem, 10vh, 7rem);
-  left: clamp(1.5rem, 4vw, 4.5rem);
+  width: 100%;
+  max-width: 36ch;
   margin: 0;
-  text-align: left;
 }
 
 .home-dining-slider__cta {
+  display: inline-flex;
+  padding: 0.55rem 0 0.4rem;
+  border-bottom: 1px solid currentColor;
+  color: inherit;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.home-dining-slider__progress {
   position: absolute;
-  bottom: clamp(1.5rem, 4vh, 3rem);
-  left: clamp(1.5rem, 4vw, 4.5rem);
+  z-index: 20;
+  top: 24%;
+  right: clamp(1rem, 2.5vw, 2.5rem);
+  bottom: 24%;
+  width: 1px;
+  overflow: hidden;
+  background: color-mix(in srgb, currentColor 18%, transparent);
+}
+
+.home-dining-slider__progress span {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background: currentColor;
+  transform: scaleY(0);
+  transform-origin: top center;
+  will-change: transform;
+}
+
+.home-dining-slider__images {
+  position: absolute;
+  inset: 0 0 0 var(--hds-caption-width);
+  z-index: 1;
+  overflow: hidden;
+  background: #16120e;
+}
+
+.home-dining-slider__image-panel,
+.home-dining-slider__image,
+.home-dining-slider__image-link {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.home-dining-slider__image-panel {
+  margin: 0;
+  will-change: clip-path;
+}
+
+.home-dining-slider__image-link {
+  will-change: transform;
+}
+
+.home-dining-slider__image-link img {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 @media (max-width: 1024px) {
   .home-dining-slider {
-    height: 300svh;
+    --hds-caption-width: 48%;
+    height: 320svh;
   }
 
-  .home-dining-slider__image {
-    left: 30%;
+  .home-dining-slider__caption-item {
+    padding:
+      max(calc(var(--site-nav-total-height, 5.75rem) + 1.25rem), 10svh)
+      clamp(1.25rem, 3vw, 2.5rem)
+      clamp(1.5rem, 4vh, 3rem);
   }
 
-  .home-dining-slider__caption {
-    width: 30%;
-    padding: 1rem;
+  .home-dining-slider__title {
+    max-width: none;
   }
 
-  .home-dining-slider__body,
-  .home-dining-slider__cta {
-    right: 1rem;
-    left: 1rem;
+  .home-dining-slider__body {
+    max-width: none;
   }
 }
 
 @media (max-width: 480px) {
   .home-dining-slider {
-    height: 240svh;
+    --hds-caption-width: 100%;
+    height: 260svh;
   }
 
-  .home-dining-slider__image {
-    inset: 0 0 43% 0;
+  .home-dining-slider__stage {
+    background: #16120e;
+  }
+
+  .home-dining-slider__images {
+    inset: 0 0 44% 0;
   }
 
   .home-dining-slider__caption {
-    top: auto;
+    inset: auto 0 0;
     width: 100%;
-    height: 43%;
-    padding: 1.25rem;
+    height: 44%;
+  }
+
+  .home-dining-slider__caption-item {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    grid-template-rows: 1fr;
+    gap: 1rem;
+    padding:
+      clamp(1rem, 3vh, 1.5rem)
+      max(1rem, env(safe-area-inset-right))
+      max(1rem, env(safe-area-inset-bottom))
+      max(1rem, env(safe-area-inset-left));
+  }
+
+  .home-dining-slider__title {
+    align-self: center;
+    justify-self: start;
+    max-width: none;
+    text-align: left;
+  }
+
+  .home-dining-slider__caption-footer {
+    align-self: center;
+    gap: 0.75rem;
   }
 
   .home-dining-slider__body {
-    bottom: 4rem;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
   }
 
-  .home-dining-slider__cta {
-    bottom: 1.25rem;
+  .home-dining-slider__progress {
+    top: 14%;
+    right: 0.65rem;
+    bottom: 14%;
   }
 }
 
@@ -145,24 +241,35 @@
     overflow: visible;
   }
 
-  .home-dining-slider__panel {
-    position: relative;
-    display: grid;
-    grid-template-columns: 34% 66%;
-    min-height: 100svh;
-    clip-path: none !important;
-  }
-
-  .home-dining-slider__image,
-  .home-dining-slider__caption {
+  .home-dining-slider__caption,
+  .home-dining-slider__images {
     position: relative;
     inset: auto;
-    width: auto;
+    width: 100%;
     height: auto;
+    overflow: visible;
   }
 
-  .home-dining-slider__body,
-  .home-dining-slider__cta {
-    position: static;
+  .home-dining-slider__caption-items {
+    position: relative;
+  }
+
+  .home-dining-slider__caption-item,
+  .home-dining-slider__image-panel {
+    position: relative;
+    inset: auto;
+    min-height: 80svh;
+    opacity: 1 !important;
+    visibility: visible !important;
+    clip-path: none !important;
+    transform: none !important;
+  }
+
+  .home-dining-slider__image-panel {
+    height: 80svh;
+  }
+
+  .home-dining-slider__progress {
+    display: none;
   }
 }
