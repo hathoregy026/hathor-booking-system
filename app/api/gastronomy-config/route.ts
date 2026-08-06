@@ -35,7 +35,14 @@ export async function GET() {
   }
   return NextResponse.json(
     {
-      images: { ...defaults, ...Object.fromEntries(images.map((image) => [image.name, image.url])) },
+      images: {
+        ...defaults,
+        ...Object.fromEntries(
+          images
+            .filter((image) => !image.name.startsWith("gastronomy-"))
+            .map((image) => [image.name, image.url]),
+        ),
+      },
       css: desktop ? gastronomyTypographyToCss(desktop) : "",
       phoneCss: phone ? gastronomyTypographyToCss(phone) : "",
     },
