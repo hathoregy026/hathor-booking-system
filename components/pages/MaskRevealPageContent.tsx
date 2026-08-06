@@ -602,39 +602,74 @@ export function MaskRevealPageContent() {
 
         <div className="mr-after">
           <nav className="mr-explore" aria-label="Continue exploring">
-            <p className="mr-explore__eyebrow">Onboard</p>
-            <p className="mr-explore__title">
-              {continueTitle.split("\n").map((line) => (
-                <span key={line}>{line.trim()}</span>
-              ))}
-            </p>
-            {continueBody ? <p className="mr-explore__body">{continueBody}</p> : null}
-            <ul>
+            <header className="mr-explore__header">
+              <p className="mr-explore__eyebrow">Onboard</p>
+              <div className="mr-explore__rule" aria-hidden="true" />
+              <h2 className="mr-explore__title">
+                {continueTitle.split("\n").map((line) => (
+                  <span key={line}>{line.trim()}</span>
+                ))}
+              </h2>
+              {continueBody ? (
+                <p className="mr-explore__body">{continueBody}</p>
+              ) : null}
+            </header>
+
+            <ul className="mr-explore__grid">
               <li>
-                <Link href="/luxury-cabins-Nile-Cruise">Luxury Rooms</Link>
-              </li>
-              <li>
-                <Link href="/rooms">Luxury Suites</Link>
-              </li>
-              <li>
-                <Link href="/Luxury-Royal-Suites-Nile-Dahabiya-Cruise">
-                  Royal Suites
+                <Link href="/luxury-cabins-Nile-Cruise" className="mr-explore-card">
+                  <span className="mr-explore-card__index">01</span>
+                  <span className="mr-explore-card__label">Cabins</span>
+                  <span className="mr-explore-card__title">Luxury Rooms</span>
+                  <span className="mr-explore-card__hint">River-view cabins</span>
                 </Link>
               </li>
               <li>
-                <Link href="/gastronomy">Dining — Hathor Flavors</Link>
+                <Link href="/rooms" className="mr-explore-card">
+                  <span className="mr-explore-card__index">02</span>
+                  <span className="mr-explore-card__label">Suites</span>
+                  <span className="mr-explore-card__title">Luxury Suites</span>
+                  <span className="mr-explore-card__hint">Spacious Nile suites</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"
+                  className="mr-explore-card"
+                >
+                  <span className="mr-explore-card__index">03</span>
+                  <span className="mr-explore-card__label">Royal</span>
+                  <span className="mr-explore-card__title">Royal Suites</span>
+                  <span className="mr-explore-card__hint">Highest privilege</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/gastronomy" className="mr-explore-card">
+                  <span className="mr-explore-card__index">04</span>
+                  <span className="mr-explore-card__label">Dining</span>
+                  <span className="mr-explore-card__title">Hathor Flavors</span>
+                  <span className="mr-explore-card__hint">Onboard gastronomy</span>
+                </Link>
               </li>
             </ul>
           </nav>
 
           <footer className="mr-cta">
-            {ctaTitle ? <h2>{ctaTitle}</h2> : null}
-            {ctaBody ? <p>{ctaBody}</p> : null}
-            <div className="mr-cta__actions">
-              <BookNowTrigger className="mr-btn mr-btn--solid">Book Now</BookNowTrigger>
-              <Link className="mr-btn mr-btn--outline" href="/luxury-cabins-Nile-Cruise">
-                Luxury Rooms
-              </Link>
+            <div className="mr-cta__inner">
+              <p className="mr-cta__eyebrow">Voyages</p>
+              {ctaTitle ? <h2 className="mr-cta__title">{ctaTitle}</h2> : null}
+              {ctaBody ? <p className="mr-cta__body">{ctaBody}</p> : null}
+              <div className="mr-cta__actions">
+                <BookNowTrigger className="mr-btn mr-btn--solid">
+                  Book Now
+                </BookNowTrigger>
+                <Link
+                  className="mr-btn mr-btn--outline"
+                  href="/luxury-cabins-Nile-Cruise"
+                >
+                  Luxury Rooms
+                </Link>
+              </div>
             </div>
           </footer>
         </div>
