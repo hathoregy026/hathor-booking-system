@@ -6,6 +6,7 @@ import { format, parseISO } from "date-fns";
 import {
   DollarSign,
   Globe,
+  LayoutGrid,
   List,
   RefreshCw,
   Ship,
@@ -187,12 +188,15 @@ export function DashboardView() {
         <p className="admin-subheading mt-1">
           Common tasks to manage your cruise business
         </p>
-        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
           <ActionButton href="/admin/cruises" icon={Ship} variant="primary" className="w-full justify-center py-3">
             Add New Cruise
           </ActionButton>
           <ActionButton href="/admin/bookings" icon={List} variant="outline" className="w-full justify-center py-3">
             View All Bookings
+          </ActionButton>
+          <ActionButton href="/admin/pages" icon={LayoutGrid} variant="outline" className="w-full justify-center py-3">
+            Pages
           </ActionButton>
           <ActionButton href="/admin/preload-screen" icon={Sparkles} variant="outline" className="w-full justify-center py-3">
             Preload Screen

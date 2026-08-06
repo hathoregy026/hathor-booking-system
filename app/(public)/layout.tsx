@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { PublicLayout } from "@/components/public/PublicLayout";
+import { PageVisibilityProvider } from "@/components/public/PageVisibilityProvider";
 import { HeroLogoSettingsProvider } from "@/components/public/HeroLogoSettingsProvider";
 import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
 import { TypographySettingsProvider } from "@/components/public/TypographySettingsProvider";
@@ -35,6 +36,7 @@ import "../hieroglyph-pattern.css";
 import "../booking-modal.css";
 import "../venetian-redesign.css";
 import "../night-mode.css";
+import "../page-visibility.css";
 
 /** Public CMS data is edge-cached; admin save routes invalidate this layout. */
 export const revalidate = 300;
@@ -124,6 +126,7 @@ export default async function PublicSiteLayout({
    */
   const cms = await loadPublicCmsBundle();
   const welcomeSplash = cms.welcomeSplash;
+  const pageVisibility = cms.pageVisibility;
 
   const displayFontStyle = {
     /* Installed local display face until Playfair file is added */
@@ -185,9 +188,11 @@ export default async function PublicSiteLayout({
               initial={cms.websiteText}
               initialMobile={cms.websiteTextMobile}
             >
-              <PublicLayout welcomeSplash={welcomeSplash}>
-                {children}
-              </PublicLayout>
+              <PageVisibilityProvider settings={pageVisibility}>
+                <PublicLayout welcomeSplash={welcomeSplash}>
+                  {children}
+                </PublicLayout>
+              </PageVisibilityProvider>
             </WebsiteTextProvider>
           </TypographySettingsProvider>
         </SiteImagesProvider>

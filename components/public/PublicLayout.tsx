@@ -9,6 +9,7 @@ import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
 import { ScrollPositionRestore } from "@/components/public/ScrollPositionRestore";
 import { SiteImagePreviewScroll } from "@/components/public/SiteImagePreviewScroll";
 import { WelcomeSplash } from "@/components/public/WelcomeSplash";
+import { PageVisibilityGate } from "@/components/public/PageVisibilityGate";
 import { PageTransition } from "@/components/ui/PageTransition";
 import {
   DEFAULT_WELCOME_SPLASH_SETTINGS,
@@ -65,7 +66,9 @@ export function PublicLayout({
           <SiteImagePreviewScroll />
           <PublicNavbar />
           <main className="public-main public-main--hero">
-            <PageTransition>{children}</PageTransition>
+            <PageVisibilityGate>
+              <PageTransition>{children}</PageTransition>
+            </PageVisibilityGate>
           </main>
           <Footer />
           <FloatingActions />

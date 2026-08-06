@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { GastronomyPageContent } from "@/components/pages/GastronomyPageContent";
+import { StandalonePageVisibilityShell } from "@/components/public/StandalonePageVisibilityShell";
+import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
+import "../page-visibility.css";
 
 export const metadata: Metadata = {
   title: "Springs Design",
@@ -13,6 +16,16 @@ export const metadata: Metadata = {
  * Deliberately outside (public): the page is a complete captured document
  * inside an isolated frame and must not inherit PublicLayout infrastructure.
  */
-export default function GastronomyPage() {
-  return <GastronomyPageContent />;
+export default async function GastronomyPage() {
+  const cms = await loadPublicCmsBundle();
+
+  return (
+    <StandalonePageVisibilityShell
+      path="/gastronomy"
+      pageLabel="Dining"
+      settings={cms.pageVisibility}
+    >
+      <GastronomyPageContent />
+    </StandalonePageVisibilityShell>
+  );
 }

@@ -3078,6 +3078,103 @@ textarea.wt-field__input {
   background: #fff;
 }
 
+.page-visibility-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+}
+
+.page-visibility-row__text {
+  min-width: 0;
+}
+
+.page-visibility-row__label {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.page-visibility-row__path {
+  margin: 0.2rem 0 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  word-break: break-all;
+}
+
+.page-visibility-row__toggle {
+  display: inline-flex;
+  shrink: 0;
+  align-items: center;
+  gap: 0.65rem;
+  cursor: pointer;
+}
+
+.page-visibility-row__toggle input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+.page-visibility-row__toggle-ui {
+  position: relative;
+  width: 2.75rem;
+  height: 1.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text-muted) 28%, transparent);
+  transition: background 0.2s ease;
+}
+
+.page-visibility-row__toggle-ui::after {
+  content: "";
+  position: absolute;
+  top: 0.15rem;
+  left: 0.15rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+  transition: transform 0.2s ease;
+}
+
+.page-visibility-row__toggle input:checked + .page-visibility-row__toggle-ui {
+  background: var(--accent);
+}
+
+.page-visibility-row__toggle input:checked + .page-visibility-row__toggle-ui::after {
+  transform: translateX(1.25rem);
+}
+
+.page-visibility-row__status {
+  min-width: 7.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.page-visibility-row__toggle input:checked ~ .page-visibility-row__status {
+  color: var(--accent);
+}
+
+@media (max-width: 640px) {
+  .page-visibility-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .page-visibility-row__toggle {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
 .typo-easy__header {
   display: flex;
   flex-wrap: wrap;

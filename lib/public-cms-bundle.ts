@@ -39,6 +39,12 @@ import {
   storedMapToSiteImageMap,
 } from "@/lib/site-image-public-map";
 import {
+  DEFAULT_PAGE_VISIBILITY_SETTINGS,
+  PAGE_VISIBILITY_KEY,
+  parsePageVisibilitySettings,
+  type PageVisibilitySettings,
+} from "@/lib/page-visibility-shared";
+import {
   DEFAULT_WELCOME_SPLASH_SETTINGS,
   WELCOME_SPLASH_SETTINGS_KEY,
   parseWelcomeSplashSettings,
@@ -58,7 +64,7 @@ import {
 
 export const PUBLIC_CMS_CACHE_TAG = "public-cms";
 /** Bumped so prior build-time default entries are never reused. */
-export const PUBLIC_CMS_CACHE_KEY = "public-cms-bundle-v8";
+export const PUBLIC_CMS_CACHE_KEY = "public-cms-bundle-v9";
 export const PUBLIC_CMS_REVALIDATE_SECONDS = 300;
 
 const PUBLIC_CMS_KEYS = [
@@ -71,6 +77,7 @@ const PUBLIC_CMS_KEYS = [
   WEBSITE_TEXT_MOBILE_KEY,
   SITE_IMAGE_PUBLIC_MAP_KEY,
   WELCOME_SPLASH_SETTINGS_KEY,
+  PAGE_VISIBILITY_KEY,
 ] as const;
 
 /** Keys known to exceed ~2KB — full SELECT value hangs on some pooler paths. */
@@ -124,6 +131,7 @@ export type PublicCmsBundle = {
   websiteText: WebsiteText;
   websiteTextMobile: WebsiteText;
   welcomeSplash: WelcomeSplashSettings;
+  pageVisibility: PageVisibilitySettings;
 };
 
 /** Internal only — never serialized into public HTML. */
@@ -191,6 +199,10 @@ function parseSettingMap(rows: SettingRow[]) {
       )
     : DEFAULT_WELCOME_SPLASH_SETTINGS;
 
+  const pageVisibility = byKey.has(PAGE_VISIBILITY_KEY)
+    ? parsePageVisibilitySettings(readStored(byKey.get(PAGE_VISIBILITY_KEY)))
+    : DEFAULT_PAGE_VISIBILITY_SETTINGS;
+
   return {
     siteImages,
     typography,
@@ -201,6 +213,7 @@ function parseSettingMap(rows: SettingRow[]) {
     heroLogoTuneMobile,
     hieroglyphTune,
     welcomeSplash,
+    pageVisibility,
   };
 }
 
@@ -215,6 +228,7 @@ export function defaultPublicCmsBundle(): PublicCmsBundle {
     websiteText: DEFAULT_WEBSITE_TEXT,
     websiteTextMobile: DEFAULT_WEBSITE_TEXT,
     welcomeSplash: DEFAULT_WELCOME_SPLASH_SETTINGS,
+    pageVisibility: DEFAULT_PAGE_VISIBILITY_SETTINGS,
   };
 }
 
