@@ -104,6 +104,48 @@ for (const [from, to] of diningCopy) {
   html = html.split(from).join(to);
 }
 
+/*
+ * Seed the standalone document with Dining imagery, not captured Springs
+ * imagery. This runs while the static document is built, before an iframe can
+ * parse or request any image. The runtime below still applies dashboard uploads
+ * after this baseline has painted.
+ */
+function replaceInitialDiningAsset(assetPattern, url) {
+  const remoteSource = String.raw`https?:\/\/[^"'\s>]*${assetPattern}[^"'\s>]*`;
+  const localSource = String.raw`\/assets\/images\/media\/${assetPattern}[^"'\s>]*`;
+  html = html
+    .replace(new RegExp(remoteSource, "g"), url)
+    .replace(new RegExp(localSource, "g"), url);
+}
+
+[
+  ["design\\/1\\.intro\\/background-", "/media/gastronomy-dining/dining-hero.jpg"],
+  ["landing\\/callback\\/spiral", "/media/gastronomy-dining/dining-table.jpg"],
+  ["design\\/3\\.projects\\/background-", "/media/gastronomy-dining/experience-dining.jpg"],
+  ["design\\/3\\.projects\\/slide-2", "/media/gastronomy-dining/dining-courses.jpg"],
+  ["design\\/3\\.projects\\/slide-3", "/media/gastronomy-dining/dining-wine.jpg"],
+  ["design\\/3\\.projects\\/thumb-1", "/media/gastronomy-dining/dining-plate-1.png"],
+  ["design\\/3\\.projects\\/thumb-2", "/media/gastronomy-dining/dining-plate-2.png"],
+  ["design\\/3\\.projects\\/thumb-3", "/media/gastronomy-dining/dining-plate-3.png"],
+  ["design\\/4\\.captions\\/image-[^-]+-1", "/media/gastronomy-dining/dining-hero.jpg"],
+  ["design\\/4\\.captions\\/image-[^-]+-2", "/media/gastronomy-dining/experience-dining.jpg"],
+  ["design\\/5\\.balcons\\/balcon-", "/media/gastronomy-dining/dining-chef.jpg"],
+  ["design\\/6\\.materials\\/material", "/media/gastronomy-dining/dining-courses.jpg"],
+  ["design\\/7\\.slider\\/slider-[^/]+-1", "/media/gastronomy-dining/dining-wine.jpg"],
+  ["design\\/7\\.slider\\/slider-[^/]+-2", "/media/gastronomy-dining/dining-plate-4.png"],
+  ["design\\/8\\.gallery\\/image-1", "/media/gastronomy-dining/dining-plate-5.png"],
+  ["design\\/8\\.gallery\\/image-2", "/media/gastronomy-dining/dining-plate-6.png"],
+  ["design\\/9\\.flats\\/image-[^/]+-1", "/media/gastronomy-dining/experience-dining.jpg"],
+  ["design\\/9\\.flats\\/image-[^/]+-2", "/media/gastronomy-dining/charter-service.jpg"],
+  ["design\\/9\\.flats\\/image-[^/]+-3", "/media/gastronomy-dining/charter-celebration.jpg"],
+  ["design\\/10\\.more\\/more-", "/media/gastronomy-dining/dining-table.jpg"],
+].forEach(([assetPattern, url]) => replaceInitialDiningAsset(assetPattern, url));
+
+html = html.replace(
+  /https?:\/\/[^"'\s>]*uploads\/32\/image_1762521394\.webp/g,
+  "/media/gastronomy-dining/dining-hero.jpg",
+);
+
 // Source Design project overview: retain its original DOM container and
 // choreography, replacing only the editorial content displayed in that place.
 html = html
@@ -273,19 +315,6 @@ const diningPalette = `
   .de-slider__mobile-scrollable-gradient div {
     background: radial-gradient(circle, rgba(182, 159, 100, 0.86) 0%, rgba(182, 159, 100, 0.38) 45%, rgba(182, 159, 100, 0) 74%) !important;
   }
-  /*
-   * The captured Springs document ships with its original image URLs. Keep
-   * visual media concealed until the Dining CMS config has replaced every
-   * source, so an old source frame can never paint during an iframe load.
-   */
-  html:not(.dining-media-ready) picture,
-  html:not(.dining-media-ready) .de-captions__canvas {
-    opacity: 0 !important;
-  }
-  picture,
-  .de-captions__canvas {
-    transition: opacity 120ms linear;
-  }
 </style>`;
 
 const gastronomyRuntime = `
@@ -369,7 +398,6 @@ const gastronomyRuntime = `
         document.head.appendChild(phone);
       }
       window.dispatchEvent(new Event("resize"));
-      document.documentElement.classList.add("dining-media-ready");
     })
     .catch(() => {});
   };

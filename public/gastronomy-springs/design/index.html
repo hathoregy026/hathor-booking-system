@@ -483,19 +483,6 @@
   .de-slider__mobile-scrollable-gradient div {
     background: radial-gradient(circle, rgba(182, 159, 100, 0.86) 0%, rgba(182, 159, 100, 0.38) 45%, rgba(182, 159, 100, 0) 74%) !important;
   }
-  /*
-   * The captured Springs document ships with its original image URLs. Keep
-   * visual media concealed until the Dining CMS config has replaced every
-   * source, so an old source frame can never paint during an iframe load.
-   */
-  html:not(.dining-media-ready) picture,
-  html:not(.dining-media-ready) .de-captions__canvas {
-    opacity: 0 !important;
-  }
-  picture,
-  .de-captions__canvas {
-    transition: opacity 120ms linear;
-  }
 </style>
 <script data-gastronomy-dashboard-runtime>
 (() => {
@@ -577,7 +564,6 @@
         document.head.appendChild(phone);
       }
       window.dispatchEvent(new Event("resize"));
-      document.documentElement.classList.add("dining-media-ready");
     })
     .catch(() => {});
   };
@@ -969,9 +955,9 @@
     
     
     
-    <picture class=" img-cover"        draggable="false"    >                    <source srcset="https://springs.house/media/cache/design_intro_bg_xxxl/assets/images/media/design/1.intro/background-md%40xxxl.webp" media="(min-width: 1920px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://springs.house/media/cache/design_intro_bg_xxl/assets/images/media/design/1.intro/background-md%40xxxl.webp" media="(min-width: 1440px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://springs.house/media/cache/design_intro_bg_md/assets/images/media/design/1.intro/background-md%40xxxl.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="1440" height="900">
+    <picture class=" img-cover"        draggable="false"    >                    <source srcset="https://springs.house/media/gastronomy-dining/dining-hero.jpg" media="(min-width: 1920px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://springs.house/media/gastronomy-dining/dining-hero.jpg" media="(min-width: 1440px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://springs.house/media/gastronomy-dining/dining-hero.jpg" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="1440" height="900">
         <img
-            src="https://springs.house/media/cache/design_intro_bg_xs/assets/images/media/design/1.intro/background-xs%40xs.webp"                    alt=""                            width="1440" height="900"                                        decoding="async"                        fetchpriority="high"                        data-reveal="image-zoom"            draggable="false"
+            src="https://springs.house/media/gastronomy-dining/dining-hero.jpg"                    alt=""                            width="1440" height="900"                                        decoding="async"                        fetchpriority="high"                        data-reveal="image-zoom"            draggable="false"
         >
     </picture>
 
@@ -1187,12 +1173,12 @@ One Kitchen · Your Hours
     
     
     <picture class="is-invisible--js is-hidden--no-js img-cover"            data-plugin="appear "        draggable="false"    >                    <source
-        data-srcset="https://springs.house/assets/images/media/landing/callback/spiral@xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-table.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221080%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201080%20900%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="1080" height="900">                    <source
-        data-srcset="https://springs.house/assets/images/media/landing/callback/spiral@xxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-table.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221080%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201080%20900%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="1080" height="900">
         <img
-            data-src="https://springs.house/assets/images/media/landing/callback/spiral@md.webp"
+            data-src="https://springs.house/media/gastronomy-dining/dining-table.jpg"
                 src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221080%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201080%20900%22%3E%3C/svg%3E"                    alt=""                            width="1080" height="900"            draggable="false"
         >
     </picture>
@@ -1203,9 +1189,9 @@ One Kitchen · Your Hours
     
     
     
-    <picture class=" img-cover"        draggable="false"    >                    <source srcset="https://springs.house/assets/images/media/landing/callback/spiral@xxxl.webp" media="(min-width: 1920px) and (min-height: 700px)" width="1080" height="900">                    <source srcset="https://springs.house/assets/images/media/landing/callback/spiral@xxl.webp" media="(min-width: 1440px) and (min-height: 700px)" width="1080" height="900">
+    <picture class=" img-cover"        draggable="false"    >                    <source srcset="https://springs.house/media/gastronomy-dining/dining-table.jpg" media="(min-width: 1920px) and (min-height: 700px)" width="1080" height="900">                    <source srcset="https://springs.house/media/gastronomy-dining/dining-table.jpg" media="(min-width: 1440px) and (min-height: 700px)" width="1080" height="900">
         <img
-            src="https://springs.house/assets/images/media/landing/callback/spiral@md.webp"                    alt=""                            width="1080" height="900"            draggable="false"
+            src="https://springs.house/media/gastronomy-dining/dining-table.jpg"                    alt=""                            width="1080" height="900"            draggable="false"
         >
     </picture>
 
@@ -1249,14 +1235,14 @@ One Kitchen · Your Hours
     
     
     <picture class="is-invisible--js is-hidden--no-js img-cover"            data-plugin="appear "        draggable="false"    >                    <source
-        data-srcset="https://springs.house/media/cache/design_projects_img_xxxl/assets/images/media/design/3.projects/background-md%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/experience-dining.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221440%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201440%20900%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="1440" height="900">                    <source
-        data-srcset="https://springs.house/media/cache/design_projects_img_xxl/assets/images/media/design/3.projects/background-md%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/experience-dining.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221440%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201440%20900%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="1440" height="900">                    <source
-        data-srcset="https://springs.house/media/cache/design_projects_img_md/assets/images/media/design/3.projects/background-md%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/experience-dining.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221440%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201440%20900%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="1440" height="900">
         <img
-            data-src="https://springs.house/media/cache/design_projects_img_xs/assets/images/media/design/3.projects/background-xs%40xs.webp"
+            data-src="https://springs.house/media/gastronomy-dining/experience-dining.jpg"
                 src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22720%22%20height=%221280%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20720%201280%22%3E%3C/svg%3E"                    alt=""                            width="720" height="1280"                                        data-plugin="parallax"                        data-parallax-enable-mq="lg-up"                        data-parallax-clamp="true"                        data-parallax-measure-selector=".sticky"                        data-parallax-0-0="{&quot;transform&quot;: &quot;translateY(0%) scale(1.05)&quot;}"                        data-parallax--100-0="{&quot;transform&quot;: &quot;translateY(0%) scale(1)&quot;}"                        data-parallax--250-0="{&quot;transform&quot;: &quot;translateY(-20%) scale(1)&quot;}"            draggable="false"
         >
     </picture>
@@ -1267,9 +1253,9 @@ One Kitchen · Your Hours
     
     
     
-    <picture class=" img-cover"        draggable="false"    >                    <source srcset="https://springs.house/media/cache/design_projects_img_xxxl/assets/images/media/design/3.projects/background-md%40xxxl.webp" media="(min-width: 1920px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://springs.house/media/cache/design_projects_img_xxl/assets/images/media/design/3.projects/background-md%40xxxl.webp" media="(min-width: 1440px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://springs.house/media/cache/design_projects_img_md/assets/images/media/design/3.projects/background-md%40xxxl.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="1440" height="900">
+    <picture class=" img-cover"        draggable="false"    >                    <source srcset="https://springs.house/media/gastronomy-dining/experience-dining.jpg" media="(min-width: 1920px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://springs.house/media/gastronomy-dining/experience-dining.jpg" media="(min-width: 1440px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://springs.house/media/gastronomy-dining/experience-dining.jpg" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="1440" height="900">
         <img
-            src="https://springs.house/media/cache/design_projects_img_xs/assets/images/media/design/3.projects/background-xs%40xs.webp"                    alt=""                            width="720" height="1280"                                        data-plugin="parallax"                        data-parallax-enable-mq="lg-up"                        data-parallax-clamp="true"                        data-parallax-measure-selector=".sticky"                        data-parallax-0-0="{&quot;transform&quot;: &quot;translateY(0%) scale(1.05)&quot;}"                        data-parallax--100-0="{&quot;transform&quot;: &quot;translateY(0%) scale(1)&quot;}"                        data-parallax--250-0="{&quot;transform&quot;: &quot;translateY(-20%) scale(1)&quot;}"            draggable="false"
+            src="https://springs.house/media/gastronomy-dining/experience-dining.jpg"                    alt=""                            width="720" height="1280"                                        data-plugin="parallax"                        data-parallax-enable-mq="lg-up"                        data-parallax-clamp="true"                        data-parallax-measure-selector=".sticky"                        data-parallax-0-0="{&quot;transform&quot;: &quot;translateY(0%) scale(1.05)&quot;}"                        data-parallax--100-0="{&quot;transform&quot;: &quot;translateY(0%) scale(1)&quot;}"                        data-parallax--250-0="{&quot;transform&quot;: &quot;translateY(-20%) scale(1)&quot;}"            draggable="false"
         >
     </picture>
 
@@ -1305,7 +1291,7 @@ One Kitchen · Your Hours
     <img class="img-full is-invisible--js is-hidden--no-js" alt=""
         draggable="false"
                                     width="300"                        height="160"                data-plugin="appear "
-             data-src="https://springs.house/media/cache/design_projects_list_img_xs/uploads/32/image_1762521394.webp"
+             data-src="https://springs.house/media/gastronomy-dining/dining-hero.jpg"
             src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22300%22%20height=%22160%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20300%20160%22%3E%3C/svg%3E"    >
 
                 <noscript>
@@ -1314,7 +1300,7 @@ One Kitchen · Your Hours
     
     <img class="img-full " alt=""
         draggable="false"                                    width="300"                        height="160"
-                src="https://springs.house/media/cache/design_projects_list_img_xs/uploads/32/image_1762521394.webp"    >
+                src="https://springs.house/media/gastronomy-dining/dining-hero.jpg"    >
 
         
         </noscript>
@@ -1361,7 +1347,7 @@ One Kitchen · Your Hours
     <img class="img-full is-invisible--js is-hidden--no-js" alt=""
         draggable="false"
                                     width="300"                        height="160"                data-plugin="appear "
-             data-src="https://springs.house/media/cache/design_projects_list_img_xs/assets/images/media/design/3.projects/slide-2%40xs.webp"
+             data-src="https://springs.house/media/gastronomy-dining/dining-courses.jpg"
             src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22300%22%20height=%22160%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20300%20160%22%3E%3C/svg%3E"    >
 
                 <noscript>
@@ -1370,7 +1356,7 @@ One Kitchen · Your Hours
     
     <img class="img-full " alt=""
         draggable="false"                                    width="300"                        height="160"
-                src="https://springs.house/media/cache/design_projects_list_img_xs/assets/images/media/design/3.projects/slide-2%40xs.webp"    >
+                src="https://springs.house/media/gastronomy-dining/dining-courses.jpg"    >
 
         
         </noscript>
@@ -1417,7 +1403,7 @@ One Kitchen · Your Hours
     <img class="img-full is-invisible--js is-hidden--no-js" alt=""
         draggable="false"
                                     width="300"                        height="160"                data-plugin="appear "
-             data-src="https://springs.house/media/cache/design_projects_list_img_xs/assets/images/media/design/3.projects/slide-3%40xs.webp"
+             data-src="https://springs.house/media/gastronomy-dining/dining-wine.jpg"
             src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22300%22%20height=%22160%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20300%20160%22%3E%3C/svg%3E"    >
 
                 <noscript>
@@ -1426,7 +1412,7 @@ One Kitchen · Your Hours
     
     <img class="img-full " alt=""
         draggable="false"                                    width="300"                        height="160"
-                src="https://springs.house/media/cache/design_projects_list_img_xs/assets/images/media/design/3.projects/slide-3%40xs.webp"    >
+                src="https://springs.house/media/gastronomy-dining/dining-wine.jpg"    >
 
         
         </noscript>
@@ -1493,7 +1479,7 @@ One Kitchen · Your Hours
     <img class="img-full is-invisible--js is-hidden--no-js" alt=""
         draggable="false"
                                     width="60"                        height="60"                data-plugin="appear "
-             data-src="https://springs.house/media/cache/design_projects_list_tmb_xs/assets/images/media/design/3.projects/thumb-1%40xs.webp"
+             data-src="https://springs.house/media/gastronomy-dining/dining-plate-1.png"
             src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2260%22%20height=%2260%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%2060%2060%22%3E%3C/svg%3E"    >
 
                 <noscript>
@@ -1502,7 +1488,7 @@ One Kitchen · Your Hours
     
     <img class="img-full " alt=""
         draggable="false"                                    width="60"                        height="60"
-                src="https://springs.house/media/cache/design_projects_list_tmb_xs/assets/images/media/design/3.projects/thumb-1%40xs.webp"    >
+                src="https://springs.house/media/gastronomy-dining/dining-plate-1.png"    >
 
         
         </noscript>
@@ -1515,7 +1501,7 @@ One Kitchen · Your Hours
     <img class="img-full is-invisible--js is-hidden--no-js" alt=""
         draggable="false"
                                     width="60"                        height="60"                data-plugin="appear "
-             data-src="https://springs.house/media/cache/design_projects_list_tmb_xs/assets/images/media/design/3.projects/thumb-2%40xs.webp"
+             data-src="https://springs.house/media/gastronomy-dining/dining-plate-2.png"
             src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2260%22%20height=%2260%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%2060%2060%22%3E%3C/svg%3E"    >
 
                 <noscript>
@@ -1524,7 +1510,7 @@ One Kitchen · Your Hours
     
     <img class="img-full " alt=""
         draggable="false"                                    width="60"                        height="60"
-                src="https://springs.house/media/cache/design_projects_list_tmb_xs/assets/images/media/design/3.projects/thumb-2%40xs.webp"    >
+                src="https://springs.house/media/gastronomy-dining/dining-plate-2.png"    >
 
         
         </noscript>
@@ -1537,7 +1523,7 @@ One Kitchen · Your Hours
     <img class="img-full is-invisible--js is-hidden--no-js" alt=""
         draggable="false"
                                     width="60"                        height="60"                data-plugin="appear "
-             data-src="https://springs.house/media/cache/design_projects_list_tmb_xs/assets/images/media/design/3.projects/thumb-3%40xs.webp"
+             data-src="https://springs.house/media/gastronomy-dining/dining-plate-3.png"
             src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2260%22%20height=%2260%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%2060%2060%22%3E%3C/svg%3E"    >
 
                 <noscript>
@@ -1546,7 +1532,7 @@ One Kitchen · Your Hours
     
     <img class="img-full " alt=""
         draggable="false"                                    width="60"                        height="60"
-                src="https://springs.house/media/cache/design_projects_list_tmb_xs/assets/images/media/design/3.projects/thumb-3%40xs.webp"    >
+                src="https://springs.house/media/gastronomy-dining/dining-plate-3.png"    >
 
         
         </noscript>
@@ -1669,14 +1655,14 @@ One Kitchen · Your Hours
     
     
     <picture class="is-invisible--js is-hidden--no-js img-full parallax-image-move"            data-plugin="appear "        draggable="false"    >                    <source
-        data-srcset="https://springs.house/media/cache/design_balcons_img_xxxl/assets/images/media/design/5.balcons/balcon-md%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-chef.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221320%22%20height=%221500%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201320%201500%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="1320" height="1500">                    <source
-        data-srcset="https://springs.house/media/cache/design_balcons_img_xxl/assets/images/media/design/5.balcons/balcon-md%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-chef.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221320%22%20height=%221500%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201320%201500%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="1320" height="1500">                    <source
-        data-srcset="https://springs.house/media/cache/design_balcons_img_md/assets/images/media/design/5.balcons/balcon-md%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-chef.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221320%22%20height=%221500%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201320%201500%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="1320" height="1500">
         <img
-            data-src="https://springs.house/media/cache/design_balcons_img_xs/assets/images/media/design/5.balcons/balcon-xs%40xs.webp"
+            data-src="https://springs.house/media/gastronomy-dining/dining-chef.jpg"
                 src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22640%22%20height=%22720%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20640%20720%22%3E%3C/svg%3E"                    alt=""                            width="640" height="720"                                        data-plugin="parallax"                        data-parallax-enable-mq="md-down"                        data-parallax-clamp="true"                        data-parallax-100-0="{&quot;transform&quot;: &quot;scale(1.1)&quot;}"                        data-parallax-0-100="{&quot;transform&quot;: &quot;scale(1)&quot;}"            draggable="false"
         >
     </picture>
@@ -1687,9 +1673,9 @@ One Kitchen · Your Hours
     
     
     
-    <picture class=" img-full parallax-image-move"        draggable="false"    >                    <source srcset="https://springs.house/media/cache/design_balcons_img_xxxl/assets/images/media/design/5.balcons/balcon-md%40xxxl.webp" media="(min-width: 1920px) and (min-height: 700px)" width="1320" height="1500">                    <source srcset="https://springs.house/media/cache/design_balcons_img_xxl/assets/images/media/design/5.balcons/balcon-md%40xxxl.webp" media="(min-width: 1440px) and (min-height: 700px)" width="1320" height="1500">                    <source srcset="https://springs.house/media/cache/design_balcons_img_md/assets/images/media/design/5.balcons/balcon-md%40xxxl.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="1320" height="1500">
+    <picture class=" img-full parallax-image-move"        draggable="false"    >                    <source srcset="https://springs.house/media/gastronomy-dining/dining-chef.jpg" media="(min-width: 1920px) and (min-height: 700px)" width="1320" height="1500">                    <source srcset="https://springs.house/media/gastronomy-dining/dining-chef.jpg" media="(min-width: 1440px) and (min-height: 700px)" width="1320" height="1500">                    <source srcset="https://springs.house/media/gastronomy-dining/dining-chef.jpg" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="1320" height="1500">
         <img
-            src="https://springs.house/media/cache/design_balcons_img_xs/assets/images/media/design/5.balcons/balcon-xs%40xs.webp"                    alt=""                            width="640" height="720"                                        data-plugin="parallax"                        data-parallax-enable-mq="md-down"                        data-parallax-clamp="true"                        data-parallax-100-0="{&quot;transform&quot;: &quot;scale(1.1)&quot;}"                        data-parallax-0-100="{&quot;transform&quot;: &quot;scale(1)&quot;}"            draggable="false"
+            src="https://springs.house/media/gastronomy-dining/dining-chef.jpg"                    alt=""                            width="640" height="720"                                        data-plugin="parallax"                        data-parallax-enable-mq="md-down"                        data-parallax-clamp="true"                        data-parallax-100-0="{&quot;transform&quot;: &quot;scale(1.1)&quot;}"                        data-parallax-0-100="{&quot;transform&quot;: &quot;scale(1)&quot;}"            draggable="false"
         >
     </picture>
 
@@ -2000,14 +1986,14 @@ One Kitchen · Your Hours
     
     
     <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
-        data-srcset="https://springs.house/media/cache/design_materials_img_xxxl/assets/images/media/design/6.materials/material%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-courses.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22600%22%20height=%22616%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20600%20616%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="600" height="616">                    <source
-        data-srcset="https://springs.house/media/cache/design_materials_img_xxl/assets/images/media/design/6.materials/material%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-courses.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22600%22%20height=%22616%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20600%20616%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="600" height="616">                    <source
-        data-srcset="https://springs.house/media/cache/design_materials_img_md/assets/images/media/design/6.materials/material%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-courses.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22600%22%20height=%22616%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20600%20616%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="600" height="616">
         <img
-            data-src="https://springs.house/media/cache/design_materials_img_xs/assets/images/media/design/6.materials/material%40xxxl.webp"
+            data-src="https://springs.house/media/gastronomy-dining/dining-courses.jpg"
                 src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22600%22%20height=%22616%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20600%20616%22%3E%3C/svg%3E"                    alt=""                            width="600" height="616"            draggable="false"
         >
     </picture>
@@ -2018,9 +2004,9 @@ One Kitchen · Your Hours
     
     
     
-    <picture class=" img-full"        draggable="false"    >                    <source srcset="https://springs.house/media/cache/design_materials_img_xxxl/assets/images/media/design/6.materials/material%40xxxl.webp" media="(min-width: 1920px) and (min-height: 700px)" width="600" height="616">                    <source srcset="https://springs.house/media/cache/design_materials_img_xxl/assets/images/media/design/6.materials/material%40xxxl.webp" media="(min-width: 1440px) and (min-height: 700px)" width="600" height="616">                    <source srcset="https://springs.house/media/cache/design_materials_img_md/assets/images/media/design/6.materials/material%40xxxl.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="600" height="616">
+    <picture class=" img-full"        draggable="false"    >                    <source srcset="https://springs.house/media/gastronomy-dining/dining-courses.jpg" media="(min-width: 1920px) and (min-height: 700px)" width="600" height="616">                    <source srcset="https://springs.house/media/gastronomy-dining/dining-courses.jpg" media="(min-width: 1440px) and (min-height: 700px)" width="600" height="616">                    <source srcset="https://springs.house/media/gastronomy-dining/dining-courses.jpg" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="600" height="616">
         <img
-            src="https://springs.house/media/cache/design_materials_img_xs/assets/images/media/design/6.materials/material%40xxxl.webp"                    alt=""                            width="600" height="616"            draggable="false"
+            src="https://springs.house/media/gastronomy-dining/dining-courses.jpg"                    alt=""                            width="600" height="616"            draggable="false"
         >
     </picture>
 
@@ -2132,14 +2118,14 @@ One Kitchen · Your Hours
     
     
     <picture class="is-invisible--js is-hidden--no-js img-cover parallax-image-move"            data-plugin="appear "        draggable="false"    >                    <source
-        data-srcset="https://springs.house/media/cache/design_slider_img_xxxl/assets/images/media/design/7.slider/slider-md-1%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-wine.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22720%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20720%20900%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="720" height="900">                    <source
-        data-srcset="https://springs.house/media/cache/design_slider_img_xxl/assets/images/media/design/7.slider/slider-md-1%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-wine.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22720%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20720%20900%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="720" height="900">                    <source
-        data-srcset="https://springs.house/media/cache/design_slider_img_md/assets/images/media/design/7.slider/slider-md-1%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-wine.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22720%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20720%20900%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="720" height="900">
         <img
-            data-src="https://springs.house/media/cache/design_slider_img_xs/assets/images/media/design/7.slider/slider-xs-1%40xs.webp"
+            data-src="https://springs.house/media/gastronomy-dining/dining-wine.jpg"
                 src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22720%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20720%20900%22%3E%3C/svg%3E"                    alt=""                            width="720" height="900"            draggable="false"
         >
     </picture>
@@ -2150,9 +2136,9 @@ One Kitchen · Your Hours
     
     
     
-    <picture class=" img-cover parallax-image-move"        draggable="false"    >                    <source srcset="https://springs.house/media/cache/design_slider_img_xxxl/assets/images/media/design/7.slider/slider-md-1%40xxxl.webp" media="(min-width: 1920px) and (min-height: 700px)" width="720" height="900">                    <source srcset="https://springs.house/media/cache/design_slider_img_xxl/assets/images/media/design/7.slider/slider-md-1%40xxxl.webp" media="(min-width: 1440px) and (min-height: 700px)" width="720" height="900">                    <source srcset="https://springs.house/media/cache/design_slider_img_md/assets/images/media/design/7.slider/slider-md-1%40xxxl.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="720" height="900">
+    <picture class=" img-cover parallax-image-move"        draggable="false"    >                    <source srcset="https://springs.house/media/gastronomy-dining/dining-wine.jpg" media="(min-width: 1920px) and (min-height: 700px)" width="720" height="900">                    <source srcset="https://springs.house/media/gastronomy-dining/dining-wine.jpg" media="(min-width: 1440px) and (min-height: 700px)" width="720" height="900">                    <source srcset="https://springs.house/media/gastronomy-dining/dining-wine.jpg" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="720" height="900">
         <img
-            src="https://springs.house/media/cache/design_slider_img_xs/assets/images/media/design/7.slider/slider-xs-1%40xs.webp"                    alt=""                            width="720" height="900"            draggable="false"
+            src="https://springs.house/media/gastronomy-dining/dining-wine.jpg"                    alt=""                            width="720" height="900"            draggable="false"
         >
     </picture>
 
@@ -2181,14 +2167,14 @@ One Kitchen · Your Hours
     
     
     <picture class="is-invisible--js is-hidden--no-js img-cover parallax-image-move"            data-plugin="appear "        draggable="false"    >                    <source
-        data-srcset="https://springs.house/media/cache/design_slider_img_xxxl/assets/images/media/design/7.slider/slider-md-2%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-plate-4.png"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22720%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20720%20900%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="720" height="900">                    <source
-        data-srcset="https://springs.house/media/cache/design_slider_img_xxl/assets/images/media/design/7.slider/slider-md-2%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-plate-4.png"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22720%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20720%20900%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="720" height="900">                    <source
-        data-srcset="https://springs.house/media/cache/design_slider_img_md/assets/images/media/design/7.slider/slider-md-2%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-plate-4.png"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22720%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20720%20900%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="720" height="900">
         <img
-            data-src="https://springs.house/media/cache/design_slider_img_xs/assets/images/media/design/7.slider/slider-xs-2%40xs.webp"
+            data-src="https://springs.house/media/gastronomy-dining/dining-plate-4.png"
                 src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22720%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20720%20900%22%3E%3C/svg%3E"                    alt=""                            width="720" height="900"            draggable="false"
         >
     </picture>
@@ -2199,9 +2185,9 @@ One Kitchen · Your Hours
     
     
     
-    <picture class=" img-cover parallax-image-move"        draggable="false"    >                    <source srcset="https://springs.house/media/cache/design_slider_img_xxxl/assets/images/media/design/7.slider/slider-md-2%40xxxl.webp" media="(min-width: 1920px) and (min-height: 700px)" width="720" height="900">                    <source srcset="https://springs.house/media/cache/design_slider_img_xxl/assets/images/media/design/7.slider/slider-md-2%40xxxl.webp" media="(min-width: 1440px) and (min-height: 700px)" width="720" height="900">                    <source srcset="https://springs.house/media/cache/design_slider_img_md/assets/images/media/design/7.slider/slider-md-2%40xxxl.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="720" height="900">
+    <picture class=" img-cover parallax-image-move"        draggable="false"    >                    <source srcset="https://springs.house/media/gastronomy-dining/dining-plate-4.png" media="(min-width: 1920px) and (min-height: 700px)" width="720" height="900">                    <source srcset="https://springs.house/media/gastronomy-dining/dining-plate-4.png" media="(min-width: 1440px) and (min-height: 700px)" width="720" height="900">                    <source srcset="https://springs.house/media/gastronomy-dining/dining-plate-4.png" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="720" height="900">
         <img
-            src="https://springs.house/media/cache/design_slider_img_xs/assets/images/media/design/7.slider/slider-xs-2%40xs.webp"                    alt=""                            width="720" height="900"            draggable="false"
+            src="https://springs.house/media/gastronomy-dining/dining-plate-4.png"                    alt=""                            width="720" height="900"            draggable="false"
         >
     </picture>
 
@@ -2237,14 +2223,14 @@ One Kitchen · Your Hours
     
     
     <picture class="is-invisible--js is-hidden--no-js img-cover"            data-plugin="appear "        draggable="false"    >                    <source
-        data-srcset="https://springs.house/media/cache/design_slider_img_xxxl/assets/images/media/design/7.slider/slider-md-1%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-wine.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22720%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20720%20900%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="720" height="900">                    <source
-        data-srcset="https://springs.house/media/cache/design_slider_img_xxl/assets/images/media/design/7.slider/slider-md-1%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-wine.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22720%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20720%20900%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="720" height="900">                    <source
-        data-srcset="https://springs.house/media/cache/design_slider_img_md/assets/images/media/design/7.slider/slider-md-1%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-wine.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22720%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20720%20900%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="720" height="900">
         <img
-            data-src="https://springs.house/media/cache/design_slider_img_xs/assets/images/media/design/7.slider/slider-xs-1%40xs.webp"
+            data-src="https://springs.house/media/gastronomy-dining/dining-wine.jpg"
                 src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22720%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20720%20900%22%3E%3C/svg%3E"                    alt=""                            width="720" height="900"                                        decoding="async"            draggable="false"
         >
     </picture>
@@ -2255,9 +2241,9 @@ One Kitchen · Your Hours
     
     
     
-    <picture class=" img-cover"        draggable="false"    >                    <source srcset="https://springs.house/media/cache/design_slider_img_xxxl/assets/images/media/design/7.slider/slider-md-1%40xxxl.webp" media="(min-width: 1920px) and (min-height: 700px)" width="720" height="900">                    <source srcset="https://springs.house/media/cache/design_slider_img_xxl/assets/images/media/design/7.slider/slider-md-1%40xxxl.webp" media="(min-width: 1440px) and (min-height: 700px)" width="720" height="900">                    <source srcset="https://springs.house/media/cache/design_slider_img_md/assets/images/media/design/7.slider/slider-md-1%40xxxl.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="720" height="900">
+    <picture class=" img-cover"        draggable="false"    >                    <source srcset="https://springs.house/media/gastronomy-dining/dining-wine.jpg" media="(min-width: 1920px) and (min-height: 700px)" width="720" height="900">                    <source srcset="https://springs.house/media/gastronomy-dining/dining-wine.jpg" media="(min-width: 1440px) and (min-height: 700px)" width="720" height="900">                    <source srcset="https://springs.house/media/gastronomy-dining/dining-wine.jpg" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="720" height="900">
         <img
-            src="https://springs.house/media/cache/design_slider_img_xs/assets/images/media/design/7.slider/slider-xs-1%40xs.webp"                    alt=""                            width="720" height="900"                                        decoding="async"            draggable="false"
+            src="https://springs.house/media/gastronomy-dining/dining-wine.jpg"                    alt=""                            width="720" height="900"                                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2272,14 +2258,14 @@ One Kitchen · Your Hours
     
     
     <picture class="is-invisible--js is-hidden--no-js img-cover"            data-plugin="appear "        draggable="false"    >                    <source
-        data-srcset="https://springs.house/media/cache/design_slider_img_xxxl/assets/images/media/design/7.slider/slider-md-2%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-plate-4.png"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22720%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20720%20900%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="720" height="900">                    <source
-        data-srcset="https://springs.house/media/cache/design_slider_img_xxl/assets/images/media/design/7.slider/slider-md-2%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-plate-4.png"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22720%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20720%20900%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="720" height="900">                    <source
-        data-srcset="https://springs.house/media/cache/design_slider_img_md/assets/images/media/design/7.slider/slider-md-2%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-plate-4.png"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22720%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20720%20900%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="720" height="900">
         <img
-            data-src="https://springs.house/media/cache/design_slider_img_xs/assets/images/media/design/7.slider/slider-xs-2%40xs.webp"
+            data-src="https://springs.house/media/gastronomy-dining/dining-plate-4.png"
                 src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22720%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20720%20900%22%3E%3C/svg%3E"                    alt=""                            width="720" height="900"                                        decoding="async"            draggable="false"
         >
     </picture>
@@ -2290,9 +2276,9 @@ One Kitchen · Your Hours
     
     
     
-    <picture class=" img-cover"        draggable="false"    >                    <source srcset="https://springs.house/media/cache/design_slider_img_xxxl/assets/images/media/design/7.slider/slider-md-2%40xxxl.webp" media="(min-width: 1920px) and (min-height: 700px)" width="720" height="900">                    <source srcset="https://springs.house/media/cache/design_slider_img_xxl/assets/images/media/design/7.slider/slider-md-2%40xxxl.webp" media="(min-width: 1440px) and (min-height: 700px)" width="720" height="900">                    <source srcset="https://springs.house/media/cache/design_slider_img_md/assets/images/media/design/7.slider/slider-md-2%40xxxl.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="720" height="900">
+    <picture class=" img-cover"        draggable="false"    >                    <source srcset="https://springs.house/media/gastronomy-dining/dining-plate-4.png" media="(min-width: 1920px) and (min-height: 700px)" width="720" height="900">                    <source srcset="https://springs.house/media/gastronomy-dining/dining-plate-4.png" media="(min-width: 1440px) and (min-height: 700px)" width="720" height="900">                    <source srcset="https://springs.house/media/gastronomy-dining/dining-plate-4.png" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="720" height="900">
         <img
-            src="https://springs.house/media/cache/design_slider_img_xs/assets/images/media/design/7.slider/slider-xs-2%40xs.webp"                    alt=""                            width="720" height="900"                                        decoding="async"            draggable="false"
+            src="https://springs.house/media/gastronomy-dining/dining-plate-4.png"                    alt=""                            width="720" height="900"                                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2419,9 +2405,9 @@ One Kitchen · Your Hours
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full parallax-image-move"            data-plugin="appear "        draggable="false"    >                    <source srcset="https://springs.house/assets/images/px-2x1.gif" data-srcset="https://springs.house/media/cache/design_gallery_img_xxxl/assets/images/media/design/8.gallery/image-1%40xxxl.webp" media="(min-width: 1920px) and (min-height: 700px)">                    <source srcset="https://springs.house/assets/images/px-2x1.gif" data-srcset="https://springs.house/media/cache/design_gallery_img_xxl/assets/images/media/design/8.gallery/image-1%40xxxl.webp" media="(min-width: 1440px) and (min-height: 700px)">                    <source srcset="https://springs.house/assets/images/px-2x1.gif" data-srcset="https://springs.house/media/cache/design_gallery_img_md/assets/images/media/design/8.gallery/image-1%40xxxl.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)">
+    <picture class="is-invisible--js is-hidden--no-js img-full parallax-image-move"            data-plugin="appear "        draggable="false"    >                    <source srcset="https://springs.house/assets/images/px-2x1.gif" data-srcset="https://springs.house/media/gastronomy-dining/dining-plate-5.png" media="(min-width: 1920px) and (min-height: 700px)">                    <source srcset="https://springs.house/assets/images/px-2x1.gif" data-srcset="https://springs.house/media/gastronomy-dining/dining-plate-5.png" media="(min-width: 1440px) and (min-height: 700px)">                    <source srcset="https://springs.house/assets/images/px-2x1.gif" data-srcset="https://springs.house/media/gastronomy-dining/dining-plate-5.png" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)">
         <img
-            data-src="https://springs.house/media/cache/design_gallery_img_xs/assets/images/media/design/8.gallery/image-1%40xxxl.webp"
+            data-src="https://springs.house/media/gastronomy-dining/dining-plate-5.png"
                 src="https://springs.house/assets/images/px.gif?v=1765268659"                    alt=""                                                    data-plugin="parallax"                        data-parallax-enable-mq="null"                        data-parallax-clamp="true"                        data-parallax-100-0="{&quot;transform&quot;: &quot;scale(1.2)&quot;}"                        data-parallax-0-150="{&quot;transform&quot;: &quot;scale(1)&quot;}"            draggable="false"
         >
     </picture>
@@ -2432,9 +2418,9 @@ One Kitchen · Your Hours
     
     
     
-    <picture class=" img-full parallax-image-move"        draggable="false"    >                    <source srcset="https://springs.house/media/cache/design_gallery_img_xxxl/assets/images/media/design/8.gallery/image-1%40xxxl.webp" media="(min-width: 1920px) and (min-height: 700px)">                    <source srcset="https://springs.house/media/cache/design_gallery_img_xxl/assets/images/media/design/8.gallery/image-1%40xxxl.webp" media="(min-width: 1440px) and (min-height: 700px)">                    <source srcset="https://springs.house/media/cache/design_gallery_img_md/assets/images/media/design/8.gallery/image-1%40xxxl.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)">
+    <picture class=" img-full parallax-image-move"        draggable="false"    >                    <source srcset="https://springs.house/media/gastronomy-dining/dining-plate-5.png" media="(min-width: 1920px) and (min-height: 700px)">                    <source srcset="https://springs.house/media/gastronomy-dining/dining-plate-5.png" media="(min-width: 1440px) and (min-height: 700px)">                    <source srcset="https://springs.house/media/gastronomy-dining/dining-plate-5.png" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)">
         <img
-            src="https://springs.house/media/cache/design_gallery_img_xs/assets/images/media/design/8.gallery/image-1%40xxxl.webp"                    alt=""                                                    data-plugin="parallax"                        data-parallax-enable-mq="null"                        data-parallax-clamp="true"                        data-parallax-100-0="{&quot;transform&quot;: &quot;scale(1.2)&quot;}"                        data-parallax-0-150="{&quot;transform&quot;: &quot;scale(1)&quot;}"            draggable="false"
+            src="https://springs.house/media/gastronomy-dining/dining-plate-5.png"                    alt=""                                                    data-plugin="parallax"                        data-parallax-enable-mq="null"                        data-parallax-clamp="true"                        data-parallax-100-0="{&quot;transform&quot;: &quot;scale(1.2)&quot;}"                        data-parallax-0-150="{&quot;transform&quot;: &quot;scale(1)&quot;}"            draggable="false"
         >
     </picture>
 
@@ -2465,9 +2451,9 @@ One Kitchen · Your Hours
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full parallax-image-move"            data-plugin="appear "        draggable="false"    >                    <source srcset="https://springs.house/assets/images/px-2x1.gif" data-srcset="https://springs.house/media/cache/design_gallery_img_xxxl/assets/images/media/design/8.gallery/image-2%40xxxl.webp" media="(min-width: 1920px) and (min-height: 700px)">                    <source srcset="https://springs.house/assets/images/px-2x1.gif" data-srcset="https://springs.house/media/cache/design_gallery_img_xxl/assets/images/media/design/8.gallery/image-2%40xxxl.webp" media="(min-width: 1440px) and (min-height: 700px)">                    <source srcset="https://springs.house/assets/images/px-2x1.gif" data-srcset="https://springs.house/media/cache/design_gallery_img_md/assets/images/media/design/8.gallery/image-2%40xxxl.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)">
+    <picture class="is-invisible--js is-hidden--no-js img-full parallax-image-move"            data-plugin="appear "        draggable="false"    >                    <source srcset="https://springs.house/assets/images/px-2x1.gif" data-srcset="https://springs.house/media/gastronomy-dining/dining-plate-6.png" media="(min-width: 1920px) and (min-height: 700px)">                    <source srcset="https://springs.house/assets/images/px-2x1.gif" data-srcset="https://springs.house/media/gastronomy-dining/dining-plate-6.png" media="(min-width: 1440px) and (min-height: 700px)">                    <source srcset="https://springs.house/assets/images/px-2x1.gif" data-srcset="https://springs.house/media/gastronomy-dining/dining-plate-6.png" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)">
         <img
-            data-src="https://springs.house/media/cache/design_gallery_img_xs/assets/images/media/design/8.gallery/image-2%40xxxl.webp"
+            data-src="https://springs.house/media/gastronomy-dining/dining-plate-6.png"
                 src="https://springs.house/assets/images/px.gif?v=1765268659"                    alt=""                                                    data-plugin="parallax"                        data-parallax-enable-mq="null"                        data-parallax-clamp="true"                        data-parallax-100-0="{&quot;transform&quot;: &quot;scale(1.2)&quot;}"                        data-parallax-0-150="{&quot;transform&quot;: &quot;scale(1)&quot;}"            draggable="false"
         >
     </picture>
@@ -2478,9 +2464,9 @@ One Kitchen · Your Hours
     
     
     
-    <picture class=" img-full parallax-image-move"        draggable="false"    >                    <source srcset="https://springs.house/media/cache/design_gallery_img_xxxl/assets/images/media/design/8.gallery/image-2%40xxxl.webp" media="(min-width: 1920px) and (min-height: 700px)">                    <source srcset="https://springs.house/media/cache/design_gallery_img_xxl/assets/images/media/design/8.gallery/image-2%40xxxl.webp" media="(min-width: 1440px) and (min-height: 700px)">                    <source srcset="https://springs.house/media/cache/design_gallery_img_md/assets/images/media/design/8.gallery/image-2%40xxxl.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)">
+    <picture class=" img-full parallax-image-move"        draggable="false"    >                    <source srcset="https://springs.house/media/gastronomy-dining/dining-plate-6.png" media="(min-width: 1920px) and (min-height: 700px)">                    <source srcset="https://springs.house/media/gastronomy-dining/dining-plate-6.png" media="(min-width: 1440px) and (min-height: 700px)">                    <source srcset="https://springs.house/media/gastronomy-dining/dining-plate-6.png" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)">
         <img
-            src="https://springs.house/media/cache/design_gallery_img_xs/assets/images/media/design/8.gallery/image-2%40xxxl.webp"                    alt=""                                                    data-plugin="parallax"                        data-parallax-enable-mq="null"                        data-parallax-clamp="true"                        data-parallax-100-0="{&quot;transform&quot;: &quot;scale(1.2)&quot;}"                        data-parallax-0-150="{&quot;transform&quot;: &quot;scale(1)&quot;}"            draggable="false"
+            src="https://springs.house/media/gastronomy-dining/dining-plate-6.png"                    alt=""                                                    data-plugin="parallax"                        data-parallax-enable-mq="null"                        data-parallax-clamp="true"                        data-parallax-100-0="{&quot;transform&quot;: &quot;scale(1.2)&quot;}"                        data-parallax-0-150="{&quot;transform&quot;: &quot;scale(1)&quot;}"            draggable="false"
         >
     </picture>
 
@@ -2548,14 +2534,14 @@ One Kitchen · Your Hours
     
     
     <picture class="is-invisible--js is-hidden--no-js img-cover"            data-plugin="appear "        draggable="false"    >                    <source
-        data-srcset="https://springs.house/media/cache/design_flats_img_xxxl/assets/images/media/design/9.flats/image-md-1%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/experience-dining.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221440%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201440%20900%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="1440" height="900">                    <source
-        data-srcset="https://springs.house/media/cache/design_flats_img_xxl/assets/images/media/design/9.flats/image-md-1%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/experience-dining.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221440%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201440%20900%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="1440" height="900">                    <source
-        data-srcset="https://springs.house/media/cache/design_flats_img_md/assets/images/media/design/9.flats/image-md-1%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/experience-dining.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221440%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201440%20900%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="1440" height="900">
         <img
-            data-src="https://springs.house/media/cache/design_flats_img_xs/assets/images/media/design/9.flats/image-xs-1%40xs.webp"
+            data-src="https://springs.house/media/gastronomy-dining/experience-dining.jpg"
                 src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22720%22%20height=%221280%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20720%201280%22%3E%3C/svg%3E"                    alt=""                            width="1440" height="900"                                        data-plugin="parallax"                        data-parallax-clamp="true"                        data-parallax-enable-mq="lg-up"                        data-parallax-0-0="{&quot;transform&quot;: &quot;translateX(0%) scale(1.2)&quot;}"                        data-parallax--100-0="{&quot;transform&quot;: &quot;translateX(0%) scale(1.1)&quot;}"                        data-parallax--150-0="{&quot;transform&quot;: &quot;translateX(-21%) scale(1.05)&quot;}"                        data-parallax--250-0="{&quot;transform&quot;: &quot;translateX(-21%) scale(1)&quot;}"            draggable="false"
         >
     </picture>
@@ -2566,9 +2552,9 @@ One Kitchen · Your Hours
     
     
     
-    <picture class=" img-cover"        draggable="false"    >                    <source srcset="https://springs.house/media/cache/design_flats_img_xxxl/assets/images/media/design/9.flats/image-md-1%40xxxl.webp" media="(min-width: 1920px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://springs.house/media/cache/design_flats_img_xxl/assets/images/media/design/9.flats/image-md-1%40xxxl.webp" media="(min-width: 1440px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://springs.house/media/cache/design_flats_img_md/assets/images/media/design/9.flats/image-md-1%40xxxl.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="1440" height="900">
+    <picture class=" img-cover"        draggable="false"    >                    <source srcset="https://springs.house/media/gastronomy-dining/experience-dining.jpg" media="(min-width: 1920px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://springs.house/media/gastronomy-dining/experience-dining.jpg" media="(min-width: 1440px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://springs.house/media/gastronomy-dining/experience-dining.jpg" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="1440" height="900">
         <img
-            src="https://springs.house/media/cache/design_flats_img_xs/assets/images/media/design/9.flats/image-xs-1%40xs.webp"                    alt=""                            width="1440" height="900"                                        data-plugin="parallax"                        data-parallax-clamp="true"                        data-parallax-enable-mq="lg-up"                        data-parallax-0-0="{&quot;transform&quot;: &quot;translateX(0%) scale(1.2)&quot;}"                        data-parallax--100-0="{&quot;transform&quot;: &quot;translateX(0%) scale(1.1)&quot;}"                        data-parallax--150-0="{&quot;transform&quot;: &quot;translateX(-21%) scale(1.05)&quot;}"                        data-parallax--250-0="{&quot;transform&quot;: &quot;translateX(-21%) scale(1)&quot;}"            draggable="false"
+            src="https://springs.house/media/gastronomy-dining/experience-dining.jpg"{&quot;transform&quot;: &quot;translateX(-21%) scale(1.05)&quot;}"                        data-parallax--250-0="{&quot;transform&quot;: &quot;translateX(-21%) scale(1)&quot;}"            draggable="false"
         >
     </picture>
 
@@ -2714,14 +2700,14 @@ One Kitchen · Your Hours
     
     
     <picture class="is-invisible--js is-hidden--no-js img-cover"            data-plugin="appear "        draggable="false"    >                    <source
-        data-srcset="https://springs.house/media/cache/design_flats_img_xxxl/assets/images/media/design/9.flats/image-md-2%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/charter-service.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221440%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201440%20900%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="1440" height="900">                    <source
-        data-srcset="https://springs.house/media/cache/design_flats_img_xxl/assets/images/media/design/9.flats/image-md-2%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/charter-service.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221440%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201440%20900%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="1440" height="900">                    <source
-        data-srcset="https://springs.house/media/cache/design_flats_img_md/assets/images/media/design/9.flats/image-md-2%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/charter-service.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221440%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201440%20900%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="1440" height="900">
         <img
-            data-src="https://springs.house/media/cache/design_flats_img_xs/assets/images/media/design/9.flats/image-xs-2%40xs.webp"
+            data-src="https://springs.house/media/gastronomy-dining/charter-service.jpg"
                 src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22720%22%20height=%221280%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20720%201280%22%3E%3C/svg%3E"                    alt=""                            width="1440" height="900"                                        data-plugin="parallax"                        data-parallax-clamp="true"                        data-parallax-enable-mq="lg-up"                        data-parallax-0-0="{&quot;transform&quot;: &quot;translateX(0%) scale(1.2)&quot;}"                        data-parallax--100-0="{&quot;transform&quot;: &quot;translateX(0%) scale(1.1)&quot;}"                        data-parallax--150-0="{&quot;transform&quot;: &quot;translateX(-21%) scale(1.05)&quot;}"                        data-parallax--250-0="{&quot;transform&quot;: &quot;translateX(-21%) scale(1)&quot;}"            draggable="false"
         >
     </picture>
@@ -2732,9 +2718,9 @@ One Kitchen · Your Hours
     
     
     
-    <picture class=" img-cover"        draggable="false"    >                    <source srcset="https://springs.house/media/cache/design_flats_img_xxxl/assets/images/media/design/9.flats/image-md-2%40xxxl.webp" media="(min-width: 1920px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://springs.house/media/cache/design_flats_img_xxl/assets/images/media/design/9.flats/image-md-2%40xxxl.webp" media="(min-width: 1440px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://springs.house/media/cache/design_flats_img_md/assets/images/media/design/9.flats/image-md-2%40xxxl.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="1440" height="900">
+    <picture class=" img-cover"        draggable="false"    >                    <source srcset="https://springs.house/media/gastronomy-dining/charter-service.jpg" media="(min-width: 1920px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://springs.house/media/gastronomy-dining/charter-service.jpg" media="(min-width: 1440px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://springs.house/media/gastronomy-dining/charter-service.jpg" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="1440" height="900">
         <img
-            src="https://springs.house/media/cache/design_flats_img_xs/assets/images/media/design/9.flats/image-xs-2%40xs.webp"                    alt=""                            width="1440" height="900"                                        data-plugin="parallax"                        data-parallax-clamp="true"                        data-parallax-enable-mq="lg-up"                        data-parallax-0-0="{&quot;transform&quot;: &quot;translateX(0%) scale(1.2)&quot;}"                        data-parallax--100-0="{&quot;transform&quot;: &quot;translateX(0%) scale(1.1)&quot;}"                        data-parallax--150-0="{&quot;transform&quot;: &quot;translateX(-21%) scale(1.05)&quot;}"                        data-parallax--250-0="{&quot;transform&quot;: &quot;translateX(-21%) scale(1)&quot;}"            draggable="false"
+            src="https://springs.house/media/gastronomy-dining/experience-dining.jpg"{&quot;transform&quot;: &quot;translateX(-21%) scale(1.05)&quot;}"                        data-parallax--250-0="{&quot;transform&quot;: &quot;translateX(-21%) scale(1)&quot;}"            draggable="false"
         >
     </picture>
 
@@ -2890,14 +2876,14 @@ One Kitchen · Your Hours
     
     
     <picture class="is-invisible--js is-hidden--no-js img-cover"            data-plugin="appear "        draggable="false"    >                    <source
-        data-srcset="https://springs.house/media/cache/design_flats_img_xxxl/assets/images/media/design/9.flats/image-md-3%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/charter-celebration.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221440%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201440%20900%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="1440" height="900">                    <source
-        data-srcset="https://springs.house/media/cache/design_flats_img_xxl/assets/images/media/design/9.flats/image-md-3%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/charter-celebration.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221440%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201440%20900%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="1440" height="900">                    <source
-        data-srcset="https://springs.house/media/cache/design_flats_img_md/assets/images/media/design/9.flats/image-md-3%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/charter-celebration.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221440%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201440%20900%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="1440" height="900">
         <img
-            data-src="https://springs.house/media/cache/design_flats_img_xs/assets/images/media/design/9.flats/image-xs-3%40xs.webp"
+            data-src="https://springs.house/media/gastronomy-dining/charter-celebration.jpg"
                 src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22720%22%20height=%221280%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20720%201280%22%3E%3C/svg%3E"                    alt=""                            width="1440" height="900"                                        data-plugin="parallax"                        data-parallax-clamp="true"                        data-parallax-enable-mq="lg-up"                        data-parallax-0-0="{&quot;transform&quot;: &quot;translateX(0%) scale(1.2)&quot;}"                        data-parallax--100-0="{&quot;transform&quot;: &quot;translateX(0%) scale(1.1)&quot;}"                        data-parallax--150-0="{&quot;transform&quot;: &quot;translateX(-21%) scale(1.05)&quot;}"                        data-parallax--250-0="{&quot;transform&quot;: &quot;translateX(-21%) scale(1)&quot;}"            draggable="false"
         >
     </picture>
@@ -2908,9 +2894,9 @@ One Kitchen · Your Hours
     
     
     
-    <picture class=" img-cover"        draggable="false"    >                    <source srcset="https://springs.house/media/cache/design_flats_img_xxxl/assets/images/media/design/9.flats/image-md-3%40xxxl.webp" media="(min-width: 1920px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://springs.house/media/cache/design_flats_img_xxl/assets/images/media/design/9.flats/image-md-3%40xxxl.webp" media="(min-width: 1440px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://springs.house/media/cache/design_flats_img_md/assets/images/media/design/9.flats/image-md-3%40xxxl.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="1440" height="900">
+    <picture class=" img-cover"        draggable="false"    >                    <source srcset="https://springs.house/media/gastronomy-dining/charter-celebration.jpg" media="(min-width: 1920px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://springs.house/media/gastronomy-dining/charter-celebration.jpg" media="(min-width: 1440px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://springs.house/media/gastronomy-dining/charter-celebration.jpg" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="1440" height="900">
         <img
-            src="https://springs.house/media/cache/design_flats_img_xs/assets/images/media/design/9.flats/image-xs-3%40xs.webp"                    alt=""                            width="1440" height="900"                                        data-plugin="parallax"                        data-parallax-clamp="true"                        data-parallax-enable-mq="lg-up"                        data-parallax-0-0="{&quot;transform&quot;: &quot;translateX(0%) scale(1.2)&quot;}"                        data-parallax--100-0="{&quot;transform&quot;: &quot;translateX(0%) scale(1.1)&quot;}"                        data-parallax--150-0="{&quot;transform&quot;: &quot;translateX(-21%) scale(1.05)&quot;}"                        data-parallax--250-0="{&quot;transform&quot;: &quot;translateX(-21%) scale(1)&quot;}"            draggable="false"
+            src="https://springs.house/media/gastronomy-dining/experience-dining.jpg"{&quot;transform&quot;: &quot;translateX(-21%) scale(1.05)&quot;}"                        data-parallax--250-0="{&quot;transform&quot;: &quot;translateX(-21%) scale(1)&quot;}"            draggable="false"
         >
     </picture>
 
@@ -3048,14 +3034,14 @@ A private table, a quiet river, and time entirely your own.
     
     
     <picture class="is-invisible--js is-hidden--no-js img-cover parallax-image-move"            data-plugin="appear "        draggable="false"    >                    <source
-        data-srcset="https://springs.house/media/cache/design_more_xxxl/assets/images/media/design/10.more/more-md%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-table.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221440%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201440%20900%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="1440" height="900">                    <source
-        data-srcset="https://springs.house/media/cache/design_more_xxl/assets/images/media/design/10.more/more-md%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-table.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221440%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201440%20900%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="1440" height="900">                    <source
-        data-srcset="https://springs.house/media/cache/design_more_md/assets/images/media/design/10.more/more-md%40xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-table.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221440%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201440%20900%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="1440" height="900">
         <img
-            data-src="https://springs.house/media/cache/design_more_xs/assets/images/media/design/10.more/more-xs%40xs.webp"
+            data-src="https://springs.house/media/gastronomy-dining/dining-table.jpg"
                 src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22720%22%20height=%221280%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20720%201280%22%3E%3C/svg%3E"                    alt=""                            width="720" height="1280"                                        data-plugin="parallax"                        data-parallax-enable-mq="null"                        data-parallax-clamp="true"                        data-parallax-100-0="{&quot;transform&quot;: &quot;scale(1.2)&quot;}"                        data-parallax--100-0="{&quot;transform&quot;: &quot;scale(1.0)&quot;}"            draggable="false"
         >
     </picture>
@@ -3066,9 +3052,9 @@ A private table, a quiet river, and time entirely your own.
     
     
     
-    <picture class=" img-cover parallax-image-move"        draggable="false"    >                    <source srcset="https://springs.house/media/cache/design_more_xxxl/assets/images/media/design/10.more/more-md%40xxxl.webp" media="(min-width: 1920px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://springs.house/media/cache/design_more_xxl/assets/images/media/design/10.more/more-md%40xxxl.webp" media="(min-width: 1440px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://springs.house/media/cache/design_more_md/assets/images/media/design/10.more/more-md%40xxxl.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="1440" height="900">
+    <picture class=" img-cover parallax-image-move"        draggable="false"    >                    <source srcset="https://springs.house/media/gastronomy-dining/dining-table.jpg" media="(min-width: 1920px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://springs.house/media/gastronomy-dining/dining-table.jpg" media="(min-width: 1440px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://springs.house/media/gastronomy-dining/dining-table.jpg" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="1440" height="900">
         <img
-            src="https://springs.house/media/cache/design_more_xs/assets/images/media/design/10.more/more-xs%40xs.webp"                    alt=""                            width="720" height="1280"                                        data-plugin="parallax"                        data-parallax-enable-mq="null"                        data-parallax-clamp="true"                        data-parallax-100-0="{&quot;transform&quot;: &quot;scale(1.2)&quot;}"                        data-parallax--100-0="{&quot;transform&quot;: &quot;scale(1.0)&quot;}"            draggable="false"
+            src="https://springs.house/media/gastronomy-dining/dining-table.jpg"                    alt=""                            width="720" height="1280"                                        data-plugin="parallax"                        data-parallax-enable-mq="null"                        data-parallax-clamp="true"                        data-parallax-100-0="{&quot;transform&quot;: &quot;scale(1.2)&quot;}"                        data-parallax--100-0="{&quot;transform&quot;: &quot;scale(1.0)&quot;}"            draggable="false"
         >
     </picture>
 
@@ -3417,12 +3403,12 @@ All materials on&nbsp;this website, including design elements, are the&nbsp;inte
     
     
     <picture class="is-invisible--js is-hidden--no-js "            data-plugin="appear "        draggable="false"    >                    <source
-        data-srcset="https://springs.house/assets/images/media/landing/callback/spiral@xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-table.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221080%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201080%20900%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="1080" height="900">                    <source
-        data-srcset="https://springs.house/assets/images/media/landing/callback/spiral@xxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-table.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221080%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201080%20900%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="1080" height="900">
         <img
-            data-src="https://springs.house/assets/images/media/landing/callback/spiral@md.webp"
+            data-src="https://springs.house/media/gastronomy-dining/dining-table.jpg"
                 src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221080%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201080%20900%22%3E%3C/svg%3E"                    alt=""                            width="1080" height="900"            draggable="false"
         >
     </picture>
@@ -3433,9 +3419,9 @@ All materials on&nbsp;this website, including design elements, are the&nbsp;inte
     
     
     
-    <picture class=" "        draggable="false"    >                    <source srcset="https://springs.house/assets/images/media/landing/callback/spiral@xxxl.webp" media="(min-width: 1920px) and (min-height: 700px)" width="1080" height="900">                    <source srcset="https://springs.house/assets/images/media/landing/callback/spiral@xxl.webp" media="(min-width: 1440px) and (min-height: 700px)" width="1080" height="900">
+    <picture class=" "        draggable="false"    >                    <source srcset="https://springs.house/media/gastronomy-dining/dining-table.jpg" media="(min-width: 1920px) and (min-height: 700px)" width="1080" height="900">                    <source srcset="https://springs.house/media/gastronomy-dining/dining-table.jpg" media="(min-width: 1440px) and (min-height: 700px)" width="1080" height="900">
         <img
-            src="https://springs.house/assets/images/media/landing/callback/spiral@md.webp"                    alt=""                            width="1080" height="900"            draggable="false"
+            src="https://springs.house/media/gastronomy-dining/dining-table.jpg"                    alt=""                            width="1080" height="900"            draggable="false"
         >
     </picture>
 
@@ -4089,12 +4075,12 @@ All materials on&nbsp;this website, including design elements, are the&nbsp;inte
     
     
     <picture class="is-invisible--js is-hidden--no-js "            data-plugin="appear "        draggable="false"    >                    <source
-        data-srcset="https://springs.house/assets/images/media/landing/callback/spiral@xxxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-table.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221080%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201080%20900%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="1080" height="900">                    <source
-        data-srcset="https://springs.house/assets/images/media/landing/callback/spiral@xxl.webp"
+        data-srcset="https://springs.house/media/gastronomy-dining/dining-table.jpg"
         srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221080%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201080%20900%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="1080" height="900">
         <img
-            data-src="https://springs.house/assets/images/media/landing/callback/spiral@md.webp"
+            data-src="https://springs.house/media/gastronomy-dining/dining-table.jpg"
                 src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221080%22%20height=%22900%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%201080%20900%22%3E%3C/svg%3E"                    alt=""                            width="1080" height="900"            draggable="false"
         >
     </picture>
@@ -4105,9 +4091,9 @@ All materials on&nbsp;this website, including design elements, are the&nbsp;inte
     
     
     
-    <picture class=" "        draggable="false"    >                    <source srcset="https://springs.house/assets/images/media/landing/callback/spiral@xxxl.webp" media="(min-width: 1920px) and (min-height: 700px)" width="1080" height="900">                    <source srcset="https://springs.house/assets/images/media/landing/callback/spiral@xxl.webp" media="(min-width: 1440px) and (min-height: 700px)" width="1080" height="900">
+    <picture class=" "        draggable="false"    >                    <source srcset="https://springs.house/media/gastronomy-dining/dining-table.jpg" media="(min-width: 1920px) and (min-height: 700px)" width="1080" height="900">                    <source srcset="https://springs.house/media/gastronomy-dining/dining-table.jpg" media="(min-width: 1440px) and (min-height: 700px)" width="1080" height="900">
         <img
-            src="https://springs.house/assets/images/media/landing/callback/spiral@md.webp"                    alt=""                            width="1080" height="900"            draggable="false"
+            src="https://springs.house/media/gastronomy-dining/dining-table.jpg"                    alt=""                            width="1080" height="900"            draggable="false"
         >
     </picture>
 
