@@ -337,7 +337,9 @@ export function PublicSiteHero({
       ref={heroRef}
       id={posterImageName ? siteImageAnchorId(posterImageName) : undefined}
       data-site-image={posterImageName}
-      className={`home-hero-container${applyGoldTint ? " hero-gold-tint" : ""}`}
+      className={`home-hero-container${applyGoldTint ? " hero-gold-tint" : ""}${
+        playVideo ? " home-hero--clear-video" : ""
+      }`}
       aria-label="Hero"
     >
       <div className="hero-media">
