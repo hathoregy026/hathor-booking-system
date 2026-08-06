@@ -402,9 +402,37 @@ export function mountHeroScrollStage({
         anticipatePin: isPhoneTouch || isTabletHero ? 0 : 1,
         invalidateOnRefresh: !(isPhoneTouch || isTabletHero),
         onLeave: () => {
-          if (!isPhoneTouch && logoMark) {
-            gsap.set(logoMark, { autoAlpha: 0, y: getLogoHiddenY() });
+          if (isPhoneTouch || !logoMark) return;
+          if (isSplitLetterLogo()) {
+            // Park the mark; letters stay at scrub end so reverse can rebuild.
+            gsap.set(logoMark, {
+              autoAlpha: 1,
+              y: getLogoLandedY(),
+              xPercent: -50,
+              x: 0,
+              yPercent: 0,
+              scale: 1,
+            });
+            gsap.set(logoMark.querySelectorAll(".logo-letter-wrap"), {
+              y: getLogoHiddenY(),
+              opacity: 0,
+              force3D: true,
+            });
+            return;
           }
+          gsap.set(logoMark, { autoAlpha: 0, y: getLogoHiddenY() });
+        },
+        onEnterBack: () => {
+          if (isPhoneTouch || !logoMark) return;
+          // Re-show the container so scrubbed letter rise (reverse) is visible.
+          gsap.set(logoMark, {
+            autoAlpha: 1,
+            y: getLogoLandedY(),
+            xPercent: -50,
+            x: 0,
+            yPercent: 0,
+            scale: 1,
+          });
         },
       },
     });
