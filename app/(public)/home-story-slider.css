@@ -1,0 +1,159 @@
+/* Direct adaptation of the dining page's Cellar Pairing Discretion slider.
+   Typography intentionally remains owned by the existing CMS typography classes. */
+.home-story {
+  height: 400svh;
+  background: var(--cream, #ece8df);
+}
+
+.home-story__viewport {
+  background: var(--cream, #ece8df);
+}
+
+.home-story__slide {
+  display: block;
+  background: var(--cream, #ece8df);
+}
+
+.home-story__media {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 34%;
+  width: auto;
+  height: auto;
+  max-height: none;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+.home-story__media::after {
+  display: none;
+}
+
+.home-story__media-link,
+.home-story__media-link img {
+  border-radius: 0;
+  transform: none !important;
+}
+
+.home-story__art {
+  display: none;
+}
+
+.home-story__copy {
+  top: 0 !important;
+  right: auto !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  z-index: 5;
+  width: 34% !important;
+  min-height: 0;
+  padding: clamp(2rem, 6vw, 6.5rem) clamp(1.25rem, 4vw, 4.5rem) !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: var(--cream, #ece8df) !important;
+  box-shadow: none !important;
+  color: inherit;
+  text-align: center !important;
+}
+
+.home-story__title {
+  max-width: 8ch !important;
+  text-shadow: none !important;
+}
+
+.home-story__body {
+  position: absolute;
+  right: clamp(1.25rem, 4vw, 4.5rem);
+  bottom: clamp(1.5rem, 6vh, 5rem);
+  left: clamp(1.25rem, 4vw, 4.5rem);
+  max-width: none !important;
+  text-align: left;
+  text-shadow: none !important;
+}
+
+.home-story__cta {
+  position: absolute;
+  bottom: clamp(1.25rem, 2.5vh, 2rem);
+  left: clamp(1.25rem, 4vw, 4.5rem);
+  border-bottom-color: currentColor;
+}
+
+.home-story__slide[data-home-story-slide="1"] .home-story__copy {
+  background: var(--cream, #ece8df) !important;
+}
+
+@media (max-width: 1024px) {
+  .home-story {
+    height: 300svh;
+  }
+
+  .home-story__media {
+    left: 28%;
+  }
+
+  .home-story__copy {
+    width: 28% !important;
+    padding-inline: clamp(0.8rem, 2vw, 1.5rem) !important;
+  }
+
+  .home-story__body,
+  .home-story__cta {
+    right: clamp(0.8rem, 2vw, 1.5rem);
+    left: clamp(0.8rem, 2vw, 1.5rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .home-story {
+    height: 240svh;
+  }
+
+  .home-story__media {
+    top: 0;
+    right: 0;
+    bottom: 43%;
+    left: 0;
+  }
+
+  .home-story__copy {
+    top: auto !important;
+    width: 100% !important;
+    height: 43%;
+    padding: 1.25rem !important;
+  }
+
+  .home-story__title {
+    max-width: 13ch !important;
+  }
+
+  .home-story__body {
+    bottom: 3.75rem;
+    font-size: inherit;
+  }
+
+  .home-story__cta {
+    bottom: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-story__slide {
+    display: grid;
+    grid-template-columns: 34% 66%;
+    min-height: 100svh;
+  }
+
+  .home-story__media,
+  .home-story__copy {
+    position: relative !important;
+    inset: auto !important;
+    width: auto !important;
+    height: auto !important;
+  }
+
+  .home-story__body,
+  .home-story__cta {
+    position: static;
+  }
+}

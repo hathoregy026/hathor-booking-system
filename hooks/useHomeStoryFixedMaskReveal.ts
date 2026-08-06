@@ -47,13 +47,15 @@ export function useHomeStoryFixedMaskReveal(
 
       const setProgress = (progress: number) => {
         const transitions = Math.max(1, panels.length - 1);
-        const revealStart = isCompact ? 0.52 : 0.58;
-        const revealEnd = isCompact ? 0.84 : 0.88;
+        // Mirrors the dining slider: early caption handoff, then a long
+        // settled second-image hold after the vertical mask has opened.
+        const revealStart = isCompact ? 0.14 : 0.1;
+        const revealEnd = isCompact ? 0.62 : 0.55;
         const revealProgress = luxWipe(
           clamp((progress - revealStart) / (revealEnd - revealStart)),
         );
         const firstExitProgress = luxWipe(
-          clamp((progress - (revealStart - 0.06)) / 0.22),
+          clamp((progress - (revealStart - 0.04)) / 0.2),
         );
 
         panels.forEach((panel, index) => {
