@@ -2628,6 +2628,7 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebr
 .home-helm-portal__stage-image {
   object-fit: cover;
   object-position: center center;
+  opacity: 0.3;
 }
 
 .home-helm-portal__media {
