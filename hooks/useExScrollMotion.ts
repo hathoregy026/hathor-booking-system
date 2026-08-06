@@ -1432,21 +1432,14 @@ export function useExScrollMotion() {
       }
 
       /*
-       * Exit handoff: last plate dissolves upward with the same fog language,
-       * silk stays hidden underneath, voyage columns stagger in — no empty gap.
+       * Exit handoff: last plate dissolves upward with the same fog language.
+       * Our Voyages columns have their own scrubbed stagger (LuxuryAccordion).
        */
       const exitAt = introSpan + total * (move + dwell);
       const lastCard = cards[total - 1];
       const lastPanel = copyPanels[total - 1];
       const lastMedia = getCardMedia(lastCard);
       const silkRoot = section.querySelector<HTMLElement>(".ex-stack-scroll__silk");
-      const nextSection = section.nextElementSibling as HTMLElement | null;
-      const voyageHeading = nextSection?.querySelector<HTMLElement>("header");
-      const voyageRows = nextSection
-        ? gsap.utils.toArray<HTMLElement>(
-            nextSection.querySelectorAll("[data-voyage-row]"),
-          )
-        : [];
       const exitChrome = [lastPanel, pager, progressRoot].filter(
         (el): el is HTMLElement => Boolean(el),
       );
@@ -1457,8 +1450,6 @@ export function useExScrollMotion() {
       if (silkChars.length) {
         gsap.set(silkChars, { opacity: 1, yPercent: 0 });
       }
-      if (voyageHeading) gsap.set(voyageHeading, { autoAlpha: 0, y: 36 });
-      voyageRows.forEach((row) => gsap.set(row, { autoAlpha: 0, y: 48 }));
 
       /* Kill silk so fog-out never flashes big invitation text behind the plate */
       tl.call(
@@ -1543,37 +1534,6 @@ export function useExScrollMotion() {
           exitAt,
         );
       }
-
-      /* Our Voyages — heading then each column, one by one */
-      if (voyageHeading) {
-        tl.fromTo(
-          voyageHeading,
-          { autoAlpha: 0, y: 40 },
-          {
-            autoAlpha: 1,
-            y: 0,
-            ease: "none",
-            duration: release * 0.32,
-          },
-          exitAt + release * 0.12,
-        );
-      }
-      voyageRows.forEach((row, index) => {
-        const rowAt =
-          exitAt +
-          release * (0.28 + (index / Math.max(1, voyageRows.length)) * 0.62);
-        tl.fromTo(
-          row,
-          { autoAlpha: 0, y: 52 },
-          {
-            autoAlpha: 1,
-            y: 0,
-            ease: "none",
-            duration: release * 0.3,
-          },
-          rowAt,
-        );
-      });
 
       if (process.env.NODE_ENV !== "production") {
         const stageRanges = Array.from({ length: total }, (_, index) => {

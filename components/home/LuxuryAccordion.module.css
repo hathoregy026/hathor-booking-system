@@ -25,6 +25,12 @@
   text-align: center;
 }
 
+/* Hidden until GSAP owns the stagger (avoids all-at-once paint) */
+.section.is-voyages-motion :global([data-voyage-heading]),
+.section.is-voyages-motion :global([data-voyage-row]) {
+  will-change: transform, opacity;
+}
+
 .title {
   /* Font/size/colour from dashboard Typography → Our Voyages · Big title */
   margin: 0;

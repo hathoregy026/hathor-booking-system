@@ -1,7 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useState, type KeyboardEvent, type MouseEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type MouseEvent,
+} from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   useTypographyInlineStyle,
   useTypographySettings,
@@ -9,6 +17,8 @@ import {
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import type { SiteImageName } from "@/lib/site-image-slots";
 import styles from "./LuxuryAccordion.module.css";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export type LuxuryAccordionItem = {
   id: string;
@@ -32,6 +42,7 @@ export default function LuxuryAccordion({
   items = [],
 }: LuxuryAccordionProps) {
   const list = items;
+  const rootRef = useRef<HTMLElement>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
   const { our_voyages_copy: voyagesCopy } = useTypographySettings();
   const titleStyle = useTypographyInlineStyle("our_voyages_title");
@@ -45,6 +56,72 @@ export default function LuxuryAccordion({
 
   const sectionTitle = (title ?? voyagesCopy.title).trim() || "Our Voyages";
   const indication = voyagesCopy.indication.trim();
+
+  /*
+   * Dedicated scrubbed reveal — each column gets its own scroll beat.
+   * (Stack-exit timeline packed them into one short release, so they popped together.)
+   */
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root || list.length === 0) return;
+
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const heading = root.querySelector<HTMLElement>("[data-voyage-heading]");
+    const rows = gsap.utils.toArray<HTMLElement>(
+      root.querySelectorAll("[data-voyage-row]"),
+    );
+    if (!rows.length) return;
+
+    if (reduced) {
+      gsap.set([heading, ...rows].filter(Boolean), { autoAlpha: 1, y: 0 });
+      root.classList.add("is-voyages-revealed");
+      return;
+    }
+
+    gsap.set([heading, ...rows].filter(Boolean), { autoAlpha: 0, y: 56 });
+    root.classList.add("is-voyages-motion");
+
+    const beat = 1;
+    const tl = gsap.timeline({
+      defaults: { ease: "none" },
+      scrollTrigger: {
+        id: "hathor-voyages-stagger",
+        trigger: root,
+        start: "top 82%",
+        end: () => `+=${Math.max(520, (rows.length + 1) * 160)}`,
+        scrub: 0.65,
+        invalidateOnRefresh: true,
+      },
+    });
+
+    if (heading) {
+      tl.fromTo(
+        heading,
+        { autoAlpha: 0, y: 40 },
+        { autoAlpha: 1, y: 0, duration: beat },
+        0,
+      );
+    }
+
+    rows.forEach((row, index) => {
+      tl.fromTo(
+        row,
+        { autoAlpha: 0, y: 64 },
+        { autoAlpha: 1, y: 0, duration: beat },
+        /* Clear sequential slots so scrub reveals one row at a time */
+        (heading ? beat * 0.85 : 0) + index * (beat * 1.05),
+      );
+    });
+
+    const refresh = window.setTimeout(() => ScrollTrigger.refresh(), 120);
+
+    return () => {
+      window.clearTimeout(refresh);
+      tl.scrollTrigger?.kill();
+      tl.kill();
+      root.classList.remove("is-voyages-motion");
+    };
+  }, [list.length]);
 
   if (list.length === 0) {
     return null;
@@ -72,12 +149,13 @@ export default function LuxuryAccordion({
 
   return (
     <section
+      ref={rootRef}
       className={`${styles.section} ex-content-section`}
       data-hathor-accordion
       aria-label={sectionTitle}
     >
       <div className={styles.container}>
-        <header className={styles.heading}>
+        <header className={styles.heading} data-voyage-heading>
           <h2
             className={`${styles.title} typo-our-voyages-title`}
             style={titleStyle}
