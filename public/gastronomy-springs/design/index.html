@@ -66,58 +66,68 @@
                             
 <style data-hathor-dining-palette>
   :root {
-    --c-beige-background: #0e0c0a;
-    --c-beige-background-rgb: 14, 12, 10;
-    --c-beige: #191713;
-    --c-beige-rgb: 25, 23, 19;
-    --c-dark-green: #0e0c0a;
-    --c-dark-green-rgb: 14, 12, 10;
+    --c-beige-background: #f5e8d1;
+    --c-beige-background-rgb: 245, 232, 209;
+    --c-beige: #f5e8d1;
+    --c-beige-rgb: 245, 232, 209;
+    --c-dark-green: #b69f64;
+    --c-dark-green-rgb: 182, 159, 100;
     --c-green: #b69f64;
     --c-green-rgb: 182, 159, 100;
-    --c-light-green: #d5c69f;
-    --c-light-green-rgb: 213, 198, 159;
-    --c-olive: #1a1815;
-    --c-olive-rgb: 26, 24, 21;
-    --c-dark-blue: #0e0c0a;
-    --c-dark-blue-rgb: 14, 12, 10;
-    --c-blue: #191713;
-    --c-blue-rgb: 25, 23, 19;
-    --c-light-blue: #d5c69f;
-    --c-light-blue-rgb: 213, 198, 159;
-    --c-sky: #191713;
-    --c-sky-rgb: 25, 23, 19;
+    --c-light-green: #b69f64;
+    --c-light-green-rgb: 182, 159, 100;
+    --c-olive: #b69f64;
+    --c-olive-rgb: 182, 159, 100;
+    --c-dark-blue: #b69f64;
+    --c-dark-blue-rgb: 182, 159, 100;
+    --c-blue: #b69f64;
+    --c-blue-rgb: 182, 159, 100;
+    --c-light-blue: #f5e8d1;
+    --c-light-blue-rgb: 245, 232, 209;
+    --c-sky: #f5e8d1;
+    --c-sky-rgb: 245, 232, 209;
+    --cookie-height: 0px;
   }
-  body { background: #0e0c0a !important; color: #f4eee3; }
+  body { background: #f5e8d1 !important; color: #162d24; }
   .ui-dark, .ui-dark-background, .ui-dark.ui-background {
-    --t-background: #0e0c0a;
-    --t-background-rgb: 14, 12, 10;
-    --t-text: #f4eee3;
-    --t-text-rgb: 244, 238, 227;
-    --t-heading: #d5c69f;
-    --t-heading-rgb: 213, 198, 159;
+    --t-background: #b69f64;
+    --t-background-rgb: 182, 159, 100;
+    --t-text: #162d24;
+    --t-text-rgb: 22, 45, 36;
+    --t-heading: #162d24;
+    --t-heading-rgb: 22, 45, 36;
     --t-primary: #b69f64;
-    background-color: #0e0c0a !important;
-    color: #f4eee3 !important;
+    background-color: #b69f64 !important;
+    color: #162d24 !important;
   }
   .ui-light, .ui-light-background, .ui-light.ui-background {
-    --t-background: #191713;
-    --t-background-rgb: 25, 23, 19;
-    --t-text: #f4eee3;
-    --t-text-rgb: 244, 238, 227;
-    --t-heading: #d5c69f;
-    --t-heading-rgb: 213, 198, 159;
+    --t-background: #f5e8d1;
+    --t-background-rgb: 245, 232, 209;
+    --t-text: #162d24;
+    --t-text-rgb: 22, 45, 36;
+    --t-heading: #162d24;
+    --t-heading-rgb: 22, 45, 36;
     --t-primary: #b69f64;
-    background-color: #191713 !important;
-    color: #f4eee3 !important;
+    background-color: #f5e8d1 !important;
+    color: #162d24 !important;
   }
-  .g1, .h0, .h1, .h2, .h3, .text-c1, .text-c2 { color: #d5c69f; }
+  .g1, .h0, .h1, .h2, .h3, .text-c1, .text-c2 { color: #162d24; }
   #de-intro .de-intro__caption-title.is-hidden--lg-up img { opacity: 0; }
   #de-intro .de-intro__caption-title.is-hidden--lg-up::after {
-    color: #d5c69f;
+    color: #162d24;
     content: "Private Dining";
     font-family: "Victor Serif", Georgia, serif;
     font-size: clamp(3rem, 13vw, 6rem);
     line-height: 0.9;
+  }
+  .header, .cookie-consent, .de-balcons__pin, .de-balcons__pin-tooltip {
+    display: none !important;
+  }
+  .de-intro__gradient div,
+  .de-spiral__gradient div,
+  .de-gallery__gradient div,
+  .de-slider__mobile-scrollable-gradient div {
+    background: radial-gradient(circle, rgba(182, 159, 100, 0.86) 0%, rgba(182, 159, 100, 0.38) 45%, rgba(182, 159, 100, 0) 74%) !important;
   }
 </style></head>
 <body data-barba="wrapper">

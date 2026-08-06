@@ -1,3 +1,5 @@
+import { PublicNavbar } from "@/components/layout/PublicNavbar";
+
 /**
  * Exact isolated Springs Design document.
  *
@@ -7,20 +9,25 @@
  */
 export function GastronomySpringsDesignPage() {
   return (
-    <iframe
-      className="gastronomy-springs-frame"
-      src="/gastronomy-springs/design/index.html"
-      title="Springs Design"
-      scrolling="auto"
-      style={{
-        border: 0,
-        display: "block",
-        height: "100dvh",
-        inset: 0,
-        position: "fixed",
-        width: "100vw",
-        zIndex: 2147483000,
-      }}
-    />
+    <>
+      <div className="public-site gastronomy-public-nav">
+        <PublicNavbar />
+      </div>
+      <iframe
+        className="gastronomy-springs-frame"
+        src="/gastronomy-springs/design/index.html"
+        title="Private Dining"
+        scrolling="auto"
+        style={{
+          border: 0,
+          display: "block",
+          height: "100dvh",
+          inset: 0,
+          position: "fixed",
+          width: "100vw",
+          zIndex: 1000,
+        }}
+      />
+    </>
   );
 }
