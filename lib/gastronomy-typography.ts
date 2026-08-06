@@ -51,12 +51,21 @@ function roleCss(selector: string, style: TypographyTextStyle) {
     /var\([^)]*\),?\s*/g,
     "",
   );
-  return `${selector}{font-family:${fontStack}!important;font-size:${style.fontSize}px!important;color:${style.color}!important;line-height:${style.lineHeight}!important;letter-spacing:${style.letterSpacing}px!important;}`;
+  return `${selector}{font-family:${fontStack}!important;}`;
+}
+
+function privateDiningTitleCss(style: TypographyTextStyle) {
+  const fontStack = HATHOR_FONT_STACKS[style.fontFamily].replace(
+    /var\([^)]*\),?\s*/g,
+    "",
+  );
+  return `#de-intro .de-intro__caption-title.is-hidden--lg-up::after{font-family:${fontStack}!important;font-size:${style.fontSize}px!important;color:${style.color}!important;line-height:${style.lineHeight}!important;letter-spacing:${style.letterSpacing}px!important;}`;
 }
 
 export function gastronomyTypographyToCss(settings: GastronomyTypography) {
   return [
-    roleCss(".g1,.h0,.h1,.h2,.h3,#de-intro .de-intro__caption-title.is-hidden--lg-up::after", settings.display),
+    privateDiningTitleCss(settings.display),
+    roleCss(".g1,.h0,.h1,.h2,.h3", settings.display),
     roleCss(".text-c1,.text-c2,.text-c2-small", settings.indication),
     roleCss("p,.btn__text", settings.body),
   ].join("");
