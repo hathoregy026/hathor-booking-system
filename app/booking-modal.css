@@ -1,42 +1,46 @@
-/* Hathor homepage booking modal — Historia-inspired */
+/* Hathor booking modal — black / gold noir */
 
 .hathor-booking-modal {
-  --booking-bg: #faf8f5;
-  --booking-bg-alt: #f5f0e8;
-  --booking-surface: #fdfbf7;
-  --booking-card: #ffffff;
-  --booking-gold: #c9a96e;
+  --booking-bg: #0d0d0d;
+  --booking-bg-alt: #141210;
+  --booking-surface: #12100e;
+  --booking-card: #161310;
+  --booking-gold: #c5a059;
+  --booking-gold-bright: #d4b06a;
   --booking-gold-dark: #8b6914;
-  --booking-gold-light: #f5ecd8;
-  --booking-navy: #1a1a1a;
-  --booking-text: #1a1a1a;
-  --booking-muted: #6b6560;
-  --booking-border: #e8e2d9;
-  --booking-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --booking-gold-metal: linear-gradient(
+    90deg,
+    #8a6a32 0%,
+    #d4b06a 35%,
+    #f0d9a0 50%,
+    #c5a059 65%,
+    #7a5a28 100%
+  );
+  --booking-navy: #0a0a0a;
+  --booking-text: #e8dcc0;
+  --booking-muted: #a8946a;
+  --booking-border: rgb(197 160 89 / 0.35);
+  --booking-shadow: 0 28px 90px rgb(0 0 0 / 0.65);
   --booking-sans: var(--font-booking-sans, "Inter"), system-ui, sans-serif;
-  --booking-serif: var(--font-booking-serif, "Playfair Display"), Georgia, serif;
+  --booking-serif: var(--font-hathor-display, "Playfair Display"), Georgia, serif;
 
-  --hathor-modal-gold: #c9a96e;
-  --hathor-modal-dark: #0a0a0a;
-  --hathor-modal-cream: #faf8f5;
-  --hathor-modal-surface: #ffffff;
-  --hathor-modal-muted: #6b6560;
-  --hathor-modal-border: #e8e2d9;
+  --hathor-modal-gold: #c5a059;
+  --hathor-modal-gold-bright: #d4b06a;
+  --hathor-modal-dark: #0d0d0d;
+  --hathor-modal-cream: #12100e;
+  --hathor-modal-surface: #161310;
+  --hathor-modal-muted: #a8946a;
+  --hathor-modal-border: rgb(197 160 89 / 0.38);
+  --hathor-modal-text: #e8dcc0;
 
   position: fixed;
   inset: 0;
-  /* Above public navbar (1200) so close/controls remain tappable */
   z-index: 1300;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1rem;
   animation: hathorModalFadeIn 0.35s ease;
-}
-
-.hathor-booking-modal,
-.hathor-booking-modal * {
-  border-radius: 0 !important;
 }
 
 @keyframes hathorModalFadeIn {
@@ -52,23 +56,25 @@
   position: absolute;
   inset: 0;
   border: none;
-  background: rgb(10 10 10 / 0.72);
-  backdrop-filter: blur(6px);
+  background: rgb(0 0 0 / 0.78);
+  backdrop-filter: blur(8px);
   cursor: pointer;
 }
 
 .hathor-booking-modal__dialog {
   position: relative;
   z-index: 1;
-  display: flex;
-  flex-direction: column;
-  width: min(100%, 52rem);
-  max-height: min(92vh, 52rem);
-  background: var(--hathor-modal-cream);
-  border: 1px solid rgb(201 169 110 / 0.35);
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.38fr) minmax(0, 0.62fr);
+  width: min(100%, 58rem);
+  max-height: min(92vh, 44rem);
+  background: var(--hathor-modal-dark);
+  border: 1px solid rgb(197 160 89 / 0.55);
+  border-radius: 18px;
   box-shadow:
-    0 24px 80px rgb(0 0 0 / 0.45),
-    0 0 0 1px rgb(255 255 255 / 0.06) inset;
+    var(--booking-shadow),
+    0 0 0 1px rgb(197 160 89 / 0.12) inset,
+    0 0 40px rgb(197 160 89 / 0.08);
   overflow: hidden;
   animation: hathorModalSlideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -84,39 +90,70 @@
   }
 }
 
+/* Left Egyptian art panel */
+.hathor-booking-modal__art {
+  position: relative;
+  min-height: 100%;
+  overflow: hidden;
+  background: #050505;
+  border-right: 1px solid rgb(197 160 89 / 0.45);
+}
+
+.hathor-booking-modal__art::after {
+  content: "";
+  position: absolute;
+  top: 8%;
+  bottom: 8%;
+  right: -1px;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    var(--hathor-modal-gold) 18%,
+    var(--hathor-modal-gold-bright) 50%,
+    var(--hathor-modal-gold) 82%,
+    transparent 100%
+  );
+  box-shadow: 0 0 10px rgb(197 160 89 / 0.35);
+  pointer-events: none;
+}
+
+.hathor-booking-modal__art-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.hathor-booking-modal__art-veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 18%, rgb(197 160 89 / 0.12), transparent 55%),
+    linear-gradient(90deg, transparent 70%, rgb(0 0 0 / 0.35) 100%);
+}
+
+.hathor-booking-modal__main {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background:
+    radial-gradient(ellipse at 70% 0%, rgb(197 160 89 / 0.08), transparent 45%),
+    linear-gradient(180deg, #12100e 0%, #0d0d0d 55%, #0a0908 100%);
+}
+
 .hathor-booking-modal__header {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 1.75rem 3.25rem 1.5rem;
+  padding: 1.75rem 2.5rem 0.75rem;
   text-align: center;
-  background: linear-gradient(180deg, #fff 0%, var(--hathor-modal-cream) 100%);
-  border-bottom: 1px solid var(--hathor-modal-border);
-}
-
-.hathor-booking-modal__header-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  width: 100%;
-  max-width: 28rem;
-  margin: 0 auto;
-}
-
-.hathor-booking-modal__hero {
-  margin: 0;
-  font-family: var(--booking-serif);
-  font-size: clamp(1rem, 2.8vw, 1.25rem);
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: var(--hathor-modal-gold);
 }
 
 .hathor-booking-modal__header-brand {
@@ -124,40 +161,68 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
+  gap: 0.55rem;
+  width: 100%;
+  max-width: 28rem;
+  margin: 0 auto;
 }
 
 .hathor-booking-modal__logo {
   display: block;
-  height: 2.75rem;
+  height: 3.25rem;
   width: auto;
-  max-width: 11rem;
+  max-width: 7.5rem;
   object-fit: contain;
-}
-
-.hathor-booking-modal__subtitle {
-  margin: 0;
-  font-family: var(--booking-serif);
-  font-size: clamp(1.125rem, 2.5vw, 1.375rem);
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  color: var(--hathor-modal-dark);
+  filter: drop-shadow(0 0 12px rgb(197 160 89 / 0.35));
 }
 
 .hathor-booking-modal__eyebrow {
-  font-size: 0.625rem;
-  font-weight: 600;
-  letter-spacing: 0.22em;
+  margin: 0.15rem 0 0;
+  font-family: var(--booking-serif);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--hathor-modal-gold);
 }
 
-.hathor-booking-modal__title {
-  margin-top: 0.35rem;
-  font-size: clamp(1.35rem, 3vw, 1.75rem);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  color: var(--hathor-modal-dark);
+.hathor-booking-modal__title,
+.hathor-booking-modal__hero {
+  margin: 0;
+  font-family: var(--booking-serif);
+  font-size: clamp(1.15rem, 2.4vw, 1.55rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hathor-modal-gold-bright);
+  text-shadow: 0 0 24px rgb(197 160 89 / 0.2);
+}
+
+.hathor-booking-modal__lotus {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 0.15rem;
+  color: var(--hathor-modal-gold);
+}
+
+.hathor-booking-modal__lotus-line {
+  display: block;
+  width: 2.75rem;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--hathor-modal-gold),
+    transparent
+  );
+}
+
+.hathor-booking-modal__lotus-mark {
+  font-size: 0.7rem;
+  line-height: 1;
+  opacity: 0.9;
 }
 
 .hathor-booking-modal__close {
@@ -165,82 +230,32 @@
   top: 1rem;
   right: 1rem;
   z-index: 2;
-  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  border: 1px solid var(--hathor-modal-border);
+  width: 2.15rem;
+  height: 2.15rem;
+  border: 1px solid rgb(197 160 89 / 0.55);
+  border-radius: 4px;
   background: transparent;
-  color: var(--hathor-modal-dark);
+  color: var(--hathor-modal-gold);
   cursor: pointer;
   transition:
     border-color 0.25s ease,
-    background 0.25s ease;
+    background 0.25s ease,
+    color 0.25s ease;
 }
 
 .hathor-booking-modal__close:hover {
-  border-color: var(--hathor-modal-gold);
-  background: rgb(201 169 110 / 0.1);
-}
-
-.hathor-booking-modal__steps {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: var(--hathor-modal-dark);
-}
-
-.hathor-booking-modal__step {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 9999px;
-  color: rgb(255 255 255 / 0.45);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  transition: color 0.25s ease;
-}
-
-.hathor-booking-modal__step--active {
-  color: #fff;
-  background: rgb(201 169 110 / 0.18);
-}
-
-.hathor-booking-modal__step--done {
-  color: var(--hathor-modal-gold);
-}
-
-.hathor-booking-modal__step-num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.35rem;
-  height: 1.35rem;
-  border-radius: 9999px;
-  border: 1px solid currentColor;
-  font-size: 0.65rem;
-}
-
-.hathor-booking-modal__step-label {
-  display: none;
-}
-
-@media (min-width: 480px) {
-  .hathor-booking-modal__step-label {
-    display: inline;
-  }
+  border-color: var(--hathor-modal-gold-bright);
+  background: rgb(197 160 89 / 0.12);
+  color: #f0d9a0;
 }
 
 .hathor-booking-modal__body {
   flex: 1;
   overflow-y: auto;
-  padding: 1.25rem 1.5rem;
+  padding: 0.85rem 2rem 0.5rem;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -248,186 +263,228 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem 1.5rem 1.25rem;
-  border-top: 1px solid var(--hathor-modal-border);
-  background: #fff;
-}
-
-.hathor-booking-modal__footer-hint {
-  flex: 1;
-  text-align: right;
-  font-size: 0.8125rem;
-  color: var(--hathor-modal-muted);
+  padding: 0.85rem 2rem 1.5rem;
+  background: transparent;
 }
 
 .hathor-booking-modal__error {
   margin-top: 1rem;
   padding: 0.75rem 1rem;
   border-radius: 8px;
-  background: rgb(185 28 28 / 0.08);
-  border: 1px solid rgb(185 28 28 / 0.2);
-  color: #991b1b;
+  background: rgb(185 28 28 / 0.14);
+  border: 1px solid rgb(248 113 113 / 0.35);
+  color: #fecaca;
   font-size: 0.875rem;
 }
 
-/* Step 1 fields */
 .hathor-modal-step {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.1rem;
 }
 
 .hathor-modal-field {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.45rem;
 }
 
 .hathor-modal-label {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
+  font-family: var(--booking-serif);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--hathor-modal-muted);
+  color: var(--hathor-modal-gold);
+}
+
+.hathor-modal-control {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.hathor-modal-control__icon {
+  position: absolute;
+  left: 0.9rem;
+  z-index: 1;
+  width: 1rem;
+  height: 1rem;
+  color: var(--hathor-modal-gold);
+  pointer-events: none;
+  flex-shrink: 0;
 }
 
 .hathor-modal-select {
   width: 100%;
-  padding: 0.875rem 1rem;
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 0.9rem 2.5rem 0.9rem 2.55rem;
   border: 1px solid var(--hathor-modal-border);
-  border-radius: 12px;
-  background: #fff;
-  color: var(--hathor-modal-dark);
-  font-family: var(--booking-sans);
-  font-size: 0.9375rem;
-  transition: border-color 0.25s ease;
+  border-radius: 10px;
+  background-color: rgb(0 0 0 / 0.35);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23C5A059' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  color: var(--hathor-modal-text);
+  font-family: var(--booking-serif);
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.hathor-modal-select option {
+  background: #161310;
+  color: #e8dcc0;
 }
 
 .hathor-modal-select:focus {
   outline: none;
-  border-color: var(--hathor-modal-gold);
-  box-shadow: 0 0 0 3px rgb(201 169 110 / 0.15);
+  border-color: var(--hathor-modal-gold-bright);
+  box-shadow: 0 0 0 3px rgb(197 160 89 / 0.16);
 }
 
 .hathor-modal-dates-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  gap: 0.9rem;
 }
 
 .hathor-modal-readonly {
   display: flex;
   align-items: center;
-  justify-content: center;
-  min-height: 3rem;
-  padding: 0.875rem 1rem;
-  border: 1px dashed var(--hathor-modal-border);
-  background: rgb(255 255 255 / 0.6);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  text-align: center;
-  color: var(--hathor-modal-muted);
+  gap: 0.65rem;
+  min-height: 3.05rem;
+  margin: 0;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid var(--hathor-modal-border);
+  border-radius: 10px;
+  background: rgb(0 0 0 / 0.28);
+  font-family: var(--booking-serif);
+  font-size: 0.88rem;
+  letter-spacing: 0.01em;
+  color: rgb(232 220 192 / 0.72);
+}
+
+.hathor-modal-readonly .hathor-modal-control__icon {
+  position: static;
 }
 
 .hathor-modal-guests {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  gap: 0.9rem;
 }
 
 .hathor-modal-hint {
-  font-size: 0.8125rem;
-  color: var(--hathor-modal-muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: rgb(168 148 106 / 0.85);
 }
 
 .hathor-modal-counter {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  padding: 0.875rem 1rem;
-  border: 1px solid var(--hathor-modal-border);
-  border-radius: 12px;
-  background: #fff;
+  gap: 0.45rem;
 }
 
 .hathor-modal-counter__label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--hathor-modal-muted);
+  font-family: var(--booking-serif);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--hathor-modal-gold);
 }
 
 .hathor-modal-counter__controls {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  min-height: 3.05rem;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid var(--hathor-modal-border);
+  border-radius: 10px;
+  background: rgb(0 0 0 / 0.28);
 }
 
 .hathor-modal-counter__btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  border: 1px solid var(--hathor-modal-border);
-  border-radius: 9999px;
+  width: 2.1rem;
+  height: 2.1rem;
+  border: none;
+  border-radius: 6px;
   background: transparent;
-  color: var(--hathor-modal-dark);
+  color: var(--hathor-modal-gold);
   cursor: pointer;
   transition:
-    border-color 0.2s ease,
-    background 0.2s ease;
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
 .hathor-modal-counter__btn:hover:not(:disabled) {
-  border-color: var(--hathor-modal-gold);
-  background: rgb(201 169 110 / 0.1);
+  background: rgb(197 160 89 / 0.12);
+  color: #f0d9a0;
 }
 
 .hathor-modal-counter__btn:disabled {
-  opacity: 0.4;
+  opacity: 0.35;
   cursor: not-allowed;
 }
 
 .hathor-modal-counter__value {
-  font-size: 1.125rem;
+  font-family: var(--booking-serif);
+  font-size: 1.15rem;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
+  color: var(--hathor-modal-text);
 }
 
 .hathor-modal-btn {
-  padding: 0.875rem 1.5rem;
-  border-radius: 12px;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.95rem 1.5rem;
+  border-radius: 10px;
+  font-family: var(--booking-serif);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   cursor: pointer;
   transition:
-    background 0.25s ease,
     transform 0.2s ease,
-    box-shadow 0.25s ease;
+    box-shadow 0.25s ease,
+    filter 0.25s ease;
 }
 
 .hathor-modal-btn--primary {
-  border: none;
-  background: var(--hathor-modal-gold);
-  color: var(--hathor-modal-dark);
-  box-shadow: 0 4px 16px rgb(201 169 110 / 0.35);
+  border: 1px solid rgb(240 217 160 / 0.45);
+  background: var(--booking-gold-metal);
+  color: #1a140c;
+  box-shadow:
+    0 8px 28px rgb(197 160 89 / 0.28),
+    inset 0 1px 0 rgb(255 255 255 / 0.28);
 }
 
 .hathor-modal-btn--primary:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 6px 24px rgb(201 169 110 / 0.45);
+  filter: brightness(1.06);
+  box-shadow:
+    0 10px 34px rgb(197 160 89 / 0.4),
+    inset 0 1px 0 rgb(255 255 255 / 0.35);
 }
 
-.hathor-modal-btn--ghost {
-  border: 1px solid var(--hathor-modal-border);
-  background: transparent;
-  color: var(--hathor-modal-dark);
-}
-
-.hathor-modal-btn--ghost:hover:not(:disabled) {
-  border-color: var(--hathor-modal-gold);
+.hathor-modal-btn__flourish {
+  font-size: 0.75rem;
+  opacity: 0.75;
+  line-height: 1;
 }
 
 .hathor-modal-btn:disabled {
@@ -435,25 +492,15 @@
   cursor: not-allowed;
 }
 
-.hathor-modal-summary {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem 2rem;
-  margin-bottom: 1.25rem;
-  padding: 0.875rem 1rem;
-  border-radius: 12px;
-  background: #fff;
-  border: 1px solid var(--hathor-modal-border);
-  font-size: 0.875rem;
+/* Legacy calendar / guest helpers (dark-theme safe) */
+.hathor-booking-modal__steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: #050505;
 }
 
-.hathor-modal-summary strong {
-  color: var(--hathor-modal-muted);
-  font-weight: 600;
-  margin-right: 0.35rem;
-}
-
-/* Availability calendar table */
 .hathor-avail-calendar__header {
   display: flex;
   flex-direction: column;
@@ -461,218 +508,7 @@
   margin-bottom: 1rem;
 }
 
-@media (min-width: 640px) {
-  .hathor-avail-calendar__header {
-    flex-direction: row;
-    align-items: flex-end;
-    justify-content: space-between;
-  }
-}
-
-.hathor-avail-calendar__eyebrow {
-  font-size: 0.625rem;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--hathor-modal-gold);
-}
-
-.hathor-avail-calendar__title {
-  margin-top: 0.25rem;
-  font-family: var(--booking-serif);
-  font-size: 1.125rem;
-  font-weight: 500;
-  color: var(--hathor-modal-dark);
-}
-
-.hathor-avail-calendar__tabs {
-  display: inline-flex;
-  gap: 0.25rem;
-  padding: 0.25rem;
-  border-radius: 9999px;
-  background: var(--hathor-modal-dark);
-}
-
-.hathor-avail-calendar__tab {
-  border: none;
-  padding: 0.5rem 1.25rem;
-  border-radius: 9999px;
-  background: transparent;
-  color: rgb(255 255 255 / 0.5);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
-}
-
-.hathor-avail-calendar__tab--active {
-  background: var(--hathor-modal-gold);
-  color: var(--hathor-modal-dark);
-}
-
-.hathor-avail-calendar__table-wrap {
-  overflow-x: auto;
-  border: 1px solid var(--hathor-modal-border);
-  border-radius: 12px;
-  background: #fff;
-}
-
-.hathor-avail-calendar__table {
-  width: 100%;
-  min-width: 28rem;
-  border-collapse: collapse;
-  font-size: 0.8125rem;
-}
-
-.hathor-avail-calendar__table th {
-  padding: 0.75rem 1rem;
-  text-align: left;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  font-size: 0.6875rem;
-  color: var(--hathor-modal-muted);
-  background: var(--hathor-modal-cream);
-  border-bottom: 1px solid var(--hathor-modal-border);
-}
-
-.hathor-avail-calendar__table tbody th {
-  width: 7rem;
-  white-space: nowrap;
-  background: #fff;
-  border-right: 1px solid var(--hathor-modal-border);
-  border-bottom: 1px solid var(--hathor-modal-border);
-  font-size: 0.8125rem;
-  text-transform: none;
-  letter-spacing: 0;
-  color: var(--hathor-modal-dark);
-}
-
-.hathor-avail-calendar__table td {
-  padding: 0.625rem 0.75rem;
-  border-bottom: 1px solid var(--hathor-modal-border);
-  vertical-align: middle;
-}
-
-.hathor-avail-calendar__empty {
-  color: var(--hathor-modal-muted);
-}
-
-.hathor-avail-calendar__dates {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.375rem;
-}
-
-.hathor-avail-calendar__date {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-width: 2.75rem;
-  padding: 0.35rem 0.5rem;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  background: transparent;
-  cursor: pointer;
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.15s ease;
-}
-
-.hathor-avail-calendar__date--available {
-  border-color: rgb(201 169 110 / 0.35);
-  background: rgb(201 169 110 / 0.12);
-  color: var(--hathor-modal-dark);
-}
-
-.hathor-avail-calendar__date--available:hover:not(:disabled) {
-  background: rgb(201 169 110 / 0.28);
-  transform: translateY(-1px);
-}
-
-.hathor-avail-calendar__date--booked {
-  opacity: 0.38;
-  text-decoration: line-through;
-  cursor: not-allowed;
-  color: var(--hathor-modal-muted);
-}
-
-.hathor-avail-calendar__date--closed {
-  opacity: 0.25;
-  cursor: not-allowed;
-}
-
-.hathor-avail-calendar__date--selected {
-  border-color: var(--hathor-modal-gold);
-  background: var(--hathor-modal-gold);
-  color: #fff;
-  box-shadow: 0 2px 12px rgb(201 169 110 / 0.4);
-}
-
-.hathor-avail-calendar__date-num {
-  font-size: 0.875rem;
-  font-weight: 700;
-  line-height: 1.1;
-}
-
-.hathor-avail-calendar__date-price {
-  font-size: 0.5625rem;
-  font-weight: 600;
-  opacity: 0.85;
-  margin-top: 0.1rem;
-}
-
-.hathor-avail-calendar__status,
-.hathor-avail-calendar__error {
-  margin-top: 0.75rem;
-  font-size: 0.8125rem;
-}
-
-.hathor-avail-calendar__error {
-  color: #991b1b;
-}
-
-.hathor-avail-calendar__legend {
-  display: flex;
-  gap: 1rem;
-  margin-top: 0.875rem;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--hathor-modal-muted);
-}
-
-.hathor-avail-calendar__legend-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.hathor-avail-calendar__legend-item::before {
-  content: "";
-  width: 0.75rem;
-  height: 0.75rem;
-  border-radius: 3px;
-}
-
-.hathor-avail-calendar__legend-item--available::before {
-  background: rgb(201 169 110 / 0.35);
-}
-
-.hathor-avail-calendar__legend-item--booked::before {
-  background: rgb(107 101 96 / 0.25);
-}
-
-/* Guest selector inside modal */
-.hathor-guest-selector__intro {
-  margin-bottom: 1rem;
-}
-
+.hathor-avail-calendar__eyebrow,
 .hathor-guest-selector__eyebrow {
   font-size: 0.625rem;
   font-weight: 600;
@@ -681,68 +517,24 @@
   color: var(--hathor-modal-gold);
 }
 
+.hathor-avail-calendar__title,
 .hathor-guest-selector__title {
   margin-top: 0.25rem;
   font-family: var(--booking-serif);
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 500;
+  color: var(--hathor-modal-text);
 }
 
-.hathor-guest-selector__text {
+.hathor-guest-selector__text,
+.hathor-avail-calendar__status {
   margin-top: 0.35rem;
   font-size: 0.8125rem;
   color: var(--hathor-modal-muted);
 }
 
-.hathor-guest-selector .booking-guests-panel {
-  background: #fff;
-  border: 1px solid var(--hathor-modal-border);
-  border-radius: 12px;
-  padding: 1rem;
-}
-
-.hathor-guest-selector .booking-btn-primary {
-  background: var(--hathor-modal-gold);
-  color: var(--hathor-modal-dark);
-}
-
-.hathor-guest-selector .booking-btn-primary:hover:not(:disabled) {
-  background: #b8955a;
-}
-
-.hathor-guest-selector .booking-counter-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  border: 1px solid var(--hathor-modal-border);
-  border-radius: 9999px;
-  background: transparent;
-  cursor: pointer;
-}
-
-.hathor-guest-selector .booking-counter-btn:hover:not(:disabled) {
-  border-color: var(--hathor-modal-gold);
-}
-
-.hathor-guest-selector__loading {
-  margin-top: 0.75rem;
-  font-size: 0.8125rem;
-  color: var(--hathor-modal-muted);
-  text-align: center;
-}
-
-.hathor-guest-selector .booking-widget-select {
-  width: 100%;
-  padding: 0.625rem 0.75rem;
-  border: 1px solid var(--hathor-modal-border);
-  border-radius: 8px;
-  background: #fff;
-}
-
 /* --------------------------------------------------------------------------
- * Phone / tablet modal — safe bottom sheet (≤1024px)
+ * Tablet / phone — form-first sheet; art becomes a slim top banner
  * -------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
   .hathor-booking-modal {
@@ -752,13 +544,15 @@
   }
 
   .hathor-booking-modal__dialog {
+    grid-template-columns: 1fr;
+    grid-template-rows: 7.5rem minmax(0, 1fr);
     width: 100%;
     max-width: none;
     max-height: min(92dvh, calc(var(--vh, 1vh) * 92));
     border-left: none;
     border-right: none;
     border-bottom: none;
-    border-radius: 16px 16px 0 0 !important;
+    border-radius: 18px 18px 0 0;
     animation: hathorModalSheetUp 0.38s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
@@ -773,12 +567,26 @@
     }
   }
 
+  .hathor-booking-modal__art {
+    border-right: none;
+    border-bottom: 1px solid rgb(197 160 89 / 0.4);
+    min-height: 7.5rem;
+  }
+
+  .hathor-booking-modal__art::after {
+    display: none;
+  }
+
+  .hathor-booking-modal__art-img {
+    object-position: center 22%;
+  }
+
   .hathor-booking-modal__header {
     padding:
-      calc(1.25rem + env(safe-area-inset-top, 0px))
+      calc(1.1rem + env(safe-area-inset-top, 0px))
       3rem
-      1rem
-      1rem;
+      0.65rem
+      1.25rem;
   }
 
   .hathor-booking-modal__close {
@@ -792,29 +600,27 @@
 
   .hathor-booking-modal__body {
     padding:
-      1rem
-      calc(1rem + env(safe-area-inset-right, 0px))
-      1rem
-      calc(1rem + env(safe-area-inset-left, 0px));
+      0.85rem
+      calc(1.15rem + env(safe-area-inset-right, 0px))
+      0.5rem
+      calc(1.15rem + env(safe-area-inset-left, 0px));
   }
 
   .hathor-booking-modal__footer {
     padding:
-      0.875rem
-      calc(1rem + env(safe-area-inset-right, 0px))
-      calc(1rem + env(safe-area-inset-bottom, 0px))
-      calc(1rem + env(safe-area-inset-left, 0px));
+      0.75rem
+      calc(1.15rem + env(safe-area-inset-right, 0px))
+      calc(1.1rem + env(safe-area-inset-bottom, 0px))
+      calc(1.15rem + env(safe-area-inset-left, 0px));
   }
 
   .hathor-modal-select,
-  .hathor-modal-readonly,
-  .hathor-guest-selector .booking-widget-select {
+  .hathor-modal-readonly {
     font-size: 16px;
     min-height: 44px;
   }
 
-  .hathor-modal-counter__btn,
-  .hathor-guest-selector .booking-counter-btn {
+  .hathor-modal-counter__btn {
     width: 2.75rem;
     height: 2.75rem;
     min-width: 44px;
@@ -822,12 +628,26 @@
   }
 
   .hathor-modal-btn {
-    min-height: 44px;
-    width: 100%;
+    min-height: 48px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hathor-booking-modal__dialog {
+    grid-template-rows: 5.75rem minmax(0, 1fr);
   }
 
-  .hathor-modal-btn--primary {
-    width: 100%;
+  .hathor-booking-modal__art {
+    min-height: 5.75rem;
+  }
+
+  .hathor-booking-modal__logo {
+    height: 2.65rem;
+  }
+
+  .hathor-booking-modal__title {
+    font-size: 1.05rem;
+    letter-spacing: 0.06em;
   }
 }
 

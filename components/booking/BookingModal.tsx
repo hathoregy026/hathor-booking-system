@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { Minus, Plus, X } from "lucide-react";
+import { BedDouble, CalendarDays, MapPin, Minus, Plus, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { HathorBrandMark } from "@/components/booking/HathorBrandMark";
 import {
@@ -43,7 +43,7 @@ function CounterField({
           disabled={value <= min}
           aria-label={`Decrease ${label}`}
         >
-          <Minus className="h-3.5 w-3.5" aria-hidden />
+          <Minus className="h-3.5 w-3.5" aria-hidden strokeWidth={1.75} />
         </button>
         <span className="hathor-modal-counter__value">{value}</span>
         <button
@@ -53,7 +53,7 @@ function CounterField({
           disabled={value >= max}
           aria-label={`Increase ${label}`}
         >
-          <Plus className="h-3.5 w-3.5" aria-hidden />
+          <Plus className="h-3.5 w-3.5" aria-hidden strokeWidth={1.75} />
         </button>
       </div>
     </div>
@@ -185,7 +185,7 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
   const maxGuestsRoom1 = 4;
 
   return (
-    <div className="hathor-booking-modal" role="presentation">
+    <div className="hathor-booking-modal hathor-booking-modal--noir" role="presentation">
       <button
         type="button"
         className="hathor-booking-modal__backdrop"
@@ -201,126 +201,176 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
         tabIndex={-1}
         className="hathor-booking-modal__dialog"
       >
-        <header className="hathor-booking-modal__header">
+        <aside className="hathor-booking-modal__art" aria-hidden="true">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/branding/booking-modal-noir-panel.webp"
+            alt=""
+            className="hathor-booking-modal__art-img"
+            draggable={false}
+          />
+          <div className="hathor-booking-modal__art-veil" />
+        </aside>
+
+        <div className="hathor-booking-modal__main">
           <button
             type="button"
             className="hathor-booking-modal__close"
             onClick={handleClose}
             aria-label="Close"
           >
-            <X className="h-5 w-5" aria-hidden />
+            <X className="h-4 w-4" aria-hidden strokeWidth={1.5} />
           </button>
 
-          <div className="hathor-booking-modal__header-center">
-            <h2 id={titleId} className="hathor-booking-modal__hero">
-              Reserve Your Journey
-            </h2>
+          <header className="hathor-booking-modal__header">
             <div className="hathor-booking-modal__header-brand">
               <HathorBrandMark
-                variant="on-light"
+                variant="on-dark"
                 className="hathor-booking-modal__logo"
               />
-              <p className="hathor-booking-modal__subtitle">Book Hathor Dahabiya</p>
+              <p className="hathor-booking-modal__eyebrow">Reserve Your Journey</p>
+              <h2 id={titleId} className="hathor-booking-modal__title">
+                Book Hathor Dahabiya
+              </h2>
+              <div className="hathor-booking-modal__lotus" aria-hidden="true">
+                <span className="hathor-booking-modal__lotus-line" />
+                <span className="hathor-booking-modal__lotus-mark">✦</span>
+                <span className="hathor-booking-modal__lotus-line" />
+              </div>
             </div>
-          </div>
-        </header>
+          </header>
 
-        <div className="hathor-booking-modal__body">
-          <div className="hathor-modal-step">
-            <div className="hathor-modal-field">
-              <label htmlFor="hathor-embarkation" className="hathor-modal-label">
-                Embarkation
-              </label>
-              <select
-                id="hathor-embarkation"
-                className="hathor-modal-select"
-                value={duration}
-                onChange={(event) =>
-                  handleDurationChange(event.target.value as StayDurationValue)
-                }
-              >
-                {STAY_DURATION_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label.replace(/^⛵\s*/, "")}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="hathor-modal-dates-grid">
+          <div className="hathor-booking-modal__body">
+            <div className="hathor-modal-step">
               <div className="hathor-modal-field">
-                <span className="hathor-modal-label">Check-in</span>
-                <p className="hathor-modal-readonly">Choose on next step</p>
+                <label htmlFor="hathor-embarkation" className="hathor-modal-label">
+                  Embarkation
+                </label>
+                <div className="hathor-modal-control">
+                  <MapPin
+                    className="hathor-modal-control__icon"
+                    aria-hidden
+                    strokeWidth={1.5}
+                  />
+                  <select
+                    id="hathor-embarkation"
+                    className="hathor-modal-select"
+                    value={duration}
+                    onChange={(event) =>
+                      handleDurationChange(event.target.value as StayDurationValue)
+                    }
+                  >
+                    {STAY_DURATION_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label.replace(/^⛵\s*/, "")}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
+
+              <div className="hathor-modal-dates-grid">
+                <div className="hathor-modal-field">
+                  <span className="hathor-modal-label">Check-in</span>
+                  <p className="hathor-modal-readonly">
+                    <CalendarDays
+                      className="hathor-modal-control__icon"
+                      aria-hidden
+                      strokeWidth={1.5}
+                    />
+                    <span>Choose your check-in date</span>
+                  </p>
+                </div>
+                <div className="hathor-modal-field">
+                  <span className="hathor-modal-label">Check-out</span>
+                  <p className="hathor-modal-readonly">
+                    <CalendarDays
+                      className="hathor-modal-control__icon"
+                      aria-hidden
+                      strokeWidth={1.5}
+                    />
+                    <span>Choose your check-out date</span>
+                  </p>
+                </div>
+              </div>
+
               <div className="hathor-modal-field">
-                <span className="hathor-modal-label">Check-out</span>
-                <p className="hathor-modal-readonly">Choose on next step</p>
+                <label htmlFor="hathor-rooms" className="hathor-modal-label">
+                  Rooms
+                </label>
+                <div className="hathor-modal-control">
+                  <BedDouble
+                    className="hathor-modal-control__icon"
+                    aria-hidden
+                    strokeWidth={1.5}
+                  />
+                  <select
+                    id="hathor-rooms"
+                    className="hathor-modal-select"
+                    value={roomCount}
+                    onChange={(event) =>
+                      handleRoomCountChange(Number(event.target.value))
+                    }
+                  >
+                    {[1, 2, 3, 4].map((count) => (
+                      <option key={count} value={count}>
+                        {count} {count === 1 ? "Room" : "Rooms"}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
+
+              {primaryRoom ? (
+                <div className="hathor-modal-guests">
+                  <CounterField
+                    label="Adults"
+                    value={primaryRoom.adults}
+                    min={1}
+                    max={Math.max(1, maxGuestsRoom1 - primaryRoom.children)}
+                    onChange={(adults) => updatePrimaryRoomGuests({ adults })}
+                  />
+                  <CounterField
+                    label="Children"
+                    value={primaryRoom.children}
+                    min={0}
+                    max={Math.max(0, maxGuestsRoom1 - primaryRoom.adults)}
+                    onChange={(children) => updatePrimaryRoomGuests({ children })}
+                  />
+                </div>
+              ) : null}
+
+              {roomCount > 1 ? (
+                <p className="hathor-modal-hint">
+                  Additional rooms use default guest settings until configured on the
+                  checkout page.
+                </p>
+              ) : null}
             </div>
 
-            <div className="hathor-modal-field">
-              <label htmlFor="hathor-rooms" className="hathor-modal-label">
-                Rooms
-              </label>
-              <select
-                id="hathor-rooms"
-                className="hathor-modal-select"
-                value={roomCount}
-                onChange={(event) =>
-                  handleRoomCountChange(Number(event.target.value))
-                }
-              >
-                {[1, 2, 3, 4].map((count) => (
-                  <option key={count} value={count}>
-                    {count} {count === 1 ? "Room" : "Rooms"}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {primaryRoom ? (
-              <div className="hathor-modal-guests">
-                <CounterField
-                  label="Adults"
-                  value={primaryRoom.adults}
-                  min={1}
-                  max={Math.max(1, maxGuestsRoom1 - primaryRoom.children)}
-                  onChange={(adults) => updatePrimaryRoomGuests({ adults })}
-                />
-                <CounterField
-                  label="Children"
-                  value={primaryRoom.children}
-                  min={0}
-                  max={Math.max(0, maxGuestsRoom1 - primaryRoom.adults)}
-                  onChange={(children) => updatePrimaryRoomGuests({ children })}
-                />
-              </div>
-            ) : null}
-
-            {roomCount > 1 ? (
-              <p className="hathor-modal-hint">
-                Additional rooms use default guest settings until configured on the
-                checkout page.
+            {error ? (
+              <p className="hathor-booking-modal__error" role="alert">
+                {error}
               </p>
             ) : null}
           </div>
 
-          {error ? (
-            <p className="hathor-booking-modal__error" role="alert">
-              {error}
-            </p>
-          ) : null}
+          <footer className="hathor-booking-modal__footer">
+            <button
+              type="button"
+              className="hathor-modal-btn hathor-modal-btn--primary"
+              onClick={handleAvailabilityCheck}
+            >
+              <span className="hathor-modal-btn__flourish" aria-hidden="true">
+                ❦
+              </span>
+              <span>Check Availability</span>
+              <span className="hathor-modal-btn__flourish" aria-hidden="true">
+                ❦
+              </span>
+            </button>
+          </footer>
         </div>
-
-        <footer className="hathor-booking-modal__footer">
-          <button
-            type="button"
-            className="hathor-modal-btn hathor-modal-btn--primary"
-            onClick={handleAvailabilityCheck}
-          >
-            Availability Check
-          </button>
-        </footer>
       </div>
     </div>
   );
