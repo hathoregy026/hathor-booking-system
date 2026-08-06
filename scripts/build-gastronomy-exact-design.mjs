@@ -241,6 +241,14 @@ const diningPalette = `
     opacity: 1 !important;
     visibility: visible !important;
   }
+  #de-projects .de-projects__text,
+  #de-projects .content-animation,
+  #de-projects [data-reveal="text"],
+  #de-projects [data-reveal="text"] * {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
   .header, .cookie-consent, .de-balcons__pin, .de-balcons__pin-tooltip {
     display: none !important;
   }
