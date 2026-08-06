@@ -51,10 +51,7 @@ function roleCss(selector: string, style: TypographyTextStyle) {
     /var\([^)]*\),?\s*/g,
     "",
   );
-  const shadow = style.innerShadow
-    ? "1px 1px 0 rgba(0,0,0,.35),-.5px -.5px 0 rgba(255,255,255,.25)"
-    : "none";
-  return `${selector}{font-family:${fontStack}!important;font-size:${style.fontSize}px!important;color:${style.color}!important;line-height:${style.lineHeight}!important;letter-spacing:${style.letterSpacing}px!important;text-shadow:${shadow}!important;}`;
+  return `${selector}{font-family:${fontStack}!important;}`;
 }
 
 function privateDiningTitleCss(style: TypographyTextStyle) {
@@ -65,20 +62,11 @@ function privateDiningTitleCss(style: TypographyTextStyle) {
   return `#de-intro .de-intro__caption-title.is-hidden--lg-up::after{font-family:${fontStack}!important;font-size:${style.fontSize}px!important;color:${style.color}!important;line-height:${style.lineHeight}!important;letter-spacing:${style.letterSpacing}px!important;}`;
 }
 
-const privateMenuPanelCss = `
-#de-flats-80691 .de-flats__text,
-#de-flats-80691 .de-flats__text *,
-#de-flats-251302 .de-flats__text,
-#de-flats-251302 .de-flats__text *,
-#de-flats-644069 .de-flats__text,
-#de-flats-644069 .de-flats__text *{color:#f5e8d1!important;}`;
-
 export function gastronomyTypographyToCss(settings: GastronomyTypography) {
   return [
     privateDiningTitleCss(settings.display),
     roleCss(".g1,.h0,.h1,.h2,.h3", settings.display),
     roleCss(".text-c1,.text-c2,.text-c2-small", settings.indication),
     roleCss("p,.btn__text", settings.body),
-    privateMenuPanelCss,
   ].join("");
 }
