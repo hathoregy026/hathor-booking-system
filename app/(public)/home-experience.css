@@ -2613,33 +2613,8 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebr
   overflow: hidden;
   /* Match next section cream so fog exit has no shade seam */
   background: var(--cream, #ece8df);
-}
-
-/* Full-screen parchment under the wheel — compass hub locked to 50% 50% (same as wheel). */
-.home-helm-portal__stage {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  overflow: hidden;
-  pointer-events: none;
-  user-select: none;
-}
-
-.home-helm-portal__stage-image {
-  object-fit: cover;
-  object-position: center center;
-  opacity: 0.3;
-}
-
-.home-helm-portal__media {
+  /* Fog covers parchment + media + wheel — whole stage dissolves at end */
   --helm-fog-edge: -40%;
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  overflow: hidden;
-  clip-path: circle(0vmax at 50% 50%);
-  -webkit-clip-path: circle(0vmax at 50% 50%);
-  /* Soft fog dissolve upward after wheel opens — same language as HCTA / stack */
   -webkit-mask-image: linear-gradient(
     to top,
     transparent 0%,
@@ -2662,6 +2637,31 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebr
   mask-repeat: no-repeat;
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
+}
+
+/* Full-screen parchment under the wheel — compass hub locked to 50% 50% (same as wheel). */
+.home-helm-portal__stage {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+.home-helm-portal__stage-image {
+  object-fit: cover;
+  object-position: center center;
+  opacity: 0.5;
+}
+
+.home-helm-portal__media {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  clip-path: circle(0vmax at 50% 50%);
+  -webkit-clip-path: circle(0vmax at 50% 50%);
   will-change: clip-path;
 }
 
@@ -2773,6 +2773,9 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebr
   .home-helm-portal__media {
     clip-path: circle(75vmax at 50% 50%);
     -webkit-clip-path: circle(75vmax at 50% 50%);
+  }
+
+  .home-helm-portal__viewport {
     --helm-fog-edge: -40%;
     -webkit-mask-image: none;
     mask-image: none;

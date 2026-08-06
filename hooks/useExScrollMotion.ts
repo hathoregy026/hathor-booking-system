@@ -376,11 +376,12 @@ export function useExScrollMotion() {
     if (prefersReduced) return;
 
     const section = document.querySelector<HTMLElement>("[data-home-helm-portal]");
+    const viewport = section?.querySelector<HTMLElement>(".home-helm-portal__viewport");
     const media = section?.querySelector<HTMLElement>("[data-home-helm-media]");
     const mediaImage = media?.querySelector<HTMLElement>("img");
     const shade = media?.querySelector<HTMLElement>(".home-helm-portal__shade");
     const wheel = section?.querySelector<HTMLElement>("[data-home-helm-wheel]");
-    if (!section || !media || !mediaImage || !wheel) {
+    if (!section || !viewport || !media || !mediaImage || !wheel) {
       return;
     }
 
@@ -393,12 +394,13 @@ export function useExScrollMotion() {
      * Scroll split (preserves wheel choreography, adds fog exit after):
      * 0.00–0.62  wheel opens to fullscreen
      * 0.62–0.70  brief hold on fullscreen image
-     * 0.70–1.00  fog dissolves image upward from the bottom → next section
+     * 0.70–1.00  fog dissolves entire viewport (parchment + media + wheel)
      */
     const WHEEL_END = 0.62;
     const FOG_START = 0.7;
     const FOG_EDGE_START = -40;
-    const FOG_EDGE_END = 138;
+    /* Past 100% + band so parchment and media are fully cleared at end */
+    const FOG_EDGE_END = 148;
 
     gsap.set(wheel, {
       xPercent: 0,
@@ -413,8 +415,8 @@ export function useExScrollMotion() {
     gsap.set(media, {
       clipPath: "circle(0vmax at 50% 50%)",
       WebkitClipPath: "circle(0vmax at 50% 50%)",
-      "--helm-fog-edge": `${FOG_EDGE_START}%`,
     });
+    viewport.style.setProperty("--helm-fog-edge", `${FOG_EDGE_START}%`);
     /* No x/y shift — image sun center must stay under the wheel hub (50% 50%). */
     gsap.set(mediaImage, { scale: 1.34, xPercent: 0, yPercent: 0, x: 0, y: 0, force3D: true });
     if (shade) gsap.set(shade, { opacity: 1 });
@@ -517,7 +519,7 @@ export function useExScrollMotion() {
       if (stepPortal && fogStepped === lastFogKey) return;
       lastFogKey = fogStepped;
       const edge = FOG_EDGE_START + (FOG_EDGE_END - FOG_EDGE_START) * fogStepped;
-      media.style.setProperty("--helm-fog-edge", `${edge}%`);
+      viewport.style.setProperty("--helm-fog-edge", `${edge}%`);
     };
 
     const render = () => {
@@ -568,7 +570,7 @@ export function useExScrollMotion() {
       window.removeEventListener(viewportEvent, requestRender);
       gsap.killTweensOf(portalTimeline);
       portalTimeline.kill();
-      media.style.removeProperty("--helm-fog-edge");
+      viewport.style.removeProperty("--helm-fog-edge");
     };
   }
 
