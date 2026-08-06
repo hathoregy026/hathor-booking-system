@@ -179,6 +179,69 @@ html = html
   .replaceAll("Astana <br>Arena Stadium, Kazakhstan", "Main course<br>At your pace")
   .replaceAll("Istanbul<br>Sapphire Skyscraper, Turkey", "Dessert<br>By candlelight");
 
+/*
+ * The captured page uses a real-estate story for its final three scroll scenes.
+ * Preserve every source container and animation, replacing only that copy with
+ * Hathor private-dining language.
+ */
+html = html
+  .replace(
+    /Our view flats transform[\s\S]*?the&nbsp;megapolises\./g,
+    "Egyptian roots, global reach: Nile fish, Cairo spice markets, and Mediterranean technique become one private progression&mdash;served only to your party and paced to the river outside.",
+  )
+  .replace(
+    /Our boutique townhouses embody[\s\S]*?your face\./g,
+    "Global kitchens, intimate scale: mezze, grills, and late-night lounge plates move between Egyptian classics and Levantine, North African, and European accents&mdash;always at your table, never in a crowd.",
+  )
+  .replace(
+    /When you live in this penthouse,[\s\S]*?with ease\./g,
+    "Private dining as ceremony: a dedicated chef, sommelier, and service team compose an Egyptian-led tasting with global accents&mdash;for milestones, celebrations, or simply an evening the Nile will remember.",
+  )
+  .replaceAll("Garden of Fulfilled Expectations", "Garden of the Nile Evening")
+  .replaceAll("Glowing Perspectives", "Candlelight on the Water")
+  .replaceAll("Beauty at Your Fingertips", "Every detail, quietly handled")
+  .replaceAll("138 view flats", "12 tasting formats")
+  .replaceAll("62-347 m<sup>2</sup> area", "2&ndash;14 guests &middot; one table")
+  .replaceAll("Unique transformable glazing", "Chef&rsquo;s table or salon service")
+  .replaceAll("5 townhouses", "5 lounge stations")
+  .replaceAll("174-378 m<sup>2</sup> area", "Sunset aperitif &rarr; midnight digestif")
+  .replaceAll("Ceiling heights up to 4 meters", "Open-air upper deck or salon bar")
+  .replaceAll("Private patio", "Nile-facing terrace service")
+  .replaceAll("7 penthouses", "7 signature celebrations")
+  .replaceAll("Luxurious terraces", "River terrace or enclosed salon")
+  .replaceAll("Designer finishings", "Bespoke service &amp; tableware")
+  .replaceAll(
+    "The balconies of the asymmetrical facade follow a chessboard pattern. The non-linear order creates a striking, recognizable effect.",
+    "Amuse-bouche one: a jewel of molokhia emulsion and crisp Nile vegetables, designed to open the palate before the first pour.",
+  )
+  .replaceAll(
+    "The architects divided the uniform transparent facade into three vertical sections, with the terraces situated in the recesses. This is how we graft rhythmic beauty with functional elegance.",
+    "Three movements&mdash;Egypt, Mediterranean, world: each course arrives in its own rhythm while the kitchen reads the room and the river light.",
+  )
+  .replaceAll("At&nbsp;Springs, you can dream, plan boldly, and enjoy life&nbsp;&mdash; here and now.", "A private table, a quiet river, and time entirely your own.")
+  .replaceAll(
+    "Our view flats transform the&nbsp;city into&nbsp;an&nbsp;element of&nbsp;your interior design; not a&nbsp;mere landscape but a&nbsp;panorama of&nbsp;seven historical parks, a&nbsp;river shifting shades, and the&nbsp;capital's iconic landmarks in&nbsp;full view. It’s the&nbsp;coziness of&nbsp;a&nbsp;country house with&nbsp;the&nbsp;expanse of&nbsp;the&nbsp;megapolises.",
+    "Egyptian roots, global reach: Nile fish, Cairo spice markets, and Mediterranean technique become one private progression&mdash;served only to your party and paced to the river outside.",
+  )
+  .replaceAll(
+    "Our boutique townhouses embody intimate coziness. The&nbsp;day’s worries fade away like&nbsp;shadows of&nbsp;butterfly wings, when you step onto&nbsp;the&nbsp;sunlit ground-floor patio. Here, you can stroll in&nbsp;light shoes, feel the&nbsp;gentle breeze, and close your eyes as&nbsp;the&nbsp;sun warmly kisses your face.",
+    "Global kitchens, intimate scale: mezze, grills, and late-night lounge plates move between Egyptian classics and Levantine, North African, and European accents&mdash;always at your table, never in a crowd.",
+  )
+  .replaceAll(
+    "When you live in&nbsp;this penthouse, you feel like&nbsp;you own a&nbsp;piece of&nbsp;the&nbsp;sky. Here, sublime feelings transform into&nbsp;higher possibilities. Declare love, dare to&nbsp;skyrocket your career, or devise a&nbsp;million-dollar idea. Here, you can do it with&nbsp;ease.",
+    "Private dining as ceremony: a dedicated chef, sommelier, and service team compose an Egyptian-led tasting with global accents&mdash;for milestones, celebrations, or simply an evening the Nile will remember.",
+  )
+  .replaceAll("Garden of Fulfilled Expectations", "Garden of the Nile Evening")
+  .replaceAll("Glowing Perspectives", "Candlelight on the Water")
+  .replaceAll("138 view flats", "12 tasting formats")
+  .replaceAll("5 townhouses", "5 lounge stations")
+  .replaceAll("7 penthouses", "7 signature celebrations")
+  .replaceAll("Designer finishings", "Bespoke service &amp; tableware")
+  .replaceAll(
+    "Visual representations of&nbsp;the&nbsp;property, layout plans, and other materials are for&nbsp;illustration purposes only. All information on&nbsp;this website is provided for&nbsp;general informational use and does not constitute an&nbsp;offer or any form of&nbsp;binding commitment.<br>\nAll materials on&nbsp;this website, including design elements, are the&nbsp;intellectual property of&nbsp;the&nbsp;Organization. Any copying, reproduction, distribution (including reposting to&nbsp;other websites or online resources), or other use of&nbsp;these materials is prohibited without&nbsp;the&nbsp;prior written consent of&nbsp;the&nbsp;rights holder.",
+    "Menus, pairings, and imagery are curated for illustration. Availability, pricing, and dietary arrangements are confirmed directly with Hathor&rsquo;s private dining desk. All Hathor content and design remain protected.",
+  );
+
 // Limit the wordmark substitution to the visual Design title: do not alter
 // unrelated words such as “Designer finishings”.
 html = html.replace(
@@ -486,6 +549,26 @@ html = html.replace(
   /<script[^>]*browser-message\/browser-message\.js[^>]*><\/script>/g,
   "",
 );
+
+// Final copy pass runs after all capture rewrites so no source editorial text
+// can be restored by a later document transformation.
+html = html
+  .replace(
+    /Our view flats[\s\S]*?megapolises\./g,
+    "Egyptian roots, global reach: Nile fish, Cairo spice markets, and Mediterranean technique become one private progression&mdash;served only to your party and paced to the river outside.",
+  )
+  .replace(
+    /Our boutique townhouses[\s\S]*?your face\./g,
+    "Global kitchens, intimate scale: mezze, grills, and late-night lounge plates move between Egyptian classics and Levantine, North African, and European accents&mdash;always at your table, never in a crowd.",
+  )
+  .replace(
+    /When you live in&nbsp;this penthouse,[\s\S]*?ease\./g,
+    "Private dining as ceremony: a dedicated chef, sommelier, and service team compose an Egyptian-led tasting with global accents&mdash;for milestones, celebrations, or simply an evening the Nile will remember.",
+  )
+  .replace(
+    /Visual representations of&nbsp;the&nbsp;property,[\s\S]*?rights holder\./g,
+    "Menus, pairings, and imagery are curated for illustration. Availability, pricing, and dietary arrangements are confirmed directly with Hathor&rsquo;s private dining desk. All Hathor content and design remain protected.",
+  );
 
 fs.mkdirSync(destinationDir, { recursive: true });
 fs.writeFileSync(destination, html);
