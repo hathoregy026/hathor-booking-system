@@ -203,15 +203,15 @@ const diningPalette = `
   .ui-dark .text-c1, .ui-dark .text-c2 { color: #f5e8d1; }
   #de-intro .de-intro__caption,
   #de-projects .de-projects__caption,
-  .more-block__caption { color: #b69f64; }
+  .more-block__caption { color: #f5e8d1; }
   #de-intro .de-intro__caption .g1,
   #de-intro .de-intro__caption .h3,
   #de-projects .de-projects__caption .g1,
   #de-projects .de-projects__caption .h3,
-  .more-block__caption .h0 { color: #b69f64; }
+  .more-block__caption .h0 { color: #f5e8d1; }
   #de-intro .de-intro__caption-title.is-hidden--lg-up img { opacity: 0; }
   #de-intro .de-intro__caption-title.is-hidden--lg-up::after {
-    color: #b69f64;
+    color: #f5e8d1;
     content: "Private Dining";
     font-family: "Hathor Display", "Gamgote", Georgia, serif;
     font-size: clamp(3rem, 13vw, 6rem);
