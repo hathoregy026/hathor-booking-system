@@ -3,7 +3,10 @@
 import { CSSProperties, useRef } from "react";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useAmenitiesFixedMaskReveal } from "@/hooks/useAmenitiesFixedMaskReveal";
+import { amenitiesWipeAngleForIndex } from "@/lib/fixed-mask-reveal";
 import type { SiteImageName } from "@/lib/site-image-slots";
+
+const DARK_GOLD = "#B69F64";
 
 export type AmenitiesMaskSlide = {
   titleLines: string[];
@@ -45,6 +48,22 @@ export function HomeAmenitiesMaskSlider({
 
   if (slides.length === 0) return null;
 
+  const darkTitleStyle =
+    theme === "dark"
+      ? ({ ...titleStyle, color: DARK_GOLD } satisfies CSSProperties)
+      : titleStyle;
+  const darkIndicationStyle =
+    theme === "dark"
+      ? ({ ...indicationStyle, color: DARK_GOLD } satisfies CSSProperties)
+      : indicationStyle;
+  const darkBodyStyle =
+    theme === "dark"
+      ? ({
+          ...bodyStyle,
+          color: "rgba(182, 159, 100, 0.88)",
+        } satisfies CSSProperties)
+      : bodyStyle;
+
   return (
     <section
       ref={sectionRef}
@@ -71,14 +90,14 @@ export function HomeAmenitiesMaskSlider({
                     {slide.indication ? (
                       <p
                         className="home-amenities-slider__indication"
-                        style={indicationStyle}
+                        style={darkIndicationStyle}
                       >
                         {slide.indication}
                       </p>
                     ) : null}
                     <h2
                       className="home-amenities-slider__title"
-                      style={titleStyle}
+                      style={darkTitleStyle}
                     >
                       {slide.titleLines.map((line) => (
                         <span
@@ -91,7 +110,7 @@ export function HomeAmenitiesMaskSlider({
                     </h2>
                     <p
                       className="home-amenities-slider__body"
-                      style={bodyStyle}
+                      style={darkBodyStyle}
                     >
                       {slide.body}
                     </p>
@@ -125,8 +144,9 @@ export function HomeAmenitiesMaskSlider({
               {slides.map((slide, index) => (
                 <div
                   key={`${id}-panel-${slide.imageName}-${index}`}
-                  className="home-amenities-slider__panel"
+                  className={`home-amenities-slider__panel home-amenities-slider__panel--wipe-${amenitiesWipeAngleForIndex(index)}`}
                   data-amenities-panel
+                  data-amenities-wipe={amenitiesWipeAngleForIndex(index)}
                   aria-hidden={index === 0 ? "false" : "true"}
                 >
                   <div

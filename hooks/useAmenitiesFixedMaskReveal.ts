@@ -3,7 +3,15 @@
 import { RefObject, useLayoutEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { luxWipe } from "@/lib/fixed-mask-reveal";
+import {
+  amenitiesWipeAngleForIndex,
+  amenitiesWipeClip,
+  amenitiesWipeClosed,
+  amenitiesWipeOpen,
+  amenitiesWipeOrigin,
+  luxWipe,
+  type AmenitiesWipeAngle,
+} from "@/lib/fixed-mask-reveal";
 import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -15,11 +23,18 @@ function segmentProgress(progress: number, start: number, end: number) {
   return luxWipe(clamp((progress - start) / (end - start)));
 }
 
+function readAngle(panel: HTMLElement, index: number): AmenitiesWipeAngle {
+  const raw = panel.dataset.amenitiesWipe;
+  if (raw === "up" || raw === "right" || raw === "down" || raw === "left") {
+    return raw;
+  }
+  return amenitiesWipeAngleForIndex(index);
+}
+
 /**
  * Amenities-page `#i-slider` Fixed-Background Mask Reveal.
- * Timing mirrors Springs parallax keys:
- * - 0→100vh: caption rises / images fall
- * - then each next image wipes bottom→top over 100vh with scale 1.2→1.0
+ * Consecutive slides use different amenities wipe angles
+ * (up / from-right / down / from-left).
  */
 export function useAmenitiesFixedMaskReveal(
   sectionRef: RefObject<HTMLElement | null>,
@@ -53,6 +68,7 @@ export function useAmenitiesFixedMaskReveal(
     ).matches;
     const isCompact = window.matchMedia("(max-width: 1024px)").matches;
     const isPhone = window.matchMedia("(max-width: 480px)").matches;
+    const angles = panels.map((panel, index) => readAngle(panel, index));
 
     const context = gsap.context(() => {
       if (reducedMotion) {
@@ -66,20 +82,21 @@ export function useAmenitiesFixedMaskReveal(
       }
 
       gsap.set(captionCol, {
-        clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
+        clipPath: amenitiesWipeClosed("up"),
       });
       gsap.set(imagesCol, {
-        clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
+        clipPath: amenitiesWipeClosed("down"),
       });
       panels.forEach((panel, index) => {
+        const angle = angles[index]!;
         gsap.set(panel, {
           clipPath:
-            index === 0
-              ? "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"
-              : "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
-          scale: index === 0 ? 1.2 : 1.2,
+            index === 0 ? amenitiesWipeOpen() : amenitiesWipeClosed(angle),
+          scale: 1.2,
+          xPercent: 0,
+          yPercent: 0,
           zIndex: index + 1,
-          transformOrigin: "50% 100%",
+          transformOrigin: amenitiesWipeOrigin(angle),
         });
       });
       captions.forEach((caption, index) => {
@@ -91,30 +108,31 @@ export function useAmenitiesFixedMaskReveal(
       if (progressLine) gsap.set(progressLine, { scaleY: 0 });
 
       // Amenities runway: ~ (N + 2) * 100svh section → ~ (N + 1) * 100vh scrub range.
-      // Map Springs "-Kvh" keys onto ScrollTrigger progress 0..1.
       const keyUnits = Math.max(2, panels.length + 1);
       const key = (vh: number) => clamp(vh / (keyUnits * 100));
 
       const setProgress = (progress: number) => {
-        // 0.00–key(100): dual-column entrance
         const entrance = segmentProgress(progress, 0, key(100));
-        const captionTop = 100 - entrance * 100;
         gsap.set(captionCol, {
-          clipPath: `polygon(0% ${captionTop}%, 100% ${captionTop}%, 100% 100%, 0% 100%)`,
+          clipPath: amenitiesWipeClip("up", entrance),
         });
-        const imageBottom = entrance * 100;
         gsap.set(imagesCol, {
-          clipPath: `polygon(0% 0%, 100% 0%, 100% ${imageBottom}%, 0% ${imageBottom}%)`,
+          clipPath: amenitiesWipeClip("down", entrance),
         });
 
         let activeIndex = 0;
         panels.forEach((panel, index) => {
+          const angle = angles[index]!;
           if (index === 0) {
-            // scale 1.2 @0 → 1.1 @100 → 1.0 @200
             const a = segmentProgress(progress, 0, key(100));
             const b = segmentProgress(progress, key(100), key(200));
             const scale = 1.2 - a * 0.1 - b * 0.1;
-            gsap.set(panel, { scale });
+            gsap.set(panel, {
+              scale,
+              xPercent: 0,
+              yPercent: 0,
+              transformOrigin: amenitiesWipeOrigin(angle),
+            });
             return;
           }
 
@@ -123,10 +141,22 @@ export function useAmenitiesFixedMaskReveal(
           const wipeEnd = key((index + 2) * 100);
           const wipe = segmentProgress(progress, wipeStart, wipeMid);
           const settle = segmentProgress(progress, wipeMid, wipeEnd);
-          const top = (1 - wipe) * 100;
+          const scale = 1.2 - wipe * 0.1 - settle * 0.1;
+
+          // Amenities intro also drifts slightly while the side wipe opens.
+          let xPercent = 0;
+          let yPercent = 0;
+          if (angle === "right") xPercent = (1 - wipe) * 8;
+          if (angle === "left") xPercent = (1 - wipe) * -8;
+          if (angle === "up") yPercent = (1 - wipe) * 6;
+          if (angle === "down") yPercent = (1 - wipe) * -6;
+
           gsap.set(panel, {
-            clipPath: `polygon(0% ${top}%, 100% ${top}%, 100% 100%, 0% 100%)`,
-            scale: 1.2 - wipe * 0.1 - settle * 0.1,
+            clipPath: amenitiesWipeClip(angle, wipe),
+            scale,
+            xPercent,
+            yPercent,
+            transformOrigin: amenitiesWipeOrigin(angle),
           });
           if (wipe >= 0.5) activeIndex = index;
         });
@@ -154,11 +184,22 @@ export function useAmenitiesFixedMaskReveal(
                     outStart,
                     outStart + (key(100) - key(0)) * 0.55,
                   );
-            visibility = Math.max(0, inLocal - outLocal) * Math.max(entrance, 0.001);
+            visibility =
+              Math.max(0, inLocal - outLocal) * Math.max(entrance, 0.001);
           }
+
+          // Caption drift matches the incoming slide angle slightly.
+          const angle = angles[index] ?? "up";
+          let x = 0;
+          let y = (1 - visibility) * (isPhone ? 16 : 26);
+          if (angle === "right") x = (1 - visibility) * (isPhone ? 14 : 22);
+          if (angle === "left") x = (1 - visibility) * (isPhone ? -14 : -22);
+          if (angle === "down") y = (1 - visibility) * (isPhone ? -14 : -22);
+
           gsap.set(caption, {
             autoAlpha: visibility,
-            y: (1 - visibility) * (isPhone ? 16 : 26),
+            x,
+            y,
           });
           caption.setAttribute(
             "aria-hidden",

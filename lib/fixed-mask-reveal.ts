@@ -39,3 +39,75 @@ export function applyPolygonBottomReveal(el: HTMLElement, progress: number) {
   const pct = Math.max(0, Math.min(100, progress * 100));
   el.style.clipPath = `polygon(0% ${100 - pct}%, 100% ${100 - pct}%, 100% 100%, 0% 100%)`;
 }
+
+/** Amenities-derived wipe angles for stacked image reveals. */
+export type AmenitiesWipeAngle = "up" | "right" | "down" | "left";
+
+/** Cycle so each consecutive slide arrives from a different amenities angle. */
+export function amenitiesWipeAngleForIndex(index: number): AmenitiesWipeAngle {
+  const angles: AmenitiesWipeAngle[] = ["up", "right", "down", "left"];
+  return angles[index % angles.length]!;
+}
+
+export function amenitiesWipeClosed(angle: AmenitiesWipeAngle): string {
+  switch (angle) {
+    case "up":
+      // i-slider stacked image — rises from bottom
+      return "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)";
+    case "right":
+      // i-intro caption — expands from the right edge
+      return "polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)";
+    case "down":
+      // i-slider images column entrance — falls from top
+      return "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)";
+    case "left":
+      // mirror of i-intro — expands from the left edge
+      return "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)";
+  }
+}
+
+export function amenitiesWipeOpen(): string {
+  return "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)";
+}
+
+/** Interpolate closed → open clip for a given amenities wipe angle. */
+export function amenitiesWipeClip(
+  angle: AmenitiesWipeAngle,
+  progress: number,
+): string {
+  const t = Math.max(0, Math.min(1, progress));
+  if (t <= 0) return amenitiesWipeClosed(angle);
+  if (t >= 1) return amenitiesWipeOpen();
+
+  switch (angle) {
+    case "up": {
+      const top = (1 - t) * 100;
+      return `polygon(0% ${top}%, 100% ${top}%, 100% 100%, 0% 100%)`;
+    }
+    case "down": {
+      const bottom = t * 100;
+      return `polygon(0% 0%, 100% 0%, 100% ${bottom}%, 0% ${bottom}%)`;
+    }
+    case "right": {
+      const left = (1 - t) * 100;
+      return `polygon(${left}% 0%, 100% 0%, 100% 100%, ${left}% 100%)`;
+    }
+    case "left": {
+      const right = t * 100;
+      return `polygon(0% 0%, ${right}% 0%, ${right}% 100%, 0% 100%)`;
+    }
+  }
+}
+
+export function amenitiesWipeOrigin(angle: AmenitiesWipeAngle): string {
+  switch (angle) {
+    case "up":
+      return "50% 100%";
+    case "down":
+      return "50% 0%";
+    case "right":
+      return "100% 50%";
+    case "left":
+      return "0% 50%";
+  }
+}
