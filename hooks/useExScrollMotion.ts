@@ -876,6 +876,8 @@ export function useExScrollMotion() {
 
     if (prefersReduced) {
       if (silkChars.length) gsap.set(silkChars, { yPercent: 0, opacity: 1 });
+      (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "140%");
+      section.classList.add("is-stack-docked");
       copyPanels.forEach((panel) => {
         const chars =
           (panel as HTMLElement & { __stackChars?: HTMLElement[] })
@@ -917,6 +919,7 @@ export function useExScrollMotion() {
         const id = st.vars && String(st.vars.id || "");
         if (
           id.startsWith("ex-stack-scroll") ||
+          id === "ex-stack-enter" ||
           id === "ex-stack-copy" ||
           id === "ex-stack-text"
         ) {
@@ -1016,39 +1019,74 @@ export function useExScrollMotion() {
 
       const isPhoneStack = isNarrowViewport;
       const fogStepped = isPhone || lightenDevice;
-      /* Desktop/tablet: Fixed-Background Mask Reveal — pinType fixed locks photos. */
-      const useFixedPin = !(isPhone || isPhoneStack);
+      /*
+       * Fixed-Background via CSS sticky (all breakpoints) — no GSAP pin.
+       * pinType:fixed caused a hard sit/jump when docking into fullscreen.
+       * Sticky locks the stage; fog masks (enter + cards) do the reveal work.
+       */
+      const runwayVh = Math.max(
+        isPhoneStack ? 380 : 480,
+        Math.round((1 + scrollSpan) * 100),
+      );
+      section.style.setProperty("--stack-runway-vh", `${runwayVh}svh`);
+      (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "0%");
+      section.classList.remove("is-stack-docked");
 
       logPhonePerfDev({
         surface: "ex-stack-fog-rise",
         cards: total,
         phoneLightweight: isPhone,
-        pin: useFixedPin,
-        pinType: useFixedPin ? "fixed" : "none",
-        stickyRunway: isPhone || isPhoneStack,
+        pin: false,
+        pinType: "sticky",
+        stickyRunway: true,
+        runwayVh,
         fogSteps: fogStepped ? FOG_STEPS : "continuous",
       });
+
+      /* Smooth dock: stage fog-rises into view as it scrolls up to fullscreen */
+      const enterSt = ScrollTrigger.create({
+        id: "ex-stack-enter",
+        trigger: section,
+        start: "top bottom",
+        end: "top top",
+        scrub: isPhoneStack ? true : 0.45,
+        onUpdate: (self) => {
+          const edge = Math.min(140, Math.max(0, self.progress * 140));
+          (viewport as HTMLElement).style.setProperty(
+            "--stack-enter-fog",
+            `${edge}%`,
+          );
+          if (self.progress >= 0.98) {
+            section.classList.add("is-stack-docked");
+          } else {
+            section.classList.remove("is-stack-docked");
+          }
+        },
+        onLeave: () => {
+          (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "140%");
+          section.classList.add("is-stack-docked");
+        },
+        onLeaveBack: () => {
+          (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "0%");
+          section.classList.remove("is-stack-docked", "is-fog-active", "is-stack-fixed-pin");
+          resetStackToSilk();
+        },
+      });
+      trackTrigger(enterSt);
 
       const tl = gsap.timeline({
         scrollTrigger: {
           id: "ex-stack-scroll",
           trigger: section,
           start: "top top",
-          end: isPhoneStack ? "bottom bottom" : `+=${scrollSpan * 100}%`,
+          end: "bottom bottom",
           /*
-           * Narrow/phone: CSS sticky section height is the runway.
-           * Desktop: short scrub lag — long lag felt rubbery/glitchy on settle.
+           * Sticky runway owns distance. Soft scrub on desktop = less rubber-band.
            */
-          scrub: isPhoneStack ? true : 0.25,
-          /*
-           * Narrow screens use a CSS-sticky viewport inside a tall section.
-           * Desktop: Fixed-Background Mask Reveal — pinType "fixed" keeps
-           * photographs locked to the viewport; only the fog mask moves.
-           */
-          pin: useFixedPin ? viewport : false,
-          pinSpacing: useFixedPin,
-          ...(useFixedPin ? { pinType: "fixed" as const } : {}),
-          anticipatePin: 1,
+          scrub: isPhoneStack ? true : 0.35,
+          pin: false,
+          pinSpacing: false,
+          anticipatePin: 0,
           fastScrollEnd: true,
           invalidateOnRefresh: !isPhone,
           onUpdate: (self) => {
@@ -1057,33 +1095,29 @@ export function useExScrollMotion() {
           },
           onEnter: () => {
             resetStackToSilk();
+            (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "140%");
+            section.classList.add("is-stack-docked", "is-stack-fixed-pin");
           },
           onEnterBack: () => {
-            /* Returning from below — keep plates; silk only if near start */
+            section.classList.add("is-stack-fixed-pin");
+          },
+          onLeave: () => {
+            section.classList.remove("is-stack-fixed-pin");
+          },
+          onLeaveBack: () => {
+            section.classList.remove("is-stack-fixed-pin");
           },
           onToggle: (self) => {
             section.classList.toggle("is-fog-active", self.isActive);
-            section.classList.toggle("is-stack-fixed-pin", self.isActive && useFixedPin);
+            if (self.isActive) {
+              section.classList.add("is-stack-fixed-pin");
+              (viewport as HTMLElement).style.setProperty("--stack-enter-fog", "140%");
+            }
             if (!self.isActive) {
               cards.forEach((card) =>
                 clearFogWillChange(card, getCardMedia(card)),
               );
             }
-          },
-          /* Keep fixed-pin geometry full-bleed — no 100vw / left jump */
-          onRefresh: (self) => {
-            const pin = self.pin as HTMLElement | null;
-            if (!pin) return;
-            gsap.set(pin, {
-              x: 0,
-              left: 0,
-              width: "100%",
-              maxWidth: "none",
-              marginLeft: 0,
-              marginRight: 0,
-              boxSizing: "border-box",
-            });
-            if (self.progress <= 0.02) resetStackToSilk();
           },
         },
       });
