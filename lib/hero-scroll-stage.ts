@@ -23,7 +23,15 @@ type MountHeroScrollStageOptions = {
 
 /** Extra downward offset at logo landing / scroll-scrub start (px). */
 const LOGO_FINISH_Y_OFFSET_PX = 30;
-const DEFAULT_LOGO_LAND_DURATION = 2.6;
+/** Per-letter land rise duration (seconds). Total wordmark ≈ delay + duration + stagger×5. */
+const DEFAULT_LOGO_LAND_DURATION = 1.4;
+const LOGO_LAND_STAGGER = 0.1;
+const LOGO_LAND_DELAY = 0.1;
+const LOGO_LAND_EASE = "power3.out";
+/** Desktop scrub: per-letter exit — mirrors land stagger, soft silk ease. */
+const LOGO_SCROLL_LETTER_DURATION = 0.55;
+const LOGO_SCROLL_LETTER_STAGGER = 0.09;
+const LOGO_SCROLL_LETTER_EASE = "power2.inOut";
 
 export function mountHeroScrollStage({
   prefersReduced,
@@ -259,9 +267,9 @@ export function mountHeroScrollStage({
         y: 0,
         opacity: 1,
         duration: readLogoLandDuration(),
-        stagger: 0.16,
-        ease: "power2.inOut",
-        delay: 0.2,
+        stagger: LOGO_LAND_STAGGER,
+        ease: LOGO_LAND_EASE,
+        delay: LOGO_LAND_DELAY,
         onComplete: markLogoReady,
       });
       return;
@@ -284,17 +292,17 @@ export function mountHeroScrollStage({
         y: 0,
         opacity: 1,
         duration: 0.5,
-        stagger: 0.22,
-        ease: "power2.out",
-        delay: 0.2,
+        stagger: LOGO_LAND_STAGGER,
+        ease: LOGO_LAND_EASE,
+        delay: LOGO_LAND_DELAY,
       });
     }
 
     landingTween = gsap.to(logoMark, {
       y: getLogoLandedY(),
-      duration: 2.6,
-      ease: "power2.inOut",
-      delay: 0.2,
+      duration: readLogoLandDuration(),
+      ease: LOGO_LAND_EASE,
+      delay: LOGO_LAND_DELAY,
       onComplete: markLogoReady,
     });
   };
@@ -687,8 +695,8 @@ export function mountHeroScrollStage({
       if (ctaText) tl.to(ctaText, { letterSpacing: "1.15em", ease: "none", duration: 1 }, 0);
 
       if (logoMark) {
+        const landedY = getLogoLandedY();
         if (logoReadyForScroll || !(landingTween && landingTween.isActive())) {
-          const landedY = getLogoLandedY();
           gsap.set(logoMark, {
             xPercent: -50,
             yPercent: 0,
@@ -699,26 +707,51 @@ export function mountHeroScrollStage({
           });
         }
 
-        const landedY = getLogoLandedY();
-        tl.fromTo(
-          logoMark,
-          {
-            y: landedY,
-            autoAlpha: 1,
+        // Split wordmark: exit one-by-one (same stagger language as land).
+        // Keep .hero-logo-mark parked — never slide the group as one block.
+        if (isSplitLetterLogo()) {
+          const letterWraps = logoMark.querySelectorAll(".logo-letter-wrap");
+          gsap.set(logoMark, {
             xPercent: -50,
-            x: 0,
             yPercent: 0,
+            x: 0,
+            y: landedY,
             scale: 1,
-          },
-          {
-            y: getLogoHiddenY(),
-            autoAlpha: 0,
-            ease: "none",
-            duration: 1,
-            immediateRender: false,
-          },
-          0,
-        );
+            autoAlpha: 1,
+          });
+          gsap.set(letterWraps, { y: 0, opacity: 1, force3D: true });
+          tl.to(
+            letterWraps,
+            {
+              y: getLogoHiddenY(),
+              opacity: 0,
+              ease: LOGO_SCROLL_LETTER_EASE,
+              duration: LOGO_SCROLL_LETTER_DURATION,
+              stagger: LOGO_SCROLL_LETTER_STAGGER,
+            },
+            0,
+          );
+        } else {
+          tl.fromTo(
+            logoMark,
+            {
+              y: landedY,
+              autoAlpha: 1,
+              xPercent: -50,
+              x: 0,
+              yPercent: 0,
+              scale: 1,
+            },
+            {
+              y: getLogoHiddenY(),
+              autoAlpha: 0,
+              ease: "power2.inOut",
+              duration: 1,
+              immediateRender: false,
+            },
+            0,
+          );
+        }
       }
     }
   };

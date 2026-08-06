@@ -67,7 +67,7 @@ export const DEFAULT_HERO_LOGO_TUNE: HeroLogoTune = {
   size: 0.8,
   y: -200,
   ctaNudge: 20,
-  animDuration: 2,
+  animDuration: 1.4,
   edgeLeft: 3,
   edgeRight: 3,
   gapTButton: 24,
