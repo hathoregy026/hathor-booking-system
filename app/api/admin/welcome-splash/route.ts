@@ -46,6 +46,7 @@ export async function PUT(request: NextRequest) {
     revalidatePath("/", "layout");
     revalidatePath("/");
     revalidatePath("/admin/settings");
+    revalidatePath("/admin/preload-screen");
 
     return NextResponse.json(
       {
