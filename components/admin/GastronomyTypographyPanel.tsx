@@ -32,13 +32,14 @@ const ROLES: Array<{
     key: "indication",
     label: "Small indication",
     description: "Eyebrows, course labels, navigation cues, and meta text.",
-    sample: "A PRIVATE TABLE ON THE NILE",
+    sample: "Tonight’s private courses:",
   },
   {
     key: "body",
     label: "Body text",
     description: "Supporting paragraphs and quiet descriptive copy.",
-    sample: "Courses, wine and service composed around your party.",
+    sample:
+      "Not a restaurant. A residence of taste—composed course by course for the only guests aboard.",
   },
 ];
 

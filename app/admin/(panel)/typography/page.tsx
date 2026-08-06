@@ -1,11 +1,5 @@
-import { TypographyStylesPanel } from "@/components/admin/TypographyStylesPanel";
-import { GastronomyTypographyPanel } from "@/components/admin/GastronomyTypographyPanel";
+import { TypographyEditorTabs } from "@/components/admin/TypographyEditorTabs";
 
 export default function AdminTypographyPage() {
-  return (
-    <>
-      <TypographyStylesPanel />
-      <GastronomyTypographyPanel />
-    </>
-  );
+  return <TypographyEditorTabs />;
 }
