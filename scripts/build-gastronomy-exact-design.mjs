@@ -273,6 +273,19 @@ const diningPalette = `
   .de-slider__mobile-scrollable-gradient div {
     background: radial-gradient(circle, rgba(182, 159, 100, 0.86) 0%, rgba(182, 159, 100, 0.38) 45%, rgba(182, 159, 100, 0) 74%) !important;
   }
+  /*
+   * The captured Springs document ships with its original image URLs. Keep
+   * visual media concealed until the Dining CMS config has replaced every
+   * source, so an old source frame can never paint during an iframe load.
+   */
+  html:not(.dining-media-ready) picture,
+  html:not(.dining-media-ready) .de-captions__canvas {
+    opacity: 0 !important;
+  }
+  picture,
+  .de-captions__canvas {
+    transition: opacity 120ms linear;
+  }
 </style>`;
 
 const gastronomyRuntime = `
@@ -356,6 +369,7 @@ const gastronomyRuntime = `
         document.head.appendChild(phone);
       }
       window.dispatchEvent(new Event("resize"));
+      document.documentElement.classList.add("dining-media-ready");
     })
     .catch(() => {});
   };
