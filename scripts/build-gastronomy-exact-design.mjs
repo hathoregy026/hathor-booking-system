@@ -249,6 +249,11 @@ const diningPalette = `
     visibility: visible !important;
     transform: none !important;
   }
+  #de-projects .ui-light .h3,
+  #de-projects .ui-light .text-c2,
+  #de-projects .ui-light .de-projects__slider-item__text {
+    color: #b69f64 !important;
+  }
   .header, .cookie-consent, .de-balcons__pin, .de-balcons__pin-tooltip {
     display: none !important;
   }
