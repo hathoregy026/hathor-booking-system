@@ -1400,7 +1400,6 @@ html[data-ex-experience] .ex-root .radius-heading h2,
 html[data-ex-experience] .ex-root .home-carousel-h2 h2,
 html[data-ex-experience] .ex-root .ex-stack-scroll__title,
 html[data-ex-experience] .ex-root .home-text-h2 h2,
-html[data-ex-experience] .ex-root .home-helm-portal__title,
 html[data-ex-experience] .ex-root .gallery-h2 h2,
 html[data-ex-experience] .ex-root .gallery-sm h2,
 html[data-ex-experience] .ex-root .testimonial-h2 h2,
@@ -1434,8 +1433,7 @@ ${block(
 .public-site .room-interstitial__script,
 .public-site .hathor-section-subtitle,
 .public-site .hathor-chapter-subtitle,
-.public-site .venetian-page .room-fs-meta,
-html[data-ex-experience] .ex-root .home-helm-portal__script`,
+.public-site .venetian-page .room-fs-meta`,
   "sub_subtitle",
 )}
 ${block(

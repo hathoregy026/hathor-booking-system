@@ -65,10 +65,6 @@ const SELECTORS = [
   ".public-site .ex-root .radius-heading h2",
   ".public-site .ex-root .radius-sub-heading h3",
   ".public-site .ex-root .radius-p p",
-  /* Helm portal editorial copy (right of wheel) */
-  ".public-site .ex-root .home-helm-portal__title",
-  ".public-site .ex-root .home-helm-portal__script",
-  ".public-site .ex-root .home-helm-portal__body",
   /* Carousel titles: visible always — atelier hide + pin refresh left empty cream */
   ".public-site .ex-root .home-text-h2 h2",
   ".public-site .ex-root .home-text-p p",
@@ -262,10 +258,8 @@ function animateAtelierSplit(
   const inServices = Boolean(
     anchor.closest?.(".services-section, .services-intro, .home-carousel"),
   );
-  /* Sticky helm runway: reverse mid-scrub would re-hide copy while pinned */
-  const inHelm = Boolean(anchor.closest?.(".home-helm-portal"));
   /* Touch: play once — reverse re-scrub thrashes phone CPUs mid-scroll */
-  const playOnce = inGallery || light || inServices || inHelm;
+  const playOnce = inGallery || light || inServices;
 
   gsap.to(units, {
     yPercent: 0,
