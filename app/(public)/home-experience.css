@@ -2633,13 +2633,14 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebr
   object-position: center center;
 }
 
-/* Editorial copy — right of the wheel, vertically centered on the hub */
+/* Editorial copy — left of the wheel, vertically centered on the hub.
+   Fonts/colours come from dashboard typography roles (typo-*). */
 .home-helm-portal__copy {
   position: absolute;
   z-index: 2;
   top: 50%;
-  right: clamp(1.25rem, 5.5vw, 5rem);
-  left: auto;
+  left: clamp(1.25rem, 5.5vw, 5rem);
+  right: auto;
   width: min(36vw, 26rem);
   transform: translateY(-50%);
   display: flex;
@@ -2649,7 +2650,6 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebr
   gap: 0.55rem;
   pointer-events: none;
   user-select: none;
-  color: #1a1612;
 }
 
 .home-helm-portal__title {
@@ -2658,12 +2658,6 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebr
   flex-direction: column;
   align-items: center;
   gap: 0.02em;
-  /* Same metrics as site big titles; ink locked off dashboard color roles */
-  font-family: var(--typo-page-title-font, var(--font-display));
-  font-size: var(--typo-page-title-size, clamp(2.4rem, 5vw, 4.2rem));
-  font-weight: 400;
-  line-height: var(--typo-page-title-line-height, 1.05);
-  letter-spacing: var(--typo-page-title-letter-spacing, 0.02em);
   text-transform: uppercase;
   max-width: 12ch;
 }
@@ -2674,11 +2668,6 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebr
 
 .home-helm-portal__script {
   margin: 0.15rem 0 0;
-  font-family: var(--font-hathor-quiet-luxury), "Quiet Luxury", cursive;
-  font-size: clamp(1.2rem, 2.1vw, 1.75rem);
-  font-weight: 400;
-  line-height: 1.25;
-  letter-spacing: 0.01em;
   text-transform: none;
 }
 
@@ -2689,7 +2678,9 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebr
   gap: 0.55rem;
   width: min(11rem, 70%);
   margin: 0.35rem 0 0.15rem;
-  color: rgb(26 22 18 / 0.42);
+  /* Soft grade of the page-title ink from dashboard typography */
+  color: var(--typo-page-title-color, currentColor);
+  opacity: 0.42;
 }
 
 .home-helm-portal__rule-line {
@@ -2708,54 +2699,6 @@ html[data-ex-experience] .ex-root .ex-stack-scroll__copy .ex-stack-scroll__eyebr
 .home-helm-portal__body {
   margin: 0;
   max-width: 28ch;
-  font-family: var(--typo-body-text-font, var(--font-display));
-  font-size: clamp(0.92rem, 1.15vw, 1.05rem);
-  font-weight: 400;
-  line-height: 1.65;
-  letter-spacing: 0;
-}
-
-/*
- * Beat dashboard typography + atelier split fills.
- * Grades of #1a1612 only — no gold/shadow/dashboard ink.
- */
-html[data-ex-experience] .ex-root .home-helm-portal__title,
-html[data-ex-experience] .ex-root .home-helm-portal__title .split-char,
-html[data-ex-experience] .ex-root .home-helm-portal__title .split-word,
-html[data-ex-experience] .ex-root .home-helm-portal__title .split-heading,
-.public-site .home-helm-portal__title,
-.public-site .home-helm-portal__title .split-char,
-.public-site .home-helm-portal__title .split-word,
-.public-site .home-helm-portal__title .split-heading {
-  color: #1a1612 !important;
-  -webkit-text-fill-color: #1a1612 !important;
-  text-shadow: none !important;
-}
-
-html[data-ex-experience] .ex-root .home-helm-portal__script,
-html[data-ex-experience] .ex-root .home-helm-portal__script .split-char,
-html[data-ex-experience] .ex-root .home-helm-portal__script .split-word,
-html[data-ex-experience] .ex-root .home-helm-portal__script .split-heading,
-.public-site .home-helm-portal__script,
-.public-site .home-helm-portal__script .split-char,
-.public-site .home-helm-portal__script .split-word,
-.public-site .home-helm-portal__script .split-heading {
-  color: rgb(26 22 18 / 0.82) !important;
-  -webkit-text-fill-color: rgb(26 22 18 / 0.82) !important;
-  text-shadow: none !important;
-}
-
-html[data-ex-experience] .ex-root .home-helm-portal__body,
-html[data-ex-experience] .ex-root .home-helm-portal__body .split-char,
-html[data-ex-experience] .ex-root .home-helm-portal__body .split-word,
-html[data-ex-experience] .ex-root .home-helm-portal__body .split-heading,
-.public-site .home-helm-portal__body,
-.public-site .home-helm-portal__body .split-char,
-.public-site .home-helm-portal__body .split-word,
-.public-site .home-helm-portal__body .split-heading {
-  color: rgb(26 22 18 / 0.68) !important;
-  -webkit-text-fill-color: rgb(26 22 18 / 0.68) !important;
-  text-shadow: none !important;
 }
 
 .home-helm-portal__media {

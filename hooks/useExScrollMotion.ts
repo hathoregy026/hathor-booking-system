@@ -938,7 +938,8 @@ export function useExScrollMotion() {
       /* Slightly longer wipe + calmer dwell â€” less rubber-band settle */
       const dwell = 0.52;
       const move = 0.82;
-      const release = 0.7;
+      /* Longer release — last plate slides up and hands off to the next section */
+      const release = 1.05;
       const step = dwell + move;
       /*
        * Cream invitation intro (same fog language as Take Your Voyage Today).
@@ -1430,7 +1431,87 @@ export function useExScrollMotion() {
         }
       }
 
-      tl.to({}, { duration: release });
+      /*
+       * Exit handoff: last landmark slides up (Fixed-Background exit) while the
+       * next section rises into place — no hard cut after the final plate.
+       */
+      const exitAt = introSpan + total * (move + dwell);
+      const lastPanel = copyPanels[total - 1];
+      const nextSection = section.nextElementSibling as HTMLElement | null;
+      const exitChrome = [lastPanel, pager, progressRoot].filter(
+        (el): el is HTMLElement => Boolean(el),
+      );
+
+      gsap.set(viewport, { yPercent: 0, force3D: true });
+      section.classList.remove("is-stack-exiting");
+      if (nextSection) {
+        gsap.set(nextSection, {
+          y: 0,
+          force3D: true,
+          clearProps: "transform",
+        });
+      }
+
+      if (exitChrome.length) {
+        tl.to(
+          exitChrome,
+          {
+            autoAlpha: 0,
+            ease: "none",
+            duration: release * 0.38,
+            onReverseComplete: () => {
+              exitChrome.forEach((el) => {
+                gsap.set(el, { autoAlpha: 1, visibility: "visible" });
+              });
+              if (lastPanel) lastPanel.setAttribute("aria-hidden", "false");
+            },
+          },
+          exitAt,
+        );
+        if (lastPanel) {
+          scrubStackChars(tl, lastPanel, exitAt, release * 0.38, "out");
+        }
+      }
+
+      tl.fromTo(
+        viewport,
+        { yPercent: 0 },
+        {
+          yPercent: -100,
+          ease: "none",
+          duration: release,
+          onStart: () => {
+            section.classList.add("is-stack-exiting");
+            (viewport as HTMLElement).style.willChange = "transform";
+          },
+          onComplete: () => {
+            (viewport as HTMLElement).style.willChange = "auto";
+          },
+          onReverseComplete: () => {
+            section.classList.remove("is-stack-exiting");
+            gsap.set(viewport, { yPercent: 0 });
+            (viewport as HTMLElement).style.willChange = "auto";
+          },
+        },
+        exitAt,
+      );
+
+      if (nextSection) {
+        const lift = () => Math.min(160, window.innerHeight * 0.24);
+        tl.fromTo(
+          nextSection,
+          { y: lift },
+          {
+            y: 0,
+            ease: "none",
+            duration: release,
+            onReverseComplete: () => {
+              gsap.set(nextSection, { clearProps: "transform" });
+            },
+          },
+          exitAt,
+        );
+      }
 
       if (process.env.NODE_ENV !== "production") {
         const stageRanges = Array.from({ length: total }, (_, index) => {
