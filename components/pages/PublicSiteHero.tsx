@@ -64,14 +64,15 @@ export type PublicSiteHeroProps = {
    */
   splitLetterLogo?: boolean;
   /**
-   * Warm gold media tint (see app/hero-tint.css). On for every public hero.
+   * Warm gold media tint (see app/hero-tint.css). On for image heroes;
+   * ignored when `playVideo` so the reel stays clear.
    */
   goldTint?: boolean;
   /** Floating gold dust over the hero (delete tag + GoldDustParticles.tsx to remove). */
   goldDust?: boolean;
   /**
    * When true, play the homepage hero video. Poster frame uses `posterImageName`
-   * CMS slot (falls back to about-hero if omitted).
+   * CMS slot (falls back to about-hero if omitted). Skips dark wash + gold tint.
    */
   playVideo?: boolean;
   /** Letter colour set from Hero Logo Tune — default keeps live gold WebPs. */
@@ -106,6 +107,9 @@ export function PublicSiteHero({
   const videoPoster = playVideo
     ? optimizedVideoPoster(heroImage.src)
     : heroImage.src;
+  /** Video hero: no dark wash / gold tint — keep gold dust only. */
+  const showMediaWash = !playVideo;
+  const applyGoldTint = showMediaWash && goldTint;
   const typography = useTypographySettings();
   const globalLogo = useHeroLogoSettings();
   const desktopLogoParts =
@@ -329,7 +333,7 @@ export function PublicSiteHero({
       ref={heroRef}
       id={posterImageName ? siteImageAnchorId(posterImageName) : undefined}
       data-site-image={posterImageName}
-      className={`home-hero-container${goldTint ? " hero-gold-tint" : ""}`}
+      className={`home-hero-container${applyGoldTint ? " hero-gold-tint" : ""}`}
       aria-label="Hero"
     >
       <div className="hero-media">
@@ -367,7 +371,9 @@ export function PublicSiteHero({
           />
         )}
       </div>
-      <div className="hero-overlay" aria-hidden="true" />
+      {showMediaWash ? (
+        <div className="hero-overlay" aria-hidden="true" />
+      ) : null}
 
       <div className="home-hero-cover" aria-hidden="true" />
 
