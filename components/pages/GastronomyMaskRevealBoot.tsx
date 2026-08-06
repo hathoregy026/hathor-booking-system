@@ -3,21 +3,21 @@
 import { useLayoutEffect, type ReactNode } from "react";
 import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
 
-type GastronomyDiningRouteShellProps = {
+type GastronomyMaskRevealBootProps = {
   children: ReactNode;
 };
 
-/** Enables native sticky scroll runway for the GPT dining clone on /gastronomy. */
-export function GastronomyDiningRouteShell({
+/** Native scroll + overflow unlock for Fixed-Background Mask Reveal on /gastronomy. */
+export function GastronomyMaskRevealBoot({
   children,
-}: GastronomyDiningRouteShellProps) {
+}: GastronomyMaskRevealBootProps) {
   useLayoutEffect(() => {
     const root = document.documentElement;
-    root.dataset.gastronomyDining = "true";
+    root.setAttribute("data-gastronomy-mask", "");
     ensurePublicScrollController();
 
     return () => {
-      delete root.dataset.gastronomyDining;
+      root.removeAttribute("data-gastronomy-mask");
       ensurePublicScrollController();
     };
   }, []);
