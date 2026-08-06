@@ -4,6 +4,7 @@ import { resolveSiteImageLivePath } from "@/lib/site-image-preview";
 /** Client-facing page names for tabs / accordion headers. */
 const PAGE_GROUP_TITLES: Record<string, string> = {
   "/": "Homepage",
+  "/#amenities-sequence": "Amenities Sequence",
   "/#moving-tilted-cards": "Moving Tilted Cards",
   "/cruises": "Cruises",
   "/about": "About Us",
@@ -26,33 +27,9 @@ const HOMEPAGE_LIVE_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> 
   [
     { name: "home-hero-poster", label: "Hero — video poster / cover" },
     { name: "home-story-craft-large", label: "About — main photo" },
-    {
-      name: "cruises-hero",
-      label: "Amenities sequence 1 — fullscreen intro photo",
-    },
-    {
-      name: "home-split-courtyard",
-      label: "Amenities sequence 2 — rising full-bleed photo",
-    },
     { name: "room-suite", label: "Itineraries carousel — Luxury Suite" },
     { name: "room-royal", label: "Itineraries carousel — Royal Suite" },
     { name: "room-luxury", label: "Itineraries carousel — Luxury Cabin" },
-    {
-      name: "about-hero",
-      label: "Amenities sequence 3 — inset + half/half photo",
-    },
-    {
-      name: "home-story-legacy-large",
-      label: "Amenities sequence 4 — fixed left + stack photo",
-    },
-    {
-      name: "home-story-way-of-life",
-      label: "Amenities sequence — Way of Life photo / card",
-    },
-    {
-      name: "home-story-dining",
-      label: "Amenities sequence — Dining photo / card",
-    },
     { name: "home-call-to-action", label: "Call to action image" },
     {
       name: "home-wheel-stage",
@@ -63,6 +40,37 @@ const HOMEPAGE_LIVE_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> 
       label: "Wheel reveal — image the wheel opens into",
     },
   ];
+
+/** Homepage amenities scroll sequence — Admin tab: Amenities Sequence. */
+const AMENITIES_SEQUENCE_ADMIN_CARDS: ReadonlyArray<{
+  name: string;
+  label: string;
+}> = [
+  {
+    name: "home-amenities-1",
+    label: "1 — Fullscreen intro photo",
+  },
+  {
+    name: "home-amenities-2",
+    label: "2 — Rising full-bleed photo",
+  },
+  {
+    name: "home-amenities-3",
+    label: "3 — Inset + half/half photo",
+  },
+  {
+    name: "home-amenities-4",
+    label: "4 — Fixed left + stack photo",
+  },
+  {
+    name: "home-amenities-way-of-life",
+    label: "Way of Life — photo / card",
+  },
+  {
+    name: "home-amenities-dining",
+    label: "Dining — photo / card",
+  },
+];
 
 const OUR_VOYAGES_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> =
   [
@@ -161,10 +169,13 @@ const SLOT_LAYOUT_KINDS: Partial<Record<SiteImageSlot["name"], SiteImageLayoutKi
   {
     "home-hero-poster": "hero",
     "home-cinematic-still": "hero",
-    "home-split-courtyard": "hero",
     "home-call-to-action": "hero",
     "home-wheel-stage": "hero",
     "home-wheel-image": "hero",
+    "home-amenities-1": "hero",
+    "home-amenities-2": "hero",
+    "home-amenities-3": "hero",
+    "home-amenities-4": "hero",
     "cruises-hero": "hero",
     "about-hero": "hero",
     "gastronomy-hero": "hero",
@@ -231,6 +242,7 @@ function layoutForSlot(slot: SiteImageSlot): SiteImageLayoutKind {
 export function getSiteImageGroupHeading(pageTitle: string): string {
   if (pageTitle === "Homepage" || pageTitle === "Home") return "Homepage Images";
   if (pageTitle === "About Us") return "About Us Images";
+  if (pageTitle === "Amenities Sequence") return "Amenities Sequence Images";
   if (pageTitle === "Our Voyages") return "Our Voyages Accordion Images";
   if (pageTitle === "Floating IG" || pageTitle === "Floating IG images") {
     return "Floating IG Bubble Images";
@@ -267,6 +279,15 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
     const slot = byName.get(card.name);
     if (!slot) return;
     homepageItems.push(toAdminItem(slot, "/", card.label, index + 1));
+  });
+
+  const amenitiesItems: SiteImageAdminItem[] = [];
+  AMENITIES_SEQUENCE_ADMIN_CARDS.forEach((card, index) => {
+    const slot = byName.get(card.name);
+    if (!slot) return;
+    amenitiesItems.push(
+      toAdminItem(slot, "/#amenities-sequence", card.label, index + 1),
+    );
   });
 
   const movingTiltedItems: SiteImageAdminItem[] = [];
@@ -311,6 +332,7 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
     }
     if (
       slot.pagePath === "/" ||
+      slot.pagePath === "/#amenities-sequence" ||
       slot.pagePath === "/#moving-tilted-cards" ||
       slot.pagePath === "/#floating-ig" ||
       slot.pagePath === "/#our-voyages"
@@ -348,6 +370,13 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
       description:
         "Only photos that appear on the live homepage. Edit here to change what guests see on /.",
       items: homepageItems,
+    },
+    {
+      pagePath: "/#amenities-sequence",
+      title: "Amenities Sequence",
+      description:
+        "Photos for the homepage amenities scroll sequence after Our Voyages (intro → rise → slider → opening). Each upload is independent from Cruises, About, and every other page.",
+      items: amenitiesItems,
     },
     {
       pagePath: "/#our-voyages",

@@ -14,6 +14,19 @@ import { isSafeLandmarkCmsOverride } from "@/lib/landmark-image-safety";
 /** SiteSetting key — v2 avoids a TOAST-stuck legacy row that hung full SELECT/UPDATE. */
 export const SITE_IMAGE_PUBLIC_MAP_KEY = "site-image-public-map-v2";
 
+/**
+ * Soft-migrate older Homepage/Cruises/About slot uploads into dedicated
+ * amenities-sequence slots until each new slot is saved on its own.
+ */
+const AMENITIES_SEQUENCE_LEGACY_FALLBACK: Readonly<Record<string, string>> = {
+  "home-amenities-1": "cruises-hero",
+  "home-amenities-2": "home-split-courtyard",
+  "home-amenities-3": "about-hero",
+  "home-amenities-4": "home-story-legacy-large",
+  "home-amenities-way-of-life": "home-story-way-of-life",
+  "home-amenities-dining": "home-story-dining",
+};
+
 export type StoredSiteImagePublicMap = Record<
   string,
   { src: string; alt: string }
@@ -42,13 +55,10 @@ export function buildSiteImageOverridesMap(
     const fallbackAlt = slot?.altText || record.name;
     const alt = (record.altText || fallbackAlt).slice(0, 120);
     /*
-     * Persist remote CMS uploads and any URL that differs from the slot default.
-     * Skip identical /media defaults so the SiteSetting row stays small enough
-     * for reliable Supabase pooler transfer (full ~12KB maps hung on SELECT).
+     * Persist remote CMS uploads (including Supabase storage) and any URL that
+     * differs from the slot default. Skip identical /media defaults so the
+     * SiteSetting row stays small enough for reliable pooler transfer.
      */
-    /* Never publish Supabase storage URLs into the public map (Cached Egress). */
-    if (record.url.includes("supabase.co/storage")) continue;
-
     const isRemote = /^https?:\/\//i.test(record.url);
     if (!isRemote && slot && record.url === slot.url && alt === slot.altText) {
       continue;
@@ -58,6 +68,14 @@ export function buildSiteImageOverridesMap(
     }
     overrides[record.name] = { src: record.url, alt };
   }
+
+  for (const [amenitiesName, legacyName] of Object.entries(
+    AMENITIES_SEQUENCE_LEGACY_FALLBACK,
+  )) {
+    if (overrides[amenitiesName] || !overrides[legacyName]) continue;
+    overrides[amenitiesName] = { ...overrides[legacyName] };
+  }
+
   return overrides;
 }
 

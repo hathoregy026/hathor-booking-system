@@ -110,7 +110,9 @@ export default function AdminContentPage() {
           raw === path ||
           path.endsWith(raw) ||
           (raw === "floating-ig" && path.includes("floating-ig")) ||
-          (raw === "our-voyages" && path.includes("our-voyages"))
+          (raw === "our-voyages" && path.includes("our-voyages")) ||
+          (raw === "amenities-sequence" && path.includes("amenities-sequence")) ||
+          (raw === "amenities" && path.includes("amenities-sequence"))
         );
       });
 

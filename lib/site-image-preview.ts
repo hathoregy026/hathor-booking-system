@@ -23,15 +23,15 @@ export function siteImageAnchorId(name: string): string {
 export const HOMEPAGE_LIVE_SLOT_NAMES = new Set<string>([
   "home-hero-poster",
   "home-story-craft-large",
-  "home-split-courtyard",
-  "cruises-hero",
   "room-suite",
   "room-royal",
   "room-luxury",
-  "about-hero",
-  "home-story-legacy-large",
-  "home-story-way-of-life",
-  "home-story-dining",
+  "home-amenities-1",
+  "home-amenities-2",
+  "home-amenities-3",
+  "home-amenities-4",
+  "home-amenities-way-of-life",
+  "home-amenities-dining",
   "moving-tilted-1",
   "moving-tilted-2",
   "moving-tilted-3",
@@ -56,10 +56,12 @@ export const HOMEPAGE_LIVE_SLOT_NAMES = new Set<string>([
 const SITE_IMAGE_PRIMARY_PAGE: Partial<Record<string, string>> = {
   "home-hero-poster": "/",
   "home-story-craft-large": "/",
-  "home-split-courtyard": "/",
-  "home-story-legacy-large": "/",
-  "home-story-way-of-life": "/",
-  "home-story-dining": "/",
+  "home-amenities-1": "/",
+  "home-amenities-2": "/",
+  "home-amenities-3": "/",
+  "home-amenities-4": "/",
+  "home-amenities-way-of-life": "/",
+  "home-amenities-dining": "/",
   "home-wheel-stage": "/",
   "home-wheel-image": "/",
   "home-voyage-3n-aswan-luxor": "/",
@@ -150,10 +152,12 @@ const SITE_IMAGE_PRIMARY_PAGE: Partial<Record<string, string>> = {
 const SLOT_FALLBACK_SECTION: Partial<Record<string, string>> = {
   "home-hero-poster": "top",
   "home-story-craft-large": "about",
-  "home-split-courtyard": "details",
-  "home-story-legacy-large": "details",
-  "home-story-way-of-life": "escape",
-  "home-story-dining": "escape",
+  "home-amenities-1": "details",
+  "home-amenities-2": "details",
+  "home-amenities-3": "details",
+  "home-amenities-4": "details",
+  "home-amenities-way-of-life": "details",
+  "home-amenities-dining": "details",
   "cruises-hero": "services",
   "room-suite": "services",
   "room-royal": "services",
@@ -197,7 +201,9 @@ export function resolveSiteImageLivePath(
 ): string | null {
   if (
     adminGroupPagePath === "/#floating-ig" ||
-    adminGroupPagePath === "/#moving-tilted-cards"
+    adminGroupPagePath === "/#moving-tilted-cards" ||
+    adminGroupPagePath === "/#amenities-sequence" ||
+    adminGroupPagePath === "/#our-voyages"
   ) {
     return buildSiteImageLivePath("/", name);
   }

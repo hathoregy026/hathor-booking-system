@@ -93,28 +93,28 @@ export const EX_PINNED = {
   body: HOMEPAGE_HIGHLIGHTS.body,
   slides: [
     {
-      imageName: "cruises-hero" as SiteImageName,
+      imageName: "home-amenities-1" as SiteImageName,
       alt: "Hathor Dahabiya sailing on the Nile",
       title: "Every landmark,\na pleasure.",
       indication: "Sail The Nile On Hathor",
       body: HOMEPAGE_HIGHLIGHTS.body,
     },
     {
-      imageName: "home-split-courtyard" as SiteImageName,
+      imageName: "home-amenities-2" as SiteImageName,
       alt: "Hathor Dahabiya on the Nile",
       title: "Where time\nmoves gently.",
       indication: "Private Nile Sailing",
       body: "Glide between Luxor and Aswan on an intimate dahabiya — unhurried days, soft light on the water, and Egypt unfolding at a gracious pace.",
     },
     {
-      imageName: "about-hero" as SiteImageName,
+      imageName: "home-amenities-3" as SiteImageName,
       alt: "Luxury Dahabiya Nile cruise",
       title: "Welcome aboard\nHathor.",
       indication: "Five-Star Small Boat",
       body: "A private, five-star vessel where refined cabins, attentive hospitality, and timeless Egyptian charm meet for a truly exclusive Nile voyage.",
     },
     {
-      imageName: "home-story-legacy-large" as SiteImageName,
+      imageName: "home-amenities-4" as SiteImageName,
       alt: "Hathor Dahabiya ship on the Nile at golden hour",
       title: "Golden hour\non the Nile.",
       indication: "History · Comfort · Style",
@@ -127,7 +127,7 @@ export const EX_TEXT_BLOCKS = [
   {
     title: HOMEPAGE_LIFESTYLE.title,
     body: HOMEPAGE_LIFESTYLE.body,
-    imageName: "home-story-way-of-life" as SiteImageName,
+    imageName: "home-amenities-way-of-life" as SiteImageName,
     alt: "Guests enjoying a Nile sunset moment aboard Hathor Dahabiya",
     cta: "Discover More",
     href: "/about",
@@ -135,7 +135,7 @@ export const EX_TEXT_BLOCKS = [
   {
     title: HOMEPAGE_DINING.title,
     body: HOMEPAGE_DINING.body,
-    imageName: "home-story-dining" as SiteImageName,
+    imageName: "home-amenities-dining" as SiteImageName,
     alt: "Fine dining aboard Hathor Dahabiya",
     cta: "Explore Dining",
     href: "/gastronomy",
