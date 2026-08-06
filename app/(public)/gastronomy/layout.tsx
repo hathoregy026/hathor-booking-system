@@ -9,13 +9,15 @@ html[data-gastronomy-mask] body,
 html[data-gastronomy-mask] .public-site {
   background-color: #ece8df !important;
   overflow: visible !important;
-  overflow-x: visible !important;
+  overflow-x: clip !important;
+  height: auto !important;
 }
 html[data-gastronomy-mask] .public-site::before { display: none !important; }
 html[data-gastronomy-mask] .public-main,
 html[data-gastronomy-mask] .public-main--hero,
 html[data-gastronomy-mask] .page-transition,
-html[data-gastronomy-mask] .gastronomy-mask-route {
+html[data-gastronomy-mask] .gastronomy-mask-route,
+html[data-gastronomy-mask] .gastronomy-springs-host {
   padding-top: 0 !important;
   margin-top: 0 !important;
   max-width: none !important;
@@ -24,6 +26,7 @@ html[data-gastronomy-mask] .gastronomy-mask-route {
   overflow: visible !important;
   transform: none !important;
   filter: none !important;
+  height: auto !important;
 }
 `;
 

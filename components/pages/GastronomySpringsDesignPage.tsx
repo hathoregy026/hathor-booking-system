@@ -42,6 +42,27 @@ function loadScript(src: string) {
   });
 }
 
+/** Springs locomotive mode locks the first sticky panel under React — keep native sticky. */
+function unlockNativeStickyScroll() {
+  const root = document.documentElement;
+  const body = document.body;
+  root.classList.remove("has-scroll-smooth", "has-scroll-dragging");
+  root.style.height = "";
+  root.style.overflow = "";
+  body.style.height = "";
+  body.style.overflow = "";
+  body.style.position = "";
+  body.style.transform = "";
+  const scrollEls = document.querySelectorAll<HTMLElement>(
+    "[data-scroll-container], .js-page-content-wrapper, .page-content-wrapper__inner",
+  );
+  scrollEls.forEach((el) => {
+    el.style.transform = "";
+    el.style.height = "";
+    el.style.overflow = "";
+  });
+}
+
 /**
  * True Springs /design clone — original HTML + CSS + JS from CLONE folder,
  * with gastronomy text/images and Hathor cream/gold remaps only.
@@ -56,28 +77,43 @@ export function GastronomySpringsDesignPage() {
     root.classList.add("js", "has-hover");
     root.classList.remove("no-js", "not-ready");
     body.setAttribute("data-barba", "wrapper");
+    unlockNativeStickyScroll();
     ensurePublicScrollController();
 
     for (const href of STYLE_HREFS) loadStylesheet(href);
 
+    const mo = new MutationObserver(() => {
+      if (root.classList.contains("has-scroll-smooth")) {
+        unlockNativeStickyScroll();
+      }
+    });
+    mo.observe(root, { attributes: true, attributeFilter: ["class"] });
+
     let cancelled = false;
+    let unlockTimer = 0;
 
     (async () => {
       try {
-        // Give styles a tick, then mount Springs engine (same order as design/index.html)
         await new Promise((r) => window.setTimeout(r, 50));
         if (cancelled) return;
         for (const src of SCRIPT_SRCS) {
           await loadScript(src);
           if (cancelled) return;
+          unlockNativeStickyScroll();
         }
-        // Springs / Barba listen for DOMContentLoaded; React mounts after it already fired
         body.dispatchEvent(
           new CustomEvent("DOMContentLoaded", { bubbles: true }),
         );
+        unlockNativeStickyScroll();
         window.dispatchEvent(new Event("resize"));
         window.dispatchEvent(new Event("scroll"));
         root.classList.remove("not-ready");
+        // Springs may re-enable smooth scroll a few frames later
+        unlockTimer = window.setInterval(unlockNativeStickyScroll, 250);
+        window.setTimeout(() => {
+          window.clearInterval(unlockTimer);
+          unlockTimer = 0;
+        }, 4000);
       } catch (err) {
         console.error("[gastronomy-springs]", err);
       }
@@ -85,6 +121,8 @@ export function GastronomySpringsDesignPage() {
 
     return () => {
       cancelled = true;
+      mo.disconnect();
+      if (unlockTimer) window.clearInterval(unlockTimer);
       root.removeAttribute("data-gastronomy-mask");
       body.removeAttribute("data-barba");
       ensurePublicScrollController();
@@ -95,7 +133,6 @@ export function GastronomySpringsDesignPage() {
     <div
       ref={hostRef}
       className="gastronomy-springs-host"
-      // Exact Springs design markup (transformed text/images only)
       dangerouslySetInnerHTML={{ __html: GASTRONOMY_SPRINGS_HTML }}
     />
   );

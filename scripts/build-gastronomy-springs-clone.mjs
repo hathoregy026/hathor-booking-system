@@ -173,6 +173,18 @@ html = html.replace(
   },
 );
 
+// Catch every remaining media/cache URL (img src, data-src, srcset) — sources often
+// remapped while the fallback <img src> still pointed at missing Springs cache files.
+html = html.replace(
+  /(?:\/gastronomy-springs)?\/media\/cache\/[^"'\s>]+/gi,
+  (path) => {
+    for (const [re, dest] of imageMap) {
+      if (re.test(path)) return dest;
+    }
+    return MEDIA.hero;
+  },
+);
+
 // Text replacements (order matters — longer first)
 const bodyReplacements = [
   [
@@ -231,6 +243,35 @@ const bodyReplacements = [
   [/62-347 m<sup>2<\/sup> area/g, "Outdoor Restaurant"],
   [/Unique transformable glazing/g, "Indoor Bar"],
   [/Designer finishings/g, "Outdoor Bar"],
+  [/Townhouses/g, "Lounge Bars"],
+  [/Garden of Fulfilled Expectations/g, "Where Taste Meets the Nile"],
+  [
+    /Our boutique townhouses embody intimate coziness\. The&nbsp;day(?:'|’)s worries fade away like shadows of&nbsp;butterfly wings, when you step onto the&nbsp;sunlit ground-floor patio\. Here, you can stroll in&nbsp;light shoes, feel the&nbsp;gentle breeze, and close your eyes as&nbsp;the&nbsp;sun warmly kisses your face\./g,
+    "With two elegant restaurants and relaxing lounge bars, every moment becomes a celebration of taste and tranquility.",
+  ],
+  [/5 townhouses/g, "Indoor Bar"],
+  [/174-378 m<sup>2<\/sup> area/g, "Outdoor Bar"],
+  [/Ceiling heights up to 4 meters/g, "Nile-front views"],
+  [/Private patio/g, "Candlelit dinners"],
+  [/Penthouses/g, "Fine Dining"],
+  [/Glowing Perspectives/g, "A Sensory Culinary Journey"],
+  [
+    /When you live in&nbsp;this&nbsp;penthouse, you feel like you own a&nbsp;piece of&nbsp;the&nbsp;sky\. Here, sublime feelings transform into&nbsp;higher possibilities\. Declare love, dare to&nbsp;skyrocket your career, or&nbsp;devise a&nbsp;million-dollar idea\. Here, you can do it&nbsp;with&nbsp;ease\. At&nbsp;Springs, you can dream, plan boldly, and enjoy life&nbsp;&mdash; here and now\./g,
+    "Hathor Cruise Egypt offers more than scenery &mdash; it offers a sensory journey through Egypt&rsquo;s culinary heritage.",
+  ],
+  [/7 penthouses/g, "Gourmet lunches"],
+  [/Luxurious terraces/g, "Starlit dinners"],
+  [/Beauty at&nbsp;Your Fingertips/g, "Continue exploring"],
+  [/Amenities/g, "Experiences"],
+  [
+    /The&nbsp;architects of&nbsp;the&nbsp;acclaimed Istanbul-based bureau Tabanlioglu masterfully frame the&nbsp;world(?:'|’)s leading megapolises with&nbsp;the&nbsp;silhouettes of&nbsp;their glistening buildings\./g,
+    "Skilled chefs craft each dish using seasonal, locally sourced ingredients, honoring both tradition and innovation.",
+  ],
+  [/Bureau(?:'|’)s signature projects:/g, "Signature dining moments:"],
+  [
+    /The&nbsp;architects divided the&nbsp;uniform transparent facade into&nbsp;three vertical sections, with&nbsp;the&nbsp;terraces situated in&nbsp;the&nbsp;recesses\. This is&nbsp;how we graft rhythmic beauty with&nbsp;functional elegance\./g,
+    "From buffet spreads to &agrave; la carte, every service is paced for unhurried Nile evenings.",
+  ],
 ];
 
 for (const [re, to] of bodyReplacements) {
