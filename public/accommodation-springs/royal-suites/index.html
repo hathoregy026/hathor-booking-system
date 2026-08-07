@@ -353,16 +353,7 @@
   font-display: swap;
 }
 
-  @font-face {
-    font-family: "Hathor Display";
-    src: url("/fonts/Gamgote-Regular.otf") format("opentype");
-    font-display: swap;
-  }
-  @font-face {
-    font-family: "Hathor Body";
-    src: url("/fonts/agraham-regular.ttf") format("truetype");
-    font-display: swap;
-  }
+  /* Face names resolve via injected hathor-fonts.css */
   :root {
     --c-beige-background: #f5eacf;
     --c-beige-background-rgb: 245, 234, 207;
@@ -389,7 +380,9 @@
   body {
     background: #f5eacf !important;
     color: #b69f64;
-    font-family: "Hathor Body", "TT Commons", sans-serif;
+    font-family: "Piloner Thin", "TT Commons", sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
   }
   .ui-dark, .ui-dark-background, .ui-dark.ui-background {
     --t-background: #b69f64;
@@ -413,11 +406,52 @@
     background-color: #f5eacf !important;
     color: #b69f64 !important;
   }
-  .g1, .h0, .h1, .h2, .h3 {
-    font-family: "Hathor Display", "Gamgote", Georgia, serif !important;
+  /*
+   * Display only on true display titles. Springs uses .h3 for body/stats —
+   * Gamgote + leading-trim there caused overlapping lines.
+   */
+  .g1, .h0, .h1, .h2 {
+    font-family: "Gamgote", Georgia, serif !important;
+    line-height: 1.18 !important;
+    letter-spacing: -0.015em;
   }
-  .text-c1, .text-c2, p, .btn__text {
-    font-family: "Hathor Body", "Agraham", sans-serif;
+  .h3, .de-projects__slider-item__text,
+  .de-flats__item .h3, .more-block .h3 {
+    font-family: "Quiet Luxury Serif", "Italiana", Georgia, serif !important;
+    line-height: 1.45 !important;
+    letter-spacing: 0.01em;
+    font-weight: 400;
+  }
+  .text-c1, .text-c2, .text-c2-small, p, .btn__text,
+  .de-projects__text .text-c2,
+  .de-flats__item p,
+  .de-balcons__text,
+  .de-materials__text,
+  .de-gallery__caption,
+  .more-block__text {
+    font-family: "Piloner Thin", "TT Commons", sans-serif !important;
+    line-height: 1.65 !important;
+    letter-spacing: 0.02em;
+    font-weight: 400;
+  }
+  /* Neutralize Springs leading-trim that collapses custom font metrics */
+  .leading-trim {
+    margin-block: 0 !important;
+    padding-block: 0.12em 0.18em !important;
+  }
+  .leading-trim.text-c1,
+  .leading-trim.text-c2,
+  .leading-trim.h3,
+  p.leading-trim,
+  .h3.leading-trim {
+    line-height: 1.65 !important;
+  }
+  .g1.leading-trim,
+  .h0.leading-trim,
+  .h1.leading-trim,
+  .h2.leading-trim {
+    line-height: 1.18 !important;
+    padding-block: 0.04em 0.1em !important;
   }
   .ui-light .g1, .ui-light .h0, .ui-light .h1, .ui-light .h2, .ui-light .h3,
   .ui-light .text-c1, .ui-light .text-c2 { color: #b69f64; }
@@ -431,13 +465,21 @@
   #de-projects .de-projects__caption .g1,
   #de-projects .de-projects__caption .h3,
   .more-block__caption .h0 { color: #f5eacf; }
+  #de-intro .de-intro__caption .h3,
+  #de-projects .de-projects__caption .h3,
+  .more-block__caption .h3 {
+    font-family: "Piloner Thin", "TT Commons", sans-serif !important;
+    line-height: 1.55 !important;
+    max-width: 32ch;
+  }
   #de-intro .de-intro__caption-title.is-hidden--lg-up img { opacity: 0; }
   #de-intro .de-intro__caption-title.is-hidden--lg-up::after {
     color: #f5eacf;
     content: "Royal Suites";
-    font-family: "Hathor Display", "Gamgote", Georgia, serif;
+    font-family: "Gamgote", Georgia, serif;
     font-size: clamp(2.6rem, 12vw, 5.5rem);
-    line-height: 0.9;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
   }
   #de-projects .de-projects__slider-item[data-content-animation-item="4"] {
     display: block !important;
@@ -1159,7 +1201,7 @@
                 <div class="de-intro__caption-subtitle">
                     <p class="h3 leading-trim text-right text-left:lg" data-reveal="text">
                         Royal Suites<br>
-56 m² · Nile Whisper
+Stories of the Nile
                     </p>
                 </div>
 
@@ -1187,7 +1229,7 @@
                         data-parallax--150-0='{"margin-bottom": "-60px", "margin-top": "35px"}'
                     >
                         <h3 class="h3 leading-trim"  data-reveal="text">
-                            Luxury Royal Suites and Nile whisper stories of kings&mdash;designed for privacy, historic decoration, and modern conveniences aboard Hathor Dahabiya.
+                            Royal Suites aboard Hathor&mdash;generous space, historic grace, and modern ease on a private Dahabiya.
                         </h3>
                     </div>
 
@@ -1366,7 +1408,7 @@
         </noscript>
 
                                 <p class="de-projects__slider-item__text h3 leading-trim">
-                                    Royal Suite<br>Luxor / Aswan / Luxor
+                                    Royal Suite<br>Luxor · Aswan · Luxor
                                 </p>
 
                                         
@@ -1422,7 +1464,7 @@
         </noscript>
 
                                 <p class="de-projects__slider-item__text h3 leading-trim">
-                                    Royal Suite<br>Aswan / Luxor
+                                    Royal Suite<br>Aswan to Luxor
                                 </p>
 
                                         
@@ -1478,7 +1520,7 @@
         </noscript>
 
                                 <p class="de-projects__slider-item__text h3 leading-trim">
-                                    Royal Suite<br>Luxor / Aswan
+                                    Royal Suite<br>Luxor to Aswan
                                 </p>
 
                                         
@@ -1517,7 +1559,7 @@
                         
                         >
                             <h3 class="h3 leading-trim" data-reveal="text">
-                                Experience a luxury authentic journey in our Royal Suite Nile Cruise aboard the Hathor Dahabiya Cruise Egypt&mdash;a memorable Luxury Nile Sailing Boat on a private Dahabiya Nile cruise.
+                                Sail Egypt aboard Hathor in a Royal Suite&mdash;a memorable private Dahabiya journey between the monuments of Luxor and Aswan.
                             </h3>
                         </div>
                     </div>
@@ -1666,7 +1708,7 @@
                 data-parallax-pattern="captionsTitle"
             >
                 <h3 class="h1 leading-trim" data-reveal="title">
-                    Authenticity, royalty,<br>and forever luxury.
+                    Privacy. Craft.<br>River majesty.
                 </h3>
             </div>
             <div class="de-captions__content-text col col--md-3"
@@ -1674,7 +1716,7 @@
                 data-parallax-pattern="captionsText"
             >
                 <p lass="leading-trim"  data-reveal="text">
-                    Panoramic windows and a private balcony&mdash;unforgettable Nile views as you sail Luxor and Aswan.
+                    Panoramic windows and a private balcony&mdash;the Nile as you sail between Luxor and Aswan.
                 </p>
             </div>
         </div>
@@ -1690,12 +1732,12 @@
 >
     <div class="mb-3">
         <h3 class="h0 leading-trim text-right" data-reveal="title">
-            Stories of Kings
+            Whispers of Kings
         </h3>
     </div>
     <div class="de-balcons__content-text col col--md-3 mb-1">
         <p lass="leading-trim" data-reveal="text">
-            Lose yourself in the heart of the Nile with Royal Suites tailored for those who appreciate authenticity, royalty, and comfort.
+            Lose yourself in the heart of the Nile&mdash;Royal Suites for those who prefer authenticity, space, and quiet splendour.
         </p>
     </div>
 
@@ -2027,12 +2069,12 @@
 
     <div class="de-materials__uptitle">
         <span class="text-c1 leading-trim" data-reveal="text">
-            Royal Suite Details
+            Royal Details
         </span>
     </div>
     <div class="col col--xs-4 col--md-7 mb-7:lg">
         <h3 class="h1 leading-trim" data-reveal="title">
-            Jacuzzi, smart systems, panoramic Nile view, and 56 square meters of private sanctuary.
+            Jacuzzi, smart systems, panoramic Nile view&mdash;fifty-six square metres of private sanctuary.
         </h3>
     </div>
 
@@ -2078,7 +2120,7 @@
 
     <div class="de-materials__text ml-auto mr-0">
         <p lass="leading-trim" data-reveal="text">
-            Traditional craftsmanship blends seamlessly with modern luxury&mdash;the perfect setting for an unforgettable private Dahabiya Nile cruise.
+            Traditional Egyptian craftsmanship meets modern luxury&mdash;the setting for an unforgettable private Nile voyage.
         </p>
     </div>
 </div>        
@@ -2105,7 +2147,7 @@
                                 <div class="de-slider__scrollbar-container row">
                     <div class="de-slider__caption__title text-right mr-0.5">
                         <h3 class="h3 leading-trim">
-                            Private<br>Royal<br>Retreat
+                            A Royal<br>Nile<br>Retreat
                         </h3>
                     </div>
                     <div class="de-slider__scrollbar mr-layout">
@@ -2134,7 +2176,7 @@
                             >
                                 <div class="de-slider__caption__text">
                                       <p class="text-t1 leading-trim">
-                                        Bathtub or walk-in shower, Jacuzzi calm, and the hush of a Private Royal Suite with Nile View after temple shores.
+                                        Bathtub or walk-in shower, Jacuzzi calm, and the hush of a Royal Suite after temple shores.
                                     </p>
                                 </div>
                               
@@ -2149,7 +2191,7 @@
                             >
                                 <div class="de-slider__caption__text">
                                       <p class="text-t1 leading-trim">
-                                        Step into the Signature Royal Suite and lose yourself in forever luxury aboard a private Dahabiya Nile cruise.
+                                        Step into the Signature Royal Suite and settle into forever luxury on a private Dahabiya.
                                     </p>
                                 </div>
                               
@@ -2361,7 +2403,7 @@
 
             <div class="px-layout pt-1 mb-1">
                 <p class="h3 leading-trim">
-                    Private<br>Royal<br>Retreat
+                    A Royal<br>Nile<br>Retreat
                 </p>
             </div>
             <div
@@ -2387,7 +2429,7 @@
       
 
                             <p class="text-t1 leading-trim">
-                                Bathtub or walk-in shower, Jacuzzi calm, and the hush of a Private Royal Suite with Nile View after temple shores.
+                                Bathtub or walk-in shower, Jacuzzi calm, and the hush of a Royal Suite after temple shores.
                             </p>
                         </div>
 
@@ -2400,7 +2442,7 @@
       
 
                             <p class="text-t1 leading-trim">
-                                Step into the Signature Royal Suite and lose yourself in forever luxury aboard a private Dahabiya Nile cruise.
+                                Step into the Signature Royal Suite and settle into forever luxury on a private Dahabiya.
                             </p>
                         </div>
 
@@ -2450,7 +2492,7 @@
 
                                                                                                 <div class="p-relative px-layout mb-1 is-hidden--lg-up">
                         <p lass="leading-trim" data-reveal="text">
-                            7 nights Luxor–Aswan–Luxor. 3 nights Aswan to Luxor. 4 nights Luxor to Aswan.
+                            Seven, four, or three nights.<br>Luxor and Aswan await.
                         </p>
                     </div>
                             
@@ -2493,7 +2535,7 @@
                         <div class="col col--md-3 de-gallery__col--no-stretch ml-2 pt-2 is-hidden--md-down"
                                                     >
                             <p class="leading-trim" data-reveal="text">
-                                Request Royal Suite availability with Hathor Concierge.
+                                Enquire with Hathor Concierge.
                             </p>
                         </div>
                     </div>
@@ -2539,7 +2581,7 @@
                         <div class="col col--md-3 de-gallery__col--no-stretch ml-1 pb-3 is-hidden--md-down"
                                                     >
                             <p class="leading-trim" data-reveal="text">
-                                7 nights Luxor–Aswan–Luxor. 3 nights Aswan to Luxor. 4 nights Luxor to Aswan.
+                                Seven, four, or three nights.<br>Luxor and Aswan await.
                             </p>
                         </div>
                     </div>
@@ -2547,7 +2589,7 @@
 
                                                                     <div class="p-relative px-layout mt-2 is-hidden--lg-up">
                         <p lass="leading-trim" data-reveal="text">
-                            Request Royal Suite availability with Hathor Concierge.
+                            Enquire with Hathor Concierge.
                         </p>
                     </div>
                                                                 
@@ -2664,7 +2706,7 @@
 
                         <div class="de-flats__text-text">
                 <p class="leading-trim">
-                    They are designed for privacy and luxury, featuring Hathor elegant interior, historic decorations, and modern conveniences that comprise a luxurious fine stay.
+                    Designed for privacy and ease: elegant interiors, historic accents, and modern comforts for a fine stay on the Nile.
                 </p>
             </div>
             <div>
@@ -2680,12 +2722,12 @@
                 </div>
                                                             <div class="de-flats__list-item  py-0.5:lg">
                     <p class="h3 leading-trim">
-                        Maximum 2 Persons
+                        For two guests
                     </p>
                 </div>
                                                             <div class="de-flats__list-item  pt-0.5:lg">
                     <p class="h3 leading-trim">
-                        Maximum 4 Persons
+                        For up to four guests
                     </p>
                 </div>
                         </div>
@@ -2696,7 +2738,7 @@
 <div class="de-flats__text ui-light-background col col--lg-6 mr-0 ml-auto ui-light px-layout pt-1 is-hidden--lg-up" data-themed-class="ui-light">
         <div class="de-flats__text-text mb-1 mb-2:lg p-relative">
         <p class="leading-trim">
-            They are designed for privacy and luxury, featuring Hathor elegant interior, historic decorations, and modern conveniences that comprise a luxurious fine stay.
+            Designed for privacy and ease: elegant interiors, historic accents, and modern comforts for a fine stay on the Nile.
         </p>
     </div>
 
@@ -2712,12 +2754,12 @@
         </div>
                             <div class="de-flats__list-item p-relative py-1 py-0.5:lg">
             <p class="h3 leading-trim">
-                Maximum 2 Persons
+                For two guests
             </p>
         </div>
                             <div class="de-flats__list-item p-relative pt-1 pt-0.5:lg">
             <p class="h3 leading-trim">
-                Maximum 4 Persons
+                For up to four guests
             </p>
         </div>
     </div>
@@ -2830,7 +2872,7 @@
 
                         <div class="de-flats__text-text">
                 <p class="leading-trim">
-                    The Royal Suite with Panoramic Nile View features panoramic windows and a private balcony, allowing unforgettable views of the Nile as you sail through Luxor and Aswan.
+                    Panoramic windows and a private balcony open onto unforgettable river views as you sail through Luxor and Aswan.
                 </p>
             </div>
             <div>
@@ -2846,17 +2888,17 @@
                 </div>
                                                             <div class="de-flats__list-item  py-0.5:lg">
                     <p class="h3 leading-trim">
-                        Ceiling heights up&nbsp;to&nbsp;4 meters
+                        Panoramic Nile windows
                     </p>
                 </div>
                                                             <div class="de-flats__list-item  py-0.5:lg">
                     <p class="h3 leading-trim">
-                        Nile-facing stillness
+                        Temple-shore stillness
                     </p>
                 </div>
                                                             <div class="de-flats__list-item  pt-0.5:lg">
                     <p class="h3 leading-trim">
-                        Maximum 4 Persons
+                        For up to four guests
                     </p>
                 </div>
                         </div>
@@ -2867,7 +2909,7 @@
 <div class="de-flats__text ui-dark-background col col--lg-6 mr-0 ml-auto ui-dark px-layout pt-1 is-hidden--lg-up" data-themed-class="ui-dark">
         <div class="de-flats__text-text mb-1 mb-2:lg p-relative">
         <p class="leading-trim">
-            The Royal Suite with Panoramic Nile View features panoramic windows and a private balcony, allowing unforgettable views of the Nile as you sail through Luxor and Aswan.
+            Panoramic windows and a private balcony open onto unforgettable river views as you sail through Luxor and Aswan.
         </p>
     </div>
 
@@ -2883,17 +2925,17 @@
         </div>
                             <div class="de-flats__list-item p-relative py-1 py-0.5:lg">
             <p class="h3 leading-trim">
-                Ceiling heights up&nbsp;to&nbsp;4 meters
+                Panoramic Nile windows
             </p>
         </div>
                             <div class="de-flats__list-item p-relative py-1 py-0.5:lg">
             <p class="h3 leading-trim">
-                Nile-facing stillness
+                Temple-shore stillness
             </p>
         </div>
                             <div class="de-flats__list-item p-relative pt-1 pt-0.5:lg">
             <p class="h3 leading-trim">
-                Maximum 4 Persons
+                For up to four guests
             </p>
         </div>
     </div>
@@ -3006,8 +3048,8 @@
 
                         <div class="de-flats__text-text">
                 <p class="leading-trim">
-                    For visitors who seek added exclusivity, the Private Royal Suite with Nile View provides a peaceful retreat and luxury furniture with personalized comfort aboard Hathor Luxury Dahabiya.<br><br />
-A Royal Suite, a quiet river, and time entirely your own.
+                    For added exclusivity, the Private Royal Suite offers a peaceful retreat with tailored comfort aboard Hathor Dahabiya.<br><br />
+A Royal Suite. The Nile. Time entirely your own.
                 </p>
             </div>
             <div>
@@ -3018,7 +3060,7 @@ A Royal Suite, a quiet river, and time entirely your own.
                 </div>
                                                             <div class="de-flats__list-item  py-0.5:lg">
                     <p class="h3 leading-trim">
-                        Ceiling heights up&nbsp;to&nbsp;4 meters
+                        Panoramic Nile windows
                     </p>
                 </div>
                                                             <div class="de-flats__list-item  py-0.5:lg">
@@ -3028,7 +3070,7 @@ A Royal Suite, a quiet river, and time entirely your own.
                 </div>
                                                             <div class="de-flats__list-item  pt-0.5:lg">
                     <p class="h3 leading-trim">
-                        Maximum 4 Persons
+                        For up to four guests
                     </p>
                 </div>
                         </div>
@@ -3039,8 +3081,8 @@ A Royal Suite, a quiet river, and time entirely your own.
 <div class="de-flats__text ui-light-background col col--lg-6 mr-0 ml-auto ui-light px-layout pt-1 is-hidden--lg-up" data-themed-class="ui-light">
         <div class="de-flats__text-text mb-1 mb-2:lg p-relative">
         <p class="leading-trim">
-            For visitors who seek added exclusivity, the Private Royal Suite with Nile View provides a peaceful retreat and luxury furniture with personalized comfort aboard Hathor Luxury Dahabiya.<br><br />
-A Royal Suite, a quiet river, and time entirely your own.
+            For added exclusivity, the Private Royal Suite offers a peaceful retreat with tailored comfort aboard Hathor Dahabiya.<br><br />
+A Royal Suite. The Nile. Time entirely your own.
         </p>
     </div>
 
@@ -3051,7 +3093,7 @@ A Royal Suite, a quiet river, and time entirely your own.
         </div>
                             <div class="de-flats__list-item p-relative py-1 py-0.5:lg">
             <p class="h3 leading-trim">
-                Ceiling heights up&nbsp;to&nbsp;4 meters
+                Panoramic Nile windows
             </p>
         </div>
                             <div class="de-flats__list-item p-relative py-1 py-0.5:lg">
@@ -3061,7 +3103,7 @@ A Royal Suite, a quiet river, and time entirely your own.
         </div>
                             <div class="de-flats__list-item p-relative pt-1 pt-0.5:lg">
             <p class="h3 leading-trim">
-                Maximum 4 Persons
+                For up to four guests
             </p>
         </div>
     </div>
@@ -3356,7 +3398,7 @@ A Royal Suite, a quiet river, and time entirely your own.
 
             <div class="footer__bottom">
                 <p class="text-c2-small leading-trim text-color-small">
-                    Royal Suite imagery and descriptions are curated for illustration. Availability, itineraries, and pricing are confirmed with Hathor&rsquo;s reservations desk. All Hathor content and design remain protected.
+                    Imagery is curated for illustration. Availability, itineraries, and tariffs are confirmed with Hathor Concierge. All Hathor content remains protected.
                     <br>
                     <br>
                     &copy; 2026. All rights reserved.

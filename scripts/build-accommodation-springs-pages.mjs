@@ -121,97 +121,98 @@ const PAGES = [
     copy: [
       [
         "Harmony in&nbsp;Greenery <br>\nand Glass",
-        "Luxury Rooms<br>\n22 m² · Nile View",
+        "Luxury Rooms<br>\nPanoramic Nile Cabins",
       ],
       [
         "Springs resembles streams of&nbsp;transparent air and clear water sculpted into&nbsp;an&nbsp;asymmetrical glass tower that soars towards&nbsp;the&nbsp;sky. Wave-like&nbsp;longlines wrap around&nbsp;the&nbsp;facade and reveal verdant terraces that offer a&nbsp;vantage point for&nbsp;observation and introspection.",
-        "Every cabin offers a peaceful retreat with wide-ranging Nile views&mdash;an exclusive Dahabiya-style journey without other travelers aboard.",
+        "A private Dahabiya cabin on the Nile&mdash;quiet light, refined craft, and an unbroken view of Egypt&rsquo;s eternal river.",
       ],
-      ["Crystal-Clear Vision", "Panoramic Nile Calm"],
+      ["Crystal-Clear Vision", "River Light &amp; Stillness"],
       [
         "Glowing building of&nbsp;limitless light resembles a&nbsp;lens refracting a&nbsp;kaleidoscope of&nbsp;reflections.",
-        "Boutique cabins<br>shaped for stillness.",
+        "Boutique cabins<br>for private sailing.",
       ],
       [
         "The&nbsp;concept of&nbsp;Springs is to&nbsp;merge architecture and nature within&nbsp;the&nbsp;optical focus of&nbsp;a&nbsp;vision reaching into&nbsp;tomorrow.",
-        "Temple shores by day.<br>Cabin quiet by night.",
+        "Temples by day.<br>Cabin hush by night.",
       ],
       [
         "Ultra-transparent panoramic windows, aluminum panels with&nbsp;restrained luster, natural oak-framed loggias, marble flooring",
-        "Soft light, handcrafted detail, and panoramic glass open onto the eternal Nile.",
+        "Panoramic glass, soft textiles, and handcrafted detail open onto Luxor and Aswan&rsquo;s river banks.",
       ],
-      ["Frozen Music", "Morning River Light"],
+      ["Frozen Music", "Dawn on the Nile"],
       [
         "Springs resembles a&nbsp;waterfall that ceased flowing, as&nbsp;if you could hear roaring cascades and the&nbsp;delicate chiming of&nbsp;scattered drops in&nbsp;a&nbsp;matter of&nbsp;seconds. How did we create this effect?",
-        "Wake to temple banks and soft water. Return to elegant decor, dedicated staff, and a cabin made for quiet recovery.",
+        "Wake to temple silhouettes and silver water. Return from Karnak or Philae to a cabin composed for quiet recovery.",
       ],
-      ["Aristocratic Quartet", "Cabin Comfort Details"],
+      ["Aristocratic Quartet", "Cabin Comforts"],
       [
         "Glass, metal, stone, and wood&nbsp;&mdash; the&nbsp;four elements that define the&nbsp;essence of&nbsp;Springs, an&nbsp;airy yet durable structure.",
-        "LED screens, walk-in shower or bathtub, safe box, tea facilities&mdash;crafted for Nile nights.",
+        "Climate, walk-in shower or bathtub, tea service, and discreet modern systems&mdash;shaped for Nile nights.",
       ],
       [
         "High-clarity glass makes our building appear levitating, while stone and wood allow you to&nbsp;feel the&nbsp;essence of&nbsp;time&nbsp;&mdash; time that you'll wish to&nbsp;halt again and again to&nbsp;admire the&nbsp;elegance that adorns your life.",
-        "Air-conditioned cool, handcrafted finishes, and private space to sail the Timeless Nile without compromise.",
+        "Cool air, Egyptian craftsmanship, and private sailing between the monuments of Upper Egypt&mdash;without another vessel in your company.",
       ],
-      ["Rich<br>\nInterior<br>\nLife", "Quiet<br>Cabin<br>Sanctuary"],
+      ["Rich<br>\nInterior<br>\nLife", "A Cabin<br>of Quiet<br>Luxury"],
       [
         "Imagine bathing in&nbsp;the&nbsp;crystal-clear pool, your whole body feeling light and energized. The&nbsp;splashing water carrying all superficial thoughts away. You emerge, feeling pleasant coolness on&nbsp;your skin.",
-        "Bathtub or walk-in shower, soft river light, and the hush of a private Dahabiya cabin after shore excursions.",
+        "Bathe in soft river light after shore excursions. The Nile sets the pace; your cabin holds the silence.",
       ],
       [
         "Our fitness center, offering state-of-the-art equipment, supports your health and well-being. Panoramic windows and comfortable environment guarantee your full satisfaction.",
-        "Hathor fine dining showcases regional dishes in a close-knit setting&mdash;an Exclusive Private Small Luxury Nile Cruise.",
+        "Evenings unfold with Hathor dining&mdash;regional flavours in an intimate salon, reserved for guests alone aboard.",
       ],
-      ["Art Gallery<br>\nof&nbsp;Your Life", "Cabins for<br>Timeless Journeys"],
+      ["Art Gallery<br>\nof&nbsp;Your Life", "Cabins for<br>Nile Journeys"],
       [
         "Our viewing terraces will surround you with&nbsp;beauty of&nbsp;botanical sculptures.",
-        "Luxor to Aswan. Three, four, or seven nights. Your cabin remains the constant.",
+        "Sail Luxor to Aswan.<br>Your cabin remains constant.",
       ],
       [
         "Our Wellness center will greet you with&nbsp;beauty chiseled in&nbsp;marble and dissolved in&nbsp;water.",
-        "Request cabin availability with Hathor Concierge.",
+        "Enquire with Hathor Concierge.",
       ],
-      ["Limitless vision", "Boutique Nile Cabins"],
+      ["Limitless vision", "Private Nile Cabins"],
       ["Continue exploring", "Explore Voyages"],
       ["Townhouses", "Elegant Suites"],
       ["Penthouses", "Royal Suites"],
       ["Amenities", "Cabin Comforts"],
       [
         "At&nbsp;Springs, you can dream, plan boldly, and enjoy life&nbsp;&mdash; here and now.",
-        "A private cabin, a quiet river, and time entirely your own.",
+        "A private cabin. The Nile. Time entirely your own.",
       ],
     ],
     story: {
       overviewLead:
-        "The Hathor Dahabiya provides an Elegant, Private Dahabiya Cruise&mdash;Dive into the Authentic Boutique Nile Cruise experience tailored for travelers who want the Timeless Nile River.",
-      course1: "Luxury King Bed<br>Luxor / Aswan / Luxor",
-      course2: "Luxury Cabin<br>Aswan to Luxor",
-      course3: "Luxury Cabin<br>Luxor to Aswan",
+        "Aboard Hathor, a private Dahabiya, each Luxury Room is a calm retreat between Luxor and Aswan&mdash;crafted for travellers who prefer the Nile at an intimate scale.",
+      course1: "Seven Nights<br>Luxor · Aswan · Luxor",
+      course2: "Three Nights<br>Aswan to Luxor",
+      course3: "Four Nights<br>Luxor to Aswan",
       flatsBody:
-        "Every cabin offers a peaceful and relaxing space with wide-ranging Nile views in complete comfort&mdash;an exclusive Dahabiya-style journey without other travelers aboard.",
+        "Each cabin frames the Nile in soft light and quiet comfort&mdash;an exclusive Dahabiya voyage with no other travellers aboard.",
       townhousesBody:
-        "Visit majestic temples and ancient sites, then return to elegant decor and dedicated staff. Hathor fine dining showcases traditional regional dishes in a close-knit setting.",
+        "Walk the temples of Luxor and Aswan, then return to elegant interiors and attentive service. Evenings belong to Hathor&rsquo;s private table and the river beyond the glass.",
       penthousesBody:
-        "The Hathor Dahabiya Nile cruise experience delivers exceptional comfort and exclusive experiences that create enduring memories for all visitors to Egypt.",
+        "From Karnak to Philae, the journey becomes memory: refined cabins, unhurried sailing, and the enduring landscape of ancient Egypt.",
       flatsLabel: "Luxury Rooms",
       townhousesLabel: "Luxury Suites",
       penthousesLabel: "Royal Suites",
       flatsStat1: "8 Luxury Cabins",
       flatsStat2: "22 m<sup>2</sup> · Nile view",
-      flatsStat3: "Maximum 2 Persons",
+      flatsStat3: "For two guests",
       townStat1: "2 Elegant Suites",
       townStat2: "Spacious suite living",
-      townStat3: "Panoramic windows",
+      townStat3: "Panoramic Nile windows",
+      townStatExtra: "Temple-shore stillness",
       pentStat1: "2 Royal Suites",
       pentStat2: "56 m<sup>2</sup> · Nile view",
       pentStat3: "Private balcony",
       balcon1:
-        "Panoramic cabin windows open onto river light&mdash;temple banks and soft water become the backdrop to morning coffee and evening stillness.",
+        "Floor-to-ceiling glass opens onto river light&mdash;palm banks and temple silhouettes become the backdrop to morning coffee and dusk.",
       balcon2:
-        "Thoughtful cabin systems wait a few steps from your bed&mdash;LED screens, climate, tea facilities, and quiet modern comfort shaped for Nile nights.",
+        "Discreet cabin systems rest a step from the bed&mdash;climate, entertainment, and tea service composed for nights on the Nile.",
       legal:
-        "Cabin imagery and descriptions are curated for illustration. Availability, itineraries, and pricing are confirmed with Hathor&rsquo;s reservations desk. All Hathor content and design remain protected.",
+        "Imagery is curated for illustration. Availability, itineraries, and tariffs are confirmed with Hathor Concierge. All Hathor content remains protected.",
     },
   },
   {
@@ -247,56 +248,56 @@ const PAGES = [
     copy: [
       [
         "Harmony in&nbsp;Greenery <br>\nand Glass",
-        "Luxury Suites<br>\nRiver Sanctuaries",
+        "Luxury Suites<br>\nPrivate Nile Sanctuaries",
       ],
       [
         "Springs resembles streams of&nbsp;transparent air and clear water sculpted into&nbsp;an&nbsp;asymmetrical glass tower that soars towards&nbsp;the&nbsp;sky. Wave-like&nbsp;longlines wrap around&nbsp;the&nbsp;facade and reveal verdant terraces that offer a&nbsp;vantage point for&nbsp;observation and introspection.",
-        "Discover effortless luxury in the Accessible Hathor Suite&mdash;a spacious, elegantly designed retreat crafted for comfort, ease, and refined living.",
+        "Spacious suites aboard Hathor&mdash;composed for ease, privacy, and the slow rhythm of a private Nile voyage.",
       ],
       ["Crystal-Clear Vision", "Suite Light · Nile Horizon"],
       [
         "Glowing building of&nbsp;limitless light resembles a&nbsp;lens refracting a&nbsp;kaleidoscope of&nbsp;reflections.",
-        "Elegant suites<br>for unmatched privacy.",
+        "Elegant suites<br>reserved for few.",
       ],
       [
         "The&nbsp;concept of&nbsp;Springs is to&nbsp;merge architecture and nature within&nbsp;the&nbsp;optical focus of&nbsp;a&nbsp;vision reaching into&nbsp;tomorrow.",
-        "Authenticity with luxury.<br>Stillness with craft.",
+        "Egyptian craft.<br>Modern calm.",
       ],
       [
         "Ultra-transparent panoramic windows, aluminum panels with&nbsp;restrained luster, natural oak-framed loggias, marble flooring",
-        "Timeless sophistication with modern amenities&mdash;a private Dahabiya suite experience for each voyage choice.",
+        "Panoramic glass and refined interiors turn the Nile into the suite&rsquo;s true horizon.",
       ],
-      ["Frozen Music", "Accessible Hathor Suite"],
+      ["Frozen Music", "The Hathor Suite"],
       [
         "Springs resembles a&nbsp;waterfall that ceased flowing, as&nbsp;if you could hear roaring cascades and the&nbsp;delicate chiming of&nbsp;scattered drops in&nbsp;a&nbsp;matter of&nbsp;seconds. How did we create this effect?",
-        "Thoughtfully tailored so every guest feels perfectly at home, without compromise&mdash;cool air, handcrafted design, serene unwind.",
+        "Thoughtfully proportioned for every guest&mdash;cool air, handcrafted finishes, and a sanctuary after temple days.",
       ],
-      ["Aristocratic Quartet", "Suite Living Details"],
+      ["Aristocratic Quartet", "Suite Details"],
       [
         "Glass, metal, stone, and wood&nbsp;&mdash; the&nbsp;four elements that define the&nbsp;essence of&nbsp;Springs, an&nbsp;airy yet durable structure.",
-        "Warm woods, soft textiles, LED screens, walk-in showers or bathtubs&mdash;suite systems shaped for Nile nights.",
+        "Warm woods, soft textiles, walk-in shower or bathtub&mdash;suite comforts shaped for nights between Luxor and Aswan.",
       ],
       [
         "High-clarity glass makes our building appear levitating, while stone and wood allow you to&nbsp;feel the&nbsp;essence of&nbsp;time&nbsp;&mdash; time that you'll wish to&nbsp;halt again and again to&nbsp;admire the&nbsp;elegance that adorns your life.",
-        "Whether you stay in Elegant Dahabiya Suites or enjoy Royal Suites with Panoramic Nile View, you receive unmatched comfort and exclusive privacy.",
+        "Choose an Elegant Suite or ascend to a Royal Suite with panoramic Nile view&mdash;always private, always unhurried.",
       ],
-      ["Rich<br>\nInterior<br>\nLife", "Private<br>Suite<br>Horizon"],
+      ["Rich<br>\nInterior<br>\nLife", "A Suite<br>Above<br>the River"],
       [
         "Imagine bathing in&nbsp;the&nbsp;crystal-clear pool, your whole body feeling light and energized. The&nbsp;splashing water carrying all superficial thoughts away. You emerge, feeling pleasant coolness on&nbsp;your skin.",
-        "Bathtub or walk-in shower, soft suite light, and the hush of a private Dahabiya after temple shores.",
+        "Bathe in soft suite light after Philae or the Valley of the Kings. The river keeps the evening quiet.",
       ],
       [
         "Our fitness center, offering state-of-the-art equipment, supports your health and well-being. Panoramic windows and comfortable environment guarantee your full satisfaction.",
-        "Each elegant cabin is a refined haven, combining modern comforts with authentic Egyptian artistry along the majestic Nile.",
+        "Each suite pairs modern ease with Egyptian artistry&mdash;a refined haven along the majestic Nile.",
       ],
       ["Art Gallery<br>\nof&nbsp;Your Life", "Suites for<br>Private Voyages"],
       [
         "Our viewing terraces will surround you with&nbsp;beauty of&nbsp;botanical sculptures.",
-        "Luxury Rooms, Elegant Suites, and Royal Suites&mdash;choose your sanctuary aboard Hathor.",
+        "Rooms, Suites, Royal Suites.<br>Choose your sanctuary.",
       ],
       [
         "Our Wellness center will greet you with&nbsp;beauty chiseled in&nbsp;marble and dissolved in&nbsp;water.",
-        "Request suite availability with Hathor Concierge.",
+        "Enquire with Hathor Concierge.",
       ],
       ["Limitless vision", "Elegant Nile Suites"],
       ["Continue exploring", "Explore Voyages"],
@@ -305,39 +306,40 @@ const PAGES = [
       ["Amenities", "Suite Comforts"],
       [
         "At&nbsp;Springs, you can dream, plan boldly, and enjoy life&nbsp;&mdash; here and now.",
-        "A private suite, a quiet river, and time entirely your own.",
+        "A private suite. The Nile. Time entirely your own.",
       ],
     ],
     story: {
       overviewLead:
-        "Experience Hathor Dahabiya Cruise that blends authenticity with luxury, offering an unforgettable journey by the timeless Nile.",
+        "Hathor blends authenticity with quiet luxury&mdash;a private Dahabiya journey where Elegant Suites open onto the timeless Nile.",
       course1: "Luxury Rooms<br>Panoramic Cabins",
-      course2: "Elegant Suites<br>Accessible Comfort",
+      course2: "Elegant Suites<br>Refined Comfort",
       course3: "Royal Suites<br>Nile Panorama",
       flatsBody:
-        "Our Small Luxury Nile Cruise Rooms offer everything you expect from a Nile View luxury cabin and more&mdash;cool retreats with handcrafted design.",
+        "Our Luxury Rooms offer Nile-view calm in a boutique cabin&mdash;cool air, handcrafted detail, and the stillness of private sailing.",
       townhousesBody:
-        "The Elegant Nile Cruise Cabins provide a cool retreat through air-conditioned spaces which show off their handcrafted designs. Luxury Nile Cruise Rooms provide a serene, stylish environment to unwind.",
+        "Elegant Suites expand the retreat: generous proportions, refined finishes, and a serene place to unwind between temple visits.",
       penthousesBody:
-        "The Royal Suite with Panoramic Nile View delivers the highest level of luxury through exceptional views and ultimate relaxation aboard Hathor Dahabiya.",
+        "Royal Suites with panoramic Nile view deliver the highest expression of privacy and ease aboard Hathor Dahabiya.",
       flatsLabel: "Luxury Rooms",
       townhousesLabel: "Luxury Suites",
       penthousesLabel: "Royal Suites",
       flatsStat1: "8 Luxury Cabins",
       flatsStat2: "22 m<sup>2</sup> · Nile view",
-      flatsStat3: "Maximum 2 Persons",
+      flatsStat3: "For two guests",
       townStat1: "2 Elegant Suites",
       townStat2: "Accessible Hathor Suite",
       townStat3: "Refined suite living",
+      townStatExtra: "Nile-facing calm",
       pentStat1: "2 Royal Suites",
       pentStat2: "56 m<sup>2</sup> · Nile view",
       pentStat3: "Private balcony",
       balcon1:
-        "Here, the Nile becomes part of your suite. River light fills panoramic windows; temple banks become the backdrop to morning coffee and quiet conversation.",
+        "Here the Nile becomes part of the suite. River light fills the glass; temple banks frame morning coffee and quiet conversation.",
       balcon2:
-        "Hathor suite craft emphasizes panoramic glass, private calm, and modern comfort&mdash;freedom of rest, elegance of detail, and visual lightness on the water.",
+        "Panoramic windows, private calm, and modern comfort&mdash;rest, detail, and visual lightness on the water.",
       legal:
-        "Suite imagery and descriptions are curated for illustration. Availability, itineraries, and pricing are confirmed with Hathor&rsquo;s reservations desk. All Hathor content and design remain protected.",
+        "Imagery is curated for illustration. Availability, itineraries, and tariffs are confirmed with Hathor Concierge. All Hathor content remains protected.",
     },
   },
   {
@@ -374,11 +376,11 @@ const PAGES = [
     copy: [
       [
         "Harmony in&nbsp;Greenery <br>\nand Glass",
-        "Royal Suites<br>\n56 m² · Nile Whisper",
+        "Royal Suites<br>\nStories of the Nile",
       ],
       [
         "Springs resembles streams of&nbsp;transparent air and clear water sculpted into&nbsp;an&nbsp;asymmetrical glass tower that soars towards&nbsp;the&nbsp;sky. Wave-like&nbsp;longlines wrap around&nbsp;the&nbsp;facade and reveal verdant terraces that offer a&nbsp;vantage point for&nbsp;observation and introspection.",
-        "Luxury Royal Suites and Nile whisper stories of kings&mdash;designed for privacy, historic decoration, and modern conveniences aboard Hathor Dahabiya.",
+        "Royal Suites aboard Hathor&mdash;generous space, historic grace, and modern ease on a private Dahabiya.",
       ],
       ["Crystal-Clear Vision", "Royal Panorama"],
       [
@@ -387,43 +389,43 @@ const PAGES = [
       ],
       [
         "The&nbsp;concept of&nbsp;Springs is to&nbsp;merge architecture and nature within&nbsp;the&nbsp;optical focus of&nbsp;a&nbsp;vision reaching into&nbsp;tomorrow.",
-        "Authenticity, royalty,<br>and forever luxury.",
+        "Privacy. Craft.<br>River majesty.",
       ],
       [
         "Ultra-transparent panoramic windows, aluminum panels with&nbsp;restrained luster, natural oak-framed loggias, marble flooring",
-        "Panoramic windows and a private balcony&mdash;unforgettable Nile views as you sail Luxor and Aswan.",
+        "Panoramic windows and a private balcony&mdash;the Nile as you sail between Luxor and Aswan.",
       ],
-      ["Frozen Music", "Stories of Kings"],
+      ["Frozen Music", "Whispers of Kings"],
       [
         "Springs resembles a&nbsp;waterfall that ceased flowing, as&nbsp;if you could hear roaring cascades and the&nbsp;delicate chiming of&nbsp;scattered drops in&nbsp;a&nbsp;matter of&nbsp;seconds. How did we create this effect?",
-        "Lose yourself in the heart of the Nile with Royal Suites tailored for those who appreciate authenticity, royalty, and comfort.",
+        "Lose yourself in the heart of the Nile&mdash;Royal Suites for those who prefer authenticity, space, and quiet splendour.",
       ],
-      ["Aristocratic Quartet", "Royal Suite Details"],
+      ["Aristocratic Quartet", "Royal Details"],
       [
         "Glass, metal, stone, and wood&nbsp;&mdash; the&nbsp;four elements that define the&nbsp;essence of&nbsp;Springs, an&nbsp;airy yet durable structure.",
-        "Jacuzzi, smart systems, panoramic Nile view, and 56 square meters of private sanctuary.",
+        "Jacuzzi, smart systems, panoramic Nile view&mdash;fifty-six square metres of private sanctuary.",
       ],
       [
         "High-clarity glass makes our building appear levitating, while stone and wood allow you to&nbsp;feel the&nbsp;essence of&nbsp;time&nbsp;&mdash; time that you'll wish to&nbsp;halt again and again to&nbsp;admire the&nbsp;elegance that adorns your life.",
-        "Traditional craftsmanship blends seamlessly with modern luxury&mdash;the perfect setting for an unforgettable private Dahabiya Nile cruise.",
+        "Traditional Egyptian craftsmanship meets modern luxury&mdash;the setting for an unforgettable private Nile voyage.",
       ],
-      ["Rich<br>\nInterior<br>\nLife", "Private<br>Royal<br>Retreat"],
+      ["Rich<br>\nInterior<br>\nLife", "A Royal<br>Nile<br>Retreat"],
       [
         "Imagine bathing in&nbsp;the&nbsp;crystal-clear pool, your whole body feeling light and energized. The&nbsp;splashing water carrying all superficial thoughts away. You emerge, feeling pleasant coolness on&nbsp;your skin.",
-        "Bathtub or walk-in shower, Jacuzzi calm, and the hush of a Private Royal Suite with Nile View after temple shores.",
+        "Bathtub or walk-in shower, Jacuzzi calm, and the hush of a Royal Suite after temple shores.",
       ],
       [
         "Our fitness center, offering state-of-the-art equipment, supports your health and well-being. Panoramic windows and comfortable environment guarantee your full satisfaction.",
-        "Step into the Signature Royal Suite and lose yourself in forever luxury aboard a private Dahabiya Nile cruise.",
+        "Step into the Signature Royal Suite and settle into forever luxury on a private Dahabiya.",
       ],
       ["Art Gallery<br>\nof&nbsp;Your Life", "Royal Suites<br>for Rare Voyages"],
       [
         "Our viewing terraces will surround you with&nbsp;beauty of&nbsp;botanical sculptures.",
-        "7 nights Luxor–Aswan–Luxor. 3 nights Aswan to Luxor. 4 nights Luxor to Aswan.",
+        "Seven, four, or three nights.<br>Luxor and Aswan await.",
       ],
       [
         "Our Wellness center will greet you with&nbsp;beauty chiseled in&nbsp;marble and dissolved in&nbsp;water.",
-        "Request Royal Suite availability with Hathor Concierge.",
+        "Enquire with Hathor Concierge.",
       ],
       ["Limitless vision", "Luxury Royal Suites"],
       ["Continue exploring", "Explore Voyages"],
@@ -432,39 +434,40 @@ const PAGES = [
       ["Amenities", "Royal Comforts"],
       [
         "At&nbsp;Springs, you can dream, plan boldly, and enjoy life&nbsp;&mdash; here and now.",
-        "A Royal Suite, a quiet river, and time entirely your own.",
+        "A Royal Suite. The Nile. Time entirely your own.",
       ],
     ],
     story: {
       overviewLead:
-        "Experience a luxury authentic journey in our Royal Suite Nile Cruise aboard the Hathor Dahabiya Cruise Egypt&mdash;a memorable Luxury Nile Sailing Boat on a private Dahabiya Nile cruise.",
-      course1: "Royal Suite<br>Luxor / Aswan / Luxor",
-      course2: "Royal Suite<br>Aswan / Luxor",
-      course3: "Royal Suite<br>Luxor / Aswan",
+        "Sail Egypt aboard Hathor in a Royal Suite&mdash;a memorable private Dahabiya journey between the monuments of Luxor and Aswan.",
+      course1: "Royal Suite<br>Luxor · Aswan · Luxor",
+      course2: "Royal Suite<br>Aswan to Luxor",
+      course3: "Royal Suite<br>Luxor to Aswan",
       flatsBody:
-        "They are designed for privacy and luxury, featuring Hathor elegant interior, historic decorations, and modern conveniences that comprise a luxurious fine stay.",
+        "Designed for privacy and ease: elegant interiors, historic accents, and modern comforts for a fine stay on the Nile.",
       townhousesBody:
-        "The Royal Suite with Panoramic Nile View features panoramic windows and a private balcony, allowing unforgettable views of the Nile as you sail through Luxor and Aswan.",
+        "Panoramic windows and a private balcony open onto unforgettable river views as you sail through Luxor and Aswan.",
       penthousesBody:
-        "For visitors who seek added exclusivity, the Private Royal Suite with Nile View provides a peaceful retreat and luxury furniture with personalized comfort aboard Hathor Luxury Dahabiya.",
+        "For added exclusivity, the Private Royal Suite offers a peaceful retreat with tailored comfort aboard Hathor Dahabiya.",
       flatsLabel: "Luxury Rooms",
       townhousesLabel: "Luxury Suites",
       penthousesLabel: "Royal Suites",
       flatsStat1: "8 Luxury Cabins",
       flatsStat2: "22 m<sup>2</sup> · Nile view",
-      flatsStat3: "Maximum 2 Persons",
+      flatsStat3: "For two guests",
       townStat1: "2 Elegant Suites",
       townStat2: "Spacious suite living",
-      townStat3: "Panoramic windows",
+      townStat3: "Panoramic Nile windows",
+      townStatExtra: "Temple-shore stillness",
       pentStat1: "2 Royal Suites",
       pentStat2: "56 m<sup>2</sup> · Nile view",
-      pentStat3: "Maximum 4 Persons",
+      pentStat3: "For up to four guests",
       balcon1:
-        "Panoramic glass and a private balcony follow the river&mdash;rhythmic beauty with functional elegance for a Royal Suite voyage.",
+        "Panoramic glass and a private balcony follow the river&mdash;beauty and ease composed for a Royal Suite voyage.",
       balcon2:
-        "Three movements of the journey&mdash;Luxor, the river, Aswan&mdash;each evening arrives in its own rhythm while the suite reads the light outside.",
+        "Three movements of the journey&mdash;Luxor, the river, Aswan&mdash;each evening arrives in its own light.",
       legal:
-        "Royal Suite imagery and descriptions are curated for illustration. Availability, itineraries, and pricing are confirmed with Hathor&rsquo;s reservations desk. All Hathor content and design remain protected.",
+        "Imagery is curated for illustration. Availability, itineraries, and tariffs are confirmed with Hathor Concierge. All Hathor content remains protected.",
     },
   },
 ];
@@ -525,11 +528,16 @@ function applyStory(html, page) {
     .replaceAll("Unique transformable glazing", story.flatsStat3)
     .replaceAll("5 townhouses", story.townStat1)
     .replaceAll("174-378 m<sup>2</sup> area", story.townStat2)
+    .replaceAll("Ceiling heights up&nbsp;to&nbsp;4 meters", story.townStat3)
     .replaceAll("Ceiling heights up to 4 meters", story.townStat3)
-    .replaceAll("Private patio", "Nile-facing stillness")
+    .replaceAll("Private patio", story.townStatExtra ?? "Nile-facing stillness")
     .replaceAll("7 penthouses", story.pentStat1)
     .replaceAll("Luxurious terraces", story.pentStat2)
     .replaceAll("Designer finishings", story.pentStat3)
+    .replaceAll("Townhouses", story.townhousesLabel)
+    .replaceAll("Penthouses", story.penthousesLabel)
+    .replaceAll("view flats", "cabins &amp; suites")
+    .replaceAll("view Flats", "cabins &amp; suites")
     .replaceAll(
       "The balconies of the asymmetrical facade follow a chessboard pattern. The non-linear order creates a striking, recognizable effect.",
       story.balcon1,
@@ -568,16 +576,7 @@ function buildPalette(page) {
   return `
 <style data-hathor-accommodation-palette>
   ${hathorFontFaces}
-  @font-face {
-    font-family: "Hathor Display";
-    src: url("/fonts/Gamgote-Regular.otf") format("opentype");
-    font-display: swap;
-  }
-  @font-face {
-    font-family: "Hathor Body";
-    src: url("/fonts/agraham-regular.ttf") format("truetype");
-    font-display: swap;
-  }
+  /* Face names resolve via injected hathor-fonts.css */
   :root {
     --c-beige-background: #f5eacf;
     --c-beige-background-rgb: 245, 234, 207;
@@ -604,7 +603,9 @@ function buildPalette(page) {
   body {
     background: #f5eacf !important;
     color: #b69f64;
-    font-family: "Hathor Body", "TT Commons", sans-serif;
+    font-family: "Piloner Thin", "TT Commons", sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
   }
   .ui-dark, .ui-dark-background, .ui-dark.ui-background {
     --t-background: #b69f64;
@@ -628,11 +629,52 @@ function buildPalette(page) {
     background-color: #f5eacf !important;
     color: #b69f64 !important;
   }
-  .g1, .h0, .h1, .h2, .h3 {
-    font-family: "Hathor Display", "Gamgote", Georgia, serif !important;
+  /*
+   * Display only on true display titles. Springs uses .h3 for body/stats —
+   * Gamgote + leading-trim there caused overlapping lines.
+   */
+  .g1, .h0, .h1, .h2 {
+    font-family: "Gamgote", Georgia, serif !important;
+    line-height: 1.18 !important;
+    letter-spacing: -0.015em;
   }
-  .text-c1, .text-c2, p, .btn__text {
-    font-family: "Hathor Body", "Agraham", sans-serif;
+  .h3, .de-projects__slider-item__text,
+  .de-flats__item .h3, .more-block .h3 {
+    font-family: "Quiet Luxury Serif", "Italiana", Georgia, serif !important;
+    line-height: 1.45 !important;
+    letter-spacing: 0.01em;
+    font-weight: 400;
+  }
+  .text-c1, .text-c2, .text-c2-small, p, .btn__text,
+  .de-projects__text .text-c2,
+  .de-flats__item p,
+  .de-balcons__text,
+  .de-materials__text,
+  .de-gallery__caption,
+  .more-block__text {
+    font-family: "Piloner Thin", "TT Commons", sans-serif !important;
+    line-height: 1.65 !important;
+    letter-spacing: 0.02em;
+    font-weight: 400;
+  }
+  /* Neutralize Springs leading-trim that collapses custom font metrics */
+  .leading-trim {
+    margin-block: 0 !important;
+    padding-block: 0.12em 0.18em !important;
+  }
+  .leading-trim.text-c1,
+  .leading-trim.text-c2,
+  .leading-trim.h3,
+  p.leading-trim,
+  .h3.leading-trim {
+    line-height: 1.65 !important;
+  }
+  .g1.leading-trim,
+  .h0.leading-trim,
+  .h1.leading-trim,
+  .h2.leading-trim {
+    line-height: 1.18 !important;
+    padding-block: 0.04em 0.1em !important;
   }
   .ui-light .g1, .ui-light .h0, .ui-light .h1, .ui-light .h2, .ui-light .h3,
   .ui-light .text-c1, .ui-light .text-c2 { color: #b69f64; }
@@ -646,13 +688,21 @@ function buildPalette(page) {
   #de-projects .de-projects__caption .g1,
   #de-projects .de-projects__caption .h3,
   .more-block__caption .h0 { color: #f5eacf; }
+  #de-intro .de-intro__caption .h3,
+  #de-projects .de-projects__caption .h3,
+  .more-block__caption .h3 {
+    font-family: "Piloner Thin", "TT Commons", sans-serif !important;
+    line-height: 1.55 !important;
+    max-width: 32ch;
+  }
   #de-intro .de-intro__caption-title.is-hidden--lg-up img { opacity: 0; }
   #de-intro .de-intro__caption-title.is-hidden--lg-up::after {
     color: #f5eacf;
     content: "${title}";
-    font-family: "Hathor Display", "Gamgote", Georgia, serif;
+    font-family: "Gamgote", Georgia, serif;
     font-size: clamp(2.6rem, 12vw, 5.5rem);
-    line-height: 0.9;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
   }
   #de-projects .de-projects__slider-item[data-content-animation-item="4"] {
     display: block !important;
