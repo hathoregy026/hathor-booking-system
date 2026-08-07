@@ -293,11 +293,14 @@ export function useHomeAmenitiesSequence(
         }
       }
 
-      /* ---------- i-opening ---------- */
+      /* ---------- i-opening (Springs: fixed left + expanding right + vertical card scroll) ---------- */
       const opening = root.querySelector<HTMLElement>("[data-am-opening]");
       if (opening) {
         const left = opening.querySelector<HTMLElement>(
           "[data-am-opening-left]",
+        );
+        const titlePanel = opening.querySelector<HTMLElement>(
+          "[data-am-opening-title-panel]",
         );
         const right = opening.querySelector<HTMLElement>(
           "[data-am-opening-right]",
@@ -312,15 +315,21 @@ export function useHomeAmenitiesSequence(
           opening.querySelectorAll<HTMLElement>("[data-am-opening-card]"),
         );
 
-        gsap.set(left, { clipPath: amenitiesWipeClosed("up"), scale: 1.16 });
-        gsap.set(right, { clipPath: amenitiesWipeClosed("down") });
-        gsap.set(title, { autoAlpha: 0, y: 36 });
-        gsap.set(rail, {
-          clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
+        gsap.set(left, { clipPath: amenitiesWipeClosed("up"), scale: 1.18 });
+        gsap.set(titlePanel, {
+          clipPath: amenitiesWipeClosed("down"),
         });
-        cards.forEach((card, i) =>
-          gsap.set(card, { autoAlpha: 0, y: 40 + i * 12 }),
-        );
+        gsap.set(title, { autoAlpha: 0, y: isPhone ? 24 : 40 });
+        /* Right column starts as a thin top band on the right half, then grows down. */
+        gsap.set(right, {
+          clipPath: isPhone
+            ? amenitiesWipeClosed("up")
+            : "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
+        });
+        const railStartY = isPhone ? 28 : isCompact ? 36 : 48;
+        const railTravel = isPhone ? 18 : isCompact ? 55 : 72;
+        gsap.set(rail, { y: `${railStartY}vh` });
+        cards.forEach((card) => gsap.set(card, { autoAlpha: 1, y: 0 }));
 
         ScrollTrigger.create({
           id: "home-am-opening",
@@ -331,29 +340,37 @@ export function useHomeAmenitiesSequence(
           refreshPriority: -85,
           onUpdate: (self) => {
             const p = self.progress;
-            const split = seg(p, 0, 0.28);
+            // 0.00–0.30: left image + title panel wipe in (Springs opening split)
+            const split = seg(p, 0, 0.3);
             gsap.set(left, {
               clipPath: amenitiesWipeClip("up", split),
-              scale: 1.16 - split * 0.16,
+              scale: 1.18 - split * 0.18,
             });
-            gsap.set(right, {
+            gsap.set(titlePanel, {
               clipPath: amenitiesWipeClip("down", split),
             });
-            const titleIn = seg(p, 0.18, 0.4);
+            const titleIn = seg(p, 0.12, 0.36);
             gsap.set(title, {
               autoAlpha: titleIn,
-              y: (1 - titleIn) * 36,
+              y: (1 - titleIn) * (isPhone ? 24 : 40),
             });
-            const railIn = seg(p, 0.32, 0.62);
-            gsap.set(rail, {
-              clipPath: `polygon(0% 0%, 100% 0%, 100% ${railIn * 100}%, 0% ${railIn * 100}%)`,
-            });
-            cards.forEach((card, i) => {
-              const local = seg(p, 0.42 + i * 0.1, 0.62 + i * 0.1);
-              gsap.set(card, {
-                autoAlpha: local,
-                y: (1 - local) * (36 + i * 10),
+
+            // 0.18–0.48: right scroll column expands downward over the title panel
+            const rightOpen = seg(p, 0.18, 0.48);
+            if (isPhone) {
+              gsap.set(right, {
+                clipPath: amenitiesWipeClip("up", rightOpen),
               });
+            } else {
+              gsap.set(right, {
+                clipPath: `polygon(0% 0%, 100% 0%, 100% ${rightOpen * 100}%, 0% ${rightOpen * 100}%)`,
+              });
+            }
+
+            // 0.32–1.00: vertical stack scrolls upward through the gold column
+            const cardScroll = seg(p, 0.32, 0.98);
+            gsap.set(rail, {
+              y: `${railStartY - cardScroll * railTravel}vh`,
             });
           },
         });

@@ -390,7 +390,7 @@ export function HomeAmenitiesSequence({
         </div>
       ) : null}
 
-      {/* 4) i-opening — fixed left image + right rail with small cards */}
+      {/* 4) i-opening — Springs: fixed left + title panel + scrolling vertical cards */}
       <div
         className="home-am-opening home-am-chapter"
         data-am-opening
@@ -409,8 +409,8 @@ export function HomeAmenitiesSequence({
           </div>
 
           <div
-            className="home-am-opening__right"
-            data-am-opening-right
+            className="home-am-opening__title-panel"
+            data-am-opening-title-panel
             style={{ background: GOLD }}
           >
             <h2
@@ -422,7 +422,16 @@ export function HomeAmenitiesSequence({
                 landmarks[3]?.titleLines.join(" ") ||
                 intro.titleLines.join(" ")}
             </h2>
+            <div className="home-am-opening__gradient" aria-hidden="true">
+              <div />
+            </div>
+          </div>
 
+          <div
+            className="home-am-opening__right"
+            data-am-opening-right
+            style={{ background: GOLD }}
+          >
             <div className="home-am-opening__rail" data-am-opening-rail>
               <p
                 className="home-am-opening__rail-text typo-on-images-body"
@@ -430,7 +439,11 @@ export function HomeAmenitiesSequence({
               >
                 {stories[0]?.body || landmarks[3]?.body || intro.body}
               </p>
-              <div className="home-am-opening__cards">
+
+              <div
+                className="home-am-opening__cards"
+                data-am-opening-cards
+              >
                 {openingCards.map((card, index) => (
                   <figure
                     key={`opening-card-${card.image.name}-${index}`}
@@ -442,7 +455,7 @@ export function HomeAmenitiesSequence({
                         name={card.image.name}
                         alt={card.image.alt}
                         fill
-                        sizes="210px"
+                        sizes="(max-width: 480px) 48vw, 210px"
                         className="object-cover"
                         previewAnchor={card.image.previewAnchor}
                       />
@@ -456,24 +469,27 @@ export function HomeAmenitiesSequence({
                   </figure>
                 ))}
               </div>
-              {stories[0]?.href ? (
-                <a
-                  className="home-am-opening__cta typo-on-images-indication"
-                  href={stories[0].href}
-                  style={onPanelIndication}
-                >
-                  {stories[0].cta}
-                </a>
-              ) : null}
-              {stories[1]?.href ? (
-                <a
-                  className="home-am-opening__cta typo-on-images-indication"
-                  href={stories[1].href}
-                  style={onPanelIndication}
-                >
-                  {stories[1].cta}
-                </a>
-              ) : null}
+
+              <div className="home-am-opening__ctas" data-am-opening-ctas>
+                {stories[0]?.href ? (
+                  <a
+                    className="home-am-opening__cta typo-on-images-indication"
+                    href={stories[0].href}
+                    style={onPanelIndication}
+                  >
+                    {stories[0].cta}
+                  </a>
+                ) : null}
+                {stories[1]?.href ? (
+                  <a
+                    className="home-am-opening__cta typo-on-images-indication"
+                    href={stories[1].href}
+                    style={onPanelIndication}
+                  >
+                    {stories[1].cta}
+                  </a>
+                ) : null}
+              </div>
             </div>
           </div>
         </div>
