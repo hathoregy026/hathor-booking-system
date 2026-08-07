@@ -493,16 +493,116 @@
     visibility: hidden !important;
     pointer-events: none !important;
   }
-  /* Gold accent glows (Springs used green radials). Keep modest so photos stay readable.
-     Do NOT flatten .l-gallery__gradient layers — Springs’ soft depth comes from those
-     stacked radials; gallery tokens are gold so the ambient shadow stays #B69F64-based. */
+  /*
+   * Soft atmospheric shadows — always cream + gold (never black + gold).
+   * Mix: site cream #ece8df with Hathor gold #b69f64.
+   */
   .l-wellness__gradient div,
   .l-nature__gradient div,
   .footer__gradient div,
   .preloader__gradient div,
   .preloader__gradient-animation div,
   .l-nature-bg-gradient {
-    background: radial-gradient(circle, rgba(182, 159, 100, 0.55) 0%, rgba(182, 159, 100, 0.22) 45%, rgba(182, 159, 100, 0) 74%) !important;
+    background: radial-gradient(
+      circle,
+      rgba(182, 159, 100, 0.58) 0%,
+      rgba(236, 232, 223, 0.42) 38%,
+      rgba(236, 232, 223, 0) 74%
+    ) !important;
+  }
+  /*
+   * Wellness split panel: replace ink/black radial layers with cream–gold mist.
+   * Caption stays warm (not charcoal) so the edge reads luxurious, not muddy.
+   */
+  .l-wellness__slider__caption,
+  .l-wellness__slider__caption.ui-dark {
+    --t-background: #3a342c;
+    --t-background-rgb: 58, 52, 44;
+    --t-text: #ffffff;
+    --t-text-rgb: 255, 255, 255;
+    --t-heading: #ffffff;
+    --t-heading-rgb: 255, 255, 255;
+    --c-dark-blue: #3a342c;
+    --c-dark-blue-rgb: 58, 52, 44;
+    --c-green: #e8dfd0;
+    --c-green-rgb: 232, 223, 208;
+    --c-blue: #b69f64;
+    --c-blue-rgb: 182, 159, 100;
+    background: linear-gradient(
+      105deg,
+      #4a4134 0%,
+      #3a342c 42%,
+      #2f2a24 100%
+    ) !important;
+    color: #ffffff !important;
+  }
+  .l-wellness__slider-gradient {
+    z-index: 1 !important;
+    pointer-events: none !important;
+  }
+  .l-wellness__slider-gradient div:first-child {
+    background: radial-gradient(
+      circle at center,
+      rgba(182, 159, 100, 0.72) 0%,
+      rgba(236, 232, 223, 0.28) 42%,
+      rgba(236, 232, 223, 0) 72%
+    ) no-repeat !important;
+  }
+  .l-wellness__slider-gradient div:nth-child(2) {
+    background: radial-gradient(
+      circle,
+      rgba(236, 232, 223, 0.9) 0%,
+      rgba(212, 196, 160, 0.55) 40%,
+      rgba(182, 159, 100, 0) 74%
+    ) !important;
+  }
+  .l-wellness__slider-gradient div:nth-child(3) {
+    background: radial-gradient(
+      circle,
+      rgba(198, 178, 130, 0.85) 0%,
+      rgba(236, 232, 223, 0.45) 32%,
+      rgba(236, 232, 223, 0) 70%
+    ) !important;
+  }
+  /* Amenity list: active white; inactive a closer soft cream (not near-invisible). */
+  .l-wellness__slider__caption-titles,
+  .l-wellness__slider__caption-text {
+    position: relative !important;
+    z-index: 5 !important;
+  }
+  .l-wellness__slider__caption-titles > a {
+    opacity: 0.52 !important;
+    color: #f0e6d4 !important;
+  }
+  .l-wellness__slider__caption-titles > a .h2,
+  .l-wellness__slider__caption-titles > a p {
+    color: #f0e6d4 !important;
+  }
+  .has-hover .l-wellness__slider__caption-titles > a:hover {
+    opacity: 0.78 !important;
+  }
+  .l-wellness__slider__caption-titles > a.is-active {
+    opacity: 1 !important;
+    color: #ffffff !important;
+  }
+  .l-wellness__slider__caption-titles > a.is-active .h2,
+  .l-wellness__slider__caption-titles > a.is-active p {
+    color: #ffffff !important;
+  }
+  .l-wellness__slider__caption-text,
+  .l-wellness__slider__caption-text .text-t1,
+  .l-wellness__slider__caption-text p {
+    color: #ffffff !important;
+  }
+  @media (max-width: 480px) {
+    .l-wellness__slider-gradient div:first-child,
+    .l-wellness__slider-gradient div:nth-child(2),
+    .l-wellness__slider-gradient div:nth-child(3) {
+      opacity: 0.92;
+    }
+    .l-wellness__slider__caption-titles > a {
+      opacity: 0.58 !important;
+    }
   }
   /*
    * Suites hero: cream gutters + harder gold wash on tiles.
