@@ -529,18 +529,20 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   position: relative;
   z-index: 2;
   margin: 0;
-  max-width: min(18rem, 100%);
-  line-height: 1.08;
+  max-width: min(22rem, 94%);
+  line-height: 1.05;
   text-align: right;
   pointer-events: all;
-  font-size: clamp(1.85rem, 3.6vw, 3.35rem) !important;
+  /* Springs h1 on the green caption — large but must fit the half-panel */
+  font-size: clamp(1.55rem, 2.85vw, 2.75rem) !important;
   letter-spacing: -0.02em;
-  overflow-wrap: normal;
+  overflow-wrap: break-word;
+  hyphens: manual;
 }
 
 .home-am-opening__title > .home-am-title-line {
   display: block;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .home-am-opening__gradient {
@@ -633,15 +635,34 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   object-fit: cover !important;
 }
 
-.home-am-opening__card figcaption {
+.home-am-opening__card figcaption,
+.home-am-opening__card-label {
+  /* Springs .i-opening__list-item__text + .text-c2 */
   position: absolute;
-  left: 0.7rem;
-  bottom: 0.7rem;
+  left: 20px;
+  bottom: 20px;
   margin: 0;
-  max-width: 7rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  width: 102px;
+  max-width: calc(100% - 2.5rem);
   z-index: 1;
+  font-family: var(
+    --font-body,
+    "TT Commons Pro",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif
+  ) !important;
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  font-style: normal !important;
+  line-height: 1.35 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(20, 16, 12, 0.35);
+  pointer-events: none;
 }
 
 .home-am-opening__ctas {
@@ -655,11 +676,23 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
 .home-am-opening__cta {
   display: inline-flex;
   width: fit-content;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  font-family: var(
+    --font-body,
+    "TT Commons Pro",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif
+  ) !important;
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  font-style: normal !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
   text-decoration: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.55);
-  color: #ffffff;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
   padding-bottom: 0.15rem;
 }
 

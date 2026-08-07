@@ -137,15 +137,30 @@ export function HomeAmenitiesSequence({
     image: AmenitiesSequenceImage;
   }>;
 
+  /* Springs i-opening list labels: short uppercase captions on the photo, not full titles. */
+  const shortCardLabel = (raw: string) => {
+    const lines = raw
+      .split(/\n/)
+      .map((line) => line.trim().replace(/\.$/, ""))
+      .filter(Boolean);
+    if (!lines.length) return raw.trim();
+    return [...lines].sort((a, b) => a.length - b.length)[0] || lines[0];
+  };
+
   const openingCards = [
     stories[0]
-      ? { image: images[8], label: stories[0].title }
+      ? { image: images[8], label: shortCardLabel(stories[0].title) }
       : null,
     stories[1]
-      ? { image: images[9], label: stories[1].title }
+      ? { image: images[9], label: shortCardLabel(stories[1].title) }
       : null,
     landmarks[1]
-      ? { image: images[10], label: landmarks[1].indication }
+      ? {
+          image: images[10],
+          label: shortCardLabel(
+            landmarks[1].indication || landmarks[1].titleLines.join("\n"),
+          ),
+        }
       : null,
   ].filter(Boolean) as Array<{
     image: AmenitiesSequenceImage;
@@ -529,7 +544,7 @@ export function HomeAmenitiesSequence({
 
       {/* ===== i-opening — dual sticky layers, cards in document flow ===== */}
       <div
-        className="home-am-opening home-am-chapter home-am-chapter--under-previous sticky sticky--full-height sticky--under-previous"
+        className="home-am-opening home-am-chapter home-am-chapter--under-previous home-am-chapter--under-next sticky sticky--full-height sticky--under-previous sticky--under-next"
         data-am-opening
         data-am-chapter
         id="home-am-opening"
@@ -582,9 +597,12 @@ export function HomeAmenitiesSequence({
                 data-am-opening-title
                 style={onGoldTitle}
               >
-                {(stories[0]?.title ||
+                {(
                   landmarks[3]?.titleLines.join("\n") ||
-                  intro.titleLines.join("\n"))
+                  landmarks[0]?.titleLines.join("\n") ||
+                  stories[0]?.title ||
+                  intro.titleLines.join("\n")
+                )
                   .split("\n")
                   .map((line) => line.trim())
                   .filter(Boolean)
@@ -637,10 +655,7 @@ export function HomeAmenitiesSequence({
                       previewAnchor={card.image.previewAnchor}
                     />
                   </div>
-                  <figcaption
-                    className="typo-on-images-indication"
-                    style={onGoldIndication}
-                  >
+                  <figcaption className="home-am-opening__card-label">
                     {card.label}
                   </figcaption>
                 </figure>
@@ -649,20 +664,12 @@ export function HomeAmenitiesSequence({
 
             <div className="home-am-opening__ctas">
               {stories[0]?.href ? (
-                <a
-                  className="home-am-opening__cta typo-on-images-indication"
-                  href={stories[0].href}
-                  style={onGoldIndication}
-                >
+                <a className="home-am-opening__cta" href={stories[0].href}>
                   {stories[0].cta}
                 </a>
               ) : null}
               {stories[1]?.href ? (
-                <a
-                  className="home-am-opening__cta typo-on-images-indication"
-                  href={stories[1].href}
-                  style={onGoldIndication}
-                >
+                <a className="home-am-opening__cta" href={stories[1].href}>
                   {stories[1].cta}
                 </a>
               ) : null}
