@@ -10,6 +10,10 @@ import { PublicNavbar } from "@/components/layout/PublicNavbar";
 export function SuitesSpringsHomepagePage() {
   return (
     <>
+      <style>{`
+        html, body { background: #ece8df !important; }
+        .suites-springs-frame { background: #ece8df; }
+      `}</style>
       <div
         className="public-site suites-public-nav"
         style={{ position: "relative", zIndex: 1500 }}
@@ -29,6 +33,7 @@ export function SuitesSpringsHomepagePage() {
           position: "fixed",
           width: "100vw",
           zIndex: 1000,
+          background: "#ece8df",
         }}
       />
     </>

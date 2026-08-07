@@ -260,7 +260,7 @@ html = html.replace(
 );
 
 function replaceAssetPattern(assetPattern, url) {
-  const remoteSource = String.raw`https?:\/\/[^"'\s>]*${assetPattern}[^"'\s>]*`;
+  const remoteSource = String.raw`(?:https?:)?\/\/[^"'\s>]*${assetPattern}[^"'\s>]*`;
   const localSource = String.raw`\/assets\/images\/media\/${assetPattern}[^"'\s>]*`;
   html = html
     .replace(new RegExp(remoteSource, "g"), url)
@@ -289,15 +289,22 @@ function replaceAssetPattern(assetPattern, url) {
 // Gallery cards: cycle Hathor suite imagery across gallery-* assets
 let galleryIndex = 0;
 html = html.replace(
-  /(?:https?:\/\/[^"'\s>]*\/)?(?:assets\/images\/media\/)?landing\/0\.gallery\/[^"'\s>]*/gi,
+  /(?:(?:https?:)?\/\/[^"'\s>]*\/)?(?:assets\/images\/media\/)?landing\/0\.gallery\/[^"'\s>]*/gi,
   () => galleryCycle[galleryIndex++ % galleryCycle.length],
 );
 
-// Any remaining springs media URLs → suite hero
+// Any remaining springs media URLs → suite hero (absolute + protocol-relative)
 html = html.replace(
-  /https?:\/\/springs\.(?:estate|house)\/(?:media|assets\/images\/media)\/[^"'\\\s>]+/gi,
+  /(?:https?:)?\/\/springs\.(?:estate|house)\/(?:media|assets\/images\/media)\/[^"'\\\s>]+/gi,
   MEDIA.hero,
 );
+
+// Critical: broken protocol-relative media hosts (//media/hathor → /media/hathor)
+// Must run BEFORE the runtime script is injected so script literals stay intact.
+html = html
+  .replaceAll("//media/hathor/", "/media/hathor/")
+  .replaceAll("https://media/hathor/", "/media/hathor/")
+  .replaceAll("http://media/hathor/", "/media/hathor/");
 
 const suitesPalette = `
 <style data-hathor-suites-palette>
@@ -376,8 +383,10 @@ const suitesPalette = `
   .ui-light .text-c1, .ui-light .text-c2 { color: #8b6914; }
   .ui-dark .g1, .ui-dark .h0, .ui-dark .h1, .ui-dark .h2, .ui-dark .h3,
   .ui-dark .text-c1, .ui-dark .text-c2 { color: #ece8df; }
-  .header, .cookie-consent, .preloader--landing .header__content {
+  .header, .cookie-consent, .preloader, .preloader--landing {
     display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
   }
   .l-gallery__gradient div,
   .l-wellness__gradient div,
@@ -387,11 +396,42 @@ const suitesPalette = `
   .preloader__gradient-animation div {
     background: radial-gradient(circle, rgba(182, 159, 100, 0.75) 0%, rgba(182, 159, 100, 0.28) 45%, rgba(236, 232, 223, 0) 74%) !important;
   }
-  html:not(.suites-media-ready) picture,
-  html:not(.suites-media-ready) img[data-src],
-  html:not(.suites-media-ready) img[src*="springs."] {
-    opacity: 0 !important;
-    visibility: hidden !important;
+  /*
+   * First-paint safety: Springs landing preloader can leave gallery masks fully
+   * clipped and title splits at opacity 0. Force the post-intro visible state.
+   */
+  .l-gallery__item,
+  .animation--gallery--inactive .l-gallery__item {
+    opacity: 1 !important;
+  }
+  .l-gallery__item__mask-list,
+  .animation--gallery .l-gallery__item__mask-list,
+  .animation--gallery--inactive .l-gallery__item__mask-list,
+  .gallery-animation-item,
+  .animation--gallery .gallery-animation-item,
+  .animation--gallery--inactive .gallery-animation-item {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%) !important;
+  }
+  .js .is-invisible--js {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+  .animation--title--inactive .char,
+  .animation--text--inactive .word-wrap,
+  .animation--title .char,
+  .animation--text .word-wrap,
+  [data-reveal="text"],
+  [data-reveal="title"] {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+  .l-gallery__caption,
+  .l-gallery__caption .text-t1,
+  .l-gallery__caption .h0 {
+    color: #8b6914 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
   /* Hathor site footer replaces Springs footer chrome */
   footer.footer {
@@ -496,26 +536,60 @@ const hathorFooterHtml = `
 const suitesRuntime = `
 <script data-suites-media-runtime>
 (() => {
+  function normalizeMediaUrl(value) {
+    if (typeof value !== "string") return value;
+    return value.split(",").map(function (part) {
+      var bits = part.trim().split(/\\s+/);
+      var url = bits[0] || "";
+      var marker = "media/hathor/";
+      var idx = url.indexOf(marker);
+      if (idx >= 0) bits[0] = "/" + url.slice(idx);
+      return bits.join(" ");
+    }).join(", ");
+  }
   function isSpringsUrl(value) {
     return typeof value === "string" && /springs\\.(estate|house)/i.test(value);
   }
-  function scrubSpringsUrls(root) {
+  function scrubUrls(root) {
     root.querySelectorAll("img, source").forEach((node) => {
       ["src", "srcset", "data-src", "data-srcset"].forEach((attr) => {
         const value = node.getAttribute(attr);
-        if (value && isSpringsUrl(value)) node.removeAttribute(attr);
+        if (!value) return;
+        if (isSpringsUrl(value)) {
+          node.removeAttribute(attr);
+          return;
+        }
+        const next = normalizeMediaUrl(value);
+        if (next !== value) node.setAttribute(attr, next);
       });
     });
   }
   function reveal() {
-    scrubSpringsUrls(document);
-    document.documentElement.classList.add("suites-media-ready");
+    scrubUrls(document);
+    const html = document.documentElement;
+    html.classList.add(
+      "suites-media-ready",
+      "is-preloader-disabled",
+      "is-intro-seen",
+      "is-header-visible",
+      "is-ready",
+    );
+    html.classList.remove("not-ready", "is-preloader-active", "no-js");
+    html.classList.add("js");
+    document.querySelectorAll(".preloader, .preloader--landing").forEach((node) => {
+      node.classList.add("is-hidden");
+      node.setAttribute("aria-hidden", "true");
+      node.style.setProperty("display", "none", "important");
+    });
   }
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", reveal, { once: true });
   } else {
     reveal();
   }
+  // Re-scrub after Springs lazy-load plugins mutate attributes.
+  window.addEventListener("load", () => scrubUrls(document), { once: true });
+  setTimeout(() => scrubUrls(document), 1200);
 })();
 </script>`;
 

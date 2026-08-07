@@ -26,6 +26,7 @@ const keepJs = new Set([
   "31.js",
   "plan-lazy.js",
   "popover-lazy.js",
+  "recaptcha-yandex.js",
 ]);
 
 for (const dir of removeDirs) {
