@@ -1,20 +1,22 @@
-/* Isolated Luxury Accordion — full-bleed itinerary rows */
+/* Isolated Luxury Accordion — full-bleed rows + cinematic open panel */
 
 .section {
   --hathor-accordion-cream: var(--cream, #ece8df);
   --hathor-accordion-gold: #c2a679;
-  --hathor-accordion-gold-soft: rgba(194, 166, 121, 0.22);
+  --hathor-accordion-gold-bright: #d4b87a;
   --hathor-accordion-line: rgba(194, 166, 121, 0.28);
   --hathor-accordion-muted: #7d7060;
   --hathor-accordion-roman: rgba(194, 166, 121, 0.18);
   --hathor-accordion-hover: rgba(194, 166, 121, 0.06);
+  --hathor-accordion-rail: #14100c;
   --hathor-accordion-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --hathor-accordion-row-h: 132px;
+  --hathor-accordion-open-h: min(88vh, 760px);
   --hathor-accordion-gutter: clamp(1.25rem, 4vw, 4.5rem);
   --hathor-accordion-roman-w: clamp(4.5rem, 9vw, 7.5rem);
+  --hathor-accordion-rail-w: clamp(4.5rem, 6.5vw, 6.25rem);
 
   padding: clamp(4rem, 8vh, 6.5rem) 0;
-  /* Transparent so page cream + hieroglyph tile (.ex-root::before) show through */
   background: transparent;
   position: relative;
   overflow: hidden;
@@ -34,19 +36,16 @@
   padding: 0 var(--hathor-accordion-gutter);
 }
 
-/* Hidden until GSAP owns the stagger (avoids all-at-once paint) */
 .section.is-voyages-motion :global([data-voyage-heading]),
 .section.is-voyages-motion :global([data-voyage-row]) {
   will-change: transform, opacity;
 }
 
 .title {
-  /* Font/size/colour from dashboard Typography → Our Voyages · Big title */
   margin: 0;
 }
 
 .indication {
-  /* Font/size/colour from dashboard Typography → Our Voyages · Indication */
   margin: 0.85rem 0 0;
 }
 
@@ -66,12 +65,11 @@
   overflow: hidden;
   cursor: pointer;
   transition:
-    height 0.8s var(--hathor-accordion-ease),
+    height 0.85s var(--hathor-accordion-ease),
     background-color 0.45s var(--hathor-accordion-ease);
   background: transparent;
 }
 
-/* Soft luminous flare where the separator meets the left edge */
 .flare {
   position: absolute;
   left: 0;
@@ -116,8 +114,10 @@
 }
 
 .accordionItem.isActive {
-  height: 520px;
-  background-color: transparent;
+  height: var(--hathor-accordion-open-h);
+  background-color: #0c0a08;
+  cursor: default;
+  border-bottom-color: rgba(194, 166, 121, 0.18);
 }
 
 .accordionItem.isActive .flare {
@@ -144,8 +144,7 @@
   z-index: 1;
   transition:
     opacity 0.45s ease,
-    visibility 0.45s ease,
-    color 0.5s ease;
+    visibility 0.45s ease;
 }
 
 .romanNumeralHidden {
@@ -161,7 +160,7 @@
   object-fit: cover;
   opacity: 0;
   transform: scale(1.14);
-  filter: brightness(1.08) saturate(0.94);
+  filter: brightness(1.05) saturate(0.96);
   transition:
     opacity 0.9s var(--hathor-accordion-ease),
     transform 1.2s var(--hathor-accordion-ease),
@@ -173,7 +172,9 @@
 
 .accordionItem.isActive .backgroundImage {
   opacity: 1;
-  filter: brightness(1) saturate(1);
+  left: var(--hathor-accordion-rail-w);
+  width: calc(100% - var(--hathor-accordion-rail-w)) !important;
+  filter: brightness(0.92) saturate(1.05);
   animation:
     hathorAccordionImageReveal 1.35s var(--hathor-accordion-ease) both,
     hathorAccordionKenBurns 18s ease-in-out 1.35s infinite alternate;
@@ -188,7 +189,7 @@
   to {
     opacity: 1;
     transform: scale(1.04);
-    filter: brightness(1) saturate(1);
+    filter: brightness(0.92) saturate(1.05);
   }
 }
 
@@ -201,23 +202,24 @@
   }
 }
 
-/* Soft dark wash so white / bright photos still leave text readable */
 .vignette {
   position: absolute;
   inset: 0;
+  left: var(--hathor-accordion-rail-w);
   background:
     linear-gradient(
-      95deg,
-      rgba(18, 14, 10, 0.62) 0%,
-      rgba(18, 14, 10, 0.34) 28%,
-      transparent 58%
+      105deg,
+      rgba(12, 10, 8, 0.78) 0%,
+      rgba(12, 10, 8, 0.42) 34%,
+      rgba(12, 10, 8, 0.18) 58%,
+      rgba(12, 10, 8, 0.45) 100%
     ),
     linear-gradient(
       180deg,
-      transparent 0%,
-      transparent 42%,
-      rgba(18, 14, 10, 0.28) 68%,
-      rgba(18, 14, 10, 0.62) 100%
+      rgba(12, 10, 8, 0.35) 0%,
+      transparent 28%,
+      transparent 58%,
+      rgba(12, 10, 8, 0.55) 100%
     );
   opacity: 0;
   transition: opacity 0.9s ease;
@@ -229,6 +231,7 @@
   opacity: 1;
 }
 
+/* —— Closed row —— */
 .row {
   position: relative;
   z-index: 2;
@@ -239,12 +242,18 @@
   align-items: center;
   column-gap: clamp(1rem, 2.5vw, 2rem);
   padding: 0 var(--hathor-accordion-gutter);
-  transition: padding-left 0.65s var(--hathor-accordion-ease);
+  transition:
+    opacity 0.35s ease,
+    visibility 0.35s ease;
 }
 
-.accordionItem.isActive .row {
-  grid-template-columns: minmax(0, 1fr) auto;
-  padding-left: clamp(20px, 3vw, 44px);
+.rowHidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
 }
 
 .divider {
@@ -264,11 +273,6 @@
     transparent 100%
   );
   pointer-events: none;
-  transition: opacity 0.45s ease;
-}
-
-.accordionItem.isActive .divider {
-  opacity: 0;
 }
 
 .copy {
@@ -279,43 +283,19 @@
   gap: 0.4rem;
   min-width: 0;
   padding-left: clamp(0.75rem, 1.5vw, 1.25rem);
-  transition: padding-left 0.65s var(--hathor-accordion-ease);
-}
-
-.accordionItem.isActive .copy {
-  grid-column: 1;
-  padding-left: 0;
 }
 
 .name {
-  /* Font/size from dashboard Typography → Our Voyages · Main / Main hover */
   margin: 0;
   min-width: 0;
   overflow-wrap: anywhere;
-  transition:
-    color 0.5s var(--hathor-accordion-ease),
-    font-size 0.5s var(--hathor-accordion-ease),
-    letter-spacing 0.55s var(--hathor-accordion-ease),
-    text-shadow 0.55s ease,
-    transform 0.55s var(--hathor-accordion-ease);
+  transition: transform 0.45s var(--hathor-accordion-ease);
 }
 
 .accordionItem:not(.isActive):hover .name {
   transform: translateX(2px);
 }
 
-/* Harder shadow — readable over bright photo areas */
-.accordionItem.isActive .name {
-  letter-spacing: 0.02em;
-  text-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.72),
-    0 3px 14px rgba(0, 0, 0, 0.78),
-    0 10px 34px rgba(0, 0, 0, 0.68),
-    0 0 52px rgba(0, 0, 0, 0.52) !important;
-  animation: hathorAccordionNameReveal 0.75s var(--hathor-accordion-ease) both;
-}
-
-/* Closed-row meta — always visible under the title (mockup) */
 .rowMeta {
   margin: 0;
   font-family: var(
@@ -330,8 +310,6 @@
   line-height: 1.35;
   overflow-wrap: anywhere;
   transition:
-    opacity 0.4s ease,
-    visibility 0.4s ease,
     color 0.4s ease,
     transform 0.45s var(--hathor-accordion-ease);
 }
@@ -341,14 +319,6 @@
   transform: translateX(2px);
 }
 
-.rowMetaHidden {
-  opacity: 0;
-  visibility: hidden;
-  position: absolute;
-  pointer-events: none;
-}
-
-/* Circular + — opens the itinerary panel */
 .icon {
   grid-column: 3;
   display: inline-flex;
@@ -363,15 +333,9 @@
   line-height: 1;
   transition:
     transform 0.4s var(--hathor-accordion-ease),
-    color 0.5s ease,
     border-color 0.4s ease,
     background-color 0.4s ease,
-    text-shadow 0.5s ease,
     box-shadow 0.4s ease;
-}
-
-.accordionItem.isActive .icon {
-  grid-column: 2;
 }
 
 .iconMark {
@@ -389,151 +353,468 @@
   box-shadow: 0 0 0 4px rgba(194, 166, 121, 0.08);
 }
 
-.accordionItem.isActive .icon {
-  transform: rotate(45deg);
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.55);
-  background-color: rgba(255, 255, 255, 0.1);
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
-  box-shadow: none;
-}
-
-.body {
+/* —— Open cinematic panel —— */
+.panel {
   position: absolute;
-  z-index: 2;
-  left: 0;
-  right: 0;
-  top: var(--hathor-accordion-row-h);
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 1.25rem;
-  padding: 0.35rem var(--hathor-accordion-gutter) 2rem
-    calc(var(--hathor-accordion-gutter) + var(--hathor-accordion-roman-w) + 1.5rem);
-  box-sizing: border-box;
-  opacity: 0;
-  transform: translateY(16px);
-  transition:
-    opacity 0.6s ease 0.1s,
-    transform 0.6s ease 0.1s,
-    padding-left 0.65s var(--hathor-accordion-ease);
-  pointer-events: none;
-}
-
-.accordionItem.isActive .body {
-  opacity: 1;
-  transform: translateY(0);
-  padding-left: clamp(20px, 3vw, 44px);
-  pointer-events: auto;
-}
-
-.bodyCopy {
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-  flex: 1 1 auto;
-  min-height: 0;
-  max-width: 36rem;
-}
-
-.meta {
-  /* Font/size/colour from dashboard Typography → Our Voyages · Hovered · Indication */
-  margin: 0;
-  min-height: 1.35em;
-  opacity: 0;
-  transform: translateY(12px);
-}
-
-.description {
-  /* Font/size/colour from dashboard Typography → Our Voyages · Hovered · Body */
-  margin: 0;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
-  overflow: hidden;
-  overflow-wrap: anywhere;
-  opacity: 0;
-  transform: translateY(14px);
-}
-
-.accordionItem.isActive .meta,
-.accordionItem.isActive .description {
-  text-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.74),
-    0 3px 14px rgba(0, 0, 0, 0.8),
-    0 8px 30px rgba(0, 0, 0, 0.7),
-    0 0 44px rgba(0, 0, 0, 0.5) !important;
-  animation: hathorAccordionCopyReveal 0.7s var(--hathor-accordion-ease) both;
-}
-
-.accordionItem.isActive .meta {
-  animation-delay: 0.12s;
-}
-
-.accordionItem.isActive .description {
-  animation-delay: 0.22s;
-}
-
-.cta {
-  position: relative;
+  inset: 0;
   z-index: 3;
-  flex: 0 0 auto;
-  margin-top: auto;
-  align-self: flex-start;
+  display: grid;
+  grid-template-columns: var(--hathor-accordion-rail-w) minmax(0, 1fr);
   opacity: 0;
-  transform: translateY(18px);
-  background: transparent !important;
-  color: #fff !important;
-  -webkit-text-fill-color: #fff !important;
-  border: 1px solid rgba(255, 255, 255, 0.82) !important;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.14) inset,
-    0 8px 24px rgba(0, 0, 0, 0.28) !important;
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  transform: translateY(12px);
   transition:
-    background-color 0.35s ease,
-    border-color 0.35s ease,
-    color 0.35s ease,
-    box-shadow 0.35s ease,
-    transform 0.35s ease;
+    opacity 0.55s var(--hathor-accordion-ease) 0.08s,
+    transform 0.65s var(--hathor-accordion-ease) 0.08s;
 }
 
-.cta:hover,
-.cta:focus-visible {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border-color: #fff !important;
+.accordionItem.isActive .panel {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.rail {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(1.25rem, 2.5vh, 2rem) 0.35rem;
+  background: var(--hathor-accordion-rail);
+  color: var(--hathor-accordion-gold-bright);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.35);
+}
+
+.railRoman {
+  font-family: var(
+    --typo-page-title-font,
+    var(--font-heading, var(--font-display, "Playfair Display", Georgia, serif))
+  );
+  font-size: clamp(1.75rem, 2.4vw, 2.35rem);
+  letter-spacing: 0.06em;
+  line-height: 1;
+}
+
+.scarab {
+  width: clamp(2.4rem, 3.2vw, 3rem);
+  height: auto;
+  color: var(--hathor-accordion-gold);
+  opacity: 0.92;
+}
+
+.railQuote {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  max-height: 52%;
+}
+
+.railLotus {
+  font-size: 0.7rem;
+  letter-spacing: 0;
+  color: var(--hathor-accordion-gold);
+  opacity: 0.85;
+}
+
+.railQuoteText {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(
+    --typo-page-subtitle-font,
+    var(--font-body, "Plus Jakarta Sans", system-ui, sans-serif)
+  );
+  font-size: clamp(0.58rem, 0.85vw, 0.7rem);
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  line-height: 1.35;
+  text-align: center;
+  color: rgba(212, 184, 122, 0.88);
+}
+
+.stage {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(16rem, 0.85fr);
+  gap: clamp(1.25rem, 3vw, 2.75rem);
+  align-items: end;
+  padding: clamp(1.5rem, 3.5vh, 2.75rem) clamp(1.25rem, 3vw, 3rem)
+    clamp(1.5rem, 3.5vh, 2.5rem);
+  min-height: 0;
+}
+
+.close {
+  position: absolute;
+  top: clamp(0.85rem, 2vh, 1.35rem);
+  right: clamp(0.85rem, 2vw, 1.5rem);
+  z-index: 5;
+  width: 2.35rem;
+  height: 2.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(212, 184, 122, 0.55);
+  border-radius: 999px;
+  background: rgba(12, 10, 8, 0.28);
+  color: #f3e7cf;
+  font-size: 1.45rem;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.close:hover,
+.close:focus-visible {
+  background: rgba(212, 184, 122, 0.16);
+  border-color: rgba(243, 231, 207, 0.85);
+  outline: none;
+  transform: scale(1.05);
+}
+
+.stageMain {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.85rem;
+  max-width: 38rem;
+  min-width: 0;
+  animation: hathorPanelRise 0.75s var(--hathor-accordion-ease) 0.12s both;
+}
+
+.duration {
+  margin: 0;
+  font-family: var(
+    --typo-page-subtitle-font,
+    var(--font-body, "Plus Jakarta Sans", system-ui, sans-serif)
+  );
+  font-size: clamp(0.68rem, 1vw, 0.8rem);
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(243, 231, 207, 0.82);
+}
+
+.routeTitle {
+  margin: 0;
+  font-family: var(
+    --typo-page-title-font,
+    var(--font-heading, var(--font-display, "Playfair Display", Georgia, serif))
+  );
+  font-size: clamp(1.65rem, 3.4vw, 3rem);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.12;
+  color: #f7efe0;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
+}
+
+.diamondRule {
+  display: block;
+  width: 4.5rem;
+  height: 0.65rem;
+  margin: 0.15rem 0 0.2rem;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(212, 184, 122, 0.75) 18%,
+      rgba(212, 184, 122, 0.75) 42%,
+      transparent 42%,
+      transparent 58%,
+      rgba(212, 184, 122, 0.75) 58%,
+      rgba(212, 184, 122, 0.75) 82%,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle at center,
+      rgba(212, 184, 122, 0.95) 0 2px,
+      transparent 2.5px
+    );
+}
+
+.summary {
+  margin: 0;
+  max-width: 34rem;
+  font-family: var(
+    --typo-page-subtitle-font,
+    var(--font-body, "Plus Jakarta Sans", system-ui, sans-serif)
+  );
+  font-size: clamp(0.88rem, 1.2vw, 1.02rem);
+  line-height: 1.65;
+  color: rgba(243, 231, 207, 0.88);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
+}
+
+.features {
+  list-style: none;
+  margin: 0.55rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(0.65rem, 1.5vw, 1.25rem);
+  width: 100%;
+  max-width: 34rem;
+}
+
+.feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  text-align: center;
+}
+
+.featureIcon {
+  width: 2.85rem;
+  height: 2.85rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(212, 184, 122, 0.45);
+  border-radius: 999px;
+  color: var(--hathor-accordion-gold-bright);
+  background: rgba(12, 10, 8, 0.28);
+}
+
+.featureIcon svg {
+  width: 1.45rem;
+  height: 1.45rem;
+}
+
+.featureLabel {
+  font-family: var(
+    --typo-page-subtitle-font,
+    var(--font-body, "Plus Jakarta Sans", system-ui, sans-serif)
+  );
+  font-size: clamp(0.58rem, 0.85vw, 0.68rem);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.3;
+  color: rgba(243, 231, 207, 0.86);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.35rem;
+  margin-top: 0.65rem;
+}
+
+.detailsCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.85rem;
+  padding: 0.75rem 1.45rem;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #c9a96e 0%, #9a7840 100%);
   color: #fff !important;
   -webkit-text-fill-color: #fff !important;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.22) inset,
-    0 10px 28px rgba(0, 0, 0, 0.34) !important;
-  transform: translateY(-1px) !important;
+  font-family: var(
+    --typo-page-subtitle-font,
+    var(--font-body, "Plus Jakarta Sans", system-ui, sans-serif)
+  );
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
+  transition:
+    transform 0.3s ease,
+    filter 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
-.accordionItem.isActive .cta {
-  animation: hathorAccordionCtaReveal 0.75s var(--hathor-accordion-ease) 0.32s
-    both;
+.detailsCta:hover,
+.detailsCta:focus-visible {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.34);
+  outline: none;
 }
 
-@keyframes hathorAccordionNameReveal {
-  from {
-    opacity: 0.65;
-    transform: translateY(6px);
-    letter-spacing: -0.02em;
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    letter-spacing: 0.02em;
-  }
+.watchCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--hathor-accordion-gold-bright);
+  font-family: var(
+    --typo-page-subtitle-font,
+    var(--font-body, "Plus Jakarta Sans", system-ui, sans-serif)
+  );
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color 0.3s ease, transform 0.3s ease;
 }
 
-@keyframes hathorAccordionCopyReveal {
+.watchCta:hover,
+.watchCta:focus-visible {
+  color: #f3e7cf;
+  outline: none;
+  transform: translateX(2px);
+}
+
+.watchPlay {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid rgba(212, 184, 122, 0.65);
+  border-radius: 999px;
+  font-size: 0.65rem;
+  padding-left: 2px;
+}
+
+.infoCard {
+  justify-self: end;
+  align-self: end;
+  width: min(100%, 20.5rem);
+  padding: clamp(1.15rem, 2.2vh, 1.55rem) clamp(1.1rem, 2vw, 1.45rem);
+  border: 1px solid rgba(212, 184, 122, 0.42);
+  border-radius: 2px;
+  background: rgba(14, 11, 8, 0.62);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  animation: hathorPanelRise 0.8s var(--hathor-accordion-ease) 0.22s both;
+}
+
+.price {
+  margin: 0 0 1.15rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.45rem;
+  color: var(--hathor-accordion-gold-bright);
+  font-family: var(
+    --typo-page-title-font,
+    var(--font-heading, var(--font-display, "Playfair Display", Georgia, serif))
+  );
+}
+
+.priceFrom {
+  font-family: var(
+    --typo-page-subtitle-font,
+    var(--font-body, "Plus Jakarta Sans", system-ui, sans-serif)
+  );
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.priceValue {
+  font-size: clamp(1.35rem, 2vw, 1.7rem);
+  letter-spacing: 0.02em;
+}
+
+.priceCaption {
+  width: 100%;
+  font-family: var(
+    --typo-page-subtitle-font,
+    var(--font-body, "Plus Jakarta Sans", system-ui, sans-serif)
+  );
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(243, 231, 207, 0.72);
+}
+
+.highlightsTitle {
+  margin: 0 0 0.75rem;
+  font-family: var(
+    --typo-page-subtitle-font,
+    var(--font-body, "Plus Jakarta Sans", system-ui, sans-serif)
+  );
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--hathor-accordion-gold-bright);
+}
+
+.highlights {
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.highlights li {
+  position: relative;
+  padding-left: 1rem;
+  font-family: var(
+    --typo-page-subtitle-font,
+    var(--font-body, "Plus Jakarta Sans", system-ui, sans-serif)
+  );
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: rgba(243, 231, 207, 0.9);
+}
+
+.highlights li::before {
+  content: "◆";
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  font-size: 0.48rem;
+  color: var(--hathor-accordion-gold);
+}
+
+.enquireCta {
+  width: 100%;
+  min-height: 2.7rem;
+  border: 1px solid rgba(212, 184, 122, 0.7);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--hathor-accordion-gold-bright);
+  font-family: var(
+    --typo-page-subtitle-font,
+    var(--font-body, "Plus Jakarta Sans", system-ui, sans-serif)
+  );
+  font-size: 0.74rem;
+  font-weight: 650;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.enquireCta:hover,
+.enquireCta:focus-visible {
+  background: rgba(212, 184, 122, 0.12);
+  border-color: #f3e7cf;
+  color: #f3e7cf;
+  outline: none;
+}
+
+@keyframes hathorPanelRise {
   from {
     opacity: 0;
-    transform: translateY(14px);
-    filter: blur(3px);
+    transform: translateY(18px);
+    filter: blur(2px);
   }
   to {
     opacity: 1;
@@ -542,30 +823,11 @@
   }
 }
 
-@keyframes hathorAccordionCtaReveal {
-  from {
-    opacity: 0;
-    transform: translateY(18px) scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .accordionItem.isActive .name,
-  .accordionItem.isActive .meta,
-  .accordionItem.isActive .description,
-  .accordionItem.isActive .cta {
+  .accordionItem.isActive .backgroundImage,
+  .stageMain,
+  .infoCard {
     animation: none;
-    opacity: 1;
-    transform: none;
-    filter: none;
-  }
-
-  .backgroundImage {
-    animation: none !important;
   }
 
   .accordionItem:not(.isActive):hover .name,
@@ -578,27 +840,12 @@
   }
 }
 
-/* Same expand reveal on phones — softer blur (still present) */
 @media (pointer: coarse) {
-  @keyframes hathorAccordionCopyReveal {
-    from {
-      opacity: 0;
-      transform: translateY(14px);
-      filter: blur(1.5px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-      filter: blur(0);
-    }
-  }
-
   .accordionItem,
   .backgroundImage {
     will-change: auto;
   }
 
-  /* Touch: no hover tint — keep press focus via :focus-visible only */
   .accordionItem:not(.isActive):hover {
     background-color: transparent;
   }
@@ -609,6 +856,10 @@
     background-color: transparent;
     border-color: rgba(194, 166, 121, 0.55);
   }
+
+  .infoCard {
+    backdrop-filter: blur(6px);
+  }
 }
 
 /* Tablet */
@@ -616,10 +867,25 @@
   .section {
     --hathor-accordion-row-h: 118px;
     --hathor-accordion-roman-w: clamp(3.75rem, 8vw, 5.5rem);
+    --hathor-accordion-open-h: min(90vh, 720px);
+    --hathor-accordion-rail-w: 4.25rem;
   }
 
-  .accordionItem.isActive {
-    height: 440px;
+  .stage {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: 1.25rem;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .infoCard {
+    justify-self: stretch;
+    width: min(100%, 26rem);
+  }
+
+  .features {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .rowMeta {
@@ -633,11 +899,9 @@
     --hathor-accordion-row-h: 108px;
     --hathor-accordion-gutter: 1.1rem;
     --hathor-accordion-roman-w: 2.75rem;
+    --hathor-accordion-rail-w: 0px;
+    --hathor-accordion-open-h: min(92svh, 820px);
     padding: clamp(3rem, 6vh, 4.5rem) 0;
-  }
-
-  .accordionItem.isActive {
-    height: 380px;
   }
 
   .romanNumeral {
@@ -667,17 +931,119 @@
     font-size: 1rem;
   }
 
-  .body {
-    padding: 0.25rem var(--hathor-accordion-gutter) 1.35rem
-      var(--hathor-accordion-gutter);
-    gap: 1rem;
-  }
-
-  .description {
-    -webkit-line-clamp: 3;
-  }
-
   .flare {
     width: min(140px, 55vw);
+  }
+
+  .panel {
+    grid-template-columns: 1fr;
+  }
+
+  .rail {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: auto;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    padding: 0.65rem 0.85rem;
+    z-index: 4;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  }
+
+  .railRoman {
+    font-size: 1.15rem;
+  }
+
+  .scarab {
+    width: 1.65rem;
+  }
+
+  .railQuote {
+    flex-direction: row;
+    max-height: none;
+    margin-left: auto;
+    gap: 0.4rem;
+  }
+
+  .railQuoteText {
+    writing-mode: horizontal-tb;
+    transform: none;
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    max-width: 11rem;
+    text-align: right;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+
+  .railLotus {
+    display: none;
+  }
+
+  .accordionItem.isActive .backgroundImage,
+  .vignette {
+    left: 0;
+    width: 100% !important;
+  }
+
+  .stage {
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 1rem;
+    padding: 3.5rem 1rem 1.25rem;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .close {
+    top: 3.15rem;
+    right: 0.75rem;
+    width: 2.1rem;
+    height: 2.1rem;
+  }
+
+  .routeTitle {
+    font-size: clamp(1.35rem, 7vw, 1.85rem);
+    letter-spacing: 0.04em;
+  }
+
+  .summary {
+    font-size: 0.88rem;
+    -webkit-line-clamp: 5;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .features {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem 0.65rem;
+  }
+
+  .featureIcon {
+    width: 2.55rem;
+    height: 2.55rem;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .detailsCta,
+  .watchCta {
+    justify-content: center;
+  }
+
+  .infoCard {
+    width: 100%;
+    justify-self: stretch;
+    backdrop-filter: blur(5px);
   }
 }

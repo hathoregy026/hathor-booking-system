@@ -408,6 +408,8 @@ export function HomePageClient({
             romanNumeral: cruise.romanNumeral,
             meta: cruise.meta,
             href: cruise.href,
+            slug: cruise.slug,
+            basePriceCents: cruise.basePriceCents,
             ctaLabel: "Check Voyages",
           }))}
         />
