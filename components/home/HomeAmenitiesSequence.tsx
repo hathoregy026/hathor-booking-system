@@ -9,6 +9,7 @@ import type { SiteImageName } from "@/lib/site-image-slots";
 const GOLD = "#B69F64";
 const CREAM = "#ece8df";
 const INK = "#1c1712";
+const WHITE = "#ffffff";
 
 export type AmenitiesLandmarkSlide = {
   titleLines: string[];
@@ -86,7 +87,8 @@ function resolveImages(
  *
  * Surfaces: gold #B69F64 / cream #ece8df
  * On-image type: site typography + #B69F64
- * On-gold/cream panels: site typography + dark ink for contrast
+ * On-gold panels: site typography + white
+ * On-cream panels: site typography + dark ink for contrast
  *
  * Eleven unique CMS images (slots 1–11) — one per visual mount.
  */
@@ -178,10 +180,11 @@ export function HomeAmenitiesSequence({
   const onImageIndication = withColor(indicationStyle, GOLD);
   const onImageBody = withColor(bodyStyle, GOLD);
 
-  // On gold / cream panels → site fonts + dark ink (contrast)
-  const onPanelTitle = withColor(titleStyle, INK);
-  const onPanelIndication = withColor(indicationStyle, INK);
-  const onPanelBody = withColor(bodyStyle, INK);
+  // On gold panels → white; on cream → dark ink
+  const onGoldTitle = withColor(titleStyle, WHITE);
+  const onGoldIndication = withColor(indicationStyle, WHITE);
+  const onGoldBody = withColor(bodyStyle, WHITE);
+  const onCreamBody = withColor(bodyStyle, INK);
 
   const introImage = images[0];
   const videoHeroImage = images[1];
@@ -238,7 +241,7 @@ export function HomeAmenitiesSequence({
           >
             <p
               className="home-am-intro__cream-text typo-on-images-body"
-              style={onPanelBody}
+              style={onCreamBody}
             >
               {intro.body}
             </p>
@@ -304,10 +307,10 @@ export function HomeAmenitiesSequence({
               data-am-video-caption
               style={{ background: GOLD }}
             >
-              <h3 className="typo-on-images-title" style={onPanelTitle}>
+              <h3 className="typo-on-images-title" style={onGoldTitle}>
                 {videoInset?.titleLines?.join(" ") || videoMain.indication}
               </h3>
-              <p className="typo-on-images-body" style={onPanelBody}>
+              <p className="typo-on-images-body" style={onGoldBody}>
                 {videoInset?.body || videoMain.body}
               </p>
             </div>
@@ -339,16 +342,16 @@ export function HomeAmenitiesSequence({
                     >
                       <p
                         className="typo-on-images-indication"
-                        style={onPanelIndication}
+                        style={onGoldIndication}
                       >
                         {slide.indication}
                       </p>
-                      <h2 className="typo-on-images-title" style={onPanelTitle}>
+                      <h2 className="typo-on-images-title" style={onGoldTitle}>
                         {slide.titleLines.map((line) => (
                           <span key={line}>{line}</span>
                         ))}
                       </h2>
-                      <p className="typo-on-images-body" style={onPanelBody}>
+                      <p className="typo-on-images-body" style={onGoldBody}>
                         {slide.body}
                       </p>
                     </div>
@@ -416,7 +419,7 @@ export function HomeAmenitiesSequence({
             <h2
               className="home-am-opening__title typo-on-images-title"
               data-am-opening-title
-              style={onPanelTitle}
+              style={onGoldTitle}
             >
               {stories[0]?.title ||
                 landmarks[3]?.titleLines.join(" ") ||
@@ -435,7 +438,7 @@ export function HomeAmenitiesSequence({
             <div className="home-am-opening__rail" data-am-opening-rail>
               <p
                 className="home-am-opening__rail-text typo-on-images-body"
-                style={onPanelBody}
+                style={onGoldBody}
               >
                 {stories[0]?.body || landmarks[3]?.body || intro.body}
               </p>
@@ -475,7 +478,7 @@ export function HomeAmenitiesSequence({
                   <a
                     className="home-am-opening__cta typo-on-images-indication"
                     href={stories[0].href}
-                    style={onPanelIndication}
+                    style={onGoldIndication}
                   >
                     {stories[0].cta}
                   </a>
@@ -484,7 +487,7 @@ export function HomeAmenitiesSequence({
                   <a
                     className="home-am-opening__cta typo-on-images-indication"
                     href={stories[1].href}
-                    style={onPanelIndication}
+                    style={onGoldIndication}
                   >
                     {stories[1].cta}
                   </a>

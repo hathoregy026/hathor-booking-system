@@ -498,7 +498,9 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   text-decoration: none;
-  border-bottom: 1px solid rgba(28, 23, 18, 0.45);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.55);
+  color: #ffffff;
+
   padding-bottom: 0.15rem;
 }
 

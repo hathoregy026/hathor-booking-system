@@ -63,7 +63,9 @@ function roleCss(selector: string, style: TypographyTextStyle) {
 export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
   const root =
     ".public-site .home-am-sequence,html[data-ex-experience] .ex-root .home-am-sequence";
-  const panelInk = `${root} .home-am-intro__cream .typo-on-images-body,${root} .home-am-intro__cream .typo-on-images-body *,${root} .home-am-video__caption .typo-on-images-title,${root} .home-am-video__caption .typo-on-images-title *,${root} .home-am-video__caption .typo-on-images-body,${root} .home-am-video__caption .typo-on-images-body *,${root} .home-am-slider__caption .typo-on-images-title,${root} .home-am-slider__caption .typo-on-images-title *,${root} .home-am-slider__caption .typo-on-images-indication,${root} .home-am-slider__caption .typo-on-images-indication *,${root} .home-am-slider__caption .typo-on-images-body,${root} .home-am-slider__caption .typo-on-images-body *,${root} .home-am-opening__title-panel .typo-on-images-title,${root} .home-am-opening__title-panel .typo-on-images-title *,${root} .home-am-opening__right .typo-on-images-body,${root} .home-am-opening__right .typo-on-images-body *,${root} .home-am-opening__right .home-am-opening__cta,${root} .home-am-opening__right .home-am-opening__cta *{color:#1c1712!important;-webkit-text-fill-color:#1c1712!important;}`;
+  /* Cream panel keeps dark ink; gold panels use white for contrast. */
+  const creamInk = `${root} .home-am-intro__cream .typo-on-images-body,${root} .home-am-intro__cream .typo-on-images-body *{color:#1c1712!important;-webkit-text-fill-color:#1c1712!important;}`;
+  const goldInk = `${root} .home-am-video__caption .typo-on-images-title,${root} .home-am-video__caption .typo-on-images-title *,${root} .home-am-video__caption .typo-on-images-body,${root} .home-am-video__caption .typo-on-images-body *,${root} .home-am-slider__caption .typo-on-images-title,${root} .home-am-slider__caption .typo-on-images-title *,${root} .home-am-slider__caption .typo-on-images-indication,${root} .home-am-slider__caption .typo-on-images-indication *,${root} .home-am-slider__caption .typo-on-images-body,${root} .home-am-slider__caption .typo-on-images-body *,${root} .home-am-opening__title-panel .typo-on-images-title,${root} .home-am-opening__title-panel .typo-on-images-title *,${root} .home-am-opening__right .typo-on-images-body,${root} .home-am-opening__right .typo-on-images-body *,${root} .home-am-opening__right .home-am-opening__cta,${root} .home-am-opening__right .home-am-opening__cta *,${root} .home-am-opening__right .home-am-opening__card figcaption,${root} .home-am-opening__right .home-am-opening__card figcaption *{color:#ffffff!important;-webkit-text-fill-color:#ffffff!important;}`;
   return [
     roleCss(
       `${root} .typo-on-images-title,${root} .typo-on-images-title *`,
@@ -77,6 +79,7 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
       `${root} .typo-on-images-body,${root} .typo-on-images-body *`,
       settings.body,
     ),
-    panelInk,
+    creamInk,
+    goldInk,
   ].join("");
 }
