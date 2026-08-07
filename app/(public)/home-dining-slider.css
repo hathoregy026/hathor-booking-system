@@ -545,12 +545,14 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
  * Springs i-opening__right-column:
  * second grid layer (NOT sticky) — cards scroll in document flow.
  * padding-top: 100svh so content arrives after left sticky settles.
+ * Must stack ABOVE the sticky title panel (stage z-index: 2) or the
+ * three rising cards paint underneath the gold half and never show.
  */
 .home-am-opening__right {
   grid-area: sticky_content;
   align-self: start;
   position: relative;
-  z-index: 1;
+  z-index: 3;
   width: 100%;
   background: transparent;
   will-change: clip-path;
