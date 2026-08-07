@@ -4,6 +4,8 @@
   --nav-edge: 137.5px;
   --nav-word-gap: 116px;
   --nav-logo-gap: 200px;
+  --theme-toggle-w: 7.75rem;
+  --theme-toggle-h: 1.7rem;
 }
 
 /* Stay above GSAP-pinned heroes on every page */
@@ -64,7 +66,8 @@
 
 /*
   Dead-center the nav cluster (links + logo + mode toggle).
-  Balance spacer mirrors toggle width so the logo stays viewport-centered.
+  Balance spacer mirrors toggle width + word gap so the logo stays viewport-centered.
+  Mode switch uses the same horizontal gap as VOYAGE / STAY / CONTACT.
 */
 @media (min-width: 768px) {
   .public-site .hathor-header--owo-hero-layout .hathor-header__inner--owo {
@@ -75,7 +78,7 @@
   .public-site .hathor-header--owo-hero-layout .hathor-header__inner--owo::before {
     content: "";
     flex: 0 0 auto;
-    width: calc(2.5rem + clamp(0.85rem, 1.6vw, 1.5rem));
+    width: calc(var(--theme-toggle-w, 7.75rem) + var(--nav-word-gap));
     height: 1px;
     pointer-events: none;
     visibility: hidden;
@@ -96,10 +99,18 @@
     align-items: center;
     align-self: center;
     margin: 0;
-    margin-left: clamp(0.85rem, 1.6vw, 1.5rem);
+    margin-left: var(--nav-word-gap);
     width: auto;
     height: auto;
+    min-height: 0;
     pointer-events: auto;
+  }
+
+  /* Match nav link text optical center (same row as labels) */
+  .public-site .hathor-header__col--right .public-theme-toggle {
+    align-self: center;
+    margin-top: 0;
+    margin-bottom: 0;
   }
 }
 
@@ -437,6 +448,13 @@
   /* Theme far left, burger far right — equal gap to centered logo */
   .public-site .hathor-header__col--right .public-theme-toggle {
     order: 1;
+    /* Compact switch so it doesn’t crowd the centered logo */
+    --theme-toggle-w: 3.2rem;
+    --theme-toggle-h: 1.7rem;
+  }
+
+  .public-site .hathor-header__col--right .public-theme-toggle__label {
+    display: none;
   }
 
   .public-site .hathor-header__col--right .hathor-header__menu-btn {
