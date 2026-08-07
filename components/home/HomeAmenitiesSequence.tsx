@@ -197,13 +197,13 @@ export function HomeAmenitiesSequence({
       className="home-am-sequence"
       aria-label="Amenities-style Nile stories"
     >
-      {/* 1) i-intro — fullscreen → slides left → cream text */}
+      {/* 1) i-intro — sticky--under-next only */}
       <div
-        className="home-am-intro home-am-chapter"
+        className="home-am-intro home-am-chapter home-am-chapter--under-next"
         data-am-intro
         data-am-chapter
       >
-        <div className="home-am-intro__sticky home-am-chapter__stage" data-am-stage>
+        <div className="home-am-chapter__stage" data-am-stage>
           <div className="home-am-intro__media" data-am-intro-media>
             <ManagedImage
               name={introImage.name}
@@ -249,14 +249,14 @@ export function HomeAmenitiesSequence({
         </div>
       </div>
 
-      {/* 2) i-video — huge image rises, title, inset image, caption card */}
+      {/* 2) i-video — under-previous + under-next */}
       {videoMain ? (
         <div
-          className="home-am-video home-am-chapter"
+          className="home-am-video home-am-chapter home-am-chapter--under-previous home-am-chapter--under-next"
           data-am-video
           data-am-chapter
         >
-          <div className="home-am-video__sticky home-am-chapter__stage" data-am-stage>
+          <div className="home-am-chapter__stage" data-am-stage>
             <div className="home-am-video__hero" data-am-video-hero>
               <ManagedImage
                 name={videoHeroImage.name}
@@ -318,14 +318,14 @@ export function HomeAmenitiesSequence({
         </div>
       ) : null}
 
-      {/* 3) i-slider — half text / half image stack */}
+      {/* 3) i-slider — under-previous + under-next */}
       {sliderSlides.length > 0 ? (
         <div
-          className="home-am-slider home-am-chapter"
+          className="home-am-slider home-am-chapter home-am-chapter--under-previous home-am-chapter--under-next"
           data-am-slider
           data-am-chapter
         >
-          <div className="home-am-slider__sticky home-am-chapter__stage" data-am-stage>
+          <div className="home-am-chapter__stage" data-am-stage>
             <div className="home-am-slider__row">
               <div
                 className="home-am-slider__caption-col"
@@ -393,106 +393,104 @@ export function HomeAmenitiesSequence({
         </div>
       ) : null}
 
-      {/* 4) i-opening — Springs: fixed left + title panel + scrolling vertical cards */}
+      {/* 4) i-opening — sticky left layer + non-sticky right column (document-flow cards) */}
       <div
-        className="home-am-opening home-am-chapter"
+        className="home-am-opening home-am-chapter home-am-chapter--under-previous home-am-chapter--under-next"
         data-am-opening
         data-am-chapter
       >
-        <div className="home-am-opening__sticky home-am-chapter__stage" data-am-stage>
-          <div className="home-am-opening__left" data-am-opening-left>
-            <ManagedImage
-              name={openingLeftImage.name}
-              alt={openingLeftImage.alt}
-              fill
-              sizes="(max-width: 480px) 100vw, 50vw"
-              className="object-cover"
-              previewAnchor={openingLeftImage.previewAnchor}
-            />
-          </div>
+        <div className="home-am-chapter__stage" data-am-stage>
+          <div className="home-am-opening__content">
+            <div className="home-am-opening__left" data-am-opening-left>
+              <ManagedImage
+                name={openingLeftImage.name}
+                alt={openingLeftImage.alt}
+                fill
+                sizes="(max-width: 480px) 100vw, 50vw"
+                className="object-cover"
+                previewAnchor={openingLeftImage.previewAnchor}
+              />
+            </div>
 
-          <div
-            className="home-am-opening__title-panel"
-            data-am-opening-title-panel
-            style={{ background: GOLD }}
-          >
-            <h2
-              className="home-am-opening__title typo-on-images-title"
-              data-am-opening-title
-              style={onGoldTitle}
+            <div
+              className="home-am-opening__title-panel"
+              data-am-opening-title-panel
+              style={{ background: GOLD }}
             >
-              {stories[0]?.title ||
-                landmarks[3]?.titleLines.join(" ") ||
-                intro.titleLines.join(" ")}
-            </h2>
-            <div className="home-am-opening__gradient" aria-hidden="true">
-              <div />
+              <h2
+                className="home-am-opening__title typo-on-images-title"
+                data-am-opening-title
+                style={onGoldTitle}
+              >
+                {stories[0]?.title ||
+                  landmarks[3]?.titleLines.join(" ") ||
+                  intro.titleLines.join(" ")}
+              </h2>
+              <div className="home-am-opening__gradient" aria-hidden="true">
+                <div />
+              </div>
             </div>
           </div>
+        </div>
 
-          <div
-            className="home-am-opening__right"
-            data-am-opening-right
-            style={{ background: GOLD }}
-          >
-            <div className="home-am-opening__rail" data-am-opening-rail>
-              <p
-                className="home-am-opening__rail-text typo-on-images-body"
-                style={onGoldBody}
-              >
-                {stories[0]?.body || landmarks[3]?.body || intro.body}
-              </p>
+        <div
+          className="home-am-opening__right home-am-chapter__layer"
+          data-am-opening-right
+        >
+          <div className="home-am-opening__right-inner">
+            <p
+              className="home-am-opening__rail-text typo-on-images-body"
+              style={onGoldBody}
+            >
+              {stories[0]?.body || landmarks[3]?.body || intro.body}
+            </p>
 
-              <div
-                className="home-am-opening__cards"
-                data-am-opening-cards
-              >
-                {openingCards.map((card, index) => (
-                  <figure
-                    key={`opening-card-${card.image.name}-${index}`}
-                    className="home-am-opening__card"
-                    data-am-opening-card
-                  >
-                    <div className="home-am-opening__card-media">
-                      <ManagedImage
-                        name={card.image.name}
-                        alt={card.image.alt}
-                        fill
-                        sizes="(max-width: 480px) 48vw, 210px"
-                        className="object-cover"
-                        previewAnchor={card.image.previewAnchor}
-                      />
-                    </div>
-                    <figcaption
-                      className="home-am-on-image-text typo-on-images-indication"
-                      style={onImageIndication}
-                    >
-                      {card.label}
-                    </figcaption>
-                  </figure>
-                ))}
-              </div>
-
-              <div className="home-am-opening__ctas" data-am-opening-ctas>
-                {stories[0]?.href ? (
-                  <a
-                    className="home-am-opening__cta typo-on-images-indication"
-                    href={stories[0].href}
+            <div className="home-am-opening__cards" data-am-opening-cards>
+              {openingCards.map((card, index) => (
+                <figure
+                  key={`opening-card-${card.image.name}-${index}`}
+                  className="home-am-opening__card"
+                  data-am-opening-card
+                >
+                  <div className="home-am-opening__card-media">
+                    <ManagedImage
+                      name={card.image.name}
+                      alt={card.image.alt}
+                      fill
+                      sizes="(max-width: 480px) 48vw, 210px"
+                      className="object-cover"
+                      previewAnchor={card.image.previewAnchor}
+                    />
+                  </div>
+                  <figcaption
+                    className="typo-on-images-indication"
                     style={onGoldIndication}
                   >
-                    {stories[0].cta}
-                  </a>
-                ) : null}
-                {stories[1]?.href ? (
-                  <a
-                    className="home-am-opening__cta typo-on-images-indication"
-                    href={stories[1].href}
-                    style={onGoldIndication}
-                  >
-                    {stories[1].cta}
-                  </a>
-                ) : null}
-              </div>
+                    {card.label}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+
+            <div className="home-am-opening__ctas" data-am-opening-ctas>
+              {stories[0]?.href ? (
+                <a
+                  className="home-am-opening__cta typo-on-images-indication"
+                  href={stories[0].href}
+                  style={onGoldIndication}
+                >
+                  {stories[0].cta}
+                </a>
+              ) : null}
+              {stories[1]?.href ? (
+                <a
+                  className="home-am-opening__cta typo-on-images-indication"
+                  href={stories[1].href}
+                  style={onGoldIndication}
+                >
+                  {stories[1].cta}
+                </a>
+              ) : null}
             </div>
           </div>
         </div>

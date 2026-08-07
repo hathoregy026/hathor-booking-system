@@ -1,16 +1,16 @@
-/* Springs amenities Fixed-Background Mask Reveal on homepage:
-   sticky--under-next chapters cover each other — no solid gold gaps */
+/* Springs infrastructure sticky grammar (ported from clone stylesheets) */
 
 .home-am-sequence {
   --am-gold: #b69f64;
   --am-cream: #ece8df;
   --am-ink: #1c1712;
-  --am-under-next: 100svh;
+  --am-svh: 1svh;
+  --sticky-under-previous-distance: calc(100 * var(--am-svh));
+  --sticky-under-next-distance: calc(100 * var(--am-svh));
   position: relative;
   z-index: 21;
   width: 100%;
   margin: 0;
-  /* Transparent runway — gold only on intentional caption panels */
   background: transparent;
   color: var(--am-ink);
   isolation: isolate;
@@ -38,27 +38,79 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   margin-top: 0 !important;
 }
 
-/* Amenities sticky--under-next grammar — next chapter covers previous */
+/*
+ * Springs .sticky system — cover is CSS clip on the NEXT chapter,
+ * not a GSAP wipe on the sticky stage.
+ */
 .home-am-chapter {
+  display: grid;
+  grid-auto-rows: 1fr;
+  grid-template-areas: "sticky_content";
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
   position: relative;
-  margin: 0 0 calc(var(--am-under-next) * -1);
+  margin: 0;
   background: transparent;
+  min-height: calc(100 * var(--am-svh));
 }
 
-.home-am-chapter::after {
-  content: "";
-  display: block;
-  height: var(--am-under-next);
-  pointer-events: none;
+.home-am-chapter__stage,
+.home-am-chapter__layer {
+  align-self: start;
+  grid-area: sticky_content;
+  min-width: 0;
+  position: relative;
+  min-height: calc(100 * var(--am-svh));
 }
 
 .home-am-chapter__stage {
+  contain: content;
   position: sticky;
   top: 0;
-  height: 100svh;
+  height: calc(100 * var(--am-svh));
   overflow: hidden;
   background: transparent;
-  will-change: clip-path;
+}
+
+.home-am-chapter--under-previous {
+  margin-top: calc(var(--sticky-under-previous-distance) * -1);
+}
+
+.home-am-chapter--under-previous::after {
+  content: "";
+  display: block;
+  height: var(--sticky-under-previous-distance);
+  pointer-events: none;
+}
+
+.home-am-chapter--under-next {
+  margin-bottom: calc(var(--sticky-under-next-distance) * -1);
+}
+
+.home-am-chapter--under-next::after {
+  content: "";
+  display: block;
+  height: var(--sticky-under-next-distance);
+  pointer-events: none;
+}
+
+.home-am-chapter--under-previous.home-am-chapter--under-next .home-am-chapter__stage {
+  max-height: 200svh;
+}
+
+.home-am-chapter--under-previous.home-am-chapter--under-next::after {
+  height: calc(
+    var(--sticky-under-previous-distance) + var(--sticky-under-next-distance)
+  );
+}
+
+.home-am-chapter--under-next + .home-am-chapter--under-previous {
+  clip-path: inset(calc(100 * var(--am-svh)) 0 0);
+  margin-top: calc(
+    var(--sticky-under-previous-distance) * -1 +
+      var(--sticky-under-next-distance) * -1
+  );
+  transform: translateZ(1px);
 }
 
 .home-am-sequence + .home-helm-portal {
@@ -66,10 +118,16 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   z-index: 26;
 }
 
-/* ========== i-intro ========== */
+/* ========== i-intro (Springs: 150svh / 300svh) ========== */
 .home-am-intro {
-  height: 220svh;
+  height: 150svh;
   z-index: 1;
+}
+
+@media (min-width: 1025px) {
+  .home-am-intro {
+    height: 300svh;
+  }
 }
 
 .home-am-intro__media {
@@ -155,10 +213,18 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   line-height: 1.25;
 }
 
-/* ========== i-video ========== */
+/* ========== i-video (Springs: 350svh / 600svh + -200svh cover) ========== */
 .home-am-video {
-  height: 420svh;
+  height: 350svh;
   z-index: 2;
+}
+
+@media (min-width: 1025px) {
+  .home-am-video.home-am-chapter--under-previous {
+    clip-path: polygon(0 100svh, 100% 100svh, 100% 100%, 0 100%);
+    height: 600svh;
+    margin-top: -200svh;
+  }
 }
 
 .home-am-video__hero {
@@ -167,6 +233,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   z-index: 1;
   will-change: transform;
   background: #0f0c09;
+  transform-origin: bottom right;
 }
 
 .home-am-video__hero img {
@@ -242,10 +309,14 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   line-height: 1.5;
 }
 
-/* ========== i-slider ========== */
+/* ========== i-slider (Springs: 600svh; no under-previous clip) ========== */
 .home-am-slider {
-  height: 560svh;
+  height: 600svh;
   z-index: 3;
+}
+
+.home-am-chapter--under-previous + .home-am-slider {
+  clip-path: none;
 }
 
 .home-am-slider__row {
@@ -341,43 +412,53 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   object-position: bottom center !important;
 }
 
-/* ========== i-opening (Springs Fixed-Background Mask Reveal) ========== */
+/* ========== i-opening (Springs: dual sticky layers, 250/400svh) ========== */
 .home-am-opening {
-  /*
-   * Long pin so the 3-card stack can keep moving (no early freeze),
-   * then a full viewport under-next for the wheel cover.
-   */
-  --am-under-next: 100svh;
-  height: 560svh;
+  height: 250svh;
   z-index: 4;
+  pointer-events: none;
+  clip-path: none;
 }
 
-.home-am-opening__sticky {
-  display: block;
+@media (min-width: 1025px) {
+  .home-am-opening {
+    height: 400svh;
+    min-height: 2700px;
+  }
+}
+
+.home-am-opening .home-am-chapter__stage {
+  pointer-events: none;
+  z-index: 2;
   overflow: hidden;
+}
+
+.home-am-opening__content {
+  display: flex;
+  height: 100%;
+  width: 100%;
 }
 
 .home-am-opening__left {
-  position: absolute;
-  inset: 0 auto 0 0;
+  position: relative;
   width: 50%;
+  height: 100%;
   overflow: hidden;
-  will-change: clip-path, transform;
-  z-index: 1;
+  will-change: clip-path;
 }
 
 .home-am-opening__left img {
   object-fit: cover !important;
+  transform-origin: center center;
 }
 
 .home-am-opening__title-panel {
-  position: absolute;
-  inset: 0 0 0 50%;
+  position: relative;
   width: 50%;
+  height: 100%;
   background: var(--am-gold);
   overflow: hidden;
   will-change: clip-path;
-  z-index: 2;
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
@@ -391,6 +472,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   max-width: 18rem;
   line-height: 1.05;
   text-align: right;
+  pointer-events: all;
 }
 
 .home-am-opening__gradient {
@@ -416,28 +498,34 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   );
 }
 
-/* Scrolling gold column — Springs i-opening__right-column */
+/*
+ * Springs i-opening__right-column:
+ * second grid layer (NOT sticky) — cards scroll in document flow.
+ * padding-top: 100svh so content arrives after left sticky settles.
+ */
 .home-am-opening__right {
-  position: absolute;
-  inset: 0 0 0 50%;
-  width: 50%;
-  background: var(--am-gold);
-  overflow: hidden;
-  will-change: clip-path;
-  z-index: 3;
-  pointer-events: none;
-}
-
-.home-am-opening__rail {
+  grid-area: sticky_content;
+  align-self: start;
   position: relative;
   z-index: 1;
+  width: 100%;
+  background: transparent;
+  will-change: clip-path;
+  pointer-events: none;
+  padding-top: 100svh;
+}
+
+.home-am-opening__right-inner {
+  margin-left: 50%;
+  width: 50%;
+  background: var(--am-gold);
   display: flex;
   flex-direction: column;
   gap: 1.35rem;
   padding: clamp(1.5rem, 3.5vw, 3rem);
-  padding-top: clamp(2rem, 5vh, 3.5rem);
-  will-change: transform;
   pointer-events: auto;
+  min-height: 200svh;
+  padding-bottom: 40svh;
 }
 
 .home-am-opening__rail-text {
@@ -457,6 +545,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
 .home-am-opening__card {
   position: relative;
   margin: 0;
+  margin-top: 0.9rem;
   width: min(58%, 13.5rem);
   flex: 0 0 auto;
 }
@@ -500,12 +589,16 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   text-decoration: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.55);
   color: #ffffff;
-
   padding-bottom: 0.15rem;
 }
 
 /* ========== Tablet ========== */
 @media (max-width: 1024px) {
+  .home-am-sequence {
+    --sticky-under-previous-distance: 90svh;
+    --sticky-under-next-distance: 90svh;
+  }
+
   .home-am-intro {
     height: 190svh;
   }
@@ -515,12 +608,12 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   }
 
   .home-am-slider {
-    height: 480svh;
+    height: 520svh;
   }
 
   .home-am-opening {
-    --am-under-next: 90svh;
-    height: 480svh;
+    height: 320svh;
+    min-height: 0;
   }
 
   .home-am-opening__card {
@@ -542,6 +635,11 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
 
 /* ========== Phone ========== */
 @media (max-width: 480px) {
+  .home-am-sequence {
+    --sticky-under-previous-distance: 80svh;
+    --sticky-under-next-distance: 80svh;
+  }
+
   .home-am-intro {
     height: 180svh;
   }
@@ -563,6 +661,10 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
 
   .home-am-video {
     height: 340svh;
+  }
+
+  .home-am-video__hero {
+    transform-origin: bottom center;
   }
 
   .home-am-video__copy {
@@ -610,17 +712,20 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   }
 
   .home-am-opening {
-    --am-under-next: 80svh;
-    height: 340svh;
+    height: 280svh;
+    min-height: 0;
+  }
+
+  .home-am-opening__content {
+    flex-direction: column;
   }
 
   .home-am-opening__left {
     width: 100%;
-    inset: 0;
+    height: 54%;
   }
 
   .home-am-opening__title-panel {
-    inset: auto 0 0 0;
     width: 100%;
     height: 46%;
     align-items: flex-start;
@@ -634,13 +739,15 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   }
 
   .home-am-opening__right {
-    inset: auto 0 0 0;
-    width: 100%;
-    height: 54%;
+    padding-top: 0;
   }
 
-  .home-am-opening__rail {
+  .home-am-opening__right-inner {
+    margin-left: 0;
+    width: 100%;
+    min-height: 0;
     padding: 1.15rem;
+    padding-bottom: 20svh;
     gap: 1rem;
   }
 
@@ -672,10 +779,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
     height: auto;
   }
 
-  .home-am-intro__sticky,
-  .home-am-video__sticky,
-  .home-am-slider__sticky,
-  .home-am-opening__sticky {
+  .home-am-chapter__stage {
     position: relative;
     height: auto;
     min-height: 100svh;
@@ -687,7 +791,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   .home-am-opening__left,
   .home-am-opening__title-panel,
   .home-am-opening__right,
-  .home-am-opening__rail {
+  .home-am-opening__right-inner {
     clip-path: none !important;
     transform: none !important;
   }

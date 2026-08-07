@@ -3,26 +3,28 @@
 import { RefObject, useLayoutEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import {
-  amenitiesWipeClip,
-  amenitiesWipeClosed,
-  amenitiesWipeOpen,
-  luxWipe,
-} from "@/lib/fixed-mask-reveal";
 import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const clamp = (v: number) => Math.max(0, Math.min(1, v));
-const seg = (p: number, a: number, b: number) => {
-  if (b <= a) return p >= b ? 1 : 0;
-  return luxWipe(clamp((p - a) / (b - a)));
+
+/** Progress between two vh offsets measured from sticky pin start (Springs parallax keys). */
+const segVh = (vh: number, from: number, to: number) => {
+  if (to <= from) return vh >= to ? 1 : 0;
+  return clamp((vh - from) / (to - from));
 };
 
+const bottomClosed = "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)";
+const topClosed = "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)";
+const fullOpen = "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)";
+const rightClosed = "polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)";
+
 /**
- * Springs amenities Fixed-Background Mask Reveal:
- * each next sticky chapter slides/covers the previous (under-next),
- * never as a solid gold block with a gap.
+ * Port of Springs infrastructure parallax:
+ * - Cover is CSS sticky under-next / under-previous (not a stage wipe)
+ * - Motion is vh-keyed from sticky pin start (parallax--100-0 ≈ +100svh)
+ * - Opening cards scroll in document flow inside expanding right column
  */
 export function useHomeAmenitiesSequence(
   rootRef: RefObject<HTMLElement | null>,
@@ -35,79 +37,100 @@ export function useHomeAmenitiesSequence(
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const isCompact = window.matchMedia("(max-width: 1024px)").matches;
     const isPhone = window.matchMedia("(max-width: 480px)").matches;
+    const isDesktop = !isCompact;
 
     const context = gsap.context(() => {
       if (reduced) return;
 
-      const chapters = Array.from(
-        root.querySelectorAll<HTMLElement>("[data-am-chapter]"),
-      );
+      const svh = () => window.innerHeight;
 
-      // Cover-reveal: each chapter after the first rises over the previous sticky stage.
-      chapters.forEach((chapter, index) => {
-        if (index === 0) return;
-        const stage =
-          chapter.querySelector<HTMLElement>("[data-am-stage]") ?? chapter;
-        gsap.set(stage, {
-          clipPath: amenitiesWipeClosed("up"),
-        });
-
+      /** Scrub a sticky chapter; callback gets scrolled distance in vh from pin start. */
+      const scrubSticky = (
+        sticky: HTMLElement,
+        id: string,
+        onVh: (scrolledVh: number, self: ScrollTrigger) => void,
+        priority: number,
+      ) => {
         ScrollTrigger.create({
-          id: `home-am-cover-${index}`,
-          trigger: chapter,
-          start: "top bottom",
-          end: "top top",
+          id,
+          trigger: sticky,
+          start: "top top",
+          end: "bottom bottom",
           scrub: true,
-          refreshPriority: -89,
+          refreshPriority: priority,
           onUpdate: (self) => {
-            gsap.set(stage, {
-              clipPath: amenitiesWipeClip("up", seg(self.progress, 0, 1)),
-            });
+            const scrolledVh = (self.scroll() - self.start) / svh();
+            onVh(scrolledVh, self);
           },
         });
-      });
+      };
 
-      /* ---------- i-intro ---------- */
+      /* ---------- i-intro (introImage + cream right wipe) ---------- */
       const intro = root.querySelector<HTMLElement>("[data-am-intro]");
       if (intro) {
         const media = intro.querySelector<HTMLElement>("[data-am-intro-media]");
         const dim = intro.querySelector<HTMLElement>("[data-am-intro-dim]");
         const title = intro.querySelector<HTMLElement>("[data-am-intro-title]");
         const cream = intro.querySelector<HTMLElement>("[data-am-intro-cream]");
-        const creamAngle = isPhone ? "up" : "right";
 
-        gsap.set(media, { xPercent: 0, scale: 1.18 });
-        gsap.set(dim, { autoAlpha: 0.55 });
-        gsap.set(title, { autoAlpha: 1, y: 0 });
-        gsap.set(cream, { clipPath: amenitiesWipeClosed(creamAngle) });
-
-        ScrollTrigger.create({
-          id: "home-am-intro",
-          trigger: intro,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: true,
-          refreshPriority: -88,
-          onUpdate: (self) => {
-            const p = self.progress;
-            const slide = seg(p, 0.08, 0.72);
-            gsap.set(media, {
-              xPercent: isPhone ? slide * -12 : slide * -36,
-              scale: 1.18 - slide * 0.18,
-            });
-            gsap.set(dim, { autoAlpha: 0.55 * (1 - seg(p, 0.05, 0.35)) });
-            gsap.set(title, {
-              autoAlpha: 1 - seg(p, 0.2, 0.45),
-              y: seg(p, 0.2, 0.45) * (isPhone ? -24 : -40),
-            });
-            gsap.set(cream, {
-              clipPath: amenitiesWipeClip(creamAngle, seg(p, 0.28, 0.78)),
-            });
-          },
+        gsap.set(media, {
+          xPercent: 0,
+          scale: 1.2,
+          clipPath: fullOpen,
         });
+        gsap.set(dim, { autoAlpha: 1 });
+        gsap.set(title, { autoAlpha: 1 });
+        gsap.set(cream, {
+          clipPath: isPhone
+            ? bottomClosed
+            : rightClosed,
+        });
+
+        scrubSticky(
+          intro,
+          "home-am-intro",
+          (vh) => {
+            if (isDesktop) {
+              /* introImage: 0→100 clip to 50%; picture: 0→200 translateX/scale */
+              const clipT = segVh(vh, 0, 1);
+              const right = 100 - clipT * 50;
+              const moveT = segVh(vh, 0, 2);
+              gsap.set(media, {
+                clipPath: `polygon(0 0, ${right}% 0, ${right}% 100%, 0% 100%)`,
+                xPercent: moveT * -36,
+                scale: 1.2 - moveT * 0.2,
+              });
+              gsap.set(cream, {
+                clipPath:
+                  clipT <= 0
+                    ? rightClosed
+                    : `polygon(${100 - clipT * 100}% 0%, 100% 0%, 100% 100%, ${100 - clipT * 100}% 100%)`,
+              });
+            } else {
+              const t = segVh(vh, 0, 0.5);
+              gsap.set(media, {
+                xPercent: isPhone ? t * -8 : t * -14,
+                scale: 1.2 - t * 0.12,
+                clipPath: fullOpen,
+              });
+              const creamT = segVh(vh, 0, 1);
+              gsap.set(cream, {
+                clipPath: isPhone
+                  ? `polygon(0% ${100 - creamT * 100}%, 100% ${100 - creamT * 100}%, 100% 100%, 0% 100%)`
+                  : `polygon(${100 - creamT * 100}% 0%, 100% 0%, 100% 100%, ${100 - creamT * 100}% 100%)`,
+              });
+            }
+
+            const dimT = segVh(vh, 0, 0.5);
+            gsap.set(dim, { autoAlpha: 1 - dimT });
+            const capT = segVh(vh, 0, 0.5);
+            gsap.set(title, { autoAlpha: 1 - capT });
+          },
+          -88,
+        );
       }
 
-      /* ---------- i-video ---------- */
+      /* ---------- i-video (videoZoom / videoImage / caption) ---------- */
       const video = root.querySelector<HTMLElement>("[data-am-video]");
       if (video) {
         const hero = video.querySelector<HTMLElement>("[data-am-video-hero]");
@@ -118,58 +141,96 @@ export function useHomeAmenitiesSequence(
           "[data-am-video-caption]",
         );
 
-        // Amenities i-video: full-bleed media is already in place under the cover wipe;
-        // only scale settles — never a gold empty stage.
-        gsap.set(hero, { scale: 1.12 });
-        gsap.set(inset, {
-          autoAlpha: 0,
-          scale: 1.15,
-          yPercent: 40,
-          clipPath: amenitiesWipeClosed("up"),
-        });
-        gsap.set([copy, title], { autoAlpha: 0, y: 28 });
-        gsap.set(caption, {
-          clipPath: amenitiesWipeClosed("up"),
-          autoAlpha: 1,
-        });
+        if (isDesktop) {
+          gsap.set(hero, {
+            scale: 0.29,
+            x: -206,
+            y: -206,
+            transformOrigin: "bottom right",
+          });
+        } else {
+          gsap.set(hero, {
+            scaleY: 0.38,
+            transformOrigin: "bottom center",
+          });
+        }
+        gsap.set(inset, { clipPath: bottomClosed, scale: 1.2 });
+        gsap.set([copy, title], { autoAlpha: 1 });
+        gsap.set(caption, { clipPath: bottomClosed, y: 0 });
 
-        ScrollTrigger.create({
-          id: "home-am-video",
-          trigger: video,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: true,
-          refreshPriority: -87,
-          onUpdate: (self) => {
-            const p = self.progress;
-            const settle = seg(p, 0, 0.35);
-            gsap.set(hero, { scale: 1.12 - settle * 0.12 });
+        scrubSticky(
+          video,
+          "home-am-video",
+          (vh) => {
+            if (isDesktop) {
+              /* videoZoom: --100 → --110 → --150 */
+              if (vh < 1) {
+                gsap.set(hero, { scale: 0.29, x: -206, y: -206 });
+              } else if (vh < 1.1) {
+                const t = segVh(vh, 1, 1.1);
+                gsap.set(hero, {
+                  scale: 0.29 + t * (0.5 - 0.29),
+                  x: -206 * (1 - t),
+                  y: -206 * (1 - t),
+                });
+              } else {
+                const t = segVh(vh, 1.1, 1.5);
+                gsap.set(hero, {
+                  scale: 0.5 + t * 0.5,
+                  x: 0,
+                  y: 0,
+                });
+              }
 
-            const textIn = seg(p, 0.08, 0.32);
-            gsap.set(copy, { autoAlpha: textIn, y: (1 - textIn) * 24 });
-            gsap.set(title, {
-              autoAlpha: textIn,
-              y: (1 - textIn) * 32,
-              x: (1 - textIn) * (isPhone ? 0 : 20),
-            });
+              /* videoTitle fades --100 → --130 */
+              const titleOut = segVh(vh, 1, 1.3);
+              gsap.set([copy, title], { autoAlpha: 1 - titleOut });
 
-            const insetIn = seg(p, 0.26, 0.5);
-            gsap.set(inset, {
-              autoAlpha: insetIn,
-              scale: 1.15 - insetIn * 0.15,
-              yPercent: 40 - insetIn * 40,
-              clipPath: amenitiesWipeClip("up", insetIn),
-            });
+              /* videoImage wipe --300 → --350 */
+              const imgT = segVh(vh, 3, 3.5);
+              gsap.set(inset, {
+                clipPath:
+                  imgT <= 0
+                    ? bottomClosed
+                    : `polygon(0% ${100 - imgT * 100}%, 100% ${100 - imgT * 100}%, 100% 100%, 0% 100%)`,
+                scale: 1.2 - imgT * 0.2,
+              });
 
-            const cap = seg(p, 0.48, 0.76);
-            gsap.set(caption, {
-              clipPath: amenitiesWipeClip("up", cap),
-            });
+              /* videoCaptionMoveUp: wipe --160→--300, then rise */
+              const capWipe = segVh(vh, 1.6, 3);
+              const capH = caption?.offsetHeight || 200;
+              gsap.set(caption, {
+                clipPath:
+                  capWipe <= 0
+                    ? bottomClosed
+                    : `polygon(0% ${100 - capWipe * 100}%, 100% ${100 - capWipe * 100}%, 100% 100%, 0% 100%)`,
+                y: capWipe < 1 ? capH / 3 : -(vh - 3) * svh() * 0.35,
+              });
+            } else {
+              const grow = segVh(vh, 0, 0.5);
+              gsap.set(hero, { scaleY: 0.38 + grow * 0.62 });
+              const imgT = segVh(vh, 1, 1.5);
+              gsap.set(inset, {
+                clipPath:
+                  imgT <= 0
+                    ? bottomClosed
+                    : `polygon(0% ${100 - imgT * 100}%, 100% ${100 - imgT * 100}%, 100% 100%, 0% 100%)`,
+                scale: 1.2 - imgT * 0.2,
+              });
+              const capWipe = segVh(vh, 0.6, 1);
+              gsap.set(caption, {
+                clipPath:
+                  capWipe <= 0
+                    ? bottomClosed
+                    : `polygon(0% ${100 - capWipe * 100}%, 100% ${100 - capWipe * 100}%, 100% 100%, 0% 100%)`,
+              });
+            }
           },
-        });
+          -87,
+        );
       }
 
-      /* ---------- i-slider ---------- */
+      /* ---------- i-slider (stacked clips + discrete caption open) ---------- */
       const slider = root.querySelector<HTMLElement>("[data-am-slider]");
       if (slider && sliderCount > 0) {
         const captionCol = slider.querySelector<HTMLElement>(
@@ -189,111 +250,101 @@ export function useHomeAmenitiesSequence(
         );
 
         if (captionCol && imagesCol && panels.length) {
-          gsap.set(captionCol, { clipPath: amenitiesWipeClosed("up") });
-          gsap.set(imagesCol, { clipPath: amenitiesWipeClosed("down") });
+          gsap.set(captionCol, { clipPath: bottomClosed });
+          gsap.set(imagesCol, { clipPath: topClosed });
           panels.forEach((panel, index) => {
             gsap.set(panel, {
-              clipPath:
-                index === 0
-                  ? amenitiesWipeOpen()
-                  : amenitiesWipeClosed("up"),
+              clipPath: index === 0 ? fullOpen : bottomClosed,
               scale: 1.2,
               zIndex: index + 1,
               transformOrigin: "50% 100%",
             });
           });
-          captions.forEach((c, i) =>
-            gsap.set(c, { autoAlpha: i === 0 ? 1 : 0, y: i === 0 ? 0 : 24 }),
-          );
+          captions.forEach((c, i) => {
+            gsap.set(c, { autoAlpha: i === 0 ? 1 : 0 });
+            c.setAttribute("aria-hidden", i === 0 ? "false" : "true");
+          });
           if (progressLine) gsap.set(progressLine, { scaleY: 0 });
 
-          const keyUnits = Math.max(2, panels.length + 1);
-          const key = (vh: number) => clamp(vh / (keyUnits * 100));
+          let activeCaption = 0;
 
-          ScrollTrigger.create({
-            id: "home-am-slider",
-            trigger: slider,
-            start: "top top",
-            end: "bottom bottom",
-            scrub: true,
-            refreshPriority: -86,
-            onUpdate: (self) => {
-              const progress = self.progress;
-              const entrance = seg(progress, 0, key(100));
+          scrubSticky(
+            slider,
+            "home-am-slider",
+            (vh, self) => {
+              /* Column entrance 0 → 100vh */
+              const enter = segVh(vh, 0, 1);
               gsap.set(captionCol, {
-                clipPath: amenitiesWipeClip("up", entrance),
+                clipPath:
+                  enter <= 0
+                    ? bottomClosed
+                    : `polygon(0% ${100 - enter * 100}%, 100% ${100 - enter * 100}%, 100% 100%, 0% 100%)`,
               });
               gsap.set(imagesCol, {
-                clipPath: amenitiesWipeClip("down", entrance),
+                clipPath:
+                  enter <= 0
+                    ? topClosed
+                    : `polygon(0% 0%, 100% 0%, 100% ${enter * 100}%, 0% ${enter * 100}%)`,
               });
 
-              let active = 0;
+              /* Panel i: wipe at i*100 → (i+1)*100, settle to (i+2)*100 */
               panels.forEach((panel, index) => {
                 if (index === 0) {
-                  const a = seg(progress, 0, key(100));
-                  const b = seg(progress, key(100), key(200));
+                  const a = segVh(vh, 0, 1);
+                  const b = segVh(vh, 1, 2);
                   gsap.set(panel, { scale: 1.2 - a * 0.1 - b * 0.1 });
                   return;
                 }
-                const wipeStart = key(index * 100);
-                const wipeMid = key((index + 1) * 100);
-                const wipeEnd = key((index + 2) * 100);
-                const wipe = seg(progress, wipeStart, wipeMid);
-                const settle = seg(progress, wipeMid, wipeEnd);
+                const wipe = segVh(vh, index, index + 1);
+                const settle = segVh(vh, index + 1, index + 2);
                 gsap.set(panel, {
-                  clipPath: amenitiesWipeClip("up", wipe),
+                  clipPath:
+                    wipe <= 0
+                      ? bottomClosed
+                      : `polygon(0% ${100 - wipe * 100}%, 100% ${100 - wipe * 100}%, 100% 100%, 0% 100%)`,
                   scale: 1.2 - wipe * 0.1 - settle * 0.1,
                 });
-                if (wipe >= 0.5) active = index;
               });
 
-              captions.forEach((caption, index) => {
-                let visibility = 0;
-                if (index === 0) {
-                  visibility =
-                    (1 - seg(progress, key(85), key(140))) *
-                    Math.max(entrance, 0.001);
-                } else {
-                  const wipeStart = key(index * 100);
-                  const inLocal = seg(
-                    progress,
-                    wipeStart + key(8),
-                    wipeStart + key(72),
-                  );
-                  const outLocal =
-                    index === panels.length - 1
-                      ? 0
-                      : seg(
-                          progress,
-                          key((index + 1) * 100 + 20),
-                          key((index + 1) * 100 + 75),
-                        );
-                  visibility =
-                    Math.max(0, inLocal - outLocal) *
-                    Math.max(entrance, 0.001);
-                }
-                gsap.set(caption, {
-                  autoAlpha: visibility,
-                  y: (1 - visibility) * 22,
+              /* infrastructureSliderScroll: discrete open by progress */
+              const t = self.progress;
+              const n = captions.length;
+              const next =
+                t < 0.05 ? 0 : Math.min(n - 1, Math.ceil((t - 0.1) * n));
+              if (next !== activeCaption) {
+                activeCaption = next;
+                captions.forEach((caption, index) => {
+                  const on = index === activeCaption;
+                  gsap.to(caption, {
+                    autoAlpha: on ? 1 : 0,
+                    duration: 0.35,
+                    overwrite: true,
+                  });
+                  caption.setAttribute("aria-hidden", on ? "false" : "true");
                 });
-                caption.setAttribute(
-                  "aria-hidden",
-                  visibility < 0.45 ? "true" : "false",
-                );
+              }
+
+              let topmost = 0;
+              panels.forEach((_, index) => {
+                if (index === 0 || segVh(vh, index, index + 1) > 0.45) {
+                  topmost = index;
+                }
               });
-              panels.forEach((panel, index) =>
+              panels.forEach((panel, index) => {
                 panel.setAttribute(
                   "aria-hidden",
-                  index === active ? "false" : "true",
-                ),
-              );
-              if (progressLine) gsap.set(progressLine, { scaleY: progress });
+                  topmost === index ? "false" : "true",
+                );
+              });
+
+              if (progressLine) gsap.set(progressLine, { scaleY: t });
             },
-          });
+            -86,
+          );
         }
       }
 
-      /* ---------- i-opening (Springs: fixed left + expanding right + vertical card scroll) ---------- */
+      /* ---------- i-opening (dual layer; right expands; cards = document flow) ---------- */
       const opening = root.querySelector<HTMLElement>("[data-am-opening]");
       if (opening) {
         const left = opening.querySelector<HTMLElement>(
@@ -302,142 +353,90 @@ export function useHomeAmenitiesSequence(
         const titlePanel = opening.querySelector<HTMLElement>(
           "[data-am-opening-title-panel]",
         );
-        const right = opening.querySelector<HTMLElement>(
-          "[data-am-opening-right]",
-        );
         const title = opening.querySelector<HTMLElement>(
           "[data-am-opening-title]",
         );
-        const rail = opening.querySelector<HTMLElement>(
-          "[data-am-opening-rail]",
-        );
-        const cards = Array.from(
-          opening.querySelectorAll<HTMLElement>("[data-am-opening-card]"),
+        const right = opening.querySelector<HTMLElement>(
+          "[data-am-opening-right]",
         );
 
-        gsap.set(left, { clipPath: amenitiesWipeClosed("up"), scale: 1.18 });
-        gsap.set(titlePanel, {
-          clipPath: amenitiesWipeClosed("down"),
-        });
-        gsap.set(title, { autoAlpha: 0, y: isPhone ? 24 : 40 });
+        gsap.set(left, { clipPath: bottomClosed });
+        gsap.set(titlePanel, { clipPath: topClosed });
+        gsap.set(title, { autoAlpha: 1 });
+        /* Springs right column starts as zero-height right-half clip */
         gsap.set(right, {
           clipPath: isPhone
-            ? amenitiesWipeClosed("up")
-            : "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
+            ? bottomClosed
+            : "polygon(50vw 0vh, 100% 0vh, 100% 0vh, 50vw 0vh)",
         });
-        cards.forEach((card) => gsap.set(card, { autoAlpha: 1, y: 0 }));
 
-        /*
-         * Pixel travel for the rail: start with cards below the gold panel,
-         * end with the last card + CTAs fully inside it. Remeasure on refresh
-         * so image layout cannot collapse travel to ~0 (which looked “locked”).
-         */
-        const railTravel = { start: 0, end: 0 };
-        const measureOpeningRail = () => {
-          if (!rail || !right) return;
-          const panelH = right.clientHeight || window.innerHeight;
-          const contentH = rail.scrollHeight || cards.length * 300;
-          if (isPhone) {
-            railTravel.start = panelH * 0.18;
-            railTravel.end = Math.min(0, panelH - contentH - 16);
-          } else {
-            /* First card enters from below the fold */
-            railTravel.start = panelH * 0.55;
-            /* Keep scrolling until last card clears into the panel */
-            railTravel.end = Math.min(
-              panelH * 0.08,
-              panelH - contentH - 32,
-            );
-          }
-          /* Guarantee meaningful motion even before images paint */
-          if (railTravel.start - railTravel.end < panelH * 0.45) {
-            railTravel.end = railTravel.start - panelH * 0.85;
-          }
-        };
-        measureOpeningRail();
-        gsap.set(rail, { y: railTravel.start });
-
-        const applyOpeningRail = (progress: number) => {
-          /*
-           * Keep moving the whole window — no mid-hold “lock”.
-           * End before under-next (phone under-next is a larger % of chapter).
-           */
-          const cardScroll = seg(progress, 0.2, isPhone ? 0.65 : 0.78);
-          gsap.set(rail, {
-            y:
-              railTravel.start +
-              (railTravel.end - railTravel.start) * cardScroll,
-          });
-        };
-
-        const openingSt = ScrollTrigger.create({
-          id: "home-am-opening",
-          trigger: opening,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: true,
-          refreshPriority: -85,
-          invalidateOnRefresh: true,
-          onRefresh: (self) => {
-            measureOpeningRail();
-            applyOpeningRail(self.progress);
-          },
-          onUpdate: (self) => {
-            const p = self.progress;
-            // 0.00–0.18: left image + title panel wipe in
-            const split = seg(p, 0, 0.18);
+        scrubSticky(
+          opening,
+          "home-am-opening",
+          (vh) => {
+            const wipe = segVh(vh, 0, 1);
             gsap.set(left, {
-              clipPath: amenitiesWipeClip("up", split),
-              scale: 1.18 - split * 0.18,
+              clipPath:
+                wipe <= 0
+                  ? bottomClosed
+                  : `polygon(0% ${100 - wipe * 100}%, 100% ${100 - wipe * 100}%, 100% 100%, 0% 100%)`,
             });
             gsap.set(titlePanel, {
-              clipPath: amenitiesWipeClip("down", split),
-            });
-            const titleIn = seg(p, 0.05, 0.22);
-            gsap.set(title, {
-              autoAlpha: titleIn,
-              y: (1 - titleIn) * (isPhone ? 24 : 40),
+              clipPath:
+                wipe <= 0
+                  ? topClosed
+                  : `polygon(0% 0%, 100% 0%, 100% ${wipe * 100}%, 0% ${wipe * 100}%)`,
             });
 
-            // 0.10–0.28: right gold column expands
-            const rightOpen = seg(p, 0.1, 0.28);
-            if (isPhone) {
-              gsap.set(right, {
-                clipPath: amenitiesWipeClip("up", rightOpen),
-              });
-            } else {
-              gsap.set(right, {
-                clipPath: `polygon(0% 0%, 100% 0%, 100% ${rightOpen * 100}%, 0% ${rightOpen * 100}%)`,
-              });
+            /* img scale 0 → 300vh */
+            const scaleT = segVh(vh, 0, 3);
+            const leftImg = left?.querySelector("img");
+            if (leftImg) {
+              gsap.set(leftImg, { scale: 1.2 - scaleT * 0.2 });
             }
 
-            /* Continuous card scroll — no mid-chapter freeze. */
-            applyOpeningRail(p);
+            if (isPhone) {
+              const rightWipe = segVh(vh, 0.2, 1.2);
+              gsap.set(right, {
+                clipPath:
+                  rightWipe <= 0
+                    ? bottomClosed
+                    : `polygon(0% ${100 - rightWipe * 100}%, 100% ${100 - rightWipe * 100}%, 100% 100%, 0% 100%)`,
+              });
+            } else {
+              /*
+               * Springs right-column expand:
+               * 0: zero height at top of right half
+               * 100: tall 200vh clip
+               * 101: tall 350vh clip
+               */
+              if (vh < 1) {
+                const t = segVh(vh, 0, 1);
+                const top = t * 100;
+                const bottom = t * 200;
+                gsap.set(right, {
+                  clipPath: `polygon(50vw ${top}vh, 100% ${top}vh, 100% ${bottom}vh, 50vw ${bottom}vh)`,
+                });
+              } else {
+                const t = segVh(vh, 1, 1.01);
+                const bottom = 200 + t * 150;
+                gsap.set(right, {
+                  clipPath: `polygon(50vw 100vh, 100% 100vh, 100% ${bottom}vh, 50vw ${bottom}vh)`,
+                });
+              }
+            }
+            /* Cards: NO y-translate — they scroll in document flow. */
           },
-        });
-
-        /* Remeasure after CMS images paint so travel is not stuck near zero. */
-        const imgs = Array.from(opening.querySelectorAll("img"));
-        imgs.forEach((img) => {
-          if (img.complete) return;
-          img.addEventListener(
-            "load",
-            () => {
-              measureOpeningRail();
-              applyOpeningRail(openingSt.progress);
-              ScrollTrigger.refresh();
-            },
-            { once: true },
-          );
-        });
+          -85,
+        );
       }
 
-      // Helm cover tied to opening under-next, after cards have finished.
+      /* Helm cover after opening under-next */
       const helm = document.querySelector<HTMLElement>(
         "[data-home-helm-portal]",
       );
       if (helm && opening) {
-        gsap.set(helm, { clipPath: amenitiesWipeClosed("up") });
+        gsap.set(helm, { clipPath: bottomClosed });
         ScrollTrigger.create({
           id: "home-am-to-helm",
           trigger: opening,
@@ -446,8 +445,12 @@ export function useHomeAmenitiesSequence(
           scrub: true,
           refreshPriority: -84,
           onUpdate: (self) => {
+            const t = self.progress;
             gsap.set(helm, {
-              clipPath: amenitiesWipeClip("up", seg(self.progress, 0, 1)),
+              clipPath:
+                t <= 0
+                  ? bottomClosed
+                  : `polygon(0% ${100 - t * 100}%, 100% ${100 - t * 100}%, 100% 100%, 0% 100%)`,
             });
           },
         });
