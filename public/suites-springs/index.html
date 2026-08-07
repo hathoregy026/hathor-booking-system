@@ -466,6 +466,28 @@
     color: #ece8df !important;
   }
   /*
+   * Springs gallery engine (landing.js moveItems) is untouched:
+   * 3 lanes, ± wrap when strips meet, -28° plane, Springs padding/widths.
+   * Springs assets are 3:4 portrait so .img-full{height:auto} yields ~467px cards.
+   * Hathor suite photos are landscape; without a locked 3:4 box, cards collapse
+   * (~253px), translateY spacing breaks, and gaps look uneven. Match Springs box only.
+   */
+  .l-gallery__item picture.img-full,
+  .l-gallery__item .img-full {
+    display: block !important;
+    width: 100% !important;
+    aspect-ratio: 3 / 4 !important;
+    height: auto !important;
+    overflow: hidden !important;
+  }
+  .l-gallery__item picture.img-full img,
+  .l-gallery__item .img-full img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    vertical-align: top;
+  }
+  /*
    * Intro “bottom 3 images + left text” stage (Springs cream panel):
    * Keep ink copy on cream. Rising second images must stack above the first mask.
    */
@@ -1151,8 +1173,27 @@ body.has-page-scroll-transition .public-site > .lux-footer {
       });
     });
   }
+  /** Match Springs snapshot: gallery pictures paint immediately so offsetHeight is stable for moveItems. */
+  function hydrateGalleryImages() {
+    document.querySelectorAll(".l-gallery__item picture").forEach((pic) => {
+      pic.classList.remove("is-invisible--js");
+      pic.querySelectorAll("source").forEach((source) => {
+        const dataSrcset = source.getAttribute("data-srcset");
+        if (dataSrcset) source.setAttribute("srcset", dataSrcset);
+      });
+      const img = pic.querySelector("img");
+      if (!img) return;
+      const dataSrc = img.getAttribute("data-src");
+      const src = img.getAttribute("src") || "";
+      if (dataSrc && (!src || src.startsWith("data:"))) {
+        img.setAttribute("src", dataSrc);
+      }
+      img.classList.remove("is-invisible--js");
+    });
+  }
   function boot() {
     scrubUrls(document);
+    hydrateGalleryImages();
     // Do not force is-intro-seen / kill the landing preloader — that changes
     // Springs gallery mask + reveal choreography. Only mark media readiness.
     document.documentElement.classList.add("suites-media-ready", "js");
@@ -1163,8 +1204,18 @@ body.has-page-scroll-transition .public-site > .lux-footer {
   } else {
     boot();
   }
-  window.addEventListener("load", () => scrubUrls(document), { once: true });
-  setTimeout(() => scrubUrls(document), 1200);
+  window.addEventListener(
+    "load",
+    () => {
+      scrubUrls(document);
+      hydrateGalleryImages();
+    },
+    { once: true },
+  );
+  setTimeout(() => {
+    scrubUrls(document);
+    hydrateGalleryImages();
+  }, 1200);
 })();
 </script></head>
 <body data-barba="wrapper">
@@ -1784,16 +1835,16 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
         data-srcset="/media/hathor/scraped/suites-hero.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/suites-hero.webp" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/suites-luxury-suites.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/suites-luxury-suites.webp" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/suites-luxury-rooms.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
+        srcset="/media/hathor/scraped/suites-luxury-rooms.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
         <img
             data-src="/media/hathor/scraped/suites-royal.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/suites-royal.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -1820,10 +1871,10 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
         <img
             data-src="/media/hathor/scraped/suites-hero.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/suites-hero.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -1853,16 +1904,16 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
         data-srcset="/media/hathor/scraped/royal-1.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/royal-1.webp" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/royal-3.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/royal-3.webp" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/luxsuite-3.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
+        srcset="/media/hathor/scraped/luxsuite-3.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
         <img
             data-src="/media/hathor/scraped/luxsuite-4.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/luxsuite-4.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -1889,10 +1940,10 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
         <img
             data-src="/media/hathor/scraped/suites-hero.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/suites-hero.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -1922,16 +1973,16 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
         data-srcset="/media/hathor/scraped/suites-luxury-rooms.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/suites-luxury-rooms.webp" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/suites-royal.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/suites-royal.webp" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/suites-hero.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
+        srcset="/media/hathor/scraped/suites-hero.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
         <img
             data-src="/media/hathor/scraped/luxsuite-1.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/luxsuite-1.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -1958,10 +2009,10 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
         <img
             data-src="/media/hathor/scraped/royal-1.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/royal-1.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -1991,16 +2042,16 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
         data-srcset="/media/hathor/scraped/luxsuite-3.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/luxsuite-3.webp" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/luxsuite-4.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/luxsuite-4.webp" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/cabin-5.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
+        srcset="/media/hathor/scraped/cabin-5.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
         <img
             data-src="/media/hathor/scraped/royal-5.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/royal-5.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2027,10 +2078,10 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
         <img
             data-src="/media/hathor/scraped/suites-luxury-rooms.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/suites-luxury-rooms.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2060,16 +2111,16 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
         data-srcset="/media/hathor/scraped/suites-hero.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/suites-hero.webp" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/luxsuite-1.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/luxsuite-1.webp" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/luxsuite-2.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
+        srcset="/media/hathor/scraped/luxsuite-2.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
         <img
             data-src="/media/hathor/scraped/cabin-1.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/cabin-1.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2096,10 +2147,10 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
         <img
             data-src="/media/hathor/scraped/luxsuite-3.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/luxsuite-3.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2129,16 +2180,16 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
         data-srcset="/media/hathor/scraped/cabin-5.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/cabin-5.webp" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/royal-5.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/royal-5.webp" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/luxsuite-5.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
+        srcset="/media/hathor/scraped/luxsuite-5.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
         <img
             data-src="/media/hathor/r2/room-suite.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/r2/room-suite.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2165,10 +2216,10 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
         <img
             data-src="/media/hathor/scraped/suites-hero.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/suites-hero.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2198,16 +2249,16 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
         data-srcset="/media/hathor/scraped/luxsuite-2.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/luxsuite-2.webp" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/cabin-1.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/cabin-1.webp" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/suites-hero.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
+        srcset="/media/hathor/scraped/suites-hero.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
         <img
             data-src="/media/hathor/scraped/cabin-3.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/cabin-3.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2234,10 +2285,10 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
         <img
             data-src="/media/hathor/scraped/cabin-5.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/cabin-5.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2267,16 +2318,16 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
         data-srcset="/media/hathor/scraped/luxsuite-5.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/luxsuite-5.webp" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/r2/room-suite.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/r2/room-suite.webp" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/suites-hero.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
+        srcset="/media/hathor/scraped/suites-hero.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
         <img
             data-src="/media/hathor/scraped/suites-luxury-suites.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/suites-luxury-suites.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2303,10 +2354,10 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
         <img
             data-src="/media/hathor/scraped/luxsuite-2.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/luxsuite-2.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2336,16 +2387,16 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
         data-srcset="/media/hathor/scraped/suites-hero.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/suites-hero.webp" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/cabin-3.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/cabin-3.webp" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/royal-1.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
+        srcset="/media/hathor/scraped/royal-1.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
         <img
             data-src="/media/hathor/scraped/royal-3.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="high"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/royal-3.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="high"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2372,10 +2423,10 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
         <img
             data-src="/media/hathor/scraped/luxsuite-5.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="high"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/luxsuite-5.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="high"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2405,16 +2456,16 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
         data-srcset="/media/hathor/scraped/suites-hero.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/suites-hero.webp" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/suites-luxury-suites.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/suites-luxury-suites.webp" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/suites-luxury-rooms.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
+        srcset="/media/hathor/scraped/suites-luxury-rooms.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
         <img
             data-src="/media/hathor/scraped/suites-royal.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/suites-royal.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2441,10 +2492,10 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
         <img
             data-src="/media/hathor/scraped/suites-hero.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/suites-hero.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2474,16 +2525,16 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
         data-srcset="/media/hathor/scraped/royal-1.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/royal-1.webp" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/royal-3.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/royal-3.webp" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/luxsuite-3.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
+        srcset="/media/hathor/scraped/luxsuite-3.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
         <img
             data-src="/media/hathor/scraped/luxsuite-4.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/luxsuite-4.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2510,10 +2561,10 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
         <img
             data-src="/media/hathor/scraped/suites-hero.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/suites-hero.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2543,16 +2594,16 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
         data-srcset="/media/hathor/scraped/suites-luxury-rooms.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/suites-luxury-rooms.webp" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/suites-royal.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/suites-royal.webp" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/suites-hero.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
+        srcset="/media/hathor/scraped/suites-hero.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
         <img
             data-src="/media/hathor/scraped/luxsuite-1.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/luxsuite-1.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2579,10 +2630,10 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
         <img
             data-src="/media/hathor/scraped/royal-1.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/royal-1.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2612,16 +2663,16 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
         data-srcset="/media/hathor/scraped/luxsuite-3.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/luxsuite-3.webp" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/luxsuite-4.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/luxsuite-4.webp" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/cabin-5.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
+        srcset="/media/hathor/scraped/cabin-5.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
         <img
             data-src="/media/hathor/scraped/royal-5.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/royal-5.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2648,10 +2699,10 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
         <img
             data-src="/media/hathor/scraped/suites-luxury-rooms.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/suites-luxury-rooms.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2681,16 +2732,16 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
         data-srcset="/media/hathor/scraped/suites-hero.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/suites-hero.webp" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/luxsuite-1.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/luxsuite-1.webp" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/luxsuite-2.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
+        srcset="/media/hathor/scraped/luxsuite-2.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
         <img
             data-src="/media/hathor/scraped/cabin-1.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/cabin-1.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2717,10 +2768,10 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
         <img
             data-src="/media/hathor/scraped/luxsuite-3.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/luxsuite-3.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2750,16 +2801,16 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
         data-srcset="/media/hathor/scraped/cabin-5.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/cabin-5.webp" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/royal-5.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/royal-5.webp" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/luxsuite-5.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
+        srcset="/media/hathor/scraped/luxsuite-5.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
         <img
             data-src="/media/hathor/r2/room-suite.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/r2/room-suite.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2786,10 +2837,10 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
         <img
             data-src="/media/hathor/scraped/suites-hero.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/suites-hero.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2819,16 +2870,16 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
         data-srcset="/media/hathor/scraped/luxsuite-2.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/luxsuite-2.webp" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/cabin-1.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/cabin-1.webp" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/suites-hero.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
+        srcset="/media/hathor/scraped/suites-hero.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
         <img
             data-src="/media/hathor/scraped/cabin-3.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/cabin-3.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2855,10 +2906,10 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
         <img
             data-src="/media/hathor/scraped/cabin-5.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/cabin-5.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2888,16 +2939,16 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
         data-srcset="/media/hathor/scraped/luxsuite-5.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/luxsuite-5.webp" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/r2/room-suite.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/r2/room-suite.webp" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/suites-hero.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
+        srcset="/media/hathor/scraped/suites-hero.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
         <img
             data-src="/media/hathor/scraped/suites-luxury-suites.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/suites-luxury-suites.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2924,10 +2975,10 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
         <img
             data-src="/media/hathor/scraped/luxsuite-2.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/luxsuite-2.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2957,16 +3008,16 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
         data-srcset="/media/hathor/scraped/suites-hero.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/suites-hero.webp" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/cabin-3.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/cabin-3.webp" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/royal-1.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
+        srcset="/media/hathor/scraped/royal-1.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
         <img
             data-src="/media/hathor/scraped/royal-3.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/royal-3.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -2993,10 +3044,10 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
         <img
             data-src="/media/hathor/scraped/luxsuite-5.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/luxsuite-5.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -3026,16 +3077,16 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >                    <source
         data-srcset="/media/hathor/scraped/suites-hero.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/suites-hero.webp" media="(min-width: 1920px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/suites-luxury-suites.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
+        srcset="/media/hathor/scraped/suites-luxury-suites.webp" media="(min-width: 1440px) and (min-height: 700px)" width="360" height="480">                    <source
         data-srcset="/media/hathor/scraped/suites-luxury-rooms.webp"
-        srcset="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
+        srcset="/media/hathor/scraped/suites-luxury-rooms.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="360" height="480">
         <img
             data-src="/media/hathor/scraped/suites-royal.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/suites-royal.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
@@ -3062,10 +3113,10 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                 
     
     
-    <picture class="is-invisible--js is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
+    <picture class="is-hidden--no-js img-full"            data-plugin="appear "        draggable="false"    >
         <img
             data-src="/media/hathor/scraped/suites-hero.webp"
-                src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22360%22%20height=%22480%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20360%20480%22%3E%3C/svg%3E"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
+                src="/media/hathor/scraped/suites-hero.webp"                    alt=""                            width="360" height="480"                                        fetchpriority="low"                        decoding="async"            draggable="false"
         >
     </picture>
 
