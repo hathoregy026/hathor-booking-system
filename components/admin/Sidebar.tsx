@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   FileText,
+  HardDrive,
   ImageIcon,
   LayoutDashboard,
   LayoutGrid,
@@ -44,6 +45,10 @@ const NAV_SECTIONS: { title: string; items: NavItem[] }[] = [
       { href: "/admin/blogs", label: "Blog Posts", icon: FileText },
       { href: "/admin/email-templates", label: "Email Templates", icon: Mail },
     ],
+  },
+  {
+    title: "Analyze",
+    items: [{ href: "/admin/storage", label: "Storage", icon: HardDrive }],
   },
   {
     title: "System",

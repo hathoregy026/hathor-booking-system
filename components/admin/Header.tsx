@@ -20,6 +20,7 @@ const PAGE_META: Record<string, { section: string; title: string }> = {
   "/admin/hieroglyph-tune": { section: "Manage", title: "Background Glyphs" },
   "/admin/typography": { section: "Manage", title: "Typography & Styles" },
   "/admin/email-templates": { section: "Manage", title: "Email Templates" },
+  "/admin/storage": { section: "Analyze", title: "Storage" },
   "/admin/settings": { section: "System", title: "Settings" },
 };
 
