@@ -57,14 +57,17 @@ const MEDIA = {
   royal8: "/media/hathor/scraped/royal-8.webp",
 };
 
+/** Hero-led gallery cycle — suites-hero anchors the landing marquee. */
 const galleryCycle = [
   MEDIA.hero,
   MEDIA.suites,
   MEDIA.rooms,
   MEDIA.royal,
+  MEDIA.hero,
   MEDIA.lux1,
   MEDIA.lux2,
   MEDIA.cabin1,
+  MEDIA.hero,
   MEDIA.cabin3,
   MEDIA.royal1,
   MEDIA.royal3,
@@ -268,8 +271,9 @@ function replaceAssetPattern(assetPattern, url) {
 }
 
 [
+  // Preloader + scroll intro hero must be the Suites hero (not a secondary suite still).
   ["landing\\/0\\.preloader\\/", MEDIA.hero],
-  ["landing\\/1\\.intro\\/", MEDIA.roomHero],
+  ["landing\\/1\\.intro\\/", MEDIA.hero],
   ["landing\\/2\\.wellness\\/", MEDIA.lux1],
   ["landing\\/3\\.nature\\/", MEDIA.royal1],
   ["landing\\/4\\.place\\/", MEDIA.cabin1],
@@ -319,6 +323,11 @@ const suitesPalette = `
     src: url("/fonts/agraham-regular.ttf") format("truetype");
     font-display: swap;
   }
+  /*
+   * Palette only — do NOT override Springs clip-path / reveal / gallery transforms.
+   * Those rules were changing the source choreography (~90% look). Layout/motion
+   * must stay identical to the Springs homepage capture.
+   */
   :root {
     --c-beige-background: #ece8df;
     --c-beige-background-rgb: 236, 232, 223;
@@ -328,10 +337,10 @@ const suitesPalette = `
     --c-dark-green-rgb: 182, 159, 100;
     --c-green: #b69f64;
     --c-green-rgb: 182, 159, 100;
-    --c-light-green: #c9a96e;
-    --c-light-green-rgb: 201, 169, 110;
-    --c-olive: #a08850;
-    --c-olive-rgb: 160, 136, 80;
+    --c-light-green: #b69f64;
+    --c-light-green-rgb: 182, 159, 100;
+    --c-olive: #b69f64;
+    --c-olive-rgb: 182, 159, 100;
     --c-dark-blue: #b69f64;
     --c-dark-blue-rgb: 182, 159, 100;
     --c-blue: #b69f64;
@@ -343,8 +352,9 @@ const suitesPalette = `
     --cookie-height: 0px;
     --lux-gold: #b69f64;
     --lux-cream: #ece8df;
-    --lux-ink-soft: #4a3f32;
-    --lux-muted: #6b6560;
+    --tooltip-shadow: 0 18px 48px rgba(182, 159, 100, 0.28);
+    --c-button-hover-gradient: linear-gradient(101.51deg, rgba(182, 159, 100, 0) 37.02%, #b69f64 308.4%);
+    --c-button-hover-gradient-dark: linear-gradient(91.82deg, hsla(39, 32%, 51%, 0) 0%, #b69f64 100%);
   }
   body {
     background: #ece8df !important;
@@ -359,6 +369,7 @@ const suitesPalette = `
     --t-heading: #ece8df;
     --t-heading-rgb: 236, 232, 223;
     --t-primary: #b69f64;
+    --t-line: rgba(236, 232, 223, 0.35);
     background-color: #b69f64 !important;
     color: #ece8df !important;
   }
@@ -367,9 +378,10 @@ const suitesPalette = `
     --t-background-rgb: 236, 232, 223;
     --t-text: #2c2824;
     --t-text-rgb: 44, 40, 36;
-    --t-heading: #8b6914;
-    --t-heading-rgb: 139, 105, 20;
+    --t-heading: #b69f64;
+    --t-heading-rgb: 182, 159, 100;
     --t-primary: #b69f64;
+    --t-line: rgba(182, 159, 100, 0.28);
     background-color: #ece8df !important;
     color: #2c2824 !important;
   }
@@ -380,10 +392,11 @@ const suitesPalette = `
     font-family: "Hathor Body", "Agraham", sans-serif;
   }
   .ui-light .g1, .ui-light .h0, .ui-light .h1, .ui-light .h2, .ui-light .h3,
-  .ui-light .text-c1, .ui-light .text-c2 { color: #8b6914; }
+  .ui-light .text-c1, .ui-light .text-c2 { color: #b69f64; }
   .ui-dark .g1, .ui-dark .h0, .ui-dark .h1, .ui-dark .h2, .ui-dark .h3,
   .ui-dark .text-c1, .ui-dark .text-c2 { color: #ece8df; }
-  .header, .cookie-consent, .preloader, .preloader--landing {
+  /* Keep Springs chrome out; Hathor public nav + site footer replace them. */
+  .header, .cookie-consent {
     display: none !important;
     visibility: hidden !important;
     pointer-events: none !important;
@@ -394,46 +407,14 @@ const suitesPalette = `
   .footer__gradient div,
   .preloader__gradient div,
   .preloader__gradient-animation div {
-    background: radial-gradient(circle, rgba(182, 159, 100, 0.75) 0%, rgba(182, 159, 100, 0.28) 45%, rgba(236, 232, 223, 0) 74%) !important;
+    background: radial-gradient(circle, rgba(182, 159, 100, 0.86) 0%, rgba(182, 159, 100, 0.38) 45%, rgba(236, 232, 223, 0) 74%) !important;
   }
-  /*
-   * First-paint safety: Springs landing preloader can leave gallery masks fully
-   * clipped and title splits at opacity 0. Force the post-intro visible state.
-   */
-  .l-gallery__item,
-  .animation--gallery--inactive .l-gallery__item {
-    opacity: 1 !important;
-  }
-  .l-gallery__item__mask-list,
-  .animation--gallery .l-gallery__item__mask-list,
-  .animation--gallery--inactive .l-gallery__item__mask-list,
-  .gallery-animation-item,
-  .animation--gallery .gallery-animation-item,
-  .animation--gallery--inactive .gallery-animation-item {
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%) !important;
-  }
-  .js .is-invisible--js {
-    opacity: 1 !important;
-    pointer-events: auto !important;
-  }
-  .animation--title--inactive .char,
-  .animation--text--inactive .word-wrap,
-  .animation--title .char,
-  .animation--text .word-wrap,
-  [data-reveal="text"],
-  [data-reveal="title"] {
-    opacity: 1 !important;
-    visibility: visible !important;
-    transform: none !important;
-  }
+  /* Soft elevation uses gold RGB via CSS vars patched into global.css. */
   .l-gallery__caption,
   .l-gallery__caption .text-t1,
   .l-gallery__caption .h0 {
-    color: #8b6914 !important;
-    opacity: 1 !important;
-    visibility: visible !important;
+    color: #b69f64 !important;
   }
-  /* Hathor site footer replaces Springs footer chrome */
   footer.footer {
     display: none !important;
   }
@@ -564,30 +545,18 @@ const suitesRuntime = `
       });
     });
   }
-  function reveal() {
+  function boot() {
     scrubUrls(document);
-    const html = document.documentElement;
-    html.classList.add(
-      "suites-media-ready",
-      "is-preloader-disabled",
-      "is-intro-seen",
-      "is-header-visible",
-      "is-ready",
-    );
-    html.classList.remove("not-ready", "is-preloader-active", "no-js");
-    html.classList.add("js");
-    document.querySelectorAll(".preloader, .preloader--landing").forEach((node) => {
-      node.classList.add("is-hidden");
-      node.setAttribute("aria-hidden", "true");
-      node.style.setProperty("display", "none", "important");
-    });
+    // Do not force is-intro-seen / kill the landing preloader — that changes
+    // Springs gallery mask + reveal choreography. Only mark media readiness.
+    document.documentElement.classList.add("suites-media-ready", "js");
+    document.documentElement.classList.remove("no-js");
   }
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", reveal, { once: true });
+    document.addEventListener("DOMContentLoaded", boot, { once: true });
   } else {
-    reveal();
+    boot();
   }
-  // Re-scrub after Springs lazy-load plugins mutate attributes.
   window.addEventListener("load", () => scrubUrls(document), { once: true });
   setTimeout(() => scrubUrls(document), 1200);
 })();
@@ -714,10 +683,59 @@ html = html.replace(
   MEDIA.hero.replaceAll(":", "&#x3A;").replaceAll("/", "&#x5C;&#x2F;"),
 );
 
+// Baked Springs brand greens/blues that appear as literals in markup/JSON attrs
+for (const [from, to] of [
+  ["#162d24", "#b69f64"],
+  ["#1b4732", "#b69f64"],
+  ["#a7b431", "#b69f64"],
+  ["#758535", "#b69f64"],
+  ["#101e27", "#b69f64"],
+  ["#005160", "#b69f64"],
+  ["#67bfda", "#ece8df"],
+  ["#bee5ee", "#ece8df"],
+  ["#8b6914", "#b69f64"],
+]) {
+  html = html.replaceAll(from, to);
+  html = html.replaceAll(from.toUpperCase(), to);
+}
+
 // Insert Hathor footer after link rewrites so it is not mutated twice
 html = html.replace(/<\/body>/i, `${hathorFooterHtml}</body>`);
 
-// Rewrite stylesheet font/image URLs under /suites-springs
+// Rewrite stylesheet URLs + retint baked Springs greens/blues/beiges to cream/gold.
+const cssColorPatches = [
+  ["#162d24", "#b69f64"],
+  ["#1b4732", "#b69f64"],
+  ["#a7b431", "#b69f64"],
+  ["#758535", "#b69f64"],
+  ["#101e27", "#b69f64"],
+  ["#005160", "#b69f64"],
+  ["#67bfda", "#ece8df"],
+  ["#bee5ee", "#ece8df"],
+  ["#e0d1b6", "#f5f0e8"],
+  ["#f5e8d1", "#ece8df"],
+  ["22,45,36", "182,159,100"],
+  ["22, 45, 36", "182, 159, 100"],
+  ["27,71,50", "182,159,100"],
+  ["27, 71, 50", "182, 159, 100"],
+  ["167,180,49", "182,159,100"],
+  ["167, 180, 49", "182, 159, 100"],
+  ["117,133,53", "182,159,100"],
+  ["117, 133, 53", "182, 159, 100"],
+  ["16,30,39", "182,159,100"],
+  ["16, 30, 39", "182, 159, 100"],
+  ["0,81,96", "182,159,100"],
+  ["0, 81, 96", "182, 159, 100"],
+  ["103,191,218", "236,232,223"],
+  ["103, 191, 218", "236, 232, 223"],
+  ["190,229,238", "236,232,223"],
+  ["190, 229, 238", "236, 232, 223"],
+  ["224,209,182", "245,240,232"],
+  ["224, 209, 182", "245, 240, 232"],
+  ["245,232,209", "236,232,223"],
+  ["245, 232, 209", "236, 232, 223"],
+];
+
 const cssDir = path.join(destinationDir, "assets", "stylesheets");
 if (fs.existsSync(cssDir)) {
   for (const name of fs.readdirSync(cssDir).filter((f) => f.endsWith(".css"))) {
@@ -726,6 +744,19 @@ if (fs.existsSync(cssDir)) {
     css = css.replaceAll("url(/assets/", "url(/suites-springs/assets/");
     css = css.replaceAll("url('/assets/", "url('/suites-springs/assets/");
     css = css.replaceAll('url("/assets/', 'url("/suites-springs/assets/');
+    for (const [from, to] of cssColorPatches) {
+      css = css.replaceAll(from, to);
+      css = css.replaceAll(from.toUpperCase(), to);
+    }
+    // Soft black elevation → gold-tinted (same blur radii, Hathor #B69F64)
+    css = css.replace(
+      /rgba\(\s*var\(--t-pure-black-rgb\)\s*,\s*([0-9.]+)\)/g,
+      "rgba(182, 159, 100, $1)",
+    );
+    css = css.replace(
+      /rgba\(\s*3\s*,\s*3\s*,\s*3\s*,\s*([0-9.]+)\)/g,
+      "rgba(182, 159, 100, $1)",
+    );
     fs.writeFileSync(cssPath, css);
   }
 }
