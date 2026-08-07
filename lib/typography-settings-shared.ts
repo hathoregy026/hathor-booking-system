@@ -452,9 +452,9 @@ export const heroPagesSchema = z.object({
 export type HeroPages = z.infer<typeof heroPagesSchema>;
 
 export const DEFAULT_ON_IMAGES_COPY: OnImagesCopy = {
-  title: "Every landmark,\na pleasure.",
+  title: "EVERY LANDMARK,\nA PLEASURE.",
   indication: "Nile · Hathor",
-  body: "The ancient Nile welcomes you aboard the luxurious Hathor Dahabiya Cruise. This private, five-star small boat blends history, comfort, and style.",
+  body: "A five-star dahabiya on the ancient Nile — history, comfort, and style in one intimate voyage.",
 };
 
 export const typographySettingsSchema = z.object({

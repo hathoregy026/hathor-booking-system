@@ -431,17 +431,19 @@ export function HomeAmenitiesSequence({
                       data-content-animation-item={String(index + 1)}
                       aria-hidden={index === 0 ? "false" : "true"}
                     >
-                      <p
-                        className="typo-on-images-indication"
-                        style={onGoldIndication}
-                      >
-                        {slide.indication}
-                      </p>
                       <h2 className="typo-on-images-title" style={onGoldTitle}>
                         {slide.titleLines.map((line) => (
-                          <span key={line}>{line}</span>
+                          <span key={`${slide.image.name}-${line}`}>{line}</span>
                         ))}
                       </h2>
+                      {slide.indication ? (
+                        <p
+                          className="typo-on-images-indication"
+                          style={onGoldIndication}
+                        >
+                          {slide.indication}
+                        </p>
+                      ) : null}
                       <p className="typo-on-images-body" style={onGoldBody}>
                         {slide.body}
                       </p>
@@ -571,9 +573,15 @@ export function HomeAmenitiesSequence({
                 data-am-opening-title
                 style={onGoldTitle}
               >
-                {stories[0]?.title ||
-                  landmarks[3]?.titleLines.join(" ") ||
-                  intro.titleLines.join(" ")}
+                {(stories[0]?.title ||
+                  landmarks[3]?.titleLines.join("\n") ||
+                  intro.titleLines.join("\n"))
+                  .split("\n")
+                  .map((line) => line.trim())
+                  .filter(Boolean)
+                  .map((line) => (
+                    <span key={line}>{line}</span>
+                  ))}
               </h2>
               <div className="home-am-opening__gradient" aria-hidden="true">
                 <div />

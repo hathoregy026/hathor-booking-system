@@ -87,14 +87,6 @@ export function HomeAmenitiesMaskSlider({
                     data-amenities-caption
                     aria-hidden={index === 0 ? "false" : "true"}
                   >
-                    {slide.indication ? (
-                      <p
-                        className="home-amenities-slider__indication"
-                        style={darkIndicationStyle}
-                      >
-                        {slide.indication}
-                      </p>
-                    ) : null}
                     <h2
                       className="home-amenities-slider__title"
                       style={darkTitleStyle}
@@ -108,6 +100,14 @@ export function HomeAmenitiesMaskSlider({
                         </span>
                       ))}
                     </h2>
+                    {slide.indication ? (
+                      <p
+                        className="home-amenities-slider__indication"
+                        style={darkIndicationStyle}
+                      >
+                        {slide.indication}
+                      </p>
+                    ) : null}
                     <p
                       className="home-amenities-slider__body"
                       style={darkBodyStyle}

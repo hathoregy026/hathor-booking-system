@@ -177,24 +177,24 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
     },
     stackSlides: [
       {
-        title: "Every landmark,\na pleasure.",
+        title: "EVERY LANDMARK,\nA PLEASURE.",
         indication: "Sail The Nile On Hathor",
-        body: HOMEPAGE_HIGHLIGHTS.body,
+        body: "A five-star dahabiya on the ancient Nile — history, comfort, and style in one intimate voyage.",
       },
       {
-        title: "Where time\nmoves gently.",
+        title: "WHERE TIME\nMOVES GENTLY.",
         indication: "Private Nile Sailing",
-        body: "Glide between Luxor and Aswan on an intimate dahabiya — unhurried days, soft light on the water, and Egypt unfolding at a gracious pace.",
+        body: "Glide between Luxor and Aswan — soft light on the water, Egypt unfolding at a gracious pace.",
       },
       {
-        title: "Welcome aboard\nHathor.",
+        title: "WELCOME ABOARD\nHATHOR.",
         indication: "Five-Star Small Boat",
-        body: "A private, five-star vessel where refined cabins, attentive hospitality, and timeless Egyptian charm meet for a truly exclusive Nile voyage.",
+        body: "Refined cabins, attentive hospitality, and Egyptian charm — an exclusive voyage on the Nile.",
       },
       {
-        title: "Golden hour\non the Nile.",
+        title: "GOLDEN HOUR\nON THE NILE.",
         indication: "History · Comfort · Style",
-        body: "From ancient landmarks to quiet decks at dusk, every moment aboard Hathor is composed for wonder, serenity, and lasting memory.",
+        body: "From ancient shores to quiet decks at dusk — every moment aboard Hathor is composed for wonder.",
       },
     ],
     textBlocks: [

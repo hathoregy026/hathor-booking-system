@@ -89,36 +89,36 @@ export const EX_CAROUSEL = {
 } as const;
 
 export const EX_PINNED = {
-  title: "Every landmark,\na pleasure.",
+  title: "EVERY LANDMARK,\nA PLEASURE.",
   body: HOMEPAGE_HIGHLIGHTS.body,
   slides: [
     {
       imageName: "home-amenities-1" as SiteImageName,
       alt: "Hathor Dahabiya sailing on the Nile",
-      title: "Every landmark,\na pleasure.",
+      title: "EVERY LANDMARK,\nA PLEASURE.",
       indication: "Sail The Nile On Hathor",
-      body: HOMEPAGE_HIGHLIGHTS.body,
+      body: "A five-star dahabiya on the ancient Nile — history, comfort, and style in one intimate voyage.",
     },
     {
       imageName: "home-amenities-2" as SiteImageName,
       alt: "Hathor Dahabiya on the Nile",
-      title: "Where time\nmoves gently.",
+      title: "WHERE TIME\nMOVES GENTLY.",
       indication: "Private Nile Sailing",
-      body: "Glide between Luxor and Aswan on an intimate dahabiya — unhurried days, soft light on the water, and Egypt unfolding at a gracious pace.",
+      body: "Glide between Luxor and Aswan — soft light on the water, Egypt unfolding at a gracious pace.",
     },
     {
       imageName: "home-amenities-3" as SiteImageName,
       alt: "Luxury Dahabiya Nile cruise",
-      title: "Welcome aboard\nHathor.",
+      title: "WELCOME ABOARD\nHATHOR.",
       indication: "Five-Star Small Boat",
-      body: "A private, five-star vessel where refined cabins, attentive hospitality, and timeless Egyptian charm meet for a truly exclusive Nile voyage.",
+      body: "Refined cabins, attentive hospitality, and Egyptian charm — an exclusive voyage on the Nile.",
     },
     {
       imageName: "home-amenities-4" as SiteImageName,
       alt: "Hathor Dahabiya ship on the Nile at golden hour",
-      title: "Golden hour\non the Nile.",
+      title: "GOLDEN HOUR\nON THE NILE.",
       indication: "History · Comfort · Style",
-      body: "From ancient landmarks to quiet decks at dusk, every moment aboard Hathor is composed for wonder, serenity, and lasting memory.",
+      body: "From ancient shores to quiet decks at dusk — every moment aboard Hathor is composed for wonder.",
     },
   ],
 } as const;
