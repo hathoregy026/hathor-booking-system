@@ -401,33 +401,33 @@
   }
   html, body {
     background: #f5eacf !important;
-    color: #b69f64;
+    color: #2c2824;
     font-family: "Hathor Body", "TT Commons", sans-serif;
   }
-  /* Former “dark” theme → beige panel + gold/cream type (never charcoal) */
+  /* Readable contrast: cream/beige surfaces → ink; gold is accent only */
   .ui-dark, .ui-dark-background, .ui-dark.ui-background {
     --t-background: #cdbfa6;
     --t-background-rgb: 205, 191, 166;
-    --t-text: #b69f64;
-    --t-text-rgb: 182, 159, 100;
-    --t-heading: #b69f64;
-    --t-heading-rgb: 182, 159, 100;
+    --t-text: #2c2824;
+    --t-text-rgb: 44, 40, 36;
+    --t-heading: #2c2824;
+    --t-heading-rgb: 44, 40, 36;
     --t-primary: #b69f64;
-    --t-line: rgba(182, 159, 100, 0.35);
+    --t-line: rgba(44, 40, 36, 0.22);
     background-color: #cdbfa6 !important;
-    color: #b69f64 !important;
+    color: #2c2824 !important;
   }
   .ui-light, .ui-light-background, .ui-light.ui-background, .ui-background {
     --t-background: #f5eacf;
     --t-background-rgb: 245, 234, 207;
-    --t-text: #b69f64;
-    --t-text-rgb: 182, 159, 100;
-    --t-heading: #b69f64;
-    --t-heading-rgb: 182, 159, 100;
+    --t-text: #2c2824;
+    --t-text-rgb: 44, 40, 36;
+    --t-heading: #2c2824;
+    --t-heading-rgb: 44, 40, 36;
     --t-primary: #b69f64;
     --t-line: rgba(182, 159, 100, 0.28);
     background-color: #f5eacf !important;
-    color: #b69f64 !important;
+    color: #2c2824 !important;
   }
   .g1, .h0, .h1, .h2, .h3 {
     font-family: "Hathor Display", "Gamgote", Georgia, serif !important;
@@ -512,30 +512,31 @@
     ) !important;
   }
   /*
-   * Wellness split panel — gold/beige field + white copy (readable over mist).
+   * Wellness split panel — cream/beige field + ink copy (high contrast).
+   * White is reserved for text sitting on photography.
    */
   .l-wellness__slider__caption,
   .l-wellness__slider__caption.ui-dark,
   .l-wellness__slider__images {
-    --t-background: #cdbfa6;
-    --t-background-rgb: 205, 191, 166;
-    --t-text: #ffffff;
-    --t-text-rgb: 255, 255, 255;
-    --t-heading: #ffffff;
-    --t-heading-rgb: 255, 255, 255;
-    --c-dark-blue: #cdbfa6;
-    --c-dark-blue-rgb: 205, 191, 166;
-    --c-green: #f5eacf;
-    --c-green-rgb: 245, 234, 207;
+    --t-background: #f5eacf;
+    --t-background-rgb: 245, 234, 207;
+    --t-text: #2c2824;
+    --t-text-rgb: 44, 40, 36;
+    --t-heading: #2c2824;
+    --t-heading-rgb: 44, 40, 36;
+    --c-dark-blue: #f5eacf;
+    --c-dark-blue-rgb: 245, 234, 207;
+    --c-green: #cdbfa6;
+    --c-green-rgb: 205, 191, 166;
     --c-blue: #b69f64;
     --c-blue-rgb: 182, 159, 100;
     background: linear-gradient(
       105deg,
-      #b69f64 0%,
-      #cdbfa6 48%,
-      #b69f64 100%
+      #f5eacf 0%,
+      #cdbfa6 55%,
+      #f5eacf 100%
     ) !important;
-    color: #ffffff !important;
+    color: #2c2824 !important;
   }
   .l-wellness__slider-gradient {
     z-index: 1 !important;
@@ -544,15 +545,15 @@
   .l-wellness__slider-gradient div:first-child {
     background: radial-gradient(
       circle at center,
-      rgba(245, 234, 207, 0.55) 0%,
-      rgba(182, 159, 100, 0.35) 42%,
+      rgba(182, 159, 100, 0.45) 0%,
+      rgba(205, 191, 166, 0.35) 42%,
       rgba(245, 234, 207, 0) 72%
     ) no-repeat !important;
   }
   .l-wellness__slider-gradient div:nth-child(2) {
     background: radial-gradient(
       circle,
-      rgba(245, 234, 207, 0.85) 0%,
+      rgba(245, 234, 207, 0.9) 0%,
       rgba(205, 191, 166, 0.55) 40%,
       rgba(182, 159, 100, 0) 74%
     ) !important;
@@ -560,12 +561,11 @@
   .l-wellness__slider-gradient div:nth-child(3) {
     background: radial-gradient(
       circle,
-      rgba(182, 159, 100, 0.65) 0%,
-      rgba(245, 234, 207, 0.4) 34%,
+      rgba(182, 159, 100, 0.5) 0%,
+      rgba(205, 191, 166, 0.35) 34%,
       rgba(245, 234, 207, 0) 70%
     ) !important;
   }
-  /* White amenity list — idle slightly softer white, active pure white */
   .l-wellness__slider__caption-titles,
   .l-wellness__slider__caption-text {
     position: relative !important;
@@ -573,33 +573,34 @@
   }
   .l-wellness__slider__caption-titles > a {
     opacity: 1 !important;
-    color: rgba(255, 255, 255, 0.55) !important;
+    color: rgba(44, 40, 36, 0.42) !important;
   }
   .l-wellness__slider__caption-titles > a .h2,
   .l-wellness__slider__caption-titles > a p {
-    color: rgba(255, 255, 255, 0.55) !important;
+    color: rgba(44, 40, 36, 0.42) !important;
   }
   .has-hover .l-wellness__slider__caption-titles > a:hover {
     opacity: 1 !important;
-    color: rgba(255, 255, 255, 0.85) !important;
+    color: #b69f64 !important;
   }
   .has-hover .l-wellness__slider__caption-titles > a:hover .h2,
   .has-hover .l-wellness__slider__caption-titles > a:hover p {
-    color: rgba(255, 255, 255, 0.85) !important;
+    color: #b69f64 !important;
   }
   .l-wellness__slider__caption-titles > a.is-active {
     opacity: 1 !important;
-    color: #ffffff !important;
+    color: #2c2824 !important;
   }
   .l-wellness__slider__caption-titles > a.is-active .h2,
   .l-wellness__slider__caption-titles > a.is-active p {
-    color: #ffffff !important;
+    color: #2c2824 !important;
   }
   .l-wellness__slider__caption-text,
   .l-wellness__slider__caption-text .text-t1,
   .l-wellness__slider__caption-text p {
-    color: #ffffff !important;
+    color: #2c2824 !important;
   }
+  /* Wellness webgl stage sits on imagery → white */
   .l-wellness__webgl-caption,
   .l-wellness__webgl-caption .text-t1,
   .l-wellness__webgl-caption p,
@@ -607,6 +608,7 @@
   .l-wellness__webgl-title .g1,
   .l-wellness__webgl-title .text-c1 {
     color: #ffffff !important;
+    text-shadow: 0 1px 16px rgba(44, 40, 36, 0.45);
     position: relative;
     z-index: 6;
   }
@@ -822,29 +824,29 @@
   .l-intro {
     --t-background: #f5eacf;
     --t-background-rgb: 245, 234, 207;
-    --t-text: #b69f64;
-    --t-text-rgb: 182, 159, 100;
-    --t-heading: #b69f64;
-    --t-heading-rgb: 182, 159, 100;
+    --t-text: #2c2824;
+    --t-text-rgb: 44, 40, 36;
+    --t-heading: #2c2824;
+    --t-heading-rgb: 44, 40, 36;
     --t-primary: #b69f64;
     --t-primary-rgb: 182, 159, 100;
     background-color: #f5eacf !important;
-    color: #b69f64 !important;
+    color: #2c2824 !important;
   }
   .l-intro__opening .h1,
   .l-intro__opening .text-c1,
   .l-intro__opening .text-color-primary,
   .l-intro__opening-subtitle {
-    color: #b69f64 !important;
+    color: #2c2824 !important;
   }
   .l-intro__content.ui-dark {
     --t-background: #cdbfa6;
     --t-background-rgb: 205, 191, 166;
-    --t-text: #b69f64;
-    --t-heading: #b69f64;
+    --t-text: #2c2824;
+    --t-heading: #2c2824;
     --t-primary: #b69f64;
     background-color: #cdbfa6 !important;
-    color: #b69f64 !important;
+    color: #2c2824 !important;
   }
   /* Hard ban: no charcoal/black surfaces anywhere in Suites iframe */
   .l-wellness,
@@ -941,23 +943,18 @@
   .l-nature-bg-caption__text,
   .l-nature__slider-caption,
   .l-nature__slider-caption .text-t1,
-  .l-nature__slider-caption p,
-  .l-nature__caption__text,
-  .l-nature__caption__text .text-t1,
-  .l-nature__caption .g1,
-  .l-nature__caption .text-c1 {
-    color: #ffffff !important;
+  .l-nature__slider-caption p {
+    color: #2c2824 !important;
     position: relative;
     z-index: 8;
     mix-blend-mode: normal !important;
+    text-shadow: none !important;
   }
-  .l-nature-bg-caption {
-    z-index: 8 !important;
-  }
-  .l-nature__slider-caption {
-    z-index: 8 !important;
-  }
-  /* Place / interiors over-image copy → white */
+  /* Nature / place / interiors copy that sits on photography → white */
+  .l-nature__caption__text,
+  .l-nature__caption__text .text-t1,
+  .l-nature__caption .g1,
+  .l-nature__caption .text-c1,
   .l-place .text-t1,
   .l-place .g1,
   .l-place .h0,
@@ -968,6 +965,13 @@
   .l-interiors .h0,
   .l-interiors .text-c1 {
     color: #ffffff !important;
+    text-shadow: 0 1px 14px rgba(44, 40, 36, 0.4);
+  }
+  .l-nature-bg-caption {
+    z-index: 8 !important;
+  }
+  .l-nature__slider-caption {
+    z-index: 8 !important;
   }
   .l-intro__image--second {
     position: relative;
@@ -1008,13 +1012,65 @@
   footer.footer {
     display: none !important;
   }
+  /* In-flow lux footer (inside Springs scroll sections — must not sit after </body> scripts) */
+  .hathor-suites-footer-scroll {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 30 !important;
+    clip-path: none !important;
+    transform: none !important;
+    background: #ece8df !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
   .hathor-suites-footer-host {
     position: relative;
     z-index: 5;
-    background: #f5eacf;
-  }
-  .hathor-suites-footer-host .lux-footer {
+    background: #ece8df;
     display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  .hathor-suites-footer-host .lux-footer,
+  .hathor-suites-footer-scroll .lux-footer {
+    --lux-bg: #ece8df;
+    --lux-surface: #f5f0e8;
+    --lux-text: #2c2824;
+    --lux-muted: #6b6560;
+    --lux-gold: #b69f64;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: #2c2824 !important;
+  }
+  .hathor-suites-footer-host .lux-footer__headline,
+  .hathor-suites-footer-host .lux-footer__subhead,
+  .hathor-suites-footer-host .lux-footer__subscribe,
+  .hathor-suites-footer-host .lux-footer__col,
+  .hathor-suites-footer-host .lux-footer__link,
+  .hathor-suites-footer-host .lux-footer__col-title,
+  .hathor-suites-footer-host .lux-footer__tagline,
+  .hathor-suites-footer-host .lux-footer__legal,
+  .hathor-suites-footer-host .lux-footer__crafted {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
+  }
+  .hathor-suites-footer-host .lux-footer__headline {
+    color: #2c2824 !important;
+  }
+  .hathor-suites-footer-host .lux-footer__subhead,
+  .hathor-suites-footer-host .lux-footer__tagline,
+  .hathor-suites-footer-host .lux-footer__legal,
+  .hathor-suites-footer-host .lux-footer__crafted {
+    color: #6b6560 !important;
+  }
+  .hathor-suites-footer-host .lux-footer__col-title,
+  .hathor-suites-footer-host .lux-footer__link,
+  .hathor-suites-footer-host .lux-footer__meta-link {
+    color: #2c2824 !important;
   }
 </style>
 <style data-hathor-suites-footer>
@@ -1024,10 +1080,10 @@
    ========================================================= */
 
 .lux-footer {
-  --lux-bg: var(--public-bg, #f5eacf);
+  --lux-bg: var(--public-bg, #ece8df);
   --lux-surface: var(--public-surface, #f5f0e8);
   --lux-card: var(--public-card, #f0ebe3);
-  --lux-text: var(--public-text, #cdbfa6);
+  --lux-text: var(--public-text, #2c2824);
   --lux-muted: var(--public-muted, #6b6560);
   --lux-gold: var(--public-gold, #b69f64);
   --lux-gold-soft: #d4c28a;
@@ -1130,7 +1186,7 @@
   font-weight: 400;
   /* Font / size / tracking from dashboard · Page title */
   /* Keep a readable cream-footer fallback if typography vars lag */
-  color: var(--lux-text, #cdbfa6);
+  color: var(--lux-text, #2c2824);
 }
 
 .lux-footer__subhead {
@@ -1278,7 +1334,7 @@
   place-items: center;
   pointer-events: none;
   overflow: hidden;
-  color: #cdbfa6;
+  color: #2c2824;
 }
 
 .lux-footer__bg-logo-img {
@@ -1689,8 +1745,6 @@ body.has-page-scroll-transition .public-site > .lux-footer {
   }
   function boot() {
     scrubUrls(document);
-    // Do not force is-intro-seen / kill the landing preloader — that changes
-    // Springs gallery mask + reveal choreography. Only mark media readiness.
     fetch("/api/suites-config", { cache: "no-store" })
       .then(function (res) { return res.ok ? res.json() : null; })
       .then(function (data) {
@@ -8948,96 +9002,94 @@ to&nbsp;the&nbsp;MIBC
 
                                             
 
-<footer
-    class="section section--no-overflow ui-dark ui-background footer is-hidden--print"
-    data-scroll-section
->
 
-    <div
-        data-plugin="parallax"
-        data-parallax-enable-mq="md-up"
-        data-parallax-clamp="true"
-        data-parallax-100-0='{"transform": "translateY(-70%)"}'
-        data-parallax-100-100='{"transform": "translateY(0%)"}'
-    >
-        <div class="px-layout footer__content">
-            
-            <div class="row row--between-xs pt-1 footer-relative footer__padding">
-                        
-                                                                          
-            
-
-        
-        
-        
-        
-    <a
-        class="btn btn--outline btn--square btn--sm"
-                                                href="#top"
-                                                                    aria-label="Scroll to top of the page"
-                                                    >
-
-        <span class="btn__content">
-            
-                                    
-                                                                    <span class="btn__icon ">
-                        <svg class="icon icon-arrow-top" width="14" height="16" aria-hidden="true"            viewBox="0 0 14 16"
-            style="--icon-width: 14; --icon-height: 16;"
-        
-        ><use href="&#x2F;suites-springs&#x2F;assets&#x2F;images&#x2F;icons.svg&#x3F;v&#x3D;1765268659#arrow-top" xlink:href="&#x2F;suites-springs&#x2F;assets&#x2F;images&#x2F;icons.svg&#x3F;v&#x3D;1765268659#arrow-top"></use></svg>
-                    </span>
-                                    </span>
-    </a>
-            </div>
-
-            <div class="row row--between-xs">
-                <div class="col col--xs-4 col--md-12 group group--center pt-4 pb-5 py-2:md">
-                                                                <a href="#top" class="footer__logo " aria-label="Scroll to top of the page">
-                            
-    
-    
-    <img class="img-full " alt=""
-        draggable="false"                                    width="661"                        height="218"
-                src="/suites-springs/assets/images/media/logo-footer.svg"    >
-
-        
-                        </a>
-                                    </div>
-            </div>
-
-            <div class="row row--between-xs">
-                <div class="col col--xs-4 row row--nowrap row--between-xs footer-relative">
-                    <div class="col col--xs-2 col--md-6">
-                        <a class="text-c2-small leading-trim text-color-small" href="/privacy-policy" target="_blank">legal information</a>
-                    </div>
-
-                    <div class="col col--xs-2 col--md-6 row row--end-xs">
-                        <span class="text-c2-small leading-trim text-color-small text-right">Hathor Dahabiya</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="footer__bottom">
-                <p class="text-c2-small leading-trim text-color-small">
-                    Suite imagery and descriptions are curated for illustration. Availability, itineraries, and pricing are confirmed with Hathor&rsquo;s reservations desk. All Hathor content and design remain protected.
-                    <br>
-                    <br>
-                    &copy; 2026. All rights reserved.
-                </p>
-            </div>
-
-                        <div class="footer__gradient">
-                <div class="gradients-container blur-fix">
-                    <div class="g3"></div>
-                    <div class="interactive"></div>
-                </div>
-            </div>
+<section class="section section--no-overflow hathor-suites-footer-scroll" data-scroll-section>
+<div class="hathor-suites-footer-host public-site">
+  <div class="lux-footer is-copy-ready">
+    <div class="lux-footer__noise" aria-hidden="true"></div>
+    <div class="lux-footer__glow" aria-hidden="true"></div>
+    <div class="lux-footer__inner">
+      <div class="lux-footer__top">
+        <h2 class="lux-footer__headline typo-page-title">BEGIN YOUR JOURNEY</h2>
+        <p class="lux-footer__subhead typo-body-text">
+          Join our exclusive circle for private itineraries and early access to rare voyages.
+        </p>
+        <div class="lux-footer__subscribe">
+          <a class="lux-footer__meta-link" href="mailto:reservations@hathorcruise.com?subject=Suites%20Availability" target="_top" data-ajax-page-ignore>
+            Request suite availability →
+          </a>
         </div>
-
+      </div>
+      <div class="lux-footer__main">
+        <div class="lux-footer__grid">
+          <div class="lux-footer__col lux-footer__col--brand">
+            <p class="lux-footer__col-title">The Vessel</p>
+            <p class="lux-footer__tagline">
+              Navigating the eternal Nile with unparalleled elegance since 2024.
+              A private dahabiya for travellers who prefer stillness, craft, and rare itineraries.
+            </p>
+            <p class="lux-footer__brand-meta">
+              <a href="mailto:reservations@hathorcruise.com" class="lux-footer__meta-link" target="_top" data-ajax-page-ignore>reservations@hathorcruise.com</a>
+            </p>
+            <p class="lux-footer__brand-meta">
+              <a href="tel:+201270496896" class="lux-footer__meta-link" target="_top" data-ajax-page-ignore>+20 127 049 6896</a>
+            </p>
+          </div>
+          <div class="lux-footer__col">
+            <p class="lux-footer__col-title">Suites</p>
+            <ul class="lux-footer__links">
+              <li><a class="lux-footer__link" href="/suites" target="_top" data-ajax-page-ignore>Suites Overview</a></li>
+              <li><a class="lux-footer__link" href="/luxury-cabins-Nile-Cruise" target="_top" data-ajax-page-ignore>Luxury Rooms</a></li>
+              <li><a class="lux-footer__link" href="/rooms" target="_top" data-ajax-page-ignore>Luxury Suites</a></li>
+              <li><a class="lux-footer__link" href="/Luxury-Royal-Suites-Nile-Dahabiya-Cruise" target="_top" data-ajax-page-ignore>Royal Suites</a></li>
+            </ul>
+          </div>
+          <div class="lux-footer__col">
+            <p class="lux-footer__col-title">Voyages</p>
+            <ul class="lux-footer__links">
+              <li><a class="lux-footer__link" href="/cruises" target="_top" data-ajax-page-ignore>Scheduled Voyages</a></li>
+              <li><a class="lux-footer__link" href="/charter" target="_top" data-ajax-page-ignore>Private Charter</a></li>
+              <li><a class="lux-footer__link" href="/highlights" target="_top" data-ajax-page-ignore>Highlights</a></li>
+              <li><a class="lux-footer__link" href="/about" target="_top" data-ajax-page-ignore>Our Story</a></li>
+            </ul>
+          </div>
+          <div class="lux-footer__col">
+            <p class="lux-footer__col-title">Experiences</p>
+            <ul class="lux-footer__links">
+              <li><a class="lux-footer__link" href="/wellness" target="_top" data-ajax-page-ignore>Wellness &amp; Spa</a></li>
+              <li><a class="lux-footer__link" href="/gastronomy" target="_top" data-ajax-page-ignore>Dining</a></li>
+              <li><a class="lux-footer__link" href="/blog" target="_top" data-ajax-page-ignore>Journal</a></li>
+              <li><a class="lux-footer__link" href="/partners" target="_top" data-ajax-page-ignore>Partners</a></li>
+            </ul>
+          </div>
+          <div class="lux-footer__col">
+            <p class="lux-footer__col-title">Concierge</p>
+            <ul class="lux-footer__links">
+              <li><a class="lux-footer__link" href="/contact" target="_top" data-ajax-page-ignore>Contact Concierge</a></li>
+              <li><a class="lux-footer__link" href="/contact" target="_top" data-ajax-page-ignore>FAQ</a></li>
+            </ul>
+          </div>
+          <div class="lux-footer__col">
+            <p class="lux-footer__col-title">Follow the Voyage</p>
+            <ul class="lux-footer__social">
+              <li><a class="lux-footer__social-link" href="https://www.instagram.com/hathorcruise/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">IG</a></li>
+              <li><a class="lux-footer__social-link" href="https://www.linkedin.com/company/hathor-dahabiya-cruise" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">IN</a></li>
+              <li><a class="lux-footer__social-link" href="https://www.facebook.com/Hathorcruise" target="_blank" rel="noopener noreferrer" aria-label="Facebook">FB</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="lux-footer__bottom">
+        <div class="lux-footer__bottom-row">
+          <p class="lux-footer__legal">© 2026 Hathor Cruise. All rights reserved.</p>
+          <p class="lux-footer__crafted">Crafted with precision in Egypt.</p>
+        </div>
+      </div>
     </div>
+  </div>
+</div>
+</section>
 
-    <div class="footer__theme" data-themed-class="ui-dark"></div>
-</footer>
 
 
                                     </div>
@@ -12261,90 +12313,5 @@ to&nbsp;the&nbsp;MIBC
 
         <script src="/suites-springs/assets/javascripts/landing.js?v=1765268659"></script>
 
-
-<div class="hathor-suites-footer-host public-site">
-  <footer class="lux-footer is-copy-ready">
-    <div class="lux-footer__noise" aria-hidden="true"></div>
-    <div class="lux-footer__glow" aria-hidden="true"></div>
-    <div class="lux-footer__inner">
-      <div class="lux-footer__top">
-        <h2 class="lux-footer__headline typo-page-title">BEGIN YOUR JOURNEY</h2>
-        <p class="lux-footer__subhead typo-body-text">
-          Join our exclusive circle for private itineraries and early access to rare voyages.
-        </p>
-        <div class="lux-footer__subscribe">
-          <a class="lux-footer__meta-link" href="mailto:reservations@hathorcruise.com?subject=Suites%20Availability" target="_top" data-ajax-page-ignore>
-            Request suite availability →
-          </a>
-        </div>
-      </div>
-      <div class="lux-footer__main">
-        <div class="lux-footer__grid">
-          <div class="lux-footer__col lux-footer__col--brand">
-            <p class="lux-footer__col-title">The Vessel</p>
-            <p class="lux-footer__tagline">
-              Navigating the eternal Nile with unparalleled elegance since 2024.
-              A private dahabiya for travellers who prefer stillness, craft, and rare itineraries.
-            </p>
-            <p class="lux-footer__brand-meta">
-              <a href="mailto:reservations@hathorcruise.com" class="lux-footer__meta-link" target="_top" data-ajax-page-ignore>reservations@hathorcruise.com</a>
-            </p>
-            <p class="lux-footer__brand-meta">
-              <a href="tel:+201270496896" class="lux-footer__meta-link" target="_top" data-ajax-page-ignore>+20 127 049 6896</a>
-            </p>
-          </div>
-          <div class="lux-footer__col">
-            <p class="lux-footer__col-title">Suites</p>
-            <ul class="lux-footer__links">
-              <li><a class="lux-footer__link" href="/suites" target="_top" data-ajax-page-ignore>Suites Overview</a></li>
-              <li><a class="lux-footer__link" href="/luxury-cabins-Nile-Cruise" target="_top" data-ajax-page-ignore>Luxury Rooms</a></li>
-              <li><a class="lux-footer__link" href="/rooms" target="_top" data-ajax-page-ignore>Luxury Suites</a></li>
-              <li><a class="lux-footer__link" href="/Luxury-Royal-Suites-Nile-Dahabiya-Cruise" target="_top" data-ajax-page-ignore>Royal Suites</a></li>
-            </ul>
-          </div>
-          <div class="lux-footer__col">
-            <p class="lux-footer__col-title">Voyages</p>
-            <ul class="lux-footer__links">
-              <li><a class="lux-footer__link" href="/cruises" target="_top" data-ajax-page-ignore>Scheduled Voyages</a></li>
-              <li><a class="lux-footer__link" href="/charter" target="_top" data-ajax-page-ignore>Private Charter</a></li>
-              <li><a class="lux-footer__link" href="/highlights" target="_top" data-ajax-page-ignore>Highlights</a></li>
-              <li><a class="lux-footer__link" href="/about" target="_top" data-ajax-page-ignore>Our Story</a></li>
-            </ul>
-          </div>
-          <div class="lux-footer__col">
-            <p class="lux-footer__col-title">Experiences</p>
-            <ul class="lux-footer__links">
-              <li><a class="lux-footer__link" href="/wellness" target="_top" data-ajax-page-ignore>Wellness &amp; Spa</a></li>
-              <li><a class="lux-footer__link" href="/gastronomy" target="_top" data-ajax-page-ignore>Dining</a></li>
-              <li><a class="lux-footer__link" href="/blog" target="_top" data-ajax-page-ignore>Journal</a></li>
-              <li><a class="lux-footer__link" href="/partners" target="_top" data-ajax-page-ignore>Partners</a></li>
-            </ul>
-          </div>
-          <div class="lux-footer__col">
-            <p class="lux-footer__col-title">Concierge</p>
-            <ul class="lux-footer__links">
-              <li><a class="lux-footer__link" href="/contact" target="_top" data-ajax-page-ignore>Contact Concierge</a></li>
-              <li><a class="lux-footer__link" href="/contact" target="_top" data-ajax-page-ignore>FAQ</a></li>
-            </ul>
-          </div>
-          <div class="lux-footer__col">
-            <p class="lux-footer__col-title">Follow the Voyage</p>
-            <ul class="lux-footer__social">
-              <li><a class="lux-footer__social-link" href="https://www.instagram.com/hathorcruise/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">IG</a></li>
-              <li><a class="lux-footer__social-link" href="https://www.linkedin.com/company/hathor-dahabiya-cruise" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">IN</a></li>
-              <li><a class="lux-footer__social-link" href="https://www.facebook.com/Hathorcruise" target="_blank" rel="noopener noreferrer" aria-label="Facebook">FB</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="lux-footer__bottom">
-        <div class="lux-footer__bottom-row">
-          <p class="lux-footer__legal">© 2026 Hathor Cruise. All rights reserved.</p>
-          <p class="lux-footer__crafted">Crafted with precision in Egypt.</p>
-        </div>
-      </div>
-    </div>
-  </footer>
-</div>
 </body>
 </html>

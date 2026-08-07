@@ -393,33 +393,33 @@ const suitesPalette = `
   }
   html, body {
     background: #f5eacf !important;
-    color: #b69f64;
+    color: #2c2824;
     font-family: "Hathor Body", "TT Commons", sans-serif;
   }
-  /* Former “dark” theme → beige panel + gold/cream type (never charcoal) */
+  /* Readable contrast: cream/beige surfaces → ink; gold is accent only */
   .ui-dark, .ui-dark-background, .ui-dark.ui-background {
     --t-background: #cdbfa6;
     --t-background-rgb: 205, 191, 166;
-    --t-text: #b69f64;
-    --t-text-rgb: 182, 159, 100;
-    --t-heading: #b69f64;
-    --t-heading-rgb: 182, 159, 100;
+    --t-text: #2c2824;
+    --t-text-rgb: 44, 40, 36;
+    --t-heading: #2c2824;
+    --t-heading-rgb: 44, 40, 36;
     --t-primary: #b69f64;
-    --t-line: rgba(182, 159, 100, 0.35);
+    --t-line: rgba(44, 40, 36, 0.22);
     background-color: #cdbfa6 !important;
-    color: #b69f64 !important;
+    color: #2c2824 !important;
   }
   .ui-light, .ui-light-background, .ui-light.ui-background, .ui-background {
     --t-background: #f5eacf;
     --t-background-rgb: 245, 234, 207;
-    --t-text: #b69f64;
-    --t-text-rgb: 182, 159, 100;
-    --t-heading: #b69f64;
-    --t-heading-rgb: 182, 159, 100;
+    --t-text: #2c2824;
+    --t-text-rgb: 44, 40, 36;
+    --t-heading: #2c2824;
+    --t-heading-rgb: 44, 40, 36;
     --t-primary: #b69f64;
     --t-line: rgba(182, 159, 100, 0.28);
     background-color: #f5eacf !important;
-    color: #b69f64 !important;
+    color: #2c2824 !important;
   }
   .g1, .h0, .h1, .h2, .h3 {
     font-family: "Hathor Display", "Gamgote", Georgia, serif !important;
@@ -504,30 +504,31 @@ const suitesPalette = `
     ) !important;
   }
   /*
-   * Wellness split panel — gold/beige field + white copy (readable over mist).
+   * Wellness split panel — cream/beige field + ink copy (high contrast).
+   * White is reserved for text sitting on photography.
    */
   .l-wellness__slider__caption,
   .l-wellness__slider__caption.ui-dark,
   .l-wellness__slider__images {
-    --t-background: #cdbfa6;
-    --t-background-rgb: 205, 191, 166;
-    --t-text: #ffffff;
-    --t-text-rgb: 255, 255, 255;
-    --t-heading: #ffffff;
-    --t-heading-rgb: 255, 255, 255;
-    --c-dark-blue: #cdbfa6;
-    --c-dark-blue-rgb: 205, 191, 166;
-    --c-green: #f5eacf;
-    --c-green-rgb: 245, 234, 207;
+    --t-background: #f5eacf;
+    --t-background-rgb: 245, 234, 207;
+    --t-text: #2c2824;
+    --t-text-rgb: 44, 40, 36;
+    --t-heading: #2c2824;
+    --t-heading-rgb: 44, 40, 36;
+    --c-dark-blue: #f5eacf;
+    --c-dark-blue-rgb: 245, 234, 207;
+    --c-green: #cdbfa6;
+    --c-green-rgb: 205, 191, 166;
     --c-blue: #b69f64;
     --c-blue-rgb: 182, 159, 100;
     background: linear-gradient(
       105deg,
-      #b69f64 0%,
-      #cdbfa6 48%,
-      #b69f64 100%
+      #f5eacf 0%,
+      #cdbfa6 55%,
+      #f5eacf 100%
     ) !important;
-    color: #ffffff !important;
+    color: #2c2824 !important;
   }
   .l-wellness__slider-gradient {
     z-index: 1 !important;
@@ -536,15 +537,15 @@ const suitesPalette = `
   .l-wellness__slider-gradient div:first-child {
     background: radial-gradient(
       circle at center,
-      rgba(245, 234, 207, 0.55) 0%,
-      rgba(182, 159, 100, 0.35) 42%,
+      rgba(182, 159, 100, 0.45) 0%,
+      rgba(205, 191, 166, 0.35) 42%,
       rgba(245, 234, 207, 0) 72%
     ) no-repeat !important;
   }
   .l-wellness__slider-gradient div:nth-child(2) {
     background: radial-gradient(
       circle,
-      rgba(245, 234, 207, 0.85) 0%,
+      rgba(245, 234, 207, 0.9) 0%,
       rgba(205, 191, 166, 0.55) 40%,
       rgba(182, 159, 100, 0) 74%
     ) !important;
@@ -552,12 +553,11 @@ const suitesPalette = `
   .l-wellness__slider-gradient div:nth-child(3) {
     background: radial-gradient(
       circle,
-      rgba(182, 159, 100, 0.65) 0%,
-      rgba(245, 234, 207, 0.4) 34%,
+      rgba(182, 159, 100, 0.5) 0%,
+      rgba(205, 191, 166, 0.35) 34%,
       rgba(245, 234, 207, 0) 70%
     ) !important;
   }
-  /* White amenity list — idle slightly softer white, active pure white */
   .l-wellness__slider__caption-titles,
   .l-wellness__slider__caption-text {
     position: relative !important;
@@ -565,33 +565,34 @@ const suitesPalette = `
   }
   .l-wellness__slider__caption-titles > a {
     opacity: 1 !important;
-    color: rgba(255, 255, 255, 0.55) !important;
+    color: rgba(44, 40, 36, 0.42) !important;
   }
   .l-wellness__slider__caption-titles > a .h2,
   .l-wellness__slider__caption-titles > a p {
-    color: rgba(255, 255, 255, 0.55) !important;
+    color: rgba(44, 40, 36, 0.42) !important;
   }
   .has-hover .l-wellness__slider__caption-titles > a:hover {
     opacity: 1 !important;
-    color: rgba(255, 255, 255, 0.85) !important;
+    color: #b69f64 !important;
   }
   .has-hover .l-wellness__slider__caption-titles > a:hover .h2,
   .has-hover .l-wellness__slider__caption-titles > a:hover p {
-    color: rgba(255, 255, 255, 0.85) !important;
+    color: #b69f64 !important;
   }
   .l-wellness__slider__caption-titles > a.is-active {
     opacity: 1 !important;
-    color: #ffffff !important;
+    color: #2c2824 !important;
   }
   .l-wellness__slider__caption-titles > a.is-active .h2,
   .l-wellness__slider__caption-titles > a.is-active p {
-    color: #ffffff !important;
+    color: #2c2824 !important;
   }
   .l-wellness__slider__caption-text,
   .l-wellness__slider__caption-text .text-t1,
   .l-wellness__slider__caption-text p {
-    color: #ffffff !important;
+    color: #2c2824 !important;
   }
+  /* Wellness webgl stage sits on imagery → white */
   .l-wellness__webgl-caption,
   .l-wellness__webgl-caption .text-t1,
   .l-wellness__webgl-caption p,
@@ -599,6 +600,7 @@ const suitesPalette = `
   .l-wellness__webgl-title .g1,
   .l-wellness__webgl-title .text-c1 {
     color: #ffffff !important;
+    text-shadow: 0 1px 16px rgba(44, 40, 36, 0.45);
     position: relative;
     z-index: 6;
   }
@@ -814,29 +816,29 @@ const suitesPalette = `
   .l-intro {
     --t-background: #f5eacf;
     --t-background-rgb: 245, 234, 207;
-    --t-text: #b69f64;
-    --t-text-rgb: 182, 159, 100;
-    --t-heading: #b69f64;
-    --t-heading-rgb: 182, 159, 100;
+    --t-text: #2c2824;
+    --t-text-rgb: 44, 40, 36;
+    --t-heading: #2c2824;
+    --t-heading-rgb: 44, 40, 36;
     --t-primary: #b69f64;
     --t-primary-rgb: 182, 159, 100;
     background-color: #f5eacf !important;
-    color: #b69f64 !important;
+    color: #2c2824 !important;
   }
   .l-intro__opening .h1,
   .l-intro__opening .text-c1,
   .l-intro__opening .text-color-primary,
   .l-intro__opening-subtitle {
-    color: #b69f64 !important;
+    color: #2c2824 !important;
   }
   .l-intro__content.ui-dark {
     --t-background: #cdbfa6;
     --t-background-rgb: 205, 191, 166;
-    --t-text: #b69f64;
-    --t-heading: #b69f64;
+    --t-text: #2c2824;
+    --t-heading: #2c2824;
     --t-primary: #b69f64;
     background-color: #cdbfa6 !important;
-    color: #b69f64 !important;
+    color: #2c2824 !important;
   }
   /* Hard ban: no charcoal/black surfaces anywhere in Suites iframe */
   .l-wellness,
@@ -933,23 +935,18 @@ const suitesPalette = `
   .l-nature-bg-caption__text,
   .l-nature__slider-caption,
   .l-nature__slider-caption .text-t1,
-  .l-nature__slider-caption p,
-  .l-nature__caption__text,
-  .l-nature__caption__text .text-t1,
-  .l-nature__caption .g1,
-  .l-nature__caption .text-c1 {
-    color: #ffffff !important;
+  .l-nature__slider-caption p {
+    color: #2c2824 !important;
     position: relative;
     z-index: 8;
     mix-blend-mode: normal !important;
+    text-shadow: none !important;
   }
-  .l-nature-bg-caption {
-    z-index: 8 !important;
-  }
-  .l-nature__slider-caption {
-    z-index: 8 !important;
-  }
-  /* Place / interiors over-image copy → white */
+  /* Nature / place / interiors copy that sits on photography → white */
+  .l-nature__caption__text,
+  .l-nature__caption__text .text-t1,
+  .l-nature__caption .g1,
+  .l-nature__caption .text-c1,
   .l-place .text-t1,
   .l-place .g1,
   .l-place .h0,
@@ -960,6 +957,13 @@ const suitesPalette = `
   .l-interiors .h0,
   .l-interiors .text-c1 {
     color: #ffffff !important;
+    text-shadow: 0 1px 14px rgba(44, 40, 36, 0.4);
+  }
+  .l-nature-bg-caption {
+    z-index: 8 !important;
+  }
+  .l-nature__slider-caption {
+    z-index: 8 !important;
   }
   .l-intro__image--second {
     position: relative;
@@ -1000,13 +1004,65 @@ const suitesPalette = `
   footer.footer {
     display: none !important;
   }
+  /* In-flow lux footer (inside Springs scroll sections — must not sit after </body> scripts) */
+  .hathor-suites-footer-scroll {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 30 !important;
+    clip-path: none !important;
+    transform: none !important;
+    background: #ece8df !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
   .hathor-suites-footer-host {
     position: relative;
     z-index: 5;
     background: #ece8df;
-  }
-  .hathor-suites-footer-host .lux-footer {
     display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  .hathor-suites-footer-host .lux-footer,
+  .hathor-suites-footer-scroll .lux-footer {
+    --lux-bg: #ece8df;
+    --lux-surface: #f5f0e8;
+    --lux-text: #2c2824;
+    --lux-muted: #6b6560;
+    --lux-gold: #b69f64;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: #2c2824 !important;
+  }
+  .hathor-suites-footer-host .lux-footer__headline,
+  .hathor-suites-footer-host .lux-footer__subhead,
+  .hathor-suites-footer-host .lux-footer__subscribe,
+  .hathor-suites-footer-host .lux-footer__col,
+  .hathor-suites-footer-host .lux-footer__link,
+  .hathor-suites-footer-host .lux-footer__col-title,
+  .hathor-suites-footer-host .lux-footer__tagline,
+  .hathor-suites-footer-host .lux-footer__legal,
+  .hathor-suites-footer-host .lux-footer__crafted {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
+  }
+  .hathor-suites-footer-host .lux-footer__headline {
+    color: #2c2824 !important;
+  }
+  .hathor-suites-footer-host .lux-footer__subhead,
+  .hathor-suites-footer-host .lux-footer__tagline,
+  .hathor-suites-footer-host .lux-footer__legal,
+  .hathor-suites-footer-host .lux-footer__crafted {
+    color: #6b6560 !important;
+  }
+  .hathor-suites-footer-host .lux-footer__col-title,
+  .hathor-suites-footer-host .lux-footer__link,
+  .hathor-suites-footer-host .lux-footer__meta-link {
+    color: #2c2824 !important;
   }
 </style>
 <style data-hathor-suites-footer>
@@ -1014,8 +1070,9 @@ ${luxFooterCss}
 </style>`;
 
 const hathorFooterHtml = `
+<section class="section section--no-overflow hathor-suites-footer-scroll" data-scroll-section>
 <div class="hathor-suites-footer-host public-site">
-  <footer class="lux-footer is-copy-ready">
+  <div class="lux-footer is-copy-ready">
     <div class="lux-footer__noise" aria-hidden="true"></div>
     <div class="lux-footer__glow" aria-hidden="true"></div>
     <div class="lux-footer__inner">
@@ -1096,8 +1153,9 @@ const hathorFooterHtml = `
         </div>
       </div>
     </div>
-  </footer>
+  </div>
 </div>
+</section>
 `;
 
 const suitesRuntime = `
@@ -1346,15 +1404,26 @@ for (const [from, to] of [
   ["#67bfda", "#f5eacf"],
   ["#bee5ee", "#f5eacf"],
   ["#8b6914", "#b69f64"],
-  ["#2c2824", "#cdbfa6"],
-  ["#ece8df", "#f5eacf"],
 ]) {
   html = html.replaceAll(from, to);
   html = html.replaceAll(from.toUpperCase(), to);
 }
 
-// Insert Hathor footer after link rewrites so it is not mutated twice
-html = html.replace(/<\/body>/i, `${hathorFooterHtml}</body>`);
+// Insert Hathor lux-footer IN PLACE of the Springs footer (data-scroll-section),
+// so it participates in the page scroll — appending after scripts never appears.
+html = html.replace(
+  /<footer\s+class="section section--no-overflow[\s\S]*?<\/footer>/i,
+  hathorFooterHtml,
+);
+// Strip any leftover end-of-body footer hosts from older builds
+html = html.replace(
+  /<div class="hathor-suites-footer-host[\s\S]*?<\/div>\s*(?=<\/body>)/gi,
+  "",
+);
+html = html.replace(
+  /<section class="section section--no-overflow hathor-suites-footer-scroll"[\s\S]*?<\/section>\s*(?=<\/body>)/gi,
+  "",
+);
 
 // Rewrite stylesheet URLs + retint baked Springs colors.
 // Dark forest/teal panels → beige #cdbfa6.
@@ -1371,8 +1440,6 @@ const cssColorPatches = [
   ["#bee5ee", "#f5eacf"],
   ["#e0d1b6", "#cdbfa6"],
   ["#f5e8d1", "#f5eacf"],
-  ["#2c2824", "#cdbfa6"],
-  ["#ece8df", "#f5eacf"],
   ["22,45,36", "205,191,166"],
   ["22, 45, 36", "205, 191, 166"],
   ["27,71,50", "205,191,166"],
@@ -1395,10 +1462,6 @@ const cssColorPatches = [
   ["224, 209, 182", "205, 191, 166"],
   ["245,232,209", "245,234,207"],
   ["245, 232, 209", "245, 234, 207"],
-  ["44,40,36", "205,191,166"],
-  ["44, 40, 36", "205, 191, 166"],
-  ["236,232,223", "245,234,207"],
-  ["236, 232, 223", "245, 234, 207"],
 ];
 
 const cssDir = path.join(destinationDir, "assets", "stylesheets");
