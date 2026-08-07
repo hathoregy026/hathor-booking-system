@@ -497,18 +497,18 @@ const suitesPalette = `
     background: radial-gradient(circle, rgba(182, 159, 100, 0.55) 0%, rgba(182, 159, 100, 0.22) 45%, rgba(182, 159, 100, 0) 74%) !important;
   }
   /*
-   * Suites hero: site cream gutters (#ece8df) + very light gold wash on tiles.
-   * Keep slower mosaic drift and Springs 3:4 card geometry.
+   * Suites hero: cream gutters + harder gold wash on tiles.
+   * Caption stays above all gold filters (mosaic / gradient / vignette).
    */
   .l-gallery-container.ui-dark,
   .l-gallery-container.ui-background,
   .l-gallery-container.ui-dark.ui-background {
     --t-background: #ece8df;
     --t-background-rgb: 236, 232, 223;
-    --t-text: #2c2824;
-    --t-text-rgb: 44, 40, 36;
-    --t-heading: #2c2824;
-    --t-heading-rgb: 44, 40, 36;
+    --t-text: #ffffff;
+    --t-text-rgb: 255, 255, 255;
+    --t-heading: #ffffff;
+    --t-heading-rgb: 255, 255, 255;
     --t-primary: #b69f64;
     --c-dark-green: #ece8df;
     --c-dark-green-rgb: 236, 232, 223;
@@ -528,32 +528,35 @@ const suitesPalette = `
   .l-gallery-container .l-gallery {
     background-color: #ece8df !important;
   }
-  /* Soft gold ambient only — very low opacity, not a heavy cast. */
+  /* Harder gold ambient cast behind caption */
   .l-gallery__gradient div:nth-child(-n + 4) {
     opacity: 0 !important;
   }
   .l-gallery__gradient div:nth-child(5) {
     background: radial-gradient(
       circle,
-      rgba(182, 159, 100, 0.18) 0,
-      rgba(182, 159, 100, 0.08) 25%,
-      rgba(182, 159, 100, 0) 70%
+      rgba(182, 159, 100, 0.42) 0,
+      rgba(182, 159, 100, 0.22) 28%,
+      rgba(182, 159, 100, 0) 72%
     ) !important;
     opacity: 1 !important;
   }
   /*
    * Hero mosaic — Springs card field on cream:
    * 1) 3:4 cover tiles (Hathor landscape webps were collapsing height).
-   * 2) Full opacity cards + low-opacity gold filter overlay on each image.
+   * 2) Harder gold filter on images only (below caption stack).
    * 3) Mild scale-up of the -28° plane to fill empty cream corners.
    */
   .l-gallery {
+    position: relative !important;
     overflow: hidden !important;
     width: 100vw !important;
     height: calc(100 * var(--svh, 1vh)) !important;
+    isolation: isolate;
   }
   .l-gallery__content.js-gallery-container {
     opacity: 1 !important;
+    z-index: 1 !important;
     top: -30vw !important;
     width: 130vw !important;
     left: -15vw !important;
@@ -582,8 +585,9 @@ const suitesPalette = `
     height: auto !important;
     overflow: hidden !important;
     border-radius: 0 !important;
+    isolation: isolate;
   }
-  /* Very low-opacity gold filter wash on hero images */
+  /* Harder gold shadow wash — locked to the image tile only */
   .l-gallery__item picture.img-full::after,
   .l-gallery__item .img-full::after {
     content: "";
@@ -591,8 +595,9 @@ const suitesPalette = `
     inset: 0;
     z-index: 1;
     pointer-events: none;
-    background: rgba(182, 159, 100, 0.14);
-    mix-blend-mode: soft-light;
+    background: rgba(182, 159, 100, 0.4);
+    mix-blend-mode: multiply;
+    box-shadow: inset 0 0 48px rgba(182, 159, 100, 0.55);
   }
   .l-gallery__item picture.img-full img,
   .l-gallery__item .img-full img,
@@ -603,24 +608,28 @@ const suitesPalette = `
     object-position: center !important;
     opacity: 1 !important;
     border-radius: 0 !important;
-    filter: contrast(1.06) saturate(1.04) !important;
+    filter: contrast(1.08) saturate(1.06) drop-shadow(0 10px 22px rgba(182, 159, 100, 0.45)) !important;
   }
   .l-gallery__gradient {
     opacity: 1 !important;
-    z-index: 30;
+    z-index: 2 !important;
     pointer-events: none;
   }
-  /* Light edge falloff only — cream hero should stay open and bright */
+  /* Gold edge falloff inside gallery stack — under caption, never over text */
   .l-gallery-container::after {
+    content: none !important;
+    display: none !important;
+  }
+  .l-gallery::before {
     content: "";
     position: absolute;
     inset: 0;
-    z-index: 35;
+    z-index: 3;
     pointer-events: none;
     background: radial-gradient(
       ellipse at 50% 45%,
-      rgba(236, 232, 223, 0) 42%,
-      rgba(182, 159, 100, 0.08) 100%
+      rgba(236, 232, 223, 0) 38%,
+      rgba(182, 159, 100, 0.22) 100%
     );
   }
   @media (max-width: 1024px) and (min-width: 481px) {
@@ -628,6 +637,11 @@ const suitesPalette = `
       transform: rotate(-28deg) scale(1.24) !important;
       width: 125vw !important;
       left: -12vw !important;
+    }
+    .l-gallery__item picture.img-full::after,
+    .l-gallery__item .img-full::after {
+      background: rgba(182, 159, 100, 0.36);
+      box-shadow: inset 0 0 40px rgba(182, 159, 100, 0.48);
     }
   }
   @media (max-width: 480px) {
@@ -644,25 +658,39 @@ const suitesPalette = `
     }
     .l-gallery__item picture.img-full::after,
     .l-gallery__item .img-full::after {
-      background: rgba(182, 159, 100, 0.12);
+      background: rgba(182, 159, 100, 0.34);
+      box-shadow: inset 0 0 32px rgba(182, 159, 100, 0.42);
     }
     .l-gallery__item picture.img-full img,
     .l-gallery__item .img-full img,
     .l-gallery__item img {
-      filter: contrast(1.05) saturate(1.03) !important;
+      filter: contrast(1.06) saturate(1.04) drop-shadow(0 8px 16px rgba(182, 159, 100, 0.4)) !important;
     }
   }
-  /* Caption on cream hero — ink + gold title, readable over mosaic */
+  /* White hero copy — always above mosaic + gold filters */
   .l-gallery__caption {
-    z-index: 50 !important;
+    position: absolute !important;
+    z-index: 60 !important;
+    isolation: isolate;
+    mix-blend-mode: normal !important;
+    pointer-events: none;
+  }
+  .l-gallery__caption a,
+  .l-gallery__caption .btn {
+    pointer-events: auto;
+  }
+  .l-gallery__caption .text-t1,
+  .l-gallery__caption .h0,
+  .l-gallery__caption .h0 *,
+  .l-gallery__caption p {
+    color: #ffffff !important;
+    mix-blend-mode: normal !important;
   }
   .l-gallery__caption .text-t1 {
-    color: #2c2824 !important;
-    text-shadow: 0 1px 0 rgba(236, 232, 223, 0.55);
+    text-shadow: 0 1px 12px rgba(44, 40, 36, 0.35);
   }
   .l-gallery__caption .h0 {
-    color: #b69f64 !important;
-    text-shadow: 0 2px 18px rgba(44, 40, 36, 0.18);
+    text-shadow: 0 2px 22px rgba(44, 40, 36, 0.4);
   }
   /*
    * Intro “bottom 3 images + left text” stage (Springs cream panel):
