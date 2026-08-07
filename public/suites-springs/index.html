@@ -30,7 +30,7 @@
         </script>
 
             <link rel="manifest" href="/suites-springs/assets/manifest/manifest.webmanifest?v=1765268659">
-<meta name="theme-color" content="#b69f64">
+<meta name="theme-color" content="#2c2824">
 <meta name="msapplication-config" content="/assets/manifest/browserconfig.xml?v=1765268659">
 
 <link rel="shortcut icon" media="(prefers-color-scheme: light)" href="/favicon-light.png?v=1765268659">
@@ -364,25 +364,27 @@
     font-display: swap;
   }
   /*
-   * Palette only — do NOT override Springs clip-path / reveal / gallery transforms.
-   * Those rules were changing the source choreography (~90% look). Layout/motion
-   * must stay identical to the Springs homepage capture.
+   * Springs contrast model (keep mosaic readable):
+   * - Dark gutters/panels (was forest green) → warm ink #2c2824
+   * - Accent / glows / shadows → gold #b69f64
+   * - Titles on dark → cream #ece8df
+   * Mid-gold as the dark surface washes photos (gold-on-gold) and breaks the clone.
    */
   :root {
     --c-beige-background: #ece8df;
     --c-beige-background-rgb: 236, 232, 223;
     --c-beige: #f5f0e8;
     --c-beige-rgb: 245, 240, 232;
-    --c-dark-green: #b69f64;
-    --c-dark-green-rgb: 182, 159, 100;
-    --c-green: #b69f64;
-    --c-green-rgb: 182, 159, 100;
+    --c-dark-green: #2c2824;
+    --c-dark-green-rgb: 44, 40, 36;
+    --c-green: #2c2824;
+    --c-green-rgb: 44, 40, 36;
     --c-light-green: #b69f64;
     --c-light-green-rgb: 182, 159, 100;
     --c-olive: #b69f64;
     --c-olive-rgb: 182, 159, 100;
-    --c-dark-blue: #b69f64;
-    --c-dark-blue-rgb: 182, 159, 100;
+    --c-dark-blue: #2c2824;
+    --c-dark-blue-rgb: 44, 40, 36;
     --c-blue: #b69f64;
     --c-blue-rgb: 182, 159, 100;
     --c-light-blue: #ece8df;
@@ -402,15 +404,15 @@
     font-family: "Hathor Body", "TT Commons", sans-serif;
   }
   .ui-dark, .ui-dark-background, .ui-dark.ui-background {
-    --t-background: #b69f64;
-    --t-background-rgb: 182, 159, 100;
+    --t-background: #2c2824;
+    --t-background-rgb: 44, 40, 36;
     --t-text: #ece8df;
     --t-text-rgb: 236, 232, 223;
     --t-heading: #ece8df;
     --t-heading-rgb: 236, 232, 223;
     --t-primary: #b69f64;
     --t-line: rgba(236, 232, 223, 0.35);
-    background-color: #b69f64 !important;
+    background-color: #2c2824 !important;
     color: #ece8df !important;
   }
   .ui-light, .ui-light-background, .ui-light.ui-background {
@@ -434,26 +436,29 @@
   .ui-light .g1, .ui-light .h0, .ui-light .h1, .ui-light .h2, .ui-light .h3,
   .ui-light .text-c1, .ui-light .text-c2 { color: #b69f64; }
   .ui-dark .g1, .ui-dark .h0, .ui-dark .h1, .ui-dark .h2, .ui-dark .h3,
-  .ui-dark .text-c1, .ui-dark .text-c2 { color: #ece8df; }
+  .ui-dark .text-c1, .ui-dark .text-c2,
+  .ui-dark .text-t1 { color: #ece8df; }
   /* Keep Springs chrome out; Hathor public nav + site footer replace them. */
   .header, .cookie-consent {
     display: none !important;
     visibility: hidden !important;
     pointer-events: none !important;
   }
+  /* Gold accent glows (Springs used green radials). Keep modest so photos stay readable. */
   .l-gallery__gradient div,
   .l-wellness__gradient div,
   .l-nature__gradient div,
   .footer__gradient div,
   .preloader__gradient div,
-  .preloader__gradient-animation div {
-    background: radial-gradient(circle, rgba(182, 159, 100, 0.86) 0%, rgba(182, 159, 100, 0.38) 45%, rgba(236, 232, 223, 0) 74%) !important;
+  .preloader__gradient-animation div,
+  .l-nature-bg-gradient {
+    background: radial-gradient(circle, rgba(182, 159, 100, 0.55) 0%, rgba(182, 159, 100, 0.22) 45%, rgba(182, 159, 100, 0) 74%) !important;
   }
-  /* Soft elevation uses gold RGB via CSS vars patched into global.css. */
+  /* Title/lede sit on dark gutters like Springs — cream, never mid-gold on gold. */
   .l-gallery__caption,
   .l-gallery__caption .text-t1,
   .l-gallery__caption .h0 {
-    color: #b69f64 !important;
+    color: #ece8df !important;
   }
   footer.footer {
     display: none !important;

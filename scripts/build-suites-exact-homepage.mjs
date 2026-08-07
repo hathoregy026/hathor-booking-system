@@ -324,25 +324,27 @@ const suitesPalette = `
     font-display: swap;
   }
   /*
-   * Palette only — do NOT override Springs clip-path / reveal / gallery transforms.
-   * Those rules were changing the source choreography (~90% look). Layout/motion
-   * must stay identical to the Springs homepage capture.
+   * Springs contrast model (keep mosaic readable):
+   * - Dark gutters/panels (was forest green) → warm ink #2c2824
+   * - Accent / glows / shadows → gold #b69f64
+   * - Titles on dark → cream #ece8df
+   * Mid-gold as the dark surface washes photos (gold-on-gold) and breaks the clone.
    */
   :root {
     --c-beige-background: #ece8df;
     --c-beige-background-rgb: 236, 232, 223;
     --c-beige: #f5f0e8;
     --c-beige-rgb: 245, 240, 232;
-    --c-dark-green: #b69f64;
-    --c-dark-green-rgb: 182, 159, 100;
-    --c-green: #b69f64;
-    --c-green-rgb: 182, 159, 100;
+    --c-dark-green: #2c2824;
+    --c-dark-green-rgb: 44, 40, 36;
+    --c-green: #2c2824;
+    --c-green-rgb: 44, 40, 36;
     --c-light-green: #b69f64;
     --c-light-green-rgb: 182, 159, 100;
     --c-olive: #b69f64;
     --c-olive-rgb: 182, 159, 100;
-    --c-dark-blue: #b69f64;
-    --c-dark-blue-rgb: 182, 159, 100;
+    --c-dark-blue: #2c2824;
+    --c-dark-blue-rgb: 44, 40, 36;
     --c-blue: #b69f64;
     --c-blue-rgb: 182, 159, 100;
     --c-light-blue: #ece8df;
@@ -362,15 +364,15 @@ const suitesPalette = `
     font-family: "Hathor Body", "TT Commons", sans-serif;
   }
   .ui-dark, .ui-dark-background, .ui-dark.ui-background {
-    --t-background: #b69f64;
-    --t-background-rgb: 182, 159, 100;
+    --t-background: #2c2824;
+    --t-background-rgb: 44, 40, 36;
     --t-text: #ece8df;
     --t-text-rgb: 236, 232, 223;
     --t-heading: #ece8df;
     --t-heading-rgb: 236, 232, 223;
     --t-primary: #b69f64;
     --t-line: rgba(236, 232, 223, 0.35);
-    background-color: #b69f64 !important;
+    background-color: #2c2824 !important;
     color: #ece8df !important;
   }
   .ui-light, .ui-light-background, .ui-light.ui-background {
@@ -394,26 +396,29 @@ const suitesPalette = `
   .ui-light .g1, .ui-light .h0, .ui-light .h1, .ui-light .h2, .ui-light .h3,
   .ui-light .text-c1, .ui-light .text-c2 { color: #b69f64; }
   .ui-dark .g1, .ui-dark .h0, .ui-dark .h1, .ui-dark .h2, .ui-dark .h3,
-  .ui-dark .text-c1, .ui-dark .text-c2 { color: #ece8df; }
+  .ui-dark .text-c1, .ui-dark .text-c2,
+  .ui-dark .text-t1 { color: #ece8df; }
   /* Keep Springs chrome out; Hathor public nav + site footer replace them. */
   .header, .cookie-consent {
     display: none !important;
     visibility: hidden !important;
     pointer-events: none !important;
   }
+  /* Gold accent glows (Springs used green radials). Keep modest so photos stay readable. */
   .l-gallery__gradient div,
   .l-wellness__gradient div,
   .l-nature__gradient div,
   .footer__gradient div,
   .preloader__gradient div,
-  .preloader__gradient-animation div {
-    background: radial-gradient(circle, rgba(182, 159, 100, 0.86) 0%, rgba(182, 159, 100, 0.38) 45%, rgba(236, 232, 223, 0) 74%) !important;
+  .preloader__gradient-animation div,
+  .l-nature-bg-gradient {
+    background: radial-gradient(circle, rgba(182, 159, 100, 0.55) 0%, rgba(182, 159, 100, 0.22) 45%, rgba(182, 159, 100, 0) 74%) !important;
   }
-  /* Soft elevation uses gold RGB via CSS vars patched into global.css. */
+  /* Title/lede sit on dark gutters like Springs — cream, never mid-gold on gold. */
   .l-gallery__caption,
   .l-gallery__caption .text-t1,
   .l-gallery__caption .h0 {
-    color: #b69f64 !important;
+    color: #ece8df !important;
   }
   footer.footer {
     display: none !important;
@@ -683,13 +688,15 @@ html = html.replace(
   MEDIA.hero.replaceAll(":", "&#x3A;").replaceAll("/", "&#x5C;&#x2F;"),
 );
 
-// Baked Springs brand greens/blues that appear as literals in markup/JSON attrs
+// Baked Springs brand greens/blues that appear as literals in markup/JSON attrs.
+// Dark surfaces → ink; accent greens → gold; skies → cream.
 for (const [from, to] of [
-  ["#162d24", "#b69f64"],
-  ["#1b4732", "#b69f64"],
+  ["#162d24", "#2c2824"],
+  ["#1b4732", "#2c2824"],
+  ["#274c19", "#b69f64"],
   ["#a7b431", "#b69f64"],
   ["#758535", "#b69f64"],
-  ["#101e27", "#b69f64"],
+  ["#101e27", "#2c2824"],
   ["#005160", "#b69f64"],
   ["#67bfda", "#ece8df"],
   ["#bee5ee", "#ece8df"],
@@ -702,28 +709,33 @@ for (const [from, to] of [
 // Insert Hathor footer after link rewrites so it is not mutated twice
 html = html.replace(/<\/body>/i, `${hathorFooterHtml}</body>`);
 
-// Rewrite stylesheet URLs + retint baked Springs greens/blues/beiges to cream/gold.
+// Rewrite stylesheet URLs + retint baked Springs colors.
+// Dark forest/teal panels → warm ink (keeps Springs mosaic contrast).
+// Lime/olive accents → gold #b69f64. Sky/teal fills → cream.
 const cssColorPatches = [
-  ["#162d24", "#b69f64"],
-  ["#1b4732", "#b69f64"],
+  ["#162d24", "#2c2824"],
+  ["#1b4732", "#2c2824"],
+  ["#274c19", "#b69f64"],
   ["#a7b431", "#b69f64"],
   ["#758535", "#b69f64"],
-  ["#101e27", "#b69f64"],
+  ["#101e27", "#2c2824"],
   ["#005160", "#b69f64"],
   ["#67bfda", "#ece8df"],
   ["#bee5ee", "#ece8df"],
   ["#e0d1b6", "#f5f0e8"],
   ["#f5e8d1", "#ece8df"],
-  ["22,45,36", "182,159,100"],
-  ["22, 45, 36", "182, 159, 100"],
-  ["27,71,50", "182,159,100"],
-  ["27, 71, 50", "182, 159, 100"],
+  ["22,45,36", "44,40,36"],
+  ["22, 45, 36", "44, 40, 36"],
+  ["27,71,50", "44,40,36"],
+  ["27, 71, 50", "44, 40, 36"],
+  ["39,76,25", "182,159,100"],
+  ["39, 76, 25", "182, 159, 100"],
   ["167,180,49", "182,159,100"],
   ["167, 180, 49", "182, 159, 100"],
   ["117,133,53", "182,159,100"],
   ["117, 133, 53", "182, 159, 100"],
-  ["16,30,39", "182,159,100"],
-  ["16, 30, 39", "182, 159, 100"],
+  ["16,30,39", "44,40,36"],
+  ["16, 30, 39", "44, 40, 36"],
   ["0,81,96", "182,159,100"],
   ["0, 81, 96", "182, 159, 100"],
   ["103,191,218", "236,232,223"],
@@ -758,6 +770,21 @@ if (fs.existsSync(cssDir)) {
       "rgba(182, 159, 100, $1)",
     );
     fs.writeFileSync(cssPath, css);
+  }
+}
+
+// Retint WebGL accent greens → gold (keeps shader math, swaps leaf/glow hue).
+const jsDir = path.join(destinationDir, "assets", "javascripts");
+if (fs.existsSync(jsDir)) {
+  for (const name of ["webgl-wellness.js", "webgl-nature.js", "shared.js"]) {
+    const jsPath = path.join(jsDir, name);
+    if (!fs.existsSync(jsPath)) continue;
+    let js = fs.readFileSync(jsPath, "utf8");
+    js = js.replaceAll(
+      "0.0951212405381588,0.761241990602591,0.0767994186031903",
+      "0.7137254901960784,0.6235294117647059,0.39215686274509803",
+    );
+    fs.writeFileSync(jsPath, js);
   }
 }
 
