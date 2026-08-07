@@ -108,6 +108,8 @@ const SKIP_CLOSEST = [
   ".hcta-track",
   ".campaign-section",
   ".gallery-section",
+  /* Our Voyages accordion owns its own row/panel type — skip atelier char split */
+  "[data-hathor-accordion]",
   /* Itineraries titles must never park at opacity 0 after pin refresh */
   ".services-section",
   ".services-intro",

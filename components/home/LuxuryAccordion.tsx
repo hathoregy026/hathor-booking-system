@@ -1,16 +1,15 @@
 "use client";
 
-import Link from "next/link";
 import {
   useEffect,
   useRef,
   useState,
+  type CSSProperties,
   type KeyboardEvent,
   type MouseEvent,
 } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useBookNowModal } from "@/components/booking/BookingModalProvider";
 import {
   useTypographyInlineStyle,
   useTypographySettings,
@@ -20,7 +19,6 @@ import type { SiteImageName } from "@/lib/site-image-slots";
 import {
   formatVoyageFromPrice,
   resolveVoyagePanelContent,
-  type VoyageFeatureId,
 } from "@/lib/voyage-accordion-panels";
 import styles from "./LuxuryAccordion.module.css";
 
@@ -45,123 +43,12 @@ export type LuxuryAccordionProps = {
   items?: LuxuryAccordionItem[];
 };
 
-function FeatureIcon({ id }: { id: VoyageFeatureId }) {
-  switch (id) {
-    case "inclusive":
-      return (
-        <svg viewBox="0 0 40 40" aria-hidden="true">
-          <rect
-            x="9"
-            y="14"
-            width="22"
-            height="14"
-            rx="1.5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.4"
-          />
-          <path
-            d="M13 14V11.5a7 7 0 0 1 14 0V14"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.4"
-          />
-          <path
-            d="M9 20h22"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.2"
-          />
-        </svg>
-      );
-    case "excursions":
-      return (
-        <svg viewBox="0 0 40 40" aria-hidden="true">
-          <circle
-            cx="20"
-            cy="20"
-            r="9"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.4"
-          />
-          <path
-            d="M20 11v18M11 20h18"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.2"
-          />
-          <path
-            d="M14.5 14.5 25.5 25.5M25.5 14.5 14.5 25.5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1"
-            opacity="0.7"
-          />
-        </svg>
-      );
-    case "dining":
-      return (
-        <svg viewBox="0 0 40 40" aria-hidden="true">
-          <path
-            d="M14 10v12c0 2.2 1.3 3.5 3 3.5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-          />
-          <path
-            d="M12 10h4M12 14h4"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.2"
-            strokeLinecap="round"
-          />
-          <path
-            d="M26 10c2.5 0 4 2 4 5.5S28 24 26 24c0 0 0 6 0 6"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-          />
-          <path
-            d="M17 25.5V30M26 30H17"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.2"
-            strokeLinecap="round"
-          />
-        </svg>
-      );
-    case "butler":
-      return (
-        <svg viewBox="0 0 40 40" aria-hidden="true">
-          <circle
-            cx="20"
-            cy="14"
-            r="4.5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.4"
-          />
-          <path
-            d="M11 30c1.2-5.2 4.2-8 9-8s7.8 2.8 9 8"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-          />
-          <path
-            d="M17.5 14.5c.6 1.4 1.5 2.2 2.5 2.2s1.9-.8 2.5-2.2"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.1"
-          />
-        </svg>
-      );
-    default:
-      return null;
-  }
+/** Keep CMS family/color; CSS owns closed-row scale so admin fontSize can’t blow up rows. */
+function pickTypeColorFamily(style: CSSProperties): CSSProperties {
+  return {
+    fontFamily: style.fontFamily,
+    color: style.color,
+  };
 }
 
 function ScarabMark() {
@@ -202,19 +89,15 @@ export default function LuxuryAccordion({
   const list = items;
   const rootRef = useRef<HTMLElement>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
-  const { openBooking } = useBookNowModal();
   const { our_voyages_copy: voyagesCopy } = useTypographySettings();
   const titleStyle = useTypographyInlineStyle("our_voyages_title");
   const indicationStyle = useTypographyInlineStyle("our_voyages_indication");
   const nameStyle = useTypographyInlineStyle("our_voyages_main");
+  const metaStyle = useTypographyInlineStyle("our_voyages_indication");
 
   const sectionTitle = (title ?? voyagesCopy.title).trim() || "Our Voyages";
   const indication = voyagesCopy.indication.trim();
 
-  /*
-   * Dedicated scrubbed reveal — each column gets its own scroll beat.
-   * (Stack-exit timeline packed them into one short release, so they popped together.)
-   */
   useEffect(() => {
     const root = rootRef.current;
     if (!root || list.length === 0) return;
@@ -262,7 +145,6 @@ export default function LuxuryAccordion({
         row,
         { autoAlpha: 0, y: 64 },
         { autoAlpha: 1, y: 0, duration: beat },
-        /* Clear sequential slots so scrub reveals one row at a time */
         (heading ? beat * 0.85 : 0) + index * (beat * 1.05),
       );
     });
@@ -369,9 +251,7 @@ export default function LuxuryAccordion({
                 aria-expanded={isActive}
                 aria-controls={`hathor-accordion-panel-${item.id}`}
                 aria-label={
-                  isActive
-                    ? undefined
-                    : `${item.name}. Click to view details.`
+                  isActive ? undefined : `${item.name}. Click to view details.`
                 }
               >
                 <span className={styles.flare} aria-hidden="true" />
@@ -402,17 +282,25 @@ export default function LuxuryAccordion({
                   <div className={styles.copy}>
                     <h3
                       className={`${styles.name} typo-our-voyages-main`}
-                      style={nameStyle}
+                      style={pickTypeColorFamily(nameStyle)}
                     >
                       {item.name}
                     </h3>
-                    {meta ? <p className={styles.rowMeta}>{meta}</p> : null}
+                    {meta ? (
+                      <p
+                        className={styles.rowMeta}
+                        style={pickTypeColorFamily(metaStyle)}
+                      >
+                        {meta}
+                      </p>
+                    ) : null}
                   </div>
                   <span className={styles.icon} aria-hidden="true">
                     <span className={styles.iconMark}>+</span>
                   </span>
                 </div>
 
+                {/* Open panel — matches ref: image + bottom copy + price only */}
                 <div
                   id={`hathor-accordion-panel-${item.id}`}
                   className={styles.panel}
@@ -423,14 +311,9 @@ export default function LuxuryAccordion({
                   <aside className={styles.rail} aria-hidden="true">
                     <span className={styles.railRoman}>{item.romanNumeral}</span>
                     <ScarabMark />
-                    <p className={styles.railQuote}>
-                      <span className={styles.railLotus} aria-hidden="true">
-                        ✦
-                      </span>
-                      <span className={styles.railQuoteText}>
-                        {panel.railQuote}
-                      </span>
-                    </p>
+                    <span className={styles.railMark} aria-hidden="true">
+                      ✦
+                    </span>
                   </aside>
 
                   <div className={styles.stage}>
@@ -448,74 +331,16 @@ export default function LuxuryAccordion({
                       <h3 className={styles.routeTitle}>{panel.routeTitle}</h3>
                       <span className={styles.diamondRule} aria-hidden="true" />
                       <p className={styles.summary}>{panel.summary}</p>
-
-                      <ul className={styles.features}>
-                        {panel.features.map((feature) => (
-                          <li key={feature.id} className={styles.feature}>
-                            <span className={styles.featureIcon}>
-                              <FeatureIcon id={feature.id} />
-                            </span>
-                            <span className={styles.featureLabel}>
-                              {feature.label}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-
-                      <div className={styles.actions}>
-                        <Link
-                          href={panel.detailsHref}
-                          className={styles.detailsCta}
-                          onClick={stopRowClick}
-                        >
-                          {panel.detailsLabel}
-                        </Link>
-                        <a
-                          href={panel.watchHref}
-                          className={styles.watchCta}
-                          onClick={stopRowClick}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <span className={styles.watchPlay} aria-hidden="true">
-                            ▶
-                          </span>
-                          {panel.watchLabel}
-                        </a>
-                      </div>
                     </div>
 
-                    <aside className={styles.infoCard}>
-                      {priceLabel ? (
+                    {priceLabel ? (
+                      <aside className={styles.priceCard}>
                         <p className={styles.price}>
-                          <span className={styles.priceFrom}>From</span>{" "}
+                          <span className={styles.priceFrom}>From</span>
                           <span className={styles.priceValue}>{priceLabel}</span>
-                          <span className={styles.priceCaption}>
-                            {panel.priceCaption}
-                          </span>
                         </p>
-                      ) : null}
-
-                      <h4 className={styles.highlightsTitle}>
-                        Journey Highlights
-                      </h4>
-                      <ul className={styles.highlights}>
-                        {panel.highlights.map((line) => (
-                          <li key={line}>{line}</li>
-                        ))}
-                      </ul>
-
-                      <button
-                        type="button"
-                        className={styles.enquireCta}
-                        onClick={(event) => {
-                          stopRowClick(event);
-                          openBooking();
-                        }}
-                      >
-                        {panel.enquireLabel}
-                      </button>
-                    </aside>
+                      </aside>
+                    ) : null}
                   </div>
                 </div>
               </li>
