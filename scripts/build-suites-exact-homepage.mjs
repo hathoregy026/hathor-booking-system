@@ -356,68 +356,70 @@ const suitesPalette = `
     font-display: swap;
   }
   /*
-   * Springs contrast model (keep mosaic readable):
-   * - Dark gutters/panels (was forest green) → warm ink #2c2824
-   * - Accent / glows / shadows → gold #b69f64
-   * - Titles on dark → cream #ece8df
-   * Mid-gold as the dark surface washes photos (gold-on-gold) and breaks the clone.
+   * Suites palette (locked — no charcoal/black panels):
+   * Gold #B69F64 · Cream #F5EACF · Beige #CDBFA6
    */
   :root {
-    --c-beige-background: #ece8df;
-    --c-beige-background-rgb: 236, 232, 223;
-    --c-beige: #f5f0e8;
-    --c-beige-rgb: 245, 240, 232;
-    --c-dark-green: #2c2824;
-    --c-dark-green-rgb: 44, 40, 36;
-    --c-green: #2c2824;
-    --c-green-rgb: 44, 40, 36;
+    --lux-gold: #b69f64;
+    --lux-gold-rgb: 182, 159, 100;
+    --lux-cream: #f5eacf;
+    --lux-cream-rgb: 245, 234, 207;
+    --lux-beige: #cdbfa6;
+    --lux-beige-rgb: 205, 191, 166;
+    --c-beige-background: #f5eacf;
+    --c-beige-background-rgb: 245, 234, 207;
+    --c-beige: #f5eacf;
+    --c-beige-rgb: 245, 234, 207;
+    --c-dark-green: #cdbfa6;
+    --c-dark-green-rgb: 205, 191, 166;
+    --c-green: #cdbfa6;
+    --c-green-rgb: 205, 191, 166;
     --c-light-green: #b69f64;
     --c-light-green-rgb: 182, 159, 100;
     --c-olive: #b69f64;
     --c-olive-rgb: 182, 159, 100;
-    --c-dark-blue: #2c2824;
-    --c-dark-blue-rgb: 44, 40, 36;
+    --c-dark-blue: #cdbfa6;
+    --c-dark-blue-rgb: 205, 191, 166;
     --c-blue: #b69f64;
     --c-blue-rgb: 182, 159, 100;
-    --c-light-blue: #ece8df;
-    --c-light-blue-rgb: 236, 232, 223;
-    --c-sky: #ece8df;
-    --c-sky-rgb: 236, 232, 223;
+    --c-light-blue: #f5eacf;
+    --c-light-blue-rgb: 245, 234, 207;
+    --c-sky: #f5eacf;
+    --c-sky-rgb: 245, 234, 207;
     --cookie-height: 0px;
-    --lux-gold: #b69f64;
-    --lux-cream: #ece8df;
-    --tooltip-shadow: 0 18px 48px rgba(182, 159, 100, 0.28);
+    --tooltip-shadow: 0 18px 48px rgba(182, 159, 100, 0.32);
     --c-button-hover-gradient: linear-gradient(101.51deg, rgba(182, 159, 100, 0) 37.02%, #b69f64 308.4%);
-    --c-button-hover-gradient-dark: linear-gradient(91.82deg, hsla(39, 32%, 51%, 0) 0%, #b69f64 100%);
+    --c-button-hover-gradient-dark: linear-gradient(91.82deg, rgba(245, 234, 207, 0) 0%, #b69f64 100%);
   }
-  body {
-    background: #ece8df !important;
-    color: #2c2824;
+  html, body {
+    background: #f5eacf !important;
+    color: #b69f64;
     font-family: "Hathor Body", "TT Commons", sans-serif;
   }
+  /* Former “dark” theme → beige panel + gold/cream type (never charcoal) */
   .ui-dark, .ui-dark-background, .ui-dark.ui-background {
-    --t-background: #2c2824;
-    --t-background-rgb: 44, 40, 36;
-    --t-text: #ece8df;
-    --t-text-rgb: 236, 232, 223;
-    --t-heading: #ece8df;
-    --t-heading-rgb: 236, 232, 223;
+    --t-background: #cdbfa6;
+    --t-background-rgb: 205, 191, 166;
+    --t-text: #b69f64;
+    --t-text-rgb: 182, 159, 100;
+    --t-heading: #b69f64;
+    --t-heading-rgb: 182, 159, 100;
     --t-primary: #b69f64;
-    --t-line: rgba(236, 232, 223, 0.35);
-    background-color: #2c2824 !important;
-    color: #ece8df !important;
+    --t-line: rgba(182, 159, 100, 0.35);
+    background-color: #cdbfa6 !important;
+    color: #b69f64 !important;
   }
-  .ui-light, .ui-light-background, .ui-light.ui-background {
-    --t-background: #ece8df;
-    --t-background-rgb: 236, 232, 223;
-    --t-text: #2c2824;
-    --t-text-rgb: 44, 40, 36;
+  .ui-light, .ui-light-background, .ui-light.ui-background, .ui-background {
+    --t-background: #f5eacf;
+    --t-background-rgb: 245, 234, 207;
+    --t-text: #b69f64;
+    --t-text-rgb: 182, 159, 100;
     --t-heading: #b69f64;
     --t-heading-rgb: 182, 159, 100;
     --t-primary: #b69f64;
     --t-line: rgba(182, 159, 100, 0.28);
-    background-color: #ece8df !important;
-    color: #2c2824 !important;
+    background-color: #f5eacf !important;
+    color: #b69f64 !important;
   }
   .g1, .h0, .h1, .h2, .h3 {
     font-family: "Hathor Display", "Gamgote", Georgia, serif !important;
@@ -486,8 +488,7 @@ const suitesPalette = `
     pointer-events: none !important;
   }
   /*
-   * Soft atmospheric shadows — always cream + gold (never black + gold).
-   * Mix: site cream #ece8df with Hathor gold #b69f64.
+   * Soft atmospheric shadows — gold + cream + beige only.
    */
   .l-wellness__gradient div,
   .l-nature__gradient div,
@@ -497,36 +498,36 @@ const suitesPalette = `
   .l-nature-bg-gradient {
     background: radial-gradient(
       circle,
-      rgba(182, 159, 100, 0.58) 0%,
-      rgba(236, 232, 223, 0.42) 38%,
-      rgba(236, 232, 223, 0) 74%
+      rgba(182, 159, 100, 0.62) 0%,
+      rgba(205, 191, 166, 0.48) 36%,
+      rgba(245, 234, 207, 0) 74%
     ) !important;
   }
   /*
-   * Wellness split panel: replace ink/black radial layers with cream–gold mist.
-   * Caption stays warm (not charcoal) so the edge reads luxurious, not muddy.
+   * Wellness split panel — cream/beige surface + gold/beige mist (no charcoal).
    */
   .l-wellness__slider__caption,
-  .l-wellness__slider__caption.ui-dark {
-    --t-background: #3a342c;
-    --t-background-rgb: 58, 52, 44;
-    --t-text: #ffffff;
-    --t-text-rgb: 255, 255, 255;
-    --t-heading: #ffffff;
-    --t-heading-rgb: 255, 255, 255;
-    --c-dark-blue: #3a342c;
-    --c-dark-blue-rgb: 58, 52, 44;
-    --c-green: #e8dfd0;
-    --c-green-rgb: 232, 223, 208;
+  .l-wellness__slider__caption.ui-dark,
+  .l-wellness__slider__images {
+    --t-background: #f5eacf;
+    --t-background-rgb: 245, 234, 207;
+    --t-text: #b69f64;
+    --t-text-rgb: 182, 159, 100;
+    --t-heading: #b69f64;
+    --t-heading-rgb: 182, 159, 100;
+    --c-dark-blue: #f5eacf;
+    --c-dark-blue-rgb: 245, 234, 207;
+    --c-green: #cdbfa6;
+    --c-green-rgb: 205, 191, 166;
     --c-blue: #b69f64;
     --c-blue-rgb: 182, 159, 100;
     background: linear-gradient(
       105deg,
-      #4a4134 0%,
-      #3a342c 42%,
-      #2f2a24 100%
+      #f5eacf 0%,
+      #cdbfa6 55%,
+      #f5eacf 100%
     ) !important;
-    color: #ffffff !important;
+    color: #b69f64 !important;
   }
   .l-wellness__slider-gradient {
     z-index: 1 !important;
@@ -535,65 +536,67 @@ const suitesPalette = `
   .l-wellness__slider-gradient div:first-child {
     background: radial-gradient(
       circle at center,
-      rgba(182, 159, 100, 0.72) 0%,
-      rgba(236, 232, 223, 0.28) 42%,
-      rgba(236, 232, 223, 0) 72%
+      rgba(182, 159, 100, 0.78) 0%,
+      rgba(205, 191, 166, 0.4) 42%,
+      rgba(245, 234, 207, 0) 72%
     ) no-repeat !important;
   }
   .l-wellness__slider-gradient div:nth-child(2) {
     background: radial-gradient(
       circle,
-      rgba(236, 232, 223, 0.9) 0%,
-      rgba(212, 196, 160, 0.55) 40%,
+      rgba(245, 234, 207, 0.95) 0%,
+      rgba(205, 191, 166, 0.65) 40%,
       rgba(182, 159, 100, 0) 74%
     ) !important;
   }
   .l-wellness__slider-gradient div:nth-child(3) {
     background: radial-gradient(
       circle,
-      rgba(198, 178, 130, 0.85) 0%,
-      rgba(236, 232, 223, 0.45) 32%,
-      rgba(236, 232, 223, 0) 70%
+      rgba(182, 159, 100, 0.7) 0%,
+      rgba(205, 191, 166, 0.5) 34%,
+      rgba(245, 234, 207, 0) 70%
     ) !important;
   }
-  /* Amenity list: active white; inactive a closer soft cream (not near-invisible). */
+  /* Amenity list on cream panel: beige idle → gold active */
   .l-wellness__slider__caption-titles,
   .l-wellness__slider__caption-text {
     position: relative !important;
     z-index: 5 !important;
   }
   .l-wellness__slider__caption-titles > a {
-    opacity: 0.52 !important;
-    color: #f0e6d4 !important;
+    opacity: 1 !important;
+    color: #cdbfa6 !important;
   }
   .l-wellness__slider__caption-titles > a .h2,
   .l-wellness__slider__caption-titles > a p {
-    color: #f0e6d4 !important;
+    color: #cdbfa6 !important;
   }
   .has-hover .l-wellness__slider__caption-titles > a:hover {
-    opacity: 0.78 !important;
+    opacity: 1 !important;
+    color: #b69f64 !important;
+  }
+  .has-hover .l-wellness__slider__caption-titles > a:hover .h2,
+  .has-hover .l-wellness__slider__caption-titles > a:hover p {
+    color: #b69f64 !important;
   }
   .l-wellness__slider__caption-titles > a.is-active {
     opacity: 1 !important;
-    color: #ffffff !important;
+    color: #b69f64 !important;
   }
   .l-wellness__slider__caption-titles > a.is-active .h2,
   .l-wellness__slider__caption-titles > a.is-active p {
-    color: #ffffff !important;
+    color: #b69f64 !important;
   }
   .l-wellness__slider__caption-text,
   .l-wellness__slider__caption-text .text-t1,
   .l-wellness__slider__caption-text p {
-    color: #ffffff !important;
+    color: #b69f64 !important;
   }
   @media (max-width: 480px) {
     .l-wellness__slider-gradient div:first-child,
     .l-wellness__slider-gradient div:nth-child(2),
     .l-wellness__slider-gradient div:nth-child(3) {
-      opacity: 0.92;
-    }
-    .l-wellness__slider__caption-titles > a {
-      opacity: 0.58 !important;
+      opacity: 0.95;
     }
   }
   /*
@@ -603,41 +606,41 @@ const suitesPalette = `
   .l-gallery-container.ui-dark,
   .l-gallery-container.ui-background,
   .l-gallery-container.ui-dark.ui-background {
-    --t-background: #ece8df;
-    --t-background-rgb: 236, 232, 223;
-    --t-text: #ffffff;
-    --t-text-rgb: 255, 255, 255;
-    --t-heading: #ffffff;
-    --t-heading-rgb: 255, 255, 255;
+    --t-background: #f5eacf;
+    --t-background-rgb: 245, 234, 207;
+    --t-text: #f5eacf;
+    --t-text-rgb: 245, 234, 207;
+    --t-heading: #f5eacf;
+    --t-heading-rgb: 245, 234, 207;
     --t-primary: #b69f64;
-    --c-dark-green: #ece8df;
-    --c-dark-green-rgb: 236, 232, 223;
-    --c-green: #ece8df;
-    --c-green-rgb: 236, 232, 223;
+    --c-dark-green: #f5eacf;
+    --c-dark-green-rgb: 245, 234, 207;
+    --c-green: #cdbfa6;
+    --c-green-rgb: 205, 191, 166;
     --c-olive: #b69f64;
     --c-olive-rgb: 182, 159, 100;
     --c-blue: #b69f64;
     --c-blue-rgb: 182, 159, 100;
     --c-light-green: #b69f64;
     --c-light-green-rgb: 182, 159, 100;
-    background: #ece8df !important;
-    background-color: #ece8df !important;
+    background: #f5eacf !important;
+    background-color: #f5eacf !important;
     min-height: 100svh !important;
   }
   .l-gallery-container .sticky__layer,
   .l-gallery-container .l-gallery {
-    background-color: #ece8df !important;
+    background-color: #f5eacf !important;
   }
-  /* Harder gold ambient cast behind caption */
+  /* Gold + beige ambient cast */
   .l-gallery__gradient div:nth-child(-n + 4) {
     opacity: 0 !important;
   }
   .l-gallery__gradient div:nth-child(5) {
     background: radial-gradient(
       circle,
-      rgba(182, 159, 100, 0.42) 0,
-      rgba(182, 159, 100, 0.22) 28%,
-      rgba(182, 159, 100, 0) 72%
+      rgba(182, 159, 100, 0.4) 0,
+      rgba(205, 191, 166, 0.28) 30%,
+      rgba(245, 234, 207, 0) 72%
     ) !important;
     opacity: 1 !important;
   }
@@ -728,8 +731,9 @@ const suitesPalette = `
     pointer-events: none;
     background: radial-gradient(
       ellipse at 50% 45%,
-      rgba(236, 232, 223, 0) 38%,
-      rgba(182, 159, 100, 0.22) 100%
+      rgba(245, 234, 207, 0) 38%,
+      rgba(205, 191, 166, 0.35) 78%,
+      rgba(182, 159, 100, 0.28) 100%
     );
   }
   @media (max-width: 1024px) and (min-width: 481px) {
@@ -767,7 +771,7 @@ const suitesPalette = `
       filter: contrast(1.06) saturate(1.04) drop-shadow(0 8px 16px rgba(182, 159, 100, 0.4)) !important;
     }
   }
-  /* White hero copy — always above mosaic + gold filters */
+  /* Hero copy — cream over mosaic (palette, not white/ink) */
   .l-gallery__caption {
     position: absolute !important;
     z-index: 60 !important;
@@ -783,46 +787,75 @@ const suitesPalette = `
   .l-gallery__caption .h0,
   .l-gallery__caption .h0 *,
   .l-gallery__caption p {
-    color: #ffffff !important;
+    color: #f5eacf !important;
     mix-blend-mode: normal !important;
   }
   .l-gallery__caption .text-t1 {
-    text-shadow: 0 1px 12px rgba(44, 40, 36, 0.35);
+    text-shadow: 0 1px 14px rgba(182, 159, 100, 0.45);
   }
   .l-gallery__caption .h0 {
-    text-shadow: 0 2px 22px rgba(44, 40, 36, 0.4);
+    color: #b69f64 !important;
+    text-shadow: 0 2px 22px rgba(205, 191, 166, 0.55);
   }
   /*
-   * Intro “bottom 3 images + left text” stage (Springs cream panel):
-   * Keep ink copy on cream. Rising second images must stack above the first mask.
+   * Intro stage — cream surface + gold type (no charcoal panels).
    */
   .l-intro.ui-background,
   .l-intro {
-    --t-background: #ece8df;
-    --t-background-rgb: 236, 232, 223;
-    --t-text: #2c2824;
-    --t-text-rgb: 44, 40, 36;
-    --t-heading: #2c2824;
-    --t-heading-rgb: 44, 40, 36;
-    --t-primary: #2c2824;
-    --t-primary-rgb: 44, 40, 36;
-    background-color: #ece8df !important;
-    color: #2c2824 !important;
+    --t-background: #f5eacf;
+    --t-background-rgb: 245, 234, 207;
+    --t-text: #b69f64;
+    --t-text-rgb: 182, 159, 100;
+    --t-heading: #b69f64;
+    --t-heading-rgb: 182, 159, 100;
+    --t-primary: #b69f64;
+    --t-primary-rgb: 182, 159, 100;
+    background-color: #f5eacf !important;
+    color: #b69f64 !important;
   }
   .l-intro__opening .h1,
   .l-intro__opening .text-c1,
   .l-intro__opening .text-color-primary,
   .l-intro__opening-subtitle {
-    color: #2c2824 !important;
+    color: #b69f64 !important;
   }
   .l-intro__content.ui-dark {
-    --t-background: #2c2824;
-    --t-background-rgb: 44, 40, 36;
-    --t-text: #ece8df;
-    --t-heading: #ece8df;
+    --t-background: #cdbfa6;
+    --t-background-rgb: 205, 191, 166;
+    --t-text: #b69f64;
+    --t-heading: #b69f64;
     --t-primary: #b69f64;
-    background-color: #2c2824 !important;
-    color: #ece8df !important;
+    background-color: #cdbfa6 !important;
+    color: #b69f64 !important;
+  }
+  /* Hard ban: no charcoal/black surfaces anywhere in Suites iframe */
+  .l-wellness,
+  .l-wellness.ui-dark,
+  .l-wellness.ui-background,
+  .l-nature,
+  .l-nature.ui-dark,
+  .l-nature.ui-background,
+  .l-place,
+  .l-interiors,
+  .l-residences,
+  .preloader,
+  .preloader.ui-dark,
+  .sticky.ui-dark,
+  .sticky.ui-background {
+    --t-background: #f5eacf !important;
+    --t-background-rgb: 245, 234, 207 !important;
+    --c-dark-blue: #cdbfa6 !important;
+    --c-dark-green: #cdbfa6 !important;
+    --c-green: #cdbfa6 !important;
+  }
+  .l-wellness.ui-dark,
+  .l-wellness.ui-background,
+  .l-nature.ui-dark,
+  .l-nature.ui-background,
+  .preloader,
+  .preloader.ui-dark {
+    background-color: #f5eacf !important;
+    color: #b69f64 !important;
   }
   .l-intro__image--second {
     position: relative;
@@ -866,7 +899,7 @@ const suitesPalette = `
   .hathor-suites-footer-host {
     position: relative;
     z-index: 5;
-    background: #0c0a08;
+    background: #f5eacf;
   }
 </style>
 <style data-hathor-suites-footer>
@@ -1129,18 +1162,20 @@ html = html.replace(
 );
 
 // Baked Springs brand greens/blues that appear as literals in markup/JSON attrs.
-// Dark surfaces → ink; accent greens → gold; skies → cream.
+// Dark surfaces → beige #cdbfa6; accents → gold; skies → cream #f5eacf.
 for (const [from, to] of [
-  ["#162d24", "#2c2824"],
-  ["#1b4732", "#2c2824"],
+  ["#162d24", "#cdbfa6"],
+  ["#1b4732", "#cdbfa6"],
   ["#274c19", "#b69f64"],
   ["#a7b431", "#b69f64"],
   ["#758535", "#b69f64"],
-  ["#101e27", "#2c2824"],
+  ["#101e27", "#cdbfa6"],
   ["#005160", "#b69f64"],
-  ["#67bfda", "#ece8df"],
-  ["#bee5ee", "#ece8df"],
+  ["#67bfda", "#f5eacf"],
+  ["#bee5ee", "#f5eacf"],
   ["#8b6914", "#b69f64"],
+  ["#2c2824", "#cdbfa6"],
+  ["#ece8df", "#f5eacf"],
 ]) {
   html = html.replaceAll(from, to);
   html = html.replaceAll(from.toUpperCase(), to);
@@ -1150,42 +1185,48 @@ for (const [from, to] of [
 html = html.replace(/<\/body>/i, `${hathorFooterHtml}</body>`);
 
 // Rewrite stylesheet URLs + retint baked Springs colors.
-// Dark forest/teal panels → warm ink (keeps Springs mosaic contrast).
-// Lime/olive accents → gold #b69f64. Sky/teal fills → cream.
+// Dark forest/teal panels → beige #cdbfa6.
+// Lime/olive accents → gold #b69f64. Sky/teal fills → cream #f5eacf.
 const cssColorPatches = [
-  ["#162d24", "#2c2824"],
-  ["#1b4732", "#2c2824"],
+  ["#162d24", "#cdbfa6"],
+  ["#1b4732", "#cdbfa6"],
   ["#274c19", "#b69f64"],
   ["#a7b431", "#b69f64"],
   ["#758535", "#b69f64"],
-  ["#101e27", "#2c2824"],
+  ["#101e27", "#cdbfa6"],
   ["#005160", "#b69f64"],
-  ["#67bfda", "#ece8df"],
-  ["#bee5ee", "#ece8df"],
-  ["#e0d1b6", "#f5f0e8"],
-  ["#f5e8d1", "#ece8df"],
-  ["22,45,36", "44,40,36"],
-  ["22, 45, 36", "44, 40, 36"],
-  ["27,71,50", "44,40,36"],
-  ["27, 71, 50", "44, 40, 36"],
+  ["#67bfda", "#f5eacf"],
+  ["#bee5ee", "#f5eacf"],
+  ["#e0d1b6", "#cdbfa6"],
+  ["#f5e8d1", "#f5eacf"],
+  ["#2c2824", "#cdbfa6"],
+  ["#ece8df", "#f5eacf"],
+  ["22,45,36", "205,191,166"],
+  ["22, 45, 36", "205, 191, 166"],
+  ["27,71,50", "205,191,166"],
+  ["27, 71, 50", "205, 191, 166"],
   ["39,76,25", "182,159,100"],
   ["39, 76, 25", "182, 159, 100"],
   ["167,180,49", "182,159,100"],
   ["167, 180, 49", "182, 159, 100"],
   ["117,133,53", "182,159,100"],
   ["117, 133, 53", "182, 159, 100"],
-  ["16,30,39", "44,40,36"],
-  ["16, 30, 39", "44, 40, 36"],
+  ["16,30,39", "205,191,166"],
+  ["16, 30, 39", "205, 191, 166"],
   ["0,81,96", "182,159,100"],
   ["0, 81, 96", "182, 159, 100"],
-  ["103,191,218", "236,232,223"],
-  ["103, 191, 218", "236, 232, 223"],
-  ["190,229,238", "236,232,223"],
-  ["190, 229, 238", "236, 232, 223"],
-  ["224,209,182", "245,240,232"],
-  ["224, 209, 182", "245, 240, 232"],
-  ["245,232,209", "236,232,223"],
-  ["245, 232, 209", "236, 232, 223"],
+  ["103,191,218", "245,234,207"],
+  ["103, 191, 218", "245, 234, 207"],
+  ["190,229,238", "245,234,207"],
+  ["190, 229, 238", "245, 234, 207"],
+  ["224,209,182", "205,191,166"],
+  ["224, 209, 182", "205, 191, 166"],
+  ["245,232,209", "245,234,207"],
+  ["245, 232, 209", "245, 234, 207"],
+  ["44,40,36", "205,191,166"],
+  ["44, 40, 36", "205, 191, 166"],
+  ["236,232,223", "245,234,207"],
+  ["236, 232, 223", "245, 234, 207"],
 ];
 
 const cssDir = path.join(destinationDir, "assets", "stylesheets");
