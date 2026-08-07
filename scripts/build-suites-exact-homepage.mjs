@@ -458,6 +458,33 @@ const suitesPalette = `
     color: #ece8df !important;
   }
   /*
+   * Hero mosaic: Springs-style floating depth via drop-shadow, gold (#B69F64) base
+   * instead of forest-green ambient shadow. Keep transform animation on the item;
+   * filter sits on the picture so drift stays GPU-friendly.
+   */
+  .l-gallery__item picture,
+  .l-gallery__item__mask-list__item picture {
+    filter:
+      drop-shadow(0 18px 42px rgba(182, 159, 100, 0.45))
+      drop-shadow(0 6px 16px rgba(44, 40, 36, 0.38));
+  }
+  @media (max-width: 1024px) {
+    .l-gallery__item picture,
+    .l-gallery__item__mask-list__item picture {
+      filter:
+        drop-shadow(0 14px 32px rgba(182, 159, 100, 0.38))
+        drop-shadow(0 5px 12px rgba(44, 40, 36, 0.32));
+    }
+  }
+  @media (max-width: 480px) {
+    .l-gallery__item picture,
+    .l-gallery__item__mask-list__item picture {
+      filter:
+        drop-shadow(0 10px 22px rgba(182, 159, 100, 0.32))
+        drop-shadow(0 3px 8px rgba(44, 40, 36, 0.28));
+    }
+  }
+  /*
    * Intro “bottom 3 images + left text” stage (Springs cream panel):
    * Keep ink copy on cream. Rising second images must stack above the first mask.
    */
