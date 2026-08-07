@@ -273,9 +273,23 @@ function replaceAssetPattern(assetPattern, url) {
 [
   // Preloader + scroll intro hero must be the Suites hero (not a secondary suite still).
   ["landing\\/0\\.preloader\\/", MEDIA.hero],
+  ["landing\\/1\\.intro\\/intro-image", MEDIA.hero],
+  ["landing\\/1\\.intro\\/opening-1", MEDIA.suites],
+  ["landing\\/1\\.intro\\/opening-2", MEDIA.rooms],
+  ["landing\\/1\\.intro\\/opening-3", MEDIA.royal],
   ["landing\\/1\\.intro\\/", MEDIA.hero],
   ["landing\\/2\\.wellness\\/", MEDIA.lux1],
-  ["landing\\/3\\.nature\\/", MEDIA.royal1],
+  ["landing\\/3\\.nature\\/nature-caption", MEDIA.lux2],
+  ["landing\\/3\\.nature\\/nature-slider-md-1", MEDIA.royal1],
+  ["landing\\/3\\.nature\\/nature-slider-xs-1", MEDIA.royal1],
+  ["landing\\/3\\.nature\\/nature-slider-md-2", MEDIA.royal3],
+  ["landing\\/3\\.nature\\/nature-slider-xs-2", MEDIA.royal3],
+  ["landing\\/3\\.nature\\/nature-slider-md-3", MEDIA.royal5],
+  ["landing\\/3\\.nature\\/nature-slider-xs-3", MEDIA.royal5],
+  ["landing\\/3\\.nature\\/", MEDIA.cabin5],
+  ["landing\\/4\\.place\\/place-caption-1", MEDIA.rooms],
+  ["landing\\/4\\.place\\/place-caption-3", MEDIA.suites],
+  ["landing\\/4\\.place\\/place-bg", MEDIA.hero],
   ["landing\\/4\\.place\\/", MEDIA.cabin1],
   ["landing\\/5\\.map\\/", MEDIA.suites],
   ["landing\\/6\\.design\\/", MEDIA.lux3],
@@ -289,6 +303,22 @@ function replaceAssetPattern(assetPattern, url) {
   ["landing\\/8\\.interiors\\/", MEDIA.lux5],
   ["landing\\/callback\\/", MEDIA.lux2],
 ].forEach(([pattern, url]) => replaceAssetPattern(pattern, url));
+
+// Springs Place sticky panels + nature caption use Vimeo — replace with Hathor stills
+// so the three rising full-bleed images and left caption read as Suites, not Springs green video.
+const vimeoToSuite = {
+  "1044257468": MEDIA.suites,
+  "1044257440": MEDIA.rooms,
+  "1086358928": MEDIA.royal,
+  "1086359012": MEDIA.lux4,
+};
+html = html.replace(
+  /<iframe\b([^>]*?)\bsrc="https:\/\/player\.vimeo\.com\/video\/(\d+)\?[^"]*"([^>]*)>[\s\S]*?<\/iframe>/gi,
+  (_m, pre, id) => {
+    const url = vimeoToSuite[id] || MEDIA.hero;
+    return `<img class="img-cover" src="${url}" alt="" width="1440" height="900" draggable="false" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" />`;
+  },
+);
 
 // Gallery cards: cycle Hathor suite imagery across gallery-* assets
 let galleryIndex = 0;
@@ -414,11 +444,35 @@ const suitesPalette = `
   .l-nature-bg-gradient {
     background: radial-gradient(circle, rgba(182, 159, 100, 0.55) 0%, rgba(182, 159, 100, 0.22) 45%, rgba(182, 159, 100, 0) 74%) !important;
   }
-  /* Title/lede sit on dark gutters like Springs — cream, never mid-gold on gold. */
+  /* Title/lede sit on dark gutters like Springs — cream, never mid-gold on gold.
+     Caption must stack above the gallery split masks (z-index 44) or left text vanishes. */
+  .l-gallery__caption {
+    z-index: 50 !important;
+  }
   .l-gallery__caption,
   .l-gallery__caption .text-t1,
   .l-gallery__caption .h0 {
     color: #ece8df !important;
+  }
+  /* Ensure lazy/appear pictures paint — Springs appear can leave them invisible in the iframe shell. */
+  .js .is-invisible--js {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  /* Place rising panels: keep full-bleed image cover after Vimeo → still swap */
+  #l-place-sticky-1 .background--cover,
+  #l-place-sticky-2 .background--cover,
+  #l-place-sticky-3 .background--cover,
+  .l-nature__caption .background--cover,
+  .l-nature__caption .vimeo-background {
+    position: relative;
+    overflow: hidden;
+  }
+  #l-place-sticky-1 img.img-cover,
+  #l-place-sticky-2 img.img-cover,
+  #l-place-sticky-3 img.img-cover,
+  .l-nature__caption img.img-cover {
+    display: block;
   }
   footer.footer {
     display: none !important;
