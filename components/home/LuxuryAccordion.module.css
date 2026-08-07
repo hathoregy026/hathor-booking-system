@@ -1,4 +1,4 @@
-/* Our Voyages — slim closed rows + simple cinematic open panel */
+/* Our Voyages — closed rows + full cinematic open panel (design ref) */
 
 .section {
   --hathor-accordion-gold: #c2a679;
@@ -10,11 +10,10 @@
   --hathor-accordion-rail: #12100d;
   --hathor-accordion-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --hathor-accordion-row-h: 108px;
-  /* Taller open stage so inner copy can sit with breathing room */
-  --hathor-accordion-open-h: min(78vh, 680px);
+  --hathor-accordion-open-h: min(82vh, 720px);
   --hathor-accordion-gutter: clamp(1.25rem, 4vw, 4.5rem);
   --hathor-accordion-roman-w: clamp(3.75rem, 7vw, 6rem);
-  --hathor-accordion-rail-w: 3.25rem;
+  --hathor-accordion-rail-w: clamp(4.75rem, 6.5vw, 6.5rem);
 
   padding: clamp(3.5rem, 7vh, 5.5rem) 0;
   background: transparent;
@@ -65,7 +64,7 @@
   overflow: hidden;
   cursor: pointer;
   transition:
-    height 0.8s var(--hathor-accordion-ease),
+    height 0.85s var(--hathor-accordion-ease),
     background-color 0.4s var(--hathor-accordion-ease);
   background: transparent;
 }
@@ -163,7 +162,7 @@
   opacity: 1;
   left: var(--hathor-accordion-rail-w);
   width: calc(100% - var(--hathor-accordion-rail-w)) !important;
-  filter: brightness(0.9) saturate(1.05);
+  filter: brightness(0.88) saturate(1.05);
   animation:
     hathorAccordionImageReveal 1.2s var(--hathor-accordion-ease) both,
     hathorAccordionKenBurns 18s ease-in-out 1.2s infinite alternate;
@@ -193,13 +192,21 @@
   position: absolute;
   inset: 0;
   left: var(--hathor-accordion-rail-w);
-  background: linear-gradient(
-    180deg,
-    rgba(10, 8, 6, 0.2) 0%,
-    transparent 35%,
-    rgba(10, 8, 6, 0.55) 72%,
-    rgba(10, 8, 6, 0.78) 100%
-  );
+  background:
+    linear-gradient(
+      105deg,
+      rgba(10, 8, 6, 0.72) 0%,
+      rgba(10, 8, 6, 0.35) 36%,
+      rgba(10, 8, 6, 0.2) 58%,
+      rgba(10, 8, 6, 0.45) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(10, 8, 6, 0.25) 0%,
+      transparent 30%,
+      rgba(10, 8, 6, 0.5) 78%,
+      rgba(10, 8, 6, 0.72) 100%
+    );
   opacity: 0;
   transition: opacity 0.85s ease;
   pointer-events: none;
@@ -262,7 +269,6 @@
   padding-left: 0.65rem;
 }
 
-/* Force scale — CMS inline fontSize must not inflate closed rows */
 .name {
   margin: 0 !important;
   min-width: 0;
@@ -281,7 +287,6 @@
 .rowMeta {
   margin: 0 !important;
   max-width: 42rem;
-  /* Normal body text — never inherit CMS script/indication fonts */
   font-family: var(--font-hathor-gamgote), "Gamgote", Georgia, serif !important;
   font-size: clamp(0.72rem, 0.95vw, 0.85rem) !important;
   font-weight: 400 !important;
@@ -298,7 +303,7 @@
 }
 
 .accordionItem:not(.isActive):hover .rowMeta {
-  color: #6f6252;
+  color: #6f6252 !important;
   transform: translateX(2px);
 }
 
@@ -332,7 +337,7 @@
   transform: scale(1.05);
 }
 
-/* —— Open panel (simple ref layout) —— */
+/* —— Open panel (full design) —— */
 .panel {
   position: absolute;
   inset: 0;
@@ -360,9 +365,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 0.2rem;
+  padding: clamp(1.1rem, 2.2vh, 1.75rem) 0.35rem;
   background: var(--hathor-accordion-rail);
   color: var(--hathor-accordion-gold-bright);
+  box-shadow: 4px 0 22px rgba(0, 0, 0, 0.35);
 }
 
 .railRoman {
@@ -370,42 +376,63 @@
     --typo-page-title-font,
     var(--font-heading, "Playfair Display", Georgia, serif)
   );
-  font-size: 1.15rem;
+  font-size: clamp(1.35rem, 1.8vw, 1.75rem);
   letter-spacing: 0.08em;
   line-height: 1;
 }
 
 .scarab {
-  width: 1.55rem;
+  width: clamp(1.85rem, 2.4vw, 2.35rem);
   height: auto;
-  opacity: 0.9;
+  opacity: 0.92;
 }
 
-.railMark {
-  font-size: 0.55rem;
-  opacity: 0.75;
+.railQuote {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  max-height: 48%;
+}
+
+.railQuoteText {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--font-hathor-gamgote), "Gamgote", Georgia, serif;
+  font-size: clamp(0.52rem, 0.7vw, 0.62rem);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  line-height: 1.35;
+  text-align: center;
+  color: rgba(212, 184, 122, 0.9);
+}
+
+.railLotus {
+  font-size: 0.6rem;
+  opacity: 0.8;
 }
 
 .stage {
   position: relative;
   z-index: 2;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: clamp(1.25rem, 2.5vw, 2.5rem);
-  /* Extra top pad keeps copy in the lower band of the taller open stage */
-  padding: clamp(4.5rem, 14vh, 7.5rem) clamp(1.25rem, 3vw, 2.75rem)
-    clamp(1.35rem, 3vh, 2.25rem);
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(15rem, 0.78fr);
+  align-items: end;
+  gap: clamp(1rem, 2.5vw, 2.25rem);
+  padding: clamp(2.75rem, 6vh, 4rem) clamp(1.25rem, 2.8vw, 2.5rem)
+    clamp(1.25rem, 2.8vh, 2rem);
   min-height: 0;
 }
 
 .close {
   position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
+  top: 0.85rem;
+  right: 0.85rem;
   z-index: 5;
-  width: 1.7rem;
-  height: 1.7rem;
+  width: 1.85rem;
+  height: 1.85rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -413,7 +440,7 @@
   border-radius: 999px;
   background: rgba(12, 10, 8, 0.3);
   color: #f3e7cf;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   line-height: 1;
   cursor: pointer;
   backdrop-filter: blur(5px);
@@ -433,8 +460,8 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.4rem;
-  max-width: min(26rem, 48%);
+  gap: 0.45rem;
+  max-width: 34rem;
   min-width: 0;
   animation: hathorPanelRise 0.7s var(--hathor-accordion-ease) 0.1s both;
 }
@@ -445,9 +472,9 @@
     --typo-page-title-font,
     var(--font-heading, "Playfair Display", Georgia, serif)
   );
-  font-size: 0.58rem;
+  font-size: clamp(0.62rem, 0.8vw, 0.72rem);
   font-weight: 500;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--hathor-accordion-gold-bright);
 }
@@ -458,20 +485,20 @@
     --typo-page-title-font,
     var(--font-heading, "Playfair Display", Georgia, serif)
   );
-  font-size: clamp(1.05rem, 1.7vw, 1.45rem);
+  font-size: clamp(1.25rem, 2.2vw, 1.85rem);
   font-weight: 500;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   line-height: 1.1;
   color: #f7efe0;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
 }
 
 .diamondRule {
   display: block;
-  width: 2.5rem;
-  height: 0.4rem;
-  margin: 0.05rem 0;
+  width: 3.25rem;
+  height: 0.5rem;
+  margin: 0.1rem 0 0.15rem;
   background:
     linear-gradient(
       90deg,
@@ -486,54 +513,174 @@
     ),
     radial-gradient(
       circle at center,
-      rgba(212, 184, 122, 0.95) 0 1.4px,
-      transparent 1.8px
+      rgba(212, 184, 122, 0.95) 0 1.5px,
+      transparent 2px
     );
 }
 
 .summary {
-  margin: 0.2rem 0 0;
-  max-width: 24rem;
-  /* Normal body text — not script */
+  margin: 0;
+  max-width: 30rem;
   font-family: var(--font-hathor-gamgote), "Gamgote", Georgia, serif !important;
-  font-size: clamp(0.78rem, 0.95vw, 0.9rem) !important;
+  font-size: clamp(0.8rem, 1vw, 0.92rem) !important;
   font-style: normal !important;
   font-weight: 400 !important;
   line-height: 1.55;
-  letter-spacing: 0.01em;
   color: rgba(243, 231, 207, 0.9);
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
+  -webkit-line-clamp: 3;
   overflow: hidden;
 }
 
-.priceCard {
-  flex-shrink: 0;
-  align-self: flex-end;
-  padding: 0.65rem 0.9rem;
+.features {
+  list-style: none;
+  margin: 0.55rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.55rem 0.75rem;
+  width: 100%;
+  max-width: 30rem;
+}
+
+.feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  text-align: center;
+  min-width: 0;
+}
+
+.featureIcon {
+  width: 2.35rem;
+  height: 2.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid rgba(212, 184, 122, 0.45);
-  background: rgba(12, 10, 8, 0.45);
-  backdrop-filter: blur(6px);
+  border-radius: 999px;
+  color: var(--hathor-accordion-gold-bright);
+  background: rgba(12, 10, 8, 0.28);
+  flex-shrink: 0;
+}
+
+.featureIcon svg {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+.featureLabel {
+  font-family: var(--font-hathor-gamgote), "Gamgote", Georgia, serif;
+  font-size: clamp(0.5rem, 0.62vw, 0.58rem);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.25;
+  color: rgba(243, 231, 207, 0.88);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.85rem 1.25rem;
+  margin-top: 0.65rem;
+}
+
+.detailsCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.45rem;
+  padding: 0.65rem 1.2rem;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #c9a96e 0%, #9a7840 100%);
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  font-family: var(--font-hathor-gamgote), "Gamgote", Georgia, serif;
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+  transition:
+    transform 0.3s ease,
+    filter 0.3s ease;
+}
+
+.detailsCta:hover,
+.detailsCta:focus-visible {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+  outline: none;
+}
+
+.watchCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--hathor-accordion-gold-bright);
+  font-family: var(--font-hathor-gamgote), "Gamgote", Georgia, serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition:
+    color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.watchCta:hover,
+.watchCta:focus-visible {
+  color: #f3e7cf;
+  outline: none;
+  transform: translateX(2px);
+}
+
+.watchPlay {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid rgba(212, 184, 122, 0.65);
+  border-radius: 999px;
+  font-size: 0.55rem;
+  padding-left: 1px;
+}
+
+.infoCard {
+  justify-self: end;
+  align-self: end;
+  width: min(100%, 17.5rem);
+  padding: 1rem 1.1rem 1.1rem;
+  border: 1px solid rgba(212, 184, 122, 0.42);
+  border-radius: 2px;
+  background: rgba(14, 11, 8, 0.58);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.32);
   animation: hathorPanelRise 0.75s var(--hathor-accordion-ease) 0.18s both;
 }
 
 .price {
-  margin: 0;
+  margin: 0 0 0.85rem;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.08rem;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2rem 0.4rem;
   color: var(--hathor-accordion-gold-bright);
 }
 
 .priceFrom {
   font-family: var(--font-hathor-gamgote), "Gamgote", Georgia, serif;
-  font-size: 0.62rem;
-  font-style: normal;
-  font-weight: 500;
-  letter-spacing: 0.14em;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
@@ -542,9 +689,84 @@
     --typo-page-title-font,
     var(--font-heading, "Playfair Display", Georgia, serif)
   );
-  font-size: clamp(1.05rem, 1.45vw, 1.3rem);
+  font-size: clamp(1.2rem, 1.6vw, 1.45rem);
   letter-spacing: 0.02em;
-  line-height: 1.15;
+  color: #f7efe0;
+}
+
+.priceCaption {
+  width: 100%;
+  font-family: var(--font-hathor-gamgote), "Gamgote", Georgia, serif;
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(212, 184, 122, 0.85);
+}
+
+.highlightsTitle {
+  margin: 0 0 0.55rem;
+  font-family: var(--font-hathor-gamgote), "Gamgote", Georgia, serif;
+  font-size: 0.62rem;
+  font-weight: 650;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--hathor-accordion-gold-bright);
+}
+
+.highlights {
+  list-style: none;
+  margin: 0 0 0.95rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.highlights li {
+  position: relative;
+  padding-left: 0.95rem;
+  font-family: var(--font-hathor-gamgote), "Gamgote", Georgia, serif;
+  font-size: 0.74rem;
+  font-style: normal;
+  line-height: 1.35;
+  color: rgba(243, 231, 207, 0.9);
+}
+
+.highlights li::before {
+  content: "+";
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 0.7rem;
+  color: var(--hathor-accordion-gold);
+}
+
+.enquireCta {
+  width: 100%;
+  min-height: 2.35rem;
+  border: 1px solid rgba(212, 184, 122, 0.7);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--hathor-accordion-gold-bright);
+  font-family: var(--font-hathor-gamgote), "Gamgote", Georgia, serif;
+  font-size: 0.64rem;
+  font-weight: 650;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.enquireCta:hover,
+.enquireCta:focus-visible {
+  background: rgba(212, 184, 122, 0.12);
+  border-color: #f3e7cf;
+  color: #f3e7cf;
+  outline: none;
 }
 
 @keyframes hathorPanelRise {
@@ -561,7 +783,7 @@
 @media (prefers-reduced-motion: reduce) {
   .accordionItem.isActive .backgroundImage,
   .stageMain,
-  .priceCard {
+  .infoCard {
     animation: none;
   }
 
@@ -588,8 +810,8 @@
     border-color: rgba(194, 166, 121, 0.5);
   }
 
-  .priceCard {
-    backdrop-filter: blur(4px);
+  .infoCard {
+    backdrop-filter: blur(5px);
   }
 }
 
@@ -597,17 +819,27 @@
 @media (max-width: 1024px) and (min-width: 481px) {
   .section {
     --hathor-accordion-row-h: 100px;
-    --hathor-accordion-open-h: min(72vh, 600px);
-    --hathor-accordion-rail-w: 2.85rem;
+    --hathor-accordion-open-h: min(78vh, 640px);
+    --hathor-accordion-rail-w: 4rem;
     --hathor-accordion-roman-w: clamp(3.25rem, 7vw, 4.75rem);
   }
 
   .stage {
-    padding: clamp(3.5rem, 10vh, 5.5rem) 1.15rem 1.25rem;
+    grid-template-columns: minmax(0, 1.2fr) minmax(14rem, 0.85fr);
+    gap: 1rem;
+    padding: 2.25rem 1.15rem 1.25rem;
   }
 
-  .stageMain {
-    max-width: min(24rem, 55%);
+  .features {
+    gap: 0.4rem 0.5rem;
+  }
+
+  .featureLabel {
+    font-size: 0.48rem;
+  }
+
+  .infoCard {
+    width: min(100%, 16rem);
   }
 
   .name {
@@ -626,7 +858,7 @@
     --hathor-accordion-gutter: 1rem;
     --hathor-accordion-roman-w: 2.5rem;
     --hathor-accordion-rail-w: 0px;
-    --hathor-accordion-open-h: min(70svh, 560px);
+    --hathor-accordion-open-h: min(86svh, 720px);
     padding: clamp(2.75rem, 5vh, 4rem) 0;
   }
 
@@ -640,7 +872,7 @@
 
   .rowMeta {
     font-size: 0.62rem !important;
-    letter-spacing: 0.02em !important;
+    letter-spacing: 0.04em !important;
   }
 
   .icon {
@@ -655,25 +887,45 @@
   .rail {
     position: absolute;
     left: 0;
+    right: 0;
     top: 0;
-    bottom: auto;
-    right: auto;
     height: auto;
     flex-direction: row;
-    gap: 0.45rem;
-    padding: 0.45rem 0.65rem;
+    justify-content: flex-start;
+    gap: 0.55rem;
+    padding: 0.5rem 0.7rem;
     z-index: 4;
   }
 
   .railRoman {
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
 
   .scarab {
-    width: 1.15rem;
+    width: 1.25rem;
   }
 
-  .railMark {
+  .railQuote {
+    flex-direction: row;
+    max-height: none;
+    margin-left: auto;
+    gap: 0.35rem;
+  }
+
+  .railQuoteText {
+    writing-mode: horizontal-tb;
+    transform: none;
+    font-size: 0.48rem;
+    letter-spacing: 0.08em;
+    max-width: 11rem;
+    text-align: right;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+
+  .railLotus {
     display: none;
   }
 
@@ -684,32 +936,43 @@
   }
 
   .stage {
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-end;
-    gap: 0.85rem;
-    padding: 3.25rem 0.85rem 1.1rem;
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 0.9rem;
+    padding: 3rem 0.85rem 1rem;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .stageMain {
-    max-width: 100%;
+    max-width: none;
   }
 
   .close {
-    top: 0.55rem;
-    right: 0.55rem;
+    top: 2.65rem;
+    right: 0.65rem;
   }
 
   .routeTitle {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
   }
 
   .summary {
     font-size: 0.78rem !important;
-    -webkit-line-clamp: 4;
   }
 
-  .priceCard {
-    align-self: flex-start;
+  .features {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: none;
+    gap: 0.65rem;
+  }
+
+  .actions {
+    width: 100%;
+  }
+
+  .infoCard {
+    width: 100%;
+    justify-self: stretch;
   }
 }

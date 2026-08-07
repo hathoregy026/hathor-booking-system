@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   useEffect,
   useRef,
@@ -10,6 +11,7 @@ import {
 } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useBookNowModal } from "@/components/booking/BookingModalProvider";
 import {
   useTypographyInlineStyle,
   useTypographySettings,
@@ -19,6 +21,7 @@ import type { SiteImageName } from "@/lib/site-image-slots";
 import {
   formatVoyageFromPrice,
   resolveVoyagePanelContent,
+  type VoyageFeatureId,
 } from "@/lib/voyage-accordion-panels";
 import styles from "./LuxuryAccordion.module.css";
 
@@ -38,17 +41,129 @@ export type LuxuryAccordionItem = {
 };
 
 export type LuxuryAccordionProps = {
-  /** Optional override; defaults to Typography → Our Voyages title copy */
   title?: string;
   items?: LuxuryAccordionItem[];
 };
 
-/** Keep CMS family/color; CSS owns closed-row scale so admin fontSize can’t blow up rows. */
+/** CMS family/color only — CSS owns closed-row scale. */
 function pickTypeColorFamily(style: CSSProperties): CSSProperties {
   return {
     fontFamily: style.fontFamily,
     color: style.color,
   };
+}
+
+function FeatureIcon({ id }: { id: VoyageFeatureId }) {
+  switch (id) {
+    case "inclusive":
+      return (
+        <svg viewBox="0 0 40 40" aria-hidden="true">
+          <rect
+            x="9"
+            y="14"
+            width="22"
+            height="14"
+            rx="1.5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.4"
+          />
+          <path
+            d="M13 14V11.5a7 7 0 0 1 14 0V14"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.4"
+          />
+          <path
+            d="M9 20h22"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.2"
+          />
+        </svg>
+      );
+    case "excursions":
+      return (
+        <svg viewBox="0 0 40 40" aria-hidden="true">
+          <circle
+            cx="20"
+            cy="20"
+            r="9"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.4"
+          />
+          <path
+            d="M20 11v18M11 20h18"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.2"
+          />
+          <path
+            d="M14.5 14.5 25.5 25.5M25.5 14.5 14.5 25.5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1"
+            opacity="0.7"
+          />
+        </svg>
+      );
+    case "dining":
+      return (
+        <svg viewBox="0 0 40 40" aria-hidden="true">
+          <path
+            d="M14 10v12c0 2.2 1.3 3.5 3 3.5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+          />
+          <path
+            d="M12 10h4M12 14h4"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.2"
+            strokeLinecap="round"
+          />
+          <path
+            d="M26 10c2.5 0 4 2 4 5.5S28 24 26 24c0 0 0 6 0 6"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+          />
+          <path
+            d="M17 25.5V30M26 30H17"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.2"
+            strokeLinecap="round"
+          />
+        </svg>
+      );
+    case "butler":
+      return (
+        <svg viewBox="0 0 40 40" aria-hidden="true">
+          <circle
+            cx="20"
+            cy="14"
+            r="4.5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.4"
+          />
+          <path
+            d="M11 30c1.2-5.2 4.2-8 9-8s7.8 2.8 9 8"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+          />
+        </svg>
+      );
+    default:
+      return null;
+  }
 }
 
 function ScarabMark() {
@@ -89,6 +204,7 @@ export default function LuxuryAccordion({
   const list = items;
   const rootRef = useRef<HTMLElement>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const { openBooking } = useBookNowModal();
   const { our_voyages_copy: voyagesCopy } = useTypographySettings();
   const titleStyle = useTypographyInlineStyle("our_voyages_title");
   const indicationStyle = useTypographyInlineStyle("our_voyages_indication");
@@ -178,13 +294,8 @@ export default function LuxuryAccordion({
     return null;
   }
 
-  const handleOpen = (id: string) => {
-    setActiveId(id);
-  };
-
-  const handleClose = () => {
-    setActiveId(null);
-  };
+  const handleOpen = (id: string) => setActiveId(id);
+  const handleClose = () => setActiveId(null);
 
   const handleKeyDown = (event: KeyboardEvent<HTMLLIElement>, id: string) => {
     if (event.key === "Enter" || event.key === " ") {
@@ -300,7 +411,7 @@ export default function LuxuryAccordion({
                   </span>
                 </div>
 
-                {/* Open panel — matches ref: image + bottom copy + price only */}
+                {/* Full open design — rail + copy + features + CTAs + highlights card */}
                 <div
                   id={`hathor-accordion-panel-${item.id}`}
                   className={styles.panel}
@@ -311,9 +422,14 @@ export default function LuxuryAccordion({
                   <aside className={styles.rail} aria-hidden="true">
                     <span className={styles.railRoman}>{item.romanNumeral}</span>
                     <ScarabMark />
-                    <span className={styles.railMark} aria-hidden="true">
-                      ✦
-                    </span>
+                    <p className={styles.railQuote}>
+                      <span className={styles.railQuoteText}>
+                        {panel.railQuote}
+                      </span>
+                      <span className={styles.railLotus} aria-hidden="true">
+                        ✦
+                      </span>
+                    </p>
                   </aside>
 
                   <div className={styles.stage}>
@@ -331,16 +447,74 @@ export default function LuxuryAccordion({
                       <h3 className={styles.routeTitle}>{panel.routeTitle}</h3>
                       <span className={styles.diamondRule} aria-hidden="true" />
                       <p className={styles.summary}>{panel.summary}</p>
+
+                      <ul className={styles.features}>
+                        {panel.features.map((feature) => (
+                          <li key={feature.id} className={styles.feature}>
+                            <span className={styles.featureIcon}>
+                              <FeatureIcon id={feature.id} />
+                            </span>
+                            <span className={styles.featureLabel}>
+                              {feature.label}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      <div className={styles.actions}>
+                        <Link
+                          href={panel.detailsHref}
+                          className={styles.detailsCta}
+                          onClick={stopRowClick}
+                        >
+                          {panel.detailsLabel}
+                        </Link>
+                        <a
+                          href={panel.watchHref}
+                          className={styles.watchCta}
+                          onClick={stopRowClick}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <span className={styles.watchPlay} aria-hidden="true">
+                            ▶
+                          </span>
+                          {panel.watchLabel}
+                        </a>
+                      </div>
                     </div>
 
-                    {priceLabel ? (
-                      <aside className={styles.priceCard}>
+                    <aside className={styles.infoCard}>
+                      {priceLabel ? (
                         <p className={styles.price}>
                           <span className={styles.priceFrom}>From</span>
                           <span className={styles.priceValue}>{priceLabel}</span>
+                          <span className={styles.priceCaption}>
+                            {panel.priceCaption}
+                          </span>
                         </p>
-                      </aside>
-                    ) : null}
+                      ) : null}
+
+                      <h4 className={styles.highlightsTitle}>
+                        Journey Highlights
+                      </h4>
+                      <ul className={styles.highlights}>
+                        {panel.highlights.map((line) => (
+                          <li key={line}>{line}</li>
+                        ))}
+                      </ul>
+
+                      <button
+                        type="button"
+                        className={styles.enquireCta}
+                        onClick={(event) => {
+                          stopRowClick(event);
+                          openBooking();
+                        }}
+                      >
+                        {panel.enquireLabel}
+                      </button>
+                    </aside>
                   </div>
                 </div>
               </li>
