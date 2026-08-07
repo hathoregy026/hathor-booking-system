@@ -5,6 +5,7 @@ import { resolveSiteImageMap } from "@/lib/resolve-site-images";
 import "../public.css";
 import "../site-nav.css";
 import "../booking-modal.css";
+import "../night-mode.css";
 import "./test-scroll-reveal.css";
 
 const playfair = Playfair_Display({

@@ -8,6 +8,7 @@ import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import "../public.css";
 import "../site-nav.css";
 import "../booking-modal.css";
+import "../night-mode.css";
 import "./preview.css";
 
 const playfair = Playfair_Display({

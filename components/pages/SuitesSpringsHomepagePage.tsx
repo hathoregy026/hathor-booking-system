@@ -16,7 +16,7 @@ export function SuitesSpringsHomepagePage() {
         above the iframe paints a solid cream sheet over the Suites document.
         Header keeps z-index 1200 and stays above the fixed iframe (1000).
       */}
-      <div className="public-site suites-public-nav">
+      <div className="public-site">
         <PublicNavbar />
       </div>
       <iframe
@@ -24,6 +24,7 @@ export function SuitesSpringsHomepagePage() {
         src="/suites-springs/index.html"
         title="Hathor Suites"
         scrolling="auto"
+        data-public-nav-scroll-root=""
         style={{
           border: 0,
           display: "block",

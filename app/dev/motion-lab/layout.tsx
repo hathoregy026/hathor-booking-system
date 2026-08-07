@@ -23,6 +23,7 @@ import "../../site-nav.css";
 import "../../public-site-hero.css";
 import "../../specular-button.css";
 import "../../mobile-touch.css";
+import "../../night-mode.css";
 import "../../hathor-fonts.css";
 
 export const dynamic = "force-dynamic";
@@ -60,9 +61,11 @@ export default function MotionLabLayout({ children }: { children: ReactNode }) {
             <SiteImagesProvider images={getDefaultSiteImageMap()}>
               <TypographySettingsProvider>
                 <WebsiteTextProvider>
-                  <PublicScrollInfrastructure />
-                  <PublicNavbar />
-                  <main className="public-main public-main--hero">{children}</main>
+                  <div className="public-site hathor-site">
+                    <PublicScrollInfrastructure />
+                    <PublicNavbar />
+                    <main className="public-main public-main--hero">{children}</main>
+                  </div>
                 </WebsiteTextProvider>
               </TypographySettingsProvider>
             </SiteImagesProvider>

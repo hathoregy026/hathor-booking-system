@@ -10,7 +10,7 @@ import { PublicNavbar } from "@/components/layout/PublicNavbar";
 export function GastronomySpringsDesignPage() {
   return (
     <>
-      <div className="public-site gastronomy-public-nav">
+      <div className="public-site">
         <PublicNavbar />
       </div>
       <iframe
@@ -18,6 +18,7 @@ export function GastronomySpringsDesignPage() {
         src="/gastronomy-springs/design/index.html"
         title="Private Dining"
         scrolling="auto"
+        data-public-nav-scroll-root=""
         style={{
           border: 0,
           display: "block",

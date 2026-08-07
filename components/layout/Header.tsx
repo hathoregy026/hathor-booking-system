@@ -312,12 +312,89 @@ export function Header() {
   }, [exploreOpen, closeExploreSync]);
 
   useEffect(() => {
-    const updateCompact = () => {
-      setNavCompact(window.scrollY > 40);
+    const NAV_SCROLL_ROOT = "iframe[data-public-nav-scroll-root]";
+    const cleanups: Array<() => void> = [];
+
+    const readScrollY = () => {
+      let y = window.scrollY || 0;
+      document.querySelectorAll<HTMLIFrameElement>(NAV_SCROLL_ROOT).forEach((frame) => {
+        try {
+          const win = frame.contentWindow;
+          if (!win) return;
+          const doc = win.document;
+          const frameY =
+            win.scrollY ||
+            doc.documentElement?.scrollTop ||
+            doc.body?.scrollTop ||
+            0;
+          if (frameY > y) y = frameY;
+        } catch {
+          /* cross-origin — ignore */
+        }
+      });
+      return y;
     };
+
+    const updateCompact = () => {
+      setNavCompact(readScrollY() > 40);
+    };
+
     updateCompact();
     window.addEventListener("scroll", updateCompact, { passive: true });
-    return () => window.removeEventListener("scroll", updateCompact);
+    cleanups.push(() =>
+      window.removeEventListener("scroll", updateCompact),
+    );
+
+    const bindFrame = (frame: HTMLIFrameElement) => {
+      const attach = () => {
+        try {
+          const win = frame.contentWindow;
+          if (!win) return;
+          win.addEventListener("scroll", updateCompact, { passive: true });
+          cleanups.push(() =>
+            win.removeEventListener("scroll", updateCompact),
+          );
+          updateCompact();
+        } catch {
+          /* cross-origin — ignore */
+        }
+      };
+
+      if (frame.contentDocument?.readyState === "complete") {
+        attach();
+      } else {
+        frame.addEventListener("load", attach);
+        cleanups.push(() => frame.removeEventListener("load", attach));
+      }
+    };
+
+    document
+      .querySelectorAll<HTMLIFrameElement>(NAV_SCROLL_ROOT)
+      .forEach(bindFrame);
+
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        mutation.addedNodes.forEach((node) => {
+          if (!(node instanceof HTMLElement)) return;
+          if (
+            node instanceof HTMLIFrameElement &&
+            node.hasAttribute("data-public-nav-scroll-root")
+          ) {
+            bindFrame(node);
+            return;
+          }
+          node
+            .querySelectorAll?.<HTMLIFrameElement>(NAV_SCROLL_ROOT)
+            .forEach(bindFrame);
+        });
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    cleanups.push(() => observer.disconnect());
+
+    return () => {
+      cleanups.forEach((fn) => fn());
+    };
   }, []);
 
   useEffect(() => {
