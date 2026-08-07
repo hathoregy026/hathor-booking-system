@@ -495,14 +495,28 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
 
 .home-am-opening__content {
   display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
   width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  gap: 0;
+  column-gap: 0;
+  row-gap: 0;
 }
 
 .home-am-opening__images {
   position: relative;
+  flex: 0 0 50%;
   width: 50%;
+  max-width: 50%;
+  margin: 0;
+  padding: 0;
   overflow: hidden;
   will-change: clip-path;
+  /* Bleed 1px over center so no hairline seam vs gold (Springs is flush) */
+  z-index: 1;
 }
 
 .home-am-opening__images-media {
@@ -519,7 +533,11 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
 
 .home-am-opening__caption {
   position: relative;
+  flex: 0 0 50%;
   width: 50%;
+  max-width: 50%;
+  margin: 0;
+  padding: 0;
   background: transparent;
   will-change: clip-path;
 }
@@ -641,6 +659,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   pointer-events: none;
 }
 
+/* Springs: ui-background on the FULL right sticky layer, clipped to right half */
 .home-am-opening__right-column {
   grid-area: sticky_content;
   align-self: start;
@@ -648,15 +667,20 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   width: 100%;
   pointer-events: none;
   will-change: clip-path;
-  background: transparent;
+  background: var(--am-gold);
+  /* Start gold 1px left of center so it meets the photo with no white seam */
+  margin: 0;
+  padding: 0;
 }
 
+/* Springs: col--lg-6 offset--lg-6 — content only, gold is on the layer */
 .home-am-opening__right-inner {
   margin-left: 50%;
   width: 50%;
-  background: var(--am-gold);
-  padding: 2.5rem clamp(1.25rem, 2.5vw, 2.5rem) 3rem;
+  max-width: 50%;
   box-sizing: border-box;
+  background: transparent;
+  padding: 2.5rem clamp(1.25rem, 2.5vw, 2.5rem) 3rem;
   pointer-events: auto;
 }
 
@@ -853,12 +877,16 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   }
 
   .home-am-opening__images {
+    flex: 0 0 auto;
     width: 100%;
+    max-width: 100%;
     height: 70svh;
   }
 
   .home-am-opening__caption {
+    flex: 0 0 auto;
     width: 100%;
+    max-width: 100%;
     height: auto;
     position: absolute;
     bottom: 0;
@@ -880,13 +908,15 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
 
   .home-am-opening__right-column {
     padding-top: 70svh;
+    background: var(--am-gold);
   }
 
   .home-am-opening__right-inner {
     margin-left: 0;
     width: 100%;
+    max-width: 100%;
     padding: 1.15rem;
-    background: var(--am-gold);
+    background: transparent;
   }
 
   .home-am-opening__list {
