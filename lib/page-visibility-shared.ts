@@ -15,6 +15,12 @@ export type ManagedPublicPage = {
 export const MANAGED_PUBLIC_PAGES: readonly ManagedPublicPage[] = [
   { id: "home", path: "/", label: "Home", group: "Main" },
   {
+    id: "suites",
+    path: "/suites",
+    label: "Suites",
+    group: "Suites",
+  },
+  {
     id: "luxury-cabins",
     path: "/luxury-cabins-Nile-Cruise",
     label: "Luxury Rooms",
@@ -26,7 +32,7 @@ export const MANAGED_PUBLIC_PAGES: readonly ManagedPublicPage[] = [
     path: "/rooms",
     label: "Luxury Suites",
     group: "Suites",
-    aliases: ["/suites", "/Nile-Cruise-Luxury-Suites"],
+    aliases: ["/Nile-Cruise-Luxury-Suites"],
   },
   {
     id: "royal-suites",

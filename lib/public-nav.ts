@@ -17,6 +17,11 @@ export const NAV_SUITES: NavGroup = {
   label: "Suites",
   links: [
     {
+      href: "/suites",
+      label: "Suites Overview",
+      description: "Luxury sanctuaries aboard Hathor",
+    },
+    {
       href: "/luxury-cabins-Nile-Cruise",
       label: "Luxury Rooms",
       description: "Nile-view cabins with quiet elegance",
@@ -110,6 +115,7 @@ export const NAV_GROUPS = [
 
 export const EXPLORE_LINKS: NavLink[] = [
   { href: "/", label: "Home" },
+  { href: "/suites", label: "Suites" },
   { href: "/luxury-cabins-Nile-Cruise", label: "Luxury Rooms" },
   { href: "/rooms", label: "Luxury Suites" },
   { href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise", label: "Royal Suites" },
@@ -144,7 +150,7 @@ export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
     type: "group",
     id: NAV_SUITES.id,
     label: NAV_SUITES.label,
-    href: "/luxury-cabins-Nile-Cruise",
+    href: "/suites",
     links: NAV_SUITES.links,
   },
   {
@@ -175,7 +181,8 @@ export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
 const NAV_PATH_ALIASES: Record<string, readonly string[]> = {
   "/cruises": ["/cruises-list"],
   "/cruises-list": ["/cruises"],
-  "/rooms": ["/suites"],
+  "/suites": ["/rooms", "/Nile-Cruise-Luxury-Suites"],
+  "/rooms": ["/Nile-Cruise-Luxury-Suites"],
   "/luxury-cabins-Nile-Cruise": ["/accommodation", "/accommodations"],
   "/gastronomy": ["/dining"],
   "/blog": ["/blogs"],

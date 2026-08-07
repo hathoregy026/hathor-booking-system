@@ -27,6 +27,7 @@
     "backfill:email-images": "node scripts/backfill-email-template-images.mjs",
     "email:dev": "node scripts/sync-email-assets.mjs && email dev --dir emails --port 3005",
     "sync:media": "node scripts/sync-hathor-media.mjs",
+    "build:suites-springs": "node scripts/sync-suites-springs-assets.mjs && node scripts/patch-suites-springs-js.mjs && node scripts/build-suites-exact-homepage.mjs && node scripts/prune-suites-springs-assets.mjs",
     "validate:availability": "tsx scripts/validate-calendar-availability.ts"
   },
   "dependencies": {

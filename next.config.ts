@@ -91,11 +91,6 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: "/suites",
-        destination: "/rooms",
-        permanent: true,
-      },
-      {
         source: "/dining",
         destination: "/gastronomy",
         permanent: true,

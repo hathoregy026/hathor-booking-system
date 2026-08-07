@@ -19,6 +19,7 @@ function footerTheme(el: Element) {
 }
 
 const SUITES_LINKS = [
+  { href: "/suites", label: "Suites Overview" },
   { href: "/luxury-cabins-Nile-Cruise", label: "Luxury Rooms" },
   { href: "/rooms", label: "Luxury Suites" },
   { href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise", label: "Royal Suites" },

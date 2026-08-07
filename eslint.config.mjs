@@ -21,6 +21,11 @@ const eslintConfig = [
       "scripts/_tmp-*/**",
       "scripts/_tmp-*.mjs",
       "scripts/_tmp-*.json",
+      // Captured Springs runtimes — not project source
+      "public/gastronomy-springs/**",
+      "public/suites-springs/**",
+      "assets/CLONE. httpssprings.estate/**",
+      "assets/GPT SITE RESTORE/**",
     ],
   },
 ];
