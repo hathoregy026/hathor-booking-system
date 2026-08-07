@@ -405,7 +405,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   letter-spacing: -0.02em;
 }
 
-.home-am-slider__caption .typo-on-images-title span {
+/* Only intentional title lines — never atelier .split-char spans */
+.home-am-slider__caption .typo-on-images-title > .home-am-title-line {
   display: block;
   white-space: nowrap;
 }
@@ -537,7 +538,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   overflow-wrap: normal;
 }
 
-.home-am-opening__title span {
+.home-am-opening__title > .home-am-title-line {
   display: block;
   white-space: nowrap;
 }
@@ -789,8 +790,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
     font-size: clamp(1.55rem, 7.2vw, 2.15rem) !important;
   }
 
-  .home-am-slider__caption .typo-on-images-title span,
-  .home-am-opening__title span {
+  .home-am-slider__caption .typo-on-images-title > .home-am-title-line,
+  .home-am-opening__title > .home-am-title-line {
     white-space: normal;
   }
 

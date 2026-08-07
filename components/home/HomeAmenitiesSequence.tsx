@@ -237,7 +237,9 @@ export function HomeAmenitiesSequence({
                 style={onImageTitle}
               >
                 {intro.titleLines.map((line) => (
-                  <span key={line}>{line}</span>
+                  <span key={line} className="home-am-title-line">
+                    {line}
+                  </span>
                 ))}
               </h2>
               <p
@@ -356,7 +358,9 @@ export function HomeAmenitiesSequence({
                   ? videoMain.titleLines
                   : [videoMain.indication]
                 ).map((line) => (
-                  <span key={line}>{line}</span>
+                  <span key={line} className="home-am-title-line">
+                    {line}
+                  </span>
                 ))}
               </h2>
             </div>
@@ -433,7 +437,12 @@ export function HomeAmenitiesSequence({
                     >
                       <h2 className="typo-on-images-title" style={onGoldTitle}>
                         {slide.titleLines.map((line) => (
-                          <span key={`${slide.image.name}-${line}`}>{line}</span>
+                          <span
+                            key={`${slide.image.name}-${line}`}
+                            className="home-am-title-line"
+                          >
+                            {line}
+                          </span>
                         ))}
                       </h2>
                       {slide.indication ? (
@@ -580,7 +589,9 @@ export function HomeAmenitiesSequence({
                   .map((line) => line.trim())
                   .filter(Boolean)
                   .map((line) => (
-                    <span key={line}>{line}</span>
+                    <span key={line} className="home-am-title-line">
+                      {line}
+                    </span>
                   ))}
               </h2>
               <div className="home-am-opening__gradient" aria-hidden="true">

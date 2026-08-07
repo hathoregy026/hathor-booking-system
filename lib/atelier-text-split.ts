@@ -92,6 +92,8 @@ const SKIP_CLOSEST = [
   "footer",
   /* Home text story owns its own scrubbed splits */
   ".home-story",
+  /* Amenities gold captions: keep whole title lines — no char stack */
+  ".home-am-sequence",
   "[data-test-scroll-reveal]",
   "[data-page-transition] .pt-hero__copy",
   ".pt-hero__copy",
