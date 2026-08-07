@@ -464,6 +464,83 @@
   .l-gallery__caption .h0 {
     color: #ece8df !important;
   }
+
+  /*
+   * Hero mosaic: fill the FULL viewport (not a left-half band) with equal gutters.
+   * Springs’ 100vw plane + origin at 50%+30svh leaves a large empty right after -28°.
+   * Dual --md/--n-md padding also collapses unevenly in the iframe shell.
+   */
+  .l-gallery {
+    overflow: hidden !important;
+    width: 100vw !important;
+    height: calc(100 * var(--svh, 1vh)) !important;
+  }
+  .l-gallery__content.js-gallery-container {
+    width: 260vw !important;
+    height: 180svh !important;
+    left: -80vw !important;
+    top: -36svh !important;
+    opacity: 1 !important;
+    transform: rotate(-28deg) !important;
+    transform-origin: 50% 50% !important;
+  }
+  .l-gallery__item.col,
+  .l-gallery__item.js-gallery-item,
+  .l-gallery__item {
+    width: 25vw !important;
+    max-width: 25vw !important;
+    flex: 0 0 25vw !important;
+    /* Exact equal gap on every side (matches travel step of col--lg-3). */
+    padding: 0.7vw !important;
+    box-sizing: border-box !important;
+    left: -40vw !important;
+  }
+  .l-gallery__item:nth-child(n + 7):nth-child(-n + 13) {
+    left: auto !important;
+    right: -45vw !important;
+  }
+  .l-gallery__item > .is-hidden--sm-down,
+  .l-gallery__item > .is-hidden--md-up,
+  .l-gallery__item > div {
+    width: 100% !important;
+  }
+  .l-gallery__item picture.img-full,
+  .l-gallery__item .img-full {
+    display: block !important;
+    width: 100% !important;
+    aspect-ratio: 3 / 4 !important;
+    height: auto !important;
+    overflow: hidden !important;
+  }
+  .l-gallery__item img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    opacity: 1 !important;
+  }
+  @media (max-width: 480px) {
+    .l-gallery__content.js-gallery-container {
+      width: 320vw !important;
+      height: 200svh !important;
+      left: -110vw !important;
+      top: -20svh !important;
+      transform-origin: 50% 50% !important;
+    }
+    .l-gallery__item.col,
+    .l-gallery__item.js-gallery-item,
+    .l-gallery__item {
+      width: 42vw !important;
+      max-width: 42vw !important;
+      flex: 0 0 42vw !important;
+      padding: 1.1vw !important;
+      left: -130vw !important;
+    }
+    .l-gallery__item:nth-child(n + 7):nth-child(-n + 13) {
+      left: auto !important;
+      right: -130vw !important;
+    }
+  }
+
   /* Ensure lazy/appear pictures paint — Springs appear can leave them invisible in the iframe shell. */
   .js .is-invisible--js {
     opacity: 1 !important;
@@ -1102,8 +1179,29 @@ body.has-page-scroll-transition .public-site > .lux-footer {
       });
     });
   }
+  function hydrateGalleryImages() {
+    document.querySelectorAll(".l-gallery__item picture").forEach((pic) => {
+      pic.classList.remove("is-invisible--js");
+      pic.querySelectorAll("source").forEach((source) => {
+        const dataSrcset = source.getAttribute("data-srcset");
+        if (dataSrcset) source.setAttribute("srcset", dataSrcset);
+      });
+      const img = pic.querySelector("img");
+      if (!img) return;
+      const dataSrc = img.getAttribute("data-src");
+      const dataSrcset = img.getAttribute("data-srcset");
+      const src = img.getAttribute("src") || "";
+      if (dataSrc && (!src || src.startsWith("data:"))) {
+        img.setAttribute("src", dataSrc);
+      }
+      if (dataSrcset) img.setAttribute("srcset", dataSrcset);
+      img.classList.remove("is-invisible--js");
+      img.style.opacity = "1";
+    });
+  }
   function boot() {
     scrubUrls(document);
+    hydrateGalleryImages();
     // Do not force is-intro-seen / kill the landing preloader — that changes
     // Springs gallery mask + reveal choreography. Only mark media readiness.
     document.documentElement.classList.add("suites-media-ready", "js");
@@ -1114,8 +1212,18 @@ body.has-page-scroll-transition .public-site > .lux-footer {
   } else {
     boot();
   }
-  window.addEventListener("load", () => scrubUrls(document), { once: true });
-  setTimeout(() => scrubUrls(document), 1200);
+  window.addEventListener(
+    "load",
+    () => {
+      scrubUrls(document);
+      hydrateGalleryImages();
+    },
+    { once: true },
+  );
+  setTimeout(() => {
+    scrubUrls(document);
+    hydrateGalleryImages();
+  }, 1200);
 })();
 </script></head>
 <body data-barba="wrapper">
