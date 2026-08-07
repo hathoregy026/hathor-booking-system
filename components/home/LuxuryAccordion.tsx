@@ -110,37 +110,6 @@ function FeatureIcon({ id }: { id: VoyageFeatureId }) {
   }
 }
 
-function ScarabMark() {
-  return (
-    <svg className={styles.scarab} viewBox="0 0 64 48" aria-hidden="true">
-      <ellipse
-        cx="32"
-        cy="24"
-        rx="9"
-        ry="11"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.25"
-      />
-      <path
-        d="M23 17c-5.5-1.5-11-0.5-13 3.2M41 17c5.5-1.5 11-0.5 13 3.2M23 31c-5.5 2-10 4-11 7.5M41 31c5.5 2 10 4 11 7.5"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M28.5 13.5c1-3.5 2.2-5.5 3.5-5.5s2.5 2 3.5 5.5"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.2"
-      />
-      <circle cx="29.5" cy="22" r="1" fill="currentColor" />
-      <circle cx="34.5" cy="22" r="1" fill="currentColor" />
-    </svg>
-  );
-}
-
 function WatchPlayIcon() {
   return (
     <svg viewBox="0 0 28 28" aria-hidden="true" className={styles.watchPlayIcon}>
@@ -388,12 +357,6 @@ export default function LuxuryAccordion({
                   onClick={stopRowClick}
                 >
                   <aside className={styles.rail} aria-hidden="true">
-                    <div className={styles.railTop}>
-                      <span className={styles.railRoman}>
-                        {item.romanNumeral}
-                      </span>
-                      <ScarabMark />
-                    </div>
                     <div className={styles.railBottom}>
                       <p className={styles.railQuoteText}>{panel.railQuote}</p>
                       <span className={styles.railLotus} aria-hidden="true">
