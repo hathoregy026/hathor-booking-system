@@ -93,7 +93,7 @@ export default function LuxuryAccordion({
   const titleStyle = useTypographyInlineStyle("our_voyages_title");
   const indicationStyle = useTypographyInlineStyle("our_voyages_indication");
   const nameStyle = useTypographyInlineStyle("our_voyages_main");
-  const metaStyle = useTypographyInlineStyle("our_voyages_indication");
+  const bodyStyle = useTypographyInlineStyle("body_text");
 
   const sectionTitle = (title ?? voyagesCopy.title).trim() || "Our Voyages";
   const indication = voyagesCopy.indication.trim();
@@ -289,7 +289,7 @@ export default function LuxuryAccordion({
                     {meta ? (
                       <p
                         className={styles.rowMeta}
-                        style={pickTypeColorFamily(metaStyle)}
+                        style={{ color: bodyStyle.color }}
                       >
                         {meta}
                       </p>
