@@ -217,6 +217,9 @@ export function SiteImageSlotCard({
             <span aria-hidden> · </span>
             {item.name}
           </p>
+          <p className="vcc-card__used-on" title={item.usedOnLabel}>
+            {item.usedOnLabel}
+          </p>
         </div>
 
         <div className="vcc-card__footer">

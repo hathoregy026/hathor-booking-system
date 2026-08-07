@@ -1103,6 +1103,28 @@ const hathorFooterHtml = `
 const suitesRuntime = `
 <script data-suites-media-runtime>
 (() => {
+  const FILE_TO_SLOT = {
+    "suites-hero.webp": "scraped-suites-hero",
+    "suites-hero.jpg": "scraped-suites-hero",
+    "suites-luxury-rooms.webp": "scraped-suites-luxury-rooms",
+    "suites-luxury-suites.webp": "scraped-suites-luxury-suites",
+    "suites-royal.webp": "scraped-suites-royal",
+    "luxsuite-1.webp": "scraped-luxsuite-1",
+    "luxsuite-2.webp": "scraped-luxsuite-2",
+    "luxsuite-3.webp": "scraped-luxsuite-3",
+    "luxsuite-4.webp": "scraped-luxsuite-4",
+    "luxsuite-5.webp": "scraped-luxsuite-5",
+    "luxsuite-6.webp": "scraped-luxsuite-6",
+    "cabin-1.webp": "scraped-cabin-1",
+    "cabin-3.webp": "scraped-cabin-3",
+    "cabin-5.webp": "scraped-cabin-5",
+    "royal-1.webp": "scraped-royal-1",
+    "royal-3.webp": "scraped-royal-3",
+    "royal-5.webp": "scraped-royal-5",
+    "room-suite.webp": "room-suite",
+    "room-royal.webp": "room-royal",
+    "room-luxury.webp": "room-luxury",
+  };
   function normalizeMediaUrl(value) {
     if (typeof value !== "string") return value;
     return value.split(",").map(function (part) {
@@ -1116,6 +1138,16 @@ const suitesRuntime = `
   }
   function isSpringsUrl(value) {
     return typeof value === "string" && /springs\\.(estate|house)/i.test(value);
+  }
+  function fileNameFromUrl(url) {
+    if (typeof url !== "string") return "";
+    try {
+      var clean = url.split("?")[0].split("#")[0];
+      var parts = clean.split("/");
+      return (parts[parts.length - 1] || "").toLowerCase();
+    } catch (e) {
+      return "";
+    }
   }
   function scrubUrls(root) {
     root.querySelectorAll("img, source").forEach((node) => {
@@ -1131,12 +1163,44 @@ const suitesRuntime = `
       });
     });
   }
-  function boot() {
-    scrubUrls(document);
-    // Do not force is-intro-seen / kill the landing preloader — that changes
-    // Springs gallery mask + reveal choreography. Only mark media readiness.
+  function replaceAttrValue(value, images) {
+    if (!value) return value;
+    return value.split(",").map(function (part) {
+      var bits = part.trim().split(/\\s+/);
+      var url = bits[0] || "";
+      var slot = FILE_TO_SLOT[fileNameFromUrl(url)];
+      if (slot && images[slot]) bits[0] = images[slot];
+      return bits.join(" ");
+    }).join(", ");
+  }
+  function applyDashboardImages(images) {
+    if (!images || typeof images !== "object") return;
+    document.querySelectorAll("img, source").forEach((node) => {
+      ["src", "srcset", "data-src", "data-srcset"].forEach((attr) => {
+        const value = node.getAttribute(attr);
+        if (!value) return;
+        const next = replaceAttrValue(value, images);
+        if (next && next !== value) {
+          node.setAttribute(attr, next);
+          const slot = FILE_TO_SLOT[fileNameFromUrl(value.split(",")[0])];
+          if (slot) node.setAttribute("data-suites-slot", slot);
+        }
+      });
+    });
+  }
+  function revealSuitesMedia() {
     document.documentElement.classList.add("suites-media-ready", "js");
     document.documentElement.classList.remove("no-js");
+  }
+  function boot() {
+    scrubUrls(document);
+    fetch("/api/suites-config", { cache: "no-store" })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (data) {
+        if (data && data.images) applyDashboardImages(data.images);
+      })
+      .catch(function () {})
+      .finally(revealSuitesMedia);
   }
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", boot, { once: true });

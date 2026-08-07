@@ -1156,6 +1156,15 @@ select.admin-input option:checked {
   word-break: break-word;
 }
 
+.vcc-card__used-on {
+  margin: 0.35rem 0 0;
+  color: #c9a96e;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.35;
+}
+
 .vcc-status {
   flex-shrink: 0;
   display: inline-flex;

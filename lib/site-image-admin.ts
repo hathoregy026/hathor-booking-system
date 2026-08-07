@@ -1,23 +1,18 @@
 import { AMENITIES_SEQUENCE_IMAGE_SLOTS } from "@/lib/amenities-sequence-images";
 import { SITE_IMAGE_SLOTS, type SiteImageSlot } from "@/lib/site-image-slots";
 import { resolveSiteImageLivePath } from "@/lib/site-image-preview";
+import {
+  SITE_IMAGE_PAGE_TITLES,
+  SUITES_DASHBOARD_SLOT_NAMES,
+  formatSiteImageUsedOnLabel,
+  getSiteImageAdminAppearPaths,
+  getSiteImageUsedOnPages,
+  type SiteImageUsedOnPage,
+} from "@/lib/site-image-usage";
 
 /** Client-facing page names for tabs / accordion headers. */
 const PAGE_GROUP_TITLES: Record<string, string> = {
-  "/": "Homepage",
-  "/#amenities-sequence": "Amenities Sequence",
-  "/#moving-tilted-cards": "Moving Tilted Cards",
-  "/cruises": "Cruises",
-  "/about": "About Us",
-  "/gastronomy": "Dining",
-  "/wellness": "Wellness",
-  "/highlights": "Highlights",
-  "/charter": "Charter",
-  "/contact": "Contact",
-  "/blogs": "Blog",
-  "/rooms": "Luxury Rooms",
-  "/luxury-cabins-Nile-Cruise": "Luxury Cabins Gallery",
-  "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise": "Royal Suites Gallery",
+  ...SITE_IMAGE_PAGE_TITLES,
 };
 
 /**
@@ -80,6 +75,35 @@ const MOVING_TILTED_ADMIN_CARDS: ReadonlyArray<{
   { name: "moving-tilted-3", label: "Card 3 — Dining" },
   { name: "moving-tilted-4", label: "Card 4 — Wellness" },
   { name: "moving-tilted-5", label: "Card 5 — Suite" },
+];
+
+/** Suites page — same linked slots as Rooms / galleries (no duplicate uploads). */
+const SUITES_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> = [
+  { name: "scraped-suites-hero", label: "Suites — Hero / gallery anchor" },
+  {
+    name: "scraped-suites-luxury-rooms",
+    label: "Suites filter — Luxury Rooms card",
+  },
+  {
+    name: "scraped-suites-luxury-suites",
+    label: "Suites filter — Luxury Suites card",
+  },
+  { name: "scraped-suites-royal", label: "Suites filter — Royal Suites card" },
+  { name: "scraped-luxsuite-1", label: "Suites gallery — Luxury Suite 1" },
+  { name: "scraped-luxsuite-2", label: "Suites gallery — Luxury Suite 2" },
+  { name: "scraped-luxsuite-3", label: "Suites gallery — Luxury Suite 3" },
+  { name: "scraped-luxsuite-4", label: "Suites gallery — Luxury Suite 4" },
+  { name: "scraped-luxsuite-5", label: "Suites gallery — Luxury Suite 5" },
+  { name: "scraped-luxsuite-6", label: "Suites gallery — Luxury Suite 6" },
+  { name: "scraped-cabin-1", label: "Suites gallery — Cabin 1" },
+  { name: "scraped-cabin-3", label: "Suites gallery — Cabin 3" },
+  { name: "scraped-cabin-5", label: "Suites gallery — Cabin 5" },
+  { name: "scraped-royal-1", label: "Suites gallery — Royal 1" },
+  { name: "scraped-royal-3", label: "Suites gallery — Royal 3" },
+  { name: "scraped-royal-5", label: "Suites gallery — Royal 5" },
+  { name: "room-suite", label: "Suites — shared Luxury Suite photo" },
+  { name: "room-royal", label: "Suites — shared Royal Suite photo" },
+  { name: "room-luxury", label: "Suites — shared Luxury Cabin photo" },
 ];
 
 const SLOT_LABELS: Partial<Record<SiteImageSlot["name"], string>> = {
@@ -191,6 +215,10 @@ export type SiteImageAdminItem = {
   livePath: string | null;
   layoutKind: SiteImageLayoutKind;
   layoutLabel: string;
+  /** Every live page that uses this linked image. */
+  usedOnPages: SiteImageUsedOnPage[];
+  /** Compact label for the card (e.g. “Used on: Suites · Luxury Rooms”). */
+  usedOnLabel: string;
 };
 
 export type SiteImageAdminGroup = {
@@ -231,6 +259,7 @@ export function getSiteImageGroupHeading(pageTitle: string): string {
     return "Floating IG Bubble Images";
   }
   if (pageTitle === "Moving Tilted Cards") return "Moving Tilted Cards Images";
+  if (pageTitle === "Suites") return "Suites Images";
   return `${pageTitle} Images`;
 }
 
@@ -241,6 +270,7 @@ function toAdminItem(
   displayOrderOverride?: number,
 ): SiteImageAdminItem {
   const layoutKind = layoutForSlot(slot);
+  const usedOnPages = getSiteImageUsedOnPages(slot.name, slot.pagePath);
   return {
     name: slot.name,
     label: labelOverride ?? labelForSlot(slot),
@@ -251,33 +281,56 @@ function toAdminItem(
     displayOrder: displayOrderOverride ?? slot.displayOrder,
     layoutKind,
     layoutLabel: LAYOUT_LABELS[layoutKind],
+    usedOnPages,
+    usedOnLabel: formatSiteImageUsedOnLabel(usedOnPages),
   };
+}
+
+function pushUniqueItem(
+  items: SiteImageAdminItem[],
+  seen: Set<string>,
+  item: SiteImageAdminItem,
+) {
+  if (seen.has(item.name)) return;
+  seen.add(item.name);
+  items.push(item);
 }
 
 export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
   const byName = new Map(SITE_IMAGE_SLOTS.map((slot) => [slot.name, slot]));
 
   const homepageItems: SiteImageAdminItem[] = [];
+  const homepageSeen = new Set<string>();
   HOMEPAGE_LIVE_ADMIN_CARDS.forEach((card, index) => {
     const slot = byName.get(card.name);
     if (!slot) return;
-    homepageItems.push(toAdminItem(slot, "/", card.label, index + 1));
+    pushUniqueItem(
+      homepageItems,
+      homepageSeen,
+      toAdminItem(slot, "/", card.label, index + 1),
+    );
   });
 
   const amenitiesItems: SiteImageAdminItem[] = [];
+  const amenitiesSeen = new Set<string>();
   AMENITIES_SEQUENCE_ADMIN_CARDS.forEach((card, index) => {
     const slot = byName.get(card.name);
     if (!slot) return;
-    amenitiesItems.push(
+    pushUniqueItem(
+      amenitiesItems,
+      amenitiesSeen,
       toAdminItem(slot, "/#amenities-sequence", card.label, index + 1),
     );
   });
 
   const movingTiltedItems: SiteImageAdminItem[] = [];
+  const movingTiltedSeen = new Set<string>();
   MOVING_TILTED_ADMIN_CARDS.forEach((card, index) => {
     const slot = byName.get(card.name);
     if (!slot) return;
-    movingTiltedItems.push(
+    pushUniqueItem(
+      movingTiltedItems,
+      movingTiltedSeen,
       toAdminItem(slot, "/#moving-tilted-cards", card.label, index + 1),
     );
   });
@@ -289,24 +342,54 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
     { name: "floating-ig-4", label: "Bubble 4 — Suite" },
   ];
   const floatingIgItems: SiteImageAdminItem[] = [];
+  const floatingIgSeen = new Set<string>();
   floatingIgCards.forEach((card, index) => {
     const slot = byName.get(card.name);
     if (!slot) return;
-    floatingIgItems.push(
+    pushUniqueItem(
+      floatingIgItems,
+      floatingIgSeen,
       toAdminItem(slot, "/#floating-ig", card.label, index + 1),
     );
   });
 
   const ourVoyagesItems: SiteImageAdminItem[] = [];
+  const ourVoyagesSeen = new Set<string>();
   OUR_VOYAGES_ADMIN_CARDS.forEach((card, index) => {
     const slot = byName.get(card.name);
     if (!slot) return;
-    ourVoyagesItems.push(
+    pushUniqueItem(
+      ourVoyagesItems,
+      ourVoyagesSeen,
       toAdminItem(slot, "/#our-voyages", card.label, index + 1),
     );
   });
 
+  const suitesItems: SiteImageAdminItem[] = [];
+  const suitesSeen = new Set<string>();
+  SUITES_ADMIN_CARDS.forEach((card, index) => {
+    const slot = byName.get(card.name);
+    if (!slot) return;
+    pushUniqueItem(
+      suitesItems,
+      suitesSeen,
+      toAdminItem(slot, "/suites", card.label, index + 1),
+    );
+  });
+  // Safety: any other shared Suites slot from the usage map
+  for (const name of SUITES_DASHBOARD_SLOT_NAMES) {
+    const slot = byName.get(name);
+    if (!slot) continue;
+    pushUniqueItem(
+      suitesItems,
+      suitesSeen,
+      toAdminItem(slot, "/suites"),
+    );
+  }
+
   const byPage = new Map<string, SiteImageAdminItem[]>();
+  const seenByPage = new Map<string, Set<string>>();
+
   for (const slot of SITE_IMAGE_SLOTS) {
     // Legacy coarse Gastronomy slots are retained for older cross-page content,
     // but the Dining dashboard exposes only source-scene image controls.
@@ -322,13 +405,30 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
     ) {
       continue;
     }
-    const items = byPage.get(slot.pagePath) ?? [];
-    items.push(toAdminItem(slot, slot.pagePath));
-    byPage.set(slot.pagePath, items);
+
+    for (const appearPath of getSiteImageAdminAppearPaths(slot)) {
+      if (
+        appearPath === "/" ||
+        appearPath === "/#amenities-sequence" ||
+        appearPath === "/#moving-tilted-cards" ||
+        appearPath === "/#floating-ig" ||
+        appearPath === "/#our-voyages" ||
+        appearPath === "/suites"
+      ) {
+        // Handled by dedicated curated groups above.
+        continue;
+      }
+      const items = byPage.get(appearPath) ?? [];
+      const seen = seenByPage.get(appearPath) ?? new Set<string>();
+      pushUniqueItem(items, seen, toAdminItem(slot, appearPath));
+      byPage.set(appearPath, items);
+      seenByPage.set(appearPath, seen);
+    }
   }
 
   const pageOrder = [
     "/cruises",
+    "/suites",
     "/rooms",
     "/luxury-cabins-Nile-Cruise",
     "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
@@ -351,7 +451,7 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
       pagePath: "/",
       title: "Homepage",
       description:
-        "Only photos that appear on the live homepage. Edit here to change what guests see on /.",
+        "Only photos that appear on the live homepage. Shared photos also list every other page that uses them.",
       items: homepageItems,
     },
     {
@@ -382,9 +482,20 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
         "Photos for the Sail with Hathor floating Instagram bubbles only. Each bubble has its own upload — independent from Homepage, Our Voyages, and every other page.",
       items: floatingIgItems,
     },
+    {
+      pagePath: "/suites",
+      title: "Suites",
+      description:
+        "Images used on the Suites page (including the residence filter cards). These are the same linked uploads as Luxury Rooms / Cabins / Royal — edit once, updates every page that uses them.",
+      items: suitesItems,
+    },
     ...orderedPaths.map((pagePath) => ({
       pagePath,
       title: PAGE_GROUP_TITLES[pagePath] ?? pagePath,
+      description:
+        pagePath === "/rooms"
+          ? "Luxury Rooms images. Shared Suites / Homepage photos also appear here and show every page that uses them."
+          : undefined,
       items: (byPage.get(pagePath) ?? []).sort(
         (a, b) =>
           a.displayOrder - b.displayOrder || a.label.localeCompare(b.label),
