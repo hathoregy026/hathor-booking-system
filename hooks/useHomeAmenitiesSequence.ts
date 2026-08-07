@@ -21,8 +21,8 @@ const seg = (p: number, a: number, b: number) => {
 
 /**
  * Springs amenities Fixed-Background Mask Reveal:
- * each next sticky chapter slides/covers the previous (under-next),
- * never as a solid gold block with a gap.
+ * CSS under-previous/under-next clips cover chapters on the SECTION.
+ * GSAP only morphs INNER panels — sticky stages stay put (no block wipes).
  */
 export function useHomeAmenitiesSequence(
   rootRef: RefObject<HTMLElement | null>,
@@ -35,37 +35,10 @@ export function useHomeAmenitiesSequence(
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const isCompact = window.matchMedia("(max-width: 1024px)").matches;
     const isPhone = window.matchMedia("(max-width: 480px)").matches;
+    const isDesktop = !isCompact;
 
     const context = gsap.context(() => {
       if (reduced) return;
-
-      const chapters = Array.from(
-        root.querySelectorAll<HTMLElement>("[data-am-chapter]"),
-      );
-
-      // Cover-reveal: each chapter after the first rises over the previous sticky stage.
-      chapters.forEach((chapter, index) => {
-        if (index === 0) return;
-        const stage =
-          chapter.querySelector<HTMLElement>("[data-am-stage]") ?? chapter;
-        gsap.set(stage, {
-          clipPath: amenitiesWipeClosed("up"),
-        });
-
-        ScrollTrigger.create({
-          id: `home-am-cover-${index}`,
-          trigger: chapter,
-          start: "top bottom",
-          end: "top top",
-          scrub: true,
-          refreshPriority: -89,
-          onUpdate: (self) => {
-            gsap.set(stage, {
-              clipPath: amenitiesWipeClip("up", seg(self.progress, 0, 1)),
-            });
-          },
-        });
-      });
 
       /* ---------- i-intro ---------- */
       const intro = root.querySelector<HTMLElement>("[data-am-intro]");
@@ -76,7 +49,11 @@ export function useHomeAmenitiesSequence(
         const cream = intro.querySelector<HTMLElement>("[data-am-intro-cream]");
         const creamAngle = isPhone ? "up" : "right";
 
-        gsap.set(media, { xPercent: 0, scale: 1.18 });
+        gsap.set(media, {
+          xPercent: 0,
+          scale: 1.2,
+          clipPath: "polygon(0 0, 100% 0, 100% 100%, 0% 100%)",
+        });
         gsap.set(dim, { autoAlpha: 0.55 });
         gsap.set(title, { autoAlpha: 1, y: 0 });
         gsap.set(cream, { clipPath: amenitiesWipeClosed(creamAngle) });
@@ -90,18 +67,30 @@ export function useHomeAmenitiesSequence(
           refreshPriority: -88,
           onUpdate: (self) => {
             const p = self.progress;
-            const slide = seg(p, 0.08, 0.72);
-            gsap.set(media, {
-              xPercent: isPhone ? slide * -12 : slide * -36,
-              scale: 1.18 - slide * 0.18,
-            });
-            gsap.set(dim, { autoAlpha: 0.55 * (1 - seg(p, 0.05, 0.35)) });
+            /* Springs introImage: clip to left 50% while image drifts left */
+            const slide = seg(p, 0, 0.55);
+            if (isDesktop) {
+              const right = 100 - slide * 50;
+              gsap.set(media, {
+                xPercent: slide * -36,
+                scale: 1.2 - slide * 0.2,
+                clipPath: `polygon(0 0, ${right}% 0, ${right}% 100%, 0% 100%)`,
+              });
+            } else {
+              gsap.set(media, {
+                xPercent: isPhone ? slide * -10 : slide * -18,
+                scale: 1.2 - slide * 0.15,
+                clipPath: "polygon(0 0, 100% 0, 100% 100%, 0% 100%)",
+              });
+            }
+            gsap.set(dim, { autoAlpha: 0.55 * (1 - seg(p, 0, 0.35)) });
             gsap.set(title, {
-              autoAlpha: 1 - seg(p, 0.2, 0.45),
-              y: seg(p, 0.2, 0.45) * (isPhone ? -24 : -40),
+              autoAlpha: 1 - seg(p, 0.12, 0.4),
+              y: seg(p, 0.12, 0.4) * (isPhone ? -24 : -40),
             });
+            /* Cream expands from the right into the freed half */
             gsap.set(cream, {
-              clipPath: amenitiesWipeClip(creamAngle, seg(p, 0.28, 0.78)),
+              clipPath: amenitiesWipeClip(creamAngle, seg(p, 0.08, 0.55)),
             });
           },
         });
@@ -118,9 +107,31 @@ export function useHomeAmenitiesSequence(
           "[data-am-video-caption]",
         );
 
-        // Amenities i-video: full-bleed media is already in place under the cover wipe;
-        // only scale settles — never a gold empty stage.
-        gsap.set(hero, { scale: 1.12 });
+        /*
+         * Springs videoZoom: tiny bottom-right frame → fullscreen grow.
+         * Cover into this chapter is CSS section clip (not a stage wipe).
+         */
+        if (isDesktop) {
+          gsap.set(hero, {
+            scale: 0.29,
+            x: -206,
+            y: -206,
+            transformOrigin: "bottom right",
+          });
+        } else if (isPhone) {
+          /* Same grow idea, cheaper — scale from bottom (no height layout thrash) */
+          gsap.set(hero, {
+            scale: 0.42,
+            transformOrigin: "bottom center",
+          });
+        } else {
+          gsap.set(hero, {
+            scale: 0.66,
+            xPercent: 9,
+            yPercent: 16,
+            transformOrigin: "bottom right",
+          });
+        }
         gsap.set(inset, {
           autoAlpha: 0,
           scale: 1.15,
@@ -142,10 +153,26 @@ export function useHomeAmenitiesSequence(
           refreshPriority: -87,
           onUpdate: (self) => {
             const p = self.progress;
-            const settle = seg(p, 0, 0.35);
-            gsap.set(hero, { scale: 1.12 - settle * 0.12 });
+            /* 0–~0.28: grow over the previous sticky (Springs --100 → --150) */
+            const grow = seg(p, 0, 0.28);
+            if (isDesktop) {
+              const s =
+                grow < 0.2
+                  ? 0.29 + (grow / 0.2) * (0.5 - 0.29)
+                  : 0.5 + ((grow - 0.2) / 0.8) * 0.5;
+              const shift = grow < 0.2 ? -206 * (1 - grow / 0.2) : 0;
+              gsap.set(hero, { scale: s, x: shift, y: shift });
+            } else if (isPhone) {
+              gsap.set(hero, { scale: 0.42 + grow * 0.58 });
+            } else {
+              gsap.set(hero, {
+                scale: 0.66 + grow * 0.34,
+                xPercent: 9 * (1 - grow),
+                yPercent: 16 * (1 - grow),
+              });
+            }
 
-            const textIn = seg(p, 0.08, 0.32);
+            const textIn = seg(p, 0.18, 0.4);
             gsap.set(copy, { autoAlpha: textIn, y: (1 - textIn) * 24 });
             gsap.set(title, {
               autoAlpha: textIn,
@@ -153,7 +180,7 @@ export function useHomeAmenitiesSequence(
               x: (1 - textIn) * (isPhone ? 0 : 20),
             });
 
-            const insetIn = seg(p, 0.26, 0.5);
+            const insetIn = seg(p, 0.42, 0.58);
             gsap.set(inset, {
               autoAlpha: insetIn,
               scale: 1.15 - insetIn * 0.15,
@@ -161,7 +188,7 @@ export function useHomeAmenitiesSequence(
               clipPath: amenitiesWipeClip("up", insetIn),
             });
 
-            const cap = seg(p, 0.48, 0.76);
+            const cap = seg(p, 0.55, 0.78);
             gsap.set(caption, {
               clipPath: amenitiesWipeClip("up", cap),
             });

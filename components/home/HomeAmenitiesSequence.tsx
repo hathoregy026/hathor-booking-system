@@ -199,7 +199,7 @@ export function HomeAmenitiesSequence({
     >
       {/* 1) i-intro — fullscreen → slides left → cream text */}
       <div
-        className="home-am-intro home-am-chapter"
+        className="home-am-intro home-am-chapter home-am-chapter--under-next"
         data-am-intro
         data-am-chapter
       >
@@ -252,7 +252,7 @@ export function HomeAmenitiesSequence({
       {/* 2) i-video — huge image rises, title, inset image, caption card */}
       {videoMain ? (
         <div
-          className="home-am-video home-am-chapter"
+          className="home-am-video home-am-chapter home-am-chapter--under-previous home-am-chapter--under-next"
           data-am-video
           data-am-chapter
         >
@@ -321,7 +321,7 @@ export function HomeAmenitiesSequence({
       {/* 3) i-slider — half text / half image stack */}
       {sliderSlides.length > 0 ? (
         <div
-          className="home-am-slider home-am-chapter"
+          className="home-am-slider home-am-chapter home-am-chapter--under-previous home-am-chapter--under-next"
           data-am-slider
           data-am-chapter
         >
@@ -395,7 +395,7 @@ export function HomeAmenitiesSequence({
 
       {/* 4) i-opening — Springs: fixed left + title panel + scrolling vertical cards */}
       <div
-        className="home-am-opening home-am-chapter"
+        className="home-am-opening home-am-chapter home-am-chapter--under-previous home-am-chapter--under-next"
         data-am-opening
         data-am-chapter
       >
