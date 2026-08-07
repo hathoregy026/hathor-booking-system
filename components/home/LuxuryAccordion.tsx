@@ -388,6 +388,9 @@ export default function LuxuryAccordion({
 
                 <div
                   className={`${styles.row} ${isActive ? styles.rowHidden : ""}`}
+                  onClick={() => {
+                    if (!isActive) handleOpen(item.id);
+                  }}
                 >
                   <span className={styles.divider} aria-hidden="true" />
                   <div className={styles.copy}>
@@ -489,7 +492,7 @@ export default function LuxuryAccordion({
                     <aside className={styles.infoCard}>
                       {priceLabel ? (
                         <p className={styles.price}>
-                          <span className={styles.priceFrom}>From</span>
+                          <span className={styles.priceFrom}>FROM</span>
                           <span className={styles.priceValue}>{priceLabel}</span>
                           <span className={styles.priceCaption}>
                             {panel.priceCaption}
