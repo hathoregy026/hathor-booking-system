@@ -141,7 +141,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
 
 .home-am-voyages {
   position: relative;
-  z-index: 6;
+  z-index: 30;
   min-height: calc(100 * var(--am-svh));
   pointer-events: none;
 }
@@ -539,6 +539,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   z-index: 2;
   /* contain:content can prevent the left ManagedImage from lazy-loading */
   contain: none;
+  position: relative;
 }
 
 .home-am-opening__content,
@@ -714,6 +715,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   pointer-events: none;
   will-change: clip-path;
   background: var(--am-gold);
+  overflow: hidden;
 }
 
 /* Springs .col--lg-6.offset--lg-6 */
@@ -726,12 +728,15 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   pointer-events: auto;
 }
 
+/* Cards + title — sibling of parallax clip layer (sticky breaks inside clip-path) */
 .home-am-opening__bottom-band {
-  display: flex;
+  display: none;
   align-items: flex-end;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: clamp(0.75rem, 2vw, 2rem);
-  width: 100%;
+  box-sizing: border-box;
+  pointer-events: none;
+  z-index: 5;
 }
 
 .home-am-opening__bottom-title {
@@ -739,7 +744,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   min-width: 0;
   padding-right: clamp(1rem, 2vw, 2.5rem);
   text-align: right;
-  display: none;
+  align-self: flex-end;
+  padding-bottom: 0.35rem;
 }
 
 .home-am-opening__title--bottom {
@@ -758,14 +764,20 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
 
 /* Springs .mt-5 */
 .home-am-opening__list-wrap {
-  margin-top: 3rem;
+  margin-top: 0;
+  flex: 0 0 auto;
 }
 
 .home-am-opening__list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+  gap: clamp(10px, 1.1vw, 15px);
   padding-left: 0.5rem;
 }
 
-@media (min-width: 1025px) {
+@media (min-width: 981px) {
   .home-am-opening {
     clip-path: none;
     height: 400svh;
@@ -777,45 +789,35 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
     display: none;
   }
 
-  .home-am-opening__bottom-title {
-    display: block;
-  }
-
   .home-am-opening__right-inner {
-    display: flex;
-    flex-direction: column;
     min-height: 300svh;
-    padding-bottom: 0;
+    padding-bottom: clamp(12rem, 22vh, 16rem);
   }
 
   .home-am-opening__caption-text {
-    flex: 0 0 auto;
+    max-width: 400px;
   }
 
-  /* Cards + title stick as one band at the gold column bottom until Voyages covers */
+  /* Pinned via GSAP pinReparent — escapes opening clip-path */
   .home-am-opening__bottom-band {
-    margin-top: auto;
-    position: sticky;
-    bottom: 0;
-    z-index: 2;
-    padding-bottom: clamp(1.25rem, 3vh, 2.5rem);
-    background: var(--am-gold);
-  }
-
-  .home-am-opening__list-wrap {
-    margin-top: 0;
-    flex: 0 0 auto;
-  }
-
-  .home-am-opening__list {
     display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: flex-end;
-    gap: clamp(10px, 1.1vw, 15px);
-    padding-left: 0.5rem;
-    flex: 0 1 auto;
-    min-width: 0;
+    left: 50vw !important;
+    width: 50vw !important;
+    bottom: 0 !important;
+    padding: 0 0 clamp(1.25rem, 3vh, 2.5rem);
+    background: linear-gradient(
+      to top,
+      var(--am-gold) 72%,
+      rgba(182, 159, 100, 0) 100%
+    );
+    pointer-events: none;
+    z-index: 5;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+  }
+
+  .home-am-opening__bottom-band.is-voyages-covered {
+    opacity: 0;
+    visibility: hidden;
   }
 
   .home-am-opening__list-item {
@@ -824,11 +826,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   }
 
   .home-am-opening__bottom-title {
-    display: block;
-    flex: 1 1 7.5rem;
     max-width: 42%;
     padding-right: clamp(0.75rem, 1.5vw, 1.5rem);
-    padding-bottom: 0.35rem;
   }
 
   .home-am-opening__title--bottom {
@@ -1047,12 +1046,23 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   }
 
   .home-am-opening__bottom-band {
+    display: flex;
+    position: static;
+    left: auto;
+    width: 100%;
     flex-direction: column;
     align-items: stretch;
-    position: static;
     margin-top: 0;
     padding-bottom: 0;
     background: transparent;
+  }
+
+  .home-am-opening__bottom-title {
+    display: none;
+  }
+
+  .home-am-opening__caption-title--mobile {
+    display: block;
   }
 
   .home-am-opening__list {

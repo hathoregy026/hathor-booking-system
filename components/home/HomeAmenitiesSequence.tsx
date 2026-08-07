@@ -619,6 +619,47 @@ export function HomeAmenitiesSequence({
               </div>
             </div>
           </div>
+
+          {/* Pinned to sticky stage bottom (right gold column) — outside parallax clip */}
+          <div
+            className="home-am-opening__bottom-band"
+            data-am-opening-bottom
+          >
+            <div className="home-am-opening__list-wrap">
+              <div className="home-am-opening__list" data-am-opening-cards>
+                {openingCards.map((card, index) => (
+                  <div
+                    key={`opening-card-${card.image.name}-${index}`}
+                    className="home-am-opening__list-item"
+                    data-am-opening-card={card.image.name}
+                  >
+                    <div className="home-am-opening__list-item-media">
+                      <ManagedImage
+                        name={card.image.name}
+                        alt={card.image.alt}
+                        fill
+                        sizes="(max-width: 480px) 48vw, 210px"
+                        className="object-cover"
+                        loading="eager"
+                        previewAnchor={card.image.previewAnchor}
+                      />
+                    </div>
+                    <div className="home-am-opening__list-item-text">
+                      {card.label}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="home-am-opening__bottom-title">
+              <h2
+                className="home-am-opening__title home-am-opening__title--bottom"
+                data-am-opening-title-dock
+              >
+                {openingTitleFormatted}
+              </h2>
+            </div>
+          </div>
         </div>
 
         <div
@@ -639,44 +680,6 @@ export function HomeAmenitiesSequence({
             >
               {stories[0]?.body || landmarks[3]?.body || intro.body}
             </p>
-
-            {/* Springs desktop: 3 cards in one row + title fixed at bottom-right of gold column */}
-            <div className="home-am-opening__bottom-band">
-              <div className="home-am-opening__list-wrap">
-                <div className="home-am-opening__list" data-am-opening-cards>
-                  {openingCards.map((card, index) => (
-                    <div
-                      key={`opening-card-${card.image.name}-${index}`}
-                      className="home-am-opening__list-item"
-                      data-am-opening-card={card.image.name}
-                    >
-                      <div className="home-am-opening__list-item-media">
-                        <ManagedImage
-                          name={card.image.name}
-                          alt={card.image.alt}
-                          fill
-                          sizes="(max-width: 480px) 48vw, 210px"
-                          className="object-cover"
-                          loading="eager"
-                          previewAnchor={card.image.previewAnchor}
-                        />
-                      </div>
-                      <div className="home-am-opening__list-item-text">
-                        {card.label}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div
-                className="home-am-opening__bottom-title"
-                aria-hidden="true"
-              >
-                <h2 className="home-am-opening__title home-am-opening__title--bottom">
-                  {openingTitleFormatted}
-                </h2>
-              </div>
-            </div>
           </div>
         </div>
       </div>
