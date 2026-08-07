@@ -50,7 +50,7 @@ function BrandedSunIcon() {
   );
 }
 
-/** Branded moon: Hathor mark as the lunar face + stars. */
+/** Branded moon: centered Hathor mark + crescent + balanced stars. */
 function BrandedMoonIcon() {
   return (
     <svg
@@ -65,17 +65,17 @@ function BrandedMoonIcon() {
         strokeWidth="1.2"
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M16.2 4.6a7.4 7.4 0 1 0 3.4 11.2 5.9 5.9 0 1 1-3.4-11.2Z"
+        d="M14.8 5.2a7.1 7.1 0 1 0 4.1 10.2 5.6 5.6 0 1 1-4.1-10.2Z"
       />
       <path
         fill="currentColor"
-        d="M18.35 7.05l.32.96h1.02l-.82.6.31.96-.83-.6-.82.6.31-.96-.82-.6h1.02z"
+        d="M17.55 6.85l.28.84h.88l-.71.52.27.84-.72-.52-.71.52.27-.84-.71-.52h.88z"
       />
       <path
         fill="currentColor"
-        d="M19.7 11.15l.2.6h.64l-.52.38.2.6-.52-.38-.52.38.2-.6-.52-.38h.64z"
+        d="M18.85 10.7l.18.54h.56l-.45.33.17.54-.46-.33-.45.33.18-.54-.46-.33h.56z"
       />
-      <g transform="translate(4.55 5.55) scale(0.0465)">
+      <g transform="translate(5.1 5.35) scale(0.05)">
         <HathorMark />
       </g>
     </svg>

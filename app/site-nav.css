@@ -5,8 +5,8 @@
   --nav-word-gap: 116px;
   --nav-logo-gap: 200px;
   /* Compact glass switch — short enough to sit with nav words */
-  --theme-toggle-w: 2.85rem;
-  --theme-toggle-h: 1.35rem;
+  --theme-toggle-w: 3.55rem;
+  --theme-toggle-h: 1.45rem;
   --theme-toggle-gap: var(--nav-word-gap);
 }
 
@@ -79,7 +79,7 @@
   .public-site .hathor-header--owo-hero-layout .hathor-header__inner--owo::before {
     content: "";
     flex: 0 0 auto;
-    width: calc(var(--theme-toggle-w, 2.85rem) + var(--theme-toggle-gap, var(--nav-word-gap)));
+    width: calc(var(--theme-toggle-w, 3.55rem) + var(--theme-toggle-gap, var(--nav-word-gap)));
     height: 1px;
     pointer-events: none;
     visibility: hidden;
@@ -448,8 +448,8 @@
   /* Theme far left, burger far right — equal gap to centered logo */
   .public-site .hathor-header__col--right .public-theme-toggle {
     order: 1;
-    --theme-toggle-w: 2.85rem;
-    --theme-toggle-h: 1.35rem;
+    --theme-toggle-w: 3.55rem;
+    --theme-toggle-h: 1.45rem;
   }
 
   .public-site .hathor-header__col--right .hathor-header__menu-btn {

@@ -4986,14 +4986,18 @@ html[data-public-theme="day"] .hathor-explore__backdrop {
 }
 
 .public-theme-toggle {
-  --theme-toggle-pad: 0.12rem;
-  --theme-toggle-thumb: calc(var(--theme-toggle-h, 1.35rem) - (var(--theme-toggle-pad) * 2));
+  /* Equal inset on every side; thumb diameter fills the inner height */
+  --theme-toggle-pad: 0.2rem;
+  --theme-toggle-thumb: calc(
+    var(--theme-toggle-h, 1.45rem) - (var(--theme-toggle-pad) * 2) - 2px
+  );
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: var(--theme-toggle-w, 2.85rem);
-  height: var(--theme-toggle-h, 1.35rem);
+  box-sizing: border-box;
+  width: var(--theme-toggle-w, 3.55rem);
+  height: var(--theme-toggle-h, 1.45rem);
   padding: 0;
   border: 0;
   border-radius: 9999px;
@@ -5019,9 +5023,13 @@ html[data-public-theme="day"] .hathor-explore__backdrop {
 
 .public-theme-toggle__track {
   position: relative;
-  display: block;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
   width: 100%;
   height: 100%;
+  padding: var(--theme-toggle-pad);
   border-radius: 9999px;
   border: 1px solid rgb(250 248 245 / 0.35);
   background: rgb(250 248 245 / 0.08);
@@ -5034,27 +5042,17 @@ html[data-public-theme="day"] .hathor-explore__backdrop {
 }
 
 .public-theme-toggle__glyph {
-  position: absolute;
-  top: 50%;
+  position: relative;
   z-index: 1;
   display: grid;
   place-items: center;
-  width: var(--theme-toggle-thumb);
+  width: 100%;
   height: var(--theme-toggle-thumb);
-  transform: translateY(-50%);
-  color: rgb(250 248 245 / 0.5);
+  color: rgb(250 248 245 / 0.55);
   pointer-events: none;
   transition:
     color 0.35s ease,
     opacity 0.35s ease;
-}
-
-.public-theme-toggle__glyph--sun {
-  left: var(--theme-toggle-pad);
-}
-
-.public-theme-toggle__glyph--moon {
-  right: var(--theme-toggle-pad);
 }
 
 .public-theme-toggle.is-day .public-theme-toggle__glyph--sun,
@@ -5068,9 +5066,8 @@ html[data-public-theme="day"] .hathor-explore__backdrop {
 }
 
 .public-theme-toggle__thumb {
-  --theme-toggle-thumb-x: 0;
   position: absolute;
-  top: var(--theme-toggle-pad);
+  top: 50%;
   left: var(--theme-toggle-pad);
   z-index: 2;
   display: grid;
@@ -5081,29 +5078,29 @@ html[data-public-theme="day"] .hathor-explore__backdrop {
   background: rgb(250 248 245 / 0.95);
   color: #1c1917;
   box-shadow: 0 1px 4px rgb(0 0 0 / 0.2);
-  transform: translateX(var(--theme-toggle-thumb-x));
+  transform: translateY(-50%);
   transition:
-    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    left 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    right 0.45s cubic-bezier(0.22, 1, 0.36, 1),
     background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
     color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 0.35s ease;
-  will-change: transform;
 }
 
-.public-theme-toggle.is-day {
-  --theme-toggle-thumb-x: calc(
-    var(--theme-toggle-w, 2.85rem) - var(--theme-toggle-thumb) -
-      (var(--theme-toggle-pad) * 2)
-  );
+/* Mirror insets — left pad == right pad */
+.public-theme-toggle.is-night .public-theme-toggle__thumb {
+  left: var(--theme-toggle-pad);
+  right: auto;
 }
 
-.public-theme-toggle.is-night {
-  --theme-toggle-thumb-x: 0;
+.public-theme-toggle.is-day .public-theme-toggle__thumb {
+  left: auto;
+  right: var(--theme-toggle-pad);
 }
 
 .public-theme-toggle__icon {
-  width: 0.72rem;
-  height: 0.72rem;
+  width: 0.78rem;
+  height: 0.78rem;
   display: block;
 }
 
