@@ -10,14 +10,13 @@ import { PublicNavbar } from "@/components/layout/PublicNavbar";
 export function SuitesSpringsHomepagePage() {
   return (
     <>
-      <style>{`
-        html, body { background: #ece8df !important; }
-        .suites-springs-frame { background: #ece8df; }
-      `}</style>
-      <div
-        className="public-site suites-public-nav"
-        style={{ position: "relative", zIndex: 1500 }}
-      >
+      {/*
+        Match gastronomy iframe shell: do NOT raise z-index on .public-site.
+        That class is min-height 100vh + cream background; a stacking context
+        above the iframe paints a solid cream sheet over the Suites document.
+        Header keeps z-index 1200 and stays above the fixed iframe (1000).
+      */}
+      <div className="public-site suites-public-nav">
         <PublicNavbar />
       </div>
       <iframe
@@ -33,7 +32,6 @@ export function SuitesSpringsHomepagePage() {
           position: "fixed",
           width: "100vw",
           zIndex: 1000,
-          background: "#ece8df",
         }}
       />
     </>
