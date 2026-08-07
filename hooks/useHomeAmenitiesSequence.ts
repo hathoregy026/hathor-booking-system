@@ -107,17 +107,19 @@ export function useHomeAmenitiesSequence(
       },
     });
 
-    /* Helm cover after opening */
+    /* Helm cover after Our Voyages (accordion sits between amenities and wheel) */
     const opening = root.querySelector<HTMLElement>("[data-am-opening]");
+    const voyages = document.querySelector<HTMLElement>("[data-hathor-accordion]");
+    const helmCoverTrigger = voyages ?? opening;
     const helm = document.querySelector<HTMLElement>("[data-home-helm-portal]");
     let helmSt: ScrollTrigger | undefined;
-    if (helm && opening) {
+    if (helm && helmCoverTrigger) {
       gsap.set(helm, {
         clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
       });
       helmSt = ScrollTrigger.create({
         id: "home-am-to-helm",
-        trigger: opening,
+        trigger: helmCoverTrigger,
         start: "bottom-=100% bottom",
         end: "bottom top",
         scrub: true,

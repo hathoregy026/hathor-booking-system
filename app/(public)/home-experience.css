@@ -2301,7 +2301,16 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   padding-top: calc(clamp(80px, 10vw, 140px) + 1px);
 }
 
-/* Tight handoff into Our Voyages — no empty cream canyon after last fog plate */
+/* Tight handoff into Our Voyages after amenities sequence */
+.home-am-sequence + [data-hathor-accordion] {
+  position: relative;
+  z-index: 21;
+  margin-top: clamp(-2rem, -4vh, -0.5rem);
+  padding-top: clamp(2.5rem, 5vh, 4rem) !important;
+  padding-bottom: clamp(3.5rem, 7vh, 5.5rem) !important;
+}
+
+/* Legacy fog-stack → voyages handoff (if stack still present) */
 .ex-stack-scroll + [data-hathor-accordion] {
   position: relative;
   z-index: 21;
