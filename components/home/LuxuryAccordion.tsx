@@ -420,16 +420,18 @@ export default function LuxuryAccordion({
                   onClick={stopRowClick}
                 >
                   <aside className={styles.rail} aria-hidden="true">
-                    <span className={styles.railRoman}>{item.romanNumeral}</span>
-                    <ScarabMark />
-                    <p className={styles.railQuote}>
-                      <span className={styles.railQuoteText}>
-                        {panel.railQuote}
+                    <div className={styles.railTop}>
+                      <span className={styles.railRoman}>
+                        {item.romanNumeral}
                       </span>
+                      <ScarabMark />
+                    </div>
+                    <div className={styles.railBottom}>
+                      <p className={styles.railQuoteText}>{panel.railQuote}</p>
                       <span className={styles.railLotus} aria-hidden="true">
                         ✦
                       </span>
-                    </p>
+                    </div>
                   </aside>
 
                   <div className={styles.stage}>
