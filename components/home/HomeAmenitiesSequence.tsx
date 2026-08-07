@@ -187,7 +187,7 @@ export function HomeAmenitiesSequence({
   return (
     <section
       ref={rootRef}
-      className="home-am-sequence"
+      className="home-am-sequence home-am-sequence--to-voyages"
       aria-label="Amenities-style Nile stories"
     >
       {/* ===== i-intro ===== */}
@@ -542,9 +542,9 @@ export function HomeAmenitiesSequence({
         </div>
       ) : null}
 
-      {/* ===== i-opening — dual sticky layers, cards in document flow ===== */}
+      {/* ===== i-opening — Springs: sticky caption + scrolling cards ===== */}
       <div
-        className="home-am-opening home-am-chapter home-am-chapter--under-previous home-am-chapter--under-next sticky sticky--full-height sticky--under-previous sticky--under-next"
+        className="home-am-opening home-am-chapter home-am-chapter--under-previous sticky sticky--full-height sticky--under-previous"
         data-am-opening
         data-am-chapter
         id="home-am-opening"
@@ -581,6 +581,7 @@ export function HomeAmenitiesSequence({
               </div>
             </div>
 
+            {/* Springs .i-opening__caption — sticky title lives HERE */}
             <div
               className="home-am-opening__title-panel"
               data-am-opening-title-panel
@@ -590,8 +591,29 @@ export function HomeAmenitiesSequence({
               data-parallax-measure-selector="[data-am-chapter]"
               data-parallax-0-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)"}'
               data-parallax--100-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
-              style={{ background: GOLD }}
             >
+              <div className="home-am-opening__caption-title">
+                <h2
+                  className="home-am-opening__title typo-on-images-title"
+                  data-am-opening-title
+                  style={onGoldTitle}
+                >
+                  {(
+                    landmarks[3]?.titleLines?.length
+                      ? landmarks[3].titleLines
+                      : landmarks[0]?.titleLines?.length
+                        ? landmarks[0].titleLines
+                        : (stories[0]?.title || intro.titleLines.join("\n"))
+                            .split("\n")
+                            .map((line) => line.trim())
+                            .filter(Boolean)
+                  ).map((line) => (
+                    <span key={line} className="home-am-title-line">
+                      {line.replace(/\.$/, "")}
+                    </span>
+                  ))}
+                </h2>
+              </div>
               <div className="home-am-opening__gradient" aria-hidden="true">
                 <div />
               </div>
@@ -599,37 +621,7 @@ export function HomeAmenitiesSequence({
           </div>
         </div>
 
-        {/*
-          Title pin ABOVE the scrolling cards (z-index 4): stays fixed on the
-          right while cards rise — Springs sticky caption behaviour.
-        */}
-        <div
-          className="home-am-opening__title-pin sticky__layer sticky__layer--sticky"
-          data-am-opening-title-pin
-          aria-hidden="false"
-        >
-          <h2
-            className="home-am-opening__title typo-on-images-title"
-            data-am-opening-title
-            style={onGoldTitle}
-          >
-            {(
-              landmarks[3]?.titleLines?.length
-                ? landmarks[3].titleLines
-                : landmarks[0]?.titleLines?.length
-                  ? landmarks[0].titleLines
-                  : (stories[0]?.title || intro.titleLines.join("\n"))
-                      .split("\n")
-                      .map((line) => line.trim())
-                      .filter(Boolean)
-            ).map((line) => (
-              <span key={line} className="home-am-title-line">
-                {line.replace(/\.$/, "")}
-              </span>
-            ))}
-          </h2>
-        </div>
-
+        {/* Springs .i-opening__right-column — scrolls under sticky caption */}
         <div
           className="home-am-opening__right sticky__layer"
           data-am-opening-right
