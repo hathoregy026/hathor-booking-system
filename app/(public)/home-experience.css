@@ -2311,6 +2311,10 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   background: var(--cream, #ece8df);
 }
 
+html[data-public-theme="night"] .home-am-sequence + [data-hathor-accordion] {
+  background: var(--cream, #0b0907);
+}
+
 /* Legacy fog-stack → voyages handoff (if stack still present) */
 .ex-stack-scroll + [data-hathor-accordion] {
   position: relative;
