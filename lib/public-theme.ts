@@ -141,8 +141,6 @@ export function isHeroRoute(pathname: string): boolean {
 const PAGE_HERO_PREFIXES = [
   "/blogs",
   "/about",
-  "/cruises",
-  "/mask-reveal",
   "/highlights",
   "/gastronomy",
   "/wellness",

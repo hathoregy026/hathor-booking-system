@@ -76,6 +76,11 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: "/mask-reveal",
+        destination: "/cruises",
+        permanent: true,
+      },
+      {
         source: "/contact-us",
         destination: "/contact",
         permanent: true,

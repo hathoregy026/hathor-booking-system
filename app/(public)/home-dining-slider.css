@@ -470,8 +470,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   object-position: bottom center !important;
 }
 
-/* ========== i-opening — LITERAL Springs infrastructure.css port ========== */
-/* Source: clone infrastructure.css .i-opening* — only colors/images differ */
+/* ========== i-opening — Springs layout (Hathor gold + images only) ========== */
 
 .home-am-opening {
   height: 250svh;
@@ -479,6 +478,11 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   z-index: 4;
   pointer-events: none;
   clip-path: none;
+}
+
+/* Opening is last amenities chapter — under-next must pull Voyages (sibling of sequence) */
+.home-am-opening.home-am-chapter--under-next {
+  margin-bottom: calc(var(--sticky-under-next-distance) * -1);
 }
 
 .home-am-opening .home-am-chapter__stage,
@@ -493,30 +497,21 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   height: 100%;
 }
 
+/* Springs .row */
 .home-am-opening__content {
   display: flex;
-  flex-wrap: nowrap;
-  align-items: stretch;
+  flex-wrap: wrap;
   width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
   gap: 0;
-  column-gap: 0;
-  row-gap: 0;
 }
 
+/* Springs .col--lg-6 → flex:0 1 50vw; width:50vw */
 .home-am-opening__images {
   position: relative;
-  flex: 0 0 50%;
-  width: 50%;
-  max-width: 50%;
-  margin: 0;
-  padding: 0;
+  flex: 0 1 50vw;
+  width: 50vw;
   overflow: hidden;
   will-change: clip-path;
-  /* Bleed 1px over center so no hairline seam vs gold (Springs is flush) */
-  z-index: 1;
 }
 
 .home-am-opening__images-media {
@@ -531,17 +526,16 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   transform-origin: center center;
 }
 
+/* Springs: caption is transparent — scrolling right-column (text + 3 cards) shows through */
 .home-am-opening__caption {
   position: relative;
-  flex: 0 0 50%;
-  width: 50%;
-  max-width: 50%;
-  margin: 0;
-  padding: 0;
+  flex: 0 1 50vw;
+  width: 50vw;
   background: transparent;
   will-change: clip-path;
 }
 
+/* Springs .col--md-3 + text-right:lg */
 .home-am-opening__caption-title {
   position: relative;
   z-index: 2;
@@ -549,7 +543,6 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   flex: 0 1 25vw;
   width: 25vw;
   max-width: 100%;
-  padding-right: clamp(1rem, 2.5vw, 2.5rem);
   box-sizing: border-box;
 }
 
@@ -608,10 +601,11 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   width: 80vw;
 }
 
+/* Springs .col--md-2 */
 .home-am-opening__list-item {
   position: relative;
-  width: min(16.666vw, 13.5rem);
-  flex: 0 0 auto;
+  flex: 0 1 16.6666vw;
+  width: 16.6666vw;
 }
 
 .home-am-opening__list-item-media {
@@ -659,7 +653,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   pointer-events: none;
 }
 
-/* Springs: ui-background on the FULL right sticky layer, clipped to right half */
+/* Springs .ui-background on full right sticky layer */
 .home-am-opening__right-column {
   grid-area: sticky_content;
   align-self: start;
@@ -668,19 +662,15 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   pointer-events: none;
   will-change: clip-path;
   background: var(--am-gold);
-  /* Start gold 1px left of center so it meets the photo with no white seam */
-  margin: 0;
-  padding: 0;
 }
 
-/* Springs: col--lg-6 offset--lg-6 — content only, gold is on the layer */
+/* Springs .col--lg-6.offset--lg-6 */
 .home-am-opening__right-inner {
-  margin-left: 50%;
-  width: 50%;
-  max-width: 50%;
+  margin-left: 50vw;
+  width: 50vw;
   box-sizing: border-box;
   background: transparent;
-  padding: 2.5rem clamp(1.25rem, 2.5vw, 2.5rem) 3rem;
+  padding: 2.5rem 0 3rem;
   pointer-events: auto;
 }
 
@@ -696,6 +686,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
 
 .home-am-opening__list {
   margin-top: 3rem;
+  padding-left: 0.5rem;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -707,7 +698,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
     clip-path: none;
     height: 400svh;
     min-height: 2700px;
-    overflow: hidden;
+    /* Do NOT set overflow:hidden — it breaks CSS sticky (Springs uses JS sticky) */
   }
 
   .home-am-opening__list-item {
@@ -719,7 +710,6 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding-bottom: clamp(1.25rem, 3vw, 2.5rem);
   }
 
   .home-am-opening__caption-title {
@@ -756,6 +746,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   }
 
   .home-am-opening__list-item {
+    flex: 0 1 min(28vw, 12rem);
     width: min(28vw, 12rem);
   }
 
@@ -877,16 +868,14 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   }
 
   .home-am-opening__images {
-    flex: 0 0 auto;
+    flex: 0 1 auto;
     width: 100%;
-    max-width: 100%;
     height: 70svh;
   }
 
   .home-am-opening__caption {
-    flex: 0 0 auto;
+    flex: none;
     width: 100%;
-    max-width: 100%;
     height: auto;
     position: absolute;
     bottom: 0;
@@ -897,7 +886,6 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   .home-am-opening__caption-title {
     width: 50%;
     flex: none;
-    padding-right: 0;
     text-align: left;
   }
 
@@ -914,9 +902,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   .home-am-opening__right-inner {
     margin-left: 0;
     width: 100%;
-    max-width: 100%;
     padding: 1.15rem;
-    background: transparent;
   }
 
   .home-am-opening__list {
@@ -925,6 +911,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
     gap: 10px;
     overflow-x: auto;
     margin-top: 1.25rem;
+    padding-left: 0;
     width: calc(100% + 1.15rem);
     margin-right: -1.15rem;
     padding-right: 1.15rem;
@@ -932,6 +919,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   }
 
   .home-am-opening__list-item {
+    flex: 0 0 49%;
     width: 49%;
     min-width: 49%;
     margin-top: 0;

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { CruisesPageContent } from "@/components/pages/CruisesPageContent";
-import { HATHOR_LOGO_LETTERS } from "@/lib/hathor-logo-letters";
+import { MaskRevealPageContent } from "@/components/pages/MaskRevealPageContent";
 
 export const metadata: Metadata = {
   title: "Dahabiya Cruises List | Hathor Nile Cruise",
@@ -14,13 +13,5 @@ export const metadata: Metadata = {
 };
 
 export default function CruisesPage() {
-  const firstLetter = HATHOR_LOGO_LETTERS[0]?.src;
-  return (
-    <>
-      {firstLetter ? (
-        <link rel="preload" href={firstLetter} as="image" type="image/webp" />
-      ) : null}
-      <CruisesPageContent />
-    </>
-  );
+  return <MaskRevealPageContent />;
 }

@@ -3,7 +3,11 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { BedDouble, CalendarDays, MapPin, Minus, Plus, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { HathorBrandMark } from "@/components/booking/HathorBrandMark";
+import { useSiteImage } from "@/components/public/SiteImagesProvider";
+import {
+  HATHOR_BRAND_NAME,
+  HATHOR_ICON_GOLD_SRC,
+} from "@/lib/branding";
 import {
   createDefaultRoomConfigs,
   normalizeRoomConfigsForDuration,
@@ -13,6 +17,13 @@ import {
 } from "@/lib/booking-search-config";
 import { clampRoomSearchConfig } from "@/lib/room-capacity";
 import { useBookingStore } from "@/store/bookingStore";
+
+/** Real site photo — Nile dahabiya (homepage legacy / landmarks). */
+const BOOKING_MODAL_PANEL_IMAGE = "home-story-legacy-large";
+
+/** Modal-only embarkation choice — routes to the charter page. */
+const PRIVATE_CHARTER_OPTION = "private-charter" as const;
+const PRIVATE_CHARTER_HREF = "/charter";
 
 type BookingModalProps = {
   open: boolean;
@@ -64,6 +75,7 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
   const titleId = useId();
   const dialogRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const panelImage = useSiteImage(BOOKING_MODAL_PANEL_IMAGE);
   const hydrateFromModal = useBookingStore((state) => state.hydrateFromModal);
   const storeDuration = useBookingStore((state) => state.duration);
   const storeRoomConfigs = useBookingStore((state) => state.roomConfigs);
@@ -144,6 +156,15 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
     setError(null);
   };
 
+  const handleEmbarkationChange = (value: string) => {
+    if (value === PRIVATE_CHARTER_OPTION) {
+      handleClose();
+      router.push(PRIVATE_CHARTER_HREF);
+      return;
+    }
+    handleDurationChange(value as StayDurationValue);
+  };
+
   const handleRoomCountChange = (count: number) => {
     setRoomCount(count);
     setRoomConfigs((current) => {
@@ -201,13 +222,17 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
         tabIndex={-1}
         className="hathor-booking-modal__dialog"
       >
-        <aside className="hathor-booking-modal__art" aria-hidden="true">
+        <aside
+          className="hathor-booking-modal__art hathor-booking-modal__art--photo"
+          aria-hidden="true"
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/branding/booking-modal-noir-panel.webp"
+            src={panelImage.src}
             alt=""
             className="hathor-booking-modal__art-img"
             draggable={false}
+            decoding="async"
           />
           <div className="hathor-booking-modal__art-veil" />
         </aside>
@@ -224,17 +249,22 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
 
           <header className="hathor-booking-modal__header">
             <div className="hathor-booking-modal__header-brand">
-              <HathorBrandMark
-                variant="on-dark"
-                className="hathor-booking-modal__logo"
-              />
-              <p className="hathor-booking-modal__eyebrow">Reserve Your Journey</p>
+              <div className="hathor-booking-modal__logo-wrap">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={HATHOR_ICON_GOLD_SRC}
+                  alt={HATHOR_BRAND_NAME}
+                  className="hathor-booking-modal__logo hathor-booking-modal__logo--icon"
+                  draggable={false}
+                />
+              </div>
+              <p className="hathor-booking-modal__eyebrow">Reserve your journey</p>
               <h2 id={titleId} className="hathor-booking-modal__title">
                 Book Hathor Dahabiya
               </h2>
               <div className="hathor-booking-modal__lotus" aria-hidden="true">
                 <span className="hathor-booking-modal__lotus-line" />
-                <span className="hathor-booking-modal__lotus-mark">✦</span>
+                <span className="hathor-booking-modal__lotus-mark" />
                 <span className="hathor-booking-modal__lotus-line" />
               </div>
             </div>
@@ -257,7 +287,7 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
                     className="hathor-modal-select"
                     value={duration}
                     onChange={(event) =>
-                      handleDurationChange(event.target.value as StayDurationValue)
+                      handleEmbarkationChange(event.target.value)
                     }
                   >
                     {STAY_DURATION_OPTIONS.map((option) => (
@@ -265,6 +295,9 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
                         {option.label.replace(/^⛵\s*/, "")}
                       </option>
                     ))}
+                    <option value={PRIVATE_CHARTER_OPTION}>
+                      Private Charter
+                    </option>
                   </select>
                 </div>
               </div>
@@ -361,13 +394,7 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
               className="hathor-modal-btn hathor-modal-btn--primary"
               onClick={handleAvailabilityCheck}
             >
-              <span className="hathor-modal-btn__flourish" aria-hidden="true">
-                ❦
-              </span>
-              <span>Check Availability</span>
-              <span className="hathor-modal-btn__flourish" aria-hidden="true">
-                ❦
-              </span>
+              Check Availability
             </button>
           </footer>
         </div>

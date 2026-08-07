@@ -749,14 +749,17 @@ export function mountHeroScrollStage({
             autoAlpha: 1,
           });
           gsap.set(letterWraps, { y: 0, opacity: 1, force3D: true });
-          tl.to(
+          // fromTo keeps start/end explicit so scroll-up reverses the same cascade.
+          tl.fromTo(
             letterWraps,
+            { y: 0, opacity: 1, force3D: true },
             {
               y: getLogoHiddenY(),
               opacity: 0,
               ease: LOGO_SCROLL_LETTER_EASE,
               duration: LOGO_SCROLL_LETTER_DURATION,
               stagger: LOGO_SCROLL_LETTER_STAGGER,
+              immediateRender: false,
             },
             LOGO_SCROLL_LETTER_AT,
           );

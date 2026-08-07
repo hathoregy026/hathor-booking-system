@@ -9,6 +9,10 @@ export const HATHOR_HERO_ICON_SRC =
 export const HATHOR_HERO_ICON_DARK_SRC =
   "/branding/hathor-logo-nile-cruise-panorama-on-nile-visit-egypt-HATHOR-ICON-dark.svg";
 
+/** Hathor icon mark — gold (cream / light surfaces) */
+export const HATHOR_ICON_GOLD_SRC =
+  "/branding/hathor-logo-nile-cruise-panorama-on-nile-visit-egypt-HATHOR-ICON-golden.svg";
+
 /** Header logo — dark / night mode */
 export const HATHOR_LOGO_SRC =
   "/branding/hathor-logo-nile-cruise-panorama-on-nile-visit-egypt-golden-for-dark.svg";

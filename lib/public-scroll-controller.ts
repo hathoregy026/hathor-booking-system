@@ -40,7 +40,8 @@ function wantsNativeMode() {
   if (typeof window === "undefined") return true;
   /* Admin is a normal document scroller — Lenis + nested overflow locks freeze the panel. */
   if (window.location.pathname.startsWith("/admin")) return true;
-  /* Mask Reveal needs native sticky filters (Lenis breaks position:sticky). */
+  /* Cruises listing (mask-reveal layout) needs native sticky filters. */
+  if (window.location.pathname.startsWith("/cruises")) return true;
   if (window.location.pathname.startsWith("/mask-reveal")) return true;
   /* Fixed-Background Mask Reveal uses native scroll (Lenis breaks pin:fixed math). */
   if (window.location.pathname.startsWith("/gastronomy")) return true;

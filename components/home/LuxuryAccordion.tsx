@@ -334,15 +334,20 @@ export default function LuxuryAccordion({
                   {item.romanNumeral}
                 </span>
 
-                <ManagedImage
-                  name={item.imageName}
-                  alt=""
-                  fill
-                  sizes="100vw"
-                  unoptimized={false}
-                  className={styles.backgroundImage}
-                  previewAnchor
-                />
+                {/* Opacity lives on the shell so Next/Image fill inline styles
+                    cannot pin the photo at opacity 0 or a 1px clipped strip. */}
+                <div className={styles.media} aria-hidden="true">
+                  <ManagedImage
+                    name={item.imageName}
+                    alt=""
+                    fill
+                    sizes="100vw"
+                    loading="eager"
+                    unoptimized={false}
+                    className={styles.backgroundImage}
+                    previewAnchor
+                  />
+                </div>
 
                 <div className={styles.vignette} aria-hidden="true" />
 

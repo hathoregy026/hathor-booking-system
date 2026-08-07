@@ -2302,23 +2302,31 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 }
 
 /*
- * Our Voyages after amenities opening (Springs i-opening → i-nature).
- * Opening under-next pulls this up; keep a full viewport of readable space.
+ * Our Voyages = Springs i-nature after i-opening.
+ * Beat .ex-content-section { background: transparent !important } so cream
+ * actually covers the sticky opening (left photo + gold) on handoff.
  */
+html[data-ex-experience] .ex-root .home-am-sequence + [data-hathor-accordion].ex-content-section,
 .home-am-sequence + [data-hathor-accordion] {
+  --am-svh: 1svh;
   position: relative;
-  z-index: 20;
-  margin-top: 0 !important;
+  z-index: 24;
+  margin-top: calc(-100 * var(--am-svh)) !important;
   padding-top: clamp(6rem, 14vh, 10rem) !important;
   padding-bottom: clamp(4rem, 8vh, 6.5rem) !important;
-  background: var(--cream, #ece8df);
+  background-color: var(--cream, #ece8df) !important;
+  background-image: none !important;
   scroll-margin-top: 2rem;
   min-height: 100svh;
   transform: translateZ(1px);
 }
 
+html[data-ex-experience][data-public-theme="night"] .ex-root
+  .home-am-sequence
+  + [data-hathor-accordion].ex-content-section,
 html[data-public-theme="night"] .home-am-sequence + [data-hathor-accordion] {
-  background: var(--cream, #0b0907);
+  background-color: var(--cream, #0b0907) !important;
+  background-image: none !important;
 }
 
 /* Legacy fog-stack → voyages handoff (if stack still present) */
