@@ -433,11 +433,12 @@
   .text-c1, .text-c2, p, .btn__text, .text-t1 {
     font-family: "Hathor Body", "Agraham", sans-serif;
   }
-  .ui-light .g1, .ui-light .h0, .ui-light .h1, .ui-light .h2, .ui-light .h3,
-  .ui-light .text-c1, .ui-light .text-c2 { color: #b69f64; }
-  .ui-dark .g1, .ui-dark .h0, .ui-dark .h1, .ui-dark .h2, .ui-dark .h3,
-  .ui-dark .text-c1, .ui-dark .text-c2,
-  .ui-dark .text-t1 { color: #ece8df; }
+  /*
+   * Do NOT blanket-force heading colors on .ui-light / .ui-dark.
+   * Springs themes sections dynamically; forcing cream on .ui-dark .h1 made the
+   * intro opening (cream stage) render cream-on-cream — “invisible” left text.
+   * Keep token-driven colors from --t-* above.
+   */
   /* Keep Springs chrome out; Hathor public nav + site footer replace them. */
   .header, .cookie-consent {
     display: none !important;
@@ -464,85 +465,53 @@
   .l-gallery__caption .h0 {
     color: #ece8df !important;
   }
-
   /*
-   * Hero mosaic: fill the FULL viewport (not a left-half band) with equal gutters.
-   * Springs’ 100vw plane + origin at 50%+30svh leaves a large empty right after -28°.
-   * Dual --md/--n-md padding also collapses unevenly in the iframe shell.
+   * Intro “bottom 3 images + left text” stage (Springs cream panel):
+   * Keep ink copy on cream. Rising second images must stack above the first mask.
    */
-  .l-gallery {
-    overflow: hidden !important;
-    width: 100vw !important;
-    height: calc(100 * var(--svh, 1vh)) !important;
+  .l-intro.ui-background,
+  .l-intro {
+    --t-background: #ece8df;
+    --t-background-rgb: 236, 232, 223;
+    --t-text: #2c2824;
+    --t-text-rgb: 44, 40, 36;
+    --t-heading: #2c2824;
+    --t-heading-rgb: 44, 40, 36;
+    --t-primary: #2c2824;
+    --t-primary-rgb: 44, 40, 36;
+    background-color: #ece8df !important;
+    color: #2c2824 !important;
   }
-  .l-gallery__content.js-gallery-container {
-    width: 260vw !important;
-    height: 180svh !important;
-    left: -80vw !important;
-    top: -36svh !important;
-    opacity: 1 !important;
-    transform: rotate(-28deg) !important;
-    transform-origin: 50% 50% !important;
+  .l-intro__opening .h1,
+  .l-intro__opening .text-c1,
+  .l-intro__opening .text-color-primary,
+  .l-intro__opening-subtitle {
+    color: #2c2824 !important;
   }
-  .l-gallery__item.col,
-  .l-gallery__item.js-gallery-item,
-  .l-gallery__item {
-    width: 25vw !important;
-    max-width: 25vw !important;
-    flex: 0 0 25vw !important;
-    /* Exact equal gap on every side (matches travel step of col--lg-3). */
-    padding: 0.7vw !important;
-    box-sizing: border-box !important;
-    left: -40vw !important;
+  .l-intro__content.ui-dark {
+    --t-background: #2c2824;
+    --t-background-rgb: 44, 40, 36;
+    --t-text: #ece8df;
+    --t-heading: #ece8df;
+    --t-primary: #b69f64;
+    background-color: #2c2824 !important;
+    color: #ece8df !important;
   }
-  .l-gallery__item:nth-child(n + 7):nth-child(-n + 13) {
-    left: auto !important;
-    right: -45vw !important;
+  .l-intro__image--second {
+    position: relative;
+    z-index: 4;
   }
-  .l-gallery__item > .is-hidden--sm-down,
-  .l-gallery__item > .is-hidden--md-up,
-  .l-gallery__item > div {
-    width: 100% !important;
+  .l-intro__image--first {
+    z-index: 1;
   }
-  .l-gallery__item picture.img-full,
-  .l-gallery__item .img-full {
-    display: block !important;
-    width: 100% !important;
-    aspect-ratio: 3 / 4 !important;
-    height: auto !important;
-    overflow: hidden !important;
-  }
-  .l-gallery__item img {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    opacity: 1 !important;
-  }
-  @media (max-width: 480px) {
-    .l-gallery__content.js-gallery-container {
-      width: 320vw !important;
-      height: 200svh !important;
-      left: -110vw !important;
-      top: -20svh !important;
-      transform-origin: 50% 50% !important;
-    }
-    .l-gallery__item.col,
-    .l-gallery__item.js-gallery-item,
-    .l-gallery__item {
-      width: 42vw !important;
-      max-width: 42vw !important;
-      flex: 0 0 42vw !important;
-      padding: 1.1vw !important;
-      left: -130vw !important;
-    }
-    .l-gallery__item:nth-child(n + 7):nth-child(-n + 13) {
-      left: auto !important;
-      right: -130vw !important;
-    }
-  }
-
-  /* Ensure lazy/appear pictures paint — Springs appear can leave them invisible in the iframe shell. */
-  .js .is-invisible--js {
+  /*
+   * Only force media pictures visible — NEVER .is-invisible--js on text/reveal
+   * splits (that collapsed overlapping lines and hid rising choreography).
+   */
+  picture.is-invisible--js.img-full,
+  picture.is-invisible--js.img-cover,
+  img.is-invisible--js[data-src],
+  img.is-invisible--js[data-plugin] {
     opacity: 1 !important;
     visibility: visible !important;
   }
@@ -560,6 +529,9 @@
   #l-place-sticky-3 img.img-cover,
   .l-nature__caption img.img-cover {
     display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   footer.footer {
     display: none !important;
@@ -1179,29 +1151,8 @@ body.has-page-scroll-transition .public-site > .lux-footer {
       });
     });
   }
-  function hydrateGalleryImages() {
-    document.querySelectorAll(".l-gallery__item picture").forEach((pic) => {
-      pic.classList.remove("is-invisible--js");
-      pic.querySelectorAll("source").forEach((source) => {
-        const dataSrcset = source.getAttribute("data-srcset");
-        if (dataSrcset) source.setAttribute("srcset", dataSrcset);
-      });
-      const img = pic.querySelector("img");
-      if (!img) return;
-      const dataSrc = img.getAttribute("data-src");
-      const dataSrcset = img.getAttribute("data-srcset");
-      const src = img.getAttribute("src") || "";
-      if (dataSrc && (!src || src.startsWith("data:"))) {
-        img.setAttribute("src", dataSrc);
-      }
-      if (dataSrcset) img.setAttribute("srcset", dataSrcset);
-      img.classList.remove("is-invisible--js");
-      img.style.opacity = "1";
-    });
-  }
   function boot() {
     scrubUrls(document);
-    hydrateGalleryImages();
     // Do not force is-intro-seen / kill the landing preloader — that changes
     // Springs gallery mask + reveal choreography. Only mark media readiness.
     document.documentElement.classList.add("suites-media-ready", "js");
@@ -1212,18 +1163,8 @@ body.has-page-scroll-transition .public-site > .lux-footer {
   } else {
     boot();
   }
-  window.addEventListener(
-    "load",
-    () => {
-      scrubUrls(document);
-      hydrateGalleryImages();
-    },
-    { once: true },
-  );
-  setTimeout(() => {
-    scrubUrls(document);
-    hydrateGalleryImages();
-  }, 1200);
+  window.addEventListener("load", () => scrubUrls(document), { once: true });
+  setTimeout(() => scrubUrls(document), 1200);
 })();
 </script></head>
 <body data-barba="wrapper">
@@ -4707,7 +4648,7 @@ with&nbsp;Unrivaled Views
     
     
     <div                         class="background--cover background">
-        <img class="img-cover" src="/media/hathor/scraped/luxsuite-4.webp" alt="" width="1440" height="900" draggable="false" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" />
+        <img class="img-cover" src="/media/hathor/scraped/luxsuite-4.webp" alt="" width="1440" height="900" draggable="false" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;" /><iframe title="" width="1440" height="900" tabindex="-1" aria-hidden="true" src="about:blank" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:none;border:0;"></iframe>
     </div>
 
 
@@ -5194,7 +5135,7 @@ with&nbsp;Unrivaled Views
     
     
     <div                         class="vimeo-background background background--cover">
-        <img class="img-cover" src="/media/hathor/scraped/luxsuite-4.webp" alt="" width="1440" height="900" draggable="false" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" />
+        <img class="img-cover" src="/media/hathor/scraped/luxsuite-4.webp" alt="" width="1440" height="900" draggable="false" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;" /><iframe title="" width="1440" height="900" tabindex="-1" aria-hidden="true" src="about:blank" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:none;border:0;"></iframe>
     </div>
 
                 </div>
@@ -5631,7 +5572,7 @@ to&nbsp;the&nbsp;MIBC
     
     
     <div                         class="background background--cover">
-        <img class="img-cover" src="/media/hathor/scraped/suites-luxury-suites.webp" alt="" width="1440" height="900" draggable="false" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" />
+        <img class="img-cover" src="/media/hathor/scraped/suites-luxury-suites.webp" alt="" width="1440" height="900" draggable="false" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;" /><iframe title="" width="1440" height="900" tabindex="-1" aria-hidden="true" src="about:blank" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:none;border:0;"></iframe>
     </div>
 
         </div>
@@ -5656,7 +5597,7 @@ to&nbsp;the&nbsp;MIBC
     
     
     <div                         class="background background--cover">
-        <img class="img-cover" src="/media/hathor/scraped/suites-luxury-rooms.webp" alt="" width="1440" height="900" draggable="false" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" />
+        <img class="img-cover" src="/media/hathor/scraped/suites-luxury-rooms.webp" alt="" width="1440" height="900" draggable="false" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;" /><iframe title="" width="1440" height="900" tabindex="-1" aria-hidden="true" src="about:blank" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:none;border:0;"></iframe>
     </div>
 
         </div>
@@ -5682,7 +5623,7 @@ to&nbsp;the&nbsp;MIBC
     
     
     <div                         class="background background--cover">
-        <img class="img-cover" src="/media/hathor/scraped/suites-royal.webp" alt="" width="1440" height="900" draggable="false" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" />
+        <img class="img-cover" src="/media/hathor/scraped/suites-royal.webp" alt="" width="1440" height="900" draggable="false" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;" /><iframe title="" width="1440" height="900" tabindex="-1" aria-hidden="true" src="about:blank" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:none;border:0;"></iframe>
     </div>
 
 

@@ -314,9 +314,11 @@ const vimeoToSuite = {
 };
 html = html.replace(
   /<iframe\b([^>]*?)\bsrc="https:\/\/player\.vimeo\.com\/video\/(\d+)\?[^"]*"([^>]*)>[\s\S]*?<\/iframe>/gi,
-  (_m, pre, id) => {
+  (_m, _pre, id) => {
     const url = vimeoToSuite[id] || MEDIA.hero;
-    return `<img class="img-cover" src="${url}" alt="" width="1440" height="900" draggable="false" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" />`;
+    // Keep a sized iframe node so Springs motion code that falls back to
+    // iframe.width does not throw; paint the suite still via img.
+    return `<img class="img-cover" src="${url}" alt="" width="1440" height="900" draggable="false" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;" /><iframe title="" width="1440" height="900" tabindex="-1" aria-hidden="true" src="about:blank" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:none;border:0;"></iframe>`;
   },
 );
 
@@ -423,11 +425,12 @@ const suitesPalette = `
   .text-c1, .text-c2, p, .btn__text, .text-t1 {
     font-family: "Hathor Body", "Agraham", sans-serif;
   }
-  .ui-light .g1, .ui-light .h0, .ui-light .h1, .ui-light .h2, .ui-light .h3,
-  .ui-light .text-c1, .ui-light .text-c2 { color: #b69f64; }
-  .ui-dark .g1, .ui-dark .h0, .ui-dark .h1, .ui-dark .h2, .ui-dark .h3,
-  .ui-dark .text-c1, .ui-dark .text-c2,
-  .ui-dark .text-t1 { color: #ece8df; }
+  /*
+   * Do NOT blanket-force heading colors on .ui-light / .ui-dark.
+   * Springs themes sections dynamically; forcing cream on .ui-dark .h1 made the
+   * intro opening (cream stage) render cream-on-cream — “invisible” left text.
+   * Keep token-driven colors from --t-* above.
+   */
   /* Keep Springs chrome out; Hathor public nav + site footer replace them. */
   .header, .cookie-consent {
     display: none !important;
@@ -454,8 +457,53 @@ const suitesPalette = `
   .l-gallery__caption .h0 {
     color: #ece8df !important;
   }
-  /* Ensure lazy/appear pictures paint — Springs appear can leave them invisible in the iframe shell. */
-  .js .is-invisible--js {
+  /*
+   * Intro “bottom 3 images + left text” stage (Springs cream panel):
+   * Keep ink copy on cream. Rising second images must stack above the first mask.
+   */
+  .l-intro.ui-background,
+  .l-intro {
+    --t-background: #ece8df;
+    --t-background-rgb: 236, 232, 223;
+    --t-text: #2c2824;
+    --t-text-rgb: 44, 40, 36;
+    --t-heading: #2c2824;
+    --t-heading-rgb: 44, 40, 36;
+    --t-primary: #2c2824;
+    --t-primary-rgb: 44, 40, 36;
+    background-color: #ece8df !important;
+    color: #2c2824 !important;
+  }
+  .l-intro__opening .h1,
+  .l-intro__opening .text-c1,
+  .l-intro__opening .text-color-primary,
+  .l-intro__opening-subtitle {
+    color: #2c2824 !important;
+  }
+  .l-intro__content.ui-dark {
+    --t-background: #2c2824;
+    --t-background-rgb: 44, 40, 36;
+    --t-text: #ece8df;
+    --t-heading: #ece8df;
+    --t-primary: #b69f64;
+    background-color: #2c2824 !important;
+    color: #ece8df !important;
+  }
+  .l-intro__image--second {
+    position: relative;
+    z-index: 4;
+  }
+  .l-intro__image--first {
+    z-index: 1;
+  }
+  /*
+   * Only force media pictures visible — NEVER .is-invisible--js on text/reveal
+   * splits (that collapsed overlapping lines and hid rising choreography).
+   */
+  picture.is-invisible--js.img-full,
+  picture.is-invisible--js.img-cover,
+  img.is-invisible--js[data-src],
+  img.is-invisible--js[data-plugin] {
     opacity: 1 !important;
     visibility: visible !important;
   }
@@ -473,6 +521,9 @@ const suitesPalette = `
   #l-place-sticky-3 img.img-cover,
   .l-nature__caption img.img-cover {
     display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   footer.footer {
     display: none !important;
