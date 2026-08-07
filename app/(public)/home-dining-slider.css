@@ -113,10 +113,14 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   transform: translateZ(1px);
 }
 
-/* Wheel rises over Our Voyages (accordion sits between amenities and helm) */
+/*
+ * Helm may stack above Voyages for the cover wipe, but stays fully clipped
+ * shut in CSS until the scrub opens it — so Voyages is never buried blank.
+ */
 [data-hathor-accordion] + .home-helm-portal {
   position: relative;
   z-index: 26;
+  clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
 }
 
 /* ========== i-intro (Springs: 150svh / 300svh) ========== */
@@ -522,19 +526,33 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   background: var(--am-gold);
   overflow: hidden;
   will-change: clip-path;
+}
+
+/*
+ * Fixed on the RIGHT while cards scroll (above card layer).
+ * Text block is left-aligned so every line shares one vertical edge.
+ */
+.home-am-opening__title-pin {
+  grid-area: sticky_content;
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  height: calc(100 * var(--am-svh));
+  width: 50%;
+  margin-left: 50%;
+  pointer-events: none;
   display: flex;
   align-items: flex-end;
-  /* Sit in the open zone beside the rising cards (cards occupy ~left 14rem) */
-  justify-content: flex-start;
-  padding: clamp(1.5rem, 3.5vw, 3rem);
-  padding-left: calc(min(58%, 13.5rem) + clamp(1.25rem, 2.5vw, 2.5rem));
+  justify-content: flex-end;
+  padding: clamp(1.75rem, 4vw, 3.25rem);
+  box-sizing: border-box;
 }
 
 .home-am-opening__title {
   position: relative;
   z-index: 2;
   margin: 0;
-  max-width: min(16rem, 100%);
+  max-width: min(15rem, 100%);
   line-height: 1.05;
   text-align: left;
   pointer-events: all;
@@ -546,7 +564,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
 
 .home-am-opening__title > .home-am-title-line {
   display: block;
-  width: 100%;
+  width: max-content;
+  max-width: 100%;
   text-align: left;
   white-space: nowrap;
 }
@@ -851,10 +870,19 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   .home-am-opening__title-panel {
     width: 100%;
     height: 46%;
+  }
+
+  .home-am-opening__title-pin {
+    width: 100%;
+    margin-left: 0;
+    height: auto;
+    min-height: 0;
+    position: relative;
+    top: auto;
     align-items: flex-start;
     justify-content: flex-start;
     padding: 1.15rem;
-    padding-left: 1.15rem;
+    z-index: 4;
   }
 
   .home-am-opening__title {

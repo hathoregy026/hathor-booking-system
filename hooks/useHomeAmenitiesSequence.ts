@@ -117,10 +117,11 @@ export function useHomeAmenitiesSequence(
       gsap.set(helm, {
         clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
       });
+      /* Wipe only after Voyages has been on screen — not as it enters. */
       helmSt = ScrollTrigger.create({
         id: "home-am-to-helm",
         trigger: helmCoverTrigger,
-        start: "bottom-=100% bottom",
+        start: "bottom bottom",
         end: "bottom top",
         scrub: true,
         refreshPriority: -84,

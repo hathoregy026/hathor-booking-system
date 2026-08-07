@@ -592,31 +592,42 @@ export function HomeAmenitiesSequence({
               data-parallax--100-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
               style={{ background: GOLD }}
             >
-              <h2
-                className="home-am-opening__title typo-on-images-title"
-                data-am-opening-title
-                style={onGoldTitle}
-              >
-                {(
-                  landmarks[3]?.titleLines?.length
-                    ? landmarks[3].titleLines
-                    : landmarks[0]?.titleLines?.length
-                      ? landmarks[0].titleLines
-                      : (stories[0]?.title || intro.titleLines.join("\n"))
-                          .split("\n")
-                          .map((line) => line.trim())
-                          .filter(Boolean)
-                ).map((line) => (
-                  <span key={line} className="home-am-title-line">
-                    {line.replace(/\.$/, "")}
-                  </span>
-                ))}
-              </h2>
               <div className="home-am-opening__gradient" aria-hidden="true">
                 <div />
               </div>
             </div>
           </div>
+        </div>
+
+        {/*
+          Title pin ABOVE the scrolling cards (z-index 4): stays fixed on the
+          right while cards rise — Springs sticky caption behaviour.
+        */}
+        <div
+          className="home-am-opening__title-pin sticky__layer sticky__layer--sticky"
+          data-am-opening-title-pin
+          aria-hidden="false"
+        >
+          <h2
+            className="home-am-opening__title typo-on-images-title"
+            data-am-opening-title
+            style={onGoldTitle}
+          >
+            {(
+              landmarks[3]?.titleLines?.length
+                ? landmarks[3].titleLines
+                : landmarks[0]?.titleLines?.length
+                  ? landmarks[0].titleLines
+                  : (stories[0]?.title || intro.titleLines.join("\n"))
+                      .split("\n")
+                      .map((line) => line.trim())
+                      .filter(Boolean)
+            ).map((line) => (
+              <span key={line} className="home-am-title-line">
+                {line.replace(/\.$/, "")}
+              </span>
+            ))}
+          </h2>
         </div>
 
         <div
