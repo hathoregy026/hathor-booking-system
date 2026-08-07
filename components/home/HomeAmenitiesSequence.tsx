@@ -187,7 +187,7 @@ export function HomeAmenitiesSequence({
   return (
     <section
       ref={rootRef}
-      className="home-am-sequence home-am-sequence--to-voyages"
+      className="home-am-sequence"
       aria-label="Amenities-style Nile stories"
     >
       {/* ===== i-intro ===== */}
@@ -542,9 +542,9 @@ export function HomeAmenitiesSequence({
         </div>
       ) : null}
 
-      {/* ===== i-opening — Springs: sticky caption + scrolling cards ===== */}
+      {/* ===== i-opening — Springs infrastructure amenities opening only ===== */}
       <div
-        className="home-am-opening home-am-chapter home-am-chapter--under-previous sticky sticky--full-height sticky--under-previous"
+        className="home-am-opening home-am-chapter home-am-chapter--under-previous home-am-chapter--under-next sticky sticky--full-height sticky--under-previous sticky--under-next"
         data-am-opening
         data-am-chapter
         id="home-am-opening"
@@ -581,7 +581,7 @@ export function HomeAmenitiesSequence({
               </div>
             </div>
 
-            {/* Springs .i-opening__caption — sticky title lives HERE */}
+            {/* Springs .i-opening__caption — sticky title over scrolling gold column */}
             <div
               className="home-am-opening__title-panel"
               data-am-opening-title-panel
@@ -593,23 +593,32 @@ export function HomeAmenitiesSequence({
               data-parallax--100-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
             >
               <div className="home-am-opening__caption-title">
+                {/* No typo-on-images-title — escape CMS size + atelier char split */}
                 <h2
-                  className="home-am-opening__title typo-on-images-title"
+                  className="home-am-opening__title"
                   data-am-opening-title
-                  style={onGoldTitle}
+                  style={{ color: WHITE, WebkitTextFillColor: WHITE }}
                 >
-                  {(
-                    landmarks[3]?.titleLines?.length
-                      ? landmarks[3].titleLines
-                      : landmarks[0]?.titleLines?.length
-                        ? landmarks[0].titleLines
-                        : (stories[0]?.title || intro.titleLines.join("\n"))
-                            .split("\n")
-                            .map((line) => line.trim())
-                            .filter(Boolean)
-                  ).map((line) => (
+                  {(() => {
+                    const raw = (
+                      landmarks[3]?.titleLines?.length
+                        ? landmarks[3].titleLines
+                        : landmarks[0]?.titleLines?.length
+                          ? landmarks[0].titleLines
+                          : (stories[0]?.title || intro.titleLines.join("\n"))
+                              .split("\n")
+                              .map((line) => line.trim())
+                              .filter(Boolean)
+                    ).map((line) => line.replace(/\.$/, "").trim());
+                    const joined = raw.join(" ").replace(/\s+/g, " ");
+                    /* Keep whole words — never GOLD / EN */
+                    if (/golden\s+hour/i.test(joined) && /on\s+the\s+nile/i.test(joined)) {
+                      return ["GOLDEN HOUR", "ON THE NILE"];
+                    }
+                    return raw.length ? raw : ["GOLDEN HOUR", "ON THE NILE"];
+                  })().map((line) => (
                     <span key={line} className="home-am-title-line">
-                      {line.replace(/\.$/, "")}
+                      {line}
                     </span>
                   ))}
                 </h2>
@@ -621,7 +630,7 @@ export function HomeAmenitiesSequence({
           </div>
         </div>
 
-        {/* Springs .i-opening__right-column — scrolls under sticky caption */}
+        {/* Springs .i-opening__right-column.ui-background */}
         <div
           className="home-am-opening__right sticky__layer"
           data-am-opening-right

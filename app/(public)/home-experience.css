@@ -2302,11 +2302,9 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 }
 
 /*
- * Our Voyages — rises under amenities (Springs i-nature under-previous).
- * No clip-path inset (that buried a short accordion). Sequence z-index
- * covers during the pull; after opening releases, Voyages owns the view.
+ * Our Voyages after amenities opening (Springs i-opening → i-nature).
+ * Opening under-next pulls this up; keep a full viewport of readable space.
  */
-.home-am-sequence--to-voyages + [data-hathor-accordion],
 .home-am-sequence + [data-hathor-accordion] {
   position: relative;
   z-index: 20;
@@ -2319,7 +2317,6 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   transform: translateZ(1px);
 }
 
-html[data-public-theme="night"] .home-am-sequence--to-voyages + [data-hathor-accordion],
 html[data-public-theme="night"] .home-am-sequence + [data-hathor-accordion] {
   background: var(--cream, #0b0907);
 }

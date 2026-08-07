@@ -39,22 +39,6 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
 }
 
 /*
- * Springs under-next on the amenities block → Our Voyages (like i-opening → i-nature).
- * Pulls Voyages under the sticky opening; spacer keeps scroll length.
- */
-.home-am-sequence.home-am-sequence--to-voyages {
-  --voyages-under-next: 100svh;
-  margin-bottom: calc(var(--voyages-under-next) * -1);
-}
-
-.home-am-sequence.home-am-sequence--to-voyages::after {
-  content: "";
-  display: block;
-  height: var(--voyages-under-next);
-  pointer-events: none;
-}
-
-/*
  * Springs .sticky system — cover is CSS clip on the NEXT chapter,
  * not a GSAP wipe on the sticky stage.
  */
@@ -553,13 +537,13 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   box-sizing: border-box;
 }
 
-/* Springs .i-opening__caption__title.col--md-3 (~25vw), bottom-right */
+/* Springs .i-opening__caption__title — bottom-right, left-aligned lines, whole words */
 .home-am-opening__caption-title {
   position: relative;
   z-index: 2;
-  flex: 0 1 auto;
-  width: min(25vw, 14rem);
-  max-width: 100%;
+  flex: 0 0 auto;
+  width: max-content;
+  max-width: min(46%, 20rem);
   pointer-events: all;
 }
 
@@ -567,29 +551,42 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   position: relative;
   z-index: 2;
   margin: 0;
-  width: 100%;
-  line-height: 1.08;
+  width: max-content;
+  max-width: 100%;
+  line-height: 1.1;
   text-align: left;
-  /* Beat amenities CMS title size — Springs caption fits ~25vw */
-  font-size: clamp(1.45rem, 2.6vw, 2.55rem) !important;
+  font-family: var(
+    --public-serif,
+    var(--font-display, "Playfair Display", Georgia, serif)
+  ) !important;
+  font-size: clamp(1.5rem, 2.5vw, 2.45rem) !important;
+  font-weight: 400 !important;
+  font-style: italic;
   letter-spacing: -0.02em;
-  overflow-wrap: break-word;
-  hyphens: manual;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  overflow-wrap: normal !important;
+  word-break: keep-all !important;
+  hyphens: none !important;
 }
 
 .public-site .home-am-sequence .home-am-opening__title,
 .public-site .home-am-sequence .home-am-opening__title *,
 html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title,
 html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
-  font-size: clamp(1.45rem, 2.6vw, 2.55rem) !important;
-  line-height: 1.08 !important;
+  font-size: clamp(1.5rem, 2.5vw, 2.45rem) !important;
+  line-height: 1.1 !important;
+  overflow-wrap: normal !important;
+  word-break: keep-all !important;
+  hyphens: none !important;
 }
 
 .home-am-opening__title > .home-am-title-line {
   display: block;
-  width: 100%;
+  width: max-content;
+  max-width: 100%;
   text-align: left;
-  white-space: normal;
+  white-space: nowrap !important;
 }
 
 .home-am-opening__gradient {
@@ -897,13 +894,18 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   }
 
   .home-am-opening__caption-title {
-    width: min(70%, 14rem);
+    width: max-content;
+    max-width: min(85%, 16rem);
     margin-left: 0;
   }
 
   .home-am-opening__title {
     text-align: left;
-    font-size: clamp(1.45rem, 6.5vw, 2.1rem) !important;
+    font-size: clamp(1.4rem, 6vw, 2rem) !important;
+  }
+
+  .home-am-opening__title > .home-am-title-line {
+    white-space: nowrap !important;
   }
 
   .home-am-opening__right {
