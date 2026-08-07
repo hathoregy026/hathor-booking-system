@@ -33,7 +33,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
     0 0 10px rgba(22, 18, 14, 0.35) !important;
 }
 
-.home-am-sequence + [data-hathor-accordion],
+/* Keep helm flush under voyages; do not zero-out voyages under amenities */
 [data-hathor-accordion] + .home-helm-portal {
   margin-top: 0 !important;
 }

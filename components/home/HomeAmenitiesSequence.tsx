@@ -518,7 +518,7 @@ export function HomeAmenitiesSequence({
 
       {/* ===== i-opening — dual sticky layers, cards in document flow ===== */}
       <div
-        className="home-am-opening home-am-chapter home-am-chapter--under-previous home-am-chapter--under-next sticky sticky--full-height sticky--under-previous sticky--under-next"
+        className="home-am-opening home-am-chapter home-am-chapter--under-previous sticky sticky--full-height sticky--under-previous"
         data-am-opening
         data-am-chapter
         id="home-am-opening"
