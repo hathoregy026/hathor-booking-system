@@ -92,14 +92,12 @@ html[data-public-theme="night"] .page-cruises {
 }
 
 html[data-public-theme="night"] .public-theme-toggle {
-  border-color: transparent;
-  background: transparent;
   color: #e4d5b8;
 }
 
-html[data-public-theme="night"] .public-theme-toggle.is-night .public-theme-toggle__track {
-  background: #0b0907;
-  color: #faf8f5;
+html[data-public-theme="night"] .public-theme-toggle__track {
+  border-color: rgb(228 213 184 / 0.35);
+  background: rgb(228 213 184 / 0.08);
 }
 
 /* ——— Day restore (must win over night variable bleed) ——— */

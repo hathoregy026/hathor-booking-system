@@ -1846,24 +1846,57 @@
   color: #faf8f5;
 }
 
+/* Theme switch — inherits nav land/scroll/hover surface language */
 .hathor-header--owo-hero-layout:not(.hathor-header--menu-hovered) .public-theme-toggle {
-  border-color: transparent;
-  background: transparent;
   color: #faf8f5;
 }
 
-.hathor-header--owo-hero-layout:not(.hathor-header--menu-hovered)
-  .public-theme-toggle.is-day
+/* Land (clear header): hairline glass pill */
+.hathor-header--owo-hero-layout.hathor-header--menu-active:not(
+    .hathor-header--menu-hovered
+  ):not(.hathor-header--nav-compact)
   .public-theme-toggle__track {
-  background: rgb(250 248 245 / 0.88);
+  background: rgb(250 248 245 / 0.08);
+  border-color: rgb(250 248 245 / 0.38);
+  box-shadow: inset 0 0 0 1px rgb(250 248 245 / 0.04);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.hathor-header--owo-hero-layout.hathor-header--menu-active:not(
+    .hathor-header--menu-hovered
+  ):not(.hathor-header--nav-compact)
+  .public-theme-toggle__thumb {
+  background: rgb(250 248 245 / 0.94);
   color: #1c1917;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.22);
 }
 
-.hathor-header--owo-hero-layout:not(.hathor-header--menu-hovered)
-  .public-theme-toggle.is-night
+.hathor-header--owo-hero-layout.hathor-header--menu-active:not(
+    .hathor-header--menu-hovered
+  ):not(.hathor-header--nav-compact)
+  .public-theme-toggle__glyph {
+  color: rgb(250 248 245 / 0.55);
+}
+
+/* Scrolled dark glass: denser frosted track */
+.hathor-header--owo-hero-layout.hathor-header--menu-active.hathor-header--nav-compact:not(
+    .hathor-header--menu-hovered
+  )
   .public-theme-toggle__track {
-  background: #0b0907;
-  color: #faf8f5;
+  background: rgb(250 248 245 / 0.12);
+  border-color: rgb(250 248 245 / 0.28);
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.hathor-header--owo-hero-layout.hathor-header--menu-active.hathor-header--nav-compact:not(
+    .hathor-header--menu-hovered
+  )
+  .public-theme-toggle__thumb {
+  background: #faf8f5;
+  color: #1c1917;
 }
 
 /* Hover only — solid white bar */
@@ -1903,23 +1936,29 @@
 }
 
 .hathor-header--owo-hero-layout.hathor-header--menu-hovered .public-theme-toggle {
-  border-color: transparent;
-  background: transparent;
   color: #1c1917;
 }
 
-.hathor-header--owo-hero-layout.hathor-header--menu-hovered
-  .public-theme-toggle.is-day
-  .public-theme-toggle__track {
-  background: #d9d6d0;
-  color: #1c1917;
+.hathor-header--owo-hero-layout.hathor-header--menu-hovered .public-theme-toggle__track {
+  background: rgb(28 25 23 / 0.06);
+  border-color: rgb(28 25 23 / 0.18);
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
-.hathor-header--owo-hero-layout.hathor-header--menu-hovered
-  .public-theme-toggle.is-night
-  .public-theme-toggle__track {
-  background: #0b0907;
+.hathor-header--owo-hero-layout.hathor-header--menu-hovered .public-theme-toggle__thumb {
+  background: #1c1917;
   color: #faf8f5;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.16);
+}
+
+.hathor-header--owo-hero-layout.hathor-header--menu-hovered .public-theme-toggle__glyph {
+  color: rgb(28 25 23 / 0.4);
+}
+
+.hathor-header--owo-hero-layout.hathor-header--menu-hovered .public-theme-toggle:hover .public-theme-toggle__track {
+  border-color: rgb(182 159 100 / 0.55);
 }
 
 .hathor-header--owo-hero-layout.hathor-header--solid .hathor-header__nav-link,
@@ -4947,26 +4986,35 @@ html[data-public-theme="day"] .hathor-explore__backdrop {
 }
 
 .public-theme-toggle {
-  --theme-toggle-pad: 0.16rem;
-  --theme-toggle-thumb: calc(var(--theme-toggle-h, 1.7rem) - (var(--theme-toggle-pad) * 2));
+  --theme-toggle-pad: 0.12rem;
+  --theme-toggle-thumb: calc(var(--theme-toggle-h, 1.35rem) - (var(--theme-toggle-pad) * 2));
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: var(--theme-toggle-w, 7.75rem);
-  height: var(--theme-toggle-h, 1.7rem);
+  width: var(--theme-toggle-w, 2.85rem);
+  height: var(--theme-toggle-h, 1.35rem);
   padding: 0;
   border: 0;
   border-radius: 9999px;
   background: transparent;
   color: inherit;
   line-height: 1;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition:
+    color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.3s ease;
 }
 
 .public-theme-toggle:hover {
-  transform: none;
-  opacity: 0.94;
+  opacity: 1;
+}
+
+.public-theme-toggle:hover .public-theme-toggle__track {
+  border-color: rgb(182 159 100 / 0.65);
+}
+
+.public-theme-toggle:hover .public-theme-toggle__thumb {
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.28);
 }
 
 .public-theme-toggle__track {
@@ -4975,88 +5023,87 @@ html[data-public-theme="day"] .hathor-explore__backdrop {
   width: 100%;
   height: 100%;
   border-radius: 9999px;
+  border: 1px solid rgb(250 248 245 / 0.35);
+  background: rgb(250 248 245 / 0.08);
   overflow: hidden;
   transition:
-    background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    backdrop-filter 0.45s ease;
 }
 
-.public-theme-toggle.is-day .public-theme-toggle__track {
-  background: #d9d6d0;
-  color: #121212;
-}
-
-.public-theme-toggle.is-night .public-theme-toggle__track {
-  background: #0b0907;
-  color: #faf8f5;
-}
-
-.public-theme-toggle__label {
+.public-theme-toggle__glyph {
   position: absolute;
   top: 50%;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: var(--theme-toggle-thumb);
+  height: var(--theme-toggle-thumb);
   transform: translateY(-50%);
-  font-family: var(--font-body, inherit);
-  font-size: 0.5625rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  white-space: nowrap;
+  color: rgb(250 248 245 / 0.5);
   pointer-events: none;
-  transition: opacity 0.28s ease;
+  transition:
+    color 0.35s ease,
+    opacity 0.35s ease;
 }
 
-.public-theme-toggle__label--day {
-  left: 0.7rem;
-  color: #121212;
+.public-theme-toggle__glyph--sun {
+  left: var(--theme-toggle-pad);
 }
 
-.public-theme-toggle__label--night {
-  right: 0.55rem;
-  color: #faf8f5;
+.public-theme-toggle__glyph--moon {
+  right: var(--theme-toggle-pad);
 }
 
-.public-theme-toggle.is-day .public-theme-toggle__label--night,
-.public-theme-toggle.is-night .public-theme-toggle__label--day {
+.public-theme-toggle.is-day .public-theme-toggle__glyph--sun,
+.public-theme-toggle.is-night .public-theme-toggle__glyph--moon {
   opacity: 0;
 }
 
-.public-theme-toggle.is-day .public-theme-toggle__label--day,
-.public-theme-toggle.is-night .public-theme-toggle__label--night {
+.public-theme-toggle.is-day .public-theme-toggle__glyph--moon,
+.public-theme-toggle.is-night .public-theme-toggle__glyph--sun {
   opacity: 1;
 }
 
 .public-theme-toggle__thumb {
+  --theme-toggle-thumb-x: 0;
   position: absolute;
   top: var(--theme-toggle-pad);
   left: var(--theme-toggle-pad);
+  z-index: 2;
   display: grid;
   place-items: center;
   width: var(--theme-toggle-thumb);
   height: var(--theme-toggle-thumb);
   border-radius: 9999px;
-  background: #ffffff;
-  color: #121212;
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.18);
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  background: rgb(250 248 245 / 0.95);
+  color: #1c1917;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.2);
+  transform: translateX(var(--theme-toggle-thumb-x));
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease;
   will-change: transform;
 }
 
-.public-theme-toggle.is-day .public-theme-toggle__thumb {
-  transform: translateX(
-    calc(
-      var(--theme-toggle-w, 7.75rem) - var(--theme-toggle-thumb) -
-        (var(--theme-toggle-pad) * 2)
-    )
+.public-theme-toggle.is-day {
+  --theme-toggle-thumb-x: calc(
+    var(--theme-toggle-w, 2.85rem) - var(--theme-toggle-thumb) -
+      (var(--theme-toggle-pad) * 2)
   );
 }
 
-.public-theme-toggle.is-night .public-theme-toggle__thumb {
-  transform: translateX(0);
+.public-theme-toggle.is-night {
+  --theme-toggle-thumb-x: 0;
 }
 
 .public-theme-toggle__icon {
-  width: 0.82rem;
-  height: 0.82rem;
+  width: 0.72rem;
+  height: 0.72rem;
   display: block;
 }
 

@@ -31,7 +31,7 @@ function BrandedSunIcon() {
       <g
         fill="none"
         stroke="currentColor"
-        strokeWidth="1.2"
+        strokeWidth="1.25"
         strokeLinecap="round"
       >
         <path d="M12 1.9v2" />
@@ -62,7 +62,7 @@ function BrandedMoonIcon() {
       <path
         fill="none"
         stroke="currentColor"
-        strokeWidth="1.15"
+        strokeWidth="1.2"
         strokeLinecap="round"
         strokeLinejoin="round"
         d="M16.2 4.6a7.4 7.4 0 1 0 3.4 11.2 5.9 5.9 0 1 1-3.4-11.2Z"
@@ -102,11 +102,11 @@ export function PublicThemeToggle() {
       title={`${isDay ? "Night" : "Day"} view`}
     >
       <span className="public-theme-toggle__track">
-        <span className="public-theme-toggle__label public-theme-toggle__label--day">
-          Day Mode
+        <span className="public-theme-toggle__glyph public-theme-toggle__glyph--sun">
+          <BrandedSunIcon />
         </span>
-        <span className="public-theme-toggle__label public-theme-toggle__label--night">
-          Night Mode
+        <span className="public-theme-toggle__glyph public-theme-toggle__glyph--moon">
+          <BrandedMoonIcon />
         </span>
         <span className="public-theme-toggle__thumb" aria-hidden>
           {isDay ? <BrandedSunIcon /> : <BrandedMoonIcon />}
