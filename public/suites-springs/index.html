@@ -445,8 +445,9 @@
     visibility: hidden !important;
     pointer-events: none !important;
   }
-  /* Gold accent glows (Springs used green radials). Keep modest so photos stay readable. */
-  .l-gallery__gradient div,
+  /* Gold accent glows (Springs used green radials). Keep modest so photos stay readable.
+     Do NOT flatten .l-gallery__gradient layers — Springs’ soft depth comes from those
+     stacked radials; gallery tokens are gold so the ambient shadow stays #B69F64-based. */
   .l-wellness__gradient div,
   .l-nature__gradient div,
   .footer__gradient div,
@@ -455,8 +456,40 @@
   .l-nature-bg-gradient {
     background: radial-gradient(circle, rgba(182, 159, 100, 0.55) 0%, rgba(182, 159, 100, 0.22) 45%, rgba(182, 159, 100, 0) 74%) !important;
   }
-  /* Title/lede sit on dark gutters like Springs — cream, never mid-gold on gold.
-     Caption must stack above the gallery split masks (z-index 44) or left text vanishes. */
+  /*
+   * Suites hero gutters: solid 100% #B69F64 (no ink wash / vignette mud).
+   * Keep slower mosaic drift; restore Springs ambient gradient layers via gold tokens.
+   * Soft elevation shadows stay Springs’ original box-shadow filters, retinted to gold
+   * in the CSS color pass (pure-black → rgba(182,159,100)) — no custom drop-shadow.
+   */
+  .l-gallery-container.ui-dark,
+  .l-gallery-container.ui-background,
+  .l-gallery-container.ui-dark.ui-background {
+    --t-background: #b69f64;
+    --t-background-rgb: 182, 159, 100;
+    --c-dark-green: #b69f64;
+    --c-dark-green-rgb: 182, 159, 100;
+    --c-green: #b69f64;
+    --c-green-rgb: 182, 159, 100;
+    --c-olive: #b69f64;
+    --c-olive-rgb: 182, 159, 100;
+    --c-blue: #b69f64;
+    --c-blue-rgb: 182, 159, 100;
+    --c-light-green: #b69f64;
+    --c-light-green-rgb: 182, 159, 100;
+    background: #b69f64 !important;
+    background-color: #b69f64 !important;
+  }
+  /* Springs’ last gradient layer was near-black vignette — retint to soft gold depth. */
+  .l-gallery__gradient div:nth-child(5) {
+    background: radial-gradient(
+      circle,
+      rgba(182, 159, 100, 0.65) 0,
+      rgba(182, 159, 100, 0.35) 15%,
+      rgba(182, 159, 100, 0) 70%
+    ) !important;
+  }
+  /* Title/lede on gold hero — cream still reads; keep above split masks. */
   .l-gallery__caption {
     z-index: 50 !important;
   }
@@ -464,33 +497,6 @@
   .l-gallery__caption .text-t1,
   .l-gallery__caption .h0 {
     color: #ece8df !important;
-  }
-  /*
-   * Hero mosaic: Springs-style floating depth via drop-shadow, gold (#B69F64) base
-   * instead of forest-green ambient shadow. Keep transform animation on the item;
-   * filter sits on the picture so drift stays GPU-friendly.
-   */
-  .l-gallery__item picture,
-  .l-gallery__item__mask-list__item picture {
-    filter:
-      drop-shadow(0 18px 42px rgba(182, 159, 100, 0.45))
-      drop-shadow(0 6px 16px rgba(44, 40, 36, 0.38));
-  }
-  @media (max-width: 1024px) {
-    .l-gallery__item picture,
-    .l-gallery__item__mask-list__item picture {
-      filter:
-        drop-shadow(0 14px 32px rgba(182, 159, 100, 0.38))
-        drop-shadow(0 5px 12px rgba(44, 40, 36, 0.32));
-    }
-  }
-  @media (max-width: 480px) {
-    .l-gallery__item picture,
-    .l-gallery__item__mask-list__item picture {
-      filter:
-        drop-shadow(0 10px 22px rgba(182, 159, 100, 0.32))
-        drop-shadow(0 3px 8px rgba(44, 40, 36, 0.28));
-    }
   }
   /*
    * Intro “bottom 3 images + left text” stage (Springs cream panel):
