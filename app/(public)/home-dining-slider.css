@@ -1,13 +1,11 @@
 /* Springs amenities Fixed-Background Mask Reveal on homepage:
-   under-next + under-previous + section clip-path — sticky stages stay put;
-   next chapter paints over the previous (no discrete “block scroll”). */
+   sticky--under-next chapters cover each other — no solid gold gaps */
 
 .home-am-sequence {
   --am-gold: #b69f64;
   --am-cream: #ece8df;
   --am-ink: #1c1712;
   --am-under-next: 100svh;
-  --am-under-previous: 100svh;
   position: relative;
   z-index: 21;
   width: 100%;
@@ -40,53 +38,18 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   margin-top: 0 !important;
 }
 
-/* Springs sticky grammar — cover is on the CHAPTER box, not the sticky stage */
+/* Amenities sticky--under-next grammar — next chapter covers previous */
 .home-am-chapter {
   position: relative;
-  margin: 0;
+  margin: 0 0 calc(var(--am-under-next) * -1);
   background: transparent;
 }
 
-.home-am-chapter--under-next {
-  margin-bottom: calc(var(--am-under-next) * -1);
-}
-
-.home-am-chapter--under-next::after {
+.home-am-chapter::after {
   content: "";
   display: block;
   height: var(--am-under-next);
   pointer-events: none;
-}
-
-.home-am-chapter--under-previous {
-  margin-top: calc(var(--am-under-previous) * -1);
-}
-
-.home-am-chapter--under-previous::before {
-  content: "";
-  display: block;
-  height: var(--am-under-previous);
-  pointer-events: none;
-}
-
-/* Both roles: one spacer (Springs consolidates into a single ::after) */
-.home-am-chapter--under-previous.home-am-chapter--under-next::before {
-  display: none;
-}
-
-.home-am-chapter--under-previous.home-am-chapter--under-next::after {
-  height: calc(var(--am-under-previous) + var(--am-under-next));
-}
-
-/*
- * Next sticky paints through this clip window while the previous sticky
- * stays full-bleed underneath — the continuous “fixed stage” feel.
- */
-.home-am-chapter--under-next + .home-am-chapter--under-previous {
-  clip-path: inset(100svh 0 0);
-  margin-top: calc(
-    (var(--am-under-previous) + var(--am-under-next)) * -1
-  );
 }
 
 .home-am-chapter__stage {
@@ -95,6 +58,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   height: 100svh;
   overflow: hidden;
   background: transparent;
+  will-change: clip-path;
 }
 
 .home-am-sequence + .home-helm-portal {
@@ -197,22 +161,12 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   z-index: 2;
 }
 
-/* Desktop: Springs i-video cover — deep overlap + section polygon clip */
-@media (min-width: 1025px) {
-  .home-am-video.home-am-chapter--under-previous {
-    height: 600svh;
-    margin-top: -200svh;
-    clip-path: polygon(0 100svh, 100% 100svh, 100% 100%, 0 100%);
-  }
-}
-
 .home-am-video__hero {
   position: absolute;
   inset: 0;
   z-index: 1;
   will-change: transform;
   background: #0f0c09;
-  transform-origin: bottom right;
 }
 
 .home-am-video__hero img {
@@ -552,11 +506,6 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
 
 /* ========== Tablet ========== */
 @media (max-width: 1024px) {
-  .home-am-sequence {
-    --am-under-next: 90svh;
-    --am-under-previous: 90svh;
-  }
-
   .home-am-intro {
     height: 190svh;
   }
@@ -570,6 +519,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   }
 
   .home-am-opening {
+    --am-under-next: 90svh;
     height: 480svh;
   }
 
@@ -592,11 +542,6 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
 
 /* ========== Phone ========== */
 @media (max-width: 480px) {
-  .home-am-sequence {
-    --am-under-next: 80svh;
-    --am-under-previous: 80svh;
-  }
-
   .home-am-intro {
     height: 180svh;
   }
@@ -665,6 +610,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   }
 
   .home-am-opening {
+    --am-under-next: 80svh;
     height: 340svh;
   }
 
