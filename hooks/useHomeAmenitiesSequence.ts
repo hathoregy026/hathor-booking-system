@@ -137,58 +137,6 @@ export function useHomeAmenitiesSequence(
     }
 
     let active = true;
-    let bottomPinSt: ScrollTrigger | undefined;
-
-    const bottomBand = root.querySelector<HTMLElement>("[data-am-opening-bottom]");
-    const openingEl = root.querySelector<HTMLElement>("[data-am-opening]");
-    const desktopOpening =
-      !isCompact && window.matchMedia("(min-width: 981px)").matches;
-    const bottomBandHome = bottomBand?.parentElement ?? null;
-
-    const dockBottomBand = () => {
-      if (!bottomBand || !openingEl || !desktopOpening) return;
-      const voyagesEl =
-        root.querySelector<HTMLElement>("[data-am-voyages]") ??
-        document.querySelector<HTMLElement>("[data-am-voyages]");
-      const openingRect = openingEl.getBoundingClientRect();
-      const voyTop = voyagesEl?.getBoundingClientRect().top ?? Infinity;
-      const openingActive =
-        openingRect.bottom > 80 && openingRect.top < window.innerHeight;
-      const voyagesCovering = voyTop < window.innerHeight * 0.55;
-      const show = openingActive && !voyagesCovering;
-
-      bottomBand.classList.toggle("is-voyages-covered", !show);
-
-      if (!show) {
-        bottomBand.style.cssText = "";
-        if (bottomBandHome && bottomBand.parentElement === document.body) {
-          bottomBandHome.appendChild(bottomBand);
-        }
-        return;
-      }
-
-      if (bottomBand.parentElement !== document.body) {
-        document.body.appendChild(bottomBand);
-      }
-      bottomBand.style.position = "fixed";
-      bottomBand.style.left = "50vw";
-      bottomBand.style.width = "50vw";
-      bottomBand.style.bottom = "0";
-      bottomBand.style.zIndex = "25";
-      bottomBand.style.visibility = "visible";
-      bottomBand.style.opacity = "1";
-    };
-
-    dockBottomBand();
-    bottomPinSt = ScrollTrigger.create({
-      id: "home-am-opening-bottom-dock",
-      trigger: root,
-      start: "top bottom",
-      end: "bottom top",
-      onUpdate: dockBottomBand,
-      onRefresh: dockBottomBand,
-    });
-
     const frame = requestAnimationFrame(() => {
       if (!active) return;
       engine.refresh();
@@ -228,11 +176,6 @@ export function useHomeAmenitiesSequence(
         onViewport,
       );
       st.kill();
-      bottomPinSt?.kill();
-      if (bottomBand && bottomBandHome && bottomBand.parentElement === document.body) {
-        bottomBandHome.appendChild(bottomBand);
-        bottomBand.style.cssText = "";
-      }
       helmSt?.kill();
       engine.destroy();
     };

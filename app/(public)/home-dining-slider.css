@@ -155,8 +155,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   background-color: var(--am-cream) !important;
 }
 
-:global(html[data-public-theme="night"]) .home-am-voyages__stage {
-  background-color: var(--bg-dark, #1e1b18) !important;
+html[data-public-theme="night"] .home-am-voyages__stage {
+  background-color: #0b0907 !important;
 }
 
 @media (min-width: 1025px) {
@@ -232,6 +232,16 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   will-change: transform, opacity;
 }
 
+@media (min-width: 1025px) {
+  .home-am-intro__caption {
+    left: clamp(1.25rem, 4vw, 3.5rem);
+    right: auto;
+    top: clamp(7rem, 38vh, 42vh);
+    bottom: auto;
+    text-align: left;
+  }
+}
+
 .home-am-intro__title {
   margin: 0;
   line-height: 0.95;
@@ -272,6 +282,15 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   padding: clamp(1.5rem, 4vw, 3.5rem);
   background: var(--am-cream);
   will-change: clip-path;
+}
+
+@media (min-width: 1025px) {
+  .home-am-intro__cream:not(.home-am-intro__cream--phone) {
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: clamp(5.5rem, 12vh, 8rem) clamp(1.5rem, 4vw, 3.5rem)
+      clamp(1.5rem, 4vw, 3.5rem);
+  }
 }
 
 .home-am-intro__cream--phone {
@@ -350,6 +369,13 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   max-width: min(34rem, 48vw);
   text-align: right;
   will-change: transform, opacity;
+}
+
+@media (min-width: 1025px) {
+  .home-am-video__title {
+    top: clamp(5.5rem, 12vh, 8rem);
+    bottom: auto;
+  }
 }
 
 .home-am-video__title h2 {
@@ -539,7 +565,6 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   z-index: 2;
   /* contain:content can prevent the left ManagedImage from lazy-loading */
   contain: none;
-  position: relative;
 }
 
 .home-am-opening__content,
@@ -652,13 +677,12 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   width: 80vw;
 }
 
-/* Springs .col--md-2 — row of 3 at bottom on desktop */
+/* Springs .col--md-2 — vertical stack (one card under the next) */
 .home-am-opening__list-item {
   position: relative;
   display: block;
   width: 16.6666vw;
   max-width: 100%;
-  flex: 0 0 auto;
 }
 
 .home-am-opening__list-item-media {
@@ -715,7 +739,6 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   pointer-events: none;
   will-change: clip-path;
   background: var(--am-gold);
-  overflow: hidden;
 }
 
 /* Springs .col--lg-6.offset--lg-6 */
@@ -723,33 +746,9 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   margin-left: 50vw;
   width: 50vw;
   box-sizing: border-box;
-  background: var(--am-gold);
-  padding: 2.5rem 0 0;
+  background: transparent;
+  padding: 2.5rem 0 3rem;
   pointer-events: auto;
-}
-
-/* Cards + title — sibling of parallax clip layer (sticky breaks inside clip-path) */
-.home-am-opening__bottom-band {
-  display: none;
-  align-items: flex-end;
-  justify-content: flex-start;
-  gap: clamp(0.75rem, 2vw, 2rem);
-  box-sizing: border-box;
-  pointer-events: none;
-  z-index: 5;
-}
-
-.home-am-opening__bottom-title {
-  flex: 1 1 auto;
-  min-width: 0;
-  padding-right: clamp(1rem, 2vw, 2.5rem);
-  text-align: right;
-  align-self: flex-end;
-  padding-bottom: 0.35rem;
-}
-
-.home-am-opening__title--bottom {
-  margin: 0;
 }
 
 .home-am-opening__caption-text {
@@ -762,77 +761,30 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   -webkit-text-fill-color: #ffffff !important;
 }
 
-/* Springs .mt-5 */
+/* Springs .mt-5 — cards sit under body copy and scroll as a vertical stack */
 .home-am-opening__list-wrap {
-  margin-top: 0;
-  flex: 0 0 auto;
+  margin-top: 3rem;
 }
 
 .home-am-opening__list {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: flex-end;
-  gap: clamp(10px, 1.1vw, 15px);
+  display: block;
   padding-left: 0.5rem;
 }
 
-@media (min-width: 981px) {
+@media (min-width: 1025px) {
   .home-am-opening {
     clip-path: none;
     height: 400svh;
     min-height: 2700px;
-    /* Do NOT set overflow:hidden — it breaks CSS sticky (Springs uses JS sticky) */
-  }
-
-  .home-am-opening__caption-title--mobile {
-    display: none;
-  }
-
-  .home-am-opening__right-inner {
-    min-height: 300svh;
-    padding-bottom: clamp(12rem, 22vh, 16rem);
-  }
-
-  .home-am-opening__caption-text {
-    max-width: 400px;
-  }
-
-  /* Pinned via GSAP pinReparent — escapes opening clip-path */
-  .home-am-opening__bottom-band {
-    display: flex;
-    left: 50vw !important;
-    width: 50vw !important;
-    bottom: 0 !important;
-    padding: 0 0 clamp(1.25rem, 3vh, 2.5rem);
-    background: linear-gradient(
-      to top,
-      var(--am-gold) 72%,
-      rgba(182, 159, 100, 0) 100%
-    );
-    pointer-events: none;
-    z-index: 5;
-    transition: opacity 0.2s ease, visibility 0.2s ease;
-  }
-
-  .home-am-opening__bottom-band.is-voyages-covered {
-    opacity: 0;
-    visibility: hidden;
+    /* Do NOT set overflow:hidden — it breaks CSS sticky */
   }
 
   .home-am-opening__list-item {
+    margin-top: 15px;
+  }
+
+  .home-am-opening__list-item:first-child {
     margin-top: 0;
-    width: min(12.5vw, 10.5rem);
-  }
-
-  .home-am-opening__bottom-title {
-    max-width: 42%;
-    padding-right: clamp(0.75rem, 1.5vw, 1.5rem);
-  }
-
-  .home-am-opening__title--bottom {
-    font-size: clamp(1.35rem, 2.4vw, 2.35rem) !important;
-    line-height: 1.12 !important;
   }
 
   .home-am-opening__caption {
@@ -1037,35 +989,9 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
     background: var(--am-gold);
   }
 
-  .home-am-opening__bottom-title {
-    display: none;
-  }
-
-  .home-am-opening__caption-title--mobile {
-    display: block;
-  }
-
-  .home-am-opening__bottom-band {
-    display: flex;
-    position: static;
-    left: auto;
-    width: 100%;
-    flex-direction: column;
-    align-items: stretch;
-    margin-top: 0;
-    padding-bottom: 0;
-    background: transparent;
-  }
-
-  .home-am-opening__bottom-title {
-    display: none;
-  }
-
-  .home-am-opening__caption-title--mobile {
-    display: block;
-  }
-
+  /* Springs mobile: horizontal swipe for cards */
   .home-am-opening__list {
+    display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     gap: 10px;

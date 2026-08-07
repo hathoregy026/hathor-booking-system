@@ -609,7 +609,8 @@ export function HomeAmenitiesSequence({
               data-parallax-0-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)"}'
               data-parallax--100-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
             >
-              <div className="home-am-opening__caption-title home-am-opening__caption-title--mobile">
+              {/* Springs: title sits on sticky caption panel (fixed) while cards scroll */}
+              <div className="home-am-opening__caption-title">
                 <h2 className="home-am-opening__title" data-am-opening-title>
                   {openingTitleFormatted}
                 </h2>
@@ -619,12 +620,28 @@ export function HomeAmenitiesSequence({
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Pinned to sticky stage bottom (right gold column) — outside parallax clip */}
-          <div
-            className="home-am-opening__bottom-band"
-            data-am-opening-bottom
-          >
+        {/* Springs right column: body + 3 cards stacked vertically, scroll with gold runway */}
+        <div
+          className="home-am-opening__right-column sticky__layer"
+          data-am-opening-right
+          data-plugin="parallax"
+          data-parallax-enable-mq="md-up"
+          data-parallax-clamp="true"
+          data-parallax-measure-selector="[data-am-chapter]"
+          data-parallax-0-0='{"clip-path":"polygon(50vw 0vh, 100% 0vh, 100% 0vh, 50vw 0vh)"}'
+          data-parallax--100-0='{"clip-path":"polygon(50vw 100vh, 100% 100vh, 100% 200vh, 50vw 200vh)"}'
+          data-parallax--101-0='{"clip-path":"polygon(50vw 100vh, 100% 100vh, 100% 350vh, 50vw 350vh)"}'
+        >
+          <div className="home-am-opening__right-inner">
+            <p
+              className="home-am-opening__caption-text typo-on-images-body"
+              style={onGoldBody}
+            >
+              {stories[0]?.body || landmarks[3]?.body || intro.body}
+            </p>
+
             <div className="home-am-opening__list-wrap">
               <div className="home-am-opening__list" data-am-opening-cards>
                 {openingCards.map((card, index) => (
@@ -651,35 +668,6 @@ export function HomeAmenitiesSequence({
                 ))}
               </div>
             </div>
-            <div className="home-am-opening__bottom-title">
-              <h2
-                className="home-am-opening__title home-am-opening__title--bottom"
-                data-am-opening-title-dock
-              >
-                {openingTitleFormatted}
-              </h2>
-            </div>
-          </div>
-        </div>
-
-        <div
-          className="home-am-opening__right-column sticky__layer"
-          data-am-opening-right
-          data-plugin="parallax"
-          data-parallax-enable-mq="md-up"
-          data-parallax-clamp="true"
-          data-parallax-measure-selector="[data-am-chapter]"
-          data-parallax-0-0='{"clip-path":"polygon(50vw 0vh, 100% 0vh, 100% 0vh, 50vw 0vh)"}'
-          data-parallax--100-0='{"clip-path":"polygon(50vw 100vh, 100% 100vh, 100% 200vh, 50vw 200vh)"}'
-          data-parallax--101-0='{"clip-path":"polygon(50vw 100vh, 100% 100vh, 100% 350vh, 50vw 350vh)"}'
-        >
-          <div className="home-am-opening__right-inner">
-            <p
-              className="home-am-opening__caption-text typo-on-images-body"
-              style={onGoldBody}
-            >
-              {stories[0]?.body || landmarks[3]?.body || intro.body}
-            </p>
           </div>
         </div>
       </div>
