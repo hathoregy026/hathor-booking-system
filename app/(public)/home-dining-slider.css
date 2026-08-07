@@ -344,11 +344,11 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
 /* ========== i-opening (Springs Fixed-Background Mask Reveal) ========== */
 .home-am-opening {
   /*
-   * Tall runway + shorter under-next so all 3 cards finish scrolling
-   * before the wheel section covers this chapter.
+   * Long pin so the 3-card stack can keep moving (no early freeze),
+   * then a full viewport under-next for the wheel cover.
    */
-  --am-under-next: 70svh;
-  height: 480svh;
+  --am-under-next: 100svh;
+  height: 560svh;
   z-index: 4;
 }
 
@@ -517,8 +517,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   }
 
   .home-am-opening {
-    --am-under-next: 65svh;
-    height: 420svh;
+    --am-under-next: 90svh;
+    height: 480svh;
   }
 
   .home-am-opening__card {
@@ -608,8 +608,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   }
 
   .home-am-opening {
-    --am-under-next: 55svh;
-    height: 300svh;
+    --am-under-next: 80svh;
+    height: 340svh;
   }
 
   .home-am-opening__left {

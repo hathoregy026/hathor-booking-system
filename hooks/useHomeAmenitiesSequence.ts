@@ -311,9 +311,6 @@ export function useHomeAmenitiesSequence(
         const rail = opening.querySelector<HTMLElement>(
           "[data-am-opening-rail]",
         );
-        const cardsWrap = opening.querySelector<HTMLElement>(
-          "[data-am-opening-cards]",
-        );
         const cards = Array.from(
           opening.querySelectorAll<HTMLElement>("[data-am-opening-card]"),
         );
@@ -323,44 +320,72 @@ export function useHomeAmenitiesSequence(
           clipPath: amenitiesWipeClosed("down"),
         });
         gsap.set(title, { autoAlpha: 0, y: isPhone ? 24 : 40 });
-        /* Right column starts as a thin top band on the right half, then grows down. */
         gsap.set(right, {
           clipPath: isPhone
             ? amenitiesWipeClosed("up")
             : "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
         });
-
-        /*
-         * Measure how far the rail must travel so all 3 cards + CTAs clear into
-         * the gold column before the helm under-next cover begins.
-         */
-        const railStartY = isPhone ? 22 : isCompact ? 34 : 46;
-        const cardsHeight = cardsWrap?.scrollHeight ?? cards.length * 280;
-        const ctas = opening.querySelector<HTMLElement>("[data-am-opening-ctas]");
-        const ctasHeight = ctas?.offsetHeight ?? 72;
-        const visiblePanel = window.innerHeight * (isPhone ? 0.48 : 0.78);
-        const neededTravelPx = Math.max(
-          window.innerHeight * 0.35,
-          cardsHeight + ctasHeight + 48 - visiblePanel * 0.55,
-        );
-        const railTravel = isPhone
-          ? 14
-          : (neededTravelPx / window.innerHeight) * 100;
-
-        gsap.set(rail, { y: `${railStartY}vh` });
         cards.forEach((card) => gsap.set(card, { autoAlpha: 1, y: 0 }));
 
-        ScrollTrigger.create({
+        /*
+         * Pixel travel for the rail: start with cards below the gold panel,
+         * end with the last card + CTAs fully inside it. Remeasure on refresh
+         * so image layout cannot collapse travel to ~0 (which looked “locked”).
+         */
+        const railTravel = { start: 0, end: 0 };
+        const measureOpeningRail = () => {
+          if (!rail || !right) return;
+          const panelH = right.clientHeight || window.innerHeight;
+          const contentH = rail.scrollHeight || cards.length * 300;
+          if (isPhone) {
+            railTravel.start = panelH * 0.18;
+            railTravel.end = Math.min(0, panelH - contentH - 16);
+          } else {
+            /* First card enters from below the fold */
+            railTravel.start = panelH * 0.55;
+            /* Keep scrolling until last card clears into the panel */
+            railTravel.end = Math.min(
+              panelH * 0.08,
+              panelH - contentH - 32,
+            );
+          }
+          /* Guarantee meaningful motion even before images paint */
+          if (railTravel.start - railTravel.end < panelH * 0.45) {
+            railTravel.end = railTravel.start - panelH * 0.85;
+          }
+        };
+        measureOpeningRail();
+        gsap.set(rail, { y: railTravel.start });
+
+        const applyOpeningRail = (progress: number) => {
+          /*
+           * Keep moving the whole window — no mid-hold “lock”.
+           * End before under-next (phone under-next is a larger % of chapter).
+           */
+          const cardScroll = seg(progress, 0.2, isPhone ? 0.65 : 0.78);
+          gsap.set(rail, {
+            y:
+              railTravel.start +
+              (railTravel.end - railTravel.start) * cardScroll,
+          });
+        };
+
+        const openingSt = ScrollTrigger.create({
           id: "home-am-opening",
           trigger: opening,
           start: "top top",
           end: "bottom bottom",
           scrub: true,
           refreshPriority: -85,
+          invalidateOnRefresh: true,
+          onRefresh: (self) => {
+            measureOpeningRail();
+            applyOpeningRail(self.progress);
+          },
           onUpdate: (self) => {
             const p = self.progress;
-            // 0.00–0.22: left image + title panel wipe in
-            const split = seg(p, 0, 0.22);
+            // 0.00–0.18: left image + title panel wipe in
+            const split = seg(p, 0, 0.18);
             gsap.set(left, {
               clipPath: amenitiesWipeClip("up", split),
               scale: 1.18 - split * 0.18,
@@ -368,14 +393,14 @@ export function useHomeAmenitiesSequence(
             gsap.set(titlePanel, {
               clipPath: amenitiesWipeClip("down", split),
             });
-            const titleIn = seg(p, 0.08, 0.26);
+            const titleIn = seg(p, 0.05, 0.22);
             gsap.set(title, {
               autoAlpha: titleIn,
               y: (1 - titleIn) * (isPhone ? 24 : 40),
             });
 
-            // 0.14–0.36: right scroll column expands downward
-            const rightOpen = seg(p, 0.14, 0.36);
+            // 0.10–0.28: right gold column expands
+            const rightOpen = seg(p, 0.1, 0.28);
             if (isPhone) {
               gsap.set(right, {
                 clipPath: amenitiesWipeClip("up", rightOpen),
@@ -386,32 +411,38 @@ export function useHomeAmenitiesSequence(
               });
             }
 
-            /*
-             * 0.28–0.72: scroll all 3 cards fully through the gold column.
-             * Hold finished state through 0.72–1.00 so the helm cover only
-             * begins after the stack has fully arrived.
-             */
-            const cardScroll = seg(p, 0.28, 0.72);
-            gsap.set(rail, {
-              y: `${railStartY - cardScroll * railTravel}vh`,
-            });
+            /* Continuous card scroll — no mid-chapter freeze. */
+            applyOpeningRail(p);
           },
+        });
+
+        /* Remeasure after CMS images paint so travel is not stuck near zero. */
+        const imgs = Array.from(opening.querySelectorAll("img"));
+        imgs.forEach((img) => {
+          if (img.complete) return;
+          img.addEventListener(
+            "load",
+            () => {
+              measureOpeningRail();
+              applyOpeningRail(openingSt.progress);
+              ScrollTrigger.refresh();
+            },
+            { once: true },
+          );
         });
       }
 
-      // Hand off into helm portal only after opening cards have finished.
+      // Helm cover tied to opening under-next, after cards have finished.
       const helm = document.querySelector<HTMLElement>(
         "[data-home-helm-portal]",
       );
-      const lastChapter = chapters[chapters.length - 1];
-      if (helm && lastChapter) {
+      if (helm && opening) {
         gsap.set(helm, { clipPath: amenitiesWipeClosed("up") });
         ScrollTrigger.create({
           id: "home-am-to-helm",
-          trigger: helm,
-          /* Wait until helm is well into view — opening dwell finishes first. */
-          start: "top 70%",
-          end: "top top",
+          trigger: opening,
+          start: "bottom-=100% bottom",
+          end: "bottom top",
           scrub: true,
           refreshPriority: -84,
           onUpdate: (self) => {
