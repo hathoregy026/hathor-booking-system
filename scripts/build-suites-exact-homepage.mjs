@@ -356,8 +356,10 @@ const suitesPalette = `
     font-display: swap;
   }
   /*
-   * Suites palette (locked — no charcoal/black panels):
-   * Gold #B69F64 · Cream #F5EACF · Beige #CDBFA6
+   * CLONE-FAITHFUL — colour tokens only. Springs landing.css owns all layout:
+   * mosaic transform, gutters, captions, sticky, wellness/nature WebGL stages.
+   * Palette locked: Gold #B69F64 · Cream #F5EACF · Beige #CDBFA6
+   * No black / ink / white invents.
    */
   :root {
     --lux-gold: #b69f64;
@@ -387,566 +389,80 @@ const suitesPalette = `
     --c-sky: #f5eacf;
     --c-sky-rgb: 245, 234, 207;
     --cookie-height: 0px;
-    --tooltip-shadow: 0 18px 48px rgba(182, 159, 100, 0.32);
+    --tooltip-shadow: 0 18px 48px rgba(182, 159, 100, 0.28);
     --c-button-hover-gradient: linear-gradient(101.51deg, rgba(182, 159, 100, 0) 37.02%, #b69f64 308.4%);
     --c-button-hover-gradient-dark: linear-gradient(91.82deg, rgba(245, 234, 207, 0) 0%, #b69f64 100%);
   }
   html, body {
     background: #f5eacf !important;
-    color: #2c2824;
-    font-family: "Hathor Body", "TT Commons", sans-serif;
+    color: #b69f64;
   }
-  /* Readable contrast: cream/beige surfaces → ink; gold is accent only */
+  /* Springs “dark” surfaces → beige; type on them → cream */
   .ui-dark, .ui-dark-background, .ui-dark.ui-background {
     --t-background: #cdbfa6;
     --t-background-rgb: 205, 191, 166;
-    --t-text: #2c2824;
-    --t-text-rgb: 44, 40, 36;
-    --t-heading: #2c2824;
-    --t-heading-rgb: 44, 40, 36;
-    --t-primary: #b69f64;
-    --t-line: rgba(44, 40, 36, 0.22);
-    background-color: #cdbfa6 !important;
-    color: #2c2824 !important;
-  }
-  .ui-light, .ui-light-background, .ui-light.ui-background, .ui-background {
-    --t-background: #f5eacf;
-    --t-background-rgb: 245, 234, 207;
-    --t-text: #2c2824;
-    --t-text-rgb: 44, 40, 36;
-    --t-heading: #2c2824;
-    --t-heading-rgb: 44, 40, 36;
-    --t-primary: #b69f64;
-    --t-line: rgba(182, 159, 100, 0.28);
-    background-color: #f5eacf !important;
-    color: #2c2824 !important;
-  }
-  .g1, .h0, .h1, .h2, .h3 {
-    font-family: "Hathor Display", "Gamgote", Georgia, serif !important;
-    letter-spacing: -0.02em;
-  }
-  /* Body/UI stay on Springs’ TT Commons metrics — Agraham was collapsing readable sizes. */
-  .text-c1, .text-c2, p, .btn__text, .text-t1, body, button, input, textarea {
-    font-family: "TT Commons Pro", "TT Commons", Helvetica, Arial, sans-serif !important;
-  }
-  /*
-   * Page-wide type sizes (px clamps — Springs html rem ≈ 10px, so rem clamps shrunk type).
-   * Targets match Springs desktop: g1≈180, h0≈125, h1≈70, text-t1≈20.
-   */
-  .g1 {
-    font-size: clamp(68px, 12.5vw, 180px) !important;
-    line-height: 0.9 !important;
-  }
-  .h0 {
-    font-size: clamp(52px, 8.7vw, 125px) !important;
-    line-height: 0.98 !important;
-  }
-  .h1 {
-    font-size: clamp(36px, 4.9vw, 70px) !important;
-    line-height: 1.02 !important;
-  }
-  .h2 {
-    font-size: clamp(28px, 3.2vw, 50px) !important;
-    line-height: 1.08 !important;
-  }
-  .h3 {
-    font-size: clamp(22px, 2.2vw, 34px) !important;
-    line-height: 1.15 !important;
-  }
-  .text-t1 {
-    font-size: clamp(16px, 1.4vw, 20px) !important;
-    line-height: 1.25 !important;
-  }
-  .text-c1, .text-c2 {
-    font-size: clamp(14px, 1.1vw, 18px) !important;
-    line-height: 1.35 !important;
-  }
-  @media (max-width: 480px) {
-    .g1 {
-      font-size: clamp(48px, 14vw, 88px) !important;
-    }
-    .h0 {
-      font-size: clamp(40px, 11vw, 68px) !important;
-    }
-    .h1 {
-      font-size: clamp(28px, 7.5vw, 44px) !important;
-    }
-    .text-t1 {
-      font-size: clamp(15px, 3.8vw, 18px) !important;
-    }
-  }
-  /*
-   * Do NOT blanket-force heading colors on .ui-light / .ui-dark.
-   * Springs themes sections dynamically; forcing cream on .ui-dark .h1 made the
-   * intro opening (cream stage) render cream-on-cream — “invisible” left text.
-   * Keep token-driven colors from --t-* above.
-   */
-  /* Keep Springs chrome out; Hathor public nav + site footer replace them. */
-  .header, .cookie-consent {
-    display: none !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-  }
-  /*
-   * Soft atmospheric shadows — gold + cream + beige only.
-   */
-  .l-wellness__gradient div,
-  .l-nature__gradient div,
-  .footer__gradient div,
-  .preloader__gradient div,
-  .preloader__gradient-animation div,
-  .l-nature-bg-gradient {
-    background: radial-gradient(
-      circle,
-      rgba(182, 159, 100, 0.62) 0%,
-      rgba(205, 191, 166, 0.48) 36%,
-      rgba(245, 234, 207, 0) 74%
-    ) !important;
-  }
-  /*
-   * Wellness split panel — cream/beige field + ink copy (high contrast).
-   * White is reserved for text sitting on photography.
-   */
-  .l-wellness__slider__caption,
-  .l-wellness__slider__caption.ui-dark,
-  .l-wellness__slider__images {
-    --t-background: #f5eacf;
-    --t-background-rgb: 245, 234, 207;
-    --t-text: #2c2824;
-    --t-text-rgb: 44, 40, 36;
-    --t-heading: #2c2824;
-    --t-heading-rgb: 44, 40, 36;
-    --c-dark-blue: #f5eacf;
-    --c-dark-blue-rgb: 245, 234, 207;
-    --c-green: #cdbfa6;
-    --c-green-rgb: 205, 191, 166;
-    --c-blue: #b69f64;
-    --c-blue-rgb: 182, 159, 100;
-    background: linear-gradient(
-      105deg,
-      #f5eacf 0%,
-      #cdbfa6 55%,
-      #f5eacf 100%
-    ) !important;
-    color: #2c2824 !important;
-  }
-  .l-wellness__slider-gradient {
-    z-index: 1 !important;
-    pointer-events: none !important;
-  }
-  .l-wellness__slider-gradient div:first-child {
-    background: radial-gradient(
-      circle at center,
-      rgba(182, 159, 100, 0.45) 0%,
-      rgba(205, 191, 166, 0.35) 42%,
-      rgba(245, 234, 207, 0) 72%
-    ) no-repeat !important;
-  }
-  .l-wellness__slider-gradient div:nth-child(2) {
-    background: radial-gradient(
-      circle,
-      rgba(245, 234, 207, 0.9) 0%,
-      rgba(205, 191, 166, 0.55) 40%,
-      rgba(182, 159, 100, 0) 74%
-    ) !important;
-  }
-  .l-wellness__slider-gradient div:nth-child(3) {
-    background: radial-gradient(
-      circle,
-      rgba(182, 159, 100, 0.5) 0%,
-      rgba(205, 191, 166, 0.35) 34%,
-      rgba(245, 234, 207, 0) 70%
-    ) !important;
-  }
-  .l-wellness__slider__caption-titles,
-  .l-wellness__slider__caption-text {
-    position: relative !important;
-    z-index: 5 !important;
-  }
-  .l-wellness__slider__caption-titles > a {
-    opacity: 1 !important;
-    color: rgba(44, 40, 36, 0.42) !important;
-  }
-  .l-wellness__slider__caption-titles > a .h2,
-  .l-wellness__slider__caption-titles > a p {
-    color: rgba(44, 40, 36, 0.42) !important;
-  }
-  .has-hover .l-wellness__slider__caption-titles > a:hover {
-    opacity: 1 !important;
-    color: #b69f64 !important;
-  }
-  .has-hover .l-wellness__slider__caption-titles > a:hover .h2,
-  .has-hover .l-wellness__slider__caption-titles > a:hover p {
-    color: #b69f64 !important;
-  }
-  .l-wellness__slider__caption-titles > a.is-active {
-    opacity: 1 !important;
-    color: #2c2824 !important;
-  }
-  .l-wellness__slider__caption-titles > a.is-active .h2,
-  .l-wellness__slider__caption-titles > a.is-active p {
-    color: #2c2824 !important;
-  }
-  .l-wellness__slider__caption-text,
-  .l-wellness__slider__caption-text .text-t1,
-  .l-wellness__slider__caption-text p {
-    color: #2c2824 !important;
-  }
-  /* Wellness webgl stage sits on imagery → white */
-  .l-wellness__webgl-caption,
-  .l-wellness__webgl-caption .text-t1,
-  .l-wellness__webgl-caption p,
-  .l-wellness__webgl-title,
-  .l-wellness__webgl-title .g1,
-  .l-wellness__webgl-title .text-c1 {
-    color: #ffffff !important;
-    text-shadow: 0 1px 16px rgba(44, 40, 36, 0.45);
-    position: relative;
-    z-index: 6;
-  }
-  @media (max-width: 480px) {
-    .l-wellness__slider-gradient div:first-child,
-    .l-wellness__slider-gradient div:nth-child(2),
-    .l-wellness__slider-gradient div:nth-child(3) {
-      opacity: 0.95;
-    }
-  }
-  /*
-   * Suites hero: cream gutters + harder gold wash on tiles.
-   * Caption stays above all gold filters (mosaic / gradient / vignette).
-   */
-  .l-gallery-container.ui-dark,
-  .l-gallery-container.ui-background,
-  .l-gallery-container.ui-dark.ui-background {
-    --t-background: #f5eacf;
-    --t-background-rgb: 245, 234, 207;
     --t-text: #f5eacf;
     --t-text-rgb: 245, 234, 207;
     --t-heading: #f5eacf;
     --t-heading-rgb: 245, 234, 207;
     --t-primary: #b69f64;
-    --c-dark-green: #f5eacf;
-    --c-dark-green-rgb: 245, 234, 207;
-    --c-green: #cdbfa6;
-    --c-green-rgb: 205, 191, 166;
-    --c-olive: #b69f64;
-    --c-olive-rgb: 182, 159, 100;
-    --c-blue: #b69f64;
-    --c-blue-rgb: 182, 159, 100;
-    --c-light-green: #b69f64;
-    --c-light-green-rgb: 182, 159, 100;
-    background: #f5eacf !important;
-    background-color: #f5eacf !important;
-    min-height: 100svh !important;
+    --t-line: rgba(245, 234, 207, 0.35);
+    background-color: #cdbfa6 !important;
+    color: #f5eacf !important;
   }
-  .l-gallery-container .sticky__layer,
-  .l-gallery-container .l-gallery {
-    background-color: #f5eacf !important;
-  }
-  /* Gold + beige ambient cast */
-  .l-gallery__gradient div:nth-child(-n + 4) {
-    opacity: 0 !important;
-  }
-  .l-gallery__gradient div:nth-child(5) {
-    background: radial-gradient(
-      circle,
-      rgba(182, 159, 100, 0.4) 0,
-      rgba(205, 191, 166, 0.28) 30%,
-      rgba(245, 234, 207, 0) 72%
-    ) !important;
-    opacity: 1 !important;
-  }
-  /*
-   * Hero mosaic — Springs card field on cream:
-   * 1) 3:4 cover tiles (Hathor landscape webps were collapsing height).
-   * 2) Harder gold filter on images only (below caption stack).
-   * 3) Mild scale-up of the -28° plane to fill empty cream corners.
-   */
-  .l-gallery {
-    position: relative !important;
-    overflow: hidden !important;
-    width: 100vw !important;
-    height: calc(100 * var(--svh, 1vh)) !important;
-    isolation: isolate;
-  }
-  .l-gallery__content.js-gallery-container {
-    opacity: 1 !important;
-    z-index: 1 !important;
-    top: -30vw !important;
-    width: 130vw !important;
-    left: -15vw !important;
-    height: calc(120 * var(--svh)) !important;
-    transform: rotate(-28deg) scale(1.28) !important;
-    transform-origin: 50% calc(50% + 30svh) !important;
-  }
-  .l-gallery__item.col,
-  .l-gallery__item.js-gallery-item,
-  .l-gallery__item {
-    padding: calc(var(--scale-px) * 8) !important;
-    box-sizing: border-box !important;
-    border-radius: 0 !important;
-  }
-  .l-gallery__item > .is-hidden--sm-down,
-  .l-gallery__item > .is-hidden--md-up,
-  .l-gallery__item > div {
-    width: 100% !important;
-  }
-  .l-gallery__item picture.img-full,
-  .l-gallery__item .img-full {
-    display: block !important;
-    position: relative !important;
-    width: 100% !important;
-    aspect-ratio: 3 / 4 !important;
-    height: auto !important;
-    overflow: hidden !important;
-    border-radius: 0 !important;
-    isolation: isolate;
-  }
-  /* Harder gold shadow wash — locked to the image tile only */
-  .l-gallery__item picture.img-full::after,
-  .l-gallery__item .img-full::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    background: rgba(182, 159, 100, 0.4);
-    mix-blend-mode: multiply;
-    box-shadow: inset 0 0 48px rgba(182, 159, 100, 0.55);
-  }
-  .l-gallery__item picture.img-full img,
-  .l-gallery__item .img-full img,
-  .l-gallery__item img {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    object-position: center !important;
-    opacity: 1 !important;
-    border-radius: 0 !important;
-    filter: contrast(1.08) saturate(1.06) drop-shadow(0 10px 22px rgba(182, 159, 100, 0.45)) !important;
-  }
-  .l-gallery__gradient {
-    opacity: 1 !important;
-    z-index: 2 !important;
-    pointer-events: none;
-  }
-  /* Gold edge falloff inside gallery stack — under caption, never over text */
-  .l-gallery-container::after {
-    content: none !important;
-    display: none !important;
-  }
-  .l-gallery::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 3;
-    pointer-events: none;
-    background: radial-gradient(
-      ellipse at 50% 45%,
-      rgba(245, 234, 207, 0) 38%,
-      rgba(205, 191, 166, 0.35) 78%,
-      rgba(182, 159, 100, 0.28) 100%
-    );
-  }
-  @media (max-width: 1024px) and (min-width: 481px) {
-    .l-gallery__content.js-gallery-container {
-      transform: rotate(-28deg) scale(1.24) !important;
-      width: 125vw !important;
-      left: -12vw !important;
-    }
-    .l-gallery__item picture.img-full::after,
-    .l-gallery__item .img-full::after {
-      background: rgba(182, 159, 100, 0.36);
-      box-shadow: inset 0 0 40px rgba(182, 159, 100, 0.48);
-    }
-  }
-  @media (max-width: 480px) {
-    .l-gallery__content.js-gallery-container {
-      width: 140vw !important;
-      left: -20vw !important;
-      transform: rotate(-28deg) scale(1.32) !important;
-      transform-origin: 50% 50% !important;
-    }
-    .l-gallery__item.col,
-    .l-gallery__item.js-gallery-item,
-    .l-gallery__item {
-      padding: calc(var(--scale-px) * 7) !important;
-    }
-    .l-gallery__item picture.img-full::after,
-    .l-gallery__item .img-full::after {
-      background: rgba(182, 159, 100, 0.34);
-      box-shadow: inset 0 0 32px rgba(182, 159, 100, 0.42);
-    }
-    .l-gallery__item picture.img-full img,
-    .l-gallery__item .img-full img,
-    .l-gallery__item img {
-      filter: contrast(1.06) saturate(1.04) drop-shadow(0 8px 16px rgba(182, 159, 100, 0.4)) !important;
-    }
-  }
-  /* Hero copy — white, above mosaic + gold filters */
-  .l-gallery__caption {
-    position: absolute !important;
-    z-index: 60 !important;
-    isolation: isolate;
-    mix-blend-mode: normal !important;
-    pointer-events: none;
-  }
-  .l-gallery__caption a,
-  .l-gallery__caption .btn {
-    pointer-events: auto;
-  }
-  .l-gallery__caption .text-t1,
-  .l-gallery__caption .h0,
-  .l-gallery__caption .h0 *,
-  .l-gallery__caption p {
-    color: #ffffff !important;
-    mix-blend-mode: normal !important;
-  }
-  .l-gallery__caption .text-t1 {
-    text-shadow: 0 1px 14px rgba(182, 159, 100, 0.45);
-  }
-  .l-gallery__caption .h0 {
-    color: #ffffff !important;
-    text-shadow: 0 2px 22px rgba(182, 159, 100, 0.4);
-  }
-  /*
-   * Intro stage — cream surface + gold type (no charcoal panels).
-   */
-  .l-intro.ui-background,
-  .l-intro {
+  /* Cream surfaces → gold type */
+  .ui-light, .ui-light-background, .ui-light.ui-background, .ui-background {
     --t-background: #f5eacf;
     --t-background-rgb: 245, 234, 207;
-    --t-text: #2c2824;
-    --t-text-rgb: 44, 40, 36;
-    --t-heading: #2c2824;
-    --t-heading-rgb: 44, 40, 36;
+    --t-text: #b69f64;
+    --t-text-rgb: 182, 159, 100;
+    --t-heading: #b69f64;
+    --t-heading-rgb: 182, 159, 100;
     --t-primary: #b69f64;
-    --t-primary-rgb: 182, 159, 100;
-    background-color: #f5eacf !important;
-    color: #2c2824 !important;
-  }
-  .l-intro__opening .h1,
-  .l-intro__opening .text-c1,
-  .l-intro__opening .text-color-primary,
-  .l-intro__opening-subtitle {
-    color: #2c2824 !important;
-  }
-  .l-intro__content.ui-dark {
-    --t-background: #cdbfa6;
-    --t-background-rgb: 205, 191, 166;
-    --t-text: #2c2824;
-    --t-heading: #2c2824;
-    --t-primary: #b69f64;
-    background-color: #cdbfa6 !important;
-    color: #2c2824 !important;
-  }
-  /* Hard ban: no charcoal/black surfaces anywhere in Suites iframe */
-  .l-wellness,
-  .l-wellness.ui-dark,
-  .l-wellness.ui-background,
-  .l-nature,
-  .l-nature.ui-dark,
-  .l-nature.ui-background,
-  .l-place,
-  .l-interiors,
-  .l-residences,
-  .preloader,
-  .preloader.ui-dark,
-  .sticky.ui-dark,
-  .sticky.ui-background {
-    --t-background: #f5eacf !important;
-    --t-background-rgb: 245, 234, 207 !important;
-    --c-dark-blue: #cdbfa6 !important;
-    --c-dark-green: #cdbfa6 !important;
-    --c-green: #cdbfa6 !important;
-  }
-  .l-wellness.ui-dark,
-  .l-wellness.ui-background,
-  .l-nature.ui-dark,
-  .l-nature.ui-background,
-  .preloader,
-  .preloader.ui-dark {
+    --t-line: rgba(182, 159, 100, 0.28);
     background-color: #f5eacf !important;
     color: #b69f64 !important;
   }
-  /*
-   * Nature / Voyage — kill Springs green WebGL field.
-   * Replace with cream–beige–gold mist; white copy above filters.
-   */
-  .l-nature-bg,
-  .l-nature-bg-item,
-  .l-nature-bg-item--webgl,
-  .l-nature-bg-item:nth-of-type(3),
-  .l-nature__slider > .col.ui-background,
-  .l-nature__slider > .col.ui-dark {
-    --c-green: #cdbfa6 !important;
-    --c-green-rgb: 205, 191, 166 !important;
-    --c-light-green: #b69f64 !important;
-    --c-light-green-rgb: 182, 159, 100 !important;
-    --c-dark-blue: #cdbfa6 !important;
-    --c-dark-blue-rgb: 205, 191, 166 !important;
-    --t-background: #f5eacf !important;
-    background-color: #f5eacf !important;
+  .g1, .h0, .h1, .h2, .h3 {
+    font-family: "Hathor Display", "Gamgote", Georgia, serif !important;
   }
-  .l-nature-bg-item:nth-of-type(3) {
-    background: linear-gradient(
-      135deg,
-      #f5eacf 0%,
-      #cdbfa6 50%,
-      #b69f64 100%
-    ) !important;
+  .text-c1, .text-c2, p, .btn__text, .text-t1, body, button, input, textarea {
+    font-family: "TT Commons Pro", "TT Commons", Helvetica, Arial, sans-serif !important;
   }
-  .l-nature-bg-item .background--cover:has(.js-nature-canvas),
-  .l-nature-bg-item--webgl .background--cover,
-  .l-nature-bg-item--webgl {
-    background: linear-gradient(
-      120deg,
-      #f5eacf 0%,
-      #cdbfa6 42%,
-      #b69f64 100%
-    ) !important;
-  }
-  canvas.js-nature-canvas {
-    opacity: 0 !important;
+  .header, .cookie-consent {
+    display: none !important;
     visibility: hidden !important;
     pointer-events: none !important;
   }
-  /* Soft gold wash if any tree/webgl canvas still paints */
-  canvas.js-tree-canvas {
-    filter: sepia(0.85) saturate(0.55) hue-rotate(-8deg) brightness(1.08) !important;
-  }
+  /* Atmospheric orbs — colour only; Springs geometry untouched */
+  .l-wellness__gradient div,
+  .l-nature__gradient div,
+  .footer__gradient div,
+  .preloader__gradient div,
+  .preloader__gradient-animation div,
   .l-nature-bg-gradient,
-  .l-nature-bg-item__gradient div:first-child,
-  .l-nature-bg-item__gradient div:nth-child(2),
-  .l-nature__gradient div {
+  .l-gallery__gradient div,
+  .l-wellness__slider-gradient div,
+  .l-nature-bg-item__gradient div {
     background: radial-gradient(
       circle,
-      rgba(182, 159, 100, 0.7) 0%,
-      rgba(205, 191, 166, 0.5) 38%,
+      rgba(182, 159, 100, 0.55) 0%,
+      rgba(205, 191, 166, 0.35) 42%,
       rgba(245, 234, 207, 0) 74%
     ) !important;
   }
-  .l-nature-bg-caption,
-  .l-nature-bg-caption .g1,
-  .l-nature-bg-caption .text-c1,
-  .l-nature-bg-caption .text-t1,
-  .l-nature-bg-caption p,
-  .l-nature-bg-caption__subtitle,
-  .l-nature-bg-caption__text,
-  .l-nature__slider-caption,
-  .l-nature__slider-caption .text-t1,
-  .l-nature__slider-caption p {
-    color: #2c2824 !important;
-    position: relative;
-    z-index: 8;
-    mix-blend-mode: normal !important;
-    text-shadow: none !important;
-  }
-  /* Nature / place / interiors copy that sits on photography → white */
-  .l-nature__caption__text,
-  .l-nature__caption__text .text-t1,
+  /* On photography: cream (lightest of the 3) — never white/black */
+  .l-gallery__caption .text-t1,
+  .l-gallery__caption .h0,
+  .l-gallery__caption p,
+  .l-wellness__webgl-caption,
+  .l-wellness__webgl-caption .text-t1,
+  .l-wellness__webgl-title .g1,
+  .l-wellness__webgl-title .text-c1,
   .l-nature__caption .g1,
   .l-nature__caption .text-c1,
+  .l-nature__caption__text,
+  .l-nature__caption__text .text-t1,
   .l-place .text-t1,
   .l-place .g1,
   .l-place .h0,
@@ -956,42 +472,9 @@ const suitesPalette = `
   .l-interiors .g1,
   .l-interiors .h0,
   .l-interiors .text-c1 {
-    color: #ffffff !important;
-    text-shadow: 0 1px 14px rgba(44, 40, 36, 0.4);
+    color: #f5eacf !important;
   }
-  .l-nature-bg-caption {
-    z-index: 8 !important;
-  }
-  .l-nature__slider-caption {
-    z-index: 8 !important;
-  }
-  .l-intro__image--second {
-    position: relative;
-    z-index: 4;
-  }
-  .l-intro__image--first {
-    z-index: 1;
-  }
-  /*
-   * Only force media pictures visible — NEVER .is-invisible--js on text/reveal
-   * splits (that collapsed overlapping lines and hid rising choreography).
-   */
-  picture.is-invisible--js.img-full,
-  picture.is-invisible--js.img-cover,
-  img.is-invisible--js[data-src],
-  img.is-invisible--js[data-plugin] {
-    opacity: 1 !important;
-    visibility: visible !important;
-  }
-  /* Place rising panels: keep full-bleed image cover after Vimeo → still swap */
-  #l-place-sticky-1 .background--cover,
-  #l-place-sticky-2 .background--cover,
-  #l-place-sticky-3 .background--cover,
-  .l-nature__caption .background--cover,
-  .l-nature__caption .vimeo-background {
-    position: relative;
-    overflow: hidden;
-  }
+  /* Vimeo→still cover only — no stacking invents */
   #l-place-sticky-1 img.img-cover,
   #l-place-sticky-2 img.img-cover,
   #l-place-sticky-3 img.img-cover,
@@ -1004,70 +487,48 @@ const suitesPalette = `
   footer.footer {
     display: none !important;
   }
-  /* In-flow lux footer (inside Springs scroll sections — must not sit after </body> scripts) */
   .hathor-suites-footer-scroll {
     display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: relative !important;
-    z-index: 30 !important;
-    clip-path: none !important;
-    transform: none !important;
-    background: #ece8df !important;
-    min-height: 0 !important;
-    overflow: visible !important;
+    background: #f5eacf !important;
   }
   .hathor-suites-footer-host {
-    position: relative;
-    z-index: 5;
-    background: #ece8df;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
+    background: #f5eacf;
   }
-  .hathor-suites-footer-host .lux-footer,
-  .hathor-suites-footer-scroll .lux-footer {
-    --lux-bg: #ece8df;
-    --lux-surface: #f5f0e8;
-    --lux-text: #2c2824;
-    --lux-muted: #6b6560;
+  .hathor-suites-footer-host .lux-footer {
+    --lux-bg: #f5eacf;
+    --lux-surface: #f5eacf;
+    --lux-card: #cdbfa6;
+    --lux-text: #b69f64;
+    --lux-muted: #cdbfa6;
     --lux-gold: #b69f64;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    color: #2c2824 !important;
+    --lux-ink-soft: #b69f64;
+    --lux-border: rgb(182 159 100 / 0.22);
+    color: #b69f64 !important;
   }
   .hathor-suites-footer-host .lux-footer__headline,
-  .hathor-suites-footer-host .lux-footer__subhead,
-  .hathor-suites-footer-host .lux-footer__subscribe,
-  .hathor-suites-footer-host .lux-footer__col,
-  .hathor-suites-footer-host .lux-footer__link,
-  .hathor-suites-footer-host .lux-footer__col-title,
-  .hathor-suites-footer-host .lux-footer__tagline,
-  .hathor-suites-footer-host .lux-footer__legal,
-  .hathor-suites-footer-host .lux-footer__crafted {
-    opacity: 1 !important;
-    transform: none !important;
-    visibility: visible !important;
-  }
-  .hathor-suites-footer-host .lux-footer__headline {
-    color: #2c2824 !important;
-  }
-  .hathor-suites-footer-host .lux-footer__subhead,
-  .hathor-suites-footer-host .lux-footer__tagline,
-  .hathor-suites-footer-host .lux-footer__legal,
-  .hathor-suites-footer-host .lux-footer__crafted {
-    color: #6b6560 !important;
-  }
   .hathor-suites-footer-host .lux-footer__col-title,
   .hathor-suites-footer-host .lux-footer__link,
   .hathor-suites-footer-host .lux-footer__meta-link {
-    color: #2c2824 !important;
+    color: #b69f64 !important;
+  }
+  .hathor-suites-footer-host .lux-footer__subhead,
+  .hathor-suites-footer-host .lux-footer__tagline,
+  .hathor-suites-footer-host .lux-footer__legal,
+  .hathor-suites-footer-host .lux-footer__crafted {
+    color: #cdbfa6 !important;
+  }
+  .hathor-suites-footer-host .lux-footer.is-copy-ready .lux-footer__headline,
+  .hathor-suites-footer-host .lux-footer.is-copy-ready .lux-footer__subhead,
+  .hathor-suites-footer-host .lux-footer.is-copy-ready .lux-footer__subscribe,
+  .hathor-suites-footer-host .lux-footer__col {
+    opacity: 1 !important;
+    transform: none !important;
   }
 </style>
 <style data-hathor-suites-footer>
 ${luxFooterCss}
 </style>`;
+
 
 const hathorFooterHtml = `
 <section class="section section--no-overflow hathor-suites-footer-scroll" data-scroll-section>
