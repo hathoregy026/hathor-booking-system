@@ -484,12 +484,148 @@
   .l-gallery__gradient div:nth-child(5) {
     background: radial-gradient(
       circle,
-      rgba(182, 159, 100, 0.65) 0,
-      rgba(182, 159, 100, 0.35) 15%,
-      rgba(182, 159, 100, 0) 70%
+      rgba(44, 40, 36, 0.45) 0,
+      rgba(44, 40, 36, 0.2) 20%,
+      rgba(44, 40, 36, 0) 70%
     ) !important;
   }
-  /* Title/lede on gold hero — cream still reads; keep above split masks. */
+  /*
+   * Hero mosaic — match Springs full-bleed field + clear contrast on gold gutters:
+   * 1) Expand the -28° plane past empty corners (stock 100vw leaves gold voids).
+   * 2) Lock Springs 3:4 card box + object-fit cover (Hathor landscape webps were
+   *    collapsing card height vs Springs 720×900 tiles).
+   * 3) Full opacity cards (stock .7 + gold wash made photos muddy).
+   * 4) Soft ink edge vignette for cream title legibility — not a gold color cast.
+   */
+  .l-gallery {
+    overflow: hidden !important;
+    width: 100vw !important;
+    height: calc(100 * var(--svh, 1vh)) !important;
+  }
+  .l-gallery__content.js-gallery-container {
+    width: 280vw !important;
+    height: 200svh !important;
+    left: -90vw !important;
+    top: -42svh !important;
+    opacity: 1 !important;
+    transform: rotate(-28deg) !important;
+    transform-origin: 50% 50% !important;
+  }
+  .l-gallery__item.col,
+  .l-gallery__item.js-gallery-item,
+  .l-gallery__item {
+    width: 25vw !important;
+    max-width: 25vw !important;
+    flex: 0 0 25vw !important;
+    padding: 0.55vw !important;
+    box-sizing: border-box !important;
+    left: -40vw !important;
+    border-radius: 0 !important;
+  }
+  .l-gallery__item:nth-child(n + 7):nth-child(-n + 13) {
+    left: auto !important;
+    right: -45vw !important;
+  }
+  .l-gallery__item > .is-hidden--sm-down,
+  .l-gallery__item > .is-hidden--md-up,
+  .l-gallery__item > div {
+    width: 100% !important;
+  }
+  .l-gallery__item picture.img-full,
+  .l-gallery__item .img-full {
+    display: block !important;
+    width: 100% !important;
+    aspect-ratio: 3 / 4 !important;
+    height: auto !important;
+    overflow: hidden !important;
+    border-radius: 0 !important;
+  }
+  .l-gallery__item picture.img-full img,
+  .l-gallery__item .img-full img,
+  .l-gallery__item img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    opacity: 1 !important;
+    border-radius: 0 !important;
+    /* Clarify photos without a gold cast */
+    filter: contrast(1.08) saturate(1.06) !important;
+  }
+  /* Kill gold-on-photo wash from remapped Springs green radials; keep one soft vignette. */
+  .l-gallery__gradient div:nth-child(-n + 4) {
+    opacity: 0 !important;
+  }
+  .l-gallery__gradient {
+    opacity: 1 !important;
+    z-index: 30;
+    pointer-events: none;
+  }
+  .l-gallery-container::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 35;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse at 50% 45%,
+      rgba(44, 40, 36, 0) 28%,
+      rgba(44, 40, 36, 0.28) 78%,
+      rgba(44, 40, 36, 0.42) 100%
+    );
+  }
+  @media (max-width: 1024px) and (min-width: 481px) {
+    .l-gallery__content.js-gallery-container {
+      width: 280vw !important;
+      height: 190svh !important;
+      left: -90vw !important;
+      top: -32svh !important;
+    }
+    .l-gallery__item.col,
+    .l-gallery__item.js-gallery-item,
+    .l-gallery__item {
+      width: 28vw !important;
+      max-width: 28vw !important;
+      flex: 0 0 28vw !important;
+      padding: 0.85vw !important;
+    }
+  }
+  @media (max-width: 480px) {
+    .l-gallery__content.js-gallery-container {
+      width: 320vw !important;
+      height: 200svh !important;
+      left: -110vw !important;
+      top: -20svh !important;
+      transform-origin: 50% 50% !important;
+    }
+    .l-gallery__item.col,
+    .l-gallery__item.js-gallery-item,
+    .l-gallery__item {
+      width: 42vw !important;
+      max-width: 42vw !important;
+      flex: 0 0 42vw !important;
+      padding: 1.1vw !important;
+      left: -130vw !important;
+    }
+    .l-gallery__item:nth-child(n + 7):nth-child(-n + 13) {
+      left: auto !important;
+      right: -130vw !important;
+    }
+    .l-gallery__item picture.img-full img,
+    .l-gallery__item .img-full img,
+    .l-gallery__item img {
+      filter: contrast(1.06) saturate(1.04) !important;
+    }
+    .l-gallery-container::after {
+      background: radial-gradient(
+        ellipse at 50% 45%,
+        rgba(44, 40, 36, 0) 32%,
+        rgba(44, 40, 36, 0.22) 80%,
+        rgba(44, 40, 36, 0.34) 100%
+      );
+    }
+  }
+  /* Title/lede on gold hero — cream + shadow for clarity over mosaic. */
   .l-gallery__caption {
     z-index: 50 !important;
   }
@@ -497,6 +633,7 @@
   .l-gallery__caption .text-t1,
   .l-gallery__caption .h0 {
     color: #ece8df !important;
+    text-shadow: 0 2px 24px rgba(44, 40, 36, 0.55);
   }
   /*
    * Intro “bottom 3 images + left text” stage (Springs cream panel):
