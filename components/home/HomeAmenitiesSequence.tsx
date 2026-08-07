@@ -542,7 +542,7 @@ export function HomeAmenitiesSequence({
         </div>
       ) : null}
 
-      {/* ===== i-opening — Springs infrastructure amenities opening only ===== */}
+      {/* ===== i-opening — Springs infrastructure amenities opening (literal) ===== */}
       <div
         className="home-am-opening home-am-chapter home-am-chapter--under-previous home-am-chapter--under-next sticky sticky--full-height sticky--under-previous sticky--under-next"
         data-am-opening
@@ -552,7 +552,7 @@ export function HomeAmenitiesSequence({
         <div className="home-am-chapter__stage sticky__layer sticky__layer--sticky sticky--full-height">
           <div className="home-am-opening__content">
             <div
-              className="home-am-opening__left"
+              className="home-am-opening__images"
               data-am-opening-left
               data-plugin="parallax"
               data-parallax-enable-mq="md-up"
@@ -568,7 +568,7 @@ export function HomeAmenitiesSequence({
                 data-parallax-measure-selector="[data-am-chapter]"
                 data-parallax-0-0='{"transform":"scale(1.2)"}'
                 data-parallax--300-0='{"transform":"scale(1.0)"}'
-                className="home-am-opening__left-img"
+                className="home-am-opening__images-media"
               >
                 <ManagedImage
                   name={openingLeftImage.name}
@@ -581,9 +581,8 @@ export function HomeAmenitiesSequence({
               </div>
             </div>
 
-            {/* Springs .i-opening__caption — sticky title over scrolling gold column */}
             <div
-              className="home-am-opening__title-panel"
+              className="home-am-opening__caption"
               data-am-opening-title-panel
               data-plugin="parallax"
               data-parallax-enable-mq="md-up"
@@ -593,34 +592,17 @@ export function HomeAmenitiesSequence({
               data-parallax--100-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
             >
               <div className="home-am-opening__caption-title">
-                {/* No typo-on-images-title — escape CMS size + atelier char split */}
-                <h2
-                  className="home-am-opening__title"
-                  data-am-opening-title
-                  style={{ color: WHITE, WebkitTextFillColor: WHITE }}
-                >
-                  {(() => {
-                    const raw = (
-                      landmarks[3]?.titleLines?.length
-                        ? landmarks[3].titleLines
-                        : landmarks[0]?.titleLines?.length
-                          ? landmarks[0].titleLines
-                          : (stories[0]?.title || intro.titleLines.join("\n"))
-                              .split("\n")
-                              .map((line) => line.trim())
-                              .filter(Boolean)
-                    ).map((line) => line.replace(/\.$/, "").trim());
-                    const joined = raw.join(" ").replace(/\s+/g, " ");
-                    /* Keep whole words — never GOLD / EN */
-                    if (/golden\s+hour/i.test(joined) && /on\s+the\s+nile/i.test(joined)) {
-                      return ["GOLDEN HOUR", "ON THE NILE"];
-                    }
-                    return raw.length ? raw : ["GOLDEN HOUR", "ON THE NILE"];
-                  })().map((line) => (
-                    <span key={line} className="home-am-title-line">
-                      {line}
-                    </span>
-                  ))}
+                <h2 className="home-am-opening__title" data-am-opening-title>
+                  {(
+                    landmarks[3]?.titleLines?.length
+                      ? landmarks[3].titleLines
+                      : ["GOLDEN HOUR", "ON THE NILE"]
+                  )
+                    .map((line) => line.replace(/\.$/, "").trim())
+                    .filter(Boolean)
+                    .join(" ")
+                    .replace(/\s+on\s+the\s+/i, " on\u00A0the ")
+                    .replace(/\s+ON\s+THE\s+/i, " on\u00A0the ")}
                 </h2>
               </div>
               <div className="home-am-opening__gradient" aria-hidden="true">
@@ -630,9 +612,8 @@ export function HomeAmenitiesSequence({
           </div>
         </div>
 
-        {/* Springs .i-opening__right-column.ui-background */}
         <div
-          className="home-am-opening__right sticky__layer"
+          className="home-am-opening__right-column sticky__layer"
           data-am-opening-right
           data-plugin="parallax"
           data-parallax-enable-mq="md-up"
@@ -644,20 +625,20 @@ export function HomeAmenitiesSequence({
         >
           <div className="home-am-opening__right-inner">
             <p
-              className="home-am-opening__rail-text typo-on-images-body"
+              className="home-am-opening__caption-text typo-on-images-body"
               style={onGoldBody}
             >
               {stories[0]?.body || landmarks[3]?.body || intro.body}
             </p>
 
-            <div className="home-am-opening__cards" data-am-opening-cards>
+            <div className="home-am-opening__list" data-am-opening-cards>
               {openingCards.map((card, index) => (
-                <figure
+                <div
                   key={`opening-card-${card.image.name}-${index}`}
-                  className="home-am-opening__card"
+                  className="home-am-opening__list-item"
                   data-am-opening-card
                 >
-                  <div className="home-am-opening__card-media">
+                  <div className="home-am-opening__list-item-media">
                     <ManagedImage
                       name={card.image.name}
                       alt={card.image.alt}
@@ -667,24 +648,11 @@ export function HomeAmenitiesSequence({
                       previewAnchor={card.image.previewAnchor}
                     />
                   </div>
-                  <figcaption className="home-am-opening__card-label">
+                  <div className="home-am-opening__list-item-text">
                     {card.label}
-                  </figcaption>
-                </figure>
+                  </div>
+                </div>
               ))}
-            </div>
-
-            <div className="home-am-opening__ctas">
-              {stories[0]?.href ? (
-                <a className="home-am-opening__cta" href={stories[0].href}>
-                  {stories[0].cta}
-                </a>
-              ) : null}
-              {stories[1]?.href ? (
-                <a className="home-am-opening__cta" href={stories[1].href}>
-                  {stories[1].cta}
-                </a>
-              ) : null}
             </div>
           </div>
         </div>
