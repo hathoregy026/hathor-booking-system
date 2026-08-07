@@ -598,19 +598,19 @@ export function HomeAmenitiesSequence({
                 style={onGoldTitle}
               >
                 {(
-                  landmarks[3]?.titleLines.join("\n") ||
-                  landmarks[0]?.titleLines.join("\n") ||
-                  stories[0]?.title ||
-                  intro.titleLines.join("\n")
-                )
-                  .split("\n")
-                  .map((line) => line.trim())
-                  .filter(Boolean)
-                  .map((line) => (
-                    <span key={line} className="home-am-title-line">
-                      {line}
-                    </span>
-                  ))}
+                  landmarks[3]?.titleLines?.length
+                    ? landmarks[3].titleLines
+                    : landmarks[0]?.titleLines?.length
+                      ? landmarks[0].titleLines
+                      : (stories[0]?.title || intro.titleLines.join("\n"))
+                          .split("\n")
+                          .map((line) => line.trim())
+                          .filter(Boolean)
+                ).map((line) => (
+                  <span key={line} className="home-am-title-line">
+                    {line.replace(/\.$/, "")}
+                  </span>
+                ))}
               </h2>
               <div className="home-am-opening__gradient" aria-hidden="true">
                 <div />

@@ -471,12 +471,15 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   z-index: 4;
   pointer-events: none;
   clip-path: none;
+  /* Softer cover into Our Voyages — still pulls, leaves readable space */
+  --sticky-under-next-distance: 70svh;
 }
 
 @media (min-width: 1025px) {
   .home-am-opening {
     height: 400svh;
     min-height: 2700px;
+    --sticky-under-next-distance: 85svh;
   }
 }
 
@@ -521,28 +524,31 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   will-change: clip-path;
   display: flex;
   align-items: flex-end;
-  justify-content: flex-end;
+  /* Sit in the open zone beside the rising cards (cards occupy ~left 14rem) */
+  justify-content: flex-start;
   padding: clamp(1.5rem, 3.5vw, 3rem);
+  padding-left: calc(min(58%, 13.5rem) + clamp(1.25rem, 2.5vw, 2.5rem));
 }
 
 .home-am-opening__title {
   position: relative;
   z-index: 2;
   margin: 0;
-  max-width: min(22rem, 94%);
+  max-width: min(16rem, 100%);
   line-height: 1.05;
-  text-align: right;
+  text-align: left;
   pointer-events: all;
-  /* Springs h1 on the green caption — large but must fit the half-panel */
   font-size: clamp(1.55rem, 2.85vw, 2.75rem) !important;
   letter-spacing: -0.02em;
-  overflow-wrap: break-word;
+  overflow-wrap: normal;
   hyphens: manual;
 }
 
 .home-am-opening__title > .home-am-title-line {
   display: block;
-  white-space: normal;
+  width: 100%;
+  text-align: left;
+  white-space: nowrap;
 }
 
 .home-am-opening__gradient {
@@ -571,9 +577,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
 /*
  * Springs i-opening__right-column:
  * second grid layer (NOT sticky) — cards scroll in document flow.
- * padding-top: 100svh so content arrives after left sticky settles.
- * Must stack ABOVE the sticky title panel (stage z-index: 2) or the
- * three rising cards paint underneath the gold half and never show.
+ * Background stays TRANSPARENT so the sticky title on the gold panel
+ * remains visible beside the cards while they rise (Springs behaviour).
  */
 .home-am-opening__right {
   grid-area: sticky_content;
@@ -590,14 +595,15 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
 .home-am-opening__right-inner {
   margin-left: 50%;
   width: 50%;
-  background: var(--am-gold);
+  background: transparent;
   display: flex;
   flex-direction: column;
   gap: 1.35rem;
   padding: clamp(1.5rem, 3.5vw, 3rem);
   pointer-events: auto;
-  min-height: 200svh;
-  padding-bottom: 40svh;
+  /* Runway after last card before Our Voyages cover pull */
+  min-height: 180svh;
+  padding-bottom: clamp(8rem, 28svh, 22rem);
 }
 
 .home-am-opening__rail-text {
@@ -848,11 +854,16 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
     align-items: flex-start;
     justify-content: flex-start;
     padding: 1.15rem;
+    padding-left: 1.15rem;
   }
 
   .home-am-opening__title {
     text-align: left;
     max-width: none;
+  }
+
+  .home-am-opening__title > .home-am-title-line {
+    white-space: normal;
   }
 
   .home-am-opening__right {

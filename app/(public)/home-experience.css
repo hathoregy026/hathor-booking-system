@@ -2306,9 +2306,12 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
   position: relative;
   z-index: 20;
   margin-top: 0 !important;
-  padding-top: clamp(2.5rem, 5vh, 4rem) !important;
+  /* Comfortable air after the last opening card before voyages */
+  padding-top: clamp(5.5rem, 12vh, 9rem) !important;
   padding-bottom: clamp(3.5rem, 7vh, 5.5rem) !important;
   background: var(--cream, #ece8df);
+  /* Keep section discoverable once opening releases */
+  scroll-margin-top: 2rem;
 }
 
 html[data-public-theme="night"] .home-am-sequence + [data-hathor-accordion] {
