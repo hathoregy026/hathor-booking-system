@@ -11,10 +11,11 @@
   --hathor-accordion-rail: #14100c;
   --hathor-accordion-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --hathor-accordion-row-h: 132px;
-  --hathor-accordion-open-h: min(88vh, 760px);
+  /* Compact open stage — content lives in the lower band like the ref */
+  --hathor-accordion-open-h: min(68vh, 520px);
   --hathor-accordion-gutter: clamp(1.25rem, 4vw, 4.5rem);
   --hathor-accordion-roman-w: clamp(4.5rem, 9vw, 7.5rem);
-  --hathor-accordion-rail-w: clamp(4.5rem, 6.5vw, 6.25rem);
+  --hathor-accordion-rail-w: clamp(3.5rem, 4.5vw, 4.75rem);
 
   padding: clamp(4rem, 8vh, 6.5rem) 0;
   background: transparent;
@@ -381,10 +382,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: clamp(1.25rem, 2.5vh, 2rem) 0.35rem;
+  padding: clamp(0.85rem, 1.8vh, 1.35rem) 0.25rem;
   background: var(--hathor-accordion-rail);
   color: var(--hathor-accordion-gold-bright);
-  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.35);
+  box-shadow: 3px 0 18px rgba(0, 0, 0, 0.32);
 }
 
 .railRoman {
@@ -392,16 +393,16 @@
     --typo-page-title-font,
     var(--font-heading, var(--font-display, "Playfair Display", Georgia, serif))
   );
-  font-size: clamp(1.75rem, 2.4vw, 2.35rem);
+  font-size: clamp(1.2rem, 1.6vw, 1.55rem);
   letter-spacing: 0.06em;
   line-height: 1;
 }
 
 .scarab {
-  width: clamp(2.4rem, 3.2vw, 3rem);
+  width: clamp(1.65rem, 2.2vw, 2.1rem);
   height: auto;
   color: var(--hathor-accordion-gold);
-  opacity: 0.92;
+  opacity: 0.9;
 }
 
 .railQuote {
@@ -409,12 +410,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.85rem;
-  max-height: 52%;
+  gap: 0.55rem;
+  max-height: 48%;
 }
 
 .railLotus {
-  font-size: 0.7rem;
+  font-size: 0.55rem;
   letter-spacing: 0;
   color: var(--hathor-accordion-gold);
   opacity: 0.85;
@@ -427,11 +428,11 @@
     --typo-page-subtitle-font,
     var(--font-body, "Plus Jakarta Sans", system-ui, sans-serif)
   );
-  font-size: clamp(0.58rem, 0.85vw, 0.7rem);
+  font-size: clamp(0.48rem, 0.65vw, 0.58rem);
   font-weight: 500;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  line-height: 1.35;
+  line-height: 1.3;
   text-align: center;
   color: rgba(212, 184, 122, 0.88);
 }
@@ -440,21 +441,22 @@
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(16rem, 0.85fr);
-  gap: clamp(1.25rem, 3vw, 2.75rem);
+  grid-template-columns: minmax(0, 1.4fr) minmax(13.5rem, 0.72fr);
+  gap: clamp(0.85rem, 2vw, 1.75rem);
   align-items: end;
-  padding: clamp(1.5rem, 3.5vh, 2.75rem) clamp(1.25rem, 3vw, 3rem)
-    clamp(1.5rem, 3.5vh, 2.5rem);
+  /* Push copy into the lower band — leave image breathing room above */
+  padding: clamp(3.5rem, 10vh, 5.5rem) clamp(1rem, 2.5vw, 2.25rem)
+    clamp(0.85rem, 2vh, 1.35rem);
   min-height: 0;
 }
 
 .close {
   position: absolute;
-  top: clamp(0.85rem, 2vh, 1.35rem);
-  right: clamp(0.85rem, 2vw, 1.5rem);
+  top: clamp(0.65rem, 1.5vh, 1rem);
+  right: clamp(0.65rem, 1.5vw, 1.1rem);
   z-index: 5;
-  width: 2.35rem;
-  height: 2.35rem;
+  width: 1.85rem;
+  height: 1.85rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -462,7 +464,7 @@
   border-radius: 999px;
   background: rgba(12, 10, 8, 0.28);
   color: #f3e7cf;
-  font-size: 1.45rem;
+  font-size: 1.15rem;
   line-height: 1;
   cursor: pointer;
   backdrop-filter: blur(6px);
@@ -484,8 +486,8 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.85rem;
-  max-width: 38rem;
+  gap: 0.45rem;
+  max-width: 28rem;
   min-width: 0;
   animation: hathorPanelRise 0.75s var(--hathor-accordion-ease) 0.12s both;
 }
@@ -493,14 +495,14 @@
 .duration {
   margin: 0;
   font-family: var(
-    --typo-page-subtitle-font,
-    var(--font-body, "Plus Jakarta Sans", system-ui, sans-serif)
+    --typo-page-title-font,
+    var(--font-heading, var(--font-display, "Playfair Display", Georgia, serif))
   );
-  font-size: clamp(0.68rem, 1vw, 0.8rem);
-  font-weight: 600;
-  letter-spacing: 0.28em;
+  font-size: clamp(0.58rem, 0.75vw, 0.68rem);
+  font-weight: 500;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(243, 231, 207, 0.82);
+  color: var(--hathor-accordion-gold-bright);
 }
 
 .routeTitle {
@@ -509,20 +511,20 @@
     --typo-page-title-font,
     var(--font-heading, var(--font-display, "Playfair Display", Georgia, serif))
   );
-  font-size: clamp(1.65rem, 3.4vw, 3rem);
+  font-size: clamp(1.15rem, 2vw, 1.7rem);
   font-weight: 500;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  line-height: 1.12;
+  line-height: 1.1;
   color: #f7efe0;
-  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.4);
 }
 
 .diamondRule {
   display: block;
-  width: 4.5rem;
-  height: 0.65rem;
-  margin: 0.15rem 0 0.2rem;
+  width: 3.25rem;
+  height: 0.5rem;
+  margin: 0.05rem 0 0.1rem;
   background:
     linear-gradient(
       90deg,
@@ -537,46 +539,52 @@
     ),
     radial-gradient(
       circle at center,
-      rgba(212, 184, 122, 0.95) 0 2px,
-      transparent 2.5px
+      rgba(212, 184, 122, 0.95) 0 1.5px,
+      transparent 2px
     );
 }
 
 .summary {
   margin: 0;
-  max-width: 34rem;
+  max-width: 26rem;
   font-family: var(
     --typo-page-subtitle-font,
     var(--font-body, "Plus Jakarta Sans", system-ui, sans-serif)
   );
-  font-size: clamp(0.88rem, 1.2vw, 1.02rem);
-  line-height: 1.65;
+  font-size: clamp(0.72rem, 0.9vw, 0.82rem);
+  font-style: italic;
+  line-height: 1.5;
   color: rgba(243, 231, 207, 0.88);
-  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 }
 
 .features {
   list-style: none;
-  margin: 0.55rem 0 0;
+  margin: 0.35rem 0 0;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(0.65rem, 1.5vw, 1.25rem);
+  gap: 0.35rem 0.55rem;
   width: 100%;
-  max-width: 34rem;
+  max-width: 26rem;
 }
 
 .feature {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.28rem;
   text-align: center;
+  min-width: 0;
 }
 
 .featureIcon {
-  width: 2.85rem;
-  height: 2.85rem;
+  width: 2rem;
+  height: 2rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -584,54 +592,58 @@
   border-radius: 999px;
   color: var(--hathor-accordion-gold-bright);
   background: rgba(12, 10, 8, 0.28);
+  flex-shrink: 0;
 }
 
 .featureIcon svg {
-  width: 1.45rem;
-  height: 1.45rem;
+  width: 1rem;
+  height: 1rem;
 }
 
 .featureLabel {
   font-family: var(
-    --typo-page-subtitle-font,
-    var(--font-body, "Plus Jakarta Sans", system-ui, sans-serif)
+    --typo-page-title-font,
+    var(--font-heading, var(--font-display, "Playfair Display", Georgia, serif))
   );
-  font-size: clamp(0.58rem, 0.85vw, 0.68rem);
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-size: clamp(0.48rem, 0.58vw, 0.56rem);
+  font-weight: 500;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  line-height: 1.3;
-  color: rgba(243, 231, 207, 0.86);
+  line-height: 1.2;
+  color: rgba(212, 184, 122, 0.92);
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 1rem 1.35rem;
-  margin-top: 0.65rem;
+  gap: 0.65rem 1rem;
+  margin-top: 0.35rem;
 }
 
 .detailsCta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 2.85rem;
-  padding: 0.75rem 1.45rem;
-  border-radius: 2px;
-  background: linear-gradient(180deg, #c9a96e 0%, #9a7840 100%);
-  color: #fff !important;
-  -webkit-text-fill-color: #fff !important;
+  min-height: 2.15rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #1a1510 !important;
+  -webkit-text-fill-color: #1a1510 !important;
+  border: 1px solid rgba(194, 166, 121, 0.55);
   font-family: var(
     --typo-page-subtitle-font,
     var(--font-body, "Plus Jakarta Sans", system-ui, sans-serif)
   );
-  font-size: 0.78rem;
+  font-size: 0.62rem;
   font-weight: 650;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   text-decoration: none;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
   transition:
     transform 0.3s ease,
     filter 0.3s ease,
@@ -641,23 +653,23 @@
 .detailsCta:hover,
 .detailsCta:focus-visible {
   transform: translateY(-1px);
-  filter: brightness(1.06);
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.34);
+  filter: brightness(1.03);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
   outline: none;
 }
 
 .watchCta {
   display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.45rem;
   color: var(--hathor-accordion-gold-bright);
   font-family: var(
     --typo-page-subtitle-font,
     var(--font-body, "Plus Jakarta Sans", system-ui, sans-serif)
   );
-  font-size: 0.78rem;
+  font-size: 0.62rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   text-decoration: none;
   transition: color 0.3s ease, transform 0.3s ease;
@@ -674,33 +686,33 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  width: 1.55rem;
+  height: 1.55rem;
   border: 1px solid rgba(212, 184, 122, 0.65);
   border-radius: 999px;
-  font-size: 0.65rem;
-  padding-left: 2px;
+  font-size: 0.5rem;
+  padding-left: 1px;
 }
 
 .infoCard {
   justify-self: end;
   align-self: end;
-  width: min(100%, 20.5rem);
-  padding: clamp(1.15rem, 2.2vh, 1.55rem) clamp(1.1rem, 2vw, 1.45rem);
-  border: 1px solid rgba(212, 184, 122, 0.42);
+  width: min(100%, 15.5rem);
+  padding: 0.85rem 0.95rem 0.95rem;
+  border: 1px solid rgba(212, 184, 122, 0.38);
   border-radius: 2px;
-  background: rgba(14, 11, 8, 0.62);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  background: rgba(14, 11, 8, 0.58);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
   animation: hathorPanelRise 0.8s var(--hathor-accordion-ease) 0.22s both;
 }
 
 .price {
-  margin: 0 0 1.15rem;
+  margin: 0 0 0.7rem;
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 0.35rem 0.45rem;
+  gap: 0.2rem 0.35rem;
   color: var(--hathor-accordion-gold-bright);
   font-family: var(
     --typo-page-title-font,
@@ -713,14 +725,14 @@
     --typo-page-subtitle-font,
     var(--font-body, "Plus Jakarta Sans", system-ui, sans-serif)
   );
-  font-size: 0.72rem;
+  font-size: 0.58rem;
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
 .priceValue {
-  font-size: clamp(1.35rem, 2vw, 1.7rem);
+  font-size: clamp(1.05rem, 1.45vw, 1.3rem);
   letter-spacing: 0.02em;
 }
 
@@ -730,44 +742,45 @@
     --typo-page-subtitle-font,
     var(--font-body, "Plus Jakarta Sans", system-ui, sans-serif)
   );
-  font-size: 0.68rem;
+  font-size: 0.55rem;
   font-weight: 500;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: rgba(243, 231, 207, 0.72);
 }
 
 .highlightsTitle {
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.45rem;
   font-family: var(
     --typo-page-subtitle-font,
     var(--font-body, "Plus Jakarta Sans", system-ui, sans-serif)
   );
-  font-size: 0.72rem;
+  font-size: 0.58rem;
   font-weight: 650;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--hathor-accordion-gold-bright);
 }
 
 .highlights {
   list-style: none;
-  margin: 0 0 1.25rem;
+  margin: 0 0 0.8rem;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
+  gap: 0.32rem;
 }
 
 .highlights li {
   position: relative;
-  padding-left: 1rem;
+  padding-left: 0.85rem;
   font-family: var(
     --typo-page-subtitle-font,
     var(--font-body, "Plus Jakarta Sans", system-ui, sans-serif)
   );
-  font-size: 0.82rem;
-  line-height: 1.4;
+  font-size: 0.68rem;
+  font-style: italic;
+  line-height: 1.35;
   color: rgba(243, 231, 207, 0.9);
 }
 
@@ -775,25 +788,25 @@
   content: "◆";
   position: absolute;
   left: 0;
-  top: 0.15em;
-  font-size: 0.48rem;
+  top: 0.2em;
+  font-size: 0.4rem;
   color: var(--hathor-accordion-gold);
 }
 
 .enquireCta {
   width: 100%;
-  min-height: 2.7rem;
+  min-height: 2.05rem;
   border: 1px solid rgba(212, 184, 122, 0.7);
-  border-radius: 2px;
-  background: transparent;
-  color: var(--hathor-accordion-gold-bright);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #1a1510;
   font-family: var(
     --typo-page-subtitle-font,
     var(--font-body, "Plus Jakarta Sans", system-ui, sans-serif)
   );
-  font-size: 0.74rem;
+  font-size: 0.6rem;
   font-weight: 650;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   cursor: pointer;
   transition:
@@ -804,9 +817,9 @@
 
 .enquireCta:hover,
 .enquireCta:focus-visible {
-  background: rgba(212, 184, 122, 0.12);
-  border-color: #f3e7cf;
-  color: #f3e7cf;
+  background: #fff;
+  border-color: #c2a679;
+  color: #1a1510;
   outline: none;
 }
 
@@ -867,25 +880,32 @@
   .section {
     --hathor-accordion-row-h: 118px;
     --hathor-accordion-roman-w: clamp(3.75rem, 8vw, 5.5rem);
-    --hathor-accordion-open-h: min(90vh, 720px);
-    --hathor-accordion-rail-w: 4.25rem;
+    --hathor-accordion-open-h: min(70vh, 540px);
+    --hathor-accordion-rail-w: 3.65rem;
   }
 
   .stage {
-    grid-template-columns: minmax(0, 1fr);
-    align-items: start;
-    gap: 1.25rem;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    grid-template-columns: minmax(0, 1.2fr) minmax(13rem, 0.8fr);
+    gap: 0.85rem;
+    padding: clamp(2.5rem, 7vh, 3.5rem) 1rem 0.85rem;
+  }
+
+  .stageMain {
+    max-width: none;
   }
 
   .infoCard {
-    justify-self: stretch;
-    width: min(100%, 26rem);
+    width: min(100%, 15rem);
   }
 
   .features {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.3rem 0.4rem;
+  }
+
+  .featureLabel {
+    font-size: 0.48rem;
+    letter-spacing: 0.02em;
   }
 
   .rowMeta {
@@ -900,7 +920,7 @@
     --hathor-accordion-gutter: 1.1rem;
     --hathor-accordion-roman-w: 2.75rem;
     --hathor-accordion-rail-w: 0px;
-    --hathor-accordion-open-h: min(92svh, 820px);
+    --hathor-accordion-open-h: min(78svh, 580px);
     padding: clamp(3rem, 6vh, 4.5rem) 0;
   }
 
@@ -947,33 +967,33 @@
     height: auto;
     flex-direction: row;
     justify-content: flex-start;
-    gap: 0.75rem;
-    padding: 0.65rem 0.85rem;
+    gap: 0.55rem;
+    padding: 0.5rem 0.7rem;
     z-index: 4;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.32);
   }
 
   .railRoman {
-    font-size: 1.15rem;
+    font-size: 0.95rem;
   }
 
   .scarab {
-    width: 1.65rem;
+    width: 1.35rem;
   }
 
   .railQuote {
     flex-direction: row;
     max-height: none;
     margin-left: auto;
-    gap: 0.4rem;
+    gap: 0.3rem;
   }
 
   .railQuoteText {
     writing-mode: horizontal-tb;
     transform: none;
-    font-size: 0.55rem;
-    letter-spacing: 0.1em;
-    max-width: 11rem;
+    font-size: 0.48rem;
+    letter-spacing: 0.08em;
+    max-width: 10rem;
     text-align: right;
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -994,46 +1014,62 @@
   .stage {
     grid-template-columns: 1fr;
     align-items: start;
-    gap: 1rem;
-    padding: 3.5rem 1rem 1.25rem;
+    gap: 0.75rem;
+    padding: 2.85rem 0.85rem 0.85rem;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
 
   .close {
-    top: 3.15rem;
-    right: 0.75rem;
-    width: 2.1rem;
-    height: 2.1rem;
+    top: 2.65rem;
+    right: 0.65rem;
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: 1.05rem;
+  }
+
+  .stageMain {
+    max-width: none;
+    gap: 0.35rem;
   }
 
   .routeTitle {
-    font-size: clamp(1.35rem, 7vw, 1.85rem);
+    font-size: clamp(1.05rem, 5.5vw, 1.35rem);
     letter-spacing: 0.04em;
   }
 
   .summary {
-    font-size: 0.88rem;
-    -webkit-line-clamp: 5;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    font-size: 0.72rem;
+    -webkit-line-clamp: 3;
   }
 
   .features {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.85rem 0.65rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.25rem 0.3rem;
+    max-width: none;
   }
 
   .featureIcon {
-    width: 2.55rem;
-    height: 2.55rem;
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  .featureIcon svg {
+    width: 0.85rem;
+    height: 0.85rem;
+  }
+
+  .featureLabel {
+    font-size: 0.42rem;
+    letter-spacing: 0.01em;
   }
 
   .actions {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
     width: 100%;
+    gap: 0.55rem 0.75rem;
   }
 
   .detailsCta,
@@ -1044,6 +1080,11 @@
   .infoCard {
     width: 100%;
     justify-self: stretch;
+    padding: 0.75rem 0.85rem;
     backdrop-filter: blur(5px);
+  }
+
+  .highlights li {
+    font-size: 0.65rem;
   }
 }
