@@ -504,30 +504,30 @@ const suitesPalette = `
     ) !important;
   }
   /*
-   * Wellness split panel — cream/beige surface + gold/beige mist (no charcoal).
+   * Wellness split panel — gold/beige field + white copy (readable over mist).
    */
   .l-wellness__slider__caption,
   .l-wellness__slider__caption.ui-dark,
   .l-wellness__slider__images {
-    --t-background: #f5eacf;
-    --t-background-rgb: 245, 234, 207;
-    --t-text: #b69f64;
-    --t-text-rgb: 182, 159, 100;
-    --t-heading: #b69f64;
-    --t-heading-rgb: 182, 159, 100;
-    --c-dark-blue: #f5eacf;
-    --c-dark-blue-rgb: 245, 234, 207;
-    --c-green: #cdbfa6;
-    --c-green-rgb: 205, 191, 166;
+    --t-background: #cdbfa6;
+    --t-background-rgb: 205, 191, 166;
+    --t-text: #ffffff;
+    --t-text-rgb: 255, 255, 255;
+    --t-heading: #ffffff;
+    --t-heading-rgb: 255, 255, 255;
+    --c-dark-blue: #cdbfa6;
+    --c-dark-blue-rgb: 205, 191, 166;
+    --c-green: #f5eacf;
+    --c-green-rgb: 245, 234, 207;
     --c-blue: #b69f64;
     --c-blue-rgb: 182, 159, 100;
     background: linear-gradient(
       105deg,
-      #f5eacf 0%,
-      #cdbfa6 55%,
-      #f5eacf 100%
+      #b69f64 0%,
+      #cdbfa6 48%,
+      #b69f64 100%
     ) !important;
-    color: #b69f64 !important;
+    color: #ffffff !important;
   }
   .l-wellness__slider-gradient {
     z-index: 1 !important;
@@ -536,28 +536,28 @@ const suitesPalette = `
   .l-wellness__slider-gradient div:first-child {
     background: radial-gradient(
       circle at center,
-      rgba(182, 159, 100, 0.78) 0%,
-      rgba(205, 191, 166, 0.4) 42%,
+      rgba(245, 234, 207, 0.55) 0%,
+      rgba(182, 159, 100, 0.35) 42%,
       rgba(245, 234, 207, 0) 72%
     ) no-repeat !important;
   }
   .l-wellness__slider-gradient div:nth-child(2) {
     background: radial-gradient(
       circle,
-      rgba(245, 234, 207, 0.95) 0%,
-      rgba(205, 191, 166, 0.65) 40%,
+      rgba(245, 234, 207, 0.85) 0%,
+      rgba(205, 191, 166, 0.55) 40%,
       rgba(182, 159, 100, 0) 74%
     ) !important;
   }
   .l-wellness__slider-gradient div:nth-child(3) {
     background: radial-gradient(
       circle,
-      rgba(182, 159, 100, 0.7) 0%,
-      rgba(205, 191, 166, 0.5) 34%,
+      rgba(182, 159, 100, 0.65) 0%,
+      rgba(245, 234, 207, 0.4) 34%,
       rgba(245, 234, 207, 0) 70%
     ) !important;
   }
-  /* Amenity list on cream panel: beige idle → gold active */
+  /* White amenity list — idle slightly softer white, active pure white */
   .l-wellness__slider__caption-titles,
   .l-wellness__slider__caption-text {
     position: relative !important;
@@ -565,32 +565,42 @@ const suitesPalette = `
   }
   .l-wellness__slider__caption-titles > a {
     opacity: 1 !important;
-    color: #cdbfa6 !important;
+    color: rgba(255, 255, 255, 0.55) !important;
   }
   .l-wellness__slider__caption-titles > a .h2,
   .l-wellness__slider__caption-titles > a p {
-    color: #cdbfa6 !important;
+    color: rgba(255, 255, 255, 0.55) !important;
   }
   .has-hover .l-wellness__slider__caption-titles > a:hover {
     opacity: 1 !important;
-    color: #b69f64 !important;
+    color: rgba(255, 255, 255, 0.85) !important;
   }
   .has-hover .l-wellness__slider__caption-titles > a:hover .h2,
   .has-hover .l-wellness__slider__caption-titles > a:hover p {
-    color: #b69f64 !important;
+    color: rgba(255, 255, 255, 0.85) !important;
   }
   .l-wellness__slider__caption-titles > a.is-active {
     opacity: 1 !important;
-    color: #b69f64 !important;
+    color: #ffffff !important;
   }
   .l-wellness__slider__caption-titles > a.is-active .h2,
   .l-wellness__slider__caption-titles > a.is-active p {
-    color: #b69f64 !important;
+    color: #ffffff !important;
   }
   .l-wellness__slider__caption-text,
   .l-wellness__slider__caption-text .text-t1,
   .l-wellness__slider__caption-text p {
-    color: #b69f64 !important;
+    color: #ffffff !important;
+  }
+  .l-wellness__webgl-caption,
+  .l-wellness__webgl-caption .text-t1,
+  .l-wellness__webgl-caption p,
+  .l-wellness__webgl-title,
+  .l-wellness__webgl-title .g1,
+  .l-wellness__webgl-title .text-c1 {
+    color: #ffffff !important;
+    position: relative;
+    z-index: 6;
   }
   @media (max-width: 480px) {
     .l-wellness__slider-gradient div:first-child,
@@ -771,7 +781,7 @@ const suitesPalette = `
       filter: contrast(1.06) saturate(1.04) drop-shadow(0 8px 16px rgba(182, 159, 100, 0.4)) !important;
     }
   }
-  /* Hero copy — cream over mosaic (palette, not white/ink) */
+  /* Hero copy — white, above mosaic + gold filters */
   .l-gallery__caption {
     position: absolute !important;
     z-index: 60 !important;
@@ -787,15 +797,15 @@ const suitesPalette = `
   .l-gallery__caption .h0,
   .l-gallery__caption .h0 *,
   .l-gallery__caption p {
-    color: #f5eacf !important;
+    color: #ffffff !important;
     mix-blend-mode: normal !important;
   }
   .l-gallery__caption .text-t1 {
     text-shadow: 0 1px 14px rgba(182, 159, 100, 0.45);
   }
   .l-gallery__caption .h0 {
-    color: #b69f64 !important;
-    text-shadow: 0 2px 22px rgba(205, 191, 166, 0.55);
+    color: #ffffff !important;
+    text-shadow: 0 2px 22px rgba(182, 159, 100, 0.4);
   }
   /*
    * Intro stage — cream surface + gold type (no charcoal panels).
@@ -857,6 +867,100 @@ const suitesPalette = `
     background-color: #f5eacf !important;
     color: #b69f64 !important;
   }
+  /*
+   * Nature / Voyage — kill Springs green WebGL field.
+   * Replace with cream–beige–gold mist; white copy above filters.
+   */
+  .l-nature-bg,
+  .l-nature-bg-item,
+  .l-nature-bg-item--webgl,
+  .l-nature-bg-item:nth-of-type(3),
+  .l-nature__slider > .col.ui-background,
+  .l-nature__slider > .col.ui-dark {
+    --c-green: #cdbfa6 !important;
+    --c-green-rgb: 205, 191, 166 !important;
+    --c-light-green: #b69f64 !important;
+    --c-light-green-rgb: 182, 159, 100 !important;
+    --c-dark-blue: #cdbfa6 !important;
+    --c-dark-blue-rgb: 205, 191, 166 !important;
+    --t-background: #f5eacf !important;
+    background-color: #f5eacf !important;
+  }
+  .l-nature-bg-item:nth-of-type(3) {
+    background: linear-gradient(
+      135deg,
+      #f5eacf 0%,
+      #cdbfa6 50%,
+      #b69f64 100%
+    ) !important;
+  }
+  .l-nature-bg-item .background--cover:has(.js-nature-canvas),
+  .l-nature-bg-item--webgl .background--cover,
+  .l-nature-bg-item--webgl {
+    background: linear-gradient(
+      120deg,
+      #f5eacf 0%,
+      #cdbfa6 42%,
+      #b69f64 100%
+    ) !important;
+  }
+  canvas.js-nature-canvas {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+  /* Soft gold wash if any tree/webgl canvas still paints */
+  canvas.js-tree-canvas {
+    filter: sepia(0.85) saturate(0.55) hue-rotate(-8deg) brightness(1.08) !important;
+  }
+  .l-nature-bg-gradient,
+  .l-nature-bg-item__gradient div:first-child,
+  .l-nature-bg-item__gradient div:nth-child(2),
+  .l-nature__gradient div {
+    background: radial-gradient(
+      circle,
+      rgba(182, 159, 100, 0.7) 0%,
+      rgba(205, 191, 166, 0.5) 38%,
+      rgba(245, 234, 207, 0) 74%
+    ) !important;
+  }
+  .l-nature-bg-caption,
+  .l-nature-bg-caption .g1,
+  .l-nature-bg-caption .text-c1,
+  .l-nature-bg-caption .text-t1,
+  .l-nature-bg-caption p,
+  .l-nature-bg-caption__subtitle,
+  .l-nature-bg-caption__text,
+  .l-nature__slider-caption,
+  .l-nature__slider-caption .text-t1,
+  .l-nature__slider-caption p,
+  .l-nature__caption__text,
+  .l-nature__caption__text .text-t1,
+  .l-nature__caption .g1,
+  .l-nature__caption .text-c1 {
+    color: #ffffff !important;
+    position: relative;
+    z-index: 8;
+    mix-blend-mode: normal !important;
+  }
+  .l-nature-bg-caption {
+    z-index: 8 !important;
+  }
+  .l-nature__slider-caption {
+    z-index: 8 !important;
+  }
+  /* Place / interiors over-image copy → white */
+  .l-place .text-t1,
+  .l-place .g1,
+  .l-place .h0,
+  .l-place .h1,
+  .l-place .text-c1,
+  .l-interiors .text-t1,
+  .l-interiors .g1,
+  .l-interiors .h0,
+  .l-interiors .text-c1 {
+    color: #ffffff !important;
+  }
   .l-intro__image--second {
     position: relative;
     z-index: 4;
@@ -899,7 +1003,10 @@ const suitesPalette = `
   .hathor-suites-footer-host {
     position: relative;
     z-index: 5;
-    background: #f5eacf;
+    background: #ece8df;
+  }
+  .hathor-suites-footer-host .lux-footer {
+    display: block !important;
   }
 </style>
 <style data-hathor-suites-footer>
@@ -941,6 +1048,7 @@ const hathorFooterHtml = `
           <div class="lux-footer__col">
             <p class="lux-footer__col-title">Suites</p>
             <ul class="lux-footer__links">
+              <li><a class="lux-footer__link" href="/suites" target="_top" data-ajax-page-ignore>Suites Overview</a></li>
               <li><a class="lux-footer__link" href="/luxury-cabins-Nile-Cruise" target="_top" data-ajax-page-ignore>Luxury Rooms</a></li>
               <li><a class="lux-footer__link" href="/rooms" target="_top" data-ajax-page-ignore>Luxury Suites</a></li>
               <li><a class="lux-footer__link" href="/Luxury-Royal-Suites-Nile-Dahabiya-Cruise" target="_top" data-ajax-page-ignore>Royal Suites</a></li>
@@ -1254,18 +1362,23 @@ if (fs.existsSync(cssDir)) {
   }
 }
 
-// Retint WebGL accent greens → gold (keeps shader math, swaps leaf/glow hue).
+// Do NOT retint AgX tone-mapping matrices (false “green” floats).
+// Nature green comes from the Springs color texture — hide canvas via CSS and
+// point the texture URL at a Hathor still so any residual load stays on-brand.
 const jsDir = path.join(destinationDir, "assets", "javascripts");
 if (fs.existsSync(jsDir)) {
-  for (const name of ["webgl-wellness.js", "webgl-nature.js", "shared.js"]) {
-    const jsPath = path.join(jsDir, name);
-    if (!fs.existsSync(jsPath)) continue;
-    let js = fs.readFileSync(jsPath, "utf8");
+  const naturePath = path.join(jsDir, "webgl-nature.js");
+  if (fs.existsSync(naturePath)) {
+    let js = fs.readFileSync(naturePath, "utf8");
     js = js.replaceAll(
-      "0.0951212405381588,0.761241990602591,0.0767994186031903",
-      "0.7137254901960784,0.6235294117647059,0.39215686274509803",
+      "/assets/images/media/landing/3.nature/color@md.avif",
+      "/media/hathor/scraped/luxsuite-2.webp",
     );
-    fs.writeFileSync(jsPath, js);
+    js = js.replaceAll(
+      "/suites-springs/assets/images/media/landing/3.nature/color@md.avif",
+      "/media/hathor/scraped/luxsuite-2.webp",
+    );
+    fs.writeFileSync(naturePath, js);
   }
 }
 

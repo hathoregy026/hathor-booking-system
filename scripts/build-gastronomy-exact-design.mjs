@@ -7,6 +7,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import { injectLuxFooterIntoHtml } from "./lux-footer-iframe-snippet.mjs";
 
 const root = process.cwd();
 const hathorFontFaces = fs.readFileSync(
@@ -726,6 +727,9 @@ html = html.replace(
   /(<a\b[^>]*?)\s+href="https:\/\/springs\.(?:estate|house)\/[^"]*"/gi,
   '$1 href="/contact" target="_top" data-ajax-page-ignore',
 );
+
+// Fixed Hathor lux-footer (same as PublicLayout / Suites iframe).
+html = injectLuxFooterIntoHtml(html);
 
 fs.mkdirSync(destinationDir, { recursive: true });
 fs.writeFileSync(destination, html);
