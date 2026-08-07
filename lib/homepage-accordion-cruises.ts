@@ -42,6 +42,14 @@ const IMAGE_SLOT_BY_SLUG: Partial<Record<string, SiteImageName>> = {
   "nile-majesty": "home-voyage-nile-majesty",
 };
 
+/** Closed-row taglines — match the itinerary list design language. */
+const TAGLINE_BY_SLUG: Partial<Record<string, string>> = {
+  "3-nights-aswan-luxor": "Intimate & Immersive",
+  "4-nights-luxor-aswan": "Classic Voyage",
+  "7-nights-luxor-aswan-luxor": "The Complete Experience",
+  "nile-majesty": "Private Charter",
+};
+
 function formatBasePrice(cents: number): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -57,6 +65,20 @@ function resolveImageSlot(slug: string, index: number): SiteImageName {
   );
 }
 
+function formatAccordionMeta(
+  roomCount: number,
+  basePriceCents: number,
+  slug: string,
+): string {
+  const roomLabel = roomCount === 1 ? "1 Cabin" : `${roomCount} Cabins`;
+  const base = `Base ${formatBasePrice(basePriceCents)}`;
+  const tagline = TAGLINE_BY_SLUG[slug];
+  const parts = tagline
+    ? [roomLabel, base, tagline]
+    : [roomLabel, base];
+  return parts.join(" · ").toUpperCase();
+}
+
 function toAccordionCruise(
   cruise: {
     id: string;
@@ -69,8 +91,6 @@ function toAccordionCruise(
   },
   index: number,
 ): HomepageAccordionCruise {
-  const roomLabel =
-    cruise.roomCount === 1 ? "1 cabin" : `${cruise.roomCount} cabins`;
   return {
     id: cruise.id,
     name: cruise.name,
@@ -81,7 +101,11 @@ function toAccordionCruise(
     roomCount: cruise.roomCount,
     slug: cruise.slug,
     romanNumeral: ROMAN[index] ?? String(index + 1),
-    meta: `${roomLabel} · Base ${formatBasePrice(cruise.basePriceCents)}`,
+    meta: formatAccordionMeta(
+      cruise.roomCount,
+      cruise.basePriceCents,
+      cruise.slug,
+    ),
     href: "/cruises",
   };
 }
@@ -184,7 +208,7 @@ const getHomepageAccordionCruisesCached = unstable_cache(
     accordionGlobal.accordionInflight = pending;
     return pending;
   },
-  ["homepage-accordion-cruises-v3"],
+  ["homepage-accordion-cruises-v4"],
   { revalidate: 300, tags: [PUBLIC_CMS_CACHE_TAG] },
 );
 

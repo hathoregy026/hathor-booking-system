@@ -176,6 +176,7 @@ export default function LuxuryAccordion({
             const isActive = activeId === item.id;
             const href = item.href ?? "/cruises";
             const ctaLabel = item.ctaLabel ?? "Check Voyages";
+            const meta = item.meta?.trim() ?? "";
 
             return (
               <li
@@ -194,6 +195,8 @@ export default function LuxuryAccordion({
                     : `${item.name}. Click to view details.`
                 }
               >
+                <span className={styles.flare} aria-hidden="true" />
+
                 <span
                   className={`${styles.romanNumeral} ${isActive ? styles.romanNumeralHidden : ""}`}
                   aria-hidden="true"
@@ -205,7 +208,7 @@ export default function LuxuryAccordion({
                   name={item.imageName}
                   alt=""
                   fill
-                  sizes="(max-width: 768px) 100vw, min(1200px, 100vw)"
+                  sizes="100vw"
                   unoptimized={false}
                   className={styles.backgroundImage}
                   previewAnchor
@@ -214,12 +217,22 @@ export default function LuxuryAccordion({
                 <div className={styles.vignette} aria-hidden="true" />
 
                 <div className={styles.row}>
-                  <h3
-                    className={`${styles.name} ${isActive ? "typo-our-voyages-main-hover" : "typo-our-voyages-main"}`}
-                    style={isActive ? nameHoverStyle : nameStyle}
-                  >
-                    {item.name}
-                  </h3>
+                  <span className={styles.divider} aria-hidden="true" />
+                  <div className={styles.copy}>
+                    <h3
+                      className={`${styles.name} ${isActive ? "typo-our-voyages-main-hover" : "typo-our-voyages-main"}`}
+                      style={isActive ? nameHoverStyle : nameStyle}
+                    >
+                      {item.name}
+                    </h3>
+                    {meta ? (
+                      <p
+                        className={`${styles.rowMeta} ${isActive ? styles.rowMetaHidden : ""}`}
+                      >
+                        {meta}
+                      </p>
+                    ) : null}
+                  </div>
                   <span className={styles.icon} aria-hidden="true">
                     <span className={styles.iconMark}>+</span>
                   </span>
@@ -236,7 +249,7 @@ export default function LuxuryAccordion({
                       className={`${styles.meta} typo-our-voyages-indication-hover`}
                       style={metaHoverStyle}
                     >
-                      {item.meta?.trim() ? item.meta : "\u00A0"}
+                      {meta || "\u00A0"}
                     </p>
                     <p
                       className={`${styles.description} typo-our-voyages-body-hover`}

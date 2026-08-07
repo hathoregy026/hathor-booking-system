@@ -1,28 +1,37 @@
-/* Isolated Luxury Accordion — horizontal rows, CSS Modules scoped */
+/* Isolated Luxury Accordion — full-bleed itinerary rows */
 
 .section {
   --hathor-accordion-cream: var(--cream, #ece8df);
-  --hathor-accordion-gold: #b69f64;
-  --hathor-accordion-text: #1a1a1a;
-  --hathor-accordion-muted: #8b7355;
+  --hathor-accordion-gold: #c2a679;
+  --hathor-accordion-gold-soft: rgba(194, 166, 121, 0.22);
+  --hathor-accordion-line: rgba(194, 166, 121, 0.28);
+  --hathor-accordion-muted: #7d7060;
+  --hathor-accordion-roman: rgba(194, 166, 121, 0.18);
+  --hathor-accordion-hover: rgba(194, 166, 121, 0.06);
   --hathor-accordion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --hathor-accordion-row-h: 132px;
+  --hathor-accordion-gutter: clamp(1.25rem, 4vw, 4.5rem);
+  --hathor-accordion-roman-w: clamp(4.5rem, 9vw, 7.5rem);
 
   padding: clamp(4rem, 8vh, 6.5rem) 0;
   /* Transparent so page cream + hieroglyph tile (.ex-root::before) show through */
   background: transparent;
   position: relative;
   overflow: hidden;
+  width: 100%;
 }
 
 .container {
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 0 5vw;
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .heading {
-  margin-bottom: 4rem;
+  margin-bottom: clamp(2.5rem, 5vh, 4rem);
   text-align: center;
+  padding: 0 var(--hathor-accordion-gutter);
 }
 
 /* Hidden until GSAP owns the stagger (avoids all-at-once paint) */
@@ -45,34 +54,92 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  width: 100%;
+  border-top: 1px solid var(--hathor-accordion-line);
 }
 
 .accordionItem {
   position: relative;
-  height: 120px;
-  border-bottom: 1px solid rgba(182, 159, 100, 0.15);
+  height: var(--hathor-accordion-row-h);
+  width: 100%;
+  border-bottom: 1px solid var(--hathor-accordion-line);
   overflow: hidden;
   cursor: pointer;
-  transition: height 0.8s var(--hathor-accordion-ease);
+  transition:
+    height 0.8s var(--hathor-accordion-ease),
+    background-color 0.45s var(--hathor-accordion-ease);
   background: transparent;
+}
+
+/* Soft luminous flare where the separator meets the left edge */
+.flare {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: min(220px, 38vw);
+  height: 2px;
+  z-index: 4;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 248, 230, 0.95) 0%,
+    rgba(194, 166, 121, 0.55) 18%,
+    rgba(194, 166, 121, 0.12) 55%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 10px 2px rgba(255, 244, 214, 0.45),
+    0 0 28px 6px rgba(194, 166, 121, 0.22);
+  opacity: 0.85;
+  transition:
+    opacity 0.45s var(--hathor-accordion-ease),
+    width 0.45s var(--hathor-accordion-ease),
+    box-shadow 0.45s var(--hathor-accordion-ease);
+}
+
+.accordionItem:not(.isActive):hover {
+  background-color: var(--hathor-accordion-hover);
+}
+
+.accordionItem:not(.isActive):hover .flare,
+.accordionItem:not(.isActive):focus-visible .flare {
+  opacity: 1;
+  width: min(280px, 48vw);
+  box-shadow:
+    0 0 14px 3px rgba(255, 244, 214, 0.55),
+    0 0 36px 8px rgba(194, 166, 121, 0.28);
+}
+
+.accordionItem:not(.isActive):focus-visible {
+  outline: none;
+  background-color: var(--hathor-accordion-hover);
 }
 
 .accordionItem.isActive {
   height: 520px;
+  background-color: transparent;
+}
+
+.accordionItem.isActive .flare {
+  opacity: 0;
 }
 
 .romanNumeral {
   position: absolute;
-  left: 5vw;
+  left: var(--hathor-accordion-gutter);
   top: 50%;
   transform: translateY(-50%);
+  width: var(--hathor-accordion-roman-w);
   font-family: var(
     --typo-page-title-font,
     var(--font-heading, var(--font-display, "Playfair Display", Georgia, serif))
   );
-  font-size: 8rem;
-  color: rgba(182, 159, 100, 0.06);
+  font-size: clamp(4.5rem, 8vw, 7.25rem);
+  font-weight: 400;
+  color: var(--hathor-accordion-roman);
   line-height: 1;
+  letter-spacing: -0.04em;
+  text-align: left;
   pointer-events: none;
   z-index: 1;
   transition:
@@ -165,16 +232,59 @@
 .row {
   position: relative;
   z-index: 2;
-  height: 120px;
-  display: flex;
+  height: var(--hathor-accordion-row-h);
+  display: grid;
+  grid-template-columns:
+    var(--hathor-accordion-roman-w) minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 5vw 0 calc(5vw + 6rem);
+  column-gap: clamp(1rem, 2.5vw, 2rem);
+  padding: 0 var(--hathor-accordion-gutter);
   transition: padding-left 0.65s var(--hathor-accordion-ease);
 }
 
 .accordionItem.isActive .row {
+  grid-template-columns: minmax(0, 1fr) auto;
   padding-left: clamp(20px, 3vw, 44px);
+}
+
+.divider {
+  position: absolute;
+  left: calc(
+    var(--hathor-accordion-gutter) + var(--hathor-accordion-roman-w) +
+      clamp(0.35rem, 1vw, 0.75rem)
+  );
+  top: 22%;
+  bottom: 22%;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    var(--hathor-accordion-line) 18%,
+    var(--hathor-accordion-line) 82%,
+    transparent 100%
+  );
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+}
+
+.accordionItem.isActive .divider {
+  opacity: 0;
+}
+
+.copy {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.4rem;
+  min-width: 0;
+  padding-left: clamp(0.75rem, 1.5vw, 1.25rem);
+  transition: padding-left 0.65s var(--hathor-accordion-ease);
+}
+
+.accordionItem.isActive .copy {
+  grid-column: 1;
+  padding-left: 0;
 }
 
 .name {
@@ -190,6 +300,10 @@
     transform 0.55s var(--hathor-accordion-ease);
 }
 
+.accordionItem:not(.isActive):hover .name {
+  transform: translateX(2px);
+}
+
 /* Harder shadow — readable over bright photo areas */
 .accordionItem.isActive .name {
   letter-spacing: 0.02em;
@@ -201,28 +315,67 @@
   animation: hathorAccordionNameReveal 0.75s var(--hathor-accordion-ease) both;
 }
 
-/* Small circular + — quiet cue that the row opens on click */
+/* Closed-row meta — always visible under the title (mockup) */
+.rowMeta {
+  margin: 0;
+  font-family: var(
+    --typo-page-subtitle-font,
+    var(--font-body, "Plus Jakarta Sans", system-ui, sans-serif)
+  );
+  font-size: clamp(0.62rem, 1.05vw, 0.78rem);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--hathor-accordion-muted);
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  transition:
+    opacity 0.4s ease,
+    visibility 0.4s ease,
+    color 0.4s ease,
+    transform 0.45s var(--hathor-accordion-ease);
+}
+
+.accordionItem:not(.isActive):hover .rowMeta {
+  color: #6a5e4f;
+  transform: translateX(2px);
+}
+
+.rowMetaHidden {
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Circular + — opens the itinerary panel */
 .icon {
+  grid-column: 3;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.65rem;
-  height: 1.65rem;
+  width: 2.15rem;
+  height: 2.15rem;
   flex-shrink: 0;
-  border: 1px solid rgba(182, 159, 100, 0.42);
+  border: 1px solid rgba(194, 166, 121, 0.55);
   border-radius: 999px;
   color: var(--hathor-accordion-gold);
   line-height: 1;
   transition:
-    transform 0.4s ease,
+    transform 0.4s var(--hathor-accordion-ease),
     color 0.5s ease,
     border-color 0.4s ease,
     background-color 0.4s ease,
-    text-shadow 0.5s ease;
+    text-shadow 0.5s ease,
+    box-shadow 0.4s ease;
+}
+
+.accordionItem.isActive .icon {
+  grid-column: 2;
 }
 
 .iconMark {
-  font-size: 0.95rem;
+  font-size: 1.15rem;
   font-weight: 400;
   line-height: 1;
   transform: translateY(-0.5px);
@@ -230,8 +383,10 @@
 
 .accordionItem:not(.isActive):hover .icon,
 .accordionItem:not(.isActive):focus-visible .icon {
-  border-color: rgba(182, 159, 100, 0.72);
-  background-color: rgba(182, 159, 100, 0.08);
+  border-color: rgba(194, 166, 121, 0.9);
+  background-color: rgba(194, 166, 121, 0.1);
+  transform: scale(1.06);
+  box-shadow: 0 0 0 4px rgba(194, 166, 121, 0.08);
 }
 
 .accordionItem.isActive .icon {
@@ -240,6 +395,7 @@
   border-color: rgba(255, 255, 255, 0.55);
   background-color: rgba(255, 255, 255, 0.1);
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+  box-shadow: none;
 }
 
 .body {
@@ -247,13 +403,14 @@
   z-index: 2;
   left: 0;
   right: 0;
-  top: 120px;
+  top: var(--hathor-accordion-row-h);
   bottom: 0;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   gap: 1.25rem;
-  padding: 0.35rem 5vw 2rem calc(5vw + 6rem);
+  padding: 0.35rem var(--hathor-accordion-gutter) 2rem
+    calc(var(--hathor-accordion-gutter) + var(--hathor-accordion-roman-w) + 1.5rem);
   box-sizing: border-box;
   opacity: 0;
   transform: translateY(16px);
@@ -410,6 +567,15 @@
   .backgroundImage {
     animation: none !important;
   }
+
+  .accordionItem:not(.isActive):hover .name,
+  .accordionItem:not(.isActive):hover .rowMeta {
+    transform: none;
+  }
+
+  .accordionItem:not(.isActive):hover .icon {
+    transform: none;
+  }
 }
 
 /* Same expand reveal on phones — softer blur (still present) */
@@ -428,50 +594,90 @@
   }
 
   .accordionItem,
-  .backgroundImage,
-  .content {
+  .backgroundImage {
     will-change: auto;
+  }
+
+  /* Touch: no hover tint — keep press focus via :focus-visible only */
+  .accordionItem:not(.isActive):hover {
+    background-color: transparent;
+  }
+
+  .accordionItem:not(.isActive):hover .icon {
+    transform: none;
+    box-shadow: none;
+    background-color: transparent;
+    border-color: rgba(194, 166, 121, 0.55);
   }
 }
 
-@media (max-width: 768px) {
+/* Tablet */
+@media (max-width: 1024px) and (min-width: 481px) {
   .section {
-    padding: clamp(3rem, 6vh, 4.5rem) 0;
-  }
-
-  .accordionItem {
-    height: 88px;
+    --hathor-accordion-row-h: 118px;
+    --hathor-accordion-roman-w: clamp(3.75rem, 8vw, 5.5rem);
   }
 
   .accordionItem.isActive {
-    height: 360px;
+    height: 440px;
+  }
+
+  .rowMeta {
+    letter-spacing: 0.11em;
+  }
+}
+
+/* Phone */
+@media (max-width: 480px) {
+  .section {
+    --hathor-accordion-row-h: 108px;
+    --hathor-accordion-gutter: 1.1rem;
+    --hathor-accordion-roman-w: 2.75rem;
+    padding: clamp(3rem, 6vh, 4.5rem) 0;
+  }
+
+  .accordionItem.isActive {
+    height: 380px;
   }
 
   .romanNumeral {
-    font-size: 4rem;
-    left: 3vw;
+    font-size: 3.25rem;
   }
 
   .row {
-    height: 88px;
-    padding: 0 5vw 0 calc(3vw + 4rem);
+    column-gap: 0.65rem;
   }
 
-  .accordionItem.isActive .row {
-    padding-left: clamp(16px, 4vw, 28px);
+  .copy {
+    gap: 0.3rem;
+    padding-left: 0.55rem;
+  }
+
+  .rowMeta {
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+  }
+
+  .icon {
+    width: 1.85rem;
+    height: 1.85rem;
+  }
+
+  .iconMark {
+    font-size: 1rem;
   }
 
   .body {
-    top: 88px;
-    padding: 0.25rem 5vw 1.35rem calc(3vw + 4rem);
+    padding: 0.25rem var(--hathor-accordion-gutter) 1.35rem
+      var(--hathor-accordion-gutter);
     gap: 1rem;
-  }
-
-  .accordionItem.isActive .body {
-    padding-left: clamp(16px, 4vw, 28px);
   }
 
   .description {
     -webkit-line-clamp: 3;
+  }
+
+  .flare {
+    width: min(140px, 55vw);
   }
 }
