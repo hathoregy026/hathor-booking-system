@@ -33,7 +33,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
     0 0 10px rgba(22, 18, 14, 0.35) !important;
 }
 
-/* Keep helm flush under voyages */
+/* Keep helm flush under voyages (inside or after sequence) */
+.home-am-sequence + .home-helm-portal,
 [data-hathor-accordion] + .home-helm-portal {
   margin-top: 0 !important;
 }
@@ -104,7 +105,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   );
 }
 
-.home-am-chapter--under-next + .home-am-chapter--under-previous {
+.home-am-chapter--under-next + .home-am-chapter--under-previous,
+.home-am-chapter--under-previous-after-next {
   clip-path: inset(calc(100 * var(--am-svh)) 0 0);
   margin-top: calc(
     var(--sticky-under-previous-distance) * -1 +
@@ -113,14 +115,60 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   transform: translateZ(1px);
 }
 
+@media (min-width: 1025px) {
+  .home-am-opening.home-am-chapter--under-previous-after-next {
+    clip-path: inset(calc(100 * var(--am-svh)) 0 0);
+    margin-top: calc(
+      var(--sticky-under-previous-distance) * -1 +
+        var(--sticky-under-next-distance) * -1
+    );
+    transform: translateZ(1px);
+  }
+}
+
 /*
  * Helm may stack above Voyages for the cover wipe, but stays fully clipped
  * shut in CSS until the scrub opens it — so Voyages is never buried blank.
  */
+.home-am-sequence + .home-helm-portal,
 [data-hathor-accordion] + .home-helm-portal {
   position: relative;
   z-index: 26;
   clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
+}
+
+/* ========== i-nature — Our Voyages (Springs sticky sibling after i-opening) ========== */
+
+.home-am-voyages {
+  position: relative;
+  z-index: 6;
+  min-height: calc(100 * var(--am-svh));
+  pointer-events: none;
+}
+
+.home-am-voyages__stage {
+  pointer-events: auto;
+  overflow: visible;
+  contain: none;
+  height: auto;
+  min-height: calc(100 * var(--am-svh));
+  background-color: var(--am-cream) !important;
+}
+
+:global(html[data-public-theme="night"]) .home-am-voyages__stage {
+  background-color: var(--bg-dark, #1e1b18) !important;
+}
+
+@media (min-width: 1025px) {
+  /* Springs i-nature runway */
+  .home-am-voyages {
+    min-height: 300svh;
+  }
+
+  .home-am-voyages__stage {
+    min-height: calc(100 * var(--am-svh));
+    height: auto;
+  }
 }
 
 /* ========== i-intro (Springs: 150svh / 300svh) ========== */
@@ -489,6 +537,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
 .home-am-opening .sticky__layer--sticky {
   pointer-events: none;
   z-index: 2;
+  /* contain:content can prevent the left ManagedImage from lazy-loading */
+  contain: none;
 }
 
 .home-am-opening__content,
@@ -601,11 +651,13 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   width: 80vw;
 }
 
-/* Springs .col--md-2 */
+/* Springs .col--md-2 — row of 3 at bottom on desktop */
 .home-am-opening__list-item {
   position: relative;
-  flex: 0 1 16.6666vw;
+  display: block;
   width: 16.6666vw;
+  max-width: 100%;
+  flex: 0 0 auto;
 }
 
 .home-am-opening__list-item-media {
@@ -669,9 +721,29 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   margin-left: 50vw;
   width: 50vw;
   box-sizing: border-box;
-  background: transparent;
-  padding: 2.5rem 0 3rem;
+  background: var(--am-gold);
+  padding: 2.5rem 0 0;
   pointer-events: auto;
+}
+
+.home-am-opening__bottom-band {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(0.75rem, 2vw, 2rem);
+  width: 100%;
+}
+
+.home-am-opening__bottom-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-right: clamp(1rem, 2vw, 2.5rem);
+  text-align: right;
+  display: none;
+}
+
+.home-am-opening__title--bottom {
+  margin: 0;
 }
 
 .home-am-opening__caption-text {
@@ -684,13 +756,13 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   -webkit-text-fill-color: #ffffff !important;
 }
 
-.home-am-opening__list {
+/* Springs .mt-5 */
+.home-am-opening__list-wrap {
   margin-top: 3rem;
+}
+
+.home-am-opening__list {
   padding-left: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0;
 }
 
 @media (min-width: 1025px) {
@@ -701,8 +773,67 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
     /* Do NOT set overflow:hidden — it breaks CSS sticky (Springs uses JS sticky) */
   }
 
+  .home-am-opening__caption-title--mobile {
+    display: none;
+  }
+
+  .home-am-opening__bottom-title {
+    display: block;
+  }
+
+  .home-am-opening__right-inner {
+    display: flex;
+    flex-direction: column;
+    min-height: 300svh;
+    padding-bottom: 0;
+  }
+
+  .home-am-opening__caption-text {
+    flex: 0 0 auto;
+  }
+
+  /* Cards + title stick as one band at the gold column bottom until Voyages covers */
+  .home-am-opening__bottom-band {
+    margin-top: auto;
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    padding-bottom: clamp(1.25rem, 3vh, 2.5rem);
+    background: var(--am-gold);
+  }
+
+  .home-am-opening__list-wrap {
+    margin-top: 0;
+    flex: 0 0 auto;
+  }
+
+  .home-am-opening__list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-end;
+    gap: clamp(10px, 1.1vw, 15px);
+    padding-left: 0.5rem;
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
   .home-am-opening__list-item {
-    margin-top: 15px;
+    margin-top: 0;
+    width: min(12.5vw, 10.5rem);
+  }
+
+  .home-am-opening__bottom-title {
+    display: block;
+    flex: 1 1 7.5rem;
+    max-width: 42%;
+    padding-right: clamp(0.75rem, 1.5vw, 1.5rem);
+    padding-bottom: 0.35rem;
+  }
+
+  .home-am-opening__title--bottom {
+    font-size: clamp(1.35rem, 2.4vw, 2.35rem) !important;
+    line-height: 1.12 !important;
   }
 
   .home-am-opening__caption {
@@ -903,6 +1034,25 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
     margin-left: 0;
     width: 100%;
     padding: 1.15rem;
+    min-height: 0;
+    background: var(--am-gold);
+  }
+
+  .home-am-opening__bottom-title {
+    display: none;
+  }
+
+  .home-am-opening__caption-title--mobile {
+    display: block;
+  }
+
+  .home-am-opening__bottom-band {
+    flex-direction: column;
+    align-items: stretch;
+    position: static;
+    margin-top: 0;
+    padding-bottom: 0;
+    background: transparent;
   }
 
   .home-am-opening__list {

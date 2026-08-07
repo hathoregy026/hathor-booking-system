@@ -1,6 +1,6 @@
 import { PUBLIC_THEME_STORAGE_KEY } from "@/lib/public-theme";
 
-const INIT_SCRIPT = `(function(){try{var t=localStorage.getItem("${PUBLIC_THEME_STORAGE_KEY}");document.documentElement.setAttribute("data-public-theme",t==="night"?"night":"day");}catch(e){document.documentElement.setAttribute("data-public-theme","day");}})();`;
+const INIT_SCRIPT = `(function(){try{var k="${PUBLIC_THEME_STORAGE_KEY}";var t=localStorage.getItem(k);var theme;if(t==="night"||t==="day"){theme=t;}else if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){theme="night";}else{theme="day";}document.documentElement.setAttribute("data-public-theme",theme);}catch(e){document.documentElement.setAttribute("data-public-theme","day");}})();`;
 
 export function PublicThemeInit() {
   return (

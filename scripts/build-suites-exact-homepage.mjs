@@ -8,10 +8,6 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = process.cwd();
-const hathorFontFaces = fs.readFileSync(
-  path.join(root, "app", "hathor-fonts.css"),
-  "utf8",
-);
 const luxFooterCss = fs
   .readFileSync(path.join(root, "app", "lux-footer.css"), "utf8")
   .replaceAll("#2c2824", "#b69f64")
@@ -309,8 +305,9 @@ function replaceAssetPattern(assetPattern, url) {
   ["landing\\/callback\\/", MEDIA.lux2],
 ].forEach(([pattern, url]) => replaceAssetPattern(pattern, url));
 
-// Springs Place sticky panels + nature caption use Vimeo — replace with Hathor stills
-// so the three rising full-bleed images and left caption read as Suites, not Springs green video.
+// Springs Place sticky panels + nature caption use Vimeo. Preserve the exact
+// iframe node/attributes expected by Springs motion code and swap only the
+// frame document's media for a Hathor still.
 const vimeoToSuite = {
   "1044257468": MEDIA.suites,
   "1044257440": MEDIA.rooms,
@@ -319,19 +316,27 @@ const vimeoToSuite = {
 };
 html = html.replace(
   /<iframe\b([^>]*?)\bsrc="https:\/\/player\.vimeo\.com\/video\/(\d+)\?[^"]*"([^>]*)>[\s\S]*?<\/iframe>/gi,
-  (_m, _pre, id) => {
+  (_match, beforeSrc, id, afterSrc) => {
     const url = vimeoToSuite[id] || MEDIA.hero;
-    // Keep a sized iframe node so Springs motion code that falls back to
-    // iframe.width does not throw; paint the suite still via img.
-    return `<img class="img-cover" src="${url}" alt="" width="1440" height="900" draggable="false" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;" /><iframe title="" width="1440" height="900" tabindex="-1" aria-hidden="true" src="about:blank" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:none;border:0;"></iframe>`;
+    const frameDocument =
+      `<!doctype html><html><head><style>` +
+      `html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#cdbfa6}` +
+      `img{display:block;width:100%;height:100%;object-fit:cover}` +
+      `</style></head><body><img src="${url}" alt=""></body></html>`;
+    const srcdoc = frameDocument
+      .replaceAll("&", "&amp;")
+      .replaceAll('"', "&quot;");
+    return `<iframe${beforeSrc} src="about:blank" srcdoc="${srcdoc}"${afterSrc}></iframe>`;
   },
 );
 
-// Gallery cards: cycle Hathor suite imagery across gallery-* assets
-let galleryIndex = 0;
+// Gallery cards: keep every responsive source for a Springs card on the same
+// Hathor image. Cycling per URL occurrence makes adjacent cards repeat and lets
+// media-query changes swap their composition.
 html = html.replace(
-  /(?:(?:https?:)?\/\/[^"'\s>]*\/)?(?:assets\/images\/media\/)?landing\/0\.gallery\/[^"'\s>]*/gi,
-  () => galleryCycle[galleryIndex++ % galleryCycle.length],
+  /(?:(?:https?:)?\/\/[^"'\s>]*\/)?(?:assets\/images\/media\/)?landing\/0\.gallery\/gallery-(\d+)[^"'\s>]*/gi,
+  (_match, sourceIndex) =>
+    galleryCycle[(Math.max(1, Number(sourceIndex)) - 1) % galleryCycle.length],
 );
 
 // Any remaining springs media URLs → suite hero (absolute + protocol-relative)
@@ -349,21 +354,11 @@ html = html
 
 const suitesPalette = `
 <style data-hathor-suites-palette>
-  ${hathorFontFaces}
-  @font-face {
-    font-family: "Hathor Display";
-    src: url("/fonts/Gamgote-Regular.otf") format("opentype");
-    font-display: swap;
-  }
-  @font-face {
-    font-family: "Hathor Body";
-    src: url("/fonts/agraham-regular.ttf") format("truetype");
-    font-display: swap;
-  }
   /*
-   * CLONE-FAITHFUL — colour tokens ONLY.
-   * Do NOT invent mosaic scale/aspect/z-index/opacity/WebGL hides.
-   * Springs landing.css owns layout, sticky, captions, wellness/nature stages.
+   * CLONE-FAITHFUL THEME LAYER.
+   * Springs owns layout, typography metrics (Victor Serif / TT Commons),
+   * transforms, sticky stages and responsive branches.
+   * This layer remaps colour tokens only.
    * Locked palette: Gold #B69F64 · Cream #F5EACF · Beige #CDBFA6
    */
   :root {
@@ -393,17 +388,21 @@ const suitesPalette = `
     --c-light-blue-rgb: 245, 234, 207;
     --c-sky: #f5eacf;
     --c-sky-rgb: 245, 234, 207;
+    --c-white: #f5eacf;
+    --c-white-rgb: 245, 234, 207;
+    --c-black: #b69f64;
+    --c-black-rgb: 182, 159, 100;
     --cookie-height: 0px;
     --tooltip-shadow: 0 18px 48px rgba(182, 159, 100, 0.28);
     --c-button-hover-gradient: linear-gradient(101.51deg, rgba(182, 159, 100, 0) 37.02%, #b69f64 308.4%);
     --c-button-hover-gradient-dark: linear-gradient(91.82deg, rgba(245, 234, 207, 0) 0%, #b69f64 100%);
   }
   html, body {
-    background: #f5eacf !important;
+    background: #f5eacf;
     color: #b69f64;
   }
-  /* Springs dark panels → beige; type on them → cream (never black) */
-  .ui-dark, .ui-dark-background, .ui-dark.ui-background {
+  /* Preserve Springs theme mechanics; replace only their colour values. */
+  .ui-dark {
     --t-background: #cdbfa6;
     --t-background-rgb: 205, 191, 166;
     --t-text: #f5eacf;
@@ -411,12 +410,12 @@ const suitesPalette = `
     --t-heading: #f5eacf;
     --t-heading-rgb: 245, 234, 207;
     --t-primary: #b69f64;
+    --t-primary-rgb: 182, 159, 100;
+    --t-secondary: #f5eacf;
+    --t-secondary-rgb: 245, 234, 207;
     --t-line: rgba(245, 234, 207, 0.4);
-    background-color: #cdbfa6 !important;
-    color: #f5eacf !important;
   }
-  /* Cream panels → gold type */
-  .ui-light, .ui-light-background, .ui-light.ui-background, .ui-background {
+  .ui-light {
     --t-background: #f5eacf;
     --t-background-rgb: 245, 234, 207;
     --t-text: #b69f64;
@@ -424,106 +423,38 @@ const suitesPalette = `
     --t-heading: #b69f64;
     --t-heading-rgb: 182, 159, 100;
     --t-primary: #b69f64;
+    --t-primary-rgb: 182, 159, 100;
+    --t-secondary: #cdbfa6;
+    --t-secondary-rgb: 205, 191, 166;
     --t-line: rgba(182, 159, 100, 0.28);
-    background-color: #f5eacf !important;
-    color: #b69f64 !important;
   }
-  .g1, .h0, .h1, .h2, .h3 {
-    font-family: "Hathor Display", "Gamgote", Georgia, serif !important;
-  }
-  .text-c1, .text-c2, p, .btn__text, .text-t1, body, button, input, textarea {
-    font-family: "TT Commons Pro", "TT Commons", Helvetica, Arial, sans-serif !important;
-  }
+  /*
+   * The shared Hathor navbar replaces Springs navigation. No other Springs
+   * element is hidden or geometrically overridden.
+   */
   .header, .cookie-consent {
     display: none !important;
     visibility: hidden !important;
     pointer-events: none !important;
   }
-  /* Orb colour only — Springs positions/sizes untouched */
-  .l-wellness__gradient div,
-  .l-nature__gradient div,
-  .footer__gradient div,
-  .preloader__gradient div,
-  .preloader__gradient-animation div,
-  .l-nature-bg-gradient,
-  .l-gallery__gradient div,
-  .l-wellness__slider-gradient div,
-  .l-nature-bg-item__gradient div {
-    background: radial-gradient(
-      circle,
-      rgba(182, 159, 100, 0.55) 0%,
-      rgba(205, 191, 166, 0.35) 42%,
-      rgba(245, 234, 207, 0) 74%
-    ) !important;
+  /* Keep Springs' responsive page usable in portrait tablet; the captured
+     site otherwise covers it with a branded rotate-device interstitial. */
+  .turn-message {
+    display: none !important;
   }
   /*
-   * Kill any remaining black/ink from Springs CSS literals & lux-footer fallbacks.
-   * Use gold on cream, cream on beige/photo — never #000 / #2c2824 / #fff.
+   * Springs gallery sources are physically 3:4. Hathor replacements are
+   * landscape, so pin the image itself to the source slot ratio; otherwise
+   * intrinsic dimensions collapse every card and change all three lanes.
    */
-  body,
-  .ui-dark,
-  .ui-light,
-  .ui-background {
-    --t-pure-black: #b69f64;
-    --t-pure-black-rgb: 182, 159, 100;
-  }
-  /* Photography captions: cream */
-  .l-gallery__caption,
-  .l-gallery__caption .text-t1,
-  .l-gallery__caption .h0,
-  .l-gallery__caption p,
-  .l-wellness__webgl-caption,
-  .l-wellness__webgl-caption .text-t1,
-  .l-wellness__webgl-caption p,
-  .l-wellness__webgl-title .g1,
-  .l-wellness__webgl-title .text-c1,
-  .l-nature__caption .g1,
-  .l-nature__caption .text-c1,
-  .l-nature__caption__text,
-  .l-nature__caption__text .text-t1,
-  .l-place .text-t1,
-  .l-place .g1,
-  .l-place .h0,
-  .l-place .h1,
-  .l-place .text-c1,
-  .l-interiors .text-t1,
-  .l-interiors .g1,
-  .l-interiors .h0,
-  .l-interiors .text-c1 {
-    color: #f5eacf !important;
-  }
-  /* Beige panel copy (wellness/nature captions on ui-dark): cream + gold active */
-  .l-wellness__slider__caption,
-  .l-wellness__slider__caption .h2,
-  .l-wellness__slider__caption .text-t1,
-  .l-wellness__slider__caption p,
-  .l-wellness__slider__caption-titles > a,
-  .l-wellness__slider__caption-titles > a .h2,
-  .l-nature__slider-caption,
-  .l-nature__slider-caption .text-t1,
-  .l-nature-bg-caption,
-  .l-nature-bg-caption .g1,
-  .l-nature-bg-caption .text-c1,
-  .l-nature-bg-caption .text-t1 {
-    color: #f5eacf !important;
-  }
-  .l-wellness__slider__caption-titles > a.is-active,
-  .l-wellness__slider__caption-titles > a.is-active .h2 {
-    color: #b69f64 !important;
-  }
-  /* Vimeo→still: cover only */
-  #l-place-sticky-1 img.img-cover,
-  #l-place-sticky-2 img.img-cover,
-  #l-place-sticky-3 img.img-cover,
-  .l-nature__caption img.img-cover {
-    display: block;
-    width: 100%;
-    height: 100%;
+  .l-gallery__item picture.img-full img {
+    aspect-ratio: 3 / 4;
     object-fit: cover;
   }
   footer.footer {
     display: none !important;
   }
+  /* Footer is the one intentional structural substitution. */
   .hathor-suites-footer-scroll {
     display: block !important;
     background: #f5eacf !important;
@@ -786,11 +717,6 @@ html = html.replaceAll(
   'href="&#x2F;suites-springs&#x2F;assets&#x2F;',
 );
 
-html = html.replace(
-  /<script[^>]*browser-message\/browser-message\.js[^>]*><\/script>/g,
-  "",
-);
-
 function rewriteHref(documentHtml, fromHref, toHref) {
   const escaped = fromHref.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   return documentHtml.replace(
@@ -910,23 +836,20 @@ for (const [from, to] of [
 
 // Insert Hathor lux-footer IN PLACE of the Springs footer (data-scroll-section),
 // so it participates in the page scroll — appending after scripts never appears.
-html = html.replace(
+const footerReplaced = html.replace(
   /<footer\s+class="section section--no-overflow[\s\S]*?<\/footer>/i,
   hathorFooterHtml,
 );
-// Strip any leftover end-of-body footer hosts from older builds
-html = html.replace(
-  /<div class="hathor-suites-footer-host[\s\S]*?<\/div>\s*(?=<\/body>)/gi,
-  "",
-);
-html = html.replace(
-  /<section class="section section--no-overflow hathor-suites-footer-scroll"[\s\S]*?<\/section>\s*(?=<\/body>)/gi,
-  "",
-);
+if (footerReplaced === html) {
+  throw new Error(
+    "Suites rebuild failed: Springs <footer data-scroll-section> not found",
+  );
+}
+html = footerReplaced;
 
-// Rewrite stylesheet URLs + retint baked Springs colors.
-// Dark forest/teal panels → beige #cdbfa6.
-// Lime/olive accents → gold #b69f64. Sky/teal fills → cream #f5eacf.
+// Rewrite stylesheet URLs + retint only Springs' named brand colours.
+// Never rewrite neutral/black literals: those include shadows, masks and
+// browser-normalization rules and changing them alters the source rendering.
 const cssColorPatches = [
   ["#162d24", "#cdbfa6"],
   ["#1b4732", "#cdbfa6"],
@@ -939,15 +862,6 @@ const cssColorPatches = [
   ["#bee5ee", "#f5eacf"],
   ["#e0d1b6", "#cdbfa6"],
   ["#f5e8d1", "#f5eacf"],
-  ["#2c2824", "#b69f64"],
-  ["#000000", "#b69f64"],
-  ["#000", "#b69f64"],
-  ["#111111", "#b69f64"],
-  ["#222222", "#b69f64"],
-  ["#333333", "#b69f64"],
-  ["#333", "#b69f64"],
-  ["#111", "#b69f64"],
-  ["#222", "#b69f64"],
   ["22,45,36", "205,191,166"],
   ["22, 45, 36", "205, 191, 166"],
   ["27,71,50", "205,191,166"],
@@ -970,56 +884,59 @@ const cssColorPatches = [
   ["224, 209, 182", "205, 191, 166"],
   ["245,232,209", "245,234,207"],
   ["245, 232, 209", "245, 234, 207"],
-  ["44,40,36", "182,159,100"],
-  ["44, 40, 36", "182, 159, 100"],
-  ["0,0,0", "182,159,100"],
-  ["0, 0, 0", "182, 159, 100"],
 ];
 
+// Retint only the homepage stylesheets. Leave unused page CSS untouched so a
+// future accidental import cannot inherit mutated layout tokens.
 const cssDir = path.join(destinationDir, "assets", "stylesheets");
-if (fs.existsSync(cssDir)) {
-  for (const name of fs.readdirSync(cssDir).filter((f) => f.endsWith(".css"))) {
-    const cssPath = path.join(cssDir, name);
-    let css = fs.readFileSync(cssPath, "utf8");
-    css = css.replaceAll("url(/assets/", "url(/suites-springs/assets/");
-    css = css.replaceAll("url('/assets/", "url('/suites-springs/assets/");
-    css = css.replaceAll('url("/assets/', 'url("/suites-springs/assets/');
-    for (const [from, to] of cssColorPatches) {
-      css = css.replaceAll(from, to);
-      css = css.replaceAll(from.toUpperCase(), to);
-    }
-    // Soft black elevation → gold-tinted (same blur radii, Hathor #B69F64)
-    css = css.replace(
-      /rgba\(\s*var\(--t-pure-black-rgb\)\s*,\s*([0-9.]+)\)/g,
-      "rgba(182, 159, 100, $1)",
-    );
-    css = css.replace(
-      /rgba\(\s*3\s*,\s*3\s*,\s*3\s*,\s*([0-9.]+)\)/g,
-      "rgba(182, 159, 100, $1)",
-    );
-    fs.writeFileSync(cssPath, css);
+for (const name of ["global.css", "landing.css", "browser-message.css"]) {
+  const cssPath = path.join(cssDir, name);
+  if (!fs.existsSync(cssPath)) continue;
+  let css = fs.readFileSync(cssPath, "utf8");
+  css = css.replaceAll("url(/assets/", "url(/suites-springs/assets/");
+  css = css.replaceAll("url('/assets/", "url('/suites-springs/assets/");
+  css = css.replaceAll('url("/assets/', 'url("/suites-springs/assets/');
+  for (const [from, to] of cssColorPatches) {
+    css = css.replaceAll(from, to);
+    css = css.replaceAll(from.toUpperCase(), to);
   }
+  fs.writeFileSync(cssPath, css);
 }
 
-// Do NOT retint AgX tone-mapping matrices (false “green” floats).
-// Nature green comes from the Springs color texture — hide canvas via CSS and
-// point the texture URL at a Hathor still so any residual load stays on-brand.
+// Keep both original WebGL engines. Rewrite every absolute /assets/ path so
+// textures, icons and lazy chunks resolve under /suites-springs/, then swap
+// only the colour plates for Hathor imagery (depth/alpha masks stay Springs).
 const jsDir = path.join(destinationDir, "assets", "javascripts");
-if (fs.existsSync(jsDir)) {
-  const naturePath = path.join(jsDir, "webgl-nature.js");
-  if (fs.existsSync(naturePath)) {
-    let js = fs.readFileSync(naturePath, "utf8");
-    js = js.replaceAll(
-      "/assets/images/media/landing/3.nature/color@md.avif",
-      "/media/hathor/scraped/luxsuite-2.webp",
-    );
-    js = js.replaceAll(
-      "/suites-springs/assets/images/media/landing/3.nature/color@md.avif",
-      "/media/hathor/scraped/luxsuite-2.webp",
-    );
-    fs.writeFileSync(naturePath, js);
+function rewriteJsTree(dir) {
+  if (!fs.existsSync(dir)) return;
+  for (const name of fs.readdirSync(dir)) {
+    const jsPath = path.join(dir, name);
+    const st = fs.statSync(jsPath);
+    if (st.isDirectory()) {
+      rewriteJsTree(jsPath);
+      continue;
+    }
+    if (!name.endsWith(".js")) continue;
+    let js = fs.readFileSync(jsPath, "utf8");
+    js = js.replaceAll('"/assets/', '"/suites-springs/assets/');
+    js = js.replaceAll("'/assets/", "'/suites-springs/assets/");
+    js = js.replaceAll("(/assets/", "(/suites-springs/assets/");
+    if (name === "webgl-nature.js") {
+      js = js.replaceAll(
+        "/suites-springs/assets/images/media/landing/3.nature/color@md.avif",
+        "/media/hathor/scraped/luxsuite-2.webp",
+      );
+    }
+    if (name === "webgl-wellness.js") {
+      js = js.replaceAll(
+        "/suites-springs/assets/images/media/landing/2.wellness/color-unc@md.avif",
+        "/media/hathor/scraped/luxsuite-1.webp",
+      );
+    }
+    fs.writeFileSync(jsPath, js);
   }
 }
+rewriteJsTree(jsDir);
 
 fs.mkdirSync(destinationDir, { recursive: true });
 fs.writeFileSync(destination, html);

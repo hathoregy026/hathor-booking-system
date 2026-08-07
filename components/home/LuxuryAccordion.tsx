@@ -43,6 +43,8 @@ export type LuxuryAccordionItem = {
 export type LuxuryAccordionProps = {
   title?: string;
   items?: LuxuryAccordionItem[];
+  /** Render inside home-am-voyages sticky stage (Springs i-nature) */
+  embedded?: boolean;
 };
 
 /** CMS family/color only — CSS owns closed-row scale. */
@@ -129,6 +131,7 @@ function WatchPlayIcon() {
 export default function LuxuryAccordion({
   title,
   items = [],
+  embedded = false,
 }: LuxuryAccordionProps) {
   const list = items;
   const rootRef = useRef<HTMLElement>(null);
@@ -241,7 +244,7 @@ export default function LuxuryAccordion({
   return (
     <section
       ref={rootRef}
-      className={`${styles.section} ex-content-section`}
+      className={`${styles.section} ${embedded ? styles.embedded : ""} ex-content-section`}
       data-hathor-accordion
       aria-label={sectionTitle}
     >

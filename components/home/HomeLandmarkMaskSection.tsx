@@ -1,6 +1,6 @@
 "use client";
 
-import { CSSProperties } from "react";
+import { CSSProperties, type ReactNode } from "react";
 import {
   HomeAmenitiesSequence,
   type AmenitiesLandmarkSlide,
@@ -19,6 +19,7 @@ type HomeLandmarkMaskSectionProps = {
   titleStyle?: CSSProperties;
   indicationStyle?: CSSProperties;
   bodyStyle?: CSSProperties;
+  voyages?: ReactNode;
 };
 
 const DEFAULT_AMENITIES_IMAGES: AmenitiesSequenceImage[] =
@@ -36,6 +37,7 @@ export function HomeLandmarkMaskSection({
   titleStyle,
   indicationStyle,
   bodyStyle,
+  voyages,
 }: HomeLandmarkMaskSectionProps) {
   return (
     <HomeAmenitiesSequence
@@ -45,6 +47,7 @@ export function HomeLandmarkMaskSection({
       titleStyle={titleStyle}
       indicationStyle={indicationStyle}
       bodyStyle={bodyStyle}
+      voyages={voyages}
     />
   );
 }

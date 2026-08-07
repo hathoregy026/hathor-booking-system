@@ -1,6 +1,6 @@
 "use client";
 
-import { CSSProperties, useRef } from "react";
+import { CSSProperties, useRef, type ReactNode } from "react";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useHomeAmenitiesSequence } from "@/hooks/useHomeAmenitiesSequence";
 import { AMENITIES_SEQUENCE_IMAGE_SLOTS } from "@/lib/amenities-sequence-images";
@@ -45,6 +45,8 @@ type HomeAmenitiesSequenceProps = {
   titleStyle?: CSSProperties;
   indicationStyle?: CSSProperties;
   bodyStyle?: CSSProperties;
+  /** Springs i-nature — must be direct sibling after i-opening inside this sequence */
+  voyages?: ReactNode;
 };
 
 function withColor(
@@ -89,6 +91,7 @@ export function HomeAmenitiesSequence({
   titleStyle,
   indicationStyle,
   bodyStyle,
+  voyages,
 }: HomeAmenitiesSequenceProps) {
   const rootRef = useRef<HTMLElement>(null);
   const images = resolveImages(imagesProp);
@@ -147,25 +150,39 @@ export function HomeAmenitiesSequence({
     return [...lines].sort((a, b) => a.length - b.length)[0] || lines[0];
   };
 
-  const openingCards = [
-    stories[0]
-      ? { image: images[8], label: shortCardLabel(stories[0].title) }
-      : null,
-    stories[1]
-      ? { image: images[9], label: shortCardLabel(stories[1].title) }
-      : null,
-    landmarks[1]
-      ? {
-          image: images[10],
-          label: shortCardLabel(
-            landmarks[1].indication || landmarks[1].titleLines.join("\n"),
-          ),
-        }
-      : null,
-  ].filter(Boolean) as Array<{
+  /* Always 3 cards → dashboard slots home-amenities-9 / 10 / 11 (never gate on copy). */
+  const openingCards: Array<{
     image: AmenitiesSequenceImage;
     label: string;
-  }>;
+  }> = [
+    {
+      image: images[8],
+      label: shortCardLabel(stories[0]?.title || "A Way of Life"),
+    },
+    {
+      image: images[9],
+      label: shortCardLabel(stories[1]?.title || "Dahabiya"),
+    },
+    {
+      image: images[10],
+      label: shortCardLabel(
+        landmarks[1]?.indication ||
+          landmarks[1]?.titleLines?.join("\n") ||
+          "Private Nile Sailing",
+      ),
+    },
+  ];
+
+  const openingTitleFormatted = (
+    landmarks[3]?.titleLines?.length
+      ? landmarks[3].titleLines
+      : ["GOLDEN HOUR", "ON THE NILE"]
+  )
+    .map((line) => line.replace(/\.$/, "").trim())
+    .filter(Boolean)
+    .join(" ")
+    .replace(/\s+on\s+the\s+/i, " on\u00A0the ")
+    .replace(/\s+ON\s+THE\s+/i, " on\u00A0the ");
 
   useHomeAmenitiesSequence(rootRef, sliderSlides.length);
 
@@ -544,7 +561,7 @@ export function HomeAmenitiesSequence({
 
       {/* ===== i-opening — Springs infrastructure amenities opening (literal) ===== */}
       <div
-        className="home-am-opening home-am-chapter home-am-chapter--under-previous home-am-chapter--under-next sticky sticky--full-height sticky--under-previous sticky--under-next"
+        className="home-am-opening home-am-chapter home-am-chapter--under-previous home-am-chapter--under-previous-after-next home-am-chapter--under-next sticky sticky--full-height sticky--under-previous sticky--under-next"
         data-am-opening
         data-am-chapter
         id="home-am-opening"
@@ -576,6 +593,7 @@ export function HomeAmenitiesSequence({
                   fill
                   sizes="(max-width: 480px) 100vw, 50vw"
                   className="object-cover"
+                  priority
                   previewAnchor={openingLeftImage.previewAnchor}
                 />
               </div>
@@ -591,18 +609,9 @@ export function HomeAmenitiesSequence({
               data-parallax-0-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)"}'
               data-parallax--100-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
             >
-              <div className="home-am-opening__caption-title">
+              <div className="home-am-opening__caption-title home-am-opening__caption-title--mobile">
                 <h2 className="home-am-opening__title" data-am-opening-title>
-                  {(
-                    landmarks[3]?.titleLines?.length
-                      ? landmarks[3].titleLines
-                      : ["GOLDEN HOUR", "ON THE NILE"]
-                  )
-                    .map((line) => line.replace(/\.$/, "").trim())
-                    .filter(Boolean)
-                    .join(" ")
-                    .replace(/\s+on\s+the\s+/i, " on\u00A0the ")
-                    .replace(/\s+ON\s+THE\s+/i, " on\u00A0the ")}
+                  {openingTitleFormatted}
                 </h2>
               </div>
               <div className="home-am-opening__gradient" aria-hidden="true">
@@ -631,32 +640,60 @@ export function HomeAmenitiesSequence({
               {stories[0]?.body || landmarks[3]?.body || intro.body}
             </p>
 
-            <div className="home-am-opening__list" data-am-opening-cards>
-              {openingCards.map((card, index) => (
-                <div
-                  key={`opening-card-${card.image.name}-${index}`}
-                  className="home-am-opening__list-item"
-                  data-am-opening-card
-                >
-                  <div className="home-am-opening__list-item-media">
-                    <ManagedImage
-                      name={card.image.name}
-                      alt={card.image.alt}
-                      fill
-                      sizes="(max-width: 480px) 48vw, 210px"
-                      className="object-cover"
-                      previewAnchor={card.image.previewAnchor}
-                    />
-                  </div>
-                  <div className="home-am-opening__list-item-text">
-                    {card.label}
-                  </div>
+            {/* Springs desktop: 3 cards in one row + title fixed at bottom-right of gold column */}
+            <div className="home-am-opening__bottom-band">
+              <div className="home-am-opening__list-wrap">
+                <div className="home-am-opening__list" data-am-opening-cards>
+                  {openingCards.map((card, index) => (
+                    <div
+                      key={`opening-card-${card.image.name}-${index}`}
+                      className="home-am-opening__list-item"
+                      data-am-opening-card={card.image.name}
+                    >
+                      <div className="home-am-opening__list-item-media">
+                        <ManagedImage
+                          name={card.image.name}
+                          alt={card.image.alt}
+                          fill
+                          sizes="(max-width: 480px) 48vw, 210px"
+                          className="object-cover"
+                          loading="eager"
+                          previewAnchor={card.image.previewAnchor}
+                        />
+                      </div>
+                      <div className="home-am-opening__list-item-text">
+                        {card.label}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
+              <div
+                className="home-am-opening__bottom-title"
+                aria-hidden="true"
+              >
+                <h2 className="home-am-opening__title home-am-opening__title--bottom">
+                  {openingTitleFormatted}
+                </h2>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* ===== i-nature — Our Voyages (Springs sticky sibling after i-opening) ===== */}
+      {voyages ? (
+        <div
+          className="home-am-voyages home-am-chapter home-am-chapter--under-previous sticky sticky--full-height sticky--under-previous sticky--under-next"
+          data-am-voyages
+          data-am-chapter
+          id="home-am-voyages"
+        >
+          <div className="home-am-voyages__stage home-am-chapter__stage sticky__layer sticky__layer--sticky sticky--full-height">
+            {voyages}
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }

@@ -3,7 +3,7 @@
 
 [data-charter-page],
 [data-highlights-page] {
-  --lx-ink: #0b0907;
+  --lx-ink: #1e1b18;
   --lx-ivory: var(--lux-cream, #ece8df);
   --lx-gold: var(--lux-gold, #b69f64);
   --lx-gold-soft: var(--gold-soft, #d4c28a);
@@ -236,4 +236,15 @@ body:has([data-highlights-page]) .public-main {
   .lx-btn {
     width: 100%;
   }
+}
+
+html[data-public-theme="night"] [data-charter-page],
+html[data-public-theme="night"] [data-highlights-page] {
+  --lx-ink: var(--text-primary, #f5eacf);
+  --lx-ivory: var(--bg-dark, #1e1b18);
+  --lx-text: var(--text-primary, #f5eacf);
+  --lx-muted: var(--text-secondary, #cdbfa6);
+  --lx-copy-light: rgb(245 234 207 / 0.78);
+  background: var(--bg-dark, #1e1b18);
+  color: var(--text-primary, #f5eacf);
 }

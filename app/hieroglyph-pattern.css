@@ -13,7 +13,7 @@
 }
 
 html[data-public-theme="night"] .public-site {
-  --hieroglyph-cream: #0b0907;
+  --hieroglyph-cream: var(--bg-dark, #1e1b18);
   --hieroglyph-opacity: 0.02;
 }
 
@@ -91,6 +91,16 @@ html[data-ex-experience] .ex-root .ex-content-section {
 html[data-ex-experience] .ex-root .ex-stack-scroll.ex-content-section {
   background-color: var(--cream, #ece8df) !important;
   background-image: none !important;
+}
+
+/* Our Voyages — opaque cream handoff over amenities opening (Springs i-nature) */
+html[data-ex-experience] .ex-root [data-hathor-accordion].ex-content-section {
+  background-color: var(--cream, #ece8df) !important;
+  background-image: none !important;
+}
+
+html[data-ex-experience][data-public-theme="night"] .ex-root [data-hathor-accordion].ex-content-section {
+  background-color: var(--cream, #1e1b18) !important;
 }
 
 /* Pin-safe width — 100vw breakout caused left-jump during sticky/pin scrub */

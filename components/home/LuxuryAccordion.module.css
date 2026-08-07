@@ -54,44 +54,56 @@
   --acc-open-active-bg: #1c1712;
 
   padding: clamp(3.5rem, 7vh, 5.5rem) 0;
-  /* Opaque — must cover amenities sticky opening on handoff (was transparent) */
+  /* Opaque — must cover amenities sticky opening on handoff */
   background: var(--cream, #ece8df);
   position: relative;
   overflow: hidden;
   width: 100%;
 }
 
-/* Night — dark surfaces, same cream/gold CTA language */
+/* Inside home-am-voyages sticky stage — Springs i-nature handoff */
+.section.embedded {
+  overflow: visible;
+  background: transparent;
+  padding-top: clamp(3.5rem, 7vh, 5.5rem);
+  padding-bottom: clamp(3.5rem, 7vh, 5.5rem);
+}
+
+:global(html[data-public-theme="night"]) .section.embedded {
+  background: transparent;
+}
+
+/* Night — warm dark surfaces, same cream/gold CTA language */
 :global(html[data-public-theme="night"]) .section {
   --hathor-accordion-gold: #b69f64;
   --hathor-accordion-gold-bright: #d4c28a;
   --hathor-accordion-line: rgba(182, 159, 100, 0.28);
-  --hathor-accordion-muted: #a89f92;
+  --hathor-accordion-muted: #cdbfa6;
   --hathor-accordion-roman: rgba(182, 159, 100, 0.16);
   --hathor-accordion-hover: rgba(182, 159, 100, 0.08);
-  --acc-open-rail-bg: #14110e;
+  --acc-open-rail-bg: #262219;
   --acc-open-rail-edge: rgba(182, 159, 100, 0.35);
   --acc-open-rail-ink: #d4c28a;
   --acc-open-rail-muted: rgba(212, 194, 138, 0.88);
   --acc-open-rail-shadow: none;
-  --acc-open-card-bg: #1a1612;
+  --acc-open-card-bg: #2c2822;
   --acc-open-card-border: rgba(182, 159, 100, 0.4);
   --acc-open-card-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
-  --acc-open-card-text: #f5efe4;
+  --acc-open-card-text: #f5eacf;
   --acc-open-card-muted: #d4c28a;
   --acc-open-gold: #b69f64;
   --acc-open-gold-bright: #d4c28a;
-  --acc-open-story-body: rgba(255, 255, 255, 0.92);
-  --acc-open-story-label: #faf8f5;
-  --acc-open-feature-bg: rgba(250, 248, 245, 0.08);
+  --acc-open-story-body: rgba(245, 234, 207, 0.92);
+  --acc-open-story-label: #f5eacf;
+  --acc-open-feature-bg: rgba(245, 234, 207, 0.08);
   --acc-open-feature-border: rgba(182, 159, 100, 0.65);
   --acc-open-close-border: rgba(182, 159, 100, 0.55);
-  --acc-open-close-bg: rgba(26, 22, 18, 0.75);
+  --acc-open-close-bg: rgba(38, 34, 30, 0.85);
   --acc-open-close-color: #d4c28a;
   --acc-open-title-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
   --acc-open-body-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
-  --acc-open-active-bg: #0b0907;
-  background: #0b0907;
+  --acc-open-active-bg: #1e1b18;
+  background: #1e1b18;
 }
 
 .container {

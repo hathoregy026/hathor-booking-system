@@ -6471,11 +6471,16 @@ html[data-public-theme="night"],
 html[data-public-theme="night"] .public-site,
 html[data-public-theme="night"] .hathor-site,
 html[data-public-theme="night"] .preview-site {
-  --public-bg: #0a0a0a;
-  --public-surface: #1a1a1a;
-  --public-text: #faf8f5;
-  --public-muted: #9a9590;
-  --public-border: rgb(250 248 245 / 0.08);
+  --bg-dark: #1e1b18;
+  --text-primary: #f5eacf;
+  --text-secondary: #cdbfa6;
+  --accent: #b69f64;
+  --public-bg: var(--bg-dark);
+  --public-surface: #262219;
+  --public-text: var(--text-primary);
+  --public-muted: var(--text-secondary);
+  --public-border: rgb(205 191 166 / 0.18);
+  --public-gold: var(--accent);
 }
 
 body,

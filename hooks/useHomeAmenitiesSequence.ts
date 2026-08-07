@@ -107,9 +107,11 @@ export function useHomeAmenitiesSequence(
       },
     });
 
-    /* Helm cover after Our Voyages (accordion sits between amenities and wheel) */
+    /* Helm cover after Our Voyages (accordion inside amenities sequence) */
+    const voyages =
+      root.querySelector<HTMLElement>("[data-am-voyages]") ??
+      document.querySelector<HTMLElement>("[data-hathor-accordion]");
     const opening = root.querySelector<HTMLElement>("[data-am-opening]");
-    const voyages = document.querySelector<HTMLElement>("[data-hathor-accordion]");
     const helmCoverTrigger = voyages ?? opening;
     const helm = document.querySelector<HTMLElement>("[data-home-helm-portal]");
     let helmSt: ScrollTrigger | undefined;

@@ -17,7 +17,7 @@ export function normalizePublicTheme(value: string | null): PublicTheme {
 export function getPublicThemeBlockingScript(): string {
   const key = PUBLIC_THEME_STORAGE_KEY;
   const fallback = PUBLIC_THEME_DEFAULT;
-  return `(function(){try{var k=${JSON.stringify(key)};var t=localStorage.getItem(k);var theme=t==="night"?"night":"day";document.documentElement.setAttribute("data-public-theme",theme);}catch(e){document.documentElement.setAttribute("data-public-theme",${JSON.stringify(fallback)});}})();`;
+  return `(function(){try{var k=${JSON.stringify(key)};var t=localStorage.getItem(k);var theme;if(t==="night"||t==="day"){theme=t;}else if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){theme="night";}else{theme="day";}document.documentElement.setAttribute("data-public-theme",theme);}catch(e){document.documentElement.setAttribute("data-public-theme",${JSON.stringify(fallback)});}})();`;
 }
 
 /**

@@ -424,22 +424,23 @@ export function HomePageClient({
           titleStyle={stackTitleStyle}
           indicationStyle={stackEyebrowStyle}
           bodyStyle={stackBodyStyle}
-        />
-
-        {/* Our Voyages — between amenities sequence and wheel portal */}
-        <LuxuryAccordion
-          items={accordionCruises.map((cruise) => ({
-            id: cruise.id,
-            name: cruise.name,
-            description: cruise.description,
-            imageName: cruise.imageName,
-            romanNumeral: cruise.romanNumeral,
-            meta: cruise.meta,
-            href: cruise.href,
-            slug: cruise.slug,
-            basePriceCents: cruise.basePriceCents,
-            ctaLabel: "Check Voyages",
-          }))}
+          voyages={
+            <LuxuryAccordion
+              embedded
+              items={accordionCruises.map((cruise) => ({
+                id: cruise.id,
+                name: cruise.name,
+                description: cruise.description,
+                imageName: cruise.imageName,
+                romanNumeral: cruise.romanNumeral,
+                meta: cruise.meta,
+                href: cruise.href,
+                slug: cruise.slug,
+                basePriceCents: cruise.basePriceCents,
+                ctaLabel: "Check Voyages",
+              }))}
+            />
+          }
         />
 
         <section

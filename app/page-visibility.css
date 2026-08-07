@@ -51,13 +51,13 @@ html[data-public-theme="night"] .hathor-page-construction {
     ),
     linear-gradient(
       180deg,
-      color-mix(in srgb, #12100d 92%, #000),
-      color-mix(in srgb, #1a1612 88%, #000)
+      color-mix(in srgb, #1e1b18 92%, #000),
+      color-mix(in srgb, #262219 88%, #000)
     );
 }
 
 html[data-public-theme="night"] .hathor-page-construction__title {
-  color: color-mix(in srgb, var(--hathor-cream, #ece8df) 92%, #fff);
+  color: color-mix(in srgb, var(--text-primary, #f5eacf) 92%, #fff);
 }
 
 html[data-public-theme="night"] .hathor-page-construction__eyebrow {

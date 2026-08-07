@@ -1,0 +1,14 @@
+---
+description: Always deploy changes by default; report deployed vs local-only
+alwaysApply: true
+---
+
+# Always commit and deploy (unless user says no)
+
+1. **Default:** After completing code changes, **commit**, push to `origin`, and wait for Vercel deploy success — unless the user explicitly says **not** to (e.g. "local only", "don't deploy", "no deploy", "don't commit").
+2. Commit message should focus on why; include only the files for that change (no secrets, no unrelated untracked assets).
+3. **Status language:** In the final reply, always state clearly:
+   - **Deployed** — if pushed and Vercel (or production) succeeded, include short SHA when useful.
+   - **Locally only** — if changes exist only on disk / were not pushed / deploy was skipped by request.
+4. Do not leave the user guessing whether production has the change.
+5. Still respect git safety: no force-push to main, no secrets in commits. This project's deploy path is push-to-main; if the GitHub→Vercel webhook does not fire, trigger `vercel deploy --prod` for the same commit.
