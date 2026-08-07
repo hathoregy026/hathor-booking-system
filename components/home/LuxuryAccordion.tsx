@@ -54,111 +54,55 @@ function pickTypeColorFamily(style: CSSProperties): CSSProperties {
 }
 
 function FeatureIcon({ id }: { id: VoyageFeatureId }) {
+  const common = {
+    fill: "none" as const,
+    stroke: "currentColor",
+    strokeWidth: 1.25,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+  };
+
   switch (id) {
     case "inclusive":
+      /* Lotus / all-inclusive mark */
       return (
         <svg viewBox="0 0 40 40" aria-hidden="true">
-          <rect
-            x="9"
-            y="14"
-            width="22"
-            height="14"
-            rx="1.5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.4"
-          />
           <path
-            d="M13 14V11.5a7 7 0 0 1 14 0V14"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.4"
+            {...common}
+            d="M20 30c-4.5-3.2-7.5-7.2-7.5-11.2C12.5 13.5 16 10 20 10s7.5 3.5 7.5 8.8C27.5 22.8 24.5 26.8 20 30Z"
           />
-          <path
-            d="M9 20h22"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.2"
-          />
+          <path {...common} d="M20 10v20" />
+          <path {...common} d="M13.2 16.5h13.6M14.5 21.5h11" />
         </svg>
       );
     case "excursions":
+      /* Compass / private shore */
       return (
         <svg viewBox="0 0 40 40" aria-hidden="true">
-          <circle
-            cx="20"
-            cy="20"
-            r="9"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.4"
-          />
-          <path
-            d="M20 11v18M11 20h18"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.2"
-          />
-          <path
-            d="M14.5 14.5 25.5 25.5M25.5 14.5 14.5 25.5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1"
-            opacity="0.7"
-          />
+          <circle {...common} cx="20" cy="20" r="10" />
+          <circle {...common} cx="20" cy="20" r="2" />
+          <path {...common} d="M20 10v3.5M20 26.5V30M10 20h3.5M26.5 20H30" />
+          <path {...common} d="M20 20 24.8 13.8M20 20 15.2 26.2" />
         </svg>
       );
     case "dining":
+      /* Cloche / dining */
       return (
         <svg viewBox="0 0 40 40" aria-hidden="true">
-          <path
-            d="M14 10v12c0 2.2 1.3 3.5 3 3.5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-          />
-          <path
-            d="M12 10h4M12 14h4"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.2"
-            strokeLinecap="round"
-          />
-          <path
-            d="M26 10c2.5 0 4 2 4 5.5S28 24 26 24c0 0 0 6 0 6"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-          />
-          <path
-            d="M17 25.5V30M26 30H17"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.2"
-            strokeLinecap="round"
-          />
+          <path {...common} d="M11 24h18" />
+          <path {...common} d="M12 24c0-6.2 3.5-10 8-10s8 3.8 8 10" />
+          <path {...common} d="M20 14V11.5" />
+          <circle {...common} cx="20" cy="10.2" r="1.1" />
+          <path {...common} d="M13 27.5h14" />
         </svg>
       );
     case "butler":
+      /* Ankh-inspired service mark */
       return (
         <svg viewBox="0 0 40 40" aria-hidden="true">
-          <circle
-            cx="20"
-            cy="14"
-            r="4.5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.4"
-          />
-          <path
-            d="M11 30c1.2-5.2 4.2-8 9-8s7.8 2.8 9 8"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-          />
+          <circle {...common} cx="20" cy="12.5" r="4.2" />
+          <path {...common} d="M20 16.8V30" />
+          <path {...common} d="M14.5 21.5h11" />
         </svg>
       );
     default:
@@ -172,27 +116,43 @@ function ScarabMark() {
       <ellipse
         cx="32"
         cy="24"
-        rx="10"
-        ry="12"
+        rx="9"
+        ry="11"
         fill="none"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="1.25"
       />
       <path
-        d="M22 18c-6-2-12-1-14 3M42 18c6-2 12-1 14 3M22 30c-6 2-11 4-12 8M42 30c6 2 11 4 12 8"
+        d="M23 17c-5.5-1.5-11-0.5-13 3.2M41 17c5.5-1.5 11-0.5 13 3.2M23 31c-5.5 2-10 4-11 7.5M41 31c5.5 2 10 4 11 7.5"
         fill="none"
         stroke="currentColor"
-        strokeWidth="1.3"
+        strokeWidth="1.2"
         strokeLinecap="round"
       />
       <path
-        d="M28 14c1.2-4 2.5-6 4-6s2.8 2 4 6"
+        d="M28.5 13.5c1-3.5 2.2-5.5 3.5-5.5s2.5 2 3.5 5.5"
         fill="none"
         stroke="currentColor"
-        strokeWidth="1.3"
+        strokeWidth="1.2"
       />
-      <circle cx="29" cy="22" r="1.2" fill="currentColor" />
-      <circle cx="35" cy="22" r="1.2" fill="currentColor" />
+      <circle cx="29.5" cy="22" r="1" fill="currentColor" />
+      <circle cx="34.5" cy="22" r="1" fill="currentColor" />
+    </svg>
+  );
+}
+
+function WatchPlayIcon() {
+  return (
+    <svg viewBox="0 0 28 28" aria-hidden="true" className={styles.watchPlayIcon}>
+      <circle
+        cx="14"
+        cy="14"
+        r="12"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.2"
+      />
+      <path d="M11.5 9.5v9l8-4.5z" fill="currentColor" stroke="none" />
     </svg>
   );
 }
@@ -469,7 +429,7 @@ export default function LuxuryAccordion({
                       <div className={styles.actions}>
                         <Link
                           href={panel.detailsHref}
-                          className={styles.detailsCta}
+                          className={`btn btn-dark ${styles.detailsCta}`}
                           onClick={stopRowClick}
                         >
                           {panel.detailsLabel}
@@ -481,9 +441,7 @@ export default function LuxuryAccordion({
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          <span className={styles.watchPlay} aria-hidden="true">
-                            ▶
-                          </span>
+                          <WatchPlayIcon />
                           {panel.watchLabel}
                         </a>
                       </div>
@@ -511,7 +469,7 @@ export default function LuxuryAccordion({
 
                       <button
                         type="button"
-                        className={styles.enquireCta}
+                        className={`btn btn-dark ${styles.enquireCta}`}
                         onClick={(event) => {
                           stopRowClick(event);
                           openBooking();
