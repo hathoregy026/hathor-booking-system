@@ -311,6 +311,9 @@ export function useHomeAmenitiesSequence(
         const rail = opening.querySelector<HTMLElement>(
           "[data-am-opening-rail]",
         );
+        const cardsWrap = opening.querySelector<HTMLElement>(
+          "[data-am-opening-cards]",
+        );
         const cards = Array.from(
           opening.querySelectorAll<HTMLElement>("[data-am-opening-card]"),
         );
@@ -326,8 +329,24 @@ export function useHomeAmenitiesSequence(
             ? amenitiesWipeClosed("up")
             : "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
         });
-        const railStartY = isPhone ? 28 : isCompact ? 36 : 48;
-        const railTravel = isPhone ? 18 : isCompact ? 55 : 72;
+
+        /*
+         * Measure how far the rail must travel so all 3 cards + CTAs clear into
+         * the gold column before the helm under-next cover begins.
+         */
+        const railStartY = isPhone ? 22 : isCompact ? 34 : 46;
+        const cardsHeight = cardsWrap?.scrollHeight ?? cards.length * 280;
+        const ctas = opening.querySelector<HTMLElement>("[data-am-opening-ctas]");
+        const ctasHeight = ctas?.offsetHeight ?? 72;
+        const visiblePanel = window.innerHeight * (isPhone ? 0.48 : 0.78);
+        const neededTravelPx = Math.max(
+          window.innerHeight * 0.35,
+          cardsHeight + ctasHeight + 48 - visiblePanel * 0.55,
+        );
+        const railTravel = isPhone
+          ? 14
+          : (neededTravelPx / window.innerHeight) * 100;
+
         gsap.set(rail, { y: `${railStartY}vh` });
         cards.forEach((card) => gsap.set(card, { autoAlpha: 1, y: 0 }));
 
@@ -340,8 +359,8 @@ export function useHomeAmenitiesSequence(
           refreshPriority: -85,
           onUpdate: (self) => {
             const p = self.progress;
-            // 0.00–0.30: left image + title panel wipe in (Springs opening split)
-            const split = seg(p, 0, 0.3);
+            // 0.00–0.22: left image + title panel wipe in
+            const split = seg(p, 0, 0.22);
             gsap.set(left, {
               clipPath: amenitiesWipeClip("up", split),
               scale: 1.18 - split * 0.18,
@@ -349,14 +368,14 @@ export function useHomeAmenitiesSequence(
             gsap.set(titlePanel, {
               clipPath: amenitiesWipeClip("down", split),
             });
-            const titleIn = seg(p, 0.12, 0.36);
+            const titleIn = seg(p, 0.08, 0.26);
             gsap.set(title, {
               autoAlpha: titleIn,
               y: (1 - titleIn) * (isPhone ? 24 : 40),
             });
 
-            // 0.18–0.48: right scroll column expands downward over the title panel
-            const rightOpen = seg(p, 0.18, 0.48);
+            // 0.14–0.36: right scroll column expands downward
+            const rightOpen = seg(p, 0.14, 0.36);
             if (isPhone) {
               gsap.set(right, {
                 clipPath: amenitiesWipeClip("up", rightOpen),
@@ -367,8 +386,12 @@ export function useHomeAmenitiesSequence(
               });
             }
 
-            // 0.32–1.00: vertical stack scrolls upward through the gold column
-            const cardScroll = seg(p, 0.32, 0.98);
+            /*
+             * 0.28–0.72: scroll all 3 cards fully through the gold column.
+             * Hold finished state through 0.72–1.00 so the helm cover only
+             * begins after the stack has fully arrived.
+             */
+            const cardScroll = seg(p, 0.28, 0.72);
             gsap.set(rail, {
               y: `${railStartY - cardScroll * railTravel}vh`,
             });
@@ -376,7 +399,7 @@ export function useHomeAmenitiesSequence(
         });
       }
 
-      // Hand off into helm portal with the same under-next cover (no gold bar).
+      // Hand off into helm portal only after opening cards have finished.
       const helm = document.querySelector<HTMLElement>(
         "[data-home-helm-portal]",
       );
@@ -386,7 +409,8 @@ export function useHomeAmenitiesSequence(
         ScrollTrigger.create({
           id: "home-am-to-helm",
           trigger: helm,
-          start: "top bottom",
+          /* Wait until helm is well into view — opening dwell finishes first. */
+          start: "top 70%",
           end: "top top",
           scrub: true,
           refreshPriority: -84,

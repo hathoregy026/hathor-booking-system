@@ -343,8 +343,12 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
 
 /* ========== i-opening (Springs Fixed-Background Mask Reveal) ========== */
 .home-am-opening {
-  /* Tall runway so the vertical card stack can scroll through the gold column */
-  height: 340svh;
+  /*
+   * Tall runway + shorter under-next so all 3 cards finish scrolling
+   * before the wheel section covers this chapter.
+   */
+  --am-under-next: 70svh;
+  height: 480svh;
   z-index: 4;
 }
 
@@ -513,7 +517,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   }
 
   .home-am-opening {
-    height: 300svh;
+    --am-under-next: 65svh;
+    height: 420svh;
   }
 
   .home-am-opening__card {
@@ -603,7 +608,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   }
 
   .home-am-opening {
-    height: 240svh;
+    --am-under-next: 55svh;
+    height: 300svh;
   }
 
   .home-am-opening__left {
