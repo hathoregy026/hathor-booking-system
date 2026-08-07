@@ -193,6 +193,19 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   text-transform: uppercase;
 }
 
+.home-am-intro__content {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.home-am-intro__media-picture {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .home-am-intro__cream {
   position: absolute;
   top: 0;
@@ -205,6 +218,20 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   padding: clamp(1.5rem, 4vw, 3.5rem);
   background: var(--am-cream);
   will-change: clip-path;
+}
+
+.home-am-intro__cream--phone {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .home-am-intro__cream:not(.home-am-intro__cream--phone) {
+    display: none;
+  }
+
+  .home-am-intro__cream--phone {
+    display: flex;
+  }
 }
 
 .home-am-intro__cream-text {
@@ -225,6 +252,13 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
     height: 600svh;
     margin-top: -200svh;
   }
+}
+
+.home-am-video__hero-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  transform-origin: bottom right;
 }
 
 .home-am-video__hero {
@@ -386,10 +420,12 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
 
 .home-am-slider__scrollbar-progress {
   width: 100%;
-  height: 100%;
-  transform: scaleY(0);
-  transform-origin: top center;
-  background: var(--am-ink);
+  height: 0%;
+  background: #ffffff;
+}
+
+.home-am-slider__caption.is-hidden {
+  pointer-events: none;
 }
 
 .home-am-slider__images-col {
@@ -447,7 +483,14 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   will-change: clip-path;
 }
 
-.home-am-opening__left img {
+.home-am-opening__left-img {
+  position: absolute;
+  inset: 0;
+  transform-origin: center center;
+}
+
+.home-am-opening__left img,
+.home-am-opening__left-img img {
   object-fit: cover !important;
   transform-origin: center center;
 }
@@ -663,8 +706,12 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
     height: 340svh;
   }
 
-  .home-am-video__hero {
+  .home-am-video__hero,
+  .home-am-video__hero-wrap {
     transform-origin: bottom center;
+    top: auto;
+    bottom: 0;
+    height: 38%;
   }
 
   .home-am-video__copy {

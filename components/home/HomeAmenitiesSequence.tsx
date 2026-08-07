@@ -15,7 +15,6 @@ export type AmenitiesLandmarkSlide = {
   titleLines: string[];
   indication: string;
   body: string;
-  /** @deprecated Text-only — images come from dedicated amenities slots 1–11. */
   imageName?: SiteImageName;
   alt?: string;
   imageAlt?: string;
@@ -27,7 +26,6 @@ export type AmenitiesStorySlide = {
   body: string;
   cta: string;
   href: string;
-  /** @deprecated Text-only — images come from dedicated amenities slots 1–11. */
   imageName?: SiteImageName;
   alt?: string;
   imageAlt?: string;
@@ -43,7 +41,6 @@ export type AmenitiesSequenceImage = {
 type HomeAmenitiesSequenceProps = {
   landmarks: AmenitiesLandmarkSlide[];
   stories: AmenitiesStorySlide[];
-  /** Eleven unique CMS images in scroll appearance order. */
   images?: AmenitiesSequenceImage[];
   titleStyle?: CSSProperties;
   indicationStyle?: CSSProperties;
@@ -82,15 +79,8 @@ function resolveImages(
 }
 
 /**
- * Faithful Springs amenities layout sequence:
- * i-intro → i-video → i-slider → i-opening
- *
- * Surfaces: gold #B69F64 / cream #ece8df
- * On-image type: site typography + #B69F64
- * On-gold panels: site typography + white
- * On-cream panels: site typography + dark ink for contrast
- *
- * Eleven unique CMS images (slots 1–11) — one per visual mount.
+ * Springs infrastructure amenities clone (i-intro → i-video → i-slider → i-opening).
+ * Markup + data-parallax keys match the Springs clone; content is Hathor CMS.
  */
 export function HomeAmenitiesSequence({
   landmarks,
@@ -149,22 +139,13 @@ export function HomeAmenitiesSequence({
 
   const openingCards = [
     stories[0]
-      ? {
-          image: images[8],
-          label: stories[0].title,
-        }
+      ? { image: images[8], label: stories[0].title }
       : null,
     stories[1]
-      ? {
-          image: images[9],
-          label: stories[1].title,
-        }
+      ? { image: images[9], label: stories[1].title }
       : null,
     landmarks[1]
-      ? {
-          image: images[10],
-          label: landmarks[1].indication,
-        }
+      ? { image: images[10], label: landmarks[1].indication }
       : null,
   ].filter(Boolean) as Array<{
     image: AmenitiesSequenceImage;
@@ -175,12 +156,9 @@ export function HomeAmenitiesSequence({
 
   if (!intro) return null;
 
-  // On images → site fonts + gold + tiny halo (CSS class handles halo)
   const onImageTitle = withColor(titleStyle, GOLD);
   const onImageIndication = withColor(indicationStyle, GOLD);
   const onImageBody = withColor(bodyStyle, GOLD);
-
-  // On gold panels → white; on cream → dark ink
   const onGoldTitle = withColor(titleStyle, WHITE);
   const onGoldIndication = withColor(indicationStyle, WHITE);
   const onGoldBody = withColor(bodyStyle, WHITE);
@@ -197,46 +175,108 @@ export function HomeAmenitiesSequence({
       className="home-am-sequence"
       aria-label="Amenities-style Nile stories"
     >
-      {/* 1) i-intro — sticky--under-next only */}
+      {/* ===== i-intro ===== */}
       <div
-        className="home-am-intro home-am-chapter home-am-chapter--under-next"
+        className="home-am-intro home-am-chapter home-am-chapter--under-next sticky sticky--full-height sticky--under-next"
         data-am-intro
         data-am-chapter
+        id="home-am-intro"
       >
-        <div className="home-am-chapter__stage" data-am-stage>
-          <div className="home-am-intro__media" data-am-intro-media>
-            <ManagedImage
-              name={introImage.name}
-              alt={introImage.alt}
-              fill
-              sizes="100vw"
-              className="object-cover"
-              priority
-              previewAnchor={introImage.previewAnchor}
-            />
-            <div className="home-am-intro__dim" data-am-intro-dim aria-hidden />
-          </div>
+        <div className="home-am-chapter__stage sticky__layer sticky__layer--sticky sticky--full-height">
+          <div className="home-am-intro__content">
+            <div
+              className="home-am-intro__media background background--cover"
+              data-am-intro-media
+              data-plugin="parallax"
+              data-parallax-pattern="introImage"
+              data-parallax-clamp="true"
+              data-parallax-measure-selector="[data-am-chapter]"
+            >
+              <div
+                data-plugin="parallax"
+                data-parallax-enable-mq="lg-up"
+                data-parallax-clamp="true"
+                data-parallax-measure-selector="[data-am-chapter]"
+                data-parallax-0-0='{"transform":"translateX(0%) scale(1.2)"}'
+                data-parallax--200-0='{"transform":"translateX(-36%) scale(1.0)"}'
+                className="home-am-intro__media-picture"
+              >
+                <ManagedImage
+                  name={introImage.name}
+                  alt={introImage.alt}
+                  fill
+                  sizes="100vw"
+                  className="object-cover"
+                  priority
+                  previewAnchor={introImage.previewAnchor}
+                />
+              </div>
+              <div
+                className="home-am-intro__dim"
+                data-am-intro-dim
+                data-plugin="parallax"
+                data-parallax-clamp="true"
+                data-parallax-measure-selector="[data-am-chapter]"
+                data-parallax-enable-mq="null"
+                data-parallax-0-0='{"opacity":"1"}'
+                data-parallax--50-0='{"opacity":"0"}'
+                aria-hidden
+              />
+            </div>
 
-          <div className="home-am-intro__caption" data-am-intro-title>
-            <h2
-              className="home-am-intro__title home-am-on-image-text typo-on-images-title"
-              style={onImageTitle}
+            <div
+              className="home-am-intro__caption"
+              data-am-intro-title
+              data-plugin="parallax"
+              data-parallax-enable-mq="null"
+              data-parallax-pattern="infrastructureIntroCaptionDesktop infrastructureIntroCaptionMobile"
+              data-parallax-measure-selector="[data-am-chapter]"
             >
-              {intro.titleLines.map((line) => (
-                <span key={line}>{line}</span>
-              ))}
-            </h2>
-            <p
-              className="home-am-intro__indication home-am-on-image-text typo-on-images-indication"
-              style={onImageIndication}
-            >
-              {intro.indication}
-            </p>
+              <h2
+                className="home-am-intro__title home-am-on-image-text typo-on-images-title"
+                style={onImageTitle}
+              >
+                {intro.titleLines.map((line) => (
+                  <span key={line}>{line}</span>
+                ))}
+              </h2>
+              <p
+                className="home-am-intro__indication home-am-on-image-text typo-on-images-indication"
+                style={onImageIndication}
+              >
+                {intro.indication}
+              </p>
+            </div>
           </div>
 
           <div
             className="home-am-intro__cream"
             data-am-intro-cream
+            data-plugin="parallax"
+            data-parallax-enable-mq="lg-up"
+            data-parallax-clamp="true"
+            data-parallax-measure-selector="[data-am-chapter]"
+            data-parallax-0-0='{"clip-path":"polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)"}'
+            data-parallax--100-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
+            style={{ background: CREAM }}
+          >
+            <p
+              className="home-am-intro__cream-text typo-on-images-body"
+              style={onCreamBody}
+            >
+              {intro.body}
+            </p>
+          </div>
+
+          {/* Phone cream wipe from bottom — Springs mobile panel */}
+          <div
+            className="home-am-intro__cream home-am-intro__cream--phone"
+            data-plugin="parallax"
+            data-parallax-enable-mq="md-down"
+            data-parallax-clamp="true"
+            data-parallax-measure-selector="[data-am-chapter]"
+            data-parallax-0-0='{"clip-path":"polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)"}'
+            data-parallax--100-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
             style={{ background: CREAM }}
           >
             <p
@@ -249,26 +289,49 @@ export function HomeAmenitiesSequence({
         </div>
       </div>
 
-      {/* 2) i-video — under-previous + under-next */}
+      {/* ===== i-video ===== */}
       {videoMain ? (
         <div
-          className="home-am-video home-am-chapter home-am-chapter--under-previous home-am-chapter--under-next"
+          className="home-am-video home-am-chapter home-am-chapter--under-previous home-am-chapter--under-next sticky sticky--full-height sticky--under-previous sticky--under-next"
           data-am-video
           data-am-chapter
+          id="home-am-video"
         >
-          <div className="home-am-chapter__stage" data-am-stage>
-            <div className="home-am-video__hero" data-am-video-hero>
-              <ManagedImage
-                name={videoHeroImage.name}
-                alt={videoHeroImage.alt}
-                fill
-                sizes="100vw"
-                className="object-cover"
-                previewAnchor={videoHeroImage.previewAnchor}
-              />
+          <div className="home-am-chapter__stage sticky__layer sticky__layer--sticky sticky--full-height">
+            <div
+              className="home-am-video__hero-wrap"
+              data-plugin="parallax"
+              data-parallax-pattern="videoTranslate"
+              data-parallax-clamp="true"
+              data-parallax-measure-selector="[data-am-chapter]"
+            >
+              <div
+                className="home-am-video__hero"
+                data-am-video-hero
+                data-plugin="parallax"
+                data-parallax-pattern="videoZoom"
+                data-parallax-clamp="true"
+                data-parallax-measure-selector="[data-am-chapter]"
+              >
+                <ManagedImage
+                  name={videoHeroImage.name}
+                  alt={videoHeroImage.alt}
+                  fill
+                  sizes="100vw"
+                  className="object-cover"
+                  previewAnchor={videoHeroImage.previewAnchor}
+                />
+              </div>
             </div>
 
-            <div className="home-am-video__copy" data-am-video-copy>
+            <div
+              className="home-am-video__copy"
+              data-am-video-copy
+              data-plugin="parallax"
+              data-parallax-pattern="videoTitle"
+              data-parallax-clamp="true"
+              data-parallax-measure-selector="[data-am-chapter]"
+            >
               <p
                 className="home-am-on-image-text typo-on-images-body"
                 style={onImageBody}
@@ -277,7 +340,14 @@ export function HomeAmenitiesSequence({
               </p>
             </div>
 
-            <div className="home-am-video__title" data-am-video-title>
+            <div
+              className="home-am-video__title"
+              data-am-video-title
+              data-plugin="parallax"
+              data-parallax-pattern="videoTitle"
+              data-parallax-clamp="true"
+              data-parallax-measure-selector="[data-am-chapter]"
+            >
               <h2
                 className="home-am-on-image-text typo-on-images-title"
                 style={onImageTitle}
@@ -291,7 +361,14 @@ export function HomeAmenitiesSequence({
               </h2>
             </div>
 
-            <div className="home-am-video__inset" data-am-video-inset>
+            <div
+              className="home-am-video__inset"
+              data-am-video-inset
+              data-plugin="parallax"
+              data-parallax-pattern="videoImage"
+              data-parallax-clamp="true"
+              data-parallax-measure-selector="[data-am-chapter]"
+            >
               <ManagedImage
                 name={videoInsetImage.name}
                 alt={videoInsetImage.alt}
@@ -305,6 +382,12 @@ export function HomeAmenitiesSequence({
             <div
               className="home-am-video__caption"
               data-am-video-caption
+              data-plugin="parallax"
+              data-parallax-enable-mq="null"
+              data-parallax-clamp="true"
+              data-parallax-measure-selector="[data-am-chapter]"
+              data-parallax--160-0='{"clip-path":"polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)"}'
+              data-parallax--300-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
               style={{ background: GOLD }}
             >
               <h3 className="typo-on-images-title" style={onGoldTitle}>
@@ -318,26 +401,34 @@ export function HomeAmenitiesSequence({
         </div>
       ) : null}
 
-      {/* 3) i-slider — under-previous + under-next */}
+      {/* ===== i-slider ===== */}
       {sliderSlides.length > 0 ? (
         <div
-          className="home-am-slider home-am-chapter home-am-chapter--under-previous home-am-chapter--under-next"
+          className="home-am-slider home-am-chapter home-am-chapter--under-previous home-am-chapter--under-next sticky sticky--full-height sticky--under-previous sticky--under-next"
           data-am-slider
           data-am-chapter
+          id="home-am-slider"
         >
-          <div className="home-am-chapter__stage" data-am-stage>
+          <div className="home-am-chapter__stage sticky__layer sticky__layer--sticky sticky--full-height">
             <div className="home-am-slider__row">
               <div
                 className="home-am-slider__caption-col"
                 data-amenities-caption-col
+                data-plugin="parallax"
+                data-parallax-enable-mq="md-up"
+                data-parallax-clamp="true"
+                data-parallax-measure-selector="[data-am-chapter]"
+                data-parallax-0-0='{"clip-path":"polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)"}'
+                data-parallax--100-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
                 style={{ background: GOLD }}
               >
-                <div className="home-am-slider__caption-stack">
+                <div className="home-am-slider__caption-stack content-animation content-animation--ready">
                   {sliderSlides.map((slide, index) => (
                     <div
                       key={`slider-cap-${slide.image.name}-${index}`}
-                      className="home-am-slider__caption"
+                      className={`home-am-slider__caption${index === 0 ? "" : " is-hidden"}`}
                       data-amenities-caption
+                      data-content-animation-item={String(index + 1)}
                       aria-hidden={index === 0 ? "false" : "true"}
                     >
                       <p
@@ -368,53 +459,111 @@ export function HomeAmenitiesSequence({
               <div
                 className="home-am-slider__images-col"
                 data-amenities-images-col
+                data-plugin="parallax"
+                data-parallax-enable-mq="md-up"
+                data-parallax-clamp="true"
+                data-parallax-measure-selector="[data-am-chapter]"
+                data-parallax-0-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)"}'
+                data-parallax--100-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
               >
-                {sliderSlides.map((slide, index) => (
-                  <div
-                    key={`slider-img-${slide.image.name}-${index}`}
-                    className="home-am-slider__panel"
-                    data-amenities-panel
-                    aria-hidden={index === 0 ? "false" : "true"}
-                  >
-                    <ManagedImage
-                      name={slide.image.name}
-                      alt={slide.image.alt}
-                      fill
-                      sizes="(max-width: 480px) 100vw, 50vw"
-                      className="object-cover"
-                      priority={index === 0}
-                      previewAnchor={slide.image.previewAnchor}
-                    />
-                  </div>
-                ))}
+                {sliderSlides.map((slide, index) => {
+                  const base = index * 100;
+                  const open = base + 100;
+                  const settle = base + 200;
+                  return (
+                    <div
+                      key={`slider-img-${slide.image.name}-${index}`}
+                      className="home-am-slider__panel"
+                      data-amenities-panel
+                      data-plugin="parallax"
+                      data-parallax-enable-mq="md-up"
+                      data-parallax-clamp="true"
+                      data-parallax-measure-selector="[data-am-chapter]"
+                      {...(index === 0
+                        ? {
+                            "data-parallax--0-0":
+                              '{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)","transform":"scale(1.2)"}',
+                            "data-parallax--100-0":
+                              '{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)","transform":"scale(1.1)"}',
+                            "data-parallax--200-0":
+                              '{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)","transform":"scale(1.0)"}',
+                          }
+                        : {
+                            [`data-parallax--${base}-0`]:
+                              '{"clip-path":"polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)","transform":"scale(1.2)"}',
+                            [`data-parallax--${open}-0`]:
+                              '{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)","transform":"scale(1.1)"}',
+                            [`data-parallax--${settle}-0`]:
+                              '{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)","transform":"scale(1.0)"}',
+                          })}
+                      aria-hidden={index === 0 ? "false" : "true"}
+                    >
+                      <ManagedImage
+                        name={slide.image.name}
+                        alt={slide.image.alt}
+                        fill
+                        sizes="(max-width: 480px) 100vw, 50vw"
+                        className="object-cover"
+                        priority={index === 0}
+                        previewAnchor={slide.image.previewAnchor}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
         </div>
       ) : null}
 
-      {/* 4) i-opening — sticky left layer + non-sticky right column (document-flow cards) */}
+      {/* ===== i-opening — dual sticky layers, cards in document flow ===== */}
       <div
-        className="home-am-opening home-am-chapter home-am-chapter--under-previous home-am-chapter--under-next"
+        className="home-am-opening home-am-chapter home-am-chapter--under-previous home-am-chapter--under-next sticky sticky--full-height sticky--under-previous sticky--under-next"
         data-am-opening
         data-am-chapter
+        id="home-am-opening"
       >
-        <div className="home-am-chapter__stage" data-am-stage>
+        <div className="home-am-chapter__stage sticky__layer sticky__layer--sticky sticky--full-height">
           <div className="home-am-opening__content">
-            <div className="home-am-opening__left" data-am-opening-left>
-              <ManagedImage
-                name={openingLeftImage.name}
-                alt={openingLeftImage.alt}
-                fill
-                sizes="(max-width: 480px) 100vw, 50vw"
-                className="object-cover"
-                previewAnchor={openingLeftImage.previewAnchor}
-              />
+            <div
+              className="home-am-opening__left"
+              data-am-opening-left
+              data-plugin="parallax"
+              data-parallax-enable-mq="md-up"
+              data-parallax-clamp="true"
+              data-parallax-measure-selector="[data-am-chapter]"
+              data-parallax-0-0='{"clip-path":"polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)"}'
+              data-parallax--100-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
+            >
+              <div
+                data-plugin="parallax"
+                data-parallax-enable-mq="null"
+                data-parallax-clamp="true"
+                data-parallax-measure-selector="[data-am-chapter]"
+                data-parallax-0-0='{"transform":"scale(1.2)"}'
+                data-parallax--300-0='{"transform":"scale(1.0)"}'
+                className="home-am-opening__left-img"
+              >
+                <ManagedImage
+                  name={openingLeftImage.name}
+                  alt={openingLeftImage.alt}
+                  fill
+                  sizes="(max-width: 480px) 100vw, 50vw"
+                  className="object-cover"
+                  previewAnchor={openingLeftImage.previewAnchor}
+                />
+              </div>
             </div>
 
             <div
               className="home-am-opening__title-panel"
               data-am-opening-title-panel
+              data-plugin="parallax"
+              data-parallax-enable-mq="md-up"
+              data-parallax-clamp="true"
+              data-parallax-measure-selector="[data-am-chapter]"
+              data-parallax-0-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)"}'
+              data-parallax--100-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
               style={{ background: GOLD }}
             >
               <h2
@@ -434,8 +583,15 @@ export function HomeAmenitiesSequence({
         </div>
 
         <div
-          className="home-am-opening__right home-am-chapter__layer"
+          className="home-am-opening__right sticky__layer"
           data-am-opening-right
+          data-plugin="parallax"
+          data-parallax-enable-mq="md-up"
+          data-parallax-clamp="true"
+          data-parallax-measure-selector="[data-am-chapter]"
+          data-parallax-0-0='{"clip-path":"polygon(50vw 0vh, 100% 0vh, 100% 0vh, 50vw 0vh)"}'
+          data-parallax--100-0='{"clip-path":"polygon(50vw 100vh, 100% 100vh, 100% 200vh, 50vw 200vh)"}'
+          data-parallax--101-0='{"clip-path":"polygon(50vw 100vh, 100% 100vh, 100% 350vh, 50vw 350vh)"}'
         >
           <div className="home-am-opening__right-inner">
             <p
@@ -472,7 +628,7 @@ export function HomeAmenitiesSequence({
               ))}
             </div>
 
-            <div className="home-am-opening__ctas" data-am-opening-ctas>
+            <div className="home-am-opening__ctas">
               {stories[0]?.href ? (
                 <a
                   className="home-am-opening__cta typo-on-images-indication"
