@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   FileText,
   Film,
+  Globe2,
   HardDrive,
   ImageIcon,
   Loader2,
@@ -25,10 +26,11 @@ import {
   type StorageFileEntry,
 } from "@/lib/storage-analyze-shared";
 
-type FilterKey = "all" | StorageCategory;
+type FilterKey = "all" | "live" | StorageCategory;
 
 const FILTERS: { key: FilterKey; label: string; icon: LucideIcon }[] = [
   { key: "all", label: "All", icon: HardDrive },
+  { key: "live", label: "Live site", icon: Globe2 },
   { key: "images", label: "Images", icon: ImageIcon },
   { key: "videos", label: "Videos", icon: Film },
   { key: "text", label: "Text", icon: Type },
@@ -79,7 +81,11 @@ export function StorageAnalyzePanel() {
     if (!report) return [];
     const q = query.trim().toLowerCase();
     return report.files.filter((file) => {
-      if (filter !== "all" && file.category !== filter) return false;
+      if (filter === "live") {
+        if (!file.usedOnLive) return false;
+      } else if (filter !== "all" && file.category !== filter) {
+        return false;
+      }
       if (!q) return true;
       return (
         file.name.toLowerCase().includes(q) ||
@@ -121,8 +127,9 @@ export function StorageAnalyzePanel() {
           </h1>
           <p className="mt-1 max-w-2xl text-sm" style={{ color: "var(--text-muted)" }}>
             Read-only inventory of local public assets, cloud uploads, and
-            website text payload sizes. Filtering never changes or deletes
-            files.
+            website text payload sizes. The Live site filter totals only cloud
+            and database content referenced by the live CMS — local files are
+            never included. Filtering never changes or deletes files.
           </p>
         </div>
         <ActionButton
@@ -156,7 +163,7 @@ export function StorageAnalyzePanel() {
         </div>
       ) : null}
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <StatCard
           label="Total files"
           value={report ? report.totalCount.toLocaleString() : "—"}
@@ -167,6 +174,12 @@ export function StorageAnalyzePanel() {
           label="Total size"
           value={report ? formatStorageBytes(report.totalBytes) : "—"}
           icon={HardDrive}
+          isLoading={isLoading && !report}
+        />
+        <StatCard
+          label="Live site size"
+          value={report ? formatStorageBytes(report.liveSiteBytes) : "—"}
+          icon={Globe2}
           isLoading={isLoading && !report}
         />
         <StatCard
@@ -192,8 +205,10 @@ export function StorageAnalyzePanel() {
               const count =
                 item.key === "all"
                   ? report?.totalCount ?? 0
-                  : report?.categories.find((c) => c.category === item.key)
-                      ?.count ?? 0;
+                  : item.key === "live"
+                    ? report?.liveSiteCount ?? 0
+                    : report?.categories.find((c) => c.category === item.key)
+                        ?.count ?? 0;
               return (
                 <button
                   key={item.key}
@@ -307,6 +322,11 @@ export function StorageAnalyzePanel() {
                     </td>
                     <td className="px-4 py-2.5" style={{ color: "var(--text-muted)" }}>
                       {sourceLabel(file.source)}
+                      {file.usedOnLive ? (
+                        <span className="ml-2 text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--accent)" }}>
+                          Live
+                        </span>
+                      ) : null}
                     </td>
                     <td
                       className="max-w-[28rem] truncate px-4 py-2.5 font-mono text-xs"

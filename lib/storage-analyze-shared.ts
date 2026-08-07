@@ -21,6 +21,8 @@ export type StorageFileEntry = {
   source: StorageSource;
   bytes: number;
   extension: string;
+  /** True when this asset is referenced by the live public CMS (never local). */
+  usedOnLive: boolean;
 };
 
 export type StorageCategorySummary = {
@@ -34,6 +36,9 @@ export type StorageAnalyzeReport = {
   generatedAt: string;
   totalCount: number;
   totalBytes: number;
+  /** Cloud + database assets actually used on the live site (excludes local files). */
+  liveSiteCount: number;
+  liveSiteBytes: number;
   categories: StorageCategorySummary[];
   files: StorageFileEntry[];
   warnings: string[];

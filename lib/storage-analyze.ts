@@ -8,6 +8,7 @@ import {
 } from "@/lib/website-text-shared";
 import { withDb } from "@/lib/db-safe";
 import { prisma } from "@/lib/prisma";
+import { resolveSiteImageMap } from "@/lib/resolve-site-images";
 import {
   STORAGE_CATEGORIES,
   STORAGE_CATEGORY_LABELS,
@@ -140,7 +141,65 @@ function walkLocalFiles(
       source: "local",
       bytes,
       extension: extension || "none",
+      // Live-site filter never counts local files.
+      usedOnLive: false,
     });
+  }
+}
+
+/**
+ * Collect cloud object keys (`bucket/object/path`) referenced by live CMS image URLs.
+ * Local `/media/...` defaults are intentionally ignored.
+ */
+function collectLiveCloudObjectKeys(
+  urls: Iterable<string>,
+): Set<string> {
+  const keys = new Set<string>();
+  for (const url of urls) {
+    const trimmed = url?.trim();
+    if (!trimmed || !/^https?:\/\//i.test(trimmed)) continue;
+
+    try {
+      const parsed = new URL(trimmed);
+      const marker = "/storage/v1/object/public/";
+      const idx = parsed.pathname.indexOf(marker);
+      if (idx === -1) continue;
+      const rest = parsed.pathname.slice(idx + marker.length);
+      const slash = rest.indexOf("/");
+      if (slash <= 0) continue;
+      const bucket = decodeURIComponent(rest.slice(0, slash));
+      const objectPath = decodeURIComponent(
+        rest.slice(slash + 1).split("?")[0] ?? "",
+      );
+      if (
+        !objectPath ||
+        (bucket !== IMAGE_BUCKET && bucket !== EMAIL_IMAGE_BUCKET)
+      ) {
+        continue;
+      }
+      keys.add(`${bucket}/${objectPath}`);
+    } catch {
+      // ignore malformed URLs
+    }
+  }
+  return keys;
+}
+
+async function collectLiveSiteCloudKeys(
+  warnings: string[],
+): Promise<Set<string>> {
+  try {
+    const map = await resolveSiteImageMap();
+    return collectLiveCloudObjectKeys(
+      Object.values(map).map((entry) => entry.src),
+    );
+  } catch (error) {
+    warnings.push(
+      error instanceof Error
+        ? `Live CMS image map unavailable: ${error.message}`
+        : "Live CMS image map unavailable.",
+    );
+    return new Set();
   }
 }
 
@@ -206,6 +265,7 @@ async function listCloudBucket(
           source: "cloud",
           bytes: hasSize ? Number(item.metadata?.size) : 0,
           extension: extension || "none",
+          usedOnLive: false,
         });
       }
 
@@ -243,6 +303,7 @@ async function collectDatabaseTextEntries(
         source: "database",
         bytes,
         extension: "json",
+        usedOnLive: true,
       });
     }
   } catch (error) {
@@ -289,22 +350,31 @@ export async function buildStorageAnalyzeReport(): Promise<StorageAnalyzeReport>
     warnings.push("Local public/ folder not found on this server.");
   }
 
-  const [cloudWebsite, cloudEmail, dbText] = await Promise.all([
+  const [cloudWebsite, cloudEmail, dbText, liveCloudKeys] = await Promise.all([
     listCloudBucket(IMAGE_BUCKET, warnings),
     listCloudBucket(EMAIL_IMAGE_BUCKET, warnings),
     collectDatabaseTextEntries(warnings),
+    collectLiveSiteCloudKeys(warnings),
   ]);
 
-  files.push(...cloudWebsite, ...cloudEmail, ...dbText);
+  for (const file of [...cloudWebsite, ...cloudEmail]) {
+    file.usedOnLive = liveCloudKeys.has(file.path);
+    files.push(file);
+  }
+  files.push(...dbText);
   files.sort((a, b) => b.bytes - a.bytes || a.path.localeCompare(b.path));
 
   const categories = summarize(files);
   const totalBytes = files.reduce((sum, file) => sum + file.bytes, 0);
+  const liveFiles = files.filter((file) => file.usedOnLive);
+  const liveSiteBytes = liveFiles.reduce((sum, file) => sum + file.bytes, 0);
 
   return {
     generatedAt: new Date().toISOString(),
     totalCount: files.length,
     totalBytes,
+    liveSiteCount: liveFiles.length,
+    liveSiteBytes,
     categories,
     files,
     warnings,
