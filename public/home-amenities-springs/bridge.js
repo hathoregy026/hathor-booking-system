@@ -1,30 +1,103 @@
 /**
- * Homepage embed bridge — PURE Springs amenities clone.
- *
- * Parent Lenis → Locomotive `scroller.setScroll(0, y)`.
- * Do NOT use smoothScroll.scrollTop / lerped scrollTo for per-frame sync —
- * those skip or lag parallax and leave chapters looking static/green.
+ * Hathor bridge for the Springs amenities clone iframe.
+ * - Does NOT alter Springs sticky / parallax / loco
+ * - Injects CMS images + copy from parent postMessage
+ * - Reports document scroll height for parent runway sizing
  */
 (function () {
   "use strict";
 
-  const AMENITY_SECTIONS = [
-    "#i-intro",
-    "#i-video",
-    "#i-slider",
-    "#i-opening",
-    "#i-nature",
-  ];
+  const GOLD = "#b69f64";
 
-  function hideStuckPreloader() {
-    const preloader = document.querySelector(".preloader, .js-preloader");
-    if (preloader) {
-      preloader.style.setProperty("display", "none", "important");
-      preloader.style.setProperty("visibility", "hidden", "important");
-      preloader.style.setProperty("pointer-events", "none", "important");
-      preloader.setAttribute("aria-hidden", "true");
+  function applyImages(images) {
+    if (!images || typeof images !== "object") return;
+    Object.entries(images).forEach(([slot, src]) => {
+      if (!src) return;
+      document
+        .querySelectorAll(`[data-hathor-img-slot="${slot}"]`)
+        .forEach((img) => {
+          img.removeAttribute("srcset");
+          img.setAttribute("src", src);
+          img.setAttribute("data-src", src);
+          const picture = img.closest("picture");
+          if (picture) {
+            picture.querySelectorAll("source").forEach((source) => {
+              source.removeAttribute("srcset");
+              source.setAttribute("srcset", src);
+            });
+          }
+        });
+    });
+  }
+
+  function applyText(text) {
+    if (!text || typeof text !== "object") return;
+
+    const setHtml = (sel, value) => {
+      if (value == null || value === "") return;
+      document.querySelectorAll(sel).forEach((el) => {
+        el.innerHTML = value;
+      });
+    };
+
+    /* Springs selectors → Hathor CMS fields (content only). */
+    if (text.introTitle) {
+      setHtml("#i-intro h1.h0", text.introTitle);
+      setHtml("#i-intro .h0.leading-trim", text.introTitle);
     }
-    document.documentElement.classList.add("is-preloader-disabled");
+    if (text.introBody) {
+      setHtml("#i-intro .text-c1 p", text.introBody);
+      setHtml("#i-next-mobile p", text.introBody);
+    }
+    if (text.videoTitle) {
+      setHtml("#i-video .i-video__title h2", text.videoTitle);
+    }
+    if (text.videoBody) {
+      setHtml("#i-video .i-video__text p", text.videoBody);
+    }
+    if (text.videoCaptionTitle) {
+      setHtml("#i-video .i-video__caption__title h3", text.videoCaptionTitle);
+    }
+    if (text.videoCaptionBody) {
+      setHtml("#i-video .i-video__caption__text p", text.videoCaptionBody);
+    }
+    if (Array.isArray(text.sliderCaptions)) {
+      const blocks = document.querySelectorAll(
+        "#i-slider .js-slider-content [data-content-animation-item], #i-slider .i-slider__caption .js-slider-content > div",
+      );
+      /* Fallback: sequential title/body pairs inside caption stack */
+      const titles = document.querySelectorAll(
+        "#i-slider .i-slider__caption h3, #i-slider .i-slider__caption .h3",
+      );
+      text.sliderCaptions.forEach((cap, i) => {
+        if (titles[i] && cap.title) titles[i].innerHTML = cap.title;
+      });
+      const bodies = document.querySelectorAll(
+        "#i-slider .i-slider__caption .text-t1 p, #i-slider .i-slider__caption p.text-t1",
+      );
+      text.sliderCaptions.forEach((cap, i) => {
+        if (bodies[i] && cap.body) bodies[i].innerHTML = cap.body;
+      });
+      void blocks;
+    }
+    if (text.openingTitle) {
+      setHtml("#i-opening .i-opening__caption__title h3", text.openingTitle);
+    }
+    if (text.openingBody) {
+      setHtml("#i-opening .i-opening__caption__text p", text.openingBody);
+    }
+    if (Array.isArray(text.openingCards)) {
+      const labels = document.querySelectorAll(
+        "#i-opening .i-opening__list-item__text",
+      );
+      text.openingCards.forEach((label, i) => {
+        if (labels[i] && label) labels[i].textContent = label;
+      });
+    }
+    if (text.natureCaption) {
+      setHtml("#i-nature .i-nature__caption p", text.natureCaption);
+      setHtml("#i-nature .i-nature__caption", text.natureCaption);
+    }
   }
 
   function reportReady() {
@@ -32,20 +105,31 @@
       document.documentElement.scrollHeight,
       document.body.scrollHeight,
       document.querySelector("[data-hathor-amenities-root]")?.scrollHeight || 0,
-      window.innerHeight * 14,
     );
-    parent.postMessage({ type: "hathor-am-ready", height }, "*");
+    parent.postMessage(
+      {
+        type: "hathor-am-ready",
+        height,
+        gold: GOLD,
+      },
+      "*",
+    );
   }
 
-  function findSmoothScroll() {
-    if (window.__hathorSmoothScroll) return window.__hathorSmoothScroll;
+  function findLoco() {
+    if (window.__hathorLoco) return window.__hathorLoco;
     try {
-      const jq = window.jQuery;
-      if (jq) {
-        const smooth = jq(document.body).data("smoothScroll");
-        if (smooth) {
-          window.__hathorSmoothScroll = smooth;
-          return smooth;
+      for (const key of Object.keys(window)) {
+        const value = window[key];
+        if (
+          value &&
+          typeof value === "object" &&
+          typeof value.scrollTo === "function" &&
+          typeof value.setScroll === "function" &&
+          value.scroll
+        ) {
+          window.__hathorLoco = value;
+          return value;
         }
       }
     } catch (_) {
@@ -54,164 +138,51 @@
     return null;
   }
 
-  function hydrateAmenitiesMedia() {
-    const introSeen =
-      document.documentElement.classList.contains("is-intro-seen");
-
-    for (const sel of AMENITY_SECTIONS) {
-      const section = document.querySelector(sel);
-      if (!section) continue;
-
-      section.querySelectorAll("[data-srcset]").forEach((el) => {
-        const value = el.getAttribute("data-srcset");
-        if (!value) return;
-        el.setAttribute("srcset", value);
-        el.removeAttribute("data-srcset");
-      });
-      section.querySelectorAll("[data-src]").forEach((el) => {
-        const value = el.getAttribute("data-src");
-        if (!value) return;
-        el.setAttribute("src", value);
-        el.removeAttribute("data-src");
-      });
-
-      if (sel !== "#i-intro" || introSeen) {
-        section
-          .querySelectorAll(".is-invisible--js")
-          .forEach((el) => el.classList.remove("is-invisible--js"));
-      }
-    }
-  }
-
-  function ensureIntroVisible() {
-    const img = document.querySelector("#i-intro img");
-    if (img) {
-      img.style.setProperty("opacity", "1", "important");
-      const reveal = img.getAttribute("data-reveal");
-      if (reveal) {
-        img.setAttribute("data-reveal-old", reveal);
-        img.removeAttribute("data-reveal");
-      }
-    }
-    document
-      .querySelectorAll("#i-intro .is-invisible--js")
-      .forEach((el) => el.classList.remove("is-invisible--js"));
-    const bg = document.querySelector("#i-intro .background");
-    if (bg) {
-      const clip = getComputedStyle(bg).clipPath || "";
-      /* Open only if still stuck in the boot closed state */
-      if (/0px 900px|93\.|90\./.test(clip)) {
-        bg.style.setProperty(
-          "clip-path",
-          "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-          "important",
-        );
-      }
-    }
-  }
-
   function applyScroll(y) {
     const target = Math.max(0, Number(y) || 0);
-    const introSeen =
-      document.documentElement.classList.contains("is-intro-seen");
-
-    /*
-     * Parent often posts y=0 while Springs intro image-zoom is mid-flight.
-     * Calling setScroll(0) freezes that reveal at ~0.005 opacity (cream void).
-     */
-    if (target === 0 && !introSeen) {
-      return;
-    }
-
-    const smooth = findSmoothScroll();
-    const scroller = smooth && smooth.scroller;
-
-    if (scroller && typeof scroller.setScroll === "function") {
+    const loco = findLoco();
+    if (loco) {
       try {
-        scroller.setScroll(0, target);
-      } catch (_) {
-        try {
-          scroller.scrollTo(target, {
-            immediate: true,
-            duration: 0,
-            disableLerp: true,
-          });
-        } catch (__) {
-          /* fall through */
+        if (typeof loco.setScroll === "function") {
+          loco.setScroll(0, target);
+          return;
         }
-      }
-    } else if (smooth && typeof smooth.scrollTo === "function") {
-      try {
-        smooth.scrollTo(target, { duration: 0, immediate: true });
+        loco.scrollTo(target, { immediate: true, duration: 0 });
+        return;
       } catch (_) {
-        smooth.scrollTo(target);
-      }
-    } else {
-      window.scrollTo(0, target);
-    }
-
-    if (smooth && typeof smooth.update === "function") {
-      try {
-        smooth.update();
-      } catch (_) {
-        /* ignore */
+        /* fall through */
       }
     }
-    if (scroller && typeof scroller.update === "function") {
-      try {
-        scroller.update();
-      } catch (_) {
-        /* ignore */
+    try {
+      if (window.jQuery && typeof window.jQuery.fn.scrollTo === "function") {
+        window.jQuery(window).scrollTo(target, 0);
+        return;
       }
+    } catch (_) {
+      /* fall through */
     }
-
-    if (introSeen) {
-      hideStuckPreloader();
-      if (target === 0) ensureIntroVisible();
-    }
-    hydrateAmenitiesMedia();
+    window.scrollTo(0, target);
   }
 
   window.addEventListener("message", (event) => {
     const data = event.data;
     if (!data || typeof data !== "object") return;
-    if (data.type === "hathor-am-scroll") applyScroll(data.y);
+    if (data.type === "hathor-am-content") {
+      applyImages(data.images);
+      applyText(data.text);
+      requestAnimationFrame(reportReady);
+      setTimeout(reportReady, 400);
+      setTimeout(reportReady, 1200);
+    }
+    if (data.type === "hathor-am-scroll") {
+      applyScroll(data.y);
+    }
   });
 
-  function springsBooted() {
-    const root = document.documentElement;
-    return (
-      root.classList.contains("is-intro-seen") &&
-      root.classList.contains("has-scroll-smooth")
-    );
-  }
-
   function boot() {
-    let reported = false;
-    const finish = () => {
-      if (reported) return;
-      reported = true;
-      if (document.documentElement.classList.contains("is-intro-seen")) {
-        hideStuckPreloader();
-        ensureIntroVisible();
-      }
-      hydrateAmenitiesMedia();
-      reportReady();
-      parent.postMessage({ type: "hathor-am-boot" }, "*");
-    };
-
-    if (springsBooted()) {
-      finish();
-      return;
-    }
-
-    const start = Date.now();
-    const tick = window.setInterval(() => {
-      if (springsBooted() || Date.now() - start > 12000) {
-        window.clearInterval(tick);
-        finish();
-      }
-    }, 80);
+    document.documentElement.classList.add("hathor-am-bridge");
+    reportReady();
+    parent.postMessage({ type: "hathor-am-boot" }, "*");
   }
 
   if (document.readyState === "loading") {
@@ -220,22 +191,7 @@
     boot();
   }
   window.addEventListener("load", () => {
-    setTimeout(() => {
-      if (document.documentElement.classList.contains("is-intro-seen")) {
-        hideStuckPreloader();
-        ensureIntroVisible();
-      }
-      hydrateAmenitiesMedia();
-      reportReady();
-    }, 400);
-    setTimeout(() => {
-      hideStuckPreloader();
-      ensureIntroVisible();
-      hydrateAmenitiesMedia();
-      reportReady();
-    }, 2000);
-    setTimeout(() => {
-      ensureIntroVisible();
-    }, 3500);
+    reportReady();
+    setTimeout(reportReady, 800);
   });
 })();

@@ -13,7 +13,6 @@ import type {
   AmenitiesLandmarkSlide,
   AmenitiesStorySlide,
 } from "@/components/home/HomeAmenitiesSequence";
-import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
 
 type HomeAmenitiesSpringsPortalProps = {
   landmarks: AmenitiesLandmarkSlide[];
@@ -47,23 +46,17 @@ function shortCardLabel(raw: string): string {
 }
 
 /**
- * Literal Springs amenities document (/test-slide → /home-amenities-springs).
- * Springs owns layout + loco + sticky + 50vw joins. Hathor only:
- *  - sizes a parent runway from bridge height
- *  - sticky-pins a 100svh iframe window
- *  - maps parent scroll through the runway → loco setScroll
- *  - injects CMS images/copy
+ * Literal Springs amenities document (/test-slide source) in an iframe.
+ * Springs owns layout + loco/sticky/parallax. Hathor only injects CMS media/copy.
  */
 export function HomeAmenitiesSpringsPortal({
   landmarks,
   stories,
   voyages,
 }: HomeAmenitiesSpringsPortalProps) {
-  const runwayRef = useRef<HTMLDivElement>(null);
+  const hostRef = useRef<HTMLElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const lastY = useRef(-1);
   const [frameReady, setFrameReady] = useState(false);
-  const [runwayPx, setRunwayPx] = useState(0);
 
   const img1 = useSiteImage("home-amenities-1");
   const img2 = useSiteImage("home-amenities-2");
@@ -177,11 +170,6 @@ export function HomeAmenitiesSpringsPortal({
       if (!data || typeof data !== "object") return;
       if (data.type === "hathor-am-boot" || data.type === "hathor-am-ready") {
         setFrameReady(true);
-        const height = Number(data.height);
-        if (Number.isFinite(height) && height > 0) {
-          /* Runway = full Springs document height so sticky window can scrub it */
-          setRunwayPx((prev) => Math.max(prev, Math.ceil(height)));
-        }
         pushContent();
       }
     };
@@ -209,76 +197,62 @@ export function HomeAmenitiesSpringsPortal({
   ]);
 
   /*
-   * Parent scroll through the runway → Springs loco scroll inside the iframe.
-   * Homepage uses Lenis — native window "scroll" alone is not enough; also
-   * bind lenis.on("scroll") like other sticky homepage surfaces.
+   * Forward wheel into the Springs iframe while mid-runway so parent Lenis
+   * does not steal scroll. At iframe start/end, release so the homepage
+   * continues (voyages / helm).
    */
   useEffect(() => {
-    const runway = runwayRef.current;
+    const host = hostRef.current;
     const iframe = iframeRef.current;
-    if (!runway || !iframe || !frameReady) return;
+    if (!host || !iframe || !frameReady) return;
 
-    let raf = 0;
-    const sync = () => {
-      raf = 0;
+    const onWheel = (event: WheelEvent) => {
       const win = iframe.contentWindow;
-      if (!win) return;
-      const vh = window.innerHeight || 1;
-      const max = Math.max(0, runway.offsetHeight - vh);
-      const top = runway.getBoundingClientRect().top;
-      const y = Math.round(Math.min(max, Math.max(0, -top)));
-      if (y === lastY.current) return;
-      lastY.current = y;
-      win.postMessage({ type: "hathor-am-scroll", y }, "*");
+      const doc = iframe.contentDocument;
+      if (!win || !doc) return;
+      const max = Math.max(
+        0,
+        doc.documentElement.scrollHeight - win.innerHeight,
+      );
+      const y = win.scrollY || doc.documentElement.scrollTop || 0;
+      const goingDown = event.deltaY > 0;
+      const atStart = y <= 1 && !goingDown;
+      const atEnd = y >= max - 2 && goingDown;
+      if (atStart || atEnd || max <= 0) return;
+      event.preventDefault();
+      event.stopPropagation();
+      win.scrollBy(0, event.deltaY);
+      win.postMessage(
+        { type: "hathor-am-scroll", y: (win.scrollY || 0) + event.deltaY },
+        "*",
+      );
     };
 
-    const onScroll = () => {
-      if (raf) return;
-      raf = window.requestAnimationFrame(sync);
-    };
-
-    const scroll = ensurePublicScrollController();
-    const offLenis = scroll.lenis?.on("scroll", onScroll);
-
-    sync();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      if (typeof offLenis === "function") offLenis();
-      else scroll.lenis?.off("scroll", onScroll);
-      if (raf) window.cancelAnimationFrame(raf);
-    };
-  }, [frameReady, runwayPx]);
+    host.addEventListener("wheel", onWheel, { passive: false });
+    return () => host.removeEventListener("wheel", onWheel);
+  }, [frameReady]);
 
   return (
     <>
-      <div
-        ref={runwayRef}
-        className="home-am-springs-runway"
-        style={runwayPx > 0 ? { height: runwayPx } : undefined}
+      <section
+        ref={hostRef}
+        className="home-am-springs-host"
         data-home-amenities-springs
+        aria-label="Amenities"
       >
-        <section
-          className="home-am-springs-host"
-          aria-label="Amenities"
-        >
-          <iframe
-            ref={iframeRef}
-            className="home-am-springs-frame"
-            src="/home-amenities-springs/index.html"
-            title="Hathor amenities"
-            loading="eager"
-            scrolling="no"
-            allow="autoplay; fullscreen"
-            onLoad={() => {
-              setFrameReady(true);
-              pushContent();
-            }}
-          />
-        </section>
-      </div>
+        <iframe
+          ref={iframeRef}
+          className="home-am-springs-frame"
+          src="/home-amenities-springs/index.html"
+          title="Hathor amenities"
+          loading="eager"
+          allow="autoplay; fullscreen"
+          onLoad={() => {
+            setFrameReady(true);
+            pushContent();
+          }}
+        />
+      </section>
       {voyages ? (
         <div className="home-am-voyages" data-am-voyages id="home-am-voyages">
           <div className="home-am-voyages__stage">{voyages}</div>

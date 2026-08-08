@@ -1,27 +1,59 @@
 "use client";
 
-import { type ReactNode } from "react";
-import { HomeAmenitiesSpringsClone } from "@/components/home/HomeAmenitiesSpringsClone";
+import { CSSProperties, type ReactNode } from "react";
+import {
+  HomeAmenitiesSequence,
+  type AmenitiesLandmarkSlide,
+  type AmenitiesSequenceImage,
+  type AmenitiesStorySlide,
+} from "@/components/home/HomeAmenitiesSequence";
+import { AMENITIES_SEQUENCE_IMAGE_SLOTS } from "@/lib/amenities-sequence-images";
+import type { SiteImageName } from "@/lib/site-image-slots";
+
+export type LandmarkMaskSlide = AmenitiesLandmarkSlide;
 
 type HomeLandmarkMaskSectionProps = {
-  /** @deprecated Kept so HomePageClient can pass old props without crashing — ignored. */
-  slides?: unknown;
-  stories?: unknown;
-  images?: unknown;
-  titleStyle?: unknown;
-  indicationStyle?: unknown;
-  bodyStyle?: unknown;
+  slides: LandmarkMaskSlide[];
+  stories?: AmenitiesStorySlide[];
+  images?: AmenitiesSequenceImage[];
+  titleStyle?: CSSProperties;
+  indicationStyle?: CSSProperties;
+  bodyStyle?: CSSProperties;
   voyages?: ReactNode;
 };
 
+const DEFAULT_AMENITIES_IMAGES: AmenitiesSequenceImage[] =
+  AMENITIES_SEQUENCE_IMAGE_SLOTS.map((slot) => ({
+    name: slot.name as SiteImageName,
+    alt: slot.alt,
+    previewAnchor: true,
+  }));
+
 /**
- * Homepage amenities = pure Springs clone (images + colours unchanged).
- * Hathor CMS restyle later from archive/home-amenities-hathor-backup.
+ * Homepage amenities sequence (React port of Springs intro→nature).
+ * The iframe clone experiment blanked production — keep the working port.
+ * Oracle for layout/scroll: /test-slide (public/springs-layout).
  */
 export function HomeLandmarkMaskSection({
+  slides,
+  stories = [],
+  images = DEFAULT_AMENITIES_IMAGES,
+  titleStyle,
+  indicationStyle,
+  bodyStyle,
   voyages,
 }: HomeLandmarkMaskSectionProps) {
-  return <HomeAmenitiesSpringsClone voyages={voyages} />;
+  return (
+    <HomeAmenitiesSequence
+      landmarks={slides}
+      stories={stories}
+      images={images}
+      titleStyle={titleStyle}
+      indicationStyle={indicationStyle}
+      bodyStyle={bodyStyle}
+      voyages={voyages}
+    />
+  );
 }
 
 export default HomeLandmarkMaskSection;
