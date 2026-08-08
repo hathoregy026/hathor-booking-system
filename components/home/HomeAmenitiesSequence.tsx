@@ -526,6 +526,7 @@ export function HomeAmenitiesSequence({
                 data-parallax--100-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
               >
                 {sliderSlides.map((slide, index) => {
+                  /* Springs panel N: --(N*100)-0 hidden → --((N+1)*100)-0 open → --((N+2)*100)-0 settle */
                   const base = index * 100;
                   const open = base + 100;
                   const settle = base + 200;
@@ -538,6 +539,11 @@ export function HomeAmenitiesSequence({
                       data-parallax-enable-mq="md-up"
                       data-parallax-clamp="true"
                       data-parallax-measure-selector=".sticky"
+                      style={
+                        {
+                          "--am-slider-panel-z": index + 1,
+                        } as CSSProperties
+                      }
                       {...(index === 0
                         ? {
                             /* Springs first panel: data-parallax--000-0 */

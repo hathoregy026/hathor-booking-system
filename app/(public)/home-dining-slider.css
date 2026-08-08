@@ -694,6 +694,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   overflow: hidden;
   transform-origin: 50% 100%;
   will-change: clip-path, transform;
+  /* Later panels stack above earlier ones (Springs DOM order + explicit index) */
+  z-index: var(--am-slider-panel-z, 1);
 }
 
 .home-am-slider__panel img {
@@ -706,7 +708,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 .home-am-opening {
   height: 250svh;
   position: relative;
-  z-index: 4;
+  /* Springs: z-index:4 only on compact — desktop must stay under/with slider or gold buries images */
+  z-index: auto;
   pointer-events: none;
   clip-path: none;
 }
