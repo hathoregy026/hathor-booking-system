@@ -240,12 +240,13 @@ body:has([data-highlights-page]) .public-main {
 
 html[data-public-theme="night"] [data-charter-page],
 html[data-public-theme="night"] [data-highlights-page] {
-  --lx-ink: var(--text-main, #eadfcd);
-  --lx-ivory: var(--bg-main, #161412);
-  --lx-text: var(--text-main, #eadfcd);
-  --lx-muted: var(--text-muted, #a99d89);
-  --lx-copy-light: rgb(234 223 205 / 0.78);
-  background: var(--bg-main, #161412);
-  color: var(--text-main, #eadfcd);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  --lx-ink: var(--text-silk, #f4efe6);
+  --lx-ivory: transparent;
+  --lx-text: var(--text-silk, #f4efe6);
+  --lx-muted: var(--text-muted, #a39682);
+  --lx-copy-light: rgba(244, 239, 230, 0.78);
+  background: transparent;
+  color: var(--text-muted, #a39682);
+  letter-spacing: 0.03em;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }

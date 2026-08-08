@@ -21,10 +21,26 @@ type HomeTextStorySectionProps = {
   slides: TextStorySlide[];
 };
 
+function storyTitleLines(title: string): string[] {
+  const lines = title
+    .split(/\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  if (lines.length > 1) return lines;
+  const single = (lines[0] || title).replace(/\s+/g, " ").trim();
+  if (/^NOT JUST A CRUISE\s+A WAY OF LIFE$/i.test(single)) {
+    return ["NOT JUST A CRUISE", "A WAY OF LIFE"];
+  }
+  if (/^FINE DINING\s+ON DAHABIYA$/i.test(single)) {
+    return ["FINE DINING", "ON DAHABIYA"];
+  }
+  return single ? [single] : [];
+}
+
 /** Way of Life / Dining — amenities `#i-slider` Fixed-Background Mask Reveal (cream). */
 export function HomeTextStorySection({ slides }: HomeTextStorySectionProps) {
   const amenitiesSlides: AmenitiesMaskSlide[] = slides.map((slide) => ({
-    titleLines: [slide.title],
+    titleLines: storyTitleLines(slide.title),
     body: slide.body,
     cta: slide.cta,
     href: slide.href,

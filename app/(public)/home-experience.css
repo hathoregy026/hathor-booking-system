@@ -25,12 +25,12 @@ html[data-ex-experience] .ex-root {
 }
 
 html[data-public-theme="night"][data-ex-experience] .ex-root {
-  --cream: var(--bg-main, #161412);
-  --cream-deep: var(--bg-surface, #23201d);
-  --ink: var(--text-main, #eadfcd);
-  --ink-soft: var(--text-main, #eadfcd);
-  --muted: var(--text-muted, #a99d89);
-  --blush: var(--bg-hover, #36312c);
+  --cream: transparent;
+  --cream-deep: rgba(28, 25, 22, 0.75);
+  --ink: var(--text-silk, #f4efe6);
+  --ink-soft: var(--text-muted, #a39682);
+  --muted: var(--text-muted, #a39682);
+  --blush: rgba(28, 25, 22, 0.55);
 }
 
 html[data-public-theme="day"][data-ex-experience] .ex-root {

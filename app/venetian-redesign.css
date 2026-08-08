@@ -2805,17 +2805,17 @@
 
 /* Night mode tokens — remapped when html[data-public-theme="night"] */
 html[data-public-theme="night"] .venetian-page {
-  --cream: var(--bg-main, #161412);
-  --cream-deep: var(--bg-surface, #23201d);
-  --ink: var(--text-main, #eadfcd);
-  --ink-soft: var(--text-main, #eadfcd);
-  --muted: var(--text-muted, #a99d89);
-  --white: var(--bg-surface, #23201d);
-  --blush: var(--bg-hover, #36312c);
-  --lux-paper: var(--bg-main, #161412);
-  --lux-paper-deep: var(--bg-surface, #23201d);
-  background: var(--bg-main, #161412);
-  color: var(--text-main, #eadfcd);
+  --cream: transparent;
+  --cream-deep: rgba(28, 25, 22, 0.75);
+  --ink: var(--text-silk, #f4efe6);
+  --ink-soft: var(--text-muted, #a39682);
+  --muted: var(--text-muted, #a39682);
+  --white: var(--surface-glass, rgba(28, 25, 22, 0.75));
+  --blush: rgba(28, 25, 22, 0.55);
+  --lux-paper: transparent;
+  --lux-paper-deep: rgba(28, 25, 22, 0.75);
+  background: transparent;
+  color: var(--text-muted, #a39682);
 }
 
 html[data-public-theme="day"] .venetian-page {

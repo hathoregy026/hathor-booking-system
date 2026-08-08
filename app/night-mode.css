@@ -1,82 +1,70 @@
 /**
- * Night mode — layered warm dark palette when html[data-public-theme="night"].
- * Toggle: PublicThemeToggle → data-public-theme on <html> (+ localStorage).
- * First visit (no stored preference): prefers-color-scheme: dark also selects night.
+ * Night mode — premium luxury glass & gradient depth.
+ * Active when html[data-public-theme="night"] (PublicThemeToggle + localStorage).
+ * Aliases: html[data-theme="dark"], html.dark (same tokens if wired later).
  */
 
-html[data-public-theme="night"] {
+html[data-public-theme="night"],
+html[data-theme="dark"],
+html.dark {
   color-scheme: dark;
 
-  /* Canonical refined palette */
-  --bg-main: #161412;
-  --bg-surface: #23201d;
-  --bg-hover: #36312c;
-  --text-main: #eadfcd;
-  --text-muted: #a99d89;
-  --accent: #c6af73;
+  /* Premium palette */
+  --bg-gradient: radial-gradient(circle at top, #141210 0%, #0d0b0a 100%);
+  --surface-glass: rgba(28, 25, 22, 0.75);
+  --border-lux: 1px solid rgba(191, 163, 107, 0.15);
+  --text-silk: #f4efe6;
+  --text-muted: #a39682;
+  --accent-gold: #bfa36b;
+  --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+  --lux-transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  --lux-letter-spacing: 0.03em;
 
-  /* Legacy aliases (existing var() references) */
-  --bg-dark: var(--bg-main);
-  --bg-dark-surface: var(--bg-surface);
-  --bg-dark-elevated: var(--bg-hover);
-  --bg-dark-muted: var(--bg-hover);
-  --text-primary: var(--text-main);
+  /* Legacy / public token bridge */
+  --bg-main: #0d0b0a;
+  --bg-surface: rgba(28, 25, 22, 0.75);
+  --bg-hover: rgba(54, 49, 44, 0.55);
+  --text-main: var(--text-silk);
+  --accent: var(--accent-gold);
+  --bg-dark: #0d0b0a;
+  --bg-dark-surface: var(--surface-glass);
+  --text-primary: var(--text-silk);
   --text-secondary: var(--text-muted);
 
-  /* Public design tokens */
-  --public-bg: var(--bg-main);
-  --public-surface: var(--bg-surface);
-  --public-card: var(--bg-surface);
-  --public-text: var(--text-main);
+  --public-bg: transparent;
+  --public-surface: var(--surface-glass);
+  --public-card: var(--surface-glass);
+  --public-text: var(--text-silk);
   --public-muted: var(--text-muted);
-  --public-border: rgb(54 49 44 / 0.55);
-  --public-gold: var(--accent);
-  --public-gold-hover: #d8c48a;
+  --public-border: rgba(191, 163, 107, 0.15);
+  --public-gold: var(--accent-gold);
+  --public-gold-hover: #d4bc84;
 
-  --hieroglyph-cream: var(--bg-surface);
-  --hathor-dark: var(--bg-main);
-  --hathor-dark-2: var(--bg-surface);
-  --hathor-surface: var(--bg-surface);
-  --hathor-cream: var(--text-main);
-  --hathor-text-light: var(--text-main);
+  --hieroglyph-cream: transparent;
+  --hieroglyph-opacity: 0.028;
+  --hathor-dark: transparent;
+  --hathor-dark-2: var(--surface-glass);
+  --hathor-surface: var(--surface-glass);
+  --hathor-cream: var(--text-silk);
+  --hathor-text-light: var(--text-silk);
   --hathor-muted: var(--text-muted);
-  --hathor-accent: var(--accent);
+  --hathor-accent: var(--accent-gold);
 }
 
-/* Smooth theme transitions */
+/* Fixed cinematic gradient canvas */
 html[data-public-theme="night"],
 html[data-public-theme="night"] body,
-html[data-public-theme="night"] .public-site,
-html[data-public-theme="night"] .hathor-site,
-html[data-public-theme="night"] .preview-site,
-html[data-public-theme="night"] .public-main,
-html[data-public-theme="night"] .page-transition,
-html[data-public-theme="night"] .public-page-body,
-html[data-public-theme="night"] .home-experience-route,
-html[data-public-theme="night"] .hathor-header,
-html[data-public-theme="night"] .owo-footer,
-html[data-public-theme="night"] .hathor-section,
-html[data-public-theme="night"] .hathor-editorial,
-html[data-public-theme="night"] .hathor-cruise-card,
-html[data-public-theme="night"] .hathor-header__dropdown-list,
-html[data-public-theme="night"] .public-site p,
-html[data-public-theme="night"] .public-site h1,
-html[data-public-theme="night"] .public-site h2,
-html[data-public-theme="night"] .public-site h3,
-html[data-public-theme="night"] .public-site h4,
-html[data-public-theme="night"] .public-site a:not(.btn):not(.hero-cta) {
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease,
-    border-color 0.3s ease;
+html[data-theme="dark"],
+html[data-theme="dark"] body,
+html.dark,
+html.dark body {
+  background: var(--bg-gradient) !important;
+  background-attachment: fixed !important;
+  color: var(--text-muted);
+  letter-spacing: var(--lux-letter-spacing);
 }
 
-html[data-public-theme="night"],
-html[data-public-theme="night"] body {
-  background-color: var(--bg-main) !important;
-  color: var(--text-main);
-}
-
+/* Site shells — transparent so gradient breathes */
 html[data-public-theme="night"] .public-site,
 html[data-public-theme="night"] .hathor-site,
 html[data-public-theme="night"] .preview-site,
@@ -84,23 +72,29 @@ html[data-public-theme="night"] .public-main,
 html[data-public-theme="night"] .page-transition,
 html[data-public-theme="night"] .public-page-body,
 html[data-public-theme="night"] .home-experience-route {
-  --public-bg: var(--bg-main);
-  --public-surface: var(--bg-surface);
-  --public-text: var(--text-main);
-  --public-muted: var(--text-muted);
-  --hieroglyph-cream: var(--bg-surface);
-  --hieroglyph-opacity: 0.02;
-  --hathor-dark: var(--bg-main);
-  --hathor-dark-2: var(--bg-surface);
-  --hathor-surface: var(--bg-surface);
-  --hathor-cream: var(--text-main);
-  --hathor-text-light: var(--text-main);
-  --hathor-muted: var(--text-muted);
-  background-color: var(--bg-main) !important;
-  color: var(--text-main);
+  background: transparent !important;
+  color: var(--text-muted);
 }
 
-/* Layered surfaces — sections & cream floors sit on main, containers lift to surface */
+html[data-public-theme="night"] .public-site,
+html[data-public-theme="night"] .public-page-body,
+html[data-public-theme="night"][data-ex-experience] .ex-root {
+  background: transparent !important;
+}
+
+html[data-public-theme="night"][data-ex-experience] .ex-root {
+  --ex-cream: transparent;
+  --cream: transparent;
+  --cream-deep: var(--surface-glass);
+  --ink: var(--text-silk);
+  --ink-soft: var(--text-muted);
+  --muted: var(--text-muted);
+  --blush: rgba(28, 25, 22, 0.55);
+  background: transparent !important;
+  color: var(--text-muted);
+}
+
+/* Large sections — subtle glass veil, not flat slabs */
 html[data-public-theme="night"] .public-site .hathor-section,
 html[data-public-theme="night"] .public-site .hathor-editorial,
 html[data-public-theme="night"] .public-site .hathor-section--dark,
@@ -108,80 +102,77 @@ html[data-public-theme="night"] .public-site .hathor-section--dark-2,
 html[data-public-theme="night"] .public-site .hathor-section--surface,
 html[data-public-theme="night"] .public-site .hathor-section--cream,
 html[data-public-theme="night"] .public-site .lux-section--cream,
-html[data-public-theme="night"] .cruises-scroll-route .cruises-sheet {
-  background-color: var(--bg-surface) !important;
-  color: var(--text-main);
-}
-
-html[data-public-theme="night"] .public-site,
-html[data-public-theme="night"] .public-page-body,
-html[data-public-theme="night"][data-ex-experience] .ex-root {
-  background-color: var(--bg-main) !important;
-}
-
-html[data-public-theme="night"][data-ex-experience] .ex-root {
-  --ex-cream: var(--bg-main);
-  --cream: var(--bg-main);
-  --cream-deep: var(--bg-surface);
-  --ink: var(--text-main);
-  --ink-soft: var(--text-main);
-  --muted: var(--text-muted);
-  --blush: var(--bg-hover);
-  background-color: var(--bg-main) !important;
-  color: var(--text-main);
-}
-
+html[data-public-theme="night"] .cruises-scroll-route .cruises-sheet,
 html[data-public-theme="night"][data-ex-experience] .ex-root .gallery-section,
 html[data-public-theme="night"][data-ex-experience] .ex-root .testimonials-section,
 html[data-public-theme="night"][data-ex-experience] .ex-root .cta-section {
-  background-color: var(--bg-surface) !important;
+  background: rgba(20, 18, 16, 0.42) !important;
+  background-image: none !important;
+  color: var(--text-muted);
 }
 
 html[data-public-theme="night"] .venetian-page,
 html[data-public-theme="night"] .page-accommodation,
 html[data-public-theme="night"] .page-cruises {
-  --cream: var(--bg-main);
-  --cream-deep: var(--bg-surface);
-  --ink: var(--text-main);
-  --ink-soft: var(--text-main);
+  --cream: transparent;
+  --cream-deep: var(--surface-glass);
+  --ink: var(--text-silk);
+  --ink-soft: var(--text-muted);
   --muted: var(--text-muted);
-  --lux-paper: var(--bg-main);
-  --lux-paper-deep: var(--bg-surface);
-  background: var(--bg-main) !important;
-  color: var(--text-main);
-}
-
-/* Navbar, header, footer, dropdowns — surface layer */
-html[data-public-theme="night"] .hathor-header--solid,
-html[data-public-theme="night"] .hathor-header--owo-hero-layout.hathor-header--solid {
-  background: rgb(35 32 29 / 0.94) !important;
-  border-bottom-color: var(--bg-hover);
-}
-
-html[data-public-theme="night"] .hathor-header__dropdown-list {
-  background: var(--bg-surface) !important;
-  border-color: var(--bg-hover);
-  box-shadow: 0 14px 40px rgb(0 0 0 / 0.35);
-}
-
-html[data-public-theme="night"] .hathor-header__dropdown-link {
+  --lux-paper: transparent;
+  --lux-paper-deep: var(--surface-glass);
+  background: transparent !important;
   color: var(--text-muted);
 }
 
-html[data-public-theme="night"] .hathor-header__dropdown-link:hover {
-  color: var(--accent);
-  background: rgb(54 49 44 / 0.35);
+/* Glass panels — nav, footer, cards, hero copy chrome */
+html[data-public-theme="night"] .hathor-header--solid,
+html[data-public-theme="night"] .hathor-header--owo-hero-layout.hathor-header--solid,
+html[data-public-theme="night"] .hathor-header__dropdown-list,
+html[data-public-theme="night"] .owo-footer,
+html[data-public-theme="night"] .lux-footer,
+html[data-public-theme="night"] .public-site .hathor-cruise-card,
+html[data-public-theme="night"] .public-site .lux-cta-band,
+html[data-public-theme="night"] .public-site .hathor-collage__panel,
+html[data-public-theme="night"] .hathor-page-hero__content,
+html[data-public-theme="night"] [data-page-transition] .pt-hero__copy,
+html[data-public-theme="night"] .preview-hero__inner,
+html[data-public-theme="night"] .owo-hero__inner {
+  background: var(--surface-glass) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: var(--border-lux);
+  box-shadow: var(--glass-shadow);
+}
+
+html[data-public-theme="night"] .hathor-header--solid,
+html[data-public-theme="night"] .hathor-header--owo-hero-layout.hathor-header--solid {
+  border-bottom: var(--border-lux);
+  box-shadow: var(--glass-shadow);
 }
 
 html[data-public-theme="night"] .owo-footer,
 html[data-public-theme="night"] .lux-footer {
-  background-color: var(--bg-surface) !important;
-  color: var(--text-main);
-  border-top-color: var(--bg-hover);
+  border-top: var(--border-lux);
+}
+
+html[data-public-theme="night"] .hathor-header__dropdown-list {
+  border-radius: 0;
+}
+
+html[data-public-theme="night"] .hathor-header__dropdown-link {
+  color: var(--text-muted);
+  letter-spacing: var(--lux-letter-spacing);
+  transition: var(--lux-transition);
+}
+
+html[data-public-theme="night"] .hathor-header__dropdown-link:hover {
+  color: var(--accent-gold);
+  background: rgba(191, 163, 107, 0.08);
 }
 
 html[data-public-theme="night"] .owo-footer__contact-bar {
-  border-color: var(--bg-hover);
+  border-color: rgba(191, 163, 107, 0.12);
 }
 
 html[data-public-theme="night"] .owo-footer__tag,
@@ -193,29 +184,20 @@ html[data-public-theme="night"] .owo-footer__contact-text {
 html[data-public-theme="night"] .owo-footer__wordmark,
 html[data-public-theme="night"] .owo-footer__contact-title,
 html[data-public-theme="night"] .lux-footer__col-title {
-  color: var(--text-main);
+  color: var(--text-silk);
 }
 
-/* Cards & editorial containers */
-html[data-public-theme="night"] .public-site .hathor-cruise-card,
-html[data-public-theme="night"] .public-site .lux-cta-band,
-html[data-public-theme="night"] .public-site .hathor-collage__panel {
-  background-color: var(--bg-surface) !important;
-  border-color: var(--bg-hover);
-  color: var(--text-main);
-}
-
-/* Typography hierarchy */
+/* Editorial typography — silk headers, muted body */
+html[data-public-theme="night"] .public-site,
 html[data-public-theme="night"] .public-site p,
-html[data-public-theme="night"] .public-site .hathor-body-text {
-  color: var(--text-main);
-}
-
+html[data-public-theme="night"] .public-site .hathor-body-text,
+html[data-public-theme="night"] .public-site li,
 html[data-public-theme="night"] .public-site .hathor-section-subtitle,
 html[data-public-theme="night"] .public-site .hathor-chapter-subtitle,
 html[data-public-theme="night"] .public-site small,
 html[data-public-theme="night"] .public-site .hathor-stat__label {
   color: var(--text-muted);
+  letter-spacing: var(--lux-letter-spacing);
 }
 
 html[data-public-theme="night"] .public-site h1,
@@ -223,13 +205,35 @@ html[data-public-theme="night"] .public-site h2,
 html[data-public-theme="night"] .public-site h3,
 html[data-public-theme="night"] .public-site h4,
 html[data-public-theme="night"] .public-site .hathor-section-title,
-html[data-public-theme="night"] .public-site .hathor-chapter-title {
-  color: var(--text-main);
+html[data-public-theme="night"] .public-site .hathor-chapter-title,
+html[data-public-theme="night"] .public-site .hathor-page-hero__title,
+html[data-public-theme="night"] .public-site .hathor-stat__value {
+  color: var(--text-silk);
+  letter-spacing: var(--lux-letter-spacing);
 }
 
-/* Links & CTAs */
+/* Interactive elements — slow luxury easing */
+html[data-public-theme="night"] a,
+html[data-public-theme="night"] button,
+html[data-public-theme="night"] .public-btn-gold,
+html[data-public-theme="night"] .public-btn-outline-gold,
+html[data-public-theme="night"] .public-btn-dark,
+html[data-public-theme="night"] .btn,
+html[data-public-theme="night"] .hathor-header__nav-link,
+html[data-public-theme="night"] .hathor-header__menu-btn,
+html[data-public-theme="night"] .hathor-header__dropdown-link,
+html[data-public-theme="night"] .public-theme-toggle,
+html[data-public-theme="night"] .owo-footer__link,
+html[data-public-theme="night"] .owo-footer__legal-link,
+html[data-public-theme="night"] .hathor-cruise-card,
+html[data-public-theme="night"] .hathor-header--solid,
+html[data-public-theme="night"] .owo-footer,
+html[data-public-theme="night"] .lux-footer {
+  transition: var(--lux-transition);
+}
+
 html[data-public-theme="night"] .public-site a:not(.btn):not(.hero-cta):not(.public-btn-gold):not(.public-btn-outline-gold):not(.public-btn-dark):not(.hathor-header__nav-link):not(.hathor-header__dropdown-link):not(.hathor-header__menu-btn) {
-  color: var(--accent);
+  color: var(--accent-gold);
 }
 
 html[data-public-theme="night"] .public-site .public-btn-gold,
@@ -237,14 +241,12 @@ html[data-public-theme="night"] .public-site .public-btn-outline-gold,
 html[data-public-theme="night"] .public-site .btn-primary:not(.hero-cta),
 html[data-public-theme="night"] .public-site a.btn-primary:not(.hero-cta),
 html[data-public-theme="night"] .public-site button.btn-primary:not(.hero-cta) {
-  border-color: var(--accent);
-  background: var(--bg-surface);
-  color: var(--accent);
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease,
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
+  background: var(--surface-glass);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: var(--border-lux);
+  color: var(--accent-gold);
+  box-shadow: var(--glass-shadow);
 }
 
 html[data-public-theme="night"] .public-site .public-btn-gold:hover,
@@ -252,9 +254,10 @@ html[data-public-theme="night"] .public-site .public-btn-outline-gold:hover,
 html[data-public-theme="night"] .public-site .btn-primary:not(.hero-cta):hover,
 html[data-public-theme="night"] .public-site a.btn-primary:not(.hero-cta):hover,
 html[data-public-theme="night"] .public-site button.btn-primary:not(.hero-cta):hover {
-  background: var(--bg-hover);
-  border-color: var(--accent);
-  color: var(--text-main);
+  background: rgba(191, 163, 107, 0.18);
+  border-color: rgba(191, 163, 107, 0.45);
+  color: var(--text-silk);
+  box-shadow: 0 8px 36px rgba(0, 0, 0, 0.45);
 }
 
 html[data-public-theme="night"] .public-theme-toggle {
@@ -262,16 +265,36 @@ html[data-public-theme="night"] .public-theme-toggle {
 }
 
 html[data-public-theme="night"] .public-theme-toggle__track {
-  border-color: var(--bg-hover);
-  background: rgb(54 49 44 / 0.35);
+  border: var(--border-lux);
+  background: var(--surface-glass);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
-/* ——— Day restore (must win over night variable bleed) ——— */
+/* Phone — softer blur, same glass idea */
+@media (max-width: 480px) {
+  html[data-public-theme="night"] .hathor-header--solid,
+  html[data-public-theme="night"] .hathor-header__dropdown-list,
+  html[data-public-theme="night"] .owo-footer,
+  html[data-public-theme="night"] .lux-footer,
+  html[data-public-theme="night"] .public-site .hathor-cruise-card,
+  html[data-public-theme="night"] .public-site .lux-cta-band,
+  html[data-public-theme="night"] .hathor-page-hero__content,
+  html[data-public-theme="night"] [data-page-transition] .pt-hero__copy {
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+}
+
+/* ——— Day restore ——— */
 html[data-public-theme="day"],
 html[data-public-theme="day"] body {
   color-scheme: light;
   background-color: #ece8df !important;
+  background-image: none !important;
+  background-attachment: scroll !important;
   color: #1a1a1a;
+  letter-spacing: normal;
 }
 
 html[data-public-theme="day"] .public-site,
