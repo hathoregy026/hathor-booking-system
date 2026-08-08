@@ -88,15 +88,6 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   background: transparent;
 }
 
-/*
- * Springs: body { background:#000 } sits under clipped sticky halves.
- * Hathor page chrome is cream — without this, every zero-area clip flashes cream.
- */
-.home-am-slider,
-.home-am-opening {
-  background: #000;
-}
-
 .home-am-chapter--under-previous {
   margin-top: calc(var(--sticky-under-previous-distance) * -1);
 }
@@ -163,7 +154,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   contain: none;
   height: calc(100 * var(--am-svh));
   min-height: calc(100 * var(--am-svh));
-  background: var(--am-ink);
+  background: transparent;
 }
 
 .home-am-nature__content {
@@ -591,22 +582,16 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   clip-path: none;
 }
 
-/* Springs .i-slider__content.row → flex; cols are exact 50vw (not 1fr 1fr) */
 .home-am-slider__row {
-  display: flex;
-  flex-wrap: nowrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   width: 100%;
   height: 100%;
   gap: 0;
-  margin: 0;
 }
 
-/* Springs .i-slider__caption.col.col--md-6 */
 .home-am-slider__caption-col {
   position: relative;
-  flex: 0 1 50vw;
-  width: 50vw;
-  max-width: 50vw;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -691,16 +676,11 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   pointer-events: none;
 }
 
-/* Springs .i-slider__images.col.col--md-6 */
 .home-am-slider__images-col {
   position: relative;
-  flex: 0 1 50vw;
-  width: 50vw;
-  max-width: 50vw;
   overflow: hidden;
-  background: #000;
+  background: var(--am-ink);
   will-change: clip-path;
-  box-sizing: border-box;
 }
 
 .home-am-slider__panel {
@@ -735,9 +715,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 .home-am-opening .sticky__layer--sticky {
   pointer-events: none;
   z-index: 2;
-  /* Springs sticky layer: no overflow:hidden — keep clips in sync with RC sibling */
+  /* contain:content can prevent the left ManagedImage from lazy-loading */
   contain: none;
-  overflow: visible;
 }
 
 .home-am-opening__content,
@@ -1112,20 +1091,13 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   }
 
   .home-am-slider__row {
-    flex-direction: column;
-  }
-
-  .home-am-slider__caption-col,
-  .home-am-slider__images-col {
-    flex: 1 1 auto;
-    width: 100%;
-    max-width: 100%;
+    grid-template-columns: 1fr;
+    grid-template-rows: 42% 1fr;
   }
 
   .home-am-slider__caption-col {
     justify-content: flex-end;
     padding: 1.15rem;
-    min-height: 42%;
   }
 
   .home-am-slider__caption-stack {
