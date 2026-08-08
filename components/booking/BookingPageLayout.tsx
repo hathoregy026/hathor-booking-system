@@ -4,6 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { Menu, ShoppingBag, X } from "lucide-react";
 import { HathorBrandMark } from "@/components/booking/HathorBrandMark";
+import { Footer } from "@/components/layout/Footer";
 import { formatPrice } from "@/lib/client-dates";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { getSelectedRooms, useBookingStore } from "@/store/bookingStore";
@@ -232,6 +233,7 @@ export function BookingPageLayout({
           {children}
         </main>
       </div>
+      <Footer />
     </div>
   );
 }

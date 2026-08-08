@@ -60,18 +60,19 @@ export function PublicLayout({
         <div className="public-site hathor-site">
           <script dangerouslySetInnerHTML={{ __html: bootScript }} />
           <DeployFreshness deployId={deployId} />
-          <PageVisibilityGate>
-            <PublicScrollInfrastructure />
-            <ScrollPositionRestore />
-            <LuxuryTextAnimations />
-            <SiteImagePreviewScroll />
-            <PublicNavbar />
-            <main className="public-main public-main--hero">
+          <PublicScrollInfrastructure />
+          <ScrollPositionRestore />
+          <LuxuryTextAnimations />
+          <SiteImagePreviewScroll />
+          <PublicNavbar />
+          <main className="public-main public-main--hero">
+            <PageVisibilityGate>
               <PageTransition>{children}</PageTransition>
-            </main>
-            <Footer />
-            <FloatingActions />
-          </PageVisibilityGate>
+            </PageVisibilityGate>
+          </main>
+          {/* Footer stays outside the visibility gate — every public page */}
+          <Footer />
+          <FloatingActions />
         </div>
       </BookingModalProvider>
     </PublicThemeProvider>

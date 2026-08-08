@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Footer } from "@/components/layout/Footer";
 import { PageUnderConstruction } from "@/components/public/PageUnderConstruction";
 import {
   isPageLive,
@@ -20,9 +21,12 @@ export function StandalonePageVisibilityShell({
 }: StandalonePageVisibilityShellProps) {
   if (!isPageLive(path, settings)) {
     return (
-      <div className="hathor-page-construction--standalone">
-        <PageUnderConstruction />
-      </div>
+      <>
+        <div className="hathor-page-construction--standalone">
+          <PageUnderConstruction />
+        </div>
+        <Footer />
+      </>
     );
   }
 

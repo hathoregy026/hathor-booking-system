@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import { PublicScrollInfrastructure } from "@/components/public/PublicScrollInfrastructure";
 import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
 import { BookingModalProvider } from "@/components/booking/BookingModalProvider";
+import { Footer } from "@/components/layout/Footer";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
 import { TypographySettingsProvider } from "@/components/public/TypographySettingsProvider";
@@ -65,6 +66,7 @@ export default function MotionLabLayout({ children }: { children: ReactNode }) {
                     <PublicScrollInfrastructure />
                     <PublicNavbar />
                     <main className="public-main public-main--hero">{children}</main>
+                    <Footer />
                   </div>
                 </WebsiteTextProvider>
               </TypographySettingsProvider>

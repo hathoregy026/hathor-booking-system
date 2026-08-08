@@ -4,6 +4,7 @@ import { BookingModalProvider } from "@/components/booking/BookingModalProvider"
 import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
 import { resolveSiteImageMap } from "@/lib/resolve-site-images";
 import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
+import { Footer } from "@/components/layout/Footer";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import "../public.css";
 import "../site-nav.css";
@@ -48,6 +49,7 @@ export default async function PreviewLayout({
             <div className="public-site preview-site hathor-site">
               <PublicNavbar />
               <main className="preview-main">{children}</main>
+              <Footer />
             </div>
           </BookingModalProvider>
         </SiteImagesProvider>

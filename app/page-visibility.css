@@ -1,6 +1,7 @@
 .hathor-page-construction {
   display: grid;
-  min-height: 100svh;
+  /* Leave room for the site footer below under-construction pages */
+  min-height: calc(100svh - 12rem);
   place-items: center;
   margin: 0;
   padding: 1rem;
