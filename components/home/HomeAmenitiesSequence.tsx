@@ -691,22 +691,21 @@ export function HomeAmenitiesSequence({
         </div>
       </div>
 
-      {/* ===== i-nature — literal Springs handoff after i-opening ===== */}
+      {/* ===== i-nature — full-bleed image (Springs handoff after i-opening) ===== */}
       <div
-        className="home-am-nature home-am-chapter home-am-chapter--under-previous home-am-chapter--under-next sticky sticky--full-height sticky--under-previous sticky--under-next"
+        className="home-am-nature home-am-chapter home-am-chapter--under-previous sticky sticky--full-height sticky--under-previous sticky--under-next"
         data-am-nature
         data-am-chapter
         id="home-am-nature"
       >
         <div className="home-am-nature__stage home-am-chapter__stage sticky__layer sticky__layer--sticky sticky--full-height">
           <div className="home-am-nature__content">
-            {/* Springs: .background.background--cover + img parallax measure .sticky */}
             <div
               className="home-am-nature__media"
               data-plugin="parallax"
               data-parallax-enable-mq="null"
               data-parallax-clamp="true"
-              data-parallax-measure-selector=".sticky"
+              data-parallax-measure-selector="[data-am-chapter]"
               data-parallax-100-0='{"transform":"scale(1.2)"}'
               data-parallax--200-0='{"transform":"scale(1.0)"}'
             >
