@@ -129,44 +129,20 @@
     color: var(--suites-gold);
     font-family: var(--suites-sans);
     font-size: 16px;
-    line-height: 1.6;
+    line-height: 1.7;
     font-weight: 400;
   }
   /*
-   * SUITES ONLY — Editorial type hierarchy.
-   * Allowed: size / line-height / tracking / transform / margin / padding /
-   * colour opacity. Fonts stay as already configured. No layout/grid/flex.
+   * Dining-matched type system (/gastronomy).
+   * Faces, sizes, weights, tracking, colours, shadows — not layout.
    */
-  /* —— 1. Kickers / over-titles (above big titles) —— */
-  .text-c1,
-  .text-c2,
-  [class*="__subtitle"],
-  .l-nature-bg-caption__subtitle,
-  .l-wellness__caption__subtitle,
-  .l-place__caption__subtitle {
-    font-family: var(--suites-sans) !important;
-    font-size: clamp(12px, 0.9vw, 14px) !important;
-    font-weight: 500 !important;
-    line-height: 1.35 !important;
-    letter-spacing: 0.08em !important;
-    text-transform: uppercase !important;
-    margin: 0 0 6px !important;
-    padding: 0 !important;
-    opacity: 0.65;
-    text-align: left;
-  }
-  /* —— 2. Main titles —— */
   .h0,
   .l-gallery__title .h0 {
     font-family: var(--suites-serif) !important;
-    font-weight: 600 !important;
+    font-weight: 500 !important;
     font-size: clamp(42px, 5.4vw, 72px) !important;
-    line-height: 1.12 !important;
+    line-height: 1.08 !important;
     letter-spacing: -0.02em !important;
-    margin: 0 0 0.65rem !important;
-    padding: 0 !important;
-    text-align: left;
-    text-wrap: balance;
   }
   .g1,
   .g2,
@@ -180,14 +156,10 @@
   .l-design .g1,
   .l-interiors .g1 {
     font-family: var(--suites-serif) !important;
-    font-weight: 600 !important;
-    font-size: clamp(44px, 5.5vw, 88px) !important;
-    line-height: 1.12 !important;
-    letter-spacing: -0.015em !important;
-    margin: 1.25rem 0 0.75rem !important;
-    padding: 0 !important;
-    text-align: left;
-    text-wrap: balance;
+    font-weight: 500 !important;
+    font-size: clamp(48px, 5.8vw, 92px) !important;
+    line-height: 0.9 !important;
+    letter-spacing: -0.03em !important;
   }
   .h1,
   .h2,
@@ -200,25 +172,11 @@
   [class*="__title"] h1:not(.h0),
   [class*="__title"] h2 {
     font-family: var(--suites-serif) !important;
-    font-weight: 600 !important;
+    font-weight: 500 !important;
     font-size: clamp(34px, 4.2vw, 56px) !important;
-    line-height: 1.15 !important;
-    letter-spacing: -0.015em !important;
-    margin: 1.1rem 0 0.7rem !important;
-    padding: 0 !important;
-    text-align: left;
-    text-wrap: balance;
+    line-height: 1.12 !important;
+    letter-spacing: -0.02em !important;
   }
-  /* Title blocks that already carry section spacing — keep close to body below */
-  .l-gallery__title .h0,
-  [class*="__title"] > .h0,
-  [class*="__title"] > .g1,
-  [class*="__title"] > h1,
-  [class*="__title"] > h2 {
-    margin-top: 0 !important;
-    margin-bottom: 0.65rem !important;
-  }
-  /* —— 3. Body text —— */
   body,
   p:not(.g1):not(.g2):not(.h0):not(.h1):not(.h2):not(.h3),
   .text-t1,
@@ -239,46 +197,44 @@
   }
   .text-t1,
   .text-t2,
-  .text-p1,
-  .text-p2,
   p:not(.g1):not(.g2):not(.h0):not(.h1):not(.h2):not(.h3):not(.text-c1):not(.text-c2),
   [class*="__text"]:not(.g1):not(.h0):not(.h1),
-  [class*="__caption"] p:not(.g1):not(.text-c1):not(.text-c2),
+  [class*="__caption"] p:not(.g1),
   [class*="-caption__text"],
-  [class*="-caption__"] p:not(.g1):not(.text-c1):not(.text-c2) {
-    font-size: clamp(0.95rem, 1.1vw, 1.125rem) !important;
+  [class*="-caption__"] p:not(.g1) {
+    font-size: clamp(0.95rem, 1.15vw, 1.125rem) !important;
     line-height: 1.55 !important;
-    font-weight: 400 !important;
+    font-weight: 300 !important;
     letter-spacing: 0.01em;
-    margin: 0 0 1.5rem !important;
-    padding: 0 !important;
-    max-width: 65ch;
-    text-align: left;
-    text-wrap: pretty;
-    orphans: 2;
-    widows: 2;
   }
-  /* Last body in a caption stack — no trailing gap */
-  [class*="__caption"] p:last-child,
-  [class*="-caption__"] p:last-child,
-  [class*="__text"]:last-child {
-    margin-bottom: 0 !important;
+  /* Dining eyebrows / short labels */
+  .text-c1,
+  .text-c2,
+  [class*="__subtitle"],
+  .l-nature-bg-caption__subtitle,
+  .l-wellness__caption__subtitle,
+  .l-place__caption__subtitle {
+    font-family: var(--suites-sans) !important;
+    font-size: clamp(8px, 0.7vw, 10px) !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.3em !important;
+    text-transform: uppercase !important;
+    line-height: 1.4 !important;
   }
   .btn__text,
   .btn {
     font-family: var(--suites-sans) !important;
-    font-size: 12px !important;
+    font-size: 9px !important;
     font-weight: 500 !important;
-    letter-spacing: 0.08em !important;
+    letter-spacing: 0.22em !important;
     text-transform: uppercase !important;
-    line-height: 1.3 !important;
   }
-  /* —— Theme colour tokens (opacity-tuned) —— */
+  /* Theme tokens — Dining on media / cream stages */
   .ui-dark {
     --t-background: #cdbfa6;
     --t-background-rgb: 205, 191, 166;
-    --t-text: rgba(247, 241, 230, 0.72);
-    --t-text-rgb: 247, 241, 230;
+    --t-text: rgba(255, 255, 255, 0.72);
+    --t-text-rgb: 255, 255, 255;
     --t-heading: #f7f1e6;
     --t-heading-rgb: 247, 241, 230;
     --t-primary: #b69f64;
@@ -290,7 +246,7 @@
   .ui-light {
     --t-background: #f5eacf;
     --t-background-rgb: 245, 234, 207;
-    --t-text: rgba(182, 159, 100, 0.88);
+    --t-text: #b69f64;
     --t-text-rgb: 182, 159, 100;
     --t-heading: #b69f64;
     --t-heading-rgb: 182, 159, 100;
@@ -300,7 +256,7 @@
     --t-secondary-rgb: 182, 159, 100;
     --t-line: rgba(182, 159, 100, 0.35);
   }
-  /* Photo / dark — cream titles, soft body, muted kickers */
+  /* Photo / dark stages — Dining: cream titles, soft white body, gold labels */
   .ui-dark .h0,
   .ui-dark .h1,
   .ui-dark .h2,
@@ -312,7 +268,7 @@
   .ui-dark [class*="__title"] .h0,
   .ui-dark [class*="__title"] .g1 {
     color: var(--suites-title-on-media) !important;
-    opacity: 1;
+    text-shadow: 0 4px 40px rgba(0, 0, 0, 0.4);
   }
   .ui-dark p,
   .ui-dark .text-t1,
@@ -323,17 +279,17 @@
   .ui-dark [class*="__caption"] p,
   .ui-dark [class*="-caption__"] p,
   .ui-dark .btn__text {
-    color: rgba(247, 241, 230, 0.72) !important;
-    opacity: 1;
+    color: var(--suites-ink-soft) !important;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.45);
   }
   .ui-dark .text-c1,
   .ui-dark .text-c2,
   .ui-dark [class*="__subtitle"],
   .ui-dark .btn {
     color: var(--suites-gold) !important;
-    opacity: 0.7;
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
   }
-  /* Cream stages — gold titles, softer gold body/kickers */
+  /* Cream stages — gold family (palette-safe Dining counterpart) */
   .ui-light .h0,
   .ui-light .h1,
   .ui-light .h2,
@@ -343,25 +299,22 @@
   .ui-light h2,
   .ui-light [class*="__title"] {
     color: var(--suites-gold) !important;
-    opacity: 1;
+    text-shadow: 0 1px 1px rgba(245, 234, 207, 0.85);
   }
   .ui-light p,
   .ui-light .text-t1,
   .ui-light .text-t2,
   .ui-light .text-p1,
   .ui-light .text-p2,
-  .ui-light [class*="__text"],
-  .ui-light [class*="__caption"] {
-    color: rgba(182, 159, 100, 0.88) !important;
-    opacity: 1;
-  }
   .ui-light .text-c1,
   .ui-light .text-c2,
-  .ui-light [class*="__subtitle"] {
+  .ui-light [class*="__text"],
+  .ui-light [class*="__subtitle"],
+  .ui-light [class*="__caption"] {
     color: var(--suites-gold) !important;
-    opacity: 0.65;
+    text-shadow: 0 1px 1px rgba(245, 234, 207, 0.85);
   }
-  /* Media sticky captions */
+  /* Media sticky captions (nature / wellness / place / preloader) */
   .l-nature-bg-caption .g1,
   .l-nature__caption .g1,
   .l-nature__slider-caption .g1,
@@ -371,7 +324,7 @@
   .preloader__content .h1,
   .l-gallery__title .h0 {
     color: var(--suites-title-on-media) !important;
-    opacity: 1;
+    text-shadow: 0 4px 40px rgba(0, 0, 0, 0.4);
   }
   .l-nature-bg-caption p,
   .l-nature-bg-caption__text,
@@ -381,66 +334,39 @@
   .l-wellness__caption p,
   .l-place__caption p,
   .preloader__content p:not(.g1) {
-    color: rgba(247, 241, 230, 0.72) !important;
-    opacity: 1;
+    color: var(--suites-ink-soft) !important;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.45);
   }
   .l-nature-bg-caption [class*="__subtitle"],
   .l-nature-bg-caption__subtitle,
   .l-wellness__caption__subtitle,
   .l-place__caption__subtitle {
     color: var(--suites-gold) !important;
-    opacity: 0.65;
-  }
-  /* Caption columns stay left-aligned; reading measure only */
-  .l-gallery__caption,
-  .l-nature-bg-caption,
-  .l-nature__caption,
-  .l-nature__slider-caption,
-  .l-wellness__caption,
-  .l-place__caption,
-  .l-intro [class*="__text"],
-  .l-residence [class*="__text"],
-  .l-design [class*="__text"],
-  .l-interiors [class*="__text"] {
-    text-align: left;
-  }
-  .l-gallery__caption .text-right {
-    text-align: left !important;
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
   }
   @media (max-width: 1024px) {
     .h0,
     .l-gallery__title .h0 {
       font-size: clamp(36px, 7vw, 56px) !important;
-      line-height: 1.15 !important;
     }
     .g1,
     .g2 {
-      font-size: clamp(38px, 7vw, 68px) !important;
-      line-height: 1.15 !important;
+      font-size: clamp(40px, 7.5vw, 72px) !important;
     }
   }
   @media (max-width: 480px) {
     .h0,
     .l-gallery__title .h0 {
       font-size: clamp(32px, 9vw, 44px) !important;
-      line-height: 1.15 !important;
     }
     .g1,
     .g2 {
-      font-size: clamp(32px, 8.5vw, 48px) !important;
-      line-height: 1.15 !important;
+      font-size: clamp(34px, 9vw, 52px) !important;
     }
     .h1,
     .h2,
     h2 {
       font-size: clamp(28px, 7vw, 40px) !important;
-      line-height: 1.2 !important;
-    }
-    .text-t1,
-    .text-t2,
-    p:not(.g1):not(.g2):not(.h0):not(.h1):not(.h2):not(.h3):not(.text-c1):not(.text-c2) {
-      line-height: 1.6 !important;
-      margin-bottom: 1.25rem !important;
     }
   }
   /*
