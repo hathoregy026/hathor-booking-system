@@ -832,13 +832,12 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   gap: 0;
 }
 
-/* Springs .col--lg-6 → flex:0 1 50vw; width:50vw (+1px join seal vs cream page) */
+/* Springs .col--lg-6 → flex:0 1 50vw; width:50vw (RC underlaps join in markup) */
 .home-am-opening__images {
   position: relative;
-  flex: 0 1 calc(50vw + 1px);
-  width: calc(50vw + 1px);
-  max-width: calc(50vw + 1px);
-  margin-right: -1px;
+  flex: 0 1 50vw;
+  width: 50vw;
+  max-width: 50vw;
   overflow: hidden;
   will-change: clip-path;
   z-index: 1;
