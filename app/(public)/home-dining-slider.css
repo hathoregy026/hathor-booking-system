@@ -2,6 +2,8 @@
 
 .home-am-sequence {
   --am-gold: #b69f64;
+  /* Amenities-style left panel (Springs ui pair → Hathor sand + gold) */
+  --am-sand: #cfbca0;
   --am-cream: #ece8df;
   --am-ink: #1c1712;
   --am-svh: 1svh;
@@ -787,7 +789,17 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   contain: none;
   /* Springs sticky layer has NO overflow:hidden — RC cards show through caption */
   overflow: visible;
-  background: transparent;
+  /*
+   * Amenities split: sand | gold under the 50/50 columns.
+   * Kills the white center seam (page bg showing between 50vw halves).
+   */
+  background: linear-gradient(
+    to right,
+    var(--am-sand) 0,
+    var(--am-sand) 50%,
+    var(--am-gold) 50%,
+    var(--am-gold) 100%
+  );
 }
 
 /* Springs: .i-opening__caption,.i-opening__content,.i-opening__images{height:100%} */
@@ -805,15 +817,16 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   gap: 0;
 }
 
-/* Springs .col--lg-6 → flex:0 1 50vw; width:50vw */
+/* Springs .col--lg-6 → flex:0 1 50vw; width:50vw (+1px overlaps center seam) */
 .home-am-opening__images {
   position: relative;
-  flex: 0 1 50vw;
-  width: 50vw;
-  max-width: 50vw;
+  flex: 0 1 calc(50vw + 1px);
+  width: calc(50vw + 1px);
+  max-width: calc(50vw + 1px);
   overflow: hidden;
   will-change: clip-path;
   z-index: 1;
+  background: var(--am-sand);
 }
 
 .home-am-opening__images-media {
@@ -914,16 +927,11 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   width: 80vw;
 }
 
-/*
- * Vertical card stack in the gold RC.
- * Springs uses col--md-2 (16.67vw); that left a ~25vw empty gold band
- * between the cards and the flex-end title (the “gap in middle”).
- * col--md-3 (25vw) meets the 25vw title at flex-end — same stack, no void.
- */
+/* Springs .col--md-2 — vertical stack */
 .home-am-opening__list-item {
   position: relative;
   display: block;
-  width: 25vw;
+  width: 16.6666vw;
   max-width: 100%;
 }
 
@@ -994,10 +1002,10 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   background: var(--am-gold);
 }
 
-/* Springs .col.col--lg-6.offset--lg-6.pt-2.5 */
+/* Springs .col.col--lg-6.offset--lg-6.pt-2.5 — overlap seam by 1px */
 .home-am-opening__right-inner {
-  margin-left: 50vw;
-  width: 50vw;
+  margin-left: calc(50vw - 1px);
+  width: calc(50vw + 1px);
   box-sizing: border-box;
   background: transparent;
   padding: 2.5rem 0 3rem;
@@ -1008,8 +1016,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
 .home-am-opening__caption-text {
   max-width: 400px;
   margin: 0;
-  /* Flush to the left-image edge — no gold seam before copy/cards */
-  padding-left: 0;
+  padding-left: 0.5rem;
   font-size: clamp(0.92rem, 1.15vw, 1.05rem) !important;
   line-height: 1.5;
   color: #ffffff !important;
@@ -1023,7 +1030,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
 
 .home-am-opening__list {
   display: block;
-  padding-left: 0;
+  padding-left: 0.5rem;
 }
 
 @media (min-width: 1025px) {
