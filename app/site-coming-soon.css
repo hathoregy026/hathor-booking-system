@@ -77,18 +77,55 @@
 }
 
 @media (max-width: 480px) {
+  .site-coming-soon {
+    /* Stable phone viewport — avoid jump when browser chrome shows/hides */
+    min-height: 100svh;
+  }
+
+  .site-coming-soon__bg {
+    background-position: center center;
+    background-size: cover;
+  }
+
   .site-coming-soon__content {
-    gap: 1.35rem;
-    width: min(100%, 22rem);
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    box-sizing: border-box;
+    padding:
+      max(1.25rem, env(safe-area-inset-top))
+      max(1.1rem, env(safe-area-inset-right))
+      max(1.25rem, env(safe-area-inset-bottom))
+      max(1.1rem, env(safe-area-inset-left));
+    text-align: center;
   }
 
   .site-coming-soon__logo {
-    width: clamp(5.75rem, 34vw, 7.5rem);
+    width: min(38vw, 8.75rem);
+    height: auto;
+    aspect-ratio: 1;
+    margin-inline: auto;
+    flex-shrink: 0;
   }
 
   .site-coming-soon__label {
-    font-size: clamp(1.85rem, 11vw, 2.6rem);
-    letter-spacing: 0.16em;
-    text-indent: 0.16em;
+    width: 100%;
+    max-width: 20.5rem;
+    box-sizing: border-box;
+    margin-inline: auto;
+    padding-inline: 0.25rem;
+    font-size: clamp(2.25rem, 11vw, 3.15rem);
+    line-height: 1.12;
+    letter-spacing: 0.12em;
+    text-indent: 0.12em;
+    text-align: center;
   }
 }
