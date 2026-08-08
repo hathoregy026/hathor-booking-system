@@ -127,7 +127,34 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
     var(--sticky-under-previous-distance) * -1 +
       var(--sticky-under-next-distance) * -1
   );
-  transform: translateZ(1px);
+  /*
+   * Springs uses translateZ for loco stacking. Under Lenis that creates a
+   * containing block and kills loco-equivalent fixed pins — use z-index instead.
+   */
+  transform: none;
+}
+
+/*
+ * Springs cover order (later chapter rises over previous).
+ * Explicit ladder replaces translateZ stacking.
+ */
+.home-am-intro {
+  z-index: 1;
+}
+.home-am-video {
+  z-index: 2;
+}
+.home-am-slider {
+  z-index: 3;
+}
+.home-am-opening {
+  z-index: 4;
+}
+.home-am-nature {
+  z-index: 5;
+}
+.home-am-voyages {
+  z-index: 6;
 }
 
 /*
@@ -271,8 +298,6 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   .home-am-nature.home-am-chapter--under-previous {
     clip-path: polygon(0 100svh, 100% 100svh, 100% 200svh, 0 200svh);
     margin-top: -200svh;
-    /* Above opening (2) — Springs cover order */
-    z-index: 3;
     min-height: calc(100 * var(--am-svh));
     transform: none;
   }
@@ -577,8 +602,6 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 /* ========== i-slider (Springs: 600svh; no under-previous clip) ========== */
 .home-am-slider {
   height: 600svh;
-  /* Springs i-slider has no chapter z-index — must stay under opening cover */
-  z-index: 1;
 }
 
 .home-am-chapter--under-previous + .home-am-slider {
@@ -711,14 +734,12 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 .home-am-opening {
   height: 250svh;
   position: relative;
-  /* Above slider (Springs next-chapter cover); below nature z-index:2 handoff */
-  z-index: 2;
   pointer-events: none;
   clip-path: none;
   /*
    * Springs .ui-dark sets --t-background on the chapter; clipped RC gaps
-   * read that theme through the transparent caption. Hathor remaps to gold
-   * so gaps never flash page cream.
+   * read that theme through the transparent caption. Hathor gold remap only
+   * for the panel fill — texts/colours elsewhere stay as authored.
    */
   background: var(--am-gold);
 }
@@ -995,16 +1016,19 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
         var(--sticky-under-next-distance) * -1
     );
     transform: none;
-    z-index: 2;
   }
 
-  /* Springs .has-scroll-smooth .sticky__layer--sticky { position:relative } */
-  .home-am-opening .home-am-chapter__stage,
-  .home-am-opening .sticky__layer--sticky {
+  /*
+   * Springs .has-scroll-smooth .sticky__layer--sticky { position:relative }
+   * — loco pins; we pin in JS. Apply to all amenities sticky stages.
+   */
+  .home-am-sequence .home-am-chapter__stage,
+  .home-am-sequence .sticky__layer--sticky {
     position: relative;
     top: auto;
     height: calc(100 * var(--am-svh));
     max-height: none;
+    contain: none;
   }
 
   .home-am-opening__list-item {

@@ -84,43 +84,57 @@ export function useHomeAmenitiesSequence(
     const openingEl = root.querySelector<HTMLElement>("[data-am-opening]");
 
     /*
-     * Springs loco: data-scroll-sticky + data-scroll-target="#i-opening"
-     * (CSS sticky → position:relative under .has-scroll-smooth).
-     * Hathor Lenis + overflow-x:clip break sticky. Manual fixed pin keeps the
-     * Springs grid siblings intact (ST pin wrappers would leave the grid).
+     * Springs loco: data-scroll-sticky on every sticky__layer--sticky.
+     * Hathor Lenis + overflow-x:clip break CSS sticky. Manual fixed pin per
+     * chapter stage (no ST pin wrappers — those leave the sticky grid).
      */
     const desktopMq = window.matchMedia("(min-width: 1025px)");
-    const openingStage = openingEl?.querySelector<HTMLElement>(
-      ".home-am-chapter__stage, .sticky__layer--sticky",
-    );
-    const natureStage = natureEl?.querySelector<HTMLElement>(
-      ".home-am-nature__stage, .home-am-chapter__stage",
-    );
     type PinMode = "start" | "fixed" | "end";
-    const pinMode = { opening: "" as PinMode | "", nature: "" as PinMode | "" };
-
-    const clearPin = (
-      el: HTMLElement | null | undefined,
-      key: "opening" | "nature",
-    ) => {
-      if (!el) return;
-      pinMode[key] = "";
-      el.style.position = "";
-      el.style.top = "";
-      el.style.left = "";
-      el.style.width = "";
-      el.style.height = "";
-      el.style.bottom = "";
-      el.style.zIndex = "";
+    type PinTarget = {
+      key: string;
+      chapter: HTMLElement;
+      stage: HTMLElement;
+      z: string;
+      mode: PinMode | "";
     };
 
-    const syncChapterPin = (
-      chapter: HTMLElement | null | undefined,
-      stage: HTMLElement | null | undefined,
-      key: "opening" | "nature",
-    ) => {
-      if (!chapter || !stage || !desktopMq.matches) {
-        clearPin(stage, key);
+    const pinTargets: PinTarget[] = [];
+    const chapterNodes = Array.from(
+      root.querySelectorAll<HTMLElement>("[data-am-chapter]"),
+    );
+    chapterNodes.forEach((chapter, index) => {
+      const stage = chapter.querySelector<HTMLElement>(
+        ".home-am-chapter__stage, .sticky__layer--sticky",
+      );
+      if (!stage) return;
+      const zFromCss = getComputedStyle(chapter).zIndex;
+      const z =
+        zFromCss && zFromCss !== "auto" ? zFromCss : String(index + 1);
+      pinTargets.push({
+        key: chapter.id || `am-chapter-${index}`,
+        chapter,
+        stage,
+        z,
+        mode: "",
+      });
+    });
+
+    const clearPin = (target: PinTarget) => {
+      target.mode = "";
+      const { stage } = target;
+      stage.style.position = "";
+      stage.style.top = "";
+      stage.style.left = "";
+      stage.style.width = "";
+      stage.style.height = "";
+      stage.style.bottom = "";
+      stage.style.zIndex = "";
+    };
+
+    const syncChapterPin = (target: PinTarget) => {
+      const { chapter, stage, z } = target;
+      if (!desktopMq.matches) {
+        clearPin(target);
         return;
       }
       const rect = chapter.getBoundingClientRect();
@@ -130,14 +144,15 @@ export function useHomeAmenitiesSequence(
       else if (rect.bottom <= vh) mode = "end";
       else mode = "fixed";
 
-      if (mode === pinMode[key]) {
+      if (mode === target.mode) {
         if (mode === "fixed") {
           stage.style.left = `${rect.left}px`;
           stage.style.width = `${rect.width}px`;
+          stage.style.zIndex = z;
         }
         return;
       }
-      pinMode[key] = mode;
+      target.mode = mode;
 
       if (mode === "start") {
         stage.style.position = "relative";
@@ -146,7 +161,7 @@ export function useHomeAmenitiesSequence(
         stage.style.width = "";
         stage.style.height = `${vh}px`;
         stage.style.bottom = "";
-        stage.style.zIndex = "2";
+        stage.style.zIndex = z;
         return;
       }
       if (mode === "end") {
@@ -156,7 +171,7 @@ export function useHomeAmenitiesSequence(
         stage.style.left = "0px";
         stage.style.width = "100%";
         stage.style.height = `${vh}px`;
-        stage.style.zIndex = "2";
+        stage.style.zIndex = z;
         return;
       }
       stage.style.position = "fixed";
@@ -165,12 +180,11 @@ export function useHomeAmenitiesSequence(
       stage.style.left = `${rect.left}px`;
       stage.style.width = `${rect.width}px`;
       stage.style.height = `${vh}px`;
-      stage.style.zIndex = "2";
+      stage.style.zIndex = z;
     };
 
     const syncPins = () => {
-      syncChapterPin(openingEl, openingStage, "opening");
-      syncChapterPin(natureEl, natureStage, "nature");
+      pinTargets.forEach(syncChapterPin);
     };
 
     const st = ScrollTrigger.create({
@@ -275,8 +289,7 @@ export function useHomeAmenitiesSequence(
         isCompact ? "orientationchange" : "resize",
         onViewport,
       );
-      clearPin(openingStage, "opening");
-      clearPin(natureStage, "nature");
+      pinTargets.forEach(clearPin);
       st.kill();
       helmSt?.kill();
       engine.destroy();
