@@ -30,6 +30,7 @@
     "build:suites-springs": "node scripts/sync-suites-springs-assets.mjs && node scripts/patch-suites-springs-js.mjs && node scripts/build-suites-exact-homepage.mjs && node scripts/prune-suites-springs-assets.mjs",
     "build:accommodation-springs": "node scripts/sync-accommodation-springs-assets.mjs && node scripts/patch-accommodation-springs-js.mjs && node scripts/build-accommodation-springs-pages.mjs && node scripts/prune-accommodation-springs-assets.mjs",
     "build:home-amenities-springs": "node scripts/build-home-amenities-springs.mjs",
+    "compare:amenities": "node scripts/compare-amenities-home-vs-test-slide.mjs",
     "validate:availability": "tsx scripts/validate-calendar-availability.ts"
   },
   "dependencies": {

@@ -1,12 +1,12 @@
 "use client";
 
 import { CSSProperties, type ReactNode } from "react";
-import type {
-  AmenitiesLandmarkSlide,
-  AmenitiesSequenceImage,
-  AmenitiesStorySlide,
+import {
+  HomeAmenitiesSequence,
+  type AmenitiesLandmarkSlide,
+  type AmenitiesSequenceImage,
+  type AmenitiesStorySlide,
 } from "@/components/home/HomeAmenitiesSequence";
-import { HomeAmenitiesSpringsPortal } from "@/components/home/HomeAmenitiesSpringsPortal";
 import { AMENITIES_SEQUENCE_IMAGE_SLOTS } from "@/lib/amenities-sequence-images";
 import type { SiteImageName } from "@/lib/site-image-slots";
 
@@ -30,22 +30,24 @@ const DEFAULT_AMENITIES_IMAGES: AmenitiesSequenceImage[] =
   }));
 
 /**
- * Homepage amenities = literal Springs /test-slide layout + scroll engine
- * (public/home-amenities-springs), with Hathor CMS images/text only.
+ * Homepage amenities sequence (React port of Springs intro→nature).
+ * The iframe clone experiment blanked production — keep the working port.
+ * Oracle for layout/scroll: /test-slide (public/springs-layout).
  */
 export function HomeLandmarkMaskSection({
   slides,
   stories = [],
-  images: _images = DEFAULT_AMENITIES_IMAGES,
+  images = DEFAULT_AMENITIES_IMAGES,
   titleStyle,
   indicationStyle,
   bodyStyle,
   voyages,
 }: HomeLandmarkMaskSectionProps) {
   return (
-    <HomeAmenitiesSpringsPortal
+    <HomeAmenitiesSequence
       landmarks={slides}
       stories={stories}
+      images={images}
       titleStyle={titleStyle}
       indicationStyle={indicationStyle}
       bodyStyle={bodyStyle}
