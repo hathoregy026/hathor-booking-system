@@ -810,8 +810,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 
 /*
  * Springs .col--lg-6 → flex:0 1 50vw; width:50vw
- * Sand under the left photo (Hathor stand-in for Springs left field).
- * 1px gold shadow closes the white center seam without covering RC cards.
+ * Lighter gold grade under the left photo (Springs left field / Hathor sand).
+ * Do NOT box-shadow here — overflow:hidden clips it (white seam stayed).
  */
 .home-am-opening__images {
   position: relative;
@@ -822,7 +822,6 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   will-change: clip-path;
   z-index: 1;
   background: var(--am-sand);
-  box-shadow: 1px 0 0 0 var(--am-gold);
 }
 
 .home-am-opening__images-media {
