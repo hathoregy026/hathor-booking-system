@@ -79,6 +79,8 @@ const PHONE_SOCIAL_ITEMS = FOOTER_SOCIAL_ORDER.map((key) =>
 
 /** Hathor gold / cream underlays for the staggered phone menu. */
 const PHONE_MENU_COLORS = ["#8b6914", "#c9a96e", "#ece8df"];
+/** Suites: dark layered filter instead of gold sheets (cream panel unchanged). */
+const SUITES_PHONE_MENU_COLORS = ["#0f0d0b", "#1c1916", "#ece8df"];
 
 function ExplorePanel({
   open,
@@ -589,7 +591,11 @@ export function Header() {
           navItems={HEADER_NAV_ITEMS}
           socialItems={PHONE_SOCIAL_ITEMS}
           displaySocials
-          colors={PHONE_MENU_COLORS}
+          colors={
+            pathname === "/suites" || pathname.startsWith("/suites/")
+              ? SUITES_PHONE_MENU_COLORS
+              : PHONE_MENU_COLORS
+          }
           accentColor="#b69f64"
         />
       ) : (
