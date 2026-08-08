@@ -1,5 +1,4 @@
 import { AdminScrollUnlock } from "@/components/admin/AdminScrollUnlock";
-import { Footer } from "@/components/layout/Footer";
 
 export default function AdminRootLayout({
   children,
@@ -10,7 +9,6 @@ export default function AdminRootLayout({
     <>
       <AdminScrollUnlock />
       {children}
-      <Footer />
     </>
   );
 }
