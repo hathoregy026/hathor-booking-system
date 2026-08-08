@@ -25,12 +25,12 @@ html[data-ex-experience] .ex-root {
 }
 
 html[data-public-theme="night"][data-ex-experience] .ex-root {
-  --cream: var(--bg-dark, #1e1b18);
-  --cream-deep: var(--bg-dark-surface, #262219);
-  --ink: var(--text-primary, #f5eacf);
-  --ink-soft: #e0d4bc;
-  --muted: var(--text-secondary, #cdbfa6);
-  --blush: var(--bg-dark-muted, #332f29);
+  --cream: var(--bg-main, #161412);
+  --cream-deep: var(--bg-surface, #23201d);
+  --ink: var(--text-main, #eadfcd);
+  --ink-soft: var(--text-main, #eadfcd);
+  --muted: var(--text-muted, #a99d89);
+  --blush: var(--bg-hover, #36312c);
 }
 
 html[data-public-theme="day"][data-ex-experience] .ex-root {

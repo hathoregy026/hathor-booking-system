@@ -4,28 +4,30 @@ import { useEffect, useRef } from "react";
 import { shouldLightenMotionForDevice } from "@/lib/touch-device";
 
 /**
- * Suites Springs gallery motion — tilted mosaic of moving images only
- * (no River Suites captions / titles). Duration matches suites landing.js (55s).
+ * Suites Springs gallery hero — same sticky mosaic layout as /suites:
+ * tilted moving cards, gold title, gradient wash, scroll-next control.
+ * Duration matches suites landing.js (55s).
  */
 const MOSAIC_IMAGES = [
   "/media/hathor/scraped/suites-hero.webp",
-  "/media/hathor/scraped/suites-luxury-suites.webp",
-  "/media/hathor/scraped/suites-luxury-rooms.webp",
-  "/media/hathor/scraped/suites-royal.webp",
-  "/media/hathor/scraped/luxsuite-1.webp",
+  "/media/hathor/scraped/royal-5.webp",
   "/media/hathor/scraped/luxsuite-2.webp",
-  "/media/hathor/scraped/cabin-1.webp",
-  "/media/hathor/scraped/cabin-3.webp",
+  "/media/hathor/scraped/suites-royal.webp",
+  "/media/hathor/scraped/suites-hero.webp",
+  "/media/hathor/scraped/luxsuite-1.webp",
+  "/media/hathor/scraped/suites-luxury-rooms.webp",
   "/media/hathor/scraped/royal-1.webp",
+  "/media/hathor/scraped/suites-hero.webp",
+  "/media/hathor/scraped/cabin-3.webp",
+  "/media/hathor/scraped/cabin-1.webp",
   "/media/hathor/scraped/royal-3.webp",
   "/media/hathor/scraped/luxsuite-3.webp",
   "/media/hathor/scraped/luxsuite-4.webp",
-  "/media/hathor/scraped/cabin-2.webp",
-  "/media/hathor/scraped/cabin-4.webp",
-  "/media/hathor/scraped/royal-2.webp",
-  "/media/hathor/scraped/luxsuite-5.webp",
   "/media/hathor/scraped/cabin-5.webp",
-  "/media/hathor/scraped/royal-4.webp",
+  "/media/hathor/scraped/suites-luxury-suites.webp",
+  "/media/hathor/scraped/luxsuite-5.webp",
+  "/media/hathor/r2/room-suite.webp",
+  "/media/hathor/scraped/suites-hero.webp",
 ] as const;
 
 const DURATION_MS = 55_000;
@@ -137,29 +139,64 @@ export function CruisesMosaicHero() {
       className="cruises-mosaic-hero"
       aria-label="Cruises gallery"
     >
-      <div className="cruises-mosaic-hero__stage">
-        <div className="cruises-mosaic-hero__plane">
-          {MOSAIC_IMAGES.map((src, index) => (
-            <div
-              key={`${src}-${index}`}
-              className="cruises-mosaic-hero__item"
-              ref={(node) => {
-                itemsRef.current[index] = node;
-              }}
-            >
-              {/* Decorative mosaic — empty alt; section has aria-label */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={src}
-                alt=""
-                width={360}
-                height={480}
-                decoding="async"
-                draggable={false}
-                fetchPriority={index < 4 ? "high" : "low"}
+      <div className="cruises-mosaic-hero__sticky">
+        <div className="cruises-mosaic-hero__stage">
+          <div className="cruises-mosaic-hero__plane" aria-hidden="true">
+            {MOSAIC_IMAGES.map((src, index) => (
+              <div
+                key={`${src}-${index}`}
+                className="cruises-mosaic-hero__item"
+                ref={(node) => {
+                  itemsRef.current[index] = node;
+                }}
+              >
+                {/* Decorative mosaic — empty alt; section has aria-label */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={src}
+                  alt=""
+                  width={360}
+                  height={480}
+                  decoding="async"
+                  draggable={false}
+                  fetchPriority={index < 4 ? "high" : "low"}
+                />
+              </div>
+            ))}
+          </div>
+
+          <div className="cruises-mosaic-hero__caption">
+            <h1 className="cruises-mosaic-hero__title">
+              River
+              <br />
+              Cruises
+            </h1>
+          </div>
+
+          <a
+            className="cruises-mosaic-hero__next"
+            href="#cruises-listing"
+            aria-label="Scroll to cruises listing"
+          >
+            <svg width="14" height="16" viewBox="0 0 14 16" aria-hidden="true">
+              <path
+                d="M7 1v12.5M2.5 9.5 7 14l4.5-4.5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.25"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
-            </div>
-          ))}
+            </svg>
+          </a>
+
+          <div className="cruises-mosaic-hero__gradient" aria-hidden="true">
+            <div />
+            <div />
+            <div />
+            <div />
+            <div />
+          </div>
         </div>
       </div>
     </section>

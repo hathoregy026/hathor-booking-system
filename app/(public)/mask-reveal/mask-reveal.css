@@ -60,20 +60,29 @@ html[data-mask-reveal] .mask-reveal-route {
   padding-top: 0;
 }
 
-/* Suites-style tilted mosaic — images only, no captions */
+/* Suites Springs gallery hero — sticky mosaic + title + gradient */
 .cruises-mosaic-hero {
   position: relative;
   width: 100%;
+  height: 200vh;
+  background: #f5eacf;
+  color: #b69f64;
+}
+
+.cruises-mosaic-hero__sticky {
+  position: sticky;
+  top: 0;
   height: 100svh;
   min-height: 100svh;
+  width: 100%;
   overflow: hidden;
-  background: #f5eacf;
 }
 
 .cruises-mosaic-hero__stage {
   position: absolute;
   inset: 0;
   overflow: hidden;
+  background: #f5eacf;
 }
 
 .cruises-mosaic-hero__plane {
@@ -87,6 +96,7 @@ html[data-mask-reveal] .mask-reveal-route {
   transform-origin: 50% calc(50% + 30svh);
   will-change: transform;
   pointer-events: none;
+  z-index: 0;
 }
 
 .cruises-mosaic-hero__item {
@@ -108,14 +118,196 @@ html[data-mask-reveal] .mask-reveal-route {
   filter: sepia(0.22) saturate(1.05) brightness(0.96);
 }
 
-@media (max-width: 480px) {
-  .cruises-mosaic-hero__plane {
-    top: -18vw;
-    opacity: 0.75;
+.cruises-mosaic-hero__caption {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+}
+
+.cruises-mosaic-hero__title {
+  position: absolute;
+  right: clamp(1.25rem, 4vw, 3.5rem);
+  bottom: clamp(1.25rem, 3.5vw, 2.75rem);
+  margin: 0;
+  max-width: min(52vw, 14em);
+  font-family: var(--font-hathor-display, var(--public-serif, Georgia, serif));
+  font-weight: 400;
+  font-size: clamp(3.25rem, 10vw, 11.25rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  text-align: right;
+  color: #b69f64;
+  text-shadow:
+    0 1px 2px rgba(44, 40, 36, 0.45),
+    0 0 18px rgba(44, 40, 36, 0.22);
+}
+
+.cruises-mosaic-hero__next {
+  position: absolute;
+  left: clamp(1rem, 3vw, 2.5rem);
+  bottom: clamp(1rem, 3vw, 2.5rem);
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1.5px solid rgba(182, 159, 100, 0.65);
+  border-radius: 2px;
+  color: #b69f64;
+  background: transparent;
+  transition:
+    color 0.35s cubic-bezier(0.25, 0.74, 0.22, 0.99),
+    border-color 0.35s cubic-bezier(0.25, 0.74, 0.22, 0.99),
+    background 0.35s cubic-bezier(0.25, 0.74, 0.22, 0.99);
+}
+
+.cruises-mosaic-hero__next:hover {
+  color: #f5eacf;
+  border-color: #b69f64;
+  background: #b69f64;
+}
+
+.cruises-mosaic-hero__gradient {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100vw;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 1;
+}
+
+.cruises-mosaic-hero__gradient div {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(182, 159, 100, 0.72) 0%,
+    rgba(205, 191, 166, 0.42) 40%,
+    rgba(245, 234, 207, 0) 74%
+  );
+}
+
+.cruises-mosaic-hero__gradient div:nth-child(1) {
+  width: 200%;
+  height: 350%;
+  left: -74vw;
+  top: -30vh;
+}
+
+.cruises-mosaic-hero__gradient div:nth-child(2) {
+  width: 900px;
+  height: 900px;
+  left: 66vw;
+  top: 32vh;
+}
+
+.cruises-mosaic-hero__gradient div:nth-child(3) {
+  width: 770px;
+  height: 770px;
+  left: 66vw;
+  top: -34vh;
+}
+
+.cruises-mosaic-hero__gradient div:nth-child(4) {
+  width: 770px;
+  height: 770px;
+  left: -1vw;
+  top: -27vh;
+}
+
+.cruises-mosaic-hero__gradient div:nth-child(5) {
+  width: 770px;
+  height: 770px;
+  left: -30vw;
+  top: -49vh;
+}
+
+/* Tablet: keep Suites sticky mosaic; soften title scale */
+@media (max-width: 1024px) and (min-width: 481px) {
+  .cruises-mosaic-hero__title {
+    max-width: min(58vw, 12em);
+    font-size: clamp(3rem, 9vw, 7.5rem);
+    right: clamp(1rem, 3.5vw, 2.5rem);
+    bottom: clamp(1.25rem, 4vw, 2.25rem);
   }
 
   .cruises-mosaic-hero__item {
+    width: clamp(130px, 26vw, 280px);
+  }
+}
+
+/* Phone: shorter sticky runway; native-friendly title + next */
+@media (max-width: 480px) {
+  .cruises-mosaic-hero {
+    height: 160vh;
+  }
+
+  .cruises-mosaic-hero__plane {
+    top: 0;
+    opacity: 0.75;
+    transform-origin: 50% 50%;
+  }
+
+  .cruises-mosaic-hero__item {
+    left: -130vw;
     width: clamp(110px, 36vw, 220px);
+  }
+
+  .cruises-mosaic-hero__caption {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .cruises-mosaic-hero__title {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    align-self: flex-start;
+    margin: 0 clamp(1rem, 5vw, 1.5rem);
+    max-width: 88vw;
+    font-size: clamp(3.5rem, 18vw, 5.5rem);
+    text-align: left;
+    line-height: 0.92;
+  }
+
+  .cruises-mosaic-hero__next {
+    left: clamp(1rem, 5vw, 1.5rem);
+    bottom: clamp(1rem, 5vw, 1.5rem);
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .cruises-mosaic-hero__gradient div:nth-child(1) {
+    left: -100vw;
+    top: -33vh;
+  }
+
+  .cruises-mosaic-hero__gradient div:nth-child(2) {
+    left: 34vw;
+    top: 52vh;
+  }
+
+  .cruises-mosaic-hero__gradient div:nth-child(3) {
+    left: 32vw;
+  }
+
+  .cruises-mosaic-hero__gradient div:nth-child(4) {
+    left: -75vw;
+    top: -27vh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cruises-mosaic-hero__next {
+    transition: none;
   }
 }
 
@@ -126,6 +318,7 @@ html[data-mask-reveal] .mask-reveal-route {
   margin: 0;
   padding: calc(var(--mr-page-top-gap)) 0 0;
   overflow: visible;
+  scroll-margin-top: calc(var(--mr-nav-offset) + 0.5rem);
 }
 
 .mr-mobile-bar,

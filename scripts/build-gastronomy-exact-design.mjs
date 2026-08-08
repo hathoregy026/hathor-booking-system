@@ -149,7 +149,7 @@ html = html.replace(
 const diningMediaBase =
   "https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images";
 const initialDiningMediaUrls = {
-  "dining-hero.jpg": `${diningMediaBase}/gastronomy-hero/dining-hero-mshk3jtr.jpg`,
+  "dining-hero.jpg": "/media/hathor/optimized/dining-intro-hero.webp",
   "dining-table.jpg": `${diningMediaBase}/gastronomy-table/dining-long-table-mshjq8sm.webp`,
   "dining-courses.jpg": `${diningMediaBase}/gastronomy-courses/dining-courses-mshj8sas.jpg`,
   "dining-wine.jpg": `${diningMediaBase}/gastronomy-wine/dining-wine-pairing-mshja14u.webp`,
@@ -457,11 +457,20 @@ const gastronomyRuntime = `
   function isSpringsUrl(value) {
     return typeof value === "string" && /springs\\.(estate|house)/i.test(value);
   }
+  function isLegacyDiningHeroUrl(value) {
+    return typeof value === "string" && (
+      /dining-hero-mshk3jtr/i.test(value) ||
+      /\\/media\\/gastronomy-dining\\/dining-hero\\.jpg/i.test(value) ||
+      /site-images\\/gastronomy-hero\\/dining-hero/i.test(value)
+    );
+  }
   function scrubSpringsUrls(root) {
     root.querySelectorAll("img, source").forEach((node) => {
       ["src", "srcset", "data-src", "data-srcset"].forEach((attr) => {
         const value = node.getAttribute(attr);
-        if (value && isSpringsUrl(value)) node.removeAttribute(attr);
+        if (value && (isSpringsUrl(value) || isLegacyDiningHeroUrl(value))) {
+          node.removeAttribute(attr);
+        }
       });
     });
   }
@@ -508,12 +517,35 @@ const gastronomyRuntime = `
   function revealDiningMedia() {
     document.documentElement.classList.add("dining-media-ready");
   }
+  function whenHeroReady(url) {
+    return new Promise((resolve) => {
+      const hero = document.querySelector(
+        "#de-intro .de-intro__background picture img, #de-intro .de-intro__background img"
+      );
+      if (!hero || !url) {
+        resolve();
+        return;
+      }
+      if (hero.complete && hero.currentSrc && !isLegacyDiningHeroUrl(hero.currentSrc)) {
+        resolve();
+        return;
+      }
+      const done = () => resolve();
+      hero.addEventListener("load", done, { once: true });
+      hero.addEventListener("error", done, { once: true });
+      window.setTimeout(done, 1800);
+    });
+  }
   const configPromise = fetch("/api/gastronomy-config", { cache: "no-store" })
     .then((response) => response.ok ? response.json() : null)
     .catch(() => null);
   const applyDashboardConfig = () => {
     scrubSpringsUrls(document);
     configPromise.then((config) => {
+      const heroUrl =
+        config && config.images
+          ? config.images["dining-intro-hero"]
+          : "/media/hathor/optimized/dining-intro-hero.webp";
       if (config && config.images) {
         Object.entries(slotTargets).forEach(([slot, target]) =>
           replaceVisual(target, config.images[slot], slot)
@@ -530,10 +562,14 @@ const gastronomyRuntime = `
           phone.textContent = "@media (max-width:480px){" + config.phoneCss + "}";
           document.head.appendChild(phone);
         }
+      } else {
+        replaceVisual(slotTargets["dining-intro-hero"], heroUrl, "dining-intro-hero");
       }
       scrubSpringsUrls(document);
-      revealDiningMedia();
-      window.dispatchEvent(new Event("resize"));
+      whenHeroReady(heroUrl).then(() => {
+        revealDiningMedia();
+        window.dispatchEvent(new Event("resize"));
+      });
     });
   };
   if (document.readyState === "loading") {

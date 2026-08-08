@@ -258,6 +258,17 @@ for (const [from, to] of moreCopy) {
   html = html.split(from).join(to);
 }
 
+// Hero gallery: park the big title in the left caption slot; drop the small lead.
+html = html.replace(
+  /(<div class="l-gallery__caption pr-layout">)\s*<div class="col col--xs-3 col--md-3 col--xxxl-2 offset--md-2 pl-layout pl-0:md pt-7:md">[\s\S]*?<\/div>\s*<div class="l-gallery__title col col--md-6 text-right">\s*<h1 class="h0 leading-trim" data-reveal="title" data-reveal-delay="1000">\s*([\s\S]*?)<\/h1>\s*<\/div>/i,
+  `$1
+                <div class="l-gallery__title col col--xs-3 col--md-3 col--xxxl-2 offset--md-2 pl-layout pl-0:md pt-7:md text-left">
+                    <h1 class="h0 leading-trim" data-reveal="title" data-reveal-delay="1000">
+                        $2
+                    </h1>
+                </div>`,
+);
+
 html = html.replace(
   /Visual representations of&nbsp;the&nbsp;property[\s\S]*?rights holder\./g,
   "Suite imagery and descriptions are curated for illustration. Availability, itineraries, and pricing are confirmed with Hathor&rsquo;s reservations desk. All Hathor content and design remain protected.",
@@ -356,12 +367,21 @@ const suitesPalette = `
 <style data-hathor-suites-palette>
   /*
    * CLONE-FAITHFUL THEME LAYER.
-   * Springs owns layout, typography metrics (Victor Serif / TT Commons),
-   * transforms, sticky stages and responsive branches.
-   * This layer remaps colour tokens only.
+   * Springs owns layout, type sizes, transforms, sticky stages and
+   * responsive branches. This layer remaps colour tokens and swaps
+   * typefaces to match Dining (Gamgote + Plus Jakarta Sans) only.
    * Locked palette: Gold #B69F64 · Cream #F5EACF · Beige #CDBFA6
    */
+  @font-face {
+    font-family: "Gamgote";
+    src: url("/fonts/Gamgote-Regular.otf") format("opentype");
+    font-weight: 400 700;
+    font-style: normal;
+    font-display: swap;
+  }
   :root {
+    --suites-serif: "Gamgote", Georgia, serif;
+    --suites-sans: "Plus Jakarta Sans", system-ui, sans-serif;
     --lux-gold: #b69f64;
     --lux-gold-rgb: 182, 159, 100;
     --lux-cream: #f5eacf;
@@ -400,20 +420,79 @@ const suitesPalette = `
   html, body {
     background: #f5eacf;
     color: #b69f64;
+    font-family: var(--suites-sans);
   }
-  /* Preserve Springs theme mechanics; replace only their colour values. */
+  /*
+   * Dining text style — faces / tracking / weight only.
+   * Keep Springs font-size, line-height, and layout classes.
+   */
+  .h0,
+  .h1,
+  .h2,
+  .h3,
+  .g1,
+  .g2,
+  h1,
+  h2,
+  h3,
+  .l-gallery__title,
+  .l-gallery__title .h0,
+  [class*="__title"] .h0,
+  [class*="__title"] .h1,
+  [class*="__title"] .g1,
+  [class*="__title"] h1,
+  [class*="__title"] h2 {
+    font-family: var(--suites-serif) !important;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+  body,
+  p:not(.g1):not(.g2):not(.h0):not(.h1):not(.h2):not(.h3),
+  .text-t1,
+  .text-t2,
+  .text-c1,
+  .text-c2,
+  .text-p1,
+  .text-p2,
+  .btn__text,
+  .btn,
+  li,
+  label,
+  input,
+  textarea,
+  select,
+  [class*="__text"]:not(.g1):not(.h0):not(.h1),
+  [class*="__subtitle"],
+  [class*="__caption"] p,
+  [class*="-caption__"] p {
+    font-family: var(--suites-sans) !important;
+  }
+  /* Dining eyebrow labels only — not long body captions */
+  [class*="__subtitle"],
+  .l-nature-bg-caption__subtitle,
+  .l-wellness__caption__subtitle,
+  .l-place__caption__subtitle {
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  /*
+   * Contrast layer (colour + soft shadow only — no layout).
+   * Photo / dark stages: white body + gold titles.
+   * Cream stages: gold body + gold titles (palette-safe).
+   */
   .ui-dark {
     --t-background: #cdbfa6;
     --t-background-rgb: 205, 191, 166;
-    --t-text: #f5eacf;
-    --t-text-rgb: 245, 234, 207;
-    --t-heading: #f5eacf;
-    --t-heading-rgb: 245, 234, 207;
+    --t-text: #ffffff;
+    --t-text-rgb: 255, 255, 255;
+    --t-heading: #b69f64;
+    --t-heading-rgb: 182, 159, 100;
     --t-primary: #b69f64;
     --t-primary-rgb: 182, 159, 100;
-    --t-secondary: #f5eacf;
-    --t-secondary-rgb: 245, 234, 207;
-    --t-line: rgba(245, 234, 207, 0.4);
+    --t-secondary: #ffffff;
+    --t-secondary-rgb: 255, 255, 255;
+    --t-line: rgba(255, 255, 255, 0.45);
   }
   .ui-light {
     --t-background: #f5eacf;
@@ -424,9 +503,92 @@ const suitesPalette = `
     --t-heading-rgb: 182, 159, 100;
     --t-primary: #b69f64;
     --t-primary-rgb: 182, 159, 100;
-    --t-secondary: #cdbfa6;
-    --t-secondary-rgb: 205, 191, 166;
-    --t-line: rgba(182, 159, 100, 0.28);
+    --t-secondary: #b69f64;
+    --t-secondary-rgb: 182, 159, 100;
+    --t-line: rgba(182, 159, 100, 0.35);
+  }
+  /* Display titles on photo stages → gold */
+  .ui-dark .g1,
+  .ui-dark .h1,
+  .ui-dark .h2,
+  .ui-dark h1,
+  .ui-dark h2,
+  .ui-dark [class*="__title"],
+  .ui-dark [class*="__subtitle"] {
+    color: #b69f64;
+    text-shadow:
+      0 1px 2px rgba(44, 40, 36, 0.45),
+      0 0 18px rgba(44, 40, 36, 0.22);
+  }
+  /* Body / captions on photo stages → white */
+  .ui-dark p,
+  .ui-dark .text-c1,
+  .ui-dark .text-c2,
+  .ui-dark .text-p1,
+  .ui-dark .text-p2,
+  .ui-dark [class*="__text"],
+  .ui-dark [class*="__caption"],
+  .ui-dark [class*="-caption__"],
+  .ui-dark .btn__text {
+    color: #ffffff;
+    text-shadow:
+      0 1px 2px rgba(44, 40, 36, 0.55),
+      0 0 14px rgba(44, 40, 36, 0.28);
+  }
+  /* Keep gold accents readable when nested in caption blocks */
+  .ui-dark [class*="__subtitle"],
+  .ui-dark .g1 {
+    color: #b69f64;
+  }
+  /* Cream stages: gold text + light lift so type stays crisp on soft beige */
+  .ui-light .g1,
+  .ui-light .h1,
+  .ui-light .h2,
+  .ui-light h1,
+  .ui-light h2,
+  .ui-light p,
+  .ui-light .text-c1,
+  .ui-light .text-c2,
+  .ui-light .text-p1,
+  .ui-light .text-p2,
+  .ui-light [class*="__text"],
+  .ui-light [class*="__title"],
+  .ui-light [class*="__subtitle"],
+  .ui-light [class*="__caption"] {
+    color: #b69f64;
+    text-shadow: 0 1px 1px rgba(245, 234, 207, 0.85);
+  }
+  /* Nature / voyage sticky copy sits on tinted media even outside ui-dark */
+  .l-nature-bg-caption,
+  .l-nature-bg-caption p,
+  .l-nature-bg-caption__text,
+  .l-nature__caption,
+  .l-nature__caption p,
+  .l-nature__caption__text,
+  .l-nature__slider-caption,
+  .l-nature__slider-caption p,
+  .l-wellness__caption,
+  .l-wellness__caption p,
+  .l-place__caption,
+  .l-place__caption p,
+  .preloader__content p,
+  .preloader__content .h1 {
+    color: #ffffff;
+    text-shadow:
+      0 1px 2px rgba(44, 40, 36, 0.55),
+      0 0 16px rgba(44, 40, 36, 0.3);
+  }
+  .l-nature-bg-caption .g1,
+  .l-nature-bg-caption [class*="__subtitle"],
+  .l-nature__caption .g1,
+  .l-nature__slider-caption .g1,
+  .l-wellness__caption .g1,
+  .l-place__caption .g1,
+  .preloader__content .g1 {
+    color: #b69f64;
+    text-shadow:
+      0 1px 2px rgba(44, 40, 36, 0.45),
+      0 0 18px rgba(44, 40, 36, 0.22);
   }
   /*
    * The shared Hathor navbar replaces Springs navigation. No other Springs
@@ -450,6 +612,48 @@ const suitesPalette = `
   .l-gallery__item picture.img-full img {
     aspect-ratio: 3 / 4;
     object-fit: cover;
+  }
+  /*
+   * Nature / wellness WebGL still paints Springs forest greens from baked
+   * textures + shaders. Retint the canvases only — no layout/position change.
+   */
+  .js-nature-canvas,
+  .js-wellness-canvas,
+  .js-tree-canvas {
+    filter: sepia(0.92) saturate(1.45) hue-rotate(-18deg) brightness(1.04)
+      contrast(1.05);
+  }
+  .l-nature__gradient div,
+  .l-wellness__gradient div,
+  .l-gallery__gradient div,
+  .l-nature-bg-gradient,
+  .preloader__gradient div,
+  .preloader__gradient-animation div,
+  .footer__gradient div {
+    background: radial-gradient(
+      circle,
+      rgba(182, 159, 100, 0.72) 0%,
+      rgba(205, 191, 166, 0.42) 40%,
+      rgba(245, 234, 207, 0) 74%
+    ) !important;
+  }
+  /* Preloader: hide Springs wordmark SVGs; show centered golden Hathor icon */
+  .preloader__logo .header__logo__inner,
+  .preloader__logo-mobile__item {
+    display: none !important;
+  }
+  .preloader__logo.hathor-preloader-logo,
+  .preloader__logo-mobile.hathor-preloader-logo {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+  .hathor-preloader-icon {
+    display: block;
+    width: clamp(52px, 6vw, 88px);
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: contain;
   }
   footer.footer {
     display: none !important;
@@ -700,7 +904,36 @@ const suitesRuntime = `
 })();
 </script>`;
 
-html = html.replace("</head>", `${suitesPalette}${suitesRuntime}</head>`);
+const suitesFontLinks = `
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+`;
+html = html.replace(
+  "</head>",
+  `${suitesFontLinks}${suitesPalette}${suitesRuntime}</head>`,
+);
+
+// Preloader Springs wordmark → golden Hathor icon (keep logo container classes).
+const hathorPreloaderIcon =
+  "/branding/hathor-logo-nile-cruise-panorama-on-nile-visit-egypt-HATHOR-ICON-golden.svg";
+html = html.replace(
+  /(<div class="header__logo preloader__logo">)[\s\S]*?(<\/div>\s*<\/div>\s*<div class="header__right)/i,
+  `$1<img class="hathor-preloader-icon" src="${hathorPreloaderIcon}" alt="Hathor" width="88" height="88" draggable="false" />$2`,
+);
+html = html.replace(
+  /(<div class="header__left preloader__logo-mobile">)[\s\S]*?(<\/div>\s*<div class="header__center)/i,
+  `$1<img class="hathor-preloader-icon" src="${hathorPreloaderIcon}" alt="Hathor" width="64" height="64" draggable="false" />$2`,
+);
+html = html
+  .replace(
+    /class="header__logo preloader__logo"/g,
+    'class="header__logo preloader__logo hathor-preloader-logo"',
+  )
+  .replace(
+    /class="header__left preloader__logo-mobile"/g,
+    'class="header__left preloader__logo-mobile hathor-preloader-logo"',
+  );
 
 // Serve captured scripts/styles from this app
 html = html.replaceAll('href="/assets/', 'href="/suites-springs/assets/');

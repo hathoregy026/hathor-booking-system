@@ -400,7 +400,7 @@ export default function LuxuryAccordion({
                       <div className={styles.actions}>
                         <Link
                           href={panel.detailsHref}
-                          className={`btn btn-dark ${styles.detailsCta}`}
+                          className={`public-btn-gold ${styles.detailsCta}`}
                           onClick={stopRowClick}
                         >
                           {panel.detailsLabel}
@@ -440,7 +440,7 @@ export default function LuxuryAccordion({
 
                       <button
                         type="button"
-                        className={`btn btn-dark ${styles.enquireCta}`}
+                        className={`public-btn-gold ${styles.enquireCta}`}
                         onClick={(event) => {
                           stopRowClick(event);
                           openBooking();

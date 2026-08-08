@@ -317,7 +317,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "gastronomy-hero",
     altText: "Candlelit private dining table aboard Hathor Dahabiya",
-    url: GASTRONOMY_DINING_MEDIA.hero,
+    url: GASTRONOMY_DINING_MEDIA.legacyHero,
     category: "dining",
     pagePath: "/gastronomy",
     displayOrder: 0,

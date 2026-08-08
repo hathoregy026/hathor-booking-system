@@ -16,21 +16,36 @@
   isolation: isolate;
 }
 
-/* Golden on-image type + tiny halo — beats CMS white WebkitTextFillColor */
+/* White on-photo type — beats CMS gold / WebkitTextFillColor on hero media */
 .public-site .home-am-sequence .home-am-on-image-text,
 .public-site .home-am-sequence .home-am-on-image-text *,
 html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text,
 html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
-  color: #b69f64 !important;
-  -webkit-text-fill-color: #b69f64 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
   background: none !important;
   background-image: none !important;
   -webkit-background-clip: border-box !important;
   background-clip: border-box !important;
   text-shadow:
-    0 0 1px rgba(22, 18, 14, 0.55),
-    0 1px 2px rgba(22, 18, 14, 0.45),
-    0 0 10px rgba(22, 18, 14, 0.35) !important;
+    0 1px 2px rgba(22, 18, 14, 0.55),
+    0 2px 12px rgba(22, 18, 14, 0.42) !important;
+  filter: none !important;
+}
+
+/* Cream-panel titles — solid gold (not white on-image halo) */
+.public-site .home-am-sequence .home-am-on-cream-title,
+.public-site .home-am-sequence .home-am-on-cream-title *,
+html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title,
+html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
+  color: var(--am-gold) !important;
+  -webkit-text-fill-color: var(--am-gold) !important;
+  background: none !important;
+  background-image: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  text-shadow: none !important;
+  filter: none !important;
 }
 
 /* Keep helm flush under voyages (inside or after sequence) */
@@ -150,13 +165,14 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   pointer-events: auto;
   overflow: visible;
   contain: none;
-  height: auto;
+  height: calc(100 * var(--am-svh));
   min-height: calc(100 * var(--am-svh));
   background-color: var(--am-cream) !important;
+  z-index: 1;
 }
 
 html[data-public-theme="night"] .home-am-voyages__stage {
-  background-color: #0b0907 !important;
+  background-color: var(--bg-main, #161412) !important;
 }
 
 @media (min-width: 1025px) {
@@ -166,8 +182,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   }
 
   .home-am-voyages__stage {
+    height: calc(100 * var(--am-svh));
     min-height: calc(100 * var(--am-svh));
-    height: auto;
   }
 }
 
@@ -361,21 +377,55 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   line-height: 1.45;
 }
 
-.home-am-video__title {
+.home-am-video__title-stack {
   position: absolute;
   right: clamp(1.25rem, 4vw, 3rem);
   bottom: clamp(28vh, 34svh, 38vh);
   z-index: 3;
+  width: min(34rem, calc(50vw - 2 * clamp(1.25rem, 4vw, 3rem)));
   max-width: min(34rem, 48vw);
-  text-align: right;
+  text-align: left;
   will-change: transform, opacity;
 }
 
 @media (min-width: 1025px) {
-  .home-am-video__title {
+  .home-am-video__title-stack {
     top: clamp(5.5rem, 12vh, 8rem);
     bottom: auto;
   }
+
+  /* Cream copy lives under the video title stack on desktop */
+  .home-am-intro__cream:not(.home-am-intro__cream--phone) .home-am-intro__cream-text {
+    display: none;
+  }
+}
+
+@media (max-width: 1024px) {
+  .home-am-video__title-body {
+    display: none;
+  }
+}
+
+.home-am-video__title {
+  position: relative;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  z-index: auto;
+  width: 100%;
+  max-width: none;
+  text-align: inherit;
+  will-change: auto;
+}
+
+.home-am-video__title-body {
+  margin: clamp(1rem, 2.2vh, 1.65rem) 0 0;
+  max-width: 100%;
+  text-align: left;
+}
+
+.home-am-video__title-body p {
+  margin: 0;
 }
 
 .home-am-video__title h2 {
@@ -549,9 +599,16 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 .home-am-opening {
   height: 250svh;
   position: relative;
-  z-index: 4;
+  z-index: 5;
   pointer-events: none;
   clip-path: none;
+}
+
+/* When opening is on screen, previous slider sticky must not paint through */
+.home-am-slider.is-opening-covering .home-am-chapter__stage,
+.home-am-slider.is-opening-covering .home-am-slider__images-col {
+  visibility: hidden;
+  pointer-events: none;
 }
 
 /* Opening is last amenities chapter — under-next must pull Voyages (sibling of sequence) */
@@ -565,6 +622,16 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   z-index: 2;
   /* contain:content can prevent the left ManagedImage from lazy-loading */
   contain: none;
+}
+
+/*
+ * Springs i-nature cover: when cream rises, BOTH halves leave together.
+ * Without this the sticky left photo stays while gold/cream handoff on the right.
+ */
+.home-am-opening.is-voyages-covering .home-am-chapter__stage,
+.home-am-opening.is-voyages-covering .home-am-opening__right-column {
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .home-am-opening__content,
@@ -584,15 +651,20 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 /* Springs .col--lg-6 → flex:0 1 50vw; width:50vw */
 .home-am-opening__images {
   position: relative;
-  flex: 0 1 50vw;
+  flex: 0 0 50vw;
   width: 50vw;
+  max-width: 50vw;
   overflow: hidden;
   will-change: clip-path;
+  z-index: 1;
 }
 
 .home-am-opening__images-media {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
   transform-origin: center center;
 }
 
@@ -602,7 +674,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   transform-origin: center center;
 }
 
-/* Springs: caption is transparent — scrolling right-column (text + 3 cards) shows through */
+/* Springs: caption stays transparent so the scrolling right-column (cards) shows through */
 .home-am-opening__caption {
   position: relative;
   flex: 0 1 50vw;
@@ -730,11 +802,12 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   pointer-events: none;
 }
 
-/* Springs .ui-background on full right sticky layer */
+/* Springs .ui-background on full right sticky layer — above sticky stage so cards paint */
 .home-am-opening__right-column {
   grid-area: sticky_content;
   align-self: start;
   position: relative;
+  z-index: 4;
   width: 100%;
   pointer-events: none;
   will-change: clip-path;
@@ -836,7 +909,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
     width: min(20rem, 46vw);
   }
 
-  .home-am-video__title {
+  .home-am-video__title-stack {
     max-width: min(30rem, 52vw);
   }
 

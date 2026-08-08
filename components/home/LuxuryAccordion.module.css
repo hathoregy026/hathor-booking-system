@@ -38,8 +38,9 @@
   --acc-open-card-bg: #faf8f5;
   --acc-open-card-border: rgba(182, 159, 100, 0.42);
   --acc-open-card-shadow: 0 16px 36px rgba(44, 36, 25, 0.12);
-  --acc-open-card-text: var(--ink, #2c2419);
-  --acc-open-card-muted: var(--ink-soft, #4a3f32);
+  /* Explicit ink — never var(--ink); ex-root night --ink breaks card contrast */
+  --acc-open-card-text: #2c2419;
+  --acc-open-card-muted: #5c4b3c;
   --acc-open-gold: var(--gold, #b69f64);
   --acc-open-gold-bright: var(--gold, #b69f64);
   --acc-open-story-body: rgba(255, 250, 240, 0.96);
@@ -73,37 +74,100 @@
   background: transparent;
 }
 
-/* Night — warm dark surfaces, same cream/gold CTA language */
+/* Night — layered warm dark palette */
 :global(html[data-public-theme="night"]) .section {
-  --hathor-accordion-gold: #b69f64;
-  --hathor-accordion-gold-bright: #d4c28a;
-  --hathor-accordion-line: rgba(182, 159, 100, 0.28);
-  --hathor-accordion-muted: #cdbfa6;
-  --hathor-accordion-roman: rgba(182, 159, 100, 0.16);
-  --hathor-accordion-hover: rgba(182, 159, 100, 0.08);
-  --acc-open-rail-bg: #262219;
-  --acc-open-rail-edge: rgba(182, 159, 100, 0.35);
-  --acc-open-rail-ink: #d4c28a;
-  --acc-open-rail-muted: rgba(212, 194, 138, 0.88);
+  --hathor-accordion-gold: var(--accent, #c6af73);
+  --hathor-accordion-gold-bright: #d8c48a;
+  --hathor-accordion-line: rgb(54 49 44 / 0.55);
+  --hathor-accordion-muted: var(--text-muted, #a99d89);
+  --hathor-accordion-roman: rgb(198 175 115 / 0.16);
+  --hathor-accordion-hover: rgb(54 49 44 / 0.35);
+  --acc-open-rail-bg: var(--bg-surface, #23201d);
+  --acc-open-rail-edge: var(--bg-hover, #36312c);
+  --acc-open-rail-ink: var(--accent, #c6af73);
+  --acc-open-rail-muted: var(--text-muted, #a99d89);
   --acc-open-rail-shadow: none;
-  --acc-open-card-bg: #2c2822;
-  --acc-open-card-border: rgba(182, 159, 100, 0.4);
-  --acc-open-card-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
-  --acc-open-card-text: #f5eacf;
-  --acc-open-card-muted: #d4c28a;
-  --acc-open-gold: #b69f64;
-  --acc-open-gold-bright: #d4c28a;
-  --acc-open-story-body: rgba(245, 234, 207, 0.92);
-  --acc-open-story-label: #f5eacf;
-  --acc-open-feature-bg: rgba(245, 234, 207, 0.08);
-  --acc-open-feature-border: rgba(182, 159, 100, 0.65);
-  --acc-open-close-border: rgba(182, 159, 100, 0.55);
-  --acc-open-close-bg: rgba(38, 34, 30, 0.85);
-  --acc-open-close-color: #d4c28a;
-  --acc-open-title-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
-  --acc-open-body-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
-  --acc-open-active-bg: #1e1b18;
-  background: #1e1b18;
+  --acc-open-card-bg: var(--bg-surface, #23201d);
+  --acc-open-card-border: var(--bg-hover, #36312c);
+  --acc-open-card-shadow: 0 18px 40px rgb(0 0 0 / 0.35);
+  --acc-open-card-text: var(--text-main, #eadfcd);
+  --acc-open-card-muted: var(--text-muted, #a99d89);
+  --acc-open-gold: var(--accent, #c6af73);
+  --acc-open-gold-bright: #d8c48a;
+  --acc-open-story-body: rgb(234 223 205 / 0.9);
+  --acc-open-story-label: var(--text-main, #eadfcd);
+  --acc-open-feature-bg: rgb(54 49 44 / 0.35);
+  --acc-open-feature-border: rgb(198 175 115 / 0.55);
+  --acc-open-close-border: var(--bg-hover, #36312c);
+  --acc-open-close-bg: rgb(35 32 29 / 0.92);
+  --acc-open-close-color: var(--accent, #c6af73);
+  --acc-open-title-shadow: 0 2px 18px rgb(0 0 0 / 0.45);
+  --acc-open-body-shadow: 0 1px 10px rgb(0 0 0 / 0.4);
+  --acc-open-active-bg: var(--bg-main, #161412);
+  background: var(--bg-main, #161412);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Section heading + closed rows — beat CMS inline typography in night */
+:global(html[data-public-theme="night"]) .title {
+  color: var(--text-main, #eadfcd) !important;
+}
+
+:global(html[data-public-theme="night"]) .indication {
+  color: var(--text-muted, #a99d89) !important;
+}
+
+:global(html[data-public-theme="night"]) .name {
+  color: var(--text-main, #eadfcd) !important;
+}
+
+:global(html[data-public-theme="night"]) .rowMeta {
+  color: var(--text-muted, #a99d89) !important;
+}
+
+:global(html[data-public-theme="night"]) .accordionItem:not(.isActive):hover .rowMeta {
+  color: var(--text-main, #eadfcd) !important;
+}
+
+/* Open panel — layered surfaces */
+:global(html[data-public-theme="night"]) .rail {
+  background: var(--bg-surface, #23201d) !important;
+  border-right-color: var(--bg-hover, #36312c);
+}
+
+:global(html[data-public-theme="night"]) .railQuoteText {
+  color: var(--text-muted, #a99d89) !important;
+}
+
+:global(html[data-public-theme="night"]) .infoCard {
+  background: var(--bg-surface, #23201d) !important;
+  background-image: none !important;
+  border-color: var(--bg-hover, #36312c);
+  color: var(--text-main, #eadfcd);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+:global(html[data-public-theme="night"]) .highlights li {
+  color: var(--text-main, #eadfcd) !important;
+}
+
+:global(html[data-public-theme="night"]) .priceCaption {
+  color: var(--text-muted, #a99d89) !important;
+}
+
+/* Day — explicit card contrast (guards against --ink bleed) */
+:global(html[data-public-theme="day"]) .infoCard {
+  background: #faf8f5 !important;
+  background-image: none !important;
+  color: #2c2419;
+}
+
+:global(html[data-public-theme="day"]) .highlights li {
+  color: #2c2419 !important;
+}
+
+:global(html[data-public-theme="day"]) .priceCaption {
+  color: #5c4b3c !important;
 }
 
 .container {
@@ -706,9 +770,17 @@
   padding-top: 1.25rem;
 }
 
-/* Visuals come from site `.btn.btn-dark` cream/gold pill */
-.detailsCta {
+/* Site pill buttons — same public-btn-gold as homepage CTAs */
+.detailsCta:global(.public-btn-gold),
+.enquireCta:global(.public-btn-gold) {
   flex-shrink: 0;
+}
+
+.enquireCta:global(.public-btn-gold) {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  margin-top: auto;
 }
 
 .watchCta {
@@ -836,14 +908,6 @@
   width: 0.35rem;
   height: 0.35rem;
   background: var(--acc-open-gold);
-}
-
-/* Full-width site pill inside the cream card */
-.enquireCta {
-  width: 100% !important;
-  min-width: 0 !important;
-  max-width: none !important;
-  margin-top: auto;
 }
 
 @keyframes hathorPanelRise {

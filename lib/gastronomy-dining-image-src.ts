@@ -2,7 +2,7 @@ import { GASTRONOMY_DINING_MEDIA } from "@/lib/gastronomy-dining-media";
 
 /** Canonical GPT dining clone asset per dashboard slot name. */
 export const GASTRONOMY_DINING_SLOT_SRC: Record<string, string> = {
-  "gastronomy-hero": GASTRONOMY_DINING_MEDIA.hero,
+  "gastronomy-hero": GASTRONOMY_DINING_MEDIA.legacyHero,
   "gastronomy-restaurant": GASTRONOMY_DINING_MEDIA.experience,
   "gastronomy-table": GASTRONOMY_DINING_MEDIA.table,
   "gastronomy-courses": GASTRONOMY_DINING_MEDIA.courses,

@@ -2,13 +2,13 @@
 
 import { CSSProperties, useRef, type ReactNode } from "react";
 import { ManagedImage } from "@/components/ui/ManagedImage";
+import { useTypographyInlineStyle } from "@/components/public/TypographySettingsProvider";
 import { useHomeAmenitiesSequence } from "@/hooks/useHomeAmenitiesSequence";
 import { AMENITIES_SEQUENCE_IMAGE_SLOTS } from "@/lib/amenities-sequence-images";
 import type { SiteImageName } from "@/lib/site-image-slots";
 
 const GOLD = "#B69F64";
 const CREAM = "#ece8df";
-const INK = "#1c1712";
 const WHITE = "#ffffff";
 
 export type AmenitiesLandmarkSlide = {
@@ -188,13 +188,14 @@ export function HomeAmenitiesSequence({
 
   if (!intro) return null;
 
-  const onImageTitle = withColor(titleStyle, GOLD);
-  const onImageIndication = withColor(indicationStyle, GOLD);
-  const onImageBody = withColor(bodyStyle, GOLD);
+  const creamBodyStyle = useTypographyInlineStyle("body_text");
+  const onImageTitle = withColor(titleStyle, WHITE);
+  const onImageIndication = withColor(indicationStyle, WHITE);
+  const onImageBody = withColor(bodyStyle, WHITE);
+  const onCreamTitle = withColor(titleStyle, GOLD);
   const onGoldTitle = withColor(titleStyle, WHITE);
   const onGoldIndication = withColor(indicationStyle, WHITE);
   const onGoldBody = withColor(bodyStyle, WHITE);
-  const onCreamBody = withColor(bodyStyle, INK);
 
   const introImage = images[0];
   const videoHeroImage = images[1];
@@ -295,8 +296,8 @@ export function HomeAmenitiesSequence({
             style={{ background: CREAM }}
           >
             <p
-              className="home-am-intro__cream-text typo-on-images-body"
-              style={onCreamBody}
+              className="home-am-intro__cream-text typo-body-text"
+              style={creamBodyStyle}
             >
               {intro.body}
             </p>
@@ -314,8 +315,8 @@ export function HomeAmenitiesSequence({
             style={{ background: CREAM }}
           >
             <p
-              className="home-am-intro__cream-text typo-on-images-body"
-              style={onCreamBody}
+              className="home-am-intro__cream-text typo-body-text"
+              style={creamBodyStyle}
             >
               {intro.body}
             </p>
@@ -375,26 +376,34 @@ export function HomeAmenitiesSequence({
             </div>
 
             <div
-              className="home-am-video__title"
+              className="home-am-video__title-stack"
               data-am-video-title
               data-plugin="parallax"
               data-parallax-pattern="videoTitle"
               data-parallax-clamp="true"
               data-parallax-measure-selector="[data-am-chapter]"
             >
-              <h2
-                className="home-am-on-image-text typo-on-images-title"
-                style={onImageTitle}
+              <div className="home-am-video__title">
+                <h2
+                  className="home-am-on-cream-title typo-on-images-title"
+                  style={onCreamTitle}
+                >
+                  {(videoMain.titleLines.length
+                    ? videoMain.titleLines
+                    : [videoMain.indication]
+                  ).map((line) => (
+                    <span key={line} className="home-am-title-line">
+                      {line}
+                    </span>
+                  ))}
+                </h2>
+              </div>
+              <p
+                className="home-am-video__title-body typo-body-text"
+                style={creamBodyStyle}
               >
-                {(videoMain.titleLines.length
-                  ? videoMain.titleLines
-                  : [videoMain.indication]
-                ).map((line) => (
-                  <span key={line} className="home-am-title-line">
-                    {line}
-                  </span>
-                ))}
-              </h2>
+                {intro.body}
+              </p>
             </div>
 
             <div
@@ -631,8 +640,10 @@ export function HomeAmenitiesSequence({
           data-parallax-clamp="true"
           data-parallax-measure-selector="[data-am-chapter]"
           data-parallax-0-0='{"clip-path":"polygon(50vw 0vh, 100% 0vh, 100% 0vh, 50vw 0vh)"}'
-          data-parallax--100-0='{"clip-path":"polygon(50vw 100vh, 100% 100vh, 100% 200vh, 50vw 200vh)"}'
-          data-parallax--101-0='{"clip-path":"polygon(50vw 100vh, 100% 100vh, 100% 350vh, 50vw 350vh)"}'
+          data-parallax--40-0='{"clip-path":"polygon(50vw 0vh, 100% 0vh, 100% 100vh, 50vw 100vh)"}'
+          data-parallax--160-0='{"clip-path":"polygon(50vw 0vh, 100% 0vh, 100% 100vh, 50vw 100vh)"}'
+          data-parallax--200-0='{"clip-path":"polygon(50vw 0vh, 100% 0vh, 100% 250vh, 50vw 250vh)"}'
+          data-parallax--220-0='{"clip-path":"polygon(50vw 100vh, 100% 100vh, 100% 350vh, 50vw 350vh)"}'
         >
           <div className="home-am-opening__right-inner">
             <p

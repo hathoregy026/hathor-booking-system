@@ -458,7 +458,7 @@ export function MaskRevealPageContent() {
   return (
     <div className="mask-reveal-page">
       <CruisesMosaicHero />
-      <div className="mr-shell">
+      <div className="mr-shell" id="cruises-listing">
         <div className="mr-mobile-bar">
           <button
             type="button"

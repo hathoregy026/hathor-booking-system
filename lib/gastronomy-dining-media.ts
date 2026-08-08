@@ -2,7 +2,10 @@
 const BASE = "/media/hathor/optimized";
 
 export const GASTRONOMY_DINING_MEDIA = {
-  hero: `${BASE}/gastronomy-hero.webp`,
+  /** Live Dining intro hero (dashboard slot `dining-intro-hero`). */
+  hero: `${BASE}/dining-intro-hero.webp`,
+  /** Legacy coarse slot still used by Highlights / Blog / home story. */
+  legacyHero: `${BASE}/gastronomy-hero.webp`,
   restaurant: `${BASE}/gastronomy-restaurant.webp`,
   experience: `${BASE}/gastronomy-restaurant.webp`,
   table: `${BASE}/gastronomy-table.webp`,

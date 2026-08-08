@@ -56,12 +56,12 @@
         <meta property="og:title" content="Hathor | Private Dining">
         <meta property="og:description" content="A private table on the Nile&mdash;courses, wine and silence composed entirely around your party.">
         <meta property="og:locale" content="en_US">
-        <meta property="og:image" content="https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images/gastronomy-hero/dining-hero-mshk3jtr.jpg">
+        <meta property="og:image" content="/media/hathor/optimized/dining-intro-hero.webp">
 
                 <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="Hathor | Private Dining">
         <meta name="twitter:description" content="A private table on the Nile&mdash;courses, wine and silence composed entirely around your party.">
-        <meta name="twitter:image" content="https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images/gastronomy-hero/dining-hero-mshk3jtr.jpg">
+        <meta name="twitter:image" content="/media/hathor/optimized/dining-intro-hero.webp">
 
                             
 <style data-hathor-dining-palette>
@@ -538,11 +538,20 @@
   function isSpringsUrl(value) {
     return typeof value === "string" && /springs\.(estate|house)/i.test(value);
   }
+  function isLegacyDiningHeroUrl(value) {
+    return typeof value === "string" && (
+      /dining-hero-mshk3jtr/i.test(value) ||
+      /\/media\/gastronomy-dining\/dining-hero\.jpg/i.test(value) ||
+      /site-images\/gastronomy-hero\/dining-hero/i.test(value)
+    );
+  }
   function scrubSpringsUrls(root) {
     root.querySelectorAll("img, source").forEach((node) => {
       ["src", "srcset", "data-src", "data-srcset"].forEach((attr) => {
         const value = node.getAttribute(attr);
-        if (value && isSpringsUrl(value)) node.removeAttribute(attr);
+        if (value && (isSpringsUrl(value) || isLegacyDiningHeroUrl(value))) {
+          node.removeAttribute(attr);
+        }
       });
     });
   }
@@ -589,12 +598,35 @@
   function revealDiningMedia() {
     document.documentElement.classList.add("dining-media-ready");
   }
+  function whenHeroReady(url) {
+    return new Promise((resolve) => {
+      const hero = document.querySelector(
+        "#de-intro .de-intro__background picture img, #de-intro .de-intro__background img"
+      );
+      if (!hero || !url) {
+        resolve();
+        return;
+      }
+      if (hero.complete && hero.currentSrc && !isLegacyDiningHeroUrl(hero.currentSrc)) {
+        resolve();
+        return;
+      }
+      const done = () => resolve();
+      hero.addEventListener("load", done, { once: true });
+      hero.addEventListener("error", done, { once: true });
+      window.setTimeout(done, 1800);
+    });
+  }
   const configPromise = fetch("/api/gastronomy-config", { cache: "no-store" })
     .then((response) => response.ok ? response.json() : null)
     .catch(() => null);
   const applyDashboardConfig = () => {
     scrubSpringsUrls(document);
     configPromise.then((config) => {
+      const heroUrl =
+        config && config.images
+          ? config.images["dining-intro-hero"]
+          : "/media/hathor/optimized/dining-intro-hero.webp";
       if (config && config.images) {
         Object.entries(slotTargets).forEach(([slot, target]) =>
           replaceVisual(target, config.images[slot], slot)
@@ -611,10 +643,14 @@
           phone.textContent = "@media (max-width:480px){" + config.phoneCss + "}";
           document.head.appendChild(phone);
         }
+      } else {
+        replaceVisual(slotTargets["dining-intro-hero"], heroUrl, "dining-intro-hero");
       }
       scrubSpringsUrls(document);
-      revealDiningMedia();
-      window.dispatchEvent(new Event("resize"));
+      whenHeroReady(heroUrl).then(() => {
+        revealDiningMedia();
+        window.dispatchEvent(new Event("resize"));
+      });
     });
   };
   if (document.readyState === "loading") {
@@ -1005,9 +1041,9 @@
     
     
     
-    <picture class=" img-cover"        draggable="false"    >                    <source srcset="https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images/gastronomy-hero/dining-hero-mshk3jtr.jpg" media="(min-width: 1920px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images/gastronomy-hero/dining-hero-mshk3jtr.jpg" media="(min-width: 1440px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images/gastronomy-hero/dining-hero-mshk3jtr.jpg" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="1440" height="900">
+    <picture class=" img-cover"        draggable="false"    >                    <source srcset="/media/hathor/optimized/dining-intro-hero.webp" media="(min-width: 1920px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="/media/hathor/optimized/dining-intro-hero.webp" media="(min-width: 1440px) and (min-height: 700px)" width="1440" height="900">                    <source srcset="/media/hathor/optimized/dining-intro-hero.webp" media="(min-width: 568px) and (max-aspect-ratio: 13 / 9), (min-width: 668px) and (min-height: 416px), (min-width: 980px)" width="1440" height="900">
         <img
-            src="https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images/gastronomy-hero/dining-hero-mshk3jtr.jpg"                    alt=""                            width="1440" height="900"                                        decoding="async"                        fetchpriority="high"                        data-reveal="image-zoom"            draggable="false"
+            src="/media/hathor/optimized/dining-intro-hero.webp"                    alt=""                            width="1440" height="900"                                        decoding="async"                        fetchpriority="high"                        data-reveal="image-zoom"            draggable="false"
         >
     </picture>
 
@@ -1341,7 +1377,7 @@ One Kitchen · Your Hours
     <img class="img-full is-invisible--js is-hidden--no-js" alt=""
         draggable="false"
                                     width="300"                        height="160"                data-plugin="appear "
-             data-src="https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images/gastronomy-hero/dining-hero-mshk3jtr.jpg"
+             data-src="/media/hathor/optimized/dining-intro-hero.webp"
             src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22300%22%20height=%22160%22%20preserveAspectRatio=%22xMinYMax%20meet%22%20viewBox=%220%200%20300%20160%22%3E%3C/svg%3E"    >
 
                 <noscript>
@@ -1350,7 +1386,7 @@ One Kitchen · Your Hours
     
     <img class="img-full " alt=""
         draggable="false"                                    width="300"                        height="160"
-                src="https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images/gastronomy-hero/dining-hero-mshk3jtr.jpg"    >
+                src="/media/hathor/optimized/dining-intro-hero.webp"    >
 
         
         </noscript>
@@ -1641,7 +1677,7 @@ One Kitchen · Your Hours
                 <div class="de-captions__canvas background background--cover"
             data-plugin="parallax imageScroll"
             data-image-scroll-displacement-image="/assets/images/media/design/4.captions/4.png"
-            data-image-scroll-image-start="{&quot;xs&quot;:{&quot;src&quot;:&quot;https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images/gastronomy-hero/dining-hero-mshk3jtr.jpg&quot;,&quot;width&quot;:720,&quot;height&quot;:1280},&quot;md&quot;:{&quot;src&quot;:&quot;https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images/gastronomy-hero/dining-hero-mshk3jtr.jpg&quot;,&quot;width&quot;:720,&quot;height&quot;:1280},&quot;xxl&quot;:{&quot;src&quot;:&quot;https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images/gastronomy-hero/dining-hero-mshk3jtr.jpg&quot;,&quot;width&quot;:1440,&quot;height&quot;:900},&quot;xxxl&quot;:{&quot;src&quot;:&quot;https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images/gastronomy-hero/dining-hero-mshk3jtr.jpg&quot;,&quot;width&quot;:1440,&quot;height&quot;:900}}"
+            data-image-scroll-image-start="{&quot;xs&quot;:{&quot;src&quot;:&quot;/media/hathor/optimized/dining-intro-hero.webp&quot;,&quot;width&quot;:720,&quot;height&quot;:1280},&quot;md&quot;:{&quot;src&quot;:&quot;/media/hathor/optimized/dining-intro-hero.webp&quot;,&quot;width&quot;:720,&quot;height&quot;:1280},&quot;xxl&quot;:{&quot;src&quot;:&quot;/media/hathor/optimized/dining-intro-hero.webp&quot;,&quot;width&quot;:1440,&quot;height&quot;:900},&quot;xxxl&quot;:{&quot;src&quot;:&quot;/media/hathor/optimized/dining-intro-hero.webp&quot;,&quot;width&quot;:1440,&quot;height&quot;:900}}"
             data-image-scroll-image-end="{&quot;xs&quot;:{&quot;src&quot;:&quot;https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images/gastronomy-restaurant/dining-private-table-mshj7qm7.webp&quot;,&quot;width&quot;:720,&quot;height&quot;:1280},&quot;md&quot;:{&quot;src&quot;:&quot;https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images/gastronomy-restaurant/dining-private-table-mshj7qm7.webp&quot;,&quot;width&quot;:720,&quot;height&quot;:1280},&quot;xxl&quot;:{&quot;src&quot;:&quot;https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images/gastronomy-restaurant/dining-private-table-mshj7qm7.webp&quot;,&quot;width&quot;:1440,&quot;height&quot;:900},&quot;xxxl&quot;:{&quot;src&quot;:&quot;https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images/gastronomy-restaurant/dining-private-table-mshj7qm7.webp&quot;,&quot;width&quot;:1440,&quot;height&quot;:900}}"
             data-parallax-enable-mq="lg-up"
             data-parallax-clamp="true"

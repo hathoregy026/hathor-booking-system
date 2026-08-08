@@ -6471,15 +6471,20 @@ html[data-public-theme="night"],
 html[data-public-theme="night"] .public-site,
 html[data-public-theme="night"] .hathor-site,
 html[data-public-theme="night"] .preview-site {
-  --bg-dark: #1e1b18;
-  --text-primary: #f5eacf;
-  --text-secondary: #cdbfa6;
-  --accent: #b69f64;
-  --public-bg: var(--bg-dark);
-  --public-surface: #262219;
-  --public-text: var(--text-primary);
-  --public-muted: var(--text-secondary);
-  --public-border: rgb(205 191 166 / 0.18);
+  --bg-main: #161412;
+  --bg-surface: #23201d;
+  --bg-hover: #36312c;
+  --text-main: #eadfcd;
+  --text-muted: #a99d89;
+  --accent: #c6af73;
+  --bg-dark: var(--bg-main);
+  --text-primary: var(--text-main);
+  --text-secondary: var(--text-muted);
+  --public-bg: var(--bg-main);
+  --public-surface: var(--bg-surface);
+  --public-text: var(--text-main);
+  --public-muted: var(--text-muted);
+  --public-border: rgb(54 49 44 / 0.55);
   --public-gold: var(--accent);
 }
 

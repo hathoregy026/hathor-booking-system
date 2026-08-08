@@ -13,7 +13,7 @@
 }
 
 html[data-public-theme="night"] .public-site {
-  --hieroglyph-cream: var(--bg-dark, #1e1b18);
+  --hieroglyph-cream: var(--bg-surface, #23201d);
   --hieroglyph-opacity: 0.02;
 }
 
@@ -100,7 +100,7 @@ html[data-ex-experience] .ex-root [data-hathor-accordion].ex-content-section {
 }
 
 html[data-ex-experience][data-public-theme="night"] .ex-root [data-hathor-accordion].ex-content-section {
-  background-color: var(--cream, #1e1b18) !important;
+  background-color: var(--bg-main, #161412) !important;
 }
 
 /* Pin-safe width — 100vw breakout caused left-jump during sticky/pin scrub */
