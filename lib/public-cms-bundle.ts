@@ -51,6 +51,12 @@ import {
   type WelcomeSplashSettings,
 } from "@/lib/welcome-splash-settings-shared";
 import {
+  DEFAULT_LIVE_SITE_SETTINGS,
+  LIVE_SITE_SETTINGS_KEY,
+  parseLiveSiteSettings,
+  type LiveSiteSettings,
+} from "@/lib/live-site-settings-shared";
+import {
   DEFAULT_WHEEL_STAGE_SETTINGS,
   WHEEL_STAGE_SETTINGS_KEY,
   parseWheelStageSettings,
@@ -70,7 +76,7 @@ import {
 
 export const PUBLIC_CMS_CACHE_TAG = "public-cms";
 /** Bumped so prior build-time default entries are never reused. */
-export const PUBLIC_CMS_CACHE_KEY = "public-cms-bundle-v10";
+export const PUBLIC_CMS_CACHE_KEY = "public-cms-bundle-v11";
 export const PUBLIC_CMS_REVALIDATE_SECONDS = 300;
 
 const PUBLIC_CMS_KEYS = [
@@ -83,6 +89,7 @@ const PUBLIC_CMS_KEYS = [
   WEBSITE_TEXT_MOBILE_KEY,
   SITE_IMAGE_PUBLIC_MAP_KEY,
   WELCOME_SPLASH_SETTINGS_KEY,
+  LIVE_SITE_SETTINGS_KEY,
   WHEEL_STAGE_SETTINGS_KEY,
   PAGE_VISIBILITY_KEY,
 ] as const;
@@ -138,6 +145,7 @@ export type PublicCmsBundle = {
   websiteText: WebsiteText;
   websiteTextMobile: WebsiteText;
   welcomeSplash: WelcomeSplashSettings;
+  liveSite: LiveSiteSettings;
   wheelStage: WheelStageSettings;
   pageVisibility: PageVisibilitySettings;
 };
@@ -207,6 +215,10 @@ function parseSettingMap(rows: SettingRow[]) {
       )
     : DEFAULT_WELCOME_SPLASH_SETTINGS;
 
+  const liveSite = byKey.has(LIVE_SITE_SETTINGS_KEY)
+    ? parseLiveSiteSettings(readStored(byKey.get(LIVE_SITE_SETTINGS_KEY)))
+    : DEFAULT_LIVE_SITE_SETTINGS;
+
   const wheelStage = byKey.has(WHEEL_STAGE_SETTINGS_KEY)
     ? parseWheelStageSettings(readStored(byKey.get(WHEEL_STAGE_SETTINGS_KEY)))
     : DEFAULT_WHEEL_STAGE_SETTINGS;
@@ -225,6 +237,7 @@ function parseSettingMap(rows: SettingRow[]) {
     heroLogoTuneMobile,
     hieroglyphTune,
     welcomeSplash,
+    liveSite,
     wheelStage,
     pageVisibility,
   };
@@ -241,6 +254,7 @@ export function defaultPublicCmsBundle(): PublicCmsBundle {
     websiteText: DEFAULT_WEBSITE_TEXT,
     websiteTextMobile: DEFAULT_WEBSITE_TEXT,
     welcomeSplash: DEFAULT_WELCOME_SPLASH_SETTINGS,
+    liveSite: DEFAULT_LIVE_SITE_SETTINGS,
     wheelStage: DEFAULT_WHEEL_STAGE_SETTINGS,
     pageVisibility: DEFAULT_PAGE_VISIBILITY_SETTINGS,
   };

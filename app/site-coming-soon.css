@@ -1,0 +1,68 @@
+/* Full-site Coming Soon gate — shown when Live Site is turned off in admin. */
+
+.site-coming-soon {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  min-height: 100svh;
+  min-height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+  background: #ece8df;
+  color: #1a1510;
+}
+
+.site-coming-soon__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.site-coming-soon__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.25rem, 3vw, 2rem);
+  padding: max(1.5rem, env(safe-area-inset-top))
+    max(1.5rem, env(safe-area-inset-right))
+    max(1.5rem, env(safe-area-inset-bottom))
+    max(1.5rem, env(safe-area-inset-left));
+  text-align: center;
+}
+
+.site-coming-soon__logo {
+  display: block;
+  width: min(72vw, 28rem);
+  height: auto;
+  max-height: 28vh;
+  object-fit: contain;
+}
+
+.site-coming-soon__label {
+  margin: 0;
+  font-family: var(--font-hathor-display, "Gamgote", Georgia, serif);
+  font-size: clamp(1.15rem, 2.6vw, 1.65rem);
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #2a2218;
+}
+
+@media (max-width: 480px) {
+  .site-coming-soon__logo {
+    width: min(78vw, 16rem);
+  }
+
+  .site-coming-soon__label {
+    letter-spacing: 0.22em;
+  }
+}

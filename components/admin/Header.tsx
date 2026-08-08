@@ -15,6 +15,7 @@ const PAGE_META: Record<string, { section: string; title: string }> = {
   "/admin/website-text": { section: "Manage", title: "Website Text" },
   "/admin/content": { section: "Manage", title: "Website Images" },
   "/admin/pages": { section: "Manage", title: "Pages" },
+  "/admin/live-site": { section: "Manage", title: "Live Site" },
   "/admin/preload-screen": { section: "Manage", title: "Preload Screen" },
   "/admin/hero-logo-tune": { section: "Manage", title: "Hero Logo Tune" },
   "/admin/hieroglyph-tune": { section: "Manage", title: "Background Glyphs" },

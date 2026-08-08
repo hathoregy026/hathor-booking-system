@@ -37,6 +37,7 @@ import "../booking-modal.css";
 import "../venetian-redesign.css";
 import "../night-mode.css";
 import "../page-visibility.css";
+import "../site-coming-soon.css";
 
 /** Public CMS data is edge-cached; admin save routes invalidate this layout. */
 export const revalidate = 300;
@@ -126,7 +127,9 @@ export default async function PublicSiteLayout({
    */
   const cms = await loadPublicCmsBundle();
   const welcomeSplash = cms.welcomeSplash;
+  const liveSite = cms.liveSite;
   const pageVisibility = cms.pageVisibility;
+  const siteIsLive = liveSite.enabled;
 
   const displayFontStyle = {
     /* Installed local display face until Playfair file is added */
@@ -148,33 +151,43 @@ export default async function PublicSiteLayout({
       className={`${agraham.variable} ${gabigaile.variable} ${gamgote.variable} ${quietLuxury.variable} ${plusJakarta.variable}`}
       style={displayFontStyle}
     >
-      <script
-        dangerouslySetInnerHTML={{
-          __html: getWelcomeSplashBlockingScript(welcomeSplash.enabled),
-        }}
-      />
-      <style
-        dangerouslySetInnerHTML={{
-          __html: getWelcomeSplashCriticalStyle(),
-        }}
-      />
-      <style
-        dangerouslySetInnerHTML={{
-          __html: typographyCss,
-        }}
-      />
-      <style
-        data-hathor-logo-tune-site
-        dangerouslySetInnerHTML={{
-          __html: logoTuneCss,
-        }}
-      />
-      <style
-        data-hathor-hieroglyph-tune-site
-        dangerouslySetInnerHTML={{
-          __html: hieroglyphTuneCss,
-        }}
-      />
+      {siteIsLive ? (
+        <script
+          dangerouslySetInnerHTML={{
+            __html: getWelcomeSplashBlockingScript(welcomeSplash.enabled),
+          }}
+        />
+      ) : null}
+      {siteIsLive ? (
+        <style
+          dangerouslySetInnerHTML={{
+            __html: getWelcomeSplashCriticalStyle(),
+          }}
+        />
+      ) : null}
+      {siteIsLive ? (
+        <style
+          dangerouslySetInnerHTML={{
+            __html: typographyCss,
+          }}
+        />
+      ) : null}
+      {siteIsLive ? (
+        <style
+          data-hathor-logo-tune-site
+          dangerouslySetInnerHTML={{
+            __html: logoTuneCss,
+          }}
+        />
+      ) : null}
+      {siteIsLive ? (
+        <style
+          data-hathor-hieroglyph-tune-site
+          dangerouslySetInnerHTML={{
+            __html: hieroglyphTuneCss,
+          }}
+        />
+      ) : null}
       <HeroLogoSettingsProvider
         desktopPartsVariant={cms.heroLogoTune.partsVariant}
         mobilePartsVariant={cms.heroLogoTuneMobile.partsVariant}
@@ -189,7 +202,10 @@ export default async function PublicSiteLayout({
               initialMobile={cms.websiteTextMobile}
             >
               <PageVisibilityProvider settings={pageVisibility}>
-                <PublicLayout welcomeSplash={welcomeSplash}>
+                <PublicLayout
+                  welcomeSplash={welcomeSplash}
+                  liveSite={liveSite}
+                >
                   {children}
                 </PublicLayout>
               </PageVisibilityProvider>

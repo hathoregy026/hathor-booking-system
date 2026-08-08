@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   FileText,
+  Globe2,
   HardDrive,
   ImageIcon,
   LayoutDashboard,
@@ -38,6 +39,7 @@ const NAV_SECTIONS: { title: string; items: NavItem[] }[] = [
       { href: "/admin/website-text", label: "Website Text", icon: TextCursorInput },
       { href: "/admin/content", label: "Website Images", icon: ImageIcon },
       { href: "/admin/pages", label: "Pages", icon: LayoutGrid },
+      { href: "/admin/live-site", label: "Live Site", icon: Globe2 },
       { href: "/admin/preload-screen", label: "Preload Screen", icon: MonitorPlay },
       { href: "/admin/hero-logo-tune", label: "Hero Logo Tune", icon: Sparkles },
       { href: "/admin/hieroglyph-tune", label: "Background Glyphs", icon: Wallpaper },

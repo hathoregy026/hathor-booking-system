@@ -3,6 +3,7 @@ import { GastronomyPageContent } from "@/components/pages/GastronomyPageContent"
 import { StandalonePageVisibilityShell } from "@/components/public/StandalonePageVisibilityShell";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import "../page-visibility.css";
+import "../site-coming-soon.css";
 
 export const metadata: Metadata = {
   title: "Springs Design",
@@ -24,6 +25,7 @@ export default async function GastronomyPage() {
       path="/gastronomy"
       pageLabel="Dining"
       settings={cms.pageVisibility}
+      liveSite={cms.liveSite}
     >
       <GastronomyPageContent />
     </StandalonePageVisibilityShell>

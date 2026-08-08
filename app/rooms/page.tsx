@@ -4,6 +4,7 @@ import { StandalonePageVisibilityShell } from "@/components/public/StandalonePag
 import { LUXURY_SUITES_PAGE } from "@/lib/page-content";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import "../page-visibility.css";
+import "../site-coming-soon.css";
 
 const OG_IMAGE = "/media/hathor/scraped/suites-hero.webp";
 
@@ -43,6 +44,7 @@ export default async function RoomsPage() {
       path="/rooms"
       pageLabel="Luxury Suites"
       settings={cms.pageVisibility}
+      liveSite={cms.liveSite}
     >
       <AccommodationSpringsDesignPage
         frameSrc="/accommodation-springs/luxury-suites/index.html"

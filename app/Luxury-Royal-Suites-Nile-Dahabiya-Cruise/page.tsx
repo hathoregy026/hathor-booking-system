@@ -4,6 +4,7 @@ import { StandalonePageVisibilityShell } from "@/components/public/StandalonePag
 import { ROYAL_SUITES_PAGE } from "@/lib/page-content";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import "../page-visibility.css";
+import "../site-coming-soon.css";
 
 const OG_IMAGE = "/media/hathor/r2/room-royal.webp";
 
@@ -43,6 +44,7 @@ export default async function RoyalSuitesPage() {
       path="/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"
       pageLabel="Royal Suites"
       settings={cms.pageVisibility}
+      liveSite={cms.liveSite}
     >
       <AccommodationSpringsDesignPage
         frameSrc="/accommodation-springs/royal-suites/index.html"

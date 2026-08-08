@@ -4,6 +4,7 @@ import { StandalonePageVisibilityShell } from "@/components/public/StandalonePag
 import { LUXURY_CABINS_PAGE } from "@/lib/page-content";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import "../page-visibility.css";
+import "../site-coming-soon.css";
 
 const OG_IMAGE = "/media/hathor/r2/room-luxury.webp";
 
@@ -45,6 +46,7 @@ export default async function LuxuryCabinsPage() {
       path="/luxury-cabins-Nile-Cruise"
       pageLabel="Luxury Rooms"
       settings={cms.pageVisibility}
+      liveSite={cms.liveSite}
     >
       <AccommodationSpringsDesignPage
         frameSrc="/accommodation-springs/luxury-rooms/index.html"

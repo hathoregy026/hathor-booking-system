@@ -34,6 +34,9 @@ export const HATHOR_FAVICON_SRC = "/branding/hathor-logo-nile-cruise-favicon.web
 /** Full-screen welcome splash shown before the public site on land */
 export const HATHOR_WELCOME_ABOARD_SRC = "/branding/hathor-welcome-aboard.webp";
 
+/** Coming Soon gate background (Live Site off) — sepia Hathor / Nile art */
+export const HATHOR_COMING_SOON_BG_SRC = "/branding/hathor-coming-soon-bg.png";
+
 /** Homepage hero wordmark — centered over video */
 export const HATHOR_MAIN_LOGO_SRC =
   "/branding/hathor-main-logo-egypt-toors.svg";
