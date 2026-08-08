@@ -101,12 +101,29 @@ export function getLuxFooterHtml() {
 `;
 }
 
+/** Suites scroll-section wrapper — same footer chrome as PublicLayout. */
+export function getLuxFooterScrollSectionHtml() {
+  return `
+<section class="section section--no-overflow hathor-suites-footer-scroll" data-scroll-section>
+${getLuxFooterHtml().trim()}
+</section>
+`;
+}
+
 /** Inject lux-footer + CSS into an iframe document (idempotent). */
 export function injectLuxFooterIntoHtml(html) {
   const css = getLuxFooterCss();
   const footer = getLuxFooterHtml();
   let next = html.replace(
     /<style data-hathor-lux-footer>[\s\S]*?<\/style>/gi,
+    "",
+  );
+  next = next.replace(
+    /<style data-hathor-suites-footer>[\s\S]*?<\/style>/gi,
+    "",
+  );
+  next = next.replace(
+    /<section[^>]*hathor-suites-footer-scroll[\s\S]*?<\/section>/gi,
     "",
   );
   next = next.replace(
@@ -125,6 +142,21 @@ export function injectLuxFooterIntoHtml(html) {
     position: relative;
     z-index: 5;
     background: #ece8df;
+  }
+  .hathor-suites-footer-scroll {
+    display: block !important;
+    background: #ece8df !important;
+  }
+  .hathor-lux-footer-host .lux-footer.is-copy-ready .lux-footer__headline,
+  .hathor-lux-footer-host .lux-footer.is-copy-ready .lux-footer__subhead,
+  .hathor-lux-footer-host .lux-footer.is-copy-ready .lux-footer__subscribe,
+  .hathor-lux-footer-host .lux-footer__col,
+  .hathor-suites-footer-host .lux-footer.is-copy-ready .lux-footer__headline,
+  .hathor-suites-footer-host .lux-footer.is-copy-ready .lux-footer__subhead,
+  .hathor-suites-footer-host .lux-footer.is-copy-ready .lux-footer__subscribe,
+  .hathor-suites-footer-host .lux-footer__col {
+    opacity: 1 !important;
+    transform: none !important;
   }
 ${css}
 </style>

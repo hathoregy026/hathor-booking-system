@@ -437,38 +437,21 @@
   footer.footer {
     display: none !important;
   }
-  /* Footer is the one intentional structural substitution. */
+  /* Same cream host as PublicLayout / other iframe pages — no gold retint. */
   .hathor-suites-footer-scroll {
     display: block !important;
-    background: #f5eacf !important;
+    background: #ece8df !important;
   }
+  .hathor-lux-footer-host,
   .hathor-suites-footer-host {
-    background: #f5eacf;
+    position: relative;
+    z-index: 5;
+    background: #ece8df;
   }
-  .hathor-suites-footer-host .lux-footer {
-    --lux-bg: #f5eacf;
-    --lux-surface: #f5eacf;
-    --lux-card: #cdbfa6;
-    --lux-text: #b69f64;
-    --lux-muted: #cdbfa6;
-    --lux-gold: #b69f64;
-    --lux-ink-soft: #b69f64;
-    --lux-border: rgb(182 159 100 / 0.22);
-    color: #b69f64 !important;
-  }
-  .hathor-suites-footer-host .lux-footer__headline,
-  .hathor-suites-footer-host .lux-footer__col-title,
-  .hathor-suites-footer-host .lux-footer__link,
-  .hathor-suites-footer-host .lux-footer__meta-link,
-  .hathor-suites-footer-host .lux-footer__bg-logo {
-    color: #b69f64 !important;
-  }
-  .hathor-suites-footer-host .lux-footer__subhead,
-  .hathor-suites-footer-host .lux-footer__tagline,
-  .hathor-suites-footer-host .lux-footer__legal,
-  .hathor-suites-footer-host .lux-footer__crafted {
-    color: #cdbfa6 !important;
-  }
+  .hathor-lux-footer-host .lux-footer.is-copy-ready .lux-footer__headline,
+  .hathor-lux-footer-host .lux-footer.is-copy-ready .lux-footer__subhead,
+  .hathor-lux-footer-host .lux-footer.is-copy-ready .lux-footer__subscribe,
+  .hathor-lux-footer-host .lux-footer__col,
   .hathor-suites-footer-host .lux-footer.is-copy-ready .lux-footer__headline,
   .hathor-suites-footer-host .lux-footer.is-copy-ready .lux-footer__subhead,
   .hathor-suites-footer-host .lux-footer.is-copy-ready .lux-footer__subscribe,
@@ -477,21 +460,21 @@
     transform: none !important;
   }
 </style>
-<style data-hathor-suites-footer>
+<style data-hathor-lux-footer>
 /* =========================================================
    Lux Editorial Footer — Hathor cream / ink / gold
    Scoped to .lux-footer so CruisesFooter (.owo-footer) stays intact
    ========================================================= */
 
 .lux-footer {
-  --lux-bg: var(--public-bg, #f5eacf);
-  --lux-surface: var(--public-surface, #f5eacf);
-  --lux-card: var(--public-card, #cdbfa6);
-  --lux-text: var(--public-text, #b69f64);
-  --lux-muted: var(--public-muted, #cdbfa6);
+  --lux-bg: var(--public-bg, #ece8df);
+  --lux-surface: var(--public-surface, #f5f0e8);
+  --lux-card: var(--public-card, #f0ebe3);
+  --lux-text: var(--public-text, #2c2824);
+  --lux-muted: var(--public-muted, #6b6560);
   --lux-gold: var(--public-gold, #b69f64);
   --lux-gold-soft: #d4c28a;
-  --lux-ink-soft: #b69f64;
+  --lux-ink-soft: #4a3f32;
   --lux-border: var(--public-border, rgb(44 40 36 / 0.12));
   --lux-font-display: var(--public-title, var(--public-serif, "Playfair Display", Georgia, serif));
   --lux-font-brand: var(--public-title, var(--public-serif, Georgia, serif));
@@ -517,7 +500,7 @@
       180deg,
       color-mix(in srgb, var(--lux-surface) 88%, var(--lux-gold) 4%) 0%,
       var(--lux-bg) 42%,
-      color-mix(in srgb, var(--lux-bg) 92%, #cdbfa6 8%) 100%
+      color-mix(in srgb, var(--lux-bg) 92%, #ebe3d4 8%) 100%
     );
   color: var(--lux-text);
   font-family: var(--lux-font-body);
@@ -590,14 +573,14 @@
   font-weight: 400;
   /* Font / size / tracking from dashboard · Page title */
   /* Keep a readable cream-footer fallback if typography vars lag */
-  color: var(--lux-text, #b69f64);
+  color: var(--lux-text, #2c2824);
 }
 
 .lux-footer__subhead {
   margin: 2rem auto 0;
   max-width: 500px;
   /* Font / size / leading from dashboard · Body text */
-  color: var(--lux-muted, #cdbfa6);
+  color: var(--lux-muted, #6b6560);
 }
 
 /* Ensure invitation copy is never left at GSAP/atelier opacity 0 after mount */
@@ -738,7 +721,7 @@
   place-items: center;
   pointer-events: none;
   overflow: hidden;
-  color: #b69f64;
+  color: #2c2824;
 }
 
 .lux-footer__bg-logo-img {
@@ -8387,8 +8370,8 @@ to&nbsp;the&nbsp;MIBC
 
 
 <section class="section section--no-overflow hathor-suites-footer-scroll" data-scroll-section>
-<div class="hathor-suites-footer-host public-site">
-  <div class="lux-footer is-copy-ready">
+<div class="hathor-lux-footer-host public-site">
+  <footer class="lux-footer is-copy-ready">
     <div class="lux-footer__noise" aria-hidden="true"></div>
     <div class="lux-footer__glow" aria-hidden="true"></div>
     <div class="lux-footer__inner">
@@ -8398,8 +8381,8 @@ to&nbsp;the&nbsp;MIBC
           Join our exclusive circle for private itineraries and early access to rare voyages.
         </p>
         <div class="lux-footer__subscribe">
-          <a class="lux-footer__meta-link" href="mailto:reservations@hathorcruise.com?subject=Suites%20Availability" target="_top" data-ajax-page-ignore>
-            Request suite availability →
+          <a class="lux-footer__meta-link" href="mailto:reservations@hathorcruise.com?subject=Voyage%20Inquiry" target="_top" data-ajax-page-ignore>
+            Speak with concierge →
           </a>
         </div>
       </div>
@@ -8469,7 +8452,7 @@ to&nbsp;the&nbsp;MIBC
         </div>
       </div>
     </div>
-  </div>
+  </footer>
 </div>
 </section>
 
