@@ -1,0 +1,30 @@
+{
+  "source": "assets/CLONE. httpssprings.estate/infrastructure/index.html",
+  "sections": [
+    "i-intro",
+    "i-next",
+    "i-next-mobile",
+    "i-video",
+    "i-slider",
+    "i-opening",
+    "i-nature",
+    "i-interiors",
+    "i-forest",
+    "i-terrace",
+    "i-parking",
+    "i-more"
+  ],
+  "localCssJs": [
+    "assets/stylesheets/global.css",
+    "assets/stylesheets/infrastructure.css",
+    "assets/stylesheets/browser-message.css",
+    "assets/javascripts/shared.js",
+    "assets/javascripts/infrastructure.js",
+    "assets/javascripts/1.js",
+    "assets/javascripts/31.js",
+    "assets/javascripts/browser-message/browser-message.js"
+  ],
+  "mediaStrategy": "https://springs.estate absolute URLs (literal clone)",
+  "output": "public/springs-layout/index.html",
+  "route": "/test-slide"
+}

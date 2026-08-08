@@ -51,6 +51,7 @@ function requiresPrivateHtml(pathname: string): boolean {
     pathname.startsWith("/booking") ||
     pathname.startsWith("/preview") ||
     pathname.startsWith("/test-scroll-reveal") ||
+    pathname.startsWith("/test-slide") ||
     pathname.startsWith("/transition")
   );
 }
