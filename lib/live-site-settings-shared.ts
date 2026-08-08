@@ -7,8 +7,9 @@ export const DEFAULT_LIVE_SITE_BG_SRC = "/branding/hathor-coming-soon-bg.png";
 
 export const liveSiteSettingsSchema = z.object({
   /**
-   * When true, the public site is shown normally.
-   * When false, visitors see Coming Soon (admin stays available).
+   * When true, the public site is shown normally everywhere.
+   * When false, Coming Soon shows on the custom domain only —
+   * Vercel / localhost keep the real site (admin always available).
    */
   enabled: z.boolean(),
   /** Full-bleed Coming Soon background (rendered at 10% opacity). */

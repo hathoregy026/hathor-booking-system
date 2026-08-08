@@ -7,8 +7,9 @@ export default function AdminLiveSitePage() {
       <div>
         <h1 className="admin-page-title">Live Site</h1>
         <p className="admin-page-subtitle">
-          Turn the public website on or off. When off, visitors see Coming Soon
-          — your pages stay intact and are shown again when you turn it back on.
+          Turn the public website on or off. When off, Coming Soon appears on
+          the custom domain only — your Vercel link stays fully working for
+          development.
         </p>
       </div>
 
@@ -25,8 +26,9 @@ export default function AdminLiveSitePage() {
           className="mt-3 text-sm leading-relaxed"
           style={{ color: "var(--text-secondary)" }}
         >
-          Use this while the site is unfinished so clients do not see a broken
-          experience. Dashboard access is never blocked.
+          Use this while the site is unfinished so clients on the domain see
+          Coming Soon. Keep using the Vercel URL to work. Dashboard access is
+          never blocked.
         </p>
         <div className="mt-6">
           <LiveSiteSettingsPanel />

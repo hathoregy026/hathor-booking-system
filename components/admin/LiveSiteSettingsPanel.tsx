@@ -88,7 +88,7 @@ export function LiveSiteSettingsPanel() {
         "success",
         saved.enabled
           ? "Live site is on — public pages are visible"
-          : "Live site is off — visitors see Coming Soon",
+          : "Live site is off — Coming Soon on custom domain; Vercel stays open",
       );
     } catch (error) {
       showToast(
@@ -134,9 +134,9 @@ export function LiveSiteSettingsPanel() {
             className="mt-1 block text-sm leading-relaxed"
             style={{ color: "var(--text-secondary)" }}
           >
-            When off, visitors see Coming Soon (logo + background). Admin and
-            APIs stay available so you can turn it back on. Page content is not
-            changed — only hidden.
+            When off, Coming Soon shows on your custom domain only. Your Vercel
+            link and localhost stay fully working so you can keep building.
+            Admin is never blocked.
           </span>
         </span>
       </label>
@@ -156,8 +156,8 @@ export function LiveSiteSettingsPanel() {
         }}
       >
         {liveSite.enabled
-          ? "Status: Live — the public website is visible."
-          : "Status: Hidden — visitors will see Coming Soon after you save."}
+          ? "Status: Live — the public website is visible everywhere."
+          : "Status: Coming Soon on the custom domain only — Vercel / localhost stay open."}
       </div>
 
       <div>

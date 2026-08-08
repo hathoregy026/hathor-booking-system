@@ -26,6 +26,8 @@ type PublicLayoutProps = {
   children: ReactNode;
   welcomeSplash?: WelcomeSplashSettings;
   liveSite?: LiveSiteSettings;
+  /** True only on custom-domain requests when Live Site is off. */
+  comingSoonActive?: boolean;
 };
 
 function resolveDeployId(): string {
@@ -40,13 +42,14 @@ export function PublicLayout({
   children,
   welcomeSplash = DEFAULT_WELCOME_SPLASH_SETTINGS,
   liveSite = DEFAULT_LIVE_SITE_SETTINGS,
+  comingSoonActive = false,
 }: PublicLayoutProps) {
   const deployId = resolveDeployId();
   const splashEnabled = welcomeSplash.enabled;
   const splashImageUrl = welcomeSplash.imageUrl;
 
-  /* Hide the public site only — does not alter page content when live. */
-  if (!liveSite.enabled) {
+  /* Custom domain only — Vercel / localhost keep the real site. */
+  if (comingSoonActive) {
     return (
       <PublicThemeProvider>
         <SiteComingSoon backgroundImageUrl={liveSite.backgroundImageUrl} />

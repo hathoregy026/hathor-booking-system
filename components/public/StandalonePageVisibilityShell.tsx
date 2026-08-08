@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Footer } from "@/components/layout/Footer";
 import { PageUnderConstruction } from "@/components/public/PageUnderConstruction";
 import { SiteComingSoon } from "@/components/public/SiteComingSoon";
+import { resolveComingSoonForRequest } from "@/lib/live-site-gate";
 import {
   DEFAULT_LIVE_SITE_SETTINGS,
   type LiveSiteSettings,
@@ -20,13 +21,14 @@ type StandalonePageVisibilityShellProps = {
 };
 
 /** For routes outside `(public)` that still need CMS page visibility. */
-export function StandalonePageVisibilityShell({
+export async function StandalonePageVisibilityShell({
   path,
   settings,
   liveSite = DEFAULT_LIVE_SITE_SETTINGS,
   children,
 }: StandalonePageVisibilityShellProps) {
-  if (!liveSite.enabled) {
+  const comingSoonActive = await resolveComingSoonForRequest(liveSite);
+  if (comingSoonActive) {
     return (
       <SiteComingSoon backgroundImageUrl={liveSite.backgroundImageUrl} />
     );

@@ -9,6 +9,7 @@ import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
 import { TypographySettingsProvider } from "@/components/public/TypographySettingsProvider";
 import { WebsiteTextProvider } from "@/components/public/WebsiteTextProvider";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
+import { resolveComingSoonForRequest } from "@/lib/live-site-gate";
 import {
   getWelcomeSplashBlockingScript,
   getWelcomeSplashCriticalStyle,
@@ -129,7 +130,8 @@ export default async function PublicSiteLayout({
   const welcomeSplash = cms.welcomeSplash;
   const liveSite = cms.liveSite;
   const pageVisibility = cms.pageVisibility;
-  const siteIsLive = liveSite.enabled;
+  const comingSoonActive = await resolveComingSoonForRequest(liveSite);
+  const siteIsLive = !comingSoonActive;
 
   const displayFontStyle = {
     /* Installed local display face until Playfair file is added */
@@ -205,6 +207,7 @@ export default async function PublicSiteLayout({
                 <PublicLayout
                   welcomeSplash={welcomeSplash}
                   liveSite={liveSite}
+                  comingSoonActive={comingSoonActive}
                 >
                   {children}
                 </PublicLayout>

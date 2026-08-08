@@ -1,5 +1,6 @@
 import { Inter, Playfair_Display } from "next/font/google";
 import { SiteComingSoon } from "@/components/public/SiteComingSoon";
+import { resolveComingSoonForRequest } from "@/lib/live-site-gate";
 import { getLiveSiteSettingsSafe } from "@/lib/live-site-settings";
 import "../public.css";
 import "../site-nav.css";
@@ -24,7 +25,8 @@ export default async function BookRouteLayout({
   children: React.ReactNode;
 }) {
   const liveSite = await getLiveSiteSettingsSafe();
-  if (!liveSite.enabled) {
+  const comingSoonActive = await resolveComingSoonForRequest(liveSite);
+  if (comingSoonActive) {
     return (
       <SiteComingSoon backgroundImageUrl={liveSite.backgroundImageUrl} />
     );
