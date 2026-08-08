@@ -709,23 +709,13 @@ const suitesPalette = `
       rgba(245, 234, 207, 0) 74%
     ) !important;
   }
-  /* Preloader: hide Springs wordmark SVGs; show centered golden Hathor icon */
+  /* Preloader: no logos — avoid flash on landing */
+  .preloader__logo,
+  .preloader__logo-mobile,
+  .preloader .hathor-preloader-icon,
   .preloader__logo .header__logo__inner,
   .preloader__logo-mobile__item {
     display: none !important;
-  }
-  .preloader__logo.hathor-preloader-logo,
-  .preloader__logo-mobile.hathor-preloader-logo {
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-  }
-  .hathor-preloader-icon {
-    display: block;
-    width: clamp(52px, 6vw, 88px);
-    height: auto;
-    aspect-ratio: 1;
-    object-fit: contain;
   }
   footer.footer {
     display: none !important;
@@ -881,26 +871,15 @@ html = html.replace(
   `${suitesFontLinks}${suitesPalette}${suitesRuntime}</head>`,
 );
 
-// Preloader Springs wordmark → golden Hathor icon (keep logo container classes).
-const hathorPreloaderIcon =
-  "/branding/hathor-logo-nile-cruise-panorama-on-nile-visit-egypt-HATHOR-ICON-golden.svg";
+// Preloader: strip logo markup so nothing flashes on landing.
 html = html.replace(
-  /(<div class="header__logo preloader__logo">)[\s\S]*?(<\/div>\s*<\/div>\s*<div class="header__right)/i,
-  `$1<img class="hathor-preloader-icon" src="${hathorPreloaderIcon}" alt="Hathor" width="88" height="88" draggable="false" />$2`,
+  /(<div class="header__logo preloader__logo(?:\s+hathor-preloader-logo)?")[^>]*>[\s\S]*?(<\/div>\s*<\/div>\s*<div class="header__right)/i,
+  '$1 aria-hidden="true"></div>\n\n            </div>\n\n            <div class="header__right',
 );
 html = html.replace(
-  /(<div class="header__left preloader__logo-mobile">)[\s\S]*?(<\/div>\s*<div class="header__center)/i,
-  `$1<img class="hathor-preloader-icon" src="${hathorPreloaderIcon}" alt="Hathor" width="64" height="64" draggable="false" />$2`,
+  /(<div class="header__left preloader__logo-mobile(?:\s+hathor-preloader-logo)?")[^>]*>[\s\S]*?(<\/div>\s*<div class="header__center)/i,
+  '$1 aria-hidden="true"></div>\n\n            <div class="header__center',
 );
-html = html
-  .replace(
-    /class="header__logo preloader__logo"/g,
-    'class="header__logo preloader__logo hathor-preloader-logo"',
-  )
-  .replace(
-    /class="header__left preloader__logo-mobile"/g,
-    'class="header__left preloader__logo-mobile hathor-preloader-logo"',
-  );
 
 // Serve captured scripts/styles from this app
 html = html.replaceAll('href="/assets/', 'href="/suites-springs/assets/');
