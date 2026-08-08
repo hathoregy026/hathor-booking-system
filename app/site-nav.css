@@ -654,91 +654,41 @@
   }
 
   /*
-   * Menu hovered: whole white frame grows — panels move in-flow under parents
-   * (same layout as the ref: options live inside the dropped nav bar).
+   * Menu hovered: top row stays locked (no height/align jump).
+   * White frame + options paint below via absolute overlay.
    */
   .public-site .hathor-header--owo-hero-layout.hathor-header--menu-hovered {
-    --nav-top-row-h: clamp(3.15rem, 7vh, 4.5rem);
+    /* Tall enough for Suites’ 4 links; layout height of header stays unchanged */
+    --nav-mega-drop-h: 11.25rem;
+    overflow: visible;
   }
 
   .public-site
-    .hathor-header--owo-hero-layout.hathor-header--menu-hovered.hathor-header--nav-compact {
-    --nav-top-row-h: clamp(2.35rem, 3.2vw, 2.85rem);
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
+    .hathor-header__inner--owo {
+    overflow: visible;
   }
 
   .public-site
     .hathor-header--owo-hero-layout.hathor-header--menu-hovered
     .hathor-header__menu-zone {
     position: relative;
-    align-items: flex-start;
   }
 
+  /* Extend the white header surface downward without growing layout box */
   .public-site
-    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
-    .hathor-header__col--logo,
-  .public-site
-    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
-    .hathor-header__col--right {
-    align-self: flex-start;
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered::before {
+    bottom: calc(-1 * var(--nav-mega-drop-h));
   }
 
-  .public-site
-    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
-    .hathor-header__col--logo {
-    min-height: var(--nav-top-row-h);
-    display: flex;
-    align-items: center;
-  }
-
-  .public-site
-    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
-    .hathor-header__nav {
-    align-items: flex-start;
-  }
-
-  .public-site
-    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
-    .hathor-header__nav-item,
-  .public-site
-    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
-    .hathor-header__nav-item--dropdown {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  /* Top labels share the logo row height so the hairline sits under them */
-  .public-site
-    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
-    .hathor-header__nav-item
-    > .hathor-header__nav-link,
-  .public-site
-    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
-    .hathor-header__dropdown-trigger {
-    min-height: var(--nav-top-row-h);
-    display: inline-flex;
-    align-items: center;
-    box-sizing: border-box;
-  }
-
-  .public-site
-    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
-    .hathor-header__inner--owo {
-    align-items: flex-start;
-    padding-bottom: 1.35rem;
-    transition:
-      padding 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-      background-color 0.55s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  /* Full-width hairline under the top label row */
+  /* Full-width hairline under the fixed top label row */
   .public-site
     .hathor-header--owo-hero-layout.hathor-header--menu-hovered
     .hathor-header__menu-zone::after {
     content: "";
     position: absolute;
     left: 50%;
-    top: var(--nav-top-row-h);
+    top: 100%;
     width: 100vw;
     height: 1px;
     background: rgb(28 25 23 / 0.14);
@@ -750,7 +700,7 @@
   .public-site
     .hathor-header--owo-hero-layout.hathor-header--menu-hovered
     .hathor-header__nav-link-label::after {
-    bottom: calc(-0.5 * (var(--nav-top-row-h) - 1em));
+    bottom: -0.5rem;
   }
 
   .public-site
@@ -761,16 +711,17 @@
     .hathor-header--owo-hero-layout.hathor-header--menu-hovered
     .hathor-header__nav-item--dropdown
     .hathor-header__dropdown.is-open {
-    position: static !important;
-    left: auto;
-    top: auto;
+    position: absolute !important;
+    left: 0;
+    top: 100%;
     display: block;
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
     transform: none !important;
-    margin-top: 0.95rem;
+    margin-top: 0.85rem;
     padding-top: 0;
+    padding-bottom: 1.1rem;
     transition:
       opacity var(--hp2-drop-open-ms) var(--hp2-drop-ease),
       visibility 0s;
@@ -931,15 +882,10 @@
   }
 }
 
-/* Mid desktop / tablet wordmark — match logo + type size */
+/* Mid desktop / tablet wordmark — match type size */
 @media (min-width: 768px) and (max-width: 1099px) {
   .public-site .hathor-header--owo-hero-layout.hathor-header--menu-hovered {
-    --nav-top-row-h: clamp(2.75rem, 5vh, 3.5rem);
-  }
-
-  .public-site
-    .hathor-header--owo-hero-layout.hathor-header--menu-hovered.hathor-header--nav-compact {
-    --nav-top-row-h: 2.15rem;
+    --nav-mega-drop-h: 8.75rem;
   }
 
   .public-site
