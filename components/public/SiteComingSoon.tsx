@@ -1,4 +1,4 @@
-import { HATHOR_MAIN_LOGO_SRC } from "@/lib/branding";
+import { HATHOR_ICON_GOLD_SRC } from "@/lib/branding";
 import { DEFAULT_LIVE_SITE_BG_SRC } from "@/lib/live-site-settings-shared";
 
 type SiteComingSoonProps = {
@@ -22,10 +22,10 @@ export function SiteComingSoon({
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           className="site-coming-soon__logo"
-          src={HATHOR_MAIN_LOGO_SRC}
+          src={HATHOR_ICON_GOLD_SRC}
           alt="Hathor"
-          width={480}
-          height={160}
+          width={220}
+          height={220}
           decoding="async"
         />
         <p className="site-coming-soon__label">Coming Soon</p>
