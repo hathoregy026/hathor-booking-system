@@ -737,11 +737,12 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   pointer-events: none;
   clip-path: none;
   /*
-   * Springs .ui-dark sets --t-background on the chapter; clipped RC gaps
-   * read that theme through the transparent caption. Hathor gold remap only
-   * for the panel fill — texts/colours elsewhere stay as authored.
+   * Springs chapter itself is transparent — gold lives on the right-column
+   * only. A chapter background here paints over the slider during the
+   * under-previous overlap (z-index 4 > slider 3) and looks like a collapsed
+   * gold void with thin clipped strips.
    */
-  background: var(--am-gold);
+  background: transparent;
 }
 
 /* Opening under-next pulls next sticky sibling (Springs sticky--under-next) */
