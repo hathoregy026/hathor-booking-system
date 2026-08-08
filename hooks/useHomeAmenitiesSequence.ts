@@ -138,44 +138,6 @@ export function useHomeAmenitiesSequence(
 
     let active = true;
 
-    /* Opening → Voyages: hide sticky left photo once cream enters (no bleed) */
-    const openingEl = root.querySelector<HTMLElement>("[data-am-opening]");
-    const sliderEl = root.querySelector<HTMLElement>("[data-am-slider]");
-    const voyagesEl =
-      root.querySelector<HTMLElement>("[data-am-voyages]") ??
-      document.querySelector<HTMLElement>("[data-am-voyages]");
-    const syncOpeningVoyagesCover = () => {
-      if (!openingEl) return;
-      const openingRect = openingEl.getBoundingClientRect();
-      const voyTop = voyagesEl?.getBoundingClientRect().top ?? Infinity;
-
-      /* Slider sticky must not paint through the opening gold column */
-      if (sliderEl) {
-        const openingActive =
-          openingRect.bottom > window.innerHeight * 0.15 &&
-          openingRect.top < window.innerHeight * 0.85;
-        sliderEl.classList.toggle("is-opening-covering", openingActive);
-      }
-
-      /*
-       * Voyages clip-path is inset(100svh): cream paints from (voyTop + 100svh).
-       * Hide BOTH opening halves as soon as cream is well into view so the sticky
-       * left photo leaves with the gold — not after cream has already covered it.
-       */
-      const creamTop = voyTop + window.innerHeight;
-      const covering = creamTop < window.innerHeight * 0.7;
-      openingEl.classList.toggle("is-voyages-covering", covering);
-    };
-    syncOpeningVoyagesCover();
-    const coverSt = ScrollTrigger.create({
-      id: "home-am-opening-voyages-cover",
-      trigger: root,
-      start: "top bottom",
-      end: "bottom top",
-      onUpdate: syncOpeningVoyagesCover,
-      onRefresh: syncOpeningVoyagesCover,
-    });
-
     const frame = requestAnimationFrame(() => {
       if (!active) return;
       engine.refresh();
@@ -215,7 +177,6 @@ export function useHomeAmenitiesSequence(
         onViewport,
       );
       st.kill();
-      coverSt?.kill();
       helmSt?.kill();
       engine.destroy();
     };

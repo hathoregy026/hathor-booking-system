@@ -130,17 +130,6 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   transform: translateZ(1px);
 }
 
-@media (min-width: 1025px) {
-  .home-am-opening.home-am-chapter--under-previous-after-next {
-    clip-path: inset(calc(100 * var(--am-svh)) 0 0);
-    margin-top: calc(
-      var(--sticky-under-previous-distance) * -1 +
-        var(--sticky-under-next-distance) * -1
-    );
-    transform: translateZ(1px);
-  }
-}
-
 /*
  * Helm may stack above Voyages for the cover wipe, but stays fully clipped
  * shut in CSS until the scrub opens it — so Voyages is never buried blank.
@@ -152,11 +141,10 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
 }
 
-/* ========== i-nature — Our Voyages (Springs sticky sibling after i-opening) ========== */
+/* ========== i-nature — Our Voyages (literal Springs sticky sibling) ========== */
 
 .home-am-voyages {
   position: relative;
-  z-index: 30;
   min-height: calc(100 * var(--am-svh));
   pointer-events: none;
 }
@@ -176,9 +164,19 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 }
 
 @media (min-width: 1025px) {
-  /* Springs i-nature runway */
-  .home-am-voyages {
-    min-height: 300svh;
+  /*
+   * Springs .i-nature @ lg-up — band clip handoff (NOT inset / NOT JS hide).
+   * Must beat `.under-next + .under-previous { inset(100svh) }`.
+   */
+  .home-am-opening.home-am-chapter--under-next
+    + .home-am-voyages.home-am-chapter--under-previous,
+  .home-am-voyages.home-am-chapter--under-previous {
+    clip-path: polygon(0 100svh, 100% 100svh, 100% 200svh, 0 200svh);
+    margin-top: -200svh;
+    /* Above opening (z-index:4) so the cream band actually covers the sticky left */
+    z-index: 6;
+    min-height: calc(100 * var(--am-svh));
+    transform: translateZ(1px);
   }
 
   .home-am-voyages__stage {
@@ -529,6 +527,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   margin: 0;
   line-height: 1.08;
   max-width: 100%;
+  text-align: left;
   /* Fit the half-column without ugly mid-phrase wraps */
   font-size: clamp(1.85rem, 3.6vw, 3.35rem) !important;
   letter-spacing: -0.02em;
@@ -537,6 +536,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 /* Only intentional title lines — never atelier .split-char spans */
 .home-am-slider__caption .typo-on-images-title > .home-am-title-line {
   display: block;
+  text-align: left;
   white-space: nowrap;
 }
 
@@ -594,25 +594,17 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   object-position: bottom center !important;
 }
 
-/* ========== i-opening — Springs layout (Hathor gold + images only) ========== */
+/* ========== i-opening — literal Springs infrastructure opening ========== */
 
 .home-am-opening {
   height: 250svh;
   position: relative;
-  z-index: 5;
+  z-index: 4;
   pointer-events: none;
   clip-path: none;
 }
 
-/* When opening is on screen, previous slider sticky must not paint through */
-.home-am-slider.is-opening-covering .home-am-chapter__stage,
-.home-am-slider.is-opening-covering .home-am-slider__images-col,
-.home-am-slider.is-opening-covering .home-am-slider__caption-col {
-  visibility: hidden;
-  pointer-events: none;
-}
-
-/* Opening is last amenities chapter — under-next must pull Voyages (sibling of sequence) */
+/* Opening under-next pulls Voyages (next sticky sibling) */
 .home-am-opening.home-am-chapter--under-next {
   margin-bottom: calc(var(--sticky-under-next-distance) * -1);
 }
@@ -623,16 +615,6 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   z-index: 2;
   /* contain:content can prevent the left ManagedImage from lazy-loading */
   contain: none;
-}
-
-/*
- * Springs i-nature cover: when cream rises, BOTH halves leave together.
- * Without this the sticky left photo stays while gold/cream handoff on the right.
- */
-.home-am-opening.is-voyages-covering .home-am-chapter__stage,
-.home-am-opening.is-voyages-covering .home-am-opening__right-column {
-  visibility: hidden;
-  pointer-events: none;
 }
 
 .home-am-opening__content,
@@ -675,16 +657,12 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   transform-origin: center center;
 }
 
-/*
- * Springs sticky right half: keep gold under the title so when the scrolling
- * right-column clip exits, left photo + gold leave together (no cream flash /
- * half-bleed). Cards paint above via .home-am-opening__right-column z-index.
- */
+/* Springs: title caption is transparent — scrolling right-column gold shows through */
 .home-am-opening__caption {
   position: relative;
   flex: 0 1 50vw;
   width: 50vw;
-  background: var(--am-gold);
+  background: transparent;
   will-change: clip-path;
 }
 
@@ -850,11 +828,20 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
 }
 
 @media (min-width: 1025px) {
-  .home-am-opening {
+  /*
+   * Springs .i-opening @ lg-up:
+   * clear sticky under-previous inset clip, keep -200svh pull from after-next.
+   */
+  .home-am-opening,
+  .home-am-opening.home-am-chapter--under-previous-after-next {
     clip-path: none;
     height: 400svh;
     min-height: 2700px;
-    /* Do NOT set overflow:hidden — it breaks CSS sticky */
+    margin-top: calc(
+      var(--sticky-under-previous-distance) * -1 +
+        var(--sticky-under-next-distance) * -1
+    );
+    transform: translateZ(1px);
   }
 
   .home-am-opening__list-item {
