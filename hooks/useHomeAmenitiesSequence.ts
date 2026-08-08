@@ -159,11 +159,11 @@ export function useHomeAmenitiesSequence(
 
       /*
        * Voyages clip-path is inset(100svh): cream paints from (voyTop + 100svh).
-       * Hide sticky opening as soon as that cream band reaches mid-viewport so the
-       * left photo cannot sit on top of Our Voyages.
+       * Hide BOTH opening halves as soon as cream is well into view so the sticky
+       * left photo leaves with the gold — not after cream has already covered it.
        */
       const creamTop = voyTop + window.innerHeight;
-      const covering = creamTop < window.innerHeight * 0.65;
+      const covering = creamTop < window.innerHeight * 0.7;
       openingEl.classList.toggle("is-voyages-covering", covering);
     };
     syncOpeningVoyagesCover();

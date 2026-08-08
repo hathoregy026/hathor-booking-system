@@ -606,7 +606,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 
 /* When opening is on screen, previous slider sticky must not paint through */
 .home-am-slider.is-opening-covering .home-am-chapter__stage,
-.home-am-slider.is-opening-covering .home-am-slider__images-col {
+.home-am-slider.is-opening-covering .home-am-slider__images-col,
+.home-am-slider.is-opening-covering .home-am-slider__caption-col {
   visibility: hidden;
   pointer-events: none;
 }
@@ -674,12 +675,16 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   transform-origin: center center;
 }
 
-/* Springs: caption stays transparent so the scrolling right-column (cards) shows through */
+/*
+ * Springs sticky right half: keep gold under the title so when the scrolling
+ * right-column clip exits, left photo + gold leave together (no cream flash /
+ * half-bleed). Cards paint above via .home-am-opening__right-column z-index.
+ */
 .home-am-opening__caption {
   position: relative;
   flex: 0 1 50vw;
   width: 50vw;
-  background: transparent;
+  background: var(--am-gold);
   will-change: clip-path;
 }
 

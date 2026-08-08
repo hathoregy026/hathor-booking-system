@@ -639,11 +639,10 @@ export function HomeAmenitiesSequence({
           data-parallax-enable-mq="md-up"
           data-parallax-clamp="true"
           data-parallax-measure-selector="[data-am-chapter]"
+          /* Springs i-opening right-column — literal keyframes */
           data-parallax-0-0='{"clip-path":"polygon(50vw 0vh, 100% 0vh, 100% 0vh, 50vw 0vh)"}'
-          data-parallax--40-0='{"clip-path":"polygon(50vw 0vh, 100% 0vh, 100% 100vh, 50vw 100vh)"}'
-          data-parallax--160-0='{"clip-path":"polygon(50vw 0vh, 100% 0vh, 100% 100vh, 50vw 100vh)"}'
-          data-parallax--200-0='{"clip-path":"polygon(50vw 0vh, 100% 0vh, 100% 250vh, 50vw 250vh)"}'
-          data-parallax--220-0='{"clip-path":"polygon(50vw 100vh, 100% 100vh, 100% 350vh, 50vw 350vh)"}'
+          data-parallax--100-0='{"clip-path":"polygon(50vw 100vh, 100% 100vh, 100% 200vh, 50vw 200vh)"}'
+          data-parallax--101-0='{"clip-path":"polygon(50vw 100vh, 100% 100vh, 100% 350vh, 50vw 350vh)"}'
         >
           <div className="home-am-opening__right-inner">
             <p
