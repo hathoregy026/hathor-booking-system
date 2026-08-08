@@ -657,12 +657,18 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   transform-origin: center center;
 }
 
-/* Springs: title caption is transparent — scrolling right-column gold shows through */
+/*
+ * Springs page chrome under i-opening is dark green, so when the scrolling
+ * right-column clip exits the right half still reads as continuous.
+ * Hathor page chrome is cream — without a gold floor the right “jumps” to
+ * Voyages while the sticky left photo remains (the bleed in your screenshot).
+ * Sticky caption = gold floor; cards still paint above via right-column z-index.
+ */
 .home-am-opening__caption {
   position: relative;
   flex: 0 1 50vw;
   width: 50vw;
-  background: transparent;
+  background: var(--am-gold);
   will-change: clip-path;
 }
 
@@ -831,6 +837,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   /*
    * Springs .i-opening @ lg-up:
    * clear sticky under-previous inset clip, keep -200svh pull from after-next.
+   * Do NOT set overflow:hidden — Springs uses it with loco-scroll; on native
+   * sticky it unsticks the left photo. Gold floor replaces dark Springs chrome.
    */
   .home-am-opening,
   .home-am-opening.home-am-chapter--under-previous-after-next {
@@ -842,6 +850,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
         var(--sticky-under-next-distance) * -1
     );
     transform: translateZ(1px);
+    background: var(--am-gold);
   }
 
   .home-am-opening__list-item {
