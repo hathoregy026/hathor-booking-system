@@ -14,12 +14,15 @@
   z-index: 21;
   /* Springs --c-dark-green — matches clone so hairlines are invisible */
   background: #162d24;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .home-am-springs-host {
-  position: sticky;
+  /* Default before JS pin — Lenis breaks CSS sticky, so Clone.tsx switches
+     this to position:fixed while the runway is scrubbing. */
+  position: absolute;
   top: 0;
+  left: 0;
   width: 100%;
   height: 100vh;
   height: 100svh;
@@ -27,6 +30,7 @@
   padding: 0;
   overflow: hidden;
   background: #162d24;
+  z-index: 1;
 }
 
 .home-am-springs-frame {

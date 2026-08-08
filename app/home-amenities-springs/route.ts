@@ -56,13 +56,19 @@ export async function GET() {
   #i-interiors ~ * {
     display: none !important;
   }
-  /* Iframe has no native scroll — hide loco scrollbar so it cannot leave a cream gutter */
-  html,
-  body {
-    overflow: hidden !important;
-  }
+  /* Hide loco scrollbar only — do NOT set overflow:hidden on html/body. */
   .c-scrollbar {
     display: none !important;
+    width: 0 !important;
+  }
+  /* After Springs marks intro done, kill a stuck preloader (green void). */
+  html.is-preloader-disabled .preloader,
+  html.is-preloader-disabled .js-preloader,
+  html.is-intro-seen .preloader,
+  html.is-intro-seen .js-preloader {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
   }
 </style>
 <script src="/home-amenities-springs/bridge.js" defer></script>

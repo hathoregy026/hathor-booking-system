@@ -8,18 +8,24 @@ type HomeAmenitiesSpringsCloneProps = {
   voyages?: ReactNode;
 };
 
+type PinMode = "before" | "pin" | "after";
+
 /**
  * 100% Springs amenities clone on the homepage.
- * Document: /home-amenities-springs (built from public/springs-layout).
- * No Hathor colours, images, or copy — pure Springs until we restyle later
- * from archive/home-amenities-hathor-backup.
+ * Document: /home-amenities-springs (same source as /test-slide).
+ *
+ * Lenis applies transforms that break CSS sticky, so the iframe host is
+ * JS-pinned (fixed) while the runway is scrubbing — otherwise the frame
+ * scrolls away and the section looks like a static green void.
  */
 export function HomeAmenitiesSpringsClone({
   voyages,
 }: HomeAmenitiesSpringsCloneProps) {
   const runwayRef = useRef<HTMLDivElement>(null);
+  const hostRef = useRef<HTMLElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const lastY = useRef(-1);
+  const lastPin = useRef<PinMode | null>(null);
   const [frameReady, setFrameReady] = useState(false);
   const [runwayPx, setRunwayPx] = useState(0);
 
@@ -41,18 +47,58 @@ export function HomeAmenitiesSpringsClone({
 
   useEffect(() => {
     const runway = runwayRef.current;
+    const host = hostRef.current;
     const iframe = iframeRef.current;
-    if (!runway || !iframe || !frameReady) return;
+    if (!runway || !host || !iframe || !frameReady) return;
 
     let raf = 0;
     const sync = () => {
       raf = 0;
       const win = iframe.contentWindow;
       if (!win) return;
+
       const vh = window.innerHeight || 1;
-      const max = Math.max(0, runway.offsetHeight - vh);
-      const top = runway.getBoundingClientRect().top;
-      const y = Math.round(Math.min(max, Math.max(0, -top)));
+      const runwayH = runway.offsetHeight;
+      const max = Math.max(0, runwayH - vh);
+      const rect = runway.getBoundingClientRect();
+
+      let pin: PinMode = "before";
+      if (rect.top <= 0 && rect.bottom > vh) pin = "pin";
+      else if (rect.bottom <= vh) pin = "after";
+
+      if (pin !== lastPin.current) {
+        lastPin.current = pin;
+        if (pin === "pin") {
+          host.style.position = "fixed";
+          host.style.top = "0";
+          host.style.left = "0";
+          host.style.right = "0";
+          host.style.bottom = "auto";
+          host.style.width = "100%";
+          host.style.height = "100vh";
+          host.style.height = "100svh";
+        } else if (pin === "before") {
+          host.style.position = "absolute";
+          host.style.top = "0";
+          host.style.left = "0";
+          host.style.right = "0";
+          host.style.bottom = "auto";
+          host.style.width = "100%";
+          host.style.height = "100vh";
+          host.style.height = "100svh";
+        } else {
+          host.style.position = "absolute";
+          host.style.top = "auto";
+          host.style.bottom = "0";
+          host.style.left = "0";
+          host.style.right = "0";
+          host.style.width = "100%";
+          host.style.height = "100vh";
+          host.style.height = "100svh";
+        }
+      }
+
+      const y = Math.round(Math.min(max, Math.max(0, -rect.top)));
       if (y === lastY.current) return;
       lastY.current = y;
       win.postMessage({ type: "hathor-am-scroll", y }, "*");
@@ -75,6 +121,14 @@ export function HomeAmenitiesSpringsClone({
       if (typeof offLenis === "function") offLenis();
       else scroll.lenis?.off("scroll", onScroll);
       if (raf) window.cancelAnimationFrame(raf);
+      lastPin.current = null;
+      host.style.position = "";
+      host.style.top = "";
+      host.style.left = "";
+      host.style.right = "";
+      host.style.bottom = "";
+      host.style.width = "";
+      host.style.height = "";
     };
   }, [frameReady, runwayPx]);
 
@@ -86,7 +140,11 @@ export function HomeAmenitiesSpringsClone({
         style={runwayPx > 0 ? { height: runwayPx } : undefined}
         data-home-amenities-springs
       >
-        <section className="home-am-springs-host" aria-label="Amenities">
+        <section
+          ref={hostRef}
+          className="home-am-springs-host"
+          aria-label="Amenities"
+        >
           <iframe
             ref={iframeRef}
             className="home-am-springs-frame"
