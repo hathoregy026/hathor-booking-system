@@ -1,4 +1,9 @@
 import { Footer } from "@/components/layout/Footer";
+import { PublicNavbar } from "@/components/layout/PublicNavbar";
+import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
+import "../public.css";
+import "../site-nav.css";
+import "../night-mode.css";
 
 export default function SiteIndexLayout({
   children,
@@ -6,9 +11,12 @@ export default function SiteIndexLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
-      {children}
-      <Footer />
-    </>
+    <PublicThemeProvider>
+      <div className="public-site hathor-site">
+        <PublicNavbar />
+        {children}
+        <Footer />
+      </div>
+    </PublicThemeProvider>
   );
 }

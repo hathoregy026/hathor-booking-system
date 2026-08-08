@@ -1,4 +1,7 @@
 import { Inter, Playfair_Display } from "next/font/google";
+import "../public.css";
+import "../site-nav.css";
+import "../night-mode.css";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],

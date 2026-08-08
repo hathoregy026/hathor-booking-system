@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import Link from "next/link";
-import { Menu, ShoppingBag, X } from "lucide-react";
-import { HathorBrandMark } from "@/components/booking/HathorBrandMark";
+import { ShoppingBag, X } from "lucide-react";
 import { Footer } from "@/components/layout/Footer";
+import { PublicNavbar } from "@/components/layout/PublicNavbar";
+import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
 import { formatPrice } from "@/lib/client-dates";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { getSelectedRooms, useBookingStore } from "@/store/bookingStore";
@@ -23,7 +23,6 @@ export function BookingPageLayout({
   children,
 }: BookingPageLayoutProps) {
   const [bannerVisible, setBannerVisible] = useState(true);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const cartPanelId = useId();
   const cartRef = useRef<HTMLDivElement>(null);
@@ -76,60 +75,48 @@ export function BookingPageLayout({
   };
 
   return (
-    <div
-      className={`booking-page${isFocusedCheckout ? " booking-page--checkout-focus" : ""}`}
-    >
-      {!isFocusedCheckout && bannerVisible ? (
+    <PublicThemeProvider>
+      <div className="public-site hathor-site booking-public-shell">
+        {/* Same site navbar as homepage — admin dashboard excluded elsewhere */}
+        <PublicNavbar />
+
         <div
-          className="relative flex items-center justify-center px-10 py-2.5 text-center text-xs sm:text-sm"
-          style={{ background: "var(--booking-gold-dark)", color: "#ffffff" }}
+          className={`booking-page${isFocusedCheckout ? " booking-page--checkout-focus" : ""}`}
         >
-          <p>
-            Sign up for our weekly newsletter and get{" "}
-            <span className="font-semibold">10% off</span> your next cruise.{" "}
-            <a href={NEWSLETTER_SIGNUP_HREF} className="underline underline-offset-2">
-              Sign up
-            </a>
-          </p>
-          <button
-            type="button"
-            onClick={() => setBannerVisible(false)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 opacity-80 hover:opacity-100"
-            aria-label="Dismiss banner"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
-      ) : null}
-
-      {!isFocusedCheckout ? (
-        <div className="booking-header-bar">
-          <header className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
-            <button
-              type="button"
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="rounded-lg p-2 transition-colors hover:bg-black/5"
-              aria-label="Menu"
-              style={{ color: "var(--booking-gold-dark)" }}
+          {!isFocusedCheckout && bannerVisible ? (
+            <div
+              className="relative flex items-center justify-center px-10 py-2.5 text-center text-xs sm:text-sm"
+              style={{ background: "var(--booking-gold-dark)", color: "#ffffff" }}
             >
-              <Menu className="h-6 w-6" />
-            </button>
-
-            <Link
-              href="/"
-              className="flex min-w-0 items-center justify-center"
-            >
-              <HathorBrandMark
-                variant="on-light"
-                className="h-10 w-auto max-w-[11rem] object-contain sm:h-11"
-              />
-            </Link>
-
-            <div ref={cartRef} className="relative">
+              <p>
+                Sign up for our weekly newsletter and get{" "}
+                <span className="font-semibold">10% off</span> your next cruise.{" "}
+                <a href={NEWSLETTER_SIGNUP_HREF} className="underline underline-offset-2">
+                  Sign up
+                </a>
+              </p>
               <button
                 type="button"
-                className="relative flex h-10 w-10 items-center justify-center rounded-full"
-                style={{ background: "var(--booking-gold-dark)", color: "#fff" }}
+                onClick={() => setBannerVisible(false)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 opacity-80 hover:opacity-100"
+                aria-label="Dismiss banner"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          ) : null}
+
+          <div className="booking-wave-bg">
+            <main className="booking-main mx-auto max-w-[1400px] px-4 pb-20 pt-4 sm:px-6 sm:pt-6 lg:px-8">
+              {children}
+            </main>
+          </div>
+
+          {!isFocusedCheckout ? (
+            <div ref={cartRef} className="booking-cart-fab">
+              <button
+                type="button"
+                className="booking-cart-fab__btn"
                 aria-label={
                   selectedCount > 0
                     ? `Booking cart, ${selectedCount} selected`
@@ -139,14 +126,9 @@ export function BookingPageLayout({
                 aria-controls={cartPanelId}
                 onClick={handleCartClick}
               >
-                <ShoppingBag className="h-4 w-4" />
+                <ShoppingBag className="h-4 w-4" aria-hidden />
                 {selectedCount > 0 ? (
-                  <span
-                    className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-semibold"
-                    style={{ background: "var(--booking-navy)", color: "#fff" }}
-                  >
-                    {selectedCount}
-                  </span>
+                  <span className="booking-cart-fab__count">{selectedCount}</span>
                 ) : null}
               </button>
 
@@ -155,7 +137,7 @@ export function BookingPageLayout({
                   id={cartPanelId}
                   role="region"
                   aria-label="Selected rooms"
-                  className="booking-card absolute right-0 z-40 mt-2 w-[min(18rem,calc(100vw-2rem))] p-3 text-sm shadow-lg"
+                  className="booking-card booking-cart-fab__panel"
                 >
                   {selectedCount === 0 ? (
                     <p style={{ color: "var(--booking-muted)" }}>
@@ -199,41 +181,11 @@ export function BookingPageLayout({
                 </div>
               ) : null}
             </div>
-          </header>
-
-          {menuOpen ? (
-            <nav
-              className="mx-auto max-w-6xl px-4 pb-4 sm:px-6 lg:px-8"
-              aria-label="Mobile menu"
-            >
-              <div className="booking-card flex flex-col gap-1 p-3 text-sm">
-                <Link
-                  href="/book"
-                  className="rounded-xl px-4 py-2.5 font-medium hover:bg-black/5"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  Book a Cruise
-                </Link>
-                <Link
-                  href="/admin"
-                  className="rounded-xl px-4 py-2.5 font-medium hover:bg-black/5"
-                  style={{ color: "var(--booking-muted)" }}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  Admin
-                </Link>
-              </div>
-            </nav>
           ) : null}
-        </div>
-      ) : null}
 
-      <div className="booking-wave-bg">
-        <main className="booking-main mx-auto max-w-[1400px] px-4 pb-20 pt-4 sm:px-6 sm:pt-6 lg:px-8">
-          {children}
-        </main>
+          <Footer />
+        </div>
       </div>
-      <Footer />
-    </div>
+    </PublicThemeProvider>
   );
 }
