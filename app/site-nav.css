@@ -658,8 +658,10 @@
    * White frame + options paint below via absolute overlay.
    */
   .public-site .hathor-header--owo-hero-layout.hathor-header--menu-hovered {
-    /* Tall enough for Suites’ 4 links; layout height of header stays unchanged */
-    --nav-mega-drop-h: 11.25rem;
+    /* Symmetric panel: equal pad above/below + even item gaps (top row stays locked) */
+    --nav-mega-pad-y: 1.85rem;
+    --nav-mega-item-gap: 1.4rem;
+    --nav-mega-drop-h: 14.5rem;
     overflow: visible;
   }
 
@@ -719,9 +721,10 @@
     visibility: visible;
     pointer-events: auto;
     transform: none !important;
-    margin-top: 0.85rem;
-    padding-top: 0;
-    padding-bottom: 1.1rem;
+    margin-top: 0;
+    /* Equal air above first link and below last link */
+    padding-top: var(--nav-mega-pad-y);
+    padding-bottom: var(--nav-mega-pad-y);
     transition:
       opacity var(--hp2-drop-open-ms) var(--hp2-drop-ease),
       visibility 0s;
@@ -731,7 +734,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.7rem;
+    gap: var(--nav-mega-item-gap, 1.4rem);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -885,7 +888,9 @@
 /* Mid desktop / tablet wordmark — match type size */
 @media (min-width: 768px) and (max-width: 1099px) {
   .public-site .hathor-header--owo-hero-layout.hathor-header--menu-hovered {
-    --nav-mega-drop-h: 8.75rem;
+    --nav-mega-pad-y: 1.55rem;
+    --nav-mega-item-gap: 1.2rem;
+    --nav-mega-drop-h: 12.75rem;
   }
 
   .public-site
