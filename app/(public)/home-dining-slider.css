@@ -789,17 +789,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   contain: none;
   /* Springs sticky layer has NO overflow:hidden — RC cards show through caption */
   overflow: visible;
-  /*
-   * Amenities split: sand | gold under the 50/50 columns.
-   * Kills the white center seam (page bg showing between 50vw halves).
-   */
-  background: linear-gradient(
-    to right,
-    var(--am-sand) 0,
-    var(--am-sand) 50%,
-    var(--am-gold) 50%,
-    var(--am-gold) 100%
-  );
+  /* Must stay transparent — opaque stage paint sits above RC and hides cards */
+  background: transparent;
 }
 
 /* Springs: .i-opening__caption,.i-opening__content,.i-opening__images{height:100%} */
@@ -817,16 +808,21 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   gap: 0;
 }
 
-/* Springs .col--lg-6 → flex:0 1 50vw; width:50vw (+1px overlaps center seam) */
+/*
+ * Springs .col--lg-6 → flex:0 1 50vw; width:50vw
+ * Sand under the left photo (Hathor stand-in for Springs left field).
+ * 1px gold shadow closes the white center seam without covering RC cards.
+ */
 .home-am-opening__images {
   position: relative;
-  flex: 0 1 calc(50vw + 1px);
-  width: calc(50vw + 1px);
-  max-width: calc(50vw + 1px);
+  flex: 0 1 50vw;
+  width: 50vw;
+  max-width: 50vw;
   overflow: hidden;
   will-change: clip-path;
   z-index: 1;
   background: var(--am-sand);
+  box-shadow: 1px 0 0 0 var(--am-gold);
 }
 
 .home-am-opening__images-media {
@@ -1002,10 +998,10 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   background: var(--am-gold);
 }
 
-/* Springs .col.col--lg-6.offset--lg-6.pt-2.5 — overlap seam by 1px */
+/* Springs .col.col--lg-6.offset--lg-6.pt-2.5 */
 .home-am-opening__right-inner {
-  margin-left: calc(50vw - 1px);
-  width: calc(50vw + 1px);
+  margin-left: 50vw;
+  width: 50vw;
   box-sizing: border-box;
   background: transparent;
   padding: 2.5rem 0 3rem;
