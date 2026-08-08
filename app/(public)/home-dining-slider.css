@@ -800,19 +800,27 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   height: 100%;
 }
 
-/* Springs .row */
+/*
+ * Springs .row — left field color lives HERE (not on clipped images).
+ * Image clip-path also clips element backgrounds; sand on __images vanished
+ * during the wipe and let cream (#ece8df) flash in the center seam.
+ * Right half stays transparent so RC gold + cards show through the caption.
+ */
 .home-am-opening__content {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
   gap: 0;
+  background: linear-gradient(
+    to right,
+    var(--am-sand) 0,
+    var(--am-sand) 50%,
+    transparent 50%,
+    transparent 100%
+  );
 }
 
-/*
- * Springs .col--lg-6 → flex:0 1 50vw; width:50vw
- * Lighter gold grade under the left photo (Springs left field / Hathor sand).
- * Do NOT box-shadow here — overflow:hidden clips it (white seam stayed).
- */
+/* Springs .col--lg-6 → flex:0 1 50vw; width:50vw */
 .home-am-opening__images {
   position: relative;
   flex: 0 1 50vw;
@@ -821,7 +829,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   overflow: hidden;
   will-change: clip-path;
   z-index: 1;
-  background: var(--am-sand);
+  background: transparent;
 }
 
 .home-am-opening__images-media {
