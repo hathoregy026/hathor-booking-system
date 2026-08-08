@@ -141,12 +141,10 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
 }
 
-/* ========== i-nature — full-bleed image chapter (literal Springs) ========== */
+/* ========== i-nature — literal Springs infrastructure.css ========== */
 
 .home-am-nature {
   position: relative;
-  height: 250svh;
-  min-height: 250svh;
 }
 
 .home-am-nature__stage {
@@ -154,9 +152,9 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   contain: none;
   height: calc(100 * var(--am-svh));
   min-height: calc(100 * var(--am-svh));
-  background: var(--am-ink);
 }
 
+/* Springs .i-nature__content */
 .home-am-nature__content {
   position: relative;
   z-index: 1;
@@ -171,6 +169,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   pointer-events: none;
 }
 
+/* Springs .background.background--cover inside i-nature__content */
 .home-am-nature__media {
   position: absolute;
   inset: 0;
@@ -252,25 +251,46 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   background-color: var(--bg-main, #161412) !important;
 }
 
+/*
+ * Springs mobile/tablet i-nature:
+ * @media (max-aspect-ratio:10/11) and (max-width:1439px), … (max-width:979px)
+ * → height: 300svh
+ */
+@media (max-width: 1024px) {
+  .home-am-nature {
+    height: 300svh;
+  }
+
+  .home-am-nature__content {
+    height: 100svh;
+  }
+
+  .home-am-nature .sticky__layer,
+  .home-am-nature__stage {
+    height: 100svh;
+  }
+}
+
 @media (min-width: 1025px) {
   /*
-   * Springs .i-nature @ lg-up — band clip handoff over opening.
-   * Must beat `.under-next + .under-previous { inset(100svh) }`.
+   * Springs .i-nature @ lg-up (exact):
+   * clip-path polygon band + margin-top:-200svh + z-index:2
+   * No invented height / z-index:6 / translateZ.
    */
   .home-am-opening.home-am-chapter--under-next
     + .home-am-nature.home-am-chapter--under-previous,
-  .home-am-nature.home-am-chapter--under-previous {
-    clip-path: polygon(0 100svh, 100% 100svh, 100% 200svh, 0 200svh);
-    margin-top: -200svh;
-    z-index: 6;
-    min-height: calc(100 * var(--am-svh));
-    transform: translateZ(1px);
-  }
-
   .home-am-nature,
   .home-am-nature.home-am-chapter--under-previous {
-    height: 250svh;
-    min-height: 250svh;
+    position: relative;
+    clip-path: polygon(0 100svh, 100% 100svh, 100% 200svh, 0 200svh);
+    margin-top: -200svh;
+    z-index: 2;
+    height: auto;
+    min-height: calc(100 * var(--am-svh));
+  }
+
+  .home-am-nature__content {
+    height: calc(100 * var(--am-svh));
   }
 
   .home-am-nature__stage {
@@ -922,9 +942,9 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
 
 @media (min-width: 1025px) {
   /*
-   * Springs .i-opening @ lg-up:
-   * clear sticky under-previous inset clip, keep -200svh pull from after-next.
-   * Do NOT set overflow:hidden — breaks native sticky (Springs uses loco-scroll).
+   * Springs .i-opening @ lg-up (exact):
+   * clip-path:none; height:400svh; min-height:2700px
+   * .has-hover .i-opening { overflow:hidden }
    */
   .home-am-opening,
   .home-am-opening.home-am-chapter--under-previous-after-next {
@@ -959,6 +979,13 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
 
   .home-am-opening__right-column {
     padding-top: 100svh;
+  }
+}
+
+/* Springs .has-hover .i-opening { overflow:hidden } @ lg-up */
+@media (min-width: 1025px) and (hover: hover) and (pointer: fine) {
+  .home-am-opening {
+    overflow: hidden;
   }
 }
 
