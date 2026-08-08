@@ -518,13 +518,16 @@
 }
 
 
-/* Line-style dropdown (replaces gold pills) — unified header */
+/*
+ * Mega nav panel — whole white header frame expands in-flow (no floating pills).
+ * Sub-links match top-nav type exactly. Desktop/tablet wordmark nav only.
+ */
 @media (min-width: 768px) {
   .public-site .hathor-header__nav-item--dropdown {
     --hp2-drop-ease: cubic-bezier(0.22, 1, 0.36, 1);
     --hp2-drop-open-ms: 0.42s;
     --hp2-drop-close-ms: 0.28s;
-    --hp2-drop-stagger: 0.09s;
+    --hp2-drop-stagger: 0.07s;
     overflow: visible;
   }
 
@@ -569,7 +572,6 @@
     border-radius: 0;
     white-space: nowrap !important;
     text-align: center;
-    /* Fixed padding — never expand on hover (avoids shoving neighbors) */
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
     padding-left: 0;
@@ -583,7 +585,6 @@
     position: relative;
   }
 
-  /* Gold line segment under the open/hovered parent */
   .public-site
     .hathor-header__nav-item--dropdown
     .hathor-header__nav-link-label::after {
@@ -591,12 +592,13 @@
     position: absolute;
     left: 0;
     right: 0;
-    bottom: -0.26rem;
-    height: 1px;
+    bottom: -0.5rem;
+    height: 1.5px;
     background: #b69f64;
     transform: scaleX(0);
     transform-origin: center;
     opacity: 0;
+    z-index: 2;
     transition:
       transform var(--hp2-drop-open-ms) var(--hp2-drop-ease),
       opacity var(--hp2-drop-open-ms) var(--hp2-drop-ease);
@@ -613,11 +615,7 @@
     transform: translateY(-0.06em);
   }
 
-  /* Gold only on the hovered trigger — never paint siblings via open state */
-  .public-site .hathor-header__dropdown-zone:hover .hathor-header__nav-link {
-    color: #b69f64;
-  }
-
+  .public-site .hathor-header__dropdown-zone:hover .hathor-header__nav-link,
   .public-site:has(.hathor-header--menu-hovered)
     .hathor-header__dropdown-zone:hover
     .hathor-header__nav-link {
@@ -629,15 +627,18 @@
     .hathor-header__dropdown-zone:has(.hathor-header__dropdown.is-open)
     .hathor-header__nav-link-label::after {
     transform: scaleX(1);
-    opacity: 0.95;
+    opacity: 1;
   }
 
+  /* Idle: keep panels out of flow / hidden */
   .public-site .hathor-header__nav-item--dropdown .hathor-header__dropdown {
+    position: absolute;
     left: 0;
     right: auto;
+    top: 100%;
     min-width: 0;
-    padding-top: 0.55rem;
-    margin-top: 0.2rem;
+    padding: 0;
+    margin: 0;
     z-index: 1225;
     opacity: 0;
     visibility: hidden;
@@ -648,24 +649,128 @@
       visibility 0s linear var(--hp2-drop-close-ms);
   }
 
-  /* Invisible bridge — no dead zone between trigger and drop */
   .public-site .hathor-header__nav-item--dropdown .hathor-header__dropdown::before {
-    content: "";
-    position: absolute;
-    top: -0.65rem;
-    left: -0.5rem;
-    right: -0.5rem;
-    height: 0.85rem;
+    content: none;
   }
 
-  .public-site .hathor-header__dropdown-zone:hover .hathor-header__dropdown,
-  .public-site .hathor-header__dropdown-zone:has(.hathor-header__dropdown.is-open) .hathor-header__dropdown,
-  .public-site .hathor-header__nav-item--dropdown .hathor-header__dropdown.is-open {
-    left: 0;
+  /*
+   * Menu hovered: whole white frame grows — panels move in-flow under parents
+   * (same layout as the ref: options live inside the dropped nav bar).
+   */
+  .public-site .hathor-header--owo-hero-layout.hathor-header--menu-hovered {
+    --nav-top-row-h: clamp(3.15rem, 7vh, 4.5rem);
+  }
+
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered.hathor-header--nav-compact {
+    --nav-top-row-h: clamp(2.35rem, 3.2vw, 2.85rem);
+  }
+
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
+    .hathor-header__menu-zone {
+    position: relative;
+    align-items: flex-start;
+  }
+
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
+    .hathor-header__col--logo,
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
+    .hathor-header__col--right {
+    align-self: flex-start;
+  }
+
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
+    .hathor-header__col--logo {
+    min-height: var(--nav-top-row-h);
+    display: flex;
+    align-items: center;
+  }
+
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
+    .hathor-header__nav {
+    align-items: flex-start;
+  }
+
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
+    .hathor-header__nav-item,
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
+    .hathor-header__nav-item--dropdown {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Top labels share the logo row height so the hairline sits under them */
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
+    .hathor-header__nav-item
+    > .hathor-header__nav-link,
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
+    .hathor-header__dropdown-trigger {
+    min-height: var(--nav-top-row-h);
+    display: inline-flex;
+    align-items: center;
+    box-sizing: border-box;
+  }
+
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
+    .hathor-header__inner--owo {
+    align-items: flex-start;
+    padding-bottom: 1.35rem;
+    transition:
+      padding 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Full-width hairline under the top label row */
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
+    .hathor-header__menu-zone::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: var(--nav-top-row-h);
+    width: 100vw;
+    height: 1px;
+    background: rgb(28 25 23 / 0.14);
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
+    .hathor-header__nav-link-label::after {
+    bottom: calc(-0.5 * (var(--nav-top-row-h) - 1em));
+  }
+
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
+    .hathor-header__nav-item--dropdown
+    .hathor-header__dropdown,
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
+    .hathor-header__nav-item--dropdown
+    .hathor-header__dropdown.is-open {
+    position: static !important;
+    left: auto;
+    top: auto;
+    display: block;
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
-    transform: none;
+    transform: none !important;
+    margin-top: 0.95rem;
+    padding-top: 0;
     transition:
       opacity var(--hp2-drop-open-ms) var(--hp2-drop-ease),
       visibility 0s;
@@ -675,12 +780,11 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.55rem;
+    gap: 0.7rem;
     margin: 0;
-    padding: 0.1rem 1.25rem 1rem 0;
+    padding: 0;
     list-style: none;
-    /* Same white as hovered header — keeps plain text readable over hero */
-    background: #ffffff !important;
+    background: transparent !important;
     border: none !important;
     box-shadow: none !important;
     backdrop-filter: none !important;
@@ -693,6 +797,7 @@
     width: auto;
   }
 
+  /* Same type as top-nav labels */
   .public-site .hathor-header__nav-item--dropdown .hathor-header__dropdown-link {
     display: inline-flex;
     align-items: center;
@@ -705,15 +810,16 @@
     background: transparent;
     box-shadow: none;
     color: #1c1917;
-    font-family: var(--public-sans, "Plus Jakarta Sans", system-ui, sans-serif);
-    font-size: 0.6875rem;
-    font-weight: 500;
-    letter-spacing: 0.16em;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+    line-height: inherit;
     text-transform: uppercase;
     text-align: left;
     white-space: nowrap;
     opacity: 0;
-    transform: translateY(-0.45rem);
+    transform: translateY(-0.35rem);
     transition:
       opacity var(--hp2-drop-close-ms) var(--hp2-drop-ease),
       transform var(--hp2-drop-close-ms) var(--hp2-drop-ease),
@@ -722,31 +828,18 @@
   }
 
   .public-site
-    .hathor-header__dropdown-zone:hover
-    .hathor-header__dropdown-link,
-  .public-site
-    .hathor-header__dropdown-zone:has(.hathor-header__dropdown.is-open)
-    .hathor-header__dropdown-link,
-  .public-site
-    .hathor-header__dropdown.is-open
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
     .hathor-header__dropdown-link {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
     opacity: 1;
     transform: translateY(0);
     transition-duration: var(--hp2-drop-open-ms), var(--hp2-drop-open-ms), 0.25s;
   }
 
   .public-site
-    .hathor-header__dropdown-zone:hover
-    .hathor-header__dropdown-list
-    > li:nth-child(1)
-    .hathor-header__dropdown-link,
-  .public-site
-    .hathor-header__dropdown-zone:has(.hathor-header__dropdown.is-open)
-    .hathor-header__dropdown-list
-    > li:nth-child(1)
-    .hathor-header__dropdown-link,
-  .public-site
-    .hathor-header__dropdown.is-open
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
     .hathor-header__dropdown-list
     > li:nth-child(1)
     .hathor-header__dropdown-link {
@@ -754,17 +847,7 @@
   }
 
   .public-site
-    .hathor-header__dropdown-zone:hover
-    .hathor-header__dropdown-list
-    > li:nth-child(2)
-    .hathor-header__dropdown-link,
-  .public-site
-    .hathor-header__dropdown-zone:has(.hathor-header__dropdown.is-open)
-    .hathor-header__dropdown-list
-    > li:nth-child(2)
-    .hathor-header__dropdown-link,
-  .public-site
-    .hathor-header__dropdown.is-open
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
     .hathor-header__dropdown-list
     > li:nth-child(2)
     .hathor-header__dropdown-link {
@@ -772,17 +855,7 @@
   }
 
   .public-site
-    .hathor-header__dropdown-zone:hover
-    .hathor-header__dropdown-list
-    > li:nth-child(3)
-    .hathor-header__dropdown-link,
-  .public-site
-    .hathor-header__dropdown-zone:has(.hathor-header__dropdown.is-open)
-    .hathor-header__dropdown-list
-    > li:nth-child(3)
-    .hathor-header__dropdown-link,
-  .public-site
-    .hathor-header__dropdown.is-open
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
     .hathor-header__dropdown-list
     > li:nth-child(3)
     .hathor-header__dropdown-link {
@@ -790,17 +863,7 @@
   }
 
   .public-site
-    .hathor-header__dropdown-zone:hover
-    .hathor-header__dropdown-list
-    > li:nth-child(4)
-    .hathor-header__dropdown-link,
-  .public-site
-    .hathor-header__dropdown-zone:has(.hathor-header__dropdown.is-open)
-    .hathor-header__dropdown-list
-    > li:nth-child(4)
-    .hathor-header__dropdown-link,
-  .public-site
-    .hathor-header__dropdown.is-open
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
     .hathor-header__dropdown-list
     > li:nth-child(4)
     .hathor-header__dropdown-link {
@@ -808,17 +871,7 @@
   }
 
   .public-site
-    .hathor-header__dropdown-zone:hover
-    .hathor-header__dropdown-list
-    > li:nth-child(5)
-    .hathor-header__dropdown-link,
-  .public-site
-    .hathor-header__dropdown-zone:has(.hathor-header__dropdown.is-open)
-    .hathor-header__dropdown-list
-    > li:nth-child(5)
-    .hathor-header__dropdown-link,
-  .public-site
-    .hathor-header__dropdown.is-open
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
     .hathor-header__dropdown-list
     > li:nth-child(5)
     .hathor-header__dropdown-link {
@@ -826,24 +879,14 @@
   }
 
   .public-site
-    .hathor-header__dropdown-zone:hover
-    .hathor-header__dropdown-list
-    > li:nth-child(6)
-    .hathor-header__dropdown-link,
-  .public-site
-    .hathor-header__dropdown-zone:has(.hathor-header__dropdown.is-open)
-    .hathor-header__dropdown-list
-    > li:nth-child(6)
-    .hathor-header__dropdown-link,
-  .public-site
-    .hathor-header__dropdown.is-open
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
     .hathor-header__dropdown-list
     > li:nth-child(6)
     .hathor-header__dropdown-link {
     transition-delay: calc(var(--hp2-drop-stagger) * 5), calc(var(--hp2-drop-stagger) * 5), 0s;
   }
 
-  /* Chosen / hovered sub-option — gold text only (no pill fill) */
+  /* Chosen / hovered sub-option — gold */
   .public-site .hathor-header__nav-item--dropdown .hathor-header__dropdown-link:hover,
   .public-site .hathor-header__nav-item--dropdown .hathor-header__dropdown-link:focus-visible,
   .public-site .hathor-header__nav-item--dropdown .hathor-header__dropdown-link--active {
@@ -853,8 +896,8 @@
     filter: none;
   }
 
-  .public-site:has(.hathor-header--menu-hovered)
-    .hathor-header__nav-item--dropdown
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
     .hathor-header__dropdown-link,
   html[data-public-theme="day"]
     .public-site
@@ -863,14 +906,14 @@
     color: #1c1917;
   }
 
-  .public-site:has(.hathor-header--menu-hovered)
-    .hathor-header__nav-item--dropdown
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
     .hathor-header__dropdown-link:hover,
-  .public-site:has(.hathor-header--menu-hovered)
-    .hathor-header__nav-item--dropdown
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
     .hathor-header__dropdown-link:focus-visible,
-  .public-site:has(.hathor-header--menu-hovered)
-    .hathor-header__nav-item--dropdown
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
     .hathor-header__dropdown-link--active,
   html[data-public-theme="day"]
     .public-site
@@ -885,6 +928,24 @@
     .hathor-header--owo-hero-layout.hathor-header--menu-hovered
     .hathor-header__dropdown-link--active {
     color: #b69f64;
+  }
+}
+
+/* Mid desktop / tablet wordmark — match logo + type size */
+@media (min-width: 768px) and (max-width: 1099px) {
+  .public-site .hathor-header--owo-hero-layout.hathor-header--menu-hovered {
+    --nav-top-row-h: clamp(2.75rem, 5vh, 3.5rem);
+  }
+
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered.hathor-header--nav-compact {
+    --nav-top-row-h: 2.15rem;
+  }
+
+  .public-site
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
+    .hathor-header__dropdown-link {
+    font-size: 0.7rem;
   }
 }
 
