@@ -1,12 +1,12 @@
 "use client";
 
 import { CSSProperties, type ReactNode } from "react";
-import {
-  HomeAmenitiesSequence,
-  type AmenitiesLandmarkSlide,
-  type AmenitiesSequenceImage,
-  type AmenitiesStorySlide,
+import type {
+  AmenitiesLandmarkSlide,
+  AmenitiesSequenceImage,
+  AmenitiesStorySlide,
 } from "@/components/home/HomeAmenitiesSequence";
+import { HomeAmenitiesSpringsPortal } from "@/components/home/HomeAmenitiesSpringsPortal";
 import { AMENITIES_SEQUENCE_IMAGE_SLOTS } from "@/lib/amenities-sequence-images";
 import type { SiteImageName } from "@/lib/site-image-slots";
 
@@ -29,21 +29,23 @@ const DEFAULT_AMENITIES_IMAGES: AmenitiesSequenceImage[] =
     previewAnchor: true,
   }));
 
-/** Homepage amenities-faithful sequence (intro → video → slider → opening). */
+/**
+ * Homepage amenities = literal Springs /test-slide layout + scroll engine
+ * (public/home-amenities-springs), with Hathor CMS images/text only.
+ */
 export function HomeLandmarkMaskSection({
   slides,
   stories = [],
-  images = DEFAULT_AMENITIES_IMAGES,
+  images: _images = DEFAULT_AMENITIES_IMAGES,
   titleStyle,
   indicationStyle,
   bodyStyle,
   voyages,
 }: HomeLandmarkMaskSectionProps) {
   return (
-    <HomeAmenitiesSequence
+    <HomeAmenitiesSpringsPortal
       landmarks={slides}
       stories={stories}
-      images={images}
       titleStyle={titleStyle}
       indicationStyle={indicationStyle}
       bodyStyle={bodyStyle}

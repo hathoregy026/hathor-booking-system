@@ -1,3 +1,32 @@
+/*
+ * Springs amenities portal — literal /test-slide document (iframe).
+ * Same pattern as gastronomy Springs: Springs owns document + loco + sticky.
+ * Hathor only injects CMS images/text via bridge.js.
+ */
+.home-am-springs-host {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  margin: 0;
+  padding: 0;
+  z-index: 21;
+  background: #ece8df;
+  overflow: hidden;
+}
+
+.home-am-springs-frame {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  background: #ece8df;
+}
+
 /* Springs infrastructure sticky grammar (ported from clone stylesheets) */
 
 .home-am-sequence {
