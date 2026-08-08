@@ -722,6 +722,13 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   will-change: clip-path;
   overflow: hidden;
   box-sizing: border-box;
+  /*
+   * Cover the 50vw hairline above the images col (water photo). Springs hides
+   * the same hairline with ui-dark-background === caption colour; our images
+   * are photographic, so extend gold 1px under the join.
+   */
+  box-shadow: 1px 0 0 0 var(--am-gold);
+  z-index: 1;
 }
 
 .home-am-slider__caption-stack {
@@ -884,7 +891,13 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   max-width: 100%;
   overflow: hidden;
   will-change: clip-path;
-  z-index: 1;
+  /* Above RC underlap (49.75vw) so photo covers the sealed gold strip */
+  z-index: 2;
+  /*
+   * Springs hairline is invisible because section + RC share one fill.
+   * Gold under the photo means any subpixel AA edge matches the RC, not cream.
+   */
+  background: var(--am-gold);
 }
 
 .home-am-opening__images-media {

@@ -676,7 +676,14 @@ export function HomeAmenitiesSequence({
           </div>
         </div>
 
-        {/* Springs sticky__layer.i-opening__right-column — scrolls; cards slide up */}
+        {/*
+          Springs sticky__layer.i-opening__right-column — scrolls; cards slide up.
+          Springs clips at 50vw over matching ui-dark-background, so a subpixel
+          hairline is invisible. Hathor still has the slider stage (water photo)
+          composited under the opening join — clip from 49.75vw so RC gold seals
+          that hairline the same way 59d8d81 did (dark-band alone cannot, it sits
+          below the slider).
+        */}
         <div
           className="home-am-opening__right-column sticky__layer"
           data-am-opening-right
@@ -684,9 +691,9 @@ export function HomeAmenitiesSequence({
           data-parallax-enable-mq="md-up"
           data-parallax-clamp="true"
           data-parallax-measure-selector=".sticky"
-          data-parallax-0-0='{"clip-path":"polygon(50vw 0vh, 100% 0vh, 100% 0vh, 50vw 0vh)"}'
-          data-parallax--100-0='{"clip-path":"polygon(50vw 100vh, 100% 100vh, 100% 200vh, 50vw 200vh)"}'
-          data-parallax--101-0='{"clip-path":"polygon(50vw 100vh, 100% 100vh, 100% 350vh, 50vw 350vh)"}'
+          data-parallax-0-0='{"clip-path":"polygon(49.75vw 0vh, 100% 0vh, 100% 0vh, 49.75vw 0vh)"}'
+          data-parallax--100-0='{"clip-path":"polygon(49.75vw 100vh, 100% 100vh, 100% 200vh, 49.75vw 200vh)"}'
+          data-parallax--101-0='{"clip-path":"polygon(49.75vw 100vh, 100% 100vh, 100% 350vh, 49.75vw 350vh)"}'
         >
           <div className="home-am-opening__right-inner">
             <p
