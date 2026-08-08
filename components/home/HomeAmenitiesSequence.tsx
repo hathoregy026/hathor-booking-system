@@ -431,21 +431,28 @@ export function HomeAmenitiesSequence({
               />
             </div>
 
+            {/*
+              Springs: .col.col--lg-6.i-video__caption + videoCaptionMoveUp
+              (reveal, then ride up off-screen — not a static bottom card).
+            */}
             <div
               className="home-am-video__caption"
               data-am-video-caption
               data-plugin="parallax"
+              data-parallax-pattern="videoCaptionMoveUp"
               data-parallax-enable-mq="null"
               data-parallax-clamp="true"
               data-parallax-measure-selector="[data-am-chapter]"
-              data-parallax--160-0='{"clip-path":"polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)"}'
-              data-parallax--300-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
-              style={{ background: GOLD }}
+              data-distance="1"
             >
               <h3 className="typo-on-images-title" style={onGoldTitle}>
                 {videoInset?.titleLines?.join(" ") || videoMain.indication}
               </h3>
-              <p className="typo-on-images-body" style={onGoldBody}>
+              <p
+                className="typo-on-images-body home-am-video__caption-text"
+                data-am-video-caption-text
+                style={onGoldBody}
+              >
                 {videoInset?.body || videoMain.body}
               </p>
             </div>

@@ -5,10 +5,11 @@
 
 import type { SpringsParallaxProps } from "@/lib/springs-parallax-engine";
 
-export type PatternMap = Record<
-  string,
-  () => Record<string, SpringsParallaxProps>
->;
+export type PatternFn = (
+  el?: HTMLElement,
+) => Record<string, SpringsParallaxProps>;
+
+export type PatternMap = Record<string, PatternFn>;
 
 const isLgUp = () =>
   window.matchMedia(
@@ -19,6 +20,10 @@ function pattern(
   entries: Record<string, SpringsParallaxProps>,
 ): Record<string, SpringsParallaxProps> {
   return entries;
+}
+
+function lvh(): number {
+  return window.innerHeight / 100;
 }
 
 export const SPRINGS_AMENITIES_PATTERNS: PatternMap = {
@@ -120,4 +125,59 @@ export const SPRINGS_AMENITIES_PATTERNS: PatternMap = {
             "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
           },
         }),
+
+  /*
+   * Springs shared.js videoCaptionMoveUp — reveal then ride the caption up
+   * off-screen. Distance is measured from the body text (data-distance=1).
+   */
+  videoCaptionMoveUp: (el) => {
+    const captionH = el?.offsetHeight || window.innerHeight * 0.55;
+    const text =
+      el?.querySelector<HTMLElement>("[data-am-video-caption-text]") ||
+      el?.querySelector<HTMLElement>(".i-video__caption__text");
+    let distance = captionH;
+    if (el?.dataset.distance === "1" && text) {
+      const top = text.getBoundingClientRect().top + window.scrollY;
+      distance = top - window.innerHeight - 70 - 50;
+      el.dataset.distance = String(distance);
+    } else if (el?.dataset.distance && el.dataset.distance !== "1") {
+      distance = parseFloat(el.dataset.distance) || distance;
+    }
+    const mobileExit = Math.max(captionH - 40, 100 * lvh() - captionH);
+    if (isLgUp()) {
+      return pattern({
+        "parallax--160-0": {
+          "clip-path":
+            "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
+          transform: `translateY(${captionH / 3}px)`,
+        },
+        "parallax--300-0": {
+          "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+          transform: `translateY(${captionH / 3}px)`,
+        },
+        "parallax--400-0": {
+          "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+          transform: `translateY(${-distance}px)`,
+        },
+        "parallax--430-0": {
+          "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+          transform: `translateY(${-2 * distance}px)`,
+        },
+      });
+    }
+    return pattern({
+      "parallax--60-0": {
+        "clip-path": "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
+        transform: `translateY(${captionH / 3}px)`,
+      },
+      "parallax--100-0": {
+        "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+        transform: `translateY(${captionH / 3}px)`,
+      },
+      "parallax--170-0": {
+        "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+        transform: `translateY(${-mobileExit}px)`,
+      },
+    });
+  },
 };

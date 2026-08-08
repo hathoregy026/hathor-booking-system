@@ -164,7 +164,11 @@ export function createSpringsParallax(
   root: HTMLElement,
   options?: {
     measureSelector?: string;
-    patterns?: Record<string, SpringsParallaxProps | (() => Record<string, SpringsParallaxProps>)>;
+    patterns?: Record<
+      string,
+      | SpringsParallaxProps
+      | ((el?: HTMLElement) => Record<string, SpringsParallaxProps>)
+    >;
   },
 ): SpringsParallaxHandle {
   const measureSelector =
@@ -216,7 +220,7 @@ export function createSpringsParallax(
         const pattern = patterns[name];
         if (!pattern) continue;
         const resolved =
-          typeof pattern === "function" ? pattern() : pattern;
+          typeof pattern === "function" ? pattern(el) : pattern;
         for (const [key, value] of Object.entries(resolved)) {
           /* keys like parallax--100-0 → data-parallax--100-0 */
           const attrName = key.startsWith("data-") ? key : `data-${key}`;

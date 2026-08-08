@@ -156,11 +156,12 @@ export function useHomeAmenitiesSequence(
           /*
            * Springs loco sticky pins to the viewport, not the chapter box.
            * Chapter getBoundingClientRect() drifts under under-previous
-           * negative margins and misaligns 50vw columns vs RC clip → gap.
-           * Use 100vw so stage width matches Springs col--md-6 (50vw + 50vw).
+           * negative margins — keep left/width locked to the viewport box.
+           * Width must stay 100% (not 100vw): 100vw overflows the layout
+           * gutter and butchers videoZoom / videoTranslate clip geometry.
            */
           stage.style.left = "0px";
-          stage.style.width = "100vw";
+          stage.style.width = "100%";
           stage.style.zIndex = z;
         }
         return;
@@ -182,7 +183,7 @@ export function useHomeAmenitiesSequence(
         stage.style.top = "auto";
         stage.style.bottom = "0px";
         stage.style.left = "0px";
-        stage.style.width = "100vw";
+        stage.style.width = "100%";
         stage.style.height = `${vh}px`;
         stage.style.zIndex = z;
         return;
@@ -192,7 +193,7 @@ export function useHomeAmenitiesSequence(
       stage.style.top = "0px";
       stage.style.bottom = "";
       stage.style.left = "0px";
-      stage.style.width = "100vw";
+      stage.style.width = "100%";
       stage.style.height = `${vh}px`;
       stage.style.zIndex = z;
     };
