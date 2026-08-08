@@ -194,16 +194,14 @@ export function HomeAmenitiesSequence({
     },
   ];
 
-  const openingTitleFormatted = (
+  /* Springs opening title: line breaks (h1 + <br>), not one jammed string */
+  const openingTitleLines = (
     landmarks[3]?.titleLines?.length
       ? landmarks[3].titleLines
       : ["GOLDEN HOUR", "ON THE NILE"]
   )
     .map((line) => line.replace(/\.$/, "").trim())
-    .filter(Boolean)
-    .join(" ")
-    .replace(/\s+on\s+the\s+/i, " on\u00A0the ")
-    .replace(/\s+ON\s+THE\s+/i, " on\u00A0the ");
+    .filter(Boolean);
 
   useHomeAmenitiesSequence(rootRef, sliderSlides.length);
 
@@ -471,7 +469,7 @@ export function HomeAmenitiesSequence({
                 data-plugin="parallax"
                 data-parallax-enable-mq="md-up"
                 data-parallax-clamp="true"
-                data-parallax-measure-selector="[data-am-chapter]"
+                data-parallax-measure-selector=".sticky"
                 data-parallax-0-0='{"clip-path":"polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)"}'
                 data-parallax--100-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
                 style={{ background: GOLD }}
@@ -523,7 +521,7 @@ export function HomeAmenitiesSequence({
                 data-plugin="parallax"
                 data-parallax-enable-mq="md-up"
                 data-parallax-clamp="true"
-                data-parallax-measure-selector="[data-am-chapter]"
+                data-parallax-measure-selector=".sticky"
                 data-parallax-0-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)"}'
                 data-parallax--100-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
               >
@@ -539,10 +537,11 @@ export function HomeAmenitiesSequence({
                       data-plugin="parallax"
                       data-parallax-enable-mq="md-up"
                       data-parallax-clamp="true"
-                      data-parallax-measure-selector="[data-am-chapter]"
+                      data-parallax-measure-selector=".sticky"
                       {...(index === 0
                         ? {
-                            "data-parallax--0-0":
+                            /* Springs first panel: data-parallax--000-0 */
+                            "data-parallax--000-0":
                               '{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)","transform":"scale(1.2)"}',
                             "data-parallax--100-0":
                               '{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)","transform":"scale(1.1)"}',
@@ -592,7 +591,7 @@ export function HomeAmenitiesSequence({
               data-plugin="parallax"
               data-parallax-enable-mq="md-up"
               data-parallax-clamp="true"
-              data-parallax-measure-selector="[data-am-chapter]"
+              data-parallax-measure-selector=".sticky"
               data-parallax-0-0='{"clip-path":"polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)"}'
               data-parallax--100-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
             >
@@ -600,7 +599,7 @@ export function HomeAmenitiesSequence({
                 data-plugin="parallax"
                 data-parallax-enable-mq="null"
                 data-parallax-clamp="true"
-                data-parallax-measure-selector="[data-am-chapter]"
+                data-parallax-measure-selector=".sticky"
                 data-parallax-0-0='{"transform":"scale(1.2)"}'
                 data-parallax--300-0='{"transform":"scale(1.0)"}'
                 className="home-am-opening__images-media"
@@ -623,14 +622,21 @@ export function HomeAmenitiesSequence({
               data-plugin="parallax"
               data-parallax-enable-mq="md-up"
               data-parallax-clamp="true"
-              data-parallax-measure-selector="[data-am-chapter]"
+              data-parallax-measure-selector=".sticky"
               data-parallax-0-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)"}'
               data-parallax--100-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
             >
-              {/* Springs: title sits on sticky caption panel (fixed) while cards scroll */}
+              {/* Springs: title sits bottom-right on sticky caption while cards scroll */}
               <div className="home-am-opening__caption-title">
-                <h2 className="home-am-opening__title" data-am-opening-title>
-                  {openingTitleFormatted}
+                <h2
+                  className="home-am-opening__title home-am-on-image-text"
+                  data-am-opening-title
+                >
+                  {openingTitleLines.map((line) => (
+                    <span key={line} className="home-am-title-line">
+                      {line}
+                    </span>
+                  ))}
                 </h2>
               </div>
               <div className="home-am-opening__gradient" aria-hidden="true">
@@ -647,7 +653,7 @@ export function HomeAmenitiesSequence({
           data-plugin="parallax"
           data-parallax-enable-mq="md-up"
           data-parallax-clamp="true"
-          data-parallax-measure-selector="[data-am-chapter]"
+          data-parallax-measure-selector=".sticky"
           /* Springs i-opening right-column — literal keyframes */
           data-parallax-0-0='{"clip-path":"polygon(50vw 0vh, 100% 0vh, 100% 0vh, 50vw 0vh)"}'
           data-parallax--100-0='{"clip-path":"polygon(50vw 100vh, 100% 100vh, 100% 200vh, 50vw 200vh)"}'
@@ -705,7 +711,7 @@ export function HomeAmenitiesSequence({
               data-plugin="parallax"
               data-parallax-enable-mq="null"
               data-parallax-clamp="true"
-              data-parallax-measure-selector="[data-am-chapter]"
+              data-parallax-measure-selector=".sticky"
               data-parallax-100-0='{"transform":"scale(1.2)"}'
               data-parallax--200-0='{"transform":"scale(1.0)"}'
             >

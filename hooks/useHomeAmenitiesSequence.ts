@@ -30,7 +30,8 @@ export function useHomeAmenitiesSequence(
     const isCompact = window.matchMedia("(max-width: 1024px)").matches;
 
     const engine = createSpringsParallax(root, {
-      measureSelector: "[data-am-chapter]",
+      /* Springs shared.js default measure for infrastructure sticky chapters */
+      measureSelector: ".sticky",
       patterns: SPRINGS_AMENITIES_PATTERNS,
     });
 
