@@ -56,6 +56,14 @@ export async function GET() {
   #i-interiors ~ * {
     display: none !important;
   }
+  /* Iframe has no native scroll — hide loco scrollbar so it cannot leave a cream gutter */
+  html,
+  body {
+    overflow: hidden !important;
+  }
+  .c-scrollbar {
+    display: none !important;
+  }
 </style>
 <script src="/home-amenities-springs/bridge.js" defer></script>
 `;
