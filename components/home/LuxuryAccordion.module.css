@@ -155,19 +155,27 @@
   color: var(--text-muted, #a99d89) !important;
 }
 
-/* Day — explicit card contrast (guards against --ink bleed) */
+/* Day — explicit card contrast (guards against --ink / WebKit fill bleed) */
 :global(html[data-public-theme="day"]) .infoCard {
   background: #faf8f5 !important;
   background-image: none !important;
   color: #2c2419;
+  -webkit-text-fill-color: #2c2419;
 }
 
 :global(html[data-public-theme="day"]) .highlights li {
   color: #2c2419 !important;
+  -webkit-text-fill-color: #2c2419 !important;
 }
 
 :global(html[data-public-theme="day"]) .priceCaption {
   color: #5c4b3c !important;
+  -webkit-text-fill-color: #5c4b3c !important;
+}
+
+:global(html[data-public-theme="day"]) .railQuoteText {
+  color: rgba(44, 36, 25, 0.72) !important;
+  -webkit-text-fill-color: rgba(44, 36, 25, 0.72) !important;
 }
 
 .container {
@@ -532,10 +540,16 @@
   padding: clamp(1.5rem, 3vh, 2.25rem) 0.55rem;
   background: var(--acc-open-rail-bg);
   color: var(--acc-open-rail-ink);
+  /* Never inherit white -webkit-text-fill from amenities on-image CSS */
+  -webkit-text-fill-color: currentColor;
   box-shadow: var(--acc-open-rail-shadow);
   min-height: 0;
   height: 100%;
   border-right: 1px solid var(--acc-open-rail-edge);
+}
+
+.rail :is(p, span, svg) {
+  -webkit-text-fill-color: currentColor;
 }
 
 .railTop {
@@ -584,6 +598,7 @@
   line-height: 1.45;
   text-align: center;
   color: var(--acc-open-rail-muted);
+  -webkit-text-fill-color: var(--acc-open-rail-muted);
   max-height: 100%;
 }
 
@@ -828,8 +843,15 @@
   background-image: none;
   backdrop-filter: none;
   box-shadow: var(--acc-open-card-shadow);
+  color: var(--acc-open-card-text);
+  /* Opaque cream + real ink — block inherited white WebKit fill */
+  -webkit-text-fill-color: currentColor;
   isolation: isolate;
   animation: hathorPanelRise 0.75s var(--hathor-accordion-ease) 0.18s both;
+}
+
+.infoCard :is(h4, p, li, span, button) {
+  -webkit-text-fill-color: currentColor;
 }
 
 .price {
@@ -839,6 +861,7 @@
   align-items: flex-start;
   gap: 0.15rem;
   color: var(--acc-open-gold);
+  -webkit-text-fill-color: var(--acc-open-gold);
 }
 
 .priceFrom {
@@ -848,6 +871,7 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--acc-open-gold);
+  -webkit-text-fill-color: var(--acc-open-gold);
 }
 
 .priceValue {
@@ -856,6 +880,7 @@
   letter-spacing: 0.02em;
   line-height: 1.05;
   color: var(--acc-open-gold);
+  -webkit-text-fill-color: var(--acc-open-gold);
 }
 
 .priceCaption {
@@ -867,6 +892,7 @@
   letter-spacing: 0.06em;
   text-transform: none;
   color: var(--acc-open-card-muted);
+  -webkit-text-fill-color: var(--acc-open-card-muted);
 }
 
 .highlightsTitle {
@@ -877,6 +903,7 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--acc-open-gold);
+  -webkit-text-fill-color: var(--acc-open-gold);
 }
 
 .highlights {
@@ -898,6 +925,7 @@
   font-style: normal;
   line-height: 1.45;
   color: var(--acc-open-card-text);
+  -webkit-text-fill-color: var(--acc-open-card-text);
 }
 
 .highlights li::before {
