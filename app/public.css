@@ -4916,8 +4916,7 @@ html[data-public-theme="day"] .hathor-header--owo-hero-layout.hathor-header--men
 }
 
 html[data-public-theme="day"] .hathor-header--owo-hero-layout.hathor-header--menu-hovered .hathor-header__nav-link,
-html[data-public-theme="day"] .hathor-header--owo-hero-layout.hathor-header--menu-hovered .hathor-header__dropdown-link,
-html[data-public-theme="day"] .hathor-header--owo-hero-layout.hathor-header--menu-hovered .hathor-header__dropdown-link:hover {
+html[data-public-theme="day"] .hathor-header--owo-hero-layout.hathor-header--menu-hovered .hathor-header__dropdown-link {
   color: #1c1917;
 }
 

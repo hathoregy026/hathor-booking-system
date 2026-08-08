@@ -485,18 +485,21 @@ export function Header() {
             aria-label={`${item.label} pages`}
           >
             <ul className="hathor-header__dropdown-list">
-              {item.links.map((link) => (
-                <li key={`${item.id}-${link.href}-${link.label}`}>
-                  <Link
-                    href={link.href}
-                    className="hathor-header__dropdown-link"
-                    role="menuitem"
-                    onClick={() => setOpenDropdown(null)}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+              {item.links.map((link) => {
+                const linkActive = navHrefMatches(pathname, link.href);
+                return (
+                  <li key={`${item.id}-${link.href}-${link.label}`}>
+                    <Link
+                      href={link.href}
+                      className={`hathor-header__dropdown-link${linkActive ? " hathor-header__dropdown-link--active" : ""}`}
+                      role="menuitem"
+                      onClick={() => setOpenDropdown(null)}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>

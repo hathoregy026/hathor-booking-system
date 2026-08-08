@@ -518,23 +518,22 @@
 }
 
 
-/* Diagonal gold dropdown pills — unified header */
+/* Line-style dropdown (replaces gold pills) — unified header */
 @media (min-width: 768px) {
   .public-site .hathor-header__nav-item--dropdown {
-    --hp2-drop-pill-width: clamp(10.75rem, 14vw, 12.5rem);
     --hp2-drop-ease: cubic-bezier(0.22, 1, 0.36, 1);
     --hp2-drop-open-ms: 0.42s;
     --hp2-drop-close-ms: 0.28s;
     --hp2-drop-stagger: 0.09s;
-    min-width: var(--hp2-drop-pill-width);
     overflow: visible;
   }
 
   .public-site .hathor-header__dropdown-zone {
     position: relative;
+    z-index: 1220;
     display: inline-flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     overflow: visible;
   }
 
@@ -567,7 +566,7 @@
     gap: 0.42rem;
     width: auto !important;
     max-width: none !important;
-    border-radius: 999px;
+    border-radius: 0;
     white-space: nowrap !important;
     text-align: center;
     /* Fixed padding — never expand on hover (avoids shoving neighbors) */
@@ -575,9 +574,7 @@
     padding-bottom: 0.5rem;
     padding-left: 0;
     padding-right: 0;
-    transition:
-      background-color var(--hp2-drop-open-ms) var(--hp2-drop-ease),
-      color var(--hp2-drop-open-ms) var(--hp2-drop-ease);
+    transition: color var(--hp2-drop-open-ms) var(--hp2-drop-ease);
   }
 
   .public-site .hathor-header__nav-item--dropdown .hathor-header__nav-link-label {
@@ -586,6 +583,7 @@
     position: relative;
   }
 
+  /* Gold line segment under the open/hovered parent */
   .public-site
     .hathor-header__nav-item--dropdown
     .hathor-header__nav-link-label::after {
@@ -595,7 +593,7 @@
     right: 0;
     bottom: -0.26rem;
     height: 1px;
-    background: currentColor;
+    background: #b69f64;
     transform: scaleX(0);
     transform-origin: center;
     opacity: 0;
@@ -634,43 +632,40 @@
     opacity: 0.95;
   }
 
-  .public-site .hathor-header__dropdown-zone {
-    position: relative;
-    z-index: 1220;
-    overflow: visible;
-  }
-
   .public-site .hathor-header__nav-item--dropdown .hathor-header__dropdown {
-    left: 50%;
+    left: 0;
+    right: auto;
     min-width: 0;
-    padding-top: 0;
-    margin-top: 0.35rem;
+    padding-top: 0.55rem;
+    margin-top: 0.2rem;
     z-index: 1225;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transform: translateX(-50%);
+    transform: none;
     transition:
       opacity var(--hp2-drop-close-ms) var(--hp2-drop-ease),
       visibility 0s linear var(--hp2-drop-close-ms);
   }
 
-  /* Invisible bridge — no dead zone between trigger and pills */
+  /* Invisible bridge — no dead zone between trigger and drop */
   .public-site .hathor-header__nav-item--dropdown .hathor-header__dropdown::before {
     content: "";
     position: absolute;
     top: -0.65rem;
-    left: -1rem;
-    right: -1rem;
+    left: -0.5rem;
+    right: -0.5rem;
     height: 0.85rem;
   }
 
   .public-site .hathor-header__dropdown-zone:hover .hathor-header__dropdown,
   .public-site .hathor-header__dropdown-zone:has(.hathor-header__dropdown.is-open) .hathor-header__dropdown,
-  .public-site .hathor-header__dropdown.is-open {
+  .public-site .hathor-header__nav-item--dropdown .hathor-header__dropdown.is-open {
+    left: 0;
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
+    transform: none;
     transition:
       opacity var(--hp2-drop-open-ms) var(--hp2-drop-ease),
       visibility 0s;
@@ -679,53 +674,50 @@
   .public-site .hathor-header__nav-item--dropdown .hathor-header__dropdown-list {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 0.48rem;
+    align-items: flex-start;
+    gap: 0.55rem;
     margin: 0;
-    padding: 0;
+    padding: 0.1rem 1.25rem 1rem 0;
     list-style: none;
-    background: transparent;
-    border: none;
-    box-shadow: none;
+    /* Same white as hovered header — keeps plain text readable over hero */
+    background: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 
   .public-site .hathor-header__nav-item--dropdown .hathor-header__dropdown-list > li {
     display: flex;
-    justify-content: center;
-    width: 100%;
+    justify-content: flex-start;
+    width: auto;
   }
 
   .public-site .hathor-header__nav-item--dropdown .hathor-header__dropdown-link {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    width: var(--hp2-drop-pill-width);
-    min-width: var(--hp2-drop-pill-width);
-    padding: 0.52rem 1rem;
-    border-radius: 999px;
-    background: #ffffff;
-    border: 1px solid rgb(195 168 109 / 0.92);
-    color: #b69f64;
-    /* Match fixed top-nav options (Suites / Cruises / …) */
+    justify-content: flex-start;
+    width: auto;
+    min-width: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    color: #1c1917;
     font-family: var(--public-sans, "Plus Jakarta Sans", system-ui, sans-serif);
-    font-size: 0.8125rem;
+    font-size: 0.6875rem;
     font-weight: 500;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    text-align: center;
+    text-align: left;
     white-space: nowrap;
-    box-shadow:
-      0 0.35rem 0.9rem rgb(0 0 0 / 0.16),
-      inset 0 0 0 1px rgb(255 255 255 / 0.35);
     opacity: 0;
-    transform: translateY(-0.75rem) scale(0.97);
+    transform: translateY(-0.45rem);
     transition:
       opacity var(--hp2-drop-close-ms) var(--hp2-drop-ease),
       transform var(--hp2-drop-close-ms) var(--hp2-drop-ease),
-      background-color 0.35s var(--hp2-drop-ease),
-      border-color 0.35s var(--hp2-drop-ease),
-      color 0.35s var(--hp2-drop-ease),
-      filter 0.35s var(--hp2-drop-ease);
+      color 0.25s var(--hp2-drop-ease);
     transition-delay: 0s;
   }
 
@@ -739,8 +731,8 @@
     .hathor-header__dropdown.is-open
     .hathor-header__dropdown-link {
     opacity: 1;
-    transform: translateY(0) scale(1);
-    transition-duration: var(--hp2-drop-open-ms), var(--hp2-drop-open-ms), 0.35s, 0.35s, 0.35s, 0.35s;
+    transform: translateY(0);
+    transition-duration: var(--hp2-drop-open-ms), var(--hp2-drop-open-ms), 0.25s;
   }
 
   .public-site
@@ -758,7 +750,7 @@
     .hathor-header__dropdown-list
     > li:nth-child(1)
     .hathor-header__dropdown-link {
-    transition-delay: calc(var(--hp2-drop-stagger) * 0), calc(var(--hp2-drop-stagger) * 0), 0s, 0s, 0s, 0s;
+    transition-delay: calc(var(--hp2-drop-stagger) * 0), calc(var(--hp2-drop-stagger) * 0), 0s;
   }
 
   .public-site
@@ -776,7 +768,7 @@
     .hathor-header__dropdown-list
     > li:nth-child(2)
     .hathor-header__dropdown-link {
-    transition-delay: calc(var(--hp2-drop-stagger) * 1), calc(var(--hp2-drop-stagger) * 1), 0s, 0s, 0s, 0s;
+    transition-delay: calc(var(--hp2-drop-stagger) * 1), calc(var(--hp2-drop-stagger) * 1), 0s;
   }
 
   .public-site
@@ -794,7 +786,7 @@
     .hathor-header__dropdown-list
     > li:nth-child(3)
     .hathor-header__dropdown-link {
-    transition-delay: calc(var(--hp2-drop-stagger) * 2), calc(var(--hp2-drop-stagger) * 2), 0s, 0s, 0s, 0s;
+    transition-delay: calc(var(--hp2-drop-stagger) * 2), calc(var(--hp2-drop-stagger) * 2), 0s;
   }
 
   .public-site
@@ -812,7 +804,7 @@
     .hathor-header__dropdown-list
     > li:nth-child(4)
     .hathor-header__dropdown-link {
-    transition-delay: calc(var(--hp2-drop-stagger) * 3), calc(var(--hp2-drop-stagger) * 3), 0s, 0s, 0s, 0s;
+    transition-delay: calc(var(--hp2-drop-stagger) * 3), calc(var(--hp2-drop-stagger) * 3), 0s;
   }
 
   .public-site
@@ -830,7 +822,7 @@
     .hathor-header__dropdown-list
     > li:nth-child(5)
     .hathor-header__dropdown-link {
-    transition-delay: calc(var(--hp2-drop-stagger) * 4), calc(var(--hp2-drop-stagger) * 4), 0s, 0s, 0s, 0s;
+    transition-delay: calc(var(--hp2-drop-stagger) * 4), calc(var(--hp2-drop-stagger) * 4), 0s;
   }
 
   .public-site
@@ -848,30 +840,19 @@
     .hathor-header__dropdown-list
     > li:nth-child(6)
     .hathor-header__dropdown-link {
-    transition-delay: calc(var(--hp2-drop-stagger) * 5), calc(var(--hp2-drop-stagger) * 5), 0s, 0s, 0s, 0s;
+    transition-delay: calc(var(--hp2-drop-stagger) * 5), calc(var(--hp2-drop-stagger) * 5), 0s;
   }
 
+  /* Chosen / hovered sub-option — gold text only (no pill fill) */
   .public-site .hathor-header__nav-item--dropdown .hathor-header__dropdown-link:hover,
-  .public-site .hathor-header__nav-item--dropdown .hathor-header__dropdown-link:focus-visible {
-    background-color: #b69f64;
-    border-color: #d7bf86;
-    color: #ffffff;
-    filter: brightness(1.04);
+  .public-site .hathor-header__nav-item--dropdown .hathor-header__dropdown-link:focus-visible,
+  .public-site .hathor-header__nav-item--dropdown .hathor-header__dropdown-link--active {
+    background: transparent;
+    border: none;
+    color: #b69f64;
+    filter: none;
   }
 
-  .public-site:has(.hathor-header--menu-hovered)
-    .hathor-header__nav-item--dropdown
-    .hathor-header__dropdown-link:hover,
-  .public-site:has(.hathor-header--menu-hovered)
-    .hathor-header__nav-item--dropdown
-    .hathor-header__dropdown-link:focus-visible {
-    background-color: #b69f64;
-    border-color: #d7bf86;
-    color: #ffffff;
-  }
-
-  /* Keep idle gold label even under day-theme menu cream overrides */
-  .public-site .hathor-header__nav-item--dropdown .hathor-header__dropdown-link,
   .public-site:has(.hathor-header--menu-hovered)
     .hathor-header__nav-item--dropdown
     .hathor-header__dropdown-link,
@@ -879,9 +860,18 @@
     .public-site
     .hathor-header--owo-hero-layout.hathor-header--menu-hovered
     .hathor-header__dropdown-link {
-    color: #b69f64;
+    color: #1c1917;
   }
 
+  .public-site:has(.hathor-header--menu-hovered)
+    .hathor-header__nav-item--dropdown
+    .hathor-header__dropdown-link:hover,
+  .public-site:has(.hathor-header--menu-hovered)
+    .hathor-header__nav-item--dropdown
+    .hathor-header__dropdown-link:focus-visible,
+  .public-site:has(.hathor-header--menu-hovered)
+    .hathor-header__nav-item--dropdown
+    .hathor-header__dropdown-link--active,
   html[data-public-theme="day"]
     .public-site
     .hathor-header--owo-hero-layout.hathor-header--menu-hovered
@@ -889,15 +879,19 @@
   html[data-public-theme="day"]
     .public-site
     .hathor-header--owo-hero-layout.hathor-header--menu-hovered
-    .hathor-header__dropdown-link:focus-visible {
-    color: #ffffff;
+    .hathor-header__dropdown-link:focus-visible,
+  html[data-public-theme="day"]
+    .public-site
+    .hathor-header--owo-hero-layout.hathor-header--menu-hovered
+    .hathor-header__dropdown-link--active {
+    color: #b69f64;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .public-site .hathor-header__nav-item--dropdown .hathor-header__dropdown-link {
     transform: none;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition: color 0.2s ease;
   }
 }
 
