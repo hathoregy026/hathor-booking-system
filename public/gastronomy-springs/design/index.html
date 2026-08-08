@@ -444,6 +444,65 @@
     font-size: clamp(3rem, 13vw, 6rem);
     line-height: 0.9;
   }
+  /*
+   * Hero copy: sit "Private Dining" directly above the small title,
+   * both left-aligned (desktop + landscape tablet).
+   */
+  @media (min-width: 1440px), (min-width: 980px) and (min-aspect-ratio: 10/11) {
+    #de-intro .de-intro__caption {
+      align-items: flex-end;
+      flex-direction: column;
+      gap: 0.35em;
+      justify-content: flex-end;
+    }
+    #de-intro .de-intro__caption-title.is-hidden--md-down {
+      align-self: flex-start;
+      left: auto !important;
+      order: 1;
+      position: relative !important;
+      top: auto !important;
+      transform: none !important;
+      width: auto;
+    }
+    #de-intro .de-intro__caption-title.is-hidden--md-down .g1 {
+      margin: 0 !important;
+      text-align: left;
+    }
+    #de-intro .de-intro__caption-subtitle {
+      align-self: flex-start;
+      order: 2;
+      text-align: left;
+    }
+    #de-intro .de-intro__caption-subtitle .h3 {
+      text-align: left !important;
+    }
+    #de-intro .de-intro__next.is-hidden--sm-down {
+      bottom: 0;
+      position: absolute;
+      right: 0;
+    }
+  }
+  /* Phone / portrait tablet: same left stack above the small title */
+  @media (max-aspect-ratio: 10/11) and (max-width: 1439px),
+    (max-aspect-ratio: 13/9) and (max-width: 667px),
+    (max-width: 979px) {
+    #de-intro .de-intro__caption-title.is-hidden--lg-up {
+      bottom: calc(2.75em + 0.85rem);
+      left: 0;
+      text-align: left;
+      top: auto !important;
+      width: auto;
+      z-index: 4;
+    }
+    #de-intro .de-intro__caption-title.is-hidden--lg-up::after {
+      display: block;
+      text-align: left;
+    }
+    #de-intro .de-intro__caption-subtitle,
+    #de-intro .de-intro__caption-subtitle .h3 {
+      text-align: left !important;
+    }
+  }
   /* The source project overview is the active desktop item. Keep its original
      left-column position visible after the standalone document boots. */
   #de-projects .de-projects__slider-item[data-content-animation-item="4"] {
