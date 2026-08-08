@@ -1,74 +1,24 @@
 .hathor-page-construction {
-  position: relative;
   display: grid;
-  min-height: min(72svh, 720px);
+  min-height: 100svh;
   place-items: center;
-  padding: clamp(2.5rem, 8vw, 5rem) clamp(1.25rem, 4vw, 2.5rem);
-  background:
-    radial-gradient(
-      ellipse 120% 80% at 50% 100%,
-      color-mix(in srgb, var(--hathor-gold, #c4a052) 14%, transparent),
-      transparent 62%
-    ),
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--hathor-cream, #ece8df) 92%, #fff),
-      color-mix(in srgb, var(--hathor-cream, #ece8df) 78%, #f6f1e8)
-    );
-}
-
-.hathor-page-construction__inner {
-  max-width: 42rem;
-  text-align: center;
-}
-
-.hathor-page-construction__eyebrow {
-  margin: 0 0 0.85rem;
-  font-family: var(--font-hathor-body, "Plus Jakarta Sans", sans-serif);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--hathor-gold, #c4a052) 72%, #6b5a2e);
-}
-
-.hathor-page-construction__title {
   margin: 0;
-  font-family: var(--font-hathor-display, "Gamgote", Georgia, serif);
-  font-size: clamp(2rem, 6vw, 3.75rem);
+  padding: 1rem;
+  background: #fff;
+  color: #111;
+}
+
+.hathor-page-construction__text {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  font-size: 1rem;
   font-weight: 400;
-  line-height: 1.08;
-  letter-spacing: -0.02em;
-  color: color-mix(in srgb, var(--hathor-ink, #1a1612) 88%, #4a4034);
-}
-
-html[data-public-theme="night"] .hathor-page-construction {
-  background:
-    radial-gradient(
-      ellipse 120% 80% at 50% 100%,
-      color-mix(in srgb, var(--hathor-gold, #c4a052) 18%, transparent),
-      transparent 62%
-    ),
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, #1e1b18 92%, #000),
-      color-mix(in srgb, #262219 88%, #000)
-    );
-}
-
-html[data-public-theme="night"] .hathor-page-construction__title {
-  color: color-mix(in srgb, var(--text-primary, #f5eacf) 92%, #fff);
-}
-
-html[data-public-theme="night"] .hathor-page-construction__eyebrow {
-  color: color-mix(in srgb, var(--hathor-gold, #c4a052) 78%, #ece8df);
+  letter-spacing: normal;
+  text-align: center;
+  text-transform: none;
 }
 
 .hathor-page-construction--standalone {
   min-height: 100svh;
-  background: color-mix(in srgb, var(--hathor-cream, #ece8df) 92%, #fff);
-}
-
-.hathor-page-construction--standalone .hathor-page-construction {
-  min-height: 100svh;
+  background: #fff;
 }

@@ -15,14 +15,13 @@ type StandalonePageVisibilityShellProps = {
 /** For routes outside `(public)` that still need CMS page visibility. */
 export function StandalonePageVisibilityShell({
   path,
-  pageLabel,
   settings,
   children,
 }: StandalonePageVisibilityShellProps) {
   if (!isPageLive(path, settings)) {
     return (
       <div className="hathor-page-construction--standalone">
-        <PageUnderConstruction pageLabel={pageLabel} />
+        <PageUnderConstruction />
       </div>
     );
   }

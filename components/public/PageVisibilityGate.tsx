@@ -20,7 +20,7 @@ export function PageVisibilityGate({ children }: PageVisibilityGateProps) {
   const live = isPageLive(pathname, settings);
 
   if (!live && managed) {
-    return <PageUnderConstruction pageLabel={managed.label} />;
+    return <PageUnderConstruction />;
   }
 
   return <>{children}</>;

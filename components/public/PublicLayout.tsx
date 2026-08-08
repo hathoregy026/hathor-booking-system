@@ -60,18 +60,18 @@ export function PublicLayout({
         <div className="public-site hathor-site">
           <script dangerouslySetInnerHTML={{ __html: bootScript }} />
           <DeployFreshness deployId={deployId} />
-          <PublicScrollInfrastructure />
-          <ScrollPositionRestore />
-          <LuxuryTextAnimations />
-          <SiteImagePreviewScroll />
-          <PublicNavbar />
-          <main className="public-main public-main--hero">
-            <PageVisibilityGate>
+          <PageVisibilityGate>
+            <PublicScrollInfrastructure />
+            <ScrollPositionRestore />
+            <LuxuryTextAnimations />
+            <SiteImagePreviewScroll />
+            <PublicNavbar />
+            <main className="public-main public-main--hero">
               <PageTransition>{children}</PageTransition>
-            </PageVisibilityGate>
-          </main>
-          <Footer />
-          <FloatingActions />
+            </main>
+            <Footer />
+            <FloatingActions />
+          </PageVisibilityGate>
         </div>
       </BookingModalProvider>
     </PublicThemeProvider>
