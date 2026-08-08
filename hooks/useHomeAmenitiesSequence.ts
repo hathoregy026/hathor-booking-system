@@ -153,8 +153,13 @@ export function useHomeAmenitiesSequence(
 
       if (mode === target.mode) {
         if (mode === "fixed") {
-          stage.style.left = `${rect.left}px`;
-          stage.style.width = `${rect.width}px`;
+          /*
+           * Springs loco sticky pins to the viewport, not the chapter box.
+           * Chapter getBoundingClientRect() drifts under under-previous
+           * negative margins and misaligns 50vw columns vs RC clip → gap.
+           */
+          stage.style.left = "0px";
+          stage.style.width = "100%";
           stage.style.zIndex = z;
         }
         return;
@@ -181,11 +186,12 @@ export function useHomeAmenitiesSequence(
         stage.style.zIndex = z;
         return;
       }
+      /* Springs data-scroll-sticky → fixed to viewport */
       stage.style.position = "fixed";
       stage.style.top = "0px";
       stage.style.bottom = "";
-      stage.style.left = `${rect.left}px`;
-      stage.style.width = `${rect.width}px`;
+      stage.style.left = "0px";
+      stage.style.width = "100%";
       stage.style.height = `${vh}px`;
       stage.style.zIndex = z;
     };
