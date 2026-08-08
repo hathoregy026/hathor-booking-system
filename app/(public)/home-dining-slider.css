@@ -260,19 +260,44 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   width: 80vw;
 }
 
-/* Accordion list follows nature (Springs i-interiors position) */
+/*
+ * Our Voyages accordion — document flow after nature.
+ * Do NOT apply sticky / under-previous / under-next / chapter stage rules.
+ * Those forced a 100svh clipped pin and hid the open-panel columns (cream gap).
+ */
 .home-am-voyages {
   position: relative;
-  z-index: 3;
-  min-height: calc(100 * var(--am-svh));
+  z-index: 6;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  /* Rise over nature via nature's under-next pull — no own negative margin */
+  clip-path: none;
+  transform: none;
+  min-height: 0;
   background: var(--am-cream);
 }
 
+.home-am-voyages::before,
+.home-am-voyages::after {
+  content: none !important;
+  display: none !important;
+}
+
 .home-am-voyages__stage {
-  overflow: visible;
-  contain: none;
-  min-height: calc(100 * var(--am-svh));
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+  contain: none !important;
   background-color: var(--am-cream) !important;
+  z-index: auto !important;
 }
 
 html[data-public-theme="night"] .home-am-voyages__stage {
@@ -1021,10 +1046,18 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
 
   /*
    * Springs .has-scroll-smooth .sticky__layer--sticky { position:relative }
-   * — loco pins; we pin in JS. Apply to all amenities sticky stages.
+   * — loco pins in JS. Only amenities sticky chapters (not Our Voyages).
    */
-  .home-am-sequence .home-am-chapter__stage,
-  .home-am-sequence .sticky__layer--sticky {
+  .home-am-intro .home-am-chapter__stage,
+  .home-am-video .home-am-chapter__stage,
+  .home-am-slider .home-am-chapter__stage,
+  .home-am-opening .home-am-chapter__stage,
+  .home-am-nature .home-am-chapter__stage,
+  .home-am-intro .sticky__layer--sticky,
+  .home-am-video .sticky__layer--sticky,
+  .home-am-slider .sticky__layer--sticky,
+  .home-am-opening .sticky__layer--sticky,
+  .home-am-nature .sticky__layer--sticky {
     position: relative;
     top: auto;
     height: calc(100 * var(--am-svh));

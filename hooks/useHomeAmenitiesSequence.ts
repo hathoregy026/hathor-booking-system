@@ -99,8 +99,15 @@ export function useHomeAmenitiesSequence(
     };
 
     const pinTargets: PinTarget[] = [];
+    /*
+     * Pin only Springs-style sticky chapters. Never pin Our Voyages —
+     * the accordion needs normal document flow; a 100vh fixed stage
+     * hides the columns and leaves a cream gap (user screenshots).
+     */
     const chapterNodes = Array.from(
-      root.querySelectorAll<HTMLElement>("[data-am-chapter]"),
+      root.querySelectorAll<HTMLElement>(
+        "[data-am-intro], [data-am-video], [data-am-slider], [data-am-opening], [data-am-nature]",
+      ),
     );
     chapterNodes.forEach((chapter, index) => {
       const stage = chapter.querySelector<HTMLElement>(

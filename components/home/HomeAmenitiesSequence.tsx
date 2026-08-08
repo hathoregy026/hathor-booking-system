@@ -744,17 +744,15 @@ export function HomeAmenitiesSequence({
         </div>
       </div>
 
-      {/* ===== Our Voyages list — follows nature (Springs i-interiors position) ===== */}
+      {/*
+        Our Voyages — Hathor accordion (NOT Springs i-interiors sticky runway).
+        Must stay in normal document flow: no sticky stage, no under-previous
+        clip, no loco pin. Nature's under-next still pulls this cream panel up
+        to cover; columns/open panel need height:auto overflow:visible.
+      */}
       {voyages ? (
-        <div
-          className="home-am-voyages home-am-chapter home-am-chapter--under-previous sticky sticky--full-height sticky--under-previous sticky--under-next"
-          data-am-voyages
-          data-am-chapter
-          id="home-am-voyages"
-        >
-          <div className="home-am-voyages__stage home-am-chapter__stage sticky__layer sticky__layer--sticky sticky--full-height">
-            {voyages}
-          </div>
+        <div className="home-am-voyages" data-am-voyages id="home-am-voyages">
+          <div className="home-am-voyages__stage">{voyages}</div>
         </div>
       ) : null}
     </section>
