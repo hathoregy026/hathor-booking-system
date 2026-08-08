@@ -634,14 +634,14 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 }
 
 /*
- * Springs paints ui-background behind the split (dark page). Hathor page is
- * cream — the same subpixel join reads as a white gap. Stage gold matches the
- * caption column (one colour, not a second sand tone) so the join stays flush
- * like the Fine Dining ref.
+ * Springs: section.ui-dark-background wraps i-slider → i-opening → i-nature.
+ * RC clip-path discards the left half; a subpixel hole at 50vw would otherwise
+ * punch through to page cream. Gold underlay = Hathor stand-in for --c-dark-green.
  */
-.home-am-slider .home-am-chapter__stage,
-.home-am-slider .sticky__layer--sticky {
-  background: var(--am-gold);
+.home-am-dark-band {
+  position: relative;
+  background-color: var(--am-gold);
+  background-image: none;
 }
 
 /*
@@ -832,7 +832,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   gap: 0;
 }
 
-/* Springs .col--lg-6 → flex:0 1 50vw; width:50vw (RC underlaps join in markup) */
+/* Springs .col--lg-6 → flex:0 1 50vw; width:50vw */
 .home-am-opening__images {
   position: relative;
   flex: 0 1 50vw;
@@ -841,6 +841,11 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   overflow: hidden;
   will-change: clip-path;
   z-index: 1;
+  /*
+   * Cover the RC clip edge (50vw). Clipped-away RC left half is transparent —
+   * without this underlap, cream/gold punches a vertical seam through photo + bar.
+   */
+  margin-right: -1px;
 }
 
 .home-am-opening__images-media {

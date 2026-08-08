@@ -453,6 +453,12 @@ export function HomeAmenitiesSequence({
         </div>
       ) : null}
 
+      {/*
+        Springs: <section class="section ui-dark-background"> wraps i-slider → i-opening
+        (and following dark chapters). Hairlines at 50vw show that colour, not cream.
+        Hathor equivalent: gold band matching RC / caption.
+      */}
+      <div className="home-am-dark-band">
       {/* ===== i-slider ===== */}
       {sliderSlides.length > 0 ? (
         <div
@@ -652,11 +658,7 @@ export function HomeAmenitiesSequence({
           </div>
         </div>
 
-        {/*
-          Springs sticky__layer.i-opening__right-column — scrolls; cards slide up.
-          Springs clips at 50vw; on Hathor cream the handoff hairline (slider gold | RC)
-          reads as a left gap — underlap 0.25vw so RC gold seals that edge.
-        */}
+        {/* Springs sticky__layer.i-opening__right-column — scrolls; cards slide up */}
         <div
           className="home-am-opening__right-column sticky__layer"
           data-am-opening-right
@@ -664,9 +666,9 @@ export function HomeAmenitiesSequence({
           data-parallax-enable-mq="md-up"
           data-parallax-clamp="true"
           data-parallax-measure-selector=".sticky"
-          data-parallax-0-0='{"clip-path":"polygon(49.75vw 0vh, 100% 0vh, 100% 0vh, 49.75vw 0vh)"}'
-          data-parallax--100-0='{"clip-path":"polygon(49.75vw 100vh, 100% 100vh, 100% 200vh, 49.75vw 200vh)"}'
-          data-parallax--101-0='{"clip-path":"polygon(49.75vw 100vh, 100% 100vh, 100% 350vh, 49.75vw 350vh)"}'
+          data-parallax-0-0='{"clip-path":"polygon(50vw 0vh, 100% 0vh, 100% 0vh, 50vw 0vh)"}'
+          data-parallax--100-0='{"clip-path":"polygon(50vw 100vh, 100% 100vh, 100% 200vh, 50vw 200vh)"}'
+          data-parallax--101-0='{"clip-path":"polygon(50vw 100vh, 100% 100vh, 100% 350vh, 50vw 350vh)"}'
         >
           <div className="home-am-opening__right-inner">
             <p
@@ -747,6 +749,7 @@ export function HomeAmenitiesSequence({
           </div>
         </div>
       </div>
+      </div>{/* /.home-am-dark-band — Springs ui-dark-background */}
 
       {/*
         Our Voyages — Hathor accordion (NOT Springs i-interiors sticky runway).
