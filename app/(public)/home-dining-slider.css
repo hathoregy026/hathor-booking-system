@@ -914,11 +914,16 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   width: 80vw;
 }
 
-/* Springs .col--md-2 — vertical stack */
+/*
+ * Vertical card stack in the gold RC.
+ * Springs uses col--md-2 (16.67vw); that left a ~25vw empty gold band
+ * between the cards and the flex-end title (the “gap in middle”).
+ * col--md-3 (25vw) meets the 25vw title at flex-end — same stack, no void.
+ */
 .home-am-opening__list-item {
   position: relative;
   display: block;
-  width: 16.6666vw;
+  width: 25vw;
   max-width: 100%;
 }
 
@@ -1003,7 +1008,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
 .home-am-opening__caption-text {
   max-width: 400px;
   margin: 0;
-  padding-left: 0.5rem;
+  /* Flush to the left-image edge — no gold seam before copy/cards */
+  padding-left: 0;
   font-size: clamp(0.92rem, 1.15vw, 1.05rem) !important;
   line-height: 1.5;
   color: #ffffff !important;
@@ -1017,7 +1023,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
 
 .home-am-opening__list {
   display: block;
-  padding-left: 0.5rem;
+  padding-left: 0;
 }
 
 @media (min-width: 1025px) {
