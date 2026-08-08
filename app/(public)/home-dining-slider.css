@@ -584,13 +584,10 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 
 .home-am-slider__row {
   display: grid;
-  /* % not vw — 50vw+50vw leaves a hairline when the scrollbar steals width */
-  grid-template-columns: 50% 50%;
+  grid-template-columns: 1fr 1fr;
   width: 100%;
   height: 100%;
   gap: 0;
-  margin: 0;
-  padding: 0;
 }
 
 .home-am-slider__caption-col {
@@ -603,10 +600,9 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   will-change: clip-path;
   overflow: hidden;
   box-sizing: border-box;
-  /* Kill subpixel seam between halves */
-  margin-right: -1px;
-  width: calc(100% + 1px);
-  max-width: none;
+  /* Stay inside the grid cell — do not widen or the gold eats the image half */
+  min-width: 0;
+  max-width: 100%;
 }
 
 .home-am-slider__caption-stack {
@@ -688,6 +684,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   overflow: hidden;
   background: var(--am-ink);
   will-change: clip-path;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .home-am-slider__panel {
