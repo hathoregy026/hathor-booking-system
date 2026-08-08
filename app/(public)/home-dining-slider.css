@@ -767,14 +767,18 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   transform-origin: center center;
 }
 
-/* Springs: title caption is transparent — scrolling right-column gold shows through */
+/*
+ * Right sticky panel: solid gold floor (user: extend gold to bottom,
+ * no cream void when the scrolling RC clip moves on).
+ * Cards still paint above via .home-am-opening__right-column z-index.
+ */
 .home-am-opening__caption {
   position: relative;
   flex: 0 0 50%;
   width: 50%;
   max-width: 50%;
-  background: transparent;
-  will-change: clip-path;
+  background: var(--am-gold);
+  will-change: auto;
 }
 
 /* Springs .i-opening__caption__title.col.col--md-3.pl-layout.pl-0:lg.pr-layout */
@@ -798,8 +802,9 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   ) !important;
   font-weight: 400 !important;
   font-style: italic;
-  font-size: clamp(1.75rem, 3.2vw, 3.25rem) !important;
-  line-height: 1.15 !important;
+  /* Big white title in the gold panel */
+  font-size: clamp(2.35rem, 4.8vw, 4.75rem) !important;
+  line-height: 1.08 !important;
   letter-spacing: -0.02em;
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
@@ -818,8 +823,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 .public-site .home-am-sequence .home-am-opening__title *,
 html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title,
 html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
-  font-size: clamp(1.75rem, 3.2vw, 3.25rem) !important;
-  line-height: 1.15 !important;
+  font-size: clamp(2.35rem, 4.8vw, 4.75rem) !important;
+  line-height: 1.08 !important;
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
 }
@@ -971,7 +976,10 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
     margin-top: 0;
   }
 
-  /* Springs .i-opening__caption @ lg: flex-end + py-layout */
+  /*
+   * Full-height gold panel + big white title (no caption wipe → no cream void).
+   * clip-path none beats parallax inline so gold always reaches the bottom.
+   */
   .home-am-opening__caption {
     align-items: flex-end;
     display: flex;
@@ -979,10 +987,14 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
     justify-content: flex-end;
     padding-top: clamp(1.25rem, 4vw, 5rem);
     padding-bottom: clamp(1.25rem, 4vw, 5rem);
+    background: var(--am-gold);
+    clip-path: none !important;
   }
 
   .home-am-opening__caption-title {
     flex-basis: 0;
+    width: min(42%, 18rem);
+    max-width: 100%;
   }
 
   .home-am-opening__right-column {

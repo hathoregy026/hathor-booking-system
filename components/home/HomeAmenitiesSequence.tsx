@@ -616,17 +616,11 @@ export function HomeAmenitiesSequence({
               </div>
             </div>
 
+            {/* Gold floor + big white title — always full right half (no cream void) */}
             <div
               className="home-am-opening__caption"
               data-am-opening-title-panel
-              data-plugin="parallax"
-              data-parallax-enable-mq="md-up"
-              data-parallax-clamp="true"
-              data-parallax-measure-selector=".sticky"
-              data-parallax-0-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)"}'
-              data-parallax--100-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
             >
-              {/* Springs: title sits bottom-right on sticky caption while cards scroll */}
               <div className="home-am-opening__caption-title">
                 <h2
                   className="home-am-opening__title home-am-on-image-text"
@@ -638,9 +632,6 @@ export function HomeAmenitiesSequence({
                     </span>
                   ))}
                 </h2>
-              </div>
-              <div className="home-am-opening__gradient" aria-hidden="true">
-                <div />
               </div>
             </div>
           </div>
