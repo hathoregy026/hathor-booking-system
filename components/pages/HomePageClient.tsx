@@ -22,18 +22,12 @@ import {
   EX_CAROUSEL,
   EX_GALLERY,
   EX_HERO,
-  EX_PINNED,
-  EX_TEXT_BLOCKS,
   type ExCarouselSlide,
 } from "@/lib/ex-page-content";
-import { AMENITIES_SEQUENCE_IMAGE_SLOTS } from "@/lib/amenities-sequence-images";
 import type { HomepageAccordionCruise } from "@/lib/homepage-accordion-cruises";
 import type { SiteImageName } from "@/lib/site-image-slots";
 import { useExScrollMotion } from "@/hooks/useExScrollMotion";
-import {
-  useTypographyInlineStyle,
-  useTypographySettings,
-} from "@/components/public/TypographySettingsProvider";
+import { useTypographyInlineStyle } from "@/components/public/TypographySettingsProvider";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { combineDesktopAndNarrowCss } from "@/lib/admin-device-preview";
 import {
@@ -186,11 +180,7 @@ export function HomePageClient({
 }: HomePageClientProps) {
   useExScrollMotion();
 
-  const typography = useTypographySettings();
   const websiteText = useWebsiteText();
-  const stackEyebrowStyle = useTypographyInlineStyle("on_images_indication");
-  const stackTitleStyle = useTypographyInlineStyle("on_images_title");
-  const stackBodyStyle = useTypographyInlineStyle("on_images_body");
   const itinerariesIndicationStyle = useTypographyInlineStyle("page_subtitle");
   const galleryIndicationStyle = useTypographyInlineStyle("page_subtitle");
   const aboutTitleStyle = useTypographyInlineStyle("page_title");
@@ -202,32 +192,6 @@ export function HomePageClient({
     .split("\n")
     .map((line) => line.trim())
     .filter(Boolean);
-
-  const stackSlides = EX_PINNED.slides.map((slide, index) => {
-    const cms = websiteText.home.stackSlides[index];
-    const titleRaw =
-      cms?.title?.trim() ||
-      (index === 0 ? typography.on_images_copy.title.trim() : "") ||
-      slide.title;
-    const titleLines = titleRaw
-      .split("\n")
-      .map((line) => line.trim())
-      .filter(Boolean);
-    return {
-      ...slide,
-      titleLines: titleLines.length > 0 ? titleLines : [slide.title],
-      indication:
-        cms?.indication?.trim() ||
-        (index === 0
-          ? typography.on_images_copy.indication.trim()
-          : "") ||
-        slide.indication,
-      body:
-        cms?.body?.trim() ||
-        (index === 0 ? typography.on_images_copy.body.trim() : "") ||
-        slide.body,
-    };
-  });
 
   const [softTune, setSoftTune] = useState<typeof heroLogoTune | null>(null);
   const [softTuneMobile, setSoftTuneMobile] = useState<
@@ -399,31 +363,11 @@ export function HomePageClient({
           </div>
         </section>
 
+        {/*
+          Pure Springs amenities clone (images + colours unchanged).
+          Hathor CMS restyle later from archive/home-amenities-hathor-backup.
+        */}
         <HomeLandmarkMaskSection
-          slides={stackSlides.map((slide) => ({
-            ...slide,
-            previewAnchor: false,
-          }))}
-          stories={EX_TEXT_BLOCKS.map((block, index) => {
-            const cms = websiteText.home.textBlocks[index];
-            return {
-              title: cms?.title?.trim() || block.title,
-              body: cms?.body?.trim() || block.body,
-              cta: cms?.cta?.trim() || block.cta,
-              href: block.href,
-              imageName: block.imageName,
-              imageAlt: block.alt,
-              previewAnchor: false,
-            };
-          })}
-          images={AMENITIES_SEQUENCE_IMAGE_SLOTS.map((slot) => ({
-            name: slot.name as SiteImageName,
-            alt: slot.alt,
-            previewAnchor: HOMEPAGE_PREVIEW_SLOTS.has(slot.name),
-          }))}
-          titleStyle={stackTitleStyle}
-          indicationStyle={stackEyebrowStyle}
-          bodyStyle={stackBodyStyle}
           voyages={
             <LuxuryAccordion
               embedded

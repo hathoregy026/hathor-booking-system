@@ -1,20 +1,20 @@
 /*
- * Pure Springs amenities clone (iframe → /home-amenities-springs).
- * Springs owns colours, images, 50vw joins, sticky, scroll.
- * Tall runway + sticky 100svh window; parent Lenis maps to Springs smoothScroll.
+ * Springs amenities portal — literal /test-slide document (iframe).
+ * Tall runway in parent flow + sticky 100svh window. Parent scroll maps to
+ * Springs loco (bridge.js). Do NOT invent 50vw joins here — Springs owns them.
  */
 .home-am-springs-runway {
   position: relative;
-  /* Use 100% (not 100vw) so the scrollbar gutter cannot leave a cream strip */
-  width: 100%;
-  max-width: 100%;
-  margin: 0;
+  /* Full viewport width — avoid parent padding leaving cream beside the iframe */
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  /* Fallback until bridge reports document height (~intro→nature) */
   min-height: 900vh;
   padding: 0;
   z-index: 21;
-  /* Springs --c-dark-green — matches clone so hairlines are invisible */
-  background: #162d24;
-  overflow: hidden;
+  background: #b69f64;
 }
 
 .home-am-springs-host {
@@ -26,7 +26,7 @@
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background: #162d24;
+  background: #b69f64;
 }
 
 .home-am-springs-frame {
@@ -38,7 +38,7 @@
   border: 0;
   margin: 0;
   padding: 0;
-  background: #162d24;
+  background: #b69f64;
   pointer-events: none;
 }
 

@@ -1,119 +1,19 @@
 /**
- * Hathor bridge for the Springs amenities clone iframe.
- * - Does NOT alter Springs sticky / parallax / loco
- * - Injects CMS images + copy from parent postMessage
- * - Reports document scroll height for parent runway sizing
+ * Homepage embed bridge — PURE Springs amenities clone.
+ * Scroll + height only. Does not touch preloader, not-ready, or appear/reveal.
+ * Springs must finish its own intro (is-intro-seen) before we report ready.
  */
 (function () {
   "use strict";
-
-  const GOLD = "#b69f64";
-
-  function applyImages(images) {
-    if (!images || typeof images !== "object") return;
-    Object.entries(images).forEach(([slot, src]) => {
-      if (!src) return;
-      document
-        .querySelectorAll(`[data-hathor-img-slot="${slot}"]`)
-        .forEach((img) => {
-          img.removeAttribute("srcset");
-          img.setAttribute("src", src);
-          img.setAttribute("data-src", src);
-          const picture = img.closest("picture");
-          if (picture) {
-            picture.querySelectorAll("source").forEach((source) => {
-              source.removeAttribute("srcset");
-              source.setAttribute("srcset", src);
-            });
-          }
-        });
-    });
-  }
-
-  function applyText(text) {
-    if (!text || typeof text !== "object") return;
-
-    const setHtml = (sel, value) => {
-      if (value == null || value === "") return;
-      document.querySelectorAll(sel).forEach((el) => {
-        el.innerHTML = value;
-      });
-    };
-
-    /* Springs selectors → Hathor CMS fields (content only). */
-    if (text.introTitle) {
-      setHtml("#i-intro h1.h0", text.introTitle);
-      setHtml("#i-intro .h0.leading-trim", text.introTitle);
-    }
-    if (text.introBody) {
-      setHtml("#i-intro .text-c1 p", text.introBody);
-      setHtml("#i-next-mobile p", text.introBody);
-    }
-    if (text.videoTitle) {
-      setHtml("#i-video .i-video__title h2", text.videoTitle);
-    }
-    if (text.videoBody) {
-      setHtml("#i-video .i-video__text p", text.videoBody);
-    }
-    if (text.videoCaptionTitle) {
-      setHtml("#i-video .i-video__caption__title h3", text.videoCaptionTitle);
-    }
-    if (text.videoCaptionBody) {
-      setHtml("#i-video .i-video__caption__text p", text.videoCaptionBody);
-    }
-    if (Array.isArray(text.sliderCaptions)) {
-      const blocks = document.querySelectorAll(
-        "#i-slider .js-slider-content [data-content-animation-item], #i-slider .i-slider__caption .js-slider-content > div",
-      );
-      /* Fallback: sequential title/body pairs inside caption stack */
-      const titles = document.querySelectorAll(
-        "#i-slider .i-slider__caption h3, #i-slider .i-slider__caption .h3",
-      );
-      text.sliderCaptions.forEach((cap, i) => {
-        if (titles[i] && cap.title) titles[i].innerHTML = cap.title;
-      });
-      const bodies = document.querySelectorAll(
-        "#i-slider .i-slider__caption .text-t1 p, #i-slider .i-slider__caption p.text-t1",
-      );
-      text.sliderCaptions.forEach((cap, i) => {
-        if (bodies[i] && cap.body) bodies[i].innerHTML = cap.body;
-      });
-      void blocks;
-    }
-    if (text.openingTitle) {
-      setHtml("#i-opening .i-opening__caption__title h3", text.openingTitle);
-    }
-    if (text.openingBody) {
-      setHtml("#i-opening .i-opening__caption__text p", text.openingBody);
-    }
-    if (Array.isArray(text.openingCards)) {
-      const labels = document.querySelectorAll(
-        "#i-opening .i-opening__list-item__text",
-      );
-      text.openingCards.forEach((label, i) => {
-        if (labels[i] && label) labels[i].textContent = label;
-      });
-    }
-    if (text.natureCaption) {
-      setHtml("#i-nature .i-nature__caption p", text.natureCaption);
-      setHtml("#i-nature .i-nature__caption", text.natureCaption);
-    }
-  }
 
   function reportReady() {
     const height = Math.max(
       document.documentElement.scrollHeight,
       document.body.scrollHeight,
       document.querySelector("[data-hathor-amenities-root]")?.scrollHeight || 0,
+      window.innerHeight * 14,
     );
-    parent.postMessage(
-      {
-        type: "hathor-am-ready",
-        height,
-        gold: GOLD,
-      },
-      "*",
-    );
+    parent.postMessage({ type: "hathor-am-ready", height }, "*");
   }
 
   function findSmoothScroll() {
@@ -138,28 +38,11 @@
     const smooth = findSmoothScroll();
     if (smooth) {
       try {
-        if (typeof smooth.scrollTop === "function") {
-          smooth.scrollTop(target);
-          return;
-        }
-        smooth.scrollTo(target, { duration: 0, immediate: true });
+        smooth.scrollTo(target);
         return;
       } catch (_) {
-        try {
-          smooth.scrollTo(target);
-          return;
-        } catch (__) {
-          /* fall through */
-        }
+        /* fall through */
       }
-    }
-    try {
-      if (window.jQuery && typeof window.jQuery.fn.scrollTo === "function") {
-        window.jQuery(window).scrollTo(target, 0);
-        return;
-      }
-    } catch (_) {
-      /* fall through */
     }
     window.scrollTo(0, target);
   }
@@ -167,36 +50,40 @@
   window.addEventListener("message", (event) => {
     const data = event.data;
     if (!data || typeof data !== "object") return;
-    if (data.type === "hathor-am-content") {
-      applyImages(data.images);
-      applyText(data.text);
-      requestAnimationFrame(reportReady);
-      setTimeout(reportReady, 400);
-      setTimeout(reportReady, 1200);
-    }
-    if (data.type === "hathor-am-scroll") {
-      applyScroll(data.y);
-    }
+    if (data.type === "hathor-am-scroll") applyScroll(data.y);
   });
 
-  function forceReady() {
+  function springsBooted() {
     const root = document.documentElement;
-    root.classList.add("js", "hathor-am-bridge");
-    root.classList.remove("no-js", "not-ready");
-    document
-      .querySelectorAll(".is-invisible--js")
-      .forEach((el) => el.classList.remove("is-invisible--js"));
-    const preloader = document.querySelector(".preloader, .js-preloader");
-    if (preloader) {
-      preloader.style.display = "none";
-      preloader.setAttribute("aria-hidden", "true");
-    }
+    return (
+      root.classList.contains("is-intro-seen") ||
+      (root.classList.contains("is-ready") &&
+        root.classList.contains("has-scroll-smooth") &&
+        !!document.querySelector('#i-intro img[data-reveal-old], #i-intro img[data-preloaded]'))
+    );
   }
 
   function boot() {
-    forceReady();
-    reportReady();
-    parent.postMessage({ type: "hathor-am-boot" }, "*");
+    let reported = false;
+    const finish = () => {
+      if (reported) return;
+      reported = true;
+      reportReady();
+      parent.postMessage({ type: "hathor-am-boot" }, "*");
+    };
+
+    if (springsBooted()) {
+      finish();
+      return;
+    }
+
+    const start = Date.now();
+    const tick = window.setInterval(() => {
+      if (springsBooted() || Date.now() - start > 12000) {
+        window.clearInterval(tick);
+        finish();
+      }
+    }, 80);
   }
 
   if (document.readyState === "loading") {
@@ -205,7 +92,7 @@
     boot();
   }
   window.addEventListener("load", () => {
-    reportReady();
-    setTimeout(reportReady, 800);
+    setTimeout(reportReady, 400);
+    setTimeout(reportReady, 1600);
   });
 })();
