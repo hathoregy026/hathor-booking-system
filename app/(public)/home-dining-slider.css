@@ -261,18 +261,20 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 
 @media (min-width: 1025px) {
   /*
-   * Springs i-nature band clip over opening.
-   * z-index above opening (4): native sticky cannot use Springs'
-   * .has-hover .i-opening{overflow:hidden} (that kills sticky here).
+   * Springs .i-nature desktop handoff — literal:
+   * clip-path band + margin-top:-200svh + z-index:2
+   * No translateZ here: it makes a containing block and breaks the
+   * loco-equivalent pin/fixed stage used under Lenis.
    */
   .home-am-opening.home-am-chapter--under-next
     + .home-am-nature.home-am-chapter--under-previous,
   .home-am-nature.home-am-chapter--under-previous {
     clip-path: polygon(0 100svh, 100% 100svh, 100% 200svh, 0 200svh);
     margin-top: -200svh;
-    z-index: 6;
+    /* Above opening (2) — Springs cover order */
+    z-index: 3;
     min-height: calc(100 * var(--am-svh));
-    transform: translateZ(1px);
+    transform: none;
   }
 
   .home-am-nature,
@@ -575,7 +577,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 /* ========== i-slider (Springs: 600svh; no under-previous clip) ========== */
 .home-am-slider {
   height: 600svh;
-  z-index: 3;
+  /* Springs i-slider has no chapter z-index — must stay under opening cover */
+  z-index: 1;
 }
 
 .home-am-chapter--under-previous + .home-am-slider {
@@ -708,9 +711,16 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 .home-am-opening {
   height: 250svh;
   position: relative;
-  z-index: auto;
+  /* Above slider (Springs next-chapter cover); below nature z-index:2 handoff */
+  z-index: 2;
   pointer-events: none;
   clip-path: none;
+  /*
+   * Springs .ui-dark sets --t-background on the chapter; clipped RC gaps
+   * read that theme through the transparent caption. Hathor remaps to gold
+   * so gaps never flash page cream.
+   */
+  background: var(--am-gold);
 }
 
 /* Opening under-next pulls next sticky sibling (Springs sticky--under-next) */
@@ -718,14 +728,19 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   margin-bottom: calc(var(--sticky-under-next-distance) * -1);
 }
 
-/* Springs: .i-opening .sticky__layer--sticky { pointer-events:none; z-index:2 } */
+/*
+ * Springs: .i-opening .sticky__layer--sticky { pointer-events:none; z-index:2 }
+ * Under Lenis / overflow-x:clip, CSS sticky cannot pin (same as site mask-reveal).
+ * Desktop stage is position:relative + ScrollTrigger pin (loco data-scroll-sticky).
+ */
 .home-am-opening .home-am-chapter__stage,
 .home-am-opening .sticky__layer--sticky {
   pointer-events: none;
   z-index: 2;
   contain: none;
-  /* Springs sticky layer has NO overflow:hidden — required to see RC cards through caption */
+  /* Springs sticky layer has NO overflow:hidden — RC cards show through caption */
   overflow: visible;
+  background: transparent;
 }
 
 /* Springs: .i-opening__caption,.i-opening__content,.i-opening__images{height:100%} */
@@ -917,6 +932,11 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   position: relative;
   z-index: auto;
   width: 100%;
+  /*
+   * Springs RC clip opens to 350vh — element must be at least that tall
+   * or the band is clipped to content height and cards vanish.
+   */
+  min-height: 350vh;
   pointer-events: none;
   will-change: clip-path;
   background: var(--am-gold);
@@ -955,12 +975,15 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
 
 @media (min-width: 1025px) {
   /*
-   * Springs @ lg-up:
+   * Springs @ lg-up (literal):
    * .i-opening { clip-path:none; height:400svh; min-height:2700px }
    * .i-opening__right-column { padding-top:100svh }
    * .i-opening__caption { flex-end column }
    * .i-opening__list-item { margin-top:15px }
-   * (skip .has-hover overflow:hidden — loco-only)
+   * Skip .has-hover{overflow:hidden} — loco clip only; kills native/pin here.
+   *
+   * transform:none — Springs after-next uses translateZ for loco stacking;
+   * under Lenis that containing-block kills the pin (cards never slide).
    */
   .home-am-opening,
   .home-am-opening.home-am-chapter--under-previous-after-next {
@@ -971,6 +994,17 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
       var(--sticky-under-previous-distance) * -1 +
         var(--sticky-under-next-distance) * -1
     );
+    transform: none;
+    z-index: 2;
+  }
+
+  /* Springs .has-scroll-smooth .sticky__layer--sticky { position:relative } */
+  .home-am-opening .home-am-chapter__stage,
+  .home-am-opening .sticky__layer--sticky {
+    position: relative;
+    top: auto;
+    height: calc(100 * var(--am-svh));
+    max-height: none;
   }
 
   .home-am-opening__list-item {
