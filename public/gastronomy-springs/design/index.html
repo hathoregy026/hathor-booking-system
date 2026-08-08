@@ -537,10 +537,33 @@
     display: none !important;
   }
   .de-intro__gradient div,
-  .de-spiral__gradient div,
   .de-gallery__gradient div,
   .de-slider__mobile-scrollable-gradient div {
     background: radial-gradient(circle, rgba(182, 159, 100, 0.86) 0%, rgba(182, 159, 100, 0.38) 45%, rgba(182, 159, 100, 0) 74%) !important;
+  }
+  /*
+   * Spiral bridge: drop the gold overlay cast so the photo reads true,
+   * and park "The table is the voyage." low-left (red-box target).
+   */
+  #de-spiral.ui-background,
+  #de-spiral .de-spiral__gradient.ui-background {
+    background-color: transparent !important;
+  }
+  #de-spiral .de-spiral__gradient {
+    display: none !important;
+  }
+  #de-spiral .de-spiral__background {
+    mix-blend-mode: normal !important;
+  }
+  #de-spiral .de-spiral__caption {
+    align-items: flex-start !important;
+    justify-content: flex-end !important;
+    padding-bottom: clamp(5rem, 14vh, 9rem) !important;
+    text-align: left !important;
+  }
+  #de-spiral .de-spiral__title,
+  #de-spiral .de-spiral__title .h1 {
+    text-align: left !important;
   }
   /* Dining course carousel: remove the source thumbnail rail and its
      architectural studio mark, replacing it with the Hathor ring icon. */
