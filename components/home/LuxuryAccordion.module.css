@@ -62,7 +62,7 @@
   width: 100%;
 }
 
-/* Inside home-am-voyages sticky stage — Springs i-nature handoff */
+/* Inside home-am-voyages sticky stage (after Springs i-nature image chapter) */
 .section.embedded {
   overflow: visible;
   background: transparent;
@@ -74,85 +74,100 @@
   background: transparent;
 }
 
-/* Night — layered warm dark palette */
+/* Night — premium glass over fixed gradient */
 :global(html[data-public-theme="night"]) .section {
-  --hathor-accordion-gold: var(--accent, #c6af73);
-  --hathor-accordion-gold-bright: #d8c48a;
-  --hathor-accordion-line: rgb(54 49 44 / 0.55);
-  --hathor-accordion-muted: var(--text-muted, #a99d89);
-  --hathor-accordion-roman: rgb(198 175 115 / 0.16);
-  --hathor-accordion-hover: rgb(54 49 44 / 0.35);
-  --acc-open-rail-bg: var(--bg-surface, #23201d);
-  --acc-open-rail-edge: var(--bg-hover, #36312c);
-  --acc-open-rail-ink: var(--accent, #c6af73);
-  --acc-open-rail-muted: var(--text-muted, #a99d89);
-  --acc-open-rail-shadow: none;
-  --acc-open-card-bg: var(--bg-surface, #23201d);
-  --acc-open-card-border: var(--bg-hover, #36312c);
-  --acc-open-card-shadow: 0 18px 40px rgb(0 0 0 / 0.35);
-  --acc-open-card-text: var(--text-main, #eadfcd);
-  --acc-open-card-muted: var(--text-muted, #a99d89);
-  --acc-open-gold: var(--accent, #c6af73);
-  --acc-open-gold-bright: #d8c48a;
-  --acc-open-story-body: rgb(234 223 205 / 0.9);
-  --acc-open-story-label: var(--text-main, #eadfcd);
-  --acc-open-feature-bg: rgb(54 49 44 / 0.35);
-  --acc-open-feature-border: rgb(198 175 115 / 0.55);
-  --acc-open-close-border: var(--bg-hover, #36312c);
-  --acc-open-close-bg: rgb(35 32 29 / 0.92);
-  --acc-open-close-color: var(--accent, #c6af73);
-  --acc-open-title-shadow: 0 2px 18px rgb(0 0 0 / 0.45);
-  --acc-open-body-shadow: 0 1px 10px rgb(0 0 0 / 0.4);
-  --acc-open-active-bg: var(--bg-main, #161412);
-  background: var(--bg-main, #161412);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  --hathor-accordion-gold: var(--accent-gold, #bfa36b);
+  --hathor-accordion-gold-bright: #d4bc84;
+  --hathor-accordion-line: rgba(191, 163, 107, 0.15);
+  --hathor-accordion-muted: var(--text-muted, #a39682);
+  --hathor-accordion-roman: rgba(191, 163, 107, 0.14);
+  --hathor-accordion-hover: rgba(191, 163, 107, 0.08);
+  --acc-open-rail-bg: var(--surface-glass, rgba(28, 25, 22, 0.75));
+  --acc-open-rail-edge: rgba(191, 163, 107, 0.15);
+  --acc-open-rail-ink: var(--accent-gold, #bfa36b);
+  --acc-open-rail-muted: var(--text-muted, #a39682);
+  --acc-open-rail-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+  --acc-open-card-bg: var(--surface-glass, rgba(28, 25, 22, 0.75));
+  --acc-open-card-border: rgba(191, 163, 107, 0.15);
+  --acc-open-card-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+  --acc-open-card-text: var(--text-silk, #f4efe6);
+  --acc-open-card-muted: var(--text-muted, #a39682);
+  --acc-open-gold: var(--accent-gold, #bfa36b);
+  --acc-open-gold-bright: #d4bc84;
+  --acc-open-story-body: rgba(244, 239, 230, 0.88);
+  --acc-open-story-label: var(--text-silk, #f4efe6);
+  --acc-open-feature-bg: rgba(191, 163, 107, 0.08);
+  --acc-open-feature-border: rgba(191, 163, 107, 0.35);
+  --acc-open-close-border: rgba(191, 163, 107, 0.25);
+  --acc-open-close-bg: var(--surface-glass, rgba(28, 25, 22, 0.75));
+  --acc-open-close-color: var(--accent-gold, #bfa36b);
+  --acc-open-title-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
+  --acc-open-body-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
+  --acc-open-active-bg: transparent;
+  background: transparent;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-/* Section heading + closed rows — beat CMS inline typography in night */
 :global(html[data-public-theme="night"]) .title {
-  color: var(--text-main, #eadfcd) !important;
+  color: var(--text-silk, #f4efe6) !important;
+  letter-spacing: 0.03em;
 }
 
 :global(html[data-public-theme="night"]) .indication {
-  color: var(--text-muted, #a99d89) !important;
+  color: var(--text-muted, #a39682) !important;
+  letter-spacing: 0.03em;
 }
 
 :global(html[data-public-theme="night"]) .name {
-  color: var(--text-main, #eadfcd) !important;
+  color: var(--text-silk, #f4efe6) !important;
+  letter-spacing: 0.03em;
 }
 
 :global(html[data-public-theme="night"]) .rowMeta {
-  color: var(--text-muted, #a99d89) !important;
+  color: var(--text-muted, #a39682) !important;
+  letter-spacing: 0.03em;
 }
 
 :global(html[data-public-theme="night"]) .accordionItem:not(.isActive):hover .rowMeta {
-  color: var(--text-main, #eadfcd) !important;
+  color: var(--text-silk, #f4efe6) !important;
 }
 
-/* Open panel — layered surfaces */
 :global(html[data-public-theme="night"]) .rail {
-  background: var(--bg-surface, #23201d) !important;
-  border-right-color: var(--bg-hover, #36312c);
+  background: var(--surface-glass, rgba(28, 25, 22, 0.75)) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-right: 1px solid rgba(191, 163, 107, 0.15);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
 }
 
 :global(html[data-public-theme="night"]) .railQuoteText {
-  color: var(--text-muted, #a99d89) !important;
+  color: var(--text-muted, #a39682) !important;
+  letter-spacing: 0.03em;
 }
 
 :global(html[data-public-theme="night"]) .infoCard {
-  background: var(--bg-surface, #23201d) !important;
+  background: var(--surface-glass, rgba(28, 25, 22, 0.75)) !important;
   background-image: none !important;
-  border-color: var(--bg-hover, #36312c);
-  color: var(--text-main, #eadfcd);
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(191, 163, 107, 0.15);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+  color: var(--text-silk, #f4efe6);
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 :global(html[data-public-theme="night"]) .highlights li {
-  color: var(--text-main, #eadfcd) !important;
+  color: var(--text-muted, #a39682) !important;
+  letter-spacing: 0.03em;
 }
 
 :global(html[data-public-theme="night"]) .priceCaption {
-  color: var(--text-muted, #a99d89) !important;
+  color: var(--text-muted, #a39682) !important;
+  letter-spacing: 0.03em;
+}
+
+:global(html[data-public-theme="night"]) .accordionItem.isActive {
+  background-color: transparent;
 }
 
 /* Day — explicit card contrast (guards against --ink / WebKit fill bleed) */

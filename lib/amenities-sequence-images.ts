@@ -1,5 +1,5 @@
 /**
- * Eleven unique CMS image mounts in the homepage amenities sequence,
+ * Twelve unique CMS image mounts in the homepage amenities sequence,
  * ordered exactly as they first appear while scrolling the live site.
  * These slots are amenities-only — never reused on other pages.
  */
@@ -58,6 +58,11 @@ export const AMENITIES_SEQUENCE_IMAGE_SLOTS = [
     name: "home-amenities-11",
     label: "11 — Opening card 3",
     alt: "Amenities sequence — third small opening card",
+  },
+  {
+    name: "home-amenities-12",
+    label: "12 — Nature fullscreen (after opening cards)",
+    alt: "Amenities sequence — full-bleed nature chapter before Our Voyages",
   },
 ] as const;
 

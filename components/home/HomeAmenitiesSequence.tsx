@@ -100,6 +100,27 @@ export function HomeAmenitiesSequence({
   const videoMain = landmarks[1] ?? landmarks[0];
   const videoInset = landmarks[2] ?? landmarks[1] ?? landmarks[0];
 
+  /** Intentional line breaks for story titles (and CMS titles without `\n`). */
+  const storyTitleLines = (title: string): string[] => {
+    const lines = title
+      .split(/\n/)
+      .map((line) => line.trim())
+      .filter(Boolean);
+    if (lines.length > 1) return lines;
+    const single = (lines[0] || title).replace(/\s+/g, " ").trim();
+    const known: Array<[RegExp, string[]]> = [
+      [
+        /^NOT JUST A CRUISE\s+A WAY OF LIFE$/i,
+        ["NOT JUST A CRUISE", "A WAY OF LIFE"],
+      ],
+      [/^FINE DINING\s+ON DAHABIYA$/i, ["FINE DINING", "ON DAHABIYA"]],
+    ];
+    for (const [re, parts] of known) {
+      if (re.test(single)) return parts;
+    }
+    return single ? [single] : [];
+  };
+
   const sliderSlides = [
     landmarks[2]
       ? {
@@ -119,7 +140,7 @@ export function HomeAmenitiesSequence({
       : null,
     stories[0]
       ? {
-          titleLines: [stories[0].title],
+          titleLines: storyTitleLines(stories[0].title),
           indication: stories[0].cta,
           body: stories[0].body,
           image: images[5],
@@ -127,7 +148,7 @@ export function HomeAmenitiesSequence({
       : null,
     stories[1]
       ? {
-          titleLines: [stories[1].title],
+          titleLines: storyTitleLines(stories[1].title),
           indication: stories[1].cta,
           body: stories[1].body,
           image: images[6],
@@ -191,7 +212,6 @@ export function HomeAmenitiesSequence({
   const creamBodyStyle = useTypographyInlineStyle("body_text");
   const onImageTitle = withColor(titleStyle, WHITE);
   const onImageIndication = withColor(indicationStyle, WHITE);
-  const onImageBody = withColor(bodyStyle, WHITE);
   const onCreamTitle = withColor(titleStyle, GOLD);
   const onGoldTitle = withColor(titleStyle, WHITE);
   const onGoldIndication = withColor(indicationStyle, WHITE);
@@ -201,6 +221,11 @@ export function HomeAmenitiesSequence({
   const videoHeroImage = images[1];
   const videoInsetImage = images[2];
   const openingLeftImage = images[7];
+  const natureImage = images[11];
+  const natureCaption =
+    stories[2]?.body?.trim() ||
+    stories[1]?.body?.trim() ||
+    "On the Nile, every bend opens another chapter — private dahabiya passages where light, water, and quiet company write the itinerary.";
 
   return (
     <section
@@ -357,22 +382,6 @@ export function HomeAmenitiesSequence({
                   previewAnchor={videoHeroImage.previewAnchor}
                 />
               </div>
-            </div>
-
-            <div
-              className="home-am-video__copy"
-              data-am-video-copy
-              data-plugin="parallax"
-              data-parallax-pattern="videoTitle"
-              data-parallax-clamp="true"
-              data-parallax-measure-selector="[data-am-chapter]"
-            >
-              <p
-                className="home-am-on-image-text typo-on-images-body"
-                style={onImageBody}
-              >
-                {videoMain.body}
-              </p>
             </div>
 
             <div
@@ -682,7 +691,49 @@ export function HomeAmenitiesSequence({
         </div>
       </div>
 
-      {/* ===== i-nature — Our Voyages (Springs sticky sibling after i-opening) ===== */}
+      {/* ===== i-nature — full-bleed image (literal Springs handoff after i-opening) ===== */}
+      <div
+        className="home-am-nature home-am-chapter home-am-chapter--under-previous sticky sticky--full-height sticky--under-previous sticky--under-next"
+        data-am-nature
+        data-am-chapter
+        id="home-am-nature"
+      >
+        <div className="home-am-nature__stage home-am-chapter__stage sticky__layer sticky__layer--sticky sticky--full-height">
+          <div className="home-am-nature__content">
+            <div
+              className="home-am-nature__media"
+              data-plugin="parallax"
+              data-parallax-enable-mq="null"
+              data-parallax-clamp="true"
+              data-parallax-measure-selector="[data-am-chapter]"
+              data-parallax-100-0='{"transform":"scale(1.2)"}'
+              data-parallax--200-0='{"transform":"scale(1.0)"}'
+            >
+              <ManagedImage
+                name={natureImage.name}
+                alt={natureImage.alt}
+                fill
+                sizes="100vw"
+                className="object-cover"
+                loading="eager"
+                previewAnchor={natureImage.previewAnchor}
+              />
+            </div>
+
+            <div className="home-am-nature__caption">
+              <p className="home-am-nature__caption-text home-am-on-image-text">
+                {natureCaption}
+              </p>
+            </div>
+
+            <div className="home-am-nature__gradient" aria-hidden="true">
+              <div />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ===== Our Voyages list — follows nature (Springs i-interiors position) ===== */}
       {voyages ? (
         <div
           className="home-am-voyages home-am-chapter home-am-chapter--under-previous sticky sticky--full-height sticky--under-previous sticky--under-next"

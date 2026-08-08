@@ -231,6 +231,14 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     pagePath: "/#amenities-sequence",
     displayOrder: 10,
   },
+  {
+    name: "home-amenities-12",
+    altText: "Amenities sequence — full-bleed nature chapter before Our Voyages",
+    url: HATHOR_MEDIA.about,
+    category: "general",
+    pagePath: "/#amenities-sequence",
+    displayOrder: 11,
+  },
   // Homepage “Our Voyages” accordion — dedicated slots (Admin tab: Our Voyages)
   {
     name: "home-voyage-3n-aswan-luxor",

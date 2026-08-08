@@ -141,22 +141,111 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
 }
 
-/* ========== i-nature — Our Voyages (literal Springs sticky sibling) ========== */
+/* ========== i-nature — full-bleed image chapter (literal Springs) ========== */
 
-.home-am-voyages {
+.home-am-nature {
   position: relative;
-  min-height: calc(100 * var(--am-svh));
-  pointer-events: none;
+  height: 250svh;
+  min-height: 250svh;
 }
 
-.home-am-voyages__stage {
-  pointer-events: auto;
-  overflow: visible;
+.home-am-nature__stage {
+  overflow: hidden;
   contain: none;
   height: calc(100 * var(--am-svh));
   min-height: calc(100 * var(--am-svh));
-  background-color: var(--am-cream) !important;
+  background: var(--am-ink);
+}
+
+.home-am-nature__content {
+  position: relative;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: calc(100 * var(--am-svh));
+  box-sizing: border-box;
+  padding: clamp(1.25rem, 3vw, 2.5rem)
+    clamp(1.25rem, 4vw, 3.5rem)
+    clamp(2rem, 5vw, 4rem);
+  pointer-events: none;
+}
+
+.home-am-nature__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.home-am-nature__media > span,
+.home-am-nature__media img {
+  object-fit: cover !important;
+}
+
+.home-am-nature__caption {
+  position: relative;
+  z-index: 2;
+  max-width: min(42rem, 92%);
+  margin-right: clamp(0rem, 6vw, 4.5rem);
+  pointer-events: auto;
+}
+
+.home-am-nature__caption-text {
+  margin: 0;
+  font-family: var(
+    --public-serif,
+    var(--font-display, "Playfair Display", Georgia, serif)
+  ) !important;
+  font-weight: 400 !important;
+  font-style: italic;
+  font-size: clamp(1.65rem, 3.4vw, 3.35rem) !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.02em;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(22, 18, 14, 0.45);
+}
+
+.home-am-nature__gradient {
+  filter: blur(10px);
+  height: 100svh;
+  left: 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+}
+
+.home-am-nature__gradient > div {
+  background: radial-gradient(
+    circle,
+    rgba(182, 159, 100, 0.55) 0%,
+    rgba(182, 159, 100, 0.28) 5%,
+    rgba(182, 159, 100, 0) 62%
+  );
+  bottom: -46vw;
+  height: 80vw;
+  left: -23vw;
+  position: absolute;
+  width: 80vw;
+}
+
+/* Accordion list follows nature (Springs i-interiors position) */
+.home-am-voyages {
+  position: relative;
+  z-index: 3;
+  min-height: calc(100 * var(--am-svh));
+  background: var(--am-cream);
+}
+
+.home-am-voyages__stage {
+  overflow: visible;
+  contain: none;
+  min-height: calc(100 * var(--am-svh));
+  background-color: var(--am-cream) !important;
 }
 
 html[data-public-theme="night"] .home-am-voyages__stage {
@@ -165,23 +254,27 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 
 @media (min-width: 1025px) {
   /*
-   * Springs .i-nature @ lg-up — band clip handoff (NOT inset / NOT JS hide).
+   * Springs .i-nature @ lg-up — band clip handoff over opening.
    * Must beat `.under-next + .under-previous { inset(100svh) }`.
    */
   .home-am-opening.home-am-chapter--under-next
-    + .home-am-voyages.home-am-chapter--under-previous,
-  .home-am-voyages.home-am-chapter--under-previous {
+    + .home-am-nature.home-am-chapter--under-previous,
+  .home-am-nature.home-am-chapter--under-previous {
     clip-path: polygon(0 100svh, 100% 100svh, 100% 200svh, 0 200svh);
     margin-top: -200svh;
-    /* Above opening (z-index:4) so the cream band actually covers the sticky left */
     z-index: 6;
     min-height: calc(100 * var(--am-svh));
     transform: translateZ(1px);
   }
 
-  .home-am-voyages__stage {
+  .home-am-nature,
+  .home-am-nature.home-am-chapter--under-previous {
+    height: 250svh;
+    min-height: 250svh;
+  }
+
+  .home-am-nature__stage {
     height: calc(100 * var(--am-svh));
-    min-height: calc(100 * var(--am-svh));
   }
 }
 
@@ -657,18 +750,12 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   transform-origin: center center;
 }
 
-/*
- * Springs page chrome under i-opening is dark green, so when the scrolling
- * right-column clip exits the right half still reads as continuous.
- * Hathor page chrome is cream — without a gold floor the right “jumps” to
- * Voyages while the sticky left photo remains (the bleed in your screenshot).
- * Sticky caption = gold floor; cards still paint above via right-column z-index.
- */
+/* Springs: title caption is transparent — scrolling right-column gold shows through */
 .home-am-opening__caption {
   position: relative;
   flex: 0 1 50vw;
   width: 50vw;
-  background: var(--am-gold);
+  background: transparent;
   will-change: clip-path;
 }
 
@@ -837,8 +924,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   /*
    * Springs .i-opening @ lg-up:
    * clear sticky under-previous inset clip, keep -200svh pull from after-next.
-   * Do NOT set overflow:hidden — Springs uses it with loco-scroll; on native
-   * sticky it unsticks the left photo. Gold floor replaces dark Springs chrome.
+   * Do NOT set overflow:hidden — breaks native sticky (Springs uses loco-scroll).
    */
   .home-am-opening,
   .home-am-opening.home-am-chapter--under-previous-after-next {
@@ -850,7 +936,6 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
         var(--sticky-under-next-distance) * -1
     );
     transform: translateZ(1px);
-    background: var(--am-gold);
   }
 
   .home-am-opening__list-item {

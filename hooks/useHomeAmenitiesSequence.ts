@@ -76,31 +76,6 @@ export function useHomeAmenitiesSequence(
       /* initial closed state for caption wipe attrs already in markup */
     }
 
-    const openingEl = root.querySelector<HTMLElement>("[data-am-opening]");
-    const voyagesEl = root.querySelector<HTMLElement>("[data-am-voyages]");
-
-    /*
-     * Springs i-nature band covers opening via loco-scroll + overflow:hidden.
-     * On native sticky the left photo can paint through that band — clip the
-     * whole opening chapter to the cream band top so both halves leave together.
-     */
-    const syncOpeningToNatureBand = () => {
-      if (!openingEl || !voyagesEl) return;
-      if (window.matchMedia("(max-width: 1024px)").matches) {
-        openingEl.style.clipPath = "none";
-        return;
-      }
-      const voyTop = voyagesEl.getBoundingClientRect().top;
-      const creamTop = voyTop + window.innerHeight;
-      const vh = window.innerHeight;
-      if (creamTop >= vh) {
-        openingEl.style.clipPath = "none";
-        return;
-      }
-      const bottomInset = Math.min(vh, Math.max(0, vh - creamTop));
-      openingEl.style.clipPath = `inset(0px 0px ${bottomInset}px 0px)`;
-    };
-
     const st = ScrollTrigger.create({
       id: "home-am-springs-parallax",
       trigger: root,
@@ -111,7 +86,6 @@ export function useHomeAmenitiesSequence(
       onUpdate: () => {
         const y = window.scrollY || window.pageYOffset;
         engine.update(y);
-        syncOpeningToNatureBand();
 
         if (slider && captions.length) {
           const rect = slider.getBoundingClientRect();
@@ -131,13 +105,15 @@ export function useHomeAmenitiesSequence(
           }
         }
       },
-      onRefresh: syncOpeningToNatureBand,
     });
 
-    /* Helm cover after Our Voyages (accordion inside amenities sequence) */
-    const voyages = voyagesEl ?? document.querySelector<HTMLElement>("[data-hathor-accordion]");
-    const opening = openingEl;
-    const helmCoverTrigger = voyages ?? opening;
+    /* Helm cover after accordion (follows Springs i-nature image chapter) */
+    const natureEl = root.querySelector<HTMLElement>("[data-am-nature]");
+    const voyagesEl =
+      root.querySelector<HTMLElement>("[data-am-voyages]") ??
+      document.querySelector<HTMLElement>("[data-hathor-accordion]");
+    const openingEl = root.querySelector<HTMLElement>("[data-am-opening]");
+    const helmCoverTrigger = voyagesEl ?? natureEl ?? openingEl;
     const helm = document.querySelector<HTMLElement>("[data-home-helm-portal]");
     let helmSt: ScrollTrigger | undefined;
     if (helm && helmCoverTrigger) {
@@ -201,7 +177,6 @@ export function useHomeAmenitiesSequence(
         isCompact ? "orientationchange" : "resize",
         onViewport,
       );
-      if (openingEl) openingEl.style.clipPath = "none";
       st.kill();
       helmSt?.kill();
       engine.destroy();
