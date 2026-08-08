@@ -703,46 +703,32 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   object-position: bottom center !important;
 }
 
-/* ========== i-opening — literal Springs infrastructure opening ========== */
+/* ========== i-opening — literal Springs infrastructure.css ========== */
 
 .home-am-opening {
   height: 250svh;
   position: relative;
-  /* Springs: z-index:4 only on compact — desktop must stay under/with slider or gold buries images */
   z-index: auto;
   pointer-events: none;
   clip-path: none;
 }
 
-/*
- * Springs stack (critical for the 3 cards to scroll):
- *   z0 gold floor (right half) — no cream void when RC clips
- *   z1 right-column (scrolls, cards) — BELOW sticky
- *   z2 sticky stage (left photo + transparent caption + title) — ABOVE RC
- * Cards slide up under the transparent caption; title stays on top.
- */
-.home-am-opening::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 0 50%;
-  z-index: 0;
-  background: var(--am-gold);
-  pointer-events: none;
-}
-
-/* Opening under-next pulls Voyages (next sticky sibling) */
+/* Opening under-next pulls next sticky sibling (Springs sticky--under-next) */
 .home-am-opening.home-am-chapter--under-next {
   margin-bottom: calc(var(--sticky-under-next-distance) * -1);
 }
 
+/* Springs: .i-opening .sticky__layer--sticky { pointer-events:none; z-index:2 } */
 .home-am-opening .home-am-chapter__stage,
 .home-am-opening .sticky__layer--sticky {
   pointer-events: none;
   z-index: 2;
-  /* contain:content can prevent the left ManagedImage from lazy-loading */
   contain: none;
+  /* Springs sticky layer has NO overflow:hidden — required to see RC cards through caption */
+  overflow: visible;
 }
 
+/* Springs: .i-opening__caption,.i-opening__content,.i-opening__images{height:100%} */
 .home-am-opening__content,
 .home-am-opening__images,
 .home-am-opening__caption {
@@ -757,13 +743,12 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   gap: 0;
 }
 
-/* Half columns use % so the center seam stays flush (vw + scrollbar = gap) */
+/* Springs .col--lg-6 → flex:0 1 50vw; width:50vw */
 .home-am-opening__images {
   position: relative;
-  flex: 0 0 calc(50% + 1px);
-  width: calc(50% + 1px);
-  max-width: calc(50% + 1px);
-  margin-right: -1px;
+  flex: 0 1 50vw;
+  width: 50vw;
+  max-width: 50vw;
   overflow: hidden;
   will-change: clip-path;
   z-index: 1;
@@ -784,17 +769,17 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   transform-origin: center center;
 }
 
-/* Springs: transparent caption — RC gold + scrolling cards show through */
+/* Springs caption: transparent — RC ui-background + cards show through */
 .home-am-opening__caption {
   position: relative;
-  flex: 0 0 50%;
-  width: 50%;
-  max-width: 50%;
+  flex: 0 1 50vw;
+  width: 50vw;
+  max-width: 50vw;
   background: transparent;
-  will-change: auto;
+  will-change: clip-path;
 }
 
-/* Springs .i-opening__caption__title.col.col--md-3.pl-layout.pl-0:lg.pr-layout */
+/* Springs .i-opening__caption__title */
 .home-am-opening__caption-title {
   position: relative;
   z-index: 2;
@@ -803,7 +788,6 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   width: 25vw;
   max-width: 100%;
   box-sizing: border-box;
-  padding-left: 0;
   padding-right: clamp(1.25rem, 4vw, 5rem);
 }
 
@@ -815,9 +799,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   ) !important;
   font-weight: 400 !important;
   font-style: italic;
-  /* Big white title in the gold panel */
-  font-size: clamp(2.35rem, 4.8vw, 4.75rem) !important;
-  line-height: 1.08 !important;
+  font-size: clamp(1.75rem, 3.2vw, 3.25rem) !important;
+  line-height: 1.15 !important;
   letter-spacing: -0.02em;
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
@@ -836,12 +819,13 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 .public-site .home-am-sequence .home-am-opening__title *,
 html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title,
 html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
-  font-size: clamp(2.35rem, 4.8vw, 4.75rem) !important;
-  line-height: 1.08 !important;
+  font-size: clamp(1.75rem, 3.2vw, 3.25rem) !important;
+  line-height: 1.15 !important;
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
 }
 
+/* Springs .i-opening__gradient */
 .home-am-opening__gradient {
   filter: blur(50px);
   height: 100%;
@@ -868,7 +852,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   width: 80vw;
 }
 
-/* Springs .col--md-2 — vertical stack (one card under the next) */
+/* Springs .col--md-2 — vertical stack */
 .home-am-opening__list-item {
   position: relative;
   display: block;
@@ -895,6 +879,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   object-fit: cover !important;
 }
 
+/* Springs .i-opening__list-item__text */
 .home-am-opening__list-item-text {
   bottom: 20px;
   left: 20px;
@@ -922,30 +907,32 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
 }
 
 /*
- * Springs .i-opening__right-column — NOT sticky, BELOW sticky stage (z-index 1 < 2).
- * Scrolls with the 400svh runway so the 3 cards slide up the gold column.
+ * Springs .sticky__layer.i-opening__right-column
+ * — NOT sticky, no z-index (sits under sticky z-index:2)
+ * — scrolls with 400svh runway; cards slide up
  */
 .home-am-opening__right-column {
   grid-area: sticky_content;
   align-self: start;
   position: relative;
-  z-index: 1;
+  z-index: auto;
   width: 100%;
   pointer-events: none;
   will-change: clip-path;
   background: var(--am-gold);
 }
 
-/* Springs .col--lg-6.offset--lg-6 — % matches caption/images seam */
+/* Springs .col.col--lg-6.offset--lg-6.pt-2.5 */
 .home-am-opening__right-inner {
-  margin-left: 50%;
-  width: 50%;
+  margin-left: 50vw;
+  width: 50vw;
   box-sizing: border-box;
   background: transparent;
   padding: 2.5rem 0 3rem;
   pointer-events: auto;
 }
 
+/* Springs .i-opening__caption__text */
 .home-am-opening__caption-text {
   max-width: 400px;
   margin: 0;
@@ -956,7 +943,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   -webkit-text-fill-color: #ffffff !important;
 }
 
-/* Springs .mt-5 — cards sit under body copy and scroll as a vertical stack */
+/* Springs .mt-5 */
 .home-am-opening__list-wrap {
   margin-top: 3rem;
 }
@@ -968,9 +955,12 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
 
 @media (min-width: 1025px) {
   /*
-   * Springs .i-opening @ lg-up:
-   * clip-path:none; height:400svh; min-height:2700px
-   * Do NOT copy .has-hover{overflow:hidden} — loco-scroll only; kills native sticky.
+   * Springs @ lg-up:
+   * .i-opening { clip-path:none; height:400svh; min-height:2700px }
+   * .i-opening__right-column { padding-top:100svh }
+   * .i-opening__caption { flex-end column }
+   * .i-opening__list-item { margin-top:15px }
+   * (skip .has-hover overflow:hidden — loco-only)
    */
   .home-am-opening,
   .home-am-opening.home-am-chapter--under-previous-after-next {
@@ -981,7 +971,6 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
       var(--sticky-under-previous-distance) * -1 +
         var(--sticky-under-next-distance) * -1
     );
-    transform: translateZ(1px);
   }
 
   .home-am-opening__list-item {
@@ -992,25 +981,17 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
     margin-top: 0;
   }
 
-  /* Springs .i-opening__caption @ lg — transparent, title bottom-right above scrolling cards */
   .home-am-opening__caption {
     align-items: flex-end;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding-top: clamp(1.25rem, 4vw, 5rem);
-    padding-bottom: clamp(1.25rem, 4vw, 5rem);
-    background: transparent;
-    clip-path: none !important;
   }
 
   .home-am-opening__caption-title {
     flex-basis: 0;
-    width: min(42%, 18rem);
-    max-width: 100%;
   }
 
-  /* Springs: padding-top 100svh so cards start below the fold and slide up */
   .home-am-opening__right-column {
     padding-top: 100svh;
   }
@@ -1154,10 +1135,6 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
     min-height: 0;
     pointer-events: none;
     z-index: 4;
-  }
-
-  .home-am-opening::before {
-    display: none;
   }
 
   .home-am-opening__content {

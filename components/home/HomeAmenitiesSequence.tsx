@@ -622,10 +622,16 @@ export function HomeAmenitiesSequence({
               </div>
             </div>
 
-            {/* Gold floor + big white title — always full right half (no cream void) */}
+            {/* Springs i-opening__caption — transparent, title above scrolling RC cards */}
             <div
               className="home-am-opening__caption"
               data-am-opening-title-panel
+              data-plugin="parallax"
+              data-parallax-enable-mq="md-up"
+              data-parallax-clamp="true"
+              data-parallax-measure-selector=".sticky"
+              data-parallax-0-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)"}'
+              data-parallax--100-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
             >
               <div className="home-am-opening__caption-title">
                 <h2
@@ -639,11 +645,14 @@ export function HomeAmenitiesSequence({
                   ))}
                 </h2>
               </div>
+              <div className="home-am-opening__gradient" aria-hidden="true">
+                <div />
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Springs right column: body + 3 cards stacked vertically, scroll with gold runway */}
+        {/* Springs sticky__layer.i-opening__right-column — scrolls; cards slide up */}
         <div
           className="home-am-opening__right-column sticky__layer"
           data-am-opening-right
@@ -651,11 +660,9 @@ export function HomeAmenitiesSequence({
           data-parallax-enable-mq="md-up"
           data-parallax-clamp="true"
           data-parallax-measure-selector=".sticky"
-          /* Springs i-opening right-column — literal keyframes */
-          /* 50% not 50vw — keeps gold flush to the center seam (no white gap) */
-          data-parallax-0-0='{"clip-path":"polygon(50% 0vh, 100% 0vh, 100% 0vh, 50% 0vh)"}'
-          data-parallax--100-0='{"clip-path":"polygon(50% 100vh, 100% 100vh, 100% 200vh, 50% 200vh)"}'
-          data-parallax--101-0='{"clip-path":"polygon(50% 100vh, 100% 100vh, 100% 350vh, 50% 350vh)"}'
+          data-parallax-0-0='{"clip-path":"polygon(50vw 0vh, 100% 0vh, 100% 0vh, 50vw 0vh)"}'
+          data-parallax--100-0='{"clip-path":"polygon(50vw 100vh, 100% 100vh, 100% 200vh, 50vw 200vh)"}'
+          data-parallax--101-0='{"clip-path":"polygon(50vw 100vh, 100% 100vh, 100% 350vh, 50vw 350vh)"}'
         >
           <div className="home-am-opening__right-inner">
             <p
