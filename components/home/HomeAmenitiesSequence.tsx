@@ -475,7 +475,18 @@ export function HomeAmenitiesSequence({
           id="home-am-slider"
         >
           <div className="home-am-chapter__stage sticky__layer sticky__layer--sticky sticky--full-height">
-            <div className="home-am-slider__row">
+            {/*
+              Springs: .i-slider__content.row data-parallax-pattern="infrastructureSliderScroll"
+              Caption open/progress is driven in useHomeAmenitiesSequence (same progress math).
+            */}
+            <div
+              className="home-am-slider__row"
+              data-plugin="parallax"
+              data-parallax-pattern="infrastructureSliderScroll"
+              data-parallax-enable-mq="md-up"
+              data-parallax-clamp="true"
+              data-parallax-measure-selector=".sticky"
+            >
               <div
                 className="home-am-slider__caption-col"
                 data-amenities-caption-col

@@ -130,6 +130,17 @@ export const SPRINGS_AMENITIES_PATTERNS: PatternMap = {
    * Springs shared.js videoCaptionMoveUp — reveal then ride the caption up
    * off-screen. Distance is measured from the body text (data-distance=1).
    */
+  /*
+   * Springs infrastructureSliderScroll — progress 0→1 across the slider runway.
+   * Caption switching is handled in useHomeAmenitiesSequence (contentAnimation
+   * stand-in). Pattern keeps the attribute/engine parity with /test-slide.
+   */
+  infrastructureSliderScroll: () =>
+    pattern({
+      "parallax-0-0": { opacity: "1" },
+      "parallax-200-100": { opacity: "1" },
+    }),
+
   videoCaptionMoveUp: (el) => {
     const captionH = el?.offsetHeight || window.innerHeight * 0.55;
     const text =

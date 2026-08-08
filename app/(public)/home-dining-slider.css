@@ -707,12 +707,13 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   column-gap: 0;
 }
 
+/* Springs .col--md-6 → flex:0 1 50vw; width:50vw; max-width:100% */
 .home-am-slider__caption-col {
   position: relative;
   display: flex;
   flex: 0 1 50vw;
   width: 50vw;
-  max-width: 50vw;
+  max-width: 100%;
   min-width: 0;
   flex-direction: column;
   justify-content: center;
@@ -721,9 +722,6 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   will-change: clip-path;
   overflow: hidden;
   box-sizing: border-box;
-  /* Overlap the join 1px so cream cannot show between gold and photo */
-  margin-right: -1px;
-  z-index: 1;
 }
 
 .home-am-slider__caption-stack {
@@ -804,7 +802,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   position: relative;
   flex: 0 1 50vw;
   width: 50vw;
-  max-width: 50vw;
+  max-width: 100%;
   min-width: 0;
   overflow: hidden;
   background: var(--am-ink);
@@ -878,20 +876,15 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   gap: 0;
 }
 
-/* Springs .col--lg-6 → flex:0 1 50vw; width:50vw */
+/* Springs .col--lg-6 → flex:0 1 50vw; width:50vw; max-width:100% */
 .home-am-opening__images {
   position: relative;
   flex: 0 1 50vw;
   width: 50vw;
-  max-width: 50vw;
+  max-width: 100%;
   overflow: hidden;
   will-change: clip-path;
   z-index: 1;
-  /*
-   * Cover the RC clip edge (50vw). Clipped-away RC left half is transparent —
-   * without this underlap, cream/gold punches a vertical seam through photo + bar.
-   */
-  margin-right: -1px;
 }
 
 .home-am-opening__images-media {
@@ -914,7 +907,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   position: relative;
   flex: 0 1 50vw;
   width: 50vw;
-  max-width: 50vw;
+  max-width: 100%;
   background: transparent;
   will-change: clip-path;
 }
@@ -965,7 +958,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   -webkit-text-fill-color: #ffffff !important;
 }
 
-/* Springs .i-opening__gradient */
+/* Springs .i-opening__gradient — theme colour fog (NOT page cream) */
 .home-am-opening__gradient {
   filter: blur(50px);
   height: 100%;
@@ -979,11 +972,12 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
 }
 
 .home-am-opening__gradient > div {
+  /* Springs: radial-gradient(circle, var(--c-blue) …). Hathor theme = am-gold */
   background: radial-gradient(
     circle,
-    rgba(236, 232, 223, 0.55) 0%,
-    rgba(236, 232, 223, 0.25) 5%,
-    rgba(236, 232, 223, 0) 62%
+    rgba(182, 159, 100, 0.85) 0%,
+    rgba(182, 159, 100, 0.45) 5%,
+    rgba(182, 159, 100, 0) 62%
   );
   height: 80svh;
   left: -34vw;

@@ -31,6 +31,7 @@
     "build:accommodation-springs": "node scripts/sync-accommodation-springs-assets.mjs && node scripts/patch-accommodation-springs-js.mjs && node scripts/build-accommodation-springs-pages.mjs && node scripts/prune-accommodation-springs-assets.mjs",
     "build:home-amenities-springs": "node scripts/build-home-amenities-springs.mjs",
     "compare:amenities": "node scripts/compare-amenities-home-vs-test-slide.mjs",
+    "compare:amenities-seam": "node scripts/compare-amenities-seam.mjs",
     "validate:availability": "tsx scripts/validate-calendar-availability.ts"
   },
   "dependencies": {
