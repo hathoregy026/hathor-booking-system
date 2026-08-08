@@ -87,15 +87,17 @@ const themeOverride = `
   .ui-dark.ui-background {
     background-color: ${GOLD} !important;
   }
+  /* Match Springs dark section — hairlines show gold, not cream */
   html, body {
-    background: ${CREAM} !important;
+    background: ${GOLD} !important;
   }
-  /* Homepage embed: hide Springs chrome; keep amenities chapters only */
+  /* Homepage embed: hide Springs chrome; keep amenities chapters only.
+   * Do NOT hide .preloader — Springs stays on html.not-ready / is-invisible--js
+   * until preloader completes (that was the cream void). Bridge force-ready. */
   header,
   .header,
   .menu,
   .menu-picker,
-  .preloader,
   .cookie-consent,
   #cookie-consent,
   .turn-message,

@@ -1,18 +1,32 @@
 /*
  * Springs amenities portal — literal /test-slide document (iframe).
- * Same pattern as gastronomy Springs: Springs owns document + loco + sticky.
- * Hathor only injects CMS images/text via bridge.js.
+ * Tall runway in parent flow + sticky 100svh window. Parent scroll maps to
+ * Springs loco (bridge.js). Do NOT invent 50vw joins here — Springs owns them.
  */
-.home-am-springs-host {
+.home-am-springs-runway {
   position: relative;
+  /* Full viewport width — avoid parent padding leaving cream beside the iframe */
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  /* Fallback until bridge reports document height (~intro→nature) */
+  min-height: 900vh;
+  padding: 0;
+  z-index: 21;
+  background: #b69f64;
+}
+
+.home-am-springs-host {
+  position: sticky;
+  top: 0;
   width: 100%;
   height: 100vh;
   height: 100svh;
   margin: 0;
   padding: 0;
-  z-index: 21;
-  background: #ece8df;
   overflow: hidden;
+  background: #b69f64;
 }
 
 .home-am-springs-frame {
@@ -24,7 +38,8 @@
   border: 0;
   margin: 0;
   padding: 0;
-  background: #ece8df;
+  background: #b69f64;
+  pointer-events: none;
 }
 
 /* Springs infrastructure sticky grammar (ported from clone stylesheets) */

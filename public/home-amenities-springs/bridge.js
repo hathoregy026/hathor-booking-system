@@ -116,20 +116,15 @@
     );
   }
 
-  function findLoco() {
-    if (window.__hathorLoco) return window.__hathorLoco;
+  function findSmoothScroll() {
+    if (window.__hathorSmoothScroll) return window.__hathorSmoothScroll;
     try {
-      for (const key of Object.keys(window)) {
-        const value = window[key];
-        if (
-          value &&
-          typeof value === "object" &&
-          typeof value.scrollTo === "function" &&
-          typeof value.setScroll === "function" &&
-          value.scroll
-        ) {
-          window.__hathorLoco = value;
-          return value;
+      const jq = window.jQuery;
+      if (jq) {
+        const smooth = jq(document.body).data("smoothScroll");
+        if (smooth && typeof smooth.scrollTo === "function") {
+          window.__hathorSmoothScroll = smooth;
+          return smooth;
         }
       }
     } catch (_) {
@@ -140,17 +135,22 @@
 
   function applyScroll(y) {
     const target = Math.max(0, Number(y) || 0);
-    const loco = findLoco();
-    if (loco) {
+    const smooth = findSmoothScroll();
+    if (smooth) {
       try {
-        if (typeof loco.setScroll === "function") {
-          loco.setScroll(0, target);
+        if (typeof smooth.scrollTop === "function") {
+          smooth.scrollTop(target);
           return;
         }
-        loco.scrollTo(target, { immediate: true, duration: 0 });
+        smooth.scrollTo(target, { duration: 0, immediate: true });
         return;
       } catch (_) {
-        /* fall through */
+        try {
+          smooth.scrollTo(target);
+          return;
+        } catch (__) {
+          /* fall through */
+        }
       }
     }
     try {
@@ -179,8 +179,22 @@
     }
   });
 
+  function forceReady() {
+    const root = document.documentElement;
+    root.classList.add("js", "hathor-am-bridge");
+    root.classList.remove("no-js", "not-ready");
+    document
+      .querySelectorAll(".is-invisible--js")
+      .forEach((el) => el.classList.remove("is-invisible--js"));
+    const preloader = document.querySelector(".preloader, .js-preloader");
+    if (preloader) {
+      preloader.style.display = "none";
+      preloader.setAttribute("aria-hidden", "true");
+    }
+  }
+
   function boot() {
-    document.documentElement.classList.add("hathor-am-bridge");
+    forceReady();
     reportReady();
     parent.postMessage({ type: "hathor-am-boot" }, "*");
   }

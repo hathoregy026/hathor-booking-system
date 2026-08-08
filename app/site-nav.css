@@ -677,10 +677,21 @@
     position: relative;
   }
 
-  /* Extend the white header surface downward without growing layout box */
+  /*
+   * Extend the white header surface downward without growing layout box.
+   * Force full viewport width (not padded inset) so the logo column cannot
+   * leave a center hole that shows page media through the mega panel.
+   */
   .public-site
     .hathor-header--owo-hero-layout.hathor-header--menu-hovered::before {
+    left: 0;
+    right: auto;
+    width: 100vw;
+    top: 0;
     bottom: calc(-1 * var(--nav-mega-drop-h));
+    opacity: 1;
+    background: #ffffff;
+    z-index: 0;
   }
 
   /* Full-width hairline under the fixed top label row */
