@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { shouldLightenMotionForDevice } from "@/lib/touch-device";
 
 /**
- * Suites Springs gallery hero — same sticky mosaic layout as /suites:
- * tilted moving cards, gold title, gradient wash, scroll-next control.
- * Duration matches suites landing.js (55s).
+ * Suites Springs gallery hero — same sticky mosaic as /suites:
+ * tilted −28° plane, 3-lane marquee, cream title bloom shadow, gold wash.
+ * Duration matches suites landing.js (`duration = 3e4`).
  */
 const MOSAIC_IMAGES = [
   "/media/hathor/scraped/suites-hero.webp",
@@ -30,7 +29,8 @@ const MOSAIC_IMAGES = [
   "/media/hathor/scraped/suites-hero.webp",
 ] as const;
 
-const DURATION_MS = 55_000;
+/** Suites `landing.js` gallery plugin: `this.duration = 3e4` */
+const DURATION_MS = 30_000;
 
 function rowForIndex(index: number): 1 | 2 | 3 {
   if (index >= 13) return 3;
@@ -48,7 +48,6 @@ export function CruisesMosaicHero() {
     if (!root) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const light = shouldLightenMotionForDevice();
     const items = itemsRef.current.filter(Boolean) as HTMLDivElement[];
     if (items.length === 0) return;
 
@@ -62,11 +61,12 @@ export function CruisesMosaicHero() {
     };
     measure();
 
+    // Suites gallery plugin: lg-up → step 125 / perRow 5; else step 300 / perRow 6
     const mqDesktop = window.matchMedia("(min-width: 980px)");
     const params = () => {
       const desktop = mqDesktop.matches;
       return {
-        stepVw: desktop ? 125 : light ? 220 : 300,
+        stepVw: desktop ? 125 : 300,
         perRow: desktop ? 5 : 6,
       };
     };
