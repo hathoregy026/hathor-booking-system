@@ -633,17 +633,41 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   clip-path: none;
 }
 
+/*
+ * Springs paints ui-background behind the split (dark page). Hathor page is
+ * cream — the same subpixel join reads as a white gap. Stage gold matches the
+ * caption column (one colour, not a second sand tone) so the join stays flush
+ * like the Fine Dining ref.
+ */
+.home-am-slider .home-am-chapter__stage,
+.home-am-slider .sticky__layer--sticky {
+  background: var(--am-gold);
+}
+
+/*
+ * Springs .i-slider__content.row + .col--md-6 → flex, each width:50vw.
+ * Grid 1fr 1fr tracks % of the stage; under classic scrollbars that drifts
+ * from 50vw and lets the cream page show as a vertical hairline.
+ */
 .home-am-slider__row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
   width: 100%;
   height: 100%;
+  margin: 0;
+  padding: 0;
   gap: 0;
+  column-gap: 0;
 }
 
 .home-am-slider__caption-col {
   position: relative;
   display: flex;
+  flex: 0 1 50vw;
+  width: 50vw;
+  max-width: 50vw;
+  min-width: 0;
   flex-direction: column;
   justify-content: center;
   padding: clamp(1.5rem, 4vw, 3.5rem);
@@ -651,9 +675,9 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   will-change: clip-path;
   overflow: hidden;
   box-sizing: border-box;
-  /* Stay inside the grid cell — do not widen or the gold eats the image half */
-  min-width: 0;
-  max-width: 100%;
+  /* Overlap the join 1px so cream cannot show between gold and photo */
+  margin-right: -1px;
+  z-index: 1;
 }
 
 .home-am-slider__caption-stack {
@@ -732,11 +756,13 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 
 .home-am-slider__images-col {
   position: relative;
+  flex: 0 1 50vw;
+  width: 50vw;
+  max-width: 50vw;
+  min-width: 0;
   overflow: hidden;
   background: var(--am-ink);
   will-change: clip-path;
-  min-width: 0;
-  max-width: 100%;
 }
 
 .home-am-slider__panel {
@@ -806,12 +832,13 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   gap: 0;
 }
 
-/* Springs .col--lg-6 → flex:0 1 50vw; width:50vw */
+/* Springs .col--lg-6 → flex:0 1 50vw; width:50vw (+1px join seal vs cream page) */
 .home-am-opening__images {
   position: relative;
-  flex: 0 1 50vw;
-  width: 50vw;
-  max-width: 50vw;
+  flex: 0 1 calc(50vw + 1px);
+  width: calc(50vw + 1px);
+  max-width: calc(50vw + 1px);
+  margin-right: -1px;
   overflow: hidden;
   will-change: clip-path;
   z-index: 1;
@@ -1200,13 +1227,26 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   }
 
   .home-am-slider__row {
-    grid-template-columns: 1fr;
-    grid-template-rows: 42% 1fr;
+    flex-direction: column;
+  }
+
+  .home-am-slider__caption-col,
+  .home-am-slider__images-col {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 100%;
+    margin-right: 0;
   }
 
   .home-am-slider__caption-col {
+    height: 42%;
     justify-content: flex-end;
     padding: 1.15rem;
+  }
+
+  .home-am-slider__images-col {
+    flex: 1 1 auto;
+    min-height: 0;
   }
 
   .home-am-slider__caption-stack {
