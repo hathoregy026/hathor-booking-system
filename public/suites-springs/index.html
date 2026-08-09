@@ -380,19 +380,20 @@
     --suites-on-media-body: rgba(247, 241, 230, 0.94);
     --suites-title-on-media: #f7f1e6;
     --suites-ink-soft: rgba(28, 25, 23, 0.78);
-    --type-display-hero: clamp(3.5rem, 7vw, 8.25rem);
-    --type-display-section: clamp(2.75rem, 5vw, 5.75rem);
-    --type-display-secondary: clamp(1.85rem, 3.2vw, 3.25rem);
-    --type-script-lg: clamp(1.85rem, 2.8vw, 3.65rem);
-    --type-lead: clamp(1.125rem, 1.35vw, 1.35rem);
-    --type-body: clamp(1.0625rem, 1.2vw, 1.1875rem);
-    --type-label: clamp(0.68rem, 0.78vw, 0.8rem);
-    --type-button: clamp(0.72rem, 0.8vw, 0.82rem);
-    --tracking-label: 0.18em;
+    /* Pass 02 — visually tuned (not max of the original range) */
+    --type-display-hero: clamp(3.25rem, 5.8vw, 7rem);
+    --type-display-section: clamp(2.4rem, 4.1vw, 4.5rem);
+    --type-display-secondary: clamp(1.6rem, 2.45vw, 2.7rem);
+    --type-script-lg: clamp(1.15rem, 1.45vw, 1.85rem);
+    --type-lead: clamp(1.125rem, 1.3vw, 1.3rem);
+    --type-body: clamp(1.0625rem, 1.15vw, 1.175rem);
+    --type-label: clamp(0.68rem, 0.76vw, 0.78rem);
+    --type-button: clamp(0.74rem, 0.8vw, 0.82rem);
+    --tracking-label: 0.16em;
     --tracking-button: 0.14em;
-    --leading-display: 0.92;
-    --leading-section: 0.96;
-    --leading-body: 1.7;
+    --leading-display: 0.93;
+    --leading-section: 0.98;
+    --leading-body: 1.72;
     --lux-gold: #b69f64;
     --lux-gold-rgb: 182, 159, 100;
     --lux-cream: #f5eacf;
@@ -494,26 +495,30 @@
     font-family: var(--suites-sans) !important;
     font-weight: 400 !important;
     font-size: var(--type-lead) !important;
-    line-height: 1.65 !important;
+    line-height: 1.68 !important;
     letter-spacing: 0.005em !important;
     text-transform: none !important;
+    max-width: 36em;
   }
 
-  /* Gallery title — text alignment only within existing caption area */
+  /* Gallery title — slightly quieter than full hero so it sits in the corner */
   .l-gallery__caption .l-gallery__title {
     left: auto !important;
-    right: clamp(1.25rem, 4vw, 3.5rem) !important;
-    bottom: clamp(1.25rem, 3.5vw, 2.75rem) !important;
+    right: clamp(1.35rem, 4vw, 3.25rem) !important;
+    bottom: clamp(1.35rem, 3.5vw, 2.5rem) !important;
     top: auto !important;
     text-align: right !important;
-    max-width: min(48vw, 11em);
+    max-width: min(42vw, 9.5em);
   }
   .l-gallery__caption .l-gallery__title .h0 {
     text-align: right !important;
+    font-size: clamp(2.85rem, 4.6vw, 5.5rem) !important;
+    line-height: 0.94 !important;
+    letter-spacing: -0.018em !important;
   }
 
   body,
-  p:not(.g1):not(.g2):not(.h0):not(.h1):not(.h2):not(.h3),
+  p:not(.g1):not(.g2):not(.h0):not(.h1):not(.h2):not(.h3):not([class*="__subtitle"]),
   .text-t1,
   .text-t2,
   .text-p1,
@@ -526,15 +531,15 @@
   textarea,
   select,
   [class*="__text"]:not(.g1):not(.h0):not(.h1),
-  [class*="__caption"] p,
-  [class*="-caption__"] p {
+  [class*="__caption"] p:not([class*="__subtitle"]),
+  [class*="-caption__"] p:not([class*="__subtitle"]) {
     font-family: var(--suites-sans) !important;
   }
 
   /* 05 — Body copy */
   .text-t1,
   .text-t2,
-  p:not(.g1):not(.g2):not(.h0):not(.h1):not(.h2):not(.h3):not(.text-c1):not(.text-c2):not(.l-intro__opening-subtitle),
+  p:not(.g1):not(.g2):not(.h0):not(.h1):not(.h2):not(.h3):not(.text-c1):not(.text-c2):not(.l-intro__opening-subtitle):not([class*="__subtitle"]),
   [class*="__text"]:not(.g1):not(.h0):not(.h1),
   [class*="__caption"] p:not(.g1):not([class*="__subtitle"]),
   [class*="-caption__text"],
@@ -544,11 +549,12 @@
     font-weight: 400 !important;
     letter-spacing: 0.01em;
     text-wrap: pretty;
+    max-width: 38em;
   }
 
-  /* 06 — Eyebrow / label (Plus Jakarta) */
-  .text-c1,
-  .text-c2,
+  /* 06 — Eyebrow / label (Plus Jakarta) — exclude script subtitles */
+  .text-c1:not([class*="__subtitle"]),
+  .text-c2:not([class*="__subtitle"]),
   .carousel__thumb__item.text-c1 {
     font-family: var(--suites-sans) !important;
     font-size: var(--type-label) !important;
@@ -558,31 +564,62 @@
     line-height: 1.35 !important;
   }
 
-  /* 03 — Quiet Luxury script accents (short emotional captions only) */
-  .l-nature-bg-caption__subtitle,
-  .l-wellness__caption__subtitle,
-  .l-place__caption__subtitle,
-  .l-place-webgl-caption__subtitle {
-    font-family: var(--suites-script) !important;
+  /*
+   * 03 — Quiet Luxury script (signature, never equal to Gamgote).
+   * Must outrank body p:not(...) chains — those accumulate :not() class weight.
+   */
+  p.l-nature-bg-caption__subtitle.text-c1.leading-trim,
+  p.l-wellness__caption__subtitle.text-c1.leading-trim,
+  p.l-place__caption__subtitle.text-c1.leading-trim,
+  p.l-place-webgl-caption__subtitle.text-c1.leading-trim,
+  p.l-nature-bg-caption__subtitle.text-c1,
+  p.l-wellness__caption__subtitle.text-c1,
+  p.l-place__caption__subtitle.text-c1,
+  p.l-place-webgl-caption__subtitle.text-c1,
+  p.l-nature-bg-caption__subtitle,
+  p.l-wellness__caption__subtitle,
+  p.l-place__caption__subtitle,
+  p.l-place-webgl-caption__subtitle {
+    font-family: "Quiet Luxury", cursive !important;
     font-size: var(--type-script-lg) !important;
     font-weight: 400 !important;
-    letter-spacing: 0.01em !important;
+    letter-spacing: 0.015em !important;
     text-transform: none !important;
-    line-height: 1 !important;
+    line-height: 1.15 !important;
     color: var(--suites-gold) !important;
     -webkit-text-fill-color: var(--suites-gold) !important;
+    /* Signature line — never a full-bleed wedding banner */
+    max-width: 16em;
+    width: max-content;
+    /* leading-trim collapses script metrics — neutralize on script only */
+    --fos: 0.18em;
+    --foe: 0.22em;
+    margin-bottom: 0.15em !important;
+  }
+  p.l-nature-bg-caption__subtitle.leading-trim:before,
+  p.l-wellness__caption__subtitle.leading-trim:before,
+  p.l-place__caption__subtitle.leading-trim:before,
+  p.l-place-webgl-caption__subtitle.leading-trim:before,
+  p.l-nature-bg-caption__subtitle.leading-trim:after,
+  p.l-wellness__caption__subtitle.leading-trim:after,
+  p.l-place__caption__subtitle.leading-trim:after,
+  p.l-place-webgl-caption__subtitle.leading-trim:after {
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
   }
 
-  /* Opening subtitle is lead copy, not a label */
+  /* Opening subtitle is lead copy — never gold jewellery paragraphs */
   .l-intro__opening-subtitle.text-c1,
+  .l-intro__opening-subtitle.text-color-primary,
   .l-intro__opening-subtitle {
     font-family: var(--suites-sans) !important;
     font-size: var(--type-lead) !important;
-    font-weight: 450 !important;
+    font-weight: 400 !important;
     letter-spacing: 0.005em !important;
     text-transform: none !important;
-    line-height: 1.65 !important;
-    margin-top: 0.85rem;
+    line-height: 1.68 !important;
+    margin-top: 0.9rem;
+    max-width: 34em;
   }
 
   /* 07 — Button typography only */
@@ -590,7 +627,7 @@
   .btn {
     font-family: var(--suites-sans) !important;
     font-size: var(--type-button) !important;
-    font-weight: 550 !important;
+    font-weight: 500 !important;
     letter-spacing: var(--tracking-button) !important;
     text-transform: uppercase !important;
   }
@@ -745,45 +782,95 @@
   .color-primary {
     color: #b69f64 !important;
   }
+  /*
+   * Intro opening sits on light suite photography (cream walls).
+   * Warm ink for title + lead — gold jewellery only for true accents.
+   */
+  .l-intro__opening .h1,
+  .l-intro__opening .h1.text-color-primary,
+  .l-intro__opening [data-reveal="title"],
+  .ui-dark .l-intro__opening .h1,
+  .ui-dark .l-intro__opening .h1.text-color-primary,
+  .ui-light .l-intro__opening .h1,
+  .ui-light .l-intro__opening .h1.text-color-primary {
+    color: #1c1917 !important;
+    -webkit-text-fill-color: #1c1917 !important;
+    text-shadow: none !important;
+  }
+  .l-intro__opening-subtitle,
+  .l-intro__opening-subtitle.text-color-primary,
+  .l-intro__opening-subtitle.text-c1,
+  .ui-dark .l-intro__opening-subtitle,
+  .ui-dark .l-intro__opening-subtitle.text-color-primary,
+  .ui-light .l-intro__opening-subtitle,
+  .ui-light .l-intro__opening-subtitle.text-color-primary {
+    color: rgba(28, 25, 23, 0.88) !important;
+    -webkit-text-fill-color: rgba(28, 25, 23, 0.88) !important;
+    text-shadow: none !important;
+  }
 
-  /* Title ↔ script rhythm inside caption groups */
+  /* Title ↔ script rhythm — signature sits close under architecture */
   .l-nature-bg-caption .g1 + .l-nature-bg-caption__subtitle,
   .l-wellness__caption .g1 + .l-wellness__caption__subtitle,
   .l-place__caption .g1 + .l-place__caption__subtitle {
-    margin-top: 0.55rem;
+    margin-top: 0.35rem;
   }
+  .l-intro__opening .h1 + .l-intro__opening-subtitle,
   .l-intro__opening .h2 + .l-intro__opening-subtitle,
   .l-intro__opening h2 + .l-intro__opening-subtitle {
-    margin-top: 1rem;
+    margin-top: 0.85rem;
+  }
+
+  /* Short section words (Comfort / The Nile) — keep breathable, not billboard */
+  .l-wellness__caption .g1,
+  .l-nature-bg-caption .g1,
+  .l-nature__caption .g1,
+  .l-place__caption .g1 {
+    font-size: clamp(2.25rem, 3.8vw, 4.1rem) !important;
+    letter-spacing: -0.015em !important;
+    width: max-content;
+    max-width: 12em;
   }
 
   @media (max-width: 1024px) and (min-width: 481px) {
     :root {
-      --type-display-hero: clamp(3.1rem, 6.4vw, 6rem);
-      --type-display-section: clamp(2.35rem, 4.6vw, 4.25rem);
-      --type-display-secondary: clamp(1.65rem, 2.8vw, 2.65rem);
-      --type-script-lg: clamp(1.7rem, 2.5vw, 2.85rem);
-      --type-lead: clamp(1.1rem, 1.5vw, 1.28rem);
-      --type-body: clamp(1.05rem, 1.35vw, 1.15rem);
+      --type-display-hero: clamp(2.9rem, 5.6vw, 5.4rem);
+      --type-display-section: clamp(2.15rem, 4vw, 3.6rem);
+      --type-display-secondary: clamp(1.5rem, 2.5vw, 2.35rem);
+      --type-script-lg: clamp(1.15rem, 1.9vw, 1.85rem);
+      --type-lead: clamp(1.1rem, 1.45vw, 1.25rem);
+      --type-body: clamp(1.05rem, 1.3vw, 1.14rem);
     }
     .l-gallery__caption .l-gallery__title {
       right: clamp(1rem, 3.5vw, 2.5rem) !important;
       bottom: clamp(1.25rem, 4vw, 2.25rem) !important;
-      max-width: min(54vw, 11em);
+      max-width: min(50vw, 10em);
+    }
+    .l-gallery__caption .l-gallery__title .h0 {
+      font-size: clamp(2.75rem, 5.4vw, 4.75rem) !important;
     }
   }
   @media (max-width: 480px) {
     :root {
-      --type-display-hero: clamp(3.1rem, 11.5vw, 3.9rem);
-      --type-display-section: clamp(2.4rem, 8.2vw, 3.15rem);
-      --type-display-secondary: clamp(1.55rem, 6.2vw, 2.1rem);
-      --type-script-lg: clamp(1.55rem, 6vw, 2.2rem);
+      --type-display-hero: clamp(2.9rem, 10.5vw, 3.55rem);
+      --type-display-section: clamp(2.2rem, 7.4vw, 2.85rem);
+      --type-display-secondary: clamp(1.45rem, 5.8vw, 1.95rem);
+      --type-script-lg: clamp(1.2rem, 5.2vw, 1.7rem);
       --type-lead: 1.125rem;
       --type-body: 1.0625rem;
       --type-label: 0.7rem;
       --type-button: 0.75rem;
-      --leading-display: 0.94;
-      --leading-section: 0.98;
+      --leading-display: 0.95;
+      --leading-section: 1;
+    }
+    .l-gallery__caption .l-gallery__title .h0 {
+      font-size: clamp(2.75rem, 10vw, 3.35rem) !important;
+    }
+    .l-wellness__caption .g1,
+    .l-nature-bg-caption .g1,
+    .l-nature__caption .g1,
+    .l-place__caption .g1 {
+      font-size: clamp(2.1rem, 7vw, 2.65rem) !important;
     }
     .l-gallery__caption .l-gallery__title {
       position: relative !important;
