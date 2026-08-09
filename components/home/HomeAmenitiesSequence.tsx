@@ -761,7 +761,7 @@ export function HomeAmenitiesSequence({
 
       {/* ===== i-nature — full-bleed image only (caption is the next gold sibling) ===== */}
       <div
-        className="home-am-nature home-am-chapter home-am-chapter--under-previous sticky sticky--full-height sticky--under-previous"
+        className="home-am-nature home-am-chapter home-am-chapter--under-previous sticky sticky--full-height sticky--under-previous sticky--under-next home-am-chapter--under-next"
         data-am-nature
         data-am-chapter
         id="home-am-nature"
@@ -792,8 +792,8 @@ export function HomeAmenitiesSequence({
       </div>
 
       {/*
-        Outside #home-am-nature (clip-path was hiding the band). Scrolls in after
-        the photo — no under-next, so Voyages cannot stack over the caption.
+        Outside #home-am-nature (clip-path was hiding the band). Nature under-next
+        pulls this short gold panel up over the pinned photo — not a tall empty slab.
       */}
       <div
         className="home-am-nature__gold-band"

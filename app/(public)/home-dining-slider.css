@@ -211,8 +211,6 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   height: calc(100 * var(--am-svh));
   min-height: calc(100 * var(--am-svh));
   background: transparent;
-  /* Above the following gold caption so the band cannot cover the photo early */
-  z-index: 9;
 }
 
 .home-am-nature__content {
@@ -237,11 +235,11 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
 
 /*
  * Caption gold band — sibling AFTER #home-am-nature (not inside it).
- * Compact content panel (title + body + CTA), not a tall full-bleed slab.
+ * Compact title + body + CTA. Cap CMS title size or the band becomes a tall slab.
  */
 .home-am-nature__gold-band {
   position: relative;
-  /* Above voyages (z 6); below nature stage (z 9) while the photo is pinned */
+  /* Above nature pin + voyages so the short panel can cover the photo bottom */
   z-index: 8;
   isolation: isolate;
   display: flex;
@@ -249,7 +247,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   justify-content: center;
   width: 100%;
   min-height: 0;
-  padding: clamp(1.75rem, 4.5vh, 2.75rem) clamp(1.25rem, 6vw, 4rem);
+  padding: clamp(1.5rem, 3.5vh, 2.25rem) clamp(1.25rem, 6vw, 4rem);
   box-sizing: border-box;
   background: var(--am-gold);
 }
@@ -259,15 +257,19 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: min(28rem, 92%);
+  max-width: min(26rem, 92%);
   margin: 0 auto;
   text-align: center;
   pointer-events: none;
 }
 
 .home-am-nature__copy .typo-on-images-title {
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.65rem;
   text-align: center;
+  line-height: 1.08;
+  /* Same scale as slider gold captions — CMS token was ~90px here */
+  font-size: clamp(1.85rem, 3.6vw, 3.35rem) !important;
+  letter-spacing: -0.02em;
 }
 
 .home-am-nature__copy .typo-on-images-title > .home-am-title-line {
@@ -278,11 +280,20 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
 .home-am-nature__copy .typo-on-images-body {
   margin: 0;
   text-align: center;
-  max-width: 36em;
+  max-width: 34em;
+  line-height: 1.5;
+  font-size: clamp(0.92rem, 1.15vw, 1.05rem) !important;
 }
 
 .home-am-nature__cta.public-btn-outline-gold {
+  margin-top: 1.15rem;
   pointer-events: auto;
+}
+
+/* Keep Voyages from painting over this short gold panel during the handoff */
+.home-am-nature__gold-band + .home-am-voyages,
+.home-am-dark-band + .home-am-voyages {
+  z-index: 6;
 }
 
 /*
@@ -1516,11 +1527,19 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
 
   .home-am-nature__gold-band {
     min-height: 0;
-    padding: clamp(1.5rem, 5vh, 2.25rem) 1.15rem;
+    padding: clamp(1.35rem, 4vh, 2rem) 1.15rem;
   }
 
   .home-am-nature__copy {
     max-width: none;
+  }
+
+  .home-am-nature__copy .typo-on-images-title {
+    font-size: clamp(1.65rem, 7vw, 2.35rem) !important;
+  }
+
+  .home-am-nature__copy .typo-on-images-body {
+    font-size: clamp(0.9rem, 3.6vw, 1rem) !important;
   }
 
   /* Springs mobile: horizontal swipe for cards */
