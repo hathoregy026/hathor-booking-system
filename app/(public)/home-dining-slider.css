@@ -1024,11 +1024,11 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   width: 80vw;
 }
 
-/* Springs .col--md-2 — vertical stack */
+/* Springs .col--md-2 — vertical stack (width from list-wrap rail) */
 .home-am-opening__list-item {
   position: relative;
   display: block;
-  width: 16.6666vw;
+  width: 100%;
   max-width: 100%;
 }
 
@@ -1109,7 +1109,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   pointer-events: auto;
 }
 
-/* Springs .i-opening__caption__text — legacy; fixed copy owns this role now */
+/* Springs .i-opening__caption__text — legacy */
 .home-am-opening__caption-text {
   max-width: 400px;
   margin: 0;
@@ -1121,81 +1121,55 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
 }
 
 /*
- * Opening gold-column copy — pinned in the empty gold to the RIGHT of the
- * card rail (cards are ~16.67vw from 50vw). left:50vw painted the title
- * on top of the cards; clear that rail so copy sits in the red-box zone.
+ * 3-card row + gold rail copy. Lives inside the RC clip-path so title/body
+ * only appear with the cards — not during the earlier opening handoff.
+ * Copy uses the same typo-on-images-title / typo-on-images-body tokens as
+ * the slider captions (no custom display override).
  */
-.home-am-opening__fixed-copy--pinned {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  /* 50vw gold start + card width + list padding/gap */
-  left: calc(50vw + 16.6666vw + 1.25rem);
-  z-index: 3;
+.home-am-opening__cards-band {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
   align-items: flex-start;
-  box-sizing: border-box;
-  padding: clamp(2rem, 6vh, 4rem) clamp(1.5rem, 3.5vw, 3rem)
-    clamp(2rem, 6vh, 4rem) clamp(1rem, 2vw, 1.75rem);
-  pointer-events: none;
+  gap: clamp(1rem, 2.2vw, 2rem);
+  width: 100%;
 }
 
-.home-am-opening__fixed-copy--inline {
-  display: none;
-}
-
-.home-am-opening__fixed-title {
-  margin: 0 0 1.1rem;
-  max-width: min(22rem, 100%);
-  font-family: var(
-    --public-serif,
-    var(--font-display, "Playfair Display", Georgia, serif)
-  ) !important;
-  font-weight: 400 !important;
-  font-style: italic;
-  font-size: clamp(1.75rem, 3.2vw, 3.25rem) !important;
-  line-height: 1.15 !important;
-  letter-spacing: -0.02em;
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-  text-align: left;
-}
-
-.home-am-opening__fixed-title .home-am-title-line {
-  display: block;
-  text-align: left;
-}
-
-.public-site .home-am-sequence .home-am-opening__fixed-title,
-.public-site .home-am-sequence .home-am-opening__fixed-title *,
-html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__fixed-title,
-html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__fixed-title * {
-  font-size: clamp(1.75rem, 3.2vw, 3.25rem) !important;
-  line-height: 1.15 !important;
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-}
-
-.home-am-opening__fixed-body {
-  margin: 0;
-  max-width: min(22rem, 100%);
-  font-size: clamp(0.95rem, 1.2vw, 1.1rem) !important;
-  line-height: 1.55;
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-}
-
-/* Springs .mt-5 — cards sit below the fixed copy’s visual zone */
 .home-am-opening__list-wrap {
-  margin-top: 3rem;
+  flex: 0 0 16.6666vw;
+  width: 16.6666vw;
+  margin-top: 0;
+  min-width: 0;
 }
 
 .home-am-opening__list {
   display: block;
   padding-left: 0.5rem;
+}
+
+.home-am-opening__rail-copy {
+  position: sticky;
+  top: 28vh;
+  flex: 1 1 auto;
+  align-self: flex-start;
+  min-width: 0;
+  max-width: min(22rem, 100%);
+  padding: 0.15rem 0.5rem 0 0;
+  pointer-events: none;
+}
+
+.home-am-opening__rail-copy .typo-on-images-title {
+  margin: 0 0 0.85rem;
+  text-align: left;
+}
+
+.home-am-opening__rail-copy .typo-on-images-title > .home-am-title-line {
+  display: block;
+  text-align: left;
+}
+
+.home-am-opening__rail-copy .typo-on-images-body {
+  margin: 0;
+  text-align: left;
 }
 
 @media (min-width: 1025px) {
@@ -1291,14 +1265,14 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__fixed-titl
     min-height: 0;
   }
 
-  .home-am-opening__list-item {
-    flex: 0 1 min(28vw, 12rem);
+  .home-am-opening__list-wrap {
+    flex: 0 0 min(28vw, 12rem);
     width: min(28vw, 12rem);
   }
 
-  /* Clear the wider tablet card rail so copy stays in empty gold */
-  .home-am-opening__fixed-copy--pinned {
-    left: calc(50vw + min(28vw, 12rem) + 1.25rem);
+  .home-am-opening__list-item {
+    flex: none;
+    width: 100%;
   }
 
   .home-am-video__copy {
@@ -1502,26 +1476,22 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__fixed-titl
     background: var(--am-gold);
   }
 
-  .home-am-opening__fixed-copy--pinned {
-    display: none;
-  }
-
-  .home-am-opening__fixed-copy--inline {
-    display: flex;
+  .home-am-opening__cards-band {
     flex-direction: column;
-    align-items: flex-start;
-    margin: 0 0 1.25rem;
-    padding: 0;
+    gap: 1rem;
   }
 
-  .home-am-opening__fixed-title {
-    font-size: clamp(1.55rem, 7vw, 2.15rem) !important;
-    margin-bottom: 0.75rem;
+  .home-am-opening__list-wrap {
+    flex: none;
+    width: 100%;
   }
 
-  .home-am-opening__fixed-body {
+  .home-am-opening__rail-copy {
+    position: relative;
+    top: auto;
+    order: -1;
     max-width: none;
-    font-size: clamp(0.95rem, 3.6vw, 1.05rem) !important;
+    padding: 0;
   }
 
   /* Springs mobile: horizontal swipe for cards */
@@ -1531,7 +1501,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__fixed-titl
     flex-wrap: nowrap;
     gap: 10px;
     overflow-x: auto;
-    margin-top: 1.25rem;
+    margin-top: 0;
     padding-left: 0;
     width: calc(100% + 1.15rem);
     margin-right: -1.15rem;

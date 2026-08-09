@@ -666,8 +666,9 @@ export function HomeAmenitiesSequence({
             >
               <div className="home-am-opening__caption-title">
                 <h2
-                  className="home-am-opening__title home-am-on-image-text"
+                  className="home-am-opening__title home-am-on-image-text typo-on-images-title"
                   data-am-opening-title
+                  style={onGoldTitle}
                 >
                   {openingTitleLines.map((line) => (
                     <span key={line} className="home-am-title-line">
@@ -681,38 +682,13 @@ export function HomeAmenitiesSequence({
               </div>
             </div>
           </div>
-
-          {/*
-            Pinned to the gold right half of the stage (desktop/tablet).
-            Stays fixed in the viewport while the RC photo cards scroll.
-          */}
-          <div className="home-am-opening__fixed-copy home-am-opening__fixed-copy--pinned">
-            <h3
-              className="home-am-opening__fixed-title home-am-on-image-text"
-              style={onGoldTitle}
-            >
-              {openingFixedTitleLines.map((line) => (
-                <span key={line} className="home-am-title-line">
-                  {line}
-                </span>
-              ))}
-            </h3>
-            <p
-              className="home-am-opening__fixed-body typo-on-images-body"
-              style={onGoldBody}
-            >
-              {openingFixedBody}
-            </p>
-          </div>
         </div>
 
         {/*
           Springs sticky__layer.i-opening__right-column — scrolls; cards slide up.
-          Springs clips at 50vw over matching ui-dark-background, so a subpixel
-          hairline is invisible. Hathor still has the slider stage (water photo)
-          composited under the opening join — clip from 49.75vw so RC gold seals
-          that hairline the same way 59d8d81 did (dark-band alone cannot, it sits
-          below the slider).
+          Copy lives HERE (not on the pinned stage) so it only appears with the
+          3-card row when this clip-path band opens — never during the earlier
+          slider → opening handoff.
         */}
         <div
           className="home-am-opening__right-column sticky__layer"
@@ -726,50 +702,46 @@ export function HomeAmenitiesSequence({
           data-parallax--101-0='{"clip-path":"polygon(49.75vw 100vh, 100% 100vh, 100% 350vh, 49.75vw 350vh)"}'
         >
           <div className="home-am-opening__right-inner">
-            {/* Phone: same copy sits in the gold column above the cards */}
-            <div className="home-am-opening__fixed-copy home-am-opening__fixed-copy--inline">
-              <h3
-                className="home-am-opening__fixed-title home-am-on-image-text"
-                style={onGoldTitle}
-              >
-                {openingFixedTitleLines.map((line) => (
-                  <span key={`m-${line}`} className="home-am-title-line">
-                    {line}
-                  </span>
-                ))}
-              </h3>
-              <p
-                className="home-am-opening__fixed-body typo-on-images-body"
-                style={onGoldBody}
-              >
-                {openingFixedBody}
-              </p>
-            </div>
+            <div className="home-am-opening__cards-band">
+              <div className="home-am-opening__list-wrap">
+                <div className="home-am-opening__list" data-am-opening-cards>
+                  {openingCards.map((card, index) => (
+                    <div
+                      key={`opening-card-${card.image.name}-${index}`}
+                      className="home-am-opening__list-item"
+                      data-am-opening-card={card.image.name}
+                    >
+                      <div className="home-am-opening__list-item-media">
+                        <ManagedImage
+                          name={card.image.name}
+                          alt={card.image.alt}
+                          fill
+                          sizes="(max-width: 480px) 48vw, 210px"
+                          className="object-cover"
+                          loading="eager"
+                          previewAnchor={card.image.previewAnchor}
+                        />
+                      </div>
+                      <div className="home-am-opening__list-item-text">
+                        {card.label}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-            <div className="home-am-opening__list-wrap">
-              <div className="home-am-opening__list" data-am-opening-cards>
-                {openingCards.map((card, index) => (
-                  <div
-                    key={`opening-card-${card.image.name}-${index}`}
-                    className="home-am-opening__list-item"
-                    data-am-opening-card={card.image.name}
-                  >
-                    <div className="home-am-opening__list-item-media">
-                      <ManagedImage
-                        name={card.image.name}
-                        alt={card.image.alt}
-                        fill
-                        sizes="(max-width: 480px) 48vw, 210px"
-                        className="object-cover"
-                        loading="eager"
-                        previewAnchor={card.image.previewAnchor}
-                      />
-                    </div>
-                    <div className="home-am-opening__list-item-text">
-                      {card.label}
-                    </div>
-                  </div>
-                ))}
+              {/* Same typo tokens as slider gold captions; sticky in the gold */}
+              <div className="home-am-opening__rail-copy">
+                <h3 className="typo-on-images-title" style={onGoldTitle}>
+                  {openingFixedTitleLines.map((line) => (
+                    <span key={line} className="home-am-title-line">
+                      {line}
+                    </span>
+                  ))}
+                </h3>
+                <p className="typo-on-images-body" style={onGoldBody}>
+                  {openingFixedBody}
+                </p>
               </div>
             </div>
           </div>
