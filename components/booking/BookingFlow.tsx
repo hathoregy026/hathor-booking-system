@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import { BookingItineraryFilter } from "@/components/booking/BookingItineraryFilter";
 import { CheckoutCalendar } from "@/components/booking/CheckoutCalendar";
 import { GuestPaymentForm } from "@/components/booking/GuestPaymentForm";
 import { ProgressBar, type HistoriaBookingStep } from "@/components/booking/ProgressBar";
@@ -18,6 +18,7 @@ import {
   getAvailabilityErrorMessage,
 } from "@/lib/booking-availability-client";
 import { checkInIsoFromDateKey } from "@/lib/departure-dates";
+import type { StayDurationValue } from "@/lib/booking-search-config";
 import type { RatePlanId } from "@/lib/rate-plans";
 import { useBookingStore } from "@/store/bookingStore";
 
@@ -27,8 +28,6 @@ function dateKeyFromCheckInIso(iso: string | null): string | null {
 }
 
 export function BookingFlow() {
-  const router = useRouter();
-
   const {
     isSuccess,
     itineraryConfigured,
@@ -51,6 +50,7 @@ export function BookingFlow() {
     setError,
     setIsLoading,
     selectRoomForCheckout,
+    hydrateFromModal,
     totalPrice,
   } = useBookingStore();
 
@@ -64,6 +64,7 @@ export function BookingFlow() {
   const stepTitles = useMemo(
     () =>
       ({
+        1: "Adults, Children & Itinerary",
         2: "Select Your Sailing Dates",
         3: "Select Your Cabin or Suite",
         4: "Complete Your Booking",
@@ -101,7 +102,16 @@ export function BookingFlow() {
   }
 
   const handleGoBackFromDates = () => {
-    router.push("/?book=1");
+    setCheckoutStep(1);
+  };
+
+  const handleApplyItineraryFilter = (input: {
+    duration: StayDurationValue;
+    roomConfigs: typeof roomConfigs;
+  }) => {
+    hydrateFromModal(input);
+    setPendingDateKey(null);
+    setError(null);
   };
 
   const handleUpdateDates = async () => {
@@ -172,7 +182,7 @@ export function BookingFlow() {
     setError(null);
 
     if (step === 1) {
-      router.push("/?book=1");
+      setCheckoutStep(1);
       return;
     }
 
@@ -190,7 +200,8 @@ export function BookingFlow() {
     setCheckoutStep(4);
   };
 
-  const activeTitle = stepTitles[checkoutStep as 2 | 3 | 4] ?? "Your Reservation";
+  const activeTitle =
+    stepTitles[checkoutStep as 1 | 2 | 3 | 4] ?? "Your Reservation";
 
   return (
     <div className="hathor-booking-flow">
@@ -210,13 +221,24 @@ export function BookingFlow() {
       <header className="hathor-booking-flow__header">
         <h1 className="booking-serif hathor-booking-flow__title">{activeTitle}</h1>
         <p className="hathor-booking-flow__subtitle">
-          {checkoutStep === 2
-            ? "Choose your check-in date from available sailings."
-            : checkoutStep === 3
-              ? "Choose from available staterooms for your sailing dates."
-              : "Review your reservation and enter guest details to confirm."}
+          {checkoutStep === 1
+            ? "Adjust embarkation, rooms, and guests without leaving booking."
+            : checkoutStep === 2
+              ? "Choose your check-in date from available sailings."
+              : checkoutStep === 3
+                ? "Choose from available staterooms for your sailing dates."
+                : "Review your reservation and enter guest details to confirm."}
         </p>
       </header>
+
+      {checkoutStep === 1 && duration ? (
+        <BookingItineraryFilter
+          initialDuration={duration}
+          initialRoomConfigs={roomConfigs}
+          onApply={handleApplyItineraryFilter}
+          onCancel={() => setCheckoutStep(2)}
+        />
+      ) : null}
 
       {checkoutStep === 2 ? (
         <CheckoutCalendar

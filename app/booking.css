@@ -1004,6 +1004,187 @@
   margin-right: auto;
 }
 
+/* On-page guests / itinerary filter (Book Now options, booking shell styling) */
+.hathor-booking-filter {
+  width: 100%;
+  max-width: 36rem;
+  margin: 0 auto 2rem;
+}
+
+.hathor-booking-filter__card {
+  background: var(--booking-card);
+  border: 1px solid var(--booking-border);
+  border-radius: 4px 20px 4px 20px;
+  box-shadow: var(--booking-shadow);
+  padding: 1.5rem 1.35rem 1.65rem;
+}
+
+.hathor-booking-filter__field + .hathor-booking-filter__field,
+.hathor-booking-filter__dates,
+.hathor-booking-filter__guests {
+  margin-top: 1.15rem;
+}
+
+.hathor-booking-filter__label {
+  display: block;
+  margin-bottom: 0.45rem;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--booking-gold-dark);
+}
+
+.hathor-booking-filter__control,
+.hathor-booking-filter__readonly {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 2.85rem;
+  padding: 0 0.9rem;
+  border: 1px solid #d9d2c8;
+  border-radius: 999px;
+  background: #faf8f5;
+  color: var(--booking-text);
+}
+
+.hathor-booking-filter__readonly {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--booking-muted);
+}
+
+.hathor-booking-filter__icon {
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+  color: #b69f64;
+}
+
+.hathor-booking-filter__select {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.875rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.hathor-booking-filter__dates {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+}
+
+@media (min-width: 640px) {
+  .hathor-booking-filter__dates {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.hathor-booking-filter__guests {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+@media (min-width: 480px) {
+  .hathor-booking-filter__guests {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.hathor-booking-filter__counter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 2.85rem;
+  padding: 0.35rem 0.75rem 0.35rem 1rem;
+  border: 1px solid #d9d2c8;
+  border-radius: 999px;
+  background: #faf8f5;
+}
+
+.hathor-booking-filter__counter-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--booking-text);
+}
+
+.hathor-booking-filter__counter-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.hathor-booking-filter__counter-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  border: 1px solid #b69f64;
+  border-radius: 999px;
+  background: #fff;
+  color: #b69f64;
+  cursor: pointer;
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
+}
+
+.hathor-booking-filter__counter-btn:hover:not(:disabled) {
+  background: #b69f64;
+  color: #fff;
+}
+
+.hathor-booking-filter__counter-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.hathor-booking-filter__counter-value {
+  min-width: 1.5rem;
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--booking-text);
+}
+
+.hathor-booking-filter__hint {
+  margin: 0.85rem 0 0;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--booking-muted);
+}
+
+.hathor-booking-filter__error {
+  margin: 0.85rem 0 0;
+  font-size: 0.8125rem;
+  color: #b42318;
+}
+
+.hathor-booking-filter__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.booking-page .hathor-booking-filter__actions .public-btn-gold,
+.booking-page .hathor-booking-filter__actions .public-btn-outline-gold {
+  width: auto !important;
+  max-width: none !important;
+  min-width: var(--hathor-btn-width, 12.5rem) !important;
+}
+
 /* Historia-style segmented step bar (Hathor palette) */
 
 .hathor-checkout-chrome {
@@ -1028,7 +1209,7 @@
   justify-content: center;
   min-height: 2.15rem;
   padding: 0.45rem 1rem;
-  background: var(--booking-gold-dark, #8b6914);
+  background: #f5e5cc;
   text-align: center;
 }
 
@@ -1037,7 +1218,7 @@
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #fff;
+  color: #b69f64;
   text-decoration: none;
   transition: opacity 0.2s ease;
 }
