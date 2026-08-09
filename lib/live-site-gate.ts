@@ -1,33 +1,19 @@
 import { headers } from "next/headers";
 import type { LiveSiteSettings } from "@/lib/live-site-settings-shared";
+import type { PageVisibilitySettings } from "@/lib/page-visibility-shared";
+import {
+  isLiveSiteWorkHost,
+  resolveComingSoonActive,
+  resolvePageVisibilityForHost,
+  shouldEnforceVisitorGates,
+} from "@/lib/live-site-gate-shared";
 
-/**
- * Hosts where the team keeps working — Coming Soon never applies here,
- * even when Live Site is turned off in admin.
- */
-export function isLiveSiteWorkHost(hostname: string): boolean {
-  const host = hostname.trim().toLowerCase().replace(/:\d+$/, "");
-  if (!host) return false;
-  if (host === "localhost" || host === "127.0.0.1" || host === "::1") {
-    return true;
-  }
-  /* All Vercel deployment / production aliases */
-  if (host.endsWith(".vercel.app")) return true;
-  return false;
-}
-
-/**
- * Coming Soon only for client-facing domains (custom domain).
- * Vercel links and localhost always show the real site.
- */
-export function resolveComingSoonActive(
-  settings: LiveSiteSettings,
-  hostname: string | null | undefined,
-): boolean {
-  if (settings.enabled) return false;
-  if (!hostname) return true;
-  return !isLiveSiteWorkHost(hostname);
-}
+export {
+  isLiveSiteWorkHost,
+  resolveComingSoonActive,
+  resolvePageVisibilityForHost,
+  shouldEnforceVisitorGates,
+} from "@/lib/live-site-gate-shared";
 
 export async function getRequestHostname(): Promise<string> {
   const h = await headers();
@@ -41,4 +27,11 @@ export async function resolveComingSoonForRequest(
 ): Promise<boolean> {
   const hostname = await getRequestHostname();
   return resolveComingSoonActive(settings, hostname);
+}
+
+export async function resolvePageVisibilityForRequest(
+  settings: PageVisibilitySettings,
+): Promise<PageVisibilitySettings> {
+  const hostname = await getRequestHostname();
+  return resolvePageVisibilityForHost(settings, hostname);
 }

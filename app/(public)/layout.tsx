@@ -9,7 +9,10 @@ import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
 import { TypographySettingsProvider } from "@/components/public/TypographySettingsProvider";
 import { WebsiteTextProvider } from "@/components/public/WebsiteTextProvider";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
-import { resolveComingSoonForRequest } from "@/lib/live-site-gate";
+import {
+  resolveComingSoonForRequest,
+  resolvePageVisibilityForRequest,
+} from "@/lib/live-site-gate";
 import {
   getWelcomeSplashBlockingScript,
   getWelcomeSplashCriticalStyle,
@@ -129,7 +132,9 @@ export default async function PublicSiteLayout({
   const cms = await loadPublicCmsBundle();
   const welcomeSplash = cms.welcomeSplash;
   const liveSite = cms.liveSite;
-  const pageVisibility = cms.pageVisibility;
+  const pageVisibility = await resolvePageVisibilityForRequest(
+    cms.pageVisibility,
+  );
   const comingSoonActive = await resolveComingSoonForRequest(liveSite);
   const siteIsLive = !comingSoonActive;
 

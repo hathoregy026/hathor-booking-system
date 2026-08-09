@@ -2,7 +2,10 @@ import type { ReactNode } from "react";
 import { Footer } from "@/components/layout/Footer";
 import { PageUnderConstruction } from "@/components/public/PageUnderConstruction";
 import { SiteComingSoon } from "@/components/public/SiteComingSoon";
-import { resolveComingSoonForRequest } from "@/lib/live-site-gate";
+import {
+  resolveComingSoonForRequest,
+  resolvePageVisibilityForRequest,
+} from "@/lib/live-site-gate";
 import {
   DEFAULT_LIVE_SITE_SETTINGS,
   type LiveSiteSettings,
@@ -34,7 +37,8 @@ export async function StandalonePageVisibilityShell({
     );
   }
 
-  if (!isPageLive(path, settings)) {
+  const effectiveVisibility = await resolvePageVisibilityForRequest(settings);
+  if (!isPageLive(path, effectiveVisibility)) {
     return (
       <>
         <div className="hathor-page-construction--standalone">
