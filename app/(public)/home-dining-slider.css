@@ -1121,22 +1121,25 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
 }
 
 /*
- * Opening gold-column copy — pinned to the right half of the sticky stage
- * so it stays in the red-box zone while RC cards scroll underneath.
+ * Opening gold-column copy — pinned in the empty gold to the RIGHT of the
+ * card rail (cards are ~16.67vw from 50vw). left:50vw painted the title
+ * on top of the cards; clear that rail so copy sits in the red-box zone.
  */
 .home-am-opening__fixed-copy--pinned {
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
-  left: 50vw;
+  /* 50vw gold start + card width + list padding/gap */
+  left: calc(50vw + 16.6666vw + 1.25rem);
   z-index: 3;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
   box-sizing: border-box;
-  padding: clamp(2rem, 6vh, 4rem) clamp(1.75rem, 4.5vw, 3.75rem);
+  padding: clamp(2rem, 6vh, 4rem) clamp(1.5rem, 3.5vw, 3rem)
+    clamp(2rem, 6vh, 4rem) clamp(1rem, 2vw, 1.75rem);
   pointer-events: none;
 }
 
@@ -1291,6 +1294,11 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__fixed-titl
   .home-am-opening__list-item {
     flex: 0 1 min(28vw, 12rem);
     width: min(28vw, 12rem);
+  }
+
+  /* Clear the wider tablet card rail so copy stays in empty gold */
+  .home-am-opening__fixed-copy--pinned {
+    left: calc(50vw + min(28vw, 12rem) + 1.25rem);
   }
 
   .home-am-video__copy {
