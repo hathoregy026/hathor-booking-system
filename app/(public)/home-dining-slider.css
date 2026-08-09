@@ -205,6 +205,14 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   min-height: 250svh;
 }
 
+/*
+ * Pull only far enough for the short gold caption to lap the pinned photo.
+ * A full 100svh under-next left a tall empty gold void after the image.
+ */
+.home-am-nature.home-am-chapter--under-next {
+  --sticky-under-next-distance: clamp(16rem, 42vh, 22rem);
+}
+
 .home-am-nature__stage {
   overflow: hidden;
   contain: none;
