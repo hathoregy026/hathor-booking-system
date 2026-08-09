@@ -71,19 +71,21 @@
 <style data-hathor-suites-palette>
   /*
    * CLONE-FAITHFUL THEME LAYER.
-   * Springs owns layout, transforms, sticky stages and responsive branches.
-   * Type (faces, sizes, colours, shadows) follows /gastronomy Dining.
+   * Springs owns sticky stages / transforms; type follows Hathor Design DNA
+   * (Gamgote display + Plus Jakarta body, cream-on-media bloom).
    * Locked palette: Gold #B69F64 · Cream #F5EACF · Beige #CDBFA6
    */
   @font-face {
     font-family: "Gamgote";
-    src: url("/fonts/Gamgote-Regular.otf") format("opentype");
+    src:
+      url("/fonts/Gamgote.otf") format("opentype"),
+      url("/fonts/Gamgote-Regular.otf") format("opentype");
     font-weight: 400 700;
     font-style: normal;
     font-display: swap;
   }
   :root {
-    --suites-serif: "Gamgote", Georgia, serif;
+    --suites-serif: var(--font-hathor-gamgote, "Gamgote"), "Gamgote", Georgia, serif;
     --suites-sans: "Plus Jakarta Sans", system-ui, sans-serif;
     --suites-gold: #b69f64;
     --suites-gold-soft: #d4bf86;
@@ -133,15 +135,15 @@
     font-weight: 400;
   }
   /*
-   * Dining-matched type system (/gastronomy).
-   * Faces, sizes, weights, tracking, colours, shadows — not layout.
+   * Hathor Suites type hierarchy (display > section > body).
+   * Hero gallery title is the largest; section .g1 sits below it.
    */
   .h0,
   .l-gallery__title .h0 {
     font-family: var(--suites-serif) !important;
     font-weight: 500 !important;
-    font-size: clamp(42px, 5.4vw, 72px) !important;
-    line-height: 1.08 !important;
+    font-size: clamp(3.5rem, 9.5vw, 10.5rem) !important;
+    line-height: 0.9 !important;
     letter-spacing: -0.02em !important;
   }
   .g1,
@@ -157,8 +159,8 @@
   .l-interiors .g1 {
     font-family: var(--suites-serif) !important;
     font-weight: 500 !important;
-    font-size: clamp(48px, 5.8vw, 92px) !important;
-    line-height: 0.9 !important;
+    font-size: clamp(2.75rem, 5.6vw, 5.75rem) !important;
+    line-height: 0.92 !important;
     letter-spacing: -0.03em !important;
   }
   .h1,
@@ -173,9 +175,21 @@
   [class*="__title"] h2 {
     font-family: var(--suites-serif) !important;
     font-weight: 500 !important;
-    font-size: clamp(34px, 4.2vw, 56px) !important;
+    font-size: clamp(1.75rem, 3.4vw, 3.25rem) !important;
     line-height: 1.12 !important;
     letter-spacing: -0.02em !important;
+  }
+  /* Springs parks River Suites bottom-right on desktop */
+  .l-gallery__caption .l-gallery__title {
+    left: auto !important;
+    right: clamp(1.25rem, 4vw, 3.5rem) !important;
+    bottom: clamp(1.25rem, 3.5vw, 2.75rem) !important;
+    top: auto !important;
+    text-align: right !important;
+    max-width: min(52vw, 14em);
+  }
+  .l-gallery__caption .l-gallery__title .h0 {
+    text-align: right !important;
   }
   body,
   p:not(.g1):not(.g2):not(.h0):not(.h1):not(.h2):not(.h3),
@@ -344,29 +358,47 @@
     color: var(--suites-gold) !important;
     text-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
   }
-  @media (max-width: 1024px) {
+  @media (max-width: 1024px) and (min-width: 481px) {
     .h0,
     .l-gallery__title .h0 {
-      font-size: clamp(36px, 7vw, 56px) !important;
+      font-size: clamp(3rem, 8.5vw, 7rem) !important;
     }
     .g1,
     .g2 {
-      font-size: clamp(40px, 7.5vw, 72px) !important;
+      font-size: clamp(2.25rem, 5.5vw, 4.25rem) !important;
+    }
+    .l-gallery__caption .l-gallery__title {
+      right: clamp(1rem, 3.5vw, 2.5rem) !important;
+      bottom: clamp(1.25rem, 4vw, 2.25rem) !important;
+      max-width: min(58vw, 12em);
     }
   }
   @media (max-width: 480px) {
     .h0,
     .l-gallery__title .h0 {
-      font-size: clamp(32px, 9vw, 44px) !important;
+      font-size: clamp(2.75rem, 14vw, 4.5rem) !important;
     }
     .g1,
     .g2 {
-      font-size: clamp(34px, 9vw, 52px) !important;
+      font-size: clamp(2.125rem, 9vw, 3.25rem) !important;
     }
     .h1,
     .h2,
     h2 {
-      font-size: clamp(28px, 7vw, 40px) !important;
+      font-size: clamp(1.5rem, 7vw, 2.5rem) !important;
+    }
+    /* Springs phone: title sits in the left editorial stack */
+    .l-gallery__caption .l-gallery__title {
+      position: relative !important;
+      right: auto !important;
+      bottom: auto !important;
+      left: auto !important;
+      max-width: 88vw;
+      margin: 0 clamp(1rem, 5vw, 1.5rem);
+      text-align: left !important;
+    }
+    .l-gallery__caption .l-gallery__title .h0 {
+      text-align: left !important;
     }
   }
   /*
@@ -3020,7 +3052,7 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                             </div>
 
             <div class="l-gallery__caption pr-layout">
-                <div class="l-gallery__title col col--xs-3 col--md-3 col--xxxl-2 offset--md-2 pl-layout pl-0:md pt-7:md text-left">
+                <div class="l-gallery__title col col--md-6 text-right">
                     <h1 class="h0 leading-trim" data-reveal="title" data-reveal-delay="1000">
                         River <br>
 Suites
