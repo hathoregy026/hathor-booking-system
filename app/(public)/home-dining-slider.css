@@ -201,8 +201,9 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
 
 .home-am-nature {
   position: relative;
-  height: 300svh;
-  min-height: 300svh;
+  /* Springs baseline — do not stretch; taller runways leave empty dark-band gold */
+  height: 250svh;
+  min-height: 250svh;
 }
 
 /*
@@ -211,6 +212,14 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
  */
 .home-am-nature.home-am-chapter--under-next {
   --sticky-under-next-distance: clamp(16rem, 42vh, 22rem);
+}
+
+/*
+ * Nature is under-previous + under-next. The shared rule adds BOTH distances
+ * into ::after (~142svh of empty gold). Keep only the short caption pull.
+ */
+.home-am-nature.home-am-chapter--under-previous.home-am-chapter--under-next::after {
+  height: var(--sticky-under-next-distance);
 }
 
 .home-am-nature__stage {
@@ -366,7 +375,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 
 @media (max-width: 1024px) {
   .home-am-nature {
-    height: 340svh;
+    height: 250svh;
   }
 }
 
@@ -388,8 +397,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 
   .home-am-nature,
   .home-am-nature.home-am-chapter--under-previous {
-    height: 300svh;
-    min-height: 300svh;
+    height: 250svh;
+    min-height: 250svh;
   }
 
   .home-am-nature__stage {
