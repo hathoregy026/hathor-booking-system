@@ -1133,30 +1133,6 @@
   pointer-events: none;
 }
 
-.hathor-checkout-chrome__footer {
-  position: relative;
-  z-index: 1;
-  padding: 0.9rem 1rem 1rem;
-  background: var(--hathor-checkout-footer);
-  border-top: 1px solid #d9d2c8;
-  text-align: center;
-}
-
-.hathor-checkout-chrome__back-home {
-  display: inline-block;
-  font-size: 0.9375rem;
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  color: #1a1a1a;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  transition: color 0.2s ease;
-}
-
-.hathor-checkout-chrome__back-home:hover {
-  color: #000;
-}
-
 .hathor-checkout-room-dropdown {
   position: fixed;
   z-index: 250;
@@ -1979,8 +1955,26 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.75rem;
+  gap: 0.85rem;
   margin-top: 2rem;
+}
+
+/* Homepage pill buttons — allow longer booking labels to fit */
+.booking-page .historia-checkout-calendar__actions .public-btn-gold,
+.booking-page .historia-checkout-calendar__actions .public-btn-outline-gold {
+  width: auto !important;
+  max-width: none !important;
+  min-width: var(--hathor-btn-width, 12.5rem) !important;
+  padding-left: 1.75rem !important;
+  padding-right: 1.75rem !important;
+}
+
+.booking-page .historia-checkout-calendar__actions .public-btn-gold:disabled,
+.booking-page .historia-checkout-calendar__actions .public-btn-outline-gold:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 8px 22px rgba(44, 36, 25, 0.1);
 }
 
 .historia-btn {

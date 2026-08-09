@@ -359,12 +359,6 @@ export function BookingProgressBar({
           })}
         </div>
       ) : null}
-
-      <div className="hathor-checkout-chrome__footer">
-        <Link href="/" className="hathor-checkout-chrome__back-home">
-          Back to main site
-        </Link>
-      </div>
     </div>
   );
 }

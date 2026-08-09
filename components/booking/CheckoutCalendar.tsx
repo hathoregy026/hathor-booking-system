@@ -378,7 +378,7 @@ export function CheckoutCalendar({
       <div className="historia-checkout-calendar__actions">
         <button
           type="button"
-          className="historia-btn historia-btn--ghost"
+          className="public-btn-outline-gold"
           onClick={onGoBack}
           disabled={isUpdating}
         >
@@ -386,7 +386,7 @@ export function CheckoutCalendar({
         </button>
         <button
           type="button"
-          className="historia-btn historia-btn--primary"
+          className="public-btn-gold"
           onClick={onUpdateDates}
           disabled={!canUpdate || isUpdating}
         >
