@@ -524,46 +524,47 @@ ${hathorFontFaces}
    */
 
   /* HERO — COMPOSITION C: lower-left editorial stack
-     Why: tilted collage densifies toward the right; lower-left gold
-     field is the cleanest negative space for one focal Gamgote mark. */
+     Pass 04: optically lift + nudge right; tighter wrap for River/Suites. */
   .l-gallery__caption {
     pointer-events: none;
   }
   .l-gallery__caption .l-gallery__title {
-    left: clamp(1.5rem, 6.5vw, 5.5rem) !important;
+    left: clamp(1.65rem, 6.8vw, 5.75rem) !important;
     right: auto !important;
-    bottom: clamp(2.25rem, 11vh, 6rem) !important;
+    bottom: clamp(2.75rem, 13.5vh, 6.75rem) !important;
     top: auto !important;
     text-align: left !important;
-    max-width: min(46vw, 10.5em);
+    max-width: min(42vw, 9.25em);
     z-index: 4;
+    transform: translate(10px, -18px) !important;
   }
   .l-gallery__caption .l-gallery__title .h0 {
     text-align: left !important;
-    font-size: clamp(2.85rem, 4.6vw, 5.5rem) !important;
-    line-height: 0.94 !important;
-    letter-spacing: -0.018em !important;
+    font-size: clamp(2.75rem, 4.35vw, 5.25rem) !important;
+    line-height: 0.93 !important;
+    letter-spacing: -0.02em !important;
   }
 
   /* INTRO OPENING — COMPOSITION A: unified upper-left title + body
-     Why: person/subject sits mid-frame looking right; left wall is
-     calm. Title and lead were split across columns — reunite them. */
+     Pass 04: controlled title→lead air; lead ≤ title visual width. */
   .l-intro.is-hidden--md-down .l-intro__opening {
     position: absolute !important;
     left: clamp(1.5rem, 6vw, 5rem) !important;
-    top: clamp(5.5rem, 14vh, 8.5rem) !important;
+    top: clamp(5.25rem, 13vh, 8rem) !important;
     right: auto !important;
     bottom: auto !important;
-    width: min(40vw, 34rem) !important;
-    max-width: 34rem !important;
+    width: min(36vw, 30rem) !important;
+    max-width: 30rem !important;
+    height: auto !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: flex-start !important;
+    justify-content: flex-start !important;
     gap: 0 !important;
     z-index: 5;
     margin: 0 !important;
     padding: 0 !important;
-    transform: none !important;
+    transform: translateX(8px) !important;
   }
   .l-intro.is-hidden--md-down .l-intro__opening > .col {
     width: 100% !important;
@@ -571,125 +572,166 @@ ${hathorFontFaces}
     margin: 0 !important;
     padding: 0 !important;
     float: none !important;
-    left: auto !important;
-    right: auto !important;
+    flex: 0 0 auto !important;
+    min-height: 0 !important;
+    height: auto !important;
+  }
+  .l-intro.is-hidden--md-down .l-intro__opening > .col:first-child {
     position: relative !important;
   }
+  /* Pin lead under title so row/col geometry cannot invent a giant gap */
+  .l-intro.is-hidden--md-down .l-intro__opening > .col:last-child {
+    position: absolute !important;
+    left: 0 !important;
+    top: 5.1rem !important;
+    right: auto !important;
+    bottom: auto !important;
+  }
   .l-intro.is-hidden--md-down .l-intro__opening .h1 {
-    max-width: 12em;
+    max-width: 11.5em;
   }
   .l-intro.is-hidden--md-down .l-intro__opening-subtitle {
-    margin-top: 1.15rem !important;
-    max-width: 28em !important;
+    margin-top: 0 !important;
+    max-width: 22em !important;
     width: 100% !important;
+    line-height: 1.62 !important;
   }
 
   /* INTRO CONTENT — COMPOSITION E: title high-left / body low-left
-     Why: gold field with image inset top-right; text was floating
-     mid-offset with no relationship. Anchor both to one left axis. */
+     Pass 04: reduce vertical disconnect; keep intentional separation. */
   .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-title {
     position: absolute !important;
     left: clamp(1.5rem, 6vw, 5rem) !important;
-    top: clamp(5rem, 16vh, 9rem) !important;
+    top: clamp(4.5rem, 13vh, 7.5rem) !important;
     bottom: auto !important;
     right: auto !important;
-    width: min(38vw, 28rem) !important;
-    max-width: 28rem !important;
+    width: min(36vw, 26rem) !important;
+    max-width: 26rem !important;
     margin: 0 !important;
     padding: 0 !important;
-    transform: none !important;
+    transform: translateX(8px) !important;
     z-index: 4;
   }
   .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-text {
     position: absolute !important;
     left: clamp(1.5rem, 6vw, 5rem) !important;
-    bottom: clamp(2rem, 8vh, 4.5rem) !important;
+    /* Keep intentional air under the title, but stay on-canvas when pinned */
+    bottom: clamp(4rem, 34vh, 15rem) !important;
     top: auto !important;
     right: auto !important;
-    width: min(34vw, 26rem) !important;
-    max-width: 26rem !important;
+    width: min(32vw, 24rem) !important;
+    max-width: 24rem !important;
     margin: 0 !important;
     padding: 0 !important;
+    transform: translateX(8px) !important;
     z-index: 4;
+  }
+  .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-text p,
+  .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-text .text-t1 {
+    line-height: 1.62 !important;
+    max-width: 34em !important;
   }
 
   /* WELLNESS / COMFORT — COMPOSITION B: body upper-left + title lower-right
-     Why: WebGL stage is open gold; split focal points create editorial
-     tension without covering the center. Fix the -60px left overflow. */
+     Pass 04: lockup script+title; ivory script on gold stage for contrast. */
   #wellness .l-wellness__webgl-caption > p.text-t1 {
     position: absolute !important;
     left: clamp(1.5rem, 6vw, 5rem) !important;
-    top: clamp(5rem, 14vh, 8rem) !important;
+    top: clamp(5.5rem, 16vh, 9rem) !important;
     right: auto !important;
     bottom: auto !important;
-    width: min(28vw, 22rem) !important;
-    max-width: 22rem !important;
+    width: min(26vw, 20rem) !important;
+    max-width: 20rem !important;
     margin: 0 !important;
-    transform: none !important;
+    transform: translateX(8px) !important;
     z-index: 4;
+    line-height: 1.62 !important;
   }
   #wellness .l-wellness__webgl-title {
     position: absolute !important;
     left: auto !important;
     right: clamp(1.5rem, 6vw, 5rem) !important;
-    bottom: clamp(2rem, 8vh, 4.5rem) !important;
+    bottom: clamp(2.5rem, 10vh, 5.25rem) !important;
     top: auto !important;
     width: max-content !important;
-    max-width: min(46vw, 18rem) !important;
+    max-width: min(42vw, 16rem) !important;
     margin: 0 !important;
     text-align: right !important;
-    transform: none !important;
+    transform: translate(-6px, -12px) !important;
     z-index: 4;
   }
   #wellness .l-wellness__webgl-title .text-c1 {
     font-family: "Quiet Luxury", cursive !important;
-    font-size: var(--type-script-lg) !important;
+    font-size: clamp(1.2rem, 1.55vw, 1.95rem) !important;
     font-weight: 400 !important;
-    letter-spacing: 0.015em !important;
+    letter-spacing: 0.02em !important;
     text-transform: none !important;
-    line-height: 1.15 !important;
-    color: var(--suites-gold) !important;
-    -webkit-text-fill-color: var(--suites-gold) !important;
-    margin-bottom: 0.4rem !important;
+    line-height: 1.2 !important;
+    /* Gold field: ivory signature reads; antique gold would vanish */
+    color: #f7f1e6 !important;
+    -webkit-text-fill-color: #f7f1e6 !important;
+    opacity: 0.92;
+    margin-bottom: 0.18rem !important;
+    --fos: 0.22em;
+    --foe: 0.28em;
+    display: block !important;
   }
   #wellness .l-wellness__webgl-title .g1 {
     margin: 0 !important;
+    font-size: clamp(2.35rem, 3.6vw, 3.85rem) !important;
   }
 
   /* WELLNESS SLIDER — titles stay right; body sits lower-left of caption
-     Why: amenity list is a right rail; copy should not compete mid-frame. */
+     Pass 04: editorial rail spacing; body quieter. */
   .l-wellness__slider__caption-titles {
-    padding-top: clamp(1.5rem, 4vh, 2.75rem) !important;
+    padding-top: clamp(1.75rem, 5vh, 3rem) !important;
+  }
+  .l-wellness__slider__caption-titles .g1,
+  .l-wellness__slider__caption-titles h2,
+  .l-wellness__slider__caption-titles h3 {
+    letter-spacing: -0.01em !important;
+    line-height: 1.15 !important;
   }
   .l-wellness__slider__caption-text {
     left: clamp(1.5rem, 5vw, 4rem) !important;
     right: auto !important;
-    bottom: clamp(1.5rem, 6vh, 3.5rem) !important;
-    width: min(36vw, 26rem) !important;
-    max-width: 26rem !important;
+    bottom: clamp(1.85rem, 7vh, 3.75rem) !important;
+    width: min(34vw, 24rem) !important;
+    max-width: 24rem !important;
+    transform: translateX(8px) !important;
+  }
+  .l-wellness__slider__caption-text p,
+  .l-wellness__slider__caption-text .text-t1 {
+    line-height: 1.6 !important;
   }
 
   /* NATURE / THE NILE — COMPOSITION C: lower-left connected stack
-     Why: title/script left + body lower-right felt like two ads.
-     Reunite into one left editorial column; free the right for photo. */
+     Pass 04: fix script overlapping Gamgote; calm magazine cover rhythm. */
   #nature .l-nature-bg-caption,
   .l-nature-bg-item .l-nature-bg-caption {
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-end !important;
     align-items: flex-start !important;
-    padding: 0 0 clamp(2rem, 8vh, 4.5rem) clamp(1.5rem, 6vw, 5rem) !important;
+    padding: 0 0 clamp(2.5rem, 9vh, 5rem) clamp(1.65rem, 6.5vw, 5.25rem) !important;
     box-sizing: border-box !important;
+    transform: translateX(8px) !important;
   }
   #nature .l-nature-bg-caption .g1,
   .l-nature-bg-item .l-nature-bg-caption .g1 {
     position: relative !important;
     margin: 0 !important;
+    font-size: clamp(2.2rem, 3.5vw, 3.85rem) !important;
+    max-width: 10em;
   }
   #nature .l-nature-bg-caption .mt-1,
   .l-nature-bg-item .l-nature-bg-caption .mt-1 {
-    margin-top: 0.45rem !important;
+    margin-top: 0.7rem !important;
     margin-bottom: 0 !important;
+  }
+  #nature .l-nature-bg-caption__subtitle,
+  .l-nature-bg-item .l-nature-bg-caption__subtitle {
+    font-size: clamp(1.15rem, 1.4vw, 1.75rem) !important;
   }
   #nature .l-nature-bg-caption__text,
   .l-nature-bg-item .l-nature-bg-caption__text {
@@ -698,66 +740,98 @@ ${hathorFontFaces}
     right: auto !important;
     top: auto !important;
     bottom: auto !important;
-    margin: 1.65rem 0 0 !important;
-    width: min(34vw, 28rem) !important;
-    max-width: 28rem !important;
+    margin: 1.35rem 0 0 !important;
+    width: min(30vw, 24rem) !important;
+    max-width: 24rem !important;
     transform: none !important;
   }
+  #nature .l-nature-bg-caption__text p,
+  #nature .l-nature-bg-caption__text .text-t1,
+  .l-nature-bg-item .l-nature-bg-caption__text p {
+    line-height: 1.62 !important;
+  }
 
-  /* PLACE / VOYAGE — COMPOSITION B variant: right-anchored title+script,
-     body lower-right on same axis.
-     Why: spiral/webgl mass sits left-center; right margin is open sky. */
+  /* PLACE / VOYAGE — COMPOSITION B variant: right-anchored title/script/body
+     Pass 04: optical right edge; closer title↔body relationship. */
   .l-place-webgl-caption {
     position: absolute !important;
-    top: clamp(4.5rem, 12vh, 7.5rem) !important;
-    right: clamp(1.5rem, 5.5vw, 4.5rem) !important;
+    top: clamp(4.25rem, 11vh, 7rem) !important;
+    right: clamp(1.65rem, 5.75vw, 4.75rem) !important;
     left: auto !important;
     bottom: auto !important;
-    width: min(36vw, 22rem) !important;
-    max-width: 22rem !important;
+    width: min(34vw, 20rem) !important;
+    max-width: 20rem !important;
     margin: 0 !important;
     padding: 0 !important;
     text-align: right !important;
     z-index: 4;
+    transform: translateX(-8px) !important;
   }
-  .l-place-webgl-caption .g1,
-  .l-place-webgl-caption__subtitle {
+  .l-place-webgl-caption .g1 {
     margin-left: auto !important;
     text-align: right !important;
+    font-size: clamp(2.2rem, 3.5vw, 3.85rem) !important;
+  }
+  .l-place-webgl-caption__subtitle {
+    margin-left: auto !important;
+    margin-top: 0.55rem !important;
+    text-align: right !important;
+    font-size: clamp(1.15rem, 1.4vw, 1.75rem) !important;
   }
   .l-place-webgl__text {
     position: absolute !important;
-    right: clamp(1.5rem, 5.5vw, 4.5rem) !important;
+    right: clamp(1.65rem, 5.75vw, 4.75rem) !important;
     left: auto !important;
-    bottom: clamp(2rem, 9vh, 5rem) !important;
+    bottom: clamp(2.75rem, 12vh, 6rem) !important;
     top: auto !important;
-    width: min(34vw, 24rem) !important;
-    max-width: 24rem !important;
+    width: min(30vw, 22rem) !important;
+    max-width: 22rem !important;
     margin: 0 !important;
     text-align: right !important;
     z-index: 4;
+    transform: translateX(-8px) !important;
   }
   .l-place-webgl__text p {
     margin-left: auto !important;
-    max-width: 24em !important;
+    max-width: 22em !important;
+    line-height: 1.62 !important;
   }
 
-  /* NATURE SLIDER CAPTION — keep right but tuck into lower-right safe area */
+  /* NATURE SLIDER CAPTION — lower-right safe area, optical tuck */
   .l-nature__slider-caption {
-    right: clamp(1.5rem, 5vw, 4rem) !important;
-    bottom: clamp(3rem, 12vh, 7rem) !important;
+    right: clamp(1.65rem, 5.25vw, 4.25rem) !important;
+    bottom: clamp(3.25rem, 13vh, 7.25rem) !important;
     left: auto !important;
-    width: min(32vw, 24rem) !important;
-    max-width: 24rem !important;
+    width: min(30vw, 22rem) !important;
+    max-width: 22rem !important;
+    transform: translateX(-6px) !important;
   }
 
-  /* FOOTER CTA — left-anchored editorial on cream (not default center) */
+  /* FOOTER CTA — left editorial closing statement
+     Pass 04: more authority via type scale + rhythm, not layout. */
   .hathor-suites-footer-host .lux-footer__top,
   .hathor-lux-footer-host .lux-footer__top {
     text-align: left !important;
     padding-left: clamp(1.5rem, 6vw, 5rem) !important;
     padding-right: clamp(1.5rem, 6vw, 5rem) !important;
-    max-width: 42rem;
+    max-width: 36rem;
+  }
+  .hathor-suites-footer-host .lux-footer__headline,
+  .hathor-lux-footer-host .lux-footer__headline {
+    font-size: clamp(2.1rem, 3.4vw, 3.35rem) !important;
+    letter-spacing: -0.02em !important;
+    line-height: 0.98 !important;
+    max-width: 14em;
+  }
+  .hathor-suites-footer-host .lux-footer__subhead,
+  .hathor-lux-footer-host .lux-footer__subhead {
+    margin-top: 1.1rem !important;
+    max-width: 28em !important;
+    line-height: 1.62 !important;
+  }
+  .hathor-suites-footer-host .lux-footer__subscribe,
+  .hathor-lux-footer-host .lux-footer__subscribe {
+    margin-top: 1.75rem !important;
   }
 
   body,
@@ -1130,24 +1204,26 @@ ${hathorFontFaces}
     .l-place__caption .g1 {
       font-size: clamp(2.1rem, 7vw, 2.65rem) !important;
     }
-    /* Phone: lower-left hero stays left; safe 22px edges */
+    /* Phone: lower-left hero — art-directed, not raw 22px dump */
     .l-gallery__caption .l-gallery__title {
       position: absolute !important;
-      left: 22px !important;
+      left: 24px !important;
       right: auto !important;
-      bottom: 28px !important;
+      bottom: 36px !important;
       top: auto !important;
-      max-width: calc(100vw - 44px);
+      max-width: min(78vw, 11em);
       margin: 0 !important;
       text-align: left !important;
+      transform: none !important;
     }
     .l-gallery__caption .l-gallery__title .h0 {
       text-align: left !important;
+      font-size: clamp(2.65rem, 9.5vw, 3.25rem) !important;
     }
     /* Phone intro mobile block — left stack */
     .l-intro.is-hidden--lg-up .l-intro__opening {
-      padding-left: 22px !important;
-      padding-right: 22px !important;
+      padding-left: 24px !important;
+      padding-right: 24px !important;
       display: flex !important;
       flex-direction: column !important;
       align-items: flex-start !important;
@@ -1160,13 +1236,20 @@ ${hathorFontFaces}
       padding-right: 0 !important;
     }
     .l-intro.is-hidden--lg-up .l-intro__opening-subtitle {
-      margin-top: 0.9rem !important;
-      max-width: 32em !important;
+      margin-top: 0.85rem !important;
+      max-width: 22em !important;
+      line-height: 1.6 !important;
     }
     /* Phone nature — left stack, body under title */
     .l-nature-bg-caption {
       align-items: flex-start !important;
-      padding: 0 22px 28px !important;
+      transform: none !important;
+      padding-left: 24px !important;
+      padding-right: 24px !important;
+      padding-bottom: 32px !important;
+    }
+    .l-nature-bg-caption .mt-1 {
+      margin-top: 0.65rem !important;
     }
     .l-nature-bg-caption .g1,
     .l-nature-bg-caption__subtitle {
