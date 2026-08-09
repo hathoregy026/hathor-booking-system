@@ -883,7 +883,11 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 /* ========== i-opening — literal Springs infrastructure.css ========== */
 
 .home-am-opening {
-  height: 300svh;
+  /*
+   * Keep runway matched to the climbing card stack. Stretching this taller
+   * than the RC content leaves empty gold while the left photo is still pinned.
+   */
+  height: 250svh;
   position: relative;
   pointer-events: none;
   clip-path: none;
@@ -1099,10 +1103,10 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   z-index: auto;
   width: 100%;
   /*
-   * Springs RC clip opens to 350vh — element must be at least that tall
-   * or the band is clipped to content height and cards vanish.
+   * Springs RC clip opens to 350vh — must match that band so cards stay
+   * visible until the left photo and RC release together into nature.
    */
-  min-height: 420vh;
+  min-height: 350vh;
   pointer-events: none;
   will-change: clip-path;
   background: var(--am-gold);
@@ -1220,8 +1224,9 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   .home-am-opening,
   .home-am-opening.home-am-chapter--under-previous-after-next {
     clip-path: none;
-    height: 500svh;
-    min-height: 3400px;
+    /* Springs 400svh — card climb ends as left + RC hand off to nature */
+    height: 400svh;
+    min-height: 2700px;
     margin-top: calc(
       var(--sticky-under-previous-distance) * -1 +
         var(--sticky-under-next-distance) * -1
@@ -1294,7 +1299,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   }
 
   .home-am-opening {
-    height: 380svh;
+    height: 320svh;
     min-height: 0;
   }
 
@@ -1452,7 +1457,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 
   /* Springs mobile i-opening */
   .home-am-opening {
-    height: 340svh;
+    height: 280svh;
     min-height: 0;
     pointer-events: none;
     z-index: 4;
