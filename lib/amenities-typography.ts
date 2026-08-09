@@ -85,13 +85,10 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
   const gapSubBody = settings.spacing.indicationToBody;
   const gapBodyCta = settings.spacing.bodyToCta;
   const L = settings.layout;
+  const { title, indication, body } = settings;
 
-  const spacingVars = `${sel("")}{--am-typo-gap-title-sub:${gapTitleSub}px;--am-typo-gap-sub-body:${gapSubBody}px;--am-typo-gap-body-cta:${gapBodyCta}px;--am-typo-align:${L.align};--am-typo-title-x:${L.titleX}px;--am-typo-title-y:${L.titleY}px;--am-typo-indication-x:${L.indicationX}px;--am-typo-indication-y:${L.indicationY}px;--am-typo-body-x:${L.bodyX}px;--am-typo-body-y:${L.bodyY}px;--am-typo-title-on-image:${settings.title.colorOnImage};--am-typo-title-on-bg:${settings.title.colorOnBg};--am-typo-indication-on-image:${settings.indication.colorOnImage};--am-typo-indication-on-bg:${settings.indication.colorOnBg};--am-typo-body-on-image:${settings.body.colorOnImage};--am-typo-body-on-bg:${settings.body.colorOnBg};}`;
+  const spacingVars = `${sel("")}{--am-typo-gap-title-sub:${gapTitleSub}px;--am-typo-gap-sub-body:${gapSubBody}px;--am-typo-gap-body-cta:${gapBodyCta}px;--am-typo-align:${L.align};--am-typo-title-x:${L.titleX}px;--am-typo-title-y:${L.titleY}px;--am-typo-indication-x:${L.indicationX}px;--am-typo-indication-y:${L.indicationY}px;--am-typo-body-x:${L.bodyX}px;--am-typo-body-y:${L.bodyY}px;--am-typo-title-on-image:${title.colorOnImage};--am-typo-title-on-bg:${title.colorOnBg};--am-typo-indication-on-image:${indication.colorOnImage};--am-typo-indication-on-bg:${indication.colorOnBg};--am-typo-body-on-image:${body.colorOnImage};--am-typo-body-on-bg:${body.colorOnBg};}`;
 
-  /*
-   * Stack gaps: title → sub → body → CTA.
-   * Free X/Y offsets (hero-style) via relative left/top — avoids fighting GSAP transforms.
-   */
   const spacingRules = [
     `${sel(" .home-am-slider__caption")}{gap:0!important;text-align:var(--am-typo-align,left)!important;}`,
     `${sel(
@@ -117,14 +114,7 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
     )}{margin-top:0!important;}`,
   ].join("");
 
-  /* Cream panel body keeps site body_text (dark ink on cream). */
-  const creamInk = `${sel(
-    " .home-am-intro__cream .typo-body-text",
-    " .home-am-intro__cream .typo-body-text *",
-    " .home-am-video__title-body",
-    " .home-am-video__title-body *",
-  )}{color:var(--typo-body-text-color,#3d3a36)!important;-webkit-text-fill-color:var(--typo-body-text-color,#3d3a36)!important;font-family:var(--typo-body-text-font)!important;font-size:var(--typo-body-text-size)!important;line-height:var(--typo-body-text-line-height)!important;letter-spacing:var(--typo-body-text-letter-spacing)!important;text-shadow:none!important;}`;
-
+  /* ——— Metrics for every amenities text role ——— */
   const titleMetrics = roleMetricsCss(
     sel(
       " .typo-on-images-title",
@@ -135,8 +125,10 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
       " .home-am-opening__title *",
       " .home-am-on-cream-title",
       " .home-am-on-cream-title *",
+      " .home-am-intro__title",
+      " .home-am-intro__title *",
     ),
-    settings.title,
+    title,
   );
   const indicationMetrics = roleMetricsCss(
     sel(
@@ -144,8 +136,12 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
       " .typo-on-images-indication *",
       " .home-am-nature__indication",
       " .home-am-nature__indication *",
+      " .home-am-intro__indication",
+      " .home-am-intro__indication *",
+      " .home-am-opening__list-item-text",
+      " .home-am-opening__list-item-text *",
     ),
-    settings.indication,
+    indication,
   );
   const bodyMetrics = roleMetricsCss(
     sel(
@@ -155,35 +151,108 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
       " .home-am-nature__body *",
       " .home-am-opening__caption-text",
       " .home-am-opening__caption-text *",
+      " .home-am-intro__cream-text",
+      " .home-am-intro__cream-text *",
+      " .home-am-video__title-body",
+      " .home-am-video__title-body *",
+      " .home-am-intro__cream .typo-body-text",
+      " .home-am-intro__cream .typo-body-text *",
     ),
-    settings.body,
+    body,
   );
 
-  /* Photo overlays */
+  /*
+   * Base colour = on-background for ALL role text (nothing left unstyled).
+   * On-image overrides follow with higher-specificity / later rules.
+   */
+  const baseColors = [
+    roleColorCss(
+      sel(
+        " .typo-on-images-title",
+        " .typo-on-images-title *",
+        " .home-am-nature__title",
+        " .home-am-nature__title *",
+        " .home-am-opening__title",
+        " .home-am-opening__title *",
+        " .home-am-on-cream-title",
+        " .home-am-on-cream-title *",
+        " .home-am-intro__title",
+        " .home-am-intro__title *",
+      ),
+      title.colorOnBg,
+    ),
+    roleColorCss(
+      sel(
+        " .typo-on-images-indication",
+        " .typo-on-images-indication *",
+        " .home-am-nature__indication",
+        " .home-am-nature__indication *",
+        " .home-am-intro__indication",
+        " .home-am-intro__indication *",
+        " .home-am-opening__list-item-text",
+        " .home-am-opening__list-item-text *",
+      ),
+      indication.colorOnBg,
+    ),
+    roleColorCss(
+      sel(
+        " .typo-on-images-body",
+        " .typo-on-images-body *",
+        " .home-am-nature__body",
+        " .home-am-nature__body *",
+        " .home-am-opening__caption-text",
+        " .home-am-opening__caption-text *",
+        " .home-am-intro__cream-text",
+        " .home-am-intro__cream-text *",
+        " .home-am-video__title-body",
+        " .home-am-video__title-body *",
+        " .home-am-intro__cream .typo-body-text",
+        " .home-am-intro__cream .typo-body-text *",
+        " .home-am-video__caption-text",
+        " .home-am-video__caption-text *",
+      ),
+      body.colorOnBg,
+    ),
+  ].join("");
+
+  /* Photo overlays — win over base (on-bg) colour */
   const onImageColors = [
     roleColorCss(
       sel(
         " .home-am-on-image-text.typo-on-images-title",
         " .home-am-on-image-text.typo-on-images-title *",
-        " .home-am-intro__title",
-        " .home-am-intro__title *",
+        " .home-am-on-image-text.home-am-intro__title",
+        " .home-am-on-image-text.home-am-intro__title *",
+        " .home-am-intro__caption .home-am-intro__title",
+        " .home-am-intro__caption .home-am-intro__title *",
+        " .home-am-opening__caption .home-am-opening__title",
+        " .home-am-opening__caption .home-am-opening__title *",
         " .home-am-opening__title.home-am-on-image-text",
         " .home-am-opening__title.home-am-on-image-text *",
       ),
-      settings.title.colorOnImage,
+      title.colorOnImage,
     ),
     roleColorCss(
       sel(
         " .home-am-on-image-text.typo-on-images-indication",
         " .home-am-on-image-text.typo-on-images-indication *",
-        " .home-am-intro__indication",
-        " .home-am-intro__indication *",
+        " .home-am-intro__caption .home-am-intro__indication",
+        " .home-am-intro__caption .home-am-intro__indication *",
+        " .home-am-opening__list-item-text",
+        " .home-am-opening__list-item-text *",
       ),
-      settings.indication.colorOnImage,
+      indication.colorOnImage,
+    ),
+    roleColorCss(
+      sel(
+        " .home-am-on-image-text.typo-on-images-body",
+        " .home-am-on-image-text.typo-on-images-body *",
+      ),
+      body.colorOnImage,
     ),
   ].join("");
 
-  /* Solid panels (gold captions, cream titles, nature band) */
+  /* Explicit on-bg reinforcement (gold / cream panels) — after base, before image */
   const onBgColors = [
     roleColorCss(
       sel(
@@ -193,21 +262,27 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
         " .home-am-video__caption .typo-on-images-title *",
         " .home-am-opening__rail-copy .typo-on-images-title",
         " .home-am-opening__rail-copy .typo-on-images-title *",
+        " .home-am-nature__gold-band .home-am-nature__title",
+        " .home-am-nature__gold-band .home-am-nature__title *",
         " .home-am-nature__title",
         " .home-am-nature__title *",
         " .home-am-on-cream-title",
         " .home-am-on-cream-title *",
+        " .home-am-video__title .home-am-on-cream-title",
+        " .home-am-video__title .home-am-on-cream-title *",
       ),
-      settings.title.colorOnBg,
+      title.colorOnBg,
     ),
     roleColorCss(
       sel(
         " .home-am-slider__caption .typo-on-images-indication",
         " .home-am-slider__caption .typo-on-images-indication *",
+        " .home-am-nature__gold-band .home-am-nature__indication",
+        " .home-am-nature__gold-band .home-am-nature__indication *",
         " .home-am-nature__indication",
         " .home-am-nature__indication *",
       ),
-      settings.indication.colorOnBg,
+      indication.colorOnBg,
     ),
     roleColorCss(
       sel(
@@ -221,10 +296,20 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
         " .home-am-opening__right-inner .typo-on-images-body *",
         " .home-am-opening__caption-text",
         " .home-am-opening__caption-text *",
+        " .home-am-nature__gold-band .home-am-nature__body",
+        " .home-am-nature__gold-band .home-am-nature__body *",
         " .home-am-nature__body",
         " .home-am-nature__body *",
+        " .home-am-intro__cream .typo-body-text",
+        " .home-am-intro__cream .typo-body-text *",
+        " .home-am-intro__cream-text",
+        " .home-am-intro__cream-text *",
+        " .home-am-video__title-body",
+        " .home-am-video__title-body *",
+        " .home-am-video__caption-text",
+        " .home-am-video__caption-text *",
       ),
-      settings.body.colorOnBg,
+      body.colorOnBg,
     ),
   ].join("");
 
@@ -233,9 +318,9 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
     titleMetrics,
     indicationMetrics,
     bodyMetrics,
-    onImageColors,
+    baseColors,
     onBgColors,
+    onImageColors,
     spacingRules,
-    creamInk,
   ].join("");
 }

@@ -286,8 +286,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   width: 100%;
   text-align: center;
   font-weight: 400;
-  color: #ffffff;
-  -webkit-text-fill-color: #ffffff;
+  color: var(--am-typo-title-on-bg, #ffffff);
+  -webkit-text-fill-color: var(--am-typo-title-on-bg, #ffffff);
 }
 
 .home-am-nature__title > .home-am-title-line {
@@ -301,8 +301,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   margin: 0 0 var(--am-typo-gap-sub-body, 14px);
   text-align: center;
   text-transform: uppercase;
-  color: #ffffff;
-  -webkit-text-fill-color: #ffffff;
+  color: var(--am-typo-indication-on-bg, #ffffff);
+  -webkit-text-fill-color: var(--am-typo-indication-on-bg, #ffffff);
 }
 
 .home-am-nature__body {
@@ -310,8 +310,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   text-align: center;
   max-width: min(26rem, 100%);
   font-weight: 400;
-  color: #ffffff;
-  -webkit-text-fill-color: #ffffff;
+  color: var(--am-typo-body-on-bg, #ffffff);
+  -webkit-text-fill-color: var(--am-typo-body-on-bg, #ffffff);
 }
 
 .home-am-nature__cta.public-btn-outline-gold {
@@ -1001,8 +1001,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 .home-am-opening__title {
   margin: 0 0 var(--am-typo-gap-title-sub, 14px);
   font-weight: 400;
-  color: #ffffff;
-  -webkit-text-fill-color: #ffffff;
+  color: var(--am-typo-title-on-image, #ffffff);
+  -webkit-text-fill-color: var(--am-typo-title-on-image, #ffffff);
   text-align: right;
   overflow-wrap: normal;
   word-break: normal;
@@ -1091,8 +1091,9 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   line-height: 1.35 !important;
   letter-spacing: 0.08em !important;
   text-transform: uppercase !important;
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
+  /* Colour from Amenities Sequence indication (on image) */
+  color: var(--am-typo-indication-on-image, #ffffff) !important;
+  -webkit-text-fill-color: var(--am-typo-indication-on-image, #ffffff) !important;
   pointer-events: none;
 }
 
@@ -1134,8 +1135,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   padding-left: 0.5rem;
   font-size: clamp(0.92rem, 1.15vw, 1.05rem) !important;
   line-height: 1.5;
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
+  color: var(--am-typo-body-on-bg, #ffffff) !important;
+  -webkit-text-fill-color: var(--am-typo-body-on-bg, #ffffff) !important;
 }
 
 /*
