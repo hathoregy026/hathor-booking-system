@@ -81,28 +81,34 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
   const gapTitleSub = settings.spacing.titleToIndication;
   const gapSubBody = settings.spacing.indicationToBody;
   const gapBodyCta = settings.spacing.bodyToCta;
+  const L = settings.layout;
 
-  const spacingVars = `${sel("")}{--am-typo-gap-title-sub:${gapTitleSub}px;--am-typo-gap-sub-body:${gapSubBody}px;--am-typo-gap-body-cta:${gapBodyCta}px;}`;
+  const spacingVars = `${sel("")}{--am-typo-gap-title-sub:${gapTitleSub}px;--am-typo-gap-sub-body:${gapSubBody}px;--am-typo-gap-body-cta:${gapBodyCta}px;--am-typo-align:${L.align};--am-typo-title-x:${L.titleX}px;--am-typo-title-y:${L.titleY}px;--am-typo-indication-x:${L.indicationX}px;--am-typo-indication-y:${L.indicationY}px;--am-typo-body-x:${L.bodyX}px;--am-typo-body-y:${L.bodyY}px;}`;
 
   /*
    * Stack gaps: title → sub → body → CTA.
-   * When a surface has no sub, title’s bottom margin still separates title → body.
+   * Free X/Y offsets (hero-style) via relative left/top — avoids fighting GSAP transforms.
+   * Indication stays stacked above title/body in paint order where captions overlap.
    */
   const spacingRules = [
-    `${sel(" .home-am-slider__caption")}{gap:0!important;}`,
+    `${sel(" .home-am-slider__caption")}{gap:0!important;text-align:var(--am-typo-align,left)!important;}`,
+    `${sel(
+      " .home-am-nature__caption",
+      " .home-am-opening__caption",
+    )}{text-align:var(--am-typo-align,left)!important;}`,
     `${sel(
       " .typo-on-images-title",
       " .home-am-nature__title",
       " .home-am-opening__title",
-    )}{margin-top:0!important;margin-bottom:var(--am-typo-gap-title-sub)!important;}`,
+    )}{position:relative!important;left:var(--am-typo-title-x,0px)!important;top:var(--am-typo-title-y,0px)!important;z-index:1!important;margin-top:0!important;margin-bottom:var(--am-typo-gap-title-sub)!important;}`,
     `${sel(
       " .typo-on-images-indication",
       " .home-am-nature__indication",
-    )}{margin-top:0!important;margin-bottom:var(--am-typo-gap-sub-body)!important;}`,
+    )}{position:relative!important;left:var(--am-typo-indication-x,0px)!important;top:var(--am-typo-indication-y,0px)!important;z-index:3!important;margin-top:0!important;margin-bottom:var(--am-typo-gap-sub-body)!important;}`,
     `${sel(
       " .typo-on-images-body",
       " .home-am-nature__body",
-    )}{margin-top:0!important;margin-bottom:var(--am-typo-gap-body-cta)!important;}`,
+    )}{position:relative!important;left:var(--am-typo-body-x,0px)!important;top:var(--am-typo-body-y,0px)!important;z-index:2!important;margin-top:0!important;margin-bottom:var(--am-typo-gap-body-cta)!important;}`,
     `${sel(
       " .home-am-opening__cta",
       " .home-am-nature__cta",

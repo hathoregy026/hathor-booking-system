@@ -1,18 +1,33 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Loader2, RotateCcw, Save } from "lucide-react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
+import {
+  AlignCenter,
+  AlignLeft,
+  AlignRight,
+  Loader2,
+  RotateCcw,
+  Save,
+} from "lucide-react";
 import { AdminDevicePreviewToggle } from "@/components/admin/AdminDevicePreviewToggle";
 import { useToast } from "@/components/admin/ToastProvider";
 import { adminFetch } from "@/lib/admin-fetch";
 import type { AdminDevicePreview } from "@/lib/admin-device-preview";
 import {
+  DEFAULT_AMENITIES_LAYOUT,
   DEFAULT_AMENITIES_SPACING,
   DEFAULT_AMENITIES_TYPOGRAPHY,
   parseAmenitiesTypography,
+  type AmenitiesLayout,
   type AmenitiesSpacing,
   type AmenitiesStyleRole,
-  type AmenitiesTypography,
 } from "@/lib/amenities-typography-shared";
 import {
   DEFAULT_WEBSITE_TEXT,
@@ -28,6 +43,8 @@ import {
 type CopyTarget =
   | { kind: "slide"; index: number }
   | { kind: "story"; index: number };
+
+type DragLine = AmenitiesStyleRole;
 
 type RailItem =
   | { id: string; label: string; mode: "copy"; target: CopyTarget; hint: string }
@@ -51,6 +68,12 @@ const STORY_LABELS = [
   "Way of Life — opening + slider",
   "Dining — opening + slider",
 ] as const;
+
+const DRAG_LINE_LABELS: Record<DragLine, string> = {
+  title: "Title",
+  indication: "Sub / indication",
+  body: "Body",
+};
 
 const RAIL: RailItem[] = [
   ...SLIDE_LABELS.map((label, index) => ({
@@ -96,14 +119,25 @@ const RAIL: RailItem[] = [
   },
   {
     id: "style-spacing",
-    label: "Spacing & line height",
+    label: "Layout & line height",
     mode: "spacing",
-    hint: "Preview big title, small label, and body together. Tune gaps between them and each role’s line height.",
+    hint: "Drag title, sub, and body freely (overlap allowed). Sub stays in front. Gaps and line height still apply on the live site.",
   },
 ];
 
 function sameJson(a: unknown, b: unknown) {
   return JSON.stringify(a) === JSON.stringify(b);
+}
+
+function clampOffset(n: number): number {
+  if (!Number.isFinite(n)) return 0;
+  return Math.min(240, Math.max(-240, Math.round(n)));
+}
+
+function roleTextShadow(on: boolean) {
+  return on
+    ? "1px 1px 0 rgba(0,0,0,.35), -.5px -.5px 0 rgba(255,255,255,.25)"
+    : "none";
 }
 
 export function AmenitiesSequenceTypographyPanel() {
@@ -127,6 +161,14 @@ export function AmenitiesSequenceTypographyPanel() {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [dragLine, setDragLine] = useState<DragLine>("indication");
+  const dragRef = useRef<{
+    line: DragLine;
+    startX: number;
+    startY: number;
+    origX: number;
+    origY: number;
+  } | null>(null);
 
   const text = device === "phone" ? phoneText : desktopText;
   const setText = device === "phone" ? setPhoneText : setDesktopText;
@@ -134,12 +176,17 @@ export function AmenitiesSequenceTypographyPanel() {
   const styles = device === "phone" ? phoneStyles : desktopStyles;
   const setStyles = device === "phone" ? setPhoneStyles : setDesktopStyles;
   const savedStyles = device === "phone" ? savedPhoneStyles : savedDesktopStyles;
+  const layout = styles.layout;
 
   const active = RAIL.find((item) => item.id === activeId) ?? RAIL[0];
   const dirty =
     !sameJson(text.home.stackSlides, savedText.home.stackSlides) ||
     !sameJson(text.home.textBlocks, savedText.home.textBlocks) ||
     !sameJson(styles, savedStyles);
+
+  useEffect(() => {
+    if (active.mode === "style") setDragLine(active.role);
+  }, [active]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -232,18 +279,86 @@ export function AmenitiesSequenceTypographyPanel() {
     }));
   };
 
+  const patchLayout = (partial: Partial<AmenitiesLayout>) => {
+    setStyles((prev) => ({
+      ...prev,
+      layout: { ...prev.layout, ...partial },
+    }));
+  };
+
+  const activeOffset =
+    dragLine === "title"
+      ? { x: layout.titleX, y: layout.titleY }
+      : dragLine === "indication"
+        ? { x: layout.indicationX, y: layout.indicationY }
+        : { x: layout.bodyX, y: layout.bodyY };
+
+  const setActiveOffset = (x: number, y: number) => {
+    const cx = clampOffset(x);
+    const cy = clampOffset(y);
+    if (dragLine === "title") patchLayout({ titleX: cx, titleY: cy });
+    else if (dragLine === "indication")
+      patchLayout({ indicationX: cx, indicationY: cy });
+    else patchLayout({ bodyX: cx, bodyY: cy });
+  };
+
+  const onDragStart =
+    (line: DragLine) => (event: ReactPointerEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+      setDragLine(line);
+      const L = styles.layout;
+      dragRef.current = {
+        line,
+        startX: event.clientX,
+        startY: event.clientY,
+        origX:
+          line === "title"
+            ? L.titleX
+            : line === "indication"
+              ? L.indicationX
+              : L.bodyX,
+        origY:
+          line === "title"
+            ? L.titleY
+            : line === "indication"
+              ? L.indicationY
+              : L.bodyY,
+      };
+      event.currentTarget.setPointerCapture(event.pointerId);
+    };
+
+  const onDragMove = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    const drag = dragRef.current;
+    if (!drag) return;
+    const nextX = clampOffset(drag.origX + (event.clientX - drag.startX));
+    const nextY = clampOffset(drag.origY + (event.clientY - drag.startY));
+    if (drag.line === "title") patchLayout({ titleX: nextX, titleY: nextY });
+    else if (drag.line === "indication")
+      patchLayout({ indicationX: nextX, indicationY: nextY });
+    else patchLayout({ bodyX: nextX, bodyY: nextY });
+  };
+
+  const onDragEnd = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (!dragRef.current) return;
+    dragRef.current = null;
+    try {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    } catch {
+      /* already released */
+    }
+  };
+
   const sampleStyle = useMemo(() => {
     if (active.mode === "style") return styles[active.role];
-    return styles.title;
-  }, [active, styles]);
+    return styles[dragLine];
+  }, [active, dragLine, styles]);
 
-  /** Always show title + sub + body stacked; prefer live copy when editing a chapter. */
+  /** Always show title + sub + body; prefer live copy when editing a chapter. */
   const previewCopy = useMemo(() => {
     const fallback = {
       title: "Every landmark,\na pleasure.",
       indication: "Sail The Nile\nOn Hathor",
       body: "Glide between Luxor and Aswan on an intimate dahabiya, where restaurant craft meets warm hospitality.",
-      cta: "Discover more",
     };
 
     if (active.mode === "copy" && active.target.kind === "slide") {
@@ -252,7 +367,6 @@ export function AmenitiesSequenceTypographyPanel() {
         title: slide?.title?.trim() || fallback.title,
         indication: slide?.indication?.trim() || fallback.indication,
         body: slide?.body?.trim() || fallback.body,
-        cta: fallback.cta,
       };
     }
 
@@ -262,7 +376,6 @@ export function AmenitiesSequenceTypographyPanel() {
         title: story?.title?.trim() || fallback.title,
         indication: fallback.indication,
         body: story?.body?.trim() || fallback.body,
-        cta: story?.cta?.trim() || fallback.cta,
       };
     }
 
@@ -271,16 +384,8 @@ export function AmenitiesSequenceTypographyPanel() {
       title: slide0?.title?.trim() || fallback.title,
       indication: slide0?.indication?.trim() || fallback.indication,
       body: slide0?.body?.trim() || fallback.body,
-      cta: fallback.cta,
     };
   }, [active, text.home.stackSlides, text.home.textBlocks]);
-
-  const focusRole: AmenitiesStyleRole | "spacing" | null =
-    active.mode === "style"
-      ? active.role
-      : active.mode === "spacing"
-        ? "spacing"
-        : null;
 
   const save = async () => {
     if (!dirty || saving) return;
@@ -447,118 +552,147 @@ export function AmenitiesSequenceTypographyPanel() {
           </div>
         </aside>
 
-        <div className="typo-easy__stage typo-easy__stage--light">
-          <span className="typo-easy__stage-kicker">
-            You are editing ({device})
-          </span>
-          <h3>{active.label}</h3>
-          <p className="typo-easy__stage-copy">{active.hint}</p>
+        <div
+          className={`typo-stage typo-stage--dark typo-stage--hero-pair typo-stage--am-trio${device === "phone" ? " typo-stage--phone" : ""}`}
+        >
+          <div className="typo-stage__banner">
+            <span className="typo-stage__editing">
+              You are editing ({device === "phone" ? "phone" : "desktop"})
+            </span>
+            <strong className="typo-stage__role">{active.label}</strong>
+          </div>
+          <p className="typo-stage__where">{active.hint}</p>
+
+          <div className="typo-stage__align">
+            {(
+              [
+                ["left", AlignLeft, "Left"],
+                ["center", AlignCenter, "Center"],
+                ["right", AlignRight, "Right"],
+              ] as const
+            ).map(([align, Icon, label]) => (
+              <button
+                key={align}
+                type="button"
+                className={`typo-stage__align-btn${layout.align === align ? " typo-stage__align-btn--on" : ""}`}
+                onClick={() => patchLayout({ align })}
+                aria-pressed={layout.align === align}
+                title={label}
+              >
+                <Icon className="h-4 w-4" />
+                {label}
+              </button>
+            ))}
+          </div>
+
           <div
-            className="typo-easy__sample"
+            className="typo-stage__canvas"
             style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              gap: 0,
-              color: styles.title.color,
-              isolation: "isolate",
+              justifyContent:
+                layout.align === "left"
+                  ? "flex-start"
+                  : layout.align === "right"
+                    ? "flex-end"
+                    : "center",
+              textAlign: layout.align,
+              alignItems:
+                layout.align === "left"
+                  ? "flex-start"
+                  : layout.align === "right"
+                    ? "flex-end"
+                    : "center",
             }}
           >
-            <span
+            <button
+              type="button"
+              className={`typo-stage__drag${dragLine === "title" ? " typo-stage__drag--on" : ""}`}
               style={{
-                position: "relative",
-                zIndex: 1,
+                transform: `translate(${layout.titleX}px, ${layout.titleY}px)`,
+                zIndex: dragLine === "title" ? 4 : 1,
                 fontFamily: HATHOR_FONT_STACKS[styles.title.fontFamily],
                 fontSize: Math.min(
                   styles.title.fontSize,
-                  device === "phone" ? 34 : 40,
+                  device === "phone" ? 34 : 48,
                 ),
-                letterSpacing: styles.title.letterSpacing,
+                color: styles.title.color,
                 lineHeight: styles.title.lineHeight,
-                marginBottom: styles.spacing.titleToIndication,
-                whiteSpace: "pre-line",
-                opacity:
-                  focusRole && focusRole !== "spacing" && focusRole !== "title"
-                    ? 0.4
-                    : 1,
-                textShadow: styles.title.innerShadow
-                  ? "1px 1px 0 rgba(0,0,0,.35), -.5px -.5px 0 rgba(255,255,255,.25)"
-                  : "none",
+                letterSpacing: styles.title.letterSpacing,
+                textShadow: roleTextShadow(styles.title.innerShadow),
               }}
+              onPointerDown={onDragStart("title")}
+              onPointerMove={onDragMove}
+              onPointerUp={onDragEnd}
+              onPointerCancel={onDragEnd}
             >
-              {previewCopy.title}
-            </span>
-            <span
+              <span className="typo-stage__line-tag">Title · drag</span>
+              <span
+                className="typo-stage__sample typo-stage__sample--inline"
+                style={{ whiteSpace: "pre-line" }}
+              >
+                {previewCopy.title}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              className={`typo-stage__drag${dragLine === "indication" ? " typo-stage__drag--on" : ""}`}
               style={{
-                position: "relative",
+                transform: `translate(${layout.indicationX}px, ${layout.indicationY}px)`,
+                /* Sub always paints in front of title + body (hero second-line concept). */
                 zIndex: 5,
                 fontFamily: HATHOR_FONT_STACKS[styles.indication.fontFamily],
                 fontSize: styles.indication.fontSize,
-                letterSpacing: styles.indication.letterSpacing,
-                lineHeight: styles.indication.lineHeight,
-                marginBottom: styles.spacing.indicationToBody,
-                textTransform: "uppercase",
-                whiteSpace: "pre-line",
-                maxWidth: "22rem",
                 color: styles.indication.color,
-                opacity:
-                  focusRole &&
-                  focusRole !== "spacing" &&
-                  focusRole !== "indication"
-                    ? 0.4
-                    : 1,
-                textShadow: styles.indication.innerShadow
-                  ? "1px 1px 0 rgba(0,0,0,.35), -.5px -.5px 0 rgba(255,255,255,.25)"
-                  : "none",
+                lineHeight: styles.indication.lineHeight,
+                letterSpacing: styles.indication.letterSpacing,
+                textTransform: "uppercase",
+                textShadow: roleTextShadow(styles.indication.innerShadow),
               }}
+              onPointerDown={onDragStart("indication")}
+              onPointerMove={onDragMove}
+              onPointerUp={onDragEnd}
+              onPointerCancel={onDragEnd}
             >
-              {previewCopy.indication}
-            </span>
-            <span
+              <span className="typo-stage__line-tag">Sub · drag</span>
+              <span
+                className="typo-stage__sample typo-stage__sample--inline"
+                style={{ whiteSpace: "pre-line" }}
+              >
+                {previewCopy.indication}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              className={`typo-stage__drag${dragLine === "body" ? " typo-stage__drag--on" : ""}`}
               style={{
-                position: "relative",
-                zIndex: 2,
+                transform: `translate(${layout.bodyX}px, ${layout.bodyY}px)`,
+                zIndex: dragLine === "body" ? 4 : 2,
                 fontFamily: HATHOR_FONT_STACKS[styles.body.fontFamily],
                 fontSize: styles.body.fontSize,
-                letterSpacing: styles.body.letterSpacing,
-                lineHeight: styles.body.lineHeight,
-                marginBottom: styles.spacing.bodyToCta,
-                maxWidth: "22rem",
-                whiteSpace: "pre-line",
                 color: styles.body.color,
-                opacity:
-                  focusRole && focusRole !== "spacing" && focusRole !== "body"
-                    ? 0.4
-                    : 1,
-                textShadow: styles.body.innerShadow
-                  ? "1px 1px 0 rgba(0,0,0,.35), -.5px -.5px 0 rgba(255,255,255,.25)"
-                  : "none",
+                lineHeight: styles.body.lineHeight,
+                letterSpacing: styles.body.letterSpacing,
+                textShadow: roleTextShadow(styles.body.innerShadow),
+                maxWidth: "22rem",
               }}
+              onPointerDown={onDragStart("body")}
+              onPointerMove={onDragMove}
+              onPointerUp={onDragEnd}
+              onPointerCancel={onDragEnd}
             >
-              {previewCopy.body}
-            </span>
-            <span
-              style={{
-                position: "relative",
-                zIndex: 3,
-                fontSize: 12,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                border: `1px solid ${styles.title.color}`,
-                borderRadius: 999,
-                padding: "0.55rem 1.1rem",
-                opacity: focusRole && focusRole !== "spacing" ? 0.45 : 1,
-              }}
-            >
-              {previewCopy.cta}
-            </span>
+              <span className="typo-stage__line-tag">Body · drag</span>
+              <span
+                className="typo-stage__sample typo-stage__sample--inline"
+                style={{ whiteSpace: "pre-line" }}
+              >
+                {previewCopy.body}
+              </span>
+            </button>
           </div>
-          <p className="typo-easy__stage-meta">
-            {active.mode === "spacing"
-              ? `Gaps ${styles.spacing.titleToIndication}/${styles.spacing.indicationToBody}/${styles.spacing.bodyToCta}px · LH title ${styles.title.lineHeight} · sub ${styles.indication.lineHeight} · body ${styles.body.lineHeight}`
-              : active.mode === "style"
-                ? `Editing ${active.role} · Font: ${sampleStyle.fontFamily} · Size: ${sampleStyle.fontSize}px · LH: ${sampleStyle.lineHeight}`
-                : `Live stack preview · Title / sub / body`}
+
+          <p className="typo-stage__readout">
+            {`Align ${layout.align} · ${DRAG_LINE_LABELS[dragLine]} at ${activeOffset.x}px, ${activeOffset.y}px · ${sampleStyle.fontFamily} ${sampleStyle.fontSize}px`}
           </p>
         </div>
 
@@ -650,6 +784,38 @@ export function AmenitiesSequenceTypographyPanel() {
 
           {active.mode === "style" ? (
             <>
+              <p className="typo-easy__controls-hint">
+                Drag any line in the preview. Active:{" "}
+                <strong>{DRAG_LINE_LABELS[dragLine]}</strong>
+              </p>
+              <div className="typo-easy__fields-row">
+                <label className="typo-easy__field">
+                  <span>Move X</span>
+                  <input
+                    className="admin-input"
+                    type="number"
+                    min={-240}
+                    max={240}
+                    value={activeOffset.x}
+                    onChange={(e) =>
+                      setActiveOffset(Number(e.target.value), activeOffset.y)
+                    }
+                  />
+                </label>
+                <label className="typo-easy__field">
+                  <span>Move Y</span>
+                  <input
+                    className="admin-input"
+                    type="number"
+                    min={-240}
+                    max={240}
+                    value={activeOffset.y}
+                    onChange={(e) =>
+                      setActiveOffset(activeOffset.x, Number(e.target.value))
+                    }
+                  />
+                </label>
+              </div>
               <label className="typo-easy__field">
                 <span>Font</span>
                 <select
@@ -760,8 +926,57 @@ export function AmenitiesSequenceTypographyPanel() {
 
           {active.mode === "spacing" ? (
             <>
-              <p className="typo-easy__stage-copy" style={{ margin: 0 }}>
-                Space between roles
+              <p className="typo-easy__controls-hint">
+                Editing <strong>{DRAG_LINE_LABELS[dragLine]}</strong> — drag in
+                the preview or use Move X / Move Y. Sub stays in front.
+                Overlap is allowed.
+              </p>
+              <div className="typo-easy__fields-row">
+                <label className="typo-easy__field">
+                  <span>Move X</span>
+                  <input
+                    className="admin-input"
+                    type="number"
+                    min={-240}
+                    max={240}
+                    value={activeOffset.x}
+                    onChange={(e) =>
+                      setActiveOffset(Number(e.target.value), activeOffset.y)
+                    }
+                  />
+                </label>
+                <label className="typo-easy__field">
+                  <span>Move Y</span>
+                  <input
+                    className="admin-input"
+                    type="number"
+                    min={-240}
+                    max={240}
+                    value={activeOffset.y}
+                    onChange={(e) =>
+                      setActiveOffset(activeOffset.x, Number(e.target.value))
+                    }
+                  />
+                </label>
+              </div>
+              <button
+                className="typo-easy__reset"
+                type="button"
+                onClick={() =>
+                  patchLayout({
+                    ...DEFAULT_AMENITIES_LAYOUT,
+                    align: layout.align,
+                  })
+                }
+              >
+                <RotateCcw className="h-3.5 w-3.5" /> Reset positions
+              </button>
+
+              <p
+                className="typo-easy__stage-copy"
+                style={{ margin: "0.75rem 0 0" }}
+              >
+                Space between roles (live margins)
               </p>
               <div className="typo-easy__fields-row">
                 <label className="typo-easy__field">
@@ -809,7 +1024,10 @@ export function AmenitiesSequenceTypographyPanel() {
                 />
               </label>
 
-              <p className="typo-easy__stage-copy" style={{ margin: "0.75rem 0 0" }}>
+              <p
+                className="typo-easy__stage-copy"
+                style={{ margin: "0.75rem 0 0" }}
+              >
                 Line height within each role
               </p>
               <div className="typo-easy__fields-row">
@@ -883,11 +1101,15 @@ export function AmenitiesSequenceTypographyPanel() {
                       lineHeight: DEFAULT_AMENITIES_TYPOGRAPHY.body.lineHeight,
                     },
                     spacing: { ...DEFAULT_AMENITIES_SPACING },
+                    layout: {
+                      ...DEFAULT_AMENITIES_LAYOUT,
+                      align: prev.layout.align,
+                    },
                   }))
                 }
               >
-                <RotateCcw className="h-3.5 w-3.5" /> Reset gaps &amp; line
-                heights
+                <RotateCcw className="h-3.5 w-3.5" /> Reset layout, gaps &amp;
+                line heights
               </button>
             </>
           ) : null}
