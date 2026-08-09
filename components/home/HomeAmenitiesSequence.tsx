@@ -108,14 +108,20 @@ export function HomeAmenitiesSequence({
       .split(/\n/)
       .map((line) => line.trim())
       .filter(Boolean);
+    const joined = (lines.length ? lines.join(" ") : title)
+      .replace(/\s+/g, " ")
+      .trim();
+    /* Two lines: “FINE DINING ON” / “DAHABIYA” (override CMS breaks). */
+    if (/^FINE DINING\s+ON\s+DAHABIYA$/i.test(joined)) {
+      return ["FINE DINING ON", "DAHABIYA"];
+    }
     if (lines.length > 1) return lines;
-    const single = (lines[0] || title).replace(/\s+/g, " ").trim();
+    const single = joined;
     const known: Array<[RegExp, string[]]> = [
       [
         /^NOT JUST A CRUISE\s+A WAY OF LIFE$/i,
         ["NOT JUST A CRUISE", "A WAY OF LIFE"],
       ],
-      [/^FINE DINING\s+ON DAHABIYA$/i, ["FINE DINING", "ON DAHABIYA"]],
     ];
     for (const [re, parts] of known) {
       if (re.test(single)) return parts;
@@ -229,7 +235,7 @@ export function HomeAmenitiesSequence({
   const natureImage = images[11];
   const natureStory = stories[2] ?? stories[1];
   const natureTitleLines = storyTitleLines(
-    natureStory?.title?.trim() || "FINE DINING\nON DAHABIYA",
+    natureStory?.title?.trim() || "FINE DINING ON\nDAHABIYA",
   );
   /* Small sub under the title — same role as slider indication. */
   const natureIndication = "Gastronomy";
