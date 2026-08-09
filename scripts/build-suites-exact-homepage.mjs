@@ -12,6 +12,10 @@ import {
 } from "./lux-footer-iframe-snippet.mjs";
 
 const root = process.cwd();
+const hathorFontFaces = fs.readFileSync(
+  path.join(root, "app", "hathor-fonts.css"),
+  "utf8",
+);
 /** Canonical cream/ink/gold — same tokens as PublicLayout Footer. */
 const luxFooterCss = getLuxFooterCss();
 const source = path.join(
@@ -367,28 +371,29 @@ html = html
 
 const suitesPalette = `
 <style data-hathor-suites-palette>
+
   /*
-   * CLONE-FAITHFUL THEME LAYER.
-   * Springs owns sticky stages / transforms; type follows Hathor Design DNA
-   * (Gamgote display + Plus Jakarta body, cream-on-media bloom).
-   * Locked palette: Gold #B69F64 · Cream #F5EACF · Beige #CDBFA6
+   * Site-aligned typography (matches Admin defaults + public layout):
+   * Hero display = Gabigaile · Titles = Gamgote · Script = Quiet Luxury ·
+   * Labels = Lavenir · Body = Plus Jakarta Sans
+   * Contrast: ink on cream, gold on media with strong bloom — no cream-on-cream.
    */
-  @font-face {
-    font-family: "Gamgote";
-    src:
-      url("/fonts/Gamgote.otf") format("opentype"),
-      url("/fonts/Gamgote-Regular.otf") format("opentype");
-    font-weight: 400 700;
-    font-style: normal;
-    font-display: swap;
-  }
+${hathorFontFaces}
   :root {
-    --suites-serif: var(--font-hathor-gamgote, "Gamgote"), "Gamgote", Georgia, serif;
+    --suites-hero: "Gabigaile", Georgia, serif;
+    --suites-serif: "Gamgote", Georgia, serif;
+    --suites-script: "Quiet Luxury", cursive;
+    --suites-label: "Lavenir", Georgia, serif;
     --suites-sans: "Plus Jakarta Sans", system-ui, sans-serif;
     --suites-gold: #b69f64;
     --suites-gold-soft: #d4bf86;
-    --suites-ink-soft: rgba(255, 255, 255, 0.72);
-    --suites-title-on-media: #f7f1e6;
+    --suites-ink: #1a1a1a;
+    --suites-body: #3d3a36;
+    --suites-muted: #7a6a58;
+    --suites-on-media: #f5f0e8;
+    --suites-on-media-body: rgba(245, 240, 232, 0.92);
+    --suites-title-on-media: #b69f64;
+    --suites-ink-soft: rgba(245, 240, 232, 0.92);
     --lux-gold: #b69f64;
     --lux-gold-rgb: 182, 159, 100;
     --lux-cream: #f5eacf;
@@ -426,23 +431,19 @@ const suitesPalette = `
   }
   html, body {
     background: #f5eacf;
-    color: var(--suites-gold);
+    color: var(--suites-body);
     font-family: var(--suites-sans);
     font-size: 16px;
     line-height: 1.7;
     font-weight: 400;
   }
-  /*
-   * Hathor Suites type hierarchy (display > section > body).
-   * Hero gallery title is the largest; section .g1 sits below it.
-   */
   .h0,
   .l-gallery__title .h0 {
-    font-family: var(--suites-serif) !important;
-    font-weight: 500 !important;
-    font-size: clamp(3.5rem, 9.5vw, 10.5rem) !important;
-    line-height: 0.9 !important;
-    letter-spacing: -0.02em !important;
+    font-family: var(--suites-hero) !important;
+    font-weight: 400 !important;
+    font-size: clamp(3.25rem, 8.5vw, 7.5rem) !important;
+    line-height: 1.05 !important;
+    letter-spacing: -0.01em !important;
   }
   .g1,
   .g2,
@@ -456,10 +457,10 @@ const suitesPalette = `
   .l-design .g1,
   .l-interiors .g1 {
     font-family: var(--suites-serif) !important;
-    font-weight: 500 !important;
-    font-size: clamp(2.75rem, 5.6vw, 5.75rem) !important;
-    line-height: 0.92 !important;
-    letter-spacing: -0.03em !important;
+    font-weight: 400 !important;
+    font-size: clamp(2.5rem, 5vw, 4.5rem) !important;
+    line-height: 1.12 !important;
+    letter-spacing: -0.02em !important;
   }
   .h1,
   .h2,
@@ -472,12 +473,11 @@ const suitesPalette = `
   [class*="__title"] h1:not(.h0),
   [class*="__title"] h2 {
     font-family: var(--suites-serif) !important;
-    font-weight: 500 !important;
-    font-size: clamp(1.75rem, 3.4vw, 3.25rem) !important;
-    line-height: 1.12 !important;
+    font-weight: 400 !important;
+    font-size: clamp(1.625rem, 3vw, 2.75rem) !important;
+    line-height: 1.2 !important;
     letter-spacing: -0.02em !important;
   }
-  /* Springs parks River Suites bottom-right on desktop */
   .l-gallery__caption .l-gallery__title {
     left: auto !important;
     right: clamp(1.25rem, 4vw, 3.5rem) !important;
@@ -514,61 +514,58 @@ const suitesPalette = `
   [class*="__caption"] p:not(.g1),
   [class*="-caption__text"],
   [class*="-caption__"] p:not(.g1) {
-    font-size: clamp(0.95rem, 1.15vw, 1.125rem) !important;
-    line-height: 1.55 !important;
-    font-weight: 300 !important;
-    letter-spacing: 0.01em;
+    font-size: clamp(1rem, 1.15vw, 1.125rem) !important;
+    line-height: 1.7 !important;
+    font-weight: 400 !important;
+    letter-spacing: 0;
   }
-  /* Dining eyebrows / short labels */
   .text-c1,
   .text-c2,
   [class*="__subtitle"],
   .l-nature-bg-caption__subtitle,
   .l-wellness__caption__subtitle,
   .l-place__caption__subtitle {
-    font-family: var(--suites-sans) !important;
-    font-size: clamp(8px, 0.7vw, 10px) !important;
-    font-weight: 500 !important;
-    letter-spacing: 0.3em !important;
+    font-family: var(--suites-label) !important;
+    font-size: clamp(11px, 0.85vw, 13px) !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.28em !important;
     text-transform: uppercase !important;
-    line-height: 1.4 !important;
+    line-height: 1.35 !important;
   }
   .btn__text,
   .btn {
     font-family: var(--suites-sans) !important;
-    font-size: 9px !important;
+    font-size: 11px !important;
     font-weight: 500 !important;
-    letter-spacing: 0.22em !important;
+    letter-spacing: 0.18em !important;
     text-transform: uppercase !important;
   }
-  /* Theme tokens — Dining on media / cream stages */
   .ui-dark {
-    --t-background: #cdbfa6;
-    --t-background-rgb: 205, 191, 166;
-    --t-text: rgba(255, 255, 255, 0.72);
-    --t-text-rgb: 255, 255, 255;
-    --t-heading: #f7f1e6;
-    --t-heading-rgb: 247, 241, 230;
-    --t-primary: #b69f64;
-    --t-primary-rgb: 182, 159, 100;
-    --t-secondary: #d4bf86;
-    --t-secondary-rgb: 212, 191, 134;
-    --t-line: rgba(255, 255, 255, 0.4);
-  }
-  .ui-light {
-    --t-background: #f5eacf;
-    --t-background-rgb: 245, 234, 207;
-    --t-text: #b69f64;
-    --t-text-rgb: 182, 159, 100;
+    --t-background: #2c2824;
+    --t-background-rgb: 44, 40, 36;
+    --t-text: #f5f0e8;
+    --t-text-rgb: 245, 240, 232;
     --t-heading: #b69f64;
     --t-heading-rgb: 182, 159, 100;
     --t-primary: #b69f64;
     --t-primary-rgb: 182, 159, 100;
-    --t-secondary: #b69f64;
-    --t-secondary-rgb: 182, 159, 100;
+    --t-secondary: #d4bf86;
+    --t-secondary-rgb: 212, 191, 134;
+    --t-line: rgba(245, 240, 232, 0.35);
+  }
+  .ui-light {
+    --t-background: #f5eacf;
+    --t-background-rgb: 245, 234, 207;
+    --t-text: #3d3a36;
+    --t-text-rgb: 61, 58, 54;
+    --t-heading: #1a1a1a;
+    --t-heading-rgb: 26, 26, 26;
+    --t-primary: #b69f64;
+    --t-primary-rgb: 182, 159, 100;
+    --t-secondary: #7a6a58;
+    --t-secondary-rgb: 122, 106, 88;
     --t-line: rgba(182, 159, 100, 0.35);
   }
-  /* Photo / dark stages — Dining: cream titles, soft white body, gold labels */
   .ui-dark .h0,
   .ui-dark .h1,
   .ui-dark .h2,
@@ -579,8 +576,9 @@ const suitesPalette = `
   .ui-dark [class*="__title"],
   .ui-dark [class*="__title"] .h0,
   .ui-dark [class*="__title"] .g1 {
-    color: var(--suites-title-on-media) !important;
-    text-shadow: 0 4px 40px rgba(0, 0, 0, 0.4);
+    color: var(--suites-gold) !important;
+    -webkit-text-fill-color: var(--suites-gold) !important;
+    text-shadow: 0 2px 28px rgba(0, 0, 0, 0.55), 0 1px 2px rgba(0, 0, 0, 0.4) !important;
   }
   .ui-dark p,
   .ui-dark .text-t1,
@@ -591,17 +589,18 @@ const suitesPalette = `
   .ui-dark [class*="__caption"] p,
   .ui-dark [class*="-caption__"] p,
   .ui-dark .btn__text {
-    color: var(--suites-ink-soft) !important;
-    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.45);
+    color: var(--suites-on-media-body) !important;
+    -webkit-text-fill-color: var(--suites-on-media-body) !important;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.5) !important;
   }
   .ui-dark .text-c1,
   .ui-dark .text-c2,
   .ui-dark [class*="__subtitle"],
   .ui-dark .btn {
     color: var(--suites-gold) !important;
-    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
+    -webkit-text-fill-color: var(--suites-gold) !important;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45) !important;
   }
-  /* Cream stages — gold family (palette-safe Dining counterpart) */
   .ui-light .h0,
   .ui-light .h1,
   .ui-light .h2,
@@ -610,23 +609,28 @@ const suitesPalette = `
   .ui-light h1,
   .ui-light h2,
   .ui-light [class*="__title"] {
-    color: var(--suites-gold) !important;
-    text-shadow: 0 1px 1px rgba(245, 234, 207, 0.85);
+    color: var(--suites-ink) !important;
+    -webkit-text-fill-color: var(--suites-ink) !important;
+    text-shadow: none !important;
   }
   .ui-light p,
   .ui-light .text-t1,
   .ui-light .text-t2,
   .ui-light .text-p1,
   .ui-light .text-p2,
+  .ui-light [class*="__text"],
+  .ui-light [class*="__caption"] {
+    color: var(--suites-body) !important;
+    -webkit-text-fill-color: var(--suites-body) !important;
+    text-shadow: none !important;
+  }
   .ui-light .text-c1,
   .ui-light .text-c2,
-  .ui-light [class*="__text"],
-  .ui-light [class*="__subtitle"],
-  .ui-light [class*="__caption"] {
-    color: var(--suites-gold) !important;
-    text-shadow: 0 1px 1px rgba(245, 234, 207, 0.85);
+  .ui-light [class*="__subtitle"] {
+    color: var(--suites-muted) !important;
+    -webkit-text-fill-color: var(--suites-muted) !important;
+    text-shadow: none !important;
   }
-  /* Media sticky captions (nature / wellness / place / preloader) */
   .l-nature-bg-caption .g1,
   .l-nature__caption .g1,
   .l-nature__slider-caption .g1,
@@ -635,8 +639,9 @@ const suitesPalette = `
   .preloader__content .g1,
   .preloader__content .h1,
   .l-gallery__title .h0 {
-    color: var(--suites-title-on-media) !important;
-    text-shadow: 0 4px 40px rgba(0, 0, 0, 0.4);
+    color: var(--suites-gold) !important;
+    -webkit-text-fill-color: var(--suites-gold) !important;
+    text-shadow: 0 2px 28px rgba(0, 0, 0, 0.55), 0 1px 2px rgba(0, 0, 0, 0.4) !important;
   }
   .l-nature-bg-caption p,
   .l-nature-bg-caption__text,
@@ -646,24 +651,26 @@ const suitesPalette = `
   .l-wellness__caption p,
   .l-place__caption p,
   .preloader__content p:not(.g1) {
-    color: var(--suites-ink-soft) !important;
-    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.45);
+    color: var(--suites-on-media-body) !important;
+    -webkit-text-fill-color: var(--suites-on-media-body) !important;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.5) !important;
   }
   .l-nature-bg-caption [class*="__subtitle"],
   .l-nature-bg-caption__subtitle,
   .l-wellness__caption__subtitle,
   .l-place__caption__subtitle {
     color: var(--suites-gold) !important;
-    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
+    -webkit-text-fill-color: var(--suites-gold) !important;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45) !important;
   }
   @media (max-width: 1024px) and (min-width: 481px) {
     .h0,
     .l-gallery__title .h0 {
-      font-size: clamp(3rem, 8.5vw, 7rem) !important;
+      font-size: clamp(2.75rem, 7.5vw, 5.5rem) !important;
     }
     .g1,
     .g2 {
-      font-size: clamp(2.25rem, 5.5vw, 4.25rem) !important;
+      font-size: clamp(2rem, 4.8vw, 3.5rem) !important;
     }
     .l-gallery__caption .l-gallery__title {
       right: clamp(1rem, 3.5vw, 2.5rem) !important;
@@ -674,18 +681,17 @@ const suitesPalette = `
   @media (max-width: 480px) {
     .h0,
     .l-gallery__title .h0 {
-      font-size: clamp(2.75rem, 14vw, 4.5rem) !important;
+      font-size: clamp(2.5rem, 12vw, 3.75rem) !important;
     }
     .g1,
     .g2 {
-      font-size: clamp(2.125rem, 9vw, 3.25rem) !important;
+      font-size: clamp(1.875rem, 8vw, 2.75rem) !important;
     }
     .h1,
     .h2,
     h2 {
-      font-size: clamp(1.5rem, 7vw, 2.5rem) !important;
+      font-size: clamp(1.375rem, 6.5vw, 2rem) !important;
     }
-    /* Springs phone: title sits in the left editorial stack */
     .l-gallery__caption .l-gallery__title {
       position: relative !important;
       right: auto !important;
@@ -699,7 +705,7 @@ const suitesPalette = `
       text-align: left !important;
     }
   }
-  /*
+/*
    * The shared Hathor navbar replaces Springs navigation. No other Springs
    * element is hidden or geometrically overridden.
    */
