@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Trusted travel and hospitality partners who sail with Hathor Dahabiya on the Nile.",
   openGraph: {
     title: "Our Partners | Hathor Dahabiya",
-    description: "Trusted worldwide — partners who share our care for the Nile.",
+    description: "Trusted worldwide. Partners who share our care for the Nile.",
   },
 };
 

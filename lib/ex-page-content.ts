@@ -56,7 +56,7 @@ function buildCarouselSlides(): ExCarouselSlide[] {
       key: `${cruise.slug}-${room.roomNumber}`,
       title: `${ports} · ${roomTitleSuffix(room.roomType)}`,
       imageName: roomImageName(room.roomType),
-      alt: `${room.name} — ${cruise.name}`,
+      alt: `${room.name}, ${cruise.name}`,
       duration,
       roomType: roomSearchType(room.roomType),
     }));
@@ -97,28 +97,28 @@ export const EX_PINNED = {
       alt: "Hathor Dahabiya sailing on the Nile",
       title: "EVERY LANDMARK,\nA PLEASURE.",
       indication: "Sail The Nile On Hathor",
-      body: "A five-star dahabiya on the ancient Nile — history, comfort, and style in one intimate voyage.",
+      body: "A five-star dahabiya on the ancient Nile: history, comfort, and style in one intimate voyage.",
     },
     {
       imageName: "home-amenities-2" as SiteImageName,
       alt: "Hathor Dahabiya on the Nile",
       title: "WHERE TIME\nMOVES GENTLY.",
       indication: "Private Nile Sailing",
-      body: "Glide between Luxor and Aswan — soft light on the water, Egypt unfolding at a gracious pace.",
+      body: "Glide between Luxor and Aswan, soft light on the water, Egypt unfolding at a gracious pace.",
     },
     {
       imageName: "home-amenities-3" as SiteImageName,
       alt: "Luxury Dahabiya Nile cruise",
       title: "WELCOME ABOARD\nHATHOR.",
       indication: "Five-Star Small Boat",
-      body: "Refined cabins, attentive hospitality, and Egyptian charm — an exclusive voyage on the Nile.",
+      body: "Refined cabins, attentive hospitality, and Egyptian charm: an exclusive voyage on the Nile.",
     },
     {
       imageName: "home-amenities-4" as SiteImageName,
       alt: "Hathor Dahabiya ship on the Nile at golden hour",
       title: "GOLDEN HOUR\nON THE NILE.",
       indication: "History · Comfort · Style",
-      body: "From ancient shores to quiet decks at dusk — every moment aboard Hathor is composed for wonder.",
+      body: "From ancient shores to quiet decks at dusk. Every moment aboard Hathor is composed for wonder.",
     },
   ],
 } as const;
@@ -181,19 +181,19 @@ export const EX_GALLERY = {
   followPreviews: [
     {
       imageName: "floating-ig-1" as SiteImageName,
-      alt: "Hathor Instagram — lounge",
+      alt: "Hathor Instagram lounge",
     },
     {
       imageName: "floating-ig-2" as SiteImageName,
-      alt: "Hathor Instagram — Nile highlights",
+      alt: "Hathor Instagram Nile highlights",
     },
     {
       imageName: "floating-ig-3" as SiteImageName,
-      alt: "Hathor Instagram — dining",
+      alt: "Hathor Instagram dining",
     },
     {
       imageName: "floating-ig-4" as SiteImageName,
-      alt: "Hathor Instagram — suite",
+      alt: "Hathor Instagram suite",
     },
   ],
 } as const;
@@ -204,7 +204,7 @@ export const EX_TESTIMONIALS = {
     {
       name: "Sarah Mitchell",
       quote:
-        "An absolutely magical journey. The Hathor Dahabiya exceeded every expectation — impeccable service, breathtaking views, and true luxury on the Nile.",
+        "An absolutely magical journey. The Hathor Dahabiya exceeded every expectation: impeccable service, breathtaking views, and true luxury on the Nile.",
     },
     {
       name: "James & Elena Torres",
@@ -227,7 +227,7 @@ export const EX_TESTIMONIALS = {
 export const EX_CAMPAIGN = {
   title: "Sail Beyond the Ordinary",
   imageName: "home-call-to-action",
-  imageAlt: "Call to action — Hathor Dahabiya on the Nile at golden hour",
+  imageAlt: "Call to action: Hathor Dahabiya on the Nile at golden hour",
 } as const;
 
 export const EX_CTA = {

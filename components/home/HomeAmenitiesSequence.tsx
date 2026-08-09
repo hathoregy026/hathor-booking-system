@@ -234,7 +234,7 @@ export function HomeAmenitiesSequence({
   const openingFixedTitleLines = ["SOUL OF", "THE NILE"];
   const openingFixedIndication = "Private Nile Sailing";
   const openingFixedBody =
-    "Aboard a quiet dahabiya, Egypt arrives without hurry — warm company, elegant cabins, and the river unfolding one measured bend at a time.";
+    "Aboard a quiet dahabiya, Egypt arrives without hurry: warm company, elegant cabins, and the river unfolding one measured bend at a time.";
 
   useHomeAmenitiesSequence(rootRef, sliderSlides.length);
 
@@ -262,7 +262,7 @@ export function HomeAmenitiesSequence({
   const natureIndication = "Gastronomy";
   const natureCaption =
     natureStory?.body?.trim() ||
-    "Restaurant craft meets warm hospitality — fresh local ingredients, Egyptian and international flavours, each meal a quiet celebration on the Nile.";
+    "Restaurant craft meets warm hospitality: fresh local ingredients, Egyptian and international flavours, each meal a quiet celebration on the Nile.";
   const natureCtaHref = natureStory?.href?.trim() || "/gastronomy";
 
   return (

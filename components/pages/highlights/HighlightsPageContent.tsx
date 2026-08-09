@@ -20,17 +20,17 @@ import { HIGHLIGHTS_PAGE } from "@/lib/page-content";
 const LIFE_ABOARD = [
   {
     title: "Dining",
-    body: "Egyptian flavours and international craft — breakfast light, lunches that linger, candlelit dinners under the stars.",
+    body: "Egyptian flavours and international craft: breakfast light, lunches that linger, candlelit dinners under the stars.",
     slot: "gastronomy-restaurant" as const,
   },
   {
     title: "Suite",
-    body: "Cabins and royal suites composed for Nile light — private quarters after every day of discovery.",
+    body: "Cabins and royal suites composed for Nile light: private quarters after every day of discovery.",
     slot: "room-royal" as const,
   },
   {
     title: "Deck",
-    body: "Sun, soft current, and the quiet theatre of the river — a sanctuary waiting after every shore.",
+    body: "Sun, soft current, and the quiet theatre of the river: a sanctuary waiting after every shore.",
     slot: "highlights-lifestyle" as const,
   },
 ] as const;
@@ -491,7 +491,7 @@ export function HighlightsPageContent() {
               Sail with Hathor
             </h2>
             <p className="iv-lead" data-lux-reveal>
-              Reserve a scheduled sailing — or charter the entire Dahabiya for your party alone.
+              Reserve a scheduled sailing, or charter the entire Dahabiya for your party alone.
             </p>
             <div className="iv-close__actions" data-lux-reveal>
               <BookNowTrigger className="btn btn-secondary">Book Now</BookNowTrigger>

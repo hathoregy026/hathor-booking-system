@@ -39,7 +39,7 @@ const ROLES: Array<{
     label: "Body text",
     description: "Supporting paragraphs and quiet descriptive copy.",
     sample:
-      "Not a restaurant. A residence of taste—composed course by course for the only guests aboard.",
+      "Not a restaurant. A residence of taste, composed course by course for the only guests aboard.",
   },
 ];
 

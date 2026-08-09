@@ -69,7 +69,7 @@ export function WellnessPageContent() {
               Wellness aboard Hathor
             </p>
             <p className="lux-lead" data-lux-reveal>
-              Health and well-being — Seneb — shaped by timeless Egyptian wisdom.
+              Health and well-being. Seneb, shaped by timeless Egyptian wisdom.
             </p>
             <div className="lux-copy" data-lux-reveal>
               <p>{wellness.spaParagraphs[3]}</p>

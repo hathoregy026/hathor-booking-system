@@ -43,7 +43,7 @@ const diningCopy = [
   ],
   [
     "Springs resembles streams of&nbsp;transparent air and clear water sculpted into&nbsp;an&nbsp;asymmetrical glass tower that soars towards&nbsp;the&nbsp;sky. Wave-like&nbsp;longlines wrap around&nbsp;the&nbsp;facade and reveal verdant terraces that offer a&nbsp;vantage point for&nbsp;observation and introspection.",
-    "Not a restaurant. A residence of taste&mdash;composed course by course for the only guests aboard.",
+    "Not a restaurant. A residence of taste, composed course by course for the only guests aboard.",
   ],
   ["Crystal-Clear Vision", "Silence · Silver · Riverlight"],
   [
@@ -56,30 +56,30 @@ const diningCopy = [
   ],
   [
     "Ultra-transparent panoramic windows, aluminum panels with&nbsp;restrained luster, natural oak-framed loggias, marble flooring",
-    "Cut from the dark like jewels&mdash;each dish arrives as its own world, then yields to the next.",
+    "Cut from the dark like jewels. Each dish arrives as its own world, then yields to the next.",
   ],
   ["Frozen Music", "First Light on Porcelain"],
   [
     "Springs resembles a&nbsp;waterfall that ceased flowing, as&nbsp;if you could hear roaring cascades and the&nbsp;delicate chiming of&nbsp;scattered drops in&nbsp;a&nbsp;matter of&nbsp;seconds. How did we create this effect?",
-    "A single bite to wake the palate&mdash;then the river, and the night, do the rest.",
+    "A single bite to wake the palate, then the river, and the night, do the rest.",
   ],
   ["Aristocratic Quartet", "The Passage of Courses"],
   [
-    "Glass, metal, stone, and wood&nbsp;&mdash; the&nbsp;four elements that define the&nbsp;essence of&nbsp;Springs, an&nbsp;airy yet durable structure.",
+    "Glass, metal, stone, and wood: the&nbsp;four elements that define the&nbsp;essence of&nbsp;Springs, an&nbsp;airy yet durable structure.",
     "Layer after<br>luminous layer.",
   ],
   [
-    "High-clarity glass makes our building appear levitating, while stone and wood allow you to&nbsp;feel the&nbsp;essence of&nbsp;time&nbsp;&mdash; time that you'll wish to&nbsp;halt again and again to&nbsp;admire the&nbsp;elegance that adorns your life.",
+    "High-clarity glass makes our building appear levitating, while stone and wood allow you to&nbsp;feel the&nbsp;essence of&nbsp;time, time that you'll wish to&nbsp;halt again and again to&nbsp;admire the&nbsp;elegance that adorns your life.",
     "Everything appears. Nothing interrupts. Preferences known once; timing written around conversation.",
   ],
   ["Rich<br>\nInterior<br>\nLife", "Cellar<br>Pairing<br>Discretion"],
   [
     "Imagine bathing in&nbsp;the&nbsp;crystal-clear pool, your whole body feeling light and energized. The&nbsp;splashing water carrying all superficial thoughts away. You emerge, feeling pleasant coolness on&nbsp;your skin.",
-    "The pour is part of the plot. Old world, new world, or something held only for you&mdash;announced quietly, never performed.",
+    "The pour is part of the plot. Old world, new world, or something held only for you, announced quietly, never performed.",
   ],
   [
     "Our fitness center, offering state-of-the-art equipment, supports your health and well-being. Panoramic windows and comfortable environment guarantee your full satisfaction.",
-    "Sweetness that does not hurry. Dessert is not an ending&mdash;it is the hour the river keeps for itself.",
+    "Sweetness that does not hurry. Dessert is not an ending. It is the hour the river keeps for itself.",
   ],
   ["Art Gallery<br>\nof&nbsp;Your Life", "Every Plate a<br>Private Horizon"],
   [
@@ -96,7 +96,7 @@ const diningCopy = [
   ["Penthouses", "Private Dining"],
   ["Amenities", "Experiences"],
   [
-    "At&nbsp;Springs, you can dream, plan boldly, and enjoy life&nbsp;&mdash; here and now.",
+    "At&nbsp;Springs, you can dream, plan boldly, and enjoy life, here and now.",
     "A private table, a quiet river, and time entirely your own.",
   ],
 ];
@@ -173,7 +173,7 @@ for (const [filename, url] of Object.entries(initialDiningMediaUrls)) {
 html = html
   .replace(
     /The&nbsp;architects of&nbsp;the&nbsp;acclaimed Istanbul-based bureau Tabanlioglu masterfully frame the&nbsp;world’s leading megapolises with&nbsp;the&nbsp;silhouettes of&nbsp;their glistening buildings\./g,
-    "The table is composed around your party&mdash;from the first pour to the last quiet course on the Nile.",
+    "The table is composed around your party, from the first pour to the last quiet course on the Nile.",
   )
   .replaceAll("Bureau’s signature projects:", "Tonight’s private courses:")
   .replaceAll("Dakar<br>International Conference Centre, Senegal", "Welcome<br>First course")
@@ -188,21 +188,21 @@ html = html
 html = html
   .replace(
     /Our view flats transform[\s\S]*?the&nbsp;megapolises\./g,
-    "Egyptian roots, global reach: Nile fish, Cairo spice markets, and Mediterranean technique become one private progression&mdash;served only to your party and paced to the river outside.",
+    "Egyptian roots, global reach: Nile fish, Cairo spice markets, and Mediterranean technique become one private progression, served only to your party and paced to the river outside.",
   )
   .replace(
     /Our boutique townhouses embody[\s\S]*?your face\./g,
-    "Global kitchens, intimate scale: mezze, grills, and late-night lounge plates move between Egyptian classics and Levantine, North African, and European accents&mdash;always at your table, never in a crowd.",
+    "Global kitchens, intimate scale: mezze, grills, and late-night lounge plates move between Egyptian classics and Levantine, North African, and European accents, always at your table, never in a crowd.",
   )
   .replace(
     /When you live in this penthouse,[\s\S]*?with ease\./g,
-    "Private dining as ceremony: a dedicated chef, sommelier, and service team compose an Egyptian-led tasting with global accents&mdash;for milestones, celebrations, or simply an evening the Nile will remember.",
+    "Private dining as ceremony: a dedicated chef, sommelier, and service team compose an Egyptian-led tasting with global accents, for milestones, celebrations, or simply an evening the Nile will remember.",
   )
   .replaceAll("Garden of Fulfilled Expectations", "Garden of the Nile Evening")
   .replaceAll("Glowing Perspectives", "Candlelight on the Water")
   .replaceAll("Beauty at Your Fingertips", "Every detail, quietly handled")
   .replaceAll("138 view flats", "12 tasting formats")
-  .replaceAll("62-347 m<sup>2</sup> area", "2&ndash;14 guests &middot; one table")
+  .replaceAll("62-347 m<sup>2</sup> area", "2 to 14 guests &middot; one table")
   .replaceAll("Unique transformable glazing", "Chef&rsquo;s table or salon service")
   .replaceAll("5 townhouses", "5 lounge stations")
   .replaceAll("174-378 m<sup>2</sup> area", "Sunset aperitif &rarr; midnight digestif")
@@ -217,20 +217,20 @@ html = html
   )
   .replaceAll(
     "The architects divided the uniform transparent facade into three vertical sections, with the terraces situated in the recesses. This is how we graft rhythmic beauty with functional elegance.",
-    "Three movements&mdash;Egypt, Mediterranean, world: each course arrives in its own rhythm while the kitchen reads the room and the river light.",
+    "Three movements: Egypt, Mediterranean, world: each course arrives in its own rhythm while the kitchen reads the room and the river light.",
   )
-  .replaceAll("At&nbsp;Springs, you can dream, plan boldly, and enjoy life&nbsp;&mdash; here and now.", "A private table, a quiet river, and time entirely your own.")
+  .replaceAll("At&nbsp;Springs, you can dream, plan boldly, and enjoy life, here and now.", "A private table, a quiet river, and time entirely your own.")
   .replaceAll(
     "Our view flats transform the&nbsp;city into&nbsp;an&nbsp;element of&nbsp;your interior design; not a&nbsp;mere landscape but a&nbsp;panorama of&nbsp;seven historical parks, a&nbsp;river shifting shades, and the&nbsp;capital's iconic landmarks in&nbsp;full view. It’s the&nbsp;coziness of&nbsp;a&nbsp;country house with&nbsp;the&nbsp;expanse of&nbsp;the&nbsp;megapolises.",
-    "Egyptian roots, global reach: Nile fish, Cairo spice markets, and Mediterranean technique become one private progression&mdash;served only to your party and paced to the river outside.",
+    "Egyptian roots, global reach: Nile fish, Cairo spice markets, and Mediterranean technique become one private progression, served only to your party and paced to the river outside.",
   )
   .replaceAll(
     "Our boutique townhouses embody intimate coziness. The&nbsp;day’s worries fade away like&nbsp;shadows of&nbsp;butterfly wings, when you step onto&nbsp;the&nbsp;sunlit ground-floor patio. Here, you can stroll in&nbsp;light shoes, feel the&nbsp;gentle breeze, and close your eyes as&nbsp;the&nbsp;sun warmly kisses your face.",
-    "Global kitchens, intimate scale: mezze, grills, and late-night lounge plates move between Egyptian classics and Levantine, North African, and European accents&mdash;always at your table, never in a crowd.",
+    "Global kitchens, intimate scale: mezze, grills, and late-night lounge plates move between Egyptian classics and Levantine, North African, and European accents, always at your table, never in a crowd.",
   )
   .replaceAll(
     "When you live in&nbsp;this penthouse, you feel like&nbsp;you own a&nbsp;piece of&nbsp;the&nbsp;sky. Here, sublime feelings transform into&nbsp;higher possibilities. Declare love, dare to&nbsp;skyrocket your career, or devise a&nbsp;million-dollar idea. Here, you can do it with&nbsp;ease.",
-    "Private dining as ceremony: a dedicated chef, sommelier, and service team compose an Egyptian-led tasting with global accents&mdash;for milestones, celebrations, or simply an evening the Nile will remember.",
+    "Private dining as ceremony: a dedicated chef, sommelier, and service team compose an Egyptian-led tasting with global accents, for milestones, celebrations, or simply an evening the Nile will remember.",
   )
   .replaceAll("Garden of Fulfilled Expectations", "Garden of the Nile Evening")
   .replaceAll("Glowing Perspectives", "Candlelight on the Water")
@@ -260,7 +260,7 @@ html = html
   )
   .replaceAll(
     "Apartments in&amp;nbsp;a&amp;nbsp;premium-class residential complex",
-    "A private table on the Nile&mdash;courses, wine and silence composed entirely around your party.",
+    "A private table on the Nile: courses, wine and silence composed entirely around your party.",
   )
   .replaceAll(
     "Springs | Design and architecture of&amp;nbsp;Springs residential complex",
@@ -750,15 +750,15 @@ html = html.replace(
 html = html
   .replace(
     /Our view flats[\s\S]*?megapolises\./g,
-    "Egyptian roots, global reach: Nile fish, Cairo spice markets, and Mediterranean technique become one private progression&mdash;served only to your party and paced to the river outside.",
+    "Egyptian roots, global reach: Nile fish, Cairo spice markets, and Mediterranean technique become one private progression, served only to your party and paced to the river outside.",
   )
   .replace(
     /Our boutique townhouses[\s\S]*?your face\./g,
-    "Global kitchens, intimate scale: mezze, grills, and late-night lounge plates move between Egyptian classics and Levantine, North African, and European accents&mdash;always at your table, never in a crowd.",
+    "Global kitchens, intimate scale: mezze, grills, and late-night lounge plates move between Egyptian classics and Levantine, North African, and European accents, always at your table, never in a crowd.",
   )
   .replace(
     /When you live in&nbsp;this penthouse,[\s\S]*?ease\./g,
-    "Private dining as ceremony: a dedicated chef, sommelier, and service team compose an Egyptian-led tasting with global accents&mdash;for milestones, celebrations, or simply an evening the Nile will remember.",
+    "Private dining as ceremony: a dedicated chef, sommelier, and service team compose an Egyptian-led tasting with global accents, for milestones, celebrations, or simply an evening the Nile will remember.",
   )
   .replace(
     /Visual representations of&nbsp;the&nbsp;property,[\s\S]*?rights holder\./g,

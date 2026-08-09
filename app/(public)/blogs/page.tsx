@@ -6,7 +6,7 @@ import { getPublishedBlogPosts } from "@/lib/blog-posts";
 export const metadata: Metadata = {
   title: "Luxury Nile Cruise Egypt | Travel Tips & Stories Blog",
   description:
-    "Stories from the Nile — travel tips, ancient wonders, and inspiration for your Hathor Dahabiya luxury cruise in Egypt.",
+    "Stories from the Nile: travel tips, ancient wonders, and inspiration for your Hathor Dahabiya luxury cruise in Egypt.",
   openGraph: {
     title: "Hathor Dahabiya Blog",
     description:

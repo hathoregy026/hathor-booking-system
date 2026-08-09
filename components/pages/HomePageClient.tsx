@@ -489,7 +489,7 @@ export function HomePageClient({
             <div className="home-helm-portal__media" data-home-helm-media>
               <ManagedImage
                 name="home-wheel-image"
-                alt="Wheel portal — Hathor Dahabiya on the Nile"
+                alt="Wheel portal, Hathor Dahabiya on the Nile"
                 fill
                 sizes="100vw"
                 className="home-helm-portal__media-image object-cover"
@@ -524,7 +524,7 @@ export function HomePageClient({
 
           <div
             className="gallery-marquee"
-            aria-label="Hathor gallery — scrolling images"
+            aria-label="Hathor gallery, scrolling images"
           >
             <div className="gallery-marquee__stage">
               <div className="gallery-marquee__band">

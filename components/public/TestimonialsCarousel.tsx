@@ -9,7 +9,7 @@ import { siteImageAnchorId } from "@/lib/site-image-preview";
 const TESTIMONIALS = [
   {
     quote:
-      "An absolutely magical journey. The Hathor Dahabiya exceeded every expectation — impeccable service, breathtaking views, and true luxury on the Nile.",
+      "An absolutely magical journey. The Hathor Dahabiya exceeded every expectation: impeccable service, breathtaking views, and true luxury on the Nile.",
     name: "Sarah Mitchell",
     location: "London, UK",
   },

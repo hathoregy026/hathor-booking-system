@@ -95,7 +95,7 @@ const suitesCopy = [
   ["Wellness-residences", "Luxury suites on a private Dahabiya Nile cruise"],
   [
     "Exclusive residence with&nbsp;a&nbsp;rich wellness infrastructure next to&nbsp;Nature Park",
-    "Luxury suites aboard Hathor Dahabiya&nbsp;&mdash; private Nile journeys shaped for stillness, craft, and panoramic river light",
+    "Luxury suites aboard Hathor Dahabiya: private Nile journeys shaped for stillness, craft, and panoramic river light",
   ],
   ["Splendor <br>\nof&nbsp;Renewal", "River <br>\nSuites"],
   ["Splendor <br>of&nbsp;Renewal", "River <br>Suites"],
@@ -115,23 +115,23 @@ const suitesCopy = [
   ],
   [
     "Springs brings wellness right into&nbsp;your home. With&nbsp;a&nbsp;thoughtfully designed infrastructure for&nbsp;relaxation, it&nbsp;rejuvenates your body and mind, leaving you refreshed and perfectly balanced.",
-    "Every Hathor suite is crafted for comfort and ease&nbsp;&mdash; LED screens, walk-in showers or bathtubs, safe boxes, and quiet privacy as the Nile drifts past your windows.",
+    "Every Hathor suite is crafted for comfort and ease: LED screens, walk-in showers or bathtubs, safe boxes, and quiet privacy as the Nile drifts past your windows.",
   ],
   [
-    "Let your thoughts flow freely as&nbsp;you immerse yourself in&nbsp;our crystal-clear spa pool that offers a&nbsp;view of&nbsp;the&nbsp;garden. Soft glare on&nbsp;the&nbsp;water, a&nbsp;cup of&nbsp;herbal tea in&nbsp;the&nbsp;fragrant warmth of&nbsp;the&nbsp;hammam&nbsp;&mdash; and just like&nbsp;that, you leave the&nbsp;day’s worries behind.",
-    "Return from temple shores to a suite shower and soft river light. Bathtub or walk-in shower, quiet air, and the Nile beyond the glass&nbsp;&mdash; worries of the day dissolve into water and gold dusk.",
+    "Let your thoughts flow freely as&nbsp;you immerse yourself in&nbsp;our crystal-clear spa pool that offers a&nbsp;view of&nbsp;the&nbsp;garden. Soft glare on&nbsp;the&nbsp;water, a&nbsp;cup of&nbsp;herbal tea in&nbsp;the&nbsp;fragrant warmth of&nbsp;the&nbsp;hammam, and just like&nbsp;that, you leave the&nbsp;day’s worries behind.",
+    "Return from temple shores to a suite shower and soft river light. Bathtub or walk-in shower, quiet air, and the Nile beyond the glass. Worries of the day dissolve into water and gold dusk.",
   ],
   [
     "Relaxing yoga session mellows the&nbsp;mind and makes your body feel light and responsive. Finding balance is&nbsp;easy.",
     "Private balcony stillness mellows the mind. Finding balance is easy when the river itself sets the tempo of your voyage.",
   ],
   [
-    "Get ready to&nbsp;face the&nbsp;day guided by&nbsp;your personal trainer in&nbsp;our modern fitness center. Exercise at&nbsp;your convenience, because the&nbsp;gym is&nbsp;just a&nbsp;few steps away&nbsp;&mdash; right up&nbsp;the&nbsp;stairs",
-    "Smart entertainment and suite systems wait a few steps from your bed&nbsp;&mdash; LED screens, climate, and quiet modern comfort shaped for Nile nights.",
+    "Get ready to&nbsp;face the&nbsp;day guided by&nbsp;your personal trainer in&nbsp;our modern fitness center. Exercise at&nbsp;your convenience, because the&nbsp;gym is&nbsp;just a&nbsp;few steps away, right up&nbsp;the&nbsp;stairs",
+    "Smart entertainment and suite systems wait a few steps from your bed: LED screens, climate, and quiet modern comfort shaped for Nile nights.",
   ],
   [
     "Do&nbsp;you sense the&nbsp;aroma of&nbsp;espresso adorned with&nbsp;creamy milk foam? Now you can experience your favorite flavors without&nbsp;leaving the&nbsp;house. Cozy up&nbsp;on&nbsp;the&nbsp;terrace of&nbsp;our wellness-caf&eacute; and relax to&nbsp;the&nbsp;sounds of&nbsp;ambient music.",
-    "Tea and coffee facilities wait in your suite. Cozy up with a quiet pour as ambient river sounds replace the city&nbsp;&mdash; a private café of one aboard Hathor.",
+    "Tea and coffee facilities wait in your suite. Cozy up with a quiet pour as ambient river sounds replace the city: a private café of one aboard Hathor.",
   ],
   ["Essence of&nbsp;Self-Care", "Essence of&nbsp;Suite Comfort"],
   [
@@ -225,11 +225,11 @@ const moreCopy = [
   ],
   [
     "Springs is&nbsp;situated in&nbsp;the&nbsp;prestigious Western District of&nbsp;the&nbsp;capital, surrounded by&nbsp;parks and close to&nbsp;the&nbsp;embankment. It&nbsp;is&nbsp;adjacent to&nbsp;the&nbsp;highway, one of&nbsp;the&nbsp;most ecological areas of&nbsp;the&nbsp;City.",
-    "Hathor sails the classic Luxor&ndash;Aswan corridor of the Nile, surrounded by temples and close to the riverbanks that shaped ancient Egypt&nbsp;&mdash; a private Dahabiya route of rare stillness.",
+    "Hathor sails the classic Luxor to Aswan corridor of the Nile, surrounded by temples and close to the riverbanks that shaped ancient Egypt: a private Dahabiya route of rare stillness.",
   ],
   [
     "Breathe in&nbsp;the&nbsp;air and open space. Do&nbsp;you feel like&nbsp;running? Don&rsquo;t hold back. As&nbsp;you are running along&nbsp;the&nbsp;embankment, delight in&nbsp;the&nbsp;kaleidoscope of&nbsp;shifting panoramas that will leave you impressed. Set your pace and change it&nbsp;at&nbsp;your desire.",
-    "Breathe in&nbsp;the&nbsp;river air and open space. As Hathor glides, delight in&nbsp;the&nbsp;kaleidoscope of&nbsp;shifting panoramas from Luxor to Aswan. Set your pace&nbsp;&mdash; three, four, or seven nights&nbsp;&mdash; and change it&nbsp;at&nbsp;your desire.",
+    "Breathe in&nbsp;the&nbsp;river air and open space. As Hathor glides, delight in&nbsp;the&nbsp;kaleidoscope of&nbsp;shifting panoramas from Luxor to Aswan. Set your pace to three, four, or seven nights, and change it&nbsp;at&nbsp;your desire.",
   ],
   [
     "Each floor reflects boundless perspectives in&nbsp;its glistening waves, inviting you to&nbsp;look farther with&nbsp;a&nbsp;fuller palette of&nbsp;possibilities.",
@@ -237,7 +237,7 @@ const moreCopy = [
   ],
   [
     "Tabanlioglu, the&nbsp;renowned architectural bureau, emphasizes the&nbsp;bold asymmetry of&nbsp;balconies in&nbsp;a&nbsp;chessboard pattern. Three vertical partitions divide the&nbsp;translucent façade, creating the&nbsp;effect of&nbsp;weightless volume. Freedom of&nbsp;expression, elegance of&nbsp;intelligence, and visual lightness.",
-    "Hathor&rsquo;s suite craft emphasizes panoramic glass, private balconies, and calm volume. Timeless Egyptian charm meets modern comfort&nbsp;&mdash; freedom of rest, elegance of detail, and visual lightness on the water.",
+    "Hathor&rsquo;s suite craft emphasizes panoramic glass, private balconies, and calm volume. Timeless Egyptian charm meets modern comfort: freedom of rest, elegance of detail, and visual lightness on the water.",
   ],
   [
     "Our designs are chosen with&nbsp;a&nbsp;delicate treatment of&nbsp;materials and time; time that will soon become history, a&nbsp;story of&nbsp;family generations. Natural stone, warm wood, aged metal, and textured textiles. This is how we create a&nbsp;visual and tactile space for&nbsp;authentically high-class comfort.",
@@ -254,7 +254,7 @@ const moreCopy = [
   ["138 view flats", "12 Luxury Cabins &amp; Suites"],
   ["138 view Flats", "12 Luxury Cabins &amp; Suites"],
   ["up to 3.1 m", "up to 56 m²"],
-  ["62-347 m<sup>2</sup> area", "22&ndash;56 m<sup>2</sup> suites"],
+  ["62-347 m<sup>2</sup> area", "22 to 56 m<sup>2</sup> suites"],
   ["5 townhouses", "2 Elegant Suites"],
   ["7 penthouses", "2 Royal Suites"],
 ];

@@ -4,7 +4,7 @@ import { AboutPageContent } from "@/components/pages/AboutPageContent";
 export const metadata: Metadata = {
   title: "Dahabiya Nile Cruise Egypt | Luxury Sailing on the Nile",
   description:
-    "Welcome aboard Hathor Dahabiya — experience Egypt where timeless tradition meets modern luxury on an ultra-private Nile cruise.",
+    "Welcome aboard Hathor Dahabiya. Experience Egypt where timeless tradition meets modern luxury on an ultra-private Nile cruise.",
   openGraph: {
     title: "About Hathor Dahabiya | Luxury Nile Cruise",
     description:

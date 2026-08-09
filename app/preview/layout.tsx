@@ -27,7 +27,7 @@ const plusJakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "Design Preview | Hathor Dahabiya",
   description:
-    "Preview of the Hathor Dahabiya luxury homepage — header and hero section.",
+    "Preview of the Hathor Dahabiya luxury homepage: header and hero section.",
   robots: {
     index: false,
     follow: false,

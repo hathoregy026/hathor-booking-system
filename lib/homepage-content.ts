@@ -26,19 +26,19 @@ export const HOMEPAGE_ITINERARIES = {
   cards: [
     {
       title: "Aswan / Luxor",
-      duration: "3 Nights — 4 Days",
+      duration: "3 Nights / 4 Days",
       schedule: "Every Wednesday",
       href: "/cruises",
     },
     {
       title: "Luxor / Aswan",
-      duration: "4 Nights — 5 Days",
+      duration: "4 Nights / 5 Days",
       schedule: "Every Saturday",
       href: "/cruises",
     },
     {
       title: "Luxor / Aswan / Luxor",
-      duration: "7 Nights — 8 Days",
+      duration: "7 Nights / 8 Days",
       schedule: "Every Saturday",
       href: "/cruises",
     },
@@ -53,13 +53,13 @@ export const HOMEPAGE_ACCOMMODATIONS = {
     {
       title: "Luxury Rooms",
       description:
-        "Discover Luxury Dahabiya Nile Cruise cabins — the best Dahabiya suitable for a truly elegant Nile cruise. Relish the comfort of refined luxury.",
+        "Discover Luxury Dahabiya Nile Cruise cabins, the best Dahabiya suitable for a truly elegant Nile cruise. Relish the comfort of refined luxury.",
       href: "/luxury-cabins-Nile-Cruise",
     },
     {
       title: "Luxury Suites",
       description:
-        "Experience elegant comfort and thoughtful design in our Accessible Hathor Suite aboard Hathor Dahabiya — luxury privilege on the Nile for an unforgettable Luxury Dahabiya Nile Cruise experience.",
+        "Experience elegant comfort and thoughtful design in our Accessible Hathor Suite aboard Hathor Dahabiya: luxury privilege on the Nile for an unforgettable Luxury Dahabiya Nile Cruise experience.",
       href: "/rooms",
     },
     {
@@ -79,7 +79,7 @@ export const HOMEPAGE_ACCOMMODATIONS = {
 
 export const HOMEPAGE_LIFESTYLE = {
   title: "NOT JUST A CRUISE\nA WAY OF LIFE",
-  body: "Aboard a quiet dahabiya, Egypt arrives without hurry — warm company, elegant cabins, and the river unfolding one measured bend at a time.",
+  body: "Aboard a quiet dahabiya, Egypt arrives without hurry: warm company, elegant cabins, and the river unfolding one measured bend at a time.",
   href: "/about",
 } as const;
 
@@ -91,15 +91,15 @@ export const HOMEPAGE_HIGHLIGHTS = {
   pillars: [
     {
       title: "The Unfinished Obelisk",
-      body: "A remarkable Ancient Egyptian monument in Aswan — a powerful reminder of Egypt's engineering brilliance, over 3,500 years old.",
+      body: "A remarkable Ancient Egyptian monument in Aswan, a powerful reminder of Egypt's engineering brilliance, over 3,500 years old.",
     },
     {
       title: "Temple of Hatshepsut",
-      body: "Djeser-Djeseru beneath the cliffs at Deir el-Bahari — relief sculptures recounting the divine birth of a first-of-its-kind female pharaoh.",
+      body: "Djeser-Djeseru beneath the cliffs at Deir el-Bahari, relief sculptures recounting the divine birth of a first-of-its-kind female pharaoh.",
     },
     {
       title: "The Valley of the Kings",
-      body: "A magnificent burial ground of pharaohs — Ramses II, Tutankhamen and Seti I — a UNESCO World Heritage Site since 1979.",
+      body: "A magnificent burial ground of pharaohs: Ramses II, Tutankhamen and Seti I, a UNESCO World Heritage Site since 1979.",
     },
   ],
 } as const;
@@ -112,7 +112,7 @@ export const HOMEPAGE_WELCOME = {
 
 export const HOMEPAGE_DINING = {
   title: "FINE DINING\nON DAHABIYA",
-  body: "Restaurant craft meets warm hospitality — fresh local ingredients, Egyptian and international flavours, each meal a quiet celebration on the Nile.",
+  body: "Restaurant craft meets warm hospitality: fresh local ingredients, Egyptian and international flavours, each meal a quiet celebration on the Nile.",
   tag: "Gastronomy",
   href: "/gastronomy",
 } as const;

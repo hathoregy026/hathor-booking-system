@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Homepage Preview | Hathor Dahabiya",
   description:
-    "Preview of the Hathor Dahabiya luxury homepage — hero video, itineraries, and upcoming sections.",
+    "Preview of the Hathor Dahabiya luxury homepage: hero video, itineraries, and upcoming sections.",
   keywords: [
     "Dahabiya Nile Cruise",
     "Luxury Egypt Cruise",

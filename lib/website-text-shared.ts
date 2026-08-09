@@ -179,22 +179,22 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
       {
         title: "EVERY LANDMARK,\nA PLEASURE.",
         indication: "Sail The Nile On Hathor",
-        body: "A five-star dahabiya on the ancient Nile — history, comfort, and style in one intimate voyage.",
+        body: "A five-star dahabiya on the ancient Nile: history, comfort, and style in one intimate voyage.",
       },
       {
         title: "WHERE TIME\nMOVES GENTLY.",
         indication: "Private Nile Sailing",
-        body: "Glide between Luxor and Aswan — soft light on the water, Egypt unfolding at a gracious pace.",
+        body: "Glide between Luxor and Aswan, soft light on the water, Egypt unfolding at a gracious pace.",
       },
       {
         title: "WELCOME ABOARD\nHATHOR.",
         indication: "Five-Star Small Boat",
-        body: "Refined cabins, attentive hospitality, and Egyptian charm — an exclusive voyage on the Nile.",
+        body: "Refined cabins, attentive hospitality, and Egyptian charm: an exclusive voyage on the Nile.",
       },
       {
         title: "GOLDEN HOUR\nON THE NILE.",
         indication: "History · Comfort · Style",
-        body: "From ancient shores to quiet decks at dusk — every moment aboard Hathor is composed for wonder.",
+        body: "From ancient shores to quiet decks at dusk. Every moment aboard Hathor is composed for wonder.",
       },
     ],
     textBlocks: [
@@ -220,7 +220,7 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
         {
           name: "Sarah Mitchell",
           quote:
-            "An absolutely magical journey. The Hathor Dahabiya exceeded every expectation — impeccable service, breathtaking views, and true luxury on the Nile.",
+            "An absolutely magical journey. The Hathor Dahabiya exceeded every expectation: impeccable service, breathtaking views, and true luxury on the Nile.",
         },
         {
           name: "James & Elena Torres",
@@ -265,7 +265,7 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
       overviewIntro: CRUISES_PAGE.hero.subtitle,
       continueTitle: "Continue exploring\naboard Hathor",
       continueBody:
-        "Discover Luxury Rooms, Suites, Royal Suites, and Dining — Hathor Flavors.",
+        "Discover Luxury Rooms, Suites, Royal Suites, and Dining, Hathor Flavors.",
       ctaTitle: "Reserve your voyage",
       ctaBody: CRUISES_PAGE.hero.subtitle,
     },
@@ -311,7 +311,7 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
     partners: {
       title: HOMEPAGE_PARTNERS.title,
       chapter: HOMEPAGE_PARTNERS.chapter,
-      lead: "We sail with trusted names in travel and hospitality — partners who share our care for the Nile and our guests.",
+      lead: "We sail with trusted names in travel and hospitality, partners who share our care for the Nile and our guests.",
     },
     rooms: {
       overviewTitle: LUXURY_SUITES_PAGE.overview.title,
