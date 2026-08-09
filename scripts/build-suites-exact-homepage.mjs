@@ -516,20 +516,248 @@ ${hathorFontFaces}
     max-width: 36em;
   }
 
-  /* Gallery title — slightly quieter than full hero so it sits in the corner */
+  /*
+   * ============================================================
+   * PASS 03 — SECTION TEXT COMPOSITIONS (art direction)
+   * Photography / section geometry locked. Text groups only.
+   * ============================================================
+   */
+
+  /* HERO — COMPOSITION C: lower-left editorial stack
+     Why: tilted collage densifies toward the right; lower-left gold
+     field is the cleanest negative space for one focal Gamgote mark. */
+  .l-gallery__caption {
+    pointer-events: none;
+  }
   .l-gallery__caption .l-gallery__title {
-    left: auto !important;
-    right: clamp(1.35rem, 4vw, 3.25rem) !important;
-    bottom: clamp(1.35rem, 3.5vw, 2.5rem) !important;
+    left: clamp(1.5rem, 6.5vw, 5.5rem) !important;
+    right: auto !important;
+    bottom: clamp(2.25rem, 11vh, 6rem) !important;
     top: auto !important;
-    text-align: right !important;
-    max-width: min(42vw, 9.5em);
+    text-align: left !important;
+    max-width: min(46vw, 10.5em);
+    z-index: 4;
   }
   .l-gallery__caption .l-gallery__title .h0 {
-    text-align: right !important;
+    text-align: left !important;
     font-size: clamp(2.85rem, 4.6vw, 5.5rem) !important;
     line-height: 0.94 !important;
     letter-spacing: -0.018em !important;
+  }
+
+  /* INTRO OPENING — COMPOSITION A: unified upper-left title + body
+     Why: person/subject sits mid-frame looking right; left wall is
+     calm. Title and lead were split across columns — reunite them. */
+  .l-intro.is-hidden--md-down .l-intro__opening {
+    position: absolute !important;
+    left: clamp(1.5rem, 6vw, 5rem) !important;
+    top: clamp(5.5rem, 14vh, 8.5rem) !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: min(40vw, 34rem) !important;
+    max-width: 34rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0 !important;
+    z-index: 5;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+  }
+  .l-intro.is-hidden--md-down .l-intro__opening > .col {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    float: none !important;
+    left: auto !important;
+    right: auto !important;
+    position: relative !important;
+  }
+  .l-intro.is-hidden--md-down .l-intro__opening .h1 {
+    max-width: 12em;
+  }
+  .l-intro.is-hidden--md-down .l-intro__opening-subtitle {
+    margin-top: 1.15rem !important;
+    max-width: 28em !important;
+    width: 100% !important;
+  }
+
+  /* INTRO CONTENT — COMPOSITION E: title high-left / body low-left
+     Why: gold field with image inset top-right; text was floating
+     mid-offset with no relationship. Anchor both to one left axis. */
+  .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-title {
+    position: absolute !important;
+    left: clamp(1.5rem, 6vw, 5rem) !important;
+    top: clamp(5rem, 16vh, 9rem) !important;
+    bottom: auto !important;
+    right: auto !important;
+    width: min(38vw, 28rem) !important;
+    max-width: 28rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+    z-index: 4;
+  }
+  .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-text {
+    position: absolute !important;
+    left: clamp(1.5rem, 6vw, 5rem) !important;
+    bottom: clamp(2rem, 8vh, 4.5rem) !important;
+    top: auto !important;
+    right: auto !important;
+    width: min(34vw, 26rem) !important;
+    max-width: 26rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    z-index: 4;
+  }
+
+  /* WELLNESS / COMFORT — COMPOSITION B: body upper-left + title lower-right
+     Why: WebGL stage is open gold; split focal points create editorial
+     tension without covering the center. Fix the -60px left overflow. */
+  #wellness .l-wellness__webgl-caption > p.text-t1 {
+    position: absolute !important;
+    left: clamp(1.5rem, 6vw, 5rem) !important;
+    top: clamp(5rem, 14vh, 8rem) !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: min(28vw, 22rem) !important;
+    max-width: 22rem !important;
+    margin: 0 !important;
+    transform: none !important;
+    z-index: 4;
+  }
+  #wellness .l-wellness__webgl-title {
+    position: absolute !important;
+    left: auto !important;
+    right: clamp(1.5rem, 6vw, 5rem) !important;
+    bottom: clamp(2rem, 8vh, 4.5rem) !important;
+    top: auto !important;
+    width: max-content !important;
+    max-width: min(46vw, 18rem) !important;
+    margin: 0 !important;
+    text-align: right !important;
+    transform: none !important;
+    z-index: 4;
+  }
+  #wellness .l-wellness__webgl-title .text-c1 {
+    font-family: "Quiet Luxury", cursive !important;
+    font-size: var(--type-script-lg) !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.015em !important;
+    text-transform: none !important;
+    line-height: 1.15 !important;
+    color: var(--suites-gold) !important;
+    -webkit-text-fill-color: var(--suites-gold) !important;
+    margin-bottom: 0.4rem !important;
+  }
+  #wellness .l-wellness__webgl-title .g1 {
+    margin: 0 !important;
+  }
+
+  /* WELLNESS SLIDER — titles stay right; body sits lower-left of caption
+     Why: amenity list is a right rail; copy should not compete mid-frame. */
+  .l-wellness__slider__caption-titles {
+    padding-top: clamp(1.5rem, 4vh, 2.75rem) !important;
+  }
+  .l-wellness__slider__caption-text {
+    left: clamp(1.5rem, 5vw, 4rem) !important;
+    right: auto !important;
+    bottom: clamp(1.5rem, 6vh, 3.5rem) !important;
+    width: min(36vw, 26rem) !important;
+    max-width: 26rem !important;
+  }
+
+  /* NATURE / THE NILE — COMPOSITION C: lower-left connected stack
+     Why: title/script left + body lower-right felt like two ads.
+     Reunite into one left editorial column; free the right for photo. */
+  #nature .l-nature-bg-caption,
+  .l-nature-bg-item .l-nature-bg-caption {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-end !important;
+    align-items: flex-start !important;
+    padding: 0 0 clamp(2rem, 8vh, 4.5rem) clamp(1.5rem, 6vw, 5rem) !important;
+    box-sizing: border-box !important;
+  }
+  #nature .l-nature-bg-caption .g1,
+  .l-nature-bg-item .l-nature-bg-caption .g1 {
+    position: relative !important;
+    margin: 0 !important;
+  }
+  #nature .l-nature-bg-caption .mt-1,
+  .l-nature-bg-item .l-nature-bg-caption .mt-1 {
+    margin-top: 0.45rem !important;
+    margin-bottom: 0 !important;
+  }
+  #nature .l-nature-bg-caption__text,
+  .l-nature-bg-item .l-nature-bg-caption__text {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    margin: 1.65rem 0 0 !important;
+    width: min(34vw, 28rem) !important;
+    max-width: 28rem !important;
+    transform: none !important;
+  }
+
+  /* PLACE / VOYAGE — COMPOSITION B variant: right-anchored title+script,
+     body lower-right on same axis.
+     Why: spiral/webgl mass sits left-center; right margin is open sky. */
+  .l-place-webgl-caption {
+    position: absolute !important;
+    top: clamp(4.5rem, 12vh, 7.5rem) !important;
+    right: clamp(1.5rem, 5.5vw, 4.5rem) !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: min(36vw, 22rem) !important;
+    max-width: 22rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: right !important;
+    z-index: 4;
+  }
+  .l-place-webgl-caption .g1,
+  .l-place-webgl-caption__subtitle {
+    margin-left: auto !important;
+    text-align: right !important;
+  }
+  .l-place-webgl__text {
+    position: absolute !important;
+    right: clamp(1.5rem, 5.5vw, 4.5rem) !important;
+    left: auto !important;
+    bottom: clamp(2rem, 9vh, 5rem) !important;
+    top: auto !important;
+    width: min(34vw, 24rem) !important;
+    max-width: 24rem !important;
+    margin: 0 !important;
+    text-align: right !important;
+    z-index: 4;
+  }
+  .l-place-webgl__text p {
+    margin-left: auto !important;
+    max-width: 24em !important;
+  }
+
+  /* NATURE SLIDER CAPTION — keep right but tuck into lower-right safe area */
+  .l-nature__slider-caption {
+    right: clamp(1.5rem, 5vw, 4rem) !important;
+    bottom: clamp(3rem, 12vh, 7rem) !important;
+    left: auto !important;
+    width: min(32vw, 24rem) !important;
+    max-width: 24rem !important;
+  }
+
+  /* FOOTER CTA — left-anchored editorial on cream (not default center) */
+  .hathor-suites-footer-host .lux-footer__top,
+  .hathor-lux-footer-host .lux-footer__top {
+    text-align: left !important;
+    padding-left: clamp(1.5rem, 6vw, 5rem) !important;
+    padding-right: clamp(1.5rem, 6vw, 5rem) !important;
+    max-width: 42rem;
   }
 
   body,
@@ -856,13 +1084,28 @@ ${hathorFontFaces}
       --type-lead: clamp(1.1rem, 1.45vw, 1.25rem);
       --type-body: clamp(1.05rem, 1.3vw, 1.14rem);
     }
+    /* Tablet: keep left hero; tighten opening width */
     .l-gallery__caption .l-gallery__title {
-      right: clamp(1rem, 3.5vw, 2.5rem) !important;
-      bottom: clamp(1.25rem, 4vw, 2.25rem) !important;
-      max-width: min(50vw, 10em);
+      left: clamp(1.25rem, 5.5vw, 3rem) !important;
+      right: auto !important;
+      bottom: clamp(1.75rem, 8vh, 3.5rem) !important;
+      max-width: min(58vw, 11em);
     }
     .l-gallery__caption .l-gallery__title .h0 {
       font-size: clamp(2.75rem, 5.4vw, 4.75rem) !important;
+      text-align: left !important;
+    }
+    .l-intro.is-hidden--md-down .l-intro__opening {
+      width: min(52vw, 28rem) !important;
+      top: clamp(5rem, 12vh, 7rem) !important;
+    }
+    #nature .l-nature-bg-caption__text,
+    .l-nature-bg-item .l-nature-bg-caption__text {
+      width: min(48vw, 26rem) !important;
+    }
+    .l-place-webgl-caption,
+    .l-place-webgl__text {
+      width: min(42vw, 22rem) !important;
     }
   }
   @media (max-width: 480px) {
@@ -887,17 +1130,99 @@ ${hathorFontFaces}
     .l-place__caption .g1 {
       font-size: clamp(2.1rem, 7vw, 2.65rem) !important;
     }
+    /* Phone: lower-left hero stays left; safe 22px edges */
     .l-gallery__caption .l-gallery__title {
-      position: relative !important;
+      position: absolute !important;
+      left: 22px !important;
       right: auto !important;
-      bottom: auto !important;
-      left: auto !important;
-      max-width: 88vw;
-      margin: 0 clamp(1rem, 5vw, 1.5rem);
+      bottom: 28px !important;
+      top: auto !important;
+      max-width: calc(100vw - 44px);
+      margin: 0 !important;
       text-align: left !important;
     }
     .l-gallery__caption .l-gallery__title .h0 {
       text-align: left !important;
+    }
+    /* Phone intro mobile block — left stack */
+    .l-intro.is-hidden--lg-up .l-intro__opening {
+      padding-left: 22px !important;
+      padding-right: 22px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: flex-start !important;
+    }
+    .l-intro.is-hidden--lg-up .l-intro__opening > .col {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    .l-intro.is-hidden--lg-up .l-intro__opening-subtitle {
+      margin-top: 0.9rem !important;
+      max-width: 32em !important;
+    }
+    /* Phone nature — left stack, body under title */
+    .l-nature-bg-caption {
+      align-items: flex-start !important;
+      padding: 0 22px 28px !important;
+    }
+    .l-nature-bg-caption .g1,
+    .l-nature-bg-caption__subtitle {
+      text-align: left !important;
+      margin-left: 0 !important;
+      margin-right: auto !important;
+    }
+    .l-nature-bg-caption__text {
+      position: relative !important;
+      left: auto !important;
+      right: auto !important;
+      width: 100% !important;
+      max-width: 34em !important;
+      margin-top: 1.25rem !important;
+    }
+    /* Phone voyage — flip to left (desktop was right) */
+    .l-place-webgl-caption {
+      position: relative !important;
+      top: auto !important;
+      right: auto !important;
+      left: auto !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      text-align: left !important;
+      padding: 0 22px !important;
+    }
+    .l-place-webgl-caption .g1,
+    .l-place-webgl-caption__subtitle {
+      text-align: left !important;
+      margin-left: 0 !important;
+      margin-right: auto !important;
+    }
+    .l-place-webgl__text {
+      position: relative !important;
+      right: auto !important;
+      left: auto !important;
+      bottom: auto !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      text-align: left !important;
+      padding: 0 22px 1.5rem !important;
+      margin-top: 1.25rem !important;
+    }
+    .l-place-webgl__text p {
+      margin-left: 0 !important;
+    }
+    #wellness-mobile .l-wellness__webgl-title,
+    .l-wellness.is-hidden--lg-up .l-wellness__webgl-title {
+      right: 22px !important;
+      bottom: 24px !important;
+      left: auto !important;
+    }
+    .hathor-suites-footer-host .lux-footer__top,
+    .hathor-lux-footer-host .lux-footer__top {
+      padding-left: 22px !important;
+      padding-right: 22px !important;
     }
   }
 /*
