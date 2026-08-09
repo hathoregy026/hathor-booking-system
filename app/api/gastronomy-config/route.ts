@@ -1,11 +1,18 @@
 import { NextResponse } from "next/server";
 import { getActiveSiteImages } from "@/lib/image-management";
 import {
+  DEFAULT_GASTRONOMY_TYPOGRAPHY,
   gastronomyTypographyToCss,
   getGastronomyTypography,
+  withSiteTypographyFonts,
   type GastronomyTypography,
 } from "@/lib/gastronomy-typography";
 import { SITE_IMAGE_SLOTS } from "@/lib/site-image-slots";
+import {
+  DEFAULT_TYPOGRAPHY_SETTINGS,
+  getTypographySettingsMobileSafe,
+  getTypographySettingsSafe,
+} from "@/lib/typography-settings";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -21,17 +28,32 @@ export async function GET() {
     ]),
   );
   let images: Array<{ name: string; url: string }> = [];
-  let desktop: GastronomyTypography | undefined;
-  let phone: GastronomyTypography | undefined;
+  let desktop: GastronomyTypography = DEFAULT_GASTRONOMY_TYPOGRAPHY;
+  let phone: GastronomyTypography = DEFAULT_GASTRONOMY_TYPOGRAPHY;
   try {
-    [images, desktop, phone] = await Promise.all([
-      getActiveSiteImages("/gastronomy"),
-      getGastronomyTypography(),
-      getGastronomyTypography(true),
-    ]);
+    const [imgs, diningDesktop, diningPhone, siteDesktop, sitePhone] =
+      await Promise.all([
+        getActiveSiteImages("/gastronomy"),
+        getGastronomyTypography(),
+        getGastronomyTypography(true),
+        getTypographySettingsSafe(),
+        getTypographySettingsMobileSafe(),
+      ]);
+    images = imgs;
+    desktop = withSiteTypographyFonts(
+      diningDesktop,
+      siteDesktop ?? DEFAULT_TYPOGRAPHY_SETTINGS,
+    );
+    phone = withSiteTypographyFonts(
+      diningPhone,
+      sitePhone ?? siteDesktop ?? DEFAULT_TYPOGRAPHY_SETTINGS,
+    );
   } catch {
-    desktop = undefined;
-    phone = undefined;
+    desktop = withSiteTypographyFonts(
+      DEFAULT_GASTRONOMY_TYPOGRAPHY,
+      DEFAULT_TYPOGRAPHY_SETTINGS,
+    );
+    phone = desktop;
   }
   return NextResponse.json(
     {
@@ -43,8 +65,8 @@ export async function GET() {
             .map((image) => [image.name, image.url]),
         ),
       },
-      css: desktop ? gastronomyTypographyToCss(desktop) : "",
-      phoneCss: phone ? gastronomyTypographyToCss(phone) : "",
+      css: gastronomyTypographyToCss(desktop),
+      phoneCss: gastronomyTypographyToCss(phone),
     },
     { headers: { "Cache-Control": "no-store" } },
   );

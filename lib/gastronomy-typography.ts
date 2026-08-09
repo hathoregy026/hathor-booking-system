@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { withDb } from "@/lib/db-safe";
 import {
   HATHOR_FONT_STACKS,
+  type TypographySettings,
   type TypographyTextStyle,
 } from "@/lib/typography-settings-shared";
 import {
@@ -60,6 +61,30 @@ function privateDiningTitleCss(style: TypographyTextStyle) {
     "",
   );
   return `#de-intro .de-intro__caption-title.is-hidden--lg-up::after{font-family:${fontStack}!important;font-size:${style.fontSize}px!important;color:${style.color}!important;line-height:${style.lineHeight}!important;letter-spacing:${style.letterSpacing}px!important;}`;
+}
+
+/**
+ * Dining faces follow the main site Typography Styles panel
+ * (on-images title / indication / body). Size & colour stay dining-local.
+ */
+export function withSiteTypographyFonts(
+  dining: GastronomyTypography,
+  site: TypographySettings,
+): GastronomyTypography {
+  return {
+    display: {
+      ...dining.display,
+      fontFamily: site.on_images_title.fontFamily,
+    },
+    indication: {
+      ...dining.indication,
+      fontFamily: site.on_images_indication.fontFamily,
+    },
+    body: {
+      ...dining.body,
+      fontFamily: site.on_images_body.fontFamily,
+    },
+  };
 }
 
 export function gastronomyTypographyToCss(settings: GastronomyTypography) {

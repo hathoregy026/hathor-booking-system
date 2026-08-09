@@ -394,7 +394,8 @@
   body {
     background: #f5e8d1 !important;
     color: #b69f64;
-    font-family: "Hathor Body", "TT Commons", sans-serif;
+    /* Fallback until /api/gastronomy-config injects site Typography Styles fonts */
+    font-family: "Gamgote", Georgia, serif;
   }
   .ui-dark, .ui-dark-background, .ui-dark.ui-background {
     --t-background: #b69f64;
@@ -418,11 +419,15 @@
     background-color: #f5e8d1 !important;
     color: #b69f64 !important;
   }
+  /* Fallbacks match site on-images defaults; live fonts come from Typography Styles */
   .g1, .h0, .h1, .h2, .h3 {
-    font-family: "Hathor Display", "Gamgote", Georgia, serif !important;
+    font-family: "Gamgote", Georgia, serif !important;
   }
-  .text-c1, .text-c2, p, .btn__text {
-    font-family: "Hathor Body", "Agraham", sans-serif;
+  .text-c1, .text-c2, .text-c2-small {
+    font-family: "Lavenir", serif !important;
+  }
+  p, .btn__text {
+    font-family: "Gamgote", Georgia, serif !important;
   }
   .ui-light .g1, .ui-light .h0, .ui-light .h1, .ui-light .h2, .ui-light .h3,
   .ui-light .text-c1, .ui-light .text-c2 { color: #b69f64; }
@@ -440,7 +445,7 @@
   #de-intro .de-intro__caption-title.is-hidden--lg-up::after {
     color: #f5e8d1;
     content: "Private Dining";
-    font-family: "Hathor Display", "Gamgote", Georgia, serif;
+    font-family: "Gamgote", Georgia, serif;
     font-size: clamp(3rem, 13vw, 6rem);
     line-height: 0.9;
   }
@@ -715,18 +720,24 @@
         );
         replaceCaptionFrame("data-image-scroll-image-start", config.images["dining-captions-start"], "dining-captions-start");
         replaceCaptionFrame("data-image-scroll-image-end", config.images["dining-captions-end"], "dining-captions-end");
-        const style = document.createElement("style");
-        style.dataset.gastronomyTypography = "true";
-        style.textContent = config.css || "";
-        document.head.appendChild(style);
+      } else {
+        replaceVisual(slotTargets["dining-intro-hero"], heroUrl, "dining-intro-hero");
+      }
+      /* Always apply site Typography Styles fonts (not gated on images). */
+      if (config && (config.css || config.phoneCss)) {
+        document.querySelectorAll("[data-gastronomy-typography],[data-gastronomy-typography-phone]").forEach((el) => el.remove());
+        if (config.css) {
+          const style = document.createElement("style");
+          style.dataset.gastronomyTypography = "true";
+          style.textContent = config.css;
+          document.head.appendChild(style);
+        }
         if (config.phoneCss) {
           const phone = document.createElement("style");
           phone.dataset.gastronomyTypographyPhone = "true";
           phone.textContent = "@media (max-width:480px){" + config.phoneCss + "}";
           document.head.appendChild(phone);
         }
-      } else {
-        replaceVisual(slotTargets["dining-intro-hero"], heroUrl, "dining-intro-hero");
       }
       scrubSpringsUrls(document);
       whenHeroReady(heroUrl).then(() => {
