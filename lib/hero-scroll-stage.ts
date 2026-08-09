@@ -392,9 +392,9 @@ export function mountHeroScrollStage({
               ? "bottom bottom" /* runway height: 360svh (100 + 260 scrub) */
               : isTabletHero
                 ? "+=260%" /* fallback only if .home-hero-runway missing */
-            : isPhoneTouch
+              : isPhoneTouch
               ? "+=290%"
-              : "+=175%", /* extra runway so per-letter logo exit can drift slowly */
+              : "+=87%", /* desktop only — half of prior 175%; phone/tablet unchanged */
         // Direct scrub on touch — laggy scrub (1.7) feels like scroll jumping
         scrub: isTouch ? true : 0.25,
         pin: !(isPhoneTouch || isTabletHero),
