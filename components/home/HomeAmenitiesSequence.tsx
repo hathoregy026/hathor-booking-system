@@ -801,28 +801,18 @@ export function HomeAmenitiesSequence({
         id="home-am-nature-caption"
       >
         <div className="home-am-nature__copy">
-          <h3
-            className="typo-on-images-title"
-            style={{
-              color: WHITE,
-              WebkitTextFillColor: WHITE,
-            }}
-          >
+          {/*
+            Dedicated classes (not typo-on-images-*) so CMS live typography
+            cannot force ~90px and inflate this short gold band.
+          */}
+          <h3 className="home-am-nature__title">
             {natureTitleLines.map((line) => (
               <span key={line} className="home-am-title-line">
                 {line}
               </span>
             ))}
           </h3>
-          <p
-            className="typo-on-images-body"
-            style={{
-              color: WHITE,
-              WebkitTextFillColor: WHITE,
-            }}
-          >
-            {natureCaption}
-          </p>
+          <p className="home-am-nature__body">{natureCaption}</p>
           <Link
             href={natureCtaHref}
             className="public-btn-outline-gold home-am-opening__cta home-am-nature__cta"
