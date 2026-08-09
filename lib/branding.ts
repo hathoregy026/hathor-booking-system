@@ -57,11 +57,15 @@ export const HATHOR_ADMIN_LOGO_DARK_SRC = "/branding/hathor-logo-nile-cruise.web
 /** Admin login — white Hathor icon (same as public hero header). */
 export const HATHOR_ADMIN_LOGIN_ICON_SRC = HATHOR_HERO_ICON_SRC;
 
-/** Full-bleed homepage hero — Vercel static CDN (same origin, edge-cached). */
+/**
+ * Full-bleed homepage hero — Vercel static CDN (same origin, edge-cached).
+ * To swap the reel: replace this file (or point this constant at a new path under
+ * `/public/media/hathor/videos/`). Poster stays CMS slot `home-hero-poster`.
+ */
 export const HATHOR_HERO_VIDEO_SRC =
   "/media/hathor/videos/hathor-luxury-nile-cruise-promo-bestofegypt.mp4";
 
-/** Static poster while hero video buffers (not a dashboard CMS slot). */
+/** Default static poster path (live hero uses CMS `home-hero-poster` via useSiteImage). */
 export const HATHOR_HERO_POSTER_SRC = hathorImage("home-hero-poster");
 
 export function getHathorLogoSrc(theme: AdminTheme): string {

@@ -11,7 +11,7 @@ export const AMENITIES_SEQUENCE_IMAGE_SLOTS = [
   },
   {
     name: "home-amenities-2",
-    label: "2 — Rising full-bleed photo",
+    label: "2 — Rising full-bleed (video poster)",
     alt: "Amenities sequence — rising full-bleed Nile view",
   },
   {

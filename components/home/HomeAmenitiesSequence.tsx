@@ -1,6 +1,7 @@
 "use client";
 
 import { CSSProperties, useRef, type ReactNode } from "react";
+import { AmenitiesRisingVideo } from "@/components/home/AmenitiesRisingVideo";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useTypographyInlineStyle } from "@/components/public/TypographySettingsProvider";
 import { useHomeAmenitiesSequence } from "@/hooks/useHomeAmenitiesSequence";
@@ -371,12 +372,13 @@ export function HomeAmenitiesSequence({
                 data-parallax-clamp="true"
                 data-parallax-measure-selector="[data-am-chapter]"
               >
-                <ManagedImage
-                  name={videoHeroImage.name}
+                {/*
+                  Same pattern as homepage hero video (PublicSiteHero).
+                  Until HATHOR_AMENITIES_RISING_VIDEO_SRC is set, CMS image shows.
+                */}
+                <AmenitiesRisingVideo
+                  imageName={videoHeroImage.name}
                   alt={videoHeroImage.alt}
-                  fill
-                  sizes="100vw"
-                  className="object-cover"
                   previewAnchor={videoHeroImage.previewAnchor}
                 />
               </div>

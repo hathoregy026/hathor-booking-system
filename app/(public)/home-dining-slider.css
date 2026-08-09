@@ -539,7 +539,14 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   transform-origin: bottom right;
 }
 
-.home-am-video__hero img {
+.home-am-video__hero img,
+.home-am-video__hero video,
+.home-am-video__hero-video,
+.home-am-video__hero-video video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover !important;
 }
 
