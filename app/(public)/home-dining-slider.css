@@ -265,7 +265,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: min(26rem, 92%);
+  /* Wide enough for “ON DAHABIYA” as one title line at dashboard sizes */
+  max-width: min(44rem, 94%);
   margin: 0 auto;
   text-align: center;
   pointer-events: none;
@@ -277,6 +278,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
  */
 .home-am-nature__title {
   margin: 0 0 var(--am-typo-gap-title-sub, 14px);
+  width: 100%;
   text-align: center;
   font-weight: 400;
   color: #ffffff;
@@ -286,6 +288,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
 .home-am-nature__title > .home-am-title-line {
   display: block;
   text-align: center;
+  /* Keep “ON DAHABIYA” on one line — never wrap to FINE DINING / ON / DAHABIYA */
+  white-space: nowrap;
 }
 
 .home-am-nature__indication {
@@ -299,7 +303,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
 .home-am-nature__body {
   margin: 0 0 var(--am-typo-gap-body-cta, 22px);
   text-align: center;
-  max-width: 34em;
+  max-width: min(26rem, 100%);
   font-weight: 400;
   color: #ffffff;
   -webkit-text-fill-color: #ffffff;

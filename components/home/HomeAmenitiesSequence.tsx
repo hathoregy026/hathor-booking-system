@@ -113,7 +113,8 @@ export function HomeAmenitiesSequence({
       .trim();
     /* Two lines: “FINE DINING” / “ON DAHABIYA” (override CMS breaks). */
     if (/^FINE DINING\s+ON\s+DAHABIYA$/i.test(joined)) {
-      return ["FINE DINING", "ON DAHABIYA"];
+      /* NBSP keeps the second line from wrapping mid-phrase */
+      return ["FINE DINING", "ON\u00A0DAHABIYA"];
     }
     if (lines.length > 1) return lines;
     const single = joined;
