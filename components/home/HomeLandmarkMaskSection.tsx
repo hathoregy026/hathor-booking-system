@@ -8,6 +8,10 @@ import {
   type AmenitiesStorySlide,
 } from "@/components/home/HomeAmenitiesSequence";
 import { AMENITIES_SEQUENCE_IMAGE_SLOTS } from "@/lib/amenities-sequence-images";
+import {
+  DEFAULT_AMENITIES_TYPOGRAPHY,
+  type AmenitiesTypography,
+} from "@/lib/amenities-typography-shared";
 import type { SiteImageName } from "@/lib/site-image-slots";
 
 export type LandmarkMaskSlide = AmenitiesLandmarkSlide;
@@ -19,6 +23,7 @@ type HomeLandmarkMaskSectionProps = {
   titleStyle?: CSSProperties;
   indicationStyle?: CSSProperties;
   bodyStyle?: CSSProperties;
+  amenitiesTypography?: AmenitiesTypography;
   voyages?: ReactNode;
 };
 
@@ -41,6 +46,7 @@ export function HomeLandmarkMaskSection({
   titleStyle,
   indicationStyle,
   bodyStyle,
+  amenitiesTypography = DEFAULT_AMENITIES_TYPOGRAPHY,
   voyages,
 }: HomeLandmarkMaskSectionProps) {
   return (
@@ -51,6 +57,7 @@ export function HomeLandmarkMaskSection({
       titleStyle={titleStyle}
       indicationStyle={indicationStyle}
       bodyStyle={bodyStyle}
+      amenitiesTypography={amenitiesTypography}
       voyages={voyages}
     />
   );

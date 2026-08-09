@@ -34,6 +34,12 @@
   --am-cream: #ece8df;
   --am-ink: #1c1712;
   --am-svh: 1svh;
+  --am-typo-title-on-image: #ffffff;
+  --am-typo-title-on-bg: #b69f64;
+  --am-typo-indication-on-image: #ffffff;
+  --am-typo-indication-on-bg: #b69f64;
+  --am-typo-body-on-image: #ffffff;
+  --am-typo-body-on-bg: #b69f64;
   --sticky-under-previous-distance: calc(100 * var(--am-svh));
   --sticky-under-next-distance: calc(100 * var(--am-svh));
   position: relative;
@@ -43,6 +49,84 @@
   background: transparent;
   color: var(--am-ink);
   isolation: isolate;
+}
+
+/*
+ * Dual-colour ink — always wins over Site Typography “On images” for this sequence.
+ * Vars are set from Amenities Sequence dashboard (inline on the section + SSR CSS).
+ */
+.public-site .home-am-sequence .typo-on-images-title,
+.public-site .home-am-sequence .typo-on-images-title *,
+.public-site .home-am-sequence .home-am-nature__title,
+.public-site .home-am-sequence .home-am-nature__title *,
+.public-site .home-am-sequence .home-am-opening__title,
+.public-site .home-am-sequence .home-am-opening__title *,
+.public-site .home-am-sequence .home-am-on-cream-title,
+.public-site .home-am-sequence .home-am-on-cream-title *,
+html[data-ex-experience] .ex-root .home-am-sequence .typo-on-images-title,
+html[data-ex-experience] .ex-root .home-am-sequence .typo-on-images-title * {
+  color: var(--am-typo-title-on-bg) !important;
+  -webkit-text-fill-color: var(--am-typo-title-on-bg) !important;
+}
+
+.public-site .home-am-sequence .home-am-on-image-text.typo-on-images-title,
+.public-site .home-am-sequence .home-am-on-image-text.typo-on-images-title *,
+.public-site .home-am-sequence .home-am-intro__caption .home-am-intro__title,
+.public-site .home-am-sequence .home-am-intro__caption .home-am-intro__title *,
+.public-site .home-am-sequence .home-am-opening__caption .home-am-opening__title,
+.public-site .home-am-sequence .home-am-opening__caption .home-am-opening__title *,
+html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text.typo-on-images-title,
+html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text.typo-on-images-title * {
+  color: var(--am-typo-title-on-image) !important;
+  -webkit-text-fill-color: var(--am-typo-title-on-image) !important;
+}
+
+.public-site .home-am-sequence .typo-on-images-indication,
+.public-site .home-am-sequence .typo-on-images-indication *,
+.public-site .home-am-sequence .home-am-nature__indication,
+.public-site .home-am-sequence .home-am-nature__indication *,
+html[data-ex-experience] .ex-root .home-am-sequence .typo-on-images-indication,
+html[data-ex-experience] .ex-root .home-am-sequence .typo-on-images-indication * {
+  color: var(--am-typo-indication-on-bg) !important;
+  -webkit-text-fill-color: var(--am-typo-indication-on-bg) !important;
+}
+
+.public-site .home-am-sequence .home-am-on-image-text.typo-on-images-indication,
+.public-site .home-am-sequence .home-am-on-image-text.typo-on-images-indication *,
+.public-site .home-am-sequence .home-am-intro__caption .home-am-intro__indication,
+.public-site .home-am-sequence .home-am-intro__caption .home-am-intro__indication *,
+.public-site .home-am-sequence .home-am-opening__list-item-text,
+.public-site .home-am-sequence .home-am-opening__list-item-text *,
+html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text.typo-on-images-indication,
+html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text.typo-on-images-indication * {
+  color: var(--am-typo-indication-on-image) !important;
+  -webkit-text-fill-color: var(--am-typo-indication-on-image) !important;
+}
+
+.public-site .home-am-sequence .typo-on-images-body,
+.public-site .home-am-sequence .typo-on-images-body *,
+.public-site .home-am-sequence .home-am-nature__body,
+.public-site .home-am-sequence .home-am-nature__body *,
+.public-site .home-am-sequence .home-am-intro__cream-text,
+.public-site .home-am-sequence .home-am-intro__cream-text *,
+.public-site .home-am-sequence .home-am-intro__cream .typo-body-text,
+.public-site .home-am-sequence .home-am-intro__cream .typo-body-text *,
+.public-site .home-am-sequence .home-am-video__title-body,
+.public-site .home-am-sequence .home-am-video__title-body *,
+.public-site .home-am-sequence .home-am-opening__caption-text,
+.public-site .home-am-sequence .home-am-opening__caption-text *,
+html[data-ex-experience] .ex-root .home-am-sequence .typo-on-images-body,
+html[data-ex-experience] .ex-root .home-am-sequence .typo-on-images-body * {
+  color: var(--am-typo-body-on-bg) !important;
+  -webkit-text-fill-color: var(--am-typo-body-on-bg) !important;
+}
+
+.public-site .home-am-sequence .home-am-on-image-text.typo-on-images-body,
+.public-site .home-am-sequence .home-am-on-image-text.typo-on-images-body *,
+html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text.typo-on-images-body,
+html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text.typo-on-images-body * {
+  color: var(--am-typo-body-on-image) !important;
+  -webkit-text-fill-color: var(--am-typo-body-on-image) !important;
 }
 
 /* On-photo type — soft halo only; colour comes from Amenities Sequence typography. */

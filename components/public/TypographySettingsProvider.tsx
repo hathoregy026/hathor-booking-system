@@ -44,6 +44,9 @@ function applyLiveCss(
   );
   /* Keep last in <head> so it beats bundled page CSS. */
   document.head.appendChild(el);
+  /* Amenities Sequence colours must stay after this sheet. */
+  const amenities = document.getElementById("hathor-amenities-typo-live");
+  if (amenities) document.head.appendChild(amenities);
 }
 
 export function TypographySettingsProvider({

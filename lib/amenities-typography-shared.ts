@@ -208,10 +208,8 @@ function parseAmenitiesTextStyle(
   const src =
     raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
   const legacyColor = asHex(src.color, fallback.color);
-  const colorOnImage = asHex(
-    src.colorOnImage,
-    asHex(src.color, fallback.colorOnImage),
-  );
+  /* On-image defaults to white when missing — do not copy legacy panel colour onto photos. */
+  const colorOnImage = asHex(src.colorOnImage, fallback.colorOnImage);
   const colorOnBg = asHex(src.colorOnBg, legacyColor || fallback.colorOnBg);
   const merged = {
     ...fallback,

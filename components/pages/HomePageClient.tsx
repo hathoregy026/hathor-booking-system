@@ -27,9 +27,14 @@ import {
   type ExCarouselSlide,
 } from "@/lib/ex-page-content";
 import { AMENITIES_SEQUENCE_IMAGE_SLOTS } from "@/lib/amenities-sequence-images";
+import {
+  DEFAULT_AMENITIES_TYPOGRAPHY,
+  type AmenitiesTypography,
+} from "@/lib/amenities-typography-shared";
 import type { HomepageAccordionCruise } from "@/lib/homepage-accordion-cruises";
 import type { SiteImageName } from "@/lib/site-image-slots";
 import { useExScrollMotion } from "@/hooks/useExScrollMotion";
+import { useIsPhoneViewport } from "@/hooks/useIsPhoneViewport";
 import {
   useTypographyInlineStyle,
   useTypographySettings,
@@ -113,6 +118,8 @@ type HomePageClientProps = {
   heroLogoTuneMobile?: HeroLogoTune;
   accordionCruises?: HomepageAccordionCruise[];
   wheelStage?: WheelStageSettings;
+  amenitiesTypography?: AmenitiesTypography;
+  amenitiesTypographyMobile?: AmenitiesTypography;
 };
 
 function paintLogoTune(desktop: HeroLogoTune, phone: HeroLogoTune) {
@@ -183,8 +190,14 @@ export function HomePageClient({
   heroLogoTuneMobile = heroLogoTune,
   accordionCruises = [],
   wheelStage = DEFAULT_WHEEL_STAGE_SETTINGS,
+  amenitiesTypography = DEFAULT_AMENITIES_TYPOGRAPHY,
+  amenitiesTypographyMobile = amenitiesTypography,
 }: HomePageClientProps) {
   useExScrollMotion();
+  const isPhone = useIsPhoneViewport();
+  const activeAmenitiesTypography = isPhone
+    ? amenitiesTypographyMobile
+    : amenitiesTypography;
 
   const typography = useTypographySettings();
   const websiteText = useWebsiteText();
@@ -424,6 +437,7 @@ export function HomePageClient({
           titleStyle={stackTitleStyle}
           indicationStyle={stackEyebrowStyle}
           bodyStyle={stackBodyStyle}
+          amenitiesTypography={activeAmenitiesTypography}
           voyages={
             <LuxuryAccordion
               embedded

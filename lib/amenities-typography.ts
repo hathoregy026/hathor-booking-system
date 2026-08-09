@@ -38,17 +38,39 @@ export async function saveAmenitiesTypography(value: unknown, phone = false) {
   const settings = amenitiesTypographySchema.parse(
     parseAmenitiesTypography(value),
   );
+  /* Guarantee dual colours are always stored (never legacy-only payloads). */
+  const persisted: AmenitiesTypography = {
+    ...settings,
+    title: {
+      ...settings.title,
+      color: settings.title.colorOnBg,
+      colorOnImage: settings.title.colorOnImage,
+      colorOnBg: settings.title.colorOnBg,
+    },
+    indication: {
+      ...settings.indication,
+      color: settings.indication.colorOnBg,
+      colorOnImage: settings.indication.colorOnImage,
+      colorOnBg: settings.indication.colorOnBg,
+    },
+    body: {
+      ...settings.body,
+      color: settings.body.colorOnBg,
+      colorOnImage: settings.body.colorOnImage,
+      colorOnBg: settings.body.colorOnBg,
+    },
+  };
   const key = phone
     ? AMENITIES_TYPOGRAPHY_MOBILE_KEY
     : AMENITIES_TYPOGRAPHY_KEY;
   await withDb(() =>
     prisma.siteSetting.upsert({
       where: { key },
-      create: { key, value: JSON.stringify(settings) },
-      update: { value: JSON.stringify(settings) },
+      create: { key, value: JSON.stringify(persisted) },
+      update: { value: JSON.stringify(persisted) },
     }),
   );
-  return settings;
+  return persisted;
 }
 
 /** Shared metrics (no colour) — colour is applied per surface below. */

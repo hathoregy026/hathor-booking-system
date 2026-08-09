@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { HomeExperienceShell } from "@/components/pages/HomeExperienceShell";
 import { HomePageClient } from "@/components/pages/HomePageClient";
+import { AmenitiesTypographyLiveStyle } from "@/components/home/AmenitiesTypographyLiveStyle";
 import { HATHOR_HERO_POSTER_SRC } from "@/lib/branding";
 import { getHomepageAccordionCruisesSafe } from "@/lib/homepage-accordion-cruises";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
@@ -84,15 +85,14 @@ export default async function HomePage() {
         data-hathor-logo-tune-ssr
         dangerouslySetInnerHTML={{ __html: logoTuneCss }}
       />
-      <style
-        data-hathor-amenities-typo-ssr
-        dangerouslySetInnerHTML={{ __html: amenitiesTypoCss }}
-      />
+      <AmenitiesTypographyLiveStyle css={amenitiesTypoCss} />
       <HomePageClient
         heroLogoTune={cms.heroLogoTune}
         heroLogoTuneMobile={cms.heroLogoTuneMobile}
         accordionCruises={accordionCruises}
         wheelStage={cms.wheelStage}
+        amenitiesTypography={amenitiesTypo}
+        amenitiesTypographyMobile={amenitiesTypoMobile}
       />
     </HomeExperienceShell>
   );

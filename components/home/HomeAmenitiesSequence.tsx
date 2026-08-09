@@ -7,6 +7,10 @@ import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useTypographyInlineStyle } from "@/components/public/TypographySettingsProvider";
 import { useHomeAmenitiesSequence } from "@/hooks/useHomeAmenitiesSequence";
 import { AMENITIES_SEQUENCE_IMAGE_SLOTS } from "@/lib/amenities-sequence-images";
+import {
+  DEFAULT_AMENITIES_TYPOGRAPHY,
+  type AmenitiesTypography,
+} from "@/lib/amenities-typography-shared";
 import type { SiteImageName } from "@/lib/site-image-slots";
 
 const GOLD = "#B69F64";
@@ -46,6 +50,7 @@ type HomeAmenitiesSequenceProps = {
   titleStyle?: CSSProperties;
   indicationStyle?: CSSProperties;
   bodyStyle?: CSSProperties;
+  amenitiesTypography?: AmenitiesTypography;
   /** Springs i-nature — must be direct sibling after i-opening inside this sequence */
   voyages?: ReactNode;
 };
@@ -91,6 +96,7 @@ export function HomeAmenitiesSequence({
   titleStyle,
   indicationStyle,
   bodyStyle,
+  amenitiesTypography = DEFAULT_AMENITIES_TYPOGRAPHY,
   voyages,
 }: HomeAmenitiesSequenceProps) {
   const rootRef = useRef<HTMLElement>(null);
@@ -257,6 +263,17 @@ export function HomeAmenitiesSequence({
       ref={rootRef}
       className="home-am-sequence"
       aria-label="Amenities-style Nile stories"
+      style={
+        {
+          "--am-typo-title-on-image": amenitiesTypography.title.colorOnImage,
+          "--am-typo-title-on-bg": amenitiesTypography.title.colorOnBg,
+          "--am-typo-indication-on-image":
+            amenitiesTypography.indication.colorOnImage,
+          "--am-typo-indication-on-bg": amenitiesTypography.indication.colorOnBg,
+          "--am-typo-body-on-image": amenitiesTypography.body.colorOnImage,
+          "--am-typo-body-on-bg": amenitiesTypography.body.colorOnBg,
+        } as CSSProperties
+      }
     >
       {/* ===== i-intro ===== */}
       <div
