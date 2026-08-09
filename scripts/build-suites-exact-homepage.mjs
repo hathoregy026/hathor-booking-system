@@ -337,7 +337,7 @@ html = html.replace(
     const url = vimeoToSuite[id] || MEDIA.hero;
     const frameDocument =
       `<!doctype html><html><head><style>` +
-      `html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#cdbfa6}` +
+      `html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#f5eacf}` +
       `img{display:block;width:100%;height:100%;object-fit:cover}` +
       `</style></head><body><img src="${url}" alt=""></body></html>`;
     const srcdoc = frameDocument
@@ -385,35 +385,40 @@ ${hathorFontFaces}
     --suites-script: "Quiet Luxury", cursive;
     --suites-label: "Lavenir", Georgia, serif;
     --suites-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+    /* Gold + cream only (no ink/brown/black) */
     --suites-gold: #b69f64;
     --suites-gold-soft: #d4bf86;
-    --suites-ink: #1a1a1a;
-    --suites-body: #3d3a36;
-    --suites-muted: #7a6a58;
-    --suites-on-media: #f5f0e8;
-    --suites-on-media-body: rgba(245, 240, 232, 0.92);
-    --suites-title-on-media: #b69f64;
-    --suites-ink-soft: rgba(245, 240, 232, 0.92);
+    --suites-gold-deep: #8b6914;
+    --suites-cream: #f5eacf;
+    --suites-cream-soft: #ece8df;
+    --suites-cream-bright: #f7f1e6;
+    --suites-ink: #8b6914;
+    --suites-body: #8b6914;
+    --suites-muted: #b69f64;
+    --suites-on-media: #f7f1e6;
+    --suites-on-media-body: rgba(247, 241, 230, 0.94);
+    --suites-title-on-media: #f7f1e6;
+    --suites-ink-soft: rgba(247, 241, 230, 0.94);
     --lux-gold: #b69f64;
     --lux-gold-rgb: 182, 159, 100;
     --lux-cream: #f5eacf;
     --lux-cream-rgb: 245, 234, 207;
-    --lux-beige: #cdbfa6;
-    --lux-beige-rgb: 205, 191, 166;
+    --lux-beige: #ece8df;
+    --lux-beige-rgb: 236, 232, 223;
     --c-beige-background: #f5eacf;
     --c-beige-background-rgb: 245, 234, 207;
     --c-beige: #f5eacf;
     --c-beige-rgb: 245, 234, 207;
-    --c-dark-green: #cdbfa6;
-    --c-dark-green-rgb: 205, 191, 166;
-    --c-green: #cdbfa6;
-    --c-green-rgb: 205, 191, 166;
-    --c-light-green: #b69f64;
-    --c-light-green-rgb: 182, 159, 100;
+    --c-dark-green: #8b6914;
+    --c-dark-green-rgb: 139, 105, 20;
+    --c-green: #b69f64;
+    --c-green-rgb: 182, 159, 100;
+    --c-light-green: #d4bf86;
+    --c-light-green-rgb: 212, 191, 134;
     --c-olive: #b69f64;
     --c-olive-rgb: 182, 159, 100;
-    --c-dark-blue: #cdbfa6;
-    --c-dark-blue-rgb: 205, 191, 166;
+    --c-dark-blue: #8b6914;
+    --c-dark-blue-rgb: 139, 105, 20;
     --c-blue: #b69f64;
     --c-blue-rgb: 182, 159, 100;
     --c-light-blue: #f5eacf;
@@ -422,16 +427,16 @@ ${hathorFontFaces}
     --c-sky-rgb: 245, 234, 207;
     --c-white: #f5eacf;
     --c-white-rgb: 245, 234, 207;
-    --c-black: #b69f64;
-    --c-black-rgb: 182, 159, 100;
+    --c-black: #8b6914;
+    --c-black-rgb: 139, 105, 20;
     --cookie-height: 0px;
     --tooltip-shadow: 0 18px 48px rgba(182, 159, 100, 0.28);
     --c-button-hover-gradient: linear-gradient(101.51deg, rgba(182, 159, 100, 0) 37.02%, #b69f64 308.4%);
     --c-button-hover-gradient-dark: linear-gradient(91.82deg, rgba(245, 234, 207, 0) 0%, #b69f64 100%);
   }
   html, body {
-    background: #f5eacf;
-    color: var(--suites-body);
+    background: var(--suites-cream);
+    color: var(--suites-gold-deep);
     font-family: var(--suites-sans);
     font-size: 16px;
     line-height: 1.7;
@@ -540,32 +545,43 @@ ${hathorFontFaces}
     letter-spacing: 0.18em !important;
     text-transform: uppercase !important;
   }
+  /* Dark stage = deep gold; light stage = cream (gold + cream only) */
   .ui-dark {
-    --t-background: #2c2824;
-    --t-background-rgb: 44, 40, 36;
-    --t-text: #f5f0e8;
-    --t-text-rgb: 245, 240, 232;
-    --t-heading: #b69f64;
-    --t-heading-rgb: 182, 159, 100;
-    --t-primary: #b69f64;
-    --t-primary-rgb: 182, 159, 100;
-    --t-secondary: #d4bf86;
-    --t-secondary-rgb: 212, 191, 134;
-    --t-line: rgba(245, 240, 232, 0.35);
+    --t-background: #8b6914;
+    --t-background-rgb: 139, 105, 20;
+    --t-text: #f7f1e6;
+    --t-text-rgb: 247, 241, 230;
+    --t-heading: #f7f1e6;
+    --t-heading-rgb: 247, 241, 230;
+    --t-primary: #d4bf86;
+    --t-primary-rgb: 212, 191, 134;
+    --t-secondary: #f5eacf;
+    --t-secondary-rgb: 245, 234, 207;
+    --t-line: rgba(245, 234, 207, 0.4);
+    background-color: #8b6914 !important;
+    color: #f7f1e6 !important;
   }
-  .ui-light {
+  .ui-light,
+  .ui-light-background {
     --t-background: #f5eacf;
     --t-background-rgb: 245, 234, 207;
-    --t-text: #3d3a36;
-    --t-text-rgb: 61, 58, 54;
-    --t-heading: #1a1a1a;
-    --t-heading-rgb: 26, 26, 26;
+    --t-text: #8b6914;
+    --t-text-rgb: 139, 105, 20;
+    --t-heading: #8b6914;
+    --t-heading-rgb: 139, 105, 20;
     --t-primary: #b69f64;
     --t-primary-rgb: 182, 159, 100;
-    --t-secondary: #7a6a58;
-    --t-secondary-rgb: 122, 106, 88;
+    --t-secondary: #b69f64;
+    --t-secondary-rgb: 182, 159, 100;
     --t-line: rgba(182, 159, 100, 0.35);
+    background-color: #f5eacf !important;
+    color: #8b6914 !important;
   }
+  .ui-background.ui-dark,
+  .ui-dark.ui-background {
+    background-color: #8b6914 !important;
+  }
+  /* On deep gold / photo: cream type for contrast */
   .ui-dark .h0,
   .ui-dark .h1,
   .ui-dark .h2,
@@ -576,9 +592,9 @@ ${hathorFontFaces}
   .ui-dark [class*="__title"],
   .ui-dark [class*="__title"] .h0,
   .ui-dark [class*="__title"] .g1 {
-    color: var(--suites-gold) !important;
-    -webkit-text-fill-color: var(--suites-gold) !important;
-    text-shadow: 0 2px 28px rgba(0, 0, 0, 0.55), 0 1px 2px rgba(0, 0, 0, 0.4) !important;
+    color: #f7f1e6 !important;
+    -webkit-text-fill-color: #f7f1e6 !important;
+    text-shadow: 0 4px 36px rgba(139, 105, 20, 0.55), 0 1px 2px rgba(139, 105, 20, 0.4) !important;
   }
   .ui-dark p,
   .ui-dark .text-t1,
@@ -589,18 +605,20 @@ ${hathorFontFaces}
   .ui-dark [class*="__caption"] p,
   .ui-dark [class*="-caption__"] p,
   .ui-dark .btn__text {
-    color: var(--suites-on-media-body) !important;
-    -webkit-text-fill-color: var(--suites-on-media-body) !important;
-    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.5) !important;
+    color: rgba(247, 241, 230, 0.94) !important;
+    -webkit-text-fill-color: rgba(247, 241, 230, 0.94) !important;
+    text-shadow: 0 2px 18px rgba(139, 105, 20, 0.45) !important;
   }
   .ui-dark .text-c1,
   .ui-dark .text-c2,
   .ui-dark [class*="__subtitle"],
-  .ui-dark .btn {
-    color: var(--suites-gold) !important;
-    -webkit-text-fill-color: var(--suites-gold) !important;
-    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45) !important;
+  .ui-dark .btn,
+  .ui-dark .text-color-primary {
+    color: #d4bf86 !important;
+    -webkit-text-fill-color: #d4bf86 !important;
+    text-shadow: 0 2px 14px rgba(139, 105, 20, 0.4) !important;
   }
+  /* On cream: deep gold type */
   .ui-light .h0,
   .ui-light .h1,
   .ui-light .h2,
@@ -609,8 +627,8 @@ ${hathorFontFaces}
   .ui-light h1,
   .ui-light h2,
   .ui-light [class*="__title"] {
-    color: var(--suites-ink) !important;
-    -webkit-text-fill-color: var(--suites-ink) !important;
+    color: #8b6914 !important;
+    -webkit-text-fill-color: #8b6914 !important;
     text-shadow: none !important;
   }
   .ui-light p,
@@ -620,17 +638,19 @@ ${hathorFontFaces}
   .ui-light .text-p2,
   .ui-light [class*="__text"],
   .ui-light [class*="__caption"] {
-    color: var(--suites-body) !important;
-    -webkit-text-fill-color: var(--suites-body) !important;
+    color: #8b6914 !important;
+    -webkit-text-fill-color: #8b6914 !important;
     text-shadow: none !important;
   }
   .ui-light .text-c1,
   .ui-light .text-c2,
-  .ui-light [class*="__subtitle"] {
-    color: var(--suites-muted) !important;
-    -webkit-text-fill-color: var(--suites-muted) !important;
+  .ui-light [class*="__subtitle"],
+  .ui-light .text-color-primary {
+    color: #b69f64 !important;
+    -webkit-text-fill-color: #b69f64 !important;
     text-shadow: none !important;
   }
+  /* Mosaic + sticky media captions: cream titles over imagery */
   .l-nature-bg-caption .g1,
   .l-nature__caption .g1,
   .l-nature__slider-caption .g1,
@@ -639,9 +659,9 @@ ${hathorFontFaces}
   .preloader__content .g1,
   .preloader__content .h1,
   .l-gallery__title .h0 {
-    color: var(--suites-gold) !important;
-    -webkit-text-fill-color: var(--suites-gold) !important;
-    text-shadow: 0 2px 28px rgba(0, 0, 0, 0.55), 0 1px 2px rgba(0, 0, 0, 0.4) !important;
+    color: #f7f1e6 !important;
+    -webkit-text-fill-color: #f7f1e6 !important;
+    text-shadow: 0 4px 40px rgba(139, 105, 20, 0.55), 0 1px 2px rgba(139, 105, 20, 0.45) !important;
   }
   .l-nature-bg-caption p,
   .l-nature-bg-caption__text,
@@ -651,17 +671,22 @@ ${hathorFontFaces}
   .l-wellness__caption p,
   .l-place__caption p,
   .preloader__content p:not(.g1) {
-    color: var(--suites-on-media-body) !important;
-    -webkit-text-fill-color: var(--suites-on-media-body) !important;
-    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.5) !important;
+    color: rgba(247, 241, 230, 0.94) !important;
+    -webkit-text-fill-color: rgba(247, 241, 230, 0.94) !important;
+    text-shadow: 0 2px 18px rgba(139, 105, 20, 0.45) !important;
   }
   .l-nature-bg-caption [class*="__subtitle"],
   .l-nature-bg-caption__subtitle,
   .l-wellness__caption__subtitle,
   .l-place__caption__subtitle {
-    color: var(--suites-gold) !important;
-    -webkit-text-fill-color: var(--suites-gold) !important;
-    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45) !important;
+    color: #d4bf86 !important;
+    -webkit-text-fill-color: #d4bf86 !important;
+    text-shadow: 0 2px 14px rgba(139, 105, 20, 0.4) !important;
+  }
+  .text-color-primary,
+  .text-color-secondary,
+  .color-primary {
+    color: #b69f64 !important;
   }
   @media (max-width: 1024px) and (min-width: 481px) {
     .h0,
@@ -748,7 +773,7 @@ ${hathorFontFaces}
     background: radial-gradient(
       circle,
       rgba(182, 159, 100, 0.72) 0%,
-      rgba(205, 191, 166, 0.42) 40%,
+      rgba(236, 232, 223, 0.42) 40%,
       rgba(245, 234, 207, 0) 74%
     ) !important;
   }
@@ -1066,14 +1091,14 @@ html = html.replace(
 );
 
 // Baked Springs brand greens/blues that appear as literals in markup/JSON attrs.
-// Dark surfaces → beige #cdbfa6; accents → gold; skies → cream #f5eacf.
+// Dark surfaces → cream #ece8df; accents → gold; skies → cream #f5eacf.
 for (const [from, to] of [
-  ["#162d24", "#cdbfa6"],
-  ["#1b4732", "#cdbfa6"],
+  ["#162d24", "#ece8df"],
+  ["#1b4732", "#ece8df"],
   ["#274c19", "#b69f64"],
   ["#a7b431", "#b69f64"],
   ["#758535", "#b69f64"],
-  ["#101e27", "#cdbfa6"],
+  ["#101e27", "#ece8df"],
   ["#005160", "#b69f64"],
   ["#67bfda", "#f5eacf"],
   ["#bee5ee", "#f5eacf"],
@@ -1100,21 +1125,21 @@ html = footerReplaced;
 // Never rewrite neutral/black literals: those include shadows, masks and
 // browser-normalization rules and changing them alters the source rendering.
 const cssColorPatches = [
-  ["#162d24", "#cdbfa6"],
-  ["#1b4732", "#cdbfa6"],
+  ["#162d24", "#ece8df"],
+  ["#1b4732", "#ece8df"],
   ["#274c19", "#b69f64"],
   ["#a7b431", "#b69f64"],
   ["#758535", "#b69f64"],
-  ["#101e27", "#cdbfa6"],
+  ["#101e27", "#ece8df"],
   ["#005160", "#b69f64"],
   ["#67bfda", "#f5eacf"],
   ["#bee5ee", "#f5eacf"],
-  ["#e0d1b6", "#cdbfa6"],
+  ["#e0d1b6", "#ece8df"],
   ["#f5e8d1", "#f5eacf"],
   ["22,45,36", "205,191,166"],
-  ["22, 45, 36", "205, 191, 166"],
+  ["22, 45, 36", "236, 232, 223"],
   ["27,71,50", "205,191,166"],
-  ["27, 71, 50", "205, 191, 166"],
+  ["27, 71, 50", "236, 232, 223"],
   ["39,76,25", "182,159,100"],
   ["39, 76, 25", "182, 159, 100"],
   ["167,180,49", "182,159,100"],
@@ -1122,7 +1147,7 @@ const cssColorPatches = [
   ["117,133,53", "182,159,100"],
   ["117, 133, 53", "182, 159, 100"],
   ["16,30,39", "205,191,166"],
-  ["16, 30, 39", "205, 191, 166"],
+  ["16, 30, 39", "236, 232, 223"],
   ["0,81,96", "182,159,100"],
   ["0, 81, 96", "182, 159, 100"],
   ["103,191,218", "245,234,207"],
@@ -1130,7 +1155,7 @@ const cssColorPatches = [
   ["190,229,238", "245,234,207"],
   ["190, 229, 238", "245, 234, 207"],
   ["224,209,182", "205,191,166"],
-  ["224, 209, 182", "205, 191, 166"],
+  ["224, 209, 182", "236, 232, 223"],
   ["245,232,209", "245,234,207"],
   ["245, 232, 209", "245, 234, 207"],
 ];
