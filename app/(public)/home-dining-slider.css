@@ -1172,6 +1172,30 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   text-align: left;
 }
 
+/*
+ * Homepage pill stroke CTA, inverted for gold: transparent + white stroke/text,
+ * hover fills white with gold label (same size/easing as public-btn-outline-gold).
+ */
+.home-am-opening__cta.public-btn-outline-gold {
+  margin-top: 1.35rem;
+  background: transparent !important;
+  border-color: #ffffff !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: none;
+  pointer-events: auto;
+}
+
+.home-am-opening__cta.public-btn-outline-gold:hover,
+.home-am-opening__cta.public-btn-outline-gold:focus-visible {
+  background: #ffffff !important;
+  border-color: #ffffff !important;
+  color: var(--am-gold, #b69f64) !important;
+  -webkit-text-fill-color: var(--am-gold, #b69f64) !important;
+  box-shadow: 0 10px 26px rgba(44, 36, 25, 0.18);
+  transform: translateY(-2px);
+}
+
 @media (min-width: 1025px) {
   /*
    * Springs @ lg-up (literal):

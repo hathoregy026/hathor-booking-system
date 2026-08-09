@@ -1,6 +1,7 @@
 "use client";
 
 import { CSSProperties, useRef, type ReactNode } from "react";
+import Link from "next/link";
 import { AmenitiesRisingVideo } from "@/components/home/AmenitiesRisingVideo";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useTypographyInlineStyle } from "@/components/public/TypographySettingsProvider";
@@ -742,6 +743,12 @@ export function HomeAmenitiesSequence({
                 <p className="typo-on-images-body" style={onGoldBody}>
                   {openingFixedBody}
                 </p>
+                <Link
+                  href="/highlights"
+                  className="public-btn-outline-gold home-am-opening__cta"
+                >
+                  Discover more
+                </Link>
               </div>
             </div>
           </div>
