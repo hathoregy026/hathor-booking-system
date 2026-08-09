@@ -7,8 +7,11 @@ import { useToast } from "@/components/admin/ToastProvider";
 import { adminFetch } from "@/lib/admin-fetch";
 import type { AdminDevicePreview } from "@/lib/admin-device-preview";
 import {
+  DEFAULT_AMENITIES_SPACING,
   DEFAULT_AMENITIES_TYPOGRAPHY,
   parseAmenitiesTypography,
+  type AmenitiesSpacing,
+  type AmenitiesStyleRole,
   type AmenitiesTypography,
 } from "@/lib/amenities-typography-shared";
 import {
@@ -26,11 +29,16 @@ type CopyTarget =
   | { kind: "slide"; index: number }
   | { kind: "story"; index: number };
 
-type StyleRole = keyof AmenitiesTypography;
-
 type RailItem =
   | { id: string; label: string; mode: "copy"; target: CopyTarget; hint: string }
-  | { id: string; label: string; mode: "style"; role: StyleRole; hint: string };
+  | {
+      id: string;
+      label: string;
+      mode: "style";
+      role: AmenitiesStyleRole;
+      hint: string;
+    }
+  | { id: string; label: string; mode: "spacing"; hint: string };
 
 const SLIDE_LABELS = [
   "1 — Fullscreen intro",
@@ -70,21 +78,27 @@ const RAIL: RailItem[] = [
     label: "Title style",
     mode: "style",
     role: "title",
-    hint: "Font, size, and colour for all amenities titles.",
+    hint: "Big titles across the amenities sequence (intro, video, slider, opening, nature).",
   },
   {
     id: "style-indication",
-    label: "Indication style",
+    label: "Sub / indication style",
     mode: "style",
     role: "indication",
-    hint: "Font, size, and colour for small labels and CTAs.",
+    hint: "Small labels under titles (slider subs, nature sub, intro indication).",
   },
   {
     id: "style-body",
     label: "Body style",
     mode: "style",
     role: "body",
-    hint: "Font, size, and colour for amenities paragraphs.",
+    hint: "Paragraphs on gold panels (slider, opening rail, nature caption).",
+  },
+  {
+    id: "style-spacing",
+    label: "Spacing",
+    mode: "spacing",
+    hint: "Space between title → sub → body → Discover more across the sequence.",
   },
 ];
 
@@ -202,7 +216,7 @@ export function AmenitiesSequenceTypographyPanel() {
   };
 
   const patchStyle = (
-    role: StyleRole,
+    role: AmenitiesStyleRole,
     partial: Partial<TypographyTextStyle>,
   ) => {
     setStyles((prev) => ({
@@ -211,15 +225,22 @@ export function AmenitiesSequenceTypographyPanel() {
     }));
   };
 
+  const patchSpacing = (partial: Partial<AmenitiesSpacing>) => {
+    setStyles((prev) => ({
+      ...prev,
+      spacing: { ...prev.spacing, ...partial },
+    }));
+  };
+
   const sampleStyle = useMemo(() => {
     if (active.mode === "style") return styles[active.role];
-    if (active.target.kind === "slide") {
-      return styles.title;
-    }
     return styles.title;
   }, [active, styles]);
 
   const sampleText = useMemo(() => {
+    if (active.mode === "spacing") {
+      return "Title\nSub label\nBody copy sits under the sub.";
+    }
     if (active.mode === "style") {
       if (active.role === "title") return "Every landmark, a pleasure.";
       if (active.role === "indication") return "Sail The Nile On Hathor";
@@ -404,28 +425,88 @@ export function AmenitiesSequenceTypographyPanel() {
           </span>
           <h3>{active.label}</h3>
           <p className="typo-easy__stage-copy">{active.hint}</p>
-          <p
-            className="typo-easy__sample"
-            style={{
-              fontFamily: HATHOR_FONT_STACKS[sampleStyle.fontFamily],
-              fontSize: Math.min(
-                sampleStyle.fontSize,
-                device === "phone" ? 34 : 64,
-              ),
-              color: sampleStyle.color,
-              lineHeight: sampleStyle.lineHeight,
-              letterSpacing: sampleStyle.letterSpacing,
-              textShadow: sampleStyle.innerShadow
-                ? "1px 1px 0 rgba(0,0,0,.35), -.5px -.5px 0 rgba(255,255,255,.25)"
-                : "none",
-              whiteSpace: "pre-line",
-            }}
-          >
-            {sampleText}
-          </p>
+          {active.mode === "spacing" ? (
+            <div
+              className="typo-easy__sample"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                gap: 0,
+                color: styles.title.color,
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: HATHOR_FONT_STACKS[styles.title.fontFamily],
+                  fontSize: Math.min(styles.title.fontSize, 40),
+                  lineHeight: styles.title.lineHeight,
+                  marginBottom: styles.spacing.titleToIndication,
+                }}
+              >
+                Fine dining
+              </span>
+              <span
+                style={{
+                  fontFamily: HATHOR_FONT_STACKS[styles.indication.fontFamily],
+                  fontSize: styles.indication.fontSize,
+                  letterSpacing: styles.indication.letterSpacing,
+                  lineHeight: styles.indication.lineHeight,
+                  marginBottom: styles.spacing.indicationToBody,
+                  textTransform: "uppercase",
+                }}
+              >
+                Gastronomy
+              </span>
+              <span
+                style={{
+                  fontFamily: HATHOR_FONT_STACKS[styles.body.fontFamily],
+                  fontSize: styles.body.fontSize,
+                  lineHeight: styles.body.lineHeight,
+                  marginBottom: styles.spacing.bodyToCta,
+                  maxWidth: "22rem",
+                }}
+              >
+                Restaurant craft meets warm hospitality on the Nile.
+              </span>
+              <span
+                style={{
+                  fontSize: 12,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  border: `1px solid ${styles.title.color}`,
+                  borderRadius: 999,
+                  padding: "0.55rem 1.1rem",
+                }}
+              >
+                Discover more
+              </span>
+            </div>
+          ) : (
+            <p
+              className="typo-easy__sample"
+              style={{
+                fontFamily: HATHOR_FONT_STACKS[sampleStyle.fontFamily],
+                fontSize: Math.min(
+                  sampleStyle.fontSize,
+                  device === "phone" ? 34 : 64,
+                ),
+                color: sampleStyle.color,
+                lineHeight: sampleStyle.lineHeight,
+                letterSpacing: sampleStyle.letterSpacing,
+                textShadow: sampleStyle.innerShadow
+                  ? "1px 1px 0 rgba(0,0,0,.35), -.5px -.5px 0 rgba(255,255,255,.25)"
+                  : "none",
+                whiteSpace: "pre-line",
+              }}
+            >
+              {sampleText}
+            </p>
+          )}
           <p className="typo-easy__stage-meta">
-            Font: {sampleStyle.fontFamily} · Size: {sampleStyle.fontSize}px ·
-            Colour: {sampleStyle.color}
+            {active.mode === "spacing"
+              ? `Title→sub ${styles.spacing.titleToIndication}px · Sub→body ${styles.spacing.indicationToBody}px · Body→CTA ${styles.spacing.bodyToCta}px`
+              : `Font: ${sampleStyle.fontFamily} · Size: ${sampleStyle.fontSize}px · Colour: ${sampleStyle.color}`}
           </p>
         </div>
 
@@ -614,10 +695,68 @@ export function AmenitiesSequenceTypographyPanel() {
                 className="typo-easy__reset"
                 type="button"
                 onClick={() =>
-                  patchStyle(active.role, DEFAULT_AMENITIES_TYPOGRAPHY[active.role])
+                  patchStyle(
+                    active.role,
+                    DEFAULT_AMENITIES_TYPOGRAPHY[active.role],
+                  )
                 }
               >
                 <RotateCcw className="h-3.5 w-3.5" /> Reset this style
+              </button>
+            </>
+          ) : null}
+
+          {active.mode === "spacing" ? (
+            <>
+              <label className="typo-easy__field">
+                <span>Title → sub (px)</span>
+                <input
+                  className="admin-input"
+                  type="number"
+                  min={0}
+                  max={120}
+                  value={styles.spacing.titleToIndication}
+                  onChange={(e) =>
+                    patchSpacing({
+                      titleToIndication: Number(e.target.value),
+                    })
+                  }
+                />
+              </label>
+              <label className="typo-easy__field">
+                <span>Sub → body (px)</span>
+                <input
+                  className="admin-input"
+                  type="number"
+                  min={0}
+                  max={120}
+                  value={styles.spacing.indicationToBody}
+                  onChange={(e) =>
+                    patchSpacing({
+                      indicationToBody: Number(e.target.value),
+                    })
+                  }
+                />
+              </label>
+              <label className="typo-easy__field">
+                <span>Body → button (px)</span>
+                <input
+                  className="admin-input"
+                  type="number"
+                  min={0}
+                  max={160}
+                  value={styles.spacing.bodyToCta}
+                  onChange={(e) =>
+                    patchSpacing({ bodyToCta: Number(e.target.value) })
+                  }
+                />
+              </label>
+              <button
+                className="typo-easy__reset"
+                type="button"
+                onClick={() => patchSpacing({ ...DEFAULT_AMENITIES_SPACING })}
+              >
+                <RotateCcw className="h-3.5 w-3.5" /> Reset spacing
               </button>
             </>
           ) : null}

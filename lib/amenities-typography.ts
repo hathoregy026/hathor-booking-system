@@ -37,7 +37,9 @@ export async function getAmenitiesTypography(phone = false) {
 }
 
 export async function saveAmenitiesTypography(value: unknown, phone = false) {
-  const settings = amenitiesTypographySchema.parse(value);
+  const settings = amenitiesTypographySchema.parse(
+    parseAmenitiesTypography(value),
+  );
   const key = phone
     ? AMENITIES_TYPOGRAPHY_MOBILE_KEY
     : AMENITIES_TYPOGRAPHY_KEY;
@@ -76,6 +78,37 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
   const sel = (...suffixes: string[]) =>
     suffixes.map((suffix) => scopeRoots(roots, suffix)).join(",");
 
+  const gapTitleSub = settings.spacing.titleToIndication;
+  const gapSubBody = settings.spacing.indicationToBody;
+  const gapBodyCta = settings.spacing.bodyToCta;
+
+  const spacingVars = `${sel("")}{--am-typo-gap-title-sub:${gapTitleSub}px;--am-typo-gap-sub-body:${gapSubBody}px;--am-typo-gap-body-cta:${gapBodyCta}px;}`;
+
+  /*
+   * Stack gaps: title → sub → body → CTA.
+   * When a surface has no sub, title’s bottom margin still separates title → body.
+   */
+  const spacingRules = [
+    `${sel(" .home-am-slider__caption")}{gap:0!important;}`,
+    `${sel(
+      " .typo-on-images-title",
+      " .home-am-nature__title",
+      " .home-am-opening__title",
+    )}{margin-top:0!important;margin-bottom:var(--am-typo-gap-title-sub)!important;}`,
+    `${sel(
+      " .typo-on-images-indication",
+      " .home-am-nature__indication",
+    )}{margin-top:0!important;margin-bottom:var(--am-typo-gap-sub-body)!important;}`,
+    `${sel(
+      " .typo-on-images-body",
+      " .home-am-nature__body",
+    )}{margin-top:0!important;margin-bottom:var(--am-typo-gap-body-cta)!important;}`,
+    `${sel(
+      " .home-am-opening__cta",
+      " .home-am-nature__cta",
+    )}{margin-top:0!important;}`,
+  ].join("");
+
   /* Cream panel body uses site body_text; gold panels use white for contrast. */
   const creamInk = `${sel(
     " .home-am-intro__cream .typo-body-text",
@@ -100,18 +133,54 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
     " .home-am-slider__caption .typo-on-images-body *",
     " .home-am-opening__caption .home-am-opening__title",
     " .home-am-opening__caption .home-am-opening__title *",
+    " .home-am-opening__rail-copy .typo-on-images-title",
+    " .home-am-opening__rail-copy .typo-on-images-title *",
+    " .home-am-opening__rail-copy .typo-on-images-body",
+    " .home-am-opening__rail-copy .typo-on-images-body *",
     " .home-am-opening__right-inner .typo-on-images-body",
     " .home-am-opening__right-inner .typo-on-images-body *",
     " .home-am-opening__caption-text",
     " .home-am-opening__caption-text *",
+    " .home-am-nature__title",
+    " .home-am-nature__title *",
+    " .home-am-nature__indication",
+    " .home-am-nature__indication *",
+    " .home-am-nature__body",
+    " .home-am-nature__body *",
   )}{color:#ffffff!important;-webkit-text-fill-color:#ffffff!important;}`;
+
   return [
-    roleCss(sel(" .typo-on-images-title", " .typo-on-images-title *"), settings.title),
+    spacingVars,
     roleCss(
-      sel(" .typo-on-images-indication", " .typo-on-images-indication *"),
+      sel(
+        " .typo-on-images-title",
+        " .typo-on-images-title *",
+        " .home-am-nature__title",
+        " .home-am-nature__title *",
+        " .home-am-opening__title",
+        " .home-am-opening__title *",
+      ),
+      settings.title,
+    ),
+    roleCss(
+      sel(
+        " .typo-on-images-indication",
+        " .typo-on-images-indication *",
+        " .home-am-nature__indication",
+        " .home-am-nature__indication *",
+      ),
       settings.indication,
     ),
-    roleCss(sel(" .typo-on-images-body", " .typo-on-images-body *"), settings.body),
+    roleCss(
+      sel(
+        " .typo-on-images-body",
+        " .typo-on-images-body *",
+        " .home-am-nature__body",
+        " .home-am-nature__body *",
+      ),
+      settings.body,
+    ),
+    spacingRules,
     creamInk,
     creamTitleGold,
     goldInk,

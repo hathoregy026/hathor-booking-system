@@ -231,6 +231,8 @@ export function HomeAmenitiesSequence({
   const natureTitleLines = storyTitleLines(
     natureStory?.title?.trim() || "FINE DINING\nON DAHABIYA",
   );
+  /* Small sub under the title — same role as slider indication. */
+  const natureIndication = "Gastronomy";
   const natureCaption =
     natureStory?.body?.trim() ||
     "Restaurant craft meets warm hospitality — fresh local ingredients, Egyptian and international flavours, each meal a quiet celebration on the Nile.";
@@ -802,17 +804,22 @@ export function HomeAmenitiesSequence({
       >
         <div className="home-am-nature__copy">
           {/*
-            Dedicated classes (not typo-on-images-*) so CMS live typography
-            cannot force ~90px and inflate this short gold band.
+            Sized by Amenities Sequence typography (dashboard) — same title /
+            indication / body roles as slider gold captions.
           */}
-          <h3 className="home-am-nature__title">
+          <h3 className="home-am-nature__title typo-on-images-title">
             {natureTitleLines.map((line) => (
               <span key={line} className="home-am-title-line">
                 {line}
               </span>
             ))}
           </h3>
-          <p className="home-am-nature__body">{natureCaption}</p>
+          <p className="home-am-nature__indication typo-on-images-indication">
+            {natureIndication}
+          </p>
+          <p className="home-am-nature__body typo-on-images-body">
+            {natureCaption}
+          </p>
           <Link
             href={natureCtaHref}
             className="public-btn-outline-gold home-am-opening__cta home-am-nature__cta"
