@@ -204,6 +204,11 @@ export function HomeAmenitiesSequence({
     .map((line) => line.replace(/\.$/, "").trim())
     .filter(Boolean);
 
+  /* Fixed gold-column copy (pinned while RC cards scroll) */
+  const openingFixedTitleLines = ["SOUL OF", "THE NILE"];
+  const openingFixedBody =
+    "Aboard a quiet dahabiya, Egypt arrives without hurry — warm company, elegant cabins, and the river unfolding one measured bend at a time.";
+
   useHomeAmenitiesSequence(rootRef, sliderSlides.length);
 
   if (!intro) return null;
@@ -676,6 +681,29 @@ export function HomeAmenitiesSequence({
               </div>
             </div>
           </div>
+
+          {/*
+            Pinned to the gold right half of the stage (desktop/tablet).
+            Stays fixed in the viewport while the RC photo cards scroll.
+          */}
+          <div className="home-am-opening__fixed-copy home-am-opening__fixed-copy--pinned">
+            <h3
+              className="home-am-opening__fixed-title home-am-on-image-text"
+              style={onGoldTitle}
+            >
+              {openingFixedTitleLines.map((line) => (
+                <span key={line} className="home-am-title-line">
+                  {line}
+                </span>
+              ))}
+            </h3>
+            <p
+              className="home-am-opening__fixed-body typo-on-images-body"
+              style={onGoldBody}
+            >
+              {openingFixedBody}
+            </p>
+          </div>
         </div>
 
         {/*
@@ -698,12 +726,25 @@ export function HomeAmenitiesSequence({
           data-parallax--101-0='{"clip-path":"polygon(49.75vw 100vh, 100% 100vh, 100% 350vh, 49.75vw 350vh)"}'
         >
           <div className="home-am-opening__right-inner">
-            <p
-              className="home-am-opening__caption-text typo-on-images-body"
-              style={onGoldBody}
-            >
-              {stories[0]?.body || landmarks[3]?.body || intro.body}
-            </p>
+            {/* Phone: same copy sits in the gold column above the cards */}
+            <div className="home-am-opening__fixed-copy home-am-opening__fixed-copy--inline">
+              <h3
+                className="home-am-opening__fixed-title home-am-on-image-text"
+                style={onGoldTitle}
+              >
+                {openingFixedTitleLines.map((line) => (
+                  <span key={`m-${line}`} className="home-am-title-line">
+                    {line}
+                  </span>
+                ))}
+              </h3>
+              <p
+                className="home-am-opening__fixed-body typo-on-images-body"
+                style={onGoldBody}
+              >
+                {openingFixedBody}
+              </p>
+            </div>
 
             <div className="home-am-opening__list-wrap">
               <div className="home-am-opening__list" data-am-opening-cards>

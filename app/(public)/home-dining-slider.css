@@ -1109,7 +1109,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   pointer-events: auto;
 }
 
-/* Springs .i-opening__caption__text */
+/* Springs .i-opening__caption__text — legacy; fixed copy owns this role now */
 .home-am-opening__caption-text {
   max-width: 400px;
   margin: 0;
@@ -1120,7 +1120,72 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   -webkit-text-fill-color: #ffffff !important;
 }
 
-/* Springs .mt-5 */
+/*
+ * Opening gold-column copy — pinned to the right half of the sticky stage
+ * so it stays in the red-box zone while RC cards scroll underneath.
+ */
+.home-am-opening__fixed-copy--pinned {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 50vw;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  box-sizing: border-box;
+  padding: clamp(2rem, 6vh, 4rem) clamp(1.75rem, 4.5vw, 3.75rem);
+  pointer-events: none;
+}
+
+.home-am-opening__fixed-copy--inline {
+  display: none;
+}
+
+.home-am-opening__fixed-title {
+  margin: 0 0 1.1rem;
+  max-width: min(22rem, 100%);
+  font-family: var(
+    --public-serif,
+    var(--font-display, "Playfair Display", Georgia, serif)
+  ) !important;
+  font-weight: 400 !important;
+  font-style: italic;
+  font-size: clamp(1.75rem, 3.2vw, 3.25rem) !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.02em;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  text-align: left;
+}
+
+.home-am-opening__fixed-title .home-am-title-line {
+  display: block;
+  text-align: left;
+}
+
+.public-site .home-am-sequence .home-am-opening__fixed-title,
+.public-site .home-am-sequence .home-am-opening__fixed-title *,
+html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__fixed-title,
+html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__fixed-title * {
+  font-size: clamp(1.75rem, 3.2vw, 3.25rem) !important;
+  line-height: 1.15 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+.home-am-opening__fixed-body {
+  margin: 0;
+  max-width: min(22rem, 100%);
+  font-size: clamp(0.95rem, 1.2vw, 1.1rem) !important;
+  line-height: 1.55;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Springs .mt-5 — cards sit below the fixed copy’s visual zone */
 .home-am-opening__list-wrap {
   margin-top: 3rem;
 }
@@ -1427,6 +1492,28 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
     padding: 1.15rem;
     min-height: 0;
     background: var(--am-gold);
+  }
+
+  .home-am-opening__fixed-copy--pinned {
+    display: none;
+  }
+
+  .home-am-opening__fixed-copy--inline {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 0 0 1.25rem;
+    padding: 0;
+  }
+
+  .home-am-opening__fixed-title {
+    font-size: clamp(1.55rem, 7vw, 2.15rem) !important;
+    margin-bottom: 0.75rem;
+  }
+
+  .home-am-opening__fixed-body {
+    max-width: none;
+    font-size: clamp(0.95rem, 3.6vw, 1.05rem) !important;
   }
 
   /* Springs mobile: horizontal swipe for cards */

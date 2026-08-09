@@ -79,7 +79,7 @@ export const HOMEPAGE_ACCOMMODATIONS = {
 
 export const HOMEPAGE_LIFESTYLE = {
   title: "NOT JUST A CRUISE\nA WAY OF LIFE",
-  body: "Egypt’s soul, felt from a quiet dahabiya — warm company, elegant cabins, and the Nile unfolding at an unhurried pace.",
+  body: "Aboard a quiet dahabiya, Egypt arrives without hurry — warm company, elegant cabins, and the river unfolding one measured bend at a time.",
   href: "/about",
 } as const;
 
