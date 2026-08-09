@@ -216,14 +216,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
 .home-am-nature__content {
   position: relative;
   z-index: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
   height: calc(100 * var(--am-svh));
   box-sizing: border-box;
-  padding: clamp(1.25rem, 3vw, 2.5rem)
-    clamp(1.25rem, 4vw, 3.5rem)
-    clamp(2rem, 5vw, 4rem);
   pointer-events: none;
 }
 
@@ -239,54 +233,53 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   object-fit: cover !important;
 }
 
-.home-am-nature__caption {
+/*
+ * Caption lives in the gold band after the photo — not overlaid on the image.
+ * Same editorial title token as other amenities gold copy.
+ */
+.home-am-nature__gold-band {
   position: relative;
   z-index: 2;
-  max-width: min(42rem, 92%);
-  margin-right: clamp(0rem, 6vw, 4.5rem);
-  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: clamp(16rem, 46vh, 30rem);
+  padding: clamp(2.75rem, 9vh, 6rem) clamp(1.5rem, 7vw, 5.5rem);
+  box-sizing: border-box;
+  background: var(--am-gold);
 }
 
 .home-am-nature__caption-text {
-  margin: 0;
+  margin: 0 auto;
+  max-width: min(38rem, 92%);
+  text-align: center;
   font-family: var(
     --public-serif,
     var(--font-display, "Playfair Display", Georgia, serif)
   ) !important;
   font-weight: 400 !important;
   font-style: italic;
-  font-size: clamp(1.65rem, 3.4vw, 3.35rem) !important;
-  line-height: 1.2 !important;
+  font-size: clamp(1.55rem, 3.1vw, 2.85rem) !important;
+  line-height: 1.28 !important;
   letter-spacing: -0.02em;
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
-  text-shadow: 0 1px 2px rgba(22, 18, 14, 0.45);
+  text-shadow: none;
 }
 
-.home-am-nature__gradient {
-  filter: blur(10px);
-  height: 100svh;
-  left: 0;
-  overflow: hidden;
-  pointer-events: none;
-  position: absolute;
-  top: 0;
-  width: 100%;
-  z-index: 1;
-}
-
-.home-am-nature__gradient > div {
-  background: radial-gradient(
-    circle,
-    rgba(182, 159, 100, 0.55) 0%,
-    rgba(182, 159, 100, 0.28) 5%,
-    rgba(182, 159, 100, 0) 62%
-  );
-  bottom: -46vw;
-  height: 80vw;
-  left: -23vw;
-  position: absolute;
-  width: 80vw;
+.public-site .home-am-sequence .home-am-nature__caption-text,
+.public-site .home-am-sequence .home-am-nature__caption-text *,
+html[data-ex-experience] .ex-root .home-am-sequence .home-am-nature__caption-text,
+html[data-ex-experience]
+  .ex-root
+  .home-am-sequence
+  .home-am-nature__caption-text
+  * {
+  font-size: clamp(1.55rem, 3.1vw, 2.85rem) !important;
+  line-height: 1.28 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 /*
@@ -1516,6 +1509,16 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
     order: -1;
     max-width: none;
     padding: 0;
+  }
+
+  .home-am-nature__gold-band {
+    min-height: clamp(12rem, 38vh, 20rem);
+    padding: clamp(2rem, 6vh, 3.25rem) 1.15rem;
+  }
+
+  .home-am-nature__caption-text {
+    font-size: clamp(1.35rem, 6.2vw, 1.85rem) !important;
+    line-height: 1.32 !important;
   }
 
   /* Springs mobile: horizontal swipe for cards */

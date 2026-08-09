@@ -230,7 +230,7 @@ export function HomeAmenitiesSequence({
   const natureCaption =
     stories[2]?.body?.trim() ||
     stories[1]?.body?.trim() ||
-    "On the Nile, every bend opens another chapter — private dahabiya passages where light, water, and quiet company write the itinerary.";
+    "Restaurant craft meets warm hospitality — fresh local ingredients, Egyptian and international flavours, each meal a quiet celebration on the Nile.";
 
   return (
     <section
@@ -755,7 +755,7 @@ export function HomeAmenitiesSequence({
         </div>
       </div>
 
-      {/* ===== i-nature — full-bleed image (Springs handoff after i-opening) ===== */}
+      {/* ===== i-nature — full-bleed image, then gold caption band (not on photo) ===== */}
       <div
         className="home-am-nature home-am-chapter home-am-chapter--under-previous sticky sticky--full-height sticky--under-previous sticky--under-next"
         data-am-nature
@@ -783,17 +783,17 @@ export function HomeAmenitiesSequence({
                 previewAnchor={natureImage.previewAnchor}
               />
             </div>
-
-            <div className="home-am-nature__caption">
-              <p className="home-am-nature__caption-text home-am-on-image-text">
-                {natureCaption}
-              </p>
-            </div>
-
-            <div className="home-am-nature__gradient" aria-hidden="true">
-              <div />
-            </div>
           </div>
+        </div>
+
+        {/* Gold band after the image — caption reads here, never over the photo */}
+        <div className="home-am-nature__gold-band">
+          <p
+            className="home-am-nature__caption-text typo-on-images-title"
+            style={onGoldTitle}
+          >
+            {natureCaption}
+          </p>
         </div>
       </div>
       </div>{/* /.home-am-dark-band — Springs ui-dark-background */}
