@@ -1,13 +1,11 @@
 import { prisma } from "@/lib/prisma";
 import { withDb } from "@/lib/db-safe";
-import {
-  HATHOR_FONT_STACKS,
-  type TypographyTextStyle,
-} from "@/lib/typography-settings-shared";
+import { HATHOR_FONT_STACKS } from "@/lib/typography-settings-shared";
 import {
   DEFAULT_AMENITIES_TYPOGRAPHY,
   amenitiesTypographySchema,
   parseAmenitiesTypography,
+  type AmenitiesTextStyle,
   type AmenitiesTypography,
 } from "@/lib/amenities-typography-shared";
 
@@ -53,12 +51,17 @@ export async function saveAmenitiesTypography(value: unknown, phone = false) {
   return settings;
 }
 
-function roleCss(selector: string, style: TypographyTextStyle) {
+/** Shared metrics (no colour) — colour is applied per surface below. */
+function roleMetricsCss(selector: string, style: AmenitiesTextStyle) {
   const fontStack = HATHOR_FONT_STACKS[style.fontFamily].replace(
     /var\([^)]*\),?\s*/g,
     "",
   );
-  return `${selector}{font-family:${fontStack}!important;font-size:${style.fontSize}px!important;color:${style.color}!important;-webkit-text-fill-color:${style.color}!important;line-height:${style.lineHeight}!important;letter-spacing:${style.letterSpacing}px!important;${style.innerShadow ? "text-shadow:1px 1px 0 rgba(0,0,0,.35),-.5px -.5px 0 rgba(255,255,255,.25)!important;" : ""}}`;
+  return `${selector}{font-family:${fontStack}!important;font-size:${style.fontSize}px!important;line-height:${style.lineHeight}!important;letter-spacing:${style.letterSpacing}px!important;${style.innerShadow ? "text-shadow:1px 1px 0 rgba(0,0,0,.35),-.5px -.5px 0 rgba(255,255,255,.25)!important;" : ""}}`;
+}
+
+function roleColorCss(selector: string, color: string) {
+  return `${selector}{color:${color}!important;-webkit-text-fill-color:${color}!important;}`;
 }
 
 /**
@@ -83,12 +86,11 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
   const gapBodyCta = settings.spacing.bodyToCta;
   const L = settings.layout;
 
-  const spacingVars = `${sel("")}{--am-typo-gap-title-sub:${gapTitleSub}px;--am-typo-gap-sub-body:${gapSubBody}px;--am-typo-gap-body-cta:${gapBodyCta}px;--am-typo-align:${L.align};--am-typo-title-x:${L.titleX}px;--am-typo-title-y:${L.titleY}px;--am-typo-indication-x:${L.indicationX}px;--am-typo-indication-y:${L.indicationY}px;--am-typo-body-x:${L.bodyX}px;--am-typo-body-y:${L.bodyY}px;}`;
+  const spacingVars = `${sel("")}{--am-typo-gap-title-sub:${gapTitleSub}px;--am-typo-gap-sub-body:${gapSubBody}px;--am-typo-gap-body-cta:${gapBodyCta}px;--am-typo-align:${L.align};--am-typo-title-x:${L.titleX}px;--am-typo-title-y:${L.titleY}px;--am-typo-indication-x:${L.indicationX}px;--am-typo-indication-y:${L.indicationY}px;--am-typo-body-x:${L.bodyX}px;--am-typo-body-y:${L.bodyY}px;--am-typo-title-on-image:${settings.title.colorOnImage};--am-typo-title-on-bg:${settings.title.colorOnBg};--am-typo-indication-on-image:${settings.indication.colorOnImage};--am-typo-indication-on-bg:${settings.indication.colorOnBg};--am-typo-body-on-image:${settings.body.colorOnImage};--am-typo-body-on-bg:${settings.body.colorOnBg};}`;
 
   /*
    * Stack gaps: title → sub → body → CTA.
    * Free X/Y offsets (hero-style) via relative left/top — avoids fighting GSAP transforms.
-   * Indication stays stacked above title/body in paint order where captions overlap.
    */
   const spacingRules = [
     `${sel(" .home-am-slider__caption")}{gap:0!important;text-align:var(--am-typo-align,left)!important;}`,
@@ -123,45 +125,116 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
     " .home-am-video__title-body *",
   )}{color:var(--typo-body-text-color,#3d3a36)!important;-webkit-text-fill-color:var(--typo-body-text-color,#3d3a36)!important;font-family:var(--typo-body-text-font)!important;font-size:var(--typo-body-text-size)!important;line-height:var(--typo-body-text-line-height)!important;letter-spacing:var(--typo-body-text-letter-spacing)!important;text-shadow:none!important;}`;
 
-  return [
-    spacingVars,
-    roleCss(
+  const titleMetrics = roleMetricsCss(
+    sel(
+      " .typo-on-images-title",
+      " .typo-on-images-title *",
+      " .home-am-nature__title",
+      " .home-am-nature__title *",
+      " .home-am-opening__title",
+      " .home-am-opening__title *",
+      " .home-am-on-cream-title",
+      " .home-am-on-cream-title *",
+    ),
+    settings.title,
+  );
+  const indicationMetrics = roleMetricsCss(
+    sel(
+      " .typo-on-images-indication",
+      " .typo-on-images-indication *",
+      " .home-am-nature__indication",
+      " .home-am-nature__indication *",
+    ),
+    settings.indication,
+  );
+  const bodyMetrics = roleMetricsCss(
+    sel(
+      " .typo-on-images-body",
+      " .typo-on-images-body *",
+      " .home-am-nature__body",
+      " .home-am-nature__body *",
+      " .home-am-opening__caption-text",
+      " .home-am-opening__caption-text *",
+    ),
+    settings.body,
+  );
+
+  /* Photo overlays */
+  const onImageColors = [
+    roleColorCss(
       sel(
-        " .typo-on-images-title",
-        " .typo-on-images-title *",
-        " .home-am-nature__title",
-        " .home-am-nature__title *",
-        " .home-am-opening__title",
-        " .home-am-opening__title *",
-        " .home-am-on-cream-title",
-        " .home-am-on-cream-title *",
         " .home-am-on-image-text.typo-on-images-title",
         " .home-am-on-image-text.typo-on-images-title *",
+        " .home-am-intro__title",
+        " .home-am-intro__title *",
+        " .home-am-opening__title.home-am-on-image-text",
+        " .home-am-opening__title.home-am-on-image-text *",
       ),
-      settings.title,
+      settings.title.colorOnImage,
     ),
-    roleCss(
+    roleColorCss(
       sel(
-        " .typo-on-images-indication",
-        " .typo-on-images-indication *",
-        " .home-am-nature__indication",
-        " .home-am-nature__indication *",
         " .home-am-on-image-text.typo-on-images-indication",
         " .home-am-on-image-text.typo-on-images-indication *",
+        " .home-am-intro__indication",
+        " .home-am-intro__indication *",
       ),
-      settings.indication,
+      settings.indication.colorOnImage,
     ),
-    roleCss(
+  ].join("");
+
+  /* Solid panels (gold captions, cream titles, nature band) */
+  const onBgColors = [
+    roleColorCss(
       sel(
-        " .typo-on-images-body",
-        " .typo-on-images-body *",
-        " .home-am-nature__body",
-        " .home-am-nature__body *",
+        " .home-am-slider__caption .typo-on-images-title",
+        " .home-am-slider__caption .typo-on-images-title *",
+        " .home-am-video__caption .typo-on-images-title",
+        " .home-am-video__caption .typo-on-images-title *",
+        " .home-am-opening__rail-copy .typo-on-images-title",
+        " .home-am-opening__rail-copy .typo-on-images-title *",
+        " .home-am-nature__title",
+        " .home-am-nature__title *",
+        " .home-am-on-cream-title",
+        " .home-am-on-cream-title *",
+      ),
+      settings.title.colorOnBg,
+    ),
+    roleColorCss(
+      sel(
+        " .home-am-slider__caption .typo-on-images-indication",
+        " .home-am-slider__caption .typo-on-images-indication *",
+        " .home-am-nature__indication",
+        " .home-am-nature__indication *",
+      ),
+      settings.indication.colorOnBg,
+    ),
+    roleColorCss(
+      sel(
+        " .home-am-slider__caption .typo-on-images-body",
+        " .home-am-slider__caption .typo-on-images-body *",
+        " .home-am-video__caption .typo-on-images-body",
+        " .home-am-video__caption .typo-on-images-body *",
+        " .home-am-opening__rail-copy .typo-on-images-body",
+        " .home-am-opening__rail-copy .typo-on-images-body *",
+        " .home-am-opening__right-inner .typo-on-images-body",
+        " .home-am-opening__right-inner .typo-on-images-body *",
         " .home-am-opening__caption-text",
         " .home-am-opening__caption-text *",
+        " .home-am-nature__body",
+        " .home-am-nature__body *",
       ),
-      settings.body,
+      settings.body.colorOnBg,
     ),
+  ].join("");
+
+  return [
+    spacingVars,
+    titleMetrics,
+    indicationMetrics,
+    bodyMetrics,
+    onImageColors,
+    onBgColors,
     spacingRules,
     creamInk,
   ].join("");

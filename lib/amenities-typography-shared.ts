@@ -1,5 +1,12 @@
 import { z } from "zod";
-import { typographyTextStyleSchema } from "@/lib/typography-settings-shared";
+import {
+  typographyTextStyleSchema,
+  type TypographyTextStyle,
+} from "@/lib/typography-settings-shared";
+
+const hexColor = z
+  .string()
+  .regex(/^#[0-9A-Fa-f]{6}$/, "Use a 6-digit hex color (#RRGGBB)");
 
 export const amenitiesSpacingSchema = z.object({
   /** Space under the big title (to sub, or to body when no sub). */
@@ -44,42 +51,80 @@ export const DEFAULT_AMENITIES_LAYOUT: AmenitiesLayout = {
   bodyY: 0,
 };
 
+/**
+ * Amenities role style: shared type metrics + separate colours for
+ * photo overlays vs solid backgrounds (gold / cream panels).
+ */
+export const amenitiesTextStyleSchema = typographyTextStyleSchema.extend({
+  /** Colour when text sits on a photo / media. */
+  colorOnImage: hexColor,
+  /** Colour when text sits on a solid panel background. */
+  colorOnBg: hexColor,
+});
+
+export type AmenitiesTextStyle = z.infer<typeof amenitiesTextStyleSchema>;
+
 export const amenitiesTypographySchema = z.object({
-  title: typographyTextStyleSchema,
-  indication: typographyTextStyleSchema,
-  body: typographyTextStyleSchema,
+  title: amenitiesTextStyleSchema,
+  indication: amenitiesTextStyleSchema,
+  body: amenitiesTextStyleSchema,
   spacing: amenitiesSpacingSchema,
   layout: amenitiesLayoutSchema,
 });
 
 export type AmenitiesTypography = z.infer<typeof amenitiesTypographySchema>;
 
-/** Defaults match the amenities sequence gold on-image look. */
+function roleDefaults(
+  base: TypographyTextStyle,
+  colorOnImage: string,
+  colorOnBg: string,
+): AmenitiesTextStyle {
+  return {
+    ...base,
+    color: colorOnBg,
+    colorOnImage,
+    colorOnBg,
+  };
+}
+
+/** Defaults: white on photos, gold on solid panels. */
 export const DEFAULT_AMENITIES_TYPOGRAPHY: AmenitiesTypography = {
-  title: {
-    fontFamily: "Gamgote",
-    fontSize: 56,
-    color: "#B69F64",
-    lineHeight: 1.05,
-    letterSpacing: 0,
-    innerShadow: false,
-  },
-  indication: {
-    fontFamily: "Agraham",
-    fontSize: 14,
-    color: "#B69F64",
-    lineHeight: 1.3,
-    letterSpacing: 1.2,
-    innerShadow: false,
-  },
-  body: {
-    fontFamily: "Agraham",
-    fontSize: 18,
-    color: "#B69F64",
-    lineHeight: 1.5,
-    letterSpacing: 0,
-    innerShadow: false,
-  },
+  title: roleDefaults(
+    {
+      fontFamily: "Gamgote",
+      fontSize: 56,
+      color: "#B69F64",
+      lineHeight: 1.05,
+      letterSpacing: 0,
+      innerShadow: false,
+    },
+    "#FFFFFF",
+    "#B69F64",
+  ),
+  indication: roleDefaults(
+    {
+      fontFamily: "Agraham",
+      fontSize: 14,
+      color: "#B69F64",
+      lineHeight: 1.3,
+      letterSpacing: 1.2,
+      innerShadow: false,
+    },
+    "#FFFFFF",
+    "#B69F64",
+  ),
+  body: roleDefaults(
+    {
+      fontFamily: "Agraham",
+      fontSize: 18,
+      color: "#B69F64",
+      lineHeight: 1.5,
+      letterSpacing: 0,
+      innerShadow: false,
+    },
+    "#FFFFFF",
+    "#B69F64",
+  ),
   spacing: { ...DEFAULT_AMENITIES_SPACING },
   layout: { ...DEFAULT_AMENITIES_LAYOUT },
 };
@@ -99,6 +144,13 @@ function asFiniteNumber(value: unknown): number | undefined {
 function clampNum(n: number, min: number, max: number, fallback: number) {
   if (!Number.isFinite(n)) return fallback;
   return Math.min(max, Math.max(min, n));
+}
+
+function asHex(value: unknown, fallback: string): string {
+  if (typeof value === "string" && /^#[0-9A-Fa-f]{6}$/.test(value)) {
+    return value;
+  }
+  return fallback;
 }
 
 function parseAmenitiesLayout(raw: unknown): AmenitiesLayout {
@@ -149,26 +201,49 @@ function parseAmenitiesLayout(raw: unknown): AmenitiesLayout {
   };
 }
 
-/** Soft-merge so older saved JSON without `spacing` / `layout` still loads. */
+function parseAmenitiesTextStyle(
+  raw: unknown,
+  fallback: AmenitiesTextStyle,
+): AmenitiesTextStyle {
+  const src =
+    raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
+  const legacyColor = asHex(src.color, fallback.color);
+  const colorOnImage = asHex(
+    src.colorOnImage,
+    asHex(src.color, fallback.colorOnImage),
+  );
+  const colorOnBg = asHex(src.colorOnBg, legacyColor || fallback.colorOnBg);
+  const merged = {
+    ...fallback,
+    ...src,
+    color: colorOnBg,
+    colorOnImage,
+    colorOnBg,
+  };
+  try {
+    return amenitiesTextStyleSchema.parse(merged);
+  } catch {
+    return {
+      ...fallback,
+      color: colorOnBg,
+      colorOnImage,
+      colorOnBg,
+    };
+  }
+}
+
+/** Soft-merge so older saved JSON without spacing / layout / dual colours still loads. */
 export function parseAmenitiesTypography(raw: unknown): AmenitiesTypography {
   if (!raw || typeof raw !== "object") return DEFAULT_AMENITIES_TYPOGRAPHY;
   const o = raw as Record<string, unknown>;
   try {
     return amenitiesTypographySchema.parse({
-      title: {
-        ...DEFAULT_AMENITIES_TYPOGRAPHY.title,
-        ...(typeof o.title === "object" && o.title ? o.title : {}),
-      },
-      indication: {
-        ...DEFAULT_AMENITIES_TYPOGRAPHY.indication,
-        ...(typeof o.indication === "object" && o.indication
-          ? o.indication
-          : {}),
-      },
-      body: {
-        ...DEFAULT_AMENITIES_TYPOGRAPHY.body,
-        ...(typeof o.body === "object" && o.body ? o.body : {}),
-      },
+      title: parseAmenitiesTextStyle(o.title, DEFAULT_AMENITIES_TYPOGRAPHY.title),
+      indication: parseAmenitiesTextStyle(
+        o.indication,
+        DEFAULT_AMENITIES_TYPOGRAPHY.indication,
+      ),
+      body: parseAmenitiesTextStyle(o.body, DEFAULT_AMENITIES_TYPOGRAPHY.body),
       spacing: {
         ...DEFAULT_AMENITIES_TYPOGRAPHY.spacing,
         ...(typeof o.spacing === "object" && o.spacing ? o.spacing : {}),

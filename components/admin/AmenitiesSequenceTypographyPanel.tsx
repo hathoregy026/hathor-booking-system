@@ -28,6 +28,7 @@ import {
   type AmenitiesLayout,
   type AmenitiesSpacing,
   type AmenitiesStyleRole,
+  type AmenitiesTextStyle,
 } from "@/lib/amenities-typography-shared";
 import {
   DEFAULT_WEBSITE_TEXT,
@@ -45,6 +46,7 @@ type CopyTarget =
   | { kind: "story"; index: number };
 
 type DragLine = AmenitiesStyleRole;
+type PreviewSurface = "onImage" | "onBg";
 
 type RailItem =
   | { id: string; label: string; mode: "copy"; target: CopyTarget; hint: string }
@@ -162,6 +164,8 @@ export function AmenitiesSequenceTypographyPanel() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [dragLine, setDragLine] = useState<DragLine>("indication");
+  const [previewSurface, setPreviewSurface] =
+    useState<PreviewSurface>("onImage");
   const dragRef = useRef<{
     line: DragLine;
     startX: number;
@@ -264,13 +268,23 @@ export function AmenitiesSequenceTypographyPanel() {
 
   const patchStyle = (
     role: AmenitiesStyleRole,
-    partial: Partial<TypographyTextStyle>,
+    partial: Partial<AmenitiesTextStyle>,
   ) => {
-    setStyles((prev) => ({
-      ...prev,
-      [role]: { ...prev[role], ...partial },
-    }));
+    setStyles((prev) => {
+      const nextRole = { ...prev[role], ...partial };
+      /* Keep legacy `color` aligned with on-bg for anything still reading it. */
+      if (partial.colorOnBg) nextRole.color = partial.colorOnBg;
+      else if (partial.color && !partial.colorOnBg && !partial.colorOnImage) {
+        nextRole.colorOnBg = partial.color;
+      }
+      return { ...prev, [role]: nextRole };
+    });
   };
+
+  const rolePreviewColor = (role: AmenitiesStyleRole) =>
+    previewSurface === "onImage"
+      ? styles[role].colorOnImage
+      : styles[role].colorOnBg;
 
   const patchSpacing = (partial: Partial<AmenitiesSpacing>) => {
     setStyles((prev) => ({
@@ -586,6 +600,31 @@ export function AmenitiesSequenceTypographyPanel() {
           </div>
 
           <div
+            className="typo-stage__align"
+            role="tablist"
+            aria-label="Colour surface preview"
+          >
+            <button
+              type="button"
+              role="tab"
+              aria-selected={previewSurface === "onImage"}
+              className={`typo-stage__align-btn${previewSurface === "onImage" ? " typo-stage__align-btn--on" : ""}`}
+              onClick={() => setPreviewSurface("onImage")}
+            >
+              On image
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={previewSurface === "onBg"}
+              className={`typo-stage__align-btn${previewSurface === "onBg" ? " typo-stage__align-btn--on" : ""}`}
+              onClick={() => setPreviewSurface("onBg")}
+            >
+              On background
+            </button>
+          </div>
+
+          <div
             className="typo-stage__canvas"
             style={{
               justifyContent:
@@ -614,7 +653,7 @@ export function AmenitiesSequenceTypographyPanel() {
                   styles.title.fontSize,
                   device === "phone" ? 34 : 48,
                 ),
-                color: styles.title.color,
+                color: rolePreviewColor("title"),
                 lineHeight: styles.title.lineHeight,
                 letterSpacing: styles.title.letterSpacing,
                 textShadow: roleTextShadow(styles.title.innerShadow),
@@ -642,7 +681,7 @@ export function AmenitiesSequenceTypographyPanel() {
                 zIndex: 5,
                 fontFamily: HATHOR_FONT_STACKS[styles.indication.fontFamily],
                 fontSize: styles.indication.fontSize,
-                color: styles.indication.color,
+                color: rolePreviewColor("indication"),
                 lineHeight: styles.indication.lineHeight,
                 letterSpacing: styles.indication.letterSpacing,
                 textTransform: "uppercase",
@@ -670,7 +709,7 @@ export function AmenitiesSequenceTypographyPanel() {
                 zIndex: dragLine === "body" ? 4 : 2,
                 fontFamily: HATHOR_FONT_STACKS[styles.body.fontFamily],
                 fontSize: styles.body.fontSize,
-                color: styles.body.color,
+                color: rolePreviewColor("body"),
                 lineHeight: styles.body.lineHeight,
                 letterSpacing: styles.body.letterSpacing,
                 textShadow: roleTextShadow(styles.body.innerShadow),
@@ -692,7 +731,7 @@ export function AmenitiesSequenceTypographyPanel() {
           </div>
 
           <p className="typo-stage__readout">
-            {`Align ${layout.align} · ${DRAG_LINE_LABELS[dragLine]} at ${activeOffset.x}px, ${activeOffset.y}px · ${sampleStyle.fontFamily} ${sampleStyle.fontSize}px`}
+            {`Align ${layout.align} · ${previewSurface === "onImage" ? "On image" : "On background"} · ${DRAG_LINE_LABELS[dragLine]} at ${activeOffset.x}px, ${activeOffset.y}px · ${sampleStyle.fontFamily} ${sampleStyle.fontSize}px`}
           </p>
         </div>
 
@@ -851,18 +890,40 @@ export function AmenitiesSequenceTypographyPanel() {
                     }
                   />
                 </label>
+              </div>
+              <div className="typo-easy__fields-row">
                 <label className="typo-easy__field">
-                  <span>Colour</span>
+                  <span>Colour on image</span>
                   <input
                     className="admin-input"
                     type="color"
-                    value={styles[active.role].color}
-                    onChange={(e) =>
-                      patchStyle(active.role, { color: e.target.value })
-                    }
+                    value={styles[active.role].colorOnImage}
+                    onChange={(e) => {
+                      setPreviewSurface("onImage");
+                      patchStyle(active.role, {
+                        colorOnImage: e.target.value,
+                      });
+                    }}
+                  />
+                </label>
+                <label className="typo-easy__field">
+                  <span>Colour on background</span>
+                  <input
+                    className="admin-input"
+                    type="color"
+                    value={styles[active.role].colorOnBg}
+                    onChange={(e) => {
+                      setPreviewSurface("onBg");
+                      patchStyle(active.role, {
+                        colorOnBg: e.target.value,
+                      });
+                    }}
                   />
                 </label>
               </div>
+              <p className="typo-easy__controls-hint">
+                On image = photo overlays. On background = gold / cream panels.
+              </p>
               <div className="typo-easy__fields-row">
                 <label className="typo-easy__field">
                   <span>Line height</span>
