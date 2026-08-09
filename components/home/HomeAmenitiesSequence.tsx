@@ -788,9 +788,8 @@ export function HomeAmenitiesSequence({
       </div>
 
       {/*
-        Must sit OUTSIDE #home-am-nature — that chapter’s under-previous clip-path
-        was hiding this band. Nature under-next pulls this gold panel up after the
-        photo so the caption reads on gold, never on the image.
+        Outside #home-am-nature (clip-path was hiding the band). Scrolls in after
+        the photo — no under-next, so Voyages cannot stack over the caption.
       */}
       <div
         className="home-am-nature__gold-band"
@@ -806,8 +805,7 @@ export function HomeAmenitiesSequence({
       {/*
         Our Voyages — Hathor accordion (NOT Springs i-interiors sticky runway).
         Must stay in normal document flow: no sticky stage, no under-previous
-        clip, no loco pin. Nature's under-next still pulls this cream panel up
-        to cover; columns/open panel need height:auto overflow:visible.
+        clip, no loco pin. columns/open panel need height:auto overflow:visible.
       */}
       {voyages ? (
         <div className="home-am-voyages" data-am-voyages id="home-am-voyages">
