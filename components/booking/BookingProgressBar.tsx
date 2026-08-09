@@ -3,10 +3,6 @@
 import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { formatPrice } from "@/lib/client-dates";
-import {
-  HATHOR_BRAND_NAME,
-  HATHOR_HERO_ICON_SRC,
-} from "@/lib/branding";
 import type { RoomSearchConfig, StayDurationValue } from "@/lib/booking-search-config";
 import type { AvailableRoom } from "@/lib/booking-types";
 import { getSelectedRooms } from "@/store/bookingStore";
@@ -208,15 +204,6 @@ export function BookingProgressBar({
     <div className="hathor-checkout-chrome">
       <nav className="hathor-checkout-steps" aria-label="Booking progress">
         <div className="hathor-checkout-steps__inner">
-          <Link href="/" className="hathor-checkout-steps__logo" aria-label="Hathor home">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={HATHOR_HERO_ICON_SRC}
-              alt={HATHOR_BRAND_NAME}
-              className="hathor-checkout-steps__logo-img hathor-checkout-steps__logo-img--icon"
-            />
-          </Link>
-
           <ol className="hathor-checkout-steps__segments">
             {segments.map((segment) => {
               const canNavigate =

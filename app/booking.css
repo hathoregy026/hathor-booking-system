@@ -27,6 +27,11 @@
   padding-top: calc(4.75rem + env(safe-area-inset-top, 0px));
 }
 
+/* Full-bleed hero sits under the transparent nav — same 100svh as other pages */
+.booking-page--with-hero {
+  padding-top: 0;
+}
+
 @keyframes bookingFadeIn {
   from {
     opacity: 0;
@@ -977,34 +982,6 @@
   overflow: visible;
 }
 
-.hathor-checkout-steps__logo {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  align-self: stretch;
-  padding: 0.5rem 1.25rem;
-  min-width: 5.5rem;
-  background: var(--hathor-checkout-bar);
-  border-right: 1px solid rgb(255 255 255 / 0.28);
-  text-decoration: none;
-}
-
-.hathor-checkout-steps__logo-img {
-  display: block;
-  height: 3.85rem;
-  width: auto;
-  max-height: calc(100% - 0.5rem);
-  max-width: 11rem;
-  object-fit: contain;
-}
-
-.hathor-checkout-steps__logo-img--icon {
-  height: 2.75rem;
-  width: 2.75rem;
-  max-width: 2.75rem;
-}
-
 .hathor-checkout-steps__segments {
   display: flex;
   flex: 1;
@@ -1228,22 +1205,6 @@
     min-height: 4.25rem;
   }
 
-  .hathor-checkout-steps__logo {
-    min-width: 4rem;
-    padding: 0.35rem 0.65rem;
-  }
-
-  .hathor-checkout-steps__logo-img {
-    height: 2.5rem;
-    max-width: 5rem;
-  }
-
-  .hathor-checkout-steps__logo-img--icon {
-    height: 2.15rem;
-    width: 2.15rem;
-    max-width: 2.15rem;
-  }
-
   .hathor-checkout-steps__segment {
     min-width: 7.25rem;
     flex: 0 0 auto;
@@ -1292,22 +1253,6 @@
 
   .hathor-checkout-steps__value {
     font-size: 1.25rem;
-  }
-
-  .hathor-checkout-steps__logo {
-    padding: 0.55rem 1.25rem;
-    min-width: 5.75rem;
-  }
-
-  .hathor-checkout-steps__logo-img {
-    height: 4.35rem;
-    max-width: 13rem;
-  }
-
-  .hathor-checkout-steps__logo-img--icon {
-    height: 3rem;
-    width: 3rem;
-    max-width: 3rem;
   }
 }
 

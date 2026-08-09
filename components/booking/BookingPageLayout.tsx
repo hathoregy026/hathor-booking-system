@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { ShoppingBag, X } from "lucide-react";
+import { PublicSiteHero } from "@/components/pages/PublicSiteHero";
 import { Footer } from "@/components/layout/Footer";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
@@ -81,8 +82,15 @@ export function BookingPageLayout({
         <PublicNavbar />
 
         <div
-          className={`booking-page${isFocusedCheckout ? " booking-page--checkout-focus" : ""}`}
+          className={`booking-page booking-page--with-hero${isFocusedCheckout ? " booking-page--checkout-focus" : ""}`}
         >
+          <PublicSiteHero
+            lineRight="Book Your Voyage"
+            lineLeft="Hathor Dahabiya"
+            posterImageName="cruises-hero"
+            showCta={false}
+          />
+
           {!isFocusedCheckout && bannerVisible ? (
             <div
               className="relative flex items-center justify-center px-10 py-2.5 text-center text-xs sm:text-sm"
