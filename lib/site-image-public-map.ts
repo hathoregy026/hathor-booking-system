@@ -23,13 +23,15 @@ const AMENITIES_SEQUENCE_LEGACY_FALLBACK: Readonly<Record<string, string>> = {
   "home-amenities-2": "home-split-courtyard",
   "home-amenities-3": "about-hero",
   "home-amenities-4": "home-story-legacy-large",
-  /* Older shared story slots → new unique slider / card mounts */
+  /* Older shared story slots → new unique slider / card mounts.
+   * Must point at real SITE_IMAGE_SLOTS names (not removed aliases). */
   "home-amenities-5": "home-amenities-4",
-  "home-amenities-6": "home-amenities-way-of-life",
-  "home-amenities-7": "home-amenities-dining",
+  "home-amenities-6": "home-story-way-of-life",
+  "home-amenities-7": "home-story-dining",
   "home-amenities-8": "home-story-legacy-large",
-  "home-amenities-9": "home-amenities-way-of-life",
-  "home-amenities-10": "home-amenities-dining",
+  /* Opening card 1 (pool / A Way of Life) — was orphaned on home-amenities-way-of-life */
+  "home-amenities-9": "home-story-way-of-life",
+  "home-amenities-10": "home-story-dining",
   "home-amenities-11": "home-amenities-2",
   "home-amenities-12": "about-hero",
 };

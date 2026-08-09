@@ -46,18 +46,18 @@ export const AMENITIES_SEQUENCE_IMAGE_SLOTS = [
   },
   {
     name: "home-amenities-9",
-    label: "9 — Opening card 1",
-    alt: "Amenities sequence — first small opening card",
+    label: "9 — Opening cards · A Way of Life (pool deck)",
+    alt: "Amenities sequence — opening card, A Way of Life pool deck",
   },
   {
     name: "home-amenities-10",
-    label: "10 — Opening card 2",
-    alt: "Amenities sequence — second small opening card",
+    label: "10 — Opening cards · Fine Dining",
+    alt: "Amenities sequence — opening card, fine dining",
   },
   {
     name: "home-amenities-11",
-    label: "11 — Opening card 3",
-    alt: "Amenities sequence — third small opening card",
+    label: "11 — Opening cards · third photo",
+    alt: "Amenities sequence — opening card, third photo",
   },
   {
     name: "home-amenities-12",
