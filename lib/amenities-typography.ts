@@ -115,45 +115,13 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
     )}{margin-top:0!important;}`,
   ].join("");
 
-  /* Cream panel body uses site body_text; gold panels use white for contrast. */
+  /* Cream panel body keeps site body_text (dark ink on cream). */
   const creamInk = `${sel(
     " .home-am-intro__cream .typo-body-text",
     " .home-am-intro__cream .typo-body-text *",
     " .home-am-video__title-body",
     " .home-am-video__title-body *",
   )}{color:var(--typo-body-text-color,#3d3a36)!important;-webkit-text-fill-color:var(--typo-body-text-color,#3d3a36)!important;font-family:var(--typo-body-text-font)!important;font-size:var(--typo-body-text-size)!important;line-height:var(--typo-body-text-line-height)!important;letter-spacing:var(--typo-body-text-letter-spacing)!important;text-shadow:none!important;}`;
-  const creamTitleGold = `${sel(
-    " .home-am-on-cream-title",
-    " .home-am-on-cream-title *",
-  )}{color:#b69f64!important;-webkit-text-fill-color:#b69f64!important;text-shadow:none!important;filter:none!important;}`;
-  const goldInk = `${sel(
-    " .home-am-video__caption .typo-on-images-title",
-    " .home-am-video__caption .typo-on-images-title *",
-    " .home-am-video__caption .typo-on-images-body",
-    " .home-am-video__caption .typo-on-images-body *",
-    " .home-am-slider__caption .typo-on-images-title",
-    " .home-am-slider__caption .typo-on-images-title *",
-    " .home-am-slider__caption .typo-on-images-indication",
-    " .home-am-slider__caption .typo-on-images-indication *",
-    " .home-am-slider__caption .typo-on-images-body",
-    " .home-am-slider__caption .typo-on-images-body *",
-    " .home-am-opening__caption .home-am-opening__title",
-    " .home-am-opening__caption .home-am-opening__title *",
-    " .home-am-opening__rail-copy .typo-on-images-title",
-    " .home-am-opening__rail-copy .typo-on-images-title *",
-    " .home-am-opening__rail-copy .typo-on-images-body",
-    " .home-am-opening__rail-copy .typo-on-images-body *",
-    " .home-am-opening__right-inner .typo-on-images-body",
-    " .home-am-opening__right-inner .typo-on-images-body *",
-    " .home-am-opening__caption-text",
-    " .home-am-opening__caption-text *",
-    " .home-am-nature__title",
-    " .home-am-nature__title *",
-    " .home-am-nature__indication",
-    " .home-am-nature__indication *",
-    " .home-am-nature__body",
-    " .home-am-nature__body *",
-  )}{color:#ffffff!important;-webkit-text-fill-color:#ffffff!important;}`;
 
   return [
     spacingVars,
@@ -165,6 +133,10 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
         " .home-am-nature__title *",
         " .home-am-opening__title",
         " .home-am-opening__title *",
+        " .home-am-on-cream-title",
+        " .home-am-on-cream-title *",
+        " .home-am-on-image-text.typo-on-images-title",
+        " .home-am-on-image-text.typo-on-images-title *",
       ),
       settings.title,
     ),
@@ -174,6 +146,8 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
         " .typo-on-images-indication *",
         " .home-am-nature__indication",
         " .home-am-nature__indication *",
+        " .home-am-on-image-text.typo-on-images-indication",
+        " .home-am-on-image-text.typo-on-images-indication *",
       ),
       settings.indication,
     ),
@@ -183,12 +157,12 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
         " .typo-on-images-body *",
         " .home-am-nature__body",
         " .home-am-nature__body *",
+        " .home-am-opening__caption-text",
+        " .home-am-opening__caption-text *",
       ),
       settings.body,
     ),
     spacingRules,
     creamInk,
-    creamTitleGold,
-    goldInk,
   ].join("");
 }

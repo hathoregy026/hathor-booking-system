@@ -11,7 +11,6 @@ import type { SiteImageName } from "@/lib/site-image-slots";
 
 const GOLD = "#B69F64";
 const CREAM = "#ece8df";
-const WHITE = "#ffffff";
 
 export type AmenitiesLandmarkSlide = {
   titleLines: string[];
@@ -51,15 +50,14 @@ type HomeAmenitiesSequenceProps = {
   voyages?: ReactNode;
 };
 
-function withColor(
+function withoutForcedFill(
   style: CSSProperties | undefined,
-  color: string,
-): CSSProperties {
-  return {
-    ...style,
-    color,
-    WebkitTextFillColor: color,
-  };
+): CSSProperties | undefined {
+  if (!style) return undefined;
+  const next = { ...style };
+  delete next.color;
+  delete next.WebkitTextFillColor;
+  return next;
 }
 
 function resolveImages(
@@ -230,12 +228,13 @@ export function HomeAmenitiesSequence({
   if (!intro) return null;
 
   const creamBodyStyle = useTypographyInlineStyle("body_text");
-  const onImageTitle = withColor(titleStyle, WHITE);
-  const onImageIndication = withColor(indicationStyle, WHITE);
-  const onCreamTitle = withColor(titleStyle, GOLD);
-  const onGoldTitle = withColor(titleStyle, WHITE);
-  const onGoldIndication = withColor(indicationStyle, WHITE);
-  const onGoldBody = withColor(bodyStyle, WHITE);
+  /* Colour comes from Amenities Sequence typography CSS — do not force white/gold here. */
+  const onImageTitle = withoutForcedFill(titleStyle);
+  const onImageIndication = withoutForcedFill(indicationStyle);
+  const onCreamTitle = withoutForcedFill(titleStyle);
+  const onGoldTitle = withoutForcedFill(titleStyle);
+  const onGoldIndication = withoutForcedFill(indicationStyle);
+  const onGoldBody = withoutForcedFill(bodyStyle);
 
   const introImage = images[0];
   const videoHeroImage = images[1];

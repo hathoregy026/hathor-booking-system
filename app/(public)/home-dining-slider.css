@@ -45,13 +45,11 @@
   isolation: isolate;
 }
 
-/* White on-photo type — beats CMS gold / WebkitTextFillColor on hero media */
+/* On-photo type — soft halo only; colour comes from Amenities Sequence typography. */
 .public-site .home-am-sequence .home-am-on-image-text,
 .public-site .home-am-sequence .home-am-on-image-text *,
 html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text,
 html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
   background: none !important;
   background-image: none !important;
   -webkit-background-clip: border-box !important;
@@ -62,13 +60,11 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text * {
   filter: none !important;
 }
 
-/* Cream-panel titles — solid gold (not white on-image halo) */
+/* Cream-panel titles — no forced gold; Amenities Sequence title colour wins. */
 .public-site .home-am-sequence .home-am-on-cream-title,
 .public-site .home-am-sequence .home-am-on-cream-title *,
 html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title,
 html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
-  color: var(--am-gold) !important;
-  -webkit-text-fill-color: var(--am-gold) !important;
   background: none !important;
   background-image: none !important;
   -webkit-background-clip: border-box !important;
