@@ -96,9 +96,9 @@ const RAIL: RailItem[] = [
   },
   {
     id: "style-spacing",
-    label: "Spacing",
+    label: "Spacing & line height",
     mode: "spacing",
-    hint: "Space between title → sub → body → Discover more across the sequence.",
+    hint: "Preview big title, small label, and body together. Tune gaps between them and each role’s line height.",
   },
 ];
 
@@ -439,12 +439,20 @@ export function AmenitiesSequenceTypographyPanel() {
               <span
                 style={{
                   fontFamily: HATHOR_FONT_STACKS[styles.title.fontFamily],
-                  fontSize: Math.min(styles.title.fontSize, 40),
+                  fontSize: Math.min(
+                    styles.title.fontSize,
+                    device === "phone" ? 34 : 40,
+                  ),
+                  letterSpacing: styles.title.letterSpacing,
                   lineHeight: styles.title.lineHeight,
                   marginBottom: styles.spacing.titleToIndication,
+                  whiteSpace: "pre-line",
+                  textShadow: styles.title.innerShadow
+                    ? "1px 1px 0 rgba(0,0,0,.35), -.5px -.5px 0 rgba(255,255,255,.25)"
+                    : "none",
                 }}
               >
-                Fine dining
+                {"Every landmark,\na pleasure."}
               </span>
               <span
                 style={{
@@ -454,20 +462,26 @@ export function AmenitiesSequenceTypographyPanel() {
                   lineHeight: styles.indication.lineHeight,
                   marginBottom: styles.spacing.indicationToBody,
                   textTransform: "uppercase",
+                  whiteSpace: "pre-line",
+                  maxWidth: "22rem",
                 }}
               >
-                Gastronomy
+                {"Sail The Nile\nOn Hathor"}
               </span>
               <span
                 style={{
                   fontFamily: HATHOR_FONT_STACKS[styles.body.fontFamily],
                   fontSize: styles.body.fontSize,
+                  letterSpacing: styles.body.letterSpacing,
                   lineHeight: styles.body.lineHeight,
                   marginBottom: styles.spacing.bodyToCta,
                   maxWidth: "22rem",
+                  whiteSpace: "pre-line",
                 }}
               >
-                Restaurant craft meets warm hospitality on the Nile.
+                {
+                  "Glide between Luxor and Aswan on an intimate dahabiya, where restaurant craft meets warm hospitality."
+                }
               </span>
               <span
                 style={{
@@ -505,7 +519,7 @@ export function AmenitiesSequenceTypographyPanel() {
           )}
           <p className="typo-easy__stage-meta">
             {active.mode === "spacing"
-              ? `Title→sub ${styles.spacing.titleToIndication}px · Sub→body ${styles.spacing.indicationToBody}px · Body→CTA ${styles.spacing.bodyToCta}px`
+              ? `Gaps ${styles.spacing.titleToIndication}/${styles.spacing.indicationToBody}/${styles.spacing.bodyToCta}px · LH title ${styles.title.lineHeight} · sub ${styles.indication.lineHeight} · body ${styles.body.lineHeight}`
               : `Font: ${sampleStyle.fontFamily} · Size: ${sampleStyle.fontSize}px · Colour: ${sampleStyle.color}`}
           </p>
         </div>
@@ -708,36 +722,41 @@ export function AmenitiesSequenceTypographyPanel() {
 
           {active.mode === "spacing" ? (
             <>
-              <label className="typo-easy__field">
-                <span>Title → sub (px)</span>
-                <input
-                  className="admin-input"
-                  type="number"
-                  min={0}
-                  max={120}
-                  value={styles.spacing.titleToIndication}
-                  onChange={(e) =>
-                    patchSpacing({
-                      titleToIndication: Number(e.target.value),
-                    })
-                  }
-                />
-              </label>
-              <label className="typo-easy__field">
-                <span>Sub → body (px)</span>
-                <input
-                  className="admin-input"
-                  type="number"
-                  min={0}
-                  max={120}
-                  value={styles.spacing.indicationToBody}
-                  onChange={(e) =>
-                    patchSpacing({
-                      indicationToBody: Number(e.target.value),
-                    })
-                  }
-                />
-              </label>
+              <p className="typo-easy__stage-copy" style={{ margin: 0 }}>
+                Space between roles
+              </p>
+              <div className="typo-easy__fields-row">
+                <label className="typo-easy__field">
+                  <span>Title → sub (px)</span>
+                  <input
+                    className="admin-input"
+                    type="number"
+                    min={0}
+                    max={120}
+                    value={styles.spacing.titleToIndication}
+                    onChange={(e) =>
+                      patchSpacing({
+                        titleToIndication: Number(e.target.value),
+                      })
+                    }
+                  />
+                </label>
+                <label className="typo-easy__field">
+                  <span>Sub → body (px)</span>
+                  <input
+                    className="admin-input"
+                    type="number"
+                    min={0}
+                    max={120}
+                    value={styles.spacing.indicationToBody}
+                    onChange={(e) =>
+                      patchSpacing({
+                        indicationToBody: Number(e.target.value),
+                      })
+                    }
+                  />
+                </label>
+              </div>
               <label className="typo-easy__field">
                 <span>Body → button (px)</span>
                 <input
@@ -751,12 +770,86 @@ export function AmenitiesSequenceTypographyPanel() {
                   }
                 />
               </label>
+
+              <p className="typo-easy__stage-copy" style={{ margin: "0.75rem 0 0" }}>
+                Line height within each role
+              </p>
+              <div className="typo-easy__fields-row">
+                <label className="typo-easy__field">
+                  <span>Big title</span>
+                  <input
+                    className="admin-input"
+                    type="number"
+                    min={0.6}
+                    max={3}
+                    step={0.05}
+                    value={styles.title.lineHeight}
+                    onChange={(e) =>
+                      patchStyle("title", {
+                        lineHeight: Number(e.target.value),
+                      })
+                    }
+                  />
+                </label>
+                <label className="typo-easy__field">
+                  <span>Small label</span>
+                  <input
+                    className="admin-input"
+                    type="number"
+                    min={0.6}
+                    max={3}
+                    step={0.05}
+                    value={styles.indication.lineHeight}
+                    onChange={(e) =>
+                      patchStyle("indication", {
+                        lineHeight: Number(e.target.value),
+                      })
+                    }
+                  />
+                </label>
+              </div>
+              <label className="typo-easy__field">
+                <span>Body</span>
+                <input
+                  className="admin-input"
+                  type="number"
+                  min={0.6}
+                  max={3}
+                  step={0.05}
+                  value={styles.body.lineHeight}
+                  onChange={(e) =>
+                    patchStyle("body", {
+                      lineHeight: Number(e.target.value),
+                    })
+                  }
+                />
+              </label>
               <button
                 className="typo-easy__reset"
                 type="button"
-                onClick={() => patchSpacing({ ...DEFAULT_AMENITIES_SPACING })}
+                onClick={() =>
+                  setStyles((prev) => ({
+                    ...prev,
+                    title: {
+                      ...prev.title,
+                      lineHeight:
+                        DEFAULT_AMENITIES_TYPOGRAPHY.title.lineHeight,
+                    },
+                    indication: {
+                      ...prev.indication,
+                      lineHeight:
+                        DEFAULT_AMENITIES_TYPOGRAPHY.indication.lineHeight,
+                    },
+                    body: {
+                      ...prev.body,
+                      lineHeight: DEFAULT_AMENITIES_TYPOGRAPHY.body.lineHeight,
+                    },
+                    spacing: { ...DEFAULT_AMENITIES_SPACING },
+                  }))
+                }
               >
-                <RotateCcw className="h-3.5 w-3.5" /> Reset spacing
+                <RotateCcw className="h-3.5 w-3.5" /> Reset gaps &amp; line
+                heights
               </button>
             </>
           ) : null}
