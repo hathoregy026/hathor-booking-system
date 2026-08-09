@@ -237,22 +237,50 @@ export function AmenitiesSequenceTypographyPanel() {
     return styles.title;
   }, [active, styles]);
 
-  const sampleText = useMemo(() => {
-    if (active.mode === "spacing") {
-      return "Title\nSub label\nBody copy sits under the sub.";
-    }
-    if (active.mode === "style") {
-      if (active.role === "title") return "Every landmark, a pleasure.";
-      if (active.role === "indication") return "Sail The Nile On Hathor";
-      return "Glide between Luxor and Aswan on an intimate dahabiya.";
-    }
-    if (active.target.kind === "slide") {
+  /** Always show title + sub + body stacked; prefer live copy when editing a chapter. */
+  const previewCopy = useMemo(() => {
+    const fallback = {
+      title: "Every landmark,\na pleasure.",
+      indication: "Sail The Nile\nOn Hathor",
+      body: "Glide between Luxor and Aswan on an intimate dahabiya, where restaurant craft meets warm hospitality.",
+      cta: "Discover more",
+    };
+
+    if (active.mode === "copy" && active.target.kind === "slide") {
       const slide = text.home.stackSlides[active.target.index];
-      return slide?.title?.split("\n")[0] || "Amenities title";
+      return {
+        title: slide?.title?.trim() || fallback.title,
+        indication: slide?.indication?.trim() || fallback.indication,
+        body: slide?.body?.trim() || fallback.body,
+        cta: fallback.cta,
+      };
     }
-    const story = text.home.textBlocks[active.target.index];
-    return story?.title?.split("\n")[0] || "Story title";
+
+    if (active.mode === "copy" && active.target.kind === "story") {
+      const story = text.home.textBlocks[active.target.index];
+      return {
+        title: story?.title?.trim() || fallback.title,
+        indication: fallback.indication,
+        body: story?.body?.trim() || fallback.body,
+        cta: story?.cta?.trim() || fallback.cta,
+      };
+    }
+
+    const slide0 = text.home.stackSlides[0];
+    return {
+      title: slide0?.title?.trim() || fallback.title,
+      indication: slide0?.indication?.trim() || fallback.indication,
+      body: slide0?.body?.trim() || fallback.body,
+      cta: fallback.cta,
+    };
   }, [active, text.home.stackSlides, text.home.textBlocks]);
+
+  const focusRole: AmenitiesStyleRole | "spacing" | null =
+    active.mode === "style"
+      ? active.role
+      : active.mode === "spacing"
+        ? "spacing"
+        : null;
 
   const save = async () => {
     if (!dirty || saving) return;
@@ -425,102 +453,112 @@ export function AmenitiesSequenceTypographyPanel() {
           </span>
           <h3>{active.label}</h3>
           <p className="typo-easy__stage-copy">{active.hint}</p>
-          {active.mode === "spacing" ? (
-            <div
-              className="typo-easy__sample"
+          <div
+            className="typo-easy__sample"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              gap: 0,
+              color: styles.title.color,
+              isolation: "isolate",
+            }}
+          >
+            <span
               style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-                gap: 0,
-                color: styles.title.color,
-              }}
-            >
-              <span
-                style={{
-                  fontFamily: HATHOR_FONT_STACKS[styles.title.fontFamily],
-                  fontSize: Math.min(
-                    styles.title.fontSize,
-                    device === "phone" ? 34 : 40,
-                  ),
-                  letterSpacing: styles.title.letterSpacing,
-                  lineHeight: styles.title.lineHeight,
-                  marginBottom: styles.spacing.titleToIndication,
-                  whiteSpace: "pre-line",
-                  textShadow: styles.title.innerShadow
-                    ? "1px 1px 0 rgba(0,0,0,.35), -.5px -.5px 0 rgba(255,255,255,.25)"
-                    : "none",
-                }}
-              >
-                {"Every landmark,\na pleasure."}
-              </span>
-              <span
-                style={{
-                  fontFamily: HATHOR_FONT_STACKS[styles.indication.fontFamily],
-                  fontSize: styles.indication.fontSize,
-                  letterSpacing: styles.indication.letterSpacing,
-                  lineHeight: styles.indication.lineHeight,
-                  marginBottom: styles.spacing.indicationToBody,
-                  textTransform: "uppercase",
-                  whiteSpace: "pre-line",
-                  maxWidth: "22rem",
-                }}
-              >
-                {"Sail The Nile\nOn Hathor"}
-              </span>
-              <span
-                style={{
-                  fontFamily: HATHOR_FONT_STACKS[styles.body.fontFamily],
-                  fontSize: styles.body.fontSize,
-                  letterSpacing: styles.body.letterSpacing,
-                  lineHeight: styles.body.lineHeight,
-                  marginBottom: styles.spacing.bodyToCta,
-                  maxWidth: "22rem",
-                  whiteSpace: "pre-line",
-                }}
-              >
-                {
-                  "Glide between Luxor and Aswan on an intimate dahabiya, where restaurant craft meets warm hospitality."
-                }
-              </span>
-              <span
-                style={{
-                  fontSize: 12,
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  border: `1px solid ${styles.title.color}`,
-                  borderRadius: 999,
-                  padding: "0.55rem 1.1rem",
-                }}
-              >
-                Discover more
-              </span>
-            </div>
-          ) : (
-            <p
-              className="typo-easy__sample"
-              style={{
-                fontFamily: HATHOR_FONT_STACKS[sampleStyle.fontFamily],
+                position: "relative",
+                zIndex: 1,
+                fontFamily: HATHOR_FONT_STACKS[styles.title.fontFamily],
                 fontSize: Math.min(
-                  sampleStyle.fontSize,
-                  device === "phone" ? 34 : 64,
+                  styles.title.fontSize,
+                  device === "phone" ? 34 : 40,
                 ),
-                color: sampleStyle.color,
-                lineHeight: sampleStyle.lineHeight,
-                letterSpacing: sampleStyle.letterSpacing,
-                textShadow: sampleStyle.innerShadow
+                letterSpacing: styles.title.letterSpacing,
+                lineHeight: styles.title.lineHeight,
+                marginBottom: styles.spacing.titleToIndication,
+                whiteSpace: "pre-line",
+                opacity:
+                  focusRole && focusRole !== "spacing" && focusRole !== "title"
+                    ? 0.4
+                    : 1,
+                textShadow: styles.title.innerShadow
                   ? "1px 1px 0 rgba(0,0,0,.35), -.5px -.5px 0 rgba(255,255,255,.25)"
                   : "none",
-                whiteSpace: "pre-line",
               }}
             >
-              {sampleText}
-            </p>
-          )}
+              {previewCopy.title}
+            </span>
+            <span
+              style={{
+                position: "relative",
+                zIndex: 5,
+                fontFamily: HATHOR_FONT_STACKS[styles.indication.fontFamily],
+                fontSize: styles.indication.fontSize,
+                letterSpacing: styles.indication.letterSpacing,
+                lineHeight: styles.indication.lineHeight,
+                marginBottom: styles.spacing.indicationToBody,
+                textTransform: "uppercase",
+                whiteSpace: "pre-line",
+                maxWidth: "22rem",
+                color: styles.indication.color,
+                opacity:
+                  focusRole &&
+                  focusRole !== "spacing" &&
+                  focusRole !== "indication"
+                    ? 0.4
+                    : 1,
+                textShadow: styles.indication.innerShadow
+                  ? "1px 1px 0 rgba(0,0,0,.35), -.5px -.5px 0 rgba(255,255,255,.25)"
+                  : "none",
+              }}
+            >
+              {previewCopy.indication}
+            </span>
+            <span
+              style={{
+                position: "relative",
+                zIndex: 2,
+                fontFamily: HATHOR_FONT_STACKS[styles.body.fontFamily],
+                fontSize: styles.body.fontSize,
+                letterSpacing: styles.body.letterSpacing,
+                lineHeight: styles.body.lineHeight,
+                marginBottom: styles.spacing.bodyToCta,
+                maxWidth: "22rem",
+                whiteSpace: "pre-line",
+                color: styles.body.color,
+                opacity:
+                  focusRole && focusRole !== "spacing" && focusRole !== "body"
+                    ? 0.4
+                    : 1,
+                textShadow: styles.body.innerShadow
+                  ? "1px 1px 0 rgba(0,0,0,.35), -.5px -.5px 0 rgba(255,255,255,.25)"
+                  : "none",
+              }}
+            >
+              {previewCopy.body}
+            </span>
+            <span
+              style={{
+                position: "relative",
+                zIndex: 3,
+                fontSize: 12,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                border: `1px solid ${styles.title.color}`,
+                borderRadius: 999,
+                padding: "0.55rem 1.1rem",
+                opacity: focusRole && focusRole !== "spacing" ? 0.45 : 1,
+              }}
+            >
+              {previewCopy.cta}
+            </span>
+          </div>
           <p className="typo-easy__stage-meta">
             {active.mode === "spacing"
               ? `Gaps ${styles.spacing.titleToIndication}/${styles.spacing.indicationToBody}/${styles.spacing.bodyToCta}px · LH title ${styles.title.lineHeight} · sub ${styles.indication.lineHeight} · body ${styles.body.lineHeight}`
-              : `Font: ${sampleStyle.fontFamily} · Size: ${sampleStyle.fontSize}px · Colour: ${sampleStyle.color}`}
+              : active.mode === "style"
+                ? `Editing ${active.role} · Font: ${sampleStyle.fontFamily} · Size: ${sampleStyle.fontSize}px · LH: ${sampleStyle.lineHeight}`
+                : `Live stack preview · Title / sub / body`}
           </p>
         </div>
 
