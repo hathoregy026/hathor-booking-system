@@ -711,9 +711,15 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 .home-am-slider__caption-col {
   position: relative;
   display: flex;
-  flex: 0 1 50vw;
-  width: 50vw;
-  max-width: 100%;
+  /*
+   * Overlap onto the images col. Measured cream hairline at x=720 was
+   * rgb(234,227,213) — page cream punching through fixed pins. box-shadow
+   * cannot seal (overflow/clip-path clip it); dark-band sits under pins.
+   * 1px was insufficient against AA; 3px covers the seam solidly.
+   */
+  flex: 0 0 calc(50vw + 3px);
+  width: calc(50vw + 3px);
+  max-width: none;
   min-width: 0;
   flex-direction: column;
   justify-content: center;
@@ -722,13 +728,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   will-change: clip-path;
   overflow: hidden;
   box-sizing: border-box;
-  /*
-   * Cover the 50vw hairline above the images col (water photo). Springs hides
-   * the same hairline with ui-dark-background === caption colour; our images
-   * are photographic, so extend gold 1px under the join.
-   */
-  box-shadow: 1px 0 0 0 var(--am-gold);
-  z-index: 1;
+  z-index: 2;
 }
 
 .home-am-slider__caption-stack {
@@ -807,13 +807,28 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 
 .home-am-slider__images-col {
   position: relative;
-  flex: 0 1 50vw;
+  flex: 0 0 50vw;
   width: 50vw;
   max-width: 100%;
   min-width: 0;
+  /* Nest under the caption’s +3px overlap so row width stays 100vw */
+  margin-left: -3px;
   overflow: hidden;
   background: var(--am-ink);
   will-change: clip-path;
+}
+
+/* Belt-and-suspenders: gold edge lives inside the photo col’s clip-path */
+.home-am-slider__images-col::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  background: var(--am-gold);
+  pointer-events: none;
+  z-index: 20;
 }
 
 .home-am-slider__panel {
@@ -886,9 +901,9 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 /* Springs .col--lg-6 → flex:0 1 50vw; width:50vw; max-width:100% */
 .home-am-opening__images {
   position: relative;
-  flex: 0 1 50vw;
-  width: 50vw;
-  max-width: 100%;
+  flex: 0 0 calc(50vw + 3px);
+  width: calc(50vw + 3px);
+  max-width: none;
   overflow: hidden;
   will-change: clip-path;
   /* Above RC underlap (49.75vw) so photo covers the sealed gold strip */
@@ -896,6 +911,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   /*
    * Springs hairline is invisible because section + RC share one fill.
    * Gold under the photo means any subpixel AA edge matches the RC, not cream.
+   * +3px width seals slider→opening while opening left rises over the gold caption.
    */
   background: var(--am-gold);
 }
@@ -918,9 +934,11 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 /* Springs caption: transparent — RC ui-background + cards show through */
 .home-am-opening__caption {
   position: relative;
-  flex: 0 1 50vw;
+  flex: 0 0 50vw;
   width: 50vw;
   max-width: 100%;
+  /* Nest under opening images +3px overlap (same seal as slider caption) */
+  margin-left: -3px;
   background: transparent;
   will-change: clip-path;
 }
@@ -1318,6 +1336,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
     width: 100%;
     max-width: 100%;
     margin-right: 0;
+    margin-left: 0;
   }
 
   .home-am-slider__caption-col {
@@ -1329,6 +1348,10 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
   .home-am-slider__images-col {
     flex: 1 1 auto;
     min-height: 0;
+  }
+
+  .home-am-slider__images-col::before {
+    display: none;
   }
 
   .home-am-slider__caption-stack {
@@ -1368,6 +1391,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-opening__title * {
     flex: none;
     width: 100%;
     height: auto;
+    margin-left: 0;
     position: absolute;
     bottom: 0;
     padding: 1.15rem;
