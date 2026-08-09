@@ -801,14 +801,26 @@ export function HomeAmenitiesSequence({
         id="home-am-nature-caption"
       >
         <div className="home-am-nature__copy">
-          <h3 className="typo-on-images-title" style={onGoldTitle}>
+          <h3
+            className="typo-on-images-title"
+            style={{
+              color: WHITE,
+              WebkitTextFillColor: WHITE,
+            }}
+          >
             {natureTitleLines.map((line) => (
               <span key={line} className="home-am-title-line">
                 {line}
               </span>
             ))}
           </h3>
-          <p className="typo-on-images-body" style={onGoldBody}>
+          <p
+            className="typo-on-images-body"
+            style={{
+              color: WHITE,
+              WebkitTextFillColor: WHITE,
+            }}
+          >
             {natureCaption}
           </p>
           <Link
