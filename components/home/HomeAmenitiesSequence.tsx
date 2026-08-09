@@ -180,7 +180,7 @@ export function HomeAmenitiesSequence({
     return [...lines].sort((a, b) => a.length - b.length)[0] || lines[0];
   };
 
-  /* Always 3 cards → dashboard slots home-amenities-9 / 10 / 11 (never gate on copy). */
+  /* Four climbing cards → slots 9 / 10 / 11 / 13 (never gate on copy). */
   const openingCards: Array<{
     image: AmenitiesSequenceImage;
     label: string;
@@ -199,6 +199,14 @@ export function HomeAmenitiesSequence({
         landmarks[1]?.indication ||
           landmarks[1]?.titleLines?.join("\n") ||
           "Private Nile Sailing",
+      ),
+    },
+    {
+      image: images[11],
+      label: shortCardLabel(
+        landmarks[2]?.indication ||
+          landmarks[2]?.titleLines?.join("\n") ||
+          "Spa & Wellness",
       ),
     },
   ];
@@ -233,7 +241,7 @@ export function HomeAmenitiesSequence({
   const videoHeroImage = images[1];
   const videoInsetImage = images[2];
   const openingLeftImage = images[7];
-  const natureImage = images[11];
+  const natureImage = images[12];
   const natureStory = stories[2] ?? stories[1];
   const natureTitleLines = storyTitleLines(
     natureStory?.title?.trim() || "FINE DINING\nON DAHABIYA",

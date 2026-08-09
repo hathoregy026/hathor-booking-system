@@ -37,6 +37,7 @@ const AMENITIES_SEQUENCE_LEGACY_FALLBACK: Readonly<Record<string, string>> = {
   "home-amenities-9": "home-amenities-way-of-life",
   "home-amenities-10": "home-story-dining",
   "home-amenities-11": "home-amenities-2",
+  "home-amenities-13": "wellness-fitness",
   "home-amenities-12": "about-hero",
 };
 

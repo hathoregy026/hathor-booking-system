@@ -232,12 +232,20 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     displayOrder: 10,
   },
   {
+    name: "home-amenities-13",
+    altText: "Amenities sequence — opening card, fourth photo",
+    url: HATHOR_MEDIA.fitness,
+    category: "general",
+    pagePath: "/#amenities-sequence",
+    displayOrder: 11,
+  },
+  {
     name: "home-amenities-12",
     altText: "Amenities sequence — full-bleed nature chapter before Our Voyages",
     url: HATHOR_MEDIA.about,
     category: "general",
     pagePath: "/#amenities-sequence",
-    displayOrder: 11,
+    displayOrder: 12,
   },
   // Homepage “Our Voyages” accordion — dedicated slots (Admin tab: Our Voyages)
   {

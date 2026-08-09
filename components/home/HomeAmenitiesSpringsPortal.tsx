@@ -69,6 +69,7 @@ export function HomeAmenitiesSpringsPortal({
   const img9 = useSiteImage("home-amenities-9");
   const img10 = useSiteImage("home-amenities-10");
   const img11 = useSiteImage("home-amenities-11");
+  const img13 = useSiteImage("home-amenities-13");
   const img12 = useSiteImage("home-amenities-12");
 
   const images = {
@@ -83,6 +84,7 @@ export function HomeAmenitiesSpringsPortal({
     "home-amenities-9": img9.src,
     "home-amenities-10": img10.src,
     "home-amenities-11": img11.src,
+    "home-amenities-13": img13.src,
     "home-amenities-12": img12.src,
   };
 
@@ -140,6 +142,11 @@ export function HomeAmenitiesSpringsPortal({
         landmarks[1]?.indication ||
           landmarks[1]?.titleLines?.join(" ") ||
           "Welcome",
+      ),
+      shortCardLabel(
+        landmarks[2]?.indication ||
+          landmarks[2]?.titleLines?.join(" ") ||
+          "Spa & Wellness",
       ),
     ],
     natureCaption: escapeHtml(
