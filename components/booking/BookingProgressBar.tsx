@@ -1,8 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { formatPrice } from "@/lib/client-dates";
+import {
+  HATHOR_BRAND_NAME,
+  HATHOR_HERO_ICON_SRC,
+} from "@/lib/branding";
 import type { RoomSearchConfig, StayDurationValue } from "@/lib/booking-search-config";
 import type { AvailableRoom } from "@/lib/booking-types";
 import { getSelectedRooms } from "@/store/bookingStore";
@@ -202,10 +213,16 @@ export function BookingProgressBar({
 
   return (
     <div className="hathor-checkout-chrome">
+      <div className="hathor-checkout-chrome__back-stripe">
+        <Link href="/" className="hathor-checkout-chrome__back-link">
+          Go Back to Hathor
+        </Link>
+      </div>
+
       <nav className="hathor-checkout-steps" aria-label="Booking progress">
         <div className="hathor-checkout-steps__inner">
           <ol className="hathor-checkout-steps__segments">
-            {segments.map((segment) => {
+            {segments.map((segment, index) => {
               const canNavigate =
                 segment.isReachable &&
                 !segment.isActive &&
@@ -239,7 +256,7 @@ export function BookingProgressBar({
                 </>
               );
 
-              return (
+              const segmentItem = (
                 <li
                   key={segment.id}
                   ref={isCabins ? cabinsRef : undefined}
@@ -292,6 +309,35 @@ export function BookingProgressBar({
                   )}
                 </li>
               );
+
+              /* Center white icon between Dates and Cabins */
+              if (index === 1) {
+                return (
+                  <Fragment key={`${segment.id}-with-logo`}>
+                    {segmentItem}
+                    <li
+                      key="hathor-center-logo"
+                      className="hathor-checkout-steps__segment hathor-checkout-steps__segment--logo"
+                    >
+                      <Link
+                        href="/"
+                        className="hathor-checkout-steps__logo-link"
+                        aria-label={`${HATHOR_BRAND_NAME} home`}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={HATHOR_HERO_ICON_SRC}
+                          alt=""
+                          className="hathor-checkout-steps__logo-icon"
+                          draggable={false}
+                        />
+                      </Link>
+                    </li>
+                  </Fragment>
+                );
+              }
+
+              return segmentItem;
             })}
           </ol>
         </div>
