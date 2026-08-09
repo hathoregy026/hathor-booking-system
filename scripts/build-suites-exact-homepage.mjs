@@ -373,32 +373,41 @@ const suitesPalette = `
 <style data-hathor-suites-palette>
 
   /*
-   * Site-aligned typography (matches Admin defaults + public layout):
-   * Hero display = Gabigaile · Titles = Gamgote · Script = Quiet Luxury ·
-   * Labels = Lavenir · Body = Plus Jakarta Sans
-   * Contrast: ink on cream, gold on media with strong bloom — no cream-on-cream.
+   * TYPOGRAPHY ONLY — Suites editorial refinement.
+   * Display = Gamgote · Script = Quiet Luxury · Body/Labels/UI = Plus Jakarta Sans
+   * Gold (#B69F64) is accent. Body on cream uses warm ink. No layout/motion changes.
    */
 ${hathorFontFaces}
   :root {
-    --suites-hero: "Gabigaile", Georgia, serif;
     --suites-serif: "Gamgote", Georgia, serif;
     --suites-script: "Quiet Luxury", cursive;
-    --suites-label: "Lavenir", Georgia, serif;
     --suites-sans: "Plus Jakarta Sans", system-ui, sans-serif;
-    /* Gold + cream only (no ink/brown/black) */
     --suites-gold: #b69f64;
     --suites-gold-soft: #d4bf86;
     --suites-gold-deep: #8b6914;
     --suites-cream: #f5eacf;
     --suites-cream-soft: #ece8df;
     --suites-cream-bright: #f7f1e6;
-    --suites-ink: #8b6914;
-    --suites-body: #8b6914;
-    --suites-muted: #b69f64;
+    --suites-ink: #1c1917;
+    --suites-body: #1c1917;
+    --suites-muted: #5c5348;
     --suites-on-media: #f7f1e6;
     --suites-on-media-body: rgba(247, 241, 230, 0.94);
     --suites-title-on-media: #f7f1e6;
-    --suites-ink-soft: rgba(247, 241, 230, 0.94);
+    --suites-ink-soft: rgba(28, 25, 23, 0.78);
+    --type-display-hero: clamp(3.5rem, 7vw, 8.25rem);
+    --type-display-section: clamp(2.75rem, 5vw, 5.75rem);
+    --type-display-secondary: clamp(1.85rem, 3.2vw, 3.25rem);
+    --type-script-lg: clamp(1.85rem, 2.8vw, 3.65rem);
+    --type-lead: clamp(1.125rem, 1.35vw, 1.35rem);
+    --type-body: clamp(1.0625rem, 1.2vw, 1.1875rem);
+    --type-label: clamp(0.68rem, 0.78vw, 0.8rem);
+    --type-button: clamp(0.72rem, 0.8vw, 0.82rem);
+    --tracking-label: 0.18em;
+    --tracking-button: 0.14em;
+    --leading-display: 0.92;
+    --leading-section: 0.96;
+    --leading-body: 1.7;
     --lux-gold: #b69f64;
     --lux-gold-rgb: 182, 159, 100;
     --lux-cream: #f5eacf;
@@ -436,20 +445,27 @@ ${hathorFontFaces}
   }
   html, body {
     background: var(--suites-cream);
-    color: var(--suites-gold-deep);
+    color: var(--suites-ink);
     font-family: var(--suites-sans);
-    font-size: 16px;
-    line-height: 1.7;
+    font-size: 17px;
+    line-height: var(--leading-body);
     font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
+
+  /* 01 — Hero display (Gamgote) */
   .h0,
   .l-gallery__title .h0 {
-    font-family: var(--suites-hero) !important;
+    font-family: var(--suites-serif) !important;
     font-weight: 400 !important;
-    font-size: clamp(3.25rem, 8.5vw, 7.5rem) !important;
-    line-height: 1.05 !important;
-    letter-spacing: -0.01em !important;
+    font-size: var(--type-display-hero) !important;
+    line-height: var(--leading-display) !important;
+    letter-spacing: -0.02em !important;
+    text-wrap: balance;
   }
+
+  /* 02 — Section display (Gamgote) */
   .g1,
   .g2,
   [class*="__title"] .g1,
@@ -463,37 +479,54 @@ ${hathorFontFaces}
   .l-interiors .g1 {
     font-family: var(--suites-serif) !important;
     font-weight: 400 !important;
-    font-size: clamp(2.5rem, 5vw, 4.5rem) !important;
-    line-height: 1.12 !important;
+    font-size: var(--type-display-section) !important;
+    line-height: var(--leading-section) !important;
     letter-spacing: -0.02em !important;
+    text-wrap: balance;
   }
+
+  /* Secondary Gamgote titles */
   .h1,
   .h2,
-  .h3,
   h1:not(.h0),
   h2,
-  h3,
   [class*="__title"] .h1,
   [class*="__title"] .h2,
   [class*="__title"] h1:not(.h0),
   [class*="__title"] h2 {
     font-family: var(--suites-serif) !important;
     font-weight: 400 !important;
-    font-size: clamp(1.625rem, 3vw, 2.75rem) !important;
-    line-height: 1.2 !important;
-    letter-spacing: -0.02em !important;
+    font-size: var(--type-display-secondary) !important;
+    line-height: 1.04 !important;
+    letter-spacing: -0.018em !important;
+    text-wrap: balance;
   }
+
+  /* 04 — Editorial lead (long h3 blocks are lead copy, not display) */
+  .h3,
+  h3,
+  .l-intro__opening-subtitle {
+    font-family: var(--suites-sans) !important;
+    font-weight: 400 !important;
+    font-size: var(--type-lead) !important;
+    line-height: 1.65 !important;
+    letter-spacing: 0.005em !important;
+    text-transform: none !important;
+  }
+
+  /* Gallery title — text alignment only within existing caption area */
   .l-gallery__caption .l-gallery__title {
     left: auto !important;
     right: clamp(1.25rem, 4vw, 3.5rem) !important;
     bottom: clamp(1.25rem, 3.5vw, 2.75rem) !important;
     top: auto !important;
     text-align: right !important;
-    max-width: min(52vw, 14em);
+    max-width: min(48vw, 11em);
   }
   .l-gallery__caption .l-gallery__title .h0 {
     text-align: right !important;
   }
+
   body,
   p:not(.g1):not(.g2):not(.h0):not(.h1):not(.h2):not(.h3),
   .text-t1,
@@ -512,40 +545,72 @@ ${hathorFontFaces}
   [class*="-caption__"] p {
     font-family: var(--suites-sans) !important;
   }
+
+  /* 05 — Body copy */
   .text-t1,
   .text-t2,
-  p:not(.g1):not(.g2):not(.h0):not(.h1):not(.h2):not(.h3):not(.text-c1):not(.text-c2),
+  p:not(.g1):not(.g2):not(.h0):not(.h1):not(.h2):not(.h3):not(.text-c1):not(.text-c2):not(.l-intro__opening-subtitle),
   [class*="__text"]:not(.g1):not(.h0):not(.h1),
-  [class*="__caption"] p:not(.g1),
+  [class*="__caption"] p:not(.g1):not([class*="__subtitle"]),
   [class*="-caption__text"],
-  [class*="-caption__"] p:not(.g1) {
-    font-size: clamp(1rem, 1.15vw, 1.125rem) !important;
-    line-height: 1.7 !important;
+  [class*="-caption__"] p:not(.g1):not([class*="__subtitle"]) {
+    font-size: var(--type-body) !important;
+    line-height: var(--leading-body) !important;
     font-weight: 400 !important;
-    letter-spacing: 0;
+    letter-spacing: 0.01em;
+    text-wrap: pretty;
   }
+
+  /* 06 — Eyebrow / label (Plus Jakarta) */
   .text-c1,
   .text-c2,
-  [class*="__subtitle"],
-  .l-nature-bg-caption__subtitle,
-  .l-wellness__caption__subtitle,
-  .l-place__caption__subtitle {
-    font-family: var(--suites-label) !important;
-    font-size: clamp(11px, 0.85vw, 13px) !important;
-    font-weight: 400 !important;
-    letter-spacing: 0.28em !important;
+  .carousel__thumb__item.text-c1 {
+    font-family: var(--suites-sans) !important;
+    font-size: var(--type-label) !important;
+    font-weight: 500 !important;
+    letter-spacing: var(--tracking-label) !important;
     text-transform: uppercase !important;
     line-height: 1.35 !important;
   }
+
+  /* 03 — Quiet Luxury script accents (short emotional captions only) */
+  .l-nature-bg-caption__subtitle,
+  .l-wellness__caption__subtitle,
+  .l-place__caption__subtitle,
+  .l-place-webgl-caption__subtitle {
+    font-family: var(--suites-script) !important;
+    font-size: var(--type-script-lg) !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.01em !important;
+    text-transform: none !important;
+    line-height: 1 !important;
+    color: var(--suites-gold) !important;
+    -webkit-text-fill-color: var(--suites-gold) !important;
+  }
+
+  /* Opening subtitle is lead copy, not a label */
+  .l-intro__opening-subtitle.text-c1,
+  .l-intro__opening-subtitle {
+    font-family: var(--suites-sans) !important;
+    font-size: var(--type-lead) !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.005em !important;
+    text-transform: none !important;
+    line-height: 1.65 !important;
+    margin-top: 0.85rem;
+  }
+
+  /* 07 — Button typography only */
   .btn__text,
   .btn {
     font-family: var(--suites-sans) !important;
-    font-size: 11px !important;
+    font-size: var(--type-button) !important;
     font-weight: 500 !important;
-    letter-spacing: 0.18em !important;
+    letter-spacing: var(--tracking-button) !important;
     text-transform: uppercase !important;
   }
-  /* Dark stage = deep gold; light stage = cream (gold + cream only) */
+
+  /* Stage tokens — keep existing stage surfaces; refine text roles only */
   .ui-dark {
     --t-background: #8b6914;
     --t-background-rgb: 139, 105, 20;
@@ -553,8 +618,8 @@ ${hathorFontFaces}
     --t-text-rgb: 247, 241, 230;
     --t-heading: #f7f1e6;
     --t-heading-rgb: 247, 241, 230;
-    --t-primary: #d4bf86;
-    --t-primary-rgb: 212, 191, 134;
+    --t-primary: #b69f64;
+    --t-primary-rgb: 182, 159, 100;
     --t-secondary: #f5eacf;
     --t-secondary-rgb: 245, 234, 207;
     --t-line: rgba(245, 234, 207, 0.4);
@@ -565,23 +630,24 @@ ${hathorFontFaces}
   .ui-light-background {
     --t-background: #f5eacf;
     --t-background-rgb: 245, 234, 207;
-    --t-text: #8b6914;
-    --t-text-rgb: 139, 105, 20;
-    --t-heading: #8b6914;
-    --t-heading-rgb: 139, 105, 20;
+    --t-text: #1c1917;
+    --t-text-rgb: 28, 25, 23;
+    --t-heading: #1c1917;
+    --t-heading-rgb: 28, 25, 23;
     --t-primary: #b69f64;
     --t-primary-rgb: 182, 159, 100;
-    --t-secondary: #b69f64;
-    --t-secondary-rgb: 182, 159, 100;
+    --t-secondary: #5c5348;
+    --t-secondary-rgb: 92, 83, 72;
     --t-line: rgba(182, 159, 100, 0.35);
     background-color: #f5eacf !important;
-    color: #8b6914 !important;
+    color: #1c1917 !important;
   }
   .ui-background.ui-dark,
   .ui-dark.ui-background {
     background-color: #8b6914 !important;
   }
-  /* On deep gold / photo: cream type for contrast */
+
+  /* Dark / media: ivory titles, warm ivory body, gold accents */
   .ui-dark .h0,
   .ui-dark .h1,
   .ui-dark .h2,
@@ -594,8 +660,10 @@ ${hathorFontFaces}
   .ui-dark [class*="__title"] .g1 {
     color: #f7f1e6 !important;
     -webkit-text-fill-color: #f7f1e6 !important;
-    text-shadow: 0 4px 36px rgba(139, 105, 20, 0.55), 0 1px 2px rgba(139, 105, 20, 0.4) !important;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.22) !important;
   }
+  .ui-dark .h3,
+  .ui-dark h3,
   .ui-dark p,
   .ui-dark .text-t1,
   .ui-dark .text-t2,
@@ -604,21 +672,22 @@ ${hathorFontFaces}
   .ui-dark [class*="__text"],
   .ui-dark [class*="__caption"] p,
   .ui-dark [class*="-caption__"] p,
-  .ui-dark .btn__text {
+  .ui-dark .btn__text,
+  .ui-dark .l-intro__opening-subtitle {
     color: rgba(247, 241, 230, 0.94) !important;
     -webkit-text-fill-color: rgba(247, 241, 230, 0.94) !important;
-    text-shadow: 0 2px 18px rgba(139, 105, 20, 0.45) !important;
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.18) !important;
   }
   .ui-dark .text-c1,
   .ui-dark .text-c2,
-  .ui-dark [class*="__subtitle"],
   .ui-dark .btn,
   .ui-dark .text-color-primary {
-    color: #d4bf86 !important;
-    -webkit-text-fill-color: #d4bf86 !important;
-    text-shadow: 0 2px 14px rgba(139, 105, 20, 0.4) !important;
+    color: #b69f64 !important;
+    -webkit-text-fill-color: #b69f64 !important;
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.16) !important;
   }
-  /* On cream: deep gold type */
+
+  /* Cream: warm ink body/titles; gold for labels + script only */
   .ui-light .h0,
   .ui-light .h1,
   .ui-light .h2,
@@ -627,30 +696,33 @@ ${hathorFontFaces}
   .ui-light h1,
   .ui-light h2,
   .ui-light [class*="__title"] {
-    color: #8b6914 !important;
-    -webkit-text-fill-color: #8b6914 !important;
+    color: #1c1917 !important;
+    -webkit-text-fill-color: #1c1917 !important;
     text-shadow: none !important;
   }
+  .ui-light .h3,
+  .ui-light h3,
   .ui-light p,
   .ui-light .text-t1,
   .ui-light .text-t2,
   .ui-light .text-p1,
   .ui-light .text-p2,
   .ui-light [class*="__text"],
-  .ui-light [class*="__caption"] {
-    color: #8b6914 !important;
-    -webkit-text-fill-color: #8b6914 !important;
+  .ui-light [class*="__caption"],
+  .ui-light .l-intro__opening-subtitle {
+    color: #1c1917 !important;
+    -webkit-text-fill-color: #1c1917 !important;
     text-shadow: none !important;
   }
   .ui-light .text-c1,
   .ui-light .text-c2,
-  .ui-light [class*="__subtitle"],
   .ui-light .text-color-primary {
     color: #b69f64 !important;
     -webkit-text-fill-color: #b69f64 !important;
     text-shadow: none !important;
   }
-  /* Mosaic + sticky media captions: cream titles over imagery */
+
+  /* Photography captions */
   .l-nature-bg-caption .g1,
   .l-nature__caption .g1,
   .l-nature__slider-caption .g1,
@@ -661,61 +733,72 @@ ${hathorFontFaces}
   .l-gallery__title .h0 {
     color: #f7f1e6 !important;
     -webkit-text-fill-color: #f7f1e6 !important;
-    text-shadow: 0 4px 40px rgba(139, 105, 20, 0.55), 0 1px 2px rgba(139, 105, 20, 0.45) !important;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.24) !important;
   }
-  .l-nature-bg-caption p,
+  .l-nature-bg-caption p:not([class*="__subtitle"]),
   .l-nature-bg-caption__text,
-  .l-nature__caption p,
+  .l-nature__caption p:not([class*="__subtitle"]),
   .l-nature__caption__text,
-  .l-nature__slider-caption p,
-  .l-wellness__caption p,
-  .l-place__caption p,
-  .preloader__content p:not(.g1) {
+  .l-nature__slider-caption p:not([class*="__subtitle"]),
+  .l-wellness__caption p:not([class*="__subtitle"]),
+  .l-place__caption p:not([class*="__subtitle"]),
+  .preloader__content p:not(.g1):not([class*="__subtitle"]) {
     color: rgba(247, 241, 230, 0.94) !important;
     -webkit-text-fill-color: rgba(247, 241, 230, 0.94) !important;
-    text-shadow: 0 2px 18px rgba(139, 105, 20, 0.45) !important;
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.18) !important;
   }
-  .l-nature-bg-caption [class*="__subtitle"],
   .l-nature-bg-caption__subtitle,
   .l-wellness__caption__subtitle,
-  .l-place__caption__subtitle {
-    color: #d4bf86 !important;
-    -webkit-text-fill-color: #d4bf86 !important;
-    text-shadow: 0 2px 14px rgba(139, 105, 20, 0.4) !important;
+  .l-place__caption__subtitle,
+  .l-place-webgl-caption__subtitle {
+    color: #b69f64 !important;
+    -webkit-text-fill-color: #b69f64 !important;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.18) !important;
   }
   .text-color-primary,
   .text-color-secondary,
   .color-primary {
     color: #b69f64 !important;
   }
+
+  /* Title ↔ script rhythm inside caption groups */
+  .l-nature-bg-caption .g1 + .l-nature-bg-caption__subtitle,
+  .l-wellness__caption .g1 + .l-wellness__caption__subtitle,
+  .l-place__caption .g1 + .l-place__caption__subtitle {
+    margin-top: 0.55rem;
+  }
+  .l-intro__opening .h2 + .l-intro__opening-subtitle,
+  .l-intro__opening h2 + .l-intro__opening-subtitle {
+    margin-top: 1rem;
+  }
+
   @media (max-width: 1024px) and (min-width: 481px) {
-    .h0,
-    .l-gallery__title .h0 {
-      font-size: clamp(2.75rem, 7.5vw, 5.5rem) !important;
-    }
-    .g1,
-    .g2 {
-      font-size: clamp(2rem, 4.8vw, 3.5rem) !important;
+    :root {
+      --type-display-hero: clamp(3.1rem, 6.4vw, 6rem);
+      --type-display-section: clamp(2.35rem, 4.6vw, 4.25rem);
+      --type-display-secondary: clamp(1.65rem, 2.8vw, 2.65rem);
+      --type-script-lg: clamp(1.7rem, 2.5vw, 2.85rem);
+      --type-lead: clamp(1.1rem, 1.5vw, 1.28rem);
+      --type-body: clamp(1.05rem, 1.35vw, 1.15rem);
     }
     .l-gallery__caption .l-gallery__title {
       right: clamp(1rem, 3.5vw, 2.5rem) !important;
       bottom: clamp(1.25rem, 4vw, 2.25rem) !important;
-      max-width: min(58vw, 12em);
+      max-width: min(54vw, 11em);
     }
   }
   @media (max-width: 480px) {
-    .h0,
-    .l-gallery__title .h0 {
-      font-size: clamp(2.5rem, 12vw, 3.75rem) !important;
-    }
-    .g1,
-    .g2 {
-      font-size: clamp(1.875rem, 8vw, 2.75rem) !important;
-    }
-    .h1,
-    .h2,
-    h2 {
-      font-size: clamp(1.375rem, 6.5vw, 2rem) !important;
+    :root {
+      --type-display-hero: clamp(3.1rem, 11.5vw, 3.9rem);
+      --type-display-section: clamp(2.4rem, 8.2vw, 3.15rem);
+      --type-display-secondary: clamp(1.55rem, 6.2vw, 2.1rem);
+      --type-script-lg: clamp(1.55rem, 6vw, 2.2rem);
+      --type-lead: 1.125rem;
+      --type-body: 1.0625rem;
+      --type-label: 0.7rem;
+      --type-button: 0.75rem;
+      --leading-display: 0.94;
+      --leading-section: 0.98;
     }
     .l-gallery__caption .l-gallery__title {
       position: relative !important;
