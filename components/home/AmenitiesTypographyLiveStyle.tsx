@@ -13,10 +13,17 @@ export function AmenitiesTypographyLiveStyle({ css }: { css: string }) {
     if (typeof document === "undefined" || !css.trim()) return;
     let el = document.getElementById(STYLE_ID) as HTMLStyleElement | null;
     if (!el) {
+      el =
+        (document.querySelector(
+          "style[data-hathor-amenities-typo-ssr]",
+        ) as HTMLStyleElement | null) ?? null;
+    }
+    if (!el) {
       el = document.createElement("style");
-      el.id = STYLE_ID;
       document.head.appendChild(el);
     }
+    el.id = STYLE_ID;
+    el.setAttribute("data-hathor-amenities-typo-ssr", "");
     el.textContent = css;
     /* Keep last in <head> so it beats #hathor-typography-live. */
     document.head.appendChild(el);
@@ -24,6 +31,7 @@ export function AmenitiesTypographyLiveStyle({ css }: { css: string }) {
 
   return (
     <style
+      id={STYLE_ID}
       data-hathor-amenities-typo-ssr
       dangerouslySetInnerHTML={{ __html: css }}
     />

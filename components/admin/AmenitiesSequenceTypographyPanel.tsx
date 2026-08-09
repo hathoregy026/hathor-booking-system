@@ -17,6 +17,7 @@ import {
   Save,
 } from "lucide-react";
 import { AdminDevicePreviewToggle } from "@/components/admin/AdminDevicePreviewToggle";
+import { HexColorInput } from "@/components/admin/HexColorInput";
 import { useToast } from "@/components/admin/ToastProvider";
 import { adminFetch } from "@/lib/admin-fetch";
 import type { AdminDevicePreview } from "@/lib/admin-device-preview";
@@ -117,7 +118,7 @@ const RAIL: RailItem[] = [
     label: "Body style",
     mode: "style",
     role: "body",
-    hint: "Paragraphs on gold panels (slider, opening rail, nature caption).",
+    hint: "Paragraphs on gold panels (slider, opening rail, nature caption) and opening card labels.",
   },
   {
     id: "style-spacing",
@@ -173,14 +174,22 @@ export function AmenitiesSequenceTypographyPanel() {
     origX: number;
     origY: number;
   } | null>(null);
+  /** Latest styles for Save — avoids stale hex after blur → setState race. */
+  const stylesRef = useRef({
+    desktop: DEFAULT_AMENITIES_TYPOGRAPHY,
+    phone: DEFAULT_AMENITIES_TYPOGRAPHY,
+  });
 
   const text = device === "phone" ? phoneText : desktopText;
   const setText = device === "phone" ? setPhoneText : setDesktopText;
   const savedText = device === "phone" ? savedPhoneText : savedDesktopText;
   const styles = device === "phone" ? phoneStyles : desktopStyles;
-  const setStyles = device === "phone" ? setPhoneStyles : setDesktopStyles;
   const savedStyles = device === "phone" ? savedPhoneStyles : savedDesktopStyles;
   const layout = styles.layout;
+
+  useEffect(() => {
+    stylesRef.current = { desktop: desktopStyles, phone: phoneStyles };
+  }, [desktopStyles, phoneStyles]);
 
   const active = RAIL.find((item) => item.id === activeId) ?? RAIL[0];
   const dirty =
@@ -224,6 +233,7 @@ export function AmenitiesSequenceTypographyPanel() {
         setSavedDesktopStyles(desk);
         setPhoneStyles(phone);
         setSavedPhoneStyles(phone);
+        stylesRef.current = { desktop: desk, phone };
       }
     } catch {
       showToast("error", "Could not load amenities sequence text.");
@@ -266,19 +276,30 @@ export function AmenitiesSequenceTypographyPanel() {
     }));
   };
 
+  const commitStyles = (
+    next: typeof DEFAULT_AMENITIES_TYPOGRAPHY,
+  ) => {
+    if (device === "phone") {
+      stylesRef.current.phone = next;
+      setPhoneStyles(next);
+    } else {
+      stylesRef.current.desktop = next;
+      setDesktopStyles(next);
+    }
+  };
+
   const patchStyle = (
     role: AmenitiesStyleRole,
     partial: Partial<AmenitiesTextStyle>,
   ) => {
-    setStyles((prev) => {
-      const nextRole = { ...prev[role], ...partial };
-      /* Keep legacy `color` aligned with on-bg for anything still reading it. */
-      if (partial.colorOnBg) nextRole.color = partial.colorOnBg;
-      else if (partial.color && !partial.colorOnBg && !partial.colorOnImage) {
-        nextRole.colorOnBg = partial.color;
-      }
-      return { ...prev, [role]: nextRole };
-    });
+    const prev = device === "phone" ? stylesRef.current.phone : stylesRef.current.desktop;
+    const nextRole = { ...prev[role], ...partial };
+    /* Keep legacy `color` aligned with on-bg for anything still reading it. */
+    if (partial.colorOnBg) nextRole.color = partial.colorOnBg;
+    else if (partial.color && !partial.colorOnBg && !partial.colorOnImage) {
+      nextRole.colorOnBg = partial.color;
+    }
+    commitStyles({ ...prev, [role]: nextRole });
   };
 
   const rolePreviewColor = (role: AmenitiesStyleRole) =>
@@ -287,17 +308,19 @@ export function AmenitiesSequenceTypographyPanel() {
       : styles[role].colorOnBg;
 
   const patchSpacing = (partial: Partial<AmenitiesSpacing>) => {
-    setStyles((prev) => ({
+    const prev = device === "phone" ? stylesRef.current.phone : stylesRef.current.desktop;
+    commitStyles({
       ...prev,
       spacing: { ...prev.spacing, ...partial },
-    }));
+    });
   };
 
   const patchLayout = (partial: Partial<AmenitiesLayout>) => {
-    setStyles((prev) => ({
+    const prev = device === "phone" ? stylesRef.current.phone : stylesRef.current.desktop;
+    commitStyles({
       ...prev,
       layout: { ...prev.layout, ...partial },
-    }));
+    });
   };
 
   const activeOffset =
@@ -403,8 +426,24 @@ export function AmenitiesSequenceTypographyPanel() {
 
   const save = async () => {
     if (!dirty || saving) return;
+    /*
+     * Hex fields commit on type when valid, but blur any focused input first so
+     * a half-edited value never races Save with stale React state.
+     */
+    if (typeof document !== "undefined") {
+      const activeEl = document.activeElement;
+      if (activeEl instanceof HTMLElement) activeEl.blur();
+    }
     setSaving(true);
     try {
+      /* Let blur/onChange flush into state + stylesRef before reading. */
+      await new Promise<void>((resolve) => {
+        requestAnimationFrame(() => resolve());
+      });
+      const stylesToSave =
+        device === "phone"
+          ? stylesRef.current.phone
+          : stylesRef.current.desktop;
       const [textRes, styleRes] = await Promise.all([
         adminFetch("/api/admin/website-text", {
           method: "PUT",
@@ -414,7 +453,7 @@ export function AmenitiesSequenceTypographyPanel() {
         adminFetch("/api/admin/amenities-typography", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ settings: styles, device }),
+          body: JSON.stringify({ settings: stylesToSave, device }),
         }),
       ]);
       if (!textRes.ok) throw new Error("Failed to save amenities wording");
@@ -426,7 +465,7 @@ export function AmenitiesSequenceTypographyPanel() {
       const nextStyles = parseAmenitiesTypography(styleData.settings);
 
       setText(nextText);
-      setStyles(nextStyles);
+      commitStyles(nextStyles);
       if (device === "phone") {
         setSavedPhoneText(nextText);
         setSavedPhoneStyles(nextStyles);
@@ -894,35 +933,33 @@ export function AmenitiesSequenceTypographyPanel() {
               <div className="typo-easy__fields-row">
                 <label className="typo-easy__field">
                   <span>Colour on image</span>
-                  <input
-                    className="admin-input"
-                    type="color"
+                  <HexColorInput
+                    aria-label="Colour on image"
                     value={styles[active.role].colorOnImage}
-                    onChange={(e) => {
+                    onChange={(hex) => {
                       setPreviewSurface("onImage");
-                      patchStyle(active.role, {
-                        colorOnImage: e.target.value,
-                      });
+                      patchStyle(active.role, { colorOnImage: hex });
                     }}
                   />
                 </label>
                 <label className="typo-easy__field">
                   <span>Colour on background</span>
-                  <input
-                    className="admin-input"
-                    type="color"
+                  <HexColorInput
+                    aria-label="Colour on background"
                     value={styles[active.role].colorOnBg}
-                    onChange={(e) => {
+                    onChange={(hex) => {
                       setPreviewSurface("onBg");
-                      patchStyle(active.role, {
-                        colorOnBg: e.target.value,
-                      });
+                      patchStyle(active.role, { colorOnBg: hex });
                     }}
                   />
                 </label>
               </div>
               <p className="typo-easy__controls-hint">
-                On image = photo overlays. On background = gold / cream panels.
+                Type or paste a hex (#FFF or #FFFFFF) — it applies as soon as it
+                is valid. Use <strong>Colour on background</strong> for gold /
+                cream panels (slider, video caption, opening rail, nature). Use{" "}
+                <strong>Colour on image</strong> for photo overlays. Save to
+                push live.
               </p>
               <div className="typo-easy__fields-row">
                 <label className="typo-easy__field">
@@ -1144,8 +1181,12 @@ export function AmenitiesSequenceTypographyPanel() {
               <button
                 className="typo-easy__reset"
                 type="button"
-                onClick={() =>
-                  setStyles((prev) => ({
+                onClick={() => {
+                  const prev =
+                    device === "phone"
+                      ? stylesRef.current.phone
+                      : stylesRef.current.desktop;
+                  commitStyles({
                     ...prev,
                     title: {
                       ...prev.title,
@@ -1166,8 +1207,8 @@ export function AmenitiesSequenceTypographyPanel() {
                       ...DEFAULT_AMENITIES_LAYOUT,
                       align: prev.layout.align,
                     },
-                  }))
-                }
+                  });
+                }}
               >
                 <RotateCcw className="h-3.5 w-3.5" /> Reset layout, gaps &amp;
                 line heights

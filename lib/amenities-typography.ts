@@ -26,10 +26,18 @@ export async function getAmenitiesTypography(phone = false) {
   const row = await withDb(() =>
     prisma.siteSetting.findUnique({ where: { key } }),
   );
-  if (!row?.value) return DEFAULT_AMENITIES_TYPOGRAPHY;
+  if (!row?.value) {
+    /*
+     * Missing phone row must NOT fall back to package defaults — that media
+     * query would wipe desktop hex colours below 767px.
+     */
+    if (phone) return getAmenitiesTypography(false);
+    return DEFAULT_AMENITIES_TYPOGRAPHY;
+  }
   try {
     return parseAmenitiesTypography(JSON.parse(row.value));
   } catch {
+    if (phone) return getAmenitiesTypography(false);
     return DEFAULT_AMENITIES_TYPOGRAPHY;
   }
 }
@@ -83,7 +91,8 @@ function roleMetricsCss(selector: string, style: AmenitiesTextStyle) {
 }
 
 function roleColorCss(selector: string, color: string) {
-  return `${selector}{color:${color}!important;-webkit-text-fill-color:${color}!important;}`;
+  /* Kill metallic/clip fills from Site Typography so the hex always shows. */
+  return `${selector}{color:${color}!important;-webkit-text-fill-color:${color}!important;background:none!important;background-image:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;}`;
 }
 
 /**
@@ -160,8 +169,6 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
       " .home-am-nature__indication *",
       " .home-am-intro__indication",
       " .home-am-intro__indication *",
-      " .home-am-opening__list-item-text",
-      " .home-am-opening__list-item-text *",
     ),
     indication,
   );
@@ -179,6 +186,8 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
       " .home-am-video__title-body *",
       " .home-am-intro__cream .typo-body-text",
       " .home-am-intro__cream .typo-body-text *",
+      " .home-am-opening__list-item-text",
+      " .home-am-opening__list-item-text *",
     ),
     body,
   );
@@ -211,8 +220,6 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
         " .home-am-nature__indication *",
         " .home-am-intro__indication",
         " .home-am-intro__indication *",
-        " .home-am-opening__list-item-text",
-        " .home-am-opening__list-item-text *",
       ),
       indication.colorOnBg,
     ),
@@ -232,6 +239,8 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
         " .home-am-intro__cream .typo-body-text *",
         " .home-am-video__caption-text",
         " .home-am-video__caption-text *",
+        " .home-am-opening__list-item-text",
+        " .home-am-opening__list-item-text *",
       ),
       body.colorOnBg,
     ),
@@ -260,8 +269,6 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
         " .home-am-on-image-text.typo-on-images-indication *",
         " .home-am-intro__caption .home-am-intro__indication",
         " .home-am-intro__caption .home-am-intro__indication *",
-        " .home-am-opening__list-item-text",
-        " .home-am-opening__list-item-text *",
       ),
       indication.colorOnImage,
     ),
@@ -269,6 +276,8 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
       sel(
         " .home-am-on-image-text.typo-on-images-body",
         " .home-am-on-image-text.typo-on-images-body *",
+        " .home-am-opening__list-item-text",
+        " .home-am-opening__list-item-text *",
       ),
       body.colorOnImage,
     ),
@@ -299,6 +308,10 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
       sel(
         " .home-am-slider__caption .typo-on-images-indication",
         " .home-am-slider__caption .typo-on-images-indication *",
+        " .home-am-video__caption .typo-on-images-indication",
+        " .home-am-video__caption .typo-on-images-indication *",
+        " .home-am-opening__rail-copy .typo-on-images-indication",
+        " .home-am-opening__rail-copy .typo-on-images-indication *",
         " .home-am-nature__gold-band .home-am-nature__indication",
         " .home-am-nature__gold-band .home-am-nature__indication *",
         " .home-am-nature__indication",

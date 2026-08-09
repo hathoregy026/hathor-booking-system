@@ -1,6 +1,8 @@
 import { z } from "zod";
 import {
+  HATHOR_LUXURY_FONTS,
   typographyTextStyleSchema,
+  type HathorLuxuryFont,
   type TypographyTextStyle,
 } from "@/lib/typography-settings-shared";
 
@@ -146,10 +148,20 @@ function clampNum(n: number, min: number, max: number, fallback: number) {
   return Math.min(max, Math.max(min, n));
 }
 
+/** Accept `#RGB`, `#RRGGBB`, `#RRGGBBAA`, or the same without `#`; store `#RRGGBB`. */
 function asHex(value: unknown, fallback: string): string {
-  if (typeof value === "string" && /^#[0-9A-Fa-f]{6}$/.test(value)) {
-    return value;
+  if (typeof value !== "string") return fallback;
+  const trimmed = value.trim();
+  if (!trimmed) return fallback;
+  const withHash = trimmed.startsWith("#") ? trimmed : `#${trimmed}`;
+  const short = /^#([0-9A-Fa-f]{3})$/.exec(withHash);
+  if (short) {
+    const [r, g, b] = short[1]!;
+    return `#${r}${r}${g}${g}${b}${b}`.toUpperCase();
   }
+  const longAlpha = /^#([0-9A-Fa-f]{8})$/.exec(withHash);
+  if (longAlpha) return `#${longAlpha[1]!.slice(0, 6)}`.toUpperCase();
+  if (/^#[0-9A-Fa-f]{6}$/.test(withHash)) return withHash.toUpperCase();
   return fallback;
 }
 
@@ -201,6 +213,33 @@ function parseAmenitiesLayout(raw: unknown): AmenitiesLayout {
   };
 }
 
+function parseAmenitiesSpacing(raw: unknown): AmenitiesSpacing {
+  if (!raw || typeof raw !== "object") return { ...DEFAULT_AMENITIES_SPACING };
+  const src = raw as Record<string, unknown>;
+  return {
+    titleToIndication: clampNum(
+      asFiniteNumber(src.titleToIndication) ??
+        DEFAULT_AMENITIES_SPACING.titleToIndication,
+      0,
+      120,
+      DEFAULT_AMENITIES_SPACING.titleToIndication,
+    ),
+    indicationToBody: clampNum(
+      asFiniteNumber(src.indicationToBody) ??
+        DEFAULT_AMENITIES_SPACING.indicationToBody,
+      0,
+      120,
+      DEFAULT_AMENITIES_SPACING.indicationToBody,
+    ),
+    bodyToCta: clampNum(
+      asFiniteNumber(src.bodyToCta) ?? DEFAULT_AMENITIES_SPACING.bodyToCta,
+      0,
+      160,
+      DEFAULT_AMENITIES_SPACING.bodyToCta,
+    ),
+  };
+}
+
 function parseAmenitiesTextStyle(
   raw: unknown,
   fallback: AmenitiesTextStyle,
@@ -234,21 +273,17 @@ function parseAmenitiesTextStyle(
 export function parseAmenitiesTypography(raw: unknown): AmenitiesTypography {
   if (!raw || typeof raw !== "object") return DEFAULT_AMENITIES_TYPOGRAPHY;
   const o = raw as Record<string, unknown>;
-  try {
-    return amenitiesTypographySchema.parse({
-      title: parseAmenitiesTextStyle(o.title, DEFAULT_AMENITIES_TYPOGRAPHY.title),
-      indication: parseAmenitiesTextStyle(
-        o.indication,
-        DEFAULT_AMENITIES_TYPOGRAPHY.indication,
-      ),
-      body: parseAmenitiesTextStyle(o.body, DEFAULT_AMENITIES_TYPOGRAPHY.body),
-      spacing: {
-        ...DEFAULT_AMENITIES_TYPOGRAPHY.spacing,
-        ...(typeof o.spacing === "object" && o.spacing ? o.spacing : {}),
-      },
-      layout: parseAmenitiesLayout(o.layout),
-    });
-  } catch {
-    return DEFAULT_AMENITIES_TYPOGRAPHY;
-  }
+  const soft: AmenitiesTypography = {
+    title: parseAmenitiesTextStyle(o.title, DEFAULT_AMENITIES_TYPOGRAPHY.title),
+    indication: parseAmenitiesTextStyle(
+      o.indication,
+      DEFAULT_AMENITIES_TYPOGRAPHY.indication,
+    ),
+    body: parseAmenitiesTextStyle(o.body, DEFAULT_AMENITIES_TYPOGRAPHY.body),
+    spacing: parseAmenitiesSpacing(o.spacing),
+    layout: parseAmenitiesLayout(o.layout),
+  };
+  const parsed = amenitiesTypographySchema.safeParse(soft);
+  /* Prefer soft merge over full defaults — never wipe a valid hex on schema noise. */
+  return parsed.success ? parsed.data : soft;
 }

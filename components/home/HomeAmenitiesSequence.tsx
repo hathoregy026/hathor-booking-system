@@ -134,11 +134,17 @@ export function HomeAmenitiesSequence({
     return single ? [single] : [];
   };
 
+  /** Script sub under every gold caption — keeps title → sub → body spacing consistent. */
+  const scriptSub = (raw: string | undefined, fallback: string) => {
+    const text = raw?.trim();
+    return text || fallback;
+  };
+
   const sliderSlides = [
     landmarks[2]
       ? {
           titleLines: landmarks[2].titleLines,
-          indication: landmarks[2].indication,
+          indication: scriptSub(landmarks[2].indication, "Spa & Wellness"),
           body: landmarks[2].body,
           image: images[3],
         }
@@ -146,7 +152,7 @@ export function HomeAmenitiesSequence({
     landmarks[3]
       ? {
           titleLines: landmarks[3].titleLines,
-          indication: landmarks[3].indication,
+          indication: scriptSub(landmarks[3].indication, "Golden Hour"),
           body: landmarks[3].body,
           image: images[4],
         }
@@ -154,7 +160,7 @@ export function HomeAmenitiesSequence({
     stories[0]
       ? {
           titleLines: storyTitleLines(stories[0].title),
-          indication: stories[0].cta,
+          indication: scriptSub(stories[0].cta, "A Way of Life"),
           body: stories[0].body,
           image: images[5],
         }
@@ -162,7 +168,7 @@ export function HomeAmenitiesSequence({
     stories[1]
       ? {
           titleLines: storyTitleLines(stories[1].title),
-          indication: stories[1].cta,
+          indication: scriptSub(stories[1].cta, "On The Dahabiya"),
           body: stories[1].body,
           image: images[6],
         }
@@ -226,6 +232,7 @@ export function HomeAmenitiesSequence({
 
   /* Fixed gold-column copy (pinned while RC cards scroll) */
   const openingFixedTitleLines = ["SOUL OF", "THE NILE"];
+  const openingFixedIndication = "Private Nile Sailing";
   const openingFixedBody =
     "Aboard a quiet dahabiya, Egypt arrives without hurry — warm company, elegant cabins, and the river unfolding one measured bend at a time.";
 
@@ -491,8 +498,19 @@ export function HomeAmenitiesSequence({
               data-distance="1"
             >
               <h3 className="typo-on-images-title" style={onGoldTitle}>
-                {videoInset?.titleLines?.join(" ") || videoMain.indication}
+                {videoInset?.titleLines?.join(" ") ||
+                  videoMain.indication ||
+                  "WELCOME ABOARD HATHOR."}
               </h3>
+              <p className="typo-on-images-indication" style={onGoldIndication}>
+                {scriptSub(
+                  videoInset?.indication ||
+                    (videoInset?.titleLines?.length
+                      ? videoMain.indication
+                      : undefined),
+                  "Welcome Aboard",
+                )}
+              </p>
               <p
                 className="typo-on-images-body home-am-video__caption-text"
                 data-am-video-caption-text
@@ -562,14 +580,12 @@ export function HomeAmenitiesSequence({
                           </span>
                         ))}
                       </h2>
-                      {slide.indication ? (
-                        <p
-                          className="typo-on-images-indication"
-                          style={onGoldIndication}
-                        >
-                          {slide.indication}
-                        </p>
-                      ) : null}
+                      <p
+                        className="typo-on-images-indication"
+                        style={onGoldIndication}
+                      >
+                        {slide.indication}
+                      </p>
                       <p className="typo-on-images-body" style={onGoldBody}>
                         {slide.body}
                       </p>
@@ -760,7 +776,7 @@ export function HomeAmenitiesSequence({
                           previewAnchor={card.image.previewAnchor}
                         />
                       </div>
-                      <div className="home-am-opening__list-item-text">
+                      <div className="home-am-opening__list-item-text home-am-on-image-text typo-on-images-body">
                         {card.label}
                       </div>
                     </div>
@@ -777,6 +793,9 @@ export function HomeAmenitiesSequence({
                     </span>
                   ))}
                 </h3>
+                <p className="typo-on-images-indication" style={onGoldIndication}>
+                  {openingFixedIndication}
+                </p>
                 <p className="typo-on-images-body" style={onGoldBody}>
                   {openingFixedBody}
                 </p>

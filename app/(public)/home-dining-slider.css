@@ -95,8 +95,6 @@ html[data-ex-experience] .ex-root .home-am-sequence .typo-on-images-indication *
 .public-site .home-am-sequence .home-am-on-image-text.typo-on-images-indication *,
 .public-site .home-am-sequence .home-am-intro__caption .home-am-intro__indication,
 .public-site .home-am-sequence .home-am-intro__caption .home-am-intro__indication *,
-.public-site .home-am-sequence .home-am-opening__list-item-text,
-.public-site .home-am-sequence .home-am-opening__list-item-text *,
 html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text.typo-on-images-indication,
 html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text.typo-on-images-indication * {
   color: var(--am-typo-indication-on-image) !important;
@@ -123,6 +121,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .typo-on-images-body * {
 
 .public-site .home-am-sequence .home-am-on-image-text.typo-on-images-body,
 .public-site .home-am-sequence .home-am-on-image-text.typo-on-images-body *,
+.public-site .home-am-sequence .home-am-opening__list-item-text,
+.public-site .home-am-sequence .home-am-opening__list-item-text *,
 html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text.typo-on-images-body,
 html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text.typo-on-images-body * {
   color: var(--am-typo-body-on-image) !important;
@@ -782,15 +782,17 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   will-change: clip-path, transform;
 }
 
-.home-am-video__caption h3 {
-  margin: 0 0 1rem;
-  line-height: 1.25;
+.home-am-video__caption h3.typo-on-images-title {
+  margin: 0 0 var(--am-typo-gap-title-sub, 14px);
 }
 
-.home-am-video__caption p,
+.home-am-video__caption .typo-on-images-indication {
+  margin: 0 0 var(--am-typo-gap-sub-body, 14px);
+}
+
+.home-am-video__caption .typo-on-images-body,
 .home-am-video__caption-text {
   margin: 0;
-  line-height: 1.5;
 }
 
 @media (min-width: 1025px) {
@@ -1153,7 +1155,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   object-fit: cover !important;
 }
 
-/* Springs .i-opening__list-item__text */
+/* Springs .i-opening__list-item__text — body role (not script / indication) */
 .home-am-opening__list-item-text {
   bottom: 20px;
   left: 20px;
@@ -1175,9 +1177,9 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   line-height: 1.35 !important;
   letter-spacing: 0.08em !important;
   text-transform: uppercase !important;
-  /* Colour from Amenities Sequence indication (on image) */
-  color: var(--am-typo-indication-on-image, #ffffff) !important;
-  -webkit-text-fill-color: var(--am-typo-indication-on-image, #ffffff) !important;
+  /* Colour from Amenities Sequence body (on image) */
+  color: var(--am-typo-body-on-image, #ffffff) !important;
+  -webkit-text-fill-color: var(--am-typo-body-on-image, #ffffff) !important;
   pointer-events: none;
 }
 
@@ -1267,6 +1269,11 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 
 .home-am-opening__rail-copy .typo-on-images-title > .home-am-title-line {
   display: block;
+  text-align: left;
+}
+
+.home-am-opening__rail-copy .typo-on-images-indication {
+  margin: 0 0 var(--am-typo-gap-sub-body, 14px);
   text-align: left;
 }
 
