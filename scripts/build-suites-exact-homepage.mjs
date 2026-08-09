@@ -379,28 +379,21 @@ const suitesPalette = `
    * Contrast: ink on cream, gold on media with strong bloom — no cream-on-cream.
    */
 ${hathorFontFaces}
-
   :root {
-    /* Brand: cream + gold + warm dark (closer to gold than cold black) */
     --suites-hero: "Gabigaile", Georgia, serif;
     --suites-serif: "Gamgote", Georgia, serif;
     --suites-script: "Quiet Luxury", cursive;
     --suites-label: "Lavenir", Georgia, serif;
     --suites-sans: "Plus Jakarta Sans", system-ui, sans-serif;
     --suites-gold: #b69f64;
-    --suites-gold-deep: #9a8348;
     --suites-gold-soft: #d4bf86;
-    --suites-cream: #f5eacf;
-    --suites-cream-soft: #ece8df;
-    --suites-cream-bright: #f7f1e6;
-    --suites-dark: #2a2218;
-    --suites-ink: #2a2218;
-    --suites-body: #3f3428;
-    --suites-muted: #8a7350;
-    --suites-on-media: #f7f1e6;
-    --suites-on-media-body: rgba(247, 241, 230, 0.92);
-    --suites-title-on-media: #f7f1e6;
-    --suites-ink-soft: rgba(247, 241, 230, 0.92);
+    --suites-ink: #1a1a1a;
+    --suites-body: #3d3a36;
+    --suites-muted: #7a6a58;
+    --suites-on-media: #f5f0e8;
+    --suites-on-media-body: rgba(245, 240, 232, 0.92);
+    --suites-title-on-media: #b69f64;
+    --suites-ink-soft: rgba(245, 240, 232, 0.92);
     --lux-gold: #b69f64;
     --lux-gold-rgb: 182, 159, 100;
     --lux-cream: #f5eacf;
@@ -429,15 +422,15 @@ ${hathorFontFaces}
     --c-sky-rgb: 245, 234, 207;
     --c-white: #f5eacf;
     --c-white-rgb: 245, 234, 207;
-    --c-black: #2a2218;
-    --c-black-rgb: 42, 34, 24;
+    --c-black: #b69f64;
+    --c-black-rgb: 182, 159, 100;
     --cookie-height: 0px;
     --tooltip-shadow: 0 18px 48px rgba(182, 159, 100, 0.28);
     --c-button-hover-gradient: linear-gradient(101.51deg, rgba(182, 159, 100, 0) 37.02%, #b69f64 308.4%);
     --c-button-hover-gradient-dark: linear-gradient(91.82deg, rgba(245, 234, 207, 0) 0%, #b69f64 100%);
   }
   html, body {
-    background: var(--suites-cream);
+    background: #f5eacf;
     color: var(--suites-body);
     font-family: var(--suites-sans);
     font-size: 16px;
@@ -484,6 +477,17 @@ ${hathorFontFaces}
     font-size: clamp(1.625rem, 3vw, 2.75rem) !important;
     line-height: 1.2 !important;
     letter-spacing: -0.02em !important;
+  }
+  .l-gallery__caption .l-gallery__title {
+    left: auto !important;
+    right: clamp(1.25rem, 4vw, 3.5rem) !important;
+    bottom: clamp(1.25rem, 3.5vw, 2.75rem) !important;
+    top: auto !important;
+    text-align: right !important;
+    max-width: min(52vw, 14em);
+  }
+  .l-gallery__caption .l-gallery__title .h0 {
+    text-align: right !important;
   }
   body,
   p:not(.g1):not(.g2):not(.h0):not(.h1):not(.h2):not(.h3),
@@ -536,45 +540,32 @@ ${hathorFontFaces}
     letter-spacing: 0.18em !important;
     text-transform: uppercase !important;
   }
-
-  /* —— Surfaces —— */
   .ui-dark {
-    --t-background: #2a2218;
-    --t-background-rgb: 42, 34, 24;
-    --t-text: #f7f1e6;
-    --t-text-rgb: 247, 241, 230;
-    --t-heading: #f7f1e6;
-    --t-heading-rgb: 247, 241, 230;
-    --t-primary: #b69f64;
-    --t-primary-rgb: 182, 159, 100;
-    --t-secondary: #d4bf86;
-    --t-secondary-rgb: 212, 191, 134;
-    --t-line: rgba(182, 159, 100, 0.4);
-    background-color: #2a2218 !important;
-    color: #f7f1e6 !important;
-  }
-  .ui-light,
-  .ui-light-background {
-    --t-background: #f5eacf;
-    --t-background-rgb: 245, 234, 207;
-    --t-text: #3f3428;
-    --t-text-rgb: 63, 52, 40;
+    --t-background: #2c2824;
+    --t-background-rgb: 44, 40, 36;
+    --t-text: #f5f0e8;
+    --t-text-rgb: 245, 240, 232;
     --t-heading: #b69f64;
     --t-heading-rgb: 182, 159, 100;
     --t-primary: #b69f64;
     --t-primary-rgb: 182, 159, 100;
-    --t-secondary: #9a8348;
-    --t-secondary-rgb: 154, 131, 72;
+    --t-secondary: #d4bf86;
+    --t-secondary-rgb: 212, 191, 134;
+    --t-line: rgba(245, 240, 232, 0.35);
+  }
+  .ui-light {
+    --t-background: #f5eacf;
+    --t-background-rgb: 245, 234, 207;
+    --t-text: #3d3a36;
+    --t-text-rgb: 61, 58, 54;
+    --t-heading: #1a1a1a;
+    --t-heading-rgb: 26, 26, 26;
+    --t-primary: #b69f64;
+    --t-primary-rgb: 182, 159, 100;
+    --t-secondary: #7a6a58;
+    --t-secondary-rgb: 122, 106, 88;
     --t-line: rgba(182, 159, 100, 0.35);
-    background-color: #f5eacf !important;
-    color: #3f3428 !important;
   }
-  .ui-background.ui-dark,
-  .ui-dark.ui-background {
-    background-color: #2a2218 !important;
-  }
-
-  /* Dark / photo: cream titles (brand on-media), gold labels */
   .ui-dark .h0,
   .ui-dark .h1,
   .ui-dark .h2,
@@ -585,9 +576,9 @@ ${hathorFontFaces}
   .ui-dark [class*="__title"],
   .ui-dark [class*="__title"] .h0,
   .ui-dark [class*="__title"] .g1 {
-    color: var(--suites-cream-bright) !important;
-    -webkit-text-fill-color: var(--suites-cream-bright) !important;
-    text-shadow: 0 4px 40px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(42, 34, 24, 0.55) !important;
+    color: var(--suites-gold) !important;
+    -webkit-text-fill-color: var(--suites-gold) !important;
+    text-shadow: 0 2px 28px rgba(0, 0, 0, 0.55), 0 1px 2px rgba(0, 0, 0, 0.4) !important;
   }
   .ui-dark p,
   .ui-dark .text-t1,
@@ -600,19 +591,16 @@ ${hathorFontFaces}
   .ui-dark .btn__text {
     color: var(--suites-on-media-body) !important;
     -webkit-text-fill-color: var(--suites-on-media-body) !important;
-    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4) !important;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.5) !important;
   }
   .ui-dark .text-c1,
   .ui-dark .text-c2,
   .ui-dark [class*="__subtitle"],
-  .ui-dark .btn,
-  .ui-dark .text-color-primary {
+  .ui-dark .btn {
     color: var(--suites-gold) !important;
     -webkit-text-fill-color: var(--suites-gold) !important;
-    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.35) !important;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45) !important;
   }
-
-  /* Cream stages: gold titles + warm-dark body (readable, on-brand) */
   .ui-light .h0,
   .ui-light .h1,
   .ui-light .h2,
@@ -621,8 +609,8 @@ ${hathorFontFaces}
   .ui-light h1,
   .ui-light h2,
   .ui-light [class*="__title"] {
-    color: var(--suites-gold-deep) !important;
-    -webkit-text-fill-color: var(--suites-gold-deep) !important;
+    color: var(--suites-ink) !important;
+    -webkit-text-fill-color: var(--suites-ink) !important;
     text-shadow: none !important;
   }
   .ui-light p,
@@ -638,14 +626,11 @@ ${hathorFontFaces}
   }
   .ui-light .text-c1,
   .ui-light .text-c2,
-  .ui-light [class*="__subtitle"],
-  .ui-light .text-color-primary {
-    color: var(--suites-gold) !important;
-    -webkit-text-fill-color: var(--suites-gold) !important;
+  .ui-light [class*="__subtitle"] {
+    color: var(--suites-muted) !important;
+    -webkit-text-fill-color: var(--suites-muted) !important;
     text-shadow: none !important;
   }
-
-  /* Sticky media captions + mosaic hero */
   .l-nature-bg-caption .g1,
   .l-nature__caption .g1,
   .l-nature__slider-caption .g1,
@@ -654,9 +639,9 @@ ${hathorFontFaces}
   .preloader__content .g1,
   .preloader__content .h1,
   .l-gallery__title .h0 {
-    color: var(--suites-cream-bright) !important;
-    -webkit-text-fill-color: var(--suites-cream-bright) !important;
-    text-shadow: 0 4px 40px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(42, 34, 24, 0.55) !important;
+    color: var(--suites-gold) !important;
+    -webkit-text-fill-color: var(--suites-gold) !important;
+    text-shadow: 0 2px 28px rgba(0, 0, 0, 0.55), 0 1px 2px rgba(0, 0, 0, 0.4) !important;
   }
   .l-nature-bg-caption p,
   .l-nature-bg-caption__text,
@@ -668,7 +653,7 @@ ${hathorFontFaces}
   .preloader__content p:not(.g1) {
     color: var(--suites-on-media-body) !important;
     -webkit-text-fill-color: var(--suites-on-media-body) !important;
-    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4) !important;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.5) !important;
   }
   .l-nature-bg-caption [class*="__subtitle"],
   .l-nature-bg-caption__subtitle,
@@ -676,94 +661,8 @@ ${hathorFontFaces}
   .l-place__caption__subtitle {
     color: var(--suites-gold) !important;
     -webkit-text-fill-color: var(--suites-gold) !important;
-    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.35) !important;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45) !important;
   }
-
-  /* Kill leftover Springs utility colors that fight the brand */
-  .text-color-primary,
-  .text-color-secondary,
-  .color-primary {
-    color: var(--suites-gold) !important;
-  }
-
-  /*
-   * UX — premium text placement
-   * Consistent left editorial rail; mosaic title stays bottom-right.
-   */
-  .l-gallery__caption .l-gallery__title {
-    left: auto !important;
-    right: clamp(1.5rem, 4.5vw, 3.75rem) !important;
-    bottom: clamp(1.75rem, 4.5vh, 3.25rem) !important;
-    top: auto !important;
-    text-align: right !important;
-    max-width: min(48vw, 12em);
-    z-index: 4;
-  }
-  .l-gallery__caption .l-gallery__title .h0 {
-    text-align: right !important;
-  }
-  .l-gallery-next {
-    left: clamp(1.25rem, 3.5vw, 2.75rem) !important;
-    bottom: clamp(1.5rem, 4vh, 2.75rem) !important;
-    z-index: 5;
-  }
-
-  /* Intro: eyebrow → title → body on one left rail */
-  .l-intro__opening .col,
-  .l-intro__content-title,
-  .l-intro__content-text {
-    margin-left: 0 !important;
-  }
-  .l-intro__opening-subtitle,
-  .l-intro__content-title,
-  .l-intro__content-text {
-    text-align: left !important;
-  }
-  .l-intro__content-title .g1,
-  .l-intro__content-title h2,
-  .l-intro__content-title h3 {
-    max-width: 14em;
-  }
-  .l-intro__content-text {
-    max-width: min(36rem, 92%);
-  }
-
-  /* Nature / wellness / place captions: left stack, readable width */
-  .l-nature__caption__inner,
-  .l-nature-bg-caption,
-  .l-place__caption,
-  .l-wellness__slider__caption-titles {
-    text-align: left !important;
-  }
-  .l-nature__caption .g1,
-  .l-nature-bg-caption .g1,
-  .l-place__caption .g1,
-  .l-wellness__caption .g1,
-  .l-wellness__webgl-title {
-    text-align: left !important;
-    max-width: min(16em, 88vw);
-  }
-  .l-wellness__webgl-title.text-right,
-  .l-wellness__slider__caption-titles.text-right {
-    text-align: right !important;
-    margin-left: auto !important;
-    margin-right: 0 !important;
-  }
-  .l-nature__caption__text,
-  .l-nature-bg-caption__text,
-  .l-place__caption p,
-  .l-wellness__caption p {
-    max-width: min(34rem, 92%);
-  }
-
-  /* Residence / design / interiors titles breathe */
-  .l-residence [class*="__title"],
-  .l-design [class*="__title"],
-  .l-interiors [class*="__title"] {
-    text-align: left !important;
-    max-width: min(18em, 90vw);
-  }
-
   @media (max-width: 1024px) and (min-width: 481px) {
     .h0,
     .l-gallery__title .h0 {
@@ -774,9 +673,9 @@ ${hathorFontFaces}
       font-size: clamp(2rem, 4.8vw, 3.5rem) !important;
     }
     .l-gallery__caption .l-gallery__title {
-      right: clamp(1.25rem, 3.5vw, 2.5rem) !important;
-      bottom: clamp(1.5rem, 4vw, 2.5rem) !important;
-      max-width: min(54vw, 11em);
+      right: clamp(1rem, 3.5vw, 2.5rem) !important;
+      bottom: clamp(1.25rem, 4vw, 2.25rem) !important;
+      max-width: min(58vw, 12em);
     }
   }
   @media (max-width: 480px) {
@@ -793,33 +692,17 @@ ${hathorFontFaces}
     h2 {
       font-size: clamp(1.375rem, 6.5vw, 2rem) !important;
     }
-    .l-gallery__caption {
-      display: flex !important;
-      flex-direction: column !important;
-      justify-content: flex-end !important;
-      padding: 0 0 clamp(5.5rem, 12vh, 7rem) !important;
-    }
     .l-gallery__caption .l-gallery__title {
       position: relative !important;
       right: auto !important;
       bottom: auto !important;
       left: auto !important;
       max-width: 88vw;
-      margin: 0 clamp(1.15rem, 5vw, 1.5rem) 0.35rem !important;
+      margin: 0 clamp(1rem, 5vw, 1.5rem);
       text-align: left !important;
     }
     .l-gallery__caption .l-gallery__title .h0 {
       text-align: left !important;
-    }
-    .l-gallery-next {
-      left: clamp(1.15rem, 5vw, 1.5rem) !important;
-      bottom: clamp(1.15rem, 4vh, 1.75rem) !important;
-    }
-    .l-intro__content-title,
-    .l-intro__content-text,
-    .l-nature__caption .g1,
-    .l-place__caption .g1 {
-      max-width: 92vw;
     }
   }
 /*

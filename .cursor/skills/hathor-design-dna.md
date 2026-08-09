@@ -14,9 +14,7 @@ Elegant Nile luxury editorial — cinematic, cream + gold, slow storytelling. No
 | Gold soft | `#c9a96e` / `#d4bf86` | Soft accents |
 | Cream / surface | `#f5eacf` / `#ece8df` | Page grounds (Suites mosaic uses `#f5eacf`) |
 | Title on media | `#f7f1e6` | Cream titles over photos |
-| Warm dark | `#2a2218` | Dark surfaces / body ink (gold-adjacent, not cold black) |
-| Body on cream | `#3f3428` | Readable warm brown |
-| Gold deep (on cream) | `#9a8348` | Display titles on cream for contrast |
+| Ink | `#2c2824` | Body on cream |
 | Beige wash | `#cdbfa6` | Soft radial washes |
 
 Avoid: blue/indigo primaries, pure white flats, purple gradients, generic gray-900 stacks.
