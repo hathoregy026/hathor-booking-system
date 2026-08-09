@@ -81,16 +81,18 @@ export function BookingFlow() {
 
   if (!itineraryConfigured || !duration) {
     return (
-      <div className="mx-auto max-w-lg px-4 py-16 text-center">
-        <div className="booking-card p-8">
-          <h1 className="booking-serif text-2xl font-semibold">
-            Start your reservation
+      <div className="hathor-booking-gate">
+        <div className="hathor-booking-gate__bar" aria-hidden />
+        <div className="hathor-booking-gate__panel">
+          <p className="hathor-booking-gate__eyebrow">Hathor Dahabiya</p>
+          <h1 className="booking-serif hathor-booking-gate__title">
+            Continue your reservation
           </h1>
-          <p className="mt-3 text-sm" style={{ color: "var(--booking-muted)" }}>
-            Use the Book Now button on our homepage to check availability and
-            begin your Hathor journey.
+          <p className="hathor-booking-gate__copy">
+            Open Book Now on the homepage to choose guests and sailing length,
+            then return here to pick dates and cabins.
           </p>
-          <Link href="/?book=1" className="booking-btn-primary mt-6 inline-flex px-8 py-3 text-sm">
+          <Link href="/?book=1" className="public-btn-gold">
             Book Now
           </Link>
         </div>

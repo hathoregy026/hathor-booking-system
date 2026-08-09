@@ -23,13 +23,72 @@
   color: var(--booking-text);
   font-family: var(--booking-sans);
   min-height: 100vh;
-  /* Clear fixed PublicNavbar (homepage-parity shell) */
-  padding-top: calc(4.75rem + env(safe-area-inset-top, 0px));
+  padding-top: 0;
 }
 
-/* Full-bleed hero sits under the transparent nav — same 100svh as other pages */
-.booking-page--with-hero {
+.booking-page--checkout-focus {
   padding-top: 0;
+}
+
+.booking-shell-bg {
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--booking-bg) 0%, var(--booking-bg-alt) 100%);
+}
+
+/* Gate when itinerary is not yet configured — gold chrome, no old marketing card */
+.hathor-booking-gate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 70vh;
+  padding: 0 1rem 3rem;
+}
+
+.hathor-booking-gate__bar {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  height: 4.5rem;
+  background: var(--booking-gold);
+  margin-bottom: 2.5rem;
+}
+
+.hathor-booking-gate__panel {
+  width: 100%;
+  max-width: 28rem;
+  text-align: center;
+  padding: 2rem 1.5rem;
+}
+
+.hathor-booking-gate__eyebrow {
+  margin: 0 0 0.75rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--booking-gold-dark);
+}
+
+.hathor-booking-gate__title {
+  margin: 0;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 500;
+  color: var(--booking-text);
+}
+
+.hathor-booking-gate__copy {
+  margin: 0.85rem auto 1.75rem;
+  max-width: 22rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--booking-muted);
+}
+
+.hathor-booking-gate .public-btn-gold {
+  margin-inline: auto;
 }
 
 @keyframes bookingFadeIn {
