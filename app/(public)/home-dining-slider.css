@@ -201,8 +201,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
 
 .home-am-nature {
   position: relative;
-  height: 250svh;
-  min-height: 250svh;
+  height: 300svh;
+  min-height: 300svh;
 }
 
 /*
@@ -365,9 +365,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 }
 
 @media (max-width: 1024px) {
-  /* Springs compact i-nature runway */
   .home-am-nature {
-    height: 300svh;
+    height: 340svh;
   }
 }
 
@@ -389,8 +388,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 
   .home-am-nature,
   .home-am-nature.home-am-chapter--under-previous {
-    height: 250svh;
-    min-height: 250svh;
+    height: 300svh;
+    min-height: 300svh;
   }
 
   .home-am-nature__stage {
@@ -398,15 +397,15 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   }
 }
 
-/* ========== i-intro (Springs: 150svh / 300svh) ========== */
+/* ========== i-intro — longer runway = slower scroll pace ========== */
 .home-am-intro {
-  height: 150svh;
+  height: 180svh;
   z-index: 1;
 }
 
 @media (min-width: 1025px) {
   .home-am-intro {
-    height: 300svh;
+    height: 360svh;
   }
 }
 
@@ -540,16 +539,19 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   line-height: 1.25;
 }
 
-/* ========== i-video (Springs: 350svh / 600svh + -200svh cover) ========== */
+/*
+ * i-video (Welcome Aboard) — slower than other chapters.
+ * Springs baseline was 350/600svh; stretched further per request.
+ */
 .home-am-video {
-  height: 350svh;
+  height: 460svh;
   z-index: 2;
 }
 
 @media (min-width: 1025px) {
   .home-am-video.home-am-chapter--under-previous {
     clip-path: polygon(0 100svh, 100% 100svh, 100% 100%, 0 100%);
-    height: 600svh;
+    height: 820svh;
     margin-top: -200svh;
   }
 }
@@ -708,9 +710,9 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   }
 }
 
-/* ========== i-slider (Springs: 600svh; no under-previous clip) ========== */
+/* ========== i-slider — paced slower than Springs 600svh ========== */
 .home-am-slider {
-  height: 600svh;
+  height: 720svh;
 }
 
 .home-am-chapter--under-previous + .home-am-slider {
@@ -881,7 +883,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 /* ========== i-opening — literal Springs infrastructure.css ========== */
 
 .home-am-opening {
-  height: 250svh;
+  height: 300svh;
   position: relative;
   pointer-events: none;
   clip-path: none;
@@ -1100,7 +1102,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
    * Springs RC clip opens to 350vh — element must be at least that tall
    * or the band is clipped to content height and cards vanish.
    */
-  min-height: 350vh;
+  min-height: 420vh;
   pointer-events: none;
   will-change: clip-path;
   background: var(--am-gold);
@@ -1218,8 +1220,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   .home-am-opening,
   .home-am-opening.home-am-chapter--under-previous-after-next {
     clip-path: none;
-    height: 400svh;
-    min-height: 2700px;
+    height: 500svh;
+    min-height: 3400px;
     margin-top: calc(
       var(--sticky-under-previous-distance) * -1 +
         var(--sticky-under-next-distance) * -1
@@ -1280,19 +1282,19 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   }
 
   .home-am-intro {
-    height: 190svh;
+    height: 230svh;
   }
 
   .home-am-video {
-    height: 360svh;
+    height: 480svh;
   }
 
   .home-am-slider {
-    height: 520svh;
+    height: 620svh;
   }
 
   .home-am-opening {
-    height: 320svh;
+    height: 380svh;
     min-height: 0;
   }
 
@@ -1343,7 +1345,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   }
 
   .home-am-intro {
-    height: 180svh;
+    height: 220svh;
   }
 
   .home-am-intro__caption {
@@ -1362,7 +1364,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   }
 
   .home-am-video {
-    height: 340svh;
+    height: 450svh;
   }
 
   .home-am-video__hero,
@@ -1408,7 +1410,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   }
 
   .home-am-slider {
-    height: 420svh;
+    height: 520svh;
   }
 
   .home-am-slider__row {
@@ -1450,7 +1452,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 
   /* Springs mobile i-opening */
   .home-am-opening {
-    height: 280svh;
+    height: 340svh;
     min-height: 0;
     pointer-events: none;
     z-index: 4;
