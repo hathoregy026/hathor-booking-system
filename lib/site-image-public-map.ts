@@ -29,8 +29,12 @@ const AMENITIES_SEQUENCE_LEGACY_FALLBACK: Readonly<Record<string, string>> = {
   "home-amenities-6": "home-story-way-of-life",
   "home-amenities-7": "home-story-dining",
   "home-amenities-8": "home-story-legacy-large",
-  /* Opening card 1 (pool / A Way of Life) — was orphaned on home-amenities-way-of-life */
-  "home-amenities-9": "home-story-way-of-life",
+  /*
+   * Opening card 1 — production still has legacy row home-amenities-way-of-life
+   * (orphaned from SITE_IMAGE_SLOTS). Prefer that upload until home-amenities-9
+   * has its own SiteImage row; also accept home-story-way-of-life.
+   */
+  "home-amenities-9": "home-amenities-way-of-life",
   "home-amenities-10": "home-story-dining",
   "home-amenities-11": "home-amenities-2",
   "home-amenities-12": "about-hero",
