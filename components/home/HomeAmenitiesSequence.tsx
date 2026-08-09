@@ -755,7 +755,7 @@ export function HomeAmenitiesSequence({
         </div>
       </div>
 
-      {/* ===== i-nature — full-bleed image, then gold caption band (not on photo) ===== */}
+      {/* ===== i-nature — full-bleed image only (caption is the next gold sibling) ===== */}
       <div
         className="home-am-nature home-am-chapter home-am-chapter--under-previous sticky sticky--full-height sticky--under-previous sticky--under-next"
         data-am-nature
@@ -785,16 +785,21 @@ export function HomeAmenitiesSequence({
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Gold band after the image — caption reads here, never over the photo */}
-        <div className="home-am-nature__gold-band">
-          <p
-            className="home-am-nature__caption-text typo-on-images-title"
-            style={onGoldTitle}
-          >
-            {natureCaption}
-          </p>
-        </div>
+      {/*
+        Must sit OUTSIDE #home-am-nature — that chapter’s under-previous clip-path
+        was hiding this band. Nature under-next pulls this gold panel up after the
+        photo so the caption reads on gold, never on the image.
+      */}
+      <div
+        className="home-am-nature__gold-band home-am-chapter--under-next"
+        data-am-nature-caption
+        id="home-am-nature-caption"
+      >
+        <p className="home-am-nature__caption-text" style={onGoldTitle}>
+          {natureCaption}
+        </p>
       </div>
       </div>{/* /.home-am-dark-band — Springs ui-dark-background */}
 
