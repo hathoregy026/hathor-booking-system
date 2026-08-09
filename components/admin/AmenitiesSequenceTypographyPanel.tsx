@@ -47,7 +47,19 @@ type CopyTarget =
   | { kind: "story"; index: number };
 
 type DragLine = AmenitiesStyleRole;
-type PreviewSurface = "onImage" | "onBg";
+type PreviewSurface = "onImage" | "onGold" | "onCream";
+
+const PREVIEW_SURFACE_BG: Record<PreviewSurface, string> = {
+  onImage: "#1a1714",
+  onGold: "#B69F64",
+  onCream: "#ece8df",
+};
+
+const PREVIEW_SURFACE_LABEL: Record<PreviewSurface, string> = {
+  onImage: "On image",
+  onGold: "On golden bg",
+  onCream: "On cream bg",
+};
 
 type RailItem =
   | { id: string; label: string; mode: "copy"; target: CopyTarget; hint: string }
@@ -294,18 +306,30 @@ export function AmenitiesSequenceTypographyPanel() {
   ) => {
     const prev = device === "phone" ? stylesRef.current.phone : stylesRef.current.desktop;
     const nextRole = { ...prev[role], ...partial };
-    /* Keep legacy `color` aligned with on-bg for anything still reading it. */
-    if (partial.colorOnBg) nextRole.color = partial.colorOnBg;
-    else if (partial.color && !partial.colorOnBg && !partial.colorOnImage) {
+    /* Keep legacy `color` / `colorOnBg` aligned with gold for older readers. */
+    if (partial.colorOnGold) {
+      nextRole.color = partial.colorOnGold;
+      nextRole.colorOnBg = partial.colorOnGold;
+    } else if (partial.colorOnBg) {
+      nextRole.color = partial.colorOnBg;
+      nextRole.colorOnGold = partial.colorOnBg;
+    } else if (
+      partial.color &&
+      !partial.colorOnGold &&
+      !partial.colorOnCream &&
+      !partial.colorOnImage
+    ) {
+      nextRole.colorOnGold = partial.color;
       nextRole.colorOnBg = partial.color;
     }
     commitStyles({ ...prev, [role]: nextRole });
   };
 
-  const rolePreviewColor = (role: AmenitiesStyleRole) =>
-    previewSurface === "onImage"
-      ? styles[role].colorOnImage
-      : styles[role].colorOnBg;
+  const rolePreviewColor = (role: AmenitiesStyleRole) => {
+    if (previewSurface === "onImage") return styles[role].colorOnImage;
+    if (previewSurface === "onCream") return styles[role].colorOnCream;
+    return styles[role].colorOnGold;
+  };
 
   const patchSpacing = (partial: Partial<AmenitiesSpacing>) => {
     const prev = device === "phone" ? stylesRef.current.phone : stylesRef.current.desktop;
@@ -643,29 +667,30 @@ export function AmenitiesSequenceTypographyPanel() {
             role="tablist"
             aria-label="Colour surface preview"
           >
-            <button
-              type="button"
-              role="tab"
-              aria-selected={previewSurface === "onImage"}
-              className={`typo-stage__align-btn${previewSurface === "onImage" ? " typo-stage__align-btn--on" : ""}`}
-              onClick={() => setPreviewSurface("onImage")}
-            >
-              On image
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={previewSurface === "onBg"}
-              className={`typo-stage__align-btn${previewSurface === "onBg" ? " typo-stage__align-btn--on" : ""}`}
-              onClick={() => setPreviewSurface("onBg")}
-            >
-              On background
-            </button>
+            {(
+              [
+                ["onImage", "On image"],
+                ["onGold", "On golden bg"],
+                ["onCream", "On cream bg"],
+              ] as const
+            ).map(([surface, label]) => (
+              <button
+                key={surface}
+                type="button"
+                role="tab"
+                aria-selected={previewSurface === surface}
+                className={`typo-stage__align-btn${previewSurface === surface ? " typo-stage__align-btn--on" : ""}`}
+                onClick={() => setPreviewSurface(surface)}
+              >
+                {label}
+              </button>
+            ))}
           </div>
 
           <div
             className="typo-stage__canvas"
             style={{
+              background: PREVIEW_SURFACE_BG[previewSurface],
               justifyContent:
                 layout.align === "left"
                   ? "flex-start"
@@ -770,7 +795,7 @@ export function AmenitiesSequenceTypographyPanel() {
           </div>
 
           <p className="typo-stage__readout">
-            {`Align ${layout.align} · ${previewSurface === "onImage" ? "On image" : "On background"} · ${DRAG_LINE_LABELS[dragLine]} at ${activeOffset.x}px, ${activeOffset.y}px · ${sampleStyle.fontFamily} ${sampleStyle.fontSize}px`}
+            {`Align ${layout.align} · ${PREVIEW_SURFACE_LABEL[previewSurface]} · ${DRAG_LINE_LABELS[dragLine]} at ${activeOffset.x}px, ${activeOffset.y}px · ${sampleStyle.fontFamily} ${sampleStyle.fontSize}px`}
           </p>
         </div>
 
@@ -943,23 +968,34 @@ export function AmenitiesSequenceTypographyPanel() {
                   />
                 </label>
                 <label className="typo-easy__field">
-                  <span>Colour on background</span>
+                  <span>Colour on golden bg</span>
                   <HexColorInput
-                    aria-label="Colour on background"
-                    value={styles[active.role].colorOnBg}
+                    aria-label="Colour on golden background"
+                    value={styles[active.role].colorOnGold}
                     onChange={(hex) => {
-                      setPreviewSurface("onBg");
-                      patchStyle(active.role, { colorOnBg: hex });
+                      setPreviewSurface("onGold");
+                      patchStyle(active.role, { colorOnGold: hex });
                     }}
                   />
                 </label>
               </div>
+              <label className="typo-easy__field">
+                <span>Colour on cream bg</span>
+                <HexColorInput
+                  aria-label="Colour on cream background"
+                  value={styles[active.role].colorOnCream}
+                  onChange={(hex) => {
+                    setPreviewSurface("onCream");
+                    patchStyle(active.role, { colorOnCream: hex });
+                  }}
+                />
+              </label>
               <p className="typo-easy__controls-hint">
-                Type or paste a hex (#FFF or #FFFFFF) — it applies as soon as it
-                is valid. Use <strong>Colour on background</strong> for gold /
-                cream panels (slider, video caption, opening rail, nature). Use{" "}
-                <strong>Colour on image</strong> for photo overlays. Save to
-                push live.
+                Three surfaces: <strong>image</strong> (photo overlays),{" "}
+                <strong>golden bg</strong> (slider / video caption / opening
+                rail / nature), <strong>cream bg</strong> (intro cream panel /
+                video cream titles). Hex applies as soon as it is valid — Save
+                to push live.
               </p>
               <div className="typo-easy__fields-row">
                 <label className="typo-easy__field">

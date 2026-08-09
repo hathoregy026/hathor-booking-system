@@ -19,6 +19,17 @@ export {
 };
 export type { AmenitiesTypography };
 
+function persistRole(style: AmenitiesTextStyle): AmenitiesTextStyle {
+  return {
+    ...style,
+    color: style.colorOnGold,
+    colorOnImage: style.colorOnImage,
+    colorOnGold: style.colorOnGold,
+    colorOnCream: style.colorOnCream,
+    colorOnBg: style.colorOnGold,
+  };
+}
+
 export async function getAmenitiesTypography(phone = false) {
   const key = phone
     ? AMENITIES_TYPOGRAPHY_MOBILE_KEY
@@ -46,27 +57,12 @@ export async function saveAmenitiesTypography(value: unknown, phone = false) {
   const settings = amenitiesTypographySchema.parse(
     parseAmenitiesTypography(value),
   );
-  /* Guarantee dual colours are always stored (never legacy-only payloads). */
+  /* Guarantee three surface colours are always stored. */
   const persisted: AmenitiesTypography = {
     ...settings,
-    title: {
-      ...settings.title,
-      color: settings.title.colorOnBg,
-      colorOnImage: settings.title.colorOnImage,
-      colorOnBg: settings.title.colorOnBg,
-    },
-    indication: {
-      ...settings.indication,
-      color: settings.indication.colorOnBg,
-      colorOnImage: settings.indication.colorOnImage,
-      colorOnBg: settings.indication.colorOnBg,
-    },
-    body: {
-      ...settings.body,
-      color: settings.body.colorOnBg,
-      colorOnImage: settings.body.colorOnImage,
-      colorOnBg: settings.body.colorOnBg,
-    },
+    title: persistRole(settings.title),
+    indication: persistRole(settings.indication),
+    body: persistRole(settings.body),
   };
   const key = phone
     ? AMENITIES_TYPOGRAPHY_MOBILE_KEY
@@ -118,7 +114,7 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
   const L = settings.layout;
   const { title, indication, body } = settings;
 
-  const spacingVars = `${sel("")}{--am-typo-gap-title-sub:${gapTitleSub}px;--am-typo-gap-sub-body:${gapSubBody}px;--am-typo-gap-body-cta:${gapBodyCta}px;--am-typo-align:${L.align};--am-typo-title-x:${L.titleX}px;--am-typo-title-y:${L.titleY}px;--am-typo-indication-x:${L.indicationX}px;--am-typo-indication-y:${L.indicationY}px;--am-typo-body-x:${L.bodyX}px;--am-typo-body-y:${L.bodyY}px;--am-typo-title-on-image:${title.colorOnImage};--am-typo-title-on-bg:${title.colorOnBg};--am-typo-indication-on-image:${indication.colorOnImage};--am-typo-indication-on-bg:${indication.colorOnBg};--am-typo-body-on-image:${body.colorOnImage};--am-typo-body-on-bg:${body.colorOnBg};}`;
+  const spacingVars = `${sel("")}{--am-typo-gap-title-sub:${gapTitleSub}px;--am-typo-gap-sub-body:${gapSubBody}px;--am-typo-gap-body-cta:${gapBodyCta}px;--am-typo-align:${L.align};--am-typo-title-x:${L.titleX}px;--am-typo-title-y:${L.titleY}px;--am-typo-indication-x:${L.indicationX}px;--am-typo-indication-y:${L.indicationY}px;--am-typo-body-x:${L.bodyX}px;--am-typo-body-y:${L.bodyY}px;--am-typo-title-on-image:${title.colorOnImage};--am-typo-title-on-gold:${title.colorOnGold};--am-typo-title-on-cream:${title.colorOnCream};--am-typo-title-on-bg:${title.colorOnGold};--am-typo-indication-on-image:${indication.colorOnImage};--am-typo-indication-on-gold:${indication.colorOnGold};--am-typo-indication-on-cream:${indication.colorOnCream};--am-typo-indication-on-bg:${indication.colorOnGold};--am-typo-body-on-image:${body.colorOnImage};--am-typo-body-on-gold:${body.colorOnGold};--am-typo-body-on-cream:${body.colorOnCream};--am-typo-body-on-bg:${body.colorOnGold};}`;
 
   const spacingRules = [
     `${sel(" .home-am-slider__caption")}{gap:0!important;text-align:var(--am-typo-align,left)!important;}`,
@@ -192,10 +188,7 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
     body,
   );
 
-  /*
-   * Base colour = on-background for ALL role text (nothing left unstyled).
-   * On-image overrides follow with higher-specificity / later rules.
-   */
+  /* Base = gold-panel colour (most gold captions use typo-on-images-* bare). */
   const baseColors = [
     roleColorCss(
       sel(
@@ -205,12 +198,10 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
         " .home-am-nature__title *",
         " .home-am-opening__title",
         " .home-am-opening__title *",
-        " .home-am-on-cream-title",
-        " .home-am-on-cream-title *",
         " .home-am-intro__title",
         " .home-am-intro__title *",
       ),
-      title.colorOnBg,
+      title.colorOnGold,
     ),
     roleColorCss(
       sel(
@@ -221,7 +212,7 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
         " .home-am-intro__indication",
         " .home-am-intro__indication *",
       ),
-      indication.colorOnBg,
+      indication.colorOnGold,
     ),
     roleColorCss(
       sel(
@@ -229,24 +220,106 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
         " .typo-on-images-body *",
         " .home-am-nature__body",
         " .home-am-nature__body *",
-        " .home-am-opening__caption-text",
-        " .home-am-opening__caption-text *",
-        " .home-am-intro__cream-text",
-        " .home-am-intro__cream-text *",
-        " .home-am-video__title-body",
-        " .home-am-video__title-body *",
-        " .home-am-intro__cream .typo-body-text",
-        " .home-am-intro__cream .typo-body-text *",
         " .home-am-video__caption-text",
         " .home-am-video__caption-text *",
         " .home-am-opening__list-item-text",
         " .home-am-opening__list-item-text *",
       ),
-      body.colorOnBg,
+      body.colorOnGold,
     ),
   ].join("");
 
-  /* Photo overlays — win over base (on-bg) colour */
+  /* Gold panels — slider / video caption / opening rail / nature band */
+  const onGoldColors = [
+    roleColorCss(
+      sel(
+        " .home-am-slider__caption .typo-on-images-title",
+        " .home-am-slider__caption .typo-on-images-title *",
+        " .home-am-video__caption .typo-on-images-title",
+        " .home-am-video__caption .typo-on-images-title *",
+        " .home-am-opening__rail-copy .typo-on-images-title",
+        " .home-am-opening__rail-copy .typo-on-images-title *",
+        " .home-am-nature__gold-band .home-am-nature__title",
+        " .home-am-nature__gold-band .home-am-nature__title *",
+        " .home-am-nature__title",
+        " .home-am-nature__title *",
+      ),
+      title.colorOnGold,
+    ),
+    roleColorCss(
+      sel(
+        " .home-am-slider__caption .typo-on-images-indication",
+        " .home-am-slider__caption .typo-on-images-indication *",
+        " .home-am-video__caption .typo-on-images-indication",
+        " .home-am-video__caption .typo-on-images-indication *",
+        " .home-am-opening__rail-copy .typo-on-images-indication",
+        " .home-am-opening__rail-copy .typo-on-images-indication *",
+        " .home-am-nature__gold-band .home-am-nature__indication",
+        " .home-am-nature__gold-band .home-am-nature__indication *",
+        " .home-am-nature__indication",
+        " .home-am-nature__indication *",
+      ),
+      indication.colorOnGold,
+    ),
+    roleColorCss(
+      sel(
+        " .home-am-slider__caption .typo-on-images-body",
+        " .home-am-slider__caption .typo-on-images-body *",
+        " .home-am-video__caption .typo-on-images-body",
+        " .home-am-video__caption .typo-on-images-body *",
+        " .home-am-opening__rail-copy .typo-on-images-body",
+        " .home-am-opening__rail-copy .typo-on-images-body *",
+        " .home-am-opening__right-inner .typo-on-images-body",
+        " .home-am-opening__right-inner .typo-on-images-body *",
+        " .home-am-nature__gold-band .home-am-nature__body",
+        " .home-am-nature__gold-band .home-am-nature__body *",
+        " .home-am-nature__body",
+        " .home-am-nature__body *",
+        " .home-am-video__caption-text",
+        " .home-am-video__caption-text *",
+      ),
+      body.colorOnGold,
+    ),
+  ].join("");
+
+  /* Cream panels — intro cream wipe, video cream title stack */
+  const onCreamColors = [
+    roleColorCss(
+      sel(
+        " .home-am-on-cream-title",
+        " .home-am-on-cream-title *",
+        " .home-am-video__title .home-am-on-cream-title",
+        " .home-am-video__title .home-am-on-cream-title *",
+        " .home-am-intro__cream .typo-on-images-title",
+        " .home-am-intro__cream .typo-on-images-title *",
+      ),
+      title.colorOnCream,
+    ),
+    roleColorCss(
+      sel(
+        " .home-am-intro__cream .typo-on-images-indication",
+        " .home-am-intro__cream .typo-on-images-indication *",
+        " .home-am-video__title .typo-on-images-indication",
+        " .home-am-video__title .typo-on-images-indication *",
+      ),
+      indication.colorOnCream,
+    ),
+    roleColorCss(
+      sel(
+        " .home-am-intro__cream .typo-body-text",
+        " .home-am-intro__cream .typo-body-text *",
+        " .home-am-intro__cream-text",
+        " .home-am-intro__cream-text *",
+        " .home-am-video__title-body",
+        " .home-am-video__title-body *",
+        " .home-am-opening__caption-text",
+        " .home-am-opening__caption-text *",
+      ),
+      body.colorOnCream,
+    ),
+  ].join("");
+
+  /* Photo overlays — win last */
   const onImageColors = [
     roleColorCss(
       sel(
@@ -283,78 +356,14 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
     ),
   ].join("");
 
-  /* Explicit on-bg reinforcement (gold / cream panels) — after base, before image */
-  const onBgColors = [
-    roleColorCss(
-      sel(
-        " .home-am-slider__caption .typo-on-images-title",
-        " .home-am-slider__caption .typo-on-images-title *",
-        " .home-am-video__caption .typo-on-images-title",
-        " .home-am-video__caption .typo-on-images-title *",
-        " .home-am-opening__rail-copy .typo-on-images-title",
-        " .home-am-opening__rail-copy .typo-on-images-title *",
-        " .home-am-nature__gold-band .home-am-nature__title",
-        " .home-am-nature__gold-band .home-am-nature__title *",
-        " .home-am-nature__title",
-        " .home-am-nature__title *",
-        " .home-am-on-cream-title",
-        " .home-am-on-cream-title *",
-        " .home-am-video__title .home-am-on-cream-title",
-        " .home-am-video__title .home-am-on-cream-title *",
-      ),
-      title.colorOnBg,
-    ),
-    roleColorCss(
-      sel(
-        " .home-am-slider__caption .typo-on-images-indication",
-        " .home-am-slider__caption .typo-on-images-indication *",
-        " .home-am-video__caption .typo-on-images-indication",
-        " .home-am-video__caption .typo-on-images-indication *",
-        " .home-am-opening__rail-copy .typo-on-images-indication",
-        " .home-am-opening__rail-copy .typo-on-images-indication *",
-        " .home-am-nature__gold-band .home-am-nature__indication",
-        " .home-am-nature__gold-band .home-am-nature__indication *",
-        " .home-am-nature__indication",
-        " .home-am-nature__indication *",
-      ),
-      indication.colorOnBg,
-    ),
-    roleColorCss(
-      sel(
-        " .home-am-slider__caption .typo-on-images-body",
-        " .home-am-slider__caption .typo-on-images-body *",
-        " .home-am-video__caption .typo-on-images-body",
-        " .home-am-video__caption .typo-on-images-body *",
-        " .home-am-opening__rail-copy .typo-on-images-body",
-        " .home-am-opening__rail-copy .typo-on-images-body *",
-        " .home-am-opening__right-inner .typo-on-images-body",
-        " .home-am-opening__right-inner .typo-on-images-body *",
-        " .home-am-opening__caption-text",
-        " .home-am-opening__caption-text *",
-        " .home-am-nature__gold-band .home-am-nature__body",
-        " .home-am-nature__gold-band .home-am-nature__body *",
-        " .home-am-nature__body",
-        " .home-am-nature__body *",
-        " .home-am-intro__cream .typo-body-text",
-        " .home-am-intro__cream .typo-body-text *",
-        " .home-am-intro__cream-text",
-        " .home-am-intro__cream-text *",
-        " .home-am-video__title-body",
-        " .home-am-video__title-body *",
-        " .home-am-video__caption-text",
-        " .home-am-video__caption-text *",
-      ),
-      body.colorOnBg,
-    ),
-  ].join("");
-
   return [
     spacingVars,
     titleMetrics,
     indicationMetrics,
     bodyMetrics,
     baseColors,
-    onBgColors,
+    onGoldColors,
+    onCreamColors,
     onImageColors,
     spacingRules,
   ].join("");

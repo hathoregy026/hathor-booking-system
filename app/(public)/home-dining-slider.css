@@ -35,11 +35,17 @@
   --am-ink: #1c1712;
   --am-svh: 1svh;
   --am-typo-title-on-image: #ffffff;
-  --am-typo-title-on-bg: #b69f64;
+  --am-typo-title-on-gold: #ffffff;
+  --am-typo-title-on-cream: #b69f64;
+  --am-typo-title-on-bg: var(--am-typo-title-on-gold);
   --am-typo-indication-on-image: #ffffff;
-  --am-typo-indication-on-bg: #b69f64;
+  --am-typo-indication-on-gold: #ffffff;
+  --am-typo-indication-on-cream: #b69f64;
+  --am-typo-indication-on-bg: var(--am-typo-indication-on-gold);
   --am-typo-body-on-image: #ffffff;
-  --am-typo-body-on-bg: #b69f64;
+  --am-typo-body-on-gold: #ffffff;
+  --am-typo-body-on-cream: #4e3232;
+  --am-typo-body-on-bg: var(--am-typo-body-on-gold);
   --sticky-under-previous-distance: calc(100 * var(--am-svh));
   --sticky-under-next-distance: calc(100 * var(--am-svh));
   position: relative;
@@ -52,7 +58,7 @@
 }
 
 /*
- * Dual-colour ink — always wins over Site Typography “On images” for this sequence.
+ * Three-surface ink — image / gold panel / cream panel.
  * Vars are set from Amenities Sequence dashboard (inline on the section + SSR CSS).
  */
 .public-site .home-am-sequence .typo-on-images-title,
@@ -61,12 +67,18 @@
 .public-site .home-am-sequence .home-am-nature__title *,
 .public-site .home-am-sequence .home-am-opening__title,
 .public-site .home-am-sequence .home-am-opening__title *,
-.public-site .home-am-sequence .home-am-on-cream-title,
-.public-site .home-am-sequence .home-am-on-cream-title *,
 html[data-ex-experience] .ex-root .home-am-sequence .typo-on-images-title,
 html[data-ex-experience] .ex-root .home-am-sequence .typo-on-images-title * {
-  color: var(--am-typo-title-on-bg) !important;
-  -webkit-text-fill-color: var(--am-typo-title-on-bg) !important;
+  color: var(--am-typo-title-on-gold) !important;
+  -webkit-text-fill-color: var(--am-typo-title-on-gold) !important;
+}
+
+.public-site .home-am-sequence .home-am-on-cream-title,
+.public-site .home-am-sequence .home-am-on-cream-title *,
+html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title,
+html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
+  color: var(--am-typo-title-on-cream) !important;
+  -webkit-text-fill-color: var(--am-typo-title-on-cream) !important;
 }
 
 .public-site .home-am-sequence .home-am-on-image-text.typo-on-images-title,
@@ -87,8 +99,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text.typo-
 .public-site .home-am-sequence .home-am-nature__indication *,
 html[data-ex-experience] .ex-root .home-am-sequence .typo-on-images-indication,
 html[data-ex-experience] .ex-root .home-am-sequence .typo-on-images-indication * {
-  color: var(--am-typo-indication-on-bg) !important;
-  -webkit-text-fill-color: var(--am-typo-indication-on-bg) !important;
+  color: var(--am-typo-indication-on-gold) !important;
+  -webkit-text-fill-color: var(--am-typo-indication-on-gold) !important;
 }
 
 .public-site .home-am-sequence .home-am-on-image-text.typo-on-images-indication,
@@ -105,6 +117,12 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text.typo-
 .public-site .home-am-sequence .typo-on-images-body *,
 .public-site .home-am-sequence .home-am-nature__body,
 .public-site .home-am-sequence .home-am-nature__body *,
+html[data-ex-experience] .ex-root .home-am-sequence .typo-on-images-body,
+html[data-ex-experience] .ex-root .home-am-sequence .typo-on-images-body * {
+  color: var(--am-typo-body-on-gold) !important;
+  -webkit-text-fill-color: var(--am-typo-body-on-gold) !important;
+}
+
 .public-site .home-am-sequence .home-am-intro__cream-text,
 .public-site .home-am-sequence .home-am-intro__cream-text *,
 .public-site .home-am-sequence .home-am-intro__cream .typo-body-text,
@@ -113,10 +131,12 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text.typo-
 .public-site .home-am-sequence .home-am-video__title-body *,
 .public-site .home-am-sequence .home-am-opening__caption-text,
 .public-site .home-am-sequence .home-am-opening__caption-text *,
-html[data-ex-experience] .ex-root .home-am-sequence .typo-on-images-body,
-html[data-ex-experience] .ex-root .home-am-sequence .typo-on-images-body * {
-  color: var(--am-typo-body-on-bg) !important;
-  -webkit-text-fill-color: var(--am-typo-body-on-bg) !important;
+html[data-ex-experience] .ex-root .home-am-sequence .home-am-intro__cream-text,
+html[data-ex-experience] .ex-root .home-am-sequence .home-am-intro__cream-text *,
+html[data-ex-experience] .ex-root .home-am-sequence .home-am-video__title-body,
+html[data-ex-experience] .ex-root .home-am-sequence .home-am-video__title-body * {
+  color: var(--am-typo-body-on-cream) !important;
+  -webkit-text-fill-color: var(--am-typo-body-on-cream) !important;
 }
 
 .public-site .home-am-sequence .home-am-on-image-text.typo-on-images-body,
@@ -370,8 +390,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   width: 100%;
   text-align: center;
   font-weight: 400;
-  color: var(--am-typo-title-on-bg, #ffffff);
-  -webkit-text-fill-color: var(--am-typo-title-on-bg, #ffffff);
+  color: var(--am-typo-title-on-gold, #ffffff);
+  -webkit-text-fill-color: var(--am-typo-title-on-gold, #ffffff);
 }
 
 .home-am-nature__title > .home-am-title-line {
@@ -385,8 +405,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   margin: 0 0 var(--am-typo-gap-sub-body, 14px);
   text-align: center;
   text-transform: uppercase;
-  color: var(--am-typo-indication-on-bg, #ffffff);
-  -webkit-text-fill-color: var(--am-typo-indication-on-bg, #ffffff);
+  color: var(--am-typo-indication-on-gold, #ffffff);
+  -webkit-text-fill-color: var(--am-typo-indication-on-gold, #ffffff);
 }
 
 .home-am-nature__body {
@@ -394,8 +414,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   text-align: center;
   max-width: min(26rem, 100%);
   font-weight: 400;
-  color: var(--am-typo-body-on-bg, #ffffff);
-  -webkit-text-fill-color: var(--am-typo-body-on-bg, #ffffff);
+  color: var(--am-typo-body-on-gold, #ffffff);
+  -webkit-text-fill-color: var(--am-typo-body-on-gold, #ffffff);
 }
 
 .home-am-nature__cta.public-btn-outline-gold {
@@ -1221,8 +1241,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   padding-left: 0.5rem;
   font-size: clamp(0.92rem, 1.15vw, 1.05rem) !important;
   line-height: 1.5;
-  color: var(--am-typo-body-on-bg, #ffffff) !important;
-  -webkit-text-fill-color: var(--am-typo-body-on-bg, #ffffff) !important;
+  color: var(--am-typo-body-on-cream, #4e3232) !important;
+  -webkit-text-fill-color: var(--am-typo-body-on-cream, #4e3232) !important;
 }
 
 /*

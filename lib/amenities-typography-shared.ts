@@ -1,8 +1,6 @@
 import { z } from "zod";
 import {
-  HATHOR_LUXURY_FONTS,
   typographyTextStyleSchema,
-  type HathorLuxuryFont,
   type TypographyTextStyle,
 } from "@/lib/typography-settings-shared";
 
@@ -54,13 +52,20 @@ export const DEFAULT_AMENITIES_LAYOUT: AmenitiesLayout = {
 };
 
 /**
- * Amenities role style: shared type metrics + separate colours for
- * photo overlays vs solid backgrounds (gold / cream panels).
+ * Amenities role style: shared type metrics + three surface colours
+ * (photo / gold panel / cream panel).
  */
 export const amenitiesTextStyleSchema = typographyTextStyleSchema.extend({
   /** Colour when text sits on a photo / media. */
   colorOnImage: hexColor,
-  /** Colour when text sits on a solid panel background. */
+  /** Colour when text sits on a gold / mustard panel. */
+  colorOnGold: hexColor,
+  /** Colour when text sits on a cream panel. */
+  colorOnCream: hexColor,
+  /**
+   * Legacy alias — kept in sync with colorOnGold so older readers still work.
+   * Prefer colorOnGold / colorOnCream in new code.
+   */
   colorOnBg: hexColor,
 });
 
@@ -79,17 +84,20 @@ export type AmenitiesTypography = z.infer<typeof amenitiesTypographySchema>;
 function roleDefaults(
   base: TypographyTextStyle,
   colorOnImage: string,
-  colorOnBg: string,
+  colorOnGold: string,
+  colorOnCream: string,
 ): AmenitiesTextStyle {
   return {
     ...base,
-    color: colorOnBg,
+    color: colorOnGold,
     colorOnImage,
-    colorOnBg,
+    colorOnGold,
+    colorOnCream,
+    colorOnBg: colorOnGold,
   };
 }
 
-/** Defaults: white on photos, gold on solid panels. */
+/** Defaults: white on photos + gold panels, gold ink on cream. */
 export const DEFAULT_AMENITIES_TYPOGRAPHY: AmenitiesTypography = {
   title: roleDefaults(
     {
@@ -100,6 +108,7 @@ export const DEFAULT_AMENITIES_TYPOGRAPHY: AmenitiesTypography = {
       letterSpacing: 0,
       innerShadow: false,
     },
+    "#FFFFFF",
     "#FFFFFF",
     "#B69F64",
   ),
@@ -113,6 +122,7 @@ export const DEFAULT_AMENITIES_TYPOGRAPHY: AmenitiesTypography = {
       innerShadow: false,
     },
     "#FFFFFF",
+    "#FFFFFF",
     "#B69F64",
   ),
   body: roleDefaults(
@@ -125,7 +135,8 @@ export const DEFAULT_AMENITIES_TYPOGRAPHY: AmenitiesTypography = {
       innerShadow: false,
     },
     "#FFFFFF",
-    "#B69F64",
+    "#FFFFFF",
+    "#4E3232",
   ),
   spacing: { ...DEFAULT_AMENITIES_SPACING },
   layout: { ...DEFAULT_AMENITIES_LAYOUT },
@@ -247,24 +258,37 @@ function parseAmenitiesTextStyle(
   const src =
     raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
   const legacyColor = asHex(src.color, fallback.color);
-  /* On-image defaults to white when missing — do not copy legacy panel colour onto photos. */
+  const legacyOnBg = asHex(src.colorOnBg, legacyColor || fallback.colorOnBg);
+  /* On-image defaults to white when missing — do not copy panel colour onto photos. */
   const colorOnImage = asHex(src.colorOnImage, fallback.colorOnImage);
-  const colorOnBg = asHex(src.colorOnBg, legacyColor || fallback.colorOnBg);
+  /*
+   * Gold + cream: prefer new fields; if missing, inherit former colorOnBg so
+   * existing dashboards keep the colour they already set.
+   */
+  const colorOnGold = asHex(src.colorOnGold, legacyOnBg || fallback.colorOnGold);
+  const colorOnCream = asHex(
+    src.colorOnCream,
+    legacyOnBg || fallback.colorOnCream,
+  );
   const merged = {
     ...fallback,
     ...src,
-    color: colorOnBg,
+    color: colorOnGold,
     colorOnImage,
-    colorOnBg,
+    colorOnGold,
+    colorOnCream,
+    colorOnBg: colorOnGold,
   };
   try {
     return amenitiesTextStyleSchema.parse(merged);
   } catch {
     return {
       ...fallback,
-      color: colorOnBg,
+      color: colorOnGold,
       colorOnImage,
-      colorOnBg,
+      colorOnGold,
+      colorOnCream,
+      colorOnBg: colorOnGold,
     };
   }
 }

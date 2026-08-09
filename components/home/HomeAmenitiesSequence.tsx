@@ -273,12 +273,21 @@ export function HomeAmenitiesSequence({
       style={
         {
           "--am-typo-title-on-image": amenitiesTypography.title.colorOnImage,
-          "--am-typo-title-on-bg": amenitiesTypography.title.colorOnBg,
+          "--am-typo-title-on-gold": amenitiesTypography.title.colorOnGold,
+          "--am-typo-title-on-cream": amenitiesTypography.title.colorOnCream,
+          "--am-typo-title-on-bg": amenitiesTypography.title.colorOnGold,
           "--am-typo-indication-on-image":
             amenitiesTypography.indication.colorOnImage,
-          "--am-typo-indication-on-bg": amenitiesTypography.indication.colorOnBg,
+          "--am-typo-indication-on-gold":
+            amenitiesTypography.indication.colorOnGold,
+          "--am-typo-indication-on-cream":
+            amenitiesTypography.indication.colorOnCream,
+          "--am-typo-indication-on-bg":
+            amenitiesTypography.indication.colorOnGold,
           "--am-typo-body-on-image": amenitiesTypography.body.colorOnImage,
-          "--am-typo-body-on-bg": amenitiesTypography.body.colorOnBg,
+          "--am-typo-body-on-gold": amenitiesTypography.body.colorOnGold,
+          "--am-typo-body-on-cream": amenitiesTypography.body.colorOnCream,
+          "--am-typo-body-on-bg": amenitiesTypography.body.colorOnGold,
         } as CSSProperties
       }
     >
