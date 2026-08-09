@@ -111,9 +111,9 @@ export function HomeAmenitiesSequence({
     const joined = (lines.length ? lines.join(" ") : title)
       .replace(/\s+/g, " ")
       .trim();
-    /* Two lines: “FINE DINING ON” / “DAHABIYA” (override CMS breaks). */
+    /* Two lines: “FINE DINING” / “ON DAHABIYA” (override CMS breaks). */
     if (/^FINE DINING\s+ON\s+DAHABIYA$/i.test(joined)) {
-      return ["FINE DINING ON", "DAHABIYA"];
+      return ["FINE DINING", "ON DAHABIYA"];
     }
     if (lines.length > 1) return lines;
     const single = joined;
@@ -235,7 +235,7 @@ export function HomeAmenitiesSequence({
   const natureImage = images[11];
   const natureStory = stories[2] ?? stories[1];
   const natureTitleLines = storyTitleLines(
-    natureStory?.title?.trim() || "FINE DINING ON\nDAHABIYA",
+    natureStory?.title?.trim() || "FINE DINING\nON DAHABIYA",
   );
   /* Small sub under the title — same role as slider indication. */
   const natureIndication = "Gastronomy";
