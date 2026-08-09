@@ -793,7 +793,7 @@ export function HomeAmenitiesSequence({
         photo so the caption reads on gold, never on the image.
       */}
       <div
-        className="home-am-nature__gold-band home-am-chapter--under-next"
+        className="home-am-nature__gold-band"
         data-am-nature-caption
         id="home-am-nature-caption"
       >

@@ -239,13 +239,14 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
  */
 .home-am-nature__gold-band {
   position: relative;
-  z-index: 5;
+  /* Above nature pin / below voyages — must stay readable through the handoff */
+  z-index: 6;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  min-height: clamp(18rem, 52vh, 32rem);
-  padding: clamp(2.75rem, 9vh, 6rem) clamp(1.5rem, 7vw, 5.5rem);
+  min-height: clamp(14rem, 38vh, 22rem);
+  padding: clamp(2.5rem, 7vh, 4.5rem) clamp(1.5rem, 7vw, 5.5rem);
   box-sizing: border-box;
   background: var(--am-gold);
 }
