@@ -757,7 +757,7 @@ export function HomeAmenitiesSequence({
 
       {/* ===== i-nature — full-bleed image only (caption is the next gold sibling) ===== */}
       <div
-        className="home-am-nature home-am-chapter home-am-chapter--under-previous sticky sticky--full-height sticky--under-previous sticky--under-next"
+        className="home-am-nature home-am-chapter home-am-chapter--under-previous sticky sticky--full-height sticky--under-previous"
         data-am-nature
         data-am-chapter
         id="home-am-nature"

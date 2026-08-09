@@ -239,8 +239,9 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
  */
 .home-am-nature__gold-band {
   position: relative;
-  /* Above nature pin / below voyages — must stay readable through the handoff */
-  z-index: 6;
+  /* Above voyages (z 6) so accordion cannot paint over the caption */
+  z-index: 8;
+  isolation: isolate;
   display: flex;
   align-items: center;
   justify-content: center;
