@@ -55,26 +55,30 @@ const MEDIA = {
   royal8: "/media/hathor/scraped/royal-8.webp",
 };
 
-/** Hero-led gallery cycle — suites-hero anchors the landing marquee. */
+/**
+ * Gallery cards gallery-1…gallery-19 — one distinct Hathor image each.
+ * (Previously hero repeated on cards 1/5/9/19 via wrap.)
+ */
 const galleryCycle = [
-  MEDIA.hero,
-  MEDIA.suites,
-  MEDIA.rooms,
-  MEDIA.royal,
-  MEDIA.hero,
-  MEDIA.lux1,
-  MEDIA.lux2,
-  MEDIA.cabin1,
-  MEDIA.hero,
-  MEDIA.cabin3,
-  MEDIA.royal1,
-  MEDIA.royal3,
-  MEDIA.lux3,
-  MEDIA.lux4,
-  MEDIA.cabin5,
-  MEDIA.royal5,
-  MEDIA.lux5,
-  MEDIA.roomHero,
+  MEDIA.hero, // 1
+  MEDIA.suites, // 2
+  MEDIA.rooms, // 3
+  MEDIA.royal, // 4
+  MEDIA.lux6, // 5
+  MEDIA.lux1, // 6
+  MEDIA.lux2, // 7
+  MEDIA.cabin1, // 8
+  MEDIA.cabin2, // 9
+  MEDIA.cabin3, // 10
+  MEDIA.royal1, // 11
+  MEDIA.royal3, // 12
+  MEDIA.lux3, // 13
+  MEDIA.lux4, // 14
+  MEDIA.cabin5, // 15
+  MEDIA.royal5, // 16
+  MEDIA.lux5, // 17
+  MEDIA.roomHero, // 18
+  MEDIA.royalHero, // 19
 ];
 
 /*
@@ -290,17 +294,17 @@ function replaceAssetPattern(assetPattern, url) {
   ["landing\\/1\\.intro\\/", MEDIA.hero],
   ["landing\\/2\\.wellness\\/", MEDIA.lux1],
   ["landing\\/3\\.nature\\/nature-caption", MEDIA.lux2],
-  ["landing\\/3\\.nature\\/nature-slider-md-1", MEDIA.royal1],
-  ["landing\\/3\\.nature\\/nature-slider-xs-1", MEDIA.royal1],
-  ["landing\\/3\\.nature\\/nature-slider-md-2", MEDIA.royal3],
-  ["landing\\/3\\.nature\\/nature-slider-xs-2", MEDIA.royal3],
-  ["landing\\/3\\.nature\\/nature-slider-md-3", MEDIA.royal5],
-  ["landing\\/3\\.nature\\/nature-slider-xs-3", MEDIA.royal5],
-  ["landing\\/3\\.nature\\/", MEDIA.cabin5],
+  ["landing\\/3\\.nature\\/nature-slider-md-1", MEDIA.royal2],
+  ["landing\\/3\\.nature\\/nature-slider-xs-1", MEDIA.royal2],
+  ["landing\\/3\\.nature\\/nature-slider-md-2", MEDIA.royal4],
+  ["landing\\/3\\.nature\\/nature-slider-xs-2", MEDIA.royal4],
+  ["landing\\/3\\.nature\\/nature-slider-md-3", MEDIA.royal6],
+  ["landing\\/3\\.nature\\/nature-slider-xs-3", MEDIA.royal6],
+  ["landing\\/3\\.nature\\/", MEDIA.cabin6],
   ["landing\\/4\\.place\\/place-caption-1", MEDIA.rooms],
   ["landing\\/4\\.place\\/place-caption-3", MEDIA.suites],
   ["landing\\/4\\.place\\/place-bg", MEDIA.hero],
-  ["landing\\/4\\.place\\/", MEDIA.cabin1],
+  ["landing\\/4\\.place\\/", MEDIA.luxury],
   ["landing\\/5\\.map\\/", MEDIA.suites],
   ["landing\\/6\\.design\\/", MEDIA.lux3],
   ["landing\\/7\\.residence\\/residence-1", MEDIA.rooms],
@@ -798,11 +802,19 @@ const suitesRuntime = `
     "luxsuite-5.webp": "scraped-luxsuite-5",
     "luxsuite-6.webp": "scraped-luxsuite-6",
     "cabin-1.webp": "scraped-cabin-1",
+    "cabin-2.webp": "scraped-cabin-2",
     "cabin-3.webp": "scraped-cabin-3",
+    "cabin-4.webp": "scraped-cabin-4",
     "cabin-5.webp": "scraped-cabin-5",
+    "cabin-6.webp": "scraped-cabin-6",
     "royal-1.webp": "scraped-royal-1",
+    "royal-2.webp": "scraped-royal-2",
     "royal-3.webp": "scraped-royal-3",
+    "royal-4.webp": "scraped-royal-4",
     "royal-5.webp": "scraped-royal-5",
+    "royal-6.webp": "scraped-royal-6",
+    "royal-7.webp": "scraped-royal-7",
+    "royal-8.webp": "scraped-royal-8",
     "room-suite.webp": "room-suite",
     "room-royal.webp": "room-royal",
     "room-luxury.webp": "room-luxury",
@@ -868,6 +880,25 @@ const suitesRuntime = `
           if (slot) node.setAttribute("data-suites-slot", slot);
         }
       });
+    });
+    // Sticky video panels bake stills into iframe srcdoc — swap those too.
+    document.querySelectorAll("iframe[srcdoc]").forEach((iframe) => {
+      var doc = iframe.getAttribute("srcdoc");
+      if (!doc) return;
+      var next = doc;
+      Object.keys(FILE_TO_SLOT).forEach(function (file) {
+        var slot = FILE_TO_SLOT[file];
+        var url = images[slot];
+        if (!url) return;
+        var escaped = file.replace(/\\./g, "\\\\.");
+        var re = new RegExp(
+          "(?:(?:https?:)?//[^\\\"&\\\\s]+)?/media/hathor/[^\\\"&\\\\s]*/" +
+            escaped,
+          "gi",
+        );
+        next = next.replace(re, url);
+      });
+      if (next !== doc) iframe.setAttribute("srcdoc", next);
     });
   }
   function revealSuitesMedia() {

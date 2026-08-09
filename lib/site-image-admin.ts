@@ -77,33 +77,42 @@ const MOVING_TILTED_ADMIN_CARDS: ReadonlyArray<{
   { name: "moving-tilted-5", label: "Card 5 — Suite" },
 ];
 
-/** Suites page — same linked slots as Rooms / galleries (no duplicate uploads). */
+/**
+ * Suites page — dashboard order matches on-page first appearance
+ * (hero → gallery marquee DOM order → nature slides → place fallback).
+ * Same linked slots as Rooms / Cabins / Royal galleries.
+ */
 const SUITES_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> = [
-  { name: "scraped-suites-hero", label: "Suites — Hero / gallery anchor" },
+  { name: "scraped-suites-hero", label: "1. Hero" },
+  { name: "scraped-royal-5", label: "2. Gallery slide" },
+  { name: "scraped-luxsuite-2", label: "3. Gallery / Nature caption" },
+  { name: "scraped-suites-royal", label: "4. Gallery / Royal filter card" },
+  { name: "scraped-luxsuite-6", label: "5. Gallery slide" },
+  { name: "scraped-luxsuite-1", label: "6. Gallery / Wellness" },
   {
     name: "scraped-suites-luxury-rooms",
-    label: "Suites filter — Luxury Rooms card",
+    label: "7. Gallery / Luxury Rooms filter",
   },
+  { name: "scraped-royal-1", label: "8. Gallery slide" },
+  { name: "scraped-cabin-2", label: "9. Gallery slide" },
+  { name: "scraped-cabin-3", label: "10. Gallery slide" },
+  { name: "scraped-cabin-1", label: "11. Gallery slide" },
+  { name: "scraped-royal-3", label: "12. Gallery slide" },
+  { name: "scraped-luxsuite-3", label: "13. Gallery / Design" },
+  { name: "scraped-luxsuite-4", label: "14. Gallery / Place still" },
+  { name: "scraped-cabin-5", label: "15. Gallery slide" },
   {
     name: "scraped-suites-luxury-suites",
-    label: "Suites filter — Luxury Suites card",
+    label: "16. Gallery / Luxury Suites filter",
   },
-  { name: "scraped-suites-royal", label: "Suites filter — Royal Suites card" },
-  { name: "scraped-luxsuite-1", label: "Suites gallery — Luxury Suite 1" },
-  { name: "scraped-luxsuite-2", label: "Suites gallery — Luxury Suite 2" },
-  { name: "scraped-luxsuite-3", label: "Suites gallery — Luxury Suite 3" },
-  { name: "scraped-luxsuite-4", label: "Suites gallery — Luxury Suite 4" },
-  { name: "scraped-luxsuite-5", label: "Suites gallery — Luxury Suite 5" },
-  { name: "scraped-luxsuite-6", label: "Suites gallery — Luxury Suite 6" },
-  { name: "scraped-cabin-1", label: "Suites gallery — Cabin 1" },
-  { name: "scraped-cabin-3", label: "Suites gallery — Cabin 3" },
-  { name: "scraped-cabin-5", label: "Suites gallery — Cabin 5" },
-  { name: "scraped-royal-1", label: "Suites gallery — Royal 1" },
-  { name: "scraped-royal-3", label: "Suites gallery — Royal 3" },
-  { name: "scraped-royal-5", label: "Suites gallery — Royal 5" },
-  { name: "room-suite", label: "Suites — shared Luxury Suite photo" },
-  { name: "room-royal", label: "Suites — shared Royal Suite photo" },
-  { name: "room-luxury", label: "Suites — shared Luxury Cabin photo" },
+  { name: "scraped-luxsuite-5", label: "17. Gallery / Interiors" },
+  { name: "room-suite", label: "18. Gallery / shared Luxury Suite" },
+  { name: "room-royal", label: "19. Gallery / shared Royal Suite" },
+  { name: "scraped-royal-2", label: "20. Nature slide 1" },
+  { name: "scraped-royal-4", label: "21. Nature slide 2" },
+  { name: "scraped-royal-6", label: "22. Nature slide 3" },
+  { name: "scraped-cabin-6", label: "23. Nature background" },
+  { name: "room-luxury", label: "24. Place panel / shared Cabin" },
 ];
 
 const SLOT_LABELS: Partial<Record<SiteImageSlot["name"], string>> = {
