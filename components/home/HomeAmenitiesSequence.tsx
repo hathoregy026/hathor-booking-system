@@ -227,10 +227,14 @@ export function HomeAmenitiesSequence({
   const videoInsetImage = images[2];
   const openingLeftImage = images[7];
   const natureImage = images[11];
+  const natureStory = stories[2] ?? stories[1];
+  const natureTitleLines = storyTitleLines(
+    natureStory?.title?.trim() || "FINE DINING\nON DAHABIYA",
+  );
   const natureCaption =
-    stories[2]?.body?.trim() ||
-    stories[1]?.body?.trim() ||
+    natureStory?.body?.trim() ||
     "Restaurant craft meets warm hospitality — fresh local ingredients, Egyptian and international flavours, each meal a quiet celebration on the Nile.";
+  const natureCtaHref = natureStory?.href?.trim() || "/gastronomy";
 
   return (
     <section
@@ -796,9 +800,24 @@ export function HomeAmenitiesSequence({
         data-am-nature-caption
         id="home-am-nature-caption"
       >
-        <p className="home-am-nature__caption-text" style={onGoldTitle}>
-          {natureCaption}
-        </p>
+        <div className="home-am-nature__copy">
+          <h3 className="typo-on-images-title" style={onGoldTitle}>
+            {natureTitleLines.map((line) => (
+              <span key={line} className="home-am-title-line">
+                {line}
+              </span>
+            ))}
+          </h3>
+          <p className="typo-on-images-body" style={onGoldBody}>
+            {natureCaption}
+          </p>
+          <Link
+            href={natureCtaHref}
+            className="public-btn-outline-gold home-am-opening__cta home-am-nature__cta"
+          >
+            Discover more
+          </Link>
+        </div>
       </div>
       </div>{/* /.home-am-dark-band — Springs ui-dark-background */}
 
