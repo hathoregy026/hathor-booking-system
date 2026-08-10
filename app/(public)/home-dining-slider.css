@@ -1296,7 +1296,7 @@ html[data-ex-experience]
   flex: 1 1 auto;
   align-self: flex-start;
   min-width: 0;
-  max-width: min(22rem, 100%);
+  max-width: min(28rem, 100%);
   padding: 0.15rem 0.5rem 0 0;
   pointer-events: none;
 }

@@ -202,18 +202,19 @@ export function HomeAmenitiesSequence({
       /* NBSP keeps the second line from wrapping mid-phrase */
       return ["FINE DINING", "ON\u00A0DAHABIYA"];
     }
-    /* Opening rail: keep “SAIL BEYOND” / “BEYOND THE ORDINARY” as two phrases. */
+    /* Opening rail: “SAIL BEYOND” / “THE ORDINARY” (never duplicate BEYOND). */
     if (
-      /^SAIL BEYOND\s+BEYOND THE ORDINARY$/i.test(joined) ||
-      /^SAIL BEYOND\s+THE ORDINARY$/i.test(joined) ||
+      /^SAIL BEYOND\s+(BEYOND\s+)?THE ORDINARY$/i.test(joined) ||
       /^SAIL\s+BEYOND\s+THE\s+ORDINARY$/i.test(joined)
     ) {
-      return ["SAIL BEYOND", "BEYOND THE ORDINARY"];
+      return ["SAIL BEYOND", "THE ORDINARY"];
     }
     if (lines.length > 1) {
-      /* Still normalize the sail-beyond title if CMS used other breaks. */
-      if (/^SAIL BEYOND$/i.test(lines[0] ?? "") && /ORDINARY/i.test(joined)) {
-        return ["SAIL BEYOND", "BEYOND THE ORDINARY"];
+      if (
+        /^SAIL BEYOND$/i.test(lines[0] ?? "") &&
+        /^(BEYOND\s+)?THE ORDINARY$/i.test(lines[1] ?? "")
+      ) {
+        return ["SAIL BEYOND", "THE ORDINARY"];
       }
       return lines;
     }
