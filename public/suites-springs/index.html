@@ -698,9 +698,10 @@
     flex-direction: column !important;
     justify-content: flex-end !important;
     align-items: flex-start !important;
+    /* QA: no translateX — full-width caption + 8px shift caused +8px overflow-x */
     padding: 0 0 clamp(2.5rem, 9vh, 5rem) clamp(1.65rem, 6.5vw, 5.25rem) !important;
     box-sizing: border-box !important;
-    transform: translateX(8px) !important;
+    transform: none !important;
   }
   #nature .l-nature-bg-caption .g1,
   .l-nature-bg-item .l-nature-bg-caption .g1 {
@@ -762,6 +763,10 @@
     margin-top: 0.55rem !important;
     text-align: right !important;
     font-size: clamp(1.15rem, 1.4vw, 1.75rem) !important;
+    /* QA: Quiet Luxury flourishes were clipping ~3–4px (scrollWidth > clientWidth) */
+    overflow: visible !important;
+    padding-inline: 0.22em !important;
+    box-decoration-break: clone;
   }
   .l-place-webgl__text {
     position: absolute !important;
