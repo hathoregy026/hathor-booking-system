@@ -7,7 +7,7 @@ alwaysApply: true
 
 The public Suites experience at `/suites` is an **approved production baseline**.
 
-**Baseline commit:** `PENDING_AFTER_DEPLOY` *(replaced `ee1ff11` — user rejected prior typography)*
+**Baseline commit:** `a648084` *(replaced `ee1ff11` — user rejected prior typography)*
 
 **Last approved task:** User explicitly approved Suites **typography + text color** changes only (homepage DNA match). Layout, images, GSAP, ScrollTrigger, Lenis, WebGL, CMS, and CTA destinations were not in scope.
 
