@@ -94,15 +94,23 @@ export const SPRINGS_AMENITIES_PATTERNS: PatternMap = {
       "parallax--25-0": { transform: "translate(0%, 0%) scale(1)" },
     }),
 
+  /**
+   * Unique cream title + body (slide 2) — no sub.
+   * Stay visible over the cream handoff until the Bar reel clip starts
+   * (videoImage ~150). Prior half-runway 50→65 faded this away too early.
+   */
   videoTitle: () =>
     isLgUp()
       ? pattern({
+          "parallax--0-0": { opacity: "1" },
           "parallax--50-0": { opacity: "1" },
-          "parallax--65-0": { opacity: "0" },
+          "parallax--140-0": { opacity: "1" },
+          "parallax--150-0": { opacity: "0" },
         })
       : pattern({
           "parallax--0-0": { opacity: "1" },
-          "parallax--15-0": { opacity: "0" },
+          "parallax--40-0": { opacity: "1" },
+          "parallax--50-0": { opacity: "0" },
         }),
 
   videoImage: () =>

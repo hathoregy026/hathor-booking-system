@@ -651,29 +651,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   }
 }
 
-.home-am-intro__cream-copy {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--am-typo-gap-title-sub, 14px);
-  max-width: 28rem;
-  width: 100%;
-}
-
-.home-am-intro__cream-title {
-  margin: 0;
-}
-
-.home-am-intro__cream-title .home-am-title-line {
-  display: block;
-}
-
-.home-am-intro__cream-indication {
-  margin: 0;
-}
-
 .home-am-intro__cream-text {
-  margin: var(--am-typo-gap-sub-body, 14px) 0 0;
+  margin: 0;
   max-width: 28rem;
   line-height: 1.25;
 }
@@ -744,6 +723,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   width: min(34rem, calc(50vw - 2 * clamp(1.25rem, 4vw, 3rem)));
   max-width: min(34rem, 48vw);
   text-align: left;
+  /* Unique cream title + body (no sub) — visible until Bar reel rises */
+  opacity: 1;
   will-change: transform, opacity;
 }
 
@@ -751,6 +732,11 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   .home-am-video__title-stack {
     top: clamp(5.5rem, 12vh, 8rem);
     bottom: auto;
+  }
+
+  /* Cream panel body is phone-only; desktop copy is the video title stack. */
+  .home-am-intro__cream:not(.home-am-intro__cream--phone) .home-am-intro__cream-text {
+    display: none;
   }
 }
 

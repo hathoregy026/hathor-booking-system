@@ -156,8 +156,6 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
       " .home-am-on-cream-title *",
       " .home-am-intro__title",
       " .home-am-intro__title *",
-      " .home-am-intro__cream-title",
-      " .home-am-intro__cream-title *",
     ),
     title,
   );
@@ -169,8 +167,6 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
       " .home-am-nature__indication *",
       " .home-am-intro__indication",
       " .home-am-intro__indication *",
-      " .home-am-intro__cream-indication",
-      " .home-am-intro__cream-indication *",
     ),
     indication,
   );
