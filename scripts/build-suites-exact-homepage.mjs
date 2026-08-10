@@ -366,6 +366,9 @@ const ctaSecondary = (href, label, extraClass = "") =>
   `<a class="suites-cta-secondary ${extraClass}" href="${href}" target="_top" data-ajax-page-ignore>${label}</a>`;
 const ctaLink = (href, label, extraClass = "") =>
   `<a class="suites-cta-link ${extraClass}" href="${href}" target="_top" data-ajax-page-ignore>${label}</a>`;
+/** In-iframe scroll CTA (no target=_top) — used for Compare Suites → collection section */
+const ctaScroll = (hash, label, extraClass = "") =>
+  `<a class="suites-cta-link ${extraClass}" href="${hash}" data-suites-scroll-target="${hash}" data-ajax-page-ignore>${label}</a>`;
 
 // Hero: unify title + supporting copy + CTAs into one lower-left lockup
 html = html.replace(
@@ -398,41 +401,23 @@ html = html.replace(
                 $2`,
 );
 
-// Gold intro content — compare CTA after body
+// Gold intro — Compare Suites scrolls to on-page suite collection (residences)
 html = html.replace(
   /(<div class="l-intro__content-text mt-2 ml-layout"[^>]*>\s*<p class="leading-trim">[\s\S]*?<\/p>)(\s*<\/div>)/i,
   `$1
-            ${ctaLink("/rooms", "Compare Suites &rarr;", "suites-cta-link--ivory")}
+            ${ctaScroll("#l-residences-sticky-1", "Compare Suites &rarr;", "suites-cta-link--ivory")}
         $2`,
 );
 
-// Comfort / amenities end — after slider caption text block (desktop)
+// Comfort — suite detail destination (Royal Suites page; distinct from /rooms collection)
 html = html.replace(
   /(class="l-wellness__slider__caption-text content-animation col col--md-4"[^>]*>)([\s\S]*?)(<\/div>\s*<\/div>\s*<div class="l-wellness__slider-gradient)/i,
   `$1$2
-                        ${ctaLink("/rooms", "View Suite Details &rarr;", "suites-cta-link--ivory")}
+                        ${ctaLink("/Luxury-Royal-Suites-Nile-Dahabiya-Cruise", "View Suite Details &rarr;", "suites-cta-link--ivory")}
                     $3`,
 );
 
-// Nature caption CTA
-html = html.replace(
-  /(#nature[\s\S]{0,800}?l-nature-bg-caption__text[\s\S]*?<\/div>)(\s*<\/div>)/i,
-  (m) => m, // fallback no-op if fragile
-);
-html = html.replace(
-  /(<div class="l-nature-bg-caption__text"[^>]*>[\s\S]*?<\/div>)(\s*)(?=<\/div>\s*<div class="l-nature-bg-gradient|<\/div>\s*<\/div>\s*<\/div>)/i,
-  `$1
-                        ${ctaLink("/cruises", "Discover the Voyage &rarr;", "suites-cta-link--ivory")}
-                    $2`,
-);
-
-// Place / voyage CTA
-html = html.replace(
-  /(<div class="l-place-webgl__text"[^>]*>[\s\S]*?<\/div>)(\s*)(?=<\/div>|<div class="l-place)/i,
-  `$1
-                ${ctaLink("/cruises", "Discover the Voyage &rarr;", "suites-cta-link--ivory")}
-            $2`,
-);
+// Discover the Voyage intentionally omitted (acceptance lock)
 
 // Book Now / callback → real booking deep link
 html = html.replaceAll(
@@ -649,6 +634,70 @@ const suitesRuntime = `
     setTimeout(sample, 800);
     setInterval(sample, 900);
   })();
+
+  /* Compare Suites: scroll to on-page suite collection */
+  (function suitesInPageScroll() {
+    function locoY() {
+      var sec = document.querySelector("[data-scroll-section]");
+      if (!sec) return window.pageYOffset || 0;
+      var st = sec.getAttribute("style") || "";
+      var m = st.match(/translate\(([^)]+)\)/);
+      if (!m) return 0;
+      return Math.abs(parseFloat((m[1].split(",")[1] || "0").trim()) || 0);
+    }
+    function scrollToEl(el) {
+      if (!el) return;
+      var $ = window.jQuery || window.$;
+      try {
+        if ($ && typeof $.fn.scrollToElement === "function") {
+          $(el).scrollToElement(0);
+          return;
+        }
+      } catch (e) {}
+      try {
+        if ($ && typeof $.fn.scrollTo === "function") {
+          $(window).scrollTo(el, 800);
+          return;
+        }
+      } catch (e) {}
+      var dest = locoY() + el.getBoundingClientRect().top - 24;
+      var steps = 0;
+      function tick() {
+        var now = locoY();
+        if (Math.abs(now - dest) < 60 || steps++ > 100) return;
+        var delta = Math.sign(dest - now) * Math.min(1100, Math.abs(dest - now));
+        try {
+          document.documentElement.dispatchEvent(
+            new WheelEvent("wheel", {
+              deltaY: delta,
+              bubbles: true,
+              cancelable: true,
+              clientX: window.innerWidth / 2,
+              clientY: window.innerHeight / 2,
+            }),
+          );
+        } catch (e) {}
+        requestAnimationFrame(tick);
+      }
+      tick();
+    }
+    document.addEventListener(
+      "click",
+      function (e) {
+        var a = e.target.closest("a[data-suites-scroll-target]");
+        if (!a) return;
+        e.preventDefault();
+        var sel = a.getAttribute("data-suites-scroll-target");
+        if (!sel) return;
+        var el = document.querySelector(sel);
+        if (!el && sel.charAt(0) === "#") {
+          el = document.getElementById(sel.slice(1));
+        }
+        scrollToEl(el);
+      },
+      true,
+    );
+  })();
 })();
 </script>`;
 
@@ -753,6 +802,10 @@ html = html.replace(
 html = html.replace(
   /href="\/flats[^"]*"/gi,
   'href="/luxury-cabins-Nile-Cruise" target="_top" data-ajax-page-ignore',
+);
+html = html.replace(
+  'id="l-residences-sticky-1"',
+  'id="l-residences-sticky-1" data-suites-collection',
 );
 html = html.replaceAll(">Townhouses<", ">Luxury Suites<");
 html = html.replaceAll(">Penthouses<", ">Royal Suites<");

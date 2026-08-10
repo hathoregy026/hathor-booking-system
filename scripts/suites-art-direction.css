@@ -110,7 +110,8 @@ h2,
 .l-wellness__slider__caption-text p,
 .l-nature-bg-caption__text p,
 .l-place-webgl__text p,
-[class*="__caption"] p:not(.g1):not(.h0):not(.h1):not([class*="__subtitle"]),
+/* Exclude .h2 — amenity rail titles use <p class="h2"> and must not inherit body size */
+[class*="__caption"] p:not(.g1):not(.h0):not(.h1):not(.h2):not([class*="__subtitle"]),
 p:not(.g1):not(.g2):not(.h0):not(.h1):not(.h2):not(.h3):not(.text-c1):not(.text-c2):not([class*="__subtitle"]) {
   font-family: var(--suites-sans) !important;
   font-size: var(--type-body) !important;
@@ -467,6 +468,9 @@ p.l-place-webgl-caption__subtitle,
 .l-wellness__slider__caption-titles .js-content-animation-link.is-active {
   opacity: 1 !important;
 }
+/* px (not rem): Springs html font-size is 10px; rem clamps read as ~17px and lost to body rule */
+.l-wellness__slider__caption-titles a.js-content-animation-link p.h2,
+.l-wellness__slider__caption-titles a.js-content-animation-link p.h2.leading-trim,
 .l-wellness__slider__caption-titles .g1,
 .l-wellness__slider__caption-titles h2,
 .l-wellness__slider__caption-titles .h2,
@@ -475,11 +479,12 @@ p.l-place-webgl-caption__subtitle,
 .l-wellness__slider__caption-titles .js-content-animation-link .h2,
 .l-wellness__slider__caption-titles .js-content-animation-link p {
   font-family: var(--suites-sans) !important;
-  font-size: clamp(1.75rem, 2.4vw, 2.55rem) !important;
+  font-size: clamp(30px, 2.5vw, 42px) !important;
   line-height: 1.2 !important;
   letter-spacing: -0.01em !important;
   font-weight: 400 !important;
   opacity: 1 !important;
+  max-width: none !important;
 }
 .l-wellness__slider__caption-titles .is-active,
 .l-wellness__slider__caption-titles .is-current,

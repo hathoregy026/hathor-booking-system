@@ -469,7 +469,8 @@ h2,
 .l-wellness__slider__caption-text p,
 .l-nature-bg-caption__text p,
 .l-place-webgl__text p,
-[class*="__caption"] p:not(.g1):not(.h0):not(.h1):not([class*="__subtitle"]),
+/* Exclude .h2 — amenity rail titles use <p class="h2"> and must not inherit body size */
+[class*="__caption"] p:not(.g1):not(.h0):not(.h1):not(.h2):not([class*="__subtitle"]),
 p:not(.g1):not(.g2):not(.h0):not(.h1):not(.h2):not(.h3):not(.text-c1):not(.text-c2):not([class*="__subtitle"]) {
   font-family: var(--suites-sans) !important;
   font-size: var(--type-body) !important;
@@ -826,6 +827,9 @@ p.l-place-webgl-caption__subtitle,
 .l-wellness__slider__caption-titles .js-content-animation-link.is-active {
   opacity: 1 !important;
 }
+/* px (not rem): Springs html font-size is 10px; rem clamps read as ~17px and lost to body rule */
+.l-wellness__slider__caption-titles a.js-content-animation-link p.h2,
+.l-wellness__slider__caption-titles a.js-content-animation-link p.h2.leading-trim,
 .l-wellness__slider__caption-titles .g1,
 .l-wellness__slider__caption-titles h2,
 .l-wellness__slider__caption-titles .h2,
@@ -834,11 +838,12 @@ p.l-place-webgl-caption__subtitle,
 .l-wellness__slider__caption-titles .js-content-animation-link .h2,
 .l-wellness__slider__caption-titles .js-content-animation-link p {
   font-family: var(--suites-sans) !important;
-  font-size: clamp(1.75rem, 2.4vw, 2.55rem) !important;
+  font-size: clamp(30px, 2.5vw, 42px) !important;
   line-height: 1.2 !important;
   letter-spacing: -0.01em !important;
   font-weight: 400 !important;
   opacity: 1 !important;
+  max-width: none !important;
 }
 .l-wellness__slider__caption-titles .is-active,
 .l-wellness__slider__caption-titles .is-current,
@@ -1910,6 +1915,70 @@ body.has-page-scroll-transition .public-site > .lux-footer {
     window.addEventListener("resize", sample);
     setTimeout(sample, 800);
     setInterval(sample, 900);
+  })();
+
+  /* Compare Suites: scroll to on-page suite collection */
+  (function suitesInPageScroll() {
+    function locoY() {
+      var sec = document.querySelector("[data-scroll-section]");
+      if (!sec) return window.pageYOffset || 0;
+      var st = sec.getAttribute("style") || "";
+      var m = st.match(/translate(([^)]+))/);
+      if (!m) return 0;
+      return Math.abs(parseFloat((m[1].split(",")[1] || "0").trim()) || 0);
+    }
+    function scrollToEl(el) {
+      if (!el) return;
+      var $ = window.jQuery || window.$;
+      try {
+        if ($ && typeof $.fn.scrollToElement === "function") {
+          $(el).scrollToElement(0);
+          return;
+        }
+      } catch (e) {}
+      try {
+        if ($ && typeof $.fn.scrollTo === "function") {
+          $(window).scrollTo(el, 800);
+          return;
+        }
+      } catch (e) {}
+      var dest = locoY() + el.getBoundingClientRect().top - 24;
+      var steps = 0;
+      function tick() {
+        var now = locoY();
+        if (Math.abs(now - dest) < 60 || steps++ > 100) return;
+        var delta = Math.sign(dest - now) * Math.min(1100, Math.abs(dest - now));
+        try {
+          document.documentElement.dispatchEvent(
+            new WheelEvent("wheel", {
+              deltaY: delta,
+              bubbles: true,
+              cancelable: true,
+              clientX: window.innerWidth / 2,
+              clientY: window.innerHeight / 2,
+            }),
+          );
+        } catch (e) {}
+        requestAnimationFrame(tick);
+      }
+      tick();
+    }
+    document.addEventListener(
+      "click",
+      function (e) {
+        var a = e.target.closest("a[data-suites-scroll-target]");
+        if (!a) return;
+        e.preventDefault();
+        var sel = a.getAttribute("data-suites-scroll-target");
+        if (!sel) return;
+        var el = document.querySelector(sel);
+        if (!el && sel.charAt(0) === "#") {
+          el = document.getElementById(sel.slice(1));
+        }
+        scrollToEl(el);
+      },
+      true,
+    );
   })();
 })();
 </script></head>
@@ -4099,7 +4168,7 @@ with&nbsp;Unrivaled Views
             <p class="leading-trim">
                 Experience Hathor Dahabiya Cruise that blends authenticity with luxury, offering an unforgettable journey by&nbsp;the timeless Nile. Whether you stay in our Elegant Suites or Royal Suites with panoramic Nile view, you enjoy unmatched comfort and exclusive privacy.
             </p>
-            <a class="suites-cta-link suites-cta-link--ivory" href="/rooms" target="_top" data-ajax-page-ignore>Compare Suites &rarr;</a>
+            <a class="suites-cta-link suites-cta-link--ivory" href="#l-residences-sticky-1" data-suites-scroll-target="#l-residences-sticky-1" data-ajax-page-ignore>Compare Suites &rarr;</a>
         
         </div>
     </div>
@@ -4653,7 +4722,7 @@ with&nbsp;Unrivaled Views
                                                             </div>
 
                                             
-                        <a class="suites-cta-link suites-cta-link--ivory" href="/rooms" target="_top" data-ajax-page-ignore>View Suite Details &rarr;</a>
+                        <a class="suites-cta-link suites-cta-link--ivory" href="/Luxury-Royal-Suites-Nile-Dahabiya-Cruise" target="_top" data-ajax-page-ignore>View Suite Details &rarr;</a>
                     </div>
                 </div>
 
@@ -7516,7 +7585,7 @@ to&nbsp;the&nbsp;MIBC
 
 
 
-<div class="l-residences sticky sticky--full-height sticky--under-previous sticky--under-next is-hidden--md-down" id="l-residences-sticky-1" data-plugin="reveal">
+<div class="l-residences sticky sticky--full-height sticky--under-previous sticky--under-next is-hidden--md-down" id="l-residences-sticky-1" data-suites-collection data-plugin="reveal">
     <div class="sticky__layer sticky__layer--sticky" data-scroll data-scroll-sticky data-scroll-target="#l-residences-sticky-1"
         data-scroll-snap-point='[{ "viewport": 0, "element": 100 }, { "viewport": 0, "element": 200 }, { "viewport": 0, "element": 300 }, { "viewport": 0, "element": 400 }]'
     >
