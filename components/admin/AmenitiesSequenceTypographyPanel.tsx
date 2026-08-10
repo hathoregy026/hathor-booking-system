@@ -37,7 +37,7 @@ import {
   type WebsiteText,
 } from "@/lib/website-text-shared";
 import {
-  HATHOR_LUXURY_FONTS,
+  HATHOR_FONT_GROUPS,
   HATHOR_FONT_STACKS,
   type TypographyTextStyle,
 } from "@/lib/typography-settings-shared";
@@ -179,6 +179,8 @@ export function AmenitiesSequenceTypographyPanel() {
   const [dragLine, setDragLine] = useState<DragLine>("indication");
   const [previewSurface, setPreviewSurface] =
     useState<PreviewSurface>("onImage");
+  const [fontMenuOpen, setFontMenuOpen] = useState(false);
+  const fontMenuRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{
     line: DragLine;
     startX: number;
@@ -212,6 +214,28 @@ export function AmenitiesSequenceTypographyPanel() {
   useEffect(() => {
     if (active.mode === "style") setDragLine(active.role);
   }, [active]);
+
+  useEffect(() => {
+    setFontMenuOpen(false);
+  }, [activeId, active.mode, device]);
+
+  useEffect(() => {
+    if (!fontMenuOpen) return;
+    const onDoc = (event: MouseEvent) => {
+      if (!fontMenuRef.current?.contains(event.target as Node)) {
+        setFontMenuOpen(false);
+      }
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setFontMenuOpen(false);
+    };
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [fontMenuOpen]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -919,25 +943,76 @@ export function AmenitiesSequenceTypographyPanel() {
                   />
                 </label>
               </div>
-              <label className="typo-easy__field">
+              <div className="typo-easy__field">
                 <span>Font</span>
-                <select
-                  className="admin-input"
-                  value={styles[active.role].fontFamily}
-                  onChange={(e) =>
-                    patchStyle(active.role, {
-                      fontFamily: e.target
-                        .value as TypographyTextStyle["fontFamily"],
-                    })
-                  }
-                >
-                  {HATHOR_LUXURY_FONTS.map((font) => (
-                    <option key={font} value={font}>
-                      {font}
-                    </option>
-                  ))}
-                </select>
-              </label>
+                <div className="typo-easy__font-dd" ref={fontMenuRef}>
+                  <button
+                    type="button"
+                    className={`typo-easy__font-dd-trigger${fontMenuOpen ? " typo-easy__font-dd-trigger--open" : ""}`}
+                    aria-haspopup="listbox"
+                    aria-expanded={fontMenuOpen}
+                    aria-label="Choose font"
+                    onClick={() => setFontMenuOpen((open) => !open)}
+                  >
+                    <span
+                      className="typo-easy__font-dd-sample"
+                      style={{
+                        fontFamily:
+                          HATHOR_FONT_STACKS[styles[active.role].fontFamily],
+                      }}
+                    >
+                      {styles[active.role].fontFamily}
+                    </span>
+                    <span className="typo-easy__font-dd-chevron" aria-hidden>
+                      {fontMenuOpen ? "▴" : "▾"}
+                    </span>
+                  </button>
+                  {fontMenuOpen ? (
+                    <div
+                      className="typo-easy__font-dd-menu"
+                      role="listbox"
+                      aria-label="Fonts"
+                    >
+                      {HATHOR_FONT_GROUPS.flatMap((fontGroup) =>
+                        fontGroup.variants.map((variant) => {
+                          const selected =
+                            styles[active.role].fontFamily === variant.id;
+                          const label =
+                            fontGroup.variants.length > 1
+                              ? `${fontGroup.family} · ${variant.label}`
+                              : fontGroup.family;
+                          return (
+                            <button
+                              key={variant.id}
+                              type="button"
+                              role="option"
+                              aria-selected={selected}
+                              className={`typo-easy__font-dd-option${selected ? " typo-easy__font-dd-option--on" : ""}`}
+                              style={{
+                                fontFamily: HATHOR_FONT_STACKS[variant.id],
+                              }}
+                              onClick={() => {
+                                patchStyle(active.role, {
+                                  fontFamily:
+                                    variant.id as TypographyTextStyle["fontFamily"],
+                                });
+                                setFontMenuOpen(false);
+                              }}
+                            >
+                              <span className="typo-easy__font-dd-option-label">
+                                {label}
+                              </span>
+                              <span className="typo-easy__font-dd-option-demo">
+                                Hathor
+                              </span>
+                            </button>
+                          );
+                        }),
+                      )}
+                    </div>
+                  ) : null}
+                </div>
+              </div>
               <div className="typo-easy__fields-row">
                 <label className="typo-easy__field">
                   <span>Size</span>
