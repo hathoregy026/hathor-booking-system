@@ -711,15 +711,6 @@ html = html.replace(
   `${suitesFontLinks}${suitesPalette}${suitesRuntime}</head>`,
 );
 
-// Cascade win: append palette once at the MAIN document body end
-// (do not replace every </body> — iframe srcdoc also contains </body>).
-{
-  const cascadeTag = `<style data-hathor-suites-cascade>${suitesArtDirectionCss}</style>\n`;
-  const bodyClose = html.lastIndexOf("</body>");
-  if (bodyClose === -1) throw new Error("Suites build: </body> not found");
-  html = html.slice(0, bodyClose) + cascadeTag + html.slice(bodyClose);
-}
-
 // Preloader: strip logo markup so nothing flashes on landing.
 html = html.replace(
   /(<div class="header__logo preloader__logo(?:\s+hathor-preloader-logo)?")[^>]*>[\s\S]*?(<\/div>\s*<\/div>\s*<div class="header__right)/i,
