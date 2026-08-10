@@ -356,13 +356,13 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
 
 /*
  * Caption gold band — sibling AFTER #home-am-nature (not inside it).
- * min-height matches nature’s under-next pull so the CMS bg fills the whole
- * gold rectangle (no solid-gold void above the short caption).
+ * min-height matches nature’s under-next pull so the CMS photo fills the
+ * whole gold rectangle (no solid-gold void above the caption).
  */
 .home-am-nature__gold-band {
   --am-nature-gold-fill: clamp(16rem, 42vh, 22rem);
   position: relative;
-  /* Above nature pin + voyages so the short panel can cover the photo bottom */
+  /* Above nature pin + voyages so the panel can cover the photo bottom */
   z-index: 8;
   isolation: isolate;
   display: flex;
@@ -374,24 +374,30 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   margin-top: -2px;
   padding: 0 clamp(1.25rem, 6vw, 4rem) clamp(1.25rem, 3vh, 2rem);
   box-sizing: border-box;
-  background: var(--am-gold);
+  /* color only — never the shorthand (it would wipe background-image) */
+  background-color: var(--am-gold);
   overflow: hidden;
 }
 
-/* Full-bleed CMS bg — covers every pixel of the gold band */
-.home-am-nature__gold-bg {
+/*
+ * Photo is painted ON the band (full padding box), then a gold wash keeps
+ * it low-opacity. This cannot leave an empty strip the way a child layer can.
+ */
+.home-am-nature__gold-band--has-bg {
+  background-image:
+    linear-gradient(rgb(182 159 100 / 0.86), rgb(182 159 100 / 0.86)),
+    var(--am-nature-gold-photo);
+  background-size: cover, cover;
+  background-position: center center, center center;
+  background-repeat: no-repeat, no-repeat;
+}
+
+.home-am-nature__gold-bg-anchor {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  opacity: 0.14;
-  pointer-events: none;
+  width: 0;
+  height: 0;
   overflow: hidden;
-  background-color: transparent;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
+  pointer-events: none;
 }
 
 .home-am-nature__copy {
@@ -1789,8 +1795,10 @@ html[data-ex-experience]
     padding-top: 0.35rem;
   }
 
-  .home-am-nature__gold-bg {
-    opacity: 0.12;
+  .home-am-nature__gold-band--has-bg {
+    background-image:
+      linear-gradient(rgb(182 159 100 / 0.88), rgb(182 159 100 / 0.88)),
+      var(--am-nature-gold-photo);
   }
 
   /* Springs mobile: horizontal swipe for cards */

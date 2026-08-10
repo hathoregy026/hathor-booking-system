@@ -74,23 +74,38 @@ function withoutForcedFill(
   return next;
 }
 
-/** Full-bleed CSS cover bg for the dining gold band (dashboard slot 14). */
-function NatureGoldBandBackground({
+/** CMS photo as layered cover bg on the gold band (dashboard slot 14). */
+function NatureGoldBand({
   name,
   previewAnchor = true,
+  children,
 }: {
   name: SiteImageName;
   previewAnchor?: boolean;
+  children: ReactNode;
 }) {
   const image = useSiteImage(name);
   return (
     <div
-      className="home-am-nature__gold-bg"
-      aria-hidden
-      id={previewAnchor ? siteImageAnchorId(name) : undefined}
+      className="home-am-nature__gold-band home-am-nature__gold-band--has-bg"
+      data-am-nature-caption
+      id="home-am-nature-caption"
       data-site-image={name}
-      style={{ backgroundImage: `url(${JSON.stringify(image.src)})` }}
-    />
+      style={
+        {
+          ["--am-nature-gold-photo" as string]: `url(${JSON.stringify(image.src)})`,
+        } as CSSProperties
+      }
+    >
+      {previewAnchor ? (
+        <span
+          id={siteImageAnchorId(name)}
+          className="home-am-nature__gold-bg-anchor"
+          aria-hidden
+        />
+      ) : null}
+      {children}
+    </div>
   );
 }
 
@@ -1024,19 +1039,12 @@ export function HomeAmenitiesSequence({
 
       {/*
         Outside #home-am-nature (clip-path was hiding the band). Nature under-next
-        pulls this short gold panel up over the pinned photo — not a tall empty slab.
+        pulls this gold panel up over the pinned photo.
       */}
-      <div
-        className="home-am-nature__gold-band"
-        data-am-nature-caption
-        id="home-am-nature-caption"
+      <NatureGoldBand
+        name={(natureGoldBg?.name ?? "home-amenities-14") as SiteImageName}
+        previewAnchor={natureGoldBg?.previewAnchor ?? true}
       >
-        {natureGoldBg ? (
-          <NatureGoldBandBackground
-            name={natureGoldBg.name}
-            previewAnchor={natureGoldBg.previewAnchor}
-          />
-        ) : null}
         <div className="home-am-nature__copy">
           {/*
             Sized by Amenities Sequence typography (dashboard) — same title /
@@ -1073,7 +1081,7 @@ export function HomeAmenitiesSequence({
             </span>
           )}
         </div>
-      </div>
+      </NatureGoldBand>
       </div>{/* /.home-am-dark-band — Springs ui-dark-background */}
 
       {/*
