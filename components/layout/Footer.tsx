@@ -230,7 +230,7 @@ function FooterNavLink({
   );
 }
 
-export function Footer() {
+export function Footer({ showTopCta = true }: { showTopCta?: boolean }) {
   const rootRef = useRef<HTMLElement>(null);
   const year = new Date().getFullYear();
 
@@ -248,8 +248,9 @@ export function Footer() {
       const subhead = root.querySelector(".lux-footer__subhead");
       const subscribe = root.querySelector(".lux-footer__subscribe");
       const columns = root.querySelectorAll(".lux-footer__col");
+      const topEls = [headline, subhead, subscribe].filter(Boolean);
 
-      gsap.set([headline, subhead, subscribe], { y: 50, opacity: 0 });
+      if (topEls.length) gsap.set(topEls, { y: 50, opacity: 0 });
       gsap.set(columns, { y: 30, opacity: 0 });
 
       const tl = gsap.timeline({
@@ -261,39 +262,45 @@ export function Footer() {
         },
       });
 
-      tl.to(headline, {
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        ease: "power3.out",
-      })
-        .to(
+      if (headline) {
+        tl.to(headline, {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: "power3.out",
+        });
+      }
+      if (subhead) {
+        tl.to(
           subhead,
           { y: 0, opacity: 1, duration: 0.9, ease: "power3.out" },
-          "-=0.7",
-        )
-        .to(
+          headline ? "-=0.7" : 0,
+        );
+      }
+      if (subscribe) {
+        tl.to(
           subscribe,
           { y: 0, opacity: 1, duration: 0.85, ease: "power3.out" },
           "-=0.65",
-        )
-        .to(
-          columns,
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.8,
-            stagger: 0.1,
-            ease: "power3.out",
-          },
-          "-=0.45",
         );
+      }
+      tl.to(
+        columns,
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: "power3.out",
+        },
+        topEls.length ? "-=0.45" : 0,
+      );
 
       /* Refresh mid-page: if footer already intersects, show invitation copy */
       requestAnimationFrame(() => {
         const top = root.getBoundingClientRect().top;
         if (top < window.innerHeight * 0.95) {
-          gsap.set([headline, subhead, subscribe, ...columns], {
+          gsap.set([...topEls, ...columns], {
             y: 0,
             opacity: 1,
           });
@@ -303,7 +310,7 @@ export function Footer() {
     }, root);
 
     return () => ctx.revert();
-  }, []);
+  }, [showTopCta]);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -355,18 +362,20 @@ export function Footer() {
       <div className="lux-footer__glow" aria-hidden />
 
       <div className="lux-footer__inner">
-        <div className="lux-footer__top">
-          <h2 className="lux-footer__headline typo-page-title">
-            BEGIN YOUR JOURNEY
-          </h2>
-          <p className="lux-footer__subhead typo-body-text">
-            Join our exclusive circle for private itineraries and early access to rare
-            voyages.
-          </p>
-          <div className="lux-footer__subscribe">
-            <FooterSubscribe />
+        {showTopCta ? (
+          <div className="lux-footer__top">
+            <h2 className="lux-footer__headline typo-page-title">
+              BEGIN YOUR JOURNEY
+            </h2>
+            <p className="lux-footer__subhead typo-body-text">
+              Join our exclusive circle for private itineraries and early access to rare
+              voyages.
+            </p>
+            <div className="lux-footer__subscribe">
+              <FooterSubscribe />
+            </div>
           </div>
-        </div>
+        ) : null}
 
         <div className="lux-footer__main">
           <div className="lux-footer__bg-logo" aria-hidden>

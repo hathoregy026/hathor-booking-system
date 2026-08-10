@@ -50,15 +50,6 @@ html[data-suites-native] .suites-native-route {
   font-family: var(--font-hathor-body, "Plus Jakarta Sans", system-ui, sans-serif);
 }
 
-/*
- * Duplicate CTA fix: shared Footer still owns link columns + legal,
- * but its marketing band ("BEGIN YOUR JOURNEY" + subscribe) duplicates
- * the Suites native closing CTA. Hide only that band on this route.
- */
-html[data-suites-native] .lux-footer__top {
-  display: none !important;
-}
-
 .suites-native-preview-banner {
   position: sticky;
   top: 0;

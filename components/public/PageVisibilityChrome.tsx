@@ -44,7 +44,11 @@ export function PageVisibilityChrome({ children }: PageVisibilityChromeProps) {
       <main className="public-main public-main--hero">
         {underConstruction ? <PageUnderConstruction /> : children}
       </main>
-      {underConstruction ? null : <Footer />}
+      {underConstruction ? null : (
+        <Footer
+          showTopCta={!pathname.startsWith("/suites-preview")}
+        />
+      )}
     </>
   );
 }
