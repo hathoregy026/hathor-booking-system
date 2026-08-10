@@ -1,13 +1,15 @@
 ---
-description: Lock accepted Suites production baseline ee1ff11 — no collateral edits
+description: Lock accepted Suites production baseline — typography matched to homepage
 alwaysApply: true
 ---
 
-# FROZEN — Suites production baseline (`ee1ff11`)
+# FROZEN — Suites production baseline
 
 The public Suites experience at `/suites` is an **approved production baseline**.
 
-**Baseline commit:** `ee1ff11`
+**Baseline commit:** `PENDING_AFTER_DEPLOY` *(replaced `ee1ff11` — user rejected prior typography)*
+
+**Last approved task:** User explicitly approved Suites **typography + text color** changes only (homepage DNA match). Layout, images, GSAP, ScrollTrigger, Lenis, WebGL, CMS, and CTA destinations were not in scope.
 
 Do **not** modify Suites as collateral while editing other pages or shared systems.
 
@@ -27,10 +29,10 @@ Do **not** clean up, refactor, restyle, or normalize Suites unless the user **ex
 
 Preserve:
 
-- typography hierarchy and positions
+- typography hierarchy matched to live homepage DNA (Bitho / Rolling Fonte / Carista / Besty / Rollgates / Plus Jakarta) and px type scales (Springs `html` rem root is 10px — do not reintroduce rem type tokens)
 - CTA labels and destinations
 - hero, Unrivaled Views, Step Aboard, Comfort title/body
-- amenity rail size and opacity
+- amenity rail editorial scale and inactive opacity **0.4**
 - WebGL behavior
 - gold statement, dark/river/mosaic chapters
 - Suites collection, Royal Suites card
@@ -53,9 +55,9 @@ Preserve:
 
 ## Locked amenity rail
 
-- Desktop visual target: **30–42px**
-- Accepted computed size at 1440: **~36px** (`clamp(30px, 2.5vw, 42px)`)
+- Editorial display face (Rolling Fonte), not software-menu sans
 - Inactive opacity: **0.4** (do not reduce)
+- Size via `--type-amenity` px clamp (not rem)
 
 **Do not reintroduce** a broad `[class*="__caption"] p` rule that matches amenity `<p class="h2">` without `:not(.h2)` — that previously forced body (~11.5px) over the rail.
 
@@ -64,5 +66,5 @@ Preserve:
 If a shared CSS, header, navigation, font, or layout change can affect `/suites`:
 
 1. Stop and name Suites as an affected protected area.
-2. Wait for explicit approval **or** regression-test against baseline `ee1ff11` before deploy.
+2. Wait for explicit approval **or** regression-test against the baseline commit above before deploy.
 3. Do not “fix Suites while we’re here.”
