@@ -249,7 +249,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   },
   {
     name: "home-amenities-14",
-    altText: "Amenities sequence — dining gold panel left photo",
+    altText: "Amenities sequence — dining gold panel background",
     url: HATHOR_MEDIA.restaurant,
     category: "dining",
     pagePath: "/#amenities-sequence",
@@ -257,7 +257,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   },
   {
     name: "home-amenities-15",
-    altText: "Amenities sequence — dining gold panel right photo",
+    altText: "Amenities sequence — dining gold panel (unused legacy slot)",
     url: HATHOR_MEDIA.altDining,
     category: "dining",
     pagePath: "/#amenities-sequence",

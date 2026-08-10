@@ -347,8 +347,7 @@ export function HomeAmenitiesSequence({
   const imageByName = (name: string) =>
     images.find((image) => image.name === name);
   const natureImage = imageByName("home-amenities-12") ?? images[12];
-  const natureGoldLeft = imageByName("home-amenities-14");
-  const natureGoldRight = imageByName("home-amenities-15");
+  const natureGoldBg = imageByName("home-amenities-14");
   /* Nature gold band — Dining story (textBlocks[1]) */
   const natureStory = stories[1] ?? stories[0];
   const natureTitleLines = storyTitleLines(natureStory?.title ?? "");
@@ -1028,69 +1027,54 @@ export function HomeAmenitiesSequence({
         data-am-nature-caption
         id="home-am-nature-caption"
       >
-        <div className="home-am-nature__gold-inner">
-          {natureGoldLeft ? (
-            <div className="home-am-nature__gold-media home-am-nature__gold-media--left">
-              <ManagedImage
-                name={natureGoldLeft.name}
-                alt={natureGoldLeft.alt}
-                fill
-                sizes="(max-width: 480px) 42vw, (max-width: 1024px) 28vw, 22vw"
-                className="object-cover"
-                loading="lazy"
-                previewAnchor={natureGoldLeft.previewAnchor}
-              />
-            </div>
-          ) : null}
-          <div className="home-am-nature__copy">
-            {/*
-              Sized by Amenities Sequence typography (dashboard) — same title /
-              indication / body roles as slider gold captions.
-            */}
-            <AmenitiesTitleLines
-              as="h3"
-              lines={natureTitleLines}
-              className="home-am-nature__title typo-on-images-title"
+        {natureGoldBg ? (
+          <div className="home-am-nature__gold-bg" aria-hidden>
+            <ManagedImage
+              name={natureGoldBg.name}
+              alt=""
+              fill
+              sizes="100vw"
+              className="object-cover"
+              loading="lazy"
+              previewAnchor={natureGoldBg.previewAnchor}
             />
-            <AmenitiesCopyText
-              as="p"
-              value={natureIndication}
-              className="home-am-nature__indication typo-on-images-indication"
-            />
-            <AmenitiesCopyText
-              as="p"
-              value={natureCaption}
-              className="home-am-nature__body typo-on-images-body"
-            />
-            {amenitiesHasCopy(natureCta) ? (
-              <Link
-                href={natureCtaHref}
-                className="public-btn-outline-gold home-am-opening__cta home-am-nature__cta"
-              >
-                {natureCta}
-              </Link>
-            ) : (
-              <span
-                className="public-btn-outline-gold home-am-opening__cta home-am-nature__cta home-am-copy--empty"
-                aria-hidden
-              >
-                {"\u00A0"}
-              </span>
-            )}
           </div>
-          {natureGoldRight ? (
-            <div className="home-am-nature__gold-media home-am-nature__gold-media--right">
-              <ManagedImage
-                name={natureGoldRight.name}
-                alt={natureGoldRight.alt}
-                fill
-                sizes="(max-width: 480px) 42vw, (max-width: 1024px) 28vw, 22vw"
-                className="object-cover"
-                loading="lazy"
-                previewAnchor={natureGoldRight.previewAnchor}
-              />
-            </div>
-          ) : null}
+        ) : null}
+        <div className="home-am-nature__copy">
+          {/*
+            Sized by Amenities Sequence typography (dashboard) — same title /
+            indication / body roles as slider gold captions.
+          */}
+          <AmenitiesTitleLines
+            as="h3"
+            lines={natureTitleLines}
+            className="home-am-nature__title typo-on-images-title"
+          />
+          <AmenitiesCopyText
+            as="p"
+            value={natureIndication}
+            className="home-am-nature__indication typo-on-images-indication"
+          />
+          <AmenitiesCopyText
+            as="p"
+            value={natureCaption}
+            className="home-am-nature__body typo-on-images-body"
+          />
+          {amenitiesHasCopy(natureCta) ? (
+            <Link
+              href={natureCtaHref}
+              className="public-btn-outline-gold home-am-opening__cta home-am-nature__cta"
+            >
+              {natureCta}
+            </Link>
+          ) : (
+            <span
+              className="public-btn-outline-gold home-am-opening__cta home-am-nature__cta home-am-copy--empty"
+              aria-hidden
+            >
+              {"\u00A0"}
+            </span>
+          )}
         </div>
       </div>
       </div>{/* /.home-am-dark-band — Springs ui-dark-background */}
