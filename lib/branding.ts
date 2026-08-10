@@ -63,7 +63,7 @@ export const HATHOR_ADMIN_LOGIN_ICON_SRC = HATHOR_HERO_ICON_SRC;
  * `/public/media/hathor/videos/`). Poster stays CMS slot `home-hero-poster`.
  */
 export const HATHOR_HERO_VIDEO_SRC =
-  "/media/hathor/videos/bar-hathor-egypt-cruise-history-meets-luxury.mp4";
+  "/media/hathor/videos/hathor-hero-nile-promo.mp4";
 
 /** Default static poster path (live hero uses CMS `home-hero-poster` via useSiteImage). */
 export const HATHOR_HERO_POSTER_SRC = hathorImage("home-hero-poster");

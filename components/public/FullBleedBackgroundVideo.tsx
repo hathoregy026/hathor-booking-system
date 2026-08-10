@@ -63,7 +63,6 @@ export function FullBleedBackgroundVideo({
       const phone = isPhoneViewport();
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)")
         .matches;
-      const narrowTablet = window.matchMedia("(max-width: 1024px)").matches;
 
       if (phone && !mobileSrc) {
         setAllowLiveVideo(false);
@@ -75,13 +74,13 @@ export function FullBleedBackgroundVideo({
         });
         return;
       }
-      if (reduced || (narrowTablet && !phone)) {
+      if (reduced) {
         setAllowLiveVideo(false);
         logPhonePerfDev({
           surface,
           phone,
           videoSource: "poster-only",
-          reason: reduced ? "reduced-motion" : "tablet-poster",
+          reason: "reduced-motion",
         });
         return;
       }

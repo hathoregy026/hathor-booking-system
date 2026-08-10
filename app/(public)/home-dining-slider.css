@@ -690,6 +690,23 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   transform-origin: bottom right;
 }
 
+/* Very soft golden shadow over amenities rising media */
+.home-am-video__hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 85% 75% at 50% 42%,
+      rgba(212, 175, 55, 0.04) 0%,
+      rgba(182, 159, 100, 0.08) 55%,
+      rgba(90, 60, 20, 0.12) 100%
+    );
+  box-shadow: inset 0 0 140px rgba(182, 159, 100, 0.14);
+}
+
 .home-am-video__hero img,
 .home-am-video__hero video,
 .home-am-video__hero-video,

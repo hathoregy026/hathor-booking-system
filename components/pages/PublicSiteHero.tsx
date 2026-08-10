@@ -19,8 +19,8 @@ import {
   type HeroPageKey,
 } from "@/lib/typography-settings-shared";
 
-/** Compact bar reel — safe for phone (≤480) and tablet; same file as desktop. */
-const HATHOR_HERO_VIDEO_MOBILE_SRC: string = HATHOR_HERO_VIDEO_SRC;
+/** No compressed mobile MP4 yet — phones keep poster until an asset is added. */
+const HATHOR_HERO_VIDEO_MOBILE_SRC: string | null = null;
 
 function optimizedVideoPoster(src: string): string {
   const trimmed = src.trim();
@@ -64,15 +64,15 @@ export type PublicSiteHeroProps = {
    */
   splitLetterLogo?: boolean;
   /**
-   * Warm gold media tint (see app/hero-tint.css). Soft golden veil on stills and
-   * video heroes; dark wash stays off when `playVideo` so the reel stays clear.
+   * Warm gold media tint (see app/hero-tint.css). On for image heroes;
+   * ignored when `playVideo` so the reel stays clear.
    */
   goldTint?: boolean;
   /** Floating gold dust over the hero (delete tag + GoldDustParticles.tsx to remove). */
   goldDust?: boolean;
   /**
    * When true, play the homepage hero video. Poster frame uses `posterImageName`
-   * CMS slot (falls back to about-hero if omitted). Skips dark wash only.
+   * CMS slot (falls back to about-hero if omitted). Skips dark wash + gold tint.
    */
   playVideo?: boolean;
   /** Letter colour set from Hero Logo Tune — default keeps live gold WebPs. */
@@ -107,9 +107,9 @@ export function PublicSiteHero({
   const videoPoster = playVideo
     ? optimizedVideoPoster(heroImage.src)
     : heroImage.src;
-  /** Video hero: no dark wash — soft gold tint still applies when goldTint. */
+  /** Video hero: no dark wash / gold tint — keep gold dust only. */
   const showMediaWash = !playVideo;
-  const applyGoldTint = goldTint;
+  const applyGoldTint = showMediaWash && goldTint;
   const typography = useTypographySettings();
   const globalLogo = useHeroLogoSettings();
   const desktopLogoParts =
@@ -157,19 +157,30 @@ export function PublicSiteHero({
   useLayoutEffect(() => {
     if (!playVideo) return;
     /*
-     * Compact bar reel (~2MB): play on desktop, tablet, and phone.
-     * Poster only for reduced-motion.
+     * Large cinematic asset. Phones ≤480: mobile source if present, else poster.
+     * Never download the desktop MP4 on phones. Tablet keeps poster (existing).
      */
     const phone = isPhoneViewport();
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const narrowTablet = window.matchMedia("(max-width: 1024px)").matches;
 
-    if (reduced) {
+    if (phone && !HATHOR_HERO_VIDEO_MOBILE_SRC) {
+      setUseLiveVideo(false);
+      logPhonePerfDev({
+        surface: "public-site-hero",
+        phone: true,
+        videoSource: "poster-only",
+        reason: "no-mobile-mp4-yet",
+      });
+      return;
+    }
+    if (reduced || (narrowTablet && !phone)) {
       setUseLiveVideo(false);
       logPhonePerfDev({
         surface: "public-site-hero",
         phone,
         videoSource: "poster-only",
-        reason: "reduced-motion",
+        reason: reduced ? "reduced-motion" : "tablet-poster",
       });
       return;
     }
@@ -187,7 +198,10 @@ export function PublicSiteHero({
     let idleId = 0;
     let delayId = 0;
     const cleanups: Array<() => void> = [];
-    const source = HATHOR_HERO_VIDEO_SRC;
+    const source =
+      phone && HATHOR_HERO_VIDEO_MOBILE_SRC
+        ? HATHOR_HERO_VIDEO_MOBILE_SRC
+        : HATHOR_HERO_VIDEO_SRC;
 
     const pauseVideo = () => {
       if (!video.paused) video.pause();
