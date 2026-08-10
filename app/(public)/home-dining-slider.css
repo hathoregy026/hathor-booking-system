@@ -311,8 +311,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
 }
 
 /*
- * Pull only far enough for the short gold caption to lap the pinned photo.
- * A full 100svh under-next left a tall empty gold void after the image.
+ * Pull only far enough for the gold caption (with bg) to lap the pinned photo.
+ * Distance matches .home-am-nature__gold-band --am-nature-gold-fill.
  */
 .home-am-nature.home-am-chapter--under-next {
   --sticky-under-next-distance: clamp(16rem, 42vh, 22rem);
@@ -356,33 +356,36 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
 
 /*
  * Caption gold band — sibling AFTER #home-am-nature (not inside it).
- * Compact title + body + CTA. Cap CMS title size or the band becomes a tall slab.
+ * min-height matches nature’s under-next pull so the CMS bg fills the whole
+ * gold rectangle (no solid-gold void above the short caption).
  */
 .home-am-nature__gold-band {
+  --am-nature-gold-fill: clamp(16rem, 42vh, 22rem);
   position: relative;
   /* Above nature pin + voyages so the short panel can cover the photo bottom */
   z-index: 8;
   isolation: isolate;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   width: 100%;
-  min-height: 0;
-  /* Flush top into the band — no empty gold strip above the dining trio */
+  min-height: var(--am-nature-gold-fill);
+  /* Seal hairline cream join above the gold rectangle */
+  margin-top: -2px;
   padding: 0 clamp(1.25rem, 6vw, 4rem) clamp(1.25rem, 3vh, 2rem);
   box-sizing: border-box;
   background: var(--am-gold);
   overflow: hidden;
 }
 
-/* Full-bleed CMS bg under the gold — covers entire band edge-to-edge */
+/* Full-bleed CMS bg — covers every pixel of the gold band */
 .home-am-nature__gold-bg {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   z-index: 0;
-  opacity: 0.12;
+  opacity: 0.14;
   pointer-events: none;
   overflow: hidden;
   background-color: transparent;
@@ -401,7 +404,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   /* Wide enough for “ON DAHABIYA” as one title line at dashboard sizes */
   max-width: min(44rem, 94%);
   margin: 0 auto;
-  padding-top: clamp(0.65rem, 1.6vh, 1.1rem);
+  padding-top: clamp(0.35rem, 1vh, 0.75rem);
   text-align: center;
   pointer-events: none;
 }
@@ -1795,8 +1798,14 @@ html[data-ex-experience]
   }
 
   .home-am-nature__gold-band {
-    min-height: 0;
+    --am-nature-gold-fill: clamp(14rem, 48vh, 20rem);
+    min-height: var(--am-nature-gold-fill);
+    margin-top: -2px;
     padding: 0 1.15rem clamp(1.15rem, 3.5vh, 1.75rem);
+  }
+
+  .home-am-nature.home-am-chapter--under-next {
+    --sticky-under-next-distance: clamp(14rem, 48vh, 20rem);
   }
 
   .home-am-nature__copy {
@@ -1805,7 +1814,7 @@ html[data-ex-experience]
   }
 
   .home-am-nature__gold-bg {
-    opacity: 0.1;
+    opacity: 0.12;
   }
 
   /* Springs mobile: horizontal swipe for cards */
