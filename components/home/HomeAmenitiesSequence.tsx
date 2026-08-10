@@ -318,6 +318,7 @@ export function HomeAmenitiesSequence({
   /* Colour comes from Amenities Sequence typography CSS — do not force white/gold here. */
   const onImageTitle = withoutForcedFill(titleStyle);
   const onImageIndication = withoutForcedFill(indicationStyle);
+  const onImageBody = withoutForcedFill(bodyStyle);
   const onCreamTitle = withoutForcedFill(titleStyle);
   const onGoldTitle = withoutForcedFill(titleStyle);
   const onGoldIndication = withoutForcedFill(indicationStyle);
@@ -430,6 +431,16 @@ export function HomeAmenitiesSequence({
                 value={intro.indication}
                 className="home-am-intro__indication home-am-on-image-text typo-on-images-indication"
                 style={onImageIndication}
+              />
+              {/*
+                Same trio as Amenities Sequence dash preview (title / sub / body).
+                Cream panel still carries body for the Springs wipe on scroll.
+              */}
+              <AmenitiesCopyText
+                as="p"
+                value={intro.body}
+                className="home-am-intro__body home-am-on-image-text typo-on-images-body"
+                style={onImageBody}
               />
             </div>
           </div>

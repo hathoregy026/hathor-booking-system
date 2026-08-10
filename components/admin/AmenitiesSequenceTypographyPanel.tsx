@@ -107,7 +107,7 @@ const RAIL: RailItem[] = [
     target: { kind: "slide" as const, index },
     hint:
       index === 0
-        ? "Title and indication on the intro photo; body on the cream panel."
+        ? "Title, sub, and body on the intro photo; body also on the cream wipe."
         : "Title, small label, and body for this amenities chapter.",
   })),
   ...STORY_LABELS.map((label, index) => ({

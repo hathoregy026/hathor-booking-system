@@ -141,10 +141,14 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-video__title-body *
 
 .public-site .home-am-sequence .home-am-on-image-text.typo-on-images-body,
 .public-site .home-am-sequence .home-am-on-image-text.typo-on-images-body *,
+.public-site .home-am-sequence .home-am-intro__body,
+.public-site .home-am-sequence .home-am-intro__body *,
 .public-site .home-am-sequence .home-am-opening__list-item-text,
 .public-site .home-am-sequence .home-am-opening__list-item-text *,
 html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text.typo-on-images-body,
-html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text.typo-on-images-body * {
+html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-image-text.typo-on-images-body *,
+html[data-ex-experience] .ex-root .home-am-sequence .home-am-intro__body,
+html[data-ex-experience] .ex-root .home-am-sequence .home-am-intro__body * {
   color: var(--am-typo-body-on-image) !important;
   -webkit-text-fill-color: var(--am-typo-body-on-image) !important;
 }
@@ -589,7 +593,12 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 .home-am-intro__indication {
   margin: 0.75rem 0 0;
   letter-spacing: 0.22em;
-  text-transform: uppercase;
+  text-transform: none;
+}
+
+.home-am-intro__body {
+  margin: var(--am-typo-gap-sub-body, 14px) 0 0;
+  max-width: min(28rem, 42vw);
 }
 
 .home-am-intro__content {

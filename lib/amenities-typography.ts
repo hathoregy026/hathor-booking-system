@@ -347,6 +347,8 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
       sel(
         " .home-am-on-image-text.typo-on-images-body",
         " .home-am-on-image-text.typo-on-images-body *",
+        " .home-am-intro__body",
+        " .home-am-intro__body *",
         " .home-am-opening__list-item-text",
         " .home-am-opening__list-item-text *",
       ),
