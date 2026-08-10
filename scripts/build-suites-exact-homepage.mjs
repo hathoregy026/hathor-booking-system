@@ -384,7 +384,7 @@ html = html.replace(
                         Luxury suites aboard Hathor Dahabiya: private Nile journeys shaped for stillness, craft, and panoramic river light
                     </p>
                     <div class="suites-cta-row">
-                        ${ctaLink("/rooms", "Explore the Suites &rarr;", "suites-cta-link--ivory")}
+                        ${ctaPrimary("/rooms", "Explore the Suites", "suites-cta-primary--on-dark")}
                         ${ctaSecondary("/contact", "Speak with Concierge")}
                     </div>
                 </div>
@@ -403,7 +403,7 @@ html = html.replaceAll(
 html = html.replace(
   /(<p class="l-intro__opening-subtitle text-t1 leading-trim"[^>]*>[\s\S]*?<\/p>)(\s*<\/div>\s*<\/div>)/i,
   `$1
-                    ${ctaLink("/luxury-cabins-Nile-Cruise", "Discover the Collection &rarr;", "suites-cta-link--ink")}
+                    ${ctaLink("/luxury-cabins-Nile-Cruise", "Discover the Collection", "suites-cta-link--ink")}
                 $2`,
 );
 
@@ -411,7 +411,7 @@ html = html.replace(
 html = html.replace(
   /(<div class="l-intro__content-text mt-2 ml-layout"[^>]*>\s*<p class="leading-trim">[\s\S]*?<\/p>)(\s*<\/div>)/i,
   `$1
-            ${ctaScroll("#l-residences-sticky-1", "Compare Suites &rarr;", "suites-cta-link--ivory")}
+            ${ctaScroll("#l-residences-sticky-1", "Compare Suites", "suites-cta-link--ivory")}
         $2`,
 );
 
@@ -419,7 +419,7 @@ html = html.replace(
 html = html.replace(
   /(class="l-wellness__slider__caption-text content-animation col col--md-4"[^>]*>)([\s\S]*?)(<\/div>\s*<\/div>\s*<div class="l-wellness__slider-gradient)/i,
   `$1$2
-                        ${ctaLink("/Luxury-Royal-Suites-Nile-Dahabiya-Cruise", "View Suite Details &rarr;", "suites-cta-link--ivory")}
+                        ${ctaLink("/Luxury-Royal-Suites-Nile-Dahabiya-Cruise", "View Suite Details", "suites-cta-link--ivory")}
                     $3`,
 );
 

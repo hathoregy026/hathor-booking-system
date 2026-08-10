@@ -562,13 +562,8 @@ p:not(.g1):not(.g2):not(.h0):not(.h1):not(.h2):not(.h3):not(.text-c1):not(.text-
   -webkit-text-fill-color: var(--home-body-cream) !important;
 }
 
-/* Mode A — image/dark body (.typo-on-images-body) */
-.ui-dark p,
-.ui-dark .text-t1,
-.ui-dark .text-t2,
-.ui-dark [class*="__text"],
+/* Mode A — image/dark body (.typo-on-images-body) — photography only */
 .l-gallery__caption .suites-hero-support,
-.l-intro__content-text p,
 .l-wellness__webgl-caption > p.text-t1,
 .l-wellness__slider__caption-text p,
 .l-nature-bg-caption__text p,
@@ -579,6 +574,21 @@ p:not(.g1):not(.g2):not(.h0):not(.h1):not(.h2):not(.h3):not(.text-c1):not(.text-
   color: var(--home-white) !important;
   -webkit-text-fill-color: var(--home-white) !important;
   text-shadow: var(--home-image-shadow);
+  opacity: 1 !important;
+}
+
+/* Mode G — solid gold / .ui-dark panels: homepage ink (white washes out on #b69f64) */
+.ui-dark p,
+.ui-dark .text-t1,
+.ui-dark .text-t2,
+.ui-dark [class*="__text"],
+.l-intro__content-text p {
+  font-size: var(--type-body-image) !important;
+  line-height: 1.45 !important;
+  letter-spacing: 2.3px !important;
+  color: var(--home-ink) !important;
+  -webkit-text-fill-color: var(--home-ink) !important;
+  text-shadow: none !important;
   opacity: 1 !important;
 }
 
@@ -605,6 +615,37 @@ p.l-place-webgl-caption__subtitle,
   -webkit-text-fill-color: var(--home-gold) !important;
   opacity: 1 !important;
   max-width: 18em;
+}
+
+/* Solid antique-gold panels: gold script washes out — cream accent from homepage palette.
+   Beat #wellness ID specificity from the gold script rule above. */
+#wellness.ui-dark .l-wellness__webgl-title .text-c1,
+#wellness .ui-dark .l-wellness__webgl-title .text-c1,
+.ui-dark#wellness .l-wellness__webgl-title .text-c1,
+.ui-dark p.l-nature-bg-caption__subtitle,
+.ui-dark p.l-wellness__caption__subtitle,
+.ui-dark p.l-place__caption__subtitle,
+.ui-dark p.l-place-webgl-caption__subtitle,
+.ui-dark .l-wellness__webgl-title .text-c1,
+.ui-dark .lux-footer__script,
+.l-wellness__slider__caption.ui-dark .text-c1 {
+  color: var(--home-btn-cream) !important;
+  -webkit-text-fill-color: var(--home-btn-cream) !important;
+}
+
+/* Comfort script: never gold-on-gold. Cream + shadow reads on photo and gold chrome. */
+#wellness .l-wellness__webgl-title .text-c1 {
+  color: var(--home-btn-cream) !important;
+  -webkit-text-fill-color: var(--home-btn-cream) !important;
+  text-shadow: var(--home-image-shadow);
+}
+/* When Comfort sits on solid gold chrome, use ink for maximum contrast */
+#wellness.ui-dark .l-wellness__webgl-title .text-c1,
+#wellness .ui-dark .l-wellness__webgl-title .text-c1,
+.ui-dark#wellness .l-wellness__webgl-title .text-c1 {
+  color: var(--home-ink) !important;
+  -webkit-text-fill-color: var(--home-ink) !important;
+  text-shadow: none !important;
 }
 
 /* Eyebrow / label = nav language */
@@ -636,12 +677,12 @@ p.l-place-webgl-caption__subtitle,
 .ui-dark {
   --t-background: #b69f64;
   --t-background-rgb: 139, 105, 20;
-  --t-text: #ffffff;
-  --t-heading: #ffffff;
-  --t-primary: #b69f64;
+  --t-text: #1c1917;
+  --t-heading: #1c1917;
+  --t-primary: #1c1917;
   --t-secondary: #faf8f5;
   background-color: #b69f64 !important;
-  color: var(--home-white) !important;
+  color: var(--home-ink) !important;
 }
 .ui-light,
 .ui-light-background {
@@ -659,8 +700,9 @@ p.l-place-webgl-caption__subtitle,
 .ui-dark .g2,
 .ui-dark h1,
 .ui-dark h2 {
-  color: var(--home-white) !important;
-  -webkit-text-fill-color: var(--home-white) !important;
+  color: var(--home-ink) !important;
+  -webkit-text-fill-color: var(--home-ink) !important;
+  text-shadow: none !important;
 }
 .ui-light .h0,
 .ui-light .h1,
@@ -817,45 +859,101 @@ p.l-place-webgl-caption__subtitle,
   opacity: 1 !important;
 }
 
-/* Navigational text-link CTAs */
-.suites-cta-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
+/* Navigational CTAs — real homepage button treatments (not bare text links)
+   --ink  → a.btn / Discover More (cream pill, gold text)
+   --ivory → .public-btn-outline-gold on photo (transparent, white border/text) */
+.suites-cta-link,
+.suites-cta-link--ink,
+.suites-cta-link--ivory {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  width: var(--hathor-btn-width) !important;
+  min-width: var(--hathor-btn-width) !important;
+  max-width: var(--hathor-btn-width) !important;
+  height: var(--hathor-btn-height) !important;
+  min-height: var(--hathor-btn-height) !important;
+  max-height: var(--hathor-btn-height) !important;
   margin-top: 1.35rem;
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: var(--home-gold) !important;
-  -webkit-text-fill-color: var(--home-gold) !important;
+  padding: 0 var(--hathor-btn-pad-x) !important;
+  border-radius: 999px !important;
   font-family: var(--suites-sans) !important;
-  font-size: var(--type-button) !important;
+  font-size: var(--hathor-btn-font-size) !important;
   font-weight: 500 !important;
   letter-spacing: var(--hathor-btn-tracking) !important;
   text-transform: uppercase !important;
-  line-height: 1.2 !important;
+  line-height: 1 !important;
   text-decoration: none !important;
-  box-shadow: none !important;
+  white-space: nowrap !important;
   opacity: 1 !important;
-  transition: color 0.3s ease, opacity 0.3s ease;
-}
-.suites-cta-link:hover {
-  color: var(--home-gold-soft) !important;
-  -webkit-text-fill-color: var(--home-gold-soft) !important;
-  opacity: 1 !important;
-  transform: none;
+  cursor: pointer;
+  transition:
+    background 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s ease,
+    box-shadow 0.35s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .suites-cta-link--ink {
+  border: 1px solid var(--home-gold) !important;
+  background: var(--home-btn-cream) !important;
+  background-color: var(--home-btn-cream) !important;
   color: var(--home-gold) !important;
   -webkit-text-fill-color: var(--home-gold) !important;
+  box-shadow: var(--home-btn-shadow) !important;
+  opacity: 1 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
-.suites-cta-link--ivory {
+.suites-cta-link--ink:hover {
+  background: var(--home-gold) !important;
+  border-color: var(--home-gold) !important;
   color: var(--home-white) !important;
   -webkit-text-fill-color: var(--home-white) !important;
+  box-shadow: var(--home-btn-shadow-hover) !important;
+  transform: translateY(-2px);
+  opacity: 1 !important;
 }
-.suites-cta-link--ivory:hover {
-  color: var(--home-gold-soft) !important;
-  -webkit-text-fill-color: var(--home-gold-soft) !important;
+.suites-cta-link--ivory,
+.suites-cta-link:not(.suites-cta-link--ink) {
+  border: 1px solid var(--home-white) !important;
+  background: transparent !important;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
+  box-shadow: none !important;
+}
+.suites-cta-link--ivory:hover,
+.suites-cta-link:not(.suites-cta-link--ink):hover {
+  background: var(--home-white) !important;
+  border-color: var(--home-white) !important;
+  color: var(--home-gold) !important;
+  -webkit-text-fill-color: var(--home-gold) !important;
+  box-shadow: var(--home-btn-shadow-hover) !important;
+  transform: translateY(-2px);
+  opacity: 1 !important;
+}
+
+/* On solid gold panels, white outline pills wash out — use Discover More cream pill */
+.ui-dark .suites-cta-link--ivory,
+.ui-dark .suites-cta-link:not(.suites-cta-link--ink),
+.l-intro__content .suites-cta-link--ivory {
+  border: 1px solid var(--home-gold) !important;
+  background: var(--home-btn-cream) !important;
+  background-color: var(--home-btn-cream) !important;
+  color: var(--home-gold) !important;
+  -webkit-text-fill-color: var(--home-gold) !important;
+  box-shadow: var(--home-btn-shadow) !important;
+  opacity: 1 !important;
+  backdrop-filter: none !important;
+}
+.ui-dark .suites-cta-link--ivory:hover,
+.ui-dark .suites-cta-link:not(.suites-cta-link--ink):hover,
+.l-intro__content .suites-cta-link--ivory:hover {
+  background: var(--home-gold) !important;
+  border-color: var(--home-ink) !important;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
 }
 
 /* ——— 01 HERO lockup ——— */
@@ -877,8 +975,8 @@ p.l-place-webgl-caption__subtitle,
 .l-gallery__caption .suites-hero-lockup .suites-eyebrow {
   display: block;
   margin-bottom: 0.85rem;
-  color: var(--home-gold) !important;
-  -webkit-text-fill-color: var(--home-gold) !important;
+  color: var(--home-btn-cream) !important;
+  -webkit-text-fill-color: var(--home-btn-cream) !important;
   font-size: var(--type-label) !important;
   letter-spacing: 0.16em !important;
   text-shadow: var(--home-image-shadow);
@@ -936,32 +1034,45 @@ p.l-place-webgl-caption__subtitle,
   max-width: min(40vw, 26rem);
 }
 .l-intro.is-hidden--md-down .l-intro__opening .h1 {
-  font-family: var(--suites-page-title) !important;
-  font-size: var(--type-section) !important;
-  line-height: 0.9 !important;
-  letter-spacing: -0.5px !important;
-  color: var(--home-gold) !important;
-  -webkit-text-fill-color: var(--home-gold) !important;
+  /* Over bright photography — ink (homepage dark) beats washed white */
+  font-family: var(--suites-display) !important;
+  font-size: var(--type-image) !important;
+  line-height: 0.8 !important;
+  letter-spacing: normal !important;
+  color: var(--home-ink) !important;
+  -webkit-text-fill-color: var(--home-ink) !important;
   text-shadow: none !important;
   text-align: left !important;
   max-width: 12em;
 }
 .l-intro.is-hidden--md-down .l-intro__opening-subtitle,
 .l-intro__opening-subtitle,
+p.l-intro__opening-subtitle.text-t1,
 p.l-intro__opening-subtitle.text-c1,
 p.l-intro__opening-subtitle.text-color-primary {
   margin-top: 1.1rem !important;
   font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body-cream) !important;
-  line-height: 1.7 !important;
-  letter-spacing: 2.5px !important;
-  color: var(--home-body-cream) !important;
-  -webkit-text-fill-color: var(--home-body-cream) !important;
+  font-size: var(--type-body-image) !important;
+  line-height: 1.35 !important;
+  letter-spacing: 2.3px !important;
+  color: var(--home-ink) !important;
+  -webkit-text-fill-color: var(--home-ink) !important;
+  text-shadow: none !important;
   text-transform: none !important;
   text-align: left !important;
   opacity: 1 !important;
 }
-.l-intro.is-hidden--md-down .l-intro__opening .suites-cta-link {
+/* Opening sits on bright photography — ink, not washed white */
+.l-intro.is-hidden--md-down .l-intro__opening-subtitle,
+.l-intro.is-hidden--md-down .l-intro__opening-subtitle.text-color-primary,
+.l-intro.is-hidden--md-down .l-intro__opening-subtitle.text-c1,
+.l-intro.is-hidden--md-down .l-intro__opening-subtitle.text-t1,
+.l-intro__opening .l-intro__opening-subtitle {
+  color: var(--home-ink) !important;
+  -webkit-text-fill-color: var(--home-ink) !important;
+  text-shadow: none !important;
+}
+.l-intro.is-hidden--md-down .l-intro__opening .suites-cta-link--ink {
   margin-top: 1.5rem;
 }
 
@@ -977,9 +1088,9 @@ p.l-intro__opening-subtitle.text-color-primary {
   line-height: 0.8 !important;
   letter-spacing: normal !important;
   max-width: 14em;
-  color: var(--home-white) !important;
-  -webkit-text-fill-color: var(--home-white) !important;
-  text-shadow: var(--home-image-shadow);
+  color: var(--home-ink) !important;
+  -webkit-text-fill-color: var(--home-ink) !important;
+  text-shadow: none !important;
   text-align: left !important;
   position: relative;
   z-index: 3;
@@ -999,12 +1110,12 @@ p.l-intro__opening-subtitle.text-color-primary {
 .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-text p {
   font-family: var(--suites-body-font) !important;
   font-size: var(--type-body-image) !important;
-  line-height: 1.35 !important;
+  line-height: 1.45 !important;
   letter-spacing: 2.3px !important;
   max-width: 30em;
-  color: var(--home-white) !important;
-  -webkit-text-fill-color: var(--home-white) !important;
-  text-shadow: var(--home-image-shadow);
+  color: var(--home-ink) !important;
+  -webkit-text-fill-color: var(--home-ink) !important;
+  text-shadow: none !important;
   text-align: left !important;
   opacity: 1 !important;
 }
@@ -1087,8 +1198,8 @@ p.l-intro__opening-subtitle.text-color-primary {
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles h3,
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-content-animation-link .h2,
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-content-animation-link p {
-  color: var(--home-white) !important;
-  -webkit-text-fill-color: var(--home-white) !important;
+  color: var(--home-ink) !important;
+  -webkit-text-fill-color: var(--home-ink) !important;
 }
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-content-animation-link:not(.is-active) {
   opacity: 0.4 !important;
@@ -1098,14 +1209,14 @@ p.l-intro__opening-subtitle.text-color-primary {
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles [class*="is-active"],
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-active,
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-content-animation-link.is-active {
-  color: var(--home-white) !important;
-  -webkit-text-fill-color: var(--home-white) !important;
+  color: var(--home-ink) !important;
+  -webkit-text-fill-color: var(--home-ink) !important;
   opacity: 1 !important;
 }
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-content-animation-link.is-active .h2,
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-content-animation-link.is-active p {
-  color: var(--home-white) !important;
-  -webkit-text-fill-color: var(--home-white) !important;
+  color: var(--home-ink) !important;
+  -webkit-text-fill-color: var(--home-ink) !important;
 }
 .l-wellness__slider__caption-text {
   max-width: 30em;
@@ -4130,7 +4241,7 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                         Luxury suites aboard Hathor Dahabiya: private Nile journeys shaped for stillness, craft, and panoramic river light
                     </p>
                     <div class="suites-cta-row">
-                        <a class="suites-cta-link suites-cta-link--ivory" href="/rooms" target="_top" data-ajax-page-ignore>Explore the Suites &rarr;</a>
+                        <a class="suites-cta-primary suites-cta-primary--on-dark" href="/rooms" target="_top" data-ajax-page-ignore>Explore the Suites</a>
                         <a class="suites-cta-secondary " href="/contact" target="_top" data-ajax-page-ignore>Speak with Concierge</a>
                     </div>
                 </div>
@@ -4219,7 +4330,7 @@ with&nbsp;Unrivaled Views
                 <p class="l-intro__opening-subtitle text-t1 leading-trim" data-reveal="text">
                     Luxury Rooms, Elegant Suites, and Royal Suites with panoramic Nile views aboard Hathor Dahabiya.
                 </p>
-                    <a class="suites-cta-link suites-cta-link--ink" href="/luxury-cabins-Nile-Cruise" target="_top" data-ajax-page-ignore>Discover the Collection &rarr;</a>
+                    <a class="suites-cta-link suites-cta-link--ink" href="/luxury-cabins-Nile-Cruise" target="_top" data-ajax-page-ignore>Discover the Collection</a>
                 
             </div>
         </div>
@@ -4426,7 +4537,7 @@ with&nbsp;Unrivaled Views
             <p class="leading-trim">
                 Experience Hathor Dahabiya Cruise that blends authenticity with luxury, offering an unforgettable journey by&nbsp;the timeless Nile. Whether you stay in our Elegant Suites or Royal Suites with panoramic Nile view, you enjoy unmatched comfort and exclusive privacy.
             </p>
-            <a class="suites-cta-link suites-cta-link--ivory" href="#l-residences-sticky-1" data-suites-scroll-target="#l-residences-sticky-1" data-ajax-page-ignore>Compare Suites &rarr;</a>
+            <a class="suites-cta-link suites-cta-link--ivory" href="#l-residences-sticky-1" data-suites-scroll-target="#l-residences-sticky-1" data-ajax-page-ignore>Compare Suites</a>
         
         </div>
     </div>
@@ -4980,7 +5091,7 @@ with&nbsp;Unrivaled Views
                                                             </div>
 
                                             
-                        <a class="suites-cta-link suites-cta-link--ivory" href="/Luxury-Royal-Suites-Nile-Dahabiya-Cruise" target="_top" data-ajax-page-ignore>View Suite Details &rarr;</a>
+                        <a class="suites-cta-link suites-cta-link--ivory" href="/Luxury-Royal-Suites-Nile-Dahabiya-Cruise" target="_top" data-ajax-page-ignore>View Suite Details</a>
                     </div>
                 </div>
 
@@ -9478,7 +9589,7 @@ to&nbsp;the&nbsp;MIBC
         </p>
         <div class="lux-footer__subscribe suites-cta-row">
           <a class="suites-cta-primary" href="/suites?book=1" target="_top" data-ajax-page-ignore>Request Availability</a>
-          <a class="suites-cta-secondary suites-cta-secondary--ink" href="/contact" target="_top" data-ajax-page-ignore>Speak With Concierge &rarr;</a>
+          <a class="suites-cta-secondary suites-cta-secondary--ink" href="/contact" target="_top" data-ajax-page-ignore>Speak With Concierge</a>
         </div>
       </div>
       <div class="lux-footer__main">

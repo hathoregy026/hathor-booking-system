@@ -28,7 +28,7 @@ export function getLuxFooterHtml() {
         </p>
         <div class="lux-footer__subscribe suites-cta-row">
           <a class="suites-cta-primary" href="/suites?book=1" target="_top" data-ajax-page-ignore>Request Availability</a>
-          <a class="suites-cta-secondary suites-cta-secondary--ink" href="/contact" target="_top" data-ajax-page-ignore>Speak With Concierge &rarr;</a>
+          <a class="suites-cta-secondary suites-cta-secondary--ink" href="/contact" target="_top" data-ajax-page-ignore>Speak With Concierge</a>
         </div>
       </div>
       <div class="lux-footer__main">
