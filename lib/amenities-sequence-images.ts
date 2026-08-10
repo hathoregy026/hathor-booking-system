@@ -6,7 +6,7 @@
 export const AMENITIES_SEQUENCE_IMAGE_SLOTS = [
   {
     name: "home-amenities-1",
-    label: "1 — Intro fullscreen photo",
+    label: "1 — Intro fullscreen (Bar reel / scroll-hole)",
     alt: "Amenities sequence — fullscreen intro aboard Hathor",
   },
   {

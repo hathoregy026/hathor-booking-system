@@ -531,6 +531,23 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   will-change: transform;
 }
 
+/* Very soft golden shadow over intro fullscreen (Bar reel / poster) */
+.home-am-intro__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 85% 75% at 50% 42%,
+      rgba(212, 175, 55, 0.04) 0%,
+      rgba(182, 159, 100, 0.08) 55%,
+      rgba(90, 60, 20, 0.12) 100%
+    );
+  box-shadow: inset 0 0 140px rgba(182, 159, 100, 0.14);
+}
+
 .home-am-intro__media > span,
 .home-am-video__hero > span,
 .home-am-video__inset > span,
@@ -545,14 +562,33 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   height: 100% !important;
 }
 
-.home-am-intro__media img {
+.home-am-intro__media img,
+.home-am-intro__media video,
+.home-am-intro__media-video,
+.home-am-intro__media-video video {
   object-fit: cover !important;
   object-position: center bottom !important;
+}
+
+.home-am-intro__media-picture,
+.home-am-intro__media-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.home-am-intro__media-video video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .home-am-intro__dim {
   position: absolute;
   inset: 0;
+  z-index: 2;
   background: linear-gradient(
     180deg,
     rgba(22, 18, 14, 0.12) 40%,
@@ -688,23 +724,6 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   will-change: transform;
   background: #0f0c09;
   transform-origin: bottom right;
-}
-
-/* Very soft golden shadow over amenities rising media */
-.home-am-video__hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  background:
-    radial-gradient(
-      ellipse 85% 75% at 50% 42%,
-      rgba(212, 175, 55, 0.04) 0%,
-      rgba(182, 159, 100, 0.08) 55%,
-      rgba(90, 60, 20, 0.12) 100%
-    );
-  box-shadow: inset 0 0 140px rgba(182, 159, 100, 0.14);
 }
 
 .home-am-video__hero img,

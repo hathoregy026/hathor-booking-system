@@ -4,27 +4,26 @@ import { FullBleedBackgroundVideo } from "@/components/public/FullBleedBackgroun
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import {
-  HATHOR_AMENITIES_RISING_VIDEO_MOBILE_SRC,
-  HATHOR_AMENITIES_RISING_VIDEO_SRC,
+  HATHOR_AMENITIES_INTRO_VIDEO_MOBILE_SRC,
+  HATHOR_AMENITIES_INTRO_VIDEO_SRC,
 } from "@/lib/amenities-video";
 import type { SiteImageName } from "@/lib/site-image-slots";
 
-type AmenitiesRisingVideoProps = {
+type AmenitiesIntroVideoProps = {
   imageName: SiteImageName;
   alt: string;
   previewAnchor?: boolean;
 };
 
 /**
- * Amenities `i-video` / rising full-bleed media.
- * Uses CMS slot as poster; plays MP4 only when `HATHOR_AMENITIES_RISING_VIDEO_SRC`
- * is set. Intro Bar reel lives on AmenitiesIntroVideo — not here.
+ * Amenities `i-intro` fullscreen media (scroll-hole sticky chapter).
+ * CMS slot is the poster; Bar reel plays when SRC is set.
  */
-export function AmenitiesRisingVideo({
+export function AmenitiesIntroVideo({
   imageName,
   alt,
   previewAnchor = true,
-}: AmenitiesRisingVideoProps) {
+}: AmenitiesIntroVideoProps) {
   const poster = useSiteImage(imageName);
 
   const imageFallback = (
@@ -34,18 +33,19 @@ export function AmenitiesRisingVideo({
       fill
       sizes="100vw"
       className="object-cover"
+      priority
       previewAnchor={previewAnchor}
     />
   );
 
   return (
     <FullBleedBackgroundVideo
-      src={HATHOR_AMENITIES_RISING_VIDEO_SRC}
-      mobileSrc={HATHOR_AMENITIES_RISING_VIDEO_MOBILE_SRC}
+      src={HATHOR_AMENITIES_INTRO_VIDEO_SRC}
+      mobileSrc={HATHOR_AMENITIES_INTRO_VIDEO_MOBILE_SRC}
       poster={poster.src}
       alt={alt || poster.alt}
-      className="home-am-video__hero-video"
-      surface="amenities-rising-video"
+      className="home-am-intro__media-video"
+      surface="amenities-intro-video"
       fallback={imageFallback}
     />
   );

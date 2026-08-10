@@ -2,6 +2,7 @@
 
 import { CSSProperties, useRef, type ReactNode } from "react";
 import Link from "next/link";
+import { AmenitiesIntroVideo } from "@/components/home/AmenitiesIntroVideo";
 import { AmenitiesRisingVideo } from "@/components/home/AmenitiesRisingVideo";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useTypographyInlineStyle } from "@/components/public/TypographySettingsProvider";
@@ -404,13 +405,13 @@ export function HomeAmenitiesSequence({
                 data-parallax--200-0='{"transform":"translateX(-36%) scale(1.0)"}'
                 className="home-am-intro__media-picture"
               >
-                <ManagedImage
-                  name={introImage.name}
+                {/*
+                  Intro fullscreen (scroll-hole sticky). Bar reel via
+                  HATHOR_AMENITIES_INTRO_VIDEO_SRC; CMS slot is poster.
+                */}
+                <AmenitiesIntroVideo
+                  imageName={introImage.name}
                   alt={introImage.alt}
-                  fill
-                  sizes="100vw"
-                  className="object-cover"
-                  priority
                   previewAnchor={introImage.previewAnchor}
                 />
               </div>
@@ -525,8 +526,8 @@ export function HomeAmenitiesSequence({
                 data-parallax-measure-selector="[data-am-chapter]"
               >
                 {/*
-                  Same pattern as homepage hero video (PublicSiteHero).
-                  Until HATHOR_AMENITIES_RISING_VIDEO_SRC is set, CMS image shows.
+                  Rising chapter — CMS still until HATHOR_AMENITIES_RISING_VIDEO_SRC
+                  is set. Intro Bar reel is on AmenitiesIntroVideo, not here.
                 */}
                 <AmenitiesRisingVideo
                   imageName={videoHeroImage.name}
