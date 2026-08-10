@@ -658,19 +658,19 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 }
 
 /*
- * i-video (Welcome Aboard) — slower than other chapters.
- * Springs baseline was 350/600svh; stretched further per request.
+ * i-video (Welcome Aboard / Bar reel) — scroll runway.
+ * Halved from prior 460/820 so the chapter reads twice as fast.
  */
 .home-am-video {
-  height: 460svh;
+  height: 230svh;
   z-index: 2;
 }
 
 @media (min-width: 1025px) {
   .home-am-video.home-am-chapter--under-previous {
     clip-path: polygon(0 100svh, 100% 100svh, 100% 100%, 0 100%);
-    height: 820svh;
-    margin-top: -200svh;
+    height: 410svh;
+    margin-top: -100svh;
   }
 }
 
@@ -1517,7 +1517,7 @@ html[data-ex-experience]
   }
 
   .home-am-video {
-    height: 480svh;
+    height: 240svh;
   }
 
   .home-am-slider {
@@ -1595,7 +1595,7 @@ html[data-ex-experience]
   }
 
   .home-am-video {
-    height: 450svh;
+    height: 225svh;
   }
 
   .home-am-video__hero,
