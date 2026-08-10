@@ -754,8 +754,13 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   pointer-events: none;
   height: 100%;
   opacity: 1;
-  /* Do not promote above the inset via will-change stacking quirks */
-  will-change: auto;
+  overflow: hidden;
+  /* Stay on its own layer UNDER the inset compositing layer */
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  /* Inverse-clipped in lockstep with videoImage — never paints over the reel */
+  will-change: clip-path, opacity;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
 }
 
 .home-am-video__title-stack {
@@ -827,11 +832,14 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 .home-am-video__inset {
   position: absolute;
   inset: 0;
-  z-index: 2 !important;
+  z-index: 10 !important;
   width: 100%;
   height: 100%;
   overflow: hidden;
   isolation: isolate;
+  /* Force a compositing layer above the cream title (sticky pin breaks plain z-index) */
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
   will-change: clip-path;
   background: #0f0c09;
   clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
@@ -902,17 +910,17 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 }
 
 @media (min-width: 1025px) {
-  /* Springs: text container stays under inset — cover is z-index */
+  /* Springs: text under inset — compositing layer + inverse clip (see videoTitle) */
   .home-am-video__text-container {
     z-index: 1 !important;
   }
 
   .home-am-video__inset {
-    z-index: 2 !important;
+    z-index: 10 !important;
   }
 
   .home-am-video__caption {
-    z-index: 3 !important;
+    z-index: 11 !important;
   }
 }
 
@@ -1561,7 +1569,7 @@ html[data-ex-experience]
     width: min(48vw, 28rem);
     height: auto;
     aspect-ratio: 16 / 10;
-    z-index: 4 !important;
+    z-index: 10 !important;
   }
 
   .home-am-video__text-container {
@@ -1572,7 +1580,7 @@ html[data-ex-experience]
     flex: none;
     width: min(50%, 36rem);
     max-width: none;
-    z-index: 5 !important;
+    z-index: 11 !important;
   }
 }
 
@@ -1638,7 +1646,7 @@ html[data-ex-experience]
     width: auto;
     height: auto;
     aspect-ratio: 16 / 10;
-    z-index: 4 !important;
+    z-index: 10 !important;
   }
 
   .home-am-video__text-container {
@@ -1649,7 +1657,7 @@ html[data-ex-experience]
     flex: none;
     width: 100%;
     max-width: none;
-    z-index: 5 !important;
+    z-index: 11 !important;
   }
 
   .home-am-slider {
