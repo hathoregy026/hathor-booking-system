@@ -472,12 +472,26 @@ export function HomeAmenitiesSequence({
             data-parallax--100-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
             style={{ background: CREAM }}
           >
-            <p
-              className="home-am-intro__cream-text typo-body-text"
-              style={creamBodyStyle}
-            >
-              {amenitiesHasCopy(intro.body) ? intro.body : "\u00A0"}
-            </p>
+            <div className="home-am-intro__cream-copy">
+              <AmenitiesTitleLines
+                as="h2"
+                lines={intro.titleLines}
+                className="home-am-intro__cream-title home-am-on-cream-title typo-on-images-title"
+                style={onCreamTitle}
+              />
+              <AmenitiesCopyText
+                as="p"
+                value={intro.indication}
+                className="home-am-intro__cream-indication typo-on-images-indication"
+                style={onGoldIndication}
+              />
+              <p
+                className="home-am-intro__cream-text typo-body-text"
+                style={creamBodyStyle}
+              >
+                {amenitiesHasCopy(intro.body) ? intro.body : "\u00A0"}
+              </p>
+            </div>
           </div>
 
           {/* Phone cream wipe from bottom — Springs mobile panel */}
@@ -491,12 +505,26 @@ export function HomeAmenitiesSequence({
             data-parallax--100-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
             style={{ background: CREAM }}
           >
-            <p
-              className="home-am-intro__cream-text typo-body-text"
-              style={creamBodyStyle}
-            >
-              {amenitiesHasCopy(intro.body) ? intro.body : "\u00A0"}
-            </p>
+            <div className="home-am-intro__cream-copy">
+              <AmenitiesTitleLines
+                as="h2"
+                lines={intro.titleLines}
+                className="home-am-intro__cream-title home-am-on-cream-title typo-on-images-title"
+                style={onCreamTitle}
+              />
+              <AmenitiesCopyText
+                as="p"
+                value={intro.indication}
+                className="home-am-intro__cream-indication typo-on-images-indication"
+                style={onGoldIndication}
+              />
+              <p
+                className="home-am-intro__cream-text typo-body-text"
+                style={creamBodyStyle}
+              >
+                {amenitiesHasCopy(intro.body) ? intro.body : "\u00A0"}
+              </p>
+            </div>
           </div>
         </div>
       </div>
