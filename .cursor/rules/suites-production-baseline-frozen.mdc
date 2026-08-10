@@ -7,7 +7,7 @@ alwaysApply: true
 
 The public Suites experience at `/suites` is an **approved production baseline**.
 
-**Baseline commit:** `PENDING_VISUAL_CLONE` *(replaced `a648084` — prior pass had homepage fonts but not homepage button/mode system)*
+**Baseline commit:** `036e7c1` *(replaced `a648084` — prior pass had homepage fonts but not homepage button/mode system)*
 
 **Last approved task:** User explicitly approved Suites **typography + text colors + button styling** to clone the live homepage visual language (layout/images/GSAP/CTA destinations locked).
 
