@@ -6,6 +6,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type CSSProperties,
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import {
@@ -153,6 +154,25 @@ function roleTextShadow(on: boolean) {
   return on
     ? "1px 1px 0 rgba(0,0,0,.35), -.5px -.5px 0 rgba(255,255,255,.25)"
     : "none";
+}
+
+/**
+ * Admin preview uses `--typo-live-*` with !important (see admin.css).
+ * Inline fontFamily on the parent is ignored — set these vars on the sample.
+ */
+function amenitiesLiveVars(
+  style: AmenitiesTextStyle,
+  color: string,
+  sizePx?: number,
+): CSSProperties {
+  return {
+    ["--typo-live-font" as string]: HATHOR_FONT_STACKS[style.fontFamily],
+    ["--typo-live-size" as string]: `${sizePx ?? style.fontSize}px`,
+    ["--typo-live-color" as string]: color,
+    ["--typo-live-lh" as string]: String(style.lineHeight),
+    ["--typo-live-ls" as string]: `${style.letterSpacing}px`,
+    ["--typo-live-shadow" as string]: roleTextShadow(style.innerShadow),
+  };
 }
 
 export function AmenitiesSequenceTypographyPanel() {
@@ -736,15 +756,6 @@ export function AmenitiesSequenceTypographyPanel() {
               style={{
                 transform: `translate(${layout.titleX}px, ${layout.titleY}px)`,
                 zIndex: dragLine === "title" ? 4 : 1,
-                fontFamily: HATHOR_FONT_STACKS[styles.title.fontFamily],
-                fontSize: Math.min(
-                  styles.title.fontSize,
-                  device === "phone" ? 34 : 48,
-                ),
-                color: rolePreviewColor("title"),
-                lineHeight: styles.title.lineHeight,
-                letterSpacing: styles.title.letterSpacing,
-                textShadow: roleTextShadow(styles.title.innerShadow),
               }}
               onPointerDown={onDragStart("title")}
               onPointerMove={onDragMove}
@@ -754,7 +765,17 @@ export function AmenitiesSequenceTypographyPanel() {
               <span className="typo-stage__line-tag">Title · drag</span>
               <span
                 className="typo-stage__sample typo-stage__sample--inline"
-                style={{ whiteSpace: "pre-line" }}
+                style={{
+                  whiteSpace: "pre-line",
+                  ...amenitiesLiveVars(
+                    styles.title,
+                    rolePreviewColor("title"),
+                    Math.min(
+                      styles.title.fontSize,
+                      device === "phone" ? 34 : 48,
+                    ),
+                  ),
+                }}
               >
                 {previewCopy.title}
               </span>
@@ -767,13 +788,6 @@ export function AmenitiesSequenceTypographyPanel() {
                 transform: `translate(${layout.indicationX}px, ${layout.indicationY}px)`,
                 /* Sub always paints in front of title + body (hero second-line concept). */
                 zIndex: 5,
-                fontFamily: HATHOR_FONT_STACKS[styles.indication.fontFamily],
-                fontSize: styles.indication.fontSize,
-                color: rolePreviewColor("indication"),
-                lineHeight: styles.indication.lineHeight,
-                letterSpacing: styles.indication.letterSpacing,
-                textTransform: "uppercase",
-                textShadow: roleTextShadow(styles.indication.innerShadow),
               }}
               onPointerDown={onDragStart("indication")}
               onPointerMove={onDragMove}
@@ -783,7 +797,14 @@ export function AmenitiesSequenceTypographyPanel() {
               <span className="typo-stage__line-tag">Sub · drag</span>
               <span
                 className="typo-stage__sample typo-stage__sample--inline"
-                style={{ whiteSpace: "pre-line" }}
+                style={{
+                  whiteSpace: "pre-line",
+                  textTransform: "uppercase",
+                  ...amenitiesLiveVars(
+                    styles.indication,
+                    rolePreviewColor("indication"),
+                  ),
+                }}
               >
                 {previewCopy.indication}
               </span>
@@ -795,12 +816,6 @@ export function AmenitiesSequenceTypographyPanel() {
               style={{
                 transform: `translate(${layout.bodyX}px, ${layout.bodyY}px)`,
                 zIndex: dragLine === "body" ? 4 : 2,
-                fontFamily: HATHOR_FONT_STACKS[styles.body.fontFamily],
-                fontSize: styles.body.fontSize,
-                color: rolePreviewColor("body"),
-                lineHeight: styles.body.lineHeight,
-                letterSpacing: styles.body.letterSpacing,
-                textShadow: roleTextShadow(styles.body.innerShadow),
                 maxWidth: "22rem",
               }}
               onPointerDown={onDragStart("body")}
@@ -811,7 +826,13 @@ export function AmenitiesSequenceTypographyPanel() {
               <span className="typo-stage__line-tag">Body · drag</span>
               <span
                 className="typo-stage__sample typo-stage__sample--inline"
-                style={{ whiteSpace: "pre-line" }}
+                style={{
+                  whiteSpace: "pre-line",
+                  ...amenitiesLiveVars(
+                    styles.body,
+                    rolePreviewColor("body"),
+                  ),
+                }}
               >
                 {previewCopy.body}
               </span>

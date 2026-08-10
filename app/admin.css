@@ -2142,12 +2142,13 @@ select.admin-input option:checked {
 }
 
 .typo-stage--am-trio .typo-stage__sample--inline {
-  font-size: inherit !important;
-  line-height: inherit !important;
-  color: inherit !important;
-  font-family: inherit !important;
-  letter-spacing: inherit !important;
-  text-shadow: inherit !important;
+  /* Same --typo-live-* contract as Typography Styles — not inherit from parent */
+  font-family: var(--typo-live-font, serif) !important;
+  font-size: var(--typo-live-size, 18px) !important;
+  line-height: var(--typo-live-lh, 1.2) !important;
+  color: var(--typo-live-color, #f5f0e8) !important;
+  letter-spacing: var(--typo-live-ls, 0) !important;
+  text-shadow: var(--typo-live-shadow, none) !important;
 }
 
 .typo-stage__drag {
@@ -2281,6 +2282,7 @@ select.admin-input option:checked {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-family: inherit;
 }
 
 .typo-easy__font-dd-chevron {
@@ -2319,6 +2321,7 @@ select.admin-input option:checked {
   color: var(--text-primary);
   cursor: pointer;
   text-align: left;
+  font-family: inherit;
   transition: background 0.15s ease;
 }
 
