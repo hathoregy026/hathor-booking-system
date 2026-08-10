@@ -136,26 +136,13 @@ export const SPRINGS_AMENITIES_PATTERNS: PatternMap = {
         }),
 
   /**
-   * Bar reel title/sub — only while videoImage clip is open.
-   * Hidden over cream titles and after the gold caption / next slide takes over.
-   * Offsets halved with the shorter video runway.
+   * Legacy: Bar reel on-image overlay copy. Kept as no-op so old markup
+   * attributes do not throw; live copy now lives only in the gold caption.
    */
   videoOverlayCopy: () =>
-    isLgUp()
-      ? pattern({
-          "parallax--0-0": { opacity: "0", visibility: "hidden" },
-          "parallax--170-0": { opacity: "0", visibility: "hidden" },
-          "parallax--178-0": { opacity: "1", visibility: "visible" },
-          "parallax--220-0": { opacity: "1", visibility: "visible" },
-          "parallax--240-0": { opacity: "0", visibility: "hidden" },
-        })
-      : pattern({
-          "parallax--0-0": { opacity: "0", visibility: "hidden" },
-          "parallax--72-0": { opacity: "0", visibility: "hidden" },
-          "parallax--78-0": { opacity: "1", visibility: "visible" },
-          "parallax--100-0": { opacity: "1", visibility: "visible" },
-          "parallax--115-0": { opacity: "0", visibility: "hidden" },
-        }),
+    pattern({
+      "parallax-0-0": { opacity: "0", visibility: "hidden" },
+    }),
 
   /*
    * Springs shared.js videoCaptionMoveUp — reveal then ride the caption up

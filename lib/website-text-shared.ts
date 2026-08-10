@@ -192,7 +192,7 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
         body: "Glide between Luxor and Aswan, soft light on the water, Egypt unfolding at a gracious pace.",
       },
       {
-        title: "WHERE HISTORY\nMEETS LUXURY.",
+        title: "WHERE HISTORY\nMEETS HISTORY",
         indication: "Bar Hathor",
         body: "Refined evenings aboard Hathor: history, comfort, and style where the Nile meets luxury.",
       },
@@ -416,6 +416,24 @@ export function migrateLegacyWebsiteTextFields(raw: unknown): unknown {
       delete cta.body;
     }
     home.cta = cta;
+    next.home = home;
+  }
+
+  /* Bar / slide 3 title: lock two-line WHERE HISTORY / MEETS HISTORY phrasing. */
+  if (home && Array.isArray(home.stackSlides)) {
+    const slides = home.stackSlides.map((slide, index) => {
+      if (index !== 2 || !isPlainObject(slide)) return slide;
+      const title = typeof slide.title === "string" ? slide.title : "";
+      const normalized = title.replace(/\s+/g, " ").trim().replace(/\.$/, "");
+      if (
+        /^WHERE HISTORY\s+MEETS (LUXURY|ELEGANCE)$/i.test(normalized) ||
+        /^WHERE\s+HISTORY\s+MEETS\s+(LUXURY|ELEGANCE)$/i.test(normalized)
+      ) {
+        return { ...slide, title: "WHERE HISTORY\nMEETS HISTORY" };
+      }
+      return slide;
+    });
+    home.stackSlides = slides;
     next.home = home;
   }
 

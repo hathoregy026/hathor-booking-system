@@ -378,6 +378,21 @@ export function HomeAmenitiesSequence({
   const natureCta = amenitiesCopy(natureStory?.cta);
   const natureCtaHref = natureStory?.href?.trim() || "/gastronomy";
 
+  /*
+   * Bar reel gold caption (slide 3): under the image on gold, Amenities typo on-gold.
+   * Keep each phrase on one line (WHERE HISTORY / MEETS HISTORY).
+   */
+  const barCaptionTitleLines = (
+    videoInset?.titleLines?.length
+      ? videoInset.titleLines
+      : ["WHERE HISTORY", "MEETS HISTORY"]
+  ).map((line) => line.replace(/\.$/, "").trim().replace(/\s+/g, "\u00A0"));
+  const barCaptionIndication = amenitiesCopy(videoInset?.indication);
+  const barCaptionBody = amenitiesCopy(
+    videoInset?.body,
+    videoMain?.body,
+  );
+
   return (
     <section
       ref={rootRef}
@@ -619,43 +634,8 @@ export function HomeAmenitiesSequence({
             </div>
 
             {/*
-              Outside videoImage clip-path so copy is not wiped with the rising mask.
-              Fades in with the same runway as the Bar reel reveal.
-            */}
-            <div
-              className="home-am-video__overlay-copy"
-              data-am-video-overlay
-              data-plugin="parallax"
-              data-parallax-pattern="videoOverlayCopy"
-              data-parallax-enable-mq="null"
-              data-parallax-clamp="true"
-              data-parallax-measure-selector="[data-am-chapter]"
-            >
-              <AmenitiesTitleLines
-                as="h2"
-                lines={
-                  videoInset?.titleLines?.length
-                    ? videoInset.titleLines
-                    : ["WHERE HISTORY", "MEETS LUXURY."]
-                }
-                className="home-am-video__overlay-title home-am-on-image-text typo-on-images-title"
-                style={onImageTitle}
-              />
-              <AmenitiesCopyText
-                as="p"
-                value={
-                  amenitiesHasCopy(videoInset?.indication)
-                    ? videoInset.indication
-                    : "Bar Hathor"
-                }
-                className="home-am-video__overlay-sub home-am-on-image-text typo-on-images-indication"
-                style={onImageIndication}
-              />
-            </div>
-
-            {/*
-              Springs: .col.col--lg-6.i-video__caption + videoCaptionMoveUp
-              (reveal, then ride up off-screen — not a static bottom card).
+              Gold caption under the Bar reel (left 50vw) — title / sub / body from
+              slide 3, Amenities Sequence typography on-gold. Not an on-image overlay.
             */}
             <div
               className="home-am-video__caption"
@@ -669,30 +649,19 @@ export function HomeAmenitiesSequence({
             >
               <AmenitiesTitleLines
                 as="h3"
-                lines={
-                  videoInset?.titleLines?.length
-                    ? videoInset.titleLines
-                    : amenitiesHasCopy(videoMain.indication)
-                      ? [videoMain.indication]
-                      : []
-                }
+                lines={barCaptionTitleLines}
                 className="typo-on-images-title"
                 style={onGoldTitle}
               />
               <AmenitiesCopyText
                 as="p"
-                value={
-                  videoInset?.indication ||
-                  (videoInset?.titleLines?.length
-                    ? videoMain.indication
-                    : "")
-                }
+                value={barCaptionIndication}
                 className="typo-on-images-indication"
                 style={onGoldIndication}
               />
               <AmenitiesCopyText
                 as="p"
-                value={videoInset?.body || videoMain.body}
+                value={barCaptionBody}
                 className="typo-on-images-body home-am-video__caption-text"
                 style={onGoldBody}
                 captionTextAttr

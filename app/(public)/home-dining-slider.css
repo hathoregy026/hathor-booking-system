@@ -846,63 +846,6 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   box-shadow: inset 0 0 160px rgba(0, 0, 0, 0.45);
 }
 
-/* Title + script sub on the Bar reel (outside clip; fades in with videoImage) */
-.home-am-video__overlay-copy {
-  position: absolute;
-  left: clamp(1.25rem, 4vw, 3.5rem);
-  right: clamp(1.25rem, 4vw, 3.5rem);
-  bottom: clamp(1.75rem, 6vh, 4rem);
-  z-index: 6;
-  max-width: min(42rem, 78vw);
-  pointer-events: none;
-  text-align: var(--am-typo-align, left);
-  /* Hidden until Bar reel clip opens — never paint over cream / other slides */
-  opacity: 0;
-  visibility: hidden;
-  will-change: opacity, visibility;
-}
-
-.home-am-video__overlay-title {
-  margin: 0 0 var(--am-typo-gap-title-sub, 14px);
-}
-
-.home-am-video__overlay-title .home-am-title-line {
-  display: block;
-}
-
-.home-am-video__overlay-sub {
-  margin: 0;
-  font-family: var(--font-hathor-quiet-luxury), "Quiet Luxury", cursive !important;
-  font-style: normal;
-}
-
-.public-site .home-am-sequence .home-am-video__overlay-title,
-.public-site .home-am-sequence .home-am-video__overlay-title *,
-html[data-ex-experience] .ex-root .home-am-sequence .home-am-video__overlay-title,
-html[data-ex-experience] .ex-root .home-am-sequence .home-am-video__overlay-title * {
-  color: var(--am-typo-title-on-image, #ffffff) !important;
-  -webkit-text-fill-color: var(--am-typo-title-on-image, #ffffff) !important;
-  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
-}
-
-.public-site .home-am-sequence .home-am-video__overlay-sub,
-.public-site .home-am-sequence .home-am-video__overlay-sub *,
-html[data-ex-experience] .ex-root .home-am-sequence .home-am-video__overlay-sub,
-html[data-ex-experience] .ex-root .home-am-sequence .home-am-video__overlay-sub * {
-  color: var(--am-typo-indication-on-image, #ffffff) !important;
-  -webkit-text-fill-color: var(--am-typo-indication-on-image, #ffffff) !important;
-  text-shadow: 0 1px 16px rgba(0, 0, 0, 0.4);
-}
-
-@media (max-width: 480px) {
-  .home-am-video__overlay-copy {
-    left: 1.1rem;
-    right: 1.1rem;
-    bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
-    max-width: none;
-  }
-}
-
 .home-am-video__inset img,
 .home-am-video__inset video,
 .home-am-video__inset-video,
@@ -934,6 +877,11 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-video__overlay-sub 
 
 .home-am-video__caption h3.typo-on-images-title {
   margin: 0 0 var(--am-typo-gap-title-sub, 14px);
+}
+
+.home-am-video__caption h3.typo-on-images-title > .home-am-title-line {
+  display: block;
+  white-space: nowrap;
 }
 
 .home-am-video__caption .typo-on-images-indication {

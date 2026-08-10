@@ -90,7 +90,7 @@ type RailItem =
 const SLIDE_LABELS = [
   "1 — Fullscreen intro",
   "2 — Rising full-bleed",
-  "3 — Bar video title + sub",
+  "3 — Bar gold caption (under image)",
   "4 — Fixed left + stack",
 ] as const;
 
@@ -115,7 +115,7 @@ const RAIL: RailItem[] = [
       index === 0
         ? "Title, sub text, and body on the intro photo; body also on the cream wipe."
         : index === 2
-          ? "Big 2-line title + script sub on the Bar video (slot 3). Same Title / Sub styles as the rest of amenities."
+          ? "Gold caption under the Bar reel: 2-line title (WHERE HISTORY / MEETS HISTORY), sub, and body — Amenities Sequence on-gold colours."
           : "Title, sub text, and body for this amenities chapter.",
   })),
   ...STORY_LABELS.map((label, index) => ({
