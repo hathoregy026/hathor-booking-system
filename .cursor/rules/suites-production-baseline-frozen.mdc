@@ -1,0 +1,68 @@
+---
+description: Lock accepted Suites production baseline ee1ff11 — no collateral edits
+alwaysApply: true
+---
+
+# FROZEN — Suites production baseline (`ee1ff11`)
+
+The public Suites experience at `/suites` is an **approved production baseline**.
+
+**Baseline commit:** `ee1ff11`
+
+Do **not** modify Suites as collateral while editing other pages or shared systems.
+
+Do **not** clean up, refactor, restyle, or normalize Suites unless the user **explicitly** requests Suites changes.
+
+## Touch points (do not edit without explicit Suites approval)
+
+- `app/suites/**`
+- `components/pages/SuitesSpringsHomepagePage.tsx`
+- `public/suites-springs/**` (including generated `index.html`)
+- `scripts/build-suites-exact-homepage.mjs`
+- `scripts/suites-art-direction.css`
+- `scripts/lux-footer-iframe-snippet.mjs` when it feeds the Suites iframe footer/CTA
+- Suites nav-tone bridge in `Header.tsx` / `site-nav.css` **only when changing Suites-specific behavior**
+
+## Locked experience surface
+
+Preserve:
+
+- typography hierarchy and positions
+- CTA labels and destinations
+- hero, Unrivaled Views, Step Aboard, Comfort title/body
+- amenity rail size and opacity
+- WebGL behavior
+- gold statement, dark/river/mosaic chapters
+- Suites collection, Royal Suites card
+- final CTA and footer treatment
+- responsive typography
+- GSAP / ScrollTrigger choreography, Lenis behavior
+- current image assets
+- booking modal behavior on Suites (`/suites?book=1`)
+- Compare Suites in-page scroll target
+
+## Locked CTA destinations
+
+| Label | Destination |
+|-------|-------------|
+| Compare Suites | `#l-residences-sticky-1` |
+| View Suite Details | `/Luxury-Royal-Suites-Nile-Dahabiya-Cruise` |
+| Request Availability | `/suites?book=1` |
+
+(Other accepted Suites CTAs — Explore the Suites → `/rooms`, Discover the Collection → `/luxury-cabins-Nile-Cruise`, Concierge → `/contact` — also stay as accepted unless explicitly changed.)
+
+## Locked amenity rail
+
+- Desktop visual target: **30–42px**
+- Accepted computed size at 1440: **~36px** (`clamp(30px, 2.5vw, 42px)`)
+- Inactive opacity: **0.4** (do not reduce)
+
+**Do not reintroduce** a broad `[class*="__caption"] p` rule that matches amenity `<p class="h2">` without `:not(.h2)` — that previously forced body (~11.5px) over the rail.
+
+## Shared / global changes
+
+If a shared CSS, header, navigation, font, or layout change can affect `/suites`:
+
+1. Stop and name Suites as an affected protected area.
+2. Wait for explicit approval **or** regression-test against baseline `ee1ff11` before deploy.
+3. Do not “fix Suites while we’re here.”

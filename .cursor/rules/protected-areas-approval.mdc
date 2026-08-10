@@ -8,6 +8,7 @@ alwaysApply: true
 Before editing anything that can affect any protected area, stop and tell the user exactly which protected area will be affected, then wait for explicit approval.
 
 Protected areas:
+- `/suites` page and Suites Springs iframe pipeline — approved baseline commit `ee1ff11`. Includes `app/suites/**`, `SuitesSpringsHomepagePage`, `public/suites-springs/**`, `scripts/build-suites-exact-homepage.mjs`, `scripts/suites-art-direction.css`, and Suites-specific footer/CTA/nav-tone wiring. See `suites-production-baseline-frozen.mdc`.
 - `/cruises` page, cruises components, cruises scroll reveal, `PageScrollTransition`, `usePageScrollTransition`, and shared transition CSS that can affect cruises.
 - Booking system and booking pages, including `/booking/**`, booking APIs, checkout, availability, holds, confirmations, and booking UI components.
 - Admin dashboard, including `/admin/**`, `/api/admin/**`, dashboard upload/save flows, dashboard UI components, and dashboard auth.
