@@ -404,15 +404,29 @@ p.l-place-webgl-caption__subtitle,
 /* ——— 03 Gold intro content ——— */
 .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-title {
   padding-top: clamp(4.5rem, 12vh, 7rem);
+  position: relative;
+  z-index: 3;
 }
 .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-title .h2 {
   font-size: clamp(2.6rem, 3.8vw, 4.1rem) !important;
   max-width: 14em;
   color: var(--suites-ivory) !important;
   -webkit-text-fill-color: var(--suites-ivory) !important;
+  position: relative;
+  z-index: 3;
+}
+/* Keep inset image from covering the Step Aboard title mid-scrub */
+.l-intro.is-hidden--md-down .l-intro__content .l-intro__content-image {
+  position: relative;
+  z-index: 1;
+  max-width: min(26vw, 260px);
+  margin-top: 0.75rem;
+  pointer-events: none;
 }
 .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-text {
   max-width: 30em;
+  position: relative;
+  z-index: 2;
 }
 .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-text p {
   font-size: clamp(1.05rem, 1.15vw, 1.2rem) !important;
@@ -446,15 +460,26 @@ p.l-place-webgl-caption__subtitle,
 }
 
 /* Amenity rail — refined chapter selector, not giant UI */
+.l-wellness__slider__caption-titles .js-content-animation-link {
+  opacity: 0.42 !important;
+  display: block;
+}
+.l-wellness__slider__caption-titles .js-content-animation-link.is-active {
+  opacity: 1 !important;
+}
 .l-wellness__slider__caption-titles .g1,
 .l-wellness__slider__caption-titles h2,
+.l-wellness__slider__caption-titles .h2,
 .l-wellness__slider__caption-titles h3,
-.l-wellness__slider__caption-titles [class*="title"] {
+.l-wellness__slider__caption-titles [class*="title"],
+.l-wellness__slider__caption-titles .js-content-animation-link .h2,
+.l-wellness__slider__caption-titles .js-content-animation-link p {
   font-family: var(--suites-sans) !important;
-  font-size: clamp(1.65rem, 2.35vw, 2.55rem) !important;
+  font-size: clamp(1.75rem, 2.4vw, 2.55rem) !important;
   line-height: 1.2 !important;
   letter-spacing: -0.01em !important;
   font-weight: 400 !important;
+  opacity: 1 !important;
 }
 .l-wellness__slider__caption-titles .is-active,
 .l-wellness__slider__caption-titles .is-current,
@@ -465,17 +490,29 @@ p.l-place-webgl-caption__subtitle,
 }
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .g1,
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles h2,
-.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles h3 {
-  color: rgba(247, 241, 230, 0.38) !important;
-  -webkit-text-fill-color: rgba(247, 241, 230, 0.38) !important;
+.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .h2,
+.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles h3,
+.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-content-animation-link .h2,
+.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-content-animation-link p {
+  color: rgba(247, 241, 230, 0.92) !important;
+  -webkit-text-fill-color: rgba(247, 241, 230, 0.92) !important;
+}
+.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-content-animation-link:not(.is-active) {
+  opacity: 0.4 !important;
 }
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .is-active,
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .is-current,
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles [class*="is-active"],
-.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-active {
+.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-active,
+.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-content-animation-link.is-active {
   color: #f7f1e6 !important;
   -webkit-text-fill-color: #f7f1e6 !important;
   opacity: 1 !important;
+}
+.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-content-animation-link.is-active .h2,
+.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-content-animation-link.is-active p {
+  color: #f7f1e6 !important;
+  -webkit-text-fill-color: #f7f1e6 !important;
 }
 .l-wellness__slider__caption-text {
   max-width: 30em;
@@ -529,31 +566,49 @@ p.l-place-webgl-caption__subtitle,
   text-transform: none !important;
 }
 
-/* Residences / collection cards */
-.l-residences__caption__card {
-  background: rgba(236, 232, 223, 0.94) !important;
+/* Residences / collection cards — ink on cream (never ivory-on-cream) */
+.l-residences__caption__card,
+.l-residences__caption__card-content {
+  background: rgba(236, 232, 223, 0.96) !important;
   padding: clamp(1.35rem, 2.5vw, 2rem) !important;
   border: 1px solid rgba(182, 159, 100, 0.28);
   box-shadow: none !important;
+  color: #1c1917 !important;
 }
 .l-residences__caption__type,
+.l-residences__caption__type.text-t1,
 .l-residences__caption__card .g1,
-.l-residences__caption__card h3 {
+.l-residences__caption__card h3,
+.l-residences__caption__card .h3,
+.l-residences__caption__item p,
+.l-residences__caption__item__text p,
+.l-residences__caption__card-content p {
   font-family: var(--suites-serif) !important;
+  color: #1c1917 !important;
+  -webkit-text-fill-color: #1c1917 !important;
+}
+.l-residences__caption__type,
+.l-residences__caption__type.text-t1 {
   font-size: clamp(1.65rem, 2.2vw, 2.25rem) !important;
-  color: var(--suites-ink) !important;
-  -webkit-text-fill-color: var(--suites-ink) !important;
 }
 .l-residences__caption__description,
-.l-residences__caption__card p {
+.l-residences__caption__description.text-small,
+.l-residences__caption__description.text-color-small,
+.l-residences__caption__card p.l-residences__caption__description {
+  font-family: var(--suites-sans) !important;
   font-size: clamp(0.95rem, 1.05vw, 1.1rem) !important;
   line-height: 1.55 !important;
   color: rgba(28, 25, 23, 0.82) !important;
+  -webkit-text-fill-color: rgba(28, 25, 23, 0.82) !important;
 }
 .l-residences__caption__button .btn,
-.l-residences__caption__button a {
+.l-residences__caption__button a,
+.l-residences__caption__card .btn {
   min-height: 44px;
   letter-spacing: 0.12em;
+  color: #1c1917 !important;
+  -webkit-text-fill-color: #1c1917 !important;
+  border-color: rgba(28, 25, 23, 0.55) !important;
 }
 
 /* Gallery 3:4 media pin */
