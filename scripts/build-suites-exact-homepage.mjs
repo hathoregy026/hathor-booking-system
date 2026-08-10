@@ -384,7 +384,7 @@ html = html.replace(
                         Luxury suites aboard Hathor Dahabiya: private Nile journeys shaped for stillness, craft, and panoramic river light
                     </p>
                     <div class="suites-cta-row">
-                        ${ctaPrimary("/rooms", "Explore the Suites", "suites-cta-primary--on-dark")}
+                        ${ctaLink("/rooms", "Explore the Suites &rarr;", "suites-cta-link--ivory")}
                         ${ctaSecondary("/contact", "Speak with Concierge")}
                     </div>
                 </div>
@@ -393,9 +393,15 @@ html = html.replace(
   },
 );
 
+// Opening subtitle is body/lead copy (homepage .typo-body-text), not a .text-c1 label
+html = html.replaceAll(
+  'class="l-intro__opening-subtitle text-c1 leading-trim text-color-primary"',
+  'class="l-intro__opening-subtitle text-t1 leading-trim"',
+);
+
 // Intro opening — editorial CTA
 html = html.replace(
-  /(<p class="l-intro__opening-subtitle text-c1 leading-trim text-color-primary"[^>]*>[\s\S]*?<\/p>)(\s*<\/div>\s*<\/div>)/i,
+  /(<p class="l-intro__opening-subtitle text-t1 leading-trim"[^>]*>[\s\S]*?<\/p>)(\s*<\/div>\s*<\/div>)/i,
   `$1
                     ${ctaLink("/luxury-cabins-Nile-Cruise", "Discover the Collection &rarr;", "suites-cta-link--ink")}
                 $2`,

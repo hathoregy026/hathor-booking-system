@@ -358,53 +358,45 @@
 }
 
 /**
- * Suites art direction — typography + text color matched to LIVE homepage DNA.
+ * Suites visual language — cloned from LIVE homepage design system.
  * Injected by scripts/build-suites-exact-homepage.mjs as data-hathor-suites-palette.
- * Springs sticky/scroll architecture remains; typography/color only in role rules.
  *
- * Homepage source of truth (production computed @ 1440):
- *   hero display  → Bitho Luxury 120px / white / lh 1.15
- *   hero script   → Carista 174px / #b69f64
- *   page title    → Rolling Fonte 72px / #b69f64 / ls -0.5px / lh 0.9
- *   on-image      → Bitho Luxury 90px / white
- *   page subtitle → Besty Script 28px / #b69f64
- *   body          → Rollgates Luxury Italic 18px / #705000 / ls 2.5px / lh 1.7
- *   CTA           → Plus Jakarta Sans 11.52px / uppercase / ls ~0.22em
+ * Allowed: typography, text/button colors, button chrome, text spacing inside wrappers.
+ * Forbidden: layout geometry, images, GSAP/ST/Lenis/WebGL, CTA destinations, homepage files.
  *
- * CRITICAL: Springs html { font-size: 10px }. All type scales use px (never rem).
+ * Springs html { font-size: 10px } — all type tokens are px (never rem).
+ *
+ * Homepage roles (prod computed @ 1440):
+ *   HERO_DISPLAY     .hero-line--right      Bitho 120 / #fff / lh 1.15 / hero shadow
+ *   HERO_SCRIPT      .hero-line--left       Carista 174 / #b69f64 / hero shadow
+ *   PAGE_TITLE       .typo-page-title       Rolling Fonte 72 / #b69f64 / ls -0.5 / lh 0.9
+ *   PAGE_SUBTITLE    .typo-page-subtitle    Besty Script 28 / #b69f64 / ls 2px
+ *   ON_IMAGE_TITLE   .typo-on-images-title  Bitho 90 / #fff / lh 0.8 / image shadow
+ *   ON_IMAGE_BODY    .typo-on-images-body   Rollgates 22 / #fff / ls 2.3 / image shadow
+ *   BODY_CREAM       .typo-body-text        Rollgates 18 / #705000 / ls 2.5 / lh 1.7
+ *   CTA_PILL         a.btn / Discover More  Jakarta 11.52 / #b69f64 on #faf8f5 / pill
+ *   CTA_HERO         .hero-cta              Jakarta 11.52 / #fff on rgba(255,255,255,.06)
+ *   NAV_LABEL        nav a                  Jakarta 13 / #faf8f5 / uppercase / ls ~0.16em
+ *
+ * Modes only:
+ *   A IMAGE/DARK — title #fff, body #fff, accent #b69f64
+ *   B CREAM      — title #b69f64, body #705000, accent #b69f64
+ *   C GOLD FIELD — same as A (homepage has no separate gold-text system)
  */
 :root {
-  --suites-display: "Bitho Luxury", cursive;
-  --suites-serif: "Rolling Fonte", "Gamgote", Georgia, serif;
-  --suites-serif-strong: "Baginda", "Gamgote", Georgia, serif;
-  --suites-script: "Carista", "Quiet Luxury", cursive;
-  --suites-script-sm: "Besty Script", "Quiet Luxury", cursive;
-  --suites-body-font: "Rollgates Luxury Italic", "Gamgote", Georgia, serif;
-  --suites-sans: "Plus Jakarta Sans", system-ui, sans-serif;
-  --suites-gold: #b69f64;
-  --suites-gold-soft: #d4bf86;
-  --suites-gold-deep: #b69f64;
-  --suites-cream: #f5eacf;
-  --suites-cream-soft: #ece8df;
-  --suites-ivory: #f7f1e6;
-  --suites-ink: #1c1917;
-  --suites-body-ink: #705000;
-  --suites-muted: #5c5348;
-  /* px clamps — homepage scale philosophy (never rem; Springs rem root = 10px) */
-  /* Hero display slightly under live 120px so bottom-anchored lockup does not clip;
-     still Bitho + home shadow + white — obvious jump from prior ~64px Gamgote. */
-  --type-hero: clamp(64px, 7.2vw, 100px);
-  --type-section: clamp(52px, 5.5vw, 72px);
-  --type-image: clamp(56px, 6.5vw, 90px);
-  --type-secondary: clamp(44px, 4.8vw, 64px);
-  --type-script: clamp(40px, 5vw, 72px);
-  --type-script-sm: clamp(24px, 2.1vw, 32px);
-  --type-lead: clamp(20px, 1.45vw, 24px);
-  --type-body: clamp(17px, 1.25vw, 18px);
-  --type-label: clamp(11px, 0.9vw, 13px);
-  --type-button: 11.52px;
-  --type-amenity: clamp(44px, 3.8vw, 58px);
-  --type-cta-display: clamp(56px, 5.5vw, 80px);
+  /* —— Homepage palette ONLY (no Suites inventions) —— */
+  --home-white: #ffffff;
+  --home-gold: #b69f64;
+  --home-gold-soft: #d4c28a;
+  --home-body-cream: #705000;
+  --home-btn-cream: #faf8f5;
+  --home-ink: #1c1917;
+  --home-ink-alt: #1a1a1a;
+  --home-nav: #faf8f5;
+  --home-hero-btn-bg: rgba(255, 255, 255, 0.06);
+  --home-hero-btn-hover-bg: rgba(182, 159, 100, 0.35);
+  --home-btn-shadow: 0 8px 22px rgba(44, 36, 25, 0.1);
+  --home-btn-shadow-hover: 0 10px 26px rgba(182, 159, 100, 0.35);
   --home-hero-shadow:
     0 0 1px rgba(8, 5, 4, 0.55),
     0 1px 2px rgba(8, 5, 4, 0.5),
@@ -414,6 +406,43 @@
   --home-image-shadow:
     0 1px 2px rgba(22, 18, 14, 0.55),
     0 2px 12px rgba(22, 18, 14, 0.42);
+
+  --suites-display: "Bitho Luxury", cursive;
+  --suites-page-title: "Rolling Fonte", "Gamgote", Georgia, serif;
+  --suites-script-hero: "Carista", cursive;
+  --suites-script-sm: "Besty Script", cursive;
+  --suites-body-font: "Rollgates Luxury Italic", Georgia, serif;
+  --suites-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+
+  /* Aliases used by residual selectors */
+  --suites-serif: var(--suites-page-title);
+  --suites-script: var(--suites-script-sm);
+  --suites-gold: var(--home-gold);
+  --suites-gold-soft: var(--home-gold-soft);
+  --suites-ivory: var(--home-white);
+  --suites-ink: var(--home-ink);
+  --suites-body-ink: var(--home-body-cream);
+  --suites-cream: #f5eacf;
+  --suites-cream-soft: #ece8df;
+  --suites-gold-deep: #b69f64;
+  --suites-muted: var(--home-body-cream);
+
+  --type-hero: clamp(64px, 7.2vw, 100px);
+  --type-section: clamp(52px, 5.5vw, 72px);
+  --type-image: clamp(56px, 6.5vw, 90px);
+  --type-script-sm: 28px;
+  --type-body-cream: 18px;
+  --type-body-image: 22px;
+  --type-label: 13px;
+  --type-button: 11.52px;
+  --type-amenity: clamp(40px, 3.5vw, 56px);
+  --type-cta-display: clamp(52px, 5.5vw, 72px);
+
+  --hathor-btn-width: 200px;
+  --hathor-btn-height: 46px;
+  --hathor-btn-pad-x: 28px;
+  --hathor-btn-font-size: 11.52px;
+  --hathor-btn-tracking: 0.18em;
   --lux-gold: #b69f64;
   --lux-gold-rgb: 182, 159, 100;
   --lux-cream: #f5eacf;
@@ -428,8 +457,8 @@
   --c-dark-green-rgb: 139, 105, 20;
   --c-green: #b69f64;
   --c-green-rgb: 182, 159, 100;
-  --c-light-green: #d4bf86;
-  --c-light-green-rgb: 212, 191, 134;
+  --c-light-green: #d4c28a;
+  --c-light-green-rgb: 212, 194, 138;
   --c-olive: #b69f64;
   --c-olive-rgb: 182, 159, 100;
   --c-dark-blue: #b69f64;
@@ -449,13 +478,13 @@
 
 html, body {
   background: var(--suites-cream-soft);
-  color: var(--suites-ink);
+  color: var(--home-ink);
   font-family: var(--suites-body-font);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-/* ——— Role typography (homepage DNA) ——— */
+/* ——— Role typography ——— */
 .h0,
 .l-gallery__title .h0 {
   font-family: var(--suites-display) !important;
@@ -463,36 +492,44 @@ html, body {
   font-size: var(--type-hero) !important;
   line-height: 1.15 !important;
   letter-spacing: normal !important;
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
+  text-transform: none !important;
+  text-align: left !important;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
   text-shadow: var(--home-hero-shadow);
 }
 
+/* On-image display = .typo-on-images-title */
 .g1,
 .g2,
 [class*="__title"] .g1 {
   font-family: var(--suites-display) !important;
   font-weight: 400 !important;
   font-size: var(--type-image) !important;
-  line-height: 0.9 !important;
+  line-height: 0.8 !important;
   letter-spacing: normal !important;
+  text-transform: none !important;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
   text-shadow: var(--home-image-shadow);
 }
 
+/* Cream section display = .typo-page-title */
 .h1,
 .h2,
 h1:not(.h0),
 h2,
 [class*="__title"] .h1,
 [class*="__title"] .h2 {
-  font-family: var(--suites-serif) !important;
+  font-family: var(--suites-page-title) !important;
   font-weight: 400 !important;
   font-size: var(--type-section) !important;
   line-height: 0.9 !important;
   letter-spacing: -0.5px !important;
+  text-transform: none !important;
 }
 
-.text-t1,
+.text-t1:not(.suites-hero-support),
 .text-t2,
 .text-p1,
 .text-p2,
@@ -502,20 +539,15 @@ h2,
 .l-wellness__slider__caption-text p,
 .l-nature-bg-caption__text p,
 .l-place-webgl__text p,
-/* Exclude .h2 — amenity rail titles use <p class="h2"> and must not inherit body size */
 [class*="__caption"] p:not(.g1):not(.h0):not(.h1):not(.h2):not([class*="__subtitle"]),
 p:not(.g1):not(.g2):not(.h0):not(.h1):not(.h2):not(.h3):not(.text-c1):not(.text-c2):not([class*="__subtitle"]):not(.lux-footer__script):not(.lux-footer__headline):not(.suites-hero-support) {
   font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body) !important;
-  line-height: 1.7 !important;
   font-weight: 400 !important;
-  letter-spacing: 2.5px !important;
-  max-width: 34em;
   text-transform: none !important;
   opacity: 1 !important;
 }
 
-/* Cream / light surfaces — homepage body ink #705000 */
+/* Mode B — cream body (.typo-body-text) */
 .ui-light p,
 .ui-light .text-t1,
 .ui-light .l-intro__opening-subtitle,
@@ -523,11 +555,14 @@ p:not(.g1):not(.g2):not(.h0):not(.h1):not(.h2):not(.h3):not(.text-c1):not(.text-
 .l-residences__caption__description,
 .hathor-suites-footer-host .lux-footer__subhead,
 .hathor-lux-footer-host .lux-footer__subhead {
-  color: var(--suites-body-ink) !important;
-  -webkit-text-fill-color: var(--suites-body-ink) !important;
+  font-size: var(--type-body-cream) !important;
+  line-height: 1.7 !important;
+  letter-spacing: 2.5px !important;
+  color: var(--home-body-cream) !important;
+  -webkit-text-fill-color: var(--home-body-cream) !important;
 }
 
-/* Dark / photography surfaces — homepage ivory/white contrast */
+/* Mode A — image/dark body (.typo-on-images-body) */
 .ui-dark p,
 .ui-dark .text-t1,
 .ui-dark .text-t2,
@@ -538,19 +573,21 @@ p:not(.g1):not(.g2):not(.h0):not(.h1):not(.h2):not(.h3):not(.text-c1):not(.text-
 .l-wellness__slider__caption-text p,
 .l-nature-bg-caption__text p,
 .l-place-webgl__text p {
-  color: rgba(255, 255, 255, 0.96) !important;
-  -webkit-text-fill-color: rgba(255, 255, 255, 0.96) !important;
+  font-size: var(--type-body-image) !important;
+  line-height: 1.35 !important;
+  letter-spacing: 2.3px !important;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
+  text-shadow: var(--home-image-shadow);
   opacity: 1 !important;
 }
 
 .l-intro__opening-subtitle {
-  font-family: var(--suites-body-font) !important;
-  font-size: var(--type-lead) !important;
-  line-height: 1.6 !important;
-  letter-spacing: 1.5px !important;
   max-width: 32em;
+  text-align: left !important;
 }
 
+/* Script accent = .typo-page-subtitle (Besty) — NOT Carista unless hero */
 p.l-nature-bg-caption__subtitle,
 p.l-wellness__caption__subtitle,
 p.l-place__caption__subtitle,
@@ -564,12 +601,13 @@ p.l-place-webgl-caption__subtitle,
   letter-spacing: 2px !important;
   text-transform: none !important;
   line-height: 1.5 !important;
-  color: var(--suites-gold) !important;
-  -webkit-text-fill-color: var(--suites-gold) !important;
+  color: var(--home-gold) !important;
+  -webkit-text-fill-color: var(--home-gold) !important;
   opacity: 1 !important;
   max-width: 18em;
 }
 
+/* Eyebrow / label = nav language */
 .text-c1:not([class*="__subtitle"]):not(.suites-eyebrow):not(.l-wellness__webgl-title .text-c1),
 .text-c2:not([class*="__subtitle"]),
 .carousel__thumb__item.text-c1,
@@ -577,11 +615,11 @@ p.l-place-webgl-caption__subtitle,
   font-family: var(--suites-sans) !important;
   font-size: var(--type-label) !important;
   font-weight: 500 !important;
-  letter-spacing: 0.22em !important;
+  letter-spacing: 0.16em !important;
   text-transform: uppercase !important;
-  line-height: 1.35 !important;
-  color: var(--suites-gold) !important;
-  -webkit-text-fill-color: var(--suites-gold) !important;
+  line-height: 1.7 !important;
+  color: var(--home-gold) !important;
+  -webkit-text-fill-color: var(--home-gold) !important;
   opacity: 1 !important;
 }
 
@@ -590,29 +628,29 @@ p.l-place-webgl-caption__subtitle,
   font-family: var(--suites-sans) !important;
   font-size: var(--type-button) !important;
   font-weight: 500 !important;
-  letter-spacing: 0.22em !important;
+  letter-spacing: var(--hathor-btn-tracking) !important;
   text-transform: uppercase !important;
 }
 
-/* Theme surfaces */
+/* Theme surfaces — keep existing panel colors; text follows modes */
 .ui-dark {
   --t-background: #b69f64;
   --t-background-rgb: 139, 105, 20;
-  --t-text: #f7f1e6;
-  --t-heading: #f7f1e6;
+  --t-text: #ffffff;
+  --t-heading: #ffffff;
   --t-primary: #b69f64;
-  --t-secondary: #f5eacf;
+  --t-secondary: #faf8f5;
   background-color: #b69f64 !important;
-  color: #f7f1e6 !important;
+  color: var(--home-white) !important;
 }
 .ui-light,
 .ui-light-background {
   --t-background: #ece8df;
-  --t-text: #1c1917;
-  --t-heading: #1c1917;
+  --t-text: #705000;
+  --t-heading: #b69f64;
   --t-primary: #b69f64;
   background-color: #ece8df !important;
-  color: #1c1917 !important;
+  color: var(--home-body-cream) !important;
 }
 .ui-dark .h0,
 .ui-dark .h1,
@@ -621,16 +659,8 @@ p.l-place-webgl-caption__subtitle,
 .ui-dark .g2,
 .ui-dark h1,
 .ui-dark h2 {
-  color: #f7f1e6 !important;
-  -webkit-text-fill-color: #f7f1e6 !important;
-}
-.ui-dark p,
-.ui-dark .text-t1,
-.ui-dark .text-t2,
-.ui-dark [class*="__text"] {
-  color: rgba(255, 255, 255, 0.96) !important;
-  -webkit-text-fill-color: rgba(255, 255, 255, 0.96) !important;
-  opacity: 1 !important;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
 }
 .ui-light .h0,
 .ui-light .h1,
@@ -639,18 +669,12 @@ p.l-place-webgl-caption__subtitle,
 .ui-light .g2,
 .ui-light h1,
 .ui-light h2 {
-  color: var(--suites-gold) !important;
-  -webkit-text-fill-color: var(--suites-gold) !important;
-}
-.ui-light p,
-.ui-light .text-t1,
-.ui-light .l-intro__opening-subtitle {
-  color: var(--suites-body-ink) !important;
-  -webkit-text-fill-color: var(--suites-body-ink) !important;
-  opacity: 1 !important;
+  color: var(--home-gold) !important;
+  -webkit-text-fill-color: var(--home-gold) !important;
+  text-shadow: none !important;
 }
 
-/* ——— CTA system ——— */
+/* ——— CTA system = homepage Discover More / Book Now ——— */
 .suites-cta-row {
   display: flex;
   flex-wrap: wrap;
@@ -659,90 +683,179 @@ p.l-place-webgl-caption__subtitle,
   margin-top: 1.65rem;
   pointer-events: auto;
 }
-.suites-cta-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 48px;
-  padding: 0.85rem 1.55rem;
-  border: 1px solid transparent;
-  border-radius: 2px;
-  background: var(--suites-ink);
-  color: var(--suites-ivory) !important;
-  -webkit-text-fill-color: var(--suites-ivory) !important;
+
+/* Primary pill = a.btn / Discover More */
+.suites-cta-primary,
+.l-residences__caption__button .btn,
+.l-residences__caption__button a,
+.l-residences__caption__card .btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  width: var(--hathor-btn-width) !important;
+  min-width: var(--hathor-btn-width) !important;
+  max-width: var(--hathor-btn-width) !important;
+  height: var(--hathor-btn-height) !important;
+  min-height: var(--hathor-btn-height) !important;
+  max-height: var(--hathor-btn-height) !important;
+  padding: 0 var(--hathor-btn-pad-x) !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--home-gold) !important;
+  background: var(--home-btn-cream) !important;
+  color: var(--home-gold) !important;
+  -webkit-text-fill-color: var(--home-gold) !important;
   font-family: var(--suites-sans) !important;
-  font-size: var(--type-button) !important;
+  font-size: var(--hathor-btn-font-size) !important;
   font-weight: 500 !important;
-  letter-spacing: 0.22em !important;
+  letter-spacing: var(--hathor-btn-tracking) !important;
   text-transform: uppercase !important;
+  line-height: 1 !important;
   text-decoration: none !important;
-  transition: background 0.35s ease, color 0.35s ease, transform 0.35s ease;
+  white-space: nowrap !important;
+  box-shadow: var(--home-btn-shadow) !important;
+  cursor: pointer;
+  transition:
+    background 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s ease,
+    box-shadow 0.35s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.suites-cta-primary:hover {
-  background: #2a2520;
-  transform: translateY(-1px);
+.suites-cta-primary:hover,
+.l-residences__caption__button .btn:hover,
+.l-residences__caption__button a:hover,
+.l-residences__caption__card .btn:hover {
+  background: var(--home-gold) !important;
+  border-color: var(--home-gold) !important;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
+  box-shadow: var(--home-btn-shadow-hover) !important;
+  transform: translateY(-2px);
 }
-.suites-cta-primary--on-dark {
-  background: var(--suites-ivory);
-  color: var(--suites-ink) !important;
-  -webkit-text-fill-color: var(--suites-ink) !important;
-}
-.suites-cta-primary--on-dark:hover {
-  background: #fff;
-}
-.suites-cta-secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  min-height: 44px;
-  padding: 0.35rem 0;
-  border: none;
-  background: transparent;
-  color: var(--suites-ivory) !important;
-  -webkit-text-fill-color: var(--suites-ivory) !important;
+
+/* On-photo primary/secondary = .hero-cta */
+.suites-cta-primary--on-dark,
+.suites-cta-secondary:not(.suites-cta-secondary--ink) {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  width: var(--hathor-btn-width) !important;
+  min-width: var(--hathor-btn-width) !important;
+  max-width: var(--hathor-btn-width) !important;
+  height: var(--hathor-btn-height) !important;
+  min-height: var(--hathor-btn-height) !important;
+  max-height: var(--hathor-btn-height) !important;
+  padding: 0 var(--hathor-btn-pad-x) !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--home-gold) !important;
+  background: var(--home-hero-btn-bg) !important;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
   font-family: var(--suites-sans) !important;
-  font-size: var(--type-button) !important;
+  font-size: var(--hathor-btn-font-size) !important;
   font-weight: 500 !important;
-  letter-spacing: 0.22em !important;
+  letter-spacing: var(--hathor-btn-tracking) !important;
   text-transform: uppercase !important;
+  line-height: 1 !important;
   text-decoration: none !important;
-  opacity: 0.92;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  white-space: nowrap !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(8px);
+  transition:
+    background 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s ease,
+    color 0.35s ease;
 }
-.suites-cta-secondary:hover {
-  opacity: 1;
-  transform: translateX(3px);
+.suites-cta-primary--on-dark:hover,
+.suites-cta-secondary:not(.suites-cta-secondary--ink):hover {
+  background: var(--home-hero-btn-hover-bg) !important;
+  border-color: var(--home-gold-soft) !important;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
+  transform: none !important;
+  box-shadow: none !important;
 }
+
+/* Cream secondary = same Discover More pill */
 .suites-cta-secondary--ink {
-  color: var(--suites-ink) !important;
-  -webkit-text-fill-color: var(--suites-ink) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  width: var(--hathor-btn-width) !important;
+  min-width: var(--hathor-btn-width) !important;
+  max-width: var(--hathor-btn-width) !important;
+  height: var(--hathor-btn-height) !important;
+  min-height: var(--hathor-btn-height) !important;
+  max-height: var(--hathor-btn-height) !important;
+  padding: 0 var(--hathor-btn-pad-x) !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--home-gold) !important;
+  background: var(--home-btn-cream) !important;
+  color: var(--home-gold) !important;
+  -webkit-text-fill-color: var(--home-gold) !important;
+  font-family: var(--suites-sans) !important;
+  font-size: var(--hathor-btn-font-size) !important;
+  font-weight: 500 !important;
+  letter-spacing: var(--hathor-btn-tracking) !important;
+  text-transform: uppercase !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  box-shadow: var(--home-btn-shadow) !important;
+  opacity: 1 !important;
 }
+.suites-cta-secondary--ink:hover {
+  background: var(--home-gold) !important;
+  border-color: var(--home-gold) !important;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
+  box-shadow: var(--home-btn-shadow-hover) !important;
+  transform: translateY(-2px);
+  opacity: 1 !important;
+}
+
+/* Navigational text-link CTAs */
 .suites-cta-link {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   margin-top: 1.35rem;
-  color: var(--suites-gold) !important;
-  -webkit-text-fill-color: var(--suites-gold) !important;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--home-gold) !important;
+  -webkit-text-fill-color: var(--home-gold) !important;
   font-family: var(--suites-sans) !important;
   font-size: var(--type-button) !important;
   font-weight: 500 !important;
-  letter-spacing: 0.22em !important;
+  letter-spacing: var(--hathor-btn-tracking) !important;
   text-transform: uppercase !important;
+  line-height: 1.2 !important;
   text-decoration: none !important;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  transition: color 0.3s ease, opacity 0.3s ease;
 }
 .suites-cta-link:hover {
-  transform: translateX(4px);
-  opacity: 0.88;
+  color: var(--home-gold-soft) !important;
+  -webkit-text-fill-color: var(--home-gold-soft) !important;
+  opacity: 1 !important;
+  transform: none;
 }
 .suites-cta-link--ink {
-  color: var(--suites-ink) !important;
-  -webkit-text-fill-color: var(--suites-ink) !important;
+  color: var(--home-gold) !important;
+  -webkit-text-fill-color: var(--home-gold) !important;
 }
 .suites-cta-link--ivory {
-  color: var(--suites-ivory) !important;
-  -webkit-text-fill-color: var(--suites-ivory) !important;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
+}
+.suites-cta-link--ivory:hover {
+  color: var(--home-gold-soft) !important;
+  -webkit-text-fill-color: var(--home-gold-soft) !important;
 }
 
 /* ——— 01 HERO lockup ——— */
@@ -764,11 +877,11 @@ p.l-place-webgl-caption__subtitle,
 .l-gallery__caption .suites-hero-lockup .suites-eyebrow {
   display: block;
   margin-bottom: 0.85rem;
-  color: var(--suites-gold-soft) !important;
-  -webkit-text-fill-color: var(--suites-gold-soft) !important;
+  color: var(--home-gold) !important;
+  -webkit-text-fill-color: var(--home-gold) !important;
   font-size: var(--type-label) !important;
-  letter-spacing: 0.22em !important;
-  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.25);
+  letter-spacing: 0.16em !important;
+  text-shadow: var(--home-image-shadow);
   opacity: 1 !important;
 }
 .l-gallery__caption .suites-hero-lockup .h0 {
@@ -777,32 +890,32 @@ p.l-place-webgl-caption__subtitle,
   font-size: var(--type-hero) !important;
   line-height: 1.15 !important;
   letter-spacing: normal !important;
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
   text-shadow: var(--home-hero-shadow) !important;
   max-width: 9em;
 }
 .l-gallery__caption .suites-hero-lockup .suites-hero-support {
   margin-top: 1.15rem !important;
-  max-width: 30em !important;
+  max-width: 28em !important;
   font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body) !important;
-  line-height: 1.7 !important;
-  letter-spacing: 1px !important;
-  color: rgba(255, 255, 255, 0.96) !important;
-  -webkit-text-fill-color: rgba(255, 255, 255, 0.96) !important;
+  font-size: var(--type-body-image) !important;
+  line-height: 1.35 !important;
+  letter-spacing: 2.3px !important;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
   text-shadow: var(--home-image-shadow) !important;
   text-transform: none !important;
+  text-align: left !important;
   opacity: 1 !important;
 }
 .l-gallery__caption .suites-hero-lockup .suites-cta-row {
   pointer-events: auto;
+  margin-top: 1.35rem;
 }
-/* Hide original split columns when lockup present */
 .l-gallery__caption:has(.suites-hero-lockup) > .col {
   display: none !important;
 }
-/* Soften wash — keep cream character, restore depth */
 .l-gallery__gradient div {
   background: radial-gradient(
     circle,
@@ -813,7 +926,7 @@ p.l-place-webgl-caption__subtitle,
   opacity: 0.85;
 }
 
-/* ——— 02 Unrivaled Views ——— */
+/* ——— 02 Unrivaled Views (Mode B cream) ——— */
 .l-intro.is-hidden--md-down .l-intro__opening {
   padding-top: clamp(6.5rem, 14vh, 9rem) !important;
   padding-left: clamp(1.5rem, 6vw, 5rem) !important;
@@ -823,49 +936,54 @@ p.l-place-webgl-caption__subtitle,
   max-width: min(40vw, 26rem);
 }
 .l-intro.is-hidden--md-down .l-intro__opening .h1 {
-  font-family: var(--suites-serif) !important;
+  font-family: var(--suites-page-title) !important;
   font-size: var(--type-section) !important;
   line-height: 0.9 !important;
   letter-spacing: -0.5px !important;
-  color: var(--suites-gold) !important;
-  -webkit-text-fill-color: var(--suites-gold) !important;
+  color: var(--home-gold) !important;
+  -webkit-text-fill-color: var(--home-gold) !important;
   text-shadow: none !important;
+  text-align: left !important;
   max-width: 12em;
 }
-.l-intro.is-hidden--md-down .l-intro__opening-subtitle {
+.l-intro.is-hidden--md-down .l-intro__opening-subtitle,
+.l-intro__opening-subtitle,
+p.l-intro__opening-subtitle.text-c1,
+p.l-intro__opening-subtitle.text-color-primary {
   margin-top: 1.1rem !important;
   font-family: var(--suites-body-font) !important;
-  color: var(--suites-body-ink) !important;
-  -webkit-text-fill-color: var(--suites-body-ink) !important;
+  font-size: var(--type-body-cream) !important;
+  line-height: 1.7 !important;
+  letter-spacing: 2.5px !important;
+  color: var(--home-body-cream) !important;
+  -webkit-text-fill-color: var(--home-body-cream) !important;
   text-transform: none !important;
-  letter-spacing: 1.5px !important;
-  font-size: var(--type-lead) !important;
-  line-height: 1.6 !important;
+  text-align: left !important;
   opacity: 1 !important;
 }
 .l-intro.is-hidden--md-down .l-intro__opening .suites-cta-link {
   margin-top: 1.5rem;
 }
 
-/* ——— 03 Gold intro content ——— */
+/* ——— 03 Step Aboard (Mode A on gold field) ——— */
 .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-title {
   padding-top: clamp(4.5rem, 12vh, 7rem);
   position: relative;
   z-index: 3;
 }
 .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-title .h2 {
-  font-family: var(--suites-serif-strong) !important;
-  font-size: var(--type-secondary) !important;
-  line-height: 0.95 !important;
-  letter-spacing: -0.5px !important;
+  font-family: var(--suites-display) !important;
+  font-size: var(--type-image) !important;
+  line-height: 0.8 !important;
+  letter-spacing: normal !important;
   max-width: 14em;
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
   text-shadow: var(--home-image-shadow);
+  text-align: left !important;
   position: relative;
   z-index: 3;
 }
-/* Keep inset image from covering the Step Aboard title mid-scrub */
 .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-image {
   position: relative;
   z-index: 1;
@@ -880,12 +998,14 @@ p.l-place-webgl-caption__subtitle,
 }
 .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-text p {
   font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body) !important;
-  line-height: 1.7 !important;
-  letter-spacing: 2.5px !important;
+  font-size: var(--type-body-image) !important;
+  line-height: 1.35 !important;
+  letter-spacing: 2.3px !important;
   max-width: 30em;
-  color: rgba(255, 255, 255, 0.96) !important;
-  -webkit-text-fill-color: rgba(255, 255, 255, 0.96) !important;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
+  text-shadow: var(--home-image-shadow);
+  text-align: left !important;
   opacity: 1 !important;
 }
 
@@ -896,34 +1016,38 @@ p.l-place-webgl-caption__subtitle,
 #wellness .l-wellness__webgl-title .g1 {
   font-family: var(--suites-display) !important;
   font-size: var(--type-image) !important;
-  line-height: 0.9 !important;
+  line-height: 0.8 !important;
   letter-spacing: normal !important;
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
   text-shadow: var(--home-image-shadow) !important;
+  text-align: left !important;
 }
 #wellness .l-wellness__webgl-title .text-c1 {
-  font-family: var(--suites-script) !important;
-  font-size: var(--type-script) !important;
-  line-height: 1.2 !important;
-  letter-spacing: normal !important;
-  color: var(--suites-gold) !important;
-  -webkit-text-fill-color: var(--suites-gold) !important;
+  font-family: var(--suites-script-sm) !important;
+  font-size: var(--type-script-sm) !important;
+  line-height: 1.5 !important;
+  letter-spacing: 2px !important;
+  color: var(--home-gold) !important;
+  -webkit-text-fill-color: var(--home-gold) !important;
   opacity: 1 !important;
   margin-bottom: 0.35rem !important;
+  text-align: left !important;
 }
 #wellness .l-wellness__webgl-caption > p.text-t1 {
   max-width: 30em !important;
   font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body) !important;
-  line-height: 1.7 !important;
-  letter-spacing: 2.5px !important;
-  color: rgba(255, 255, 255, 0.96) !important;
-  -webkit-text-fill-color: rgba(255, 255, 255, 0.96) !important;
+  font-size: var(--type-body-image) !important;
+  line-height: 1.35 !important;
+  letter-spacing: 2.3px !important;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
+  text-shadow: var(--home-image-shadow);
+  text-align: left !important;
   opacity: 1 !important;
 }
 
-/* Amenity rail — editorial chapter titles (homepage secondary display philosophy) */
+/* Amenity rail = scaled .typo-page-title face; Mode A colors */
 .l-wellness__slider__caption-titles .js-content-animation-link {
   opacity: 0.4 !important;
   display: block;
@@ -931,7 +1055,6 @@ p.l-place-webgl-caption__subtitle,
 .l-wellness__slider__caption-titles .js-content-animation-link.is-active {
   opacity: 1 !important;
 }
-/* px (not rem): Springs html font-size is 10px */
 .l-wellness__slider__caption-titles a.js-content-animation-link p.h2,
 .l-wellness__slider__caption-titles a.js-content-animation-link p.h2.leading-trim,
 .l-wellness__slider__caption-titles .g1,
@@ -941,21 +1064,22 @@ p.l-place-webgl-caption__subtitle,
 .l-wellness__slider__caption-titles [class*="title"],
 .l-wellness__slider__caption-titles .js-content-animation-link .h2,
 .l-wellness__slider__caption-titles .js-content-animation-link p {
-  font-family: var(--suites-serif) !important;
+  font-family: var(--suites-page-title) !important;
   font-size: var(--type-amenity) !important;
-  line-height: 1.1 !important;
+  line-height: 0.9 !important;
   letter-spacing: -0.5px !important;
   font-weight: 400 !important;
   opacity: 1 !important;
   max-width: none !important;
   text-transform: none !important;
+  text-align: left !important;
 }
 .l-wellness__slider__caption-titles .is-active,
 .l-wellness__slider__caption-titles .is-current,
 .l-wellness__slider__caption-titles [aria-current="true"] {
   opacity: 1 !important;
-  color: var(--suites-ink) !important;
-  -webkit-text-fill-color: var(--suites-ink) !important;
+  color: var(--home-gold) !important;
+  -webkit-text-fill-color: var(--home-gold) !important;
 }
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .g1,
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles h2,
@@ -963,8 +1087,8 @@ p.l-place-webgl-caption__subtitle,
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles h3,
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-content-animation-link .h2,
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-content-animation-link p {
-  color: rgba(247, 241, 230, 0.92) !important;
-  -webkit-text-fill-color: rgba(247, 241, 230, 0.92) !important;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
 }
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-content-animation-link:not(.is-active) {
   opacity: 0.4 !important;
@@ -974,91 +1098,97 @@ p.l-place-webgl-caption__subtitle,
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles [class*="is-active"],
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-active,
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-content-animation-link.is-active {
-  color: #f7f1e6 !important;
-  -webkit-text-fill-color: #f7f1e6 !important;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
   opacity: 1 !important;
 }
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-content-animation-link.is-active .h2,
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-content-animation-link.is-active p {
-  color: #f7f1e6 !important;
-  -webkit-text-fill-color: #f7f1e6 !important;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
 }
 .l-wellness__slider__caption-text {
   max-width: 30em;
 }
 .l-wellness__slider__caption-text p {
   font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body) !important;
-  line-height: 1.7 !important;
-  letter-spacing: 2.5px !important;
+  font-size: var(--type-body-image) !important;
+  line-height: 1.35 !important;
+  letter-spacing: 2.3px !important;
   max-width: 30em;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
+  text-shadow: var(--home-image-shadow);
   opacity: 1 !important;
 }
 
-/* ——— Nature / Nile ——— */
+/* ——— Nature / Place (Mode A) ——— */
 #nature .l-nature-bg-caption .g1 {
   font-family: var(--suites-display) !important;
   font-size: var(--type-image) !important;
-  line-height: 0.9 !important;
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
+  line-height: 0.8 !important;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
   text-shadow: var(--home-image-shadow) !important;
 }
 #nature .l-nature-bg-caption__text p {
   font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body) !important;
-  line-height: 1.7 !important;
-  letter-spacing: 2.5px !important;
+  font-size: var(--type-body-image) !important;
+  line-height: 1.35 !important;
+  letter-spacing: 2.3px !important;
   max-width: 32em;
-  color: rgba(255, 255, 255, 0.96) !important;
-  -webkit-text-fill-color: rgba(255, 255, 255, 0.96) !important;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
+  text-shadow: var(--home-image-shadow);
   opacity: 1 !important;
 }
-
-/* ——— Place / Voyage ——— */
 .l-place-webgl-caption .g1 {
   font-family: var(--suites-display) !important;
   font-size: var(--type-image) !important;
-  line-height: 0.9 !important;
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
+  line-height: 0.8 !important;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
   text-shadow: var(--home-image-shadow) !important;
 }
 .l-place-webgl__text p {
   font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body) !important;
-  line-height: 1.7 !important;
-  letter-spacing: 2.5px !important;
+  font-size: var(--type-body-image) !important;
+  line-height: 1.35 !important;
+  letter-spacing: 2.3px !important;
   max-width: 32em;
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
+  text-shadow: var(--home-image-shadow);
   opacity: 1 !important;
 }
 
-/* Large statement paragraphs on cream — homepage editorial lead */
+/* Cream editorial statements = scaled page title */
 .l-design .h3,
 .l-design p.text-t1,
 .l-interiors .h3,
 .l-interiors p.text-t1,
 .l-map p.text-t1,
 .l-map .h3 {
-  font-family: var(--suites-serif) !important;
+  font-family: var(--suites-page-title) !important;
   font-size: clamp(28px, 2.8vw, 40px) !important;
-  line-height: 1.2 !important;
+  line-height: 0.9 !important;
   max-width: 22em;
-  color: var(--suites-gold) !important;
-  -webkit-text-fill-color: var(--suites-gold) !important;
+  color: var(--home-gold) !important;
+  -webkit-text-fill-color: var(--home-gold) !important;
   letter-spacing: -0.5px;
   text-transform: none !important;
+  text-align: left !important;
   opacity: 1 !important;
 }
 
-/* Residences / collection cards — ink on cream (never ivory-on-cream) */
+/* Residences cards — Mode B */
 .l-residences__caption__card,
 .l-residences__caption__card-content {
-  background: rgba(236, 232, 223, 0.96) !important;
+  background: rgba(250, 248, 245, 0.96) !important;
   padding: clamp(1.35rem, 2.5vw, 2rem) !important;
   border: 1px solid rgba(182, 159, 100, 0.28);
   box-shadow: none !important;
-  color: #1c1917 !important;
+  color: var(--home-body-cream) !important;
 }
 .l-residences__caption__type,
 .l-residences__caption__type.text-t1,
@@ -1068,14 +1198,15 @@ p.l-place-webgl-caption__subtitle,
 .l-residences__caption__item p,
 .l-residences__caption__item__text p,
 .l-residences__caption__card-content p {
-  font-family: var(--suites-serif) !important;
-  color: var(--suites-gold) !important;
-  -webkit-text-fill-color: var(--suites-gold) !important;
+  font-family: var(--suites-page-title) !important;
+  color: var(--home-gold) !important;
+  -webkit-text-fill-color: var(--home-gold) !important;
+  text-shadow: none !important;
 }
 .l-residences__caption__type,
 .l-residences__caption__type.text-t1 {
   font-size: clamp(28px, 2.6vw, 40px) !important;
-  line-height: 1.1 !important;
+  line-height: 0.9 !important;
   letter-spacing: -0.5px !important;
 }
 .l-residences__caption__description,
@@ -1083,25 +1214,12 @@ p.l-place-webgl-caption__subtitle,
 .l-residences__caption__description.text-color-small,
 .l-residences__caption__card p.l-residences__caption__description {
   font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body) !important;
+  font-size: var(--type-body-cream) !important;
   line-height: 1.7 !important;
   letter-spacing: 2.5px !important;
-  color: var(--suites-body-ink) !important;
-  -webkit-text-fill-color: var(--suites-body-ink) !important;
+  color: var(--home-body-cream) !important;
+  -webkit-text-fill-color: var(--home-body-cream) !important;
   opacity: 1 !important;
-}
-.l-residences__caption__button .btn,
-.l-residences__caption__button a,
-.l-residences__caption__card .btn {
-  min-height: 44px;
-  font-family: var(--suites-sans) !important;
-  font-size: var(--type-button) !important;
-  font-weight: 500 !important;
-  letter-spacing: 0.22em !important;
-  text-transform: uppercase !important;
-  color: #1c1917 !important;
-  -webkit-text-fill-color: #1c1917 !important;
-  border-color: rgba(28, 25, 23, 0.55) !important;
 }
 
 /* Gallery 3:4 media pin */
@@ -1147,7 +1265,7 @@ footer.footer {
   display: none !important;
 }
 
-/* Final CTA / footer host */
+/* Final CTA — Mode B cream section */
 .hathor-suites-footer-scroll,
 .hathor-lux-footer-host,
 .hathor-suites-footer-host {
@@ -1163,15 +1281,19 @@ footer.footer {
 .hathor-suites-footer-host .suites-eyebrow,
 .hathor-lux-footer-host .suites-eyebrow {
   margin-bottom: 1rem;
+  color: var(--home-gold) !important;
+  -webkit-text-fill-color: var(--home-gold) !important;
 }
 .hathor-suites-footer-host .lux-footer__headline,
 .hathor-lux-footer-host .lux-footer__headline {
-  font-family: var(--suites-serif-strong) !important;
+  font-family: var(--suites-page-title) !important;
   font-size: var(--type-cta-display) !important;
   line-height: 0.9 !important;
   letter-spacing: -0.5px !important;
-  color: var(--suites-ink) !important;
-  -webkit-text-fill-color: var(--suites-ink) !important;
+  color: var(--home-gold) !important;
+  -webkit-text-fill-color: var(--home-gold) !important;
+  text-shadow: none !important;
+  text-align: left !important;
   max-width: 12em;
   opacity: 1 !important;
 }
@@ -1181,23 +1303,25 @@ footer.footer {
   font-size: var(--type-script-sm) !important;
   line-height: 1.5 !important;
   letter-spacing: 2px !important;
-  color: var(--suites-gold) !important;
-  -webkit-text-fill-color: var(--suites-gold) !important;
+  color: var(--home-gold) !important;
+  -webkit-text-fill-color: var(--home-gold) !important;
   margin-top: 0.55rem;
   margin-bottom: 0;
   opacity: 1 !important;
   text-transform: none !important;
+  text-align: left !important;
 }
 .hathor-suites-footer-host .lux-footer__subhead,
 .hathor-lux-footer-host .lux-footer__subhead {
   margin-top: 1.35rem !important;
   max-width: 32em !important;
   font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body) !important;
+  font-size: var(--type-body-cream) !important;
   line-height: 1.7 !important;
   letter-spacing: 2.5px !important;
-  color: var(--suites-body-ink) !important;
-  -webkit-text-fill-color: var(--suites-body-ink) !important;
+  color: var(--home-body-cream) !important;
+  -webkit-text-fill-color: var(--home-body-cream) !important;
+  text-align: left !important;
   opacity: 1 !important;
 }
 .hathor-suites-footer-host .lux-footer__subscribe,
@@ -1206,10 +1330,10 @@ footer.footer {
 }
 .hathor-suites-footer-host .lux-footer__col-title,
 .hathor-lux-footer-host .lux-footer__col-title {
-  color: var(--suites-gold) !important;
+  color: var(--home-gold) !important;
   font-family: var(--suites-sans) !important;
-  font-size: 11.52px !important;
-  letter-spacing: 0.22em !important;
+  font-size: var(--type-button) !important;
+  letter-spacing: var(--hathor-btn-tracking) !important;
   text-transform: uppercase !important;
 }
 .hathor-suites-footer-host .lux-footer__link,
@@ -1222,11 +1346,11 @@ footer.footer {
 .hathor-lux-footer-host .lux-footer__meta-link,
 .hathor-lux-footer-host .lux-footer__legal,
 .hathor-lux-footer-host .lux-footer__crafted {
-  color: var(--suites-body-ink) !important;
+  color: var(--home-body-cream) !important;
   font-family: var(--suites-body-font) !important;
-  font-size: 14px !important;
-  line-height: 1.5 !important;
-  letter-spacing: 1px !important;
+  font-size: 18px !important;
+  line-height: 1.7 !important;
+  letter-spacing: 2.5px !important;
   opacity: 1 !important;
 }
 .hathor-lux-footer-host .lux-footer.is-copy-ready .lux-footer__headline,
@@ -1247,10 +1371,8 @@ footer.footer {
     --type-hero: clamp(56px, 7vw, 88px);
     --type-section: clamp(44px, 5vw, 60px);
     --type-image: clamp(48px, 5.5vw, 72px);
-    --type-secondary: clamp(36px, 4vw, 52px);
-    --type-script: clamp(32px, 4vw, 56px);
     --type-amenity: clamp(36px, 3.5vw, 48px);
-    --type-cta-display: clamp(48px, 5vw, 68px);
+    --type-cta-display: clamp(44px, 5vw, 60px);
   }
   .l-gallery__caption .suites-hero-lockup {
     width: min(58vw, 26rem) !important;
@@ -1264,21 +1386,19 @@ footer.footer {
   }
 }
 
-/* Phone — typography only (layout lockup positions preserved) */
+/* Phone — typography only */
 @media (max-width: 480px) {
   :root {
     --type-hero: clamp(44px, 11vw, 64px);
     --type-section: clamp(36px, 8vw, 48px);
     --type-image: clamp(40px, 9vw, 56px);
-    --type-secondary: clamp(28px, 7vw, 40px);
-    --type-script: clamp(28px, 7vw, 44px);
-    --type-script-sm: clamp(20px, 5vw, 26px);
-    --type-lead: 18px;
-    --type-body: 16px;
+    --type-script-sm: 24px;
+    --type-body-cream: 16px;
+    --type-body-image: 18px;
     --type-label: 11px;
     --type-button: 11px;
     --type-amenity: clamp(28px, 7vw, 36px);
-    --type-cta-display: clamp(40px, 9vw, 56px);
+    --type-cta-display: clamp(36px, 8vw, 48px);
   }
   .l-gallery__caption .suites-hero-lockup {
     left: 24px !important;
@@ -1286,7 +1406,9 @@ footer.footer {
     width: min(86vw, 22rem) !important;
   }
   .suites-cta-primary,
-  .suites-cta-secondary {
+  .suites-cta-secondary,
+  .suites-cta-primary--on-dark,
+  .suites-cta-secondary--ink {
     min-height: 44px;
   }
   .l-wellness__slider__caption-titles .g1,
@@ -4008,7 +4130,7 @@ body.has-page-scroll-transition .public-site > .lux-footer {
                         Luxury suites aboard Hathor Dahabiya: private Nile journeys shaped for stillness, craft, and panoramic river light
                     </p>
                     <div class="suites-cta-row">
-                        <a class="suites-cta-primary suites-cta-primary--on-dark" href="/rooms" target="_top" data-ajax-page-ignore>Explore the Suites</a>
+                        <a class="suites-cta-link suites-cta-link--ivory" href="/rooms" target="_top" data-ajax-page-ignore>Explore the Suites &rarr;</a>
                         <a class="suites-cta-secondary " href="/contact" target="_top" data-ajax-page-ignore>Speak with Concierge</a>
                     </div>
                 </div>
@@ -4094,7 +4216,7 @@ with&nbsp;Unrivaled Views
                 </p>
             </div>
             <div class="col col--md-3 offset--md-2">
-                <p class="l-intro__opening-subtitle text-c1 leading-trim text-color-primary" data-reveal="text">
+                <p class="l-intro__opening-subtitle text-t1 leading-trim" data-reveal="text">
                     Luxury Rooms, Elegant Suites, and Royal Suites with panoramic Nile views aboard Hathor Dahabiya.
                 </p>
                     <a class="suites-cta-link suites-cta-link--ink" href="/luxury-cabins-Nile-Cruise" target="_top" data-ajax-page-ignore>Discover the Collection &rarr;</a>
@@ -4364,7 +4486,7 @@ with&nbsp;Unrivaled Views
                 </p>
             </div>
             <div class="col col--xs-2 pl-layout">
-                <p class="l-intro__opening-subtitle text-c1 leading-trim text-color-primary">
+                <p class="l-intro__opening-subtitle text-t1 leading-trim">
                     Luxury Rooms, Elegant Suites, and Royal Suites with panoramic Nile views aboard Hathor Dahabiya.
                 </p>
             </div>
