@@ -1,14 +1,13 @@
 /**
- * Suites art direction — TYPOGRAPHY / COLOUR / CTA ONLY.
+ * Suites art direction — TYPOGRAPHY / COLOUR / CTA + TEXT LOCKUP PLACEMENT.
  * Built into public/suites-springs/index.html as data-hathor-suites-palette.
  *
- * Allowed: font-family, font-size, line-height, letter-spacing, text-align,
- *          colour, surface fills, button chrome, max-width on text nodes,
- *          margins between eyebrow / title / script / body / CTA.
+ * Allowed: font/colour/CTA chrome; max-width + text-align on text nodes;
+ *          margins between eyebrow/title/script/body/CTA; position/top/left/
+ *          right/bottom/inset/translate ONLY on the text-lockup allowlist.
  *
- * Forbidden: position, top/left/right/bottom/inset, translate for placement,
- *            min-height/height on sections, wrapper width, flex/grid on
- *            structural containers, section padding used to reposition.
+ * Forbidden on non-text: min-height/height, section width, flex/grid on
+ *          structural containers, section padding, sticky/WebGL/image geometry.
  *
  * Springs html { font-size: 10px } — all type tokens are px (never rem).
  *
@@ -231,9 +230,39 @@ h2 {
   text-overflow: clip !important;
 }
 
+/*
+ * TEXT LOCKUP ALLOWLIST — coordinates only on these selectors:
+ *   .suites-hero-lockup
+ *   .l-intro__opening
+ *   .l-intro__content-title
+ *   .l-intro__content-text
+ *   #wellness .l-wellness__webgl-title
+ *   #wellness .l-wellness__webgl-caption > p.text-t1
+ *   .l-wellness__slider__caption-titles
+ *   .l-wellness__slider__caption-text
+ * Existing Springs ancestors already supply positioning contexts.
+ * No section/image/sticky/WebGL/panel geometry changes.
+ */
+
 /* ========================================
-   01 — RIVER SUITES HERO (type / colour / rhythm only)
+   01 — RIVER SUITES HERO
    ======================================== */
+@media (min-width: 981px) {
+  .l-gallery__caption .suites-hero-lockup {
+    position: absolute !important;
+    left: 5vw !important;
+    bottom: 3.5vh !important;
+    top: auto !important;
+    right: auto !important;
+    max-width: 28em;
+    text-align: left !important;
+    z-index: 5;
+    pointer-events: none;
+  }
+  .l-gallery__caption .suites-hero-lockup .suites-cta-row {
+    pointer-events: auto;
+  }
+}
 .l-gallery__caption .suites-hero-lockup .suites-eyebrow {
   margin: 0 0 12px !important;
 }
@@ -271,8 +300,21 @@ h2 {
 }
 
 /* ========================================
-   02 — UNRIVALED VIEWS (type / colour / rhythm only)
+   02 — UNRIVALED VIEWS
    ======================================== */
+@media (min-width: 981px) {
+  .l-intro.is-hidden--md-down .l-intro__opening {
+    position: absolute !important;
+    left: 5.5vw !important;
+    top: 18vh !important;
+    right: auto !important;
+    bottom: auto !important;
+    margin: 0 !important;
+    max-width: 34em;
+    text-align: left !important;
+    z-index: 5;
+  }
+}
 .l-intro.is-hidden--md-down .l-intro__opening .h1 {
   font-family: var(--font-display) !important;
   font-size: var(--type-unrivaled) !important;
@@ -299,8 +341,32 @@ h2 {
 }
 
 /* ========================================
-   03 — STEP ABOARD (type / colour / rhythm only)
+   03 — STEP ABOARD
    ======================================== */
+@media (min-width: 981px) {
+  .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-title {
+    position: absolute !important;
+    left: 5.5vw !important;
+    top: 14vh !important;
+    right: auto !important;
+    bottom: auto !important;
+    margin: 0 !important;
+    max-width: 34em;
+    text-align: left !important;
+    z-index: 5;
+  }
+  .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-text {
+    position: absolute !important;
+    left: 5.5vw !important;
+    top: calc(14vh + 165px) !important;
+    right: auto !important;
+    bottom: auto !important;
+    margin: 0 !important;
+    max-width: 28em;
+    text-align: left !important;
+    z-index: 5;
+  }
+}
 .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-title .h2 {
   font-family: var(--font-display) !important;
   font-size: var(--type-step) !important;
@@ -326,8 +392,29 @@ h2 {
 }
 
 /* ========================================
-   04 — COMFORT (type / colour / rhythm only)
+   04 — COMFORT
    ======================================== */
+@media (min-width: 981px) {
+  #wellness .l-wellness__webgl-title {
+    position: absolute !important;
+    right: 5.5vw !important;
+    bottom: 12vh !important;
+    left: auto !important;
+    top: auto !important;
+    max-width: 18em;
+    text-align: left !important;
+    z-index: 5;
+  }
+  #wellness .l-wellness__webgl-caption > p.text-t1 {
+    position: absolute !important;
+    left: 5.5vw !important;
+    bottom: 14vh !important;
+    right: auto !important;
+    top: auto !important;
+    max-width: 28em !important;
+    text-align: left !important;
+  }
+}
 #wellness .l-wellness__webgl-caption > p.text-t1 {
   max-width: 28em !important;
   color: var(--white) !important;
@@ -361,11 +448,35 @@ h2 {
 }
 
 /* ========================================
-   05 — AMENITY PANEL (type / colour only)
+   05 — AMENITY PANEL (text wrappers inside panel only)
    ======================================== */
 .l-wellness__slider__caption {
   background: var(--cream) !important;
   background-color: var(--cream) !important;
+}
+@media (min-width: 981px) {
+  .l-wellness__slider__caption-titles {
+    position: absolute !important;
+    left: 8% !important;
+    top: 16vh !important;
+    right: auto !important;
+    bottom: auto !important;
+    margin: 0 !important;
+    max-width: 20em;
+    text-align: left !important;
+    z-index: 4;
+  }
+  .l-wellness__slider__caption-text {
+    position: absolute !important;
+    left: 8% !important;
+    top: 48vh !important;
+    right: auto !important;
+    bottom: auto !important;
+    margin: 0 !important;
+    max-width: 28em;
+    text-align: left !important;
+    z-index: 4;
+  }
 }
 .l-wellness__slider__caption-titles .js-content-animation-link {
   text-decoration: none;
@@ -512,6 +623,12 @@ h2 {
   background: var(--white) !important;
   color: var(--ink) !important;
   -webkit-text-fill-color: var(--ink) !important;
+}
+
+/* Hero CTA stack — keep chrome, stack as one lockup column */
+.l-gallery__caption .suites-hero-lockup .suites-cta-row a:first-of-type,
+.l-gallery__caption .suites-hero-lockup .suites-cta-row a:nth-of-type(2) {
+  display: flex !important;
 }
 
 .hathor-suites-footer-host .lux-footer__headline,
