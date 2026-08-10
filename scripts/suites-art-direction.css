@@ -1,31 +1,28 @@
 /**
- * Suites visual language — cloned from LIVE homepage design system.
+ * Suites visual language — homepage DESIGN LANGUAGE (restraint), not literal px clones.
  * Injected by scripts/build-suites-exact-homepage.mjs as data-hathor-suites-palette.
  *
- * Allowed: typography, text/button colors, button chrome, text spacing inside wrappers.
+ * Allowed: typography, text/button colors, section/bg colours, text wrap/align/spacing in wrappers.
  * Forbidden: layout geometry, images, GSAP/ST/Lenis/WebGL, CTA destinations, homepage files.
+ *
+ * LOCKED (8baae65 — do not regress):
+ *   Hero Explore  → .hero-cta glass + gold border
+ *   Hero Speak    → .public-btn-outline-gold.home-am-opening__cta (white outline)
+ *   Cream CTAs    → #faf8f5 + 1px #b69f64 + shadow 0 8px 22px rgba(44,36,25,.1)
+ *   Ink #1c1917   → available for high-contrast dark type (not automatic everywhere)
  *
  * Springs html { font-size: 10px } — all type tokens are px (never rem).
  *
- * Homepage roles (prod computed @ 1440):
- *   HERO_DISPLAY     .hero-line--right      Bitho 120 / #fff / lh 1.15 / hero shadow
- *   HERO_SCRIPT      .hero-line--left       Carista 174 / #b69f64 / hero shadow
- *   PAGE_TITLE       .typo-page-title       Rolling Fonte 72 / #b69f64 / ls -0.5 / lh 0.9
- *   PAGE_SUBTITLE    .typo-page-subtitle    Besty Script 28 / #b69f64 / ls 2px
- *   ON_IMAGE_TITLE   .typo-on-images-title  Bitho 90 / #fff / lh 0.8 / image shadow
- *   ON_IMAGE_BODY    .typo-on-images-body   Rollgates 22 / #fff / ls 2.3 / image shadow
- *   BODY_CREAM       .typo-body-text        Rollgates 18 / #705000 / ls 2.5 / lh 1.7
- *   CTA_PILL         a.btn / Discover More  Jakarta 11.52 / #b69f64 on #faf8f5 / pill
- *   CTA_HERO         .hero-cta              Jakarta 11.52 / #fff on rgba(255,255,255,.06)
- *   NAV_LABEL        nav a                  Jakarta 13 / #faf8f5 / uppercase / ls ~0.16em
- *
- * Modes only:
- *   A IMAGE/DARK — title #fff, body #fff, accent #b69f64
- *   B CREAM      — title #b69f64, body #705000, accent #b69f64
- *   C GOLD FIELD — same as A (homepage has no separate gold-text system)
+ * Roles (restrained):
+ *   DISPLAY     Bitho — one dominant title per section
+ *   SECTION     Rolling Fonte — cream titles / quiet amenity rail
+ *   SCRIPT      Besty — short accent only (not Carista)
+ *   BODY        Plus Jakarta — long readable paragraphs
+ *   EDITORIAL   Rollgates — SHORT statements only (never long body)
+ *   UI          Plus Jakarta — CTAs / eyebrows
  */
 :root {
-  /* —— Homepage palette ONLY (no Suites inventions) —— */
+  /* —— Homepage palette ONLY —— */
   --home-white: #ffffff;
   --home-gold: #b69f64;
   --home-gold-soft: #d4c28a;
@@ -34,6 +31,9 @@
   --home-ink: #1c1917;
   --home-ink-alt: #1a1a1a;
   --home-nav: #faf8f5;
+  --home-surface-cream: #ece8df; /* .public-site / .ui-light */
+  --home-surface-ivory: #faf8f5;
+  --home-surface-dark: #1a1410; /* hero photography veil family */
   --home-hero-btn-bg: rgba(255, 255, 255, 0.06);
   --home-hero-btn-hover-bg: rgba(182, 159, 100, 0.35);
   --home-btn-shadow: 0 8px 22px rgba(44, 36, 25, 0.1);
@@ -50,12 +50,11 @@
 
   --suites-display: "Bitho Luxury", cursive;
   --suites-page-title: "Rolling Fonte", "Gamgote", Georgia, serif;
-  --suites-script-hero: "Carista", cursive;
   --suites-script-sm: "Besty Script", cursive;
-  --suites-body-font: "Rollgates Luxury Italic", Georgia, serif;
+  --suites-editorial: "Rollgates Luxury Italic", Georgia, serif;
+  --suites-body-font: "Plus Jakarta Sans", system-ui, sans-serif;
   --suites-sans: "Plus Jakarta Sans", system-ui, sans-serif;
 
-  /* Aliases used by residual selectors */
   --suites-serif: var(--suites-page-title);
   --suites-script: var(--suites-script-sm);
   --suites-gold: var(--home-gold);
@@ -63,21 +62,25 @@
   --suites-ivory: var(--home-white);
   --suites-ink: var(--home-ink);
   --suites-body-ink: var(--home-body-cream);
-  --suites-cream: #f5eacf;
+  --suites-cream: #ece8df; /* homepage .public-site — not mustard #f5eacf */
   --suites-cream-soft: #ece8df;
-  --suites-gold-deep: #8b6914;
+  --suites-gold-deep: #8b6914; /* accent / menu only — never large surfaces */
   --suites-muted: var(--home-body-cream);
 
-  --type-hero: clamp(64px, 7.2vw, 100px);
-  --type-section: clamp(52px, 5.5vw, 72px);
-  --type-image: clamp(56px, 6.5vw, 90px);
-  --type-script-sm: 28px;
+  /* Restrained scales — homepage proportion, not billboard px clones */
+  --type-hero: clamp(48px, 5.2vw, 68px);
+  --type-section: clamp(34px, 3.6vw, 48px);
+  --type-image: clamp(36px, 3.8vw, 54px);
+  --type-comfort: clamp(40px, 4vw, 56px);
+  --type-script-sm: 22px;
+  --type-body: 18px;
+  --type-body-on-image: 17px;
   --type-body-cream: 18px;
-  --type-body-image: 22px;
-  --type-label: 13px;
+  --type-body-image: 17px;
+  --type-label: 12px;
   --type-button: 11.52px;
-  --type-amenity: clamp(40px, 3.5vw, 56px);
-  --type-cta-display: clamp(52px, 5.5vw, 72px);
+  --type-amenity: clamp(20px, 1.65vw, 28px);
+  --type-cta-display: clamp(40px, 4vw, 56px);
 
   --hathor-btn-width: 200px;
   --hathor-btn-height: 46px;
@@ -86,39 +89,81 @@
   --hathor-btn-tracking: 0.18em;
   --lux-gold: #b69f64;
   --lux-gold-rgb: 182, 159, 100;
-  --lux-cream: #f5eacf;
-  --lux-cream-rgb: 245, 234, 207;
+  --lux-cream: #ece8df;
+  --lux-cream-rgb: 236, 232, 223;
   --lux-beige: #ece8df;
   --lux-beige-rgb: 236, 232, 223;
   --c-beige-background: #ece8df;
   --c-beige-background-rgb: 236, 232, 223;
-  --c-beige: #f5eacf;
-  --c-beige-rgb: 245, 234, 207;
-  --c-dark-green: #8b6914;
-  --c-dark-green-rgb: 139, 105, 20;
+  --c-beige: #ece8df;
+  --c-beige-rgb: 236, 232, 223;
+  /* Remap former mustard “walls” → homepage cream surface (.public-site) */
+  --c-dark-green: #ece8df;
+  --c-dark-green-rgb: 236, 232, 223;
   --c-green: #b69f64;
   --c-green-rgb: 182, 159, 100;
   --c-light-green: #d4c28a;
   --c-light-green-rgb: 212, 194, 138;
   --c-olive: #b69f64;
   --c-olive-rgb: 182, 159, 100;
-  --c-dark-blue: #8b6914;
-  --c-dark-blue-rgb: 139, 105, 20;
+  --c-dark-blue: #ece8df;
+  --c-dark-blue-rgb: 236, 232, 223;
   --c-blue: #b69f64;
   --c-blue-rgb: 182, 159, 100;
-  --c-light-blue: #f5eacf;
-  --c-light-blue-rgb: 245, 234, 207;
-  --c-sky: #f5eacf;
-  --c-sky-rgb: 245, 234, 207;
-  --c-white: #f5eacf;
-  --c-white-rgb: 245, 234, 207;
+  --c-light-blue: #faf8f5;
+  --c-light-blue-rgb: 250, 248, 245;
+  --c-sky: #faf8f5;
+  --c-sky-rgb: 250, 248, 245;
+  --c-white: #faf8f5;
+  --c-white-rgb: 250, 248, 245;
   --c-black: #1c1917;
   --c-black-rgb: 28, 25, 23;
   --cookie-height: 0px;
 }
 
+/* Force cream surfaces on former mustard panels (colour only — no geometry) */
+.ui-dark,
+.l-wellness__slider__caption.ui-dark,
+.l-intro__content.ui-dark,
+.l-wellness__slider__caption,
+.l-intro.is-hidden--md-down .l-intro__content {
+  background: var(--home-surface-cream) !important;
+  background-color: var(--home-surface-cream) !important;
+  background-image: none !important;
+  color: var(--home-body-cream) !important;
+}
+.l-wellness__slider__caption .l-wellness__slider__caption-bg,
+.l-wellness__slider__caption [class*="gradient"],
+.l-wellness__slider__caption::before,
+.l-wellness__slider__caption::after,
+.l-intro__content::before,
+.l-intro__content::after {
+  background: transparent !important;
+  background-image: none !important;
+  opacity: 0 !important;
+}
+
+/* Amenity body — readable Jakarta only (kill residual italic display faces) */
+.l-wellness__slider__caption-text p,
+.l-wellness__slider__caption-text p.text-t1,
+.l-wellness__slider__caption-text p.text-t2,
+.l-wellness__slider__caption .l-wellness__slider__caption-text p {
+  font-family: var(--suites-sans) !important;
+  font-size: var(--type-body) !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  line-height: 1.65 !important;
+  letter-spacing: 0.01em !important;
+  color: var(--home-body-cream) !important;
+  -webkit-text-fill-color: var(--home-body-cream) !important;
+  text-shadow: none !important;
+  text-align: left !important;
+  opacity: 1 !important;
+  max-width: 26em;
+}
+
 html, body {
-  background: var(--suites-cream-soft);
+  background: var(--home-surface-cream);
   color: var(--home-ink);
   font-family: var(--suites-body-font);
   -webkit-font-smoothing: antialiased;
@@ -188,7 +233,7 @@ p:not(.g1):not(.g2):not(.h0):not(.h1):not(.h2):not(.h3):not(.text-c1):not(.text-
   opacity: 1 !important;
 }
 
-/* Mode B — cream body (.typo-body-text) */
+/* Mode B — cream body: readable Plus Jakarta (not decorative italic) */
 .ui-light p,
 .ui-light .text-t1,
 .ui-light .l-intro__opening-subtitle,
@@ -196,39 +241,48 @@ p:not(.g1):not(.g2):not(.h0):not(.h1):not(.h2):not(.h3):not(.text-c1):not(.text-
 .l-residences__caption__description,
 .hathor-suites-footer-host .lux-footer__subhead,
 .hathor-lux-footer-host .lux-footer__subhead {
-  font-size: var(--type-body-cream) !important;
-  line-height: 1.7 !important;
-  letter-spacing: 2.5px !important;
+  font-family: var(--suites-body-font) !important;
+  font-size: var(--type-body) !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  line-height: 1.65 !important;
+  letter-spacing: 0.01em !important;
   color: var(--home-body-cream) !important;
   -webkit-text-fill-color: var(--home-body-cream) !important;
 }
 
-/* Mode A — image/dark body (.typo-on-images-body) — photography only */
+/* Mode A — body on photography */
 .l-gallery__caption .suites-hero-support,
 .l-wellness__webgl-caption > p.text-t1,
 .l-wellness__slider__caption-text p,
 .l-nature-bg-caption__text p,
 .l-place-webgl__text p {
-  font-size: var(--type-body-image) !important;
-  line-height: 1.35 !important;
-  letter-spacing: 2.3px !important;
+  font-family: var(--suites-body-font) !important;
+  font-size: var(--type-body-on-image) !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
+  letter-spacing: 0.01em !important;
   color: var(--home-white) !important;
   -webkit-text-fill-color: var(--home-white) !important;
   text-shadow: var(--home-image-shadow);
   opacity: 1 !important;
 }
 
-/* Mode G — solid gold / .ui-dark panels: homepage ink (white washes out on #b69f64) */
+/* Former “gold wall” panels → homepage cream surface (.public-site #ece8df) */
 .ui-dark p,
 .ui-dark .text-t1,
 .ui-dark .text-t2,
 .ui-dark [class*="__text"],
 .l-intro__content-text p {
-  font-size: var(--type-body-image) !important;
-  line-height: 1.45 !important;
-  letter-spacing: 2.3px !important;
-  color: var(--home-ink) !important;
-  -webkit-text-fill-color: var(--home-ink) !important;
+  font-family: var(--suites-body-font) !important;
+  font-size: var(--type-body) !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  line-height: 1.65 !important;
+  letter-spacing: 0.01em !important;
+  color: var(--home-body-cream) !important;
+  -webkit-text-fill-color: var(--home-body-cream) !important;
   text-shadow: none !important;
   opacity: 1 !important;
 }
@@ -258,35 +312,25 @@ p.l-place-webgl-caption__subtitle,
   max-width: 18em;
 }
 
-/* Solid antique-gold panels: gold script washes out — cream accent from homepage palette.
-   Beat #wellness ID specificity from the gold script rule above. */
-#wellness.ui-dark .l-wellness__webgl-title .text-c1,
-#wellness .ui-dark .l-wellness__webgl-title .text-c1,
-.ui-dark#wellness .l-wellness__webgl-title .text-c1,
+/* Script on cream panels (former gold walls) — gold accent, not washed cream-on-cream */
 .ui-dark p.l-nature-bg-caption__subtitle,
 .ui-dark p.l-wellness__caption__subtitle,
 .ui-dark p.l-place__caption__subtitle,
 .ui-dark p.l-place-webgl-caption__subtitle,
-.ui-dark .l-wellness__webgl-title .text-c1,
 .ui-dark .lux-footer__script,
 .l-wellness__slider__caption.ui-dark .text-c1 {
-  color: var(--home-btn-cream) !important;
-  -webkit-text-fill-color: var(--home-btn-cream) !important;
+  color: var(--home-gold) !important;
+  -webkit-text-fill-color: var(--home-gold) !important;
 }
 
-/* Comfort script: never gold-on-gold. Cream + shadow reads on photo and gold chrome. */
+/* Comfort script on photography — soft gold accent attached to title */
 #wellness .l-wellness__webgl-title .text-c1 {
-  color: var(--home-btn-cream) !important;
-  -webkit-text-fill-color: var(--home-btn-cream) !important;
+  color: var(--home-gold-soft) !important;
+  -webkit-text-fill-color: var(--home-gold-soft) !important;
   text-shadow: var(--home-image-shadow);
-}
-/* When Comfort sits on solid gold chrome, use ink for maximum contrast */
-#wellness.ui-dark .l-wellness__webgl-title .text-c1,
-#wellness .ui-dark .l-wellness__webgl-title .text-c1,
-.ui-dark#wellness .l-wellness__webgl-title .text-c1 {
-  color: var(--home-ink) !important;
-  -webkit-text-fill-color: var(--home-ink) !important;
-  text-shadow: none !important;
+  letter-spacing: 1px !important;
+  line-height: 1.35 !important;
+  max-width: 12em;
 }
 
 /* Eyebrow / label = nav language */
@@ -316,14 +360,14 @@ p.l-place-webgl-caption__subtitle,
 
 /* Theme surfaces — keep existing panel colors; text follows modes */
 .ui-dark {
-  --t-background: #8b6914;
-  --t-background-rgb: 139, 105, 20;
-  --t-text: #1c1917;
-  --t-heading: #1c1917;
-  --t-primary: #1c1917;
-  --t-secondary: #faf8f5;
-  background-color: #8b6914 !important;
-  color: var(--home-ink) !important;
+  --t-background: #ece8df;
+  --t-background-rgb: 236, 232, 223;
+  --t-text: #705000;
+  --t-heading: #b69f64;
+  --t-primary: #b69f64;
+  --t-secondary: #1c1917;
+  background-color: var(--home-surface-cream) !important;
+  color: var(--home-body-cream) !important;
 }
 .ui-light,
 .ui-light-background {
@@ -341,8 +385,8 @@ p.l-place-webgl-caption__subtitle,
 .ui-dark .g2,
 .ui-dark h1,
 .ui-dark h2 {
-  color: var(--home-ink) !important;
-  -webkit-text-fill-color: var(--home-ink) !important;
+  color: var(--home-gold) !important;
+  -webkit-text-fill-color: var(--home-gold) !important;
   text-shadow: none !important;
 }
 .ui-light .h0,
@@ -681,12 +725,14 @@ p.l-place-webgl-caption__subtitle,
   max-width: 9em;
 }
 .l-gallery__caption .suites-hero-lockup .suites-hero-support {
-  margin-top: 1.15rem !important;
-  max-width: 28em !important;
+  margin-top: 1rem !important;
+  max-width: 22em !important;
   font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body-image) !important;
-  line-height: 1.35 !important;
-  letter-spacing: 2.3px !important;
+  font-size: var(--type-body-on-image) !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
+  letter-spacing: 0.01em !important;
   color: var(--home-white) !important;
   -webkit-text-fill-color: var(--home-white) !important;
   text-shadow: var(--home-image-shadow) !important;
@@ -721,33 +767,36 @@ p.l-place-webgl-caption__subtitle,
   max-width: min(40vw, 26rem);
 }
 .l-intro.is-hidden--md-down .l-intro__opening .h1 {
-  /* Over bright photography — ink (homepage dark) beats washed white */
+  /* Controlled editorial display — 2–3 lines inside existing wrapper */
   font-family: var(--suites-display) !important;
   font-size: var(--type-image) !important;
-  line-height: 0.8 !important;
+  line-height: 1.02 !important;
   letter-spacing: normal !important;
   color: var(--home-ink) !important;
   -webkit-text-fill-color: var(--home-ink) !important;
   text-shadow: none !important;
   text-align: left !important;
-  max-width: 12em;
+  max-width: 9.5em;
 }
 .l-intro.is-hidden--md-down .l-intro__opening-subtitle,
 .l-intro__opening-subtitle,
 p.l-intro__opening-subtitle.text-t1,
 p.l-intro__opening-subtitle.text-c1,
 p.l-intro__opening-subtitle.text-color-primary {
-  margin-top: 1.1rem !important;
+  margin-top: 0.85rem !important;
   font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body-image) !important;
-  line-height: 1.35 !important;
-  letter-spacing: 2.3px !important;
+  font-size: var(--type-body) !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  line-height: 1.65 !important;
+  letter-spacing: 0.01em !important;
   color: var(--home-ink) !important;
   -webkit-text-fill-color: var(--home-ink) !important;
   text-shadow: none !important;
   text-transform: none !important;
   text-align: left !important;
   opacity: 1 !important;
+  max-width: 28em;
 }
 /* Opening sits on bright photography — ink, not washed white */
 .l-intro.is-hidden--md-down .l-intro__opening-subtitle,
@@ -763,7 +812,7 @@ p.l-intro__opening-subtitle.text-color-primary {
   margin-top: 1.5rem;
 }
 
-/* ——— 03 Step Aboard (Mode A on gold field) ——— */
+/* ——— 03 Step Aboard (cream surface — restrained editorial) ——— */
 .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-title {
   padding-top: clamp(4.5rem, 12vh, 7rem);
   position: relative;
@@ -771,12 +820,12 @@ p.l-intro__opening-subtitle.text-color-primary {
 }
 .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-title .h2 {
   font-family: var(--suites-display) !important;
-  font-size: var(--type-image) !important;
-  line-height: 0.8 !important;
+  font-size: var(--type-section) !important;
+  line-height: 1.05 !important;
   letter-spacing: normal !important;
-  max-width: 14em;
-  color: var(--home-ink) !important;
-  -webkit-text-fill-color: var(--home-ink) !important;
+  max-width: 11em;
+  color: var(--home-gold) !important;
+  -webkit-text-fill-color: var(--home-gold) !important;
   text-shadow: none !important;
   text-align: left !important;
   position: relative;
@@ -790,18 +839,20 @@ p.l-intro__opening-subtitle.text-color-primary {
   pointer-events: none;
 }
 .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-text {
-  max-width: 30em;
+  max-width: 28em;
   position: relative;
   z-index: 2;
 }
 .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-text p {
   font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body-image) !important;
-  line-height: 1.45 !important;
-  letter-spacing: 2.3px !important;
-  max-width: 30em;
-  color: var(--home-ink) !important;
-  -webkit-text-fill-color: var(--home-ink) !important;
+  font-size: var(--type-body) !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  line-height: 1.65 !important;
+  letter-spacing: 0.01em !important;
+  max-width: 28em;
+  color: var(--home-body-cream) !important;
+  -webkit-text-fill-color: var(--home-body-cream) !important;
   text-shadow: none !important;
   text-align: left !important;
   opacity: 1 !important;
@@ -809,35 +860,43 @@ p.l-intro__opening-subtitle.text-color-primary {
 
 /* ——— 04 Comfort ——— */
 #wellness .l-wellness__webgl-title {
-  max-width: min(38vw, 18rem);
+  max-width: min(42vw, 16rem);
+  overflow: visible;
 }
 #wellness .l-wellness__webgl-title .g1 {
   font-family: var(--suites-display) !important;
-  font-size: var(--type-image) !important;
-  line-height: 0.8 !important;
+  font-size: var(--type-comfort) !important;
+  line-height: 1 !important;
   letter-spacing: normal !important;
   color: var(--home-white) !important;
   -webkit-text-fill-color: var(--home-white) !important;
   text-shadow: var(--home-image-shadow) !important;
   text-align: left !important;
+  white-space: nowrap !important;
+  max-width: 100%;
+  overflow: visible !important;
 }
 #wellness .l-wellness__webgl-title .text-c1 {
   font-family: var(--suites-script-sm) !important;
   font-size: var(--type-script-sm) !important;
-  line-height: 1.5 !important;
-  letter-spacing: 2px !important;
-  color: var(--home-gold) !important;
-  -webkit-text-fill-color: var(--home-gold) !important;
+  line-height: 1.35 !important;
+  letter-spacing: 1px !important;
+  color: var(--home-gold-soft) !important;
+  -webkit-text-fill-color: var(--home-gold-soft) !important;
   opacity: 1 !important;
-  margin-bottom: 0.35rem !important;
+  margin-top: 0.35rem !important;
+  margin-bottom: 0.15rem !important;
   text-align: left !important;
+  max-width: 12em;
 }
 #wellness .l-wellness__webgl-caption > p.text-t1 {
-  max-width: 30em !important;
+  max-width: 26em !important;
   font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body-image) !important;
-  line-height: 1.35 !important;
-  letter-spacing: 2.3px !important;
+  font-size: var(--type-body-on-image) !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
+  letter-spacing: 0.01em !important;
   color: var(--home-white) !important;
   -webkit-text-fill-color: var(--home-white) !important;
   text-shadow: var(--home-image-shadow);
@@ -845,7 +904,7 @@ p.l-intro__opening-subtitle.text-color-primary {
   opacity: 1 !important;
 }
 
-/* Amenity rail = scaled .typo-page-title face; Mode A colors */
+/* Amenity rail — quiet secondary headlines, not page titles */
 .l-wellness__slider__caption-titles .js-content-animation-link {
   opacity: 0.4 !important;
   display: block;
@@ -864,8 +923,8 @@ p.l-intro__opening-subtitle.text-color-primary {
 .l-wellness__slider__caption-titles .js-content-animation-link p {
   font-family: var(--suites-page-title) !important;
   font-size: var(--type-amenity) !important;
-  line-height: 0.9 !important;
-  letter-spacing: -0.5px !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.02em !important;
   font-weight: 400 !important;
   opacity: 1 !important;
   max-width: none !important;
@@ -876,8 +935,8 @@ p.l-intro__opening-subtitle.text-color-primary {
 .l-wellness__slider__caption-titles .is-current,
 .l-wellness__slider__caption-titles [aria-current="true"] {
   opacity: 1 !important;
-  color: var(--home-gold) !important;
-  -webkit-text-fill-color: var(--home-gold) !important;
+  color: var(--home-ink) !important;
+  -webkit-text-fill-color: var(--home-ink) !important;
 }
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .g1,
 .l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles h2,
@@ -906,35 +965,39 @@ p.l-intro__opening-subtitle.text-color-primary {
   -webkit-text-fill-color: var(--home-ink) !important;
 }
 .l-wellness__slider__caption-text {
-  max-width: 30em;
+  max-width: 26em;
 }
 .l-wellness__slider__caption-text p {
   font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body-image) !important;
-  line-height: 1.35 !important;
-  letter-spacing: 2.3px !important;
-  max-width: 30em;
-  color: var(--home-white) !important;
-  -webkit-text-fill-color: var(--home-white) !important;
-  text-shadow: var(--home-image-shadow);
+  font-size: var(--type-body) !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  line-height: 1.65 !important;
+  letter-spacing: 0.01em !important;
+  max-width: 26em;
+  color: var(--home-body-cream) !important;
+  -webkit-text-fill-color: var(--home-body-cream) !important;
+  text-shadow: none !important;
+  text-align: left !important;
   opacity: 1 !important;
 }
 
-/* ——— Nature / Place (Mode A) ——— */
+/* ——— Nature / Place (Mode A photography) ——— */
 #nature .l-nature-bg-caption .g1 {
   font-family: var(--suites-display) !important;
   font-size: var(--type-image) !important;
-  line-height: 0.8 !important;
+  line-height: 1.02 !important;
   color: var(--home-white) !important;
   -webkit-text-fill-color: var(--home-white) !important;
   text-shadow: var(--home-image-shadow) !important;
 }
 #nature .l-nature-bg-caption__text p {
   font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body-image) !important;
-  line-height: 1.35 !important;
-  letter-spacing: 2.3px !important;
-  max-width: 32em;
+  font-size: var(--type-body-on-image) !important;
+  font-style: normal !important;
+  line-height: 1.6 !important;
+  letter-spacing: 0.01em !important;
+  max-width: 28em;
   color: var(--home-white) !important;
   -webkit-text-fill-color: var(--home-white) !important;
   text-shadow: var(--home-image-shadow);
@@ -943,39 +1006,57 @@ p.l-intro__opening-subtitle.text-color-primary {
 .l-place-webgl-caption .g1 {
   font-family: var(--suites-display) !important;
   font-size: var(--type-image) !important;
-  line-height: 0.8 !important;
+  line-height: 1.02 !important;
   color: var(--home-white) !important;
   -webkit-text-fill-color: var(--home-white) !important;
   text-shadow: var(--home-image-shadow) !important;
 }
 .l-place-webgl__text p {
   font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body-image) !important;
-  line-height: 1.35 !important;
-  letter-spacing: 2.3px !important;
-  max-width: 32em;
+  font-size: var(--type-body-on-image) !important;
+  font-style: normal !important;
+  line-height: 1.6 !important;
+  letter-spacing: 0.01em !important;
+  max-width: 28em;
   color: var(--home-white) !important;
   -webkit-text-fill-color: var(--home-white) !important;
   text-shadow: var(--home-image-shadow);
   opacity: 1 !important;
 }
 
-/* Cream editorial statements = scaled page title */
+/* Cream chapter short titles = Rolling gold display */
 .l-design .h3,
-.l-design p.text-t1,
 .l-interiors .h3,
-.l-interiors p.text-t1,
-.l-map p.text-t1,
 .l-map .h3 {
   font-family: var(--suites-page-title) !important;
   font-size: clamp(28px, 2.8vw, 40px) !important;
   line-height: 0.9 !important;
-  max-width: 22em;
+  max-width: 14em;
   color: var(--home-gold) !important;
   -webkit-text-fill-color: var(--home-gold) !important;
   letter-spacing: -0.5px;
   text-transform: none !important;
   text-align: left !important;
+  opacity: 1 !important;
+}
+
+/* Long cream “title” paragraphs (design statement) = readable body, not pale gold billboard */
+.l-design__title .h3,
+.l-design__title h3,
+.l-design p.text-t1,
+.l-interiors p.text-t1,
+.l-map p.text-t1 {
+  font-family: var(--suites-body-font) !important;
+  font-size: clamp(17px, 1.25vw, 20px) !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  line-height: 1.65 !important;
+  letter-spacing: 0.01em !important;
+  max-width: 36em;
+  color: var(--home-body-cream) !important;
+  -webkit-text-fill-color: var(--home-body-cream) !important;
+  text-transform: none !important;
+  text-align: center !important;
   opacity: 1 !important;
 }
 
@@ -1012,9 +1093,10 @@ p.l-intro__opening-subtitle.text-color-primary {
 .l-residences__caption__description.text-color-small,
 .l-residences__caption__card p.l-residences__caption__description {
   font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body-cream) !important;
-  line-height: 1.7 !important;
-  letter-spacing: 2.5px !important;
+  font-size: var(--type-body) !important;
+  font-style: normal !important;
+  line-height: 1.65 !important;
+  letter-spacing: 0.01em !important;
   color: var(--home-body-cream) !important;
   -webkit-text-fill-color: var(--home-body-cream) !important;
   opacity: 1 !important;
@@ -1187,16 +1269,19 @@ footer.footer {
 /* Phone — typography only */
 @media (max-width: 480px) {
   :root {
-    --type-hero: clamp(44px, 11vw, 64px);
-    --type-section: clamp(36px, 8vw, 48px);
-    --type-image: clamp(40px, 9vw, 56px);
-    --type-script-sm: 24px;
+    --type-hero: clamp(40px, 10vw, 56px);
+    --type-section: clamp(30px, 7vw, 40px);
+    --type-image: clamp(32px, 8vw, 44px);
+    --type-comfort: clamp(36px, 9vw, 48px);
+    --type-script-sm: 20px;
+    --type-body: 16px;
     --type-body-cream: 16px;
-    --type-body-image: 18px;
+    --type-body-on-image: 16px;
+    --type-body-image: 16px;
     --type-label: 11px;
     --type-button: 11px;
-    --type-amenity: clamp(28px, 7vw, 36px);
-    --type-cta-display: clamp(36px, 8vw, 48px);
+    --type-amenity: clamp(18px, 5vw, 24px);
+    --type-cta-display: clamp(32px, 7vw, 44px);
   }
   .l-gallery__caption .suites-hero-lockup {
     left: 24px !important;
