@@ -1028,8 +1028,7 @@
   background: #ffffff;
 }
 
-
-/* Suites iframe journey — section-aware nav ink/ivory (no redesign) */
+/* Suites iframe journey - section-aware nav ink/ivory (no redesign) */
 .public-site .hathor-header.hathor-header--suites-ink:not(.hathor-header--menu-hovered):not(.hathor-header--explore-open) {
   --nav-link: #1c1917;
   color: #1c1917;
