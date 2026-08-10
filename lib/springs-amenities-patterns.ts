@@ -95,40 +95,23 @@ export const SPRINGS_AMENITIES_PATTERNS: PatternMap = {
     }),
 
   /**
-   * Unique cream title + body (slide 2) — no sub.
-   * Must sit under the rising inset (z-index) AND wipe with the same runway as
-   * videoImage so it cannot paint on top of the next slide through the clip.
+   * Springs videoTitle — opacity only on the cream title container.
+   * Stays visible on cream, then hides as videoImage rises over it
+   * (same runway as inset). Do not add clip-path here — cover is z-index.
    */
   videoTitle: () =>
     isLgUp()
       ? pattern({
-          "parallax--0-0": {
-            opacity: "1",
-            "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-          },
-          "parallax--150-0": {
-            opacity: "1",
-            "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-          },
-          /* Same window as videoImage rise — collapse title as inset covers it */
-          "parallax--175-0": {
-            opacity: "0",
-            "clip-path": "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
-          },
+          "parallax--0-0": { opacity: "1", visibility: "visible" },
+          "parallax--149-0": { opacity: "1", visibility: "visible" },
+          "parallax--150-0": { opacity: "1", visibility: "visible" },
+          "parallax--175-0": { opacity: "0", visibility: "hidden" },
         })
       : pattern({
-          "parallax--0-0": {
-            opacity: "1",
-            "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-          },
-          "parallax--50-0": {
-            opacity: "1",
-            "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-          },
-          "parallax--75-0": {
-            opacity: "0",
-            "clip-path": "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
-          },
+          "parallax--0-0": { opacity: "1", visibility: "visible" },
+          "parallax--49-0": { opacity: "1", visibility: "visible" },
+          "parallax--50-0": { opacity: "1", visibility: "visible" },
+          "parallax--75-0": { opacity: "0", visibility: "hidden" },
         }),
 
   videoImage: () =>

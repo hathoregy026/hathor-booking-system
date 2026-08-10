@@ -545,36 +545,46 @@ export function HomeAmenitiesSequence({
               </div>
             </div>
 
+            {/*
+              Springs .i-video__text-container — z-index 1 under .i-video__image.
+              Unique cream title + body only (no sub). Covered by rising inset.
+            */}
             <div
-              className="home-am-video__title-stack"
+              className="home-am-video__text-container"
               data-am-video-title
               data-plugin="parallax"
               data-parallax-pattern="videoTitle"
               data-parallax-clamp="true"
               data-parallax-measure-selector="[data-am-chapter]"
             >
-              <div className="home-am-video__title">
-                <AmenitiesTitleLines
-                  as="h2"
-                  lines={
-                    videoMain.titleLines.length
-                      ? videoMain.titleLines
-                      : amenitiesHasCopy(videoMain.indication)
-                        ? [videoMain.indication]
-                        : []
-                  }
-                  className="home-am-on-cream-title typo-on-images-title"
-                  style={onCreamTitle}
+              <div className="home-am-video__title-stack">
+                <div className="home-am-video__title">
+                  <AmenitiesTitleLines
+                    as="h2"
+                    lines={
+                      videoMain.titleLines.length
+                        ? videoMain.titleLines
+                        : amenitiesHasCopy(videoMain.indication)
+                          ? [videoMain.indication]
+                          : []
+                    }
+                    className="home-am-on-cream-title typo-on-images-title"
+                    style={onCreamTitle}
+                  />
+                </div>
+                <AmenitiesCopyText
+                  as="p"
+                  value={videoMain.body}
+                  className="home-am-video__title-body typo-body-text"
+                  style={creamBodyStyle}
                 />
               </div>
-              <AmenitiesCopyText
-                as="p"
-                value={videoMain.body}
-                className="home-am-video__title-body typo-body-text"
-                style={creamBodyStyle}
-              />
             </div>
 
+            {/*
+              Springs .i-video__image — z-index 2, rises via videoImage clip and
+              covers the cream title above. Do not move overlay/caption here.
+            */}
             <div
               className="home-am-video__inset"
               data-am-video-inset
@@ -583,10 +593,6 @@ export function HomeAmenitiesSequence({
               data-parallax-clamp="true"
               data-parallax-measure-selector="[data-am-chapter]"
             >
-              {/*
-                Slot 3 — full sticky stage rising via clip (not a corner card).
-                Bar reel only — title sits outside this clip so it stays visible.
-              */}
               <AmenitiesInsetVideo alt={videoInsetImage.alt} />
             </div>
 

@@ -735,35 +735,40 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   line-height: 1.45;
 }
 
+/*
+ * Springs .i-video__text-container — full stage, under rising image (z-index 1).
+ * Only this cream title block; does not affect caption/overlay/other chapters.
+ */
+.home-am-video__text-container {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  height: 100%;
+  opacity: 1;
+  will-change: opacity;
+}
+
 .home-am-video__title-stack {
   position: absolute;
   right: clamp(1.25rem, 4vw, 3rem);
   bottom: clamp(28vh, 34svh, 38vh);
-  /* Under rising inset — never paint above the next slide */
-  z-index: 1;
+  z-index: auto;
   width: min(34rem, calc(50vw - 2 * clamp(1.25rem, 4vw, 3rem)));
   max-width: min(34rem, 48vw);
   text-align: left;
-  opacity: 1;
   pointer-events: none;
-  will-change: opacity, clip-path;
 }
 
 @media (min-width: 1025px) {
   .home-am-video__title-stack {
     top: clamp(5.5rem, 12vh, 8rem);
     bottom: auto;
-    z-index: 1 !important;
   }
 
   /* Cream panel body is phone-only; desktop copy is the video title stack. */
   .home-am-intro__cream:not(.home-am-intro__cream--phone) .home-am-intro__cream-text {
     display: none;
-  }
-
-  /* Rising next slide must stack above cream title */
-  .home-am-video__inset {
-    z-index: 4 !important;
   }
 }
 
@@ -805,19 +810,19 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 }
 
 /*
- * Springs .i-video__image.background.background--cover — full sticky stage,
- * rises via videoImage clip (not a small corner card).
+ * Springs .i-video__image.background.background--cover — z-index 2 over text.
+ * Default clip keeps it hidden until videoImage parallax opens (covers title).
  */
 .home-am-video__inset {
   position: absolute;
   inset: 0;
-  z-index: 4;
+  z-index: 2;
   width: 100%;
   height: 100%;
   overflow: hidden;
   will-change: clip-path;
   background: #0f0c09;
-  isolation: isolate;
+  clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
 }
 
 /* Dark luxurious veil over slot-3 Bar reel — primary opacity 0.45 */
@@ -913,7 +918,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-video__overlay-sub 
   position: absolute;
   left: 0;
   bottom: 0;
-  z-index: 5;
+  z-index: 3;
   flex: 0 1 50vw;
   width: 50vw;
   max-width: 50vw;
@@ -937,9 +942,13 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-video__overlay-sub 
 }
 
 @media (min-width: 1025px) {
-  /* Kept next to title-stack layout rule above — do not raise above inset. */
-  .home-am-video__title-stack {
+  /* Springs: text container stays under inset — no extra title-stack z bump */
+  .home-am-video__text-container {
     z-index: 1;
+  }
+
+  .home-am-video__inset {
+    z-index: 2;
   }
 }
 
