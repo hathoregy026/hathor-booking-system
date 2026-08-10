@@ -50,6 +50,14 @@ type CopyTarget =
 type DragLine = AmenitiesStyleRole;
 type PreviewSurface = "onImage" | "onGold" | "onCream";
 
+/** Same EX defaults the homepage uses when a slide sub-line is blank. */
+const EX_PINNED_FALLBACKS = [
+  { indication: "Sail The Nile On Hathor" },
+  { indication: "Private Nile Sailing" },
+  { indication: "Five-Star Small Boat" },
+  { indication: "History · Comfort · Style" },
+] as const;
+
 const PREVIEW_SURFACE_BG: Record<PreviewSurface, string> = {
   onImage: "#1a1714",
   onGold: "#B69F64",
@@ -471,9 +479,14 @@ export function AmenitiesSequenceTypographyPanel() {
 
     if (active.mode === "copy" && active.target.kind === "slide") {
       const slide = text.home.stackSlides[active.target.index];
+      const ex = EX_PINNED_FALLBACKS[active.target.index];
       return {
         title: slide?.title?.trim() || fallback.title,
-        indication: slide?.indication?.trim() || fallback.indication,
+        /* Prefer CMS; if blank, show the same EX default the homepage uses. */
+        indication:
+          slide?.indication?.trim() ||
+          ex?.indication ||
+          fallback.indication,
         body: slide?.body?.trim() || fallback.body,
       };
     }
@@ -490,7 +503,10 @@ export function AmenitiesSequenceTypographyPanel() {
     const slide0 = text.home.stackSlides[0];
     return {
       title: slide0?.title?.trim() || fallback.title,
-      indication: slide0?.indication?.trim() || fallback.indication,
+      indication:
+        slide0?.indication?.trim() ||
+        EX_PINNED_FALLBACKS[0]?.indication ||
+        fallback.indication,
       body: slide0?.body?.trim() || fallback.body,
     };
   }, [active, text.home.stackSlides, text.home.textBlocks]);
@@ -868,10 +884,14 @@ export function AmenitiesSequenceTypographyPanel() {
                 />
               </label>
               <label className="typo-easy__field">
-                <span>Small label</span>
+                <span>Small label (sub)</span>
                 <input
                   className="admin-input"
                   type="text"
+                  placeholder={
+                    EX_PINNED_FALLBACKS[active.target.index]?.indication ??
+                    "Sail The Nile On Hathor"
+                  }
                   value={
                     text.home.stackSlides[active.target.index]?.indication ??
                     ""
@@ -883,6 +903,10 @@ export function AmenitiesSequenceTypographyPanel() {
                   }
                 />
               </label>
+              <p className="typo-easy__controls-hint">
+                If Small label is blank, the homepage still shows the default sub
+                (placeholder above) so title / sub / body stay a trio.
+              </p>
               <label className="typo-easy__field">
                 <span>Body</span>
                 <textarea

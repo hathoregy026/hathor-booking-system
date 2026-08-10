@@ -220,11 +220,18 @@ export function HomePageClient({
 
   const stackSlides = EX_PINNED.slides.map((slide, index) => {
     const cms = websiteText.home.stackSlides[index];
-    /* CMS is source of truth: "" hides on live; missing falls back to EX defaults. */
+    /*
+     * Title/body: CMS "" hides the line (spacer).
+     * Indication/sub: empty CMS falls back to EX defaults so the trio
+     * (title / sub / body) stays visible — dash preview already shows a sub.
+     */
+    const indicationCms = cms?.indication?.trim();
     return {
       ...slide,
       titleLines: amenitiesTitleLines(cms?.title, [slide.title]),
-      indication: amenitiesCopy(cms?.indication, slide.indication),
+      indication: indicationCms
+        ? indicationCms
+        : amenitiesCopy(undefined, slide.indication),
       body: amenitiesCopy(cms?.body, slide.body),
     };
   });
