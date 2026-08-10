@@ -394,7 +394,7 @@ export function mountHeroScrollStage({
                 ? "+=260%" /* fallback only if .home-hero-runway missing */
               : isPhoneTouch
               ? "+=290%"
-              : "+=18%", /* desktop only — short pin; phone/tablet untouched */
+              : "+=175%", /* desktop — restored cinematic pin runway */
         // Direct scrub on touch — laggy scrub (1.7) feels like scroll jumping
         scrub: isTouch ? true : 0.25,
         pin: !(isPhoneTouch || isTabletHero),
@@ -762,6 +762,14 @@ export function mountHeroScrollStage({
               immediateRender: false,
             },
             LOGO_SCROLL_LETTER_AT,
+          );
+          /* Hold pin a beat so the last letter can finish its slow drift. */
+          tl.to(
+            {},
+            { duration: 0.18 },
+            LOGO_SCROLL_LETTER_AT +
+              LOGO_SCROLL_LETTER_DURATION +
+              LOGO_SCROLL_LETTER_STAGGER * 5,
           );
         } else {
           tl.fromTo(
