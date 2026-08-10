@@ -399,6 +399,18 @@ html = html.replaceAll(
   'class="l-intro__opening-subtitle text-t1 leading-trim"',
 );
 
+// Controlled Unrivaled line breaks (wording unchanged)
+html = html.replace(
+  /Luxury Suites<br>\s*with&nbsp;Unrivaled Views/gi,
+  "Luxury Suites<br>\nwith&nbsp;Unrivaled<br>\nViews",
+);
+
+// Kill Springs boot mustard fill — homepage cream surface
+html = html.replaceAll("background: #F5E8D1", "background: #ece8df");
+html = html.replaceAll("color: #F5E8D1", "color: #ece8df");
+html = html.replaceAll("background:#F5E8D1", "background:#ece8df");
+html = html.replaceAll("color:#F5E8D1", "color:#ece8df");
+
 // Intro opening — editorial CTA
 html = html.replace(
   /(<p class="l-intro__opening-subtitle text-t1 leading-trim"[^>]*>[\s\S]*?<\/p>)(\s*<\/div>\s*<\/div>)/i,
@@ -698,6 +710,15 @@ html = html.replace(
   "</head>",
   `${suitesFontLinks}${suitesPalette}${suitesRuntime}</head>`,
 );
+
+// Cascade win: append palette once at the MAIN document body end
+// (do not replace every </body> — iframe srcdoc also contains </body>).
+{
+  const cascadeTag = `<style data-hathor-suites-cascade>${suitesArtDirectionCss}</style>\n`;
+  const bodyClose = html.lastIndexOf("</body>");
+  if (bodyClose === -1) throw new Error("Suites build: </body> not found");
+  html = html.slice(0, bodyClose) + cascadeTag + html.slice(bodyClose);
+}
 
 // Preloader: strip logo markup so nothing flashes on landing.
 html = html.replace(

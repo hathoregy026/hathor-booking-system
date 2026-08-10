@@ -1,39 +1,26 @@
 /**
- * Suites visual language — homepage DESIGN LANGUAGE (restraint), not literal px clones.
- * Injected by scripts/build-suites-exact-homepage.mjs as data-hathor-suites-palette.
+ * Suites visual language — SINGLE OWNER (break-loop rebuild).
+ * Injected as data-hathor-suites-palette. Homepage files untouched.
  *
- * Allowed: typography, text/button colors, section/bg colours, text wrap/align/spacing in wrappers.
- * Forbidden: layout geometry, images, GSAP/ST/Lenis/WebGL, CTA destinations, homepage files.
+ * Allowed: type, color, button chrome, text-wrapper position/spacing inside sections.
+ * Forbidden: image/grid/section geometry, GSAP/ST/Lenis/WebGL, CTA destinations.
  *
- * LOCKED (8baae65 — do not regress):
- *   Hero Explore  → .hero-cta glass + gold border
- *   Hero Speak    → .public-btn-outline-gold.home-am-opening__cta (white outline)
+ * LOCKED CTAs (8baae65):
+ *   Hero Explore  → glass rgba(255,255,255,.06) + #b69f64 border
+ *   Hero Speak    → transparent + white border/text
  *   Cream CTAs    → #faf8f5 + 1px #b69f64 + shadow 0 8px 22px rgba(44,36,25,.1)
- *   Ink #1c1917   → available for high-contrast dark type (not automatic everywhere)
  *
- * Springs html { font-size: 10px } — all type tokens are px (never rem).
- *
- * Roles (restrained):
- *   DISPLAY     Bitho — one dominant title per section
- *   SECTION     Rolling Fonte — cream titles / quiet amenity rail
- *   SCRIPT      Besty — short accent only (not Carista)
- *   BODY        Plus Jakarta — long readable paragraphs
- *   EDITORIAL   Rollgates — SHORT statements only (never long body)
- *   UI          Plus Jakarta — CTAs / eyebrows
+ * Springs html { font-size: 10px } — all type tokens are px.
  */
 :root {
-  /* —— Homepage palette ONLY —— */
   --home-white: #ffffff;
   --home-gold: #b69f64;
   --home-gold-soft: #d4c28a;
   --home-body-cream: #705000;
   --home-btn-cream: #faf8f5;
   --home-ink: #1c1917;
-  --home-ink-alt: #1a1a1a;
-  --home-nav: #faf8f5;
-  --home-surface-cream: #ece8df; /* .public-site / .ui-light */
-  --home-surface-ivory: #faf8f5;
-  --home-surface-dark: #1a1410; /* hero photography veil family */
+  --home-cream: #ece8df;
+  --home-ivory: #faf8f5;
   --home-hero-btn-bg: rgba(255, 255, 255, 0.06);
   --home-hero-btn-hover-bg: rgba(182, 159, 100, 0.35);
   --home-btn-shadow: 0 8px 22px rgba(44, 36, 25, 0.1);
@@ -42,97 +29,88 @@
     0 0 1px rgba(8, 5, 4, 0.55),
     0 1px 2px rgba(8, 5, 4, 0.5),
     0 2px 10px rgba(8, 5, 4, 0.42),
-    0 8px 28px rgba(8, 5, 4, 0.36),
-    0 18px 56px rgba(8, 5, 4, 0.26);
+    0 8px 28px rgba(8, 5, 4, 0.36);
   --home-image-shadow:
     0 1px 2px rgba(22, 18, 14, 0.55),
     0 2px 12px rgba(22, 18, 14, 0.42);
 
-  --suites-display: "Bitho Luxury", cursive;
-  --suites-page-title: "Rolling Fonte", "Gamgote", Georgia, serif;
-  --suites-script-sm: "Besty Script", cursive;
-  --suites-editorial: "Rollgates Luxury Italic", Georgia, serif;
-  --suites-body-font: "Plus Jakarta Sans", system-ui, sans-serif;
-  --suites-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-display: "Bitho Luxury", cursive;
+  --font-section: "Rolling Fonte", Georgia, serif;
+  --font-script: "Besty Script", cursive;
+  --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
 
-  --suites-serif: var(--suites-page-title);
-  --suites-script: var(--suites-script-sm);
-  --suites-gold: var(--home-gold);
-  --suites-gold-soft: var(--home-gold-soft);
-  --suites-ivory: var(--home-white);
-  --suites-ink: var(--home-ink);
-  --suites-body-ink: var(--home-body-cream);
-  --suites-cream: #ece8df; /* homepage .public-site — not mustard #f5eacf */
-  --suites-cream-soft: #ece8df;
-  --suites-gold-deep: #8b6914; /* accent / menu only — never large surfaces */
-  --suites-muted: var(--home-body-cream);
-
-  /* Restrained scales — homepage proportion, not billboard px clones */
-  --type-hero: clamp(48px, 5.2vw, 68px);
-  --type-section: clamp(34px, 3.6vw, 48px);
-  --type-image: clamp(36px, 3.8vw, 54px);
-  --type-comfort: clamp(40px, 4vw, 56px);
-  --type-script-sm: 22px;
+  --type-hero: clamp(56px, 5.6vw, 78px);
+  --type-unrivaled: clamp(58px, 4.7vw, 72px);
+  --type-step: clamp(48px, 4vw, 60px);
+  --type-comfort: clamp(64px, 5vw, 76px);
+  --type-script: 28px;
+  --type-section: clamp(36px, 3.4vw, 52px);
+  --type-amenity: clamp(34px, 2.7vw, 42px);
   --type-body: 18px;
-  --type-body-on-image: 17px;
-  --type-body-cream: 18px;
-  --type-body-image: 17px;
+  --type-body-photo: 17px;
   --type-label: 12px;
   --type-button: 11.52px;
-  --type-amenity: clamp(20px, 1.65vw, 28px);
-  --type-cta-display: clamp(40px, 4vw, 56px);
 
-  --hathor-btn-width: 200px;
-  --hathor-btn-height: 46px;
-  --hathor-btn-pad-x: 28px;
-  --hathor-btn-font-size: 11.52px;
-  --hathor-btn-tracking: 0.18em;
-  --lux-gold: #b69f64;
-  --lux-gold-rgb: 182, 159, 100;
-  --lux-cream: #ece8df;
-  --lux-cream-rgb: 236, 232, 223;
-  --lux-beige: #ece8df;
-  --lux-beige-rgb: 236, 232, 223;
+  --btn-w: 200px;
+  --btn-h: 46px;
+  --btn-pad-x: 28px;
+  --btn-track: 0.18em;
+  --side: 6vw;
+
+  /* Kill Springs mustard walls → homepage cream */
   --c-beige-background: #ece8df;
   --c-beige-background-rgb: 236, 232, 223;
   --c-beige: #ece8df;
   --c-beige-rgb: 236, 232, 223;
-  /* Remap former mustard “walls” → homepage cream surface (.public-site) */
   --c-dark-green: #ece8df;
   --c-dark-green-rgb: 236, 232, 223;
-  --c-green: #b69f64;
-  --c-green-rgb: 182, 159, 100;
-  --c-light-green: #d4c28a;
-  --c-light-green-rgb: 212, 194, 138;
-  --c-olive: #b69f64;
-  --c-olive-rgb: 182, 159, 100;
   --c-dark-blue: #ece8df;
   --c-dark-blue-rgb: 236, 232, 223;
-  --c-blue: #b69f64;
-  --c-blue-rgb: 182, 159, 100;
-  --c-light-blue: #faf8f5;
-  --c-light-blue-rgb: 250, 248, 245;
-  --c-sky: #faf8f5;
-  --c-sky-rgb: 250, 248, 245;
   --c-white: #faf8f5;
   --c-white-rgb: 250, 248, 245;
   --c-black: #1c1917;
-  --c-black-rgb: 28, 25, 23;
-  --cookie-height: 0px;
+  --c-green: #b69f64;
+  --c-olive: #b69f64;
+  --c-blue: #b69f64;
+  --c-light-green: #d4c28a;
+  --c-light-blue: #faf8f5;
+  --c-sky: #faf8f5;
+  --lux-beige: #ece8df;
+  --lux-cream: #ece8df;
+  --lux-gold: #b69f64;
 }
 
-/* Force cream surfaces on former mustard panels (colour only — no geometry) */
+html,
+body {
+  background: var(--home-cream) !important;
+  color: var(--home-ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ——— Surfaces ——— */
 .ui-dark,
+.ui-light,
+.ui-light-background,
+.l-wellness__slider__caption,
 .l-wellness__slider__caption.ui-dark,
 .l-intro__content.ui-dark,
-.l-wellness__slider__caption,
 .l-intro.is-hidden--md-down .l-intro__content {
-  background: var(--home-surface-cream) !important;
-  background-color: var(--home-surface-cream) !important;
+  background: var(--home-cream) !important;
+  background-color: var(--home-cream) !important;
   background-image: none !important;
   color: var(--home-body-cream) !important;
 }
-.l-wellness__slider__caption .l-wellness__slider__caption-bg,
+.ui-dark {
+  --t-background: #ece8df;
+  --t-background-rgb: 236, 232, 223;
+  --t-heading: #b69f64;
+  --t-primary: #b69f64;
+  --t-secondary: #1c1917;
+}
+.l-intro__gradient,
+.l-intro__gradient.flicker-fix,
+.l-wellness__slider__caption-bg,
 .l-wellness__slider__caption [class*="gradient"],
 .l-wellness__slider__caption::before,
 .l-wellness__slider__caption::after,
@@ -142,1165 +120,581 @@
   background-image: none !important;
   opacity: 0 !important;
 }
-
-/* Amenity body — readable Jakarta only (kill residual italic display faces) */
-.l-wellness__slider__caption-text p,
-.l-wellness__slider__caption-text p.text-t1,
-.l-wellness__slider__caption-text p.text-t2,
-.l-wellness__slider__caption .l-wellness__slider__caption-text p {
-  font-family: var(--suites-sans) !important;
-  font-size: var(--type-body) !important;
-  font-style: normal !important;
-  font-weight: 400 !important;
-  line-height: 1.65 !important;
-  letter-spacing: 0.01em !important;
-  color: var(--home-body-cream) !important;
-  -webkit-text-fill-color: var(--home-body-cream) !important;
-  text-shadow: none !important;
-  text-align: left !important;
-  opacity: 1 !important;
-  max-width: 26em;
+.hathor-suites-footer-scroll,
+.hathor-lux-footer-host,
+.hathor-suites-footer-host {
+  background: var(--home-cream) !important;
 }
 
-html, body {
-  background: var(--home-surface-cream);
-  color: var(--home-ink);
-  font-family: var(--suites-body-font);
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-
-/* ——— Role typography ——— */
-.h0,
-.l-gallery__title .h0 {
-  font-family: var(--suites-display) !important;
-  font-weight: 400 !important;
-  font-size: var(--type-hero) !important;
-  line-height: 1.15 !important;
-  letter-spacing: normal !important;
-  text-transform: none !important;
-  text-align: left !important;
-  color: var(--home-white) !important;
-  -webkit-text-fill-color: var(--home-white) !important;
-  text-shadow: var(--home-hero-shadow);
-}
-
-/* On-image display = .typo-on-images-title */
-.g1,
-.g2,
-[class*="__title"] .g1 {
-  font-family: var(--suites-display) !important;
-  font-weight: 400 !important;
-  font-size: var(--type-image) !important;
-  line-height: 0.8 !important;
-  letter-spacing: normal !important;
-  text-transform: none !important;
-  color: var(--home-white) !important;
-  -webkit-text-fill-color: var(--home-white) !important;
-  text-shadow: var(--home-image-shadow);
-}
-
-/* Cream section display = .typo-page-title */
-.h1,
-.h2,
-h1:not(.h0),
-h2,
-[class*="__title"] .h1,
-[class*="__title"] .h2 {
-  font-family: var(--suites-page-title) !important;
-  font-weight: 400 !important;
-  font-size: var(--type-section) !important;
-  line-height: 0.9 !important;
-  letter-spacing: -0.5px !important;
-  text-transform: none !important;
-}
-
-.text-t1:not(.suites-hero-support),
-.text-t2,
-.text-p1,
-.text-p2,
+/* ——— ONE body owner ——— */
+.suites-hero-support,
 .l-intro__opening-subtitle,
+p.l-intro__opening-subtitle,
 .l-intro__content-text p,
 .l-wellness__webgl-caption > p.text-t1,
 .l-wellness__slider__caption-text p,
+.l-wellness__slider__caption-text p.text-t1,
+.l-wellness__slider__caption-text p.text-t2,
 .l-nature-bg-caption__text p,
 .l-place-webgl__text p,
-[class*="__caption"] p:not(.g1):not(.h0):not(.h1):not(.h2):not([class*="__subtitle"]),
-p:not(.g1):not(.g2):not(.h0):not(.h1):not(.h2):not(.h3):not(.text-c1):not(.text-c2):not([class*="__subtitle"]):not(.lux-footer__script):not(.lux-footer__headline):not(.suites-hero-support) {
-  font-family: var(--suites-body-font) !important;
-  font-weight: 400 !important;
-  text-transform: none !important;
-  opacity: 1 !important;
-}
-
-/* Mode B — cream body: readable Plus Jakarta (not decorative italic) */
-.ui-light p,
-.ui-light .text-t1,
-.ui-light .l-intro__opening-subtitle,
-.l-intro__opening-subtitle,
 .l-residences__caption__description,
-.hathor-suites-footer-host .lux-footer__subhead,
-.hathor-lux-footer-host .lux-footer__subhead {
-  font-family: var(--suites-body-font) !important;
+.l-design__title .h3,
+.l-design__title h3,
+.ui-dark p:not(.h0):not(.h1):not(.h2):not(.g1):not(.g2):not(.text-c1):not([class*="__subtitle"]),
+.ui-light p:not(.h0):not(.h1):not(.h2):not(.g1):not(.g2):not(.text-c1):not([class*="__subtitle"]),
+.lux-footer__subhead {
+  font-family: var(--font-body) !important;
   font-size: var(--type-body) !important;
   font-style: normal !important;
   font-weight: 400 !important;
-  line-height: 1.65 !important;
+  line-height: 1.62 !important;
   letter-spacing: 0.01em !important;
-  color: var(--home-body-cream) !important;
-  -webkit-text-fill-color: var(--home-body-cream) !important;
-}
-
-/* Mode A — body on photography */
-.l-gallery__caption .suites-hero-support,
-.l-wellness__webgl-caption > p.text-t1,
-.l-wellness__slider__caption-text p,
-.l-nature-bg-caption__text p,
-.l-place-webgl__text p {
-  font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body-on-image) !important;
-  font-style: normal !important;
-  font-weight: 400 !important;
-  line-height: 1.6 !important;
-  letter-spacing: 0.01em !important;
-  color: var(--home-white) !important;
-  -webkit-text-fill-color: var(--home-white) !important;
-  text-shadow: var(--home-image-shadow);
-  opacity: 1 !important;
-}
-
-/* Former “gold wall” panels → homepage cream surface (.public-site #ece8df) */
-.ui-dark p,
-.ui-dark .text-t1,
-.ui-dark .text-t2,
-.ui-dark [class*="__text"],
-.l-intro__content-text p {
-  font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body) !important;
-  font-style: normal !important;
-  font-weight: 400 !important;
-  line-height: 1.65 !important;
-  letter-spacing: 0.01em !important;
-  color: var(--home-body-cream) !important;
-  -webkit-text-fill-color: var(--home-body-cream) !important;
-  text-shadow: none !important;
-  opacity: 1 !important;
-}
-
-.l-intro__opening-subtitle {
-  max-width: 32em;
-  text-align: left !important;
-}
-
-/* Script accent = .typo-page-subtitle (Besty) — NOT Carista unless hero */
-p.l-nature-bg-caption__subtitle,
-p.l-wellness__caption__subtitle,
-p.l-place__caption__subtitle,
-p.l-place-webgl-caption__subtitle,
-#wellness .l-wellness__webgl-title .text-c1,
-.l-wellness__webgl-title .text-c1,
-.lux-footer__script {
-  font-family: var(--suites-script-sm) !important;
-  font-size: var(--type-script-sm) !important;
-  font-weight: 400 !important;
-  letter-spacing: 2px !important;
   text-transform: none !important;
-  line-height: 1.5 !important;
-  color: var(--home-gold) !important;
-  -webkit-text-fill-color: var(--home-gold) !important;
   opacity: 1 !important;
-  max-width: 18em;
 }
 
-/* Script on cream panels (former gold walls) — gold accent, not washed cream-on-cream */
-.ui-dark p.l-nature-bg-caption__subtitle,
-.ui-dark p.l-wellness__caption__subtitle,
-.ui-dark p.l-place__caption__subtitle,
-.ui-dark p.l-place-webgl-caption__subtitle,
-.ui-dark .lux-footer__script,
-.l-wellness__slider__caption.ui-dark .text-c1 {
-  color: var(--home-gold) !important;
-  -webkit-text-fill-color: var(--home-gold) !important;
+/* ——— Display owners ——— */
+.h0 {
+  font-family: var(--font-display) !important;
+  font-weight: 400 !important;
+  font-size: var(--type-hero) !important;
+  line-height: 1.12 !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
 }
-
-/* Comfort script on photography — soft gold accent attached to title */
-#wellness .l-wellness__webgl-title .text-c1 {
-  color: var(--home-gold-soft) !important;
-  -webkit-text-fill-color: var(--home-gold-soft) !important;
-  text-shadow: var(--home-image-shadow);
+.g1,
+.g2 {
+  font-family: var(--font-display) !important;
+  font-weight: 400 !important;
+  font-size: var(--type-section) !important;
+  line-height: 1.05 !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+}
+.h1,
+.h2,
+h1:not(.h0),
+h2 {
+  font-family: var(--font-display) !important;
+  font-weight: 400 !important;
+  font-size: var(--type-section) !important;
+  line-height: 1.08 !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+}
+.text-c1,
+[class*="__subtitle"].text-c1,
+.lux-footer__script {
+  font-family: var(--font-script) !important;
+  font-size: var(--type-script) !important;
+  font-weight: 400 !important;
   letter-spacing: 1px !important;
   line-height: 1.35 !important;
-  max-width: 12em;
-}
-
-/* Eyebrow / label = nav language */
-.text-c1:not([class*="__subtitle"]):not(.suites-eyebrow):not(.l-wellness__webgl-title .text-c1),
-.text-c2:not([class*="__subtitle"]),
-.carousel__thumb__item.text-c1,
-.suites-eyebrow {
-  font-family: var(--suites-sans) !important;
-  font-size: var(--type-label) !important;
-  font-weight: 500 !important;
-  letter-spacing: 0.16em !important;
-  text-transform: uppercase !important;
-  line-height: 1.7 !important;
+  text-transform: none !important;
   color: var(--home-gold) !important;
   -webkit-text-fill-color: var(--home-gold) !important;
-  opacity: 1 !important;
 }
-
-.btn__text,
-.btn {
-  font-family: var(--suites-sans) !important;
-  font-size: var(--type-button) !important;
+.suites-eyebrow,
+.text-c2:not([class*="__subtitle"]) {
+  font-family: var(--font-body) !important;
+  font-size: var(--type-label) !important;
   font-weight: 500 !important;
-  letter-spacing: var(--hathor-btn-tracking) !important;
+  letter-spacing: 0.22em !important;
   text-transform: uppercase !important;
 }
 
-/* Theme surfaces — keep existing panel colors; text follows modes */
-.ui-dark {
-  --t-background: #ece8df;
-  --t-background-rgb: 236, 232, 223;
-  --t-text: #705000;
-  --t-heading: #b69f64;
-  --t-primary: #b69f64;
-  --t-secondary: #1c1917;
-  background-color: var(--home-surface-cream) !important;
-  color: var(--home-body-cream) !important;
+/* ——— 01 Hero lockup ——— */
+.l-gallery__caption .suites-hero-lockup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  max-width: min(34em, 42vw);
+  margin-left: var(--side);
+  text-align: left !important;
 }
-.ui-light,
-.ui-light-background {
-  --t-background: #ece8df;
-  --t-text: #705000;
-  --t-heading: #b69f64;
-  --t-primary: #b69f64;
-  background-color: #ece8df !important;
-  color: var(--home-body-cream) !important;
+.l-gallery__caption .suites-hero-lockup .h0 {
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
+  text-shadow: var(--home-hero-shadow);
+  max-width: 10em;
 }
+.l-gallery__caption .suites-hero-lockup .suites-hero-support {
+  color: var(--home-white) !important;
+  -webkit-text-fill-color: var(--home-white) !important;
+  font-size: 18px !important;
+  line-height: 1.6 !important;
+  max-width: 32em !important;
+  width: min(32em, 100%);
+  text-shadow: var(--home-image-shadow);
+}
+.l-gallery__caption .suites-hero-lockup .suites-cta-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 10px;
+}
+.l-gallery__caption:has(.suites-hero-lockup) > .col {
+  max-width: none !important;
+}
+
+/* ——— 02 Unrivaled — ONE left lockup (text may move) ——— */
+@media (min-width: 981px) {
+  .l-intro.is-hidden--md-down .l-intro__opening {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    gap: 18px;
+    padding: 116px 0 0 var(--side) !important;
+    margin: 0 !important;
+    max-width: min(46vw, 560px) !important;
+    width: min(46vw, 560px) !important;
+    position: relative;
+    z-index: 6;
+    box-sizing: border-box;
+  }
+  .l-intro.is-hidden--md-down .l-intro__opening > .col,
+  .l-intro.is-hidden--md-down .l-intro__opening > .col.col--md-4,
+  .l-intro.is-hidden--md-down .l-intro__opening > .col.col--md-3,
+  .l-intro.is-hidden--md-down .l-intro__opening > .col.offset--md-2,
+  .l-intro.is-hidden--md-down .l-intro__opening > .col.ml-layout {
+    flex: 0 0 auto !important;
+    flex-basis: 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    float: none !important;
+    left: auto !important;
+    right: auto !important;
+  }
+  .l-intro.is-hidden--md-down .l-intro__opening .h1 {
+    font-family: var(--font-display) !important;
+    font-size: var(--type-unrivaled) !important;
+    line-height: 1.04 !important;
+    max-width: 11em !important;
+    width: 100% !important;
+    color: var(--home-ink) !important;
+    -webkit-text-fill-color: var(--home-ink) !important;
+    text-shadow: none !important;
+    text-align: left !important;
+  }
+  .l-intro.is-hidden--md-down .l-intro__opening-subtitle,
+  .l-intro.is-hidden--md-down .l-intro__opening .l-intro__opening-subtitle {
+    margin: 0 !important;
+    max-width: 34em !important;
+    width: 100% !important;
+    color: var(--home-ink) !important;
+    -webkit-text-fill-color: var(--home-ink) !important;
+    text-align: left !important;
+    text-shadow: none !important;
+  }
+  .l-intro.is-hidden--md-down .l-intro__opening .suites-cta-link {
+    margin-top: 6px !important;
+  }
+}
+
+/* ——— 03 Step Aboard — one left axis ——— */
+@media (min-width: 981px) {
+  .l-intro.is-hidden--md-down .l-intro__content {
+    position: relative;
+  }
+  .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-title,
+  .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-title.col,
+  .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-title.col--md-4,
+  .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-title.offset--md-2 {
+    padding: 88px 0 0 var(--side) !important;
+    margin: 0 !important;
+    margin-left: var(--side) !important;
+    max-width: min(52vw, 560px) !important;
+    width: min(52vw, 560px) !important;
+    min-width: min(52vw, 420px) !important;
+    flex: 0 0 auto !important;
+    flex-basis: min(52vw, 560px) !important;
+    float: none !important;
+    position: relative;
+    z-index: 4;
+    box-sizing: border-box !important;
+  }
+  .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-title .h2 {
+    font-family: var(--font-display) !important;
+    font-size: var(--type-step) !important;
+    line-height: 1.08 !important;
+    max-width: 16em !important;
+    width: 100% !important;
+    min-width: 288px !important;
+    color: var(--home-gold) !important;
+    -webkit-text-fill-color: var(--home-gold) !important;
+    text-shadow: none !important;
+    text-align: left !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+  }
+  .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-text {
+    margin: 22px 0 0 var(--side) !important;
+    padding: 0 !important;
+    max-width: 32em !important;
+    width: min(32em, 42vw);
+    position: relative;
+    z-index: 3;
+  }
+  .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-text p {
+    color: var(--home-ink) !important;
+    -webkit-text-fill-color: var(--home-ink) !important;
+    max-width: 32em !important;
+    text-align: left !important;
+  }
+  .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-text .suites-cta-link {
+    margin-top: 18px !important;
+  }
+}
+
+/* ——— 04 Comfort photo ——— */
+@media (min-width: 981px) {
+  #wellness .l-wellness__webgl-caption {
+    position: relative;
+    z-index: 5;
+  }
+  #wellness .l-wellness__webgl-caption > p.text-t1 {
+    position: absolute !important;
+    left: var(--side) !important;
+    bottom: 18vh !important;
+    margin: 0 !important;
+    max-width: 30em !important;
+    width: min(30em, 36vw);
+    color: var(--home-white) !important;
+    -webkit-text-fill-color: var(--home-white) !important;
+    font-size: var(--type-body-photo) !important;
+    text-shadow:
+      0 1px 2px rgba(8, 5, 4, 0.75),
+      0 4px 18px rgba(8, 5, 4, 0.55) !important;
+    text-align: left !important;
+  }
+  #wellness .l-wellness__webgl-title {
+    position: absolute !important;
+    right: var(--side) !important;
+    bottom: 11vh !important;
+    left: auto !important;
+    margin: 0 !important;
+    max-width: min(42vw, 420px) !important;
+    width: auto !important;
+    text-align: left !important;
+    overflow: visible !important;
+    z-index: 6;
+  }
+  #wellness .l-wellness__webgl-title .text-c1 {
+    display: block;
+    margin: 0 0 6px !important;
+    font-size: var(--type-script) !important;
+    line-height: 1.35 !important;
+    color: #e2d3a4 !important;
+    -webkit-text-fill-color: #e2d3a4 !important;
+    max-width: 16em;
+    text-align: left !important;
+    overflow: visible !important;
+    text-shadow: 0 1px 8px rgba(8, 5, 4, 0.55);
+  }
+  #wellness .l-wellness__webgl-title .g1 {
+    font-family: var(--font-display) !important;
+    font-size: var(--type-comfort) !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    color: var(--home-white) !important;
+    -webkit-text-fill-color: var(--home-white) !important;
+    text-shadow: var(--home-image-shadow) !important;
+    overflow: visible !important;
+    max-width: none !important;
+    text-align: left !important;
+  }
+}
+
+/* ——— 05 Amenity panel ——— */
+@media (min-width: 981px) {
+  .l-wellness__slider__caption {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: flex-start !important;
+    padding: 80px 5vw 80px 4.5vw !important;
+    box-sizing: border-box;
+  }
+  .l-wellness__slider__caption .js-wellness-controller-selector {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 28px;
+    width: 100%;
+    max-width: 34em;
+  }
+  .l-wellness__slider__caption-titles {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 9px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: left !important;
+    float: none !important;
+  }
+  .l-wellness__slider__caption-titles .js-content-animation-link {
+    display: block;
+    text-decoration: none;
+  }
+  .l-wellness__slider__caption-titles .js-content-animation-link p.h2,
+  .l-wellness__slider__caption-titles .js-content-animation-link p,
+  .l-wellness__slider__caption-titles .h2 {
+    font-family: var(--font-section) !important;
+    font-size: var(--type-amenity) !important;
+    line-height: 1.15 !important;
+    letter-spacing: -0.02em !important;
+    color: var(--home-ink) !important;
+    -webkit-text-fill-color: var(--home-ink) !important;
+    text-align: left !important;
+    margin: 0 !important;
+    opacity: 0.38 !important;
+  }
+  .l-wellness__slider__caption-titles .js-content-animation-link.is-active p.h2,
+  .l-wellness__slider__caption-titles .js-content-animation-link.is-active p,
+  .l-wellness__slider__caption-titles .is-active .h2 {
+    opacity: 1 !important;
+    color: var(--home-ink) !important;
+    -webkit-text-fill-color: var(--home-ink) !important;
+  }
+  .l-wellness__slider__caption-text {
+    width: 100% !important;
+    max-width: 32em !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    float: none !important;
+  }
+  .l-wellness__slider__caption-text p {
+    color: var(--home-ink) !important;
+    -webkit-text-fill-color: var(--home-ink) !important;
+    max-width: 32em !important;
+    text-align: left !important;
+  }
+  .l-wellness__slider__caption .suites-cta-link {
+    margin-top: 4px !important;
+  }
+}
+
+/* Cream / dark titles */
 .ui-dark .h0,
 .ui-dark .h1,
 .ui-dark .h2,
 .ui-dark .g1,
 .ui-dark .g2,
-.ui-dark h1,
-.ui-dark h2 {
-  color: var(--home-gold) !important;
-  -webkit-text-fill-color: var(--home-gold) !important;
-  text-shadow: none !important;
-}
 .ui-light .h0,
 .ui-light .h1,
 .ui-light .h2,
 .ui-light .g1,
-.ui-light .g2,
-.ui-light h1,
-.ui-light h2 {
+.ui-light .g2 {
   color: var(--home-gold) !important;
   -webkit-text-fill-color: var(--home-gold) !important;
   text-shadow: none !important;
 }
 
-/* ——— CTA system = homepage Discover More / Book Now ——— */
+/* Design long statement → body, not gold billboard */
+.l-design__title .h3,
+.l-design__title h3 {
+  font-family: var(--font-body) !important;
+  font-size: clamp(17px, 1.2vw, 20px) !important;
+  line-height: 1.65 !important;
+  color: var(--home-body-cream) !important;
+  -webkit-text-fill-color: var(--home-body-cream) !important;
+  max-width: 36em;
+  text-align: center !important;
+}
+
+/* Residences */
+.l-residences__caption__card,
+.l-residences__caption__card-content {
+  background: rgba(250, 248, 245, 0.96) !important;
+  border: 1px solid rgba(182, 159, 100, 0.28);
+}
+.l-residences__caption__type,
+.l-residences__caption__card .g1,
+.l-residences__caption__card h3 {
+  font-family: var(--font-section) !important;
+  color: var(--home-gold) !important;
+  -webkit-text-fill-color: var(--home-gold) !important;
+}
+
+/* ——— CTA system (3 families only) ——— */
 .suites-cta-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.85rem 1.35rem;
-  margin-top: 1.65rem;
   pointer-events: auto;
 }
 
-/* Primary pill = a.btn / Discover More */
+/* HOME STANDARD / Discover More */
 .suites-cta-primary,
+.suites-cta-link,
+.suites-cta-link--ink,
+.suites-cta-link--ivory,
 .l-residences__caption__button .btn,
 .l-residences__caption__button a,
-.l-residences__caption__card .btn {
+.l-residences__caption__card .btn,
+.hathor-suites-footer-host .lux-footer__cta,
+.hathor-lux-footer-host .lux-footer__cta {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   box-sizing: border-box !important;
-  width: var(--hathor-btn-width) !important;
-  min-width: var(--hathor-btn-width) !important;
-  max-width: var(--hathor-btn-width) !important;
-  height: var(--hathor-btn-height) !important;
-  min-height: var(--hathor-btn-height) !important;
-  max-height: var(--hathor-btn-height) !important;
-  padding: 0 var(--hathor-btn-pad-x) !important;
+  width: var(--btn-w) !important;
+  min-width: var(--btn-w) !important;
+  height: var(--btn-h) !important;
+  min-height: var(--btn-h) !important;
+  padding: 0 var(--btn-pad-x) !important;
   border-radius: 999px !important;
   border: 1px solid var(--home-gold) !important;
   background: var(--home-btn-cream) !important;
   color: var(--home-gold) !important;
   -webkit-text-fill-color: var(--home-gold) !important;
-  font-family: var(--suites-sans) !important;
-  font-size: var(--hathor-btn-font-size) !important;
+  font-family: var(--font-body) !important;
+  font-size: var(--type-button) !important;
   font-weight: 500 !important;
-  letter-spacing: var(--hathor-btn-tracking) !important;
+  letter-spacing: var(--btn-track) !important;
   text-transform: uppercase !important;
   line-height: 1 !important;
   text-decoration: none !important;
   white-space: nowrap !important;
   box-shadow: var(--home-btn-shadow) !important;
-  cursor: pointer;
   transition:
     background 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.35s ease,
+    color 0.35s ease,
     box-shadow 0.35s ease,
-    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    transform 0.35s ease;
 }
 .suites-cta-primary:hover,
+.suites-cta-link:hover,
+.suites-cta-link--ink:hover,
+.suites-cta-link--ivory:hover,
 .l-residences__caption__button .btn:hover,
 .l-residences__caption__button a:hover,
-.l-residences__caption__card .btn:hover {
+.l-residences__caption__card .btn:hover,
+.hathor-suites-footer-host .lux-footer__cta:hover,
+.hathor-lux-footer-host .lux-footer__cta:hover {
   background: var(--home-gold) !important;
-  border-color: var(--home-gold) !important;
   color: var(--home-white) !important;
   -webkit-text-fill-color: var(--home-white) !important;
   box-shadow: var(--home-btn-shadow-hover) !important;
   transform: translateY(-2px);
 }
 
-/* On-photo PRIMARY only = .hero-cta (homepage has one Book Now, not two) */
-.suites-cta-primary--on-dark {
+/* HOME HERO PRIMARY */
+.suites-cta-row a.suites-cta-primary--on-dark,
+.suites-cta-primary--on-dark,
+.l-gallery__caption .suites-cta-row a:first-of-type {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  box-sizing: border-box !important;
-  width: var(--hathor-btn-width) !important;
-  min-width: var(--hathor-btn-width) !important;
-  max-width: var(--hathor-btn-width) !important;
-  height: var(--hathor-btn-height) !important;
-  min-height: var(--hathor-btn-height) !important;
-  max-height: var(--hathor-btn-height) !important;
-  padding: 0 var(--hathor-btn-pad-x) !important;
+  width: var(--btn-w) !important;
+  height: var(--btn-h) !important;
   border-radius: 999px !important;
   border: 1px solid var(--home-gold) !important;
   background: var(--home-hero-btn-bg) !important;
   color: var(--home-white) !important;
   -webkit-text-fill-color: var(--home-white) !important;
-  font-family: var(--suites-sans) !important;
-  font-size: var(--hathor-btn-font-size) !important;
+  font-family: var(--font-body) !important;
+  font-size: var(--type-button) !important;
   font-weight: 500 !important;
-  letter-spacing: var(--hathor-btn-tracking) !important;
+  letter-spacing: var(--btn-track) !important;
   text-transform: uppercase !important;
-  line-height: 1 !important;
-  text-decoration: none !important;
-  white-space: nowrap !important;
   box-shadow: none !important;
-  backdrop-filter: blur(8px);
-  transition:
-    background 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.35s ease,
-    color 0.35s ease;
+  text-decoration: none !important;
 }
-.suites-cta-primary--on-dark:hover {
+.suites-cta-row a.suites-cta-primary--on-dark:hover,
+.l-gallery__caption .suites-cta-row a:first-of-type:hover {
   background: var(--home-hero-btn-hover-bg) !important;
-  border-color: var(--home-gold-soft) !important;
-  color: var(--home-white) !important;
-  -webkit-text-fill-color: var(--home-white) !important;
-  transform: none !important;
-  box-shadow: none !important;
 }
 
-/* On-photo SECONDARY = .public-btn-outline-gold.home-am-opening__cta
-   (transparent + white stroke/text — actual homepage secondary on photography) */
-.suites-cta-secondary:not(.suites-cta-secondary--ink) {
+/* HOME SECONDARY / OUTLINE */
+.suites-cta-row a.suites-cta-secondary,
+.suites-cta-secondary,
+.l-gallery__caption .suites-cta-row a:nth-of-type(2) {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  box-sizing: border-box !important;
-  width: var(--hathor-btn-width) !important;
-  min-width: var(--hathor-btn-width) !important;
-  max-width: var(--hathor-btn-width) !important;
-  height: var(--hathor-btn-height) !important;
-  min-height: var(--hathor-btn-height) !important;
-  max-height: var(--hathor-btn-height) !important;
-  padding: 0 var(--hathor-btn-pad-x) !important;
+  width: var(--btn-w) !important;
+  height: var(--btn-h) !important;
   border-radius: 999px !important;
   border: 1px solid var(--home-white) !important;
   background: transparent !important;
   color: var(--home-white) !important;
   -webkit-text-fill-color: var(--home-white) !important;
-  font-family: var(--suites-sans) !important;
-  font-size: var(--hathor-btn-font-size) !important;
+  font-family: var(--font-body) !important;
+  font-size: var(--type-button) !important;
   font-weight: 500 !important;
-  letter-spacing: var(--hathor-btn-tracking) !important;
+  letter-spacing: var(--btn-track) !important;
   text-transform: uppercase !important;
-  line-height: 1 !important;
-  text-decoration: none !important;
-  white-space: nowrap !important;
   box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  opacity: 1 !important;
-  transition:
-    background 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.35s ease,
-    box-shadow 0.35s ease,
-    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  text-decoration: none !important;
 }
-.suites-cta-secondary:not(.suites-cta-secondary--ink):hover {
+.suites-cta-row a.suites-cta-secondary:hover,
+.l-gallery__caption .suites-cta-row a:nth-of-type(2):hover {
   background: var(--home-white) !important;
-  border-color: var(--home-white) !important;
-  color: var(--home-gold) !important;
-  -webkit-text-fill-color: var(--home-gold) !important;
-  box-shadow: 0 10px 26px rgba(44, 36, 25, 0.18) !important;
-  transform: translateY(-2px);
-  opacity: 1 !important;
-}
-
-/* Cream secondary = same Discover More pill */
-.suites-cta-secondary--ink {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  box-sizing: border-box !important;
-  width: var(--hathor-btn-width) !important;
-  min-width: var(--hathor-btn-width) !important;
-  max-width: var(--hathor-btn-width) !important;
-  height: var(--hathor-btn-height) !important;
-  min-height: var(--hathor-btn-height) !important;
-  max-height: var(--hathor-btn-height) !important;
-  padding: 0 var(--hathor-btn-pad-x) !important;
-  border-radius: 999px !important;
-  border: 1px solid var(--home-gold) !important;
-  background: var(--home-btn-cream) !important;
-  color: var(--home-gold) !important;
-  -webkit-text-fill-color: var(--home-gold) !important;
-  font-family: var(--suites-sans) !important;
-  font-size: var(--hathor-btn-font-size) !important;
-  font-weight: 500 !important;
-  letter-spacing: var(--hathor-btn-tracking) !important;
-  text-transform: uppercase !important;
-  line-height: 1 !important;
-  text-decoration: none !important;
-  white-space: nowrap !important;
-  box-shadow: var(--home-btn-shadow) !important;
-  opacity: 1 !important;
-}
-.suites-cta-secondary--ink:hover {
-  background: var(--home-gold) !important;
-  border-color: var(--home-gold) !important;
-  color: var(--home-white) !important;
-  -webkit-text-fill-color: var(--home-white) !important;
-  box-shadow: var(--home-btn-shadow-hover) !important;
-  transform: translateY(-2px);
-  opacity: 1 !important;
-}
-
-/* Navigational CTAs — real homepage button treatments (not bare text links)
-   --ink  → a.btn / Discover More (cream pill, gold text)
-   --ivory → .public-btn-outline-gold on photo (transparent, white border/text) */
-.suites-cta-link,
-.suites-cta-link--ink,
-.suites-cta-link--ivory {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  box-sizing: border-box !important;
-  width: var(--hathor-btn-width) !important;
-  min-width: var(--hathor-btn-width) !important;
-  max-width: var(--hathor-btn-width) !important;
-  height: var(--hathor-btn-height) !important;
-  min-height: var(--hathor-btn-height) !important;
-  max-height: var(--hathor-btn-height) !important;
-  margin-top: 1.35rem;
-  padding: 0 var(--hathor-btn-pad-x) !important;
-  border-radius: 999px !important;
-  font-family: var(--suites-sans) !important;
-  font-size: var(--hathor-btn-font-size) !important;
-  font-weight: 500 !important;
-  letter-spacing: var(--hathor-btn-tracking) !important;
-  text-transform: uppercase !important;
-  line-height: 1 !important;
-  text-decoration: none !important;
-  white-space: nowrap !important;
-  opacity: 1 !important;
-  cursor: pointer;
-  transition:
-    background 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.35s ease,
-    box-shadow 0.35s ease,
-    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.suites-cta-link--ink {
-  border: 1px solid var(--home-gold) !important;
-  background: var(--home-btn-cream) !important;
-  background-color: var(--home-btn-cream) !important;
-  color: var(--home-gold) !important;
-  -webkit-text-fill-color: var(--home-gold) !important;
-  box-shadow: var(--home-btn-shadow) !important;
-  opacity: 1 !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-.suites-cta-link--ink:hover {
-  background: var(--home-gold) !important;
-  border-color: var(--home-gold) !important;
-  color: var(--home-white) !important;
-  -webkit-text-fill-color: var(--home-white) !important;
-  box-shadow: var(--home-btn-shadow-hover) !important;
-  transform: translateY(-2px);
-  opacity: 1 !important;
-}
-.suites-cta-link--ivory,
-.suites-cta-link:not(.suites-cta-link--ink) {
-  border: 1px solid var(--home-white) !important;
-  background: transparent !important;
-  color: var(--home-white) !important;
-  -webkit-text-fill-color: var(--home-white) !important;
-  box-shadow: none !important;
-}
-.suites-cta-link--ivory:hover,
-.suites-cta-link:not(.suites-cta-link--ink):hover {
-  background: var(--home-white) !important;
-  border-color: var(--home-white) !important;
-  color: var(--home-gold) !important;
-  -webkit-text-fill-color: var(--home-gold) !important;
-  box-shadow: var(--home-btn-shadow-hover) !important;
-  transform: translateY(-2px);
-  opacity: 1 !important;
-}
-
-/* On solid gold panels, white outline pills wash out — use Discover More cream pill */
-.ui-dark .suites-cta-link--ivory,
-.ui-dark .suites-cta-link:not(.suites-cta-link--ink),
-.l-intro__content .suites-cta-link--ivory {
-  border: 1px solid var(--home-gold) !important;
-  background: var(--home-btn-cream) !important;
-  background-color: var(--home-btn-cream) !important;
-  color: var(--home-gold) !important;
-  -webkit-text-fill-color: var(--home-gold) !important;
-  box-shadow: var(--home-btn-shadow) !important;
-  opacity: 1 !important;
-  backdrop-filter: none !important;
-}
-.ui-dark .suites-cta-link--ivory:hover,
-.ui-dark .suites-cta-link:not(.suites-cta-link--ink):hover,
-.l-intro__content .suites-cta-link--ivory:hover {
-  background: var(--home-gold) !important;
-  border-color: var(--home-ink) !important;
-  color: var(--home-white) !important;
-  -webkit-text-fill-color: var(--home-white) !important;
-}
-
-/* ——— 01 HERO lockup ——— */
-.l-gallery__caption {
-  pointer-events: none;
-}
-.l-gallery__caption .suites-hero-lockup {
-  position: absolute !important;
-  left: clamp(1.5rem, 6.5vw, 5.5rem) !important;
-  right: auto !important;
-  bottom: clamp(2.5rem, 11vh, 5.75rem) !important;
-  top: auto !important;
-  width: min(42vw, 28rem) !important;
-  max-width: 28rem !important;
-  z-index: 5;
-  pointer-events: none;
-  text-align: left !important;
-}
-.l-gallery__caption .suites-hero-lockup .suites-eyebrow {
-  display: block;
-  margin-bottom: 0.85rem;
-  color: var(--home-btn-cream) !important;
-  -webkit-text-fill-color: var(--home-btn-cream) !important;
-  font-size: var(--type-label) !important;
-  letter-spacing: 0.16em !important;
-  text-shadow: var(--home-image-shadow);
-  opacity: 1 !important;
-}
-.l-gallery__caption .suites-hero-lockup .h0 {
-  text-align: left !important;
-  font-family: var(--suites-display) !important;
-  font-size: var(--type-hero) !important;
-  line-height: 1.15 !important;
-  letter-spacing: normal !important;
-  color: var(--home-white) !important;
-  -webkit-text-fill-color: var(--home-white) !important;
-  text-shadow: var(--home-hero-shadow) !important;
-  max-width: 9em;
-}
-.l-gallery__caption .suites-hero-lockup .suites-hero-support {
-  margin-top: 1rem !important;
-  max-width: 22em !important;
-  font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body-on-image) !important;
-  font-style: normal !important;
-  font-weight: 400 !important;
-  line-height: 1.6 !important;
-  letter-spacing: 0.01em !important;
-  color: var(--home-white) !important;
-  -webkit-text-fill-color: var(--home-white) !important;
-  text-shadow: var(--home-image-shadow) !important;
-  text-transform: none !important;
-  text-align: left !important;
-  opacity: 1 !important;
-}
-.l-gallery__caption .suites-hero-lockup .suites-cta-row {
-  pointer-events: auto;
-  margin-top: 1.35rem;
-}
-.l-gallery__caption:has(.suites-hero-lockup) > .col {
-  display: none !important;
-}
-.l-gallery__gradient div {
-  background: radial-gradient(
-    circle,
-    rgba(182, 159, 100, 0.35) 0%,
-    rgba(236, 232, 223, 0.18) 42%,
-    rgba(245, 234, 207, 0) 74%
-  ) !important;
-  opacity: 0.85;
-}
-
-/* ——— 02 Unrivaled Views (Mode B cream) ——— */
-.l-intro.is-hidden--md-down .l-intro__opening {
-  padding-top: clamp(6.5rem, 14vh, 9rem) !important;
-  padding-left: clamp(1.5rem, 6vw, 5rem) !important;
-  padding-right: clamp(1.5rem, 4vw, 3rem) !important;
-}
-.l-intro.is-hidden--md-down .l-intro__opening > .col:first-child {
-  max-width: min(40vw, 26rem);
-}
-.l-intro.is-hidden--md-down .l-intro__opening .h1 {
-  /* Controlled editorial display — 2–3 lines inside existing wrapper */
-  font-family: var(--suites-display) !important;
-  font-size: var(--type-image) !important;
-  line-height: 1.02 !important;
-  letter-spacing: normal !important;
-  color: var(--home-ink) !important;
-  -webkit-text-fill-color: var(--home-ink) !important;
-  text-shadow: none !important;
-  text-align: left !important;
-  max-width: 9.5em;
-}
-.l-intro.is-hidden--md-down .l-intro__opening-subtitle,
-.l-intro__opening-subtitle,
-p.l-intro__opening-subtitle.text-t1,
-p.l-intro__opening-subtitle.text-c1,
-p.l-intro__opening-subtitle.text-color-primary {
-  margin-top: 0.85rem !important;
-  font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body) !important;
-  font-style: normal !important;
-  font-weight: 400 !important;
-  line-height: 1.65 !important;
-  letter-spacing: 0.01em !important;
-  color: var(--home-ink) !important;
-  -webkit-text-fill-color: var(--home-ink) !important;
-  text-shadow: none !important;
-  text-transform: none !important;
-  text-align: left !important;
-  opacity: 1 !important;
-  max-width: 28em;
-}
-/* Opening sits on bright photography — ink, not washed white */
-.l-intro.is-hidden--md-down .l-intro__opening-subtitle,
-.l-intro.is-hidden--md-down .l-intro__opening-subtitle.text-color-primary,
-.l-intro.is-hidden--md-down .l-intro__opening-subtitle.text-c1,
-.l-intro.is-hidden--md-down .l-intro__opening-subtitle.text-t1,
-.l-intro__opening .l-intro__opening-subtitle {
-  color: var(--home-ink) !important;
-  -webkit-text-fill-color: var(--home-ink) !important;
-  text-shadow: none !important;
-}
-.l-intro.is-hidden--md-down .l-intro__opening .suites-cta-link--ink {
-  margin-top: 1.5rem;
-}
-
-/* ——— 03 Step Aboard (cream surface — restrained editorial) ——— */
-.l-intro.is-hidden--md-down .l-intro__content .l-intro__content-title {
-  padding-top: clamp(4.5rem, 12vh, 7rem);
-  position: relative;
-  z-index: 3;
-}
-.l-intro.is-hidden--md-down .l-intro__content .l-intro__content-title .h2 {
-  font-family: var(--suites-display) !important;
-  font-size: var(--type-section) !important;
-  line-height: 1.05 !important;
-  letter-spacing: normal !important;
-  max-width: 11em;
-  color: var(--home-gold) !important;
-  -webkit-text-fill-color: var(--home-gold) !important;
-  text-shadow: none !important;
-  text-align: left !important;
-  position: relative;
-  z-index: 3;
-}
-.l-intro.is-hidden--md-down .l-intro__content .l-intro__content-image {
-  position: relative;
-  z-index: 1;
-  max-width: min(26vw, 260px);
-  margin-top: 0.75rem;
-  pointer-events: none;
-}
-.l-intro.is-hidden--md-down .l-intro__content .l-intro__content-text {
-  max-width: 28em;
-  position: relative;
-  z-index: 2;
-}
-.l-intro.is-hidden--md-down .l-intro__content .l-intro__content-text p {
-  font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body) !important;
-  font-style: normal !important;
-  font-weight: 400 !important;
-  line-height: 1.65 !important;
-  letter-spacing: 0.01em !important;
-  max-width: 28em;
-  color: var(--home-body-cream) !important;
-  -webkit-text-fill-color: var(--home-body-cream) !important;
-  text-shadow: none !important;
-  text-align: left !important;
-  opacity: 1 !important;
-}
-
-/* ——— 04 Comfort ——— */
-#wellness .l-wellness__webgl-title {
-  max-width: min(42vw, 16rem);
-  overflow: visible;
-}
-#wellness .l-wellness__webgl-title .g1 {
-  font-family: var(--suites-display) !important;
-  font-size: var(--type-comfort) !important;
-  line-height: 1 !important;
-  letter-spacing: normal !important;
-  color: var(--home-white) !important;
-  -webkit-text-fill-color: var(--home-white) !important;
-  text-shadow: var(--home-image-shadow) !important;
-  text-align: left !important;
-  white-space: nowrap !important;
-  max-width: 100%;
-  overflow: visible !important;
-}
-#wellness .l-wellness__webgl-title .text-c1 {
-  font-family: var(--suites-script-sm) !important;
-  font-size: var(--type-script-sm) !important;
-  line-height: 1.35 !important;
-  letter-spacing: 1px !important;
-  color: var(--home-gold-soft) !important;
-  -webkit-text-fill-color: var(--home-gold-soft) !important;
-  opacity: 1 !important;
-  margin-top: 0.35rem !important;
-  margin-bottom: 0.15rem !important;
-  text-align: left !important;
-  max-width: 12em;
-}
-#wellness .l-wellness__webgl-caption > p.text-t1 {
-  max-width: 26em !important;
-  font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body-on-image) !important;
-  font-style: normal !important;
-  font-weight: 400 !important;
-  line-height: 1.6 !important;
-  letter-spacing: 0.01em !important;
-  color: var(--home-white) !important;
-  -webkit-text-fill-color: var(--home-white) !important;
-  text-shadow: var(--home-image-shadow);
-  text-align: left !important;
-  opacity: 1 !important;
-}
-
-/* Amenity rail — quiet secondary headlines, not page titles */
-.l-wellness__slider__caption-titles .js-content-animation-link {
-  opacity: 0.4 !important;
-  display: block;
-}
-.l-wellness__slider__caption-titles .js-content-animation-link.is-active {
-  opacity: 1 !important;
-}
-.l-wellness__slider__caption-titles a.js-content-animation-link p.h2,
-.l-wellness__slider__caption-titles a.js-content-animation-link p.h2.leading-trim,
-.l-wellness__slider__caption-titles .g1,
-.l-wellness__slider__caption-titles h2,
-.l-wellness__slider__caption-titles .h2,
-.l-wellness__slider__caption-titles h3,
-.l-wellness__slider__caption-titles [class*="title"],
-.l-wellness__slider__caption-titles .js-content-animation-link .h2,
-.l-wellness__slider__caption-titles .js-content-animation-link p {
-  font-family: var(--suites-page-title) !important;
-  font-size: var(--type-amenity) !important;
-  line-height: 1.15 !important;
-  letter-spacing: -0.02em !important;
-  font-weight: 400 !important;
-  opacity: 1 !important;
-  max-width: none !important;
-  text-transform: none !important;
-  text-align: left !important;
-}
-.l-wellness__slider__caption-titles .is-active,
-.l-wellness__slider__caption-titles .is-current,
-.l-wellness__slider__caption-titles [aria-current="true"] {
-  opacity: 1 !important;
   color: var(--home-ink) !important;
   -webkit-text-fill-color: var(--home-ink) !important;
 }
-.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .g1,
-.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles h2,
-.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .h2,
-.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles h3,
-.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-content-animation-link .h2,
-.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-content-animation-link p {
-  color: var(--home-ink) !important;
-  -webkit-text-fill-color: var(--home-ink) !important;
-}
-.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-content-animation-link:not(.is-active) {
-  opacity: 0.4 !important;
-}
-.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .is-active,
-.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .is-current,
-.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles [class*="is-active"],
-.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-active,
-.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-content-animation-link.is-active {
-  color: var(--home-ink) !important;
-  -webkit-text-fill-color: var(--home-ink) !important;
-  opacity: 1 !important;
-}
-.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-content-animation-link.is-active .h2,
-.l-wellness__slider__caption.ui-dark .l-wellness__slider__caption-titles .js-content-animation-link.is-active p {
-  color: var(--home-ink) !important;
-  -webkit-text-fill-color: var(--home-ink) !important;
-}
-.l-wellness__slider__caption-text {
-  max-width: 26em;
-}
-.l-wellness__slider__caption-text p {
-  font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body) !important;
-  font-style: normal !important;
-  font-weight: 400 !important;
-  line-height: 1.65 !important;
-  letter-spacing: 0.01em !important;
-  max-width: 26em;
-  color: var(--home-body-cream) !important;
-  -webkit-text-fill-color: var(--home-body-cream) !important;
-  text-shadow: none !important;
-  text-align: left !important;
-  opacity: 1 !important;
-}
 
-/* ——— Nature / Place (Mode A photography) ——— */
-#nature .l-nature-bg-caption .g1 {
-  font-family: var(--suites-display) !important;
-  font-size: var(--type-image) !important;
-  line-height: 1.02 !important;
-  color: var(--home-white) !important;
-  -webkit-text-fill-color: var(--home-white) !important;
-  text-shadow: var(--home-image-shadow) !important;
-}
-#nature .l-nature-bg-caption__text p {
-  font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body-on-image) !important;
-  font-style: normal !important;
-  line-height: 1.6 !important;
-  letter-spacing: 0.01em !important;
-  max-width: 28em;
-  color: var(--home-white) !important;
-  -webkit-text-fill-color: var(--home-white) !important;
-  text-shadow: var(--home-image-shadow);
-  opacity: 1 !important;
-}
-.l-place-webgl-caption .g1 {
-  font-family: var(--suites-display) !important;
-  font-size: var(--type-image) !important;
-  line-height: 1.02 !important;
-  color: var(--home-white) !important;
-  -webkit-text-fill-color: var(--home-white) !important;
-  text-shadow: var(--home-image-shadow) !important;
-}
-.l-place-webgl__text p {
-  font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body-on-image) !important;
-  font-style: normal !important;
-  line-height: 1.6 !important;
-  letter-spacing: 0.01em !important;
-  max-width: 28em;
-  color: var(--home-white) !important;
-  -webkit-text-fill-color: var(--home-white) !important;
-  text-shadow: var(--home-image-shadow);
-  opacity: 1 !important;
-}
-
-/* Cream chapter short titles = Rolling gold display */
-.l-design .h3,
-.l-interiors .h3,
-.l-map .h3 {
-  font-family: var(--suites-page-title) !important;
-  font-size: clamp(28px, 2.8vw, 40px) !important;
-  line-height: 0.9 !important;
-  max-width: 14em;
+/* Footer */
+.hathor-suites-footer-host .lux-footer__headline,
+.hathor-lux-footer-host .lux-footer__headline {
+  font-family: var(--font-section) !important;
+  font-size: clamp(40px, 4vw, 56px) !important;
   color: var(--home-gold) !important;
   -webkit-text-fill-color: var(--home-gold) !important;
-  letter-spacing: -0.5px;
-  text-transform: none !important;
   text-align: left !important;
-  opacity: 1 !important;
-}
-
-/* Long cream “title” paragraphs (design statement) = readable body, not pale gold billboard */
-.l-design__title .h3,
-.l-design__title h3,
-.l-design p.text-t1,
-.l-interiors p.text-t1,
-.l-map p.text-t1 {
-  font-family: var(--suites-body-font) !important;
-  font-size: clamp(17px, 1.25vw, 20px) !important;
-  font-style: normal !important;
-  font-weight: 400 !important;
-  line-height: 1.65 !important;
-  letter-spacing: 0.01em !important;
-  max-width: 36em;
-  color: var(--home-body-cream) !important;
-  -webkit-text-fill-color: var(--home-body-cream) !important;
-  text-transform: none !important;
-  text-align: center !important;
-  opacity: 1 !important;
-}
-
-/* Residences cards — Mode B */
-.l-residences__caption__card,
-.l-residences__caption__card-content {
-  background: rgba(250, 248, 245, 0.96) !important;
-  padding: clamp(1.35rem, 2.5vw, 2rem) !important;
-  border: 1px solid rgba(182, 159, 100, 0.28);
-  box-shadow: none !important;
-  color: var(--home-body-cream) !important;
-}
-.l-residences__caption__type,
-.l-residences__caption__type.text-t1,
-.l-residences__caption__card .g1,
-.l-residences__caption__card h3,
-.l-residences__caption__card .h3,
-.l-residences__caption__item p,
-.l-residences__caption__item__text p,
-.l-residences__caption__card-content p {
-  font-family: var(--suites-page-title) !important;
-  color: var(--home-gold) !important;
-  -webkit-text-fill-color: var(--home-gold) !important;
-  text-shadow: none !important;
-}
-.l-residences__caption__type,
-.l-residences__caption__type.text-t1 {
-  font-size: clamp(28px, 2.6vw, 40px) !important;
-  line-height: 0.9 !important;
-  letter-spacing: -0.5px !important;
-}
-.l-residences__caption__description,
-.l-residences__caption__description.text-small,
-.l-residences__caption__description.text-color-small,
-.l-residences__caption__card p.l-residences__caption__description {
-  font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body) !important;
-  font-style: normal !important;
-  line-height: 1.65 !important;
-  letter-spacing: 0.01em !important;
-  color: var(--home-body-cream) !important;
-  -webkit-text-fill-color: var(--home-body-cream) !important;
-  opacity: 1 !important;
-}
-
-/* Gallery 3:4 media pin */
-.l-gallery__item picture.img-full img {
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
 }
 
 /* Host chrome */
 .header,
-.cookie-consent {
-  display: none !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-}
-.turn-message {
-  display: none !important;
-}
-.js-nature-canvas,
-.js-wellness-canvas,
-.js-tree-canvas {
-  filter: sepia(0.78) saturate(1.28) hue-rotate(-14deg) brightness(1.02) contrast(1.04);
-}
-.l-nature__gradient div,
-.l-wellness__gradient div,
-.l-nature-bg-gradient,
-.preloader__gradient div,
-.preloader__gradient-animation div,
-.footer__gradient div {
-  background: radial-gradient(
-    circle,
-    rgba(182, 159, 100, 0.55) 0%,
-    rgba(236, 232, 223, 0.28) 40%,
-    rgba(245, 234, 207, 0) 74%
-  ) !important;
-}
+.cookie-consent,
+.turn-message,
+footer.footer,
 .preloader__logo,
-.preloader__logo-mobile,
-.preloader .hathor-preloader-icon {
-  display: none !important;
-}
-footer.footer {
+.preloader__logo-mobile {
   display: none !important;
 }
 
-/* Final CTA — Mode B cream section */
-.hathor-suites-footer-scroll,
-.hathor-lux-footer-host,
-.hathor-suites-footer-host {
-  background: #ece8df !important;
-}
-.hathor-suites-footer-host .lux-footer__top,
-.hathor-lux-footer-host .lux-footer__top {
-  text-align: left !important;
-  max-width: 40rem;
-  padding-top: clamp(4rem, 10vh, 7rem) !important;
-  padding-bottom: clamp(2.5rem, 6vh, 4rem) !important;
-}
-.hathor-suites-footer-host .suites-eyebrow,
-.hathor-lux-footer-host .suites-eyebrow {
-  margin-bottom: 1rem;
-  color: var(--home-gold) !important;
-  -webkit-text-fill-color: var(--home-gold) !important;
-}
-.hathor-suites-footer-host .lux-footer__headline,
-.hathor-lux-footer-host .lux-footer__headline {
-  font-family: var(--suites-page-title) !important;
-  font-size: var(--type-cta-display) !important;
-  line-height: 0.9 !important;
-  letter-spacing: -0.5px !important;
-  color: var(--home-gold) !important;
-  -webkit-text-fill-color: var(--home-gold) !important;
-  text-shadow: none !important;
-  text-align: left !important;
-  max-width: 12em;
-  opacity: 1 !important;
-}
-.hathor-suites-footer-host .lux-footer__script,
-.hathor-lux-footer-host .lux-footer__script {
-  font-family: var(--suites-script-sm) !important;
-  font-size: var(--type-script-sm) !important;
-  line-height: 1.5 !important;
-  letter-spacing: 2px !important;
-  color: var(--home-gold) !important;
-  -webkit-text-fill-color: var(--home-gold) !important;
-  margin-top: 0.55rem;
-  margin-bottom: 0;
-  opacity: 1 !important;
-  text-transform: none !important;
-  text-align: left !important;
-}
-.hathor-suites-footer-host .lux-footer__subhead,
-.hathor-lux-footer-host .lux-footer__subhead {
-  margin-top: 1.35rem !important;
-  max-width: 32em !important;
-  font-family: var(--suites-body-font) !important;
-  font-size: var(--type-body-cream) !important;
-  line-height: 1.7 !important;
-  letter-spacing: 2.5px !important;
-  color: var(--home-body-cream) !important;
-  -webkit-text-fill-color: var(--home-body-cream) !important;
-  text-align: left !important;
-  opacity: 1 !important;
-}
-.hathor-suites-footer-host .lux-footer__subscribe,
-.hathor-lux-footer-host .lux-footer__subscribe {
-  margin-top: 2rem !important;
-}
-.hathor-suites-footer-host .lux-footer__col-title,
-.hathor-lux-footer-host .lux-footer__col-title {
-  color: var(--home-gold) !important;
-  font-family: var(--suites-sans) !important;
-  font-size: var(--type-button) !important;
-  letter-spacing: var(--hathor-btn-tracking) !important;
-  text-transform: uppercase !important;
-}
-.hathor-suites-footer-host .lux-footer__link,
-.hathor-suites-footer-host .lux-footer__tagline,
-.hathor-suites-footer-host .lux-footer__meta-link,
-.hathor-suites-footer-host .lux-footer__legal,
-.hathor-suites-footer-host .lux-footer__crafted,
-.hathor-lux-footer-host .lux-footer__link,
-.hathor-lux-footer-host .lux-footer__tagline,
-.hathor-lux-footer-host .lux-footer__meta-link,
-.hathor-lux-footer-host .lux-footer__legal,
-.hathor-lux-footer-host .lux-footer__crafted {
-  color: var(--home-body-cream) !important;
-  font-family: var(--suites-body-font) !important;
-  font-size: 18px !important;
-  line-height: 1.7 !important;
-  letter-spacing: 2.5px !important;
-  opacity: 1 !important;
-}
-.hathor-lux-footer-host .lux-footer.is-copy-ready .lux-footer__headline,
-.hathor-lux-footer-host .lux-footer.is-copy-ready .lux-footer__subhead,
-.hathor-lux-footer-host .lux-footer.is-copy-ready .lux-footer__subscribe,
-.hathor-lux-footer-host .lux-footer__col,
-.hathor-suites-footer-host .lux-footer.is-copy-ready .lux-footer__headline,
-.hathor-suites-footer-host .lux-footer.is-copy-ready .lux-footer__subhead,
-.hathor-suites-footer-host .lux-footer.is-copy-ready .lux-footer__subscribe,
-.hathor-suites-footer-host .lux-footer__col {
-  opacity: 1 !important;
-  transform: none !important;
-}
-
-/* Tablet — typography only */
-@media (max-width: 1024px) and (min-width: 481px) {
-  :root {
-    --type-hero: clamp(56px, 7vw, 88px);
-    --type-section: clamp(44px, 5vw, 60px);
-    --type-image: clamp(48px, 5.5vw, 72px);
-    --type-amenity: clamp(36px, 3.5vw, 48px);
-    --type-cta-display: clamp(44px, 5vw, 60px);
-  }
-  .l-gallery__caption .suites-hero-lockup {
-    width: min(58vw, 26rem) !important;
-    bottom: clamp(2rem, 8vh, 4rem) !important;
-  }
-  .l-wellness__slider__caption-titles .g1,
-  .l-wellness__slider__caption-titles h2,
-  .l-wellness__slider__caption-titles h3,
-  .l-wellness__slider__caption-titles .h2 {
-    font-size: var(--type-amenity) !important;
-  }
-}
-
-/* Phone — typography only */
+/* ——— Phone ——— */
 @media (max-width: 480px) {
   :root {
-    --type-hero: clamp(40px, 10vw, 56px);
-    --type-section: clamp(30px, 7vw, 40px);
-    --type-image: clamp(32px, 8vw, 44px);
-    --type-comfort: clamp(36px, 9vw, 48px);
-    --type-script-sm: 20px;
+    --type-hero: clamp(42px, 11vw, 56px);
+    --type-unrivaled: clamp(36px, 9vw, 48px);
+    --type-step: clamp(34px, 8.5vw, 44px);
+    --type-comfort: clamp(44px, 12vw, 56px);
+    --type-script: 22px;
+    --type-amenity: clamp(28px, 7vw, 34px);
     --type-body: 16px;
-    --type-body-cream: 16px;
-    --type-body-on-image: 16px;
-    --type-body-image: 16px;
-    --type-label: 11px;
-    --type-button: 11px;
-    --type-amenity: clamp(18px, 5vw, 24px);
-    --type-cta-display: clamp(32px, 7vw, 44px);
+    --type-body-photo: 16px;
+    --side: 22px;
+    --btn-h: 44px;
   }
-  .l-gallery__caption .suites-hero-lockup {
-    left: 24px !important;
-    bottom: 36px !important;
-    width: min(86vw, 22rem) !important;
-  }
-  .suites-cta-primary,
-  .suites-cta-secondary,
-  .suites-cta-primary--on-dark,
-  .suites-cta-secondary--ink {
-    min-height: 44px;
-  }
-  .l-wellness__slider__caption-titles .g1,
-  .l-wellness__slider__caption-titles h2,
-  .l-wellness__slider__caption-titles h3,
-  .l-wellness__slider__caption-titles .h2 {
-    font-size: var(--type-amenity) !important;
+  .l-gallery__caption .suites-hero-lockup,
+  .l-intro__opening,
+  .l-intro__content-title,
+  .l-intro__content-text {
+    margin-left: var(--side) !important;
+    max-width: calc(100% - 44px) !important;
   }
   #wellness .l-wellness__webgl-title .g1 {
-    font-size: var(--type-image) !important;
+    white-space: nowrap !important;
+    font-size: var(--type-comfort) !important;
+  }
+}
+
+/* ——— Tablet ——— */
+@media (min-width: 481px) and (max-width: 1024px) {
+  :root {
+    --type-unrivaled: clamp(48px, 5.2vw, 64px);
+    --type-step: clamp(42px, 4.4vw, 54px);
+    --type-comfort: clamp(52px, 5.5vw, 68px);
+    --type-amenity: clamp(30px, 3vw, 38px);
+    --side: 4.5vw;
   }
 }
