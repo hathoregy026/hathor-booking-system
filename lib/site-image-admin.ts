@@ -137,6 +137,8 @@ const SLOT_LABELS: Partial<Record<SiteImageSlot["name"], string>> = {
   "home-amenities-10": "Opening cards — Fine Dining",
   "home-amenities-11": "Opening cards — third photo",
   "home-amenities-13": "Opening cards — fourth photo",
+  "home-amenities-14": "Nature gold band — left photo",
+  "home-amenities-15": "Nature gold band — right photo",
   "wellness-hero": "Hero — Wellness",
   "wellness-fitness": "Wellness - Fitness Photo",
   "highlights-hero": "Hero — Highlights",

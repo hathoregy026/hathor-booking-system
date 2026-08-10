@@ -364,13 +364,50 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   z-index: 8;
   isolation: isolate;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   width: 100%;
   min-height: 0;
-  padding: clamp(1.5rem, 3.5vh, 2.25rem) clamp(1.25rem, 6vw, 4rem);
+  /* Flush top into the band — no empty gold strip above the dining trio */
+  padding: 0 clamp(1rem, 4vw, 2.5rem) clamp(1.25rem, 3vh, 2rem);
   box-sizing: border-box;
   background: var(--am-gold);
+}
+
+.home-am-nature__gold-inner {
+  display: grid;
+  grid-template-columns: minmax(7rem, 1fr) minmax(14rem, 28rem) minmax(7rem, 1fr);
+  align-items: center;
+  gap: clamp(0.85rem, 2.5vw, 2rem);
+  width: 100%;
+  max-width: min(78rem, 100%);
+  margin: 0 auto;
+  padding-top: 0;
+  box-sizing: border-box;
+}
+
+.home-am-nature__gold-media {
+  position: relative;
+  width: 100%;
+  max-width: 15rem;
+  margin-inline: auto;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 0;
+  pointer-events: none;
+}
+
+.home-am-nature__gold-media--left {
+  justify-self: end;
+}
+
+.home-am-nature__gold-media--right {
+  justify-self: start;
+}
+
+.home-am-nature__gold-media > span,
+.home-am-nature__gold-media img {
+  object-fit: cover !important;
 }
 
 .home-am-nature__copy {
@@ -379,10 +416,25 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   align-items: center;
   width: 100%;
   /* Wide enough for “ON DAHABIYA” as one title line at dashboard sizes */
-  max-width: min(44rem, 94%);
+  max-width: min(44rem, 100%);
   margin: 0 auto;
+  padding-top: clamp(0.65rem, 1.6vh, 1.1rem);
   text-align: center;
   pointer-events: none;
+}
+
+@media (max-width: 1024px) and (min-width: 481px) {
+  .home-am-nature__gold-inner {
+    grid-template-columns: minmax(5.5rem, 0.9fr) minmax(12rem, 22rem) minmax(
+        5.5rem,
+        0.9fr
+      );
+    gap: 0.75rem 1rem;
+  }
+
+  .home-am-nature__gold-media {
+    max-width: 11.5rem;
+  }
 }
 
 /*
@@ -1757,11 +1809,36 @@ html[data-ex-experience]
 
   .home-am-nature__gold-band {
     min-height: 0;
-    padding: clamp(1.35rem, 4vh, 2rem) 1.15rem;
+    padding: 0 1.15rem clamp(1.15rem, 3.5vh, 1.75rem);
+  }
+
+  .home-am-nature__gold-inner {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "left right"
+      "copy copy";
+    gap: 0.85rem 0.75rem;
+    align-items: start;
+  }
+
+  .home-am-nature__gold-media--left {
+    grid-area: left;
+    justify-self: stretch;
+    max-width: none;
+    aspect-ratio: 4 / 5;
+  }
+
+  .home-am-nature__gold-media--right {
+    grid-area: right;
+    justify-self: stretch;
+    max-width: none;
+    aspect-ratio: 4 / 5;
   }
 
   .home-am-nature__copy {
+    grid-area: copy;
     max-width: none;
+    padding-top: 0.35rem;
   }
 
   /* Springs mobile: horizontal swipe for cards */

@@ -69,6 +69,16 @@ export const AMENITIES_SEQUENCE_IMAGE_SLOTS = [
     label: "12 — Nature fullscreen (after opening cards)",
     alt: "Amenities sequence — full-bleed nature chapter before Our Voyages",
   },
+  {
+    name: "home-amenities-14",
+    label: "14 — Nature gold band · left photo",
+    alt: "Amenities sequence — dining gold panel left photo",
+  },
+  {
+    name: "home-amenities-15",
+    label: "15 — Nature gold band · right photo",
+    alt: "Amenities sequence — dining gold panel right photo",
+  },
 ] as const;
 
 export type AmenitiesSequenceImageName =

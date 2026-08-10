@@ -247,6 +247,22 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     pagePath: "/#amenities-sequence",
     displayOrder: 12,
   },
+  {
+    name: "home-amenities-14",
+    altText: "Amenities sequence — dining gold panel left photo",
+    url: HATHOR_MEDIA.restaurant,
+    category: "dining",
+    pagePath: "/#amenities-sequence",
+    displayOrder: 13,
+  },
+  {
+    name: "home-amenities-15",
+    altText: "Amenities sequence — dining gold panel right photo",
+    url: HATHOR_MEDIA.altDining,
+    category: "dining",
+    pagePath: "/#amenities-sequence",
+    displayOrder: 14,
+  },
   // Homepage “Our Voyages” accordion — dedicated slots (Admin tab: Our Voyages)
   {
     name: "home-voyage-3n-aswan-luxor",

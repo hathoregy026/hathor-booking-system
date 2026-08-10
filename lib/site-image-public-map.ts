@@ -39,6 +39,8 @@ const AMENITIES_SEQUENCE_LEGACY_FALLBACK: Readonly<Record<string, string>> = {
   "home-amenities-11": "home-amenities-2",
   "home-amenities-13": "wellness-fitness",
   "home-amenities-12": "about-hero",
+  "home-amenities-14": "gastronomy-restaurant",
+  "home-amenities-15": "home-alt-dining",
 };
 
 export type StoredSiteImagePublicMap = Record<
