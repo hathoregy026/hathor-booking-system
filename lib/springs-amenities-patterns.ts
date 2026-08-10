@@ -126,18 +126,25 @@ export const SPRINGS_AMENITIES_PATTERNS: PatternMap = {
           },
         }),
 
-  /** Bar reel title/sub — hide under cream titles, show as reel covers. */
+  /**
+   * Bar reel title/sub — only while videoImage clip is open.
+   * Hidden over cream titles and after the gold caption / next slide takes over.
+   */
   videoOverlayCopy: () =>
     isLgUp()
       ? pattern({
-          "parallax--0-0": { opacity: "0" },
-          "parallax--280-0": { opacity: "0" },
-          "parallax--320-0": { opacity: "1" },
+          "parallax--0-0": { opacity: "0", visibility: "hidden" },
+          "parallax--340-0": { opacity: "0", visibility: "hidden" },
+          "parallax--355-0": { opacity: "1", visibility: "visible" },
+          "parallax--440-0": { opacity: "1", visibility: "visible" },
+          "parallax--480-0": { opacity: "0", visibility: "hidden" },
         })
       : pattern({
-          "parallax--0-0": { opacity: "0" },
-          "parallax--90-0": { opacity: "0" },
-          "parallax--130-0": { opacity: "1" },
+          "parallax--0-0": { opacity: "0", visibility: "hidden" },
+          "parallax--145-0": { opacity: "0", visibility: "hidden" },
+          "parallax--155-0": { opacity: "1", visibility: "visible" },
+          "parallax--200-0": { opacity: "1", visibility: "visible" },
+          "parallax--230-0": { opacity: "0", visibility: "hidden" },
         }),
 
   /*

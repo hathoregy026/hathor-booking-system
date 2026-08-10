@@ -817,8 +817,10 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   max-width: min(42rem, 78vw);
   pointer-events: none;
   text-align: var(--am-typo-align, left);
-  opacity: 1;
-  will-change: opacity;
+  /* Hidden until Bar reel clip opens — never paint over cream / other slides */
+  opacity: 0;
+  visibility: hidden;
+  will-change: opacity, visibility;
 }
 
 .home-am-video__overlay-title {
