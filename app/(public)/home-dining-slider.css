@@ -701,14 +701,14 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 .home-am-video__hero-wrap {
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 0;
   transform-origin: bottom right;
 }
 
 .home-am-video__hero {
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 0;
   will-change: transform;
   background: #0f0c09;
   transform-origin: bottom right;
@@ -740,24 +740,29 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 }
 
 /*
- * Springs .i-video__text-container — full stage, under rising image (z-index 1).
- * Only this cream title block; does not affect caption/overlay/other chapters.
+ * Springs .i-video__text-container — MUST stay under .i-video__image.
+ * Cover is z-index (not opacity alone). Never let this paint over the Bar reel.
  */
+.home-am-video .home-am-chapter__stage {
+  isolation: isolate;
+}
+
 .home-am-video__text-container {
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 1 !important;
   pointer-events: none;
   height: 100%;
   opacity: 1;
-  will-change: opacity;
+  /* Do not promote above the inset via will-change stacking quirks */
+  will-change: auto;
 }
 
 .home-am-video__title-stack {
   position: absolute;
   right: clamp(1.25rem, 4vw, 3rem);
   bottom: clamp(28vh, 34svh, 38vh);
-  z-index: auto;
+  z-index: 0;
   width: min(34rem, calc(50vw - 2 * clamp(1.25rem, 4vw, 3rem)));
   max-width: min(34rem, 48vw);
   text-align: left;
@@ -787,7 +792,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   top: auto;
   right: auto;
   bottom: auto;
-  z-index: auto;
+  z-index: 0;
   width: 100%;
   max-width: none;
   text-align: inherit;
@@ -809,8 +814,10 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   line-height: 0.98;
 }
 
-.home-am-video__title span {
+.home-am-video__title span,
+.home-am-video__title-stack .home-am-title-line {
   display: block;
+  white-space: nowrap;
 }
 
 /*
@@ -820,10 +827,11 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 .home-am-video__inset {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 2 !important;
   width: 100%;
   height: 100%;
   overflow: hidden;
+  isolation: isolate;
   will-change: clip-path;
   background: #0f0c09;
   clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
@@ -894,13 +902,17 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 }
 
 @media (min-width: 1025px) {
-  /* Springs: text container stays under inset — no extra title-stack z bump */
+  /* Springs: text container stays under inset — cover is z-index */
   .home-am-video__text-container {
-    z-index: 1;
+    z-index: 1 !important;
   }
 
   .home-am-video__inset {
-    z-index: 2;
+    z-index: 2 !important;
+  }
+
+  .home-am-video__caption {
+    z-index: 3 !important;
   }
 }
 
@@ -1549,14 +1561,18 @@ html[data-ex-experience]
     width: min(48vw, 28rem);
     height: auto;
     aspect-ratio: 16 / 10;
-    z-index: 4;
+    z-index: 4 !important;
+  }
+
+  .home-am-video__text-container {
+    z-index: 1 !important;
   }
 
   .home-am-video__caption {
     flex: none;
     width: min(50%, 36rem);
     max-width: none;
-    z-index: 5;
+    z-index: 5 !important;
   }
 }
 
@@ -1622,14 +1638,18 @@ html[data-ex-experience]
     width: auto;
     height: auto;
     aspect-ratio: 16 / 10;
-    z-index: 4;
+    z-index: 4 !important;
+  }
+
+  .home-am-video__text-container {
+    z-index: 1 !important;
   }
 
   .home-am-video__caption {
     flex: none;
     width: 100%;
     max-width: none;
-    z-index: 5;
+    z-index: 5 !important;
   }
 
   .home-am-slider {

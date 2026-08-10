@@ -115,7 +115,7 @@ const RAIL: RailItem[] = [
       index === 0
         ? "Title, sub text, and body on the intro photo; body also on the cream wipe."
         : index === 2
-          ? "Gold caption under the Bar reel: 2-line title (WHERE HISTORY / MEETS HISTORY), sub, and body — Amenities Sequence on-gold colours."
+          ? "Gold caption under the Bar reel: 2-line title (WHERE HISTORY / MEETS ELEGANCE), sub, and body — Amenities Sequence on-gold colours."
           : "Title, sub text, and body for this amenities chapter.",
   })),
   ...STORY_LABELS.map((label, index) => ({

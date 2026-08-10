@@ -358,6 +358,7 @@ export function HomeAmenitiesSequence({
   const onImageIndication = withoutForcedFill(indicationStyle);
   const onImageBody = withoutForcedFill(bodyStyle);
   const onCreamTitle = withoutForcedFill(titleStyle);
+  const onCreamBody = withoutForcedFill(bodyStyle);
   const onGoldTitle = withoutForcedFill(titleStyle);
   const onGoldIndication = withoutForcedFill(indicationStyle);
   const onGoldBody = withoutForcedFill(bodyStyle);
@@ -379,13 +380,25 @@ export function HomeAmenitiesSequence({
   const natureCtaHref = natureStory?.href?.trim() || "/gastronomy";
 
   /*
+   * Cream title under Bar reel (slide 2) — keep phrases on two lines
+   * (WHERE HISTORY / MEETS ELEGANCE), never word-stack.
+   */
+  const creamTitleLines = (
+    videoMain.titleLines.length
+      ? videoMain.titleLines
+      : amenitiesHasCopy(videoMain.indication)
+        ? [videoMain.indication]
+        : []
+  ).map((line) => line.replace(/\.$/, "").trim().replace(/\s+/g, "\u00A0"));
+
+  /*
    * Bar reel gold caption (slide 3): under the image on gold, Amenities typo on-gold.
    * Keep each phrase on one line (WHERE HISTORY / MEETS HISTORY).
    */
   const barCaptionTitleLines = (
     videoInset?.titleLines?.length
       ? videoInset.titleLines
-      : ["WHERE HISTORY", "MEETS HISTORY"]
+      : ["WHERE HISTORY", "MEETS ELEGANCE"]
   ).map((line) => line.replace(/\.$/, "").trim().replace(/\s+/g, "\u00A0"));
   const barCaptionIndication = amenitiesCopy(videoInset?.indication);
   const barCaptionBody = amenitiesCopy(
@@ -583,8 +596,8 @@ export function HomeAmenitiesSequence({
             </div>
 
             {/*
-              Springs .i-video__text-container — z-index 1 under .i-video__image.
-              Unique cream title + body only (no sub). Covered by rising inset.
+              Springs .i-video__text-container — z-index 1 UNDER .i-video__image.
+              Cream title + body; rising Bar reel covers this (never on top of it).
             */}
             <div
               className="home-am-video__text-container"
@@ -598,13 +611,7 @@ export function HomeAmenitiesSequence({
                 <div className="home-am-video__title">
                   <AmenitiesTitleLines
                     as="h2"
-                    lines={
-                      videoMain.titleLines.length
-                        ? videoMain.titleLines
-                        : amenitiesHasCopy(videoMain.indication)
-                          ? [videoMain.indication]
-                          : []
-                    }
+                    lines={creamTitleLines}
                     className="home-am-on-cream-title typo-on-images-title"
                     style={onCreamTitle}
                   />
@@ -612,8 +619,8 @@ export function HomeAmenitiesSequence({
                 <AmenitiesCopyText
                   as="p"
                   value={videoMain.body}
-                  className="home-am-video__title-body typo-body-text"
-                  style={creamBodyStyle}
+                  className="home-am-video__title-body typo-on-images-body"
+                  style={onCreamBody}
                 />
               </div>
             </div>

@@ -95,23 +95,22 @@ export const SPRINGS_AMENITIES_PATTERNS: PatternMap = {
     }),
 
   /**
-   * Springs videoTitle — opacity only on the cream title container.
-   * Stays visible on cream, then hides as videoImage rises over it
-   * (same runway as inset). Do not add clip-path here — cover is z-index.
+   * Springs videoTitle — opacity backup only.
+   * Cover is z-index: text stays under .i-video__image while the clip opens.
+   * Keep opacity 1 through the rise so the title is seen *behind* the image,
+   * then hide once fully covered (cleanup / no bleed into caption).
    */
   videoTitle: () =>
     isLgUp()
       ? pattern({
           "parallax--0-0": { opacity: "1", visibility: "visible" },
-          "parallax--149-0": { opacity: "1", visibility: "visible" },
-          "parallax--150-0": { opacity: "1", visibility: "visible" },
-          "parallax--175-0": { opacity: "0", visibility: "hidden" },
+          "parallax--174-0": { opacity: "1", visibility: "visible" },
+          "parallax--176-0": { opacity: "0", visibility: "hidden" },
         })
       : pattern({
           "parallax--0-0": { opacity: "1", visibility: "visible" },
-          "parallax--49-0": { opacity: "1", visibility: "visible" },
-          "parallax--50-0": { opacity: "1", visibility: "visible" },
-          "parallax--75-0": { opacity: "0", visibility: "hidden" },
+          "parallax--74-0": { opacity: "1", visibility: "visible" },
+          "parallax--76-0": { opacity: "0", visibility: "hidden" },
         }),
 
   videoImage: () =>
