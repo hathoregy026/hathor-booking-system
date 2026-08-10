@@ -790,7 +790,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   background: #0f0c09;
 }
 
-/* Dark luxurious veil over slot-3 Bar reel — primary opacity 0.35 */
+/* Dark luxurious veil over slot-3 Bar reel — primary opacity 0.45 */
 .home-am-video__inset::after {
   content: "";
   position: absolute;
@@ -800,11 +800,40 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   background:
     radial-gradient(
       ellipse 90% 80% at 50% 40%,
-      rgba(8, 6, 4, 0.22) 0%,
-      rgba(8, 6, 4, 0.35) 55%,
-      rgba(4, 3, 2, 0.48) 100%
+      rgba(8, 6, 4, 0.28) 0%,
+      rgba(8, 6, 4, 0.45) 55%,
+      rgba(4, 3, 2, 0.58) 100%
     );
-  box-shadow: inset 0 0 160px rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 0 160px rgba(0, 0, 0, 0.45);
+}
+
+/* Title + script sub on the Bar reel (amenities typography title / indication) */
+.home-am-video__overlay-copy {
+  position: absolute;
+  left: clamp(1.25rem, 4vw, 3.5rem);
+  right: clamp(1.25rem, 4vw, 3.5rem);
+  bottom: clamp(1.75rem, 6vh, 4rem);
+  z-index: 4;
+  max-width: min(42rem, 78vw);
+  pointer-events: none;
+  text-align: var(--am-typo-align, left);
+}
+
+.home-am-video__overlay-title {
+  margin: 0 0 var(--am-typo-gap-title-sub, 14px);
+}
+
+.home-am-video__overlay-title .home-am-title-line {
+  display: block;
+}
+
+@media (max-width: 480px) {
+  .home-am-video__overlay-copy {
+    left: 1.1rem;
+    right: 1.1rem;
+    bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
+    max-width: none;
+  }
 }
 
 .home-am-video__inset img,

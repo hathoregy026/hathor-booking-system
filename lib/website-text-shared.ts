@@ -192,9 +192,9 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
         body: "Glide between Luxor and Aswan, soft light on the water, Egypt unfolding at a gracious pace.",
       },
       {
-        title: "WELCOME ABOARD\nHATHOR.",
-        indication: "Five-Star Small Boat",
-        body: "Refined cabins, attentive hospitality, and Egyptian charm: an exclusive voyage on the Nile.",
+        title: "WHERE HISTORY\nMEETS LUXURY.",
+        indication: "Bar Hathor",
+        body: "Refined evenings aboard Hathor: history, comfort, and style where the Nile meets luxury.",
       },
       {
         title: "GOLDEN HOUR\nON THE NILE.",

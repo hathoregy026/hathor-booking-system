@@ -109,9 +109,9 @@ export const EX_PINNED = {
     {
       imageName: "home-amenities-3" as SiteImageName,
       alt: "Luxury Dahabiya Nile cruise",
-      title: "WELCOME ABOARD\nHATHOR.",
-      indication: "Five-Star Small Boat",
-      body: "Refined cabins, attentive hospitality, and Egyptian charm: an exclusive voyage on the Nile.",
+      title: "WHERE HISTORY\nMEETS LUXURY.",
+      indication: "Bar Hathor",
+      body: "Refined evenings aboard Hathor: history, comfort, and style where the Nile meets luxury.",
     },
     {
       imageName: "home-amenities-4" as SiteImageName,

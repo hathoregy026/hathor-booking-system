@@ -580,6 +580,28 @@ export function HomeAmenitiesSequence({
                 Bar reel replaces the CMS still (home-amenities-3 deleted).
               */}
               <AmenitiesInsetVideo alt={videoInsetImage.alt} />
+              <div className="home-am-video__overlay-copy" data-am-video-overlay>
+                <AmenitiesTitleLines
+                  as="h2"
+                  lines={
+                    videoInset?.titleLines?.length
+                      ? videoInset.titleLines
+                      : ["WHERE HISTORY", "MEETS LUXURY."]
+                  }
+                  className="home-am-video__overlay-title home-am-on-image-text typo-on-images-title"
+                  style={onImageTitle}
+                />
+                <AmenitiesCopyText
+                  as="p"
+                  value={
+                    amenitiesHasCopy(videoInset?.indication)
+                      ? videoInset.indication
+                      : "Bar Hathor"
+                  }
+                  className="home-am-video__overlay-sub home-am-on-image-text typo-on-images-indication"
+                  style={onImageIndication}
+                />
+              </div>
             </div>
 
             {/*

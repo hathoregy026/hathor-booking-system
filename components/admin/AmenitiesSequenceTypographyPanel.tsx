@@ -54,7 +54,7 @@ type PreviewSurface = "onImage" | "onGold" | "onCream";
 const EX_PINNED_FALLBACKS = [
   { indication: "Sail The Nile On Hathor" },
   { indication: "Private Nile Sailing" },
-  { indication: "Five-Star Small Boat" },
+  { indication: "Bar Hathor" },
   { indication: "History · Comfort · Style" },
 ] as const;
 
@@ -90,7 +90,7 @@ type RailItem =
 const SLIDE_LABELS = [
   "1 — Fullscreen intro",
   "2 — Rising full-bleed",
-  "3 — Inset + half/half",
+  "3 — Bar video title + sub",
   "4 — Fixed left + stack",
 ] as const;
 
@@ -114,7 +114,9 @@ const RAIL: RailItem[] = [
     hint:
       index === 0
         ? "Title, sub text, and body on the intro photo; body also on the cream wipe."
-        : "Title, sub text, and body for this amenities chapter.",
+        : index === 2
+          ? "Big 2-line title + script sub on the Bar video (slot 3). Same Title / Sub styles as the rest of amenities."
+          : "Title, sub text, and body for this amenities chapter.",
   })),
   ...STORY_LABELS.map((label, index) => ({
     id: `story-${index}`,
@@ -138,7 +140,7 @@ const RAIL: RailItem[] = [
     label: "Sub / indication style",
     mode: "style",
     role: "indication",
-    hint: "Sub text under titles (intro, slider, opening rail, nature band).",
+    hint: "Sub / script text under titles (intro, Bar video, slider, opening rail, nature band).",
   },
   {
     id: "style-body",
