@@ -1097,6 +1097,202 @@ export function WebsiteTextPanel() {
               </>
             ) : null}
 
+            {activePage === "suites" ? (
+              <>
+                <Section
+                  step={2}
+                  title="Hero"
+                  description="Native Suites mosaic hero (/suites-preview). Empty fields fall back to bake-time copy."
+                >
+                  <Field
+                    label="Eyebrow"
+                    value={text.pages.suites.heroEyebrow}
+                    onChange={(heroEyebrow) =>
+                      patchPage("suites", { ...text.pages.suites, heroEyebrow })
+                    }
+                  />
+                  <Field
+                    label="Title"
+                    value={text.pages.suites.heroTitle}
+                    hint="Line break between River / Suites"
+                    multiline
+                    rows={2}
+                    onChange={(heroTitle) =>
+                      patchPage("suites", { ...text.pages.suites, heroTitle })
+                    }
+                  />
+                  <Field
+                    label="Support"
+                    value={text.pages.suites.heroSupport}
+                    multiline
+                    rows={3}
+                    onChange={(heroSupport) =>
+                      patchPage("suites", { ...text.pages.suites, heroSupport })
+                    }
+                  />
+                </Section>
+                <Section step={3} title="Unrivaled + Step Aboard">
+                  <Field
+                    label="Unrivaled title"
+                    value={text.pages.suites.unrivaledTitle}
+                    onChange={(unrivaledTitle) =>
+                      patchPage("suites", {
+                        ...text.pages.suites,
+                        unrivaledTitle,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Unrivaled body"
+                    value={text.pages.suites.unrivaledBody}
+                    multiline
+                    rows={3}
+                    onChange={(unrivaledBody) =>
+                      patchPage("suites", {
+                        ...text.pages.suites,
+                        unrivaledBody,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Step Aboard title"
+                    value={text.pages.suites.stepTitle}
+                    onChange={(stepTitle) =>
+                      patchPage("suites", { ...text.pages.suites, stepTitle })
+                    }
+                  />
+                  <Field
+                    label="Step Aboard body"
+                    value={text.pages.suites.stepBody}
+                    multiline
+                    rows={4}
+                    onChange={(stepBody) =>
+                      patchPage("suites", { ...text.pages.suites, stepBody })
+                    }
+                  />
+                </Section>
+                <Section step={4} title="Comfort amenities">
+                  <Field
+                    label="Comfort title"
+                    value={text.pages.suites.comfortTitle}
+                    onChange={(comfortTitle) =>
+                      patchPage("suites", {
+                        ...text.pages.suites,
+                        comfortTitle,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Comfort lead"
+                    value={text.pages.suites.comfortLead}
+                    multiline
+                    rows={3}
+                    onChange={(comfortLead) =>
+                      patchPage("suites", { ...text.pages.suites, comfortLead })
+                    }
+                  />
+                  <Field
+                    label="Shower body"
+                    value={text.pages.suites.amenityShowerBody}
+                    multiline
+                    rows={2}
+                    onChange={(amenityShowerBody) =>
+                      patchPage("suites", {
+                        ...text.pages.suites,
+                        amenityShowerBody,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Balcony body"
+                    value={text.pages.suites.amenityBalconyBody}
+                    multiline
+                    rows={2}
+                    onChange={(amenityBalconyBody) =>
+                      patchPage("suites", {
+                        ...text.pages.suites,
+                        amenityBalconyBody,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Smart TV body"
+                    value={text.pages.suites.amenitySmartTvBody}
+                    multiline
+                    rows={2}
+                    onChange={(amenitySmartTvBody) =>
+                      patchPage("suites", {
+                        ...text.pages.suites,
+                        amenitySmartTvBody,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Minibar body"
+                    value={text.pages.suites.amenityMinibarBody}
+                    multiline
+                    rows={2}
+                    onChange={(amenityMinibarBody) =>
+                      patchPage("suites", {
+                        ...text.pages.suites,
+                        amenityMinibarBody,
+                      })
+                    }
+                  />
+                </Section>
+                <Section step={5} title="Nile / Closing">
+                  <Field
+                    label="Nile title"
+                    value={text.pages.suites.nileTitle}
+                    onChange={(nileTitle) =>
+                      patchPage("suites", { ...text.pages.suites, nileTitle })
+                    }
+                  />
+                  <Field
+                    label="Nile body"
+                    value={text.pages.suites.nileBody}
+                    multiline
+                    rows={3}
+                    onChange={(nileBody) =>
+                      patchPage("suites", { ...text.pages.suites, nileBody })
+                    }
+                  />
+                  <Field
+                    label="Closing eyebrow"
+                    value={text.pages.suites.closingEyebrow}
+                    onChange={(closingEyebrow) =>
+                      patchPage("suites", {
+                        ...text.pages.suites,
+                        closingEyebrow,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Closing title"
+                    value={text.pages.suites.closingTitle}
+                    onChange={(closingTitle) =>
+                      patchPage("suites", {
+                        ...text.pages.suites,
+                        closingTitle,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Closing body"
+                    value={text.pages.suites.closingBody}
+                    multiline
+                    rows={3}
+                    onChange={(closingBody) =>
+                      patchPage("suites", {
+                        ...text.pages.suites,
+                        closingBody,
+                      })
+                    }
+                  />
+                </Section>
+              </>
+            ) : null}
+
             {activePage === "highlights" ? (
               <>
                 <Section step={2} title="Introduction">

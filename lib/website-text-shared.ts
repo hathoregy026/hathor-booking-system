@@ -25,6 +25,10 @@ import {
   ROYAL_SUITES_PAGE,
   WELLNESS_PAGE,
 } from "@/lib/page-content";
+import {
+  DEFAULT_SUITES_NATIVE_CMS,
+  type SuitesNativeCmsFields,
+} from "@/lib/suites-native-content";
 
 export const WEBSITE_TEXT_KEY = "website-text";
 /** Phone-only website copy (used on live site at max-width 767px). */
@@ -77,6 +81,8 @@ export type WebsiteText = {
       /** Bottom reserve CTA body */
       ctaBody: string;
     };
+    /** Native /suites-preview (and future /suites) editorial ownership */
+    suites: SuitesNativeCmsFields;
     highlights: {
       intro: string[];
       landmarks: Array<{ title: string; body: string }>;
@@ -147,6 +153,7 @@ export const WEBSITE_TEXT_NAV: WebsiteTextNavItem[] = [
   { id: "home", label: "Homepage", href: "/" },
   { id: "about", label: "About", href: "/about" },
   { id: "cruises", label: "Cruises", href: "/cruises" },
+  { id: "suites", label: "Suites (Native)", href: "/suites-preview" },
   { id: "highlights", label: "Highlights", href: "/highlights" },
   { id: "gastronomy", label: "Gastronomy", href: "/gastronomy" },
   { id: "wellness", label: "Wellness", href: "/wellness" },
@@ -276,6 +283,7 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
       ctaTitle: "Reserve your voyage",
       ctaBody: CRUISES_PAGE.hero.subtitle,
     },
+    suites: { ...DEFAULT_SUITES_NATIVE_CMS },
     highlights: {
       intro: [...HIGHLIGHTS_PAGE.intro],
       landmarks: HIGHLIGHTS_PAGE.landmarks.map((l) => ({

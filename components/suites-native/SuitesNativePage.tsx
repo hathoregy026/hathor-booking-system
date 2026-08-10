@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
+import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { SuitesMosaicHero } from "@/components/suites-native/SuitesMosaicHero";
 import { SuitesComfortExperience } from "@/components/suites-native/SuitesComfortExperience";
+import { SuitesNileStory } from "@/components/suites-native/SuitesNileStory";
 import {
-  SUITES_NATIVE_CONTENT,
   SUITES_NATIVE_CTAS,
   resolveSuitesImage,
+  resolveSuitesNativeView,
 } from "@/lib/suites-native-content";
 
 type Props = {
@@ -15,7 +17,8 @@ type Props = {
 };
 
 export function SuitesNativePage({ images }: Props) {
-  const c = SUITES_NATIVE_CONTENT;
+  const { pages } = useWebsiteText();
+  const c = resolveSuitesNativeView(pages.suites);
 
   return (
     <div className="suites-native-page">
@@ -24,9 +27,8 @@ export function SuitesNativePage({ images }: Props) {
         <a href="/suites">Compare current Suites</a>
       </div>
 
-      <SuitesMosaicHero images={images} />
+      <SuitesMosaicHero images={images} hero={c.hero} />
 
-      {/* 02 Unrivaled Views */}
       <section
         className="sn-section sn-section--cream"
         id="suites-unrivaled"
@@ -70,7 +72,6 @@ export function SuitesNativePage({ images }: Props) {
         </div>
       </section>
 
-      {/* 03 Step Aboard */}
       <section
         className="sn-section sn-section--soft"
         id="suites-step"
@@ -106,38 +107,10 @@ export function SuitesNativePage({ images }: Props) {
         </div>
       </section>
 
-      {/* 04 Comfort */}
-      <SuitesComfortExperience images={images} />
+      <SuitesComfortExperience images={images} comfort={c.comfort} />
 
-      {/* 05 The Nile */}
-      <section className="sn-section sn-section--cream" id="suites-nile" aria-label="The Nile">
-        <div style={{ maxWidth: "42rem", margin: "0 auto", textAlign: "center" }}>
-          <p className="sn-eyebrow">{c.nile.eyebrow}</p>
-          <div className="sn-rule" style={{ marginInline: "auto" }} aria-hidden="true" />
-          <h2 className="sn-display sn-display--section">{c.nile.title}</h2>
-          <p className="sn-eyebrow" style={{ marginTop: "1rem" }}>
-            {c.nile.subtitle}
-          </p>
-          <p className="sn-body" style={{ marginTop: "0.85rem" }}>
-            {c.nile.body}
-          </p>
-        </div>
-        <div className="sn-nile__grid">
-          {c.nile.imageSlots.map((slot, index) => (
-            <article key={slot} className="sn-nile__card">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={resolveSuitesImage(images, slot)}
-                alt=""
-                decoding="async"
-              />
-              <p>{c.nile.captions[index]}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+      <SuitesNileStory images={images} nile={c.nile} />
 
-      {/* 06 Statement / panels */}
       <section
         className="sn-section sn-section--soft"
         id="suites-statement"
@@ -168,7 +141,6 @@ export function SuitesNativePage({ images }: Props) {
         </div>
       </section>
 
-      {/* 07 Map */}
       <section className="sn-section sn-section--cream" id="suites-map" aria-label="Voyage map">
         <div className="sn-map">
           <div className="sn-map__media">
@@ -198,7 +170,6 @@ export function SuitesNativePage({ images }: Props) {
         </div>
       </section>
 
-      {/* 08 Craft */}
       <section className="sn-section sn-section--soft" id="suites-craft" aria-label="Nile craft">
         <div style={{ maxWidth: "40rem", margin: "0 auto", textAlign: "center" }}>
           <p className="sn-eyebrow">{c.craft.eyebrow}</p>
@@ -230,7 +201,6 @@ export function SuitesNativePage({ images }: Props) {
         </div>
       </section>
 
-      {/* 09 Collection */}
       <section
         className="sn-section sn-section--cream"
         id="suites-collection"
@@ -271,7 +241,6 @@ export function SuitesNativePage({ images }: Props) {
         </ul>
       </section>
 
-      {/* 10 Interiors */}
       <section
         className="sn-section sn-section--soft"
         id="suites-interiors"
@@ -307,7 +276,7 @@ export function SuitesNativePage({ images }: Props) {
         </div>
       </section>
 
-      {/* 11 Closing CTA */}
+      {/* Sole conversion CTA — shared Footer marketing band is suppressed on this route */}
       <footer className="sn-cta" id="suites-closing" aria-label="Begin your journey">
         <div className="sn-cta__inner">
           <p className="sn-eyebrow">{c.closing.eyebrow}</p>

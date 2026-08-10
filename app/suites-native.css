@@ -50,6 +50,15 @@ html[data-suites-native] .suites-native-route {
   font-family: var(--font-hathor-body, "Plus Jakarta Sans", system-ui, sans-serif);
 }
 
+/*
+ * Duplicate CTA fix: shared Footer still owns link columns + legal,
+ * but its marketing band ("BEGIN YOUR JOURNEY" + subscribe) duplicates
+ * the Suites native closing CTA. Hide only that band on this route.
+ */
+html[data-suites-native] .lux-footer__top {
+  display: none !important;
+}
+
 .suites-native-preview-banner {
   position: sticky;
   top: 0;
@@ -463,13 +472,20 @@ html[data-suites-native] .suites-native-route {
   background: var(--sn-cream);
 }
 
+.sn-comfort__track {
+  position: relative;
+  height: 320vh;
+}
+
 .sn-comfort__stage {
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 34vw);
+  height: 100svh;
   min-height: 100svh;
   border-top: 1px solid var(--sn-card-line);
   border-bottom: 1px solid var(--sn-card-line);
+  background: var(--sn-cream);
 }
 
 .sn-comfort__visual {
@@ -479,23 +495,20 @@ html[data-suites-native] .suites-native-route {
   overflow: hidden;
 }
 
-.sn-comfort__visual img {
+.sn-comfort__layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  will-change: transform, opacity, filter, clip-path;
+}
+
+.sn-comfort__layer img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0;
   transform: scale(1.04);
-  transition:
-    opacity 0.7s var(--sn-ease),
-    transform 1.1s var(--sn-ease);
-  will-change: opacity, transform;
-}
-
-.sn-comfort__visual img.is-active {
-  opacity: 1;
-  transform: scale(1);
 }
 
 .sn-comfort__fog {
@@ -508,7 +521,7 @@ html[data-suites-native] .suites-native-route {
     rgba(236, 232, 223, 0.15) 70%,
     rgba(236, 232, 223, 0.55) 100%
   );
-  z-index: 1;
+  z-index: 4;
 }
 
 .sn-comfort__panel {
@@ -519,6 +532,7 @@ html[data-suites-native] .suites-native-route {
   padding: clamp(1.75rem, 4vw, 3rem);
   background: var(--sn-cream-soft);
   border-left: 1px solid var(--sn-card-line);
+  z-index: 5;
 }
 
 .sn-comfort__rail {
@@ -552,6 +566,16 @@ html[data-suites-native] .suites-native-route {
 
 .sn-comfort__rail-btn:hover {
   opacity: 0.85;
+}
+
+.sn-comfort__body {
+  min-height: 5.5rem;
+}
+
+.sn-nile__intro {
+  max-width: 42rem;
+  margin: 0 auto;
+  text-align: center;
 }
 
 /* ——— Nile / statement / map / craft ——— */
@@ -884,8 +908,20 @@ html[data-suites-native] .suites-native-route {
     order: initial;
   }
 
+  .sn-comfort__track {
+    height: 240vh;
+  }
+
   .sn-comfort__stage {
     grid-template-columns: 1fr;
+    height: 100svh;
+    min-height: 100svh;
+    position: sticky;
+    top: 0;
+  }
+
+  .sn-comfort__visual {
+    min-height: 52svh;
   }
 
   .sn-comfort__fog {
@@ -927,6 +963,14 @@ html[data-suites-native] .suites-native-route {
 @media (max-width: 480px) {
   .suites-native-route {
     --sn-nav-offset: 4.5rem;
+  }
+
+  .sn-comfort__track {
+    height: 220vh;
+  }
+
+  .sn-comfort__visual {
+    min-height: 42svh;
   }
 
   .sn-mosaic-hero {

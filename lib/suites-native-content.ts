@@ -270,6 +270,275 @@ export const SUITES_NATIVE_CONTENT = {
   },
 } as const;
 
+/** Flat CMS shape for WebsiteText.pages.suites (admin-editable). */
+export type SuitesNativeCmsFields = {
+  heroEyebrow: string;
+  heroTitle: string;
+  heroSupport: string;
+  unrivaledEyebrow: string;
+  unrivaledTitle: string;
+  unrivaledBody: string;
+  stepEyebrow: string;
+  stepTitle: string;
+  stepBody: string;
+  comfortEyebrow: string;
+  comfortTitle: string;
+  comfortLead: string;
+  amenityShowerLabel: string;
+  amenityShowerBody: string;
+  amenityBalconyLabel: string;
+  amenityBalconyBody: string;
+  amenitySmartTvLabel: string;
+  amenitySmartTvBody: string;
+  amenityMinibarLabel: string;
+  amenityMinibarBody: string;
+  nileEyebrow: string;
+  nileTitle: string;
+  nileSubtitle: string;
+  nileBody: string;
+  nileCaption1: string;
+  nileCaption2: string;
+  nileCaption3: string;
+  nileCaption4: string;
+  statementEyebrow: string;
+  statementTitle: string;
+  statementBody: string;
+  statementSecondary: string;
+  mapEyebrow: string;
+  mapTitle: string;
+  mapCaption: string;
+  mapStat1Value: string;
+  mapStat1Label: string;
+  mapStat2Value: string;
+  mapStat2Label: string;
+  mapStat3Value: string;
+  mapStat3Label: string;
+  craftEyebrow: string;
+  craftTitle: string;
+  craftSubtitle: string;
+  craftBody: string;
+  craftFollowOn1: string;
+  craftFollowOn2: string;
+  collectionEyebrow: string;
+  collectionTitle: string;
+  collectionSubtitle: string;
+  interiorsEyebrow: string;
+  interiorsTitle: string;
+  interiorsSubtitle: string;
+  interiorsBody: string;
+  interiorsClosing: string;
+  closingEyebrow: string;
+  closingTitle: string;
+  closingBody: string;
+};
+
+export const DEFAULT_SUITES_NATIVE_CMS: SuitesNativeCmsFields = {
+  heroEyebrow: SUITES_NATIVE_CONTENT.hero.eyebrow,
+  heroTitle: SUITES_NATIVE_CONTENT.hero.titleLines.join("\n"),
+  heroSupport: SUITES_NATIVE_CONTENT.hero.support,
+  unrivaledEyebrow: SUITES_NATIVE_CONTENT.unrivaled.eyebrow,
+  unrivaledTitle: SUITES_NATIVE_CONTENT.unrivaled.title,
+  unrivaledBody: SUITES_NATIVE_CONTENT.unrivaled.body,
+  stepEyebrow: SUITES_NATIVE_CONTENT.stepAboard.eyebrow,
+  stepTitle: SUITES_NATIVE_CONTENT.stepAboard.title,
+  stepBody: SUITES_NATIVE_CONTENT.stepAboard.body,
+  comfortEyebrow: SUITES_NATIVE_CONTENT.comfort.eyebrow,
+  comfortTitle: SUITES_NATIVE_CONTENT.comfort.title,
+  comfortLead: SUITES_NATIVE_CONTENT.comfort.lead,
+  amenityShowerLabel: SUITES_NATIVE_CONTENT.comfort.amenities[0].label,
+  amenityShowerBody: SUITES_NATIVE_CONTENT.comfort.amenities[0].body,
+  amenityBalconyLabel: SUITES_NATIVE_CONTENT.comfort.amenities[1].label,
+  amenityBalconyBody: SUITES_NATIVE_CONTENT.comfort.amenities[1].body,
+  amenitySmartTvLabel: SUITES_NATIVE_CONTENT.comfort.amenities[2].label,
+  amenitySmartTvBody: SUITES_NATIVE_CONTENT.comfort.amenities[2].body,
+  amenityMinibarLabel: SUITES_NATIVE_CONTENT.comfort.amenities[3].label,
+  amenityMinibarBody: SUITES_NATIVE_CONTENT.comfort.amenities[3].body,
+  nileEyebrow: SUITES_NATIVE_CONTENT.nile.eyebrow,
+  nileTitle: SUITES_NATIVE_CONTENT.nile.title,
+  nileSubtitle: SUITES_NATIVE_CONTENT.nile.subtitle,
+  nileBody: SUITES_NATIVE_CONTENT.nile.body,
+  nileCaption1: SUITES_NATIVE_CONTENT.nile.captions[0],
+  nileCaption2: SUITES_NATIVE_CONTENT.nile.captions[1],
+  nileCaption3: SUITES_NATIVE_CONTENT.nile.captions[2],
+  nileCaption4: SUITES_NATIVE_CONTENT.nile.captions[3],
+  statementEyebrow: SUITES_NATIVE_CONTENT.statement.eyebrow,
+  statementTitle: SUITES_NATIVE_CONTENT.statement.title,
+  statementBody: SUITES_NATIVE_CONTENT.statement.body,
+  statementSecondary: SUITES_NATIVE_CONTENT.statement.secondary,
+  mapEyebrow: SUITES_NATIVE_CONTENT.map.eyebrow,
+  mapTitle: SUITES_NATIVE_CONTENT.map.title,
+  mapCaption: SUITES_NATIVE_CONTENT.map.caption,
+  mapStat1Value: SUITES_NATIVE_CONTENT.map.stats[0].value,
+  mapStat1Label: SUITES_NATIVE_CONTENT.map.stats[0].label,
+  mapStat2Value: SUITES_NATIVE_CONTENT.map.stats[1].value,
+  mapStat2Label: SUITES_NATIVE_CONTENT.map.stats[1].label,
+  mapStat3Value: SUITES_NATIVE_CONTENT.map.stats[2].value,
+  mapStat3Label: SUITES_NATIVE_CONTENT.map.stats[2].label,
+  craftEyebrow: SUITES_NATIVE_CONTENT.craft.eyebrow,
+  craftTitle: SUITES_NATIVE_CONTENT.craft.title,
+  craftSubtitle: SUITES_NATIVE_CONTENT.craft.subtitle,
+  craftBody: SUITES_NATIVE_CONTENT.craft.body,
+  craftFollowOn1: SUITES_NATIVE_CONTENT.craft.followOns[0],
+  craftFollowOn2: SUITES_NATIVE_CONTENT.craft.followOns[1],
+  collectionEyebrow: SUITES_NATIVE_CONTENT.collection.eyebrow,
+  collectionTitle: SUITES_NATIVE_CONTENT.collection.title,
+  collectionSubtitle: SUITES_NATIVE_CONTENT.collection.subtitle,
+  interiorsEyebrow: SUITES_NATIVE_CONTENT.interiors.eyebrow,
+  interiorsTitle: SUITES_NATIVE_CONTENT.interiors.title,
+  interiorsSubtitle: SUITES_NATIVE_CONTENT.interiors.subtitle,
+  interiorsBody: SUITES_NATIVE_CONTENT.interiors.body,
+  interiorsClosing: SUITES_NATIVE_CONTENT.interiors.closing,
+  closingEyebrow: SUITES_NATIVE_CONTENT.closing.eyebrow,
+  closingTitle: SUITES_NATIVE_CONTENT.closing.title,
+  closingBody: SUITES_NATIVE_CONTENT.closing.body,
+};
+
+function pick(
+  cms: Partial<SuitesNativeCmsFields> | null | undefined,
+  key: keyof SuitesNativeCmsFields,
+): string {
+  const fallback = DEFAULT_SUITES_NATIVE_CMS[key];
+  const raw = cms?.[key];
+  if (typeof raw !== "string") return fallback;
+  const trimmed = raw.trim();
+  return trimmed.length > 0 ? trimmed : fallback;
+}
+
+/** Merge CMS Suites fields with bake-time fallbacks for native page render. */
+export function resolveSuitesNativeView(
+  cms?: Partial<SuitesNativeCmsFields> | null,
+) {
+  const heroTitle = pick(cms, "heroTitle");
+  const titleLines = heroTitle
+    .split(/\n+/)
+    .map((l) => l.trim())
+    .filter(Boolean);
+  return {
+    hero: {
+      eyebrow: pick(cms, "heroEyebrow"),
+      titleLines:
+        titleLines.length >= 2
+          ? ([titleLines[0], titleLines[1]] as [string, string])
+          : ([titleLines[0] || "River", titleLines[1] || "Suites"] as [
+              string,
+              string,
+            ]),
+      support: pick(cms, "heroSupport"),
+    },
+    unrivaled: {
+      eyebrow: pick(cms, "unrivaledEyebrow"),
+      title: pick(cms, "unrivaledTitle"),
+      body: pick(cms, "unrivaledBody"),
+    },
+    stepAboard: {
+      eyebrow: pick(cms, "stepEyebrow"),
+      title: pick(cms, "stepTitle"),
+      body: pick(cms, "stepBody"),
+    },
+    comfort: {
+      eyebrow: pick(cms, "comfortEyebrow"),
+      title: pick(cms, "comfortTitle"),
+      lead: pick(cms, "comfortLead"),
+      amenities: [
+        {
+          id: "shower",
+          label: pick(cms, "amenityShowerLabel"),
+          body: pick(cms, "amenityShowerBody"),
+          imageSlot: "scraped-luxsuite-1",
+        },
+        {
+          id: "balcony",
+          label: pick(cms, "amenityBalconyLabel"),
+          body: pick(cms, "amenityBalconyBody"),
+          imageSlot: "scraped-luxsuite-2",
+        },
+        {
+          id: "smart-tv",
+          label: pick(cms, "amenitySmartTvLabel"),
+          body: pick(cms, "amenitySmartTvBody"),
+          imageSlot: "scraped-luxsuite-3",
+        },
+        {
+          id: "minibar",
+          label: pick(cms, "amenityMinibarLabel"),
+          body: pick(cms, "amenityMinibarBody"),
+          imageSlot: "scraped-luxsuite-4",
+        },
+      ] as const,
+    },
+    nile: {
+      eyebrow: pick(cms, "nileEyebrow"),
+      title: pick(cms, "nileTitle"),
+      subtitle: pick(cms, "nileSubtitle"),
+      body: pick(cms, "nileBody"),
+      captions: [
+        pick(cms, "nileCaption1"),
+        pick(cms, "nileCaption2"),
+        pick(cms, "nileCaption3"),
+        pick(cms, "nileCaption4"),
+      ] as const,
+      imageSlots: SUITES_NATIVE_CONTENT.nile.imageSlots,
+    },
+    statement: {
+      eyebrow: pick(cms, "statementEyebrow"),
+      title: pick(cms, "statementTitle"),
+      body: pick(cms, "statementBody"),
+      secondary: pick(cms, "statementSecondary"),
+      panels: SUITES_NATIVE_CONTENT.statement.panels,
+    },
+    map: {
+      eyebrow: pick(cms, "mapEyebrow"),
+      title: pick(cms, "mapTitle"),
+      caption: pick(cms, "mapCaption"),
+      stats: [
+        {
+          value: pick(cms, "mapStat1Value"),
+          label: pick(cms, "mapStat1Label"),
+        },
+        {
+          value: pick(cms, "mapStat2Value"),
+          label: pick(cms, "mapStat2Label"),
+        },
+        {
+          value: pick(cms, "mapStat3Value"),
+          label: pick(cms, "mapStat3Label"),
+        },
+      ] as const,
+      imageSlot: SUITES_NATIVE_CONTENT.map.imageSlot,
+    },
+    craft: {
+      eyebrow: pick(cms, "craftEyebrow"),
+      title: pick(cms, "craftTitle"),
+      subtitle: pick(cms, "craftSubtitle"),
+      body: pick(cms, "craftBody"),
+      followOns: [
+        pick(cms, "craftFollowOn1"),
+        pick(cms, "craftFollowOn2"),
+      ] as const,
+      imageSlots: SUITES_NATIVE_CONTENT.craft.imageSlots,
+    },
+    collection: {
+      eyebrow: pick(cms, "collectionEyebrow"),
+      title: pick(cms, "collectionTitle"),
+      subtitle: pick(cms, "collectionSubtitle"),
+      cards: SUITES_NATIVE_CONTENT.collection.cards,
+    },
+    interiors: {
+      eyebrow: pick(cms, "interiorsEyebrow"),
+      title: pick(cms, "interiorsTitle"),
+      subtitle: pick(cms, "interiorsSubtitle"),
+      body: pick(cms, "interiorsBody"),
+      closing: pick(cms, "interiorsClosing"),
+      imageSlots: SUITES_NATIVE_CONTENT.interiors.imageSlots,
+    },
+    closing: {
+      eyebrow: pick(cms, "closingEyebrow"),
+      title: pick(cms, "closingTitle"),
+      body: pick(cms, "closingBody"),
+    },
+  };
+}
+
 export function resolveSuitesImage(
   images: Record<string, string> | undefined,
   slot: string,

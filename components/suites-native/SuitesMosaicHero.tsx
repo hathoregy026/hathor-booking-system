@@ -3,10 +3,10 @@
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import {
-  SUITES_NATIVE_CONTENT,
   SUITES_NATIVE_CTAS,
   SUITES_NATIVE_GALLERY_SLOTS,
   resolveSuitesImage,
+  resolveSuitesNativeView,
 } from "@/lib/suites-native-content";
 
 const DURATION_MS = 30_000;
@@ -19,13 +19,13 @@ function rowForIndex(index: number): 1 | 2 | 3 {
 
 type Props = {
   images: Record<string, string>;
+  hero: ReturnType<typeof resolveSuitesNativeView>["hero"];
 };
 
-export function SuitesMosaicHero({ images }: Props) {
+export function SuitesMosaicHero({ images, hero }: Props) {
   const rootRef = useRef<HTMLElement>(null);
   const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
   const cardHeightRef = useRef(0);
-  const { hero } = SUITES_NATIVE_CONTENT;
   const sources = SUITES_NATIVE_GALLERY_SLOTS.map((slot) =>
     resolveSuitesImage(images, slot),
   );
