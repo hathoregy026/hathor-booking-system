@@ -28,7 +28,37 @@ const nextConfig: NextConfig = {
     },
   },
   async headers() {
+    /*
+     * Cache strategy (safe for deploys + performance):
+     * - Hashed Next chunks (`/_next/static/*`): immutable forever (filename changes per build).
+     * - HTML / documents: browsers must revalidate; Vercel still ISR-invalidates on deploy.
+     * - Unhashed public JS/CSS (Springs iframes): short revalidate so in-place edits land.
+     * - Versioned media/video under content-addressed paths: long immutable.
+     */
     return [
+      {
+        source: "/_next/static/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        // Kill-switch SW must never be sticky — clients need the latest unregister logic.
+        source: "/sw.js",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=0, must-revalidate",
+          },
+          {
+            key: "Service-Worker-Allowed",
+            value: "/",
+          },
+        ],
+      },
       {
         source: "/media/hathor/:path*",
         headers: [
@@ -63,6 +93,61 @@ const nextConfig: NextConfig = {
           {
             key: "Cache-Control",
             value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        // Springs clone assets use stable filenames (shared.js, design.js) — revalidate.
+        source: "/suites-springs/assets/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=0, must-revalidate",
+          },
+        ],
+      },
+      {
+        source: "/accommodation-springs/assets/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=0, must-revalidate",
+          },
+        ],
+      },
+      {
+        source: "/gastronomy-springs/assets/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=0, must-revalidate",
+          },
+        ],
+      },
+      {
+        source: "/springs-layout/assets/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=0, must-revalidate",
+          },
+        ],
+      },
+      {
+        source: "/home-amenities-springs/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=0, must-revalidate",
+          },
+        ],
+      },
+      {
+        source: "/js/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=0, must-revalidate",
           },
         ],
       },

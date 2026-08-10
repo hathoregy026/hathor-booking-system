@@ -1,5 +1,6 @@
 "use client";
 
+import { resetBrowserAppCaches } from "@/lib/browser-cache-reset";
 import { useEffect } from "react";
 
 const STORAGE_KEY = "hathor-deploy-id-v3";
@@ -16,16 +17,6 @@ function hardNavigateToFresh(deployId: string) {
   url.searchParams.set("_d", deployId);
   /* Bust any intermediary cache and drop soft-nav state. */
   window.location.replace(url.toString());
-}
-
-async function unregisterServiceWorkers() {
-  if (!("serviceWorker" in navigator)) return;
-  try {
-    const regs = await navigator.serviceWorker.getRegistrations();
-    await Promise.all(regs.map((reg) => reg.unregister()));
-  } catch {
-    /* ignore */
-  }
 }
 
 async function fetchLiveDeployId(pageDeployId: string): Promise<string | null> {
@@ -56,7 +47,7 @@ export function DeployFreshness({ deployId }: { deployId: string }) {
     let cancelled = false;
 
     const sync = async () => {
-      await unregisterServiceWorkers();
+      await resetBrowserAppCaches();
       if (cancelled) return;
 
       const liveId = await fetchLiveDeployId(deployId);

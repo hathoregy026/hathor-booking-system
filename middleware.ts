@@ -24,6 +24,11 @@ function redirectStaleDeploymentHost(request: NextRequest): NextResponse | null 
   return NextResponse.redirect(target, 308);
 }
 
+/**
+ * Force browsers to revalidate HTML on every navigation without relying on
+ * a sticky disk cache. CDN no-store is intentional for private / preview /
+ * booking shells; marketing ISR pages intentionally skip this helper.
+ */
 function withHtmlNoStore(response: NextResponse): NextResponse {
   response.headers.set(
     "Cache-Control",
@@ -33,6 +38,17 @@ function withHtmlNoStore(response: NextResponse): NextResponse {
   response.headers.set("Vercel-CDN-Cache-Control", "no-store");
   response.headers.set("Cloudflare-CDN-Cache-Control", "no-store");
   response.headers.set("Surrogate-Control", "no-store");
+  response.headers.set("Pragma", "no-cache");
+  response.headers.set("Expires", "0");
+  return response;
+}
+
+/** Browser must revalidate; allow short CDN ISR (matches layout revalidate=300). */
+function withHtmlMustRevalidate(response: NextResponse): NextResponse {
+  response.headers.set(
+    "Cache-Control",
+    "public, max-age=0, s-maxage=300, must-revalidate",
+  );
   response.headers.set("Pragma", "no-cache");
   response.headers.set("Expires", "0");
   return response;
@@ -89,12 +105,12 @@ export async function middleware(request: NextRequest) {
       }
 
       /*
-       * Marketing pages use their App Router ISR policy. Vercel invalidates
-       * route output on deploy, while DeployFreshness handles already-open
-       * stale tabs. Do not overwrite those cache headers or clear storage on
-       * every visitor's first request.
+       * Marketing HTML: browsers must revalidate (max-age=0). Do NOT set
+       * Vercel-CDN-Cache-Control: no-store here — that would kill ISR edge
+       * caching. DeployFreshness + /api/deploy-id heal already-open tabs.
+       * Do not Clear-Site-Data on every visit.
        */
-      return NextResponse.next();
+      return withHtmlMustRevalidate(NextResponse.next());
     }
 
     const session = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
