@@ -132,9 +132,14 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
       " .home-am-nature__indication",
     )}{position:relative!important;left:var(--am-typo-indication-x,0px)!important;top:var(--am-typo-indication-y,0px)!important;z-index:3!important;margin-top:0!important;margin-bottom:var(--am-typo-gap-sub-body)!important;}`,
     `${sel(
-      " .typo-on-images-body",
+      " .typo-on-images-body:not(.home-am-opening__list-item-text)",
       " .home-am-nature__body",
     )}{position:relative!important;left:var(--am-typo-body-x,0px)!important;top:var(--am-typo-body-y,0px)!important;z-index:2!important;margin-top:0!important;margin-bottom:var(--am-typo-gap-body-cta)!important;}`,
+    /* Opening card labels stay absolute overlays — never inherit body layout offsets. */
+    `${sel(
+      " .home-am-opening__list-item-text",
+      " .home-am-opening__list-item-text.typo-on-images-body",
+    )}{position:absolute!important;left:20px!important;right:auto!important;top:auto!important;bottom:20px!important;z-index:1!important;margin:0!important;transform:none!important;}`,
     `${sel(
       " .home-am-opening__cta",
       " .home-am-nature__cta",
@@ -182,8 +187,6 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
       " .home-am-video__title-body *",
       " .home-am-intro__cream .typo-body-text",
       " .home-am-intro__cream .typo-body-text *",
-      " .home-am-opening__list-item-text",
-      " .home-am-opening__list-item-text *",
     ),
     body,
   );
@@ -222,8 +225,6 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
         " .home-am-nature__body *",
         " .home-am-video__caption-text",
         " .home-am-video__caption-text *",
-        " .home-am-opening__list-item-text",
-        " .home-am-opening__list-item-text *",
       ),
       body.colorOnGold,
     ),
