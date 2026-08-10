@@ -20,14 +20,15 @@ export function getLuxFooterHtml() {
     <div class="lux-footer__glow" aria-hidden="true"></div>
     <div class="lux-footer__inner">
       <div class="lux-footer__top">
-        <h2 class="lux-footer__headline typo-page-title">BEGIN YOUR JOURNEY</h2>
+        <p class="suites-eyebrow">Your Nile Awaits</p>
+        <h2 class="lux-footer__headline typo-page-title">Begin Your Journey</h2>
+        <p class="lux-footer__script">A voyage shaped around you</p>
         <p class="lux-footer__subhead typo-body-text">
           Join our exclusive circle for private itineraries and early access to rare voyages.
         </p>
-        <div class="lux-footer__subscribe">
-          <a class="lux-footer__meta-link" href="mailto:reservations@hathorcruise.com?subject=Voyage%20Inquiry" target="_top" data-ajax-page-ignore>
-            Speak with concierge →
-          </a>
+        <div class="lux-footer__subscribe suites-cta-row">
+          <a class="suites-cta-primary" href="/suites?book=1" target="_top" data-ajax-page-ignore>Request Availability</a>
+          <a class="suites-cta-secondary suites-cta-secondary--ink" href="/contact" target="_top" data-ajax-page-ignore>Speak With Concierge &rarr;</a>
         </div>
       </div>
       <div class="lux-footer__main">

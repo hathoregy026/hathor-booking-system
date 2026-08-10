@@ -207,6 +207,9 @@ export function Header() {
   const [isPhone, setIsPhone] = useState(false);
   const [menuHovered, setMenuHovered] = useState(false);
   const [navCompact, setNavCompact] = useState(false);
+  const [suitesNavTone, setSuitesNavTone] = useState<"ivory" | "ink" | null>(
+    null,
+  );
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const closeDropdownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
     null,
@@ -347,6 +350,17 @@ export function Header() {
       window.removeEventListener("scroll", updateCompact),
     );
 
+    const onSuitesNavTone = (event: MessageEvent) => {
+      if (event.data?.type !== "hathor-suites-nav-tone") return;
+      const tone = event.data.tone;
+      if (tone === "ink" || tone === "ivory") setSuitesNavTone(tone);
+    };
+    window.addEventListener("message", onSuitesNavTone);
+    cleanups.push(() => window.removeEventListener("message", onSuitesNavTone));
+    if (!(pathname === "/suites" || pathname.startsWith("/suites/"))) {
+      setSuitesNavTone(null);
+    }
+
     const bindFrame = (frame: HTMLIFrameElement) => {
       const attach = () => {
         try {
@@ -397,7 +411,7 @@ export function Header() {
     return () => {
       cleanups.forEach((fn) => fn());
     };
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     if (!openDropdown) return;
@@ -518,6 +532,8 @@ export function Header() {
     menuHovered && "hathor-header--menu-hovered",
     navCompact && "hathor-header--nav-compact",
     exploreOpen && "hathor-header--explore-open",
+    suitesNavTone === "ink" && "hathor-header--suites-ink",
+    suitesNavTone === "ivory" && "hathor-header--suites-ivory",
   ]
     .filter(Boolean)
     .join(" ");
