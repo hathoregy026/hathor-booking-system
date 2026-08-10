@@ -598,46 +598,70 @@ const suitesRuntime = `
   window.addEventListener("load", () => scrubUrls(document), { once: true });
   setTimeout(() => scrubUrls(document), 1200);
 
-  /* Suites → parent navbar tone (ink over cream/gold, ivory over photography) */
+  /* Suites → parent navbar tone (ink on cream/bright, ivory on dark/photo) */
   (function suitesNavToneBridge() {
     var last = "";
+    var PHOTO = [
+      ".l-gallery",
+      ".l-place-webgl",
+      ".l-nature-bg",
+      "#wellness .l-wellness__webgl",
+      ".l-intro__image--first",
+      ".l-place-description__image",
+    ];
+    var CREAM = [
+      ".l-intro__content",
+      ".l-wellness__slider__caption",
+      ".l-residences",
+      ".l-nature__caption",
+      ".l-nature__slider-caption",
+      ".l-design",
+      ".hathor-suites-footer-host",
+      ".hathor-lux-footer-host",
+      ".l-intro__opening",
+    ];
+    function coverAtNav(el) {
+      if (!el) return 0;
+      var r = el.getBoundingClientRect();
+      if (r.bottom <= 60 || r.top >= 140) return 0;
+      return Math.min(r.bottom, 140) - Math.max(r.top, 0);
+    }
     function sample() {
       try {
-        var y = 12;
-        var x = Math.round(window.innerWidth * 0.5);
-        var el = document.elementFromPoint(x, y);
-        var tone = "ivory";
-        while (el && el !== document.documentElement) {
-          var cs = getComputedStyle(el);
-          var bg = cs.backgroundColor || "";
-          var m = bg.match(/rgba?\\((\\d+),\\s*(\\d+),\\s*(\\d+)/i);
-          if (m) {
-            var r = +m[1], g = +m[2], b = +m[3];
-            var lum = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
-            if (lum > 0.55) tone = "ink";
-            else if (lum < 0.45) tone = "ivory";
-            break;
-          }
-          if (el.classList && (el.classList.contains("ui-light") || el.classList.contains("ui-background"))) {
-            tone = "ink";
-            break;
-          }
-          if (el.classList && el.classList.contains("ui-dark")) {
-            tone = "ivory";
-            break;
-          }
-          el = el.parentElement;
+        var tone = "ink";
+        var bestPhoto = 0;
+        var bestCream = 0;
+        for (var i = 0; i < PHOTO.length; i++) {
+          var p = document.querySelector(PHOTO[i]);
+          var c = coverAtNav(p);
+          if (c > bestPhoto) bestPhoto = c;
         }
-        /* Hero / gallery photography → ivory; cream/gold panels → ink */
-        var gallery = document.querySelector(".l-gallery");
-        if (gallery) {
-          var gr = gallery.getBoundingClientRect();
-          if (gr.top <= 80 && gr.bottom > 120) tone = "ivory";
+        for (var j = 0; j < CREAM.length; j++) {
+          var q = document.querySelector(CREAM[j]);
+          var d = coverAtNav(q);
+          if (d > bestCream) bestCream = d;
         }
-        var gold = document.querySelector(".l-intro__content.ui-dark, .ui-dark.ui-background");
-        if (gold) {
-          var rr = gold.getBoundingClientRect();
-          if (rr.top <= 60 && rr.bottom > 100) tone = "ink";
+        /* Amenity split: cream panel is left half — prefer ink when caption covers nav */
+        var amenity = document.querySelector(".l-wellness__slider__caption");
+        if (amenity && coverAtNav(amenity) > 40) {
+          tone = "ink";
+        } else if (bestCream >= bestPhoto && bestCream > 20) {
+          tone = "ink";
+        } else if (bestPhoto > 20) {
+          tone = "ivory";
+        } else {
+          /* luminance fallback under logo */
+          var el = document.elementFromPoint(Math.round(window.innerWidth * 0.5), 16);
+          while (el && el !== document.documentElement) {
+            var bg = getComputedStyle(el).backgroundColor || "";
+            var m = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+            if (m) {
+              var lum = (0.2126 * +m[1] + 0.7152 * +m[2] + 0.0722 * +m[3]) / 255;
+              tone = lum > 0.58 ? "ink" : "ivory";
+              break;
+            }
+            el = el.parentElement;
+          }
         }
         if (tone !== last) {
           last = tone;
@@ -650,7 +674,7 @@ const suitesRuntime = `
     window.addEventListener("scroll", sample, { passive: true });
     window.addEventListener("resize", sample);
     setTimeout(sample, 800);
-    setInterval(sample, 900);
+    setInterval(sample, 700);
   })();
 
   /* Compare Suites: scroll to on-page suite collection */

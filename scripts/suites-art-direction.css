@@ -51,24 +51,31 @@
     0 1px 2px rgba(22, 18, 14, 0.55),
     0 3px 14px rgba(22, 18, 14, 0.4);
 
-  /* Kill mustard CSS fills → cream (colour only; images untouched) */
+  /* Kill mustard / champagne / green fills → Hathor palette only (images untouched) */
   --c-beige-background: #ece8df;
   --c-beige-background-rgb: 236, 232, 223;
   --c-beige: #ece8df;
   --c-beige-rgb: 236, 232, 223;
-  --c-dark-green: #ece8df;
-  --c-dark-green-rgb: 236, 232, 223;
-  --c-dark-blue: #ece8df;
-  --c-dark-blue-rgb: 236, 232, 223;
+  --c-dark-green: #1c1917;
+  --c-dark-green-rgb: 28, 25, 23;
+  --c-dark-blue: #1c1917;
+  --c-dark-blue-rgb: 28, 25, 23;
   --c-white: #faf8f5;
   --c-white-rgb: 250, 248, 245;
   --c-black: #1c1917;
+  --c-black-rgb: 28, 25, 23;
   --c-green: #b69f64;
+  --c-green-rgb: 182, 159, 100;
   --c-olive: #b69f64;
+  --c-olive-rgb: 182, 159, 100;
   --c-blue: #b69f64;
+  --c-blue-rgb: 182, 159, 100;
   --c-light-green: #b69f64;
+  --c-light-green-rgb: 182, 159, 100;
   --c-light-blue: #faf8f5;
+  --c-light-blue-rgb: 250, 248, 245;
   --c-sky: #faf8f5;
+  --c-sky-rgb: 250, 248, 245;
   --lux-beige: #ece8df;
   --lux-cream: #ece8df;
   --lux-gold: #b69f64;
@@ -109,9 +116,62 @@ body {
 .l-wellness__slider__caption-bg,
 .l-wellness__slider__caption [class*="gradient"],
 .l-wellness__slider__caption::before,
-.l-wellness__slider__caption::after {
+.l-wellness__slider__caption::after,
+.l-gallery__gradient,
+.l-gallery__gradient div,
+.l-nature-bg-gradient,
+.l-nature-bg-item__gradient,
+.l-place-webgl__gradient,
+.l-place-webgl__gradient div,
+.l-place-description__gradient,
+.l-wellness__webgl-gradient,
+.l-wellness__webgl-gradient div,
+.l-wellness__slider-gradient {
   background: transparent !important;
+  background-image: none !important;
   opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Dark cinematic Voyage / place chapters — ink, never green/teal */
+.l-place,
+.l-place-webgl,
+.l-place-webgl.ui-dark,
+.l-place-webgl.ui-background,
+.l-nature-bg,
+.l-nature-bg-item.background,
+.l-place-video__caption-item,
+.l-place-video__caption-item:nth-child(1),
+.l-place-video__caption-item:nth-child(2),
+.l-place-video__caption-item:nth-child(3) {
+  background: var(--ink) !important;
+  background-color: var(--ink) !important;
+  background-image: none !important;
+}
+.l-place-webgl__spiral,
+.l-place-webgl__spiral-container {
+  mix-blend-mode: normal !important;
+}
+.l-place-webgl-caption .g1,
+.l-place-webgl-caption h2,
+.l-nature-bg-caption .g1,
+.l-nature-bg-caption h2 {
+  color: var(--ivory) !important;
+  -webkit-text-fill-color: var(--ivory) !important;
+  text-shadow: var(--hero-shadow);
+}
+.l-place-webgl-caption__subtitle,
+.l-nature-bg-caption__subtitle,
+.l-place-webgl-caption .text-c1,
+.l-nature-bg-caption .text-c1 {
+  color: var(--gold) !important;
+  -webkit-text-fill-color: var(--gold) !important;
+}
+.l-place-webgl__text p,
+.l-nature-bg-caption__text p {
+  color: var(--ivory) !important;
+  -webkit-text-fill-color: var(--ivory) !important;
+  opacity: 0.9 !important;
 }
 
 /* ——— Body copy — global ——— */
@@ -305,12 +365,12 @@ h2 {
 @media (min-width: 981px) {
   .l-intro.is-hidden--md-down .l-intro__opening {
     position: absolute !important;
-    left: 5.5vw !important;
-    top: 18vh !important;
+    left: 7.5vw !important;
+    top: 20vh !important;
     right: auto !important;
     bottom: auto !important;
     margin: 0 !important;
-    max-width: 34em;
+    max-width: 28em;
     text-align: left !important;
     z-index: 5;
   }
@@ -320,7 +380,7 @@ h2 {
   font-size: var(--type-unrivaled) !important;
   line-height: 0.92 !important;
   letter-spacing: normal !important;
-  max-width: 11em;
+  max-width: 9em;
   margin: 0 !important;
   color: var(--ink) !important;
   -webkit-text-fill-color: var(--ink) !important;
@@ -492,7 +552,7 @@ h2 {
   -webkit-text-fill-color: var(--ink) !important;
   text-align: left !important;
   margin: 0 0 8px !important;
-  opacity: 0.4 !important;
+  opacity: 0.52 !important;
 }
 .l-wellness__slider__caption-titles .js-content-animation-link.is-active p.h2,
 .l-wellness__slider__caption-titles .js-content-animation-link.is-active p,
@@ -509,11 +569,11 @@ h2 {
   margin: 28px 0 0 !important;
 }
 
-/* Residences cards — surface + type only */
+/* Residences cards — surface + readable contrast */
 .l-residences__caption__card,
 .l-residences__caption__card-content {
-  background: rgba(250, 248, 245, 0.96) !important;
-  border: 1px solid rgba(182, 159, 100, 0.28);
+  background: var(--ivory) !important;
+  border: 1px solid rgba(28, 25, 23, 0.14);
 }
 .l-residences__caption__type,
 .l-residences__caption__card .g1,
@@ -521,6 +581,169 @@ h2 {
   font-family: var(--font-editorial) !important;
   color: var(--gold) !important;
   -webkit-text-fill-color: var(--gold) !important;
+  opacity: 1 !important;
+}
+.l-residences__caption__description,
+.l-residences__caption__card .text-color-small,
+.l-residences__caption__card .text-small,
+.l-residences__caption__card p {
+  color: var(--ink) !important;
+  -webkit-text-fill-color: var(--ink) !important;
+  opacity: 0.86 !important;
+}
+.l-residences__caption__card [class*="meta"],
+.l-residences__caption__card .text-t1:not(.l-residences__caption__type) {
+  color: var(--ink) !important;
+  -webkit-text-fill-color: var(--ink) !important;
+  opacity: 0.72 !important;
+}
+
+/* ——— Long bright-photo statement ——— */
+.l-place-description__title,
+.l-place-description__title.h3,
+.l-place-description h3.h3,
+.l-place-description .h3 {
+  font-family: var(--font-display) !important;
+  font-size: 44px !important;
+  line-height: 1.05 !important;
+  letter-spacing: normal !important;
+  color: var(--ink) !important;
+  -webkit-text-fill-color: var(--ink) !important;
+  text-shadow: 0 1px 12px rgba(255, 255, 255, 0.12);
+  max-width: 22em;
+  opacity: 1 !important;
+}
+
+/* ——— Cream / ivory editorial chapters — never white-on-cream ——— */
+.l-nature__caption,
+.l-nature__caption__text,
+.l-nature__slider-caption,
+.l-design__title,
+.ui-light,
+.ui-light-background {
+  color: var(--ink);
+}
+.l-nature__caption .h0,
+.l-nature__caption .h1,
+.l-nature__caption .h2,
+.l-nature__caption .g1,
+.l-nature__caption .g2,
+.l-nature__slider-caption .h0,
+.l-nature__slider-caption .h1,
+.l-nature__slider-caption .h2,
+.l-nature__slider-caption .g1,
+.l-design__title .h0,
+.l-design__title .h1,
+.l-design__title .h2,
+.l-design__title .g1 {
+  color: var(--gold) !important;
+  -webkit-text-fill-color: var(--gold) !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+.l-nature__caption p,
+.l-nature__caption__text p,
+.l-nature__slider-caption p,
+.l-design__title .h3,
+.l-design__title h3,
+.ui-light p:not(.h0):not(.h1):not(.h2):not(.g1):not(.g2):not(.text-c1),
+.ui-light-background p:not(.h0):not(.h1):not(.h2):not(.g1):not(.g2):not(.text-c1) {
+  color: var(--ink) !important;
+  -webkit-text-fill-color: var(--ink) !important;
+  opacity: 0.88 !important;
+}
+.l-nature__caption .text-c1,
+.l-nature__slider-caption .text-c1,
+.l-design__title .text-c1 {
+  color: var(--gold) !important;
+  -webkit-text-fill-color: var(--gold) !important;
+  opacity: 1 !important;
+}
+
+/* ——— Final CTA — one centered axis ——— */
+.hathor-suites-footer-host .lux-footer__top,
+.hathor-lux-footer-host .lux-footer__top {
+  text-align: center !important;
+}
+.hathor-suites-footer-host .lux-footer__top .suites-eyebrow,
+.hathor-lux-footer-host .lux-footer__top .suites-eyebrow {
+  color: var(--gold) !important;
+  -webkit-text-fill-color: var(--gold) !important;
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+.hathor-suites-footer-host .lux-footer__headline,
+.hathor-lux-footer-host .lux-footer__headline {
+  font-family: var(--font-editorial) !important;
+  font-size: 60px !important;
+  color: var(--gold) !important;
+  -webkit-text-fill-color: var(--gold) !important;
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  opacity: 1 !important;
+}
+.hathor-suites-footer-host .lux-footer__script,
+.hathor-lux-footer-host .lux-footer__script {
+  color: var(--gold) !important;
+  -webkit-text-fill-color: var(--gold) !important;
+  text-align: center !important;
+  font-size: 28px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+.hathor-suites-footer-host .lux-footer__subhead,
+.hathor-lux-footer-host .lux-footer__subhead {
+  color: var(--ink) !important;
+  -webkit-text-fill-color: var(--ink) !important;
+  opacity: 0.88 !important;
+  text-align: center !important;
+  max-width: 34em;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+.hathor-suites-footer-host .lux-footer__subscribe,
+.hathor-lux-footer-host .lux-footer__subscribe,
+.hathor-suites-footer-host .suites-cta-row,
+.hathor-lux-footer-host .suites-cta-row {
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+.hathor-suites-footer-host .suites-cta-secondary--ink,
+.hathor-lux-footer-host .suites-cta-secondary--ink {
+  border-color: var(--ink) !important;
+  color: var(--ink) !important;
+  -webkit-text-fill-color: var(--ink) !important;
+  background: transparent !important;
+}
+
+/* Footer body contrast */
+.hathor-suites-footer-host .lux-footer__col-title,
+.hathor-lux-footer-host .lux-footer__col-title {
+  color: var(--gold) !important;
+  -webkit-text-fill-color: var(--gold) !important;
+  opacity: 1 !important;
+}
+.hathor-suites-footer-host .lux-footer__tagline,
+.hathor-suites-footer-host .lux-footer__brand-meta,
+.hathor-suites-footer-host .lux-footer__link,
+.hathor-suites-footer-host .lux-footer__meta-link,
+.hathor-lux-footer-host .lux-footer__tagline,
+.hathor-lux-footer-host .lux-footer__brand-meta,
+.hathor-lux-footer-host .lux-footer__link,
+.hathor-lux-footer-host .lux-footer__meta-link {
+  color: var(--ink) !important;
+  -webkit-text-fill-color: var(--ink) !important;
+  opacity: 0.74 !important;
+  font-size: 13px !important;
+}
+.hathor-suites-footer-host .lux-footer__link:hover,
+.hathor-suites-footer-host .lux-footer__meta-link:hover,
+.hathor-lux-footer-host .lux-footer__link:hover,
+.hathor-lux-footer-host .lux-footer__meta-link:hover {
+  opacity: 1 !important;
 }
 
 /* ——— CTA: 3 homepage families only ——— */
@@ -629,15 +852,6 @@ h2 {
 .l-gallery__caption .suites-hero-lockup .suites-cta-row a:first-of-type,
 .l-gallery__caption .suites-hero-lockup .suites-cta-row a:nth-of-type(2) {
   display: flex !important;
-}
-
-.hathor-suites-footer-host .lux-footer__headline,
-.hathor-lux-footer-host .lux-footer__headline {
-  font-family: var(--font-editorial) !important;
-  font-size: 52px !important;
-  color: var(--gold) !important;
-  -webkit-text-fill-color: var(--gold) !important;
-  text-align: left !important;
 }
 
 .header,
