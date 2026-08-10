@@ -138,6 +138,8 @@ function applyProps(el: HTMLElement, props: SpringsParallaxProps) {
       el.style.transform = value;
     } else if (key === "opacity") {
       el.style.opacity = value;
+    } else if (key === "visibility") {
+      el.style.visibility = value;
     } else if (key === "clip-path" || key === "clipPath") {
       el.style.clipPath = value;
     } else if (key === "height") {
