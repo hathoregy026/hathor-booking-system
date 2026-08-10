@@ -161,7 +161,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   },
   {
     name: "home-amenities-3",
-    altText: "Amenities sequence — inset photo over the rising chapter",
+    altText: "Amenities sequence — rising full-stage Bar reel",
     url: HATHOR_MEDIA.about,
     category: "general",
     pagePath: "/#amenities-sequence",

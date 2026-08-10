@@ -2,7 +2,7 @@
 
 import { CSSProperties, useRef, type ReactNode } from "react";
 import Link from "next/link";
-import { AmenitiesIntroVideo } from "@/components/home/AmenitiesIntroVideo";
+import { AmenitiesInsetVideo } from "@/components/home/AmenitiesInsetVideo";
 import { AmenitiesRisingVideo } from "@/components/home/AmenitiesRisingVideo";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useTypographyInlineStyle } from "@/components/public/TypographySettingsProvider";
@@ -405,13 +405,13 @@ export function HomeAmenitiesSequence({
                 data-parallax--200-0='{"transform":"translateX(-36%) scale(1.0)"}'
                 className="home-am-intro__media-picture"
               >
-                {/*
-                  Intro fullscreen (scroll-hole sticky). Bar reel via
-                  HATHOR_AMENITIES_INTRO_VIDEO_SRC; CMS slot is poster.
-                */}
-                <AmenitiesIntroVideo
-                  imageName={introImage.name}
+                <ManagedImage
+                  name={introImage.name}
                   alt={introImage.alt}
+                  fill
+                  sizes="100vw"
+                  className="object-cover"
+                  priority
                   previewAnchor={introImage.previewAnchor}
                 />
               </div>
@@ -526,8 +526,8 @@ export function HomeAmenitiesSequence({
                 data-parallax-measure-selector="[data-am-chapter]"
               >
                 {/*
-                  Rising chapter — CMS still until HATHOR_AMENITIES_RISING_VIDEO_SRC
-                  is set. Intro Bar reel is on AmenitiesIntroVideo, not here.
+                  Rising base layer (slot 2) — CMS still. Bar reel is on
+                  AmenitiesInsetVideo (slot 3 full-stage clip), not here.
                 */}
                 <AmenitiesRisingVideo
                   imageName={videoHeroImage.name}
@@ -575,14 +575,11 @@ export function HomeAmenitiesSequence({
               data-parallax-clamp="true"
               data-parallax-measure-selector="[data-am-chapter]"
             >
-              <ManagedImage
-                name={videoInsetImage.name}
-                alt={videoInsetImage.alt}
-                fill
-                sizes="(max-width: 1024px) 70vw, 42vw"
-                className="object-cover"
-                previewAnchor={videoInsetImage.previewAnchor}
-              />
+              {/*
+                Slot 3 — full sticky stage rising via clip (not a corner card).
+                Bar reel replaces the CMS still (home-amenities-3 deleted).
+              */}
+              <AmenitiesInsetVideo alt={videoInsetImage.alt} />
             </div>
 
             {/*

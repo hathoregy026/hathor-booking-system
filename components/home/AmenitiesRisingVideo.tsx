@@ -16,9 +16,9 @@ type AmenitiesRisingVideoProps = {
 };
 
 /**
- * Amenities `i-video` / rising full-bleed media.
- * Uses CMS slot as poster; plays MP4 only when `HATHOR_AMENITIES_RISING_VIDEO_SRC`
- * is set. Intro Bar reel lives on AmenitiesIntroVideo — not here.
+ * Amenities `i-video` / rising full-bleed base layer (slot 2).
+ * Plays MP4 only when `HATHOR_AMENITIES_RISING_VIDEO_SRC` is set.
+ * Bar reel is on AmenitiesInsetVideo (slot 3), not here.
  */
 export function AmenitiesRisingVideo({
   imageName,

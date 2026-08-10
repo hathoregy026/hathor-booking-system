@@ -6,7 +6,7 @@
 export const AMENITIES_SEQUENCE_IMAGE_SLOTS = [
   {
     name: "home-amenities-1",
-    label: "1 — Intro fullscreen (Bar reel / scroll-hole)",
+    label: "1 — Intro fullscreen photo",
     alt: "Amenities sequence — fullscreen intro aboard Hathor",
   },
   {
@@ -16,8 +16,8 @@ export const AMENITIES_SEQUENCE_IMAGE_SLOTS = [
   },
   {
     name: "home-amenities-3",
-    label: "3 — Video inset photo",
-    alt: "Amenities sequence — inset photo over the rising chapter",
+    label: "3 — Rising full-stage clip (Bar reel)",
+    alt: "Amenities sequence — rising full-stage Bar reel",
   },
   {
     name: "home-amenities-4",
