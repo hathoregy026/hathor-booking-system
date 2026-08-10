@@ -375,19 +375,20 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   overflow: hidden;
 }
 
-/* Full-bleed CMS bg under the gold — very low opacity so gold + type stay dominant */
+/* Full-bleed CMS bg under the gold — covers entire band edge-to-edge */
 .home-am-nature__gold-bg {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   z-index: 0;
   opacity: 0.12;
   pointer-events: none;
   overflow: hidden;
-}
-
-.home-am-nature__gold-bg > span,
-.home-am-nature__gold-bg img {
-  object-fit: cover !important;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
 }
 
 .home-am-nature__copy {

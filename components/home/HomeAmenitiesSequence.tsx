@@ -4,6 +4,7 @@ import { CSSProperties, useRef, type ReactNode } from "react";
 import Link from "next/link";
 import { AmenitiesInsetVideo } from "@/components/home/AmenitiesInsetVideo";
 import { AmenitiesRisingVideo } from "@/components/home/AmenitiesRisingVideo";
+import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useTypographyInlineStyle } from "@/components/public/TypographySettingsProvider";
 import { useHomeAmenitiesSequence } from "@/hooks/useHomeAmenitiesSequence";
@@ -17,6 +18,7 @@ import {
   DEFAULT_AMENITIES_TYPOGRAPHY,
   type AmenitiesTypography,
 } from "@/lib/amenities-typography-shared";
+import { siteImageAnchorId } from "@/lib/site-image-preview";
 import type { SiteImageName } from "@/lib/site-image-slots";
 
 const GOLD = "#B69F64";
@@ -70,6 +72,26 @@ function withoutForcedFill(
   delete next.color;
   delete next.WebkitTextFillColor;
   return next;
+}
+
+/** Full-bleed CSS cover bg for the dining gold band (dashboard slot 14). */
+function NatureGoldBandBackground({
+  name,
+  previewAnchor = true,
+}: {
+  name: SiteImageName;
+  previewAnchor?: boolean;
+}) {
+  const image = useSiteImage(name);
+  return (
+    <div
+      className="home-am-nature__gold-bg"
+      aria-hidden
+      id={previewAnchor ? siteImageAnchorId(name) : undefined}
+      data-site-image={name}
+      style={{ backgroundImage: `url(${JSON.stringify(image.src)})` }}
+    />
+  );
 }
 
 function resolveImages(
@@ -1034,17 +1056,10 @@ export function HomeAmenitiesSequence({
         id="home-am-nature-caption"
       >
         {natureGoldBg ? (
-          <div className="home-am-nature__gold-bg" aria-hidden>
-            <ManagedImage
-              name={natureGoldBg.name}
-              alt=""
-              fill
-              sizes="100vw"
-              className="object-cover"
-              loading="lazy"
-              previewAnchor={natureGoldBg.previewAnchor}
-            />
-          </div>
+          <NatureGoldBandBackground
+            name={natureGoldBg.name}
+            previewAnchor={natureGoldBg.previewAnchor}
+          />
         ) : null}
         <div className="home-am-nature__copy">
           {/*
