@@ -89,7 +89,8 @@
     width: auto;
     max-width: none;
     flex: 0 0 auto;
-    align-items: center;
+    /* Logo bottom + nav text share one baseline (see desktop row below) */
+    align-items: flex-end;
   }
 
   .public-site .hathor-header--owo-hero-layout .hathor-header__col--right {
@@ -140,7 +141,7 @@
   .public-site .hathor-header--owo-hero-layout .hathor-header__menu-zone {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
     width: auto;
     max-width: none;
@@ -151,7 +152,7 @@
   .public-site .hathor-header__col--nav-left,
   .public-site .hathor-header__col--nav-right {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     flex: 0 0 auto;
     width: auto;
     min-width: 0;
@@ -170,7 +171,7 @@
 
   .public-site .hathor-header__col--logo {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
     flex: 0 0 auto;
     width: auto;
@@ -178,34 +179,47 @@
     z-index: 1220;
   }
 
+  .public-site .hathor-header__col--logo .hathor-header__brand {
+    display: flex;
+    align-items: flex-end;
+    line-height: 0;
+  }
+
   .public-site .hathor-header--owo-hero-layout .hathor-header__logo--icon {
+    display: block;
     height: clamp(3.15rem, 7vh, 4.5rem);
     width: auto;
-    transition: height 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    /* Match nav-link padding-bottom so logo bottom = text bottom */
+    margin-bottom: 0.5rem;
+    transition:
+      height 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      margin-bottom 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .public-site
     .hathor-header--owo-hero-layout.hathor-header--nav-compact
     .hathor-header__logo--icon {
     height: clamp(2.35rem, 3.2vw, 2.85rem);
+    margin-bottom: 0.25rem;
   }
 
   .public-site .hathor-header--owo-hero-layout .hathor-header__nav {
     display: flex;
     flex-wrap: nowrap;
-    align-items: center;
+    align-items: flex-end;
     justify-content: flex-start;
     width: auto;
     max-width: none;
     margin: 0;
     gap: var(--nav-word-gap);
-    padding: 0.35rem 0;
+    /* Top pad only — bottom pad would sit logo below the text baseline */
+    padding: 0.35rem 0 0;
   }
 
   .public-site
     .hathor-header--owo-hero-layout.hathor-header--nav-compact
     .hathor-header__nav {
-    padding: 0.1rem 0;
+    padding: 0.1rem 0 0;
   }
 
   .public-site .hathor-header--owo-hero-layout .hathor-header__nav li,
@@ -271,10 +285,15 @@
   .public-site .hathor-header--owo-hero-layout .hathor-header__menu-zone {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
     width: auto;
     gap: 0;
+  }
+
+  .public-site .hathor-header__col--nav-left,
+  .public-site .hathor-header__col--nav-right {
+    align-items: flex-end;
   }
 
   .public-site .hathor-header__col--nav-left {
@@ -287,6 +306,7 @@
 
   .public-site .hathor-header--owo-hero-layout .hathor-header__nav {
     display: flex;
+    align-items: flex-end;
     gap: var(--nav-word-gap);
     width: auto;
     padding: 0;
@@ -298,14 +318,19 @@
   }
 
   .public-site .hathor-header--owo-hero-layout .hathor-header__logo--icon {
+    display: block;
     height: clamp(2.75rem, 5vh, 3.5rem);
-    transition: height 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    margin-bottom: 0.4rem;
+    transition:
+      height 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      margin-bottom 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .public-site
     .hathor-header--owo-hero-layout.hathor-header--nav-compact
     .hathor-header__logo--icon {
     height: 2.15rem;
+    margin-bottom: 0.25rem;
   }
 
   .public-site .hathor-header--owo-hero-layout .hathor-header__nav-link {
@@ -592,7 +617,8 @@
     position: absolute;
     left: 0;
     right: 0;
-    bottom: -0.5rem;
+    /* Small air under text/logo baseline, then the hairline */
+    bottom: -0.28rem;
     height: 1.5px;
     background: #b69f64;
     transform: scaleX(0);
@@ -713,7 +739,7 @@
   .public-site
     .hathor-header--owo-hero-layout.hathor-header--menu-hovered
     .hathor-header__nav-link-label::after {
-    bottom: -0.5rem;
+    bottom: -0.28rem;
   }
 
   .public-site
