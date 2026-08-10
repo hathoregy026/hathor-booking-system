@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
-import { Footer } from "@/components/layout/Footer";
+import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import { PageUnderConstruction } from "@/components/public/PageUnderConstruction";
+import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
 import { SiteComingSoon } from "@/components/public/SiteComingSoon";
 import {
   resolveComingSoonForRequest,
@@ -40,12 +41,14 @@ export async function StandalonePageVisibilityShell({
   const effectiveVisibility = await resolvePageVisibilityForRequest(settings);
   if (!isPageLive(path, effectiveVisibility)) {
     return (
-      <>
-        <div className="hathor-page-construction--standalone">
-          <PageUnderConstruction />
+      <PublicThemeProvider>
+        <div className="public-site hathor-site hathor-page-construction--shell">
+          <PublicNavbar />
+          <main className="public-main public-main--hero">
+            <PageUnderConstruction />
+          </main>
         </div>
-        <Footer />
-      </>
+      </PublicThemeProvider>
     );
   }
 

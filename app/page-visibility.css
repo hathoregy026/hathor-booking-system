@@ -1,7 +1,6 @@
 .hathor-page-construction {
   display: grid;
-  /* Leave room for the site footer below under-construction pages */
-  min-height: calc(100svh - 12rem);
+  min-height: calc(100svh - 5.5rem);
   place-items: center;
   margin: 0;
   padding: 1rem;
@@ -19,7 +18,12 @@
   text-transform: none;
 }
 
-.hathor-page-construction--standalone {
+.hathor-page-construction--shell {
   min-height: 100svh;
   background: #fff;
+}
+
+/* Under construction: navbar + one message only — hide floating CTAs */
+body:has(.hathor-page-construction) .public-fab {
+  display: none !important;
 }
