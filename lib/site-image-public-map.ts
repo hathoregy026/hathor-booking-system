@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { withDb, logDbError } from "@/lib/db-safe";
+import { HOME_CAROUSEL_LEGACY_FALLBACK } from "@/lib/home-carousel-images";
 import {
   SITE_IMAGE_SLOTS,
   getDefaultSiteImage,
@@ -48,6 +49,24 @@ export type StoredSiteImagePublicMap = Record<
   { src: string; alt: string }
 >;
 
+function applyLegacySlotFallbacks(
+  overrides: StoredSiteImagePublicMap,
+): void {
+  for (const [amenitiesName, legacyName] of Object.entries(
+    AMENITIES_SEQUENCE_LEGACY_FALLBACK,
+  )) {
+    if (overrides[amenitiesName] || !overrides[legacyName]) continue;
+    overrides[amenitiesName] = { ...overrides[legacyName] };
+  }
+
+  for (const [carouselName, legacyName] of Object.entries(
+    HOME_CAROUSEL_LEGACY_FALLBACK,
+  )) {
+    if (overrides[carouselName] || !overrides[legacyName]) continue;
+    overrides[carouselName] = { ...overrides[legacyName] };
+  }
+}
+
 export function defaultStoredSiteImageMap(): StoredSiteImagePublicMap {
   const map: StoredSiteImagePublicMap = {};
   for (const slot of SITE_IMAGE_SLOTS) {
@@ -85,12 +104,7 @@ export function buildSiteImageOverridesMap(
     overrides[record.name] = { src: record.url, alt };
   }
 
-  for (const [amenitiesName, legacyName] of Object.entries(
-    AMENITIES_SEQUENCE_LEGACY_FALLBACK,
-  )) {
-    if (overrides[amenitiesName] || !overrides[legacyName]) continue;
-    overrides[amenitiesName] = { ...overrides[legacyName] };
-  }
+  applyLegacySlotFallbacks(overrides);
 
   return overrides;
 }
@@ -116,6 +130,18 @@ export function storedMapToSiteImageMap(
       alt: typeof value.alt === "string" && value.alt ? value.alt : fallback.alt,
     };
   }
+
+  /* Inherit shared room-* CMS uploads until each carousel card is customized. */
+  for (const [carouselName, legacyName] of Object.entries(
+    HOME_CAROUSEL_LEGACY_FALLBACK,
+  )) {
+    if (stored[carouselName]) continue;
+    const legacy = map[legacyName];
+    const slot = getSiteImageSlot(carouselName);
+    if (!legacy || !slot) continue;
+    map[carouselName] = { src: legacy.src, alt: slot.altText };
+  }
+
   return map;
 }
 

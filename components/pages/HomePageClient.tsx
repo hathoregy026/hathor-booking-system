@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useState, type CSSProperties } from "react";
 import rotatingWheel from "@/assets/LOGOS/rotating-wheel-hathor-cruise.png";
 import { HomeLandmarkMaskSection } from "@/components/home/HomeLandmarkMaskSection";
@@ -56,7 +55,6 @@ import {
 } from "@/lib/wheel-stage-settings-shared";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 import { shouldSoftRefreshCms } from "@/lib/cms-soft-refresh";
-import { useBookingStore } from "@/store/bookingStore";
 
 const GALLERY_PREVIEW_ANCHORS = new Set([
   "moving-tilted-1",
@@ -92,9 +90,16 @@ function GalleryMarqueePhoto({
 const HOMEPAGE_PREVIEW_SLOTS = new Set([
   "home-hero-poster",
   "home-story-craft-large",
-  "room-suite",
-  "room-royal",
-  "room-luxury",
+  "home-carousel-suite-3n",
+  "home-carousel-royal-3n",
+  "home-carousel-king-4n",
+  "home-carousel-twin-4n",
+  "home-carousel-suite-4n",
+  "home-carousel-royal-4n",
+  "home-carousel-king-7n",
+  "home-carousel-twin-7n",
+  "home-carousel-suite-7n",
+  "home-carousel-royal-7n",
   "home-amenities-1",
   "home-amenities-2",
   "home-amenities-3",
@@ -142,30 +147,12 @@ function paintLogoTune(desktop: HeroLogoTune, phone: HeroLogoTune) {
 }
 
 function ItineraryCarouselSlide({ slide }: { slide: ExCarouselSlide }) {
-  const router = useRouter();
-  const hydrateFromModal = useBookingStore((state) => state.hydrateFromModal);
-
-  const openCruise = () => {
-    hydrateFromModal({
-      duration: slide.duration,
-      roomConfigs: [
-        {
-          roomType: slide.roomType,
-          adults: 1,
-          children: 0,
-        },
-      ],
-    });
-    router.push("/booking");
-  };
-
   return (
     <article className="carousel-slide">
-      <button
-        type="button"
+      <Link
+        href="/cruises"
         className="carousel-slide__hit"
-        onClick={openCruise}
-        aria-label={`Book ${slide.title}`}
+        aria-label={`View cruises — ${slide.title}`}
       >
         <div className="carousel-container-parent">
           <div className="carousel-container">
@@ -183,7 +170,7 @@ function ItineraryCarouselSlide({ slide }: { slide: ExCarouselSlide }) {
             </div>
           </div>
         </div>
-      </button>
+      </Link>
     </article>
   );
 }

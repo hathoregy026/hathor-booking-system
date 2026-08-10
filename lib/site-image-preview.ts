@@ -23,9 +23,16 @@ export function siteImageAnchorId(name: string): string {
 export const HOMEPAGE_LIVE_SLOT_NAMES = new Set<string>([
   "home-hero-poster",
   "home-story-craft-large",
-  "room-suite",
-  "room-royal",
-  "room-luxury",
+  "home-carousel-suite-3n",
+  "home-carousel-royal-3n",
+  "home-carousel-king-4n",
+  "home-carousel-twin-4n",
+  "home-carousel-suite-4n",
+  "home-carousel-royal-4n",
+  "home-carousel-king-7n",
+  "home-carousel-twin-7n",
+  "home-carousel-suite-7n",
+  "home-carousel-royal-7n",
   "home-amenities-1",
   "home-amenities-2",
   "home-amenities-3",
@@ -86,6 +93,16 @@ const SITE_IMAGE_PRIMARY_PAGE: Partial<Record<string, string>> = {
   "home-voyage-4n-luxor-aswan": "/",
   "home-voyage-7n-roundtrip": "/",
   "home-voyage-nile-majesty": "/",
+  "home-carousel-suite-3n": "/",
+  "home-carousel-royal-3n": "/",
+  "home-carousel-king-4n": "/",
+  "home-carousel-twin-4n": "/",
+  "home-carousel-suite-4n": "/",
+  "home-carousel-royal-4n": "/",
+  "home-carousel-king-7n": "/",
+  "home-carousel-twin-7n": "/",
+  "home-carousel-suite-7n": "/",
+  "home-carousel-royal-7n": "/",
 
   "floating-ig-1": "/",
   "floating-ig-2": "/",
@@ -186,9 +203,16 @@ const SLOT_FALLBACK_SECTION: Partial<Record<string, string>> = {
   "home-amenities-14": "details",
   "home-amenities-15": "details",
   "cruises-hero": "services",
-  "room-suite": "services",
-  "room-royal": "services",
-  "room-luxury": "services",
+  "home-carousel-suite-3n": "services",
+  "home-carousel-royal-3n": "services",
+  "home-carousel-king-4n": "services",
+  "home-carousel-twin-4n": "services",
+  "home-carousel-suite-4n": "services",
+  "home-carousel-royal-4n": "services",
+  "home-carousel-king-7n": "services",
+  "home-carousel-twin-7n": "services",
+  "home-carousel-suite-7n": "services",
+  "home-carousel-royal-7n": "services",
   "about-hero": "details",
   "gastronomy-restaurant": "escape",
   "moving-tilted-1": "gallery",
@@ -232,6 +256,11 @@ export function resolveSiteImageLivePath(
     adminGroupPagePath === "/#amenities-sequence" ||
     adminGroupPagePath === "/#our-voyages"
   ) {
+    return buildSiteImageLivePath("/", name);
+  }
+
+  /* Cruises-tab itinerary cards still render on the homepage slider. */
+  if (adminGroupPagePath === "/cruises" && HOMEPAGE_LIVE_SLOT_NAMES.has(name)) {
     return buildSiteImageLivePath("/", name);
   }
 

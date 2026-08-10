@@ -9,6 +9,7 @@ import {
   HOMEPAGE_WELLNESS,
 } from "@/lib/homepage-content";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
+import { homeCarouselImageName } from "@/lib/home-carousel-images";
 import type {
   LuxuryRoomTypeValue,
   StayDurationValue,
@@ -17,12 +18,6 @@ import type { SiteImageName } from "@/lib/site-image-slots";
 
 function formatCruisePorts(ports: string) {
   return ports.replace(/→/g, "/").replace(/\s*\/\s*/g, " / ").trim();
-}
-
-function roomImageName(roomType: string): SiteImageName {
-  if (roomType.includes("Royal")) return "room-royal";
-  if (roomType.includes("Suite")) return "room-suite";
-  return "room-luxury";
 }
 
 function roomSearchType(roomType: string): LuxuryRoomTypeValue {
@@ -55,7 +50,7 @@ function buildCarouselSlides(): ExCarouselSlide[] {
     return cruise.rooms.map((room) => ({
       key: `${cruise.slug}-${room.roomNumber}`,
       title: `${ports} · ${roomTitleSuffix(room.roomType)}`,
-      imageName: roomImageName(room.roomType),
+      imageName: homeCarouselImageName(room.roomNumber),
       alt: `${room.name}, ${cruise.name}`,
       duration,
       roomType: roomSearchType(room.roomType),

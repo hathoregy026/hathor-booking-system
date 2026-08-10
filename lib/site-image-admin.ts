@@ -1,4 +1,5 @@
 import { AMENITIES_SEQUENCE_IMAGE_SLOTS } from "@/lib/amenities-sequence-images";
+import { HOME_CAROUSEL_ADMIN_CARDS } from "@/lib/home-carousel-images";
 import { SITE_IMAGE_SLOTS, type SiteImageSlot } from "@/lib/site-image-slots";
 import { resolveSiteImageLivePath } from "@/lib/site-image-preview";
 import {
@@ -23,9 +24,6 @@ const HOMEPAGE_LIVE_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> 
   [
     { name: "home-hero-poster", label: "Hero — video poster / cover" },
     { name: "home-story-craft-large", label: "About — main photo" },
-    { name: "room-suite", label: "Itineraries carousel — Luxury Suite" },
-    { name: "room-royal", label: "Itineraries carousel — Royal Suite" },
-    { name: "room-luxury", label: "Itineraries carousel — Luxury Cabin" },
     { name: "home-call-to-action", label: "Call to action image" },
     {
       name: "home-wheel-stage",
@@ -36,6 +34,12 @@ const HOMEPAGE_LIVE_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> 
       label: "Wheel reveal — image the wheel opens into",
     },
   ];
+
+/** Cruises tab — hero + homepage itinerary carousel cards (unique per cruise room). */
+const CRUISES_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> = [
+  { name: "cruises-hero", label: "Hero — Cruises" },
+  ...HOME_CAROUSEL_ADMIN_CARDS,
+];
 
 /** Homepage amenities scroll sequence — Admin tab: Amenities Sequence (site order). */
 const AMENITIES_SEQUENCE_ADMIN_CARDS: ReadonlyArray<{
@@ -380,6 +384,18 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
     );
   });
 
+  const cruisesItems: SiteImageAdminItem[] = [];
+  const cruisesSeen = new Set<string>();
+  CRUISES_ADMIN_CARDS.forEach((card, index) => {
+    const slot = byName.get(card.name);
+    if (!slot) return;
+    pushUniqueItem(
+      cruisesItems,
+      cruisesSeen,
+      toAdminItem(slot, "/cruises", card.label, index + 1),
+    );
+  });
+
   const suitesItems: SiteImageAdminItem[] = [];
   const suitesSeen = new Set<string>();
   SUITES_ADMIN_CARDS.forEach((card, index) => {
@@ -428,6 +444,7 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
         appearPath === "/#moving-tilted-cards" ||
         appearPath === "/#floating-ig" ||
         appearPath === "/#our-voyages" ||
+        appearPath === "/cruises" ||
         appearPath === "/suites"
       ) {
         // Handled by dedicated curated groups above.
@@ -442,8 +459,6 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
   }
 
   const pageOrder = [
-    "/cruises",
-    "/suites",
     "/rooms",
     "/luxury-cabins-Nile-Cruise",
     "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
@@ -496,6 +511,13 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
       description:
         "Photos for the Sail with Hathor floating Instagram bubbles only. Each bubble has its own upload — independent from Homepage, Our Voyages, and every other page.",
       items: floatingIgItems,
+    },
+    {
+      pagePath: "/cruises",
+      title: "Cruises",
+      description:
+        "Cruises page hero plus the homepage itinerary carousel cards. Each cruise room card has its own upload — edit here, shown on the homepage itineraries slider.",
+      items: cruisesItems,
     },
     {
       pagePath: "/suites",
