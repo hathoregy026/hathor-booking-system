@@ -1,4 +1,5 @@
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
+import { BookingModalProvider } from "@/components/booking/BookingModalProvider";
 import { DeployFreshness } from "@/components/public/DeployFreshness";
 import { LuxuryTextAnimations } from "@/components/public/LuxuryTextAnimations";
 import { PageVisibilityChrome } from "@/components/public/PageVisibilityChrome";
@@ -59,32 +60,34 @@ export function PublicLayout({
 
   return (
     <PublicThemeProvider>
-      {/*
-        Splash must sit outside `.public-site` so mid-page home reloads with
-        `ex-pending-deep` (opacity:0 on `.public-site`) cannot hide it.
-        Book Now modal + floating BOOK NOW / chat live in GlobalSiteChrome (root).
-      */}
-      {splashEnabled ? (
-        <link
-          rel="preload"
-          as="image"
-          href={splashImageUrl}
-          fetchPriority="high"
-        />
-      ) : null}
-      <WelcomeSplash enabled={splashEnabled} imageUrl={splashImageUrl} />
-      <div className="public-site hathor-site">
-        <script dangerouslySetInnerHTML={{ __html: bootScript }} />
-        <DeployFreshness deployId={deployId} />
-        <PublicScrollInfrastructure />
-        <ScrollPositionRestore />
-        <LuxuryTextAnimations />
-        <SiteImagePreviewScroll />
-        <PublicNavbar />
-        <PageVisibilityChrome>
-          <PageTransition>{children}</PageTransition>
-        </PageVisibilityChrome>
-      </div>
+      <BookingModalProvider>
+        {/*
+          Splash must sit outside `.public-site` so mid-page home reloads with
+          `ex-pending-deep` (opacity:0 on `.public-site`) cannot hide it.
+          Floating BOOK NOW / chat mount from GlobalSiteChrome (root sibling).
+        */}
+        {splashEnabled ? (
+          <link
+            rel="preload"
+            as="image"
+            href={splashImageUrl}
+            fetchPriority="high"
+          />
+        ) : null}
+        <WelcomeSplash enabled={splashEnabled} imageUrl={splashImageUrl} />
+        <div className="public-site hathor-site">
+          <script dangerouslySetInnerHTML={{ __html: bootScript }} />
+          <DeployFreshness deployId={deployId} />
+          <PublicScrollInfrastructure />
+          <ScrollPositionRestore />
+          <LuxuryTextAnimations />
+          <SiteImagePreviewScroll />
+          <PublicNavbar />
+          <PageVisibilityChrome>
+            <PageTransition>{children}</PageTransition>
+          </PageVisibilityChrome>
+        </div>
+      </BookingModalProvider>
     </PublicThemeProvider>
   );
 }

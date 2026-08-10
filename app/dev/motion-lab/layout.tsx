@@ -6,7 +6,6 @@ import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { PublicScrollInfrastructure } from "@/components/public/PublicScrollInfrastructure";
 import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
-import { BookingModalProvider } from "@/components/booking/BookingModalProvider";
 import { Footer } from "@/components/layout/Footer";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
@@ -54,25 +53,23 @@ export default function MotionLabLayout({ children }: { children: ReactNode }) {
         DEV MOTION LAB — not production
       </div>
       <PublicThemeProvider>
-        <BookingModalProvider>
-          <HeroLogoSettingsProvider
-            desktopPartsVariant={DEFAULT_HERO_LOGO_TUNE.partsVariant}
-            mobilePartsVariant={DEFAULT_HERO_LOGO_TUNE_MOBILE.partsVariant}
-          >
-            <SiteImagesProvider images={getDefaultSiteImageMap()}>
-              <TypographySettingsProvider>
-                <WebsiteTextProvider>
-                  <div className="public-site hathor-site">
-                    <PublicScrollInfrastructure />
-                    <PublicNavbar />
-                    <main className="public-main public-main--hero">{children}</main>
-                    <Footer />
-                  </div>
-                </WebsiteTextProvider>
-              </TypographySettingsProvider>
-            </SiteImagesProvider>
-          </HeroLogoSettingsProvider>
-        </BookingModalProvider>
+        <HeroLogoSettingsProvider
+          desktopPartsVariant={DEFAULT_HERO_LOGO_TUNE.partsVariant}
+          mobilePartsVariant={DEFAULT_HERO_LOGO_TUNE_MOBILE.partsVariant}
+        >
+          <SiteImagesProvider images={getDefaultSiteImageMap()}>
+            <TypographySettingsProvider>
+              <WebsiteTextProvider>
+                <div className="public-site hathor-site">
+                  <PublicScrollInfrastructure />
+                  <PublicNavbar />
+                  <main className="public-main public-main--hero">{children}</main>
+                  <Footer />
+                </div>
+              </WebsiteTextProvider>
+            </TypographySettingsProvider>
+          </SiteImagesProvider>
+        </HeroLogoSettingsProvider>
       </PublicThemeProvider>
     </div>
   );

@@ -10,9 +10,12 @@ import {
 } from "@/lib/public-theme";
 import { getTouchDeviceBlockingScript } from "@/lib/touch-device";
 import { TouchDeviceBootstrap } from "@/components/public/TouchDeviceBootstrap";
+import { GlobalFloatingActions } from "@/components/public/GlobalFloatingActions";
 import "./hathor-fonts.css";
 import "./globals.css";
 import "./mobile-touch.css";
+import "./floating-actions.css";
+import "./booking-modal.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -81,6 +84,7 @@ export default function RootLayout({
       >
         <TouchDeviceBootstrap />
         {children}
+        <GlobalFloatingActions />
       </body>
     </html>
   );

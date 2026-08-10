@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
-import { BookingModalProvider } from "@/components/booking/BookingModalProvider";
 import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
 import { resolveSiteImageMap } from "@/lib/resolve-site-images";
 import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
@@ -8,7 +7,6 @@ import { Footer } from "@/components/layout/Footer";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import "../public.css";
 import "../site-nav.css";
-import "../booking-modal.css";
 import "../night-mode.css";
 import "./preview.css";
 
@@ -45,13 +43,11 @@ export default async function PreviewLayout({
     <div className={`${playfair.variable} ${plusJakarta.variable}`}>
       <PublicThemeProvider>
         <SiteImagesProvider images={siteImages}>
-          <BookingModalProvider>
-            <div className="public-site preview-site hathor-site">
-              <PublicNavbar />
-              <main className="preview-main">{children}</main>
-              <Footer />
-            </div>
-          </BookingModalProvider>
+          <div className="public-site preview-site hathor-site">
+            <PublicNavbar />
+            <main className="preview-main">{children}</main>
+            <Footer />
+          </div>
         </SiteImagesProvider>
       </PublicThemeProvider>
     </div>

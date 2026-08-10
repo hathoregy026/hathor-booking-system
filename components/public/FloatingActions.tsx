@@ -8,6 +8,7 @@ import { SocialBrandIcon } from "@/components/public/SocialBrandIcon";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 import { PUBLIC_SOCIAL_LINKS } from "@/lib/public-social";
+import { shouldShowFloatingActions } from "@/lib/floating-actions-visibility";
 
 const HERO_CTA_SELECTOR =
   ".home-hero-container .hero-button .hero-cta, .home-hero-container .hero-cta";
@@ -16,8 +17,11 @@ export function FloatingActions() {
   const pathname = usePathname();
   const [chatOpen, setChatOpen] = useState(false);
   const [showBook, setShowBook] = useState(false);
+  const visible = shouldShowFloatingActions(pathname);
 
   useEffect(() => {
+    if (!visible) return;
+
     setChatOpen(false);
     setShowBook(false);
 
@@ -55,7 +59,7 @@ export function FloatingActions() {
       window.clearTimeout(t2);
       observer?.disconnect();
     };
-  }, [pathname]);
+  }, [pathname, visible]);
 
   useEffect(() => {
     if (!chatOpen) return;
@@ -65,6 +69,8 @@ export function FloatingActions() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [chatOpen]);
+
+  if (!visible) return null;
 
   return (
     <div className="public-fab public-fab--right">
