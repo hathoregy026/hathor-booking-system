@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import { HATHOR_BRAND_NAME, HATHOR_FAVICON_SRC } from "@/lib/branding";
 import {
   PUBLIC_THEME_DEFAULT,
@@ -85,6 +86,7 @@ export default function RootLayout({
         <TouchDeviceBootstrap />
         {children}
         <GlobalFloatingActions />
+        <Analytics />
       </body>
     </html>
   );
