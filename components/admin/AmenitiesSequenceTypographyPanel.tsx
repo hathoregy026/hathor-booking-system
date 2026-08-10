@@ -39,7 +39,7 @@ import {
 } from "@/lib/website-text-shared";
 import {
   HATHOR_FONT_GROUPS,
-  HATHOR_FONT_STACKS,
+  hathorFontStackForAdmin,
   type TypographyTextStyle,
 } from "@/lib/typography-settings-shared";
 
@@ -158,20 +158,23 @@ function roleTextShadow(on: boolean) {
 
 /**
  * Admin preview uses `--typo-live-*` with !important (see admin.css).
- * Inline fontFamily on the parent is ignored — set these vars on the sample.
+ * Use admin-safe stacks (no undefined next/font vars) or font-family goes invalid.
  */
 function amenitiesLiveVars(
   style: AmenitiesTextStyle,
   color: string,
   sizePx?: number,
 ): CSSProperties {
+  const font = hathorFontStackForAdmin(style.fontFamily);
   return {
-    ["--typo-live-font" as string]: HATHOR_FONT_STACKS[style.fontFamily],
+    ["--typo-live-font" as string]: font,
     ["--typo-live-size" as string]: `${sizePx ?? style.fontSize}px`,
     ["--typo-live-color" as string]: color,
     ["--typo-live-lh" as string]: String(style.lineHeight),
     ["--typo-live-ls" as string]: `${style.letterSpacing}px`,
     ["--typo-live-shadow" as string]: roleTextShadow(style.innerShadow),
+    /* Belt-and-braces: some browsers still honor this when vars resolve oddly */
+    fontFamily: font,
   };
 }
 
@@ -978,8 +981,9 @@ export function AmenitiesSequenceTypographyPanel() {
                     <span
                       className="typo-easy__font-dd-sample"
                       style={{
-                        fontFamily:
-                          HATHOR_FONT_STACKS[styles[active.role].fontFamily],
+                        fontFamily: hathorFontStackForAdmin(
+                          styles[active.role].fontFamily,
+                        ),
                       }}
                     >
                       {styles[active.role].fontFamily}
@@ -1010,7 +1014,7 @@ export function AmenitiesSequenceTypographyPanel() {
                               aria-selected={selected}
                               className={`typo-easy__font-dd-option${selected ? " typo-easy__font-dd-option--on" : ""}`}
                               style={{
-                                fontFamily: HATHOR_FONT_STACKS[variant.id],
+                                fontFamily: hathorFontStackForAdmin(variant.id),
                               }}
                               onClick={() => {
                                 patchStyle(active.role, {

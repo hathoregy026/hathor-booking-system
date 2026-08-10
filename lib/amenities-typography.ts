@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { withDb } from "@/lib/db-safe";
-import { HATHOR_FONT_STACKS } from "@/lib/typography-settings-shared";
+import { hathorFontStackForAdmin } from "@/lib/typography-settings-shared";
 import {
   DEFAULT_AMENITIES_TYPOGRAPHY,
   amenitiesTypographySchema,
@@ -79,10 +79,7 @@ export async function saveAmenitiesTypography(value: unknown, phone = false) {
 
 /** Shared metrics (no colour) — colour is applied per surface below. */
 function roleMetricsCss(selector: string, style: AmenitiesTextStyle) {
-  const fontStack = HATHOR_FONT_STACKS[style.fontFamily].replace(
-    /var\([^)]*\),?\s*/g,
-    "",
-  );
+  const fontStack = hathorFontStackForAdmin(style.fontFamily);
   return `${selector}{font-family:${fontStack}!important;font-size:${style.fontSize}px!important;line-height:${style.lineHeight}!important;letter-spacing:${style.letterSpacing}px!important;${style.innerShadow ? "text-shadow:1px 1px 0 rgba(0,0,0,.35),-.5px -.5px 0 rgba(255,255,255,.25)!important;" : ""}}`;
 }
 

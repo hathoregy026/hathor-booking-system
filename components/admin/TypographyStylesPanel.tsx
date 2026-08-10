@@ -26,7 +26,7 @@ import {
   DEFAULT_OUR_VOYAGES_COPY,
   DEFAULT_TYPOGRAPHY_SETTINGS,
   HATHOR_FONT_GROUPS,
-  HATHOR_FONT_STACKS,
+  hathorFontStackForAdmin,
   HERO_ALIGNS,
   HERO_PAGE_KEYS,
   HERO_PAGE_LABELS,
@@ -131,8 +131,9 @@ function clampOffset(n: number): number {
 
 /** CSS vars — admin.css applies them with !important so Inter never wins. */
 function liveVars(style: TypographyTextStyle): CSSProperties {
+  const font = hathorFontStackForAdmin(style.fontFamily);
   return {
-    ["--typo-live-font" as string]: HATHOR_FONT_STACKS[style.fontFamily],
+    ["--typo-live-font" as string]: font,
     ["--typo-live-size" as string]: `${style.fontSize}px`,
     ["--typo-live-color" as string]: style.color,
     ["--typo-live-lh" as string]: String(style.lineHeight),
@@ -140,6 +141,7 @@ function liveVars(style: TypographyTextStyle): CSSProperties {
     ["--typo-live-shadow" as string]: style.innerShadow
       ? "1px 1px 0 rgba(0,0,0,0.35), -0.5px -0.5px 0 rgba(255,255,255,0.25)"
       : "none",
+    fontFamily: font,
   };
 }
 
@@ -703,7 +705,7 @@ export function TypographyStylesPanel() {
             >
               <span
                 className="typo-easy__font-dd-sample"
-                style={{ fontFamily: HATHOR_FONT_STACKS[value.fontFamily] }}
+                style={{ fontFamily: hathorFontStackForAdmin(value.fontFamily) }}
               >
                 {value.fontFamily}
               </span>
@@ -731,7 +733,7 @@ export function TypographyStylesPanel() {
                         role="option"
                         aria-selected={selected}
                         className={`typo-easy__font-dd-option${selected ? " typo-easy__font-dd-option--on" : ""}`}
-                        style={{ fontFamily: HATHOR_FONT_STACKS[variant.id] }}
+                        style={{ fontFamily: hathorFontStackForAdmin(variant.id) }}
                         onClick={() => {
                           patch({ fontFamily: variant.id });
                           setFontMenuOpen(false);

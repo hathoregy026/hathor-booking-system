@@ -664,6 +664,16 @@ export const HATHOR_FONT_STACKS: Record<HathorLuxuryFont, string> = {
   "Piloner Semibold Italic": '"Piloner Semibold Italic", "Piloner", sans-serif',
 };
 
+/**
+ * Stack for admin UI / CSS that does not load next/font variables.
+ * Nested `var(--font-hathor-*)` is undefined in admin and invalidates the
+ * entire font-family at computed-value time — strip them so @font-face names win.
+ */
+export function hathorFontStackForAdmin(font: HathorLuxuryFont): string {
+  const stack = HATHOR_FONT_STACKS[font] ?? `"${font}", serif`;
+  return stack.replace(/var\(--font-hathor-[^)]+\),\s*/g, "").trim() || `"${font}", serif`;
+}
+
 function fontStack(font: HathorLuxuryFont): string {
   return HATHOR_FONT_STACKS[font] ?? `"${font}", serif`;
 }

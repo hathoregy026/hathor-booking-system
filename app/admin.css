@@ -2142,8 +2142,8 @@ select.admin-input option:checked {
 }
 
 .typo-stage--am-trio .typo-stage__sample--inline {
-  /* Same --typo-live-* contract as Typography Styles — not inherit from parent */
-  font-family: var(--typo-live-font, serif) !important;
+  /* Admin-safe --typo-live-font (no nested next/font vars) */
+  font-family: var(--typo-live-font) !important;
   font-size: var(--typo-live-size, 18px) !important;
   line-height: var(--typo-live-lh, 1.2) !important;
   color: var(--typo-live-color, #f5f0e8) !important;
