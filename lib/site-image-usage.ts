@@ -29,7 +29,7 @@ export const SITE_IMAGE_PAGE_TITLES: Record<string, string> = {
 const EXTRA_USAGE_BY_SLOT: Partial<Record<string, readonly string[]>> = {
   "room-suite": ["/suites", "/rooms"],
   "room-royal": ["/suites", "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"],
-  "room-luxury": ["/suites", "/luxury-cabins-Nile-Cruise"],
+  /* room-luxury: Suites Place panel only (cabins hero is cabins-hero). */
 
   "scraped-suites-hero": ["/suites"],
   "scraped-suites-luxury-rooms": ["/suites"],

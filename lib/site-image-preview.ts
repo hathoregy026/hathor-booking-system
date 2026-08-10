@@ -116,7 +116,8 @@ const SITE_IMAGE_PRIMARY_PAGE: Partial<Record<string, string>> = {
   "moving-tilted-5": "/",
 
   "cruises-hero": "/cruises",
-  "room-luxury": "/luxury-cabins-Nile-Cruise",
+  "cabins-hero": "/luxury-cabins-Nile-Cruise",
+  "room-luxury": "/suites",
   "room-suite": "/rooms",
   "room-royal": "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
   charter: "/charter",

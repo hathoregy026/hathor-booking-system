@@ -6,7 +6,7 @@ import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import "../page-visibility.css";
 import "../site-coming-soon.css";
 
-const OG_IMAGE = "/media/hathor/r2/room-luxury.webp";
+const OG_IMAGE = "/media/hathor/r2/cabins-hero.webp";
 
 export const metadata: Metadata = {
   title: "Small Luxury Nile Cruise Rooms",

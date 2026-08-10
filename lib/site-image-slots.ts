@@ -377,13 +377,21 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     pagePath: "/cruises",
     displayOrder: 49,
   },
-  // Shared accommodations (Suites / rooms / galleries — not homepage carousel)
+  // Suites Place panel only — not shared with Luxury Cabins hero
   {
     name: "room-luxury",
     altText: "Luxury cabin aboard Hathor Dahabiya",
     url: HATHOR_MEDIA.luxuryRoom,
     category: "room",
-    pagePath: "/rooms",
+    pagePath: "/suites",
+    displayOrder: 24,
+  },
+  {
+    name: "cabins-hero",
+    altText: "Luxury cabin with Nile view aboard Hathor Dahabiya",
+    url: "/media/hathor/r2/cabins-hero.webp",
+    category: "room",
+    pagePath: "/luxury-cabins-Nile-Cruise",
     displayOrder: 0,
   },
   {

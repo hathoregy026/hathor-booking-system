@@ -13,7 +13,7 @@ export const ACCOMMODATION_SLOTS_BY_PAGE: Record<
   readonly string[]
 > = {
   "luxury-rooms": [
-    "room-luxury",
+    "cabins-hero",
     "scraped-cabin-1",
     "scraped-cabin-2",
     "scraped-cabin-3",

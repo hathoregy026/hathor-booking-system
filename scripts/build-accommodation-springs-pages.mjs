@@ -97,7 +97,7 @@ const PAGES = [
     metaDescription:
       "Small Luxury Nile Cruise Rooms | Boutique Nile Cruise Hathor Dahabiya",
     media: {
-      intro: "/media/hathor/r2/room-luxury.webp",
+      intro: "/media/hathor/r2/cabins-hero.webp",
       spiral: "/media/hathor/scraped/cabin-1.webp",
       projectsBg: "/media/hathor/scraped/cabin-2.webp",
       slide2: "/media/hathor/scraped/cabin-3.webp",
@@ -105,7 +105,7 @@ const PAGES = [
       thumb1: "/media/hathor/scraped/cabin-1.webp",
       thumb2: "/media/hathor/scraped/cabin-3.webp",
       thumb3: "/media/hathor/scraped/cabin-5.webp",
-      captionStart: "/media/hathor/r2/room-luxury.webp",
+      captionStart: "/media/hathor/r2/cabins-hero.webp",
       captionEnd: "/media/hathor/scraped/cabin-2.webp",
       balcon: "/media/hathor/scraped/cabin-5.webp",
       materials: "/media/hathor/scraped/cabin-6.webp",
@@ -113,7 +113,7 @@ const PAGES = [
       slider2: "/media/hathor/scraped/cabin-8.webp",
       gallery1: "/media/hathor/scraped/cabin-3.webp",
       gallery2: "/media/hathor/scraped/cabin-4.webp",
-      flat1: "/media/hathor/r2/room-luxury.webp",
+      flat1: "/media/hathor/r2/cabins-hero.webp",
       flat2: "/media/hathor/scraped/cabin-1.webp",
       flat3: "/media/hathor/scraped/cabin-5.webp",
       more: "/media/hathor/scraped/cabin-2.webp",
@@ -764,12 +764,15 @@ function buildPalette(page) {
 }
 
 function buildRuntime(page) {
+  const roomLuxurySlot =
+    page.id === "luxury-rooms" ? "cabins-hero" : "room-luxury";
   return `
 <script data-accommodation-media-runtime>
 (() => {
   const PAGE_ID = ${JSON.stringify(page.id)};
   const FILE_TO_SLOT = {
-    "room-luxury.webp": "room-luxury",
+    "room-luxury.webp": ${JSON.stringify(roomLuxurySlot)},
+    "cabins-hero.webp": "cabins-hero",
     "room-suite.webp": "room-suite",
     "room-royal.webp": "room-royal",
     "cabin-1.webp": "scraped-cabin-1",

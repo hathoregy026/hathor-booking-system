@@ -116,11 +116,12 @@ const SUITES_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> = [
   { name: "scraped-royal-4", label: "21. Nature slide 2" },
   { name: "scraped-royal-6", label: "22. Nature slide 3" },
   { name: "scraped-cabin-6", label: "23. Nature background" },
-  { name: "room-luxury", label: "24. Place panel / shared Cabin" },
+  { name: "room-luxury", label: "24. Place panel — Cabin" },
 ];
 
 const SLOT_LABELS: Partial<Record<SiteImageSlot["name"], string>> = {
-  "room-luxury": "Hero — Luxury Rooms",
+  "room-luxury": "Place panel — Cabin",
+  "cabins-hero": "Hero — Luxury Rooms",
   "room-suite": "Luxury Rooms - Luxury Suite Photo",
   "room-royal": "Hero — Royal Suites",
   charter: "Charter - Overview Photo",
@@ -215,6 +216,7 @@ const SLOT_LAYOUT_KINDS: Partial<Record<SiteImageSlot["name"], SiteImageLayoutKi
     "contact-hero": "hero",
     "blog-hero": "hero",
     "room-luxury": "hero",
+    "cabins-hero": "hero",
     "room-royal": "hero",
   };
 
