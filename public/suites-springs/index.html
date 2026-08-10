@@ -1930,38 +1930,20 @@ body.has-page-scroll-transition .public-site > .lux-footer {
     function scrollToEl(el) {
       if (!el) return;
       var $ = window.jQuery || window.$;
+      var dest = locoY() + el.getBoundingClientRect().top - 24;
       try {
-        if ($ && typeof $.fn.scrollToElement === "function") {
-          $(el).scrollToElement(0);
+        var smooth = $ && $(window).data("smooth-scroll");
+        if (smooth && smooth.scroller && typeof smooth.scroller.scrollTo === "function") {
+          smooth.scroller.scrollTo(dest);
           return;
         }
       } catch (e) {}
       try {
         if ($ && typeof $.fn.scrollTo === "function") {
-          $(window).scrollTo(el, 800);
+          $(window).scrollTo(dest, 0);
           return;
         }
       } catch (e) {}
-      var dest = locoY() + el.getBoundingClientRect().top - 24;
-      var steps = 0;
-      function tick() {
-        var now = locoY();
-        if (Math.abs(now - dest) < 60 || steps++ > 100) return;
-        var delta = Math.sign(dest - now) * Math.min(1100, Math.abs(dest - now));
-        try {
-          document.documentElement.dispatchEvent(
-            new WheelEvent("wheel", {
-              deltaY: delta,
-              bubbles: true,
-              cancelable: true,
-              clientX: window.innerWidth / 2,
-              clientY: window.innerHeight / 2,
-            }),
-          );
-        } catch (e) {}
-        requestAnimationFrame(tick);
-      }
-      tick();
     }
     document.addEventListener(
       "click",
