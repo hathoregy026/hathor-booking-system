@@ -96,21 +96,21 @@ export const SPRINGS_AMENITIES_PATTERNS: PatternMap = {
 
   /**
    * Unique cream title + body (slide 2) — no sub.
-   * Stay visible over the cream handoff until the Bar reel clip starts
-   * (videoImage ~150). Prior half-runway 50→65 faded this away too early.
+   * Stay fully opaque while videoImage rises so the next slide covers it
+   * (title-stack z-index 1 under inset z-index 2 on desktop). Do not fade
+   * at clip start — that removed the cover wipe.
    */
   videoTitle: () =>
     isLgUp()
       ? pattern({
           "parallax--0-0": { opacity: "1" },
-          "parallax--50-0": { opacity: "1" },
-          "parallax--140-0": { opacity: "1" },
-          "parallax--150-0": { opacity: "0" },
+          "parallax--175-0": { opacity: "1" },
+          "parallax--180-0": { opacity: "0" },
         })
       : pattern({
           "parallax--0-0": { opacity: "1" },
-          "parallax--40-0": { opacity: "1" },
-          "parallax--50-0": { opacity: "0" },
+          "parallax--75-0": { opacity: "1" },
+          "parallax--80-0": { opacity: "0" },
         }),
 
   videoImage: () =>

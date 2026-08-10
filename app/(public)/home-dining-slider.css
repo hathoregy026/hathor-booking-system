@@ -784,6 +784,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   .home-am-video__title-stack {
     top: clamp(5.5rem, 12vh, 8rem);
     bottom: auto;
+    /* Under the rising next slide (inset z-index 2) so it gets covered */
+    z-index: 1;
   }
 
   /* Cream panel body is phone-only; desktop copy is the video title stack. */
@@ -961,6 +963,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-video__overlay-sub 
 }
 
 @media (min-width: 1025px) {
+  /* Kept next to title-stack layout rule above — do not raise above inset. */
   .home-am-video__title-stack {
     z-index: 1;
   }
