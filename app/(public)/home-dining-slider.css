@@ -1265,7 +1265,7 @@ html[data-ex-experience]
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  gap: clamp(1.25rem, 2.8vw, 2.75rem);
+  gap: clamp(1rem, 2.2vw, 2rem);
   width: 100%;
 }
 
@@ -1388,25 +1388,6 @@ html[data-ex-experience]
 
   .home-am-opening__list-item:first-child {
     margin-top: 0;
-  }
-
-  /*
-   * Card rail: slightly wider than Springs md-2, stack height matches the
-   * pinned left photo (~100svh) while keeping 15px gaps + scroll climb.
-   */
-  .home-am-opening__list-wrap {
-    flex: 0 0 19.5vw;
-    width: 19.5vw;
-  }
-
-  .home-am-opening__list-item-media {
-    aspect-ratio: auto;
-    height: calc((100svh - 45px) / 4);
-  }
-
-  .home-am-opening__rail-copy {
-    padding-left: clamp(0.75rem, 1.5vw, 1.75rem);
-    max-width: min(24rem, 100%);
   }
 
   .home-am-opening__caption {
