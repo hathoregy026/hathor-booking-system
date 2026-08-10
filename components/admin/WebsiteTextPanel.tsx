@@ -617,12 +617,12 @@ export function WebsiteTextPanel() {
                         }}
                       />
                       <Field
-                        label="Small label"
+                        label="Sub text"
                         value={slide.indication}
                         hint={
                           index === 0
-                            ? "Indication under the intro title."
-                            : "Small label on that chapter / slider panel."
+                            ? "Under the intro title. Blank → “Sail The Nile On Hathor” on live."
+                            : "Sub text on that chapter / slider panel."
                         }
                         onChange={(indication) => {
                           const stackSlides = text.home.stackSlides.map(
@@ -685,12 +685,12 @@ export function WebsiteTextPanel() {
                         }}
                       />
                       <Field
-                        label="Small label"
+                        label="Sub text"
                         value={block.indication}
                         hint={
                           index === 0
-                            ? "Opening rail sub-line (and slider indication)."
-                            : "Nature band sub-line (and slider indication)."
+                            ? "Opening rail sub-line (and slider). Blank → “A Way of Life” on live."
+                            : "Nature band sub-line (and slider). Blank → “Gastronomy” on live."
                         }
                         onChange={(indication) => {
                           const textBlocks = text.home.textBlocks.map((b, i) =>

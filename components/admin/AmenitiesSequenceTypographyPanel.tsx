@@ -58,6 +58,12 @@ const EX_PINNED_FALLBACKS = [
   { indication: "History · Comfort · Style" },
 ] as const;
 
+/** Same defaults the homepage uses when a story sub-line is blank. */
+const STORY_INDICATION_FALLBACKS = [
+  "A Way of Life",
+  "Gastronomy",
+] as const;
+
 const PREVIEW_SURFACE_BG: Record<PreviewSurface, string> = {
   onImage: "#1a1714",
   onGold: "#B69F64",
@@ -107,8 +113,8 @@ const RAIL: RailItem[] = [
     target: { kind: "slide" as const, index },
     hint:
       index === 0
-        ? "Title, sub, and body on the intro photo; body also on the cream wipe."
-        : "Title, small label, and body for this amenities chapter.",
+        ? "Title, sub text, and body on the intro photo; body also on the cream wipe."
+        : "Title, sub text, and body for this amenities chapter.",
   })),
   ...STORY_LABELS.map((label, index) => ({
     id: `story-${index}`,
@@ -117,8 +123,8 @@ const RAIL: RailItem[] = [
     target: { kind: "story" as const, index },
     hint:
       index === 0
-        ? "Opening gold rail title, small label, body, and CTA. Also drives a slider panel and card label."
-        : "Nature gold band title, small label, body, and CTA. Also drives a slider panel and card label.",
+        ? "Opening gold rail: title, sub text, body, and button. Also drives a slider panel and card label."
+        : "Nature gold band: title, sub text, body, and button. Also drives a slider panel and card label.",
   })),
   {
     id: "style-title",
@@ -132,7 +138,7 @@ const RAIL: RailItem[] = [
     label: "Sub / indication style",
     mode: "style",
     role: "indication",
-    hint: "Small labels under titles (slider subs, nature sub, intro indication).",
+    hint: "Sub text under titles (intro, slider, opening rail, nature band).",
   },
   {
     id: "style-body",
@@ -493,9 +499,11 @@ export function AmenitiesSequenceTypographyPanel() {
 
     if (active.mode === "copy" && active.target.kind === "story") {
       const story = text.home.textBlocks[active.target.index];
+      const storySub =
+        STORY_INDICATION_FALLBACKS[active.target.index] ?? fallback.indication;
       return {
         title: story?.title?.trim() || fallback.title,
-        indication: story?.indication?.trim() || fallback.indication,
+        indication: story?.indication?.trim() || storySub,
         body: story?.body?.trim() || fallback.body,
       };
     }
@@ -884,7 +892,7 @@ export function AmenitiesSequenceTypographyPanel() {
                 />
               </label>
               <label className="typo-easy__field">
-                <span>Small label (sub)</span>
+                <span>Sub text</span>
                 <input
                   className="admin-input"
                   type="text"
@@ -904,7 +912,7 @@ export function AmenitiesSequenceTypographyPanel() {
                 />
               </label>
               <p className="typo-easy__controls-hint">
-                If Small label is blank, the homepage still shows the default sub
+                If Sub text is blank, the homepage still shows the default
                 (placeholder above) so title / sub / body stay a trio.
               </p>
               <label className="typo-easy__field">
@@ -937,10 +945,14 @@ export function AmenitiesSequenceTypographyPanel() {
                 />
               </label>
               <label className="typo-easy__field">
-                <span>Small label</span>
+                <span>Sub text</span>
                 <input
                   className="admin-input"
                   type="text"
+                  placeholder={
+                    STORY_INDICATION_FALLBACKS[active.target.index] ??
+                    "A Way of Life"
+                  }
                   value={
                     text.home.textBlocks[active.target.index]?.indication ??
                     ""
@@ -952,6 +964,11 @@ export function AmenitiesSequenceTypographyPanel() {
                   }
                 />
               </label>
+              <p className="typo-easy__controls-hint">
+                If Sub text is blank, the homepage still shows the default
+                (placeholder above) on the opening rail, nature band, and
+                slider.
+              </p>
               <label className="typo-easy__field">
                 <span>Body</span>
                 <textarea
@@ -975,9 +992,9 @@ export function AmenitiesSequenceTypographyPanel() {
                 />
               </label>
               <p className="typo-easy__controls-hint">
-                Clear any field and save to hide it on the live site while
-                keeping spacing. Desktop and Phone save separately — match the
-                toggle above to what you are viewing.
+                Clear Title, Body, or Button and save to hide that line on the
+                live site while keeping spacing. Desktop and Phone save
+                separately — match the toggle above to what you are viewing.
               </p>
             </>
           ) : null}
@@ -1331,7 +1348,7 @@ export function AmenitiesSequenceTypographyPanel() {
                   />
                 </label>
                 <label className="typo-easy__field">
-                  <span>Small label</span>
+                  <span>Sub text</span>
                   <input
                     className="admin-input"
                     type="number"

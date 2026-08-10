@@ -413,12 +413,15 @@ export function HomePageClient({
           }))}
           stories={EX_TEXT_BLOCKS.map((block, index) => {
             const cms = websiteText.home.textBlocks[index];
+            /* Sub text: empty CMS falls back to EX defaults (same as intro slides). */
+            const indicationCms = cms?.indication?.trim();
+            const indicationFallback =
+              index === 0 ? "A Way of Life" : "Gastronomy";
             return {
               title: amenitiesCopy(cms?.title, block.title),
-              indication: amenitiesCopy(
-                cms?.indication,
-                index === 0 ? "A Way of Life" : "Gastronomy",
-              ),
+              indication: indicationCms
+                ? indicationCms
+                : amenitiesCopy(undefined, indicationFallback),
               body: amenitiesCopy(cms?.body, block.body),
               cta: amenitiesCopy(cms?.cta, block.cta),
               href: block.href,
