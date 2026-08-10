@@ -663,8 +663,8 @@ export function WebsiteTextPanel() {
                       key={index}
                       title={
                         index === 0
-                          ? "Way of Life — opening + slider"
-                          : "Dining — opening + slider"
+                          ? "Way of Life — opening rail + slider"
+                          : "Dining — nature band + slider"
                       }
                     >
                       <Field
@@ -674,12 +674,27 @@ export function WebsiteTextPanel() {
                         rows={2}
                         hint={
                           index === 0
-                            ? "Opening chapter title (and card / slider)."
-                            : "Dining card, CTA row, and slider panel."
+                            ? "Opening gold rail title (and card / slider)."
+                            : "Nature gold band title (and card / slider)."
                         }
                         onChange={(title) => {
                           const textBlocks = text.home.textBlocks.map((b, i) =>
                             i === index ? { ...b, title } : b,
+                          );
+                          patchHome("textBlocks", textBlocks);
+                        }}
+                      />
+                      <Field
+                        label="Small label"
+                        value={block.indication}
+                        hint={
+                          index === 0
+                            ? "Opening rail sub-line (and slider indication)."
+                            : "Nature band sub-line (and slider indication)."
+                        }
+                        onChange={(indication) => {
+                          const textBlocks = text.home.textBlocks.map((b, i) =>
+                            i === index ? { ...b, indication } : b,
                           );
                           patchHome("textBlocks", textBlocks);
                         }}
@@ -692,7 +707,7 @@ export function WebsiteTextPanel() {
                         hint={
                           index === 0
                             ? "Opening rail body text."
-                            : "Dining story body on the slider panel."
+                            : "Nature band / dining slider body."
                         }
                         onChange={(body) => {
                           const textBlocks = text.home.textBlocks.map((b, i) =>
@@ -704,7 +719,7 @@ export function WebsiteTextPanel() {
                       <Field
                         label="Button label"
                         value={block.cta}
-                        hint="CTA link label in the opening chapter."
+                        hint="CTA on the opening rail (story 1) or nature band (story 2). Clear to hide while keeping space."
                         onChange={(cta) => {
                           const textBlocks = text.home.textBlocks.map((b, i) =>
                             i === index ? { ...b, cta } : b,

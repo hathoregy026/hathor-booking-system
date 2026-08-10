@@ -81,8 +81,8 @@ const SLIDE_LABELS = [
 ] as const;
 
 const STORY_LABELS = [
-  "Way of Life — opening + slider",
-  "Dining — opening + slider",
+  "Way of Life — opening rail + slider",
+  "Dining — nature band + slider",
 ] as const;
 
 const DRAG_LINE_LABELS: Record<DragLine, string> = {
@@ -109,8 +109,8 @@ const RAIL: RailItem[] = [
     target: { kind: "story" as const, index },
     hint:
       index === 0
-        ? "Opening chapter title, body, and CTA button label."
-        : "Dining card, slider panel, and CTA button label.",
+        ? "Opening gold rail title, small label, body, and CTA. Also drives a slider panel and card label."
+        : "Nature gold band title, small label, body, and CTA. Also drives a slider panel and card label.",
   })),
   {
     id: "style-title",
@@ -482,7 +482,7 @@ export function AmenitiesSequenceTypographyPanel() {
       const story = text.home.textBlocks[active.target.index];
       return {
         title: story?.title?.trim() || fallback.title,
-        indication: fallback.indication,
+        indication: story?.indication?.trim() || fallback.indication,
         body: story?.body?.trim() || fallback.body,
       };
     }
@@ -582,8 +582,12 @@ export function AmenitiesSequenceTypographyPanel() {
       showToast(
         "success",
         device === "phone"
-          ? "Phone amenities sequence saved."
-          : "Amenities sequence saved to live site.",
+          ? "Phone amenities saved. Soft-refresh the live homepage on a phone viewport to see it."
+          : "Amenities sequence saved. Soft-refresh the live homepage (or wait a few seconds) to see it.",
+      );
+      /* Bust public CMS read so preview/live soft refresh picks up immediately. */
+      void fetch(`/api/website-text?t=${Date.now()}`, { cache: "no-store" }).catch(
+        () => undefined,
       );
     } catch (error) {
       showToast(
@@ -909,6 +913,22 @@ export function AmenitiesSequenceTypographyPanel() {
                 />
               </label>
               <label className="typo-easy__field">
+                <span>Small label</span>
+                <input
+                  className="admin-input"
+                  type="text"
+                  value={
+                    text.home.textBlocks[active.target.index]?.indication ??
+                    ""
+                  }
+                  onChange={(e) =>
+                    patchStory(active.target.index, {
+                      indication: e.target.value,
+                    })
+                  }
+                />
+              </label>
+              <label className="typo-easy__field">
                 <span>Body</span>
                 <textarea
                   className="admin-input"
@@ -930,6 +950,11 @@ export function AmenitiesSequenceTypographyPanel() {
                   }
                 />
               </label>
+              <p className="typo-easy__controls-hint">
+                Clear any field and save to hide it on the live site while
+                keeping spacing. Desktop and Phone save separately — match the
+                toggle above to what you are viewing.
+              </p>
             </>
           ) : null}
 

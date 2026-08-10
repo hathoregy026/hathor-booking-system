@@ -1292,6 +1292,12 @@ html[data-ex-experience]
   pointer-events: none;
 }
 
+/* Cleared CMS text: invisible but keeps title/sub/body/cta spacing */
+.home-am-sequence .home-am-copy--empty {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .home-am-opening__rail-copy .typo-on-images-title {
   margin: 0 0 var(--am-typo-gap-title-sub, 14px);
   text-align: left;

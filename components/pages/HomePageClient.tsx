@@ -37,9 +37,12 @@ import { useExScrollMotion } from "@/hooks/useExScrollMotion";
 import { useIsPhoneViewport } from "@/hooks/useIsPhoneViewport";
 import {
   useTypographyInlineStyle,
-  useTypographySettings,
 } from "@/components/public/TypographySettingsProvider";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
+import {
+  amenitiesCopy,
+  amenitiesTitleLines,
+} from "@/lib/amenities-copy";
 import { combineDesktopAndNarrowCss } from "@/lib/admin-device-preview";
 import {
   DEFAULT_HERO_LOGO_TUNE,
@@ -199,7 +202,6 @@ export function HomePageClient({
     ? amenitiesTypographyMobile
     : amenitiesTypography;
 
-  const typography = useTypographySettings();
   const websiteText = useWebsiteText();
   const stackEyebrowStyle = useTypographyInlineStyle("on_images_indication");
   const stackTitleStyle = useTypographyInlineStyle("on_images_title");
@@ -218,27 +220,12 @@ export function HomePageClient({
 
   const stackSlides = EX_PINNED.slides.map((slide, index) => {
     const cms = websiteText.home.stackSlides[index];
-    const titleRaw =
-      cms?.title?.trim() ||
-      (index === 0 ? typography.on_images_copy.title.trim() : "") ||
-      slide.title;
-    const titleLines = titleRaw
-      .split("\n")
-      .map((line) => line.trim())
-      .filter(Boolean);
+    /* CMS is source of truth: "" hides on live; missing falls back to EX defaults. */
     return {
       ...slide,
-      titleLines: titleLines.length > 0 ? titleLines : [slide.title],
-      indication:
-        cms?.indication?.trim() ||
-        (index === 0
-          ? typography.on_images_copy.indication.trim()
-          : "") ||
-        slide.indication,
-      body:
-        cms?.body?.trim() ||
-        (index === 0 ? typography.on_images_copy.body.trim() : "") ||
-        slide.body,
+      titleLines: amenitiesTitleLines(cms?.title, [slide.title]),
+      indication: amenitiesCopy(cms?.indication, slide.indication),
+      body: amenitiesCopy(cms?.body, slide.body),
     };
   });
 
@@ -420,9 +407,13 @@ export function HomePageClient({
           stories={EX_TEXT_BLOCKS.map((block, index) => {
             const cms = websiteText.home.textBlocks[index];
             return {
-              title: cms?.title?.trim() || block.title,
-              body: cms?.body?.trim() || block.body,
-              cta: cms?.cta?.trim() || block.cta,
+              title: amenitiesCopy(cms?.title, block.title),
+              indication: amenitiesCopy(
+                cms?.indication,
+                index === 0 ? "A Way of Life" : "Gastronomy",
+              ),
+              body: amenitiesCopy(cms?.body, block.body),
+              cta: amenitiesCopy(cms?.cta, block.cta),
               href: block.href,
               imageName: block.imageName,
               imageAlt: block.alt,

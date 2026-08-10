@@ -35,7 +35,12 @@ export type WebsiteText = {
     about: { heading: string; eyebrow: string; body: string; cta: string };
     carousel: { title: string; subtitle: string; exploreCta: string };
     stackSlides: Array<{ title: string; indication: string; body: string }>;
-    textBlocks: Array<{ title: string; body: string; cta: string }>;
+    textBlocks: Array<{
+      title: string;
+      indication: string;
+      body: string;
+      cta: string;
+    }>;
     gallery: { title: string; indication: string; followEyebrow: string };
     testimonials: {
       title: string;
@@ -200,11 +205,13 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
     textBlocks: [
       {
         title: HOMEPAGE_LIFESTYLE.title,
+        indication: "A Way of Life",
         body: HOMEPAGE_LIFESTYLE.body,
         cta: "Discover More",
       },
       {
         title: HOMEPAGE_DINING.title,
+        indication: "Gastronomy",
         body: HOMEPAGE_DINING.body,
         cta: "Explore Dining",
       },

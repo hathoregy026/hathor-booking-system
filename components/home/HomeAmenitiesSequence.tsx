@@ -6,6 +6,11 @@ import { AmenitiesRisingVideo } from "@/components/home/AmenitiesRisingVideo";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useTypographyInlineStyle } from "@/components/public/TypographySettingsProvider";
 import { useHomeAmenitiesSequence } from "@/hooks/useHomeAmenitiesSequence";
+import {
+  amenitiesCopy,
+  amenitiesHasCopy,
+  amenitiesTitleLines,
+} from "@/lib/amenities-copy";
 import { AMENITIES_SEQUENCE_IMAGE_SLOTS } from "@/lib/amenities-sequence-images";
 import {
   DEFAULT_AMENITIES_TYPOGRAPHY,
@@ -28,6 +33,7 @@ export type AmenitiesLandmarkSlide = {
 
 export type AmenitiesStorySlide = {
   title: string;
+  indication?: string;
   body: string;
   cta: string;
   href: string;
@@ -85,6 +91,81 @@ function resolveImages(
   });
 }
 
+/** Empty CMS copy → invisible spacer so title/sub/body gaps stay aligned. */
+function AmenitiesCopyText({
+  as: Tag,
+  value,
+  className,
+  style,
+  children,
+  captionTextAttr = false,
+}: {
+  as: "h2" | "h3" | "p" | "div" | "span";
+  value?: string;
+  className?: string;
+  style?: CSSProperties;
+  children?: ReactNode;
+  /** Marks video gold caption body for Springs parallax measure. */
+  captionTextAttr?: boolean;
+}) {
+  const visible = amenitiesHasCopy(value) || Boolean(children);
+  const dataProps = captionTextAttr
+    ? ({ "data-am-video-caption-text": "" } as const)
+    : {};
+  if (!visible) {
+    return (
+      <Tag
+        className={`${className ?? ""} home-am-copy--empty`.trim()}
+        style={style}
+        aria-hidden
+        {...dataProps}
+      >
+        {"\u00A0"}
+      </Tag>
+    );
+  }
+  return (
+    <Tag className={className} style={style} {...dataProps}>
+      {children ?? value}
+    </Tag>
+  );
+}
+
+function AmenitiesTitleLines({
+  as: Tag,
+  lines,
+  className,
+  style,
+  lineClassName = "home-am-title-line",
+}: {
+  as: "h2" | "h3";
+  lines: string[];
+  className?: string;
+  style?: CSSProperties;
+  lineClassName?: string;
+}) {
+  if (!lines.length) {
+    return (
+      <Tag
+        className={`${className ?? ""} home-am-copy--empty`.trim()}
+        style={style}
+        aria-hidden
+      >
+        {"\u00A0"}
+      </Tag>
+    );
+  }
+  return (
+    <Tag className={className} style={style}>
+      {lines.map((line) => (
+        <span key={line} className={lineClassName}>
+          {line}
+        </span>
+      ))}
+    </Tag>
+  );
+}
+
 /**
  * Springs infrastructure amenities clone (i-intro → i-video → i-slider → i-opening).
  * Markup + data-parallax keys match the Springs clone; content is Hathor CMS.
@@ -108,6 +189,7 @@ export function HomeAmenitiesSequence({
 
   /** Intentional line breaks for story titles (and CMS titles without `\n`). */
   const storyTitleLines = (title: string): string[] => {
+    if (!title.trim()) return [];
     const lines = title
       .split(/\n/)
       .map((line) => line.trim())
@@ -134,17 +216,11 @@ export function HomeAmenitiesSequence({
     return single ? [single] : [];
   };
 
-  /** Script sub under every gold caption — keeps title → sub → body spacing consistent. */
-  const scriptSub = (raw: string | undefined, fallback: string) => {
-    const text = raw?.trim();
-    return text || fallback;
-  };
-
   const sliderSlides = [
     landmarks[2]
       ? {
           titleLines: landmarks[2].titleLines,
-          indication: scriptSub(landmarks[2].indication, "Spa & Wellness"),
+          indication: landmarks[2].indication,
           body: landmarks[2].body,
           image: images[3],
         }
@@ -152,7 +228,7 @@ export function HomeAmenitiesSequence({
     landmarks[3]
       ? {
           titleLines: landmarks[3].titleLines,
-          indication: scriptSub(landmarks[3].indication, "Golden Hour"),
+          indication: landmarks[3].indication,
           body: landmarks[3].body,
           image: images[4],
         }
@@ -160,7 +236,7 @@ export function HomeAmenitiesSequence({
     stories[0]
       ? {
           titleLines: storyTitleLines(stories[0].title),
-          indication: scriptSub(stories[0].cta, "A Way of Life"),
+          indication: amenitiesCopy(stories[0].indication),
           body: stories[0].body,
           image: images[5],
         }
@@ -168,7 +244,7 @@ export function HomeAmenitiesSequence({
     stories[1]
       ? {
           titleLines: storyTitleLines(stories[1].title),
-          indication: scriptSub(stories[1].cta, "On The Dahabiya"),
+          indication: amenitiesCopy(stories[1].indication),
           body: stories[1].body,
           image: images[6],
         }
@@ -186,7 +262,7 @@ export function HomeAmenitiesSequence({
       .split(/\n/)
       .map((line) => line.trim().replace(/\.$/, ""))
       .filter(Boolean);
-    if (!lines.length) return raw.trim();
+    if (!lines.length) return "";
     return [...lines].sort((a, b) => a.length - b.length)[0] || lines[0];
   };
 
@@ -197,18 +273,18 @@ export function HomeAmenitiesSequence({
   }> = [
     {
       image: images[8],
-      label: shortCardLabel(stories[0]?.title || "A Way of Life"),
+      label: shortCardLabel(stories[0]?.title ?? ""),
     },
     {
       image: images[9],
-      label: shortCardLabel(stories[1]?.title || "Dahabiya"),
+      label: shortCardLabel(stories[1]?.title ?? ""),
     },
     {
       image: images[10],
       label: shortCardLabel(
         landmarks[1]?.indication ||
           landmarks[1]?.titleLines?.join("\n") ||
-          "Private Nile Sailing",
+          "",
       ),
     },
     {
@@ -216,25 +292,23 @@ export function HomeAmenitiesSequence({
       label: shortCardLabel(
         landmarks[2]?.indication ||
           landmarks[2]?.titleLines?.join("\n") ||
-          "Spa & Wellness",
+          "",
       ),
     },
   ];
 
   /* Springs opening title: line breaks (h1 + <br>), not one jammed string */
-  const openingTitleLines = (
-    landmarks[3]?.titleLines?.length
-      ? landmarks[3].titleLines
-      : ["GOLDEN HOUR", "ON THE NILE"]
-  )
+  const openingTitleLines = (landmarks[3]?.titleLines ?? [])
     .map((line) => line.replace(/\.$/, "").trim())
     .filter(Boolean);
 
-  /* Fixed gold-column copy (pinned while RC cards scroll) */
-  const openingFixedTitleLines = ["SOUL OF", "THE NILE"];
-  const openingFixedIndication = "Private Nile Sailing";
-  const openingFixedBody =
-    "Aboard a quiet dahabiya, Egypt arrives without hurry: warm company, elegant cabins, and the river unfolding one measured bend at a time.";
+  /* Opening gold rail — story 0 (Way of Life) from CMS; empty = hide + keep space */
+  const openingRail = stories[0];
+  const openingFixedTitleLines = amenitiesTitleLines(openingRail?.title);
+  const openingFixedIndication = amenitiesCopy(openingRail?.indication);
+  const openingFixedBody = amenitiesCopy(openingRail?.body);
+  const openingFixedCta = amenitiesCopy(openingRail?.cta);
+  const openingFixedHref = openingRail?.href?.trim() || "/about";
 
   useHomeAmenitiesSequence(rootRef, sliderSlides.length);
 
@@ -254,15 +328,12 @@ export function HomeAmenitiesSequence({
   const videoInsetImage = images[2];
   const openingLeftImage = images[7];
   const natureImage = images[12];
-  const natureStory = stories[2] ?? stories[1];
-  const natureTitleLines = storyTitleLines(
-    natureStory?.title?.trim() || "FINE DINING\nON DAHABIYA",
-  );
-  /* Small sub under the title — same role as slider indication. */
-  const natureIndication = "Gastronomy";
-  const natureCaption =
-    natureStory?.body?.trim() ||
-    "Restaurant craft meets warm hospitality: fresh local ingredients, Egyptian and international flavours, each meal a quiet celebration on the Nile.";
+  /* Nature gold band — Dining story (textBlocks[1]) */
+  const natureStory = stories[1] ?? stories[0];
+  const natureTitleLines = storyTitleLines(natureStory?.title ?? "");
+  const natureIndication = amenitiesCopy(natureStory?.indication);
+  const natureCaption = amenitiesCopy(natureStory?.body);
+  const natureCta = amenitiesCopy(natureStory?.cta);
   const natureCtaHref = natureStory?.href?.trim() || "/gastronomy";
 
   return (
@@ -348,22 +419,18 @@ export function HomeAmenitiesSequence({
               data-parallax-pattern="infrastructureIntroCaptionDesktop infrastructureIntroCaptionMobile"
               data-parallax-measure-selector="[data-am-chapter]"
             >
-              <h2
+              <AmenitiesTitleLines
+                as="h2"
+                lines={intro.titleLines}
                 className="home-am-intro__title home-am-on-image-text typo-on-images-title"
                 style={onImageTitle}
-              >
-                {intro.titleLines.map((line) => (
-                  <span key={line} className="home-am-title-line">
-                    {line}
-                  </span>
-                ))}
-              </h2>
-              <p
+              />
+              <AmenitiesCopyText
+                as="p"
+                value={intro.indication}
                 className="home-am-intro__indication home-am-on-image-text typo-on-images-indication"
                 style={onImageIndication}
-              >
-                {intro.indication}
-              </p>
+              />
             </div>
           </div>
 
@@ -382,7 +449,7 @@ export function HomeAmenitiesSequence({
               className="home-am-intro__cream-text typo-body-text"
               style={creamBodyStyle}
             >
-              {intro.body}
+              {amenitiesHasCopy(intro.body) ? intro.body : "\u00A0"}
             </p>
           </div>
 
@@ -401,7 +468,7 @@ export function HomeAmenitiesSequence({
               className="home-am-intro__cream-text typo-body-text"
               style={creamBodyStyle}
             >
-              {intro.body}
+              {amenitiesHasCopy(intro.body) ? intro.body : "\u00A0"}
             </p>
           </div>
         </div>
@@ -452,26 +519,25 @@ export function HomeAmenitiesSequence({
               data-parallax-measure-selector="[data-am-chapter]"
             >
               <div className="home-am-video__title">
-                <h2
+                <AmenitiesTitleLines
+                  as="h2"
+                  lines={
+                    videoMain.titleLines.length
+                      ? videoMain.titleLines
+                      : amenitiesHasCopy(videoMain.indication)
+                        ? [videoMain.indication]
+                        : []
+                  }
                   className="home-am-on-cream-title typo-on-images-title"
                   style={onCreamTitle}
-                >
-                  {(videoMain.titleLines.length
-                    ? videoMain.titleLines
-                    : [videoMain.indication]
-                  ).map((line) => (
-                    <span key={line} className="home-am-title-line">
-                      {line}
-                    </span>
-                  ))}
-                </h2>
+                />
               </div>
-              <p
+              <AmenitiesCopyText
+                as="p"
+                value={videoMain.body}
                 className="home-am-video__title-body typo-body-text"
                 style={creamBodyStyle}
-              >
-                {intro.body}
-              </p>
+              />
             </div>
 
             <div
@@ -506,27 +572,36 @@ export function HomeAmenitiesSequence({
               data-parallax-measure-selector="[data-am-chapter]"
               data-distance="1"
             >
-              <h3 className="typo-on-images-title" style={onGoldTitle}>
-                {videoInset?.titleLines?.join(" ") ||
-                  videoMain.indication ||
-                  "WELCOME ABOARD HATHOR."}
-              </h3>
-              <p className="typo-on-images-indication" style={onGoldIndication}>
-                {scriptSub(
+              <AmenitiesTitleLines
+                as="h3"
+                lines={
+                  videoInset?.titleLines?.length
+                    ? videoInset.titleLines
+                    : amenitiesHasCopy(videoMain.indication)
+                      ? [videoMain.indication]
+                      : []
+                }
+                className="typo-on-images-title"
+                style={onGoldTitle}
+              />
+              <AmenitiesCopyText
+                as="p"
+                value={
                   videoInset?.indication ||
-                    (videoInset?.titleLines?.length
-                      ? videoMain.indication
-                      : undefined),
-                  "Welcome Aboard",
-                )}
-              </p>
-              <p
+                  (videoInset?.titleLines?.length
+                    ? videoMain.indication
+                    : "")
+                }
+                className="typo-on-images-indication"
+                style={onGoldIndication}
+              />
+              <AmenitiesCopyText
+                as="p"
+                value={videoInset?.body || videoMain.body}
                 className="typo-on-images-body home-am-video__caption-text"
-                data-am-video-caption-text
                 style={onGoldBody}
-              >
-                {videoInset?.body || videoMain.body}
-              </p>
+                captionTextAttr
+              />
             </div>
           </div>
         </div>
@@ -579,25 +654,24 @@ export function HomeAmenitiesSequence({
                       data-content-animation-item={String(index + 1)}
                       aria-hidden={index === 0 ? "false" : "true"}
                     >
-                      <h2 className="typo-on-images-title" style={onGoldTitle}>
-                        {slide.titleLines.map((line) => (
-                          <span
-                            key={`${slide.image.name}-${line}`}
-                            className="home-am-title-line"
-                          >
-                            {line}
-                          </span>
-                        ))}
-                      </h2>
-                      <p
+                      <AmenitiesTitleLines
+                        as="h2"
+                        lines={slide.titleLines}
+                        className="typo-on-images-title"
+                        style={onGoldTitle}
+                      />
+                      <AmenitiesCopyText
+                        as="p"
+                        value={slide.indication}
                         className="typo-on-images-indication"
                         style={onGoldIndication}
-                      >
-                        {slide.indication}
-                      </p>
-                      <p className="typo-on-images-body" style={onGoldBody}>
-                        {slide.body}
-                      </p>
+                      />
+                      <AmenitiesCopyText
+                        as="p"
+                        value={slide.body}
+                        className="typo-on-images-body"
+                        style={onGoldBody}
+                      />
                     </div>
                   ))}
                 </div>
@@ -733,11 +807,17 @@ export function HomeAmenitiesSequence({
                   data-am-opening-title
                   style={onGoldTitle}
                 >
-                  {openingTitleLines.map((line) => (
-                    <span key={line} className="home-am-title-line">
-                      {line}
+                  {openingTitleLines.length ? (
+                    openingTitleLines.map((line) => (
+                      <span key={line} className="home-am-title-line">
+                        {line}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="home-am-title-line home-am-copy--empty" aria-hidden>
+                      {"\u00A0"}
                     </span>
-                  ))}
+                  )}
                 </h2>
               </div>
               <div className="home-am-opening__gradient" aria-hidden="true">
@@ -785,8 +865,13 @@ export function HomeAmenitiesSequence({
                           previewAnchor={card.image.previewAnchor}
                         />
                       </div>
-                      <div className="home-am-opening__list-item-text home-am-on-image-text typo-on-images-body">
-                        {card.label}
+                      <div
+                        className={`home-am-opening__list-item-text home-am-on-image-text typo-on-images-body${
+                          amenitiesHasCopy(card.label) ? "" : " home-am-copy--empty"
+                        }`}
+                        aria-hidden={amenitiesHasCopy(card.label) ? undefined : true}
+                      >
+                        {amenitiesHasCopy(card.label) ? card.label : "\u00A0"}
                       </div>
                     </div>
                   ))}
@@ -795,25 +880,39 @@ export function HomeAmenitiesSequence({
 
               {/* Same typo tokens as slider gold captions; sticky in the gold */}
               <div className="home-am-opening__rail-copy">
-                <h3 className="typo-on-images-title" style={onGoldTitle}>
-                  {openingFixedTitleLines.map((line) => (
-                    <span key={line} className="home-am-title-line">
-                      {line}
-                    </span>
-                  ))}
-                </h3>
-                <p className="typo-on-images-indication" style={onGoldIndication}>
-                  {openingFixedIndication}
-                </p>
-                <p className="typo-on-images-body" style={onGoldBody}>
-                  {openingFixedBody}
-                </p>
-                <Link
-                  href="/highlights"
-                  className="public-btn-outline-gold home-am-opening__cta"
-                >
-                  Discover more
-                </Link>
+                <AmenitiesTitleLines
+                  as="h3"
+                  lines={openingFixedTitleLines}
+                  className="typo-on-images-title"
+                  style={onGoldTitle}
+                />
+                <AmenitiesCopyText
+                  as="p"
+                  value={openingFixedIndication}
+                  className="typo-on-images-indication"
+                  style={onGoldIndication}
+                />
+                <AmenitiesCopyText
+                  as="p"
+                  value={openingFixedBody}
+                  className="typo-on-images-body"
+                  style={onGoldBody}
+                />
+                {amenitiesHasCopy(openingFixedCta) ? (
+                  <Link
+                    href={openingFixedHref}
+                    className="public-btn-outline-gold home-am-opening__cta"
+                  >
+                    {openingFixedCta}
+                  </Link>
+                ) : (
+                  <span
+                    className="public-btn-outline-gold home-am-opening__cta home-am-copy--empty"
+                    aria-hidden
+                  >
+                    {"\u00A0"}
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -866,25 +965,36 @@ export function HomeAmenitiesSequence({
             Sized by Amenities Sequence typography (dashboard) — same title /
             indication / body roles as slider gold captions.
           */}
-          <h3 className="home-am-nature__title typo-on-images-title">
-            {natureTitleLines.map((line) => (
-              <span key={line} className="home-am-title-line">
-                {line}
-              </span>
-            ))}
-          </h3>
-          <p className="home-am-nature__indication typo-on-images-indication">
-            {natureIndication}
-          </p>
-          <p className="home-am-nature__body typo-on-images-body">
-            {natureCaption}
-          </p>
-          <Link
-            href={natureCtaHref}
-            className="public-btn-outline-gold home-am-opening__cta home-am-nature__cta"
-          >
-            Discover more
-          </Link>
+          <AmenitiesTitleLines
+            as="h3"
+            lines={natureTitleLines}
+            className="home-am-nature__title typo-on-images-title"
+          />
+          <AmenitiesCopyText
+            as="p"
+            value={natureIndication}
+            className="home-am-nature__indication typo-on-images-indication"
+          />
+          <AmenitiesCopyText
+            as="p"
+            value={natureCaption}
+            className="home-am-nature__body typo-on-images-body"
+          />
+          {amenitiesHasCopy(natureCta) ? (
+            <Link
+              href={natureCtaHref}
+              className="public-btn-outline-gold home-am-opening__cta home-am-nature__cta"
+            >
+              {natureCta}
+            </Link>
+          ) : (
+            <span
+              className="public-btn-outline-gold home-am-opening__cta home-am-nature__cta home-am-copy--empty"
+              aria-hidden
+            >
+              {"\u00A0"}
+            </span>
+          )}
         </div>
       </div>
       </div>{/* /.home-am-dark-band — Springs ui-dark-background */}
