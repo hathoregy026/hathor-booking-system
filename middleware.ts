@@ -90,7 +90,9 @@ export async function middleware(request: NextRequest) {
       !pathname.startsWith("/api/admin")
     ) {
       // Let branding/font files use next.config Cache-Control (revalidate), not no-store.
+      // /sw.js must keep its kill-switch headers from next.config / vercel.json.
       if (
+        pathname === "/sw.js" ||
         pathname.startsWith("/branding/") ||
         pathname.startsWith("/fonts/") ||
         pathname.startsWith("/_next/") ||
@@ -147,6 +149,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|media/|videos/|assets/).*)",
+    "/((?!_next/static|_next/image|favicon.ico|sw\\.js|media/|videos/|assets/).*)",
   ],
 };
