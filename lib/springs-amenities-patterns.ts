@@ -126,6 +126,18 @@ export const SPRINGS_AMENITIES_PATTERNS: PatternMap = {
           },
         }),
 
+  /** Bar reel title/sub — same runway as videoImage, outside the clip. */
+  videoOverlayCopy: () =>
+    isLgUp()
+      ? pattern({
+          "parallax--300-0": { opacity: "0" },
+          "parallax--335-0": { opacity: "1" },
+        })
+      : pattern({
+          "parallax--100-0": { opacity: "0" },
+          "parallax--140-0": { opacity: "1" },
+        }),
+
   /*
    * Springs shared.js videoCaptionMoveUp — reveal then ride the caption up
    * off-screen. Distance is measured from the body text (data-distance=1).

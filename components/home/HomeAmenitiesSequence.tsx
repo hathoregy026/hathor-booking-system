@@ -577,31 +577,44 @@ export function HomeAmenitiesSequence({
             >
               {/*
                 Slot 3 — full sticky stage rising via clip (not a corner card).
-                Bar reel replaces the CMS still (home-amenities-3 deleted).
+                Bar reel only — title sits outside this clip so it stays visible.
               */}
               <AmenitiesInsetVideo alt={videoInsetImage.alt} />
-              <div className="home-am-video__overlay-copy" data-am-video-overlay>
-                <AmenitiesTitleLines
-                  as="h2"
-                  lines={
-                    videoInset?.titleLines?.length
-                      ? videoInset.titleLines
-                      : ["WHERE HISTORY", "MEETS LUXURY."]
-                  }
-                  className="home-am-video__overlay-title home-am-on-image-text typo-on-images-title"
-                  style={onImageTitle}
-                />
-                <AmenitiesCopyText
-                  as="p"
-                  value={
-                    amenitiesHasCopy(videoInset?.indication)
-                      ? videoInset.indication
-                      : "Bar Hathor"
-                  }
-                  className="home-am-video__overlay-sub home-am-on-image-text typo-on-images-indication"
-                  style={onImageIndication}
-                />
-              </div>
+            </div>
+
+            {/*
+              Outside videoImage clip-path so copy is not wiped with the rising mask.
+              Fades in with the same runway as the Bar reel reveal.
+            */}
+            <div
+              className="home-am-video__overlay-copy"
+              data-am-video-overlay
+              data-plugin="parallax"
+              data-parallax-pattern="videoOverlayCopy"
+              data-parallax-enable-mq="null"
+              data-parallax-clamp="true"
+              data-parallax-measure-selector="[data-am-chapter]"
+            >
+              <AmenitiesTitleLines
+                as="h2"
+                lines={
+                  videoInset?.titleLines?.length
+                    ? videoInset.titleLines
+                    : ["WHERE HISTORY", "MEETS LUXURY."]
+                }
+                className="home-am-video__overlay-title home-am-on-image-text typo-on-images-title"
+                style={onImageTitle}
+              />
+              <AmenitiesCopyText
+                as="p"
+                value={
+                  amenitiesHasCopy(videoInset?.indication)
+                    ? videoInset.indication
+                    : "Bar Hathor"
+                }
+                className="home-am-video__overlay-sub home-am-on-image-text typo-on-images-indication"
+                style={onImageIndication}
+              />
             </div>
 
             {/*
