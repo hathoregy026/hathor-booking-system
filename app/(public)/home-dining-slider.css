@@ -1315,6 +1315,8 @@ html[data-ex-experience]
 .home-am-opening__rail-copy .typo-on-images-title > .home-am-title-line {
   display: block;
   text-align: left;
+  /* Keep each CMS title line intact (avoid SAIL / BEYOND / THE / ORDINARY wrap). */
+  white-space: nowrap;
 }
 
 .home-am-opening__rail-copy .typo-on-images-indication {

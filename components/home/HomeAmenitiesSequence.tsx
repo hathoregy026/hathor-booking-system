@@ -202,7 +202,21 @@ export function HomeAmenitiesSequence({
       /* NBSP keeps the second line from wrapping mid-phrase */
       return ["FINE DINING", "ON\u00A0DAHABIYA"];
     }
-    if (lines.length > 1) return lines;
+    /* Opening rail: keep “SAIL BEYOND” / “BEYOND THE ORDINARY” as two phrases. */
+    if (
+      /^SAIL BEYOND\s+BEYOND THE ORDINARY$/i.test(joined) ||
+      /^SAIL BEYOND\s+THE ORDINARY$/i.test(joined) ||
+      /^SAIL\s+BEYOND\s+THE\s+ORDINARY$/i.test(joined)
+    ) {
+      return ["SAIL BEYOND", "BEYOND THE ORDINARY"];
+    }
+    if (lines.length > 1) {
+      /* Still normalize the sail-beyond title if CMS used other breaks. */
+      if (/^SAIL BEYOND$/i.test(lines[0] ?? "") && /ORDINARY/i.test(joined)) {
+        return ["SAIL BEYOND", "BEYOND THE ORDINARY"];
+      }
+      return lines;
+    }
     const single = joined;
     const known: Array<[RegExp, string[]]> = [
       [
@@ -304,7 +318,7 @@ export function HomeAmenitiesSequence({
 
   /* Opening gold rail — story 0 (Way of Life) from CMS; empty = hide + keep space */
   const openingRail = stories[0];
-  const openingFixedTitleLines = amenitiesTitleLines(openingRail?.title);
+  const openingFixedTitleLines = storyTitleLines(openingRail?.title ?? "");
   const openingFixedIndication = amenitiesCopy(openingRail?.indication);
   const openingFixedBody = amenitiesCopy(openingRail?.body);
   const openingFixedCta = amenitiesCopy(openingRail?.cta);
