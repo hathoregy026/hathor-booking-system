@@ -817,7 +817,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   max-width: min(42rem, 78vw);
   pointer-events: none;
   text-align: var(--am-typo-align, left);
-  opacity: 0;
+  opacity: 1;
   will-change: opacity;
 }
 

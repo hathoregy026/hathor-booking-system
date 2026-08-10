@@ -126,16 +126,18 @@ export const SPRINGS_AMENITIES_PATTERNS: PatternMap = {
           },
         }),
 
-  /** Bar reel title/sub — same runway as videoImage, outside the clip. */
+  /** Bar reel title/sub — hide under cream titles, show as reel covers. */
   videoOverlayCopy: () =>
     isLgUp()
       ? pattern({
-          "parallax--300-0": { opacity: "0" },
-          "parallax--335-0": { opacity: "1" },
+          "parallax--0-0": { opacity: "0" },
+          "parallax--280-0": { opacity: "0" },
+          "parallax--320-0": { opacity: "1" },
         })
       : pattern({
-          "parallax--100-0": { opacity: "0" },
-          "parallax--140-0": { opacity: "1" },
+          "parallax--0-0": { opacity: "0" },
+          "parallax--90-0": { opacity: "0" },
+          "parallax--130-0": { opacity: "1" },
         }),
 
   /*
