@@ -96,21 +96,39 @@ export const SPRINGS_AMENITIES_PATTERNS: PatternMap = {
 
   /**
    * Unique cream title + body (slide 2) — no sub.
-   * Stay fully opaque while videoImage rises so the next slide covers it
-   * (title-stack z-index 1 under inset z-index 2 on desktop). Do not fade
-   * at clip start — that removed the cover wipe.
+   * Must sit under the rising inset (z-index) AND wipe with the same runway as
+   * videoImage so it cannot paint on top of the next slide through the clip.
    */
   videoTitle: () =>
     isLgUp()
       ? pattern({
-          "parallax--0-0": { opacity: "1" },
-          "parallax--175-0": { opacity: "1" },
-          "parallax--180-0": { opacity: "0" },
+          "parallax--0-0": {
+            opacity: "1",
+            "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+          },
+          "parallax--150-0": {
+            opacity: "1",
+            "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+          },
+          /* Same window as videoImage rise — collapse title as inset covers it */
+          "parallax--175-0": {
+            opacity: "0",
+            "clip-path": "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
+          },
         })
       : pattern({
-          "parallax--0-0": { opacity: "1" },
-          "parallax--75-0": { opacity: "1" },
-          "parallax--80-0": { opacity: "0" },
+          "parallax--0-0": {
+            opacity: "1",
+            "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+          },
+          "parallax--50-0": {
+            opacity: "1",
+            "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+          },
+          "parallax--75-0": {
+            opacity: "0",
+            "clip-path": "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
+          },
         }),
 
   videoImage: () =>

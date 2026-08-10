@@ -739,26 +739,31 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   position: absolute;
   right: clamp(1.25rem, 4vw, 3rem);
   bottom: clamp(28vh, 34svh, 38vh);
-  z-index: 3;
+  /* Under rising inset — never paint above the next slide */
+  z-index: 1;
   width: min(34rem, calc(50vw - 2 * clamp(1.25rem, 4vw, 3rem)));
   max-width: min(34rem, 48vw);
   text-align: left;
-  /* Unique cream title + body (no sub) — visible until Bar reel rises */
   opacity: 1;
-  will-change: transform, opacity;
+  pointer-events: none;
+  will-change: opacity, clip-path;
 }
 
 @media (min-width: 1025px) {
   .home-am-video__title-stack {
     top: clamp(5.5rem, 12vh, 8rem);
     bottom: auto;
-    /* Under the rising next slide (inset z-index 2) so it gets covered */
-    z-index: 1;
+    z-index: 1 !important;
   }
 
   /* Cream panel body is phone-only; desktop copy is the video title stack. */
   .home-am-intro__cream:not(.home-am-intro__cream--phone) .home-am-intro__cream-text {
     display: none;
+  }
+
+  /* Rising next slide must stack above cream title */
+  .home-am-video__inset {
+    z-index: 4 !important;
   }
 }
 
@@ -806,12 +811,13 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 .home-am-video__inset {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 4;
   width: 100%;
   height: 100%;
   overflow: hidden;
   will-change: clip-path;
   background: #0f0c09;
+  isolation: isolate;
 }
 
 /* Dark luxurious veil over slot-3 Bar reel — primary opacity 0.45 */
@@ -907,7 +913,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-video__overlay-sub 
   position: absolute;
   left: 0;
   bottom: 0;
-  z-index: 3;
+  z-index: 5;
   flex: 0 1 50vw;
   width: 50vw;
   max-width: 50vw;
