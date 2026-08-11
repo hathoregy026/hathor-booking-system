@@ -74,7 +74,7 @@ function withoutForcedFill(
   return next;
 }
 
-/** CMS photo as layered cover bg on the gold band (dashboard slot 14). */
+/** CMS photo as a real full-bleed cover layer (dashboard slot 14). */
 function NatureGoldBand({
   name,
   previewAnchor = true,
@@ -91,19 +91,22 @@ function NatureGoldBand({
       data-am-nature-caption
       id="home-am-nature-caption"
       data-site-image={name}
-      style={
-        {
-          ["--am-nature-gold-photo" as string]: `url(${JSON.stringify(image.src)})`,
-        } as CSSProperties
-      }
     >
-      {previewAnchor ? (
-        <span
-          id={siteImageAnchorId(name)}
-          className="home-am-nature__gold-bg-anchor"
-          aria-hidden
+      {/*
+        Real img layer — CSS background-image + heavy gold wash looked like an
+        empty strip at the top. Cover img always paints edge-to-edge.
+      */}
+      <div className="home-am-nature__gold-photo" aria-hidden>
+        {/* eslint-disable-next-line @next/next/no-img-element -- full-bleed decorative CMS bg */}
+        <img
+          src={image.src}
+          alt=""
+          id={previewAnchor ? siteImageAnchorId(name) : undefined}
+          decoding="async"
+          draggable={false}
         />
-      ) : null}
+      </div>
+      <div className="home-am-nature__gold-wash" aria-hidden />
       {children}
     </div>
   );

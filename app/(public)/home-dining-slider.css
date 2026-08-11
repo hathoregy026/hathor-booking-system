@@ -374,35 +374,48 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   margin-top: -2px;
   padding: 0 clamp(1.25rem, 6vw, 4rem) clamp(1.25rem, 3vh, 2rem);
   box-sizing: border-box;
-  /* color only — never the shorthand (it would wipe background-image) */
   background-color: var(--am-gold);
   overflow: hidden;
 }
 
-/*
- * Photo is painted ON the band (full padding box), then a gold wash keeps
- * it low-opacity. This cannot leave an empty strip the way a child layer can.
- */
-.home-am-nature__gold-band--has-bg {
-  background-image:
-    linear-gradient(rgb(182 159 100 / 0.86), rgb(182 159 100 / 0.86)),
-    var(--am-nature-gold-photo);
-  background-size: cover, cover;
-  background-position: center center, center center;
-  background-repeat: no-repeat, no-repeat;
+/* Full-bleed photo — forced to the band’s padding box, every edge */
+.home-am-nature__gold-photo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  pointer-events: none;
 }
 
-.home-am-nature__gold-bg-anchor {
+.home-am-nature__gold-photo img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  display: block !important;
+}
+
+/* Soft gold wash over the photo — keep image readable across the full band */
+.home-am-nature__gold-wash {
   position: absolute;
-  width: 0;
-  height: 0;
-  overflow: hidden;
+  inset: 0;
+  z-index: 1;
+  background: var(--am-gold);
+  opacity: 0.72;
   pointer-events: none;
 }
 
 .home-am-nature__copy {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1790,10 +1803,8 @@ html[data-ex-experience]
     padding-top: 0.35rem;
   }
 
-  .home-am-nature__gold-band--has-bg {
-    background-image:
-      linear-gradient(rgb(182 159 100 / 0.88), rgb(182 159 100 / 0.88)),
-      var(--am-nature-gold-photo);
+  .home-am-nature__gold-wash {
+    opacity: 0.75;
   }
 
   /* Springs mobile: horizontal swipe for cards */
