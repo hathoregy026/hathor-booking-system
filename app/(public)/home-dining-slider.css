@@ -746,6 +746,15 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   transform-origin: bottom right;
 }
 
+@media (min-width: 1025px) {
+  /* Desktop: dining starts clipped shut so title shows on cream, then rises over it */
+  .home-am-video__hero-wrap {
+    overflow: hidden;
+    clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
+    will-change: clip-path, transform;
+  }
+}
+
 .home-am-video__hero {
   position: absolute;
   inset: 0;
@@ -781,11 +790,11 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 }
 
 /*
- * WHERE HISTORY title — no own bg; ALWAYS under photo layers (never in front).
- * Stack: text (0) < dining hero (1) < rising Bar cover (2)
+ * Title on main cream — no own bg. Under dining + Bar until they rise over it.
  */
 .home-am-video .home-am-chapter__stage {
   isolation: isolate;
+  background: #ece8df;
 }
 
 .home-am-video__text-container {
