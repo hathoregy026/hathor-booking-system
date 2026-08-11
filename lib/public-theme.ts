@@ -65,12 +65,15 @@ export function getWelcomeSplashBlockingScript(enabled = true): string {
   if (!enabled) {
     return `(function(){try{document.documentElement.classList.add("hathor-welcome-skip");}catch(e){}})();`;
   }
-  return `(function(){try{var p=(location.pathname||"/");if(p==="/admin"||p.indexOf("/admin/")===0)return;var d=document.documentElement;if(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches){d.classList.add("hathor-welcome-skip");return;}d.classList.add("hathor-welcome-lock");}catch(e){}})();`;
+  return `(function(){try{var p=(location.pathname||"/");if(p==="/admin"||p.indexOf("/admin/")===0)return;var d=document.documentElement;if(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches){d.classList.add("hathor-welcome-skip");return;}d.classList.add("hathor-welcome-lock");setTimeout(function(){if(!d.classList.contains("hathor-welcome-ready")&&!d.classList.contains("hathor-welcome-skip")){d.classList.add("hathor-welcome-ready");d.classList.remove("hathor-welcome-lock");}},2500);}catch(e){}})();`;
 }
 
 /**
  * Critical CSS for the welcome splash — paints full-screen cover before CSS bundles.
  * Lives outside `.public-site` so mid-page `ex-pending-deep` opacity veil cannot hide it.
+ *
+ * Site stays hidden until `hathor-welcome-ready` (splash finished) or `hathor-welcome-skip`.
+ * That gate is stronger than `hathor-welcome-lock` alone — lock can flap on remount.
  */
 export function getWelcomeSplashCriticalStyle(): string {
   return [
@@ -80,8 +83,14 @@ export function getWelcomeSplashCriticalStyle(): string {
     "@media (prefers-reduced-motion: reduce){",
     ".hathor-welcome-splash{display:none!important;pointer-events:none!important;}",
     "}",
-    "html.hathor-welcome-lock,html.hathor-welcome-lock body{",
+    /* Gold + hide site from first paint until splash finishes or is skipped. */
+    "html.hathor-welcome-lock:not(.hathor-welcome-ready):not(.hathor-welcome-skip),",
+    "html.hathor-welcome-lock:not(.hathor-welcome-ready):not(.hathor-welcome-skip) body{",
+    "background:#c4a052!important;",
     "overflow:hidden!important;overscroll-behavior:none;",
+    "}",
+    "html.hathor-welcome-lock:not(.hathor-welcome-ready):not(.hathor-welcome-skip) .public-site{",
+    "opacity:0!important;visibility:hidden!important;pointer-events:none!important;",
     "}",
     /* Admin never runs WelcomeSplash — never inherit the public scroll lock. */
     "html.admin-app,html.admin-app body{",
@@ -91,7 +100,7 @@ export function getWelcomeSplashCriticalStyle(): string {
     "position:fixed;inset:0;z-index:2147483000;",
     "display:flex;align-items:center;justify-content:center;",
     "background:#c4a052;margin:0;padding:0;",
-    "opacity:1;transition:opacity .4s ease-out;",
+    "opacity:1;transition:opacity .28s ease-out;",
     "pointer-events:auto;",
     "}",
     ".hathor-welcome-splash--out{",
@@ -101,13 +110,6 @@ export function getWelcomeSplashCriticalStyle(): string {
     "display:block;width:auto;height:auto;",
     "max-width:100%;max-height:100%;",
     "object-fit:contain;object-position:center;",
-    "}",
-    /* Hide hero titles/CTA until splash fully ends (lock stays through fade).
-     * Prevents Timeless Elegance + Welcome Aboard stacking under the gold preload. */
-    "html.hathor-welcome-lock .home-hero-container .hero-heading,",
-    "html.hathor-welcome-lock .home-hero-container .hero-button,",
-    "html.hathor-welcome-lock .home-hero-container .hero-scroll-hint{",
-    "opacity:0!important;visibility:hidden!important;pointer-events:none!important;",
     "}",
   ].join("");
 }

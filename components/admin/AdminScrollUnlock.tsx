@@ -12,6 +12,8 @@ export function AdminScrollUnlock() {
     const html = document.documentElement;
     html.classList.add("admin-app");
     html.classList.remove("hathor-welcome-lock");
+    html.classList.add("hathor-welcome-skip");
+    html.classList.add("hathor-welcome-ready");
     html.style.removeProperty("overflow");
     document.body.style.removeProperty("overflow");
     document.body.style.removeProperty("height");

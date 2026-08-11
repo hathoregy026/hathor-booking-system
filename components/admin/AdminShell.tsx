@@ -28,6 +28,8 @@ function AdminShellInner({ children }: { children: React.ReactNode }) {
     html.classList.add("admin-app");
     /* Welcome splash lock is public-only; clear if left over from a soft land. */
     html.classList.remove("hathor-welcome-lock");
+    html.classList.add("hathor-welcome-skip");
+    html.classList.add("hathor-welcome-ready");
     html.style.removeProperty("overflow");
     body.style.removeProperty("overflow");
     body.style.removeProperty("height");
