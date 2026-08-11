@@ -88,16 +88,26 @@ export const SPRINGS_AMENITIES_PATTERNS: PatternMap = {
           "parallax--25-0": { height: "100%" },
         }),
 
+  /**
+   * Springs-style framed hero card while cream title is up.
+   * Do NOT full-bleed under the title (that put WHERE HISTORY on dining).
+   * Expand only as Bar reel covers the title (-150→-175).
+   */
   videoTranslate: () =>
-    pattern({
-      "parallax--0-0": { transform: "translate(9%, 16%) scale(0.66)" },
-      "parallax--25-0": { transform: "translate(0%, 0%) scale(1)" },
-    }),
+    isLgUp()
+      ? pattern({
+          "parallax--0-0": { transform: "translate(9%, 16%) scale(0.66)" },
+          "parallax--149-0": { transform: "translate(9%, 16%) scale(0.66)" },
+          "parallax--175-0": { transform: "translate(0%, 0%) scale(1)" },
+        })
+      : pattern({
+          "parallax--0-0": { transform: "translate(9%, 16%) scale(0.66)" },
+          "parallax--25-0": { transform: "translate(0%, 0%) scale(1)" },
+        }),
 
   /**
-   * Springs videoTitle — opacity only on the cream title container.
-   * Stays visible on cream, then hides as videoImage rises over it
-   * (same runway as inset). Do not add clip-path here — cover is z-index.
+   * Springs videoTitle — opacity on the cream title container.
+   * Stays on cream field; videoImage rises over it (same runway as inset).
    */
   videoTitle: () =>
     isLgUp()
