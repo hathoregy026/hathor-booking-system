@@ -781,11 +781,11 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 }
 
 /*
- * Cream field + title under rising Bar (Springs). Not a floating plaque on dining.
+ * Springs .i-video__text-container — under .i-video__image (z-index).
+ * Title stays on the handoff stage; videoImage rises over it.
  */
 .home-am-video .home-am-chapter__stage {
   isolation: isolate;
-  background: #ece8df;
 }
 
 .home-am-video__text-container {
@@ -812,9 +812,10 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   max-width: min(34rem, 48vw);
   text-align: left;
   pointer-events: none;
-  /* no plaque — title sits on the cream stage field */
-  padding: 0;
-  background: none;
+  /* Cream pad behind THIS lockup only — not a full-stage wall */
+  box-sizing: border-box;
+  padding: clamp(1rem, 2.2vh, 1.65rem) clamp(1.15rem, 2.4vw, 1.85rem);
+  background: #ece8df;
 }
 
 @media (min-width: 1025px) {
