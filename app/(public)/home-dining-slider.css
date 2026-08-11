@@ -742,7 +742,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 .home-am-video__hero-wrap {
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 0;
   transform-origin: bottom right;
 }
 
@@ -782,8 +782,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 
 /*
  * Title on main site cream — no own background.
- * Hero + Bar inset stack ABOVE this text so the rising image covers it
- * (text stays behind; never paints on top of the photo).
+ * Above the base hero, UNDER the rising cover image so that slide covers it.
  */
 .home-am-video .home-am-chapter__stage {
   isolation: isolate;
@@ -792,7 +791,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 .home-am-video__text-container {
   position: absolute;
   inset: 0;
-  z-index: 0;
+  z-index: 1;
   pointer-events: none;
   height: 100%;
   opacity: 1;
@@ -972,11 +971,11 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 
 @media (min-width: 1025px) {
   .home-am-video__text-container {
-    z-index: 0;
+    z-index: 1;
   }
 
   .home-am-video__hero-wrap {
-    z-index: 1;
+    z-index: 0;
   }
 
   .home-am-video__inset {
