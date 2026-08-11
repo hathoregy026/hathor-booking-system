@@ -9,11 +9,12 @@
 
 /**
  * Slot 3 — full-stage rising clip (`home-am-video__inset`).
- * Vercel static CDN (same origin, edge-cached). Swap by replacing the file
- * (or pointing this constant at a new path). Poster = CMS `home-amenities-3`.
+ * Vercel static CDN (same origin, edge-cached). Swap with a NEW filename
+ * (version suffix) — never overwrite an immutable URL in place.
+ * Poster = CMS `home-amenities-3`.
  */
 export const HATHOR_AMENITIES_INSET_VIDEO_SRC =
-  "/media/hathor/videos/bar-hathor-egypt-cruise-history-meets-luxury.mp4";
+  "/media/hathor/videos/bar-hathor-egypt-cruise-history-meets-luxury-v20260811.mp4";
 
 /**
  * Phone encode for slot 3. Null = poster only on phones (same as hero:

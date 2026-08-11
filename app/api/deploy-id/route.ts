@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
 
   /* Wipe HTTP cache for this origin so the next navigation cannot reuse old HTML/JS. */
   if (stale) {
-    response.headers.set("Clear-Site-Data", '"cache"');
+    response.headers.set("Clear-Site-Data", '"cache", "storage"');
   }
 
   return response;

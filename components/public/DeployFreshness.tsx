@@ -3,7 +3,7 @@
 import { resetBrowserAppCaches } from "@/lib/browser-cache-reset";
 import { useEffect } from "react";
 
-const STORAGE_KEY = "hathor-deploy-id-v3";
+const STORAGE_KEY = "hathor-deploy-id-v4";
 
 function hardNavigateToFresh(deployId: string) {
   try {

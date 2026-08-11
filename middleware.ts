@@ -56,8 +56,8 @@ function withHtmlMustRevalidate(response: NextResponse): NextResponse {
 
 function withCachePurge(response: NextResponse): NextResponse {
   withHtmlNoStore(response);
-  /* Forces Chromium to drop disk/memory HTTP cache for this origin. */
-  response.headers.set("Clear-Site-Data", '"cache", "storage"');
+  /* Forces Chromium to drop disk/memory HTTP cache + storage for this origin. */
+  response.headers.set("Clear-Site-Data", '"cache", "storage", "executionContexts"');
   return response;
 }
 

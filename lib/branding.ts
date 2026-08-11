@@ -59,11 +59,12 @@ export const HATHOR_ADMIN_LOGIN_ICON_SRC = HATHOR_HERO_ICON_SRC;
 
 /**
  * Full-bleed homepage hero — Vercel static CDN (same origin, edge-cached).
- * To swap the reel: replace this file (or point this constant at a new path under
- * `/public/media/hathor/videos/`). Poster stays CMS slot `home-hero-poster`.
+ * To swap the reel: use a NEW filename (or bump the version suffix) under
+ * `/public/media/hathor/videos/` — never overwrite an immutable URL in place.
+ * Poster stays CMS slot `home-hero-poster`.
  */
 export const HATHOR_HERO_VIDEO_SRC =
-  "/media/hathor/videos/hathor-hero-nile-promo.mp4";
+  "/media/hathor/videos/hathor-hero-nile-promo-v20260811.mp4";
 
 /** Default static poster path (live hero uses CMS `home-hero-poster` via useSiteImage). */
 export const HATHOR_HERO_POSTER_SRC = hathorImage("home-hero-poster");

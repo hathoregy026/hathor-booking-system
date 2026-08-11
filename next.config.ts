@@ -60,6 +60,20 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        // Videos: revalidate so in-place swaps recover; prefer versioned filenames.
+        source: "/media/hathor/videos/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=3600, must-revalidate",
+          },
+          {
+            key: "Accept-Ranges",
+            value: "bytes",
+          },
+        ],
+      },
+      {
         source: "/media/hathor/:path*",
         headers: [
           {
