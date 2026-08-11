@@ -102,6 +102,13 @@ export function getWelcomeSplashCriticalStyle(): string {
     "max-width:100%;max-height:100%;",
     "object-fit:contain;object-position:center;",
     "}",
+    /* Hide hero titles/CTA until splash fully ends (lock stays through fade).
+     * Prevents Timeless Elegance + Welcome Aboard stacking under the gold preload. */
+    "html.hathor-welcome-lock .home-hero-container .hero-heading,",
+    "html.hathor-welcome-lock .home-hero-container .hero-button,",
+    "html.hathor-welcome-lock .home-hero-container .hero-scroll-hint{",
+    "opacity:0!important;visibility:hidden!important;pointer-events:none!important;",
+    "}",
   ].join("");
 }
 
