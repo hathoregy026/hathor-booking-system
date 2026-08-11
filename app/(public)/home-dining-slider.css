@@ -784,6 +784,10 @@ html[data-public-theme="night"] .home-am-voyages__stage {
  * Springs .i-video__text-container — under .i-video__image (z-index).
  * Title stays on the handoff stage; videoImage rises over it.
  */
+.home-am-video .home-am-chapter__stage {
+  isolation: isolate;
+}
+
 .home-am-video__text-container {
   position: absolute;
   inset: 0;
@@ -791,7 +795,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   pointer-events: none;
   height: 100%;
   opacity: 1;
-  will-change: opacity;
+  overflow: hidden;
+  will-change: opacity, clip-path;
 }
 
 .home-am-video__title-stack {
@@ -807,6 +812,10 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   max-width: min(34rem, 48vw);
   text-align: left;
   pointer-events: none;
+  /* Cream pad behind THIS lockup only — not a full-stage wall */
+  box-sizing: border-box;
+  padding: clamp(1rem, 2.2vh, 1.65rem) clamp(1.15rem, 2.4vw, 1.85rem);
+  background: #ece8df;
 }
 
 @media (min-width: 1025px) {
@@ -891,6 +900,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
   will-change: clip-path;
   background: #0f0c09;
   clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
