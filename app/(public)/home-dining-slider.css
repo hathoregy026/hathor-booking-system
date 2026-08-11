@@ -742,17 +742,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 .home-am-video__hero-wrap {
   position: absolute;
   inset: 0;
-  z-index: 1 !important;
+  z-index: 0;
   transform-origin: bottom right;
-}
-
-@media (min-width: 1025px) {
-  /* Desktop: dining starts clipped shut so title shows on cream, then rises over it */
-  .home-am-video__hero-wrap {
-    overflow: hidden;
-    clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
-    will-change: clip-path, transform;
-  }
 }
 
 .home-am-video__hero {
@@ -790,17 +781,17 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 }
 
 /*
- * Title on main cream — no own bg. Under dining + Bar until they rise over it.
+ * Title: no own bg, same position.
+ * Under the rising cover image only (inset) — dining hero stays visible behind.
  */
 .home-am-video .home-am-chapter__stage {
   isolation: isolate;
-  background: #ece8df;
 }
 
 .home-am-video__text-container {
   position: absolute;
   inset: 0;
-  z-index: 0 !important;
+  z-index: 1;
   pointer-events: none;
   height: 100%;
   opacity: 1;
@@ -812,7 +803,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   position: absolute;
   right: clamp(1.25rem, 4vw, 3rem);
   bottom: clamp(28vh, 34svh, 38vh);
-  z-index: 0 !important;
+  z-index: auto;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -898,12 +889,12 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 }
 
 /*
- * Springs .i-video__image — rises via videoImage clip OVER the cream title.
+ * Rising cover image — above the title so it covers that text as it opens.
  */
 .home-am-video__inset {
   position: absolute;
   inset: 0;
-  z-index: 2 !important;
+  z-index: 2;
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -979,17 +970,16 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 }
 
 @media (min-width: 1025px) {
-  .home-am-video__text-container,
-  .home-am-video__title-stack {
-    z-index: 0 !important;
+  .home-am-video__text-container {
+    z-index: 1;
   }
 
   .home-am-video__hero-wrap {
-    z-index: 1 !important;
+    z-index: 0;
   }
 
   .home-am-video__inset {
-    z-index: 2 !important;
+    z-index: 2;
   }
 }
 

@@ -200,30 +200,20 @@ export function useHomeAmenitiesSequence(
 
     const videoInset = root.querySelector<HTMLElement>("[data-am-video-inset]");
     const videoTitle = root.querySelector<HTMLElement>("[data-am-video-title]");
-    const videoHeroWrap = root.querySelector<HTMLElement>(
-      ".home-am-video__hero-wrap",
-    );
-
-    const desktopCoverMq = window.matchMedia("(min-width: 1025px)");
 
     /**
-     * Title sits on cream under the photos. On desktop, dining hero rises with
-     * the Bar cover clip so images cover the title (text never in front).
+     * Keep title under the rising cover image only (clip with inset).
+     * Do not clip/hide the dining hero — image must stay visible.
      */
     const syncCreamTitleUnderBarReel = () => {
       if (!videoInset || !videoTitle) return;
-      const clip =
-        videoInset.style.clipPath ||
-        "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)";
+      const clip = videoInset.style.clipPath || "";
       const nums = Array.from(clip.matchAll(/(\d+(?:\.\d+)?)%/g)).map((m) =>
         parseFloat(m[1]),
       );
       const topY =
         nums.length >= 2 && Number.isFinite(nums[1]) ? nums[1] : 100;
       const y = Math.max(0, Math.min(100, topY));
-      if (desktopCoverMq.matches && videoHeroWrap) {
-        videoHeroWrap.style.clipPath = clip;
-      }
       videoTitle.style.clipPath = `polygon(0% 0%, 100% 0%, 100% ${y}%, 0% ${y}%)`;
       videoTitle.style.visibility = y <= 2 ? "hidden" : "visible";
     };
@@ -342,9 +332,6 @@ export function useHomeAmenitiesSequence(
       if (videoTitle) {
         videoTitle.style.clipPath = "";
         videoTitle.style.visibility = "";
-      }
-      if (videoHeroWrap) {
-        videoHeroWrap.style.clipPath = "";
       }
       st.kill();
       helmSt?.kill();
