@@ -782,10 +782,12 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 
 /*
  * Cream title under Bar reel — absolute full stage, z-index under inset.
- * Inverse-clipped in JS lockstep with videoImage so text never paints on photo.
+ * Opaque cream fill so the title NEVER sits on the dining hero photo.
+ * Inverse-clipped in JS lockstep with videoImage; Bar reel (z-10) covers it.
  */
 .home-am-video .home-am-chapter__stage {
   isolation: isolate;
+  background: #ece8df;
 }
 
 .home-am-video__text-container {
@@ -796,6 +798,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   height: 100%;
   opacity: 1;
   overflow: hidden;
+  background: #ece8df;
   transform: translate3d(0, 0, 0);
   -webkit-transform: translate3d(0, 0, 0);
   will-change: clip-path, opacity;

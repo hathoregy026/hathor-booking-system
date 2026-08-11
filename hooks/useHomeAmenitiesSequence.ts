@@ -202,9 +202,9 @@ export function useHomeAmenitiesSequence(
     const videoTitle = root.querySelector<HTMLElement>("[data-am-video-title]");
 
     /**
-     * Keep cream title under the rising Bar reel. Sticky pins break z-index,
-     * so clip the title to the still-uncovered cream band (inverse of inset).
-     * Do not force opacity — parallax videoTitle owns fade timing.
+     * Keep cream title under the rising Bar reel.
+     * Clip the cream panel to the still-uncovered band (inverse of inset) so
+     * dining hero never shows under the title — only cream, then Bar covers.
      */
     const syncCreamTitleUnderBarReel = () => {
       if (!videoInset || !videoTitle) return;
@@ -217,7 +217,7 @@ export function useHomeAmenitiesSequence(
         nums.length >= 2 && Number.isFinite(nums[1]) ? nums[1] : 100;
       const y = Math.max(0, Math.min(100, topY));
       videoTitle.style.clipPath = `polygon(0% 0%, 100% 0%, 100% ${y}%, 0% ${y}%)`;
-      videoTitle.style.visibility = y <= 2 ? "hidden" : "";
+      videoTitle.style.visibility = y <= 2 ? "hidden" : "visible";
     };
 
     const syncPins = () => {
