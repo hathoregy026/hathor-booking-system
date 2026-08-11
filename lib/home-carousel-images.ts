@@ -2,7 +2,7 @@ import type { SiteImageName } from "@/lib/site-image-slots";
 
 /**
  * Homepage itineraries carousel — dedicated CMS slot per cruise room card.
- * Do not collapse by room type (that made King/Twin/etc. share one dashboard image).
+ * Never share defaults or CMS fallbacks across cards in this carousel.
  */
 export const HOME_CAROUSEL_IMAGE_BY_ROOM = {
   "SUITE-3N": "home-carousel-suite-3n",
@@ -19,21 +19,22 @@ export const HOME_CAROUSEL_IMAGE_BY_ROOM = {
 
 export type HomeCarouselRoomNumber = keyof typeof HOME_CAROUSEL_IMAGE_BY_ROOM;
 
-/** Soft-migrate: inherit shared room-* CMS uploads until each carousel slot is saved. */
-export const HOME_CAROUSEL_LEGACY_FALLBACK: Readonly<
-  Record<(typeof HOME_CAROUSEL_IMAGE_BY_ROOM)[HomeCarouselRoomNumber], string>
-> = {
-  "home-carousel-suite-3n": "room-suite",
-  "home-carousel-royal-3n": "room-royal",
-  "home-carousel-king-4n": "room-luxury",
-  "home-carousel-twin-4n": "room-luxury",
-  "home-carousel-suite-4n": "room-suite",
-  "home-carousel-royal-4n": "room-royal",
-  "home-carousel-king-7n": "room-luxury",
-  "home-carousel-twin-7n": "room-luxury",
-  "home-carousel-suite-7n": "room-suite",
-  "home-carousel-royal-7n": "room-royal",
-};
+/** Unique default media for each carousel slot — one card, one image. */
+export const HOME_CAROUSEL_DEFAULT_URLS = {
+  "home-carousel-suite-3n": "/media/hathor/scraped/luxsuite-1.webp",
+  "home-carousel-royal-3n": "/media/hathor/scraped/royal-1.webp",
+  "home-carousel-king-4n": "/media/hathor/scraped/cabin-1.webp",
+  "home-carousel-twin-4n": "/media/hathor/scraped/cabin-2.webp",
+  "home-carousel-suite-4n": "/media/hathor/scraped/luxsuite-2.webp",
+  "home-carousel-royal-4n": "/media/hathor/scraped/royal-2.webp",
+  "home-carousel-king-7n": "/media/hathor/scraped/cabin-3.webp",
+  "home-carousel-twin-7n": "/media/hathor/scraped/cabin-4.webp",
+  "home-carousel-suite-7n": "/media/hathor/scraped/luxsuite-3.webp",
+  "home-carousel-royal-7n": "/media/hathor/scraped/royal-3.webp",
+} as const satisfies Record<
+  (typeof HOME_CAROUSEL_IMAGE_BY_ROOM)[HomeCarouselRoomNumber],
+  string
+>;
 
 export const HOME_CAROUSEL_ADMIN_CARDS: ReadonlyArray<{
   name: (typeof HOME_CAROUSEL_IMAGE_BY_ROOM)[HomeCarouselRoomNumber];

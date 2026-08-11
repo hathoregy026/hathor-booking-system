@@ -26,9 +26,11 @@ function roomSearchType(roomType: string): LuxuryRoomTypeValue {
   return "luxury-rooms";
 }
 
-function roomTitleSuffix(roomType: string) {
-  if (roomType.includes("Royal")) return "Royal Suite";
-  if (roomType.includes("Suite")) return "Suite";
+function roomTitleSuffix(room: { roomType: string; roomNumber: string }) {
+  if (room.roomType.includes("Royal")) return "Royal Suite";
+  if (room.roomType.includes("Suite")) return "Suite";
+  if (room.roomNumber.startsWith("KING")) return "King Cabin";
+  if (room.roomNumber.startsWith("TWIN")) return "Twin Cabin";
   return "Cabin";
 }
 
@@ -49,7 +51,7 @@ function buildCarouselSlides(): ExCarouselSlide[] {
 
     return cruise.rooms.map((room) => ({
       key: `${cruise.slug}-${room.roomNumber}`,
-      title: `${ports} · ${roomTitleSuffix(room.roomType)}`,
+      title: `${ports} · ${roomTitleSuffix(room)}`,
       imageName: homeCarouselImageName(room.roomNumber),
       alt: `${room.name}, ${cruise.name}`,
       duration,

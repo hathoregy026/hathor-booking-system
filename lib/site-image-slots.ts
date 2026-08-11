@@ -296,11 +296,11 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     pagePath: "/#our-voyages",
     displayOrder: 3,
   },
-  // Homepage itineraries carousel — one slot per cruise room card (not shared by type)
+  // Homepage itineraries carousel — one slot per cruise room card (unique defaults)
   {
     name: "home-carousel-suite-3n",
     altText: "Luxury Suite on the 3-night Aswan to Luxor itinerary",
-    url: HATHOR_MEDIA.luxurySuite,
+    url: "/media/hathor/scraped/luxsuite-1.webp",
     category: "suite",
     pagePath: "/cruises",
     displayOrder: 40,
@@ -308,7 +308,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-carousel-royal-3n",
     altText: "Royal Suite on the 3-night Aswan to Luxor itinerary",
-    url: HATHOR_MEDIA.royalSuite,
+    url: "/media/hathor/scraped/royal-1.webp",
     category: "suite",
     pagePath: "/cruises",
     displayOrder: 41,
@@ -316,7 +316,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-carousel-king-4n",
     altText: "King cabin on the 4-night Luxor to Aswan itinerary",
-    url: HATHOR_MEDIA.luxuryRoom,
+    url: "/media/hathor/scraped/cabin-1.webp",
     category: "room",
     pagePath: "/cruises",
     displayOrder: 42,
@@ -324,7 +324,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-carousel-twin-4n",
     altText: "Twin cabin on the 4-night Luxor to Aswan itinerary",
-    url: HATHOR_MEDIA.luxuryRoom,
+    url: "/media/hathor/scraped/cabin-2.webp",
     category: "room",
     pagePath: "/cruises",
     displayOrder: 43,
@@ -332,7 +332,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-carousel-suite-4n",
     altText: "Luxury Suite on the 4-night Luxor to Aswan itinerary",
-    url: HATHOR_MEDIA.luxurySuite,
+    url: "/media/hathor/scraped/luxsuite-2.webp",
     category: "suite",
     pagePath: "/cruises",
     displayOrder: 44,
@@ -340,7 +340,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-carousel-royal-4n",
     altText: "Royal Suite on the 4-night Luxor to Aswan itinerary",
-    url: HATHOR_MEDIA.royalSuite,
+    url: "/media/hathor/scraped/royal-2.webp",
     category: "suite",
     pagePath: "/cruises",
     displayOrder: 45,
@@ -348,7 +348,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-carousel-king-7n",
     altText: "King cabin on the 7-night round-trip itinerary",
-    url: HATHOR_MEDIA.luxuryRoom,
+    url: "/media/hathor/scraped/cabin-3.webp",
     category: "room",
     pagePath: "/cruises",
     displayOrder: 46,
@@ -356,7 +356,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-carousel-twin-7n",
     altText: "Twin cabin on the 7-night round-trip itinerary",
-    url: HATHOR_MEDIA.luxuryRoom,
+    url: "/media/hathor/scraped/cabin-4.webp",
     category: "room",
     pagePath: "/cruises",
     displayOrder: 47,
@@ -364,7 +364,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-carousel-suite-7n",
     altText: "Luxury Suite on the 7-night round-trip itinerary",
-    url: HATHOR_MEDIA.luxurySuite,
+    url: "/media/hathor/scraped/luxsuite-3.webp",
     category: "suite",
     pagePath: "/cruises",
     displayOrder: 48,
@@ -372,7 +372,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   {
     name: "home-carousel-royal-7n",
     altText: "Royal Suite on the 7-night round-trip itinerary",
-    url: HATHOR_MEDIA.royalSuite,
+    url: "/media/hathor/scraped/royal-3.webp",
     category: "suite",
     pagePath: "/cruises",
     displayOrder: 49,

@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { withDb, logDbError } from "@/lib/db-safe";
-import { HOME_CAROUSEL_LEGACY_FALLBACK } from "@/lib/home-carousel-images";
+import { HOME_CAROUSEL_DEFAULT_URLS } from "@/lib/home-carousel-images";
 import {
   SITE_IMAGE_SLOTS,
   getDefaultSiteImage,
@@ -59,11 +59,17 @@ function applyLegacySlotFallbacks(
     overrides[amenitiesName] = { ...overrides[legacyName] };
   }
 
-  for (const [carouselName, legacyName] of Object.entries(
-    HOME_CAROUSEL_LEGACY_FALLBACK,
-  )) {
-    if (overrides[carouselName] || !overrides[legacyName]) continue;
-    overrides[carouselName] = { ...overrides[legacyName] };
+  /* Drop carousel overrides that only mirrored shared room-* uploads. */
+  const sharedSrcs = new Set(
+    ["room-luxury", "room-suite", "room-royal"]
+      .map((name) => overrides[name]?.src)
+      .filter((src): src is string => Boolean(src)),
+  );
+  for (const carouselName of Object.keys(HOME_CAROUSEL_DEFAULT_URLS)) {
+    const entry = overrides[carouselName];
+    if (entry && sharedSrcs.has(entry.src)) {
+      delete overrides[carouselName];
+    }
   }
 }
 
@@ -131,15 +137,22 @@ export function storedMapToSiteImageMap(
     };
   }
 
-  /* Inherit shared room-* CMS uploads until each carousel card is customized. */
-  for (const [carouselName, legacyName] of Object.entries(
-    HOME_CAROUSEL_LEGACY_FALLBACK,
-  )) {
-    if (stored[carouselName]) continue;
-    const legacy = map[legacyName];
+  /*
+   * Never let itinerary carousel cards share the Suites/rooms room-* photos.
+   * Old soft-migrate copies are discarded in favor of each card’s unique default
+   * until that carousel slot has its own distinct CMS upload.
+   */
+  const sharedSrcs = new Set(
+    ["room-luxury", "room-suite", "room-royal"]
+      .map((name) => map[name]?.src)
+      .filter((src): src is string => Boolean(src)),
+  );
+  for (const carouselName of Object.keys(HOME_CAROUSEL_DEFAULT_URLS)) {
     const slot = getSiteImageSlot(carouselName);
-    if (!legacy || !slot) continue;
-    map[carouselName] = { src: legacy.src, alt: slot.altText };
+    if (!slot) continue;
+    if (sharedSrcs.has(map[carouselName]?.src)) {
+      map[carouselName] = { src: slot.url, alt: slot.altText };
+    }
   }
 
   return map;
