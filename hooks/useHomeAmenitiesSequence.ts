@@ -198,24 +198,25 @@ export function useHomeAmenitiesSequence(
       stage.style.zIndex = z;
     };
 
-    const videoInset = root.querySelector<HTMLElement>("[data-am-video-inset]");
+    const videoHero = root.querySelector<HTMLElement>("[data-am-video-hero]");
     const videoTitle = root.querySelector<HTMLElement>("[data-am-video-title]");
 
     /**
-     * Keep title under the rising cover image only (clip with inset).
-     * Do not clip/hide the dining hero — image must stay visible.
+     * Keep the title on the page background and mask it at the dining image's
+     * live top edge. The image itself stays untouched and visible.
      */
     const syncCreamTitleUnderBarReel = () => {
-      if (!videoInset || !videoTitle) return;
-      const clip = videoInset.style.clipPath || "";
-      const nums = Array.from(clip.matchAll(/(\d+(?:\.\d+)?)%/g)).map((m) =>
-        parseFloat(m[1]),
+      if (!videoHero || !videoTitle) return;
+      const imageRect = videoHero.getBoundingClientRect();
+      const titleRect = videoTitle.getBoundingClientRect();
+      const uncoveredHeight = Math.max(
+        0,
+        Math.min(titleRect.height, imageRect.top - titleRect.top),
       );
-      const topY =
-        nums.length >= 2 && Number.isFinite(nums[1]) ? nums[1] : 100;
-      const y = Math.max(0, Math.min(100, topY));
-      videoTitle.style.clipPath = `polygon(0% 0%, 100% 0%, 100% ${y}%, 0% ${y}%)`;
-      videoTitle.style.visibility = y <= 2 ? "hidden" : "visible";
+      videoTitle.style.clipPath = `inset(0 0 ${Math.max(
+        0,
+        titleRect.height - uncoveredHeight,
+      )}px 0)`;
     };
 
     const syncPins = () => {
@@ -313,6 +314,7 @@ export function useHomeAmenitiesSequence(
       lastW = window.innerWidth;
       engine.refresh();
       syncPins();
+      syncCreamTitleUnderBarReel();
       ScrollTrigger.refresh();
     };
     window.addEventListener(
@@ -331,7 +333,6 @@ export function useHomeAmenitiesSequence(
       pinTargets.forEach(clearPin);
       if (videoTitle) {
         videoTitle.style.clipPath = "";
-        videoTitle.style.visibility = "";
       }
       st.kill();
       helmSt?.kill();
