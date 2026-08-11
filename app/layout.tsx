@@ -8,6 +8,8 @@ import {
   getHomeBootCriticalStyle,
   getHomeScrollPendingBlockingScript,
   getPublicHeroBootCriticalStyle,
+  getWelcomeSplashBlockingScript,
+  getWelcomeSplashCriticalStyle,
 } from "@/lib/public-theme";
 import { getTouchDeviceBlockingScript } from "@/lib/touch-device";
 import { TouchDeviceBootstrap } from "@/components/public/TouchDeviceBootstrap";
@@ -61,6 +63,17 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{ __html: getPublicThemeBlockingScript() }}
+        />
+        {/* Kill gold welcome splash before paint — including stale cached shells. */}
+        <style
+          dangerouslySetInnerHTML={{
+            __html: getWelcomeSplashCriticalStyle(),
+          }}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: getWelcomeSplashBlockingScript(false),
+          }}
         />
         <style
           dangerouslySetInnerHTML={{

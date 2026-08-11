@@ -209,11 +209,13 @@ function parseSettingMap(rows: SettingRow[]) {
     );
   }
 
-  const welcomeSplash = byKey.has(WELCOME_SPLASH_SETTINGS_KEY)
+  const welcomeSplashRaw = byKey.has(WELCOME_SPLASH_SETTINGS_KEY)
     ? parseWelcomeSplashSettings(
         readStored(byKey.get(WELCOME_SPLASH_SETTINGS_KEY)),
       )
     : DEFAULT_WELCOME_SPLASH_SETTINGS;
+  /* Public land never shows the gold preload — ignore CMS enabled flag. */
+  const welcomeSplash = { ...welcomeSplashRaw, enabled: false };
 
   const liveSite = byKey.has(LIVE_SITE_SETTINGS_KEY)
     ? parseLiveSiteSettings(readStored(byKey.get(LIVE_SITE_SETTINGS_KEY)))

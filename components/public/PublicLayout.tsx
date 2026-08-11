@@ -8,7 +8,6 @@ import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
 import { ScrollPositionRestore } from "@/components/public/ScrollPositionRestore";
 import { SiteComingSoon } from "@/components/public/SiteComingSoon";
 import { SiteImagePreviewScroll } from "@/components/public/SiteImagePreviewScroll";
-import { WelcomeSplash } from "@/components/public/WelcomeSplash";
 import { PageTransition } from "@/components/ui/PageTransition";
 import { getServiceWorkerKillBootScript } from "@/lib/browser-cache-reset";
 import {
@@ -17,7 +16,6 @@ import {
 } from "@/lib/live-site-settings-shared";
 import {
   DEFAULT_WELCOME_SPLASH_SETTINGS,
-  WELCOME_SPLASH_PUBLIC_ENABLED,
   type WelcomeSplashSettings,
 } from "@/lib/welcome-splash-settings-shared";
 import type { ReactNode } from "react";
@@ -40,14 +38,11 @@ function resolveDeployId(): string {
 
 export function PublicLayout({
   children,
-  welcomeSplash = DEFAULT_WELCOME_SPLASH_SETTINGS,
+  welcomeSplash: _welcomeSplash = DEFAULT_WELCOME_SPLASH_SETTINGS,
   liveSite = DEFAULT_LIVE_SITE_SETTINGS,
   comingSoonActive = false,
 }: PublicLayoutProps) {
   const deployId = resolveDeployId();
-  const splashEnabled =
-    WELCOME_SPLASH_PUBLIC_ENABLED && welcomeSplash.enabled;
-  const splashImageUrl = welcomeSplash.imageUrl;
 
   /* Custom domain only — Vercel / localhost keep the real site. */
   if (comingSoonActive) {
@@ -66,19 +61,9 @@ export function PublicLayout({
     <PublicThemeProvider>
       <BookingModalProvider>
         {/*
-          Splash must sit outside `.public-site` so mid-page home reloads with
-          `ex-pending-deep` (opacity:0 on `.public-site`) cannot hide it.
+          Welcome splash removed from public land — no preload overlay.
           Floating BOOK NOW / chat mount from GlobalSiteChrome (root sibling).
         */}
-        {splashEnabled ? (
-          <link
-            rel="preload"
-            as="image"
-            href={splashImageUrl}
-            fetchPriority="high"
-          />
-        ) : null}
-        <WelcomeSplash enabled={splashEnabled} imageUrl={splashImageUrl} />
         <div className="public-site hathor-site">
           <script dangerouslySetInnerHTML={{ __html: bootScript }} />
           <DeployFreshness deployId={deployId} />

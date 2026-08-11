@@ -57,55 +57,31 @@ export function getPublicHeroBootCriticalStyle(): string {
 }
 
 /**
- * Early welcome gate: skip admin + prefers-reduced-motion; else lock scroll before paint.
- * Overlay + dismiss timer run here — must NOT wait for React hydrate (that caused 5s+ gold).
- * Admin never mounts WelcomeSplash, so locking here would freeze the dashboard forever.
+ * Welcome splash is retired on the public site.
+ * Always skip + strip any leftover overlay from a cached/old shell.
  */
 export function getWelcomeSplashBlockingScript(
-  enabled = true,
-  imageUrl = "/branding/hathor-welcome-aboard.webp",
+  _enabled = false,
+  _imageUrl = "/branding/hathor-welcome-aboard.webp",
 ): string {
-  if (!enabled) {
-    return `(function(){try{document.documentElement.classList.add("hathor-welcome-skip");document.documentElement.classList.add("hathor-welcome-ready");}catch(e){}})();`;
-  }
-  const src = JSON.stringify(imageUrl);
-  return `(function(){try{var p=(location.pathname||"/");if(p==="/admin"||p.indexOf("/admin/")===0)return;var d=document.documentElement;if(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches){d.classList.add("hathor-welcome-skip");d.classList.add("hathor-welcome-ready");return;}if(d.classList.contains("hathor-welcome-ready")||d.classList.contains("hathor-welcome-skip"))return;d.classList.add("hathor-welcome-lock");var HOLD=700,FADE=220;function unlock(){d.classList.add("hathor-welcome-ready");d.classList.remove("hathor-welcome-lock");}function finish(){if(d.classList.contains("hathor-welcome-ready")||d.classList.contains("hathor-welcome-skip"))return;var el=document.getElementById("hathor-welcome-boot");if(!el){unlock();return;}el.classList.add("hathor-welcome-splash--out");setTimeout(function(){unlock();try{el.remove();}catch(e){}},FADE);}function mount(){if(document.getElementById("hathor-welcome-boot"))return;var wrap=document.createElement("div");wrap.id="hathor-welcome-boot";wrap.className="hathor-welcome-splash";wrap.setAttribute("aria-hidden","true");wrap.setAttribute("role","presentation");var img=document.createElement("img");img.className="hathor-welcome-splash__img";img.alt="";img.decoding="async";try{img.fetchPriority="high";}catch(e){}img.src=${src};wrap.appendChild(img);(document.body||d).appendChild(wrap);}if(document.body)mount();else document.addEventListener("DOMContentLoaded",mount);setTimeout(finish,HOLD);}catch(e){}})();`;
+  return `(function(){try{var d=document.documentElement;d.classList.add("hathor-welcome-skip");d.classList.add("hathor-welcome-ready");d.classList.remove("hathor-welcome-lock");function nuke(){try{document.querySelectorAll(".hathor-welcome-splash,#hathor-welcome-boot").forEach(function(el){el.remove();});}catch(e){}}nuke();if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",nuke);else nuke();var obs=new MutationObserver(nuke);if(document.documentElement)obs.observe(document.documentElement,{childList:!0,subtree:!0});setTimeout(function(){try{obs.disconnect();}catch(e){}},4000);}catch(e){}})();`;
 }
 
 /**
- * Critical CSS for the welcome splash — paints full-screen cover before CSS bundles.
- * Overlay covers the site; we do NOT hide `.public-site` (that waited on hydrate = multi-second gold).
+ * Force-hide any leftover welcome splash nodes (stale HTML / bfcache).
+ * No gold cover styles — the preload must never paint.
  */
 export function getWelcomeSplashCriticalStyle(): string {
   return [
-    "html.hathor-welcome-skip .hathor-welcome-splash{",
-    "display:none!important;pointer-events:none!important;",
+    ".hathor-welcome-splash,#hathor-welcome-boot{",
+    "display:none!important;opacity:0!important;visibility:hidden!important;",
+    "pointer-events:none!important;background:transparent!important;",
     "}",
-    "@media (prefers-reduced-motion: reduce){",
-    ".hathor-welcome-splash{display:none!important;pointer-events:none!important;}",
-    "}",
-    "html.hathor-welcome-lock:not(.hathor-welcome-ready):not(.hathor-welcome-skip),",
-    "html.hathor-welcome-lock:not(.hathor-welcome-ready):not(.hathor-welcome-skip) body{",
-    "overflow:hidden!important;overscroll-behavior:none;",
-    "}",
-    /* Admin never runs WelcomeSplash — never inherit the public scroll lock. */
-    "html.admin-app,html.admin-app body{",
+    "html.hathor-welcome-lock,html.hathor-welcome-lock body{",
     "overflow:auto!important;overscroll-behavior:auto;",
     "}",
-    ".hathor-welcome-splash{",
-    "position:fixed;inset:0;z-index:2147483000;",
-    "display:flex;align-items:center;justify-content:center;",
-    "background:#c4a052;margin:0;padding:0;",
-    "opacity:1;transition:opacity .22s ease-out;",
-    "pointer-events:auto;",
-    "}",
-    ".hathor-welcome-splash--out{",
-    "opacity:0;pointer-events:none;",
-    "}",
-    ".hathor-welcome-splash__img{",
-    "display:block;width:auto;height:auto;",
-    "max-width:min(92vw,720px);max-height:70vh;",
-    "object-fit:contain;object-position:center;",
+    "html.admin-app,html.admin-app body{",
+    "overflow:auto!important;overscroll-behavior:auto;",
     "}",
   ].join("");
 }
