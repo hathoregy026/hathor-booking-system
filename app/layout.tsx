@@ -10,6 +10,7 @@ import {
   getPublicHeroBootCriticalStyle,
   getWelcomeSplashBlockingScript,
   getWelcomeSplashCriticalStyle,
+  getHeroTypeReadyBlockingScript,
 } from "@/lib/public-theme";
 import { getTouchDeviceBlockingScript } from "@/lib/touch-device";
 import { TouchDeviceBootstrap } from "@/components/public/TouchDeviceBootstrap";
@@ -75,6 +76,27 @@ export default function RootLayout({
             __html: getWelcomeSplashBlockingScript(false),
           }}
         />
+        <link
+          rel="preload"
+          href="/fonts/bitho-luxury-italic-1784552304-0/BithoLuxury-Italic-Exfont89bb.otf"
+          as="font"
+          type="font/otf"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/more-fonts/carista-calligraphy.otf"
+          as="font"
+          type="font/otf"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/Gabigaile.otf"
+          as="font"
+          type="font/otf"
+          crossOrigin="anonymous"
+        />
         <style
           dangerouslySetInnerHTML={{
             __html:
@@ -85,6 +107,11 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: getHomeScrollPendingBlockingScript(),
+          }}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: getHeroTypeReadyBlockingScript(),
           }}
         />
         <script

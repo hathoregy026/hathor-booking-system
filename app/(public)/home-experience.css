@@ -1350,17 +1350,16 @@ h1, h2, h3, h4, p {
 }
 
 /*
- * Homepage chrome is part of the first paint. The shared hero stage still
- * animates each title line on scroll, but its hydration-only entrance tween
- * must never hide the already-rendered heading or CTA.
+ * Homepage chrome is part of the first paint — but only after display fonts are ready
+ * (`hathor-hero-type-ready`). Showing early caused fallback→Bitho/Carista size morph.
  */
-html.ex-home .ex-root .home-hero-container .hero-heading {
+html.ex-home.hathor-hero-type-ready .ex-root .home-hero-container .hero-heading {
   opacity: 1 !important;
   visibility: visible !important;
   transform: none !important;
 }
 
-html.ex-home .ex-root .home-hero-container .hero-button {
+html.ex-home.hathor-hero-type-ready .ex-root .home-hero-container .hero-button {
   opacity: 1 !important;
   visibility: visible !important;
   transform: translateX(var(--hathor-cta-nudge, 0px)) !important;

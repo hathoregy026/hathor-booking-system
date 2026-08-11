@@ -269,18 +269,18 @@ body.is-touch-device .lux-cursor {
  * Phone ≤480 uses scrubbed choreography — do not force opacity/width there.
  * -------------------------------------------------------------------------- */
 @media (min-width: 481px) and (max-width: 1024px) {
-  html.ex-home .home-hero-container .hero-logo-mark,
-  html.ex-home .home-hero-container .hero-logo-mark--split,
-  html.ex-home .home-hero-container .hathor-logo-split,
-  html.ex-home .home-hero-container .hathor-logo-split .logo-letter-wrap,
-  html.ex-home .home-hero-container .hathor-logo-split img,
-  html.ex-home .home-hero-container .hathor-logo-split .logo-letter,
-  .public-site .home-hero-container .hero-logo-mark,
-  .public-site .home-hero-container .hero-logo-mark--split,
-  .public-site .home-hero-container .hathor-logo-split,
-  .public-site .home-hero-container .hathor-logo-split .logo-letter-wrap,
-  .public-site .home-hero-container .hathor-logo-split img,
-  .public-site .home-hero-container .hathor-logo-split .logo-letter {
+  html.ex-home.ex-scroll-ready .home-hero-container .hero-logo-mark,
+  html.ex-home.ex-scroll-ready .home-hero-container .hero-logo-mark--split,
+  html.ex-home.ex-scroll-ready .home-hero-container .hathor-logo-split,
+  html.ex-home.ex-scroll-ready .home-hero-container .hathor-logo-split .logo-letter-wrap,
+  html.ex-home.ex-scroll-ready .home-hero-container .hathor-logo-split img,
+  html.ex-home.ex-scroll-ready .home-hero-container .hathor-logo-split .logo-letter,
+  html:not(.ex-home) .public-site .home-hero-container .hero-logo-mark,
+  html:not(.ex-home) .public-site .home-hero-container .hero-logo-mark--split,
+  html:not(.ex-home) .public-site .home-hero-container .hathor-logo-split,
+  html:not(.ex-home) .public-site .home-hero-container .hathor-logo-split .logo-letter-wrap,
+  html:not(.ex-home) .public-site .home-hero-container .hathor-logo-split img,
+  html:not(.ex-home) .public-site .home-hero-container .hathor-logo-split .logo-letter {
     opacity: 1 !important;
     visibility: visible !important;
     pointer-events: none !important;
@@ -288,10 +288,10 @@ body.is-touch-device .lux-cursor {
     max-height: none !important;
   }
 
-  html.ex-home .home-hero-container .hathor-logo-split img,
-  .public-site .home-hero-container .hathor-logo-split img,
-  html.ex-home .home-hero-container .hathor-logo-split .logo-letter,
-  .public-site .home-hero-container .hathor-logo-split .logo-letter {
+  html.ex-home.ex-scroll-ready .home-hero-container .hathor-logo-split img,
+  html:not(.ex-home) .public-site .home-hero-container .hathor-logo-split img,
+  html.ex-home.ex-scroll-ready .home-hero-container .hathor-logo-split .logo-letter,
+  html:not(.ex-home) .public-site .home-hero-container .hathor-logo-split .logo-letter {
     width: 100% !important;
     height: 100% !important;
   }

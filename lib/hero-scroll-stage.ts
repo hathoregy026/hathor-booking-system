@@ -23,10 +23,10 @@ type MountHeroScrollStageOptions = {
 
 /** Extra downward offset at logo landing / scroll-scrub start (px). */
 const LOGO_FINISH_Y_OFFSET_PX = 30;
-/** Per-letter land rise duration (seconds). Total wordmark ≈ delay + duration + stagger×5. */
-const DEFAULT_LOGO_LAND_DURATION = 1.4;
-const LOGO_LAND_STAGGER = 0.1;
-const LOGO_LAND_DELAY = 0.1;
+/** Per-letter land rise duration (seconds). Kept short so land never feels stalled. */
+const DEFAULT_LOGO_LAND_DURATION = 0.65;
+const LOGO_LAND_STAGGER = 0.06;
+const LOGO_LAND_DELAY = 0;
 const LOGO_LAND_EASE = "power3.out";
 /** Desktop scrub: per-letter exit — long silk drift, one-by-one cascade. */
 const LOGO_SCROLL_LETTER_DURATION = 1.05;
@@ -91,7 +91,9 @@ export function mountHeroScrollStage({
   };
 
   if (chrome.length) {
-    if (prefersReduced) {
+    const isHomeLand = document.documentElement.classList.contains("ex-home");
+    /* Home: CSS owns visibility once fonts are ready — no GSAP fade that fights type. */
+    if (prefersReduced || isHomeLand) {
       gsap.set(chrome, { opacity: 1, y: 0 });
       markHeroMotionReady();
     } else {

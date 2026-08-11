@@ -21,20 +21,26 @@ export function getPublicThemeBlockingScript(): string {
 }
 
 /**
- * Critical home CSS in <head> — kills unstyled giant letter images before any CSS bundle.
+ * Critical home CSS in <head> — kills unstyled giant letter images + hero type FOUC.
  * Full-page veil (ex-pending-deep) only when a mid-page scroll restore is pending.
  */
 export function getHomeBootCriticalStyle(): string {
   return [
-    "html.ex-home:not(.ex-scroll-ready):not(.is-touch-device) .hero-logo-mark,",
-    "html.ex-home:not(.ex-scroll-ready):not(.is-touch-device) .hathor-logo-split,",
-    "html.ex-home:not(.ex-scroll-ready):not(.is-touch-device) .hathor-logo-split .logo-letter-wrap,",
-    "html.ex-home:not(.ex-scroll-ready):not(.is-touch-device) .hathor-logo-split img,",
+    /* Logo letters: never paint at intrinsic size on any device before scroll-ready. */
+    "html.ex-home:not(.ex-scroll-ready) .hero-logo-mark,",
+    "html.ex-home:not(.ex-scroll-ready) .hathor-logo-split,",
+    "html.ex-home:not(.ex-scroll-ready) .hathor-logo-split .logo-letter-wrap,",
+    "html.ex-home:not(.ex-scroll-ready) .hathor-logo-split img,",
     "html.ex-home:not(.ex-scroll-ready) .blind-strip-v{",
     "opacity:0!important;visibility:hidden!important;pointer-events:none!important;",
     "}",
-    "html.ex-home:not(.ex-scroll-ready):not(.is-touch-device) .hathor-logo-split img{",
+    "html.ex-home:not(.ex-scroll-ready) .hathor-logo-split img{",
     "width:0!important;height:0!important;max-width:0!important;max-height:0!important;",
+    "}",
+    /* Hero titles: hide until display fonts are ready — no fallback→Bitho/Carista morph. */
+    "html.ex-home:not(.hathor-hero-type-ready) .home-hero-container .hero-heading,",
+    "html.ex-home:not(.hathor-hero-type-ready) .home-hero-container .hero-heading .hero-line{",
+    "opacity:0!important;visibility:hidden!important;",
     "}",
     "html.ex-home.ex-pending-deep:not(.ex-scroll-ready) .public-site{",
     "opacity:0!important;pointer-events:none!important;",
@@ -44,6 +50,14 @@ export function getHomeBootCriticalStyle(): string {
     "background:#ece8df!important;",
     "}",
   ].join("");
+}
+
+/**
+ * Preload + gate hero display fonts so titles never flash in a fallback face.
+ * Marks html.hathor-hero-type-ready as soon as faces load (failsafe 400ms).
+ */
+export function getHeroTypeReadyBlockingScript(): string {
+  return `(function(){try{var d=document.documentElement;if(d.classList.contains("hathor-hero-type-ready"))return;function done(){d.classList.add("hathor-hero-type-ready");}var faces=["Bitho Luxury","Carista","Gabigaile","Quiet Luxury","Agraham"];var fail=setTimeout(done,400);if(!document.fonts||!document.fonts.load){clearTimeout(fail);done();return;}Promise.all(faces.map(function(f){return document.fonts.load('400 64px "'+f+'"');})).then(function(){clearTimeout(fail);done();}).catch(function(){clearTimeout(fail);done();});}catch(e){try{document.documentElement.classList.add("hathor-hero-type-ready");}catch(x){}}})();`;
 }
 
 /** Critical CSS for inner public heroes (cruises, about, etc.) before motion hook runs. */
