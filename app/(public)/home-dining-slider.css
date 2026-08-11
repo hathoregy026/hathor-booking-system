@@ -324,6 +324,8 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
  */
 .home-am-nature.home-am-chapter--under-previous.home-am-chapter--under-next::after {
   height: var(--sticky-under-next-distance);
+  /* Don’t flash solid dark-band gold — caption photo overhang covers this */
+  background: transparent;
 }
 
 .home-am-nature__stage {
@@ -356,13 +358,17 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
 
 /*
  * Caption gold band — sibling AFTER #home-am-nature (not inside it).
- * min-height matches nature’s under-next pull so the CMS photo fills the
- * whole gold rectangle (no solid-gold void above the caption).
+ * min-height matches nature’s under-next pull.
  */
 .home-am-nature__gold-band {
   --am-nature-gold-fill: clamp(16rem, 42vh, 22rem);
+  /* Extra lift so the photo covers dark-band / ::after solid-gold above the band */
+  --am-nature-gold-photo-overhang: max(
+    var(--am-nature-gold-fill),
+    28vh,
+    12rem
+  );
   position: relative;
-  /* Above nature pin + voyages so the panel can cover the photo bottom */
   z-index: 8;
   isolation: isolate;
   display: flex;
@@ -370,25 +376,32 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   justify-content: center;
   width: 100%;
   min-height: var(--am-nature-gold-fill);
-  /* Seal hairline cream join above the gold rectangle */
   margin-top: -2px;
   padding: 0 clamp(1.25rem, 6vw, 4rem) clamp(1.25rem, 3vh, 2rem);
   box-sizing: border-box;
   background-color: var(--am-gold);
-  overflow: hidden;
+  /* Allow photo/wash to paint into the solid-gold void above this box */
+  overflow: visible;
 }
 
-/* Full-bleed photo — forced to the band’s padding box, every edge */
+/*
+ * Full-bleed photo — extends ABOVE the band to cover the empty gold strip
+ * from .home-am-dark-band / nature ::after during the handoff.
+ */
 .home-am-nature__gold-photo {
   position: absolute;
-  inset: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: calc(-1 * var(--am-nature-gold-photo-overhang));
   z-index: 0;
   width: 100%;
-  height: 100%;
+  height: auto;
   margin: 0;
   padding: 0;
   overflow: hidden;
   pointer-events: none;
+  background-color: var(--am-gold);
 }
 
 .home-am-nature__gold-photo img {
@@ -403,13 +416,16 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   display: block !important;
 }
 
-/* Soft gold wash over the photo — keep image readable across the full band */
+/* Soft gold wash — same overhang as the photo */
 .home-am-nature__gold-wash {
   position: absolute;
-  inset: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: calc(-1 * var(--am-nature-gold-photo-overhang));
   z-index: 1;
   background: var(--am-gold);
-  opacity: 0.72;
+  opacity: 0.62;
   pointer-events: none;
 }
 
@@ -420,7 +436,6 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  /* Wide enough for “ON DAHABIYA” as one title line at dashboard sizes */
   max-width: min(44rem, 94%);
   margin: 0 auto;
   padding-top: clamp(0.35rem, 1vh, 0.75rem);
@@ -701,21 +716,19 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 }
 
 /*
- * i-video (Welcome Aboard / Bar reel) — Springs source runway.
- * Desktop: 600svh + margin-top -200svh so videoTitle (-100→-130) finishes
- * before videoImage (-300→-350), matching springs.estate shared.js.
+ * i-video (Welcome Aboard / Bar reel) — shortened runway with lockstep
+ * videoImage (-150→-175) covering cream title (inverse clip + z-index).
  */
 .home-am-video {
-  height: 350svh;
+  height: 230svh;
   z-index: 2;
 }
 
 @media (min-width: 1025px) {
   .home-am-video.home-am-chapter--under-previous {
     clip-path: polygon(0 100svh, 100% 100svh, 100% 100%, 0 100%);
-    height: 600svh;
-    margin-top: -200svh;
-    min-height: calc(100 * var(--am-svh));
+    height: 410svh;
+    margin-top: -100svh;
   }
 }
 
@@ -761,29 +774,32 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 }
 
 /*
- * Springs .i-video__text-container — relative, z-index 1 under .i-video__image.
- * Source fades title @ -100→-130 before reel @ -300→-350 — never on the photo.
+ * Cream title under Bar reel — absolute full stage, z-index under inset.
+ * Inverse-clipped in JS lockstep with videoImage so text never paints on photo.
  */
 .home-am-video .home-am-chapter__stage {
   isolation: isolate;
 }
 
 .home-am-video__text-container {
-  position: relative;
+  position: absolute;
+  inset: 0;
   z-index: 1 !important;
-  height: calc(100 * var(--am-svh));
-  min-height: calc(100 * var(--am-svh));
   pointer-events: none;
+  height: 100%;
   opacity: 1;
-  overflow: visible;
-  will-change: opacity;
+  overflow: hidden;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  will-change: clip-path, opacity;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
 }
 
 .home-am-video__title-stack {
   position: absolute;
   right: clamp(1.25rem, 4vw, 3rem);
   bottom: clamp(28vh, 34svh, 38vh);
-  z-index: 1;
+  z-index: 0;
   width: min(34rem, calc(50vw - 2 * clamp(1.25rem, 4vw, 3rem)));
   max-width: min(34rem, 48vw);
   text-align: left;
@@ -792,11 +808,8 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 
 @media (min-width: 1025px) {
   .home-am-video__title-stack {
-    /* Springs desktop: bottom calc(33.06svh - .23em); right: 0 */
-    top: auto;
-    bottom: calc(33.06svh - 0.23em);
-    right: 0;
-    padding-right: clamp(1.25rem, 4vw, 3rem);
+    top: clamp(5.5rem, 12vh, 8rem);
+    bottom: auto;
   }
 
   /* Cream panel body is phone-only; desktop copy is the video title stack. */
@@ -816,7 +829,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   top: auto;
   right: auto;
   bottom: auto;
-  z-index: 1;
+  z-index: 0;
   width: 100%;
   max-width: none;
   text-align: inherit;
@@ -845,16 +858,18 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 }
 
 /*
- * Springs .i-video__image — z-index 2 over text. Clip shut until videoImage.
+ * Bar reel image — compositing layer above cream title (sticky breaks plain z-index).
  */
 .home-am-video__inset {
   position: absolute;
   inset: 0;
-  z-index: 2 !important;
+  z-index: 10 !important;
   width: 100%;
   height: 100%;
   overflow: hidden;
   isolation: isolate;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
   will-change: clip-path;
   background: #0f0c09;
   clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
@@ -930,11 +945,11 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   }
 
   .home-am-video__inset {
-    z-index: 2 !important;
+    z-index: 10 !important;
   }
 
   .home-am-video__caption {
-    z-index: 3 !important;
+    z-index: 11 !important;
   }
 }
 
@@ -1583,7 +1598,7 @@ html[data-ex-experience]
     width: min(48vw, 28rem);
     height: auto;
     aspect-ratio: 16 / 10;
-    z-index: 2 !important;
+    z-index: 10 !important;
   }
 
   .home-am-video__text-container {
@@ -1594,7 +1609,7 @@ html[data-ex-experience]
     flex: none;
     width: min(50%, 36rem);
     max-width: none;
-    z-index: 3 !important;
+    z-index: 11 !important;
   }
 }
 
@@ -1660,7 +1675,7 @@ html[data-ex-experience]
     width: auto;
     height: auto;
     aspect-ratio: 16 / 10;
-    z-index: 2 !important;
+    z-index: 10 !important;
   }
 
   .home-am-video__text-container {
@@ -1671,7 +1686,7 @@ html[data-ex-experience]
     flex: none;
     width: 100%;
     max-width: none;
-    z-index: 3 !important;
+    z-index: 11 !important;
   }
 
   .home-am-slider {
@@ -1789,6 +1804,11 @@ html[data-ex-experience]
 
   .home-am-nature__gold-band {
     --am-nature-gold-fill: clamp(14rem, 48vh, 20rem);
+    --am-nature-gold-photo-overhang: max(
+      var(--am-nature-gold-fill),
+      32vh,
+      11rem
+    );
     min-height: var(--am-nature-gold-fill);
     margin-top: -2px;
     padding: 0 1.15rem clamp(1.15rem, 3.5vh, 1.75rem);
@@ -1804,7 +1824,7 @@ html[data-ex-experience]
   }
 
   .home-am-nature__gold-wash {
-    opacity: 0.75;
+    opacity: 0.65;
   }
 
   /* Springs mobile: horizontal swipe for cards */
