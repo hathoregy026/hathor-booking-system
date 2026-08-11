@@ -95,66 +95,38 @@ export const SPRINGS_AMENITIES_PATTERNS: PatternMap = {
     }),
 
   /**
-   * Cream title under Bar reel — MUST NOT paint over the rising image.
-   * Z-index alone is unreliable with sticky/pin transforms, so clip the
-   * text away in lockstep with videoImage (inverse of the reel reveal).
-   * Text stays visible only on the still-uncovered cream region.
+   * Springs source (shared.js) — title fades OUT before the Bar reel rises.
+   * Desktop: opacity 1 @ -100 → 0 @ -130; image clip @ -300 → -350.
+   * Title is gone long before the dining image appears — never on top of it.
    */
   videoTitle: () =>
     isLgUp()
       ? pattern({
-          "parallax--0-0": {
-            opacity: "1",
-            visibility: "visible",
-            "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-          },
-          /* Match videoImage runway: as reel rises from bottom, shrink text from bottom */
-          "parallax--150-0": {
-            opacity: "1",
-            visibility: "visible",
-            "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-          },
-          "parallax--175-0": {
-            opacity: "0",
-            visibility: "hidden",
-            "clip-path": "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
-          },
+          "parallax--100-0": { opacity: "1", visibility: "visible" },
+          "parallax--130-0": { opacity: "0", visibility: "hidden" },
         })
       : pattern({
-          "parallax--0-0": {
-            opacity: "1",
-            visibility: "visible",
-            "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-          },
-          "parallax--50-0": {
-            opacity: "1",
-            visibility: "visible",
-            "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-          },
-          "parallax--75-0": {
-            opacity: "0",
-            visibility: "hidden",
-            "clip-path": "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
-          },
+          "parallax-0-0": { opacity: "1", visibility: "visible" },
+          "parallax--30-0": { opacity: "0", visibility: "hidden" },
         }),
 
   videoImage: () =>
     isLgUp()
       ? pattern({
-          "parallax--150-0": {
+          "parallax--300-0": {
             "clip-path":
               "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
           },
-          "parallax--175-0": {
+          "parallax--350-0": {
             "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
           },
         })
       : pattern({
-          "parallax--50-0": {
+          "parallax--100-0": {
             "clip-path":
               "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
           },
-          "parallax--75-0": {
+          "parallax--150-0": {
             "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
           },
         }),

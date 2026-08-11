@@ -688,19 +688,21 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 }
 
 /*
- * i-video (Welcome Aboard / Bar reel) — scroll runway.
- * Halved from prior 460/820 so the chapter reads twice as fast.
+ * i-video (Welcome Aboard / Bar reel) — Springs source runway.
+ * Desktop: 600svh + margin-top -200svh so videoTitle (-100→-130) finishes
+ * before videoImage (-300→-350), matching springs.estate shared.js.
  */
 .home-am-video {
-  height: 230svh;
+  height: 350svh;
   z-index: 2;
 }
 
 @media (min-width: 1025px) {
   .home-am-video.home-am-chapter--under-previous {
     clip-path: polygon(0 100svh, 100% 100svh, 100% 100%, 0 100%);
-    height: 410svh;
-    margin-top: -100svh;
+    height: 600svh;
+    margin-top: -200svh;
+    min-height: calc(100 * var(--am-svh));
   }
 }
 
@@ -746,34 +748,29 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 }
 
 /*
- * Springs .i-video__text-container — MUST stay under .i-video__image.
- * Cover is z-index (not opacity alone). Never let this paint over the Bar reel.
+ * Springs .i-video__text-container — relative, z-index 1 under .i-video__image.
+ * Source fades title @ -100→-130 before reel @ -300→-350 — never on the photo.
  */
 .home-am-video .home-am-chapter__stage {
   isolation: isolate;
 }
 
 .home-am-video__text-container {
-  position: absolute;
-  inset: 0;
+  position: relative;
   z-index: 1 !important;
+  height: calc(100 * var(--am-svh));
+  min-height: calc(100 * var(--am-svh));
   pointer-events: none;
-  height: 100%;
   opacity: 1;
-  overflow: hidden;
-  /* Stay on its own layer UNDER the inset compositing layer */
-  transform: translate3d(0, 0, 0);
-  -webkit-transform: translate3d(0, 0, 0);
-  /* Inverse-clipped in lockstep with videoImage — never paints over the reel */
-  will-change: clip-path, opacity;
-  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  overflow: visible;
+  will-change: opacity;
 }
 
 .home-am-video__title-stack {
   position: absolute;
   right: clamp(1.25rem, 4vw, 3rem);
   bottom: clamp(28vh, 34svh, 38vh);
-  z-index: 0;
+  z-index: 1;
   width: min(34rem, calc(50vw - 2 * clamp(1.25rem, 4vw, 3rem)));
   max-width: min(34rem, 48vw);
   text-align: left;
@@ -782,8 +779,11 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 
 @media (min-width: 1025px) {
   .home-am-video__title-stack {
-    top: clamp(5.5rem, 12vh, 8rem);
-    bottom: auto;
+    /* Springs desktop: bottom calc(33.06svh - .23em); right: 0 */
+    top: auto;
+    bottom: calc(33.06svh - 0.23em);
+    right: 0;
+    padding-right: clamp(1.25rem, 4vw, 3rem);
   }
 
   /* Cream panel body is phone-only; desktop copy is the video title stack. */
@@ -803,7 +803,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   top: auto;
   right: auto;
   bottom: auto;
-  z-index: 0;
+  z-index: 1;
   width: 100%;
   max-width: none;
   text-align: inherit;
@@ -832,20 +832,16 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 }
 
 /*
- * Springs .i-video__image.background.background--cover — z-index 2 over text.
- * Default clip keeps it hidden until videoImage parallax opens (covers title).
+ * Springs .i-video__image — z-index 2 over text. Clip shut until videoImage.
  */
 .home-am-video__inset {
   position: absolute;
   inset: 0;
-  z-index: 10 !important;
+  z-index: 2 !important;
   width: 100%;
   height: 100%;
   overflow: hidden;
   isolation: isolate;
-  /* Force a compositing layer above the cream title (sticky pin breaks plain z-index) */
-  transform: translate3d(0, 0, 0);
-  -webkit-transform: translate3d(0, 0, 0);
   will-change: clip-path;
   background: #0f0c09;
   clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
@@ -916,17 +912,16 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 }
 
 @media (min-width: 1025px) {
-  /* Springs: text under inset — compositing layer + inverse clip (see videoTitle) */
   .home-am-video__text-container {
     z-index: 1 !important;
   }
 
   .home-am-video__inset {
-    z-index: 10 !important;
+    z-index: 2 !important;
   }
 
   .home-am-video__caption {
-    z-index: 11 !important;
+    z-index: 3 !important;
   }
 }
 
@@ -1575,7 +1570,7 @@ html[data-ex-experience]
     width: min(48vw, 28rem);
     height: auto;
     aspect-ratio: 16 / 10;
-    z-index: 10 !important;
+    z-index: 2 !important;
   }
 
   .home-am-video__text-container {
@@ -1586,7 +1581,7 @@ html[data-ex-experience]
     flex: none;
     width: min(50%, 36rem);
     max-width: none;
-    z-index: 11 !important;
+    z-index: 3 !important;
   }
 }
 
@@ -1652,7 +1647,7 @@ html[data-ex-experience]
     width: auto;
     height: auto;
     aspect-ratio: 16 / 10;
-    z-index: 10 !important;
+    z-index: 2 !important;
   }
 
   .home-am-video__text-container {
@@ -1663,7 +1658,7 @@ html[data-ex-experience]
     flex: none;
     width: 100%;
     max-width: none;
-    z-index: 11 !important;
+    z-index: 3 !important;
   }
 
   .home-am-slider {
