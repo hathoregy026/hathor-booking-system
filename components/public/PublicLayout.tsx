@@ -17,6 +17,7 @@ import {
 } from "@/lib/live-site-settings-shared";
 import {
   DEFAULT_WELCOME_SPLASH_SETTINGS,
+  WELCOME_SPLASH_PUBLIC_ENABLED,
   type WelcomeSplashSettings,
 } from "@/lib/welcome-splash-settings-shared";
 import type { ReactNode } from "react";
@@ -44,7 +45,8 @@ export function PublicLayout({
   comingSoonActive = false,
 }: PublicLayoutProps) {
   const deployId = resolveDeployId();
-  const splashEnabled = welcomeSplash.enabled;
+  const splashEnabled =
+    WELCOME_SPLASH_PUBLIC_ENABLED && welcomeSplash.enabled;
   const splashImageUrl = welcomeSplash.imageUrl;
 
   /* Custom domain only — Vercel / localhost keep the real site. */

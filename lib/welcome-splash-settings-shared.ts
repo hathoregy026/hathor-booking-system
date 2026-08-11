@@ -12,8 +12,15 @@ export const welcomeSplashSettingsSchema = z.object({
 
 export type WelcomeSplashSettings = z.infer<typeof welcomeSplashSettingsSchema>;
 
+/**
+ * Hard kill for the gold "Welcome Aboard" land preload.
+ * Not professional for this brand — public site never shows it, even if CMS is on.
+ * Admin preload settings remain for assets / future use.
+ */
+export const WELCOME_SPLASH_PUBLIC_ENABLED = false;
+
 export const DEFAULT_WELCOME_SPLASH_SETTINGS: WelcomeSplashSettings = {
-  enabled: true,
+  enabled: false,
   imageUrl: HATHOR_WELCOME_ABOARD_SRC,
 };
 

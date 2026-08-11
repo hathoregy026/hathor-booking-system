@@ -17,6 +17,7 @@ import {
   getWelcomeSplashBlockingScript,
   getWelcomeSplashCriticalStyle,
 } from "@/lib/public-theme";
+import { WELCOME_SPLASH_PUBLIC_ENABLED } from "@/lib/welcome-splash-settings-shared";
 import {
   heroLogoTuneToImportantCss,
   heroLogoTuneToNarrowImportantCss,
@@ -162,7 +163,7 @@ export default async function PublicSiteLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: getWelcomeSplashBlockingScript(
-              welcomeSplash.enabled,
+              WELCOME_SPLASH_PUBLIC_ENABLED && welcomeSplash.enabled,
               welcomeSplash.imageUrl,
             ),
           }}

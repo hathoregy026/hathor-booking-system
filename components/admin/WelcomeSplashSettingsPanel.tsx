@@ -113,6 +113,18 @@ export function WelcomeSplashSettingsPanel() {
 
   return (
     <div className="space-y-6">
+      <p
+        className="rounded-lg border px-3 py-2 text-sm"
+        style={{
+          borderColor: "var(--border)",
+          background: "var(--surface-2, var(--surface))",
+          color: "var(--text-secondary)",
+        }}
+      >
+        Public site preload is currently force-off (no gold Welcome Aboard flash
+        on land). Saving here keeps assets ready; it will not show until the
+        public kill switch is re-enabled in code.
+      </p>
       <label className="flex cursor-pointer items-start gap-3">
         <input
           type="checkbox"
