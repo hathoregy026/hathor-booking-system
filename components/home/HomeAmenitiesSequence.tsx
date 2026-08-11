@@ -641,14 +641,14 @@ export function HomeAmenitiesSequence({
                   <AmenitiesTitleLines
                     as="h2"
                     lines={creamTitleLines}
-                    className="home-am-on-cream-title"
+                    className="home-am-on-cream-title typo-on-images-title"
                     style={onCreamTitle}
                   />
                 </div>
                 <AmenitiesCopyText
                   as="p"
                   value={videoMain.body}
-                  className="home-am-video__title-body"
+                  className="home-am-video__title-body typo-on-images-body"
                   style={onCreamBody}
                 />
               </div>

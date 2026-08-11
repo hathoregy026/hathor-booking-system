@@ -95,45 +95,23 @@ export const SPRINGS_AMENITIES_PATTERNS: PatternMap = {
     }),
 
   /**
-   * Cream title under Bar reel — image must cover text (not the reverse).
-   * Sticky/pin compositing breaks plain z-index, so clip text away in lockstep
-   * with videoImage. Title stays only on the still-uncovered cream region.
+   * Springs videoTitle — opacity only on the cream title container.
+   * Stays visible on cream, then hides as videoImage rises over it
+   * (same runway as inset). Do not add clip-path here — cover is z-index.
    */
   videoTitle: () =>
     isLgUp()
       ? pattern({
-          "parallax--0-0": {
-            opacity: "1",
-            visibility: "visible",
-            "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-          },
-          "parallax--150-0": {
-            opacity: "1",
-            visibility: "visible",
-            "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-          },
-          "parallax--175-0": {
-            opacity: "0",
-            visibility: "hidden",
-            "clip-path": "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
-          },
+          "parallax--0-0": { opacity: "1", visibility: "visible" },
+          "parallax--149-0": { opacity: "1", visibility: "visible" },
+          "parallax--150-0": { opacity: "1", visibility: "visible" },
+          "parallax--175-0": { opacity: "0", visibility: "hidden" },
         })
       : pattern({
-          "parallax--0-0": {
-            opacity: "1",
-            visibility: "visible",
-            "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-          },
-          "parallax--50-0": {
-            opacity: "1",
-            visibility: "visible",
-            "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-          },
-          "parallax--75-0": {
-            opacity: "0",
-            visibility: "hidden",
-            "clip-path": "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
-          },
+          "parallax--0-0": { opacity: "1", visibility: "visible" },
+          "parallax--49-0": { opacity: "1", visibility: "visible" },
+          "parallax--50-0": { opacity: "1", visibility: "visible" },
+          "parallax--75-0": { opacity: "0", visibility: "hidden" },
         }),
 
   videoImage: () =>
