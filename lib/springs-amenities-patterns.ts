@@ -42,7 +42,7 @@ export const SPRINGS_AMENITIES_PATTERNS: PatternMap = {
             width: "250%",
             transform: "translateX(9%)",
           },
-          "parallax--50-0": {
+          "parallax--100-0": {
             width: "125%",
             transform: "translateX(0%)",
           },
@@ -73,25 +73,25 @@ export const SPRINGS_AMENITIES_PATTERNS: PatternMap = {
   videoZoom: () =>
     isLgUp()
       ? pattern({
-          "parallax--50-0": {
+          "parallax--100-0": {
             transform: "scale(0.29) translate(-206px, -206px)",
           },
-          "parallax--55-0": {
+          "parallax--110-0": {
             transform: "scale(0.5) translate(0px, 0px)",
           },
-          "parallax--75-0": {
+          "parallax--150-0": {
             transform: "scale(1) translate(0px, 0px)",
           },
         })
       : pattern({
           "parallax--0-0": { height: "38%" },
-          "parallax--25-0": { height: "100%" },
+          "parallax--50-0": { height: "100%" },
         }),
 
   videoTranslate: () =>
     pattern({
       "parallax--0-0": { transform: "translate(9%, 16%) scale(0.66)" },
-      "parallax--25-0": { transform: "translate(0%, 0%) scale(1)" },
+      "parallax--50-0": { transform: "translate(0%, 0%) scale(1)" },
     }),
 
   /**
@@ -102,35 +102,31 @@ export const SPRINGS_AMENITIES_PATTERNS: PatternMap = {
   videoTitle: () =>
     isLgUp()
       ? pattern({
-          "parallax--0-0": { opacity: "1", visibility: "visible" },
-          "parallax--149-0": { opacity: "1", visibility: "visible" },
-          "parallax--150-0": { opacity: "1", visibility: "visible" },
-          "parallax--175-0": { opacity: "0", visibility: "hidden" },
+          "parallax--100-0": { opacity: "1" },
+          "parallax--130-0": { opacity: "0" },
         })
       : pattern({
-          "parallax--0-0": { opacity: "1", visibility: "visible" },
-          "parallax--49-0": { opacity: "1", visibility: "visible" },
-          "parallax--50-0": { opacity: "1", visibility: "visible" },
-          "parallax--75-0": { opacity: "0", visibility: "hidden" },
+          "parallax-0-0": { opacity: "1" },
+          "parallax--30-0": { opacity: "0" },
         }),
 
   videoImage: () =>
     isLgUp()
       ? pattern({
-          "parallax--150-0": {
+          "parallax--300-0": {
             "clip-path":
               "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
           },
-          "parallax--175-0": {
+          "parallax--350-0": {
             "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
           },
         })
       : pattern({
-          "parallax--50-0": {
+          "parallax--100-0": {
             "clip-path":
               "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
           },
-          "parallax--75-0": {
+          "parallax--150-0": {
             "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
           },
         }),
@@ -175,35 +171,35 @@ export const SPRINGS_AMENITIES_PATTERNS: PatternMap = {
     const mobileExit = Math.max(captionH - 40, 100 * lvh() - captionH);
     if (isLgUp()) {
       return pattern({
-        "parallax--80-0": {
+        "parallax--160-0": {
           "clip-path":
             "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
           transform: `translateY(${captionH / 3}px)`,
         },
-        "parallax--150-0": {
+        "parallax--300-0": {
           "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
           transform: `translateY(${captionH / 3}px)`,
         },
-        "parallax--200-0": {
+        "parallax--400-0": {
           "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
           transform: `translateY(${-distance}px)`,
         },
-        "parallax--215-0": {
+        "parallax--430-0": {
           "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
           transform: `translateY(${-2 * distance}px)`,
         },
       });
     }
     return pattern({
-      "parallax--30-0": {
+      "parallax--60-0": {
         "clip-path": "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
         transform: `translateY(${captionH / 3}px)`,
       },
-      "parallax--50-0": {
+      "parallax--100-0": {
         "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
         transform: `translateY(${captionH / 3}px)`,
       },
-      "parallax--85-0": {
+      "parallax--170-0": {
         "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
         transform: `translateY(${-mobileExit}px)`,
       },

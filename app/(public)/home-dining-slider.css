@@ -577,13 +577,13 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 
 /* ========== i-intro — longer runway = slower scroll pace ========== */
 .home-am-intro {
-  height: 180svh;
+  height: 150svh;
   z-index: 1;
 }
 
 @media (min-width: 1025px) {
   .home-am-intro {
-    height: 360svh;
+    height: 300svh;
   }
 }
 
@@ -727,15 +727,15 @@ html[data-public-theme="night"] .home-am-voyages__stage {
  * videoImage (-150→-175) covering cream title (inverse clip + z-index).
  */
 .home-am-video {
-  height: 230svh;
+  height: 350svh;
   z-index: 2;
 }
 
 @media (min-width: 1025px) {
   .home-am-video.home-am-chapter--under-previous {
     clip-path: polygon(0 100svh, 100% 100svh, 100% 100%, 0 100%);
-    height: 410svh;
-    margin-top: -100svh;
+    height: 600svh;
+    margin-top: -200svh;
   }
 }
 
@@ -985,7 +985,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 
 /* ========== i-slider — paced slower than Springs 600svh ========== */
 .home-am-slider {
-  height: 720svh;
+  height: 600svh;
 }
 
 .home-am-chapter--under-previous + .home-am-slider {
@@ -1584,19 +1584,19 @@ html[data-ex-experience]
   }
 
   .home-am-intro {
-    height: 230svh;
+    height: 150svh;
   }
 
   .home-am-video {
-    height: 240svh;
+    height: 350svh;
   }
 
   .home-am-slider {
-    height: 620svh;
+    height: 600svh;
   }
 
   .home-am-opening {
-    height: 320svh;
+    height: 250svh;
     min-height: 0;
   }
 
@@ -1618,17 +1618,13 @@ html[data-ex-experience]
     max-width: min(30rem, 52vw);
   }
 
-  /* Tablet: framed inset (Springs md), not desktop full-bleed cover */
+  /* Springs i-video__image: full-stage rising cover on tablet. */
   .home-am-video__inset {
-    inset: auto;
-    top: auto;
-    right: clamp(1.25rem, 5vw, 4rem);
-    bottom: clamp(1.25rem, 4vh, 2.5rem);
-    left: auto;
-    width: min(48vw, 28rem);
-    height: auto;
-    aspect-ratio: 16 / 10;
-    z-index: 4;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    z-index: 2;
   }
 
   .home-am-video__caption {
@@ -1646,7 +1642,7 @@ html[data-ex-experience]
   }
 
   .home-am-intro {
-    height: 220svh;
+    height: 150svh;
   }
 
   .home-am-intro__caption {
@@ -1665,7 +1661,7 @@ html[data-ex-experience]
   }
 
   .home-am-video {
-    height: 225svh;
+    height: 350svh;
   }
 
   .home-am-video__hero,
@@ -1690,17 +1686,13 @@ html[data-ex-experience]
     text-align: left;
   }
 
-  /* Phone: Springs keeps a framed inset card (not desktop full-bleed cover) */
+  /* Springs i-video__image: full-stage rising cover on phone. */
   .home-am-video__inset {
-    inset: auto;
-    top: auto;
-    right: 1.15rem;
-    left: 1.15rem;
-    bottom: 1.1rem;
-    width: auto;
-    height: auto;
-    aspect-ratio: 16 / 10;
-    z-index: 4;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    z-index: 2;
   }
 
   .home-am-video__caption {
@@ -1710,7 +1702,7 @@ html[data-ex-experience]
   }
 
   .home-am-slider {
-    height: 520svh;
+    height: 600svh;
   }
 
   .home-am-slider__row {
@@ -1752,7 +1744,7 @@ html[data-ex-experience]
 
   /* Springs mobile i-opening */
   .home-am-opening {
-    height: 280svh;
+    height: 250svh;
     min-height: 0;
     pointer-events: none;
     z-index: 4;

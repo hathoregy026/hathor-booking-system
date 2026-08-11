@@ -198,27 +198,6 @@ export function useHomeAmenitiesSequence(
       stage.style.zIndex = z;
     };
 
-    const videoHero = root.querySelector<HTMLElement>("[data-am-video-hero]");
-    const videoTitle = root.querySelector<HTMLElement>("[data-am-video-title]");
-
-    /**
-     * Keep the title on the page background and mask it at the dining image's
-     * live top edge. The image itself stays untouched and visible.
-     */
-    const syncCreamTitleUnderBarReel = () => {
-      if (!videoHero || !videoTitle) return;
-      const imageRect = videoHero.getBoundingClientRect();
-      const titleRect = videoTitle.getBoundingClientRect();
-      const uncoveredHeight = Math.max(
-        0,
-        Math.min(titleRect.height, imageRect.top - titleRect.top),
-      );
-      videoTitle.style.clipPath = `inset(0 0 ${Math.max(
-        0,
-        titleRect.height - uncoveredHeight,
-      )}px 0)`;
-    };
-
     const syncPins = () => {
       pinTargets.forEach(syncChapterPin);
     };
@@ -234,7 +213,6 @@ export function useHomeAmenitiesSequence(
         const y = window.scrollY || window.pageYOffset;
         engine.update(y);
         syncPins();
-        syncCreamTitleUnderBarReel();
 
         if (slider && captions.length) {
           const rect = slider.getBoundingClientRect();
@@ -288,21 +266,18 @@ export function useHomeAmenitiesSequence(
       if (!active) return;
       engine.refresh();
       syncPins();
-      syncCreamTitleUnderBarReel();
       requestScrollRefresh("home-am-springs-layout");
     });
     void document.fonts.ready.then(() => {
       if (!active) return;
       engine.refresh();
       syncPins();
-      syncCreamTitleUnderBarReel();
       ScrollTrigger.refresh();
     });
     const settled = window.setTimeout(() => {
       if (!active) return;
       engine.refresh();
       syncPins();
-      syncCreamTitleUnderBarReel();
       ScrollTrigger.refresh();
     }, 1000);
 
@@ -314,7 +289,6 @@ export function useHomeAmenitiesSequence(
       lastW = window.innerWidth;
       engine.refresh();
       syncPins();
-      syncCreamTitleUnderBarReel();
       ScrollTrigger.refresh();
     };
     window.addEventListener(
@@ -331,9 +305,6 @@ export function useHomeAmenitiesSequence(
         onViewport,
       );
       pinTargets.forEach(clearPin);
-      if (videoTitle) {
-        videoTitle.style.clipPath = "";
-      }
       st.kill();
       helmSt?.kill();
       engine.destroy();
