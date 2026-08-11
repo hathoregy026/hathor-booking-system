@@ -799,6 +799,10 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   right: clamp(1.25rem, 4vw, 3rem);
   bottom: clamp(28vh, 34svh, 38vh);
   z-index: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(0.85rem, 1.8vh, 1.35rem);
   width: min(34rem, calc(50vw - 2 * clamp(1.25rem, 4vw, 3rem)));
   max-width: min(34rem, 48vw);
   text-align: left;
@@ -835,10 +839,31 @@ html[data-public-theme="night"] .home-am-voyages__stage {
   will-change: auto;
 }
 
+/* This handoff stack only — keep title/body as a clean vertical lockup */
+.home-am-video__title-stack .home-am-on-cream-title,
+.home-am-video__title-stack .home-am-on-cream-title * {
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
+  display: block;
+}
+
+.home-am-video__title-stack .home-am-title-line {
+  display: block !important;
+  white-space: nowrap;
+}
+
 .home-am-video__title-body {
-  margin: clamp(1rem, 2.2vh, 1.65rem) 0 0;
+  margin: 0;
   max-width: 100%;
   text-align: left;
+}
+
+.home-am-video__title-stack .home-am-video__title-body,
+.home-am-video__title-stack .home-am-video__title-body * {
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
 }
 
 .home-am-video__title-body p {
@@ -847,7 +872,7 @@ html[data-public-theme="night"] .home-am-voyages__stage {
 
 .home-am-video__title h2 {
   margin: 0;
-  line-height: 0.98;
+  line-height: 1.02;
 }
 
 .home-am-video__title span,

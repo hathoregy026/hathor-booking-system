@@ -127,7 +127,7 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
     `${sel(
       " .home-am-on-cream-title",
       " .home-am-video__title .home-am-on-cream-title",
-    )}{position:relative!important;left:var(--am-typo-title-x,0px)!important;top:var(--am-typo-title-y,0px)!important;z-index:0!important;margin-top:0!important;margin-bottom:var(--am-typo-gap-title-sub)!important;}`,
+    )}{position:relative!important;left:0!important;top:0!important;z-index:0!important;margin-top:0!important;margin-bottom:var(--am-typo-gap-title-sub)!important;}`,
     `${sel(
       " .typo-on-images-indication",
       " .home-am-nature__indication",
@@ -137,9 +137,13 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
       " .typo-on-images-body:not(.home-am-opening__list-item-text):not(.home-am-video__title-body)",
       " .home-am-nature__body",
     )}{position:relative!important;left:var(--am-typo-body-x,0px)!important;top:var(--am-typo-body-y,0px)!important;z-index:2!important;margin-top:0!important;margin-bottom:var(--am-typo-gap-body-cta)!important;}`,
+    /* Bar cream handoff only — never inherit drag offsets (they overlap title+body). */
     `${sel(
       " .home-am-video__title-body",
-    )}{position:relative!important;left:var(--am-typo-body-x,0px)!important;top:var(--am-typo-body-y,0px)!important;z-index:0!important;margin-top:0!important;margin-bottom:var(--am-typo-gap-body-cta)!important;}`,
+    )}{position:relative!important;left:0!important;top:0!important;z-index:0!important;margin-top:0!important;margin-bottom:0!important;line-height:${Math.max(Number(body.lineHeight) || 0, 1.3)}!important;}`,
+    `${sel(
+      " .home-am-video__title-body *",
+    )}{line-height:inherit!important;}`,
     /* Opening card labels stay absolute overlays — never inherit body layout offsets. */
     `${sel(
       " .home-am-opening__list-item-text",
@@ -180,20 +184,26 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
   );
   const bodyMetrics = roleMetricsCss(
     sel(
-      " .typo-on-images-body",
-      " .typo-on-images-body *",
+      " .typo-on-images-body:not(.home-am-video__title-body)",
+      " .typo-on-images-body:not(.home-am-video__title-body) *",
       " .home-am-nature__body",
       " .home-am-nature__body *",
       " .home-am-opening__caption-text",
       " .home-am-opening__caption-text *",
       " .home-am-intro__cream-text",
       " .home-am-intro__cream-text *",
-      " .home-am-video__title-body",
-      " .home-am-video__title-body *",
       " .home-am-intro__cream .typo-body-text",
       " .home-am-intro__cream .typo-body-text *",
     ),
     body,
+  );
+  /* Bar cream handoff body — same dash font/size/colour, readable line-height floor */
+  const videoCreamBodyMetrics = roleMetricsCss(
+    sel(" .home-am-video__title-body", " .home-am-video__title-body *"),
+    {
+      ...body,
+      lineHeight: Math.max(Number(body.lineHeight) || 0, 1.3),
+    },
   );
 
   /* Base = gold-panel colour (most gold captions use typo-on-images-* bare).
@@ -373,6 +383,7 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
     titleMetrics,
     indicationMetrics,
     bodyMetrics,
+    videoCreamBodyMetrics,
     baseColors,
     onGoldColors,
     onCreamColors,
