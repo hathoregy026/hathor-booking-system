@@ -120,18 +120,26 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
       " .home-am-opening__caption",
     )}{text-align:var(--am-typo-align,left)!important;}`,
     `${sel(
-      " .typo-on-images-title",
+      " .typo-on-images-title:not(.home-am-on-cream-title)",
       " .home-am-nature__title",
       " .home-am-opening__title",
     )}{position:relative!important;left:var(--am-typo-title-x,0px)!important;top:var(--am-typo-title-y,0px)!important;z-index:1!important;margin-top:0!important;margin-bottom:var(--am-typo-gap-title-sub)!important;}`,
     `${sel(
+      " .home-am-on-cream-title",
+      " .home-am-video__title .home-am-on-cream-title",
+    )}{position:relative!important;left:var(--am-typo-title-x,0px)!important;top:var(--am-typo-title-y,0px)!important;z-index:0!important;margin-top:0!important;margin-bottom:var(--am-typo-gap-title-sub)!important;}`,
+    `${sel(
       " .typo-on-images-indication",
       " .home-am-nature__indication",
+      " .home-am-intro__indication",
     )}{position:relative!important;left:var(--am-typo-indication-x,0px)!important;top:var(--am-typo-indication-y,0px)!important;z-index:3!important;margin-top:0!important;margin-bottom:var(--am-typo-gap-sub-body)!important;}`,
     `${sel(
-      " .typo-on-images-body:not(.home-am-opening__list-item-text)",
+      " .typo-on-images-body:not(.home-am-opening__list-item-text):not(.home-am-video__title-body)",
       " .home-am-nature__body",
     )}{position:relative!important;left:var(--am-typo-body-x,0px)!important;top:var(--am-typo-body-y,0px)!important;z-index:2!important;margin-top:0!important;margin-bottom:var(--am-typo-gap-body-cta)!important;}`,
+    `${sel(
+      " .home-am-video__title-body",
+    )}{position:relative!important;left:var(--am-typo-body-x,0px)!important;top:var(--am-typo-body-y,0px)!important;z-index:0!important;margin-top:0!important;margin-bottom:var(--am-typo-gap-body-cta)!important;}`,
     /* Opening card labels stay absolute overlays — never inherit body layout offsets. */
     `${sel(
       " .home-am-opening__list-item-text",
@@ -188,12 +196,12 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
     body,
   );
 
-  /* Base = gold-panel colour (most gold captions use typo-on-images-* bare). */
+  /* Base = gold-panel colour (most gold captions use typo-on-images-* bare).
+   * Cream Bar title uses .home-am-on-cream-title / .home-am-video__title-body only. */
   const baseColors = [
     roleColorCss(
       sel(
-        " .typo-on-images-title",
-        " .typo-on-images-title *",
+        " .typo-on-images-title:not(.home-am-on-cream-title)",
         " .home-am-nature__title",
         " .home-am-nature__title *",
         " .home-am-opening__title",
@@ -216,8 +224,8 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
     ),
     roleColorCss(
       sel(
-        " .typo-on-images-body",
-        " .typo-on-images-body *",
+        " .typo-on-images-body:not(.home-am-video__title-body)",
+        " .typo-on-images-body:not(.home-am-video__title-body) *",
         " .home-am-nature__body",
         " .home-am-nature__body *",
         " .home-am-video__caption-text",

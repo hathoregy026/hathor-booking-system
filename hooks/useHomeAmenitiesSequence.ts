@@ -198,6 +198,28 @@ export function useHomeAmenitiesSequence(
       stage.style.zIndex = z;
     };
 
+    const videoInset = root.querySelector<HTMLElement>("[data-am-video-inset]");
+    const videoTitle = root.querySelector<HTMLElement>("[data-am-video-title]");
+
+    /**
+     * Keep cream title under the rising Bar reel. Sticky pins break z-index,
+     * so clip the title to the still-uncovered cream band (inverse of inset).
+     * Do not force opacity — parallax videoTitle owns fade timing.
+     */
+    const syncCreamTitleUnderBarReel = () => {
+      if (!videoInset || !videoTitle) return;
+      const clip = videoInset.style.clipPath || "";
+      const nums = Array.from(clip.matchAll(/(\d+(?:\.\d+)?)%/g)).map((m) =>
+        parseFloat(m[1]),
+      );
+      /* videoImage polygon: (0% topY, 100% topY, 100% 100%, 0% 100%) */
+      const topY =
+        nums.length >= 2 && Number.isFinite(nums[1]) ? nums[1] : 100;
+      const y = Math.max(0, Math.min(100, topY));
+      videoTitle.style.clipPath = `polygon(0% 0%, 100% 0%, 100% ${y}%, 0% ${y}%)`;
+      videoTitle.style.visibility = y <= 2 ? "hidden" : "";
+    };
+
     const syncPins = () => {
       pinTargets.forEach(syncChapterPin);
     };
@@ -213,8 +235,7 @@ export function useHomeAmenitiesSequence(
         const y = window.scrollY || window.pageYOffset;
         engine.update(y);
         syncPins();
-        /* Cream title: Springs videoTitle opacity fade only — never force
-         * opacity/clip here (that kept text visible over the Bar reel). */
+        syncCreamTitleUnderBarReel();
 
         if (slider && captions.length) {
           const rect = slider.getBoundingClientRect();
@@ -268,18 +289,21 @@ export function useHomeAmenitiesSequence(
       if (!active) return;
       engine.refresh();
       syncPins();
+      syncCreamTitleUnderBarReel();
       requestScrollRefresh("home-am-springs-layout");
     });
     void document.fonts.ready.then(() => {
       if (!active) return;
       engine.refresh();
       syncPins();
+      syncCreamTitleUnderBarReel();
       ScrollTrigger.refresh();
     });
     const settled = window.setTimeout(() => {
       if (!active) return;
       engine.refresh();
       syncPins();
+      syncCreamTitleUnderBarReel();
       ScrollTrigger.refresh();
     }, 1000);
 
@@ -307,6 +331,10 @@ export function useHomeAmenitiesSequence(
         onViewport,
       );
       pinTargets.forEach(clearPin);
+      if (videoTitle) {
+        videoTitle.style.clipPath = "";
+        videoTitle.style.visibility = "";
+      }
       st.kill();
       helmSt?.kill();
       engine.destroy();

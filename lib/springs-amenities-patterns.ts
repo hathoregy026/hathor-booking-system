@@ -95,38 +95,64 @@ export const SPRINGS_AMENITIES_PATTERNS: PatternMap = {
     }),
 
   /**
-   * Springs source (shared.js) — title fades OUT before the Bar reel rises.
-   * Desktop: opacity 1 @ -100 → 0 @ -130; image clip @ -300 → -350.
-   * Title is gone long before the dining image appears — never on top of it.
+   * Cream title under Bar reel — image must cover text (not the reverse).
+   * Sticky/pin compositing breaks plain z-index, so clip text away in lockstep
+   * with videoImage. Title stays only on the still-uncovered cream region.
    */
   videoTitle: () =>
     isLgUp()
       ? pattern({
-          "parallax--100-0": { opacity: "1", visibility: "visible" },
-          "parallax--130-0": { opacity: "0", visibility: "hidden" },
+          "parallax--0-0": {
+            opacity: "1",
+            visibility: "visible",
+            "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+          },
+          "parallax--150-0": {
+            opacity: "1",
+            visibility: "visible",
+            "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+          },
+          "parallax--175-0": {
+            opacity: "0",
+            visibility: "hidden",
+            "clip-path": "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
+          },
         })
       : pattern({
-          "parallax-0-0": { opacity: "1", visibility: "visible" },
-          "parallax--30-0": { opacity: "0", visibility: "hidden" },
+          "parallax--0-0": {
+            opacity: "1",
+            visibility: "visible",
+            "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+          },
+          "parallax--50-0": {
+            opacity: "1",
+            visibility: "visible",
+            "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+          },
+          "parallax--75-0": {
+            opacity: "0",
+            visibility: "hidden",
+            "clip-path": "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
+          },
         }),
 
   videoImage: () =>
     isLgUp()
       ? pattern({
-          "parallax--300-0": {
+          "parallax--150-0": {
             "clip-path":
               "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
           },
-          "parallax--350-0": {
+          "parallax--175-0": {
             "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
           },
         })
       : pattern({
-          "parallax--100-0": {
+          "parallax--50-0": {
             "clip-path":
               "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
           },
-          "parallax--150-0": {
+          "parallax--75-0": {
             "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
           },
         }),
