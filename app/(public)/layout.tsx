@@ -161,7 +161,10 @@ export default async function PublicSiteLayout({
       {siteIsLive ? (
         <script
           dangerouslySetInnerHTML={{
-            __html: getWelcomeSplashBlockingScript(welcomeSplash.enabled),
+            __html: getWelcomeSplashBlockingScript(
+              welcomeSplash.enabled,
+              welcomeSplash.imageUrl,
+            ),
           }}
         />
       ) : null}

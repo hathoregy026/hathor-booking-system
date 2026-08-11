@@ -1,137 +1,68 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
 import type { WelcomeSplashSettings } from "@/lib/welcome-splash-settings-shared";
 
-/** Minimum time the gold preload stays up (feels intentional, not a blink). */
-const MIN_HOLD_MS = 650;
-/** Hard cap — never leave visitors on the gold screen longer than this. */
-const MAX_HOLD_MS = 1200;
-const FADE_MS = 280;
-
 type WelcomeSplashProps = Pick<WelcomeSplashSettings, "enabled" | "imageUrl">;
 
-function shouldSkipWelcomeSplash(enabled: boolean): boolean {
-  if (!enabled) return true;
-  if (typeof document === "undefined") return false;
-  if (document.documentElement.classList.contains("hathor-welcome-skip")) {
-    return true;
-  }
-  try {
-    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  } catch {
-    return false;
-  }
-}
-
-function revealPublicSiteAfterSplash() {
-  const root = document.documentElement;
-  root.classList.add("hathor-welcome-ready");
-  root.classList.remove("hathor-welcome-lock");
-  const scroll = ensurePublicScrollController();
-  scroll.start();
-  scroll.syncToCurrentScroll();
-}
-
 /**
- * Full-screen welcome on every hard land of the public site.
- * Short hold (≤1.2s): dismiss as soon as the image is ready after the min hold.
- * Skipped when disabled in CMS or when prefers-reduced-motion is set.
+ * Boot overlay + 700ms dismiss live in the blocking head/body script
+ * (`getWelcomeSplashBlockingScript`) so they never wait on React hydrate.
+ * This component only syncs scroll once the boot script marks ready/skip.
  */
-export function WelcomeSplash({ enabled, imageUrl }: WelcomeSplashProps) {
-  const [phase, setPhase] = useState<"hold" | "fade" | "gone">(() =>
-    shouldSkipWelcomeSplash(enabled) ? "gone" : "hold",
-  );
-  const imgRef = useRef<HTMLImageElement>(null);
-  const fadingRef = useRef(false);
-
+export function WelcomeSplash({ enabled }: WelcomeSplashProps) {
   useEffect(() => {
-    if (shouldSkipWelcomeSplash(enabled)) {
-      document.documentElement.classList.remove("hathor-welcome-lock");
-      document.documentElement.classList.add("hathor-welcome-skip");
-      document.documentElement.classList.add("hathor-welcome-ready");
+    const root = document.documentElement;
+
+    const release = () => {
+      root.classList.add("hathor-welcome-ready");
+      root.classList.remove("hathor-welcome-lock");
+      const scroll = ensurePublicScrollController();
+      scroll.start();
+      scroll.syncToCurrentScroll();
+    };
+
+    if (
+      !enabled ||
+      root.classList.contains("hathor-welcome-skip") ||
+      root.classList.contains("hathor-welcome-ready")
+    ) {
+      if (!enabled) {
+        root.classList.add("hathor-welcome-skip");
+      }
+      release();
       return;
     }
 
-    document.documentElement.classList.add("hathor-welcome-lock");
-    document.documentElement.classList.remove("hathor-welcome-ready");
-    const scroll = ensurePublicScrollController();
-    scroll.stop();
-
-    const startedAt = performance.now();
-    fadingRef.current = false;
-    const timers = new Set<number>();
-    let removed = false;
-
-    const clearTimers = () => {
-      timers.forEach((id) => window.clearTimeout(id));
-      timers.clear();
-    };
-
-    const beginFade = () => {
-      if (fadingRef.current || removed) return;
-      fadingRef.current = true;
-      clearTimers();
-      setPhase("fade");
-      timers.add(
-        window.setTimeout(() => {
-          setPhase("gone");
-          revealPublicSiteAfterSplash();
-        }, FADE_MS),
-      );
-    };
-
-    const scheduleFadeAfterMinHold = () => {
-      if (fadingRef.current || removed) return;
-      const wait = Math.max(0, MIN_HOLD_MS - (performance.now() - startedAt));
-      timers.add(window.setTimeout(beginFade, wait));
-    };
-
-    timers.add(window.setTimeout(beginFade, MAX_HOLD_MS));
-
-    const img = imgRef.current;
-    const onImageReady = () => scheduleFadeAfterMinHold();
-
-    if (img) {
-      if (img.complete && img.naturalWidth > 0) {
-        scheduleFadeAfterMinHold();
-      } else {
-        img.addEventListener("load", onImageReady);
-        img.addEventListener("error", onImageReady);
+    const onReady = () => {
+      if (
+        root.classList.contains("hathor-welcome-ready") ||
+        root.classList.contains("hathor-welcome-skip")
+      ) {
+        const scroll = ensurePublicScrollController();
+        scroll.start();
+        scroll.syncToCurrentScroll();
+        return true;
       }
-    } else {
-      scheduleFadeAfterMinHold();
-    }
+      return false;
+    };
+
+    if (onReady()) return;
+
+    const obs = new MutationObserver(() => {
+      if (onReady()) obs.disconnect();
+    });
+    obs.observe(root, { attributes: true, attributeFilter: ["class"] });
+
+    /* Belt-and-suspenders if boot script failed. */
+    const failsafe = window.setTimeout(release, 1200);
 
     return () => {
-      removed = true;
-      clearTimers();
-      if (img) {
-        img.removeEventListener("load", onImageReady);
-        img.removeEventListener("error", onImageReady);
-      }
-      /* Keep lock; do not mark ready — remount continues the cover. */
+      obs.disconnect();
+      window.clearTimeout(failsafe);
     };
   }, [enabled]);
 
-  if (phase === "gone" || !enabled) return null;
-
-  return (
-    <div
-      className={`hathor-welcome-splash${phase === "fade" ? " hathor-welcome-splash--out" : ""}`}
-      aria-hidden="true"
-      role="presentation"
-    >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        ref={imgRef}
-        src={imageUrl}
-        alt=""
-        className="hathor-welcome-splash__img"
-        decoding="async"
-        fetchPriority="high"
-      />
-    </div>
-  );
+  return null;
 }
