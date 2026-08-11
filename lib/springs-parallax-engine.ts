@@ -122,12 +122,23 @@ function viewportSizeList(natural: boolean) {
   };
 }
 
-function resolveMeasure(el: HTMLElement, selector: string | null): HTMLElement {
+function resolveMeasure(
+  el: HTMLElement,
+  selector: string | null,
+  root?: HTMLElement,
+): HTMLElement {
   if (!selector) return el;
   const found = el.closest(selector);
   if (found instanceof HTMLElement) return found;
   const nested = el.querySelector(selector);
   if (nested instanceof HTMLElement) return nested;
+  /* Sibling / document targets — e.g. nature gold band → #home-am-nature */
+  try {
+    const scoped = (root ?? document).querySelector(selector);
+    if (scoped instanceof HTMLElement) return scoped;
+  } catch {
+    /* invalid selector */
+  }
   return el;
 }
 
@@ -209,7 +220,7 @@ export function createSpringsParallax(
 
       const localMeasure =
         el.getAttribute("data-parallax-measure-selector") || measureSelector;
-      const measure = resolveMeasure(el, localMeasure);
+      const measure = resolveMeasure(el, localMeasure, root);
       const clamp = el.getAttribute("data-parallax-clamp") !== "false";
 
       let points = collectAttrPoints(el);

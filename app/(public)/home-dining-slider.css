@@ -382,6 +382,13 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   background-color: var(--am-gold);
   /* Allow photo/wash to paint into the solid-gold void above this box */
   overflow: visible;
+  /*
+   * Boot closed at the bottom — Springs parallax opens to full rect
+   * (--140 → --200 on #home-am-nature) so the faded image rises like
+   * opening / video panels instead of arriving as one block.
+   */
+  clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
+  will-change: clip-path;
 }
 
 /*
@@ -1857,6 +1864,11 @@ html[data-ex-experience]
   .home-am-slider,
   .home-am-opening {
     height: auto;
+  }
+
+  .home-am-nature__gold-band {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+    will-change: auto;
   }
 
   .home-am-chapter__stage {
