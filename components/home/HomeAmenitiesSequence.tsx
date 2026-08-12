@@ -92,16 +92,15 @@ function NatureGoldBand({
       id="home-am-nature-caption"
       data-site-image={name}
       /*
-        Physically slide the photo panel upward while its lower edge is
-        clipped, then finish at its normal full-cover position before the
-        pinned nature chapter hands off to Our Voyages.
+        Wait below the viewport until the leading gold sheet reaches halfway,
+        then follow it upward and finish before the copy is revealed.
       */
       data-plugin="parallax"
       data-parallax-enable-mq="null"
       data-parallax-clamp="true"
       data-parallax-measure-selector="#home-am-nature-gold"
-      data-parallax--30-0='{"transform":"translateY(100svh)"}'
-      data-parallax--120-0='{"transform":"translateY(0svh)"}'
+      data-parallax--50-0='{"transform":"translateY(100svh)"}'
+      data-parallax--140-0='{"transform":"translateY(0svh)"}'
     >
       {/*
         Real img layer — CSS background-image + heavy gold wash looked like an
@@ -1052,8 +1051,9 @@ export function HomeAmenitiesSequence({
       </div>
 
       {/*
-        Springs-style pinned cover chapter: the photo rises through the gold
-        field, then the completed slide releases upward as one layer.
+        Springs-style pinned cover chapter: gold rises over the pinned nature
+        image, the faded photo follows, then copy reveals before the completed
+        slide releases upward as one layer.
       */}
       <div
         className="home-am-nature-gold home-am-chapter home-am-chapter--under-previous sticky sticky--full-height sticky--under-previous"
@@ -1070,7 +1070,7 @@ export function HomeAmenitiesSequence({
             data-parallax-clamp="true"
             data-parallax-measure-selector="#home-am-nature-gold"
             data-parallax--0-0='{"transform":"translateY(100svh)"}'
-            data-parallax--90-0='{"transform":"translateY(0svh)"}'
+            data-parallax--100-0='{"transform":"translateY(0svh)"}'
           />
           <NatureGoldBand
             name={(natureGoldBg?.name ?? "home-amenities-14") as SiteImageName}
@@ -1082,8 +1082,8 @@ export function HomeAmenitiesSequence({
               data-parallax-enable-mq="null"
               data-parallax-clamp="true"
               data-parallax-measure-selector="#home-am-nature-gold"
-              data-parallax--75-0='{"opacity":"0","transform":"translateY(8svh)","clip-path":"polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)"}'
-              data-parallax--130-0='{"opacity":"1","transform":"translateY(0svh)","clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
+              data-parallax--140-0='{"opacity":"0","transform":"translateY(8svh)","clip-path":"polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)"}'
+              data-parallax--185-0='{"opacity":"1","transform":"translateY(0svh)","clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
             >
           {/*
             Sized by Amenities Sequence typography (dashboard) — same title /

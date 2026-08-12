@@ -363,12 +363,13 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
 .home-am-nature-gold {
   position: relative;
   /*
-   * 60→140svh: photo rises inside the pinned gold stage.
-   * At 160svh the pin releases, leaving 100svh for the completed photo and
-   * gold stage to travel upward together over the previous chapter.
+   * 0→100svh: gold rises over the pinned nature image.
+   * 50→140svh: the faded image follows after gold reaches halfway.
+   * 140→185svh: copy reveals only after the image reaches the top.
+   * 185→240svh: hold the completed frame before its upward release.
    */
-  height: 260svh;
-  min-height: 260svh;
+  height: 340svh;
+  min-height: 340svh;
   background: transparent;
 }
 
