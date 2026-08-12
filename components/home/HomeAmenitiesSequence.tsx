@@ -1129,11 +1129,7 @@ export function HomeAmenitiesSequence({
       </div>
       </div>{/* /.home-am-dark-band — Springs ui-dark-background */}
 
-      {/*
-        Our Voyages — Hathor accordion (NOT Springs i-interiors sticky runway).
-        Must stay in normal document flow: no sticky stage, no under-previous
-        clip, no loco pin. columns/open panel need height:auto overflow:visible.
-      */}
+      {/* Gilded Horizon — full-screen voyage chapters continue the Amenities stack. */}
       {voyages ? (
         <div className="home-am-voyages" data-am-voyages id="home-am-voyages">
           <div className="home-am-voyages__stage">{voyages}</div>

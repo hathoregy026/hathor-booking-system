@@ -559,28 +559,23 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   pointer-events: auto;
 }
 
-/* Keep Voyages from painting over this short gold panel during the handoff */
+/* Voyages must cover the completed Amenities frame during the handoff. */
 .home-am-nature-gold + .home-am-voyages,
 .home-am-dark-band + .home-am-voyages {
   z-index: 7;
 }
 
-/*
- * Our Voyages accordion — document flow after nature.
- * Do NOT apply sticky / under-previous / under-next / chapter stage rules.
- * Those forced a 100svh clipped pin and hid the open-panel columns (cream gap).
- */
+/* Gilded Horizon voyage stack — no cream reset between the two stories. */
 .home-am-voyages {
   position: relative;
   z-index: 6;
   width: 100%;
   margin: 0;
   padding: 0;
-  /* Rise over nature via nature's under-next pull — no own negative margin */
   clip-path: none;
   transform: none;
   min-height: 0;
-  background: var(--am-cream);
+  background: #1b130c;
 }
 
 .home-am-voyages::before,
@@ -601,12 +596,12 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   min-height: 0 !important;
   overflow: visible !important;
   contain: none !important;
-  background-color: var(--am-cream) !important;
+  background-color: #1b130c !important;
   z-index: auto !important;
 }
 
 html[data-public-theme="night"] .home-am-voyages__stage {
-  background-color: var(--bg-main, #161412) !important;
+  background-color: #1b130c !important;
 }
 
 @media (max-width: 1024px) {
