@@ -363,10 +363,10 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
 .home-am-nature-gold {
   position: relative;
   /*
-   * 0→95svh: gold rises over the pinned nature image.
-   * 65→165svh: the faded image follows with a visible gold lead between them.
-   * 165→230svh: title, subline, body and CTA reveal in sequence.
-   * 230→280svh: hold the completed frame before its upward release.
+   * 0→120svh: gold rises with a slower, weightier variable-speed curve.
+   * 60→155svh: the faded image follows about 25% faster and catches up.
+   * 155→220svh: title, subline, body and CTA reveal in sequence.
+   * 220→280svh: hold the completed frame before its upward release.
    */
   height: 380svh;
   min-height: 380svh;

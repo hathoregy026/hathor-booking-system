@@ -99,8 +99,10 @@ function NatureGoldBand({
       data-parallax-enable-mq="null"
       data-parallax-clamp="true"
       data-parallax-measure-selector="#home-am-nature-gold"
-      data-parallax--65-0='{"transform":"translateY(100svh)"}'
-      data-parallax--165-0='{"transform":"translateY(0svh)"}'
+      data-parallax--60-0='{"transform":"translateY(100svh)"}'
+      data-parallax--95-0='{"transform":"translateY(70svh)"}'
+      data-parallax--125-0='{"transform":"translateY(34svh)"}'
+      data-parallax--155-0='{"transform":"translateY(0svh)"}'
     >
       {/*
         Real img layer — CSS background-image + heavy gold wash looked like an
@@ -1070,7 +1072,9 @@ export function HomeAmenitiesSequence({
             data-parallax-clamp="true"
             data-parallax-measure-selector="#home-am-nature-gold"
             data-parallax--0-0='{"transform":"translateY(100svh)"}'
-            data-parallax--95-0='{"transform":"translateY(0svh)"}'
+            data-parallax--45-0='{"transform":"translateY(67svh)"}'
+            data-parallax--85-0='{"transform":"translateY(30svh)"}'
+            data-parallax--120-0='{"transform":"translateY(0svh)"}'
           />
           <NatureGoldBand
             name={(natureGoldBg?.name ?? "home-amenities-14") as SiteImageName}
@@ -1082,8 +1086,8 @@ export function HomeAmenitiesSequence({
               data-parallax-enable-mq="null"
               data-parallax-clamp="true"
               data-parallax-measure-selector="#home-am-nature-gold"
-              data-parallax--165-0='{"--am-copy-progress":"0"}'
-              data-parallax--230-0='{"--am-copy-progress":"1"}'
+              data-parallax--155-0='{"--am-copy-progress":"0"}'
+              data-parallax--220-0='{"--am-copy-progress":"1"}'
             >
           {/*
             Sized by Amenities Sequence typography (dashboard) — same title /
