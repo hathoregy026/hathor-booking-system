@@ -71,3 +71,6 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# local Claude redesign bundles (never deploy)
+/redesign/
