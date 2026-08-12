@@ -369,20 +369,43 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
    */
   height: 260svh;
   min-height: 260svh;
-  background: var(--am-gold);
+  background: transparent;
+}
+
+/*
+ * Springs cover handoff: pull this chapter one viewport back so its pinned
+ * transparent stage sits over the still-pinned nature image. Gold leads,
+ * the dining photo follows, and neither becomes a separate document block.
+ */
+.home-am-nature.home-am-chapter--under-next
+  + .home-am-nature-gold.home-am-chapter--under-previous {
+  clip-path: inset(calc(100 * var(--am-svh)) 0 0);
+  margin-top: calc(
+    var(--sticky-under-previous-distance) * -1 +
+      var(--sticky-under-next-distance) * -1
+  );
 }
 
 .home-am-nature-gold__stage {
   height: calc(100 * var(--am-svh));
   min-height: calc(100 * var(--am-svh));
   overflow: hidden;
+  background: transparent;
+}
+
+.home-am-nature-gold__sheet {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
   background: var(--am-gold);
+  transform: translateY(100svh);
+  will-change: transform;
 }
 
 .home-am-nature__gold-band {
   position: absolute;
   inset: 0;
-  z-index: 8;
+  z-index: 2;
   isolation: isolate;
   display: flex;
   align-items: flex-end;
@@ -395,13 +418,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   box-sizing: border-box;
   background-color: var(--am-gold);
   overflow: hidden;
-  /*
-   * Boot below its final position. Parallax physically slides this photo
-   * panel upward (--60 → --140 on #home-am-nature-gold) until it fills the gold
-   * area before the nature chapter hands off.
-   */
-  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
-  transform: translateY(70svh);
+  transform: translateY(100svh);
   will-change: transform;
 }
 
@@ -456,6 +473,10 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   padding-top: clamp(0.35rem, 1vh, 0.75rem);
   text-align: center;
   pointer-events: none;
+  opacity: 0;
+  transform: translateY(8svh);
+  clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
+  will-change: opacity, transform, clip-path;
 }
 
 /*

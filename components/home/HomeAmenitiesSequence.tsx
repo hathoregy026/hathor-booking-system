@@ -100,8 +100,8 @@ function NatureGoldBand({
       data-parallax-enable-mq="null"
       data-parallax-clamp="true"
       data-parallax-measure-selector="#home-am-nature-gold"
-      data-parallax--60-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)","transform":"translateY(70svh)"}'
-      data-parallax--140-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)","transform":"translateY(0svh)"}'
+      data-parallax--30-0='{"transform":"translateY(100svh)"}'
+      data-parallax--120-0='{"transform":"translateY(0svh)"}'
     >
       {/*
         Real img layer — CSS background-image + heavy gold wash looked like an
@@ -1056,17 +1056,35 @@ export function HomeAmenitiesSequence({
         field, then the completed slide releases upward as one layer.
       */}
       <div
-        className="home-am-nature-gold home-am-chapter sticky sticky--full-height"
+        className="home-am-nature-gold home-am-chapter home-am-chapter--under-previous sticky sticky--full-height sticky--under-previous"
         data-am-nature-gold
         data-am-chapter
         id="home-am-nature-gold"
       >
         <div className="home-am-nature-gold__stage home-am-chapter__stage sticky__layer sticky__layer--sticky sticky--full-height">
+          <div
+            className="home-am-nature-gold__sheet"
+            aria-hidden
+            data-plugin="parallax"
+            data-parallax-enable-mq="null"
+            data-parallax-clamp="true"
+            data-parallax-measure-selector="#home-am-nature-gold"
+            data-parallax--0-0='{"transform":"translateY(100svh)"}'
+            data-parallax--90-0='{"transform":"translateY(0svh)"}'
+          />
           <NatureGoldBand
             name={(natureGoldBg?.name ?? "home-amenities-14") as SiteImageName}
             previewAnchor={natureGoldBg?.previewAnchor ?? true}
           >
-            <div className="home-am-nature__copy">
+            <div
+              className="home-am-nature__copy"
+              data-plugin="parallax"
+              data-parallax-enable-mq="null"
+              data-parallax-clamp="true"
+              data-parallax-measure-selector="#home-am-nature-gold"
+              data-parallax--75-0='{"opacity":"0","transform":"translateY(8svh)","clip-path":"polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)"}'
+              data-parallax--130-0='{"opacity":"1","transform":"translateY(0svh)","clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
+            >
           {/*
             Sized by Amenities Sequence typography (dashboard) — same title /
             indication / body roles as slider gold captions.
