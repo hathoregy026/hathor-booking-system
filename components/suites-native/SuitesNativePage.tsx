@@ -22,12 +22,50 @@ export function SuitesNativePage({ images }: Props) {
 
   return (
     <div className="suites-native-page">
-      <div className="suites-native-preview-banner" role="status">
-        <span>Suites native preview — production /suites unchanged</span>
-        <a href="/suites">Compare current Suites</a>
-      </div>
-
       <SuitesMosaicHero images={images} hero={c.hero} />
+
+      <section
+        className="sn-section sn-section--collection-intro"
+        id="suites-collection"
+        aria-label="Choose your accommodation"
+      >
+        <header className="sn-collection__header sn-collection__header--opening">
+          <p className="sn-eyebrow">Three ways to stay</p>
+          <div className="sn-rule" style={{ marginInline: "auto" }} aria-hidden="true" />
+          <h2 className="sn-display sn-display--section">Choose your place on the Nile</h2>
+          <p className="sn-body" style={{ marginTop: "0.85rem" }}>
+            From intimate river rooms to our most expansive private suites, every
+            stay is composed around stillness, craftsmanship, and the passing Nile.
+          </p>
+        </header>
+        <ul className="sn-collection__portals">
+          {c.collection.cards.map((card) => (
+            <li key={card.index}>
+              <Link href={card.href} className="sn-suite-portal">
+                <div className="sn-suite-portal__media">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={resolveSuitesImage(images, card.imageSlot)}
+                    alt={card.title}
+                    decoding="async"
+                  />
+                </div>
+                <div className="sn-suite-portal__wash" aria-hidden="true" />
+                <div className="sn-suite-portal__copy">
+                  <span className="sn-suite-portal__index">{card.index}</span>
+                  <span className="sn-suite-portal__label">{card.label}</span>
+                  <h3>{card.title}</h3>
+                  <p>{card.hint}</p>
+                  <span className="sn-suite-portal__cta">
+                    {card.cta}
+                    <span aria-hidden="true">↗</span>
+                  </span>
+                </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <section
         className="sn-section sn-section--cream"
@@ -199,46 +237,6 @@ export function SuitesNativePage({ images }: Props) {
             </figure>
           ))}
         </div>
-      </section>
-
-      <section
-        className="sn-section sn-section--cream"
-        id="suites-collection"
-        aria-label="Suites collection"
-      >
-        <header className="sn-collection__header">
-          <p className="sn-eyebrow">{c.collection.eyebrow}</p>
-          <div className="sn-rule" style={{ marginInline: "auto" }} aria-hidden="true" />
-          <h2 className="sn-display sn-display--section">{c.collection.title}</h2>
-          <p className="sn-body" style={{ marginTop: "0.85rem" }}>
-            {c.collection.subtitle}
-          </p>
-        </header>
-        <ul className="sn-collection__grid">
-          {c.collection.cards.map((card) => (
-            <li key={card.index}>
-              <Link href={card.href} className="sn-collection-card">
-                <div className="sn-collection-card__media">
-                  <span className="sn-collection-card__index">{card.index}</span>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={resolveSuitesImage(images, card.imageSlot)}
-                    alt={card.title}
-                    decoding="async"
-                  />
-                </div>
-                <div className="sn-collection-card__body">
-                  <span className="sn-collection-card__label">{card.label}</span>
-                  <span className="sn-collection-card__title">{card.title}</span>
-                  <span className="sn-collection-card__hint">{card.hint}</span>
-                  <span className="sn-btn sn-btn--outline sn-collection-card__cta">
-                    {card.cta}
-                  </span>
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
       </section>
 
       <section

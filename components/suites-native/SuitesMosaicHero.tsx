@@ -39,7 +39,7 @@ export function SuitesMosaicHero({ images, hero }: Props) {
     if (items.length === 0) return;
 
     let raf = 0;
-    let start = performance.now();
+    const start = performance.now();
     let visible = true;
     let running = true;
 
@@ -162,8 +162,8 @@ export function SuitesMosaicHero({ images, hero }: Props) {
 
           <a
             className="sn-mosaic-hero__next"
-            href="#suites-unrivaled"
-            aria-label="Scroll to Unrivaled Views"
+            href="#suites-collection"
+            aria-label="Explore the three accommodation types"
           >
             <svg width="14" height="16" viewBox="0 0 14 16" aria-hidden="true">
               <path

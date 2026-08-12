@@ -1,8 +1,16 @@
 import type { Metadata } from "next";
-import { SuitesSpringsHomepagePage } from "@/components/pages/SuitesSpringsHomepagePage";
+import { PublicNavbar } from "@/components/layout/PublicNavbar";
+import { BookingModalProvider } from "@/components/booking/BookingModalProvider";
+import { WebsiteTextProvider } from "@/components/public/WebsiteTextProvider";
+import { SuitesNativeBoot } from "@/components/suites-native/SuitesNativeBoot";
+import { SuitesNativePage } from "@/components/suites-native/SuitesNativePage";
 import { StandalonePageVisibilityShell } from "@/components/public/StandalonePageVisibilityShell";
 import { LUXURY_SUITES_PAGE } from "@/lib/page-content";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
+import { resolveSiteImageMap } from "@/lib/resolve-site-images";
+import { SUITES_DASHBOARD_SLOT_NAMES } from "@/lib/site-image-usage";
+import { SUITES_NATIVE_SLOT_DEFAULTS } from "@/lib/suites-native-content";
+import "../suites-native.css";
 import "../page-visibility.css";
 import "../site-coming-soon.css";
 
@@ -39,6 +47,17 @@ export const metadata: Metadata = {
  */
 export default async function SuitesPage() {
   const cms = await loadPublicCmsBundle();
+  const images: Record<string, string> = { ...SUITES_NATIVE_SLOT_DEFAULTS };
+
+  try {
+    const map = await resolveSiteImageMap();
+    for (const name of SUITES_DASHBOARD_SLOT_NAMES) {
+      const resolved = map[name]?.src?.trim();
+      if (resolved) images[name] = resolved;
+    }
+  } catch {
+    // The bundled defaults keep the page complete if the CMS is unavailable.
+  }
 
   return (
     <StandalonePageVisibilityShell
@@ -47,7 +66,21 @@ export default async function SuitesPage() {
       settings={cms.pageVisibility}
       liveSite={cms.liveSite}
     >
-      <SuitesSpringsHomepagePage />
+      <WebsiteTextProvider
+        initial={cms.websiteText}
+        initialMobile={cms.websiteTextMobile}
+      >
+        <div className="public-site suites-native-shell">
+          <BookingModalProvider>
+            <PublicNavbar />
+            <SuitesNativeBoot>
+              <main className="suites-native-route">
+                <SuitesNativePage images={images} />
+              </main>
+            </SuitesNativeBoot>
+          </BookingModalProvider>
+        </div>
+      </WebsiteTextProvider>
     </StandalonePageVisibilityShell>
   );
 }

@@ -82,7 +82,7 @@ export const SUITES_NATIVE_GALLERY_SLOTS = [
 ] as const;
 
 export const SUITES_NATIVE_CTAS = {
-  exploreSuites: { label: "Explore the Suites", href: "/rooms" },
+  exploreSuites: { label: "Choose Your Suite", href: "#suites-collection" },
   concierge: { label: "Speak with Concierge", href: "/contact" },
   discoverCollection: {
     label: "Discover the Collection",
