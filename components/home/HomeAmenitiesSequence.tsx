@@ -92,15 +92,15 @@ function NatureGoldBand({
       id="home-am-nature-caption"
       data-site-image={name}
       /*
-        Wait below the viewport until the leading gold sheet reaches halfway,
-        then follow it upward and finish before the copy is revealed.
+        Wait below the viewport while the leading gold sheet establishes a
+        visible lead, then follow it upward as a clearly separate cover layer.
       */
       data-plugin="parallax"
       data-parallax-enable-mq="null"
       data-parallax-clamp="true"
       data-parallax-measure-selector="#home-am-nature-gold"
-      data-parallax--50-0='{"transform":"translateY(100svh)"}'
-      data-parallax--140-0='{"transform":"translateY(0svh)"}'
+      data-parallax--65-0='{"transform":"translateY(100svh)"}'
+      data-parallax--165-0='{"transform":"translateY(0svh)"}'
     >
       {/*
         Real img layer — CSS background-image + heavy gold wash looked like an
@@ -1070,7 +1070,7 @@ export function HomeAmenitiesSequence({
             data-parallax-clamp="true"
             data-parallax-measure-selector="#home-am-nature-gold"
             data-parallax--0-0='{"transform":"translateY(100svh)"}'
-            data-parallax--100-0='{"transform":"translateY(0svh)"}'
+            data-parallax--95-0='{"transform":"translateY(0svh)"}'
           />
           <NatureGoldBand
             name={(natureGoldBg?.name ?? "home-amenities-14") as SiteImageName}
@@ -1082,8 +1082,8 @@ export function HomeAmenitiesSequence({
               data-parallax-enable-mq="null"
               data-parallax-clamp="true"
               data-parallax-measure-selector="#home-am-nature-gold"
-              data-parallax--140-0='{"opacity":"0","transform":"translateY(8svh)","clip-path":"polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)"}'
-              data-parallax--185-0='{"opacity":"1","transform":"translateY(0svh)","clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
+              data-parallax--165-0='{"--am-copy-progress":"0"}'
+              data-parallax--230-0='{"--am-copy-progress":"1"}'
             >
           {/*
             Sized by Amenities Sequence typography (dashboard) — same title /

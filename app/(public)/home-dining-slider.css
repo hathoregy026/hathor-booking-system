@@ -363,13 +363,13 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
 .home-am-nature-gold {
   position: relative;
   /*
-   * 0→100svh: gold rises over the pinned nature image.
-   * 50→140svh: the faded image follows after gold reaches halfway.
-   * 140→185svh: copy reveals only after the image reaches the top.
-   * 185→240svh: hold the completed frame before its upward release.
+   * 0→95svh: gold rises over the pinned nature image.
+   * 65→165svh: the faded image follows with a visible gold lead between them.
+   * 165→230svh: title, subline, body and CTA reveal in sequence.
+   * 230→280svh: hold the completed frame before its upward release.
    */
-  height: 340svh;
-  min-height: 340svh;
+  height: 380svh;
+  min-height: 380svh;
   background: transparent;
 }
 
@@ -398,7 +398,10 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: var(--am-gold);
+  background:
+    radial-gradient(circle at 50% 112%, rgba(245, 234, 207, 0.3), transparent 48%),
+    var(--am-gold);
+  box-shadow: 0 -1px 0 rgba(247, 241, 230, 0.42);
   transform: translateY(100svh);
   will-change: transform;
 }
@@ -421,6 +424,9 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   overflow: hidden;
   transform: translateY(100svh);
   will-change: transform;
+  box-shadow:
+    0 -1px 0 rgba(247, 241, 230, 0.72),
+    0 -22px 52px rgba(64, 43, 12, 0.2);
 }
 
 /*
@@ -458,7 +464,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   inset: 0;
   z-index: 1;
   background: var(--am-gold);
-  opacity: 0.62;
+  opacity: 0.46;
   pointer-events: none;
 }
 
@@ -474,10 +480,41 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   padding-top: clamp(0.35rem, 1vh, 0.75rem);
   text-align: center;
   pointer-events: none;
-  opacity: 0;
-  transform: translateY(8svh);
-  clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
-  will-change: opacity, transform, clip-path;
+  --am-copy-progress: 0;
+  opacity: 1;
+  transform: none;
+  clip-path: none;
+  will-change: auto;
+}
+
+/*
+ * One continuous scroll-controlled reveal with editorial staggering. Each
+ * existing dashboard typography role keeps its size and position; only its
+ * entrance is delayed after the faded image has locked to the viewport.
+ */
+.home-am-nature__copy > * {
+  --am-copy-delay: 0;
+  --am-copy-reveal: clamp(
+    0,
+    calc((var(--am-copy-progress) - var(--am-copy-delay)) * 3.25),
+    1
+  );
+  opacity: var(--am-copy-reveal);
+  transform: translateY(calc((1 - var(--am-copy-reveal)) * 2.75rem));
+  filter: blur(calc((1 - var(--am-copy-reveal)) * 7px));
+  will-change: opacity, transform, filter;
+}
+
+.home-am-nature__indication {
+  --am-copy-delay: 0.16;
+}
+
+.home-am-nature__body {
+  --am-copy-delay: 0.3;
+}
+
+.home-am-nature__cta {
+  --am-copy-delay: 0.44;
 }
 
 /*
@@ -1860,7 +1897,7 @@ html[data-ex-experience]
   }
 
   .home-am-nature__gold-wash {
-    opacity: 0.65;
+    opacity: 0.5;
   }
 
   /* Springs mobile: horizontal swipe for cards */
