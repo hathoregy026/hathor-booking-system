@@ -12,8 +12,12 @@ const smooth = (value: number) => {
   return x * x * (3 - 2 * x);
 };
 
-/** Springs-style pinned slides for Suites: horizontal accommodation rail,
- * full-viewport editorial hand-offs, directional image wipes and long holds.
+/**
+ * Springs-style Suites flow: horizontal accommodation rail + sticky editorial chapters.
+ *
+ * Critical: scrub must start while the section is entering the viewport
+ * (`start: "top bottom"`), so content is already visible by the time sticky locks.
+ * Starting at `"top top"` with enter=0 left users stuck on blank cream runways.
  */
 export function useSuitesSpringsFlow(
   rootRef: RefObject<HTMLElement | null>,
@@ -32,33 +36,59 @@ export function useSuitesSpringsFlow(
       const heroCaption = hero?.querySelector<HTMLElement>(".sn-mosaic-hero__caption");
       if (hero && heroPlane && heroCaption) {
         gsap.timeline({
-          scrollTrigger: { trigger: hero, start: "top top", end: "bottom bottom", scrub: true },
+          scrollTrigger: {
+            trigger: hero,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: true,
+          },
         })
-          .fromTo(heroPlane, { scale: 1.08, yPercent: 2 }, { scale: 0.91, yPercent: -5, ease: "none" }, 0)
-          .fromTo(heroCaption, { xPercent: 0, autoAlpha: 1 }, { xPercent: 13, autoAlpha: 0, ease: "none" }, 0.56);
+          .fromTo(
+            heroPlane,
+            { scale: 1.08, yPercent: 2 },
+            { scale: 0.91, yPercent: -5, ease: "none" },
+            0,
+          )
+          .fromTo(
+            heroCaption,
+            { xPercent: 0, autoAlpha: 1 },
+            { xPercent: 13, autoAlpha: 0, ease: "none" },
+            0.56,
+          );
       }
 
       const collection = root.querySelector<HTMLElement>("[data-sn-collection-slider]");
       const portals = collection?.querySelector<HTMLElement>(".sn-collection__portals");
-      const portalItems = portals ? Array.from(portals.children) as HTMLElement[] : [];
+      const portalItems = portals
+        ? (Array.from(portals.children) as HTMLElement[])
+        : [];
       if (collection && portals && portalItems.length) {
         const setCollection = (progress: number) => {
-          const maxTravel = Math.max(0, portals.scrollWidth - window.innerWidth + window.innerWidth * 0.08);
+          const maxTravel = Math.max(
+            0,
+            portals.scrollWidth - window.innerWidth + window.innerWidth * 0.08,
+          );
           gsap.set(portals, { x: -maxTravel * smooth(progress), force3D: true });
           portalItems.forEach((item, index) => {
-            const local = smooth(clamp(progress * 2.2 - index * 0.32));
-            gsap.set(item, { y: (1 - local) * (index % 2 ? 11 : 18) + "vh", rotate: (1 - local) * (index - 1) * 1.2 });
+            // Settle quickly — avoid floating cards for a full sticky viewport.
+            const local = smooth(clamp(progress * 3.2 - index * 0.22));
+            gsap.set(item, {
+              y: `${(1 - local) * (index % 2 ? 4 : 7)}vh`,
+              rotate: (1 - local) * (index - 1) * 0.6,
+            });
           });
         };
-        setCollection(0);
-        ScrollTrigger.create({
+
+        const collectionTrigger = ScrollTrigger.create({
           trigger: collection,
-          start: "top top",
+          // Reveal / settle while the section approaches, not after sticky locks.
+          start: "top bottom",
           end: "bottom bottom",
           scrub: true,
           invalidateOnRefresh: true,
           onUpdate: (self) => setCollection(self.progress),
         });
+        setCollection(collectionTrigger.progress);
       }
 
       root.querySelectorAll<HTMLElement>("[data-sn-slide]").forEach((chapter) => {
@@ -67,52 +97,75 @@ export function useSuitesSpringsFlow(
         const copy = chapter.querySelector<HTMLElement>(
           ".sn-editorial__copy, .sn-map > div:last-child, .sn-interiors > div:last-child",
         );
-        const frames = Array.from(scene.querySelectorAll<HTMLElement>(
-          ".sn-editorial__media-col:not(.sn-editorial__stack), .sn-editorial__stack-item, .sn-map__media, .sn-interiors__gallery figure",
-        ));
+        const frames = Array.from(
+          scene.querySelectorAll<HTMLElement>(
+            ".sn-editorial__media-col:not(.sn-editorial__stack), .sn-editorial__stack-item, .sn-map__media, .sn-interiors__gallery figure",
+          ),
+        );
         const images = Array.from(scene.querySelectorAll<HTMLElement>("img"));
         const direction = chapter.dataset.snSlide;
+
         const setChapter = (progress: number) => {
-          const enter = smooth(clamp(progress / 0.3));
-          const exit = smooth(clamp((progress - 0.8) / 0.2));
+          // Fast enter so sticky lock is never a blank cream screen.
+          const enter = smooth(clamp(progress / 0.18));
+          // Soft exit only at the very end of the runway.
+          const exit = smooth(clamp((progress - 0.9) / 0.1));
+          const copyVisible = Math.max(0, enter - exit);
+
           frames.forEach((frame, index) => {
-            const delayed = frames.length > 1
-              ? index === 0
-                ? enter
-                : smooth(clamp((progress - (0.2 + index * 0.2)) / 0.16))
-              : enter;
+            const delayed =
+              frames.length > 1
+                ? index === 0
+                  ? enter
+                  : smooth(clamp((progress - (0.12 + index * 0.14)) / 0.14))
+                : enter;
             const hidden = (1 - delayed) * 100;
-            const clipPath = direction === "from-left"
-              ? `inset(0% ${hidden}% 0% 0%)`
-              : direction === "from-bottom"
-                ? `inset(${hidden}% 0% 0% 0%)`
-                : `inset(0% 0% 0% ${hidden}%)`;
+            const clipPath =
+              direction === "from-left"
+                ? `inset(0% ${hidden}% 0% 0%)`
+                : direction === "from-bottom"
+                  ? `inset(${hidden}% 0% 0% 0%)`
+                  : `inset(0% 0% 0% ${hidden}%)`;
             gsap.set(frame, {
               clipPath,
               autoAlpha: delayed,
-              xPercent: direction === "from-right" ? (1 - delayed) * 18 : direction === "from-left" ? (delayed - 1) * 18 : 0,
-              yPercent: direction === "from-bottom" ? (1 - delayed) * 12 : 0,
+              xPercent:
+                direction === "from-right"
+                  ? (1 - delayed) * 10
+                  : direction === "from-left"
+                    ? (delayed - 1) * 10
+                    : 0,
+              yPercent: direction === "from-bottom" ? (1 - delayed) * 8 : 0,
             });
           });
+
           images.forEach((image, index) => {
-            const phase = smooth(clamp(progress * 3 - index * 0.55));
-            gsap.set(image, { scale: 1.16 - phase * 0.12, yPercent: (0.5 - progress) * (index % 2 ? -7 : 7) });
+            const phase = smooth(clamp(progress * 2.4 - index * 0.4));
+            gsap.set(image, {
+              scale: 1.1 - phase * 0.08,
+              yPercent: (0.5 - progress) * (index % 2 ? -4 : 4),
+            });
           });
-          if (copy) gsap.set(copy, {
-            autoAlpha: Math.max(0, enter - exit),
-            xPercent: (1 - enter) * (direction === "from-left" ? 12 : -12) - exit * 8,
-            yPercent: direction === "from-bottom" ? (1 - enter) * 8 : 0,
-          });
+
+          if (copy) {
+            gsap.set(copy, {
+              autoAlpha: copyVisible,
+              xPercent:
+                (1 - enter) * (direction === "from-left" ? 8 : -8) - exit * 6,
+              yPercent: direction === "from-bottom" ? (1 - enter) * 6 : 0,
+            });
+          }
         };
-        setChapter(0);
-        ScrollTrigger.create({
+
+        const chapterTrigger = ScrollTrigger.create({
           trigger: chapter,
-          start: "top top",
+          start: "top bottom",
           end: "bottom bottom",
           scrub: true,
           invalidateOnRefresh: true,
           onUpdate: (self) => setChapter(self.progress),
         });
+        setChapter(chapterTrigger.progress);
       });
     }, root);
 

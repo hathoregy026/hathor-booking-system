@@ -291,7 +291,8 @@ html[data-suites-native] .suites-native-route {
 /* Three accommodation doors — the first decision after the Springs-style arrival. */
 
 .sn-section--collection-intro {
-  height: 390svh;
+  /* Long enough for the horizontal rail, short enough to avoid a dead sticky slog */
+  height: 260svh;
   padding: 0;
   overflow: clip;
   background:
@@ -427,7 +428,8 @@ html[data-suites-native] .suites-native-route {
 }
 
 .sn-springs-chapter {
-  height: 270svh;
+  /* Sticky scene layout unchanged — only the scrub runway length */
+  height: 180svh;
   padding: 0;
   overflow: clip;
 }
@@ -1391,7 +1393,7 @@ html[data-suites-native] .suites-native-route {
   }
 
   .sn-section--collection-intro {
-    height: 340svh;
+    height: 220svh;
   }
 
   .sn-collection__header--opening {
@@ -1405,7 +1407,7 @@ html[data-suites-native] .suites-native-route {
   }
 
   .sn-springs-chapter {
-    height: 235svh;
+    height: 160svh;
   }
 
   .sn-springs-chapter > .sn-editorial,
