@@ -94,14 +94,16 @@ function NatureGoldBand({
       /*
         Same bottom→top clip rise as opening / video / slider panels —
         not a whole gold rectangle translating up as a block.
-        Measured on #home-am-nature (late runway, after the pinned photo).
+        Measured on #home-am-nature. Complete the rise before the pinned
+        nature chapter hands off to Our Voyages, so the photo fills the whole
+        gold panel instead of stopping low in it.
       */
       data-plugin="parallax"
       data-parallax-enable-mq="null"
       data-parallax-clamp="true"
       data-parallax-measure-selector="#home-am-nature"
-      data-parallax--140-0='{"clip-path":"polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)"}'
-      data-parallax--200-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
+      data-parallax--80-0='{"clip-path":"polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)"}'
+      data-parallax--140-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
     >
       {/*
         Real img layer — CSS background-image + heavy gold wash looked like an
