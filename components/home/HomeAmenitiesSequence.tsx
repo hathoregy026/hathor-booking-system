@@ -92,18 +92,16 @@ function NatureGoldBand({
       id="home-am-nature-caption"
       data-site-image={name}
       /*
-        Same bottom→top clip rise as opening / video / slider panels —
-        not a whole gold rectangle translating up as a block.
-        Measured on #home-am-nature. Complete the rise before the pinned
-        nature chapter hands off to Our Voyages, so the photo fills the whole
-        gold panel instead of stopping low in it.
+        Physically slide the photo panel upward while its lower edge is
+        clipped, then finish at its normal full-cover position before the
+        pinned nature chapter hands off to Our Voyages.
       */
       data-plugin="parallax"
       data-parallax-enable-mq="null"
       data-parallax-clamp="true"
       data-parallax-measure-selector="#home-am-nature"
-      data-parallax--80-0='{"clip-path":"polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)"}'
-      data-parallax--140-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"}'
+      data-parallax--60-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)","transform":"translateY(70svh)"}'
+      data-parallax--140-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)","transform":"translateY(0svh)"}'
     >
       {/*
         Real img layer — CSS background-image + heavy gold wash looked like an

@@ -383,13 +383,13 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   /* Allow photo/wash to paint into the solid-gold void above this box */
   overflow: visible;
   /*
-   * Boot closed at the bottom — Springs parallax opens to full rect
-   * (--80 → --140 on #home-am-nature) so the faded image reaches the top
-   * before the nature chapter hands off, while still rising like
-   * opening / video panels instead of arriving as one block.
+   * Boot below its final position. Parallax physically slides this photo
+   * panel upward (--60 → --140 on #home-am-nature) until it fills the gold
+   * area before the nature chapter hands off.
    */
-  clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
-  will-change: clip-path;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  transform: translateY(70svh);
+  will-change: transform;
 }
 
 /*
