@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
 import {
   SUITES_NATIVE_CTAS,
@@ -11,12 +11,6 @@ import {
 
 const DURATION_MS = 30_000;
 
-function rowForIndex(index: number): 1 | 2 | 3 {
-  if (index >= 13) return 3;
-  if (index >= 6) return 2;
-  return 1;
-}
-
 type Props = {
   images: Record<string, string>;
   hero: ReturnType<typeof resolveSuitesNativeView>["hero"];
@@ -24,10 +18,14 @@ type Props = {
 
 export function SuitesMosaicHero({ images, hero }: Props) {
   const rootRef = useRef<HTMLElement>(null);
-  const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const cardHeightRef = useRef(0);
+  const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const groupRefs = useRef<(HTMLDivElement | null)[]>([]);
   const sources = SUITES_NATIVE_GALLERY_SLOTS.map((slot) =>
     resolveSuitesImage(images, slot),
+  );
+  const rows = useMemo(
+    () => [sources.slice(0, 7), sources.slice(7, 14), sources.slice(14)],
+    [sources],
   );
 
   useEffect(() => {
@@ -35,44 +33,28 @@ export function SuitesMosaicHero({ images, hero }: Props) {
     if (!root) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const items = itemsRef.current.filter(Boolean) as HTMLDivElement[];
-    if (items.length === 0) return;
+    const rows = rowRefs.current.filter(Boolean) as HTMLDivElement[];
+    if (rows.length === 0) return;
 
     let raf = 0;
     const start = performance.now();
     let visible = true;
     let running = true;
 
-    const measure = () => {
-      cardHeightRef.current = items[0]?.offsetHeight ?? 0;
-    };
-    measure();
-
-    const mqDesktop = window.matchMedia("(min-width: 980px)");
-    const params = () => {
-      const desktop = mqDesktop.matches;
-      return {
-        stepVw: desktop ? 125 : 300,
-        perRow: desktop ? 5 : 6,
-      };
-    };
-
     const apply = (elapsed: number) => {
-      const e = (elapsed % DURATION_MS) / DURATION_MS;
-      const { stepVw, perRow } = params();
-      const f = cardHeightRef.current;
-
-      items.forEach((el, t) => {
-        const row = rowForIndex(t);
-        const cycle = (row === 2 ? 7 : 6) / perRow;
-        const r = (t / perRow + e) % cycle;
-        if (row === 2) {
-          el.style.transform = `translateX(${r * -stepVw}vw) translateY(${f}px)`;
-        } else if (row === 3) {
-          el.style.transform = `translateX(${r * stepVw}vw) translateY(${2 * f}px)`;
-        } else {
-          el.style.transform = `translateX(${r * stepVw}vw)`;
-        }
+      const timeProgress = (elapsed % DURATION_MS) / DURATION_MS;
+      const heroProgress = Math.min(
+        1,
+        Math.max(0, -root.getBoundingClientRect().top / Math.max(1, root.offsetHeight)),
+      );
+      rows.forEach((row, index) => {
+        const groupWidth = groupRefs.current[index]?.offsetWidth ?? 0;
+        const gap = Number.parseFloat(getComputedStyle(row).columnGap) || 0;
+        const cycle = groupWidth + gap;
+        if (!cycle) return;
+        const travel = (timeProgress * cycle * 0.7 + heroProgress * cycle * 0.42) % cycle;
+        const x = index === 1 ? -cycle + travel : -travel;
+        row.style.transform = `translate3d(${x}px, 0, 0)`;
       });
     };
 
@@ -97,14 +79,11 @@ export function SuitesMosaicHero({ images, hero }: Props) {
       if (document.hidden) visible = false;
     };
     document.addEventListener("visibilitychange", onVisibility);
-    window.addEventListener("resize", measure, { passive: true });
-
     return () => {
       running = false;
       cancelAnimationFrame(raf);
       io.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
-      window.removeEventListener("resize", measure);
     };
   }, []);
 
@@ -113,25 +92,39 @@ export function SuitesMosaicHero({ images, hero }: Props) {
       <div className="sn-mosaic-hero__sticky">
         <div className="sn-mosaic-hero__stage">
           <div className="sn-mosaic-hero__plane" aria-hidden="true">
-            {sources.map((src, index) => (
-              <div
-                key={`${src}-${index}`}
-                className="sn-mosaic-hero__item"
-                ref={(node) => {
-                  itemsRef.current[index] = node;
-                }}
-              >
-                {/* Decorative mosaic */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={src}
-                  alt=""
-                  width={360}
-                  height={480}
-                  decoding="async"
-                  draggable={false}
-                  fetchPriority={index < 4 ? "high" : "low"}
-                />
+            {rows.map((row, rowIndex) => (
+              <div className="sn-mosaic-hero__rail-window" key={`rail-${rowIndex}`}>
+                <div
+                  className="sn-mosaic-hero__rail"
+                  ref={(node) => {
+                    rowRefs.current[rowIndex] = node;
+                  }}
+                >
+                  {[0, 1].map((copyIndex) => (
+                    <div
+                      className="sn-mosaic-hero__rail-group"
+                      key={`rail-${rowIndex}-copy-${copyIndex}`}
+                      ref={copyIndex === 0 ? (node) => {
+                        groupRefs.current[rowIndex] = node;
+                      } : undefined}
+                    >
+                      {row.map((src, index) => (
+                        <div key={`${src}-${index}`} className="sn-mosaic-hero__item">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={src}
+                            alt=""
+                            width={360}
+                            height={480}
+                            decoding="async"
+                            draggable={false}
+                            fetchPriority={rowIndex === 0 && index < 3 ? "high" : "low"}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>

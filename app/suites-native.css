@@ -7,8 +7,9 @@
   --sn-hero-cream: #f5eacf;
   --sn-gold: #b69f64;
   --sn-gold-soft: #c9a96e;
-  --sn-ink: #2c2824;
-  --sn-muted: rgba(44, 40, 36, 0.58);
+  --sn-gold-deep: #7b642f;
+  --sn-ink: #7b642f;
+  --sn-muted: rgba(103, 80, 31, 0.78);
   --sn-line: rgba(182, 159, 100, 0.45);
   --sn-card-line: rgba(182, 159, 100, 0.28);
   --sn-hero-title: #f7f1e6;
@@ -60,7 +61,8 @@ html[data-suites-native] .suites-native-route {
   min-height: 100svh;
   background: var(--sn-cream);
   color: var(--sn-ink);
-  font-family: var(--font-hathor-body, "Plus Jakarta Sans", "Avenir Next", sans-serif);
+  font-family: var(--sn-amenities-body-font, "Agraham", Georgia, serif);
+  overflow: clip;
 }
 
 .suites-native-preview-banner {
@@ -90,20 +92,22 @@ html[data-suites-native] .suites-native-route {
 
 .sn-eyebrow {
   margin: 0 0 0.85rem;
-  font-size: 0.68rem;
-  font-weight: 650;
-  letter-spacing: 0.22em;
+  font-family: var(--sn-amenities-indication-font, "Agraham", Georgia, serif);
+  font-size: var(--sn-amenities-indication-size, 14px);
+  font-weight: 400;
+  line-height: var(--sn-amenities-indication-leading, 1.3);
+  letter-spacing: var(--sn-amenities-indication-tracking, 1.2px);
   text-transform: uppercase;
   color: var(--sn-gold);
 }
 
 .sn-display {
   margin: 0;
-  font-family: var(--font-hathor-display, "Gamgote", "Playfair Display", Georgia, serif);
-  font-weight: 500;
-  letter-spacing: -0.025em;
-  line-height: 1.05;
-  color: var(--sn-ink);
+  font-family: var(--sn-amenities-title-font, "Gamgote", Georgia, serif);
+  font-weight: 400;
+  letter-spacing: var(--sn-amenities-title-tracking, 0px);
+  line-height: var(--sn-amenities-title-leading, 1.05);
+  color: var(--sn-gold-deep);
 }
 
 .sn-display--hero {
@@ -115,20 +119,65 @@ html[data-suites-native] .suites-native-route {
 }
 
 .sn-display--section {
-  font-size: clamp(2.7rem, 5.5vw, 5.8rem);
-  line-height: 0.94;
+  font-size: clamp(var(--sn-amenities-title-size, 56px), 5.5vw, 5.8rem);
 }
 
 .sn-body {
   margin: 0;
-  font-size: clamp(1rem, 1.15vw, 1.125rem);
-  font-weight: 300;
-  line-height: 1.72;
+  font-family: var(--sn-amenities-body-font, "Agraham", Georgia, serif);
+  font-size: var(--sn-amenities-body-size, 18px);
+  font-weight: 400;
+  line-height: var(--sn-amenities-body-leading, 1.5);
+  letter-spacing: var(--sn-amenities-body-tracking, 0px);
   color: var(--sn-muted);
 }
 
 .sn-body--ink {
   color: var(--sn-ink);
+}
+
+/* Amenities typography contract — scoped strongly enough to beat public.css. */
+.public-site .suites-native-route .sn-display:not(.sn-display--hero),
+.public-site .suites-native-route .sn-comfort__rail-btn,
+.public-site .suites-native-route .sn-map__stat strong {
+  font-family: var(--sn-amenities-title-font, "Gamgote", Georgia, serif) !important;
+  color: var(--sn-gold-deep) !important;
+  -webkit-text-fill-color: var(--sn-gold-deep) !important;
+}
+
+.public-site .suites-native-route .sn-eyebrow,
+.public-site .suites-native-route .sn-suite-portal__label,
+.public-site .suites-native-route .sn-map__stat span,
+.public-site .suites-native-route .sn-btn {
+  font-family: var(--sn-amenities-indication-font, "Agraham", Georgia, serif) !important;
+}
+
+.public-site .suites-native-route .sn-body,
+.public-site .suites-native-route .sn-collection-card__hint,
+.public-site .suites-native-route .sn-nile__card p,
+.public-site .suites-native-route .sn-suite-portal p {
+  font-family: var(--sn-amenities-body-font, "Agraham", Georgia, serif) !important;
+  color: var(--sn-muted) !important;
+  -webkit-text-fill-color: var(--sn-muted) !important;
+}
+
+.public-site .suites-native-route .sn-mosaic-hero__caption .sn-display,
+.public-site .suites-native-route .sn-mosaic-hero__caption .sn-body,
+.public-site .suites-native-route .sn-suite-portal h3,
+.public-site .suites-native-route .sn-suite-portal p,
+.public-site .suites-native-route .sn-suite-portal__cta,
+.public-site .suites-native-route .sn-nile__card p {
+  color: var(--sn-hero-title) !important;
+  -webkit-text-fill-color: var(--sn-hero-title) !important;
+  text-shadow:
+    0 1px 2px rgba(22, 18, 14, 0.55),
+    0 2px 12px rgba(22, 18, 14, 0.42) !important;
+}
+
+.public-site .suites-native-route .sn-mosaic-hero__support {
+  font-family: var(--sn-amenities-body-font, "Agraham", Georgia, serif) !important;
+  color: var(--sn-hero-title) !important;
+  -webkit-text-fill-color: var(--sn-hero-title) !important;
 }
 
 .sn-btn {
@@ -139,7 +188,7 @@ html[data-suites-native] .suites-native-route {
   padding: 0.5rem 1.15rem;
   border-radius: var(--sn-radius-pill);
   border: 1.5px solid transparent;
-  font-family: var(--font-hathor-body, sans-serif);
+  font-family: var(--sn-amenities-indication-font, "Agraham", Georgia, serif);
   font-size: 0.7rem;
   font-weight: 650;
   letter-spacing: 0.12em;
@@ -164,7 +213,7 @@ html[data-suites-native] .suites-native-route {
 .sn-btn--outline {
   border-color: var(--sn-line);
   background: transparent;
-  color: var(--sn-ink);
+  color: var(--sn-gold-deep);
 }
 
 .sn-btn--outline:hover {
@@ -212,6 +261,8 @@ html[data-suites-native] .suites-native-route {
 .sn-section {
   position: relative;
   padding: clamp(3.5rem, 8vw, 6.5rem) var(--sn-inset);
+  transform-origin: 50% 100%;
+  will-change: clip-path, transform;
 }
 
 /* Three accommodation doors — the first decision after the Springs-style arrival. */
@@ -320,7 +371,7 @@ html[data-suites-native] .suites-native-route {
 .sn-suite-portal h3 {
   max-width: 8ch;
   margin: 0;
-  font-family: "Gamgote", Georgia, serif;
+  font-family: var(--sn-amenities-title-font, "Gamgote", Georgia, serif);
   font-size: clamp(2.8rem, 4.5vw, 5rem);
   font-weight: 400;
   line-height: 0.88;
@@ -331,8 +382,10 @@ html[data-suites-native] .suites-native-route {
 .sn-suite-portal p {
   margin: 1rem 0 1.5rem;
   color: rgba(247, 241, 230, 0.74);
-  font-size: 0.78rem;
-  letter-spacing: 0.08em;
+  font-family: var(--sn-amenities-body-font, "Agraham", Georgia, serif);
+  font-size: var(--sn-amenities-body-size, 18px);
+  line-height: var(--sn-amenities-body-leading, 1.5);
+  letter-spacing: var(--sn-amenities-body-tracking, 0px);
 }
 
 .sn-suite-portal__cta {
@@ -397,42 +450,57 @@ html[data-suites-native] .suites-native-route {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: var(--sn-hero-cream);
+  background:
+    radial-gradient(circle at 76% 68%, rgba(182, 159, 100, 0.34), transparent 40%),
+    var(--sn-hero-cream);
 }
 
 .sn-mosaic-hero__plane {
   position: absolute;
-  top: -26vw;
-  left: 0;
-  width: 100vw;
-  height: 100svh;
-  opacity: 0.7;
-  transform: rotate(-28deg);
-  transform-origin: 50% calc(50% + 30svh);
+  top: 50%;
+  left: 50%;
+  width: 160vw;
+  height: auto;
+  opacity: 0.82;
+  transform: translate(-50%, -50%) rotate(-28deg);
+  transform-origin: 50% 50%;
   will-change: transform;
   pointer-events: none;
   z-index: 0;
+  display: grid;
+  gap: clamp(10px, 1.1vw, 18px);
 }
 
-.sn-mosaic-hero__item {
-  position: absolute;
-  top: 0;
-  left: -40vw;
-  width: clamp(140px, 22vw, 360px);
-  padding: clamp(10px, 1.4vw, 20px) clamp(6px, 0.8vw, 10px);
+.sn-mosaic-hero__rail-window {
+  width: 100%;
+  overflow: hidden;
+}
+
+.sn-mosaic-hero__rail {
+  display: flex;
+  width: max-content;
+  gap: clamp(10px, 1.1vw, 18px);
   will-change: transform;
 }
 
-.sn-mosaic-hero__item:nth-child(n + 7):nth-child(-n + 13) {
-  left: auto;
-  right: -45vw;
+.sn-mosaic-hero__rail-group {
+  display: flex;
+  flex: none;
+  gap: clamp(10px, 1.1vw, 18px);
+}
+
+.sn-mosaic-hero__item {
+  position: relative;
+  flex: 0 0 clamp(190px, 16vw, 300px);
+  width: clamp(190px, 16vw, 300px);
+  will-change: transform;
 }
 
 .sn-mosaic-hero__item img {
   display: block;
   width: 100%;
-  height: auto;
-  aspect-ratio: 3 / 4;
+  height: clamp(220px, 20vw, 360px);
+  aspect-ratio: 4 / 5;
   object-fit: cover;
   filter: sepia(0.22) saturate(1.05) brightness(0.96);
 }
@@ -453,9 +521,10 @@ html[data-suites-native] .suites-native-route {
 
 .sn-mosaic-hero__eyebrow {
   margin: 0 0 0.65rem;
-  font-size: 0.68rem;
-  font-weight: 650;
-  letter-spacing: 0.22em;
+  font-family: var(--sn-amenities-indication-font, "Agraham", Georgia, serif);
+  font-size: var(--sn-amenities-indication-size, 14px);
+  font-weight: 400;
+  letter-spacing: var(--sn-amenities-indication-tracking, 1.2px);
   text-transform: uppercase;
   color: var(--sn-gold);
 }
@@ -463,9 +532,10 @@ html[data-suites-native] .suites-native-route {
 .sn-mosaic-hero__support {
   margin: 0.85rem 0 0;
   max-width: min(32rem, 52vw);
-  font-size: clamp(1rem, 1.2vw, 1.125rem);
-  font-weight: 300;
-  line-height: 1.55;
+  font-family: var(--sn-amenities-body-font, "Agraham", Georgia, serif);
+  font-size: var(--sn-amenities-body-size, 18px);
+  font-weight: 400;
+  line-height: var(--sn-amenities-body-leading, 1.5);
   color: rgba(247, 241, 230, 0.88);
   text-align: right;
 }
@@ -520,8 +590,8 @@ html[data-suites-native] .suites-native-route {
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(182, 159, 100, 0.72) 0%,
-    rgba(205, 191, 166, 0.42) 40%,
+    rgba(182, 159, 100, 0.52) 0%,
+    rgba(205, 191, 166, 0.28) 40%,
     rgba(245, 234, 207, 0) 74%
   );
 }
@@ -1156,19 +1226,19 @@ html[data-suites-native] .suites-native-route {
   }
 
   .sn-mosaic-hero__plane {
-    top: 0;
-    opacity: 0.75;
+    top: 50%;
+    width: 250vw;
+    opacity: 0.82;
     transform-origin: 50% 50%;
   }
 
   .sn-mosaic-hero__item {
-    left: -130vw;
+    flex-basis: clamp(120px, 38vw, 180px);
     width: clamp(110px, 36vw, 220px);
   }
 
-  .sn-mosaic-hero__item:nth-child(n + 7):nth-child(-n + 13) {
-    left: auto;
-    right: -130vw;
+  .sn-mosaic-hero__item img {
+    height: clamp(150px, 47vw, 210px);
   }
 
   .sn-mosaic-hero__caption {
@@ -1218,10 +1288,6 @@ html[data-suites-native] .suites-native-route {
 
   .sn-suite-portal h3 {
     font-size: clamp(3.25rem, 17vw, 4.7rem);
-  }
-
-  .sn-body {
-    font-size: 1rem;
   }
 
   .sn-panels {
