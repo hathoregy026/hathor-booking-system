@@ -43,8 +43,8 @@ function wantsNativeMode() {
   /* Cruises listing (mask-reveal layout) needs native sticky filters. */
   if (window.location.pathname.startsWith("/cruises")) return true;
   if (window.location.pathname.startsWith("/mask-reveal")) return true;
-  /* Native Suites preview: sticky mosaic + comfort stage (no second Lenis). */
-  if (window.location.pathname.startsWith("/suites-preview")) return true;
+  /* Suites native: sticky mosaic + Springs chapters + comfort pin need document scroll. */
+  if (window.location.pathname.startsWith("/suites")) return true;
   /* Fixed-Background Mask Reveal uses native scroll (Lenis breaks pin:fixed math). */
   if (window.location.pathname.startsWith("/gastronomy")) return true;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return true;

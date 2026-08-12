@@ -4,8 +4,8 @@ import { useEffect, type ReactNode } from "react";
 import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
 
 /**
- * Boots cream surface + native scroll for Suites native preview
- * (sticky mosaic + comfort stage need native scroll like Cruises).
+ * Boots cream surface + native scroll for Suites
+ * (sticky mosaic + Springs chapters + comfort pin — Lenis breaks sticky).
  */
 export function SuitesNativeBoot({ children }: { children: ReactNode }) {
   useEffect(() => {

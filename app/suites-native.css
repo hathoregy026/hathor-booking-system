@@ -8,11 +8,16 @@
   --sn-gold: #b69f64;
   --sn-gold-soft: #c9a96e;
   --sn-gold-deep: #7b642f;
+  /* Dark surface token (not body text) — keep umber for photo wells / banners. */
   --sn-ink: #7b642f;
-  --sn-muted: rgba(103, 80, 31, 0.78);
+  /* Text on cream site bg = gold; text on imagery = white. */
+  --sn-on-bg: #b69f64;
+  --sn-on-bg-muted: color-mix(in srgb, #b69f64 82%, transparent);
+  --sn-muted: var(--sn-on-bg-muted);
   --sn-line: rgba(182, 159, 100, 0.45);
   --sn-card-line: rgba(182, 159, 100, 0.28);
-  --sn-hero-title: #f7f1e6;
+  --sn-on-image: #ffffff;
+  --sn-hero-title: #ffffff;
   --sn-ease: cubic-bezier(0.25, 0.74, 0.22, 0.99);
   --sn-radius-pill: 999px;
   --sn-nav-offset: 5.25rem;
@@ -37,7 +42,7 @@ html[data-suites-native] body,
 html[data-suites-native] .public-site {
   background-color: var(--sn-cream) !important;
   background-image: none !important;
-  color: var(--sn-ink);
+  color: var(--sn-on-bg, #b69f64);
 }
 
 html[data-suites-native] .public-site::before {
@@ -60,9 +65,11 @@ html[data-suites-native] .suites-native-route {
   position: relative;
   min-height: 100svh;
   background: var(--sn-cream);
-  color: var(--sn-ink);
+  color: var(--sn-on-bg);
   font-family: var(--sn-amenities-body-font, "Agraham", Georgia, serif);
-  overflow: clip;
+  /* overflow-y must stay visible — clip on the page root kills sticky / ScrollTrigger pins */
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 .suites-native-preview-banner {
@@ -98,7 +105,7 @@ html[data-suites-native] .suites-native-route {
   line-height: 1.3;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--sn-gold);
+  color: var(--sn-on-bg);
 }
 
 .sn-display {
@@ -107,14 +114,14 @@ html[data-suites-native] .suites-native-route {
   font-weight: 400;
   letter-spacing: var(--sn-amenities-title-tracking, 0px);
   line-height: var(--sn-amenities-title-leading, 1.05);
-  color: var(--sn-gold-deep);
+  color: var(--sn-on-bg);
 }
 
 .sn-display--hero {
   font-size: clamp(3.6rem, 8.2vw, 8.8rem);
   line-height: 0.82;
   letter-spacing: -0.055em;
-  color: var(--sn-hero-title);
+  color: var(--sn-on-image);
   text-shadow: 0 4px 40px rgba(0, 0, 0, 0.4);
 }
 
@@ -129,11 +136,11 @@ html[data-suites-native] .suites-native-route {
   font-weight: 400;
   line-height: var(--sn-amenities-body-leading, 1.5);
   letter-spacing: var(--sn-amenities-body-tracking, 0px);
-  color: var(--sn-muted);
+  color: var(--sn-on-bg-muted);
 }
 
 .sn-body--ink {
-  color: var(--sn-ink);
+  color: var(--sn-on-bg);
 }
 
 /* Amenities typography contract — scoped strongly enough to beat public.css. */
@@ -141,14 +148,16 @@ html[data-suites-native] .suites-native-route {
 .public-site .suites-native-route .sn-comfort__rail-btn,
 .public-site .suites-native-route .sn-map__stat strong {
   font-family: var(--sn-amenities-title-font, "Gamgote", Georgia, serif) !important;
-  color: var(--sn-gold-deep) !important;
-  -webkit-text-fill-color: var(--sn-gold-deep) !important;
+  color: var(--sn-on-bg) !important;
+  -webkit-text-fill-color: var(--sn-on-bg) !important;
 }
 
 .public-site .suites-native-route .sn-eyebrow,
 .public-site .suites-native-route .sn-suite-portal__label,
 .public-site .suites-native-route .sn-map__stat span {
   font-family: var(--public-sans, var(--font-hathor-body), "Plus Jakarta Sans", sans-serif) !important;
+  color: var(--sn-on-bg) !important;
+  -webkit-text-fill-color: var(--sn-on-bg) !important;
 }
 
 .public-site .suites-native-route .sn-btn,
@@ -161,18 +170,22 @@ html[data-suites-native] .suites-native-route {
 .public-site .suites-native-route .sn-nile__card p,
 .public-site .suites-native-route .sn-suite-portal p {
   font-family: var(--sn-amenities-body-font, "Agraham", Georgia, serif) !important;
-  color: var(--sn-muted) !important;
-  -webkit-text-fill-color: var(--sn-muted) !important;
+  color: var(--sn-on-bg-muted) !important;
+  -webkit-text-fill-color: var(--sn-on-bg-muted) !important;
 }
 
+/* White copy only when sitting on imagery */
 .public-site .suites-native-route .sn-mosaic-hero__caption .sn-display,
 .public-site .suites-native-route .sn-mosaic-hero__caption .sn-body,
+.public-site .suites-native-route .sn-mosaic-hero__eyebrow,
+.public-site .suites-native-route .sn-mosaic-hero__support,
+.public-site .suites-native-route .sn-suite-portal__label,
 .public-site .suites-native-route .sn-suite-portal h3,
 .public-site .suites-native-route .sn-suite-portal p,
 .public-site .suites-native-route .sn-suite-portal__cta,
 .public-site .suites-native-route .sn-nile__card p {
-  color: var(--sn-hero-title) !important;
-  -webkit-text-fill-color: var(--sn-hero-title) !important;
+  color: var(--sn-on-image) !important;
+  -webkit-text-fill-color: var(--sn-on-image) !important;
   text-shadow:
     0 1px 2px rgba(22, 18, 14, 0.55),
     0 2px 12px rgba(22, 18, 14, 0.42) !important;
@@ -180,8 +193,6 @@ html[data-suites-native] .suites-native-route {
 
 .public-site .suites-native-route .sn-mosaic-hero__support {
   font-family: var(--sn-amenities-body-font, "Agraham", Georgia, serif) !important;
-  color: var(--sn-hero-title) !important;
-  -webkit-text-fill-color: var(--sn-hero-title) !important;
 }
 
 .sn-btn {
@@ -235,33 +246,33 @@ html[data-suites-native] .suites-native-route {
 .sn-btn--ghost {
   border-color: transparent;
   background: transparent;
-  color: var(--sn-muted);
+  color: var(--sn-on-bg-muted);
 }
 
 .sn-btn--ghost:hover {
-  color: var(--sn-gold);
+  color: var(--sn-on-bg);
 }
 
 .sn-btn--on-photo {
-  border-color: var(--sn-hero-title);
+  border-color: var(--sn-on-image);
   background: transparent;
-  color: var(--sn-hero-title);
+  color: var(--sn-on-image);
 }
 
 .sn-btn--on-photo:hover {
-  border-color: var(--sn-hero-title);
-  background: var(--sn-hero-title);
+  border-color: var(--sn-on-image);
+  background: var(--sn-on-image);
   color: var(--sn-gold-deep);
   transform: translateY(-2px);
 }
 
 .sn-btn--on-photo-ghost {
   border-color: transparent;
-  color: rgba(247, 241, 230, 0.78);
+  color: rgba(255, 255, 255, 0.78);
 }
 
 .sn-btn--on-photo-ghost:hover {
-  color: var(--sn-gold-soft);
+  color: var(--sn-on-image);
 }
 
 .sn-actions {
@@ -274,8 +285,7 @@ html[data-suites-native] .suites-native-route {
 .sn-section {
   position: relative;
   padding: clamp(3.5rem, 8vw, 6.5rem) var(--sn-inset);
-  transform-origin: 50% 100%;
-  will-change: clip-path, transform;
+  /* Do not set transform / will-change:transform here — it breaks sticky children */
 }
 
 /* Three accommodation doors — the first decision after the Springs-style arrival. */
@@ -370,7 +380,7 @@ html[data-suites-native] .suites-native-route {
   font-family: "Gamgote", Georgia, serif;
   font-size: clamp(4.5rem, 8vw, 8rem);
   line-height: 0.72;
-  color: rgba(247, 241, 230, 0.13);
+  color: rgba(255, 255, 255, 0.13);
 }
 
 .sn-suite-portal__label {
@@ -379,7 +389,7 @@ html[data-suites-native] .suites-native-route {
   font-weight: 650;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--sn-gold-soft);
+  color: var(--sn-on-image);
 }
 
 .sn-suite-portal h3 {
@@ -395,7 +405,7 @@ html[data-suites-native] .suites-native-route {
 
 .sn-suite-portal p {
   margin: 1rem 0 1.5rem;
-  color: rgba(247, 241, 230, 0.74);
+  color: var(--sn-on-image);
   font-family: var(--sn-amenities-body-font, "Agraham", Georgia, serif);
   font-size: var(--sn-amenities-body-size, 18px);
   line-height: var(--sn-amenities-body-leading, 1.5);
@@ -488,7 +498,7 @@ html[data-suites-native] .suites-native-route {
   }
 
   .sn-suite-portal:hover .sn-suite-portal__cta {
-    color: var(--sn-gold-soft);
+    color: var(--sn-on-image);
   }
 }
 
@@ -606,7 +616,7 @@ html[data-suites-native] .suites-native-route {
   font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--sn-gold);
+  color: var(--sn-on-image);
 }
 
 .sn-mosaic-hero__support {
@@ -616,7 +626,7 @@ html[data-suites-native] .suites-native-route {
   font-size: var(--sn-amenities-body-size, 18px);
   font-weight: 400;
   line-height: var(--sn-amenities-body-leading, 1.5);
-  color: rgba(247, 241, 230, 0.88);
+  color: var(--sn-on-image);
   text-align: right;
 }
 
@@ -854,14 +864,14 @@ html[data-suites-native] .suites-native-route {
   font-weight: 500;
   letter-spacing: -0.02em;
   line-height: 1.15;
-  color: var(--sn-ink);
+  color: var(--sn-on-bg);
   opacity: 0.48;
   transition: opacity 0.35s var(--sn-ease), color 0.35s var(--sn-ease);
 }
 
 .sn-comfort__rail-btn.is-active {
   opacity: 1;
-  color: var(--sn-ink);
+  color: var(--sn-on-bg);
 }
 
 .sn-comfort__rail-btn:hover {
@@ -912,7 +922,7 @@ html[data-suites-native] .suites-native-route {
   margin: 0;
   padding: 1rem 1.1rem;
   background: linear-gradient(transparent, rgba(44, 40, 36, 0.72));
-  color: var(--sn-hero-title);
+  color: var(--sn-on-image);
   font-size: 0.88rem;
   line-height: 1.45;
   font-weight: 300;
@@ -988,7 +998,7 @@ html[data-suites-native] .suites-native-route {
   font-family: var(--font-hathor-display, "Gamgote", Georgia, serif);
   font-size: clamp(2rem, 3vw, 2.6rem);
   font-weight: 500;
-  color: var(--sn-gold);
+  color: var(--sn-on-bg);
   letter-spacing: -0.03em;
 }
 
@@ -997,7 +1007,7 @@ html[data-suites-native] .suites-native-route {
   font-weight: 650;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--sn-muted);
+  color: var(--sn-on-bg-muted);
 }
 
 .sn-craft__media-row {
@@ -1047,7 +1057,7 @@ html[data-suites-native] .suites-native-route {
   min-height: 100%;
   border: 1px solid var(--sn-card-line);
   background: var(--sn-cream-soft);
-  color: var(--sn-ink);
+  color: var(--sn-on-bg);
   text-decoration: none;
   overflow: hidden;
   transition:
@@ -1087,7 +1097,7 @@ html[data-suites-native] .suites-native-route {
   font-weight: 500;
   letter-spacing: -0.04em;
   line-height: 1;
-  color: var(--sn-gold);
+  color: var(--sn-on-image);
   text-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
 }
 
@@ -1110,7 +1120,7 @@ html[data-suites-native] .suites-native-route {
 .sn-collection-card__hint {
   font-size: 0.78rem;
   line-height: 1.35;
-  color: var(--sn-muted);
+  color: var(--sn-on-bg-muted);
   margin-bottom: 0.75rem;
 }
 
