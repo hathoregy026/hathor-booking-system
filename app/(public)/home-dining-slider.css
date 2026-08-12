@@ -286,8 +286,11 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
 .home-am-nature {
   z-index: 5;
 }
-.home-am-voyages {
+.home-am-nature-gold {
   z-index: 6;
+}
+.home-am-voyages {
+  z-index: 7;
 }
 
 /*
@@ -356,35 +359,45 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
   object-fit: cover !important;
 }
 
-/*
- * Caption gold band — sibling AFTER #home-am-nature (not inside it).
- * min-height matches nature’s under-next pull.
- */
-.home-am-nature__gold-band {
-  --am-nature-gold-fill: clamp(16rem, 42vh, 22rem);
-  /* Extra lift so the photo covers dark-band / ::after solid-gold above the band */
-  --am-nature-gold-photo-overhang: max(
-    var(--am-nature-gold-fill),
-    28vh,
-    12rem
-  );
+/* Pinned photo-on-gold cover chapter. */
+.home-am-nature-gold {
   position: relative;
+  /*
+   * 60→140svh: photo rises inside the pinned gold stage.
+   * At 160svh the pin releases, leaving 100svh for the completed photo and
+   * gold stage to travel upward together over the previous chapter.
+   */
+  height: 260svh;
+  min-height: 260svh;
+  background: var(--am-gold);
+}
+
+.home-am-nature-gold__stage {
+  height: calc(100 * var(--am-svh));
+  min-height: calc(100 * var(--am-svh));
+  overflow: hidden;
+  background: var(--am-gold);
+}
+
+.home-am-nature__gold-band {
+  position: absolute;
+  inset: 0;
   z-index: 8;
   isolation: isolate;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   width: 100%;
-  min-height: var(--am-nature-gold-fill);
-  margin-top: -2px;
+  height: 100%;
+  min-height: 100%;
+  margin: 0;
   padding: 0 clamp(1.25rem, 6vw, 4rem) clamp(1.25rem, 3vh, 2rem);
   box-sizing: border-box;
   background-color: var(--am-gold);
-  /* Allow photo/wash to paint into the solid-gold void above this box */
-  overflow: visible;
+  overflow: hidden;
   /*
    * Boot below its final position. Parallax physically slides this photo
-   * panel upward (--60 → --140 on #home-am-nature) until it fills the gold
+   * panel upward (--60 → --140 on #home-am-nature-gold) until it fills the gold
    * area before the nature chapter hands off.
    */
   clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
@@ -398,10 +411,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
  */
 .home-am-nature__gold-photo {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  top: calc(-1 * var(--am-nature-gold-photo-overhang));
+  inset: 0;
   z-index: 0;
   width: 100%;
   height: auto;
@@ -427,10 +437,7 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
 /* Soft gold wash — same overhang as the photo */
 .home-am-nature__gold-wash {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  top: calc(-1 * var(--am-nature-gold-photo-overhang));
+  inset: 0;
   z-index: 1;
   background: var(--am-gold);
   opacity: 0.62;
@@ -494,9 +501,9 @@ html[data-ex-experience] .ex-root .home-am-sequence .home-am-on-cream-title * {
 }
 
 /* Keep Voyages from painting over this short gold panel during the handoff */
-.home-am-nature__gold-band + .home-am-voyages,
+.home-am-nature-gold + .home-am-voyages,
 .home-am-dark-band + .home-am-voyages {
-  z-index: 6;
+  z-index: 7;
 }
 
 /*
@@ -1816,14 +1823,8 @@ html[data-ex-experience]
   }
 
   .home-am-nature__gold-band {
-    --am-nature-gold-fill: clamp(14rem, 48vh, 20rem);
-    --am-nature-gold-photo-overhang: max(
-      var(--am-nature-gold-fill),
-      32vh,
-      11rem
-    );
-    min-height: var(--am-nature-gold-fill);
-    margin-top: -2px;
+    min-height: 100%;
+    margin: 0;
     padding: 0 1.15rem clamp(1.15rem, 3.5vh, 1.75rem);
   }
 

@@ -106,7 +106,7 @@ export function useHomeAmenitiesSequence(
      */
     const chapterNodes = Array.from(
       root.querySelectorAll<HTMLElement>(
-        "[data-am-intro], [data-am-video], [data-am-slider], [data-am-opening], [data-am-nature]",
+        "[data-am-intro], [data-am-video], [data-am-slider], [data-am-opening], [data-am-nature], [data-am-nature-gold]",
       ),
     );
     chapterNodes.forEach((chapter, index) => {
