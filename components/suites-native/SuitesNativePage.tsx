@@ -33,6 +33,7 @@ export function SuitesNativePage({ images }: Props) {
         className="sn-section sn-section--collection-intro"
         id="suites-collection"
         aria-label="Choose your accommodation"
+        data-sn-collection-slider
       >
         <header className="sn-collection__header sn-collection__header--opening">
           <p className="sn-eyebrow">Three ways to stay</p>
@@ -73,9 +74,10 @@ export function SuitesNativePage({ images }: Props) {
       </section>
 
       <section
-        className="sn-section sn-section--cream"
+        className="sn-section sn-section--cream sn-springs-chapter"
         id="suites-unrivaled"
         aria-label="Unrivaled Views"
+        data-sn-slide="from-right"
       >
         <div className="sn-editorial">
           <div className="sn-editorial__copy">
@@ -116,9 +118,10 @@ export function SuitesNativePage({ images }: Props) {
       </section>
 
       <section
-        className="sn-section sn-section--soft"
+        className="sn-section sn-section--soft sn-springs-chapter"
         id="suites-step"
         aria-label="Step Aboard"
+        data-sn-slide="from-left"
       >
         <div className="sn-editorial sn-editorial--reverse">
           <div className="sn-editorial__media-col">
@@ -184,7 +187,12 @@ export function SuitesNativePage({ images }: Props) {
         </div>
       </section>
 
-      <section className="sn-section sn-section--cream" id="suites-map" aria-label="Voyage map">
+      <section
+        className="sn-section sn-section--cream sn-springs-chapter"
+        id="suites-map"
+        aria-label="Voyage map"
+        data-sn-slide="from-bottom"
+      >
         <div className="sn-map">
           <div className="sn-map__media">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -245,9 +253,10 @@ export function SuitesNativePage({ images }: Props) {
       </section>
 
       <section
-        className="sn-section sn-section--soft"
+        className="sn-section sn-section--soft sn-springs-chapter"
         id="suites-interiors"
         aria-label="Interiors"
+        data-sn-slide="from-right"
       >
         <div className="sn-interiors">
           <div className="sn-interiors__gallery">

@@ -9,7 +9,7 @@ import {
   resolveSuitesNativeView,
 } from "@/lib/suites-native-content";
 
-const DURATION_MS = 30_000;
+const DURATION_MS = 18_000;
 
 type Props = {
   images: Record<string, string>;
@@ -31,6 +31,7 @@ export function SuitesMosaicHero({ images, hero }: Props) {
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
+    root.dataset.mosaicMotion = "ready";
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const rows = rowRefs.current.filter(Boolean) as HTMLDivElement[];
@@ -52,7 +53,7 @@ export function SuitesMosaicHero({ images, hero }: Props) {
         const gap = Number.parseFloat(getComputedStyle(row).columnGap) || 0;
         const cycle = groupWidth + gap;
         if (!cycle) return;
-        const travel = (timeProgress * cycle * 0.7 + heroProgress * cycle * 0.42) % cycle;
+        const travel = (timeProgress * cycle * 0.9 + heroProgress * cycle * 0.68) % cycle;
         const x = index === 1 ? -cycle + travel : -travel;
         row.style.transform = `translate3d(${x}px, 0, 0)`;
       });
@@ -84,6 +85,7 @@ export function SuitesMosaicHero({ images, hero }: Props) {
       cancelAnimationFrame(raf);
       io.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
+      delete root.dataset.mosaicMotion;
     };
   }, []);
 

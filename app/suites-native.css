@@ -92,11 +92,11 @@ html[data-suites-native] .suites-native-route {
 
 .sn-eyebrow {
   margin: 0 0 0.85rem;
-  font-family: var(--sn-amenities-indication-font, "Agraham", Georgia, serif);
-  font-size: var(--sn-amenities-indication-size, 14px);
-  font-weight: 400;
-  line-height: var(--sn-amenities-indication-leading, 1.3);
-  letter-spacing: var(--sn-amenities-indication-tracking, 1.2px);
+  font-family: var(--public-sans, var(--font-hathor-body), "Plus Jakarta Sans", sans-serif);
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--sn-gold);
 }
@@ -147,9 +147,13 @@ html[data-suites-native] .suites-native-route {
 
 .public-site .suites-native-route .sn-eyebrow,
 .public-site .suites-native-route .sn-suite-portal__label,
-.public-site .suites-native-route .sn-map__stat span,
-.public-site .suites-native-route .sn-btn {
-  font-family: var(--sn-amenities-indication-font, "Agraham", Georgia, serif) !important;
+.public-site .suites-native-route .sn-map__stat span {
+  font-family: var(--public-sans, var(--font-hathor-body), "Plus Jakarta Sans", sans-serif) !important;
+}
+
+.public-site .suites-native-route .sn-btn,
+.public-site .suites-native-route .sn-suite-portal__cta {
+  font-family: var(--public-sans, var(--font-hathor-body), "Plus Jakarta Sans", sans-serif) !important;
 }
 
 .public-site .suites-native-route .sn-body,
@@ -184,21 +188,25 @@ html[data-suites-native] .suites-native-route {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 2.75rem;
-  padding: 0.5rem 1.15rem;
-  border-radius: var(--sn-radius-pill);
-  border: 1.5px solid transparent;
-  font-family: var(--sn-amenities-indication-font, "Agraham", Georgia, serif);
-  font-size: 0.7rem;
-  font-weight: 650;
-  letter-spacing: 0.12em;
+  width: var(--hathor-btn-width, 12.5rem);
+  min-width: var(--hathor-btn-width, 12.5rem);
+  min-height: var(--hathor-btn-height, 2.85rem);
+  padding: 3px var(--hathor-btn-pad-x, 1.75rem) 1px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-family: var(--public-sans, var(--font-hathor-body), "Plus Jakarta Sans", sans-serif);
+  font-size: var(--hathor-btn-font-size, 0.72rem);
+  font-weight: 500;
+  letter-spacing: var(--hathor-btn-tracking, 0.18em);
   text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
   transition:
     background 0.35s var(--sn-ease),
     color 0.35s var(--sn-ease),
-    border-color 0.35s var(--sn-ease);
+    border-color 0.35s var(--sn-ease),
+    box-shadow 0.35s var(--sn-ease),
+    transform 0.35s var(--sn-ease);
 }
 
 .sn-btn--solid {
@@ -211,14 +219,17 @@ html[data-suites-native] .suites-native-route {
 }
 
 .sn-btn--outline {
-  border-color: var(--sn-line);
-  background: transparent;
-  color: var(--sn-gold-deep);
+  border-color: var(--sn-gold);
+  background: #faf8f5;
+  color: var(--sn-gold);
 }
 
 .sn-btn--outline:hover {
   border-color: var(--sn-gold);
-  color: var(--sn-gold);
+  background: var(--sn-gold);
+  color: #fff;
+  box-shadow: 0 10px 26px rgba(182, 159, 100, 0.35);
+  transform: translateY(-2px);
 }
 
 .sn-btn--ghost {
@@ -232,14 +243,16 @@ html[data-suites-native] .suites-native-route {
 }
 
 .sn-btn--on-photo {
-  border-color: rgba(247, 241, 230, 0.55);
+  border-color: var(--sn-hero-title);
+  background: transparent;
   color: var(--sn-hero-title);
 }
 
 .sn-btn--on-photo:hover {
-  border-color: var(--sn-gold);
-  background: var(--sn-gold);
-  color: var(--sn-cream);
+  border-color: var(--sn-hero-title);
+  background: var(--sn-hero-title);
+  color: var(--sn-gold-deep);
+  transform: translateY(-2px);
 }
 
 .sn-btn--on-photo-ghost {
@@ -268,46 +281,47 @@ html[data-suites-native] .suites-native-route {
 /* Three accommodation doors — the first decision after the Springs-style arrival. */
 
 .sn-section--collection-intro {
-  padding-top: clamp(6rem, 12vw, 11rem);
-  padding-bottom: clamp(5rem, 10vw, 9rem);
+  height: 390svh;
+  padding: 0;
+  overflow: clip;
   background:
     radial-gradient(circle at 50% 0%, rgba(182, 159, 100, 0.22), transparent 36rem),
     var(--sn-cream-soft);
 }
 
 .sn-collection__header--opening {
-  max-width: 46rem;
-  margin-bottom: clamp(2.75rem, 6vw, 5rem);
+  position: absolute;
+  top: clamp(6rem, 12vh, 9rem);
+  left: var(--sn-inset);
+  z-index: 4;
+  max-width: min(35rem, 40vw);
+  margin: 0;
+  text-align: left;
 }
 
 .sn-collection__portals {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
   gap: clamp(0.75rem, 1.4vw, 1.25rem);
-  max-width: 92rem;
-  margin: 0 auto;
-  padding: 0;
+  width: max-content;
+  height: 100svh;
+  max-width: none;
+  margin: 0;
+  padding: 12vh 8vw 6vh 44vw;
   list-style: none;
 }
 
-.sn-collection__portals li:nth-child(1) {
-  grid-column: 1 / span 4;
-  padding-top: clamp(2rem, 7vw, 7rem);
-}
-
-.sn-collection__portals li:nth-child(2) {
-  grid-column: 5 / span 4;
-}
-
-.sn-collection__portals li:nth-child(3) {
-  grid-column: 9 / span 4;
-  padding-top: clamp(4rem, 12vw, 12rem);
+.sn-collection__portals li {
+  flex: 0 0 clamp(24rem, 42vw, 43rem);
 }
 
 .sn-suite-portal {
   position: relative;
   display: block;
-  min-height: clamp(31rem, 65vw, 50rem);
+  height: min(76svh, 49rem);
+  min-height: 34rem;
   overflow: hidden;
   color: var(--sn-hero-title);
   text-decoration: none;
@@ -399,7 +413,73 @@ html[data-suites-native] .suites-native-route {
   font-weight: 650;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  font-family: var(--public-sans, var(--font-hathor-body), "Plus Jakarta Sans", sans-serif);
 }
+
+.sn-springs-chapter {
+  height: 270svh;
+  padding: 0;
+  overflow: clip;
+}
+
+.sn-springs-chapter > .sn-editorial,
+.sn-springs-chapter > .sn-map,
+.sn-springs-chapter > .sn-interiors {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100svh;
+  max-width: none;
+  padding: clamp(5rem, 10vh, 8rem) var(--sn-inset) clamp(2rem, 5vh, 4rem);
+  overflow: hidden;
+}
+
+.sn-springs-chapter .sn-editorial__copy,
+.sn-springs-chapter .sn-map > div:last-child,
+.sn-springs-chapter .sn-interiors > div:last-child {
+  max-width: 36rem;
+}
+
+.sn-springs-chapter .sn-editorial__media-col,
+.sn-springs-chapter .sn-map__media,
+.sn-springs-chapter .sn-interiors__gallery {
+  height: min(76svh, 50rem);
+}
+
+.sn-springs-chapter .sn-editorial__media {
+  height: 100%;
+}
+
+.sn-springs-chapter .sn-editorial__stack {
+  position: relative;
+  display: block;
+}
+
+.sn-springs-chapter .sn-editorial__stack-item {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+}
+
+.sn-springs-chapter .sn-editorial__stack-item:nth-child(1) { z-index: 1; }
+.sn-springs-chapter .sn-editorial__stack-item:nth-child(2) { z-index: 2; }
+.sn-springs-chapter .sn-editorial__stack-item:nth-child(3) { z-index: 3; }
+
+.sn-springs-chapter .sn-interiors__gallery {
+  position: relative;
+  display: block;
+}
+
+.sn-springs-chapter .sn-interiors__gallery figure {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  aspect-ratio: auto;
+}
+
+.sn-springs-chapter .sn-interiors__gallery figure:nth-child(1) { z-index: 1; }
+.sn-springs-chapter .sn-interiors__gallery figure:nth-child(2) { z-index: 2; }
+.sn-springs-chapter .sn-interiors__gallery figure:nth-child(3) { z-index: 3; }
 
 @media (hover: hover) and (pointer: fine) {
   .sn-suite-portal:hover .sn-suite-portal__media img {
@@ -521,10 +601,10 @@ html[data-suites-native] .suites-native-route {
 
 .sn-mosaic-hero__eyebrow {
   margin: 0 0 0.65rem;
-  font-family: var(--sn-amenities-indication-font, "Agraham", Georgia, serif);
-  font-size: var(--sn-amenities-indication-size, 14px);
-  font-weight: 400;
-  letter-spacing: var(--sn-amenities-indication-tracking, 1.2px);
+  font-family: var(--public-sans, var(--font-hathor-body), "Plus Jakarta Sans", sans-serif);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--sn-gold);
 }
@@ -1117,18 +1197,18 @@ html[data-suites-native] .suites-native-route {
 
 @media (max-width: 1024px) {
   .sn-collection__portals {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: flex;
+    padding-left: 12vw;
   }
 
   .sn-collection__portals li:nth-child(1),
   .sn-collection__portals li:nth-child(2),
   .sn-collection__portals li:nth-child(3) {
-    grid-column: auto;
     padding-top: 0;
   }
 
-  .sn-collection__portals li:nth-child(3) {
-    grid-column: 1 / -1;
+  .sn-collection__portals li {
+    flex-basis: min(72vw, 36rem);
   }
 
   .sn-suite-portal {
@@ -1144,6 +1224,19 @@ html[data-suites-native] .suites-native-route {
   .sn-map,
   .sn-interiors {
     grid-template-columns: 1fr;
+  }
+
+  .sn-springs-chapter > .sn-editorial,
+  .sn-springs-chapter > .sn-map,
+  .sn-springs-chapter > .sn-interiors {
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.78fr);
+    gap: 1.25rem;
+  }
+
+  .sn-springs-chapter .sn-editorial__media-col,
+  .sn-springs-chapter .sn-map__media,
+  .sn-springs-chapter .sn-interiors__gallery {
+    height: min(63svh, 39rem);
   }
 
   .sn-editorial--reverse .sn-editorial__copy,
@@ -1273,17 +1366,52 @@ html[data-suites-native] .suites-native-route {
   }
 
   .sn-collection__portals {
-    grid-template-columns: 1fr;
+    display: flex;
     gap: 0.9rem;
+    padding: 21vh 7vw 5vh;
   }
 
-  .sn-collection__portals li:nth-child(3) {
-    grid-column: auto;
+  .sn-collection__portals li {
+    flex-basis: 84vw;
   }
 
   .sn-suite-portal,
   .sn-collection__portals li:nth-child(3) .sn-suite-portal {
     min-height: 72svh;
+  }
+
+  .sn-section--collection-intro {
+    height: 340svh;
+  }
+
+  .sn-collection__header--opening {
+    top: 5.75rem;
+    left: 7vw;
+    max-width: 86vw;
+  }
+
+  .sn-collection__header--opening .sn-body {
+    display: none;
+  }
+
+  .sn-springs-chapter {
+    height: 235svh;
+  }
+
+  .sn-springs-chapter > .sn-editorial,
+  .sn-springs-chapter > .sn-map,
+  .sn-springs-chapter > .sn-interiors {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(42svh, 1fr) auto;
+    align-content: center;
+    padding: 5.25rem 1rem 1rem;
+  }
+
+  .sn-springs-chapter .sn-editorial__media-col,
+  .sn-springs-chapter .sn-map__media,
+  .sn-springs-chapter .sn-interiors__gallery {
+    height: 46svh;
+    min-height: 0;
   }
 
   .sn-suite-portal h3 {

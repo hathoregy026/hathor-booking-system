@@ -6,10 +6,14 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/**
- * Springs-style continuity for Suites: chapters lift through a soft mask while
- * their media keeps drifting underneath. Motion is scroll-linked, not a set of
- * one-shot reveal blocks.
+const clamp = (value: number) => Math.max(0, Math.min(1, value));
+const smooth = (value: number) => {
+  const x = clamp(value);
+  return x * x * (3 - 2 * x);
+};
+
+/** Springs-style pinned slides for Suites: horizontal accommodation rail,
+ * full-viewport editorial hand-offs, directional image wipes and long holds.
  */
 export function useSuitesSpringsFlow(
   rootRef: RefObject<HTMLElement | null>,
@@ -20,79 +24,95 @@ export function useSuitesSpringsFlow(
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) return;
-
-    const chapters = Array.from(
-      root.querySelectorAll<HTMLElement>(".sn-section, .sn-cta"),
-    );
+    root.dataset.snMotion = "ready";
 
     const ctx = gsap.context(() => {
-      chapters.forEach((chapter, index) => {
-        chapter.style.zIndex = String(index + 2);
+      const hero = root.querySelector<HTMLElement>(".sn-mosaic-hero");
+      const heroPlane = hero?.querySelector<HTMLElement>(".sn-mosaic-hero__plane");
+      const heroCaption = hero?.querySelector<HTMLElement>(".sn-mosaic-hero__caption");
+      if (hero && heroPlane && heroCaption) {
+        gsap.timeline({
+          scrollTrigger: { trigger: hero, start: "top top", end: "bottom bottom", scrub: true },
+        })
+          .fromTo(heroPlane, { scale: 1.08, yPercent: 2 }, { scale: 0.91, yPercent: -5, ease: "none" }, 0)
+          .fromTo(heroCaption, { xPercent: 0, autoAlpha: 1 }, { xPercent: 13, autoAlpha: 0, ease: "none" }, 0.56);
+      }
 
-        gsap.fromTo(
-          chapter,
-          {
-            clipPath: "inset(10% 0% 0% 0% round 48% 48% 0 0)",
-            y: "7svh",
-          },
-          {
-            clipPath: "inset(0% 0% 0% 0% round 0% 0% 0 0)",
-            y: 0,
-            ease: "none",
-            scrollTrigger: {
-              trigger: chapter,
-              start: "top 96%",
-              end: "top 52%",
-              scrub: 0.8,
-              invalidateOnRefresh: true,
-            },
-          },
-        );
-
-        const media = Array.from(
-          chapter.querySelectorAll<HTMLElement>(
-            ".sn-editorial__media img, .sn-editorial__stack-item img, .sn-panels__item img, .sn-map__media img, .sn-craft__media-row img, .sn-interiors__gallery img, .sn-suite-portal__media img",
-          ),
-        );
-        media.forEach((image, imageIndex) => {
-          gsap.fromTo(
-            image,
-            { yPercent: imageIndex % 2 ? -7 : 7, scale: 1.1 },
-            {
-              yPercent: imageIndex % 2 ? 7 : -7,
-              scale: 1.02,
-              ease: "none",
-              scrollTrigger: {
-                trigger: image.closest("figure, a, div") ?? image,
-                start: "top bottom",
-                end: "bottom top",
-                scrub: 1,
-                invalidateOnRefresh: true,
-              },
-            },
-          );
+      const collection = root.querySelector<HTMLElement>("[data-sn-collection-slider]");
+      const portals = collection?.querySelector<HTMLElement>(".sn-collection__portals");
+      const portalItems = portals ? Array.from(portals.children) as HTMLElement[] : [];
+      if (collection && portals && portalItems.length) {
+        const setCollection = (progress: number) => {
+          const maxTravel = Math.max(0, portals.scrollWidth - window.innerWidth + window.innerWidth * 0.08);
+          gsap.set(portals, { x: -maxTravel * smooth(progress), force3D: true });
+          portalItems.forEach((item, index) => {
+            const local = smooth(clamp(progress * 2.2 - index * 0.32));
+            gsap.set(item, { y: (1 - local) * (index % 2 ? 11 : 18) + "vh", rotate: (1 - local) * (index - 1) * 1.2 });
+          });
+        };
+        setCollection(0);
+        ScrollTrigger.create({
+          trigger: collection,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: true,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => setCollection(self.progress),
         });
+      }
 
+      root.querySelectorAll<HTMLElement>("[data-sn-slide]").forEach((chapter) => {
+        const scene = chapter.firstElementChild as HTMLElement | null;
+        if (!scene) return;
         const copy = chapter.querySelector<HTMLElement>(
-          ".sn-editorial__copy, .sn-statement, .sn-map > div:last-child, .sn-interiors > div:last-child, .sn-collection__header",
+          ".sn-editorial__copy, .sn-map > div:last-child, .sn-interiors > div:last-child",
         );
-        if (copy) {
-          gsap.fromTo(
-            copy,
-            { y: 56, autoAlpha: 0.35 },
-            {
-              y: 0,
-              autoAlpha: 1,
-              ease: "none",
-              scrollTrigger: {
-                trigger: chapter,
-                start: "top 82%",
-                end: "top 38%",
-                scrub: 0.7,
-              },
-            },
-          );
-        }
+        const frames = Array.from(scene.querySelectorAll<HTMLElement>(
+          ".sn-editorial__media-col:not(.sn-editorial__stack), .sn-editorial__stack-item, .sn-map__media, .sn-interiors__gallery figure",
+        ));
+        const images = Array.from(scene.querySelectorAll<HTMLElement>("img"));
+        const direction = chapter.dataset.snSlide;
+        const setChapter = (progress: number) => {
+          const enter = smooth(clamp(progress / 0.3));
+          const exit = smooth(clamp((progress - 0.8) / 0.2));
+          frames.forEach((frame, index) => {
+            const delayed = frames.length > 1
+              ? index === 0
+                ? enter
+                : smooth(clamp((progress - (0.2 + index * 0.2)) / 0.16))
+              : enter;
+            const hidden = (1 - delayed) * 100;
+            const clipPath = direction === "from-left"
+              ? `inset(0% ${hidden}% 0% 0%)`
+              : direction === "from-bottom"
+                ? `inset(${hidden}% 0% 0% 0%)`
+                : `inset(0% 0% 0% ${hidden}%)`;
+            gsap.set(frame, {
+              clipPath,
+              autoAlpha: delayed,
+              xPercent: direction === "from-right" ? (1 - delayed) * 18 : direction === "from-left" ? (delayed - 1) * 18 : 0,
+              yPercent: direction === "from-bottom" ? (1 - delayed) * 12 : 0,
+            });
+          });
+          images.forEach((image, index) => {
+            const phase = smooth(clamp(progress * 3 - index * 0.55));
+            gsap.set(image, { scale: 1.16 - phase * 0.12, yPercent: (0.5 - progress) * (index % 2 ? -7 : 7) });
+          });
+          if (copy) gsap.set(copy, {
+            autoAlpha: Math.max(0, enter - exit),
+            xPercent: (1 - enter) * (direction === "from-left" ? 12 : -12) - exit * 8,
+            yPercent: direction === "from-bottom" ? (1 - enter) * 8 : 0,
+          });
+        };
+        setChapter(0);
+        ScrollTrigger.create({
+          trigger: chapter,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: true,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => setChapter(self.progress),
+        });
       });
     }, root);
 
@@ -100,6 +120,7 @@ export function useSuitesSpringsFlow(
     return () => {
       window.clearTimeout(refresh);
       ctx.revert();
+      delete root.dataset.snMotion;
     };
   }, [rootRef]);
 }
