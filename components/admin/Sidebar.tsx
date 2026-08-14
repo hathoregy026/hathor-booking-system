@@ -3,99 +3,62 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
+  Boxes,
   FileText,
-  Globe2,
-  HardDrive,
-  ImageIcon,
   LayoutDashboard,
-  LayoutGrid,
   LogOut,
-  Mail,
-  MonitorPlay,
   Settings,
-  Ship,
-  Sparkles,
-  TextCursorInput,
   Ticket,
-  Type,
-  Wallpaper,
   X,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import {
+  isAdminCmsPath,
+  isAdminInventoryPath,
+} from "@/lib/admin-nav";
 import { HathorLogo } from "./HathorLogo";
 
 type NavItem = { href: string; label: string; icon: LucideIcon };
 
-const NAV_SECTIONS: { title: string; items: NavItem[] }[] = [
-  {
-    title: "Overview",
-    items: [{ href: "/admin", label: "Dashboard", icon: LayoutDashboard }],
-  },
-  {
-    title: "Manage",
-    items: [
-      { href: "/admin/bookings", label: "Bookings", icon: Ticket },
-      { href: "/admin/cruises", label: "Cruises & Rooms", icon: Ship },
-      { href: "/admin/website-text", label: "Website Text", icon: TextCursorInput },
-      { href: "/admin/content", label: "Website Images", icon: ImageIcon },
-      { href: "/admin/pages", label: "Pages", icon: LayoutGrid },
-      { href: "/admin/live-site", label: "Live Site", icon: Globe2 },
-      { href: "/admin/preload-screen", label: "Preload Screen", icon: MonitorPlay },
-      { href: "/admin/hero-logo-tune", label: "Hero Logo Tune", icon: Sparkles },
-      { href: "/admin/hieroglyph-tune", label: "Background Glyphs", icon: Wallpaper },
-      { href: "/admin/typography", label: "Typography & Styles", icon: Type },
-      { href: "/admin/blogs", label: "Blog Posts", icon: FileText },
-      { href: "/admin/email-templates", label: "Email Templates", icon: Mail },
-    ],
-  },
-  {
-    title: "Analyze",
-    items: [{ href: "/admin/storage", label: "Storage", icon: HardDrive }],
-  },
-  {
-    title: "System",
-    items: [{ href: "/admin/settings", label: "Settings", icon: Settings }],
-  },
+const NAV: NavItem[] = [
+  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/bookings", label: "Bookings", icon: Ticket },
+  { href: "/admin/inventory", label: "Inventory", icon: Boxes },
+  { href: "/admin/cms", label: "CMS", icon: FileText },
+  { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
 type SidebarProps = {
-  collapsed?: boolean;
   mobileOpen?: boolean;
   onMobileClose?: () => void;
 };
 
-function SidebarBrand({ collapsed }: { collapsed?: boolean }) {
+function isActive(pathname: string, href: string) {
+  if (href === "/admin") return pathname === "/admin";
+  if (href === "/admin/cms") return isAdminCmsPath(pathname);
+  if (href === "/admin/inventory") return isAdminInventoryPath(pathname);
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+function SidebarBrand() {
   return (
-    <div
-      className="flex h-20 flex-col items-center justify-center gap-1.5 px-4"
-      style={{ borderBottom: "1px solid var(--border)" }}
-    >
-      <HathorLogo size="lg" className="!h-10 !w-auto max-w-[140px]" />
-      {!collapsed && (
-        <p
-          className="admin-section-label"
-          style={{ color: "var(--accent)", letterSpacing: "0.16em" }}
-        >
-          Admin Panel
-        </p>
-      )}
+    <div className="flex h-16 shrink-0 items-center gap-3 px-5">
+      <HathorLogo size="sm" className="!h-9 !w-9" />
+      <div className="leading-tight">
+        <p className="text-sm font-semibold tracking-tight">Hathor</p>
+        <p className="text-[11px] text-muted">Admin Console</p>
+      </div>
     </div>
   );
 }
 
 function NavContent({
-  collapsed,
   onNavigate,
 }: {
-  collapsed?: boolean;
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
   const router = useRouter();
-
-  const isActive = (href: string) =>
-    pathname === href ||
-    (href !== "/admin" && pathname.startsWith(href));
 
   const handleLogout = async () => {
     await fetch("/api/admin/logout", { method: "POST" });
@@ -106,45 +69,39 @@ function NavContent({
 
   return (
     <>
-      <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-4">
-        {NAV_SECTIONS.map((section) => (
-          <div key={section.title}>
-            {!collapsed && (
-              <p className="admin-section-label mb-2 px-3">{section.title}</p>
-            )}
-            <div className="space-y-0.5">
-              {section.items.map((item) => {
-                const active = isActive(item.href);
-                const Icon = item.icon;
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    title={collapsed ? item.label : undefined}
-                    onClick={onNavigate}
-                    className={`admin-nav-item ${active ? "admin-nav-item--active" : ""}`}
-                  >
-                    <Icon className="h-5 w-5 shrink-0" aria-hidden />
-                    {!collapsed && <span>{item.label}</span>}
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
-        ))}
+      <div className="gold-hairline" />
+
+      <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
+        <p className="admin-section-label px-3 pb-2">Menu</p>
+        {NAV.map(({ label, href, icon: Icon }) => {
+          const active = isActive(pathname, href);
+          return (
+            <Link
+              key={href}
+              href={href}
+              onClick={onNavigate}
+              aria-current={active ? "page" : undefined}
+              className={`group nav-item ${active ? "nav-item-active" : ""}`}
+            >
+              <Icon
+                className="h-[18px] w-[18px] shrink-0"
+                strokeWidth={1.9}
+                aria-hidden
+              />
+              <span className="truncate">{label}</span>
+            </Link>
+          );
+        })}
       </nav>
 
       <div className="p-3" style={{ borderTop: "1px solid var(--border)" }}>
-        {!collapsed && (
-          <p className="admin-section-label mb-2 px-3">System</p>
-        )}
         <button
           type="button"
           onClick={handleLogout}
-          className="admin-nav-item admin-nav-item--danger w-full"
+          className="nav-item admin-nav-item--danger w-full"
         >
-          <LogOut className="h-5 w-5 shrink-0" aria-hidden />
-          {!collapsed && "Logout"}
+          <LogOut className="h-[18px] w-[18px] shrink-0" aria-hidden />
+          Logout
         </button>
       </div>
     </>
@@ -152,24 +109,18 @@ function NavContent({
 }
 
 export function Sidebar({
-  collapsed = false,
   mobileOpen = false,
   onMobileClose,
 }: SidebarProps) {
   return (
     <>
-      <aside
-        className={`admin-sidebar hidden min-h-0 shrink-0 flex-col md:flex ${
-          collapsed ? "w-[72px]" : "w-[260px]"
-        }`}
-        style={{ borderRight: "1px solid var(--border)" }}
-      >
-        <SidebarBrand collapsed={collapsed} />
-        <NavContent collapsed={collapsed} />
+      <aside className="admin-sidebar admin-sidebar--fixed hidden min-h-0 shrink-0 flex-col lg:flex">
+        <SidebarBrand />
+        <NavContent />
       </aside>
 
       {mobileOpen && (
-        <div className="fixed inset-0 z-50 md:hidden" role="dialog" aria-modal="true">
+        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true">
           <button
             type="button"
             className="absolute inset-0 bg-black/50 backdrop-blur-[2px]"
@@ -177,7 +128,7 @@ export function Sidebar({
             onClick={onMobileClose}
           />
           <aside
-            className="admin-sidebar admin-sidebar--drawer absolute inset-y-0 left-0 flex w-[min(100vw-3rem,280px)] max-w-full flex-col shadow-2xl"
+            className="admin-sidebar admin-sidebar--drawer absolute inset-y-0 left-0 flex w-[min(100vw-3rem,17rem)] max-w-full flex-col"
             style={{ borderRight: "1px solid var(--border)" }}
           >
             <div className="relative">
@@ -185,10 +136,10 @@ export function Sidebar({
               <button
                 type="button"
                 onClick={onMobileClose}
-                className="admin-header-icon-btn absolute right-3 top-3"
+                className="btn-ghost absolute right-2 top-3 h-9 w-9 px-0"
                 aria-label="Close menu"
               >
-                <X className="h-4 w-4" aria-hidden />
+                <X className="h-5 w-5" aria-hidden />
               </button>
             </div>
             <NavContent onNavigate={onMobileClose} />

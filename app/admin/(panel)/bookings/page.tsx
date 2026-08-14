@@ -3,17 +3,21 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   CalendarDays,
+  CheckCircle2,
+  Clock3,
   LayoutList,
   Loader2,
   RotateCcw,
+  Search,
   Trash2,
+  Users,
 } from "lucide-react";
 import { BookingStatus } from "@/app/generated/prisma/enums";
-import { ActionButton } from "@/components/admin/ActionButton";
 import { BookingCalendar } from "@/components/admin/BookingCalendar";
 import { BookingsListView } from "@/components/admin/BookingsListView";
 import { useToast } from "@/components/admin/ToastProvider";
 import type { AdminBookingDto } from "@/lib/admin-bookings";
+import { isPendingBookingStatus } from "@/lib/admin-bookings";
 import {
   ADMIN_BOOKINGS_TIMEOUT_MS,
   adminFetch,
@@ -43,6 +47,7 @@ export default function AdminBookingsPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("active");
   const [layoutView, setLayoutView] = useState<LayoutView>("list");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [query, setQuery] = useState("");
 
   const loadIdRef = useRef(0);
   const abortRef = useRef<AbortController | null>(null);
@@ -132,9 +137,50 @@ export default function AdminBookingsPage() {
     void loadBookings(); // eslint-disable-line react-hooks/set-state-in-effect -- dashboard data load
   }, [loadBookings]);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const next = params.get("q")?.trim() ?? "";
+    if (next) setQuery(next); // eslint-disable-line react-hooks/set-state-in-effect -- hydrate search from ?q=
+  }, []);
+
+  const filteredBookings = useMemo(() => {
+    const needle = query.trim().toLowerCase();
+    if (!needle) return bookings;
+    return bookings.filter((booking) => {
+      const haystack = [
+        booking.guestName,
+        booking.guestPhone,
+        booking.customerEmail,
+        booking.cruiseName,
+        booking.partyLabel,
+        booking.specialRequests,
+        booking.id,
+        booking.rooms.join(" "),
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      return haystack.includes(needle);
+    });
+  }, [bookings, query]);
+
+  const summary = useMemo(() => {
+    const pending = bookings.filter((booking) =>
+      isPendingBookingStatus(booking.status),
+    ).length;
+    const confirmed = bookings.filter(
+      (booking) => booking.status === "CONFIRMED",
+    ).length;
+    const guests = bookings.reduce((total, booking) => {
+      if (booking.status === "CANCELLED") return total;
+      return total + (booking.partySize ?? 0);
+    }, 0);
+    return { pending, confirmed, guests };
+  }, [bookings]);
+
   const visibleIds = useMemo(
-    () => bookings.map((booking) => booking.id),
-    [bookings],
+    () => filteredBookings.map((booking) => booking.id),
+    [filteredBookings],
   );
   const allSelected =
     visibleIds.length > 0 && visibleIds.every((id) => selectedIds.has(id));
@@ -264,98 +310,174 @@ export default function AdminBookingsPage() {
 
   const tableDescription =
     viewMode === "bin"
-      ? `${bookings.length} deleted — auto-removed after 7 days`
-      : `${bookings.length} reservation${bookings.length === 1 ? "" : "s"}`;
+      ? `${filteredBookings.length} deleted — auto-removed after 7 days`
+      : `${filteredBookings.length} reservation${filteredBookings.length === 1 ? "" : "s"}`;
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="admin-page-title">Bookings</h1>
-          <p className="admin-page-subtitle">Manage reservations</p>
-        </div>
+    <div className="space-y-6">
+      <div>
+        <h1 className="admin-page-title">Bookings</h1>
+        <p className="admin-page-subtitle">
+          Manage reservations, confirm requests and track party sizes.
+        </p>
       </div>
 
-      <div className="flex flex-col gap-4">
-        <div className="-mx-4 flex overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
-          <div className="flex min-w-max flex-wrap items-center gap-2 sm:min-w-0">
-            {viewMode === "active" && (
-              <div
-                className="mr-1 flex shrink-0 rounded-xl border p-1 sm:mr-2"
-                style={{ borderColor: "var(--border)" }}
+      {viewMode === "active" && layoutView === "list" && (
+        <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="card p-4">
+            <div className="flex items-center gap-2.5">
+              <span
+                className="flex h-8 w-8 items-center justify-center rounded-lg"
+                style={{
+                  background: "var(--warning-bg)",
+                  color: "var(--warning)",
+                }}
               >
-                <button
-                  type="button"
-                  onClick={() => setLayoutView("list")}
-                  className={`admin-filter-tab flex items-center gap-1.5 ${
-                    layoutView === "list" ? "admin-filter-tab--active" : ""
-                  }`}
-                >
-                  <LayoutList className="h-4 w-4" />
-                  List
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setLayoutView("calendar")}
-                  className={`admin-filter-tab flex items-center gap-1.5 ${
-                    layoutView === "calendar" ? "admin-filter-tab--active" : ""
-                  }`}
-                >
-                  <CalendarDays className="h-4 w-4" />
-                  Calendar
-                </button>
-              </div>
-            )}
+                <Clock3 className="h-4 w-4" strokeWidth={1.9} />
+              </span>
+              <p className="text-sm font-medium text-muted">Awaiting confirmation</p>
+            </div>
+            <p className="mt-3 text-2xl font-semibold leading-none tracking-[-0.02em]">
+              {summary.pending}
+            </p>
+            <p className="mt-1.5 text-xs text-muted">Pending holds in this list</p>
+          </div>
+          <div className="card p-4">
+            <div className="flex items-center gap-2.5">
+              <span
+                className="flex h-8 w-8 items-center justify-center rounded-lg"
+                style={{
+                  background: "var(--success-bg)",
+                  color: "var(--success)",
+                }}
+              >
+                <CheckCircle2 className="h-4 w-4" strokeWidth={1.9} />
+              </span>
+              <p className="text-sm font-medium text-muted">Confirmed</p>
+            </div>
+            <p className="mt-3 text-2xl font-semibold leading-none tracking-[-0.02em]">
+              {summary.confirmed}
+            </p>
+            <p className="mt-1.5 text-xs text-muted">In the current filter</p>
+          </div>
+          <div className="card p-4">
+            <div className="flex items-center gap-2.5">
+              <span
+                className="flex h-8 w-8 items-center justify-center rounded-lg"
+                style={{
+                  background: "hsl(var(--gold-100))",
+                  color: "hsl(var(--gold-700))",
+                }}
+              >
+                <Users className="h-4 w-4" strokeWidth={1.9} />
+              </span>
+              <p className="text-sm font-medium text-muted">Guests booked</p>
+            </div>
+            <p className="mt-3 text-2xl font-semibold leading-none tracking-[-0.02em]">
+              {summary.guests}
+            </p>
+            <p className="mt-1.5 text-xs text-muted">Party size excluding cancelled</p>
+          </div>
+        </section>
+      )}
 
-            {FILTER_TABS.map((tab) => (
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="-mx-4 flex overflow-x-auto px-4 pb-1 sm:mx-0 sm:overflow-visible sm:px-0 sm:pb-0">
+            <div className="flex min-w-max flex-wrap items-center gap-2">
+              {viewMode === "active" && (
+                <div
+                  className="mr-1 flex shrink-0 rounded-xl border p-1 sm:mr-2"
+                  style={{ borderColor: "var(--border)" }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setLayoutView("list")}
+                    className={`admin-filter-tab flex items-center gap-1.5 ${
+                      layoutView === "list" ? "admin-filter-tab--active" : ""
+                    }`}
+                  >
+                    <LayoutList className="h-4 w-4" />
+                    List
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLayoutView("calendar")}
+                    className={`admin-filter-tab flex items-center gap-1.5 ${
+                      layoutView === "calendar" ? "admin-filter-tab--active" : ""
+                    }`}
+                  >
+                    <CalendarDays className="h-4 w-4" />
+                    Calendar
+                  </button>
+                </div>
+              )}
+
+              {FILTER_TABS.map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  disabled={viewMode === "bin" || layoutView === "calendar"}
+                  onClick={() => setStatusFilter(tab.id)}
+                  className={`admin-filter-tab disabled:opacity-40 ${
+                    statusFilter === tab.id && viewMode === "active"
+                      ? "admin-filter-tab--active"
+                      : ""
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
               <button
-                key={tab.id}
                 type="button"
-                disabled={viewMode === "bin" || layoutView === "calendar"}
-                onClick={() => setStatusFilter(tab.id)}
-                className={`admin-filter-tab disabled:opacity-40 ${
-                  statusFilter === tab.id && viewMode === "active"
-                    ? "admin-filter-tab--active"
-                    : ""
+                onClick={() => {
+                  switchViewMode(viewMode === "bin" ? "active" : "bin");
+                  setStatusFilter("all");
+                }}
+                className={`admin-filter-tab ${
+                  viewMode === "bin"
+                    ? "admin-filter-tab--danger-active"
+                    : "admin-filter-tab--danger"
                 }`}
               >
-                {tab.label}
+                Recycle Bin
               </button>
-            ))}
-            <button
-              type="button"
-              onClick={() => {
-                switchViewMode(viewMode === "bin" ? "active" : "bin");
-                setStatusFilter("all");
-              }}
-              className={`admin-filter-tab ${
-                viewMode === "bin"
-                  ? "admin-filter-tab--danger-active"
-                  : "admin-filter-tab--danger"
-              }`}
-            >
-              Recycle Bin
-            </button>
+            </div>
           </div>
+
+          {layoutView === "list" && (
+            <div className="relative w-full sm:max-w-xs">
+              <Search
+                className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
+                strokeWidth={1.9}
+              />
+              <input
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Search guest, phone, cruise…"
+                aria-label="Search bookings"
+                className="input h-10 pl-9"
+              />
+            </div>
+          )}
         </div>
 
         <div className="flex flex-wrap gap-2">
           {layoutView === "list" && (
-            <ActionButton
-              variant="outline"
+            <button
+              type="button"
               onClick={toggleSelectAll}
-              disabled={isLoading || bookings.length === 0}
-              className="w-full px-4 py-2.5 text-sm sm:w-auto"
+              disabled={isLoading || filteredBookings.length === 0}
+              className="btn-outline h-10 px-4 text-sm disabled:opacity-50"
             >
               {allSelected ? "Deselect all" : "Select all"}
-            </ActionButton>
+            </button>
           )}
 
           {viewMode === "active" ? (
             layoutView === "list" && (
-              <ActionButton
-                variant="outline"
-                icon={Trash2}
+              <button
+                type="button"
                 onClick={() =>
                   runBulkAction(
                     "soft-delete",
@@ -363,27 +485,29 @@ export default function AdminBookingsPage() {
                   )
                 }
                 disabled={!someSelected || isBulkWorking}
-                className="w-full px-4 py-2.5 text-sm sm:w-auto"
+                className="btn-outline h-10 px-4 text-sm disabled:opacity-50"
               >
                 {isBulkWorking ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  "Move to bin"
+                  <Trash2 className="h-4 w-4" />
                 )}
-              </ActionButton>
+                Move to bin
+              </button>
             )
           ) : (
             <>
-              <ActionButton
-                variant="outline"
-                icon={RotateCcw}
+              <button
+                type="button"
                 onClick={() => runBulkAction("restore")}
                 disabled={!someSelected || isBulkWorking}
-                className="w-full px-4 py-2.5 text-sm sm:w-auto"
+                className="btn-outline h-10 px-4 text-sm disabled:opacity-50"
               >
+                <RotateCcw className="h-4 w-4" />
                 Restore
-              </ActionButton>
-              <ActionButton
+              </button>
+              <button
+                type="button"
                 onClick={() =>
                   runBulkAction(
                     "purge",
@@ -391,21 +515,26 @@ export default function AdminBookingsPage() {
                   )
                 }
                 disabled={!someSelected || isBulkWorking}
-                className="px-4 py-2 text-sm [background:var(--danger)] hover:opacity-90"
+                className="btn-primary h-10 px-4 text-sm disabled:opacity-50"
+                style={{
+                  background: "var(--danger)",
+                  borderColor: "var(--danger)",
+                  color: "#fff",
+                }}
               >
                 Delete permanently
-              </ActionButton>
+              </button>
             </>
           )}
 
-          <ActionButton
-            variant="outline"
+          <button
+            type="button"
             onClick={() => loadBookings()}
             disabled={isLoading}
-            className="px-4 py-2 text-sm"
+            className="btn-outline h-10 px-4 text-sm disabled:opacity-50"
           >
             Refresh
-          </ActionButton>
+          </button>
         </div>
       </div>
 
@@ -425,10 +554,10 @@ export default function AdminBookingsPage() {
       )}
 
       {layoutView === "calendar" && viewMode === "active" ? (
-        <BookingCalendar bookings={bookings} isLoading={isLoading} />
+        <BookingCalendar bookings={filteredBookings} isLoading={isLoading} />
       ) : (
         <BookingsListView
-          bookings={bookings}
+          bookings={filteredBookings}
           viewMode={viewMode}
           statusFilter={statusFilter}
           isLoading={isLoading}

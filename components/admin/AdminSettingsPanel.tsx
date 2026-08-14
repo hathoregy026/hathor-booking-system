@@ -11,7 +11,7 @@ export function AdminSettingsPanel() {
         <p className="admin-page-subtitle">System configuration and preferences</p>
       </div>
 
-      <div className="admin-card p-6">
+      <div className="card p-6">
         <div className="flex items-center gap-3">
           <Sparkles
             className="h-5 w-5"
@@ -32,7 +32,7 @@ export function AdminSettingsPanel() {
         </p>
       </div>
 
-      <div className="admin-card p-6">
+      <div className="card p-6">
         <div className="flex items-center gap-3">
           <Settings className="h-5 w-5" style={{ color: "var(--accent)" }} aria-hidden />
           <h2 className="admin-heading text-lg">Admin access</h2>
@@ -65,7 +65,7 @@ export function AdminSettingsPanel() {
         </p>
       </div>
 
-      <div className="admin-card p-6">
+      <div className="card p-6">
         <h2 className="admin-heading text-lg">Notifications</h2>
         <p
           className="mt-3 text-sm leading-relaxed"
@@ -77,7 +77,7 @@ export function AdminSettingsPanel() {
         </p>
       </div>
 
-      <div className="admin-card p-6">
+      <div className="card p-6">
         <h2 className="admin-heading text-lg">Appearance</h2>
         <p
           className="mt-3 text-sm leading-relaxed"

@@ -805,6 +805,9 @@ select.admin-input option:checked {
 }
 
 .admin-sidebar--drawer {
+  position: absolute;
+  top: 0;
+  height: 100%;
   animation: admin-drawer-in 220ms ease-out;
 }
 
@@ -3214,4 +3217,199 @@ textarea.wt-field__input {
   align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
+}
+
+/* New dashboard UI aliases — scoped to .admin-shell. Day/Night hex tokens stay source of truth. */
+.admin-shell {
+  --gold-500: 43 35% 55%;
+  --gold-600: 43 40% 45%;
+  --gold-700: 43 42% 32%;
+  --gold-100: 43 38% 88%;
+  --gold-50: 43 32% 94%;
+}
+
+.admin-shell[data-theme="night"] {
+  --gold-100: 43 22% 18%;
+  --gold-50: 43 18% 14%;
+  --gold-700: 43 40% 78%;
+  --primary-foreground: 0 0% 10%;
+}
+
+.admin-shell[data-theme="day"] {
+  --primary-foreground: 0 0% 10%;
+}
+
+.admin-shell .text-muted {
+  color: var(--text-muted);
+}
+
+.admin-shell .tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-shell .gold-hairline {
+  height: 1px;
+  background: color-mix(in srgb, var(--accent) 35%, var(--border));
+}
+
+.admin-shell .divider {
+  height: 1px;
+  background: var(--border);
+}
+
+.admin-shell .card {
+  background: var(--bg-glass);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  box-shadow: var(--shadow);
+}
+
+.admin-shell .card-hover {
+  transition:
+    background-color 200ms ease,
+    box-shadow 200ms ease,
+    transform 200ms ease;
+}
+
+.admin-shell .card-hover:hover {
+  background: var(--bg-glass-hover);
+  box-shadow: var(--shadow-hover);
+}
+
+.admin-shell .btn-primary,
+.admin-shell .btn-outline,
+.admin-shell .btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  line-height: 1;
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    opacity 200ms ease;
+}
+
+.admin-shell .btn-primary {
+  min-height: 2.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--accent);
+  color: #1a1a1a;
+  border: 1px solid color-mix(in srgb, var(--accent) 70%, #000);
+}
+
+.admin-shell .btn-primary:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+
+.admin-shell .btn-outline {
+  min-height: 2.5rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.admin-shell .btn-outline:hover:not(:disabled) {
+  background: var(--bg-glass-hover);
+  border-color: var(--accent);
+}
+
+.admin-shell .btn-ghost {
+  min-height: 2.5rem;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-secondary);
+}
+
+.admin-shell .btn-ghost:hover:not(:disabled) {
+  background: var(--bg-glass-hover);
+  color: var(--text-primary);
+}
+
+.admin-shell .input {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: 0.5rem;
+}
+
+.admin-shell .input::placeholder {
+  color: var(--text-muted);
+}
+
+.admin-shell .input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.admin-shell .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+.admin-shell .badge-gold {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  color: var(--accent);
+}
+
+.admin-shell .nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 0.625rem;
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--sidebar-fg-muted, var(--text-secondary));
+  transition:
+    background 200ms ease,
+    color 200ms ease;
+}
+
+.admin-shell .nav-item:hover {
+  background: var(--sidebar-nav-hover, var(--bg-glass-hover));
+  color: var(--sidebar-fg, var(--text-primary));
+}
+
+.admin-shell .nav-item-active {
+  background: var(--sidebar-active);
+  color: var(--sidebar-active-text);
+  font-weight: 600;
+}
+
+.admin-shell .nav-item.admin-nav-item--danger {
+  color: var(--danger);
+}
+
+.admin-shell .nav-item.admin-nav-item--danger:hover {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+@media (min-width: 1024px) {
+  .admin-shell .admin-sidebar--fixed {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 40;
+    display: flex;
+    width: 16rem;
+    flex-direction: column;
+    border-right: 1px solid var(--border);
+  }
+
+  .admin-shell .admin-shell__stage {
+    padding-left: 16rem;
+  }
 }

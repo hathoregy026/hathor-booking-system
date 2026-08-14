@@ -1,20 +1,17 @@
 import { format } from "date-fns";
 import type { AdminBookingDto } from "@/lib/admin-bookings";
+import { parseBookingCustomerName } from "@/lib/booking-guest-details";
 import type { BookingEmailDetails } from "@/lib/email-types";
 import { formatPrice } from "@/lib/client-dates";
 import type { CheckoutBooking } from "@/lib/validations";
 
 export function parseGuestFromCustomerName(customerName: string) {
-  const lines = customerName.split("\n");
-  const guestName = lines[0]?.trim() || "Guest";
-  const phoneLine = lines.find((line) => line.startsWith("Phone:"));
-  const guestsLine = lines.find((line) => line.startsWith("Guests:"));
-
+  const parsed = parseBookingCustomerName(customerName);
   return {
-    guestName,
-    guestPhone: phoneLine?.replace(/^Phone:\s*/, "").trim(),
+    guestName: parsed.guestName,
+    guestPhone: parsed.guestPhone ?? undefined,
     guests:
-      guestsLine?.replace(/^Guests:\s*/, "").trim() ?? "Not specified",
+      parsed.partyLabel !== "—" ? parsed.partyLabel : "Not specified",
   };
 }
 

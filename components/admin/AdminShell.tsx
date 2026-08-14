@@ -12,21 +12,14 @@ import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
 function AdminShellInner({ children }: { children: React.ReactNode }) {
   const { theme } = useAdminTheme();
   const pathname = usePathname();
-  /* Menu is open only for the path it was opened on — soft nav closes it automatically. */
   const [menuOpenForPath, setMenuOpenForPath] = useState<string | null>(null);
   const mobileMenuOpen = menuOpenForPath === pathname;
 
-  /*
-   * Force native document scroll on every admin route.
-   * Root TouchDeviceBootstrap can start Lenis on desktop; that + overflow locks
-   * freezes the dashboard. Tear it down here and keep the page on window scroll.
-   */
   useEffect(() => {
     ensurePublicScrollController();
     const html = document.documentElement;
     const body = document.body;
     html.classList.add("admin-app");
-    /* Welcome splash lock is public-only; clear if left over from a soft land. */
     html.classList.remove("hathor-welcome-lock");
     html.classList.add("hathor-welcome-skip");
     html.classList.add("hathor-welcome-ready");
@@ -37,7 +30,6 @@ function AdminShellInner({ children }: { children: React.ReactNode }) {
 
     return () => {
       html.classList.remove("admin-app");
-      /* Re-evaluate Lenis when leaving admin for a public route. */
       ensurePublicScrollController();
     };
   }, [pathname]);
@@ -53,28 +45,26 @@ function AdminShellInner({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      className="admin-shell flex min-h-screen overflow-x-hidden"
+      className="admin-shell min-h-screen overflow-x-hidden"
       data-theme={theme}
     >
       <div className="admin-shell__glow" aria-hidden />
-      <div className="admin-shell__content flex min-h-screen w-full">
-        <Sidebar
-          mobileOpen={mobileMenuOpen}
-          onMobileClose={() => setMenuOpenForPath(null)}
-        />
+      <Sidebar
+        mobileOpen={mobileMenuOpen}
+        onMobileClose={() => setMenuOpenForPath(null)}
+      />
 
-        <div className="admin-shell__main flex min-w-0 flex-1 flex-col">
-          <Header
-            onMenuToggle={() =>
-              setMenuOpenForPath((current) =>
-                current === pathname ? null : pathname,
-              )
-            }
-          />
-          <main className="admin-main flex-1 overflow-x-hidden px-3 py-4 pb-24 sm:px-5 md:px-6 md:pb-6 lg:px-8 lg:py-6">
-            {children}
-          </main>
-        </div>
+      <div className="admin-shell__stage relative z-[1] flex min-h-screen min-w-0 flex-col">
+        <Header
+          onMenuToggle={() =>
+            setMenuOpenForPath((current) =>
+              current === pathname ? null : pathname,
+            )
+          }
+        />
+        <main className="admin-main mx-auto w-full max-w-[1600px] flex-1 overflow-x-hidden px-4 py-6 pb-24 sm:px-6 lg:px-8 lg:py-8 lg:pb-8">
+          {children}
+        </main>
       </div>
 
       <AdminBottomNav onOpenMenu={() => setMenuOpenForPath(pathname)} />

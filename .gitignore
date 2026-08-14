@@ -74,3 +74,6 @@ next-env.d.ts
 
 # local Claude redesign bundles (never deploy)
 /redesign/
+
+# local snapshot of current admin dashboard (restore source; never deploy)
+/OLD DASHBOARD BACK UP/

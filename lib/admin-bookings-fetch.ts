@@ -1,4 +1,5 @@
 import type { AdminBookingDto } from "@/lib/admin-bookings";
+import { parseBookingCustomerName } from "@/lib/booking-guest-details";
 import { resolveDatabaseUrl } from "@/lib/database-config";
 import { withDbRetry } from "@/lib/db-retry";
 import { getSharedPgPool } from "@/lib/pg-pool";
@@ -58,10 +59,17 @@ const LIST_SQL = `
 function mapRow(row: SqlRow): AdminBookingDto {
   const departureTime = row.departureTime.toISOString();
   const arrivalTime = row.arrivalTime.toISOString();
+  const customerName = row.customerName ?? "—";
+  const parsed = parseBookingCustomerName(customerName);
 
   return {
     id: row.id,
-    customerName: row.customerName ?? "—",
+    customerName,
+    guestName: parsed.guestName,
+    guestPhone: parsed.guestPhone,
+    partyLabel: parsed.partyLabel,
+    partySize: parsed.partySize,
+    specialRequests: parsed.specialRequests,
     customerEmail: row.customerEmail ?? "—",
     status: row.status,
     cruiseName: row.cruiseName,

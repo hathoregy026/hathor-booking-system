@@ -1,4 +1,5 @@
 import type { Prisma } from "@/app/generated/prisma/client";
+import { parseBookingCustomerName } from "@/lib/booking-guest-details";
 import { bookingListSelect } from "@/lib/query-selects";
 
 export type AdminBookingRecord = Prisma.BookingGetPayload<{
@@ -8,6 +9,11 @@ export type AdminBookingRecord = Prisma.BookingGetPayload<{
 export type AdminBookingDto = {
   id: string;
   customerName: string;
+  guestName: string;
+  guestPhone: string | null;
+  partyLabel: string;
+  partySize: number | null;
+  specialRequests: string | null;
   customerEmail: string;
   status: string;
   cruiseName: string;
@@ -21,6 +27,26 @@ export type AdminBookingDto = {
   createdAt: string;
   deletedAt: string | null;
 };
+
+function withParsedGuest<T extends { customerName: string }>(
+  row: T,
+): T & {
+  guestName: string;
+  guestPhone: string | null;
+  partyLabel: string;
+  partySize: number | null;
+  specialRequests: string | null;
+} {
+  const parsed = parseBookingCustomerName(row.customerName);
+  return {
+    ...row,
+    guestName: parsed.guestName,
+    guestPhone: parsed.guestPhone,
+    partyLabel: parsed.partyLabel,
+    partySize: parsed.partySize,
+    specialRequests: parsed.specialRequests,
+  };
+}
 
 function computeTotalCents(
   tickets: {
@@ -40,7 +66,7 @@ export function serializeAdminBooking(
   const departureTime = booking.cruiseSchedule.departureTime.toISOString();
   const arrivalTime = booking.cruiseSchedule.arrivalTime.toISOString();
 
-  return {
+  return withParsedGuest({
     id: booking.id,
     customerName: booking.customerName ?? "—",
     customerEmail: booking.customerEmail ?? "—",
@@ -57,7 +83,7 @@ export function serializeAdminBooking(
     totalPriceCents: computeTotalCents(booking.bookingTickets),
     createdAt: booking.createdAt.toISOString(),
     deletedAt: booking.deletedAt?.toISOString() ?? null,
-  };
+  });
 }
 
 /** True for checkout pending state (`PENDING` or legacy `PENDING_HOLD`). */

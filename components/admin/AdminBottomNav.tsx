@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Boxes,
   LayoutDashboard,
   Menu,
-  Ship,
   Ticket,
 } from "lucide-react";
+import { isAdminInventoryPath } from "@/lib/admin-nav";
 
 type AdminBottomNavProps = {
   onOpenMenu: () => void;
@@ -16,18 +17,21 @@ type AdminBottomNavProps = {
 const ITEMS = [
   { href: "/admin", label: "Home", icon: LayoutDashboard, exact: true },
   { href: "/admin/bookings", label: "Bookings", icon: Ticket, exact: false },
-  { href: "/admin/cruises", label: "Cruises", icon: Ship, exact: false },
+  { href: "/admin/inventory", label: "Inventory", icon: Boxes, exact: false },
 ] as const;
 
 export function AdminBottomNav({ onOpenMenu }: AdminBottomNavProps) {
   const pathname = usePathname();
 
-  const isActive = (href: string, exact: boolean) =>
-    exact ? pathname === href : pathname.startsWith(href);
+  const isActive = (href: string, exact: boolean) => {
+    if (exact) return pathname === href;
+    if (href === "/admin/inventory") return isAdminInventoryPath(pathname);
+    return pathname.startsWith(href);
+  };
 
   return (
     <nav
-      className="admin-bottom-nav fixed inset-x-0 bottom-0 z-40 md:hidden"
+      className="admin-bottom-nav fixed inset-x-0 bottom-0 z-40 lg:hidden"
       aria-label="Mobile navigation"
     >
       <div className="admin-bottom-nav__inner mx-auto flex max-w-lg items-stretch justify-around gap-1 px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2">

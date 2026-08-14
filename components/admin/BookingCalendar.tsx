@@ -208,7 +208,7 @@ export function BookingCalendar({ bookings, isLoading }: BookingCalendarProps) {
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="font-semibold">{booking.customerName}</p>
+                    <p className="font-semibold">{booking.guestName}</p>
                     <p className="mt-1 text-xs opacity-80">
                       {format(parseISO(booking.checkInDate), "EEE, MMM d")} –{" "}
                       {format(parseISO(booking.checkOutDate), "MMM d, yyyy")}
@@ -280,10 +280,10 @@ export function BookingCalendar({ bookings, isLoading }: BookingCalendarProps) {
                         key={`${booking.id}-${key}`}
                         className="rounded-md border px-2 py-1.5 text-[11px] leading-snug"
                         style={eventStyles(booking.status)}
-                        title={`${booking.customerName} · ${booking.roomTypes.join(", ") || booking.rooms.join(", ")}`}
+                        title={`${booking.guestName} · ${booking.roomTypes.join(", ") || booking.rooms.join(", ")}`}
                       >
                         <p className="truncate font-semibold">
-                          {booking.customerName}
+                          {booking.guestName}
                         </p>
                         <p className="truncate opacity-80">
                           {booking.roomTypes[0] ?? booking.rooms[0] ?? "Room"}

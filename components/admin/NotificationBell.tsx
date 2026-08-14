@@ -5,6 +5,7 @@ import Link from "next/link";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { Bell, Loader2, Ticket } from "lucide-react";
 import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
+import { parseBookingCustomerName } from "@/lib/booking-guest-details";
 import { formatPrice } from "@/lib/client-dates";
 
 type NotificationItem = {
@@ -205,7 +206,9 @@ export function NotificationBell() {
                       className="block px-4 py-3 transition-colors hover:bg-[color-mix(in_srgb,var(--accent)_6%,transparent)]"
                       onClick={() => setOpen(false)}
                     >
-                      <p className="text-sm font-medium">{item.customerName}</p>
+                      <p className="text-sm font-medium">
+                        {parseBookingCustomerName(item.customerName).guestName}
+                      </p>
                       <p
                         className="mt-0.5 text-xs"
                         style={{ color: "var(--text-secondary)" }}
