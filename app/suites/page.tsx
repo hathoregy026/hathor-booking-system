@@ -93,6 +93,9 @@ export default async function SuitesPage() {
   --sn-amenities-body-size: ${amenitiesType.body.fontSize}px;
   --sn-amenities-body-leading: ${amenitiesType.body.lineHeight};
   --sn-amenities-body-tracking: ${amenitiesType.body.letterSpacing}px;
+  --sn-amenities-title-to-indication: ${amenitiesType.spacing.titleToIndication}px;
+  --sn-amenities-indication-to-body: ${amenitiesType.spacing.indicationToBody}px;
+  --sn-amenities-body-to-cta: ${amenitiesType.spacing.bodyToCta}px;
 }
 @media (max-width: 480px) {
   .suites-native-route {
@@ -105,6 +108,9 @@ export default async function SuitesPage() {
     --sn-amenities-body-size: ${amenitiesTypeMobile.body.fontSize}px;
     --sn-amenities-body-leading: ${amenitiesTypeMobile.body.lineHeight};
     --sn-amenities-body-tracking: ${amenitiesTypeMobile.body.letterSpacing}px;
+    --sn-amenities-title-to-indication: ${amenitiesTypeMobile.spacing.titleToIndication}px;
+    --sn-amenities-indication-to-body: ${amenitiesTypeMobile.spacing.indicationToBody}px;
+    --sn-amenities-body-to-cta: ${amenitiesTypeMobile.spacing.bodyToCta}px;
   }
 }`,
           }}

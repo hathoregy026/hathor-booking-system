@@ -109,7 +109,7 @@ export function useSuitesComfortTheatre({
         start: "top top",
         end: "bottom bottom",
         pin: stage,
-        scrub: 0.65,
+        scrub: 1.15,
         anticipatePin: 1,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
@@ -132,7 +132,7 @@ export function useSuitesComfortTheatre({
         trigger: track,
         start: "top 70%",
         end: "bottom 30%",
-        scrub: 0.8,
+        scrub: 1.2,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           const next = Math.min(

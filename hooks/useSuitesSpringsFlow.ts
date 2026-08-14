@@ -40,7 +40,7 @@ export function useSuitesSpringsFlow(
             trigger: hero,
             start: "top top",
             end: "bottom bottom",
-            scrub: true,
+            scrub: 1.15,
           },
         })
           .fromTo(
@@ -70,8 +70,8 @@ export function useSuitesSpringsFlow(
           );
           gsap.set(portals, { x: -maxTravel * smooth(progress), force3D: true });
           portalItems.forEach((item, index) => {
-            // Settle quickly — avoid floating cards for a full sticky viewport.
-            const local = smooth(clamp(progress * 3.2 - index * 0.22));
+            // Settle across most of the runway so each door can be read.
+            const local = smooth(clamp(progress * 1.25 - index * 0.16));
             gsap.set(item, {
               y: `${(1 - local) * (index % 2 ? 4 : 7)}vh`,
               rotate: (1 - local) * (index - 1) * 0.6,
@@ -84,7 +84,7 @@ export function useSuitesSpringsFlow(
           // Reveal / settle while the section approaches, not after sticky locks.
           start: "top bottom",
           end: "bottom bottom",
-          scrub: true,
+          scrub: 1.15,
           invalidateOnRefresh: true,
           onUpdate: (self) => setCollection(self.progress),
         });
@@ -106,10 +106,13 @@ export function useSuitesSpringsFlow(
         const direction = chapter.dataset.snSlide;
 
         const setChapter = (progress: number) => {
-          // Fast enter so sticky lock is never a blank cream screen.
-          const enter = smooth(clamp(progress / 0.18));
+          // 0.00–0.12: first frame and copy enter
+          // 0.36–0.54: second stacked image covers and holds
+          // 0.64–0.82: third stacked image covers and holds
+          // 0.93–1.00: soft exit
+          const enter = smooth(clamp(progress / 0.12));
           // Soft exit only at the very end of the runway.
-          const exit = smooth(clamp((progress - 0.9) / 0.1));
+          const exit = smooth(clamp((progress - 0.93) / 0.07));
           const copyVisible = Math.max(0, enter - exit);
 
           frames.forEach((frame, index) => {
@@ -117,7 +120,11 @@ export function useSuitesSpringsFlow(
               frames.length > 1
                 ? index === 0
                   ? enter
-                  : smooth(clamp((progress - (0.12 + index * 0.14)) / 0.14))
+                  : smooth(
+                      clamp(
+                        (progress - (0.08 + index * 0.28)) / 0.18,
+                      ),
+                    )
                 : enter;
             const hidden = (1 - delayed) * 100;
             const clipPath =
@@ -140,10 +147,10 @@ export function useSuitesSpringsFlow(
           });
 
           images.forEach((image, index) => {
-            const phase = smooth(clamp(progress * 2.4 - index * 0.4));
+            const phase = smooth(clamp(progress * 1.05 - index * 0.18));
             gsap.set(image, {
-              scale: 1.1 - phase * 0.08,
-              yPercent: (0.5 - progress) * (index % 2 ? -4 : 4),
+              scale: 1.08 - phase * 0.06,
+              yPercent: (0.5 - progress) * (index % 2 ? -2.5 : 2.5),
             });
           });
 
@@ -161,7 +168,7 @@ export function useSuitesSpringsFlow(
           trigger: chapter,
           start: "top bottom",
           end: "bottom bottom",
-          scrub: true,
+          scrub: 1.2,
           invalidateOnRefresh: true,
           onUpdate: (self) => setChapter(self.progress),
         });

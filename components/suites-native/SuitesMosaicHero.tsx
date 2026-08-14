@@ -9,7 +9,7 @@ import {
   resolveSuitesNativeView,
 } from "@/lib/suites-native-content";
 
-const DURATION_MS = 18_000;
+const DURATION_MS = 48_000;
 
 type Props = {
   images: Record<string, string>;
@@ -56,7 +56,7 @@ export function SuitesMosaicHero({ images, hero }: Props) {
         const gap = Number.parseFloat(getComputedStyle(row).columnGap) || 0;
         const cycle = groupWidth + gap;
         if (!cycle) return;
-        const travel = (timeProgress * cycle * 0.9 + heroProgress * cycle * 0.68) % cycle;
+        const travel = (timeProgress * cycle * 0.38 + heroProgress * cycle * 0.22) % cycle;
         const x = index % 2 === 1 ? -cycle + travel : -travel;
         row.style.transform = `translate3d(${x}px, 0, 0)`;
       });
@@ -135,15 +135,15 @@ export function SuitesMosaicHero({ images, hero }: Props) {
           </div>
 
           <div className="sn-mosaic-hero__caption">
-            <p className="sn-mosaic-hero__eyebrow typo-on-images-indication">
-              {hero.eyebrow}
-            </p>
-            <h1 className="sn-display sn-display--hero typo-on-images-title">
+            <h1 className="sn-display sn-display--section sn-mosaic-hero__title">
               {hero.titleLines[0]}
               <br />
               {hero.titleLines[1]}
             </h1>
-            <p className="sn-mosaic-hero__support typo-on-images-body">
+            <p className="sn-mosaic-hero__eyebrow">
+              {hero.eyebrow}
+            </p>
+            <p className="sn-body sn-mosaic-hero__support">
               {hero.support}
             </p>
             <div className="sn-mosaic-hero__actions">

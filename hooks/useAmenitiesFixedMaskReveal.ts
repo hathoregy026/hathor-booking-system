@@ -60,7 +60,6 @@ export function useAmenitiesFixedMaskReveal(
       "[data-amenities-progress]",
     );
     const triggerId = section.dataset.amenitiesMaskId ?? "amenities-mask";
-    const startsOpen = section.dataset.amenitiesStartOpen === "true";
 
     if (!captionCol || !imagesCol || panels.length === 0) return;
 
@@ -83,10 +82,10 @@ export function useAmenitiesFixedMaskReveal(
       }
 
       gsap.set(captionCol, {
-        clipPath: startsOpen ? amenitiesWipeOpen() : amenitiesWipeClosed("up"),
+        clipPath: amenitiesWipeClosed("up"),
       });
       gsap.set(imagesCol, {
-        clipPath: startsOpen ? amenitiesWipeOpen() : amenitiesWipeClosed("down"),
+        clipPath: amenitiesWipeClosed("down"),
       });
       panels.forEach((panel, index) => {
         const angle = angles[index]!;
@@ -109,11 +108,11 @@ export function useAmenitiesFixedMaskReveal(
       if (progressLine) gsap.set(progressLine, { scaleY: 0 });
 
       // Amenities runway: ~ (N + 2) * 100svh section → ~ (N + 1) * 100vh scrub range.
-      const keyUnits = Math.max(2, panels.length + (startsOpen ? 0 : 1));
+      const keyUnits = Math.max(2, panels.length + 1);
       const key = (vh: number) => clamp(vh / (keyUnits * 100));
 
       const setProgress = (progress: number) => {
-        const entrance = startsOpen ? 1 : segmentProgress(progress, 0, key(100));
+        const entrance = segmentProgress(progress, 0, key(100));
         gsap.set(captionCol, {
           clipPath: amenitiesWipeClip("up", entrance),
         });
