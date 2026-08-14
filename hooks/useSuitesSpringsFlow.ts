@@ -45,8 +45,8 @@ export function useSuitesSpringsFlow(
         })
           .fromTo(
             heroPlane,
-            { scale: 1.08, yPercent: 2 },
-            { scale: 0.91, yPercent: -5, ease: "none" },
+            { scale: 1.08, xPercent: -50, yPercent: -48 },
+            { scale: 0.91, xPercent: -50, yPercent: -55, ease: "none" },
             0,
           )
           .fromTo(

@@ -125,6 +125,19 @@ html[data-suites-native] .suites-native-route {
   text-shadow: 0 4px 40px rgba(0, 0, 0, 0.4);
 }
 
+.public-site .suites-native-route .sn-mosaic-hero__caption .sn-display--hero {
+  font-family: var(--typo-on-images-title-font, var(--font-hathor-display), "Gamgote", Georgia, serif) !important;
+  font-size: clamp(2.4rem, 7vw, 6.5rem) !important;
+  font-weight: 400 !important;
+  line-height: 1.02 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: none !important;
+  color: var(--typo-on-images-title-color, #f5eacf) !important;
+  -webkit-text-fill-color: var(--typo-on-images-title-color, #f5eacf) !important;
+  text-shadow: 0 2px 28px rgba(11, 9, 7, 0.35) !important;
+  margin: 0 !important;
+}
+
 .sn-display--section {
   font-size: clamp(var(--sn-amenities-title-size, 56px), 5.5vw, 5.8rem);
 }
@@ -551,10 +564,10 @@ html[data-suites-native] .suites-native-route {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 180vw;
+  width: 165vw;
   height: auto;
-  opacity: 0.82;
-  transform: translate(-50%, -50%) rotate(-28deg);
+  opacity: 0.92;
+  transform: translate(-50%, -50%) rotate(-16deg);
   transform-origin: 50% 50%;
   will-change: transform;
   pointer-events: none;
@@ -583,18 +596,17 @@ html[data-suites-native] .suites-native-route {
 
 .sn-mosaic-hero__item {
   position: relative;
-  flex: 0 0 clamp(190px, 16vw, 300px);
-  width: clamp(190px, 16vw, 300px);
+  flex: 0 0 clamp(360px, 30vw, 560px);
+  width: clamp(360px, 30vw, 560px);
   will-change: transform;
 }
 
 .sn-mosaic-hero__item img {
   display: block;
   width: 100%;
-  height: clamp(220px, 20vw, 360px);
-  aspect-ratio: 4 / 5;
+  height: clamp(470px, 72vh, 760px);
   object-fit: cover;
-  filter: sepia(0.22) saturate(1.05) brightness(0.96);
+  filter: sepia(0.12) saturate(0.96) brightness(0.9);
 }
 
 .sn-mosaic-hero__caption {
@@ -605,11 +617,15 @@ html[data-suites-native] .suites-native-route {
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  gap: clamp(0.9rem, 1.35vw, 1.3rem);
+  gap: clamp(1.25rem, 2vw, 1.75rem);
   padding: clamp(5.5rem, 9vh, 8rem) clamp(1.5rem, 6vw, 7rem);
   pointer-events: none;
   text-align: left;
   max-width: 100%;
+}
+
+.public-site .suites-native-route .sn-mosaic-hero__caption > * {
+  margin-block: 0 !important;
 }
 
 .sn-mosaic-hero__eyebrow {
@@ -625,12 +641,24 @@ html[data-suites-native] .suites-native-route {
 .sn-mosaic-hero__support {
   margin: 0;
   max-width: min(32rem, 52vw);
-  font-family: var(--sn-amenities-body-font, "Agraham", Georgia, serif);
+  font-family: var(--font-body, var(--font-hathor-body), "Plus Jakarta Sans", sans-serif);
   font-size: var(--sn-amenities-body-size, 18px);
   font-weight: 400;
+  font-style: italic;
   line-height: var(--sn-amenities-body-leading, 1.5);
   color: var(--sn-on-image);
   text-align: left;
+}
+
+.public-site .suites-native-route .sn-mosaic-hero__caption .sn-mosaic-hero__support {
+  font-family: var(--font-body, var(--font-hathor-body), "Plus Jakarta Sans", sans-serif) !important;
+  font-size: clamp(1rem, 1.15vw, 1.15rem) !important;
+  font-weight: 400 !important;
+  font-style: italic !important;
+  line-height: 1.55 !important;
+  letter-spacing: 0.055em !important;
+  color: #f5eacf !important;
+  -webkit-text-fill-color: #f5eacf !important;
 }
 
 .sn-mosaic-hero__actions {
@@ -639,17 +667,41 @@ html[data-suites-native] .suites-native-route {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  gap: 0.65rem;
+  gap: clamp(0.65rem, 1vw, 1rem);
 }
 
-.public-site .suites-native-route .sn-mosaic-hero__actions .sn-btn {
-  color: var(--sn-hero-title) !important;
-  -webkit-text-fill-color: var(--sn-hero-title) !important;
+.public-site .suites-native-route .sn-mosaic-hero__button.public-btn-outline-gold {
+  margin: 0;
+  width: var(--hathor-btn-width, 12.5rem) !important;
+  min-width: var(--hathor-btn-width, 12.5rem) !important;
+  max-width: var(--hathor-btn-width, 12.5rem) !important;
+  height: var(--hathor-btn-height, 2.85rem) !important;
+  min-height: var(--hathor-btn-height, 2.85rem) !important;
+  max-height: var(--hathor-btn-height, 2.85rem) !important;
+  padding: 3px var(--hathor-btn-pad-x, 1.75rem) 1px !important;
+  border: 1px solid rgba(255, 255, 255, 0.92) !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-family: var(--public-sans, var(--font-hathor-body), "Plus Jakarta Sans", sans-serif) !important;
+  font-size: var(--hathor-btn-font-size, 0.72rem) !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  letter-spacing: var(--hathor-btn-tracking, 0.18em) !important;
+  text-transform: uppercase !important;
+  box-shadow: none !important;
 }
 
-.public-site .suites-native-route .sn-mosaic-hero__actions .sn-btn--on-photo:hover {
-  color: var(--sn-gold-deep) !important;
-  -webkit-text-fill-color: var(--sn-gold-deep) !important;
+.public-site .suites-native-route .sn-mosaic-hero__button.public-btn-outline-gold:hover,
+.public-site .suites-native-route .sn-mosaic-hero__button.public-btn-outline-gold:focus-visible {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  border-color: #ffffff !important;
+  color: var(--sn-gold) !important;
+  -webkit-text-fill-color: var(--sn-gold) !important;
+  transform: translateY(-2px);
 }
 
 .sn-mosaic-hero__next {
@@ -686,24 +738,13 @@ html[data-suites-native] .suites-native-route {
   height: 100%;
   overflow: hidden;
   pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    rgba(64, 47, 20, 0.46) 0%,
-    rgba(82, 61, 28, 0.23) 34%,
-    rgba(82, 61, 28, 0.04) 62%,
-    transparent 76%
-  );
+  background:
+    linear-gradient(90deg, rgba(48, 34, 14, 0.52) 0%, rgba(59, 42, 17, 0.24) 34%, transparent 68%),
+    linear-gradient(0deg, rgba(48, 34, 14, 0.12), transparent 44%);
 }
 
 .sn-mosaic-hero__gradient div {
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(182, 159, 100, 0.52) 0%,
-    rgba(205, 191, 166, 0.28) 40%,
-    rgba(245, 234, 207, 0) 74%
-  );
+  display: none;
 }
 
 .sn-mosaic-hero__gradient div:nth-child(1) {
@@ -1350,25 +1391,25 @@ html[data-suites-native] .suites-native-route {
 
   .sn-mosaic-hero__plane {
     top: 50%;
-    width: 280vw;
-    opacity: 0.82;
+    width: 300vw;
+    opacity: 0.92;
     transform-origin: 50% 50%;
   }
 
   .sn-mosaic-hero__item {
-    flex-basis: clamp(120px, 38vw, 180px);
-    width: clamp(110px, 36vw, 220px);
+    flex-basis: clamp(230px, 72vw, 310px);
+    width: clamp(230px, 72vw, 310px);
   }
 
   .sn-mosaic-hero__item img {
-    height: clamp(150px, 47vw, 210px);
+    height: clamp(360px, 78vh, 600px);
   }
 
   .sn-mosaic-hero__caption {
     align-items: flex-start;
     justify-content: flex-end;
     text-align: left;
-    gap: 0.85rem;
+    gap: 1rem;
     padding: clamp(1rem, 5vw, 1.5rem);
     padding-bottom: 8.25rem;
   }

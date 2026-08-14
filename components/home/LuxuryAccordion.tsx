@@ -63,7 +63,8 @@ export default function LuxuryAccordion({
       aria-label={sectionTitle}
       data-hathor-voyages
       data-amenities-mask-id="home-voyages-mask"
-      style={{ "--voyage-runway": `${(items.length + 2) * 100}svh` } as CSSProperties}
+      data-amenities-start-open="true"
+      style={{ "--voyage-runway": `${(items.length + 1) * 100}svh` } as CSSProperties}
     >
       <div className={styles.sticky}>
         <div className={styles.stage}>
