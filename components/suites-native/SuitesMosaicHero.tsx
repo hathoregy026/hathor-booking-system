@@ -23,10 +23,13 @@ export function SuitesMosaicHero({ images, hero }: Props) {
   const sources = SUITES_NATIVE_GALLERY_SLOTS.map((slot) =>
     resolveSuitesImage(images, slot),
   );
-  const rows = useMemo(
-    () => [sources.slice(0, 7), sources.slice(7, 14), sources.slice(14)],
-    [sources],
-  );
+  const rows = useMemo(() => {
+    const first = sources.slice(0, 7);
+    const second = sources.slice(7, 14);
+    const centre = [...sources.slice(14), ...sources.slice(0, 2)];
+
+    return [first, second, centre, second, first];
+  }, [sources]);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -54,7 +57,7 @@ export function SuitesMosaicHero({ images, hero }: Props) {
         const cycle = groupWidth + gap;
         if (!cycle) return;
         const travel = (timeProgress * cycle * 0.9 + heroProgress * cycle * 0.68) % cycle;
-        const x = index === 1 ? -cycle + travel : -travel;
+        const x = index % 2 === 1 ? -cycle + travel : -travel;
         row.style.transform = `translate3d(${x}px, 0, 0)`;
       });
     };

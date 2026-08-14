@@ -551,7 +551,7 @@ html[data-suites-native] .suites-native-route {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 160vw;
+  width: 180vw;
   height: auto;
   opacity: 0.82;
   transform: translate(-50%, -50%) rotate(-28deg);
@@ -603,16 +603,17 @@ html[data-suites-native] .suites-native-route {
   z-index: 2;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  align-items: flex-end;
-  padding: clamp(1.25rem, 5vw, 5rem);
+  justify-content: center;
+  align-items: flex-start;
+  gap: clamp(0.9rem, 1.35vw, 1.3rem);
+  padding: clamp(5.5rem, 9vh, 8rem) clamp(1.5rem, 6vw, 7rem);
   pointer-events: none;
-  text-align: right;
+  text-align: left;
   max-width: 100%;
 }
 
 .sn-mosaic-hero__eyebrow {
-  margin: 0 0 0.65rem;
+  margin: 0;
   font-family: var(--public-sans, var(--font-hathor-body), "Plus Jakarta Sans", sans-serif);
   font-size: 0.72rem;
   font-weight: 500;
@@ -622,23 +623,33 @@ html[data-suites-native] .suites-native-route {
 }
 
 .sn-mosaic-hero__support {
-  margin: 0.85rem 0 0;
+  margin: 0;
   max-width: min(32rem, 52vw);
   font-family: var(--sn-amenities-body-font, "Agraham", Georgia, serif);
   font-size: var(--sn-amenities-body-size, 18px);
   font-weight: 400;
   line-height: var(--sn-amenities-body-leading, 1.5);
   color: var(--sn-on-image);
-  text-align: right;
+  text-align: left;
 }
 
 .sn-mosaic-hero__actions {
   pointer-events: auto;
-  margin-top: 1.25rem;
+  margin-top: 0;
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 0.5rem;
+  justify-content: flex-start;
+  gap: 0.65rem;
+}
+
+.public-site .suites-native-route .sn-mosaic-hero__actions .sn-btn {
+  color: var(--sn-hero-title) !important;
+  -webkit-text-fill-color: var(--sn-hero-title) !important;
+}
+
+.public-site .suites-native-route .sn-mosaic-hero__actions .sn-btn--on-photo:hover {
+  color: var(--sn-gold-deep) !important;
+  -webkit-text-fill-color: var(--sn-gold-deep) !important;
 }
 
 .sn-mosaic-hero__next {
@@ -675,6 +686,13 @@ html[data-suites-native] .suites-native-route {
   height: 100%;
   overflow: hidden;
   pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(64, 47, 20, 0.46) 0%,
+    rgba(82, 61, 28, 0.23) 34%,
+    rgba(82, 61, 28, 0.04) 62%,
+    transparent 76%
+  );
 }
 
 .sn-mosaic-hero__gradient div {
@@ -1332,7 +1350,7 @@ html[data-suites-native] .suites-native-route {
 
   .sn-mosaic-hero__plane {
     top: 50%;
-    width: 250vw;
+    width: 280vw;
     opacity: 0.82;
     transform-origin: 50% 50%;
   }
@@ -1350,6 +1368,7 @@ html[data-suites-native] .suites-native-route {
     align-items: flex-start;
     justify-content: flex-end;
     text-align: left;
+    gap: 0.85rem;
     padding: clamp(1rem, 5vw, 1.5rem);
     padding-bottom: 8.25rem;
   }
