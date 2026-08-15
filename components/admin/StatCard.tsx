@@ -19,7 +19,7 @@ export function StatCard({
 }: StatCardProps) {
   if (isLoading) {
     return (
-      <div className="admin-card admin-card--hover p-4 sm:p-6">
+      <div className="card card-hover p-4 sm:p-6">
         <div className="animate-pulse space-y-4">
           <div className="h-10 w-10 rounded-xl" style={{ background: "var(--border)" }} />
           <div className="h-4 w-24 rounded" style={{ background: "var(--border)" }} />
@@ -38,7 +38,7 @@ export function StatCard({
         : "admin-change-pill admin-change-pill--neutral";
 
   return (
-    <div className="admin-card admin-card--hover p-4 sm:p-6">
+    <div className="card card-hover p-4 sm:p-6">
       <div className="flex items-start justify-between gap-3">
         <div
           className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl"

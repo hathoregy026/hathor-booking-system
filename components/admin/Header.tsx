@@ -11,8 +11,8 @@ import { NotificationBell } from "./NotificationBell";
 const PAGE_META: Record<string, { section: string; title: string }> = {
   "/admin": { section: "Overview", title: "Dashboard" },
   "/admin/bookings": { section: "Manage", title: "Bookings" },
-  "/admin/cruises": { section: "Manage", title: "Inventory" },
-  "/admin/inventory": { section: "Manage", title: "Inventory" },
+  "/admin/cruises": { section: "Manage", title: "Cruises" },
+  "/admin/inventory": { section: "Manage", title: "Cruises" },
   "/admin/cms": { section: "Manage", title: "CMS" },
   "/admin/website-text": { section: "CMS", title: "Website Text" },
   "/admin/content": { section: "CMS", title: "Website Images" },
@@ -35,7 +35,7 @@ type HeaderProps = {
 function pageMeta(pathname: string) {
   if (PAGE_META[pathname]) return PAGE_META[pathname];
   if (isAdminCmsPath(pathname)) return { section: "CMS", title: "CMS" };
-  if (isAdminInventoryPath(pathname)) return { section: "Manage", title: "Inventory" };
+  if (isAdminInventoryPath(pathname)) return { section: "Manage", title: "Cruises" };
   if (pathname.startsWith("/admin")) return { section: "Admin", title: "Panel" };
   return { section: "Overview", title: "Dashboard" };
 }

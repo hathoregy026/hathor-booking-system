@@ -151,17 +151,17 @@ export function GastronomyTypographyPanel() {
         </div>
         <div className="typo-easy__controls card">
           <label className="typo-easy__field"><span>Font</span>
-            <select className="admin-input" value={style.fontFamily} onChange={(e) => patch(active.key, { fontFamily: e.target.value as TypographyTextStyle["fontFamily"] })}>
+            <select className="input" value={style.fontFamily} onChange={(e) => patch(active.key, { fontFamily: e.target.value as TypographyTextStyle["fontFamily"] })}>
               {HATHOR_LUXURY_FONTS.map((font) => <option key={font} value={font}>{font}</option>)}
             </select>
           </label>
           <div className="typo-easy__fields-row">
-            <label className="typo-easy__field"><span>Size</span><input className="admin-input" type="number" min="8" max="200" value={style.fontSize} onChange={(e) => patch(active.key, { fontSize: Number(e.target.value) })} /></label>
-            <label className="typo-easy__field"><span>Colour</span><input className="admin-input" type="color" value={style.color} onChange={(e) => patch(active.key, { color: e.target.value })} /></label>
+            <label className="typo-easy__field"><span>Size</span><input className="input" type="number" min="8" max="200" value={style.fontSize} onChange={(e) => patch(active.key, { fontSize: Number(e.target.value) })} /></label>
+            <label className="typo-easy__field"><span>Colour</span><input className="input" type="color" value={style.color} onChange={(e) => patch(active.key, { color: e.target.value })} /></label>
           </div>
           <div className="typo-easy__fields-row">
-            <label className="typo-easy__field"><span>Line height</span><input className="admin-input" type="number" min="0.6" max="3" step="0.05" value={style.lineHeight} onChange={(e) => patch(active.key, { lineHeight: Number(e.target.value) })} /></label>
-            <label className="typo-easy__field"><span>Letter spacing</span><input className="admin-input" type="number" min="-5" max="20" step="0.1" value={style.letterSpacing} onChange={(e) => patch(active.key, { letterSpacing: Number(e.target.value) })} /></label>
+            <label className="typo-easy__field"><span>Line height</span><input className="input" type="number" min="0.6" max="3" step="0.05" value={style.lineHeight} onChange={(e) => patch(active.key, { lineHeight: Number(e.target.value) })} /></label>
+            <label className="typo-easy__field"><span>Letter spacing</span><input className="input" type="number" min="-5" max="20" step="0.1" value={style.letterSpacing} onChange={(e) => patch(active.key, { letterSpacing: Number(e.target.value) })} /></label>
           </div>
           <label className="typo-easy__checkbox"><input type="checkbox" checked={style.innerShadow} onChange={(e) => patch(active.key, { innerShadow: e.target.checked })} /> Inner shadow</label>
           <button className="typo-easy__reset" type="button" onClick={resetActive}><RotateCcw className="h-3.5 w-3.5" /> Reset this style</button>
@@ -169,7 +169,7 @@ export function GastronomyTypographyPanel() {
       </div>
       <div className="typo-easy__savebar">
         <span>{same(settings, saved) ? "All changes saved." : "Unsaved Dining typography changes."}</span>
-        <button className="admin-btn admin-btn--primary" type="button" disabled={saving || same(settings, saved)} onClick={() => void save()}>
+        <button className="btn-primary" type="button" disabled={saving || same(settings, saved)} onClick={() => void save()}>
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />} Save Dining typography
         </button>
       </div>

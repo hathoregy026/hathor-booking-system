@@ -421,7 +421,7 @@ export function ImageUpload({
             isActionsOnly
               ? "vcc-card__replace-btn"
               : isAdmin
-                ? "admin-btn-outline inline-flex items-center gap-2 px-3 py-2 text-sm disabled:opacity-60"
+                ? "btn-outline inline-flex items-center gap-2 px-3 py-2 text-sm disabled:opacity-60"
                 : "inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
           }
         >
@@ -438,7 +438,7 @@ export function ImageUpload({
               isActionsOnly
                 ? "vcc-card__upload-btn"
                 : isAdmin
-                  ? "admin-btn-primary inline-flex items-center gap-2 px-3 py-2 text-sm disabled:opacity-60"
+                  ? "btn-primary inline-flex items-center gap-2 px-3 py-2 text-sm disabled:opacity-60"
                   : "inline-flex items-center gap-2 rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-60"
             }
           >
@@ -460,7 +460,7 @@ export function ImageUpload({
               isActionsOnly
                 ? "vcc-card__remove-btn"
                 : isAdmin
-                  ? "admin-btn-outline inline-flex items-center gap-2 px-3 py-2 text-sm text-red-600 disabled:opacity-60"
+                  ? "btn-outline inline-flex items-center gap-2 px-3 py-2 text-sm text-red-600 disabled:opacity-60"
                   : "inline-flex items-center gap-2 rounded-lg border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 disabled:opacity-60"
             }
           >

@@ -883,7 +883,7 @@ export function AmenitiesSequenceTypographyPanel() {
               <label className="typo-easy__field">
                 <span>Title</span>
                 <textarea
-                  className="admin-input"
+                  className="input"
                   rows={2}
                   value={
                     text.home.stackSlides[active.target.index]?.title ?? ""
@@ -896,7 +896,7 @@ export function AmenitiesSequenceTypographyPanel() {
               <label className="typo-easy__field">
                 <span>Sub text</span>
                 <input
-                  className="admin-input"
+                  className="input"
                   type="text"
                   placeholder={
                     EX_PINNED_FALLBACKS[active.target.index]?.indication ??
@@ -920,7 +920,7 @@ export function AmenitiesSequenceTypographyPanel() {
               <label className="typo-easy__field">
                 <span>Body</span>
                 <textarea
-                  className="admin-input"
+                  className="input"
                   rows={4}
                   value={text.home.stackSlides[active.target.index]?.body ?? ""}
                   onChange={(e) =>
@@ -936,7 +936,7 @@ export function AmenitiesSequenceTypographyPanel() {
               <label className="typo-easy__field">
                 <span>Title</span>
                 <textarea
-                  className="admin-input"
+                  className="input"
                   rows={2}
                   value={
                     text.home.textBlocks[active.target.index]?.title ?? ""
@@ -949,7 +949,7 @@ export function AmenitiesSequenceTypographyPanel() {
               <label className="typo-easy__field">
                 <span>Sub text</span>
                 <input
-                  className="admin-input"
+                  className="input"
                   type="text"
                   placeholder={
                     STORY_INDICATION_FALLBACKS[active.target.index] ??
@@ -974,7 +974,7 @@ export function AmenitiesSequenceTypographyPanel() {
               <label className="typo-easy__field">
                 <span>Body</span>
                 <textarea
-                  className="admin-input"
+                  className="input"
                   rows={5}
                   value={text.home.textBlocks[active.target.index]?.body ?? ""}
                   onChange={(e) =>
@@ -985,7 +985,7 @@ export function AmenitiesSequenceTypographyPanel() {
               <label className="typo-easy__field">
                 <span>Button label</span>
                 <input
-                  className="admin-input"
+                  className="input"
                   type="text"
                   value={text.home.textBlocks[active.target.index]?.cta ?? ""}
                   onChange={(e) =>
@@ -1011,7 +1011,7 @@ export function AmenitiesSequenceTypographyPanel() {
                 <label className="typo-easy__field">
                   <span>Move X</span>
                   <input
-                    className="admin-input"
+                    className="input"
                     type="number"
                     min={-240}
                     max={240}
@@ -1024,7 +1024,7 @@ export function AmenitiesSequenceTypographyPanel() {
                 <label className="typo-easy__field">
                   <span>Move Y</span>
                   <input
-                    className="admin-input"
+                    className="input"
                     type="number"
                     min={-240}
                     max={240}
@@ -1110,7 +1110,7 @@ export function AmenitiesSequenceTypographyPanel() {
                 <label className="typo-easy__field">
                   <span>Size</span>
                   <input
-                    className="admin-input"
+                    className="input"
                     type="number"
                     min={8}
                     max={200}
@@ -1169,7 +1169,7 @@ export function AmenitiesSequenceTypographyPanel() {
                 <label className="typo-easy__field">
                   <span>Line height</span>
                   <input
-                    className="admin-input"
+                    className="input"
                     type="number"
                     min={0.6}
                     max={3}
@@ -1185,7 +1185,7 @@ export function AmenitiesSequenceTypographyPanel() {
                 <label className="typo-easy__field">
                   <span>Letter spacing</span>
                   <input
-                    className="admin-input"
+                    className="input"
                     type="number"
                     min={-5}
                     max={20}
@@ -1237,7 +1237,7 @@ export function AmenitiesSequenceTypographyPanel() {
                 <label className="typo-easy__field">
                   <span>Move X</span>
                   <input
-                    className="admin-input"
+                    className="input"
                     type="number"
                     min={-240}
                     max={240}
@@ -1250,7 +1250,7 @@ export function AmenitiesSequenceTypographyPanel() {
                 <label className="typo-easy__field">
                   <span>Move Y</span>
                   <input
-                    className="admin-input"
+                    className="input"
                     type="number"
                     min={-240}
                     max={240}
@@ -1284,7 +1284,7 @@ export function AmenitiesSequenceTypographyPanel() {
                 <label className="typo-easy__field">
                   <span>Title → sub (px)</span>
                   <input
-                    className="admin-input"
+                    className="input"
                     type="number"
                     min={0}
                     max={120}
@@ -1299,7 +1299,7 @@ export function AmenitiesSequenceTypographyPanel() {
                 <label className="typo-easy__field">
                   <span>Sub → body (px)</span>
                   <input
-                    className="admin-input"
+                    className="input"
                     type="number"
                     min={0}
                     max={120}
@@ -1315,7 +1315,7 @@ export function AmenitiesSequenceTypographyPanel() {
               <label className="typo-easy__field">
                 <span>Body → button (px)</span>
                 <input
-                  className="admin-input"
+                  className="input"
                   type="number"
                   min={0}
                   max={160}
@@ -1336,7 +1336,7 @@ export function AmenitiesSequenceTypographyPanel() {
                 <label className="typo-easy__field">
                   <span>Big title</span>
                   <input
-                    className="admin-input"
+                    className="input"
                     type="number"
                     min={0.6}
                     max={3}
@@ -1352,7 +1352,7 @@ export function AmenitiesSequenceTypographyPanel() {
                 <label className="typo-easy__field">
                   <span>Sub text</span>
                   <input
-                    className="admin-input"
+                    className="input"
                     type="number"
                     min={0.6}
                     max={3}
@@ -1369,7 +1369,7 @@ export function AmenitiesSequenceTypographyPanel() {
               <label className="typo-easy__field">
                 <span>Body</span>
                 <input
-                  className="admin-input"
+                  className="input"
                   type="number"
                   min={0.6}
                   max={3}
@@ -1429,7 +1429,7 @@ export function AmenitiesSequenceTypographyPanel() {
             : "All changes saved."}
         </span>
         <button
-          className="admin-btn admin-btn--primary"
+          className="btn-primary"
           type="button"
           disabled={saving || !dirty}
           onClick={() => void save()}

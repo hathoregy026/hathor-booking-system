@@ -116,7 +116,7 @@ export function BookingCalendar({ bookings, isLoading }: BookingCalendarProps) {
 
   if (isLoading) {
     return (
-      <div className="admin-card p-6">
+      <div className="card p-6">
         <div className="space-y-3">
           {Array.from({ length: 6 }).map((_, index) => (
             <div
@@ -131,7 +131,7 @@ export function BookingCalendar({ bookings, isLoading }: BookingCalendarProps) {
   }
 
   return (
-    <div className="admin-card overflow-hidden">
+    <div className="card overflow-hidden">
       <div
         className="flex flex-col gap-3 border-b px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5"
         style={{
@@ -203,7 +203,7 @@ export function BookingCalendar({ bookings, isLoading }: BookingCalendarProps) {
             monthBookings.map((booking) => (
               <article
                 key={booking.id}
-                className="admin-card rounded-xl border p-4"
+                className="card rounded-xl border p-4"
                 style={eventStyles(booking.status)}
               >
                 <div className="flex items-start justify-between gap-3">

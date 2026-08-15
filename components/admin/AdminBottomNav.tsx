@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Boxes,
   LayoutDashboard,
   Menu,
+  Ship,
   Ticket,
 } from "lucide-react";
 import { isAdminInventoryPath } from "@/lib/admin-nav";
@@ -17,7 +17,7 @@ type AdminBottomNavProps = {
 const ITEMS = [
   { href: "/admin", label: "Home", icon: LayoutDashboard, exact: true },
   { href: "/admin/bookings", label: "Bookings", icon: Ticket, exact: false },
-  { href: "/admin/inventory", label: "Inventory", icon: Boxes, exact: false },
+  { href: "/admin/cruises", label: "Cruises", icon: Ship, exact: false },
 ] as const;
 
 export function AdminBottomNav({ onOpenMenu }: AdminBottomNavProps) {
@@ -25,7 +25,7 @@ export function AdminBottomNav({ onOpenMenu }: AdminBottomNavProps) {
 
   const isActive = (href: string, exact: boolean) => {
     if (exact) return pathname === href;
-    if (href === "/admin/inventory") return isAdminInventoryPath(pathname);
+    if (href === "/admin/cruises") return isAdminInventoryPath(pathname);
     return pathname.startsWith(href);
   };
 

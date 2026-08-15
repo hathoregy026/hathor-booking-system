@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  Boxes,
   FileText,
   LayoutDashboard,
   LogOut,
   Settings,
+  Ship,
   Ticket,
   X,
 } from "lucide-react";
@@ -23,7 +23,7 @@ type NavItem = { href: string; label: string; icon: LucideIcon };
 const NAV: NavItem[] = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/bookings", label: "Bookings", icon: Ticket },
-  { href: "/admin/inventory", label: "Inventory", icon: Boxes },
+  { href: "/admin/cruises", label: "Cruises", icon: Ship },
   { href: "/admin/cms", label: "CMS", icon: FileText },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
@@ -36,7 +36,7 @@ type SidebarProps = {
 function isActive(pathname: string, href: string) {
   if (href === "/admin") return pathname === "/admin";
   if (href === "/admin/cms") return isAdminCmsPath(pathname);
-  if (href === "/admin/inventory") return isAdminInventoryPath(pathname);
+  if (href === "/admin/cruises") return isAdminInventoryPath(pathname);
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 

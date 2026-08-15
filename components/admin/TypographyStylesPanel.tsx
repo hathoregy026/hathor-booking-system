@@ -219,7 +219,7 @@ function NumberInput({
     >
       <input
         type="number"
-        className="typo-easy__number admin-input"
+        className="typo-easy__number input"
         value={draft}
         min={min}
         max={max}
@@ -811,7 +811,7 @@ export function TypographyStylesPanel() {
 
             <SimpleField label="Page hero">
               <select
-                className="admin-input typo-easy__text"
+                className="input typo-easy__text"
                 value={heroPage}
                 aria-label="Which page hero to edit"
                 onChange={(e) => setHeroPage(e.target.value as HeroPageKey)}
@@ -828,7 +828,7 @@ export function TypographyStylesPanel() {
               <SimpleField label="First line text">
                 <input
                   type="text"
-                  className="admin-input typo-easy__text"
+                  className="input typo-easy__text"
                   value={heroCopy.main}
                   maxLength={160}
                   aria-label="First line text"
@@ -839,7 +839,7 @@ export function TypographyStylesPanel() {
               <SimpleField label="Second title text">
                 <input
                   type="text"
-                  className="admin-input typo-easy__text"
+                  className="input typo-easy__text"
                   value={heroCopy.second}
                   maxLength={160}
                   aria-label="Second title text"
@@ -1023,7 +1023,7 @@ export function TypographyStylesPanel() {
               {onImagesLine === "on_images_body" ||
               onImagesLine === "on_images_title" ? (
                 <textarea
-                  className="admin-input typo-easy__textarea"
+                  className="input typo-easy__textarea"
                   value={
                     onImagesLine === "on_images_title"
                       ? onImagesCopy.title
@@ -1043,7 +1043,7 @@ export function TypographyStylesPanel() {
               ) : (
                 <input
                   type="text"
-                  className="admin-input typo-easy__text"
+                  className="input typo-easy__text"
                   value={onImagesCopy.indication}
                   maxLength={160}
                   aria-label="Indication text"
@@ -1126,7 +1126,7 @@ export function TypographyStylesPanel() {
               >
                 <input
                   type="text"
-                  className="admin-input typo-easy__text"
+                  className="input typo-easy__text"
                   value={
                     ourVoyagesLine === "our_voyages_title"
                       ? ourVoyagesCopy.title
@@ -1178,7 +1178,7 @@ export function TypographyStylesPanel() {
             </p>
             <SimpleField label="Marquee phrases (one per line)">
               <textarea
-                className="admin-input typo-easy__textarea"
+                className="input typo-easy__textarea"
                 value={marqueeCopy.text}
                 maxLength={1200}
                 rows={8}
@@ -1459,7 +1459,7 @@ export function TypographyStylesPanel() {
         <div className="typo-easy__savebar-actions">
           <button
             type="button"
-            className="admin-btn admin-btn--ghost"
+            className="btn-ghost"
             onClick={() => setSettings(saved)}
             disabled={!dirty || saving}
           >
@@ -1468,7 +1468,7 @@ export function TypographyStylesPanel() {
           </button>
           <button
             type="button"
-            className="admin-btn admin-btn--primary typo-easy__save-btn"
+            className="btn-primary typo-easy__save-btn"
             onClick={() => void handleSave()}
             disabled={!dirty || saving}
           >

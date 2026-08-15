@@ -457,7 +457,7 @@ export default function AdminCruisesPage() {
   return (
     <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="admin-page-title">Cruises &amp; Rooms</h1>
+        <h1 className="admin-page-title">Cruises</h1>
         <p className="admin-page-subtitle">Manage fleet and cabin inventory</p>
       </div>
 

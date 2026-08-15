@@ -418,7 +418,7 @@ export function WebsiteTextPanel() {
         <div className="wt-topbar__actions">
           <button
             type="button"
-            className="admin-btn admin-btn--ghost"
+            className="btn-ghost"
             disabled={!dirty || saving}
             onClick={handleDiscard}
           >
@@ -427,7 +427,7 @@ export function WebsiteTextPanel() {
           </button>
           <button
             type="button"
-            className="admin-btn admin-btn--primary"
+            className="btn-primary"
             disabled={!dirty || saving}
             onClick={() => void handleSave()}
           >
@@ -1865,7 +1865,7 @@ export function WebsiteTextPanel() {
         <div className="wt-topbar__actions">
           <button
             type="button"
-            className="admin-btn admin-btn--ghost"
+            className="btn-ghost"
             disabled={!dirty || saving}
             onClick={handleDiscard}
           >
@@ -1873,7 +1873,7 @@ export function WebsiteTextPanel() {
           </button>
           <button
             type="button"
-            className="admin-btn admin-btn--primary"
+            className="btn-primary"
             disabled={!dirty || saving}
             onClick={() => void handleSave()}
           >

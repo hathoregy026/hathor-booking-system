@@ -128,7 +128,7 @@ export function DashboardView() {
 
       {error && (
         <div
-          className="admin-card px-5 py-4 text-sm"
+          className="card px-5 py-4 text-sm"
           style={{
             borderColor: "var(--danger)",
             color: "var(--danger)",
@@ -138,7 +138,7 @@ export function DashboardView() {
           <button
             type="button"
             onClick={() => loadDashboard()}
-            className="admin-btn-primary mt-3 px-4 py-2 text-xs"
+            className="btn-primary mt-3 px-4 py-2 text-xs"
           >
             Retry
           </button>
@@ -184,7 +184,7 @@ export function DashboardView() {
         />
       </section>
 
-      <section className="admin-card p-6">
+      <section className="card p-6">
         <h2 className="admin-heading text-lg">Quick Actions</h2>
         <p className="admin-subheading mt-1">
           Common tasks to manage your cruise business
@@ -220,7 +220,7 @@ export function DashboardView() {
         action={
           <Link
             href="/admin/bookings"
-            className="admin-btn-primary px-4 py-2 text-sm"
+            className="btn-primary px-4 py-2 text-sm"
           >
             View All
           </Link>
@@ -230,7 +230,7 @@ export function DashboardView() {
           {recentBookings.map((booking) => {
             const guest = parseBookingCustomerName(booking.customerName);
             return (
-              <article key={booking.id} className="admin-card space-y-2 p-4">
+              <article key={booking.id} className="card space-y-2 p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <p className="font-semibold">{guest.guestName}</p>
@@ -323,7 +323,7 @@ export function DashboardView() {
           className="grid gap-4 sm:grid-cols-2"
           style={{ color: "var(--text-secondary)" }}
         >
-          <div className="admin-card flex items-center gap-4 p-5">
+          <div className="card flex items-center gap-4 p-5">
             <Ship className="h-8 w-8" style={{ color: "var(--accent)" }} />
             <div>
               <p className="text-2xl font-bold tabular-nums" style={{ color: "var(--text-primary)" }}>
