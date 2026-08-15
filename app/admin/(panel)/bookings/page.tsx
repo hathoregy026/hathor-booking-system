@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   CalendarDays,
   CheckCircle2,
@@ -37,7 +38,38 @@ const FILTER_TABS: { id: StatusFilter; label: string }[] = [
 ];
 
 export default function AdminBookingsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="space-y-6">
+          <div>
+            <h1 className="admin-page-title">Bookings</h1>
+            <p className="admin-page-subtitle">
+              Manage reservations, confirm requests and track party sizes.
+            </p>
+          </div>
+          <div className="card space-y-3 p-6">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <div
+                key={index}
+                className="h-10 animate-pulse rounded-lg"
+                style={{ background: "var(--border)", opacity: 0.4 }}
+              />
+            ))}
+          </div>
+        </div>
+      }
+    >
+      <AdminBookingsPageInner />
+    </Suspense>
+  );
+}
+
+function AdminBookingsPageInner() {
   const { showToast } = useToast();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q") ?? "";
   const [bookings, setBookings] = useState<AdminBookingDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadFailed, setLoadFailed] = useState(false);
@@ -47,10 +79,17 @@ export default function AdminBookingsPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("active");
   const [layoutView, setLayoutView] = useState<LayoutView>("list");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [query, setQuery] = useState("");
 
   const loadIdRef = useRef(0);
   const abortRef = useRef<AbortController | null>(null);
+
+  const setQuery = (value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value) params.set("q", value);
+    else params.delete("q");
+    const qs = params.toString();
+    router.replace(qs ? `/admin/bookings?${qs}` : "/admin/bookings");
+  };
 
   const switchViewMode = (mode: ViewMode) => {
     loadIdRef.current += 1;
@@ -136,12 +175,6 @@ export default function AdminBookingsPage() {
     // Admin list mount/filter fetch — loading flags are intentional.
     void loadBookings(); // eslint-disable-line react-hooks/set-state-in-effect -- dashboard data load
   }, [loadBookings]);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const next = params.get("q")?.trim() ?? "";
-    if (next) setQuery(next); // eslint-disable-line react-hooks/set-state-in-effect -- hydrate search from ?q=
-  }, []);
 
   const filteredBookings = useMemo(() => {
     const needle = query.trim().toLowerCase();

@@ -38,6 +38,7 @@
   "exclude": [
     "node_modules",
     "assets",
-    "_local"
+    "_local",
+    "OLD DASHBOARD BACK UP"
   ]
 }

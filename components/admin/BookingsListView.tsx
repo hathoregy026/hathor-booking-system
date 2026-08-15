@@ -309,6 +309,7 @@ export function BookingsListView({
                   </th>
                   {[
                     "Guest name",
+                    "Email",
                     "Phone",
                     "Party size",
                     "Special requests",
@@ -381,6 +382,19 @@ export function BookingsListView({
                             </p>
                           </div>
                         </div>
+                      </td>
+                      <td className="max-w-[14rem] px-4 py-3">
+                        {booking.customerEmail && booking.customerEmail !== "—" ? (
+                          <a
+                            href={`mailto:${booking.customerEmail}`}
+                            className="block truncate text-muted transition-colors hover:text-[var(--accent)]"
+                            title={booking.customerEmail}
+                          >
+                            {booking.customerEmail}
+                          </a>
+                        ) : (
+                          <span className="text-muted">—</span>
+                        )}
                       </td>
                       <td className="whitespace-nowrap px-4 py-3">
                         {booking.guestPhone ? (

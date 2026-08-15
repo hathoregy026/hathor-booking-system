@@ -18,6 +18,7 @@ import { ActionButton } from "@/components/admin/ActionButton";
 import { DataTable, StatusBadge } from "@/components/admin/DataTable";
 import { StatCard } from "@/components/admin/StatCard";
 import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
+import { parseBookingCustomerName } from "@/lib/booking-guest-details";
 import { formatPrice } from "@/lib/client-dates";
 
 type DashboardStats = {
@@ -226,31 +227,45 @@ export function DashboardView() {
         }
       >
         <div className="space-y-3 p-4 md:hidden">
-          {recentBookings.map((booking) => (
-            <article key={booking.id} className="admin-card space-y-2 p-4">
-              <div className="flex items-start justify-between gap-3">
-                <p className="font-semibold">{booking.customerName}</p>
-                <StatusBadge status={booking.status} />
-              </div>
-              <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-                {booking.cruiseName}
-              </p>
-              <div className="flex items-center justify-between gap-3 text-sm">
-                <span style={{ color: "var(--text-muted)" }}>
-                  {format(parseISO(booking.departureTime), "MMM d, yyyy")}
-                </span>
-                <span className="font-semibold tabular-nums" style={{ color: "var(--accent)" }}>
-                  {formatPrice(booking.totalPriceCents)}
-                </span>
-              </div>
-            </article>
-          ))}
+          {recentBookings.map((booking) => {
+            const guest = parseBookingCustomerName(booking.customerName);
+            return (
+              <article key={booking.id} className="admin-card space-y-2 p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="font-semibold">{guest.guestName}</p>
+                    <p className="mt-0.5 text-xs" style={{ color: "var(--text-muted)" }}>
+                      {guest.guestPhone ?? "—"}
+                      {" · "}
+                      {guest.partySize != null
+                        ? `${guest.partySize} guests`
+                        : guest.partyLabel}
+                    </p>
+                  </div>
+                  <StatusBadge status={booking.status} />
+                </div>
+                <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+                  {booking.cruiseName}
+                </p>
+                <div className="flex items-center justify-between gap-3 text-sm">
+                  <span style={{ color: "var(--text-muted)" }}>
+                    {format(parseISO(booking.departureTime), "MMM d, yyyy")}
+                  </span>
+                  <span className="font-semibold tabular-nums" style={{ color: "var(--accent)" }}>
+                    {formatPrice(booking.totalPriceCents)}
+                  </span>
+                </div>
+              </article>
+            );
+          })}
         </div>
 
         <table className="admin-table hidden min-w-full text-sm md:table">
           <thead>
             <tr>
               <th className="px-6 py-3 text-left">Customer</th>
+              <th className="px-6 py-3 text-left">Phone</th>
+              <th className="px-6 py-3 text-left">Party</th>
               <th className="px-6 py-3 text-left">Cruise</th>
               <th className="px-6 py-3 text-left">Date</th>
               <th className="px-6 py-3 text-left">Status</th>
@@ -258,32 +273,47 @@ export function DashboardView() {
             </tr>
           </thead>
           <tbody>
-            {recentBookings.map((booking) => (
-              <tr key={booking.id}>
-                <td className="px-6 py-4 font-medium">{booking.customerName}</td>
-                <td
-                  className="px-6 py-4"
-                  style={{ color: "var(--text-secondary)" }}
-                >
-                  {booking.cruiseName}
-                </td>
-                <td
-                  className="whitespace-nowrap px-6 py-4"
-                  style={{ color: "var(--text-secondary)" }}
-                >
-                  {format(parseISO(booking.departureTime), "MMM d, yyyy")}
-                </td>
-                <td className="px-6 py-4">
-                  <StatusBadge status={booking.status} />
-                </td>
-                <td
-                  className="px-6 py-4 font-semibold tabular-nums"
-                  style={{ color: "var(--accent)" }}
-                >
-                  {formatPrice(booking.totalPriceCents)}
-                </td>
-              </tr>
-            ))}
+            {recentBookings.map((booking) => {
+              const guest = parseBookingCustomerName(booking.customerName);
+              return (
+                <tr key={booking.id}>
+                  <td className="px-6 py-4 font-medium">{guest.guestName}</td>
+                  <td
+                    className="whitespace-nowrap px-6 py-4"
+                    style={{ color: "var(--text-secondary)" }}
+                  >
+                    {guest.guestPhone ?? "—"}
+                  </td>
+                  <td
+                    className="whitespace-nowrap px-6 py-4"
+                    style={{ color: "var(--text-secondary)" }}
+                  >
+                    {guest.partySize != null ? guest.partySize : guest.partyLabel}
+                  </td>
+                  <td
+                    className="px-6 py-4"
+                    style={{ color: "var(--text-secondary)" }}
+                  >
+                    {booking.cruiseName}
+                  </td>
+                  <td
+                    className="whitespace-nowrap px-6 py-4"
+                    style={{ color: "var(--text-secondary)" }}
+                  >
+                    {format(parseISO(booking.departureTime), "MMM d, yyyy")}
+                  </td>
+                  <td className="px-6 py-4">
+                    <StatusBadge status={booking.status} />
+                  </td>
+                  <td
+                    className="px-6 py-4 font-semibold tabular-nums"
+                    style={{ color: "var(--accent)" }}
+                  >
+                    {formatPrice(booking.totalPriceCents)}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </DataTable>

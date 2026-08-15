@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronDown, Eye, Menu, Search } from "lucide-react";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { isAdminCmsPath, isAdminInventoryPath } from "@/lib/admin-nav";
 import { ThemeToggle } from "./ThemeToggle";
 import { NotificationBell } from "./NotificationBell";
@@ -40,12 +40,26 @@ function pageMeta(pathname: string) {
   return { section: "Overview", title: "Dashboard" };
 }
 
+function bookingsSearchHref(query: string) {
+  const next = query.trim();
+  return next
+    ? `/admin/bookings?q=${encodeURIComponent(next)}`
+    : "/admin/bookings";
+}
+
 export function Header({ onMenuToggle }: HeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const page = pageMeta(pathname);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [query, setQuery] = useState("");
+  const urlQuery = searchParams.get("q") ?? "";
+  const [query, setQuery] = useState(urlQuery);
+  const onBookingsPage = pathname === "/admin/bookings";
+
+  useEffect(() => {
+    setQuery(urlQuery); // eslint-disable-line react-hooks/set-state-in-effect -- sync header draft with ?q=
+  }, [urlQuery]);
 
   const handlePreview = () => {
     window.open("/", "_blank", "noopener,noreferrer");
@@ -57,13 +71,28 @@ export function Header({ onMenuToggle }: HeaderProps) {
     router.refresh();
   };
 
+  const applyBookingsQuery = (value: string) => {
+    const href = bookingsSearchHref(value);
+    if (onBookingsPage) {
+      router.replace(href);
+      return;
+    }
+    router.push(href);
+  };
+
   const handleSearch = (event: FormEvent) => {
     event.preventDefault();
-    const next = query.trim();
-    const href = next
-      ? `/admin/bookings?q=${encodeURIComponent(next)}`
-      : "/admin/bookings";
-    router.push(href);
+    applyBookingsQuery(query.trim());
+  };
+
+  const handleQueryChange = (value: string) => {
+    setQuery(value);
+    if (onBookingsPage) {
+      const href = value
+        ? `/admin/bookings?q=${encodeURIComponent(value)}`
+        : "/admin/bookings";
+      router.replace(href);
+    }
   };
 
   return (
@@ -86,7 +115,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
         <input
           type="search"
           value={query}
-          onChange={(event) => setQuery(event.target.value)}
+          onChange={(event) => handleQueryChange(event.target.value)}
           placeholder="Search bookings…"
           aria-label="Search bookings"
           className="input h-10 pl-9"

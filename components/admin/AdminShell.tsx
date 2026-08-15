@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { AdminThemeProvider, useAdminTheme } from "./ThemeProvider";
 import { AdminBottomNav } from "./AdminBottomNav";
@@ -55,13 +55,19 @@ function AdminShellInner({ children }: { children: React.ReactNode }) {
       />
 
       <div className="admin-shell__stage relative z-[1] flex min-h-screen min-w-0 flex-col">
-        <Header
-          onMenuToggle={() =>
-            setMenuOpenForPath((current) =>
-              current === pathname ? null : pathname,
-            )
+        <Suspense
+          fallback={
+            <header className="admin-header sticky top-0 z-30 flex h-16 shrink-0 items-center px-4 sm:px-6" />
           }
-        />
+        >
+          <Header
+            onMenuToggle={() =>
+              setMenuOpenForPath((current) =>
+                current === pathname ? null : pathname,
+              )
+            }
+          />
+        </Suspense>
         <main className="admin-main mx-auto w-full max-w-[1600px] flex-1 overflow-x-hidden px-4 py-6 pb-24 sm:px-6 lg:px-8 lg:py-8 lg:pb-8">
           {children}
         </main>
