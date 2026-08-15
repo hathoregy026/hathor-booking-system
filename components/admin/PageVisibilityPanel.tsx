@@ -152,7 +152,7 @@ export function PageVisibilityPanel() {
   return (
     <div className="space-y-6">
       {groups.map(({ group, pages }) => (
-        <section key={group} className="admin-card overflow-hidden">
+        <section key={group} className="card overflow-hidden">
           <div
             className="border-b px-5 py-4"
             style={{ borderColor: "var(--border)" }}
@@ -178,7 +178,7 @@ export function PageVisibilityPanel() {
           type="button"
           onClick={() => void handleSave()}
           disabled={isSaving || !dirty}
-          className="admin-btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm disabled:opacity-60"
+          className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm disabled:opacity-60"
         >
           {isSaving ? (
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden />

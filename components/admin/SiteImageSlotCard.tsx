@@ -341,7 +341,7 @@ export function SiteImageSlotCard({
               <input
                 value={altText}
                 onChange={(event) => onAltTextChange(event.target.value)}
-                className="admin-input w-full px-3 py-2"
+                className="input w-full px-3 py-2"
                 placeholder="e.g. Luxury suite with Nile view"
               />
             </label>

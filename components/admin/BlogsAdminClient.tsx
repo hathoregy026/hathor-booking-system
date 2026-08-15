@@ -125,13 +125,17 @@ export function BlogsAdminClient() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <p className="admin-section-label">Content</p>
-        <h1 className="admin-heading mt-1 text-2xl sm:text-3xl">Blog Posts</h1>
-        <p className="admin-subheading mt-2 max-w-2xl">
-          Create, edit, and publish stories for the public blog. Content is stored
-          as HTML.
-        </p>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="admin-page-title">Blog Posts</h1>
+          <p className="admin-page-subtitle max-w-2xl">
+            Create, edit, and publish stories for the public blog. Content is
+            stored as HTML.
+          </p>
+        </div>
+        <ActionButton href="/admin/blogs/new" icon={Plus} className="shrink-0">
+          Create New Post
+        </ActionButton>
       </div>
 
       <DataTable
@@ -140,11 +144,6 @@ export function BlogsAdminClient() {
           isLoading
             ? "Loading posts…"
             : `${posts.length} post${posts.length === 1 ? "" : "s"} in the database`
-        }
-        action={
-          <ActionButton href="/admin/blogs/new" icon={Plus}>
-            Create New Post
-          </ActionButton>
         }
         isEmpty={!isLoading && filtered.length === 0}
         emptyMessage={
@@ -180,7 +179,7 @@ export function BlogsAdminClient() {
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder="Search by title or slug…"
-                  className="admin-input w-full py-2.5 pl-10 pr-3 text-sm"
+                  className="input w-full py-2.5 pl-10 pr-3 text-sm"
                 />
               </label>
             </div>
@@ -214,7 +213,7 @@ export function BlogsAdminClient() {
                         <div className="flex items-center justify-end gap-2">
                           <Link
                             href={`/admin/blogs/${post.id}`}
-                            className="admin-btn-outline inline-flex items-center gap-1.5 px-3 py-2 text-xs"
+                            className="btn-outline inline-flex items-center gap-1.5 px-3 py-2 text-xs"
                           >
                             <Pencil className="h-3.5 w-3.5" aria-hidden />
                             Edit
@@ -223,7 +222,7 @@ export function BlogsAdminClient() {
                             type="button"
                             onClick={() => handleDelete(post)}
                             disabled={isDeleting}
-                            className="admin-btn-outline inline-flex items-center gap-1.5 px-3 py-2 text-xs disabled:opacity-60"
+                            className="btn-outline inline-flex items-center gap-1.5 px-3 py-2 text-xs disabled:opacity-60"
                             style={{
                               borderColor: "color-mix(in srgb, #ef4444 35%, var(--border))",
                               color: "#ef4444",

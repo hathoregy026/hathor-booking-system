@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Loader2, Mail, Save, Send } from "lucide-react";
+import { CmsPageHeader } from "@/components/admin/CmsPageHeader";
 import {
   EmailTemplatePreviewButton,
   EmailTemplatePreviewModal,
@@ -190,45 +191,44 @@ export default function AdminEmailTemplatesPage() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="admin-page-title">Email Templates</h1>
-          <p className="admin-page-subtitle">
-            One shared brand for all automated booking emails
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <EmailTemplatePreviewButton onClick={() => setPreviewOpen(true)} />
-          <button
-            type="button"
-            onClick={() => void handleSendTest()}
-            disabled={isSendingTest}
-            className="admin-btn-outline inline-flex items-center gap-2 px-4 py-2 text-sm disabled:opacity-60"
-          >
-            {isSendingTest ? (
-              <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-            ) : (
-              <Send className="h-4 w-4" aria-hidden />
-            )}
-            Send test email
-          </button>
-          <button
-            type="button"
-            onClick={() => void handleSaveAll()}
-            disabled={isSaving}
-            className="admin-btn-primary inline-flex items-center gap-2 px-4 py-2 text-sm disabled:opacity-60"
-          >
-            {isSaving ? (
-              <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-            ) : (
-              <Save className="h-4 w-4" aria-hidden />
-            )}
-            Save all templates
-          </button>
-        </div>
-      </div>
+      <CmsPageHeader
+        title="Email Templates"
+        description="One shared brand for all automated booking emails"
+        icon={Mail}
+        action={
+          <div className="flex flex-wrap gap-2">
+            <EmailTemplatePreviewButton onClick={() => setPreviewOpen(true)} />
+            <button
+              type="button"
+              onClick={() => void handleSendTest()}
+              disabled={isSendingTest}
+              className="btn-outline h-10 px-4 text-sm disabled:opacity-60"
+            >
+              {isSendingTest ? (
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+              ) : (
+                <Send className="h-4 w-4" aria-hidden />
+              )}
+              Send test email
+            </button>
+            <button
+              type="button"
+              onClick={() => void handleSaveAll()}
+              disabled={isSaving}
+              className="btn-primary h-10 px-4 text-sm disabled:opacity-60"
+            >
+              {isSaving ? (
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+              ) : (
+                <Save className="h-4 w-4" aria-hidden />
+              )}
+              Save all templates
+            </button>
+          </div>
+        }
+      />
 
-      <section className="admin-card space-y-6 p-4 sm:p-6">
+      <section className="card space-y-6 p-4 sm:p-6">
         <div>
           <h2 className="admin-heading text-lg">Shared branding</h2>
           <p className="mt-1 text-sm" style={{ color: "var(--text-secondary)" }}>
@@ -288,7 +288,7 @@ export default function AdminEmailTemplatesPage() {
                     primaryColor: event.target.value,
                   }))
                 }
-                className="admin-input min-w-0 flex-1 px-3 py-2"
+                className="input min-w-0 flex-1 px-3 py-2"
               />
             </div>
           </label>
@@ -321,14 +321,14 @@ export default function AdminEmailTemplatesPage() {
                     backgroundColor: event.target.value,
                   }))
                 }
-                className="admin-input min-w-0 flex-1 px-3 py-2"
+                className="input min-w-0 flex-1 px-3 py-2"
               />
             </div>
           </label>
         </div>
       </section>
 
-      <section className="admin-card p-4 sm:p-6">
+      <section className="card p-4 sm:p-6">
         <div className="mb-4 flex flex-wrap gap-2 border-b pb-4" style={{ borderColor: "var(--border)" }}>
           {EMAIL_TEMPLATE_NAMES.map((name) => (
             <button
@@ -337,8 +337,8 @@ export default function AdminEmailTemplatesPage() {
               onClick={() => setActiveTab(name)}
               className={
                 activeTab === name
-                  ? "admin-btn-primary px-4 py-2 text-sm"
-                  : "admin-btn-outline px-4 py-2 text-sm"
+                  ? "btn-primary px-4 py-2 text-sm"
+                  : "btn-outline px-4 py-2 text-sm"
               }
             >
               {TEMPLATE_META[name].label}
@@ -364,7 +364,7 @@ export default function AdminEmailTemplatesPage() {
                 onChange={(event) =>
                   updateCopy(activeCopy.name, { subject: event.target.value })
                 }
-                className="admin-input w-full px-3 py-2"
+                className="input w-full px-3 py-2"
               />
               <span
                 className="mt-1 block text-xs"
@@ -386,7 +386,7 @@ export default function AdminEmailTemplatesPage() {
                 onChange={(event) =>
                   updateCopy(activeCopy.name, { heroHeading: event.target.value })
                 }
-                className="admin-input w-full px-3 py-2"
+                className="input w-full px-3 py-2"
                 placeholder="Thank You, {guestName}"
               />
             </label>
@@ -404,7 +404,7 @@ export default function AdminEmailTemplatesPage() {
                   updateCopy(activeCopy.name, { bodyText: event.target.value })
                 }
                 rows={5}
-                className="admin-input w-full px-3 py-2"
+                className="input w-full px-3 py-2"
               />
             </label>
           </div>
@@ -412,7 +412,7 @@ export default function AdminEmailTemplatesPage() {
       </section>
 
       <div
-        className="admin-card flex items-center gap-3 p-4 text-sm"
+        className="card flex items-center gap-3 p-4 text-sm"
         style={{ color: "var(--text-secondary)" }}
       >
         <Mail className="h-4 w-4 shrink-0" aria-hidden />

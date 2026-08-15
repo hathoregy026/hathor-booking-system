@@ -86,7 +86,7 @@ function Field({
       </span>
       {multiline ? (
         <textarea
-          className="admin-input wt-field__input"
+          className="input wt-field__input"
           value={value}
           rows={rows}
           placeholder={placeholder}
@@ -94,7 +94,7 @@ function Field({
         />
       ) : (
         <input
-          className="admin-input wt-field__input"
+          className="input wt-field__input"
           value={value}
           placeholder={placeholder}
           onChange={(e) => onChange(e.target.value)}

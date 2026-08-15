@@ -22,7 +22,7 @@ export function DataTable({
   children,
 }: DataTableProps) {
   return (
-    <div className="admin-card overflow-hidden">
+    <div className="card overflow-hidden">
       {(title || action) && (
         <div
           className="flex flex-col gap-3 px-4 py-4 sm:px-6 sm:py-5 md:flex-row md:items-center md:justify-between"

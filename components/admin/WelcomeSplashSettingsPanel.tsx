@@ -193,7 +193,7 @@ export function WelcomeSplashSettingsPanel() {
           type="button"
           onClick={() => void handleSaveWelcomeSplash()}
           disabled={isSaving || !welcomeDirty}
-          className="admin-btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm disabled:opacity-60"
+          className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm disabled:opacity-60"
         >
           {isSaving ? (
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden />

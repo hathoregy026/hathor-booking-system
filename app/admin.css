@@ -3413,3 +3413,78 @@ textarea.wt-field__input {
     padding-left: 16rem;
   }
 }
+
+/* Align legacy CMS chrome with new shell utilities (logic unchanged). */
+.admin-shell .admin-card {
+  border-radius: 1rem;
+  background: var(--bg-glass);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.admin-shell .admin-input {
+  border-radius: 0.5rem;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.admin-shell .admin-btn-primary {
+  border-radius: 0.5rem;
+  text-transform: none;
+  letter-spacing: normal;
+  background: var(--accent);
+  color: #1a1a1a;
+  border: 1px solid color-mix(in srgb, var(--accent) 70%, #000);
+  box-shadow: none;
+}
+
+.admin-shell .admin-btn-primary:hover:not(:disabled) {
+  filter: brightness(1.05);
+  transform: none;
+  box-shadow: none;
+}
+
+.admin-shell .admin-btn-outline {
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  background: transparent;
+}
+
+.admin-shell .admin-btn-outline:hover {
+  background: var(--bg-glass-hover);
+  border-color: var(--accent);
+  transform: none;
+}
+
+/* BEM variants used by Website Text / Typography / Hero Logo panels */
+.admin-shell .admin-btn.admin-btn--primary,
+.admin-shell .admin-btn--primary {
+  border-radius: 0.5rem;
+  text-transform: none;
+  letter-spacing: normal;
+  background: var(--accent);
+  color: #1a1a1a;
+  border: 1px solid color-mix(in srgb, var(--accent) 70%, #000);
+  box-shadow: none;
+}
+
+.admin-shell .admin-btn.admin-btn--primary:hover:not(:disabled),
+.admin-shell .admin-btn--primary:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+
+.admin-shell .admin-btn.admin-btn--ghost,
+.admin-shell .admin-btn--ghost {
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.admin-shell .admin-btn.admin-btn--ghost:hover:not(:disabled),
+.admin-shell .admin-btn--ghost:hover:not(:disabled) {
+  background: var(--bg-glass-hover);
+  color: var(--text-primary);
+}

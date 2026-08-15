@@ -117,7 +117,7 @@ export function EmailTemplatePreviewModal({
                 type="button"
                 onClick={() => setViewport("desktop")}
                 className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
-                  viewport === "desktop" ? "admin-btn-primary" : ""
+                  viewport === "desktop" ? "btn-primary" : ""
                 }`}
                 style={
                   viewport !== "desktop"
@@ -132,7 +132,7 @@ export function EmailTemplatePreviewModal({
                 type="button"
                 onClick={() => setViewport("mobile")}
                 className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
-                  viewport === "mobile" ? "admin-btn-primary" : ""
+                  viewport === "mobile" ? "btn-primary" : ""
                 }`}
                 style={
                   viewport !== "mobile"
@@ -167,7 +167,7 @@ export function EmailTemplatePreviewModal({
                 type="button"
                 onClick={() => setActiveName(name)}
                 className={`shrink-0 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                  activeName === name ? "admin-btn-primary" : "admin-btn-outline"
+                  activeName === name ? "btn-primary" : "btn-outline"
                 }`}
               >
                 {TEMPLATE_LABELS[name]}
@@ -229,7 +229,7 @@ export function EmailTemplatePreviewButton({
     <button
       type="button"
       onClick={onClick}
-      className="admin-btn-outline inline-flex w-full items-center justify-center gap-2 px-4 py-2.5 text-sm sm:w-auto"
+      className="btn-outline inline-flex w-full items-center justify-center gap-2 px-4 py-2.5 text-sm sm:w-auto"
     >
       <Eye className="h-4 w-4" aria-hidden />
       Preview Emails

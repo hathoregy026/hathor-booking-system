@@ -121,11 +121,8 @@ export function StorageAnalyzePanel() {
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="admin-section-label">Analyze</p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight">
-            Storage
-          </h1>
-          <p className="mt-1 max-w-2xl text-sm" style={{ color: "var(--text-muted)" }}>
+          <h1 className="admin-page-title">Storage</h1>
+          <p className="admin-page-subtitle max-w-2xl">
             Read-only inventory of local public assets, cloud uploads, and
             website text payload sizes. The Live site filter totals only cloud
             and database content referenced by the live CMS — local files are
@@ -145,7 +142,7 @@ export function StorageAnalyzePanel() {
 
       {error ? (
         <div
-          className="admin-card px-4 py-3 text-sm"
+          className="card px-4 py-3 text-sm"
           style={{
             borderColor: "rgba(248, 113, 113, 0.35)",
             color: "#fca5a5",
@@ -156,7 +153,7 @@ export function StorageAnalyzePanel() {
       ) : null}
 
       {report?.warnings?.length ? (
-        <div className="admin-card space-y-1 px-4 py-3 text-sm" style={{ color: "var(--text-muted)" }}>
+        <div className="card space-y-1 px-4 py-3 text-sm text-muted">
           {report.warnings.map((warning) => (
             <p key={warning}>{warning}</p>
           ))}
@@ -196,7 +193,7 @@ export function StorageAnalyzePanel() {
         />
       </div>
 
-      <div className="admin-card p-4 sm:p-5">
+      <div className="card p-4 sm:p-5">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-wrap gap-2">
             {FILTERS.map((item) => {
@@ -244,7 +241,7 @@ export function StorageAnalyzePanel() {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search path, name, extension…"
-              className="admin-input w-full py-2 pl-10 pr-3 text-sm"
+              className="input w-full py-2 pl-10 pr-3 text-sm"
               aria-label="Search storage files"
             />
           </div>
@@ -281,7 +278,7 @@ export function StorageAnalyzePanel() {
         ) : null}
       </div>
 
-      <div className="admin-card overflow-hidden">
+      <div className="card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full text-left text-sm">
             <thead>

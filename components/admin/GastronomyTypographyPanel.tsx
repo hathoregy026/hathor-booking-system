@@ -149,7 +149,7 @@ export function GastronomyTypographyPanel() {
           >{active.sample}</p>
           <p className="typo-easy__stage-meta">Font: {style.fontFamily} · Size: {style.fontSize}px · Colour: {style.color}</p>
         </div>
-        <div className="typo-easy__controls admin-card">
+        <div className="typo-easy__controls card">
           <label className="typo-easy__field"><span>Font</span>
             <select className="admin-input" value={style.fontFamily} onChange={(e) => patch(active.key, { fontFamily: e.target.value as TypographyTextStyle["fontFamily"] })}>
               {HATHOR_LUXURY_FONTS.map((font) => <option key={font} value={font}>{font}</option>)}

@@ -692,7 +692,7 @@ export function TypographyStylesPanel() {
                   </button>
 
                   {on ? (
-                    <div className="typo-easy__controls admin-card">
+                    <div className="typo-easy__controls card">
         <SimpleField label="Font">
           <div className="typo-easy__font-dd" ref={fontMenuRef}>
             <button

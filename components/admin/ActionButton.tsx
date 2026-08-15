@@ -24,7 +24,7 @@ export function ActionButton({
   disabled = false,
 }: ActionButtonProps) {
   const baseClass =
-    variant === "primary" ? "admin-btn-primary" : "admin-btn-outline";
+    variant === "primary" ? "btn-primary" : "btn-outline";
   const classes = `inline-flex items-center justify-center gap-2 text-sm ${baseClass} ${className} disabled:cursor-not-allowed disabled:opacity-60`;
 
   const content = (

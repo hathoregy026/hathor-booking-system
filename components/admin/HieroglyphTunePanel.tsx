@@ -224,16 +224,7 @@ export function HieroglyphTunePanel() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="admin-page-title">Background Glyphs</h1>
-        <p className="admin-page-subtitle max-w-2xl">
-          Control the cream-page hieroglyph pattern opacity and tile size. Day
-          and night each have their own transparency; size is shared across
-          themes with a separate phone size.
-        </p>
-      </div>
-
-      <div className="admin-card space-y-8 p-6">
+      <div className="card space-y-8 p-5 sm:p-6">
         {loading ? (
           <div
             className="flex items-center gap-2 text-sm"
@@ -261,8 +252,8 @@ export function HieroglyphTunePanel() {
               onClick={() => patch({ enabled: !tune.enabled })}
               className={
                 tune.enabled
-                  ? "admin-btn-primary inline-flex items-center gap-2 px-4 py-2.5 text-sm disabled:opacity-60"
-                  : "admin-btn-outline inline-flex items-center gap-2 px-4 py-2.5 text-sm disabled:opacity-60"
+                  ? "btn-primary inline-flex items-center gap-2 px-4 py-2.5 text-sm disabled:opacity-60"
+                  : "btn-outline inline-flex items-center gap-2 px-4 py-2.5 text-sm disabled:opacity-60"
               }
             >
               {tune.enabled ? (
@@ -364,7 +355,7 @@ export function HieroglyphTunePanel() {
         <div className="flex flex-wrap gap-3 pt-2">
           <button
             type="button"
-            className="admin-btn-primary inline-flex items-center gap-2 px-4 py-2.5 text-sm disabled:opacity-60"
+            className="btn-primary inline-flex items-center gap-2 px-4 py-2.5 text-sm disabled:opacity-60"
             disabled={saving || loading}
             onClick={() => void save()}
           >
@@ -377,7 +368,7 @@ export function HieroglyphTunePanel() {
           </button>
           <button
             type="button"
-            className="admin-btn-outline inline-flex items-center gap-2 px-4 py-2.5 text-sm disabled:opacity-60"
+            className="btn-outline inline-flex items-center gap-2 px-4 py-2.5 text-sm disabled:opacity-60"
             disabled={saving || !dirty}
             onClick={() => setTune(saved)}
           >
@@ -386,7 +377,7 @@ export function HieroglyphTunePanel() {
           </button>
           <button
             type="button"
-            className="admin-btn-outline inline-flex items-center gap-2 px-4 py-2.5 text-sm disabled:opacity-60"
+            className="btn-outline inline-flex items-center gap-2 px-4 py-2.5 text-sm disabled:opacity-60"
             disabled={saving || loading}
             onClick={() => setTune(DEFAULT_HIEROGLYPH_TUNE)}
           >
@@ -397,7 +388,7 @@ export function HieroglyphTunePanel() {
             href={`/?t=${Date.now()}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="admin-btn-outline inline-flex items-center gap-2 px-4 py-2.5 text-sm"
+            className="btn-outline inline-flex items-center gap-2 px-4 py-2.5 text-sm"
           >
             <ExternalLink className="h-4 w-4" aria-hidden />
             Open homepage

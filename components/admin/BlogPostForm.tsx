@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { ActionButton } from "@/components/admin/ActionButton";
+import { CmsPageHeader } from "@/components/admin/CmsPageHeader";
 import { useToast } from "@/components/admin/ToastProvider";
 import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
 import { slugifyBlogTitle } from "@/lib/blog-slug";
@@ -173,7 +174,7 @@ export function BlogPostForm(props: BlogPostFormProps) {
         <p className="admin-subheading">
           This post could not be loaded. The database may be busy — try again.
         </p>
-        <Link href="/admin/blogs" className="admin-btn-outline inline-block px-4 py-2.5 text-sm">
+        <Link href="/admin/blogs" className="btn-outline inline-block px-4 py-2.5 text-sm">
           Back to all posts
         </Link>
       </div>
@@ -182,17 +183,12 @@ export function BlogPostForm(props: BlogPostFormProps) {
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
-      <div>
-        <p className="admin-section-label">Blog</p>
-        <h1 className="admin-heading mt-1 text-2xl sm:text-3xl">
-          {mode === "create" ? "Create New Post" : "Edit Post"}
-        </h1>
-        <p className="admin-subheading mt-2">
-          Paste or edit HTML directly in the content field.
-        </p>
-      </div>
+      <CmsPageHeader
+        title={mode === "create" ? "Create New Post" : "Edit Post"}
+        description="Paste or edit HTML directly in the content field."
+      />
 
-      <form onSubmit={handleSubmit} className="admin-card space-y-6 p-4 sm:p-6">
+      <form onSubmit={handleSubmit} className="card space-y-6 p-4 sm:p-6">
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="sm:col-span-2">
             <label htmlFor="title" className="admin-section-label mb-2 block">
@@ -206,7 +202,7 @@ export function BlogPostForm(props: BlogPostFormProps) {
               maxLength={300}
               value={title}
               onChange={(event) => handleTitleChange(event.target.value)}
-              className="admin-input w-full px-3 py-2.5 text-sm"
+              className="input w-full px-3 py-2.5 text-sm"
             />
           </div>
 
@@ -225,9 +221,9 @@ export function BlogPostForm(props: BlogPostFormProps) {
                 setSlug(event.target.value);
               }}
               placeholder="auto-generated-from-title"
-              className="admin-input w-full px-3 py-2.5 font-mono text-sm"
+              className="input w-full px-3 py-2.5 font-mono text-sm"
             />
-            <p className="mt-2 text-xs" style={{ color: "var(--text-muted)" }}>
+            <p className="mt-2 text-xs text-muted">
               Lowercase letters, numbers, and hyphens only. Leave blank to
               auto-generate from the title.
             </p>
@@ -245,7 +241,7 @@ export function BlogPostForm(props: BlogPostFormProps) {
               maxLength={2000}
               value={excerpt}
               onChange={(event) => setExcerpt(event.target.value)}
-              className="admin-input w-full resize-y px-3 py-2.5 text-sm"
+              className="input w-full resize-y px-3 py-2.5 text-sm"
             />
           </div>
 
@@ -260,7 +256,7 @@ export function BlogPostForm(props: BlogPostFormProps) {
               maxLength={500000}
               value={content}
               onChange={(event) => setContent(event.target.value)}
-              className="admin-input w-full resize-y px-3 py-2.5 font-mono text-xs leading-relaxed sm:text-sm"
+              className="input w-full resize-y px-3 py-2.5 font-mono text-xs leading-relaxed sm:text-sm"
               placeholder="<h2>Your article HTML…</h2>"
             />
           </div>
@@ -279,7 +275,7 @@ export function BlogPostForm(props: BlogPostFormProps) {
               required
               value={publishedAt}
               onChange={(event) => setPublishedAt(event.target.value)}
-              className="admin-input w-full px-3 py-2.5 text-sm"
+              className="input w-full px-3 py-2.5 text-sm"
             />
           </div>
         </div>
@@ -288,7 +284,7 @@ export function BlogPostForm(props: BlogPostFormProps) {
           className="flex flex-col-reverse gap-3 border-t pt-5 sm:flex-row sm:justify-end"
           style={{ borderColor: "var(--border)" }}
         >
-          <Link href="/admin/blogs" className="admin-btn-outline px-4 py-2.5 text-center text-sm">
+          <Link href="/admin/blogs" className="btn-outline px-4 py-2.5 text-center text-sm">
             Cancel
           </Link>
           <ActionButton type="submit" disabled={isPending} className="px-5 py-2.5">

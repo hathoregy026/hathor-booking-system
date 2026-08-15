@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ChevronDown, Loader2, Save } from "lucide-react";
+import { ChevronDown, ImageIcon, Loader2, Save } from "lucide-react";
+import { CmsPageHeader } from "@/components/admin/CmsPageHeader";
 import { SiteImageSlotCard } from "@/components/admin/SiteImageSlotCard";
 import { useToast } from "@/components/admin/ToastProvider";
 import { adminFetch } from "@/lib/admin-fetch";
@@ -330,19 +331,12 @@ export default function AdminContentPage() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-10 sm:space-y-12">
+      <CmsPageHeader
+        title="Website Images"
+        description="Named photo slots the public site reads. Uploads publish to the live site immediately. Page wording is edited under Website Text."
+        icon={ImageIcon}
+      />
       <div id="site-images" className="site-images-cms space-y-5">
-        <div>
-          <h1 className="admin-heading text-xl">Website Images</h1>
-          <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
-            Choose a tab below, then replace any photo. Uploads publish to the
-            live site immediately. Page wording is edited separately under{" "}
-            <a href="/admin/website-text" className="admin-inline-link">
-              Website Text
-            </a>
-            .
-          </p>
-        </div>
-
         <div className="site-images-tabs" role="tablist" aria-label="Choose a page">
           {SITE_IMAGE_GROUPS.map((group) => {
             const isActive = openImageGroup === group.pagePath;
@@ -381,7 +375,7 @@ export default function AdminContentPage() {
           return (
             <section
               key={group.pagePath}
-              className={`site-image-group admin-card overflow-hidden${isOpen ? " is-open" : ""}`}
+              className={`site-image-group card overflow-hidden${isOpen ? " is-open" : ""}`}
               hidden={!isOpen}
               aria-labelledby={headingId}
             >

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import {
   Aperture,
+  ArrowUpRight,
   FileText,
   Globe,
   HardDrive,
@@ -39,6 +40,8 @@ export default function AdminCmsHubPage() {
         </p>
       </div>
 
+      <div className="gold-hairline" />
+
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {ADMIN_CMS_LINKS.map((link) => {
           const Icon = CMS_ICONS[link.href] ?? FileText;
@@ -46,27 +49,35 @@ export default function AdminCmsHubPage() {
             <Link
               key={link.href}
               href={link.href}
-              className="card card-hover group flex flex-col gap-3 p-5"
+              className="card card-hover group flex flex-col gap-4 p-5"
             >
-              <span
-                className="flex h-10 w-10 items-center justify-center rounded-xl"
-                style={{
-                  background: "color-mix(in srgb, var(--accent) 16%, transparent)",
-                  color: "var(--accent)",
-                }}
-              >
-                <Icon className="h-5 w-5" strokeWidth={1.9} aria-hidden />
-              </span>
-              <div>
+              <div className="flex items-start justify-between gap-3">
+                <span
+                  className="flex h-10 w-10 items-center justify-center rounded-xl"
+                  style={{
+                    background:
+                      "color-mix(in srgb, var(--accent) 16%, transparent)",
+                    color: "var(--accent)",
+                  }}
+                >
+                  <Icon className="h-5 w-5" strokeWidth={1.9} aria-hidden />
+                </span>
+                <ArrowUpRight
+                  className="h-4 w-4 shrink-0 text-muted transition-colors group-hover:text-[var(--accent)]"
+                  aria-hidden
+                />
+              </div>
+              <div className="min-w-0">
                 <p className="font-semibold tracking-tight">{link.label}</p>
                 <p className="mt-1 text-sm text-muted">{link.description}</p>
               </div>
-              <p
-                className="mt-auto pt-1 text-xs font-medium"
+              <div className="gold-hairline mt-auto" />
+              <span
+                className="text-xs font-semibold tracking-wide"
                 style={{ color: "var(--accent)" }}
               >
-                Open
-              </p>
+                Open editor
+              </span>
             </Link>
           );
         })}

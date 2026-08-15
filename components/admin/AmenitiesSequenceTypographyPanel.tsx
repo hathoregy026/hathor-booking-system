@@ -877,7 +877,7 @@ export function AmenitiesSequenceTypographyPanel() {
           </p>
         </div>
 
-        <div className="typo-easy__controls admin-card">
+        <div className="typo-easy__controls card">
           {active.mode === "copy" && active.target.kind === "slide" ? (
             <>
               <label className="typo-easy__field">
