@@ -15,9 +15,9 @@ const smooth = (value: number) => {
 /**
  * Springs-style Suites flow: horizontal accommodation rail + sticky editorial chapters.
  *
- * Critical: scrub must start while the section is entering the viewport
- * (`start: "top bottom"`), so content is already visible by the time sticky locks.
- * Starting at `"top top"` with enter=0 left users stuck on blank cream runways.
+ * Each sticky story starts at `top top` and finishes at `bottom bottom`.
+ * Its first frame is already visible at progress 0, so no scene advances before
+ * it owns the viewport and no copy disappears before the sticky lock releases.
  */
 export function useSuitesSpringsFlow(
   rootRef: RefObject<HTMLElement | null>,
@@ -64,14 +64,17 @@ export function useSuitesSpringsFlow(
         : [];
       if (collection && portals && portalItems.length) {
         const setCollection = (progress: number) => {
+          // Hold the first and final accommodation briefly at each end.
+          const travelProgress = smooth(clamp((progress - 0.07) / 0.86));
           const maxTravel = Math.max(
             0,
             portals.scrollWidth - window.innerWidth + window.innerWidth * 0.08,
           );
-          gsap.set(portals, { x: -maxTravel * smooth(progress), force3D: true });
+          gsap.set(portals, { x: -maxTravel * travelProgress, force3D: true });
           portalItems.forEach((item, index) => {
-            // Settle across most of the runway so each door can be read.
-            const local = smooth(clamp(progress * 1.25 - index * 0.16));
+            const local = smooth(
+              clamp((progress - (0.02 + index * 0.1)) / 0.22),
+            );
             gsap.set(item, {
               y: `${(1 - local) * (index % 2 ? 4 : 7)}vh`,
               rotate: (1 - local) * (index - 1) * 0.6,
@@ -81,12 +84,11 @@ export function useSuitesSpringsFlow(
 
         const collectionTrigger = ScrollTrigger.create({
           trigger: collection,
-          // Reveal / settle while the section approaches, not after sticky locks.
-          start: "top bottom",
+          start: "top top",
           end: "bottom bottom",
-          scrub: 1.15,
           invalidateOnRefresh: true,
           onUpdate: (self) => setCollection(self.progress),
+          onRefresh: (self) => setCollection(self.progress),
         });
         setCollection(collectionTrigger.progress);
       }
@@ -106,27 +108,27 @@ export function useSuitesSpringsFlow(
         const direction = chapter.dataset.snSlide;
 
         const setChapter = (progress: number) => {
-          // 0.00–0.12: first frame and copy enter
-          // 0.36–0.54: second stacked image covers and holds
-          // 0.64–0.82: third stacked image covers and holds
-          // 0.93–1.00: soft exit
-          const enter = smooth(clamp(progress / 0.12));
-          // Soft exit only at the very end of the runway.
-          const exit = smooth(clamp((progress - 0.93) / 0.07));
-          const copyVisible = Math.max(0, enter - exit);
+          // Three-image chapters: first holds to 26%, second reveals 26–38%
+          // and holds to 62%, third reveals 62–74% and remains through release.
+          // Single-image chapters remain fully composed for their whole runway.
+          const revealWindows = [
+            [0, 0],
+            [0.26, 0.38],
+            [0.62, 0.74],
+          ] as const;
 
           frames.forEach((frame, index) => {
-            const delayed =
-              frames.length > 1
-                ? index === 0
-                  ? enter
-                  : smooth(
-                      clamp(
-                        (progress - (0.08 + index * 0.28)) / 0.18,
-                      ),
-                    )
-                : enter;
-            const hidden = (1 - delayed) * 100;
+            const revealWindow = revealWindows[index] ?? [0.72, 0.84];
+            const reveal =
+              index === 0 || frames.length === 1
+                ? 1
+                : smooth(
+                    clamp(
+                      (progress - revealWindow[0]) /
+                        (revealWindow[1] - revealWindow[0]),
+                    ),
+                  );
+            const hidden = (1 - reveal) * 100;
             const clipPath =
               direction === "from-left"
                 ? `inset(0% ${hidden}% 0% 0%)`
@@ -135,42 +137,42 @@ export function useSuitesSpringsFlow(
                   : `inset(0% 0% 0% ${hidden}%)`;
             gsap.set(frame, {
               clipPath,
-              autoAlpha: delayed,
+              autoAlpha: reveal,
               xPercent:
                 direction === "from-right"
-                  ? (1 - delayed) * 10
+                  ? (1 - reveal) * 6
                   : direction === "from-left"
-                    ? (delayed - 1) * 10
+                    ? (reveal - 1) * 6
                     : 0,
-              yPercent: direction === "from-bottom" ? (1 - delayed) * 8 : 0,
+              yPercent: direction === "from-bottom" ? (1 - reveal) * 5 : 0,
             });
           });
 
           images.forEach((image, index) => {
-            const phase = smooth(clamp(progress * 1.05 - index * 0.18));
+            const imageStart = index === 0 ? 0 : (revealWindows[index]?.[0] ?? 0.7);
+            const phase = smooth(clamp((progress - imageStart) / (1 - imageStart)));
             gsap.set(image, {
-              scale: 1.08 - phase * 0.06,
-              yPercent: (0.5 - progress) * (index % 2 ? -2.5 : 2.5),
+              scale: 1.045 - phase * 0.035,
+              yPercent: (0.5 - phase) * (index % 2 ? -1.5 : 1.5),
             });
           });
 
           if (copy) {
             gsap.set(copy, {
-              autoAlpha: copyVisible,
-              xPercent:
-                (1 - enter) * (direction === "from-left" ? 8 : -8) - exit * 6,
-              yPercent: direction === "from-bottom" ? (1 - enter) * 6 : 0,
+              autoAlpha: 1,
+              xPercent: 0,
+              yPercent: 0,
             });
           }
         };
 
         const chapterTrigger = ScrollTrigger.create({
           trigger: chapter,
-          start: "top bottom",
+          start: "top top",
           end: "bottom bottom",
-          scrub: 1.2,
           invalidateOnRefresh: true,
           onUpdate: (self) => setChapter(self.progress),
+          onRefresh: (self) => setChapter(self.progress),
         });
         setChapter(chapterTrigger.progress);
       });

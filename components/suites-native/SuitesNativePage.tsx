@@ -78,6 +78,7 @@ export function SuitesNativePage({ images }: Props) {
         id="suites-unrivaled"
         aria-label="Unrivaled Views"
         data-sn-slide="from-right"
+        data-sn-frames="3"
       >
         <div className="sn-editorial">
           <div className="sn-editorial__copy">
@@ -122,6 +123,7 @@ export function SuitesNativePage({ images }: Props) {
         id="suites-step"
         aria-label="Step Aboard"
         data-sn-slide="from-left"
+        data-sn-frames="1"
       >
         <div className="sn-editorial sn-editorial--reverse">
           <div className="sn-editorial__media-col">
@@ -192,6 +194,7 @@ export function SuitesNativePage({ images }: Props) {
         id="suites-map"
         aria-label="Voyage map"
         data-sn-slide="from-bottom"
+        data-sn-frames="1"
       >
         <div className="sn-map">
           <div className="sn-map__media">
@@ -257,6 +260,7 @@ export function SuitesNativePage({ images }: Props) {
         id="suites-interiors"
         aria-label="Interiors"
         data-sn-slide="from-right"
+        data-sn-frames="3"
       >
         <div className="sn-interiors">
           <div className="sn-interiors__gallery">

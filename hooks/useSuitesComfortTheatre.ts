@@ -34,7 +34,10 @@ export function useSuitesComfortTheatre({
   const triggerRef = useRef<ScrollTrigger | null>(null);
   const indexRef = useRef(0);
   const onIndexChangeRef = useRef(onIndexChange);
-  onIndexChangeRef.current = onIndexChange;
+
+  useEffect(() => {
+    onIndexChangeRef.current = onIndexChange;
+  }, [onIndexChange]);
 
   useEffect(() => {
     const track = trackRef.current;
@@ -70,7 +73,7 @@ export function useSuitesComfortTheatre({
           return;
         }
         gsap.to(layer, {
-          autoAlpha: isActive ? 1 : 0.08,
+          autoAlpha: isActive ? 1 : 0,
           scale: isActive ? 1 : 1.07,
           filter: isActive ? "blur(0px)" : "blur(5px)",
           clipPath: isActive
@@ -79,7 +82,7 @@ export function useSuitesComfortTheatre({
               ? "inset(0% 0% 88% 0%)"
               : "inset(88% 0% 0% 0%)",
           zIndex: isActive ? 3 : isPast ? 1 : 2,
-          duration: 0.85,
+          duration: 1.05,
           ease: "power2.inOut",
           overwrite: "auto",
         });
@@ -90,7 +93,7 @@ export function useSuitesComfortTheatre({
         gsap.fromTo(
           body,
           { autoAlpha: 0, y: 14 },
-          { autoAlpha: 1, y: 0, duration: 0.45, ease: "power2.out" },
+          { autoAlpha: 1, y: 0, duration: 0.65, ease: "power2.out" },
         );
       }
     };
@@ -113,9 +116,13 @@ export function useSuitesComfortTheatre({
         anticipatePin: 1,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
+          const pacedProgress = Math.max(
+            0,
+            Math.min(1, (self.progress - 0.06) / 0.88),
+          );
           const next = Math.min(
             amenityCount - 1,
-            Math.floor(self.progress * amenityCount + 0.001),
+            Math.floor(pacedProgress * amenityCount + 0.001),
           );
           if (next !== indexRef.current) applyIndex(next);
         },
@@ -130,14 +137,17 @@ export function useSuitesComfortTheatre({
     mm.add("(max-width: 1024px)", () => {
       const st = ScrollTrigger.create({
         trigger: track,
-        start: "top 70%",
-        end: "bottom 30%",
-        scrub: 1.2,
+        start: "top top",
+        end: "bottom bottom",
         invalidateOnRefresh: true,
         onUpdate: (self) => {
+          const pacedProgress = Math.max(
+            0,
+            Math.min(1, (self.progress - 0.06) / 0.88),
+          );
           const next = Math.min(
             amenityCount - 1,
-            Math.floor(self.progress * amenityCount + 0.001),
+            Math.floor(pacedProgress * amenityCount + 0.001),
           );
           if (next !== indexRef.current) applyIndex(next);
         },
@@ -158,7 +168,7 @@ export function useSuitesComfortTheatre({
   const goToIndex = (index: number) => {
     const st = triggerRef.current;
     if (st) {
-      const progress = (index + 0.5) / amenityCount;
+      const progress = 0.06 + ((index + 0.5) / amenityCount) * 0.88;
       const y = st.start + (st.end - st.start) * progress;
       window.scrollTo({ top: y, behavior: "smooth" });
       return;

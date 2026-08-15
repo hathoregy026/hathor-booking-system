@@ -39,6 +39,8 @@
 
 .suites-native-shell {
   min-height: 100svh;
+  /* Any non-visible overflow on an ancestor disables the Suites sticky stories. */
+  overflow: visible !important;
   background-color: var(--sn-cream, #ece8df) !important;
   background-image:
     radial-gradient(ellipse 88% 52% at 6% -8%, rgba(182, 159, 100, 0.2), transparent 54%),
@@ -58,6 +60,16 @@ html[data-suites-native] .public-site {
   background-color: var(--sn-cream) !important;
   background-image: var(--sn-page-atmosphere) !important;
   color: var(--sn-on-bg, #b69f64);
+}
+
+/* Keep one scroll container only. A scrolling body traps every nested sticky scene. */
+html[data-suites-native] {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+html[data-suites-native] body {
+  overflow: visible !important;
 }
 
 html[data-suites-native] .public-site::before {
@@ -84,8 +96,7 @@ html[data-suites-native] .suites-native-route {
   color: var(--sn-on-bg);
   font-family: var(--sn-amenities-body-font, "Agraham", Georgia, serif);
   /* overflow-y must stay visible — clip on the page root kills sticky / ScrollTrigger pins */
-  overflow-x: clip;
-  overflow-y: visible;
+  overflow: visible;
 }
 
 .suites-native-preview-banner {
@@ -318,6 +329,7 @@ html[data-suites-native] .suites-native-route {
 
 .sn-section {
   position: relative;
+  min-height: 100svh;
   padding: clamp(3.5rem, 8vw, 6.5rem) var(--sn-inset);
   /* Do not set transform / will-change:transform here — it breaks sticky children */
 }
@@ -326,9 +338,10 @@ html[data-suites-native] .suites-native-route {
 
 .sn-section--collection-intro {
   /* Long enough for the horizontal rail, short enough to avoid a dead sticky slog */
-  height: 340svh;
+  height: 360svh;
   padding: 0;
-  overflow: clip;
+  /* Sticky must resolve against the viewport. The page shell clips horizontal spill. */
+  overflow: visible;
   background:
     radial-gradient(circle at 50% 0%, rgba(182, 159, 100, 0.2), transparent 36rem),
     radial-gradient(ellipse at 88% 80%, rgba(123, 100, 47, 0.07), transparent 42%),
@@ -463,10 +476,15 @@ html[data-suites-native] .suites-native-route {
 }
 
 .sn-springs-chapter {
-  /* Sticky scene layout unchanged — longer runway so each image can be read */
-  height: 320svh;
+  /* A single composition gets one measured hold; stacked scenes get three. */
+  height: 260svh;
   padding: 0;
-  overflow: clip;
+  /* `overflow: clip` breaks sticky positioning in Chromium on these tall chapters. */
+  overflow: visible;
+}
+
+.sn-springs-chapter[data-sn-frames="3"] {
+  height: 420svh;
 }
 
 .sn-springs-chapter > .sn-editorial,
@@ -490,7 +508,7 @@ html[data-suites-native] .suites-native-route {
 .sn-springs-chapter .sn-editorial__media-col,
 .sn-springs-chapter .sn-map__media,
 .sn-springs-chapter .sn-interiors__gallery {
-  height: min(76svh, 50rem);
+  height: min(82svh, 54rem);
 }
 
 .sn-springs-chapter .sn-editorial__media {
@@ -898,7 +916,7 @@ html[data-suites-native] .suites-native-route {
 
 .sn-comfort__track {
   position: relative;
-  height: 520vh;
+  height: 560vh;
 }
 
 .sn-comfort__stage {
@@ -1000,6 +1018,14 @@ html[data-suites-native] .suites-native-route {
   max-width: 42rem;
   margin: 0 auto;
   text-align: center;
+}
+
+.sn-nile,
+#suites-statement,
+#suites-craft {
+  min-height: 100svh;
+  display: grid;
+  align-content: center;
 }
 
 /* ——— Nile / statement / map / craft ——— */
@@ -1369,15 +1395,19 @@ html[data-suites-native] .suites-native-route {
   }
 
   .sn-springs-chapter {
-    height: 260svh;
+    height: 240svh;
+  }
+
+  .sn-springs-chapter[data-sn-frames="3"] {
+    height: 360svh;
   }
 
   .sn-section--collection-intro {
-    height: 300svh;
+    height: 320svh;
   }
 
   .sn-comfort__track {
-    height: 380vh;
+    height: 460vh;
   }
 
   .sn-comfort__stage {
@@ -1434,11 +1464,51 @@ html[data-suites-native] .suites-native-route {
   }
 
   .sn-comfort__track {
-    height: 340vh;
+    height: 420vh;
   }
 
   .sn-comfort__visual {
-    min-height: 42svh;
+    min-height: 0;
+  }
+
+  .sn-comfort__stage {
+    /* Leave the lower booking rail clear while keeping every amenity line visible. */
+    grid-template-rows: 24svh minmax(0, 1fr);
+    overflow: hidden;
+  }
+
+  .sn-comfort__panel {
+    min-height: 0;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    padding: 0.9rem 1.5rem 4.25rem;
+  }
+
+  .sn-comfort__panel .sn-eyebrow {
+    margin: 0;
+  }
+
+  .sn-comfort__panel .sn-display--section {
+    font-size: clamp(2.35rem, 11.5vw, 3rem);
+  }
+
+  .sn-comfort__rail {
+    gap: 0.15rem 0.9rem;
+    margin: 0.2rem 0 0.25rem;
+  }
+
+  .sn-comfort__rail-btn {
+    padding: 0.1rem 0;
+    font-size: 1.25rem;
+    line-height: 1.05;
+  }
+
+  .sn-comfort__body {
+    min-height: 4rem;
+  }
+
+  .sn-comfort__panel .sn-actions {
+    margin-top: 0.15rem;
   }
 
   .sn-mosaic-hero {
@@ -1514,7 +1584,7 @@ html[data-suites-native] .suites-native-route {
   }
 
   .sn-section--collection-intro {
-    height: 280svh;
+    height: 300svh;
   }
 
   .sn-collection__header--opening {
@@ -1528,7 +1598,11 @@ html[data-suites-native] .suites-native-route {
   }
 
   .sn-springs-chapter {
-    height: 240svh;
+    height: 220svh;
+  }
+
+  .sn-springs-chapter[data-sn-frames="3"] {
+    height: 330svh;
   }
 
   .sn-springs-chapter > .sn-editorial,
