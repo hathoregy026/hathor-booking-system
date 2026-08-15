@@ -4,18 +4,18 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   FileText,
+  ImageIcon,
   LayoutDashboard,
+  Layers,
   LogOut,
   Settings,
   Ship,
   Ticket,
+  Type,
   X,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import {
-  isAdminCmsPath,
-  isAdminInventoryPath,
-} from "@/lib/admin-nav";
+import { isAdminInventoryPath } from "@/lib/admin-nav";
 import { HathorLogo } from "./HathorLogo";
 
 type NavItem = { href: string; label: string; icon: LucideIcon };
@@ -24,7 +24,10 @@ const NAV: NavItem[] = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/bookings", label: "Bookings", icon: Ticket },
   { href: "/admin/cruises", label: "Cruises", icon: Ship },
-  { href: "/admin/cms", label: "CMS", icon: FileText },
+  { href: "/admin/website-text", label: "Website Text", icon: FileText },
+  { href: "/admin/typography", label: "Typography", icon: Type },
+  { href: "/admin/content", label: "Website Images", icon: ImageIcon },
+  { href: "/admin/cms", label: "CMS", icon: Layers },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
@@ -35,8 +38,11 @@ type SidebarProps = {
 
 function isActive(pathname: string, href: string) {
   if (href === "/admin") return pathname === "/admin";
-  if (href === "/admin/cms") return isAdminCmsPath(pathname);
   if (href === "/admin/cruises") return isAdminInventoryPath(pathname);
+  if (href === "/admin/cms") return pathname === "/admin/cms";
+  if (href === "/admin/content") {
+    return pathname === "/admin/content" || pathname.startsWith("/admin/images");
+  }
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
