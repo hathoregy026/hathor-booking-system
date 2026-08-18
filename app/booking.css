@@ -2963,9 +2963,12 @@
 }
 
 
-/* Step 1 — reference-matched palace voyage composition. */
+/* Step 1 — keep the booking gold stripe visible above the voyage still. */
 .hathor-booking-flow--voyage .hathor-checkout-chrome {
-  display: none;
+  display: block;
+  position: relative;
+  z-index: 40;
+  margin-bottom: 0;
 }
 
 .booking-page:has(.hathor-booking-flow--voyage) .booking-main {
@@ -2985,7 +2988,7 @@
   box-sizing: border-box;
   flex-direction: column;
   justify-content: flex-start;
-  min-height: 100svh;
+  min-height: calc(100svh - 8.15rem);
   padding: clamp(1.1rem, 2.2vh, 1.7rem) 2rem 2rem;
   display: flex;
   overflow: hidden;
@@ -3465,8 +3468,8 @@
   }
 
   .hathor-voyage-stage__layout {
-    height: calc(100svh - 13.25rem);
-    min-height: 31rem;
+    height: calc(100svh - 21.4rem);
+    min-height: 28rem;
     transform: translateX(3.5rem);
   }
 
@@ -3485,7 +3488,7 @@
 
 @media (min-width: 481px) and (max-width: 1024px) {
   .hathor-voyage-stage {
-    min-height: 100svh;
+    min-height: calc(100svh - 8.15rem);
     padding: 1.5rem 1.25rem 2rem;
     overflow: visible;
   }
@@ -3524,7 +3527,7 @@
 
 @media (max-width: 480px) {
   .hathor-voyage-stage {
-    min-height: 100svh;
+    min-height: calc(100svh - 8.15rem);
     padding: 1.2rem .8rem 2rem;
     overflow: visible;
   }

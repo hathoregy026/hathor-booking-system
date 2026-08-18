@@ -16,7 +16,6 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { HATHOR_ICON_GOLD_SRC } from "@/lib/branding";
 import {
   createDefaultRoomConfigs,
   durationSupportsRoomType,
@@ -237,13 +236,6 @@ export function BookingItineraryFilter({
       </div>
 
       <header className="hathor-voyage-stage__intro">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={HATHOR_ICON_GOLD_SRC}
-          alt=""
-          className="hathor-voyage-stage__crest"
-          draggable={false}
-        />
         <h1 className="hathor-voyage-stage__title">
           Your Voyage, Crafted to Perfection
         </h1>
@@ -254,11 +246,6 @@ export function BookingItineraryFilter({
 
       <div className="hathor-voyage-stage__layout">
         <article className="hathor-voyage-card">
-          <div className="hathor-voyage-card__pin" aria-hidden>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={HATHOR_ICON_GOLD_SRC} alt="" draggable={false} />
-          </div>
-
           <div className="hathor-voyage-card__body">
             <aside className="hathor-voyage-card__rail">
               <div className="hathor-voyage-card__journey">
