@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { Inter, Playfair_Display } from "next/font/google";
+import localFont from "next/font/local";
+import { Inter, Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
 import { BookingPageLayout } from "@/components/booking/BookingPageLayout";
 import { SiteComingSoon } from "@/components/public/SiteComingSoon";
 import { resolveComingSoonForRequest } from "@/lib/live-site-gate";
@@ -20,6 +21,21 @@ const inter = Inter({
   weight: ["300", "400", "500", "600", "700"],
 });
 
+const gamgote = localFont({
+  src: "../../public/fonts/Gamgote-Regular.otf",
+  variable: "--font-hathor-gamgote",
+  display: "swap",
+  weight: "400",
+  style: "normal",
+  declarations: [{ prop: "font-synthesis", value: "none" }],
+});
+
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-hathor-body",
+  weight: ["300", "400", "500", "600", "700"],
+});
+
 export default async function BookingFlowLayout({
   children,
 }: {
@@ -34,7 +50,9 @@ export default async function BookingFlowLayout({
   }
 
   return (
-    <div className={`${playfair.variable} ${inter.variable}`}>
+    <div
+      className={`${playfair.variable} ${inter.variable} ${gamgote.variable} ${plusJakarta.variable}`}
+    >
       <BookingPageLayout>{children}</BookingPageLayout>
     </div>
   );

@@ -204,7 +204,11 @@ export function BookingFlow() {
     stepTitles[checkoutStep as 1 | 2 | 3 | 4] ?? "Your Reservation";
 
   return (
-    <div className="hathor-booking-flow">
+    <div
+      className={`hathor-booking-flow${
+        checkoutStep === 1 ? " hathor-booking-flow--voyage" : ""
+      }`}
+    >
       <ProgressBar
         currentStep={checkoutStep}
         maxReachableStep={maxReachableStep}
@@ -218,18 +222,18 @@ export function BookingFlow() {
         onStepNavigate={handleStepNavigate}
       />
 
-      <header className="hathor-booking-flow__header">
-        <h1 className="booking-serif hathor-booking-flow__title">{activeTitle}</h1>
-        <p className="hathor-booking-flow__subtitle">
-          {checkoutStep === 1
-            ? "Adjust embarkation, rooms, and guests without leaving booking."
-            : checkoutStep === 2
+      {checkoutStep !== 1 ? (
+        <header className="hathor-booking-flow__header">
+          <h1 className="booking-serif hathor-booking-flow__title">{activeTitle}</h1>
+          <p className="hathor-booking-flow__subtitle">
+            {checkoutStep === 2
               ? "Choose your check-in date from available sailings."
               : checkoutStep === 3
                 ? "Choose from available staterooms for your sailing dates."
                 : "Review your reservation and enter guest details to confirm."}
-        </p>
-      </header>
+          </p>
+        </header>
+      ) : null}
 
       {checkoutStep === 1 && duration ? (
         <BookingItineraryFilter

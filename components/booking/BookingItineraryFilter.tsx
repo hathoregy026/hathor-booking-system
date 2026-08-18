@@ -1,19 +1,47 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { BedDouble, CalendarDays, MapPin, Minus, Plus } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  BedDouble,
+  CalendarDays,
+  Clock3,
+  Headphones,
+  Lock,
+  MapPin,
+  Minus,
+  Plus,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
+import { HATHOR_ICON_GOLD_SRC } from "@/lib/branding";
+import { hathorImage } from "@/lib/hathor-media";
 import {
   createDefaultRoomConfigs,
+  durationSupportsRoomType,
+  findStayDurationOption,
+  LUXURY_ROOM_TYPE_OPTIONS,
   normalizeRoomConfigsForDuration,
   STAY_DURATION_OPTIONS,
+  type LuxuryRoomTypeValue,
   type RoomSearchConfig,
   type StayDurationValue,
 } from "@/lib/booking-search-config";
-import { clampRoomSearchConfig } from "@/lib/room-capacity";
+import {
+  clampRoomSearchConfig,
+  getMaxCapacityForLuxuryType,
+} from "@/lib/room-capacity";
 
 const PRIVATE_CHARTER_OPTION = "private-charter" as const;
 const PRIVATE_CHARTER_HREF = "/charter";
+const VOYAGE_STAGE_IMAGE = hathorImage("home-hero-poster");
+
+const TRUST_MARKS = [
+  { label: "Best Rate Guarantee", Icon: ShieldCheck },
+  { label: "Private & Secure Booking", Icon: Lock },
+  { label: "Personal Travel Designer", Icon: Sparkles },
+  { label: "24/7 VIP Assistance", Icon: Headphones },
+] as const;
 
 type BookingItineraryFilterProps = {
   initialDuration: StayDurationValue;
@@ -24,6 +52,26 @@ type BookingItineraryFilterProps = {
   }) => void;
   onCancel: () => void;
 };
+
+function journeyLabel(duration: StayDurationValue): string {
+  if (duration === "3-nights-aswan-luxor") return "Aswan ↔ Luxor";
+  if (duration === "4-nights-luxor-aswan") return "Luxor ↔ Aswan";
+  return "Luxor ↔ Aswan";
+}
+
+function nightsLabel(duration: StayDurationValue): string {
+  const option = findStayDurationOption(duration);
+  if (!option) return "Flexible";
+  return option.label.replace(/^⛵\s*/, "").split(" - ")[0] ?? option.label;
+}
+
+function guestsLabel(rooms: RoomSearchConfig[]): string {
+  const adults = rooms.reduce((sum, room) => sum + room.adults, 0);
+  const children = rooms.reduce((sum, room) => sum + room.children, 0);
+  const adultText = `${adults} ${adults === 1 ? "Adult" : "Adults"}`;
+  if (children <= 0) return adultText;
+  return `${adultText}, ${children} ${children === 1 ? "Child" : "Children"}`;
+}
 
 function CounterField({
   label,
@@ -39,22 +87,22 @@ function CounterField({
   onChange: (next: number) => void;
 }) {
   return (
-    <div className="hathor-booking-filter__counter">
-      <span className="hathor-booking-filter__counter-label">{label}</span>
-      <div className="hathor-booking-filter__counter-controls">
+    <div className="hathor-voyage-counter">
+      <span className="hathor-voyage-counter__label">{label}</span>
+      <div className="hathor-voyage-counter__controls">
         <button
           type="button"
-          className="hathor-booking-filter__counter-btn"
+          className="hathor-voyage-counter__btn"
           onClick={() => onChange(Math.max(min, value - 1))}
           disabled={value <= min}
           aria-label={`Decrease ${label}`}
         >
           <Minus className="h-3.5 w-3.5" aria-hidden strokeWidth={1.75} />
         </button>
-        <span className="hathor-booking-filter__counter-value">{value}</span>
+        <span className="hathor-voyage-counter__value">{value}</span>
         <button
           type="button"
-          className="hathor-booking-filter__counter-btn"
+          className="hathor-voyage-counter__btn"
           onClick={() => onChange(Math.min(max, value + 1))}
           disabled={value >= max}
           aria-label={`Increase ${label}`}
@@ -117,10 +165,23 @@ export function BookingItineraryFilter({
     setRoomCount(count);
     setRoomConfigs((current) => {
       if (count > current.length) {
-        return [...current, ...createDefaultRoomConfigs(count - current.length)];
+        const extras = createDefaultRoomConfigs(count - current.length).map(
+          (room) =>
+            clampRoomSearchConfig({
+              ...room,
+              roomType: current[0]?.roomType ?? room.roomType,
+            }),
+        );
+        return [...current, ...extras];
       }
       return current.slice(0, count);
     });
+  };
+
+  const handleRoomTypeChange = (roomType: LuxuryRoomTypeValue) => {
+    setRoomConfigs((current) =>
+      current.map((room) => clampRoomSearchConfig({ ...room, roomType })),
+    );
   };
 
   const updatePrimaryRoomGuests = (patch: Partial<RoomSearchConfig>) => {
@@ -147,119 +208,312 @@ export function BookingItineraryFilter({
   };
 
   const primaryRoom = roomConfigs[0];
-  const maxGuestsRoom1 = 4;
+  const maxGuestsRoom1 = primaryRoom
+    ? getMaxCapacityForLuxuryType(primaryRoom.roomType)
+    : 4;
+  const roomTypeLabel =
+    LUXURY_ROOM_TYPE_OPTIONS.find(
+      (option) => option.value === primaryRoom?.roomType,
+    )?.label ?? "Select";
+  const accommodationOptions = useMemo(
+    () =>
+      LUXURY_ROOM_TYPE_OPTIONS.filter((option) =>
+        durationSupportsRoomType(duration, option.value),
+      ),
+    [duration],
+  );
 
   return (
-    <section className="hathor-booking-filter" aria-label="Guests and itinerary">
-      <div className="hathor-booking-filter__card">
-        <div className="hathor-booking-filter__field">
-          <label htmlFor="booking-filter-embarkation" className="hathor-booking-filter__label">
-            Embarkation
-          </label>
-          <div className="hathor-booking-filter__control">
-            <MapPin className="hathor-booking-filter__icon" aria-hidden strokeWidth={1.5} />
-            <select
-              id="booking-filter-embarkation"
-              className="hathor-booking-filter__select"
-              value={duration}
-              onChange={(event) => handleEmbarkationChange(event.target.value)}
-            >
-              {STAY_DURATION_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label.replace(/^⛵\s*/, "")}
-                </option>
-              ))}
-              <option value={PRIVATE_CHARTER_OPTION}>Private Charter</option>
-            </select>
-          </div>
-        </div>
+    <section className="hathor-voyage-stage" aria-label="Guests and itinerary">
+      <div className="hathor-voyage-stage__media" aria-hidden>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={VOYAGE_STAGE_IMAGE}
+          alt=""
+          className="hathor-voyage-stage__photo"
+        />
+        <div className="hathor-voyage-stage__veil" />
+      </div>
 
-        <div className="hathor-booking-filter__dates">
-          <div className="hathor-booking-filter__field">
-            <span className="hathor-booking-filter__label">Check-in</span>
-            <p className="hathor-booking-filter__readonly">
-              <CalendarDays
-                className="hathor-booking-filter__icon"
-                aria-hidden
-                strokeWidth={1.5}
-              />
-              <span>Choose your check-in date</span>
-            </p>
-          </div>
-          <div className="hathor-booking-filter__field">
-            <span className="hathor-booking-filter__label">Check-out</span>
-            <p className="hathor-booking-filter__readonly">
-              <CalendarDays
-                className="hathor-booking-filter__icon"
-                aria-hidden
-                strokeWidth={1.5}
-              />
-              <span>Choose your check-out date</span>
-            </p>
-          </div>
-        </div>
+      <header className="hathor-voyage-stage__intro">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={HATHOR_ICON_GOLD_SRC}
+          alt=""
+          className="hathor-voyage-stage__crest"
+          draggable={false}
+        />
+        <h1 className="hathor-voyage-stage__title">
+          Your Voyage, Crafted to Perfection
+        </h1>
+        <p className="hathor-voyage-stage__subtitle">
+          Reserve your private journey on the Nile.
+        </p>
+      </header>
 
-        <div className="hathor-booking-filter__field">
-          <label htmlFor="booking-filter-rooms" className="hathor-booking-filter__label">
-            Rooms
-          </label>
-          <div className="hathor-booking-filter__control">
-            <BedDouble className="hathor-booking-filter__icon" aria-hidden strokeWidth={1.5} />
-            <select
-              id="booking-filter-rooms"
-              className="hathor-booking-filter__select"
-              value={roomCount}
-              onChange={(event) => handleRoomCountChange(Number(event.target.value))}
-            >
-              {[1, 2, 3, 4].map((count) => (
-                <option key={count} value={count}>
-                  {count} {count === 1 ? "Room" : "Rooms"}
-                </option>
-              ))}
-            </select>
+      <div className="hathor-voyage-stage__layout">
+        <article className="hathor-voyage-card">
+          <div className="hathor-voyage-card__pin" aria-hidden>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={HATHOR_ICON_GOLD_SRC} alt="" draggable={false} />
           </div>
-        </div>
 
-        {primaryRoom ? (
-          <div className="hathor-booking-filter__guests">
-            <CounterField
-              label="Adults"
-              value={primaryRoom.adults}
-              min={1}
-              max={Math.max(1, maxGuestsRoom1 - primaryRoom.children)}
-              onChange={(adults) => updatePrimaryRoomGuests({ adults })}
-            />
-            <CounterField
-              label="Children"
-              value={primaryRoom.children}
-              min={0}
-              max={Math.max(0, maxGuestsRoom1 - primaryRoom.adults)}
-              onChange={(children) => updatePrimaryRoomGuests({ children })}
-            />
+          <div className="hathor-voyage-card__body">
+            <aside className="hathor-voyage-card__rail">
+              <div className="hathor-voyage-card__rail-item">
+                <MapPin strokeWidth={1.5} aria-hidden />
+                <div>
+                  <p className="hathor-voyage-card__rail-label">Your Journey</p>
+                  <p className="hathor-voyage-card__rail-value">
+                    {journeyLabel(duration)}
+                  </p>
+                </div>
+              </div>
+              <div className="hathor-voyage-card__rail-item">
+                <Clock3 strokeWidth={1.5} aria-hidden />
+                <div>
+                  <p className="hathor-voyage-card__rail-label">Duration</p>
+                  <p className="hathor-voyage-card__rail-value">
+                    {nightsLabel(duration)}
+                  </p>
+                </div>
+              </div>
+              <div className="hathor-voyage-card__rail-item">
+                <CalendarDays strokeWidth={1.5} aria-hidden />
+                <div>
+                  <p className="hathor-voyage-card__rail-label">Flexible Dates</p>
+                  <p className="hathor-voyage-card__rail-copy">
+                    Choose your preferred window, then confirm sailing dates on
+                    the next step.
+                  </p>
+                </div>
+              </div>
+            </aside>
+
+            <div className="hathor-voyage-card__form">
+              <div className="hathor-voyage-card__dates">
+                <div className="hathor-voyage-field">
+                  <span className="hathor-voyage-field__label">
+                    Preferred Check-in Window
+                  </span>
+                  <p className="hathor-voyage-field__readonly">
+                    <CalendarDays
+                      className="hathor-voyage-field__icon"
+                      aria-hidden
+                      strokeWidth={1.5}
+                    />
+                    <span>Choose your check-in date</span>
+                  </p>
+                </div>
+                <div className="hathor-voyage-field">
+                  <span className="hathor-voyage-field__label">
+                    Preferred Check-out Window
+                  </span>
+                  <p className="hathor-voyage-field__readonly">
+                    <CalendarDays
+                      className="hathor-voyage-field__icon"
+                      aria-hidden
+                      strokeWidth={1.5}
+                    />
+                    <span>Choose your check-out date</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="hathor-voyage-card__pair">
+                <div className="hathor-voyage-field">
+                  <label
+                    htmlFor="booking-filter-embarkation"
+                    className="hathor-voyage-field__label"
+                  >
+                    Itinerary
+                  </label>
+                  <div className="hathor-voyage-field__control">
+                    <MapPin
+                      className="hathor-voyage-field__icon"
+                      aria-hidden
+                      strokeWidth={1.5}
+                    />
+                    <select
+                      id="booking-filter-embarkation"
+                      className="hathor-voyage-field__select"
+                      value={duration}
+                      onChange={(event) =>
+                        handleEmbarkationChange(event.target.value)
+                      }
+                    >
+                      {STAY_DURATION_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label.replace(/^⛵\s*/, "")}
+                        </option>
+                      ))}
+                      <option value={PRIVATE_CHARTER_OPTION}>
+                        Private Charter
+                      </option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="hathor-voyage-field">
+                  <label
+                    htmlFor="booking-filter-accommodation"
+                    className="hathor-voyage-field__label"
+                  >
+                    Accommodation
+                  </label>
+                  <div className="hathor-voyage-field__control">
+                    <BedDouble
+                      className="hathor-voyage-field__icon"
+                      aria-hidden
+                      strokeWidth={1.5}
+                    />
+                    <select
+                      id="booking-filter-accommodation"
+                      className="hathor-voyage-field__select"
+                      value={primaryRoom?.roomType ?? ""}
+                      onChange={(event) =>
+                        handleRoomTypeChange(
+                          event.target.value as LuxuryRoomTypeValue,
+                        )
+                      }
+                    >
+                      {accommodationOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {primaryRoom ? (
+                <div className="hathor-voyage-card__guests">
+                  <CounterField
+                    label="Adults"
+                    value={primaryRoom.adults}
+                    min={1}
+                    max={Math.max(1, maxGuestsRoom1 - primaryRoom.children)}
+                    onChange={(adults) => updatePrimaryRoomGuests({ adults })}
+                  />
+                  <CounterField
+                    label="Children"
+                    value={primaryRoom.children}
+                    min={0}
+                    max={Math.max(0, maxGuestsRoom1 - primaryRoom.adults)}
+                    onChange={(children) =>
+                      updatePrimaryRoomGuests({ children })
+                    }
+                  />
+                </div>
+              ) : null}
+
+              <div className="hathor-voyage-field">
+                <label
+                  htmlFor="booking-filter-rooms"
+                  className="hathor-voyage-field__label"
+                >
+                  Room Preference
+                </label>
+                <div className="hathor-voyage-field__control">
+                  <BedDouble
+                    className="hathor-voyage-field__icon"
+                    aria-hidden
+                    strokeWidth={1.5}
+                  />
+                  <select
+                    id="booking-filter-rooms"
+                    className="hathor-voyage-field__select"
+                    value={roomCount}
+                    onChange={(event) =>
+                      handleRoomCountChange(Number(event.target.value))
+                    }
+                  >
+                    {[1, 2, 3, 4].map((count) => (
+                      <option key={count} value={count}>
+                        {count} {count === 1 ? "Room" : "Rooms"}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {roomCount > 1 ? (
+                <p className="hathor-voyage-card__hint">
+                  Additional rooms use default guest settings until configured at
+                  cabin selection.
+                </p>
+              ) : null}
+
+              {error ? (
+                <p className="hathor-voyage-card__error" role="alert">
+                  {error}
+                </p>
+              ) : null}
+
+              <div className="hathor-voyage-card__actions">
+                <button
+                  type="button"
+                  className="hathor-voyage-card__continue"
+                  onClick={handleApply}
+                >
+                  Update Guests
+                </button>
+                <button
+                  type="button"
+                  className="hathor-voyage-card__cancel"
+                  onClick={onCancel}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
           </div>
-        ) : null}
 
-        {roomCount > 1 ? (
-          <p className="hathor-booking-filter__hint">
-            Additional rooms use default guest settings until configured at cabin
-            selection.
+          <ul className="hathor-voyage-card__trust">
+            {TRUST_MARKS.map(({ label, Icon }) => (
+              <li key={label}>
+                <Icon aria-hidden strokeWidth={1.5} />
+                <span>{label}</span>
+              </li>
+            ))}
+          </ul>
+        </article>
+
+        <aside className="hathor-voyage-select" aria-label="Your selection">
+          <h2 className="hathor-voyage-select__title">Your Selection</h2>
+          <dl className="hathor-voyage-select__list">
+            <div>
+              <dt>Journey</dt>
+              <dd>{journeyLabel(duration)}</dd>
+            </div>
+            <div>
+              <dt>Duration</dt>
+              <dd>{nightsLabel(duration)}</dd>
+            </div>
+            <div>
+              <dt>Dates</dt>
+              <dd>Flexible</dd>
+            </div>
+            <div>
+              <dt>Guests</dt>
+              <dd>{guestsLabel(roomConfigs)}</dd>
+            </div>
+            <div>
+              <dt>Accommodation</dt>
+              <dd>{roomTypeLabel}</dd>
+            </div>
+            <div>
+              <dt>Preference</dt>
+              <dd>
+                {roomCount} {roomCount === 1 ? "Room" : "Rooms"}
+              </dd>
+            </div>
+          </dl>
+          <p className="hathor-voyage-select__quote">
+            Exceptional journeys. Timeless Egypt. Exclusively yours.
           </p>
-        ) : null}
-
-        {error ? (
-          <p className="hathor-booking-filter__error" role="alert">
-            {error}
-          </p>
-        ) : null}
-
-        <div className="hathor-booking-filter__actions">
-          <button type="button" className="public-btn-outline-gold" onClick={onCancel}>
-            Cancel
-          </button>
-          <button type="button" className="public-btn-gold" onClick={handleApply}>
-            Update Guests
-          </button>
-        </div>
+        </aside>
       </div>
     </section>
   );
