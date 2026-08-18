@@ -2961,3 +2961,644 @@
     line-height: 1.25;
   }
 }
+
+
+/* Step 1 — reference-matched palace voyage composition. */
+.hathor-booking-flow--voyage .hathor-checkout-chrome {
+  display: none;
+}
+
+.booking-page:has(.hathor-booking-flow--voyage) .booking-main {
+  padding-top: 0 !important;
+}
+
+.hathor-voyage-stage {
+  --voyage-serif: var(--font-hathor-gamgote), "Gamgote", Georgia, serif;
+  --voyage-sans: var(--font-hathor-body), "Plus Jakarta Sans", sans-serif;
+  --voyage-gold: #b78a3d;
+  --voyage-gold-deep: #8b641f;
+  --voyage-ink: #33261c;
+  --voyage-muted: #77685a;
+  --voyage-cream: #fffaf1;
+  --voyage-card: #fffcf6f0;
+  --voyage-line: #b78a3d4d;
+  box-sizing: border-box;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 100svh;
+  padding: clamp(1.1rem, 2.2vh, 1.7rem) 2rem 2rem;
+  display: flex;
+  overflow: hidden;
+}
+
+.hathor-voyage-stage__media {
+  position: absolute;
+  inset: 0;
+}
+
+.hathor-voyage-stage__photo {
+  object-position: center center;
+  filter: saturate(.9) contrast(.96) brightness(1.02);
+  transform: none;
+}
+
+.hathor-voyage-stage__veil {
+  background: linear-gradient(#fffaf014, #fff7e80a 52%, #4a2e1414), radial-gradient(circle at 50% 12%, #fffbf242, #0000 43%);
+}
+
+.hathor-voyage-stage__intro {
+  width: min(54rem, 100%);
+  margin: 0 auto clamp(1.35rem, 2.8vh, 2rem);
+}
+
+.hathor-voyage-stage__crest {
+  filter: none;
+  width: 2rem;
+  height: 2rem;
+  margin: 0 auto .55rem;
+}
+
+.hathor-voyage-stage__title {
+  letter-spacing: -.028em;
+  color: #241b15;
+  text-shadow: 0 2px 22px #fffaf18c;
+  font-size: clamp(2.35rem, 3.05vw, 3.15rem);
+  line-height: 1;
+}
+
+.hathor-voyage-stage__subtitle {
+  font-family: var(--voyage-serif);
+  letter-spacing: 0;
+  color: #3f3228;
+  margin-top: .65rem;
+  font-size: .96rem;
+}
+
+.hathor-voyage-stage__layout {
+  grid-template-columns: minmax(0, 47.5rem) 13.75rem;
+  gap: .65rem;
+  width: min(62rem, 100% - 2rem);
+  height: clamp(32.5rem, 72svh, 41.25rem);
+  margin: 0 auto;
+}
+
+.hathor-voyage-card, .hathor-voyage-select {
+  background: var(--voyage-card);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid #b78a3d80;
+  border-radius: 1.15rem;
+  box-shadow: 0 1.5rem 4.5rem #5c351324, inset 0 1px #ffffffd9;
+}
+
+.hathor-voyage-card:before, .hathor-voyage-select:before {
+  content: "";
+  z-index: 0;
+  pointer-events: none;
+  border: 1px solid #b78a3d38;
+  border-radius: .8rem;
+  position: absolute;
+  inset: .55rem;
+}
+
+.hathor-voyage-card {
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  display: flex;
+  overflow: visible;
+}
+
+.hathor-voyage-card__pin {
+  background: #fffaf1;
+  border: 1px solid #b78a3d6b;
+  width: 3.35rem;
+  height: 3.35rem;
+  top: -.05rem;
+  box-shadow: 0 .65rem 1.6rem #5c351324;
+}
+
+.hathor-voyage-card__pin img {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.hathor-voyage-card__body {
+  z-index: 1;
+  flex: 1;
+  grid-template-columns: 10.75rem minmax(0, 1fr);
+  gap: 0;
+  min-height: 0;
+  padding: .8rem 0 0;
+  position: relative;
+}
+
+.hathor-voyage-card__rail {
+  border-right: 1px solid var(--voyage-line);
+  text-align: center;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2.7rem 1.25rem 1.5rem;
+  display: flex;
+  transform: translateY(-1.7rem);
+}
+
+.hathor-voyage-card__journey, .hathor-voyage-card__flexible {
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+}
+
+.hathor-voyage-card__rail-emblem {
+  width: 1.8rem;
+  height: 1.8rem;
+  color: var(--voyage-gold);
+  margin-bottom: .85rem;
+}
+
+.hathor-voyage-card__rail-label {
+  letter-spacing: .16em;
+  margin: 0 0 .42rem;
+  font-size: .58rem;
+}
+
+.hathor-voyage-card__rail-value {
+  font-size: .98rem;
+  line-height: 1.25;
+}
+
+.hathor-voyage-card__rail-meta {
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--voyage-gold-deep);
+  margin: .45rem 0 0;
+  font-size: .55rem;
+  font-weight: 600;
+}
+
+.hathor-voyage-card__rail-copy {
+  max-width: 8.6rem;
+  font-family: var(--voyage-serif);
+  font-size: .72rem;
+  line-height: 1.55;
+}
+
+.hathor-voyage-card__rail-divider {
+  background: var(--voyage-line);
+  width: 3.8rem;
+  height: 1px;
+  margin: 1.65rem 0 1.55rem;
+  position: relative;
+}
+
+.hathor-voyage-card__rail-divider span {
+  border: 1px solid var(--voyage-gold);
+  background: #fffaf1;
+  width: .38rem;
+  height: .38rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%)rotate(45deg);
+}
+
+.hathor-voyage-card__form {
+  min-height: 0;
+  padding: 1.8rem 1.7rem 1rem;
+  overflow: hidden;
+}
+
+.hathor-voyage-card__dates, .hathor-voyage-card__pair {
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.hathor-voyage-card__form > .hathor-voyage-field, .hathor-voyage-card__pair, .hathor-voyage-card__guest-block, .hathor-voyage-card__hint, .hathor-voyage-card__error, .hathor-voyage-card__actions {
+  margin-top: 1rem;
+}
+
+.hathor-voyage-field__label, .hathor-voyage-card__section-label {
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--voyage-gold-deep);
+  margin: 0 0 .42rem;
+  font-size: .56rem;
+  font-weight: 600;
+}
+
+.hathor-voyage-card__section-label {
+  align-items: center;
+  gap: .75rem;
+  display: flex;
+}
+
+.hathor-voyage-card__section-label:after {
+  content: "";
+  background: var(--voyage-line);
+  flex: 1;
+  height: 1px;
+}
+
+.hathor-voyage-field__control, .hathor-voyage-field__readonly {
+  background: #fffdf9a3;
+  border-color: #b78a3d57;
+  border-radius: .32rem;
+  min-height: 2.55rem;
+  padding: 0 .8rem;
+}
+
+.hathor-voyage-field__readonly, .hathor-voyage-field__select {
+  font-family: var(--voyage-serif);
+  font-size: .78rem;
+}
+
+.hathor-voyage-card__dates .hathor-voyage-field__readonly {
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+
+.hathor-voyage-card__pair .hathor-voyage-field__icon, .hathor-voyage-card__form > .hathor-voyage-field .hathor-voyage-field__icon {
+  display: none;
+}
+
+.hathor-voyage-card__guests {
+  grid-template-columns: 1fr 1fr .95fr;
+  align-items: end;
+  gap: 1.05rem;
+}
+
+.hathor-voyage-counter {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  min-height: 0;
+  padding: 0;
+  display: block;
+}
+
+.hathor-voyage-counter__label {
+  letter-spacing: .1em;
+  min-height: 1.35rem;
+  color: var(--voyage-gold-deep);
+  margin-bottom: .25rem;
+  font-size: .52rem;
+  display: block;
+}
+
+.hathor-voyage-counter__controls {
+  background: #fffdf9a3;
+  border: 1px solid #b78a3d57;
+  border-radius: .32rem;
+  justify-content: space-between;
+  min-height: 2.45rem;
+  padding: .28rem .5rem;
+  display: flex;
+}
+
+.hathor-voyage-counter__btn {
+  background: none;
+  border-color: #b78a3d73;
+  width: 1.45rem;
+  height: 1.45rem;
+}
+
+.hathor-voyage-counter__value {
+  font-family: var(--voyage-serif);
+  font-size: .82rem;
+  font-weight: 400;
+}
+
+.hathor-voyage-card__infant-note {
+  border-left: 1px solid var(--voyage-line);
+  align-items: center;
+  gap: .65rem;
+  min-height: 2.45rem;
+  padding: 0 .25rem;
+  display: flex;
+}
+
+.hathor-voyage-card__infant-icon {
+  width: 2.35rem;
+  height: 2.35rem;
+  color: var(--voyage-gold-deep);
+  border: 1px solid #b78a3d6b;
+  border-radius: 999px;
+  place-items: center;
+  margin-left: .75rem;
+  display: grid;
+}
+
+.hathor-voyage-card__infant-icon svg {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.hathor-voyage-card__infant-note strong, .hathor-voyage-card__infant-note small {
+  display: block;
+}
+
+.hathor-voyage-card__infant-note strong {
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--voyage-gold-deep);
+  font-size: .54rem;
+  font-weight: 600;
+}
+
+.hathor-voyage-card__infant-note small {
+  font-family: var(--voyage-serif);
+  color: var(--voyage-muted);
+  margin-top: .12rem;
+  font-size: .66rem;
+}
+
+.hathor-voyage-card__actions {
+  gap: 0;
+  margin-top: 1.45rem;
+}
+
+.hathor-voyage-card__continue {
+  background: linear-gradient(#d3aa59fa, #b17c1efa);
+  border: 1px solid #8b641f42;
+  border-radius: .55rem;
+  justify-content: center;
+  align-items: center;
+  gap: .8rem;
+  width: min(20rem, 74%);
+  min-height: 3.45rem;
+  display: inline-flex;
+  box-shadow: 0 .85rem 1.8rem #8b641f3d, inset 0 1px #ffffff47;
+}
+
+.hathor-voyage-card__continue svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.hathor-voyage-card__cancel {
+  display: none;
+}
+
+.hathor-voyage-card__trust {
+  z-index: 1;
+  border-top-color: var(--voyage-line);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  min-height: 5.55rem;
+  margin: 0;
+  padding: .85rem 1.1rem;
+  position: relative;
+}
+
+.hathor-voyage-card__trust li {
+  justify-content: center;
+  padding: 0 .8rem;
+  font-size: .52rem;
+  line-height: 1.35;
+}
+
+.hathor-voyage-card__trust li + li {
+  border-left: 1px solid var(--voyage-line);
+}
+
+.hathor-voyage-card__trust svg {
+  width: 1.45rem;
+  height: 1.45rem;
+}
+
+.hathor-voyage-select {
+  z-index: 1;
+  height: 100%;
+  min-height: 0;
+}
+
+.hathor-voyage-select__title, .hathor-voyage-select__list, .hathor-voyage-select__quote {
+  z-index: 1;
+  position: relative;
+}
+
+.hathor-voyage-select__title {
+  font-size: .7rem;
+  font-family: var(--voyage-sans);
+  letter-spacing: .15em;
+  color: var(--voyage-gold-deep);
+  padding: 2.25rem 1.55rem 1rem;
+  font-weight: 600;
+}
+
+.hathor-voyage-select__title:after {
+  content: "вњ¦";
+  color: var(--voyage-gold);
+  letter-spacing: 0;
+  text-shadow: 1.3rem 0 var(--voyage-line), 2.6rem 0 var(--voyage-line), 3.9rem 0 var(--voyage-line), 5.2rem 0 var(--voyage-line), 6.5rem 0 var(--voyage-line), 7.8rem 0 var(--voyage-line), 9.1rem 0 var(--voyage-line);
+  margin-top: .75rem;
+  font-size: .72rem;
+  line-height: 1px;
+  display: block;
+  overflow: hidden;
+}
+
+.hathor-voyage-select__list {
+  padding: 0 1.55rem 1.25rem;
+  display: block;
+}
+
+.hathor-voyage-select__list div {
+  display: block;
+}
+
+.hathor-voyage-select__list div + div {
+  margin-top: .85rem;
+}
+
+.hathor-voyage-select__list dt {
+  color: #b18b51;
+  margin-bottom: .22rem;
+  font-size: .5rem;
+}
+
+.hathor-voyage-select__list dd {
+  font-family: var(--voyage-serif);
+  font-size: .8rem;
+  line-height: 1.25;
+}
+
+.hathor-voyage-select__quote {
+  min-height: 6.25rem;
+  font-family: var(--voyage-sans);
+  letter-spacing: .12em;
+  text-align: center;
+  background: linear-gradient(#301f111f, #26180dc2), url("/media/hathor/booking/voyage-palace-nile.webp") 50% 78% / 255%;
+  justify-content: center;
+  align-items: flex-end;
+  margin: auto 0 0;
+  padding: 1rem 1rem 1.2rem;
+  font-size: .58rem;
+  font-weight: 600;
+  line-height: 1.55;
+  display: flex;
+}
+
+@media (min-width: 1025px) and (max-height: 820px) {
+  .hathor-voyage-stage {
+    padding-top: 1.65rem;
+    padding-bottom: 1.25rem;
+  }
+
+  .hathor-voyage-stage__crest {
+    width: 1.7rem;
+    height: 1.7rem;
+    margin-bottom: 1rem;
+  }
+
+  .hathor-voyage-stage__intro {
+    margin-bottom: 1.9rem;
+  }
+
+  .hathor-voyage-stage__title {
+    font-size: 3.15rem;
+  }
+
+  .hathor-voyage-stage__subtitle {
+    margin-top: .45rem;
+  }
+
+  .hathor-voyage-stage__layout {
+    height: calc(100svh - 13.25rem);
+    min-height: 31rem;
+    transform: translateX(3.5rem);
+  }
+
+  .hathor-voyage-card__form {
+    padding-top: 1.5rem;
+  }
+
+  .hathor-voyage-card__form > .hathor-voyage-field, .hathor-voyage-card__pair, .hathor-voyage-card__guest-block, .hathor-voyage-card__actions {
+    margin-top: .78rem;
+  }
+
+  .hathor-voyage-card__actions {
+    margin-top: 2.65rem;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 1024px) {
+  .hathor-voyage-stage {
+    min-height: 100svh;
+    padding: 1.5rem 1.25rem 2rem;
+    overflow: visible;
+  }
+
+  .hathor-voyage-stage__layout {
+    grid-template-columns: minmax(0, 1fr) 14.5rem;
+    width: 100%;
+    height: auto;
+  }
+
+  .hathor-voyage-card, .hathor-voyage-select {
+    height: auto;
+  }
+
+  .hathor-voyage-card__body {
+    grid-template-columns: 1fr;
+  }
+
+  .hathor-voyage-card__rail {
+    display: none;
+  }
+
+  .hathor-voyage-card__form {
+    padding: 2.3rem 1.4rem 1rem;
+  }
+
+  .hathor-voyage-card__guests {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hathor-voyage-card__infant-note {
+    border-left: 0;
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .hathor-voyage-stage {
+    min-height: 100svh;
+    padding: 1.2rem .8rem 2rem;
+    overflow: visible;
+  }
+
+  .hathor-voyage-stage__media {
+    position: fixed;
+  }
+
+  .hathor-voyage-stage__title {
+    font-size: clamp(2rem, 10.5vw, 2.75rem);
+    line-height: .98;
+  }
+
+  .hathor-voyage-stage__subtitle {
+    font-size: .86rem;
+  }
+
+  .hathor-voyage-stage__layout {
+    grid-template-columns: 1fr;
+    gap: .8rem;
+    width: 100%;
+    height: auto;
+  }
+
+  .hathor-voyage-card, .hathor-voyage-select {
+    border-radius: 1rem;
+    height: auto;
+  }
+
+  .hathor-voyage-card__body {
+    grid-template-columns: 1fr;
+  }
+
+  .hathor-voyage-card__rail {
+    display: none;
+  }
+
+  .hathor-voyage-card__form {
+    padding: 2.35rem 1rem 1rem;
+    overflow: visible;
+  }
+
+  .hathor-voyage-card__dates, .hathor-voyage-card__pair, .hathor-voyage-card__guests {
+    grid-template-columns: 1fr;
+    gap: .75rem;
+  }
+
+  .hathor-voyage-card__infant-note {
+    border-left: 0;
+  }
+
+  .hathor-voyage-card__infant-icon {
+    margin-left: 0;
+  }
+
+  .hathor-voyage-card__continue {
+    width: 100%;
+  }
+
+  .hathor-voyage-card__trust {
+    grid-template-columns: 1fr 1fr;
+    padding-inline: .75rem;
+  }
+
+  .hathor-voyage-card__trust li {
+    justify-content: flex-start;
+    padding: .55rem;
+  }
+
+  .hathor-voyage-card__trust li:nth-child(3) {
+    border-left: 0;
+  }
+
+  .hathor-voyage-select {
+    min-height: 31rem;
+  }
+}

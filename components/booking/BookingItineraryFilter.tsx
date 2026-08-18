@@ -2,10 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import {
+  ArrowRight,
+  Baby,
   BedDouble,
   CalendarDays,
-  Clock3,
   Headphones,
+  Landmark,
   Lock,
   MapPin,
   Minus,
@@ -15,7 +17,6 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { HATHOR_ICON_GOLD_SRC } from "@/lib/branding";
-import { hathorImage } from "@/lib/hathor-media";
 import {
   createDefaultRoomConfigs,
   durationSupportsRoomType,
@@ -34,7 +35,7 @@ import {
 
 const PRIVATE_CHARTER_OPTION = "private-charter" as const;
 const PRIVATE_CHARTER_HREF = "/charter";
-const VOYAGE_STAGE_IMAGE = hathorImage("home-hero-poster");
+const VOYAGE_STAGE_IMAGE = "/media/hathor/booking/voyage-palace-nile.webp";
 
 const TRUST_MARKS = [
   { label: "Best Rate Guarantee", Icon: ShieldCheck },
@@ -260,33 +261,28 @@ export function BookingItineraryFilter({
 
           <div className="hathor-voyage-card__body">
             <aside className="hathor-voyage-card__rail">
-              <div className="hathor-voyage-card__rail-item">
-                <MapPin strokeWidth={1.5} aria-hidden />
-                <div>
-                  <p className="hathor-voyage-card__rail-label">Your Journey</p>
-                  <p className="hathor-voyage-card__rail-value">
-                    {journeyLabel(duration)}
-                  </p>
-                </div>
+              <div className="hathor-voyage-card__journey">
+                <Landmark className="hathor-voyage-card__rail-emblem" strokeWidth={1.25} aria-hidden />
+                <p className="hathor-voyage-card__rail-label">Your Journey</p>
+                <p className="hathor-voyage-card__rail-value">
+                  {journeyLabel(duration)}
+                </p>
+                <p className="hathor-voyage-card__rail-meta">
+                  {nightsLabel(duration)}
+                </p>
               </div>
-              <div className="hathor-voyage-card__rail-item">
-                <Clock3 strokeWidth={1.5} aria-hidden />
-                <div>
-                  <p className="hathor-voyage-card__rail-label">Duration</p>
-                  <p className="hathor-voyage-card__rail-value">
-                    {nightsLabel(duration)}
-                  </p>
-                </div>
+
+              <div className="hathor-voyage-card__rail-divider" aria-hidden>
+                <span />
               </div>
-              <div className="hathor-voyage-card__rail-item">
-                <CalendarDays strokeWidth={1.5} aria-hidden />
-                <div>
-                  <p className="hathor-voyage-card__rail-label">Flexible Dates</p>
-                  <p className="hathor-voyage-card__rail-copy">
-                    Choose your preferred window, then confirm sailing dates on
-                    the next step.
-                  </p>
-                </div>
+
+              <div className="hathor-voyage-card__flexible">
+                <CalendarDays className="hathor-voyage-card__rail-emblem" strokeWidth={1.25} aria-hidden />
+                <p className="hathor-voyage-card__rail-label">Flexible Dates</p>
+                <p className="hathor-voyage-card__rail-copy">
+                  Your exact dates are flexible. Choose a window and we&apos;ll
+                  suggest the perfect sailing.
+                </p>
               </div>
             </aside>
 
@@ -388,23 +384,35 @@ export function BookingItineraryFilter({
               </div>
 
               {primaryRoom ? (
-                <div className="hathor-voyage-card__guests">
-                  <CounterField
-                    label="Adults"
-                    value={primaryRoom.adults}
-                    min={1}
-                    max={Math.max(1, maxGuestsRoom1 - primaryRoom.children)}
-                    onChange={(adults) => updatePrimaryRoomGuests({ adults })}
-                  />
-                  <CounterField
-                    label="Children"
-                    value={primaryRoom.children}
-                    min={0}
-                    max={Math.max(0, maxGuestsRoom1 - primaryRoom.adults)}
-                    onChange={(children) =>
-                      updatePrimaryRoomGuests({ children })
-                    }
-                  />
+                <div className="hathor-voyage-card__guest-block">
+                  <p className="hathor-voyage-card__section-label">Guests</p>
+                  <div className="hathor-voyage-card__guests">
+                    <CounterField
+                      label="Adults"
+                      value={primaryRoom.adults}
+                      min={1}
+                      max={Math.max(1, maxGuestsRoom1 - primaryRoom.children)}
+                      onChange={(adults) => updatePrimaryRoomGuests({ adults })}
+                    />
+                    <CounterField
+                      label="Children (2–11 years)"
+                      value={primaryRoom.children}
+                      min={0}
+                      max={Math.max(0, maxGuestsRoom1 - primaryRoom.adults)}
+                      onChange={(children) =>
+                        updatePrimaryRoomGuests({ children })
+                      }
+                    />
+                    <div className="hathor-voyage-card__infant-note">
+                      <span className="hathor-voyage-card__infant-icon">
+                        <Baby aria-hidden strokeWidth={1.35} />
+                      </span>
+                      <span>
+                        <strong>Add Infant</strong>
+                        <small>Under 2 years</small>
+                      </span>
+                    </div>
+                  </div>
                 </div>
               ) : null}
 
@@ -457,7 +465,8 @@ export function BookingItineraryFilter({
                   className="hathor-voyage-card__continue"
                   onClick={handleApply}
                 >
-                  Update Guests
+                  <span>Continue to Suites</span>
+                  <ArrowRight aria-hidden strokeWidth={1.5} />
                 </button>
                 <button
                   type="button"
