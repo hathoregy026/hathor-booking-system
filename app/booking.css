@@ -35,60 +35,161 @@
   background: linear-gradient(180deg, var(--booking-bg) 0%, var(--booking-bg-alt) 100%);
 }
 
-/* Gate when itinerary is not yet configured — gold chrome, no old marketing card */
+/* Gate when itinerary is not yet configured — cream editorial, site fonts */
 .hathor-booking-gate {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 70vh;
-  padding: 0 1rem 3rem;
-}
-
-.hathor-booking-gate__bar {
-  width: 100vw;
+  --gate-gold: #b69f64;
+  --gate-gold-deep: #8b6914;
+  --gate-ink: #2c2824;
+  --gate-muted: #6b6560;
+  --gate-cream: #ece8df;
+  --gate-wash: #f5eacf;
+  --gate-serif: var(--font-hathor-gamgote), "Gamgote", Georgia, serif;
+  --gate-sans: var(--font-hathor-body), "Plus Jakarta Sans", system-ui, sans-serif;
   position: relative;
   left: 50%;
   right: 50%;
+  width: 100vw;
   margin-left: -50vw;
   margin-right: -50vw;
-  height: 4.5rem;
-  background: var(--booking-gold);
-  margin-bottom: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100svh;
+  padding: 0 1.25rem calc(3.5rem + env(safe-area-inset-bottom, 0px));
+  font-family: var(--gate-sans);
+  color: var(--gate-ink);
+  background:
+    radial-gradient(ellipse 70% 42% at 50% 12%, rgb(182 159 100 / 0.14), transparent 58%),
+    linear-gradient(180deg, var(--gate-wash) 0%, var(--gate-cream) 46%, #faf8f5 100%);
 }
 
-.hathor-booking-gate__panel {
+.hathor-booking-gate__back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  max-width: 28rem;
-  text-align: center;
-  padding: 2rem 1.5rem;
+  min-height: 2.75rem;
+  padding: 0.85rem 1rem;
+  padding-top: max(0.85rem, env(safe-area-inset-top, 0px));
 }
 
-.hathor-booking-gate__eyebrow {
-  margin: 0 0 0.75rem;
-  font-size: 0.65rem;
+.hathor-booking-gate__back-link {
+  font-family: var(--gate-sans);
+  font-size: 0.625rem;
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--booking-gold-dark);
+  color: var(--gate-gold);
+  text-decoration: none;
+  transition:
+    color 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.hathor-booking-gate__back-link:hover {
+  color: var(--gate-gold-deep);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.hathor-booking-gate__back-link:focus-visible {
+  outline: 2px solid var(--gate-gold);
+  outline-offset: 6px;
+}
+
+.hathor-booking-gate__panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 34rem;
+  flex: 1;
+  justify-content: center;
+  text-align: center;
+  padding: 1.5rem 1.25rem 4.5rem;
+}
+
+.hathor-booking-gate__eyebrow {
+  margin: 0 0 1.1rem;
+  font-family: var(--gate-sans);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gate-gold);
 }
 
 .hathor-booking-gate__title {
   margin: 0;
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  font-weight: 500;
-  color: var(--booking-text);
+  font-family: var(--gate-serif);
+  font-size: clamp(2.15rem, 4.6vw, 3.35rem);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: var(--gate-ink);
 }
 
 .hathor-booking-gate__copy {
-  margin: 0.85rem auto 1.75rem;
-  max-width: 22rem;
-  font-size: 0.9rem;
-  line-height: 1.55;
-  color: var(--booking-muted);
+  margin: 1.15rem auto 2.1rem;
+  max-width: 26rem;
+  font-family: var(--gate-sans);
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--gate-muted);
 }
 
 .hathor-booking-gate .public-btn-gold {
   margin-inline: auto;
+  font-family: var(--gate-sans);
+}
+
+@media (min-width: 481px) and (max-width: 1024px) {
+  .hathor-booking-gate__panel {
+    padding-bottom: 5rem;
+  }
+
+  .hathor-booking-gate__title {
+    font-size: clamp(2.25rem, 5.2vw, 3rem);
+  }
+
+  .hathor-booking-gate__copy {
+    font-size: 0.92rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hathor-booking-gate {
+    padding-inline: 1rem;
+  }
+
+  .hathor-booking-gate__back {
+    min-height: 2.75rem;
+  }
+
+  .hathor-booking-gate__back-link {
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+  }
+
+  .hathor-booking-gate__panel {
+    padding: 1.25rem 0.5rem 3.75rem;
+  }
+
+  .hathor-booking-gate__eyebrow {
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+  }
+
+  .hathor-booking-gate__title {
+    font-size: clamp(1.85rem, 9vw, 2.45rem);
+  }
+
+  .hathor-booking-gate__copy {
+    margin-bottom: 1.75rem;
+    font-size: 0.88rem;
+    max-width: 22rem;
+  }
 }
 
 @keyframes bookingFadeIn {

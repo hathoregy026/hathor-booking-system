@@ -83,12 +83,14 @@ export function BookingFlow() {
   if (!itineraryConfigured || !duration) {
     return (
       <div className="hathor-booking-gate">
-        <div className="hathor-booking-gate__bar" aria-hidden />
+        <div className="hathor-booking-gate__back">
+          <Link href="/" className="hathor-booking-gate__back-link">
+            Back to Hathor
+          </Link>
+        </div>
         <div className="hathor-booking-gate__panel">
           <p className="hathor-booking-gate__eyebrow">Hathor Dahabiya</p>
-          <h1 className="booking-serif hathor-booking-gate__title">
-            Continue your reservation
-          </h1>
+          <h1 className="hathor-booking-gate__title">Continue your reservation</h1>
           <p className="hathor-booking-gate__copy">
             Open Book Now on the homepage to choose guests and sailing length,
             then return here to pick dates and cabins.
