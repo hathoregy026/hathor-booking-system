@@ -75,17 +75,49 @@ const SECONDARY_SELECTORS = [
   ".header__menu__nav-single__proyectos__item .title",
 ].join(",");
 
-const BODY_SELECTORS = [
-  "p",
-  ".mod-scroll__intro__text p",
-  ".mod-scroll__text__text p",
-  ".mod-scroll__images-text__text p",
-  ".mod-scroll__terms__term__text__single",
+const BODY_SIZE_SELECTORS = [
   ".mod-scroll__projects__text",
   ".mod-scroll__projects__item__text__data",
+  ".mod-scroll__terms__term__text__single",
   ".place",
   ".btn__text",
 ].join(",");
+
+/** Color + face on supporting copy and SplitText editorial paragraphs (not px size). */
+const BODY_COLOR_SELECTORS = [
+  BODY_SIZE_SELECTORS,
+  ".mod-scroll__intro__text p",
+  ".mod-scroll__text__text p",
+  ".mod-scroll__images-text__text p",
+].join(",");
+
+/**
+ * SplitText measures line breaks at load. CMS body px overrides on these blocks
+ * shrink/garble the split wrappers — keep their native clone scale instead.
+ */
+export const SUITES_SPLITTEXT_TYPE_GUARD_CSS = `
+main .mod-scroll__images-text__text,
+main .mod-scroll__images-text__text p,
+main .mod-scroll__images-text__text p :is(div, span) {
+  font-size: var(--titulo-xl) !important;
+  line-height: var(--titulo-xl-lh) !important;
+  letter-spacing: normal !important;
+}
+main .mod-scroll__intro__text,
+main .mod-scroll__intro__text p,
+main .mod-scroll__intro__text p :is(.splitline, .splitline span, div, span) {
+  font-size: var(--parrafo) !important;
+  line-height: var(--parrafo-lh) !important;
+  letter-spacing: normal !important;
+}
+main .mod-scroll__text__text,
+main .mod-scroll__text__text p,
+main .mod-scroll__text__text p :is(.line, .line span, div, span) {
+  font-size: var(--parrafo) !important;
+  line-height: var(--parrafo-lh) !important;
+  letter-spacing: normal !important;
+}
+`;
 
 function roleCss(
   selector: string,
@@ -284,6 +316,7 @@ export function suitesTypographyToCss(
     roleCss(DISPLAY_SELECTORS, settings.display, defaults.display, true),
     roleCss(DISPLAY_COLOR_SELECTORS, settings.display, defaults.display, false),
     roleCss(SECONDARY_SELECTORS, settings.secondary, defaults.secondary, true),
-    roleCss(BODY_SELECTORS, settings.body, defaults.body, true),
+    roleCss(BODY_COLOR_SELECTORS, settings.body, defaults.body, false),
+    roleCss(BODY_SIZE_SELECTORS, settings.body, defaults.body, true),
   ].join("");
 }
