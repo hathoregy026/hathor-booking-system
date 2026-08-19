@@ -47,26 +47,26 @@ function patchLogoWordmark(doc: Document) {
     if (chars.length > 0) {
       chars.forEach((charEl, index) => {
         const target = charEl.querySelector("span") ?? charEl;
-        if (index < letters.length) {
-          target.textContent = letters[index]!;
-          (charEl as HTMLElement).style.display = "";
-        } else {
-          (charEl as HTMLElement).style.display = "none";
+        const next = letters[index];
+        if (next == null) {
+          if ((charEl as HTMLElement).style.display !== "none") {
+            (charEl as HTMLElement).style.display = "none";
+          }
+          return;
         }
+        if (target.textContent !== next) target.textContent = next;
       });
       return;
     }
 
+    const current = Array.from(el.childNodes)
+      .filter((child) => child.nodeType === Node.TEXT_NODE)
+      .map((child) => child.textContent ?? "")
+      .join("")
+      .trim();
+    if (current === LOGO_BORING_WORDMARK && el.querySelector(".reg")) return;
     el.innerHTML = `${LOGO_BORING_WORDMARK}<div class="reg">®</div>`;
   });
-}
-
-function watchLogoWordmark(doc: Document) {
-  patchLogoWordmark(doc);
-  if (doc.documentElement.dataset.hathorLogoWatch) return;
-  doc.documentElement.dataset.hathorLogoWatch = "1";
-  const observer = new MutationObserver(() => patchLogoWordmark(doc));
-  observer.observe(doc.body, { childList: true, subtree: true, characterData: true });
 }
 
 const CLONE_MENU_HIDE_CSS = `
@@ -157,25 +157,26 @@ function fitTermsToViewport(doc: Document) {
 }
 
 function applyImages(doc: Document, images: Record<string, string>) {
-  const paint = () => {
-    doc.querySelectorAll("img").forEach((node) => {
-      const img = node as HTMLImageElement;
-      const current =
-        img.getAttribute("data-hathor-slot") ||
-        slotNameFromSuitesImageUrl(
-          img.getAttribute("src") || img.getAttribute("data-lazy-src") || "",
-        );
-      if (!current) return;
-      const url = images[current];
-      if (!url) return;
+  doc.querySelectorAll("img").forEach((node) => {
+    const img = node as HTMLImageElement;
+    const current =
+      img.getAttribute("data-hathor-slot") ||
+      slotNameFromSuitesImageUrl(
+        img.getAttribute("src") || img.getAttribute("data-lazy-src") || "",
+      );
+    if (!current) return;
+    const url = images[current];
+    if (!url) return;
+    if (img.getAttribute("data-hathor-slot") !== current) {
       img.setAttribute("data-hathor-slot", current);
-      if (img.getAttribute("src") !== url) img.setAttribute("src", url);
-      if (img.hasAttribute("data-lazy-src")) img.setAttribute("data-lazy-src", url);
-      img.removeAttribute("srcset");
-      img.removeAttribute("data-lazy-srcset");
-    });
-  };
-  paint();
+    }
+    if (img.getAttribute("src") !== url) img.setAttribute("src", url);
+    if (img.hasAttribute("data-lazy-src") && img.getAttribute("data-lazy-src") !== url) {
+      img.setAttribute("data-lazy-src", url);
+    }
+    if (img.hasAttribute("srcset")) img.removeAttribute("srcset");
+    if (img.hasAttribute("data-lazy-srcset")) img.removeAttribute("data-lazy-srcset");
+  });
 }
 
 export function SuitesNormalHomepagePage() {
@@ -202,7 +203,7 @@ export function SuitesNormalHomepagePage() {
       doc.head.appendChild(live);
     }
     live.textContent = buildSuitesLiveCss();
-    watchLogoWordmark(doc);
+    patchLogoWordmark(doc);
     tagSuiteCollectionPanels(doc);
     retargetCloneLinks(doc);
     const runTermsFit = () => fitTermsToViewport(doc);
@@ -237,7 +238,7 @@ export function SuitesNormalHomepagePage() {
         images?: Record<string, string>;
       };
       live.textContent = buildSuitesLiveCss(data.css ?? "");
-      watchLogoWordmark(doc);
+      patchLogoWordmark(doc);
       tagSuiteCollectionPanels(doc);
       retargetCloneLinks(doc);
       fitTermsToViewport(doc);
@@ -245,7 +246,13 @@ export function SuitesNormalHomepagePage() {
       if (data.images) {
         applyImages(doc, data.images);
         observerRef.current?.disconnect();
-        const observer = new MutationObserver(() => applyImages(doc, data.images ?? {}));
+        let painting = false;
+        const observer = new MutationObserver(() => {
+          if (painting) return;
+          painting = true;
+          applyImages(doc, data.images ?? {});
+          painting = false;
+        });
         observer.observe(doc.body, {
           subtree: true,
           attributes: true,
@@ -270,7 +277,7 @@ export function SuitesNormalHomepagePage() {
       <iframe
         ref={iframeRef}
         className="suites-normal-clone__frame"
-        src="/suites-normal/index.html?v=hathor-wordmark-20260820d"
+        src="/suites-normal/index.html?v=hathor-unfreeze-20260820"
         title="Hathor Suites"
         onLoad={() => void apply()}
       />
