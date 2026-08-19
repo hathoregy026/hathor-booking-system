@@ -1,0 +1,287 @@
+/**
+ * Hathor custom luxury fonts — local files only (no Google Fonts).
+ * Files live under /public/fonts/ (including subfolders).
+ */
+
+@font-face {
+  font-family: "Agraham";
+  src: url("/fonts/agraham-regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Baginda";
+  src: url("/fonts/baginda-font/baginda.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bastliga One";
+  src: url("/fonts/bastilga/Bastliga%20One%20Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bastliga Two";
+  src: url("/fonts/bastilga/Bastliga%20Two%20Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bastliga Three";
+  src: url("/fonts/bastilga/Bastliga%20Three%20Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bastliga Four";
+  src: url("/fonts/bastilga/Bastliga%20Four%20Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bastliga Five";
+  src: url("/fonts/bastilga/Bastliga%20Five%20Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bastliga Tail";
+  src: url("/fonts/bastilga/Bastliga%20Tail%20Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bitho Luxury";
+  src: url("/fonts/bitho-luxury-italic-1784552304-0/BithoLuxury-Italic-Exfont89bb.otf")
+    format("opentype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Cylburn";
+  src:
+    url("/fonts/cylburn-1784545829-0/Cylburn.otf") format("opentype"),
+    url("/fonts/cylburn-personal-license/Cylburn.otf") format("opentype"),
+    url("/fonts/cylburn-personal-license/Cylburn.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Dynalight";
+  src: url("/fonts/Dynalight%2CPlayfair_Display/Dynalight-Regular.ttf")
+    format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Playfair Display";
+  src: url("/fonts/Dynalight%2CPlayfair_Display/PlayfairDisplay-VariableFont_wght.ttf")
+    format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Playfair Display Italic";
+  src: url("/fonts/Dynalight%2CPlayfair_Display/PlayfairDisplay-Italic-VariableFont_wght.ttf")
+    format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Gabigaile";
+  src: url("/fonts/Gabigaile.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Gamgote";
+  src:
+    url("/fonts/Gamgote.otf") format("opentype"),
+    url("/fonts/Gamgote-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Lavenir";
+  src:
+    url("/fonts/lavenir-modern-lavish-serif-font/lavenir.otf") format("opentype"),
+    url("/fonts/lavenir-modern-lavish-serif-font/lavenir.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Michiko";
+  src: url("/fonts/michiko-personal-use-only-italic-ttf-1784545869-0/MichikoPersonalUseOnlyItalic-yYvze-Exfonted8a.ttf")
+    format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Quiet Luxury";
+  src: url("/fonts/quietluxury-script.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Quiet Luxury Serif";
+  src: url("/fonts/quiet-luxury-serif-1784545771-0/QuietLuxury-Serif-Exfontc332.otf")
+    format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Rollgates Luxury";
+  src:
+    url("/fonts/rollgates-luxury/Rollgates%20Luxury.otf") format("opentype"),
+    url("/fonts/rollgates-luxury/Rollgates%20Luxury.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Rollgates Luxury Italic";
+  src:
+    url("/fonts/rollgates-luxury/Rollgates%20Luxury%20Italic.otf") format("opentype"),
+    url("/fonts/rollgates-luxury/Rollgates%20Luxury%20Italic.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Rolling Fonte";
+  src:
+    url("/fonts/rollingfonte.otf") format("opentype"),
+    url("/fonts/rollingfonte.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* —— more-fonts (Admin → Typography picker) —— */
+
+@font-face {
+  font-family: "Adobe Bloom";
+  src: url("/fonts/more-fonts/adobe-bloom-script.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Adorebloom";
+  src: url("/fonts/more-fonts/adorebloom.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Besty Script";
+  src: url("/fonts/more-fonts/Besty-Script-Exfont208d.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Canthira";
+  src: url("/fonts/more-fonts/canthira.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Carista";
+  src:
+    url("/fonts/more-fonts/carista-calligraphy.otf") format("opentype"),
+    url("/fonts/more-fonts/carista-calligraphy.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Italiana";
+  src: url("/fonts/more-fonts/Italiana-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Piloner Thin";
+  src: url("/fonts/more-fonts/Fontspring-DEMO-piloner-thin-iF66b5d28bd9725.otf")
+    format("opentype");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Piloner Thin Italic";
+  src: url("/fonts/more-fonts/Fontspring-DEMO-piloner-thinitalic-iF66b5d28bdf68e.otf")
+    format("opentype");
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Piloner Semibold";
+  src: url("/fonts/more-fonts/Fontspring-DEMO-piloner-semibold-iF66b5d28bcf566.otf")
+    format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Piloner Semibold Italic";
+  src: url("/fonts/more-fonts/Fontspring-DEMO-piloner-semibolditalic-iF66b5d28bd44fe.otf")
+    format("opentype");
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}

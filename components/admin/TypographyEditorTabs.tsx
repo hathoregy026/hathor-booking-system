@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { AmenitiesSequenceTypographyPanel } from "@/components/admin/AmenitiesSequenceTypographyPanel";
 import { GastronomyTypographyPanel } from "@/components/admin/GastronomyTypographyPanel";
+import { SuitesTypographyPanel } from "@/components/admin/SuitesTypographyPanel";
 import { TypographyStylesPanel } from "@/components/admin/TypographyStylesPanel";
 
-type TypographyEditor = "site" | "amenities" | "dining";
+type TypographyEditor = "site" | "amenities" | "dining" | "suites";
 
 export function TypographyEditorTabs() {
   const [editor, setEditor] = useState<TypographyEditor>("site");
@@ -44,13 +45,24 @@ export function TypographyEditorTabs() {
         >
           Dining typography
         </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={editor === "suites"}
+          className={`typo-stage__align-btn${editor === "suites" ? " typo-stage__align-btn--on" : ""}`}
+          onClick={() => setEditor("suites")}
+        >
+          Suites typography
+        </button>
       </div>
       {editor === "site" ? (
         <TypographyStylesPanel />
       ) : editor === "amenities" ? (
         <AmenitiesSequenceTypographyPanel />
-      ) : (
+      ) : editor === "dining" ? (
         <GastronomyTypographyPanel />
+      ) : (
+        <SuitesTypographyPanel />
       )}
     </div>
   );

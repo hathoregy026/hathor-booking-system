@@ -148,6 +148,15 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        source: "/suites-normal/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=0, must-revalidate",
+          },
+        ],
+      },
+      {
         source: "/home-amenities-springs/:path*",
         headers: [
           {

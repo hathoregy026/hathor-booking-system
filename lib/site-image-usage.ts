@@ -44,19 +44,19 @@ const EXTRA_USAGE_BY_SLOT: Partial<Record<string, readonly string[]>> = {
   "scraped-cabin-1": ["/suites", "/luxury-cabins-Nile-Cruise"],
   "scraped-cabin-2": ["/suites", "/luxury-cabins-Nile-Cruise"],
   "scraped-cabin-3": ["/suites", "/luxury-cabins-Nile-Cruise"],
-  "scraped-cabin-4": ["/luxury-cabins-Nile-Cruise"],
+  "scraped-cabin-4": ["/suites", "/luxury-cabins-Nile-Cruise"],
   "scraped-cabin-5": ["/suites", "/luxury-cabins-Nile-Cruise"],
   "scraped-cabin-6": ["/suites", "/luxury-cabins-Nile-Cruise"],
-  "scraped-cabin-7": ["/luxury-cabins-Nile-Cruise"],
-  "scraped-cabin-8": ["/luxury-cabins-Nile-Cruise"],
+  "scraped-cabin-7": ["/suites", "/luxury-cabins-Nile-Cruise"],
+  "scraped-cabin-8": ["/suites", "/luxury-cabins-Nile-Cruise"],
   "scraped-royal-1": ["/suites", "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"],
   "scraped-royal-2": ["/suites", "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"],
   "scraped-royal-3": ["/suites", "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"],
   "scraped-royal-4": ["/suites", "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"],
   "scraped-royal-5": ["/suites", "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"],
   "scraped-royal-6": ["/suites", "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"],
-  "scraped-royal-7": ["/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"],
-  "scraped-royal-8": ["/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"],
+  "scraped-royal-7": ["/suites", "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"],
+  "scraped-royal-8": ["/suites", "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"],
 };
 
 /** Slot names the Suites iframe reads from the dashboard (shared with Rooms / galleries). */
@@ -85,6 +85,12 @@ export const SUITES_DASHBOARD_SLOT_NAMES = [
   "scraped-royal-6",
   "scraped-cabin-6",
   "room-luxury",
+  "scraped-royal-7",
+  "scraped-royal-8",
+  "scraped-cabin-4",
+  "scraped-cabin-7",
+  "scraped-cabin-8",
+  "suites-nile-still",
 ] as const;
 
 export type SiteImageUsedOnPage = {

@@ -7,7 +7,7 @@ export default function AdminTypographyPage() {
     <div className="space-y-6">
       <CmsPageHeader
         title="Typography & Styles"
-        description="Type roles, hero wording, amenities sequence, and dining type — all wired to the public site."
+        description="Type roles, hero wording, amenities sequence, dining, and Suites type — all wired to the public site."
         icon={Type}
         compact
       />

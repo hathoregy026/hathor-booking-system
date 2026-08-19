@@ -828,6 +828,14 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     pagePath: "/luxury-cabins-Nile-Cruise",
     displayOrder: 17,
   },
+  {
+    name: "suites-nile-still",
+    altText: "Nile still aboard Hathor Dahabiya",
+    url: "/media/hathor/optimized/home-call-to-action.webp",
+    category: "suite",
+    pagePath: "/suites",
+    displayOrder: 25,
+  },
   // Floating Instagram bubbles — Sail with Hathor only (independent of other page photos)
   {
     name: "floating-ig-1",

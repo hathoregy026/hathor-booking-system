@@ -117,6 +117,12 @@ const SUITES_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> = [
   { name: "scraped-royal-6", label: "22. Nature slide 3" },
   { name: "scraped-cabin-6", label: "23. Nature background" },
   { name: "room-luxury", label: "24. Place panel — Cabin" },
+  { name: "scraped-royal-7", label: "25. Royal gallery still" },
+  { name: "scraped-royal-8", label: "26. Royal gallery still" },
+  { name: "scraped-cabin-4", label: "27. Cabin gallery still" },
+  { name: "scraped-cabin-7", label: "28. Cabin gallery still" },
+  { name: "scraped-cabin-8", label: "29. Cabin gallery still" },
+  { name: "suites-nile-still", label: "30. Nile still" },
 ];
 
 const SLOT_LABELS: Partial<Record<SiteImageSlot["name"], string>> = {
@@ -184,6 +190,7 @@ const SLOT_LABELS: Partial<Record<SiteImageSlot["name"], string>> = {
   "scraped-cabin-6": "Luxury Cabin Gallery — Photo 6",
   "scraped-cabin-7": "Luxury Cabin Gallery — Photo 7",
   "scraped-cabin-8": "Luxury Cabin Gallery — Photo 8",
+  "suites-nile-still": "Suites — Nile still",
 };
 
 export type SiteImageLayoutKind = "hero" | "gallery" | "standard";

@@ -205,6 +205,18 @@ $("img").each((_, element) => {
 
   image.attr("src", replacement);
   image.attr("data-lazy-src", replacement);
+  image.attr(
+    "data-hathor-slot",
+    replacement
+      .split("/")
+      .pop()
+      .replace(/\.(?:webp|jpe?g|png)$/i, "")
+      .replace(/^suites-/, "scraped-suites-")
+      .replace(/^luxsuite-/, "scraped-luxsuite-")
+      .replace(/^royal-/, "scraped-royal-")
+      .replace(/^cabin-/, "scraped-cabin-")
+      .replace(/^home-call-to-action$/, "suites-nile-still"),
+  );
   image.removeAttr("srcset");
   image.removeAttr("data-lazy-srcset");
   image.removeAttr("sizes");
@@ -543,6 +555,26 @@ $("head").append(`
       font-style: italic !important;
       color: #B69F64 !important;
       -webkit-text-fill-color: #B69F64 !important;
+    }
+    .mod-scroll__intro__title,
+    .mod-scroll__text__title,
+    .mod-scroll__text__title__line,
+    .mod-scroll__terms__term__title,
+    .mod-scroll__projects__item__text__title,
+    .last-item__content__title,
+    .last-item__content__title .line,
+    .anima__title,
+    .anima__title .line,
+    .mod-title--lines .line,
+    .t-titulo-xxl,
+    .t-supertitulo,
+    .t-supertitulo-l,
+    .t-supertitulo-xl,
+    .logo__normal,
+    .logo__boring {
+      overflow: visible !important;
+      padding-inline: 0.08em 0.28em;
+      padding-block: 0.06em 0.16em;
     }
   </style>
 `);

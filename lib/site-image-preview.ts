@@ -179,6 +179,7 @@ const SITE_IMAGE_PRIMARY_PAGE: Partial<Record<string, string>> = {
   "scraped-royal-6": "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
   "scraped-royal-7": "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
   "scraped-royal-8": "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+  "suites-nile-still": "/suites",
 };
 
 /**
@@ -263,6 +264,10 @@ export function resolveSiteImageLivePath(
   /* Cruises-tab itinerary cards still render on the homepage slider. */
   if (adminGroupPagePath === "/cruises" && HOMEPAGE_LIVE_SLOT_NAMES.has(name)) {
     return buildSiteImageLivePath("/", name);
+  }
+
+  if (adminGroupPagePath === "/suites") {
+    return buildSiteImageLivePath("/suites", name);
   }
 
   if (adminGroupPagePath === "/" && HOMEPAGE_LIVE_SLOT_NAMES.has(name)) {
