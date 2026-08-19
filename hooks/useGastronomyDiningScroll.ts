@@ -9,6 +9,13 @@ const smoothstep = (edge0: number, edge1: number, value: number) => {
   return t * t * (3 - 2 * t);
 };
 
+/* Fifth-order easing gives the plate cut-outs a softer lift-off and a calm,
+   zero-velocity landing without changing their final positions. */
+const smootherstep = (edge0: number, edge1: number, value: number) => {
+  const t = clamp((value - edge0) / (edge1 - edge0));
+  return t * t * t * (t * (t * 6 - 15) + 10);
+};
+
 const snapProgress = (value: number) => Math.round(value * 1000) / 1000;
 
 function applyScrollVars(stage: HTMLElement, progress: number) {
@@ -21,6 +28,10 @@ function applyScrollVars(stage: HTMLElement, progress: number) {
   stage.style.setProperty("--c", String(snapProgress(smoothstep(0.56, 0.84, p))));
   stage.style.setProperty("--d", String(snapProgress(smoothstep(0.76, 0.96, p))));
   stage.style.setProperty("--e", String(snapProgress(smoothstep(0.88, 1, p))));
+  stage.style.setProperty("--pa", String(snapProgress(smootherstep(0.02, 0.4, p))));
+  stage.style.setProperty("--pb", String(snapProgress(smootherstep(0.24, 0.64, p))));
+  stage.style.setProperty("--pc", String(snapProgress(smootherstep(0.5, 0.86, p))));
+  stage.style.setProperty("--pd", String(snapProgress(smootherstep(0.7, 0.98, p))));
   updateDiningPile(stage, p);
 }
 

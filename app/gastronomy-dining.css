@@ -1508,3 +1508,454 @@ html[data-gastronomy-dining] body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Dining typography follows the homepage Amenities sequence:
+   Gamgote display, an overlapping Agraham signature, then Agraham body copy. */
+.gastronomy-dining-page :is(h1, h2) {
+  margin-block: 0 !important;
+  font-family: var(--gd-title-font) !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  line-height: 0.82 !important;
+  letter-spacing: -0.025em !important;
+  text-transform: uppercase;
+}
+
+.gastronomy-dining-page .gd-title-line {
+  display: block;
+  white-space: nowrap;
+}
+
+.gastronomy-dining-page .dining-hero__copy h1 {
+  font-size: clamp(62px, 7.4vw, 112px) !important;
+}
+
+.gastronomy-dining-page :is(
+  .dining-hero__copy,
+  .dining-orbit__copy,
+  .dining-course__meta,
+  .dining-wine__copy,
+  .dining-chef__copy,
+  .dining-finale__copy,
+  .dining-cascade__sticky > header,
+  .dining-gallery__sticky > header
+) > .gd-script {
+  position: relative;
+  z-index: 3;
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  margin: -0.13em 0 clamp(24px, 2.5vw, 40px) clamp(18px, 3.4vw, 54px);
+  color: #d4bf86;
+  font-family: var(--gd-script-font) !important;
+  font-size: clamp(23px, 2.35vw, 38px) !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  line-height: 0.8 !important;
+  text-transform: none !important;
+  text-shadow: 0 2px 22px rgba(34, 22, 8, 0.42);
+}
+
+.gastronomy-dining-page .dining-hero__copy--open > .gd-script,
+.gastronomy-dining-page .dining-finale__copy > .gd-script {
+  margin-inline: auto;
+  transform: translateX(clamp(12px, 3vw, 42px));
+}
+
+.gastronomy-dining-page :is(
+  .dining-hero__copy,
+  .dining-orbit__copy,
+  .dining-course__meta,
+  .dining-wine__copy,
+  .dining-chef__copy,
+  .dining-finale__copy
+) > p,
+.gastronomy-dining-page .dining-gallery__caption {
+  margin-top: 0;
+  font-family: var(--gd-body-font) !important;
+  font-size: clamp(16px, 1.18vw, 18px);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0.055em;
+  line-height: 1.55;
+}
+
+.dining-course__meta--left {
+  text-align: left;
+}
+
+/* Day is the default public theme: cream and Hathor gold, never a black page.
+   Photography keeps a warm bronze wash so the cream typography remains legible. */
+.gastronomy-dining-shell,
+.gastronomy-dining-page {
+  background: #f5eacf;
+  color: #6e5a36;
+}
+
+.dining-orbit,
+.dining-chef {
+  background:
+    radial-gradient(circle at 78% 18%, rgba(182, 159, 100, 0.18), transparent 32%),
+    #f5eacf;
+}
+
+.dining-cascade,
+.dining-gallery {
+  background:
+    radial-gradient(circle at 78% 34%, rgba(255, 248, 226, 0.18), transparent 34%),
+    #b69f64;
+}
+
+.dining-course__sticky,
+.dining-course--sea .dining-course__sticky,
+.dining-course--sweet .dining-course__sticky,
+.dining-wine__sticky {
+  background: #f5eacf;
+}
+
+.dining-hero__sticky {
+  background: #b69f64;
+}
+
+.dining-hero__veil {
+  background:
+    linear-gradient(180deg, rgba(87, 58, 20, 0.08) 28%, rgba(67, 42, 15, 0.62) 100%),
+    radial-gradient(circle at 50% 38%, transparent 16%, rgba(72, 47, 19, 0.36) 100%);
+}
+
+.dining-wine__veil {
+  background:
+    linear-gradient(90deg, rgba(78, 50, 18, 0.72) 8%, transparent 58%),
+    linear-gradient(180deg, transparent 38%, rgba(76, 47, 16, 0.58));
+}
+
+.dining-finale__veil {
+  background: rgba(74, 47, 18, 0.55);
+}
+
+.dining-orbit__word {
+  color: rgba(182, 159, 100, 0.13);
+}
+
+.gastronomy-dining-page .dining-orbit__copy h2,
+.gastronomy-dining-page .dining-chef__copy h2 {
+  color: #b69f64;
+  text-shadow: none;
+}
+
+.gastronomy-dining-page :is(.dining-orbit__copy, .dining-chef__copy) > .gd-script {
+  color: #7d5f28;
+  text-shadow: none;
+}
+
+.gastronomy-dining-page :is(.dining-orbit__copy, .dining-chef__copy) > p {
+  color: #6e5a36;
+  text-shadow: none;
+}
+
+.gastronomy-dining-page :is(.dining-cascade__sticky > header, .dining-gallery__sticky > header) h2,
+.gastronomy-dining-page .dining-gallery__caption {
+  color: #fffaf0 !important;
+}
+
+.gastronomy-dining-page :is(.dining-cascade__sticky > header, .dining-gallery__sticky > header) > .gd-script {
+  color: #765a25;
+  text-shadow: none;
+}
+
+/* Homepage pill language: cream/gold by day, restrained glass only at night. */
+.gastronomy-dining-page .gd-home-cta.public-btn-outline-gold,
+.gastronomy-dining-page .dining-finale__actions .gd-home-cta.public-btn-outline-gold {
+  width: var(--hathor-btn-width, 12.5rem) !important;
+  min-width: var(--hathor-btn-width, 12.5rem) !important;
+  max-width: var(--hathor-btn-width, 12.5rem) !important;
+  height: var(--hathor-btn-height, 2.85rem) !important;
+  min-height: var(--hathor-btn-height, 2.85rem) !important;
+  margin-top: 28px;
+  padding: 3px var(--hathor-btn-pad-x, 1.75rem) 1px !important;
+  border: 1px solid #b69f64 !important;
+  background: #faf8f5 !important;
+  box-shadow: 0 8px 22px rgba(44, 36, 25, 0.1);
+  color: #b69f64 !important;
+  -webkit-text-fill-color: #b69f64 !important;
+  font-family: var(--public-sans, sans-serif) !important;
+  font-size: var(--hathor-btn-font-size, 0.72rem) !important;
+  font-style: normal !important;
+  font-weight: 500 !important;
+  letter-spacing: var(--hathor-btn-tracking, 0.18em) !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
+  transition:
+    background 350ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 350ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 350ms ease,
+    box-shadow 350ms ease,
+    transform 350ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gastronomy-dining-page .dining-finale__actions .gd-home-cta.public-btn-outline-gold {
+  margin-top: 0;
+}
+
+.gastronomy-dining-page .gd-home-cta.public-btn-outline-gold:hover,
+.gastronomy-dining-page .gd-home-cta.public-btn-outline-gold:focus-visible {
+  border-color: #b69f64 !important;
+  background: #b69f64 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: 0 10px 26px rgba(182, 159, 100, 0.35);
+  transform: translateY(-2px);
+}
+
+/* Night mode is the only dark surface treatment. */
+html[data-public-theme="night"] .gastronomy-dining-shell,
+html[data-public-theme="night"] .gastronomy-dining-page,
+html[data-public-theme="night"] .dining-orbit,
+html[data-public-theme="night"] .dining-cascade,
+html[data-public-theme="night"] .dining-chef,
+html[data-public-theme="night"] .dining-gallery {
+  background: #090807;
+  color: #f7f1e6;
+}
+
+html[data-public-theme="night"] .dining-course__sticky,
+html[data-public-theme="night"] .dining-course--sea .dining-course__sticky,
+html[data-public-theme="night"] .dining-course--sweet .dining-course__sticky,
+html[data-public-theme="night"] .dining-wine__sticky,
+html[data-public-theme="night"] .dining-hero__sticky {
+  background: #070605;
+}
+
+html[data-public-theme="night"] .dining-hero__veil {
+  background:
+    linear-gradient(transparent 35%, rgba(5, 4, 3, 0.85)),
+    radial-gradient(circle at 50% 40%, transparent 10%, rgba(5, 4, 3, 0.53) 100%);
+}
+
+html[data-public-theme="night"] .dining-wine__veil {
+  background:
+    linear-gradient(90deg, rgba(7, 8, 12, 0.8) 10%, transparent 55%),
+    linear-gradient(transparent 40%, rgba(7, 8, 12, 0.7));
+}
+
+html[data-public-theme="night"] .dining-finale__veil {
+  background: rgba(7, 6, 5, 0.6);
+}
+
+html[data-public-theme="night"] .gastronomy-dining-page :is(.dining-orbit__copy, .dining-chef__copy) h2,
+html[data-public-theme="night"] .gastronomy-dining-page :is(.dining-orbit__copy, .dining-chef__copy) > p {
+  color: #f7f1e6;
+  text-shadow: 0 3px 28px rgba(0, 0, 0, 0.48);
+}
+
+html[data-public-theme="night"] .gastronomy-dining-page :is(.dining-orbit__copy, .dining-chef__copy) > .gd-script,
+html[data-public-theme="night"] .gastronomy-dining-page :is(.dining-cascade__sticky > header, .dining-gallery__sticky > header) > .gd-script {
+  color: #d4bf86;
+  text-shadow: 0 2px 22px rgba(0, 0, 0, 0.5);
+}
+
+html[data-public-theme="night"] .gastronomy-dining-page .gd-home-cta.public-btn-outline-gold {
+  border-color: rgba(212, 194, 138, 0.72) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  box-shadow: none;
+  color: #d4bf86 !important;
+  -webkit-text-fill-color: #d4bf86 !important;
+  backdrop-filter: blur(8px);
+}
+
+html[data-public-theme="night"] .gastronomy-dining-page .gd-home-cta.public-btn-outline-gold:hover,
+html[data-public-theme="night"] .gastronomy-dining-page .gd-home-cta.public-btn-outline-gold:focus-visible {
+  border-color: rgba(212, 194, 138, 0.92) !important;
+  background: rgba(182, 159, 100, 0.24) !important;
+  color: #fffaf0 !important;
+  -webkit-text-fill-color: #fffaf0 !important;
+}
+
+/* Softer plate descents. The anchor positions and final rotations are unchanged;
+   only the approach distance, tilt and arrival easing are refined. */
+@media (min-width: 1025px) {
+  .dining-plate--one {
+    opacity: var(--pa, var(--a));
+    transform:
+      translate3d(calc((1 - var(--pa, var(--a))) * -2vw), calc((1 - var(--pa, var(--a))) * -42vh), 0)
+      rotate(calc((1 - var(--pa, var(--a))) * -7deg + var(--p) * 8deg))
+      scale(calc(0.975 + var(--pa, var(--a)) * 0.025));
+  }
+
+  .dining-plate--two {
+    opacity: var(--pb, var(--b));
+    transform:
+      translate3d(calc((1 - var(--pb, var(--b))) * 2.5vw), calc((1 - var(--pb, var(--b))) * -46vh), 0)
+      rotate(calc((1 - var(--pb, var(--b))) * 8deg + var(--p) * -10deg))
+      scale(calc(0.975 + var(--pb, var(--b)) * 0.025));
+  }
+
+  .dining-plate--three {
+    opacity: var(--pc, var(--c));
+    transform:
+      translate3d(calc((1 - var(--pc, var(--c))) * -6vw), calc((1 - var(--pc, var(--c))) * 12vh), 0)
+      rotate(calc((1 - var(--pc, var(--c))) * 5deg + var(--p) * 6deg))
+      scale(calc(0.975 + var(--pc, var(--c)) * 0.025));
+  }
+
+  .dining-plate--four {
+    opacity: var(--pc, var(--c));
+    transform:
+      translate3d(0, calc((1 - var(--pc, var(--c))) * -34vh), 0)
+      rotate(calc((1 - var(--pc, var(--c))) * -8deg + var(--p) * 12deg))
+      scale(calc(0.975 + var(--pc, var(--c)) * 0.025));
+  }
+
+  .dining-plate--five {
+    opacity: var(--pd, var(--d));
+    transform:
+      translate3d(calc((1 - var(--pd, var(--d))) * 3vw), calc((1 - var(--pd, var(--d))) * -30vh), 0)
+      rotate(calc((1 - var(--pd, var(--d))) * 10deg + var(--p) * -6deg))
+      scale(calc(0.975 + var(--pd, var(--d)) * 0.025));
+  }
+
+  .dining-plate--six {
+    opacity: var(--pd, var(--d));
+    transform:
+      translate3d(0, calc((1 - var(--pd, var(--d))) * -26vh), 0)
+      rotate(calc((1 - var(--pd, var(--d))) * -6deg + var(--p) * -8deg))
+      scale(calc(0.975 + var(--pd, var(--d)) * 0.025));
+  }
+
+  .dining-plate--seven {
+    opacity: var(--pb, var(--b));
+    transform:
+      translate3d(calc((1 - var(--pb, var(--b))) * -2vw), calc((1 - var(--pb, var(--b))) * -22vh), 0)
+      rotate(calc((1 - var(--pb, var(--b))) * 4deg + var(--p) * 14deg))
+      scale(calc(0.975 + var(--pb, var(--b)) * 0.025));
+  }
+
+  .dining-course__cutout {
+    opacity: var(--pc, var(--c));
+    transform:
+      translate3d(0, calc(-50% + (1 - var(--pc, var(--c))) * -38vh), 0)
+      rotate(calc((1 - var(--pc, var(--c))) * 6deg + var(--p) * 6deg))
+      scale(calc(0.975 + var(--pc, var(--c)) * 0.025));
+  }
+
+  .dining-course__cutout--right {
+    transform:
+      translate3d(0, calc(-50% + (1 - var(--pc, var(--c))) * -38vh), 0)
+      rotate(calc((1 - var(--pc, var(--c))) * -6deg + var(--p) * -5deg))
+      scale(calc(0.975 + var(--pc, var(--c)) * 0.025));
+  }
+
+  .dining-wine__glass {
+    opacity: var(--pb, var(--b));
+    transform:
+      translate3d(calc((1 - var(--pb, var(--b))) * 3vw), calc(-50% + (1 - var(--pb, var(--b))) * -34vh), 0)
+      rotate(calc((1 - var(--pb, var(--b))) * -8deg + var(--p) * -6deg))
+      scale(calc(0.94 + var(--pb, var(--b)) * 0.1));
+  }
+
+  .dining-gallery__a {
+    opacity: var(--pa, var(--a));
+    transform:
+      translate3d(0, calc((1 - var(--pa, var(--a))) * -34vh), 0)
+      rotate(calc((1 - var(--pa, var(--a))) * 6deg + var(--p) * 8deg))
+      scale(calc(0.975 + var(--pa, var(--a)) * 0.025));
+  }
+
+  .dining-gallery__b {
+    opacity: var(--pb, var(--b));
+    transform:
+      translate3d(0, calc((1 - var(--pb, var(--b))) * -38vh), 0)
+      rotate(calc((1 - var(--pb, var(--b))) * -7deg + var(--p) * -10deg))
+      scale(calc(0.975 + var(--pb, var(--b)) * 0.025));
+  }
+
+  .dining-gallery__c {
+    opacity: var(--pc, var(--c));
+    transform:
+      translate3d(0, calc((1 - var(--pc, var(--c))) * -28vh), 0)
+      rotate(calc((1 - var(--pc, var(--c))) * 5deg + var(--p) * 6deg))
+      scale(calc(0.975 + var(--pc, var(--c)) * 0.025));
+  }
+
+  .dining-finale__plate {
+    opacity: calc(var(--pa, var(--a)) * 0.72);
+    transform:
+      translate3d(0, calc((1 - var(--pa, var(--a))) * -28vh), 0)
+      rotate(calc((1 - var(--pa, var(--a))) * 6deg + var(--p) * 10deg))
+      scale(calc(0.88 + var(--pa, var(--a)) * 0.16));
+  }
+}
+
+@media (width <= 1024px) {
+  .gastronomy-dining-page .gd-title-line {
+    white-space: normal;
+  }
+
+  .gastronomy-dining-page :is(
+    .dining-hero__copy,
+    .dining-orbit__copy,
+    .dining-course__meta,
+    .dining-wine__copy,
+    .dining-chef__copy,
+    .dining-finale__copy,
+    .dining-cascade__sticky > header,
+    .dining-gallery__sticky > header
+  ) > .gd-script {
+    margin-bottom: 28px;
+  }
+}
+
+@media (width <= 480px) {
+  .gastronomy-dining-page .dining-hero__copy h1 {
+    font-size: clamp(48px, 15vw, 64px) !important;
+  }
+
+  .gastronomy-dining-page :is(
+    .dining-orbit__copy,
+    .dining-course__meta,
+    .dining-wine__copy,
+    .dining-chef__copy,
+    .dining-finale__copy,
+    .dining-cascade__sticky > header,
+    .dining-gallery__sticky > header
+  ) h2 {
+    font-size: clamp(42px, 12.2vw, 58px) !important;
+    line-height: 0.82 !important;
+  }
+
+  .gastronomy-dining-page :is(
+    .dining-hero__copy,
+    .dining-orbit__copy,
+    .dining-course__meta,
+    .dining-wine__copy,
+    .dining-chef__copy,
+    .dining-finale__copy,
+    .dining-cascade__sticky > header,
+    .dining-gallery__sticky > header
+  ) > .gd-script {
+    margin-top: -0.08em;
+    margin-left: 14px;
+    margin-bottom: 22px;
+    font-size: clamp(21px, 7.2vw, 29px) !important;
+  }
+
+  .gastronomy-dining-page .dining-hero__copy--open > .gd-script,
+  .gastronomy-dining-page .dining-finale__copy > .gd-script {
+    margin-inline: auto;
+    transform: translateX(10px);
+  }
+
+  .gastronomy-dining-page :is(
+    .dining-hero__copy,
+    .dining-orbit__copy,
+    .dining-course__meta,
+    .dining-wine__copy,
+    .dining-chef__copy,
+    .dining-finale__copy
+  ) > p,
+  .gastronomy-dining-page .dining-gallery__caption {
+    font-size: clamp(15px, 4.35vw, 17px);
+    line-height: 1.6;
+  }
+}

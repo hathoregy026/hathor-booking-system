@@ -12,8 +12,8 @@ const plate = (number: number) =>
 
 const typeStyle = {
   "--gd-title-font": '"Gamgote", "Bitho Luxury", Georgia, serif',
-  "--gd-script-font": '"Agraham", "Quiet Luxury", cursive',
-  "--gd-body-font": '"Agraham", "Hathor Body", sans-serif',
+  "--gd-script-font": '"Quiet Luxury", "Agraham", cursive',
+  "--gd-body-font": 'var(--public-sans, "Plus Jakarta Sans", sans-serif)',
 } as CSSProperties;
 
 function Plate({ number, alt, className }: { number: number; alt: string; className: string }) {
@@ -53,31 +53,31 @@ export function GastronomySpringsDesignPage() {
             <div className="dining-hero__veil" />
 
             <div className="dining-hero__copy dining-hero__copy--open">
-              <span>HATHOR TABLE · THE NILE · YOUR HOURS</span>
               <h1>
-                The Nile sets
-                <em>the table.</em>
+                <span className="gd-title-line">Dining on</span>
+                <span className="gd-title-line">the Nile.</span>
               </h1>
+              <span className="gd-script">A Table in Motion</span>
               <p>
-                Egyptian flavours, thoughtful service and riverlight come together in a dining
-                experience composed around the rhythm of your voyage.
+                Egyptian flavours, thoughtful service and riverlight come together in an intimate
+                dining experience composed around the rhythm of your voyage.
               </p>
             </div>
             <div className="dining-hero__copy dining-hero__copy--mid">
-              <span>RIVERLIGHT · FLAVOUR · CEREMONY</span>
               <h2>
-                Every course holds
-                <em>a view of Egypt.</em>
+                <span className="gd-title-line">Riverlight at</span>
+                <span className="gd-title-line">every course.</span>
               </h2>
+              <span className="gd-script">Egypt, Served Slowly</span>
             </div>
             <div className="dining-hero__copy dining-hero__copy--end">
-              <span>ENTER THE HATHOR TABLE</span>
               <h2>
-                A voyage told
-                <em>through taste.</em>
+                <span className="gd-title-line">A voyage</span>
+                <span className="gd-title-line">through taste.</span>
               </h2>
-              <a className="gd-home-cta" href="#orbit">
-                <span>Discover the table</span>
+              <span className="gd-script">Enter the Hathor Table</span>
+              <a className="public-btn-outline-gold gd-home-cta" href="#orbit">
+                <span>Explore Dining</span>
               </a>
             </div>
             <div className="gastronomy-dining-hero__edge">DINING ON THE NILE 01 / 10</div>
@@ -95,11 +95,11 @@ export function GastronomySpringsDesignPage() {
             <Plate number={6} alt="Hathor evening plate" className="dining-plate dining-plate--six" />
             <Plate number={7} alt="Hathor river plate" className="dining-plate dining-plate--seven" />
             <div className="dining-orbit__copy">
-              <span>SEVEN PLATES · ONE NILE STORY</span>
               <h2>
-                Plates arrive.
-                <em>Time slows.</em>
+                <span className="gd-title-line">Seven plates.</span>
+                <span className="gd-title-line">One Nile story.</span>
               </h2>
+              <span className="gd-script">Time, Beautifully Slowed</span>
               <p>
                 Each dish carries a different note of Egypt—bright herbs, warm spice, river fish
                 and produce gathered close to the banks.
@@ -118,11 +118,11 @@ export function GastronomySpringsDesignPage() {
             </figure>
             <Plate number={1} alt="Opening plate" className="dining-course__cutout" />
             <div className="dining-course__meta">
-              <span>01 · THE FIRST COURSE</span>
               <h2>
-                First light
-                <em>on porcelain.</em>
+                <span className="gd-title-line">First light</span>
+                <span className="gd-title-line">on porcelain.</span>
               </h2>
+              <span className="gd-script">The Opening Course</span>
               <p>
                 A precise opening bite awakens the palate while the river changes colour beyond
                 the windows.
@@ -141,11 +141,11 @@ export function GastronomySpringsDesignPage() {
             </figure>
             <Plate number={3} alt="Nile-inspired seafood plate" className="dining-course__cutout dining-course__cutout--right" />
             <div className="dining-course__meta dining-course__meta--left">
-              <span>02 · FROM THE RIVER AND SEA</span>
               <h2>
-                Freshness at
-                <em>the water’s edge.</em>
+                <span className="gd-title-line">Fresh from</span>
+                <span className="gd-title-line">the water’s edge.</span>
               </h2>
+              <span className="gd-script">River &amp; Sea</span>
               <p>
                 Morning market ingredients are prepared with restraint, letting each flavour meet
                 the cool evening air.
@@ -157,11 +157,11 @@ export function GastronomySpringsDesignPage() {
         <section className="dining-cascade" data-v6-scroll>
           <div className="dining-cascade__sticky">
             <header>
-              <span>THE PASSAGE OF COURSES</span>
               <h2>
-                Layer after
-                <em>luminous layer.</em>
+                <span className="gd-title-line">Course after</span>
+                <span className="gd-title-line">luminous course.</span>
               </h2>
+              <span className="gd-script">The Passage of Flavour</span>
             </header>
             <div className="dining-cascade__stack">
               <figure><img src={media.courses} alt="A tableau of Hathor courses" /></figure>
@@ -180,11 +180,11 @@ export function GastronomySpringsDesignPage() {
             <div className="dining-wine__veil" />
             <Plate number={6} alt="A plate chosen for the wine pairing" className="dining-wine__glass" />
             <div className="dining-wine__copy">
-              <span>CELLAR · PAIRING · RIVER NIGHT</span>
               <h2>
-                The pour becomes
-                <em>part of the voyage.</em>
+                <span className="gd-title-line">The pour</span>
+                <span className="gd-title-line">joins the voyage.</span>
               </h2>
+              <span className="gd-script">Cellar by Candlelight</span>
               <p>
                 Carefully selected wines meet Egyptian ingredients in pairings paced around the
                 conversation, never the clock.
@@ -202,11 +202,11 @@ export function GastronomySpringsDesignPage() {
               <img src={media.chef} alt="Hathor's chef composing dinner" />
             </figure>
             <div className="dining-chef__copy">
-              <span>THE KITCHEN BEHIND THE JOURNEY</span>
               <h2>
-                Everything appears.
-                <em>Nothing interrupts.</em>
+                <span className="gd-title-line">Quiet service.</span>
+                <span className="gd-title-line">Perfect timing.</span>
               </h2>
+              <span className="gd-script">The Hathor Way</span>
               <p>
                 Preferences are remembered, timings follow the room and each plate arrives with
                 the quiet confidence of Hathor hospitality.
@@ -225,11 +225,11 @@ export function GastronomySpringsDesignPage() {
             </figure>
             <Plate number={2} alt="Hathor dessert plate" className="dining-course__cutout" />
             <div className="dining-course__meta">
-              <span>03 · THE LAST LIGHT</span>
               <h2>
-                Sweetness that
-                <em>does not hurry.</em>
+                <span className="gd-title-line">Sweetness</span>
+                <span className="gd-title-line">without hurry.</span>
               </h2>
+              <span className="gd-script">The Last Light</span>
               <p>
                 Dessert lingers with tea, quiet laughter and the lights of the Nile passing slowly
                 beyond the deck.
@@ -241,11 +241,11 @@ export function GastronomySpringsDesignPage() {
         <section className="dining-gallery" data-v6-scroll>
           <div className="dining-gallery__sticky">
             <header>
-              <span>A HATHOR MENU IN MOTION</span>
               <h2>
-                Every plate
-                <em>a private horizon.</em>
+                <span className="gd-title-line">Every plate.</span>
+                <span className="gd-title-line">A private horizon.</span>
               </h2>
+              <span className="gd-script">A Hathor Menu in Motion</span>
             </header>
             <Plate number={5} alt="Hathor plate one" className="dining-gallery__a" />
             <Plate number={6} alt="Hathor plate two" className="dining-gallery__b" />
@@ -263,18 +263,18 @@ export function GastronomySpringsDesignPage() {
             <div className="dining-finale__veil" />
             <Plate number={4} alt="Hathor's final plate" className="dining-finale__plate" />
             <div className="dining-finale__copy">
-              <span>YOUR TABLE ON THE NILE</span>
               <h2>
-                Tell us what
-                <em>the evening should become.</em>
+                <span className="gd-title-line">Your evening.</span>
+                <span className="gd-title-line">Beautifully yours.</span>
               </h2>
+              <span className="gd-script">A Table on the Nile</span>
               <p>
                 A birthday beneath the stars, a private family dinner or a quiet celebration—our
                 team will shape the table around you.
               </p>
               <div className="dining-finale__actions">
-                <a className="gd-home-cta" href="/contact"><span>Speak with concierge</span></a>
-                <a className="gd-home-cta" href="/booking"><span>Book your voyage</span></a>
+                <a className="public-btn-outline-gold gd-home-cta" href="/contact"><span>Ask Concierge</span></a>
+                <a className="public-btn-outline-gold gd-home-cta" href="/booking"><span>Book Voyage</span></a>
               </div>
             </div>
           </div>
