@@ -10,7 +10,7 @@ type WellnessBoringScrollRefs = {
   trackRef: RefObject<HTMLDivElement | null>;
 };
 
-export function useWellnessBoringScroll({ rootRef, runRef, trackRef }: WellnessBoringScrollRefs) {
+export function useWellnessEditorialScroll({ rootRef, runRef, trackRef }: WellnessBoringScrollRefs) {
   useEffect(() => {
     const root = rootRef.current;
     const run = runRef.current;
@@ -23,6 +23,7 @@ export function useWellnessBoringScroll({ rootRef, runRef, trackRef }: WellnessB
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     let desktop = false;
     let travel = 0;
+    let scrollDistance = 0;
     let frame = 0;
     let target = 0;
     let current = 0;
@@ -36,8 +37,24 @@ export function useWellnessBoringScroll({ rootRef, runRef, trackRef }: WellnessB
         const width = scene.offsetWidth;
         const enter = clamp((viewport * 0.96 - left) / Math.max(viewport * 0.5, width * 0.35));
         const parallax = clamp((viewport - left) / Math.max(1, viewport + width));
+        const focus = Math.sin(parallax * Math.PI);
         scene.style.setProperty("--reveal", enter.toFixed(4));
         scene.style.setProperty("--parallax", parallax.toFixed(4));
+        scene.style.setProperty("--scene-progress", parallax.toFixed(4));
+        scene.style.setProperty("--focus", Math.max(0, focus).toFixed(4));
+      });
+    };
+
+    const applyVerticalVars = () => {
+      const viewport = window.innerHeight;
+      scenes.forEach((scene) => {
+        const rect = scene.getBoundingClientRect();
+        const progress = clamp((viewport - rect.top) / Math.max(1, viewport + rect.height));
+        const focus = Math.sin(progress * Math.PI);
+        scene.style.setProperty("--reveal", clamp(progress * 1.8).toFixed(4));
+        scene.style.setProperty("--parallax", progress.toFixed(4));
+        scene.style.setProperty("--scene-progress", progress.toFixed(4));
+        scene.style.setProperty("--focus", Math.max(0, focus).toFixed(4));
       });
     };
 
@@ -46,17 +63,15 @@ export function useWellnessBoringScroll({ rootRef, runRef, trackRef }: WellnessB
       if (!desktop) {
         run.style.height = "auto";
         track.style.transform = "none";
-        scenes.forEach((scene) => {
-          scene.style.setProperty("--reveal", "1");
-          scene.style.setProperty("--parallax", "0.5");
-        });
+        applyVerticalVars();
         if (progressBar) progressBar.style.transform = "scaleX(0)";
         return;
       }
       travel = Math.max(1, track.scrollWidth - window.innerWidth);
-      run.style.height = `${travel + window.innerHeight}px`;
+      scrollDistance = Math.max(1, travel * 0.74);
+      run.style.height = `${scrollDistance + window.innerHeight}px`;
       const rect = run.getBoundingClientRect();
-      target = clamp(-rect.top / travel);
+      target = clamp(-rect.top / scrollDistance);
       current = target;
       const x = current * travel;
       track.style.transform = `translate3d(${-x}px,0,0)`;
@@ -76,9 +91,12 @@ export function useWellnessBoringScroll({ rootRef, runRef, trackRef }: WellnessB
     };
 
     const updateTarget = () => {
-      if (!desktop) return;
+      if (!desktop) {
+        applyVerticalVars();
+        return;
+      }
       const rect = run.getBoundingClientRect();
-      target = clamp(-rect.top / travel);
+      target = clamp(-rect.top / scrollDistance);
       if (!frame) frame = requestAnimationFrame(tick);
     };
 

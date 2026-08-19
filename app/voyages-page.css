@@ -1,0 +1,563 @@
+/* Voyages page — Suites DNA (Bitho / Rolling Fonte / Besty / Plus Jakarta)
+   Scoped to [data-voyages-page] only. */
+
+@import "./luxury-editorial.css";
+
+[data-voyages-page] {
+  --voy-cream: #ece8df;
+  --voy-ivory: #faf8f5;
+  --voy-ink: #1c1917;
+  --voy-umber: #1b130c;
+  --voy-gold: #b69f64;
+  --voy-muted: #6b6560;
+  --voy-display: "Bitho Luxury", cursive;
+  --voy-editorial: "Rolling Fonte", Georgia, serif;
+  --voy-script: "Besty Script", cursive;
+  --voy-body: var(--font-hathor-body, "Plus Jakarta Sans"), system-ui, sans-serif;
+  --voy-gutter: clamp(1.25rem, 4vw, 3.5rem);
+  --voy-max: 92rem;
+  --voy-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  position: relative;
+  overflow-x: clip;
+  background: var(--voy-cream);
+  color: var(--voy-ink);
+  font-family: var(--voy-body);
+}
+
+.voy-wrap {
+  width: min(calc(100% - (var(--voy-gutter) * 2)), var(--voy-max));
+  margin-inline: auto;
+}
+
+.voy-kicker {
+  margin: 0 0 1rem;
+  font-family: var(--voy-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--voy-muted);
+}
+
+.voy-display {
+  margin: 0;
+  font-family: var(--voy-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(2.8rem, 6vw, 5.25rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: var(--voy-ink);
+  text-wrap: balance;
+}
+
+.voy-display--gold {
+  color: var(--voy-gold);
+}
+
+.voy-script {
+  margin: 0.75rem 0 0;
+  font-family: var(--voy-script);
+  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+  line-height: 1.25;
+  color: var(--voy-gold);
+}
+
+.voy-body {
+  margin: 0;
+  max-width: 42ch;
+  font-size: clamp(0.98rem, 1.05vw, 1.1rem);
+  line-height: 1.75;
+  color: var(--voy-muted);
+}
+
+.voy-body + .voy-body {
+  margin-top: 1rem;
+}
+
+.voy-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 1.75rem;
+}
+
+/* ——— Opening ——— */
+.voy-opening {
+  padding: clamp(4rem, 9vw, 7.5rem) 0 clamp(3rem, 6vw, 5rem);
+  background: var(--voy-cream);
+}
+
+.voy-opening__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: end;
+}
+
+.voy-opening__media {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  box-shadow:
+    0 1px 2px rgba(22, 18, 14, 0.55),
+    0 3px 14px rgba(22, 18, 14, 0.4);
+}
+
+.voy-opening__media img {
+  object-fit: cover;
+}
+
+/* ——— Manifesto numerals ——— */
+.voy-manifesto {
+  padding: clamp(2.5rem, 5vw, 4rem) 0 clamp(3.5rem, 7vw, 5.5rem);
+  background: var(--voy-ivory);
+  border-block: 1px solid rgb(44 40 36 / 0.08);
+}
+
+.voy-manifesto__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.voy-manifesto__numeral {
+  margin: 0 0 0.5rem;
+  font-family: var(--voy-editorial);
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  line-height: 1;
+  color: var(--voy-gold);
+  opacity: 0.52;
+}
+
+.voy-manifesto__title {
+  margin: 0 0 0.65rem;
+  font-family: var(--voy-display);
+  font-style: italic;
+  font-size: clamp(1.75rem, 2.8vw, 2.25rem);
+  line-height: 1.05;
+  color: var(--voy-ink);
+}
+
+/* ——— Sticky voyage chapters (Suites / accordion DNA) ——— */
+.voy-chapters {
+  position: relative;
+  background: var(--voy-umber);
+  isolation: isolate;
+}
+
+.voy-chapter {
+  position: relative;
+  height: 185svh;
+  background: var(--voy-umber);
+}
+
+.voy-chapter + .voy-chapter {
+  margin-top: -100svh;
+}
+
+.voy-chapter--last {
+  height: 145svh;
+}
+
+.voy-chapter__frame {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--voy-umber);
+  box-shadow: 0 -30px 70px rgba(22, 13, 7, 0.24);
+}
+
+.voy-chapter__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.voy-chapter__media img {
+  object-fit: cover;
+}
+
+.voy-chapter__wash {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(17, 11, 7, 0.68) 0%,
+      rgba(27, 18, 11, 0.32) 42%,
+      rgba(27, 18, 11, 0.06) 72%,
+      rgba(18, 12, 8, 0.18) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(13, 9, 6, 0.2) 0%,
+      transparent 38%,
+      rgba(13, 9, 6, 0.42) 100%
+    );
+  pointer-events: none;
+}
+
+.voy-chapter__horizon {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 8;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(182, 159, 100, 0.42),
+    #f1d995 52%,
+    rgba(182, 159, 100, 0.42)
+  );
+  box-shadow:
+    0 0 14px rgba(232, 196, 104, 0.72),
+    0 0 34px rgba(182, 159, 100, 0.28);
+}
+
+.voy-chapter__index {
+  position: absolute;
+  left: clamp(1.5rem, 3vw, 3.25rem);
+  top: clamp(1.35rem, 3vh, 2.25rem);
+  z-index: 4;
+  color: var(--voy-gold);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  line-height: 1;
+}
+
+.voy-chapter__index-total {
+  color: rgba(247, 241, 230, 0.72);
+}
+
+.voy-chapter__copy {
+  position: absolute;
+  left: clamp(9.5rem, 15.5vw, 18rem);
+  bottom: clamp(2.5rem, 8vh, 5rem);
+  z-index: 5;
+  max-width: min(36rem, calc(100vw - 12rem));
+  color: var(--voy-ivory);
+}
+
+.voy-chapter__section-head {
+  margin-bottom: clamp(1.25rem, 3vh, 2rem);
+}
+
+.voy-chapter__section-title {
+  margin: 0;
+  font-family: var(--voy-display);
+  font-style: italic;
+  font-size: clamp(2.4rem, 4.5vw, 3.75rem);
+  line-height: 0.95;
+  color: var(--voy-gold);
+}
+
+.voy-chapter__section-indication {
+  margin: 0.35rem 0 0;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(247, 241, 230, 0.72);
+}
+
+.voy-chapter__name {
+  margin: 0;
+  font-family: var(--voy-display);
+  font-style: italic;
+  font-size: clamp(2rem, 3.8vw, 3.25rem);
+  line-height: 1;
+  color: var(--voy-ivory);
+}
+
+.voy-chapter__meta {
+  margin: 0.65rem 0 0;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(247, 241, 230, 0.62);
+}
+
+.voy-chapter__quote {
+  margin: 0.85rem 0 0;
+  font-family: var(--voy-script);
+  font-size: clamp(1.1rem, 1.8vw, 1.45rem);
+  line-height: 1.3;
+  color: var(--voy-gold);
+}
+
+.voy-chapter__summary {
+  margin: 1rem 0 0;
+  max-width: 38ch;
+  font-size: clamp(0.92rem, 1vw, 1.02rem);
+  line-height: 1.65;
+  color: rgba(247, 241, 230, 0.82);
+}
+
+.voy-chapter__highlights {
+  margin: 1.15rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 1.25rem;
+}
+
+.voy-chapter__highlights li {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(247, 241, 230, 0.58);
+}
+
+.voy-chapter__highlights li::before {
+  content: "◆ ";
+  color: var(--voy-gold);
+  font-size: 0.55rem;
+  vertical-align: middle;
+}
+
+.voy-chapter__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+/* Outline on dark chapter */
+.voy-chapter__actions .public-btn-outline-gold {
+  background: transparent !important;
+  border-color: rgba(250, 248, 245, 0.85) !important;
+  color: var(--voy-ivory) !important;
+}
+
+.voy-chapter__actions .public-btn-outline-gold:hover,
+.voy-chapter__actions .public-btn-outline-gold:focus-visible {
+  background: var(--voy-ivory) !important;
+  color: var(--voy-gold) !important;
+}
+
+/* ——— Features rail (Rolling Fonte) ——— */
+.voy-features {
+  padding: clamp(4rem, 8vw, 6.5rem) 0;
+  background: var(--voy-cream);
+}
+
+.voy-features__head {
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+  max-width: 36rem;
+}
+
+.voy-features__rail {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: clamp(2rem, 4vw, 3.5rem);
+  align-items: start;
+}
+
+.voy-features__tabs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.voy-features__tab {
+  margin: 0;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid rgb(44 40 36 / 0.1);
+  font-family: var(--voy-editorial);
+  font-size: clamp(1.75rem, 2.8vw, 2.25rem);
+  line-height: 1.1;
+  color: var(--voy-gold);
+  opacity: 0.4;
+  transition: opacity 0.35s var(--voy-ease);
+  cursor: default;
+}
+
+.voy-features__tab.is-active {
+  opacity: 1;
+}
+
+.voy-features__panel {
+  padding-top: 0.25rem;
+}
+
+.voy-features__panel-title {
+  margin: 0 0 0.75rem;
+  font-family: var(--voy-display);
+  font-style: italic;
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  line-height: 1;
+  color: var(--voy-ink);
+}
+
+/* ——— Charter band ——— */
+.voy-charter {
+  position: relative;
+  min-height: min(88svh, 820px);
+  display: grid;
+  align-items: end;
+  background: var(--voy-ink);
+}
+
+.voy-charter__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.voy-charter__shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, transparent 10%, rgb(12 10 8 / 0.62) 100%),
+    linear-gradient(90deg, rgb(12 10 8 / 0.48) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+.voy-charter__panel {
+  position: relative;
+  z-index: 2;
+  width: min(38rem, calc(100% - (var(--voy-gutter) * 2)));
+  margin: 0 var(--voy-gutter) clamp(2.5rem, 6vw, 4.5rem);
+  padding: clamp(1.75rem, 3vw, 2.5rem);
+  background: rgb(236 232 223 / 0.94);
+  color: var(--voy-ink);
+}
+
+.voy-charter__panel .voy-display {
+  font-size: clamp(2.2rem, 4vw, 3.25rem);
+}
+
+/* ——— Final CTA ——— */
+.voy-final-cta {
+  padding: clamp(4rem, 9vw, 7rem) 0 clamp(5rem, 10vw, 8rem);
+  background: var(--voy-ivory);
+  text-align: center;
+}
+
+.voy-final-cta .voy-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.voy-final-cta .voy-display {
+  max-width: 16ch;
+}
+
+.voy-final-cta .voy-body {
+  max-width: 36ch;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.voy-final-cta .voy-cta-row {
+  justify-content: center;
+}
+
+/* Reuse immersive-voyage scrub inside voyages page */
+[data-voyages-page] .iv-scrub {
+  background: var(--voy-cream);
+}
+
+[data-voyages-page] .iv-kicker,
+[data-voyages-page] .iv-lead,
+[data-voyages-page] .iv-copy {
+  font-family: var(--voy-body);
+}
+
+[data-voyages-page] .lux-gold {
+  font-family: var(--voy-display) !important;
+  font-style: italic;
+}
+
+/* ——— Tablet ——— */
+@media (max-width: 1024px) {
+  .voy-opening__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .voy-opening__media {
+    order: -1;
+    aspect-ratio: 16 / 10;
+    max-height: 52svh;
+  }
+
+  .voy-manifesto__grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .voy-features__rail {
+    grid-template-columns: 1fr;
+  }
+
+  .voy-chapter__copy {
+    left: clamp(1.25rem, 4vw, 2rem);
+    right: clamp(1.25rem, 4vw, 2rem);
+    max-width: none;
+  }
+
+  .voy-chapter__section-title {
+    font-size: clamp(2rem, 8vw, 2.75rem);
+  }
+
+  .voy-chapter__name {
+    font-size: clamp(1.65rem, 6.5vw, 2.35rem);
+  }
+}
+
+/* ——— Phone ——— */
+@media (max-width: 480px) {
+  .voy-chapter {
+    height: 165svh;
+  }
+
+  .voy-chapter + .voy-chapter {
+    margin-top: -92svh;
+  }
+
+  .voy-chapter--last {
+    height: 130svh;
+  }
+
+  .voy-chapter__copy {
+    bottom: clamp(1.75rem, 5vh, 3rem);
+  }
+
+  .voy-chapter__highlights {
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .voy-features__tab {
+    font-size: clamp(1.45rem, 6vw, 1.85rem);
+  }
+
+  .voy-cta-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .voy-cta-row .btn,
+  .voy-cta-row .public-btn-outline-gold {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .voy-features__tab {
+    transition: none;
+  }
+}

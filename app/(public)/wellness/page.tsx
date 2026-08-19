@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { WellnessPageContent } from "@/components/pages/WellnessPageContent";
-import "../../wellness-editorial.css";
+import { WellnessEditorialPageContent } from "@/components/pages/WellnessEditorialPageContent";
+import "../../wellness-editorial-v4.css";
 
 export const metadata: Metadata = {
   title: "Wellness Hathor Dahabiya Cruise | Spa Experience on the Nile",
@@ -14,5 +14,5 @@ export const metadata: Metadata = {
 };
 
 export default function WellnessPage() {
-  return <WellnessPageContent />;
+  return <WellnessEditorialPageContent />;
 }

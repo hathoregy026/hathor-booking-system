@@ -112,6 +112,121 @@ function roleCss(
   return `${selector}{font-family:${fontStack}!important;${extras.length ? `${extras.join(";")};` : ""}color:${style.color}!important;-webkit-text-fill-color:${style.color}!important;text-shadow:${shadow}!important;}`;
 }
 
+/** PANORAMIC / PRIVATE / TIMELESS slide: cream-gold invert reads as navy.
+ *  Force white type and scale the three titles into one viewport. */
+export const SUITES_TERMS_STAGE_CSS = `
+.mod-scroll__terms {
+  isolation: isolate;
+}
+.mod-scroll__terms .mod-scroll__terms__term__title,
+.mod-scroll__terms .mod-scroll__terms__term__title *,
+.mod-scroll__terms .mod-scroll__terms__term__title__filter,
+.mod-scroll__terms .mod-scroll__terms__term__title__color,
+.mod-scroll__terms .mod-scroll__terms__term__num,
+.mod-scroll__terms .mod-scroll__terms__term__text,
+.mod-scroll__terms .mod-scroll__terms__term__text *,
+.mod-scroll__terms .mod-scroll__terms__term__text__single {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  mix-blend-mode: normal !important;
+  filter: none !important;
+}
+@media (min-width: 951px) {
+  main .mod-scroll__terms {
+    box-sizing: border-box;
+    justify-content: space-between;
+    padding-top: clamp(5.2rem, 9svh, 7.4rem);
+    padding-bottom: clamp(1rem, 3.2svh, 2.2rem);
+  }
+  main .mod-scroll__terms .mod-scroll__terms__term__title,
+  main .mod-scroll__terms .mod-scroll__terms__term__title.t-supertitulo-l,
+  main .mod-scroll__terms .mod-scroll__terms__term:last-of-type .lh-less2 {
+    font-size: clamp(4.2rem, 11svh, 7.2rem) !important;
+    line-height: 0.82 !important;
+  }
+}
+@media (min-width: 481px) and (max-width: 950px) {
+  main .mod-scroll__terms .mod-scroll__terms__term__title,
+  main .mod-scroll__terms .mod-scroll__terms__term__title.t-supertitulo-l {
+    font-size: clamp(2.6rem, 8.4svh, 5.2rem) !important;
+    line-height: 0.86 !important;
+  }
+}
+@media (max-width: 480px) {
+  main .mod-scroll__terms .mod-scroll__terms__term__title,
+  main .mod-scroll__terms .mod-scroll__terms__term__title.t-supertitulo-l {
+    font-size: clamp(2.2rem, 9.2vw, 3rem) !important;
+    line-height: 0.9 !important;
+  }
+}
+`;
+
+/**
+ * Moving suite-collection panels: cycle the 4 Suites page colours so two
+ * adjacent cards never share a fill. Ink/ivory type for WCAG-clear contrast.
+ * Cream #ece8df · Ink #1c1917 · Gold #b69f64 · Ivory #faf8f5
+ */
+export const SUITES_COLLECTION_PANEL_TONES = [
+  "cream",
+  "ink",
+  "gold",
+  "ivory",
+  "ink",
+] as const;
+
+export const SUITES_COLLECTION_PANEL_CSS = `
+.mod-scroll__projects__item[data-suite-panel="cream"] {
+  --suite-panel: #ece8df;
+  --suite-panel-fg: #1c1917;
+}
+.mod-scroll__projects__item[data-suite-panel="ivory"] {
+  --suite-panel: #faf8f5;
+  --suite-panel-fg: #1c1917;
+}
+.mod-scroll__projects__item[data-suite-panel="gold"] {
+  --suite-panel: #b69f64;
+  --suite-panel-fg: #1c1917;
+}
+.mod-scroll__projects__item[data-suite-panel="ink"] {
+  --suite-panel: #1c1917;
+  --suite-panel-fg: #faf8f5;
+}
+.mod-scroll__projects__item[data-suite-panel]:not(.last-item) {
+  background: var(--suite-panel) !important;
+  box-shadow: 0 -1px 0 var(--suite-panel) !important;
+}
+.mod-scroll__projects__item[data-suite-panel]:not(.last-item) .mod-scroll__projects__item__text,
+.mod-scroll__projects__item.last-item[data-suite-panel] .mod-scroll__projects__item__text {
+  background: var(--suite-panel) !important;
+}
+.mod-scroll__projects__item[data-suite-panel] .mod-scroll__projects__item__text,
+.mod-scroll__projects__item[data-suite-panel] .mod-scroll__projects__item__text :is(div, span, a, p, h3, strong, em) {
+  color: var(--suite-panel-fg) !important;
+  -webkit-text-fill-color: var(--suite-panel-fg) !important;
+}
+.mod-scroll__projects__item[data-suite-panel] .mod-scroll__projects__item__text :is(.btn--bg, .btn--circle) {
+  border-color: var(--suite-panel-fg) !important;
+  color: var(--suite-panel-fg) !important;
+  -webkit-text-fill-color: var(--suite-panel-fg) !important;
+  background: transparent !important;
+}
+.mod-scroll__projects__item[data-suite-panel] .mod-scroll__projects__item__text .btn--bg::before {
+  background: var(--suite-panel-fg) !important;
+}
+.mod-scroll__projects__item[data-suite-panel] .mod-scroll__projects__item__text :is(.btn--bg, .btn--circle):hover,
+.mod-scroll__projects__item[data-suite-panel] .mod-scroll__projects__item__text :is(.btn--bg, .btn--circle):focus-visible {
+  background: var(--suite-panel-fg) !important;
+  color: var(--suite-panel) !important;
+  -webkit-text-fill-color: var(--suite-panel) !important;
+  border-color: var(--suite-panel-fg) !important;
+}
+.mod-scroll__projects__item[data-suite-panel] .mod-scroll__projects__item__text :is(.btn--bg, .btn--circle):hover :where(span, div),
+.mod-scroll__projects__item[data-suite-panel] .mod-scroll__projects__item__text :is(.btn--bg, .btn--circle):focus-visible :where(span, div) {
+  color: var(--suite-panel) !important;
+  -webkit-text-fill-color: var(--suite-panel) !important;
+}
+`;
+
 /** Preserve the reference site's text boxes so SplitText measures and clips
  * against the same geometry as the original scroll choreography. */
 export const SUITES_CLIP_FIX_CSS = `

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef, type ComponentPropsWithoutRef, type CSSProperties } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
-import { useWellnessBoringScroll } from "@/hooks/useWellnessBoringScroll";
+import { useWellnessEditorialScroll } from "@/hooks/useWellnessEditorialScroll";
 
 const MEDIA = {
   spa: "/media/hathor/r2/wellness-hero.webp",
@@ -97,11 +97,11 @@ const experiences = [
   { meta: "MORNING", place: "LUXURY SUITE", number: "05", title: "Slow Living", image: MEDIA.luxury, href: "/luxury-cabins-Nile-Cruise" },
 ] as const;
 
-export function WellnessPageContent() {
+export function WellnessEditorialPageContent() {
   const rootRef = useRef<HTMLDivElement>(null);
   const runRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  useWellnessBoringScroll({ rootRef, runRef, trackRef });
+  useWellnessEditorialScroll({ rootRef, runRef, trackRef });
 
   return (
     <div ref={rootRef} className="wellness-boring">

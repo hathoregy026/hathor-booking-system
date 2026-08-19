@@ -4,7 +4,8 @@
 @import "./luxury-editorial.css";
 
 [data-charter-page],
-[data-highlights-page] {
+[data-highlights-page],
+[data-voyages-page] {
   --iv-cream: var(--lux-cream, #ece8df);
   --iv-ink: #1a1714;
   --iv-gold: var(--lux-gold, #b69f64);

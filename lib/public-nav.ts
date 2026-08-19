@@ -44,6 +44,11 @@ export const NAV_CRUISES: NavGroup = {
   label: "Cruises",
   links: [
     {
+      href: "/voyages",
+      label: "Our Voyages",
+      description: "Private dahabiya itineraries on the Nile",
+    },
+    {
       href: "/cruises",
       label: "Scheduled Voyages",
       description: "Join a sailing on the Nile",
@@ -119,6 +124,7 @@ export const EXPLORE_LINKS: NavLink[] = [
   { href: "/luxury-cabins-Nile-Cruise", label: "Luxury Rooms" },
   { href: "/rooms", label: "Luxury Suites" },
   { href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise", label: "Royal Suites" },
+  { href: "/voyages", label: "Our Voyages" },
   { href: "/cruises", label: "Scheduled Voyages" },
   { href: "/charter", label: "Private Charter" },
   { href: "/highlights", label: "Highlights" },
@@ -157,7 +163,7 @@ export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
     type: "group",
     id: NAV_CRUISES.id,
     label: NAV_CRUISES.label,
-    href: "/cruises",
+    href: "/voyages",
     links: NAV_CRUISES.links,
   },
   {
