@@ -9,6 +9,8 @@ type InquiryFormProps = {
   intro?: string;
   submitLabel?: string;
   showCharterFields?: boolean;
+  className?: string;
+  submitClassName?: string;
 };
 
 type FormState = "idle" | "submitting" | "success" | "error";
@@ -19,6 +21,8 @@ export function InquiryForm({
   intro,
   submitLabel = "Send Request",
   showCharterFields = false,
+  className,
+  submitClassName = "btn btn-primary",
 }: InquiryFormProps) {
   const [state, setState] = useState<FormState>("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -77,7 +81,7 @@ export function InquiryForm({
 
   if (state === "success") {
     return (
-      <div className="hathor-form-card hathor-form-card--success">
+      <div className={["hathor-form-card hathor-form-card--success", className].filter(Boolean).join(" ")}>
         <h2 className="section-title typo-page-title text-2xl">Thank You</h2>
         <p className="section-body typo-body-text mt-4">
           Your message has been received. Our reservations team will respond
@@ -88,7 +92,11 @@ export function InquiryForm({
   }
 
   return (
-    <form className="hathor-form-card" onSubmit={handleSubmit} noValidate>
+    <form
+      className={["hathor-form-card", className].filter(Boolean).join(" ")}
+      onSubmit={handleSubmit}
+      noValidate
+    >
       <h2 className="section-title typo-page-title text-2xl">{title}</h2>
       {intro ? <p className="section-body typo-body-text mt-3">{intro}</p> : null}
 
@@ -221,7 +229,7 @@ export function InquiryForm({
 
         <button
           type="submit"
-          className="btn btn-primary"
+          className={submitClassName}
           disabled={state === "submitting"}
         >
           {state === "submitting" ? "Sending…" : submitLabel}

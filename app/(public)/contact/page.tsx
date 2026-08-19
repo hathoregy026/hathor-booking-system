@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ContactPageContent } from "@/components/pages/ContactPageContent";
+import "../../contact-editorial.css";
 
 export const metadata: Metadata = {
   title: "Contact Us | Hathor Dahabiya Nile Cruise Egypt",
