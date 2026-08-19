@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AboutPageContent } from "@/components/pages/AboutPageContent";
+import "../../about-editorial.css";
 
 export const metadata: Metadata = {
   title: "Dahabiya Nile Cruise Egypt | Luxury Sailing on the Nile",
