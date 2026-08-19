@@ -1,0 +1,157 @@
+.wellness-editorial {
+  --we-gold: #b69f64;
+  --we-cream: #f7f1e6;
+  --we-ink: #070605;
+  --we-display: var(--font-hathor-gamgote), "Gamgote", Georgia, serif;
+  --we-small: var(--font-hathor-agraham), "Agraham", Georgia, serif;
+  --we-script: var(--font-hathor-quiet-luxury), "Quiet Luxury", cursive;
+  --we-body: var(--font-hathor-body), "Plus Jakarta Sans", sans-serif;
+  --we-gutter: clamp(1.25rem, 4vw, 4.75rem);
+  position: relative;
+  width: 100%;
+  max-width: 100vw;
+  overflow: visible;
+  background: var(--we-ink);
+  color: var(--we-cream);
+  font-family: var(--we-body);
+  isolation: isolate;
+}
+
+.wellness-editorial *, .wellness-editorial *::before, .wellness-editorial *::after { box-sizing: border-box; }
+
+html[data-wellness-editorial],
+html[data-wellness-editorial] body,
+html[data-wellness-editorial] .public-site,
+html[data-wellness-editorial] .public-main,
+html[data-wellness-editorial] .page-transition {
+  overflow-x: visible !important;
+}
+.wellness-editorial figure, .wellness-editorial h1, .wellness-editorial h2, .wellness-editorial p { margin: 0; }
+.wellness-editorial section { scroll-margin-top: 4.5rem; }
+.wellness-editorial__image { object-fit: cover; }
+.wellness-editorial__progress { position: fixed; z-index: 80; top: 0; left: 0; right: 0; height: 2px; pointer-events: none; }
+.wellness-editorial__progress i { display: block; width: 100%; height: 100%; background: var(--we-gold); transform: scaleX(0); transform-origin: left center; }
+.wellness-editorial__edge { position: absolute; z-index: 10; right: 1rem; bottom: 2rem; writing-mode: vertical-rl; font: 400 .58rem/1 var(--we-small); letter-spacing: .28em; text-transform: uppercase; color: #fff9; }
+
+.wellness-editorial [data-v6-scroll] { --p: 0; --a: 0; --ao: 1; --b: 0; --bo: 1; --c: 0; --d: 0; --e: 0; position: relative; }
+.wellness-editorial [class$="__sticky"] { height: 100svh; min-height: 100svh; width: 100%; position: sticky; top: 0; overflow: hidden; }
+.wellness-editorial figure { overflow: hidden; }
+
+.wellness-editorial .dining-hero { height: 420svh; min-height: 420svh; }
+.wellness-editorial .dining-hero__sticky { background: #050403; }
+.wellness-editorial .dining-hero__layer { position: absolute; inset: 0; }
+.wellness-editorial .dining-hero__layer .wellness-editorial__image { transform: scale(1.08); }
+.wellness-editorial .dining-hero__layer--a { z-index: 1; opacity: var(--ao); transform: scale(calc(1 + var(--p) * .06)); }
+.wellness-editorial .dining-hero__layer--b { z-index: 2; opacity: var(--b); clip-path: inset(calc((1 - var(--b)) * 100%) 0 0); }
+.wellness-editorial .dining-hero__layer--c { z-index: 3; opacity: var(--c); clip-path: inset(calc((1 - var(--c)) * 100%) 0 0); }
+.wellness-editorial .dining-hero__layer--d { z-index: 4; opacity: var(--d); clip-path: inset(0 calc((1 - var(--d)) * 100%) 0 0); }
+.wellness-editorial .dining-hero__veil, .wellness-editorial .dining-wine__veil, .wellness-editorial .dining-finale__veil { position: absolute; z-index: 5; inset: 0; pointer-events: none; background: linear-gradient(180deg, #05040333 20%, #050403d9 100%), radial-gradient(circle at 50% 40%, #0000 10%, #05040388 100%); }
+.wellness-editorial .dining-hero__copy { position: absolute; z-index: 8; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: clamp(6rem, 12vh, 8rem) var(--we-gutter) 8svh; pointer-events: none; }
+.wellness-editorial .dining-hero__copy--open { align-items: center; text-align: center; opacity: var(--ao); transform: translateY(calc(var(--a) * -10vh)); }
+.wellness-editorial .dining-hero__copy--mid { opacity: min(var(--b), var(--bo)); transform: translateX(calc((1 - var(--b)) * 10vw)); justify-content: flex-end; padding-bottom: 12svh; }
+.wellness-editorial .dining-hero__copy--end { opacity: var(--d); transform: translateY(calc((1 - var(--d)) * 4rem)); justify-content: flex-end; padding-bottom: 14svh; }
+.wellness-editorial .dining-hero__copy .btn { margin-top: 1.8rem; pointer-events: auto; }
+
+.wellness-editorial .dining-hero__copy > span, .wellness-editorial .dining-orbit__copy > span, .wellness-editorial .dining-course__meta > span, .wellness-editorial .dining-cascade header > span, .wellness-editorial .dining-wine__copy > span, .wellness-editorial .dining-chef__copy > span, .wellness-editorial .dining-finale__copy > span { display: block; color: var(--we-gold); font: 400 clamp(.72rem, .85vw, .9rem)/1.25 var(--we-small); letter-spacing: .24em; text-transform: uppercase; text-shadow: 0 2px 18px #0009; }
+.wellness-editorial h1, .wellness-editorial h2 { max-width: 13ch; color: var(--we-cream); font-family: var(--we-display); font-weight: 400; letter-spacing: -.035em; text-wrap: balance; text-shadow: 0 4px 40px #0009; }
+.wellness-editorial h1 { margin-top: .65rem; font-size: clamp(3.4rem, 7.6vw, 8.5rem); line-height: .82; }
+.wellness-editorial h2 { margin-top: .75rem; font-size: clamp(3rem, 6.2vw, 7rem); line-height: .84; }
+.wellness-editorial h1 em, .wellness-editorial h2 em { display: block; position: relative; z-index: 1; margin-top: .12em; color: #d8c49a; font-family: var(--we-script); font-size: .58em; font-style: normal; font-weight: 400; line-height: 1.1; letter-spacing: 0; transform: none; }
+.wellness-editorial p { max-width: 36rem; margin-top: 1.35rem; color: #fffbd1; font: 400 clamp(.93rem, 1.05vw, 1.08rem)/1.75 var(--we-body); text-wrap: pretty; text-shadow: 0 2px 20px #000b; }
+
+.wellness-editorial .dining-orbit { height: 380svh; min-height: 380svh; background: #0a0908; }
+.wellness-editorial .dining-orbit__word { position: absolute; inset: 0; display: grid; place-items: center; color: #fff1; font: 400 clamp(7rem, 22vw, 22rem)/.7 var(--we-display); letter-spacing: -.06em; transform: translateX(calc((.5 - var(--p)) * 18vw)); }
+.wellness-editorial .dining-plate { position: absolute; z-index: 3; width: min(34vw, 27rem); aspect-ratio: 1; border: 1px solid #ffffff1a; box-shadow: 0 2.6rem 5rem #000c, 0 .7rem 2rem #b69f6426; opacity: var(--a); transform: translateY(calc((1 - var(--a)) * -60vh)) rotate(calc((1 - var(--a)) * -12deg)); }
+.wellness-editorial .dining-plate--one { top: 8svh; left: 6vw; }
+.wellness-editorial .dining-plate--two { top: 13svh; right: 8vw; width: min(27vw, 22rem); opacity: var(--b); transform: translateY(calc((1 - var(--b)) * -65vh)) rotate(calc((1 - var(--b)) * 15deg)); }
+.wellness-editorial .dining-plate--three { bottom: 7svh; left: 28vw; width: min(23vw, 18rem); opacity: var(--c); transform: translateY(calc((1 - var(--c)) * 35vh)) rotate(calc((1 - var(--c)) * 10deg)); }
+.wellness-editorial .dining-plate--four { top: 38svh; left: 47vw; width: min(19vw, 15rem); opacity: var(--c); transform: translateY(calc((1 - var(--c)) * -50vh)) rotate(calc((1 - var(--c)) * -18deg)); }
+.wellness-editorial .dining-orbit__copy { position: absolute; z-index: 8; left: var(--we-gutter); bottom: 9svh; max-width: min(38rem, 48vw); opacity: calc(.2 + var(--b) * .8); }
+
+.wellness-editorial .dining-course { height: 320svh; min-height: 320svh; }
+.wellness-editorial .dining-course__sticky { background: #080706; }
+.wellness-editorial .dining-course__bg { position: absolute; inset: 0; }
+.wellness-editorial .dining-course__bg--1 { opacity: var(--ao); transform: scale(calc(1 + var(--p) * .05)); }
+.wellness-editorial .dining-course__bg--2 { opacity: var(--b); clip-path: inset(calc((1 - var(--b)) * 100%) 0 0); }
+.wellness-editorial .dining-course__bg .wellness-editorial__image { transform: scale(1.08); }
+.wellness-editorial .dining-course__sticky::after { content: ""; position: absolute; z-index: 3; inset: 0; background: linear-gradient(90deg, #050403d9 0%, #05040322 58%, #05040380 100%); pointer-events: none; }
+.wellness-editorial .dining-course--reverse .dining-course__sticky::after { background: linear-gradient(270deg, #050403d9 0%, #05040322 58%, #05040380 100%); }
+.wellness-editorial .dining-course__cutout { position: absolute; z-index: 4; right: 6vw; top: 50%; width: min(42vw, 34rem); aspect-ratio: 4/5; border: 1px solid #ffffff1f; opacity: var(--c); transform: translateY(calc(-50% + (1 - var(--c)) * -55vh)) rotate(calc((1 - var(--c)) * 12deg)); box-shadow: 0 3rem 6rem #000d, 0 .8rem 2rem #b69f6430; }
+.wellness-editorial .dining-course__cutout--right { left: 6vw; right: auto; transform: translateY(calc(-50% + (1 - var(--c)) * -55vh)) rotate(calc((1 - var(--c)) * -12deg)); }
+.wellness-editorial .dining-course__meta { position: absolute; z-index: 6; left: var(--we-gutter); bottom: 10svh; max-width: min(39rem, 48vw); opacity: calc(.25 + var(--b) * .75); transform: translateY(calc((1 - var(--b)) * 2.5rem)); }
+.wellness-editorial .dining-course__meta--left { left: auto; right: var(--we-gutter); text-align: right; }
+.wellness-editorial .dining-course__meta--left h2, .wellness-editorial .dining-course__meta--left p { margin-left: auto; }
+
+.wellness-editorial .dining-cascade { height: 560svh; min-height: 560svh; background: #090807; }
+.wellness-editorial .dining-cascade header { position: absolute; z-index: 30; top: 10svh; left: var(--we-gutter); width: min(38rem, 42vw); pointer-events: none; }
+.wellness-editorial .dining-cascade__stack { position: absolute; inset: 0; display: grid; place-items: center; padding-left: 9vw; }
+.wellness-editorial .dining-cascade__stack figure { position: absolute; width: min(54vw, 46rem); height: min(64svh, 44rem); background: #111; border: 1px solid #ffffff16; box-shadow: 0 3rem 8rem #000e; opacity: 0; transform: translate3d(0, 2.5rem, 0) scale(.92); will-change: transform, opacity, filter; }
+.wellness-editorial .dining-cascade__stack figure.is-front { box-shadow: 0 3.5rem 9rem #000f, 0 0 0 1px #ffffff12; }
+
+.wellness-editorial .dining-wine { height: 280svh; min-height: 280svh; }
+.wellness-editorial .dining-wine__sticky { background: #080706; }
+.wellness-editorial .dining-wine__sticky > .wellness-editorial__image { transform: scale(calc(1.12 - var(--p) * .07)); }
+.wellness-editorial .dining-wine__veil { background: linear-gradient(90deg, #050403e6 0%, #0504034d 68%, #05040380 100%); }
+.wellness-editorial .dining-wine__copy { position: absolute; z-index: 7; left: var(--we-gutter); top: 50%; max-width: min(38rem, 48vw); opacity: calc(.15 + var(--b) * .85); transform: translateY(calc(-50% + (1 - var(--b)) * 3rem)); }
+
+.wellness-editorial .dining-chef { height: 320svh; min-height: 320svh; background: #0b0907; }
+.wellness-editorial .dining-chef__frame { position: absolute; box-shadow: 0 3rem 7rem #000d; }
+.wellness-editorial .dining-chef__frame--back { inset: 0 0 0 43%; opacity: calc(.25 + var(--a) * .75); }
+.wellness-editorial .dining-chef__frame--front { z-index: 3; top: 13svh; right: 8vw; width: min(34vw, 28rem); height: 66svh; opacity: var(--c); transform: translateY(calc((1 - var(--c)) * -55vh)) rotate(calc((1 - var(--c)) * 8deg)); border: 1px solid #ffffff1f; }
+.wellness-editorial .dining-chef__copy { position: absolute; z-index: 6; left: var(--we-gutter); top: 50%; max-width: min(38rem, 43vw); opacity: calc(.2 + var(--b) * .8); transform: translateY(calc(-50% + (1 - var(--b)) * 3rem)); }
+
+.wellness-editorial .dining-finale { height: 260svh; min-height: 260svh; }
+.wellness-editorial .dining-finale__sticky { display: grid; place-items: center; text-align: center; background: #070605; }
+.wellness-editorial .dining-finale__sticky > .wellness-editorial__image { transform: scale(calc(1.12 - var(--p) * .07)); }
+.wellness-editorial .dining-finale__veil { background: #070605a6; }
+.wellness-editorial .dining-finale__copy { position: relative; z-index: 6; display: flex; flex-direction: column; align-items: center; width: min(58rem, calc(100% - 2 * var(--we-gutter))); opacity: calc(.2 + var(--b) * .8); transform: translateY(calc((1 - var(--b)) * 3rem)); }
+.wellness-editorial .dining-finale__actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; }
+
+@media (max-width: 1024px) {
+  .wellness-editorial { overflow: visible; }
+  .wellness-editorial__edge { display: none; }
+  .wellness-editorial [data-v6-scroll] { height: auto; min-height: 0; }
+  .wellness-editorial [class$="__sticky"] { position: relative; top: auto; height: auto; min-height: clamp(42rem, 100svh, 62rem); }
+  .wellness-editorial .dining-hero__layer--b, .wellness-editorial .dining-hero__layer--c, .wellness-editorial .dining-hero__layer--d, .wellness-editorial .dining-hero__copy--mid, .wellness-editorial .dining-hero__copy--end { display: none; }
+  .wellness-editorial .dining-hero__copy--open { position: relative; min-height: 100svh; opacity: 1; transform: none; }
+  .wellness-editorial .dining-orbit__sticky { display: grid; align-content: end; padding-top: 5rem; }
+  .wellness-editorial .dining-plate:not(.dining-plate--one) { display: none; }
+  .wellness-editorial .dining-plate--one { position: relative; top: auto; left: auto; width: min(76vw, 28rem); margin: 0 auto; opacity: 1; transform: none; }
+  .wellness-editorial .dining-orbit__copy, .wellness-editorial .dining-course__meta, .wellness-editorial .dining-wine__copy, .wellness-editorial .dining-chef__copy { position: relative; inset: auto; width: auto; max-width: 42rem; padding: 2.5rem var(--we-gutter) 4.5rem; opacity: 1; transform: none; text-align: left; }
+  .wellness-editorial .dining-course__sticky { display: flex; flex-direction: column; justify-content: flex-end; padding-top: 16rem; }
+  .wellness-editorial .dining-course__bg--2 { display: none; }
+  .wellness-editorial .dining-course__bg--1 { opacity: 1; transform: none; }
+  .wellness-editorial .dining-course__cutout { position: relative; inset: auto; width: min(65vw, 25rem); height: auto; margin: 4rem auto 0; opacity: 1; transform: none; }
+  .wellness-editorial .dining-course__meta--left h2, .wellness-editorial .dining-course__meta--left p { margin-left: 0; }
+  .wellness-editorial .dining-cascade__sticky { min-height: 58rem; }
+  .wellness-editorial .dining-cascade header { top: 4.5rem; width: min(34rem, calc(100% - 2 * var(--we-gutter))); }
+  .wellness-editorial .dining-cascade__stack { padding: 13rem 0 0; }
+  .wellness-editorial .dining-cascade__stack figure { display: none; }
+  .wellness-editorial .dining-cascade__stack figure:first-child { display: block; width: min(76vw, 34rem); height: 54svh; opacity: 1 !important; transform: none !important; }
+  .wellness-editorial .dining-wine__sticky { display: flex; align-items: flex-end; }
+  .wellness-editorial .dining-chef__sticky { display: flex; align-items: flex-end; }
+  .wellness-editorial .dining-chef__frame--back { inset: 0; opacity: 1; }
+  .wellness-editorial .dining-chef__frame--front { display: none; }
+  .wellness-editorial .dining-finale__copy { opacity: 1; transform: none; }
+}
+
+@media (max-width: 480px) {
+  .wellness-editorial { --we-gutter: 1.25rem; }
+  .wellness-editorial h1 { font-size: clamp(3.15rem, 17vw, 5rem); line-height: .86; }
+  .wellness-editorial h2 { font-size: clamp(2.8rem, 14vw, 4.35rem); line-height: .88; }
+  .wellness-editorial h1 em, .wellness-editorial h2 em { font-size: .62em; line-height: 1.05; }
+  .wellness-editorial p { font-size: .94rem; line-height: 1.65; }
+  .wellness-editorial .dining-hero__copy { justify-content: flex-end; padding-bottom: 14svh; }
+  .wellness-editorial .dining-course__sticky { padding-top: 11rem; }
+  .wellness-editorial .dining-course__cutout { width: 72vw; max-height: 48svh; }
+  .wellness-editorial .dining-cascade__sticky { min-height: 48rem; }
+  .wellness-editorial .dining-cascade__stack { padding-top: 14rem; }
+  .wellness-editorial .dining-cascade__stack figure:first-child { width: calc(100% - 2.5rem); height: 48svh; }
+  .wellness-editorial .dining-finale__sticky { min-height: 48rem; padding: 6rem 0; }
+  .wellness-editorial .dining-finale__actions { flex-direction: column; align-items: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wellness-editorial [data-v6-scroll] { height: auto; min-height: 100svh; }
+  .wellness-editorial [class$="__sticky"] { position: relative; }
+}

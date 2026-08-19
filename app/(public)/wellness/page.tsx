@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { WellnessPageContent } from "@/components/pages/WellnessPageContent";
+import "../../wellness-editorial.css";
 
 export const metadata: Metadata = {
   title: "Wellness Hathor Dahabiya Cruise | Spa Experience on the Nile",
