@@ -831,6 +831,10 @@ $("head").append(`
     .mod-scroll__intro__menu {
       display: none !important;
     }
+    .logo__boring,
+    .logo__boring .reg {
+      transform: none !important;
+    }
   </style>
 `);
 

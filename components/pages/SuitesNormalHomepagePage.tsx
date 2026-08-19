@@ -27,6 +27,10 @@ header .header__logo,
 .mod-scroll__intro__menu {
   display: none !important;
 }
+.logo__boring,
+.logo__boring .reg {
+  transform: none !important;
+}
 `;
 
 function hathorHrefFromClone(href: string): string | null {
@@ -156,7 +160,7 @@ export function SuitesNormalHomepagePage() {
       <iframe
         ref={iframeRef}
         className="suites-normal-clone__frame"
-        src="/suites-normal/index.html?v=hathor-nav-20260819"
+        src="/suites-normal/index.html?v=hathor-unflip-20260820"
         title="Hathor Suites"
         onLoad={() => void apply()}
       />

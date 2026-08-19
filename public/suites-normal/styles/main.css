@@ -1120,14 +1120,14 @@ input[type=checkbox]:checked:before {
   font-weight: 500;
   text-transform: uppercase;
   text-align: right;
-  transform: scale(-1, -1);
+  transform: none;
   letter-spacing: 0.011em;
   white-space: nowrap;
 }
 .logo__boring .reg {
   position: relative;
   display: inline-block;
-  transform: scale(-1, -1);
+  transform: none;
   font-size: 0.4em;
   margin: 0 0.2em;
 }
