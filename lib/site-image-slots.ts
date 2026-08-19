@@ -1,5 +1,10 @@
 import type { ImageCategory } from "@/lib/image-categories";
-import { GASTRONOMY_DINING_MEDIA } from "@/lib/gastronomy-dining-media";
+import {
+  DINING_PLATE_NUMBERS,
+  GASTRONOMY_DINING_MEDIA,
+  diningPlateSlotName,
+  diningPlateSrc,
+} from "@/lib/gastronomy-dining-media";
 import { HATHOR_MEDIA } from "@/lib/hathor-media";
 
 export type SiteImageSlot = {
@@ -42,9 +47,21 @@ const DINING_SCENE_SLOTS: SiteImageSlot[] = [
   displayOrder,
 }));
 
+const DINING_PLATE_SLOTS: SiteImageSlot[] = DINING_PLATE_NUMBERS.map(
+  (number, displayOrder) => ({
+    name: diningPlateSlotName(number),
+    altText: `Hathor plated course ${number}`,
+    url: diningPlateSrc(number),
+    category: "dining" as ImageCategory,
+    pagePath: "/gastronomy",
+    displayOrder: 80 + displayOrder,
+  }),
+);
+
 /** Canonical image slots — seeded to SiteImage and editable in admin → Site Images. */
 export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   ...DINING_SCENE_SLOTS,
+  ...DINING_PLATE_SLOTS,
   // Homepage (live EX page only)
   {
     name: "home-hero-poster",

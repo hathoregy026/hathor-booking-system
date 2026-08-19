@@ -1,5 +1,6 @@
 import { AMENITIES_SEQUENCE_IMAGE_SLOTS } from "@/lib/amenities-sequence-images";
 import { HOME_CAROUSEL_ADMIN_CARDS } from "@/lib/home-carousel-images";
+import { DINING_PLATE_NUMBERS, diningPlateSlotName } from "@/lib/gastronomy-dining-media";
 import { SITE_IMAGE_SLOTS, type SiteImageSlot } from "@/lib/site-image-slots";
 import { resolveSiteImageLivePath } from "@/lib/site-image-preview";
 import {
@@ -125,6 +126,12 @@ const SUITES_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> = [
   { name: "suites-nile-still", label: "30. Nile still" },
 ];
 
+const DINING_PLATES_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> =
+  DINING_PLATE_NUMBERS.map((number) => ({
+    name: diningPlateSlotName(number),
+    label: `Plate ${number}`,
+  }));
+
 const SLOT_LABELS: Partial<Record<SiteImageSlot["name"], string>> = {
   "room-luxury": "Place panel — Cabin",
   "cabins-hero": "Hero — Luxury Rooms",
@@ -142,6 +149,13 @@ const SLOT_LABELS: Partial<Record<SiteImageSlot["name"], string>> = {
   "gastronomy-chef": "Dining — Chef",
   "gastronomy-service": "Dining — Service",
   "gastronomy-celebration": "Dining — Celebration",
+  "dining-plate-1": "Plate 1",
+  "dining-plate-2": "Plate 2",
+  "dining-plate-3": "Plate 3",
+  "dining-plate-4": "Plate 4",
+  "dining-plate-5": "Plate 5",
+  "dining-plate-6": "Plate 6",
+  "dining-plate-7": "Plate 7",
   "home-story-way-of-life": "Way of Life — photo (home story)",
   "home-story-dining": "Fine Dining — photo (home story)",
   "home-amenities-9": "Opening cards — A Way of Life (pool deck)",
@@ -267,6 +281,7 @@ function labelForSlot(slot: SiteImageSlot): string {
 
 function layoutForSlot(slot: SiteImageSlot): SiteImageLayoutKind {
   if (SLOT_LAYOUT_KINDS[slot.name]) return SLOT_LAYOUT_KINDS[slot.name]!;
+  if (slot.name.startsWith("dining-plate-")) return "gallery";
   if (slot.category === "hero") return "hero";
   if (
     slot.name.includes("collage") ||
@@ -288,6 +303,8 @@ export function getSiteImageGroupHeading(pageTitle: string): string {
   }
   if (pageTitle === "Moving Tilted Cards") return "Moving Tilted Cards Images";
   if (pageTitle === "Suites") return "Suites Images";
+  if (pageTitle === "Dining") return "Dining Images";
+  if (pageTitle === "Dining Plates") return "Dining Plates Images";
   return `${pageTitle} Images`;
 }
 
@@ -393,6 +410,18 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
     );
   });
 
+  const diningPlatesItems: SiteImageAdminItem[] = [];
+  const diningPlatesSeen = new Set<string>();
+  DINING_PLATES_ADMIN_CARDS.forEach((card, index) => {
+    const slot = byName.get(card.name);
+    if (!slot) return;
+    pushUniqueItem(
+      diningPlatesItems,
+      diningPlatesSeen,
+      toAdminItem(slot, "/#dining-plates", card.label, index + 1),
+    );
+  });
+
   const cruisesItems: SiteImageAdminItem[] = [];
   const cruisesSeen = new Set<string>();
   CRUISES_ADMIN_CARDS.forEach((card, index) => {
@@ -434,6 +463,9 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
     // Legacy coarse Gastronomy slots are retained for older cross-page content,
     // but the Dining dashboard exposes only source-scene image controls.
     if (slot.pagePath === "/gastronomy" && slot.name.startsWith("gastronomy-")) {
+      continue;
+    }
+    if (slot.name.startsWith("dining-plate-")) {
       continue;
     }
     if (
@@ -535,17 +567,32 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
         "Images used on the Suites page (including the residence filter cards). These are the same linked uploads as Luxury Rooms / Cabins / Royal — edit once, updates every page that uses them.",
       items: suitesItems,
     },
-    ...orderedPaths.map((pagePath) => ({
-      pagePath,
-      title: PAGE_GROUP_TITLES[pagePath] ?? pagePath,
-      description:
-        pagePath === "/rooms"
-          ? "Luxury Rooms images. Shared Suites / Homepage photos also appear here and show every page that uses them."
-          : undefined,
-      items: (byPage.get(pagePath) ?? []).sort(
-        (a, b) =>
-          a.displayOrder - b.displayOrder || a.label.localeCompare(b.label),
-      ),
-    })),
+    ...orderedPaths.flatMap((pagePath) => {
+      const group = {
+        pagePath,
+        title: PAGE_GROUP_TITLES[pagePath] ?? pagePath,
+        description:
+          pagePath === "/rooms"
+            ? "Luxury Rooms images. Shared Suites / Homepage photos also appear here and show every page that uses them."
+            : pagePath === "/gastronomy"
+              ? "Dining page scenes. Cut-out course plates are under the Dining Plates filter."
+              : undefined,
+        items: (byPage.get(pagePath) ?? []).sort(
+          (a, b) =>
+            a.displayOrder - b.displayOrder || a.label.localeCompare(b.label),
+        ),
+      };
+      if (pagePath !== "/gastronomy") return [group];
+      return [
+        group,
+        {
+          pagePath: "/#dining-plates",
+          title: "Dining Plates",
+          description:
+            "The seven plated-course cutouts on Dining. Filter this tab to replace each plate without touching the other Dining photos.",
+          items: diningPlatesItems,
+        },
+      ];
+    }),
   ];
 }

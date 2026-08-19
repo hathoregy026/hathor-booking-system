@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { GastronomyPageContent } from "@/components/pages/GastronomyPageContent";
 import { GastronomyDiningRuntime } from "@/components/pages/GastronomyDiningRuntime";
+import { SiteImagePreviewScroll } from "@/components/public/SiteImagePreviewScroll";
+import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
 import { StandalonePageVisibilityShell } from "@/components/public/StandalonePageVisibilityShell";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import "../page-visibility.css";
@@ -27,7 +29,10 @@ export default async function GastronomyPage() {
       liveSite={cms.liveSite}
     >
       <GastronomyDiningRuntime />
-      <GastronomyPageContent />
+      <SiteImagesProvider images={cms.siteImages}>
+        <SiteImagePreviewScroll />
+        <GastronomyPageContent />
+      </SiteImagesProvider>
     </StandalonePageVisibilityShell>
   );
 }

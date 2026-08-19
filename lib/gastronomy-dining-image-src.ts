@@ -1,4 +1,4 @@
-import { GASTRONOMY_DINING_MEDIA } from "@/lib/gastronomy-dining-media";
+import { GASTRONOMY_DINING_MEDIA, diningPlateSrc } from "@/lib/gastronomy-dining-media";
 
 /** Canonical GPT dining clone asset per dashboard slot name. */
 export const GASTRONOMY_DINING_SLOT_SRC: Record<string, string> = {
@@ -10,13 +10,20 @@ export const GASTRONOMY_DINING_SLOT_SRC: Record<string, string> = {
   "gastronomy-chef": GASTRONOMY_DINING_MEDIA.chef,
   "gastronomy-service": GASTRONOMY_DINING_MEDIA.service,
   "gastronomy-celebration": GASTRONOMY_DINING_MEDIA.celebration,
-  "gastronomy-plate-1": GASTRONOMY_DINING_MEDIA.plate1,
-  "gastronomy-plate-2": GASTRONOMY_DINING_MEDIA.plate2,
-  "gastronomy-plate-3": GASTRONOMY_DINING_MEDIA.plate3,
-  "gastronomy-plate-4": GASTRONOMY_DINING_MEDIA.plate4,
-  "gastronomy-plate-5": GASTRONOMY_DINING_MEDIA.plate5,
-  "gastronomy-plate-6": GASTRONOMY_DINING_MEDIA.plate6,
-  "gastronomy-plate-7": GASTRONOMY_DINING_MEDIA.plate7,
+  "gastronomy-plate-1": diningPlateSrc(1),
+  "gastronomy-plate-2": diningPlateSrc(2),
+  "gastronomy-plate-3": diningPlateSrc(3),
+  "gastronomy-plate-4": diningPlateSrc(4),
+  "gastronomy-plate-5": diningPlateSrc(5),
+  "gastronomy-plate-6": diningPlateSrc(6),
+  "gastronomy-plate-7": diningPlateSrc(7),
+  "dining-plate-1": diningPlateSrc(1),
+  "dining-plate-2": diningPlateSrc(2),
+  "dining-plate-3": diningPlateSrc(3),
+  "dining-plate-4": diningPlateSrc(4),
+  "dining-plate-5": diningPlateSrc(5),
+  "dining-plate-6": diningPlateSrc(6),
+  "dining-plate-7": diningPlateSrc(7),
 };
 
 /**

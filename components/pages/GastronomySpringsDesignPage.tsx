@@ -5,10 +5,8 @@
 import type { CSSProperties, ReactNode } from "react";
 import { Footer } from "@/components/layout/Footer";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
-import { GASTRONOMY_DINING_MEDIA as media } from "@/lib/gastronomy-dining-media";
-
-const plateSrc = (number: number) =>
-  `/media/gastronomy-dining/dining-plate-${number}.png`;
+import { useSiteImage } from "@/components/public/SiteImagesProvider";
+import { GASTRONOMY_DINING_MEDIA as media, diningPlateSlotName } from "@/lib/gastronomy-dining-media";
 
 const typeStyle = {
   "--nib-display": '"Bitho Luxury", cursive',
@@ -96,13 +94,16 @@ function Plate({
   className?: string;
   style?: CSSProperties;
 }) {
+  const slotName = diningPlateSlotName(number);
+  const image = useSiteImage(slotName);
   return (
     <figure
       className={`nib-plate nib-plate--${number} ${className}`}
       data-nib-plate
+      data-site-image={slotName}
       style={style}
     >
-      <img src={plateSrc(number)} alt={`Hathor plated course ${number}`} />
+      <img src={image.src} alt={image.alt} />
     </figure>
   );
 }

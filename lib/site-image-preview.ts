@@ -143,6 +143,13 @@ const SITE_IMAGE_PRIMARY_PAGE: Partial<Record<string, string>> = {
   "gastronomy-plate-5": "/gastronomy",
   "gastronomy-plate-6": "/gastronomy",
   "gastronomy-plate-7": "/gastronomy",
+  "dining-plate-1": "/gastronomy",
+  "dining-plate-2": "/gastronomy",
+  "dining-plate-3": "/gastronomy",
+  "dining-plate-4": "/gastronomy",
+  "dining-plate-5": "/gastronomy",
+  "dining-plate-6": "/gastronomy",
+  "dining-plate-7": "/gastronomy",
   "wellness-hero": "/wellness",
   "wellness-fitness": "/wellness",
   "highlights-hero": "/highlights",
@@ -259,6 +266,10 @@ export function resolveSiteImageLivePath(
     adminGroupPagePath === "/#our-voyages"
   ) {
     return buildSiteImageLivePath("/", name);
+  }
+
+  if (adminGroupPagePath === "/#dining-plates") {
+    return buildSiteImageLivePath("/gastronomy", name);
   }
 
   /* Cruises-tab itinerary cards still render on the homepage slider. */

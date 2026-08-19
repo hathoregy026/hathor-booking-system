@@ -1,6 +1,15 @@
 /** Canonical Dining media — local optimized WebP (Vercel), not Supabase. */
 const BASE = "/media/hathor/optimized";
 
+export const DINING_PLATE_NUMBERS = [1, 2, 3, 4, 5, 6, 7] as const;
+export type DiningPlateNumber = (typeof DINING_PLATE_NUMBERS)[number];
+
+export const diningPlateSlotName = (number: DiningPlateNumber | number) =>
+  `dining-plate-${number}`;
+
+export const diningPlateSrc = (number: DiningPlateNumber | number) =>
+  `/media/gastronomy-dining/dining-plate-${number}.png`;
+
 export const GASTRONOMY_DINING_MEDIA = {
   /** Live Dining intro hero (dashboard slot `dining-intro-hero`). */
   hero: `${BASE}/dining-intro-hero.webp`,
