@@ -169,18 +169,20 @@ export function ContactPageContent() {
               </Scene>
 
               <Scene className="ce-dispatch">
-                <ContactMedia
-                  slot="contact-hero"
-                  alt="Hathor reservations and Nile voyage"
-                  priority
-                  className="ce-dispatch__hero"
-                />
-                <div className="ce-flip ce-dispatch__flip">
-                  <ContactMedia slot="about-hero" alt="Hathor Dahabiya on the Nile" />
+                <div className="ce-gallery ce-gallery--dispatch">
                   <ContactMedia
-                    slot="home-voyage-nile-majesty"
-                    alt="Sailing the Nile aboard Hathor"
+                    slot="contact-hero"
+                    alt="Hathor reservations and Nile voyage"
+                    priority
+                    className="ce-gallery__primary"
                   />
+                  <div className="ce-flip ce-gallery__flip">
+                    <ContactMedia slot="about-hero" alt="Hathor Dahabiya on the Nile" />
+                    <ContactMedia
+                      slot="home-voyage-nile-majesty"
+                      alt="Sailing the Nile aboard Hathor"
+                    />
+                  </div>
                 </div>
               </Scene>
 
@@ -196,25 +198,25 @@ export function ContactPageContent() {
               </Scene>
 
               <Scene className="ce-atelier">
-                <div className="ce-flip ce-atelier__left">
-                  <ContactMedia slot="room-royal" alt="Royal suite calm aboard Hathor" />
-                  <ContactMedia slot="room-suite" alt="Suite interiors aboard Hathor" />
-                </div>
-                <div className="ce-flip ce-atelier__right">
+                <div className="ce-gallery ce-gallery--atelier">
                   <ContactMedia
-                    slot="home-call-to-action"
-                    alt="Golden hour on the Nile"
+                    slot="room-royal"
+                    alt="Royal suite calm aboard Hathor"
+                    className="ce-gallery__primary"
                   />
-                  <ContactMedia
-                    slot="home-story-craft-large"
-                    alt="Handcrafted detail aboard Hathor"
-                  />
+                  <div className="ce-gallery__aside">
+                    <article className="ce-letter">
+                      <p className="ce-letter__kicker">Cairo atelier</p>
+                      <h2>Company Address</h2>
+                      <p>{PUBLIC_CONTACT.address}</p>
+                    </article>
+                    <ContactMedia
+                      slot="room-suite"
+                      alt="Suite interiors aboard Hathor"
+                      className="ce-gallery__accent"
+                    />
+                  </div>
                 </div>
-                <article className="ce-letter">
-                  <p className="ce-letter__kicker">Cairo atelier</p>
-                  <h2>Company Address</h2>
-                  <p>{PUBLIC_CONTACT.address}</p>
-                </article>
               </Scene>
 
               <Scene className="ce-marquee" aria-label="Correspondence">
@@ -292,14 +294,16 @@ export function ContactPageContent() {
           </header>
 
           <div className="ce-salon__stage">
-            <div className="ce-salon__media">
+            <div className="ce-gallery ce-gallery--salon">
               <ContactMedia
                 slot="cruises-hero"
                 alt="Hathor Dahabiya waiting on the Nile"
+                className="ce-gallery__primary"
               />
               <ContactMedia
                 slot="home-split-courtyard"
                 alt="Life aboard Hathor"
+                className="ce-gallery__secondary"
               />
             </div>
 
