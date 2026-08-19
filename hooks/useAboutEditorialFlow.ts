@@ -1,209 +1,137 @@
 "use client";
 
-import { useLayoutEffect, type RefObject } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { shouldLightenMotionForDevice } from "@/lib/touch-device";
-
-gsap.registerPlugin(ScrollTrigger);
+import { useEffect, type RefObject } from "react";
 
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
-const smooth = (value: number) => {
-  const x = clamp(value);
-  return x * x * (3 - 2 * x);
+
+type AboutBoringScrollRefs = {
+  rootRef: RefObject<HTMLDivElement | null>;
+  runRef: RefObject<HTMLElement | null>;
+  trackRef: RefObject<HTMLDivElement | null>;
 };
 
 /**
- * About vessel flow — Suites-language sticky stories, unique selectors.
- *
- * 0.00–0.58 hero: still scales, caption holds
- * 0.56–1.00 hero: caption drifts, cream arrival rises
- * Collection: horizontal accommodation doors
- * Chapters: clip-path image stack, first frame visible at progress 0
+ * Suites / Normal Is Boring horizontal story: desktop scrubs a sticky track;
+ * tablet and phone stack the same scenes vertically.
  */
-export function useAboutEditorialFlow(rootRef: RefObject<HTMLElement | null>) {
-  useLayoutEffect(() => {
+export function useAboutEditorialFlow({
+  rootRef,
+  runRef,
+  trackRef,
+}: AboutBoringScrollRefs) {
+  useEffect(() => {
     const root = rootRef.current;
-    if (!root) return;
+    const run = runRef.current;
+    const track = trackRef.current;
+    if (!root || !run || !track) return;
 
     const html = document.documentElement;
-    html.setAttribute("data-about-editorial", "");
+    const progressBar = root.querySelector<HTMLElement>("[data-ab-progress]");
+    const scenes = [...root.querySelectorAll<HTMLElement>(".ab-scene")];
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let desktop = false;
+    let travel = 0;
+    let scrollDistance = 0;
+    let frame = 0;
+    let target = 0;
+    let current = 0;
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
-      root.dataset.abMotion = "reduced";
-      return () => {
-        html.removeAttribute("data-about-editorial");
-        delete root.dataset.abMotion;
-      };
-    }
+    html.setAttribute("data-about-boring", "");
 
-    root.dataset.abMotion = "ready";
-    const light = shouldLightenMotionForDevice();
-    const scrub = light ? 0.85 : 1.15;
-
-    const ctx = gsap.context(() => {
-      const hero = root.querySelector<HTMLElement>(".ab-hero");
-      const heroMedia = hero?.querySelector<HTMLElement>(".ab-hero__media");
-      const heroCaption = hero?.querySelector<HTMLElement>(".ab-hero__caption");
-      const heroArrive = hero?.querySelector<HTMLElement>(".ab-hero__arrive");
-      if (hero && heroMedia && heroCaption) {
-        gsap.timeline({
-          scrollTrigger: {
-            trigger: hero,
-            start: "top top",
-            end: "bottom bottom",
-            scrub,
-          },
-        })
-          .fromTo(
-            heroMedia,
-            { scale: 1.1 },
-            { scale: 1, ease: "none" },
-            0,
-          )
-          .fromTo(
-            heroCaption,
-            { xPercent: 0, autoAlpha: 1 },
-            { xPercent: light ? 8 : 13, autoAlpha: 0, ease: "none" },
-            0.56,
-          );
-
-        if (heroArrive) {
-          gsap.fromTo(
-            heroArrive,
-            { yPercent: 108 },
-            {
-              yPercent: 0,
-              ease: "none",
-              scrollTrigger: {
-                trigger: hero,
-                start: "top top",
-                end: "bottom bottom",
-                scrub,
-              },
-            },
-          );
-        }
-      }
-
-      const collection = root.querySelector<HTMLElement>("[data-ab-collection]");
-      const portals = collection?.querySelector<HTMLElement>(".ab-vessel__portals");
-      const portalItems = portals
-        ? (Array.from(portals.children) as HTMLElement[])
-        : [];
-      if (collection && portals && portalItems.length) {
-        const setCollection = (progress: number) => {
-          const travelProgress = smooth(clamp((progress - 0.07) / 0.86));
-          const maxTravel = Math.max(
-            0,
-            portals.scrollWidth - window.innerWidth + window.innerWidth * 0.08,
-          );
-          gsap.set(portals, { x: -maxTravel * travelProgress, force3D: true });
-          portalItems.forEach((item, index) => {
-            const local = smooth(
-              clamp((progress - (0.02 + index * 0.1)) / 0.22),
-            );
-            gsap.set(item, {
-              y: `${(1 - local) * (index % 2 ? 4 : 7)}vh`,
-              rotate: (1 - local) * (index - 1) * 0.55,
-            });
-          });
-        };
-
-        const collectionTrigger = ScrollTrigger.create({
-          trigger: collection,
-          start: "top top",
-          end: "bottom bottom",
-          invalidateOnRefresh: true,
-          onUpdate: (self) => setCollection(self.progress),
-          onRefresh: (self) => setCollection(self.progress),
-        });
-        setCollection(collectionTrigger.progress);
-      }
-
-      root.querySelectorAll<HTMLElement>("[data-ab-slide]").forEach((chapter) => {
-        const scene = chapter.firstElementChild as HTMLElement | null;
-        if (!scene) return;
-        const copy = chapter.querySelector<HTMLElement>(".ab-chapter__copy");
-        const frames = Array.from(
-          scene.querySelectorAll<HTMLElement>(
-            ".ab-chapter__media:not(.ab-chapter__stack), .ab-chapter__stack-item",
-          ),
+    const applySceneVars = (x: number) => {
+      const viewport = window.innerWidth;
+      scenes.forEach((scene) => {
+        const left = scene.offsetLeft - x;
+        const width = scene.offsetWidth;
+        const enter = clamp(
+          (viewport * 0.96 - left) / Math.max(viewport * 0.5, width * 0.35),
         );
-        const images = Array.from(scene.querySelectorAll<HTMLElement>("img"));
-        const direction = chapter.dataset.abSlide;
-
-        const setChapter = (progress: number) => {
-          const revealWindows = [
-            [0, 0],
-            [0.26, 0.38],
-            [0.62, 0.74],
-          ] as const;
-
-          frames.forEach((frame, index) => {
-            const revealWindow = revealWindows[index] ?? [0.72, 0.84];
-            const reveal =
-              index === 0 || frames.length === 1
-                ? 1
-                : smooth(
-                    clamp(
-                      (progress - revealWindow[0]) /
-                        (revealWindow[1] - revealWindow[0]),
-                    ),
-                  );
-            const hidden = (1 - reveal) * 100;
-            const clipPath =
-              direction === "from-left"
-                ? `inset(0% ${hidden}% 0% 0%)`
-                : direction === "from-bottom"
-                  ? `inset(${hidden}% 0% 0% 0%)`
-                  : `inset(0% 0% 0% ${hidden}%)`;
-            gsap.set(frame, {
-              clipPath,
-              autoAlpha: reveal,
-              xPercent:
-                direction === "from-right"
-                  ? (1 - reveal) * 6
-                  : direction === "from-left"
-                    ? (reveal - 1) * 6
-                    : 0,
-              yPercent: direction === "from-bottom" ? (1 - reveal) * 5 : 0,
-            });
-          });
-
-          images.forEach((image, index) => {
-            const imageStart = index === 0 ? 0 : (revealWindows[index]?.[0] ?? 0.7);
-            const phase = smooth(clamp((progress - imageStart) / (1 - imageStart)));
-            gsap.set(image, {
-              scale: 1.045 - phase * 0.035,
-              yPercent: (0.5 - phase) * (index % 2 ? -1.5 : 1.5),
-            });
-          });
-
-          if (copy) {
-            gsap.set(copy, { autoAlpha: 1, xPercent: 0, yPercent: 0 });
-          }
-        };
-
-        const chapterTrigger = ScrollTrigger.create({
-          trigger: chapter,
-          start: "top top",
-          end: "bottom bottom",
-          invalidateOnRefresh: true,
-          onUpdate: (self) => setChapter(self.progress),
-          onRefresh: (self) => setChapter(self.progress),
-        });
-        setChapter(chapterTrigger.progress);
+        const parallax = clamp((viewport - left) / Math.max(1, viewport + width));
+        const focus = Math.sin(parallax * Math.PI);
+        scene.style.setProperty("--reveal", enter.toFixed(4));
+        scene.style.setProperty("--parallax", parallax.toFixed(4));
+        scene.style.setProperty("--scene-progress", parallax.toFixed(4));
+        scene.style.setProperty("--focus", Math.max(0, focus).toFixed(4));
       });
-    }, root);
-
-    const refresh = window.setTimeout(() => ScrollTrigger.refresh(), 250);
-    return () => {
-      window.clearTimeout(refresh);
-      ctx.revert();
-      html.removeAttribute("data-about-editorial");
-      delete root.dataset.abMotion;
     };
-  }, [rootRef]);
+
+    const applyVerticalVars = () => {
+      const viewport = window.innerHeight;
+      scenes.forEach((scene) => {
+        const rect = scene.getBoundingClientRect();
+        const progress = clamp(
+          (viewport - rect.top) / Math.max(1, viewport + rect.height),
+        );
+        const focus = Math.sin(progress * Math.PI);
+        scene.style.setProperty("--reveal", clamp(progress * 1.8).toFixed(4));
+        scene.style.setProperty("--parallax", progress.toFixed(4));
+        scene.style.setProperty("--scene-progress", progress.toFixed(4));
+        scene.style.setProperty("--focus", Math.max(0, focus).toFixed(4));
+      });
+    };
+
+    const measure = () => {
+      desktop = window.innerWidth > 1024 && !reduced.matches;
+      if (!desktop) {
+        run.style.height = "auto";
+        track.style.transform = "none";
+        applyVerticalVars();
+        if (progressBar) progressBar.style.transform = "scaleX(0)";
+        return;
+      }
+      travel = Math.max(1, track.scrollWidth - window.innerWidth);
+      scrollDistance = Math.max(1, travel * 0.74);
+      run.style.height = `${scrollDistance + window.innerHeight}px`;
+      const rect = run.getBoundingClientRect();
+      target = clamp(-rect.top / scrollDistance);
+      current = target;
+      const x = current * travel;
+      track.style.transform = `translate3d(${-x}px,0,0)`;
+      applySceneVars(x);
+    };
+
+    const tick = () => {
+      frame = 0;
+      if (!desktop) return;
+      current += (target - current) * 0.14;
+      if (Math.abs(target - current) < 0.0001) current = target;
+      const x = current * travel;
+      track.style.transform = `translate3d(${-x}px,0,0)`;
+      applySceneVars(x);
+      if (progressBar) progressBar.style.transform = `scaleX(${current})`;
+      if (current !== target) frame = requestAnimationFrame(tick);
+    };
+
+    const updateTarget = () => {
+      if (!desktop) {
+        applyVerticalVars();
+        return;
+      }
+      const rect = run.getBoundingClientRect();
+      target = clamp(-rect.top / scrollDistance);
+      if (!frame) frame = requestAnimationFrame(tick);
+    };
+
+    const onResize = () => {
+      measure();
+      updateTarget();
+    };
+
+    window.addEventListener("scroll", updateTarget, { passive: true });
+    window.addEventListener("resize", onResize, { passive: true });
+    reduced.addEventListener("change", onResize);
+    document.fonts?.ready.then(onResize).catch(() => undefined);
+    measure();
+    requestAnimationFrame(measure);
+
+    return () => {
+      window.removeEventListener("scroll", updateTarget);
+      window.removeEventListener("resize", onResize);
+      reduced.removeEventListener("change", onResize);
+      if (frame) cancelAnimationFrame(frame);
+      html.removeAttribute("data-about-boring");
+      run.style.height = "";
+      track.style.transform = "";
+    };
+  }, [rootRef, runRef, trackRef]);
 }
