@@ -191,7 +191,7 @@ export function useGastronomyDiningScroll(
       };
     };
 
-    let dispose = () => undefined;
+    let dispose: () => void = () => undefined;
 
     const start = () => {
       if (cancelled) return;
