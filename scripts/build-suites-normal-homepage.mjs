@@ -90,6 +90,25 @@ await Promise.all(
   ),
 );
 
+const recolorSvg = async (file, replacements) => {
+  const target = path.join(outputRoot, "assets", "images", file);
+  let svg = await readFile(target, "utf8");
+  for (const [from, to] of replacements) svg = svg.replaceAll(from, to);
+  await writeFile(target, svg, "utf8");
+};
+
+await Promise.all([
+  recolorSvg("asterisco.svg", [
+    ["<svg ", '<svg fill="#B69F64" '],
+    ["#000", "#B69F64"],
+  ]),
+  recolorSvg("close.svg", [["#828EA2", "#B69F64"]]),
+  recolorSvg("logo_boring_footer.svg", [
+    ["#040405", "#B69F64"],
+    ["#030404", "#B69F64"],
+  ]),
+]);
+
 const html = await readFile(sourceIndex, "utf8");
 const $ = cheerio.load(html, { decodeEntities: false });
 
@@ -289,6 +308,8 @@ replaceExactText("Aviso legal", "Terms of Voyage");
 replaceContainedText("Normal is boring ©2025", "HATHOR DAHABIYA ©2026");
 replaceContainedText("NORMAL IS BORING ©2025", "HATHOR DAHABIYA ©2026");
 replaceContainedText("contacto@normalisboring.es", "reservations@hathorcruise.com");
+
+$(".mod-scroll__carousel__text").text("HATHOR");
 
 $(".mod-scroll__intro__title").eq(0).html("Suites<br>of serenity");
 $(".mod-scroll__intro__title").eq(1).html("<br>where<br>the Nile");
@@ -575,6 +596,163 @@ $("head").append(`
       overflow: visible !important;
       padding-inline: 0.08em 0.28em;
       padding-block: 0.06em 0.16em;
+    }
+
+    :root {
+      --black: #B69F64;
+      --beige: #F4E4CC;
+      --red: #B69F64;
+      --blue: #CEBBA0;
+      --grey: #CEBBA0;
+      --green: #F4E4CC;
+      --hathor-cream: #F4E4CC;
+      --hathor-gold: #B69F64;
+      --hathor-sand: #CEBBA0;
+      --hathor-white: #FFFFFF;
+    }
+    html,
+    body,
+    main {
+      background-color: var(--hathor-cream) !important;
+    }
+    .bg-white {
+      background: var(--hathor-white) !important;
+      box-shadow: 0 -1px 0 var(--hathor-white) !important;
+    }
+    .bg-beige,
+    .bg-green {
+      background: var(--hathor-cream) !important;
+      box-shadow: 0 -1px 0 var(--hathor-cream) !important;
+    }
+    .bg-blue,
+    .bg-grey {
+      background: var(--hathor-sand) !important;
+      box-shadow: 0 -1px 0 var(--hathor-sand) !important;
+    }
+    .bg-black,
+    .bg-red {
+      background: var(--hathor-gold) !important;
+      box-shadow: 0 -1px 0 var(--hathor-gold) !important;
+    }
+    body :where(.bg-black, .bg-red),
+    body :where(.bg-black, .bg-red) :where(a, button, p, span, div, li, strong, em, h1, h2, h3, h4, h5, h6),
+    body .c-white,
+    body .c-white :where(a, button, p, span, div, li, strong, em, h1, h2, h3, h4, h5, h6) {
+      color: var(--hathor-white) !important;
+      -webkit-text-fill-color: var(--hathor-white) !important;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    textarea {
+      color: var(--hathor-gold) !important;
+      -webkit-text-fill-color: var(--hathor-gold) !important;
+      border-color: var(--hathor-gold) !important;
+      background: transparent !important;
+    }
+    input[type="checkbox"] {
+      border-color: var(--hathor-gold) !important;
+      background: transparent !important;
+    }
+    input[type="checkbox"]::before {
+      background: var(--hathor-gold) !important;
+    }
+    #awwwards .js-color-bg {
+      fill: var(--hathor-gold) !important;
+    }
+    #awwwards .js-color-text {
+      fill: var(--hathor-white) !important;
+    }
+    #awwwards .js-color-bg,
+    #awwwards .js-color-bg path {
+      fill: var(--hathor-gold) !important;
+    }
+    #awwwards .js-color-text,
+    #awwwards .js-color-text path {
+      fill: var(--hathor-white) !important;
+    }
+    body svg :where(path, g, rect, circle, ellipse, polygon, polyline) {
+      fill: currentColor !important;
+    }
+    body :where(.bg-black, .bg-red) svg {
+      color: var(--hathor-white) !important;
+    }
+    #mouse {
+      mix-blend-mode: normal !important;
+    }
+    #mouse div,
+    #mouse span {
+      background-color: var(--hathor-gold) !important;
+      color: var(--hathor-white) !important;
+      -webkit-text-fill-color: var(--hathor-white) !important;
+    }
+
+    .btn--bg,
+    .mod-content__btn,
+    .modal--contact input[type="submit"],
+    .cky-btn {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--hathor-gold) !important;
+      border-radius: 999px !important;
+      background: transparent !important;
+      color: var(--hathor-gold) !important;
+      -webkit-text-fill-color: var(--hathor-gold) !important;
+      box-shadow: none !important;
+      transition: color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.35s ease,
+        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    }
+    .btn--bg::before {
+      background: var(--hathor-gold) !important;
+    }
+    .btn--bg:hover,
+    .btn--bg:focus-visible,
+    .mod-content__btn:hover,
+    .mod-content__btn:focus-visible,
+    .modal--contact input[type="submit"]:hover,
+    .modal--contact input[type="submit"]:focus-visible,
+    .cky-btn:hover,
+    .cky-btn:focus-visible {
+      background-color: var(--hathor-gold) !important;
+      color: var(--hathor-white) !important;
+      -webkit-text-fill-color: var(--hathor-white) !important;
+      border-color: var(--hathor-gold) !important;
+      transform: translateY(-2px);
+    }
+    .btn--bg:hover :where(span, div),
+    .btn--bg:focus-visible :where(span, div) {
+      color: var(--hathor-white) !important;
+      -webkit-text-fill-color: var(--hathor-white) !important;
+    }
+    .btn--circle {
+      background: transparent !important;
+      border: 1px solid var(--hathor-gold) !important;
+      color: var(--hathor-gold) !important;
+      -webkit-text-fill-color: var(--hathor-gold) !important;
+      transition: background-color 0.35s ease, color 0.35s ease !important;
+    }
+    .btn--circle:hover,
+    .btn--circle:focus-visible {
+      background: var(--hathor-gold) !important;
+      color: var(--hathor-white) !important;
+      -webkit-text-fill-color: var(--hathor-white) !important;
+    }
+    .cky-consent-bar,
+    .cky-preference-center,
+    .cky-accordion-wrapper,
+    .cky-footer-wrapper,
+    .cky-audit-table {
+      background: var(--hathor-white) !important;
+      border-color: var(--hathor-sand) !important;
+    }
+    .cky-overlay {
+      background: var(--hathor-gold) !important;
+    }
+    .cky-switch input::before,
+    .cky-btn-revisit-wrapper {
+      background: var(--hathor-gold) !important;
     }
   </style>
 `);
