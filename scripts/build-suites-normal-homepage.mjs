@@ -354,6 +354,25 @@ $(".logo__boring").each((_, element) => {
     .remove();
   $(element).prepend("Hathor");
 });
+if (!$("#hathor-logo-wordmark").length) {
+  $("#preloader-js-js").before(`<script id="hathor-logo-wordmark">
+(function () {
+  function patchLogoWordmark() {
+    document.querySelectorAll(".logo__boring").forEach(function (el) {
+      var reg = el.querySelector(".reg");
+      while (el.firstChild) el.removeChild(el.firstChild);
+      el.appendChild(document.createTextNode("Hathor"));
+      if (reg) el.appendChild(reg);
+    });
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", patchLogoWordmark, true);
+  } else {
+    patchLogoWordmark();
+  }
+})();
+</script>`);
+}
 $(".header__menu__media").attr("data-text", "Explore Suite");
 $(".header__menu__media__title").text("Royal Suites");
 const menuSuites = [

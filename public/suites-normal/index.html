@@ -87,6 +87,23 @@ var _ckyStyles = {"css":".cky-overlay{background: #000000; opacity: 0.4; positio
 <script id="SplitText-js" src="scripts/vendor/SplitText.min.js"></script>
 <script id="MorphSVGPlugin-js" src="scripts/vendor/MorphSVGPlugin.min.js"></script>
 <script id="Lenis-smooth-js" src="scripts/vendor/lenis.min.js"></script>
+<script id="hathor-logo-wordmark">
+(function () {
+  function patchLogoWordmark() {
+    document.querySelectorAll(".logo__boring").forEach(function (el) {
+      var reg = el.querySelector(".reg");
+      while (el.firstChild) el.removeChild(el.firstChild);
+      el.appendChild(document.createTextNode("Hathor"));
+      if (reg) el.appendChild(reg);
+    });
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", patchLogoWordmark, true);
+  } else {
+    patchLogoWordmark();
+  }
+})();
+</script>
 <script id="preloader-js-js" src="scripts/preloader.js"></script>
 
 <meta name="generator" content="WordPress 7.0.4">

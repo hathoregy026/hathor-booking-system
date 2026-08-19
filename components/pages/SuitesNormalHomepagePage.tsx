@@ -24,6 +24,34 @@ const CLONE_HREF_MAP: ReadonlyArray<readonly [RegExp, string]> = [
   [/^https?:\/\/www\.awwwards\.com/i, "/"],
 ];
 
+const LOGO_BORING_WORDMARK = "Hathor";
+
+function patchLogoWordmark(doc: Document) {
+  doc.querySelectorAll(".logo__boring").forEach((node) => {
+    const el = node as HTMLElement;
+    const reg = el.querySelector(".reg");
+    const letters = LOGO_BORING_WORDMARK.split("");
+    const chars = el.querySelectorAll(":scope > .char");
+
+    if (chars.length > 0) {
+      chars.forEach((charEl, index) => {
+        const target = charEl.querySelector("span") ?? charEl;
+        if (index < letters.length) {
+          target.textContent = letters[index]!;
+          (charEl as HTMLElement).style.display = "";
+        } else {
+          (charEl as HTMLElement).style.display = "none";
+        }
+      });
+      return;
+    }
+
+    el.textContent = "";
+    el.appendChild(doc.createTextNode(LOGO_BORING_WORDMARK));
+    if (reg) el.appendChild(reg);
+  });
+}
+
 const CLONE_MENU_HIDE_CSS = `
 #awwwards,
 .header__menu,
@@ -115,6 +143,7 @@ export function SuitesNormalHomepagePage() {
       doc.head.appendChild(live);
     }
     live.textContent = `${SUITES_CLIP_FIX_CSS}\n${CLONE_MENU_HIDE_CSS}\n${SUITES_TERMS_STAGE_CSS}\n${SUITES_COLLECTION_PANEL_CSS}`;
+    patchLogoWordmark(doc);
     tagSuiteCollectionPanels(doc);
     retargetCloneLinks(doc);
 
@@ -146,6 +175,7 @@ export function SuitesNormalHomepagePage() {
         images?: Record<string, string>;
       };
       live.textContent = `${SUITES_CLIP_FIX_CSS}\n${CLONE_MENU_HIDE_CSS}\n${data.css ?? ""}\n${SUITES_TERMS_STAGE_CSS}\n${SUITES_COLLECTION_PANEL_CSS}`;
+      patchLogoWordmark(doc);
       tagSuiteCollectionPanels(doc);
       retargetCloneLinks(doc);
       if (data.images) {
@@ -176,7 +206,7 @@ export function SuitesNormalHomepagePage() {
       <iframe
         ref={iframeRef}
         className="suites-normal-clone__frame"
-        src="/suites-normal/index.html?v=hathor-logo-hathor-20260820"
+        src="/suites-normal/index.html?v=hathor-wordmark-fix-20260820b"
         title="Hathor Suites"
         onLoad={() => void apply()}
       />
