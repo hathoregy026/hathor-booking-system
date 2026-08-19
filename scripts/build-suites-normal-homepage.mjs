@@ -352,7 +352,7 @@ $(".logo__boring").each((_, element) => {
     .contents()
     .filter((__, node) => node.type === "text")
     .remove();
-  $(element).prepend("Suites");
+  $(element).prepend("Hathor");
 });
 $(".header__menu__media").attr("data-text", "Explore Suite");
 $(".header__menu__media__title").text("Royal Suites");
@@ -422,8 +422,10 @@ const suiteCards = [
   { meta: "EN SUITE", place: "ABOARD HATHOR", title: "Suite Comfort" },
   { meta: "PRIVATE", place: "LUXOR–ASWAN", title: "Nile Evenings" },
 ];
+const suitePanelTones = ["cream", "ink", "gold", "ivory", "ink"];
 $(".mod-scroll__projects__item").each((index, element) => {
   const card = suiteCards[index];
+  $(element).attr("data-suite-panel", suitePanelTones[index] ?? "gold");
   if (!card) return;
   const data = $(element).find(".mod-scroll__projects__item__text__data > div");
   data.eq(0).find("span").text(card.meta);
@@ -834,6 +836,104 @@ $("head").append(`
     .logo__boring,
     .logo__boring .reg {
       transform: none !important;
+    }
+
+    /* Moving suite collection: 4 Suites colours, never two alike in a row. */
+    .mod-scroll__projects__item[data-suite-panel="cream"] {
+      --suite-panel: #ece8df;
+      --suite-panel-fg: #1c1917;
+    }
+    .mod-scroll__projects__item[data-suite-panel="ivory"] {
+      --suite-panel: #faf8f5;
+      --suite-panel-fg: #1c1917;
+    }
+    .mod-scroll__projects__item[data-suite-panel="gold"] {
+      --suite-panel: #b69f64;
+      --suite-panel-fg: #1c1917;
+    }
+    .mod-scroll__projects__item[data-suite-panel="ink"] {
+      --suite-panel: #1c1917;
+      --suite-panel-fg: #faf8f5;
+    }
+    .mod-scroll__projects__item[data-suite-panel]:not(.last-item) {
+      background: var(--suite-panel) !important;
+      box-shadow: 0 -1px 0 var(--suite-panel) !important;
+    }
+    .mod-scroll__projects__item[data-suite-panel]:not(.last-item) .mod-scroll__projects__item__text,
+    .mod-scroll__projects__item.last-item[data-suite-panel] .mod-scroll__projects__item__text {
+      background: var(--suite-panel) !important;
+    }
+    .mod-scroll__projects__item[data-suite-panel] .mod-scroll__projects__item__text,
+    .mod-scroll__projects__item[data-suite-panel] .mod-scroll__projects__item__text :is(div, span, a, p, h3, strong, em) {
+      color: var(--suite-panel-fg) !important;
+      -webkit-text-fill-color: var(--suite-panel-fg) !important;
+    }
+    .mod-scroll__projects__item[data-suite-panel] .mod-scroll__projects__item__text :is(.btn--bg, .btn--circle) {
+      border-color: var(--suite-panel-fg) !important;
+      color: var(--suite-panel-fg) !important;
+      -webkit-text-fill-color: var(--suite-panel-fg) !important;
+      background: transparent !important;
+    }
+    .mod-scroll__projects__item[data-suite-panel] .mod-scroll__projects__item__text .btn--bg::before {
+      background: var(--suite-panel-fg) !important;
+    }
+    .mod-scroll__projects__item[data-suite-panel] .mod-scroll__projects__item__text :is(.btn--bg, .btn--circle):hover,
+    .mod-scroll__projects__item[data-suite-panel] .mod-scroll__projects__item__text :is(.btn--bg, .btn--circle):focus-visible {
+      background: var(--suite-panel-fg) !important;
+      color: var(--suite-panel) !important;
+      -webkit-text-fill-color: var(--suite-panel) !important;
+      border-color: var(--suite-panel-fg) !important;
+    }
+    .mod-scroll__projects__item[data-suite-panel] .mod-scroll__projects__item__text :is(.btn--bg, .btn--circle):hover :where(span, div),
+    .mod-scroll__projects__item[data-suite-panel] .mod-scroll__projects__item__text :is(.btn--bg, .btn--circle):focus-visible :where(span, div) {
+      color: var(--suite-panel) !important;
+      -webkit-text-fill-color: var(--suite-panel) !important;
+    }
+  </style>
+  <style id="hathor-suites-terms-stage">
+    .mod-scroll__terms {
+      isolation: isolate;
+    }
+    .mod-scroll__terms .mod-scroll__terms__term__title,
+    .mod-scroll__terms .mod-scroll__terms__term__title *,
+    .mod-scroll__terms .mod-scroll__terms__term__title__filter,
+    .mod-scroll__terms .mod-scroll__terms__term__title__color,
+    .mod-scroll__terms .mod-scroll__terms__term__num,
+    .mod-scroll__terms .mod-scroll__terms__term__text,
+    .mod-scroll__terms .mod-scroll__terms__term__text *,
+    .mod-scroll__terms .mod-scroll__terms__term__text__single {
+      color: #ffffff !important;
+      -webkit-text-fill-color: #ffffff !important;
+      mix-blend-mode: normal !important;
+      filter: none !important;
+    }
+    @media (min-width: 951px) {
+      main .mod-scroll__terms {
+        box-sizing: border-box;
+        justify-content: space-between;
+        padding-top: clamp(5.2rem, 9svh, 7.4rem);
+        padding-bottom: clamp(1rem, 3.2svh, 2.2rem);
+      }
+      main .mod-scroll__terms .mod-scroll__terms__term__title,
+      main .mod-scroll__terms .mod-scroll__terms__term__title.t-supertitulo-l,
+      main .mod-scroll__terms .mod-scroll__terms__term:last-of-type .lh-less2 {
+        font-size: clamp(4.2rem, 11svh, 7.2rem) !important;
+        line-height: 0.82 !important;
+      }
+    }
+    @media (min-width: 481px) and (max-width: 950px) {
+      main .mod-scroll__terms .mod-scroll__terms__term__title,
+      main .mod-scroll__terms .mod-scroll__terms__term__title.t-supertitulo-l {
+        font-size: clamp(2.6rem, 8.4svh, 5.2rem) !important;
+        line-height: 0.86 !important;
+      }
+    }
+    @media (max-width: 480px) {
+      main .mod-scroll__terms .mod-scroll__terms__term__title,
+      main .mod-scroll__terms .mod-scroll__terms__term__title.t-supertitulo-l {
+        font-size: clamp(2.2rem, 9.2vw, 3rem) !important;
+        line-height: 0.9 !important;
+      }
     }
   </style>
 `);

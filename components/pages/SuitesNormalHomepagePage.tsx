@@ -3,7 +3,12 @@
 import { useCallback, useEffect, useRef } from "react";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import { slotNameFromSuitesImageUrl } from "@/lib/suites-normal-image-map";
-import { SUITES_CLIP_FIX_CSS } from "@/lib/suites-typography-shared";
+import {
+  SUITES_CLIP_FIX_CSS,
+  SUITES_COLLECTION_PANEL_CSS,
+  SUITES_COLLECTION_PANEL_TONES,
+  SUITES_TERMS_STAGE_CSS,
+} from "@/lib/suites-typography-shared";
 
 const CLONE_HREF_MAP: ReadonlyArray<readonly [RegExp, string]> = [
   [/normalisboring\.es\/lasolana/i, "/luxury-cabins-Nile-Cruise"],
@@ -38,6 +43,15 @@ function hathorHrefFromClone(href: string): string | null {
     if (pattern.test(href)) return destination;
   }
   return null;
+}
+
+function tagSuiteCollectionPanels(doc: Document) {
+  doc.querySelectorAll(".mod-scroll__projects__item").forEach((node, index) => {
+    node.setAttribute(
+      "data-suite-panel",
+      SUITES_COLLECTION_PANEL_TONES[index] ?? "gold",
+    );
+  });
 }
 
 function retargetCloneLinks(doc: Document) {
@@ -100,7 +114,8 @@ export function SuitesNormalHomepagePage() {
       live.id = "hathor-suites-live";
       doc.head.appendChild(live);
     }
-    live.textContent = `${SUITES_CLIP_FIX_CSS}\n${CLONE_MENU_HIDE_CSS}`;
+    live.textContent = `${SUITES_CLIP_FIX_CSS}\n${CLONE_MENU_HIDE_CSS}\n${SUITES_TERMS_STAGE_CSS}\n${SUITES_COLLECTION_PANEL_CSS}`;
+    tagSuiteCollectionPanels(doc);
     retargetCloneLinks(doc);
 
     if (!doc.documentElement.dataset.hathorNavBound) {
@@ -130,7 +145,8 @@ export function SuitesNormalHomepagePage() {
         css?: string;
         images?: Record<string, string>;
       };
-      live.textContent = `${SUITES_CLIP_FIX_CSS}\n${CLONE_MENU_HIDE_CSS}\n${data.css ?? ""}`;
+      live.textContent = `${SUITES_CLIP_FIX_CSS}\n${CLONE_MENU_HIDE_CSS}\n${data.css ?? ""}\n${SUITES_TERMS_STAGE_CSS}\n${SUITES_COLLECTION_PANEL_CSS}`;
+      tagSuiteCollectionPanels(doc);
       retargetCloneLinks(doc);
       if (data.images) {
         applyImages(doc, data.images);
@@ -160,7 +176,7 @@ export function SuitesNormalHomepagePage() {
       <iframe
         ref={iframeRef}
         className="suites-normal-clone__frame"
-        src="/suites-normal/index.html?v=hathor-unflip-20260820"
+        src="/suites-normal/index.html?v=hathor-logo-hathor-20260820"
         title="Hathor Suites"
         onLoad={() => void apply()}
       />

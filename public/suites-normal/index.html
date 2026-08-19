@@ -371,6 +371,104 @@ var _ckyStyles = {"css":".cky-overlay{background: #000000; opacity: 0.4; positio
       transform: none !important;
     }
   </style>
+  <style id="hathor-suites-terms-stage">
+    .mod-scroll__terms {
+      isolation: isolate;
+    }
+    .mod-scroll__terms .mod-scroll__terms__term__title,
+    .mod-scroll__terms .mod-scroll__terms__term__title *,
+    .mod-scroll__terms .mod-scroll__terms__term__title__filter,
+    .mod-scroll__terms .mod-scroll__terms__term__title__color,
+    .mod-scroll__terms .mod-scroll__terms__term__num,
+    .mod-scroll__terms .mod-scroll__terms__term__text,
+    .mod-scroll__terms .mod-scroll__terms__term__text *,
+    .mod-scroll__terms .mod-scroll__terms__term__text__single {
+      color: #ffffff !important;
+      -webkit-text-fill-color: #ffffff !important;
+      mix-blend-mode: normal !important;
+      filter: none !important;
+    }
+    @media (min-width: 951px) {
+      main .mod-scroll__terms {
+        box-sizing: border-box;
+        justify-content: space-between;
+        padding-top: clamp(5.2rem, 9svh, 7.4rem);
+        padding-bottom: clamp(1rem, 3.2svh, 2.2rem);
+      }
+      main .mod-scroll__terms .mod-scroll__terms__term__title,
+      main .mod-scroll__terms .mod-scroll__terms__term__title.t-supertitulo-l,
+      main .mod-scroll__terms .mod-scroll__terms__term:last-of-type .lh-less2 {
+        font-size: clamp(4.2rem, 11svh, 7.2rem) !important;
+        line-height: 0.82 !important;
+      }
+    }
+    @media (min-width: 481px) and (max-width: 950px) {
+      main .mod-scroll__terms .mod-scroll__terms__term__title,
+      main .mod-scroll__terms .mod-scroll__terms__term__title.t-supertitulo-l {
+        font-size: clamp(2.6rem, 8.4svh, 5.2rem) !important;
+        line-height: 0.86 !important;
+      }
+    }
+    @media (max-width: 480px) {
+      main .mod-scroll__terms .mod-scroll__terms__term__title,
+      main .mod-scroll__terms .mod-scroll__terms__term__title.t-supertitulo-l {
+        font-size: clamp(2.2rem, 9.2vw, 3rem) !important;
+        line-height: 0.9 !important;
+      }
+    }
+  </style>
+  <style id="hathor-suites-collection-panels">
+    .mod-scroll__projects__item[data-suite-panel="cream"] {
+      --suite-panel: #ece8df;
+      --suite-panel-fg: #1c1917;
+    }
+    .mod-scroll__projects__item[data-suite-panel="ivory"] {
+      --suite-panel: #faf8f5;
+      --suite-panel-fg: #1c1917;
+    }
+    .mod-scroll__projects__item[data-suite-panel="gold"] {
+      --suite-panel: #b69f64;
+      --suite-panel-fg: #1c1917;
+    }
+    .mod-scroll__projects__item[data-suite-panel="ink"] {
+      --suite-panel: #1c1917;
+      --suite-panel-fg: #faf8f5;
+    }
+    .mod-scroll__projects__item[data-suite-panel]:not(.last-item) {
+      background: var(--suite-panel) !important;
+      box-shadow: 0 -1px 0 var(--suite-panel) !important;
+    }
+    .mod-scroll__projects__item[data-suite-panel]:not(.last-item) .mod-scroll__projects__item__text,
+    .mod-scroll__projects__item.last-item[data-suite-panel] .mod-scroll__projects__item__text {
+      background: var(--suite-panel) !important;
+    }
+    .mod-scroll__projects__item[data-suite-panel] .mod-scroll__projects__item__text,
+    .mod-scroll__projects__item[data-suite-panel] .mod-scroll__projects__item__text :is(div, span, a, p, h3, strong, em) {
+      color: var(--suite-panel-fg) !important;
+      -webkit-text-fill-color: var(--suite-panel-fg) !important;
+    }
+    .mod-scroll__projects__item[data-suite-panel] .mod-scroll__projects__item__text :is(.btn--bg, .btn--circle) {
+      border-color: var(--suite-panel-fg) !important;
+      color: var(--suite-panel-fg) !important;
+      -webkit-text-fill-color: var(--suite-panel-fg) !important;
+      background: transparent !important;
+    }
+    .mod-scroll__projects__item[data-suite-panel] .mod-scroll__projects__item__text .btn--bg::before {
+      background: var(--suite-panel-fg) !important;
+    }
+    .mod-scroll__projects__item[data-suite-panel] .mod-scroll__projects__item__text :is(.btn--bg, .btn--circle):hover,
+    .mod-scroll__projects__item[data-suite-panel] .mod-scroll__projects__item__text :is(.btn--bg, .btn--circle):focus-visible {
+      background: var(--suite-panel-fg) !important;
+      color: var(--suite-panel) !important;
+      -webkit-text-fill-color: var(--suite-panel) !important;
+      border-color: var(--suite-panel-fg) !important;
+    }
+    .mod-scroll__projects__item[data-suite-panel] .mod-scroll__projects__item__text :is(.btn--bg, .btn--circle):hover :where(span, div),
+    .mod-scroll__projects__item[data-suite-panel] .mod-scroll__projects__item__text :is(.btn--bg, .btn--circle):focus-visible :where(span, div) {
+      color: var(--suite-panel) !important;
+      -webkit-text-fill-color: var(--suite-panel) !important;
+    }
+  </style>
 </head>
 
 
@@ -419,7 +517,7 @@ var _ckyStyles = {"css":".cky-overlay{background: #000000; opacity: 0.4; positio
 				<div class="logo__normal link disabled">Hathor</div>
 				<div class="logo__group">
 					<div class="logo__is">Nile</div>
-					<div class="logo__boring">Suites<div class="reg">®</div></div>
+					<div class="logo__boring">Hathor<div class="reg">®</div></div>
 				</div>
 				<!-- <img class="logo__image" src="https://normalisboring.es/wp-content/themes/normalisboring25/images/logo_normalisboring.svg"> -->
 			</div>
@@ -568,7 +666,7 @@ var _ckyStyles = {"css":".cky-overlay{background: #000000; opacity: 0.4; positio
             <div class="logo__normal link" data-url="/">Hathor</div>
             <div class="logo__group">
                 <div class="logo__is">Nile</div>
-                <div class="logo__boring">Suites<div class="reg">®</div></div>
+                <div class="logo__boring">Hathor<div class="reg">®</div></div>
             </div>
         </div>
 
@@ -831,7 +929,7 @@ before-bg-blue">
         <!-- projects -->
 
 
-                            <div class="mod-scroll__projects__item  bg-beige c-black">
+                            <div class="mod-scroll__projects__item  bg-beige c-black" data-suite-panel="cream">
 
                     <!-- item-project -->
                     <div class="mod-scroll__projects__item__content">
@@ -860,7 +958,7 @@ before-bg-blue">
 
                                     </div>
 
-                            <div class="mod-scroll__projects__item  bg-grey">
+                            <div class="mod-scroll__projects__item  bg-grey" data-suite-panel="ink">
 
                     <!-- item-project -->
                     <div class="mod-scroll__projects__item__content">
@@ -889,7 +987,7 @@ before-bg-blue">
 
                                     </div>
 
-                            <div class="mod-scroll__projects__item  bg-blue">
+                            <div class="mod-scroll__projects__item  bg-blue" data-suite-panel="gold">
 
                     <!-- item-project -->
                     <div class="mod-scroll__projects__item__content">
@@ -918,7 +1016,7 @@ before-bg-blue">
 
                                     </div>
 
-                            <div class="mod-scroll__projects__item  bg-beige c-black">
+                            <div class="mod-scroll__projects__item  bg-beige c-black" data-suite-panel="ivory">
 
                     <!-- item-project -->
                     <div class="mod-scroll__projects__item__content">
@@ -947,7 +1045,7 @@ before-bg-blue">
 
                                     </div>
 
-                            <div class="mod-scroll__projects__item last-item bg-grey">
+                            <div class="mod-scroll__projects__item last-item bg-grey" data-suite-panel="ink">
 
                     <!-- item-project -->
                     <div class="mod-scroll__projects__item__content">
