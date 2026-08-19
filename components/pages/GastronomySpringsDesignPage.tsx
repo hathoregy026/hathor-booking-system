@@ -2,281 +2,349 @@
 
 /* eslint-disable @next/next/no-img-element */
 
-import type { CSSProperties } from "react";
-import { PublicNavbar } from "@/components/layout/PublicNavbar";
+import type { CSSProperties, ReactNode } from "react";
 import { Footer } from "@/components/layout/Footer";
+import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import { GASTRONOMY_DINING_MEDIA as media } from "@/lib/gastronomy-dining-media";
 
-const plate = (number: number) =>
+const plateSrc = (number: number) =>
   `/media/gastronomy-dining/dining-plate-${number}.png`;
 
 const typeStyle = {
-  "--gd-title-font": '"Gamgote", "Bitho Luxury", Georgia, serif',
-  "--gd-script-font": '"Quiet Luxury", "Agraham", cursive',
-  "--gd-body-font": 'var(--public-sans, "Plus Jakarta Sans", sans-serif)',
+  "--nib-display": '"Bitho Luxury", cursive',
+  "--nib-copy": '"Rollgates Luxury Italic", serif',
 } as CSSProperties;
 
-function Plate({ number, alt, className }: { number: number; alt: string; className: string }) {
+const stories = [
+  {
+    number: "01",
+    time: "SUNRISE",
+    place: "UPPER DECK",
+    title: "BREAKFAST",
+    image: media.hero,
+    alt: "Breakfast served aboard Hathor in the Nile morning light",
+  },
+  {
+    number: "02",
+    time: "EVENING",
+    place: "DINING SALON",
+    title: "CHEF'S TABLE",
+    image: media.chef,
+    alt: "Hathor's chef composing an evening course",
+  },
+  {
+    number: "03",
+    time: "GOLDEN HOUR",
+    place: "RIVER DECK",
+    title: "NILE SUPPER",
+    image: media.table,
+    alt: "An intimate supper overlooking the Nile",
+  },
+  {
+    number: "04",
+    time: "DAILY",
+    place: "FITNESS DECK",
+    title: "MOVE",
+    image: "/media/hathor/r2/wellness-fitness.webp",
+    alt: "Guests training in Hathor's onboard fitness space",
+  },
+  {
+    number: "05",
+    time: "ANY HOUR",
+    place: "YOUR SUITE",
+    title: "SUITE SERVICE",
+    image: "/media/hathor/optimized/room-royal.webp",
+    alt: "Private service in a Hathor Nile suite",
+  },
+] as const;
+
+function Image({ src, alt, className = "" }: { src: string; alt: string; className?: string }) {
   return (
     <figure className={className}>
-      <img src={plate(number)} alt={alt} />
+      <img src={src} alt={alt} />
     </figure>
+  );
+}
+
+function FlipImage({
+  front,
+  back,
+  alt,
+  className = "",
+  axis = "up",
+}: {
+  front: string;
+  back: string;
+  alt: string;
+  className?: string;
+  axis?: "up" | "left" | "right";
+}) {
+  return (
+    <figure className={`nib-flip nib-flip--${axis} ${className}`} data-nib-flip>
+      <img src={front} alt={alt} />
+      <img src={back} alt="" aria-hidden />
+    </figure>
+  );
+}
+
+function Plate({
+  number,
+  className = "",
+  style,
+}: {
+  number: number;
+  className?: string;
+  style?: CSSProperties;
+}) {
+  return (
+    <figure
+      className={`nib-plate nib-plate--${number} ${className}`}
+      data-nib-plate
+      style={style}
+    >
+      <img src={plateSrc(number)} alt={`Hathor plated course ${number}`} />
+    </figure>
+  );
+}
+
+function Panel({ className, children }: { className: string; children: ReactNode }) {
+  return (
+    <article className={`nib-panel ${className}`} data-nib-panel>
+      {children}
+    </article>
   );
 }
 
 export function GastronomySpringsDesignPage() {
   return (
-    <div className="gastronomy-dining-shell">
+    <div className="gastronomy-dining-shell" style={typeStyle}>
       <div className="public-site gastronomy-dining-nav">
         <PublicNavbar />
       </div>
 
-      <main className="gastronomy-dining-page" style={typeStyle}>
-        <div className="gastronomy-dining-progress" aria-hidden>
-          <i data-v6-progress />
+      <main className="nib-dining">
+        <div className="nib-progress" aria-hidden>
+          <i data-nib-progress />
         </div>
 
-        <section className="dining-hero" data-v6-scroll>
-          <div className="dining-hero__sticky">
-            <figure className="dining-hero__layer dining-hero__layer--a">
-              <img src={media.hero} alt="Dinner on Hathor beside the Nile" />
-            </figure>
-            <figure className="dining-hero__layer dining-hero__layer--b">
-              <img src={media.table} alt="A table prepared for an evening voyage" />
-            </figure>
-            <figure className="dining-hero__layer dining-hero__layer--c">
-              <img src={media.courses} alt="Hathor's tasting courses" />
-            </figure>
-            <figure className="dining-hero__layer dining-hero__layer--d">
-              <img src={media.wine} alt="Wine served in the Nile evening light" />
-            </figure>
-            <div className="dining-hero__veil" />
+        <section className="nib-horizontal" data-nib-horizontal aria-label="The Hathor dining story">
+          <div className="nib-horizontal__sticky">
+            <div className="nib-fixed-brand" aria-hidden>HATHOR</div>
+            <div className="nib-fixed-rail" aria-hidden>
+              <span>DINING</span><span>MOVE</span><span>REST</span>
+            </div>
+            <div className="nib-track" data-nib-track>
+              <Panel className="nib-intro nib-surface--cream">
+                <span className="nib-chapter">Dining</span>
+                <div className="nib-intro__titles">
+                  <h1><span>TABLES</span><span>ON THE NILE</span></h1>
+                  <h2><span>MADE TO</span><span>MOVE WITH YOU</span></h2>
+                  <h2><span>TASTE</span><em>EGYPT</em></h2>
+                </div>
+                <p className="nib-intro__copy">
+                  In a world that hurries, Hathor sets another rhythm: market-led Egyptian
+                  cooking, gracious service and time enough to watch the Nile change colour.
+                  Meals, movement and suite rest are composed to last the voyage—not to
+                  chase passing fashion.
+                </p>
+                <span className="nib-intro__index">01</span>
+                <span className="nib-intro__copyright">HATHOR DAHABIYA ©2026</span>
+              </Panel>
 
-            <div className="dining-hero__copy dining-hero__copy--open">
-              <h1>
-                <span className="gd-title-line">Dining on</span>
-                <span className="gd-title-line">the Nile.</span>
-              </h1>
-              <span className="gd-script">A Table in Motion</span>
-              <p>
-                Egyptian flavours, thoughtful service and riverlight come together in an intimate
-                dining experience composed around the rhythm of your voyage.
-              </p>
-            </div>
-            <div className="dining-hero__copy dining-hero__copy--mid">
-              <h2>
-                <span className="gd-title-line">Riverlight at</span>
-                <span className="gd-title-line">every course.</span>
-              </h2>
-              <span className="gd-script">Egypt, Served Slowly</span>
-            </div>
-            <div className="dining-hero__copy dining-hero__copy--end">
-              <h2>
-                <span className="gd-title-line">A voyage</span>
-                <span className="gd-title-line">through taste.</span>
-              </h2>
-              <span className="gd-script">Enter the Hathor Table</span>
-              <a className="public-btn-outline-gold gd-home-cta" href="#orbit">
-                <span>Explore Dining</span>
-              </a>
-            </div>
-            <div className="gastronomy-dining-hero__edge">DINING ON THE NILE 01 / 10</div>
-          </div>
-        </section>
+              <Panel className="nib-principal nib-surface--cream">
+                <Image src={media.hero} alt="Dining beside the Nile aboard Hathor" className="nib-principal__main" />
+                <FlipImage
+                  className="nib-principal__top"
+                  front={media.courses}
+                  back={media.chef}
+                  alt="A sequence of Hathor tasting courses"
+                  axis="up"
+                />
+                <FlipImage
+                  className="nib-principal__bottom"
+                  front={media.service}
+                  back={media.table}
+                  alt="Warm attentive service aboard Hathor"
+                  axis="up"
+                />
+                <span className="nib-side-label">THE TABLE</span>
+              </Panel>
 
-        <section id="orbit" className="dining-orbit" data-v6-scroll>
-          <div className="dining-orbit__sticky">
-            <div className="dining-orbit__word">TASTE</div>
-            <Plate number={1} alt="Hathor signature plate" className="dining-plate dining-plate--one" />
-            <Plate number={2} alt="Hathor dessert plate" className="dining-plate dining-plate--two" />
-            <Plate number={3} alt="Nile-inspired seafood plate" className="dining-plate dining-plate--three" />
-            <Plate number={4} alt="Seasonal Egyptian plate" className="dining-plate dining-plate--four" />
-            <Plate number={5} alt="Chef's tasting plate" className="dining-plate dining-plate--five" />
-            <Plate number={6} alt="Hathor evening plate" className="dining-plate dining-plate--six" />
-            <Plate number={7} alt="Hathor river plate" className="dining-plate dining-plate--seven" />
-            <div className="dining-orbit__copy">
-              <h2>
-                <span className="gd-title-line">Seven plates.</span>
-                <span className="gd-title-line">One Nile story.</span>
-              </h2>
-              <span className="gd-script">Time, Beautifully Slowed</span>
-              <p>
-                Each dish carries a different note of Egypt—bright herbs, warm spice, river fish
-                and produce gathered close to the banks.
-              </p>
-            </div>
-          </div>
-        </section>
+              <Panel className="nib-statement nib-surface--cream">
+                <span className="nib-chapter">The experience</span>
+                <div className="nib-statement__title">
+                  <h2>DINING THAT INVITES</h2>
+                  <h2>YOU TO LINGER</h2>
+                  <h2>MOVE WITH</h2>
+                  <h2>THE RIVER</h2>
+                </div>
+                <p>
+                  Every table is shaped around the people who gather there. Breakfast arrives
+                  with first light; dinner follows the breeze; the gym stays close to the deck;
+                  your suite remembers how you like to rest. Design, flavour and ease of life
+                  meet as one Hathor day.
+                </p>
+              </Panel>
 
-        <section className="dining-course" data-v6-scroll>
-          <div className="dining-course__sticky">
-            <figure className="dining-course__bg dining-course__bg--1">
-              <img src={media.hero} alt="The opening course aboard Hathor" />
-            </figure>
-            <figure className="dining-course__bg dining-course__bg--2">
-              <img src={media.experience} alt="Hathor's dining room beside the Nile" />
-            </figure>
-            <Plate number={1} alt="Opening plate" className="dining-course__cutout" />
-            <div className="dining-course__meta">
-              <h2>
-                <span className="gd-title-line">First light</span>
-                <span className="gd-title-line">on porcelain.</span>
-              </h2>
-              <span className="gd-script">The Opening Course</span>
-              <p>
-                A precise opening bite awakens the palate while the river changes colour beyond
-                the windows.
-              </p>
-            </div>
-          </div>
-        </section>
+              <Panel className="nib-image-text nib-surface--gold">
+                <FlipImage
+                  className="nib-image-text__wide"
+                  front={media.restaurant}
+                  back={media.wine}
+                  alt="Hathor's intimate dining salon"
+                  axis="right"
+                />
+                <FlipImage
+                  className="nib-image-text__small"
+                  front={media.celebration}
+                  back="/media/hathor/optimized/room-suite.webp"
+                  alt="A candlelit celebration on Hathor"
+                  axis="left"
+                />
+                <p>
+                  On Hathor, dining is part of the voyage—not a pause from it. Egyptian produce,
+                  fresh herbs and precise technique meet an atmosphere that remains warm,
+                  unforced and open to the river: more comfort, more flavour, more quiet luxury.
+                </p>
+              </Panel>
 
-        <section className="dining-course dining-course--sea" data-v6-scroll>
-          <div className="dining-course__sticky">
-            <figure className="dining-course__bg dining-course__bg--1">
-              <img src={media.table} alt="The Nile course table setting" />
-            </figure>
-            <figure className="dining-course__bg dining-course__bg--2">
-              <img src={media.wine} alt="Wine paired with the Nile course" />
-            </figure>
-            <Plate number={3} alt="Nile-inspired seafood plate" className="dining-course__cutout dining-course__cutout--right" />
-            <div className="dining-course__meta dining-course__meta--left">
-              <h2>
-                <span className="gd-title-line">Fresh from</span>
-                <span className="gd-title-line">the water’s edge.</span>
-              </h2>
-              <span className="gd-script">River &amp; Sea</span>
-              <p>
-                Morning market ingredients are prepared with restraint, letting each flavour meet
-                the cool evening air.
-              </p>
-            </div>
-          </div>
-        </section>
+              <Panel className="nib-marquee nib-surface--cream" >
+                <div aria-hidden>
+                  <span>RITUALS</span><b>✦</b><span>RITUALS</span><b>✦</b><span>RITUALS</span><b>✦</b>
+                </div>
+              </Panel>
 
-        <section className="dining-cascade" data-v6-scroll>
-          <div className="dining-cascade__sticky">
-            <header>
-              <h2>
-                <span className="gd-title-line">Course after</span>
-                <span className="gd-title-line">luminous course.</span>
-              </h2>
-              <span className="gd-script">The Passage of Flavour</span>
-            </header>
-            <div className="dining-cascade__stack">
-              <figure><img src={media.courses} alt="A tableau of Hathor courses" /></figure>
-              <figure><img src={media.chef} alt="The Hathor chef finishing a plate" /></figure>
-              <figure><img src={media.service} alt="Warm service aboard Hathor" /></figure>
-              <figure><img src={media.experience} alt="An intimate Nile table" /></figure>
-              <figure><img src={media.table} alt="Dining beside the river" /></figure>
-              <figure><img src={media.celebration} alt="A celebration aboard Hathor" /></figure>
-            </div>
-          </div>
-        </section>
+              <Panel className="nib-atelier nib-surface--cream">
+                <div className="nib-atelier__copy">
+                  <span className="nib-chapter">Seven courses</span>
+                  <h2>PLATES THAT<br />ARRIVE<br /><em>LIKE MOMENTS</em></h2>
+                  <p>
+                    Each course enters slowly, settles into its place and gives the table time
+                    to look, breathe and taste.
+                  </p>
+                </div>
+                <div className="nib-atelier__plates" data-nib-plate-stage>
+                  <Plate number={1} style={{ "--plate-delay": "0.00" } as CSSProperties} />
+                  <Plate number={2} style={{ "--plate-delay": "0.08" } as CSSProperties} />
+                  <Plate number={3} style={{ "--plate-delay": "0.16" } as CSSProperties} />
+                  <Plate number={4} style={{ "--plate-delay": "0.24" } as CSSProperties} />
+                  <Plate number={5} style={{ "--plate-delay": "0.32" } as CSSProperties} />
+                  <Plate number={6} style={{ "--plate-delay": "0.40" } as CSSProperties} />
+                  <Plate number={7} style={{ "--plate-delay": "0.48" } as CSSProperties} />
+                </div>
+              </Panel>
 
-        <section className="dining-wine" data-v6-scroll>
-          <div className="dining-wine__sticky">
-            <img src={media.wine} alt="Wine service aboard Hathor" />
-            <div className="dining-wine__veil" />
-            <Plate number={6} alt="A plate chosen for the wine pairing" className="dining-wine__glass" />
-            <div className="dining-wine__copy">
-              <h2>
-                <span className="gd-title-line">The pour</span>
-                <span className="gd-title-line">joins the voyage.</span>
-              </h2>
-              <span className="gd-script">Cellar by Candlelight</span>
-              <p>
-                Carefully selected wines meet Egyptian ingredients in pairings paced around the
-                conversation, never the clock.
-              </p>
-            </div>
-          </div>
-        </section>
+              <Panel className="nib-values nib-surface--gold">
+                <div className="nib-value">
+                  <p>Egyptian ingredients are treated with restraint: bright citrus, warm spice,
+                    river fish and vegetables gathered close to the banks.</p>
+                  <span>01</span><h2>TABLE</h2>
+                  <Plate number={3} className="nib-value__plate" />
+                </div>
+                <div className="nib-value">
+                  <p>The onboard gym keeps movement close—an unhurried morning session while
+                    palms and villages pass beyond the deck.</p>
+                  <span>02</span><h2>MOVEMENT</h2>
+                  <Image src="/media/hathor/r2/wellness-fitness.webp" alt="Hathor onboard fitness" className="nib-value__image" />
+                </div>
+                <div className="nib-value">
+                  <p>Your suite is the quiet counterpoint: generous river views, thoughtful
+                    details and private service whenever you prefer to stay in.</p>
+                  <span>03</span><h2>REST</h2>
+                  <Image src="/media/hathor/optimized/room-suite.webp" alt="A calm Hathor suite" className="nib-value__image" />
+                </div>
+              </Panel>
 
-        <section className="dining-chef" data-v6-scroll>
-          <div className="dining-chef__sticky">
-            <figure className="dining-chef__frame dining-chef__frame--back">
-              <img src={media.table} alt="The dining room glowing at night" />
-            </figure>
-            <figure className="dining-chef__frame dining-chef__frame--front">
-              <img src={media.chef} alt="Hathor's chef composing dinner" />
-            </figure>
-            <div className="dining-chef__copy">
-              <h2>
-                <span className="gd-title-line">Quiet service.</span>
-                <span className="gd-title-line">Perfect timing.</span>
-              </h2>
-              <span className="gd-script">The Hathor Way</span>
-              <p>
-                Preferences are remembered, timings follow the room and each plate arrives with
-                the quiet confidence of Hathor hospitality.
-              </p>
+              <Panel className="nib-stories-intro nib-surface--cream">
+                <span className="nib-chapter">Experiences</span>
+                <p>
+                  Luxury does not need to announce itself. It is felt in exact timing, a favourite
+                  drink remembered, room to move and the freedom to dine wherever the river looks best.
+                </p>
+              </Panel>
+
+              {stories.map((story) => (
+                <Panel className="nib-story nib-surface--cream" key={story.number}>
+                  <Image src={story.image} alt={story.alt} className="nib-story__image" />
+                  <div className="nib-story__meta">
+                    <span>{story.time}</span><span>{story.place}</span>
+                    <span>{story.number}</span><a href="/contact">Open Story</a>
+                  </div>
+                  <h2>{story.title}</h2>
+                </Panel>
+              ))}
+
+              <Panel className="nib-story-end nib-surface--cream">
+                <span className="nib-chapter">Beyond the table</span>
+                <h2>WHO SAID<br />PLEASURE<br />CANNOT BE<br /><em>FUNCTIONAL?</em></h2>
+                <p>
+                  Dining, movement and rest are composed as one continuous experience. Nothing is
+                  rushed, nothing is overworked, and every detail serves the ease of life aboard.
+                </p>
+                <a className="public-btn-outline-gold nib-button" href="/booking"><span>Book Voyage</span></a>
+              </Panel>
+
+              <Panel className="nib-close nib-surface--gold">
+                <FlipImage
+                  front={media.wine}
+                  back={media.hero}
+                  alt="The last golden hour at the Hathor table"
+                  axis="up"
+                />
+                <Plate number={4} className="nib-close__plate" />
+                <span>02</span>
+              </Panel>
             </div>
           </div>
         </section>
 
-        <section className="dining-course dining-course--sweet" data-v6-scroll>
-          <div className="dining-course__sticky">
-            <figure className="dining-course__bg dining-course__bg--1">
-              <img src={media.courses} alt="The final courses of the evening" />
-            </figure>
-            <figure className="dining-course__bg dining-course__bg--2">
-              <img src={media.celebration} alt="Golden celebration light aboard Hathor" />
-            </figure>
-            <Plate number={2} alt="Hathor dessert plate" className="dining-course__cutout" />
-            <div className="dining-course__meta">
-              <h2>
-                <span className="gd-title-line">Sweetness</span>
-                <span className="gd-title-line">without hurry.</span>
-              </h2>
-              <span className="gd-script">The Last Light</span>
-              <p>
-                Dessert lingers with tea, quiet laughter and the lights of the Nile passing slowly
-                beyond the deck.
-              </p>
-            </div>
+        <section className="nib-contact nib-surface--cream" data-nib-reveal>
+          <span className="nib-contact__eyebrow">(Concierge)</span>
+          <h2>SHAPE YOUR<br />VOYAGE</h2>
+        </section>
+
+        <section className="nib-double nib-surface--cream" data-nib-reveal>
+          <Image src={media.table} alt="A Hathor table prepared beside the river" />
+          <Image src="/media/hathor/r2/wellness-fitness.webp" alt="Hathor's onboard gym" />
+        </section>
+
+        <section className="nib-lines nib-surface--cream" data-nib-reveal>
+          <h2>DINING WITH</h2>
+          <h2>ROOM TO</h2>
+          <h2>BREATHE</h2>
+        </section>
+
+        <section className="nib-contact-copy nib-surface--cream" data-nib-reveal>
+          <div />
+          <div>
+            <p>
+              Tell us how you like to travel. Our team can shape private dinners, dietary requests,
+              celebrations, fitness time and suite service around the natural pace of your Nile voyage.
+            </p>
+            <a href="mailto:reservations@hathorcruise.com">reservations@hathorcruise.com</a>
           </div>
         </section>
 
-        <section className="dining-gallery" data-v6-scroll>
-          <div className="dining-gallery__sticky">
-            <header>
-              <h2>
-                <span className="gd-title-line">Every plate.</span>
-                <span className="gd-title-line">A private horizon.</span>
-              </h2>
-              <span className="gd-script">A Hathor Menu in Motion</span>
-            </header>
-            <Plate number={5} alt="Hathor plate one" className="dining-gallery__a" />
-            <Plate number={6} alt="Hathor plate two" className="dining-gallery__b" />
-            <Plate number={7} alt="Hathor plate three" className="dining-gallery__c" />
-            <div className="dining-gallery__caption">
-              Nile herbs. Egyptian citrus. Candlelight on gold. A menu shaped by the season, the
-              route and the people gathered around your table.
-            </div>
-          </div>
+        <section className="nib-contact-action nib-surface--cream" data-nib-reveal>
+          <a className="public-btn-outline-gold nib-button nib-button--large" href="/contact">
+            <span>Plan Voyage</span>
+          </a>
         </section>
 
-        <section id="concierge" className="dining-finale" data-v6-scroll>
-          <div className="dining-finale__sticky">
-            <img src={media.hero} alt="Private dining on Hathor at night" />
-            <div className="dining-finale__veil" />
-            <Plate number={4} alt="Hathor's final plate" className="dining-finale__plate" />
-            <div className="dining-finale__copy">
-              <h2>
-                <span className="gd-title-line">Your evening.</span>
-                <span className="gd-title-line">Beautifully yours.</span>
-              </h2>
-              <span className="gd-script">A Table on the Nile</span>
-              <p>
-                A birthday beneath the stars, a private family dinner or a quiet celebration—our
-                team will shape the table around you.
-              </p>
-              <div className="dining-finale__actions">
-                <a className="public-btn-outline-gold gd-home-cta" href="/contact"><span>Ask Concierge</span></a>
-                <a className="public-btn-outline-gold gd-home-cta" href="/booking"><span>Book Voyage</span></a>
-              </div>
-            </div>
+        <section className="nib-epilogue nib-surface--cream" data-nib-reveal>
+          <div className="nib-epilogue__social">
+            <a href="https://www.instagram.com/hathorcruise/">INSTAGRAM</a><span>|</span>
+            <a href="mailto:reservations@hathorcruise.com">reservations@hathorcruise.com</a><span>(2026)</span>
+          </div>
+          <div className="nib-epilogue__feature">
+            <span>THE HATHOR TABLE</span>
+            <Image src={media.celebration} alt="A private celebration on Hathor" />
+            <h3>PRIVATE DINING</h3>
+            <p>Egyptian flavour, candlelight and the Nile moving beside you.</p>
+          </div>
+          <div className="nib-epilogue__legal">
+            <span>HATHOR DAHABIYA ©2026</span>
+            <a href="/privacy">PRIVACY</a><a href="/terms">VOYAGE TERMS</a><a href="/contact">CONTACT</a>
           </div>
         </section>
       </main>

@@ -1,1961 +1,1087 @@
-/* GPT SITE RESTORE dining.html — scoped clone for /gastronomy */
-.gastronomy-dining-page {
-  --gd-gold: var(--public-gold, #b69f64);
-  --gd-champagne: var(--public-gold, #b69f64);
-  --gd-gold-soft: #d4bf86;
-  --gd-serif: var(--gd-title-font, var(--public-serif, var(--font-hathor-display, Georgia, serif)));
-  --gd-sans: var(--gd-body-font, var(--public-sans, var(--font-hathor-body, sans-serif)));
-  --gd-gutter: var(--content-gutter, clamp(12px, 2.2vw, 28px));
-  --gd-ink: #f3eee4;
-  background: #070605;
-  color: var(--gd-ink);
-  font-family: var(--gd-sans);
+html[data-gastronomy-dining],
+html[data-gastronomy-dining] body {
   overflow-x: clip;
+  background: #f5eacf;
 }
 
-.gastronomy-dining-page img {
-  max-width: none;
-  display: block;
+.gastronomy-dining-shell {
+  --nib-gold: #b69f64;
+  --nib-gold-deep: #b69f64;
+  --nib-cream: #f5eacf;
+  --nib-cream-soft: #fbf6ea;
+  --nib-night: #090806;
+  min-height: 100vh;
+  overflow: clip;
+  background: var(--nib-cream);
+  color: var(--nib-gold);
 }
 
-.gastronomy-dining-progress {
-  z-index: 2000;
-  background: #ffffff24;
-  height: 2px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-}
-
-.gastronomy-dining-progress i {
-  background: var(--gd-gold);
-  transform-origin: 0;
-  will-change: transform;
-  height: 100%;
-  display: block;
-  transform: scaleX(0);
-}
-
-.gastronomy-dining-hero__edge {
-  z-index: 8;
-  writing-mode: vertical-rl;
-  letter-spacing: 0.27em;
-  font-size: 7px;
+.gastronomy-dining-nav {
   position: absolute;
-  top: 24%;
-  left: 27px;
-  color: var(--gd-champagne);
-  opacity: 0.85;
-}
-/* === DINING PAGE вЂ” extreme scroll luxury === */
-.gastronomy-dining-page {
-    background: #070605;
-    color: #f3eee4;
-}
-
-.gastronomy-dining-page .v6-nav {
-    border-bottom-color: #ffffff1a;
-}
-
-.dining-hero {
-    --p: 0;
-    --a: 0;
-    --ao: 1;
-    --b: 0;
-    --bo: 1;
-    --c: 0;
-    --d: 0;
-    height: 420svh;
-    min-height: 420svh;
-    color: #fff;
-    position: relative;
-}
-
-.dining-hero__sticky {
-    height: 100svh;
-    min-height: 100svh;
-    width: 100%;
-    position: sticky;
-    top: 0;
-    overflow: hidden;
-    background: #050403;
-}
-
-.dining-hero__layer {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-}
-
-.dining-hero__layer img {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 115%;
-    height: 115%;
-    object-fit: cover;
-    transform: translate(-50%, -50%) scale(1.05);
-}
-
-.dining-hero__layer--a {
-    z-index: 1;
-    opacity: var(--ao);
-    transform: scale(calc(1 + var(--p) * 0.06));
-}
-
-.dining-hero__layer--b {
-    z-index: 2;
-    /* Overlay layer: fully hidden until wipe — never a tiny center box */
-    opacity: var(--b);
-    clip-path: inset(calc((1 - var(--b)) * 100%) 0 0 0);
-}
-
-.dining-hero__layer--c {
-    z-index: 3;
-    opacity: var(--c);
-    clip-path: inset(calc((1 - var(--c)) * 100%) 0 0);
-}
-
-.dining-hero__layer--d {
-    z-index: 4;
-    opacity: var(--d);
-    clip-path: inset(0 calc((1 - var(--d)) * 100%) 0 0);
-}
-
-.dining-hero__veil {
-    z-index: 5;
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background:
-        linear-gradient(#0000 35%, #050403d9),
-        radial-gradient(circle at 50% 40%, #0000 10%, #05040388 100%);
-}
-
-.dining-hero__copy {
-    z-index: 8;
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 110px var(--gd-gutter) 80px;
-    pointer-events: none;
-}
-
-.dining-hero__copy a {
-    pointer-events: auto;
-}
-
-.dining-hero__copy--open {
-    align-items: center;
-    text-align: center;
-    opacity: var(--ao);
-    transform: translateY(calc(var(--a) * -10vh));
-}
-
-.dining-hero__copy--mid {
-    opacity: min(var(--b), var(--bo));
-    transform: translateX(calc((1 - var(--b)) * 10vw));
-    justify-content: flex-end;
-    padding-bottom: 12svh;
-}
-
-.dining-hero__copy--end {
-    opacity: var(--d);
-    transform: translateY(calc((1 - var(--d)) * 60px));
-    justify-content: flex-end;
-    padding-bottom: 14svh;
-}
-
-.dining-hero__copy > span {
-    letter-spacing: 0.34em;
-    text-transform: uppercase;
-    color: var(--gd-champagne);
-    font-size: 8px;
-    font-weight: 500;
-}
-
-.dining-hero__copy h1 {
-    font: 500 clamp(42px, 5.4vw, 72px) / 1.08 var(--gd-serif);
-    letter-spacing: -0.02em;
-    margin: 14px 0 0;
-    position: relative;
-    text-shadow: 0 4px 40px #00000066;
-}
-
-.dining-hero__copy h1 em,
-.dining-hero__copy h2 em {
-    font-family: var(--gd-serif);
-    font-style: italic;
-    font-weight: 500;
-    display: block;
-    position: relative;
-    z-index: 2;
-    margin: 0.04em 0 0;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    transform: none;
-    color: var(--gd-gold-soft);
-}
-
-.dining-hero__copy h2 {
-    font: 500 clamp(34px, 4.2vw, 56px) / 1.12 var(--gd-serif);
-    letter-spacing: -0.02em;
-    margin: 12px 0 0;
-    position: relative;
-    text-shadow: 0 4px 36px #00000066;
-}
-
-.dining-hero__copy p {
-    color: #ffffffb8;
-    max-width: 540px;
-    text-shadow: 0 2px 20px #00000073;
-}
-
-.dining-hero__copy a {
-    margin-top: 28px;
-    width: max-content;
-    border-bottom: 1px solid var(--gd-gold);
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    font-size: 9px;
-    padding: 12px 0 8px;
-    color: #fff;
-}
-
-/* Floating cut-out plates */
-.dining-orbit {
-    --p: 0;
-    --a: 0;
-    --b: 0;
-    --c: 0;
-    --d: 0;
-    height: 380svh;
-    min-height: 380svh;
-    background: #0a0908;
-    position: relative;
-}
-
-.dining-orbit__sticky {
-    height: 100svh;
-    min-height: 100svh;
-    width: 100%;
-    position: sticky;
-    top: 0;
-    overflow: hidden;
-}
-
-.dining-orbit__word {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    font: 600 clamp(120px, 22vw, 340px) / 0.7 var(--gd-serif);
-    letter-spacing: -0.06em;
-    color: #ffffff0d;
-    transform: translateX(calc((0.5 - var(--p)) * 18vw));
-    pointer-events: none;
-}
-
-.dining-plate {
-    position: absolute;
-    margin: 0;
-    background: transparent;
-    overflow: visible;
-    pointer-events: none;
-    will-change: transform, opacity, filter;
-    filter:
-        drop-shadow(0 42px 58px #000000bf)
-        drop-shadow(0 10px 28px #b69f642e);
-}
-
-.dining-plate img {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: contain;
-}
-
-/* Soft parachute drop: high + slight blur в†’ settled glow */
-.dining-plate--one {
-    width: min(40vw, 440px);
-    top: 8svh;
-    left: 6vw;
-    z-index: 3;
-    opacity: var(--a);
-    transform:
-        translate3d(
-            calc((1 - var(--a)) * -3vw),
-            calc((1 - var(--a)) * -58vh),
-            0
-        )
-        rotate(calc((1 - var(--a)) * -14deg + var(--p) * 8deg))
-        scale(calc(0.94 + var(--a) * 0.06));
-    filter:
-        drop-shadow(0 42px 58px #000000bf)
-        drop-shadow(0 10px 28px #b69f642e);
-}
-
-.dining-plate--two {
-    width: min(32vw, 360px);
-    top: 14svh;
-    right: 8vw;
-    z-index: 4;
-    opacity: var(--b);
-    transform:
-        translate3d(
-            calc((1 - var(--b)) * 4vw),
-            calc((1 - var(--b)) * -64vh),
-            0
-        )
-        rotate(calc((1 - var(--b)) * 16deg + var(--p) * -10deg))
-        scale(calc(0.94 + var(--b) * 0.06));
-    filter:
-        drop-shadow(0 38px 52px #000000b8)
-        drop-shadow(0 8px 24px #b69f6426);
-}
-
-.dining-plate--three {
-    width: min(26vw, 300px);
-    bottom: 8svh;
-    left: 24vw;
-    z-index: 2;
-    opacity: var(--c);
-    transform:
-        translate3d(
-            calc((1 - var(--c)) * -10vw),
-            calc((1 - var(--c)) * 18vh),
-            0
-        )
-        rotate(calc((1 - var(--c)) * 10deg + var(--p) * 6deg))
-        scale(calc(0.94 + var(--c) * 0.06));
-    filter:
-        drop-shadow(0 34px 48px #000000b3);
-}
-
-.dining-plate--four {
-    width: min(22vw, 250px);
-    top: 38svh;
-    left: 42vw;
-    z-index: 5;
-    opacity: var(--c);
-    transform:
-        translate3d(0, calc((1 - var(--c)) * -48vh), 0)
-        rotate(calc((1 - var(--c)) * -18deg + var(--p) * 12deg))
-        scale(calc(0.94 + var(--c) * 0.06));
-    filter:
-        drop-shadow(0 30px 44px #000000b8)
-        drop-shadow(0 6px 18px #b69f6433);
-}
-
-.dining-plate--five {
-    width: min(18vw, 210px);
-    top: 22svh;
-    right: 28vw;
-    z-index: 1;
-    opacity: var(--d);
-    transform:
-        translate3d(
-            calc((1 - var(--d)) * 6vw),
-            calc((1 - var(--d)) * -42vh),
-            0
-        )
-        rotate(calc((1 - var(--d)) * 22deg + var(--p) * -6deg))
-        scale(calc(0.94 + var(--d) * 0.06));
-    filter:
-        drop-shadow(0 26px 40px #000000b3);
-}
-
-.dining-plate--six {
-    width: min(16vw, 190px);
-    bottom: 18svh;
-    right: 12vw;
-    z-index: 4;
-    opacity: var(--d);
-    transform:
-        translate3d(0, calc((1 - var(--d)) * -36vh), 0)
-        rotate(calc((1 - var(--d)) * -12deg + var(--p) * -8deg))
-        scale(calc(0.94 + var(--d) * 0.06));
-    filter:
-        drop-shadow(0 24px 36px #000000b8)
-        drop-shadow(0 0 32px #b69f642e);
-}
-
-.dining-plate--seven {
-    width: min(14vw, 170px);
-    bottom: 28svh;
-    left: 10vw;
-    z-index: 2;
-    opacity: var(--b);
-    transform:
-        translate3d(
-            calc((1 - var(--b)) * -4vw),
-            calc((1 - var(--b)) * -30vh),
-            0
-        )
-        rotate(calc((1 - var(--b)) * 8deg + var(--p) * 14deg))
-        scale(calc(0.94 + var(--b) * 0.06));
-    filter:
-        drop-shadow(0 22px 34px #000000b3);
-}
-
-.dining-orbit__copy {
-    z-index: 5;
-    position: absolute;
-    left: var(--gd-gutter);
-    bottom: 10svh;
-    max-width: min(480px, 42vw);
-    opacity: calc(0.2 + var(--b) * 0.8);
-}
-
-.dining-orbit__copy > span {
-    letter-spacing: 0.3em;
-    color: var(--gd-champagne);
-    font-size: 8px;
-}
-
-.dining-orbit__copy h2 {
-    font: 600 clamp(48px, 5.5vw, 92px) / 0.82 var(--gd-serif);
-    margin: 18px 0;
-    text-shadow: 0 4px 30px #000000a6;
-}
-
-.dining-orbit__copy p {
-    color: #ffffffa8;
-}
-
-/* Course chapters with cutout plate */
-.dining-course {
-    --p: 0;
-    --a: 0;
-    --ao: 1;
-    --b: 0;
-    --c: 0;
-    height: 320svh;
-    min-height: 320svh;
-    position: relative;
-    color: #fff;
-}
-
-.dining-course__sticky {
-    height: 100svh;
-    min-height: 100svh;
-    width: 100%;
-    position: sticky;
-    top: 0;
-    overflow: hidden;
-    background: #080706;
-}
-
-.dining-course__bg {
-    position: absolute;
-    inset: 0;
-}
-
-.dining-course__bg img {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 112%;
-    height: 112%;
-    object-fit: cover;
-    transform: translate(-50%, -50%);
-}
-
-.dining-course__bg--1 {
-    opacity: var(--ao);
-    transform: scale(calc(1 + var(--p) * 0.05));
-}
-
-.dining-course__bg--2 {
-    opacity: var(--b);
-    clip-path: inset(calc((1 - var(--b)) * 100%) 0 0);
-}
-
-.dining-course__cutout {
-    z-index: 4;
-    position: absolute;
-    right: 6vw;
-    top: 50%;
-    width: min(48vw, 560px);
-    margin: 0;
-    background: transparent;
-    overflow: visible;
-    opacity: var(--c);
-    transform:
-        translate3d(0, calc(-50% + (1 - var(--c)) * -55vh), 0)
-        rotate(calc((1 - var(--c)) * 14deg + var(--p) * 6deg))
-        scale(calc(0.94 + var(--c) * 0.06));
-    filter:
-        drop-shadow(0 48px 70px #000000d9)
-        drop-shadow(0 12px 36px #b69f6433);
-    will-change: transform, opacity;
-}
-
-.dining-course__cutout--right {
-    right: auto;
-    left: 6vw;
-    transform:
-        translate3d(0, calc(-50% + (1 - var(--c)) * -55vh), 0)
-        rotate(calc((1 - var(--c)) * -12deg + var(--p) * -5deg))
-        scale(calc(0.94 + var(--c) * 0.06));
-}
-
-.dining-course__cutout img {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: contain;
-}
-
-.dining-course__meta {
-    z-index: 6;
-    position: absolute;
-    left: var(--gd-gutter);
-    bottom: 12svh;
-    max-width: min(520px, 40vw);
-    opacity: calc(0.25 + var(--b) * 0.75);
-    transform: translateY(calc((1 - var(--b)) * 40px));
-}
-
-.dining-course__meta--left {
-    left: auto;
-    right: var(--gd-gutter);
-    text-align: right;
-}
-
-.dining-course__meta > span {
-    letter-spacing: 0.3em;
-    color: var(--gd-champagne);
-    font-size: 8px;
-}
-
-.dining-course__meta h2 {
-    font: 600 clamp(54px, 6.5vw, 110px) / 0.8 var(--gd-serif);
-    margin: 20px 0;
-    text-shadow: 0 4px 34px #000c;
-}
-
-.dining-course__meta p {
-    color: #ffffffb0;
-}
-
-.dining-course--sea .dining-course__sticky {
-    background: #0b1218;
-}
-
-.dining-course--sweet .dining-course__sticky {
-    background: #120e0c;
-}
-
-/* Cascade stack вЂ” luxury image pile */
-.dining-cascade {
-    --p: 0;
-    height: 560svh;
-    min-height: 560svh;
-    background: #090807;
-    color: #fff;
-    position: relative;
-}
-
-.dining-cascade__sticky {
-    height: 100svh;
-    min-height: 100svh;
-    width: 100%;
-    position: sticky;
-    top: 0;
-    overflow: hidden;
-}
-
-.dining-cascade__sticky > header {
-    z-index: 30;
-    position: absolute;
-    left: var(--gd-gutter);
-    top: 11svh;
-    width: min(36vw, 460px);
-    pointer-events: none;
-}
-
-.dining-cascade__sticky > header span {
-    letter-spacing: 0.34em;
-    color: var(--gd-gold-soft);
-    font-size: 9px;
-    font-weight: 500;
-    text-shadow: 0 2px 16px #000000a6;
-}
-
-.dining-cascade__sticky > header h2 {
-    font: 500 clamp(52px, 6vw, 96px) / 0.86 var(--gd-serif);
-    letter-spacing: -0.03em;
-    margin: 18px 0 0;
-    color: #f7f1e6;
-    text-shadow: 0 6px 40px #000000cc;
-}
-
-.dining-cascade__sticky > header h2 em {
-    color: var(--gd-gold-soft);
-    font-weight: 500;
-}
-
-.dining-cascade__stack {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    padding-left: 8vw;
-}
-
-.dining-cascade__stack figure {
-    position: absolute;
-    width: min(54vw, 740px);
-    height: min(64svh, 700px);
-    overflow: hidden;
-    border-radius: 3px;
-    box-shadow:
-        0 40px 110px #000000d9,
-        0 0 0 1px #ffffff14;
-    opacity: 0;
-    transform: translate3d(0, 40px, 0) scale(0.92);
-    will-change: transform, opacity, filter;
-    background: #111;
-}
-
-.dining-cascade__stack figure.is-front {
-    box-shadow:
-        0 50px 130px #000000f0,
-        0 0 0 1px #ffffff22;
-}
-
-.dining-cascade__stack figure img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transform: scale(1.03);
-}
-
-.dining-cascade__stack figure.dining-cascade__cut {
-    background: #0a0908;
-    border-radius: 50%;
-    width: min(42vw, 520px);
-    height: min(42vw, 520px);
-    box-shadow:
-        0 46px 120px #000000e6,
-        0 0 60px #b69f6426;
-}
-
-.dining-cascade__stack figure.dining-cascade__cut img {
-    object-fit: contain;
-    transform: scale(0.92);
-}
-
-/* Wine */
-.dining-wine {
-    --p: 0;
-    --a: 0;
-    --b: 0;
-    height: 280svh;
-    min-height: 280svh;
-    position: relative;
-    color: #fff;
-}
-
-.dining-wine__sticky {
-    height: 100svh;
-    min-height: 100svh;
-    width: 100%;
-    position: sticky;
-    top: 0;
-    overflow: hidden;
-    background: #08090c;
-}
-
-.dining-wine__sticky > img {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 114%;
-    height: 114%;
-    object-fit: cover;
-    transform: translate(-50%, -50%) scale(calc(1.12 - var(--p) * 0.08));
-    filter: saturate(calc(0.75 + var(--a) * 0.3));
-}
-
-.dining-wine__veil {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, #07080ccc 10%, #0000 55%), linear-gradient(#0000 40%, #07080cb3);
-}
-
-.dining-wine__glass {
-    z-index: 4;
-    position: absolute;
-    right: 8vw;
-    top: 50%;
-    width: min(36vw, 400px);
-    margin: 0;
-    background: transparent;
-    overflow: visible;
-    opacity: var(--b);
-    transform:
-        translate3d(
-            calc((1 - var(--b)) * 5vw),
-            calc(-50% + (1 - var(--b)) * -46vh),
-            0
-        )
-        rotate(calc((1 - var(--b)) * -20deg + var(--p) * -6deg))
-        scale(calc(0.7 + var(--b) * 0.34));
-    filter:
-        drop-shadow(0 40px 64px #000000d1)
-        drop-shadow(0 0 48px #b69f644d);
-    will-change: transform, opacity, filter;
-}
-
-.dining-wine__glass img {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: contain;
-}
-
-.dining-wine__copy {
-    z-index: 5;
-    position: absolute;
-    left: var(--gd-gutter);
-    bottom: 12svh;
-    max-width: min(560px, 46vw);
-    opacity: calc(0.25 + var(--a) * 0.75);
-}
-
-.dining-wine__copy > span {
-    letter-spacing: 0.3em;
-    color: var(--gd-champagne);
-    font-size: 8px;
-}
-
-.dining-wine__copy h2 {
-    font: 600 clamp(56px, 6.8vw, 116px) / 0.8 var(--gd-serif);
-    margin: 20px 0;
-    text-shadow: 0 4px 34px #000c;
-}
-
-.dining-wine__copy p {
-    color: #ffffffb3;
-}
-
-/* Chef */
-.dining-chef {
-    --p: 0;
-    --a: 0;
-    --b: 0;
-    height: 300svh;
-    min-height: 300svh;
-    background: #0d0b0a;
-    color: #fff;
-    position: relative;
-}
-
-.dining-chef__sticky {
-    height: 100svh;
-    min-height: 100svh;
-    width: 100%;
-    position: sticky;
-    top: 0;
-    overflow: hidden;
-}
-
-.dining-chef__frame {
-    position: absolute;
-    overflow: hidden;
-    box-shadow: 0 30px 90px #000000a6;
-}
-
-.dining-chef__frame img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.dining-chef__frame--back {
-    inset: 0;
-    opacity: 0.45;
-    transform: scale(calc(1.08 - var(--p) * 0.04));
-}
-
-.dining-chef__frame--front {
-    width: min(48vw, 680px);
-    height: min(70svh, 760px);
-    top: 15svh;
-    left: 8vw;
-    clip-path: inset(calc((1 - var(--a)) * 40%) calc((1 - var(--a)) * 40%));
-    transform: rotate(calc((1 - var(--a)) * -3deg));
-}
-
-.dining-chef__copy {
-    z-index: 4;
-    position: absolute;
-    right: var(--gd-gutter);
-    top: 28svh;
-    width: min(420px, 36vw);
-    opacity: calc(0.2 + var(--b) * 0.8);
-    transform: translateY(calc((1 - var(--b)) * 50px));
-}
-
-.dining-chef__copy > span {
-    letter-spacing: 0.28em;
-    color: var(--gd-champagne);
-    font-size: 8px;
-}
-
-.dining-chef__copy h2 {
-    font: 600 clamp(48px, 5.5vw, 92px) / 0.82 var(--gd-serif);
-    margin: 18px 0;
-}
-
-.dining-chef__copy p {
-    color: #ffffffb0;
-}
-
-/* Gallery */
-.dining-gallery {
-    --p: 0;
-    --a: 0;
-    --b: 0;
-    --c: 0;
-    height: 340svh;
-    min-height: 340svh;
-    background: #e8e1d6;
-    color: var(--gd-ink);
-    position: relative;
-}
-
-.dining-gallery__sticky {
-    height: 100svh;
-    min-height: 100svh;
-    width: 100%;
-    position: sticky;
-    top: 0;
-    overflow: hidden;
-}
-
-.dining-gallery__sticky > header {
-    z-index: 5;
-    position: absolute;
-    left: var(--gd-gutter);
-    top: 10svh;
-    width: min(46vw, 520px);
-}
-
-.dining-gallery__sticky > header span {
-    letter-spacing: 0.28em;
-    color: var(--gd-gold);
-    font-size: 8px;
-}
-
-.dining-gallery__sticky > header h2 {
-    font: 600 clamp(48px, 5.8vw, 96px) / 0.82 var(--gd-serif);
-    margin: 18px 0 0;
-}
-
-.dining-gallery figure {
-    position: absolute;
-    margin: 0;
-    overflow: visible;
-    background: transparent;
-    border-radius: 0;
-    box-shadow: none;
-    mix-blend-mode: lighten;
-    will-change: transform, opacity, filter;
-}
-
-.dining-gallery figure img {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: contain;
-}
-
-.dining-gallery__a {
-    width: min(30vw, 340px);
-    top: 18svh;
-    right: 12vw;
-    opacity: var(--a);
-    transform:
-        translate3d(0, calc((1 - var(--a)) * -48vh), 0)
-        rotate(calc((1 - var(--a)) * 12deg + var(--p) * 8deg))
-        scale(calc(0.94 + var(--a) * 0.06));
-    filter:
-        drop-shadow(0 28px 48px #231a1166);
-}
-
-.dining-gallery__b {
-    width: min(24vw, 280px);
-    top: 42svh;
-    right: 28vw;
-    opacity: var(--b);
-    transform:
-        translate3d(0, calc((1 - var(--b)) * -54vh), 0)
-        rotate(calc((1 - var(--b)) * -14deg + var(--p) * -10deg))
-        scale(calc(0.94 + var(--b) * 0.06));
-    filter:
-        drop-shadow(0 24px 42px #231a1159);
-}
-
-.dining-gallery__c {
-    width: min(20vw, 230px);
-    bottom: 12svh;
-    right: 8vw;
-    opacity: var(--c);
-    transform:
-        translate3d(0, calc((1 - var(--c)) * -38vh), 0)
-        rotate(calc((1 - var(--c)) * 10deg + var(--p) * 6deg))
-        scale(calc(0.94 + var(--c) * 0.06));
-    filter:
-        drop-shadow(0 20px 36px #231a1152);
-}
-
-.dining-gallery__d,
-.dining-gallery__e {
-    display: none;
-}
-
-.dining-gallery__caption {
-    z-index: 4;
-    position: absolute;
-    left: var(--gd-gutter);
-    bottom: 9svh;
-    max-width: min(420px, 36vw);
-    color: #5c5140;
-    font-size: clamp(15px, 1.05vw, 18px);
-    line-height: 1.75;
-    opacity: calc(0.3 + var(--c) * 0.7);
-}
-
-/* Finale */
-.dining-finale {
-    --p: 0;
-    --a: 0;
-    --b: 0;
-    height: 260svh;
-    min-height: 260svh;
-    position: relative;
-    color: #fff;
-}
-
-.dining-finale__sticky {
-    height: 100svh;
-    min-height: 100svh;
-    width: 100%;
-    position: sticky;
-    top: 0;
-    overflow: hidden;
-    display: grid;
-    place-items: center;
-    text-align: center;
-}
-
-.dining-finale__sticky > img {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 114%;
-    height: 114%;
-    object-fit: cover;
-    transform: translate(-50%, -50%) scale(calc(1.12 - var(--p) * 0.07));
-}
-
-.dining-finale__veil {
-    position: absolute;
-    inset: 0;
-    background: #07060599;
-}
-
-.dining-finale__plate {
-    z-index: 3;
-    position: absolute;
-    width: min(30vw, 340px);
-    top: 8svh;
-    right: 10vw;
-    margin: 0;
-    background: transparent;
-    overflow: visible;
-    opacity: calc(var(--a) * 0.72);
-    transform:
-        translate3d(0, calc((1 - var(--a)) * -40vh), 0)
-        rotate(calc((1 - var(--a)) * 14deg + var(--p) * 10deg))
-        scale(calc(0.68 + var(--a) * 0.36));
-    filter:
-        drop-shadow(0 36px 60px #000000d9)
-        drop-shadow(0 0 40px #b69f6433);
-    will-change: transform, opacity, filter;
-}
-
-.dining-finale__plate img {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: contain;
-}
-
-.dining-finale__copy {
-    z-index: 4;
-    position: relative;
-    max-width: 900px;
-    padding: 0 var(--gd-gutter);
-    opacity: calc(0.2 + var(--b) * 0.8);
-    transform: translateY(calc((1 - var(--b)) * 50px));
-}
-
-.dining-finale__copy > span {
-    letter-spacing: 0.32em;
-    color: var(--gd-champagne);
-    font-size: 8px;
-}
-
-.dining-finale__copy h2 {
-    font: 600 clamp(56px, 7.5vw, 130px) / 0.78 var(--gd-serif);
-    margin: 22px 0;
-    text-shadow: 0 4px 40px #000000a6;
-}
-
-.dining-finale__copy p {
-    color: #ffffffb8;
-    margin: 0 auto 34px;
-}
-
-.dining-finale__actions {
-    display: flex;
-    gap: 28px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.dining-finale__actions a {
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    font-size: 9px;
-    border-bottom: 1px solid var(--gd-gold);
-    padding: 12px 0 8px;
-}
-
-.gastronomy-dining-page .v6-footer {
-    background: #0a0908;
-    color: #f3eee4;
-}
-
-.gastronomy-dining-page .v6-footer__lead h2,
-.gastronomy-dining-page .v6-footer__word {
-    color: #f3eee4;
-}
-
-.gastronomy-dining-page .v6-footer__lead p,
-.gastronomy-dining-page .v6-footer__links,
-.gastronomy-dining-page .v6-footer__bottom {
-    color: #ffffff99;
-}
-@media (width <= 1024px) {
-    .dining-hero,
-    .dining-orbit,
-    .dining-course,
-    .dining-cascade,
-    .dining-wine,
-    .dining-chef,
-    .dining-gallery,
-    .dining-finale {
-        height: auto;
-        min-height: 100svh;
-    }
-
-    .dining-hero__sticky,
-    .dining-orbit__sticky,
-    .dining-course__sticky,
-    .dining-cascade__sticky,
-    .dining-wine__sticky,
-    .dining-chef__sticky,
-    .dining-gallery__sticky,
-    .dining-finale__sticky {
-        position: relative;
-        height: auto;
-        min-height: 100svh;
-    }
-
-    .dining-hero__layer--b,
-    .dining-hero__layer--c,
-    .dining-hero__layer--d,
-    .dining-hero__copy--mid,
-    .dining-hero__copy--end {
-        display: none;
-    }
-
-    .dining-hero__copy--open {
-        opacity: 1;
-        position: relative;
-        min-height: 100svh;
-        transform: none;
-    }
-
-    .dining-plate--two,
-    .dining-plate--three,
-    .dining-plate--four,
-    .dining-plate--five,
-    .dining-plate--six,
-    .dining-plate--seven {
-        display: none;
-    }
-
-    .dining-plate--one {
-        position: relative;
-        top: auto;
-        left: auto;
-        width: min(78vw, 420px);
-        margin: 10vh auto 0;
-        opacity: 1;
-        transform: none;
-        filter: drop-shadow(0 28px 48px #000000b3);
-    }
-
-    .dining-orbit__copy,
-    .dining-course__meta,
-    .dining-wine__copy,
-    .dining-chef__copy {
-        position: relative;
-        left: auto;
-        right: auto;
-        bottom: auto;
-        top: auto;
-        max-width: none;
-        width: auto;
-        opacity: 1;
-        transform: none;
-        padding: 40px 24px 70px;
-        text-align: left;
-    }
-
-    .dining-course__cutout,
-    .dining-wine__glass,
-    .dining-chef__frame--front {
-        position: relative;
-        top: auto;
-        left: auto;
-        right: auto;
-        width: min(78vw, 420px);
-        height: auto;
-        margin: 8vh auto;
-        opacity: 1;
-        transform: none;
-        clip-path: none;
-        filter: drop-shadow(0 28px 50px #000000b8);
-    }
-
-    .dining-gallery figure {
-        filter: drop-shadow(0 18px 32px #231a114d) !important;
-    }
-
-    .dining-cascade__stack figure:nth-child(n + 3) {
-        display: none;
-    }
-
-    .dining-gallery figure {
-        position: relative;
-        width: min(70vw, 320px);
-        height: min(70vw, 320px);
-        margin: 24px auto;
-        transform: none !important;
-    }
-}
-.dining-hero__copy h1 em,
-.dining-hero__copy h2 em,
-.dining-orbit__copy h2 em,
-.dining-course__meta h2 em,
-.dining-wine__copy h2 em,
-.dining-chef__copy h2 em,
-.dining-finale__copy h2 em,
-.dining-cascade__sticky > header h2 em,
-.v6-charter-hero__opening h1 em,
-.v6-charter-hero__chapter h2 em,
-.v6-charter-hero__final h2 em,
-.v6-highlights-hero__opening h1 em,
-.v6-highlights-hero__arrival h2 em,
-.v6-finale__copy h2 em,
-.v6-footer__lead h2 em,
-.pulse-open__type h1 em,
-.pulse-open__type h2 em,
-.chronicle-mast h1 em,
-.hero-opening h1 em,
-.scroll-hero__content h1 em {
-    font-family: var(--gd-serif) !important;
-    font-style: italic !important;
-    font-weight: 500 !important;
-    letter-spacing: -0.02em !important;
-    line-height: 1.12 !important;
-    transform: none !important;
-    margin-top: 0.04em !important;
-    margin-bottom: 0 !important;
-    margin-left: 0 !important;
-    display: block;
-}
-.gastronomy-dining-page p,
-.gastronomy-dining-page .dining-hero__copy p,
-.gastronomy-dining-page .dining-orbit__copy p,
-.gastronomy-dining-page .dining-course__meta p,
-.gastronomy-dining-page .dining-wine__copy p,
-.gastronomy-dining-page .dining-chef__copy p,
-.gastronomy-dining-page .dining-finale__copy p,
-.gastronomy-dining-page .dining-gallery__caption {
-  color: #f3ebe0;
-  opacity: 1;
-  text-shadow: 0 2px 22px rgba(0, 0, 0, 0.45);
-}
-
-.gastronomy-dining-page .dining-hero__copy > span,
-.gastronomy-dining-page .dining-orbit__copy > span,
-.gastronomy-dining-page .dining-course__meta > span,
-.gastronomy-dining-page .dining-wine__copy > span,
-.gastronomy-dining-page .dining-chef__copy > span,
-.gastronomy-dining-page .dining-finale__copy > span,
-.gastronomy-dining-page .dining-cascade__sticky > header span {
-  color: var(--gd-gold-soft);
-  opacity: 1;
-}
-
-/* Sticky runway requires visible overflow — public-main uses overflow-x: clip globally. */
-html[data-gastronomy-dining] .public-site,
-html[data-gastronomy-dining] .public-main,
-html[data-gastronomy-dining] .page-transition {
-  overflow: visible !important;
-  overflow-x: visible !important;
-}
-
-html[data-gastronomy-dining] .public-main {
-  min-height: auto;
-}
-
-html[data-gastronomy-dining] .gastronomy-dining-page {
+  inset: 0 0 auto;
+  z-index: 1200;
+  width: 100%;
+  height: 0 !important;
+  min-height: 0 !important;
+  overflow: visible;
+}
+
+.gastronomy-dining-shell *,
+.gastronomy-dining-shell *::before,
+.gastronomy-dining-shell *::after {
+  box-sizing: border-box;
+}
+
+.nib-dining {
+  position: relative;
+  background: var(--nib-cream);
   isolation: isolate;
 }
 
-/* `overflow-x:hidden` on body creates a scrolling ancestor and breaks sticky. */
-html[data-gastronomy-dining] {
-  overflow-x: clip !important;
-  overflow-y: auto !important;
+.nib-dining h1,
+.nib-dining h2,
+.nib-dining h3 {
+  margin: 0;
+  color: var(--nib-gold);
+  font-family: var(--nib-display) !important;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 0.78;
+  text-transform: uppercase;
 }
 
-html[data-gastronomy-dining] body {
-  overflow: visible !important;
-  overflow-x: clip !important;
+.nib-dining p,
+.nib-dining a,
+.nib-dining span,
+.nib-dining em {
+  font-family: var(--nib-copy) !important;
 }
 
-/* Hathor homepage amenities typography and button language. */
-.gastronomy-dining-shell {
-  width: 100%;
-  overflow-x: clip;
-  background: #070605;
+.nib-dining p {
+  margin: 0;
+  color: var(--nib-gold);
+  font-size: clamp(1rem, 1.14vw, 1.24rem);
+  font-style: italic;
+  letter-spacing: 0.035em;
+  line-height: 1.48;
 }
 
-.gastronomy-dining-shell .gastronomy-dining-nav {
-  display: block !important;
-  position: absolute !important;
-  top: 0;
-  right: 0;
-  left: 0;
-  z-index: 3000;
-  min-height: 0 !important;
-  height: 0 !important;
+.nib-dining a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.nib-progress {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 1190;
+  height: 2px;
+  background: rgba(182, 159, 100, 0.16);
   pointer-events: none;
 }
 
-.gastronomy-dining-nav > * {
-  pointer-events: auto;
-}
-
-.gastronomy-dining-page :is(h1, h2) {
-  color: #f7f1e6;
-  font-family: var(--gd-title-font) !important;
-  font-style: normal;
-  font-weight: 400 !important;
-  letter-spacing: -0.035em !important;
-  text-wrap: balance;
-  text-shadow: 0 4px 40px rgba(0, 0, 0, 0.4);
-}
-
-.gastronomy-dining-page :is(h1, h2) em,
-.dining-hero__copy h1 em,
-.dining-hero__copy h2 em,
-.dining-orbit__copy h2 em,
-.dining-course__meta h2 em,
-.dining-wine__copy h2 em,
-.dining-chef__copy h2 em,
-.dining-finale__copy h2 em,
-.dining-cascade__sticky > header h2 em,
-.dining-gallery__sticky > header h2 em {
-  color: #d4bf86;
-  font-family: var(--gd-script-font) !important;
-  font-style: normal !important;
-  font-weight: 400 !important;
-  letter-spacing: 0 !important;
-  line-height: 0.92 !important;
-  text-wrap: balance;
-}
-
-.gastronomy-dining-page p,
-.gastronomy-dining-page .dining-gallery__caption {
-  max-width: 38rem;
-  color: #f7f1e6;
-  font-family: var(--gd-body-font) !important;
-  font-size: clamp(16px, 1.3vw, 20px);
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  line-height: 1.55;
-}
-
-.gastronomy-dining-page .dining-hero__copy p {
-  margin: 30px 0 0;
-}
-
-.dining-hero__copy--open h1 em {
-  font-size: 0.92em;
-}
-
-.gastronomy-dining-page :is(
-  .dining-hero__copy,
-  .dining-orbit__copy,
-  .dining-course__meta,
-  .dining-wine__copy,
-  .dining-chef__copy,
-  .dining-finale__copy,
-  .dining-cascade__sticky > header,
-  .dining-gallery__sticky > header
-) > span {
-  color: #d4bf86;
-  font-family: var(--gd-script-font) !important;
-  font-size: clamp(11px, 0.9vw, 14px);
-  font-weight: 400;
-  letter-spacing: 0.16em;
-  line-height: 1.3;
-  text-transform: uppercase;
-  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.44);
-}
-
-.gastronomy-dining-page .gd-home-cta,
-.gastronomy-dining-page .dining-finale__actions .gd-home-cta {
-  display: inline-flex;
-  width: var(--hathor-btn-width, 12.5rem);
-  min-width: var(--hathor-btn-width, 12.5rem);
-  max-width: none;
-  min-height: var(--hathor-btn-height, 2.85rem);
-  height: var(--hathor-btn-height, 2.85rem);
-  align-items: center;
-  justify-content: center;
-  margin-top: 28px;
-  padding: 3px var(--hathor-btn-pad-x, 1.75rem) 1px;
-  border: 1px solid rgba(212, 194, 138, 0.7);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow: none;
-  color: #fff !important;
-  font-family: var(--public-sans, sans-serif) !important;
-  font-size: 0.66rem;
-  font-style: normal;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  line-height: 1;
-  text-align: center;
-  text-decoration: none;
-  text-transform: uppercase;
-  transition: background-color 300ms ease, border-color 300ms ease;
-}
-
-.gastronomy-dining-page .gd-home-cta:hover,
-.gastronomy-dining-page .gd-home-cta:focus-visible {
-  border-color: #d4bf86;
-  background: rgba(182, 159, 100, 0.35);
-  color: #fff !important;
-  outline: none;
-}
-
-.gastronomy-dining-page .gd-home-cta:focus-visible {
-  box-shadow: 0 0 0 3px rgba(245, 234, 207, 0.28);
-}
-
-.dining-finale__actions .gd-home-cta {
-  margin-top: 0;
-}
-
-/* The amenities gold-panel surface keeps the light chapter high contrast. */
-.dining-gallery {
-  background:
-    radial-gradient(circle at 78% 34%, rgba(255, 248, 226, 0.19), transparent 32%),
-    #a88f53;
-  color: #f7f1e6;
-}
-
-.dining-gallery__sticky > header span,
-.dining-gallery__sticky > header h2,
-.dining-gallery__sticky > header h2 em,
-.gastronomy-dining-page .dining-gallery__caption {
-  color: #fffaf0 !important;
-  text-shadow: 0 3px 28px rgba(56, 37, 10, 0.46);
-}
-
-@media (width <= 1024px) {
-  .gastronomy-dining-page :is(.dining-hero__sticky, .dining-course__sticky, .dining-wine__sticky, .dining-chef__sticky, .dining-finale__sticky) {
-    min-height: 100dvh;
-  }
-
-  .dining-orbit__sticky,
-  .dining-cascade__sticky,
-  .dining-gallery__sticky {
-    min-height: 125dvh;
-    padding-block: 8rem 5rem;
-  }
-
-  .dining-cascade__sticky > header,
-  .dining-gallery__sticky > header {
-    position: relative;
-    inset: auto;
-    width: auto;
-    margin: 0 24px 40px;
-  }
-
-  .dining-cascade__stack {
-    position: relative;
-    inset: auto;
-    min-height: 66dvh;
-    padding: 0 24px;
-  }
-
-  .dining-cascade__stack figure {
-    width: min(78vw, 640px);
-    height: min(58dvh, 620px);
-  }
-
-  .dining-gallery figure {
-    opacity: 1 !important;
-    mix-blend-mode: normal;
-  }
-
-  .dining-gallery__caption {
-    position: relative;
-    inset: auto;
-    max-width: 34rem !important;
-    margin: 44px 24px 0;
-  }
-
-  .dining-finale__copy {
-    opacity: 1;
-    transform: none;
-  }
-
-  .dining-finale__plate {
-    display: none;
-  }
-}
-
-@media (width <= 480px) {
-  .gastronomy-dining-hero__edge {
-    display: none;
-  }
-
-  .dining-hero__copy {
-    align-items: flex-start;
-    justify-content: flex-end;
-    padding: 7rem 22px 13dvh;
-    text-align: left;
-  }
-
-  .dining-hero__copy h1 {
-    font-size: clamp(48px, 15vw, 68px) !important;
-    line-height: 0.88 !important;
-  }
-
-  .gastronomy-dining-page :is(.dining-orbit__copy, .dining-course__meta, .dining-wine__copy, .dining-chef__copy) {
-    padding-inline: 22px;
-  }
-
-  .gastronomy-dining-page :is(.dining-orbit__copy, .dining-course__meta, .dining-wine__copy, .dining-chef__copy, .dining-finale__copy) h2,
-  .dining-cascade__sticky > header h2,
-  .dining-gallery__sticky > header h2 {
-    font-size: clamp(44px, 13vw, 62px) !important;
-    line-height: 0.9 !important;
-  }
-
-  .dining-course__meta--left {
-    text-align: left;
-  }
-
-  .dining-finale__copy {
-    padding-inline: 22px;
-  }
-
-  .dining-finale__actions {
-    gap: 12px;
-  }
-
-  .gastronomy-dining-page .gd-home-cta,
-  .gastronomy-dining-page .dining-finale__actions .gd-home-cta {
-    width: min(100%, 16rem);
-    min-width: min(100%, 16rem);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .gastronomy-dining-page *,
-  .gastronomy-dining-page *::before,
-  .gastronomy-dining-page *::after {
-    scroll-behavior: auto !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* Dining typography follows the homepage Amenities sequence:
-   Gamgote display, an overlapping Agraham signature, then Agraham body copy. */
-.gastronomy-dining-page :is(h1, h2) {
-  margin-block: 0 !important;
-  font-family: var(--gd-title-font) !important;
-  font-style: normal !important;
-  font-weight: 400 !important;
-  line-height: 0.82 !important;
-  letter-spacing: -0.025em !important;
-  text-transform: uppercase;
-}
-
-.gastronomy-dining-page .gd-title-line {
+.nib-progress i {
   display: block;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(0);
+  transform-origin: left center;
+  background: var(--nib-gold);
+}
+
+.nib-horizontal {
+  position: relative;
+  min-height: 100svh;
+}
+
+.nib-horizontal__sticky {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+  background: var(--nib-cream);
+}
+
+.nib-track {
+  --nib-progress: 0;
+  display: flex;
+  width: max-content;
+  height: 100%;
+  will-change: transform;
+}
+
+.nib-panel {
+  --nib-local: 0;
+  --nib-enter: 0;
+  --nib-exit: 1;
+  --nib-active: 0;
+  --nib-parallax: 0;
+  position: relative;
+  flex: 0 0 auto;
+  width: 100vw;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.nib-surface--cream {
+  background:
+    radial-gradient(circle at 68% 38%, rgba(255, 255, 255, 0.48), transparent 32%),
+    var(--nib-cream);
+}
+
+.nib-surface--gold {
+  background:
+    radial-gradient(circle at 72% 36%, rgba(255, 247, 218, 0.22), transparent 31%),
+    var(--nib-gold);
+  color: var(--nib-cream-soft);
+}
+
+.nib-surface--gold :is(h1, h2, h3, p, span, em, a) {
+  color: var(--nib-cream-soft);
+}
+
+.nib-fixed-brand,
+.nib-fixed-rail {
+  position: absolute;
+  z-index: 80;
+  color: var(--nib-gold);
+  font-family: var(--nib-copy) !important;
+  pointer-events: none;
+  mix-blend-mode: difference;
+}
+
+.nib-fixed-brand {
+  top: 5.8rem;
+  left: 1.5rem;
+  font-size: clamp(1.2rem, 2vw, 2rem);
+  letter-spacing: 0.08em;
+}
+
+.nib-fixed-rail {
+  top: 50%;
+  right: 1rem;
+  display: flex;
+  gap: 1.6rem;
+  transform: translateY(-50%) rotate(-90deg);
+  transform-origin: center;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+}
+
+.nib-chapter {
+  position: absolute;
+  z-index: 8;
+  color: var(--nib-gold);
+  font-size: clamp(1rem, 1.25vw, 1.4rem);
+  font-style: italic;
+}
+
+.nib-intro {
+  width: 100vw;
+}
+
+.nib-intro__titles h1,
+.nib-intro__titles h2 {
+  position: absolute;
+  z-index: 2;
+  font-size: clamp(3.5rem, 6.3vw, 7.4rem);
+  line-height: 0.76;
+}
+
+.nib-intro__titles h1 {
+  top: 29%;
+  left: 17%;
+}
+
+.nib-intro__titles h2:nth-child(2) {
+  top: 34%;
+  left: 43%;
+}
+
+.nib-intro__titles h2:nth-child(3) {
+  top: 50%;
+  left: 17%;
+}
+
+.nib-intro__titles :is(h1, h2) span,
+.nib-intro__titles h2 em {
+  display: block;
+  color: var(--nib-gold);
+  font-family: var(--nib-display) !important;
+  font-style: italic;
+  transform: translate3d(calc((1 - var(--nib-enter)) * 4rem), 0, 0);
+  opacity: var(--nib-enter);
+}
+
+.nib-intro__titles h2:nth-child(2) span {
+  transform: translate3d(calc((1 - var(--nib-enter-late, var(--nib-enter))) * 5.5rem), 0, 0);
+  opacity: var(--nib-enter-late, var(--nib-enter));
+}
+
+.nib-intro__titles h2 em {
+  margin-left: 0.45em;
+  color: var(--nib-gold);
+}
+
+.nib-intro__copy {
+  position: absolute;
+  right: 19%;
+  bottom: 20%;
+  width: min(23rem, 25vw);
+}
+
+.nib-intro .nib-chapter {
+  left: 1.55rem;
+  top: 49%;
+}
+
+.nib-intro__index {
+  position: absolute;
+  right: 49%;
+  top: 50%;
+  width: 0.7rem;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--nib-gold);
+  color: transparent;
+}
+
+.nib-intro__copyright {
+  position: absolute;
+  left: 1.55rem;
+  bottom: 1.45rem;
+  color: var(--nib-gold);
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+}
+
+.nib-principal {
+  width: 112vw;
+}
+
+.nib-principal figure,
+.nib-image-text figure,
+.nib-story__image,
+.nib-double figure,
+.nib-epilogue figure,
+.nib-close > figure:first-child,
+.nib-value__image {
+  margin: 0;
+  overflow: hidden;
+}
+
+.nib-flip {
+  position: relative;
+}
+
+.nib-flip img:last-child {
+  position: absolute;
+  inset: 0;
+}
+
+.nib-flip--up img:last-child {
+  clip-path: inset(calc((1 - var(--nib-flip, 0)) * 100%) 0 0 0);
+}
+
+.nib-flip--left img:last-child {
+  clip-path: inset(0 calc((1 - var(--nib-flip, 0)) * 100%) 0 0);
+}
+
+.nib-flip--right img:last-child {
+  clip-path: inset(0 0 0 calc((1 - var(--nib-flip, 0)) * 100%));
+}
+
+.nib-principal img,
+.nib-image-text img,
+.nib-story__image img,
+.nib-double img,
+.nib-epilogue img,
+.nib-close > figure:first-child img,
+.nib-value__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.08) translate3d(calc(var(--nib-parallax) * 3%), 0, 0);
+  will-change: transform;
+}
+
+.nib-principal__main {
+  position: absolute;
+  inset: 0 34vw 0 0;
+}
+
+.nib-principal__top,
+.nib-principal__bottom {
+  position: absolute;
+  left: 51vw;
+  width: 43vw;
+  height: 46%;
+  border: 0.8rem solid var(--nib-cream);
+}
+
+.nib-principal__top { top: 8%; }
+.nib-principal__bottom { bottom: 4%; left: 57vw; }
+
+.nib-side-label {
+  position: absolute;
+  right: 3.8rem;
+  top: 50%;
+  color: var(--nib-gold);
+  font-size: 1rem;
+  transform: rotate(-90deg);
+}
+
+.nib-statement {
+  width: 122vw;
+  padding: 8.5rem 8vw 4rem 5vw;
+}
+
+.nib-statement .nib-chapter {
+  top: 49%;
+  left: 1.5rem;
+}
+
+.nib-statement__title {
+  width: 100%;
+}
+
+.nib-statement__title h2 {
+  font-size: clamp(5rem, 9vw, 10.6rem);
+  white-space: nowrap;
+  transform: translate3d(calc((1 - var(--nib-enter)) * 7rem), 0, 0);
+  opacity: var(--nib-enter);
+}
+
+.nib-statement__title h2:nth-child(3),
+.nib-statement__title h2:nth-child(4) {
+  transform: translate3d(calc((1 - var(--nib-enter-late, var(--nib-enter))) * 8rem), 0, 0);
+  opacity: var(--nib-enter-late, var(--nib-enter));
+}
+
+.nib-statement__title h2:nth-child(2) { margin-left: 14vw; }
+.nib-statement__title h2:nth-child(3) { margin-left: 5vw; }
+.nib-statement__title h2:nth-child(4) { text-align: right; }
+
+.nib-statement > p {
+  position: absolute;
+  right: 8vw;
+  bottom: 7vh;
+  width: min(27rem, 30vw);
+}
+
+.nib-image-text {
+  width: 104vw;
+}
+
+.nib-image-text__wide {
+  position: absolute;
+  left: 4vw;
+  top: 8vh;
+  width: 48vw;
+  height: 77vh;
+}
+
+.nib-image-text__small {
+  position: absolute;
+  left: 48vw;
+  bottom: 7vh;
+  width: 27vw;
+  height: 42vh;
+  border: 0.65rem solid var(--nib-gold);
+}
+
+.nib-image-text > p {
+  position: absolute;
+  right: 4vw;
+  top: 14vh;
+  width: 25vw;
+  font-size: clamp(1.25rem, 2vw, 2.25rem);
+}
+
+.nib-marquee {
+  width: clamp(8rem, 10vw, 11rem);
+  background: var(--nib-cream-soft);
+}
+
+.nib-marquee > div {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  display: flex;
+  align-items: center;
+  gap: 2.2rem;
+  width: max-content;
+  color: var(--nib-gold);
+  font-size: clamp(3.5rem, 6vw, 6rem);
+  transform: rotate(-90deg) translateY(-50%);
+  transform-origin: left top;
+  animation: nib-marquee 14s linear infinite;
+}
+
+.nib-marquee span {
+  font-family: var(--nib-display) !important;
+}
+
+@keyframes nib-marquee {
+  to { transform: rotate(-90deg) translateY(-50%) translateX(-33.33%); }
+}
+
+.nib-atelier {
+  width: 148vw;
+}
+
+.nib-atelier__copy {
+  position: absolute;
+  left: 5vw;
+  top: 17vh;
+  z-index: 10;
+  width: 34vw;
+}
+
+.nib-atelier__copy .nib-chapter {
+  position: relative;
+  display: block;
+  margin-bottom: 2rem;
+}
+
+.nib-atelier__copy h2 {
+  font-size: clamp(4.8rem, 7.3vw, 8.8rem);
+}
+
+.nib-atelier__copy h2 em {
+  color: var(--nib-gold);
+  font-family: var(--nib-display) !important;
+  font-style: italic;
+}
+
+.nib-atelier__copy p {
+  width: 27rem;
+  max-width: 100%;
+  margin-top: 2.5rem;
+}
+
+.nib-atelier__plates {
+  position: absolute;
+  inset: 0 0 0 36vw;
+}
+
+.nib-plate {
+  --plate-land: 0;
+  position: absolute;
+  z-index: 3;
+  margin: 0;
+  opacity: var(--plate-land);
+  filter: drop-shadow(0 2.2rem 2rem rgba(86, 61, 19, 0.2));
+  will-change: transform, opacity;
+}
+
+.nib-plate img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.nib-atelier .nib-plate {
+  transform:
+    translate3d(
+      calc((1 - var(--plate-land)) * var(--plate-x, 0vw)),
+      calc((1 - var(--plate-land)) * -52vh),
+      0
+    )
+    rotate(calc((1 - var(--plate-land)) * var(--plate-tilt, 6deg) + var(--plate-rest, 0deg)))
+    scale(calc(0.88 + var(--plate-land) * 0.12));
+}
+
+.nib-atelier .nib-plate--1 { left: 2%; top: 7%; width: 24vw; --plate-x: -5vw; --plate-tilt: -10deg; --plate-rest: -4deg; }
+.nib-atelier .nib-plate--2 { left: 26%; top: 43%; width: 21vw; --plate-x: 2vw; --plate-tilt: 9deg; --plate-rest: 3deg; }
+.nib-atelier .nib-plate--3 { left: 43%; top: 4%; width: 27vw; --plate-x: -3vw; --plate-tilt: -7deg; --plate-rest: 4deg; }
+.nib-atelier .nib-plate--4 { left: 66%; top: 48%; width: 23vw; --plate-x: 5vw; --plate-tilt: 11deg; --plate-rest: -3deg; }
+.nib-atelier .nib-plate--5 { left: 76%; top: 5%; width: 20vw; --plate-x: 3vw; --plate-tilt: -9deg; --plate-rest: 2deg; }
+.nib-atelier .nib-plate--6 { left: 8%; top: 58%; width: 18vw; --plate-x: -2vw; --plate-tilt: 6deg; --plate-rest: 5deg; }
+.nib-atelier .nib-plate--7 { left: 50%; top: 61%; width: 18vw; --plate-x: 2vw; --plate-tilt: -6deg; --plate-rest: -4deg; }
+
+.nib-values {
+  display: flex;
+  width: 224vw;
+  overflow: visible;
+}
+
+.nib-value {
+  position: relative;
+  flex: 0 0 74.666vw;
+  height: 100%;
+  padding: 8rem 4vw 3rem;
+  border-right: 1px solid rgba(245, 234, 207, 0.42);
+}
+
+.nib-value > p {
+  position: absolute;
+  left: 4vw;
+  top: 14vh;
+  width: min(22rem, 26vw);
+}
+
+.nib-value > span {
+  position: absolute;
+  left: 4vw;
+  bottom: 23vh;
+  font-size: 0.9rem;
+}
+
+.nib-value > h2 {
+  position: absolute;
+  left: 8vw;
+  bottom: 5vh;
+  z-index: 5;
+  font-size: clamp(6rem, 13vw, 15rem);
+  white-space: nowrap;
+  transform: translate3d(calc((1 - var(--nib-enter)) * 8rem), 0, 0);
+}
+
+.nib-value__plate,
+.nib-value__image {
+  position: absolute;
+  right: 4vw;
+  top: 14vh;
+  width: 25vw;
+  height: 50vh;
+  opacity: var(--nib-enter);
+  transform: translate3d(0, calc((1 - var(--nib-enter)) * -22vh), 0) rotate(calc((1 - var(--nib-enter)) * 8deg));
+}
+
+.nib-value__plate {
+  height: auto;
+  filter: drop-shadow(0 2rem 1.8rem rgba(69, 43, 10, 0.22));
+}
+
+.nib-stories-intro {
+  width: 35vw;
+  padding: 0 3vw 5vh;
+  display: flex;
+  align-items: flex-end;
+}
+
+.nib-stories-intro .nib-chapter {
+  top: 9rem;
+  left: 3vw;
+}
+
+.nib-stories-intro > p {
+  width: 22rem;
+  max-width: 100%;
+}
+
+.nib-story {
+  width: 72vw;
+}
+
+.nib-story__image {
+  height: 66vh;
+}
+
+.nib-story__meta {
+  position: absolute;
+  inset: 68vh 1.25rem 1.2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: space-between;
+  font-size: clamp(0.85rem, 1.05vw, 1.1rem);
+}
+
+.nib-story__meta span:nth-child(2),
+.nib-story__meta a { text-align: right; }
+
+.nib-story__meta a {
+  justify-self: end;
+  padding: 0.62rem 1.4rem;
+  border: 1px solid var(--nib-gold);
+  border-radius: 999px;
+}
+
+.nib-story > h2 {
+  position: absolute;
+  left: 50%;
+  bottom: 8vh;
+  z-index: 3;
+  font-size: clamp(4.8rem, 9.5vw, 11rem);
+  transform: translateX(-50%);
   white-space: nowrap;
 }
 
-.gastronomy-dining-page .dining-hero__copy h1 {
-  font-size: clamp(62px, 7.4vw, 112px) !important;
+.nib-story-end {
+  width: 92vw;
+  padding: 12vh 8vw;
 }
 
-.gastronomy-dining-page :is(
-  .dining-hero__copy,
-  .dining-orbit__copy,
-  .dining-course__meta,
-  .dining-wine__copy,
-  .dining-chef__copy,
-  .dining-finale__copy,
-  .dining-cascade__sticky > header,
-  .dining-gallery__sticky > header
-) > .gd-script {
-  position: relative;
-  z-index: 3;
-  display: block;
-  width: max-content;
-  max-width: 100%;
-  margin: -0.13em 0 clamp(24px, 2.5vw, 40px) clamp(18px, 3.4vw, 54px);
-  color: #d4bf86;
-  font-family: var(--gd-script-font) !important;
-  font-size: clamp(23px, 2.35vw, 38px) !important;
-  font-style: normal !important;
-  font-weight: 400 !important;
-  letter-spacing: 0 !important;
-  line-height: 0.8 !important;
-  text-transform: none !important;
-  text-shadow: 0 2px 22px rgba(34, 22, 8, 0.42);
+.nib-story-end .nib-chapter {
+  top: 9rem;
+  left: 8vw;
 }
 
-.gastronomy-dining-page .dining-hero__copy--open > .gd-script,
-.gastronomy-dining-page .dining-finale__copy > .gd-script {
-  margin-inline: auto;
-  transform: translateX(clamp(12px, 3vw, 42px));
+.nib-story-end h2 {
+  font-size: clamp(5rem, 9vw, 10rem);
 }
 
-.gastronomy-dining-page :is(
-  .dining-hero__copy,
-  .dining-orbit__copy,
-  .dining-course__meta,
-  .dining-wine__copy,
-  .dining-chef__copy,
-  .dining-finale__copy
-) > p,
-.gastronomy-dining-page .dining-gallery__caption {
-  margin-top: 0;
-  font-family: var(--gd-body-font) !important;
-  font-size: clamp(16px, 1.18vw, 18px);
+.nib-story-end h2 em {
+  color: var(--nib-gold);
+  font-family: var(--nib-display) !important;
   font-style: italic;
-  font-weight: 400;
-  letter-spacing: 0.055em;
-  line-height: 1.55;
 }
 
-.dining-course__meta--left {
-  text-align: left;
+.nib-story-end > p {
+  position: absolute;
+  right: 8vw;
+  bottom: 18vh;
+  width: min(29rem, 33vw);
 }
 
-/* Day is the default public theme: cream and Hathor gold, never a black page.
-   Photography keeps a warm bronze wash so the cream typography remains legible. */
-.gastronomy-dining-shell,
-.gastronomy-dining-page {
-  background: #f5eacf;
-  color: #6e5a36;
-}
-
-.dining-orbit,
-.dining-chef {
-  background:
-    radial-gradient(circle at 78% 18%, rgba(182, 159, 100, 0.18), transparent 32%),
-    #f5eacf;
-}
-
-.dining-cascade,
-.dining-gallery {
-  background:
-    radial-gradient(circle at 78% 34%, rgba(255, 248, 226, 0.18), transparent 34%),
-    #b69f64;
-}
-
-.dining-course__sticky,
-.dining-course--sea .dining-course__sticky,
-.dining-course--sweet .dining-course__sticky,
-.dining-wine__sticky {
-  background: #f5eacf;
-}
-
-.dining-hero__sticky {
-  background: #b69f64;
-}
-
-.dining-hero__veil {
-  background:
-    linear-gradient(180deg, rgba(87, 58, 20, 0.08) 28%, rgba(67, 42, 15, 0.62) 100%),
-    radial-gradient(circle at 50% 38%, transparent 16%, rgba(72, 47, 19, 0.36) 100%);
-}
-
-.dining-wine__veil {
-  background:
-    linear-gradient(90deg, rgba(78, 50, 18, 0.72) 8%, transparent 58%),
-    linear-gradient(180deg, transparent 38%, rgba(76, 47, 16, 0.58));
-}
-
-.dining-finale__veil {
-  background: rgba(74, 47, 18, 0.55);
-}
-
-.dining-orbit__word {
-  color: rgba(182, 159, 100, 0.13);
-}
-
-.gastronomy-dining-page .dining-orbit__copy h2,
-.gastronomy-dining-page .dining-chef__copy h2 {
-  color: #b69f64;
-  text-shadow: none;
-}
-
-.gastronomy-dining-page :is(.dining-orbit__copy, .dining-chef__copy) > .gd-script {
-  color: #7d5f28;
-  text-shadow: none;
-}
-
-.gastronomy-dining-page :is(.dining-orbit__copy, .dining-chef__copy) > p {
-  color: #6e5a36;
-  text-shadow: none;
-}
-
-.gastronomy-dining-page :is(.dining-cascade__sticky > header, .dining-gallery__sticky > header) h2,
-.gastronomy-dining-page .dining-gallery__caption {
-  color: #fffaf0 !important;
-}
-
-.gastronomy-dining-page :is(.dining-cascade__sticky > header, .dining-gallery__sticky > header) > .gd-script {
-  color: #765a25;
-  text-shadow: none;
-}
-
-/* Homepage pill language: cream/gold by day, restrained glass only at night. */
-.gastronomy-dining-page .gd-home-cta.public-btn-outline-gold,
-.gastronomy-dining-page .dining-finale__actions .gd-home-cta.public-btn-outline-gold {
-  width: var(--hathor-btn-width, 12.5rem) !important;
-  min-width: var(--hathor-btn-width, 12.5rem) !important;
-  max-width: var(--hathor-btn-width, 12.5rem) !important;
-  height: var(--hathor-btn-height, 2.85rem) !important;
-  min-height: var(--hathor-btn-height, 2.85rem) !important;
-  margin-top: 28px;
-  padding: 3px var(--hathor-btn-pad-x, 1.75rem) 1px !important;
-  border: 1px solid #b69f64 !important;
-  background: #faf8f5 !important;
-  box-shadow: 0 8px 22px rgba(44, 36, 25, 0.1);
-  color: #b69f64 !important;
-  -webkit-text-fill-color: #b69f64 !important;
+.nib-button.public-btn-outline-gold {
+  display: inline-flex !important;
+  width: 12.5rem !important;
+  min-width: 12.5rem !important;
+  height: 2.85rem !important;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1.75rem !important;
+  border: 1px solid var(--nib-gold) !important;
+  border-radius: 999px !important;
+  background: var(--nib-cream-soft) !important;
+  color: var(--nib-gold) !important;
   font-family: var(--public-sans, sans-serif) !important;
-  font-size: var(--hathor-btn-font-size, 0.72rem) !important;
+  font-size: 0.7rem !important;
   font-style: normal !important;
-  font-weight: 500 !important;
-  letter-spacing: var(--hathor-btn-tracking, 0.18em) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.18em !important;
   line-height: 1 !important;
   text-transform: uppercase !important;
-  transition:
-    background 350ms cubic-bezier(0.22, 1, 0.36, 1),
-    color 350ms cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 350ms ease,
-    box-shadow 350ms ease,
-    transform 350ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: color 350ms ease, background 350ms ease, transform 350ms cubic-bezier(.22,1,.36,1) !important;
 }
 
-.gastronomy-dining-page .dining-finale__actions .gd-home-cta.public-btn-outline-gold {
-  margin-top: 0;
+.nib-button.public-btn-outline-gold span {
+  color: inherit;
+  font-family: inherit !important;
 }
 
-.gastronomy-dining-page .gd-home-cta.public-btn-outline-gold:hover,
-.gastronomy-dining-page .gd-home-cta.public-btn-outline-gold:focus-visible {
-  border-color: #b69f64 !important;
-  background: #b69f64 !important;
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-  box-shadow: 0 10px 26px rgba(182, 159, 100, 0.35);
+.nib-button.public-btn-outline-gold:hover,
+.nib-button.public-btn-outline-gold:focus-visible {
+  background: var(--nib-gold) !important;
+  color: #fff !important;
   transform: translateY(-2px);
 }
 
-/* Night mode is the only dark surface treatment. */
+.nib-story-end > .nib-button {
+  position: absolute;
+  right: 8vw;
+  bottom: 9vh;
+}
+
+.nib-close {
+  width: 110vw;
+  display: grid;
+  place-items: center;
+}
+
+.nib-close > figure:first-child {
+  width: 68vw;
+  height: 70vh;
+  transform: translate3d(calc(var(--nib-parallax) * -4vw), 0, 0);
+}
+
+.nib-close__plate {
+  right: 8vw;
+  bottom: -6vh;
+  width: 24vw;
+  transform: translate3d(0, calc((1 - var(--plate-land)) * -28vh), 0) rotate(calc((1 - var(--plate-land)) * -7deg + 5deg));
+}
+
+.nib-close > span {
+  position: absolute;
+  right: 2rem;
+  bottom: 1.5rem;
+  color: var(--nib-cream-soft);
+}
+
+.nib-contact,
+.nib-double,
+.nib-lines,
+.nib-contact-copy,
+.nib-contact-action,
+.nib-epilogue {
+  position: relative;
+  padding-inline: clamp(1.5rem, 5vw, 5.5rem);
+}
+
+[data-nib-reveal] {
+  opacity: 0;
+  transform: translateY(4rem);
+  transition: opacity 900ms ease, transform 1200ms cubic-bezier(.22,1,.36,1);
+}
+
+[data-nib-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.nib-contact {
+  min-height: 87svh;
+  padding-top: 19vh;
+}
+
+.nib-contact__eyebrow {
+  display: block;
+  margin-left: 8vw;
+  margin-bottom: 2.5rem;
+  color: var(--nib-gold);
+  font-size: clamp(1.4rem, 2vw, 2.2rem);
+}
+
+.nib-contact h2 {
+  font-size: clamp(6.2rem, 14.5vw, 16rem);
+  text-align: center;
+}
+
+.nib-double {
+  display: grid;
+  grid-template-columns: 1.45fr 0.9fr;
+  gap: clamp(1rem, 3vw, 3rem);
+  padding-bottom: 13vh;
+}
+
+.nib-double figure:first-child { height: 58vw; max-height: 48rem; }
+.nib-double figure:last-child { height: 38vw; max-height: 34rem; margin-top: 9vw; }
+
+.nib-lines {
+  padding-bottom: 15vh;
+}
+
+.nib-lines h2 {
+  font-size: clamp(5.5rem, 13vw, 14rem);
+}
+
+.nib-lines h2:nth-child(2) { margin-left: 14vw; }
+.nib-lines h2:nth-child(3) { text-align: right; }
+
+.nib-contact-copy {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding-bottom: 12vh;
+}
+
+.nib-contact-copy > div:last-child {
+  width: min(37rem, 100%);
+}
+
+.nib-contact-copy a {
+  display: inline-block;
+  margin-top: 2rem;
+  color: var(--nib-gold);
+  font-size: clamp(1rem, 1.4vw, 1.3rem);
+}
+
+.nib-contact-action {
+  display: grid;
+  place-items: center;
+  min-height: 32svh;
+  padding-bottom: 10vh;
+}
+
+.nib-button--large.public-btn-outline-gold {
+  width: min(31rem, 80vw) !important;
+  min-width: min(31rem, 80vw) !important;
+  height: 4.3rem !important;
+}
+
+.nib-epilogue {
+  min-height: 100svh;
+  padding-top: 8vh;
+  padding-bottom: 2rem;
+  border-top: 1px solid rgba(182, 159, 100, 0.34);
+}
+
+.nib-epilogue__social {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--nib-gold);
+  font-size: clamp(0.9rem, 1.25vw, 1.15rem);
+}
+
+.nib-epilogue__social span:last-child { margin-left: auto; }
+
+.nib-epilogue__feature {
+  width: min(39vw, 34rem);
+  margin: 10vh auto 8vh;
+  text-align: center;
+}
+
+.nib-epilogue__feature > span {
+  display: block;
+  margin-bottom: 1rem;
+  color: var(--nib-gold);
+}
+
+.nib-epilogue__feature figure {
+  height: min(30vw, 25rem);
+}
+
+.nib-epilogue__feature h3 {
+  margin-top: 1.4rem;
+  font-size: clamp(3rem, 5vw, 5rem);
+}
+
+.nib-epilogue__feature p { margin-top: 1rem; }
+
+.nib-epilogue__legal {
+  display: flex;
+  gap: 2.5rem;
+  align-items: center;
+  color: var(--nib-gold);
+  font-size: 0.8rem;
+}
+
+.nib-epilogue__legal span { margin-right: auto; }
+
+.gastronomy-dining-footer {
+  position: relative;
+  z-index: 2;
+  background: var(--nib-cream);
+}
+
+html[data-public-theme="night"][data-gastronomy-dining],
+html[data-public-theme="night"][data-gastronomy-dining] body,
 html[data-public-theme="night"] .gastronomy-dining-shell,
-html[data-public-theme="night"] .gastronomy-dining-page,
-html[data-public-theme="night"] .dining-orbit,
-html[data-public-theme="night"] .dining-cascade,
-html[data-public-theme="night"] .dining-chef,
-html[data-public-theme="night"] .dining-gallery {
-  background: #090807;
-  color: #f7f1e6;
+html[data-public-theme="night"] .nib-dining,
+html[data-public-theme="night"] .nib-horizontal__sticky {
+  background: var(--nib-night);
 }
 
-html[data-public-theme="night"] .dining-course__sticky,
-html[data-public-theme="night"] .dining-course--sea .dining-course__sticky,
-html[data-public-theme="night"] .dining-course--sweet .dining-course__sticky,
-html[data-public-theme="night"] .dining-wine__sticky,
-html[data-public-theme="night"] .dining-hero__sticky {
-  background: #070605;
-}
-
-html[data-public-theme="night"] .dining-hero__veil {
+html[data-public-theme="night"] .nib-surface--cream {
   background:
-    linear-gradient(transparent 35%, rgba(5, 4, 3, 0.85)),
-    radial-gradient(circle at 50% 40%, transparent 10%, rgba(5, 4, 3, 0.53) 100%);
+    radial-gradient(circle at 68% 38%, rgba(182, 159, 100, 0.08), transparent 32%),
+    var(--nib-night);
 }
 
-html[data-public-theme="night"] .dining-wine__veil {
-  background:
-    linear-gradient(90deg, rgba(7, 8, 12, 0.8) 10%, transparent 55%),
-    linear-gradient(transparent 40%, rgba(7, 8, 12, 0.7));
+html[data-public-theme="night"] .nib-dining p,
+html[data-public-theme="night"] .nib-chapter,
+html[data-public-theme="night"] .nib-intro__copyright,
+html[data-public-theme="night"] .nib-side-label,
+html[data-public-theme="night"] .nib-contact__eyebrow,
+html[data-public-theme="night"] .nib-epilogue :is(a, span, p) {
+  color: var(--nib-cream);
 }
 
-html[data-public-theme="night"] .dining-finale__veil {
-  background: rgba(7, 6, 5, 0.6);
+html[data-public-theme="night"] .nib-button.public-btn-outline-gold {
+  background: transparent !important;
+  color: var(--nib-gold) !important;
 }
 
-html[data-public-theme="night"] .gastronomy-dining-page :is(.dining-orbit__copy, .dining-chef__copy) h2,
-html[data-public-theme="night"] .gastronomy-dining-page :is(.dining-orbit__copy, .dining-chef__copy) > p {
-  color: #f7f1e6;
-  text-shadow: 0 3px 28px rgba(0, 0, 0, 0.48);
-}
-
-html[data-public-theme="night"] .gastronomy-dining-page :is(.dining-orbit__copy, .dining-chef__copy) > .gd-script,
-html[data-public-theme="night"] .gastronomy-dining-page :is(.dining-cascade__sticky > header, .dining-gallery__sticky > header) > .gd-script {
-  color: #d4bf86;
-  text-shadow: 0 2px 22px rgba(0, 0, 0, 0.5);
-}
-
-html[data-public-theme="night"] .gastronomy-dining-page .gd-home-cta.public-btn-outline-gold {
-  border-color: rgba(212, 194, 138, 0.72) !important;
-  background: rgba(255, 255, 255, 0.06) !important;
-  box-shadow: none;
-  color: #d4bf86 !important;
-  -webkit-text-fill-color: #d4bf86 !important;
-  backdrop-filter: blur(8px);
-}
-
-html[data-public-theme="night"] .gastronomy-dining-page .gd-home-cta.public-btn-outline-gold:hover,
-html[data-public-theme="night"] .gastronomy-dining-page .gd-home-cta.public-btn-outline-gold:focus-visible {
-  border-color: rgba(212, 194, 138, 0.92) !important;
-  background: rgba(182, 159, 100, 0.24) !important;
-  color: #fffaf0 !important;
-  -webkit-text-fill-color: #fffaf0 !important;
-}
-
-/* Softer plate descents. The anchor positions and final rotations are unchanged;
-   only the approach distance, tilt and arrival easing are refined. */
-@media (min-width: 1025px) {
-  .dining-plate--one {
-    opacity: var(--pa, var(--a));
-    transform:
-      translate3d(calc((1 - var(--pa, var(--a))) * -2vw), calc((1 - var(--pa, var(--a))) * -42vh), 0)
-      rotate(calc((1 - var(--pa, var(--a))) * -7deg + var(--p) * 8deg))
-      scale(calc(0.975 + var(--pa, var(--a)) * 0.025));
+@media (max-width: 950px) {
+  .nib-progress {
+    position: sticky;
+    inset: auto;
   }
 
-  .dining-plate--two {
-    opacity: var(--pb, var(--b));
-    transform:
-      translate3d(calc((1 - var(--pb, var(--b))) * 2.5vw), calc((1 - var(--pb, var(--b))) * -46vh), 0)
-      rotate(calc((1 - var(--pb, var(--b))) * 8deg + var(--p) * -10deg))
-      scale(calc(0.975 + var(--pb, var(--b)) * 0.025));
+  .nib-fixed-brand {
+    position: relative;
+    top: 5.4rem;
+    left: 1.25rem;
+    mix-blend-mode: normal;
   }
 
-  .dining-plate--three {
-    opacity: var(--pc, var(--c));
-    transform:
-      translate3d(calc((1 - var(--pc, var(--c))) * -6vw), calc((1 - var(--pc, var(--c))) * 12vh), 0)
-      rotate(calc((1 - var(--pc, var(--c))) * 5deg + var(--p) * 6deg))
-      scale(calc(0.975 + var(--pc, var(--c)) * 0.025));
+  .nib-fixed-rail {
+    display: none;
   }
 
-  .dining-plate--four {
-    opacity: var(--pc, var(--c));
-    transform:
-      translate3d(0, calc((1 - var(--pc, var(--c))) * -34vh), 0)
-      rotate(calc((1 - var(--pc, var(--c))) * -8deg + var(--p) * 12deg))
-      scale(calc(0.975 + var(--pc, var(--c)) * 0.025));
+  .nib-marquee {
+    width: 100%;
+    min-height: 18svh;
+    overflow: hidden;
   }
 
-  .dining-plate--five {
-    opacity: var(--pd, var(--d));
-    transform:
-      translate3d(calc((1 - var(--pd, var(--d))) * 3vw), calc((1 - var(--pd, var(--d))) * -30vh), 0)
-      rotate(calc((1 - var(--pd, var(--d))) * 10deg + var(--p) * -6deg))
-      scale(calc(0.975 + var(--pd, var(--d)) * 0.025));
+  .nib-marquee > div {
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    animation: nib-marquee-phone 18s linear infinite;
   }
 
-  .dining-plate--six {
-    opacity: var(--pd, var(--d));
-    transform:
-      translate3d(0, calc((1 - var(--pd, var(--d))) * -26vh), 0)
-      rotate(calc((1 - var(--pd, var(--d))) * -6deg + var(--p) * -8deg))
-      scale(calc(0.975 + var(--pd, var(--d)) * 0.025));
+  @keyframes nib-marquee-phone {
+    to { transform: translateY(-50%) translateX(-33.33%); }
   }
 
-  .dining-plate--seven {
-    opacity: var(--pb, var(--b));
-    transform:
-      translate3d(calc((1 - var(--pb, var(--b))) * -2vw), calc((1 - var(--pb, var(--b))) * -22vh), 0)
-      rotate(calc((1 - var(--pb, var(--b))) * 4deg + var(--p) * 14deg))
-      scale(calc(0.975 + var(--pb, var(--b)) * 0.025));
+  .nib-horizontal {
+    height: auto !important;
   }
 
-  .dining-course__cutout {
-    opacity: var(--pc, var(--c));
-    transform:
-      translate3d(0, calc(-50% + (1 - var(--pc, var(--c))) * -38vh), 0)
-      rotate(calc((1 - var(--pc, var(--c))) * 6deg + var(--p) * 6deg))
-      scale(calc(0.975 + var(--pc, var(--c)) * 0.025));
+  .nib-horizontal__sticky {
+    position: relative;
+    height: auto;
+    overflow: visible;
   }
 
-  .dining-course__cutout--right {
-    transform:
-      translate3d(0, calc(-50% + (1 - var(--pc, var(--c))) * -38vh), 0)
-      rotate(calc((1 - var(--pc, var(--c))) * -6deg + var(--p) * -5deg))
-      scale(calc(0.975 + var(--pc, var(--c)) * 0.025));
+  .nib-track {
+    display: block;
+    width: 100%;
+    height: auto;
+    transform: none !important;
   }
 
-  .dining-wine__glass {
-    opacity: var(--pb, var(--b));
-    transform:
-      translate3d(calc((1 - var(--pb, var(--b))) * 3vw), calc(-50% + (1 - var(--pb, var(--b))) * -34vh), 0)
-      rotate(calc((1 - var(--pb, var(--b))) * -8deg + var(--p) * -6deg))
-      scale(calc(0.94 + var(--pb, var(--b)) * 0.1));
+  .nib-panel {
+    width: 100% !important;
+    min-height: 100svh;
+    height: auto;
   }
 
-  .dining-gallery__a {
-    opacity: var(--pa, var(--a));
-    transform:
-      translate3d(0, calc((1 - var(--pa, var(--a))) * -34vh), 0)
-      rotate(calc((1 - var(--pa, var(--a))) * 6deg + var(--p) * 8deg))
-      scale(calc(0.975 + var(--pa, var(--a)) * 0.025));
+  .nib-intro {
+    min-height: 118svh;
   }
 
-  .dining-gallery__b {
-    opacity: var(--pb, var(--b));
-    transform:
-      translate3d(0, calc((1 - var(--pb, var(--b))) * -38vh), 0)
-      rotate(calc((1 - var(--pb, var(--b))) * -7deg + var(--p) * -10deg))
-      scale(calc(0.975 + var(--pb, var(--b)) * 0.025));
+  .nib-intro__titles h1,
+  .nib-intro__titles h2 {
+    left: 1.5rem !important;
+    font-size: clamp(3.8rem, 14.5vw, 7rem);
   }
 
-  .dining-gallery__c {
-    opacity: var(--pc, var(--c));
-    transform:
-      translate3d(0, calc((1 - var(--pc, var(--c))) * -28vh), 0)
-      rotate(calc((1 - var(--pc, var(--c))) * 5deg + var(--p) * 6deg))
-      scale(calc(0.975 + var(--pc, var(--c)) * 0.025));
+  .nib-intro__titles h1 { top: 24%; }
+  .nib-intro__titles h2:nth-child(2) { top: 42%; }
+  .nib-intro__titles h2:nth-child(3) { top: 60%; }
+
+  .nib-intro__copy {
+    right: 1.5rem;
+    bottom: 8%;
+    width: min(28rem, calc(100% - 3rem));
   }
 
-  .dining-finale__plate {
-    opacity: calc(var(--pa, var(--a)) * 0.72);
-    transform:
-      translate3d(0, calc((1 - var(--pa, var(--a))) * -28vh), 0)
-      rotate(calc((1 - var(--pa, var(--a))) * 6deg + var(--p) * 10deg))
-      scale(calc(0.88 + var(--pa, var(--a)) * 0.16));
-  }
-}
+  .nib-intro .nib-chapter { top: 8.5rem; }
+  .nib-intro__index { display: none; }
 
-@media (width <= 1024px) {
-  .gastronomy-dining-page .gd-title-line {
+  .nib-principal { min-height: 110svh; }
+  .nib-principal__main { inset: 0 0 35%; }
+  .nib-principal__top { left: 5%; top: 52%; width: 72%; height: 36%; }
+  .nib-principal__bottom { left: 34%; bottom: 4%; width: 62%; height: 34%; }
+  .nib-side-label { right: -0.4rem; }
+
+  .nib-statement {
+    min-height: 112svh;
+    padding: 10rem 1.5rem 4rem;
+  }
+
+  .nib-statement .nib-chapter { top: 8rem; left: 1.5rem; }
+  .nib-statement__title h2 {
+    font-size: clamp(3.8rem, 14vw, 7rem);
     white-space: normal;
   }
+  .nib-statement__title h2:nth-child(n) { margin-left: 0; text-align: left; }
+  .nib-statement > p { right: 1.5rem; bottom: 6vh; width: min(30rem, calc(100% - 3rem)); }
 
-  .gastronomy-dining-page :is(
-    .dining-hero__copy,
-    .dining-orbit__copy,
-    .dining-course__meta,
-    .dining-wine__copy,
-    .dining-chef__copy,
-    .dining-finale__copy,
-    .dining-cascade__sticky > header,
-    .dining-gallery__sticky > header
-  ) > .gd-script {
-    margin-bottom: 28px;
+  .nib-image-text { min-height: 118svh; }
+  .nib-image-text__wide { left: 0; top: 0; width: 100%; height: 58%; }
+  .nib-image-text__small { left: 38%; bottom: 24%; width: 58%; height: 34%; }
+  .nib-image-text > p { left: 1.5rem; right: auto; top: auto; bottom: 5vh; width: calc(100% - 3rem); }
+
+  .nib-atelier {
+    min-height: 175svh;
   }
+
+  .nib-atelier__copy {
+    left: 1.5rem;
+    top: 10vh;
+    width: calc(100% - 3rem);
+  }
+
+  .nib-atelier__copy h2 { font-size: clamp(4.2rem, 15vw, 7rem); }
+  .nib-atelier__plates { inset: 52svh 0 0; }
+  .nib-atelier .nib-plate { width: 43vw; }
+  .nib-atelier .nib-plate--1 { left: 2%; top: 2%; }
+  .nib-atelier .nib-plate--2 { left: 51%; top: 8%; }
+  .nib-atelier .nib-plate--3 { left: 26%; top: 22%; }
+  .nib-atelier .nib-plate--4 { left: 0; top: 42%; }
+  .nib-atelier .nib-plate--5 { left: 53%; top: 46%; }
+  .nib-atelier .nib-plate--6 { left: 27%; top: 64%; }
+  .nib-atelier .nib-plate--7 { left: 6%; top: 79%; }
+
+  .nib-values { display: block; }
+  .nib-value {
+    min-height: 100svh;
+    padding: 8rem 1.5rem 3rem;
+    border-right: 0;
+    border-bottom: 1px solid rgba(245, 234, 207, 0.4);
+  }
+  .nib-value > p { left: 1.5rem; top: 8rem; width: calc(100% - 3rem); }
+  .nib-value > span { left: 1.5rem; bottom: 24vh; }
+  .nib-value > h2 { left: 1.5rem; bottom: 7vh; font-size: clamp(5rem, 22vw, 10rem); }
+  .nib-value__plate,
+  .nib-value__image { right: 1.5rem; top: 32vh; width: min(72vw, 28rem); height: 42vh; }
+
+  .nib-stories-intro {
+    min-height: 65svh;
+    padding: 10rem 1.5rem 3rem;
+  }
+  .nib-stories-intro .nib-chapter { top: 8rem; left: 1.5rem; }
+
+  .nib-story { min-height: 100svh; }
+  .nib-story__image { height: 64svh; }
+  .nib-story__meta { inset: 66svh 1rem 1rem; }
+  .nib-story > h2 { bottom: 13vh; font-size: clamp(4rem, 17vw, 7.5rem); }
+
+  .nib-story-end { min-height: 112svh; padding: 12rem 1.5rem 3rem; }
+  .nib-story-end .nib-chapter { top: 8rem; left: 1.5rem; }
+  .nib-story-end h2 { font-size: clamp(4.2rem, 15.5vw, 7rem); }
+  .nib-story-end > p { right: 1.5rem; bottom: 17vh; width: calc(100% - 3rem); }
+  .nib-story-end > .nib-button { left: 1.5rem; right: auto; bottom: 8vh; }
+
+  .nib-close { min-height: 100svh; }
+  .nib-close > figure:first-child { width: calc(100% - 3rem); height: 62svh; }
+  .nib-close__plate { right: -8vw; bottom: 2vh; width: 56vw; }
+
+  .nib-contact { min-height: 72svh; padding-top: 16vh; }
+  .nib-contact h2 { font-size: clamp(5rem, 19vw, 9rem); }
+
+  .nib-double { grid-template-columns: 1fr; }
+  .nib-double figure:first-child { height: 76svh; }
+  .nib-double figure:last-child { width: 76%; height: 48svh; margin: -15svh 0 0 auto; border: 0.55rem solid var(--nib-cream); }
+
+  .nib-lines h2 { font-size: clamp(4.5rem, 16.8vw, 8rem); }
+  .nib-lines h2:nth-child(2) { margin-left: 0; }
+
+  .nib-contact-copy { grid-template-columns: 1fr; }
+  .nib-contact-copy > div:first-child { display: none; }
+
+  .nib-epilogue__social { align-items: flex-start; flex-wrap: wrap; }
+  .nib-epilogue__social span:last-child { width: 100%; margin: 0; }
+  .nib-epilogue__feature { width: min(86vw, 32rem); }
+  .nib-epilogue__feature figure { height: 65vw; max-height: 25rem; }
+  .nib-epilogue__legal { flex-wrap: wrap; gap: 1rem 1.5rem; }
+  .nib-epilogue__legal span { width: 100%; }
 }
 
-@media (width <= 480px) {
-  .gastronomy-dining-page .dining-hero__copy h1 {
-    font-size: clamp(48px, 15vw, 64px) !important;
-  }
+@media (max-width: 480px) {
+  .nib-dining p { font-size: clamp(0.98rem, 4.6vw, 1.12rem); }
+  .nib-intro__titles h1,
+  .nib-intro__titles h2 { font-size: clamp(3.2rem, 15vw, 5rem); }
+  .nib-atelier__copy h2,
+  .nib-story-end h2 { font-size: clamp(3.8rem, 17vw, 5.8rem); }
+  .nib-value > h2 { font-size: clamp(4.5rem, 22vw, 7rem); }
+  .nib-story__meta { font-size: 0.78rem; }
+  .nib-story__meta a { padding: 0.55rem 1rem; }
+  .nib-contact,
+  .nib-double,
+  .nib-lines,
+  .nib-contact-copy,
+  .nib-contact-action,
+  .nib-epilogue { padding-inline: 1.25rem; }
+}
 
-  .gastronomy-dining-page :is(
-    .dining-orbit__copy,
-    .dining-course__meta,
-    .dining-wine__copy,
-    .dining-chef__copy,
-    .dining-finale__copy,
-    .dining-cascade__sticky > header,
-    .dining-gallery__sticky > header
-  ) h2 {
-    font-size: clamp(42px, 12.2vw, 58px) !important;
-    line-height: 0.82 !important;
-  }
-
-  .gastronomy-dining-page :is(
-    .dining-hero__copy,
-    .dining-orbit__copy,
-    .dining-course__meta,
-    .dining-wine__copy,
-    .dining-chef__copy,
-    .dining-finale__copy,
-    .dining-cascade__sticky > header,
-    .dining-gallery__sticky > header
-  ) > .gd-script {
-    margin-top: -0.08em;
-    margin-left: 14px;
-    margin-bottom: 22px;
-    font-size: clamp(21px, 7.2vw, 29px) !important;
-  }
-
-  .gastronomy-dining-page .dining-hero__copy--open > .gd-script,
-  .gastronomy-dining-page .dining-finale__copy > .gd-script {
-    margin-inline: auto;
-    transform: translateX(10px);
-  }
-
-  .gastronomy-dining-page :is(
-    .dining-hero__copy,
-    .dining-orbit__copy,
-    .dining-course__meta,
-    .dining-wine__copy,
-    .dining-chef__copy,
-    .dining-finale__copy
-  ) > p,
-  .gastronomy-dining-page .dining-gallery__caption {
-    font-size: clamp(15px, 4.35vw, 17px);
-    line-height: 1.6;
+@media (prefers-reduced-motion: reduce) {
+  .gastronomy-dining-shell *,
+  .gastronomy-dining-shell *::before,
+  .gastronomy-dining-shell *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }
