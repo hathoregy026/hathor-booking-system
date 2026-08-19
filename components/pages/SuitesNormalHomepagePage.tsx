@@ -1,8 +1,55 @@
 "use client";
 
 import { useCallback, useEffect, useRef } from "react";
+import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import { slotNameFromSuitesImageUrl } from "@/lib/suites-normal-image-map";
 import { SUITES_CLIP_FIX_CSS } from "@/lib/suites-typography-shared";
+
+const CLONE_HREF_MAP: ReadonlyArray<readonly [RegExp, string]> = [
+  [/normalisboring\.es\/lasolana/i, "/luxury-cabins-Nile-Cruise"],
+  [/normalisboring\.es\/plaza-espana/i, "/rooms"],
+  [/normalisboring\.es\/rua-pexegueiro/i, "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"],
+  [/normalisboring\.es\/proyectos/i, "/suites"],
+  [/normalisboring\.es\/conocenos/i, "/suites"],
+  [/normalisboring\.es\/politica/i, "/contact"],
+  [/normalisboring\.es\/aviso-legal/i, "/contact"],
+  [/^https?:\/\/contacto\/?$/i, "/contact"],
+  [/^https?:\/\/disponibilidad\/?$/i, "/suites?book=1"],
+  [/^https?:\/\/(www\.)?normalisboring\.es\/?$/i, "/"],
+  [/^https?:\/\/www\.awwwards\.com/i, "/"],
+];
+
+const CLONE_MENU_HIDE_CSS = `
+#awwwards,
+.header__menu,
+.header__btn.btn--menu,
+header .header__logo,
+.mod-scroll__intro__menu {
+  display: none !important;
+}
+`;
+
+function hathorHrefFromClone(href: string): string | null {
+  for (const [pattern, destination] of CLONE_HREF_MAP) {
+    if (pattern.test(href)) return destination;
+  }
+  return null;
+}
+
+function retargetCloneLinks(doc: Document) {
+  doc.querySelectorAll("a[href]").forEach((anchor) => {
+    const href = anchor.getAttribute("href") || "";
+    const next = hathorHrefFromClone(href);
+    if (!next) return;
+    anchor.setAttribute("href", next);
+    anchor.setAttribute("target", "_top");
+  });
+  doc.querySelectorAll("[data-url]").forEach((node) => {
+    const url = node.getAttribute("data-url") || "";
+    const next = hathorHrefFromClone(url);
+    if (next) node.setAttribute("data-url", next);
+  });
+}
 
 function applyImages(doc: Document, images: Record<string, string>) {
   const paint = () => {
@@ -49,7 +96,29 @@ export function SuitesNormalHomepagePage() {
       live.id = "hathor-suites-live";
       doc.head.appendChild(live);
     }
-    live.textContent = SUITES_CLIP_FIX_CSS;
+    live.textContent = `${SUITES_CLIP_FIX_CSS}\n${CLONE_MENU_HIDE_CSS}`;
+    retargetCloneLinks(doc);
+
+    if (!doc.documentElement.dataset.hathorNavBound) {
+      doc.documentElement.dataset.hathorNavBound = "1";
+      doc.addEventListener(
+        "click",
+        (event) => {
+          const target = event.target;
+          if (!(target instanceof Element)) return;
+          const tagged = target.closest<HTMLElement>("[data-url]");
+          const url = tagged?.getAttribute("data-url") || "";
+          const next =
+            (url && hathorHrefFromClone(url)) ||
+            (url.startsWith("/") ? url : null);
+          if (!next) return;
+          event.preventDefault();
+          event.stopPropagation();
+          window.top?.location.assign(next);
+        },
+        true,
+      );
+    }
 
     try {
       const response = await fetch("/api/suites-config", { cache: "no-store" });
@@ -57,7 +126,8 @@ export function SuitesNormalHomepagePage() {
         css?: string;
         images?: Record<string, string>;
       };
-      live.textContent = `${SUITES_CLIP_FIX_CSS}\n${data.css ?? ""}`;
+      live.textContent = `${SUITES_CLIP_FIX_CSS}\n${CLONE_MENU_HIDE_CSS}\n${data.css ?? ""}`;
+      retargetCloneLinks(doc);
       if (data.images) {
         applyImages(doc, data.images);
         observerRef.current?.disconnect();
@@ -80,10 +150,13 @@ export function SuitesNormalHomepagePage() {
 
   return (
     <main className="suites-normal-clone" aria-label="Hathor Suites">
+      <div className="public-site suites-normal-clone__nav">
+        <PublicNavbar />
+      </div>
       <iframe
         ref={iframeRef}
         className="suites-normal-clone__frame"
-        src="/suites-normal/index.html?v=hathor-fidelity-20260819"
+        src="/suites-normal/index.html?v=hathor-nav-20260819"
         title="Hathor Suites"
         onLoad={() => void apply()}
       />

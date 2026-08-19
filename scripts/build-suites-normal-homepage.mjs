@@ -276,13 +276,41 @@ $("meta[property='og:description']").attr(
 $(
   "link[rel='canonical'], link[rel='alternate'], link[rel='EditURI'], link[rel='shortlink'], link[rel='https://api.w.org/'], script.yoast-schema-graph",
 ).remove();
+$("#awwwards").remove();
+$(".header__menu, .header__btn.btn--menu, .mod-scroll__intro__menu").remove();
+$("header .header__logo").remove();
 
-const navigationLabels = ["Suites", "Life Aboard", "Contact", "Book Now"];
-$("#menu-principal > li > a, #menu-principal-1 > li > a").each(
-  (index, element) => {
-    $(element).text(navigationLabels[index % navigationLabels.length]);
-  },
-);
+const cloneHrefMap = [
+  [/normalisboring\.es\/lasolana/i, "/luxury-cabins-Nile-Cruise"],
+  [/normalisboring\.es\/plaza-espana/i, "/rooms"],
+  [/normalisboring\.es\/rua-pexegueiro/i, "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"],
+  [/normalisboring\.es\/proyectos/i, "/suites"],
+  [/normalisboring\.es\/conocenos/i, "/suites"],
+  [/normalisboring\.es\/politica/i, "/contact"],
+  [/normalisboring\.es\/aviso-legal/i, "/contact"],
+  [/^https?:\/\/contacto\/?$/i, "/contact"],
+  [/^https?:\/\/disponibilidad\/?$/i, "/suites?book=1"],
+  [/^https?:\/\/(www\.)?normalisboring\.es\/?$/i, "/"],
+];
+
+const hathorHrefFromClone = (href) => {
+  if (!href) return null;
+  for (const [pattern, destination] of cloneHrefMap) {
+    if (pattern.test(href)) return destination;
+  }
+  return null;
+};
+
+$("a[href]").each((_, element) => {
+  const next = hathorHrefFromClone($(element).attr("href"));
+  if (!next) return;
+  $(element).attr("href", next);
+  $(element).attr("target", "_top");
+});
+$("[data-url]").each((_, element) => {
+  const next = hathorHrefFromClone($(element).attr("data-url"));
+  if (next) $(element).attr("data-url", next);
+});
 
 replaceExactText("Menú", "Menu");
 replaceExactText("Proyectos", "Suite Collection");
@@ -795,6 +823,13 @@ $("head").append(`
     .cky-switch input::before,
     .cky-btn-revisit-wrapper {
       background: var(--hathor-gold) !important;
+    }
+    #awwwards,
+    .header__menu,
+    .header__btn.btn--menu,
+    header .header__logo,
+    .mod-scroll__intro__menu {
+      display: none !important;
     }
   </style>
 `);
