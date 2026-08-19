@@ -66,8 +66,6 @@ const DISPLAY_COLOR_SELECTORS = [
 ].join(",");
 
 const SECONDARY_SELECTORS = [
-  ".mod-scroll__terms__term__title",
-  ".mod-scroll__terms__term__title__color",
   ".mod-scroll__projects__item__text__title",
   ".header__menu__media__title",
   ".mod-footer__content__project__name",
@@ -112,51 +110,72 @@ function roleCss(
   return `${selector}{font-family:${fontStack}!important;${extras.length ? `${extras.join(";")};` : ""}color:${style.color}!important;-webkit-text-fill-color:${style.color}!important;text-shadow:${shadow}!important;}`;
 }
 
-/** PANORAMIC / PRIVATE / TIMELESS slide: cream-gold invert reads as navy.
- *  Force white type and scale the three titles into one viewport. */
+/** PANORAMIC / PRIVATE / TIMELESS slide.
+ *  Source clone uses black + invert + mix-blend difference, which turns
+ *  any light type navy on the gold panel. Kill both, paint white, fit 100vh. */
 export const SUITES_TERMS_STAGE_CSS = `
-.mod-scroll__terms {
-  isolation: isolate;
+html body main .mod-scroll__terms {
+  isolation: isolate !important;
+  mix-blend-mode: normal !important;
+  filter: none !important;
 }
-.mod-scroll__terms .mod-scroll__terms__term__title,
-.mod-scroll__terms .mod-scroll__terms__term__title *,
-.mod-scroll__terms .mod-scroll__terms__term__title__filter,
-.mod-scroll__terms .mod-scroll__terms__term__title__color,
-.mod-scroll__terms .mod-scroll__terms__term__num,
-.mod-scroll__terms .mod-scroll__terms__term__text,
-.mod-scroll__terms .mod-scroll__terms__term__text *,
-.mod-scroll__terms .mod-scroll__terms__term__text__single {
+html body main .mod-scroll__terms,
+html body main .mod-scroll__terms :is(
+  .mod-scroll__terms__term__title,
+  .mod-scroll__terms__term__title *,
+  .mod-scroll__terms__term__num,
+  .mod-scroll__terms__term__text,
+  .mod-scroll__terms__term__text *,
+  .t-supertitulo-l,
+  .t-supertitulo-l *
+) {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
   mix-blend-mode: normal !important;
   filter: none !important;
 }
+html body main .mod-scroll__terms :is(
+  .mod-scroll__terms__term__title,
+  .mod-scroll__terms__term__title *,
+  .t-supertitulo-l,
+  .t-supertitulo-l *
+) {
+  transform: none !important;
+}
 @media (min-width: 951px) {
-  main .mod-scroll__terms {
-    box-sizing: border-box;
-    justify-content: space-between;
-    padding-top: clamp(5.2rem, 9svh, 7.4rem);
-    padding-bottom: clamp(1rem, 3.2svh, 2.2rem);
+  html body main .mod-scroll > .mod-scroll__terms,
+  html body main .mod-scroll__terms {
+    height: 100svh !important;
+    max-height: 100svh !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    padding-top: 9svh !important;
+    padding-bottom: 3.5svh !important;
+    overflow: hidden !important;
   }
-  main .mod-scroll__terms .mod-scroll__terms__term__title,
-  main .mod-scroll__terms .mod-scroll__terms__term__title.t-supertitulo-l,
-  main .mod-scroll__terms .mod-scroll__terms__term:last-of-type .lh-less2 {
-    font-size: clamp(4.2rem, 11svh, 7.2rem) !important;
-    line-height: 0.82 !important;
+  html body main .mod-scroll__terms .mod-scroll__terms__term__title,
+  html body main .mod-scroll__terms .mod-scroll__terms__term__title.t-supertitulo-l,
+  html body main .mod-scroll__terms .t-supertitulo-l,
+  html body main .mod-scroll__terms .mod-scroll__terms__term:last-of-type .lh-less2 {
+    font-size: min(8.6svh, 6.4vw) !important;
+    line-height: 0.8 !important;
   }
 }
 @media (min-width: 481px) and (max-width: 950px) {
-  main .mod-scroll__terms .mod-scroll__terms__term__title,
-  main .mod-scroll__terms .mod-scroll__terms__term__title.t-supertitulo-l {
-    font-size: clamp(2.6rem, 8.4svh, 5.2rem) !important;
-    line-height: 0.86 !important;
+  html body main .mod-scroll__terms .mod-scroll__terms__term__title,
+  html body main .mod-scroll__terms .t-supertitulo-l {
+    font-size: min(7.2svh, 8vw) !important;
+    line-height: 0.84 !important;
   }
 }
 @media (max-width: 480px) {
-  main .mod-scroll__terms .mod-scroll__terms__term__title,
-  main .mod-scroll__terms .mod-scroll__terms__term__title.t-supertitulo-l {
-    font-size: clamp(2.2rem, 9.2vw, 3rem) !important;
+  html body main .mod-scroll__terms .mod-scroll__terms__term__title,
+  html body main .mod-scroll__terms .t-supertitulo-l {
+    font-size: min(9.4vw, 2.8rem) !important;
     line-height: 0.9 !important;
+    transform: none !important;
   }
 }
 `;

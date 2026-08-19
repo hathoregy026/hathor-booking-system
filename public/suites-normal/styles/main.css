@@ -3699,14 +3699,17 @@ main .mod-scroll__terms__term {
 }
 main .mod-scroll__terms__term__title {
   position: relative;
-  mix-blend-mode: difference;
+  mix-blend-mode: normal;
   z-index: 20;
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
 }
 main .mod-scroll__terms__term__title__filter {
-  filter: invert(100%);
+  filter: none;
 }
 main .mod-scroll__terms__term__title__color {
-  color: black;
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
 }
 @media (max-width: 950px) {
   main .mod-scroll__terms__term__title {
