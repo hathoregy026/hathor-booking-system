@@ -384,29 +384,14 @@ export function Header() {
       }
     };
 
-    document
-      .querySelectorAll<HTMLIFrameElement>(NAV_SCROLL_ROOT)
-      .forEach(bindFrame);
-
-    const observer = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        mutation.addedNodes.forEach((node) => {
-          if (!(node instanceof HTMLElement)) return;
-          if (
-            node instanceof HTMLIFrameElement &&
-            node.hasAttribute("data-public-nav-scroll-root")
-          ) {
-            bindFrame(node);
-            return;
-          }
-          node
-            .querySelectorAll?.<HTMLIFrameElement>(NAV_SCROLL_ROOT)
-            .forEach(bindFrame);
-        });
-      }
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-    cleanups.push(() => observer.disconnect());
+    const bindExistingFrames = () => {
+      document
+        .querySelectorAll<HTMLIFrameElement>(NAV_SCROLL_ROOT)
+        .forEach(bindFrame);
+    };
+    bindExistingFrames();
+    const retry = window.setTimeout(bindExistingFrames, 400);
+    cleanups.push(() => window.clearTimeout(retry));
 
     return () => {
       cleanups.forEach((fn) => fn());

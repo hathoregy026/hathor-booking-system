@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useRef } from "react";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import { slotNameFromSuitesImageUrl } from "@/lib/suites-normal-image-map";
 import {
@@ -171,17 +171,16 @@ function applyImages(doc: Document, images: Record<string, string>) {
       img.setAttribute("data-hathor-slot", current);
     }
     if (img.getAttribute("src") !== url) img.setAttribute("src", url);
-    if (img.hasAttribute("data-lazy-src") && img.getAttribute("data-lazy-src") !== url) {
-      img.setAttribute("data-lazy-src", url);
-    }
-    if (img.hasAttribute("srcset")) img.removeAttribute("srcset");
-    if (img.hasAttribute("data-lazy-srcset")) img.removeAttribute("data-lazy-srcset");
+    img.removeAttribute("data-lazy-src");
+    img.removeAttribute("data-lazy-srcset");
+    img.removeAttribute("srcset");
+    img.classList.remove("lazyload", "lazyloading");
+    img.classList.add("lazyloaded");
   });
 }
 
 export function SuitesNormalHomepagePage() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const observerRef = useRef<MutationObserver | null>(null);
 
   const apply = useCallback(async () => {
     const iframe = iframeRef.current;
@@ -243,30 +242,10 @@ export function SuitesNormalHomepagePage() {
       retargetCloneLinks(doc);
       fitTermsToViewport(doc);
       void doc.fonts?.ready.then(() => fitTermsToViewport(doc));
-      if (data.images) {
-        applyImages(doc, data.images);
-        observerRef.current?.disconnect();
-        let painting = false;
-        const observer = new MutationObserver(() => {
-          if (painting) return;
-          painting = true;
-          applyImages(doc, data.images ?? {});
-          painting = false;
-        });
-        observer.observe(doc.body, {
-          subtree: true,
-          attributes: true,
-          attributeFilter: ["src", "data-lazy-src"],
-        });
-        observerRef.current = observer;
-      }
+      if (data.images) applyImages(doc, data.images);
     } catch {
       /* Clip-fix still applies if CMS is unreachable. */
     }
-  }, []);
-
-  useEffect(() => {
-    return () => observerRef.current?.disconnect();
   }, []);
 
   return (
@@ -277,7 +256,7 @@ export function SuitesNormalHomepagePage() {
       <iframe
         ref={iframeRef}
         className="suites-normal-clone__frame"
-        src="/suites-normal/index.html?v=hathor-unfreeze-20260820"
+        src="/suites-normal/index.html?v=hathor-unfreeze-20260820b"
         title="Hathor Suites"
         onLoad={() => void apply()}
       />

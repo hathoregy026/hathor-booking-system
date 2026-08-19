@@ -78,7 +78,7 @@ export function getWelcomeSplashBlockingScript(
   _enabled = false,
   _imageUrl = "/branding/hathor-welcome-aboard.webp",
 ): string {
-  return `(function(){try{var d=document.documentElement;d.classList.add("hathor-welcome-skip");d.classList.add("hathor-welcome-ready");d.classList.remove("hathor-welcome-lock");function nuke(){try{document.querySelectorAll(".hathor-welcome-splash,#hathor-welcome-boot").forEach(function(el){el.remove();});}catch(e){}}nuke();if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",nuke);else nuke();var obs=new MutationObserver(nuke);if(document.documentElement)obs.observe(document.documentElement,{childList:!0,subtree:!0});setTimeout(function(){try{obs.disconnect();}catch(e){}},4000);}catch(e){}})();`;
+  return `(function(){try{var d=document.documentElement;d.classList.add("hathor-welcome-skip");d.classList.add("hathor-welcome-ready");d.classList.remove("hathor-welcome-lock");function nuke(){try{document.querySelectorAll(".hathor-welcome-splash,#hathor-welcome-boot").forEach(function(el){el.remove();});}catch(e){}}nuke();if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",nuke);}catch(e){}})();`;
 }
 
 /**
