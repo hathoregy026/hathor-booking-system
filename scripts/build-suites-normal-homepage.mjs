@@ -649,6 +649,22 @@ $("head").append(`
       color: #B69F64 !important;
       -webkit-text-fill-color: #B69F64 !important;
     }
+    body .mod-scroll__terms :is(
+      .t-supertitulo-l,
+      .mod-scroll__terms__term__title,
+      .mod-scroll__terms__term__num,
+      .mod-scroll__terms__term__text
+    ),
+    body .mod-scroll__terms :is(
+      .t-supertitulo-l,
+      .mod-scroll__terms__term__title,
+      .mod-scroll__terms__term__text
+    ) * {
+      color: #ffffff !important;
+      -webkit-text-fill-color: #ffffff !important;
+      mix-blend-mode: normal !important;
+      filter: none !important;
+    }
     .mod-scroll__intro__title,
     .mod-scroll__text__title,
     .mod-scroll__text__title__line,
@@ -910,47 +926,66 @@ $("head").append(`
     }
   </style>
   <style id="hathor-suites-terms-stage">
-    .mod-scroll__terms {
-      isolation: isolate;
+    html body main .mod-scroll__terms {
+      isolation: isolate !important;
+      mix-blend-mode: normal !important;
+      filter: none !important;
     }
-    .mod-scroll__terms .mod-scroll__terms__term__title,
-    .mod-scroll__terms .mod-scroll__terms__term__title *,
-    .mod-scroll__terms .mod-scroll__terms__term__title__filter,
-    .mod-scroll__terms .mod-scroll__terms__term__title__color,
-    .mod-scroll__terms .mod-scroll__terms__term__num,
-    .mod-scroll__terms .mod-scroll__terms__term__text,
-    .mod-scroll__terms .mod-scroll__terms__term__text *,
-    .mod-scroll__terms .mod-scroll__terms__term__text__single {
+    html body main .mod-scroll__terms,
+    html body main .mod-scroll__terms :is(
+      .mod-scroll__terms__term__title,
+      .mod-scroll__terms__term__title *,
+      .mod-scroll__terms__term__num,
+      .mod-scroll__terms__term__text,
+      .mod-scroll__terms__term__text *,
+      .t-supertitulo-l,
+      .t-supertitulo-l *
+    ) {
       color: #ffffff !important;
       -webkit-text-fill-color: #ffffff !important;
       mix-blend-mode: normal !important;
       filter: none !important;
     }
+    html body main .mod-scroll__terms :is(
+      .mod-scroll__terms__term__title,
+      .mod-scroll__terms__term__title *,
+      .t-supertitulo-l,
+      .t-supertitulo-l *
+    ) {
+      transform: none !important;
+    }
     @media (min-width: 951px) {
-      main .mod-scroll__terms {
-        box-sizing: border-box;
-        justify-content: space-between;
-        padding-top: clamp(5.2rem, 9svh, 7.4rem);
-        padding-bottom: clamp(1rem, 3.2svh, 2.2rem);
+      html body main .mod-scroll > .mod-scroll__terms,
+      html body main .mod-scroll__terms {
+        height: 100svh !important;
+        max-height: 100svh !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        padding-top: 9svh !important;
+        padding-bottom: 3.5svh !important;
+        overflow: hidden !important;
       }
-      main .mod-scroll__terms .mod-scroll__terms__term__title,
-      main .mod-scroll__terms .mod-scroll__terms__term__title.t-supertitulo-l,
-      main .mod-scroll__terms .mod-scroll__terms__term:last-of-type .lh-less2 {
-        font-size: clamp(4.2rem, 11svh, 7.2rem) !important;
-        line-height: 0.82 !important;
+      html body main .mod-scroll__terms .mod-scroll__terms__term__title,
+      html body main .mod-scroll__terms .mod-scroll__terms__term__title.t-supertitulo-l,
+      html body main .mod-scroll__terms .t-supertitulo-l,
+      html body main .mod-scroll__terms .mod-scroll__terms__term:last-of-type .lh-less2 {
+        font-size: min(8.6svh, 6.4vw) !important;
+        line-height: 0.8 !important;
       }
     }
     @media (min-width: 481px) and (max-width: 950px) {
-      main .mod-scroll__terms .mod-scroll__terms__term__title,
-      main .mod-scroll__terms .mod-scroll__terms__term__title.t-supertitulo-l {
-        font-size: clamp(2.6rem, 8.4svh, 5.2rem) !important;
-        line-height: 0.86 !important;
+      html body main .mod-scroll__terms .mod-scroll__terms__term__title,
+      html body main .mod-scroll__terms .t-supertitulo-l {
+        font-size: min(7.2svh, 8vw) !important;
+        line-height: 0.84 !important;
       }
     }
     @media (max-width: 480px) {
-      main .mod-scroll__terms .mod-scroll__terms__term__title,
-      main .mod-scroll__terms .mod-scroll__terms__term__title.t-supertitulo-l {
-        font-size: clamp(2.2rem, 9.2vw, 3rem) !important;
+      html body main .mod-scroll__terms .mod-scroll__terms__term__title,
+      html body main .mod-scroll__terms .t-supertitulo-l {
+        font-size: min(9.4vw, 2.8rem) !important;
         line-height: 0.9 !important;
       }
     }

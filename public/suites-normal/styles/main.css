@@ -3711,6 +3711,17 @@ main .mod-scroll__terms__term__title__color {
   color: #ffffff;
   -webkit-text-fill-color: #ffffff;
 }
+@media (min-width: 951px) {
+  main .mod-scroll__terms {
+    padding-top: 9svh;
+    padding-bottom: 3.5svh;
+    overflow: hidden;
+  }
+  main .mod-scroll__terms .t-supertitulo-l {
+    font-size: min(8.6svh, 6.4vw);
+    line-height: 0.8;
+  }
+}
 @media (max-width: 950px) {
   main .mod-scroll__terms__term__title {
     order: 1;
