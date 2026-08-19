@@ -123,10 +123,12 @@ function fitTermsToViewport(doc: Document) {
     titles.forEach((el) => {
       el.style.setProperty("font-size", `${px}px`, "important");
       el.style.setProperty("line-height", "0.8", "important");
-      el.style.setProperty("color", "#ffffff", "important");
-      el.style.setProperty("-webkit-text-fill-color", "#ffffff", "important");
-      el.style.setProperty("mix-blend-mode", "normal", "important");
-      el.style.setProperty("filter", "none", "important");
+      [el, ...Array.from(el.querySelectorAll<HTMLElement>("*"))].forEach((node) => {
+        node.style.setProperty("color", "#ffffff", "important");
+        node.style.setProperty("-webkit-text-fill-color", "#ffffff", "important");
+        node.style.setProperty("mix-blend-mode", "normal", "important");
+        node.style.setProperty("filter", "none", "important");
+      });
     });
   };
 

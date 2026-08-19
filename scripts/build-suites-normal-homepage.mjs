@@ -423,6 +423,10 @@ $(".mod-scroll__terms__term").each((index, element) => {
   $(element).find(".mod-scroll__terms__term__title__color").text(copy.title);
   $(element).find(".mod-scroll__terms__term__text__single").text(copy.body);
 });
+$(".mod-scroll__terms__term__title__filter").each((_, element) => {
+  const $el = $(element);
+  $el.replaceWith($el.html() ?? "");
+});
 $(".mod-scroll__terms__term__text-group .mod-scroll__terms__term__text__single").each(
   (index, element) => {
     $(element).text(termCopy[index]?.body ?? termCopy[0].body);
