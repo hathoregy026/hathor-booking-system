@@ -354,6 +354,22 @@ $(".logo__boring").each((_, element) => {
     .remove();
   $(element).prepend("Hathor");
 });
+$(".mod-scroll__intro__logo").html(
+  '<div class="logo__boring">Hathor<div class="reg">®</div></div>',
+);
+if (!$("#hathor-intro-logo-wordmark").length) {
+  $(".mod-scroll__intro__logo").after(`<script id="hathor-intro-logo-wordmark">
+(function () {
+  var el = document.querySelector(".mod-scroll__intro__logo .logo__boring");
+  if (!el) return;
+  var reg = el.querySelector(".reg");
+  while (el.firstChild) el.removeChild(el.firstChild);
+  el.appendChild(document.createTextNode("Hathor"));
+  if (reg) el.appendChild(reg);
+})();
+</script>`);
+}
+$("#preloader-js-js").attr("src", "scripts/preloader.js?v=hathor-wordmark-20260820d");
 if (!$("#hathor-logo-wordmark").length) {
   $("#preloader-js-js").before(`<script id="hathor-logo-wordmark">
 (function () {

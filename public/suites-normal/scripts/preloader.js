@@ -3,6 +3,17 @@
 let first_charge = true;
 (!localStorage.getItem('first_charge')) ? localStorage.setItem('first_charge', 1) : first_charge = false ;
 
+const HATHOR_LOGO_WORDMARK = "Hathor";
+
+function patchHathorLogoWordmark() {
+    document.querySelectorAll('.logo__boring').forEach((el) => {
+        const reg = el.querySelector('.reg');
+        while (el.firstChild) el.removeChild(el.firstChild);
+        el.appendChild(document.createTextNode(HATHOR_LOGO_WORDMARK));
+        if (reg) el.appendChild(reg);
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 
     ///ANIM PRECHARGE
@@ -10,11 +21,20 @@ document.addEventListener('DOMContentLoaded', () => {
     ///ANIM PRECHARGE
     let loaderAnim_end = false;
 
+    patchHathorLogoWordmark();
+
     //anima logo
     const split_normal = SplitText.create(header_logo_normal, {type: "chars,lines", charsClass: "char"})
     const split_is = SplitText.create('.header .logo__is', {type: "chars",charsClass: "char"})
     const split_boring = SplitText.create('.header .logo__boring', {type: "chars",charsClass: "char"})
+    const split_intro_boring = document.querySelector('.mod-scroll__intro__logo .logo__boring')
+        ? SplitText.create('.mod-scroll__intro__logo .logo__boring', {type: "chars", charsClass: "char"})
+        : null;
     header_logo.querySelectorAll('.char').forEach(elem => {
+        const content = elem.innerHTML;
+        elem.innerHTML = '<span>'+content+'</span>';
+    })
+    document.querySelectorAll('.mod-scroll__intro__logo .logo__boring .char').forEach(elem => {
         const content = elem.innerHTML;
         elem.innerHTML = '<span>'+content+'</span>';
     })

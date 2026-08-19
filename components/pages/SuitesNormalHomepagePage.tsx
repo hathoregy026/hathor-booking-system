@@ -41,7 +41,6 @@ const LOGO_BORING_WORDMARK = "Hathor";
 function patchLogoWordmark(doc: Document) {
   doc.querySelectorAll(".logo__boring").forEach((node) => {
     const el = node as HTMLElement;
-    const reg = el.querySelector(".reg");
     const letters = LOGO_BORING_WORDMARK.split("");
     const chars = el.querySelectorAll(":scope > .char");
 
@@ -58,10 +57,16 @@ function patchLogoWordmark(doc: Document) {
       return;
     }
 
-    el.textContent = "";
-    el.appendChild(doc.createTextNode(LOGO_BORING_WORDMARK));
-    if (reg) el.appendChild(reg);
+    el.innerHTML = `${LOGO_BORING_WORDMARK}<div class="reg">®</div>`;
   });
+}
+
+function watchLogoWordmark(doc: Document) {
+  patchLogoWordmark(doc);
+  if (doc.documentElement.dataset.hathorLogoWatch) return;
+  doc.documentElement.dataset.hathorLogoWatch = "1";
+  const observer = new MutationObserver(() => patchLogoWordmark(doc));
+  observer.observe(doc.body, { childList: true, subtree: true, characterData: true });
 }
 
 const CLONE_MENU_HIDE_CSS = `
@@ -75,6 +80,16 @@ header .header__logo,
 .logo__boring,
 .logo__boring .reg {
   transform: none !important;
+}
+.mod-scroll__intro__logo {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.mod-scroll__intro__logo .logo__boring {
+  right: 0 !important;
+  bottom: 0 !important;
+  text-align: center !important;
 }
 `;
 
@@ -187,7 +202,7 @@ export function SuitesNormalHomepagePage() {
       doc.head.appendChild(live);
     }
     live.textContent = buildSuitesLiveCss();
-    patchLogoWordmark(doc);
+    watchLogoWordmark(doc);
     tagSuiteCollectionPanels(doc);
     retargetCloneLinks(doc);
     const runTermsFit = () => fitTermsToViewport(doc);
@@ -222,7 +237,7 @@ export function SuitesNormalHomepagePage() {
         images?: Record<string, string>;
       };
       live.textContent = buildSuitesLiveCss(data.css ?? "");
-      patchLogoWordmark(doc);
+      watchLogoWordmark(doc);
       tagSuiteCollectionPanels(doc);
       retargetCloneLinks(doc);
       fitTermsToViewport(doc);
@@ -255,7 +270,7 @@ export function SuitesNormalHomepagePage() {
       <iframe
         ref={iframeRef}
         className="suites-normal-clone__frame"
-        src="/suites-normal/index.html?v=hathor-split-guard-20260820"
+        src="/suites-normal/index.html?v=hathor-wordmark-20260820d"
         title="Hathor Suites"
         onLoad={() => void apply()}
       />
