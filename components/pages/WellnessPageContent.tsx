@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, type CSSProperties, type ReactNode } from "react";
+import { useRef, type ComponentPropsWithoutRef, type CSSProperties } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { useWellnessBoringScroll } from "@/hooks/useWellnessBoringScroll";
 
@@ -64,8 +64,8 @@ function SplitText({ children, className = "" }: { children: string; className?:
   );
 }
 
-function Scene({ className, children }: { className: string; children: ReactNode }) {
-  return <section className={`wb-scene ${className}`}>{children}</section>;
+function Scene({ className = "", children, ...props }: ComponentPropsWithoutRef<"section">) {
+  return <section className={`wb-scene ${className}`} {...props}>{children}</section>;
 }
 
 const principles = [

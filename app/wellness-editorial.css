@@ -22,7 +22,12 @@ html[data-wellness-boring],
 html[data-wellness-boring] body,
 html[data-wellness-boring] .public-site,
 html[data-wellness-boring] .public-main,
-html[data-wellness-boring] .page-transition { overflow-x: visible !important; }
+html[data-wellness-boring] .page-transition,
+html:has(.wellness-boring),
+html:has(.wellness-boring) body,
+html:has(.wellness-boring) .public-site,
+html:has(.wellness-boring) .public-main,
+html:has(.wellness-boring) .page-transition { overflow-x: visible !important; }
 
 .wellness-boring *, .wellness-boring *::before, .wellness-boring *::after { box-sizing: border-box; }
 .wellness-boring h1, .wellness-boring h2, .wellness-boring h3, .wellness-boring p, .wellness-boring figure { margin: 0; }
@@ -33,11 +38,12 @@ html[data-wellness-boring] .page-transition { overflow-x: visible !important; }
 .wb-run { position: relative; width: 100%; }
 .wb-stage { position: sticky; top: 0; width: 100%; height: 100svh; overflow: hidden; background: var(--wb-paper); }
 .wb-track { display: flex; width: max-content; height: 100%; will-change: transform; }
-.wb-scene { --reveal: 0; --parallax: 0; position: relative; flex: 0 0 auto; height: 100svh; overflow: hidden; }
+.wb-scene { --reveal: 1; --parallax: .5; position: relative; flex: 0 0 auto; height: 100svh; overflow: hidden; }
 .wb-media { position: relative; overflow: hidden; }
 .wb-media__image { object-fit: cover; transform: translate3d(calc((.5 - var(--parallax)) * 5%),0,0) scale(1.08); }
 .wb-marker { font-size: clamp(.76rem, .9vw, 1rem); }
-.wb-big-title, .wb-project h2, .wb-epilogue h2, .wb-epilogue h3 { color: var(--wb-gold); font-family: var(--wb-title); font-style: italic; font-weight: 400; letter-spacing: -.045em; text-transform: uppercase; }
+.wellness-boring, .wellness-boring p, .wellness-boring a, .wellness-boring button, .wellness-boring em, .wellness-boring strong { font-family: var(--wb-copy) !important; font-style: italic !important; }
+.wb-intro__title-part, .wb-big-title, .wb-project h2, .wb-epilogue h2, .wb-epilogue h3, .wb-epilogue__monogram { color: var(--wb-gold); font-family: var(--wb-title) !important; font-style: italic; font-weight: 400; letter-spacing: -.045em; text-transform: uppercase; }
 .wb-split { display: inline-flex; overflow: hidden; vertical-align: bottom; }
 .wb-split__char { display: inline-block; transform: translateY(calc((1 - var(--reveal)) * var(--char-direction) * 115%)); opacity: calc(.16 + var(--reveal) * .84); }
 
@@ -87,7 +93,7 @@ html[data-wellness-boring] .page-transition { overflow-x: visible !important; }
 .wb-image-pair__right { position: absolute; right: 3%; top: 0; width: 47%; height: 62%; }
 
 .wb-principles { width: 110vw; background: var(--wb-blue); }
-.wb-principle { position: absolute; inset: 0; border-left: 1px solid #b69f6455; opacity: calc(.08 + var(--reveal) * .92); }
+.wb-principle { position: absolute; inset: 0 auto 0 0; width: 33.333%; border-left: 1px solid #b69f6455; opacity: calc(.08 + var(--reveal) * .92); }
 .wb-principle:nth-child(2) { left: 33.333%; }
 .wb-principle:nth-child(3) { left: 66.666%; }
 .wb-principle__copy { position: absolute; top: 9%; left: 8%; width: 20%; font-size: clamp(.78rem, .9vw, 1rem); line-height: 1.3; }
@@ -149,7 +155,7 @@ html[data-wellness-boring] .page-transition { overflow-x: visible !important; }
 .wb-epilogue__legal span { margin-right: auto; }
 
 @media (max-width: 1024px) {
-  html[data-wellness-boring], html[data-wellness-boring] body { overflow-x: hidden !important; }
+  html[data-wellness-boring], html[data-wellness-boring] body, html:has(.wellness-boring), html:has(.wellness-boring) body { overflow-x: hidden !important; }
   .wb-progress { display: none; }
   .wb-run, .wb-stage { height: auto !important; }
   .wb-stage { position: relative; overflow: visible; }
@@ -173,7 +179,7 @@ html[data-wellness-boring] .page-transition { overflow-x: visible !important; }
   .wb-marquee { min-height: 42svh; }
   .wb-image-pair { min-height: 100svh; }
   .wb-principles { min-height: 210svh; display: flex; flex-direction: column; }
-  .wb-principle { position: relative; inset: auto !important; flex: 1; min-height: 68svh; border-top: 1px solid #b69f6455; }
+  .wb-principle { position: relative; inset: auto !important; width: 100%; flex: 1; min-height: 68svh; border-top: 1px solid #b69f6455; }
   .wb-principle__copy { width: 45%; }
   .wb-principle h2 { writing-mode: initial; transform: none; font-size: clamp(4rem, 12vw, 7rem); }
   .wb-principle__hover { left: auto; right: 6%; width: 38%; opacity: .85; }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, type RefObject } from "react";
+import { useEffect, type RefObject } from "react";
 
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
 
@@ -11,7 +11,7 @@ type WellnessBoringScrollRefs = {
 };
 
 export function useWellnessBoringScroll({ rootRef, runRef, trackRef }: WellnessBoringScrollRefs) {
-  useLayoutEffect(() => {
+  useEffect(() => {
     const root = rootRef.current;
     const run = runRef.current;
     const track = trackRef.current;
