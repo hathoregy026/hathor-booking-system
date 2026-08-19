@@ -112,10 +112,8 @@ function roleCss(
   return `${selector}{font-family:${fontStack}!important;${extras.length ? `${extras.join(";")};` : ""}color:${style.color}!important;-webkit-text-fill-color:${style.color}!important;text-shadow:${shadow}!important;}`;
 }
 
-/**
- * Keep italic display faces fully visible. SplitText / overflow:clip was
- * shaving letter corners without changing layout or scroll choreography.
- */
+/** Preserve the reference site's text boxes so SplitText measures and clips
+ * against the same geometry as the original scroll choreography. */
 export const SUITES_CLIP_FIX_CSS = `
 .mod-scroll__intro__title,
 .mod-scroll__text__title,
@@ -123,10 +121,7 @@ export const SUITES_CLIP_FIX_CSS = `
 .mod-scroll__terms__term__title,
 .mod-scroll__projects__item__text__title,
 .last-item__content__title,
-.last-item__content__title .line,
 .anima__title,
-.anima__title .line,
-.mod-title--lines .line,
 .t-titulo-xxl,
 .t-supertitulo,
 .t-supertitulo-l,
@@ -134,8 +129,16 @@ export const SUITES_CLIP_FIX_CSS = `
 .logo__normal,
 .logo__boring {
   overflow: visible !important;
-  padding-inline: 0.08em 0.28em;
-  padding-block: 0.06em 0.16em;
+  padding: 0 !important;
+}
+.last-item__content__title .line,
+.anima__title .line {
+  overflow: clip !important;
+  padding: 0 !important;
+}
+.mod-title--lines .line {
+  overflow: hidden !important;
+  padding: 0 !important;
 }
 `;
 

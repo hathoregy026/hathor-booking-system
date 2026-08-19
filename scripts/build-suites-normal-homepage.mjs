@@ -549,19 +549,25 @@ $("head").append(`
       font-weight: 400;
       font-display: swap;
     }
-    body,
-    body :where(a, button, p, span, div, li, strong, em, h1, h2, h3, h4, h5, h6) {
+    body {
       color: #B69F64 !important;
       -webkit-text-fill-color: #B69F64 !important;
       font-family: "Rollgates Luxury Italic", serif !important;
       font-style: italic !important;
     }
-    body :where(
+    body :where(a, button, p, li, strong, em, input, textarea) {
+      color: inherit;
+      -webkit-text-fill-color: currentColor;
+      font-family: "Rollgates Luxury Italic", serif !important;
+      font-style: italic !important;
+    }
+    body :is(
       .t-supertitulo,
       .t-supertitulo-l,
       .t-supertitulo-xl,
       .t-titulo-xxl,
       .mod-scroll__intro__title,
+      .mod-scroll__carousel__text,
       .mod-scroll__text__title__line,
       .mod-scroll__terms__term__title,
       .mod-scroll__projects__item__text__title,
@@ -571,7 +577,24 @@ $("head").append(`
       .logo__normal,
       .logo__boring,
       .mod-footer__content__project__name
-    ) {
+    ),
+    body :is(
+      .t-supertitulo,
+      .t-supertitulo-l,
+      .t-supertitulo-xl,
+      .t-titulo-xxl,
+      .mod-scroll__intro__title,
+      .mod-scroll__carousel__text,
+      .mod-scroll__text__title__line,
+      .mod-scroll__terms__term__title,
+      .mod-scroll__projects__item__text__title,
+      .last-item__content__title .line,
+      .anima__title,
+      .mod-title--lines .line,
+      .logo__normal,
+      .logo__boring,
+      .mod-footer__content__project__name
+    ) * {
       font-family: "Bitho Luxury", cursive !important;
       font-style: italic !important;
       color: #B69F64 !important;
@@ -594,8 +617,16 @@ $("head").append(`
     .logo__normal,
     .logo__boring {
       overflow: visible !important;
-      padding-inline: 0.08em 0.28em;
-      padding-block: 0.06em 0.16em;
+      padding: 0 !important;
+    }
+    .last-item__content__title .line,
+    .anima__title .line {
+      overflow: clip !important;
+      padding: 0 !important;
+    }
+    .mod-title--lines .line {
+      overflow: hidden !important;
+      padding: 0 !important;
     }
 
     :root {
@@ -625,19 +656,16 @@ $("head").append(`
       box-shadow: 0 -1px 0 var(--hathor-cream) !important;
     }
     .bg-blue,
-    .bg-grey {
-      background: var(--hathor-sand) !important;
-      box-shadow: 0 -1px 0 var(--hathor-sand) !important;
-    }
+    .bg-grey,
     .bg-black,
     .bg-red {
       background: var(--hathor-gold) !important;
       box-shadow: 0 -1px 0 var(--hathor-gold) !important;
     }
-    body :where(.bg-black, .bg-red),
-    body :where(.bg-black, .bg-red) :where(a, button, p, span, div, li, strong, em, h1, h2, h3, h4, h5, h6),
+    body :is(.bg-blue, .bg-grey, .bg-black, .bg-red),
+    body :is(.bg-blue, .bg-grey, .bg-black, .bg-red) *,
     body .c-white,
-    body .c-white :where(a, button, p, span, div, li, strong, em, h1, h2, h3, h4, h5, h6) {
+    body .c-white * {
       color: var(--hathor-white) !important;
       -webkit-text-fill-color: var(--hathor-white) !important;
     }
@@ -674,7 +702,7 @@ $("head").append(`
     body svg :where(path, g, rect, circle, ellipse, polygon, polyline) {
       fill: currentColor !important;
     }
-    body :where(.bg-black, .bg-red) svg {
+    body :where(.bg-blue, .bg-grey, .bg-black, .bg-red) svg {
       color: var(--hathor-white) !important;
     }
     #mouse {
@@ -685,6 +713,15 @@ $("head").append(`
       background-color: var(--hathor-gold) !important;
       color: var(--hathor-white) !important;
       -webkit-text-fill-color: var(--hathor-white) !important;
+    }
+    header .header,
+    header .header__menu__media__title,
+    main .mod-header__content__wrap-title-text,
+    main .mod-scroll__logo,
+    main .mod-scroll__footer-logo,
+    main .mod-scroll__terms__term__title {
+      mix-blend-mode: normal !important;
+      filter: none !important;
     }
 
     .btn--bg,
@@ -736,6 +773,11 @@ $("head").append(`
     .btn--circle:hover,
     .btn--circle:focus-visible {
       background: var(--hathor-gold) !important;
+      color: var(--hathor-white) !important;
+      -webkit-text-fill-color: var(--hathor-white) !important;
+    }
+    body :where(.bg-blue, .bg-grey, .bg-black, .bg-red) :where(.btn--bg, .btn--circle) {
+      border-color: var(--hathor-white) !important;
       color: var(--hathor-white) !important;
       -webkit-text-fill-color: var(--hathor-white) !important;
     }
