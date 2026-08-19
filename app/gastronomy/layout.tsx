@@ -4,6 +4,8 @@ import "../public.css";
 import "../site-nav.css";
 import "../night-mode.css";
 import "../mobile-touch.css";
+import "../lux-footer.css";
+import "../gastronomy-dining.css";
 
 export default function GastronomyLayout({
   children,

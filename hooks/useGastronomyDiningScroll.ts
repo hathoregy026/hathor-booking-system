@@ -93,7 +93,8 @@ export function useGastronomyDiningScroll(rootRef: RefObject<HTMLDivElement | nu
     const tick = (now: number) => {
       const delta = Math.min(32, Math.max(8, now - lastTime));
       lastTime = now;
-      const ease = 1 - Math.exp(-delta / 360);
+      /* Close tracking prevents a stage from visually lagging into the next one. */
+      const ease = 1 - Math.exp(-delta / 140);
       let animating = false;
 
       smoothedDocProgress += (targetDocProgress - smoothedDocProgress) * ease;

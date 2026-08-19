@@ -3,8 +3,8 @@
   --gd-gold: var(--public-gold, #b69f64);
   --gd-champagne: var(--public-gold, #b69f64);
   --gd-gold-soft: #d4bf86;
-  --gd-serif: var(--public-serif, var(--font-hathor-display, Georgia, serif));
-  --gd-sans: var(--public-sans, var(--font-hathor-body, system-ui, sans-serif));
+  --gd-serif: var(--gd-title-font, var(--public-serif, var(--font-hathor-display, Georgia, serif)));
+  --gd-sans: var(--gd-body-font, var(--public-sans, var(--font-hathor-body, sans-serif)));
   --gd-gutter: var(--content-gutter, clamp(12px, 2.2vw, 28px));
   --gd-ink: #f3eee4;
   background: #070605;
@@ -1234,4 +1234,277 @@ html[data-gastronomy-dining] .public-main {
 
 html[data-gastronomy-dining] .gastronomy-dining-page {
   isolation: isolate;
+}
+
+/* `overflow-x:hidden` on body creates a scrolling ancestor and breaks sticky. */
+html[data-gastronomy-dining] {
+  overflow-x: clip !important;
+  overflow-y: auto !important;
+}
+
+html[data-gastronomy-dining] body {
+  overflow: visible !important;
+  overflow-x: clip !important;
+}
+
+/* Hathor homepage amenities typography and button language. */
+.gastronomy-dining-shell {
+  width: 100%;
+  overflow-x: clip;
+  background: #070605;
+}
+
+.gastronomy-dining-shell .gastronomy-dining-nav {
+  display: block !important;
+  position: absolute !important;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 3000;
+  min-height: 0 !important;
+  height: 0 !important;
+  pointer-events: none;
+}
+
+.gastronomy-dining-nav > * {
+  pointer-events: auto;
+}
+
+.gastronomy-dining-page :is(h1, h2) {
+  color: #f7f1e6;
+  font-family: var(--gd-title-font) !important;
+  font-style: normal;
+  font-weight: 400 !important;
+  letter-spacing: -0.035em !important;
+  text-wrap: balance;
+  text-shadow: 0 4px 40px rgba(0, 0, 0, 0.4);
+}
+
+.gastronomy-dining-page :is(h1, h2) em,
+.dining-hero__copy h1 em,
+.dining-hero__copy h2 em,
+.dining-orbit__copy h2 em,
+.dining-course__meta h2 em,
+.dining-wine__copy h2 em,
+.dining-chef__copy h2 em,
+.dining-finale__copy h2 em,
+.dining-cascade__sticky > header h2 em,
+.dining-gallery__sticky > header h2 em {
+  color: #d4bf86;
+  font-family: var(--gd-script-font) !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  line-height: 0.92 !important;
+  text-wrap: balance;
+}
+
+.gastronomy-dining-page p,
+.gastronomy-dining-page .dining-gallery__caption {
+  max-width: 38rem;
+  color: #f7f1e6;
+  font-family: var(--gd-body-font) !important;
+  font-size: clamp(16px, 1.3vw, 20px);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1.55;
+}
+
+.gastronomy-dining-page .dining-hero__copy p {
+  margin: 30px 0 0;
+}
+
+.dining-hero__copy--open h1 em {
+  font-size: 0.92em;
+}
+
+.gastronomy-dining-page :is(
+  .dining-hero__copy,
+  .dining-orbit__copy,
+  .dining-course__meta,
+  .dining-wine__copy,
+  .dining-chef__copy,
+  .dining-finale__copy,
+  .dining-cascade__sticky > header,
+  .dining-gallery__sticky > header
+) > span {
+  color: #d4bf86;
+  font-family: var(--gd-script-font) !important;
+  font-size: clamp(11px, 0.9vw, 14px);
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.44);
+}
+
+.gastronomy-dining-page .gd-home-cta,
+.gastronomy-dining-page .dining-finale__actions .gd-home-cta {
+  display: inline-flex;
+  width: var(--hathor-btn-width, 12.5rem);
+  min-width: var(--hathor-btn-width, 12.5rem);
+  max-width: none;
+  min-height: var(--hathor-btn-height, 2.85rem);
+  height: var(--hathor-btn-height, 2.85rem);
+  align-items: center;
+  justify-content: center;
+  margin-top: 28px;
+  padding: 3px var(--hathor-btn-pad-x, 1.75rem) 1px;
+  border: 1px solid rgba(212, 194, 138, 0.7);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+  color: #fff !important;
+  font-family: var(--public-sans, sans-serif) !important;
+  font-size: 0.66rem;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background-color 300ms ease, border-color 300ms ease;
+}
+
+.gastronomy-dining-page .gd-home-cta:hover,
+.gastronomy-dining-page .gd-home-cta:focus-visible {
+  border-color: #d4bf86;
+  background: rgba(182, 159, 100, 0.35);
+  color: #fff !important;
+  outline: none;
+}
+
+.gastronomy-dining-page .gd-home-cta:focus-visible {
+  box-shadow: 0 0 0 3px rgba(245, 234, 207, 0.28);
+}
+
+.dining-finale__actions .gd-home-cta {
+  margin-top: 0;
+}
+
+/* The amenities gold-panel surface keeps the light chapter high contrast. */
+.dining-gallery {
+  background:
+    radial-gradient(circle at 78% 34%, rgba(255, 248, 226, 0.19), transparent 32%),
+    #a88f53;
+  color: #f7f1e6;
+}
+
+.dining-gallery__sticky > header span,
+.dining-gallery__sticky > header h2,
+.dining-gallery__sticky > header h2 em,
+.gastronomy-dining-page .dining-gallery__caption {
+  color: #fffaf0 !important;
+  text-shadow: 0 3px 28px rgba(56, 37, 10, 0.46);
+}
+
+@media (width <= 1024px) {
+  .gastronomy-dining-page :is(.dining-hero__sticky, .dining-course__sticky, .dining-wine__sticky, .dining-chef__sticky, .dining-finale__sticky) {
+    min-height: 100dvh;
+  }
+
+  .dining-orbit__sticky,
+  .dining-cascade__sticky,
+  .dining-gallery__sticky {
+    min-height: 125dvh;
+    padding-block: 8rem 5rem;
+  }
+
+  .dining-cascade__sticky > header,
+  .dining-gallery__sticky > header {
+    position: relative;
+    inset: auto;
+    width: auto;
+    margin: 0 24px 40px;
+  }
+
+  .dining-cascade__stack {
+    position: relative;
+    inset: auto;
+    min-height: 66dvh;
+    padding: 0 24px;
+  }
+
+  .dining-cascade__stack figure {
+    width: min(78vw, 640px);
+    height: min(58dvh, 620px);
+  }
+
+  .dining-gallery figure {
+    opacity: 1 !important;
+    mix-blend-mode: normal;
+  }
+
+  .dining-gallery__caption {
+    position: relative;
+    inset: auto;
+    max-width: 34rem !important;
+    margin: 44px 24px 0;
+  }
+
+  .dining-finale__copy {
+    opacity: 1;
+    transform: none;
+  }
+
+  .dining-finale__plate {
+    display: none;
+  }
+}
+
+@media (width <= 480px) {
+  .gastronomy-dining-hero__edge {
+    display: none;
+  }
+
+  .dining-hero__copy {
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 7rem 22px 13dvh;
+    text-align: left;
+  }
+
+  .dining-hero__copy h1 {
+    font-size: clamp(48px, 15vw, 68px) !important;
+    line-height: 0.88 !important;
+  }
+
+  .gastronomy-dining-page :is(.dining-orbit__copy, .dining-course__meta, .dining-wine__copy, .dining-chef__copy) {
+    padding-inline: 22px;
+  }
+
+  .gastronomy-dining-page :is(.dining-orbit__copy, .dining-course__meta, .dining-wine__copy, .dining-chef__copy, .dining-finale__copy) h2,
+  .dining-cascade__sticky > header h2,
+  .dining-gallery__sticky > header h2 {
+    font-size: clamp(44px, 13vw, 62px) !important;
+    line-height: 0.9 !important;
+  }
+
+  .dining-course__meta--left {
+    text-align: left;
+  }
+
+  .dining-finale__copy {
+    padding-inline: 22px;
+  }
+
+  .dining-finale__actions {
+    gap: 12px;
+  }
+
+  .gastronomy-dining-page .gd-home-cta,
+  .gastronomy-dining-page .dining-finale__actions .gd-home-cta {
+    width: min(100%, 16rem);
+    min-width: min(100%, 16rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gastronomy-dining-page *,
+  .gastronomy-dining-page *::before,
+  .gastronomy-dining-page *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
