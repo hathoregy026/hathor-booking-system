@@ -31,9 +31,10 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
   const metaStyle = useTypographyInlineStyle("our_voyages_indication_hover");
   const bodyStyle = useTypographyInlineStyle("our_voyages_body_hover");
 
-  const sectionTitle = voyagesCopy.title.trim() || VOYAGES_PAGE.hero.title;
+  const sectionTitle =
+    (voyagesCopy?.title ?? "").trim() || VOYAGES_PAGE.hero.title;
   const sectionIndication =
-    voyagesCopy.indication.trim() || "Private dahabiya itineraries";
+    (voyagesCopy?.indication ?? "").trim() || "Private dahabiya itineraries";
 
   const total = voyages.length;
 

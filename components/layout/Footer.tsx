@@ -28,9 +28,9 @@ const SUITES_LINKS = [
 ] as const;
 
 const VOYAGE_LINKS = [
+  { href: "/voyages", label: "Our Voyages" },
   { href: "/cruises", label: "Scheduled Voyages" },
   { href: "/charter", label: "Private Charter" },
-  { href: "/voyages", label: "Our Voyages" },
   { href: "/highlights", label: "Highlights" },
   { href: "/about", label: "Our Story" },
 ] as const;
