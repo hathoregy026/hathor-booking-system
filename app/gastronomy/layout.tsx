@@ -6,6 +6,7 @@ import "../night-mode.css";
 import "../mobile-touch.css";
 import "../lux-footer.css";
 import "../gastronomy-dining.css";
+import "../editorial-chrome.css";
 
 export default function GastronomyLayout({
   children,

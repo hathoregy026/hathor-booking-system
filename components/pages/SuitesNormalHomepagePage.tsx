@@ -33,6 +33,7 @@ function buildSuitesLiveCss(cmsCss = "") {
     SUITES_SPLITTEXT_TYPE_GUARD_CSS,
     SUITES_TERMS_STAGE_CSS,
     SUITES_COLLECTION_PANEL_CSS,
+    SUITES_EDITORIAL_CHROME_CSS,
   ].join("\n");
 }
 
@@ -68,6 +69,55 @@ function patchLogoWordmark(doc: Document) {
     el.innerHTML = `${LOGO_BORING_WORDMARK}<div class="reg">®</div>`;
   });
 }
+
+const SUITES_EDITORIAL_CHROME_CSS = `
+main .mod-scroll__section,
+main .mod-scroll__intro__copyright,
+main .mod-footer__footer__copyright {
+  font-family: "Piloner Thin", "Plus Jakarta Sans", sans-serif !important;
+  font-style: normal !important;
+  font-weight: 100 !important;
+  font-size: 0.6875rem !important;
+  line-height: 1.3 !important;
+  letter-spacing: 0.2em !important;
+  text-transform: uppercase !important;
+  color: #806b35 !important;
+  -webkit-text-fill-color: #806b35 !important;
+  text-shadow: none !important;
+}
+
+main .mod-scroll__intro__text,
+main .mod-scroll__intro__text p,
+main .mod-scroll__intro__text > p,
+main .mod-scroll__text__text,
+main .mod-scroll__text__text p {
+  font-family: "Rollgates Luxury Italic", serif !important;
+  font-style: italic !important;
+  font-weight: 400 !important;
+  font-size: clamp(0.875rem, 0.95vw, 1.0625rem) !important;
+  line-height: 1.55 !important;
+  letter-spacing: 0.02em !important;
+  color: rgb(64 55 37 / 0.82) !important;
+  -webkit-text-fill-color: rgb(64 55 37 / 0.82) !important;
+}
+
+main .mod-scroll__intro__text,
+main .mod-scroll__intro__text p,
+main .mod-scroll__intro__text > p {
+  text-align: right !important;
+  max-width: 22rem !important;
+}
+
+@media (max-width: 480px) {
+  main .mod-scroll__intro__text,
+  main .mod-scroll__intro__text p,
+  main .mod-scroll__intro__text > p {
+    text-align: left !important;
+    max-width: none !important;
+    font-size: 0.875rem !important;
+  }
+}
+`;
 
 const CLONE_MENU_HIDE_CSS = `
 html body,

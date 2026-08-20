@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import "@/app/charter-private.css";
+import "@/app/editorial-chrome.css";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { CharterRequestForm } from "@/components/pages/charter/CharterRequestForm";

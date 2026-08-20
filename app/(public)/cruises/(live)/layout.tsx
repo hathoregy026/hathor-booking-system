@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { MaskRevealBoot } from "../../mask-reveal/MaskRevealBoot";
 import "../../mask-reveal/mask-reveal.css";
 import "../../mask-reveal/cruises-intro.css";
+import "../../../editorial-chrome.css";
 
 /**
  * Cruises = short Suites-style horizontal intro + listing with filters.

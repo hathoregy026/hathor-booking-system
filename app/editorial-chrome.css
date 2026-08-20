@@ -1,0 +1,421 @@
+/* Unified editorial chrome — small labels, copyright, support copy, wordmark.
+   Homepage (`html[data-ex-experience]`) and booking flows are out of scope. */
+
+.voyages-boring,
+.about-boring,
+.contact-editorial,
+.wellness-boring,
+.cr-intro,
+.nib-dining,
+[data-charter-page],
+[data-highlights-page] {
+  --ed-gutter: 2.2rem;
+  --ed-bottom: 1.5rem;
+  --ed-meta-font: "Piloner Thin", var(--font-hathor-body), "Plus Jakarta Sans", sans-serif;
+  --ed-meta-size: 0.6875rem;
+  --ed-meta-tracking: 0.2em;
+  --ed-meta-color: #806b35;
+  --ed-copy-font: "Rollgates Luxury Italic", serif;
+  --ed-copy-size: clamp(0.875rem, 0.95vw, 1.0625rem);
+  --ed-copy-color: rgb(64 55 37 / 0.82);
+  --ed-copy-on-dark: #f6efdf;
+}
+
+/* ---------- Meta: page labels, copyright, wordmark, legal, social ---------- */
+
+.voyages-boring .vb-marker,
+.voyages-boring p.vb-marker,
+.voyages-boring .vb-copyright,
+.voyages-boring p.vb-copyright,
+.voyages-boring .vb-intro__menu,
+.voyages-boring .vb-intro__menu a,
+.voyages-boring .vb-intro__book,
+.voyages-boring .vb-intro__wordmark,
+.voyages-boring .vb-intro__wordmark span,
+.voyages-boring .vb-intro__wordmark em,
+.voyages-boring .vb-intro__wordmark strong,
+.voyages-boring .vb-epilogue__social,
+.voyages-boring .vb-epilogue__social a,
+.voyages-boring .vb-epilogue__social span,
+.voyages-boring .vb-epilogue__legal,
+.voyages-boring .vb-epilogue__legal a,
+.voyages-boring .vb-epilogue__legal span,
+.voyages-boring .vb-epilogue__title > span,
+.voyages-boring .vb-epilogue__feature > span,
+.about-boring .ab-marker,
+.about-boring p.ab-marker,
+.about-boring .ab-copyright,
+.about-boring p.ab-copyright,
+.about-boring .ab-intro__menu,
+.about-boring .ab-intro__menu a,
+.about-boring .ab-intro__wordmark,
+.about-boring .ab-intro__wordmark span,
+.about-boring .ab-intro__wordmark em,
+.about-boring .ab-intro__wordmark strong,
+.about-boring .ab-epilogue__social,
+.about-boring .ab-epilogue__social a,
+.about-boring .ab-epilogue__social span,
+.about-boring .ab-epilogue__legal,
+.about-boring .ab-epilogue__legal a,
+.about-boring .ab-epilogue__legal span,
+.about-boring .ab-epilogue__title > span,
+.about-boring .ab-epilogue__feature > span,
+.contact-editorial .ce-marker,
+.contact-editorial p.ce-marker,
+.contact-editorial .ce-copyright,
+.contact-editorial p.ce-copyright,
+.contact-editorial .ce-intro__menu,
+.contact-editorial .ce-intro__menu a,
+.contact-editorial .ce-intro__wordmark,
+.contact-editorial .ce-intro__wordmark span,
+.contact-editorial .ce-intro__wordmark em,
+.contact-editorial .ce-intro__wordmark strong,
+.contact-editorial .ce-epilogue__social,
+.contact-editorial .ce-epilogue__social a,
+.contact-editorial .ce-epilogue__social span,
+.contact-editorial .ce-epilogue__legal,
+.contact-editorial .ce-epilogue__legal a,
+.contact-editorial .ce-epilogue__legal span,
+.contact-editorial .ce-epilogue__title > span,
+.contact-editorial .ce-epilogue__feature > span,
+.wellness-boring .wb-marker,
+.wellness-boring p.wb-marker,
+.wellness-boring .wb-copyright,
+.wellness-boring p.wb-copyright,
+.wellness-boring .wb-intro__menu,
+.wellness-boring .wb-intro__menu a,
+.wellness-boring .wb-intro__wordmark,
+.wellness-boring .wb-intro__wordmark span,
+.wellness-boring .wb-intro__wordmark em,
+.wellness-boring .wb-intro__wordmark strong,
+.wellness-boring .wb-epilogue__social,
+.wellness-boring .wb-epilogue__social a,
+.wellness-boring .wb-epilogue__social span,
+.wellness-boring .wb-epilogue__legal,
+.wellness-boring .wb-epilogue__legal a,
+.wellness-boring .wb-epilogue__legal span,
+.wellness-boring .wb-epilogue__title > span,
+.wellness-boring .wb-epilogue__feature > span,
+.cr-intro .cr-intro__marker,
+.cr-intro .cr-intro__copyright,
+.cr-intro .cr-intro__menu,
+.cr-intro .cr-intro__menu a,
+.cr-intro .cr-intro__book,
+.cr-intro .cr-intro__wordmark,
+.cr-intro .cr-intro__wordmark span,
+.cr-intro .cr-intro__wordmark em,
+.cr-intro .cr-intro__wordmark strong,
+.nib-dining .nib-chapter,
+.nib-dining .nib-intro__copyright,
+.nib-dining .nib-fixed-rail,
+.nib-dining .nib-fixed-rail span,
+.nib-dining .nib-side-label,
+.nib-dining .nib-contact__eyebrow,
+.nib-dining .nib-epilogue__social,
+.nib-dining .nib-epilogue__social a,
+.nib-dining .nib-epilogue__social span,
+.nib-dining .nib-epilogue__legal,
+.nib-dining .nib-epilogue__legal a,
+.nib-dining .nib-epilogue__legal span,
+.nib-dining .nib-epilogue__feature > span,
+[data-charter-page] .lx-label,
+[data-highlights-page] .lx-label {
+  font-family: var(--ed-meta-font) !important;
+  font-style: normal !important;
+  font-weight: 100 !important;
+  font-size: var(--ed-meta-size) !important;
+  font-synthesis: none;
+  letter-spacing: var(--ed-meta-tracking) !important;
+  line-height: 1.3 !important;
+  text-transform: uppercase !important;
+  color: var(--ed-meta-color) !important;
+  -webkit-text-stroke: 0 !important;
+}
+
+.voyages-boring .vb-intro__menu a:hover,
+.voyages-boring .vb-intro__book:hover,
+.about-boring .ab-intro__menu a:hover,
+.contact-editorial .ce-intro__menu a:hover,
+.wellness-boring .wb-intro__menu a:hover,
+.cr-intro .cr-intro__menu a:hover,
+.cr-intro .cr-intro__book:hover,
+.voyages-boring .vb-epilogue__social a:hover,
+.about-boring .ab-epilogue__social a:hover,
+.contact-editorial .ce-epilogue__social a:hover,
+.wellness-boring .wb-epilogue__social a:hover,
+.nib-dining .nib-epilogue__social a:hover,
+.voyages-boring .vb-epilogue__legal a:hover,
+.about-boring .ab-epilogue__legal a:hover,
+.contact-editorial .ce-epilogue__legal a:hover,
+.wellness-boring .wb-epilogue__legal a:hover,
+.nib-dining .nib-epilogue__legal a:hover {
+  color: #b69f64 !important;
+}
+
+.voyages-boring .vb-projects-intro > .vb-marker,
+.voyages-boring .vb-last-project__copy .vb-marker,
+.about-boring .ab-projects-intro > .ab-marker,
+.about-boring .ab-last-project__copy .ab-marker,
+.wellness-boring .wb-projects-intro > .wb-marker,
+.wellness-boring .wb-last-project__copy .wb-marker,
+.contact-editorial .ce-projects-intro > .ce-marker,
+.contact-editorial .ce-last-project__copy .ce-marker {
+  color: #b69f64 !important;
+}
+
+/* ---------- Support copy: one italic serif, one size ---------- */
+
+.voyages-boring .vb-intro__body,
+.voyages-boring .vb-manifesto__body,
+.voyages-boring .vb-epilogue__contact,
+.voyages-boring .vb-epilogue__contact p,
+.voyages-boring .vb-epilogue__contact a,
+.voyages-boring .vb-epilogue__outro,
+.voyages-boring .vb-epilogue__feature p,
+.about-boring .ab-intro__body,
+.about-boring .ab-manifesto__body,
+.about-boring .ab-epilogue__contact,
+.about-boring .ab-epilogue__contact p,
+.about-boring .ab-epilogue__contact a,
+.about-boring .ab-epilogue__outro,
+.about-boring .ab-epilogue__feature p,
+.contact-editorial .ce-intro__body,
+.contact-editorial .ce-manifesto__body,
+.contact-editorial .ce-epilogue__form-lead,
+.contact-editorial .ce-epilogue__feature p,
+.wellness-boring .wb-intro__body,
+.wellness-boring .wb-manifesto__body,
+.wellness-boring .wb-epilogue__contact,
+.wellness-boring .wb-epilogue__contact p,
+.wellness-boring .wb-epilogue__contact a,
+.wellness-boring .wb-epilogue__feature p,
+.cr-intro .cr-intro__body,
+.nib-dining .nib-intro__copy {
+  font-family: var(--ed-copy-font) !important;
+  font-style: italic !important;
+  font-weight: 400 !important;
+  font-size: var(--ed-copy-size) !important;
+  letter-spacing: 0.02em !important;
+  line-height: 1.55 !important;
+  color: var(--ed-copy-color) !important;
+  text-transform: none !important;
+}
+
+.voyages-boring .vb-collage > p,
+.voyages-boring .vb-projects-intro > p:last-child,
+.voyages-boring .vb-last-project__copy > p:last-child,
+.about-boring .ab-collage > p,
+.about-boring .ab-projects-intro > p:last-child,
+.about-boring .ab-last-project__copy > p:last-child,
+.wellness-boring .wb-collage > p,
+.wellness-boring .wb-projects-intro > p:last-child,
+.wellness-boring .wb-last-project__copy > p:last-child {
+  font-family: var(--ed-copy-font) !important;
+  font-style: italic !important;
+  font-weight: 400 !important;
+  font-size: var(--ed-copy-size) !important;
+  letter-spacing: 0.02em !important;
+  line-height: 1.55 !important;
+}
+
+/* ---------- Intro frame: same gutter, same baselines ---------- */
+
+.voyages-boring .vb-intro > .vb-intro__inner > .vb-marker,
+.about-boring .ab-intro > .ab-intro__inner > .ab-marker,
+.contact-editorial .ce-intro > .ce-intro__inner > .ce-marker,
+.wellness-boring .wb-intro > .wb-intro__inner > .wb-marker,
+.cr-intro .cr-intro__marker {
+  position: absolute;
+  top: 50%;
+  left: var(--ed-gutter);
+  transform: translateY(-50%);
+  margin: 0;
+}
+
+.voyages-boring .vb-copyright,
+.about-boring .ab-copyright,
+.contact-editorial .ce-copyright,
+.wellness-boring .wb-copyright,
+.cr-intro .cr-intro__copyright {
+  position: absolute;
+  left: var(--ed-gutter);
+  bottom: var(--ed-bottom);
+  margin: 0;
+}
+
+.voyages-boring .vb-intro__body,
+.about-boring .ab-intro__body,
+.contact-editorial .ce-intro__body,
+.wellness-boring .wb-intro__body,
+.cr-intro .cr-intro__body {
+  position: absolute;
+  right: var(--ed-gutter);
+  bottom: calc(var(--ed-bottom) + 2.35rem);
+  width: min(22rem, 30vw);
+  max-width: calc(100% - (var(--ed-gutter) * 2));
+  margin: 0;
+  text-align: right;
+}
+
+.voyages-boring .vb-intro__wordmark,
+.about-boring .ab-intro__wordmark,
+.contact-editorial .ce-intro__wordmark,
+.wellness-boring .wb-intro__wordmark,
+.cr-intro .cr-intro__wordmark {
+  position: absolute;
+  right: var(--ed-gutter);
+  bottom: var(--ed-bottom);
+  display: flex;
+  align-items: baseline;
+  gap: 0.7em;
+  margin: 0;
+  transform: none !important;
+}
+
+.voyages-boring .vb-intro__wordmark span,
+.voyages-boring .vb-intro__wordmark em,
+.voyages-boring .vb-intro__wordmark strong,
+.about-boring .ab-intro__wordmark span,
+.about-boring .ab-intro__wordmark em,
+.about-boring .ab-intro__wordmark strong,
+.contact-editorial .ce-intro__wordmark span,
+.contact-editorial .ce-intro__wordmark em,
+.contact-editorial .ce-intro__wordmark strong,
+.wellness-boring .wb-intro__wordmark span,
+.wellness-boring .wb-intro__wordmark em,
+.wellness-boring .wb-intro__wordmark strong,
+.cr-intro .cr-intro__wordmark span,
+.cr-intro .cr-intro__wordmark em,
+.cr-intro .cr-intro__wordmark strong {
+  display: inline;
+  font-size: inherit !important;
+  letter-spacing: inherit !important;
+  transform: none !important;
+}
+
+.nib-dining .nib-intro .nib-chapter {
+  left: var(--ed-gutter);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.nib-dining .nib-intro__copyright {
+  left: var(--ed-gutter);
+  bottom: var(--ed-bottom);
+}
+
+.nib-dining .nib-intro__copy {
+  right: var(--ed-gutter);
+  bottom: calc(var(--ed-bottom) + 2.35rem);
+  width: min(22rem, 30vw);
+  text-align: right;
+}
+
+/* Epilogue support lines: centered, same scale */
+.voyages-boring .vb-epilogue__contact,
+.about-boring .ab-epilogue__contact,
+.wellness-boring .wb-epilogue__contact {
+  display: flex;
+  min-height: 28svh;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem var(--ed-gutter);
+  text-align: center;
+}
+
+.voyages-boring .vb-epilogue__contact p,
+.voyages-boring .vb-epilogue__contact a,
+.about-boring .ab-epilogue__contact p,
+.about-boring .ab-epilogue__contact a,
+.wellness-boring .wb-epilogue__contact p,
+.wellness-boring .wb-epilogue__contact a {
+  grid-column: auto;
+  max-width: 34rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.voyages-boring .vb-epilogue__outro,
+.about-boring .ab-epilogue__outro {
+  width: min(34rem, 82vw);
+  margin: 0 auto 6vh;
+  text-align: center;
+}
+
+.voyages-boring .vb-epilogue__social,
+.about-boring .ab-epilogue__social,
+.contact-editorial .ce-epilogue__social,
+.wellness-boring .wb-epilogue__social,
+.nib-dining .nib-epilogue__social {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.85rem;
+  margin: 0 auto 4vh;
+}
+
+@media (max-width: 1024px) {
+  .voyages-boring,
+  .about-boring,
+  .contact-editorial,
+  .wellness-boring,
+  .cr-intro,
+  .nib-dining {
+    --ed-gutter: 2rem;
+  }
+
+  .voyages-boring .vb-intro > .vb-intro__inner > .vb-marker,
+  .about-boring .ab-intro > .ab-intro__inner > .ab-marker,
+  .contact-editorial .ce-intro > .ce-intro__inner > .ce-marker,
+  .wellness-boring .wb-intro > .wb-intro__inner > .wb-marker,
+  .cr-intro .cr-intro__marker {
+    top: 7rem;
+    transform: none;
+  }
+
+  .voyages-boring .vb-intro__body,
+  .about-boring .ab-intro__body,
+  .contact-editorial .ce-intro__body,
+  .wellness-boring .wb-intro__body,
+  .cr-intro .cr-intro__body,
+  .nib-dining .nib-intro__copy {
+    width: min(30rem, 66vw);
+  }
+}
+
+@media (max-width: 480px) {
+  .voyages-boring,
+  .about-boring,
+  .contact-editorial,
+  .wellness-boring,
+  .cr-intro,
+  .nib-dining {
+    --ed-gutter: 1.25rem;
+    --ed-bottom: 1.15rem;
+    --ed-copy-size: 0.875rem;
+  }
+
+  .voyages-boring .vb-intro__body,
+  .about-boring .ab-intro__body,
+  .contact-editorial .ce-intro__body,
+  .wellness-boring .wb-intro__body,
+  .cr-intro .cr-intro__body,
+  .nib-dining .nib-intro__copy {
+    left: var(--ed-gutter);
+    right: var(--ed-gutter);
+    width: auto;
+    max-width: none;
+    bottom: calc(var(--ed-bottom) + 2.1rem);
+    text-align: left;
+  }
+
+  .voyages-boring .vb-intro__wordmark,
+  .about-boring .ab-intro__wordmark,
+  .contact-editorial .ce-intro__wordmark,
+  .wellness-boring .wb-intro__wordmark,
+  .cr-intro .cr-intro__wordmark {
+    max-width: calc(100% - (var(--ed-gutter) * 2));
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+}

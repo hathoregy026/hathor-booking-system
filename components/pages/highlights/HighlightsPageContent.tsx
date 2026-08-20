@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import Link from "next/link";
 import "@/app/immersive-voyage.css";
+import "@/app/editorial-chrome.css";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ManagedImage } from "@/components/ui/ManagedImage";
