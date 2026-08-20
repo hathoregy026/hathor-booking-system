@@ -40,6 +40,29 @@ function VoyageMedia({
   );
 }
 
+function FlipImage({
+  front,
+  back,
+  frontAlt,
+  backAlt = "",
+  className = "",
+  axis = "left",
+}: {
+  front: string;
+  back: string;
+  frontAlt: string;
+  backAlt?: string;
+  className?: string;
+  axis?: "up" | "left" | "right";
+}) {
+  return (
+    <div className={`vb-flip vb-flip--${axis} ${className}`} data-vb-flip>
+      <VoyageMedia slot={front} alt={frontAlt} className="vb-flip__base" />
+      <VoyageMedia slot={back} alt={backAlt} className="vb-flip__overlay" />
+    </div>
+  );
+}
+
 function SplitText({
   children,
   className = "",
@@ -178,16 +201,14 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                   priority
                   className="vb-image-lead__main"
                 />
-                <div className="vb-flip vb-image-lead__flip">
-                  <VoyageMedia
-                    slot="home-voyage-3n-aswan-luxor"
-                    alt="Aswan to Luxor voyage"
-                  />
-                  <VoyageMedia
-                    slot="home-voyage-4n-luxor-aswan"
-                    alt="Luxor to Aswan voyage"
-                  />
-                </div>
+                <FlipImage
+                  className="vb-image-lead__flip"
+                  axis="left"
+                  front="home-voyage-3n-aswan-luxor"
+                  back="home-voyage-4n-luxor-aswan"
+                  frontAlt="Aswan to Luxor voyage"
+                  backAlt="Luxor to Aswan voyage"
+                />
               </Scene>
 
               <Scene className="vb-manifesto">
@@ -201,26 +222,22 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
               </Scene>
 
               <Scene className="vb-collage">
-                <div className="vb-collage__tile vb-collage__tile--one vb-flip">
-                  <VoyageMedia
-                    slot="home-voyage-nile-majesty"
-                    alt="Nile Majesty private charter"
-                  />
-                  <VoyageMedia
-                    slot="highlights-lifestyle"
-                    alt="Life aboard Hathor"
-                  />
-                </div>
-                <div className="vb-collage__tile vb-collage__tile--two vb-flip">
-                  <VoyageMedia
-                    slot="home-voyage-4n-luxor-aswan"
-                    alt="Classic Nile voyage"
-                  />
-                  <VoyageMedia
-                    slot="home-cinematic-still"
-                    alt="Hathor on the river"
-                  />
-                </div>
+                <FlipImage
+                  className="vb-collage__tile vb-collage__tile--one"
+                  axis="up"
+                  front="home-voyage-nile-majesty"
+                  back="highlights-lifestyle"
+                  frontAlt="Nile Majesty private charter"
+                  backAlt="Life aboard Hathor"
+                />
+                <FlipImage
+                  className="vb-collage__tile vb-collage__tile--two"
+                  axis="right"
+                  front="home-voyage-4n-luxor-aswan"
+                  back="home-cinematic-still"
+                  frontAlt="Classic Nile voyage"
+                  backAlt="Hathor on the river"
+                />
                 <p>{VOYAGES_PAGE.opening.body[1]}</p>
               </Scene>
 
@@ -235,20 +252,22 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
               </Scene>
 
               <Scene className="vb-image-pair">
-                <div className="vb-flip vb-image-pair__left">
-                  <VoyageMedia
-                    slot="home-voyage-3n-aswan-luxor"
-                    alt="Aswan departure"
-                  />
-                  <VoyageMedia
-                    slot="home-call-to-action"
-                    alt="Deck on the Nile"
-                  />
-                </div>
-                <div className="vb-flip vb-image-pair__right">
-                  <VoyageMedia slot="gastronomy-table" alt="Dining on the Nile" />
-                  <VoyageMedia slot="room-royal" alt="Royal Suite aboard Hathor" />
-                </div>
+                <FlipImage
+                  className="vb-image-pair__left"
+                  axis="left"
+                  front="home-voyage-3n-aswan-luxor"
+                  back="home-call-to-action"
+                  frontAlt="Aswan departure"
+                  backAlt="Deck on the Nile"
+                />
+                <FlipImage
+                  className="vb-image-pair__right"
+                  axis="right"
+                  front="gastronomy-table"
+                  back="room-royal"
+                  frontAlt="Dining on the Nile"
+                  backAlt="Royal Suite aboard Hathor"
+                />
               </Scene>
 
               <Scene className="vb-principles" id="itineraries">
@@ -314,9 +333,16 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                   <VoyageMedia
                     slot="gastronomy-restaurant"
                     alt="Dining aboard Hathor"
+                    className="vb-last-project__main"
                   />
-                  <VoyageMedia slot="highlights-lifestyle" alt="Deck living" />
-                  <VoyageMedia slot="room-royal" alt="Suite rest after shore days" />
+                  <FlipImage
+                    className="vb-last-project__stack"
+                    axis="left"
+                    front="highlights-lifestyle"
+                    back="room-royal"
+                    frontAlt="Deck living"
+                    backAlt="Suite rest after shore days"
+                  />
                   <Link href="/gastronomy" className="vb-last-project__link">
                     <span>↗</span> Explore Dining
                   </Link>
@@ -333,16 +359,14 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
               </Scene>
 
               <Scene className="vb-closing">
-                <div className="vb-flip vb-closing__media">
-                  <VoyageMedia
-                    slot="home-voyage-nile-majesty"
-                    alt="Nile Majesty charter"
-                  />
-                  <VoyageMedia
-                    slot="home-voyage-7n-roundtrip"
-                    alt="Seven-night Nile round trip"
-                  />
-                </div>
+                <FlipImage
+                  className="vb-closing__media"
+                  axis="up"
+                  front="home-voyage-nile-majesty"
+                  back="home-voyage-7n-roundtrip"
+                  frontAlt="Nile Majesty charter"
+                  backAlt="Seven-night Nile round trip"
+                />
               </Scene>
             </div>
           </div>

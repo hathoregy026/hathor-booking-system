@@ -4,6 +4,11 @@ import { useEffect, type RefObject } from "react";
 
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
 
+const smootherstep = (edge0: number, edge1: number, value: number) => {
+  const t = clamp((value - edge0) / Math.max(0.0001, edge1 - edge0));
+  return t * t * t * (t * (t * 6 - 15) + 10);
+};
+
 type VoyagesBoringScrollRefs = {
   rootRef: RefObject<HTMLDivElement | null>;
   runRef: RefObject<HTMLElement | null>;
@@ -28,6 +33,7 @@ export function useVoyagesEditorialFlow({
     const html = document.documentElement;
     const progressBar = root.querySelector<HTMLElement>("[data-vb-progress]");
     const scenes = [...root.querySelectorAll<HTMLElement>(".vb-scene")];
+    const flips = [...root.querySelectorAll<HTMLElement>("[data-vb-flip]")];
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     let desktop = false;
     let travel = 0;
@@ -38,6 +44,25 @@ export function useVoyagesEditorialFlow({
     let lastWidth = window.innerWidth;
 
     html.setAttribute("data-voyages-boring", "");
+
+    // NIB setFlips: each stacked pair wipes in its own window
+    // (start when the frame is on screen, complete after ~0.75vw), not from scene progress.
+    const applyFlips = (mode: "horizontal" | "vertical") => {
+      const viewportX = window.innerWidth;
+      const viewportY = window.innerHeight;
+      flips.forEach((el) => {
+        if (reduced.matches) {
+          el.style.setProperty("--vb-flip", "1");
+          return;
+        }
+        const rect = el.getBoundingClientRect();
+        const local =
+          mode === "horizontal"
+            ? clamp((viewportX - rect.left) / Math.max(1, viewportX + rect.width))
+            : clamp((viewportY - rect.top) / Math.max(1, viewportY + rect.height));
+        el.style.setProperty("--vb-flip", smootherstep(0.18, 0.72, local).toFixed(4));
+      });
+    };
 
     const applySceneVars = (x: number) => {
       const viewport = window.innerWidth;
@@ -54,6 +79,7 @@ export function useVoyagesEditorialFlow({
         scene.style.setProperty("--scene-progress", parallax.toFixed(4));
         scene.style.setProperty("--focus", Math.max(0, focus).toFixed(4));
       });
+      applyFlips("horizontal");
     };
 
     const applyVerticalVars = () => {
@@ -69,6 +95,7 @@ export function useVoyagesEditorialFlow({
         scene.style.setProperty("--scene-progress", progress.toFixed(4));
         scene.style.setProperty("--focus", Math.max(0, focus).toFixed(4));
       });
+      applyFlips("vertical");
     };
 
     const measure = () => {
