@@ -84,8 +84,16 @@
 }
 
 /* ——— Opening ——— */
+html:has([data-voyages-page]),
+html:has([data-voyages-page]) body,
+html:has([data-voyages-page]) .public-site,
+html:has([data-voyages-page]) .public-main {
+  background-color: #ece8df;
+}
+
 .voy-opening {
-  padding: clamp(4rem, 9vw, 7.5rem) 0 clamp(3rem, 6vw, 5rem);
+  padding: calc(5.5rem + clamp(1.25rem, 4vw, 2.75rem)) 0
+    clamp(3rem, 6vw, 5rem);
   background: var(--voy-cream);
 }
 
@@ -519,6 +527,10 @@
 
 /* ——— Phone ——— */
 @media (max-width: 480px) {
+  .voy-opening {
+    padding-top: calc(6.25rem + 1.1rem);
+  }
+
   .voy-chapter {
     height: 165svh;
   }

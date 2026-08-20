@@ -5,7 +5,6 @@ import Link from "next/link";
 import "@/app/voyages-page.css";
 import "@/app/immersive-voyage.css";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
-import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import {
   useTypographyInlineStyle,
@@ -39,14 +38,6 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
   const total = voyages.length;
 
   return (
-    <PageScrollTransition
-      title={VOYAGES_PAGE.hero.title}
-      secondTitle={VOYAGES_PAGE.hero.secondTitle}
-      subtitle={VOYAGES_PAGE.hero.subtitle}
-      breadcrumb="Voyages"
-      imageName="home-voyage-7n-roundtrip"
-      imageAlt="Hathor voyages on the Nile"
-    >
       <div ref={rootRef} className="venetian-page lux-page" data-voyages-page="">
         {/* Opening editorial */}
         <section className="voy-opening" aria-labelledby="voy-opening-title">
@@ -403,6 +394,5 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
           </div>
         </section>
       </div>
-    </PageScrollTransition>
   );
 }
