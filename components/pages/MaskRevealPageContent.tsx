@@ -3,7 +3,7 @@
 import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
-import { CruisesMosaicHero } from "@/components/pages/CruisesMosaicHero";
+import { CruisesIntroHero } from "@/components/pages/CruisesIntroHero";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { useMaskRevealStickyFilters } from "@/hooks/useMaskRevealStickyFilters";
@@ -457,7 +457,7 @@ export function MaskRevealPageContent() {
 
   return (
     <div className="mask-reveal-page">
-      <CruisesMosaicHero />
+      <CruisesIntroHero />
       <div className="mr-shell" id="cruises-listing">
         <div className="mr-mobile-bar">
           <button

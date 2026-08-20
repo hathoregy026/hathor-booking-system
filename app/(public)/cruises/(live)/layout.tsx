@@ -1,9 +1,10 @@
 import type { ReactNode } from "react";
 import { MaskRevealBoot } from "../../mask-reveal/MaskRevealBoot";
 import "../../mask-reveal/mask-reveal.css";
+import "../../mask-reveal/cruises-intro.css";
 
 /**
- * Cruises = mask-reveal listing experience + Suites mosaic hero.
+ * Cruises = short Suites-style horizontal intro + listing with filters.
  * Native scroll (via MaskRevealBoot) keeps sticky filters working.
  */
 const CRUISES_BOOT = `(function(){try{var d=document.documentElement,b=document.body;d.setAttribute("data-mask-reveal","");b.style.backgroundColor="#ece8df";}catch(e){}})();`;
