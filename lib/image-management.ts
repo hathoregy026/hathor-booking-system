@@ -4,6 +4,10 @@ import { prisma } from "@/lib/prisma";
 import { withDb } from "@/lib/db-safe";
 import { getSiteImageSlot } from "@/lib/site-image-slots";
 import { deleteWebsiteImageByUrl } from "@/lib/website-image-storage";
+import {
+  SITE_IMAGE_CLEARED_SRC,
+  canHideSiteImageOnClear,
+} from "@/lib/site-image-url";
 
 const siteImageSchema = z.object({
   name: z
@@ -129,7 +133,7 @@ export async function deleteSiteImage(id: string) {
 
 export type SiteImageBulkItem = {
   name: string;
-  /** Empty / whitespace → reset slot to seeded default and delete prior upload. */
+  /** Empty / whitespace → hide dining plates, or reset other slots to the seeded default. */
   url: string;
   altText: string;
 };
@@ -152,8 +156,11 @@ export async function upsertSiteImagesBulk(items: SiteImageBulkItem[]) {
     const nextUrl = item.url.trim();
     const nextAlt = item.altText.trim() || slot.altText;
 
-    /* Clear / reset → default slot asset + delete prior upload */
+    /* Clear: dining plates stay hidden; other slots reset to the seeded default. */
     if (!nextUrl) {
+      const clearedUrl = canHideSiteImageOnClear(slot.name)
+        ? SITE_IMAGE_CLEARED_SRC
+        : slot.url;
       if (existing) {
         /* Don't block the response on storage cleanup */
         void deleteWebsiteImageByUrl(existing.url);
@@ -161,13 +168,28 @@ export async function upsertSiteImagesBulk(items: SiteImageBulkItem[]) {
           prisma.siteImage.update({
             where: { id: existing.id },
             data: {
-              url: slot.url,
+              url: clearedUrl,
               altText: nextAlt,
               isActive: true,
             },
           }),
         );
         results.push(updated);
+      } else if (canHideSiteImageOnClear(slot.name)) {
+        const created = await withDb(() =>
+          prisma.siteImage.create({
+            data: {
+              name: slot.name,
+              altText: nextAlt,
+              url: SITE_IMAGE_CLEARED_SRC,
+              category: slot.category,
+              pagePath: slot.pagePath,
+              displayOrder: slot.displayOrder,
+              isActive: true,
+            },
+          }),
+        );
+        results.push(created);
       }
       continue;
     }

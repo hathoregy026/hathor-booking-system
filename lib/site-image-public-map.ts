@@ -11,6 +11,11 @@ import {
   type SiteImageMap,
 } from "@/lib/resolve-site-images";
 import { isSafeLandmarkCmsOverride } from "@/lib/landmark-image-safety";
+import {
+  SITE_IMAGE_CLEARED_SRC,
+  canHideSiteImageOnClear,
+  isSiteImageClearedSrc,
+} from "@/lib/site-image-url";
 
 /** SiteSetting key — v2 avoids a TOAST-stuck legacy row that hung full SELECT/UPDATE. */
 export const SITE_IMAGE_PUBLIC_MAP_KEY = "site-image-public-map-v2";
@@ -90,11 +95,20 @@ export function buildSiteImageOverridesMap(
 ): StoredSiteImagePublicMap {
   const overrides: StoredSiteImagePublicMap = {};
   for (const record of records) {
-    if (!shouldUseDatabaseSiteImageUrl(record.url)) continue;
-    if (!isSafeLandmarkCmsOverride(record.name, record.url)) continue;
     const slot = getSiteImageSlot(record.name);
     const fallbackAlt = slot?.altText || record.name;
     const alt = (record.altText || fallbackAlt).slice(0, 120);
+
+    if (
+      canHideSiteImageOnClear(record.name) &&
+      isSiteImageClearedSrc(record.url)
+    ) {
+      overrides[record.name] = { src: SITE_IMAGE_CLEARED_SRC, alt };
+      continue;
+    }
+
+    if (!shouldUseDatabaseSiteImageUrl(record.url)) continue;
+    if (!isSafeLandmarkCmsOverride(record.name, record.url)) continue;
     /*
      * Persist remote CMS uploads (including Supabase storage) and any URL that
      * differs from the slot default. Skip identical /media defaults so the
@@ -125,6 +139,20 @@ export function storedMapToSiteImageMap(
   if (!stored || typeof stored !== "object") return map;
   for (const [name, value] of Object.entries(stored)) {
     if (!value || typeof value.src !== "string") continue;
+    if (
+      canHideSiteImageOnClear(name) &&
+      isSiteImageClearedSrc(value.src)
+    ) {
+      const slot = getSiteImageSlot(name);
+      map[name] = {
+        src: "",
+        alt:
+          typeof value.alt === "string" && value.alt
+            ? value.alt
+            : slot?.altText || name,
+      };
+      continue;
+    }
     if (!shouldUseDatabaseSiteImageUrl(value.src)) continue;
     if (!isSafeLandmarkCmsOverride(name, value.src)) continue;
     const slot = getSiteImageSlot(name);
@@ -174,6 +202,11 @@ export function parseStoredSiteImageMap(raw: unknown): StoredSiteImagePublicMap 
   )) {
     /* Compact form: { "slot": "https://..." } */
     if (typeof entry === "string") {
+      if (canHideSiteImageOnClear(name) && isSiteImageClearedSrc(entry)) {
+        const slot = getSiteImageSlot(name);
+        out[name] = { src: SITE_IMAGE_CLEARED_SRC, alt: slot?.altText ?? name };
+        continue;
+      }
       if (!shouldUseDatabaseSiteImageUrl(entry)) continue;
       if (!isSafeLandmarkCmsOverride(name, entry)) continue;
       const slot = getSiteImageSlot(name);
@@ -183,7 +216,19 @@ export function parseStoredSiteImageMap(raw: unknown): StoredSiteImagePublicMap 
     if (!entry || typeof entry !== "object") continue;
     const src = (entry as { src?: unknown }).src;
     const alt = (entry as { alt?: unknown }).alt;
-    if (typeof src !== "string" || !shouldUseDatabaseSiteImageUrl(src)) continue;
+    if (typeof src !== "string") continue;
+    if (canHideSiteImageOnClear(name) && isSiteImageClearedSrc(src)) {
+      const slot = getSiteImageSlot(name);
+      out[name] = {
+        src: SITE_IMAGE_CLEARED_SRC,
+        alt:
+          typeof alt === "string" && alt
+            ? alt
+            : slot?.altText ?? name,
+      };
+      continue;
+    }
+    if (!shouldUseDatabaseSiteImageUrl(src)) continue;
     if (!isSafeLandmarkCmsOverride(name, src)) continue;
     const slot = getSiteImageSlot(name);
     out[name] = {

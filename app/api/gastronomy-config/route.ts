@@ -8,6 +8,7 @@ import {
   type GastronomyTypography,
 } from "@/lib/gastronomy-typography";
 import { SITE_IMAGE_SLOTS } from "@/lib/site-image-slots";
+import { publicSiteImageSrc } from "@/lib/site-image-url";
 import {
   DEFAULT_TYPOGRAPHY_SETTINGS,
   getTypographySettingsMobileSafe,
@@ -62,7 +63,7 @@ export async function GET() {
         ...Object.fromEntries(
           images
             .filter((image) => !image.name.startsWith("gastronomy-"))
-            .map((image) => [image.name, image.url]),
+            .map((image) => [image.name, publicSiteImageSrc(image.name, image.url)]),
         ),
       },
       css: gastronomyTypographyToCss(desktop),

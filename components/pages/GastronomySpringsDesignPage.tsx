@@ -96,6 +96,7 @@ function Plate({
 }) {
   const slotName = diningPlateSlotName(number);
   const image = useSiteImage(slotName);
+  if (!image.src.trim()) return null;
   return (
     <figure
       className={`nib-plate nib-plate--${number} ${className}`}

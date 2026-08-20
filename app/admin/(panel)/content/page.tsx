@@ -12,6 +12,9 @@ import {
 } from "@/lib/site-image-admin";
 import { getSiteImageSlot } from "@/lib/site-image-slots";
 import {
+  publicSiteImageSrc,
+} from "@/lib/site-image-url";
+import {
   DEFAULT_WHEEL_STAGE_SETTINGS,
   isWheelStageSettingsEqual,
   parseWheelStageSettings,
@@ -47,7 +50,9 @@ function buildSiteImageForm(
       form[item.name] = {
         name: item.name,
         label: item.label,
-        url: record?.url ?? slot?.url ?? "",
+        url: record
+          ? publicSiteImageSrc(item.name, record.url)
+          : (slot?.url ?? ""),
         altText: record?.altText ?? slot?.altText ?? item.defaultAlt,
       };
     }

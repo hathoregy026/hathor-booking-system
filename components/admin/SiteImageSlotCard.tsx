@@ -10,6 +10,7 @@ import {
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import type { SiteImageAdminItem } from "@/lib/site-image-admin";
 import { getSiteImageSlot } from "@/lib/site-image-slots";
+import { canHideSiteImageOnClear, publicSiteImageSrc } from "@/lib/site-image-url";
 
 type SiteImageSlotCardProps = {
   item: SiteImageAdminItem;
@@ -45,12 +46,13 @@ export function SiteImageSlotCard({
   onOpacityCommit,
   opacitySaving = false,
 }: SiteImageSlotCardProps) {
-  const hasImage = Boolean(url?.trim());
+  const displayUrl = publicSiteImageSrc(item.name, url);
+  const hasImage = Boolean(displayUrl);
   const slotDefaultUrl = getSiteImageSlot(item.name)?.url?.trim() || "";
   const [altOpen, setAltOpen] = useState(false);
   const [thumbBroken, setThumbBroken] = useState(false);
   const [localPreview, setLocalPreview] = useState<string | null>(null);
-  const [remoteSrc, setRemoteSrc] = useState(url);
+  const [remoteSrc, setRemoteSrc] = useState(displayUrl);
   const [usedFallback, setUsedFallback] = useState(false);
   const [syncedUrl, setSyncedUrl] = useState(url);
   const retryRef = useRef(0);
@@ -62,7 +64,7 @@ export function SiteImageSlotCard({
     setSyncedUrl(url);
     setThumbBroken(false);
     setUsedFallback(false);
-    setRemoteSrc(url);
+    setRemoteSrc(publicSiteImageSrc(item.name, url));
   }
 
   useEffect(() => {
@@ -136,6 +138,7 @@ export function SiteImageSlotCard({
     /* CMS URL failed — try the built-in slot default so the card isn't blank */
     if (
       !usedFallback &&
+      !canHideSiteImageOnClear(item.name) &&
       slotDefaultUrl &&
       slotDefaultUrl !== url.trim()
     ) {
@@ -226,7 +229,7 @@ export function SiteImageSlotCard({
           <div className="vcc-card__replace">
             <ImageUpload
               label="Upload / Replace"
-              value={url || null}
+              value={displayUrl || null}
               onChange={(nextUrl, meta) => {
                 retryRef.current = 0;
                 setThumbBroken(false);
