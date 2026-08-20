@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import { PageUnderConstruction } from "@/components/public/PageUnderConstruction";
-import { PageVisibilityProvider } from "@/components/public/PageVisibilityProvider";
 import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
 import { SiteComingSoon } from "@/components/public/SiteComingSoon";
 import {
@@ -40,22 +39,18 @@ export async function StandalonePageVisibilityShell({
   }
 
   const effectiveVisibility = await resolvePageVisibilityForRequest(settings);
-  const gated = (
-    <PageVisibilityProvider settings={effectiveVisibility}>
-      {!isPageLive(path, effectiveVisibility) ? (
-        <PublicThemeProvider>
-          <div className="public-site hathor-site hathor-page-construction--shell">
-            <PublicNavbar />
-            <main className="public-main public-main--hero">
-              <PageUnderConstruction />
-            </main>
-          </div>
-        </PublicThemeProvider>
-      ) : (
-        children
-      )}
-    </PageVisibilityProvider>
-  );
+  if (!isPageLive(path, effectiveVisibility)) {
+    return (
+      <PublicThemeProvider>
+        <div className="public-site hathor-site hathor-page-construction--shell">
+          <PublicNavbar />
+          <main className="public-main public-main--hero">
+            <PageUnderConstruction />
+          </main>
+        </div>
+      </PublicThemeProvider>
+    );
+  }
 
-  return gated;
+  return <>{children}</>;
 }

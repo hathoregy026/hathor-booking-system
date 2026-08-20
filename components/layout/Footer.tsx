@@ -4,10 +4,8 @@ import Link from "next/link";
 import { useEffect, useRef, type ReactNode } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { usePageVisibilitySettings } from "@/components/public/PageVisibilityProvider";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { PUBLIC_SOCIAL_LINKS } from "@/lib/public-social";
-import { isPageLive } from "@/lib/page-visibility-shared";
 import { FooterSubscribe } from "@/components/layout/FooterSubscribe";
 
 /** Resolve live theme tokens so hover motion stays on-brand. */
@@ -232,22 +230,9 @@ function FooterNavLink({
   );
 }
 
-function visibleFooterLinks<T extends { href: string }>(
-  links: readonly T[],
-  settings: ReturnType<typeof usePageVisibilitySettings>,
-): T[] {
-  return links.filter((link) => {
-    if (!link.href.startsWith("/") || link.href.startsWith("//")) return true;
-    return isPageLive(link.href, settings);
-  });
 }
 
 export function Footer({ showTopCta = true }: { showTopCta?: boolean }) {
-  const pageVisibility = usePageVisibilitySettings();
-  const suitesLinks = visibleFooterLinks(SUITES_LINKS, pageVisibility);
-  const voyageLinks = visibleFooterLinks(VOYAGE_LINKS, pageVisibility);
-  const experienceLinks = visibleFooterLinks(EXPERIENCE_LINKS, pageVisibility);
-  const infoLinks = visibleFooterLinks(INFO_LINKS, pageVisibility);
   const rootRef = useRef<HTMLElement>(null);
   const year = new Date().getFullYear();
 
@@ -424,50 +409,43 @@ export function Footer({ showTopCta = true }: { showTopCta?: boolean }) {
               </p>
             </div>
 
-            {suitesLinks.length > 0 ? (
             <div className="lux-footer__col">
               <p className="lux-footer__col-title">Suites</p>
               <ul className="lux-footer__links">
-                {suitesLinks.map((link) => (
+                {SUITES_LINKS.map((link) => (
                   <li key={link.label}>
                     <FooterNavLink href={link.href} label={link.label} />
                   </li>
                 ))}
               </ul>
             </div>
-            ) : null}
 
-            {voyageLinks.length > 0 ? (
             <div className="lux-footer__col">
               <p className="lux-footer__col-title">Voyages</p>
               <ul className="lux-footer__links">
-                {voyageLinks.map((link) => (
+                {VOYAGE_LINKS.map((link) => (
                   <li key={link.label}>
                     <FooterNavLink href={link.href} label={link.label} />
                   </li>
                 ))}
               </ul>
             </div>
-            ) : null}
 
-            {experienceLinks.length > 0 ? (
             <div className="lux-footer__col">
               <p className="lux-footer__col-title">Experiences</p>
               <ul className="lux-footer__links">
-                {experienceLinks.map((link) => (
+                {EXPERIENCE_LINKS.map((link) => (
                   <li key={link.label}>
                     <FooterNavLink href={link.href} label={link.label} />
                   </li>
                 ))}
               </ul>
             </div>
-            ) : null}
 
-            {infoLinks.length > 0 ? (
             <div className="lux-footer__col">
               <p className="lux-footer__col-title">Concierge</p>
               <ul className="lux-footer__links">
-                {infoLinks.map((link) => (
+                {INFO_LINKS.map((link) => (
                   <li key={link.label}>
                     <FooterNavLink
                       href={link.href}
@@ -478,7 +456,6 @@ export function Footer({ showTopCta = true }: { showTopCta?: boolean }) {
                 ))}
               </ul>
             </div>
-            ) : null}
 
             <div className="lux-footer__col">
               <p className="lux-footer__col-title">Follow the Voyage</p>
