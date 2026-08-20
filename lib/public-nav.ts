@@ -1,3 +1,8 @@
+import {
+  isPageLive,
+  type PageVisibilitySettings,
+} from "@/lib/page-visibility-shared";
+
 /** Public navigation structure — editorial labels, four dropdown groups. */
 
 export type NavLink = {
@@ -41,13 +46,8 @@ export const NAV_SUITES: NavGroup = {
 
 export const NAV_CRUISES: NavGroup = {
   id: "cruises",
-  label: "Voyages",
+  label: "Cruises",
   links: [
-    {
-      href: "/voyages",
-      label: "Our Voyages",
-      description: "Private dahabiya itineraries on the Nile",
-    },
     {
       href: "/cruises",
       label: "Scheduled Voyages",
@@ -57,6 +57,11 @@ export const NAV_CRUISES: NavGroup = {
       href: "/charter",
       label: "Private Charter",
       description: "The Dahabiya, yours alone",
+    },
+    {
+      href: "/voyages",
+      label: "Our Voyages",
+      description: "Private dahabiya itineraries on the Nile",
     },
   ],
 };
@@ -124,8 +129,9 @@ export const EXPLORE_LINKS: NavLink[] = [
   { href: "/luxury-cabins-Nile-Cruise", label: "Luxury Rooms" },
   { href: "/rooms", label: "Luxury Suites" },
   { href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise", label: "Royal Suites" },
-  { href: "/voyages", label: "Our Voyages" },
   { href: "/cruises", label: "Scheduled Voyages" },
+  { href: "/charter", label: "Private Charter" },
+  { href: "/voyages", label: "Our Voyages" },
   { href: "/highlights", label: "Highlights" },
   { href: "/wellness", label: "Wellness & Spa" },
   { href: "/gastronomy", label: "Dining" },
@@ -162,7 +168,7 @@ export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
     type: "group",
     id: NAV_CRUISES.id,
     label: NAV_CRUISES.label,
-    href: "/voyages",
+    href: "/cruises",
     links: NAV_CRUISES.links,
   },
   {
@@ -205,6 +211,59 @@ export function navHrefMatches(pathname: string, href: string): boolean {
       (alias) => pathname === alias || pathname.startsWith(`${alias}/`),
     ) ?? false
   );
+}
+
+/**
+ * Drop dashboard-off destinations from the public nav.
+ * Work hosts (Vercel / localhost) pass all-live settings, so the full menu stays.
+ */
+export function filterNavItemsForVisibility(
+  items: readonly HeaderNavItem[],
+  settings: PageVisibilitySettings,
+): HeaderNavItem[] {
+  const visible: HeaderNavItem[] = [];
+
+  for (const item of items) {
+    if (item.type === "link") {
+      if (isPageLive(item.href, settings)) {
+        visible.push(item);
+      }
+      continue;
+    }
+
+    const liveLinks = item.links.filter((link) =>
+      isPageLive(link.href, settings),
+    );
+    const landingLive = isPageLive(item.href, settings);
+
+    if (!landingLive && liveLinks.length === 0) {
+      continue;
+    }
+
+    if (landingLive && liveLinks.length === 0) {
+      visible.push({ type: "link", href: item.href, label: item.label });
+      continue;
+    }
+
+    visible.push({
+      ...item,
+      href: landingLive ? item.href : liveLinks[0]!.href,
+      links: liveLinks,
+    });
+  }
+
+  return visible;
+}
+
+export function splitHeaderNavItems(items: readonly HeaderNavItem[]): {
+  left: HeaderNavItem[];
+  right: HeaderNavItem[];
+} {
+  const mid = Math.ceil(items.length / 2);
+  return {
+    left: items.slice(0, mid),
+    right: items.slice(mid),
+  };
 }
 
 /** @deprecated Use HEADER_NAV_ITEMS */
