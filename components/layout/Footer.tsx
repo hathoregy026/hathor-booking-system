@@ -230,8 +230,6 @@ function FooterNavLink({
   );
 }
 
-}
-
 export function Footer({ showTopCta = true }: { showTopCta?: boolean }) {
   const rootRef = useRef<HTMLElement>(null);
   const year = new Date().getFullYear();
