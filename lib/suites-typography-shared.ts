@@ -97,22 +97,19 @@ const BODY_COLOR_SELECTORS = [
  */
 export const SUITES_SPLITTEXT_TYPE_GUARD_CSS = `
 main .mod-scroll__images-text__text,
-main .mod-scroll__images-text__text p,
-main .mod-scroll__images-text__text p :is(div, span) {
+main .mod-scroll__images-text__text > p {
   font-size: var(--titulo-xl) !important;
   line-height: var(--titulo-xl-lh) !important;
   letter-spacing: normal !important;
 }
 main .mod-scroll__intro__text,
-main .mod-scroll__intro__text p,
-main .mod-scroll__intro__text p :is(.splitline, .splitline span, div, span) {
+main .mod-scroll__intro__text > p {
   font-size: var(--parrafo) !important;
   line-height: var(--parrafo-lh) !important;
   letter-spacing: normal !important;
 }
 main .mod-scroll__text__text,
-main .mod-scroll__text__text p,
-main .mod-scroll__text__text p :is(.line, .line span, div, span) {
+main .mod-scroll__text__text > p {
   font-size: var(--parrafo) !important;
   line-height: var(--parrafo-lh) !important;
   letter-spacing: normal !important;

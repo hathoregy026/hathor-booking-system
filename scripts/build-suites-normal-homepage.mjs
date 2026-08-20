@@ -370,7 +370,7 @@ if (!$("#hathor-intro-logo-wordmark").length) {
 })();
 </script>`);
 }
-$("#preloader-js-js").attr("src", "scripts/preloader.js?v=hathor-wordmark-20260820d");
+$("#preloader-js-js").attr("src", "scripts/preloader.js?v=hathor-restore-motion-20260820");
 if (!$("#hathor-logo-wordmark").length) {
   $("#preloader-js-js").before(`<script id="hathor-logo-wordmark">
 (function () {

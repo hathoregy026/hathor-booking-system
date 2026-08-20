@@ -7,13 +7,11 @@ const htmlPath = path.resolve(
   "public/suites-normal/index.html",
 );
 
-const FREEZE_GUARD = `<script id="hathor-freeze-guard">(function(){var O=window.MutationObserver;if(!O)return;function G(cb){var obs=new O(cb);var n=obs.observe.bind(obs);obs.observe=function(t,o){if(t&&o&&o.subtree&&(t===document.documentElement||t===document.body||t.tagName==="HTML"||t.tagName==="BODY"))return;return n(t,o);};return obs;}G.prototype=O.prototype;window.MutationObserver=G;})();</script>`;
-
 export function stripSuitesFreezeScripts(html) {
-  let next = html;
-  if (!next.includes('id="hathor-freeze-guard"')) {
-    next = next.replace("<head>", `<head>${FREEZE_GUARD}`);
-  }
+  let next = html.replace(
+    /<script id="hathor-freeze-guard">[\s\S]*?<\/script>/i,
+    "",
+  );
   next = next.replace(
     /<script id="cookie-law-info-js-extra">[\s\S]*?<\/script>\s*/i,
     "",

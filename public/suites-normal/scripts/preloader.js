@@ -104,8 +104,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     }, 50);
 
-    //loadComplete
+    window.setTimeout(() => {
+        if (fake_progress < 100) fake_progress = 100;
+        if (porcentLoad < 100) porcentLoad = 100;
+        loaderAnim_end = true;
+        loadComplete();
+    }, 4000);
+
+    let loadCompleteOnce = false;
     const loadComplete = () => {
+        if (loadCompleteOnce) return;
+        loadCompleteOnce = true;
 
         if(control) console.log('loadComplete');
         
