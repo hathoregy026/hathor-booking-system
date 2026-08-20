@@ -68,8 +68,13 @@ export const NAV_CRUISES: NavGroup = {
 
 export const NAV_EXPERIENCES: NavGroup = {
   id: "experiences",
-  label: "Experiences",
+  label: "Voyages",
   links: [
+    {
+      href: "/voyages",
+      label: "Our Voyages",
+      description: "Private dahabiya itineraries on the Nile",
+    },
     {
       href: "/highlights",
       label: "Highlights",
@@ -171,12 +176,11 @@ export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
     href: "/cruises",
     links: NAV_CRUISES.links,
   },
-  { type: "link", href: "/voyages", label: "Voyages" },
   {
     type: "group",
     id: NAV_EXPERIENCES.id,
     label: NAV_EXPERIENCES.label,
-    href: "/highlights",
+    href: "/voyages",
     links: NAV_EXPERIENCES.links,
   },
   {
