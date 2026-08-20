@@ -16,21 +16,27 @@ function patchHathorLogoWordmark() {
 
 document.addEventListener('DOMContentLoaded', () => {
 
+    try {
+        gsap.set('body',{opacity:1});
+        gsap.set('main',{opacity:1});
+    } catch (err) {}
+
     ///ANIM PRECHARGE
     ///ANIM PRECHARGE
     ///ANIM PRECHARGE
     let loaderAnim_end = false;
 
+    try {
     patchHathorLogoWordmark();
 
     //anima logo
-    const split_normal = SplitText.create(header_logo_normal, {type: "chars,lines", charsClass: "char"})
-    const split_is = SplitText.create('.header .logo__is', {type: "chars",charsClass: "char"})
-    const split_boring = SplitText.create('.header .logo__boring', {type: "chars",charsClass: "char"})
+    const split_normal = header_logo_normal ? SplitText.create(header_logo_normal, {type: "chars,lines", charsClass: "char"}) : null
+    const split_is = document.querySelector('.header .logo__is') ? SplitText.create('.header .logo__is', {type: "chars",charsClass: "char"}) : null
+    const split_boring = document.querySelector('.header .logo__boring') ? SplitText.create('.header .logo__boring', {type: "chars",charsClass: "char"}) : null
     const split_intro_boring = document.querySelector('.mod-scroll__intro__logo .logo__boring')
         ? SplitText.create('.mod-scroll__intro__logo .logo__boring', {type: "chars", charsClass: "char"})
         : null;
-    header_logo.querySelectorAll('.char').forEach(elem => {
+    header_logo?.querySelectorAll('.char').forEach(elem => {
         const content = elem.innerHTML;
         elem.innerHTML = '<span>'+content+'</span>';
     })
@@ -38,6 +44,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const content = elem.innerHTML;
         elem.innerHTML = '<span>'+content+'</span>';
     })
+    } catch (err) {
+        console.warn('preloader split', err);
+    }
     const logo_tl = gsap.timeline({paused:true,onComplete:()=>{
         loaderAnim_end = true;
         if(control) console.log('loaderAnim_end: ',loaderAnim_end);

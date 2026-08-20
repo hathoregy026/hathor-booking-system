@@ -279,7 +279,6 @@ $(
 ).remove();
 $("#awwwards").remove();
 $(".header__menu, .header__btn.btn--menu, .mod-scroll__intro__menu").remove();
-$("header .header__logo").remove();
 
 const cloneHrefMap = [
   [/normalisboring\.es\/lasolana/i, "/luxury-cabins-Nile-Cruise"],
@@ -885,9 +884,16 @@ $("head").append(`
     #awwwards,
     .header__menu,
     .header__btn.btn--menu,
-    header .header__logo,
     .mod-scroll__intro__menu {
       display: none !important;
+    }
+    header .header__logo {
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+    html body,
+    html body main {
+      opacity: 1 !important;
     }
     .logo__boring,
     .logo__boring .reg {

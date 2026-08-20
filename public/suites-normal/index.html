@@ -388,9 +388,16 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
     #awwwards,
     .header__menu,
     .header__btn.btn--menu,
-    header .header__logo,
     .mod-scroll__intro__menu {
       display: none !important;
+    }
+    header .header__logo {
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+    html body,
+    html body main {
+      opacity: 1 !important;
     }
     .logo__boring,
     .logo__boring .reg {

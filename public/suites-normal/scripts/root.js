@@ -32,13 +32,13 @@ if(control) console.log('is_md',is_md)
 const htmlEl = document.querySelector("html");
 const header = document.querySelector('.header');
 const header_logo = document.querySelector('.header__logo');
-const header_logo_normal = header_logo.querySelector('.logo__normal');
-const header_logo_group = header_logo.querySelector('.logo__group');
+const header_logo_normal = header_logo?.querySelector('.logo__normal');
+const header_logo_group = header_logo?.querySelector('.logo__group');
 const menu = document.querySelector('.header__menu');
 const btnAnchors = document.querySelector('.header__footer__btn');
 const transition = document.querySelector(".transition");
 const contacto = document.querySelector('.modal--contact');
-const contacto_content = contacto.querySelector('.modal__content');
+const contacto_content = contacto?.querySelector('.modal__content');
 const posLogoMobile = (!is_mobile) ? 0 : '0.15em' ;
 ///
 const timescale = 1.15;//1.15;
@@ -51,7 +51,7 @@ removeRolloversMenu, menu_tl, anclas_tl, alert_tl, header_logo_tl, header_btn_tl
 scroll_intro_tl, contacto_tl, chaptersAll, onlyOnce, onScroll, terms, setFlips, processResize = false;;
 
 cursor = document.querySelector("#mouse");
-cursorSpan = cursor.querySelector('span');
+cursorSpan = cursor?.querySelector('span');
 smoothWrapper = document.querySelector("#smooth-wrapper");
 smoothContent = document.querySelector("#smooth-content");
 main = document.querySelector('main');
@@ -61,7 +61,11 @@ onlyOnce = false;
 onScroll = false;
 
 //gsap
-gsap.registerPlugin(ScrollTrigger,ScrollSmoother,MorphSVGPlugin);
+try {
+    gsap.registerPlugin(ScrollTrigger,ScrollSmoother,MorphSVGPlugin,SplitText);
+} catch (err) {
+    gsap.registerPlugin(ScrollTrigger,ScrollSmoother,MorphSVGPlugin);
+}
 gsap.config({ nullTargetWarn: false, force3D: true });
 
 ///set if is safari

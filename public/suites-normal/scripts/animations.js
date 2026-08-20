@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(control) console.log('--- init_animations ');
 
         ///anima header__logo to intro small logo
-        if(document.querySelector('.header__logo') && !header_logo_tl ){
+        if(document.querySelector('.header__logo') && header_logo && header_logo_normal && !header_logo_tl ){
             
             header_logo_tl = gsap.timeline({paused:true, 
                 onStart: ()=>{
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         //anima cabecera scroll
-        if(document.querySelector('.mod-scroll__intro')){
+        if(document.querySelector('.mod-scroll__intro') && scroll_intro_tl){
             scroll_intro_tl.progress(0).timeScale(timescale).play()       
         }
 

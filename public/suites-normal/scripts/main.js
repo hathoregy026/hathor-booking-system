@@ -457,6 +457,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         ///clear main y transition
         gsap.set(main,{opacity:1})
+        gsap.set('body',{opacity:1})
 
         ///set window height
         htmlEl.style = '--vh:'+window.innerHeight;
@@ -483,28 +484,34 @@ document.addEventListener('DOMContentLoaded', () => {
         //setAspectRatio media
         setAspectRatio();
 
-        //set scroll horizontal
-        if(document.querySelector('.mod-scroll')) setScrollH();
-
-        //show menu
-        // if(document.querySelector('.mod-header--proyecto')){
-        //     document.querySelector('.btn--menu').classList.add('disabled')
-        // }else{
-        //     document.querySelector('.btn--menu').classList.remove('disabled')
-        // }
-
-        //show link disponibilidad
-        if(document.querySelector('.mod-header--proyecto')){
-            document.querySelector('#menu-principal .no-show-scroll').classList.remove('disabled')
-        }else{
-            document.querySelector('#menu-principal .no-show-scroll').classList.add('disabled')
+        try {
+            if(document.querySelector('.mod-scroll')) setScrollH();
+        } catch (err) {
+            console.warn('setScrollH', err);
         }
 
-        //reinit mouseChanges
-        if(!is_mobile){mouseChanges()} 
+        try {
+            document.querySelector('#menu-principal .no-show-scroll')?.classList.add('disabled');
+        } catch (err) {}
 
-        //init_animations
-        init_animations()     
+        try {
+            if(!is_mobile){mouseChanges()}
+        } catch (err) {}
+
+        try {
+            init_animations()
+        } catch (err) {
+            console.warn('init_animations', err);
+        }
+        if (typeof scroll_intro_tl !== 'undefined' && scroll_intro_tl && scroll_intro_tl.progress() === 0) {
+            try { scroll_intro_tl.progress(0).timeScale(timescale).play(); } catch (err) {}
+        }
+
+        try {
+            if(!document.querySelector('.mod-scroll') || is_mobile) last_animations();
+        } catch (err) {
+            console.warn('last_animations', err);
+        }
 
         //si hay cookies
         if(document.querySelector('.cky-consent-container')){

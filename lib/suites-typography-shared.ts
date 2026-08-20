@@ -52,15 +52,15 @@ const DISPLAY_SELECTORS = [
   ".t-supertitulo",
   ".t-supertitulo-l",
   ".t-supertitulo-xl",
+].join(",");
+
+const DISPLAY_COLOR_SELECTORS = [
+  DISPLAY_SELECTORS,
   ".mod-scroll__intro__title",
   ".mod-scroll__text__title__line",
   ".last-item__content__title .line",
   ".anima__title",
   ".mod-title--lines .line",
-].join(",");
-
-const DISPLAY_COLOR_SELECTORS = [
-  DISPLAY_SELECTORS,
   ".logo__normal",
   ".logo__boring",
 ].join(",");
@@ -163,14 +163,6 @@ html body main .mod-scroll__terms :is(
   mix-blend-mode: normal !important;
   filter: none !important;
 }
-html body main .mod-scroll__terms :is(
-  .mod-scroll__terms__term__title,
-  .mod-scroll__terms__term__title *,
-  .t-supertitulo-l,
-  .t-supertitulo-l *
-) {
-  transform: none !important;
-}
 @media (min-width: 951px) {
   html body main .mod-scroll > .mod-scroll__terms,
   html body main .mod-scroll__terms {
@@ -204,7 +196,6 @@ html body main .mod-scroll__terms :is(
   html body main .mod-scroll__terms .t-supertitulo-l {
     font-size: min(9.4vw, 2.8rem) !important;
     line-height: 0.9 !important;
-    transform: none !important;
   }
 }
 `;

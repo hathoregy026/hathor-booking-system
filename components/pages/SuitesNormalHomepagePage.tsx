@@ -70,12 +70,19 @@ function patchLogoWordmark(doc: Document) {
 }
 
 const CLONE_MENU_HIDE_CSS = `
+html body,
+html body main {
+  opacity: 1 !important;
+}
 #awwwards,
 .header__menu,
 .header__btn.btn--menu,
-header .header__logo,
 .mod-scroll__intro__menu {
   display: none !important;
+}
+header .header__logo {
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 .logo__boring,
 .logo__boring .reg {
@@ -256,7 +263,7 @@ export function SuitesNormalHomepagePage() {
       <iframe
         ref={iframeRef}
         className="suites-normal-clone__frame"
-        src="/suites-normal/index.html?v=hathor-restore-motion-20260820"
+        src="/suites-normal/index.html?v=hathor-restore-motion-20260820c"
         title="Hathor Suites"
         onLoad={() => void apply()}
       />

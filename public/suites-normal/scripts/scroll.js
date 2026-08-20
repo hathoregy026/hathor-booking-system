@@ -13,12 +13,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const restScroll = () => {
 
         const scroll_logo_normal = document.querySelector('.mod-scroll__intro .logo__normal')
+        if (scroll_logo_normal) {
         scroll_logo_normal.addEventListener('click',()=>{
             if(control) console.log('click scroll_logo_normal');
             if(!scroll_logo_normal.classList.contains('disabled'))
-                // scroll_logo_normal.closest('.logo').querySelector('a').click()
                 swup.navigate(scroll_logo_normal.getAttribute('data-url'))
         })
+        }
 
          //scrolltrigger to show logo small and btn menu
         if(document.querySelector('.mod-scroll__intro')){ 
@@ -30,29 +31,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     trigger: document.querySelector('.mod-scroll__intro'),
                     start: startTl,
                     onEnter: () => {
-                        // console.log('onEnter header_logo_tl');
-                        // console.log( document.querySelector('.mod-scroll__intro'));
-                        if(document.querySelector('.mod-scroll__intro')) header_logo_tl.progress(0).play()
-                        if(!is_mobile) header_btn_tl.timeScale(1).play()
+                        if(document.querySelector('.mod-scroll__intro')) header_logo_tl?.progress(0).play()
+                        header_btn_tl?.timeScale(1).play()
                     },
                     onEnterBack: () => {
-                        // console.log('onEnterBack header_logo_tl');
-                        // console.log( header_logo_normal.classList);
-                        
-                        if(document.querySelector('.mod-scroll__intro') && !header_logo_normal.classList.contains('disabled')) header_logo_tl.reverse()
-                        if(!is_mobile) header_btn_tl.timeScale(1.75).reverse()
+                        if(document.querySelector('.mod-scroll__intro') && !header_logo_normal?.classList.contains('disabled')) header_logo_tl?.reverse()
+                        header_btn_tl?.timeScale(1.75).reverse()
                     },
-                    // toggleActions: 'play none none reverse',
-                    // markers: true,
                 })
             }else{
-                header_btn_tl.timeScale(1).play()
+                header_btn_tl?.timeScale(1).play()
             }
 
         }
         
-        //setFlips
-        setFlips()
+        try { setFlips() } catch (err) { console.warn('setFlips', err) }
 
         //anima mod-scroll__text
         if(document.querySelectorAll('.mod-scroll__text').length){
@@ -60,14 +53,18 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.mod-scroll__text').forEach( elem => {
 
                 const lines = elem.querySelectorAll('.line')
+                if (lines.length < 4) return;
                 lines.forEach(el => {
+                    if (el.querySelector('span.cont')) return;
                     const content = el.innerHTML;
                     el.innerHTML = '<span class="cont">'+content+'</span>';
                 })
+                const lineCont = lines[3].querySelector('span.cont');
+                if (!lineCont) return;
 
-                const posInitLeft = lines[3].querySelector('span.cont').offsetWidth - lines[3].offsetWidth;
+                const posInitLeft = lineCont.offsetWidth - lines[3].offsetWidth;
                 const title_tl = gsap.timeline({paused:true})
-                title_tl.from(lines[3].querySelector('span.cont'),
+                title_tl.from(lineCont,
                     {left: posInitLeft, duration: 2, ease: 'power1.inOut'},0)
 
                 const textTrigger = ScrollTrigger.create({
@@ -233,8 +230,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if(document.querySelectorAll('.mod-scroll__projects__item.last-item').length){
 
             lastProject_content_tl = gsap.timeline({paused:true});
-            const splitTitle = SplitText.create(document.querySelector('.last-item__content__title'), {type: "chars, words",charsClass:'char'})
-            const splitText = SplitText.create(document.querySelector('.last-item__content__text > p'), {type: "lines", linesClass:'line'})
+            const lastTitle = document.querySelector('.last-item__content__title');
+            const lastText = document.querySelector('.last-item__content__text > p');
+            if (lastTitle && lastText) {
+            const splitTitle = SplitText.create(lastTitle, {type: "chars, words",charsClass:'char'})
+            const splitText = SplitText.create(lastText, {type: "lines", linesClass:'line'})
             splitText.lines.forEach(elem => {
                 const content = elem.innerHTML;
                 elem.innerHTML = '<span class="w-100">'+content+'</span>';
@@ -263,6 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
 
             }
+            }
             
         }
 
@@ -274,6 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ///move big image 
                 const imageInt = elem.querySelector('.flipMedia__media.flipMedia__media--up');
                 const projectInt_image_tl = gsap.timeline({paused:true});
+                if (imageInt?.querySelector('.media__source')) {
                 projectInt_image_tl.to(imageInt.querySelector('.media__source'),{x: '-15%'})
 
                 ScrollTrigger.create({
@@ -289,11 +291,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         if(triggerFlipCierreImage) triggerFlipCierreImage.refresh();
                     },
                 })
+                }
 
                 ///change spacing text and show year
                 const title = elem.querySelector('.mod-scroll__projectInt__title');
-                const splitTitle = new SplitText(title,{type: "words"})
                 const year = elem.querySelector('.mod-scroll__projectInt__section');
+                if (!title || !year) return;
+                const splitTitle = new SplitText(title,{type: "words"})
                 year.classList.add('clip-y')
                 const splitYear = new SplitText(year,{type: "words", wordsClass: 'word'})
 
@@ -352,18 +356,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                 },
                 onComplete: ()=>{
-                    if(triggerProjects) triggerProjects.refresh()
-
-                    //set rest init
-                    restInit()
-
-                    ///set rest animations
-                    restScroll()
+                    try { if(triggerProjects) triggerProjects.refresh() } catch (err) {}
+                    try { restInit() } catch (err) { console.warn('restInit', err) }
+                    try { restScroll() } catch (err) {
+                        console.warn('restScroll', err)
+                        try { last_animations() } catch (err2) {}
+                    }
                 }
             });
 
             // scroll_intro_tl.set('.logo__normal',{ opacity:1 },0)
 
+            if (header_logo && header_logo_normal) {
             scroll_intro_tl.to(header_logo,{ width:'100%', duration: 1, ease: 'power2.in(2)' },.25)
             scroll_intro_tl.to('.header__percent',{ opacity:0, duration: .5,  ease: 'linear' },.25)
             scroll_intro_tl.to('.header__progress',{opacity:0, duration: .33, ease: 'linear'},.25)
@@ -371,49 +375,59 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(!is_mobile){
                     //change header logo
                     if(document.querySelector('.mod-scroll__intro.bg-black'))
-                        document.querySelector('.mod-scroll__intro__logo').classList.remove('c-black')
+                        document.querySelector('.mod-scroll__intro__logo')?.classList.remove('c-black')
                     gsap.set(header_logo_normal,{opacity:0})
                     gsap.set(header_logo_group,{opacity:0,onComplete:()=>{ 
-                        header_logo_normal.classList.add('d-none') 
+                        header_logo_normal?.classList.add('d-none') 
                     }})
                     gsap.set(document.querySelector('.mod-scroll__intro__logo'),{opacity:1})
                 }
-                header_logo_normal.classList.remove('disabled')
+                header_logo_normal?.classList.remove('disabled')
             }},'<+=1.75')
             scroll_intro_tl.to(header_logo_normal,{ top:posLogoMobile, duration: 1.75, ease: 'power2.out'},'<')
+            } else {
+                gsap.set(document.querySelector('.mod-scroll__intro__logo'),{opacity:1})
+            }
 
             //anim titles intro
             document.querySelectorAll('.mod-scroll__intro__title').forEach( (elem,index) => {
+                try {
                 const split = SplitText.create(elem, {type: "lines,chars", linesClass:'splitline clip-y', charsClass:'char'})
                 elem.querySelectorAll('.splitline').forEach( (el,ind) => {
                     const posInit = (ind%2!=0) ? '-110%' : '110%';
                     const delayTime = (ind==0) ? "<+=.05" : "<+=.05" ;
-                    scroll_intro_tl.from(el.querySelectorAll('.char'),{y:posInit, duration: .65, stagger: 0.03, ease: 'power3.out'},delayTime)
+                    scroll_intro_tl.from(el.querySelectorAll('.char'),{y:posInit, duration: .65, stagger: 0.03, ease: 'power3.out', immediateRender:false},delayTime)
                 } )
+                } catch (err) { console.warn('intro title split', err) }
                 
             })
 
             //anim paragraph intro
             document.querySelectorAll('.mod-scroll__intro__text p').forEach( elem => {
+                try {
                 const split = SplitText.create(elem, {type: "lines",linesClass:'splitline clip-y'})
                 split.lines.forEach(elem => {
                     const content = elem.innerHTML;
                     elem.innerHTML = '<span>'+content+'</span>';
                 })
-                scroll_intro_tl.from(elem.querySelectorAll('span'),{y:'100%', duration: .5, stagger: 0.09, ease: 'power3.easeOut'},"<+=.05")
+                scroll_intro_tl.from(elem.querySelectorAll('span'),{y:'100%', duration: .5, stagger: 0.09, ease: 'power3.easeOut', immediateRender:false},"<+=.05")
+                } catch (err) { console.warn('intro text split', err) }
             })
 
             //anim width & image 
             if(!is_mobile){
-                scroll_intro_tl.fromTo(document.querySelector('.mod-scroll__intro > .wrapper'),
+                const introWrapper = document.querySelector('.mod-scroll__intro > .wrapper');
+                if (introWrapper) {
+                scroll_intro_tl.fromTo(introWrapper,
                     {width:'100vw'},{width:'80vw', duration: 1.25,  ease: 'power3.out', onStart: () => {
 
                         //if next module is .mod-scroll__images move image and set trigger
                         const elems_scroll = document.querySelectorAll('.mod-scroll > *')
-                        if(elems_scroll[1].classList.contains('mod-scroll__images')){
+                        if(elems_scroll[1]?.classList.contains('mod-scroll__images')){
 
                             //move image
                             const image = elems_scroll[1].querySelector('.mod-scroll__images__image-single')
+                            if (!image) return;
                             gsap.fromTo(image,{x:'-5vw'},{x:'-15vw', duration: 1.25,  ease: 'power2.out', 
                                 onComplete: ()=>{
 
@@ -437,6 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         }
                     } },'-=.5')
+                }
             }
 
             //anim rest elements
@@ -474,6 +489,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const textTitle = elem.querySelector('.mod-scroll__projects__item__text__title');
                 const dataTitle = elem.querySelectorAll('.mod-scroll__projects__item__text__data > div:not(.data-number)');
                 const linkTitle = elem.querySelector('.mod-scroll__projects__item__text__data a.btn');
+                if (!textTitle || !dataTitle[0] || !dataTitle[1] || !linkTitle) return;
                 const titleSplit = new SplitText(textTitle,{type: "chars,lines",})
 
                 const textProject_tl = gsap.timeline({paused:true,delay:.1});
