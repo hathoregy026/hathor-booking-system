@@ -145,19 +145,13 @@ export function ContactPageContent() {
 
                   <div className="ce-intro__title" id="contact" data-anima-title>
                     <h1 className="ce-intro__title-part ce-intro__title-part--one">
-                      <AnimaSplitLine line={0}>We would</AnimaSplitLine>
-                      <br />
-                      <AnimaSplitLine line={1}>love to</AnimaSplitLine>
+                      <AnimaSplitLine line={0}>We would love to</AnimaSplitLine>
                     </h1>
                     <h1 className="ce-intro__title-part ce-intro__title-part--two">
-                      <AnimaSplitLine line={2}>hear</AnimaSplitLine>
-                      <br />
-                      <AnimaSplitLine line={3}>from you</AnimaSplitLine>
+                      <AnimaSplitLine line={1}>hear from you</AnimaSplitLine>
                     </h1>
                     <h1 className="ce-intro__title-part ce-intro__title-part--three">
-                      <AnimaSplitLine line={4}>on the</AnimaSplitLine>
-                      <br />
-                      <AnimaSplitLine line={5}>Nile</AnimaSplitLine>
+                      <AnimaSplitLine line={2}>on the Nile</AnimaSplitLine>
                     </h1>
                   </div>
 
@@ -279,8 +273,10 @@ export function ContactPageContent() {
                   <i />
                   <span>17:00</span>
                 </div>
-                <p className="ce-hours__note">{PUBLIC_CONTACT.workingHours}</p>
-                <p className="ce-hours__rest">{PUBLIC_CONTACT.dayOff}</p>
+                <div className="ce-hours__meta">
+                  <p className="ce-hours__note">{PUBLIC_CONTACT.workingHours}</p>
+                  <p className="ce-hours__rest">{PUBLIC_CONTACT.dayOff}</p>
+                </div>
               </Scene>
 
               <Scene className="ce-closing">
@@ -300,48 +296,48 @@ export function ContactPageContent() {
         <section className="ce-epilogue" id="write">
           <header className="ce-epilogue__title">
             <span>(Write)</span>
-            <h2 data-anima-title>{formTitle.toUpperCase()}</h2>
+            <h2 data-anima-title>{formTitle}</h2>
           </header>
 
-          <div className="ce-epilogue__form-wrap">
-            <p className="ce-epilogue__form-lead">{formIntro}</p>
-            <InquiryForm
-              type="contact"
-              title="Your message"
-              intro="Share dates, guests, and how you wish to sail. Our reservations team replies within 24 hours."
-              submitLabel="Send Request"
-              className="ce-form"
-              submitClassName="btn btn-dark"
-            />
-          </div>
-
-          <div className="ce-epilogue__pills">
-            <a className="btn btn-dark" href={`tel:${PUBLIC_CONTACT.phone}`}>
-              Call Now
-            </a>
-            <a
-              className="btn btn-dark"
-              href={PUBLIC_CONTACT.whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              WhatsApp
-            </a>
-            <BookNowTrigger className="btn btn-dark">Book Now</BookNowTrigger>
-          </div>
-
-          <div className="ce-epilogue__feature">
-            <div className="ce-epilogue__monogram" aria-hidden="true">
-              HATHOR
+          <div className="ce-epilogue__board">
+            <div className="ce-epilogue__compose">
+              <div className="ce-epilogue__form-wrap">
+                <p className="ce-epilogue__form-lead">{formIntro}</p>
+                <InquiryForm
+                  type="contact"
+                  title="Your message"
+                  intro="Share dates, guests, and how you wish to sail. Our reservations team replies within 24 hours."
+                  submitLabel="Send Request"
+                  className="ce-form"
+                  submitClassName="btn btn-dark"
+                />
+              </div>
+              <div className="ce-epilogue__pills">
+                <a className="btn btn-dark" href={`tel:${PUBLIC_CONTACT.phone}`}>
+                  Call Now
+                </a>
+                <a
+                  className="btn btn-dark"
+                  href={PUBLIC_CONTACT.whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  WhatsApp
+                </a>
+                <BookNowTrigger className="btn btn-dark">Book Now</BookNowTrigger>
+              </div>
             </div>
-            <span>(RESERVATIONS)</span>
-            <ContactMedia slot="contact-hero" alt="Hathor Dahabiya on the Nile" />
-            <h3>CORRESPONDENCE</h3>
-            <p>
-              Cairo office · daily 09:00–17:00
-              <br />
-              {PUBLIC_CONTACT.email}
-            </p>
+
+            <div className="ce-epilogue__feature">
+              <span>(Reservations)</span>
+              <ContactMedia slot="contact-hero" alt="Hathor Dahabiya on the Nile" />
+              <h3>Correspondence</h3>
+              <p>
+                Cairo office · daily 09:00–17:00
+                <br />
+                {PUBLIC_CONTACT.email}
+              </p>
+            </div>
           </div>
 
           <div className="ce-epilogue__legal">
