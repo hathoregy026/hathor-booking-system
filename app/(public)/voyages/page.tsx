@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "@/app/voyages-page.css";
+import "@/app/voyages-editorial.css";
 import { VoyagesPageContent } from "@/components/pages/voyages/VoyagesPageContent";
 import { getHomepageAccordionCruisesSafe } from "@/lib/homepage-accordion-cruises";
 import {

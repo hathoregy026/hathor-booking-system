@@ -1,19 +1,111 @@
 "use client";
 
-import { useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import "@/app/voyages-page.css";
-import "@/app/immersive-voyage.css";
-import { BookNowTrigger } from "@/components/public/BookNowTrigger";
-import { ManagedImage } from "@/components/ui/ManagedImage";
 import {
-  useTypographyInlineStyle,
-  useTypographySettings,
-} from "@/components/public/TypographySettingsProvider";
-import { useVoyagesPageMotion } from "@/hooks/useVoyagesPageMotion";
+  useRef,
+  type ComponentPropsWithoutRef,
+  type CSSProperties,
+} from "react";
+import { BookNowTrigger } from "@/components/public/BookNowTrigger";
+import { useSiteImage } from "@/components/public/SiteImagesProvider";
+import { useVoyagesEditorialFlow } from "@/hooks/useVoyagesEditorialFlow";
 import type { HomepageAccordionCruise } from "@/lib/homepage-accordion-cruises";
 import { resolveVoyagePanelContent } from "@/lib/voyage-accordion-panels";
 import { VOYAGES_PAGE } from "@/lib/voyages-page-content";
+
+function VoyageMedia({
+  slot,
+  alt,
+  priority = false,
+  className = "",
+}: {
+  slot: string;
+  alt: string;
+  priority?: boolean;
+  className?: string;
+}) {
+  const image = useSiteImage(slot);
+  return (
+    <figure className={`vb-media ${className}`}>
+      <Image
+        src={image.src}
+        alt={alt || image.alt}
+        fill
+        priority={priority}
+        sizes="(max-width: 1024px) 100vw, 70vw"
+        className="vb-media__image"
+      />
+    </figure>
+  );
+}
+
+function SplitText({
+  children,
+  className = "",
+}: {
+  children: string;
+  className?: string;
+}) {
+  return (
+    <span className={`vb-split ${className}`} aria-label={children}>
+      {Array.from(children).map((character, index) => (
+        <span
+          key={`${character}-${index}`}
+          aria-hidden="true"
+          className="vb-split__char"
+          style={
+            {
+              "--char-index": index,
+              "--char-direction": index % 2 === 0 ? 1 : -1,
+            } as CSSProperties
+          }
+        >
+          {character === " " ? "\u00a0" : character}
+        </span>
+      ))}
+    </span>
+  );
+}
+
+function Scene({
+  className = "",
+  children,
+  ...props
+}: ComponentPropsWithoutRef<"section">) {
+  return (
+    <section className={`vb-scene ${className}`} {...props}>
+      {children}
+    </section>
+  );
+}
+
+const PRINCIPLES = [
+  {
+    number: "01",
+    title: "THREE",
+    count: "03",
+    text: VOYAGES_PAGE.manifesto[0]!.body,
+    slot: "home-voyage-3n-aswan-luxor",
+  },
+  {
+    number: "02",
+    title: "FOUR",
+    count: "04",
+    text: VOYAGES_PAGE.manifesto[1]!.body,
+    slot: "home-voyage-4n-luxor-aswan",
+  },
+  {
+    number: "03",
+    title: "SEVEN",
+    count: "07",
+    text: VOYAGES_PAGE.manifesto[2]!.body,
+    slot: "home-voyage-7n-roundtrip",
+  },
+] as const;
+
+const PROJECT_TONES = ["cream", "ink", "gold", "cream"] as const;
+const PROJECT_TITLES = ["Three", "Four", "Seven", "Charter"] as const;
 
 export type VoyagesPageContentProps = {
   voyages: HomepageAccordionCruise[];
@@ -21,378 +113,304 @@ export type VoyagesPageContentProps = {
 
 export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  useVoyagesPageMotion(rootRef);
+  const runRef = useRef<HTMLElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  useVoyagesEditorialFlow({ rootRef, runRef, trackRef });
 
-  const { our_voyages_copy: voyagesCopy } = useTypographySettings();
-  const titleStyle = useTypographyInlineStyle("our_voyages_title");
-  const indicationStyle = useTypographyInlineStyle("our_voyages_indication");
-  const nameStyle = useTypographyInlineStyle("our_voyages_main_hover");
-  const metaStyle = useTypographyInlineStyle("our_voyages_indication_hover");
-  const bodyStyle = useTypographyInlineStyle("our_voyages_body_hover");
-
-  const sectionTitle =
-    (voyagesCopy?.title ?? "").trim() || VOYAGES_PAGE.hero.title;
-  const sectionIndication =
-    (voyagesCopy?.indication ?? "").trim() || "Private dahabiya itineraries";
-
-  const total = voyages.length;
+  const itineraries = voyages.slice(0, 4);
 
   return (
-      <div ref={rootRef} className="venetian-page lux-page" data-voyages-page="">
-        {/* Opening editorial */}
-        <section className="voy-opening" aria-labelledby="voy-opening-title">
-          <div className="voy-wrap voy-opening__grid">
-            <div>
-              <p className="voy-kicker" data-lux-reveal>
-                {VOYAGES_PAGE.opening.eyebrow}
-              </p>
-              <h2
-                id="voy-opening-title"
-                className="voy-display"
-                data-lux-title
-              >
-                {VOYAGES_PAGE.opening.title}
-              </h2>
-              <p className="voy-script" data-lux-reveal>
-                {VOYAGES_PAGE.opening.script}
-              </p>
-              {VOYAGES_PAGE.opening.body.map((paragraph) => (
-                <p key={paragraph.slice(0, 40)} className="voy-body" data-lux-reveal>
-                  {paragraph}
-                </p>
-              ))}
-              <div className="voy-cta-row">
-                <Link
-                  className="btn btn-dark"
-                  href={VOYAGES_PAGE.opening.primaryCta.href}
-                >
-                  {VOYAGES_PAGE.opening.primaryCta.label}
-                </Link>
-                <Link
-                  className="public-btn-outline-gold"
-                  href={VOYAGES_PAGE.opening.secondaryCta.href}
-                >
-                  {VOYAGES_PAGE.opening.secondaryCta.label}
-                </Link>
-              </div>
-            </div>
-            <div className="voy-opening__media lux-mask" data-lux-reveal>
-              <ManagedImage
-                name="home-voyage-4n-luxor-aswan"
-                alt="Hathor sailing the Nile"
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 42vw"
-                priority
-              />
-            </div>
-          </div>
-        </section>
+    <div ref={rootRef} className="voyages-boring">
+      <div className="vb-progress" aria-hidden="true">
+        <i data-vb-progress />
+      </div>
 
-        {/* Manifesto */}
-        <section className="voy-manifesto" aria-label="The Hathor voyage promise">
-          <div className="voy-wrap voy-manifesto__grid">
-            {VOYAGES_PAGE.manifesto.map((item) => (
-              <article key={item.numeral} data-lux-reveal>
-                <p className="voy-manifesto__numeral">{item.numeral}</p>
-                <h3 className="voy-manifesto__title">{item.title}</h3>
-                <p className="voy-body">{item.body}</p>
-              </article>
-            ))}
-          </div>
-        </section>
+      <main>
+        <section
+          ref={runRef}
+          className="vb-run"
+          aria-label="Hathor voyages on the Nile"
+        >
+          <div className="vb-stage">
+            <div ref={trackRef} className="vb-track">
+              <Scene className="vb-intro">
+                <div className="vb-intro__inner">
+                  <nav className="vb-intro__menu" aria-label="Voyages page sections">
+                    <a href="#voyages">Voyages</a>
+                    <a href="#itineraries">Itineraries</a>
+                    <Link href="/charter">Charter</Link>
+                    <BookNowTrigger className="vb-intro__book">Book Now</BookNowTrigger>
+                  </nav>
+                  <p className="vb-marker">Voyages</p>
+                  <p className="vb-copyright">Hathor Cruise ©2026</p>
 
-        {/* Sticky voyage chapters */}
-        <section className="voy-chapters" aria-label={sectionTitle}>
-          {voyages.map((item, index) => {
-            const panel = resolveVoyagePanelContent({
-              slug: item.slug,
-              name: item.name,
-              description: item.description,
-              href: item.href,
-            });
-            const isFirst = index === 0;
-            const isLast = index === total - 1;
-
-            return (
-              <article
-                key={item.id}
-                className={`voy-chapter${isLast ? " voy-chapter--last" : ""}`}
-              >
-                <div className="voy-chapter__frame">
-                  <div className="voy-chapter__media" aria-hidden="true">
-                    <ManagedImage
-                      name={item.imageName}
-                      alt=""
-                      fill
-                      sizes="100vw"
-                      loading={index < 2 ? "eager" : "lazy"}
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="voy-chapter__wash" aria-hidden="true" />
-                  <span className="voy-chapter__horizon" aria-hidden="true" />
-
-                  <div
-                    className="voy-chapter__index"
-                    aria-label={`Voyage ${index + 1} of ${total}`}
-                  >
-                    <span>{String(index + 1).padStart(2, "0")}</span>
-                    <span className="voy-chapter__index-total">
-                      {" "}
-                      / {String(total).padStart(2, "0")}
-                    </span>
+                  <div className="vb-intro__title" id="voyages">
+                    <h1 className="vb-intro__title-part vb-intro__title-part--one">
+                      <SplitText>Our</SplitText>
+                      <br />
+                      <SplitText>Voyages</SplitText>
+                    </h1>
+                    <h1 className="vb-intro__title-part vb-intro__title-part--two">
+                      <SplitText>on the</SplitText>
+                      <br />
+                      <SplitText>Nile</SplitText>
+                    </h1>
+                    <h1 className="vb-intro__title-part vb-intro__title-part--three">
+                      <SplitText>private</SplitText>
+                      <br />
+                      <SplitText>sailings</SplitText>
+                    </h1>
                   </div>
 
-                  <div className="voy-chapter__copy">
-                    {isFirst ? (
-                      <header className="voy-chapter__section-head">
-                        <p
-                          className="voy-chapter__section-title typo-our-voyages-title"
-                          style={titleStyle}
-                        >
-                          {sectionTitle}
-                        </p>
-                        {sectionIndication ? (
-                          <p
-                            className="voy-chapter__section-indication typo-our-voyages-indication"
-                            style={indicationStyle}
-                          >
-                            {sectionIndication}
-                          </p>
-                        ) : null}
-                      </header>
-                    ) : null}
-
-                    <h3
-                      className="voy-chapter__name typo-our-voyages-main-hover"
-                      style={nameStyle}
-                    >
-                      {panel.routeTitle}
-                    </h3>
-                    <p
-                      className="voy-chapter__meta typo-our-voyages-indication-hover"
-                      style={metaStyle}
-                    >
-                      {panel.durationLabel}
-                      {item.meta?.trim() ? ` · ${item.meta}` : ""}
-                    </p>
-                    <p className="voy-chapter__quote">{panel.railQuote}</p>
-                    <p
-                      className="voy-chapter__summary typo-our-voyages-body-hover"
-                      style={bodyStyle}
-                    >
-                      {panel.summary}
-                    </p>
-                    <ul className="voy-chapter__highlights">
-                      {panel.highlights.map((highlight) => (
-                        <li key={highlight}>{highlight}</li>
-                      ))}
-                    </ul>
-                    <div className="voy-chapter__actions">
-                      <Link
-                        className="btn btn-dark"
-                        href={panel.detailsHref}
-                      >
-                        {panel.detailsLabel}
-                      </Link>
-                      <Link
-                        className="public-btn-outline-gold"
-                        href="/contact"
-                      >
-                        {panel.enquireLabel}
-                      </Link>
-                    </div>
+                  <p className="vb-intro__body">{VOYAGES_PAGE.hero.subtitle}</p>
+                  <div className="vb-intro__wordmark" aria-label="Hathor Nile dahabiya">
+                    <span>HATHOR</span>
+                    <em>Nile</em>
+                    <strong>dahabiya</strong>
                   </div>
                 </div>
-              </article>
-            );
-          })}
-        </section>
+              </Scene>
 
-        {/* Features rail */}
-        <section className="voy-features" aria-labelledby="voy-features-title">
-          <div className="voy-wrap">
-            <header className="voy-features__head">
-              <p className="voy-kicker" data-lux-reveal>
-                {VOYAGES_PAGE.features.eyebrow}
-              </p>
-              <h2
-                id="voy-features-title"
-                className="voy-display voy-display--gold"
-                data-lux-title
-              >
-                {VOYAGES_PAGE.features.title}
-              </h2>
-            </header>
-            <div className="voy-features__rail">
-              <ul className="voy-features__tabs" role="list">
-                {VOYAGES_PAGE.features.items.map((item, index) => (
-                  <li
-                    key={item.id}
-                    className={`voy-features__tab${index === 0 ? " is-active" : ""}`}
-                    data-label={item.label}
-                    data-body={item.body}
-                  >
-                    {item.label}
-                  </li>
-                ))}
-              </ul>
-              <div className="voy-features__panel" aria-live="polite">
-                <h3 className="voy-features__panel-title">
-                  {VOYAGES_PAGE.features.items[0]!.label}
-                </h3>
-                <p className="voy-body voy-features__panel-body">
-                  {VOYAGES_PAGE.features.items[0]!.body}
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
+              <Scene className="vb-image-lead">
+                <VoyageMedia
+                  slot="home-voyage-7n-roundtrip"
+                  alt="Hathor sailing the Nile"
+                  priority
+                  className="vb-image-lead__main"
+                />
+                <div className="vb-flip vb-image-lead__flip">
+                  <VoyageMedia
+                    slot="home-voyage-3n-aswan-luxor"
+                    alt="Aswan to Luxor voyage"
+                  />
+                  <VoyageMedia
+                    slot="home-voyage-4n-luxor-aswan"
+                    alt="Luxor to Aswan voyage"
+                  />
+                </div>
+              </Scene>
 
-        {/* River rhythm scrub */}
-        <section
-          className="iv-scrub"
-          data-iv-scrub="voyages-rhythm"
-          aria-labelledby="voy-rhythm-title"
-        >
-          <div className="iv-wrap iv-scrub__head">
-            <p className="iv-kicker" data-lux-reveal>
-              {VOYAGES_PAGE.rhythm.eyebrow}
-            </p>
-            <h2
-              id="voy-rhythm-title"
-              className="lux-gold lux-gold-lg"
-              data-lux-title
-            >
-              {VOYAGES_PAGE.rhythm.title}
-            </h2>
-          </div>
+              <Scene className="vb-manifesto">
+                <p className="vb-marker">The river</p>
+                <div className="vb-manifesto__headline vb-big-title">
+                  <SplitText>Sail Egypt</SplitText>
+                  <SplitText>at a dahabiya</SplitText>
+                  <SplitText>pace</SplitText>
+                </div>
+                <p className="vb-manifesto__body">{VOYAGES_PAGE.opening.body[0]}</p>
+              </Scene>
 
-          <div className="iv-scrub__pin">
-            <div className="iv-scrub__stage">
-              <div className="iv-scrub__media">
-                {VOYAGES_PAGE.rhythm.chapters.map((chapter, i) => (
-                  <div
-                    key={chapter.kicker}
-                    className={`iv-scrub__slide${i === 0 ? " is-active" : ""}`}
-                  >
-                    <ManagedImage
-                      name={chapter.slot}
-                      alt={chapter.title}
-                      fill
-                      className="object-cover"
-                      sizes="60vw"
-                    />
-                  </div>
-                ))}
-                <div className="iv-scrub__rail" aria-hidden="true">
-                  {VOYAGES_PAGE.rhythm.chapters.map((chapter, i) => (
-                    <span
-                      key={chapter.kicker}
-                      className={i === 0 ? "is-active" : undefined}
-                    >
-                      {chapter.kicker}
+              <Scene className="vb-collage">
+                <div className="vb-collage__tile vb-collage__tile--one vb-flip">
+                  <VoyageMedia
+                    slot="home-voyage-nile-majesty"
+                    alt="Nile Majesty private charter"
+                  />
+                  <VoyageMedia
+                    slot="highlights-lifestyle"
+                    alt="Life aboard Hathor"
+                  />
+                </div>
+                <div className="vb-collage__tile vb-collage__tile--two vb-flip">
+                  <VoyageMedia
+                    slot="home-voyage-4n-luxor-aswan"
+                    alt="Classic Nile voyage"
+                  />
+                  <VoyageMedia
+                    slot="home-cinematic-still"
+                    alt="Hathor on the river"
+                  />
+                </div>
+                <p>{VOYAGES_PAGE.opening.body[1]}</p>
+              </Scene>
+
+              <Scene className="vb-marquee" aria-label="Voyages">
+                <div className="vb-marquee__rail">
+                  {[0, 1, 2].map((item) => (
+                    <span key={item}>
+                      VOYAGES <b>✦</b>
                     </span>
                   ))}
                 </div>
-              </div>
-              <div className="iv-scrub__copy">
-                {VOYAGES_PAGE.rhythm.chapters.map((chapter, i) => (
-                  <div
-                    key={chapter.title}
-                    className={`iv-scrub__chapter${i === 0 ? " is-active" : ""}`}
-                  >
-                    <p className="iv-kicker">{chapter.kicker}</p>
-                    <h3>{chapter.title}</h3>
-                    <p className="iv-copy">{chapter.body}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="iv-scrub__progress" aria-hidden="true">
-                <i />
-              </div>
-            </div>
-          </div>
+              </Scene>
 
-          <div className="iv-wrap iv-scrub__stack">
-            {VOYAGES_PAGE.rhythm.chapters.map((chapter) => (
-              <article key={chapter.kicker} className="iv-stack-card">
-                <div className="iv-stack-card__media lux-mask">
-                  <ManagedImage
-                    name={chapter.slot}
-                    alt={chapter.title}
-                    fill
-                    className="object-cover"
-                    sizes="100vw"
+              <Scene className="vb-image-pair">
+                <div className="vb-flip vb-image-pair__left">
+                  <VoyageMedia
+                    slot="home-voyage-3n-aswan-luxor"
+                    alt="Aswan departure"
+                  />
+                  <VoyageMedia
+                    slot="home-call-to-action"
+                    alt="Deck on the Nile"
                   />
                 </div>
-                <p className="iv-kicker">{chapter.kicker}</p>
-                <h3>{chapter.title}</h3>
-                <p className="iv-copy">{chapter.body}</p>
-              </article>
-            ))}
+                <div className="vb-flip vb-image-pair__right">
+                  <VoyageMedia slot="gastronomy-table" alt="Dining on the Nile" />
+                  <VoyageMedia slot="room-royal" alt="Royal Suite aboard Hathor" />
+                </div>
+              </Scene>
+
+              <Scene className="vb-principles" id="itineraries">
+                {PRINCIPLES.map((stat) => (
+                  <article className="vb-principle" key={stat.number}>
+                    <p className="vb-principle__copy">{stat.text}</p>
+                    <div className="vb-principle__heading">
+                      <span>{stat.count}</span>
+                      <h2>{stat.title}</h2>
+                    </div>
+                    <VoyageMedia
+                      slot={stat.slot}
+                      alt={`${stat.title.toLowerCase()} night voyage aboard Hathor`}
+                      className="vb-principle__hover"
+                    />
+                  </article>
+                ))}
+              </Scene>
+
+              <Scene className="vb-projects-intro">
+                <p className="vb-marker">Itineraries</p>
+                <p>
+                  Four private passages — three, four, and seven nights, or the
+                  dahabiya entirely yours.
+                </p>
+              </Scene>
+
+              {itineraries.map((item, index) => {
+                const panel = resolveVoyagePanelContent({
+                  slug: item.slug,
+                  name: item.name,
+                  description: item.description,
+                  href: item.href,
+                });
+                const tone = PROJECT_TONES[index] ?? "cream";
+                const title = PROJECT_TITLES[index] ?? panel.routeTitle;
+
+                return (
+                  <Scene
+                    className={`vb-project vb-project--${index + 1} vb-project--${tone}`}
+                    key={item.id}
+                  >
+                    <div className="vb-project__shell">
+                      <VoyageMedia
+                        slot={item.imageName}
+                        alt={panel.routeTitle}
+                        className="vb-project__image"
+                      />
+                      <div className="vb-project__data">
+                        <span>{panel.durationLabel}</span>
+                        <span>{panel.routeTitle}</span>
+                        <span>{String(index + 1).padStart(2, "0")}</span>
+                        <Link href={panel.detailsHref}>View Details</Link>
+                      </div>
+                      <h2>{title}</h2>
+                    </div>
+                  </Scene>
+                );
+              })}
+
+              <Scene className="vb-last-project">
+                <div className="vb-last-project__images">
+                  <VoyageMedia
+                    slot="gastronomy-restaurant"
+                    alt="Dining aboard Hathor"
+                  />
+                  <VoyageMedia slot="highlights-lifestyle" alt="Deck living" />
+                  <VoyageMedia slot="room-royal" alt="Suite rest after shore days" />
+                  <Link href="/gastronomy" className="vb-last-project__link">
+                    <span>↗</span> Explore Dining
+                  </Link>
+                </div>
+                <div className="vb-last-project__copy">
+                  <p className="vb-marker">Onboard</p>
+                  <div className="vb-big-title">
+                    <SplitText>Every voyage</SplitText>
+                    <SplitText>fully</SplitText>
+                    <SplitText>composed</SplitText>
+                  </div>
+                  <p>{VOYAGES_PAGE.features.items[0]!.body}</p>
+                </div>
+              </Scene>
+
+              <Scene className="vb-closing">
+                <div className="vb-flip vb-closing__media">
+                  <VoyageMedia
+                    slot="home-voyage-nile-majesty"
+                    alt="Nile Majesty charter"
+                  />
+                  <VoyageMedia
+                    slot="home-voyage-7n-roundtrip"
+                    alt="Seven-night Nile round trip"
+                  />
+                </div>
+              </Scene>
+            </div>
           </div>
         </section>
 
-        {/* Private charter */}
-        <section className="voy-charter" aria-labelledby="voy-charter-title">
-          <div className="voy-charter__media" aria-hidden="true">
-            <ManagedImage
-              name={VOYAGES_PAGE.charter.image}
-              alt="Nile Majesty private charter"
-              fill
-              className="object-cover"
-              sizes="100vw"
+        <section className="vb-epilogue" id="reserve">
+          <header className="vb-epilogue__title">
+            <span>(Reserve)</span>
+            <h2>
+              SAIL
+              <br />
+              THE NILE
+            </h2>
+          </header>
+          <div className="vb-epilogue__images">
+            <VoyageMedia
+              slot="home-voyage-7n-roundtrip"
+              alt="Hathor voyage on the Nile"
+            />
+            <VoyageMedia
+              slot="home-voyage-nile-majesty"
+              alt="Private charter on the Nile"
             />
           </div>
-          <div className="voy-charter__shade" aria-hidden="true" />
-          <div className="voy-charter__panel">
-            <p className="voy-kicker" data-lux-reveal>
-              {VOYAGES_PAGE.charter.eyebrow}
-            </p>
-            <h2 id="voy-charter-title" className="voy-display" data-lux-title>
-              {VOYAGES_PAGE.charter.title}
-            </h2>
-            <p className="voy-script" data-lux-reveal>
-              {VOYAGES_PAGE.charter.script}
-            </p>
-            <p className="voy-body" data-lux-reveal>
-              {VOYAGES_PAGE.charter.body}
-            </p>
-            <div className="voy-cta-row">
-              <Link className="btn btn-dark" href={VOYAGES_PAGE.charter.cta.href}>
-                {VOYAGES_PAGE.charter.cta.label}
-              </Link>
-              <BookNowTrigger className="public-btn-outline-gold">
-                Enquire Now
-              </BookNowTrigger>
+          <div className="vb-epilogue__statement vb-big-title">
+            <span>Private</span>
+            <span>sailings on</span>
+            <span>the Nile</span>
+          </div>
+          <div className="vb-epilogue__contact">
+            <p>{VOYAGES_PAGE.cta.body}</p>
+          </div>
+          <div className="vb-epilogue__pills">
+            <BookNowTrigger className="btn btn-dark">Book Now</BookNowTrigger>
+            <Link href="/cruises" className="public-btn-outline-gold">
+              View Itineraries
+            </Link>
+          </div>
+          <p className="vb-epilogue__outro">{VOYAGES_PAGE.opening.script}</p>
+          <div className="vb-epilogue__social">
+            <a href="https://www.instagram.com/hathorcruise/">INSTAGRAM</a>
+            <span>|</span>
+            <a href="mailto:reservations@hathorcruise.com">
+              reservations@hathorcruise.com
+            </a>
+            <span>|</span>
+          </div>
+          <div className="vb-epilogue__feature">
+            <div className="vb-epilogue__monogram" aria-hidden="true">
+              HATHOR
             </div>
+            <span>(VOYAGES)</span>
+            <VoyageMedia slot="home-voyage-4n-luxor-aswan" alt="Hathor on the Nile" />
+            <h3>DAHABIYA</h3>
+            <p>
+              Intimate itineraries
+              <br />
+              from Luxor to Aswan
+            </p>
+          </div>
+          <div className="vb-epilogue__legal">
+            <span>HATHOR CRUISE ©2026</span>
+            <Link href="/contact">PRIVACY</Link>
+            <Link href="/contact">COOKIES</Link>
+            <Link href="/contact">LEGAL</Link>
           </div>
         </section>
-
-        {/* Final CTA */}
-        <section className="voy-final-cta" aria-labelledby="voy-cta-title">
-          <div className="voy-wrap">
-            <h2 id="voy-cta-title" className="voy-display" data-lux-title>
-              {VOYAGES_PAGE.cta.title}
-            </h2>
-            <p className="voy-body" data-lux-reveal>
-              {VOYAGES_PAGE.cta.body}
-            </p>
-            <div className="voy-cta-row">
-              <BookNowTrigger className="btn btn-dark">
-                {VOYAGES_PAGE.cta.primary}
-              </BookNowTrigger>
-              <Link
-                className="public-btn-outline-gold"
-                href={VOYAGES_PAGE.cta.secondary.href}
-              >
-                {VOYAGES_PAGE.cta.secondary.label}
-              </Link>
-            </div>
-          </div>
-        </section>
-      </div>
+      </main>
+    </div>
   );
 }
