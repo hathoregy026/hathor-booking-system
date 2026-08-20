@@ -222,25 +222,40 @@ html:has(.contact-editorial) footer.lux-footer {
  .ce-intro__wordmark em { font-size: 1.65rem; }
  .ce-intro__wordmark strong { display: inline-block; font: inherit; transform: rotate(180deg); }
 
-/* Paired images move against one another, following the reference choreography. */
+/* NIB flipMedia: base stays put; overlay wipes in. Driven by --ce-flip on the pair. */
  .ce-image-lead { background: var(--ce-paper); }
  .ce-image-lead__main {
   position: absolute;
   inset: 0 41% 0 0;
-  clip-path: inset(0 calc((1 - var(--reveal)) * 88%) 0 0);
-  transform: translate3d(calc((1 - var(--reveal)) * -7%), 0, 0);
+  transform: translate3d(calc((.5 - var(--scene-progress)) * 4%), 0, 0);
 }
  .ce-image-lead__flip { position: absolute; top: 13%; right: 5%; width: 39%; height: 74%; }
- .ce-flip { perspective: 1200px; transform: rotate(calc((.5 - var(--scene-progress)) * 1.8deg)); }
- .ce-flip  .ce-media { position: absolute; inset: 0; }
- .ce-flip  .ce-media:first-child {
-  clip-path: inset(0 calc(var(--scene-progress) * 100%) 0 0);
-  transform: translate3d(calc(var(--scene-progress) * -8%), calc((.5 - var(--scene-progress)) * 5%), 0) scale(calc(1 - var(--scene-progress) * .025));
-}
- .ce-flip  .ce-media:last-child {
-  clip-path: inset(0 0 0 calc((1 - var(--scene-progress)) * 100%));
-  transform: translate3d(calc((1 - var(--scene-progress)) * 8%), calc((var(--scene-progress) - .5) * 5%), 0) scale(calc(.975 + var(--scene-progress) * .025));
-}
+ .ce-flip {
+  --ce-flip: 0;
+  position: relative;
+  overflow: hidden;
+ }
+ .ce-flip > .ce-media {
+  position: absolute;
+  inset: 0;
+  height: auto;
+ }
+ .ce-flip__overlay { z-index: 1; }
+ .ce-flip--left .ce-flip__overlay {
+  clip-path: inset(0 calc((1 - var(--ce-flip, 0)) * 100%) 0 0);
+ }
+ .ce-flip--right .ce-flip__overlay {
+  clip-path: inset(0 0 0 calc((1 - var(--ce-flip, 0)) * 100%));
+ }
+ .ce-flip--up .ce-flip__overlay {
+  clip-path: inset(calc((1 - var(--ce-flip, 0)) * 100%) 0 0 0);
+ }
+ .ce-flip__base .ce-media__image {
+  transform: none;
+ }
+ .ce-flip__overlay .ce-media__image {
+  transform: scale(calc(1.2 - var(--ce-flip, 0) * 0.2));
+ }
 
  .ce-manifesto { background: var(--ce-paper); }
  .ce-manifesto >  .ce-marker { position: absolute; top: 9%; left: 5%; }
@@ -819,6 +834,7 @@ a.ce-ledger__value:hover { color: var(--ce-gold); }
 }
 
 @media (prefers-reduced-motion: reduce) {
+   .ce-flip { --ce-flip: 1; }
    .ce-track,
    .ce-split__char,
    .ce-media,

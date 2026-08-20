@@ -41,6 +41,29 @@ function ContactMedia({
   );
 }
 
+function FlipImage({
+  front,
+  back,
+  frontAlt,
+  backAlt = "",
+  className = "",
+  axis = "left",
+}: {
+  front: string;
+  back: string;
+  frontAlt: string;
+  backAlt?: string;
+  className?: string;
+  axis?: "up" | "left" | "right";
+}) {
+  return (
+    <div className={`ce-flip ce-flip--${axis} ${className}`} data-ce-flip>
+      <ContactMedia slot={front} alt={frontAlt} className="ce-flip__base" />
+      <ContactMedia slot={back} alt={backAlt} className="ce-flip__overlay" />
+    </div>
+  );
+}
+
 function SplitText({
   children,
   className = "",
@@ -182,13 +205,14 @@ export function ContactPageContent() {
                   priority
                   className="ce-image-lead__main"
                 />
-                <div className="ce-flip ce-image-lead__flip">
-                  <ContactMedia slot="about-hero" alt="Hathor Dahabiya on the Nile" />
-                  <ContactMedia
-                    slot="room-royal"
-                    alt="Royal suite aboard Hathor Dahabiya"
-                  />
-                </div>
+                <FlipImage
+                  className="ce-image-lead__flip"
+                  axis="left"
+                  front="about-hero"
+                  back="room-royal"
+                  frontAlt="Hathor Dahabiya on the Nile"
+                  backAlt="Royal suite aboard Hathor Dahabiya"
+                />
               </Scene>
 
               <Scene className="ce-manifesto">
@@ -288,16 +312,14 @@ export function ContactPageContent() {
               </Scene>
 
               <Scene className="ce-closing">
-                <div className="ce-flip ce-closing__media">
-                  <ContactMedia
-                    slot="home-voyage-nile-majesty"
-                    alt="Sailing the Nile aboard Hathor"
-                  />
-                  <ContactMedia
-                    slot="home-split-courtyard"
-                    alt="Life aboard Hathor Dahabiya"
-                  />
-                </div>
+                <FlipImage
+                  className="ce-closing__media"
+                  axis="up"
+                  front="home-voyage-nile-majesty"
+                  back="home-split-courtyard"
+                  frontAlt="Sailing the Nile aboard Hathor"
+                  backAlt="Life aboard Hathor Dahabiya"
+                />
               </Scene>
             </div>
           </div>
