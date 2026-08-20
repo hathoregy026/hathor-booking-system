@@ -106,7 +106,7 @@ function toAccordionCruise(
       cruise.basePriceCents,
       cruise.slug,
     ),
-    href: "/cruises",
+    href: "/voyages",
   };
 }
 

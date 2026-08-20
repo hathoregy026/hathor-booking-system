@@ -41,8 +41,13 @@ export const NAV_SUITES: NavGroup = {
 
 export const NAV_CRUISES: NavGroup = {
   id: "cruises",
-  label: "Cruises",
+  label: "Voyages",
   links: [
+    {
+      href: "/voyages",
+      label: "Our Voyages",
+      description: "Private dahabiya itineraries on the Nile",
+    },
     {
       href: "/cruises",
       label: "Scheduled Voyages",
@@ -53,17 +58,12 @@ export const NAV_CRUISES: NavGroup = {
       label: "Private Charter",
       description: "The Dahabiya, yours alone",
     },
-    {
-      href: "/voyages",
-      label: "Our Voyages",
-      description: "Private dahabiya itineraries on the Nile",
-    },
   ],
 };
 
 export const NAV_EXPERIENCES: NavGroup = {
   id: "experiences",
-  label: "Voyage",
+  label: "Experiences",
   links: [
     {
       href: "/highlights",
@@ -124,9 +124,8 @@ export const EXPLORE_LINKS: NavLink[] = [
   { href: "/luxury-cabins-Nile-Cruise", label: "Luxury Rooms" },
   { href: "/rooms", label: "Luxury Suites" },
   { href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise", label: "Royal Suites" },
-  { href: "/cruises", label: "Scheduled Voyages" },
-  { href: "/charter", label: "Private Charter" },
   { href: "/voyages", label: "Our Voyages" },
+  { href: "/cruises", label: "Scheduled Voyages" },
   { href: "/highlights", label: "Highlights" },
   { href: "/wellness", label: "Wellness & Spa" },
   { href: "/gastronomy", label: "Dining" },
@@ -163,7 +162,7 @@ export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
     type: "group",
     id: NAV_CRUISES.id,
     label: NAV_CRUISES.label,
-    href: "/cruises",
+    href: "/voyages",
     links: NAV_CRUISES.links,
   },
   {
@@ -187,6 +186,7 @@ export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
 const NAV_PATH_ALIASES: Record<string, readonly string[]> = {
   "/cruises": ["/cruises-list"],
   "/cruises-list": ["/cruises"],
+  "/voyages": ["/cruises-list"],
   "/suites": ["/rooms", "/Nile-Cruise-Luxury-Suites"],
   "/rooms": ["/Nile-Cruise-Luxury-Suites"],
   "/luxury-cabins-Nile-Cruise": ["/accommodation", "/accommodations"],

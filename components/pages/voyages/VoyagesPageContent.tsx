@@ -200,7 +200,11 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                     <div className="voy-chapter__actions">
                       <Link
                         className="btn btn-dark"
-                        href={panel.detailsHref}
+                        href={
+                          item.slug === "nile-majesty"
+                            ? "/charter"
+                            : "/cruises"
+                        }
                       >
                         {panel.detailsLabel}
                       </Link>
