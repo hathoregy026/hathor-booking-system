@@ -39,6 +39,29 @@ function AboutMedia({
   );
 }
 
+function FlipImage({
+  front,
+  back,
+  frontAlt,
+  backAlt = "",
+  className = "",
+  axis = "left",
+}: {
+  front: string;
+  back: string;
+  frontAlt: string;
+  backAlt?: string;
+  className?: string;
+  axis?: "up" | "left" | "right";
+}) {
+  return (
+    <div className={`ab-flip ab-flip--${axis} ${className}`} data-ab-flip>
+      <AboutMedia slot={front} alt={frontAlt} className="ab-flip__base" />
+      <AboutMedia slot={back} alt={backAlt} className="ab-flip__overlay" />
+    </div>
+  );
+}
+
 function SplitText({
   children,
   className = "",
@@ -199,10 +222,14 @@ export function AboutPageContent() {
                   priority
                   className="ab-image-lead__main"
                 />
-                <div className="ab-flip ab-image-lead__flip">
-                  <AboutMedia slot="room-suite" alt="Suite aboard Hathor" />
-                  <AboutMedia slot="about-dining" alt="Dining aboard Hathor" />
-                </div>
+                <FlipImage
+                  className="ab-image-lead__flip"
+                  axis="left"
+                  front="room-suite"
+                  back="about-dining"
+                  frontAlt="Suite aboard Hathor"
+                  backAlt="Dining aboard Hathor"
+                />
               </Scene>
 
               <Scene className="ab-manifesto">
@@ -216,14 +243,22 @@ export function AboutPageContent() {
               </Scene>
 
               <Scene className="ab-collage">
-                <div className="ab-collage__tile ab-collage__tile--one ab-flip">
-                  <AboutMedia slot="home-story-way-of-life" alt="Life aboard Hathor" />
-                  <AboutMedia slot="home-cinematic-still" alt="Hathor on the river" />
-                </div>
-                <div className="ab-collage__tile ab-collage__tile--two ab-flip">
-                  <AboutMedia slot="home-story-craft-large" alt="Craft aboard Hathor" />
-                  <AboutMedia slot="room-luxury" alt="Cabin aboard Hathor" />
-                </div>
+                <FlipImage
+                  className="ab-collage__tile ab-collage__tile--one"
+                  axis="up"
+                  front="home-story-way-of-life"
+                  back="home-cinematic-still"
+                  frontAlt="Life aboard Hathor"
+                  backAlt="Hathor on the river"
+                />
+                <FlipImage
+                  className="ab-collage__tile ab-collage__tile--two"
+                  axis="right"
+                  front="home-story-craft-large"
+                  back="room-luxury"
+                  frontAlt="Craft aboard Hathor"
+                  backAlt="Cabin aboard Hathor"
+                />
                 <p>{second}</p>
               </Scene>
 
@@ -238,14 +273,22 @@ export function AboutPageContent() {
               </Scene>
 
               <Scene className="ab-image-pair">
-                <div className="ab-flip ab-image-pair__left">
-                  <AboutMedia slot="home-voyage-nile-majesty" alt="Nile voyage" />
-                  <AboutMedia slot="home-call-to-action" alt="Deck on the Nile" />
-                </div>
-                <div className="ab-flip ab-image-pair__right">
-                  <AboutMedia slot="gastronomy-table" alt="Dining on the Nile" />
-                  <AboutMedia slot="room-royal" alt="Royal Suite aboard Hathor" />
-                </div>
+                <FlipImage
+                  className="ab-image-pair__left"
+                  axis="left"
+                  front="home-voyage-nile-majesty"
+                  back="home-call-to-action"
+                  frontAlt="Nile voyage"
+                  backAlt="Deck on the Nile"
+                />
+                <FlipImage
+                  className="ab-image-pair__right"
+                  axis="right"
+                  front="gastronomy-table"
+                  back="room-royal"
+                  frontAlt="Dining on the Nile"
+                  backAlt="Royal Suite aboard Hathor"
+                />
               </Scene>
 
               <Scene className="ab-principles" id="stay">
@@ -294,9 +337,19 @@ export function AboutPageContent() {
 
               <Scene className="ab-last-project">
                 <div className="ab-last-project__images">
-                  <AboutMedia slot="gastronomy-restaurant" alt="Indoor restaurant aboard Hathor" />
-                  <AboutMedia slot="gastronomy-wine" alt="Bar aboard Hathor" />
-                  <AboutMedia slot="about-dining" alt="Fine dining aboard Hathor" />
+                  <AboutMedia
+                    slot="gastronomy-restaurant"
+                    alt="Indoor restaurant aboard Hathor"
+                    className="ab-last-project__main"
+                  />
+                  <FlipImage
+                    className="ab-last-project__stack"
+                    axis="left"
+                    front="gastronomy-wine"
+                    back="about-dining"
+                    frontAlt="Bar aboard Hathor"
+                    backAlt="Fine dining aboard Hathor"
+                  />
                   <Link href="/gastronomy" className="ab-last-project__link">
                     <span>↗</span> Explore Dining
                   </Link>
@@ -314,10 +367,14 @@ export function AboutPageContent() {
               </Scene>
 
               <Scene className="ab-closing">
-                <div className="ab-flip ab-closing__media">
-                  <AboutMedia slot="home-story-legacy-large" alt="Hathor legacy on the Nile" />
-                  <AboutMedia slot="home-split-courtyard" alt="Hathor deck living" />
-                </div>
+                <FlipImage
+                  className="ab-closing__media"
+                  axis="up"
+                  front="home-story-legacy-large"
+                  back="home-split-courtyard"
+                  frontAlt="Hathor legacy on the Nile"
+                  backAlt="Hathor deck living"
+                />
               </Scene>
             </div>
           </div>
