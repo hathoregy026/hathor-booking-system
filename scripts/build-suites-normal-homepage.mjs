@@ -1,3 +1,4 @@
+import { stripSuitesFreezeScripts } from "./strip-suites-freeze.mjs";
 import { cp, mkdir, readFile, realpath, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 
@@ -1012,16 +1013,18 @@ $("head").append(`
   </style>
 `);
 
-const outputHtml = $.html()
-  .replaceAll(
-    "https://normalisboring.es/wp-content/plugins/cookie-law-info/lite/frontend/images/",
-    "assets/images/",
-  )
-  .replaceAll(
-    "https://normalisboring.es/wp-includes/js/wp-emoji-release.min.js?ver=7.0.4",
-    "scripts/vendor/wp-emoji-release.min.js",
-  )
-  .replace(/[ \t]+$/gm, "");
+const outputHtml = stripSuitesFreezeScripts(
+  $.html()
+    .replaceAll(
+      "https://normalisboring.es/wp-content/plugins/cookie-law-info/lite/frontend/images/",
+      "assets/images/",
+    )
+    .replaceAll(
+      "https://normalisboring.es/wp-includes/js/wp-emoji-release.min.js?ver=7.0.4",
+      "scripts/vendor/wp-emoji-release.min.js",
+    )
+    .replace(/[ \t]+$/gm, ""),
+);
 
 await writeFile(path.join(outputRoot, "index.html"), outputHtml, "utf8");
 

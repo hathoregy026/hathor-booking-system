@@ -14,10 +14,6 @@ import {
   resolvePageVisibilityForRequest,
 } from "@/lib/live-site-gate";
 import {
-  getWelcomeSplashBlockingScript,
-  getWelcomeSplashCriticalStyle,
-} from "@/lib/public-theme";
-import {
   heroLogoTuneToImportantCss,
   heroLogoTuneToNarrowImportantCss,
 } from "@/lib/hero-logo-tune-shared";
@@ -158,21 +154,6 @@ export default async function PublicSiteLayout({
       className={`${agraham.variable} ${gabigaile.variable} ${gamgote.variable} ${quietLuxury.variable} ${plusJakarta.variable}`}
       style={displayFontStyle}
     >
-      {siteIsLive ? (
-        <script
-          dangerouslySetInnerHTML={{
-            /* Always kill — never mount — regardless of CMS preload toggle. */
-            __html: getWelcomeSplashBlockingScript(false),
-          }}
-        />
-      ) : null}
-      {siteIsLive ? (
-        <style
-          dangerouslySetInnerHTML={{
-            __html: getWelcomeSplashCriticalStyle(),
-          }}
-        />
-      ) : null}
       {siteIsLive ? (
         <style
           dangerouslySetInnerHTML={{

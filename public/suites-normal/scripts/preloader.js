@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(porcentLoad== 100) loadComplete();
         }
 
-    }, 5);
+    }, 50);
 
     //loadComplete
     const loadComplete = () => {
