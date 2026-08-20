@@ -60,6 +60,31 @@ export function getHeroTypeReadyBlockingScript(): string {
   return `(function(){try{var d=document.documentElement;if(d.classList.contains("hathor-hero-type-ready"))return;function done(){d.classList.add("hathor-hero-type-ready");}var faces=["Bitho Luxury","Carista","Gabigaile","Quiet Luxury","Agraham"];var fail=setTimeout(done,400);if(!document.fonts||!document.fonts.load){clearTimeout(fail);done();return;}Promise.all(faces.map(function(f){return document.fonts.load('400 64px "'+f+'"');})).then(function(){clearTimeout(fail);done();}).catch(function(){clearTimeout(fail);done();});}catch(e){try{document.documentElement.classList.add("hathor-hero-type-ready");}catch(x){}}})();`;
 }
 
+/**
+ * Editorial Bitho titles: hide until the face is ready, but never longer than 1s.
+ * font-display:swap alone would flash a fallback; block would FOIT for ~3s.
+ */
+export function getBithoTitleReadyBlockingScript(): string {
+  return `(function(){try{var d=document.documentElement;if(d.classList.contains("hathor-bitho-ready"))return;function done(){d.classList.add("hathor-bitho-ready");}var fail=setTimeout(done,1000);if(!document.fonts||!document.fonts.load){clearTimeout(fail);done();return;}document.fonts.load('italic 80px "Bitho Luxury"').then(function(){clearTimeout(fail);done();}).catch(function(){clearTimeout(fail);done();});}catch(e){try{document.documentElement.classList.add("hathor-bitho-ready");}catch(x){}}})();`;
+}
+
+export function getBithoTitleReadyCriticalStyle(): string {
+  return [
+    "html:not(.hathor-bitho-ready) .voyages-boring .vb-intro__title,",
+    "html:not(.hathor-bitho-ready) .voyages-boring .vb-intro__title-part,",
+    "html:not(.hathor-bitho-ready) .about-boring .ab-intro__title,",
+    "html:not(.hathor-bitho-ready) .about-boring .ab-intro__title-part,",
+    "html:not(.hathor-bitho-ready) .contact-editorial .ce-intro__title,",
+    "html:not(.hathor-bitho-ready) .contact-editorial .ce-intro__title-part,",
+    "html:not(.hathor-bitho-ready) .wellness-boring .wb-intro__title,",
+    "html:not(.hathor-bitho-ready) .wellness-boring .wb-intro__title-part,",
+    "html:not(.hathor-bitho-ready) .cr-intro .cr-intro__title,",
+    "html:not(.hathor-bitho-ready) .nib-dining .nib-intro__titles{",
+    "opacity:0!important;visibility:hidden!important;",
+    "}",
+  ].join("");
+}
+
 /** Critical CSS for inner public heroes (cruises, about, etc.) before motion hook runs. */
 export function getPublicHeroBootCriticalStyle(): string {
   return [

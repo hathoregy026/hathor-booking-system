@@ -73,7 +73,7 @@
     format("opentype");
   font-weight: 400;
   font-style: italic;
-  font-display: block;
+  font-display: swap;
 }
 
 @font-face {

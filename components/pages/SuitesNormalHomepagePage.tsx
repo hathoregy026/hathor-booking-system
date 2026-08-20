@@ -117,6 +117,11 @@ main .mod-scroll__intro__text > p {
     font-size: 0.875rem !important;
   }
 }
+
+html:not(.hathor-bitho-ready) .mod-scroll__intro__title {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
 `;
 
 const CLONE_MENU_HIDE_CSS = `
@@ -250,6 +255,13 @@ export function SuitesNormalHomepagePage() {
       fonts.rel = "stylesheet";
       fonts.href = "/hathor-fonts.css";
       doc.head.appendChild(fonts);
+    }
+
+    if (!doc.getElementById("hathor-bitho-ready-boot")) {
+      const boot = doc.createElement("script");
+      boot.id = "hathor-bitho-ready-boot";
+      boot.textContent = `(function(){try{var d=document.documentElement;if(d.classList.contains("hathor-bitho-ready"))return;function done(){d.classList.add("hathor-bitho-ready");}var fail=setTimeout(done,1000);if(!document.fonts||!document.fonts.load){clearTimeout(fail);done();return;}document.fonts.load('italic 80px "Bitho Luxury"').then(function(){clearTimeout(fail);done();}).catch(function(){clearTimeout(fail);done();});}catch(e){try{document.documentElement.classList.add("hathor-bitho-ready");}catch(x){}}})();`;
+      doc.head.appendChild(boot);
     }
 
     let live = doc.getElementById("hathor-suites-live") as HTMLStyleElement | null;

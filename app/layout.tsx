@@ -11,6 +11,8 @@ import {
   getWelcomeSplashBlockingScript,
   getWelcomeSplashCriticalStyle,
   getHeroTypeReadyBlockingScript,
+  getBithoTitleReadyBlockingScript,
+  getBithoTitleReadyCriticalStyle,
 } from "@/lib/public-theme";
 import { getTouchDeviceBlockingScript } from "@/lib/touch-device";
 import { TouchDeviceBootstrap } from "@/components/public/TouchDeviceBootstrap";
@@ -101,7 +103,8 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html:
               getHomeBootCriticalStyle() +
-              getPublicHeroBootCriticalStyle(),
+              getPublicHeroBootCriticalStyle() +
+              getBithoTitleReadyCriticalStyle(),
           }}
         />
         <script
@@ -112,6 +115,11 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: getHeroTypeReadyBlockingScript(),
+          }}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: getBithoTitleReadyBlockingScript(),
           }}
         />
         <script
