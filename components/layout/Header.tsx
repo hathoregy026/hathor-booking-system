@@ -3,9 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { PublicThemeToggle } from "@/components/public/PublicThemeToggle";
+import { usePageVisibilitySettings } from "@/components/public/PageVisibilityProvider";
 import { StaggeredMenu } from "@/components/layout/StaggeredMenu";
 import {
   HATHOR_BRAND_NAME,
@@ -14,7 +15,9 @@ import {
 } from "@/lib/branding";
 import {
   HEADER_NAV_ITEMS,
+  filterNavItemsForVisibility,
   navHrefMatches,
+  splitHeaderNavItems,
   type HeaderNavItem,
 } from "@/lib/public-nav";
 import {
@@ -27,14 +30,6 @@ import { PUBLIC_SOCIAL_LINKS } from "@/lib/public-social";
 import type { ReactNode } from "react";
 
 const EXPLORE_LOCK_OWNER = "explore-panel" as const;
-
-const HEADER_NAV_LEFT = HEADER_NAV_ITEMS.slice(
-  0,
-  Math.ceil(HEADER_NAV_ITEMS.length / 2),
-);
-const HEADER_NAV_RIGHT = HEADER_NAV_ITEMS.slice(
-  Math.ceil(HEADER_NAV_ITEMS.length / 2),
-);
 
 /** Same social order + glyphs as the desktop footer. */
 type FooterSocialKey = "instagram" | "linkedin" | "facebook";
@@ -86,10 +81,12 @@ function ExplorePanel({
   open,
   onClose,
   onNavigate,
+  navItems,
 }: {
   open: boolean;
   onClose: () => void;
   onNavigate: (href: string) => void;
+  navItems: HeaderNavItem[];
 }) {
   if (!open) return null;
 
@@ -115,7 +112,7 @@ function ExplorePanel({
         </div>
 
         <div className="hathor-explore__grid">
-          {HEADER_NAV_ITEMS.map((item) => {
+          {navItems.map((item) => {
             if (item.type === "link") {
               return (
                 <div key={item.href} className="hathor-explore__group">
@@ -203,6 +200,15 @@ function isNavItemActive(pathname: string, item: HeaderNavItem): boolean {
 export function Header() {
   const pathname = usePathname();
   const router = useRouter();
+  const pageVisibility = usePageVisibilitySettings();
+  const navItems = useMemo(
+    () => filterNavItemsForVisibility(HEADER_NAV_ITEMS, pageVisibility),
+    [pageVisibility],
+  );
+  const { left: navLeft, right: navRight } = useMemo(
+    () => splitHeaderNavItems(navItems),
+    [navItems],
+  );
   const [exploreOpen, setExploreOpen] = useState(false);
   const [isPhone, setIsPhone] = useState(false);
   const [menuHovered, setMenuHovered] = useState(false);
@@ -537,7 +543,7 @@ export function Header() {
               aria-label="Primary navigation left"
             >
               <ul className="hathor-header__nav hathor-header__nav--left">
-                {HEADER_NAV_LEFT.map(renderNavItem)}
+                {navLeft.map(renderNavItem)}
               </ul>
             </nav>
 
@@ -563,7 +569,7 @@ export function Header() {
               aria-label="Primary navigation right"
             >
               <ul className="hathor-header__nav hathor-header__nav--right">
-                {HEADER_NAV_RIGHT.map(renderNavItem)}
+                {navRight.map(renderNavItem)}
               </ul>
             </nav>
           </div>
@@ -589,7 +595,7 @@ export function Header() {
           onClose={closeExploreSync}
           onNavigate={navigateFromExplore}
           position="right"
-          navItems={HEADER_NAV_ITEMS}
+          navItems={navItems}
           socialItems={PHONE_SOCIAL_ITEMS}
           displaySocials
           colors={
@@ -604,6 +610,7 @@ export function Header() {
           open={exploreOpen}
           onClose={closeExploreSync}
           onNavigate={navigateFromExplore}
+          navItems={navItems}
         />
       )}
     </>
