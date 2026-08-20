@@ -48,11 +48,11 @@ function ToggleRow({
           type="checkbox"
           checked={live}
           onChange={(event) => onChange(event.target.checked)}
-          aria-label={`${live ? "Live" : "Under construction"} — ${label}`}
+          aria-label={`${live ? "Live" : "Coming Soon"} — ${label}`}
         />
         <span className="page-visibility-row__toggle-ui" aria-hidden />
         <span className="page-visibility-row__status">
-          {live ? "Live" : "Under construction"}
+          {live ? "Live" : "Coming Soon"}
         </span>
       </label>
     </div>

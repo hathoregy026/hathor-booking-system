@@ -39,7 +39,7 @@ export const ADMIN_CMS_LINKS: AdminCmsLink[] = [
   {
     href: "/admin/pages",
     label: "Pages",
-    description: "Show live or under construction",
+    description: "Show live or Coming Soon",
   },
   {
     href: "/admin/live-site",

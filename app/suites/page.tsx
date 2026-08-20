@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 
 import { SuitesNormalHomepagePage } from "@/components/pages/SuitesNormalHomepagePage";
+import { StandalonePageVisibilityShell } from "@/components/public/StandalonePageVisibilityShell";
 import { LUXURY_SUITES_PAGE } from "@/lib/page-content";
+import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 
+import "../page-visibility.css";
+import "../site-coming-soon.css";
 import "../suites-normal-clone.css";
 
 const OG_IMAGE = "/media/hathor/scraped/suites-hero.webp";
@@ -31,6 +35,21 @@ export const metadata: Metadata = {
   },
 };
 
-export default function SuitesPage() {
-  return <SuitesNormalHomepagePage />;
+/**
+ * Outside (public): Suites owns its own layout. Still must honor dashboard
+ * Pages + Live Site gates on the custom domain (Vercel / localhost stay open).
+ */
+export default async function SuitesPage() {
+  const cms = await loadPublicCmsBundle();
+
+  return (
+    <StandalonePageVisibilityShell
+      path="/suites"
+      pageLabel="Suites"
+      settings={cms.pageVisibility}
+      liveSite={cms.liveSite}
+    >
+      <SuitesNormalHomepagePage />
+    </StandalonePageVisibilityShell>
+  );
 }

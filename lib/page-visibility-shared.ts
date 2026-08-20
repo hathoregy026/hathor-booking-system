@@ -45,7 +45,7 @@ export const MANAGED_PUBLIC_PAGES: readonly ManagedPublicPage[] = [
     path: "/cruises",
     label: "Scheduled Voyages",
     group: "Cruises",
-    aliases: ["/cruises-list"],
+    aliases: ["/cruises-list", "/voyages"],
   },
   { id: "charter", path: "/charter", label: "Private Charter", group: "Cruises" },
   { id: "highlights", path: "/highlights", label: "Highlights", group: "Voyage" },
@@ -74,7 +74,7 @@ export type ManagedPublicPageId = (typeof MANAGED_PUBLIC_PAGES)[number]["id"];
 export type PageVisibilityMap = Record<ManagedPublicPageId, boolean>;
 
 export type PageVisibilitySettings = {
-  /** When true the page is live; when false visitors see under construction. */
+  /** When true the page is live; when false visitors see Coming Soon. */
   pages: PageVisibilityMap;
 };
 

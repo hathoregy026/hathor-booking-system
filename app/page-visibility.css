@@ -23,7 +23,7 @@
   background: #fff;
 }
 
-/* Under construction: navbar + one message only — hide floating CTAs */
+/* Coming Soon: navbar + one message only — hide floating CTAs */
 body:has(.hathor-page-construction) .public-fab {
   display: none !important;
 }

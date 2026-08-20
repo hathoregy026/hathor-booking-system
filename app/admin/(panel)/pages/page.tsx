@@ -7,7 +7,7 @@ export default function AdminPagesPage() {
     <div className="mx-auto max-w-3xl space-y-6">
       <CmsPageHeader
         title="Pages"
-        description="Turn each public page live or under construction. When a page is off, visitors see a single under-construction message instead of the page content. Saves publish to the live site immediately."
+        description="Turn each public page live or Coming Soon. When a page is off, visitors on your custom domain see Coming Soon. Your Vercel link still shows the real page so you can keep working."
         icon={LayoutGrid}
       />
       <PageVisibilityPanel />

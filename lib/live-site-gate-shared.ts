@@ -21,7 +21,7 @@ export function isLiveSiteWorkHost(hostname: string): boolean {
 
 /**
  * True on the client-facing custom domain — Coming Soon + per-page
- * under-construction apply. False on Vercel links and localhost.
+ * Coming Soon apply. False on Vercel links and localhost.
  */
 export function shouldEnforceVisitorGates(
   hostname: string | null | undefined,
@@ -43,7 +43,7 @@ export function resolveComingSoonActive(
 }
 
 /**
- * Per-page under-construction only on the main domain.
+ * Per-page Coming Soon only on the main domain.
  * Work hosts always receive all-live settings so editors can keep previewing.
  */
 export function resolvePageVisibilityForHost(

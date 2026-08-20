@@ -51,6 +51,9 @@ export async function PUT(request: NextRequest) {
 
     for (const page of MANAGED_PUBLIC_PAGES) {
       revalidatePath(page.path);
+      for (const alias of page.aliases ?? []) {
+        revalidatePath(alias);
+      }
     }
 
     return NextResponse.json(

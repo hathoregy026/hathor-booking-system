@@ -29,7 +29,7 @@ function useIsWorkHost(): boolean {
 
 /**
  * Main content + footer for public routes.
- * Under construction: single message, navbar stays in layout, no footer.
+ * Coming Soon: single message, navbar stays in layout, no footer.
  */
 export function PageVisibilityChrome({ children }: PageVisibilityChromeProps) {
   const pathname = usePathname() ?? "/";
