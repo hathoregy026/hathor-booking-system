@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, type RefObject } from "react";
+import { editorialFlipProgress } from "@/lib/editorial-flip-progress";
 
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
 
@@ -26,6 +27,7 @@ export function useCruisesIntroScroll({
     const html = document.documentElement;
     const progressBar = run.querySelector<HTMLElement>("[data-cr-intro-progress]");
     const scenes = [...track.querySelectorAll<HTMLElement>("[data-cr-intro-scene]")];
+    const flips = [...track.querySelectorAll<HTMLElement>("[data-cr-intro-flip]")];
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     let desktop = false;
     let travel = 0;
@@ -36,6 +38,19 @@ export function useCruisesIntroScroll({
     let lastWidth = window.innerWidth;
 
     html.setAttribute("data-cruises-intro", "");
+
+    const applyFlips = (mode: "horizontal" | "vertical") => {
+      flips.forEach((el) => {
+        if (reduced.matches) {
+          el.style.setProperty("--reveal", "1");
+          return;
+        }
+        el.style.setProperty(
+          "--reveal",
+          editorialFlipProgress(el.getBoundingClientRect(), mode).toFixed(4),
+        );
+      });
+    };
 
     const applySceneVars = (x: number) => {
       const viewport = window.innerWidth;
@@ -52,6 +67,7 @@ export function useCruisesIntroScroll({
         scene.style.setProperty("--scene-progress", parallax.toFixed(4));
         scene.style.setProperty("--focus", Math.max(0, focus).toFixed(4));
       });
+      applyFlips("horizontal");
     };
 
     const applyVerticalVars = () => {
@@ -67,6 +83,7 @@ export function useCruisesIntroScroll({
         scene.style.setProperty("--scene-progress", progress.toFixed(4));
         scene.style.setProperty("--focus", Math.max(0, focus).toFixed(4));
       });
+      applyFlips("vertical");
     };
 
     const measure = () => {

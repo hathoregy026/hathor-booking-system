@@ -130,7 +130,7 @@ export function CruisesIntroHero() {
                   sizes="(max-width: 1024px) 100vw, 92vw"
                 />
               </figure>
-              <div className="cr-intro__flip">
+              <div className="cr-intro__flip" data-cr-intro-flip>
                 <figure>
                   <ManagedImage
                     name="home-voyage-4n-luxor-aswan"

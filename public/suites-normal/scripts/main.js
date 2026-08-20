@@ -269,7 +269,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         endTl = '+=75%';
                         scrubTl = .5;
                     }else{
-                        endTl = '+=75%';
+                        // Finish the wipe while the frame is still on screen.
+                        if (!elem.getAttribute('data-start')) startTl = "0% 100%";
+                        endTl = '+=50%';
                         scrubTl = .35;   
                     }
 

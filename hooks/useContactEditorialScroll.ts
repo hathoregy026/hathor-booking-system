@@ -1,13 +1,9 @@
 "use client";
 
 import { useEffect, type RefObject } from "react";
+import { editorialFlipProgress } from "@/lib/editorial-flip-progress";
 
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
-
-const smootherstep = (edge0: number, edge1: number, value: number) => {
-  const t = clamp((value - edge0) / Math.max(0.0001, edge1 - edge0));
-  return t * t * t * (t * (t * 6 - 15) + 10);
-};
 
 type ContactEditorialScrollRefs = {
   rootRef: RefObject<HTMLDivElement | null>;
@@ -41,21 +37,17 @@ export function useContactEditorialScroll({
 
     html.setAttribute("data-contact-editorial", "");
 
-    // NIB setFlips: each stacked pair wipes in its own window, not from scene progress.
+    // Finish each pair while the frame is still on screen — not after it has left.
     const applyFlips = (mode: "horizontal" | "vertical") => {
-      const viewportX = window.innerWidth;
-      const viewportY = window.innerHeight;
       flips.forEach((el) => {
         if (reduced.matches) {
           el.style.setProperty("--ce-flip", "1");
           return;
         }
-        const rect = el.getBoundingClientRect();
-        const local =
-          mode === "horizontal"
-            ? clamp((viewportX - rect.left) / Math.max(1, viewportX + rect.width))
-            : clamp((viewportY - rect.top) / Math.max(1, viewportY + rect.height));
-        el.style.setProperty("--ce-flip", smootherstep(0.18, 0.72, local).toFixed(4));
+        el.style.setProperty(
+          "--ce-flip",
+          editorialFlipProgress(el.getBoundingClientRect(), mode).toFixed(4),
+        );
       });
     };
 

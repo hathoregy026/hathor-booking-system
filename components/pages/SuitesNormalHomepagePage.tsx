@@ -313,7 +313,7 @@ export function SuitesNormalHomepagePage() {
       <iframe
         ref={iframeRef}
         className="suites-normal-clone__frame"
-        src="/suites-normal/index.html?v=hathor-restore-motion-20260820c"
+        src="/suites-normal/index.html?v=hathor-flip-complete-20260820"
         title="Hathor Suites"
         onLoad={() => void apply()}
       />
