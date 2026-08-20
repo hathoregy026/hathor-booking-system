@@ -607,7 +607,7 @@ export function MaskRevealPageContent() {
             <header className="mr-explore__header">
               <p className="mr-explore__eyebrow">Onboard</p>
               <div className="mr-explore__rule" aria-hidden="true" />
-              <h2 className="mr-explore__title">
+              <h2 className="mr-explore__title" data-anima-title>
                 {continueTitle.split("\n").map((line) => (
                   <span key={line}>{line.trim()}</span>
                 ))}
@@ -659,7 +659,11 @@ export function MaskRevealPageContent() {
           <footer className="mr-cta">
             <div className="mr-cta__inner">
               <p className="mr-cta__eyebrow">Voyages</p>
-              {ctaTitle ? <h2 className="mr-cta__title">{ctaTitle}</h2> : null}
+              {ctaTitle ? (
+                <h2 className="mr-cta__title" data-anima-title>
+                  {ctaTitle}
+                </h2>
+              ) : null}
               {ctaBody ? <p className="mr-cta__body">{ctaBody}</p> : null}
               <div className="mr-cta__actions">
                 <BookNowTrigger className="mr-btn mr-btn--solid">

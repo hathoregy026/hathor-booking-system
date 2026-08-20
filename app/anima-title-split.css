@@ -1,0 +1,50 @@
+/* Suites anima__title: clipped lines, letters rise/fall on scroll */
+
+.anima-split-line {
+  display: block;
+  overflow-x: visible;
+  overflow-y: clip;
+  padding: 0.04em 0.02em 0.1em;
+}
+
+.anima-split-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.anima-split-char,
+.anima-split-word-unit {
+  display: inline-block;
+  will-change: transform;
+  transform: translate3d(0, calc(var(--char-direction, 1) * 110%), 0);
+}
+
+[data-anima-played] .anima-split-char,
+[data-anima-played] .anima-split-word-unit,
+[data-anima-played] .anima-title-char,
+[data-anima-played] .anima-title-word {
+  transform: none;
+  will-change: auto;
+}
+
+.anima-title-line {
+  display: block;
+  overflow-x: visible;
+  overflow-y: clip;
+  padding: 0.04em 0.02em 0.1em;
+}
+
+.anima-title-char,
+.anima-title-word {
+  display: inline-block;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anima-split-char,
+  .anima-split-word-unit,
+  .anima-title-char,
+  .anima-title-word {
+    transform: none !important;
+  }
+}

@@ -1,6 +1,7 @@
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import { BookingModalProvider } from "@/components/booking/BookingModalProvider";
 import { DeployFreshness } from "@/components/public/DeployFreshness";
+import { AnimaTitleScroll } from "@/components/public/AnimaTitleScroll";
 import { LuxuryTextAnimations } from "@/components/public/LuxuryTextAnimations";
 import { PageVisibilityChrome } from "@/components/public/PageVisibilityChrome";
 import { PublicScrollInfrastructure } from "@/components/public/PublicScrollInfrastructure";
@@ -70,6 +71,7 @@ export function PublicLayout({
           <PublicScrollInfrastructure />
           <ScrollPositionRestore />
           <LuxuryTextAnimations />
+          <AnimaTitleScroll />
           <SiteImagePreviewScroll />
           <PublicNavbar />
           <PageVisibilityChrome>

@@ -5,9 +5,9 @@ import Link from "next/link";
 import {
   useRef,
   type ComponentPropsWithoutRef,
-  type CSSProperties,
 } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
+import { AnimaSplitLine } from "@/components/public/AnimaSplitLine";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { useVoyagesEditorialFlow } from "@/hooks/useVoyagesEditorialFlow";
 import type { HomepageAccordionCruise } from "@/lib/homepage-accordion-cruises";
@@ -60,34 +60,6 @@ function FlipImage({
       <VoyageMedia slot={front} alt={frontAlt} className="vb-flip__base" />
       <VoyageMedia slot={back} alt={backAlt} className="vb-flip__overlay" />
     </div>
-  );
-}
-
-function SplitText({
-  children,
-  className = "",
-}: {
-  children: string;
-  className?: string;
-}) {
-  return (
-    <span className={`vb-split ${className}`} aria-label={children}>
-      {Array.from(children).map((character, index) => (
-        <span
-          key={`${character}-${index}`}
-          aria-hidden="true"
-          className="vb-split__char"
-          style={
-            {
-              "--char-index": index,
-              "--char-direction": index % 2 === 0 ? 1 : -1,
-            } as CSSProperties
-          }
-        >
-          {character === " " ? "\u00a0" : character}
-        </span>
-      ))}
-    </span>
   );
 }
 
@@ -167,21 +139,21 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                   <p className="vb-marker">Voyages</p>
                   <p className="vb-copyright">Hathor Cruise ©2026</p>
 
-                  <div className="vb-intro__title" id="voyages">
+                  <div className="vb-intro__title" id="voyages" data-anima-title>
                     <h1 className="vb-intro__title-part vb-intro__title-part--one">
-                      <SplitText>Our</SplitText>
+                      <AnimaSplitLine line={0}>Our</AnimaSplitLine>
                       <br />
-                      <SplitText>Voyages</SplitText>
+                      <AnimaSplitLine line={1}>Voyages</AnimaSplitLine>
                     </h1>
                     <h1 className="vb-intro__title-part vb-intro__title-part--two">
-                      <SplitText>on the</SplitText>
+                      <AnimaSplitLine line={2}>on the</AnimaSplitLine>
                       <br />
-                      <SplitText>Nile</SplitText>
+                      <AnimaSplitLine line={3}>Nile</AnimaSplitLine>
                     </h1>
                     <h1 className="vb-intro__title-part vb-intro__title-part--three">
-                      <SplitText>private</SplitText>
+                      <AnimaSplitLine line={4}>private</AnimaSplitLine>
                       <br />
-                      <SplitText>sailings</SplitText>
+                      <AnimaSplitLine line={5}>sailings</AnimaSplitLine>
                     </h1>
                   </div>
 
@@ -213,10 +185,10 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
 
               <Scene className="vb-manifesto">
                 <p className="vb-marker">The river</p>
-                <div className="vb-manifesto__headline vb-big-title">
-                  <SplitText>Sail Egypt</SplitText>
-                  <SplitText>at a dahabiya</SplitText>
-                  <SplitText>pace</SplitText>
+                <div className="vb-manifesto__headline vb-big-title" data-anima-title>
+                  <AnimaSplitLine line={0}>Sail Egypt</AnimaSplitLine>
+                  <AnimaSplitLine line={1}>at a dahabiya</AnimaSplitLine>
+                  <AnimaSplitLine line={2}>pace</AnimaSplitLine>
                 </div>
                 <p className="vb-manifesto__body">{VOYAGES_PAGE.opening.body[0]}</p>
               </Scene>
@@ -276,7 +248,7 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                     <p className="vb-principle__copy">{stat.text}</p>
                     <div className="vb-principle__heading">
                       <span>{stat.count}</span>
-                      <h2>{stat.title}</h2>
+                      <h2 data-anima-title>{stat.title}</h2>
                     </div>
                     <VoyageMedia
                       slot={stat.slot}
@@ -322,7 +294,7 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                         <span>{String(index + 1).padStart(2, "0")}</span>
                         <Link href={panel.detailsHref}>View Details</Link>
                       </div>
-                      <h2>{title}</h2>
+                      <h2 data-anima-title>{title}</h2>
                     </div>
                   </Scene>
                 );
@@ -349,10 +321,10 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                 </div>
                 <div className="vb-last-project__copy">
                   <p className="vb-marker">Onboard</p>
-                  <div className="vb-big-title">
-                    <SplitText>Every voyage</SplitText>
-                    <SplitText>fully</SplitText>
-                    <SplitText>composed</SplitText>
+                  <div className="vb-big-title" data-anima-title>
+                    <AnimaSplitLine line={0}>Every voyage</AnimaSplitLine>
+                    <AnimaSplitLine line={1}>fully</AnimaSplitLine>
+                    <AnimaSplitLine line={2}>composed</AnimaSplitLine>
                   </div>
                   <p>{VOYAGES_PAGE.features.items[0]!.body}</p>
                 </div>
@@ -375,7 +347,7 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
         <section className="vb-epilogue" id="reserve">
           <header className="vb-epilogue__title">
             <span>(Reserve)</span>
-            <h2>
+            <h2 data-anima-title>
               SAIL
               <br />
               THE NILE
@@ -391,7 +363,7 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
               alt="Private charter on the Nile"
             />
           </div>
-          <div className="vb-epilogue__statement vb-big-title">
+          <div className="vb-epilogue__statement vb-big-title" data-anima-title>
             <span>Private</span>
             <span>sailings on</span>
             <span>the Nile</span>

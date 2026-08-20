@@ -5,10 +5,10 @@ import Link from "next/link";
 import {
   useRef,
   type ComponentPropsWithoutRef,
-  type CSSProperties,
 } from "react";
 import { InquiryForm } from "@/components/pages/InquiryForm";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
+import { AnimaSplitLine } from "@/components/public/AnimaSplitLine";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { useContactEditorialScroll } from "@/hooks/useContactEditorialScroll";
@@ -61,34 +61,6 @@ function FlipImage({
       <ContactMedia slot={front} alt={frontAlt} className="ce-flip__base" />
       <ContactMedia slot={back} alt={backAlt} className="ce-flip__overlay" />
     </div>
-  );
-}
-
-function SplitText({
-  children,
-  className = "",
-}: {
-  children: string;
-  className?: string;
-}) {
-  return (
-    <span className={`ce-split ${className}`} aria-label={children}>
-      {Array.from(children).map((character, index) => (
-        <span
-          key={`${character}-${index}`}
-          aria-hidden="true"
-          className="ce-split__char"
-          style={
-            {
-              "--char-index": index,
-              "--char-direction": index % 2 === 0 ? 1 : -1,
-            } as CSSProperties
-          }
-        >
-          {character === " " ? "\u00a0" : character}
-        </span>
-      ))}
-    </span>
   );
 }
 
@@ -171,21 +143,21 @@ export function ContactPageContent() {
                   <p className="ce-marker">Contact</p>
                   <p className="ce-copyright">Hathor Cruise ©2026</p>
 
-                  <div className="ce-intro__title" id="contact">
+                  <div className="ce-intro__title" id="contact" data-anima-title>
                     <h1 className="ce-intro__title-part ce-intro__title-part--one">
-                      <SplitText>We would</SplitText>
+                      <AnimaSplitLine line={0}>We would</AnimaSplitLine>
                       <br />
-                      <SplitText>love to</SplitText>
+                      <AnimaSplitLine line={1}>love to</AnimaSplitLine>
                     </h1>
                     <h1 className="ce-intro__title-part ce-intro__title-part--two">
-                      <SplitText>hear</SplitText>
+                      <AnimaSplitLine line={2}>hear</AnimaSplitLine>
                       <br />
-                      <SplitText>from you</SplitText>
+                      <AnimaSplitLine line={3}>from you</AnimaSplitLine>
                     </h1>
                     <h1 className="ce-intro__title-part ce-intro__title-part--three">
-                      <SplitText>on the</SplitText>
+                      <AnimaSplitLine line={4}>on the</AnimaSplitLine>
                       <br />
-                      <SplitText>Nile</SplitText>
+                      <AnimaSplitLine line={5}>Nile</AnimaSplitLine>
                     </h1>
                   </div>
 
@@ -217,11 +189,11 @@ export function ContactPageContent() {
 
               <Scene className="ce-manifesto">
                 <p className="ce-marker">A line open</p>
-                <div className="ce-manifesto__headline ce-big-title">
-                  <SplitText>A private line</SplitText>
-                  <SplitText>that invites you</SplitText>
-                  <SplitText>to begin</SplitText>
-                  <SplitText>the Nile</SplitText>
+                <div className="ce-manifesto__headline ce-big-title" data-anima-title>
+                  <AnimaSplitLine line={0}>A private line</AnimaSplitLine>
+                  <AnimaSplitLine line={1}>that invites you</AnimaSplitLine>
+                  <AnimaSplitLine line={2}>to begin</AnimaSplitLine>
+                  <AnimaSplitLine line={3}>the Nile</AnimaSplitLine>
                 </div>
                 <p className="ce-manifesto__body">{formIntro}</p>
               </Scene>
@@ -239,15 +211,15 @@ export function ContactPageContent() {
               <Scene className="ce-ledger" id="channels">
                 <div className="ce-ledger__title">
                   <p className="ce-marker">Reach us</p>
-                  <h2>
+                  <h2 data-anima-title>
                     <span>
-                      <SplitText>A quiet</SplitText>
+                      <AnimaSplitLine line={0}>A quiet</AnimaSplitLine>
                     </span>
                     <span>
-                      <SplitText>line to</SplitText>
+                      <AnimaSplitLine line={1}>line to</AnimaSplitLine>
                     </span>
                     <span>
-                      <SplitText>Hathor</SplitText>
+                      <AnimaSplitLine line={2}>Hathor</AnimaSplitLine>
                     </span>
                   </h2>
                 </div>
@@ -328,7 +300,7 @@ export function ContactPageContent() {
         <section className="ce-epilogue" id="write">
           <header className="ce-epilogue__title">
             <span>(Write)</span>
-            <h2>{formTitle.toUpperCase()}</h2>
+            <h2 data-anima-title>{formTitle.toUpperCase()}</h2>
           </header>
 
           <div className="ce-epilogue__form-wrap">

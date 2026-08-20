@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, type ComponentPropsWithoutRef, type CSSProperties } from "react";
+import { useRef, type ComponentPropsWithoutRef } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
+import { AnimaSplitLine } from "@/components/public/AnimaSplitLine";
 import { useWellnessEditorialScroll } from "@/hooks/useWellnessEditorialScroll";
 
 const MEDIA = {
@@ -39,28 +40,6 @@ function BoringMedia({ src, alt, priority = false, className = "" }: MediaProps)
         className="wb-media__image"
       />
     </figure>
-  );
-}
-
-function SplitText({ children, className = "" }: { children: string; className?: string }) {
-  return (
-    <span className={`wb-split ${className}`} aria-label={children}>
-      {Array.from(children).map((character, index) => (
-        <span
-          key={`${character}-${index}`}
-          aria-hidden="true"
-          className="wb-split__char"
-          style={
-            {
-              "--char-index": index,
-              "--char-direction": index % 2 === 0 ? 1 : -1,
-            } as CSSProperties
-          }
-        >
-          {character === " " ? "\u00a0" : character}
-        </span>
-      ))}
-    </span>
   );
 }
 
@@ -122,15 +101,15 @@ export function WellnessEditorialPageContent() {
                   <p className="wb-marker">Wellness</p>
                   <p className="wb-copyright">Hathor Cruise ©2026</p>
 
-                  <div className="wb-intro__title" id="wellness">
+                  <div className="wb-intro__title" id="wellness" data-anima-title>
                     <h1 className="wb-intro__title-part wb-intro__title-part--one">
-                      <SplitText>Rituals</SplitText><br /><SplitText>of renewal</SplitText>
+                      <AnimaSplitLine line={0}>Rituals</AnimaSplitLine><br /><AnimaSplitLine line={1}>of renewal</AnimaSplitLine>
                     </h1>
                     <h1 className="wb-intro__title-part wb-intro__title-part--two">
-                      <SplitText>that</SplitText><br /><SplitText>travel</SplitText><br /><SplitText>with you</SplitText>
+                      <AnimaSplitLine line={2}>that</AnimaSplitLine><br /><AnimaSplitLine line={3}>travel</AnimaSplitLine><br /><AnimaSplitLine line={4}>with you</AnimaSplitLine>
                     </h1>
                     <h1 className="wb-intro__title-part wb-intro__title-part--three">
-                      <SplitText>on</SplitText><br /><SplitText>the Nile</SplitText>
+                      <AnimaSplitLine line={5}>on</AnimaSplitLine><br /><AnimaSplitLine line={6}>the Nile</AnimaSplitLine>
                     </h1>
                   </div>
 
@@ -153,11 +132,11 @@ export function WellnessEditorialPageContent() {
 
               <Scene className="wb-manifesto">
                 <p className="wb-marker">Our ritual</p>
-                <div className="wb-manifesto__headline wb-big-title">
-                  <SplitText>Spaces that invite</SplitText>
-                  <SplitText>the body to</SplitText>
-                  <SplitText>release</SplitText>
-                  <SplitText>and recover</SplitText>
+                <div className="wb-manifesto__headline wb-big-title" data-anima-title>
+                  <AnimaSplitLine line={0}>Spaces that invite</AnimaSplitLine>
+                  <AnimaSplitLine line={1}>the body to</AnimaSplitLine>
+                  <AnimaSplitLine line={2}>release</AnimaSplitLine>
+                  <AnimaSplitLine line={3}>and recover</AnimaSplitLine>
                 </div>
                 <p className="wb-manifesto__body">
                   Every moment aboard Hathor is designed as part of your well-being. The spa restores, the gym energises, and each suite protects the quiet that follows—so discovery along the Nile never asks you to leave comfort behind.
@@ -187,7 +166,7 @@ export function WellnessEditorialPageContent() {
                     <p className="wb-principle__copy">{principle.text}</p>
                     <div className="wb-principle__heading">
                       <span>{principle.number}</span>
-                      <h2>{principle.title}</h2>
+                      <h2 data-anima-title>{principle.title}</h2>
                     </div>
                     <BoringMedia src={principle.image} alt={`${principle.title.toLowerCase()} aboard Hathor`} className="wb-principle__hover" />
                   </article>
@@ -207,7 +186,7 @@ export function WellnessEditorialPageContent() {
                       <span>{experience.meta}</span><span>{experience.place}</span><span>{experience.number}</span>
                       <Link href={experience.href}>The experience</Link>
                     </div>
-                    <h2>{experience.title}</h2>
+                    <h2 data-anima-title>{experience.title}</h2>
                   </div>
                 </Scene>
               ))}
@@ -221,11 +200,11 @@ export function WellnessEditorialPageContent() {
                 </div>
                 <div className="wb-last-project__copy">
                   <p className="wb-marker">Suites</p>
-                  <div className="wb-big-title">
-                    <SplitText>Who said</SplitText>
-                    <SplitText>that true rest</SplitText>
-                    <SplitText>cannot be</SplitText>
-                    <SplitText>adventurous</SplitText>
+                  <div className="wb-big-title" data-anima-title>
+                    <AnimaSplitLine line={0}>Who said</AnimaSplitLine>
+                    <AnimaSplitLine line={1}>that true rest</AnimaSplitLine>
+                    <AnimaSplitLine line={2}>cannot be</AnimaSplitLine>
+                    <AnimaSplitLine line={3}>adventurous</AnimaSplitLine>
                   </div>
                   <p>Our suites ignore passing trends in favour of craftsmanship, generous proportions, considered storage, private bathrooms, and the rare luxury of waking beside a different Nile horizon.</p>
                 </div>
@@ -241,13 +220,13 @@ export function WellnessEditorialPageContent() {
         <section className="wb-epilogue" id="reserve">
           <header className="wb-epilogue__title">
             <span>(Reserve)</span>
-            <h2>BEGIN YOUR<br />NILE RETURN</h2>
+            <h2 data-anima-title>BEGIN YOUR<br />NILE RETURN</h2>
           </header>
           <div className="wb-epilogue__images">
             <BoringMedia src={MEDIA.fitness} alt="Historia Fitness experience" />
             <BoringMedia src={MEDIA.spa} alt="Seneb Spa experience" />
           </div>
-          <div className="wb-epilogue__statement wb-big-title">
+          <div className="wb-epilogue__statement wb-big-title" data-anima-title>
             <span>Wellness at</span><span>its most</span><span>personal</span>
           </div>
           <div className="wb-epilogue__contact">

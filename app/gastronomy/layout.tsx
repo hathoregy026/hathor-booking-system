@@ -7,6 +7,7 @@ import "../mobile-touch.css";
 import "../lux-footer.css";
 import "../gastronomy-dining.css";
 import "../editorial-chrome.css";
+import "../anima-title-split.css";
 
 export default function GastronomyLayout({
   children,

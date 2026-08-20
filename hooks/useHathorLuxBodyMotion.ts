@@ -52,15 +52,8 @@ function revealOnce(
   });
 }
 
-function setupLuxTitlesAndReveals(root: HTMLElement, ease: string, lux: string) {
-  root.querySelectorAll<HTMLElement>("[data-lux-title]").forEach((el) => {
-    revealOnce(
-      el,
-      { y: 42, opacity: 0, duration: 1.05, ease: lux },
-      el,
-      "top 88%",
-    );
-  });
+function setupLuxTitlesAndReveals(root: HTMLElement, ease: string, _lux: string) {
+  /* Title clip-letter motion is owned by mountAnimaTitleSplit. */
 
   root.querySelectorAll<HTMLElement>("[data-lux-reveal]").forEach((el, i) => {
     /* Homepage Book Now is always painted — do not hide CTAs behind lux reveals. */

@@ -2,12 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import {
-  useRef,
-  type ComponentPropsWithoutRef,
-  type CSSProperties,
-} from "react";
+import { useRef, type ComponentPropsWithoutRef } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
+import { AnimaSplitLine } from "@/components/public/AnimaSplitLine";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { useAboutEditorialFlow } from "@/hooks/useAboutEditorialFlow";
@@ -59,34 +56,6 @@ function FlipImage({
       <AboutMedia slot={front} alt={frontAlt} className="ab-flip__base" />
       <AboutMedia slot={back} alt={backAlt} className="ab-flip__overlay" />
     </div>
-  );
-}
-
-function SplitText({
-  children,
-  className = "",
-}: {
-  children: string;
-  className?: string;
-}) {
-  return (
-    <span className={`ab-split ${className}`} aria-label={children}>
-      {Array.from(children).map((character, index) => (
-        <span
-          key={`${character}-${index}`}
-          aria-hidden="true"
-          className="ab-split__char"
-          style={
-            {
-              "--char-index": index,
-              "--char-direction": index % 2 === 0 ? 1 : -1,
-            } as CSSProperties
-          }
-        >
-          {character === " " ? "\u00a0" : character}
-        </span>
-      ))}
-    </span>
   );
 }
 
@@ -188,21 +157,21 @@ export function AboutPageContent() {
                   <p className="ab-marker">About</p>
                   <p className="ab-copyright">Hathor Cruise ©2026</p>
 
-                  <div className="ab-intro__title" id="about">
+                  <div className="ab-intro__title" id="about" data-anima-title>
                     <h1 className="ab-intro__title-part ab-intro__title-part--one">
-                      <SplitText>Welcome</SplitText>
+                      <AnimaSplitLine line={0}>Welcome</AnimaSplitLine>
                       <br />
-                      <SplitText>Aboard</SplitText>
+                      <AnimaSplitLine line={1}>Aboard</AnimaSplitLine>
                     </h1>
                     <h1 className="ab-intro__title-part ab-intro__title-part--two">
-                      <SplitText>Hathor</SplitText>
+                      <AnimaSplitLine line={2}>Hathor</AnimaSplitLine>
                       <br />
-                      <SplitText>Dahabiya</SplitText>
+                      <AnimaSplitLine line={3}>Dahabiya</AnimaSplitLine>
                     </h1>
                     <h1 className="ab-intro__title-part ab-intro__title-part--three">
-                      <SplitText>on the</SplitText>
+                      <AnimaSplitLine line={4}>on the</AnimaSplitLine>
                       <br />
-                      <SplitText>Nile</SplitText>
+                      <AnimaSplitLine line={5}>Nile</AnimaSplitLine>
                     </h1>
                   </div>
 
@@ -234,10 +203,10 @@ export function AboutPageContent() {
 
               <Scene className="ab-manifesto">
                 <p className="ab-marker">The dahabiya</p>
-                <div className="ab-manifesto__headline ab-big-title">
-                  <SplitText>Experience Egypt</SplitText>
-                  <SplitText>in a whole</SplitText>
-                  <SplitText>new light</SplitText>
+                <div className="ab-manifesto__headline ab-big-title" data-anima-title>
+                  <AnimaSplitLine line={0}>Experience Egypt</AnimaSplitLine>
+                  <AnimaSplitLine line={1}>in a whole</AnimaSplitLine>
+                  <AnimaSplitLine line={2}>new light</AnimaSplitLine>
                 </div>
                 <p className="ab-manifesto__body">{lead}</p>
               </Scene>
@@ -330,7 +299,7 @@ export function AboutPageContent() {
                       <span>{stay.number}</span>
                       <Link href={stay.href}>The experience</Link>
                     </div>
-                    <h2>{stay.title}</h2>
+                    <h2 data-anima-title>{stay.title}</h2>
                   </div>
                 </Scene>
               ))}
@@ -356,11 +325,11 @@ export function AboutPageContent() {
                 </div>
                 <div className="ab-last-project__copy">
                   <p className="ab-marker">{about.diningTitle}</p>
-                  <div className="ab-big-title">
-                    <SplitText>Luxury dining</SplitText>
-                    <SplitText>on Egypt’s</SplitText>
-                    <SplitText>finest</SplitText>
-                    <SplitText>dahabiya</SplitText>
+                  <div className="ab-big-title" data-anima-title>
+                    <AnimaSplitLine line={0}>Luxury dining</AnimaSplitLine>
+                    <AnimaSplitLine line={1}>on Egypt’s</AnimaSplitLine>
+                    <AnimaSplitLine line={2}>finest</AnimaSplitLine>
+                    <AnimaSplitLine line={3}>dahabiya</AnimaSplitLine>
                   </div>
                   <p>{ABOUT_PAGE.diningPromo.body}</p>
                 </div>
@@ -383,7 +352,7 @@ export function AboutPageContent() {
         <section className="ab-epilogue" id="reserve">
           <header className="ab-epilogue__title">
             <span>(Reserve)</span>
-            <h2>
+            <h2 data-anima-title>
               WELCOME
               <br />
               ABOARD
@@ -393,7 +362,7 @@ export function AboutPageContent() {
             <AboutMedia slot="room-royal" alt="Royal Suite experience" />
             <AboutMedia slot="about-dining" alt="Dining experience" />
           </div>
-          <div className="ab-epilogue__statement ab-big-title">
+          <div className="ab-epilogue__statement ab-big-title" data-anima-title>
             <span>Timeless</span>
             <span>luxury on</span>
             <span>the Nile</span>

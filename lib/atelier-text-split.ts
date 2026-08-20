@@ -216,6 +216,8 @@ export function splitAtelierWords(el: HTMLElement): HTMLElement[] {
 
 function shouldSkip(el: HTMLElement): boolean {
   if (el.closest(SKIP_CLOSEST)) return true;
+  if (el.closest("[data-anima-title], [data-anima-bound='1']")) return true;
+  if (el.querySelector(".anima-split-char, .anima-title-char")) return true;
   /* Titles owned by rooms / cruises SplitType engines */
   if (
     el.matches(

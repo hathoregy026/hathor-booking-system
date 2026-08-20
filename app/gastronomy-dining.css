@@ -225,6 +225,15 @@ html[data-gastronomy-dining] body {
   color: var(--nib-gold);
 }
 
+.nib-intro__titles[data-anima-title] :is(h1, h2) span,
+.nib-intro__titles[data-anima-title] h2 em,
+.nib-statement__title[data-anima-title] h2,
+.nib-statement__title[data-anima-title] h2:nth-child(3),
+.nib-statement__title[data-anima-title] h2:nth-child(4) {
+  transform: none;
+  opacity: 1;
+}
+
 .nib-intro__copy {
   position: absolute;
   right: 19%;

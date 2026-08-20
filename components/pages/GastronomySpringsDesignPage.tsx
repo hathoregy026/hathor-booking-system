@@ -5,6 +5,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { Footer } from "@/components/layout/Footer";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
+import { AnimaTitleScroll } from "@/components/public/AnimaTitleScroll";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { GASTRONOMY_DINING_MEDIA as media, diningPlateSlotName } from "@/lib/gastronomy-dining-media";
 
@@ -120,6 +121,7 @@ function Panel({ className, children }: { className: string; children: ReactNode
 export function GastronomySpringsDesignPage() {
   return (
     <div className="gastronomy-dining-shell" style={typeStyle}>
+      <AnimaTitleScroll />
       <div className="public-site gastronomy-dining-nav">
         <PublicNavbar />
       </div>
@@ -138,7 +140,7 @@ export function GastronomySpringsDesignPage() {
             <div className="nib-track" data-nib-track>
               <Panel className="nib-intro nib-surface--cream">
                 <span className="nib-chapter">Dining</span>
-                <div className="nib-intro__titles">
+                <div className="nib-intro__titles" data-anima-title>
                   <h1><span>TABLES</span><span>ON THE NILE</span></h1>
                   <h2><span>MADE TO</span><span>MOVE WITH YOU</span></h2>
                   <h2><span>TASTE</span><em>EGYPT</em></h2>
@@ -174,7 +176,7 @@ export function GastronomySpringsDesignPage() {
 
               <Panel className="nib-statement nib-surface--cream">
                 <span className="nib-chapter">The experience</span>
-                <div className="nib-statement__title">
+                <div className="nib-statement__title" data-anima-title>
                   <h2>DINING THAT INVITES</h2>
                   <h2>YOU TO LINGER</h2>
                   <h2>MOVE WITH</h2>
@@ -219,7 +221,7 @@ export function GastronomySpringsDesignPage() {
               <Panel className="nib-atelier nib-surface--cream">
                 <div className="nib-atelier__copy">
                   <span className="nib-chapter">Seven courses</span>
-                  <h2>PLATES THAT<br />ARRIVE<br /><em>LIKE MOMENTS</em></h2>
+                  <h2 data-anima-title>PLATES THAT<br />ARRIVE<br /><em>LIKE MOMENTS</em></h2>
                   <p>
                     Each course enters slowly, settles into its place and gives the table time
                     to look, breathe and taste.
@@ -240,19 +242,19 @@ export function GastronomySpringsDesignPage() {
                 <div className="nib-value">
                   <p>Egyptian ingredients are treated with restraint: bright citrus, warm spice,
                     river fish and vegetables gathered close to the banks.</p>
-                  <span>01</span><h2>TABLE</h2>
+                  <span>01</span><h2 data-anima-title>TABLE</h2>
                   <Plate number={3} className="nib-value__plate" />
                 </div>
                 <div className="nib-value">
                   <p>The onboard gym keeps movement close—an unhurried morning session while
                     palms and villages pass beyond the deck.</p>
-                  <span>02</span><h2>MOVEMENT</h2>
+                  <span>02</span><h2 data-anima-title>MOVEMENT</h2>
                   <Image src="/media/hathor/r2/wellness-fitness.webp" alt="Hathor onboard fitness" className="nib-value__image" />
                 </div>
                 <div className="nib-value">
                   <p>Your suite is the quiet counterpoint: generous river views, thoughtful
                     details and private service whenever you prefer to stay in.</p>
-                  <span>03</span><h2>REST</h2>
+                  <span>03</span><h2 data-anima-title>REST</h2>
                   <Image src="/media/hathor/optimized/room-suite.webp" alt="A calm Hathor suite" className="nib-value__image" />
                 </div>
               </Panel>
@@ -272,13 +274,13 @@ export function GastronomySpringsDesignPage() {
                     <span>{story.time}</span><span>{story.place}</span>
                     <span>{story.number}</span><a href="/contact">Open Story</a>
                   </div>
-                  <h2>{story.title}</h2>
+                  <h2 data-anima-title>{story.title}</h2>
                 </Panel>
               ))}
 
               <Panel className="nib-story-end nib-surface--cream">
                 <span className="nib-chapter">Beyond the table</span>
-                <h2>WHO SAID<br />PLEASURE<br />CANNOT BE<br /><em>FUNCTIONAL?</em></h2>
+                <h2 data-anima-title>WHO SAID<br />PLEASURE<br />CANNOT BE<br /><em>FUNCTIONAL?</em></h2>
                 <p>
                   Dining, movement and rest are composed as one continuous experience. Nothing is
                   rushed, nothing is overworked, and every detail serves the ease of life aboard.
@@ -302,7 +304,7 @@ export function GastronomySpringsDesignPage() {
 
         <section className="nib-contact nib-surface--cream" data-nib-reveal>
           <span className="nib-contact__eyebrow">(Concierge)</span>
-          <h2>SHAPE YOUR<br />VOYAGE</h2>
+          <h2 data-anima-title>SHAPE YOUR<br />VOYAGE</h2>
         </section>
 
         <section className="nib-double nib-surface--cream" data-nib-reveal>
@@ -310,7 +312,7 @@ export function GastronomySpringsDesignPage() {
           <Image src="/media/hathor/r2/wellness-fitness.webp" alt="Hathor's onboard gym" />
         </section>
 
-        <section className="nib-lines nib-surface--cream" data-nib-reveal>
+        <section className="nib-lines nib-surface--cream" data-nib-reveal data-anima-title>
           <h2>DINING WITH</h2>
           <h2>ROOM TO</h2>
           <h2>BREATHE</h2>

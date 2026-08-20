@@ -28,6 +28,7 @@ import "../public.css";
 import "../lux-footer.css";
 import "../interior-design-system.css";
 import "../atelier-text-split.css";
+import "../anima-title-split.css";
 import "../site-nav.css";
 import "../public-site-hero.css";
 import "../specular-button.css";

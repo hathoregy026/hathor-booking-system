@@ -3,49 +3,13 @@
 import Link from "next/link";
 import {
   useRef,
-  type CSSProperties,
   type ComponentPropsWithoutRef,
 } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
+import { AnimaSplitLine } from "@/components/public/AnimaSplitLine";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useCruisesIntroScroll } from "@/hooks/useCruisesIntroScroll";
 import { CRUISES_PAGE } from "@/lib/page-content";
-
-function SplitLine({
-  children,
-  className = "",
-}: {
-  children: string;
-  className?: string;
-}) {
-  const words = children.split(/\s+/).filter(Boolean);
-
-  return (
-    <span className={`cr-intro__split ${className}`} aria-label={children}>
-      {words.map((word, wordIndex) => (
-        <span key={`${word}-${wordIndex}`} className="cr-intro__word" aria-hidden="true">
-          {Array.from(word).map((character, charIndex) => {
-            const index = wordIndex * 8 + charIndex;
-            return (
-              <span
-                key={`${character}-${charIndex}`}
-                className="cr-intro__char"
-                style={
-                  {
-                    "--char-index": index,
-                    "--char-direction": index % 2 === 0 ? 1 : -1,
-                  } as CSSProperties
-                }
-              >
-                {character}
-              </span>
-            );
-          })}
-        </span>
-      ))}
-    </span>
-  );
-}
 
 function Scene({
   className = "",
@@ -91,21 +55,21 @@ export function CruisesIntroHero() {
                 <p className="cr-intro__marker">Cruises</p>
                 <p className="cr-intro__copyright">Hathor Dahabiya ©2026</p>
 
-                <div className="cr-intro__titles">
+                <div className="cr-intro__titles" data-anima-title>
                   <h1 className="cr-intro__title cr-intro__title--one">
-                    <SplitLine>Cruises</SplitLine>
+                    <AnimaSplitLine line={0}>Cruises</AnimaSplitLine>
                     <br />
-                    <SplitLine>of the Nile</SplitLine>
+                    <AnimaSplitLine line={1}>of the Nile</AnimaSplitLine>
                   </h1>
                   <h1 className="cr-intro__title cr-intro__title--two">
-                    <SplitLine>where</SplitLine>
+                    <AnimaSplitLine line={2}>where</AnimaSplitLine>
                     <br />
-                    <SplitLine>Egypt sails</SplitLine>
+                    <AnimaSplitLine line={3}>Egypt sails</AnimaSplitLine>
                   </h1>
                   <h1 className="cr-intro__title cr-intro__title--three">
-                    <SplitLine>meets</SplitLine>
+                    <AnimaSplitLine line={4}>meets</AnimaSplitLine>
                     <br />
-                    <SplitLine>luxury</SplitLine>
+                    <AnimaSplitLine line={5}>luxury</AnimaSplitLine>
                   </h1>
                 </div>
 
