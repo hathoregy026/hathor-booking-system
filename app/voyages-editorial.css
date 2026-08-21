@@ -1,679 +1,1464 @@
+/* ==========================================================================
+   VOYAGES — EDITORIAL
+   Third page in the "Normal is Boring" family, deliberately built on a
+   different spine from Contact and About:
+
+     · the display face is a SCRIPT (Bitho Luxury), so headlines are set in
+       sentence case at generous leading instead of tight uppercase — the page
+       reads as handwriting on paper rather than stone-cut caps
+     · a centred chapter-title opening, not a left-aligned one
+     · a departure-board data strip
+     · stacked full-bleed bands instead of an overlapping image pair
+     · Roman numerals throughout: a ragged I/II/III creed, and a giant
+       outlined ghost numeral behind every itinerary panel
+     · a filmstrip of day-chapters at unequal heights
+     · a staggered feature masonry with a deliberate 12rem push-down
+     · circular disc buttons instead of pills
+
+   Fonts are the ones this page already used:
+     --vb-display  Bitho Luxury          script display
+     --vb-edit     Rolling Fonte         numerals, chapter titles
+     --vb-script   Besty Script          the rare flourish line
+     --vb-meta     Plus Jakarta Sans     labels, body, data
+
+   Motion comes from custom properties written per-scene by
+   hooks/useVoyagesEditorialFlow.ts:  --reveal  --parallax  --focus  --vb-flip
+   ========================================================================== */
+
 .voyages-boring {
+  /* ---- palette */
+  --vb-paper: #ece4da;
+  --vb-paper-warm: #f3ede4;
+  --vb-ink: #14120e;
+  --vb-ink-soft: #4a453c;
   --vb-gold: #b69f64;
   --vb-gold-deep: #806b35;
-  --vb-ink: #211d16;
-  --vb-cream: #f5eacf;
-  --vb-paper: #f4e4cc;
+  --vb-wash-sand: #ded4c6;
+  --vb-wash-stone: #cfc7ba;
+  --vb-wash-olive: #adaa8a;
   --vb-black: #0b0a08;
-  --vb-blue: #ece8df;
-  --vb-grey: #d9d5cc;
-  --vb-red: #b69f64;
-  --vb-title: "Bitho Luxury", cursive;
-  --vb-copy: "Rollgates Luxury Italic", serif;
+  --vb-hair: rgb(20 18 14 / 16%);
+
+  /* ---- type stacks (all already loaded by this site) */
+  --vb-display: "Bitho Luxury", "Rollgates Luxury Italic", cursive;
+  --vb-edit: "Rolling Fonte", Georgia, "Times New Roman", serif;
+  --vb-script: "Besty Script", "Rollgates Luxury Italic", cursive;
+  --vb-meta: var(--font-hathor-body), "Plus Jakarta Sans", "Helvetica Neue",
+    Arial, sans-serif;
+
+  /* ---- scale. A script face needs more room than caps, so the display
+     sizes run a little smaller and the leading a little looser. */
+  --vb-t-xl: clamp(2.9rem, 8.2vw, 9.5rem);
+  --vb-t-l: clamp(2.3rem, 5.4vw, 6rem);
+  --vb-t-m: clamp(1.8rem, 3.4vw, 3.6rem);
+  --vb-t-s: clamp(1.3rem, 2vw, 2.2rem);
+  --vb-t-body: clamp(0.95rem, 1.05vw, 1.15rem);
+  --vb-t-meta: clamp(0.66rem, 0.72vw, 0.8rem);
+
+  /* ---- grid + rhythm */
+  --vb-pad: clamp(1rem, 2.4vw, 2.6rem);
+  --vb-gap: clamp(0.75rem, 1.5vw, 1.5rem);
+  --vb-col: calc((100vw - (var(--vb-pad) * 2) - (var(--vb-gap) * 11)) / 12);
+  --vb-band-pad: clamp(3.5rem, 9vw, 11rem);
+  --vb-push: clamp(2.5rem, 8vw, 12rem);
+
+  --vb-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --vb-ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+
   position: relative;
   width: 100%;
   max-width: 100vw;
-  overflow: visible;
   background: var(--vb-paper);
   color: var(--vb-ink);
-  font-family: var(--vb-copy);
-  font-style: italic;
+  font-family: var(--vb-meta);
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
 }
 
+/* --------------------------------------------------------------- host chrome */
 html[data-voyages-boring],
 html[data-voyages-boring] body,
 html[data-voyages-boring] .public-site,
 html[data-voyages-boring] .public-main,
-html[data-voyages-boring] .page-transition,
 html:has(.voyages-boring),
 html:has(.voyages-boring) body,
 html:has(.voyages-boring) .public-site,
-html:has(.voyages-boring) .public-main,
-html:has(.voyages-boring) .page-transition {
-  overflow-x: visible !important;
+html:has(.voyages-boring) .public-main {
+  overflow-x: clip;
+  background: #ece4da;
 }
 
 html:has(.voyages-boring) .hathor-header {
-  background: rgb(245 234 207 / 88%) !important;
-  box-shadow: 0 1px 0 rgb(128 107 53 / 18%);
-  backdrop-filter: blur(14px) saturate(.9);
+  background: rgb(236 228 218 / 82%) !important;
+  box-shadow: 0 1px 0 rgb(20 18 14 / 10%);
+  backdrop-filter: blur(14px) saturate(0.92);
 }
 
 html:has(.voyages-boring) .hathor-header a,
 html:has(.voyages-boring) .hathor-header button {
-  color: var(--vb-ink, #211d16) !important;
+  color: #14120e !important;
   text-shadow: none !important;
 }
 
 html:has(.voyages-boring) .hathor-header__logo--icon {
-  filter: brightness(.23) sepia(.5) saturate(.65) !important;
+  filter: brightness(0.16) saturate(0.4) !important;
 }
 
-html:has(.voyages-boring) .public-fab { display: none !important; }
+html:has(.voyages-boring) .public-fab {
+  display: none !important;
+}
+
 html:has(.voyages-boring) .lux-footer,
 html:has(.voyages-boring) footer.lux-footer {
   display: none !important;
 }
 
+/* ------------------------------------------------------------------- reset */
 .voyages-boring *,
 .voyages-boring *::before,
-.voyages-boring *::after { box-sizing: border-box; }
+.voyages-boring *::after {
+  box-sizing: border-box;
+}
+
 .voyages-boring h1,
 .voyages-boring h2,
 .voyages-boring h3,
 .voyages-boring p,
-.voyages-boring figure { margin: 0; }
-.voyages-boring a { color: inherit; text-decoration: none; }
-.voyages-boring main { width: 100%; }
-.voyages-boring,
-.voyages-boring p,
-.voyages-boring a,
-.voyages-boring button,
-.voyages-boring em,
-.voyages-boring strong {
-  font-family: var(--vb-copy) !important;
-  font-style: italic !important;
+.voyages-boring ol,
+.voyages-boring ul,
+.voyages-boring dl,
+.voyages-boring dd,
+.voyages-boring figure {
+  margin: 0;
+  padding: 0;
 }
 
- .vb-progress {
+.voyages-boring ol,
+.voyages-boring ul {
+  list-style: none;
+}
+
+.voyages-boring a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.voyages-boring main {
+  width: 100%;
+}
+
+/* ------------------------------------------------------------ type classes
+   The script display face carries its weight in the stroke, so it is never
+   uppercased and never tracked tight. */
+.voyages-boring .vb-display {
+  font-family: var(--vb-display);
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.02;
+  letter-spacing: 0;
+}
+
+.voyages-boring .vb-display--xl {
+  font-size: var(--vb-t-xl);
+}
+
+.voyages-boring .vb-display--l {
+  font-size: var(--vb-t-l);
+}
+
+.voyages-boring .vb-edit {
+  font-family: var(--vb-edit);
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.voyages-boring .vb-script {
+  font-family: var(--vb-script);
+  font-size: var(--vb-t-s);
+  line-height: 1.35;
+  color: var(--vb-gold-deep);
+}
+
+.voyages-boring .vb-eyebrow {
+  font-family: var(--vb-edit);
+  font-size: var(--vb-t-body);
+  font-style: italic;
+  color: var(--vb-gold-deep);
+}
+
+.voyages-boring .vb-reg {
+  font-size: 0.55em;
+  vertical-align: super;
+  margin: 0 0.1em;
+}
+
+/* clip-mask reveal — a script face has long ascenders and descenders, so the
+   mask gets extra room top and bottom or the swashes get shaved. */
+.voyages-boring .vb-line {
+  display: block;
+  overflow: clip;
+  padding: 0.12em 0.06em 0.16em;
+  margin: -0.12em -0.06em -0.16em;
+}
+
+.voyages-boring .vb-line > * {
+  display: block;
+  transform: translateY(calc((1 - var(--reveal, 1)) * 105%));
+  opacity: calc(0.2 + var(--reveal, 1) * 0.8);
+  transition:
+    transform 0.9s var(--vb-ease-soft),
+    opacity 0.9s var(--vb-ease-soft);
+}
+
+/* ------------------------------------------------------------------- links */
+.voyages-boring .vb-link {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.06em;
+}
+
+.voyages-boring .vb-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: var(--vb-lw, 0%);
+  height: 1px;
+  background: currentcolor;
+  transition: width 0.4s var(--vb-ease-soft);
+}
+
+.voyages-boring .vb-link:hover {
+  --vb-lw: 100%;
+}
+
+/* -------------------------------------------------------------- disc button
+   A circle rather than a pill — this page's signature control. */
+.voyages-boring .vb-disc {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(6.5rem, 8vw, 8.5rem);
+  aspect-ratio: 1 / 1;
+  flex: 0 0 auto;
+  border: 1px solid currentcolor;
+  border-radius: 50%;
+  overflow: hidden;
+  isolation: isolate;
+  text-align: center;
+  cursor: pointer;
+  transition: color 0.34s var(--vb-ease-soft);
+}
+
+.voyages-boring .vb-disc > span {
+  position: relative;
+  z-index: 2;
+  padding: 0 1.1em;
+  font-size: var(--vb-t-meta);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1.35;
+}
+
+.voyages-boring .vb-disc > i {
+  position: relative;
+  z-index: 2;
+  margin-top: 0.25em;
+  font-style: normal;
+  font-size: var(--vb-t-meta);
+  transition: transform 0.4s var(--vb-ease);
+}
+
+.voyages-boring .vb-disc::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: -1px;
+  border-radius: 50%;
+  background: currentcolor;
+  transform: scale(var(--vb-ds, 0));
+  transition: transform 0.45s var(--vb-ease-soft);
+}
+
+.voyages-boring .vb-disc:hover {
+  --vb-ds: 1;
+}
+
+.voyages-boring .vb-disc:hover > span,
+.voyages-boring .vb-disc:hover > i {
+  mix-blend-mode: difference;
+  filter: invert(1);
+}
+
+.voyages-boring .vb-disc:hover > i {
+  transform: translate(0.15em, -0.15em);
+}
+
+/* ---------------------------------------------------------------- pill button */
+.voyages-boring .vb-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  isolation: isolate;
+  padding: calc(0.72em - 1px) calc(1.5em - 1px);
+  border: 1px solid currentcolor;
+  border-radius: calc(0.72em * 3);
+  background: transparent;
+  color: inherit;
+  font-family: var(--vb-meta);
+  font-size: var(--vb-t-meta);
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.voyages-boring .vb-btn > span {
+  position: relative;
+  z-index: 2;
+}
+
+.voyages-boring .vb-btn::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: -1px;
+  background: currentcolor;
+  transform: translate3d(var(--vb-bx, -101%), var(--vb-by, -101%), 0);
+  transition: transform 0.42s var(--vb-ease-soft);
+}
+
+.voyages-boring .vb-btn:hover {
+  --vb-bx: 0%;
+  --vb-by: 0%;
+}
+
+.voyages-boring .vb-btn:hover > span {
+  mix-blend-mode: difference;
+  filter: invert(1);
+}
+
+.voyages-boring .vb-btn--xl {
+  padding: calc(1.05em - 1px) calc(2.6em - 1px);
+  border-radius: calc(1.05em * 3);
+}
+
+.voyages-boring .vb-btn--solid {
+  background: var(--vb-ink);
+  color: var(--vb-paper);
+  border-color: var(--vb-ink);
+}
+
+/* ---------------------------------------------------------------- progress */
+.vb-progress {
   position: fixed;
   z-index: 100;
   inset: 0 0 auto;
-  height: 3px;
+  height: 2px;
   pointer-events: none;
 }
- .vb-progress i {
+
+.vb-progress i {
   display: block;
   width: 100%;
   height: 100%;
-  background: var(--vb-gold);
-  box-shadow: 0 0 16px rgb(182 159 100 / 55%);
+  background: var(--vb-gold, #b69f64);
   transform: scaleX(0);
-  transform-origin: left;
+  transform-origin: 0 50%;
 }
- .vb-run { position: relative; width: 100%; }
- .vb-stage {
+
+/* ============================================================ HORIZONTAL ACT */
+.vb-run {
+  position: relative;
+  width: 100%;
+}
+
+.vb-stage {
   position: sticky;
   top: 0;
-  width: 100%;
   height: 100svh;
   overflow: hidden;
-  background: var(--vb-paper);
-}
- .vb-track {
   display: flex;
+  align-items: stretch;
+}
+
+.vb-track {
+  display: flex;
+  align-items: stretch;
   width: max-content;
   height: 100%;
   will-change: transform;
 }
- .vb-scene {
-  --reveal: 1;
-  --parallax: .5;
-  --scene-progress: .5;
-  --focus: 1;
+
+.vb-scene {
   position: relative;
   flex: 0 0 auto;
-  width: 100vw;
-  height: 100svh;
-  overflow: hidden;
-  isolation: isolate;
-}
- .vb-marker {
-  color: var(--vb-gold-deep);
-  font-size: clamp(.76rem, .78vw, .9rem);
-  letter-spacing: .02em;
-}
- .vb-big-title,
- .vb-intro__title-part,
- .vb-project h2,
- .vb-epilogue h2,
- .vb-epilogue h3,
- .vb-epilogue__monogram {
-  color: var(--vb-gold);
-  font-family: var(--vb-title) !important;
-  font-style: italic;
-  font-weight: 400;
-  letter-spacing: -.045em;
-  text-transform: uppercase;
-  -webkit-text-stroke: .28px rgb(128 107 53 / 72%);
-}
- .vb-split { display: inline-flex; overflow: hidden; vertical-align: bottom; }
- .vb-split__char {
-  display: inline-block;
-  opacity: calc(.12 + var(--reveal) * .88);
-  transform: translate3d(0, calc((1 - var(--reveal)) * var(--char-direction) * 112%), 0);
-  transition: opacity .08s linear;
-}
- .vb-media { position: relative; overflow: hidden; background: #cabf9f; }
- .vb-media::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: linear-gradient(135deg, rgb(18 15 10 / 4%), transparent 48%, rgb(182 159 100 / 10%));
-}
- .vb-media__image {
-  object-fit: cover;
-  transform: translate3d(calc((.5 - var(--scene-progress)) * 13%), calc((1 - var(--focus)) * 4%), 0) scale(calc(1.18 - var(--focus) * .08));
-  transition: filter .35s ease;
-  will-change: transform;
+  height: 100%;
+  padding: calc(var(--vb-band-pad) * 0.9) var(--vb-pad);
+  display: flex;
+  flex-direction: column;
 }
 
-/* Opening composition */
- .vb-intro { background: var(--vb-paper); }
- .vb-intro__inner { position: absolute; inset: 0; padding: 2rem 2.2rem; }
- .vb-intro__menu {
+/* -------------------------------------------------------- vertical marquee */
+.vb-rail {
   position: absolute;
-  z-index: 2;
-  top: 5.5rem;
-  right: 1.35rem;
-  display: flex;
-  gap: 1.7rem;
-  color: var(--vb-ink);
-  font-size: .72rem;
-  text-transform: uppercase;
-  transform: rotate(-90deg) translateY(-100%);
-  transform-origin: top right;
-}
-.vb-intro__book {
-  background: none;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-  font: inherit;
-  color: inherit;
-  text-transform: uppercase;
-}
- .vb-intro >  .vb-intro__inner >  .vb-marker { position: absolute; top: 50%; left: 2.2rem; }
- .vb-copyright { position: absolute; bottom: 1.35rem; left: 2.2rem; color: var(--vb-ink); font-size: .66rem; text-transform: uppercase; }
- .vb-intro__title {
-  position: absolute;
-  inset: 0;
+  z-index: 6;
+  top: 0;
+  left: 0;
+  width: 2.4em;
+  height: 100%;
+  overflow: hidden;
+  background: var(--vb-ink);
+  color: var(--vb-paper);
+  font-size: var(--vb-t-meta);
   pointer-events: none;
 }
- .vb-intro__title-part {
-  position: absolute;
-  max-width: min(42vw, 28rem);
-  font-size: clamp(3.5rem, 6.1vw, 7.2rem);
-  line-height: .76;
-  text-shadow: 0 2px 20px rgb(128 107 53 / 10%);
-}
- .vb-intro__title-part--one { top: 29%; left: 17%; }
- .vb-intro__title-part--two { top: 34%; left: 43%; text-align: left; }
- .vb-intro__title-part--three { top: 52%; left: 17%; }
- .vb-intro__body {
-  position: absolute;
-  right: 19%;
-  bottom: 20%;
-  width: min(22rem, 24vw);
-  color: #403725;
-  font-size: clamp(.84rem, .82vw, 1rem);
-  line-height: 1.45;
-}
- .vb-intro__wordmark {
-  position: absolute;
-  right: 2rem;
-  bottom: 1.25rem;
-  display: flex;
-  align-items: baseline;
-  gap: .38rem;
-  color: var(--vb-gold-deep);
-  font-size: 1.05rem;
-  text-transform: uppercase;
-}
- .vb-intro__wordmark span { font-family: var(--vb-title); font-size: 2.35rem; }
- .vb-intro__wordmark em { font-size: 1.65rem; }
- .vb-intro__wordmark strong { display: inline-block; font: inherit; transform: rotate(180deg); }
 
-/* NIB flipMedia: base stays put; overlay wipes in. Driven by --vb-flip on the pair. */
- .vb-image-lead { background: var(--vb-paper); }
- .vb-image-lead__main {
-  position: absolute;
-  inset: 0 41% 0 0;
-  transform: translate3d(calc((.5 - var(--scene-progress)) * 4%), 0, 0);
-}
- .vb-image-lead__flip { position: absolute; top: 13%; right: 5%; width: 39%; height: 74%; }
- .vb-flip {
-  --vb-flip: 0;
-  position: relative;
-  overflow: hidden;
-}
- .vb-flip > .vb-media {
-  position: absolute;
-  inset: 0;
-  height: auto;
-}
- .vb-flip__overlay { z-index: 1; }
- .vb-flip--left .vb-flip__overlay {
-  clip-path: inset(0 calc((1 - var(--vb-flip, 0)) * 100%) 0 0);
- }
- .vb-flip--right .vb-flip__overlay {
-  clip-path: inset(0 0 0 calc((1 - var(--vb-flip, 0)) * 100%));
- }
- .vb-flip--up .vb-flip__overlay {
-  clip-path: inset(calc((1 - var(--vb-flip, 0)) * 100%) 0 0 0);
- }
- .vb-flip__base .vb-media__image {
-  transform: none;
- }
- .vb-flip__overlay .vb-media__image {
-  transform: scale(calc(1.2 - var(--vb-flip, 0) * 0.2));
- }
-
- .vb-manifesto { background: var(--vb-paper); }
- .vb-manifesto >  .vb-marker { position: absolute; top: 9%; left: 8%; }
- .vb-manifesto__headline {
-  position: absolute;
-  top: 22%;
-  left: 8%;
-  right: 8%;
-  color: var(--vb-gold);
-  font-size: clamp(3.5rem, 5.5vw, 7rem);
-  line-height: .84;
-}
- .vb-manifesto__headline > span { display: block; }
- .vb-manifesto__headline > span:nth-child(2) { padding-left: 12vw; }
- .vb-manifesto__headline > span:last-child { padding-left: 6vw; }
- .vb-manifesto__body {
-  position: absolute;
-  bottom: 7%;
-  left: 8%;
-  width: min(29rem, 32vw);
-  color: #403725;
-  font-size: clamp(.86rem, .9vw, 1.02rem);
-  line-height: 1.46;
-}
-
- .vb-collage { background: var(--vb-black); }
- .vb-collage::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 45%, rgb(182 159 100 / 12%), transparent 42%);
-}
- .vb-collage__tile { position: absolute; width: 45%; height: 76%; }
- .vb-collage__tile--one { top: -4%; left: 4%; transform: translate3d(0, calc((.5 - var(--scene-progress)) * 8%), 0); }
- .vb-collage__tile--two { right: 4%; bottom: -4%; transform: translate3d(0, calc((var(--scene-progress) - .5) * 8%), 0); }
- .vb-collage > p {
-  position: absolute;
-  z-index: 4;
-  left: 8%;
-  right: auto;
-  bottom: 8%;
-  top: auto;
-  width: min(28rem, 32vw);
-  padding: 0;
-  color: #f6efdf;
-  background: none;
-  box-shadow: none;
-  font-size: clamp(.9rem, 1vw, 1.08rem);
-  line-height: 1.48;
-  transform: none;
-  text-shadow: 0 10px 28px rgb(0 0 0 / 55%);
-}
-
- .vb-marquee { width: 48vw; min-width: 38rem; display: grid; place-items: center; background: var(--vb-cream); }
- .vb-marquee__rail { display: flex; gap: 2.2rem; white-space: nowrap; transform: translate3d(calc((.5 - var(--scene-progress)) * 28%),0,0); }
- .vb-marquee__rail span { color: var(--vb-gold-deep); font-family: var(--vb-title); font-size: clamp(5rem, 7vw, 9rem); font-style: italic; }
- .vb-marquee__rail b { margin-left: 1rem; font-family: serif; font-weight: 400; }
-
- .vb-image-pair { background: var(--vb-cream); }
- .vb-image-pair__left {
-  position: absolute;
-  top: 12%;
-  left: 4%;
-  width: 54%;
-  height: 76%;
-  transform: translate3d(0, calc((.5 - var(--scene-progress)) * 8%), 0);
-}
- .vb-image-pair__right {
-  position: absolute;
-  top: 8%;
-  right: 4%;
-  width: 43%;
-  height: 64%;
-  transform: translate3d(0, calc((var(--scene-progress) - .5) * 8%), 0);
-}
-
- .vb-principles { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--vb-blue); }
- .vb-principle { position: relative; min-width: 0; border-left: 1px solid rgb(128 107 53 / 28%); }
- .vb-principle:first-child { border-left: 0; }
- .vb-principle__copy {
-  position: absolute;
-  z-index: 3;
-  top: 10%;
-  left: 8%;
-  width: 72%;
-  color: #332c20;
-  font-size: clamp(.82rem, .86vw, .98rem);
-  line-height: 1.42;
-}
- .vb-principle__heading { position: absolute; z-index: 3; bottom: 6%; left: 8%; }
- .vb-principle__heading > span { color: var(--vb-gold-deep); font-size: .78rem; }
- .vb-principle h2 {
-  margin-top: 1rem;
-  color: var(--vb-gold-deep);
-  font-family: var(--vb-title);
-  font-size: clamp(3.3rem, 5.8vw, 7rem);
-  font-style: italic;
-  font-weight: 400;
-  line-height: .78;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-}
- .vb-principle__hover {
-  position: absolute;
-  z-index: 2;
-  top: 24%;
-  left: 23%;
-  width: 60%;
-  height: 48%;
-  opacity: calc(.2 + var(--focus) * .8);
-  clip-path: inset(calc((1 - var(--focus)) * 42%) 0);
-  transform: translate3d(0, calc((.5 - var(--scene-progress)) * 16%), 0) scale(calc(.92 + var(--focus) * .08));
-  transition: opacity .25s ease, filter .25s ease;
-}
- .vb-principle:hover  .vb-principle__hover { filter: saturate(1.08) contrast(1.04); }
-
- .vb-projects-intro { width: 40vw; min-width: 32rem; background: var(--vb-black); }
- .vb-projects-intro >  .vb-marker { position: absolute; top: 10%; left: 8%; color: var(--vb-gold); }
- .vb-projects-intro > p:last-child {
-  position: absolute;
-  bottom: 9%;
-  left: 8%;
-  width: min(23rem, 68%);
-  color: #f6efdf;
-  font-size: .98rem;
-  line-height: 1.5;
-}
- .vb-project { width: 56vw; background: var(--vb-black); }
- .vb-project__shell {
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: calc(18% + var(--reveal) * 82%);
-  min-width: 11rem;
-  overflow: hidden;
-  color: var(--vb-ink);
-  background: var(--vb-cream);
-  box-shadow: -18px 0 55px rgb(0 0 0 / 22%);
-}
-.vb-project--1 .vb-project__shell { background: #ece8df; }
-.vb-project--2 .vb-project__shell {
-  background: #1c1917;
-  color: #faf8f5;
-}
-.vb-project--2 .vb-project__data,
-.vb-project--2 .vb-project__data a,
-.vb-project--2 h2 {
-  color: #faf8f5;
-}
-.vb-project--3 .vb-project__shell { background: #b69f64; }
- .vb-project__image {
+.vb-rail__inner {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 66%;
-  clip-path: inset(calc((1 - var(--reveal)) * 100%) 0 0);
-  transform: translate3d(0, calc((1 - var(--reveal)) * -8%), 0) scale(calc(1.08 - var(--focus) * .04));
+  display: flex;
+  gap: 2.5rem;
+  white-space: nowrap;
+  transform-origin: top left;
+  transform: rotate(90deg) translateY(-2.4em);
+  animation: vb-rail-run 40s linear infinite;
 }
- .vb-project__data {
-  position: absolute;
-  z-index: 3;
-  right: 1.5rem;
-  bottom: 7%;
-  left: 1.5rem;
-  display: grid;
-  grid-template-columns: auto auto 1fr auto;
-  gap: 1rem;
-  align-items: end;
-  color: #312a1d;
-  font-size: .72rem;
+
+.vb-rail__inner em {
+  font-style: normal;
+  letter-spacing: 0.34em;
   text-transform: uppercase;
+  line-height: 2.4;
 }
- .vb-project__data a { padding-bottom: .25rem; border-bottom: 1px solid currentColor; }
- .vb-project h2 {
-  position: absolute;
-  z-index: 3;
-  bottom: 14%;
-  left: 1.5rem;
-  color: var(--vb-gold-deep);
-  font-size: clamp(3.4rem, 5.7vw, 7rem);
-  line-height: .8;
+
+.vb-rail__inner b {
+  color: var(--vb-gold);
+  font-weight: 400;
+}
+
+@keyframes vb-rail-run {
+  to {
+    transform: rotate(90deg) translateY(-2.4em) translateX(-50%);
+  }
+}
+
+/* ------------------------------------------------------------ media system */
+.vb-media {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: var(--vb-ratio, 4 / 3);
+  background: var(--vb-wash-sand);
+}
+
+.vb-media__image {
+  object-fit: cover;
+  transform: translateY(calc((var(--parallax, 0.5) - 0.5) * -4%))
+    scale(calc(1.06 + var(--focus, 0) * 0.02));
+  transition: transform 0.8s var(--vb-ease-soft);
+}
+
+.vb-flip {
+  position: relative;
+  overflow: hidden;
+}
+
+.vb-flip .vb-media {
+  width: 100%;
+  height: 100%;
+}
+
+.vb-flip__overlay {
+  position: absolute !important;
+  inset: 0;
+}
+
+.vb-flip--left .vb-flip__overlay {
+  clip-path: inset(0 0 0 calc((1 - var(--vb-flip, 0)) * 100%));
+}
+
+.vb-flip--right .vb-flip__overlay {
+  clip-path: inset(0 calc((1 - var(--vb-flip, 0)) * 100%) 0 0);
+}
+
+.vb-flip--up .vb-flip__overlay {
+  clip-path: inset(calc((1 - var(--vb-flip, 0)) * 100%) 0 0 0);
+}
+
+/* --------------------------------------------------- 01 · opening (centred) */
+.vb-open {
+  width: min(94vw, 70rem);
+  padding-left: calc(var(--vb-pad) + 3.4em);
+  justify-content: center;
+  align-items: center;
+  background: var(--vb-paper);
+}
+
+.vb-open__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1rem, 2.4vw, 2rem);
+  text-align: center;
+  width: 100%;
+}
+
+.vb-open__title h1 {
+  display: block;
+}
+
+.vb-open__body {
+  font-size: var(--vb-t-body);
+  line-height: 1.6;
+  color: var(--vb-ink-soft);
+  max-width: 46ch;
+}
+
+/* the departure board */
+.vb-board {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--vb-gap);
+  width: min(100%, calc(var(--vb-col) * 9 + var(--vb-gap) * 8));
+  margin-top: clamp(0.8rem, 2vw, 1.6rem);
+  padding-top: clamp(0.9rem, 2vw, 1.4rem);
+  border-top: 1px solid var(--vb-hair);
+}
+
+.vb-board div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+  align-items: center;
+  transform: translateY(calc((1 - var(--reveal, 1)) * 18px));
+  opacity: calc(0.2 + var(--reveal, 1) * 0.8);
+  transition:
+    transform 0.8s var(--vb-ease-soft),
+    opacity 0.8s var(--vb-ease-soft);
+}
+
+.vb-board dt {
+  font-size: var(--vb-t-meta);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--vb-ink-soft);
+}
+
+.vb-board dd {
+  font-family: var(--vb-edit);
+  font-size: clamp(0.95rem, 1.3vw, 1.4rem);
   white-space: nowrap;
 }
 
- .vb-last-project { width: 118vw; background: var(--vb-black); }
- .vb-last-project__images { position: absolute; inset: 0 auto 0 0; width: 57%; overflow: hidden; }
- .vb-last-project__main { position: absolute; inset: 0; }
- .vb-last-project__stack {
+.vb-open__nav {
   position: absolute;
-  top: 12%;
-  right: 6%;
-  width: 46%;
-  height: 70%;
- }
- .vb-last-project__link {
-  position: absolute;
-  z-index: 5;
-  right: 0;
-  bottom: 0;
+  z-index: 4;
+  top: calc(var(--vb-band-pad) * 0.9);
+  right: var(--vb-pad);
   display: flex;
-  width: 31%;
-  height: 18%;
-  align-items: center;
-  justify-content: center;
-  gap: .65rem;
-  color: var(--vb-ink);
-  background: var(--vb-cream);
+  gap: 1.6rem;
+  transform-origin: bottom right;
+  transform: rotate(-90deg) translateY(-100%);
+  font-size: var(--vb-t-meta);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
 }
- .vb-last-project__copy { position: absolute; inset: 0 0 0 auto; width: 48%; padding: 5rem 4vw; background: var(--vb-black); }
- .vb-last-project__copy  .vb-marker { color: var(--vb-gold); }
- .vb-last-project__copy  .vb-big-title { margin-top: 14%; font-size: clamp(3.2rem, 4.7vw, 6rem); line-height: .84; }
- .vb-last-project__copy  .vb-big-title > span { display: block; }
- .vb-last-project__copy > p:last-child {
+
+.vb-open__nav a {
+  position: relative;
+  padding-bottom: 0.3em;
+  color: var(--vb-ink-soft);
+  transition: color 0.3s var(--vb-ease-soft);
+}
+
+.vb-open__nav a::after {
+  content: "";
   position: absolute;
-  bottom: 8%;
-  left: 8%;
-  width: 72%;
-  color: #f6efdf;
-  font-size: .95rem;
-  line-height: 1.48;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 1px;
+  background: var(--vb-gold-deep);
+  transition: width 0.4s var(--vb-ease-soft);
 }
 
- .vb-closing { width: 76vw; background: var(--vb-red); }
- .vb-closing::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 15% 50%, rgb(245 234 207 / 18%), transparent 35%); }
- .vb-closing__media { position: absolute; inset: 0 0 0 16%; transform: translate3d(calc((.5 - var(--scene-progress)) * 6%),0,0); }
+.vb-open__nav a:hover {
+  color: var(--vb-ink);
+}
 
-/* Vertical epilogue */
- .vb-epilogue { position: relative; min-height: 430vh; padding: 12vh 3vw 2rem; overflow: hidden; color: var(--vb-ink); background: var(--vb-cream); }
- .vb-epilogue__title { min-height: 82svh; text-align: center; }
- .vb-epilogue__title > span { display: block; margin-bottom: 2rem; color: var(--vb-gold-deep); font-size: 1rem; }
- .vb-epilogue__title h2 { font-size: clamp(4.8rem, 9vw, 11rem); line-height: .76; }
- .vb-epilogue__images { position: relative; display: flex; min-height: 100svh; align-items: flex-start; justify-content: space-between; }
- .vb-epilogue__images  .vb-media:first-child { width: 54%; height: 76svh; }
- .vb-epilogue__images  .vb-media:last-child { width: 34%; height: 56svh; margin-top: 20svh; }
- .vb-epilogue__statement { display: flex; min-height: 92svh; flex-direction: column; justify-content: center; padding-inline: 8%; font-size: clamp(4.8rem, 9vw, 11rem); line-height: .8; }
- .vb-epilogue__statement span:nth-child(2) { padding-left: 12vw; }
- .vb-epilogue__statement span:nth-child(3) { padding-left: 6vw; }
- .vb-epilogue__contact { display: grid; min-height: 52svh; grid-template-columns: 1fr 1fr; padding: 3rem 9vw; font-size: clamp(1.15rem, 1.7vw, 1.9rem); line-height: 1.38; }
- .vb-epilogue__contact p,
- .vb-epilogue__contact a { grid-column: 2; }
- .vb-epilogue__contact a { align-self: start; color: var(--vb-gold-deep); text-decoration: underline; }
+.vb-open__nav a:hover::after {
+  width: 100%;
+}
+
+.vb-open__mark,
+.vb-open__scroll {
+  position: absolute;
+  bottom: calc(var(--vb-band-pad) * 0.55);
+  font-size: var(--vb-t-meta);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--vb-ink-soft);
+}
+
+.vb-open__mark {
+  left: calc(var(--vb-pad) + 3.4em);
+}
+
+.vb-open__scroll {
+  right: var(--vb-pad);
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.vb-open__scroll i {
+  display: block;
+  width: 3.2rem;
+  height: 1px;
+  background: var(--vb-ink);
+  transform-origin: 0 50%;
+  animation: vb-scroll-hint 2.4s var(--vb-ease-soft) infinite;
+}
+
+@keyframes vb-scroll-hint {
+  0%,
+  100% {
+    transform: scaleX(0.35);
+  }
+  50% {
+    transform: scaleX(1);
+  }
+}
+
+/* ------------------------------------------------------------- 02 · bands
+   Three full-bleed horizontal bands stacked to fill the panel. Each slides in
+   from an alternating side, staggered by index. */
+.vb-bands {
+  width: min(70vw, 56rem);
+  padding: 0;
+  gap: 0;
+  background: var(--vb-black);
+}
+
+.vb-band {
+  position: relative;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+  transform: translateX(
+    calc((1 - var(--reveal, 1)) * (var(--vb-i, 0) - 1) * 14%)
+  );
+  opacity: calc(0.25 + var(--reveal, 1) * 0.75);
+  transition:
+    transform 1s var(--vb-ease-soft),
+    opacity 1s var(--vb-ease-soft);
+  transition-delay: calc(var(--vb-i, 0) * 90ms);
+}
+
+.vb-band__media {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+}
+
+.vb-band__label {
+  position: absolute;
+  z-index: 2;
+  left: var(--vb-pad);
+  bottom: 1rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  color: #fff;
+  text-shadow: 0 1px 12px rgb(0 0 0 / 45%);
+}
+
+.vb-band__label span {
+  font-family: var(--vb-edit);
+  font-size: clamp(1.1rem, 1.8vw, 1.8rem);
+}
+
+.vb-band__label em {
+  font-style: normal;
+  font-size: var(--vb-t-meta);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+/* -------------------------------------------------------------- 03 · creed
+   Roman numerals with a ragged setting: rows 0 and 2 sit left, row 1 is
+   pushed right — the reference's staggered-lines block. */
+.vb-creed {
+  width: min(92vw, 74rem);
+  justify-content: center;
+  gap: clamp(1.6rem, 3.6vw, 3.4rem);
+  background: var(--vb-wash-sand);
+}
+
+.vb-creed__head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-width: 44ch;
+}
+
+.vb-creed__list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.2rem, 2.6vw, 2.4rem);
+}
+
+.vb-creed__row {
+  display: grid;
+  grid-template-columns: 2.6em minmax(0, auto) minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--vb-gap);
+  transform: translateY(calc((1 - var(--reveal, 1)) * 26px));
+  opacity: calc(0.15 + var(--reveal, 1) * 0.85);
+  transition:
+    transform 0.85s var(--vb-ease-soft),
+    opacity 0.85s var(--vb-ease-soft);
+}
+
+.vb-creed__row--1 {
+  margin-left: calc(var(--vb-col) * 1.6);
+}
+
+.vb-creed__row--2 {
+  margin-left: calc(var(--vb-col) * 0.7);
+}
+
+.vb-creed__numeral {
+  font-size: var(--vb-t-s);
+  letter-spacing: 0.06em;
+  color: var(--vb-gold-deep);
+}
+
+.vb-creed__title {
+  font-size: var(--vb-t-m);
+  white-space: nowrap;
+}
+
+.vb-creed__body {
+  font-size: var(--vb-t-body);
+  line-height: 1.55;
+  color: var(--vb-ink-soft);
+  max-width: 42ch;
+}
+
+/* --------------------------------------------------------- 04 · itineraries
+   Each voyage is its own full-height panel with an outlined ghost numeral
+   sitting behind the composition. */
+.vb-itin {
+  width: min(94vw, 76rem);
+  justify-content: center;
+  display: grid;
+  grid-template-columns:
+    minmax(0, calc(var(--vb-col) * 5.4 + var(--vb-gap) * 4))
+    minmax(0, 1fr);
+  align-content: center;
+  gap: clamp(1.6rem, 3.6vw, 3.6rem);
+  overflow: hidden;
+}
+
+.vb-itin--sand {
+  background: var(--vb-paper-warm);
+  color: var(--vb-ink);
+  --vb-stroke: var(--vb-ink);
+}
+
+.vb-itin--ink {
+  background: var(--vb-black);
+  color: var(--vb-paper);
+  --vb-stroke: var(--vb-paper);
+}
+
+.vb-itin--olive {
+  background: var(--vb-wash-olive);
+  color: var(--vb-black);
+  --vb-stroke: var(--vb-black);
+}
+
+.vb-itin--stone {
+  background: var(--vb-wash-stone);
+  color: var(--vb-ink);
+  --vb-stroke: var(--vb-ink);
+}
+
+.vb-itin__ghost {
+  position: absolute;
+  z-index: 0;
+  right: calc(var(--vb-pad) * -0.4);
+  top: 50%;
+  transform: translateY(-52%)
+    translateX(calc((1 - var(--reveal, 1)) * 6%));
+  font-size: clamp(14rem, 34vw, 34rem);
+  line-height: 0.72;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--vb-stroke, #14120e);
+  opacity: calc(0.14 + var(--reveal, 1) * 0.14);
+  pointer-events: none;
+  user-select: none;
+  transition:
+    transform 1.1s var(--vb-ease-soft),
+    opacity 1.1s var(--vb-ease-soft);
+}
+
+.vb-itin__media,
+.vb-itin__copy {
+  position: relative;
+  z-index: 1;
+}
+
+.vb-itin__media .vb-media {
+  width: 100%;
+  max-height: 62svh;
+}
+
+.vb-itin__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(0.7rem, 1.6vw, 1.2rem);
+}
+
+.vb-itin__duration {
+  font-size: var(--vb-t-meta);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.vb-itin__route {
+  font-size: var(--vb-t-l);
+  transform: translateY(calc((1 - var(--reveal, 1)) * 18px));
+  opacity: calc(0.2 + var(--reveal, 1) * 0.8);
+  transition:
+    transform 0.9s var(--vb-ease-soft),
+    opacity 0.9s var(--vb-ease-soft);
+}
+
+.vb-itin__summary {
+  font-size: var(--vb-t-body);
+  line-height: 1.55;
+  max-width: 44ch;
+  opacity: 0.82;
+}
+
+.vb-itin__highlights {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+  font-size: var(--vb-t-meta);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.vb-itin__highlights li {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+}
+
+.vb-itin__highlights i {
+  display: block;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--vb-gold);
+  flex: 0 0 auto;
+}
+
+.vb-itin__foot {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 2.4vw, 2rem);
+  margin-top: clamp(0.4rem, 1.4vw, 1rem);
+}
+
+.vb-itin__meta {
+  font-family: var(--vb-edit);
+  font-size: clamp(0.9rem, 1.15vw, 1.2rem);
+  line-height: 1.35;
+  max-width: 18ch;
+}
+
+/* ------------------------------------------------------------- 05 · rhythm
+   A filmstrip of four day-chapters, each nudged to a different height so the
+   row reads as a hand-set spread rather than a card grid. */
+.vb-rhythm {
+  width: min(96vw, 88rem);
+  justify-content: center;
+  gap: clamp(1.2rem, 2.4vw, 2.2rem);
+  background: var(--vb-paper);
+  /* a gentler push here — the whole strip must fit one screen */
+  --vb-push: clamp(1.2rem, 3.4vw, 4rem);
+}
+
+.vb-rhythm__head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-width: 30ch;
+}
+
+.voyages-boring .vb-rhythm__head h2 {
+  font-size: var(--vb-t-m);
+}
+
+.vb-rhythm__strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(1rem, 2.2vw, 2.2rem);
+  align-items: start;
+}
+
+.vb-chapter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  /* vertical offsets are set per-position by the nth-child rules below */
+  transform: translateY(calc((1 - var(--reveal, 1)) * 30px));
+  opacity: calc(0.15 + var(--reveal, 1) * 0.85);
+  transition:
+    transform 0.9s var(--vb-ease-soft),
+    opacity 0.9s var(--vb-ease-soft);
+  transition-delay: calc(var(--vb-i, 0) * 70ms);
+}
+
+.vb-chapter:nth-child(2) {
+  margin-top: var(--vb-push);
+}
+
+.vb-chapter:nth-child(3) {
+  margin-top: calc(var(--vb-push) * 0.35);
+}
+
+.vb-chapter:nth-child(4) {
+  margin-top: calc(var(--vb-push) * 1.25);
+}
+
+.vb-chapter__kicker {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7em;
+  font-size: var(--vb-t-meta);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--vb-ink-soft);
+}
+
+.vb-chapter__kicker span {
+  font-family: var(--vb-edit);
+  letter-spacing: 0.04em;
+  color: var(--vb-gold-deep);
+}
+
+.vb-chapter__media {
+  width: 100%;
+  max-height: 22svh;
+}
+
+.vb-chapter__title {
+  font-size: clamp(1.15rem, 1.7vw, 1.75rem);
+}
+
+.vb-chapter__body {
+  font-size: var(--vb-t-body);
+  line-height: 1.5;
+  color: var(--vb-ink-soft);
+}
+
+/* ----------------------------------------------------------- 06 · included
+   Staggered masonry: every other item drops by the push value, and the
+   columns are deliberately unequal. */
+.vb-included {
+  width: min(92vw, 76rem);
+  justify-content: center;
+  gap: clamp(1.4rem, 2.8vw, 2.4rem);
+  background: var(--vb-paper-warm);
+  --vb-push: clamp(1.2rem, 4vw, 6rem);
+}
+
+.vb-included__head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-width: 32ch;
+}
+
+.voyages-boring .vb-included__head h2 {
+  font-size: var(--vb-t-m);
+}
+
+.vb-included__grid {
+  display: grid;
+  grid-template-columns:
+    minmax(0, calc(var(--vb-col) * 3.4))
+    minmax(0, calc(var(--vb-col) * 2.6))
+    minmax(0, calc(var(--vb-col) * 3.1));
+  gap: clamp(1.2rem, 2.6vw, 2.6rem);
+  align-items: start;
+}
+
+.vb-feature {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--vb-hair);
+  transform: translateY(calc((1 - var(--reveal, 1)) * 26px));
+  opacity: calc(0.15 + var(--reveal, 1) * 0.85);
+  transition:
+    transform 0.85s var(--vb-ease-soft),
+    opacity 0.85s var(--vb-ease-soft);
+  transition-delay: calc(var(--vb-i, 0) * 70ms);
+}
+
+/* the fourth item wraps to the second row, offset under the first column */
+.vb-feature:nth-child(2) {
+  margin-top: var(--vb-push);
+}
+
+.vb-feature:nth-child(3) {
+  margin-top: calc(var(--vb-push) * 0.4);
+}
+
+.vb-feature:nth-child(4) {
+  grid-column: 2 / span 2;
+  margin-top: calc(var(--vb-push) * 0.2);
+}
+
+.vb-feature__num {
+  font-size: var(--vb-t-body);
+  color: var(--vb-gold-deep);
+}
+
+.vb-feature__label {
+  font-family: var(--vb-meta);
+  font-size: var(--vb-t-meta);
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.vb-feature__body {
+  font-size: var(--vb-t-body);
+  line-height: 1.55;
+  color: var(--vb-ink-soft);
+}
+
+/* ------------------------------------------------------------ 07 · charter */
+.vb-charter {
+  width: min(96vw, 82rem);
+  justify-content: center;
+  display: grid;
+  grid-template-columns:
+    minmax(0, calc(var(--vb-col) * 6 + var(--vb-gap) * 5))
+    minmax(0, 1fr);
+  align-content: center;
+  gap: clamp(1.6rem, 4vw, 4rem);
+  background: var(--vb-black);
+  color: var(--vb-paper);
+}
+
+.vb-charter__media {
+  width: 100%;
+  max-height: 62svh;
+}
+
+.vb-charter__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(0.7rem, 1.8vw, 1.4rem);
+}
+
+.vb-charter .vb-eyebrow,
+.vb-charter .vb-script {
+  color: var(--vb-gold);
+}
+
+.vb-charter__body {
+  font-size: var(--vb-t-body);
+  line-height: 1.6;
+  max-width: 40ch;
+  opacity: 0.8;
+}
+
+/* ------------------------------------------------------------ 08 · closing */
+.vb-closing {
+  width: min(60vw, 40rem);
+  justify-content: center;
+  align-items: center;
+  background: var(--vb-paper);
+}
+
+.vb-closing__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+/* ================================================ EPILOGUE (always vertical)
+   A centred column — the reference's "centered content" pattern — followed by
+   an index of the itineraries as a departure list. */
+.vb-epilogue {
+  position: relative;
+  padding: var(--vb-band-pad) var(--vb-pad) calc(var(--vb-band-pad) * 0.55);
+  background: var(--vb-wash-stone);
+  color: var(--vb-ink);
+}
+
+.vb-epilogue__column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.9rem, 2vw, 1.6rem);
+  text-align: center;
+  width: min(100%, calc(var(--vb-col) * 8 + var(--vb-gap) * 7));
+  margin-inline: auto;
+}
+
+.vb-epilogue__body {
+  font-size: var(--vb-t-body);
+  line-height: 1.6;
+  color: var(--vb-ink-soft);
+  max-width: 44ch;
+}
+
 .vb-epilogue__pills {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.75rem;
-  margin: 0 auto 8vh;
+  gap: 0.7rem;
+  margin-top: clamp(0.6rem, 1.6vw, 1.2rem);
 }
-.vb-epilogue__outro {
-  width: min(42rem, 82vw);
-  margin: 0 auto 10vh;
-  color: #403725;
-  font-size: clamp(1.05rem, 1.4vw, 1.35rem);
-  line-height: 1.45;
-  text-align: center;
+
+/* --- the departure index */
+.vb-epilogue__index {
+  margin-top: clamp(2.5rem, 6vw, 5rem);
+  border-top: 1px solid var(--vb-hair);
 }
-.voyages-boring .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  width: var(--hathor-btn-width, 12.5rem);
-  min-width: var(--hathor-btn-width, 12.5rem);
-  max-width: var(--hathor-btn-width, 12.5rem);
-  min-height: var(--hathor-btn-height, 2.85rem);
-  height: var(--hathor-btn-height, 2.85rem);
-  padding: 3px var(--hathor-btn-pad-x, 1.75rem) 1px;
-  border-radius: 999px;
-  border: 1px solid #b69f64;
-  background: #faf8f5;
-  color: #b69f64;
-  font-family: var(--font-hathor-body), "Plus Jakarta Sans", sans-serif !important;
-  font-size: var(--hathor-btn-font-size, 0.72rem);
-  font-weight: 500;
-  font-style: normal !important;
-  letter-spacing: var(--hathor-btn-tracking, 0.18em);
+
+.vb-index-row {
+  display: grid;
+  grid-template-columns: 3.4em minmax(0, 1fr) auto 2em;
+  align-items: baseline;
+  gap: var(--vb-gap);
+  padding: clamp(0.9rem, 1.8vw, 1.4rem) 0;
+  border-bottom: 1px solid var(--vb-hair);
+  transition: background-color 0.4s var(--vb-ease-soft);
+}
+
+.vb-index-row:hover {
+  background: rgb(182 159 100 / 10%);
+}
+
+.vb-index-row__numeral {
+  font-size: var(--vb-t-s);
+  color: var(--vb-gold-deep);
+}
+
+.vb-index-row__route {
+  font-family: var(--vb-display);
+  font-size: clamp(1.3rem, 2.4vw, 2.4rem);
+  line-height: 1.05;
+}
+
+.vb-index-row__nights {
+  font-size: var(--vb-t-meta);
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  line-height: 1;
-  text-decoration: none;
-  cursor: pointer;
-  box-shadow: 0 8px 22px rgba(44, 36, 25, 0.1);
-  transition: background 0.35s ease, color 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease;
-}
-.voyages-boring .btn-dark {
-  background: #faf8f5;
-  color: #b69f64;
-}
-.voyages-boring .btn:hover,
-.voyages-boring .btn-dark:hover {
-  background: #b69f64;
-  color: #ffffff;
-  box-shadow: 0 10px 26px rgba(182, 159, 100, 0.35);
-  transform: translateY(-2px);
-}
- .vb-epilogue__social { display: flex; justify-content: center; gap: 1rem; color: var(--vb-gold-deep); font-size: clamp(1.2rem, 2vw, 2.35rem); }
- .vb-epilogue__feature { position: relative; min-height: 138svh; padding-top: 25svh; text-align: center; }
- .vb-epilogue__monogram { position: absolute; inset: 5% 0 auto; color: rgb(128 107 53 / 12%); font-size: 26vw; line-height: .7; }
- .vb-epilogue__feature > span { display: block; margin-bottom: 2rem; color: var(--vb-gold-deep); }
- .vb-epilogue__feature  .vb-media { width: min(38vw, 34rem); height: 66svh; margin: 0 auto; box-shadow: 0 28px 80px rgb(80 58 20 / 18%); }
- .vb-epilogue__feature h3 { margin-top: 1.5rem; color: var(--vb-gold-deep); font-size: clamp(2.6rem, 4vw, 5rem); }
- .vb-epilogue__feature p { margin-top: .8rem; color: #403725; font-size: 1.1rem; line-height: 1.38; }
- .vb-epilogue__legal { display: flex; gap: 2rem; align-items: flex-end; padding-top: 2rem; border-top: 1px solid rgb(128 107 53 / 32%); color: #403725; font-size: .8rem; text-transform: uppercase; }
- .vb-epilogue__legal span { margin-right: auto; }
-
-@media (max-width: 1024px) {
-  html[data-voyages-boring],
-  html[data-voyages-boring] body,
-  html:has(.voyages-boring),
-  html:has(.voyages-boring) body { overflow-x: hidden !important; }
-   .vb-progress { display: none; }
-   .vb-run,
-   .vb-stage { height: auto !important; }
-   .vb-stage { position: relative; overflow: visible; }
-   .vb-track { display: block; width: 100%; height: auto; transform: none !important; }
-   .vb-scene { width: 100%; min-width: 0; height: auto; min-height: 100svh; }
-   .vb-intro  .vb-split__char { opacity: 1; transform: none; }
-   .vb-intro__inner { position: relative; min-height: 108svh; padding: 5rem 2rem 2rem; }
-   .vb-intro__menu { display: none; }
-   .vb-intro >  .vb-intro__inner >  .vb-marker { top: 7rem; left: 2rem; }
-   .vb-intro__title { inset: 18% 2rem auto; display: flex; flex-direction: column; gap: 1rem; pointer-events: auto; }
-   .vb-intro__title-part { position: relative; inset: auto; top: auto; left: auto; max-width: none; font-size: clamp(3rem, 8vw, 5rem); line-height: .8; }
-   .vb-intro__title-part--two { align-self: flex-end; text-align: right; }
-   .vb-intro__title-part--three { align-self: flex-start; }
-   .vb-intro__body { right: 2rem; bottom: 8rem; width: min(30rem, 66vw); }
-   .vb-intro__wordmark { right: 2rem; }
-   .vb-image-lead { min-height: 110svh; }
-   .vb-image-lead__main { inset: 0 24% 30% 0; }
-   .vb-image-lead__flip { top: 44%; right: 2rem; width: 62%; height: 48%; }
-   .vb-manifesto { min-height: 100svh; }
-   .vb-manifesto__headline { inset-inline: 5%; font-size: clamp(3.1rem, 8vw, 5.5rem); }
-   .vb-manifesto__body { left: 2rem; width: min(30rem, 70vw); }
-   .vb-collage { min-height: 108svh; }
-   .vb-collage > p { width: min(32rem, 68vw); left: 2rem; bottom: 8%; top: auto; transform: none; }
-   .vb-marquee { width: 100%; min-width: 0; min-height: 38svh; }
-   .vb-image-pair { min-height: 100svh; }
-   .vb-principles { display: flex; min-height: auto; flex-direction: column; }
-   .vb-principle { min-height: 72svh; border-top: 1px solid rgb(128 107 53 / 28%); border-left: 0; }
-   .vb-principle__copy { width: 43%; }
-   .vb-principle h2 { font-size: clamp(4rem, 10vw, 6.5rem); writing-mode: initial; transform: none; }
-   .vb-principle__hover { top: 22%; right: 7%; left: auto; width: 45%; height: 54%; }
-   .vb-projects-intro { width: 100%; min-width: 0; min-height: 68svh; }
-   .vb-project { width: 100%; min-height: 96svh; background: var(--vb-black); }
-   .vb-project__shell { width: 100%; min-width: 0; }
-   .vb-project h2 { font-size: clamp(4rem, 10vw, 7rem); white-space: normal; }
-   .vb-last-project { width: 100%; min-height: 172svh; }
-   .vb-last-project__images { width: 100%; height: 90svh; }
-   .vb-last-project__copy { inset: 90svh 0 auto; width: 100%; height: 82svh; }
-   .vb-last-project__copy  .vb-big-title { font-size: clamp(3.2rem, 8vw, 5.5rem); }
-   .vb-closing { width: 100%; min-height: 96svh; }
-   .vb-closing__media { left: 0; }
-   .vb-epilogue { min-height: 400vh; }
+  color: var(--vb-ink-soft);
+  white-space: nowrap;
 }
 
-@media (max-width: 480px) {
-  html:has(.voyages-boring) .hathor-header { background: rgb(245 234 207 / 94%); }
-   .vb-intro__inner { min-height: 112svh; padding-inline: 1.25rem; }
-   .vb-intro >  .vb-intro__inner >  .vb-marker { left: 1.25rem; }
-   .vb-intro__title { inset: 18% 1.25rem auto; gap: .85rem; }
-   .vb-intro__title-part { font-size: clamp(2.35rem, 12vw, 3.35rem); }
-   .vb-intro__body { right: 1.25rem; bottom: 8.6rem; width: calc(100% - 2.5rem); font-size: .78rem; }
-   .vb-intro__wordmark { right: 1.25rem; bottom: 3.2rem; max-width: calc(100% - 2.5rem); font-size: .8rem; }
-   .vb-intro__wordmark span { font-size: 1.8rem; }
-   .vb-intro__wordmark em { font-size: 1.2rem; }
-   .vb-copyright { bottom: 1.15rem; left: 1.25rem; }
-   .vb-image-lead { min-height: 105svh; }
-   .vb-image-lead__main { inset: 0 16% 38% 0; }
-   .vb-image-lead__flip { top: 48%; right: 1.25rem; width: 78%; height: 43%; }
-   .vb-manifesto__headline { top: 16%; font-size: clamp(2.6rem, 12vw, 3.8rem); }
-   .vb-manifesto__headline > span:nth-child(even),
-   .vb-manifesto__headline > span:last-child { padding-left: 0; }
-   .vb-manifesto__body { left: 1.25rem; bottom: 7%; width: calc(100% - 2.5rem); }
-   .vb-collage__tile { width: 76%; height: 56%; }
-   .vb-collage__tile--one { left: 0; }
-   .vb-collage__tile--two { right: 0; }
-   .vb-collage > p { top: auto; bottom: 6%; left: 1.25rem; width: calc(100% - 2.5rem); padding: 0; background: none; box-shadow: none; }
-   .vb-marquee { min-height: 30svh; }
-   .vb-marquee__rail span { font-size: 3.8rem; }
-   .vb-image-pair__left { left: 0; width: 76%; height: 68%; }
-   .vb-image-pair__right { right: 0; width: 65%; height: 54%; }
-   .vb-principle { min-height: 78svh; }
-   .vb-principle__copy { left: 1.25rem; width: calc(100% - 2.5rem); }
-   .vb-principle__hover { top: 27%; right: 1.25rem; width: 68%; height: 43%; }
-   .vb-principle__heading { left: 1.25rem; }
-   .vb-principle h2 { font-size: clamp(3.2rem, 15vw, 5rem); }
-   .vb-projects-intro { min-height: 74svh; }
-   .vb-projects-intro >  .vb-marker { left: 1.25rem; }
-   .vb-projects-intro > p:last-child { left: 1.25rem; width: calc(100% - 2.5rem); }
-   .vb-project { min-height: 92svh; }
-   .vb-project__data { grid-template-columns: 1fr 1fr; }
-   .vb-project h2 { font-size: clamp(2.8rem, 12.5vw, 4.7rem); }
-   .vb-last-project__copy { padding: 4rem 1.25rem; }
-   .vb-last-project__copy  .vb-big-title { font-size: clamp(2.8rem, 12vw, 4rem); }
-   .vb-last-project__copy > p:last-child { left: 1.25rem; width: calc(100% - 2.5rem); }
-   .vb-last-project__link { width: 46%; }
-   .vb-epilogue { padding-inline: 1.25rem; }
-   .vb-epilogue__title h2 { font-size: clamp(3.7rem, 18vw, 5.5rem); }
-   .vb-epilogue__images  .vb-media:first-child { width: 68%; }
-   .vb-epilogue__images  .vb-media:last-child { width: 48%; }
-   .vb-epilogue__statement { padding-inline: 0; font-size: clamp(3.7rem, 17vw, 5.3rem); }
-   .vb-epilogue__statement span:nth-child(2),
-   .vb-epilogue__statement span:nth-child(3) { padding-left: 0; }
-   .vb-epilogue__contact { display: block; padding: 3rem 0; font-size: 1.25rem; }
-   .vb-epilogue__contact a { display: block; margin-top: 2rem; overflow-wrap: anywhere; }
-  .vb-epilogue__pills { flex-direction: column; align-items: center; }
-   .vb-epilogue__social { flex-wrap: wrap; font-size: 1rem; }
-   .vb-epilogue__feature  .vb-media { width: 82vw; }
-   .vb-epilogue__legal { flex-wrap: wrap; gap: 1rem; }
-   .vb-epilogue__legal span { width: 100%; }
+.vb-index-row__go {
+  justify-self: end;
+  font-size: var(--vb-t-body);
+  transition: transform 0.4s var(--vb-ease);
 }
 
+.vb-index-row:hover .vb-index-row__go {
+  transform: translate(0.2em, -0.2em);
+}
+
+.vb-epilogue__legal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: clamp(2rem, 5vw, 4rem);
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--vb-hair);
+  font-size: var(--vb-t-meta);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--vb-ink-soft);
+}
+
+.vb-epilogue__legal nav {
+  display: flex;
+  gap: 1.6rem;
+}
+
+.vb-epilogue__legal a:hover {
+  color: var(--vb-ink);
+}
+
+/* ==========================================================================
+   RESPONSIVE — 950px is the structural break
+   ========================================================================== */
+@media (max-width: 1180px) {
+  .vb-creed__row {
+    grid-template-columns: 2.4em minmax(0, 1fr);
+    row-gap: 0.4rem;
+  }
+
+  .vb-creed__body {
+    grid-column: 2;
+    max-width: none;
+  }
+
+  .vb-creed__title {
+    white-space: normal;
+  }
+
+  .vb-rhythm__strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: clamp(1.4rem, 3vw, 2.4rem);
+  }
+
+  .vb-chapter:nth-child(2),
+  .vb-chapter:nth-child(3),
+  .vb-chapter:nth-child(4) {
+    margin-top: 0;
+  }
+
+  .vb-chapter:nth-child(2),
+  .vb-chapter:nth-child(4) {
+    margin-top: calc(var(--vb-push) * 0.3);
+  }
+}
+
+@media (max-width: 950px) {
+  .voyages-boring {
+    --vb-band-pad: clamp(3rem, 12vw, 5rem);
+    --vb-push: clamp(1.2rem, 6vw, 2.6rem);
+  }
+
+  .vb-run {
+    height: auto !important;
+  }
+
+  .vb-stage {
+    position: relative;
+    top: auto;
+    height: auto;
+    overflow: visible;
+    display: block;
+  }
+
+  .vb-track {
+    display: block;
+    width: 100%;
+    height: auto;
+    transform: none !important;
+  }
+
+  .vb-scene {
+    width: 100% !important;
+    height: auto;
+    min-height: 0;
+    padding: var(--vb-band-pad) var(--vb-pad);
+  }
+
+  .vb-rail {
+    position: relative;
+    width: 100%;
+    height: 2.6em;
+    /* clear the fixed site header */
+    margin-top: var(--vb-header-clear, 4rem);
+  }
+
+  .vb-rail__inner {
+    position: relative;
+    transform: none;
+    animation: vb-rail-run-flat 30s linear infinite;
+  }
+
+  @keyframes vb-rail-run-flat {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .vb-open {
+    padding-left: var(--vb-pad);
+    padding-top: calc(var(--vb-band-pad) * 1.4);
+  }
+
+  .vb-open__nav {
+    position: static;
+    transform: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.1rem;
+    margin-bottom: 1.6rem;
+  }
+
+  .vb-open__mark {
+    position: static;
+    margin-top: clamp(1.6rem, 5vw, 2.4rem);
+  }
+
+  .vb-open__scroll {
+    display: none;
+  }
+
+  .vb-board {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 1.2rem;
+    width: 100%;
+  }
+
+  /* bands become a normal stack with real height */
+  .vb-bands {
+    padding: 0;
+  }
+
+  .vb-band {
+    flex: 0 0 auto;
+    height: 42svh;
+    transform: none !important;
+  }
+
+  /* creed indents collapse */
+  .vb-creed__row--1,
+  .vb-creed__row--2 {
+    margin-left: 0;
+  }
+
+  /* itinerary panels stack: media, then copy */
+  .vb-itin,
+  .vb-charter {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.4rem, 6vw, 2.4rem);
+  }
+
+  .vb-itin__media .vb-media,
+  .vb-charter__media {
+    max-height: none;
+  }
+
+  .vb-itin__ghost {
+    font-size: clamp(9rem, 42vw, 16rem);
+    right: -0.2em;
+    top: 0.4em;
+    transform: none;
+  }
+
+  .vb-itin__foot {
+    flex-wrap: wrap;
+  }
+
+  /* masonry flattens to a single column, offsets removed */
+  .vb-included__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .vb-feature:nth-child(2),
+  .vb-feature:nth-child(3),
+  .vb-feature:nth-child(4) {
+    margin-top: 0;
+    grid-column: auto;
+  }
+
+  .vb-chapter__media {
+    max-height: none;
+  }
+
+  .vb-epilogue__legal {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.9rem;
+  }
+}
+
+@media (max-width: 620px) {
+  .voyages-boring {
+    --vb-t-xl: clamp(2.4rem, 12vw, 3.8rem);
+    --vb-t-l: clamp(2rem, 9vw, 2.9rem);
+    --vb-t-m: clamp(1.6rem, 7vw, 2.3rem);
+  }
+
+  .vb-rhythm__strip {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .vb-chapter:nth-child(2),
+  .vb-chapter:nth-child(4) {
+    margin-top: 0;
+  }
+
+  .vb-index-row {
+    grid-template-columns: 2.4em minmax(0, 1fr) 1.6em;
+    row-gap: 0.2rem;
+  }
+
+  .vb-index-row__nights {
+    grid-column: 2;
+  }
+
+  .vb-index-row__go {
+    grid-row: 1;
+    grid-column: 3;
+  }
+
+  .vb-epilogue__pills .vb-btn {
+    flex: 1 1 auto;
+  }
+
+  .vb-band {
+    height: 32svh;
+  }
+}
+
+/* ------------------------------------------------------- reduced motion */
 @media (prefers-reduced-motion: reduce) {
-   .vb-flip { --vb-flip: 1; }
-   .vb-track,
-   .vb-split__char,
-   .vb-media,
-   .vb-media__image { transform: none !important; }
+  .voyages-boring .vb-line > *,
+  .voyages-boring .vb-band,
+  .voyages-boring .vb-board div,
+  .voyages-boring .vb-creed__row,
+  .voyages-boring .vb-chapter,
+  .voyages-boring .vb-feature,
+  .voyages-boring .vb-itin__route,
+  .voyages-boring .vb-itin__ghost,
+  .voyages-boring .vb-media__image {
+    transform: none !important;
+    opacity: 1 !important;
+    transition: none !important;
+  }
+
+  .voyages-boring .vb-itin__ghost {
+    opacity: 0.18 !important;
+  }
+
+  .vb-rail__inner,
+  .vb-open__scroll i {
+    animation: none !important;
+  }
+
+  .vb-flip__overlay {
+    clip-path: none !important;
+  }
 }

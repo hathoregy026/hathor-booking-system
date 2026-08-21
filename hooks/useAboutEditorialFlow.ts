@@ -89,7 +89,7 @@ export function useAboutEditorialFlow({
     };
 
     const measure = () => {
-      desktop = window.innerWidth > 1024 && !reduced.matches;
+      desktop = window.innerWidth > 950 && !reduced.matches;
       if (!desktop) {
         run.style.height = "auto";
         track.style.transform = "none";

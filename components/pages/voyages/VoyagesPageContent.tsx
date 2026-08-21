@@ -5,6 +5,8 @@ import Link from "next/link";
 import {
   useRef,
   type ComponentPropsWithoutRef,
+  type CSSProperties,
+  type ReactNode,
 } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { AnimaSplitLine } from "@/components/public/AnimaSplitLine";
@@ -19,21 +21,28 @@ function VoyageMedia({
   alt,
   priority = false,
   className = "",
+  ratio,
 }: {
   slot: string;
   alt: string;
   priority?: boolean;
   className?: string;
+  ratio?: string;
 }) {
   const image = useSiteImage(slot);
   return (
-    <figure className={`vb-media ${className}`}>
+    <figure
+      className={`vb-media ${className}`}
+      style={
+        ratio ? ({ ["--vb-ratio" as string]: ratio } as CSSProperties) : undefined
+      }
+    >
       <Image
         src={image.src}
         alt={alt || image.alt}
         fill
         priority={priority}
-        sizes="(max-width: 1024px) 100vw, 70vw"
+        sizes="(max-width: 950px) 100vw, 70vw"
         className="vb-media__image"
       />
     </figure>
@@ -47,6 +56,7 @@ function FlipImage({
   backAlt = "",
   className = "",
   axis = "left",
+  ratio,
 }: {
   front: string;
   back: string;
@@ -54,11 +64,12 @@ function FlipImage({
   backAlt?: string;
   className?: string;
   axis?: "up" | "left" | "right";
+  ratio?: string;
 }) {
   return (
     <div className={`vb-flip vb-flip--${axis} ${className}`} data-vb-flip>
-      <VoyageMedia slot={front} alt={frontAlt} className="vb-flip__base" />
-      <VoyageMedia slot={back} alt={backAlt} className="vb-flip__overlay" />
+      <VoyageMedia slot={front} alt={frontAlt} className="vb-flip__base" ratio={ratio} />
+      <VoyageMedia slot={back} alt={backAlt} className="vb-flip__overlay" ratio={ratio} />
     </div>
   );
 }
@@ -75,32 +86,41 @@ function Scene({
   );
 }
 
-const PRINCIPLES = [
-  {
-    number: "01",
-    title: "THREE",
-    count: "03",
-    text: VOYAGES_PAGE.manifesto[0]!.body,
-    slot: "home-voyage-3n-aswan-luxor",
-  },
-  {
-    number: "02",
-    title: "FOUR",
-    count: "04",
-    text: VOYAGES_PAGE.manifesto[1]!.body,
-    slot: "home-voyage-4n-luxor-aswan",
-  },
-  {
-    number: "03",
-    title: "SEVEN",
-    count: "07",
-    text: VOYAGES_PAGE.manifesto[2]!.body,
-    slot: "home-voyage-7n-roundtrip",
-  },
+function Eyebrow({ children }: { children: ReactNode }) {
+  return <p className="vb-eyebrow">({children})</p>;
+}
+
+/** The circular badge — the reference's "Explorar" disc, used here as the CTA. */
+function Disc({
+  href,
+  children,
+  external = false,
+}: {
+  href: string;
+  children: ReactNode;
+  external?: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      className="vb-disc"
+      target={external ? "_blank" : undefined}
+      rel={external ? "noopener noreferrer" : undefined}
+    >
+      <span>{children}</span>
+      <i aria-hidden="true">↗</i>
+    </Link>
+  );
+}
+
+/** Three stacked full-bleed bands — the reference's vertical carousel finale. */
+const BANDS = [
+  { slot: "home-voyage-3n-aswan-luxor", label: "Philae", meta: "Aswan" },
+  { slot: "home-voyage-4n-luxor-aswan", label: "Karnak", meta: "Luxor" },
+  { slot: "home-voyage-7n-roundtrip", label: "Edfu", meta: "The bend" },
 ] as const;
 
-const PROJECT_TONES = ["cream", "ink", "gold", "cream"] as const;
-const PROJECT_TITLES = ["Three", "Four", "Seven", "Charter"] as const;
+const TONES = ["sand", "ink", "olive", "stone"] as const;
 
 export type VoyagesPageContentProps = {
   voyages: HomepageAccordionCruise[];
@@ -127,283 +147,322 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
           aria-label="Hathor voyages on the Nile"
         >
           <div className="vb-stage">
-            <div ref={trackRef} className="vb-track">
-              <Scene className="vb-intro">
-                <div className="vb-intro__inner">
-                  <nav className="vb-intro__menu" aria-label="Voyages page sections">
-                    <a href="#voyages">Voyages</a>
-                    <a href="#itineraries">Itineraries</a>
-                    <Link href="/charter">Charter</Link>
-                    <BookNowTrigger className="vb-intro__book">Book Now</BookNowTrigger>
-                  </nav>
-                  <p className="vb-marker">Voyages</p>
-                  <p className="vb-copyright">Hathor Cruise ©2026</p>
-
-                  <div className="vb-intro__title" id="voyages" data-anima-title>
-                    <h1 className="vb-intro__title-part vb-intro__title-part--one">
-                      <AnimaSplitLine line={0}>Our</AnimaSplitLine>
-                      <br />
-                      <AnimaSplitLine line={1}>Voyages</AnimaSplitLine>
-                    </h1>
-                    <h1 className="vb-intro__title-part vb-intro__title-part--two">
-                      <AnimaSplitLine line={2}>on the</AnimaSplitLine>
-                      <br />
-                      <AnimaSplitLine line={3}>Nile</AnimaSplitLine>
-                    </h1>
-                    <h1 className="vb-intro__title-part vb-intro__title-part--three">
-                      <AnimaSplitLine line={4}>private</AnimaSplitLine>
-                      <br />
-                      <AnimaSplitLine line={5}>sailings</AnimaSplitLine>
-                    </h1>
-                  </div>
-
-                  <p className="vb-intro__body">{VOYAGES_PAGE.hero.subtitle}</p>
-                  <div className="vb-intro__wordmark" aria-label="Hathor Nile dahabiya">
-                    <span>HATHOR</span>
-                    <em>Nile</em>
-                    <strong>dahabiya</strong>
-                  </div>
-                </div>
-              </Scene>
-
-              <Scene className="vb-image-lead">
-                <VoyageMedia
-                  slot="home-voyage-7n-roundtrip"
-                  alt="Hathor sailing the Nile"
-                  priority
-                  className="vb-image-lead__main"
-                />
-                <FlipImage
-                  className="vb-image-lead__flip"
-                  axis="left"
-                  front="home-voyage-3n-aswan-luxor"
-                  back="home-voyage-4n-luxor-aswan"
-                  frontAlt="Aswan to Luxor voyage"
-                  backAlt="Luxor to Aswan voyage"
-                />
-              </Scene>
-
-              <Scene className="vb-manifesto">
-                <p className="vb-marker">The river</p>
-                <div className="vb-manifesto__headline vb-big-title" data-anima-title>
-                  <AnimaSplitLine line={0}>Sail Egypt</AnimaSplitLine>
-                  <AnimaSplitLine line={1}>at a dahabiya</AnimaSplitLine>
-                  <AnimaSplitLine line={2}>pace</AnimaSplitLine>
-                </div>
-                <p className="vb-manifesto__body">{VOYAGES_PAGE.opening.body[0]}</p>
-              </Scene>
-
-              <Scene className="vb-collage">
-                <FlipImage
-                  className="vb-collage__tile vb-collage__tile--one"
-                  axis="up"
-                  front="home-voyage-nile-majesty"
-                  back="highlights-lifestyle"
-                  frontAlt="Nile Majesty private charter"
-                  backAlt="Life aboard Hathor"
-                />
-                <FlipImage
-                  className="vb-collage__tile vb-collage__tile--two"
-                  axis="right"
-                  front="home-voyage-4n-luxor-aswan"
-                  back="home-cinematic-still"
-                  frontAlt="Classic Nile voyage"
-                  backAlt="Hathor on the river"
-                />
-                <p>{VOYAGES_PAGE.opening.body[1]}</p>
-              </Scene>
-
-              <Scene className="vb-marquee" aria-label="Voyages">
-                <div className="vb-marquee__rail">
-                  {[0, 1, 2].map((item) => (
-                    <span key={item}>
-                      VOYAGES <b>✦</b>
-                    </span>
-                  ))}
-                </div>
-              </Scene>
-
-              <Scene className="vb-image-pair">
-                <FlipImage
-                  className="vb-image-pair__left"
-                  axis="left"
-                  front="home-voyage-3n-aswan-luxor"
-                  back="home-call-to-action"
-                  frontAlt="Aswan departure"
-                  backAlt="Deck on the Nile"
-                />
-                <FlipImage
-                  className="vb-image-pair__right"
-                  axis="right"
-                  front="gastronomy-table"
-                  back="room-royal"
-                  frontAlt="Dining on the Nile"
-                  backAlt="Royal Suite aboard Hathor"
-                />
-              </Scene>
-
-              <Scene className="vb-principles" id="itineraries">
-                {PRINCIPLES.map((stat) => (
-                  <article className="vb-principle" key={stat.number}>
-                    <p className="vb-principle__copy">{stat.text}</p>
-                    <div className="vb-principle__heading">
-                      <span>{stat.count}</span>
-                      <h2 data-anima-title>{stat.title}</h2>
-                    </div>
-                    <VoyageMedia
-                      slot={stat.slot}
-                      alt={`${stat.title.toLowerCase()} night voyage aboard Hathor`}
-                      className="vb-principle__hover"
-                    />
-                  </article>
+            <div className="vb-rail" aria-hidden="true">
+              <span className="vb-rail__inner">
+                {[0, 1, 2, 3].map((item) => (
+                  <em key={item}>
+                    Luxor ⇄ Aswan <b>✦</b> Three to seven nights <b>✦</b>
+                  </em>
                 ))}
-              </Scene>
+              </span>
+            </div>
 
-              <Scene className="vb-projects-intro">
-                <p className="vb-marker">Itineraries</p>
-                <p>
-                  Four private passages — three, four, and seven nights, or the
-                  dahabiya entirely yours.
+            <div ref={trackRef} className="vb-track">
+              {/* 01 — Opening chapter title, centred */}
+              <Scene className="vb-open" id="voyages">
+                <nav className="vb-open__nav" aria-label="Voyages page sections">
+                  <a href="#itineraries">Itineraries</a>
+                  <a href="#rhythm">The day</a>
+                  <Link href="/charter">Charter</Link>
+                  <a href="#reserve">Reserve</a>
+                </nav>
+
+                <div className="vb-open__inner">
+                  <Eyebrow>{VOYAGES_PAGE.opening.eyebrow}</Eyebrow>
+
+                  <div className="vb-open__title" data-anima-title>
+                    <h1 className="vb-display vb-display--xl">
+                      <span className="vb-line">
+                        <AnimaSplitLine line={0}>
+                          {VOYAGES_PAGE.hero.title}
+                        </AnimaSplitLine>
+                      </span>
+                      <span className="vb-line">
+                        <AnimaSplitLine line={1}>
+                          {VOYAGES_PAGE.hero.secondTitle}
+                        </AnimaSplitLine>
+                      </span>
+                    </h1>
+                  </div>
+
+                  <p className="vb-open__body">{VOYAGES_PAGE.hero.subtitle}</p>
+
+                  {/* the departure-board strip */}
+                  <dl className="vb-board">
+                    <div>
+                      <dt>Itineraries</dt>
+                      <dd>{String(itineraries.length).padStart(2, "0")}</dd>
+                    </div>
+                    <div>
+                      <dt>Nights</dt>
+                      <dd>03 — 07</dd>
+                    </div>
+                    <div>
+                      <dt>Route</dt>
+                      <dd>Luxor ⇄ Aswan</dd>
+                    </div>
+                    <div>
+                      <dt>Manner</dt>
+                      <dd>All inclusive</dd>
+                    </div>
+                  </dl>
+                </div>
+
+                <p className="vb-open__mark">
+                  Hathor Cruise <span className="vb-reg">®</span> 2026
+                </p>
+                <p className="vb-open__scroll">
+                  <i />
+                  Scroll
                 </p>
               </Scene>
 
-              {itineraries.map((item, index) => {
+              {/* 02 — Three stacked bands */}
+              <Scene className="vb-bands" aria-label="Along the river">
+                {BANDS.map((band, index) => (
+                  <div
+                    className="vb-band"
+                    key={band.slot}
+                    style={{ ["--vb-i" as string]: index } as CSSProperties}
+                  >
+                    <VoyageMedia
+                      slot={band.slot}
+                      alt={`${band.label} on the Nile`}
+                      priority={index === 0}
+                      className="vb-band__media"
+                    />
+                    <p className="vb-band__label">
+                      <span>{band.label}</span>
+                      <em>{band.meta}</em>
+                    </p>
+                  </div>
+                ))}
+              </Scene>
+
+              {/* 03 — Creed: Roman numerals, ragged setting */}
+              <Scene className="vb-creed">
+                <div className="vb-creed__head">
+                  <Eyebrow>Why a dahabiya</Eyebrow>
+                  <p className="vb-script">{VOYAGES_PAGE.opening.script}</p>
+                </div>
+
+                <ol className="vb-creed__list">
+                  {VOYAGES_PAGE.manifesto.map((item, index) => (
+                    <li className={`vb-creed__row vb-creed__row--${index}`} key={item.numeral}>
+                      <span className="vb-creed__numeral vb-edit">{item.numeral}</span>
+                      <h2 className="vb-creed__title vb-display">{item.title}</h2>
+                      <p className="vb-creed__body">{item.body}</p>
+                    </li>
+                  ))}
+                </ol>
+              </Scene>
+
+              {/* 04 — Itinerary panels, one per voyage, ghost numeral behind */}
+              {itineraries.map((voyage, index) => {
                 const panel = resolveVoyagePanelContent({
-                  slug: item.slug,
-                  name: item.name,
-                  description: item.description,
-                  href: item.href,
+                  slug: voyage.slug,
+                  name: voyage.name,
+                  description: voyage.description,
+                  href: voyage.href,
                 });
-                const tone = PROJECT_TONES[index] ?? "cream";
-                const title = PROJECT_TITLES[index] ?? panel.routeTitle;
+                const tone = TONES[index % TONES.length];
 
                 return (
                   <Scene
-                    className={`vb-project vb-project--${index + 1} vb-project--${tone}`}
-                    key={item.id}
+                    className={`vb-itin vb-itin--${tone}`}
+                    key={voyage.id}
+                    id={index === 0 ? "itineraries" : undefined}
                   >
-                    <div className="vb-project__shell">
+                    <span className="vb-itin__ghost vb-edit" aria-hidden="true">
+                      {voyage.romanNumeral}
+                    </span>
+
+                    <div className="vb-itin__media">
                       <VoyageMedia
-                        slot={item.imageName}
-                        alt={panel.routeTitle}
-                        className="vb-project__image"
+                        slot={voyage.imageName}
+                        alt={voyage.name}
+                        ratio="1090 / 960"
                       />
-                      <div className="vb-project__data">
-                        <span>{panel.durationLabel}</span>
-                        <span>{panel.routeTitle}</span>
-                        <span>{String(index + 1).padStart(2, "0")}</span>
-                        <Link href={panel.detailsHref}>View Details</Link>
+                    </div>
+
+                    <div className="vb-itin__copy">
+                      <p className="vb-itin__duration">{panel.durationLabel}</p>
+                      <h2 className="vb-itin__route vb-display" data-anima-title>
+                        {panel.routeTitle}
+                      </h2>
+                      <p className="vb-itin__summary">{panel.summary}</p>
+
+                      <ul className="vb-itin__highlights">
+                        {panel.highlights.map((highlight) => (
+                          <li key={highlight}>
+                            <i aria-hidden="true" />
+                            {highlight}
+                          </li>
+                        ))}
+                      </ul>
+
+                      <div className="vb-itin__foot">
+                        <p className="vb-itin__meta">{voyage.meta}</p>
+                        <Disc href={panel.detailsHref}>{panel.detailsLabel}</Disc>
                       </div>
-                      <h2 data-anima-title>{title}</h2>
                     </div>
                   </Scene>
                 );
               })}
 
-              <Scene className="vb-last-project">
-                <div className="vb-last-project__images">
-                  <VoyageMedia
-                    slot="gastronomy-restaurant"
-                    alt="Dining aboard Hathor"
-                    className="vb-last-project__main"
-                  />
-                  <FlipImage
-                    className="vb-last-project__stack"
-                    axis="left"
-                    front="highlights-lifestyle"
-                    back="room-royal"
-                    frontAlt="Deck living"
-                    backAlt="Suite rest after shore days"
-                  />
-                  <Link href="/gastronomy" className="vb-last-project__link">
-                    <span>↗</span> Explore Dining
-                  </Link>
+              {/* 05 — Rhythm filmstrip: four chapters at unequal heights */}
+              <Scene className="vb-rhythm" id="rhythm">
+                <div className="vb-rhythm__head">
+                  <Eyebrow>{VOYAGES_PAGE.rhythm.eyebrow}</Eyebrow>
+                  <h2 className="vb-display vb-display--l">
+                    {VOYAGES_PAGE.rhythm.title}
+                  </h2>
                 </div>
-                <div className="vb-last-project__copy">
-                  <p className="vb-marker">Onboard</p>
-                  <div className="vb-big-title" data-anima-title>
-                    <AnimaSplitLine line={0}>Every voyage</AnimaSplitLine>
-                    <AnimaSplitLine line={1}>fully</AnimaSplitLine>
-                    <AnimaSplitLine line={2}>composed</AnimaSplitLine>
-                  </div>
-                  <p>{VOYAGES_PAGE.features.items[0]!.body}</p>
+
+                <div className="vb-rhythm__strip">
+                  {VOYAGES_PAGE.rhythm.chapters.map((chapter, index) => (
+                    <article
+                      className="vb-chapter"
+                      key={chapter.kicker}
+                      style={{ ["--vb-i" as string]: index } as CSSProperties}
+                    >
+                      <p className="vb-chapter__kicker">
+                        <span>{String(index + 1).padStart(2, "0")}</span>
+                        {chapter.kicker}
+                      </p>
+                      <VoyageMedia
+                        slot={chapter.slot}
+                        alt={chapter.title}
+                        className="vb-chapter__media"
+                        ratio="4 / 5"
+                      />
+                      <h3 className="vb-chapter__title vb-edit">{chapter.title}</h3>
+                      <p className="vb-chapter__body">{chapter.body}</p>
+                    </article>
+                  ))}
                 </div>
               </Scene>
 
-              <Scene className="vb-closing">
+              {/* 06 — Included aboard: staggered editorial masonry */}
+              <Scene className="vb-included">
+                <div className="vb-included__head">
+                  <Eyebrow>{VOYAGES_PAGE.features.eyebrow}</Eyebrow>
+                  <h2 className="vb-display vb-display--l">
+                    {VOYAGES_PAGE.features.title}
+                  </h2>
+                </div>
+
+                <div className="vb-included__grid">
+                  {VOYAGES_PAGE.features.items.map((item, index) => (
+                    <article
+                      className="vb-feature"
+                      key={item.id}
+                      style={{ ["--vb-i" as string]: index } as CSSProperties}
+                    >
+                      <span className="vb-feature__num vb-edit">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <h3 className="vb-feature__label">{item.label}</h3>
+                      <p className="vb-feature__body">{item.body}</p>
+                    </article>
+                  ))}
+                </div>
+              </Scene>
+
+              {/* 07 — Charter: a dark full-bleed act */}
+              <Scene className="vb-charter">
                 <FlipImage
-                  className="vb-closing__media"
+                  className="vb-charter__media"
                   axis="up"
-                  front="home-voyage-nile-majesty"
-                  back="home-voyage-7n-roundtrip"
-                  frontAlt="Nile Majesty charter"
-                  backAlt="Seven-night Nile round trip"
+                  ratio="1483 / 960"
+                  front={VOYAGES_PAGE.charter.image}
+                  back="home-call-to-action"
+                  frontAlt={VOYAGES_PAGE.charter.title}
+                  backAlt="The deck at dusk"
                 />
+                <div className="vb-charter__copy">
+                  <Eyebrow>{VOYAGES_PAGE.charter.eyebrow}</Eyebrow>
+                  <h2 className="vb-display vb-display--l">
+                    {VOYAGES_PAGE.charter.title}
+                  </h2>
+                  <p className="vb-script">{VOYAGES_PAGE.charter.script}</p>
+                  <p className="vb-charter__body">{VOYAGES_PAGE.charter.body}</p>
+                  <Disc href={VOYAGES_PAGE.charter.cta.href}>
+                    {VOYAGES_PAGE.charter.cta.label}
+                  </Disc>
+                </div>
+              </Scene>
+
+              {/* 08 — Closing */}
+              <Scene className="vb-closing">
+                <div className="vb-closing__copy">
+                  <Eyebrow>Next</Eyebrow>
+                  <p className="vb-display vb-display--l">
+                    {VOYAGES_PAGE.cta.title}
+                  </p>
+                </div>
               </Scene>
             </div>
           </div>
         </section>
 
+        {/* Epilogue — a centred column, always vertical */}
         <section className="vb-epilogue" id="reserve">
-          <header className="vb-epilogue__title">
-            <span>(Reserve)</span>
-            <h2 data-anima-title>
-              SAIL
-              <br />
-              THE NILE
+          <div className="vb-epilogue__column">
+            <Eyebrow>Reserve</Eyebrow>
+            <h2 className="vb-display vb-display--xl" data-anima-title>
+              <span className="vb-line">
+                <AnimaSplitLine line={0}>{VOYAGES_PAGE.cta.title}</AnimaSplitLine>
+              </span>
             </h2>
-          </header>
-          <div className="vb-epilogue__images">
-            <VoyageMedia
-              slot="home-voyage-7n-roundtrip"
-              alt="Hathor voyage on the Nile"
-            />
-            <VoyageMedia
-              slot="home-voyage-nile-majesty"
-              alt="Private charter on the Nile"
-            />
-          </div>
-          <div className="vb-epilogue__statement vb-big-title" data-anima-title>
-            <span>Private</span>
-            <span>sailings on</span>
-            <span>the Nile</span>
-          </div>
-          <div className="vb-epilogue__contact">
-            <p>{VOYAGES_PAGE.cta.body}</p>
-          </div>
-          <div className="vb-epilogue__pills">
-            <BookNowTrigger className="btn btn-dark">Book Now</BookNowTrigger>
-            <Link href="/cruises" className="public-btn-outline-gold">
-              View Itineraries
-            </Link>
-          </div>
-          <p className="vb-epilogue__outro">{VOYAGES_PAGE.opening.script}</p>
-          <div className="vb-epilogue__social">
-            <a href="https://www.instagram.com/hathorcruise/">INSTAGRAM</a>
-            <span>|</span>
-            <a href="mailto:reservations@hathorcruise.com">
-              reservations@hathorcruise.com
-            </a>
-            <span>|</span>
-          </div>
-          <div className="vb-epilogue__feature">
-            <div className="vb-epilogue__monogram" aria-hidden="true">
-              HATHOR
+            <p className="vb-epilogue__body">{VOYAGES_PAGE.cta.body}</p>
+            <p className="vb-script">{VOYAGES_PAGE.opening.script}</p>
+
+            <div className="vb-epilogue__pills">
+              <BookNowTrigger className="vb-btn vb-btn--xl vb-btn--solid">
+                {VOYAGES_PAGE.cta.primary}
+              </BookNowTrigger>
+              <Link
+                href={VOYAGES_PAGE.cta.secondary.href}
+                className="vb-btn vb-btn--xl"
+              >
+                <span>{VOYAGES_PAGE.cta.secondary.label}</span>
+              </Link>
             </div>
-            <span>(VOYAGES)</span>
-            <VoyageMedia slot="home-voyage-4n-luxor-aswan" alt="Hathor on the Nile" />
-            <h3>DAHABIYA</h3>
-            <p>
-              Intimate itineraries
-              <br />
-              from Luxor to Aswan
-            </p>
           </div>
+
+          <div className="vb-epilogue__index">
+            {itineraries.map((voyage) => {
+              const panel = resolveVoyagePanelContent({
+                slug: voyage.slug,
+                name: voyage.name,
+                description: voyage.description,
+                href: voyage.href,
+              });
+              return (
+                <Link className="vb-index-row" href={panel.detailsHref} key={voyage.id}>
+                  <span className="vb-index-row__numeral vb-edit">
+                    {voyage.romanNumeral}
+                  </span>
+                  <span className="vb-index-row__route">{panel.routeTitle}</span>
+                  <span className="vb-index-row__nights">{panel.durationLabel}</span>
+                  <span className="vb-index-row__go" aria-hidden="true">
+                    ↗
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+
           <div className="vb-epilogue__legal">
-            <span>HATHOR CRUISE ©2026</span>
-            <Link href="/contact">PRIVACY</Link>
-            <Link href="/contact">COOKIES</Link>
-            <Link href="/contact">LEGAL</Link>
+            <span>
+              Hathor Cruise <span className="vb-reg">®</span> 2026
+            </span>
+            <nav aria-label="Legal">
+              <Link href="/contact">Contact</Link>
+              <Link href="/cruises">Cruises</Link>
+              <Link href="/charter">Charter</Link>
+            </nav>
           </div>
         </section>
       </main>
