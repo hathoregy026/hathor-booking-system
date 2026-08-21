@@ -77,3 +77,28 @@ next-env.d.ts
 
 # local snapshot of current admin dashboard (restore source; never deploy)
 /OLD DASHBOARD BACK UP/
+
+# local scratch / QA dumps (never commit)
+# Root .tmp-* matches both files (.tmp-foo.json) and dirs (.tmp-foo/)
+/.tmp-*
+/_tmp_*
+/repomix-output.xml
+/pages_only.txt
+/cruises
+/scripts/qa-*-out/
+/scripts/qa-user-check/
+/scripts/tmp-*.mjs
+/scripts/scrape-*.json
+/scripts/scraped-*.json
+/assets/CLONE. httpssprings.estate/
+/assets/GPT SITE RESTORE/
+/assets/NORMAL IS DEF BORING/
+/assets/plates/
+/assets/hathor cruise nile trips luxur aswan visit egypt.jpg
+/assets/LOGOS/Hathor.parts/
+/assets/LOGOS/~ai-*.tmp
+/assets/LOGOS/dahabiya-cruise,-nile-cruises-and-tours.webp
+/assets/LOGOS/egyptian-hyroglyphs-hathor-cruise.webp
+/assets/LOGOS/gold.svg
+/assets/LOGOS/hathor-logo-behind-the-sheet-egypt-toors-gold-01.svg
+/assets/LOGOS/hathor-logo-behing-the-sheet-egypt-toors-pyramids.svg

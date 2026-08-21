@@ -1,0 +1,11 @@
+const u = "https://hathor-booking-system-njdy3s16q-hathor1.vercel.app/rooms";
+const r = await fetch(u);
+const t = await r.text();
+console.log("status", r.status, "len", t.length);
+console.log("title", (t.match(/<title>[^<]+/) || [])[0]);
+console.log("Cabins & Suits", t.includes("Cabins & Suits") || t.includes("Cabins \\u0026 Suits"));
+console.log("Accessible", t.includes("Accessible Hathor"));
+console.log("scraped path", t.includes("scraped"));
+console.log("venetian", t.includes("venetian-page") || t.includes("room-fs"));
+const imgs = [...t.matchAll(/media\/hathor\/[a-zA-Z0-9/_.-]+/g)].map((m) => m[0]);
+console.log("imgs", [...new Set(imgs)].slice(0, 20));
