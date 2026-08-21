@@ -19,6 +19,12 @@ import {
 } from "@/lib/admin-device-preview";
 import "./home-experience.css";
 import "./home-dining-slider.css";
+/*
+ * Phone + tablet adaptation. MUST stay last: every rule inside is bounded by a
+ * max-width media query and scoped to html[data-ex-experience], so it only ever
+ * affects this page below 1025px. Desktop is untouched.
+ */
+import "./home-responsive.css";
 
 export const revalidate = 300;
 

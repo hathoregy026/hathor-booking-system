@@ -96,7 +96,21 @@ function scopeRoots(roots: string[], suffix: string): string {
   return roots.map((root) => `${root}${suffix}`).join(",");
 }
 
-/** Styles scoped to the homepage amenities sequence only. */
+/**
+ * Styles scoped to the homepage amenities sequence only.
+ *
+ * Alongside the concrete `font-size` declarations this also publishes the
+ * three role sizes as custom properties on the sequence root:
+ *
+ *     --am-typo-title-size / --am-typo-indication-size / --am-typo-body-size
+ *
+ * They carry whatever the dashboard has stored for the device this block was
+ * generated for (the phone block gets the phone record's values). Narrow
+ * viewport stylesheets read them so they can CAP a size that would overflow
+ * its column without hard-coding one — the dashboard stays authoritative and
+ * a value that already fits is used exactly as entered.
+ * See app/(public)/home-responsive.css, section 4.
+ */
 export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
   const roots = [
     ".public-site .home-am-sequence",
@@ -111,7 +125,7 @@ export function amenitiesTypographyToCss(settings: AmenitiesTypography) {
   const L = settings.layout;
   const { title, indication, body } = settings;
 
-  const spacingVars = `${sel("")}{--am-typo-gap-title-sub:${gapTitleSub}px;--am-typo-gap-sub-body:${gapSubBody}px;--am-typo-gap-body-cta:${gapBodyCta}px;--am-typo-align:${L.align};--am-typo-title-x:${L.titleX}px;--am-typo-title-y:${L.titleY}px;--am-typo-indication-x:${L.indicationX}px;--am-typo-indication-y:${L.indicationY}px;--am-typo-body-x:${L.bodyX}px;--am-typo-body-y:${L.bodyY}px;--am-typo-title-on-image:${title.colorOnImage};--am-typo-title-on-gold:${title.colorOnGold};--am-typo-title-on-cream:${title.colorOnCream};--am-typo-title-on-bg:${title.colorOnGold};--am-typo-indication-on-image:${indication.colorOnImage};--am-typo-indication-on-gold:${indication.colorOnGold};--am-typo-indication-on-cream:${indication.colorOnCream};--am-typo-indication-on-bg:${indication.colorOnGold};--am-typo-body-on-image:${body.colorOnImage};--am-typo-body-on-gold:${body.colorOnGold};--am-typo-body-on-cream:${body.colorOnCream};--am-typo-body-on-bg:${body.colorOnGold};}`;
+  const spacingVars = `${sel("")}{--am-typo-gap-title-sub:${gapTitleSub}px;--am-typo-gap-sub-body:${gapSubBody}px;--am-typo-gap-body-cta:${gapBodyCta}px;--am-typo-align:${L.align};--am-typo-title-x:${L.titleX}px;--am-typo-title-y:${L.titleY}px;--am-typo-indication-x:${L.indicationX}px;--am-typo-indication-y:${L.indicationY}px;--am-typo-body-x:${L.bodyX}px;--am-typo-body-y:${L.bodyY}px;--am-typo-title-on-image:${title.colorOnImage};--am-typo-title-on-gold:${title.colorOnGold};--am-typo-title-on-cream:${title.colorOnCream};--am-typo-title-on-bg:${title.colorOnGold};--am-typo-indication-on-image:${indication.colorOnImage};--am-typo-indication-on-gold:${indication.colorOnGold};--am-typo-indication-on-cream:${indication.colorOnCream};--am-typo-indication-on-bg:${indication.colorOnGold};--am-typo-body-on-image:${body.colorOnImage};--am-typo-body-on-gold:${body.colorOnGold};--am-typo-body-on-cream:${body.colorOnCream};--am-typo-body-on-bg:${body.colorOnGold};--am-typo-title-size:${title.fontSize}px;--am-typo-indication-size:${indication.fontSize}px;--am-typo-body-size:${body.fontSize}px;}`;
 
   const spacingRules = [
     `${sel(" .home-am-slider__caption")}{gap:0!important;text-align:var(--am-typo-align,left)!important;}`,

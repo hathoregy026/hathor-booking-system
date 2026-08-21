@@ -1,0 +1,646 @@
+/*
+ * ============================================================================
+ * home-responsive.css — Homepage phone + tablet adaptation
+ * ============================================================================
+ *
+ * SAFETY CONTRACT (read before editing):
+ *
+ *   1. EVERY rule in this file lives inside a `max-width` media query.
+ *      Nothing here can ever apply above 1024px. The desktop rendering is
+ *      byte-for-byte untouched.
+ *
+ *   2. EVERY selector is scoped to `html[data-ex-experience]`, the attribute
+ *      set by HomeExperienceShell. That attribute exists ONLY on the homepage,
+ *      so no other route can be affected by this file.
+ *
+ *   3. No animation, transition, transform or scroll effect is removed or
+ *      disabled here. Effects are re-proportioned (column -> stacked, runway
+ *      length, type scale) so they read the same on a small screen.
+ *
+ * Loaded last from app/(public)/page.tsx so it wins on source order.
+ *
+ * ---------------------------------------------------------------------------
+ * WHAT THIS FIXES (all reproduced in-browser before writing)
+ * ---------------------------------------------------------------------------
+ *
+ *   [1] 481-767px had NO NAVIGATION AT ALL.
+ *       site-nav.css hides the burger across 481-1024px ("tablet uses word
+ *       nav"), but the word nav itself only turns on at min-width:768px.
+ *       Everything in between rendered a logo and nothing else.
+ *
+ *   [2] 481-767px ran the DESKTOP two-column amenities layout in half the
+ *       width. home-dining-slider.css has a complete, well-designed phone
+ *       layout for the whole .home-am-sequence narrative — but it is gated at
+ *       max-width:480px. At 701px the caption column collapsed to 49% of the
+ *       viewport (the opening rail to 20% / 143px) while still holding 90px
+ *       display type. Section 3 below re-applies the author's own phone
+ *       art direction across 481-767px. Nothing new is invented.
+ *
+ *   [3] On-image display titles rendered at their DESKTOP size on phones.
+ *       A missing phone row in amenities-typography falls back to the desktop
+ *       record, so phones inherited 90px — emitted with `!important`, and
+ *       .home-am-title-line is `nowrap`. Measured: 90px type needs 666px of
+ *       line width. On a 374px viewport that is 178% of the screen, so every
+ *       large title was cut mid-word.
+ *       Section 4 CAPS the dashboard value rather than replacing it, reading
+ *       --am-typo-title-size so Homepage -> Amenities typography stays in
+ *       charge. Requires the matching one-line addition in
+ *       lib/amenities-typography.ts that publishes that variable.
+ *
+ *   [4] ~30 touch targets under the 44x44px minimum on phone.
+ *       Section 5 grows the HIT AREA without moving anything visually.
+ *
+ *   [5] The day/night switch sat outside the right edge and could not be
+ *       tapped at ANY width from 768px to 1024px. Fixed in section 1.
+ * ============================================================================
+ */
+
+/* ==========================================================================
+   1. NAVIGATION — restore an affordance across 481-767px
+   ========================================================================== */
+
+@media (min-width: 481px) and (max-width: 767.98px) {
+  /*
+   * Bring back the burger that the 481-1024 rule in site-nav.css suppresses.
+   * The word nav cannot help here: it does not switch on until 768px.
+   * `--editorial-nav` is excluded so inner pages keep their own left burger.
+   */
+  html[data-ex-experience]
+    .public-site
+    .hathor-header:not(.hathor-header--editorial-nav)
+    .hathor-header__col--right
+    .hathor-header__menu-btn,
+  html[data-ex-experience]
+    .public-site
+    .hathor-header:not(.hathor-header--editorial-nav)
+    .hathor-header__menu-btn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /*
+   * The empty word-nav columns still reserve flex space and pull the wheel
+   * logo off-centre. They hold no visible links at this width, so remove them
+   * from the layout rather than leaving invisible gutters.
+   */
+  html[data-ex-experience]
+    .public-site
+    .hathor-header:not(.hathor-header--editorial-nav)
+    .hathor-header__col--nav-left,
+  html[data-ex-experience]
+    .public-site
+    .hathor-header:not(.hathor-header--editorial-nav)
+    .hathor-header__col--nav-right {
+    display: none !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024.98px) {
+  /*
+   * At exactly 1024px both the burger and the word nav were rendering.
+   * The word nav is live from 768px up, so the burger is redundant here.
+   */
+  html[data-ex-experience]
+    .public-site
+    .hathor-header:not(.hathor-header--editorial-nav)
+    .hathor-header__menu-btn {
+    display: none !important;
+  }
+
+  /*
+   * DAY / NIGHT SWITCH WAS OFF-SCREEN AND UNCLICKABLE ACROSS THIS WHOLE BAND.
+   *
+   * Measured at 821px before this rule:
+   *   header inner .. 0 -> 806        col--right .. width 0, at x=855
+   *   toggle ....... 798 -> 855       viewport 821  =>  34px outside
+   *   elementFromPoint at the switch centre returned NULL — nothing could tap it.
+   *
+   * Cause is flex distribution, not lack of room: .hathor-header__inner is a
+   * flex row of [::before spacer][menu-zone][col--right], and menu-zone grows
+   * to eat the whole line, starving col--right to width 0 and pushing it past
+   * the edge. There are ~89px genuinely free to the right of the nav.
+   *
+   * Letting menu-zone shrink and giving col--right an intrinsic floor keeps
+   * everything in normal flow — no positioning hacks. Note the base stylesheet
+   * DOES position col--right absolutely; a `position:static !important` rule at
+   * min-width:768px overrides that, and re-asserting `absolute` here was tried
+   * and rejected: it let menu-zone reflow and moved the wheel logo further off
+   * centre than the flow fix does.
+   *
+   * Verified (toggle now returns .public-theme-toggle__track from a centre hit
+   * test at every width, and never overflows):
+   *    769px -> toggle 681..738, 23px clear of the nav
+   *    821px -> toggle 733..790, 44px clear
+   *   1024px -> toggle inside, 128px clear
+   *   1025px+ (desktop) untouched — it was already correct there.
+   *
+   * TRADE-OFF: reserving the switch's ~73px shifts the centred nav row about
+   * 27px left on tablet. The wheel logo was already ~13px right of true centre
+   * here; it now sits ~14px left of it. If you would rather the nav did not
+   * move at all, the alternative is showing the burger up to ~900px instead of
+   * 767px — say so and it is a one-line change to section 1.
+   */
+  html[data-ex-experience]
+    .public-site
+    .hathor-header:not(.hathor-header--editorial-nav)
+    .hathor-header__menu-zone {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  html[data-ex-experience]
+    .public-site
+    .hathor-header:not(.hathor-header--editorial-nav)
+    .hathor-header__col--right {
+    flex: 0 0 auto;
+    width: auto;
+    min-width: max-content;
+  }
+}
+
+/* ==========================================================================
+   2. GLOBAL NARROW GUARDS
+   ========================================================================== */
+
+@media (max-width: 1024.98px) {
+  /* Belt-and-braces against sideways drift from oversized absolute children. */
+  html[data-ex-experience] body {
+    overflow-x: hidden;
+  }
+
+  /*
+   * iOS: stop Safari inflating type inside the rotated / transformed
+   * marquee and stack sections on orientation change.
+   */
+  html[data-ex-experience] {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+}
+
+/* ==========================================================================
+   3. AMENITIES SEQUENCE — extend the author's phone layout to 481-767px
+   --------------------------------------------------------------------------
+   These declarations are lifted from the existing
+   `@media (max-width: 480px)` block in home-dining-slider.css so the
+   narrative reads identically on a large phone or small tablet. The values
+   are the author's, not new art direction. The <=480px band is deliberately
+   NOT included, so the original block continues to own true phone widths.
+   ========================================================================== */
+
+@media (min-width: 481px) and (max-width: 767.98px) {
+  html[data-ex-experience] .home-am-sequence {
+    --sticky-under-previous-distance: 80svh;
+    --sticky-under-next-distance: 80svh;
+  }
+
+  html[data-ex-experience] .home-am-intro {
+    height: 150svh;
+  }
+
+  html[data-ex-experience] .home-am-intro__caption {
+    max-width: 88vw;
+    text-align: left;
+    left: 1.6rem;
+    right: 1.6rem;
+  }
+
+  html[data-ex-experience] .home-am-intro__cream {
+    width: 100%;
+    height: 42%;
+    top: auto;
+    bottom: 0;
+    align-items: center;
+  }
+
+  /* ---- video chapter ---- */
+
+  html[data-ex-experience] .home-am-video {
+    height: 350svh;
+  }
+
+  html[data-ex-experience] .home-am-video__hero,
+  html[data-ex-experience] .home-am-video__hero-wrap {
+    transform-origin: bottom center;
+    top: auto;
+    bottom: 0;
+    height: 42%;
+  }
+
+  html[data-ex-experience] .home-am-video__copy {
+    top: 6rem;
+    left: 1.6rem;
+    width: calc(100% - 3.2rem);
+  }
+
+  html[data-ex-experience] .home-am-video__title {
+    right: 1.6rem;
+    left: 1.6rem;
+    bottom: 40vh;
+    max-width: none;
+    text-align: left;
+  }
+
+  html[data-ex-experience] .home-am-video__inset {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    z-index: 2;
+  }
+
+  /* Was collapsing to 49% of the viewport — the headline defect at 701px. */
+  html[data-ex-experience] .home-am-video__caption {
+    flex: none;
+    width: 100%;
+    max-width: none;
+  }
+
+  /* ---- slider chapter ---- */
+
+  html[data-ex-experience] .home-am-slider {
+    height: 600svh;
+  }
+
+  html[data-ex-experience] .home-am-slider__row {
+    flex-direction: column;
+  }
+
+  html[data-ex-experience] .home-am-slider__caption-col,
+  html[data-ex-experience] .home-am-slider__images-col {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 100%;
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  html[data-ex-experience] .home-am-slider__caption-col {
+    height: 42%;
+    justify-content: flex-end;
+    padding: 1.6rem;
+  }
+
+  html[data-ex-experience] .home-am-slider__images-col {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  html[data-ex-experience] .home-am-slider__images-col::before {
+    display: none;
+  }
+
+  html[data-ex-experience] .home-am-slider__caption-stack {
+    max-width: none;
+    min-height: 10.5rem;
+  }
+
+  /* ---- opening chapter ---- */
+
+  html[data-ex-experience] .home-am-opening {
+    height: 250svh;
+    min-height: 0;
+    pointer-events: none;
+    z-index: 4;
+  }
+
+  html[data-ex-experience] .home-am-opening__content {
+    flex-direction: column;
+    height: auto;
+    min-height: 100svh;
+  }
+
+  html[data-ex-experience] .home-am-opening__images {
+    flex: 0 1 auto;
+    width: 100%;
+    height: 70svh;
+  }
+
+  html[data-ex-experience] .home-am-opening__caption {
+    flex: none;
+    width: 100%;
+    height: auto;
+    margin-left: 0;
+    position: absolute;
+    bottom: 0;
+    padding: 1.6rem;
+    background: transparent;
+  }
+
+  html[data-ex-experience] .home-am-opening__caption-title {
+    width: 60%;
+    flex: none;
+    text-align: left;
+  }
+
+  html[data-ex-experience] .home-am-opening__title {
+    text-align: left;
+  }
+
+  html[data-ex-experience] .home-am-opening__right-column {
+    padding-top: 70svh;
+    background: var(--am-gold);
+  }
+
+  html[data-ex-experience] .home-am-opening__right-inner {
+    margin-left: 0;
+    width: 100%;
+    padding: 1.6rem;
+    min-height: 0;
+    background: var(--am-gold);
+  }
+
+  html[data-ex-experience] .home-am-opening__cards-band {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  html[data-ex-experience] .home-am-opening__list-wrap {
+    flex: none;
+    width: 100%;
+  }
+
+  /* Was 143px wide (20% of viewport) holding 90px type. */
+  html[data-ex-experience] .home-am-opening__rail-copy {
+    position: relative;
+    top: auto;
+    order: -1;
+    max-width: none;
+    padding: 0;
+  }
+
+  /* Card rail keeps its horizontal swipe — just re-proportioned. */
+  html[data-ex-experience] .home-am-opening__list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 12px;
+    overflow-x: auto;
+    margin-top: 0;
+    padding-left: 0;
+    width: calc(100% + 1.6rem);
+    margin-right: -1.6rem;
+    padding-right: 1.6rem;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+  }
+
+  html[data-ex-experience] .home-am-opening__list-item {
+    flex: 0 0 42%;
+    width: 42%;
+    min-width: 42%;
+    margin-top: 0;
+    scroll-snap-align: start;
+  }
+
+  /* ---- nature chapter ---- */
+
+  html[data-ex-experience] .home-am-nature__gold-band {
+    min-height: 100%;
+    margin: 0;
+    padding: 0 1.6rem clamp(1.6rem, 3.5vh, 2.25rem);
+  }
+
+  html[data-ex-experience] .home-am-nature.home-am-chapter--under-next {
+    --sticky-under-next-distance: clamp(14rem, 48vh, 20rem);
+  }
+
+  html[data-ex-experience] .home-am-nature__copy {
+    max-width: none;
+    padding-top: 0.35rem;
+  }
+
+  html[data-ex-experience] .home-am-nature__gold-wash {
+    opacity: 0.5;
+  }
+}
+
+/* ==========================================================================
+   4. ON-IMAGE DISPLAY TYPE — cap the dashboard value, never replace it
+   --------------------------------------------------------------------------
+   THE DASHBOARD STAYS AUTHORITATIVE.
+
+   lib/amenities-typography.ts publishes the stored size for the current
+   device as `--am-typo-title-size` on the sequence root (the phone block
+   carries the phone record's value, the desktop block the desktop one).
+   The rules below read that variable and only clamp it with a viewport term:
+
+       font-size: min(var(--am-typo-title-size), <cap>vw)
+
+   min() means the entered value wins whenever it fits, and the vw term takes
+   over only when it would overflow its column. Raise or lower the size in
+   Homepage -> Amenities typography and this follows it — nothing here is
+   hard-coded except the fallback, used only if the variable is missing.
+
+   WHY A CAP IS NEEDED AT ALL: a missing phone row falls back to the DESKTOP
+   record (amenities-typography.ts, getAmenitiesTypography — deliberate, so
+   phone does not lose the desktop hex colours). Sizes come along for the
+   ride, so phones inherited 90px. Measured: a 90px line needs 666px of width
+   and a 374px phone gave it 374px — 178% of the screen, cut mid-word.
+
+   The vw caps are tuned so nothing overflows at the narrowest width in each
+   band, and so the tablet band lands on 90px exactly at 1024px — crossing
+   into desktop at 1025px is seamless (8.8vw x 1024 = 90.1px).
+
+   `nowrap` is relaxed to `normal` — the same escape the author already uses
+   for slider captions at <=480px — so a long line breaks instead of running
+   off. The per-line reveal animation is unaffected: it animates the span, and
+   the span is still one element.
+
+   SPECIFICITY NOTE: the CMS emits its winning rule as
+       html[data-ex-experience] .ex-root .home-am-sequence .typo-on-images-title
+   which scores (0,4,1) with !important, and its <style> tag is injected into
+   the body — i.e. AFTER this stylesheet. Matching that score would lose on
+   source order, so `[data-ex-experience]` is repeated to reach (0,5,1). It is
+   the same element either way; the duplicate attribute only buys precedence.
+   ========================================================================== */
+
+@media (max-width: 767.98px) {
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-sequence
+    :is(
+      .typo-on-images-title,
+      .home-am-on-cream-title,
+      .home-am-opening__title,
+      .home-am-opening__caption-title,
+      .home-am-nature__title,
+      .home-am-video__title,
+      .home-am-title-line
+    ) {
+    /* 10.5vw keeps the longest measured line inside a 374px viewport. */
+    font-size: min(var(--am-typo-title-size, 84px), 10.5vw) !important;
+    line-height: 0.94 !important;
+    overflow-wrap: break-word;
+  }
+
+  /* Let a long display line break rather than run off the screen. */
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-sequence
+    .home-am-title-line {
+    white-space: normal !important;
+  }
+
+  /* Keep the title block inside the safe area on very narrow screens. */
+  html[data-ex-experience] .home-am-sequence .home-am-video__title-stack {
+    width: auto;
+    max-width: calc(100vw - 2.3rem);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024.98px) {
+  /*
+   * Tablet keeps the desktop two-column layout, so the caption columns are
+   * roughly 42% of the viewport. Measured at 821px: a 90px line needs 666px
+   * but the column offers 345px — a 321px overflow.
+   *
+   * 8.8vw lands on 90px at 1024px, so the handoff to desktop is invisible:
+   *   821px -> 72px    900px -> 79px    1024px -> 90px
+   */
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-sequence
+    :is(
+      .typo-on-images-title,
+      .home-am-on-cream-title,
+      .home-am-opening__title,
+      .home-am-opening__caption-title,
+      .home-am-nature__title,
+      .home-am-video__title,
+      .home-am-title-line
+    ) {
+    font-size: min(var(--am-typo-title-size, 90px), 8.8vw) !important;
+    line-height: 0.96 !important;
+    overflow-wrap: break-word;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-sequence
+    .home-am-title-line {
+    white-space: normal !important;
+  }
+}
+
+/* ==========================================================================
+   5. TOUCH TARGETS — grow the hit area, not the design
+   --------------------------------------------------------------------------
+   Measured 30 interactive elements under 44x44px on a 390px phone. Where an
+   element's visible size is part of the design (the day/night switch, the
+   accordion CTA underline), the box is left alone and an invisible padded
+   overlay carries the extra hit area instead — nothing moves on screen.
+   ========================================================================== */
+
+@media (max-width: 1024.98px) {
+  /* Day / night switch: 57x23 visually. Keep it; extend the tap zone. */
+  html[data-ex-experience] .public-site .public-theme-toggle {
+    position: relative;
+  }
+
+  html[data-ex-experience] .public-site .public-theme-toggle::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, 44px);
+    height: 44px;
+    transform: translate(-50%, -50%);
+    /* Sits behind the switch art, above nothing else. */
+    z-index: 0;
+  }
+
+  /* Accordion "Check Voyages" — 21px tall inline link. */
+  html[data-ex-experience] .home-am-sequence [class*="LuxuryAccordion"][class*="cta"] {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  /* Instagram handle under the gallery title — 27px tall. */
+  html[data-ex-experience] .gallery-section .gallery-ig-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  /* Carousel prev / next chevrons. */
+  html[data-ex-experience] .home-carousel .carousel-nav button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /*
+   * Header brand mark — 38x38. Its size IS the design, so the box is left
+   * alone and an invisible centred overlay carries the tap area.
+   * Verified by hit-test: probes at +/-20px from centre all resolve to the
+   * link, and nothing moves on screen.
+   */
+  html[data-ex-experience] .public-site .hathor-header__brand {
+    position: relative;
+  }
+
+  html[data-ex-experience] .public-site .hathor-header__brand::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+    transform: translate(-50%, -50%);
+    z-index: 0;
+  }
+
+  /*
+   * Tablet word-nav links — about 42x25. An ::after overlay does NOT work
+   * here: it paints outside the 25px-tall <li> and later header layers win
+   * the hit test (measured: only the centre point resolved to the link).
+   *
+   * Padding grows the real border box, and an equal negative margin pulls the
+   * outer box back to its original size so the flex row is unchanged.
+   * Measured before/after at 821px: header height delta 0.00px, link text
+   * centre shift 0.00px, tap height 25px -> 45px, all five probes hit.
+   *
+   * 3.2px is the element's existing vertical padding — preserved, not replaced.
+   */
+  html[data-ex-experience] .public-site .hathor-header__nav-link {
+    padding-top: calc(3.2px + 10px);
+    padding-bottom: calc(3.2px + 10px);
+    margin-top: -10px;
+    margin-bottom: -10px;
+  }
+
+  /*
+   * Footer link columns — 30px rows. Growing min-height keeps the type and
+   * the column rhythm identical while making each row tappable.
+   */
+  html[data-ex-experience] .lux-footer__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  html[data-ex-experience] .lux-footer__meta-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}
+
+/* ==========================================================================
+   6. REDUCED MOTION — mirror the existing contract at narrow widths
+   --------------------------------------------------------------------------
+   The base stylesheets already honour prefers-reduced-motion. This only makes
+   sure the layouts introduced above degrade the same way, and it never runs
+   unless the visitor has asked for reduced motion.
+   ========================================================================== */
+
+@media (max-width: 1024.98px) and (prefers-reduced-motion: reduce) {
+  html[data-ex-experience] .home-am-opening__list {
+    scroll-behavior: auto;
+  }
+}
