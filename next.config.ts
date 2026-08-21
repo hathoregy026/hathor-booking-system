@@ -28,7 +28,12 @@ const CSP_DIRECTIVES = [
   "worker-src 'self' blob:",
   "frame-src 'self'",
   "manifest-src 'self'",
-  "upgrade-insecure-requests",
+  /*
+   * NOTE: `upgrade-insecure-requests` is intentionally omitted. Browsers
+   * ignore it in a report-only policy and log a console warning about it.
+   * Add it back at the same time you switch the header key below to the
+   * enforcing "Content-Security-Policy".
+   */
 ].join("; ");
 
 /* Applied to every route. None of these change rendering. */
