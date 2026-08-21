@@ -238,7 +238,7 @@ html:has(.voyages-boring) footer.lux-footer {
   position: relative;
   display: grid;
   place-items: center;
-  width: clamp(6.5rem, 8vw, 8.5rem);
+  width: clamp(5.2rem, 6.2vw, 6.6rem);
   aspect-ratio: 1 / 1;
   flex: 0 0 auto;
   border: 1px solid currentcolor;
@@ -489,75 +489,92 @@ html:has(.voyages-boring) footer.lux-footer {
   clip-path: inset(calc((1 - var(--vb-flip, 0)) * 100%) 0 0 0);
 }
 
-/* --------------------------------------------------- 01 · opening (centred) */
-.vb-open {
-  width: min(94vw, 70rem);
-  padding-left: calc(var(--vb-pad) + 3.4em);
-  justify-content: center;
-  align-items: center;
-  background: var(--vb-paper);
+/* =========================================================== IMAGE MECHANICS
+   Pictures are the material of this page, so the parallax range is wider than
+   on the other two and every large frame carries a wipe. */
+.vb-media__image {
+  transform: translateY(calc((var(--parallax, 0.5) - 0.5) * -9%))
+    scale(calc(1.1 + var(--focus, 0) * 0.04));
 }
 
-.vb-open__inner {
+/* a soft scrim so tracked-out type stays legible over any photograph */
+.vb-scrim::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgb(11 10 8 / 62%) 0%,
+    rgb(11 10 8 / 22%) 42%,
+    rgb(11 10 8 / 4%) 72%,
+    transparent 100%
+  );
+}
+
+/* ---------------------------------------------------- 01 · opening picture
+   A full-bleed frame the width of the viewport, with the title set over it. */
+.vb-open {
+  position: relative;
+  width: 100vw;
+  padding: 0;
+  color: #fff;
+}
+
+.vb-open__media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.vb-open__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgb(11 10 8 / 66%) 0%,
+    rgb(11 10 8 / 26%) 44%,
+    rgb(11 10 8 / 6%) 74%,
+    transparent 100%
+  );
+}
+
+.vb-open__over {
+  position: absolute;
+  z-index: 3;
+  left: calc(var(--vb-pad) + 3.4em);
+  right: var(--vb-pad);
+  bottom: calc(var(--vb-band-pad) * 0.5);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: clamp(1rem, 2.4vw, 2rem);
-  text-align: center;
-  width: 100%;
+  gap: clamp(0.5rem, 1.4vw, 1rem);
+}
+
+.vb-open .vb-eyebrow {
+  color: var(--vb-gold);
 }
 
 .vb-open__title h1 {
   display: block;
+  text-shadow: 0 2px 30px rgb(0 0 0 / 35%);
 }
 
-.vb-open__body {
-  font-size: var(--vb-t-body);
-  line-height: 1.6;
-  color: var(--vb-ink-soft);
-  max-width: 46ch;
-}
-
-/* the departure board */
-.vb-board {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--vb-gap);
-  width: min(100%, calc(var(--vb-col) * 9 + var(--vb-gap) * 8));
-  margin-top: clamp(0.8rem, 2vw, 1.6rem);
-  padding-top: clamp(0.9rem, 2vw, 1.4rem);
-  border-top: 1px solid var(--vb-hair);
-}
-
-.vb-board div {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4em;
-  align-items: center;
-  transform: translateY(calc((1 - var(--reveal, 1)) * 18px));
-  opacity: calc(0.2 + var(--reveal, 1) * 0.8);
-  transition:
-    transform 0.8s var(--vb-ease-soft),
-    opacity 0.8s var(--vb-ease-soft);
-}
-
-.vb-board dt {
+.vb-open__tracked {
   font-size: var(--vb-t-meta);
-  letter-spacing: 0.2em;
+  letter-spacing: 0.42em;
   text-transform: uppercase;
-  color: var(--vb-ink-soft);
-}
-
-.vb-board dd {
-  font-family: var(--vb-edit);
-  font-size: clamp(0.95rem, 1.3vw, 1.4rem);
-  white-space: nowrap;
+  opacity: 0.9;
 }
 
 .vb-open__nav {
   position: absolute;
   z-index: 4;
-  top: calc(var(--vb-band-pad) * 0.9);
+  top: calc(var(--vb-band-pad) * 0.7);
   right: var(--vb-pad);
   display: flex;
   gap: 1.6rem;
@@ -566,13 +583,13 @@ html:has(.voyages-boring) footer.lux-footer {
   font-size: var(--vb-t-meta);
   letter-spacing: 0.2em;
   text-transform: uppercase;
+  color: #fff;
+  mix-blend-mode: difference;
 }
 
 .vb-open__nav a {
   position: relative;
   padding-bottom: 0.3em;
-  color: var(--vb-ink-soft);
-  transition: color 0.3s var(--vb-ease-soft);
 }
 
 .vb-open__nav a::after {
@@ -582,44 +599,33 @@ html:has(.voyages-boring) footer.lux-footer {
   bottom: 0;
   width: 0;
   height: 1px;
-  background: var(--vb-gold-deep);
+  background: currentcolor;
   transition: width 0.4s var(--vb-ease-soft);
-}
-
-.vb-open__nav a:hover {
-  color: var(--vb-ink);
 }
 
 .vb-open__nav a:hover::after {
   width: 100%;
 }
 
-.vb-open__mark,
 .vb-open__scroll {
   position: absolute;
-  bottom: calc(var(--vb-band-pad) * 0.55);
-  font-size: var(--vb-t-meta);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--vb-ink-soft);
-}
-
-.vb-open__mark {
-  left: calc(var(--vb-pad) + 3.4em);
-}
-
-.vb-open__scroll {
+  z-index: 4;
   right: var(--vb-pad);
+  bottom: calc(var(--vb-band-pad) * 0.5);
   display: flex;
   align-items: center;
   gap: 0.7rem;
+  font-size: var(--vb-t-meta);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #fff;
 }
 
 .vb-open__scroll i {
   display: block;
   width: 3.2rem;
   height: 1px;
-  background: var(--vb-ink);
+  background: currentcolor;
   transform-origin: 0 50%;
   animation: vb-scroll-hint 2.4s var(--vb-ease-soft) infinite;
 }
@@ -634,174 +640,161 @@ html:has(.voyages-boring) footer.lux-footer {
   }
 }
 
-/* ------------------------------------------------------------- 02 · bands
-   Three full-bleed horizontal bands stacked to fill the panel. Each slides in
-   from an alternating side, staggered by index. */
-.vb-bands {
-  width: min(70vw, 56rem);
-  padding: 0;
-  gap: 0;
-  background: var(--vb-black);
-}
-
-.vb-band {
-  position: relative;
-  flex: 1 1 0;
-  min-height: 0;
-  overflow: hidden;
-  transform: translateX(
-    calc((1 - var(--reveal, 1)) * (var(--vb-i, 0) - 1) * 14%)
-  );
-  opacity: calc(0.25 + var(--reveal, 1) * 0.75);
-  transition:
-    transform 1s var(--vb-ease-soft),
-    opacity 1s var(--vb-ease-soft);
-  transition-delay: calc(var(--vb-i, 0) * 90ms);
-}
-
-.vb-band__media {
-  width: 100%;
-  height: 100%;
-  aspect-ratio: auto;
-}
-
-.vb-band__label {
-  position: absolute;
-  z-index: 2;
-  left: var(--vb-pad);
-  bottom: 1rem;
-  display: flex;
-  align-items: baseline;
-  gap: 0.8rem;
-  color: #fff;
-  text-shadow: 0 1px 12px rgb(0 0 0 / 45%);
-}
-
-.vb-band__label span {
-  font-family: var(--vb-edit);
-  font-size: clamp(1.1rem, 1.8vw, 1.8rem);
-}
-
-.vb-band__label em {
-  font-style: normal;
-  font-size: var(--vb-t-meta);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  opacity: 0.85;
-}
-
-/* -------------------------------------------------------------- 03 · creed
-   Roman numerals with a ragged setting: rows 0 and 2 sit left, row 1 is
-   pushed right — the reference's staggered-lines block. */
-.vb-creed {
-  width: min(92vw, 74rem);
+/* ---------------------------------------------------------- 02 · the pair
+   One tall frame filling the panel height, with a smaller one riding across
+   its right edge — precise unequal ratios, a deliberate overlap. */
+.vb-duo {
+  width: min(86vw, 68rem);
   justify-content: center;
-  gap: clamp(1.6rem, 3.6vw, 3.4rem);
+  background: var(--vb-paper);
+}
+
+.vb-duo__main {
+  width: calc(var(--vb-col) * 6.4 + var(--vb-gap) * 5);
+  height: 82svh;
+  align-self: flex-start;
+}
+
+.vb-duo__inset {
+  position: absolute;
+  z-index: 3;
+  right: calc(var(--vb-pad) - var(--vb-col) * 0.7);
+  top: 46%;
+  width: calc(var(--vb-col) * 4.4 + var(--vb-gap) * 3);
+  aspect-ratio: 835 / 557;
+  box-shadow: 0 2rem 4.5rem rgb(20 18 14 / 22%);
+}
+
+.vb-duo__caption {
+  position: absolute;
+  left: calc(var(--vb-pad) + 3.4em);
+  bottom: calc(var(--vb-band-pad) * 0.42);
+  font-size: var(--vb-t-meta);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--vb-ink-soft);
+}
+
+.vb-duo__caption span {
+  font-family: var(--vb-edit);
+  font-style: italic;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--vb-gold-deep);
+  margin-right: 0.5em;
+}
+
+/* --------------------------------------------------------- 03 · text pane
+   The reference keeps its text panes narrow and rare. This is the only one. */
+.vb-pane {
+  width: min(52vw, 34rem);
+  justify-content: center;
+  gap: clamp(0.9rem, 2vw, 1.6rem);
   background: var(--vb-wash-sand);
 }
 
-.vb-creed__head {
+.vb-pane__list {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
-  max-width: 44ch;
+  gap: clamp(0.9rem, 2vw, 1.5rem);
 }
 
-.vb-creed__list {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(1.2rem, 2.6vw, 2.4rem);
-}
-
-.vb-creed__row {
+.vb-pane__list li {
   display: grid;
-  grid-template-columns: 2.6em minmax(0, auto) minmax(0, 1fr);
+  grid-template-columns: 2.2em minmax(0, 1fr);
+  gap: 0.6rem;
   align-items: baseline;
-  gap: var(--vb-gap);
-  transform: translateY(calc((1 - var(--reveal, 1)) * 26px));
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--vb-hair);
+  transform: translateY(calc((1 - var(--reveal, 1)) * 22px));
   opacity: calc(0.15 + var(--reveal, 1) * 0.85);
   transition:
     transform 0.85s var(--vb-ease-soft),
     opacity 0.85s var(--vb-ease-soft);
 }
 
-.vb-creed__row--1 {
-  margin-left: calc(var(--vb-col) * 1.6);
-}
-
-.vb-creed__row--2 {
-  margin-left: calc(var(--vb-col) * 0.7);
-}
-
-.vb-creed__numeral {
+.vb-pane__list li > span {
   font-size: var(--vb-t-s);
-  letter-spacing: 0.06em;
   color: var(--vb-gold-deep);
 }
 
-.vb-creed__title {
-  font-size: var(--vb-t-m);
-  white-space: nowrap;
+.vb-pane__list h2 {
+  font-family: var(--vb-display);
+  font-size: clamp(1.3rem, 2.2vw, 2rem);
+  line-height: 1.05;
+  margin-bottom: 0.3em;
 }
 
-.vb-creed__body {
+.vb-pane__list p {
   font-size: var(--vb-t-body);
-  line-height: 1.55;
+  line-height: 1.5;
   color: var(--vb-ink-soft);
-  max-width: 42ch;
 }
 
-/* --------------------------------------------------------- 04 · itineraries
-   Each voyage is its own full-height panel with an outlined ghost numeral
-   sitting behind the composition. */
+.vb-pane .vb-open__tracked {
+  color: var(--vb-ink-soft);
+  letter-spacing: 0.16em;
+  line-height: 1.7;
+  text-transform: none;
+  font-size: var(--vb-t-body);
+  opacity: 0.9;
+}
+
+/* -------------------------------------------------------- 04 · itineraries
+   Each voyage is a full-height photograph with a wall-label plate beneath and
+   an outlined ghost numeral cut into the picture. */
 .vb-itin {
-  width: min(94vw, 76rem);
-  justify-content: center;
-  display: grid;
-  grid-template-columns:
-    minmax(0, calc(var(--vb-col) * 5.4 + var(--vb-gap) * 4))
-    minmax(0, 1fr);
-  align-content: center;
-  gap: clamp(1.6rem, 3.6vw, 3.6rem);
+  width: min(78vw, 52rem);
+  padding: 0;
+  justify-content: flex-end;
   overflow: hidden;
 }
 
 .vb-itin--sand {
   background: var(--vb-paper-warm);
   color: var(--vb-ink);
-  --vb-stroke: var(--vb-ink);
+  --vb-stroke: #fff;
 }
 
 .vb-itin--ink {
   background: var(--vb-black);
   color: var(--vb-paper);
-  --vb-stroke: var(--vb-paper);
+  --vb-stroke: #fff;
 }
 
 .vb-itin--olive {
   background: var(--vb-wash-olive);
   color: var(--vb-black);
-  --vb-stroke: var(--vb-black);
+  --vb-stroke: #fff;
 }
 
 .vb-itin--stone {
   background: var(--vb-wash-stone);
   color: var(--vb-ink);
-  --vb-stroke: var(--vb-ink);
+  --vb-stroke: #fff;
+}
+
+.vb-itin__media {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  aspect-ratio: auto;
 }
 
 .vb-itin__ghost {
   position: absolute;
-  z-index: 0;
-  right: calc(var(--vb-pad) * -0.4);
-  top: 50%;
-  transform: translateY(-52%)
-    translateX(calc((1 - var(--reveal, 1)) * 6%));
-  font-size: clamp(14rem, 34vw, 34rem);
+  z-index: 2;
+  left: 50%;
+  top: 32%;
+  transform: translate(-50%, -50%)
+    scale(calc(0.94 + var(--reveal, 1) * 0.06));
+  font-size: clamp(10rem, 26vw, 26rem);
   line-height: 0.72;
   color: transparent;
-  -webkit-text-stroke: 1px var(--vb-stroke, #14120e);
-  opacity: calc(0.14 + var(--reveal, 1) * 0.14);
+  -webkit-text-stroke: 1.5px var(--vb-stroke, #fff);
+  opacity: calc(0.25 + var(--reveal, 1) * 0.35);
   pointer-events: none;
   user-select: none;
   transition:
@@ -809,33 +802,19 @@ html:has(.voyages-boring) footer.lux-footer {
     opacity 1.1s var(--vb-ease-soft);
 }
 
-.vb-itin__media,
-.vb-itin__copy {
+.vb-itin__plate {
   position: relative;
-  z-index: 1;
-}
-
-.vb-itin__media .vb-media {
-  width: 100%;
-  max-height: 62svh;
-}
-
-.vb-itin__copy {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: clamp(0.7rem, 1.6vw, 1.2rem);
-}
-
-.vb-itin__duration {
-  font-size: var(--vb-t-meta);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  opacity: 0.72;
+  z-index: 3;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  min-height: clamp(9.5rem, 18svh, 13rem);
+  padding: clamp(1rem, 2vw, 1.6rem);
 }
 
 .vb-itin__route {
-  font-size: var(--vb-t-l);
+  font-size: var(--vb-t-m);
+  text-align: center;
   transform: translateY(calc((1 - var(--reveal, 1)) * 18px));
   opacity: calc(0.2 + var(--reveal, 1) * 0.8);
   transition:
@@ -843,240 +822,253 @@ html:has(.voyages-boring) footer.lux-footer {
     opacity 0.9s var(--vb-ease-soft);
 }
 
-.vb-itin__summary {
-  font-size: var(--vb-t-body);
-  line-height: 1.55;
-  max-width: 44ch;
-  opacity: 0.82;
-}
-
-.vb-itin__highlights {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4em;
+.vb-itin__corner {
+  position: absolute;
   font-size: var(--vb-t-meta);
-  letter-spacing: 0.14em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
+  /* the disc occupies the right third of the plate — keep clear of it */
+  max-width: 30%;
 }
 
-.vb-itin__highlights li {
-  display: flex;
-  align-items: center;
-  gap: 0.7em;
+.vb-itin__corner--tl {
+  top: 1rem;
+  left: 1.1rem;
+  font-size: var(--vb-t-body);
+  font-style: italic;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
-.vb-itin__highlights i {
-  display: block;
-  width: 0.4rem;
-  height: 0.4rem;
-  border-radius: 50%;
-  background: var(--vb-gold);
-  flex: 0 0 auto;
+.vb-itin__corner--tr {
+  top: 1rem;
+  right: 1.1rem;
+  text-align: right;
 }
 
-.vb-itin__foot {
-  display: flex;
-  align-items: center;
-  gap: clamp(1rem, 2.4vw, 2rem);
-  margin-top: clamp(0.4rem, 1.4vw, 1rem);
+.vb-itin__corner--bl {
+  bottom: 1.1rem;
+  left: 1.1rem;
+  line-height: 1.5;
 }
 
-.vb-itin__meta {
-  font-family: var(--vb-edit);
-  font-size: clamp(0.9rem, 1.15vw, 1.2rem);
-  line-height: 1.35;
-  max-width: 18ch;
+.vb-itin__corner--br {
+  bottom: 0.9rem;
+  right: 1.1rem;
+  max-width: none;
 }
 
-/* ------------------------------------------------------------- 05 · rhythm
-   A filmstrip of four day-chapters, each nudged to a different height so the
-   row reads as a hand-set spread rather than a card grid. */
-.vb-rhythm {
-  width: min(96vw, 88rem);
+/* ------------------------------------------------------------ 05 · filmstrip
+   Four pictures at four different ratios, each nudged to its own height —
+   a hand-set spread, not a card row. */
+.vb-strip {
+  width: auto;
+  padding-left: calc(var(--vb-pad) + 3.4em);
+  padding-right: calc(var(--vb-pad) * 2);
   justify-content: center;
-  gap: clamp(1.2rem, 2.4vw, 2.2rem);
+  flex-direction: row;
+  align-items: center;
+  gap: clamp(1rem, 2.4vw, 2.6rem);
   background: var(--vb-paper);
-  /* a gentler push here — the whole strip must fit one screen */
-  --vb-push: clamp(1.2rem, 3.4vw, 4rem);
 }
 
-.vb-rhythm__head {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  max-width: 30ch;
-}
-
-.voyages-boring .vb-rhythm__head h2 {
+.vb-strip__title {
+  /* a narrow text column opening the run, not an overlay on the first picture */
+  flex: 0 0 auto;
+  align-self: flex-start;
+  width: 13ch;
+  margin-top: calc(var(--vb-push) * 0.6);
+  margin-right: clamp(0.5rem, 1.6vw, 1.6rem);
   font-size: var(--vb-t-m);
+  color: var(--vb-ink);
 }
 
-.vb-rhythm__strip {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(1rem, 2.2vw, 2.2rem);
-  align-items: start;
-}
-
-.vb-chapter {
+.vb-frame {
+  position: relative;
+  flex: 0 0 auto;
+  width: auto;
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
-  /* vertical offsets are set per-position by the nth-child rules below */
-  transform: translateY(calc((1 - var(--reveal, 1)) * 30px));
-  opacity: calc(0.15 + var(--reveal, 1) * 0.85);
+  transform: translateY(calc((1 - var(--reveal, 1)) * 40px));
+  opacity: calc(0.1 + var(--reveal, 1) * 0.9);
   transition:
-    transform 0.9s var(--vb-ease-soft),
-    opacity 0.9s var(--vb-ease-soft);
-  transition-delay: calc(var(--vb-i, 0) * 70ms);
+    transform 0.95s var(--vb-ease-soft),
+    opacity 0.95s var(--vb-ease-soft);
+  transition-delay: calc(var(--vb-i, 0) * 80ms);
 }
 
-.vb-chapter:nth-child(2) {
-  margin-top: var(--vb-push);
+/* each frame is a different height; its width follows from its own ratio */
+.vb-frame:nth-child(2) .vb-frame__media {
+  height: 58svh;
 }
 
-.vb-chapter:nth-child(3) {
-  margin-top: calc(var(--vb-push) * 0.35);
+.vb-frame:nth-child(3) {
+  margin-top: calc(var(--vb-push) * 1.1);
 }
 
-.vb-chapter:nth-child(4) {
-  margin-top: calc(var(--vb-push) * 1.25);
+.vb-frame:nth-child(3) .vb-frame__media {
+  height: 42svh;
 }
 
-.vb-chapter__kicker {
+.vb-frame:nth-child(4) {
+  margin-top: calc(var(--vb-push) * -0.6);
+}
+
+.vb-frame:nth-child(4) .vb-frame__media {
+  height: 66svh;
+}
+
+.vb-frame:nth-child(5) {
+  margin-top: calc(var(--vb-push) * 0.55);
+}
+
+.vb-frame:nth-child(5) .vb-frame__media {
+  height: 50svh;
+}
+
+.vb-frame__media {
+  height: 54svh;
+  width: auto;
+}
+
+.vb-frame figcaption {
   display: flex;
   align-items: baseline;
-  gap: 0.7em;
+  gap: 0.6em;
   font-size: var(--vb-t-meta);
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--vb-ink-soft);
 }
 
-.vb-chapter__kicker span {
+.vb-frame figcaption span {
   font-family: var(--vb-edit);
   letter-spacing: 0.04em;
   color: var(--vb-gold-deep);
 }
 
-.vb-chapter__media {
-  width: 100%;
-  max-height: 22svh;
+.vb-frame figcaption b {
+  font-weight: 400;
+  color: var(--vb-ink);
 }
 
-.vb-chapter__title {
-  font-size: clamp(1.15rem, 1.7vw, 1.75rem);
+.vb-frame figcaption em {
+  font-family: var(--vb-edit);
+  font-style: italic;
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: calc(var(--vb-t-meta) * 1.25);
 }
 
-.vb-chapter__body {
-  font-size: var(--vb-t-body);
-  line-height: 1.5;
-  color: var(--vb-ink-soft);
-}
-
-/* ----------------------------------------------------------- 06 · included
-   Staggered masonry: every other item drops by the push value, and the
-   columns are deliberately unequal. */
-.vb-included {
-  width: min(92vw, 76rem);
+/* ------------------------------------------------------------- 06 · the trio
+   Three frames at unequal ratios and heights; the inclusions annotate them
+   from a corner rather than sitting in a grid of their own. */
+.vb-trio {
+  width: auto;
+  padding-left: calc(var(--vb-pad) + 3.4em);
+  padding-right: calc(var(--vb-pad) * 2);
+  flex-direction: row;
+  align-items: center;
   justify-content: center;
-  gap: clamp(1.4rem, 2.8vw, 2.4rem);
+  gap: clamp(1rem, 2.4vw, 2.4rem);
   background: var(--vb-paper-warm);
-  --vb-push: clamp(1.2rem, 4vw, 6rem);
 }
 
-.vb-included__head {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  max-width: 32ch;
+.vb-trio__frame {
+  flex: 0 0 auto;
+  width: auto;
 }
 
-.voyages-boring .vb-included__head h2 {
-  font-size: var(--vb-t-m);
+.vb-trio__frame--1 {
+  height: 62svh;
+  margin-bottom: calc(var(--vb-push) * 1.1);
 }
 
-.vb-included__grid {
-  display: grid;
-  grid-template-columns:
-    minmax(0, calc(var(--vb-col) * 3.4))
-    minmax(0, calc(var(--vb-col) * 2.6))
-    minmax(0, calc(var(--vb-col) * 3.1));
-  gap: clamp(1.2rem, 2.6vw, 2.6rem);
-  align-items: start;
+.vb-trio__frame--2 {
+  height: 50svh;
+  margin-top: calc(var(--vb-push) * 1.3);
 }
 
-.vb-feature {
+.vb-trio__frame--3 {
+  height: 70svh;
+  margin-bottom: calc(var(--vb-push) * 0.2);
+}
+
+.vb-trio__note {
+  position: absolute;
+  z-index: 4;
+  left: calc(var(--vb-pad) + 3.4em);
+  bottom: calc(var(--vb-band-pad) * 0.42);
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  padding-top: 0.9rem;
-  border-top: 1px solid var(--vb-hair);
-  transform: translateY(calc((1 - var(--reveal, 1)) * 26px));
-  opacity: calc(0.15 + var(--reveal, 1) * 0.85);
-  transition:
-    transform 0.85s var(--vb-ease-soft),
-    opacity 0.85s var(--vb-ease-soft);
-  transition-delay: calc(var(--vb-i, 0) * 70ms);
 }
 
-/* the fourth item wraps to the second row, offset under the first column */
-.vb-feature:nth-child(2) {
-  margin-top: var(--vb-push);
-}
-
-.vb-feature:nth-child(3) {
-  margin-top: calc(var(--vb-push) * 0.4);
-}
-
-.vb-feature:nth-child(4) {
-  grid-column: 2 / span 2;
-  margin-top: calc(var(--vb-push) * 0.2);
-}
-
-.vb-feature__num {
-  font-size: var(--vb-t-body);
-  color: var(--vb-gold-deep);
-}
-
-.vb-feature__label {
-  font-family: var(--vb-meta);
+.vb-trio__note ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em 1.4em;
+  max-width: 44ch;
   font-size: var(--vb-t-meta);
-  font-weight: 400;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
+  color: var(--vb-ink-soft);
 }
 
-.vb-feature__body {
-  font-size: var(--vb-t-body);
-  line-height: 1.55;
-  color: var(--vb-ink-soft);
+.vb-trio__note li {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+
+.vb-trio__note i {
+  display: block;
+  width: 0.36rem;
+  height: 0.36rem;
+  border-radius: 50%;
+  background: var(--vb-gold);
 }
 
 /* ------------------------------------------------------------ 07 · charter */
 .vb-charter {
-  width: min(96vw, 82rem);
-  justify-content: center;
-  display: grid;
-  grid-template-columns:
-    minmax(0, calc(var(--vb-col) * 6 + var(--vb-gap) * 5))
-    minmax(0, 1fr);
-  align-content: center;
-  gap: clamp(1.6rem, 4vw, 4rem);
-  background: var(--vb-black);
-  color: var(--vb-paper);
+  position: relative;
+  width: 100vw;
+  padding: 0;
+  color: #fff;
 }
 
 .vb-charter__media {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  max-height: 62svh;
+  height: 100%;
 }
 
-.vb-charter__copy {
+.vb-charter__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    to right,
+    rgb(11 10 8 / 74%) 0%,
+    rgb(11 10 8 / 44%) 46%,
+    rgb(11 10 8 / 10%) 100%
+  );
+}
+
+.vb-charter__over {
+  position: absolute;
+  z-index: 3;
+  left: calc(var(--vb-pad) + 3.4em);
+  bottom: calc(var(--vb-band-pad) * 0.5);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: clamp(0.7rem, 1.8vw, 1.4rem);
+  gap: clamp(0.6rem, 1.6vw, 1.2rem);
+  max-width: 34ch;
 }
 
 .vb-charter .vb-eyebrow,
@@ -1084,32 +1076,47 @@ html:has(.voyages-boring) footer.lux-footer {
   color: var(--vb-gold);
 }
 
-.vb-charter__body {
-  font-size: var(--vb-t-body);
-  line-height: 1.6;
-  max-width: 40ch;
-  opacity: 0.8;
-}
-
 /* ------------------------------------------------------------ 08 · closing */
 .vb-closing {
-  width: min(60vw, 40rem);
-  justify-content: center;
-  align-items: center;
-  background: var(--vb-paper);
+  position: relative;
+  width: min(84vw, 62rem);
+  padding: 0;
+  color: #fff;
 }
 
-.vb-closing__copy {
+.vb-closing__media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.vb-closing__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: rgb(11 10 8 / 38%);
+}
+
+.vb-closing__over {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   text-align: center;
 }
 
-/* ================================================ EPILOGUE (always vertical)
-   A centred column — the reference's "centered content" pattern — followed by
-   an index of the itineraries as a departure list. */
+.vb-closing .vb-eyebrow {
+  color: var(--vb-gold);
+}
+
+/* ================================================ EPILOGUE (always vertical) */
 .vb-epilogue {
   position: relative;
   padding: var(--vb-band-pad) var(--vb-pad) calc(var(--vb-band-pad) * 0.55);
@@ -1142,7 +1149,6 @@ html:has(.voyages-boring) footer.lux-footer {
   margin-top: clamp(0.6rem, 1.6vw, 1.2rem);
 }
 
-/* --- the departure index */
 .vb-epilogue__index {
   margin-top: clamp(2.5rem, 6vw, 5rem);
   border-top: 1px solid var(--vb-hair);
@@ -1217,42 +1223,10 @@ html:has(.voyages-boring) footer.lux-footer {
 /* ==========================================================================
    RESPONSIVE — 950px is the structural break
    ========================================================================== */
-@media (max-width: 1180px) {
-  .vb-creed__row {
-    grid-template-columns: 2.4em minmax(0, 1fr);
-    row-gap: 0.4rem;
-  }
-
-  .vb-creed__body {
-    grid-column: 2;
-    max-width: none;
-  }
-
-  .vb-creed__title {
-    white-space: normal;
-  }
-
-  .vb-rhythm__strip {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    row-gap: clamp(1.4rem, 3vw, 2.4rem);
-  }
-
-  .vb-chapter:nth-child(2),
-  .vb-chapter:nth-child(3),
-  .vb-chapter:nth-child(4) {
-    margin-top: 0;
-  }
-
-  .vb-chapter:nth-child(2),
-  .vb-chapter:nth-child(4) {
-    margin-top: calc(var(--vb-push) * 0.3);
-  }
-}
-
 @media (max-width: 950px) {
   .voyages-boring {
     --vb-band-pad: clamp(3rem, 12vw, 5rem);
-    --vb-push: clamp(1.2rem, 6vw, 2.6rem);
+    --vb-push: clamp(1rem, 5vw, 2rem);
   }
 
   .vb-run {
@@ -1279,13 +1253,13 @@ html:has(.voyages-boring) footer.lux-footer {
     height: auto;
     min-height: 0;
     padding: var(--vb-band-pad) var(--vb-pad);
+    flex-direction: column;
   }
 
   .vb-rail {
     position: relative;
     width: 100%;
     height: 2.6em;
-    /* clear the fixed site header */
     margin-top: var(--vb-header-clear, 4rem);
   }
 
@@ -1301,90 +1275,163 @@ html:has(.voyages-boring) footer.lux-footer {
     }
   }
 
-  .vb-open {
-    padding-left: var(--vb-pad);
-    padding-top: calc(var(--vb-band-pad) * 1.4);
+  /* full-bleed picture panels keep their overlay treatment, sized to content */
+  .vb-open,
+  .vb-charter,
+  .vb-closing {
+    padding: 0;
+    min-height: 78svh;
+    justify-content: flex-end;
+  }
+
+  .vb-charter__over {
+    position: relative;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    margin: auto var(--vb-pad) calc(var(--vb-band-pad) * 0.6);
+  }
+
+  /* the rotated nav lands bottom-left on phones, so lift the title clear of it */
+  .vb-open__over {
+    position: relative;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    margin: auto var(--vb-pad) calc(var(--vb-band-pad) * 1.35);
   }
 
   .vb-open__nav {
-    position: static;
+    position: absolute;
+    top: auto;
+    bottom: calc(var(--vb-band-pad) * 0.25);
+    left: var(--vb-pad);
+    right: auto;
     transform: none;
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 1.1rem;
-    margin-bottom: 1.6rem;
-  }
-
-  .vb-open__mark {
-    position: static;
-    margin-top: clamp(1.6rem, 5vw, 2.4rem);
+    gap: 1rem;
   }
 
   .vb-open__scroll {
     display: none;
   }
 
-  .vb-board {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    row-gap: 1.2rem;
+  /* the pair stacks; the inset stops overlapping */
+  .vb-duo__main {
     width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 4;
   }
 
-  /* bands become a normal stack with real height */
-  .vb-bands {
-    padding: 0;
+  .vb-duo__inset {
+    position: relative;
+    right: auto;
+    top: auto;
+    width: 76%;
+    margin: -16% 0 0 auto;
   }
 
-  .vb-band {
-    flex: 0 0 auto;
-    height: 42svh;
-    transform: none !important;
+  .vb-duo__caption {
+    position: static;
+    margin-top: 1.4rem;
   }
 
-  /* creed indents collapse */
-  .vb-creed__row--1,
-  .vb-creed__row--2 {
-    margin-left: 0;
-  }
-
-  /* itinerary panels stack: media, then copy */
-  .vb-itin,
-  .vb-charter {
-    display: flex;
+  /* filmstrip and trio become vertical runs, offsets kept but halved */
+  .vb-strip,
+  .vb-trio {
     flex-direction: column;
+    align-items: stretch;
     gap: clamp(1.4rem, 6vw, 2.4rem);
   }
 
-  .vb-itin__media .vb-media,
-  .vb-charter__media {
+  .vb-strip__title {
+    position: static;
+    max-width: none;
+    margin-bottom: 0.6rem;
+  }
+
+  .vb-frame,
+  .vb-frame:nth-child(2),
+  .vb-frame:nth-child(3),
+  .vb-frame:nth-child(4),
+  .vb-frame:nth-child(5) {
+    width: 100%;
+    margin-top: 0;
+  }
+
+  /* alternate the inset so the vertical run still feels hand-set */
+  .vb-frame:nth-child(odd) {
+    width: 84%;
+    align-self: flex-start;
+  }
+
+  .vb-frame:nth-child(even) {
+    width: 84%;
+    align-self: flex-end;
+  }
+
+  .vb-frame__media {
     max-height: none;
+  }
+
+  .vb-trio__frame,
+  .vb-trio__frame--1,
+  .vb-trio__frame--2,
+  .vb-trio__frame--3 {
+    width: 100%;
+    max-height: none;
+    margin: 0;
+  }
+
+  .vb-trio__frame--1 {
+    width: 82%;
+  }
+
+  .vb-trio__frame--3 {
+    width: 82%;
+    margin-left: auto;
+  }
+
+  .vb-trio__note {
+    position: static;
+    margin-top: 0.6rem;
+  }
+
+  /* itinerary panels keep the picture + plate shape, sized to content */
+  .vb-itin {
+    padding: 0;
+    min-height: 0;
+  }
+
+  .vb-itin__media {
+    flex: 0 0 auto;
+    aspect-ratio: 4 / 5;
   }
 
   .vb-itin__ghost {
-    font-size: clamp(9rem, 42vw, 16rem);
-    right: -0.2em;
-    top: 0.4em;
-    transform: none;
+    font-size: clamp(8rem, 40vw, 15rem);
+    top: 26%;
   }
 
-  .vb-itin__foot {
-    flex-wrap: wrap;
+  .vb-itin__plate {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+    min-height: 0;
+    padding: 1.3rem var(--vb-pad) 1.6rem;
   }
 
-  /* masonry flattens to a single column, offsets removed */
-  .vb-included__grid {
-    grid-template-columns: minmax(0, 1fr);
+  .vb-itin__corner,
+  .voyages-boring .vb-itin__corner--br {
+    position: static;
+    max-width: 100%;
+    text-align: left;
   }
 
-  .vb-feature:nth-child(2),
-  .vb-feature:nth-child(3),
-  .vb-feature:nth-child(4) {
-    margin-top: 0;
-    grid-column: auto;
-  }
-
-  .vb-chapter__media {
-    max-height: none;
+  .vb-itin__route {
+    text-align: left;
+    order: -1;
   }
 
   .vb-epilogue__legal {
@@ -1401,13 +1448,11 @@ html:has(.voyages-boring) footer.lux-footer {
     --vb-t-m: clamp(1.6rem, 7vw, 2.3rem);
   }
 
-  .vb-rhythm__strip {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .vb-chapter:nth-child(2),
-  .vb-chapter:nth-child(4) {
-    margin-top: 0;
+  .vb-frame:nth-child(odd),
+  .vb-frame:nth-child(even),
+  .vb-trio__frame--1,
+  .vb-trio__frame--3 {
+    width: 100%;
   }
 
   .vb-index-row {
@@ -1427,20 +1472,13 @@ html:has(.voyages-boring) footer.lux-footer {
   .vb-epilogue__pills .vb-btn {
     flex: 1 1 auto;
   }
-
-  .vb-band {
-    height: 32svh;
-  }
 }
 
 /* ------------------------------------------------------- reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .voyages-boring .vb-line > *,
-  .voyages-boring .vb-band,
-  .voyages-boring .vb-board div,
-  .voyages-boring .vb-creed__row,
-  .voyages-boring .vb-chapter,
-  .voyages-boring .vb-feature,
+  .voyages-boring .vb-pane__list li,
+  .voyages-boring .vb-frame,
   .voyages-boring .vb-itin__route,
   .voyages-boring .vb-itin__ghost,
   .voyages-boring .vb-media__image {
@@ -1450,7 +1488,8 @@ html:has(.voyages-boring) footer.lux-footer {
   }
 
   .voyages-boring .vb-itin__ghost {
-    opacity: 0.18 !important;
+    opacity: 0.45 !important;
+    transform: translate(-50%, -50%) !important;
   }
 
   .vb-rail__inner,
