@@ -19,6 +19,7 @@ export const HATHOR_LUXURY_FONTS = [
   "Bastliga Five",
   "Bastliga Tail",
   "Bitho Luxury",
+  "Brittany Signature",
   "Cylburn",
   "Dynalight",
   "Gabigaile",
@@ -74,6 +75,10 @@ export const HATHOR_FONT_GROUPS: readonly HathorFontFamilyGroup[] = [
   {
     family: "Bitho Luxury",
     variants: [{ id: "Bitho Luxury", label: "Italic" }],
+  },
+  {
+    family: "Brittany Signature",
+    variants: [{ id: "Brittany Signature", label: "Script" }],
   },
   { family: "Cylburn", variants: [{ id: "Cylburn", label: "Regular" }] },
   { family: "Dynalight", variants: [{ id: "Dynalight", label: "Regular" }] },
@@ -639,6 +644,7 @@ export const HATHOR_FONT_STACKS: Record<HathorLuxuryFont, string> = {
   "Bastliga Five": '"Bastliga Five", cursive',
   "Bastliga Tail": '"Bastliga Tail", cursive',
   "Bitho Luxury": '"Bitho Luxury", cursive',
+  "Brittany Signature": '"Brittany Signature", cursive',
   Cylburn: '"Cylburn", serif',
   Dynalight: '"Dynalight", cursive',
   Gabigaile: 'var(--font-hathor-gabigaile), "Gabigaile", serif',
