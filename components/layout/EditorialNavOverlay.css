@@ -146,7 +146,7 @@
   left: 0;
   z-index: 10;
   display: grid;
-  grid-template-columns: 3.4rem minmax(0, 1fr) 4.25rem;
+  grid-template-columns: 3.4rem minmax(0, 1fr);
   grid-template-rows: auto 1fr auto;
   width: var(--eno-panel-w);
   height: 100%;
@@ -424,39 +424,6 @@
   outline: none;
 }
 
-.eno-ports {
-  grid-column: 3;
-  grid-row: 1 / -1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.35rem;
-  margin: 0;
-  padding: 2.5rem 0;
-  list-style: none;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  opacity: 0;
-  transition: opacity 0.5s ease 0.9s;
-}
-
-.eno.is-open .eno-ports {
-  opacity: 1;
-}
-
-.eno-ports li {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-family: var(--eno-serif);
-  font-size: 0.62rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--eno-muted);
-  white-space: nowrap;
-}
-
 .eno-foot {
   grid-column: 2;
   grid-row: 3;
@@ -517,8 +484,7 @@
     --eno-panel-w: 100%;
   }
 
-  .eno-photo,
-  .eno-ports {
+  .eno-photo {
     display: none;
   }
 
@@ -544,7 +510,6 @@
   .eno-top,
   .eno-foot,
   .eno-row,
-  .eno-ports,
   .eno-backdrop {
     transition-duration: 0.4s;
     transition-delay: 0s;

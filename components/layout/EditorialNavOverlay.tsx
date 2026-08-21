@@ -23,13 +23,6 @@ import type { HeaderNavItem } from "@/lib/public-nav";
 import "./EditorialNavOverlay.css";
 
 const LAYER_COLORS = ["#8b6914", "#c9a96e", "#ece8df"] as const;
-const NILE_PORTS = [
-  { num: "01", name: "LUXOR" },
-  { num: "02", name: "ESNA" },
-  { num: "03", name: "EDFU" },
-  { num: "04", name: "KOM OMBO" },
-  { num: "05", name: "ASWAN" },
-] as const;
 const OVERLAY_IMAGE_SRC = HATHOR_MEDIA.royalSuite;
 
 type EditorialNavOverlayProps = {
@@ -232,15 +225,6 @@ export function EditorialNavOverlay({
             );
           })}
         </nav>
-
-        <ol className="eno-ports" aria-label="Nile ports of call">
-          {NILE_PORTS.map((port) => (
-            <li key={port.name}>
-              <span>{port.num}</span>
-              <span>{port.name}</span>
-            </li>
-          ))}
-        </ol>
 
         <footer className="eno-foot" data-eno-chrome>
           <p className="eno-copy">Hathor Dahabiya © 2026</p>
