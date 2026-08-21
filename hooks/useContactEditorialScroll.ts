@@ -86,7 +86,7 @@ export function useContactEditorialScroll({
     };
 
     const measure = () => {
-      desktop = window.innerWidth > 1024 && !reduced.matches;
+      desktop = window.innerWidth > 950 && !reduced.matches;
       if (!desktop) {
         run.style.height = "auto";
         track.style.transform = "none";
@@ -131,7 +131,7 @@ export function useContactEditorialScroll({
       const width = window.innerWidth;
       const widthChanged = Math.abs(width - lastWidth) > 24;
       lastWidth = width;
-      if (!widthChanged && window.innerWidth <= 1024) {
+      if (!widthChanged && window.innerWidth <= 950) {
         applyVerticalVars();
         return;
       }

@@ -5,6 +5,8 @@ import Link from "next/link";
 import {
   useRef,
   type ComponentPropsWithoutRef,
+  type CSSProperties,
+  type ReactNode,
 } from "react";
 import { InquiryForm } from "@/components/pages/InquiryForm";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
@@ -20,21 +22,26 @@ function ContactMedia({
   alt,
   priority = false,
   className = "",
+  ratio,
 }: {
   slot: string;
   alt: string;
   priority?: boolean;
   className?: string;
+  ratio?: string;
 }) {
   const image = useSiteImage(slot);
   return (
-    <figure className={`ce-media ${className}`}>
+    <figure
+      className={`ce-media ${className}`}
+      style={ratio ? ({ ["--ce-ratio" as string]: ratio } as CSSProperties) : undefined}
+    >
       <Image
         src={image.src}
         alt={alt || image.alt}
         fill
         priority={priority}
-        sizes="(max-width: 1024px) 100vw, 70vw"
+        sizes="(max-width: 950px) 100vw, 70vw"
         className="ce-media__image"
       />
     </figure>
@@ -48,6 +55,7 @@ function FlipImage({
   backAlt = "",
   className = "",
   axis = "left",
+  ratio,
 }: {
   front: string;
   back: string;
@@ -55,11 +63,12 @@ function FlipImage({
   backAlt?: string;
   className?: string;
   axis?: "up" | "left" | "right";
+  ratio?: string;
 }) {
   return (
     <div className={`ce-flip ce-flip--${axis} ${className}`} data-ce-flip>
-      <ContactMedia slot={front} alt={frontAlt} className="ce-flip__base" />
-      <ContactMedia slot={back} alt={backAlt} className="ce-flip__overlay" />
+      <ContactMedia slot={front} alt={frontAlt} className="ce-flip__base" ratio={ratio} />
+      <ContactMedia slot={back} alt={backAlt} className="ce-flip__overlay" ratio={ratio} />
     </div>
   );
 }
@@ -76,9 +85,15 @@ function Scene({
   );
 }
 
+/** Parenthesised eyebrow — the reference's signature label form. */
+function Eyebrow({ children }: { children: ReactNode }) {
+  return <p className="ce-eyebrow">({children})</p>;
+}
+
 const CHANNELS = [
   {
     number: "01",
+    word: "Visit",
     label: "Company Address",
     value: PUBLIC_CONTACT.address,
     href: null,
@@ -86,6 +101,7 @@ const CHANNELS = [
   },
   {
     number: "02",
+    word: "Call",
     label: "Call Us Hotline",
     value: PUBLIC_CONTACT.phoneDisplay,
     href: `tel:${PUBLIC_CONTACT.phone}`,
@@ -94,14 +110,16 @@ const CHANNELS = [
   },
   {
     number: "03",
+    word: "Write",
     label: "Email",
     value: PUBLIC_CONTACT.email,
     href: `mailto:${PUBLIC_CONTACT.email}`,
     meta: "Reservations",
-    cta: "Write",
+    cta: "Email Us",
   },
   {
     number: "04",
+    word: "Message",
     label: "WhatsApp",
     value: "Message us on WhatsApp",
     href: PUBLIC_CONTACT.whatsappUrl,
@@ -129,222 +147,276 @@ export function ContactPageContent() {
       </div>
 
       <main>
-        <section ref={runRef} className="ce-run" aria-label="Contact Hathor reservations">
+        <section
+          ref={runRef}
+          className="ce-run"
+          aria-label="Contact Hathor reservations"
+        >
           <div className="ce-stage">
+            {/* Vertical marquee rail — rides the edge of the horizontal act. */}
+            <div className="ce-rail" aria-hidden="true">
+              <span className="ce-rail__inner">
+                {[0, 1, 2, 3].map((item) => (
+                  <em key={item}>
+                    Correspondence <b>✦</b> Hathor Dahabiya <b>✦</b>
+                  </em>
+                ))}
+              </span>
+            </div>
+
             <div ref={trackRef} className="ce-track">
+              {/* 01 — Intro panel */}
               <Scene className="ce-intro">
+                <nav className="ce-intro__nav" aria-label="Contact page sections">
+                  <a href="#write">Write</a>
+                  <a href="#channels">Reach</a>
+                  <a href="#hours">Hours</a>
+                  <Link href="/cruises">Cruises</Link>
+                </nav>
+
                 <div className="ce-intro__inner">
-                  <nav className="ce-intro__menu" aria-label="Contact page sections">
-                    <a href="#write">Write</a>
-                    <a href="#channels">Reach</a>
-                    <a href="#hours">Hours</a>
-                    <Link href="/suites">Suites</Link>
-                  </nav>
-                  <p className="ce-marker">Contact</p>
-                  <p className="ce-copyright">Hathor Cruise ©2026</p>
+                  <Eyebrow>Contact</Eyebrow>
 
                   <div className="ce-intro__title" id="contact" data-anima-title>
-                    <h1 className="ce-intro__title-part ce-intro__title-part--one">
-                      <AnimaSplitLine line={0}>We would love to</AnimaSplitLine>
-                    </h1>
-                    <h1 className="ce-intro__title-part ce-intro__title-part--two">
-                      <AnimaSplitLine line={1}>hear from you</AnimaSplitLine>
-                    </h1>
-                    <h1 className="ce-intro__title-part ce-intro__title-part--three">
-                      <AnimaSplitLine line={2}>on the Nile</AnimaSplitLine>
+                    <h1 className="ce-display ce-display--xl">
+                      <span className="ce-line ce-line--a">
+                        <AnimaSplitLine line={0}>We would love</AnimaSplitLine>
+                      </span>
+                      <span className="ce-line ce-line--b">
+                        <AnimaSplitLine line={1}>to hear</AnimaSplitLine>
+                      </span>
+                      <span className="ce-line ce-line--c">
+                        <AnimaSplitLine line={2}>from you</AnimaSplitLine>
+                      </span>
                     </h1>
                   </div>
 
                   <p className="ce-intro__body">{CONTACT_PAGE.hero.subtitle}</p>
-                  <div className="ce-intro__wordmark" aria-label="Hathor Nile correspondence">
-                    <span>HATHOR</span>
-                    <em>Nile</em>
-                    <strong>correspondence</strong>
-                  </div>
                 </div>
+
+                <p className="ce-intro__mark">
+                  Hathor Cruise <span className="ce-reg">®</span> 2026
+                </p>
+                <p className="ce-intro__scroll">
+                  <i />
+                  Scroll
+                </p>
               </Scene>
 
-              <Scene className="ce-image-lead">
+              {/* 02 — Image lead: hero with an overlapping second frame */}
+              <Scene className="ce-lead">
                 <ContactMedia
                   slot="contact-hero"
                   alt="Hathor reservations and Nile voyage"
                   priority
-                  className="ce-image-lead__main"
+                  className="ce-lead__main"
+                  ratio="1279 / 960"
                 />
                 <FlipImage
-                  className="ce-image-lead__flip"
+                  className="ce-lead__inset"
                   axis="left"
+                  ratio="835 / 557"
                   front="about-hero"
                   back="room-royal"
                   frontAlt="Hathor Dahabiya on the Nile"
                   backAlt="Royal suite aboard Hathor Dahabiya"
                 />
+                <p className="ce-lead__caption">
+                  <span>(Aboard)</span> Luxor — Aswan
+                </p>
               </Scene>
 
+              {/* 03 — Manifesto: narrow meta column against a large lyrical statement */}
               <Scene className="ce-manifesto">
-                <p className="ce-marker">A line open</p>
-                <div className="ce-manifesto__headline ce-big-title" data-anima-title>
-                  <AnimaSplitLine line={0}>A private line</AnimaSplitLine>
-                  <AnimaSplitLine line={1}>that invites you</AnimaSplitLine>
-                  <AnimaSplitLine line={2}>to begin</AnimaSplitLine>
-                  <AnimaSplitLine line={3}>the Nile</AnimaSplitLine>
+                <div className="ce-manifesto__aside">
+                  <Eyebrow>A line open</Eyebrow>
+                  <p className="ce-meta-copy">{formIntro}</p>
                 </div>
-                <p className="ce-manifesto__body">{formIntro}</p>
-              </Scene>
-
-              <Scene className="ce-marquee" aria-label="Correspondence">
-                <div className="ce-marquee__rail">
-                  {[0, 1, 2].map((item) => (
-                    <span key={item}>
-                      CORRESPONDENCE <b>✦</b>
+                <div className="ce-manifesto__headline" data-anima-title>
+                  <h2 className="ce-edit ce-edit--xl">
+                    <span className="ce-line">
+                      <AnimaSplitLine line={0}>A private line</AnimaSplitLine>
                     </span>
-                  ))}
-                </div>
-              </Scene>
-
-              <Scene className="ce-ledger" id="channels">
-                <div className="ce-ledger__title">
-                  <p className="ce-marker">Reach us</p>
-                  <h2 data-anima-title>
-                    <span>
-                      <AnimaSplitLine line={0}>A quiet</AnimaSplitLine>
+                    <span className="ce-line">
+                      <AnimaSplitLine line={1}>that invites you</AnimaSplitLine>
                     </span>
-                    <span>
-                      <AnimaSplitLine line={1}>line to</AnimaSplitLine>
-                    </span>
-                    <span>
-                      <AnimaSplitLine line={2}>Hathor</AnimaSplitLine>
+                    <span className="ce-line ce-line--indent">
+                      <AnimaSplitLine line={2}>to begin the Nile</AnimaSplitLine>
                     </span>
                   </h2>
                 </div>
+              </Scene>
+
+              {/* 04 — Ledger: numbered channels, display word + detail */}
+              <Scene className="ce-ledger" id="channels">
+                <div className="ce-ledger__head">
+                  <Eyebrow>Reach us</Eyebrow>
+                  <p className="ce-meta-copy">
+                    Four ways to begin a conversation with our reservations desk
+                    in Cairo.
+                  </p>
+                </div>
+
                 <ol className="ce-ledger__list">
                   {CHANNELS.map((channel) => {
-                    const action =
-                      channel.href && "cta" in channel ? (
-                        <a
-                          className="btn btn-dark"
-                          href={channel.href}
-                          target={"external" in channel ? "_blank" : undefined}
-                          rel={
-                            "external" in channel
-                              ? "noopener noreferrer"
-                              : undefined
-                          }
-                        >
-                          {channel.cta}
-                        </a>
-                      ) : null;
+                    const isExternal = "external" in channel;
+                    const cta = "cta" in channel ? channel.cta : null;
 
                     return (
-                      <li key={channel.number} className="ce-ledger__row">
-                        <span className="ce-ledger__num">{channel.number}</span>
-                        <div className="ce-ledger__copy">
-                          <p className="ce-ledger__label">
+                      <li key={channel.number} className="ce-row">
+                        <span className="ce-row__num">{channel.number}</span>
+
+                        <h3 className="ce-row__word ce-display">
+                          {channel.word}
+                        </h3>
+
+                        <div className="ce-row__detail">
+                          <p className="ce-row__label">
                             {channel.meta} · {channel.label}
                           </p>
                           {channel.href ? (
                             <a
-                              className="ce-ledger__value"
+                              className="ce-row__value ce-link"
                               href={channel.href}
-                              target={"external" in channel ? "_blank" : undefined}
-                              rel={
-                                "external" in channel
-                                  ? "noopener noreferrer"
-                                  : undefined
-                              }
+                              target={isExternal ? "_blank" : undefined}
+                              rel={isExternal ? "noopener noreferrer" : undefined}
                             >
                               {channel.value}
                             </a>
                           ) : (
-                            <p className="ce-ledger__value">{channel.value}</p>
+                            <p className="ce-row__value">{channel.value}</p>
                           )}
                         </div>
-                        {action}
+
+                        {channel.href && cta ? (
+                          <a
+                            className="ce-btn"
+                            href={channel.href}
+                            target={isExternal ? "_blank" : undefined}
+                            rel={isExternal ? "noopener noreferrer" : undefined}
+                          >
+                            <span>{cta}</span>
+                          </a>
+                        ) : (
+                          <span className="ce-row__spacer" aria-hidden="true" />
+                        )}
                       </li>
                     );
                   })}
                 </ol>
               </Scene>
 
+              {/* 05 — Hours, set as a museum wall label */}
               <Scene className="ce-hours" id="hours">
-                <p className="ce-marker">Working hours</p>
-                <div className="ce-hours__times" aria-label={PUBLIC_CONTACT.workingHours}>
-                  <span>09:00</span>
-                  <i />
-                  <span>17:00</span>
-                </div>
-                <div className="ce-hours__meta">
-                  <p className="ce-hours__note">{PUBLIC_CONTACT.workingHours}</p>
-                  <p className="ce-hours__rest">{PUBLIC_CONTACT.dayOff}</p>
+                <div className="ce-hours__frame">
+                  <span className="ce-hours__corner ce-hours__corner--tl">
+                    (Working hours)
+                  </span>
+                  <span className="ce-hours__corner ce-hours__corner--tr">
+                    Cairo · EET
+                  </span>
+
+                  <p className="ce-hours__times">
+                    <span>09</span>
+                    <i />
+                    <span>17</span>
+                  </p>
+
+                  <span className="ce-hours__corner ce-hours__corner--bl">
+                    {PUBLIC_CONTACT.workingHours}
+                  </span>
+                  <span className="ce-hours__corner ce-hours__corner--br">
+                    {PUBLIC_CONTACT.dayOff}
+                  </span>
                 </div>
               </Scene>
 
+              {/* 06 — Closing frame */}
               <Scene className="ce-closing">
                 <FlipImage
                   className="ce-closing__media"
                   axis="up"
+                  ratio="1483 / 960"
                   front="home-voyage-nile-majesty"
                   back="home-split-courtyard"
                   frontAlt="Sailing the Nile aboard Hathor"
                   backAlt="Life aboard Hathor Dahabiya"
                 />
+                <div className="ce-closing__copy">
+                  <Eyebrow>Next</Eyebrow>
+                  <p className="ce-display ce-display--l">Write to us</p>
+                </div>
               </Scene>
             </div>
           </div>
         </section>
 
+        {/* Epilogue — always vertical */}
         <section className="ce-epilogue" id="write">
-          <header className="ce-epilogue__title">
-            <span>(Write)</span>
-            <h2 data-anima-title>{formTitle}</h2>
+          <header className="ce-epilogue__head">
+            <Eyebrow>Write</Eyebrow>
+            <h2 className="ce-display ce-display--l" data-anima-title>
+              {formTitle}
+            </h2>
           </header>
 
           <div className="ce-epilogue__board">
             <div className="ce-epilogue__compose">
-              <div className="ce-epilogue__form-wrap">
-                <p className="ce-epilogue__form-lead">{formIntro}</p>
-                <InquiryForm
-                  type="contact"
-                  title="Your message"
-                  intro="Share dates, guests, and how you wish to sail. Our reservations team replies within 24 hours."
-                  submitLabel="Send Request"
-                  className="ce-form"
-                  submitClassName="btn btn-dark"
-                />
-              </div>
-              <div className="ce-epilogue__pills">
-                <a className="btn btn-dark" href={`tel:${PUBLIC_CONTACT.phone}`}>
-                  Call Now
+              <p className="ce-epilogue__lead ce-edit">{formIntro}</p>
+              <InquiryForm
+                type="contact"
+                title="Your message"
+                intro="Share dates, guests, and how you wish to sail. Our reservations team replies within 24 hours."
+                submitLabel="Send Request"
+                className="ce-form"
+                submitClassName="ce-btn ce-btn--xl"
+              />
+            </div>
+
+            <aside className="ce-epilogue__card">
+              <span className="ce-card__tag">(Reservations)</span>
+              <ContactMedia
+                slot="contact-hero"
+                alt="Hathor Dahabiya on the Nile"
+                className="ce-card__media"
+                ratio="356 / 460"
+              />
+              <h3 className="ce-display">Correspondence</h3>
+              <p className="ce-card__body">
+                Cairo office · daily 09:00–17:00
+                <br />
+                <a className="ce-link" href={`mailto:${PUBLIC_CONTACT.email}`}>
+                  {PUBLIC_CONTACT.email}
+                </a>
+              </p>
+              <div className="ce-card__pills">
+                <a className="ce-btn" href={`tel:${PUBLIC_CONTACT.phone}`}>
+                  <span>Call</span>
                 </a>
                 <a
-                  className="btn btn-dark"
+                  className="ce-btn"
                   href={PUBLIC_CONTACT.whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  WhatsApp
+                  <span>WhatsApp</span>
                 </a>
-                <BookNowTrigger className="btn btn-dark">Book Now</BookNowTrigger>
+                <BookNowTrigger className="ce-btn ce-btn--solid">
+                  Book Now
+                </BookNowTrigger>
               </div>
-            </div>
-
-            <div className="ce-epilogue__feature">
-              <span>(Reservations)</span>
-              <ContactMedia slot="contact-hero" alt="Hathor Dahabiya on the Nile" />
-              <h3>Correspondence</h3>
-              <p>
-                Cairo office · daily 09:00–17:00
-                <br />
-                {PUBLIC_CONTACT.email}
-              </p>
-            </div>
+            </aside>
           </div>
 
           <div className="ce-epilogue__legal">
-            <span>HATHOR CRUISE ©2026</span>
-            <Link href="/contact">PRIVACY</Link>
-            <Link href="/contact">COOKIES</Link>
-            <Link href="/contact">LEGAL</Link>
+            <span>
+              Hathor Cruise <span className="ce-reg">®</span> 2026
+            </span>
+            <nav aria-label="Legal">
+              <Link href="/contact">Privacy</Link>
+              <Link href="/contact">Cookies</Link>
+              <Link href="/contact">Legal</Link>
+            </nav>
           </div>
         </section>
       </main>
