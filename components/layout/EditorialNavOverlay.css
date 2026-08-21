@@ -1,6 +1,6 @@
 /**
  * Editorial left overlay — desktop/tablet only (hidden ≤480px).
- * Homepage never mounts this component.
+ * Open state is CSS-driven so the cream menu always lands on screen.
  */
 
 .eno {
@@ -12,7 +12,8 @@
   --eno-muted: #7a7268;
   --eno-line: rgba(44, 38, 31, 0.14);
   --eno-panel-w: 66%;
-  --eno-serif: "Rolling Fonte", "Playfair Display", Georgia, serif;
+  --eno-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --eno-serif: "Rolling Fonte", "Playfair Display", Georgia, "Times New Roman", serif;
   --eno-body: var(--font-hathor-body), "Plus Jakarta Sans", sans-serif;
 
   position: fixed;
@@ -22,6 +23,7 @@
   height: 100%;
   height: 100dvh;
   overflow: hidden;
+  isolation: isolate;
   pointer-events: none;
 }
 
@@ -32,16 +34,18 @@
 .eno-backdrop {
   position: absolute;
   inset: 0;
+  z-index: 1;
   margin: 0;
   padding: 0;
   border: 0;
-  background: rgba(18, 14, 10, 0.38);
+  background: rgba(18, 14, 10, 0.42);
   cursor: pointer;
-  pointer-events: none;
   opacity: 0;
+  transition: opacity 0.42s var(--eno-ease);
 }
 
 .eno.is-open .eno-backdrop {
+  opacity: 1;
   pointer-events: auto;
 }
 
@@ -61,12 +65,17 @@
   left: 0;
   height: 100%;
   transform: translate3d(-100%, 0, 0);
-  will-change: transform;
+  transition: transform 1.15s var(--eno-ease);
+}
+
+.eno.is-open .eno-prelayer {
+  transform: translate3d(0, 0, 0);
 }
 
 .eno-prelayer--1 {
   z-index: 1;
   width: calc(var(--eno-panel-w) + 5.5%);
+  transition-delay: 0s;
 }
 
 .eno-prelayer--2 {
@@ -79,6 +88,26 @@
   width: calc(var(--eno-panel-w) + 1.35%);
 }
 
+.eno.is-open .eno-prelayer--2 {
+  transition-delay: 0.16s;
+}
+
+.eno.is-open .eno-prelayer--3 {
+  transition-delay: 0.32s;
+}
+
+.eno:not(.is-open) .eno-prelayer--1 {
+  transition-delay: 0.28s;
+}
+
+.eno:not(.is-open) .eno-prelayer--2 {
+  transition-delay: 0.14s;
+}
+
+.eno:not(.is-open) .eno-prelayer--3 {
+  transition-delay: 0s;
+}
+
 .eno-photo {
   position: absolute;
   top: 0;
@@ -88,6 +117,11 @@
   z-index: 4;
   overflow: hidden;
   opacity: 0;
+  transition: opacity 0.9s var(--eno-ease) 0.35s;
+}
+
+.eno.is-open .eno-photo {
+  opacity: 1;
 }
 
 .eno-photo__img {
@@ -123,13 +157,20 @@
     max(1.1rem, env(safe-area-inset-left));
   background: var(--eno-cream);
   color: var(--eno-ink);
+  opacity: 1;
   pointer-events: none;
   transform: translate3d(-100%, 0, 0);
-  will-change: transform;
+  transition: transform 1.08s var(--eno-ease);
 }
 
 .eno.is-open .eno-panel {
+  transform: translate3d(0, 0, 0);
   pointer-events: auto;
+  transition-delay: 0.45s;
+}
+
+.eno:not(.is-open) .eno-panel {
+  transition-delay: 0s;
 }
 
 .eno-rail {
@@ -154,6 +195,38 @@
   width: 1.55rem;
   height: auto;
   opacity: 0.92;
+}
+
+.eno-top,
+.eno-foot,
+.eno-row {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s var(--eno-ease);
+}
+
+.eno.is-open .eno-top,
+.eno.is-open .eno-foot,
+.eno.is-open .eno-row {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.eno.is-open .eno-top {
+  transition-delay: 0.62s;
+}
+
+.eno.is-open .eno-row:nth-child(1) { transition-delay: 0.68s; }
+.eno.is-open .eno-row:nth-child(2) { transition-delay: 0.76s; }
+.eno.is-open .eno-row:nth-child(3) { transition-delay: 0.84s; }
+.eno.is-open .eno-row:nth-child(4) { transition-delay: 0.92s; }
+.eno.is-open .eno-row:nth-child(5) { transition-delay: 1s; }
+.eno.is-open .eno-row:nth-child(6) { transition-delay: 1.08s; }
+
+.eno.is-open .eno-foot {
+  transition-delay: 1.12s;
 }
 
 .eno-top {
@@ -271,7 +344,7 @@
   padding: 0.85rem 0.15rem;
   border: 0;
   background: transparent;
-  color: inherit;
+  color: var(--eno-ink);
   text-align: left;
   text-decoration: none;
   cursor: pointer;
@@ -364,6 +437,12 @@
   list-style: none;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
+  opacity: 0;
+  transition: opacity 0.5s ease 0.9s;
+}
+
+.eno.is-open .eno-ports {
+  opacity: 1;
 }
 
 .eno-ports li {
@@ -452,7 +531,6 @@
   }
 }
 
-/* Phone keeps the existing staggered menu — never show this overlay. */
 @media (max-width: 480px) {
   .eno {
     display: none !important;
@@ -462,7 +540,13 @@
 @media (prefers-reduced-motion: reduce) {
   .eno-prelayer,
   .eno-panel,
-  .eno-photo {
-    will-change: auto;
+  .eno-photo,
+  .eno-top,
+  .eno-foot,
+  .eno-row,
+  .eno-ports,
+  .eno-backdrop {
+    transition-duration: 0.4s;
+    transition-delay: 0s;
   }
 }

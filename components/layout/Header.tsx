@@ -556,7 +556,7 @@ export function Header() {
               aria-expanded={exploreOpen}
               aria-label={exploreOpen ? "Close menu" : "Open menu"}
             >
-              <Menu className="h-5 w-5" aria-hidden />
+              <Menu className="h-10 w-10" aria-hidden />
             </button>
           ) : null}
           <div

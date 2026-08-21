@@ -4,26 +4,18 @@
  * Desktop/tablet left overlay for Suites, Cruises, Voyages, About, Contact
  * (and their dropdown destinations). Homepage does not mount this.
  *
- * Choreography (signature three-layer open, from the left):
- * 0.00–0.18  dark gold sheet (#8b6914) enters
- * 0.16–0.36  light gold sheet (#c9a96e) enters
- * 0.32–0.52  cream sheet (#ece8df) enters under the panel
- * 0.48–0.78  cream content panel settles; photo fades
- * 0.62–1.00  rows stagger in
+ * Open is CSS-driven so the cream menu cannot get stuck off-screen:
+ * 0.00–0.18  dark gold sheet (#8b6914)
+ * 0.16–0.36  light gold sheet (#c9a96e)
+ * 0.32–0.52  cream sheet (#ece8df)
+ * 0.45–0.78  cream content panel
+ * 0.62–1.00  rows rise in
  */
 
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  type MouseEvent,
-} from "react";
-import gsap from "gsap";
+import { useCallback, useEffect, useState, type MouseEvent } from "react";
 import { ChevronDown } from "lucide-react";
 import { HATHOR_ICON_GOLD_SRC } from "@/lib/branding";
 import { HATHOR_MEDIA } from "@/lib/hathor-media";
@@ -39,7 +31,6 @@ const NILE_PORTS = [
   { num: "05", name: "ASWAN" },
 ] as const;
 const OVERLAY_IMAGE_SRC = HATHOR_MEDIA.royalSuite;
-const CLOSE_MS = 1100;
 
 type EditorialNavOverlayProps = {
   open: boolean;
@@ -61,131 +52,11 @@ export function EditorialNavOverlay({
   const pathname = usePathname();
   const router = useRouter();
   const [openGroupId, setOpenGroupId] = useState<string | null>(null);
-  const rootRef = useRef<HTMLDivElement | null>(null);
-  const panelRef = useRef<HTMLElement | null>(null);
-  const backdropRef = useRef<HTMLButtonElement | null>(null);
-  const photoRef = useRef<HTMLDivElement | null>(null);
-  const menuTlRef = useRef<gsap.core.Timeline | null>(null);
-  const closeTimerRef = useRef<number | null>(null);
 
   const closeMenu = useCallback(() => {
     setOpenGroupId(null);
     onClose();
   }, [onClose]);
-
-  useLayoutEffect(() => {
-    const root = rootRef.current;
-    const panel = panelRef.current;
-    const backdrop = backdropRef.current;
-    const photo = photoRef.current;
-    if (!root || !panel || !backdrop) return;
-
-    const reduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    const prelayers = Array.from(
-      root.querySelectorAll<HTMLElement>(".eno-prelayer"),
-    );
-    const rows = Array.from(root.querySelectorAll<HTMLElement>(".eno-row"));
-    const chrome = Array.from(
-      root.querySelectorAll<HTMLElement>("[data-eno-chrome]"),
-    );
-
-    const layerDuration = reduced ? 0.42 : 1.18;
-    const panelDuration = reduced ? 0.38 : 1.08;
-    const layerGap = reduced ? 0.06 : 0.16;
-
-    gsap.set(backdrop, { opacity: 0, pointerEvents: "none" });
-    gsap.set(prelayers, { xPercent: -100 });
-    gsap.set(panel, { xPercent: -100, pointerEvents: "none" });
-    if (photo) gsap.set(photo, { opacity: 0 });
-    gsap.set(rows, { opacity: 0, y: 28 });
-    gsap.set(chrome, { opacity: 0, y: 12 });
-
-    const tl = gsap.timeline({
-      paused: true,
-      defaults: { ease: "power3.inOut" },
-    });
-
-    tl.to(
-      backdrop,
-      { opacity: 1, duration: reduced ? 0.18 : 0.42, pointerEvents: "auto" },
-      0,
-    )
-      .to(prelayers[0], { xPercent: 0, duration: layerDuration }, 0)
-      .to(prelayers[1], { xPercent: 0, duration: layerDuration }, layerGap)
-      .to(
-        prelayers[2],
-        { xPercent: 0, duration: layerDuration + 0.04 },
-        layerGap * 2,
-      )
-      .to(
-        panel,
-        { xPercent: 0, duration: panelDuration, pointerEvents: "auto" },
-        reduced ? 0.18 : 0.48,
-      );
-
-    if (photo) {
-      tl.to(
-        photo,
-        { opacity: 1, duration: reduced ? 0.28 : 0.9, ease: "power2.out" },
-        reduced ? 0.2 : 0.55,
-      );
-    }
-
-    tl.to(
-      chrome,
-      {
-        opacity: 1,
-        y: 0,
-        duration: reduced ? 0.2 : 0.45,
-        stagger: reduced ? 0.03 : 0.06,
-        ease: "power2.out",
-      },
-      reduced ? 0.22 : 0.62,
-    ).to(
-      rows,
-      {
-        opacity: 1,
-        y: 0,
-        stagger: reduced ? 0.03 : 0.08,
-        duration: reduced ? 0.22 : 0.5,
-        ease: "power2.out",
-      },
-      reduced ? 0.24 : 0.68,
-    );
-
-    menuTlRef.current = tl;
-    tl.progress(0).pause(0);
-
-    return () => {
-      tl.kill();
-      menuTlRef.current = null;
-    };
-  }, [navItems]);
-
-  useEffect(() => {
-    const tl = menuTlRef.current;
-    const root = rootRef.current;
-    if (!tl || !root) return;
-    if (closeTimerRef.current) {
-      window.clearTimeout(closeTimerRef.current);
-      closeTimerRef.current = null;
-    }
-    if (open) {
-      root.classList.add("is-open");
-      tl.play();
-      return;
-    }
-    if (tl.progress() === 0) {
-      root.classList.remove("is-open");
-      return;
-    }
-    tl.reverse();
-    closeTimerRef.current = window.setTimeout(() => {
-      if (!open) root.classList.remove("is-open");
-    }, CLOSE_MS);
-  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -217,13 +88,11 @@ export function EditorialNavOverlay({
 
   return (
     <div
-      ref={rootRef}
       className={`eno${open ? " is-open" : ""}`}
       data-open={open || undefined}
       aria-hidden={!open}
     >
       <button
-        ref={backdropRef}
         type="button"
         className="eno-backdrop"
         aria-label="Close menu"
@@ -241,7 +110,7 @@ export function EditorialNavOverlay({
         ))}
       </div>
 
-      <div ref={photoRef} className="eno-photo" aria-hidden="true">
+      <div className="eno-photo" aria-hidden="true">
         <Image
           src={OVERLAY_IMAGE_SRC}
           alt=""
@@ -255,7 +124,6 @@ export function EditorialNavOverlay({
       </div>
 
       <aside
-        ref={panelRef}
         className="eno-panel"
         aria-hidden={!open}
         aria-label="Site menu"

@@ -417,6 +417,13 @@
   top: 50%;
   transform: translateY(-50%);
   z-index: 1230;
+  min-width: 3.5rem;
+  min-height: 3.5rem;
+}
+
+.public-site .hathor-header__menu-btn--left svg {
+  width: 2.5rem;
+  height: 2.5rem;
 }
 
 @media (min-width: 481px) {
