@@ -218,6 +218,25 @@ export function navHrefMatches(pathname: string, href: string): boolean {
 }
 
 /**
+ * Left editorial overlay nav — Suites / Cruises / Voyages / About / Contact
+ * and their dropdown destinations only. Homepage keeps the current header.
+ */
+export function usesEditorialOverlayNav(pathname: string): boolean {
+  if (!pathname || pathname === "/" || pathname === "/preview") return false;
+
+  return HEADER_NAV_ITEMS.some((item) => {
+    if (item.type === "link") {
+      return item.href !== "/" && navHrefMatches(pathname, item.href);
+    }
+
+    return (
+      navHrefMatches(pathname, item.href) ||
+      item.links.some((link) => navHrefMatches(pathname, link.href))
+    );
+  });
+}
+
+/**
  * Drop dashboard-off destinations from the public nav.
  * Work hosts (Vercel / localhost) pass all-live settings, so the full menu stays.
  */

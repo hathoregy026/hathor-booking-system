@@ -1,0 +1,468 @@
+/**
+ * Editorial left overlay — desktop/tablet only (hidden ≤480px).
+ * Homepage never mounts this component.
+ */
+
+.eno {
+  --eno-cream: #f3efe6;
+  --eno-cream-deep: #ece8df;
+  --eno-gold: #c9a96e;
+  --eno-gold-deep: #8b6914;
+  --eno-ink: #2c261f;
+  --eno-muted: #7a7268;
+  --eno-line: rgba(44, 38, 31, 0.14);
+  --eno-panel-w: 66%;
+  --eno-serif: "Rolling Fonte", "Playfair Display", Georgia, serif;
+  --eno-body: var(--font-hathor-body), "Plus Jakarta Sans", sans-serif;
+
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.eno.is-open {
+  pointer-events: auto;
+}
+
+.eno-backdrop {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: rgba(18, 14, 10, 0.38);
+  cursor: pointer;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.eno.is-open .eno-backdrop {
+  pointer-events: auto;
+}
+
+.eno-prelayers {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--eno-panel-w);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.eno-prelayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  transform: translate3d(-100%, 0, 0);
+  will-change: transform;
+}
+
+.eno-prelayer--1 {
+  z-index: 1;
+  width: calc(var(--eno-panel-w) + 5.5%);
+}
+
+.eno-prelayer--2 {
+  z-index: 2;
+  width: calc(var(--eno-panel-w) + 3.25%);
+}
+
+.eno-prelayer--3 {
+  z-index: 3;
+  width: calc(var(--eno-panel-w) + 1.35%);
+}
+
+.eno-photo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: calc(100% - var(--eno-panel-w) + 1.5%);
+  z-index: 4;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.eno-photo__img {
+  object-fit: cover;
+  object-position: center;
+}
+
+.eno-photo__veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(20, 14, 10, 0.18) 0%,
+    transparent 28%
+  );
+  pointer-events: none;
+}
+
+.eno-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: 3.4rem minmax(0, 1fr) 4.25rem;
+  grid-template-rows: auto 1fr auto;
+  width: var(--eno-panel-w);
+  height: 100%;
+  padding:
+    max(1.35rem, env(safe-area-inset-top))
+    1.25rem
+    max(1.25rem, env(safe-area-inset-bottom))
+    max(1.1rem, env(safe-area-inset-left));
+  background: var(--eno-cream);
+  color: var(--eno-ink);
+  pointer-events: none;
+  transform: translate3d(-100%, 0, 0);
+  will-change: transform;
+}
+
+.eno.is-open .eno-panel {
+  pointer-events: auto;
+}
+
+.eno-rail {
+  grid-column: 1;
+  grid-row: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1rem;
+  padding: 0.35rem 0;
+}
+
+.eno-rail__line {
+  flex: 1;
+  width: 1px;
+  background: var(--eno-gold-deep);
+  opacity: 0.55;
+}
+
+.eno-rail__mark {
+  width: 1.55rem;
+  height: auto;
+  opacity: 0.92;
+}
+
+.eno-top {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.15rem 0.5rem 0.85rem;
+}
+
+.eno-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.85rem;
+  height: 2.85rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--eno-gold);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--eno-ink);
+  font-family: var(--eno-serif);
+  font-size: 1.55rem;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color 0.3s ease,
+    border-color 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.eno-close:hover,
+.eno-close:focus-visible {
+  color: var(--eno-gold-deep);
+  border-color: var(--eno-gold-deep);
+  background: rgba(201, 169, 110, 0.12);
+  outline: none;
+}
+
+.eno-kicker {
+  margin: 0 auto 0 1.15rem;
+  font-family: var(--eno-serif);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--eno-ink);
+}
+
+.eno-book {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0.38rem 0.4rem 0.38rem 1.05rem;
+  border: 1px solid var(--eno-gold);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--eno-ink);
+  font-family: var(--eno-body);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.eno-book:hover,
+.eno-book:focus-visible {
+  background: rgba(201, 169, 110, 0.12);
+  border-color: var(--eno-gold-deep);
+  outline: none;
+}
+
+.eno-book__arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border: 1px solid var(--eno-gold);
+  border-radius: 50%;
+  font-size: 0.78rem;
+}
+
+.eno-nav {
+  grid-column: 2;
+  grid-row: 2;
+  align-self: center;
+  width: min(36rem, 100%);
+  margin: 0 auto;
+  padding: 0.5rem 0.35rem;
+}
+
+.eno-row {
+  border-top: 1px solid var(--eno-line);
+}
+
+.eno-row:last-child {
+  border-bottom: 1px solid var(--eno-line);
+}
+
+.eno-link {
+  display: grid;
+  grid-template-columns: 2.6rem minmax(0, 1fr) 1.6rem;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+  padding: 0.85rem 0.15rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.eno-link--group {
+  font: inherit;
+}
+
+.eno-num {
+  font-family: var(--eno-serif);
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--eno-muted);
+}
+
+.eno-label {
+  font-family: var(--eno-serif);
+  font-size: clamp(1.85rem, 3.2vw, 3.15rem);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--eno-ink);
+  transition: color 0.3s ease;
+}
+
+.eno-link:hover .eno-label,
+.eno-link:focus-visible .eno-label {
+  color: var(--eno-gold-deep);
+}
+
+.eno-link:focus-visible {
+  outline: none;
+}
+
+.eno-chevron {
+  width: 0.95rem;
+  height: 0.95rem;
+  justify-self: end;
+  color: var(--eno-gold-deep);
+  opacity: 0.85;
+  transition: transform 0.35s ease;
+}
+
+.eno-row--group.is-open .eno-chevron {
+  transform: rotate(180deg);
+}
+
+.eno-sub {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0 0 0.95rem 2.75rem;
+}
+
+.eno-sub[hidden] {
+  display: none;
+}
+
+.eno-sublink {
+  font-family: var(--eno-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--eno-muted);
+  padding: 0.28rem 0;
+  transition: color 0.25s ease;
+}
+
+.eno-sublink:hover,
+.eno-sublink:focus-visible {
+  color: var(--eno-gold-deep);
+  outline: none;
+}
+
+.eno-ports {
+  grid-column: 3;
+  grid-row: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.35rem;
+  margin: 0;
+  padding: 2.5rem 0;
+  list-style: none;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.eno-ports li {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--eno-serif);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--eno-muted);
+  white-space: nowrap;
+}
+
+.eno-foot {
+  grid-column: 2;
+  grid-row: 3;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 0.5rem 0.15rem;
+}
+
+.eno-copy,
+.eno-legal {
+  margin: 0;
+  font-family: var(--eno-serif);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--eno-ink);
+}
+
+.eno-legal {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.eno-legal a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.eno-legal a:hover,
+.eno-legal a:focus-visible {
+  color: var(--eno-gold-deep);
+  outline: none;
+}
+
+.eno-legal span {
+  color: var(--eno-gold-deep);
+}
+
+@media (max-width: 1024px) {
+  .eno {
+    --eno-panel-w: 72%;
+  }
+
+  .eno-label {
+    font-size: clamp(1.55rem, 4.2vw, 2.4rem);
+  }
+
+  .eno-kicker {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .eno {
+    --eno-panel-w: 100%;
+  }
+
+  .eno-photo,
+  .eno-ports {
+    display: none;
+  }
+
+  .eno-panel {
+    grid-template-columns: 2.6rem minmax(0, 1fr);
+  }
+
+  .eno-label {
+    font-size: clamp(1.45rem, 6.4vw, 2.1rem);
+  }
+}
+
+/* Phone keeps the existing staggered menu — never show this overlay. */
+@media (max-width: 480px) {
+  .eno {
+    display: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eno-prelayer,
+  .eno-panel,
+  .eno-photo {
+    will-change: auto;
+  }
+}

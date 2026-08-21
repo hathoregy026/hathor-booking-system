@@ -5,9 +5,18 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
+import dynamic from "next/dynamic";
 import { PublicThemeToggle } from "@/components/public/PublicThemeToggle";
 import { usePageVisibilitySettings } from "@/components/public/PageVisibilityProvider";
 import { StaggeredMenu } from "@/components/layout/StaggeredMenu";
+
+const EditorialNavOverlay = dynamic(
+  () =>
+    import("@/components/layout/EditorialNavOverlay").then(
+      (mod) => mod.EditorialNavOverlay,
+    ),
+  { ssr: false },
+);
 import {
   HATHOR_BRAND_NAME,
   HATHOR_HERO_ICON_DARK_SRC,
@@ -18,6 +27,7 @@ import {
   filterNavItemsForVisibility,
   navHrefMatches,
   splitHeaderNavItems,
+  usesEditorialOverlayNav,
   type HeaderNavItem,
 } from "@/lib/public-nav";
 import {
@@ -209,6 +219,7 @@ export function Header() {
     () => splitHeaderNavItems(navItems),
     [navItems],
   );
+  const editorialNav = usesEditorialOverlayNav(pathname);
   const [exploreOpen, setExploreOpen] = useState(false);
   const [isPhone, setIsPhone] = useState(false);
   const [menuHovered, setMenuHovered] = useState(false);
@@ -522,7 +533,11 @@ export function Header() {
     "hathor-header--menu-active",
     menuHovered && "hathor-header--menu-hovered",
     navCompact && "hathor-header--nav-compact",
-    exploreOpen && "hathor-header--explore-open",
+    editorialNav && "hathor-header--editorial-nav",
+    exploreOpen &&
+      (editorialNav && !isPhone
+        ? "hathor-header--editorial-open"
+        : "hathor-header--explore-open"),
     suitesNavTone === "ink" && "hathor-header--suites-ink",
     suitesNavTone === "ivory" && "hathor-header--suites-ivory",
   ]
@@ -533,6 +548,17 @@ export function Header() {
     <>
       <header className={headerClass}>
         <div className="hathor-header__inner hathor-header__inner--owo">
+          {editorialNav ? (
+            <button
+              type="button"
+              className="hathor-header__menu-btn hathor-header__menu-btn--left"
+              onClick={toggleExplore}
+              aria-expanded={exploreOpen}
+              aria-label={exploreOpen ? "Close menu" : "Open menu"}
+            >
+              <Menu className="h-5 w-5" aria-hidden />
+            </button>
+          ) : null}
           <div
             className="hathor-header__menu-zone"
             onMouseEnter={() => setMenuHovered(true)}
@@ -604,6 +630,13 @@ export function Header() {
               : PHONE_MENU_COLORS
           }
           accentColor="#b69f64"
+        />
+      ) : editorialNav ? (
+        <EditorialNavOverlay
+          open={exploreOpen}
+          onClose={closeExploreSync}
+          onNavigate={navigateFromExplore}
+          navItems={navItems}
         />
       ) : (
         <ExplorePanel
