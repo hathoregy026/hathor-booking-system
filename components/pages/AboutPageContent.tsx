@@ -166,17 +166,6 @@ export function AboutPageContent() {
       <main>
         <section ref={runRef} className="ab-run" aria-label="About Hathor Dahabiya">
           <div className="ab-stage">
-            {/* Vertical marquee rail riding the edge of the horizontal act */}
-            <div className="ab-rail" aria-hidden="true">
-              <span className="ab-rail__inner">
-                {[0, 1, 2, 3].map((item) => (
-                  <em key={item}>
-                    Dahabiya <b>✦</b> Est. on the Nile <b>✦</b>
-                  </em>
-                ))}
-              </span>
-            </div>
-
             <div ref={trackRef} className="ab-track">
               {/* 01 — Intro: a ragged three-part display setting */}
               <Scene className="ab-intro">

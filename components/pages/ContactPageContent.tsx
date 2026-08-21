@@ -153,17 +153,6 @@ export function ContactPageContent() {
           aria-label="Contact Hathor reservations"
         >
           <div className="ce-stage">
-            {/* Vertical marquee rail — rides the edge of the horizontal act. */}
-            <div className="ce-rail" aria-hidden="true">
-              <span className="ce-rail__inner">
-                {[0, 1, 2, 3].map((item) => (
-                  <em key={item}>
-                    Correspondence <b>✦</b> Hathor Dahabiya <b>✦</b>
-                  </em>
-                ))}
-              </span>
-            </div>
-
             <div ref={trackRef} className="ce-track">
               {/* 01 — Intro panel */}
               <Scene className="ce-intro">

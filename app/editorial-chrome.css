@@ -21,6 +21,18 @@
   --ed-copy-on-dark: #f6efdf;
 }
 
+/* Black left-edge sliding stripe — hidden on every editorial page.
+   Voyages markup is left untouched; this chrome rule is the only Voyages hook. */
+.voyages-boring .vb-rail,
+.voyages-boring .vb-rail__inner,
+.about-boring .ab-rail,
+.about-boring .ab-rail__inner,
+.contact-editorial .ce-rail,
+.contact-editorial .ce-rail__inner {
+  display: none !important;
+  animation: none !important;
+}
+
 /* ---------- Meta: page labels, copyright, wordmark, legal, social ---------- */
 
 .voyages-boring .vb-marker,
