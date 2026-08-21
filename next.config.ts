@@ -1,5 +1,76 @@
 import type { NextConfig } from "next";
 
+/*
+ * Content Security Policy — shipped in REPORT-ONLY mode.
+ *
+ * Report-only means the browser logs violations to the devtools console but
+ * blocks nothing, so this cannot break a page. Check the console on the
+ * heaviest pages (home, gastronomy, suites, /admin) for a few days; once the
+ * report is quiet, switch the header key below from
+ * "Content-Security-Policy-Report-Only" to "Content-Security-Policy".
+ *
+ * 'unsafe-inline' / 'unsafe-eval' on script-src are required by Next's inline
+ * bootstrap and by GSAP/Lenis-style runtime code. Tightening those needs a
+ * nonce pass — a separate job, after launch.
+ */
+const CSP_DIRECTIVES = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "frame-ancestors 'self'",
+  "form-action 'self'",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com",
+  "media-src 'self' blob: https://*.supabase.co",
+  "font-src 'self' data:",
+  "connect-src 'self' https://*.supabase.co https://va.vercel-scripts.com https://vitals.vercel-insights.com",
+  "worker-src 'self' blob:",
+  "frame-src 'self'",
+  "manifest-src 'self'",
+  "upgrade-insecure-requests",
+].join("; ");
+
+/* Applied to every route. None of these change rendering. */
+const SECURITY_HEADERS = [
+  {
+    key: "Content-Security-Policy-Report-Only",
+    value: CSP_DIRECTIVES,
+  },
+  {
+    // Browsers must use HTTPS for this origin. No `preload` yet — that is a
+    // one-way door (removal from the preload list takes months).
+    key: "Strict-Transport-Security",
+    value: "max-age=63072000; includeSubDomains",
+  },
+  {
+    // Blocks clickjacking of the admin panel. CSP frame-ancestors above is the
+    // modern equivalent; this covers older browsers.
+    key: "X-Frame-Options",
+    value: "SAMEORIGIN",
+  },
+  {
+    // Stop the browser guessing content types (MIME-confusion attacks).
+    key: "X-Content-Type-Options",
+    value: "nosniff",
+  },
+  {
+    // Send the full URL to ourselves, only the origin to third parties.
+    key: "Referrer-Policy",
+    value: "strict-origin-when-cross-origin",
+  },
+  {
+    // Deny hardware APIs the site never uses.
+    key: "Permissions-Policy",
+    value:
+      "camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=()",
+  },
+  {
+    key: "X-DNS-Prefetch-Control",
+    value: "on",
+  },
+];
+
 const nextConfig: NextConfig = {
   images: {
     // Next 16 defaults qualities to [75] only — anything else snaps to 75.
@@ -36,6 +107,12 @@ const nextConfig: NextConfig = {
      * - Versioned media/video under content-addressed paths: long immutable.
      */
     return [
+      {
+        // Security headers on every route. Listed first; later entries in this
+        // array only add Cache-Control, so nothing here is overwritten.
+        source: "/:path*",
+        headers: SECURITY_HEADERS,
+      },
       {
         source: "/_next/static/:path*",
         headers: [

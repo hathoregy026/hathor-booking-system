@@ -5,12 +5,30 @@ type RateLimitEntry = {
 
 const store = new Map<string, RateLimitEntry>();
 
+/**
+ * Drop expired entries so the Map cannot grow without bound.
+ * Cheap: only runs when the store gets large, and only walks it once.
+ */
+const MAX_ENTRIES_BEFORE_SWEEP = 5_000;
+
+function sweepExpired(now: number): void {
+  if (store.size < MAX_ENTRIES_BEFORE_SWEEP) return;
+
+  for (const [key, entry] of store) {
+    if (now > entry.resetAt) {
+      store.delete(key);
+    }
+  }
+}
+
 export function checkRateLimit(
   key: string,
   limit = 5,
   windowMs = 60_000,
 ): { allowed: boolean; retryAfterSeconds: number } {
   const now = Date.now();
+  sweepExpired(now);
+
   const entry = store.get(key);
 
   if (!entry || now > entry.resetAt) {
@@ -27,6 +45,15 @@ export function checkRateLimit(
 
   entry.count += 1;
   return { allowed: true, retryAfterSeconds: 0 };
+}
+
+/**
+ * Clear a key's counter. Use after a *successful* auth attempt so a
+ * legitimate user who fat-fingered their password a few times is not
+ * left throttled for the rest of the window.
+ */
+export function resetRateLimit(key: string): void {
+  store.delete(key);
 }
 
 export function getClientIp(request: Request): string {

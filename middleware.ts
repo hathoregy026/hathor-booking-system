@@ -61,6 +61,33 @@ function withCachePurge(response: NextResponse): NextResponse {
   return response;
 }
 
+/**
+ * Clear-Site-Data is destructive (wipes the visitor's cache + storage for this
+ * origin), so the purge switch must not be reachable by anyone who guesses the
+ * URL. Authorised when EITHER:
+ *   - the request carries a valid admin session cookie, or
+ *   - `?fresh=<CACHE_PURGE_TOKEN>` matches the env secret (set one to use it
+ *     from a logged-out browser; unset means only admins can purge).
+ * Unauthorised requests fall through to normal handling — no purge, no error.
+ */
+async function isPurgeAuthorised(request: NextRequest): Promise<boolean> {
+  const session = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
+  if (await verifySessionToken(session)) return true;
+
+  const secret = process.env.CACHE_PURGE_TOKEN?.trim();
+  if (!secret) return false;
+
+  const supplied = request.nextUrl.searchParams.get("fresh")?.trim();
+  if (!supplied || supplied.length !== secret.length) return false;
+
+  let mismatch = 0;
+  for (let index = 0; index < supplied.length; index += 1) {
+    mismatch |= supplied.charCodeAt(index) ^ secret.charCodeAt(index);
+  }
+
+  return mismatch === 0;
+}
+
 function requiresPrivateHtml(pathname: string): boolean {
   return (
     pathname === "/book" ||
@@ -82,7 +109,10 @@ export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
     if (pathname === "/purge" || request.nextUrl.searchParams.has("fresh")) {
-      return withCachePurge(NextResponse.next());
+      if (await isPurgeAuthorised(request)) {
+        return withCachePurge(NextResponse.next());
+      }
+      /* Not authorised — ignore the purge request and serve the page normally. */
     }
 
     if (
