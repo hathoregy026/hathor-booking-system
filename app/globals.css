@@ -2,6 +2,7 @@
 @import "react-day-picker/style.css";
 @import "./booking.css";
 @import "./admin.css";
+@import "./admin-shell.css";
 @import "./lux-footer.css";
 
 :root {
