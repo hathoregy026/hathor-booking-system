@@ -108,7 +108,7 @@ export function EditorialNavOverlay({
           src={OVERLAY_IMAGE_SRC}
           alt=""
           fill
-          sizes="(min-width: 1025px) 34vw, 40vw"
+          sizes="(min-width: 1025px) 56vw, (min-width: 768px) 44vw, 100vw"
           className="eno-photo__img"
           quality={90}
           priority={false}

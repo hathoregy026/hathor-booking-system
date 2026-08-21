@@ -11,7 +11,7 @@
   --eno-ink: #2c261f;
   --eno-muted: #7a7268;
   --eno-line: rgba(44, 38, 31, 0.14);
-  --eno-panel-w: 66%;
+  --eno-panel-w: 44%;
   --eno-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --eno-serif: "Rolling Fonte", "Playfair Display", Georgia, "Times New Roman", serif;
   --eno-body: var(--font-hathor-body), "Plus Jakarta Sans", sans-serif;
@@ -270,11 +270,11 @@
 }
 
 .eno-kicker {
-  margin: 0 auto 0 1.15rem;
+  margin: 0 auto 0 0.7rem;
   font-family: var(--eno-serif);
-  font-size: 0.68rem;
+  font-size: 0.62rem;
   font-weight: 400;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--eno-ink);
 }
@@ -322,9 +322,10 @@
   grid-column: 2;
   grid-row: 2;
   align-self: center;
-  width: min(36rem, 100%);
-  margin: 0 auto;
-  padding: 0.5rem 0.35rem;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0.35rem 0.85rem 0.35rem 0.1rem;
 }
 
 .eno-row {
@@ -337,11 +338,11 @@
 
 .eno-link {
   display: grid;
-  grid-template-columns: 2.6rem minmax(0, 1fr) 1.6rem;
+  grid-template-columns: 3.1rem minmax(0, 1fr) 1.7rem;
   align-items: center;
   width: 100%;
   margin: 0;
-  padding: 0.85rem 0.15rem;
+  padding: 1.05rem 0.1rem;
   border: 0;
   background: transparent;
   color: var(--eno-ink);
@@ -356,7 +357,7 @@
 
 .eno-num {
   font-family: var(--eno-serif);
-  font-size: 0.78rem;
+  font-size: clamp(0.82rem, 1.1vw, 1.05rem);
   font-weight: 400;
   letter-spacing: 0.04em;
   color: var(--eno-muted);
@@ -364,10 +365,10 @@
 
 .eno-label {
   font-family: var(--eno-serif);
-  font-size: clamp(1.85rem, 3.2vw, 3.15rem);
+  font-size: clamp(2.55rem, 5.2vw, 4.85rem);
   font-weight: 500;
-  letter-spacing: 0.04em;
-  line-height: 1;
+  letter-spacing: 0.015em;
+  line-height: 0.92;
   text-transform: uppercase;
   color: var(--eno-ink);
   transition: color 0.3s ease;
@@ -399,7 +400,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
-  padding: 0 0 0.95rem 2.75rem;
+  padding: 0 0 0.95rem 3.2rem;
 }
 
 .eno-sub[hidden] {
@@ -467,11 +468,11 @@
 
 @media (max-width: 1024px) {
   .eno {
-    --eno-panel-w: 72%;
+    --eno-panel-w: 56%;
   }
 
   .eno-label {
-    font-size: clamp(1.55rem, 4.2vw, 2.4rem);
+    font-size: clamp(2.15rem, 5.8vw, 3.6rem);
   }
 
   .eno-kicker {
@@ -493,7 +494,11 @@
   }
 
   .eno-label {
-    font-size: clamp(1.45rem, 6.4vw, 2.1rem);
+    font-size: clamp(2.05rem, 8.4vw, 3.1rem);
+  }
+
+  .eno-nav {
+    padding-right: 0.35rem;
   }
 }
 
