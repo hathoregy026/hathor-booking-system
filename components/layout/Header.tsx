@@ -564,14 +564,16 @@ export function Header() {
             onMouseEnter={() => setMenuHovered(true)}
             onMouseLeave={() => setMenuHovered(false)}
           >
-            <nav
-              className="hathor-header__col hathor-header__col--nav-left"
-              aria-label="Primary navigation left"
-            >
-              <ul className="hathor-header__nav hathor-header__nav--left">
-                {navLeft.map(renderNavItem)}
-              </ul>
-            </nav>
+            {editorialNav ? null : (
+              <nav
+                className="hathor-header__col hathor-header__col--nav-left"
+                aria-label="Primary navigation left"
+              >
+                <ul className="hathor-header__nav hathor-header__nav--left">
+                  {navLeft.map(renderNavItem)}
+                </ul>
+              </nav>
+            )}
 
             <div className="hathor-header__col hathor-header__col--logo">
               <Link href="/" prefetch={false} className="hathor-header__brand">
@@ -590,14 +592,16 @@ export function Header() {
               </Link>
             </div>
 
-            <nav
-              className="hathor-header__col hathor-header__col--nav-right"
-              aria-label="Primary navigation right"
-            >
-              <ul className="hathor-header__nav hathor-header__nav--right">
-                {navRight.map(renderNavItem)}
-              </ul>
-            </nav>
+            {editorialNav ? null : (
+              <nav
+                className="hathor-header__col hathor-header__col--nav-right"
+                aria-label="Primary navigation right"
+              >
+                <ul className="hathor-header__nav hathor-header__nav--right">
+                  {navRight.map(renderNavItem)}
+                </ul>
+              </nav>
+            )}
           </div>
 
           <div className="hathor-header__col hathor-header__col--right">

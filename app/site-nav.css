@@ -407,9 +407,62 @@
 }
 
 /*
+ * Homepage tablet: word nav only — no burger.
+ * Inner pages keep the left burger (editorial rules below).
+ */
+@media (min-width: 481px) and (max-width: 1024px) {
+  .public-site
+    .hathor-header:not(.hathor-header--editorial-nav)
+    .hathor-header__col--nav-left,
+  .public-site
+    .hathor-header:not(.hathor-header--editorial-nav)
+    .hathor-header__col--nav-right {
+    display: flex !important;
+  }
+
+  .public-site
+    .hathor-header:not(.hathor-header--editorial-nav)
+    .hathor-header__col--right
+    .hathor-header__menu-btn {
+    display: none !important;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+  .public-site .hathor-header:not(.hathor-header--editorial-nav) {
+    --nav-logo-gap: 12px;
+    --nav-word-gap: 10px;
+  }
+
+  .public-site
+    .hathor-header:not(.hathor-header--editorial-nav)
+    .hathor-header__col--nav-left {
+    margin-right: var(--nav-logo-gap);
+  }
+
+  .public-site
+    .hathor-header:not(.hathor-header--editorial-nav)
+    .hathor-header__col--nav-right {
+    margin-left: var(--nav-logo-gap);
+  }
+
+  .public-site
+    .hathor-header:not(.hathor-header--editorial-nav)
+    .hathor-header__nav-link {
+    font-size: 0.58rem;
+  }
+}
+
+/*
  * Editorial overlay pages (not homepage): hamburger on the left, tablet + desktop.
+ * Word links never show here — homepage is the only place for the flanking nav.
  * Phone (≤480px) keeps the existing right burger + staggered menu.
  */
+.public-site .hathor-header--editorial-nav .hathor-header__col--nav-left,
+.public-site .hathor-header--editorial-nav .hathor-header__col--nav-right {
+  display: none !important;
+}
+
 .public-site .hathor-header__menu-btn--left {
   display: none;
   position: absolute;
