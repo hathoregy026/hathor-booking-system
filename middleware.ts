@@ -88,6 +88,38 @@ async function isPurgeAuthorised(request: NextRequest): Promise<boolean> {
   return mismatch === 0;
 }
 
+/**
+ * Routes that must never answer on a production deployment.
+ *
+ * These are scratch/diagnostic surfaces: they leak build internals, timing
+ * data and mail plumbing, and none of them are linked from the public site.
+ * Blocking them here — in one place — is safer than remembering to guard each
+ * handler individually, and it also covers any dev route added later under the
+ * same prefixes.
+ */
+const PRODUCTION_BLOCKED_PREFIXES = [
+  "/api/dev",
+  "/api/debug-email",
+  "/api/test-email",
+  "/dev",
+  "/test-create",
+  "/test-scroll-reveal",
+  "/test-slide",
+];
+
+/**
+ * Internal-but-useful surfaces. Not deleted, just put behind the admin
+ * session so the CMS device preview keeps working while the public cannot
+ * reach them.
+ */
+const ADMIN_ONLY_PREFIXES = ["/preview", "/transition", "/site-index"];
+
+function matchesPrefix(pathname: string, prefixes: string[]): boolean {
+  return prefixes.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
+}
+
 function requiresPrivateHtml(pathname: string): boolean {
   return (
     pathname === "/book" ||
@@ -107,6 +139,25 @@ export async function middleware(request: NextRequest) {
     }
 
     const { pathname } = request.nextUrl;
+    const isProduction = process.env.NODE_ENV === "production";
+
+    /* Dev/diagnostic routes: 404 in production, untouched in local dev. */
+    if (isProduction && matchesPrefix(pathname, PRODUCTION_BLOCKED_PREFIXES)) {
+      if (pathname.startsWith("/api/")) {
+        return NextResponse.json({ error: "Not found" }, { status: 404 });
+      }
+      return new NextResponse(null, { status: 404 });
+    }
+
+    /* Preview/transition surfaces: admin session required in production. */
+    if (isProduction && matchesPrefix(pathname, ADMIN_ONLY_PREFIXES)) {
+      const previewSession = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
+      if (!(await verifySessionToken(previewSession))) {
+        const loginUrl = new URL("/admin/login", request.url);
+        loginUrl.searchParams.set("from", pathname);
+        return withHtmlNoStore(NextResponse.redirect(loginUrl));
+      }
+    }
 
     if (pathname === "/purge" || request.nextUrl.searchParams.has("fresh")) {
       if (await isPurgeAuthorised(request)) {

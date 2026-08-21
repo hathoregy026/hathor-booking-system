@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   ADMIN_SESSION_COOKIE,
+  ADMIN_SESSION_TTL_SECONDS,
   createSessionToken,
   verifyAdminPassword,
 } from "@/lib/admin-auth";
@@ -69,7 +70,8 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7,
+      /* Match the signed token's own expiry so the two cannot drift apart. */
+      maxAge: ADMIN_SESSION_TTL_SECONDS,
       path: "/",
     });
 
