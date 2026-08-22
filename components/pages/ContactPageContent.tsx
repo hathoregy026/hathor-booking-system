@@ -17,6 +17,7 @@ import { useContactEditorialScroll } from "@/hooks/useContactEditorialScroll";
 import { CONTACT_PAGE } from "@/lib/page-content";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
+import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
 
 function ContactMedia({
   slot,
@@ -38,7 +39,7 @@ function ContactMedia({
       style={ratio ? ({ ["--ce-ratio" as string]: ratio } as CSSProperties) : undefined}
     >
       <Image
-        src={image.src}
+        src={originSrcForNextImage(image.src)}
         alt={alt || image.alt}
         fill
         priority={priority}

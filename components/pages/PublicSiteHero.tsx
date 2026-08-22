@@ -18,21 +18,10 @@ import {
   resolveHeroPageCopy,
   type HeroPageKey,
 } from "@/lib/typography-settings-shared";
+import { toVercelOptimizedSrc } from "@/lib/local-optimized-site-images";
 
 /** No compressed mobile MP4 yet — phones keep poster until an asset is added. */
 const HATHOR_HERO_VIDEO_MOBILE_SRC: string | null = null;
-
-function optimizedVideoPoster(src: string): string {
-  const trimmed = src.trim();
-  if (!/^https?:\/\//i.test(trimmed)) return trimmed;
-
-  const params = new URLSearchParams({
-    url: trimmed,
-    w: "1920",
-    q: "75",
-  });
-  return `/_next/image?${params.toString()}`;
-}
 
 export type PublicSiteHeroProps = {
   lineRight: string;
@@ -105,7 +94,7 @@ export function PublicSiteHero({
   const [useLiveVideo, setUseLiveVideo] = useState(false);
   const heroImage = useSiteImage(posterImageName ?? "about-hero");
   const videoPoster = playVideo
-    ? optimizedVideoPoster(heroImage.src)
+    ? toVercelOptimizedSrc(heroImage.src)
     : heroImage.src;
   /** Video hero: no dark wash / gold tint — keep gold dust only. */
   const showMediaWash = !playVideo;

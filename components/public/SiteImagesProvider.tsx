@@ -8,7 +8,7 @@ import {
 } from "react";
 import { getDefaultSiteImage } from "@/lib/site-image-slots";
 import type { ResolvedSiteImage, SiteImageMap } from "@/lib/resolve-site-images";
-import { preferLocalOptimizedSiteImage } from "@/lib/local-optimized-site-images";
+import { deliverPublicSiteImage } from "@/lib/local-optimized-site-images";
 
 type SiteImagesContextValue = {
   getImage: (name: string) => ResolvedSiteImage;
@@ -27,7 +27,7 @@ export function SiteImagesProvider({ images, children }: SiteImagesProviderProps
       const image = images[name] ?? getDefaultSiteImage(name);
       return {
         ...image,
-        src: preferLocalOptimizedSiteImage(name, image.src),
+        src: deliverPublicSiteImage(name, image.src),
       };
     },
     [images],
@@ -43,7 +43,11 @@ export function SiteImagesProvider({ images, children }: SiteImagesProviderProps
 export function useSiteImage(name: string): ResolvedSiteImage {
   const context = useContext(SiteImagesContext);
   if (!context) {
-    return getDefaultSiteImage(name);
+    const image = getDefaultSiteImage(name);
+    return {
+      ...image,
+      src: deliverPublicSiteImage(name, image.src),
+    };
   }
   return context.getImage(name);
 }

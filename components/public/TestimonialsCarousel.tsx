@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { ScrollReveal } from "./ScrollReveal";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
+import { cssImageUrl } from "@/lib/local-optimized-site-images";
 
 const TESTIMONIALS = [
   {
@@ -50,7 +51,7 @@ export function TestimonialsCarousel({
 
   const current = TESTIMONIALS[index];
   const bgStyle = background
-    ? { backgroundImage: `url(${background})` }
+    ? { backgroundImage: cssImageUrl(background) }
     : { background: HERO_PLACEHOLDER };
 
   return (

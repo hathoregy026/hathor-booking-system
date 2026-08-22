@@ -15,6 +15,7 @@ import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { useAboutEditorialFlow } from "@/hooks/useAboutEditorialFlow";
 import { ABOUT_PAGE } from "@/lib/page-content";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
+import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
 
 function AboutMedia({
   slot,
@@ -38,7 +39,7 @@ function AboutMedia({
       }
     >
       <Image
-        src={image.src}
+        src={originSrcForNextImage(image.src)}
         alt={alt || image.alt}
         fill
         priority={priority}

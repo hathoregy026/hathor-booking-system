@@ -4,6 +4,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
+import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
 import { shouldLightenMotionForDevice } from "@/lib/touch-device";
 
 type ParallaxHeroImageProps = {
@@ -51,7 +52,7 @@ export function ParallaxHeroImage({
     >
       <motion.div className="hathor-parallax-hero__motion" style={{ y, scale }}>
         <Image
-          src={src}
+          src={originSrcForNextImage(src)}
           alt={alt}
           fill
           priority={priority}

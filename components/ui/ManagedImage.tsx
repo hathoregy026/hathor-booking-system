@@ -4,6 +4,7 @@ import Image, { type ImageProps } from "next/image";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
+import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
 
 export { SITE_IMAGE_QUALITY };
 
@@ -28,6 +29,7 @@ export function ManagedImage({
   ...props
 }: ManagedImageProps) {
   const image = useSiteImage(name);
+  const nextSrc = originSrcForNextImage(image.src);
   const resolvedAlt = alt ?? image.alt;
   const anchorId = previewAnchor ? siteImageAnchorId(name) : undefined;
 
@@ -35,8 +37,8 @@ export function ManagedImage({
     return (
       <Image
         {...props}
-        key={image.src}
-        src={image.src}
+        key={nextSrc}
+        src={nextSrc}
         alt={resolvedAlt}
         fill
         quality={quality}
@@ -51,8 +53,8 @@ export function ManagedImage({
   return (
     <Image
       {...props}
-      key={image.src}
-      src={image.src}
+      key={nextSrc}
+      src={nextSrc}
       alt={resolvedAlt}
       quality={quality}
       unoptimized={unoptimized}

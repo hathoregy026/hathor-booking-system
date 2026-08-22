@@ -17,6 +17,7 @@ import type { HomepageAccordionCruise } from "@/lib/homepage-accordion-cruises";
 import { resolveVoyagePanelContent } from "@/lib/voyage-accordion-panels";
 import { VOYAGES_PAGE } from "@/lib/voyages-page-content";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
+import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
 
 function VoyageMedia({
   slot,
@@ -39,7 +40,7 @@ function VoyageMedia({
       style={ratio ? ({ "--vb-ratio": ratio } as CSSProperties) : undefined}
     >
       <Image
-        src={image.src}
+        src={originSrcForNextImage(image.src)}
         alt={alt || image.alt}
         fill
         priority={priority}

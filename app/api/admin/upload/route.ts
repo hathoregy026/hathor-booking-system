@@ -114,6 +114,11 @@ export async function POST(request: NextRequest) {
       imageTitle,
     });
 
+    /*
+     * Public delivery does not read this URL raw. SiteImagesProvider serves a
+     * local /media copy when mirrored, otherwise Vercel `/_next/image`.
+     * Do not write /public here — the Vercel serverless filesystem is read-only.
+     */
     return NextResponse.json({
       url: result.url,
       path: result.path,
