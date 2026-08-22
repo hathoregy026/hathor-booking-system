@@ -95,6 +95,13 @@ html:has(.voyages-boring) .lux-footer {
   transition: transform 1s var(--vb-ease), opacity 0.8s ease;
 }
 
+/* This page owns its scene reveal; do not leave characters waiting for the
+   separate Suites observer, which is not mounted on /voyages. */
+.voyages-boring .anima-split-char {
+  transform: none;
+  will-change: auto;
+}
+
 .vb-progress {
   position: fixed;
   z-index: 90;
@@ -428,6 +435,8 @@ html:has(.voyages-boring) .lux-footer {
   .vb-intro__image .vb-media__image { object-position: 64% center; }
   .vb-intro .vb-kicker { top: 15%; }
   .vb-intro__title { bottom: 25%; font-size: clamp(4.15rem, 20vw, 6.3rem); }
+  .vb-intro__title .vb-line { overflow: visible; }
+  .vb-intro__title .vb-line > * { transform: none; opacity: 1; }
   .vb-intro__offset { margin-left: 0.18em; }
   .vb-intro__script { margin-left: 0.75em; font-size: 0.58em; }
   .vb-intro__copy { left: var(--vb-pad); right: var(--vb-pad); bottom: 5%; width: auto; font-size: 0.78rem; line-height: 1.6; }

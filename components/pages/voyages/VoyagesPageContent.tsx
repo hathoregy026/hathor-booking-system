@@ -178,7 +178,7 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
             <div ref={trackRef} className="vb-track">
               <Scene className="vb-intro" id="voyages">
                 <VoyageMedia
-                  slot="highlights-hero"
+                  slot="cruises-hero"
                   alt="The Nile in golden light"
                   priority
                   className="vb-intro__image"
@@ -329,6 +329,7 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
               </Scene>
 
               {itineraries.map((voyage, index) => {
+                const isCharter = voyage.slug === "nile-majesty";
                 const panel = resolveVoyagePanelContent({
                   slug: voyage.slug,
                   name: voyage.name,
@@ -346,11 +347,14 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                     <div className="vb-journey__shade" aria-hidden="true" />
                     <span className="vb-journey__number">0{index + 1}</span>
                     <p className="vb-journey__meta">
-                      {panel.durationLabel}<span>·</span>{voyage.ports}
+                      {isCharter ? "Private charter" : panel.durationLabel}
+                      <span>·</span>
+                      {isCharter ? "Custom itinerary" : voyage.ports}
                     </p>
                     <h2 className="vb-journey__title vb-display">{panel.routeTitle}</h2>
                     <Link className="vb-journey__link" href={panel.detailsHref}>
-                      {panel.detailsLabel} <span aria-hidden="true">↗</span>
+                      {isCharter ? "Explore private charter" : panel.detailsLabel}{" "}
+                      <span aria-hidden="true">↗</span>
                     </Link>
                   </Scene>
                 );
