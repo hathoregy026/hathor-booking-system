@@ -1,5 +1,5 @@
 /**
- * Editorial left overlay — desktop/tablet only (hidden ≤480px).
+ * Editorial left overlay — desktop/tablet, and a minimized phone version.
  * Open state is CSS-driven so the cream menu always lands on screen.
  */
 
@@ -504,7 +504,110 @@
 
 @media (max-width: 480px) {
   .eno {
-    display: none !important;
+    --eno-panel-w: 100%;
+  }
+
+  .eno-photo {
+    display: none;
+  }
+
+  .eno-prelayers,
+  .eno-panel {
+    width: 100%;
+  }
+
+  .eno-prelayer--1 {
+    width: 100%;
+  }
+
+  .eno-prelayer--2 {
+    width: 100%;
+  }
+
+  .eno-prelayer--3 {
+    width: 100%;
+  }
+
+  .eno-panel {
+    grid-template-columns: 2.15rem minmax(0, 1fr);
+    padding:
+      max(0.85rem, env(safe-area-inset-top))
+      0.85rem
+      max(0.9rem, env(safe-area-inset-bottom))
+      max(0.7rem, env(safe-area-inset-left));
+  }
+
+  .eno-rail {
+    gap: 0.7rem;
+  }
+
+  .eno-rail__mark {
+    width: 1.15rem;
+  }
+
+  .eno-top {
+    gap: 0.55rem;
+    padding: 0.1rem 0.15rem 0.55rem;
+  }
+
+  .eno-close {
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: 1.25rem;
+  }
+
+  .eno-kicker {
+    display: none;
+  }
+
+  .eno-book {
+    padding: 0.28rem 0.28rem 0.28rem 0.75rem;
+    font-size: 0.58rem;
+    gap: 0.45rem;
+  }
+
+  .eno-book__arrow {
+    width: 1.4rem;
+    height: 1.4rem;
+    font-size: 0.68rem;
+  }
+
+  .eno-nav {
+    padding: 0.15rem 0.2rem 0.15rem 0;
+  }
+
+  .eno-link {
+    grid-template-columns: 2.2rem minmax(0, 1fr) 1.2rem;
+    padding: 0.62rem 0.05rem;
+  }
+
+  .eno-num {
+    font-size: 0.68rem;
+  }
+
+  .eno-label {
+    font-size: clamp(1.45rem, 7.2vw, 2.05rem);
+  }
+
+  .eno-sub {
+    padding: 0 0 0.65rem 2.3rem;
+  }
+
+  .eno-sublink {
+    font-size: 0.68rem;
+    padding: 0.2rem 0;
+  }
+
+  .eno-foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    padding: 0.55rem 0.15rem 0.1rem;
+  }
+
+  .eno-copy,
+  .eno-legal {
+    font-size: 0.58rem;
   }
 }
 

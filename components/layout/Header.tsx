@@ -7,7 +7,6 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { Menu, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { PublicThemeToggle } from "@/components/public/PublicThemeToggle";
-import { StaggeredMenu } from "@/components/layout/StaggeredMenu";
 
 const EditorialNavOverlay = dynamic(
   () =>
@@ -34,56 +33,8 @@ import {
   unlockBodyScroll,
 } from "@/lib/body-scroll-lock";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
-import { PUBLIC_SOCIAL_LINKS } from "@/lib/public-social";
-import type { ReactNode } from "react";
 
 const EXPLORE_LOCK_OWNER = "explore-panel" as const;
-
-/** Same social order + glyphs as the desktop footer. */
-type FooterSocialKey = "instagram" | "linkedin" | "facebook";
-const FOOTER_SOCIAL_ORDER: FooterSocialKey[] = [
-  "instagram",
-  "linkedin",
-  "facebook",
-];
-
-function PhoneSocialGlyph({ platform }: { platform: FooterSocialKey }) {
-  const icons: Record<FooterSocialKey, ReactNode> = {
-    instagram: (
-      <svg viewBox="0 0 24 24" aria-hidden>
-        <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
-        <circle cx="12" cy="12" r="4" />
-        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
-      </svg>
-    ),
-    linkedin: (
-      <svg viewBox="0 0 24 24" aria-hidden>
-        <rect x="3.5" y="3.5" width="17" height="17" rx="2" />
-        <path d="M8 11v6M8 8.2v.1M12 17v-3.8c0-1.2.8-2 2-2s2 .8 2 2V17" />
-      </svg>
-    ),
-    facebook: (
-      <svg viewBox="0 0 24 24" aria-hidden>
-        <path d="M14 8h2.5V5.5H14c-2.2 0-4 1.8-4 4V12H7.5v2.5H10V21h3v-6.5h2.5V12H13v-2c0-.55.45-1 1-1Z" />
-      </svg>
-    ),
-  };
-  return icons[platform];
-}
-
-const PHONE_SOCIAL_ITEMS = FOOTER_SOCIAL_ORDER.map((key) =>
-  PUBLIC_SOCIAL_LINKS.find((link) => link.key === key),
-)
-  .filter((link): link is NonNullable<typeof link> => Boolean(link))
-  .map((link) => ({
-    ...link,
-    icon: <PhoneSocialGlyph platform={link.key as FooterSocialKey} />,
-  }));
-
-/** Hathor gold / cream underlays for the staggered phone menu. */
-const PHONE_MENU_COLORS = ["#8b6914", "#c9a96e", "#ece8df"];
-/** Suites: dark layered filter instead of gold sheets (cream panel unchanged). */
-const SUITES_PHONE_MENU_COLORS = ["#0f0d0b", "#1c1916", "#ece8df"];
 
 function ExplorePanel({
   open,
@@ -216,6 +167,7 @@ export function Header() {
   const editorialNav = usesEditorialOverlayNav(pathname);
   const [exploreOpen, setExploreOpen] = useState(false);
   const [isPhone, setIsPhone] = useState(false);
+  const chromeNav = editorialNav || isPhone;
   const [menuHovered, setMenuHovered] = useState(false);
   const [navCompact, setNavCompact] = useState(false);
   const [suitesNavTone, setSuitesNavTone] = useState<"ivory" | "ink" | null>(
@@ -528,8 +480,9 @@ export function Header() {
     menuHovered && "hathor-header--menu-hovered",
     navCompact && "hathor-header--nav-compact",
     editorialNav && "hathor-header--editorial-nav",
+    chromeNav && "hathor-header--chrome",
     exploreOpen &&
-      (editorialNav && !isPhone
+      (chromeNav && !isPhone
         ? "hathor-header--editorial-open"
         : "hathor-header--explore-open"),
     suitesNavTone === "ink" && "hathor-header--suites-ink",
@@ -542,7 +495,7 @@ export function Header() {
     <>
       <header className={headerClass}>
         <div className="hathor-header__inner hathor-header__inner--owo">
-          {editorialNav ? (
+          {chromeNav ? (
             <button
               type="button"
               className="hathor-header__menu-btn hathor-header__menu-btn--left"
@@ -555,10 +508,12 @@ export function Header() {
           ) : null}
           <div
             className="hathor-header__menu-zone"
-            onMouseEnter={() => setMenuHovered(true)}
+            onMouseEnter={() => {
+              if (!chromeNav) setMenuHovered(true);
+            }}
             onMouseLeave={() => setMenuHovered(false)}
           >
-            {editorialNav ? null : (
+            {chromeNav ? null : (
               <nav
                 className="hathor-header__col hathor-header__col--nav-left"
                 aria-label="Primary navigation left"
@@ -573,7 +528,7 @@ export function Header() {
               <Link href="/" prefetch={false} className="hathor-header__brand">
                 <Image
                   src={
-                    menuHovered
+                    chromeNav || menuHovered
                       ? HATHOR_HERO_ICON_DARK_SRC
                       : HATHOR_HERO_ICON_SRC
                   }
@@ -586,7 +541,7 @@ export function Header() {
               </Link>
             </div>
 
-            {editorialNav ? null : (
+            {chromeNav ? null : (
               <nav
                 className="hathor-header__col hathor-header__col--nav-right"
                 aria-label="Primary navigation right"
@@ -599,37 +554,23 @@ export function Header() {
           </div>
 
           <div className="hathor-header__col hathor-header__col--right">
-            <button
-              type="button"
-              className="hathor-header__menu-btn"
-              onClick={toggleExplore}
-              aria-expanded={exploreOpen}
-              aria-label={exploreOpen ? "Close menu" : "Open menu"}
-            >
-              <Menu className="h-5 w-5" aria-hidden />
-            </button>
+            {chromeNav ? null : (
+              <button
+                type="button"
+                className="hathor-header__menu-btn"
+                onClick={toggleExplore}
+                aria-expanded={exploreOpen}
+                aria-label={exploreOpen ? "Close menu" : "Open menu"}
+              >
+                <Menu className="h-5 w-5" aria-hidden />
+              </button>
+            )}
             <PublicThemeToggle />
           </div>
         </div>
       </header>
 
-      {isPhone ? (
-        <StaggeredMenu
-          open={exploreOpen}
-          onClose={closeExploreSync}
-          onNavigate={navigateFromExplore}
-          position="right"
-          navItems={navItems}
-          socialItems={PHONE_SOCIAL_ITEMS}
-          displaySocials
-          colors={
-            pathname === "/suites" || pathname.startsWith("/suites/")
-              ? SUITES_PHONE_MENU_COLORS
-              : PHONE_MENU_COLORS
-          }
-          accentColor="#b69f64"
-        />
-      ) : editorialNav ? (
+      {chromeNav ? (
         <EditorialNavOverlay
           open={exploreOpen}
           onClose={closeExploreSync}

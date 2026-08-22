@@ -365,7 +365,62 @@ html[data-public-theme="day"] .page-cruises {
   color: #3e3026;
 }
 
-html[data-public-theme="day"] .hathor-header--over-hero:not(.hathor-header--menu-hovered) .hathor-header__nav-link,
-html[data-public-theme="day"] .hathor-header--over-hero:not(.hathor-header--menu-hovered) .hathor-header__menu-btn {
+html[data-public-theme="day"] .hathor-header--over-hero:not(.hathor-header--menu-hovered) .hathor-header__nav-link {
   color: #e4d5b8;
+}
+
+/* Burger: gold over homepage imagery; ink on the cream chrome bar. */
+.public-site .hathor-header:not(.hathor-header--chrome) .hathor-header__menu-btn,
+.public-site .hathor-header:not(.hathor-header--chrome).hathor-header--owo-hero-layout .hathor-header__menu-btn,
+html[data-public-theme="day"] .hathor-header:not(.hathor-header--chrome).hathor-header--over-hero .hathor-header__menu-btn,
+html[data-public-theme="night"] .hathor-header:not(.hathor-header--chrome) .hathor-header__menu-btn {
+  color: #b69f64 !important;
+}
+
+.public-site .hathor-header--chrome .hathor-header__menu-btn,
+.public-site .hathor-header--chrome.hathor-header--suites-ink .hathor-header__menu-btn,
+.public-site .hathor-header--chrome.hathor-header--suites-ivory .hathor-header__menu-btn,
+.public-site .hathor-header--chrome.hathor-header--explore-open .hathor-header__menu-btn {
+  color: #1c1917 !important;
+}
+
+/* Gold / charcoal editorial pill — beats land/scroll glass styles. */
+.public-site .hathor-header .public-theme-toggle,
+.public-site .hathor-header--owo-hero-layout .public-theme-toggle,
+.public-site .hathor-header--owo-hero-layout.hathor-header--menu-hovered .public-theme-toggle,
+html[data-public-theme="night"] .public-theme-toggle {
+  color: #b69f64 !important;
+  background: transparent !important;
+}
+
+.public-site .hathor-header .public-theme-toggle__track,
+.public-site .hathor-header--owo-hero-layout.hathor-header--menu-active .public-theme-toggle__track,
+.public-site .hathor-header--owo-hero-layout.hathor-header--nav-compact .public-theme-toggle__track,
+.public-site .hathor-header--owo-hero-layout.hathor-header--menu-hovered .public-theme-toggle__track,
+html[data-public-theme="night"] .public-theme-toggle__track {
+  background: #b69f64 !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.public-site .hathor-header .public-theme-toggle.is-night .public-theme-toggle__track,
+.public-site .hathor-header--owo-hero-layout .public-theme-toggle.is-night .public-theme-toggle__track,
+html[data-public-theme="night"] .public-theme-toggle.is-night .public-theme-toggle__track {
+  background: #161311 !important;
+  border-color: #b69f64 !important;
+}
+
+.public-site .hathor-header .public-theme-toggle__thumb,
+.public-site .hathor-header--owo-hero-layout.hathor-header--menu-active .public-theme-toggle__thumb,
+.public-site .hathor-header--owo-hero-layout.hathor-header--menu-hovered .public-theme-toggle__thumb,
+html[data-public-theme="night"] .public-theme-toggle__thumb {
+  background: #f3efe6 !important;
+  color: #b69f64 !important;
+  box-shadow: 0 1px 3px rgb(28 25 23 / 0.16) !important;
+}
+
+.public-site .hathor-header .public-theme-toggle__label {
+  color: #f7f1e6 !important;
 }
