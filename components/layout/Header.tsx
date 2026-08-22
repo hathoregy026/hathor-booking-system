@@ -7,7 +7,6 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { Menu, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { PublicThemeToggle } from "@/components/public/PublicThemeToggle";
-import { usePageVisibilitySettings } from "@/components/public/PageVisibilityProvider";
 import { StaggeredMenu } from "@/components/layout/StaggeredMenu";
 
 const EditorialNavOverlay = dynamic(
@@ -24,7 +23,6 @@ import {
 } from "@/lib/branding";
 import {
   HEADER_NAV_ITEMS,
-  filterNavItemsForVisibility,
   navHrefMatches,
   splitHeaderNavItems,
   usesEditorialOverlayNav,
@@ -210,11 +208,7 @@ function isNavItemActive(pathname: string, item: HeaderNavItem): boolean {
 export function Header() {
   const pathname = usePathname();
   const router = useRouter();
-  const pageVisibility = usePageVisibilitySettings();
-  const navItems = useMemo(
-    () => filterNavItemsForVisibility(HEADER_NAV_ITEMS, pageVisibility),
-    [pageVisibility],
-  );
+  const navItems = HEADER_NAV_ITEMS;
   const { left: navLeft, right: navRight } = useMemo(
     () => splitHeaderNavItems(navItems),
     [navItems],

@@ -1,7 +1,4 @@
-import {
-  isPageLive,
-  type PageVisibilitySettings,
-} from "@/lib/page-visibility-shared";
+import type { PageVisibilitySettings } from "@/lib/page-visibility-shared";
 
 /** Public navigation structure — editorial labels, four dropdown groups. */
 
@@ -237,45 +234,14 @@ export function usesEditorialOverlayNav(pathname: string): boolean {
 }
 
 /**
- * Drop dashboard-off destinations from the public nav.
- * Work hosts (Vercel / localhost) pass all-live settings, so the full menu stays.
+ * Nav always lists every destination. Dashboard "off" only gates the page
+ * itself (Coming Soon via PageVisibilityChrome), not the menu labels.
  */
 export function filterNavItemsForVisibility(
   items: readonly HeaderNavItem[],
-  settings: PageVisibilitySettings,
+  _settings: PageVisibilitySettings,
 ): HeaderNavItem[] {
-  const visible: HeaderNavItem[] = [];
-
-  for (const item of items) {
-    if (item.type === "link") {
-      if (isPageLive(item.href, settings)) {
-        visible.push(item);
-      }
-      continue;
-    }
-
-    const liveLinks = item.links.filter((link) =>
-      isPageLive(link.href, settings),
-    );
-    const landingLive = isPageLive(item.href, settings);
-
-    if (!landingLive && liveLinks.length === 0) {
-      continue;
-    }
-
-    if (landingLive && liveLinks.length === 0) {
-      visible.push({ type: "link", href: item.href, label: item.label });
-      continue;
-    }
-
-    visible.push({
-      ...item,
-      href: landingLive ? item.href : liveLinks[0]!.href,
-      links: liveLinks,
-    });
-  }
-
-  return visible;
+  return [...items];
 }
 
 export function splitHeaderNavItems(items: readonly HeaderNavItem[]): {

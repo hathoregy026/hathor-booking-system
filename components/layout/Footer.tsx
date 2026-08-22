@@ -4,10 +4,8 @@ import Link from "next/link";
 import { useEffect, useRef, type ReactNode } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { usePageVisibilitySettings } from "@/components/public/PageVisibilityProvider";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { PUBLIC_SOCIAL_LINKS } from "@/lib/public-social";
-import { isPageLive } from "@/lib/page-visibility-shared";
 import { FooterSubscribe } from "@/components/layout/FooterSubscribe";
 
 /** Resolve live theme tokens so hover motion stays on-brand. */
@@ -233,22 +231,11 @@ function FooterNavLink({
   );
 }
 
-function visibleFooterLinks<T extends { href: string }>(
-  links: readonly T[],
-  settings: ReturnType<typeof usePageVisibilitySettings>,
-): T[] {
-  return links.filter((link) => {
-    if (!link.href.startsWith("/") || link.href.startsWith("//")) return true;
-    return isPageLive(link.href, settings);
-  });
-}
-
 export function Footer({ showTopCta = true }: { showTopCta?: boolean }) {
-  const pageVisibility = usePageVisibilitySettings();
-  const suitesLinks = visibleFooterLinks(SUITES_LINKS, pageVisibility);
-  const voyageLinks = visibleFooterLinks(VOYAGE_LINKS, pageVisibility);
-  const experienceLinks = visibleFooterLinks(EXPERIENCE_LINKS, pageVisibility);
-  const infoLinks = visibleFooterLinks(INFO_LINKS, pageVisibility);
+  const suitesLinks = SUITES_LINKS;
+  const voyageLinks = VOYAGE_LINKS;
+  const experienceLinks = EXPERIENCE_LINKS;
+  const infoLinks = INFO_LINKS;
   const rootRef = useRef<HTMLElement>(null);
   const year = new Date().getFullYear();
 
